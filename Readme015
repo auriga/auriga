@@ -1,4 +1,18 @@
 ----------------------------------------
+//047 [2006/01/02] by Rayce
+
+・path_search_real(), path_search_long_real() で参照する引数の型をcell_t型に修正（map.h, path.c）
+　path_search2() 用に CHK_NONE を追加
+・細かい修正および整形
+	battle_calc_damage()
+	battle_calc_magic_attack()
+	clif_skill_nodamage()
+	clif_guild_message()
+	pc_payzeny()
+	pc_getzeny()
+	pc_steal_item()
+
+----------------------------------------
 //046 [2007/01/01] by Rayce
 
 ・白羽取り中に連打掌を使うと鯖落ちするバグを修正（unit.c）

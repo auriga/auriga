@@ -2765,14 +2765,11 @@ int pc_inventoryblank(struct map_session_data *sd)
  */
 int pc_payzeny(struct map_session_data *sd,int zeny)
 {
-	atn_bignumber z;
-
 	nullpo_retr(0, sd);
 
-	z = (atn_bignumber)sd->status.zeny;
-	if(sd->status.zeny<zeny || z - (atn_bignumber)zeny > MAX_ZENY)
+	if(sd->status.zeny < zeny)
 		return 1;
-	sd->status.zeny-=zeny;
+	sd->status.zeny -= zeny;
 	clif_updatestatus(sd,SP_ZENY);
 
 	return 0;
@@ -2785,16 +2782,13 @@ int pc_payzeny(struct map_session_data *sd,int zeny)
  */
 int pc_getzeny(struct map_session_data *sd,int zeny)
 {
-	atn_bignumber z;
-
 	nullpo_retr(0, sd);
 
-	z = (atn_bignumber)sd->status.zeny;
-	if(z + zeny > MAX_ZENY) {
+	if(sd->status.zeny > MAX_ZENY - zeny) {
 		zeny = 0;
 		sd->status.zeny = MAX_ZENY;
 	}
-	sd->status.zeny+=zeny;
+	sd->status.zeny += zeny;
 	clif_updatestatus(sd,SP_ZENY);
 
 	return 0;
@@ -3335,16 +3329,17 @@ int pc_steal_item(struct map_session_data *sd,struct block_list *bl)
 			if(itemid > 0 && itemdb_type(itemid) != 6) {
 				rate = mob_db[md->class_].dropitem[i].p * skill * battle_config.steal_rate / 10000 + 1;
 				rate += sd->add_steal_rate;
-#ifdef _DEBUG
-				printf( "skill=%d, mob base=%d, rate=%d, bc.rate=%d, add=%d\n"
-					, skill, mob_db[md->class_].dropitem[i].p, rate, battle_config.steal_rate, sd->add_steal_rate );
-#endif	// #ifdef _DEBUG
+
+				if(battle_config.battle_log)
+					printf( "skill=%d, mob base=%d, rate=%d, bc.rate=%d, add=%d\n",
+						skill, mob_db[md->class_].dropitem[i].p, rate, battle_config.steal_rate, sd->add_steal_rate );
+
 				if(atn_rand()%10000 < rate) {
 					struct item tmp_item;
 					memset(&tmp_item,0,sizeof(tmp_item));
 					tmp_item.nameid = itemid;
 					tmp_item.amount = 1;
-					tmp_item.identify = !((itemid >= 1101 && itemid<= 2670 ) || (itemid >= 5001 && itemid<= 5150 )|| (itemid >= 13000 && itemid<= 13010 ));
+					tmp_item.identify = !itemdb_isequip3(itemid);
 					flag = pc_additem(sd,&tmp_item,1);
 					if(battle_config.show_steal_in_same_party)
 						party_foreachsamemap(pc_show_steal,sd,1,sd,tmp_item.nameid,0);

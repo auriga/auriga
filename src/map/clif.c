@@ -5152,7 +5152,7 @@ void clif_skill_nodamage(struct block_list *src,struct block_list *dst,
 	nullpo_retv(src);
 	nullpo_retv(dst);
 
-	if(heal>0x7fff && skill_id != (NPC_SELFDESTRUCTION || NPC_SELFDESTRUCTION2))
+	if(heal > 0x7fff && skill_id != NPC_SELFDESTRUCTION && skill_id != NPC_SELFDESTRUCTION2)
 		heal=0x7fff;
 
 	WBUFW(buf,0)=0x11a;
@@ -7675,7 +7675,7 @@ static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *
 void clif_guild_message(struct guild *g, int account_id, const char *mes, int len)
 {
 	struct map_session_data *sd;
-	unsigned char *buf = aMalloc(len+32);
+	unsigned char *buf = (unsigned char *)aMalloc(len+32);
 
 	WBUFW(buf, 0)=0x17f;
 	WBUFW(buf, 2)=len+4;
