@@ -304,11 +304,11 @@ enum {
 struct mail {
 	int account_id;
 	int char_id;
-	int rates;	// 総件数
-	int store;	// 保有件数
+	unsigned int rates;	// 総件数
+	int store;		// 保有件数
 };
 struct mail_data {
-	int mail_num;
+	unsigned int mail_num;
 	//送信元
 	int char_id;
 	char char_name[24];

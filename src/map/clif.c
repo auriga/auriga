@@ -8338,13 +8338,13 @@ void clif_send_mailbox(struct map_session_data *sd,int mail_num,struct mail_data
 	int len,fd;
 	int i;
 
-	if(!sd || mail_num<=0)
+	if(!sd)
 		return;
 
 	fd=sd->fd;
-	WFIFOW(fd,0)  = 0x240;
-	WFIFOW(fd,2)  = (len=8+73*mail_num);
-	WFIFOL(fd,4)  = mail_num;	// 0だとエラー
+	WFIFOW(fd,0) = 0x240;
+	WFIFOW(fd,2) = (len=8+73*mail_num);
+	WFIFOL(fd,4) = mail_num;	// 0のときは画面のクリア
 	for(i=0;i<mail_num && md[i];i++){
 		WFIFOL(fd,8+73*i)  = md[i]->mail_num;
 		memcpy(WFIFOP(fd,12+73*i),md[i]->title,40);
@@ -11837,7 +11837,7 @@ static void clif_parse_SendMail(int fd,struct map_session_data *sd, int cmd)
 	md.char_id = sd->status.char_id;
 
 	memcpy(md.receive_name,RFIFOP(fd,GETPACKETPOS(cmd,1)),24);
-	snprintf(md.title,40,"%s",RFIFOP(fd,GETPACKETPOS(cmd,2)));
+	snprintf(md.title,sizeof(md.title),"%s",RFIFOP(fd,GETPACKETPOS(cmd,2)));
 
 	if(bodylen > sizeof(md.body))
 		return;
@@ -11846,7 +11846,7 @@ static void clif_parse_SendMail(int fd,struct map_session_data *sd, int cmd)
 	md.body_size = bodylen;
 
 	// 日付の保存
-	md.times = (int)mail_calctimes();
+	md.times = (unsigned int)mail_calctimes();
 	// アイテム・Zenyチェック
 	if(mail_checkappend(sd,&md)==0)
 		intif_sendmail(&md);

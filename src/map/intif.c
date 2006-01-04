@@ -1531,9 +1531,6 @@ int intif_parse_MailBoxLoad(int fd)
 	struct map_session_data *sd = map_nick2sd(RFIFOP(fd,8));
 	struct mail_data *md[MAIL_STORE_MAX];
 
-	if(RFIFOL(fd,4)<=0)
-		return 0;
-
 	for(i=0;i<(int)RFIFOL(fd,4);i++){
 		md[i]=(struct mail_data *)aCalloc(1,size);
 		memcpy(md[i],RFIFOP(fd,32+i*size),size);

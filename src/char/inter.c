@@ -389,9 +389,9 @@ const struct accreg* accreg_sql_load(int account_id) {
 	int j=0;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
-	struct accreg *reg = numdb_search(accreg_db,account_id);
+	struct accreg *reg = (struct accreg *)numdb_search(accreg_db,account_id);
 	if(reg == NULL) {
-		reg = aMalloc(sizeof(struct accreg));
+		reg = (struct accreg *)aMalloc(sizeof(struct accreg));
 		numdb_insert(accreg_db,account_id,reg);
 	}
 	memset(reg, 0, sizeof(struct accreg));
@@ -417,7 +417,7 @@ const struct accreg* accreg_sql_load(int account_id) {
 
 static int accreg_sql_final_sub(void *key,void *data,va_list ap)
 {
-	struct accreg *reg=data;
+	struct accreg *reg = (struct accreg *)data;
 
 	aFree(reg);
 
@@ -472,6 +472,7 @@ int inter_config_read(const char *cfgName)
 			storage_config_read_sub(w1,w2);
 			party_config_read(w1,w2);
 			guild_config_read(w1,w2);
+			mail_config_read_sub(w1,w2);
 			homun_config_read_sub(w1,w2);
 			status_config_read_sub(w1,w2);
 		}

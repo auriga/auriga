@@ -1,4 +1,39 @@
 ----------------------------------------
+//048 [2006/01/05] by Rayce
+
+・ROメールに関する変更および修正（mmo.h, inter.c, int_mail.c, clif.c, intif.c）
+　　-> mail構造体のメンバ rates を unsigned int型に変更
+　　-> mail_data構造体のメンバ mail_num を unsigned int型に変更
+　　-> ROメールのデータ保存場所をinter_athena.confから設定出来るように追加
+　　　 mail_txtにはメール全体のデータを保存するファイル名、mail_dirはメール本体のデータを格納する
+　　　 ディレクトリを指定します
+		mail_config_read_sub() 追加
+　　-> メールの削除時にfreeし忘れる可能性を修正
+		mail_txt_deletemail() 修正
+　　-> メールを削除すると最後にあるデータが消去されずに残るバグを修正
+		mail_txt_save_mail() 修正
+　　-> 受信メールがBOXにある状態でキャラチェンジをすると、チェンジ後のキャラでもそのメールを閲覧
+　　　 および添付アイテム/Zenyの取得が出来たバグを修正
+		clif_send_mailbox()
+		intif_parse_MailBoxLoad()
+
+　※clif_send_mailbox() で mail_num に0を入れて送信すると画面がクリアできるようです
+　　0だとエラーというコメントが気になりましたが、とりあえず問題なさそうなので0を許可しています
+
+・ROメールの保存をSQLに対応（int_mail.*）
+	`mail` にはメール全体の情報、`mail_data` には個人のメール本体の情報が格納されます
+	残念ながら、文字化け対策のためメール本文（body）はTXTと同じくバイナリデータに変換されます
+
+・mail_save_mail() の引数を一つ増やす
+	この関数が呼ばれるのは、メール既読もしくは添付アイテム/Zenyの取得時にデータを書き換える時だけです
+	SQLではTXTとは違い対象データをUPDATEするだけで済むので、mail_dataのindexを渡せるようにして
+	無駄な処理を行わないようにしています
+	TXTではこの引数は使われません
+
+・SQL: sql-files/Auriga048_changetable.sqlを追加、main.sqlおよびdrop_table.sqlの更新
+・SQL: 使われてないテーブル login_error, ragsrvinfo, sstatus を作成しないように削除（sql_files/mail.sql）
+
+----------------------------------------
 //047 [2006/01/02] by Rayce
 
 ・path_search_real(), path_search_long_real() で参照する引数の型をcell_t型に修正（map.h, path.c）
