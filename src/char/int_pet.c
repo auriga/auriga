@@ -333,7 +333,7 @@ int  pet_sql_sync(void) {
 }
 
 int  pet_sql_delete(int pet_id) {
-	struct s_pet *p = numdb_search(pet_db,pet_id);
+	struct s_pet *p = (struct s_pet *)numdb_search(pet_db,pet_id);
 	if(p) {
 		numdb_erase(pet_db,p->pet_id);
 		aFree(p);
@@ -341,7 +341,7 @@ int  pet_sql_delete(int pet_id) {
 	// printf("Request del  pet  (%6d)[",pet_id);
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `pet_id`='%d'",pet_db_, pet_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", pet_db_, mysql_error(&mysql_handle) );
 	}
 	// printf("]\n");
 	return 0;
@@ -350,12 +350,12 @@ int  pet_sql_delete(int pet_id) {
 const struct s_pet* pet_sql_load(int pet_id) {
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
-	struct s_pet *p = numdb_search(pet_db,pet_id);
+	struct s_pet *p = (struct s_pet *)numdb_search(pet_db,pet_id);
 	if(p && p->pet_id == pet_id) {
 		return p;
 	}
 	if(p == NULL) {
-		p = aMalloc(sizeof(struct s_pet));
+		p = (struct s_pet *)aMalloc(sizeof(struct s_pet));
 		numdb_insert(pet_db,pet_id,p);
 	}
 
@@ -370,7 +370,7 @@ const struct s_pet* pet_sql_load(int pet_id) {
 		pet_db_, pet_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `pet`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", pet_db_, mysql_error(&mysql_handle) );
 		p->pet_id = -1;
 		return NULL;
 	}
@@ -428,13 +428,13 @@ int  pet_sql_save(struct s_pet* p2) {
 			p2->equip, p2->intimate, p2->hungry, p2->rename_flag, p2->incubate, p2->pet_id
 		);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (inset/update `pet`)- %s\n", mysql_error(&mysql_handle) );
+			printf("DB server Error (update `%s`)- %s\n", pet_db_, mysql_error(&mysql_handle) );
 		}
 		// printf("basic ");
 	}
 	// printf("]\n");
 	{
-		struct s_pet *p3 = numdb_search(pet_db,p2->pet_id);
+		struct s_pet *p3 = (struct s_pet *)numdb_search(pet_db,p2->pet_id);
 		if(p3)
 			memcpy(p3,p2,sizeof(struct s_pet));
 	}
@@ -456,7 +456,7 @@ int  pet_sql_new(struct s_pet *p,int account_id,int char_id) {
 		p->equip, p->intimate, p->hungry, p->rename_flag, p->incubate
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)){
-		printf("failed (insert pet), SQL error: %s\n", mysql_error(&mysql_handle));
+		printf("failed (insert `%s`), SQL error: %s\n", pet_db_, mysql_error(&mysql_handle));
 		aFree(p);
 		return 1;
 	}
@@ -469,7 +469,7 @@ int  pet_sql_new(struct s_pet *p,int account_id,int char_id) {
 
 static int pet_sql_final_sub(void *key,void *data,va_list ap)
 {
-	struct s_pet *p=data;
+	struct s_pet *p = (struct s_pet *)data;
 
 	aFree(p);
 

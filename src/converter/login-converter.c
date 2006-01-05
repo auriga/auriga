@@ -118,7 +118,7 @@ int login_convert(void)
 	input=getchar();
 	if(input == 'y' || input == 'Y') {
 		read_gm_account();
-		fp=fopen("save/account.txt","r");
+		fp=fopen(account_filename,"r");
 		if(fp==NULL)
 			return 0;
 		while(fgets(line,1023,fp)!=NULL){

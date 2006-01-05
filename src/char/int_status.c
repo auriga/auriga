@@ -339,15 +339,15 @@ int status_sql_sync(void)
 
 int status_sql_delete(int char_id)
 {
-	struct status_change_data *sc = numdb_search(scdata_db,char_id);
+	struct status_change_data *sc = (struct status_change_data *)numdb_search(scdata_db,char_id);
 
-	if(sc) {
-		numdb_erase(scdata_db,sc->char_id);
+	if(sc && sc->char_id == char_id) {
+		numdb_erase(scdata_db,char_id);
 		aFree(sc);
 	}
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",scdata_db_, char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", scdata_db_, mysql_error(&mysql_handle));
 	}
 	return 0;
 }
@@ -358,7 +358,7 @@ struct status_change_data *status_sql_load(int char_id)
 	int i=0;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
-	struct status_change_data *sc = numdb_search(scdata_db,char_id);
+	struct status_change_data *sc = (struct status_change_data *)numdb_search(scdata_db,char_id);
 
 	if(sc && sc->char_id == char_id) {
 		// 既にキャッシュが存在する
@@ -368,6 +368,9 @@ struct status_change_data *status_sql_load(int char_id)
 		sc = (struct status_change_data *)aMalloc(sizeof(struct status_change_data));
 		numdb_insert(scdata_db,char_id,sc);
 	}
+	memset(sc, 0, sizeof(struct status_change_data));
+
+	sc->char_id = char_id;
 
 	//`status_change` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`)
 	sprintf(
@@ -377,11 +380,11 @@ struct status_change_data *status_sql_load(int char_id)
 		scdata_db_, char_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `status_change`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", scdata_db_, mysql_error(&mysql_handle) );
+		sc->char_id = -1;
 		return NULL;
 	}
 	sql_res = mysql_store_result(&mysql_handle);
-	sc->char_id = char_id;
 
 	if(sql_res && mysql_num_rows(sql_res) > 0) {
 		for(i=0; (sql_row = mysql_fetch_row(sql_res)) && i<MAX_STATUSCHANGE; i++) {
@@ -395,9 +398,15 @@ struct status_change_data *status_sql_load(int char_id)
 			sc->data[i].val4 = atoi(sql_row[6]);
 			sc->data[i].tick = atoi(sql_row[7]);
 		}
+		sc->count = (i < MAX_STATUSCHANGE)? i: MAX_STATUSCHANGE;
+
 		mysql_free_result(sql_res);
+	} else {
+		// 見つからなくても正常
+		if(sql_res)
+			mysql_free_result(sql_res);
+		return NULL;
 	}
-	sc->count = (i < MAX_STATUSCHANGE)? i: MAX_STATUSCHANGE;
 
 	return sc;
 }
@@ -414,7 +423,7 @@ int status_sql_save(struct status_change_data *sc2)
 		// データサーバ側にデータがあるときだけ削除クエリを発行
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",scdata_db_, sc2->char_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `status_change`)- %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (delete `%s`)- %s\n", scdata_db_, mysql_error(&mysql_handle));
 		}
 	}
 
@@ -427,7 +436,7 @@ int status_sql_save(struct status_change_data *sc2)
 			sc2->data[i].val1, sc2->data[i].val2, sc2->data[i].val3, sc2->data[i].val4, sc2->data[i].tick
 		);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (insert `status_change`)- %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (insert `%s`)- %s\n", scdata_db_, mysql_error(&mysql_handle));
 		}
 	}
 

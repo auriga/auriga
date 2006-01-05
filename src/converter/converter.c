@@ -26,6 +26,8 @@ char login_db_userid[1024]     = "userid";
 char login_db_user_pass[1024]  = "user_pass";
 char login_db_level[1024]      = "level";
 
+char account_filename[1024]    = "save/account.txt";
+char char_txt[1024]            = "save/athena.txt";
 char GM_account_filename[1024] = "conf/GM_account.txt";
 char pet_txt[1024]             = "save/pet.txt";
 char storage_txt[1024]         = "save/storage.txt";
@@ -68,7 +70,13 @@ int config_read(const char *cfgName) {
 			continue;
 
 		// TXT files
-		if(strcmpi(w1,"GM_account_filename")==0){
+		if(strcmpi(w1,"account_filename")==0){
+			printf("set account_filename : %s\n",w2);
+			strncpy(account_filename, w2, sizeof(account_filename));
+		} else if(strcmpi(w1,"char_txt")==0){
+			printf("set char_txt : %s\n",w2);
+			strncpy(char_txt, w2, sizeof(char_txt));
+		} else if(strcmpi(w1,"GM_account_filename")==0){
 			printf("set GM_account_filename : %s\n",w2);
 			strncpy(GM_account_filename, w2, sizeof(GM_account_filename));
 		} else if(strcmpi(w1,"pet_txt")==0){

@@ -394,7 +394,7 @@ int  homun_sql_sync(void) {
 }
 
 int  homun_sql_delete(int homun_id) {
-	struct mmo_homunstatus *p = numdb_search(homun_db,homun_id);
+	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
 	if(p) {
 		numdb_erase(homun_db,p->homun_id);
 		aFree(p);
@@ -402,11 +402,11 @@ int  homun_sql_delete(int homun_id) {
 	// printf("Request del  hom  (%6d)[",homun_id);
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `homun_id`='%d'",homun_db_, homun_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", homun_db_, mysql_error(&mysql_handle) );
 	}
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `homun_id`='%d'",homun_skill_db, homun_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", homun_skill_db, mysql_error(&mysql_handle) );
 	}
 	// printf("]\n");
 	return 0;
@@ -415,13 +415,13 @@ int  homun_sql_delete(int homun_id) {
 const struct mmo_homunstatus* homun_sql_load(int homun_id) {
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
-	struct mmo_homunstatus *p = numdb_search(homun_db,homun_id);
+	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
 
 	if(p && p->homun_id == homun_id) {
 		return p;
 	}
 	if(p == NULL) {
-		p = aMalloc(sizeof(struct mmo_homunstatus));
+		p = (struct mmo_homunstatus *)aMalloc(sizeof(struct mmo_homunstatus));
 		numdb_insert(homun_db,homun_id,p);
 	}
 
@@ -440,7 +440,7 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id) {
 		homun_db_, homun_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `hom`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", homun_db_, mysql_error(&mysql_handle) );
 		p->homun_id = -1;
 		return NULL;
 	}
@@ -484,7 +484,7 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id) {
 		homun_skill_db, homun_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `homun_skill`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", homun_skill_db, mysql_error(&mysql_handle) );
 		p->homun_id = -1;
 		return NULL;
 	}
@@ -571,7 +571,7 @@ int  homun_sql_save(struct mmo_homunstatus* p2) {
 	if(sep == ',') {
 		sprintf(p," WHERE `homun_id` = '%d'",p2->homun_id);
 		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (update `%s`)- %s\n", homun_db_, mysql_error(&mysql_handle));
 		}
 		// printf("basic ");
 	}
@@ -579,7 +579,7 @@ int  homun_sql_save(struct mmo_homunstatus* p2) {
 	if(memcmp(p1->skill, p2->skill, sizeof(p1->skill)) ) {
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `homun_id`='%d'",homun_skill_db,p2->homun_id);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (delete `homun_id_skill`)- %s\n", mysql_error(&mysql_handle) );
+			printf("DB server Error (delete `%s`)- %s\n", homun_skill_db, mysql_error(&mysql_handle) );
 		}
 		p  = tmp_sql;
 		p += sprintf(tmp_sql, "INSERT INTO `%s` (`homun_id`,`id`,`lv`) VALUES", homun_skill_db);
@@ -593,14 +593,14 @@ int  homun_sql_save(struct mmo_homunstatus* p2) {
 		}
 		if(sep == ',') {
 			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `homun_skill`)- %s\n", mysql_error(&mysql_handle) );
+				printf("DB server Error (insert `%s`)- %s\n", homun_skill_db, mysql_error(&mysql_handle) );
 			}
 		}
 		// printf("skill ");
 	}
 	// printf("]\n");
 	{
-		struct mmo_homunstatus *p3 = numdb_search(homun_db,p2->homun_id);
+		struct mmo_homunstatus *p3 = (struct mmo_homunstatus *)numdb_search(homun_db,p2->homun_id);
 		if(p3)
 			memcpy(p3,p2,sizeof(struct mmo_homunstatus));
 	}
@@ -627,7 +627,7 @@ int  homun_sql_new(struct mmo_homunstatus *p,int account_id,int char_id) {
 		p->hungry, p->rename_flag, p->incubate
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)){
-		printf("failed (insert hom), SQL error: %s\n", mysql_error(&mysql_handle));
+		printf("failed (insert `%s`), SQL error: %s\n", homun_db_, mysql_error(&mysql_handle));
 		aFree(p);
 		return 1;
 	}
@@ -647,7 +647,7 @@ int  homun_sql_new(struct mmo_homunstatus *p,int account_id,int char_id) {
 	}
 	if(sep == ',') {
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (insert `homun_skill`)- %s\n", mysql_error(&mysql_handle) );
+			printf("DB server Error (insert `%s`)- %s\n", homun_skill_db, mysql_error(&mysql_handle) );
 		}
 	}
 
@@ -660,7 +660,7 @@ int  homun_sql_new(struct mmo_homunstatus *p,int account_id,int char_id) {
 
 static int homun_sql_final_sub(void *key,void *data,va_list ap)
 {
-	struct mmo_homunstatus *p=data;
+	struct mmo_homunstatus *p = (struct mmo_homunstatus *)data;
 
 	aFree(p);
 

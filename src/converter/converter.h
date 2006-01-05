@@ -25,6 +25,8 @@ extern char login_db_level[1024];
 
 extern char tmp_sql[65535];
 
+extern char account_filename[1024];
+extern char char_txt[1024];
 extern char GM_account_filename[1024];
 extern char pet_txt[1024];
 extern char storage_txt[1024];

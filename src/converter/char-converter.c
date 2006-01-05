@@ -1120,7 +1120,7 @@ int char_convert(void){
 		struct linkdb_node *char_namedb;	// char.cのようにchar_txt_load() がなくて面倒なのでキャラ名リストを用意
 
 		printf("\nConverting Character Database...\n");
-		fp=fopen("save/athena.txt","r");
+		fp=fopen(char_txt,"r");
 		if(fp==NULL)
 			return 0;
 
@@ -1140,7 +1140,7 @@ int char_convert(void){
 				linkdb_replace(&char_namedb, (void*)cd[char_num].st.char_id, aStrdup(cd[char_num].st.name));
 				char_num++;
 			} else {
-				printf("mmo_char: broken data [save/athena.txt] line %d\n",c);
+				printf("mmo_char: broken data [%s] line %d\n", char_txt, c);
 			}
 		}
 		// 友達リストの名前を解決

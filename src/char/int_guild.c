@@ -858,7 +858,7 @@ int guildcastle_sql_init(void)
 	sprintf (tmp_sql , "SELECT * FROM `%s` ORDER BY `castle_id`", guild_castle_db);
 	if(mysql_query(&mysql_handle, tmp_sql) )
 	{
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", guild_castle_db, mysql_error(&mysql_handle) );
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0)
@@ -919,7 +919,7 @@ int guildcastle_sql_init(void)
 }
 
 int guildcastle_tosql(int castle_id){
-	struct guild_castle *gc=numdb_search(castle_db,castle_id);
+	struct guild_castle *gc = (struct guild_castle *)numdb_search(castle_db,castle_id);
 	if(gc==NULL){
 		printf("guild_castle Data in numdb is lost or broken.\n");
 		return 0;
@@ -982,7 +982,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 		return g;
 	}
 	if (g == NULL) {
-		g = aMalloc(sizeof(struct guild));
+		g = (struct guild *)aMalloc(sizeof(struct guild));
 		numdb_insert(guild_db,guild_id,g);
 	}
 	memset(g,0,sizeof(struct guild));
@@ -995,7 +995,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 		"`emblem_id`,`emblem_data` FROM `%s` WHERE `guild_id`='%d'",guild_db_, guild_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `guild`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", guild_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
 		return NULL;
 	}
@@ -1055,7 +1055,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 	);
 	//printf("  %s\n",tmp_sql);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `guild_member`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", guild_member_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
 		return NULL;
 	}
@@ -1088,7 +1088,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 	sprintf(tmp_sql,"SELECT `guild_id`,`position`,`name`,`mode`,`exp_mode` FROM `%s` WHERE `guild_id`='%d'",guild_position_db, guild_id);
 	//printf("  %s\n",tmp_sql);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `guild_position`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", guild_position_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
 		return NULL;
 	}
@@ -1113,7 +1113,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 		guild_alliance_db, guild_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `guild_alliance`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", guild_alliance_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
 		return NULL;
 	}
@@ -1133,7 +1133,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 	//printf("- Read guild_expulsion %d from sql \n",guild_id);
 	sprintf(tmp_sql,"SELECT `guild_id`,`name`,`mes`,`acc`,`account_id`,`rsv1`,`rsv2`,`rsv3` FROM `%s` WHERE `guild_id`='%d'",guild_expulsion_db, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `guild_expulsion`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", guild_expulsion_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
 		return NULL;
 	}
@@ -1157,7 +1157,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 	//printf("- Read guild_skill %d from sql \n",guild_id);
 	sprintf(tmp_sql,"SELECT `guild_id`,`id`,`lv` FROM `%s` WHERE `guild_id`='%d' ORDER BY `id`",guild_skill_db, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `guild_skill`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", guild_skill_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
 		return NULL;
 	}
@@ -1196,7 +1196,7 @@ const struct guild* guild_sql_load_str(char *str) {
 		guild_db_,strecpy(buf,str)
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", guild_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle) ;
 	if (sql_res) {
@@ -1263,7 +1263,7 @@ int  guild_sql_save(struct guild* g2) {
 	if(sep == ',') {
 		sprintf(p," WHERE `guild_id` = '%d'",g2->guild_id);
 		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (update `%s`)- %s\n", guild_db, mysql_error(&mysql_handle));
 		}
 		// printf("basic ");
 	}
@@ -1271,7 +1271,7 @@ int  guild_sql_save(struct guild* g2) {
 	if(memcmp(g1->member,g2->member,sizeof(g1->member))) {
 		sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d'",guild_member_db,g2->guild_id);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (delete `guild_member`)- %s\n", mysql_error(&mysql_handle) );
+			printf("DB server Error (delete `%s`)- %s\n", guild_member_db, mysql_error(&mysql_handle) );
 		}
 
 		p  = tmp_sql;
@@ -1299,7 +1299,7 @@ int  guild_sql_save(struct guild* g2) {
 		}
 		if(sep == ',') {
 			if(mysql_query(&mysql_handle,tmp_sql)) {
-				printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+				printf("DB server Error (insert `%s`)- %s\n", guild_member_db, mysql_error(&mysql_handle) );
 			}
 		}
 		// printf("member ");
@@ -1310,7 +1310,7 @@ int  guild_sql_save(struct guild* g2) {
 		//	printf("- Delete guild %d from guild_position\n",g2->guild_id);
 		sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d'",guild_position_db, g2->guild_id);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (delete `guild_position`)- %s\n", mysql_error(&mysql_handle) );
+			printf("DB server Error (delete `%s`)- %s\n", guild_position_db, mysql_error(&mysql_handle) );
 		}
 
 		p  = tmp_sql;
@@ -1331,7 +1331,7 @@ int  guild_sql_save(struct guild* g2) {
 		}
 		if(sep == ',') {
 			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `guild_position`)- %s\n", mysql_error(&mysql_handle) );
+				printf("DB server Error (insert `%s`)- %s\n", guild_position_db, mysql_error(&mysql_handle) );
 			}
 		}
 		// printf("position ");
@@ -1344,7 +1344,7 @@ int  guild_sql_save(struct guild* g2) {
 			"DELETE FROM `%s` WHERE `guild_id`='%d'",guild_alliance_db,g2->guild_id
 		);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (delete `guild_alliance`)- %s\n", mysql_error(&mysql_handle) );
+			printf("DB server Error (delete `%s`)- %s\n", guild_alliance_db, mysql_error(&mysql_handle) );
 		}
 
 		p  = tmp_sql;
@@ -1368,7 +1368,7 @@ int  guild_sql_save(struct guild* g2) {
 		//printf(" %s\n",tmp_sql);
 		if(sep == ',') {
 			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `guild_alliance`)- %s\n", mysql_error(&mysql_handle) );
+				printf("DB server Error (insert `%s`)- %s\n", guild_alliance_db, mysql_error(&mysql_handle) );
 			}
 		}
 		// printf("alliance ");
@@ -1378,7 +1378,7 @@ int  guild_sql_save(struct guild* g2) {
 	if(memcmp(g1->explusion,g2->explusion,sizeof(g1->explusion))) {
 		sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d'",guild_expulsion_db, g2->guild_id);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (delete `guild_expulsion`)- %s\n", mysql_error(&mysql_handle) );
+			printf("DB server Error (delete `%s`)- %s\n", guild_expulsion_db, mysql_error(&mysql_handle) );
 		}
 		p  = tmp_sql;
 		p += sprintf(
@@ -1400,7 +1400,7 @@ int  guild_sql_save(struct guild* g2) {
 		}
 		if(sep == ',') {
 			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `guild_expulsion`)- %s\n", mysql_error(&mysql_handle) );
+				printf("DB server Error (insert `%s`)- %s\n", guild_expulsion_db, mysql_error(&mysql_handle) );
 			}
 		}
 		// printf("expulsion ");
@@ -1409,7 +1409,7 @@ int  guild_sql_save(struct guild* g2) {
 	if(memcmp(g1->skill,g2->skill,sizeof(g1->skill))) {
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `guild_id`='%d'",guild_skill_db,g2->guild_id);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (delete `guild_skill`)- %s\n", mysql_error(&mysql_handle) );
+			printf("DB server Error (delete `%s`)- %s\n", guild_skill_db, mysql_error(&mysql_handle) );
 		}
 		p  = tmp_sql;
 		p += sprintf(
@@ -1429,14 +1429,14 @@ int  guild_sql_save(struct guild* g2) {
 		}
 		if(sep == ',') {
 			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `guild_skill`)- %s\n", mysql_error(&mysql_handle) );
+				printf("DB server Error (insert `%s`)- %s\n", guild_skill_db, mysql_error(&mysql_handle) );
 			}
 		}
 		// printf("skill ");
 	}
 	// printf("]\n");
 	{
-		struct guild* g3 = numdb_search(guild_db,g2->guild_id);
+		struct guild* g3 = (struct guild *)numdb_search(guild_db,g2->guild_id);
 		if(g3)
 			memcpy(g3,g2,sizeof(struct guild));
 	}
@@ -1460,7 +1460,7 @@ int guild_sql_delete_sub(void *key,void *data,va_list ap)
 }
 
 void guild_sql_delete(int guild_id) {
-	struct guild* g = numdb_search(guild_db,guild_id);
+	struct guild* g = (struct guild *)numdb_search(guild_db,guild_id);
 	// printf("Request del  guild(%06d)[",guild_id);
 
 	if(g) {
@@ -1473,37 +1473,37 @@ void guild_sql_delete(int guild_id) {
 
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d'",guild_db_, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", guild_db, mysql_error(&mysql_handle) );
 	}
 	// printf("basic ");
 
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d'",guild_member_db, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_member`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", guild_member_db, mysql_error(&mysql_handle) );
 	}
 	// printf("member ");
 
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d'",guild_position_db, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_position`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", guild_position_db, mysql_error(&mysql_handle) );
 	}
 	// printf("position ");
 
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d' OR `alliance_id`='%d'",guild_alliance_db, guild_id,guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_alliance`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", guild_alliance_db, mysql_error(&mysql_handle) );
 	}
 	// printf("alliance ");
 
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d'",guild_expulsion_db, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_expulsion`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", guild_expulsion_db, mysql_error(&mysql_handle) );
 	}
 	// printf("expulsion ");
 
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d'",guild_skill_db, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_skill`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", guild_skill_db, mysql_error(&mysql_handle) );
 	}
 	// printf("skill ");
 	update_castle_loop(guild_id);
@@ -1519,7 +1519,7 @@ int update_castle_loop(int guild_id)
 
 int update_castle(int guild_id,int index)
 {
-	struct guild_castle *gc=numdb_search(castle_db,index);
+	struct guild_castle *gc = (struct guild_castle *)numdb_search(castle_db,index);
 	if(gc==NULL){
 		return 0;
 	}
@@ -1579,7 +1579,7 @@ int guild_sql_new(struct guild *g) {
 		guild_db_,g->guild_id,strecpy(t_name,g->name),g->max_member
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `guild`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (insert `%s`)- %s\n", guild_db, mysql_error(&mysql_handle) );
 		return 0;
 	}
 	// printf("]\n");
@@ -1595,14 +1595,14 @@ void guild_sql_config_read_sub(const char *w1,const char* w2) {
 
 static int guild_sql_db_final(void *key,void *data,va_list ap)
 {
-	struct guild *g=data;
+	struct guild *g = (struct guild *)data;
 	aFree(g);
 	return 0;
 }
 
 static int guildcastle_sql_db_final(void *key,void *data,va_list ap)
 {
-	struct guild_castle *gc=data;
+	struct guild_castle *gc = (struct guild_castle *)data;
 	aFree(gc);
 	return 0;
 }

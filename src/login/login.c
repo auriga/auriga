@@ -466,6 +466,7 @@ char login_server_db[32]      = "ragnarok";
 char login_server_charset[32] = "";
 char login_db[256]       = "login";
 char loginlog_db[256]    = "loginlog";
+char reg_db[256] = "global_reg_value";
 
 // added to help out custom login tables, without having to recompile
 // source so options are kept in the login_athena.conf or the inter_athena.conf
@@ -525,7 +526,7 @@ int  login_sql_init(void) {
 
 static int account_db_final(void *key,void *data,va_list ap)
 {
-	struct account *p=data;
+	struct account *p = (struct account *)data;
 
 	aFree(p);
 
@@ -582,11 +583,11 @@ int  login_sql_config_read_sub(const char* w1,const char* w2) {
 int login_sql_account_delete(int account_id) {
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `%s` = '%d'",login_db,login_db_account_id,account_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
 	}
-	sprintf(tmp_sql,"DELETE FROM `global_reg_value` WHERE `type`='1' AND `account_id`='%d'",account_id);
+	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`='1' AND `account_id`='%d'", reg_db, account_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 	}
 	return 0;
 }
@@ -601,9 +602,9 @@ const struct mmo_account* login_sql_account_load_num(int account_id) {
 		return NULL;
 	}
 
-	ac = numdb_search(account_db, account_id);
+	ac = (struct mmo_account *)numdb_search(account_db, account_id);
 	if(ac == NULL) {
-		ac = aMalloc(sizeof(struct mmo_account));
+		ac = (struct mmo_account *)aMalloc(sizeof(struct mmo_account));
 		numdb_insert(account_db,account_id,ac);
 	}
 
@@ -614,7 +615,7 @@ const struct mmo_account* login_sql_account_load_num(int account_id) {
 		login_db_userid,login_db_user_pass,login_db,login_db_account_id,account_id
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 	if (!sql_res) {
@@ -647,9 +648,9 @@ const struct mmo_account* login_sql_account_load_num(int account_id) {
 
 	// global reg
 	ac->account_reg2_num = 0;
-	sprintf(tmp_sql, "SELECT `str`,`value` FROM `global_reg_value` WHERE `type`='1' AND `account_id`='%d'",account_id);
+	sprintf(tmp_sql, "SELECT `str`,`value` FROM `%s` WHERE `type`='1' AND `account_id`='%d'", reg_db, account_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res) {
@@ -676,7 +677,7 @@ const struct mmo_account* login_sql_account_load_str(const char *account_id) {
 		login_db_account_id,login_db,login_db_userid,strecpy(buf,account_id)
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle) ;
 	if (sql_res) {
@@ -703,7 +704,7 @@ const struct mmo_account* login_sql_account_load_idx(int index) {
 		login_db_account_id,login_db,login_db_account_id,index
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle) ;
 	if (sql_res) {
@@ -787,7 +788,7 @@ int  login_sql_account_save(struct mmo_account *ac2) {
 	if(sep == ',') {
 		sprintf(p," WHERE `%s` = '%d'",login_db_account_id,ac2->account_id);
 		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (update `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
 		}
 	}
 
@@ -797,20 +798,20 @@ int  login_sql_account_save(struct mmo_account *ac2) {
 		ac1->account_reg2_num != ac2->account_reg2_num
 	) {
 		int i;
-		sprintf(tmp_sql,"DELETE FROM `global_reg_value` WHERE `type`='1' AND `account_id`='%d'",ac2->account_id);
+		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`='1' AND `account_id`='%d'", reg_db, ac2->account_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 		}
 		for(i = 0;i < ac2->account_reg2_num ; i++) {
 			sprintf(
 				tmp_sql,
-				"INSERT INTO `global_reg_value` (`type`, `account_id`, `str`, `value`) "
+				"INSERT INTO `%s` (`type`, `account_id`, `str`, `value`) "
 				"VALUES ( 1 , '%d' , '%s' , '%d')",
-				ac2->account_id,
+				reg_db, ac2->account_id,
 				strecpy(buf,ac2->account_reg2[i].str),ac2->account_reg2[i].value
 			);
 			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+				printf("DB server Error (insert `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 			}
 		}
 	}
@@ -841,7 +842,7 @@ int  login_sql_account_new(struct mmo_account* account,const char *tmpstr) {
 		sex_str[account->sex],strecpy(buf3,account->mail)
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (insert `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
 	}
 	return 1;
 }
@@ -970,11 +971,11 @@ int login_log(char *fmt,...)
 	va_end(ap);
 
 	sprintf(
-		tmp_sql,"INSERT INTO `loginlog` (`time`,`log`) VALUES (NOW(),'%s')",
-		strecpy(buf,log)
+		tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')",
+		loginlog_db, strecpy(buf,log)
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ){
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (insert `%s`)- %s\n", loginlog_db, mysql_error(&mysql_handle) );
 	}
 
 	return 0;

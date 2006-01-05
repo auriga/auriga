@@ -384,7 +384,7 @@ const struct party* party_sql_load_str(char *str) {
 		party_db_,strecpy(buf,str)
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", party_db_, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle) ;
 	if (sql_res) {
@@ -404,7 +404,7 @@ const struct party* party_sql_load_str(char *str) {
 
 const struct party* party_sql_load_num(int party_id) {
 	int leader_id=0;
-	struct party *p = numdb_search(party_db,party_id);
+	struct party *p = (struct party *)numdb_search(party_db,party_id);
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
@@ -412,7 +412,7 @@ const struct party* party_sql_load_num(int party_id) {
 		return p;
 	}
 	if(p == NULL) {
-		p = aMalloc(sizeof(struct party));
+		p = (struct party *)aMalloc(sizeof(struct party));
 		numdb_insert(party_db,party_id,p);
 	}
 	memset(p, 0, sizeof(struct party));
@@ -423,7 +423,7 @@ const struct party* party_sql_load_num(int party_id) {
 		party_db_, party_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `party`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
 		p->party_id = -1;
 		return NULL;
 	}
@@ -451,7 +451,7 @@ const struct party* party_sql_load_num(int party_id) {
 		char_db, party_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `party`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
 		p->party_id = -1;
 		return NULL;
 	}
@@ -487,12 +487,12 @@ int party_sql_save(struct party* p2) {
 			party_db_,strecpy(t_name,p2->name),p2->exp,p2->item,p2->party_id
 		);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (update `party`)- %s\n", mysql_error(&mysql_handle) );
+			printf("DB server Error (update `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
 		}
 	}
 	// printf("]\n");
 	{
-		struct party *p3 = numdb_search(party_db,p2->party_id);
+		struct party *p3 = (struct party *)numdb_search(party_db,p2->party_id);
 		if(p3)
 			memcpy(p3,p2,sizeof(struct party));
 	}
@@ -501,7 +501,7 @@ int party_sql_save(struct party* p2) {
 
 int party_sql_delete(int party_id) {
 	// Delete the party
-	struct party *p = numdb_search(party_db,party_id);
+	struct party *p = (struct party *)numdb_search(party_db,party_id);
 	if(p) {
 		numdb_erase(party_db,p->party_id);
 		aFree(p);
@@ -509,7 +509,7 @@ int party_sql_delete(int party_id) {
 	// printf("Request del party(%06d)[",party_id);
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `party_id`='%d'",party_db_, party_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
 	}
 	// printf("]\n");
 	return 0;
@@ -569,7 +569,7 @@ int party_sql_new(struct party *p) {
 		party_db_,p->party_id,strecpy(t_name,p->name), p->exp, p->item,leader_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (inset `party`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (inset `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
 		return 0;
 	}
 	// printf("]\n");
@@ -579,7 +579,7 @@ int party_sql_new(struct party *p) {
 
 static int party_sql_final_sub(void *key,void *data,va_list ap)
 {
-	struct party *p=data;
+	struct party *p = (struct party *)data;
 
 	aFree(p);
 

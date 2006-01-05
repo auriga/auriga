@@ -688,7 +688,7 @@ int  storage_sql_delete(int account_id) {
 
 static int storage_db_final(void *key,void *data,va_list ap)
 {
-	struct storage *s=data;
+	struct storage *s = (struct storage *)data;
 
 	aFree(s);
 
@@ -756,7 +756,7 @@ int  gstorage_sql_delete(int guild_id) {
 
 static int gstorage_db_final(void *key,void *data,va_list ap)
 {
-	struct guild_storage *gs=data;
+	struct guild_storage *gs = (struct guild_storage *)data;
 
 	aFree(gs);
 

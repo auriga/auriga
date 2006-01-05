@@ -1034,7 +1034,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 		return p;
 	}
 	if (p == NULL) {
-		p = aMalloc(sizeof(struct mmo_chardata));
+		p = (struct mmo_chardata *)aMalloc(sizeof(struct mmo_chardata));
 		numdb_insert(char_db_,char_id,p);
 	}
 	memset(p,0,sizeof(struct mmo_chardata));
@@ -1045,7 +1045,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	sprintf(tmp_sql, "SELECT * FROM `%s` WHERE `char_id` = '%d'",char_db, char_id);
 
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
 	}
 
 	sql_res = mysql_store_result(&mysql_handle);
@@ -1130,7 +1130,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
 	sprintf(tmp_sql, "SELECT `map`,`x`,`y` FROM `%s` WHERE `type`='W' AND `char_id`='%d'",memo_db, char_id); // TBR
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `memo`)- %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 
@@ -1157,7 +1157,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	//`skill` (`char_id`, `id`, `lv`)
 	sprintf(tmp_sql, "SELECT `id`, `lv` FROM `%s` WHERE `char_id`='%d'",skill_db, char_id); // TBR
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `skill`)- %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res) {
@@ -1176,7 +1176,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	//`global_reg_value` (`char_id`, `str`, `value`)
 	sprintf(tmp_sql, "SELECT `str`, `value` FROM `%s` WHERE `type`=3 AND `char_id`='%d'",reg_db, char_id); // TBR
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `global_reg_value`)- %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 	}
 	i = 0;
 	sql_res = mysql_store_result(&mysql_handle);
@@ -1198,7 +1198,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	p->st.friend_num = 0;
 	sprintf( tmp_sql, "SELECT `id1`, `id2`, `name` FROM `%s` WHERE `char_id`='%d'", friend_db, char_id );
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `friend`)- %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", friend_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result( &mysql_handle );
 	if( sql_res )
@@ -1217,7 +1217,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	{
 		sprintf( tmp_sql, "SELECT `id1`, `name` FROM `%s` WHERE `char_id`='%d' AND `id2`='%d'", friend_db, p->st.friend_data[i].char_id, p->st.char_id );
 		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (select `friend` / check )- %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (select `%s` / check )- %s\n", friend_db, mysql_error(&mysql_handle));
 		}
 		sql_res = mysql_store_result( &mysql_handle );
 		if( !sql_res )
@@ -1225,7 +1225,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 			// 相手に存在しないので、友達リストから削除する
 			sprintf( tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d' AND `id2`='%d'", friend_db, p->st.char_id, p->st.friend_data[i].char_id );
 			if (mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (delete `friend` / correct)- %s\n", mysql_error(&mysql_handle));
+				printf("DB server Error (delete `%s` / correct)- %s\n", friend_db, mysql_error(&mysql_handle));
 			}
 			p->st.friend_num--;
 			memmove( &p->st.friend_data[i], &p->st.friend_data[i+1], sizeof(p->st.friend_data[0])* (p->st.friend_num - i ) );
@@ -1243,7 +1243,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
 	sprintf(tmp_sql, "SELECT `map`,`x` FROM `%s` WHERE `type`='F' AND `char_id`='%d'",memo_db, char_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `memo`)- %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 
@@ -1265,6 +1265,7 @@ int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
 	const struct mmo_chardata *cd = char_sql_load(char_id);
 	char buf[256];
 	char *p = tmp_sql;
+	char sep = ' ';
 	int i;
 
 	if(cd == NULL || cd->st.account_id != account_id)
@@ -1274,24 +1275,25 @@ int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
 	//`global_reg_value` (`char_id`, `str`, `value`)
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`=3 AND `char_id`='%d'",reg_db, char_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `global_reg_value`)- %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 	}
 
 	//insert here.
+	p += sprintf(p, "INSERT INTO `%s` (`char_id`, `str`, `value`) VALUES", reg_db);
 	for(i=0;i<num;i++){
 		if (reg[i].str[0] && reg[i].value !=0) {
-			sprintf(
-				tmp_sql,"INSERT INTO `%s` (`char_id`, `str`, `value`) VALUES ('%d', '%s','%d')",
-				reg_db, char_id, strecpy(buf,reg[i].str), reg[i].value
-			);
-			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (insert `global_reg_value`)- %s\n", mysql_error(&mysql_handle));
-			}
+			p += sprintf(p, "%c('%d', '%s', '%d')", sep, char_id, strecpy(buf,reg[i].str), reg[i].value);
+			sep = ',';
+		}
+	}
+	if(sep == ',') {
+		if(mysql_query(&mysql_handle, tmp_sql)) {
+			printf("DB server Error (insert `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 		}
 	}
 
 	{
-		struct mmo_chardata *cd2 = numdb_search(char_db_,char_id);
+		struct mmo_chardata *cd2 = (struct mmo_chardata *)numdb_search(char_db_,char_id);
 		if(cd2) {
 			memcpy(&cd2->reg.global,reg,sizeof(cd2->reg.global));
 			cd2->reg.global_num = num;
@@ -1377,7 +1379,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 	if(sep == ',') {
 		sprintf(p," WHERE `char_id` = '%d'",st2->char_id);
 		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (update `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
 		}
 		// printf("char ");
 	}
@@ -1387,7 +1389,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 		//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`='W' AND `char_id`='%d'",memo_db, st2->char_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `memo`)- %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (delete `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 		}
 
 		//insert here.
@@ -1398,7 +1400,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 					memo_db, st2->char_id, strecpy(buf,st2->memo_point[i].map), st2->memo_point[i].x, st2->memo_point[i].y
 				);
 				if(mysql_query(&mysql_handle, tmp_sql))
-					printf("DB server Error (insert `memo`)- %s\n", mysql_error(&mysql_handle));
+					printf("DB server Error (insert `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 			}
 		}
 		// printf("memo ");
@@ -1422,7 +1424,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 		//`skill` (`char_id`, `id`, `lv`)
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",skill_db, st2->char_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `skill`)- %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (delete `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
 		}
 		//printf("- Insert skill \n");
 		//insert here.
@@ -1438,7 +1440,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 		}
 		if(sep == ',') {
 			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (insert `skill`)- %s\n", mysql_error(&mysql_handle));
+				printf("DB server Error (insert `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
 			}
 		}
 		// printf("skill ");
@@ -1450,7 +1452,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 	{
 		sprintf( tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d'", friend_db, st2->char_id );
 		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `friend`)- %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (delete `%s`)- %s\n", friend_db, mysql_error(&mysql_handle));
 		}
 
 		for( i=0; i<st2->friend_num; i++ )
@@ -1459,7 +1461,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 				friend_db, st2->char_id, st2->friend_data[i].account_id, st2->friend_data[i].char_id,
 				strecpy( buf, st2->friend_data[i].name ) );
 			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (insert `friend`)- %s\n", mysql_error(&mysql_handle));
+				printf("DB server Error (insert `%s`)- %s\n", friend_db, mysql_error(&mysql_handle));
 			}
 		}
 		// printf("friend ");
@@ -1470,7 +1472,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 		//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`='F' AND `char_id`='%d'",memo_db, st2->char_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `memo`)- %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (delete `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 		}
 
 		//insert here.
@@ -1481,14 +1483,14 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 					memo_db, st2->char_id, strecpy(buf,st2->feel_map[i]), i
 				);
 				if(mysql_query(&mysql_handle, tmp_sql))
-					printf("DB server Error (insert `memo`)- %s\n", mysql_error(&mysql_handle));
+					printf("DB server Error (insert `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 			}
 		}
 	}
 
 	// printf("]\n");
 	{
-		struct mmo_chardata *cd2 = numdb_search(char_db_,st2->char_id);
+		struct mmo_chardata *cd2 = (struct mmo_chardata *)numdb_search(char_db_,st2->char_id);
 		if(cd2)
 			memcpy(&cd2->st,st2,sizeof(struct mmo_charstatus));
 	}
@@ -1534,7 +1536,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 		"`name` = '%s'",char_db, sd->account_id,dat[30],strecpy(buf,dat)
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
 		return 0;
 	}
 	sql_res = mysql_store_result(&mysql_handle);
@@ -1557,7 +1559,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 		start_point.x, start_point.y, start_point.map, start_point.x,start_point.y
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)){
-		printf("failed (insert in chardb), SQL error: %s\n", mysql_error(&mysql_handle));
+		printf("failed (insert in `%s`), SQL error: %s\n", char_db, mysql_error(&mysql_handle));
 		return NULL; //No, stop the procedure!
 	}
 
@@ -1566,25 +1568,29 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 
 	// Give the char the default items
 	// knife
-	sprintf(
-		tmp_sql,"INSERT INTO `%s` (`char_id`,`nameid`, `amount`, `equip`, `identify`) "
-		"VALUES ('%d', '%d', '%d', '%d', '%d')",inventory_db, char_id, 1201,1,0x02,1
-	);
-	if (mysql_query(&mysql_handle, tmp_sql)){
-		printf("fail (insert in inventory  the 'knife'), SQL error: %s\n", mysql_error(&mysql_handle));
-		return NULL;
+	if(start_weapon > 0) {
+		sprintf(
+			tmp_sql,"INSERT INTO `%s` (`char_id`,`nameid`, `amount`, `equip`, `identify`) "
+			"VALUES ('%d', '%d', '%d', '%d', '%d')",inventory_db, char_id, start_weapon,1,0x02,1
+		);
+		if (mysql_query(&mysql_handle, tmp_sql)){
+			printf("fail (insert in inventory ID %d), SQL error: %s\n", start_weapon, mysql_error(&mysql_handle));
+			return NULL;
+		}
 	}
 	//cotton shirt
-	sprintf(tmp_sql,"INSERT INTO `%s` (`char_id`,`nameid`, `amount`, `equip`, `identify`) "
-		"VALUES ('%d', '%d', '%d', '%d', '%d')", inventory_db, char_id, 2301,1,0x10,1
-	);
-	if (mysql_query(&mysql_handle, tmp_sql)){
-		printf("fail (insert in inventroxy the 'cotton shirt'), SQL error: %s\n", mysql_error(&mysql_handle));
-		return NULL; //end....
+	if(start_armor > 0) {
+		sprintf(tmp_sql,"INSERT INTO `%s` (`char_id`,`nameid`, `amount`, `equip`, `identify`) "
+			"VALUES ('%d', '%d', '%d', '%d', '%d')", inventory_db, char_id, start_armor,1,0x10,1
+		);
+		if (mysql_query(&mysql_handle, tmp_sql)){
+			printf("fail (insert in inventory ID %d), SQL error: %s\n", start_armor, mysql_error(&mysql_handle));
+			return NULL; //end....
+		}
 	}
 
 	//printf("making new char success - id:(\033[1;32m%d\033[0m\tname:\033[1;32%s\033[0m\n", char_id, t_name);
-	printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", sd->account_id, char_id, dat[30], strecpy(buf,dat));
+	printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", sd->account_id, char_id, dat[30], dat);
 
 	return char_sql_load(char_id);
 }
@@ -1601,7 +1607,7 @@ int  char_sql_load_all(struct char_session_data* sd,int account_id) {
 	//search char.
 	sprintf(tmp_sql, "SELECT `char_id` FROM `%s` WHERE `account_id` = '%d'",char_db, account_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
 		return 0;
 	}
 	sql_res = mysql_store_result(&mysql_handle);
@@ -1630,7 +1636,7 @@ int  char_sql_load_all(struct char_session_data* sd,int account_id) {
 }
 
 int  char_sql_delete_sub(int char_id) {
-	struct mmo_chardata *p = numdb_search(char_db_,char_id);
+	struct mmo_chardata *p = (struct mmo_chardata *)numdb_search(char_db_,char_id);
 	if(p) {
 		numdb_erase(char_db_,char_id);
 		aFree(p);
@@ -1639,43 +1645,43 @@ int  char_sql_delete_sub(int char_id) {
 	// char
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",char_db, char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
 	}
 
 	// memo
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",memo_db, char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 	}
 
 	// inventory
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",inventory_db, char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", inventory_db, mysql_error(&mysql_handle));
 	}
 
 	// cart
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",cart_db, char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", cart_db, mysql_error(&mysql_handle));
 	}
 
 	// skill
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",skill_db, char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
 	}
 
 	// global_reg
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`=3 AND `char_id`='%d'",reg_db, char_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 	}
 
 	// friend
 	sprintf( tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d'", friend_db, char_id );
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", friend_db, mysql_error(&mysql_handle));
 	}
 
 	return 1;
@@ -1683,7 +1689,7 @@ int  char_sql_delete_sub(int char_id) {
 
 static int char_db_final(void *key,void *data,va_list ap)
 {
-	struct mmo_chardata *p=data;
+	struct mmo_chardata *p = (struct mmo_chardata *)data;
 
 	aFree(p);
 
@@ -1893,7 +1899,7 @@ static int char_log(char *fmt,...)
 		charlog_db,strecpy(buf,log)
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ){
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (insert `%s`)- %s\n", charlog_db, mysql_error(&mysql_handle) );
 	}
 
 	return 0;
@@ -2074,6 +2080,9 @@ static int char_delete(const struct mmo_chardata *cd)
 
 	// ステータス異常削除
 	status_delete(cd->st.char_id);
+
+	// ROメール削除
+	mail_delete(cd->st.char_id);
 
 	// ペット削除
 	if(cd->st.pet_id)

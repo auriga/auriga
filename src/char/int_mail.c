@@ -20,7 +20,7 @@
 
 static struct dbt *mail_db;
 
-void mail_free(struct mail_data *md[MAIL_STORE_MAX],int store);
+static void mail_free(struct mail_data *md[MAIL_STORE_MAX],int store);
 
 #ifdef TXT_ONLY
 
@@ -256,7 +256,7 @@ int mail_txt_init(void)
 	printf("%s init %d\n",mail_txt,c);
 	return 0;
 }
-static int mail_sync_sub(void *key,void *data,va_list ap)
+static int mail_txt_sync_sub(void *key,void *data,va_list ap)
 {
 	char line[8192];
 	FILE *fp;
@@ -273,12 +273,29 @@ int mail_txt_sync(void) {
 		printf("int_mail: cant write [%s] !!! data is lost !!!\n",mail_txt);
 		return 1;
 	}
-	numdb_foreach(mail_db,mail_sync_sub,fp);
+	numdb_foreach(mail_db,mail_txt_sync_sub,fp);
 	lock_fclose(fp,mail_txt,&lock);
 	return 0;
 }
 
-const struct mail* mail_load(int char_id) {
+// キャラ削除時
+int mail_txt_delete(int char_id)
+{
+	char filename[1024];
+	struct mail *m = (struct mail *)numdb_search(mail_db,char_id);
+
+	if(m && m->char_id == char_id) {
+		numdb_erase(mail_db,char_id);
+		aFree(m);
+	}
+
+	sprintf(filename,"%s%d.txt",mail_dir,char_id);
+	remove(filename);
+
+	return 0;
+}
+
+const struct mail* mail_txt_load(int char_id) {
 	return (const struct mail *)numdb_search(mail_db,char_id);
 }
 
@@ -302,7 +319,7 @@ int mail_txt_new(int account_id,int char_id) {
 	return 0;
 }
 
-static int mail_final_sub(void *key,void *data,va_list ap)
+static int mail_txt_final_sub(void *key,void *data,va_list ap)
 {
 	struct mail *md = (struct mail *)data;
 	aFree(md);
@@ -312,7 +329,7 @@ static int mail_final_sub(void *key,void *data,va_list ap)
 void mail_txt_final(void)
 {
 	if(mail_db)
-		numdb_final(mail_db,mail_final_sub);
+		numdb_final(mail_db,mail_txt_final_sub);
 }
 
 void mail_txt_config_read_sub(const char *w1, const char *w2)
@@ -412,7 +429,7 @@ int mail_sql_save_mail(int char_id,int i,int store,struct mail_data *md[MAIL_STO
 		char_id, md[i]->mail_num
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (update `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
 	}
 
 	return 0;
@@ -506,7 +523,7 @@ int mail_sql_deletemail(int char_id,unsigned int mail_num,const struct mail *m)
 
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id` = '%d' AND `number` = '%u'", mail_data, char_id, mail_num);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
 	}
 
 	if(mysql_affected_rows(&mysql_handle) <= 0)
@@ -528,6 +545,27 @@ int mail_sql_init(void)
 
 int mail_sql_sync(void) {
 	// nothing to do
+	return 0;
+}
+
+// キャラ削除時
+int mail_sql_delete(int char_id)
+{
+	struct mail *m = (struct mail *)numdb_search(mail_db,char_id);
+
+	if(m && m->char_id == char_id) {
+		numdb_erase(mail_db,char_id);
+		aFree(m);
+	}
+	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id` = '%d'", mail_db_, char_id);
+	if(mysql_query(&mysql_handle, tmp_sql)) {
+		printf("DB server Error (delete `%s`)- %s\n", mail_db_, mysql_error(&mysql_handle));
+	}
+
+	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id` = '%d'", mail_data, char_id);
+	if(mysql_query(&mysql_handle, tmp_sql)) {
+		printf("DB server Error (delete `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
+	}
 	return 0;
 }
 
@@ -641,7 +679,7 @@ int mail_sql_new(int account_id,int char_id)
 	return 0;
 }
 
-static int mail_final_sub(void *key,void *data,va_list ap)
+static int mail_sql_final_sub(void *key,void *data,va_list ap)
 {
 	struct mail *md = (struct mail *)data;
 	aFree(md);
@@ -651,7 +689,7 @@ static int mail_final_sub(void *key,void *data,va_list ap)
 void mail_sql_final(void)
 {
 	if(mail_db)
-		numdb_final(mail_db,mail_final_sub);
+		numdb_final(mail_db,mail_sql_final_sub);
 }
 
 void mail_sql_config_read_sub(const char *w1, const char *w2)
@@ -675,7 +713,7 @@ void mail_sql_config_read_sub(const char *w1, const char *w2)
 #endif /* TXT_ONLY */
 
 //--------------------------------------------------------
-void mail_free(struct mail_data *md[MAIL_STORE_MAX],int store)
+static void mail_free(struct mail_data *md[MAIL_STORE_MAX],int store)
 {
 	int i;
 	for(i=0;i<store;i++) {

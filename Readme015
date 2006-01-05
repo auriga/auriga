@@ -1,4 +1,21 @@
 ----------------------------------------
+//049 [2006/01/06] by Rayce
+
+・キャラ削除時に保存してあるROメールを削除するように修正（char.c, int_mail.*）
+	mail_delete() 追加
+
+・SQL: char_athena.confの start_weapon, start_armor が反映されてなかった問題を修正（char.c）
+・SQL: status_sql_load() でステータス異常のデータをロードするとき、ゼロクリアやmysql_free_result()
+       を呼び忘れてた箇所を修正（int_status.c）
+・SQL: accreg_sql_save() において文字列エスケープ用のバッファサイズが小さかったので修正
+       ついでに処理方法を少し改善（inter.c）
+・SQL: converter_athena.confで account.txt と athena.txt を指定出来るように追加
+       （char-converter.c, converter.*, login-converter.c）
+
+・SQL: クエリ発行時にエラーが発生したとき、正しいテーブル名が出力されなかった問題を修正
+・SQL: 「void*型から型変換する際にキャストを明示する」が抜けていた部分を修正
+
+----------------------------------------
 //048 [2006/01/05] by Rayce
 
 ・ROメールに関する変更および修正（mmo.h, inter.c, int_mail.c, clif.c, intif.c）

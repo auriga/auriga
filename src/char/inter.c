@@ -344,6 +344,8 @@ void accreg_txt_final(void) {
 
 #else /* TXT_ONLY */
 
+static char interlog_db[256] = "interlog";
+
 int accreg_sql_init(void) {
 	accreg_db = numdb_init();
 	return 0;
@@ -361,26 +363,29 @@ void accreg_sql_config_read_sub(const char *w1,const char *w2) {
 
 void accreg_sql_save(struct accreg *reg) {
 	int j;
-	char temp_str[32];
+	char temp_str[64];
+	char *p = tmp_sql;
+	char sep = ' ';
 
 	//`global_reg_value` (`type`, `account_id`, `char_id`, `str`, `value`)
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`=2 AND `account_id`='%d'",reg_db, reg->account_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `global_reg_value`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle) );
 	}
 
-	if (reg->reg_num<=0) return;
+	if (reg->reg_num<=0)
+		return;
 
+	p += sprintf(p, "INSERT INTO `%s` (`type`, `account_id`, `str`, `value`) VALUES", reg_db);
 	for(j=0;j<reg->reg_num;j++){
 		if(reg->reg[j].str != NULL){
-			sprintf(
-				tmp_sql,
-				"INSERT INTO `%s` (`type`, `account_id`, `str`, `value`) VALUES (2,'%d', '%s','%d')",
-				reg_db, reg->account_id,strecpy(temp_str,reg->reg[j].str), reg->reg[j].value
-			);
-			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `global_reg_value`)- %s\n", mysql_error(&mysql_handle) );
-			}
+			p += sprintf(p, "%c(2,'%d', '%s','%d')", reg->account_id,strecpy(temp_str,reg->reg[j].str), reg->reg[j].value);
+			sep = ',';
+		}
+	}
+	if(sep == ',') {
+		if(mysql_query(&mysql_handle, tmp_sql) ) {
+			printf("DB server Error (insert `%s`)- %s\n", reg_db, mysql_error(&mysql_handle) );
 		}
 	}
 }
@@ -400,7 +405,7 @@ const struct accreg* accreg_sql_load(int account_id) {
 	//`global_reg_value` (`type`, `account_id`, `char_id`, `str`, `value`)
 	sprintf (tmp_sql, "SELECT `str`, `value` FROM `%s` WHERE `type`=2 AND `account_id`='%d'",reg_db, reg->account_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `global_reg_value`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (select `%s`)- %s\n", reg_db, mysql_error(&mysql_handle) );
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 
@@ -515,10 +520,10 @@ int inter_log(char *fmt,...)
 	(void) vsnprintf(log,256,fmt,ap);
 	va_end(ap);
 
-	sprintf(tmp_sql,"INSERT INTO `interlog` (`time`,`log`) VALUES (NOW(),'%s')",strecpy(buf,log));
+	sprintf(tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')", interlog_db, strecpy(buf,log));
 
 	if(mysql_query(&mysql_handle, tmp_sql) ){
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (insert `%s`)- %s\n", interlog_db, mysql_error(&mysql_handle) );
 	}
 
 	return 0;
