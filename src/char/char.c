@@ -834,15 +834,6 @@ int char_txt_set_offline(int char_id) {
 
 #else /* TXT_ONLY */
 
-#include <mysql.h>
-MYSQL mysql_handle;
-
-#ifdef _MSC_VER
-#pragma comment(lib,"libmysql.lib")
-#endif
-
-char tmp_sql[65535];
-
 static struct dbt *char_db_;
 static int  char_server_port        = 3306;
 static char char_server_ip[32]      = "127.0.0.1";
@@ -857,16 +848,8 @@ char friend_db[256]                 = "friend";
 static char cart_db[256]            = "cart_inventory";
 static char inventory_db[256]       = "inventory";
 static char charlog_db[256]         = "charlog";
-// static char interlog_db[256]        = "interlog";
 static char skill_db[256]           = "skill";
 static char memo_db[256]            = "memo";
-
-char* strecpy (char* pt,const char* spt) {
-	//copy from here
-	mysql_real_escape_string(&mysql_handle,pt,spt,strlen(spt));
-
-	return pt;
-}
 
 int char_sql_loaditem(struct item *item, int max, int id, int tableswitch) {
 	int i = 0;
@@ -3802,7 +3785,6 @@ void do_final(void)
 
 #ifndef TXT_ONLY
 	// let's 0 all chars (we are going down after all)
-	//char tmp_sql[256];
 	sprintf(tmp_sql, "UPDATE `%s` SET `online` = '0' WHERE `online` = '1'",char_db);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (update do_final)- %s\n", mysql_error(&mysql_handle));
@@ -3891,7 +3873,6 @@ int do_init(int argc,char **argv)
 
 #ifndef TXT_ONLY
 	// and let's nullate all online chars too
-	//char tmp_sql[256];
 	sprintf(tmp_sql, "UPDATE `%s` SET `online` = '0' WHERE `online` = '1'",char_db);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (update do_init)- %s\n", mysql_error(&mysql_handle));

@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "converter.h"
 #include "../common/mmo.h"
+#include "../common/utils.h"
+#include "converter.h"
 
 
 struct accreg {

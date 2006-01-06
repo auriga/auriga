@@ -70,9 +70,6 @@ int char_sql_nick2id(const char *char_name);
 #define char_nick2id char_sql_nick2id
 #endif /* _CHAR_C_ */
 
-#include "socket.h"
-#include <mysql.h>
-
 // for sql
 enum {
 	TABLE_INVENTORY,
@@ -83,11 +80,8 @@ enum {
 int char_sql_saveitem(struct item *item, int max, int id, int tableswitch);
 int char_sql_loaditem(struct item *item, int max, int id, int tableswitch);
 
-extern MYSQL mysql_handle;
-extern char tmp_sql[65535];
 extern char char_db[256];
 extern char reg_db[256];
-char* strecpy (char* pt,const char* spt);
 
 #endif /* TXT_ONLY */
 

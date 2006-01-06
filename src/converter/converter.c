@@ -2,16 +2,15 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "mmo.h"
-#include "converter.h"
-#include "login-converter.h"
-#include "char-converter.h"
-#include "inter-converter.h"
+#include "../common/mmo.h"
 #include "../common/db.h"
 #include "../common/timer.h"
 #include "../common/utils.h"
 
-MYSQL mysql_handle;
+#include "converter.h"
+#include "login-converter.h"
+#include "char-converter.h"
+#include "inter-converter.h"
 
 char db_server_ip[16] = "127.0.0.1";
 int  db_server_port   = 3306;
@@ -38,17 +37,6 @@ char homun_txt[1024]           = "save/homun.txt";
 char account_reg_txt[1024]     = "save/accreg.txt";
 char scdata_txt[1024]          = "save/scdata.txt";
 
-char tmp_sql[65535];
-
-#ifdef _MSC_VER
-#pragma comment(lib,"libmysql.lib")
-#endif
-
-char* strecpy (char* pt,const char* spt) {
-	//copy from here
-	mysql_real_escape_string(&mysql_handle,pt,spt,strlen(spt));
-	return pt;
-}
 
 int config_read(const char *cfgName) {
 	int i;

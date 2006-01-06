@@ -5,7 +5,10 @@
 #include "utils.h"
 
 
-// BCC のときに使用
+/*==========================================
+ * BCCのときに使用
+ *------------------------------------------
+ */
 #if defined(_WIN32) && defined(__BORLANDC__)
 int strcasecmp(const char *s1, const char *s2) {
 	while(*s1 && *s2) {
@@ -20,7 +23,11 @@ int strcasecmp(const char *s1, const char *s2) {
 }
 #endif
 
-// 32bit 線形合同法( 戻り値は 24 ビット有効 )
+
+/*==========================================
+ * 32bit線形合同法(戻り値は24ビット有効)
+ *------------------------------------------
+ */
 #ifdef RANDOM32
 static int seed32 = 1;
 
@@ -35,7 +42,10 @@ int atn_int24_random32(void)
 }
 #endif	// ifdef RANDOM32
 
-// 64bit 線形合同法( 戻り値は 31 ビット有効 )
+/*==========================================
+ * 64bit線形合同法(戻り値は31ビット有効)
+ *------------------------------------------
+ */
 #ifdef RANDOM64
 static atn_int64 seed64 = 0x1234ABCD330E;
 
@@ -51,8 +61,10 @@ int atn_int31_random64(void)
 }
 #endif	// ifdef RANDOM64
 
-
-// メルセンヌツイスター
+/*==========================================
+ * メルセンヌツイスター
+ *------------------------------------------
+ */
 // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/mt.html
 #ifdef RANDOMMT
 
@@ -126,3 +138,22 @@ long atn_int31_randommt(void)
 }
 
 #endif	// ifdef RANDOMMT
+
+
+/*==========================================
+ * MySQL
+ *------------------------------------------
+ */
+#ifndef TXT_ONLY
+
+MYSQL mysql_handle;
+char tmp_sql[65535];
+
+char* strecpy(char* pt,const char* spt) {
+	//copy from here
+	mysql_real_escape_string(&mysql_handle,pt,spt,strlen(spt));
+
+	return pt;
+}
+
+#endif	// ifndef TXT_ONLY

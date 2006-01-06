@@ -6,11 +6,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "converter.h"
-#include "char-converter.h"
 #include "../common/mmo.h"
 #include "../common/db.h"
 #include "../common/malloc.h"
+#include "../common/utils.h"
+
+#include "converter.h"
+#include "char-converter.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -117,8 +119,6 @@ int inter_pet_fromstr(char *str, struct s_pet *p)
 //---------------------------------------------------------
 int inter_pet_tosql(int pet_id, struct s_pet *p) {
 	//`pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
-
-	char tmp_sql[65535];
 	char t_name[256];
 	MYSQL_RES* 	sql_res ;
 	MYSQL_ROW	sql_row ;

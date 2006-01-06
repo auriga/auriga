@@ -156,4 +156,29 @@
 #	define ATN_RAND_MAX	RAND_MAX
 #endif
 
+
+// =====================
+// MySQL
+// ---------------------
+#ifndef TXT_ONLY
+
+#ifdef _WIN32
+	#include <winsock.h>
+#else
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+#endif
+
+#include <mysql.h>
+
+extern MYSQL mysql_handle;
+extern char tmp_sql[65535];
+char* strecpy(char* pt,const char* spt);
+
+#	ifdef _MSC_VER
+#		pragma comment(lib,"libmysql.lib")
+#	endif
+
+#endif	// if TXT
+
 #endif	// _UTILS_H_

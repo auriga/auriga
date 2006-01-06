@@ -450,23 +450,15 @@ int login_txt_config_read_sub(const char* w1,const char* w2) {
 
 #else /* TXT_ONLY */
 
-//add include for DBMS(mysql)
-#include <mysql.h>
-MYSQL mysql_handle;
-
-#ifdef _MSC_VER
-#pragma comment(lib,"libmysql.lib")
-#endif
-
 int  login_server_port        = 3306;
 char login_server_ip[32]      = "127.0.0.1";
 char login_server_id[32]      = "ragnarok";
 char login_server_pw[32]      = "ragnarok";
 char login_server_db[32]      = "ragnarok";
 char login_server_charset[32] = "";
-char login_db[256]       = "login";
-char loginlog_db[256]    = "loginlog";
-char reg_db[256] = "global_reg_value";
+char login_db[256]    = "login";
+char loginlog_db[256] = "loginlog";
+char reg_db[256]      = "global_reg_value";
 
 // added to help out custom login tables, without having to recompile
 // source so options are kept in the login_athena.conf or the inter_athena.conf
@@ -474,15 +466,8 @@ char login_db_account_id[256] = "account_id";
 char login_db_userid[256]     = "userid";
 char login_db_user_pass[256]  = "user_pass";
 char login_db_level[256]      = "level";
-char tmp_sql[65535];
 
 static struct dbt *account_db;
-
-char* strecpy (char* pt,const char* spt) {
-	//copy from here
-	mysql_real_escape_string(&mysql_handle,pt,spt,strlen(spt));
-	return pt;
-}
 
 int  login_sql_init(void) {
 

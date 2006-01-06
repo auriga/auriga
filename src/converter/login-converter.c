@@ -5,10 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "converter.h"
 #include "../common/mmo.h"
 #include "../common/db.h"
 #include "../common/malloc.h"
+#include "../common/utils.h"
+#include "converter.h"
 
 static struct dbt *gm_account_db;
 

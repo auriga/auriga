@@ -12,8 +12,6 @@ int inter_log(char *fmt,...);
 
 #define inter_cfgName "conf/inter_athena.conf"
 
-extern char inter_log_filename[1024];
-
 void do_final_inter(void);
 
 #endif
