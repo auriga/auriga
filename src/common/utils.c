@@ -149,10 +149,29 @@ long atn_int31_randommt(void)
 MYSQL mysql_handle;
 char tmp_sql[65535];
 
-char* strecpy(char* pt,const char* spt) {
-	//copy from here
-	mysql_real_escape_string(&mysql_handle,pt,spt,strlen(spt));
+/* 文字コードがSJISの場合（Windows環境等）MySQL側のバグを回避する暫定処置 */
+/* 最後の文字が0x5cを含む2バイト文字だった場合に余計なエスケープシーケンスを除去する */
+/* '一覧表\' はクエリ発行出来ないので、'一覧表' に変換し直す必要がある */
 
+//#define TRIM_ESCAPE_AS_SJIS
+
+char* strecpy(char* pt,const char* spt)
+{
+	unsigned long len = mysql_real_escape_string(&mysql_handle,pt,spt,strlen(spt));
+
+	if(len == 0xffffffff)
+		printf("strecpy: %s buffer overflow!! size %d < 2*%d+1\n", spt, sizeof(pt), strlen(spt));
+
+#ifdef TRIM_ESCAPE_AS_SJIS
+	if(len >= 3) {
+		unsigned char *p = (unsigned char *)(pt + len - 3);
+
+		if( *(p+1) == '\\' && *(p+2) == '\\' ) {
+			if( (*p >= 0x81 && *p <= 0x9f) || (*p >= 0xe0 && *p <= 0xfc) )	// cp932対応
+				*(p+2) = 0;
+		}
+	}
+#endif
 	return pt;
 }
 

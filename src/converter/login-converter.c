@@ -166,6 +166,10 @@ int login_convert(void)
 			if(sex == 'S')
 				account_id++;
 
+			// 警告抑制のため変換しておく
+			if(strcmp(lastlogin,"-") == 0)
+				strcpy(lastlogin,"0000-00-00 00:00:00");
+
 			sprintf(tmpsql, "SELECT `%s`,`%s`,`%s`,`lastlogin`,`logincount`,`sex`,`connect_until`,`last_ip`,`ban_until`,`state`"
 				        " FROM `%s` WHERE `%s`='%d'",
 				login_db_account_id, login_db_userid, login_db_user_pass,

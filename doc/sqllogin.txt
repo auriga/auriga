@@ -39,10 +39,16 @@ Windows 64bit-CPU+OS なら
  -- -- Without installer (AMD64 / Intel EM64T)をダウンロードする。
  -- -- Windows Server 2003 (AMD64 / Intel EM64T)をダウンロードする。
 
+※旧バージョンである 4.0.x, 4.1.x も利用可能です。
+　MySQL のバージョンによって操作が異なる箇所が幾つかあります。
+　4.0.x以前を使用するときは[-v4.0] 、4.1.xは[v4.1]、5.0.x以降は[v5.0-]に従って操作をしてください。
+
 
 【Windows版　MySQLのインストール方法】
 ○注意！！　下記の設定はあくまでも例です。本番環境では必ずrootパスの変更を
 　行うようにしてください。また、データベース名・ユーザー名・パスワードも同様です。
+
+[v5.0-]
 
 ○ZIP圧縮されているので解凍。解凍した後のフォルダ名は[mysql-5.*.**-win32]
 ○中にsetup.exeがあるので、ダブルクリックしてインストール開始
@@ -96,7 +102,10 @@ Windows 64bit-CPU+OS なら
 　　　有効になっていればよい。
 　　　[Excute]をクリックし、正常終了すれば完了。
 
-
+※[-v4.0]
+	文字コードをsjisに統一しないと、正しく検索できない、日本語が使えないなど
+　　　　の問題が生じる恐れがあります。他の用途に使用することが無い時は、sjisにす
+　　　　ることをお勧めします。
 
 
 
@@ -105,7 +114,10 @@ Windows 64bit-CPU+OS なら
 　　mysql -u root
 		
 ２．次にデータベースの大元の器を設定。下記のコマンドを実行する。
-		create database `ragnarok` default character set sjis;
+	[-v4.0]
+		CREATE DATABASE `ragnarok`;
+	[v4.1] [v5.0-]
+		CREATE DATABASE `ragnarok` DEFAULT CHARACTER SET sjis;
 
 		（ここでは　ragnarok がデータベース名。任意に変更可能）
 
@@ -174,7 +186,30 @@ set __sqllib__=../sql/bcclib/libmysql.lib
 
 部分を書き換えておく。binフォルダにZlib.dllも入れておく。
 
+※
+[-v4.0]
+	MySQL v4.0では、文字コード指定はサポートされていないので、設定ファイルの
+　　　　文字コードの欄をコメントアウトしてください。
+
+[v4.1-] [v5.0-]
+	テーブルの文字コードと設定ファイルの文字コードが違う場合、データベースに
+　　　　正常にアクセス出来ない可能性があります。
+	MySQLのサーバサイドの文字コードを確認してください。
+	4.1.15以降、および5.0.13以降であればskip-character-set-client-handshakeキーワードを利用できます。
+
 ６．アカウントはhttp://127.0.0.1:6900/　等で作成。
+　　またはmail.sqlを実行した時点でs1 ... s15までのアカウントが作成されているので、
+　　そちらのパスワードを変更するという方法もあります。
+
+	USE `ragnarok` INSERT INTO `login` (`userid`,`user_pass`,`sex`) VALUES ('inter-server_chaos','password','S');
+
+７．新たにアカウントを作成する場合、今まで通りの方法(ladmin)に加えて、データベース
+　　上に直接作成することもできます。（任意）
+
+	USE `ragnarok` INSERT INTO `login` (`userid`,`user_pass`,`sex`,`level`) VALUES ('<username>','<password>','<gender>','<game master level>');
+
+　　性別の欄には、M(男) F(女) S(サーバー) のいずれかを指定してください。サーバー用のアカウントは、
+　　アカウントID(数字)が大きくなりすぎると、ログイン出来ない事がありますので、0-31を使うようにしてください。
 
 
 ・BCCの場合の事前準備
@@ -216,6 +251,13 @@ http://www.hi-ho.ne.jp/tsumiki/
 【わかりにくい表現などがあれば修正お願いします】
 
 
+【注意】
+・最適化のため、サーバーの動作中に login 以外のテーブルを書き換えると誤動作する
+　可能性があります。login テーブル以外を操作する場合、一回charサーバーを止めて
+　から行ってください
+
+最後に、MySQL 対応にあたって大いに参考にさせて頂いた、eAthena の開発メンバーに感
+謝します。
 
 
 【変更履歴】（敬称略）
