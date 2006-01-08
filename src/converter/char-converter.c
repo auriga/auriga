@@ -946,6 +946,61 @@ int guild_tosql(struct guild* g2) {
 	return 1;
 }
 
+// ギルド城データの文字列からの変換
+int guildcastle_fromstr(char *str,struct guild_castle *gc)
+{
+	int tmp_int[18];
+
+	if( sscanf(str,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
+		&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],
+		&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
+		&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17]) <18 )
+		return 1;
+	gc->castle_id=tmp_int[0];
+	gc->guild_id=tmp_int[1];
+	gc->economy=tmp_int[2];
+	gc->defense=tmp_int[3];
+	gc->triggerE=tmp_int[4];
+	gc->triggerD=tmp_int[5];
+	gc->nextTime=tmp_int[6];
+	gc->payTime=tmp_int[7];
+	gc->createTime=tmp_int[8];
+	gc->visibleC=tmp_int[9];
+	gc->visibleG0=tmp_int[10];
+	gc->visibleG1=tmp_int[11];
+	gc->visibleG2=tmp_int[12];
+	gc->visibleG3=tmp_int[13];
+	gc->visibleG4=tmp_int[14];
+	gc->visibleG5=tmp_int[15];
+	gc->visibleG6=tmp_int[16];
+	gc->visibleG7=tmp_int[17];
+
+	return 0;
+}
+
+int guildcastle_tosql(struct guild_castle *gc)
+{
+	sprintf(tmp_sql, "DELETE FROM `guild_castle` WHERE `castle_id` = '%d'", gc->castle_id);
+	if(mysql_query(&mysql_handle, tmp_sql) ) {
+		printf("DB server Error (delete `guild_castle`)- %s\n", mysql_error(&mysql_handle) );
+	}
+
+	sprintf(
+		tmp_sql,
+		"INSERT INTO `guild_castle` (`castle_id`, `guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`, "
+		"`visibleC`, `visibleG0`, `visibleG1`, `visibleG2`, `visibleG3`, `visibleG4`, `visibleG5`, `visibleG6`, `visibleG7`) "
+		"VALUES ('%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d')",
+		gc->castle_id, gc->guild_id, gc->economy, gc->defense, gc->triggerE, gc->triggerD, gc->nextTime, gc->payTime, gc->createTime,
+		gc->visibleC, gc->visibleG0, gc->visibleG1, gc->visibleG2, gc->visibleG3, gc->visibleG4, gc->visibleG5, gc->visibleG6, gc->visibleG7
+	);
+
+	if(mysql_query(&mysql_handle, tmp_sql) ) {
+		printf("DB server Error (insert `guild_castle`)- %s\n", mysql_error(&mysql_handle) );
+	}
+
+	return 0;
+}
+
 int gstorage_fromstr(char *str,struct guild_storage *p)
 {
 	int tmp_int[11];
@@ -1252,6 +1307,27 @@ int char_convert(void){
 				guild_tosql(&g);
 			}else{
 				printf("int_guild: broken data [%s] line %d\n",guild_txt,c);
+			}
+		}
+		fclose(fp);
+	}
+
+	c = 0;
+	while(getchar() != '\n');
+	printf("\nDo you wish to convert your Guild Castle Database to SQL? (y/n) : ");
+	input=getchar();
+	if(input == 'y' || input == 'Y') {
+		struct guild_castle gc;
+		printf("\nConverting Guild Castle Database...\n");
+		if( (fp=fopen(castle_txt,"r"))==NULL )
+			return 1;
+		while(fgets(line,sizeof(line),fp)){
+			c++;
+			memset(&gc, 0, sizeof(gc));
+			if(guildcastle_fromstr(line,&gc)==0){
+				guildcastle_tosql(&gc);
+			}else{
+				printf("int_guild: broken data [%s] line %d\n",castle_txt,c);
 			}
 		}
 		fclose(fp);

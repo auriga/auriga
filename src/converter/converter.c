@@ -33,9 +33,12 @@ char storage_txt[1024]         = "save/storage.txt";
 char party_txt[1024]           = "save/party.txt";
 char guild_txt[1024]           = "save/guild.txt";
 char guild_storage_txt[1024]   = "save/g_storage.txt";
+char castle_txt[1024]          = "save/castle.txt";
 char homun_txt[1024]           = "save/homun.txt";
 char account_reg_txt[1024]     = "save/accreg.txt";
 char scdata_txt[1024]          = "save/scdata.txt";
+char mail_txt[1024]            = "save/mail.txt";
+char mail_dir[1024]            = "save/mail_data/";
 
 
 int config_read(const char *cfgName) {
@@ -82,6 +85,9 @@ int config_read(const char *cfgName) {
 		} else if(strcmpi(w1,"guild_storage_txt")==0){
 			printf("set guild_storage_txt : %s\n",w2);
 			strncpy(guild_storage_txt, w2, sizeof(guild_storage_txt));
+		} else if(strcmpi(w1,"castle_txt")==0){
+			printf("set castle_txt : %s\n",w2);
+			strncpy(castle_txt, w2, sizeof(castle_txt));
 		} else if(strcmpi(w1,"homun_txt")==0){
 			printf("set homun_txt : %s\n",w2);
 			strncpy(homun_txt, w2, sizeof(homun_txt));
@@ -91,6 +97,12 @@ int config_read(const char *cfgName) {
 		} else if(strcmpi(w1,"scdata_txt")==0){
 			printf("set scdata_txt : %s\n",w2);
 			strncpy(scdata_txt, w2, sizeof(scdata_txt));
+		} else if(strcmpi(w1,"mail_txt")==0){
+			printf("set mail_txt : %s\n",w2);
+			strncpy(mail_txt, w2, sizeof(mail_txt));
+		} else if(strcmpi(w1,"mail_dir")==0){
+			printf("set mail_dir : %s\n",w2);
+			strncpy(mail_dir, w2, sizeof(mail_dir));
 		}
 
 		// add for DB connection

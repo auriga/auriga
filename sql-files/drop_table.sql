@@ -28,5 +28,5 @@ drop table `storage`;
 drop table `homunculus`;
 drop table `homunculus_skill`;
 drop table `status_change`;
-drop_table `mail`;
-drop_table `mail_data`;
+drop table `mail`;
+drop table `mail_data`;

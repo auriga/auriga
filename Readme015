@@ -1,4 +1,17 @@
 ----------------------------------------
+//051 [2006/01/09] by Rayce
+
+・converter_athena.conf, msg_athena.conf, script_athena.conf のimportをデフォルトでサポートする
+　conf/importに対応するファイルを3つ追加
+
+・TXT: ROメールのデータを読み込む際に、復帰コード \r が考慮されてなかったので修正（int_mail.c）
+　     ついでにコメントを少し追加
+
+・SQL: ROメールのセーブデータをTXTからSQLにconvert対応化（converter.*, inter-converter.c）
+・SQL: save/castle.txtがconvert出来なかったので対応化（converter.*, char-converter.c）
+・SQL: 048で同梱したsql-files/drop_table.sqlの書式が間違っていたので修正
+
+----------------------------------------
 //050 [2006/01/07] by Rayce
 
 ・utils.cを少し整理

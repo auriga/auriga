@@ -21,9 +21,12 @@ extern char storage_txt[1024];
 extern char party_txt[1024];
 extern char guild_txt[1024];
 extern char guild_storage_txt[1024];
+extern char castle_txt[1024];
 extern char homun_txt[1024];
 extern char account_reg_txt[1024];
 extern char scdata_txt[1024];
+extern char mail_txt[1024];
+extern char mail_dir[1024];
 
 #endif
 

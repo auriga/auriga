@@ -106,7 +106,7 @@ int mail_txt_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 		unsigned int n;
 		char *p;
 		while(i+1<store && fgets(line,65535,fp) && i+1<MAIL_STORE_MAX){
-			n=sscanf(line,"%u,%d\t%[^\t]\t%[^\t]\t%[^\t]\t%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%[^\n]",
+			n=sscanf(line,"%u,%d\t%[^\t]\t%[^\t]\t%[^\t]\t%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%[^\r\n]",
 				&tmp_int[0],&tmp_int[1],tmp_char[0],tmp_char[1],tmp_char[2],&tmp_int[2],
 				&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
 				&tmp_int[14],&tmp_int[15],tmp_char[3]);
@@ -369,6 +369,7 @@ int mail_sql_store_mail(int char_id,struct mail_data *md)
 	if(!md)
 		return 0;
 
+	// SELECT HEX()
 	for(i=0, p=body_data; i<md->body_size; i++) {
 		p += sprintf(p,"%02X",RBUFB(md->body,i));
 	}
@@ -470,6 +471,7 @@ int mail_sql_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 			md[i]->times     = (unsigned int)atoi(sql_row[6]);
 			md[i]->body_size = (unsigned int)atoi(sql_row[7]);
 
+			// SELECT UNHEX()
 			for(n = 0,p = sql_row[8]; n < md[i]->body_size; n++) {
 				sscanf(p,"%2x",&tmp_int);
 				WBUFB(md[i]->body,n) = tmp_int;
