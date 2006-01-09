@@ -323,7 +323,6 @@ int pet_return_egg(struct map_session_data *sd)
 		}
 
 		intif_save_petdata(sd->status.account_id,&sd->pet);
-		pc_makesavestatus(sd);
 		chrif_save(sd);
 		storage_storage_save(sd);
 
@@ -422,7 +421,6 @@ int pet_birth_process(struct map_session_data *sd)
 	}
 
 	intif_save_petdata(sd->status.account_id,&sd->pet);
-	pc_makesavestatus(sd);
 	chrif_save(sd);
 	storage_storage_save(sd);
 	map_addblock(&sd->pd->bl);
@@ -1016,7 +1014,6 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			sd->status.pet_id = 0;
 			sd->pd = NULL;
 			intif_delete_petdata(sd->pet.pet_id);
-			pc_makesavestatus(sd);
 			chrif_save(sd);
 			storage_storage_save(sd);
 		}else{

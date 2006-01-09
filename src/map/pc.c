@@ -7724,7 +7724,6 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 			intif_save_petdata(sd->status.account_id,&sd->pet);
 		if(sd->status.homun_id > 0 && sd->hd)
 			homun_save_data(sd);
-		pc_makesavestatus(sd);
 		chrif_save(sd);
 		storage_storage_save(sd);
 		if(sd->state.storage_flag==2)
@@ -7753,6 +7752,9 @@ int pc_autosave(int tid,unsigned int tick,int id,int data)
 	interval = autosave_interval/(clif_countusers()+1);
 	if(interval <= 200)
 		interval = 200;
+	if(agit_flag == 1)	// GvG中はインターバルを長く取ることでラグを緩和する
+		interval = interval * autosave_gvg_rate / 100;
+
 	add_timer(gettick()+interval,pc_autosave,0,0);
 
 	return 0;

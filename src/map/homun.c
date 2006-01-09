@@ -888,7 +888,6 @@ int homun_delete_data(struct map_session_data *sd)
 		intif_delete_homdata(sd->status.account_id,sd->status.char_id,sd->status.homun_id);
 		sd->status.homun_id = 0;
 		memset(&sd->hom,0,sizeof(struct mmo_homunstatus));
-		pc_makesavestatus(sd);
 		chrif_save(sd);
 		storage_storage_save(sd);
 	}

@@ -973,7 +973,6 @@ atcommand_save(
 	pc_setsavepoint(sd, sd->mapname, sd->bl.x, sd->bl.y);
 	if (sd->status.pet_id > 0 && sd->pd)
 		intif_save_petdata(sd->status.account_id, &sd->pet);
-	pc_makesavestatus(sd);
 	chrif_save(sd);
 	storage_storage_save(sd);
 	clif_displaymessage(fd, msg_txt(6));
@@ -1778,7 +1777,6 @@ atcommand_gm(
 	else {
 		if (sd->status.pet_id > 0 && sd->pd)
 			intif_save_petdata(sd->status.account_id, &sd->pet);
-		pc_makesavestatus(sd);
 		chrif_save(sd);
 		storage_storage_save(sd);
 		clif_displaymessage(fd, msg_txt(30));

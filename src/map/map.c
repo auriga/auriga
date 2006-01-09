@@ -72,6 +72,7 @@ struct map_data *map = NULL;
 int map_num=0;
 
 int autosave_interval=DEFAULT_AUTOSAVE_INTERVAL;
+int autosave_gvg_rate=100;
 int agit_flag=0;
 int map_pk_server_flag = 0;
 int map_pk_nightmaredrop_flag = 0;
@@ -2317,6 +2318,12 @@ static int map_config_read(char *cfgName)
 			if (autosave_interval <= 0) {
 				printf("map_config_read: Invalid autosave_time value: %d. Set to %d (default).\n", autosave_interval, (int)(DEFAULT_AUTOSAVE_INTERVAL / 1000));
 				autosave_interval = DEFAULT_AUTOSAVE_INTERVAL;
+			}
+		} else if (strcmpi(w1, "autosave_gvg_rate") == 0) {
+			autosave_gvg_rate = atoi(w2);
+			if (autosave_gvg_rate < 100) {
+				printf("map_config_read: Invalid autosave_gvg_rate value: %d. Set to 100 (minimum).\n", autosave_gvg_rate);
+				autosave_gvg_rate = 100;
 			}
 		} else if (strcmpi(w1, "motd_txt") == 0) {
 			strncpy(motd_txt, w2, sizeof(motd_txt) - 1);

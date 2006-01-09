@@ -11310,6 +11310,15 @@ static void clif_parse_GuildBreak(int fd,struct map_session_data *sd, int cmd)
 {
 	guild_break(sd,RFIFOP(fd,GETPACKETPOS(cmd,0)));
 }
+/*==========================================
+ * ギルドメンバー情報（未使用）
+ *------------------------------------------
+ */
+static void clif_parse_GuildMemberInfo(int fd,struct map_session_data *sd, int cmd)
+{
+	//int account_id = GETPACKETPOS(cmd,0);
+	return;
+}
 
 // pet
 static void clif_parse_PetMenu(int fd,struct map_session_data *sd, int cmd)
@@ -12233,6 +12242,7 @@ struct {
 	{clif_parse_GuildDelAlliance,"guilddelalliance"},
 	{clif_parse_GuildOpposition,"guildopposition"},
 	{clif_parse_GuildBreak,"guildbreak"},
+	{clif_parse_GuildMemberInfo,"guildmemberinfo"},
 	{clif_parse_PetMenu,"petmenu"},
 	{clif_parse_CatchPet,"catchpet"},
 	{clif_parse_SelectEgg,"selectegg"},
