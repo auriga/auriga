@@ -5858,7 +5858,7 @@ int pc_changelook(struct map_session_data *sd,int type,int val)
  * 付属品(鷹,ペコ,カート)設定
  *------------------------------------------
  */
-void pc_setoption(struct map_session_data *sd, short type)
+void pc_setoption(struct map_session_data *sd, unsigned int type)
 {
 	nullpo_retv(sd);
 
@@ -5877,7 +5877,7 @@ void pc_setoption(struct map_session_data *sd, short type)
  */
 void pc_setcart(struct map_session_data *sd, unsigned short type)
 {
-	short cart[6] = {0x0000,0x0008,0x0080,0x0100,0x0200,0x0400};
+	unsigned int cart[6] = {0x0000,0x0008,0x0080,0x0100,0x0200,0x0400};
 
 	nullpo_retv(sd);
 
@@ -5886,7 +5886,7 @@ void pc_setcart(struct map_session_data *sd, unsigned short type)
 
 	if (type == 0) { // I have nerver see type 0, but we know...
 		if (pc_iscarton(sd))
-			pc_setoption(sd, sd->status.option & ~((short)CART_MASK)); // suppress actual cart; conserv other options
+			pc_setoption(sd, sd->status.option & ~CART_MASK); // suppress actual cart; conserv other options
 		return;
 	}
 
@@ -5898,7 +5898,7 @@ void pc_setcart(struct map_session_data *sd, unsigned short type)
 			clif_updatestatus(sd,SP_CARTINFO);
 			clif_status_change(&sd->bl,0x0c,0);
 		} else {
-			sd->status.option &= ~((short)CART_MASK); // suppress actual cart; conserv other options
+			sd->status.option &= ~CART_MASK; // suppress actual cart; conserv other options
 			pc_setoption(sd, sd->status.option | cart[type]);
 		}
 	}
@@ -7715,7 +7715,11 @@ int pc_setsavepoint(struct map_session_data *sd,char *mapname,int x,int y)
 static int last_save_fd,save_flag;
 static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 {
+	int *users = va_arg(ap,int *);
+
 	nullpo_retr(0, sd);
+
+	(*users)++;
 
 	if(save_flag==0 && sd->fd>last_save_fd && !sd->state.waitingdisconnect){
 		intif_save_scdata(sd);
@@ -7742,14 +7746,14 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
  */
 int pc_autosave(int tid,unsigned int tick,int id,int data)
 {
-	int interval;
+	int interval, users = 0;
 
 	save_flag=0;
-	clif_foreachclient(pc_autosave_sub);
+	clif_foreachclient(pc_autosave_sub, &users);
 	if(save_flag==0)
 		last_save_fd=0;
 
-	interval = autosave_interval/(clif_countusers()+1);
+	interval = autosave_interval/(users+1);
 	if(interval <= 200)
 		interval = 200;
 	if(agit_flag == 1)	// GvG中はインターバルを長く取ることでラグを緩和する

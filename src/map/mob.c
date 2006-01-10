@@ -518,7 +518,7 @@ int mob_target(struct mob_data *md,struct block_list *bl,int dist)
 {
 	struct map_session_data *sd;
 	struct status_change *sc_data = NULL;
-	short *option;
+	unsigned int *option;
 	int mode,race;
 
 	nullpo_retr(0, md);
@@ -627,8 +627,8 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 		}
 		if(active_flag) {
 			// 射線チェック
-			int flag = (mob_db[smd->class_].range > 6 ? CELL_CHKWALL : CELL_CHKNOPASS);
-			if(!path_search_long_real(NULL,smd->bl.m,smd->bl.x,smd->bl.y,bl->x,bl->y,flag) )
+			cell_t cell_flag = (mob_db[smd->class_].range > 6 ? CELL_CHKWALL : CELL_CHKNOPASS);
+			if(!path_search_long_real(NULL,smd->bl.m,smd->bl.x,smd->bl.y,bl->x,bl->y,cell_flag) )
 				active_flag = 0;
 		}
 		if(active_flag) {
@@ -3650,7 +3650,7 @@ static int mob_readdb_mobavail(void)
 			mob_db[class_].head_top=atoi(str[9]);
 			mob_db[class_].head_mid=atoi(str[10]);
 			mob_db[class_].head_buttom=atoi(str[11]);
-			mob_db[class_].option=atoi(str[12])&~0x46;
+			mob_db[class_].option=((unsigned int)atoi(str[12]))&~0x46;
 			mob_db[class_].trans=atoi(str[13]);
 		}
 		ln++;

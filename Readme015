@@ -1,4 +1,28 @@
 ----------------------------------------
+//054 [2006/01/11] by Rayce
+
+・オプション系の型をパケットの仕様に正しく合わせる
+	option : short → unsigned int
+	opt1   : short → unsigned short
+	opt2   : short → unsigned short
+	opt3   : short → unsigned int
+・上記変更により浮遊とサンタ服が混ざる問題が解決したので、
+　太陽と月と星の融合を使用時に浮遊するよう修正（status.c）
+・オプション系についてhelp.txtに追記
+
+・map_session_data構造体内のstate構造体のメンバ pass_through は使用されてないので削除（map.h）
+・path_search_long_real() の引数がcell_t型になっていなかった部分を修正（mob.c）
+・@charoptionも@optionと同様にopt3を指定できるように（atcommand.c）
+・自動セーブ処理を少し最適化（pc.c）
+・clif_changeoption() で使われていたループを展開（pc.c）
+　clif_changelook() を少し修正
+
+・SQL: charテーブルの `option` を unsigned int型に変更
+・SQL: 使われていないフィールドを削除
+・SQL: セキュリティ向上のため、標準で提供されるサーバアカウントを15個からTXTと同じ5個に変更
+		Auriga054_changetable.sql追加、mail.sql更新
+
+----------------------------------------
 //053 [2006/01/10] by Rayce
 
 ・pc_makesavestatus() が二重に呼ばれていた無駄を修正（atcommand.c, homun.c, pc.c pet.c）

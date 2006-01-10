@@ -122,7 +122,8 @@ struct mmo_charstatus {
 	short class_;
 	short status_point,skill_point;
 	int hp,max_hp,sp,max_sp;
-	short option,karma,manner;
+	unsigned int option;
+	short karma,manner;
 	short hair,hair_color,clothes_color;
 	int party_id,guild_id,pet_id,homun_id;
 
@@ -173,7 +174,7 @@ struct mmo_homunstatus {
 	unsigned char base_level;
 	short str,agi,vit,int_,dex,luk;
 
-	short option;
+	unsigned int option;
 	short equip;
 
 	struct skill skill[MAX_HOMSKILL];

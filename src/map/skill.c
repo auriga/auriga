@@ -10107,7 +10107,7 @@ int skill_check_cloaking(struct block_list *bl)
 			end=0;
 	}
 	if(end){
-		short *option = status_get_option(bl);
+		unsigned int *option = status_get_option(bl);
 		status_change_end(bl, SC_CLOAKING, -1);
 		if( option )
 			*option &= ~4;	/* 念のための処理 */

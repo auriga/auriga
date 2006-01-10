@@ -130,7 +130,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 	nullpo_retr(-1,p);
 
 	str_p += sprintf(str_p,"%d\t%d,%d\t%s\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+		"\t%u,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%s,%d,%d\t%s,%d,%d,%d,%d,%d,%d\t",
 		p->st.char_id,p->st.account_id,p->st.char_num,p->st.name, //
 		p->st.class_,p->st.base_level,p->st.job_level,
@@ -206,7 +206,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	nullpo_retr(0,p);
 
 	set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+		"\t%u,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%[^,],%d,%d\t%[^,],%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],
@@ -246,7 +246,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	p->st.luk=tmp_int[18];
 	p->st.status_point=tmp_int[19];
 	p->st.skill_point=tmp_int[20];
-	p->st.option=tmp_int[21];
+	p->st.option=(unsigned int)tmp_int[21];
 	p->st.karma=tmp_int[22];
 	p->st.manner=tmp_int[23];
 	p->st.party_id=tmp_int[24];
@@ -1075,13 +1075,13 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 		p->st.sp            = atoi(sql_row[19]);
 		p->st.status_point  = atoi(sql_row[20]);
 		p->st.skill_point   = atoi(sql_row[21]);
-		p->st.option        = atoi(sql_row[22]);
+		p->st.option        = (unsigned int)atoi(sql_row[22]);
 		p->st.karma         = atoi(sql_row[23]);
 		p->st.manner        = atoi(sql_row[24]);
 		p->st.party_id      = atoi(sql_row[25]);
 		p->st.guild_id      = atoi(sql_row[26]);
 		p->st.pet_id        = atoi(sql_row[27]);
-		p->st.homun_id      = (mysql_num_fields(sql_res) >= 48 ? atoi(sql_row[47]) : 0);
+		p->st.homun_id      = atoi(sql_row[47]);
 		p->st.hair          = atoi(sql_row[28]);
 		p->st.hair_color    = atoi(sql_row[29]);
 		p->st.clothes_color = atoi(sql_row[30]);
@@ -1290,6 +1290,10 @@ int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
 	if(st1->val != st2->val) {\
 		p += sprintf(p,"%c`"sql"` = '%d'",sep,st2->val); sep = ',';\
 	}
+#define UPDATE_UNUM(val,sql) \
+	if(st1->val != st2->val) {\
+		p += sprintf(p,"%c`"sql"` = '%u'",sep,st2->val); sep = ',';\
+	}
 #define UPDATE_STR(val,sql) \
 	if(strcmp(st1->val,st2->val)) {\
 		p += sprintf(p,"%c`"sql"` = '%s'",sep,strecpy(buf,st2->val)); sep = ',';\
@@ -1333,7 +1337,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 	UPDATE_NUM(sp            ,"sp");
 	UPDATE_NUM(status_point  ,"status_point");
 	UPDATE_NUM(skill_point   ,"skill_point");
-	UPDATE_NUM(option        ,"option");
+	UPDATE_UNUM(option       ,"option");
 	UPDATE_NUM(karma         ,"karma");
 	UPDATE_NUM(manner        ,"manner");
 	UPDATE_NUM(party_id      ,"party_id");

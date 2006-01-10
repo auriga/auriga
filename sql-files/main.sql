@@ -14,7 +14,6 @@ CREATE TABLE `cart_inventory` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
-  `broken` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `char_id` (`char_id`)
 ) TYPE=MyISAM; 
@@ -45,7 +44,7 @@ CREATE TABLE `char` (
   `sp` int(11) NOT NULL default '0',
   `status_point` int(11) NOT NULL default '0',
   `skill_point` int(11) NOT NULL default '0',
-  `option` int(11) NOT NULL default '0',
+  `option` int(11) unsigned NOT NULL default '0',
   `karma` int(11) NOT NULL default '0',
   `manner` int(11) NOT NULL default '0',
   `party_id` int(11) NOT NULL default '0',
@@ -286,7 +285,6 @@ CREATE TABLE `guild_storage` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
-  `broken` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `guild_id` (`guild_id`)
 ) TYPE=MyISAM; 
@@ -315,7 +313,6 @@ CREATE TABLE `inventory` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
-  `broken` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `char_id` (`char_id`)
 ) TYPE=MyISAM; 
@@ -342,11 +339,7 @@ CREATE TABLE `login` (
   `logincount` mediumint(9) NOT NULL default '0',
   `email` varchar(60) NOT NULL default '',
   `level` smallint(3) NOT NULL default '0',
-  `error_message` int(11) NOT NULL default '0',
-  `connect_until` int(11) NOT NULL default '0',
   `last_ip` varchar(100) NOT NULL default '',
-  `memo` int(11) NOT NULL default '0',
-  `ban_until` int(11) NOT NULL default '0',
   `state` int(11) NOT NULL default '0',
   PRIMARY KEY  (`account_id`),
   KEY `name` (`userid`)
@@ -360,25 +353,12 @@ INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES
 INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('3', 's3', 'p3', 'S','athena@athena.com');
 INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('4', 's4', 'p4', 'S','athena@athena.com');
 INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('5', 's5', 'p5', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('6', 's6', 'p6', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('7', 's7', 'p7', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('8', 's8', 'p8', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('9', 's9', 'p9', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('10', 's10', 'p10', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('11', 's11', 'p11', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('12', 's12', 'p12', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('13', 's13', 'p13', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('14', 's14', 'p14', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('15', 's15', 'p15', 'S','athena@athena.com');
 
 # Database: Ragnarok
 # Table: 'loginlog'
 # 
 CREATE TABLE `loginlog` (
   `time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `ip` varchar(64) NOT NULL default '',
-  `user` varchar(32) NOT NULL default '',
-  `rcode` tinyint(4) NOT NULL default '0',
   `log` varchar(255) NOT NULL default ''
 ) TYPE=MyISAM; 
 
@@ -453,7 +433,6 @@ CREATE TABLE `storage` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
-  `broken` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `account_id` (`account_id`)
 ) TYPE=MyISAM; 

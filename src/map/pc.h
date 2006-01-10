@@ -156,7 +156,7 @@ int pc_heal(struct map_session_data *,int,int);
 int pc_itemheal(struct map_session_data *sd,int hp,int sp);
 int pc_percentheal(struct map_session_data *sd,int,int);
 int pc_jobchange(struct map_session_data *,int, int);
-void pc_setoption(struct map_session_data *sd, short type);
+void pc_setoption(struct map_session_data *sd, unsigned int type);
 void pc_setcart(struct map_session_data *sd, unsigned short type);
 int pc_setfalcon(struct map_session_data *sd);
 int pc_setriding(struct map_session_data *sd);

@@ -1317,7 +1317,9 @@ int unit_can_move(struct block_list *bl)
 	struct map_session_data *sd = NULL;
 	struct unit_data *ud = NULL;
 	struct status_change *sc_data = NULL;
-	short *sc_count,*opt1,*option;
+	short *sc_count;
+	unsigned short *opt1;
+	unsigned int *option;
 
 	nullpo_retr(0, bl);
 
@@ -1457,7 +1459,7 @@ int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 	target_hd = BL_DOWNCAST( BL_HOM, target );
 
 	if( src_sd ) {
-		short *opt;
+		unsigned int *opt;
 		// 異常などで攻撃できない
 		if( src_sd->opt1 > 0 || src_sd->status.option&2 || pc_ischasewalk(src_sd) )
 			return 0;

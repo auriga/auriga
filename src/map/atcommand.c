@@ -1069,14 +1069,15 @@ atcommand_option(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	int param1, param2 = 0, param3 = 0, param4 = 0;
+	unsigned short param1, param2 = 0;
+	unsigned int param3 = 0, param4 = 0;
 
 	nullpo_retr(-1, sd);
 
 	if (!message || !*message)
 		return -1;
 
-	if (sscanf(message, "%d %d %d %d", &param1, &param2, &param3, &param4) < 1)
+	if (sscanf(message, "%hu %hu %u %u", &param1, &param2, &param3, &param4) < 1)
 		return -1;
 
 	sd->opt1 = param1;
@@ -2977,20 +2978,22 @@ atcommand_character_option(
 	const char* command, const char* message)
 {
 	char character[100];
-	int opt1, opt2, opt3;
+	unsigned short opt1, opt2;
+	unsigned int opt3, option;
 	struct map_session_data* pl_sd;
 
 	if (!message || !*message)
 		return -1;
 	memset(character, '\0', sizeof character);
-	if (sscanf(message, "%d %d %d %99[^\n]", &opt1, &opt2, &opt3, character) < 4 || opt1 < 0 || opt2 < 0 || opt3 < 0)
+	if (sscanf(message, "%hu %hu %u %u %99[^\n]", &opt1, &opt2, &option, &opt3, character) < 5)
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
 			pl_sd->opt1 = opt1;
 			pl_sd->opt2 = opt2;
-			pl_sd->status.option = opt3;
+			pl_sd->opt3 = opt3;
+			pl_sd->status.option = option;
 			clif_changeoption(&pl_sd->bl);
 			clif_send_clothcolor(&pl_sd->bl);
 			clif_displaymessage(fd, msg_txt(55));

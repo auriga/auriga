@@ -39,7 +39,8 @@ struct mob_db {
 		int p;
 	} mvpitem[3];
 	int view_class,sex;
-	short hair,hair_color,clothes_color,weapon,shield,head_top,head_mid,head_buttom,option,trans,group_id,view_size;
+	short hair,hair_color,clothes_color,weapon,shield,head_top,head_mid,head_buttom,trans,group_id,view_size;
+	unsigned int option;
 	int summonper[MAX_RANDOMMONSTER];
 	int maxskill;
 	struct mob_skill skill[MAX_MOBSKILL];

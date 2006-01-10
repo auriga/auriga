@@ -258,7 +258,6 @@ struct map_session_data {
 		unsigned make_arrow_flag : 1;
 		unsigned potionpitcher_flag : 1;
 		unsigned storage_flag : 2;	// 0:倉庫未使用, 1:個人倉庫使用中, 2:ギルド倉庫使用中
-		unsigned pass_through : 1;
 		unsigned autoloot : 1;
 		unsigned refuse_emergencycall : 1;
 		unsigned reg_dirty : 1;
@@ -287,7 +286,8 @@ struct map_session_data {
 	char mapname[24];
 	int fd,new_fd;
 	short speed, prev_speed;
-	short opt1,opt2,opt3;
+	unsigned short opt1,opt2;
+	unsigned int opt3;
 	char dir,head_dir;
 	unsigned int client_tick,server_tick;
 	int npc_id,areanpc_id,npc_shopid;
@@ -566,7 +566,8 @@ struct npc_data {
 	char exname[24];
 	char position[24];
 	int chat_id;
-	short opt1,opt2,opt3,option;
+	unsigned short opt1,opt2;
+	unsigned int opt3,option;
 	short flag;
 	short view_size;
 	union {
@@ -625,7 +626,8 @@ struct mob_data {
 	struct status_change sc_data[MAX_STATUSCHANGE];
 #endif
 	short sc_count;
-	short opt1,opt2,opt3,option;
+	unsigned short opt1,opt2;
+	unsigned int opt3,option;
 	short min_chase;
 
 	int guild_id;
@@ -707,7 +709,9 @@ struct homun_data {
 	int target_id;
 	unsigned int homskillstatictimer[MAX_HOMSKILL];
 	struct status_change sc_data[MAX_STATUSCHANGE];
-	short sc_count, opt1, opt2, opt3;
+	short sc_count;
+	unsigned short opt1,opt2;
+	unsigned int opt3;
 	short attackable;
 	short limits_to_growth;
 	int view_class;

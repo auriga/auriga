@@ -205,7 +205,7 @@ int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 
 	// 1882以降の形式読み込み
 	set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+		"\t%u,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%[^,],%d,%d\t%[^,],%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],
@@ -245,7 +245,7 @@ int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 	p->st.luk = tmp_int[18];
 	p->st.status_point = tmp_int[19];
 	p->st.skill_point = tmp_int[20];
-	p->st.option = tmp_int[21];
+	p->st.option = (unsigned int)tmp_int[21];
 	p->st.karma = tmp_int[22];
 	p->st.manner = tmp_int[23];
 	p->st.party_id = tmp_int[24];
@@ -432,7 +432,7 @@ int mmo_char_tosql(int char_id, struct mmo_chardata *p){
 		"`base_exp`='%d', `job_exp`='%d', `zeny`='%d',"
 		"`max_hp`='%d',`hp`='%d',`max_sp`='%d',`sp`='%d',`status_point`='%d',`skill_point`='%d',"
 		"`str`='%d',`agi`='%d',`vit`='%d',`int`='%d',`dex`='%d',`luk`='%d',"
-		"`option`='%d',`karma`='%d',`manner`='%d',`party_id`='%d',`guild_id`='%d',`pet_id`='%d',"
+		"`option`='%u',`karma`='%d',`manner`='%d',`party_id`='%d',`guild_id`='%d',`pet_id`='%d',"
 		"`hair`='%d',`hair_color`='%d',`clothes_color`='%d',`weapon`='%d',`shield`='%d',`head_top`='%d',`head_mid`='%d',`head_bottom`='%d',"
 		"`last_map`='%s',`last_x`='%d',`last_y`='%d',`save_map`='%s',`save_x`='%d',`save_y`='%d',"
 		"`partner_id` = '%d', `parent_id` = '%d', `parent_id2` = '%d', `baby_id` = '%d', `homun_id` = '%d'",

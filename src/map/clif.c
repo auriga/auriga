@@ -190,7 +190,7 @@ int clif_send_sub(struct block_list *bl,va_list ap)
 	int len;
 	struct block_list *src_bl;
 	int type, fd;
-	short *src_option = NULL;
+	unsigned int *src_option = NULL;
 	struct map_session_data *sd;
 
 	nullpo_retr(0, bl);
@@ -3254,9 +3254,6 @@ void clif_changelook(struct block_list *bl, int type, int val)
 	if(bl->type == BL_PC)
 		sd = (struct map_session_data *)bl;
 
-	if(sd && type == LOOK_BASE)
-		val = sd->view_class;
-
 #if PACKETVER < 4
 	if(sd && (type == LOOK_WEAPON || type == LOOK_SHIELD) && (sd->view_class == 22 || sd->view_class == 26))
 		val = 0;
@@ -3596,17 +3593,16 @@ void clif_misceffect3(struct block_list *bl,int type)
 void clif_changeoption(struct block_list* bl)
 {
 	char buf[16];
-	short option;
+	unsigned int option;
 	struct status_change *sc_data;
-	struct map_session_data *sd;
-	static const int omask[]={ 0x10,0x20 };
-	static const int scnum[]={ SC_FALCON, SC_RIDING };
-	int i;
 
 	nullpo_retv(bl);
 
-	if(bl->type==BL_PC && (sd=(struct map_session_data *)bl))
-		clif_changelook(bl,LOOK_BASE,sd->view_class);
+	if(bl->type==BL_PC) {
+		struct map_session_data *sd = (struct map_session_data *)bl;
+		if(sd)
+			clif_changelook(bl,LOOK_BASE,sd->view_class);
+	}
 
 	option = *status_get_option(bl);
 	sc_data = status_get_sc_data(bl);
@@ -3630,14 +3626,18 @@ void clif_changeoption(struct block_list* bl)
 #endif
 
 	// アイコンの表示
-	if(sc_data){
-		for(i=0;i<sizeof(omask)/sizeof(omask[0]);i++){
-			if( option&omask[i] ){
-				if( sc_data[scnum[i]].timer==-1)
-					status_change_start(bl,scnum[i],0,0,0,0,0,0);
-			}else{
-				status_change_end(bl,scnum[i],-1);
-			}
+	if(sc_data) {
+		if(option&0x10) {
+			if(sc_data[SC_FALCON].timer == -1)
+				status_change_start(bl,SC_FALCON,0,0,0,0,0,0);
+			else
+				status_change_end(bl,SC_FALCON,-1);
+		}
+		if(option&0x20) {
+			if(sc_data[SC_RIDING].timer == -1)
+				status_change_start(bl,SC_RIDING,0,0,0,0,0,0);
+			else
+				status_change_end(bl,SC_RIDING,-1);
 		}
 	}
 
@@ -10021,7 +10021,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 	int skillnum,skilllv,lv,target_id;
 	unsigned int tick=gettick();
 	struct block_list *bl;
-	short *option;
+	unsigned int *option;
 
 	nullpo_retv(sd);
 

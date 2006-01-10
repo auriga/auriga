@@ -3770,7 +3770,7 @@ short *status_get_sc_count(struct block_list *bl)
 		return &((struct homun_data*)bl)->sc_count;
 	return NULL;
 }
-short *status_get_opt1(struct block_list *bl)
+unsigned short *status_get_opt1(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
@@ -3783,7 +3783,7 @@ short *status_get_opt1(struct block_list *bl)
 		return &((struct homun_data*)bl)->opt1;
 	return 0;
 }
-short *status_get_opt2(struct block_list *bl)
+unsigned short *status_get_opt2(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
@@ -3796,7 +3796,7 @@ short *status_get_opt2(struct block_list *bl)
 		return &((struct homun_data*)bl)->opt2;
 	return 0;
 }
-short *status_get_opt3(struct block_list *bl)
+unsigned int *status_get_opt3(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
@@ -3809,7 +3809,7 @@ short *status_get_opt3(struct block_list *bl)
 		return &((struct homun_data*)bl)->opt3;
 	return 0;
 }
-short *status_get_option(struct block_list *bl)
+unsigned int *status_get_option(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
@@ -3922,7 +3922,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	struct mob_data *md = NULL;
 	struct homun_data *hd = NULL;
 	struct status_change* sc_data;
-	short *sc_count, *option, *opt1, *opt2, *opt3;
+	short *sc_count;
+	unsigned short *opt1, *opt2;
+	unsigned int *opt3, *option;
 	int opt_flag = 0, calc_flag = 0, race, mode, elem;
 	int scdef=0;
 
@@ -5018,7 +5020,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			*opt2 |= 128;
 			break;
 		case SC_SIGNUMCRUCIS:
-			*opt2 |= 0x40;
+			*opt2 |= 64;
 			break;
 		// opt3
 		case SC_ONEHAND:			/* 1HQ */
@@ -5034,7 +5036,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			*opt3 |= 4;
 			break;
 		case SC_EXPLOSIONSPIRITS:	// 爆裂波動
-			*opt3 = 8;
+			*opt3 |= 8;
 			break;
 		case SC_STEELBODY:			// 金剛
 			*opt3 |= 16;
@@ -5061,7 +5063,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_KAITE:
 			*opt3 |= 8192;
 			break;
-		/* 体が赤くなる　*opt3 |= 16386; */
 		case SC_MONK:			//#モンクの魂#
 		case SC_STAR:			//#ケンセイの魂#
 		case SC_SAGE:			//#セージの魂#
@@ -5117,9 +5118,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			*option |= 0x4004;
 			break;
 		case SC_FUSION:
-			// 浮遊はするけどサンタ服と同じオプション！
-			//*option |= 32768;
-			opt_flag = 0;
+			*option |= 32768;
 			break;
 		default:
 			opt_flag = 0;
@@ -5173,7 +5172,9 @@ int status_change_end( struct block_list* bl , int type,int tid)
 	struct map_session_data *sd = NULL;
 	struct status_change* sc_data;
 	int opt_flag=0, calc_flag = 0;
-	short *sc_count, *option, *opt1, *opt2, *opt3;
+	short *sc_count;
+	unsigned short *opt1, *opt2;
+	unsigned int *opt3, *option;
 
 	nullpo_retr(0, bl);
 	if(type == -1) return 0;
@@ -5621,7 +5622,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			*opt2 &= ~128;
 			break;
 		case SC_SIGNUMCRUCIS:
-			*opt2 &= ~0x40;
+			*opt2 &= ~64;
 			break;
 		// opt3
 		case SC_ONEHAND:			/* 1HQ */
@@ -5717,6 +5718,9 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			break;
 		case SC_CHASEWALK:	/*チェイスウォーク*/
 			*option &= ~0x4004;
+			break;
+		case SC_FUSION:
+			*option &= ~32768;
 			break;
 		default:
 			opt_flag = 0;
@@ -6067,7 +6071,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 
 	case SC_STONE:
 		if(sc_data[type].val2 != 0) {
-			short *opt1 = status_get_opt1(bl);
+			unsigned short *opt1 = status_get_opt1(bl);
 			sc_data[type].val2 = 0;
 			sc_data[type].val4 = 0;
 			unit_stop_walking(bl,1);
@@ -6317,7 +6321,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap )
 	struct block_list *src;
 	int type;
 	unsigned int tick;
-	short *opt;
+	unsigned int *opt;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
@@ -6412,7 +6416,9 @@ int status_change_timer_sub(struct block_list *bl, va_list ap )
 int status_change_clear(struct block_list *bl,int type)
 {
 	struct status_change* sc_data;
-	short *sc_count, *option, *opt1, *opt2, *opt3;
+	short *sc_count;
+	unsigned short *opt1, *opt2;
+	unsigned int *opt3, *option;
 	int i;
 
 	nullpo_retr(0, bl);
@@ -6964,7 +6970,7 @@ int status_change_attacked_end(struct block_list *bl)
  */
 int status_change_hidden_end(struct block_list *bl)
 {
-	short *option;
+	unsigned int *option;
 
 	nullpo_retr(0, bl);
 

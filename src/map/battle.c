@@ -3390,7 +3390,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 {
 	struct map_session_data *sd=NULL,*tsd=NULL;
 	struct status_change *sc_data, *t_sc_data;
-	short *opt1;
+	unsigned short *opt1;
 	int race = 7, ele = 0;
 	int damage,rdamage = 0;
 	static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };

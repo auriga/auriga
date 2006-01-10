@@ -3051,7 +3051,7 @@ static int debug_hash_output(void)
 		fprintf(fp,"\n--------------------------------------\n");
 		fprintf(fp,"items : buckets : percent\n--------------------------------------\n");
 		for(i=0; i<=max; i++) {
-			fprintf(fp,"%5d : %7d : %6.2f%\n",i,buckets[i],(double)buckets[i]/SCRIPT_HASH_SIZE*100.);
+			fprintf(fp,"%5d : %7d : %6.2lf%\n",i,buckets[i],(double)buckets[i]/SCRIPT_HASH_SIZE*100.);
 		}
 		aFree(buckets);
 		fclose(fp);
@@ -5545,10 +5545,10 @@ int buildin_end(struct script_state *st)
  */
 int buildin_checkoption(struct script_state *st)
 {
-	int type;
+	unsigned int type;
 	struct map_session_data *sd = script_rid2sd(st);
 
-	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	type=(unsigned int)conv_num(st,& (st->stack->stack_data[st->start+2]));
 
 	if(sd && sd->status.option & type){
 		push_val(st->stack,C_INT,1);
@@ -5565,9 +5565,9 @@ int buildin_checkoption(struct script_state *st)
  */
 int buildin_setoption(struct script_state *st)
 {
-	short type;
+	unsigned int type;
 
-	type = (short)conv_num(st,& (st->stack->stack_data[st->start+2]));
+	type = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+2]));
 	pc_setoption(script_rid2sd(st),type);
 
 	return 0;
