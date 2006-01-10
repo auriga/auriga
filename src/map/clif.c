@@ -11809,60 +11809,23 @@ static void clif_parse_RankingPk(int fd,struct map_session_data *sd, int cmd)
 	return;
 }
 /*==========================================
- * メール送信→Interへ
+ * メール送信
  *------------------------------------------
  */
 static void clif_parse_SendMail(int fd,struct map_session_data *sd, int cmd)
 {
-	struct map_session_data *rd;
-	struct mail_data md;
 	int bodylen;
 
 	nullpo_retv(sd);
 
-	if(!battle_config.romail){	// メール送信を禁止
-		clif_res_sendmail(sd->fd,1);
+	if(!battle_config.romail) {	// メール送信を禁止
+		clif_res_sendmail(fd,1);
 		return;
 	}
 
-	if(RFIFOW(fd,GETPACKETPOS(cmd,0))<70)		// 短すぎ、おかしい
-		return;
+	bodylen = RFIFOW(fd,GETPACKETPOS(cmd,0))-69;
+	mail_checkmail(sd, RFIFOP(fd,GETPACKETPOS(cmd,1)), RFIFOP(fd,GETPACKETPOS(cmd,2)), RFIFOP(fd,GETPACKETPOS(cmd,3)), bodylen);
 
-	bodylen = RFIFOW(fd,2)-69;
-	rd = map_nick2sd(RFIFOP(fd,GETPACKETPOS(cmd,0)));
-
-	if(rd && rd==sd){		// 自分はダメ
-		clif_res_sendmail(sd->fd,1);
-		mail_removeitem(sd);
-		return;
-	}
-
-	memset(&md, 0, sizeof(md));
-
-	if(rd)
-		md.receive_id = rd->status.char_id;
-
-	strcpy(md.char_name,sd->status.name);
-	md.char_id = sd->status.char_id;
-
-	memcpy(md.receive_name,RFIFOP(fd,GETPACKETPOS(cmd,1)),24);
-	snprintf(md.title,sizeof(md.title),"%s",RFIFOP(fd,GETPACKETPOS(cmd,2)));
-
-	if(bodylen > sizeof(md.body))
-		return;
-
-	memcpy(md.body,RFIFOP(fd,GETPACKETPOS(cmd,3)),bodylen);
-	md.body_size = bodylen;
-
-	// 日付の保存
-	md.times = (unsigned int)mail_calctimes();
-	// アイテム・Zenyチェック
-	if(mail_checkappend(sd,&md)==0)
-		intif_sendmail(&md);
-
-	sd->mail_zeny = 0;
-	sd->mail_amount = 0;
-	mail_removeitem(sd);
 	return;
 }
 /*==========================================

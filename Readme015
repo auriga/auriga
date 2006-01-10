@@ -1,4 +1,51 @@
 ----------------------------------------
+//055 [2006/01/11] by Rayce
+
+・ROメールシステムのバグ修正（int_mail.c, inter.c, clif.c, intif.*, mail.*）
+　　-> clif_parse_SendMail() 内で送信処理が行われているのは良くないので、mail.cに移動
+　　-> 本文に何も記入されてない状態で送信を試みると、それ以後メール送信が出来なくなる不具合を修正
+　　　 　　失敗時には必ず返答パケット0x245を送らなければならないようです。
+　　　 　　clif_res_sendmail() のflagに2を入れてやるとメッセージを出さずにこの問題を解決できる模様。
+
+　　-> メール送信失敗時には必ず mail_removeitem() を呼ぶようにする
+　　　 zenyもリセットされるように修正
+　　　 　　アイテムを添付した状態で一度送信を試みて失敗し、次にアイテムは添付せずに正しく入力し直して
+　　　 　　送信すると、失敗したときに置いたアイテムが勝手に添付される不具合が解消されます。
+
+　　-> 受信者名の欄に存在しないキャラ名を指定してしまうと添付したアイテム/Zenyが消失する致命的なバグを修正
+　　　 　　これはInter鯖から成功可否判定が返ってくる前にアイテム/Zenyを減らす処理を行っていたためでした。
+　　　 　　安全性を確保するために処理の流れを変更しました。
+　　　 　　キャラクターがそのMAP鯖に登録されてない場合は一旦Inter鯖にキャラクターの存在確認を要求し、
+　　　 　　OKなら再度メールを送信する形式となります。
+　　　 　　手抜きによりInter鯖から返ってきたキャラクター名はcharid_dbに登録されません！
+
+　※変更後の処理の流れ
+	1. clif_parse_SendMail
+　　　  2. mail_checkmail (キャラが居れば7にジャンプ)
+　　　  3. intif_mail_checkmail
+　　　  4. mapif_parse_CheckMail
+　　　  5. mapif_mail_checkok
+　　　  6. intif_parse_MailCheckOK
+　　　  7. mail_sendmail
+　　　  8. mail_checkappend
+　　　  9. intif_sendmail
+
+・ROメール関連でInter鯖とMAP鯖間でやり取りするパケット番号を整理し直し（int_mail.c, intif.c）
+　送信と受信がきちんと正しく対応するように変更、詳細は doc/inter_server_packet.txt
+・mail_data構造体のメンバ receive_id は使われてないので削除（mmo.h）
+
+・char鯖にキャラクター名の検索を要求したが見つからずに0x2b09が返ってくる場合、map_addchariddb() で
+　charid_dbに登録しないように修正（map.c）
+
+・SQL: char_sql_load() でキャラが見つからないときに「char - failed」が出力されないように修正（char.c）
+　     例えば以下のようなスクリプトはエラーとして扱われるべきではないからです
+
+		// ID 150000を持つキャラは既に削除されてると仮定
+		set '@dummy$,getcharname(150000);
+		if(sleep2(2000))
+			mes getcharname(150000);	// Unknownが返る、このときfailedが出力されていた
+
+----------------------------------------
 //054 [2006/01/11] by Rayce
 
 ・オプション系の型をパケットの仕様に正しく合わせる

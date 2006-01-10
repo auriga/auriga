@@ -735,6 +735,7 @@ int mapif_mail_res(const int fd,int account,int flag)
 	WFIFOSET(fd,7);
 	return 0;
 }
+
 int mapif_send_mailbox(int fd,const char *char_name,int store,struct mail_data *md[MAIL_STORE_MAX])
 {
 	int i,size = sizeof(struct mail_data);
@@ -747,6 +748,7 @@ int mapif_send_mailbox(int fd,const char *char_name,int store,struct mail_data *
 	WFIFOSET(fd,WFIFOW(fd,2));
 	return 0;
 }
+
 int mapif_mail_newmail(int fd,struct mail_data *md)
 {
 	int size=sizeof(struct mail_data);
@@ -757,6 +759,7 @@ int mapif_mail_newmail(int fd,struct mail_data *md)
 	WFIFOSET(fd,WFIFOW(fd,2));
 	return 0;
 }
+
 int mapif_mail_readmail(int fd,struct mail_data *md)
 {
 	int size = sizeof(struct mail_data);
@@ -767,6 +770,7 @@ int mapif_mail_readmail(int fd,struct mail_data *md)
 	WFIFOSET(fd,WFIFOW(fd,2));
 	return 0;
 }
+
 int mapif_mail_delmail(int fd,int account,unsigned int mail_num,int flag)
 {
 	WFIFOW(fd,0)=0x384c;
@@ -776,6 +780,7 @@ int mapif_mail_delmail(int fd,int account,unsigned int mail_num,int flag)
 	WFIFOSET(fd,11);
 	return 0;
 }
+
 int mapif_mail_getappend(int fd,int account,struct mail_data *md)
 {
 	int size = sizeof(struct item);
@@ -794,6 +799,21 @@ int mapif_mail_getappend(int fd,int account,struct mail_data *md)
 	md->zeny=0;
 	return 0;
 }
+
+int mapif_mail_checkok(int fd,int account,struct mail_data *md)
+{
+	int size = sizeof(struct mail_data);
+	if(!md)
+		return 1;
+
+	WFIFOW(fd,0) = 0x384e;
+	WFIFOW(fd,2) = 8+size;
+	WFIFOL(fd,4) = account;
+	memcpy(WFIFOP(fd,8),md,size);
+	WFIFOSET(fd,WFIFOW(fd,2));
+	return 0;
+}
+
 //--------------------------------------------------------
 int mapif_parse_OpenMailBox(int fd)
 {
@@ -817,6 +837,7 @@ int mapif_parse_OpenMailBox(int fd)
 		mapif_send_mailbox(fd,rd->st.name,0,NULL);
 	return 0;
 }
+
 int mapif_parse_SendMail(int fd)
 {
 	const struct mmo_chardata *sd,*rd;
@@ -859,12 +880,13 @@ int mapif_parse_SendMail(int fd)
 			mail_new(rd->st.account_id,rd->st.char_id);
 			md.mail_num = 1;
 		}
-		mail_store_mail(receive_id,&md);				// 保存
-		mapif_mail_res(fd,sd->st.account_id,0);			// 送信成功
+		mail_store_mail(receive_id,&md);	// 保存
+		mapif_mail_res(fd,sd->st.account_id,0);	// 送信成功
 		mapif_mail_newmail(fd,&md);		// 新着メール通知
 	}
 	return 0;
 }
+
 int mapif_parse_DeleteMail(int fd)
 {
 	const struct mail *m = mail_load(RFIFOL(fd,2));
@@ -874,6 +896,7 @@ int mapif_parse_DeleteMail(int fd)
 	mapif_mail_delmail(fd,m->account_id,RFIFOL(fd,6),flag);	// 結果送信
 	return 0;
 }
+
 int mapif_parse_ReadMail(int fd)
 {
 	const struct mail *m;
@@ -904,6 +927,7 @@ int mapif_parse_ReadMail(int fd)
 	}
 	return 0;
 }
+
 int mapif_parse_GetAppend(int fd)
 {
 	const struct mail *m;
@@ -928,6 +952,26 @@ int mapif_parse_GetAppend(int fd)
 	mail_free(md,m->store);
 	return 0;
 }
+
+int mapif_parse_CheckMail(int fd)
+{
+	int send_id;
+	struct mail_data *md;
+
+	if(!RFIFOP(fd,8))
+		return 0;
+
+	send_id = RFIFOL(fd,4);
+	md = (struct mail_data *)RFIFOP(fd,8);
+
+	if(char_nick2id(md->receive_name) <= 0)		// 受け取る人が存在しません
+		mapif_mail_res(fd,send_id,1);
+	else
+		mapif_mail_checkok(fd,send_id,md);
+
+	return 0;
+}
+
 // map server からの通信
 // ・１パケットのみ解析すること
 // ・パケット長データはinter.cにセットしておくこと
@@ -936,11 +980,12 @@ int mapif_parse_GetAppend(int fd)
 int inter_mail_parse_frommap(int fd)
 {
 	switch(RFIFOW(fd,0)){
-	case 0x3048: mapif_parse_OpenMailBox(fd); break;
-	case 0x3049: mapif_parse_SendMail(fd); break;
-	case 0x304a: mapif_parse_DeleteMail(fd); break;
-	case 0x304b: mapif_parse_ReadMail(fd); break;
-	case 0x304c: mapif_parse_GetAppend(fd); break;
+	case 0x3049: mapif_parse_OpenMailBox(fd); break;
+	case 0x304a: mapif_parse_SendMail(fd); break;
+	case 0x304b: mapif_parse_DeleteMail(fd); break;
+	case 0x304c: mapif_parse_ReadMail(fd); break;
+	case 0x304d: mapif_parse_GetAppend(fd); break;
+	case 0x304e: mapif_parse_CheckMail(fd); break;
 	default:
 		return 0;
 	}

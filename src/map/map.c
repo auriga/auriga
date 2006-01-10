@@ -1025,24 +1025,30 @@ struct charid2nick *char_search(int char_id)
 void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, int port)
 {
 	struct charid2nick *p;
-	int req=0;
-	p = (struct charid2nick *)numdb_search(charid_db,charid);
-	if(p==NULL){	// データベースにない
-		p = (struct charid2nick *)aCalloc(1,sizeof(struct charid2nick));
-		p->req_id=0;
-	}else
-		numdb_erase(charid_db,charid);
+	int req = 0;
 
-	req=p->req_id;
-	memcpy(p->nick,name,24);
-	p->account_id=account_id;
-	p->ip=ip;
-	p->port=port;
-	p->req_id=0;
+	if(account_id <= 0)
+		return;
+
+	p = (struct charid2nick *)numdb_search(charid_db,charid);
+	if(p == NULL) {	// データベースにない
+		p = (struct charid2nick *)aCalloc(1,sizeof(struct charid2nick));
+		p->req_id = 0;
+	} else {
+		numdb_erase(charid_db,charid);
+	}
+
+	req = p->req_id;
+	memcpy(p->nick, name, 24);
+	p->account_id = account_id;
+	p->ip         = ip;
+	p->port       = port;
+	p->req_id     = 0;
 	numdb_insert(charid_db,charid,p);
-	if(req){	// 返信待ちがあれば返信
+
+	if(req) {	// 返信待ちがあれば返信
 		struct map_session_data *sd = map_id2sd(req);
-		if(sd!=NULL)
+		if(sd != NULL)
 			clif_solved_charname(sd,charid);
 	}
 	//printf("map add chariddb:%s\n",p->nick);

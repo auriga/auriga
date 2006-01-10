@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "malloc.h"
+#include "nullpo.h"
 #include "socket.h"
 #include "timer.h"
 #include "utils.h"
@@ -29,10 +31,9 @@
 #include "guild.h"
 #include "pet.h"
 #include "homun.h"
-#include "nullpo.h"
 #include "atcommand.h"
-#include "malloc.h"
 #include "status.h"
+#include "mail.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -43,7 +44,7 @@ static const int packet_len_table[]={
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11, 0, 0,  0, 0,  0, 0,	// 3810-
 	35,-1,35,15, 34,53, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 14,67,186,-1,	// 3830-
-	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1,  0, 0,	// 3840-
+	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3860-
 	 0, 0, 0, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3870-
@@ -900,7 +901,7 @@ int intif_mailbox(int char_id)
 	if (inter_fd < 0)
 		return -1;
 
-	WFIFOW(inter_fd,0) = 0x3048;
+	WFIFOW(inter_fd,0) = 0x3049;
 	WFIFOL(inter_fd,2) = char_id;
 	WFIFOSET(inter_fd,6);
 
@@ -918,7 +919,7 @@ int intif_sendmail(struct mail_data *md)
 		return -1;
 
 	size = sizeof(struct mail_data);
-	WFIFOW(inter_fd,0) = 0x3049;
+	WFIFOW(inter_fd,0) = 0x304a;
 	WFIFOW(inter_fd,2) = 4+size;
 	memcpy(WFIFOP(inter_fd,4), md, size);
 	WFIFOSET(inter_fd, 4+size);
@@ -934,7 +935,7 @@ int intif_deletemail(int char_id,int mail_num)
 	if (inter_fd < 0)
 		return -1;
 
-	WFIFOW(inter_fd,0) = 0x304a;
+	WFIFOW(inter_fd,0) = 0x304b;
 	WFIFOL(inter_fd,2) = char_id;
 	WFIFOL(inter_fd,6) = mail_num;
 	WFIFOSET(inter_fd, 10);
@@ -950,7 +951,7 @@ int intif_readmail(int char_id,int mail_num)
 	if (inter_fd < 0)
 		return -1;
 
-	WFIFOW(inter_fd,0) = 0x304b;
+	WFIFOW(inter_fd,0) = 0x304c;
 	WFIFOL(inter_fd,2) = char_id;
 	WFIFOL(inter_fd,6) = mail_num;
 	WFIFOSET(inter_fd, 10);
@@ -966,10 +967,30 @@ int intif_mail_getappend(int char_id,int mail_num)
 	if (inter_fd < 0)
 		return -1;
 
-	WFIFOW(inter_fd,0) = 0x304c;
+	WFIFOW(inter_fd,0) = 0x304d;
 	WFIFOL(inter_fd,2) = char_id;
 	WFIFOL(inter_fd,6) = mail_num;
 	WFIFOSET(inter_fd, 10);
+
+	return 0;
+}
+/*==========================================
+ * メールを受け取る人がいるか確認要求
+ *------------------------------------------
+ */
+int intif_mail_checkmail(int account_id,struct mail_data *md)
+{
+	int size;
+
+	if (inter_fd < 0)
+		return -1;
+
+	size = sizeof(struct mail_data);
+	WFIFOW(inter_fd,0) = 0x304e;
+	WFIFOW(inter_fd,2) = 8+size;
+	WFIFOL(inter_fd,4) = account_id;
+	memcpy(WFIFOP(inter_fd,8), md, size);
+	WFIFOSET(inter_fd, 8+size);
 
 	return 0;
 }
@@ -1520,9 +1541,13 @@ int intif_parse_DeleteHomOk(int fd)
 int intif_parse_MailSendRes(int fd)
 {
 	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
+	int flag = RFIFOB(fd,6);
 
-	if(sd)
-		clif_res_sendmail(sd->fd,RFIFOB(fd,6));
+	if(sd) {
+		clif_res_sendmail(sd->fd,flag);
+		if(flag)
+			mail_removeitem(sd);
+	}
 	return 0;
 }
 int intif_parse_MailBoxLoad(int fd)
@@ -1581,6 +1606,15 @@ int intif_parse_MailGetAppend(int fd)
 		if(item.nameid>0 && item.amount>0)
 			pc_additem(sd,&item,item.amount);
 	}
+	return 0;
+}
+int intif_parse_MailCheckOK(int fd)
+{
+	struct map_session_data *sd = map_id2sd(RFIFOL(fd,4));
+
+	if(sd)
+		mail_sendmail(sd,(struct mail_data *)RFIFOP(fd,8));
+
 	return 0;
 }
 
@@ -1796,6 +1830,7 @@ int intif_parse(int fd)
 	case 0x384b:	intif_parse_ReadMail(fd); break;
 	case 0x384c:	intif_parse_MailDeleteRes(fd); break;
 	case 0x384d:	intif_parse_MailGetAppend(fd); break;
+	case 0x384e:	intif_parse_MailCheckOK(fd); break;
 	case 0x3878:	intif_parse_LoadStatusChange(fd); break;
 	case 0x3879:	intif_parse_SaveStatusChange(fd); break;
 	case 0x3880:	intif_parse_CreatePet(fd); break;

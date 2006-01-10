@@ -69,6 +69,7 @@ int intif_sendmail(struct mail_data *md);
 int intif_deletemail(int char_id,int mail_num);
 int intif_readmail(int char_id,int mail_num);
 int intif_mail_getappend(int char_id,int mail_num);
+int intif_mail_checkmail(int accound_id,struct mail_data *md);
 
 int intif_request_scdata(int account_id,int char_id);
 int intif_save_scdata(struct map_session_data *sd);

@@ -1016,13 +1016,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 		// 既にキャッシュが存在する
 		return p;
 	}
-	if (p == NULL) {
-		p = (struct mmo_chardata *)aMalloc(sizeof(struct mmo_chardata));
-		numdb_insert(char_db_,char_id,p);
-	}
-	memset(p,0,sizeof(struct mmo_chardata));
 
-	p->st.char_id = char_id;
 	// printf("Request load char (%6d)[",char_id);
 
 	sprintf(tmp_sql, "SELECT * FROM `%s` WHERE `char_id` = '%d'",char_db, char_id);
@@ -1047,12 +1041,16 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 
 		sql_row = mysql_fetch_row(sql_res);
 		if(sql_row == NULL) {
-			// char not found
-			printf("char - failed\n");
-			p->st.char_id = -1;
+			// 見つからなくても正常
 			mysql_free_result(sql_res);
 			return NULL;
 		}
+		if(p == NULL) {
+			p = (struct mmo_chardata *)aMalloc(sizeof(struct mmo_chardata));
+			numdb_insert(char_db_,char_id,p);
+		}
+		memset(p,0,sizeof(struct mmo_chardata));
+
 		p->st.char_id       = char_id;
 		p->st.account_id    = atoi(sql_row[ 1]);
 		p->st.char_num      = atoi(sql_row[ 2]);
@@ -1097,14 +1095,13 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 		p->st.save_point.x  = atoi(sql_row[40]);
 		p->st.save_point.y  = atoi(sql_row[41]);
 		p->st.partner_id    = atoi(sql_row[42]);
-		p->st.parent_id[0]	 = atoi(sql_row[43]);
-		p->st.parent_id[1]	 = atoi(sql_row[44]);
-		p->st.baby_id		 = atoi(sql_row[45]);
+		p->st.parent_id[0]  = atoi(sql_row[43]);
+		p->st.parent_id[1]  = atoi(sql_row[44]);
+		p->st.baby_id       = atoi(sql_row[45]);
 		//free mysql result.
 		mysql_free_result(sql_res);
 	} else {
 		printf("char - failed\n");	//Error?! ERRRRRR WHAT THAT SAY!?
-		p->st.char_id = -1;
 		return NULL;
 	}
 	// printf("char ");

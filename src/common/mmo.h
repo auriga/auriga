@@ -314,7 +314,6 @@ struct mail_data {
 	int char_id;
 	char char_name[24];
 	//受取人
-	int receive_id;
 	char receive_name[24];
 	int read;
 	unsigned int times;
