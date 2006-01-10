@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "nullpo.h"
+
 #include "clif.h"
 #include "itemdb.h"
 #include "map.h"
@@ -8,7 +10,7 @@
 #include "pc.h"
 #include "npc.h"
 #include "battle.h"
-#include "nullpo.h"
+#include "chrif.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -424,6 +426,9 @@ void trade_tradecommit(struct map_session_data *sd)
 				target_sd->trade_partner=0;
 				clif_tradecompleted(sd,0);
 				clif_tradecompleted(target_sd,0);
+				// save both player to avoid crash: they always have no advantage/disadvantage between the 2 players
+				chrif_save(sd);
+				chrif_save(target_sd);
 			}
 		}
 	} else {
