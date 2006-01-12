@@ -1054,7 +1054,7 @@ prt_castle.gat,35,151,4	script	守備兵	751,{
 		mes "では、始めましょうか。";
 		mes "それとも準備をしますか？";
 		set CHANGE_CRU,9;
-		break
+		break;
 	case 9:
 		mes "[ブリッテン=ヒルド]";
 		mes "よく来ました。";

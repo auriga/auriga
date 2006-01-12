@@ -3040,6 +3040,14 @@ AthenaNPCScript
 			NPCの定義が間違っています。
 			指定された記述にしたがって下さい。
 
+		'case' label not integer
+			caseラベルが数値ではありません。
+			数値型定数しか指定することはできません。
+
+		dup 'case' or 'default'
+			caseもしくはdefaultの重複
+			同じ値のcaseがある、またはdefaultが複数存在しています。
+
 	実行時のエラー
 		fatal error ! player not attached!
 			致命的エラー！プレイヤーがアタッチされていません！
