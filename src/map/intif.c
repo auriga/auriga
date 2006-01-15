@@ -34,6 +34,7 @@
 #include "atcommand.h"
 #include "status.h"
 #include "mail.h"
+#include "npc.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -41,7 +42,7 @@
 
 static const int packet_len_table[]={
 	-1,-1,27, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
-	-1, 7, 0, 0,  0, 0, 0, 0, -1,11, 0, 0,  0, 0,  0, 0,	// 3810-
+	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  0, 0,  0, 0,	// 3810-
 	35,-1,35,15, 34,53, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 14,67,186,-1,	// 3830-
 	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
@@ -318,6 +319,7 @@ int intif_send_storage(struct storage *stor)
 	return 0;
 }
 
+// ギルド倉庫データ要求
 int intif_request_guild_storage(int account_id,int guild_id)
 {
 	if (inter_fd < 0)
@@ -331,6 +333,7 @@ int intif_request_guild_storage(int account_id,int guild_id)
 	return 0;
 }
 
+// ギルド倉庫データ送信
 int intif_send_guild_storage(int account_id,struct guild_storage *gstor)
 {
 	if (inter_fd < 0)
@@ -343,6 +346,34 @@ int intif_send_guild_storage(int account_id,struct guild_storage *gstor)
 	WFIFOL(inter_fd,8) = gstor->guild_id;
 	memcpy( WFIFOP(inter_fd,12),gstor, sizeof(struct guild_storage) );
 	WFIFOSET(inter_fd,WFIFOW(inter_fd,2));
+
+	return 0;
+}
+
+// ギルド倉庫ロック要求
+int intif_trylock_guild_storage(struct map_session_data *sd,int npc_id)
+{
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0)  = 0x301a;
+	WFIFOL(inter_fd,2)  = sd->status.account_id;
+	WFIFOL(inter_fd,6)  = sd->status.guild_id;
+	WFIFOL(inter_fd,10) = npc_id;
+	WFIFOSET(inter_fd,14);
+
+	return 0;
+}
+
+// ギルド倉庫ロック解除
+int intif_unlock_guild_storage(int guild_id)
+{
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0) = 0x301b;
+	WFIFOL(inter_fd,2) = guild_id;
+	WFIFOSET(inter_fd,6);
 
 	return 0;
 }
@@ -1168,6 +1199,7 @@ int intif_parse_SaveStorage(int fd)
 	return 0;
 }
 
+// ギルド倉庫データ受信
 int intif_parse_LoadGuildStorage(int fd)
 {
 	struct guild_storage *gstor;
@@ -1204,11 +1236,50 @@ int intif_parse_LoadGuildStorage(int fd)
 	}
 	return 0;
 }
+// ギルド倉庫データ送信成功
 int intif_parse_SaveGuildStorage(int fd)
 {
 	if(battle_config.save_log) {
 		printf("intif_save_guild_storage: done %d %d %d\n",RFIFOL(fd,2),RFIFOL(fd,6),RFIFOB(fd,10) );
 	}
+	return 0;
+}
+// ギルド倉庫ロック要求返答
+int intif_parse_TrylockGuildStorageAck(int fd)
+{
+	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
+	int guild_id = RFIFOL(fd,6);
+	int succeed  = RFIFOB(fd,14);
+
+	// 既に存在してないかギルドが違うなら
+	if(sd == NULL || sd->status.guild_id != guild_id) {
+		intif_unlock_guild_storage(guild_id);
+		return 0;
+	}
+
+	if(sd->state.gstorage_lockreq == 1) {	// script
+		sd->npc_menu = succeed;
+		npc_scriptcont(sd,RFIFOL(fd,10));
+	}
+	else if(sd->state.gstorage_lockreq == 2) {	// atcommand
+		if(succeed)
+			storage_guild_storageopen(sd);
+		else
+			clif_displaymessage(sd->fd, msg_txt(130));
+	}
+	else {
+		// リログイン等をしたため倉庫を開く必要がない
+		intif_unlock_guild_storage(sd->status.guild_id);
+	}
+	sd->state.gstorage_lockreq = 0;
+
+	return 0;
+}
+// ギルド倉庫ロック解除返答
+int intif_parse_UnlockGuildStorageAck(int fd)
+{
+	if(battle_config.save_log)
+		printf("intif_unlock_guild_storage: done %d %d\n",RFIFOL(fd,2),RFIFOB(fd,6) );
 	return 0;
 }
 
@@ -1799,6 +1870,8 @@ int intif_parse(int fd)
 	case 0x3811:	intif_parse_SaveStorage(fd); break;
 	case 0x3818:	intif_parse_LoadGuildStorage(fd); break;
 	case 0x3819:	intif_parse_SaveGuildStorage(fd); break;
+	case 0x381a:	intif_parse_TrylockGuildStorageAck(fd); break;
+	case 0x381b:	intif_parse_UnlockGuildStorageAck(fd); break;
 	case 0x3820:	intif_parse_PartyCreated(fd); break;
 	case 0x3821:	intif_parse_PartyInfo(fd); break;
 	case 0x3822:	intif_parse_PartyMemberAdded(fd); break;

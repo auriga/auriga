@@ -887,7 +887,6 @@ unsigned char* parse_syntax(unsigned char *p) {
 				char *np;
 				char label[256];
 				int  l,v;
-				struct linkdb_node *node;
 
 				if(syntax.curly[pos].count != 1) {
 					// FALLTHRU 用のジャンプ
@@ -906,7 +905,6 @@ unsigned char* parse_syntax(unsigned char *p) {
 				if(p == p2) {
 					disp_error_message("expect space ' '",p);
 				}
-				p2 = p;
 
 				// caseラベルが数値型定数であるかチェック
 				v = strtol(p,&np,0);
@@ -924,21 +922,15 @@ unsigned char* parse_syntax(unsigned char *p) {
 					disp_error_message("expect ':'",p);
 				}
 
-				// caseラベルが重複してないかチェック、0とNULLが被るのでlinkdb_searchは使えない
-				node = syntax.curly[pos].case_label;
-				while(node) {
-					if(v == (int)node->data) {
-						disp_error_message("dup 'case'",p);
-					}
-					node = node->next;
+				// caseラベルが重複してないかチェック
+				if(linkdb_search(&syntax.curly[pos].case_label, (void*)v) != NULL) {
+					disp_error_message("dup 'case'",p);
 				}
-				linkdb_insert(&syntax.curly[pos].case_label, (void*)v, (void*)v);
+				linkdb_insert(&syntax.curly[pos].case_label, (void*)v, (void*)1);
 
-				*p = 0;
-				sprintf(label,"if(%s != $@__SW%x_VAL) goto __SW%x_%x;",
-					p2,syntax.curly[pos].index,syntax.curly[pos].index,syntax.curly[pos].count+1);
+				sprintf(label,"if(%d != $@__SW%x_VAL) goto __SW%x_%x;",
+					v,syntax.curly[pos].index,syntax.curly[pos].index,syntax.curly[pos].count+1);
 				syntax.curly[syntax.curly_count++].type = TYPE_NULL;
-				*p = ':';
 				// ２回parse しないとダメ
 				p2 = parse_line(label);
 				parse_line(p2);
@@ -5768,12 +5760,43 @@ int buildin_openstorage(struct script_state *st)
 	return 0;
 }
 
+/*==========================================
+ * ギルド倉庫を開く
+ *------------------------------------------
+ */
 int buildin_guildopenstorage(struct script_state *st)
 {
-	struct map_session_data *sd=script_rid2sd(st);
-	int ret;
-	ret = storage_guild_storageopen(sd);
-	push_val(st->stack,C_INT,ret);
+	struct map_session_data *sd = script_rid2sd(st);
+
+	if(sd == NULL) {
+		st->state = END;
+		return 0;
+	}
+
+	if(sd->state.menu_or_input == 0) {
+		if(sd->status.guild_id <= 0) {	// ギルド未所属
+			push_val(st->stack,C_INT,2);
+			return 0;
+		}
+		if(sd->state.gstorage_lockreq != 0) {
+			push_val(st->stack,C_INT,3);
+			return 0;
+		}
+		st->state = RERUNLINE;
+		sd->state.menu_or_input = 1;
+		sd->state.gstorage_lockreq = 1;
+		intif_trylock_guild_storage(sd,st->oid);
+	} else {
+		sd->state.menu_or_input = 0;
+
+		if(sd->npc_menu) {	// ロック取得成功
+			sd->npc_menu = 0;
+			push_val(st->stack,C_INT,storage_guild_storageopen(sd));
+		} else {		// ロック取得失敗
+			push_val(st->stack,C_INT,1);
+		}
+	}
+
 	return 0;
 }
 

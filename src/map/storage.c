@@ -74,6 +74,10 @@ struct storage *account2storage(int account_id)
 	return stor;
 }
 
+/*==========================================
+ * カプラ倉庫を削除
+ *------------------------------------------
+ */
 void storage_delete(int account_id)
 {
 	struct storage *stor = (struct storage *)numdb_search(storage_db,account_id);
@@ -94,6 +98,9 @@ int storage_storageopen(struct map_session_data *sd)
 	struct storage *stor;
 
 	nullpo_retr(0, sd);
+
+	if(sd->state.storage_flag == 1)
+		return 0;	// 既にカプラ倉庫を開いている
 
 	if((stor = (struct storage *)numdb_search(storage_db,sd->status.account_id)) != NULL) {
 		if(stor->storage_status)
@@ -367,6 +374,10 @@ struct guild_storage *guild2storage(int guild_id)
 	return gs;
 }
 
+/*==========================================
+ * ギルド倉庫を削除
+ *------------------------------------------
+ */
 void guild_storage_delete(int guild_id)
 {
 	struct guild_storage *gstor = (struct guild_storage *)numdb_search(guild_storage_db,guild_id);
@@ -390,25 +401,19 @@ int storage_guild_storageopen(struct map_session_data *sd)
 
 	if(sd->status.guild_id <= 0)
 		return 2;
-	if((gstor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) != NULL) {
-		if(gstor->storage_status)
-			return 1;
-		gstor->storage_status = 1;
+	if(sd->state.storage_flag == 2)
+		return 3;	// 既にギルド倉庫を開いている
 
-		if(sd->state.storage_flag == 1)
-			storage_storageclose(sd); // 倉庫をすでに開いている場合閉じる
+	if(sd->state.storage_flag == 1)
+		storage_storageclose(sd); // カプラ倉庫をすでに開いている場合閉じる
+
+	if((gstor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) != NULL) {
+		gstor->storage_status = 1;
 		sd->state.storage_flag = 2;
 		clif_guildstorageitemlist(sd,gstor);
 		clif_guildstorageequiplist(sd,gstor);
 		clif_updateguildstorageamount(sd,gstor);
-		return 0;
-	}
-	else {
-		gstor = guild2storage(sd->status.guild_id);
-		gstor->storage_status = 1;
-
-		if(sd->state.storage_flag == 1)
-			storage_storageclose(sd); // 倉庫をすでに開いている場合閉じる
+	} else {
 		intif_request_guild_storage(sd->status.account_id,sd->status.guild_id);
 	}
 
@@ -613,6 +618,7 @@ void storage_guild_storageclose(struct map_session_data *sd)
 	}
 	sd->state.storage_flag = 0;
 	clif_storageclose(sd);
+	intif_unlock_guild_storage(sd->status.guild_id);
 
 	return;
 }
@@ -634,6 +640,7 @@ void storage_guild_storage_quit(struct map_session_data *sd, char flag)
 		stor->storage_status = 0;
 	}
 	sd->state.storage_flag = 0;
+	intif_unlock_guild_storage(sd->status.guild_id);
 
 	return;
 }

@@ -1052,9 +1052,9 @@ atcommand_guildstorage(
 {
 	nullpo_retr(-1, sd);
 
-	if (sd->status.guild_id > 0) {
-		if (storage_guild_storageopen(sd) == 1)
-			clif_displaymessage(fd, msg_txt(130));
+	if (sd->status.guild_id > 0 && sd->state.gstorage_lockreq == 0) {
+		sd->state.gstorage_lockreq = 2;
+		intif_trylock_guild_storage(sd,0);
 	}
 
 	return 0;

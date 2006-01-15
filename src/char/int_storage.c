@@ -810,6 +810,7 @@ int mapif_save_storage_ack(int fd,int account_id)
 	return 0;
 }
 
+// ギルド倉庫データの送信
 int mapif_load_guild_storage(int fd,int account_id,int guild_id)
 {
 	const struct guild_storage *gs = gstorage_load(guild_id);
@@ -830,6 +831,7 @@ int mapif_load_guild_storage(int fd,int account_id,int guild_id)
 
 	return 0;
 }
+// ギルド倉庫データ保存完了送信
 int mapif_save_guild_storage_ack(int fd,int account_id,int guild_id,int fail)
 {
 	WFIFOW(fd,0)=0x3819;
@@ -837,6 +839,28 @@ int mapif_save_guild_storage_ack(int fd,int account_id,int guild_id,int fail)
 	WFIFOL(fd,6)=guild_id;
 	WFIFOB(fd,10)=fail;
 	WFIFOSET(fd,11);
+	return 0;
+}
+
+// ギルド倉庫ロック要求返答
+int mapif_trylock_guild_storage_ack(int fd,int account_id,int guild_id,int npc_id,char succeed)
+{
+	WFIFOW(fd,0)  = 0x381a;
+	WFIFOL(fd,2)  = account_id;
+	WFIFOL(fd,6)  = guild_id;
+	WFIFOL(fd,10) = npc_id;
+	WFIFOB(fd,14) = succeed;
+	WFIFOSET(fd,15);
+	return 0;
+}
+
+// ギルド倉庫ロック解除返答
+int mapif_unlock_guild_storage_ack(int fd,int guild_id,char succeed)
+{
+	WFIFOW(fd,0) = 0x381b;
+	WFIFOL(fd,2) = guild_id;
+	WFIFOB(fd,6) = succeed;
+	WFIFOSET(fd,7);
 	return 0;
 }
 
@@ -884,6 +908,42 @@ int mapif_parse_SaveGuildStorage(int fd)
 	return 0;
 }
 
+int mapif_parse_TrylockGuildStorage(int fd)
+{
+	char succeed = 0;
+	int guild_id = RFIFOL(fd,6);
+	const struct guild_storage *gs = gstorage_load(guild_id);
+
+	if(gs && gs->storage_status == 0) {
+		struct guild_storage gs2;
+		memcpy(&gs2, gs, sizeof(gs2));
+		gs2.storage_status = 1;
+		gstorage_save(&gs2);
+		succeed = 1;
+	}
+	mapif_trylock_guild_storage_ack(fd,RFIFOL(fd,2),guild_id,RFIFOL(fd,10),succeed);
+
+	return 0;
+}
+
+int mapif_parse_UnlockGuildStorage(int fd)
+{
+	char succeed = 0;
+	int guild_id = RFIFOL(fd,2);
+	const struct guild_storage *gs = gstorage_load(guild_id);
+
+	if(gs && gs->storage_status == 1) {
+		struct guild_storage gs2;
+		memcpy(&gs2, gs, sizeof(gs2));
+		gs2.storage_status = 0;
+		gstorage_save(&gs2);
+		succeed = 1;
+	}
+	mapif_unlock_guild_storage_ack(fd,guild_id,succeed);
+
+	return 0;
+}
+
 //---------------------------------------------------------
 // map server からの通信
 // ・１パケットのみ解析すること
@@ -897,6 +957,8 @@ int inter_storage_parse_frommap(int fd)
 	case 0x3011: mapif_parse_SaveStorage(fd); break;
 	case 0x3018: mapif_parse_LoadGuildStorage(fd); break;
 	case 0x3019: mapif_parse_SaveGuildStorage(fd); break;
+	case 0x301a: mapif_parse_TrylockGuildStorage(fd); break;
+	case 0x301b: mapif_parse_UnlockGuildStorage(fd); break;
 	default:
 		return 0;
 	}

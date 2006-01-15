@@ -261,6 +261,7 @@ struct map_session_data {
 		unsigned autoloot : 1;
 		unsigned refuse_emergencycall : 1;
 		unsigned reg_dirty : 1;
+		unsigned gstorage_lockreq : 2;	// 0:無し, 1:scriptからロック要求中, 2:atcommandからロック要求中
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
