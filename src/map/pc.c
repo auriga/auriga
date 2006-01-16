@@ -1973,6 +1973,7 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_TIGEREYE:
 		sd->infinite_tigereye = 1;
+		clif_status_change(&sd->bl, SI_TIGEREYE, 1);
 		break;
 	case SP_AUTO_STATUS_CALC_PC:
 		//sd->auto_status_calc_pc = 1;

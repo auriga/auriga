@@ -190,7 +190,6 @@ int clif_send_sub(struct block_list *bl,va_list ap)
 	int len;
 	struct block_list *src_bl;
 	int type, fd;
-	unsigned int *src_option = NULL;
 	struct map_session_data *sd;
 
 	nullpo_retr(0, bl);
@@ -219,51 +218,6 @@ int clif_send_sub(struct block_list *bl,va_list ap)
 
 	fd = sd->fd;
 	memcpy(WFIFOP(fd,0),buf,len);
-	src_option = status_get_option(src_bl);
-	//看破
-	if(src_option && bl != src_bl && ((*src_option)&6) &&
-		(sd->sc_data[SC_TIGEREYE].timer!=-1 || sd->infinite_tigereye || sd->race==4 || sd->race==6)
-		&&(src_bl->type==BL_PC || src_bl->type==BL_MOB || src_bl->type==BL_PET || src_bl->type==BL_HOM) )
-	{
-		//optionの修正
-		switch(((unsigned short*)buf)[0])
-		{
-#if PACKETVER < 7
-			case 0x119:
-				WFIFOW(fd,6)  =  1;
-				WFIFOW(fd,10) &=~6;
-				break;
-#else
-			case 0x229:
-				WFIFOW(fd,6)  =  1;
-				WFIFOL(fd,10) &=~6;
-				break;
-#endif
-
-#if PACKETVER < 4
-			case 0x78:
-			case 0x79:
-			case 0x7b:
-				WFIFOW(fd,8)  =  1;
-				WFIFOW(fd,12) &=~6;
-				break;
-#elif PACKETVER < 7
-			case 0x1d8:
-			case 0x1d9:
-			case 0x1da:
-				WFIFOW(fd,8)  =  1;
-				WFIFOW(fd,12) &=~6;
-				break;
-#else
-			case 0x22a:
-			case 0x22b:
-			case 0x22c:
-				WFIFOW(fd,8)  =  1;
-				WFIFOL(fd,12) &=~6;
-				break;
-#endif
-		}
-	}
 	WFIFOSET(fd,len);
 
 	return 0;

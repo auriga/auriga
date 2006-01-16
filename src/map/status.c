@@ -122,7 +122,7 @@ static int StatusIconChangeTable[] = {
 /* 320- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 /* 330- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_TIGEREYE,SI_BLANK,SI_BLANK,
 /* 340- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_TAROTCARD,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_MADNESSCANCEL,SI_ADJUSTMENT,
 /* 350- */
@@ -218,7 +218,7 @@ int status_can_save(int type)
 /*==========================================
  * パラメータ計算
  * first==0の時、計算対象のパラメータが呼び出し前から
- * 変 化した場合自動でsendするが、
+ * 変化した場合自動でsendするが、
  * 能動的に変化させたパラメータは自前でsendするように
  *------------------------------------------
  */
@@ -228,6 +228,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_speed,b_max_hp,b_max_sp,b_hp,b_sp,b_weight,b_max_weight,b_paramb[6],b_parame[6],b_hit,b_flee;
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
+	short b_tigereye;
 	struct skill b_skill[MAX_SKILL];
 	int i,blv,calc_val,index;
 	int skill,aspd_rate,wele,wele_,def_ele,refinedef;
@@ -279,6 +280,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_mdef2 = sd->mdef2;
 	b_class = sd->view_class;
 	b_base_atk = sd->base_atk;
+	b_tigereye = sd->infinite_tigereye;
 
 L_RECALC:
 	// 本来の計算開始(元のパラメータを更新しないのは、計算中に計算処理が呼ばれたときの
@@ -2001,6 +2003,10 @@ L_RECALC:
 		sd->status.hp=sd->status.max_hp;
 	if(sd->status.sp>sd->status.max_sp)
 		sd->status.sp=sd->status.max_sp;
+
+	// bTigereyeがなくなっていたらパケット送って元に戻す
+	if(b_tigereye == 1 && sd->infinite_tigereye == 0 && sd->sc_data[SC_TIGEREYE].timer == -1)
+		clif_status_change(&sd->bl, SI_TIGEREYE, 0);
 
 	// 計算処理ここまで
 	if( sd->status_calc_pc_process > 1 ) {
@@ -3823,42 +3829,6 @@ unsigned int *status_get_option(struct block_list *bl)
 	return 0;
 }
 
-/*
-// 未使用
-int status_check_attackable_by_tigereye(struct block_list *bl)
-{
-	int mode,race;
-	nullpo_retr(0, bl);
-	mode = status_get_mode(bl);
-	race = status_get_race(bl);
-	if(race==4 || race==6)
-		return 1;
-	if(mode&0x20)
-		return 1;
-	return 0;
-}
-*/
-
-/*
-// 未使用
-int status_check_tigereye(struct block_list *bl)
-{
-	struct map_session_data* sd =NULL;
-	int mode,race;
-	nullpo_retr(0, bl);
-	mode = status_get_mode(bl);
-	race = status_get_race(bl);
-	BL_CAST( BL_PC , bl , sd );
-	if(race==4 || race==6)
-		return 1;
-	if(mode&0x20)
-		return 1;
-	if(sd && (sd->sc_data[SC_TIGEREYE].timer!=-1 || sd->infinite_tigereye))
-		return 1;
-	return 0;
-}
-*/
-
 int status_check_no_magic_damage(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
@@ -5321,6 +5291,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			case SC_RESISTUNDEAD:
 			case SC_RESISTALL:
 			case SC_INVISIBLE:
+			case SC_TIGEREYE:
 			case SC_TAROTCARD:
 			case SC_DISARM:				/* ディスアーム */
 			case SC_GATLINGFEVER:		/* ガトリングフィーバー */
@@ -5577,7 +5548,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 				sc_data[type].val3 = 0;
 				break;
 
-		/* option2 */
+			/* option2 */
 			case SC_POISON:				/* 毒 */
 			case SC_BLIND:				/* 暗黒 */
 			case SC_CURSE:

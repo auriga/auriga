@@ -87,8 +87,6 @@ int status_change_attacked_end(struct block_list *bl);
 int status_change_hidden_end(struct block_list *bl);
 
 //状態チェック
-//int status_check_tigereye(struct block_list *bl);
-//int status_check_attackable_by_tigereye(struct block_list *bl);
 int status_check_no_magic_damage(struct block_list *bl);
 #ifdef DYNAMIC_SC_DATA
 int status_calloc_sc_data(struct block_list *bl);
@@ -621,6 +619,7 @@ enum {
 	SI_STAR_COMFORT			=171,	//星の安楽
 	SI_PRESERVE				=181,	//プリザーブ
 	SI_CHASEWALK_STR		=182,	//チェイスウォークのSTR?
+	SI_TIGEREYE			=184,	//タイガーアイ（ハイド見破り）
 	SI_DOUBLECASTING		=186,	//ダブルキャスティング
 	SI_OVERTHRUSTMAX		=188,	//オーバートラストマックス
 	SI_TAROTCARD			=191,

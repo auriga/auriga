@@ -1,4 +1,13 @@
 ----------------------------------------
+//059 [2006/01/17] by Rayce
+
+・マヤパープルカードの効果によるハイド見破りを本鯖仕様に修正（clif.c, pc.c, status.*）
+　SI_TIGEREYE追加
+	merged from eA, thanks to HelloKitty2
+
+・status_check_attackable_by_tigereye() と status_check_tigereye() は本当に不要なので抹消
+
+----------------------------------------
 //058 [2006/01/16] by Rayce
 
 ・ギルド倉庫に関する処理の変更
