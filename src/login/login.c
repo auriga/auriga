@@ -1117,7 +1117,7 @@ int mmo_auth(struct login_session_data* sd)
 		sd->sex        = ac->sex;
 		memcpy(sd->lastlogin,tmpstr,24);
 	}
-	return 100;
+	return -1;	// 認証OK
 }
 
 // 自分以外の全てのcharサーバーにデータ送信（送信したmap鯖の数を返す）
@@ -1620,7 +1620,7 @@ int parse_login_disconnect(int fd) {
 int parse_login(int fd)
 {
 	struct login_session_data *sd = (struct login_session_data *)session[fd]->session_data;
-	int result=0,i;
+	int result=-1,i;
 
 	if(sd == NULL) {
 		session[fd]->session_data = aCalloc(1,sizeof(struct login_session_data));
@@ -1683,14 +1683,14 @@ int parse_login(int fd)
 #endif
 			}
 
-			if(login_version > 0 && RFIFOL(fd,2) != login_version)	//規定外のバージョンからの接続を拒否
-				result = 0x03;
-			if(login_type > 0 && RFIFOB(fd,length-1) != login_type)	//規定外のタイプからの接続を拒否
-				result = 0x03;
-			if(strlen(RFIFOP(fd,6)) < 4)	//IDが4字未満を拒否
-				result = 0x03;
+			if( login_version > 0 && login_version != RFIFOL(fd,2) )	//規定外のバージョンからの接続を拒否
+				result = 5;
+			if( login_type > 0 && login_type != ((RFIFOW(fd,0) == 0x64)? RFIFOB(fd,54): RFIFOB(fd,46)) )	//規定外のタイプからの接続を拒否
+				result = 5;
+			if( strlen(RFIFOP(fd,6)) < 4 )	//IDが4字未満を拒否
+				result = 3;
 			if( RFIFOW(fd,0) == 0x64 && strlen(RFIFOP(fd,30)) < 4 ) // 0x64以外のPASSはmd5符号なので、\0 が含まれる可能性有り
-				result = 0x03;
+				result = 3;
 
 			memcpy(sd->userid,RFIFOP(fd, 6),24);
 			if( length-31 >= sizeof(sd->pass) ) // 60 - 31 = 29
@@ -1702,10 +1702,10 @@ int parse_login(int fd)
 #else
 			sd->passwdenc = 0;
 #endif
-			if(result == 0) {
+			if(result == -1) {
 				result = mmo_auth(sd);
 			}
-			if(result == 100) {
+			if(result == -1) {
 				server_num=0;
 				for(i=0;i<MAX_SERVERS;i++){
 					if(server_fd[i]>=0){
@@ -1807,7 +1807,7 @@ int parse_login(int fd)
 			memcpy( sd->pass, RFIFOP(fd, 26), sd->md5keylen ? 16 : 24 );
 			sd->passwdenc = sd->md5keylen ? RFIFOL(fd,46) : 0;
 			result = mmo_auth(sd);
-			if(result == 100 && sd->sex == 2 && sd->account_id<MAX_SERVERS && server_fd[sd->account_id]<0){
+			if(result == -1 && sd->sex == 2 && sd->account_id<MAX_SERVERS && server_fd[sd->account_id]<0){
 				server[sd->account_id].ip=RFIFOL(fd,54);
 				server[sd->account_id].port=RFIFOW(fd,58);
 				memcpy(server[sd->account_id].name,RFIFOP(fd,60),20);
