@@ -20,7 +20,9 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bAtkRate						攻撃力+n%
 	bonus2 bWeaponAtk,n,x;				タイプnの武器を装備しているときに攻撃力+x。
 	bonus2 bWeaponAtkRate,n,x;			タイプnの武器を装備しているときに攻撃力+x%。
-					0,素手	1,短剣	2,片手剣　3,両手剣　4,片手槍　5,両手槍	6,片手斧　7,両手斧　8,鈍器	9,	10,杖	11,弓	12,拳	13,楽器	14,鞭	15,本	16,カタール
+					0,素手	1,短剣	2,片手剣　3,両手剣　4,片手槍　5,両手槍	6,片手斧　7,両手斧　8,鈍器　9,両手鈍器　10,杖　11,弓　12,ナックル　13,楽器　14,鞭　15,本　16,カタール
+					17,ハンドガン　18,ライフル　19,ショットガン　20,ガトリングガン　21,グレネードランチャー　22,手裏剣
+					23,短剣+短剣　24,片手剣+片手剣　25,片手斧+片手斧　26,短剣+片手剣　27,短剣+片手斧　28,片手剣+片手斧
 	bonus bBaseAtk,n;					基本攻撃力+n
 	bonus bMatk,n;						魔法攻撃力1+n、魔法攻撃力2+n
 	bonus bMatk1,n;						魔法攻撃力1+n
@@ -126,6 +128,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 ・クリティカル
 	bonus bAddCriticalDamage,n;			クリティカルダメージ+n%
 	bonus2 bCriticalRace,n,x;			n種族にクリティカル+x
+	bonus2 bCriticalRaceRate,n,x;			n種族にクリティカル+x%
 					0,無形　1,不死　2,動物　3,植物　4,昆虫　5,魚貝　6,悪魔　7,人間　8,天使　9,竜族　10,全種族
 
 

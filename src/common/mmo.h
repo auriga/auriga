@@ -58,6 +58,8 @@
 #define HOM_SKILLID 8001		// ホムスキルIDの開始値
 #define MAX_HOM_SKILLID (HOM_SKILLID+MAX_HOMSKILL)	// ホムスキルIDの最大値
 
+#define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
+
 #define GRF_PATH_FILENAME "conf/grf-files.txt"
 
 // ブロックID定義
@@ -302,6 +304,27 @@ enum {
 	GMI_EXP			=1,		// メンバーのEXP
 
 };
+
+enum {
+	GD_APPROVAL = 10000,
+	GD_KAFRACONTACT,
+	GD_GUARDIANRESEARCH,
+	GD_GUARDUP,
+	// GD_CHARISMA, -> GD_GUARDUPに変更あり
+	// GD_GURADUP,	// GD)CHARISMAと同ID
+	GD_EXTENSION,
+	GD_GLORYGUILD,
+	GD_LEADERSHIP,
+	GD_GLORYWOUNDS,
+	GD_SOULCOLD,
+	GD_HAWKEYES,
+	GD_BATTLEORDER,
+	GD_REGENERATION,
+	GD_RESTORE,
+	GD_EMERGENCYCALL,
+	GD_DEVELOPMENT,
+};
+
 struct mail {
 	int account_id;
 	int char_id;

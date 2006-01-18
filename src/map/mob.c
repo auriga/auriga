@@ -542,7 +542,7 @@ int mob_target(struct mob_data *md,struct block_list *bl,int dist)
 
 	if(mode&0x20 ||	// MVPMOBなら強制
 	  ((!sc_data || (sc_data[SC_TRICKDEAD].timer == -1 && sc_data[SC_FORCEWALKING].timer == -1 && md->sc_data[SC_WINKCHARM].timer == -1)) &&
-	  ( (option && !(*option&0x06) ) || race==4 || race==6) ) ){
+	  ( (option && !(*option&0x06) ) || race == RCT_INSECT || race == RCT_DEMON) ) ){
 		if(bl->type == BL_PC) {
 			nullpo_retr(0, sd = (struct map_session_data *)bl);
 			if(sd->invincible_timer != -1 || pc_isinvisible(sd))
@@ -618,7 +618,7 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 			tsd->sc_data[SC_FORCEWALKING].timer == -1 &&
 			smd->sc_data[SC_WINKCHARM].timer == -1 &&
 			!tsd->state.gangsterparadise &&
-			(!(pc_ishiding(tsd) && race != 4 && race != 6))) )
+			(!(pc_ishiding(tsd) && race != RCT_INSECT && race != RCT_DEMON))) )
 				active_flag = 1;
 		} else if(tmd && dist<=range) {
 			active_flag = 1;
@@ -769,7 +769,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 			sd->sc_data[SC_FORCEWALKING].timer == -1 &&
 			mmd->sc_data[SC_WINKCHARM].timer == -1 &&
 			!sd->state.gangsterparadise &&
-			(!(pc_ishiding(sd) && race != 4 && race != 6))) ){
+			(!(pc_ishiding(sd) && race != RCT_INSECT && race != RCT_DEMON))) ){
 				md->target_id=sd->bl.id;
 				md->min_chase=5+unit_distance(md->bl.x,md->bl.y,sd->bl.x,sd->bl.y);
 				md->state.master_check = 1;
@@ -785,7 +785,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 			race=mob_db[mmd->class_].race;
 			if(mode&0x20 ||
 				(sd->sc_data[SC_TRICKDEAD].timer == -1 &&
-				(!(sd->status.option&0x06) || race==4 || race==6)
+				(!(sd->status.option&0x06) || race == RCT_INSECT || race == RCT_DEMON)
 				) ){	// 妨害がないか判定
 
 				mmd->target_id=sd->bl.id;
@@ -997,7 +997,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			tsd->sc_data[SC_FORCEWALKING].timer!=-1 ||
 			md->sc_data[SC_WINKCHARM].timer != -1 ||
 			tsd->state.gangsterparadise ||
-			(pc_ishiding(tsd) && race != 4 && race != 6)) ) {
+			(pc_ishiding(tsd) && race != RCT_INSECT && race != RCT_DEMON)) ) {
 				mob_unlocktarget(md,tick);
 		} else if(!battle_check_range(&md->bl,tbl,mob_db[md->class_].range)){
 			// 攻撃範囲外なので移動
@@ -1943,8 +1943,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				if(sd->monster_drop_itemrate[i] <= 0)
 					continue;
 				if(sd->monster_drop_race[i] & (1<<race) ||
-					(mode & 0x20 && sd->monster_drop_race[i] & 1<<10) ||
-					(!(mode & 0x20) && sd->monster_drop_race[i] & 1<<11) ) {
+					(mode & 0x20 && sd->monster_drop_race[i] & 1<<RCT_BOSS) ||
+					(!(mode & 0x20) && sd->monster_drop_race[i] & 1<<RCT_NONBOSS) ) {
 					if(sd->monster_drop_itemrate[i] <= atn_rand()%10000)
 						continue;
 
@@ -2818,7 +2818,7 @@ static int mobskill_anothertarget(struct block_list *bl, va_list ap)
 						md->sc_data[SC_WINKCHARM].timer != -1)
 							return 0;
 					if( !(mode&0x20) ) {
-						if( tsd->state.gangsterparadise || (pc_ishiding(tsd) && race != 4 && race != 6) )
+						if( tsd->state.gangsterparadise || (pc_ishiding(tsd) && race != RCT_INSECT && race != RCT_DEMON) )
 							return 0;
 					}
 				}
@@ -3424,7 +3424,7 @@ static int mob_makedummymobdb(int class_)
 	mob_db[class_].range2=10;
 	mob_db[class_].range3=10;
 	mob_db[class_].size=0;
-	mob_db[class_].race=0;
+	mob_db[class_].race=RCT_FORMLESS;
 	mob_db[class_].element=ELE_NEUTRAL;
 	mob_db[class_].mode=0;
 	mob_db[class_].speed=300;

@@ -83,14 +83,14 @@ int guild_skill_get_max(int id)
 
 int guild_skill_get_lv(struct guild *g,int id)
 {
-	int idx = id-GD_SKILLBASE;
+	int idx = id-GUILD_SKILLID;
 
 	if(g == NULL) return 0;
 
 	if (idx < 0 || idx >= MAX_GUILDSKILL)
 		return 0;
 
-	return g->skill[id-GD_SKILLBASE].lv;
+	return g->skill[id-GUILD_SKILLID].lv;
 }
 
 /*==========================================
@@ -123,7 +123,7 @@ static void guild_read_guildskill_tree_db(void)
 		}
 		if(i<12)
 			continue;
-		id = atoi(split[0]) - GD_SKILLBASE;
+		id = atoi(split[0]) - GUILD_SKILLID;
 		if(id<0 || id>=MAX_GUILDSKILL)
 			continue;
 		guild_skill_tree[id].id=atoi(split[0]);
@@ -142,7 +142,7 @@ static void guild_read_guildskill_tree_db(void)
 int guild_check_skill_require(struct guild *g,int id)
 {
 	int i;
-	int idx = id-GD_SKILLBASE;
+	int idx = id-GUILD_SKILLID;
 
 	if(g == NULL)
 		return 0;
@@ -162,7 +162,7 @@ int guild_check_skill_require(struct guild *g,int id)
 // ギルドスキルがあるか確認
 int guild_checkskill(struct guild *g,int id)
 {
-	int idx = id-GD_SKILLBASE;
+	int idx = id-GUILD_SKILLID;
 
 	if (idx < 0 || idx >= MAX_GUILDSKILL)
 		return 0;
@@ -1253,7 +1253,7 @@ void guild_skillup(struct map_session_data *sd, int skill_num, int flag)
 	if(strcmp(sd->status.name,g->master))
 		return;
 
-	idx = skill_num - GD_SKILLBASE;
+	idx = skill_num - GUILD_SKILLID;
 	if (idx < 0 || idx >= MAX_GUILDSKILL)
 		return;
 
@@ -1279,7 +1279,7 @@ void guild_skillupack(int guild_id, int skill_num, int account_id)
 		return;
 
 	if(sd!=NULL)
-		clif_guild_skillup(sd,skill_num,g->skill[skill_num-GD_SKILLBASE].lv);
+		clif_guild_skillup(sd,skill_num,g->skill[skill_num-GUILD_SKILLID].lv);
 	// 全員に通知
 	for(i=0;i<g->max_member;i++)
 		if((sd=g->member[i].sd)!=NULL)

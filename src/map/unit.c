@@ -1464,7 +1464,7 @@ int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 		if( src_sd->opt1 > 0 || src_sd->status.option&2 || pc_ischasewalk(src_sd) )
 			return 0;
 		// 昆虫・悪魔状態でないならハイド中の敵に攻撃できない
-		if( (opt = status_get_option(target)) != NULL && *opt&0x46 && src_sd->race != 4 && src_sd->race != 6 )
+		if( (opt = status_get_option(target)) != NULL && *opt&0x46 && src_sd->race != RCT_INSECT && src_sd->race != RCT_DEMON )
 			return 0;
 	}
 
@@ -1484,7 +1484,7 @@ int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 			if( tsc_data && (tsc_data[SC_FORCEWALKING].timer != -1 || tsc_data[SC_WINKCHARM].timer != -1) )
 				return 0;
 			if( target_sd ) {
-				if( pc_ishiding(target_sd) && race != 4 && race != 6 )
+				if( pc_ishiding(target_sd) && race != RCT_INSECT && race != RCT_DEMON )
 					return 0;
 				if( target_sd->state.gangsterparadise )
 					return 0;

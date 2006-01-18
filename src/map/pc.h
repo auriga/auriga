@@ -9,40 +9,6 @@
 
 #define MAX_SKILL_TREE 100
 
-// status.weaponおよびweapontype1, weapontype2用の武器タイプ定義
-enum {
-	WT_FIST     = 0,
-	WT_DAGGER,
-	WT_1HSWORD,
-	WT_2HSWORD,
-	WT_1HSPEAR,
-	WT_2HSPEAR,
-	WT_1HAXE,
-	WT_2HAXE,
-	WT_MACE,
-	WT_2HMACE,		// 未使用
-	WT_STAFF,
-	WT_BOW,
-	WT_KNUCKLE,
-	WT_MUSICAL,
-	WT_WHIP,
-	WT_BOOK,
-	WT_KATAR,
-	WT_HANDGUN,
-	WT_RIFLE,
-	WT_SHOTGUN,
-	WT_GATLING,
-	WT_GRENADE,
-	WT_HUUMA,
-	WT_DOUBLE_DD = 23,	// 短剣+短剣
-	WT_DOUBLE_SS,		// 片手剣+片手剣
-	WT_DOUBLE_AA,		// 片手斧+片手斧
-	WT_DOUBLE_DS,		// 短剣+片手剣
-	WT_DOUBLE_DA,		// 短剣+片手斧
-	WT_DOUBLE_SA,		// 片手剣+片手斧
-	WT_MAX,			// 最大値
-};
-
 #define pc_setdead(sd) ((sd)->state.dead_sit = 1)
 #define pc_setsit(sd) ((sd)->state.dead_sit = 2)
 //#define pc_setstand(sd) ((sd)->state.dead_sit = 0)

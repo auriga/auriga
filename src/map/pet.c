@@ -135,7 +135,7 @@ int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
 			if(pd->bl.m != md->bl.m || md->bl.prev == NULL ||
 				unit_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13)
 				return 0;
-			if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race!=4 && race!=6) )
+			if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race != RCT_INSECT && race != RCT_DEMON) )
 				return 0;
 		}
 		if(!type) {
@@ -865,7 +865,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			if(md == NULL || pd->bl.m != md->bl.m || md->bl.prev == NULL ||
 				unit_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13)
 				pet_unlocktarget(pd);
-			else if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race!=4 && race!=6) )
+			else if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race != RCT_INSECT && race != RCT_DEMON) )
 				pet_unlocktarget(pd);
 			else if(!battle_check_range(&pd->bl,&md->bl,mob_db[pd->class_].range)){
 				if(pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,md->bl.x,md->bl.y) < 2)

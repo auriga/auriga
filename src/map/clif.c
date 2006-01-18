@@ -10002,7 +10002,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 	}
 	// end decode
 
-	if (skillnum >= GD_SKILLBASE) {
+	if (skillnum >= GUILD_SKILLID) {
 		//ギルドスキルはギルマスのみ
 		if (sd != guild_get_guildmaster_sd(guild_search(sd->status.guild_id)))
 			return;
@@ -10070,7 +10070,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 	if((option = status_get_option(bl)) != NULL && *option&0x4006 && ((&sd->bl)!=bl))
 	{
 		//昆虫と悪魔は攻撃可能？
-		if(sd->race!=4 && sd->race!=6)
+		if(sd->race != RCT_INSECT && sd->race != RCT_DEMON)
 			return;
 	}
 

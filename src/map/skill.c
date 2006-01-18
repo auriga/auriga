@@ -332,7 +332,7 @@ int SkillStatusChangeTable[]={	/* skill.hのenumのSC_***とあわせること *
 	-1,-1,-1,-1,-1,-1,-1,-1,
 };
 
-/* (スキル番号 - GD_SKILLBASE)＝＞ステータス異常番号変換テーブル */
+/* (スキル番号 - HOM_SKILLID)＝＞ステータス異常番号変換テーブル */
 /* */
 int HomSkillStatusChangeTable[]={	/* skill.hのenumのSC_***とあわせること */
 /* 0- */
@@ -341,7 +341,7 @@ int HomSkillStatusChangeTable[]={	/* skill.hのenumのSC_***とあわせるこ�
 	SC_SPEED,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 };
 
-/* (スキル番号 - GD_SKILLBASE)＝＞ステータス異常番号変換テーブル */
+/* (スキル番号 - GUILD_SKILLID)＝＞ステータス異常番号変換テーブル */
 /* */
 int GuildSkillStatusChangeTable[]={	/* skill.hのenumのSC_***とあわせること */
 /* 0- */
@@ -409,22 +409,22 @@ struct skill_unit_layout *skill_get_unit_layout(int skillid,int skilllv,struct b
 */
 int skill_get_skilldb_id(int id)
 {
-	if(id>=GD_SKILLBASE)
-		id = id -GD_SKILLBASE + MAX_HOMSKILL_DB + MAX_SKILL_DB;
-	if(id >= HM_SKILLBASE)
-		id = id -HM_SKILLBASE + MAX_SKILL_DB;
+	if(id>=GUILD_SKILLID)
+		id = id - GUILD_SKILLID + MAX_HOMSKILL_DB + MAX_SKILL_DB;
+	if(id >= HOM_SKILLID)
+		id = id - HOM_SKILLID + MAX_SKILL_DB;
 	return id;
 }
 
 int GetSkillStatusChangeTable(int id)
 {
-	if(id < HM_SKILLBASE)
+	if(id < HOM_SKILLID)
 		return SkillStatusChangeTable[id];
 
-	if(id < GD_SKILLBASE)
-		return HomSkillStatusChangeTable[id - HM_SKILLBASE];
+	if(id < GUILD_SKILLID)
+		return HomSkillStatusChangeTable[id - HOM_SKILLID];
 
-	return 	GuildSkillStatusChangeTable[id - GD_SKILLBASE];
+	return 	GuildSkillStatusChangeTable[id - GUILD_SKILLID];
 }
 int skill_get_hit(int id)
 {
@@ -808,7 +808,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 
 	case HT_FLASHER:	/* フラッシャー */
-		if( !(status_get_mode(bl)&0x20) && status_get_race(bl) != 3 ) {	//ボスと植物無効
+		if( !(status_get_mode(bl)&0x20) && status_get_race(bl) != RCT_PLANT ) {	//ボスと植物無効
 			if (atn_rand()%100 < (10*skilllv+30)*sc_def_int/100)
 				status_change_start(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		}
@@ -883,7 +883,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case NPC_DARKGRANDCROSS:	/*闇グランドクロス*/
 		{
 			int race = status_get_race(bl);
-			if( (battle_check_undead(race,status_get_elem_type(bl)) || race == 6) && atn_rand()%100 < 100000*sc_def_int/100)	//強制付与だが完全耐性には無効
+			if( (battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON) && atn_rand()%100 < 100000*sc_def_int/100)	//強制付与だが完全耐性には無効
 				status_change_start(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		}
 		break;
@@ -977,7 +977,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case LK_HEADCRUSH:				/* ヘッドクラッシュ */
 		{
 			int race=status_get_race(bl);
-			if( !battle_check_undead(race,status_get_elem_type(bl)) && race != 6 && atn_rand()%100 < sc_def_vit/2 )
+			if( !battle_check_undead(race,status_get_elem_type(bl)) && race != RCT_DEMON && atn_rand()%100 < sc_def_vit/2 )
 				status_change_start(bl,SC_BLEED,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		}
 		break;
@@ -1110,7 +1110,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case GS_PIERCINGSHOT:	/* ピアーシングショット */
 		{
 			int race=status_get_race(bl);
-			if( !(battle_check_undead(race,status_get_elem_type(bl)) || race == 6) && atn_rand()%100 < (2*skilllv+10)*sc_def_vit/100 )
+			if( !(battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON) && atn_rand()%100 < (2*skilllv+10)*sc_def_vit/100 )
 				status_change_start(bl,SC_BLEED,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		}
 		break;
@@ -1150,7 +1150,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case NJ_KASUMIKIRI:		/* 霞斬り */
 		status_change_start(src,SC_HIDING,skilllv,0,1,0,skill_get_time2(skillid,skilllv),0);
 		break;
-	case NJ_HYOUSYOURAKU:		/* 氷晶落 */
+	case NJ_HYOUSYOURAKU:		/* 氷柱落し */
 		rate = (skilllv*5+10)*sc_def_mdef/100-(status_get_int(bl)+status_get_luk(bl))/15;
 		if (rate <= 5)
 			rate = 5;
@@ -1265,7 +1265,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		}
 
 		//殴ってmob変化
-		if(sd && dstmd && mob_db[dstmd->class_].race != 7 && !map[dstmd->bl.m].flag.nobranch
+		if(sd && dstmd && mob_db[dstmd->class_].race != RCT_HUMAN && !map[dstmd->bl.m].flag.nobranch
 			&& !(mob_db[dstmd->class_].mode&0x20) && dstmd->class_ != 1288 && dstmd->state.special_mob_ai != 1)
 		{
 			if(atn_rand()%10000 < sd->mob_class_change_rate)
@@ -1961,7 +1961,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case GS_PIERCINGSHOT:	/* ピアーシングショット */
 	case GS_FULLBUSTER:		/* フルバスター */
 	case NJ_SYURIKEN:		/* 手裏剣投げ */
-	case NJ_KUNAI:			/* クナイ投げ */
+	case NJ_KUNAI:			/* 苦無投げ */
 	case NJ_ZENYNAGE:		/* 銭投げ */
 	case NJ_KASUMIKIRI:		/* 霞斬り */
 	case HFLI_MOON:
@@ -2194,7 +2194,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case GS_BULLSEYE:		/* ブルズアイ */
 		{
 			int race = status_get_race(bl);
-			if (race!=2 && race!=7){
+			if (race != RCT_BRUTE && race != RCT_HUMAN){
 				if(sd)
 					clif_skill_fail(sd,skillid,0,0);
 				break;
@@ -2202,7 +2202,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		}
 		break;
-	case NJ_KIRIKAGE:		/* 斬影 */
+	case NJ_KIRIKAGE:		/* 影斬り */
 		{
 			int dist = unit_distance(src->x,src->y,bl->x,bl->y);
 			if(sd && ((pc_checkskill(sd,NJ_SHADOWJUMP)+4) >= dist)) {
@@ -2601,7 +2601,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case PR_BENEDICTIO:			/* 聖体降福 */
 		{
 			int race=status_get_race(bl);
-			if(battle_check_undead(race,status_get_elem_type(bl)) || race == 6)
+			if(battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON)
 				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
 		}
 		break;
@@ -2621,7 +2621,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case WZ_SIGHTRASHER:		/* サイトラッシャー */
 	case WZ_FROSTNOVA:			/* フロストノヴァ */
 	case HW_NAPALMVULCAN:		/* ナパームバルカン */
-	case NJ_HYOUSYOURAKU:		/* 氷晶落 */
+	case NJ_HYOUSYOURAKU:		/* 氷柱落し */
 	case NJ_RAIGEKISAI:			/* 雷撃砕 */
 		if (flag&1) {
 			/* 個別にダメージを与える */
@@ -2663,7 +2663,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					skill_area_temp[3]=bl->y;
 					bl = src;
 					break;
-				case NJ_HYOUSYOURAKU:		/* 氷晶落 */
+				case NJ_HYOUSYOURAKU:		/* 氷柱落し */
 					ar = 7;
 					skill_area_temp[2]=bl->x;
 					skill_area_temp[3]=bl->y;
@@ -2695,7 +2695,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					skill_castend_damage_id);
 		}
 		break;
-	case NJ_KAMAITACHI:			/* カマイタチ */
+	case NJ_KAMAITACHI:			/* 朔風 */
 		if(flag&1){
 			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,(skill_area_temp[1] == 0 ? 0 : 0x0500));
 			skill_area_temp[1]++;
@@ -2834,11 +2834,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		bl=src;
 		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
 		break;
-	case NJ_BAKUENRYU:	/*爆炎龍*/
+	case NJ_BAKUENRYU:	/* 龍炎陣 */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
 		break;
-	case GS_DESPERADO:	/*デスペラード*/
+	case GS_DESPERADO:	/* デスペラード */
 		{
 			int tmpx, tmpy, i, num;
 			bl = src;
@@ -3126,7 +3126,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(flag&1) {
 			int race = status_get_race(bl);
 			int ele = status_get_elem_type(bl);
-			if(race == 6 || battle_check_undead(race,ele)) {
+			if(race == RCT_DEMON || battle_check_undead(race,ele)) {
 				int rate = 23 + skilllv*4 + status_get_lv(src) - status_get_lv(bl);
 				if(atn_rand()%100 < rate)
 					status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,0,0);
@@ -3326,7 +3326,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if( dstsd && dstsd->special_state.no_magic_damage ){
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}else{
-			if(status_get_elem_type(bl) == ELE_DARK || status_get_race(bl) == 6)
+			if(status_get_elem_type(bl) == ELE_DARK || status_get_race(bl) == RCT_DEMON)
 				break;
 			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -3349,7 +3349,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 		} else if(dstmd) {
 			int race = status_get_race(bl);
-			if( !(dstmd->mode&0x20) && (race == 6 || race == 7 || race == 8) && atn_rand()%10000 < 7000)
+			if( !(dstmd->mode&0x20) && (race == RCT_DEMON || race == RCT_HUMAN || race == RCT_ANGEL) && atn_rand()%10000 < 7000)
 			{
 				status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,10000,0);
 				break;
@@ -4801,7 +4801,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			if(dstsd && dstsd->special_state.no_magic_damage )
 				break;
-			if(status_get_elem_type(bl) == ELE_DARK || status_get_race(bl) == 6)
+			if(status_get_elem_type(bl) == ELE_DARK || status_get_race(bl) == RCT_DEMON)
 				break;
 			if(atn_rand()%100 < sc_def*(50+skilllv*5)/100) {
 				if(dstsd) {
@@ -5495,7 +5495,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(hd && hd->msd && !unit_isdead(&hd->msd->bl))
 			{
 				clif_skill_nodamage(src,&hd->msd->bl,skillid,skilllv,1);
-				status_change_start(&hd->msd->bl,HomSkillStatusChangeTable[skillid - HM_SKILLBASE],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+				status_change_start(&hd->msd->bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 			}
 		}
 	case HAMI_BLOODLUST://#ブラッドラスト#
@@ -5505,7 +5505,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(hd)
 			{
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				status_change_start(bl,HomSkillStatusChangeTable[skillid - HM_SKILLBASE],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+				status_change_start(bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 				hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 			}
 		}
@@ -5515,7 +5515,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(hd)
 			{
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				status_change_start(bl,HomSkillStatusChangeTable[skillid - HM_SKILLBASE],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+				status_change_start(bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 				homun_heal(hd,hd->max_hp,0);
 				hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 			}
@@ -5813,7 +5813,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case PF_FOGWALL:			/* フォグウォール */
 	case HT_TALKIEBOX:			/* トーキーボックス */
 	case NJ_TATAMIGAESHI:		/* 畳返し */
-	case NJ_BAKUENRYU:			/* 爆炎龍*/
+	case NJ_BAKUENRYU:			/* 龍炎陣 */
 		skill_unitsetting(src,skillid,skilllv,x,y,0);
 		break;
 	case HW_GRAVITATION:		//グラビテーションフィールド
@@ -5986,7 +5986,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			}
 		}
 		break;
-	case NJ_SHADOWJUMP://影跳躍
+	case NJ_SHADOWJUMP:	// 影跳び
 		{
 			struct status_change *sc_data = status_get_sc_data(src);
 			if(!sc_data || sc_data[SC_ANKLE].timer==-1) {
@@ -6677,36 +6677,36 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 		break;
 	case UNT_SANCTUARY:	/* サンクチュアリ */
 	{
-		int race=status_get_race(bl);
-		sc_data=status_get_sc_data(bl);
+		int race = status_get_race(bl);
+		sc_data = status_get_sc_data(bl);
 
-		if (battle_check_undead(race,status_get_elem_type(bl)) || race==6) {
-			if (bl->type==BL_PC)
+		if (battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON) {
+			if (bl->type == BL_PC)
 				if(!(map[bl->m].flag.pvp || map[bl->m].flag.gvg))
 				break;
 			if (battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0))
-				sg->val1=sg->val1-2;	// チャットキャンセルに対応
+				sg->val1 = sg->val1-2;	// チャットキャンセルに対応
 		} else {
 			int heal = sg->val2;
-			if (status_get_hp(bl)>=status_get_max_hp(bl))
+			if (status_get_hp(bl) >= status_get_max_hp(bl))
 				break;
-			if(bl->type==BL_PC && ((struct map_session_data *)bl)->special_state.no_magic_damage)
-				heal=0;	/* 黄金蟲カード（ヒール量０） */
-			if(sc_data && sc_data[SC_BERSERK].timer!=-1) /* バーサーク中はヒール０ */
-				heal=0;
+			if(bl->type == BL_PC && ((struct map_session_data *)bl)->special_state.no_magic_damage)
+				heal = 0;	/* 黄金蟲カード（ヒール量０） */
+			if(sc_data && sc_data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
+				heal = 0;
 			clif_skill_nodamage(&src->bl,bl,AL_HEAL,heal,1);
 			battle_heal(NULL,bl,heal,0,0);
-			if (diff>=500)
+			if (diff >= 500)
 				sg->val1--;	// 新規に入ったユニットだけカウント
 		}
-		if (sg->val1<=0)
+		if (sg->val1 <= 0)
 			skill_delunitgroup(sg);
 		break;
 	}
 	case UNT_MAGNUS:	/* マグヌスエクソシズム */
 	{
 		int race = status_get_race(bl);
-		if (!battle_check_undead(race,status_get_elem_type(bl)) && race!=6)
+		if (!battle_check_undead(race,status_get_elem_type(bl)) && race != RCT_DEMON)
 			return 0;
 		battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 		src->val2++;
@@ -7714,7 +7714,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 	}
 
 	// GVGギルドスキル
-	if(sc->id >= GD_SKILLBASE)
+	if(sc->id >= GUILD_SKILLID)
 	{
 		if( !sd ) return 0;
 		switch(sc->id){
@@ -7796,7 +7796,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 	case HT_POWER:		/* ビーストストレイピング */
 		if(sc_data && sc_data[SC_HUNTER].timer != -1 && sc_data[SC_DOUBLE].timer != -1) {
 			int race = status_get_race(target);
-			if(race == 2 || race == 4)
+			if(race == RCT_BRUTE || race == RCT_INSECT)
 				break;
 		}
 		if(sd)
@@ -11429,9 +11429,8 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 //オートスペル
 int skill_use_bonus_autospell(struct block_list * src,struct block_list * bl,int skill_id,int skill_lv,int rate,long skill_flag,int tick,int flag)
 {
-	int t_race = 7, t_ele = 0;
-	int skillid	=skill_id;
-	int skilllv	=skill_lv;
+	int skillid = skill_id;
+	int skilllv = skill_lv;
 	long asflag = skill_flag;
 	struct block_list *spell_target;
 	int f=0,sp = 0;
@@ -11478,9 +11477,6 @@ int skill_use_bonus_autospell(struct block_list * src,struct block_list * bl,int
 	}else
 		spell_target = (struct block_list *)bl;//相手
 
-	t_race = status_get_race(spell_target);
-	t_ele  = status_get_element(spell_target);
-
 	//レベル調整
 	if(battle_config.allow_cloneskill_at_autospell)
 	{
@@ -11526,6 +11522,8 @@ int skill_use_bonus_autospell(struct block_list * src,struct block_list * bl,int
 	else if(skill_get_inf(skillid) == 2 || skill_get_inf(skillid) == 32) //場所と罠(設置系スキル)
 		f = skill_castend_pos2(&sd->bl,spell_target->x,spell_target->y,skillid,skilllv,tick,flag);
 	else {
+		int t_race = status_get_race(spell_target);
+		int t_ele  = status_get_element(spell_target);
 		switch( skill_get_nk(skillid)&3 ) {
 			case 0://通常
 			case 2://吹き飛ばし
@@ -11539,7 +11537,8 @@ int skill_use_bonus_autospell(struct block_list * src,struct block_list * bl,int
 				break;
 		}
 	}
-	if(!f) pc_heal(sd,0,-sp);
+	if(!f)
+		pc_heal(sd,0,-sp);
 	return 1;//成功
 }
 
@@ -12216,7 +12215,7 @@ int skill_readdb(void)
 				continue;
 
 			i=atoi(split[0]);
-			if(! ( (0<=i && i<=MAX_SKILL_DB) ||  (HM_SKILLBASE <= i && i<= (HM_SKILLBASE+MAX_HOMSKILL_DB)) || (GD_SKILLBASE <= i && i<= (GD_SKILLBASE+MAX_GUILDSKILL_DB)) ))
+			if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
 				continue;
 
 			i = skill_get_skilldb_id(i);
@@ -12268,7 +12267,7 @@ int skill_readdb(void)
 
 		i=atoi(split[0]);
 
-		if(! ( (0<=i && i<=MAX_SKILL_DB) ||  (HM_SKILLBASE <= i && i<= (HM_SKILLBASE+MAX_HOMSKILL_DB)) || (GD_SKILLBASE <= i && i<= (GD_SKILLBASE+MAX_GUILDSKILL_DB)) ))
+		if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
 			continue;
 		i = skill_get_skilldb_id(i);
 		skill_db[i].cloneable=atoi(split[1]);
@@ -12300,7 +12299,7 @@ int skill_readdb(void)
 				continue;
 
 			i=atoi(split[0]);
-			if(! ( (0<=i && i<=MAX_SKILL_DB) ||  (HM_SKILLBASE <= i && i<= (HM_SKILLBASE+MAX_HOMSKILL_DB)) || (GD_SKILLBASE <= i && i<= (GD_SKILLBASE+MAX_GUILDSKILL_DB)) ))
+			if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
 				continue;
 
 			i = skill_get_skilldb_id(i);
@@ -12384,7 +12383,7 @@ int skill_readdb(void)
 			continue;
 
 		i=atoi(split[0]);
-		if(! ( (0<=i && i<=MAX_SKILL_DB) ||  (HM_SKILLBASE <= i && i<= (HM_SKILLBASE+MAX_HOMSKILL_DB)) || (GD_SKILLBASE <= i && i<= (GD_SKILLBASE+MAX_GUILDSKILL_DB)) ))
+		if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
 			continue;
 
 		i = skill_get_skilldb_id(i);
@@ -12416,7 +12415,7 @@ int skill_readdb(void)
 				continue;
 
 			i=atoi(split[0]);
-			if(! ( (0<=i && i<=MAX_SKILL_DB) ||  (HM_SKILLBASE <= i && i<= (HM_SKILLBASE+MAX_HOMSKILL_DB)) || (GD_SKILLBASE <= i && i<= (GD_SKILLBASE+MAX_GUILDSKILL_DB)) ))
+			if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
 				continue;
 
 			i = skill_get_skilldb_id(i);
@@ -12448,7 +12447,7 @@ int skill_readdb(void)
 			continue;
 
 		i=atoi(split[0]);
-		if(! ( (0<=i && i<=MAX_SKILL_DB) ||  (HM_SKILLBASE <= i && i<= (HM_SKILLBASE+MAX_HOMSKILL_DB)) || (GD_SKILLBASE <= i && i<= (GD_SKILLBASE+MAX_GUILDSKILL_DB)) ))
+		if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
 			continue;
 
 		i = skill_get_skilldb_id(i);

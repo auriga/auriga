@@ -1,4 +1,27 @@
 ----------------------------------------
+//061 [2006/01/19] by Rayce
+
+・種族を示す定数を RCT_*** として定義（map.h）
+　種極に関連する値を気付いた範囲で置き換え
+	eAと同じく RC_*** にしても良かったんですが、ユニークなものにし易いよう3文字（RaCeType）にしました。
+	また人間は DEMIHUMAN ではなく単に HUMAN にしています。
+・bWeaponAtk, bWeaponAtkRateに銃、手裏剣、両手武器が指定できるように拡張（map.h, pc.h）
+　元々は指貫用として実装されてたみたいだけど使われてない？
+　WT_*** のenumをpc.hからmap.hへ移動
+
+・battle_calc_magic_attack() と battle_calc_misc_attack() を battle_calc_weapon_attack() と同様の書式に統一（battle.c）
+	Damage構造体のポインタ *md は mob_data と混同しやすいので別の名前に変更しています
+
+・doc/item_bonus.txtに bCriticalRaceRate の説明が欠けてたので追記
+・ガンスリンガーと忍者のスキル名をjROの呼び名に統一
+
+・HOM_SKILLID と HM_SKILLBASE は同じなので、全て HOM_SKILLID に統一して HM_SKILLBASE を削除（skill.c, skill.h）
+・int_guild.cが GD_SKILLBASE を参照するために skill.h をincludeするという悲惨な状態だったので
+　mmo.hに GUILD_SKILLID を定義、さらにギルドスキルのenumはmmo.hに移動
+　（mmo.h, int_guild.c, clif.c, guild.c, skill.c, skill.h）
+	guild_checkskill() でギルド拡張以外のギルドスキルも参照できる可能性を作るための処置です
+
+----------------------------------------
 //060 [2006/01/18] by Rayce
 
 ・mmo_auth() で認証OKだった場合は100ではなく-1を返すように変更（login.c）

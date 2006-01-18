@@ -81,6 +81,22 @@ enum {
 enum { WARP, SHOP, SCRIPT, MONS };
 
 enum {
+	RCT_FORMLESS = 0,
+	RCT_UNDEAD,
+	RCT_BRUTE,
+	RCT_PLANT,
+	RCT_INSECT,
+	RCT_FISH,
+	RCT_DEMON,
+	RCT_HUMAN,
+	RCT_ANGEL,
+	RCT_DRAGON,
+	RCT_BOSS,
+	RCT_NONBOSS,
+	RCT_MAX,
+};
+
+enum {
 	ELE_NONE = -1,
 	ELE_NEUTRAL = 0,
 	ELE_WATER,
@@ -92,7 +108,41 @@ enum {
 	ELE_DARK,
 	ELE_GHOST,
 	ELE_UNDEAD,
-	ELE_MAX
+	ELE_MAX,
+};
+
+// status.weaponおよびweapontype1, weapontype2用の武器タイプ定義
+enum {
+	WT_FIST     = 0,
+	WT_DAGGER,
+	WT_1HSWORD,
+	WT_2HSWORD,
+	WT_1HSPEAR,
+	WT_2HSPEAR,
+	WT_1HAXE,
+	WT_2HAXE,
+	WT_MACE,
+	WT_2HMACE,		// 未使用
+	WT_STAFF,
+	WT_BOW,
+	WT_KNUCKLE,
+	WT_MUSICAL,
+	WT_WHIP,
+	WT_BOOK,
+	WT_KATAR,
+	WT_HANDGUN,
+	WT_RIFLE,
+	WT_SHOTGUN,
+	WT_GATLING,
+	WT_GRENADE,
+	WT_HUUMA,
+	WT_DOUBLE_DD = 23,	// 短剣+短剣
+	WT_DOUBLE_SS,		// 片手剣+片手剣
+	WT_DOUBLE_AA,		// 片手斧+片手斧
+	WT_DOUBLE_DS,		// 短剣+片手剣
+	WT_DOUBLE_DA,		// 短剣+片手斧
+	WT_DOUBLE_SA,		// 片手剣+片手斧
+	WT_MAX,			// 最大値
 };
 
 struct block_list {
@@ -330,23 +380,23 @@ struct map_session_data {
 	int def,def2,mdef,mdef2,critical,matk1,matk2;
 	int atk_ele,def_ele,star,overrefine;
 	int castrate,hprate,sprate,dsprate;
-	int addele[ELE_MAX],addrace[12],addenemy[4],addsize[3];
-	int subele[ELE_MAX],subrace[12],subenemy[4],subsize[3];
+	int addele[ELE_MAX],addrace[RCT_MAX],addenemy[4],addsize[3];
+	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[4],subsize[3];
 	int addeff[10],addeff2[10],reseff[10],addeff_range_flag[10];
-	int watk_,watk_2,atkmods_[3],addele_[ELE_MAX],addrace_[12],addenemy_[4],addsize_[3];	//二刀流のために追加
+	int watk_,watk_2,atkmods_[3],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[4],addsize_[3];	//二刀流のために追加
 	int atk_ele_,star_,overrefine_;				//二刀流のために追加
 	int base_atk,atk_rate;
-	int weapon_atk[16],weapon_atk_rate[16];	//指貫
+	int weapon_atk[WT_MAX],weapon_atk_rate[WT_MAX];	//指貫
 	int arrow_atk,arrow_ele,arrow_cri,arrow_hit,arrow_range;
-	int arrow_addele[ELE_MAX],arrow_addrace[12],arrow_addenemy[4],arrow_addsize[3],arrow_addeff[10],arrow_addeff2[10];
+	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[4],arrow_addsize[3],arrow_addeff[10],arrow_addeff2[10];
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
 	int aspd_rate,speed_rate,hprecov_rate,sprecov_rate,critical_def,double_rate;
 	int near_attack_def_rate,long_attack_def_rate,magic_def_rate,misc_def_rate,matk_rate;
 	int ignore_def_ele,ignore_def_race,ignore_def_enemy;
 	int ignore_def_ele_,ignore_def_race_,ignore_def_enemy_;
 	int ignore_mdef_ele,ignore_mdef_race,ignore_mdef_enemy;
-	int magic_addele[ELE_MAX],magic_addrace[12],magic_addenemy[4];
-	int magic_subrace[12],magic_subsize[3];
+	int magic_addele[ELE_MAX],magic_addrace[RCT_MAX],magic_addenemy[4];
+	int magic_subrace[RCT_MAX],magic_subsize[3];
 	int perfect_hit,get_zeny_num,get_zeny_num2;
 	int critical_rate,hit_rate,flee_rate,flee2_rate,def_rate,def2_rate,mdef_rate,mdef2_rate;
 	int def_ratio_atk_ele,def_ratio_atk_race,def_ratio_atk_enemy;
@@ -368,8 +418,8 @@ struct map_session_data {
 	short hp_drain_rate_,hp_drain_per_,sp_drain_rate_,sp_drain_per_;
 	short hp_drain_value,sp_drain_value,hp_drain_value_,sp_drain_value_;
 	int short_weapon_damage_return,long_weapon_damage_return,magic_damage_return;
-	int weapon_coma_ele[ELE_MAX],weapon_coma_race[12];
-	int weapon_coma_ele2[ELE_MAX],weapon_coma_race2[12];
+	int weapon_coma_ele[ELE_MAX],weapon_coma_race[RCT_MAX];
+	int weapon_coma_ele2[ELE_MAX],weapon_coma_race2[RCT_MAX];
 	short break_weapon_rate,break_armor_rate;
 	short add_steal_rate;
 	//新カード用

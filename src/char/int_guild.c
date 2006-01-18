@@ -17,7 +17,6 @@
 #include "inter.h"
 #include "int_guild.h"
 #include "int_storage.h"
-#include "../map/skill.h"
 
 static int guild_exp[MAX_GUILDLEVEL];
 
@@ -287,7 +286,7 @@ int guild_fromstr(char *str,struct guild *g)
 	
 	//新ギルドスキルへ移行
 	for(i=0;i<MAX_GUILDSKILL;i++)
-		g->skill[i].id=GD_SKILLBASE+i;
+		g->skill[i].id=GUILD_SKILLID+i;
 	
 	str=strchr(str+1,'\t');
 //	printf("GuildSkillInfo OK\n");
@@ -1171,7 +1170,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 		
 		//移行用
 		for(i = 0; i< MAX_GUILDSKILL;i++)
-			g->skill[i].id=GD_SKILLBASE+i;
+			g->skill[i].id=GUILD_SKILLID+i;
 	}
 	mysql_free_result(sql_res);
 	// printf("skill ");
@@ -1660,7 +1659,7 @@ int guild_nextexp(int level)
 // ギルドスキルがあるか確認
 int guild_checkskill(const struct guild *g,int id)
 {
-	int idx = id - GD_SKILLBASE;
+	int idx = id - GUILD_SKILLID;
 
 	if (idx < 0 || idx >= MAX_GUILDSKILL)
 		return 0;
@@ -1675,7 +1674,7 @@ int guild_calcinfo(struct guild *g)
 
 	// スキルIDの設定
 	for(i=0;i<5;i++)
-		g->skill[i].id=i+GD_SKILLBASE;
+		g->skill[i].id=i+GUILD_SKILLID;
 
 	// ギルドレベル
 	if(g->guild_lv <= 0)
@@ -2006,7 +2005,7 @@ int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member
 	g.average_lv = master->lv;
 	g.guild_lv   = 1;
 	for(i=0;i<MAX_GUILDSKILL;i++)
-		g.skill[i].id=i+GD_SKILLBASE;
+		g.skill[i].id=i+GUILD_SKILLID;
 	
 	guild_new(&g);
 
@@ -2269,7 +2268,7 @@ int mapif_parse_GuildSkillUp(int fd,int guild_id,int skill_num,int account_id,in
 {
 	const struct guild *g1 = guild_load_num(guild_id);
 	struct guild g2;
-	int idx = skill_num - GD_SKILLBASE;
+	int idx = skill_num - GUILD_SKILLID;
 	if (g1 == NULL || idx < 0 || idx >= MAX_GUILDSKILL)
 		return 0;
 	memcpy(&g2,g1,sizeof(struct guild));
