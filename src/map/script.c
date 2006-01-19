@@ -905,17 +905,25 @@ unsigned char* parse_syntax(unsigned char *p) {
 				if(p == p2) {
 					disp_error_message("expect space ' '",p);
 				}
+				p2 = p;
 
 				// caseラベルが数値型定数であるかチェック
 				v = strtol(p,&np,0);
-				if((unsigned char *)np == p) {
-					disp_error_message("'case' label not integer",p);
-				}
 				if((*p == '-' || *p == '+') && isdigit(p[1]))	// '-' はskip_word出来ないのであらかじめskipしておく
 					p++;
 				p = skip_word(p);
-				if((unsigned char *)np != p) {
-					disp_error_message("'case' label not integer",(unsigned char *)np);
+				if((unsigned char *)np == p2 || (unsigned char *)np != p) {	// 数値ではないようなので定数として検索してみる
+					int i;
+					unsigned char c = *p;
+
+					*p = 0;
+					i = search_str(p2);
+					*p = c;
+					if(i >= 0 && str_data[i].type == C_INT) {
+						v = str_data[i].val;
+					} else {
+						disp_error_message("'case' label not integer",p2);
+					}
 				}
 				p = skip_space(p);
 				if(*p != ':') {
