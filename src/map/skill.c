@@ -29,6 +29,7 @@
 #include "unit.h"
 #include "homun.h"
 #include "atcommand.h"
+#include "ranking.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

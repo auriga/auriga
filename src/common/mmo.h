@@ -60,6 +60,9 @@
 
 #define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
 
+#define MAX_RANKING 4	//ランキング数
+#define MAX_RANKER  10	//ランキング人数
+
 #define GRF_PATH_FILENAME "conf/grf-files.txt"
 
 // ブロックID定義
@@ -345,6 +348,13 @@ struct mail_data {
 	unsigned int body_size;
 	int zeny;
 	struct item item;
+};
+
+struct Ranking_Data
+{
+	char name[24];
+	int point;
+	int char_id;
 };
 
 #pragma pack()

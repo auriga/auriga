@@ -107,8 +107,7 @@ void read_gm_account() {
 int login_convert(void)
 {
 	char tmpsql[1024];
-	MYSQL_RES* sql_res ;
-	MYSQL_ROW  sql_row ;
+	MYSQL_RES* sql_res;
 	FILE *fp;
 	int account_id, logincount, user_level, state, n, n2, i, j, val;
 	char line[2048], userid[2048], pass[2048], lastlogin[2048], sex, str[64];
@@ -170,7 +169,7 @@ int login_convert(void)
 			if(strcmp(lastlogin,"-") == 0)
 				strcpy(lastlogin,"0000-00-00 00:00:00");
 
-			sprintf(tmpsql, "SELECT `%s`,`%s`,`%s`,`lastlogin`,`logincount`,`sex`,`connect_until`,`last_ip`,`ban_until`,`state`"
+			sprintf(tmpsql, "SELECT `%s`,`%s`,`%s`,`lastlogin`,`logincount`,`sex`,`last_ip`,`state`"
 				        " FROM `%s` WHERE `%s`='%d'",
 				login_db_account_id, login_db_userid, login_db_user_pass,
 				login_db, login_db_account_id, account_id);
@@ -179,19 +178,18 @@ int login_convert(void)
 			}
 
 			sql_res = mysql_store_result(&mysql_handle);
-			sql_row = mysql_fetch_row(sql_res);	//row fetching
 
-			if (!sql_row) //no row -> insert
-				sprintf(tmpsql, "INSERT INTO `%s` (`%s`, `%s`, `%s`, `lastlogin`, `sex`, `logincount`, `email`, `%s`)"
-				                " VALUES ('%d', '%s', '%s', '%s', '%c', '%d', '%s', '%d');",
-				login_db, login_db_account_id, login_db_userid, login_db_user_pass, login_db_level,
-				account_id , userid, pass, lastlogin, sex, logincount, email, user_level);
-			else //row reside -> updating
+			if (sql_res && mysql_num_rows(sql_res) > 0)	//row reside -> updating
 				sprintf(tmpsql, "UPDATE `%s` SET `%s`='%d', `%s`='%s', `%s`='%s', `lastlogin`='%s',"
 				                " `sex`='%c', `logincount`='%d', `email`='%s', `%s`='%d'\nWHERE `account_id`='%d';",
 				login_db, login_db_account_id, account_id , login_db_userid, userid, login_db_user_pass, pass, lastlogin,
 				sex, logincount, email, login_db_level, user_level, account_id);
-			mysql_free_result(sql_res) ; //resource free
+			else	//no row -> insert
+				sprintf(tmpsql, "INSERT INTO `%s` (`%s`, `%s`, `%s`, `lastlogin`, `sex`, `logincount`, `email`, `%s`)"
+				                " VALUES ('%d', '%s', '%s', '%s', '%c', '%d', '%s', '%d');",
+				login_db, login_db_account_id, login_db_userid, login_db_user_pass, login_db_level,
+				account_id , userid, pass, lastlogin, sex, logincount, email, user_level);
+			mysql_free_result(sql_res); //resource free
 			if(mysql_query(&mysql_handle, tmpsql) ) {
 				printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
 			}

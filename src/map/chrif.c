@@ -24,6 +24,7 @@
 #include "atcommand.h"
 #include "friend.h"
 #include "md5calc.h"
+#include "ranking.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -36,7 +37,8 @@ static const int packet_len_table[]={
 	-1,-1, 6, 3, 3, 3,-1, 6,		// 2b10-2b17
 	10, 6, 6, 0, 0, 0, 0, 0,		// 2b18-2b1f
 	 6, 0, 0, 0,18,18,-1,-1,		// 2b20-2b27
-	30,30, 2,-1,60,-1,         		// 2b28-2b2d
+	30,30, 2,-1,60,-1, 2,-1,		// 2b28-2b2f
+	-1,					// 2b30
 };
 
 int char_fd = -1;
@@ -318,6 +320,7 @@ int chrif_connectack(int fd)
 	session[fd]->auth = -1; // 認証終了を socket.c に伝える
 
 	chrif_sendmap(fd);
+	chrif_ranking_request(fd);
 	chrif_mapactive(1);
 
 	printf("chrif: OnCharIfInit event done. (%d events)\n",
@@ -809,6 +812,50 @@ int chrif_breakadoption(int char_id, unsigned char *name)
 }
 
 /*==========================================
+ * ランキングデータ要求
+ *------------------------------------------
+ */
+int chrif_ranking_request(int fd)
+{
+	if (fd < 0)
+		return -1;
+
+	WFIFOW(fd,0) = 0x2b2e;
+	WFIFOSET(fd,2);
+
+	return 0;
+}
+
+/*==========================================
+ * ランキングデータ更新
+ *------------------------------------------
+ */
+int chrif_ranking_update(struct Ranking_Data *rd,int ranking_id,int rank)
+{
+	if (char_fd < 0)
+		return -1;
+
+	WFIFOW(char_fd,0) = 0x2b2f;
+	WFIFOW(char_fd,2) = 8+sizeof(struct Ranking_Data);
+	WFIFOW(char_fd,4) = ranking_id;
+	WFIFOW(char_fd,6) = rank;
+	memcpy(WFIFOP(char_fd,8), rd, sizeof(struct Ranking_Data));
+	WFIFOSET(char_fd,WFIFOW(char_fd,2));
+
+	return 0;
+}
+
+/*==========================================
+ * ランキングデータ受信
+ *------------------------------------------
+ */
+int chrif_ranking_recv(int fd)
+{
+	ranking_set_data((int)RFIFOW(fd,4),(struct Ranking_Data *)RFIFOP(fd,6));
+	return 0;
+}
+
+/*==========================================
  * クライアントを切断する
  *------------------------------------------
  */
@@ -893,6 +940,7 @@ int chrif_parse(int fd)
 		case 0x2b27: chrif_parse_friend_online(fd); break;
 		case 0x2b29: chrif_breakadoption(RFIFOL(fd,2),RFIFOP(fd,6)); break;
 		case 0x2b2b: chrif_cram_connect(fd); break;
+		case 0x2b30: chrif_ranking_recv(fd); break;
 
 		default:
 			if(battle_config.error_log)

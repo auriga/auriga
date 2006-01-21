@@ -50,6 +50,7 @@
 #include "unit.h"
 #include "mail.h"
 #include "homun.h"
+#include "ranking.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

@@ -91,7 +91,7 @@ CREATE TABLE `charlog` (
 CREATE TABLE `global_reg_value` (
   `char_id` int(11) NOT NULL default '0',
   `str` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '0',
+  `value` int(11) NOT NULL default '0',
   `type` int(11) NOT NULL default '3',
   `account_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`char_id`,`str`,`account_id`),

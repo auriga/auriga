@@ -44,6 +44,7 @@
 #include "friend.h"
 #include "unit.h"
 #include "homun.h"
+#include "ranking.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

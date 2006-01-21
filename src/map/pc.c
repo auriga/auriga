@@ -35,6 +35,7 @@
 #include "friend.h"
 #include "date.h"
 #include "unit.h"
+#include "ranking.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -1024,8 +1025,6 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 
 	//ランキング用ポイントのスクリプト変数からの読み出しとsdへのセット
 	ranking_readreg(sd);
-	//暫定更新
-	ranking_update_all(sd);
 
 	//ファーマシー連続成功カウンタ 起動時0に
 	//

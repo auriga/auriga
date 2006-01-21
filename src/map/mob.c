@@ -27,6 +27,7 @@
 #include "status.h"
 #include "date.h"
 #include "unit.h"
+#include "ranking.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

@@ -3,15 +3,6 @@
 
 #include "map.h"
 
-struct Ranking_Data
-{
-	char name[24];
-	int  point;
-	int  char_id;
-};
-
-//char* ranking_get_ranker_name(int ranking_id,int order);
-//int ranking_get_ranker_point(int ranking_id,int order);
 int ranking_get_pc_rank(struct map_session_data * sd,int ranking_id);
 int ranking_get_id2rank(int char_id,int ranking_id);
 
@@ -29,8 +20,7 @@ int ranking_clif_display(struct map_session_data * sd,int ranking_id);
 int ranking_display(struct map_session_data * sd,int ranking_id,int begin,int end);
 int ranking_display_point(struct map_session_data * sd,int ranking_id);
 
-int ranking_update_all(struct map_session_data * sd);
-int ranking_sort(int ranking_id);
+int ranking_set_data(int ranking_id,struct Ranking_Data *rd);
 
 //ランキング
 enum {

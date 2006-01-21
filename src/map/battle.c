@@ -22,6 +22,7 @@
 #include "status.h"
 #include "party.h"
 #include "unit.h"
+#include "ranking.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

@@ -4,7 +4,6 @@
 #include <stdarg.h>
 #include "mmo.h"
 #include "script.h"
-#include "ranking.h"
 
 #ifdef CLASS_DKDC
 	#define MAX_VALID_PC_CLASS 32
@@ -52,8 +51,6 @@
 #define MAX_SKILL_DAMAGE_UP	10	//スキルを強化できる数
 #define MAX_SKILL_BLOW  5		//スキルを吹き飛ばし化
 #define MAX_BONUS_AUTOSPELL  16		//オートスペルの容量
-#define MAX_RANKING 4	//ランキング数
-#define MAX_RANKER  10	//ランキング人数
 #define MAX_DEAL_ITEMS 10
 #define MAX_VENDING 12
 #define MAX_WEAPON_LEVEL 4

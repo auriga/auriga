@@ -26,6 +26,7 @@
 #include "script.h"
 #include "guild.h"
 #include "unit.h"
+#include "ranking.h"
 
 static struct job_db {
 	int max_weight_base;

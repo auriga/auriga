@@ -60,7 +60,8 @@ S 272f <username>.24B <response>.16B <0>.4B <algorithm>.l <0>.l <char_ip>.l <cha
 	-1,-1, 6, 3, 3, 3,-1, 6,		// 2b10-2b17
 	10, 6, 6, 0, 0, 0, 0, 0,		// 2b18-2b1f
 	 6, 0, 0, 0,18,18,-1,-1,		// 2b20-2b27
-	30,30, 2,-1,60,-1,         		// 2b28-2b2d
+	30,30, 2,-1,60,-1, 2,-1,		// 2b28-2b2f
+	-1,					// 2b30
 
 R char->map
 S map->char
@@ -145,13 +146,19 @@ R 2b29 <char_id>.l <name>.24B
 	養子解体情報同期受付
 S 2b2a
 	暗号化ログインのチャレンジ要求
-S 2b2b <len>.w <challenge>.?B
+R 2b2b <len>.w <challenge>.?B
 	暗号化ログインのチャレンジ返答
 S 2b2c <userid>.24B <passwd>.16B <dummy>.4B <algorithm>.l <0>.l <mapip>.l  <mapport>.w
 	暗号化ログイン要求
 	algorithm= 4:HMAC-MD5
 S 2b2d <len>.w <char_id>.l { <name>.32B <value>.l }.36B*
 	キャラ永続変数の保存要求
+S 2b2e
+	ランキングデータ要求
+S 2b2f <len>.w <ranking_id>.l <rank>.l <struct Ranking_Data>
+	ランキングデータ更新
+R 2b30 <len>.w <ranking_id>.l <struct Ranking_Data>
+	ランキングデータ受信
 
 ==========================================================================
 		char<->inter

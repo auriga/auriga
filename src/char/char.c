@@ -104,6 +104,16 @@ static int start_zeny = 500;
 static int start_weapon = 1201;		/* Knife */
 static int start_armor = 2301;		/* Cotton Shirt */
 
+static struct Ranking_Data ranking_data[MAX_RANKING][MAX_RANKER];
+const char ranking_reg[MAX_RANKING][32] =
+{
+	"PC_BLACKSMITH_POINT",
+	"PC_ALCHEMIST_POINT",
+	"PC_TAEKWON_POINT",
+	"PC_PK_POINT",
+	//"PC_PVP_POINT",
+};
+
 // map.hより
 #define PC_CLASS_SNV    23
 #define PC_CLASS_NV3  4023
@@ -819,17 +829,60 @@ int char_txt_set_offline(int char_id) {
 	return 0;
 }
 
-#define char_make       char_txt_make
-#define char_init       char_txt_init
-#define char_sync       char_txt_sync
-#define char_load       char_txt_load
-#define char_save_reg   char_txt_save_reg
-#define char_save       char_txt_save
-#define char_final      char_txt_final
-#define char_load_all   char_txt_load_all
-#define char_delete_sub char_txt_delete_sub
-#define char_set_online  char_txt_set_online
-#define char_set_offline char_txt_set_offline
+static int compare_ranking_data(const void *a,const void *b);
+
+static int char_txt_build_ranking(void)
+{
+	int i,j,k;
+	int count[MAX_RANKING];
+	struct Ranking_Data *rd[MAX_RANKING];
+
+	memset(&ranking_data, 0, sizeof(ranking_data));
+
+	if(char_num <= 0)
+		return 0;
+
+	memset(&count, 0, sizeof(count));
+	for(i=0; i<MAX_RANKING; i++)
+		rd[i] = (struct Ranking_Data *)aCalloc(char_num, sizeof(struct Ranking_Data));
+
+	for(i=0; i<char_num; i++) {
+		for(j=0; j<char_dat[i].reg.global_num; j++) {
+			for(k=0; k<MAX_RANKING; k++) {
+				if(strcmp(char_dat[i].reg.global[j].str, ranking_reg[k]) == 0 && char_dat[i].reg.global[j].value > 0) {
+					strncpy(rd[k][count[k]].name, char_dat[i].st.name, 24);
+					rd[k][count[k]].point   = char_dat[i].reg.global[j].value;
+					rd[k][count[k]].char_id = char_dat[i].st.char_id;
+					count[k]++;
+				}
+			}
+		}
+	}
+
+	for(k=0; k<MAX_RANKING; k++) {
+		if(count[k] > 0) {
+			int max = (char_num < MAX_RANKER)? char_num: MAX_RANKER;
+			qsort(rd[k], char_num, sizeof(struct Ranking_Data), compare_ranking_data);
+			memcpy(&ranking_data[k], rd[k], max * sizeof(struct Ranking_Data));
+		}
+		aFree(rd[k]);
+	}
+
+	return 0;
+}
+
+#define char_make            char_txt_make
+#define char_init            char_txt_init
+#define char_sync            char_txt_sync
+#define char_load            char_txt_load
+#define char_save_reg        char_txt_save_reg
+#define char_save            char_txt_save
+#define char_final           char_txt_final
+#define char_load_all        char_txt_load_all
+#define char_delete_sub      char_txt_delete_sub
+#define char_set_online      char_txt_set_online
+#define char_set_offline     char_txt_set_offline
+#define char_build_ranking   char_txt_build_ranking
 #define char_config_read_sub char_txt_config_read_sub
 
 #else /* TXT_ONLY */
@@ -1751,17 +1804,70 @@ int char_sql_set_offline(int char_id) {
 	return 0;
 }
 
-#define char_make       char_sql_make
-#define char_init       char_sql_init
-#define char_sync       char_sql_sync
-#define char_load       char_sql_load
-#define char_save_reg   char_sql_save_reg
-#define char_save       char_sql_save
-#define char_final      char_sql_final
-#define char_load_all   char_sql_load_all
-#define char_delete_sub char_sql_delete_sub
-#define char_set_online  char_sql_set_online
-#define char_set_offline char_sql_set_offline
+static int char_sql_build_ranking(void)
+{
+	int i,j,max;
+	char buf[128];
+	MYSQL_RES* sql_res;
+	MYSQL_ROW  sql_row = NULL;
+
+	memset(&ranking_data, 0, sizeof(ranking_data));
+
+	for(i=0; i<MAX_RANKING; i++) {
+		sprintf(
+			tmp_sql,
+			"SELECT `value`,`char_id` FROM `%s` WHERE `type` = 3 AND `str` = '%s' AND `value` > 0 ORDER BY `value` DESC LIMIT 0,%d",
+			reg_db, strecpy(buf,ranking_reg[i]), MAX_RANKER
+		);
+		if (mysql_query(&mysql_handle, tmp_sql)) {
+			printf("DB server Error (select `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
+		}
+		sql_res = mysql_store_result(&mysql_handle);
+
+		if(sql_res) {
+			for(j=0; j<MAX_RANKER && (sql_row = mysql_fetch_row(sql_res)); j++) {
+				ranking_data[i][j].point   = atoi(sql_row[0]);
+				ranking_data[i][j].char_id = atoi(sql_row[1]);
+			}
+			mysql_free_result(sql_res);
+		}
+
+		// キャラ名の補完
+		max = j;
+		for(j=0; j<max; j++) {
+			sprintf(tmp_sql, "SELECT `name` FROM `%s` WHERE `char_id` = '%d'", char_db, ranking_data[i][j].char_id);
+			if (mysql_query(&mysql_handle, tmp_sql)) {
+				printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
+			}
+			sql_res = mysql_store_result(&mysql_handle);
+
+			if(sql_res && (sql_row = mysql_fetch_row(sql_res))) {
+				memcpy(ranking_data[i][j].name, sql_row[0], 24);
+				mysql_free_result(sql_res);
+			} else {
+				printf("char_build_ranking: char_name not found (ID = %d, Rank = %d)\n", ranking_data[i][j].char_id, j+1);
+				memcpy(ranking_data[i][j].name, unknown_char_name, 24);
+				if(sql_res)
+					mysql_free_result(sql_res);
+			}
+		}
+	}
+
+	return 0;
+}
+
+#define char_make            char_sql_make
+#define char_init            char_sql_init
+#define char_sync            char_sql_sync
+#define char_load            char_sql_load
+#define char_save_reg        char_sql_save_reg
+#define char_save            char_sql_save
+#define char_final           char_sql_final
+#define char_load_all        char_sql_load_all
+#define char_delete_sub      char_sql_delete_sub
+#define char_set_online      char_sql_set_online
+#define char_set_offline     char_sql_set_offline
+#define char_build_ranking   char_sql_build_ranking
 #define char_config_read_sub char_sql_config_read_sub
 
 #endif /* TXT_ONLY */
@@ -2048,6 +2154,112 @@ int char_break_adoption(const struct mmo_charstatus *st)
 	return 0;
 }
 
+// ランキングデータ送信セット
+int char_set_ranking_send(int ranking_id,char *buf)
+{
+	WBUFW(buf,0) = 0x2b30;
+	WBUFW(buf,2) = 6+sizeof(ranking_data[0]);
+	WBUFW(buf,4) = ranking_id;
+	memcpy(WBUFP(buf,6), &ranking_data[ranking_id], sizeof(ranking_data[0]));
+
+	return (int)WBUFW(buf,2);
+}
+
+// ランキングデータ更新
+static int compare_ranking_data(const void *a,const void *b)
+{
+	struct Ranking_Data *p1 = (struct Ranking_Data *)a;
+	struct Ranking_Data *p2 = (struct Ranking_Data *)b;
+
+	if(p1->point < p2->point)
+		return 1;
+	else if(p1->point > p2->point)
+		return -1;
+
+	return 0;
+}
+
+int char_ranking_update(int ranking_id,int rank,struct Ranking_Data *rd)
+{
+	if(rd == NULL)
+		return 0;
+	if(ranking_id < 0 || ranking_id >= MAX_RANKING)
+		return 0;
+
+	if(rank >= 0 && rank < MAX_RANKER) {
+		// ランカーのポイント更新
+		if(ranking_data[ranking_id][rank].char_id == rd->char_id) {
+			ranking_data[ranking_id][rank].point = rd->point;
+		} else {
+			// 順位が変更されている可能性があるので該当キャラを探す
+			int i;
+			for(i=0; i<MAX_RANKER; i++) {
+				if(ranking_data[ranking_id][i].char_id == rd->char_id) {
+					ranking_data[ranking_id][i].point = rd->point;
+					rank = i;
+					break;
+				}
+			}
+			if(i >= MAX_RANKER)	// 見つからない場合もある
+				return 0;
+		}
+	} else if(rank == MAX_RANKER) {
+		// 新規ランクイン
+		if(ranking_data[ranking_id][MAX_RANKER-1].point < rd->point)
+		{
+			int i;
+			for(i=MAX_RANKER; i>0 && ranking_data[ranking_id][i-1].char_id <= 0; i--);
+			if(i == MAX_RANKER)
+				i--;
+			strncpy(ranking_data[ranking_id][i].name, rd->name, 24);
+			ranking_data[ranking_id][i].point   = rd->point;
+			ranking_data[ranking_id][i].char_id = rd->char_id;
+			rank = i;
+		} else {
+			return 0;	// ランクインできない場合もある
+		}
+	} else {
+		printf("char_ranking_update: invalid rank %d !!\n",rank);
+		return 0;
+	}
+
+	// 順位が変動するならソート
+	if( (rank > 0 && ranking_data[ranking_id][rank-1].point < rd->point) ||
+	    (rank < MAX_RANKER-1 && ranking_data[ranking_id][rank+1].point > rd->point) )
+	{
+		qsort(ranking_data[ranking_id], MAX_RANKER, sizeof(struct Ranking_Data), compare_ranking_data);
+	}
+
+	return 0;
+}
+
+// ランキングデータ削除
+int char_ranking_delete(int char_id)
+{
+	int i,j;
+
+	for(i=0; i<MAX_RANKING; i++) {
+		for(j=0; j<MAX_RANKER; j++) {
+			if(ranking_data[i][j].char_id == char_id) {
+				strncpy(ranking_data[i][j].name, unknown_char_name, 24);
+				ranking_data[i][j].point   = 0;
+				ranking_data[i][j].char_id = 0;
+				break;
+			}
+		}
+		if(j < MAX_RANKER) {
+			int len;
+			char buf[6+32*MAX_RANKER];
+
+			// ランキングの再構築はしない
+			qsort(ranking_data[i], MAX_RANKER, sizeof(struct Ranking_Data), compare_ranking_data);
+			len = char_set_ranking_send(i,buf);
+			mapif_sendall(buf,len);
+		}
+	}
+	return 0;
+}
+
 // キャラ削除に伴うデータ削除
 static int char_delete(const struct mmo_chardata *cd)
 {
@@ -2067,6 +2279,9 @@ static int char_delete(const struct mmo_chardata *cd)
 
 	// ROメール削除
 	mail_delete(cd->st.char_id);
+
+	// ランキング削除
+	char_ranking_delete(cd->st.char_id);
 
 	// ペット削除
 	if(cd->st.pet_id)
@@ -3001,6 +3216,39 @@ int parse_frommap(int fd)
 			}
 			break;
 
+		// ランキングデータ取得要求
+		case 0x2b2e:
+			if(RFIFOREST(fd) < 2)
+				return 0;
+			{
+				int i;
+				for(i=0; i<MAX_RANKING; i++) {
+					int len = char_set_ranking_send(i,WFIFOP(fd,0));
+					WFIFOSET(fd,len);
+				}
+				RFIFOSKIP(fd,2);
+			}
+			break;
+
+		// ランキングデータ更新
+		case 0x2b2f:
+			if(RFIFOREST(fd) < 4 || RFIFOREST(fd) < RFIFOW(fd,2))
+				return 0;
+			{
+				int len;
+				int ranking_id = (int)RFIFOW(fd,4);
+				char buf[6+MAX_RANKER*32];
+
+				char_ranking_update(ranking_id,(int)RFIFOW(fd,6),(struct Ranking_Data *)RFIFOP(fd,8));
+
+				// 全MAPサーバにデータをフラッシュ
+				len = char_set_ranking_send(ranking_id,buf);
+				mapif_sendall(buf,len);
+
+				RFIFOSKIP(fd,RFIFOW(fd,2));
+			}
+			break;
+
 		default:
 			// inter server処理に渡す
 			{
@@ -3846,6 +4094,7 @@ int do_init(int argc,char **argv)
 	}
 	char_online_db = numdb_init();
 	char_init();
+	char_build_ranking();
 	read_gm_account();
 	inter_init((argc>2)?argv[2]:inter_cfgName);	// inter server 初期化
 

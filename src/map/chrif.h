@@ -31,6 +31,9 @@ int chrif_friend_online( struct map_session_data *sd, int flag );
 
 int chrif_req_break_adoption(int char_id, char *name);
 
+int chrif_ranking_request(int fd);
+int chrif_ranking_update(struct Ranking_Data *rd,int ranking_id,int rank);
+
 int do_final_chrif(void);
 int do_init_chrif(void);
 
