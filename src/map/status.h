@@ -4,6 +4,8 @@
 // ステータス異常データベース
 struct scdata_db {
 	short save;
+	int releasable;
+	int disable;
 };
 
 // パラメータ所得系 battle.c より移動
@@ -68,13 +70,12 @@ int status_get_aspd(struct block_list *bl);
 
 // 状態異常関連
 int status_can_save(int type);
+int status_is_disable(int type,int mask);
 int status_change_start(struct block_list *bl,int type,int val1,int val2,int val3,int val4,int tick,int flag);
 int status_change_end( struct block_list* bl , int type,int tid );
 int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int val3,int val4,int tick,int flag,int pre_tick);
 int status_change_timer(int tid, unsigned int tick, int id, int data);
 int status_change_timer_sub(struct block_list *bl, va_list ap );
-int status_change_end_by_jumpkick( struct block_list* bl);
-int status_support_magic_skill_end( struct block_list* bl);
 int status_change_race_end(struct block_list *bl,int type);
 int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int val4,int tick,int flag);
 int status_change_soulclear(struct block_list *bl);
@@ -82,6 +83,7 @@ int status_change_resistclear(struct block_list *bl);
 int status_enchant_armor_eremental_end(struct block_list *bl,int type);
 int status_encchant_eremental_end(struct block_list *bl,int type);
 int status_change_clear(struct block_list *bl,int type);
+int status_change_release(struct block_list *bl,int mask);
 int status_clearpretimer(struct block_list *bl);
 int status_change_attacked_end(struct block_list *bl);
 int status_change_hidden_end(struct block_list *bl);
@@ -150,7 +152,7 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_ENERGYCOAT			=31,	/* エナジーコート */
 	SC_PK_PENALTY			=32,	//PKのペナルティ
 	SC_REVERSEORCISH		=33,    //リバースオーキッシュ
-	SC_HALLUCINATION		=34,	/* ハルネーションウォーク？ */
+	SC_HALLUCINATION		=34,	/* 幻覚 */
 	SC_WEIGHT50				=35,	/* 重量50％オーバー */
 	SC_WEIGHT90				=36,	/* 重量90％オーバー */
 	SC_SPEEDPOTION0			=37,	/* 速度ポーション？ */

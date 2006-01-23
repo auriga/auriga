@@ -4046,16 +4046,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				status_change_end(bl,SC_GOSPEL,-1);
 				break;
 			}
-			for(i=0;i<201;i++){
-				if(i==SC_RIDING || i== SC_FALCON || i==SC_HALLUCINATION || i==SC_WEIGHT50
-					|| i==SC_WEIGHT90 || i==SC_CP_WEAPON || i==SC_CP_SHIELD || i==SC_CP_ARMOR
-					|| i==SC_CP_HELM || i==SC_COMBO || i==SC_TKCOMBO)
-						continue;
-				if(i==136)
-					i=192;
-				else
-					status_change_end(bl,i,-1);
-			}
+			status_change_release(src,0x04);	// ゴスペル術者のステータス異常解除
 			clif_skill_poseffect(src,skillid,skilllv,src->x,src->y,tick);
 			status_change_start(bl,SC_GOSPEL,skilllv,bl->id,
 				(int)(skill_unitsetting(src,skillid,skilllv,src->x,src->y,0)),0,skill_get_time(skillid,skilllv),0);
@@ -4526,7 +4517,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case SA_DISPELL:			/* ディスペル */
 		{
-			int i;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			if( dstsd && dstsd->special_state.no_magic_damage )
 				break;
@@ -4538,34 +4528,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				break;
 			if(atn_rand()%100 >= skilllv*10+50)
 				break;
-
-			status_calc_pc_stop_begin(bl);
-			for(i=0;i<=136;i++){
-				if(i==SC_RIDING || i== SC_FALCON || i==SC_HALLUCINATION || i==SC_WEIGHT50
-					|| i==SC_WEIGHT90 || i==SC_STRIPWEAPON || i==SC_STRIPSHIELD || i==SC_STRIPARMOR
-					|| i==SC_STRIPHELM || i==SC_CP_WEAPON || i==SC_CP_SHIELD || i==SC_CP_ARMOR
-					|| i==SC_MELTDOWN || i==SC_CARTBOOST || i==SC_EDP || i==SC_AUTOSPELL
-					|| i==SC_CP_HELM || i==SC_COMBO || i==SC_TKCOMBO || i==SC_REJECTSWORD
-					|| i==SC_WINDWALK || i==SC_TRUESIGHT)
-						continue;
-				status_change_end(bl,i,-1);
-			}
-			//魂・カー系スキル
-			for(i=244;i<=267;i++){
-				if(i==SC_SOULLINKER || i==SC_ROGUE || i==SC_ADRENALINE2 )
-					continue;
-				status_change_end(bl,i,-1);
-			}
-			// 個別処理
-			status_change_end(bl,SC_BLADESTOP,-1);
-			status_change_end(bl,SC_MEMORIZE,-1);
-			status_change_end(bl,SC_PRESERVE,-1);
-			status_change_end(bl,SC_DARKELEMENT,-1);
-			status_change_end(bl,SC_RESISTCLEAR,-1);
-			if(battle_config.cancel_race)
-				status_change_end(bl,SC_RACECLEAR,-1);
-
-			status_calc_pc_stop_end(bl);
+			status_change_release(bl,0x02);	// ディスペルによるステータス異常解除
 		}
 		break;
 
@@ -6569,7 +6532,7 @@ int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsigned int
 				same_flag = 1;
 				//ソウルリンカー以外は支援スキル解除
 				if(status_get_class(bl) != PC_CLASS_SL)
-					status_support_magic_skill_end(bl);
+					status_change_release(bl,0x20);
 			}
 
 			if(sc_data && sc_data[type].timer!=-1 && same_flag==0) {
@@ -6904,7 +6867,7 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 					type = 0x20;
 					break;
 				case 10:	// 全ての状態異常を解除
-					status_change_clear(bl,0);
+					status_change_release(bl,0x08);
 					type = 0x15;
 					break;
 				case 11:	// 全状態異常の耐性(持続時間60秒)
@@ -9925,7 +9888,7 @@ int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,in
 			break;
 		case 2://女祭司(The High Priestess) - すべての補助魔法が消える
 			{
-				status_support_magic_skill_end(target);
+				status_change_release(target,0x40);
 			}
 			break;
 		case 3://戦車(The Chariot) - 防御力無視の1000ダメージ 防具がランダムに一つ破壊される

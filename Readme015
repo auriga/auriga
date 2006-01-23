@@ -1,4 +1,25 @@
 ----------------------------------------
+//064 [2006/01/24] by Rayce
+
+・特定条件でステータス異常が解除可能かどうか、また特定条件下でステータス異常開始を無効にするか、を
+　db/scdata_db.txtで設定できるように拡張（battle.c, pc.c, skill.c, status.*）
+	詳細はdoc/db_ref.txtを参照。
+	基本的には今までソースコードに記述されていた部分をtxtに追い出しただけです。
+	設定はあくまでも適当暫定なので修正できる方に任せます。
+
+　※死亡時は落法、PKペナルティ、赤エモだけ解除されません。
+　　ディスペルは一部wikiを参考にして解除可否を修正しています。
+　　ゴスペルの全状態異常解除はeAを参考に設定しました。
+
+	scdata_db構造体にメンバ releasable, disable を追加
+	status_is_disable() 追加
+	status_change_release() 追加
+	status_change_end_by_jumpkick() 削除
+	status_support_magic_skill_end() 削除
+
+・battle_athena.confの cancel_race は不要になったので削除（battle.*, skill.c）
+
+----------------------------------------
 //063 [2006/01/22] by Rayce
 
 ・ランキングの処理方法を修正

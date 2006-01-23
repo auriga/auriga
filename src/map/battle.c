@@ -1870,7 +1870,16 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 				// 計算式不明なので適当
 				DMG_ADD( 10*pc_checkskill(src_sd,TK_RUN) );
 			}
-			status_change_end_by_jumpkick(target);
+			// ティオアプチャギによる対象のステータス異常解除
+			if(target_sd || target_md) {
+				// ソウルリンカーは無視
+				if(target_sd && target_sd->status.class_ == PC_CLASS_SL)
+					break;
+				// プリザーブ中は切れない
+				if(t_sc_data && t_sc_data[SC_PRESERVE].timer != -1)
+					break;
+				status_change_release(target,0x10);
+			}
 			break;
 		case PA_SHIELDCHAIN:	// シールドチェイン
 			if(src_sd)
@@ -5014,7 +5023,6 @@ int battle_config_read(const char *cfgName)
 		battle_config.calc_dist_flag = 0;
 		battle_config.allow_sw_dist = 4;
 		battle_config.storagesort_by_itemid = 3;
-		battle_config.cancel_race = 1;
 		battle_config.allow_es_magic_all = 0;
 		battle_config.trap_is_invisible = 0;
 		battle_config.gm_perfect_hide = 0;
@@ -5464,7 +5472,6 @@ int battle_config_read(const char *cfgName)
 			{ "calc_dist_flag",						&battle_config.calc_dist_flag						},
 			{ "allow_sw_dist",						&battle_config.allow_sw_dist						},
 			{ "storagesort_by_itemid",				&battle_config.storagesort_by_itemid				},
-			{ "cancel_race",						&battle_config.cancel_race							},
 			{ "allow_es_magic_all",					&battle_config.allow_es_magic_all					},
 			{ "trap_is_invisible",					&battle_config.trap_is_invisible					},
 			{ "gm_perfect_hide",					&battle_config.gm_perfect_hide					},

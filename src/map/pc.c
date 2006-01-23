@@ -4883,7 +4883,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 	if(sd->sc_data[SC_HOLDWEB].timer!=-1)
 		status_change_end(&sd->bl,SC_HOLDWEB,-1);
 	pc_setglobalreg(sd,"PC_DIE_COUNTER",++sd->die_counter);	// 死にカウンター書き込み
-	status_change_clear(&sd->bl,0);	// ステータス異常を解除する
+	status_change_release(&sd->bl,0x01);	// ステータス異常を解除する
 
 	pc_setdead(sd);
 
