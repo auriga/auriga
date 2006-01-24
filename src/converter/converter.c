@@ -11,6 +11,7 @@
 #include "login-converter.h"
 #include "char-converter.h"
 #include "inter-converter.h"
+#include "map-converter.h"
 
 char db_server_ip[16] = "127.0.0.1";
 int  db_server_port   = 3306;
@@ -24,6 +25,8 @@ char login_db_account_id[1024] = "account_id";
 char login_db_userid[1024]     = "userid";
 char login_db_user_pass[1024]  = "user_pass";
 char login_db_level[1024]      = "level";
+
+char map_server_tag[16]        = "map01";
 
 char account_filename[1024]    = "save/account.txt";
 char char_txt[1024]            = "save/athena.txt";
@@ -39,6 +42,7 @@ char account_reg_txt[1024]     = "save/accreg.txt";
 char scdata_txt[1024]          = "save/scdata.txt";
 char mail_txt[1024]            = "save/mail.txt";
 char mail_dir[1024]            = "save/mail_data/";
+char mapreg_txt[1024]          = "save/mapreg.txt";
 
 
 int config_read(const char *cfgName) {
@@ -103,6 +107,9 @@ int config_read(const char *cfgName) {
 		} else if(strcmpi(w1,"mail_dir")==0){
 			printf("set mail_dir : %s\n",w2);
 			strncpy(mail_dir, w2, sizeof(mail_dir));
+		} else if(strcmpi(w1,"mapreg_txt")==0){
+			printf("set mapreg_txt : %s\n",w2);
+			strncpy(mapreg_txt, w2, sizeof(mapreg_txt));
 		}
 
 		// add for DB connection
@@ -147,13 +154,22 @@ int config_read(const char *cfgName) {
 		} else if(strcmpi(w1,"login_db_level")==0){
 			strncpy(login_db_level, w2, sizeof(login_db_level));
 			printf("set login_db_level : %s\n",w2);
+		}
+
+		// Map Server Tag Name
+		else if(strcmpi(w1,"map_server_tag")==0){
+			strncpy(map_server_tag, w2, sizeof(map_server_tag));
+			map_server_tag[sizeof(map_server_tag) - 1] = '\0';
+			printf("set map_server_tag : %s\n",map_server_tag);
+		}
 
 		// support the import command, just like any other config
-		} else if(strcmpi(w1,"import")==0){
+		else if(strcmpi(w1,"import")==0){
 			config_read(w2);
+		}
 
 		// unknown option
-		} else {
+		else {
 			printf("Unknown option '%s' in file %s\n", w1, cfgName);
 		}
 	}
@@ -182,7 +198,7 @@ int do_init(int argc,char **argv) {
 		exit(1);
 	}
 	else {
-		printf ("connect success! (inter server)\n");
+		printf ("connect success!\n");
 	}
 	if(db_server_charset[0]) {
 		sprintf(tmp_sql,"SET NAMES %s",db_server_charset);
@@ -197,6 +213,7 @@ int do_init(int argc,char **argv) {
 	login_convert();
 	char_convert();
 	inter_convert();
+	map_convert();
 
 	printf ("\nEverything's been converted!\n");
 	printf ("Please Push Any Key...");

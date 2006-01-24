@@ -1,4 +1,15 @@
 ----------------------------------------
+//066 [2006/01/25] by Rayce
+
+・aStrdupをキャストするように修正（script.c）
+・map.dspを少し修正、map_sql.dsp追加
+
+・SQL: マップ永続変数のconvert対応（converter.*, map-converter.*）
+	converter_athena.confに map_server_tag を設定する項目を追加しているので、
+	複数のデータがある場合にはタグ名を変更して読み込ませてください。
+・SQL: 049の最適化が不完全だった部分を修正および巻き戻し等（char.c, inter.c）
+
+----------------------------------------
 //065 [2006/01/25] by Rayce
 
 ・MAPサーバからSQLを発行できるように追加（map.c）

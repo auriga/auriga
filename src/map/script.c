@@ -2041,7 +2041,7 @@ void push_copy(struct script_stack *stack,int pos)
 		push_str(stack,C_CONSTSTR,stack->stack_data[pos].u.str);
 		break;
 	case C_STR:
-		push_str(stack,C_STR,aStrdup(stack->stack_data[pos].u.str));
+		push_str(stack,C_STR,(unsigned char *)aStrdup(stack->stack_data[pos].u.str));
 		break;
 	default:
 		push_val2(
@@ -5068,7 +5068,7 @@ static char *buildin_getpartyname_sub(int party_id)
 	p=party_search(party_id);
 
 	if(p!=NULL){
-		return aStrdup(p->name);
+		return (char *)aStrdup(p->name);
 	}
 
 	return 0;
@@ -5099,7 +5099,7 @@ static char *buildin_getcharname_sub(int char_id)
 //	c=map_charid2nick(char_id);
 
 	if(c!=NULL){
-		return aStrdup(c->nick);
+		return (char *)aStrdup(c->nick);
 	}
 
 	return 0;
@@ -5160,7 +5160,7 @@ static char *buildin_getguildname_sub(int guild_id)
 	g=guild_search(guild_id);
 
 	if(g!=NULL){
-		return aStrdup(g->name);
+		return (char *)aStrdup(g->name);
 	}
 	return 0;
 }
@@ -5186,7 +5186,7 @@ static char *buildin_getguildmaster_sub(int guild_id)
 	g=guild_search(guild_id);
 
 	if(g!=NULL){
-		return aStrdup(g->master);
+		return (char *)aStrdup(g->master);
 	}
 
 	return 0;
@@ -5237,7 +5237,7 @@ int buildin_strcharinfo(struct script_state *st)
 	if(sd) {
 		switch (num) {
 		case 0:
-			push_str(st->stack,C_STR,aStrdup(sd->status.name));
+			push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->status.name));
 			return 0;
 		case 1:
 			buf=buildin_getpartyname_sub(sd->status.party_id);
@@ -7665,7 +7665,7 @@ int buildin_getcastlename(struct script_state *st)
 	for(i=0;i<MAX_GUILDCASTLE;i++){
 		if( (gc=guild_castle_search(i)) != NULL ){
 			if(strcmp(mapname,gc->map_name)==0){
-				buf=aStrdup(gc->castle_name);
+				buf=(char *)aStrdup(gc->castle_name);
 				break;
 			}
 		}
@@ -8413,7 +8413,7 @@ int buildin_getpetinfo(struct script_state *st)
 				break;
 			case 2:
 				if(sd->pet.name)
-					push_str(st->stack,C_STR,aStrdup(sd->pet.name));
+					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->pet.name));
 				else
 					push_val(st->stack,C_INT,0);
 				break;
@@ -8459,7 +8459,7 @@ int buildin_gethomuninfo(struct script_state *st)
 				break;
 			case 2:
 				if(sd->hd && sd->hd->status.name)
-					push_str(st->stack,C_STR,aStrdup(sd->hd->status.name));
+					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->hd->status.name));
 				else
 					push_val(st->stack,C_INT,0);
 				break;
@@ -8772,7 +8772,7 @@ int buildin_getmapname(struct script_state *st)
 		sd = script_rid2sd(st);
 
 	if(sd)
-		push_str(st->stack,C_STR,aStrdup(sd->mapname));
+		push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->mapname));
 	else
 		push_str(st->stack,C_CONSTSTR,"");
 
@@ -9320,7 +9320,7 @@ int buildin_csvread(struct script_state *st)
 	v = (csv ? csvdb_get_str(csv, row, col) : NULL);
 
 	if( v ) {
-		push_str(st->stack,C_STR,aStrdup(v));
+		push_str(st->stack,C_STR,(unsigned char *)aStrdup(v));
 	} else {
 		push_str(st->stack,C_CONSTSTR,"");
 	}
@@ -9365,7 +9365,7 @@ int buildin_csvreadarray(struct script_state *st)
 		for( i = 0; i < max; i++ ) {
 			if( postfix == '$' ) {
 				// set_regはconstが付いてないので、一端strdupしている
-				char *v = aStrdup(csvdb_get_str(csv, row, i));
+				char *v = (char *)aStrdup(csvdb_get_str(csv, row, i));
 				set_reg(st,sd,num+(i<<24),name,v,st->stack->stack_data[st->start+4].ref);
 				aFree(v);
 			} else {
@@ -9835,27 +9835,27 @@ int buildin_strnpcinfo(struct script_state *st)
 	}
 	switch(type) {
 		case 0:
-			name=aStrdup(nd->name);
+			name=(char *)aStrdup(nd->name);
 			break;
 		case 1:
-			name=strtok(aStrdup(nd->name),"#");
+			name=strtok((char *)aStrdup(nd->name),"#");
 			break;
 		case 2:
 			if((buf=strchr(nd->name,'#')) != NULL)
-				name=aStrdup(buf+1);
+				name=(char *)aStrdup(buf+1);
 			break;
 		case 3:
-			name=aStrdup(nd->exname);
+			name=(char *)aStrdup(nd->exname);
 			break;
 		case 4:
-			name=strtok(aStrdup(nd->exname),"#");
+			name=strtok((char *)aStrdup(nd->exname),"#");
 			break;
 		case 5:
 			if((buf=strchr(nd->exname,'#')) != NULL)
-				name=aStrdup(buf+1);
+				name=(char *)aStrdup(buf+1);
 			break;
 		case 6:
-			name=aStrdup(nd->position);
+			name=(char *)aStrdup(nd->position);
 			break;
 	}
 	if(name)
@@ -9883,7 +9883,7 @@ int buildin_getpartyleader(struct script_state *st)
 	}
 	for(i=0;i<MAX_PARTY;i++){
 		if(p->member[i].leader) {
-			push_str(st->stack,C_STR,aStrdup(p->member[i].name));
+			push_str(st->stack,C_STR,(unsigned char *)aStrdup(p->member[i].name));
 			return 0;
 		}
 	}
@@ -9940,7 +9940,7 @@ int buildin_setusescript(struct script_state *st)
 		script_free_code(id->use_script);
 	}
 	if( type == C_CONSTSTR ) {
-		p = aStrdup( p );
+		p = (char *)aStrdup( p );
 	}
 	script = parse_script(p,"buildin_setusescript",0);
 
@@ -9976,7 +9976,7 @@ int buildin_setequipscript(struct script_state *st)
 		script_free_code(id->equip_script);
 	}
 	if( type == C_CONSTSTR ) {
-		p = aStrdup( p );
+		p = (char *)aStrdup( p );
 	}
 	script = parse_script(p,"buildin_setequipscript",0);
 

@@ -13,6 +13,8 @@ extern char login_db_userid[1024];
 extern char login_db_user_pass[1024];
 extern char login_db_level[1024];
 
+extern char map_server_tag[16];
+
 extern char account_filename[1024];
 extern char char_txt[1024];
 extern char GM_account_filename[1024];
@@ -27,6 +29,7 @@ extern char account_reg_txt[1024];
 extern char scdata_txt[1024];
 extern char mail_txt[1024];
 extern char mail_dir[1024];
+extern char mapreg_txt[1024];
 
 #endif
 

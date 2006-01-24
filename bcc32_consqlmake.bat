@@ -123,7 +123,7 @@ copy char.exe ..\..\char-server.exe > NUL
 
 @echo コンバーターコンパイル
 cd ..\converter
-bcc32 -j255 %__warning__% %__define__% %__include__% char-converter.c libmysql.lib converter.c login-converter.c inter-converter.c %__common__%
+bcc32 -j255 %__warning__% %__define__% %__include__% char-converter.c libmysql.lib converter.c login-converter.c inter-converter.c map-converter.c %__common__%
 copy converter.exe ..\..\converter.exe > NUL
 
 cd ..\..\

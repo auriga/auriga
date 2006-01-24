@@ -24,7 +24,7 @@ ifneq ($(findstring LOCALZLIB,$(CFLAGS)), LOCALZLIB)
 	LIBS += -lz
 endif
 
-txt-converter: converter.o login-converter.o char-converter.o inter-converter.c $(COMMON_OBJ)
+txt-converter: converter.o login-converter.o char-converter.o inter-converter.o map-converter.o $(COMMON_OBJ)
 	$(CC) -o ../../bin/$@ $> $(LIBS)
 
 clean:

@@ -1297,8 +1297,6 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg) {
 	const struct mmo_chardata *cd = char_sql_load(char_id);
 	char buf[256];
-	char *p = tmp_sql;
-	char sep = ' ';
 	int i;
 
 	if(cd == NULL || cd->st.account_id != account_id)
@@ -1312,16 +1310,15 @@ int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
 	}
 
 	//insert here.
-	p += sprintf(p, "INSERT INTO `%s` (`char_id`, `str`, `value`) VALUES", reg_db);
 	for(i=0;i<num;i++){
 		if (reg[i].str[0] && reg[i].value !=0) {
-			p += sprintf(p, "%c('%d', '%s', '%d')", sep, char_id, strecpy(buf,reg[i].str), reg[i].value);
-			sep = ',';
-		}
-	}
-	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (insert `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
+			sprintf(
+				tmp_sql,"INSERT INTO `%s` (`char_id`, `str`, `value`) VALUES ('%d', '%s', '%d')",
+				reg_db, char_id, strecpy(buf,reg[i].str), reg[i].value
+			);
+			if(mysql_query(&mysql_handle, tmp_sql)) {
+				printf("DB server Error (insert `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
+			}
 		}
 	}
 

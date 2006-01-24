@@ -121,6 +121,10 @@ SOURCE=..\common\md5calc.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\map-converter.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\common\socket.c
 # End Source File
 # Begin Source File
@@ -129,7 +133,7 @@ SOURCE=..\common\timer.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\common\utils.c
+SOURCE=..\common\utils.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -154,6 +158,10 @@ SOURCE=".\login-converter.h"
 # Begin Source File
 
 SOURCE=..\common\md5calc.h
+# End Source File
+# Begin Source File
+
+SOURCE=".\map-converter.h"
 # End Source File
 # End Group
 # End Target

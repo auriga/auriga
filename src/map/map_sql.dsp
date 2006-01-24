@@ -1,25 +1,25 @@
-# Microsoft Developer Studio Project File - Name="map" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="map_sql" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** 編集しないでください **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=map - Win32 Debug
+CFG=map_sql - Win32 Debug
 !MESSAGE これは有効なメイクファイルではありません。 このプロジェクトをビルドするためには NMAKE を使用してください。
 !MESSAGE [メイクファイルのエクスポート] コマンドを使用して実行してください
-!MESSAGE 
-!MESSAGE NMAKE /f "map.mak".
-!MESSAGE 
+!MESSAGE
+!MESSAGE NMAKE /f "map_sql.mak".
+!MESSAGE
 !MESSAGE NMAKE の実行時に構成を指定できます
 !MESSAGE コマンド ライン上でマクロの設定を定義します。例:
-!MESSAGE 
-!MESSAGE NMAKE /f "map.mak" CFG="map - Win32 Debug"
-!MESSAGE 
+!MESSAGE
+!MESSAGE NMAKE /f "map_sql.mak" CFG="map_sql - Win32 Debug"
+!MESSAGE
 !MESSAGE 選択可能なビルド モード:
-!MESSAGE 
-!MESSAGE "map - Win32 Release" ("Win32 (x86) Console Application" 用)
-!MESSAGE "map - Win32 Debug" ("Win32 (x86) Console Application" 用)
-!MESSAGE 
+!MESSAGE
+!MESSAGE "map_sql - Win32 Release" ("Win32 (x86) Console Application" 用)
+!MESSAGE "map_sql - Win32 Debug" ("Win32 (x86) Console Application" 用)
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -28,7 +28,7 @@ CFG=map - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "map - Win32 Release"
+!IF  "$(CFG)" == "map_sql - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -37,11 +37,11 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
+# PROP Output_Dir "Release_sql"
+# PROP Intermediate_Dir "Release_sql"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D "TXT_ONLY" /D PACKETVER=7 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "DYNAMIC_SC_DATA" /FD /c
+# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D PACKETVER=7 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "DYNAMIC_SC_DATA" /FD /c
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
 # ADD RSC /l 0x411 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -51,7 +51,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib /nologo /subsystem:console /incremental:yes /map:"../../map-server.map" /machine:I386 /out:"../../map-server.exe"
 
-!ELSEIF  "$(CFG)" == "map - Win32 Debug"
+!ELSEIF  "$(CFG)" == "map_sql - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -60,11 +60,11 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
+# PROP Output_Dir "Debug_sql"
+# PROP Intermediate_Dir "Debug_sql"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D "TXT_ONLY" /D PACKETVER=7 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "DYNAMIC_SC_DATA" /FR /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D PACKETVER=7 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "DYNAMIC_SC_DATA" /FR /FD /GZ /c
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
 # ADD RSC /l 0x411 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,12 +74,12 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib /nologo /subsystem:console /map:"../../map-server.map" /debug /machine:I386 /out:"../../map-server.exe" /pdbtype:sept
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
-# Name "map - Win32 Release"
-# Name "map - Win32 Debug"
+# Name "map_sql - Win32 Release"
+# Name "map_sql - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
