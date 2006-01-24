@@ -80,12 +80,11 @@ int map_pk_nightmaredrop_flag = 0;
 
 extern int packet_parse_time;
 
-static int read_grf_files_txt=1;
-
 // マップキャッシュ利用フラグ(map_athana.conf内のread_map_from_cacheで指定)
 // 0:利用しない 1:非圧縮保存 2:圧縮保存
 int map_read_flag=0;
 
+char map_server_tag[16]="map01";	// マップサーバタグ名
 char map_cache_file[256]="db/map.info"; // マップキャッシュファイル名
 char motd_txt[256]="conf/motd.txt";
 char help_txt[256]="conf/help.txt";
@@ -94,6 +93,111 @@ char extra_add_file_txt[1024] = "map_extra_add.txt"; // to add items from extern
 // 向き計算用
 const int dirx[8] = { 0,-1,-1,-1, 0, 1, 1, 1 };
 const int diry[8] = { 1, 1, 0,-1,-1,-1, 0, 1 };
+
+
+#ifdef TXT_ONLY
+
+int do_txt_init_map(void)
+{
+	// nothing to do
+	return 0;
+}
+
+int do_txt_final_map(void)
+{
+	// nothing to do
+	return 0;
+}
+
+int map_txt_config_read_sub(const char *w1,const char *w2)
+{
+	if(strcmpi(w1,"mapreg_txt") == 0) {
+		strncpy(mapreg_txt, w2, sizeof(mapreg_txt) - 1);
+		mapreg_txt[sizeof(mapreg_txt) - 1] = '\0';
+	}
+
+	return 0;
+}
+
+#define do_init_map         do_txt_init_map
+#define do_final_map        do_txt_final_map
+#define map_config_read_sub map_txt_config_read_sub
+
+#else /* TXT_ONLY */
+
+static int  map_server_port        = 3306;
+static char map_server_ip[32]      = "127.0.0.1";
+static char map_server_id[32]      = "ragnarok";
+static char map_server_pw[32]      = "ragnarok";
+static char map_server_db[32]      = "ragnarok";
+static char map_server_charset[32] = "";
+
+int do_sql_init_map(void)
+{
+	//DB connection initialized
+	mysql_init(&mysql_handle);
+	printf("Connect DB server");
+	if(map_server_charset[0]) {
+		printf(" (charset: %s)",map_server_charset);
+	}
+	printf("...\n");
+
+	if(!mysql_real_connect(&mysql_handle, map_server_ip, map_server_id, map_server_pw,
+		map_server_db ,map_server_port, (char *)NULL, 0)
+	) {
+		printf("%s\n",mysql_error(&mysql_handle));
+		exit(1);
+	} else {
+		printf ("Connect Success!\n");
+	}
+	if(map_server_charset[0]) {
+		sprintf(tmp_sql,"SET NAMES %s",map_server_charset);
+		if (mysql_query(&mysql_handle, tmp_sql)) {
+			printf("DB server Error (charset)- %s\n", mysql_error(&mysql_handle));
+		}
+	}
+
+	return 0;
+}
+
+int do_sql_final_map(void)
+{
+	mysql_close(&mysql_handle);
+	printf("close DB connect....\n");
+
+	return 0;
+}
+
+int map_sql_config_read_sub(const char* w1,const char* w2)
+{
+	if(strcmpi(w1,"map_server_ip")==0){
+		strcpy(map_server_ip, w2);
+	}
+	else if(strcmpi(w1,"map_server_port")==0){
+		map_server_port=atoi(w2);
+	}
+	else if(strcmpi(w1,"map_server_id")==0){
+		strcpy(map_server_id, w2);
+	}
+	else if(strcmpi(w1,"map_server_pw")==0){
+		strcpy(map_server_pw, w2);
+	}
+	else if(strcmpi(w1,"map_server_db")==0){
+		strcpy(map_server_db, w2);
+	}
+	else if(strcmpi(w1,"map_server_charset")==0){
+		strcpy(map_server_charset, w2);
+	}
+
+	return 0;
+}
+
+#define do_init_map         do_sql_init_map
+#define do_final_map        do_sql_final_map
+#define map_config_read_sub map_sql_config_read_sub
+
+#endif /* TXT_ONLY */
+
 
 /*==========================================
  * 全map鯖総計での接続数設定
@@ -2300,6 +2404,9 @@ static int map_config_read(char *cfgName)
 				printf("map_config_read: Invalid listen_ip value: %s.\n", w2);
 			else
 				listen_ip = ip_result;
+		} else if (strcmpi(w1, "map_server_tag") == 0) {
+			strncpy(map_server_tag, w2, sizeof(map_server_tag));
+			map_server_tag[sizeof(map_server_tag) - 1] = '\0';
 		} else if (strcmpi(w1, "water_height") == 0) {
 			map_readwater(w2);
 		} else if (strcmpi(w1, "gm_account_filename") == 0) {
@@ -2312,8 +2419,6 @@ static int map_config_read(char *cfgName)
 			npc_addsrcfile(w2);
 		} else if (strcmpi(w1, "delnpc") == 0) {
 			npc_delsrcfile(w2);
-		} else if (strcmpi(w1, "read_grf_files_txt") == 0) {
-			read_grf_files_txt = atoi(w2);
 		} else if (strcmpi(w1, "packet_parse_time") == 0) {
 			packet_parse_time = atoi(w2);
 			if (packet_parse_time < 0) {
@@ -2338,31 +2443,30 @@ static int map_config_read(char *cfgName)
 		} else if (strcmpi(w1, "help_txt") == 0) {
 			strncpy(help_txt, w2, sizeof(help_txt) - 1);
 			help_txt[sizeof(help_txt) - 1] = '\0';
-		} else if (strcmpi(w1, "mapreg_txt") == 0) {
-			strncpy(mapreg_txt, w2, sizeof(mapreg_txt) - 1);
-			mapreg_txt[sizeof(mapreg_txt) - 1] = '\0';
 		} else if (strcmpi(w1, "extra_add_file_txt") == 0) {
 			strncpy(extra_add_file_txt, w2, sizeof(extra_add_file_txt) - 1);
 			extra_add_file_txt[sizeof(extra_add_file_txt) - 1] = '\0';
-		}else if (strcmpi(w1, "read_map_from_cache") == 0) {
+		} else if (strcmpi(w1, "read_map_from_cache") == 0) {
 			map_read_flag = atoi(w2);
-		}else if (strcmpi(w1, "map_cache_file") == 0) {
+		} else if (strcmpi(w1, "map_cache_file") == 0) {
 			strncpy(map_cache_file, w2, sizeof(map_cache_file) - 1);
 			map_cache_file[sizeof(map_cache_file) - 1] = '\0';
-		}else if (strcmpi(w1, "httpd_enable") == 0) {
+		} else if (strcmpi(w1, "httpd_enable") == 0) {
 			socket_enable_httpd(atoi(w2));
-		}else if (strcmpi(w1, "httpd_document_root") == 0) {
+		} else if (strcmpi(w1, "httpd_document_root") == 0) {
 			httpd_set_document_root(w2);
-		}else if (strcmpi(w1, "httpd_log_filename") == 0) {
+		} else if (strcmpi(w1, "httpd_log_filename") == 0) {
 			httpd_set_logfile(w2);
-		}else if (strcmpi(w1, "httpd_config") == 0) {
+		} else if (strcmpi(w1, "httpd_config") == 0) {
 			httpd_config_read(w2);
-		}else if (strcmpi(w1, "import") == 0) {
+		} else if (strcmpi(w1, "import") == 0) {
 			map_config_read(w2);
-		}else if (strcmpi(w1, "map_pk_server") == 0) {
+		} else if (strcmpi(w1, "map_pk_server") == 0) {
 			map_pk_server_flag = atoi(w2);
-		}else if (strcmpi(w1, "map_pk_nightmaredrop") == 0) {
+		} else if (strcmpi(w1, "map_pk_nightmaredrop") == 0) {
 			map_pk_nightmaredrop_flag = atoi(w2);
+		} else {
+			map_config_read_sub(w1, w2);
 		}
 	}
 	fclose(fp);
@@ -2473,6 +2577,7 @@ void do_final(void)
 	do_final_unit();
 	do_final_mob();
 	do_final_atcommand();
+	do_final_map();
 
 	for(i=0;i<map_num;i++){
 		if(map[i].gat) {
@@ -2546,7 +2651,9 @@ int do_init(int argc,char *argv[])
 	charid_db = numdb_init();
 	//address_db = numdb_init();
 
-	grfio_init( (!read_grf_files_txt)? NULL : (argc>6)? argv[6] : GRF_PATH_FILENAME );
+	do_init_map();
+
+	grfio_init((argc>6)? argv[6] : GRF_PATH_FILENAME);
 	map_readallmap();
 
 	add_timer_func_list(map_freeblock_timer,"map_freeblock_timer");

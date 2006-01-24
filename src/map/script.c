@@ -81,8 +81,7 @@ int str_hash[SCRIPT_HASH_SIZE];
 
 static struct dbt *mapreg_db=NULL;
 static struct dbt *mapregstr_db=NULL;
-static int mapreg_dirty=-1;
-char mapreg_txt[256]="save/mapreg.txt";
+static int mapreg_dirty = 0;
 #define MAPREG_AUTOSAVE_INTERVAL	(300*1000)
 
 static struct dbt *scriptlabel_db=NULL;
@@ -161,8 +160,8 @@ int script_csvinit( void );
 int script_csvfinal( void );
 #endif
 
-int mapreg_setreg(int num,int val);
-int mapreg_setregstr(int num,const char *str);
+int mapreg_setreg(int num,int val,int eternal);
+int mapreg_setregstr(int num,const char *str,int eternal);
 
 enum {
 	C_NOP,C_POS,C_INT,C_PARAM,C_FUNC,C_STR,C_CONSTSTR,C_ARG,
@@ -1876,7 +1875,7 @@ static int set_reg(struct script_state*st,struct map_session_data *sd,int num,ch
 		if( prefix=='@'){
 			pc_setregstr(sd,num,str);
 		}else if(prefix=='$') {
-			mapreg_setregstr(num,str);
+			mapreg_setregstr(num,str,(name[1] == '@')? 0: 1);
 		}else if(prefix=='\'') {
 			char *p;
 			struct linkdb_node **n;
@@ -1905,7 +1904,7 @@ static int set_reg(struct script_state*st,struct map_session_data *sd,int num,ch
 		}else if(prefix=='@') {
 			pc_setreg(sd,num,val);
 		}else if(prefix=='$') {
-			mapreg_setreg(num,val);
+			mapreg_setreg(num,val,(name[1] == '@')? 0: 1);
 		}else if(prefix=='#') {
 			if( name[1]=='#' )
 				pc_setaccountreg2(sd,name,val);
@@ -2739,21 +2738,22 @@ void run_script_main(struct script_state *st)
  * マップ変数の変更
  *------------------------------------------
  */
-int mapreg_setreg(int num,int val)
+int mapreg_setreg(int num,int val,int eternal)
 {
 	if(val!=0)
 		numdb_insert(mapreg_db,num,val);
 	else
 		numdb_erase(mapreg_db,num);
 
-	mapreg_dirty=1;
+	if(eternal)
+		mapreg_dirty=1;
 	return 0;
 }
 /*==========================================
  * 文字列型マップ変数の変更
  *------------------------------------------
  */
-int mapreg_setregstr(int num,const char *str)
+int mapreg_setregstr(int num,const char *str,int eternal)
 {
 	char *p;
 
@@ -2762,21 +2762,26 @@ int mapreg_setregstr(int num,const char *str)
 
 	if( str==NULL || *str==0 ){
 		numdb_erase(mapregstr_db,num);
-		mapreg_dirty=1;
+		if(eternal)
+			mapreg_dirty=1;
 		return 0;
 	}
-	p=(char *)aCalloc(strlen(str)+1, sizeof(char));
-	strcpy(p,str);
-	numdb_insert(mapregstr_db,num,p);
-	mapreg_dirty=1;
+	numdb_insert(mapregstr_db,num,aStrdup(str));
+
+	if(eternal)
+		mapreg_dirty=1;
 	return 0;
 }
 
+#ifdef TXT_ONLY
+
+char mapreg_txt[256] = "save/mapreg.txt";
+
 /*==========================================
- * 永続的マップ変数の読み込み
+ * 永続的マップ変数の読み込み(TXT)
  *------------------------------------------
  */
-static int script_load_mapreg(void)
+static int script_txt_load_mapreg(void)
 {
 	FILE *fp;
 	char line[1024];
@@ -2785,22 +2790,22 @@ static int script_load_mapreg(void)
 		return -1;
 
 	while(fgets(line,sizeof(line),fp)){
-		char buf1[256],buf2[1024],*p;
+		char buf1[256],buf2[1024];
 		int n,v,s,i;
 		if( sscanf(line,"%255[^,],%d\t%n",buf1,&i,&n)!=2 &&
 			(i=0,sscanf(line,"%[^\t]\t%n",buf1,&n)!=1) )
 			continue;
-		if(i<0 || i>=128)
+		if(i < 0 || i >= 128) {
+			printf("%s: %s broken data !\n",mapreg_txt,buf1);
 			continue;
+		}
 		if( buf1[strlen(buf1)-1]=='$' ){
 			if( sscanf(line+n,"%[^\n\r]",buf2)!=1 ){
 				printf("%s: %s broken data !\n",mapreg_txt,buf1);
 				continue;
 			}
-			p=(char *)aCalloc(strlen(buf2) + 1,sizeof(char));
-			strcpy(p,buf2);
 			s=add_str(buf1);
-			numdb_insert(mapregstr_db,(i<<24)|s,p);
+			numdb_insert(mapregstr_db,(i<<24)|s,aStrdup(buf2));
 		}else{
 			if( sscanf(line+n,"%d",&v)!=1 ){
 				printf("%s: %s broken data !\n",mapreg_txt,buf1);
@@ -2815,10 +2820,10 @@ static int script_load_mapreg(void)
 	return 0;
 }
 /*==========================================
- * 永続的マップ変数の書き込み
+ * 永続的マップ変数の書き込み(TXT)
  *------------------------------------------
  */
-static int script_save_mapreg_intsub(void *key,void *data,va_list ap)
+static int script_txt_save_mapreg_intsub(void *key,void *data,va_list ap)
 {
 	FILE *fp=va_arg(ap,FILE*);
 	int num=((int)key)&0x00ffffff, i=((int)key)>>24;
@@ -2831,7 +2836,7 @@ static int script_save_mapreg_intsub(void *key,void *data,va_list ap)
 	}
 	return 0;
 }
-static int script_save_mapreg_strsub(void *key,void *data,va_list ap)
+static int script_txt_save_mapreg_strsub(void *key,void *data,va_list ap)
 {
 	FILE *fp=va_arg(ap,FILE*);
 	int num=((int)key)&0x00ffffff, i=((int)key)>>24;
@@ -2844,19 +2849,126 @@ static int script_save_mapreg_strsub(void *key,void *data,va_list ap)
 	}
 	return 0;
 }
-static int script_save_mapreg(void)
+static int script_txt_save_mapreg(void)
 {
 	FILE *fp;
 	int lock;
 
 	if( (fp=lock_fopen(mapreg_txt,&lock))==NULL )
 		return -1;
-	numdb_foreach(mapreg_db,script_save_mapreg_intsub,fp);
-	numdb_foreach(mapregstr_db,script_save_mapreg_strsub,fp);
+	numdb_foreach(mapreg_db,script_txt_save_mapreg_intsub,fp);
+	numdb_foreach(mapregstr_db,script_txt_save_mapreg_strsub,fp);
 	lock_fclose(fp,mapreg_txt,&lock);
 	mapreg_dirty=0;
 	return 0;
 }
+
+#define script_load_mapreg script_txt_load_mapreg
+#define script_save_mapreg script_txt_save_mapreg
+
+#else /* TXT_ONLY */
+
+char mapreg_sqldb[256] = "mapreg";
+
+/*==========================================
+ * 永続的マップ変数の読み込み(SQL)
+ *------------------------------------------
+ */
+static int script_sql_load_mapreg(void)
+{
+	MYSQL_RES* sql_res;
+	MYSQL_ROW  sql_row = NULL;
+	char buf[64];
+
+	sprintf(tmp_sql, "SELECT `reg`,`index`,`value` FROM `%s` WHERE `server_tag` = '%s'", mapreg_sqldb, strecpy(buf,map_server_tag));
+	if(mysql_query(&mysql_handle, tmp_sql)) {
+		printf("DB server Error (select `%s`)- %s\n", mapreg_sqldb, mysql_error(&mysql_handle));
+	}
+	sql_res = mysql_store_result(&mysql_handle);
+
+	if(sql_res) {
+		int i,s;
+		char *name;
+		while((sql_row = mysql_fetch_row(sql_res)) != NULL) {
+			i = atoi(sql_row[1]);
+			if(i < 0 || i >= 128)
+				continue;
+			name = sql_row[0];
+			s = add_str(name);
+
+			if(name[strlen(name)-1] == '$') {
+				numdb_insert(mapregstr_db,(i<<24)|s,aStrdup(sql_row[2]));
+			} else {
+				numdb_insert(mapreg_db,(i<<24)|s,atoi(sql_row[2]));
+			}
+		}
+		mysql_free_result(sql_res);
+	}
+	return 0;
+}
+/*==========================================
+ * 永続的マップ変数の書き込み(SQL)
+ *------------------------------------------
+ */
+static int script_sql_save_mapreg_intsub(void *key,void *data,va_list ap)
+{
+	int num=((int)key)&0x00ffffff, i=((int)key)>>24;
+	char *name=str_buf+str_data[num].str;
+
+	if( name[1]!='@' ){
+		char buf1[64], buf2[1024];
+		sprintf(
+			tmp_sql,
+			"INSERT INTO `%s` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%d')",
+			mapreg_sqldb, strecpy(buf1,map_server_tag), strecpy(buf2,name), i, (int)data
+		);
+		if(mysql_query(&mysql_handle, tmp_sql)) {
+			printf("DB server Error (insert `%s`)- %s\n", mapreg_sqldb, mysql_error(&mysql_handle));
+		}
+	}
+	return 0;
+}
+static int script_sql_save_mapreg_strsub(void *key,void *data,va_list ap)
+{
+	int num=((int)key)&0x00ffffff, i=((int)key)>>24;
+	char *name=str_buf+str_data[num].str;
+
+	if( name[1]!='@' ){
+		char buf1[64], buf2[1024], buf3[4096];
+		sprintf(
+			tmp_sql,
+			"INSERT INTO `%s` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%s')",
+			mapreg_sqldb, strecpy(buf1,map_server_tag), strecpy(buf2,name), i, strecpy(buf3,(char*)data)
+		);
+		if(mysql_query(&mysql_handle, tmp_sql)) {
+			printf("DB server Error (insert `%s`)- %s\n", mapreg_sqldb, mysql_error(&mysql_handle));
+		}
+	}
+	return 0;
+}
+static int script_sql_save_mapreg(void)
+{
+	char buf[64];
+
+	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `server_tag` = '%s'", mapreg_sqldb, strecpy(buf,map_server_tag));
+	if(mysql_query(&mysql_handle, tmp_sql)) {
+		printf("DB server Error (delete `%s`)- %s\n", mapreg_sqldb, mysql_error(&mysql_handle));
+	}
+	numdb_foreach(mapreg_db,script_sql_save_mapreg_intsub);
+	numdb_foreach(mapregstr_db,script_sql_save_mapreg_strsub);
+	mapreg_dirty=0;
+	return 0;
+}
+
+#define script_load_mapreg script_sql_load_mapreg
+#define script_save_mapreg script_sql_save_mapreg
+
+#endif /* TXT_ONLY */
+
+/*==========================================
+ * 永続的マップ変数の自動セーブ
+ *------------------------------------------
+ */
 static int script_autosave_mapreg(int tid,unsigned int tick,int id,int data)
 {
 	if(mapreg_dirty)
@@ -2865,7 +2977,7 @@ static int script_autosave_mapreg(int tid,unsigned int tick,int id,int data)
 }
 
 /*==========================================
- *
+ * poswordの設定
  *------------------------------------------
  */
 static int set_posword(char *p)
@@ -2887,6 +2999,10 @@ static int set_posword(char *p)
 	return 0;
 }
 
+/*==========================================
+ * config読み込み
+ *------------------------------------------
+ */
 int script_config_read(char *cfgName)
 {
 	int i;
@@ -2973,7 +3089,6 @@ int script_check_variable(const char *name,int array_flag,int read_only)
 	}
 	return 0;
 }
-
 void* script_read_vars(struct map_session_data *sd,char *var,int elem,struct linkdb_node **ref)
 {
 	struct script_state *st = NULL;
@@ -2989,7 +3104,6 @@ void* script_read_vars(struct map_session_data *sd,char *var,int elem,struct lin
 
 	return ret;
 }
-
 void script_write_vars(struct map_session_data *sd,char *var,int elem,void *v,struct linkdb_node **ref)
 {
 	set_reg(NULL, sd, (elem<<24) | add_str(var), var, v, ref);
@@ -5027,12 +5141,12 @@ int buildin_getpartymember(struct script_state *st)
 		for(i=0;i<MAX_PARTY && i<128;i++){
 			if(p->member[i].account_id){
 //				printf("name:%s %d\n",p->member[i].name,i);
-				mapreg_setregstr(add_str("$@partymembername$")+(i<<24),p->member[i].name);
+				mapreg_setregstr(add_str("$@partymembername$")+(i<<24),p->member[i].name,0);
 				j++;
 			}
 		}
 	}
-	mapreg_setreg(add_str("$@partymembercount"),j);
+	mapreg_setreg(add_str("$@partymembercount"),j,0);
 
 	return 0;
 }
@@ -7089,7 +7203,7 @@ int buildin_warpwaitingpc(struct script_state *st)
 
 		if( sd == NULL )
 			continue;
-		mapreg_setreg(add_str("$@warpwaitingpc")+(i<<24),sd->bl.id);
+		mapreg_setreg(add_str("$@warpwaitingpc")+(i<<24),sd->bl.id,0);
 
 		if(strcmp(str,"Random")==0)
 			pc_randomwarp(sd,3);
@@ -7098,7 +7212,7 @@ int buildin_warpwaitingpc(struct script_state *st)
 		else
 			pc_setpos(sd,str,x,y,0);
 	}
-	mapreg_setreg(add_str("$@warpwaitingpcnum"),n);
+	mapreg_setreg(add_str("$@warpwaitingpcnum"),n,0);
 	return 0;
 }
 

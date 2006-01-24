@@ -1063,6 +1063,7 @@ int map_field_setting(void);
 int map_check_dir(int s_dir,int t_dir);
 int map_calc_dir( struct block_list *src,int x,int y);
 
+extern char map_server_tag[16];
 extern const int dirx[], diry[];
 
 // path.cより

@@ -48,12 +48,15 @@ int do_init_script(void);
 int do_final_script(void);
 
 extern struct script_code error_code;
-extern char mapreg_txt[256];
 
 // @readvars, @writevars
 int script_check_variable(const char *name,int array_flag,int read_only);
 void* script_read_vars(struct map_session_data *sd,char *var,int elem,struct linkdb_node **ref);
 void script_write_vars(struct map_session_data *sd,char *var,int elem,void *v,struct linkdb_node **ref);
+
+#ifdef TXT_ONLY
+extern char mapreg_txt[256];
+#endif /* TXT_ONLY */
 
 #endif
 

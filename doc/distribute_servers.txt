@@ -160,6 +160,11 @@ import/char_conf.txt を変更するといいでしょう。
 ならないことが多いです。このあたりは判断が難しいのですが、
 こまめに調べるしかないでしょう。
 
+SQLでは各マップサーバの持つマップ永続変数を管理するために、マップサーバタグ名を
+設定する必要があります。
+各マップサーバでそれぞれ別の名前にしてください。
+（わざと同一にすることも可能ですが、変数の値が正しく得られないため推奨されません）
+
 では、マップの分担を import/map_conf.txt に記述する方法を説明します。
 まず、delmap: all で標準のマップを全て削除します。
 その後、担当するマップを map: hoge.gat というふうに羅列するといいでしょう。
@@ -179,25 +184,27 @@ import/char_conf.txt を変更するといいでしょう。
 	char_conf.txt
 		userid: s1
 		passwd: p1
-		
+
 	map_conf.txt	（map-server[A]）
 		userid: s1				← char_conf.txt と同じものを指定
 		passwd: p1
 		char_ip: localhost		← 同じマシンなので localhost でよい
 		char_port: 6121
-	
+		map_server_tag: map01
+
 		delmap: all
 		map: new_1-1.gat
-	
+
 	map_conf.txt	（map-server[B]）
 		userid: s1				← char_conf.txt と同じものを指定
 		passwd: p1
 		char_ip: 192.168.0.2	← キャラサーバー（マシンA）の IP を指定
 		char_port: 6121
-		
+		map_server_tag: map02
+
 		delmap: all
 		map: prontera.gat
-		
+
 	注意
 	　マシンB ではキャラクターサーバーを起動する必要はありません。
 	　この例ではサーバーアカウントはデフォルトのまま使用していますが、

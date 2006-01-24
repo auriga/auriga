@@ -4038,19 +4038,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case PA_GOSPEL:				/* ゴスペル */
-		{
-			int i;
-			sc_data = status_get_sc_data(src);
-			if (sc_data && sc_data[SC_GOSPEL].timer!=-1) {
-				skill_delunitgroup((struct skill_unit_group *)sc_data[SC_GOSPEL].val3);
-				status_change_end(bl,SC_GOSPEL,-1);
-				break;
-			}
-			status_change_release(src,0x04);	// ゴスペル術者のステータス異常解除
-			clif_skill_poseffect(src,skillid,skilllv,src->x,src->y,tick);
-			status_change_start(bl,SC_GOSPEL,skilllv,bl->id,
-				(int)(skill_unitsetting(src,skillid,skilllv,src->x,src->y,0)),0,skill_get_time(skillid,skilllv),0);
+		sc_data = status_get_sc_data(src);
+		if (sc_data && sc_data[SC_GOSPEL].timer!=-1) {
+			skill_delunitgroup((struct skill_unit_group *)sc_data[SC_GOSPEL].val3);
+			status_change_end(bl,SC_GOSPEL,-1);
+			break;
 		}
+		status_change_release(src,0x04);	// ゴスペル術者のステータス異常解除
+		clif_skill_poseffect(src,skillid,skilllv,src->x,src->y,tick);
+		status_change_start(bl,SC_GOSPEL,skilllv,bl->id,
+			(int)(skill_unitsetting(src,skillid,skilllv,src->x,src->y,0)),0,skill_get_time(skillid,skilllv),0);
 		break;
 
 	case BD_ADAPTATION:			/* アドリブ */
