@@ -4557,9 +4557,12 @@ void battle_join_struggle(struct mob_data *md,struct block_list *src)
 	nullpo_retv(src);
 
 	if(src->type == BL_PC) {
-		// ダメージ-1で戦闘参加者入り(0にするとリスト未登録のNULLとかぶって困る)
-		if(linkdb_search( &md->dmglog, (void*)src->id ) == NULL) {
-			linkdb_insert( &md->dmglog, (void*)src->id, (void*)-1 );
+		struct map_session_data *sd = (struct map_session_data *)src;
+		if(sd) {
+			// ダメージ-1で戦闘参加者入り(0にするとリスト未登録のNULLとかぶって困る)
+			if(linkdb_search( &md->dmglog, (void*)sd->status.char_id ) == NULL) {
+				linkdb_insert( &md->dmglog, (void*)sd->status.char_id, (void*)-1 );
+			}
 		}
 	}
 	return;

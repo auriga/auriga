@@ -1611,18 +1611,18 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		// ダメージを与えた人と個人累計ダメージを保存(Exp計算用)
 		if(src_sd)
 		{
-			damage2 = (int)linkdb_search( &md->dmglog, (void*)src_sd->bl.id );
+			damage2 = (int)linkdb_search( &md->dmglog, (void*)src_sd->status.char_id );
 			damage2 += (damage2==-1)? 0: damage; // 先制を受けていた場合-1で戦闘参加者に登録されている
 			if(damage2 <= 0)
 				damage2 = -1;
-			linkdb_replace( &md->dmglog, (void*)src_sd->bl.id, (void*)damage2 );
+			linkdb_replace( &md->dmglog, (void*)src_sd->status.char_id, (void*)damage2 );
 			id = src_sd->bl.id;
 		}
 		if(src_pd && src_pd->msd && battle_config.pet_attack_exp_to_master)
 		{
 			damage2 = damage * battle_config.pet_attack_exp_rate/100;
-			damage2 += (int)linkdb_search( &md->dmglog, (void*)src_pd->msd->bl.id );
-			linkdb_replace( &md->dmglog, (void*)src_pd->msd->bl.id, (void*)damage2 );
+			damage2 += (int)linkdb_search( &md->dmglog, (void*)src_pd->msd->status.char_id );
+			linkdb_replace( &md->dmglog, (void*)src_pd->msd->status.char_id, (void*)damage2 );
 			id = 0;
 		}
 		if(src_md && src_md->state.special_mob_ai)
@@ -1630,16 +1630,17 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			struct map_session_data *msd = map_id2sd(src_md->master_id);
 			// msdがNULLのときはダメージログに記録しない
 			if(msd) {
-				damage2 = damage + (int)linkdb_search( &md->dmglog, (void*)msd->bl.id );
-				linkdb_replace( &md->dmglog, (void*)msd->bl.id, (void*)damage2 );
+				damage2 = damage + (int)linkdb_search( &md->dmglog, (void*)msd->status.char_id );
+				linkdb_replace( &md->dmglog, (void*)msd->status.char_id, (void*)damage2 );
 				id = src_md->master_id;
 			}
 		}
 		if(src_hd)
 		{
+			// ホムの場合はIDを負に反転する
 			damage2 = damage;
-			damage2 += (int)linkdb_search( &md->dmglog, (void*)src_hd->bl.id );
-			linkdb_replace( &md->dmglog, (void*)src_hd->bl.id, (void*)damage2 );
+			damage2 += (int)linkdb_search( &md->dmglog, (void*)-src_hd->bl.id );
+			linkdb_replace( &md->dmglog, (void*)-src_hd->bl.id, (void*)damage2 );
 			id = src_hd->bl.id;
 		}
 
@@ -1775,7 +1776,14 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 	for(i=0; node; node = node->next,i++) {
 		int damage;
-		tmpbl[i] = map_id2bl((int)node->key);
+		int id = (int)node->key;
+		if(id > 0) {
+			struct map_session_data *sd = map_charid2sd(id);
+			if(sd)
+				tmpbl[i] = &sd->bl;
+		} else {
+			tmpbl[i] = map_id2bl(-id);	// ホムの場合はIDが負に反転されている
+		}
 		if( !tmpbl[i] || (tmpbl[i]->type != BL_PC && tmpbl[i]->type != BL_HOM) ) {
 			tmpbl[i] = NULL;
 			continue;
