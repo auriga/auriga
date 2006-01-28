@@ -1707,8 +1707,11 @@ int intif_parse_LoadStatusChange(int fd)
 		type = RFIFOW(fd,p);
 		if(status_can_save(type))
 		{
+			int tick = (int)RFIFOL(fd,p+18);
+			if(tick <= 0)
+				continue;
 			// ここでは効果時間補正およびステータス再計算しない（flag=2+4）
-			status_change_start(&sd->bl, type, RFIFOL(fd,p+2), RFIFOL(fd,p+6), RFIFOL(fd,p+10), RFIFOL(fd,p+14), RFIFOL(fd,p+18), 6);
+			status_change_start(&sd->bl, type, RFIFOL(fd,p+2), RFIFOL(fd,p+6), RFIFOL(fd,p+10), RFIFOL(fd,p+14), (unsigned int)tick, 6);
 			calc_flag = 1;
 		}
 	}

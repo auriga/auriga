@@ -3952,6 +3952,10 @@ int buildin_return(struct script_state *st)
 			if( name[0] == '\'' && name[1] == '@') {
 				// '@ 変数を参照渡しにすると危険なので値渡しにする
 				get_val(st,sd);
+				if(isstr(sd)) {		// 文字列の場合はaStrdupしないといけない
+					sd->type  = C_STR;
+					sd->u.str = aStrdup(sd->u.str);
+				}
 			} else if( name[0] == '\'' && !sd->ref) {
 				// ' 変数は参照渡しでも良いが、参照元が設定されていないと
 				// 元のスクリプトの値を差してしまうので補正する。

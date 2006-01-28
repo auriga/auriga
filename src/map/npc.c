@@ -596,13 +596,20 @@ int npc_checknear(struct map_session_data *sd, struct npc_data *nd)
  */
 int npc_globalmessage(const char *name,char *mes)
 {
-	struct npc_data *nd = (struct npc_data *)strdb_search(npcname_db,name);
-	char temp[100];
+	struct npc_data *nd = npc_name2id(name);
+	char temp[128], *p;
+	int len;
 
 	if(!nd)
 		return 0;
 
-	snprintf(temp, sizeof temp ,"%s : %s",nd->name,mes);
+	strcpy(temp, nd->name);
+	temp[sizeof(nd->name)] = 0;
+	if((p = strchr(temp,'#')) != NULL)	// #以下の文字列は表示しない
+		*p = 0;
+
+	len = strlen(temp);
+	snprintf(temp+len, sizeof(temp)-len-1, " : %s", mes);
 	clif_GlobalMessage(&nd->bl,temp);
 
 	return 0;
