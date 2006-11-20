@@ -1,0 +1,230 @@
+//npc_monster.txt＠Athena 2006/10/09 20:47:07 (JST)
+
+//タナトスタワー最上階(thana_boss.gat)
+thana_boss.gat,135,119,0,0	monster	魔剣士タナトスの記憶	1708,1,7200000,3600000,0
+
+//ゲフェニアダンジョン(gef_dun03.gat)
+gef_dun03.gat,0,0,0,0	monster	ヘリオン	1626,1,600000,300000,0
+gef_dun03.gat,0,0,0,0	monster	レイス	1192,5,180000,90000,0
+gef_dun03.gat,0,0,0,0	monster	ウィンドゴースト	1263,5,180000,90000,0
+gef_dun03.gat,0,0,0,0	monster	デッドリーレイス	1291,1,1800000,900000,0
+
+//オーディン神殿(odin_tem01.gat)
+odin_tem01.gat,0,0,0,0	monster	スケッギョルド	1755,1,3600000,1800000,0
+odin_tem01.gat,0,0,0,0	monster	スケッギョルド	1754,1,3600000,1800000,0
+odin_tem01.gat,0,0,0,0	monster	ブリーズ	1692,10,0,0,0
+odin_tem01.gat,0,0,0,0	monster	プラズマ	1693,15,0,0,0
+odin_tem01.gat,0,0,0,0	monster	プラズマ	1694,3,0,0,0
+odin_tem01.gat,0,0,0,0	monster	プラズマ	1695,3,0,0,0
+odin_tem01.gat,0,0,0,0	monster	プラズマ	1696,3,0,0,0
+odin_tem01.gat,0,0,0,0	monster	プラズマ	1697,3,0,0,0
+odin_tem01.gat,0,0,0,0	monster	黄色草	1081,5,180000,90000,0
+odin_tem01.gat,0,0,0,0	monster	青い草	1079,5,180000,90000,0
+odin_tem01.gat,0,0,0,0	monster	緑色草	1080,5,180000,90000,0
+
+//オーディン神殿(odin_tem02.gat)
+odin_tem02.gat,0,0,0,0	monster	スケッギョルド	1754,3,3600000,1800000,0
+odin_tem02.gat,0,0,0,0	monster	スケッギョルド	1755,3,3600000,1800000,0
+odin_tem02.gat,0,0,0,0	monster	スケグル	1752,30,0,0,0
+odin_tem02.gat,0,0,0,0	monster	プラズマ	1693,15,0,0,0
+odin_tem02.gat,0,0,0,0	monster	青い草	1079,10,180000,90000,0
+odin_tem02.gat,0,0,0,0	monster	フラッズ	1753,25,0,0,0
+odin_tem02.gat,0,0,0,0	monster	ヴァルキリー	1765,1,3600000,1800000,0
+
+//オーディン神殿(odin_tem03.gat)
+odin_tem03.gat,0,0,0,0	monster	スケッギョルド	1754,15,0,0,0
+odin_tem03.gat,0,0,0,0	monster	スケッギョルド	1755,10,0,0,0
+odin_tem03.gat,0,0,0,0	monster	スケグル	1752,5,0,0,0
+odin_tem03.gat,0,0,0,0	monster	プラズマ	1693,15,0,0,0
+odin_tem03.gat,0,0,0,0	monster	青い草	1079,12,180000,90000,0
+odin_tem03.gat,0,0,0,0	monster	輝く草	1083,10,180000,90000,0
+odin_tem03.gat,0,0,0,0	monster	ランドグリーズ	1751,1,28800000,7200000,0
+odin_tem03.gat,0,0,0,0	monster	フラッズ	1753,5,0,0,0
+odin_tem03.gat,0,0,0,0	monster	ヴァルキリー	1765,2,3600000,1800000,0
+
+//機械人形工場 1F(kh_dun01.gat)
+kh_dun01.gat,0,0,0,0	monster	アリセル	1735,5,0,0,0
+kh_dun01.gat,0,0,0,0	monster	アリス	1275,30,0,0,0
+kh_dun01.gat,0,0,0,0	monster	アリオット	1736,5,0,0,0
+kh_dun01.gat,0,0,0,0	monster	アリザ	1737,60,0,0,0
+kh_dun01.gat,0,0,0,0	monster	コンスタント	1738,30,0,0,0
+
+//機械人形工場 2F(kh_dun02.gat)
+kh_dun02.gat,0,0,0,0	monster	アリセル	1735,40,0,0,0
+kh_dun02.gat,0,0,0,0	monster	アリオット	1736,35,0,0,0
+kh_dun02.gat,0,0,0,0	monster	アリザ	1737,25,0,0,0
+kh_dun02.gat,0,0,0,0	monster	コンスタント	1738,30,0,0,0
+kh_dun02.gat,0,0,0,0	monster	キエルD-01	1734,1,7200000,3600000,0
+
+//アインブロックフィールド(ein_fild01.gat)
+ein_fild01.gat,0,0,0,0	monster	デーモンパンク	1378,50,0,0,0
+ein_fild01.gat,0,0,0,0	monster	パンク	1199,50,0,0,0
+
+//アインブロックフィールド(ein_fild02.gat)
+ein_fild02.gat,0,0,0,0	monster	ドリラー	1380,40,0,0,0
+ein_fild02.gat,0,0,0,0	monster	デーモンパンク	1378,25,0,0,0
+ein_fild02.gat,0,0,0,0	monster	ウンゴリアント	1618,1,3600000,1800000,0
+
+//ジュノーフィールド(yuno_fild10.gat)
+yuno_fild10.gat,0,0,0,0	monster	ダスティネス	1114,20,0,0,0
+yuno_fild10.gat,0,0,0,0	monster	ハンターフライ	1035,10,0,0,0
+yuno_fild10.gat,0,0,0,0	monster	ジオグラファー	1368,20,0,0,0
+yuno_fild10.gat,0,0,0,0	monster	ビートル	1494,40,0,0,0
+yuno_fild10.gat,0,0,0,0	monster	スタイナー	1174,20,0,0,0
+
+//氷洞窟(ice_dun01.gat)
+ice_dun01.gat,0,0,0,0	monster	ガゼティ	1778,10,0,0,0
+ice_dun01.gat,0,0,0,0	monster	ロウィーン	1782,40,0,0,0
+ice_dun01.gat,0,0,0,0	monster	ムスキプラー	1780,20,0,0,0
+ice_dun01.gat,0,0,0,0	monster	シロマ	1776,60,0,0,0
+
+//氷洞窟(ice_dun02.gat)
+ice_dun02.gat,0,0,0,0	monster	ガゼティ	1778,30,0,0,0
+ice_dun02.gat,0,0,0,0	monster	アイシクル	1789,10,0,0,0
+ice_dun02.gat,0,0,0,0	monster	スノウアー	1775,30,0,0,0
+ice_dun02.gat,0,0,0,0	monster	シロマ	1776,20,0,0,0
+ice_dun02.gat,0,0,0,0	monster	アイスタイタン	1777,10,0,0,0
+
+//氷洞窟(ice_dun03.gat)
+ice_dun03.gat,0,0,0,0	monster	ガゼティ	1778,15,0,0,0
+ice_dun03.gat,0,0,0,0	monster	アイシクル	1789,10,0,0,0
+ice_dun03.gat,0,0,0,0	monster	スノウアー	1775,20,0,0,0
+ice_dun03.gat,0,0,0,0	monster	アイスタイタン	1777,30,0,0,0
+ice_dun03.gat,0,0,0,0	monster	シロマ	1776,20,0,0,0
+ice_dun03.gat,0,0,0,0	monster	クチュラヌクス	1779,1,7200000,3600000,0
+
+//アウドムラ草原(ra_fild01.gat)
+ra_fild01.gat,0,0,0,0	monster	ムスキプラー	1780,40,0,0,0
+ra_fild01.gat,0,0,0,0	monster	ジオグラファー	1368,40,0,0,0
+ra_fild01.gat,0,0,0,0	monster	ガリオン	1783,1,0,0,0
+ra_fild01.gat,0,0,0,0	monster	ロウィーン	1782,10,0,0,0
+ra_fild01.gat,0,0,0,0	monster	グリフォン	1259,1,0,0,0
+ra_fild01.gat,0,0,0,0	monster	ドロセラ	1781,40,0,0,0
+
+//オッズ峡谷(ra_fild02.gat)
+ra_fild02.gat,0,0,0,0	monster	ムスキプラー	1780,30,0,0,0
+ra_fild02.gat,0,0,0,0	monster	ドロセラ	1781,30,0,0,0
+ra_fild02.gat,0,0,0,0	monster	ガリオン	1783,1,0,0,0
+ra_fild02.gat,0,0,0,0	monster	ロウィーン	1782,15,0,0,0
+
+//ラッセル平原(ra_fild03.gat)
+ra_fild03.gat,0,0,0,0	monster	アトラス	1785,1,7200000,3600000,0
+ra_fild03.gat,0,0,0,0	monster	ガリオン	1783,1,0,0,0
+ra_fild03.gat,0,0,0,0	monster	ロウィーン	1782,40,0,0,0
+ra_fild03.gat,0,0,0,0	monster	スタポ	1784,45,0,0,0
+
+//アウドムラ草原(ra_fild04.gat)
+ra_fild04.gat,0,0,0,0	monster	スタポ	1784,10,0,0,0
+ra_fild04.gat,0,0,0,0	monster	ロウィーン	1782,10,0,0,0
+
+//アウドムラ草原(ra_fild05.gat)
+ra_fild05.gat,0,0,0,0	monster	ヒルウィンド	1629,35,0,0,0
+ra_fild05.gat,0,0,0,0	monster	ドロセラ	1781,20,0,0,0
+ra_fild05.gat,0,0,0,0	monster	ジオグラファー	1368,20,0,0,0
+
+//ポルトルナ(ra_fild06.gat)
+ra_fild06.gat,0,0,0,0	monster	ヒルウィンド	1629,30,0,0,0
+ra_fild06.gat,0,0,0,0	monster	ドロセラ	1781,25,0,0,0
+ra_fild06.gat,0,0,0,0	monster	ウィレス	1627,10,0,0,0
+
+//オッズ峡谷(ra_fild07.gat)
+ra_fild07.gat,0,0,0,0	monster	ガリオン	1783,1,0,0,0
+ra_fild07.gat,0,0,0,0	monster	ロウィーン	1782,35,0,0,0
+ra_fild07.gat,0,0,0,0	monster	スタポ	1784,30,0,0,0
+
+//ラッセル平原(ra_fild08.gat)
+ra_fild08.gat,0,0,0,0	monster	スタポ	1784,60,0,0,0
+ra_fild08.gat,0,0,0,0	monster	ドロップス	1113,30,0,0,0
+ra_fild08.gat,0,0,0,0	monster	ドロセラ	1781,25,0,0,0
+
+//アウドムラ草原(ra_fild09.gat)
+ra_fild09.gat,0,0,0,0	monster	ドロセラ	1781,50,0,0,0
+ra_fild09.gat,0,0,0,0	monster	メタリン	1613,20,0,0,0
+ra_fild09.gat,0,0,0,0	monster	ヒルウィンド	1680,20,0,0,0
+
+//オッズ峡谷(ra_fild10.gat)
+ra_fild10.gat,0,0,0,0	monster	ガリオン	1783,1,0,0,0
+ra_fild10.gat,0,0,0,0	monster	ロウィーン	1782,30,0,0,0
+ra_fild10.gat,0,0,0,0	monster	スタポ	1784,30,0,0,0
+ra_fild10.gat,0,0,0,0	monster	ドロップス	1113,20,0,0,0
+
+//ラッセル平原(ra_fild11.gat)
+ra_fild11.gat,0,0,0,0	monster	スタポ	1784,15,0,0,0
+ra_fild11.gat,0,0,0,0	monster	ドロップス	1113,10,0,0,0
+
+//ラッセル平原(ra_fild12.gat)
+ra_fild12.gat,0,0,0,0	monster	スタポ	1784,30,0,0,0
+ra_fild12.gat,0,0,0,0	monster	ドロップス	1113,20,0,0,0
+
+//涙の海岸(ra_fild13.gat)
+ra_fild13.gat,0,0,0,0	monster	スタポ	1784,30,0,0,0
+ra_fild13.gat,0,0,0,0	monster	ドロップス	1113,20,0,0,0
+ra_fild13.gat,0,0,0,0	monster	ロウィーン	1782,25,0,0,0
+
+//神殿聖域(ra_san05.gat)
+ra_san05.gat,0,0,0,0	monster	グルームアンダーナイト	1768,1,0,0,0
+ra_san05.gat,0,0,0,0	monster	アガヴ	1769,10,0,0,0
+ra_san05.gat,0,0,0,0	monster	エキオ	1770,10,0,0,0
+ra_san05.gat,0,0,0,0	monster	イシラ	1772,10,0,0,0
+ra_san05.gat,0,0,0,0	monster	ホドレムリン	1773,10,0,0,0
+ra_san05.gat,0,0,0,0	monster	シーカー	1774,10,0,0,0
+
+//神殿聖域(ra_san01.gat)
+ra_san01.gat,0,0,0,0	monster	グレムリン	1632,10,0,0,0
+ra_san01.gat,0,0,0,0	monster	ビホルダー	1633,10,0,0,0
+ra_san01.gat,0,0,0,0	monster	イシラ	1772,10,0,0,0
+ra_san01.gat,0,0,0,0	monster	ヴァンベルク	1771,10,0,0,0
+
+//神殿聖域(ra_san02.gat)
+ra_san02.gat,0,0,0,0	monster	グレムリン	1632,10,0,0,0
+ra_san02.gat,0,0,0,0	monster	ビホルダー	1633,10,0,0,0
+ra_san02.gat,0,0,0,0	monster	ヴァンベルク	1771,10,0,0,0
+ra_san02.gat,0,0,0,0	monster	イシラ	1772,10,0,0,0
+
+//神殿聖域(ra_san03.gat)
+ra_san03.gat,0,0,0,0	monster	グレムリン	1632,10,0,0,0
+ra_san03.gat,0,0,0,0	monster	ビホルダー	1633,10,0,0,0
+ra_san03.gat,0,0,0,0	monster	ホドレムリン	1773,10,0,0,0
+ra_san03.gat,0,0,0,0	monster	シーカー	1774,10,0,0,0
+
+//神殿聖域(ra_san04.gat)
+ra_san04.gat,0,0,0,0	monster	アガヴ	1769,10,0,0,0
+ra_san04.gat,0,0,0,0	monster	エキオ	1770,10,0,0,0
+ra_san04.gat,0,0,0,0	monster	ホドレムリン	1773,10,0,0,0
+ra_san04.gat,0,0,0,0	monster	シーカー	1774,10,0,0,0
+
+//アインブロックフィールド(ein_fild05.gat)
+ein_fild05.gat,0,0,0,0	monster	ミネラル	1614,35,0,0,0
+ein_fild05.gat,0,0,0,0	monster	ウィレス	1627,30,0,0,0
+ein_fild05.gat,0,0,0,0	monster	オブシディアン	1615,20,0,0,0
+ein_fild05.gat,0,0,0,0	monster	デーモンパンク	1378,20,0,0,0
+ein_fild05.gat,0,0,0,0	monster	ジオグラファー	1368,10,0,0,0
+
+//フィゲルフィールド(hu_fild02.gat)
+hu_fild02.gat,0,0,0,0	monster	ラフレシア	1162,35,0,0,0
+hu_fild02.gat,0,0,0,0	monster	ウィレス	1627,30,0,0,0
+hu_fild02.gat,0,0,0,0	monster	メタリン	1613,20,0,0,0
+hu_fild02.gat,0,0,0,0	monster	サベージベベ	1167,20,0,0,0
+hu_fild02.gat,0,0,0,0	monster	グリーンイグアナ	1687,10,0,0,0
+hu_fild02.gat,0,0,0,0	monster	ブリーズ	1692,10,0,0,0
+hu_fild02.gat,0,0,0,0	monster	ジオグラファー	1368,10,0,0,0
+hu_fild02.gat,0,0,0,0	monster	デーモンパンク	1378,5,0,0,0
+hu_fild02.gat,0,0,0,0	monster	ノーバス	1715,2,0,0,0
+hu_fild02.gat,0,0,0,0	monster	ノーバス	1718,2,0,0,0
+
+//フィゲルフィールド(hu_fild03.gat)
+hu_fild03.gat,0,0,0,0	monster	メタリン	1613,80,0,0,0
+hu_fild03.gat,0,0,0,0	monster	ポポリン	1031,20,0,0,0
+hu_fild03.gat,0,0,0,0	monster	グリーンイグアナ	1687,10,0,0,0
+hu_fild03.gat,0,0,0,0	monster	盗蟲	1051,10,0,0,0
+hu_fild03.gat,0,0,0,0	monster	黒いきのこ	1084,10,0,0,0
+hu_fild03.gat,0,0,0,0	monster	赤いきのこ	1085,10,0,0,0
+
+//フィゲルフィールド(hu_fild06.gat)
+hu_fild06.gat,0,0,0,0	monster	モルデン	1628,50,0,0,0
+hu_fild06.gat,0,0,0,0	monster	キャラメル	1103,20,0,0,0
+hu_fild06.gat,0,0,0,0	monster	ポリン	1002,10,0,0,0
+hu_fild06.gat,0,0,0,0	monster	ポポリン	1031,10,0,0,0
+hu_fild06.gat,0,0,0,0	monster	メタリン	1613,10,0,0,0
+hu_fild06.gat,0,0,0,0	monster	緑色草	1080,10,0,0,0
+hu_fild06.gat,0,0,0,0	monster	黄色草	1081,10,0,0,0

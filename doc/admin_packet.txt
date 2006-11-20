@@ -1,0 +1,75 @@
+===========================================================================
+===========================================================================
+			管理用パケットリスト
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+
+===========================================================================
+	全サーバー共通
+---------------------------------------------------------------------------
+
+S 7530
+	Athena情報所得要求
+R 7531 <major_version>.B <minor_version>.B <revision>.B <release_flag>.B <official_flag>.B <server_type>.B <mod_version>.w
+	Athena情報所得通知
+	release_flag : 0=release,1=debug
+	official_flag: 0=official,1=mod
+S 7532
+	切断要求(応答無しでサーバー側から即切断する)
+	クライアントが切断するとログにでるset eofが表示されないようにする
+
+===========================================================================
+	ログインサーバー
+---------------------------------------------------------------------------
+
+S 7918 <len>.w <encrypt_flag>.w <ladmin_password>.24(16)B
+	管理者ログイン要求
+	暗号化ログインの場合はあらかじめ 01db か 791a で暗号化キーを所得する．
+	また、暗号化ログインのときはladmin_passwordは16Bになる．
+	encrypt_flag: 0=plain , 1=md5(key+pass) , 2=md5(pass+key)
+R 7919 <flag>.B
+	管理者ログイン結果
+	flag=0 成功 / 1 失敗
+S 791a
+	暗号化キー要求
+	ログが出ないこと以外は01dbと同じ．応答は01dc．
+---以上はログインが成功するまで/以下はログインが成功しているときのみ---
+R 791f
+	ready信号
+S 7920 <start_id>.l <end_id>.l <flag>.B
+	アカウントリスト所得要求
+	flag=0固定
+R 7921 <len>.w { <account_id>.l <account_name>.24B <sex>.B <dummy>.24B <count>.l state.l }.61B*
+	アカウントリスト送信
+S 7930 <len>.w <account_name>.24B <password>.24B <sex>.B [<mail>.40B]
+	アカウント作成
+	mail は省略可能
+R 7931 <flag>.w <account_name>.24B
+	アカウント作成成否 flag= 0 成功/ 1 同じアカウントがある
+S 7932 <len>.w <account_name>.24B
+	アカウントの削除
+R 7933 <flag>.w <account_name>.24B
+	アカウントの削除可否 flag= 0 成功 / 1 存在しない
+S 7934 <len>.w <account_name>.24B <password>.24B
+	アカウントのパスワード変更
+R 7935 <flag>.w <account_name>.24B
+	アカウントのパスワード変更可否 flag=0成功/1存在しない
+S 7936 <len>.w <account_name>.24B <state>.l
+	アカウントのバン状態変更
+R 7937 <flag>.w <account_name>.24B <state>.l
+	アカウントのバン状態変更可否 flag=0成功/1=存在しない
+S 7938
+	ログインサーバに接続しているサーバ情報要求
+R 7939 <length>.w {<IP>.l <port>.w <server_name>.20B <#_of_users>.w <maintenance>.w <new>.w}.32B*
+	サーバ情報応答
+S 793a <account_name>.24B <password>.24B
+	パスワードテスト要求
+R 793b <flag>.w <account_name>.24B
+	パスワードテスト応答 flag= 0 成功 / 1 アカウントが存在しないか無効
+S 793c <account_name>.24B
+	アカウントの全情報を名前引きで要求
+S 793d <account_id>.L
+	アカウントの全情報をID引きで要求
+R 793e <flag>.w <account_id>.l <GM_level>.B <account_name>.24B <sex>.B <count>.l <state>.W <last_ip>.16B <last_login_time>.24B <email>.40B
+	アカウントの全情報の応答 flag= 0 成功 / 1 存在しない

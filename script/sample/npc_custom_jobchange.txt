@@ -1,0 +1,152 @@
+//-----------------------------------------------------------------------------
+//転職カプラ
+//追加職対応修正版
+//追加職に対応していなくても大丈夫なはず	by ＡＡＡ
+//-----------------------------------------------------------------------------
+prontera.gat,161,192,5	script	転職カプラ	114,{
+	cutin "kafra_04",2;
+	if(countitem(515)<10) goto Llesscarrot;
+
+Llesscarrot:
+	mes "[転職カプラ]";
+	mes "いらっしゃいませ。";
+	mes "こちらでは、転職する事が出来ます。";
+	mes "転職しますか?";
+	next;
+	menu 	"1次職への転職希望",Litiji,
+		"拡張1次職への転職希望",Lexitiji,
+		"2-1次職への転職希望",Lninoiti,
+		"2-2次職への転職希望",Lninoni,
+		"やめる",Lend;
+
+Litiji:
+	if(getskilllv(1) < 9) goto LlowSkill;
+	if(SkillPoint != 0) goto Lskillpoint;
+	if(Class != Job_Novice) goto Lcantchange;
+	cutin "kafra_04",255;
+	mes "[転職カプラ]";
+	mes "どの職業に転職しますか?";
+	next;
+	menu	"剣士",Lsm,"マジシャン",Lmg,"アーチャー",Lac,"アコライト",Lal,"商人",Lmc,"シーフ",Ltf,"テコン少年/少女",Ltk,"やめる",Ljchcancel;
+
+Lexitiji:
+	if(getskilllv(1) < 9) goto LlowSkill;
+	if(SkillPoint != 0) goto Lskillpoint;
+	if(Class != Job_Novice) goto Lcantchange;
+	cutin "kafra_04",255;
+	mes "[転職カプラ]";
+	mes "どの職業に転職しますか?";
+	next;
+	menu	"スーパーノービス",Lsn,"ガンスリンガー",Lgs,"忍者",Lnj,"デスナイト",Ldn,"ダークコレクター",Ldc,"やめる",Ljchcancel;
+
+Lninoiti:
+	if(JobLevel < 40) goto Lika;
+	mes "[転職カプラ]";
+	mes "どの職業に転職しますか?";
+	next;
+	menu	"ナイト",Lkn,"プリースト",Lpr,"ウィザード",Lwz,"鍛冶屋",Lbs,"ハンター",Lht,"アサシン",Las,"拳聖",Lsgl,"やめる",Ljchcancel;
+
+
+Lninoni:
+	if(JobLevel < 40) goto Lika;
+	mes "[転職カプラ]";
+	mes "どの職業に転職しますか?";
+	next;
+	menu	"クルセイダー",Lcd,"モンク",Lmk,"セージ",Lsg,"ローグ",Lrg,"アルケミスト",Lam,"バード/ダンサー",Lbd,"ソウルリンカー",Lsl,"やめる",Ljchcancel;
+
+Lsm:	jobchange Job_Swordman;	goto Lend;
+Lmg:	jobchange Job_Mage;	goto Lend;
+Lac:	jobchange Job_Archer;	goto Lend;
+Lal:	jobchange Job_Acolyte;	goto Lend;
+Lmc:	jobchange Job_Merchant;	goto Lend;
+Ltf:	jobchange Job_Thief;	goto Lend;
+Lsn:	if (Upper == 1)	goto Lcantchange;
+	if (BaseLevel < 45) goto Lcantsnovi;
+	jobchange Job_SuperNovice;	goto Lend;
+Ltk:	if (Upper != 0 || Class!=Job_Novice)	goto Lcantchange;
+	jobchange Job_TaeKwonBoy;	goto Lend;
+Lgs:	if (Upper != 0 || Class!=Job_Novice)	goto Lcantchange;
+	jobchange Job_Gunslinger;	goto Lend;
+Lnj:	if (Upper != 0 || Class!=Job_Novice)	goto Lcantchange;
+	jobchange Job_Ninja;	goto Lend;
+Ldn:	if (Upper != 0 || Class!=Job_Novice)	goto Lcantchange;
+	jobchange Job_DeathKnight;	goto Lend;
+Ldc:	if (Upper != 0 || Class!=Job_Novice)	goto Lcantchange;
+	jobchange Job_DarkCollector;	goto Lend;
+//2-1
+Lkn:	if(Class != Job_Swordman) goto Lcantchange;
+	jobchange Job_Knight;	goto Lend;
+
+Lpr:	if(Class != Job_Acolyte) goto Lcantchange;
+	jobchange Job_Priest;	goto Lend;
+
+Lwz:	if(Class != Job_Mage) goto Lcantchange;
+	jobchange Job_Wizard;	goto Lend;
+
+Lbs:	if(Class != Job_Merchant) goto Lcantchange;
+	jobchange Job_Blacksmith;	goto Lend; 
+
+Lht:	if(Class != Job_Archer) goto Lcantchange;
+	jobchange Job_Hunter;	goto Lend;
+
+Las:	if(Class != Job_Thief) goto Lcantchange;
+	jobchange Job_Assassin;	goto Lend;
+
+Lsgl:	if(Class != Job_TaeKwonBoy) goto Lcantchange;
+	jobchange Job_StarGladiator;	goto Lend;
+
+//2-2
+Lcd:	if(Class != Job_Swordman) goto Lcantchange;
+	jobchange Job_Crusader;	goto Lend;
+
+Lmk:	if(Class != Job_Acolyte) goto Lcantchange;
+	jobchange Job_Monk;	goto Lend;
+
+Lsg:	if(Class != Job_Mage) goto Lcantchange;
+	jobchange Job_Sage;	goto Lend;
+
+Lrg:	if(Class != Job_Thief) goto Lcantchange;
+	jobchange Job_Rogue;	goto Lend;
+
+Lam:	if(Class != Job_Merchant) goto Lcantchange;
+	jobchange Job_Alchem;	goto Lend;
+
+Lbd:	if(Class != Job_Archer) goto Lcantchange;
+	if (Sex == 1) goto LMan;
+	if (Sex == 0) goto LWoman;
+
+LMan:	jobchange Job_Bard;	goto Lend;
+
+LWoman:	jobchange Job_Dancer;	goto Lend;
+
+Lsl:	if(Class != Job_TaeKwonBoy) goto Lcantchange;
+	jobchange Job_SoulLinker;	goto Lend;
+
+LlowSkill:
+	mes "基本スキルを9にしてきてください。";	close;
+	goto Lend;
+
+Lcantsnovi:
+	mes "ベースレベルを45以上にしてきてください。";	close;
+	goto Lend;
+
+Lika:
+	mes "ジョブレベルが40以下だと転職出来ません。";	close;
+	goto Lend;
+
+Lskillpoint:
+	mes "スキルポイントを全て使い切らないと転職出来ません。";	close;
+	goto Lend;
+
+Lcantchange:
+	mes "あなたはそのジョブに転職出来ません。";	close;
+	goto Lend;
+
+Ljchcancel:
+	mes "またのご利用を、お待ちしております。";	close;
+	goto Lend;
+
+Lend:	cutin "kafra_04",255;
+	close;
+	end;
+}

@@ -1,0 +1,36 @@
+<html><head><title>Athena http server</title></head><body>
+
+<h1>Athena http server</h1>
+
+<p>Welcome to Athena http server.</p>
+
+<h2>Server status</h2>
+
+<p><a href="/graph">here</a></p>
+
+<h2>Socket control panel</h2>
+
+<p><a href="/socketctrl">here</a></p>
+
+<h2>Add account(login server only)</h2>
+
+<form action="/account" method="POST">
+
+<table border>
+	<tr><th>User ID</th><td><input type="text" name="userid"></td></tr>
+	<tr><th>Password</th><td><input type="password" name="passwd" ></td></tr>
+	<tr><th>Gender</th><td><input type="radio" name="gender" value="male">Male <input type="radio" name="gender" value="female">Female</td></tr>
+	<tr><td colspan="2"><input type="submit" name="add" value="Make Account"><input type="submit" name="check" value="Check UserID"></td></tr>
+</table>
+
+</form>
+
+<h2>Chat system (map server only)</h2>
+
+<form action="/chat" method="POST">
+
+<p>Name: <input type="text" name="name" size="10"><input type="submit" name="enter" value="Enter!"></p>
+
+</form>
+
+</body></html>

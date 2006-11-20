@@ -1,0 +1,23 @@
+//ギルド城データ by sakage,shuto
+// AgitDB Modify by Michael_Huang at 2004-02/13.
+// <Castle_ID>,<Map_Name>,<Castle_Name>,<Event_Name>
+0,aldeg_cas01.gat,Luina Guild 1,AgitExe#L1
+1,aldeg_cas02.gat,Luina Guild 2,AgitExe#L2
+2,aldeg_cas03.gat,Luina Guild 3,AgitExe#L3
+3,aldeg_cas04.gat,Luina Guild 4,AgitExe#L4
+4,aldeg_cas05.gat,Luina Guild 5,AgitExe#L5
+5,gefg_cas01.gat,Britoniah Guild 1,AgitExe#B1
+6,gefg_cas02.gat,Britoniah Guild 2,AgitExe#B2
+7,gefg_cas03.gat,Britoniah Guild 3,AgitExe#B3
+8,gefg_cas04.gat,Britoniah Guild 4,AgitExe#B4
+9,gefg_cas05.gat,Britoniah Guild 5,AgitExe#B5
+10,payg_cas01.gat,Chung-Rim Guild 1,AgitExe#C1
+11,payg_cas02.gat,Chung-Rim Guild 2,AgitExe#C2
+12,payg_cas03.gat,Chung-Rim Guild 3,AgitExe#C3
+13,payg_cas04.gat,Chung-Rim Guild 4,AgitExe#C4
+14,payg_cas05.gat,Chung-Rim Guild 5,AgitExe#C5
+15,prtg_cas01.gat,Valkyrie Realms 1,AgitExe#V1
+16,prtg_cas02.gat,Valkyrie Realms 2,AgitExe#V2
+17,prtg_cas03.gat,Valkyrie Realms 3,AgitExe#V3
+18,prtg_cas04.gat,Valkyrie Realms 4,AgitExe#V4
+19,prtg_cas05.gat,Valkyrie Realms 5,AgitExe#V5

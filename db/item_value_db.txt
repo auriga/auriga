@@ -1,0 +1,2 @@
+// アイテム価格データ（item_db.txtのデータにオーバーライドされます）
+//ID,Name,Jname,Price,Sell,Not_DC,Not_OC

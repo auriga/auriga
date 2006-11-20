@@ -1,0 +1,125 @@
+//クエストスキル
+prontera.gat,152,187,4	script	スキル屋	779,{
+	mes "[スキル屋]";
+	mes "職業を選んでください";
+	next;
+	menu "剣士系",L_SWO,"ウィザード系",L_WIZ,"アーチャー系",L_AR,"アコライト系",L_ACO,"シーフ系",L_THI,"商人系",L_MAR,"やめる",L_EX;
+L_SWO:
+	mes "[スキル屋]";
+	mes "覚えるスキルを選んでください";
+	menu "チャージアタック",L_SKILL1001,"シュリンク",L_SKILL1002;
+	L_SKILL1001:
+		if(Class != 7) goto L_EX;
+		skill 1001,1,0;
+		close;
+	L_SKILL1002:
+		if(Class != 14) goto L_EX;
+		skill 1002,1,0;
+		close;
+L_WIZ:
+	mes "[スキル屋]";
+	mes "覚えるスキルを選んでください";
+	menu "サイトブラスター",L_SKILL1006,"コンバーター製造",L_SKILL1007,"水属性エレメンタルチェンジ",L_SKILL1008,"地属性エレメンタルチェンジ",L_SKILL1017,"火属性エレメンタルチェンジ",L_SKILL1018,"風属性エレメンタルチェンジ",L_SKILL1019;
+	L_SKILL1006:
+		if(Class != 9) goto L_EX;
+		skill 1006,1,0;
+		close;
+	L_SKILL1007:
+		if(Class != 16) goto L_EX;
+		skill 1007,1,0;
+		close;
+	L_SKILL1008:
+		if(Class != 16) goto L_EX;
+		if(getskilllv(1008)) goto L_EX;
+		if(getskilllv(1017)) goto L_EX;
+		if(getskilllv(1018)) goto L_EX;
+		if(getskilllv(1019)) goto L_EX;
+		skill 1008,1,0;
+		close;
+	L_SKILL1017:
+		if(Class != 16) goto L_EX;
+		if(getskilllv(1008)) goto L_EX;
+		if(getskilllv(1017)) goto L_EX;
+		if(getskilllv(1018)) goto L_EX;
+		if(getskilllv(1019)) goto L_EX;
+		skill 1017,1,0;
+		close;
+	L_SKILL1018:
+		if(Class != 16) goto L_EX;
+		if(getskilllv(1008)) goto L_EX;
+		if(getskilllv(1017)) goto L_EX;
+		if(getskilllv(1018)) goto L_EX;
+		if(getskilllv(1019)) goto L_EX;
+		skill 1018,1,0;
+		close;
+	L_SKILL1019:
+		if(Class != 16) goto L_EX;
+		if(getskilllv(1008)) goto L_EX;
+		if(getskilllv(1017)) goto L_EX;
+		if(getskilllv(1018)) goto L_EX;
+		if(getskilllv(1019)) goto L_EX;
+		skill 1019,1,0;
+		close;
+L_AR:
+	mes "[スキル屋]";
+	mes "覚えるスキルを選んでください";
+	menu "ファンタスミックアロー",L_SKILL1009,"パンボイス",L_SKILL1010,"魅惑のウィンク",L_SKILL1011;
+	L_SKILL1009:
+		if(Class != 11) goto L_EX;
+		skill 1009,1,0;
+		close;
+	L_SKILL1010:
+		if(Class != 19) goto L_EX;
+		skill 1010,1,0;
+		close;
+	L_SKILL1011:
+		if(Class != 20) goto L_EX;
+		skill 1011,1,0;
+		close;
+L_ACO:
+	mes "[スキル屋]";
+	mes "覚えるスキルを選んでください";
+	menu "レデムプティオ",L_SKILL1014,"気注入",L_SKILL1015,"気爆発",L_SKILL1016;
+	L_SKILL1014:
+		if(Class != 8) goto L_EX;
+		skill 1014,1,0;
+		close;
+	L_SKILL1015:
+		if(Class != 15) goto L_EX;
+		skill 1015,1,0;
+		close;
+	L_SKILL1016:
+		if(Class != 15) goto L_EX;
+		skill 1016,1,0;
+		close;
+L_THI:
+	mes "[スキル屋]";
+	mes "覚えるスキルを選んでください";
+	menu "ソニックアクセラレーション",L_SKILL1003,"ベナムナイフ",L_SKILL1004,"クローズコンファイン",L_SKILL1005;
+	L_SKILL1003:
+		if(Class != 12) goto L_EX;
+		skill 1003,1,0;
+		close;
+	L_SKILL1004:
+		if(Class != 12) goto L_EX;
+		skill 1004,1,0;
+		close;
+	L_SKILL1005:
+		if(Class != 17) goto L_EX;
+		skill 1005,1,0;
+		close;
+L_MAR:
+	mes "[スキル屋]";
+	mes "覚えるスキルを選んでください";
+	menu "アンフェアリートリック",L_SKILL1012,"貪欲",L_SKILL1013;
+	L_SKILL1012:
+		if(Class != 10) goto L_EX;
+		skill 1012,1,0;
+		close;
+	L_SKILL1013:
+		if(Class != 10) goto L_EX;
+		skill 1013,1,0;
+		close;
+L_EX:
+	close;
+}

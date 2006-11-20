@@ -1,0 +1,2 @@
+//item_db.txtへオーバーライド
+//ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine,{UseScript},{EquipScript}

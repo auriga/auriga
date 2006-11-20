@@ -1,0 +1,59 @@
+//==============================================================================
+// Ragnarok Online The Sign Script     by Blaze
+//==============================================================================
+
+geffen.gat,119,48,0	script	噴水台	111,{
+	if(countitem(7025)<1) {
+		mes "噴水台がある。";
+		close;
+	}
+	mes "「魔王の嘆き」が不思議な光を";
+	mes "放ち始めた。噴水台の一部が、";
+	mes "その光に呼応するように";
+	mes "光を放っている。";
+	gmcommand "@misceffect 200";
+	misceffect 200;
+	next;
+	if(select("魔王の嘆きをかざす","無視する")==2) {
+		mes "…………";
+		close;
+	}
+	if('flag==0) {	//重複アタッチ防止
+		set 'flag,1;
+		hideoffnpc "GefeniaWarp";
+		initnpctimer;
+		misceffect 247;
+		misceffect 247,"GefeniaWarp";
+		announce "光と共にゲフェニアへの門が開かれた",9,0x99CC33;
+		mes "魔王の涙を噴水台の光へかざすと";
+		mes "噴水台がさらに光り、見たことのない";
+		mes "門が開いた。";
+	}
+	close;
+OnTimer10000:
+OnTimer20000:
+OnTimer30000:
+OnTimer40000:
+	misceffect 247,"GefeniaWarp";
+	end;
+OnTimer46000:
+	stopnpctimer;
+	hideonnpc "GefeniaWarp";
+	announce "ゲフェニアへの門が閉まります",9,0x99CC33;
+	set 'flag,0;
+	end;
+OnInit:
+	hideonnpc "GefeniaWarp";
+	end;
+}
+
+geffen.gat,119,56,0	script	GefeniaWarp	139,1,1,{
+OnTouch:
+	switch(rand(4)) {
+		case 0: warp "gefenia01.gat",58,169; 	break;
+		case 1: warp "gefenia02.gat",116,15; 	break;
+		case 2: warp "gefenia03.gat",130,206; 	break;
+		case 3: warp "gefenia04.gat",133,88; 	break;
+	}
+	end;
+}

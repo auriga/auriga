@@ -1,0 +1,74 @@
+Athenaサービス化キット Ver2000/XP/2003 Ver.4
+                                                           by nameless
+
+概要
+　AthenaのLogin / Char / Mapサーバをwindowsのサービスとして組み込みます
+
+用意するもの
+　BCCもしくはVC、Gcc for MinGw(-mnoオプション付きで)でコンパイルした
+　Athena本体(login-server.exe/char-server.exe/map-server.exe)
+
+　※Gcc for Cygwinでコンパイルしたバイナリを使用する場合はstartのある
+　フォルダに./bin/からサーババイナリとCygz.dll/Cygwin1.dllを移動して
+　おく必要があります。
+
+　リソースキット (Windows XP/2003は標準搭載)
+
+ファイルの説明
+　instasv.bat    サービス登録用バッチ
+　delasv.bat     サービス抹消用バッチ
+　instasv.txt    この説明書
+
+設定方法
+　１．はじめにinstsrv.batをメモ帳等で開きます
+　先頭付近に
+　　set athenasrv=
+　という行があるので、ここに設定を書き込んで上書きします
+　設定例を上げておくと
+
+　　set athenasrv="c:\athena"
+　　　└Athenaのバイナリがあるフォルダを指定します
+
+　２．Athenaの設定をします。confファイルの設定が無かったりすると
+　サービスが暴走したりしますので、はじめにAthenaが通常起動できるか確認してください
+
+　３．設定を確認したらinstasv.batをダブルクリックで実行してください。
+　エラーが出なければサービスに登録されているはずです
+
+  <<登録成功時のログはこうなります>>
+  ----------------------------------------------------------------
+  instasv
+  →Athenaをサービスとして登録します。
+  [SC] CreateService SUCCESS
+  [SC] CreateService SUCCESS
+  [SC] CreateService SUCCESS
+  ★Login.Char.MapサーバをWindowsのサービスとして登録しました。
+  ★障害時の自動起動をONにする場合はWindowsの「管理ツール」から「サービス」を選択
+  してください。
+  続行するには何かキーを押してください . . .
+  ----------------------------------------------------------------
+
+　４．管理ツール内のサービスで登録されたサービスのプロパティを開き
+　回復タブからエラー時の処理の選択が出来ます、ここで、エラー(スタックも含む)が発生
+　した場合、サービスを再起動にしておくと障害時に自動復旧するようになります。
+
+アンインストール
+　１．サービスが不要になった場合は同封のdelasv.batをメモ帳で開き、
+　　set reskit=
+　　set svname=
+
+　　set reskit="C:\Program Files\Resource Kit\"
+　　　└リソースキットの場所を指定します
+
+　　set svname="\\myserver"
+　　　└コンピュータ名(サーバ名)を指定します。
+　　　※コントロールパネル内システムのネットワークIDに表示されるコンピュータ名です
+
+　を設定して上書き保存します
+
+　２．管理ツール内のサービスで該当のサービスを停止させてください
+　(AthenaLogin/AthenaChar/AthenaMap)
+
+　３．サービスの停止を確認したら、delasv.batをダブルクリックで実行してください。
+　delasv実行後、再起動をしておくことをお勧めします。
+

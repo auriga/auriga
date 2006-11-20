@@ -1,0 +1,2 @@
+//skill_cast_db.txtへオーバーライド
+//id,cast_list,fixed_cast_list,delay_list,upkeep_time,upkeep_time2

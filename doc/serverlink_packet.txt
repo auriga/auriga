@@ -1,0 +1,160 @@
+map<->inter については inter_server_packet.txt を参照
+
+==========================================================================
+		login<->char
+--------------------------------------------------------------------------
+
+R login->char
+S char->login
+S 2710 <username>.24B <password>.24B <0>.l <char_ip>.l <char_port>.w <servername>.20B <maintenance>.w <new>.w
+	charサーバ情報をloginに通知
+R 2711 <err>.B
+	loginサーバーへ接続可否　　err=0で成功
+S 2712 <account_id>.l <login_id1>.l <login_id2>.l <sex>.B <ip>.l <search_id>.l
+	auth_fifoの認証要求
+R 2713 <search_id>.l <err>.B <account_id>.l <login_id1>.l
+	auth_fifoの認証可否　　err=0で成功
+S 2714 <users>.l
+	ワールドのユーザー数を送信
+S 2715 <account_id>.l <char_id>.l <mail>.40B
+	キャラ削除時にメールアドレスを確認
+R 2716 <account_id>.l <char_id>.l <flag>.B
+	メールアドレス認証結果
+	flag: 0=正しい, 1=異なる
+S 2720 <len>.w <account_id>.l <gm_pass>.?B
+	GMになりたい
+R 2721 <old_aid>.l <new_aid>.l
+	GMになれたかどうか  new_aid=0で失敗
+S 2722 <len>.w <account_id>.l <sex>.B
+	性別変更要求 
+R 2723 <account_id>.l <sex>.B
+	性別変更可否
+S 2728 <len>.w <account_id>.l { <name>.32B <value>.l }.36B*
+	##アカウント変数の保存要求
+R 2729 <len>.w <account_id>.l { <name>.32B <value>.l }.36B*
+	##アカウント変数の変更通知
+R 272a <account_id>.l
+	アカウント削除通知
+S 272b <account_id>.l <maintenance>.B
+	charサーバメンテナンス状態変更要求
+R 272c <account_id>.l <maintenance>.B
+	charサーバメンテナンス状態変更応答
+S 272d
+	暗号化ログインのチャレンジ要求
+S 272e <len>.w <challenge>.?B
+	暗号化ログインのチャレンジ返答
+S 272f <username>.24B <response>.16B <0>.4B <algorithm>.l <0>.l <char_ip>.l <char_port>.w <servername>.20B <maintenance>.w <new>.w
+	暗号化ログイン＆charサーバ情報をloginに通知
+	algorithm= 1:MD5タイプ1   2:MD5タイプ2  3:MD5タイプ1,2どちらか  4:HMAC-MD5(既定値)
+	
+
+
+==========================================================================
+		char<->map
+--------------------------------------------------------------------------
+
+パケット長リスト
+	60, 3,-1, 3,23,-1, 7, 6,		// 2af8-2aff
+	 6,-1,19, 7,-1,41,40, 0,		// 2b00-2b07
+	 6,40,-1,10, 9, 7, 0, 0,		// 2b08-2b0f
+	-1,-1, 6, 3, 3, 3,-1, 6,		// 2b10-2b17
+	10, 6, 6, 0, 0, 0, 0, 0,		// 2b18-2b1f
+	 6, 0, 0, 0,18,18,-1,-1,		// 2b20-2b27
+	30,30, 2,-1,60,-1,         		// 2b28-2b2d
+
+R char->map
+S map->char
+
+S 2af8 <userid>.24B <passwd>.24B <0>.l <mapip>.l  <mapport>.w
+	接続要求
+R 2af9 <err>.B
+	接続可否 err=0で成功
+S 2afa <len>.w <mapname>.16B* 
+	担当マップの送信
+R 2afb <len>.w <err>.B
+	担当マップ受信確認通知  err=0固定
+S 2afc <account_id>.l <char_id>.l <login_id1>.l <login_id2>.l <ip>.l <sex>.B
+	auth_fifo認証要求
+R 2afd <len>.w <account_id>.l <char_id>.l <struct mmo_chardata>.?B
+	auth_fifo認証成功＆キャラクターデータ通知
+R 2afe <account_id>.l <err>.B
+	auth_fifo認証失敗　err=0で固定
+S 2aff <users>.l
+	マップサーバー上の人数を送信
+R 2b00 <users>.l
+	ワールドのユーザー数を送信
+S 2b01 <len>.w <account_id>.l <login_id2>.l <struct mmo_charstatus>.?B
+	キャラクターデータ保存要求
+S 2b02 <account_id>.l <login_id1>.l <login_id2>.l <ip>.l <sex>.B
+	キャラクターセレクトのためのauth_fifo準備要求
+R 2b03 <account_id>.l <0>.B
+	キャラクターセレクトのauth_fifo準備完了通知
+R 2b04 <len>.w <ip>.l <port>.w <mapname>.16B*
+	他のマップサーバーの担当マップの通知
+S 2b05 <account_id>.l <login_id>.l <char_id>.l <mapname>.16B* <x>.w <y>.w <ip>.l <port>.w <sex>.B
+	マップサーバー間移動のためのauth_fifo準備要求
+R 2b06 <account_id>.l <error>.l <char_id>.l <mapname>.16B* <x>.w <y>.w <ip>.l <port>.w
+	マップサーバー間移動のauth_fifo準備可否　error=0 で成功
+S 2b08 <char_id>.l
+	キャラクター名解決要求
+R 2b09 <char_id>.l <name>.24B <account_id>.l <map-server ip>.l <map-server port>.w
+	キャラクター名解決結果　idが存在しなくても<名無し>など何かが返る
+S 2b0a <len>.w <account_id>.l <gm_pass>.?B
+	GMになりたい
+R 2b0b <old_acc>.l <new_acc.l>
+	GM変化終了  new_acc=0でエラー
+S 2b0c <len>.w <account_id>.l <sex>.B
+	性別変更要求
+R 2b0d <account_id>.l <0>.B
+	性別変更結果
+S 2b10 <len>.w <account_id>.l { <name>.32B <value>.l }.36B*
+	##アカウント変数の保存要求
+R 2b11 <len>.w <account_id>.l { <name>.32B <value>.l }.36B*
+	##アカウント変数の変更通知
+R 2b12 <char_id>.l
+	離婚情報同期要求
+S 2b13 <active>.B
+	mapサーバ 準備中:0 準備完了:1
+S 2b14 <maintenance>.B
+	charサーバ状態変更要求 通常:0 メンテナンス中:1
+R 2b15 <maintenance>.B
+	charサーバ状態変更応答 通常:0 メンテナンス中:1
+R 2b16 <len>.w <ip>.l <port>.w <map_num>.w <mapname>.16B*
+	他のマップサーバーの担当マップの削除通知
+R 2b17 <char_id>.l
+	charid_dbから削除
+S 2b18 <account_id>.l <char_id>.l
+	キャラクター切断通知
+R 2b19 <account_id>.l
+	キャラクター切断要求
+R 2b1a <account_id>.l
+	２重ログインメッセージ表示後、キャラクター切断
+S 2b20 <char_id>.l
+	離婚情報同期通知
+S 2b24 <account_id>.l <char_id>.l <account_id2>.l <char_id2>.l
+	友達リスト削除
+R 2b25 <account_id>.l <char_id>.l <account_id2>.l <char_id2>.l
+	友達リスト削除通知
+S 2b26 <len>.w <account_id>.l <char_id>.l <flag>.l { <account_id>.l <char_id>.l }.8B*
+	友達リストオンライン切り替え通知
+R 2b27 <len>.w <account_id>.l <char_id>.l <flag>.l { <account_id>.l <char_id>.l }.8B*
+	友達リストオンライン切り替え通知
+S 2b28 <char_id>.l <name>.24B
+	養子解体情報同期通知
+R 2b29 <char_id>.l <name>.24B
+	養子解体情報同期受付
+S 2b2a
+	暗号化ログインのチャレンジ要求
+S 2b2b <len>.w <challenge>.?B
+	暗号化ログインのチャレンジ返答
+S 2b2c <userid>.24B <passwd>.16B <dummy>.4B <algorithm>.l <0>.l <mapip>.l  <mapport>.w
+	暗号化ログイン要求
+	algorithm= 4:HMAC-MD5
+S 2b2d <len>.w <char_id>.l { <name>.32B <value>.l }.36B*
+	キャラ永続変数の保存要求
+
+==========================================================================
+		char<->inter
+--------------------------------------------------------------------------
+
+同じ実行ファイルのため静的にリンクされている

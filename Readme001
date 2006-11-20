@@ -1,0 +1,12 @@
+----------------------------------------
+//001 (2006/11/21) by Rayce
+
+・Auriga始動
+・サーバースナップショット
+・ATHENA_MOD_VERSIONを1に変更（version.h）
+・不要なファイルを削除
+　　doc/sc_start.txt, bin/tool/convert.c
+
+　※上記以外には変更を加えてないので、実質Athena-dev-2.1.1-mod2261までを集約したSSに相当します
+　　このversionを以ってAurigaのスタートとします
+　　細かい部分は「Athena」のままですが、今後変更していく予定です

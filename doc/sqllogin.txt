@@ -1,0 +1,233 @@
+★SQLのススメ★
+【Windows版MySQL導入ガイド　2005年10月7日　逆毛鰻＆リカルド】
+
+
+【Windows版　MySQLのダウンロード場所】
+
+<本家>
+http://www.mysql.com/
+
+<ミラー>
+MySQLダウンロードトップページへ行く
+http://download.softagency.net/MySQL/
+Download x.x ≫
+をクリックする
+(xは任意の数値)
+
+http://download.softagency.net/MySQL/downloads/index.html
+から
+_______________________________________________________
+|MySQL Community Edition -- Database Server and Client|
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MySQL 5.0 -- Generally Available (GA) release for production use 
+URL:<　http://download.softagency.net/MySQL/Downloads/MySQL-5.0/mysql-essential-5.0.24a-win32.msi　>
+
+を選択。それぞれの環境に適したプラットホームのMYSQLをダウンロードする
+
+(例)
+Windows 32bit-CPU+OS なら
+PowerPC (601/8xx/5xx/603/603e/604/82xx/5xxx/750/740/83xx/7400/8400)
+Celeron,Pentium4,CoreDuo　や　Athron,Duron,Sempron)
+
+ -- Windows downloads (platform notes)
+ -- -- Windows (x86)をダウンロードする。
+
+Windows 64bit-CPU+OS なら
+(PowerPC 950　や　Core2Duo,Xeon,Celeron D,Pentium D　や　Opteron,Turion,Athlon64,最上位Sempron)
+
+ -- Windows x64 downloads (platform notes)
+ -- -- Without installer (AMD64 / Intel EM64T)をダウンロードする。
+ -- -- Windows Server 2003 (AMD64 / Intel EM64T)をダウンロードする。
+
+
+【Windows版　MySQLのインストール方法】
+○注意！！　下記の設定はあくまでも例です。本番環境では必ずrootパスの変更を
+　行うようにしてください。また、データベース名・ユーザー名・パスワードも同様です。
+
+○ZIP圧縮されているので解凍。解凍した後のフォルダ名は[mysql-5.*.**-win32]
+○中にsetup.exeがあるので、ダブルクリックしてインストール開始
+
+１．Welcome to the Setup Wizard for MySQL
+　　→[Next>]
+
+２．Setup Type
+　　→Customを選択して　[Next>]
+
+３．Custom Setup
+　　→Developer Components上でクリックし、This feature will be installed on local driveを選択
+		→インストール先を変えたければchangeボタンで変更
+
+４．Ready to Install the Program
+　　→[Install]
+　　→インストールが始まるので暫くお待ちを。
+
+５．MySQL.com Sign-up
+　　→Skip Sign-Upにチェックして [Next>]
+
+６．Wizard Completed
+　　→Configure the MySQL Server now にチェックが入っていること
+　　→[Finish]
+
+７．Welcome to MySQL Server Instance Cibfguration Wizard 1.0.8
+　　→[Next>]
+
+８．MySQL Server Instance Configuration
+　　→Detailed Configurationにチェックして　[Next>]
+
+９．サーバータイプを選択。ここではServer Machineにチェックして　[Next>]
+
+１０．Non-Transactional Database Onlyにチェックして　[Next>]
+
+１１．Manual Setting にチェックして、Concurrent connectionsは１５を設定し　[Next>]
+
+１２．Enable TCP/IP Networkingにチェック　PortNumberは3306のまま
+　　　Enable Strict Modeにチェックして　[Next>]
+
+１３．Manual Selected Default Character Set/Collationにチェック
+　　　sjisを選択して　[Next>]
+
+１４．Install As Windows Serviceにチェック
+　　　Include Bin Directory in Windows PATHにチェックして　[Next>]
+
+１５．Modify Security Settingのチェックをはずして　[Next>]
+　　　*チェックをはずさず入力するとrootのパスワードになります。
+
+１６　ここで全ての設定が終了。４つ表示されている項目のうちApply security setting以外
+　　　有効になっていればよい。
+　　　[Excute]をクリックし、正常終了すれば完了。
+
+
+
+
+
+【AthenaのDB設定方法】
+１．コマンドプロンプトを立ち上げて下記のコマンドを実行
+　　mysql -u root
+		
+２．次にデータベースの大元の器を設定。下記のコマンドを実行する。
+		create database `ragnarok` default character set sjis;
+
+		（ここでは　ragnarok がデータベース名。任意に変更可能）
+
+３．次に、上で設定した大元の器にアクセスできるユーザーを設定します。
+　　GRANT SELECT,INSERT,UPDATE,DELETE ON `ragnarok`.* TO 'raguser'@'localhost' IDENTIFIED BY 'password';
+
+　　データベース名が　ragnarok
+　　アカウント名が　raguser
+　　パスワードが　password
+
+　　（もちろん本番環境ではアカウント名・パスワードは変更してください。）
+
+４．一度下記のコマンドを実行し、MySQLClientを終了させる。
+　　quit
+
+５．最後にデータテーブルを作成します。athenaのフォルダ内にある \sql-files\main.sqlを
+　　dataフォルダへコピーします。（デフォルトではC:\Program Files\MySQL\MySQL Server 5.0\data）
+
+６．コピーしたら、下記のコマンドを実行してディレクトリ移動
+　　cd C:\Program Files\MySQL\MySQL Server 5.0\data
+　　（セットアップしたフォルダが異なれば当然上記アドレスも変わります。）
+
+７．下記のコマンドを実行してテーブルを作成する。
+　　mysql -D ragnarok -h localhost -u root < main.sql
+
+８．数秒で通常のプロンプトに戻ります。戻ってきたらテーブル作成は完了です。
+
+
+
+【TextのathenaデータをSQLにコンバートする方法】
+注意！！　古すぎるデータだと失敗する場合があります。
+
+
+・コンバーター作成方法
+Windows上でコンバートしてしまおう。
+VisualC++を利用してSQLでコンパイルする場合はそのままで作成されます。
+
+なお、SQLコンパイル時はvc_make.batを編集し
+rem set PATH=C:\
+rem set INCLUDE=C:\
+rem set LIB=C:\
+それぞれのPCのMySQLファイルへのパス設定を行なう事(;で区切る事で追記可能)
+
+
+・BCCの場合の事前準備
+１．bccが利用できる環境(コンパイルできる環境)にする。
+
+２．bcc32_consqlmake.bat内の以下の文を編集する
+set __sqlinclude__=-I../sql/include/
+set __sqllib__=../sql/bcclib/libmysql.lib
+
+をご自身の環境に書き換えてください。
+
+３．includeファイル群はインストールしたMySQLフォルダ内にあります。
+　　libmysql.libはimplibコマンドを使ってMySQLにあるlibmysql.dllから取り出してください。
+
+４．bcc32_consqlmake.batを使用しコンバーター実行ファイルを作成します。
+　（binフォルダ内にあるtxt-converter.exeを使用）
+
+５．bin\txt-converter.exeを実行するとconfフォルダのconverter_athena.confが読み取られる。
+・converter_athena.conf
+・char_athena.conf
+・login_athena.conf
+のそれぞれの
+// MySQL Login SQL Server
+
+部分を書き換えておく。binフォルダにZlib.dllも入れておく。
+
+６．アカウントはhttp://127.0.0.1:6900/　等で作成。
+
+
+・BCCの場合の事前準備
+
+１．MYSQL,MicrosoftSDK,VCToolKit2003をインストールし
+　　VCが利用できる環境(コンパイルできる環境)にする。
+
+２．vc07_make.batを以下のように編集する
+
+編集前→編集後
+rem set __sqlinclude__=-I../sql/include/　→　set __sqlinclude__=-I../sql/include/
+rem set __sqllib__=../sql/vclib/libmysql.lib　→　set __sqllib__=../sql/vclib/libmysql.lib
+
+編集前→編集後
+ set __TXT_MODE__=/D "TXT_ONLY"　→　rem set __TXT_MODE__=/D "TXT_ONLY"
+するとtxt-converter.exeがBinフォルダに作成されます
+
+３．includeファイル群はインストールしたMySQLフォルダ内にあります。
+　　libmysql.libはインストールしたMySQLフォルダ内にあります。
+
+４．vc07_make.batを使用しコンバーター実行ファイルを作成します。
+　（binフォルダ内にあるtxt-converter.exeを使用）
+
+以下BCC 手順５．から同様に進める
+
+
+【情報】
+○main.sql実行時、まれに数箇所のテーブルにてプライマリーキーが設定されないことが
+あり、作成したデータが削除できない場合があります。その際は「sql-files」フォルダ内に
+ある　drop_table.sql　を実行した後、再度main.sqlを実行してください。
+
+
+○Windows環境下やリモートでデータベースを弄る場合下記のソフトが使い勝手がいいです。
+Common SQL Environment（CSE）
+http://www.hi-ho.ne.jp/tsumiki/
+なお、上記サイトでAthena関係の質問はやめてください。全く関係がないですので。
+
+
+【わかりにくい表現などがあれば修正お願いします】
+
+
+
+
+【変更履歴】（敬称略）
+2005年10月7日　逆毛鰻＆リカルド
+初版
+
+2005年12月2日　よらん
+DropTabelSprict追加による説明文追加
+
+2006年9月19日　よらん
+インストール方法の部分を現在のMySQLバージョンでの説明に変更
+テキストコンバータの部分を変更
+
+2006年11月5日　逆毛鰻
+説明の修正

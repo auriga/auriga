@@ -1,0 +1,1851 @@
+//==============================================================================
+// Ragnarok Online Airport Script    by Blaze
+//
+//   $TypingScore -> タイピングハイスコア
+//   $TypingName$ -> タイピング記録保持者のキャラ名
+//==============================================================================
+
+//==========================================
+// ガイド職員
+//------------------------------------------
+
+-	script	飛行船職員#guide	91,{
+	mes "[飛行船職員]";
+	mes "こんにちは。";
+	mes "当船では、いつも";
+	mes "お客様の快適な旅行のために";
+	mes "最善を尽くしております。";
+	next;
+	mes "[飛行船職員]";
+	mes "飛行船に乗りたい場合は、";
+	mes "こちらの入り口からお入りください。";
+	mes "空港を出たい場合は、";
+	mes "あちらの階段をお降りください。";
+	close;
+}
+
+//アインブロック
+einbroch.gat,94,267,3	duplicate(飛行船職員#guide)	飛行船職員	91
+
+//ジュノー
+yuno.gat,88,263,3	duplicate(飛行船職員#guide)	飛行船職員	91
+yuno.gat,14,262,5	duplicate(飛行船職員#guide)	飛行船職員	91
+
+
+//==========================================
+// 空港ゲート内職員
+//------------------------------------------
+
+-	script	空港職員#AirportIn	90,{
+	mes "[空港職員]";
+	mes "こんにちは。";
+	mes "我々は、お客様に快適な空の旅を";
+	mes "提供できるよう、心掛けております。";
+	mes "何をお手伝いいたしましょう？";
+	next;
+	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//map以外はダミー
+	if('@map$ == "izlude.gat")
+		set '@word$,"ジュノー行き飛行船に乗る";
+	else
+		set '@word$,"空港に入る";
+
+	if(select('@word$,"取り消し")==1) {
+		mes "[空港職員]";
+		mes "飛行船の利用料金は1200zenyです。";
+		mes "飛行船無料利用券をお持ちの場合は";
+		mes "無料でご利用できます。";
+		if('@map$ == "izlude.gat")
+			mes "飛行船に乗りますか？";
+		else
+			mes "空港に入りますか？";
+		next;
+		if(select("はい","いいえ")==1) {
+			if(countitem(7311))
+				delitem 7311,1;
+			else if(Zeny<1200) {
+				mes "[空港職員]";
+				mes "飛行船の利用料金は";
+				mes "1200zenyです。";
+				close;
+			}
+			else {
+				set Zeny,Zeny-1200;
+			}
+			if('@map$ == "izlude.gat")
+				warp "airplane_01.gat",244,58;
+			else
+				warp '@map$,148,51;
+			end;
+		}
+	}
+	mes "[空港職員]";
+	mes "またのご利用をお待ちしております。";
+	close;
+}
+
+//アインブロック
+airport.gat,126,43,5		duplicate(空港職員#AirportIn)	空港職員	90
+airport.gat,143,43,5		duplicate(空港職員#AirportIn)	空港職員	90
+airport.gat,158,43,5		duplicate(空港職員#AirportIn)	空港職員	90
+
+//ジュノー
+y_airport.gat,126,43,5		duplicate(空港職員#AirportIn)	空港職員	90
+y_airport.gat,143,43,5		duplicate(空港職員#AirportIn)	空港職員	90
+y_airport.gat,158,43,5		duplicate(空港職員#AirportIn)	空港職員	90
+
+//リヒタルゼン
+lhz_airport.gat,126,43,5	duplicate(空港職員#AirportIn)	空港職員	90
+lhz_airport.gat,143,43,5	duplicate(空港職員#AirportIn)	空港職員	90
+lhz_airport.gat,158,43,5	duplicate(空港職員#AirportIn)	空港職員	90
+
+//イズルード
+izlude.gat,206,55,2		duplicate(空港職員#AirportIn)	空港職員	90
+
+//フィゲル
+hugel.gat,178,142,0	script	hugelwarp	45,1,1,{
+	mes "飛行船に乗るには、";
+	mes "飛行船無料利用券か";
+	mes "1200Zenyが必要となります。";
+	mes "飛行船に乗りますか？";
+	next;
+	if(select("乗る","乗らない")==2) {
+		mes "次回のご利用をお待ちしています。";
+		close;
+	}
+	if(countitem(7311))
+		delitem 7311,1;
+	else if(Zeny<1200) {
+		mes "所持金が足りません";
+		mes "飛行船に乗るには";
+		mes "1200Zeny必要です。";
+		close;
+	}
+	else
+		set Zeny,Zeny-1200;
+	warp "airplane.gat",244,58;
+	end;
+}
+
+//==========================================
+// 空港ゲート外職員
+//------------------------------------------
+
+-	script	空港職員#AirportOut	90,{
+	mes "[空港職員]";
+	mes "こんにちは。";
+	mes "我々は、お客様に快適な空の旅を";
+	mes "提供できるよう、心掛けております。";
+	mes "何をお手伝いいたしましょう？";
+	next;
+	if(select("空港から出る","取り消し")==1) {
+		mes "[空港職員]";
+		mes "一度出てしまうと、再入場の際は";
+		mes "ご料金を頂くこととなります。";
+		mes "出ますか？";
+		next;
+		if(select("はい","いいえ")==1) {
+			set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//map以外はダミー
+			warp '@map$,142,40;
+			end;
+		}
+	}
+	mes "[空港職員]";
+	mes "またのご利用をお待ちしております。";
+	close;
+}
+
+//アインブロック
+airport.gat,126,51,3		duplicate(空港職員#AirportOut)	空港職員	90
+airport.gat,143,49,3		duplicate(空港職員#AirportOut)	空港職員	90
+airport.gat,158,50,3		duplicate(空港職員#AirportOut)	空港職員	90
+
+//ジュノー
+y_airport.gat,126,51,3		duplicate(空港職員#AirportOut)	空港職員	90
+y_airport.gat,143,49,3		duplicate(空港職員#AirportOut)	空港職員	90
+y_airport.gat,158,50,3		duplicate(空港職員#AirportOut)	空港職員	90
+
+//リヒタルゼン
+lhz_airport.gat,126,51,3	duplicate(空港職員#AirportOut)	空港職員	90
+lhz_airport.gat,143,49,3	duplicate(空港職員#AirportOut)	空港職員	90
+lhz_airport.gat,158,50,3	duplicate(空港職員#AirportOut)	空港職員	90
+
+
+//==========================================
+// アインブロック空港NPC
+//------------------------------------------
+
+airport.gat,174,41,6	script	青年	99,{
+	mes "[ルンアン]";
+	mes "私は世界中から珍しい物を";
+	mes "集めているんですが……";
+	mes "最近の金持ちは、いわゆる";
+	mes "珍品に対する目が肥えていて、";
+	mes "もっともっと珍しい物を";
+	mes "探してこいってうるさいんですよ……";
+	next;
+	mes "[ルンアン]";
+	mes "昔は、ゼロピーですら珍しがられたのに";
+	mes "今じゃありふれた物……";
+	mes "はぁ〜……ん？　あ、あなた！";
+	mes "その身につけている派手な物は";
+	mes "どこで手に入れたのですか？";
+	close;
+}
+
+airport.gat,176,41,4	script	おじさん	88,{
+	mes "[チンアン]";
+	mes "ここら辺にいるモンスターから、";
+	mes "花瓶の材料となる派手な光を出す鉱物が";
+	mes "たくさん取れるという話を聞きました。";
+	next;
+	mes "[チンアン]";
+	mes "けれど、それは本当に、";
+	mes "花瓶にしか使えないのでしょうか？";
+	next;
+	mes "[チンアン]";
+	mes "……私の友達に聞いた話なんですが、";
+	mes "人形ってのは、手入れした動物の皮に";
+	mes "羽毛を詰めて、目にサイファーや";
+	mes "ジャルゴンを入れているそうです。";
+	mes "そして、重心を整えるため、";
+	mes "お尻の方にゼロピーを詰めるそうです！";
+	next;
+	mes "[チンアン]";
+	mes "……気づきましたか？　つまり、物が";
+	mes "多いのは悪いことではありません。";
+	mes "結局、全て何かに使えるのですから。";
+	mes "だから、私の様な収集品商人は、";
+	mes "倉庫の規模が商売の規模を決める。";
+	mes "そう思いませんか？";
+	close;
+}
+
+
+//==========================================
+// ジュノー空港路線変更職員
+//------------------------------------------
+
+y_airport.gat,145,63,4	script	空港職員	91,{
+	mes "[空港職員]";
+	mes "シュバルツバルド共和国内の";
+	mes "各地域を行き来する";
+	mes "飛行船をご利用なさいますか？";
+	next;
+	if(select("はい","いいえ")==1) {
+		warp "yuno.gat",59,244;
+		end;
+	}
+	mes "[空港職員]";
+	mes "快適な旅になりますように。";
+	close;
+}
+
+y_airport.gat,140,63,4	script	空港職員	91,{
+	mes "[空港職員]";
+	mes "ジュノー・イズルード間を往復する";
+	mes "飛行船をご利用なさいますか？";
+	next;
+	if(select("はい","いいえ")==1) {
+		warp "yuno.gat",47,244;
+		end;
+	}
+	mes "[空港職員]";
+	mes "快適な旅になりますように。";
+	close;
+}
+
+
+//==========================================
+// シュバルツバルド国内線 飛行船NPC
+//------------------------------------------
+
+airplane.gat,100,69,3	script	乗務員	852,{
+	mes "[乗務員]";
+	mes "飛行船をご利用の方は、";
+	mes "そこの階段を上ってください。";
+	mes "いつも飛行船を利用してくださり";
+	mes "ありがとうございます。";
+	close;
+}
+
+airplane.gat,250,58,2	script	飛行船案内員	67,{
+	mes "[飛行船案内員]";
+	mes "こんにちは。";
+	mes "当船では、いつも";
+	mes "お客様の快適な旅行のために";
+	mes "最善を尽くしております。";
+	mes "何をご案内いたしましょうか？";
+	next;
+	switch(select("飛行船の利用方法","船長室の位置","内部施設","けっこうです")) {
+	case 1:
+		mes "[飛行船案内員]";
+		mes "飛行船で目的地へ行かれる場合は、";
+		mes "案内放送をよくお聞きください。";
+		mes "そして、目的地の到着案内が";
+		mes "ありましたら、甲板にある";
+		mes "出口からお降りください。";
+		next;
+		mes "[飛行船案内員]";
+		mes "万が一、降りるタイミングを";
+		mes "逃してしまったとしても、大丈夫です。";
+		mes "飛行船はずっと循環運行を";
+		mes "しておりますので。";
+		mes "少しお待ちになって、次の到着時に";
+		mes "降りるようにしてください。";
+		close;
+	case 2:
+		mes "[飛行船案内員]";
+		mes "船長室は飛行船の一番前方にあります。";
+		mes "その中には、飛行船を指揮する船長と";
+		mes "舵をとっている操縦士がおります。";
+		mes "船長は本当によいお方なので、";
+		mes "是非、一度会ってみてください。";
+		close;
+	case 3:
+		mes "[飛行船案内員]";
+		mes "飛行船には、お客様がご旅行の間、";
+		mes "退屈なさらないように";
+		mes "ミニゲームをご用意しております。";
+		mes "長旅に疲れた時、気分転換したい時、";
+		mes "少し休みたい時にくつろげる場所なので";
+		mes "遠慮なくご利用ください。";
+		close;
+	case 4:
+		mes "[飛行船案内員]";
+		mes "では、よい旅になりますように。";
+		close;
+	}
+}
+
+airplane.gat,221,158,2	script	操縦士	852,{
+	switch(rand(4)) {
+	case 0:
+		mes "[操縦士]";
+		mes "今日は天気が本当に良いですね。";
+		mes "こんな日の操縦は、";
+		mes "すごく気持ちいいです。";
+		close;
+	case 1:
+		mes "[操縦士]";
+		mes "私どもの船長は、";
+		mes "よい人格と格式の両方を兼ね備えた";
+		mes "素晴らしい方として、";
+		mes "シュバルツバルド内でも有名です。";
+		mes "もちろん、船員達は皆、";
+		mes "船長を慕い、尊敬しています。";
+		next;
+		mes "[操縦士]";
+		mes "それに引き換え、船長のお兄さんは";
+		mes "少々気難しい方でして……";
+		mes "でも、そんなお兄さんを船長は、";
+		mes "大好きなんだそうです。";
+		next;
+		mes "[操縦士]";
+		mes "ところで、そのお兄さんが船長に";
+		mes "何か借りていたようですね。";
+		mes "船長は、それが急に必要になった、";
+		mes "とか言って探していたようですが……。";
+		close;
+	case 2:
+		mes "[操縦士]";
+		mes "どこへ行っても、";
+		mes "酒さえ飲めればいいです。";
+		mes "酒は私の人生！　酒は私の力！";
+		mes "酒がない人生は、";
+		mes "小豆がないまんじゅうと一緒です！！";
+		next;
+		emotion 28;
+		mes "[操縦士]";
+		mes "でも、飲酒運転は絶対駄目！";
+		mes "それが、この仕事の";
+		mes "辛いところなんです〜。";
+		close;
+	case 3:
+		mes "[操縦士]";
+		mes "ふう〜。";
+		mes "この制服だと、あっついなぁ〜。";
+		mes "船長室に人は来ないから、";
+		mes "パンツ姿でいようかな……。";
+		next;
+		mes "[操縦士]";
+		mes "…………。";
+		next;
+		emotion 23;
+		mes "[操縦士]";
+		mes "ハッ!!";
+		mes "誰です?!";
+		close;
+	}
+}
+
+airplane.gat,65,63,4	script	少女	714,{
+	mes "[少女]";
+	mes "この飛行船は、";
+	mes "いつルティエに着くのかしら？";
+	mes "いくら待っても、";
+	mes "「ルティエに到着した」という";
+	mes "放送がないのよね……";
+	close;
+}
+
+airplane.gat,80,71,2	script	ゼルタ	834,{
+	mes "[ゼルタ]";
+	mes "私は、ある教えを広めるために";
+	mes "巡業している者です。";
+	mes "この教えにより、";
+	mes "ルーンミッドガッツ王国全体を";
+	mes "団結させることが、私の願いです。";
+	close;
+}
+
+airplane.gat,72,34,6	script	アノース	702,{
+	mes "[アノース]";
+	mes "空から眺める景色は、";
+	mes "本当に良いですね。";
+	mes "鳥になって、自由に飛び回れたら";
+	mes "どんなに良いだろうな。";
+	close;
+}
+
+airplane.gat,71,91,6	script	ウンバラの男性	789,{
+	mes "[お父さん]";
+	mes "ウムババ、フムババ。";
+	next;
+	emotion 32;
+	mes "[お父さん]";
+	mes "ウムバ、ウバフムバ、ウムババ。";
+	mes "ウババ、ウムババ、フムババ、";
+	mes "ウムバ、フムバウムバ、ウムバ。";
+	close;
+}
+
+airplane.gat,66,93,2	script	ウンバラの女性	783,{
+	emotion 9;
+	mes "[お母さん]";
+	mes "ウムバウムバ……";
+	mes "ウムウムバ、ウムバフムバ、ウムババ？";
+	mes "ウムバ、ウムバババ。ウムバウムバ。";
+	close;
+}
+
+airplane.gat,64,94,0	script	ウンバラの子供	787,{
+	emotion 19;
+	mes "[子供]";
+	mes "ウムバウムバ!!";
+	mes "ウムババ、ウムバウムバ、";
+	mes "フムバ!!!";
+	close;
+}
+
+airplane.gat,0,0,0	script	airplane	-1,{
+OnInit:
+	disablenpc "airplanewarp#ein1";
+	disablenpc "airplanewarp#ein2";
+	disablenpc "airplanewarp#lhz1";
+	disablenpc "airplanewarp#lhz2";
+	disablenpc "airplanewarp#hu1";
+	disablenpc "airplanewarp#hu2";
+	initnpctimer;
+	end;
+OnTimer1000:
+	disablenpc "airplanewarp#yuno1";
+	disablenpc "airplanewarp#yuno2";
+	announce "当船は離陸します。次の目的地はアインブロックです。",9,0x00FF00;
+	end;
+OnTimer16000:
+	announce "当船は現在、アインブロックに向かっております。",9,0x00FF00;
+	end;
+OnTimer31000:
+	announce "まもなく、アインブロックに着陸いたします。",9,0x00FF00;
+	end;
+OnTimer41000:
+	enablenpc "airplanewarp#ein1";
+	enablenpc "airplanewarp#ein2";
+	announce "アインブロックに到着しました。またのご利用をお待ちしております。",9,0x00FF00;
+	end;
+OnTimer51000:
+	announce "現在、アインブロックに停船中です。出発まで、しばらくお待ちください。",9,0x00FF00;
+	end;
+OnTimer61000:
+	disablenpc "airplanewarp#ein1";
+	disablenpc "airplanewarp#ein2";
+	announce "飛行船、離陸します。次の目的地はリヒタルゼンです。",9,0x73DEDE;
+	end;
+OnTimer76000:
+	announce "当船は現在、リヒタルゼンに向かっております。",9,0x73DEDE;
+	end;
+OnTimer91000:
+	announce "まもなく、リヒタルゼンに着陸いたします。",9,0x73DEDE;
+	end;
+OnTimer101000:
+	enablenpc "airplanewarp#lhz1";
+	enablenpc "airplanewarp#lhz2";
+	announce "リヒタルゼンに到着しました。またのご利用をお待ちしております。",9,0x73DEDE;
+	end;
+OnTimer111000:
+	announce "現在、リヒタルゼンに停船中です。出発まで、しばらくお待ちください。",9,0x73DEDE;
+	end;
+OnTimer121000:
+	disablenpc "airplanewarp#lhz1";
+	disablenpc "airplanewarp#lhz2";
+	announce "当船は離陸します。次の目的地はアインブロックです。",9,0x00FF00;
+	end;
+OnTimer136000:
+	announce "当船は現在、アインブロックに向かっております。",9,0x00FF00;
+	end;
+OnTimer151000:
+	announce "まもなく、アインブロックに着陸いたします。",9,0x00FF00;
+	end;
+OnTimer161000:
+	enablenpc "airplanewarp#ein1";
+	enablenpc "airplanewarp#ein2";
+	announce "アインブロックに到着しました。またのご利用をお待ちしております。",9,0x00FF00;
+	end;
+OnTimer171000:
+	announce "現在、アインブロックに停船中です。出発まで、しばらくお待ちください。",9,0x00FF00;
+	end;
+OnTimer181000:
+	disablenpc "airplanewarp#ein1";
+	disablenpc "airplanewarp#ein2";
+	announce "当船は離陸します。次の目的地はジュノーです。",9,0xFF8400;
+	end;
+OnTimer196000:
+	announce "当船は現在、ジュノーに向かっております。",9,0xFF8400;
+	end;
+OnTimer211000:
+	announce "まもなく、ジュノーに着陸いたします。",9,0xFF8400;
+	end;
+OnTimer221000:
+	enablenpc "airplanewarp#yuno1";
+	enablenpc "airplanewarp#yuno2";
+	announce "ジュノーに到着しました。またのご利用をお待ちしております。",9,0xFF8400;
+	end;
+OnTimer231000:
+	announce "現在、ジュノーに停船中です。出発まで、しばらくお待ちください。",9,0xFF8400;
+	end;
+OnTimer241000:
+	disablenpc "airplanewarp#yuno1";
+	disablenpc "airplanewarp#yuno2";
+	announce "飛行船、離陸します。次の目的地はフィゲルです。",9,0xCE4AF7;
+	end;
+OnTimer256000:
+	announce "当船は現在、フィゲルに向かっております。",9,0xCE4AF7;
+	end;
+OnTimer271000:
+	announce "まもなく、フィゲルに着陸いたします。",9,0xCE4AF7;
+	end;
+OnTimer281000:
+	enablenpc "airplanewarp#hu1";
+	enablenpc "airplanewarp#hu2";
+	announce "フィゲルに到着しました。またのご利用をお待ちしております。",9,0xCE4AF7;
+	end;
+OnTimer291000:
+	announce "現在、フィゲルに停船中です。出発まで、しばらくお待ちください。",9,0xCE4AF7;
+	end;
+OnTimer301000:
+	disablenpc "airplanewarp#hu1";
+	disablenpc "airplanewarp#hu2";
+	announce "当船は離陸します。次の目的地はジュノーです。",9,0xFF8400;
+	end;
+OnTimer316000:
+	announce "当船は現在、ジュノーに向かっております。",9,0xFF8400;
+	end;
+OnTimer331000:
+	announce "まもなく、ジュノーに着陸いたします。",9,0xFF8400;
+	end;
+OnTimer341000:
+	enablenpc "airplanewarp#yuno1";
+	enablenpc "airplanewarp#yuno2";
+	announce "ジュノーに到着しました。またのご利用をお待ちしております。",9,0xFF8400;
+	end;
+OnTimer351000:
+	announce "現在、ジュノーに停船中です。出発まで、しばらくお待ちください。",9,0xFF8400;
+	end;
+OnTimer360000:
+	initnpctimer;
+	end;
+}
+
+airplane.gat,243,29	warp	airplanewarp#yuno1	1,1,yuno.gat,92,260
+airplane.gat,243,73	warp	airplanewarp#yuno2	1,1,yuno.gat,92,260
+airplane.gat,243,29	warp	airplanewarp#ein1	1,1,einbroch.gat,92,278
+airplane.gat,243,73	warp	airplanewarp#ein2	1,1,einbroch.gat,92,278
+airplane.gat,243,29	warp	airplanewarp#lhz1	1,1,lighthalzen.gat,302,75
+airplane.gat,243,73	warp	airplanewarp#lhz2	1,1,lighthalzen.gat,302,75
+airplane.gat,243,29	warp	airplanewarp#hu1	1,1,hugel.gat,181,146
+airplane.gat,243,73	warp	airplanewarp#hu2	1,1,hugel.gat,181,146
+
+airplane.gat,240,64,5	script	出口	857,{}
+airplane.gat,247,64,5	script	出口	857,{}
+airplane.gat,240,40,0	script	出口	857,{}
+airplane.gat,247,40,0	script	出口	857,{}
+
+
+//==========================================
+// ルーンミッドガッツ間線 飛行船NPC
+//------------------------------------------
+
+airplane_01.gat,250,58,3	script	飛行船案内員#AirEvent	67,{
+	mes "[飛行船案内員]";
+	mes "こんにちは。";
+	mes "当船では、いつも";
+	mes "お客様の快適な旅行のために";
+	mes "最善を尽くしております。";
+	mes "何をご案内いたしましょうか？";
+	next;
+	switch(select("飛行船の利用方法","船長室の位置","内部施設","けっこうです")) {
+	case 1:
+		mes "[飛行船案内員]";
+		mes "飛行船で目的地へ行かれる場合は、";
+		mes "案内放送をよくお聞きください。";
+		mes "そして、目的地の到着案内が";
+		mes "ありましたら、甲板にある";
+		mes "出口からお降りください。";
+		next;
+		mes "[飛行船案内員]";
+		mes "万が一、降りるタイミングを";
+		mes "逃してしまったとしても、大丈夫です。";
+		mes "飛行船はずっと循環運行を";
+		mes "しておりますので。";
+		mes "少しお待ちなって、次の到着時に";
+		mes "降りるようにしてください。";
+		close;
+	case 2:
+		mes "[飛行船案内員]";
+		mes "船長室は飛行船の一番前方にあります。";
+		mes "その中には、飛行船を指揮する船長と";
+		mes "舵をとっている操縦士がおります。";
+		mes "船長は性格が少々……。";
+		mes "まあ、お話する時は、";
+		mes "気をつけてくださいね。";
+		close;
+	case 3:
+		mes "[飛行船案内員]";
+		mes "飛行船には、お客様がご旅行の間、";
+		mes "退屈なさらないように";
+		mes "ミニゲームをご用意しております。";
+		mes "長旅に疲れた時、気分転換したい時、";
+		mes "少し休みたい時にくつろげる場所なので";
+		mes "遠慮なくご利用ください。";
+		close;
+	case 4:
+		mes "[飛行船案内員]";
+		mes "では、よい旅になりますように。";
+		close;
+	}
+}
+
+airplane_01.gat,221,158,2	script	操縦士	852,{
+	switch(rand(4)) {
+	case 0:
+		mes "[操縦士]";
+		mes "今日は雲が多いですね。";
+		mes "こんな日は航路を見つけるのが";
+		mes "大変なんです。";
+		mes "はぁ〜";
+		close;
+	case 1:
+		mes "[操縦士]";
+		mes "船長は、気難しい方です。";
+		mes "何か問題を起こすと、";
+		mes "その後始末は全部、";
+		mes "私ども船員達がします。";
+		mes "今日もまた、何のトラブルを";
+		mes "起こすことやら……はぁ〜。";
+		next;
+		mes "[^FF0000ペルロック^000000]";
+		mes "^FF0000おい！　そこ!!";
+		mes "無駄話してないで働け！^000000";
+		next;
+		mes "[操縦士]";
+		mes "は、はい！";
+		mes "了解です!!";
+		close;
+	case 2:
+		mes "[操縦士]";
+		mes "現在、α131、β52の上を航行中。";
+		mes "異常なし！";
+		close;
+	case 3:
+		mes "[操縦士]";
+		mes "ふう〜。";
+		mes "この制服だと、あっついなぁ〜。";
+		mes "船長室に人は来ないから、";
+		mes "パンツ姿でいようかな……。";
+		next;
+		mes "[操縦士]";
+		mes "…………。";
+		next;
+		emotion 23;
+		mes "[操縦士]";
+		mes "ハッ!!";
+		mes "誰です?!";
+		close;
+	}
+}
+
+airplane_01.gat,83,61,2	script	少女	72,2,2,{
+	mes "[少女]";
+	mes "うわ〜ん!!";
+	mes "お外ではしゃいでたら、";
+	mes "鹿さん怒られた〜。";
+	mes "びっくりしたよ〜。";
+	close;
+OnTouch:
+	emotion 28;
+	end;
+}
+
+airplane_01.gat,69,63,2	script	貴族の男性	55,{
+	mes "[貴族の男性]";
+	mes "やはり機内食は、私の口に合わないね。";
+	mes "気品も、センスもない。";
+	mes "専属料理人を連れて来ればよかった。";
+	close;
+}
+
+airplane_01.gat,71,31,2	script	剣士	106,{
+	mes "[剣士]";
+	mes "……5年前の復讐……。";
+	mes "……覚えてろ……。";
+	mes "今度は絶対に逃がさんぞ!!";
+	close;
+}
+
+airplane_01.gat,0,0,0	script	airplane_01	-1,{
+OnInit:
+	disablenpc "airplanewarp#iz1";
+	disablenpc "airplanewarp#iz2";
+	initnpctimer;
+	end;
+OnTimer1000:
+	disablenpc "airplanewarp#yuno1_";
+	disablenpc "airplanewarp#yuno2_";
+	announce "当船は離陸します。次の目的地はイズルードです。",9,0x00FF00;
+	end;
+OnTimer26000:
+	announce "当船は現在、イズルードに向かっております。",9,0x00FF00;
+	end;
+OnTimer41000:
+	if(rand(10) == 0) {
+		stopnpctimer;
+		announce "観測兵：うん……うわ〜っ!! 変なものが近づいてきてる?!",9,0x00FF00;
+		sleep 5000;
+		announce "案内放送：乗客の皆様、現在、正体不明のモンスター達が当船に向っております!!",9,0x00FF00;
+		sleep 5000;
+		announce "案内放送：甲板にいらっしゃる方々は、至急、中へ非難してください。",9,0x00FF00;
+		hideonnpc "飛行船案内員#AirEvent";
+		sleep 10000;
+		areamonster "airplane_01.gat",222,36,252,67,"ファミリアー",1005,1,"Airplane#AirEvent1";
+		areamonster "airplane_01.gat",222,36,252,67,"ファミリアー",1005,1,"Airplane#AirEvent2";
+		areamonster "airplane_01.gat",222,36,252,67,"スチールチョンチョン",1042,1,"Airplane#AirEvent1";
+		areamonster "airplane_01.gat",222,36,252,67,"スチールチョンチョン",1042,1,"Airplane#AirEvent2";
+		areamonster "airplane_01.gat",222,36,252,67,"ピッキ",1049,1,"Airplane#AirEvent1";
+		areamonster "airplane_01.gat",222,36,252,67,"ピッキ",1049,1,"Airplane#AirEvent2";
+		areamonster "airplane_01.gat",222,36,252,67,"ロータージャイロ",1392,2,"Airplane#AirEvent1";
+		areamonster "airplane_01.gat",222,36,252,67,"ロータージャイロ",1392,2,"Airplane#AirEvent2";
+		areamonster "airplane_01.gat",222,36,252,67,"グレムリン",1632,5,"Airplane#AirEvent1";
+		areamonster "airplane_01.gat",222,36,252,67,"グレムリン",1632,5,"Airplane#AirEvent3";
+		areamonster "airplane_01.gat",222,36,252,67,"ビホルダー",1633,5,"Airplane#AirEvent1";
+		areamonster "airplane_01.gat",222,36,252,67,"ビホルダー",1633,5,"Airplane#AirEvent3";
+		sleep 5000;
+		announce "ペルロック船長：何だと?!　奴らめ〜、ただじゃおかねぇ〜!!　この俺様が直接……！",9,0x73DEDE;
+		sleep 5000;
+		hideoffnpc "飛行船船長#AirEvent";
+		sleep 5000;
+		announce "ペルロック船長：こいつらめ〜!!　引きずり下ろすことができねぇーっ!!",9,0x73DEDE;
+		emotion 7,"飛行船船長#AirEvent";
+		sleep 5000;
+		announce "-ギイギイーッ……グルルゥーッ、ギイギイギィーッ、グアァーッ!!-",9,0x00FF00;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		announce "機関士：うわ〜っ!!　1番の後方エンジンがっ……！",9,0x00FF00;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		announce "操縦士：老人と女性、子供を先に安全な場所へ！　急げ!!",9,0x00FF00;
+		sleep 5000;
+		announce "ペルロック船長：ぬぅ〜っ！　実力行使しかなさそうだな……。",9,0x73DEDE;
+		emotion 6,"飛行船船長#AirEvent";
+		sleep 5000;
+		announce "ペルロック船長：俺様の船で暴れるとどうなるか、思い知らせてやるっ!!",9,0x73DEDE;
+		sleep 5000;
+		announce "ペルロック船長：特製のエクソダスジョーカーⅩⅢ、このとっておきのライフルでケリをつけてやるっ!!",9,0x73DEDE;
+		emotion 32,"飛行船船長#AirEvent";
+		sleep 5000;
+		announce "シュッ!!　パンパン！　パンパン！　ズドンズドンズドンッ!!",9,0x00FF00;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		killmonster "airplane_01.gat","Airplane#AirEvent2";
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		announce "ペルロック船長：グハハハッ！　これでどうだ?!",9,0x73DEDE;
+		sleep 5000;
+		announce "シュッ!!　パンパン！　パンパン！　ズドンズドンズドンッ!!",9,0x00FF00;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		killmonster "airplane_01.gat","Airplane#AirEvent3";
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		sleep 500;
+		misceffect 5,"飛行船船長#AirEvent";
+		misceffect 183,"Effect#AirEvent"+rand(1,11);
+		announce "機関士：うわ〜っ!!　1番の後方エンジンがっ……！",9,0x00FF00;
+		sleep 5000;
+		announce "ペルロック船長：なぬ?!　あいつら、またエンジンを壊しやがった?!",9,0x73DEDE;
+		sleep 5000;
+		announce "ペルロック船長：操縦士：あ、あの……エンジンが壊れたのは、船長のライフルのせいかと……。",9,0x00FF00;
+		sleep 5000;
+		announce "ペルロック船長：んあ？　それは……まあ〜、誰しも間違いはあるだろ！　フハハハハッ！",9,0x73DEDE;
+		emotion 4,"飛行船船長#AirEvent";
+		sleep 5000;
+		announce "ペルロック船長：とにかく、後のことはお前達に任せた……。ハハハハーッ！",9,0x73DEDE;
+		emotion 17,"飛行船船長#AirEvent";
+		sleep 5000;
+		hideonnpc "飛行船船長#AirEvent";
+		sleep 240000;
+		killmonster "airplane_01.gat","Airplane#AirEvent1";
+		sleep 5000;
+		announce "案内放送：モンスター達は、全ていなくなったようです。では、再び通常運行に戻ります。",9,0x00FF00;
+		hideoffnpc "飛行船案内員#AirEvent";
+		startnpctimer;
+	}
+	end;
+OnTimer51000:
+	announce "まもなく、イズルードに着陸いたします。",9,0x00FF00;
+	end;
+OnTimer61000:
+	enablenpc "airplanewarp#iz1";
+	enablenpc "airplanewarp#iz2";
+	announce "イズルードに到着しました。またのご利用をお待ちしております。",9,0x00FF00;
+	end;
+OnTimer71000:
+	announce "現在、イズルードに停船中です。出発まで、しばらくお待ちください。",9,0x00FF00;
+	end;
+OnTimer81000:
+	disablenpc "airplanewarp#iz1";
+	disablenpc "airplanewarp#iz2";
+	announce "当船は離陸します。次の目的地はジュノーです。",9,0x73DEDE;
+	end;
+OnTimer106000:
+	announce "当船は現在、ジュノーに向かっております。",9,0x73DEDE;
+	end;
+OnTimer131000:
+	announce "まもなく、ジュノーに着陸いたします。",9,0x73DEDE;
+	end;
+OnTimer141000:
+	enablenpc "airplanewarp#yuno1_";
+	enablenpc "airplanewarp#yuno2_";
+	announce "ジュノーに到着しました。またのご利用をお待ちしております。",9,0x73DEDE;
+	end;
+OnTimer151000:
+	announce "現在、ジュノーに停船中です。出発まで、しばらくお待ちください。",9,0x73DEDE;
+	end;
+OnTimer160000:
+	initnpctimer;
+	end;
+}
+
+airplane_01.gat,243,29	warp	airplanewarp#yuno1_	1,1,yuno.gat,12,261
+airplane_01.gat,243,73	warp	airplanewarp#yuno2_	1,1,yuno.gat,12,261
+airplane_01.gat,243,29	warp	airplanewarp#iz1	1,1,izlude.gat,200,56
+airplane_01.gat,243,73	warp	airplanewarp#iz2	1,1,izlude.gat,200,56
+
+airplane_01.gat,240,64,5	script	出口	857,{}
+airplane_01.gat,247,64,5	script	出口	857,{}
+airplane_01.gat,240,40,0	script	出口	857,{}
+airplane_01.gat,247,40,0	script	出口	857,{}
+
+airplane_01.gat,247,54,3	script	飛行船船長#AirEvent	873,{
+	mes "[ペルロック]";
+	mes "私が、この飛行船の船長ペルロックだ。";
+	mes "今はグレムリン対応で忙しいから、";
+	mes "後にしてくれないか！";
+	close;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+airplane_01.gat,227,67,0	script	Effect#AirEvent1	139,{}
+airplane_01.gat,234,65,0	script	Effect#AirEvent2	139,{}
+airplane_01.gat,235,39,0	script	Effect#AirEvent3	139,{}
+airplane_01.gat,239,50,0	script	Effect#AirEvent4	139,{}
+airplane_01.gat,239,62,0	script	Effect#AirEvent5	139,{}
+airplane_01.gat,244,55,0	script	Effect#AirEvent6	139,{}
+airplane_01.gat,245,48,0	script	Effect#AirEvent7	139,{}
+airplane_01.gat,245,59,0	script	Effect#AirEvent8	139,{}
+airplane_01.gat,249,50,0	script	Effect#AirEvent9	139,{}
+airplane_01.gat,252,41,0	script	Effect#AirEvent10	139,{}
+airplane_01.gat,252,63,0	script	Effect#AirEvent11	139,{}
+
+airplane_01.gat,0,0,0	script	Airplane#AirEvent1	-1,{}	//ダミーイベント
+airplane_01.gat,0,0,0	script	Airplane#AirEvent2	-1,{}	//ダミーイベント
+airplane_01.gat,0,0,0	script	Airplane#AirEvent3	-1,{}	//ダミーイベント
+
+
+//==========================================
+// 船内施設
+//------------------------------------------
+
+airplane.gat,50,66,5	script	リンゴ商人#フルツ	86,{
+	mes "[" +strnpcinfo(2)+ "]";
+	mes "いらっしゃいませ〜。";
+	mes "美味しい〜、甘〜いリンゴは";
+	mes "いかがですか〜。";
+	mes "リンゴジュースも作りますよ〜。";
+	next;
+	if(strnpcinfo(2) == "フルツ")	//フルツの場合、選択肢増加
+		set '@word$,"何故ここにリンゴ売りが？";
+	switch (select("リンゴを買う","リンゴジュースを作る",'@word$,"取り消し")) {
+	case 1:
+		mes "[" +strnpcinfo(2)+ "]";
+		mes "リンゴは1個、15zenyです。";
+		mes "1度に500個まで買えます。";
+		mes "やっぱりやめたって方は";
+		mes "0を入力してくださいね。";
+		mes "何個欲しいですか？";
+		next;
+		while(1) {
+			input '@num;
+			if('@num>500 || '@num<0) {
+				mes "[" +strnpcinfo(2)+ "]";
+				mes "一度に買えるのは、500個までですよ。";
+				next;
+				continue;
+			}
+			break;	//while文抜ける
+		}
+		if('@num==0)
+			break;	//switch文抜ける
+		set '@price,'@num*15;
+		mes "[" +strnpcinfo(2)+ "]";
+		mes "リンゴ^FF0000"+'@num+"個^000000で、";
+		mes "金額は^FF0000"+'@price+"zeny^000000ですね。";
+		mes "買いますか？";
+		next;
+		if(select("はい","いいえ")==2)
+			break;	//「いいえ」ならswitch文抜ける
+		if(Zeny<'@price) {
+			mes "[" +strnpcinfo(2)+ "]";
+			mes "あら、お金が足りないようですよ。";
+			mes "お金をもうちょっと持ってくるか、";
+			mes "購入するリンゴの数を";
+			mes "減らしてくださいね〜。";
+			close;
+		}
+		if(checkweight(512,'@num)==0) {
+			mes "[" +strnpcinfo(2)+ "]";
+			mes "あらあら、それじゃあ荷物が多くて";
+			mes "リンゴを買っても持てませんよ。";
+			mes "荷物、減らしてきた方が";
+			mes "いいと思いますよ。";
+			close;
+		}
+		set Zeny,Zeny-'@price;
+		getitem 512,'@num;
+		mes "[" +strnpcinfo(2)+ "]";
+		mes "毎度、ありがとうございました〜！";
+		mes "リンゴが必要になったら";
+		mes "いつでも来てくださいね。";
+		close;
+	case 2:
+		mes "[" +strnpcinfo(2)+ "]";
+		mes "リンゴジュースは";
+		mes "^FF0000リンゴ3個、空きビン1個^000000で";
+		mes "作れます。";
+		mes "リンゴジュースを作りますか？";
+		next;
+		if(select("はい","いいえ")==2)
+			break;	//switch文抜ける
+		if(countitem(512) < 3 || countitem(713) < 1) {
+			mes "[" +strnpcinfo(2)+ "]";
+			mes "あら、材料が足りないみたいですね。";
+			mes "いいですか、^FF0000リンゴ3個、";
+			mes "空きビン1個^000000ですよ。";
+			mes "材料がそろったら、";
+			mes "またいらしてくださいね。";
+			close;
+		}
+		mes "[" +strnpcinfo(2)+ "]";
+		mes "はい、ちょっと待っててくださいね。";
+		next;
+		mes "サク、サク、トントン……";
+		mes "ギュオ〜ン、グォングォン、";
+		mes "ギュオ〜〜〜ン!!";
+		next;
+		delitem 512,3;
+		delitem 713,1;
+		getitem 531,1;
+		mes "[" +strnpcinfo(2)+ "]";
+		mes "はい、新鮮なリンゴジュースです。";
+		mes "毎度、ありがとうございました〜！";
+		mes "リンゴジュースが必要になったら";
+		mes "いつでも来てくださいね。";
+		close;
+	case 3:
+		mes "[フルツ]";
+		mes "実は私、以前は日々の食べ物ですら";
+		mes "人からもらって生活していました。";
+		mes "そんなある日、木の下でぐっすり";
+		mes "眠っていたら、私の頭に何かが";
+		mes "ドンって落ちてきまして……";
+		next;
+		mes "[フルツ]";
+		mes "びっくりして起きて、辺りを見回すと";
+		mes "リンゴが転がっていました。";
+		mes "私、リンゴの木の下で";
+		mes "眠っていたんですね。";
+		next;
+		mes "[フルツ]";
+		mes "ちょうどお腹が空いてたので、";
+		mes "そのリンゴを食べることにしました。";
+		mes "すると、飛行船のおじさんに";
+		mes "助けてくれ〜って";
+		mes "急に呼ばれたんですよ。";
+		next;
+		mes "[フルツ]";
+		mes "それで、しばらく飛行船で";
+		mes "お手伝いをしました。";
+		mes "その後に、リンゴを賭けて";
+		mes "サイコロゲームをしている";
+		mes "お姉さんに気がついたんです。";
+		next;
+		mes "[フルツ]";
+		mes "退屈だったし、ちょうど";
+		mes "リンゴを持っていたから、";
+		mes "そのゲームで遊んでみました。";
+		mes "そうしたら、運が良かったのか";
+		mes "1個だったリンゴが2個、";
+		mes "2個が4個になっていき……";
+		next;
+		mes "[フルツ]";
+		mes "そうこうしているうちに、";
+		mes "何と商売ができるくらいの";
+		mes "リンゴが集まっちゃいました！";
+		mes "信じられない出来事ですけど、";
+		mes "リンゴ1個が私の人生を変えたんです！";
+		next;
+		mes "[フルツ]";
+		mes "話が長くなっちゃいましたね。";
+		mes "リンゴは健康にも美容にもいいですよ。";
+		mes "お一つどうですか？";
+		close;
+	case 4:
+		break;
+	}
+	mes "[" +strnpcinfo(2)+ "]";
+	mes "よかったら次は買ってくださいね。";
+	mes "では、お元気で〜。";
+	close;
+}
+airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メルツ	86
+
+airplane.gat,33,69,4	script	ケージ#Air	73,{
+	mes "[" +strnpcinfo(0)+ "]";
+	mes "こんにちは。";
+	mes "私の名前は" +strnpcinfo(0)+ "。";
+	mes "ちょっと退屈してるの。";
+	mes "暇つぶしに、私とサクっと軽く";
+	mes "サイコロゲームでもしない？";
+	next;
+	switch (select("する","ルールを教えて","しない")) {
+	case 1:
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "サイコロゲームをするには、";
+		mes "リンゴが必要よ。";
+		mes "リンゴ、何個賭ける？";
+		mes "最大50個まで賭けられるわ。";
+		mes "止めるんだったら、0って入れてね。";
+		while(1) {
+			next;
+			input '@apple;
+			if('@apple==0) {
+				mes "[" +strnpcinfo(0)+ "]";
+				mes "退屈だったら、後でまた来てね。";
+				mes "じゃあね！";
+				close;
+			}
+			if('@apple>50) {
+				mes "[" +strnpcinfo(0)+ "]";
+				mes "最大は50までよ。";
+				mes "次は間違えないよう教えてね。";
+				continue;
+			}
+			mes "[" +strnpcinfo(0)+ "]";
+			mes "リンゴ^FF0000" +'@apple+ "個^000000で";
+			mes "間違いない？";
+			next;
+			if(select("はい","いいえ")==2) {
+				mes "[" +strnpcinfo(0)+ "]";
+				mes "今度は間違いなく入力してね。";
+				continue;
+			}
+			if(countitem(512) < '@apple) {
+				mes "[" +strnpcinfo(0)+ "]";
+				mes "リンゴが足りないみたいよ。";
+				mes "何個賭ける？";
+				continue;
+			}
+			break;	//while文を抜ける
+		}
+		delitem 512,'@apple;
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "はーい。";
+		mes "では、ゲームの始まり始まり。";
+		mes "私が先に転がすわね。";
+		next;
+		mes "-コロ〜ン、コロコロ-";
+		next;
+		//[0]:合計,[1]:1個目,[2]:2個目,[3]:3個目
+		setarray '@enemy[1],rand(1,6),rand(1,6);
+		setarray '@mine[1],rand(1,6),rand(1,6);
+		set '@enemy[0],'@enemy[1]+'@enemy[2];
+		set '@mine[0],'@mine[1]+'@mine[2];
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "私の手は^0000FF" +'@enemy[1]+ "^000000と^0000FF" +'@enemy[2]+ "^000000。";
+		mes "合計は^0000FF" +'@enemy+ "^000000ね。";
+		mes "今度は^FF0000" +strcharinfo(0)+ "^000000さんの";
+		mes "番よ。";
+		next;
+		menu "サイコロを転がす",-;
+		mes "-コロ〜ン、コロコロ-";
+		next;
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "^FF0000" +strcharinfo(0)+ "^000000さんの手は";
+		mes "^FF0000" +'@mine[1]+ "^000000と^FF0000" +'@mine[2]+ "^000000ね。";
+		mes "合計は^FF0000" +'@mine+ "^000000！";
+		next;
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "私が^0000FF" +'@enemy+ "^000000で、";
+		mes "^FF0000" +strcharinfo(0)+ "^000000さんが^FF0000" +'@mine+ "^000000ね。";
+		if('@mine < '@enemy)  {	//負けてる場合
+			mes "私が一歩リード！";
+			mes "どう、サイコロをもう1個転がす？";
+		}
+		if('@mine > '@enemy) {	//勝ってる場合
+			mes "^FF0000" +strcharinfo(0)+ "^000000さんが";
+			mes "一歩リード！";
+			mes "どう、サイコロをもう1個転がす？";
+		}
+		if('@mine == '@enemy) {	//同点の場合
+			mes "同点だけれど、どうする？";
+			mes "サイコロをもう1個転がす？";
+		}
+		next;
+		if(select("うん","ううん")==1) {
+			mes "-コロロン、コロンコロン、トン！-";
+			next;
+			set '@mine[3],rand(1,6);
+			set '@mine[0],'@mine[0]+'@mine[3];
+			mes "[" +strnpcinfo(0)+ "]";
+			mes "^FF0000" +strcharinfo(0)+ "^000000さんの手は";
+			mes "^FF0000" +'@mine[3]+ "^000000だから";
+			mes "合計は^FF0000" +'@mine+ "^000000ね。";
+			if('@mine > 12) {	//12を超えた場合
+				mes "合計が12を超えちゃったから";
+				mes "そっちの負け〜！";
+				mes "残念だったね。";
+				close;
+			}
+			if('@mine < '@enemy) {	//負けてる場合
+				mes "私の手の方がまだ大きいわ。残念！";
+				mes "そっちの負け〜！";
+				close;
+			}
+			if('@mine == '@enemy) {	//同点の場合
+				mes "同点か……何か嫌な予感がするから";
+				mes "今回は引き分けにしようか。";
+				mes "はい、最初に賭けたリンゴを返すわね。";
+				getitem 512,'@apple;
+				next;
+				mes "[" +strnpcinfo(0)+ "]";
+				mes "次は負けないわよ〜。";
+				close;
+			}
+			if('@mine > '@enemy) {	//勝ってる場合
+				mes "次は私の番よ。";
+			}
+		}
+		else {
+			mes "[" +strnpcinfo(0)+ "]";
+			if('@mine < '@enemy) {	//負けてる場合
+				mes "えー、諦めるの？";
+				mes "転がすだけ転がしてみればいいのに。";
+				mes "……なら、私の勝ちになるわね。";
+				mes "また遊びにおいでね。";
+				mes "じゃあね〜。";
+				close;
+			}
+			if('@mine > '@enemy) {	//勝ってる場合
+				mes "勝ってるんだから、";
+				mes "無理することないもんね。";
+			}
+			if('@mine == '@enemy) {	//同点の場合
+				mes "あら、転がさないの？";
+			}
+			mes "じゃあ、私は転がすわね。";
+		}
+		next;
+		mes "-コロン、コロロロン！-";
+		next;
+		set '@enemy[3],rand(1,6);
+		set '@enemy[0],'@enemy[0]+'@enemy[3];
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "私の手は^0000FF" +'@enemy[3]+ "^000000だから、合計は^0000FF" +'@enemy+ "^000000ね。";
+		if('@enemy > 12) {	//12を超えた場合
+			mes "合計が12を超えちゃったから";
+			mes "私の負けだ〜！";
+			mes "はい、リンゴよ。";
+			mes "よかったら、また勝負しようね。";
+			getitem 512,'@apple*2;
+		}
+		if('@mine > '@enemy) {	//勝った場合
+			mes "合計が^FF0000" +'@mine+ "^000000の";
+			mes "^FF0000" +strcharinfo(0)+ "^000000さんの勝ち！";
+			mes "はい、リンゴよ。";
+			mes "よかったら、また勝負しようね。";
+			getitem 512,'@apple*2;
+		}
+		if('@mine < '@enemy) {	//負けた場合
+			mes "合計が^FF0000" +'@mine+ "^000000の";
+			mes "^FF0000" +strcharinfo(0)+ "^000000さんの負け！";
+			mes "残念だったね。";
+		}
+		if('@mine == '@enemy) {	//同点の場合
+			mes "これは、引き分けね！";
+			mes "^FF0000" +strcharinfo(0)+ "^000000さんが";
+			mes "最初に賭けたリンゴを返すわ。";
+			mes "よかったら、また勝負しようね。";
+			getitem 512,'@apple;
+		}
+		close;
+	case 2:
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "じゃあ、サイコロゲームのルールを";
+		mes "説明するわね。とても簡単よ。";
+		mes "まず、賭ける分だけの";
+		mes "リンゴを私に預けてね。";
+		mes "リンゴは50個まで賭けられるわ。";
+		next;
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "次に、サイコロを2個転がすの。";
+		mes "それで、サイコロの目の";
+		mes "合計が多い方が勝ち！";
+		mes "でも、それじゃあ簡単すぎるよね。";
+		mes "だから、サイコロをもう1個";
+		mes "転がすチャンスがあるのよ。";
+		next;
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "サイコロをもう1個、転がすかどうかは";
+		mes "本人の自由。但し！";
+		mes "この段階でサイコロの目の合計が";
+		mes "12を超えちゃったら、負けよ。";
+		next;
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "3個目のサイコロを転がした場合、";
+		mes "合計が12を超えちゃったら、";
+		mes "その時点で負け決定よ。いい？";
+		next;
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "ゲームで勝った方は、自分と相手の";
+		mes "賭けたリンゴを全部もらえるの。";
+		mes "ね、簡単でしょ。";
+		close;
+	case 3:
+		mes "[" +strnpcinfo(0)+ "]";
+		mes "やってみたくなったら";
+		mes "いつでも声かけてね。";
+		mes "じゃあね〜。";
+		close;
+	}
+}
+airplane_01.gat,33,69,4	duplicate(ケージ#Air)	クラリス	74
+
+//callfunc "Typing#Einbroch","Name";
+//  呼び出し元のNPC名前が引数
+
+function	script	Typing#Air	{
+	set '@t,gettimetick(0);
+	switch(rand(7)) {	//出題文を配列に格納する
+	case 0:
+		setarray '@term$,"^39BDBD","スモモも桃も桃のうち、","^39BDBD","桃もスモモも桃のうち","",
+				"^39BDBD","さくら咲く桜の山の桜花、","咲く桜あり散る桜あり"; break;
+	case 1:
+		setarray '@term$,"^39BDBD","マヤパープルオーガトゥース","^39BDBD","キャットナインテイル","",
+				"^840084","黄金蟲エドガ月夜花","ドッペルゲンガーミストレス"; break;
+	case 2:
+		setarray '@term$,"^39BDBD","空きビンカタシムリの皮","^39BDBD","でっかいゼロピーリンゴ","",
+				"^FF1094","赤ポーション黄ポーション","白ポーション青ポーション"; break;
+	case 3:
+		setarray '@term$,"^39BDBD","はなのいろは","^39BDBD","うつりにけりな","いたづらに",
+				"^39BDBD","わがみよにふる","ながめせしまに"; break;
+	case 4:
+		setarray '@term$,"^0000FF","abcdefghijklmnopqrstuvwxyz","^39BDBD","1234567890","",
+				"^FF1094","LoadKnightAssassin","PriestProfessorSniper"; break;
+	case 5:
+		setarray '@term$,"^39BDBD","グラディウスクレイモア","^39BDBD","パルチザンバトルアックス","",
+				"^FF1094","たれ猫ウサギのヘアバンド","ピエロの鼻大きなリボン"; break;
+	case 6:
+		setarray '@term$,"^39BDBD","人を知る者は、智なり。","^39BDBD","自ら知る者は、明なり。","",
+				"^FF1094","人に勝つ者は、力あり。","自ら勝つ者は、強し。"; break;
+	}
+	mes "[" +getarg(0)+ "]";
+	mes '@term$[0] + '@term$[1];
+	mes '@term$[2] + '@term$[3];
+	mes '@term$[4] + "^000000";
+	next;
+	//3分経過してたらcloseする
+	if(getarg(0) == "セキュリティシステム" && (gettimetick(0)-'@t) >= 180000)
+		close;
+	input '@typing1$;
+	mes "[" +getarg(0)+ "]";
+	mes '@term$[5] + '@term$[6];
+	mes '@term$[7] + "^000000";
+	next;
+	if(getarg(0) == "セキュリティシステム" && (gettimetick(0)-'@t) >= 180000)
+		close;
+	input '@typing2$;
+	if('@typing1$ != '@term$[1]+'@term$[3]+'@term$[4] || '@typing2$ != '@term$[6]+'@term$[7]) {
+		if(getarg(0) == "セキュリティシステム") {
+			mes "[セキュリティシステム]";
+			mes "認証に失敗しました。";
+		}
+		else {
+			mes "[" +getarg(0)+ "]";
+			mes "正確に入力してください。";
+		}
+		close;
+	}
+	//開始時間と終了時間の差からタイピング秒を計算（ms以下切捨て）
+	return (gettimetick(0)-'@t)/1000;
+}
+
+airplane.gat,32,61,4	script	ジョン#Air	51,{
+	mes "[" +strnpcinfo(1)+ "]";
+	mes "こんにちは！";
+	mes "^FF0000タイピングラグナロク^000000の";
+	mes "進行、" +strnpcinfo(1)+ "です！";
+	next;
+	switch (select("^FF0000タイピングラグナロク^000000に挑戦する","^FF0000タイピングラグナロク^000000の説明を聞く","最高記録を見る","取り消す")) {
+	case 1:
+		mes "[" +strnpcinfo(1)+ "]";
+		mes "^FF0000タイピングラグナロク^000000に";
+		mes "挑戦するのですね！";
+		mes "では、これから提示する文章を";
+		mes "出来るだけ早く、正確に";
+		mes "入力してください。";
+		mes "それでは始めます！";
+		next;
+		set '@time,callfunc("Typing#Air",strnpcinfo(1));	//タイピングタイムを取得
+		set '@score,(200-'@time)*10;
+		if('@time < 0 || '@score < 0)
+			set '@score,0;
+		mes "[" +strnpcinfo(1)+ "]";
+		mes "^FF0000" +'@time+ "秒^000000で正確に入力完了！";
+		mes "スコアは" +'@score+ "と出ました！";
+		next;
+		if('@score >= $TypingScore) {	//メッセージ未取得
+			set $TypingScore,'@score;
+			set $TypingName$,strcharinfo(0);
+			mes "[" +strnpcinfo(1)+ "]";
+			mes "おめでとうございます！";
+			mes "最高記録更新です！";
+			mes "次もこの調子で頑張ってください。";
+		}
+		else {
+			mes "[" +strnpcinfo(1)+ "]";
+			mes "現在の最高スコアは、";
+			mes "^0000FF" +$TypingName$+ "様^000000の";
+			mes "^0000FF" +$TypingScore+ "^000000です。";
+			mes "次は是非、最高記録更新に";
+			mes "挑戦してください！";
+		}
+		close;
+	case 2:
+		mes "[" +strnpcinfo(1)+ "]";
+		mes "^FF0000タイピングラグナロク^000000は";
+		mes "私が提示する文章を素早く、";
+		mes "正確に入力するゲームです。";
+		next;
+		mes "[" +strnpcinfo(1)+ "]";
+		mes "スコアが一番高い方の記録は、";
+		mes "殿堂入りとなります。";
+		mes "タイピングに自信のある方は";
+		mes "是非挑戦してください！";
+		close;
+	case 3:
+		mes "[" +strnpcinfo(1)+ "]";
+		mes "現在の最高スコアは、";
+		mes "^0000FF" +$TypingName$+ "様^000000の";
+		mes "^0000FF" +$TypingScore+ "^000000です。";
+		close;
+	case 4:
+		mes "[" +strnpcinfo(1)+ "]";
+		mes "^FF0000タイピングラグナロク^000000に";
+		mes "挑戦したくなったら、";
+		mes "いつでも来てください！";
+		close;
+	}
+}
+airplane_01.gat,32,61,4	duplicate(ジョン#Air)	ニルス	49
+
+
+//==========================================
+// 飛行船クエストNPC
+//------------------------------------------
+airplane_01.gat,238,154,2	script	飛行船船長	873,{
+	cutin "fly_felrock",2;
+	mes "[ペルロック]";
+	mes "私が、この飛行船の船長ペルロックだ。";
+	mes "私に何か用事でもあるのかね？";
+	mes "うん？";
+	next;
+	switch(AIR_1QUE) {
+	default: set '@word$,"飛行船はどうやって動いてるのですか？"; break;
+	case 4: set '@word$,"トロック船長の手紙を渡す"; break;
+	case 5:
+	case 6: set '@word$,"船長が手紙を読み終えたのか、確認してみる"; break;
+	}
+	switch(select("何故、トナカイが船長なの？",'@word$,"何もありません")) {
+	case 1:
+		mes "[ペルロック]";
+		mes "な……トナカイだと?!";
+		mes "これだから人間の若者は駄目だな。";
+		mes "礼儀がなってない！　礼儀が！";
+		mes "ふざけたこと言ってると、";
+		mes "下に投げ落とすぞ!!";
+		next;
+		mes "[ペルロック]";
+		mes "私の一族は、代々、";
+		mes "貴い血を受け継ぐ貴族だ。";
+		mes "君達人間どもとは、格が違う！";
+		mes "この巨大な飛行船の船長を";
+		mes "引き受けることだって、";
+		mes "生易しいことじゃないんだ。";
+		next;
+		mes "[ペルロック]";
+		mes "まあ〜、私にとって、";
+		mes "飛行船で全世界を旅することは、";
+		mes "楽しみでもあり";
+		mes "人生の目的でもあるがな。";
+		close2;
+		cutin "fly_felrock",255;
+		end;
+	case 2:
+		break;
+	case 3:
+		mes "[ペルロック]";
+		mes "ああっ?!";
+		mes "私は忙しいんだ！";
+		mes "用がないなら話かけないでくれ！";
+		close2;
+		cutin "fly_felrock",255;
+		end;
+	}
+	switch(AIR_1QUE) {
+	case 0:
+		mes "[ペルロック]";
+		mes "飛行船がどうやって動くかって？";
+		mes "そんなの、説明したところで";
+		mes "素人には理解はできんよ。";
+		set AIR_1QUE,1;
+		break;
+	case 1:
+		mes "[ペルロック]";
+		mes "前に同じ質問してきた奴がいたが……。";
+		if(BaseLevel < 60) {
+			mes "君のような人間のひよっこに";
+			mes "教えることなどない！";
+			break;
+		}
+		mes "ん？　そうか……";
+		mes "あれは君だったか！";
+		mes "そんなに知りたいのかね？";
+		next;
+		if(select("いいえ、そうではありませんが……","はい、知りたいです")==1) {
+			mes "[ペルロック]";
+			mes "大して興味がないことを";
+			mes "また質問して、";
+			mes "私の貴重な時間を奪うとは！";
+			mes "そんなに外に放り出されたいのか?!";
+			break;
+		}
+		mes "[ペルロック]";
+		mes "大して興味がないことを";
+		mes "また質問して、";
+		mes "私の貴重な時間を奪うとは！";
+		mes "そんなに外に放り出されたいのか?!";
+		next;
+		mes "[ペルロック]";
+		mes "そうか……";
+		mes "これは本来、船長達だけに";
+		mes "知らされている機密事項だが……。";
+		mes "とは言っても、上司達が";
+		mes "そう考えてるだけだし……。";
+		mes "ちょうど頼みたいことがあるしな……。";
+		next;
+		mes "[ペルロック]";
+		mes "そうだな、私の頼みをきいてくれたら、";
+		mes "教えてやってもいいぞ。";
+		next;
+		mes "[ペルロック]";
+		mes "どうだ……";
+		mes "悪い取り引きではないだろう？";
+		mes "私の頼みをきいてくれるかね？";
+		next;
+		if(select("遠慮します","引き受けます")==1) {
+			mes "[ペルロック]";
+			mes "まあ、無理強いはしないよ。";
+			mes "もし、考えが変わったらまた来てくれ。";
+			break;
+		}
+		mes "[ペルロック]";
+		mes "それなら話は早い。";
+		mes "では、頼むことにしよう。";
+		next;
+		mes "[ペルロック]";
+		mes "私には、私のように飛行船に乗って";
+		mes "旅をしている弟がいる。";
+		mes "だが……それぞれ飛行船に";
+		mes "乗って旅をしていると、";
+		mes "なかなか会うことができなくてな……。";
+		mes "連絡をとる方法もほとんどないんだよ。";
+		next;
+		mes "[ペルロック]";
+		mes "そこでだ。";
+		mes "私が書いたこの手紙を";
+		mes "我が弟に届け、";
+		mes "その返事をもらってきてくれないか？";
+		next;
+		mes "-ペルロックから手紙を受け取った-";
+		next;
+		mes "[ペルロック]";
+		mes "それではよろしくな。";
+		set AIR_1QUE,2;
+		break;
+	default:
+		mes "[ペルロック]";
+		mes "飛行船がどうやって動くかって？";
+		mes "まだ、私の弟から返事を";
+		mes "もらってきてないだろ？";
+		mes "私の手紙を届けた上で、";
+		mes "返事をもらってきたら教えてやる。";
+		break;
+	case 4:
+		mes "[ペルロック]";
+		mes "おお！";
+		mes "本当に返事をもらってきてくれたのか！";
+		mes "実は、あまり期待は";
+		mes "していなかったんだが……。";
+		mes "手紙を読むから、";
+		mes "ちょっと待っててくれ。";
+		set AIR_1QUE,5;
+		break;
+	case 5:
+		mes "[ペルロック]";
+		mes "ううむ……ハハハッ！";
+		mes "あいつめ、恋人ができたようだな。";
+		mes "だが、真の男の、真の無敵の道は、";
+		mes "無敵のソロ軍団だ……。";
+		mes "うん？　俺は何を言ってるんだ？";
+		mes "ブツブツ……。";
+		next;
+		mes "-まだ読み途中のようなので、";
+		mes "もう少し待とう-";
+		set AIR_1QUE,6;
+		break;
+	case 6:
+		mes "[ペルロック]";
+		mes "手紙は全部読んだ。";
+		mes "あいつに会ったのなら分かるだろうが、";
+		mes "私とは全く違う性格だろ？";
+		mes "だから、小さい頃はよくケンカした。";
+		mes "でも、二人一緒なら";
+		mes "怖いものなしだったがな……。";
+		next;
+		mes "[ペルロック]";
+		mes "ああ、そんな昔話ではなく、";
+		mes "君が知りたがってたことを";
+		mes "教えてやろう。";
+		next;
+		mes "[ペルロック]";
+		mes "飛行船が浮かぶ基本原理はな……";
+		mes "大型ボイラーに火をつけ、";
+		mes "湯を沸かした時にでる蒸気の圧力で";
+		mes "ピストンと歯車、タービンを動かして、";
+		mes "プロペラを回しているんだ。";
+		mes "な？　これで分かっただろ？";
+		next;
+		menu "え？　それだけ?!　もっと何かあるでしょ？",-;
+		mes "[ペルロック]";
+		mes "ハハハッ！";
+		mes "大雑把に説明して終わらそうと思ったが";
+		mes "君にはそれで通用しなかったか。";
+		mes "君の言うとおり、今話したのは、";
+		mes "誰もが知る基本原理だ。";
+		next;
+		mes "[ペルロック]";
+		mes "確かに蒸気だけでは、";
+		mes "この重い腹を空に浮かべるのは無理だ。";
+		mes "そこで^FF0000ルーン機関^000000という";
+		mes "増幅器を使うんだよ。";
+		next;
+		menu "ルーン機関？　それは何ですか？",-;
+		mes "[ペルロック]";
+		mes "魔法の石を使った装置だ。";
+		mes "それをどうするかまでは、";
+		mes "覚えてないが……。";
+		mes "話を聞き流したせいか、";
+		mes "詳しい名前も忘れたが……。";
+		next;
+		mes "[ペルロック]";
+		mes "ユミ……なんだったかな？";
+		mes "それのイミテーションを";
+		mes "蒸気機関みたいなものに装着すると、";
+		mes "その石から流れ出るルーンで";
+		mes "エネルギーが増幅されるんだ。";
+		next;
+		mes "[ペルロック]";
+		mes "実は親指ほどの石ころ一つで";
+		mes "このでっかい腹が浮いていると";
+		mes "言っても過言ではない。";
+		mes "それだけ強い力があるからな。";
+		next;
+		mes "[ペルロック]";
+		mes "これで納得したかね？";
+		mes "私は、少し休むよ。";
+		mes "手紙の読み書きで";
+		mes "ちょっと疲れたからな。";
+		gmcommand "@misceffect 231";
+		set AIR_1QUE,7;
+		set BASEEXP,BASEEXP+200000;
+		set JOBEXP,JOBEXP+10000;
+		break;
+	case 7:
+		mes "[ペルロック]";
+		mes "前に教えてやっただろ？";
+		mes "そんな面倒なこと、";
+		mes "何度も聞くんじゃない！";
+		break;
+	}
+	close2;
+	cutin "fly_felrock",255;
+	end;
+}
+
+airplane.gat,236,163,2	script	飛行船船長	873,{
+	cutin "fly_trock",2;
+	mes "[トロック]";
+	mes "我が飛行船へのご乗船を";
+	mes "歓迎いたします。";
+	mes "私はこの飛行船の船長";
+	mes "トロックと申します。";
+	mes "何かございますか？";
+	next;
+	if(AIR_1QUE == 2) set '@word$,"ペルロック船長の手紙を渡す";
+	else if(AIR_1QUE == 3) set '@word$,"船長に頼まれた物を渡す";
+	switch(select("飛行船はどうやって動いてるのですか？",'@word$,"特にありません")) {
+	case 1:
+		mes "[トロック]";
+		mes "申し訳ございません。";
+		mes "それに関しては、";
+		mes "船長達だけに知らされている";
+		mes "機密事項となりますので……。";
+		mes "一般の方々にお教えすることは";
+		mes "できません。ご了承ください。";
+		close2;
+		cutin "fly_trock",255;
+		end;
+	case 2:
+		break;
+	case 3:
+		mes "[トロック]";
+		mes "それでは、よい旅になるといいですね。";
+		close2;
+		cutin "fly_trock",255;
+		end;
+	}
+	switch(AIR_1QUE) {
+	case 2:
+		mes "-ペルロック船長の手紙を";
+		mes "トロック船長に渡した-";
+		next;
+		mes "[トロック]";
+		mes "おや……";
+		mes "兄からの手紙ですか。";
+		mes "お忙しい中、";
+		mes "わざわざ届けていただいて";
+		mes "ありがとうございます。";
+		mes "少々お待ちください。";
+		next;
+		mes "-トロック船長は、手紙を読み始めた-";
+		next;
+		mes "[トロック]";
+		mes "うーん……ハハッ……";
+		mes "兄さんたら……。";
+		mes "ううん……うーん……";
+		mes "うん？……ハハハッ！";
+		mes "……へぇ〜、そんな事が……";
+		mes "ううん……ブツブツ……。";
+		next;
+		mes "[トロック]";
+		mes "はい、読みました。";
+		mes "お待たせして申し訳ありません。";
+		next;
+		mes "[トロック]";
+		mes "兄が私に手紙をよこすのは、";
+		mes "安否を確認するためではありますが……";
+		mes "今回は、この前、兄が私から借りた物を";
+		mes "返すためでもありました。";
+		next;
+		mes "[トロック]";
+		mes "私にとって必要な物です。";
+		mes "ところが、兄はどうやらその品物を";
+		mes "なくしてしまったようで……。";
+		mes "手紙にはこう書いてありますね。";
+		next;
+		mes "[トロック]";
+		mes "^FF0000「この手紙を持って来てくれた人が、";
+		mes "その品物を渡してくれるだろう。";
+		mes "だがもし、その人が品物を";
+		mes "渡してくれなかったら、";
+		mes "私に返事をよこさないでくれ。」^000000とね。";
+		next;
+		mes "[トロック]";
+		mes "兄に何か弱点でも";
+		mes "握られているんですか？";
+		mes "ハッハッ！";
+		mes "まあ、私には必要な物なので、";
+		mes "持ってきていただければと思います。";
+		next;
+		mes "[トロック]";
+		mes "お願いしたい品物は、";
+		mes "^FF0000暗黒の意志2個^000000と";
+		mes "^FF0000トゲの実2個^000000です。";
+		next;
+		mes "[トロック]";
+		mes "あと、聞いた話によると、";
+		mes "兄の飛行船をたまに";
+		mes "襲う連中がいるそうです。";
+		mes "詳しいことは分かりませんが……。";
+		mes "それではお願いしますね。";
+		set AIR_1QUE,3;
+		break;
+	case 3:
+		if(countitem(7340) < 2 || countitem(576) < 2) {
+			mes "[トロック]";
+			mes "おや？";
+			mes "まだ頼んだ品が";
+			mes "揃っていないようですが……。";
+			mes "念のため、もう一度";
+			mes "申し上げましょうか。";
+			next;
+			mes "[トロック]";
+			mes "^FF0000暗黒の意志2個^000000と";
+			mes "^FF0000トゲの実2個^000000を";
+			mes "集めてきてください。";
+			mes "それではよろしくお願いします。";
+			break;
+		}
+		delitem 7340,2;
+		delitem 576,2;
+		set AIR_1QUE,4;
+		mes "[トロック]";
+		mes "持ってきてくださいましたか！";
+		mes "本当にありがとうございます。";
+		mes "兄への手紙はこちらです。";
+		next;
+		mes "-船長から手紙を受けとった-";
+		next;
+		mes "[トロック]";
+		mes "兄によろしくお伝えください。";
+		mes "それではよい一日を。";
+		break;
+	}
+	close2;
+	cutin "fly_trock",255;
+	end;
+}

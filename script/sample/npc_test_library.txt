@@ -1,0 +1,287 @@
+//=========================================================================
+// 汎用文字列処理ユーザー定義関数スクリプトライブラリ
+//			created by Rayce (Athena mod1782 and fixed mod1784)
+//
+// ■ strcut関数を利用することでC言語のような文字列処理ライブラリ関数を
+//    作成することができます。
+//    本来ならば使いたい関数をscript.cに直接追加するところですが
+//    全てのライブラリ関数を追加していくのはソースコードに無駄が生じます
+//    （しかも文字列処理を行わない人ならば全く必要ない）。
+//    strcut関数は文字列を１バイトずつ分解できるため、かなりの範囲の
+//    文字列処理が実現できます。
+//    ここでは頻繁に使いそうなfunctionをライブラリとして用意しておきます。
+//
+// ■ C言語とは違いポインタの概念はありませんので、文字列検索系の
+//    関数では何番目に一致したかを返り値とします。
+//-------------------------------------------------------------------------
+
+//===============================================
+// 文字列長を返す
+//	callfunc("StrLen","<string>")
+//-----------------------------------------------
+function	script	StrLen	{
+	while(strcut(getarg(0),'@i) != "") {
+		set '@i,'@i+1;
+	}
+	return '@i;
+}
+
+//===============================================
+// 先頭から<len>バイト切り出す
+//	callfunc("StrNCpy","<string>",<len>)
+//-----------------------------------------------
+function	script	StrNCpy	{
+	if(getarg(1) <= 0)
+		return "";
+
+	for(set '@i,0; '@i<getarg(1); set '@i,'@i+1) {
+		set '@buf$,'@buf$ + strcut(getarg(0),'@i);
+	}
+	return '@buf$;
+}
+
+//===============================================
+// <n>番目から<len>バイト切り出す
+//	callfunc("SubStr","<string>",<n>,<len>)
+//-----------------------------------------------
+function	script	SubStr	{
+	if(getarg(2) <= 0)
+		return "";
+
+	for(set '@i,getarg(1); '@i < getarg(1)+getarg(2); set '@i,'@i+1) {
+		set '@buf$,'@buf$ + strcut(getarg(0),'@i);
+	}
+	return '@buf$;
+}
+
+//===============================================
+// 指定文字列が最も先頭に出現する位置を返す
+//	callfunc("StrIndex","<str1>","<str2>")
+//-----------------------------------------------
+function	script	StrIndex	{
+	set '@max,callfunc("StrLen",getarg(0));
+	set '@len,callfunc("StrLen",getarg(1));
+	if('@max==0 || '@len==0 || '@max < '@len)
+		return -1;
+
+	for(set '@i,0; '@i <= '@max-'@len; set '@i,'@i+1) {
+		if( strcut(getarg(0),'@i) == strcut(getarg(1),0) ) {	//<str2>の最初の1バイトが一致したら
+
+			if( callfunc("SubStr",getarg(0),'@i,'@len) == getarg(1) )
+				return '@i;
+		}
+	}
+	return -1;
+}
+
+//===============================================
+// 指定文字列が最も末尾に出現する位置を返す
+//	callfunc("StrRIndex","<str1>","<str2>")
+//-----------------------------------------------
+function	script	StrRIndex	{
+	set '@max,callfunc("StrLen",getarg(0));
+	set '@len,callfunc("StrLen",getarg(1));
+	if('@max==0 || '@len==0 || '@max < '@len)
+		return -1;
+
+	for(set '@i,'@max-'@len; '@i >= 0; set '@i,'@i-1) {
+		if( strcut(getarg(0),'@i) == strcut(getarg(1),0) ) {	//<str2>の最初の1バイトが一致したら
+
+			if( callfunc("SubStr",getarg(0),'@i,'@len) == getarg(1) )
+				return '@i;
+		}
+	}
+	return -1;
+}
+
+//===============================================
+// 指定文字列のいずれかの文字を探索
+// 動作が保証されるのは１バイト文字のみ
+//	callfunc("StrCSpn","<str1>","<str2>")
+//-----------------------------------------------
+function	script	StrCSpn	{
+	for(set '@i,0; strcut(getarg(0),'@i) != ""; set '@i,'@i+1) {		//<str1>の走査
+		for(set '@j,0; strcut(getarg(1),'@j) != ""; set '@j,'@j+1) {	//<str2>の走査
+
+			if( strcut(getarg(0),'@i) == strcut(getarg(1),'@j) )
+				return '@i;
+		}
+	}
+	return -1;
+}
+
+//===============================================
+// 指定文字列のいずれかの文字列を探索
+// ２バイト単位で検索する
+//	callfunc("WcsSpn","<str1>","<str2>")
+//-----------------------------------------------
+function	script	WcsSpn	{
+	for(set '@i,0; strcut(getarg(0),'@i) != ""; set '@i,'@i+2) {		//<str1>の走査
+		for(set '@j,0; strcut(getarg(1),'@j) != ""; set '@j,'@j+2) {	//<str2>の走査
+
+			if( strcut(getarg(0),'@i)+strcut(getarg(0),'@i+1) == strcut(getarg(1),'@j)+strcut(getarg(1),'@j+1) )
+				return '@i;
+		}
+	}
+	return -1;
+}
+
+//===============================================
+// <n>番目を１バイト削る
+//	callfunc("StrDelete","<string>",<n>)
+//-----------------------------------------------
+function	script	StrDelete	{
+	for(set '@i,0; strcut(getarg(0),'@i) != ""; set '@i,'@i+1) {
+		if('@i == getarg(1))
+			continue;
+
+		set '@buf$,'@buf$ + strcut(getarg(0),'@i);
+	}
+	return '@buf$;
+}
+
+//===============================================
+// <n>番目以降の文字列を返す
+//	callfunc("StrSplit","<string>",<n>)
+//-----------------------------------------------
+function	script	StrSplit	{
+	for(set '@i,getarg(1); strcut(getarg(0),'@i) != ""; set '@i,'@i+1) {
+		set '@buf$,'@buf$ + strcut(getarg(0),'@i);
+	}
+	return '@buf$;
+}
+
+//===============================================
+// <n>番目以降の文字列を左に<len>バイトずらす
+//	callfunc("StrShift","<string>",<n>,<len>)
+//-----------------------------------------------
+function	script	StrShift	{
+	if(getarg(2)<0)
+		return "";
+
+	for(set '@i,0; strcut(getarg(0),'@i) != ""; set '@i,'@i+1) {
+		if('@i >= getarg(1)-getarg(2) && '@i <= getarg(1)-1)
+			continue;
+
+		set '@buf$,'@buf$ + strcut(getarg(0),'@i);
+	}
+	return '@buf$;
+}
+
+//===============================================
+// <n>番目以降の文字列を右にずらして
+// 指定文字列を挿入する
+//	callfunc("StrInsert","<str1>",<n>,"<str2>")
+//-----------------------------------------------
+function	script	StrInsert	{
+	for(set '@i,0; strcut(getarg(0),'@i) != ""; set '@i,'@i+1) {
+		if('@i == getarg(1))
+			set '@buf$,'@buf$ + getarg(2) + strcut(getarg(0),'@i);
+		else
+			set '@buf$,'@buf$ + strcut(getarg(0),'@i);
+	}
+	return '@buf$;
+}
+
+//===============================================
+// <str1>に含まれる<str2>を<str3>に置換
+//	callfunc("StrReplace","<str1>","<str2>","<str3>")
+//-----------------------------------------------
+function	script	StrReplace	{
+	set '@len,callfunc("StrLen",getarg(1));			//検索文字列のバイト数
+	set '@n,callfunc("StrIndex",getarg(0),getarg(1));	//文字列がヒット
+	if('@n < 0)
+		return getarg(0);	//何もしない
+	else
+		return callfunc("StrNCpy",getarg(0),'@n) + getarg(2) + callfunc("StrSplit",getarg(0),'@n+'@len);
+}
+
+//===============================================
+// 先頭から順に<str1>に含まれる<str2>を
+// <str3>に全部置換する
+//	callfunc("StrAReplace","<str1>","<str2>","<str3>")
+//-----------------------------------------------
+function	script	StrAReplace	{
+	//StrIndexを利用する
+	set '@max,callfunc("StrLen",getarg(0));
+	set '@len,callfunc("StrLen",getarg(1));
+	if('@max==0 || '@len==0 || '@max < '@len)
+		return getarg(0);
+
+	for(set '@i,0; '@i <= '@max-'@len; set '@i,'@i+1) {
+		if( strcut(getarg(0),'@i) == strcut(getarg(1),0) ) {		//最初の1バイトが一致したら
+
+			if( callfunc("SubStr",getarg(0),'@i,'@len) == getarg(1) ) {
+				set '@buf$,'@buf$ + getarg(2);
+				set '@i,'@i+'@len-1;	//置換したら次の検索位置まで飛ばす
+				continue;
+			}
+		}
+		set '@buf$,'@buf$ + strcut(getarg(0),'@i);
+	}
+	return '@buf$ + callfunc("StrSplit",getarg(0),'@i);		//末尾をつないで終了
+}
+
+//===============================================
+// 文字列の並びを逆にする
+// 動作が保証されるのは１バイト文字のみ
+//	callfunc("StrReverse","<string>")
+//-----------------------------------------------
+function	script	StrReverse	{
+	set '@len,callfunc("StrLen",getarg(0));
+
+	for(set '@i,'@len-1; '@i>=0; set '@i,'@i-1) {
+		set '@buf$,'@buf$ + strcut(getarg(0),'@i);
+	}
+	return '@buf$;
+}
+
+//===============================================
+// 文字列の並びを逆にする
+// ２バイト単位で並び替える
+//	callfunc("WStrReverse","<string>")
+//-----------------------------------------------
+function	script	WStrReverse	{
+	set '@len,callfunc("StrLen",getarg(0));
+
+	for(set '@i,'@len-1; '@i>=0; set '@i,'@i-2) {
+		set '@buf$,'@buf$ + strcut(getarg(0),'@i-1) + strcut(getarg(0),'@i);
+	}
+	return '@buf$;
+}
+
+//===============================================
+// 文字列の並びをシャッフルする
+// 動作が保証されるのは１バイト文字のみ
+//	callfunc("StrShuffle","<string>")
+//-----------------------------------------------
+function	script	StrShuffle	{
+	set '@len,callfunc("StrLen",getarg(0));
+	set '@dup$,getarg(0);				//元の変数の中身を書き換えてしまわないないようにstrdup
+
+	for(set '@i,'@len-1; '@i>=0; set '@i,'@i-1) {
+		if('@i==0)
+			set '@buf$,'@buf$ + '@dup$;	//最後は乱数使わずそのまま結合
+		else {
+			set '@rand,rand('@i);
+			set '@buf$,'@buf$ + strcut('@dup$,'@rand);
+			set '@dup$,callfunc("StrDelete",'@dup$,'@rand);		//選んだ文字は削る
+		}
+	}
+	return '@buf$;
+}
+
+//===============================================
+// １バイトずつ分解して配列で返す(128biteまで)
+//	callfunc("StrArray","<string>")
+//-----------------------------------------------
+function	script	StrArray	{
+	cleararray 'buf$,"",128;		//スクリプト依存変数に格納するので初期化
+
+	if('@len <= 128) {
+		for(set '@i,0; strcut(getarg(0),'@i) != ""; set '@i,'@i+1) {
+			set 'buf$['@i],strcut(getarg(0),'@i);
+		}
+	}
+	return 'buf$;
+}

@@ -1,0 +1,2906 @@
+==========================================================================
+ Athena dev 2.1.1 mod1250 現在のconfのリファレンス＋α
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+ Athena設定ファイルの設定方法のリファレンスです。
+ HowToではありませんが、これを見てもAthenaが動かせない人は
+ 素直にあきらめたほうが無難です。
+
+
+< confのリスト >
+
+ 以下のような設定ファイルがありますが、これらは通常書き換えません。
+ 設定を変更する場合は次のセクションを参照してください。
+
+ conf/socket.conf			全サーバー共通の通信関係の設定
+ conf/httpd.conf			全サーバー共通の httpd の設定
+ conf/login_athena.conf		login-server の設定
+ conf/char_athena.conf		char-server の設定
+ conf/inter_athena.conf		inter-server の設定
+ conf/map_athena.conf		map-server の設定
+ conf/battle_athena.conf	map-server の設定(特殊ルールなどの設定)
+ conf/atcommand_athena.conf	map-server の設定(GMコマンドや@コマンドの設定)
+
+
+< 設定の変更 >
+
+ 基本的に上記のファイルはパッチなどで更新されるので書き換えません。
+ それぞれのファイルは import フォルダ内のファイルを読み込むので、
+ 対応するファイルを書き換えましょう。
+ こうすることで、パッチが出ても自分の設定には影響しなくなりますし、
+ SS が出ても、import フォルダをコピーするだけで設定が引き継げます。
+ 
+ conf/socket.conf			→  conf/import/socket_conf.txt
+ conf/httpd.conf			→  conf/import/httpd_conf.txt
+ conf/login_athena.conf		→  conf/import/login_conf.txt
+ conf/char_athena.conf		→  conf/import/char_conf.txt
+ conf/inter_athena.conf		→  conf/import/inter_conf.txt
+ conf/map_athena.conf		→  conf/import/map_conf.txt
+ conf/battle_athena.conf	→  conf/import/battle_conf.txt
+ conf/atcommand_athena.conf	→  conf/import/atcommand_conf.txt
+
+ * map_athena.conf の map や npc などは clear でクリアしたり、
+   delmap や delnpc などでリストから削除できます。
+   map_conf.txt で不要なマップを消す場合などに利用しましょう。
+
+
+< 基本的な設定方法 >
+
+１行に「キー: 値」として記入します。
+<例>
+key: value
+
+行頭を // で始めるとコメントになります。
+<例>
+// この行はコメントなので、処理されません
+
+
+< 複数の同じ項目 >
+
+同じ項目を複数書くと、特に明記されてない限り後に書いたものが優先されます。
+socket.conf / httpd.conf の allow 、deny および
+map_athena.confの map 、npc などは複数行書くと別の処理をします。
+
+
+==========================================================================
+1. conf/login_athena.conf
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+  login-server（アカウントを管理するサーバー）の設定を記述するものです。
+  主に管理者の設定になります。
+
+
+< キーの説明 >
+
+login_port
+	login-serverで使用するポートです。省略可能でデフォルトは6900です。
+
+admin_pass
+	アカウントを作成するのに使用する管理者パスワードです。
+	./tool/addaccount に設定するものです。
+
+new_account
+	新しいアカウント作成を許可するかどうかです。
+	1で許可、0で禁止します。
+
+account_filename
+	アカウントセーブファイルを指定します。
+	省略可能で、デフォルトはsave/account.txtです。
+
+gm_account_filename
+	GMアカウントファイルを指定します。
+	省略可能で、デフォルトはconf/GM_account.txtです。
+
+login_log_filename
+	ログインサーバーのログファイルを指定します。
+	省略可能で、デフォルトはlog/login.logです。
+
+ladmin_pass
+	Password for remote administration (ladmin)
+
+httpd_enable
+	httpd が有効の無効を切り替えます。
+	1 で有効, 0 で無効, -1 で socket_athena.conf の設定を引き継ぎます。
+	省略可能で、デフォルトは -1 です。
+
+httpd_document_root
+	httpd が有効の時のドキュメントルート(最後のスラッシュ必須)
+	省略可能で、デフォルトは httpd/ です。
+
+httpd_new_account
+	httpd から新しいアカウント作成を許可するかどうかです。
+	1で許可、0で禁止します。デフォルトは 0 です。
+
+httpd_config
+	httpd の設定が書かれたファイルを指定します。
+
+account_journal_enable
+		0 でジャーナル機能を無効にします
+
+account_journal_file
+		ジャーナルデータを保存するファイル名を指定します
+
+account_journal_cache_interval
+		ジャーナルのキャッシュをフラッシュする間隔を指定します
+		0 に設定するとまったくキャッシュしなくなります
+
+
+import
+	その行を別ファイルの中身と置き換えます。
+
+< 例 >
+
+login_port: 6900
+admin_pass: admin
+new_account: 1
+account_filename: save/account.txt
+gm_account_filename: conf/GM_account.txt
+login_log_filename: log/login.log
+ladmin_pass: admin
+httpd_enable: -1
+httpd_document_root: httpd/
+httpd_new_account: 1
+httpd_config: conf/httpd_login.conf
+
+==========================================================================
+2. conf/char_athena.conf
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+  char-server（１ワールドでのキャラクターデータを管理するサーバー）の設定
+  を記述するものです。ワールドの名前や、ワールドのパスワード、サーバーのIP、
+  データファイル名などを記述します。
+
+
+< キーの説明 >
+
+userid
+	このワールドが使用するIDです。login-serverに登録されている
+	アカウントのIDを指定します。
+	このワールドで使用するmap-serverの認証に使用するほか、
+	login-server内でのワールドの識別にも使用されます。
+	同じloin-serverに複数のワールドを登録する場合は、それぞれの
+	char-serverで別のIDを使用する必要があります。
+
+passwd
+	このワールドが使用するIDに対応するパスワードです。
+	login-serverへの登録時と、map-serverの認証に使用されます。
+
+server_name
+	このワールドの名前です。クライアントでログインしたときに表示されます。
+
+login_ip
+	char-serverから見た、ワールドを登録するlogin-serverのIPアドレスです。
+
+login_port
+	login-serverで使用するポートです。省略可能でデフォルトは6900です。
+
+char_ip
+	クライアントから見た、char-serverのIPアドレスです。
+
+char_port
+	char-serverで使用するポートです。省略可能でデフォルトは6121です。
+
+char_txt
+	キャラクターデータを格納するデータファイル名です。
+	省略不可能です。
+
+gm_account_filename
+	GMアカウントファイルを指定します。
+	省略可能で、デフォルトはconf/GM_account.txtです。
+
+char_maintenance
+	1にすると、メンテナンス状態になります。
+	省略可能でデフォルトは0です。
+
+char_new
+	1にすると、クライアントに表示されるとき(new)がつきます。
+	省略可能でデフォルトは0です。
+
+char_txt
+	キャラデータを保存するファイルの
+
+max_connect_user
+	キャラサーバーに接続するユーザーの最大人数です。
+	0にすれば最大人数制限はなくなります。
+	接続人数の制限をかけたい時だけ使ってください。
+	省略可能でデフォルトは0です。
+
+autosave_time
+	ファイルにデータを自動保存する時間です。単位は秒です。
+	省略可能でデフォルトは300(5分)です。
+
+start_point
+	新しいキャラクターを作成したとき、最初にいる場所です。
+	「mapファイル名,X座標,Y座標」のように記述します。
+	省略可能で、デフォルトは new_1-1.gat,53,111 です。
+
+start_zeny
+	新しいキャラを作った時初めから持っているゼニの量を設定します。
+	省略可能で、デフォルトは500です。
+
+unknown_char_name
+	キャラクターサーバーに存在しないキャラの名前要請された時返す名前を
+	設定します。省略可能で、デフォルトはUnknownです。
+
+char_log_filename
+	キャラクターサーバーのログファイルを指定します。
+	省略可能で、デフォルトはlog/char.logです。
+
+httpd_enable
+	httpd が有効の無効を切り替えます。
+	1 で有効, 0 で無効, -1 で socket_athena.conf の設定を引き継ぎます。
+	省略可能で、デフォルトは -1 です。
+
+httpd_document_root
+	httpd が有効の時のドキュメントルート(最後のスラッシュ必須)
+	省略可能で、デフォルトは httpd/ です。
+
+httpd_config
+	httpd の設定が書かれたファイルを指定します。
+
+char_journal_enable
+		0 でジャーナル機能を無効にします
+
+char_journal_file
+		ジャーナルデータを保存するファイル名を指定します
+
+char_journal_cache_interval
+		ジャーナルのキャッシュをフラッシュする間隔を指定します
+		0 に設定するとまったくキャッシュしなくなります
+
+import
+	その行を別ファイルの中身と置き換えます。
+
+
+< 例 >
+userid: s1
+passwd: p1
+server_name: Athena
+login_ip: 127.0.0.1
+login_port: 6900
+char_ip: 127.0.0.1
+char_port: 6121
+char_txt: save/athena.txt
+gm_account_filename: conf/GM_account.txt
+max_connect_user: 0
+autosave_time: 300
+char_maintenance: 0
+char_new: 0
+start_point: new_1-1.gat,150,120
+start_zeny: 500
+unknown_char_name: Unknown
+char_log_filename: log/char.log
+httpd_enable: -1
+httpd_document_root: httpd/
+httpd_config: conf/httpd_char.conf
+
+
+==========================================================================
+3. conf/inter_athena.conf
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+  inter-server（１ワールドでのグローバルデータを管理するサーバー）の設定
+  を記述するものです。データファイル名などを記述します。
+  (プログラム的には現在はchar-serverの一部として動作しています。)
+
+
+< キーの説明 >
+
+storage_txt
+	倉庫データを格納するファイル名です。
+	省略可能で、デフォルトは save/storage.txt です。
+
+party_txt
+	パーティデータを格納するファイル名です。
+	省略可能で、デフォルトは save/party.txt です。
+
+guild_txt
+	ギルドデータを格納するファイル名です。
+	省略可能で、デフォルトは save/guild.txt です。
+
+pet_txt
+	ペットデータを格納するファイル名です。
+	省略可能で、デフォルトは save/pet.txt です。
+
+castle_txt
+	ギルドの城データを格納するファイル名です。
+	省略可能で、デフォルトは save/castle.txt です。
+
+guild_storage_txt
+	ギルド倉庫データを格納するファイル名です。
+	省略可能で、デフォルトはsave/g_storage.txt です。
+
+accreg_txt
+	ワールド内アカウント共有変数データを格納するファイル名です。
+	省略可能で、デフォルトは save/accreg.txt です。
+
+party_share_level
+	公平分配パーティの制限レベルを設定します。
+	省略可能で、デフォルトは10です。
+
+guild_join_limit
+	ギルドに同一アカウントの別キャラの加入を制限するかどうかを設定します。
+	0:制限しない 1（0以外）:制限する
+	省略可能で、デフォルトは1（制限する）です。
+
+guild_extension_increment
+	ギルド拡張で 1Lv あたり最大人数が何人増えるかを設定します。
+	0 〜 6 で指定します。桜井は 6 のようです。
+	省略可能で、デフォルトは 4 です。
+
+inter_log_filename
+	インターサーバーのログファイルを指定します。
+	省略可能で、デフォルトはlog/inter.logです。
+
+storage_journal_enable
+	0 で倉庫のジャーナル機能を無効にします
+
+storage_journal_file
+	倉庫のジャーナルデータを保存するファイル名を指定します
+
+storage_journal_cache_interval
+	倉庫のジャーナルのキャッシュをフラッシュする間隔を指定します
+	0 に設定するとまったくキャッシュしなくなります
+
+accreg_journal_enable
+accreg_journal_file
+accreg_journal_cache_interval
+party_journal_enable
+party_journal_file
+party_journal_cache_interval
+guild_storage_journal_enable
+guild_storage_journal_file
+guild_storage_journal_cache_interval
+guild_journal_enable
+guild_journal_file
+guild_journal_cache_interval
+castle_journal_enable
+castle_journal_file
+castle_journal_cache_interval
+pet_journal_enable
+pet_journal_file
+pet_journal_cache_interval
+	アカウント変数、パーティー、ギルド、ギルド倉庫、ギルド城、ペットの
+	ジャーナルに関する設定
+
+import
+	その行を別ファイルの中身と置き換えます。
+
+
+< 例 >
+storage_txt: save/storage.txt
+party_txt: save/party.txt
+guild_txt: save/guild.txt
+pet_txt: save/pet.txt
+castle_txt: save/castle.txt
+guild_storage_txt: save/g_storage.txt
+accreg_txt: save/accreg.txt
+party_share_level: 10
+guild_join_limit: 1
+guild_extension_increment: 4
+inter_log_file: log/inter.log
+
+
+==========================================================================
+4. conf/map_athena.conf
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+  map-server（担当マップでのゲーム進行を管理するサーバー）の基本的な設定
+  を記述するものです。
+
+
+< キーの説明 >
+
+userid
+	このワールドが使用するIDです。char-serverへの認証に使用されます。
+
+passwd
+	このワールドが使用するIDに対応するパスワードです。
+
+char_ip
+	map-serverからみた、このサーバーが担当するマップのワールドを管理する
+	char-serverのIPです。
+
+char_port
+	マップを登録するchar-serverのポートです。省略可能でデフォルトは6121です。
+
+map_ip
+	クライアントから見たこのmap-serverのIPです。
+
+map_port
+	map-serverで使用するポートです。省略可能でデフォルトは5121です。
+
+autosave_time
+	データを自動的にキャラ鯖に送る時間です。単位は秒です。
+	省略可能でデフォルトは60(1分)です。
+
+gm_account_filename
+	GMアカウントファイルを指定します。
+	省略可能で、デフォルトはconf/GM_account.txtです。
+
+water_height
+	水場の高さを指定するファイルを決めます。
+	省略可能で、デフォルトはconf/water_height.txtです。
+
+motd_txt
+	Message of the Dayファイルを指定します。
+	省略可能で、デフォルトはconf/motd.txtです。
+
+help_txt
+	@helpで表示するファイルを指定します。
+	省略可能で、デフォルトはconf/help.txtです。
+
+mapreg_txt
+	MAPサーバー内キャラクター共有変数を保存するファイルを指定します。
+	省略可能で、デフォルトはsave/mapreg_txtです。
+
+read_grf_files_txt
+	data.grf 等ののパス指定ファイル grf-files.txt を読むかどうかを指定します。
+	0 を指定すると、ファイル grf-files.txt が存在しても読まなくなり、
+	以下の data_grf などの設定を利用するようになります。
+	デフォルトは 1 です。
+
+data_grf
+	ROデータファイル data.grf へのパスです。
+	省略可能で、デフォルトは ./data.grf です。
+	grf-files.txt を読み込む場合、そちらの設定が優先されます。
+
+sdata_grf
+	サクライデータファイル sdata.grf へのパスです。
+	省略可能で、デフォルトは ./sdata.grf です。
+	grf-files.txt を読み込む場合、そちらの設定が優先されます。
+
+adata_grf
+	αデータファイル adata.grf へのパスです。
+	省略可能で、デフォルトは ./adata.grf です。
+	grf-files.txt を読み込む場合、そちらの設定が優先されます。
+
+read_map_from_cache
+	マップキャッシュを使用するかどうか
+	 0 : 使用しない 1 : 非圧縮で保存 2 : 圧縮して保存
+	圧縮すると1MB程に縮まるようです。
+	全てのマップがキャッシュ内にあれば、grf を読み込まなくても起動できます。
+
+npc
+	読み込むnpcデータファイルへのパスです。
+	複数指定可能で、指定した順にロードします。
+	clear を指定するとそれまでに登録したパスを全て削除します。
+
+delnpc
+	読み込まないnpcファイルへのパスです。
+	指定したパスはnpcで指定されたデータファイルリストから削除されます。
+	all を指定すると全て削除します( npc: clear と同義)。
+
+map
+	このマップが担当するマップファイル名です。
+	複数指定可能で、指定した順にロードします。
+	存在しないマップを指定した場合エラーになります。
+	clear を指定するとそれまでに登録したファイル名を全て削除します。
+
+delmap
+	読み込まないマップファイルへのパスです。
+	指定したファイルはmapで指定されたリストから削除されます。
+	all を指定すると全て削除します( map: clear と同義)。
+
+httpd_enable
+	httpd が有効の無効を切り替えます。
+	1 で有効, 0 で無効, -1 で socket_athena.conf の設定を引き継ぎます。
+	省略可能で、デフォルトは -1 です。
+
+httpd_document_root
+	httpd が有効の時のドキュメントルート(最後のスラッシュ必須)
+	省略可能で、デフォルトは httpd/ です。
+
+httpd_config
+	httpd の設定が書かれたファイルを指定します。
+
+import
+	その行を別ファイルの中身と置き換えます。
+
+< 例 >
+
+userid: s1
+passwd: p1
+char_ip: 127.0.0.1
+char_port: 6121
+map_ip: 127.0.0.1
+map_port: 5121
+autosave_time: 60
+nullpo_check: 1
+gm_account_filename: conf/GM_account.txt
+water_height: conf/water_height.txt
+data_grf: ./data.grf
+sdata_grf: ./sdata.grf
+httpd_enable: -1
+httpd_document_root: httpd/
+httpd_config: conf/httpd_map.conf
+npc: conf/warp/npc_warp.txt
+npc: conf/warp/npc_warp25.txt
+npc: conf/warp/npc_warp3.txt
+npc: conf/mob/npc_monster3J.txt
+map: prontera.gat
+map: prt_castle.gat
+（npc、mapは多いので省略）
+delnpc: conf/sample/npc_test.txt
+npc: clear
+delmap: prontera.gat
+delmap: all
+
+==========================================================================
+5. conf/battle_athena.conf
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+  map-server（担当マップでのゲーム進行を管理するサーバー）の戦闘関連や、
+  その他の設定を記述するものです。
+  設定は全て省略可能で、省略時はデフォルト値が利用されます。
+
+< 値に指定できる特殊な文字列 >
+
+  yes と on は 1 として処理されます。（有効の意味）
+  no と off は 0 として処理されます。（無効の意味）
+
+
+< キーの説明 >
+
+warp_point_debug
+	ワープポイントを普通に表示するかどうかです。これをyesにすると
+	ワープポイントのかわりにギルドフラグがその場所に出てワープ
+	ポイントの名前を確認することができます。デフォルトはnoです。
+
+enemy_critical
+	プレイヤーと同じLUKによるクリティカル判定をMOBとペットに有効にするかどうかです。
+	このクリティカルはもちろん必中なので、onにすると高Fleeでも、
+	LUKの高い敵の攻撃が避けづらくなります。デフォルトはnoです。
+
+enemy_critical_rate
+	モンスターとペットのクリティカル頻度の百分率です。enemy_criticalがyesじゃないと設定しても何の意味もありません。デフォルトは100です。
+
+enemy_str
+	モンスターのが攻撃するときのATK計算にSTRを使用するかどうかです。
+	デフォルトはyesです。
+
+enemy_perfect_flee
+	敵が完全回避をするかどうかです。これをyesにすると敵も完全回避を
+	するようになります。デフォルトはnoです。
+
+casting_rate
+	スキルの詠唱時間を百分率で調整します。
+	200にすると詠唱時間が倍になり、0にすると詠唱がなくなります。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+no_casting_dex
+	スキルの詠唱時間が無しになるDEXの値を調整します。
+	デフォルトは150です。
+	DEXの影響を受けた詠唱時間 = 詠唱時間 * (no_deray_dex - dex) / no_deray_dex
+
+delay_rate
+	スキル使用後ディレイを百分率で調整します。
+	200にするとディレイが倍になり、0にするとディレイがなくなります。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+delay_dependon_dex
+	スキル使用後ディレイが詠唱時間と同じようにDEXで影響を受けるかどうかを
+	指定します。デフォルトはnoです。
+
+no_deray_dex
+	スキル使用後ディレイが無しになるDEXの値を調整します。
+	デフォルトは150です。
+	DEXの影響を受けたディレイ時間 = ディレイ時間 * (no_deray_dex - dex) / no_deray_dex
+
+skill_delay_attack_enable
+	スキルディレイの間攻撃できるかどうかです。yesにすればスキルディレイの間スキルは使えないけど攻撃はできます。
+	デフォルトはnoです。
+
+left_cardfix_to_right
+	二刀流の左手武器の種族、属性、Sizeのダメージ補正を右手武器に適用するかどうかです。これをyesにすると左手武器には種族、属性、Sizeのダメージ補正が掛からなくなります。デフォルトはnoです。
+
+player_skill_add_range
+	プレイヤーのスキル射程から敵が離れた時どれぐらいの距離までスキルを使用可能にするかを決めます。スキルの射程+player_skill_add_rangeまでスキルが届きます。デフォルトは0ですが少しは入れた方がいいです。
+
+skill_out_range_consume
+	スキルの射程から敵が離れてスキルが失敗した時SPやアイテムを消耗するかどうかです。デフォルトはyesです。
+
+monster_skill_add_range
+	モンスターのスキル射程から敵が離れた時どれぐらいの距離までスキルを使用可能にするかを決めます。スキルの射程+monster_skill_add_rangeまでスキルが届きます。デフォルトは0です。
+
+player_damage_delay
+	プレイヤーキャラがダメージを受けた時移動できないディレイを入れるかどうかです。
+	yesにするとインデュアでも使わない限りダメージを受けた時
+	しばらくは動きません。デフォルトはyesです。
+
+player_damage_delay_rate
+	プレイヤーキャラがダメージを受けた時移動できないディレイを百分率で調整します。
+	200にするとディレイが倍になり、0にするとディレイがなくなります。
+	player_damage_delayがyesにしてないと意味がありません。
+	デフォルトは100です。
+
+defunit_not_enemy
+	防御ユニット（セイフティウォール/ニューマなど）がMOBに効果を
+	及ぼさないようにするかどうかです。デフォルトはyesです。
+
+random_monster_checklv
+	モンスター召還アイテムを使ったときに自分よりLVの高いモンスターを召還するかどうかです。
+	yesにすると、自分よりLVの高いモンスターを召還しないようになります。
+	デフォルトはyesです。
+
+attribute_recover
+	属性によって攻撃されても回復するかどうかです。noの場合は-属性を
+	0にします。デフォルトはyesです。
+
+item_auto_get
+	アイテム自動取得機能を使用するかどうかです。
+	yesにするとアイテムドロップをモンスターに一番多くダメージを与えたキャラが
+	自動でアイテムを取得するようになります。
+	デフォルトはnoです。
+
+flooritem_lifetime
+	床に落ちたアイテムが消えるまでかかる時間です。単位はms(ミリ秒)です。
+	デフォルトは60000(60秒)で最小は1000(1秒)です。1000未満ならデフォルトにセットされます。
+
+item_first_get_time
+	モンスターに一番ダメージを多く与えたキャラ以外がそのモンスターの
+	ドロップアイテムを取れるようになるまでの時間です。
+	単位はms(ミリ秒)です。デフォルトは10000(10秒)です。
+
+item_second_get_time
+	item_first_get_timeの後モンスターに二番目にダメージを多く与えた
+	キャラ以外がそのモンスターのドロップアイテムを取れるようになるまでの
+	時間です。単位はms(ミリ秒)です。デフォルトは7000(7秒)です。
+
+item_third_get_time
+	item_second_get_timeの後モンスターに三番目にダメージを多く与えた
+	ャラ以外がそのモンスターのドロップアイテムを取れるようになるまでの
+	時間です。単位はms(ミリ秒)です。デフォルトは5000(5秒)です。
+
+mvp_item_first_get_time
+	モンスターに一番ダメージを多く与えたキャラ以外がそのモンスターの
+	MVPアイテムを取れるようになるまでの時間です。
+	単位はms(ミリ秒)です。デフォルトは10000(10秒)です。
+
+mvp_item_second_get_time
+	mvp_item_first_get_timeの後モンスターに二番目にダメージを多く与えた
+	キャラ以外がそのモンスターのMVPアイテムを取れるようになるまでの
+	時間です。単位はms(ミリ秒)です。デフォルトは10000(10秒)です。
+
+mvp_item_third_get_time
+	mvp_item_second_get_timeの後モンスターに三番目にダメージを多く与えた
+	キャラ以外がそのモンスターのMVPアイテムを取れるようになるまでの
+	時間です。単位はms(ミリ秒)です。デフォルトは2000(2秒)です。
+
+item_rate
+	アイテムドロップ率を百分率で調整します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+drop_rate0item
+	落下確率0のアイテム(一部モンスターにおけるリンゴ)を落下するかどうかの設定です。
+	デフォルトはnoです。
+
+base_exp_rate
+	BaseEXPの所得倍率を百分率で調整します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+	
+job_exp_rate
+	JobEXPの所得倍率を百分率で調整します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+next_exp_limit
+	獲得経験値の上限を%で設定します。
+	100で1レベル、200で2レベル分です。デフォルトは150です。
+death_penalty_type
+	デスペナルティのタイプを決定します。
+	0で死んだ後リスタートする時に適用で持っているEXPの量から比率の分を減らす仕様、1で死んだ直後に適用で持っているEXPの量から比率の分を減らす仕様です。
+	2で死んだ後リスタートする時に適用で次のレベルアップまでのEXPから比率の分を減らす仕様、3で死んだ直後に適用で次のレベルアップまでのEXPから比率の分を減らす仕様です。
+	デフォルトは0です。
+
+death_penalty_base
+	デスペナルティによるBASE経験値減少率を百分率で調整します。
+	あまり低すぎる値を使うと減りません。単位は0.01%です。
+	デフォルトは0です。
+
+death_penalty_job
+	デスペナルティによるJOB経験値減少率を百分率で調整します。
+	あまり低すぎる値を使うと減りません。単位は0.01%です。
+	デフォルトは0です。
+
+zeny_penalty
+zeny_penalty_percent
+zeny_penalty_by_lvl
+	死んだ時無くなるゼニーの量。以下の3項目の合計額を損失させます。
+	各項目にマイナスの値を入力することは可能ですが、ゼニーを与えることはありません。
+	死んだ時減るわけではなく死んだ後セーヴポイントに戻る時適用されます。
+	zeny_penalty:         損失するゼニーの額。
+	zeny_penalty_percent: ゼニーの比率、単位は0.01%。
+	zeny_penalty_by_lvl:  ベースレベルに比例したゼニーを損失させる、値は傾き。
+
+restart_hp_rate
+	リスタートする時に回復するHP比率を百分率で調整します。単位は%です。
+	デフォルトは0です。0の場合1回復になります。
+
+restart_sp_rate
+	リスタートする時に回復するSP比率を百分率で調整します。単位は%です。
+	デフォルトは0です。0の場合は回復しません。
+	そしてSPが比率より高い場合も回復しません。
+
+mvp_hp_rate
+	MVP モンスターのHPを百分率で調整します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+mvp_item_rate
+	MVPアイテムの所得倍率を百分率で調整します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+mvp_exp_rate
+	MVP EXPの所得倍率を百分率で調整します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+monster_hp_rate
+	MVP 以外のモンスターのHPを百分率で調整します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+monster_max_aspd
+	モンスターの最大攻撃速度を設定します。
+	デフォルトは199です。最大は199で最小は100です。
+
+atcommand_gm_only
+	＠コマンドをGM専用にするかどうかです。デフォルトはnoです。
+
+gm_all_skill
+	全てのスキルを覚えられるようにするGMのレベルを設定します。
+	これを0以外にすると、そのGMレベル以上のGMはJOBやスキル所得条件に関係なく全スキルが覚えられます。(クェストスキルも含めて)
+	デフォルトは 0 です。0の場合はGMではない全てのキャラの意味ではなく全てのGMが全てのスキルを覚えられないと言うことです。
+
+gm_all_equipment
+	全ての装備品を装備できるようにするGMのレベルを設定します。
+	これを0以外にすると、そのGMレベル以上のGMはJOBやレベル、性別に関係なく
+	全装備品を装備できるようになります。ただし、クライアント側でエラーを
+	起こす組み合わせもあると思います。デフォルトは 0 です。
+	0の場合は全てのGMは通常プレイヤーと同じ判定が行われます。
+
+gm_skill_unconditional
+	無条件にスキルを使用できるようにするGMのレベルを設定します。
+	これを0以外にすると、そのGMレベル以上のGMは装備武器や消費アイテムの有無
+	などに関係なく、そして何も消費することなくスキルを使用できるように
+	なります。判定処理を無視するので動作に不都合がでる可能性があります。
+	デフォルトは 0 です。 0の場合は全てのGMは通常プレイヤーと同じ判定が
+	行われます。
+
+player_skillfree
+	スキルツリーに関係なくスキルを上げることができるかどうかです。
+	これをyesにすればプレイヤーの職業で習うことができるスキル全てを
+	スキルツリーに関係なく上げることができます。デフォルトはnoです。
+
+player_skillup_limit
+	スキルリセット等をした時スキルを制限なしに上げるかどうかです。
+	これをyesにすれば始めのスキルポイント9つはノービスで習うスキルにしか
+	使えません。そしてその後の39は1次職業で習う物にだけ使えてその後の
+	ポイントは自由に使うことができます。デフォルトはnoです。
+
+weapon_produce_rate
+	武器製造スキルでの製造成功率を百分率で調整します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+potion_produce_rate
+	ポーション製造スキルでの製造成功率を百分率で調整します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+
+monster_active_enable
+	先攻モンスターを先攻にするかどうかです。これをnoにすると
+	先攻モンスターが非先攻になります。デフォルトはyesです。
+
+monster_damage_delay_rate
+	モンスターがダメージを受けた時移動できないディレイを百分率で調整します。
+	200にするとディレイが倍になり、0にするとディレイがなくなります。
+	デフォルトは100です。
+
+monster_loot_type
+	ルートモンスターの行動の仕方を指定します。
+	0の場合はLOOTITEM_SIZEまでアイテムを食べてもまたアイテムを食べて、
+	前のアイテムが消える仕様。1の場合はLOOTITEM_SIZEまでアイテムを食べると
+	もうアイテムを食べなくなる仕様。デフォルトは0です。
+
+mob_skill_use
+	MOBがスキルを使ってくるかどうかです。デフォルトはyesです。
+
+mob_count_rate
+	map_athena.confで指定されたnpcデータを読み込む際、
+	monsterで定義された配置MOBの数を百分率で調整します。
+	例外として、配置数1として定義されたMOBの数は変わりません。(BOSS対策)
+	また、配置数を下方修正したとき、1未満になった場合は1として処理します。
+	0-1000程度で指定してください。デフォルトは100です。
+
+quest_skill_learn
+	クェストスキルを普通に習得するかどうかです。
+	これをyesにするとクェストスキルが普通に表示されてスキルポイントを使って習得することができます。
+	デフォルトは noです。
+
+quest_skill_reset
+	スキルをリセットする時クェストスキルをリセットするかどうかです。
+	デフォルトはyesです。
+	noにしてもquest_skill_learnをyesにすればリセットされます。
+
+basic_skill_check
+	座り、交換、パーティ結成、チャットルーム作り等の時基本スキルをチェックするかどうかです。 
+	これをnoにすれば座り、交換等の基本スキルが必要な行動を基本スキルに関係なく使うことができます。
+	デフォルトは yesです。
+
+guild_emperium_check
+	ギルドを作る時エンペリウムを消費するかどうかです。これをnoにすれば
+	エンペリウムなしでもギルドが作れます。
+	デフォルトは yesです。
+
+guild_exp_limit
+	ギルドの役職に設定できる上納経験値の割合の上限を設定できます。
+	デフォルトは50(%)です。
+
+guild_emblem_colors
+	エンブレムのBMPに256色以外のカラーを利用可能にする
+	0: 256色のみ, +1: 16ビットカラー, +2: 24ビットカラー
+
+player_invincible_time
+	マップ移動やテレポート、復活した時の無敵時間を設定します。単囲は
+	ms(ミリ秒)。移動、攻撃行動、スキル使用、アイテム使用をするとこの
+	時間はなくなる。(シーズモードでは時間を2倍にして適用)
+	デフォルトは5000(5秒)です。
+	
+pet_catch_rate
+	ペットの捕獲倍率を百分率で設定します。
+	0-1000程度の数値を指定してください。デフォルトは100です。
+pet_rename
+	ペットの名前を変更するかどうかを決めます。デフォルトはnoです。
+	yesは何度でも名前の変更が可能。noは一度変更するともう変更不可能になる。
+
+pet_friendly_rate
+	ペットに餌をあげた時上がる親密度の倍率です。
+	親密度が減る場合は適用されません。デフォルトは100です。
+
+pet_hungry_delay_rate
+	ペットの腹が減る時間の倍率です。
+	倍率が高いと腹が減り難くなります。デフォルトは100です。
+
+pet_hungry_friendly_decrease
+	ペットの腹が完全に減った時減る親密度の量です。デフォルトは5です。
+
+pet_str
+	ペットのATK計算にSTRを適用するかどうかです。
+	デフォルトはyesです。
+
+pet_status_support
+	ペットによるステータスボーナスを適用するかどうかです。yesにすると
+	ペットを持ってる時ペット毎に設定されているステータスボーナスが
+	付きます。デフォルトはnoです。
+
+pet_attack_support
+pet_damage_support
+	主人がモンスターにダメージを与えたとき、受けたときに
+	ペットが支援攻撃をするかどうかです。yesにするとペットの親密度が
+	きわめて親しいの時だけ支援攻撃をしてくれます。デフォルトはnoです。
+
+pet_support_rate
+	ペットの支援攻撃確率の倍率です。（100で通常、200で倍です) 
+	倍率が高いと支援攻撃よくしてくれるようになります。デフォルトは100です。
+
+pet_attack_exp_to_master
+	ペットが与えたダメージの分の経験値を主人が収得するかどうかです。
+	これをyesにするとペットの攻撃によるダメージも主人が与えた物になり
+	主人が経験値を収得することができます。デフォルトはnoです。
+
+pet_attack_exp_rate
+	ペットが与えたダメージの分の経験値を主人が収得する時の倍率です。
+	デフォルトは100です。
+pet_lootitem
+	ペットがアイテムをルートするかどうかの設定です。
+	デフォルトはnoです。
+
+pet_weight
+	ペットにルートさせるときの重量制限です。
+	デフォルトは1000です。
+
+skill_min_damage
+	スキルを使った時ダメージが連打数より未満の場合全てミスになるか1ダメージになるかを決定します。
+	デフォルトはnoです。
+
+finger_offensive_type
+	スキル指弾の表示タイプを決定します。
+	0は本サーバー仕様で1はアテナ仕様です。デフォルトは0です。
+	
+heal_counterstop
+	スキル「ヒール」が何レベル以上で9999固定になるかの設定です。
+	0を記述した場合、固定無しになります。
+	デフォルト値は11です。
+
+heal_exp
+	スキル「ヒール」を使った際にもらえるジョブ経験値量の設定です。
+	100で回復した量と同量になります。
+	モンスターの経験値を変更してない場合は5〜10程度が適当だと思われます。
+	デフォルトは0です。
+
+resurrection_exp
+ 	スキル「リザレクション」を使った際にもらえる経験値量の設定です。
+	単位は0.01%です。復活したプレイヤーが持っている経験値 * レベル差/100 * resurrection_exp/10000 分の経験が貰えます。
+	デフォルトは0です。
+
+shop_exp
+	スキルディスカウントとオーバーチャージを習得してる場合NPC利用金額に応じたJOB経験値獲得倍率です。（100で通常、200で倍になります）
+	計算式はln(代金*スキルレベル) * shop_exp / 100 で買う場合はディスカウントがある時のみ適用で売る場合オーバーチャージがある時のみ適用されます。
+	計算式は適度に作った物です。
+	デフォルトは0です。
+
+combo_delay_rate
+	モンクのコンボディレイの時間の倍率です。（100で通常、200で倍になります。）
+	ただ注意するべきなのは高く設定するのがいいことではないことです。
+	コンボディレイが長いとコンボの繋ぎはよくなりますがその長くなった
+	時間の間は行動できないからです。デフォルトは100です。
+
+item_check
+	アイテムのチェックを行うかどうかです。
+	ログイン時とマップ移動時に所持アイテムに不正アイテムがないかチェックします。
+	また@itemで不正アイテムを所得できなくします。
+	デバグやアイテムの確認を行うときなどはoffにしてください。
+	デフォルトはonです。
+
+wedding_relog
+	リログしたときに、ウェディング状態を行なうかどうかです。
+	リログすると、ウェディング状態が解除されるようにするためには、noです。
+	デフォルトはyesです。
+
+wedding_time
+	ウェディング状態の継続時間です。
+	他の設定と違い秒を基準としているので注意が必要です。
+	デフォルトは１時間(3600)です。
+
+wedding_modifydisplay
+	タキシードとウェディングドレスを表示するかどうかです。
+	結婚キャラを表示したい場合はこれをyesにしてください。
+	デフォルトはnoです。
+
+natural_healhp_interval
+	HPが自動回復するまで掛かる時間です。単位はms(ミリ秒)です。
+	デフォルトは6000でNATURAL_HEAL_INTERVAL未満にすることはできません。
+
+natural_healsp_interval
+	SPが自動回復するまで掛かる時間です。単位はms(ミリ秒)です。
+	デフォルトは8000でNATURAL_HEAL_INTERVAL未満にすることはできません。
+
+natural_heal_skill_interval
+	スキルによって自動回復する場合掛かる時間です。単位はms(ミリ秒)です。
+	デフォルトは10000でNATURAL_HEAL_INTERVAL未満にすることはできません。
+
+natural_heal_weight_rate
+	自動回復ができなくなる重量を設定します。単位は%です。
+	最小は50で最大は101です。最大が101なのは重量が
+	natural_heal_weight_rate未満の時に自動回復するからです。(つまり101なら
+	いつでも自動回復できます。)
+	デフォルトは50です。
+
+natural_heal_weight_rate_icon: no
+	重量50%アイコンを重量がnatural_heal_weight_rateになったときに表示する。
+	noでnatural_heal_weight_rateに関係なく50%で表示。
+	デフォルトはno
+
+item_name_override_grffile
+	アイテムの名前(英語以外の名前です。)を.grfファイルから読むかどうかです。
+	noにするとitem_db.txtの名前を使います。
+	デフォルトはyesです。
+
+arrow_decrement
+	弓を使う時矢を消耗するかどうかです。これをnoにすると
+	矢が消耗されません。(矢を装備する必要はあります。)
+	デフォルトはyesです。
+
+allow_any_weapon_autoblitz
+	弓以外の武器を装備していても、自動鷹が発動するかどうかです。
+	コモドパッチ以前を再現するときはyes、デフォルトはnoです。
+
+max_aspd
+	プレイヤーの最大攻撃速度を設定します。
+	デフォルトは199です。最大は199で最小は100です。
+
+max_hp
+	 最大HPを設定します。
+	デフォルトは32500です。最大は1000000で最小は100です。
+
+max_sp
+	 最大SPを設定します。
+	デフォルトは32500です。最大は1000000で最小は100です。
+
+max_parameter
+	プレイヤーの基本パラメータの最大値を設定します。
+	デフォルトは99です。最大は10000で最小は10です。
+	基本パラメータ大きい過ぎるとクライアント落ちが起こるので
+	適当な値を設定する方が良いです。
+
+max_cart_weight
+	 カートの最大重量を設定します。
+	デフォルトは8000です。最大は1000000で最小は100です。
+
+player_skill_log
+	プレイヤーのスキル使用ログを表示するかどうかです。
+	デフォルトはnoです。
+
+monster_skill_log
+	モンスターのスキル使用ログを表示するかどうかです。
+	デフォルトはnoです。
+
+battle_log
+	戦闘関係のログを表示するかどうかです。
+	デフォルトはnoです。
+
+save_log
+	キャラの保存に関するログを表示するかどうか
+	デフォルトはnoです。
+
+error_log
+	エラーログを表示するかどうかです。
+	デフォルトはyesです。
+
+etc_log
+	スキル、戦闘、キャラ保存、エラー以外のログを表示するかどうか
+	デフォルトはyesです。
+
+save_clothcolor
+	服の色を保存するかどうか、有効にすると問題があるかもしれません。
+	デフォルトはnoです。
+
+undead_detect_type
+	アンデッドを認識する方法を設定します。0で属性のみ、1で種族のみ、
+	2で属性と種族の両方のどちらでもあってる場合になります。
+	デフォルトは0です。
+
+player_auto_counter_type
+	プレイヤーのオートカウンターの仕様を設定します。0で100%クリティカル
+	でスキル反撃無し、1で防御無視、Hit+20、クリティカル率2倍でスキル反撃
+	無し、2で100%クリティカルでスキル反撃有り、3で防御無視、Hit+20、
+	クリティカル率2倍でスキル反撃有りです。
+	デフォルトは1です。
+
+monster_auto_counter_type
+	モンスターのオートカウンターの仕様を設定します。0で100%クリティカル
+	でスキル反撃無し、1で防御無視、Hit+20、クリティカル率2倍でスキル反撃
+	無し、2で100%クリティカルでスキル反撃有り、3で防御無視、Hit+20、
+	クリティカル率2倍でスキル反撃有りです。
+	デフォルトは1です。
+
+agi_penaly_type
+	agi_penaly_count以上の敵に攻撃された時のagiペナルティの仕様を設定します。
+	0でなし、1でagi_penaly_num%ずつ減って、2でagi_penaly_numだけ減ります。
+	デフォルトは0です。
+
+min_hitrate
+	最低命中率を設定します。
+	0にすると最大回避率が100%になり、100に設定すると敵味方問わず全て必中になります。
+	デフォルトは5です。
+
+agi_penaly_count
+	agiペナルティを適用する敵の数を設定します。
+	2未満に設定することはできません。デフォルトは3です。
+
+agi_penaly_num
+	agiペナルティによって減る回避の量を設定します。
+	デフォルトは0です。
+
+vit_penaly_type
+	vit_penaly_count以上の敵に攻撃された時のvitペナルティの仕様を設定します。
+	0でなし、1でvit_penaly_num%ずつ減って、2でvit_penaly_numだけ減ります。
+	(減るのはvitによる防御のみ)
+	デフォルトは0です。
+
+vit_penaly_count
+	vitペナルティを適用する敵の数を設定します。
+	2未満に設定することはできません。デフォルトは3です。
+
+vit_penaly_num
+	vitペナルティによって減る回避の量を設定します。
+	デフォルトは0です。
+
+player_defense_type
+	プレイヤーが対象に攻撃する時のDEFの計算方法。0で本鯖仕様、1以上で減算(DEF*値)。
+
+monster_defense_type
+	モンスターが対象に攻撃する時のDEFの計算方法。0で本鯖仕様、1以上で減算(DEF*値)。
+
+pet_defense_type
+	ペットが対象に攻撃する時のDEFの計算方法。0で本鯖仕様、1以上で減算(DEF*値)。
+
+magic_defense_type
+	MDEFの計算方法。0で本鯖仕様、1以上で減算(MDEF*値)
+
+player_skill_reiteration
+	プレイヤーが使う一部の地面スキルの重ね置きを許可するかどうかです。
+	これをyesにするとSWやニューマ、トラップを重ねて置くことができます。
+	デフォルトはnoです。
+
+monster_skill_reiteration
+	モンスターが使う一部の地面スキルの重ね置きを許可するかどうかです。
+	これをyesにするとSWやニューマ、トラップを重ねて置くことができます。
+	デフォルトはnoです。
+
+player_skill_nofootset
+	プレイヤーが使う一部の地面スキルをプレイヤーやモンスターの足元に
+	置くのを禁止するかどうかです。これをyesにするとスキルを設置する時その
+	効果範囲にプレイヤーやモンスターがいるとスキルを置くことができません。
+	デフォルトはnoです。
+
+monster_skill_nofootset
+	モンスターが使う一部の地面スキルをプレイヤーやモンスターの足元に
+	置くのを禁止するかどうかです。これをyesにするとスキルを設置する時その
+	効果範囲にプレイヤーやモンスターがいるとスキルを置くことができません。
+	デフォルトはnoです。
+
+player_cloak_check_type
+	 プレイヤークローキングの仕様を設定します。
+	0は壁チェック有り、スキル使用と攻撃で解除される。
+	1は壁チェック無し、スキル使用と攻撃で解除される。
+	2はは壁チェック有り、スキル使用と攻撃で解除されない。
+	2はは壁チェック無し、スキル使用と攻撃で解除されない。
+	デフォルトは0です。
+
+monster_cloak_check_type
+	 モンスタークローキングの仕様を設定します。
+	0は壁チェック有り、スキル使用と攻撃で解除される。
+	1は壁チェック無し、スキル使用と攻撃で解除される。
+	2はは壁チェック有り、スキル使用と攻撃で解除されない。
+	2はは壁チェック無し、スキル使用と攻撃で解除されない。
+	デフォルトは0です。
+
+gvg_short_attack_damage_rate
+	シーズモードで近距離物理攻撃のダメージ倍率です。デフォルトは100です。
+
+gvg_long_attack_damage_rate
+	シーズモードで遠距離物理攻撃のダメージ倍率です。デフォルトは100です。
+
+gvg_magic_attack_damage_rate
+	シーズモードで魔法攻撃のダメージ倍率です。デフォルトは100です。
+
+gvg_misc_attack_damage_rate
+	シーズモードで物理攻撃と魔法攻撃以外の攻撃(鷹やトラップ等)の
+	ダメージ倍率です。デフォルトは100です。
+
+mob_changetarget_byskill: no
+	条件がskillusedのスキルをMOBがPCに使用するとき、その対象をスキル使用者にするかどうかです。
+	MOBスキル使用後にタゲは戻ります。デフォルトはnoです。
+
+player_attack_direction_change
+	プレイヤーが攻撃した時方向を変更するかどうかです。本鯖では動けない限り方向が変えらないのですがバグぽい仕様なのでデフォルトはyesです。
+	noにすれば動くことだけで方向が変えるようになります。
+
+monster_attack_direction_change
+	モンスターが攻撃した時方向を変更するかどうかです。本鯖では動けない限り方向が変えらないのですがバグぽい仕様なのでデフォルトはyesです。
+	noにすれば動くことだけで方向が変えるようになります。
+
+player_land_skill_limit
+	skill_db.txtで設定されている地面スキルの数制限をプレイヤーに
+	適用するかどうかです。これをyesにすれば設定されている数以上は
+	地面に設置することができなくなりますが数制限をどう変えても
+	MAX_SKILLUNITGROUPを越える数の設置はできません。
+	デフォルトはyesです。
+
+monster_land_skill_limit
+	skill_db.txtで設定されている地面スキルの数制限をモンスターに
+	適用するかどうかです。これをyesにすれば設定されている数以上は
+	地面に設置することができなくなりますが数制限をどう変えても
+	MAX_MOBSKILLUNITGROUPを越える数の設置はできません。
+	デフォルトはyesです。
+
+party_skill_penaly
+	一部のパーティスキルを使用者とパーティでスキル効果が違うように
+	するかどうかです。これの影響を受けるスキルは今の所
+	アドレナリンラッシュ、ウエポンパーフェクション、オーバートラストのみです。
+	デフォルトはyesです。
+
+monster_class_change_full_recover
+	モンスターがメタモルフォーシスとトランスフォーメーション等によって
+	他のモンスターに変わった時そのモンスターのHPを最大なで回復させるか
+	どうかです。これをyesにすると変わったモンスターの最大HPまで
+	回復します。noなら変わる前のHPと最大HPの比率の分のHPになります。
+	デフォルトはnoです。
+
+produce_item_name_input
+	製造で作られた鉄や属性石に製造者の名前を付けるかどうかです。
+	デフォルトはyesです。
+
+produce_potion_name_input
+	製造で作られたポーションに製造者の名前を付けるかどうかです。
+	デフォルトはyesです。
+
+making_arrow_name_input
+	矢作成で作られた矢に製造者の名前を付けるかどうかです。
+	デフォルトはyesです。
+
+holywater_name_input
+	アクアベネディクタで作られた聖水に製造者の名前を付けるかどうかです。
+	デフォルトはyesです。
+
+display_delay_skill_fail
+	スキル使用のディレイ中に「スキル使用の後は、しばらくお待ちください」を表示するかどうかです。
+	デフォルトはyesです。
+
+chat_warpportal
+	チャット中のPCをワープポータルで飛ばせるかどうかです。
+	デフォルトはnoです。
+	
+mob_warpportal
+	MOBをワープポータルで飛ばせるかどうかです。
+	デフォルトはnoです。
+
+dead_branch_active
+	古木の枝などmonster命令でmobidを負数に指定した場合に召喚されるモンスターをアクティブにするかどうかです。
+	デフォルトはnoです。
+
+vending_max_value
+	露店で置けるアイテム価格の最高値です。
+	デフォルトは10000000です。
+
+show_steal_in_same_party
+	スティール成功時、画面内のPTメンバー(自分含む)に
+	スティールしたアイテムの情報を公開するかどうかです。
+	デフォルトはnoです。
+
+enable_upper_class
+	転生、養子職を有効にするかどうかです。
+	デフォルトはnoです。
+
+pet_atack_attr_none
+	ペットによる無属性通常攻撃を
+	属性無し(属性による補正無し)にするかどうかです。
+	デフォルトはnoです
+
+pc_atack_attr_none
+	プレイヤーによる無属性通常攻撃を
+	属性無し(属性による補正無し)にするかどうかです。
+	デフォルトはnoです
+
+mob_atack_attr_none
+	モンスターによる無属性通常攻撃を
+	属性無し(属性による補正無し)にするかどうかです。
+	デフォルトはyesです
+
+player_skill_partner_check
+	聖体降福や合奏スキルを行う際にパートナーの存在をチェックするかどうかです。
+	デフォルトはyes(チェックする)です。
+
+hide_GM_session
+	GMアカウントのキャラクターを@コマンド等で表示の対象にするかどうかです。
+	デフォルトはnoです
+unit_movement_type
+	ユニット移動処理方法を選択します。
+	0で本鯖仕様(回線負荷→重、鯖処理→軽)、1でAthena仕様(回線負荷→軽、鯖処理→重)
+	デフォルトは0(本鯖仕様)です
+invite_request_check
+	プレイヤーが各種要請中(PT加入、Guild加入、取引)に他の要請を受け入れるかどうかです。
+	yesで本鯖仕様、noでAthena仕様(受け入れない)
+	デフォルトはyes(受け入れる)です。
+skill_removetrap_type
+	リムーブトラップの仕様を選択します。
+	0:本鯖仕様で罠1個を取得する
+	1:Athena仕様で使ったアイテムを使った個数を取得する
+disp_experience
+	経験値を表示するかどうかです。
+	yesにすると、敵を倒した時など経験値が入った時に本人にのみ表示されます。
+	デフォルトはnoです。
+hp_rate
+	キャラのHP倍率を設定。(100で正規の値)
+	デフォルトは100です。
+sp_rate
+	キャラのSP倍率を設定。(100で正規の値)
+	デフォルトは100です。
+gm_can_drop_lv: 0
+	GMがアイテムドロップ・倉庫出し入れ・ItemZeny交換が可能になるレベルです。
+	指定レベル未満のGMは、アイテムのドロップなどはできなくなります。
+	デフォルトは0です。
+disp_hpmeter
+	全キャラがPTの時のように、GMにHPメーターを常に送信するか。
+	デフォルトはnoです。
+bone_drop
+	PC死亡時に、ドクロをドロップするか
+	0:しない 1:PvPマップのみ 2:いつでも
+	デフォルトは0です。
+item_rate_details
+	アイテムドロップ率の倍率を細かく指定します。
+	0:指定しない 1:指定する 2:指定する ドロップ率最大値と最低値も指定します
+	デフォルトは0です。
+item_rate_1
+item_rate_1_min
+item_rate_1_max
+	アイテムドロップ率設定1/10000〜9/10000の物の設定です
+	rateは百分率(item_rateと同じ) min/maxはrate適用後に
+	min/10000 以上か max/10000 以下にならない場合にその数値を代入します
+item_rate_10
+item_rate_10_min
+item_rate_10_max
+	アイテムドロップ率設定10/10000〜99/10000の物の設定です
+item_rate_100: 100
+item_rate_100_min: 100
+item_rate_100_max: 999
+	アイテムドロップ率設定100/10000〜999/10000の物の設定です
+item_rate_1000
+item_rate_1000_min
+item_rate_1000_max
+	アイテムドロップ率設定1000/10000〜10000/10000の物の設定です
+finding_ore_drop_rate
+	ブラックスミスの鉱石発見スキルで鉱石を発見する確率です。
+	100 で 1%、10000 で 100% になります。また、item_rate の影響も受けます。
+	finding_ore_drop_rate が 100、item_rate が 500 なら 5% で発見します。
+	実際に発見するアイテムは db/item_findingore.txt で設定されます。
+mvp_announce
+	MPVmobを倒した時に、全国放送するかどうか。
+	デフォルトはnoです。
+petowneditem
+	ペットがアイテムをルートした時に、ペットがアイテムを持つか、飼い主にそのまま渡すか。
+	yes：ペットが所持 no：飼い主へ渡す。デフォルトはnoです。
+buyer_name
+	露店で誰かが購入した際に、購入者も通知するかどうか。
+	デフォルトはnoです。
+noportal_flag
+	ワープポータルの使用を制限するmapflagの設定です。デフォルトは0です。
+	0 : 従来通り、noteleportで制限します（テレポート・ワープポータル共にnoteleportで制限）
+	1 : noportalで制限します（テレポートはnoteleport、ワープポータルはnoportalで個別に制限）
+
+equip_autospell_nocost
+	アイテムボーナスによるオートスペルのSP消費無しにするか設定します。デフォルトはnoです
+ 	yes : 0になります。現在の日本鯖使用です
+	no  : 2/3になります。
+
+expand_autospell
+	複数のオートスペルを所持可能にします。デフォルトはnoです
+	アサシンは武器だけで8つオートスペルを持てるので気をつけてください
+	once_autospell、allow_same_autospellで制御を
+ 	yes : 攻撃用反撃用を合わせて16個まで所持できます
+	no  : 攻撃用オートスペル１ 反撃用オートスペル１の２つだけ持てます
+
+once_autospell
+	アイテムボーナスによるオートスペルの発動を制御します。デフォルトはyesです
+ 	yes : 発動した時点で判定を終了します
+	no  : 全ての発動判定を行います
+
+allow_same_autospell
+	同じカードのオートスペルを許可する。デフォルトはnoです
+	アイテムIDによる追加判定を行います
+	yes : 同じIDのオートスペルは追加されません。(他のボーナスは処理されます)
+	no  : 全てのオートスペルは追加されます。発動率は加算ではなく個別です
+
+
+combo_delay_lower_limits
+	0 〜 (ミリ秒)
+	コンボに最低入力保障時間を設けます
+	パラメーターが大きくなりすぎる場合に使ってください
+
+reveff_plus_addeff: no
+	攻撃を受けた時の状態異常の反撃に武器の異常確率を加算する
+	yes : reveff + addeff
+	no  : reveff
+
+summonslave_no_exp: no
+summonslave_no_drop: no
+summonslave_no_mvp: no
+	yesで取巻きのEXP,DROP,MVPをなくします
+
+summonmonster_no_exp: no
+summonmonster_no_drop: no
+summonmonster_no_mvp: no
+	yesで召還MobのEXP,DROP,MVPをなくします
+
+cannibalize_no_exp: no
+cannibalize_no_drop: no
+cannibalize_no_mvp: no
+	バイオプラントのEXP,DROP,MVPをなくします
+
+branch_mob_no_exp: no
+branch_mob_no_drop: no
+branch_mob_no_mvp: no
+	枝MOB(非BOSS属性)のEXP,DROP,MVPをなくします
+
+branch_boss_no_exp: no
+branch_boss_no_drop: no
+branch_boss_no_mvp: no
+	枝MOB(BOSS属性)のEXP,DROP,MVPをなくします
+
+	※アゾート,カード効果で変えたMOBはドロップがあります
+  	　またルートアイテム、鉱石発見、カードによるドロップは判定を行います
+
+nomanner_mode
+	yes : 赤エモになりません
+	no  : 通常
+
+death_by_unrig_penalty
+	yes :　装備解除ペナルティで死ねます
+	no  :  装備解除ペナルティで死ぬ場合１残ります
+
+dance_and_play_duration: 20000
+	演奏・踊りの効果場の持続時間です
+	デフォルトは20000(単位ミリ秒)
+
+soulcollect_max_fail
+	気球が５個ある場合、錬気功の挙動を指定します
+	yes : 失敗します
+	no  : 現在の気球を破棄し新しい気球を５個作ります（本鯖）
+
+mob_delay_rate: 100
+	配置MOBの再出現までの時間（0で即沸き、100で通常、200で倍の時間、…）
+
+noexp_hiding
+	ハイディング中に EXP が入るかどうか( yes で入らない）
+
+noexp_trickdead
+	死んだふり中に EXP が入るかどうか( yes で入らない）
+
+new_marrige_skill: no
+	結婚スキルの効果
+	yes:現在の本鯖(回復量対象依存)
+	no :使用者依存
+
+※↓のオートスペルとHPSPドレイン関係はアユタヤパッチで変更になりましたが
+　　バグの可能性が高く、そのうち修正が入ると思われます。
+　　再現したい場合のみ自己責任で使いましょう
+
+weapon_attack_autospell: no
+	物理攻撃スキルでオートスペル発動
+	yes: 発動させます
+	no : 発動させません
+	※本鯖のアユタヤで発動するようになりましたが、修正させるようです
+
+magic_attack_autospell: no
+	攻撃魔法でオートスペル発動
+	yes: 発動させます
+	no : 発動させません
+	※本鯖のアユタヤで発動するようになりましたが、修正させるようです
+
+misc_attack_autospell: no
+	罠などでオートスペル発動
+	yes: 発動させます
+	no : 発動させません
+	※本鯖は未確認、修正させるようです
+
+magic_attack_drain: no
+	魔法でHP/SPドレイン発動(月光剣など)
+	yes: 発動させます
+	no : 発動させません
+
+magic_attack_drain_per_enable: no
+	魔法でHP/SPドレインに％吸収も有効にする
+	yes: 発動させます
+	no : 発動させません
+
+misc_attack_drain: no
+	武器魔法以外でHP/SPドレイン発動(罠など？）
+	yes: 発動させます
+	no : 発動させません
+
+misc_attack_drain_per_enable: no
+	武器魔法以外でHP/SPドレインに％吸収も有効にする
+	yes: 発動させます
+	no : 発動させません
+
+weapon_reflect_autospell: no
+	物理ダメージ反射でオートスペル発動
+	yes: 発動させます
+	no : 発動させません
+
+magic_reflect_autospell: no
+	魔法ダメージ反射でオートスペル発動
+	yes: 発動させます
+	no : 発動させません
+
+weapon_reflect_drain: no
+	物理ダメージ反射でHP/SPドレイン発動
+	yes: 発動させます
+	no : 発動させません
+
+weapon_reflect_drain_per_enable: no
+	物理ダメージ反射でHP/SPドレイン発動に％吸収も有効にする
+	yes: 発動させます
+	no : 発動させません
+
+magic_reflect_drain: no
+	魔法ダメージ反射でHP/SPドレイン発動
+	yes: 発動させます
+	no : 発動させません
+
+magic_reflect_drain_per_enable: no
+	魔法ダメージ反射でHP/SPドレインに％吸収も有効にする
+	yes: 発動させます
+	no : 発動させません
+
+※↑　ここまで
+
+hallucianation_off: no
+	錯覚スキルを無効にする
+	アユタヤパッチで効果が変わったため
+	処理が重い場合無効にします
+	yes:無効
+	no :有効
+
+extended_cloneskill: no
+	転生スキルをクローン可能にする
+	yes :転生スキルを転生職に限りクローン出来ます
+	no  :転生スキルをクローンできません（本鯖）
+
+max_parameter_str: 999
+	プレイヤーの基本パラメータの最大値strを設定します。
+	1〜999 : max_parameterを超えて設定できません。
+	max_parameterより大きい場合はmax_parameterに設定されます。
+	個別に最大値を設定したい場合に利用しましょう。
+
+max_parameter_agi: 999
+	プレイヤーの基本パラメータの最大値agiを設定します。
+
+max_parameter_vit: 999
+	プレイヤーの基本パラメータの最大値vitを設定します。
+	1〜999 : max_parameterを超えて設定できません。
+	max_parameterより大きい場合はmax_parameterに設定されます。
+	個別に最大値を設定したい場合に利用しましょう。
+
+max_parameter_int: 999
+	プレイヤーの基本パラメータの最大値intを設定します。
+	1〜999 : max_parameterを超えて設定できません。
+	max_parameterより大きい場合はmax_parameterに設定されます。
+	個別に最大値を設定したい場合に利用しましょう。
+
+max_parameter_dex: 999
+	プレイヤーの基本パラメータの最大値dexを設定します。
+	1〜999 : max_parameterを超えて設定できません。
+	max_parameterより大きい場合はmax_parameterに設定されます。
+	個別に最大値を設定したい場合に利用しましょう。
+
+max_parameter_luk: 999
+	プレイヤーの基本パラメータの最大値lukを設定します。
+	1〜999 : max_parameterを超えて設定できません。
+	max_parameterより大きい場合はmax_parameterに設定されます。
+	個別に最大値を設定したい場合に利用しましょう。
+
+cannibalize_nocost: no
+	コストなしにバイオプラントが使用できる
+	※ケミの強化とバランスを考えて通常フィールドのみ効果があります
+	yes:アイテムを消費しません
+	no :規定のアイテムを消費します
+
+spheremine_nocost: no
+	コストなしにスフィアーマインが使用できる(PVP,GVG以外)
+	※ケミの強化とバランスを考えて通常フィールドのみ効果があります
+	yes:アイテムを消費しません
+	no :規定のアイテムを消費します
+
+demonstration_nocost: no
+	コストなしにデモンストレーションが使用できる(PVP,GVG以外）
+	※ケミの強化とバランスを考えて通常フィールドのみ効果があります
+	yes:アイテムを消費しません
+	no :規定のアイテムを消費します
+
+acidterror_nocost: no
+	コストなしにアシッドテラーが使用できる(PVP,GVG以外）
+	※ケミの強化とバランスを考えて通常フィールドのみ効果があります
+	yes:アイテムを消費しません
+	no :規定のアイテムを消費します
+
+aciddemonstration_nocost: no
+	コストなしにアシッドデモンストレーションが使用できる(PVP,GVG以外)
+	※ケミの強化とバランスを考えて通常フィールドのみ効果があります
+	yes:アイテムを消費しません
+	no :規定のアイテムを消費します
+
+chemical_nocost: no
+	コストなしにケミカル○○チャージが使用できる(PVP,GVG以外)
+	※ケミの強化とバランスを考えて通常フィールドのみ効果があります
+	※砦前でも可能なので考えて利用しましょう
+	yes:アイテムを消費しません
+	no :規定のアイテムを消費します
+
+slimpitcher_nocost: no
+	普通のポーションでスリムピッチャーが使用できる(PVP,GVG以外)
+	※ケミの強化とバランスを考えて通常フィールドのみ効果があります
+	yes:ポーションでスキルを使用できます
+	no :規定のスリムポーションでスキルを使用できます
+
+mes_send_type: 0
+	@mesのゲーム内での送信タイプを選択します
+	0で従来のギルド会話、1でオープン会話として送信します
+	オープン会話にするとクライアント側の/notalkmsgで
+	ユーザーが受信を抑制することが可能になります
+
+serverside_friendlist: yes
+	友達リストをサーバー側で管理するかどうか( yes でサーバー管理 )
+	蔵側で管理する蔵の場合は no にします
+
+pet0078_hair_id: 100
+	packet0078, 007b で送るペットの髪型 ID
+	蔵はこの ID でペットかどうか判別している模様。
+	jRO-2005-08-02b では 100, jRO-2005-07-12b では 24,
+	jRO-2005-05-09e や、それより古い物は 20 で良いと思う。
+	韓蔵や桜井はチェックしていない。
+
+job_soul_check: yes
+	〜魂スキルを使う際に対象の職業をチェックするかどうか
+
+repeal_die_counter_rate: 100
+	スパノビの魂　死亡カウンタを一時的に無効化する(万分率)
+
+tripleattack_rate_up_keeptime: 2000
+	三段掌発動率アップの持続時間
+
+tk_counter_rate_up_keeptime: 2000
+	カウンター姿勢発動率アップの持続時間
+
+disp_job_soul_state_change: no
+	魂状態に〜の表示ON/OFF
+
+check_knowlege_map: yes
+	太陽と月と星の知識のマップチェック
+
+allow_skill_without_day: no
+	ケンセイスキルの日時条件を無視する
+
+debug_new_disp_status_icon_system: no
+	状態アイコンの表示非表示の内部処理を新方式にする(テスト用)
+	成功すれば、SC_SENDMAX以下の空きを利用できるかもしれない(謎)
+
+save_hate_mob: no
+	太陽と月と星の憎悪データを保存するか
+
+twilight_party_check: yes
+	トワイライトファーマシーのPT条件をチェックするか
+
+alchemist_point_type: 0
+	アルケミストのランキングポイントの計算方法
+	0: 累計型 3,5,7,10回成功時にそれぞれポイントを獲得(本鯖らしい)
+	1: 3回以上成功後の失敗時、または10回成功時にポイントを獲得
+
+save_am_pharmacy_success: no
+	アルケミランキング用のファーマシー連続成功回数を保存する
+
+pharmacy_get_point_type: 0
+	アルケミストのランキングポイントの取得方法
+	0:スリムのみ対象(本鯖)
+	1:全てのファーマシーが対象
+
+marionette_type: 0
+	マリオネットコントロールの計算
+	0:上限を個別に指定する
+	1:純粋に半分を付与
+
+	以下、marionette_type:0のときの上限値。
+	0でmax_parameterの値。デフォルトは99。
+
+max_marionette_str: 99
+	マリオネットコントロールのstr上限を設定。
+
+max_marionette_agi: 99
+	マリオネットコントロールのagi上限を設定。
+
+max_marionette_vit: 99
+	マリオネットコントロールのvit上限を設定。
+
+max_marionette_int: 99
+	マリオネットコントロールのint上限を設定。
+
+max_marionette_dex: 99
+	マリオネットコントロールのdex上限を設定。
+
+max_marionette_luk: 99
+	マリオネットコントロールのluk上限を設定。
+
+baby_status_max: 80
+	//養子のステータス限界
+
+baby_hp_rate: 70
+	//養子のHP補正(%)
+
+baby_sp_rate: 70
+	//養子のSP補正(%)
+
+baby_weight_rate: 100
+	//養子の所持量補正(%)
+
+no_emergency_call: yes
+	//緊急招集を使えなくする
+
+save_all_ranking_point_when_logout: no
+	//ログアウト時に全てのランキングポイントを保存するか
+	//(独自実装用)
+
+soul_linker_battle_mode: 0
+	//ソウルリンカーの戦闘モード
+	//0:準備動作と飛び蹴りが使えない(本鯖仕様)
+	//1:魂状態のみ使える
+	//2:条件無し
+
+soul_linker_battle_mode_ka: 0
+	//ソウルリンカーのカー系列の魔法使用条件
+	//0:魂状態のみ他のPCに使える(本鯖仕様)
+	//1:条件無し
+
+skillup_type: 0
+	//スキルを上げるときに下位スキルに規定ポイントを振っていないと
+	//上位スキルを上げられないようにする(二次スキルも見えるタイプ)
+	//1:本鯖の再振りシステム
+	//0:自由
+
+allow_me_dance_effect: no
+	//演奏・踊りのスキル効果を自分にも適用する
+
+allow_me_concert_effect: no
+	//合奏スキル効果を自分にも適用する
+
+allow_me_rokisweil: no
+	allow_me_concert_effect:yesのとき、ロキの効果も適用するか。
+	noで適用。デフォルトはno。
+
+soulskill_can_be_used_for_myself: no
+	//魂を自分に使用可能か(no:本鯖)
+
+hermode_wp_check_range: 3
+	//ヘルモードの杖のWPチェックを範囲
+
+hermode_gvg_only: yes
+	//ヘルモードの杖はGvG中しか使用できない
+
+hermode_wp_check: yes
+	//ヘルモードの杖のWPチェックを行うか
+
+hermode_no_walking: no
+	//ヘルモードの杖の使用中に歩けるか
+
+atcommand_go_significant_values: 21
+	//@goの有効数字を制限
+
+expansion_job1_skill_cloneable: no
+	//テコン系のスキルをクローン完全にクローン可能にするか
+	//yes:魂スキル以外可能(ビーストストレイフィング除外)
+	//no :飛び蹴りのみ
+
+questskill2_cloneable: no
+	//二次職のクエストスキルをクローン可能にするか
+
+redemptio_penalty_type: 0
+	//レディムプティオのペナルティタイプ
+	//0:無条件に死ぬ
+	//+1:蘇生人数0人だとペナルティ無し
+	//+2:蘇生5人以上でHP1で生き残る
+	//+4:HP1で生き残る
+	//+8:ペナルティ無し
+
+boss_no_knockbacking: 0
+	//ボスはノックバックしない
+	//0:ノックバックする
+	//1:ボス属性のMobは全てノックバックしない
+	//2:MVPのMobのみノックバックしない
+
+// ボスはセージのエレメンタルチェンジを無効にする
+// 公式では無効と発表しているが実際は変更出来てしまっている。
+boss_no_element_change: no
+
+allow_create_scroll: no
+	//スクロール製造を許す
+
+scroll_produce_rate: 100
+	// スクロール製造スキルでの製造確率調整（100で通常、200で倍の確率…）
+
+scroll_item_name_input: no
+	// 製造で作られたスクロールに製造者の名前を付けるかどうか
+
+pet_leave: yes
+	ペットとの新密度が0になったらすぐに消えるかどうか
+	本鯖だと、すぐに消えるそうなので、yesがデフォルトです。
+
+extended_abracadabra: no
+	アブラカタブラで転生職スキルが発動した場合、セージでの使用を許可するか。
+	noの場合、セージは使用できないが、プロフェッサーでは使用できる。
+	デフォルトはno。
+
+dropitem_itemrate_fix: no
+	// カード・装備によるドロップに倍率を適用するか
+	// 2以上の数値を指定すると%適用(100で等倍、200で2倍…)
+
+gm_nomanner_lv: 50
+	// チャット・スキル禁止(赤エモ)付与可能なGMのレベル
+	
+mob_take_over_sp: 0
+	// mob_db の SP の値を他の用途に使用するかの設定
+	// 1:	MATK補正値に使用 (100分率)
+	//		例）	MOB_DBのSPが50でそのMOBのMATK半分
+	//				100または0で等倍、
+	//				200で2倍...以下省略
+	//    MATK最小と最大の両方に作用します
+	// 1以外:他の用途に使用しない
+
+
+import
+	その行を別ファイルの中身と置き換えます。
+
+< 例 >
+
+warp_point_debug: no
+enemy_critical: no
+enemy_critical_rate: 100
+enemy_perfect_flee: no
+casting_rate: 100
+delay_rate: 100
+delay_dependon_dex: no
+skill_delay_attack_enable: no
+left_cardfix_to_right: no
+player_skill_add_range: 0
+skill_out_range_consume: yes
+monster_skill_add_range: 0
+player_damage_delay: yes
+player_damage_delay_rate: 100
+defunit_not_enemy: yes
+random_monster_checklv: yes
+attribute_recover: yes
+item_auto_get: no
+flooritem_lifetime: 60000
+item_first_get_time: 10000
+item_second_get_time: 7000
+item_third_get_time: 5000
+mvp_item_first_get_time: 10000
+mvp_item_second_get_time: 10000
+mvp_item_third_get_time: 2000
+item_rate: 100
+drop_rate0item: no
+base_exp_rate: 100
+job_exp_rate: 100
+death_penalty_type: 0
+death_penalty_base: 100
+death_penalty_job: 100
+zeny_penalty: 0
+zeny_penalty_percent: 0
+zeny_penalty_by_lvl: 0
+restart_hp_rate: 0
+restart_sp_rate: 0
+mvp_hp_rate: 100
+mvp_item_rate: 100
+mvp_exp_rate: 100
+monster_hp_rate: 100
+monster_max_aspd: 199
+atcommand_gm_only: no
+gm_all_skill: 0
+gm_all_equipment: 0
+gm_skill_unconditional: 0
+player_skillfree: no
+player_skillup_limit: no
+weapon_produce_rate: 100
+potion_produce_rate: 100
+monster_active_enable: yes
+monster_damage_delay_rate: 100
+monster_loot_type: 0
+mob_skill_use: yes
+mob_count_rate: 100
+quest_skill_learn: no
+quest_skill_reset: yes
+basic_skill_check: yes
+guild_emperium_check: yes
+guild_emblem_colors: 0
+player_invincible_time: 5000
+pet_catch_rate: 100
+pet_rename: no
+pet_friendly_rate: 100
+pet_hungry_delay_rate: 100
+pet_hungry_friendly_decrease: 5
+pet_str: yes
+pet_status_support: no
+pet_support: no
+pet_support_rate: 100
+pet_attack_exp_to_master: no
+pet_attack_exp_rate: no
+pet_lootitem: no
+pet_weight: 1000
+skill_min_damage: no
+finger_offensive_type: 0
+heal_counterstop: 11
+heal_exp: 0
+resurrection_exp: 0
+hop_exp: 0
+combo_delay_rate: 100
+item_check: on
+wedding_relog: yes
+wedding_time: 3600
+wedding_modifydisplay: no
+natural_healhp_interval:4000
+natural_healsp_interval:8000
+natural_heal_skill_interval:10000
+natural_heal_weight_rate: 50
+natural_heal_weight_rate_icon: no
+item_name_override_grffile: yes
+arrow_decrement: yes
+allow_any_weapon_autoblitz: no
+max_aspd: 199
+max_hp: 32500
+max_sp: 32500
+max_parameter: 99
+max_cart_weight: 8000
+player_skill_log: off
+monster_skill_log: off
+battle_log: off
+save_log: off
+error_log: on
+etc_log: on
+save_clothcolor: no
+undead_detect_type: 2
+player_auto_counter_type: 1
+monster_auto_counter_type: 0
+min_hitrate: 5
+agi_penaly_type: 0
+agi_penaly_count: 3
+agi_penaly_num: 0
+vit_penaly_type: 0
+vit_penaly_count: 3
+vit_penaly_num: 0
+player_defense_type: 0
+monster_defense_type: 0
+pet_defense_type: 0
+magic_defense_type: 0
+player_skill_reiteration: no
+monster_skill_reiteration: no
+player_skill_nofootset: no
+monster_skill_nofootset: no
+player_cloak_check_type: 0
+monster_cloak_check_type: 0
+gvg_short_attack_damage_rate: 100
+gvg_long_attack_damage_rate: 100
+gvg_magic_attack_damage_rate: 100
+gvg_misc_attack_damage_rate: 100
+mob_changetarget_byskill: no
+player_attack_direction_change:yes
+monster_attack_direction_change:yes
+player_land_skill_limit: yes
+monster_land_skill_limit: yes
+party_skill_penaly: yes
+monster_class_change_full_recover: no
+produce_item_name_input: yes
+produce_potion_name_input: yes
+making_arrow_name_input: yes
+holywater_name_input: yes
+display_delay_skill_fail: yes
+chat_warpportal: no
+mob_warpportal: no
+dead_branch_active: no
+vending_max_value: 10000000
+show_steal_in_same_party: no
+enable_upper_class: no
+pet_atack_attr_none: no
+pc_atack_attr_none: no
+mob_atack_attr_none: yes
+player_skill_partner_check: yes
+hide_GM_session: no
+invite_request_check: yes
+unit_movement_type: 0
+disp_experience: no
+hp_rate: 100
+sp_rate: 100
+gm_can_drop_lv: 0
+disp_hpmeter: no
+bone_drop: 0
+item_rate_details: 0
+item_rate_1: 100
+item_rate_1_min: 1
+item_rate_1_max: 9
+item_rate_10: 100
+item_rate_10_min: 10
+item_rate_10_max: 99
+item_rate_100: 100
+item_rate_100_min: 100
+item_rate_100_max: 999
+item_rate_1000: 100
+item_rate_1000_min: 1000
+item_rate_1000_max: 10000
+finding_ore_drop_rate: 100
+mvp_announce: no
+petowneditem: no
+buyer_name: no
+noportal_flag: 0
+equip_autospell_nocost: no
+expand_autospell: no
+once_autospell: yes
+allow_same_autospell: no
+combo_delay_lower_limits: 0
+reveff_plus_addeff : no
+summonslave_no_exp  :  no
+summonslave_no_drop :  no
+summonslave_no_mvp  :  no
+cannibalize_no_exp :  no
+cannibalize_no_drop :  no
+cannibalize_no_mvp :  no
+branch_mob_no_exp  : no
+branch_mob_no_drop : no
+branch_mob_no_mvp  : no
+branch_boss_no_exp  : no
+branch_boss_no_drop : no
+branch_boss_no_mvp  : no
+nomanner_mode: no
+death_by_unrig_penalty: no
+dance_and_play_duration : 20000
+soulcollect_max_fail : no
+mob_delay_rate: 100
+noexp_hiding: no
+noexp_trickdead: no
+serverside_friendlist: yes
+pet0078_hair_id: 100
+job_soul_check: yes
+repeal_die_counter_rate: 100
+tripleattack_rate_up_keeptime: 2000
+tk_counter_rate_up_keeptime: 2000
+disp_job_soul_state_change: no
+check_knowlege_map: yes
+allow_skill_without_day: no
+debug_new_disp_status_icon_system: no
+save_hate_mob: no
+twilight_party_check: yes
+alchemist_point_type: 0
+save_am_pharmacy_success: no
+pharmacy_get_point_type: 0
+marionette_type: 0
+max_marionette_str: 99
+max_marionette_vit: 99
+max_marionette_agi: 99
+max_marionette_int: 99
+max_marionette_dex: 99
+max_marionette_luk: 99
+baby_status_max: 80
+baby_hp_rate: 70
+baby_sp_rate: 70
+baby_weight_rate: 100
+no_emergency_call: yes
+save_all_ranking_point_when_logout: no
+soul_linker_battle_mode: 0
+soul_linker_battle_mode_ka: 0
+skillup_type: 0
+allow_me_dance_effect: no
+allow_me_concert_effect: no
+allow_me_rokisweil: no
+soulskill_can_be_used_for_myself: no
+hermode_wp_check_range: 3
+hermode_gvg_only: yes
+hermode_wp_check: yes
+hermode_no_walking: no
+atcommand_go_significant_values: 21
+expansion_job1_skill_cloneable: no
+questskill2_cloneable: no
+redemptio_penalty_type: 0
+boss_no_knockbacking: no
+allow_create_scroll: no
+scroll_produce_rate: 100
+scroll_item_name_input: no
+pet_leave: yes
+extended_abracadabra: no
+mob_take_over_sp: 0
+
+
+==========================================================================
+6. atcommand_athena.conf
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+  GMコマンド(/mm、/nb等)や@コマンドを使うことができるGMのレベルを設定する物です。
+  設定は全て省略可能で、省略時はデフォルト値が利用されます。(デフォルトは0です。)
+
+< GMコマンドについて >
+	<>で括られてるものは必須引数。
+	()で括られてるものは任意引数。
+
+1. MapMove
+     MapMoveコマンドとは実際のサーバでGMが使えるコマンドとして存在しているものの実装です。
+     現在GMだけが使えるなどの制限はなく誰でも使用可能です。
+     /mmもしくは/mapmoveとして使うことができます使用方法は以下の通りです。
+         /mm <field name(.gat)> (X Y)
+         /mapmove <field name(.gat)> (X Y)
+
+     <field name(.gat)>
+         field nameはpronteraや/whereを実行時に出てくるmap名を入力してください。
+         このとき必ずしも.gatは必須では"ありません"。
+     (X Y)
+         行きたい場所のX座標とY座標を指定します。
+         ただし指定しなくてもランダムジャンプを行います。
+         しかし、指定したX,Y座標が動けない場所として指定されている座標への移動は
+         指定しても自動的にランダムジャンプを行います。
+
+     例:
+         /mm payon
+         /mapmove prontera.gat 167 158
+
+2. Broadcast
+     Broadcastコマンドとは実際のサーバでGMが使えるGMメッセージと同様の働きをします。
+     /bもしくは/nbとして使うことができます使用方法は以下の通りです。
+         /b <message>
+         /nb <message>
+
+     /b
+         実行したユーザ名付きでメッセージを表示します。
+     /nb
+         実行したユーザ名を表示せずメッセージを表示します。
+
+     例:
+         /b テスト
+         /nb テスト
+
+< キーの説明 >
+
+broadcast
+	GMコマンド /nb、/b、/bb
+local_broadcast
+	GMコマンド /lb
+mapmove
+	GMコマンド /mm
+resetstate
+	GMコマンド /resetstate、/resetskill
+rura+
+	@コマンド @rura+
+rura
+	@コマンド @rura
+where
+	@コマンド @where
+jumpto
+	@コマンド @jumpto
+jump
+	@コマンド @jump
+who
+	@コマンド @who
+save
+	@コマンド @save
+load
+	@コマンド @load
+speed
+	@コマンド @speed
+storage
+	@コマンド @storage
+gstorage
+	@コマンド @gstorage
+option
+	@コマンド @option
+hide
+	GMコマンド /hideと@コマンド @hide
+jobchange
+	@コマンド @jobchange
+die
+	@コマンド @die
+kill
+	@コマンド @kill
+alive
+	@コマンド @alive
+kami
+	@コマンド @kami、@kamib
+heal
+	@コマンド @heal
+item
+	@コマンド @item、@item2
+itemreset
+	@コマンド @itemreset
+itemcheck
+	@コマンド @itemcheck
+lvup
+	@コマンド @lvup
+joblvup
+	@コマンド @joblvup
+help
+	@コマンド @help、@h
+GM
+	@コマンド @GM
+pvpoff
+	@コマンド @pvpoff
+pvpon
+	@コマンド @pvpon
+gvgoff
+	@コマンド @gvgoff
+gvgon
+	@コマンド @gvgon
+model
+	@コマンド @model
+go
+	@コマンド @go
+monster
+	@コマンド @monster
+monstermap
+	@コマンド @monstermap
+killmonster
+	@コマンド @killmonster、@killmonster2
+refine
+	@コマンド @refine
+produce
+	@コマンド @produce
+memo
+	@コマンド @memo
+gat
+	@コマンド @gat
+packet
+	@コマンド @packet
+stpoint
+	@コマンド @stpoint
+skpoint
+	@コマンド @skpoint
+zeny
+	@コマンド @zeny
+param
+	@コマンド @str、@agi、@vit、@int、@dex、@luk
+guildlvup
+	@コマンド @guildlvup
+makepet
+	@コマンド @makepet
+petfriendly
+	@コマンド @petfriendly
+pethungry
+	@コマンド @pethungry
+petrename
+	@コマンド @petrename
+recall
+	@コマンド @recall
+charjob
+	@コマンド @charjob
+revive
+	@コマンド @revive
+charstats
+	@コマンド @charstats
+charoption
+	@コマンド @charoption
+charsave
+	@コマンド @charsave
+night
+	@コマンド @night
+day
+	@コマンド @day
+doom
+	@コマンド @doom
+doommap
+	@コマンド @doommap
+raise
+	@コマンド @raise
+raisemap
+	@コマンド @raisemap
+charbaselvl
+	@コマンド @charbaselvl
+charjlvl
+	@コマンド @charjlvl
+kick
+	@コマンド @kickとGM右クリック命令「使用者強制終了」
+allskill
+	@コマンド @allskill
+questskill
+	@コマンド @questskill
+lostskill
+	@コマンド @lostskill
+spiritball
+	@コマンド @spiritball
+party
+	@コマンド @party
+guild
+	@コマンド @guild
+agitstart
+	@コマンド @agitstart
+agitend
+	@コマンド @agitend
+mapexit
+	@コマンド @mapexit
+idsearch
+	@コマンド @idsearch
+reloadatcommand
+	@コマンド @reloadatcommand
+reloadbattleconf
+	@コマンド @reloadbattleconf
+reloadgmaccount
+	@コマンド @reloadgmaccount
+reloadstatusdb
+	@コマンド @reloadstatusdb
+reloadpcdb
+	@コマンド @reloadpcdb
+mesweb
+	ブラウザ上からのチャットの有効/無効を設定。0: 有効 1:無効。
+	ただし、battle_athena.conf でatcommand_gm_only: no が設定
+	されている場合、必ず有効になります（ここでの設定は無視されます）。
+kamib
+	@コマンド @kamib
+kamic
+	@コマンド @kamic
+h
+	@コマンド @h
+str
+	@コマンド @str
+agi
+	@コマンド @agi
+vit
+	@コマンド @vit
+int
+	@コマンド @int
+dex
+	@コマンド @dex
+luk
+	@コマンド @luk
+vit
+	@コマンド @vit
+item2
+	@コマンド @item2
+item3
+	@コマンド @item3
+repair
+	@コマンド @repair
+monstermap
+	@コマンド @monstermap
+killmonster2
+	@コマンド @killmonster2
+kickall
+	@コマンド @kickall
+skillall
+	@コマンド @skillall
+mes
+	@コマンド @mes
+resetskill
+	@コマンド @resetskill
+h1
+	@コマンド @h1
+help1
+	@コマンド @help1
+h2
+	@コマンド @h2
+help2
+	@コマンド @help2
+h3
+	@コマンド @h3
+help3
+	@コマンド @help3
+h4
+	@コマンド @h4
+help4
+	@コマンド @help4
+econ
+	@コマンド @econ
+ecoff
+	@コマンド @ecoff
+icon
+	@コマンド @icon
+ranking
+	@コマンド @ranking
+blacksmith
+	@コマンド @blacksmith
+alchemist
+	@コマンド @alchemist
+taekwon
+	@コマンド @taekwon
+rankingpoint
+	@コマンド @rankingpoint
+resetfeel
+	@コマンド @resetfeel
+resethate
+	@コマンド @resethate
+resetstate
+	@コマンド @resetstate
+resetskill
+	@コマンド @resetskill
+statall
+	@コマンド @statall
+viewclass
+	@コマンド @viewclass
+mailbox
+	@コマンド @mailbox
+readvars
+	@コマンド @readvars
+writevars
+	@コマンド @writevars
+emotion
+	@コマンド @emotion
+
+import
+	その行を別ファイルの中身と置き換えます。
+
+
+< 例 >
+
+broadcast: 1
+local_broadcast: 1
+mapmove: 1
+resetstate: 1
+rura+: 1
+rura: 1
+where: 1
+jumpto: 1
+jump: 1
+who: 1
+save: 1
+load: 1
+speed: 1
+storage: 1
+gstorage: 1
+option: 1
+hide: 1
+jobchange: 1
+die: 1
+kill: 1
+alive: 1
+kami: 1
+heal: 1
+item: 1
+itemreset: 1
+itemcheck: 1
+lvup: 1
+joblvup: 1
+help: 1
+gm: 1
+pvpoff: 1
+pvpon: 1
+gvgoff: 1
+gvgon: 1
+model: 1
+go: 1
+monster: 1
+killmonster: 1
+refine: 1
+produce: 1
+memo: 1
+gat: 1
+packet: 1
+stpoint : 1
+skpoint : 1
+zeny: 1
+param: 1
+guildlvup: 1
+makepet: 1
+petfriendly: 1
+pethungry: 1
+petrename: 1
+recall: 1
+charjob: 1
+revive: 1
+charstats: 1
+charoption: 1
+charsave: 1
+night: 1
+day: 1
+doom: 1
+doommap: 1
+raise: 1
+raisemap: 1
+charbaselvl: 1
+charjlvl: 1
+kick: 1
+allskill: 1
+questskill: 1
+lostskill: 1
+spiritball: 1
+party: 1
+guild: 1
+agitstart: 1
+agitend: 1
+mapexit: 1
+idsearch: 1
+itemidentify: 1
+shuffle: 1
+maintenance: 1
+misceffect: 1
+summon: 1
+who+: 1
+reloaditemdb: 99
+reloadmobdb: 99
+reloadskilldb: 99
+mapinfo: 1
+hatch: 1
+charstpoint: 1
+charskpoint: 1
+charstreset: 1
+charskreset: 1
+charreset: 1
+charquestskill: 1
+charlostskill: 1
+charzeny: 1
+charpetrename: 1
+recallall: 1
+recallguild: 1
+recallparty: 1
+clock: 1
+mobsearch: 1
+cleanmap: 1
+giveitem: 1
+weather: 1
+reloadatcommand: 99
+reloadbattleconf: 99
+reloadgmaccount: 99
+reloadstatusdb: 99
+reloadpcdb: 99
+im: 1
+users: 1
+npctalk: 1
+pettalk: 1
+charitemreset: 1
+connectlimit: 1
+mapflag: 1
+mannerpoint: 1
+mesweb: 1
+kamib: 1
+kamic: 1
+h: 1
+str: 1
+agi: 1
+vit: 1
+int: 1
+dex: 1
+luk: 1
+item2: 1
+item3: 1
+repair: 1
+monstermap: 1
+killmonster2: 1
+kickall: 99
+skillall: 1
+mes: 1
+resetskill: 1
+h1: 1
+help1: 1
+h2: 1
+help2: 1
+h3: 1
+help3: 1
+h4: 1
+help4: 1
+econ:  0
+ecoff: 0
+icon: 1
+ranking: 0
+blacksmith: 0
+alchemist: 0
+taekwon: 0
+rankingpoint: 1
+resetfeel: 1
+resethate: 1
+resetstate: 1
+resetskill: 1
+emotion: 1
+statall: 1
+viewclass: 99
+mailbox: 1
+readvars: 99
+writevars: 99
+
+
+
+
+==========================================================================
+7. socket.conf
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+	全サーバー共通の通信関係の設定を記述します
+
+
+< キーの説明 >
+
+httpd_config
+	全サーバー共通の httpd の設定が書かれたファイルを指定します。
+
+socket_ctrl_panel
+	httpd で socket コントロールパネルを使用できるかどうか ( 0 で使用しない)
+	URL は socket_ctrl_panel_url で指定。
+	httpd.conf でアクセス制限をかけることを強く推奨。
+
+socket_ctrl_panel_url
+	socket コントロールパネルの URL
+
+
+ ** ddos攻撃と判断する為のルール設定 **
+ ddos_interval msec以内の接続要求がddos_count回続いた場合に、
+ ddos攻撃されたと判定します。
+
+ddos_interval
+	接続間隔(msec)
+
+ddos_count
+	接続回数
+
+ddos_autoreset: 600000
+	この時間経過すると、接続制限が解除されます。
+
+
+ ** 受信帯域制限に関するルール設定 **
+   受信の通信速度を recv_limit_rate_bytes の帯域幅に制限します
+   recv_limit_rate_period を小さくすると帯域の増大に敏感になりますが、誤反応しやすくなります。
+   recv_limit_rate_period を大きくすると鈍感になります。
+   recv_limit_rate_wait_max は制限解除待ちの時間に上限を与えます。
+   recv_limit_rate_disconnect 以上の間、帯域制限が続くと切断します
+
+recv_limit_rate_enable: 1
+ 受信帯域制限を有効にするかどうか( 0 で無効)
+
+recv_limit_rate_period: 500
+	チェック間隔（msec）
+
+recv_limit_rate_bytes: 1024
+	制限する帯域幅（bytes/sec)
+
+recv_limit_rate_wait_max: 2000
+	制限する無通信時間の上限（msec）
+
+recv_limit_rate_disconnect: 5000
+	この時間、帯域制限が続くと切断する（msec）
+	recv_limit_rate_wait_max より大きくする必要がある
+
+
+send_limit_buffer_size: 131072
+	送信バッファの最大サイズ（鯖間リンクや httpd を除く）
+
+
+ ** アクセス制御のルール設定 **
+ order で指定された順序で allow と deny の IP を評価し、
+ アクセスを許可するか禁止するかを制御します。
+
+
+order
+	アクセスコントロールのallowとdenyの評価順を指定します。
+	deny,allow 、 allow,deny 、 mutual-failure の３つから１つを選びます。
+
+	"deny,allow" ではdenyを先に評価し、その後allowを評価します。
+	"allow,deny" ではallow → denyの順です。
+	なお、 "allow" "," "deny" それぞれの間にスペースを入れてはいけません。
+	
+	共にマッチした場合、順序が後ろにあるほうが優先されます。
+	
+	共にマッチしなかった場合、mutual-failure 以外では
+	ddos チェックの結果を使います。
+	mutual-failure の場合は、allow に存在し、deny にないもののみ許可します。
+	
+	アクセスコントロールの記述は .htaccess の order, allow, deny が近いので、
+	apache の文献などを探すと詳しい解説が見つかると思います。
+	省略可能でデフォルト deny,allow になります。
+
+allow
+	許可するホストを指定します。
+	無条件で許可するため、 ddos チェックも行いません。
+	表記はIPアドレスの前方一致やネットマスク付きのIPアドレスを記述します。
+	ホスト名の後方一致はサポートしていません。
+	また、IPアドレスの変わりに all と記述すると全てのホストになります。
+	clear と記述するとそれまでに追加した allow ホストを全て削除します。
+	複数行書くことが出来ます。省略可能です。
+	アクセスコントロールを有効にするには少なくとも１つ以上の
+	allow か denyが必要です(order指定だけでは機能しません)。
+	アクセスコントロールが無効の場合は常に接続を許可します。
+
+deny
+	で禁止するホストを指定します。
+	表記の仕方はallowと同じです。
+
+import
+	その行を別ファイルの中身と置き換えます。
+
+< 例 >
+
+httpd_config: conf/httpd.conf
+socket_ctrl_panel: 0
+socket_ctrl_panel_url: /socketctrl
+ddos_interval: 1000
+ddos_count: 5
+ddos_autoreset: 600000
+recv_limit_rate_enable: 1
+recv_limit_rate_period: 500
+recv_limit_rate_bytes: 1024
+recv_limit_rate_wait_max: 2000
+recv_limit_rate_disconnect: 5000
+send_limit_buffer_size: 131072
+order: deny,allow
+deny: all
+allow: 127.0.0.1
+allow: 192.168.0.0/24
+
+
+
+==========================================================================
+7. httpd.conf
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+	httpd サーバーの設定を記述します。
+	httpd.conf では全サーバーの共通設定を書きますが、
+	他のファイルに個別に設定を記述することもできます。
+	それぞれのサーバーの conf の httpd_config を参照してください。
+
+
+< キーの説明 >
+
+
+enable
+	httpd の有効・無効の切り替え
+    1 で有効で、 0 にするとhttpd が無効になります。
+
+document_root
+	ドキュメントルートの設定です(最後のスラッシュ必須)
+
+request_timeout_first
+	接続直後のリクエストタイムアウト(ミリ秒)
+
+request_timeout_persist
+	持続通信でのリクエストタイムアウト(ミリ秒)
+
+max_persist_requests
+	持続通信の最大リクエスト数
+
+max_uri_length: 255
+	URI の長さ制限
+
+auth_digest_period
+	Digest 認証の nonce 有効期限（ミリ秒）
+
+timezone
+	タイムゾーン(auto または時差) ログの表示に使います。
+	auto で警告がでるなら手動設定が必要です。
+	英国は 0 , 日本は +9 …etc。
+	
+log_no_flush
+	ログをフラッシュしないかどうか(0でフラッシュする)
+
+
+ ** 秒間リクエスト数の制限 **
+ 
+server_max_requests_per_second
+	サーバー全体で処理する秒間リクエスト数をこの個数に制限する
+
+server_max_requests_period
+	サーバー全体で処理数を制限する場合のチェック間隔（ミリ秒）
+	この値が小さい場合、アクセスの集中度合いに時間的なムラがあると 503 を返しやすくなる。
+	大きい場合、一度制限がかかると解除に時間(設定したミリ秒)がかかる。
+
+
+ ** 外部 CGI に関する設定 **
+
+cgi_enable
+	外部 CGI を利用可能にするかどうか ( 0 にするとサーバー全体で CGI を無効にする )
+
+cgi_ext_list
+	外部 CGI の拡張子リスト ( target と組み合わせて URL ごとに設定することもできる ）
+	  スペースで区切って複数指定。拡張子前のドット "." は省略できない。
+	  "none" (クォート文字は要らない) にすると CGI を無効にする。
+	  <例>
+	   cgi_ext_list: .cgi .exe .pl .php .rb
+	   cgi_ext_list: none
+
+max_cgi_process
+	同時に処理できる外部 CGI プロセスの数をこの個数に制限する
+
+cgi_process_timeout
+	外部 CGI プロセスの最大実行時間（CGI のタイムアウトまでの時間：ミリ秒）
+
+cgi_kill_timeout
+	外部 CGI プロセスの中断の最大待ち時間（終了要求から強制終了までの時間：ミリ秒 ）
+
+cgi_temp_dir
+	外部 CGI 実行用のテンポラリファイルを作るディレクトリ
+	athena_httpd_ から始まるファイルが作られます。
+
+cgi_server_name
+	外部 CGI にメタ変数 SERVER_NAME で渡すサーバーのホスト名
+	（通常、グローバルアドレスか DNS 名を設定する）
+	Athena 自体はこの値を使いません。外部 CGI に直接渡します。
+	一部の CGI が自分自身への URL を生成するために利用することがあります。
+
+ ** url 単位での設定 **
+
+ このあたりは apache の .htaccess の構文と似ているのでそちらの解説を
+ 参照するとかなりわかりやすいとおもいます。
+ IP アドレス／認証によるアクセス制御ができます。
+
+target
+	以後の文で、アクセス制御を設定する URL を指定します。
+	必ずルート（スラッシュ記号）から始まっている必要があります。
+
+satisfy
+	IP チェックとユーザー認証の "any"(どちらか) か "all"(全て) を
+	満たす必要があるかを設定します。省略すると all になります。
+
+cgi_ext_list
+	外部 CGI の拡張子リストです。前述の「外部 CGI に関する設定」を参考にしてください。
+
+ *-- IP アドレスによるアクセス制御 --*
+
+order
+	IP チェックの評価順序を設定します。
+	"deny,allow" , "allow,deny" , "mutual-failure" から選択します。
+	省略すると IP チェックは行われません。
+
+allow
+	許可する IP をリストに追加します。
+	127.0.0.1 , 192.168.0 , 192.168 , 192.168.0.0/24
+	192.168.0.0/255.255.255.0 といった指定が可能です。
+	ドメイン名での指定には対応していません。
+	clear を指定すると、全ての許可 IP を削除します。
+
+deny
+	禁止する IP をリストに追加します。allow を参照してください。
+	clear を指定すると、全ての禁止 IP を削除します。
+
+ *-- 認証によるアクセス制御 --*
+
+authtype
+	認証タイプを指定します。"basic" か "digest" か "none" です。
+	Basic 認証か Digest 認証か、または認証しないかを設定します。
+	省略すると認証は行われません（"none" になります）。
+	Digest 認証はブラウザによってはサポートされていないかもしれませんが、
+	安全性は高いです。またサーバーの負担が大きいです。
+	Basic 認証は安全性は皆無ですが、サーバーの負担が少ないです。
+
+authfunc
+	認証のアカウント情報として、 authuser で追加するもの以外に 
+	Athena の機能を用いてアカウント情報を得るかどうかを設定します。
+	指定する値は以下の通りです。
+	
+	  0 : authuser で指定されたユーザー情報のみ使います
+	  1 : Athena のアカウント情報も利用できるようになります
+	
+	login サーバーでは 0 か 1 を指定できます。
+	char、map サーバーでは 0 しか指定できません。
+	省略すると 0 を指定したことになります。
+
+authname
+	認証の際にブラウザに通知する領域名(realm)を設定します。
+	ブラウザの入力ダイアログに表示されます。
+
+authuser
+	ユーザーを追加します。name:passwd と記述します。
+	clear を指定すると、全ユーザーを削除します。
+	passwd はプレーン、MD5、Digest 認証の A1 で記述することができます。
+	
+	・プレーンの場合はパスワードをそのまま記述します。
+	　　authuser: testuser:testpasswd
+	
+	・MD5 を指定する場合は、ユーザー名、パスワードを : で区切って
+	　つなげた (user:name) 文字列の MD5 を求め、
+	　　authuser: testuser:$MD5$aa4a5443cb91ee1810785314651e5dd1
+	　のように、パスワード欄に
+	　　$MD5$ の5文字 ＋ MD5 の16進表現32文字
+	　を指定します。Digest 認証では使用できません。
+
+	・Digest認証の A1 を指定する場合、ユーザー名、領域名、パスワードを
+	　: で区切ってつなげた（user:realm:passwd）文字列(A1)の MD5 を求め、
+	　　authuser: testuser:$Digest$aa4a5443cb91ee1810785314651e5dd1
+	　のように、パスワード欄に
+	　　$Digest$ の8文字、MD5 の16進表現32文字
+	　を指定します。
+	　文字列の中に領域名 (realm) を含んでいるので、
+	　authname を変更したら全て再設定する必要があります。
+
+	・Digest 認証を使う場合、MD5 パスワードは指定できません。
+	　プレーンか、Digest認証の A1 を使ってください。
+	　Basic 認証ではどれでも対応しています。
+
+	MD5 の計算は各自求めるツールを使ってください。
+
+import
+	その行を別ファイルの中身と置き換えます。
+
+<例>
+enable: 1
+document_root: httpd/
+request_timeout_first: 2500
+request_timeout_persist: 60000
+max_persist_requests: 32
+max_uri_length: 255
+timezone: auto
+auth_digest_period: 600000
+log_no_flush: 0
+server_max_requests_per_second: 10
+server_max_requests_period: 5000
+
+cgi_enable: 1
+cgi_ext_list: .cgi .exe .pl .php .rb
+max_cgi_process: 3
+cgi_process_timeout: 5000
+cgi_kill_timeout: 500
+cgi_temp_dir: ./log/
+cgi_server_name: localhost
+
+target: /memberspage/
+satisfy: any
+order: deny,allow
+deny: all
+allow: 127.0.0.1
+allow: 192.168.0.0/24
+authtype: basic
+authname: Athena Authorization
+authuser: testuser:testpass
+authuser: user2:passwd2
+
+==========================================================================
+EOF
+--------------------------------------------------------------------------

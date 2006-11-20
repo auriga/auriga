@@ -1,0 +1,116 @@
+//==============================================================================
+// Ragnarok Online Juperos Script     by Blaze
+//==============================================================================
+
+//==============================================================================
+// Warp
+//==============================================================================
+
+yuno_fild07.gat,208,175,0	script	juperoswarp0401		139,2,2{ warp "jupe_cave.gat",143,52; end; }
+jupe_cave.gat,147,52,0		script	juperoswarp0501		139,2,2{ warp "yuno_fild07.gat",212,175; end; }
+jupe_cave.gat,29,52,0		warp	juperoswarp4001		3,3,juperos_01.gat,54,246
+juperos_01.gat,51,249,0		warp	juperoswarp4002		3,3,jupe_cave.gat,36,51
+juperos_01.gat,100,91,0		script	juperoswarp4003		139,2,2{
+	initnpctimer;
+	mes "^797979["+strcharinfo(0)+"]^000000";
+	mes "暖かい光に包まれている。";
+	mes "まるで、体が宙に";
+	mes "浮かんでいるかのようだ……。";
+	mes "ああ……。";
+	next;
+	if(select("もう少しの間、この光に包まれていたい……","あっ！　そんなこと考えてる場合じゃない！")==1) {
+		gmcommand "@misceffect 348";
+		mes "^797979["+strcharinfo(0)+"]^000000";
+		mes "ああ……。";
+		mes "体が軽くなっていく気がする……。";
+		next;
+		warp "juperos_02.gat",128,278;
+		end;
+	}
+	mes "^797979["+strcharinfo(0)+"]^000000";
+	mes "この光はどこから来ているんだ?!";
+	mes "すぐに、ここから離れなきゃ……。";
+	next;
+	warp "juperos_01.gat",96,91;
+	end;
+OnTimer10000:
+	areawarp "juperos_01.gat",98,89,102,93,"juperos_02",128,278;
+	stopnpctimer;
+	end;
+}
+juperos_02.gat,33,59,0		script	juperoswarp4004		45,2,2{
+	switch(rand(4)) {
+	case 0:
+		warp "juperos_01.gat",79,72;
+		end;
+	case 1:
+		warp "juperos_01.gat",79,112;
+		end;
+	case 2:
+		warp "juperos_01.gat",120,72;
+		end;
+	case 3:
+		warp "juperos_01.gat",120,112;
+		end;
+	}
+}
+//juperos_02.gat,130,150,0	script	juperoswarp4005		139,2,2{ warp "jupe_gate.gat",50,167; end; }
+juperos_02.gat,130,150,0	script	juperoswarp4005		139,2,2{ warp "jupe_core.gat",150,286; end; } //保安区域未実装のため、暫定
+jupe_gate.gat,28,145,0		warp	juperoswarp4006		1,1,jupe_area1.gat,101,222
+jupe_area1.gat,103,222,0	warp	juperoswarp4007		1,1,jupe_gate.gat,30,145
+jupe_gate.gat,71,145,0		warp	juperoswarp4008		1,1,jupe_area2.gat,63,222
+jupe_area2.gat,60,222,0		warp	juperoswarp4009		1,1,jupe_gate.gat,69,145
+jupe_gate.gat,49,55,0		warp	juperoswarp4010		1,1,jupe_ele_r.gat,49,29
+jupe_ele_r.gat,49,27,0		warp	juperoswarp4011		1,1,jupe_gate.gat,49,53
+
+//==============================================================================
+// ゲート制御装置
+//==============================================================================
+
+juperos_02.gat,0,0,0	script	ゲート制御装置#juperos	-1,{
+OnInit:
+	hideonnpc "juperoswarp4005";
+	set 'jupe_gate,3;
+	monster "juperos_02.gat",24,275,"第1ゲート制御装置",1674,1,"ゲート制御装置#juperos::OnKilled";
+	monster "juperos_02.gat",240,29,"第2ゲート制御装置",1674,1,"ゲート制御装置#juperos::OnKilled";
+	monster "juperos_02.gat",282,183,"第3ゲート制御装置",1674,1,"ゲート制御装置#juperos::OnKilled";
+	end;
+OnKilled:
+	set 'jupe_gate,'jupe_gate-1;
+	if('jupe_gate==2) {
+		announce "誰かね？　ここへ来たのは……。",9,0xFF0000;
+	}
+	if('jupe_gate==1) {
+		announce "残念だが、ここはかつてのジュピロスではないがな……。",9,0xFF0000;
+	}
+	if('jupe_gate==0) {
+		announce "時間を与えよう！　我に会いたければ、探し出すがよい！",9,0xFF0000;
+		areamisceffect "juperos_02.gat",0,0,300,300,563;
+		sleep 5000;
+		announce "ウィイイーーンッ！　ウィイイーーンッ！",9,0xE55AA4;
+		areasoundeffect "juperos_02.gat",0,0,300,300,"jupe_warning.wav",0;
+		sleep 2000;
+		announce "訪問者に告げます。",9,0xE55AA4;
+		sleep 2000;
+		announce "少しの間、次の区域への立ち入りを許可します。ゲートへお入りください。",9,0xE55AA4;
+		sleep 2000;
+		hideoffnpc "juperoswarp4005";
+		initnpctimer;
+	}
+	end;
+OnTimer535000:
+	announce "訪問者に告げます。まもなく、次の区域へ通じるゲートが閉じます。",9,0xE55AA4;
+	sleep 5000;
+	announce "ゲートが閉じるまで、あと約1分です。",9,0xE55AA4;
+	end;
+OnTimer600000:
+	hideonnpc "juperoswarp4005";
+	announce "ゲートが閉じました。",9,0xE55AA4;
+	sleep 5000;
+	announce "制御装置は再稼動準備に入ります。",9,0xE55AA4;
+	end;
+OnTimer1200000:
+	stopnpctimer;
+	donpcevent "ゲート制御装置#juperos::OnInit";
+	end;
+}
