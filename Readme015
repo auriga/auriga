@@ -1,0 +1,9 @@
+----------------------------------------
+//015 [2006/11/21] by Rayce
+
+・サーバースナップショット（version.h）
+・不要なファイルを削除
+　　conf/
+	help1.txt, help2.txt, help3.txt, help4.txt
+　　src/common/
+	zconf_win32.h, common/zlib_win32.h
