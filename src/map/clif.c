@@ -1815,7 +1815,7 @@ void clif_send_homstatus(struct map_session_data *sd, int flag)
 	WFIFOL(fd,59)=hd->status.base_exp;		// Exp
 	WFIFOL(fd,63)=homun_nextbaseexp(hd);	// NextExp
 	WFIFOW(fd,67)=hd->status.skill_point;	// skill point
-	WFIFOW(fd,69)=hd->atackable;			// 攻撃可否フラグ	0:不可/1:許可
+	WFIFOW(fd,69)=hd->attackable;			// 攻撃可否フラグ	0:不可/1:許可
 	WFIFOSET(fd,packet_db[0x22e].len);
 
 	return;
@@ -11459,12 +11459,12 @@ static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, i
 		struct pc_base_job s_class = pc_calc_base_job(sd->status.class);
 		if (battle_config.etc_log){
 			if(nextbaseexp != 0)
-				printf("SuperNovice explosionspirits!! %d %d %d %d\n",sd->bl.id,s_class.job,sd->status.base_exp,(int)((double)1000*sd->status.base_exp/nextbaseexp));
+				printf("SuperNovice explosionspirits!! %d %d %d %d\n",sd->bl.id,s_class.job,sd->status.base_exp,(int)((atn_bignumber)1000*sd->status.base_exp/nextbaseexp));
 			else
 				printf("SuperNovice explosionspirits!! %d %d %d 000\n",sd->bl.id,s_class.job,sd->status.base_exp);
 		}
 
-		if(s_class.job == 23 && sd->status.base_exp > 0 && nextbaseexp > 0 && (int)((double)1000*sd->status.base_exp/nextbaseexp)%100==0){
+		if(s_class.job == 23 && sd->status.base_exp > 0 && nextbaseexp > 0 && (int)((atn_bignumber)1000*sd->status.base_exp/nextbaseexp)%100==0){
 			clif_skill_nodamage(&sd->bl,&sd->bl,MO_EXPLOSIONSPIRITS,5,1);
 			status_change_start(&sd->bl,SkillStatusChangeTable[MO_EXPLOSIONSPIRITS],5,0,0,0,skill_get_time(MO_EXPLOSIONSPIRITS,5),0 );
 		}

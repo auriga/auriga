@@ -622,7 +622,7 @@ int homun_data_init(struct map_session_data *sd)
 	hd->bl.type = BL_HOM;
 	memset(&hd->state,0,sizeof(hd->state));
 	hd->target_id = 0;
-	hd->atackable = 1;	// これを0にすると、クライアントから攻撃パケットを出さなくなる
+	hd->attackable = 1;	// これを0にすると、クライアントから攻撃パケットを出さなくなる
 	hd->limits_to_growth = 0;
 	hd->msd = sd;
 	hd->view_class = homun_db[class].view_class;

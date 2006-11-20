@@ -766,7 +766,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	struct mob_data         *target_md = NULL;
 	struct homun_data       *target_hd = NULL;
 //	struct unit_data        *target_ud = NULL;
-	int forcecast  = 0,zone = 0;
+	int forcecast = 0,zone = 0;
 	struct status_change *sc_data;
 	struct status_change *tsc_data;
 
@@ -956,7 +956,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	case WE_FEMALE:
 		{
 			struct map_session_data *p_sd = NULL;
-			if(! src_sd) return 0;
+			if(!src_sd) return 0;
 			if((p_sd = pc_get_partner(src_sd)) == NULL)
 				return 0;
 			target_id = p_sd->bl.id;
@@ -977,7 +977,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		break;
 	case KN_CHARGEATK:			//チャージアタック
 		{
-			int dist  = unit_distance(src->x,src->y,target->x,target->y);
+			int dist = unit_distance(src->x,src->y,target->x,target->y);
 			if(dist >= 4 && dist <= 6)
 				casttime = casttime * 2;
 			else if(dist > 6)

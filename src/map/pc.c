@@ -127,16 +127,6 @@ int pc_isquitable(struct map_session_data *sd)
 	return 0;
 }
 
-static int distance(int x0,int y0,int x1,int y1)
-{
-	int dx,dy;
-
-	dx=abs(x0-x1);
-	dy=abs(y0-y1);
-
-	return dx>dy ? dx : dy;
-}
-
 static int pc_invincible_timer(int tid,unsigned int tick,int id,int data)
 {
 	struct map_session_data *sd = map_id2sd(id);
@@ -2949,7 +2939,7 @@ void pc_takeitem(struct map_session_data *sd, struct flooritem_data *fitem)
 	nullpo_retv(sd);
 	nullpo_retv(fitem);
 
-	if(distance(fitem->bl.x,fitem->bl.y,sd->bl.x,sd->bl.y)>2)
+	if(unit_distance(fitem->bl.x,fitem->bl.y,sd->bl.x,sd->bl.y)>2)
 		return;	// 距離が遠い
 
 	if(fitem->first_get_id > 0) {

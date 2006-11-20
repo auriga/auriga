@@ -4217,13 +4217,14 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* 反射ダメージの実際の処理 */
 	if (sd && (skillid || flag) && rdamage>0) {
+		const long mode = EAS_WEAPON | EAS_ATTACK | EAS_NORMAL;
 		if (attack_type&BF_WEAPON)
 		{
 			battle_delay_damage(tick+dmg.amotion,bl,src,rdamage,0);
 			//反射ダメージのオートスペル
 			if(battle_config.weapon_reflect_autospell)
 			{
-				skill_bonus_autospell(bl,src,AS_ATTACK,gettick(),0);
+				skill_bonus_autospell(bl,src,mode,gettick(),0);
 			}
 
 			if(battle_config.weapon_reflect_drain)
@@ -4235,7 +4236,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			//反射ダメージのオートスペル
 			if(battle_config.magic_reflect_autospell)
 			{
-				skill_bonus_autospell(bl,src,AS_ATTACK,gettick(),0);
+				skill_bonus_autospell(bl,src,mode,gettick(),0);
 			}
 			if(battle_config.magic_reflect_drain)
 				battle_attack_drain(bl,src,rdamage,0,battle_config.magic_reflect_drain_per_enable);

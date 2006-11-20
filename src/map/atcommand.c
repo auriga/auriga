@@ -2033,10 +2033,10 @@ atcommand_go(
 		{	"comodo.gat",     209, 143	},	//	8=コモド
 		{	"yuno.gat",       157,  51	},	//	9=ジュノー
 		{	"amatsu.gat",     198,  84	},	//	10=アマツ
-		{	"gonryun.gat",    160, 120	},	//	11=ゴンリュン
+		{	"gonryun.gat",    160, 120	},	//	11=コンロン
 		{	"umbala.gat",      89, 157	},	//	12=ウンバラ
 		{	"niflheim.gat",   202, 177	},	//	13=ニブルヘルム
-		{	"louyang.gat",    217,  40	},	//	14=洛陽
+		{	"louyang.gat",    217,  40	},	//	14=龍之城
 		{	"jawaii.gat",     241, 116	},	//	15=ジャワイ
 		{	"ayothaya.gat",   217, 187	},	//	16=アユタヤ
 		{	"einbroch.gat",   149,  38	},	//	17=アインブロック(南口)
@@ -2044,7 +2044,7 @@ atcommand_go(
 		{	"einbech.gat",    103, 197	},	//	19=アインベフ
 		{	"lighthalzen.gat",214, 322	},	//	20=リヒタルゼン
 		{	"hugel.gat",       95,  63	},	//	21=フィゲル
-		{	"rachel.gat",     131, 115	},	//	22=ラッセル
+		{	"rachel.gat",     131, 115	},	//	22=ラヘル
 	};
 
 	nullpo_retr(-1, sd);
@@ -2550,7 +2550,7 @@ atcommand_param(
 			break;
 		}
 	}
-	if (index < 0 || index > MAX_STATUS_TYPE)
+	if (index < 0)
 		return -1;
 
 	new_value = (int)(*status[index]) + value;

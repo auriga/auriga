@@ -380,14 +380,6 @@ int skill_chastle_mob_changetarget(struct block_list *bl,va_list ap);
 int skill_delunit_by_ganbatein(struct block_list *bl, va_list ap );
 int skill_count_unitgroup(struct unit_data *ud,int skillid);
 
-static int distance(int x0,int y0,int x1,int y1)
-{
-	int dx,dy;
-
-	dx=abs(x0-x1);
-	dy=abs(y0-y1);
-	return dx>dy ? dx : dy;
-}
 /* スキルユニットの配置情報を返す */
 struct skill_unit_layout skill_unit_layout[MAX_SKILL_UNIT_LAYOUT];
 int firewall_unit_pos;
@@ -1981,7 +1973,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case RG_BACKSTAP:		/* バックスタブ */
 		{
 			int dir = map_calc_dir(src,bl->x,bl->y),t_dir = status_get_dir(bl);
-			int dist = distance(src->x,src->y,bl->x,bl->y);
+			int dist = unit_distance(src->x,src->y,bl->x,bl->y);
 			if((dist > 0 && !map_check_dir(dir,t_dir)) || bl->type == BL_SKILL) {
 				struct status_change *sc_data = status_get_sc_data(src);
 				if(sc_data && sc_data[SC_HIDING].timer != -1)
@@ -2024,7 +2016,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case TK_STORMKICK:
 		if(flag&1) {
 			if(bl->id != skill_area_temp[1]) {
-				int dist = distance (bl->x, bl->y, skill_area_temp[2], skill_area_temp[3]);
+				int dist = unit_distance(bl->x, bl->y, skill_area_temp[2], skill_area_temp[3]);
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,
 					0x0500|dist);
 			}
@@ -2049,7 +2041,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case KN_CHARGEATK:			//チャージアタック
 	case TK_JUMPKICK:
 	{
-		int dist  = unit_distance(src->x,src->y,bl->x,bl->y);
+		int dist = unit_distance(src->x,src->y,bl->x,bl->y);
 		if(sd) {
 			struct walkpath_data wpd;
 			int dx,dy;
@@ -2155,7 +2147,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case NJ_KIRIKAGE:		/* 斬影 */
 		{
-			int dist  = unit_distance(src->x,src->y,bl->x,bl->y);
+			int dist = unit_distance(src->x,src->y,bl->x,bl->y);
 			if(sd && ((pc_checkskill(sd,NJ_SHADOWJUMP)+4) >= dist)) {
 				struct walkpath_data wpd;
 				int dx,dy;
@@ -2350,7 +2342,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			dir = status_get_dir(src);
 			if(dir <= 3)
 				dir += 4;
-			else 
+			else
 				dir -= 4;
 			if(dir == 0)
 				dir = 8;
@@ -2550,9 +2542,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 
 	case PR_BENEDICTIO:			/* 聖体降福 */
 		{
-		int race=status_get_race(bl);
-		if(battle_check_undead(race,status_get_elem_type(bl)) || race == 6)
-			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+			int race=status_get_race(bl);
+			if(battle_check_undead(race,status_get_elem_type(bl)) || race == 6)
+				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
 		}
 		break;
 
@@ -3001,11 +2993,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					int exp = 0,jexp = 0;
 					int lv = dstsd->status.base_level - sd->status.base_level, jlv = dstsd->status.job_level - sd->status.job_level;
 					if(lv > 0) {
-						exp = (int)((double)dstsd->status.base_exp * (double)lv * (double)battle_config.resurrection_exp / 1000000.);
+						exp = (int)((atn_bignumber)dstsd->status.base_exp * lv * battle_config.resurrection_exp / 1000000);
 						if(exp < 1) exp = 1;
 					}
 					if(jlv > 0) {
-						jexp = (int)((double)dstsd->status.job_exp * (double)lv * (double)battle_config.resurrection_exp / 1000000.);
+						jexp = (int)((atn_bignumber)dstsd->status.job_exp * lv * battle_config.resurrection_exp / 1000000);
 						if(jexp < 1) jexp = 1;
 					}
 					if(exp > 0 || jexp > 0)
@@ -5151,7 +5143,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(sd->bl.m != member->bl.m)
 					continue;
 
-				if(distance(sd->bl.x,sd->bl.y,member->bl.x,member->bl.y)<=range)
+				if(unit_distance(sd->bl.x,sd->bl.y,member->bl.x,member->bl.y)<=range)
 				{
 					clif_skill_nodamage(src,&member->bl,skillid,skilllv,1);
 					status_change_start(&member->bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0 );
@@ -5176,7 +5168,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(sd->bl.m != member->bl.m)
 					continue;
 
-				if(distance(sd->bl.x,sd->bl.y,member->bl.x,member->bl.y)<=range)
+				if(unit_distance(sd->bl.x,sd->bl.y,member->bl.x,member->bl.y)<=range)
 				{
 					clif_skill_nodamage(src,&member->bl,skillid,skilllv,1);
 					status_change_start(&member->bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0 );
@@ -5200,7 +5192,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(sd->bl.m != member->bl.m)
 					continue;
 
-				if(distance(sd->bl.x,sd->bl.y,member->bl.x,member->bl.y)<=range)
+				if(unit_distance(sd->bl.x,sd->bl.y,member->bl.x,member->bl.y)<=range)
 				{
 					clif_skill_nodamage(src,&member->bl,skillid,skilllv,1);
 					pc_heal(member,member->status.max_hp*90/100,member->status.max_sp*90/100);
@@ -5566,7 +5558,7 @@ int skill_castend_id( int tid, unsigned int tick, int id,int data )
 		}
 		else if(src_ud->skillid == RG_BACKSTAP) {
 			int dir = map_calc_dir(src,target->x,target->y),t_dir = status_get_dir(target);
-			int dist = distance(src->x,src->y,target->x,target->y);
+			int dist = unit_distance(src->x,src->y,target->x,target->y);
 			if(target->type != BL_SKILL && (dist == 0 || map_check_dir(dir,t_dir))) {
 				break;
 			}
@@ -7321,7 +7313,7 @@ int skill_castend_pos( int tid, unsigned int tick, int id,int data )
 			range += battle_config.mob_skill_add_range;
 
 		if(!src_sd || battle_config.check_skillpos_range) {	// 発動元がPCで射程チェック無しならこの処理は無視してクライアントの情報を信頼する
-			if(range < distance(src->x,src->y,src_ud->skillx,src_ud->skilly)) {
+			if(range < unit_distance(src->x,src->y,src_ud->skillx,src_ud->skilly)) {
 				if(src_sd && battle_config.skill_out_range_consume)
 					skill_check_condition(&src_sd->bl,1);	// アイテム消費
 				break;
@@ -9420,7 +9412,7 @@ int skill_devotion3(struct map_session_data *md,int target)
 	if ((sd = map_id2sd(target))==NULL)
 		return 1;
 	else
-		r = distance(md->bl.x,md->bl.y,sd->bl.x,sd->bl.y);
+		r = unit_distance(md->bl.x,md->bl.y,sd->bl.x,sd->bl.y);
 
 	if(pc_checkskill(md,CR_DEVOTION)+6 < r){	// 許容範囲を超えてた
 		for(n=0;n<5;n++)
@@ -9463,7 +9455,7 @@ int skill_marionette(struct map_session_data *sd,int target)
 		return 1;
 	}
 	else
-		r = distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y);
+		r = unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y);
 
 	if(7 < r){	// 許容範囲を超えてた
 		status_change_end(&sd->bl,SC_MARIONETTE,-1);

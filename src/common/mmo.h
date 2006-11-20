@@ -55,8 +55,6 @@
 
 #define MAX_PORTAL_MEMO 3
 
-#define MAX_STATUS_TYPE 5
-
 #define WEDDING_RING_M 2634
 #define WEDDING_RING_F 2635
 

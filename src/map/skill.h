@@ -136,13 +136,9 @@ enum {	//吹き飛ばしフラグ
 	SAB_NOPATHSTOP  = 0x40000,
 };
 
-#define	SAB_NORMAL	0x00010000
-#define	SAB_SKIDTRAP	0x00020000
 int skill_add_blown( struct block_list *src, struct block_list *target,int skillid,int flag);
 
 //カード効果のオートスペル
-#define AS_ATTACK	0x00050003
-#define AS_REVENGE	0x00060003
 int skill_use_bonus_autospell(struct block_list * src,struct block_list * bl,int skill_id,int skill_lv,int rate,long skill_flag,int tick,int flag);
 int skill_bonus_autospell(struct block_list * src,struct block_list * bl,long mode,int tick,int flag);
 
@@ -815,7 +811,7 @@ enum {
 	NJ_KAMAITACHI,//#NJ_KAMAITACHI#
 	NJ_NEN,//#NJ_NEN#
 	NJ_ISSEN,//#NJ_ISSEN#
-	
+
 	MB_FIGHTING		=545,//#ファイティング#
 	MB_NEUTRAL,//#ニュートラル,//#
 	MB_TAIMING_PUTI,//#テイミングプティ,//#
@@ -889,7 +885,7 @@ enum {
 	DE_TWINATTACK,//#ツインアタック,//#
 	DE_WINDATTACK,//#ウィンドアタック,//#
 	DE_WATERATTACK	=	615,//#ウォーターアタック,//#
-	
+
 	KN_CHARGEATK	=	1001,//#チャージアタック#
 	CR_SHRINK		=	1002,//#シュリンク#
 	AS_SONICACCEL	=	1003,//#ソニックアクセラレーション#
@@ -928,13 +924,6 @@ enum {
 	HVAN_INSTRUCT	=8015,//#チェンジインストラクション#
 	HVAN_EXPLOSION	=8016,//#バイオエクスプロージョン#
 
-//	move to common/mmo.h
-//	GD_APPROVAL=10000,
-//	GD_KAFRACONTACT,
-//	GD_GUARDIANRESEARCH,
-//	GD_CHARISMA,
-//	GD_EXTENSION,
-	//return from common/mmo.h
 	GD_SKILLBASE=10000,
 	GD_APPROVAL=10000,
 	GD_KAFRACONTACT,
@@ -953,7 +942,6 @@ enum {
 	GD_RESTORE,
 	GD_EMERGENCYCALL,
 	GD_DEVELOPMENT,
-
 };
 
 extern int SkillStatusChangeTable[];

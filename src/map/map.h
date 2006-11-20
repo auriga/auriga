@@ -686,14 +686,14 @@ struct homun_data {
 	short atk,matk,def,mdef;
 	short hit,critical,flee,aspd;
 	short equip;
-	int   intimate;
+	int intimate;
 	int target_id;
 	unsigned int homskillstatictimer[MAX_HOMSKILL];
 	struct status_change sc_data[MAX_STATUSCHANGE];
 	short sc_count, opt1, opt2, opt3;
-	short atackable;
+	short attackable;
 	short limits_to_growth;
-	int   view_class;
+	int view_class;
 	int nhealhp,nhealsp;
 	int hprecov_rate,sprecov_rate;
 	int natural_heal_hp,natural_heal_sp;
@@ -701,9 +701,6 @@ struct homun_data {
 
 	struct map_session_data *msd;
 };
-
-enum { MS_IDLE,MS_WALK,MS_ATTACK,MS_DEAD,MS_DELAY };
-enum { ATK_LUCKY=1,ATK_FLEE,ATK_DEF};	// 囲まれペナルティ計算用
 
 // 装備コード
 enum {

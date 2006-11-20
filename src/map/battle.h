@@ -49,6 +49,8 @@ enum {	// 最終計算のフラグ
 	BF_SKILLMASK  = 0x0f00,
 };
 
+enum { ATK_LUCKY=1,ATK_FLEE,ATK_DEF};	// 囲まれペナルティ計算用
+
 // 実際にHPを増減
 int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,int damage,int flag);
 int battle_damage(struct block_list *bl,struct block_list *target,int damage,int flag);

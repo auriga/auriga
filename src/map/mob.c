@@ -786,7 +786,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 				) ){	// 妨害がないか判定
 
 				mmd->target_id=sd->bl.id;
-				mmd->min_chase=5+distance(mmd->bl.x,mmd->bl.y,sd->bl.x,sd->bl.y);
+				mmd->min_chase=5+unit_distance(mmd->bl.x,mmd->bl.y,sd->bl.x,sd->bl.y);
 			}
 		}
 	}*/

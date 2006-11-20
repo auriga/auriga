@@ -1,4 +1,19 @@
 ----------------------------------------
+//002 (2006/11/21) by Rayce
+
+・囲まれ判定用の定数 ATK_LUCKY, ATK_FLEE, ATK_DEF をmap.hからbattle.hに移動
+・使われていない定数 MS_IDLE, MS_WALK, MS_ATTACK, MS_DEAD, MS_DELAY をmap.hから削除
+　（mob.hの MSS_*** に変更されている）
+・使われていない定数 SAB_NORMAL, SAB_SKIDTRAP をskill.hから削除
+・ほとんど意味がないので AS_ATTACK, AS_REVENGE をskill.hとbattle.cから削除
+・ほとんど意味がないので MAX_STATUS_TYPE をmmo.hとatcommand.cから削除
+
+・pc.cとskill.cの distance() を削除し unit_distance() に置き換え
+・一部のdouble型へのキャストをatn_bignumber型に置き換え
+・homun_data構造体の変数名を atackable → attackable に変更（clif.c, homun.c, map.h）
+・unit.cを少しだけ整理
+
+----------------------------------------
 //001 (2006/11/21) by Rayce
 
 ・Auriga始動
