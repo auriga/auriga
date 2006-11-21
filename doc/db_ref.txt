@@ -91,8 +91,9 @@ list_weapon: スキルを使うことができる武器を設定します。
 state:スキルを使用する為の条件を設定します。複数の設定はできません。
 	none - 条件無し
 	hiding - ハイディング状態
-	cloaking - クローキング状態。
-	hidden: ハイディングやクロッキング状態
+	cloaking - クローキング状態
+	chasewalking - チェイスウォーキング状態
+	hidden: ハイディングやクローキング状態
 	riding: ペコペコに乗っている
 	falcon: 鷹を連れている
 	cart: カートを着けている

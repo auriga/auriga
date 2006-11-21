@@ -3731,17 +3731,17 @@ atcommand_idsearch(
 {
 	char item_name[100];
 	char output[100];
-	unsigned int i, len, match;
+	int i, max, match = 0;
 	struct item_data *item;
 
 	if (sscanf(message, "%99s", item_name) < 0)
 		return -1;
 
-	len = strlen(item_name);
 	snprintf(output, sizeof output, msg_txt(77), item_name);
 	clif_displaymessage(fd,output);
-	match = 0;
-	for(i = 0; i < 20000; i++) {
+
+	max = itemdb_getmaxid();
+	for(i = 0; i <= max; i++) {
 		if ((item = itemdb_exists(i)) != NULL && strstr(item->jname, item_name) != NULL) {
 			match++;
 			snprintf(output, sizeof output, msg_txt(78), item->jname, item->nameid);

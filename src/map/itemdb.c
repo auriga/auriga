@@ -39,25 +39,33 @@ static int blue_box_default=0,violet_box_default=0,card_album_default=0,gift_box
 				diamond_helm_default=0,diamond_shoes_default=0,diamond_shield_default=0,jewel_box_default=0,meiji_almond_default=0,
 				pet_box_default=0,mask_default=0,fabox_default=0,food_default=0,rjc2006_default=0;
 
+static int max_itemid;
+
 /*==========================================
- * 名前で検索用
+ * アイテムIDの最大値を返す
  *------------------------------------------
  */
-int itemdb_searchname_sub(void *key,void *data,va_list ap)
+int itemdb_getmaxid(void)
+{
+	return max_itemid;
+}
+
+/*==========================================
+ * 名前で検索
+ *------------------------------------------
+ */
+static int itemdb_searchname_sub(void *key,void *data,va_list ap)
 {
 	struct item_data *item=(struct item_data *)data,**dst;
 	char *str;
 	str=va_arg(ap,char *);
 	dst=va_arg(ap,struct item_data **);
 	if( strcmpi(item->name,str)==0 || strcmp(item->jname,str)==0 ||
-		memcmp(item->name,str,32)==0 || memcmp(item->jname,str,32)==0 )
+	    memcmp(item->name,str,32)==0 || memcmp(item->jname,str,32)==0 )
 		*dst=item;
 	return 0;
 }
-/*==========================================
- * 名前で検索
- *------------------------------------------
- */
+
 struct item_data* itemdb_searchname(const char *str)
 {
 	struct item_data *item=NULL;
@@ -110,7 +118,7 @@ int itemdb_searchrandomid(int flags)
 		if(count > 0) {
 			for(i=0;i<1000;i++) {
 				index = atn_rand()%count;
-				if(	atn_rand()%1000000 < list[index].per) {
+				if(atn_rand()%1000000 < list[index].per) {
 					nameid = list[index].nameid;
 					break;
 				}
@@ -305,6 +313,7 @@ static int itemdb_read_itemdb(void)
 	int i=0;
 	char *filename[]={ "db/item_db.txt","db/addon/item_db_add.txt" };
 
+	max_itemid = 0;
 	for(i=0;i<2;i++){
 		fp=fopen(filename[i],"r");
 		if(fp==NULL){
@@ -328,8 +337,10 @@ static int itemdb_read_itemdb(void)
 				continue;
 
 			nameid=atoi(str[0]);
-			if(nameid<=0 || nameid>=20000)
+			if(nameid<=0)
 				continue;
+			if(nameid > max_itemid)
+				max_itemid = nameid;
 			ln++;
 
 			//ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine
@@ -415,7 +426,7 @@ static int itemdb_read_itemdb(void)
 			continue;
 
 		nameid=atoi(str[0]);
-		if(nameid<=0 || nameid>=20000 || !(id=itemdb_exists(nameid)))
+		if(nameid<=0 || !(id=itemdb_exists(nameid)))
 			continue;
 
 		ln++;
@@ -447,10 +458,9 @@ static int itemdb_read_itemdb(void)
 			continue;
 
 		nameid=atoi(str[0]);
-		if(nameid<=0 || nameid>=20000)
+		if(nameid<=0 || !(id=itemdb_exists(nameid)))
 			continue;
 		//ID,Name,Jname,type
-		id=itemdb_search(nameid);
 		id->arrow_type=atoi(str[3]);
 	}
 	fclose(fp);
@@ -474,10 +484,9 @@ static int itemdb_read_itemdb(void)
 			continue;
 
 		nameid=atoi(str[0]);
-		if(nameid<=0 || nameid>=20000)
+		if(nameid<=0 || !(id=itemdb_exists(nameid)))
 			continue;
 		//ID,Name,Jname,Group
-		id=itemdb_search(nameid);
 		id->group=atoi(str[3]);
 	}
 	fclose(fp);
@@ -516,7 +525,7 @@ static int itemdb_read_itemvaluedb(void)
 			continue;
 
 		nameid=atoi(str[0]);
-		if(nameid<=0 || nameid>=20000)
+		if(nameid<=0)
 			continue;
 
 		if( !(id=itemdb_exists(nameid)) )
@@ -630,7 +639,7 @@ static int itemdb_read_randomitem(void)
 				continue;
 
 			nameid=atoi(str[0]);
-			if(nameid<0 || nameid>=20000)
+			if(nameid<0)
 				continue;
 			if(nameid == 0) {
 				if(str[2])
@@ -686,7 +695,7 @@ static int itemdb_read_itemavail(void)
 			continue;
 
 		nameid=atoi(str[0]);
-		if(nameid<0 || nameid>=20000 || !(id=itemdb_exists(nameid)) )
+		if(nameid<0 || !(id=itemdb_exists(nameid)) )
 			continue;
 		k=atoi(str[1]);
 		if(k > 0) {
@@ -721,7 +730,7 @@ static int itemdb_read_itemnametable(void)
 		int nameid;
 		char buf2[64];
 
-		if(	sscanf(p,"%d#%[^#]#",&nameid,buf2)==2 ){
+		if( sscanf(p,"%d#%[^#]#",&nameid,buf2)==2 ){
 
 #ifdef ITEMDB_OVERRIDE_NAME_VERBOSE
 			if( itemdb_exists(nameid) &&
@@ -763,7 +772,7 @@ static int itemdb_read_cardillustnametable(void)
 		int nameid;
 		char buf2[64];
 
-		if(	sscanf(p,"%d#%[^#]#",&nameid,buf2)==2 ){
+		if( sscanf(p,"%d#%[^#]#",&nameid,buf2)==2 ){
 			strcat(buf2,".bmp");
 			memcpy(itemdb_search(nameid)->cardillustname,buf2,64);
 //			printf("%d %s\n",nameid,itemdb_search(nameid)->cardillustname);

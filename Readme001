@@ -1,5 +1,23 @@
 ----------------------------------------
-//002 (2006/11/21) by Rayce
+//003 [2006/11/22] by Rayce
+
+・battle_calc_weapon_attack() の構造変更によって、001の時点で矢のATKが計算されない
+　可能性が生じていたので修正（battle.c）
+・battle_calc_weapon_attack() を全体的に整形
+・battle_delarrow() の引数を増やして battle_skill_attack() からでも使えるように共通化（battle.*）
+
+・item_arrowtype.txtとitem_group_db.txtで存在しないアイテムIDだった場合は読み飛ばすように修正（itemdb.c）
+・item_db.txtでアイテムIDが20000までしか使えない制限を取り払う（atcommand.c, itemdb.*）
+	-> 読み込まれたデータの中で最大のID値をmax_itemidに保存しておくように変更
+	-> itemdb_getmaxid() を追加
+	-> 上記変更に伴って @idsearch を少し修正
+
+・チェイサーのスキル名と混同するので、スキルの使用条件を示す ST_CLOAKING 等の名称を ST_*** → SST_*** に変更（skill.*）
+　ST_CHASEWALKというstateは存在せず誤っているので、新しくSST_CHASEWALKINGを定義
+　skill_require_db.txtのstateの項目にchasewalkingを追加
+
+----------------------------------------
+//002 [2006/11/21] by Rayce
 
 ・囲まれ判定用の定数 ATK_LUCKY, ATK_FLEE, ATK_DEF をmap.hからbattle.hに移動
 ・使われていない定数 MS_IDLE, MS_WALK, MS_ATTACK, MS_DEAD, MS_DELAY をmap.hから削除
@@ -14,7 +32,7 @@
 ・unit.cを少しだけ整理
 
 ----------------------------------------
-//001 (2006/11/21) by Rayce
+//001 [2006/11/21] by Rayce
 
 ・Auriga始動
 ・サーバースナップショット

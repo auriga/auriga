@@ -46,6 +46,8 @@ struct random_item_data {
 	int per;
 };
 
+int itemdb_getmaxid(void);
+
 struct item_data* itemdb_searchname(const char *name);
 struct item_data* itemdb_search(int nameid);
 struct item_data* itemdb_exists(int nameid);

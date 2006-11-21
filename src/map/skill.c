@@ -8696,73 +8696,73 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	}
 
 	switch(state) {
-	case ST_HIDING:
+	case SST_HIDING:
 		if(!(sd->status.option&2)) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_CLOAKING:
+	case SST_CLOAKING:
 		if(!pc_iscloaking(sd)) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_CHASEWALK:
+	case SST_CHASEWALKING:
 		if(!pc_ischasewalk(sd)) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_HIDDEN:
+	case SST_HIDDEN:
 		if(!pc_ishiding(sd)) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_RIDING:
+	case SST_RIDING:
 		if(!pc_isriding(sd)) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_FALCON:
+	case SST_FALCON:
 		if(!pc_isfalcon(sd)) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_CART:
+	case SST_CART:
 		if(!pc_iscarton(sd)) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_SHIELD:
+	case SST_SHIELD:
 		if(sd->status.shield <= 0) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_SIGHT:
+	case SST_SIGHT:
 		if(sd->sc_data[SC_SIGHT].timer == -1) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_EXPLOSIONSPIRITS:
+	case SST_EXPLOSIONSPIRITS:
 		if(sd->sc_data[SC_EXPLOSIONSPIRITS].timer == -1) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_RECOV_WEIGHT_RATE:
+	case SST_RECOV_WEIGHT_RATE:
 		if(battle_config.natural_heal_weight_rate <= 100 && sd->weight*100/sd->max_weight >= battle_config.natural_heal_weight_rate) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
-	case ST_MOVE_ENABLE:
+	case SST_MOVE_ENABLE:
 		{
 			struct walkpath_data wpd;
 			if(path_search(&wpd,bl->m,bl->x,bl->y,sc->x,sc->y,1)==-1) {
@@ -8771,7 +8771,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			}
 		}
 		break;
-	case ST_WATER:
+	case SST_WATER:
 		if(!map[bl->m].flag.rain)
 		{
 			if((!map_getcell(bl->m,bl->x,bl->y,CELL_CHKWATER))&&
@@ -9036,7 +9036,7 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 	}
 
 	switch(state) {
-	case ST_MOVE_ENABLE:
+	case SST_MOVE_ENABLE:
 		{
 			struct walkpath_data wpd;
 			if(path_search(&wpd,bl->m,bl->x,bl->y,sc->x,sc->y,1)==-1) {
@@ -12370,19 +12370,20 @@ int skill_readdb(void)
 				p++;
 			}
 
-			if( strcmpi(split[7],"hiding")==0 ) skill_db[i].state=ST_HIDING;
-			else if( strcmpi(split[7],"cloaking")==0 ) skill_db[i].state=ST_CLOAKING;
-			else if( strcmpi(split[7],"hidden")==0 ) skill_db[i].state=ST_HIDDEN;
-			else if( strcmpi(split[7],"riding")==0 ) skill_db[i].state=ST_RIDING;
-			else if( strcmpi(split[7],"falcon")==0 ) skill_db[i].state=ST_FALCON;
-			else if( strcmpi(split[7],"cart")==0 ) skill_db[i].state=ST_CART;
-			else if( strcmpi(split[7],"shield")==0 ) skill_db[i].state=ST_SHIELD;
-			else if( strcmpi(split[7],"sight")==0 ) skill_db[i].state=ST_SIGHT;
-			else if( strcmpi(split[7],"explosionspirits")==0 ) skill_db[i].state=ST_EXPLOSIONSPIRITS;
-			else if( strcmpi(split[7],"recover_weight_rate")==0 ) skill_db[i].state=ST_RECOV_WEIGHT_RATE;
-			else if( strcmpi(split[7],"move_enable")==0 ) skill_db[i].state=ST_MOVE_ENABLE;
-			else if( strcmpi(split[7],"water")==0 ) skill_db[i].state=ST_WATER;
-			else skill_db[i].state=ST_NONE;
+			if( strcmpi(split[7],"hiding")==0 ) skill_db[i].state=SST_HIDING;
+			else if( strcmpi(split[7],"cloaking")==0 ) skill_db[i].state=SST_CLOAKING;
+			else if( strcmpi(split[7],"chasewalking")==0 ) skill_db[i].state=SST_CHASEWALKING;
+			else if( strcmpi(split[7],"hidden")==0 ) skill_db[i].state=SST_HIDDEN;
+			else if( strcmpi(split[7],"riding")==0 ) skill_db[i].state=SST_RIDING;
+			else if( strcmpi(split[7],"falcon")==0 ) skill_db[i].state=SST_FALCON;
+			else if( strcmpi(split[7],"cart")==0 ) skill_db[i].state=SST_CART;
+			else if( strcmpi(split[7],"shield")==0 ) skill_db[i].state=SST_SHIELD;
+			else if( strcmpi(split[7],"sight")==0 ) skill_db[i].state=SST_SIGHT;
+			else if( strcmpi(split[7],"explosionspirits")==0 ) skill_db[i].state=SST_EXPLOSIONSPIRITS;
+			else if( strcmpi(split[7],"recover_weight_rate")==0 ) skill_db[i].state=SST_RECOV_WEIGHT_RATE;
+			else if( strcmpi(split[7],"move_enable")==0 ) skill_db[i].state=SST_MOVE_ENABLE;
+			else if( strcmpi(split[7],"water")==0 ) skill_db[i].state=SST_WATER;
+			else skill_db[i].state=SST_NONE;
 
 			skill_split_atoi(split[8],skill_db[i].spiritball,MAX_SKILL_LEVEL);
 			skill_db[i].itemid[0]=atoi(split[9]);
