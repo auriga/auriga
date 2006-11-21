@@ -1039,10 +1039,10 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	int tk_power_damage=0,tk_power_damage2=0;//TK_POWER用
 	int calc_dist_on = 0;	//遠距離スキルの計算フラグ
 
-	memset(&wd,0,sizeof(wd));
+	//memset(&wd,0,sizeof(wd));
 
-	//return前の処理があるので情報出力部のみ変更
-	if( src == NULL || target == NULL) {
+	// return前の処理があるので情報出力部のみ変更
+	if(src == NULL || target == NULL) {
 		nullpo_info(NLP_MARK);
 		return wd;
 	}
@@ -1056,21 +1056,22 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	target_hd = BL_DOWNCAST( BL_HOM, target );
 
 	// アタッカー
-	s_ele    = status_get_attack_element(src);	//属性
-	s_ele_   = status_get_attack_element2(src);	//左手属性
-	s_str    = status_get_str(src);			//STR
-	sc_data  = status_get_sc_data(src);		//ステータス異常
+	s_ele    = status_get_attack_element(src);	// 属性
+	s_ele_   = status_get_attack_element2(src);	// 左手属性
+	s_str    = status_get_str(src);			// STR
+	sc_data  = status_get_sc_data(src);		// ステータス異常
 
 	// ターゲット
 	t_vit     = status_get_vit(target);
-	t_race    = status_get_race( target );		//対象の種族
-	t_ele     = status_get_elem_type(target);	//対象の属性
-	t_enemy   = status_get_enemy_type( target );	//対象の敵タイプ
-	t_size    = status_get_size( target );		//対象のサイズ
-	t_mode    = status_get_mode( target );		//対象のMode
-	t_sc_data = status_get_sc_data( target );	//対象のステータス異常
-	t_group   = status_get_group( target );
-	t_flee    = status_get_flee( target );
+	t_race    = status_get_race(target);		// 対象の種族
+	t_ele     = status_get_elem_type(target);	// 対象の属性
+	t_enemy   = status_get_enemy_type(target);	// 対象の敵タイプ
+	t_size    = status_get_size(target);		// 対象のサイズ
+	t_mode    = status_get_mode(target);		// 対象のMode
+	t_sc_data = status_get_sc_data(target);		// 対象のステータス異常
+	t_group   = status_get_group(target);
+	t_class   = status_get_class(target);
+	t_flee    = status_get_flee(target);
 	t_def1    = status_get_def(target);
 	t_def2    = status_get_def2(target);
 
@@ -1094,18 +1095,6 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 
 	if(src_sd && skill_num != CR_GRANDCROSS && skill_num != NPC_DARKGRANDCROSS) //グランドクロスでないなら
 		src_sd->state.attack_type = BF_WEAPON; //攻撃タイプは武器攻撃
-
-	//強制移動中もしくはウィンク中は駄目
-	if(sc_data && (sc_data[SC_FORCEWALKING].timer!=-1 || sc_data[SC_WINKCHARM].timer!=-1)){
-		unit_stopattack(src);
-		return wd;
-	}
-
-	//相手が強制移動中
-	if(t_sc_data && t_sc_data[SC_FORCEWALKING].timer!=-1){
-		unit_stopattack(src);
-		return wd;
-	}
 
 	//オートカウンター処理ここから
 	if(skill_lv >= 0 && (skill_num == 0 || (target_sd && battle_config.pc_auto_counter_type&2) ||
@@ -2442,10 +2431,10 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 //スキルによるダメージ補正ここまで
 
 //カードによるダメージ追加処理ここから
-	cardfix=100;
 	if(src_sd && !no_cardfix) {
-		if(!src_sd->state.arrow_atk) { //弓矢以外
-			if(!battle_config.left_cardfix_to_right) { //左手カード補正設定無し
+		cardfix = 100;
+		if(!src_sd->state.arrow_atk) {	// 弓矢以外
+			if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
 				cardfix=cardfix*(100+src_sd->addrace[t_race])/100;	// 種族によるダメージ修正
 				cardfix=cardfix*(100+src_sd->addele[t_ele])/100;	// 属性によるダメージ修正
 				cardfix=cardfix*(100+src_sd->addenemy[t_enemy])/100;	// 敵タイプによるダメージ修正
@@ -2505,8 +2494,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 				}
 			}
 		}
-		//特定Class用補正処理(少女の日記→ボンゴン用？)
-		t_class = status_get_class(target);
+		// 特定Class用補正処理(少女の日記→ボンゴン用？)
 		for(i=0;i<src_sd->add_damage_class_count;i++) {
 			if(src_sd->add_damage_classid[i] == t_class) {
 				cardfix=cardfix*(100+src_sd->add_damage_classrate[i])/100;
@@ -2518,9 +2506,9 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 //カードによるダメージ増加処理ここまで
 
 //カードによるダメージ追加処理(左手)ここから
-	cardfix=100;
 	if( src_sd && !no_cardfix ) {
-		if(!battle_config.left_cardfix_to_right) {  //左手カード補正設定無し
+		cardfix = 100;
+		if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
 			cardfix=cardfix*(100+src_sd->addrace_[t_race])/100;	// 種族によるダメージ修正左手
 			cardfix=cardfix*(100+src_sd->addele_[t_ele])/100;	// 属性によるダメージ修正左手
 			cardfix=cardfix*(100+src_sd->addenemy_[t_enemy])/100;	// 敵タイプによるダメージ修正左手
@@ -2531,7 +2519,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			else
 				cardfix=cardfix*(100+src_sd->addrace_[11])/100;	// ボス以外モンスターに追加ダメージ左手
 		}
-		//特定Class用補正処理左手(少女の日記→ボンゴン用？)
+		// 特定Class用補正処理左手(少女の日記→ボンゴン用？)
 		for(i=0;i<src_sd->add_damage_class_count_;i++) {
 			if(src_sd->add_damage_classid_[i] == t_class) {
 				cardfix=cardfix*(100+src_sd->add_damage_classrate_[i])/100;
@@ -2563,7 +2551,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		else
 			cardfix=cardfix*(100-target_sd->subrace[11])/100;	// ボス以外からの攻撃はダメージ減少
 
-		//特定Class用補正処理左手(少女の日記→ボンゴン用？)
+		// 特定Class用補正処理左手(少女の日記→ボンゴン用？)
 		for(i=0;i<target_sd->add_def_class_count;i++) {
 			if(target_sd->add_def_classid[i] == status_get_class(src)) {
 				cardfix=cardfix*(100-target_sd->add_def_classrate[i])/100;
@@ -2584,7 +2572,6 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	//   addeff_range_flag  0:指定無し 1:近距離 2:遠距離 3,4:それぞれのレンジで状態異常を発動させない
 	//   flagがあり、攻撃タイプとflagが一致しないときは、flag+2する
 	if(src_sd && wd.flag&BF_WEAPON){
-		int i;
 		for(i=SC_STONE;i<=SC_BLEED;i++){
 			if( (src_sd->addeff_range_flag[i-SC_STONE]==1 && wd.flag&BF_LONG ) ||
 			    (src_sd->addeff_range_flag[i-SC_STONE]==2 && wd.flag&BF_SHORT) ){
@@ -2724,7 +2711,6 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		if(wd.damage > 0 && wd.damage2 < 1)
 			wd.damage2 = 1;
 	}
-	// インベナム修正
 	if(skill_num == TF_POISON){
 		wd.damage = battle_attr_fix(wd.damage + 15*skill_lv, s_ele, status_get_element(target) );
 	}
@@ -2775,7 +2761,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	}
 
 	//物理攻撃スキルによるオートスペル発動(item_bonus)
-	if(wd.flag&BF_SKILL && src && src->type == BL_PC && src != target && (wd.damage+wd.damage2)> 0)
+	if(wd.flag&BF_SKILL && src && src->type == BL_PC && src != target && (wd.damage+wd.damage2) > 0)
 	{
 		long asflag = EAS_ATTACK;
 		if(skill_num==AM_DEMONSTRATION)
@@ -3539,12 +3525,11 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	sc_data = status_get_sc_data(src);
 	t_sc_data = status_get_sc_data(target);
 
-	//白羽中もしくは強制移動中はダメ
-	if(sc_data && (sc_data[SC_BLADESTOP].timer!=-1 || sc_data[SC_FORCEWALKING].timer!=-1)) {
+	//自分が白羽・強制移動・魅惑のウィンク中はダメ
+	if(sc_data && (sc_data[SC_BLADESTOP].timer!=-1 || sc_data[SC_FORCEWALKING].timer!=-1 || sc_data[SC_WINKCHARM].timer!=-1)) {
 		unit_stopattack(src);
 		return 0;
 	}
-
 	//相手が強制移動中
 	if(t_sc_data && t_sc_data[SC_FORCEWALKING].timer!=-1){
 		unit_stopattack(src);
@@ -3841,13 +3826,32 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		return 0;
 	if(src->prev == NULL || dsrc->prev == NULL || bl->prev == NULL)
 		return 0;
-	if( unit_isdead(src) || unit_isdead(dsrc) || unit_isdead(bl))	//すでに死んでいたら何もしない
+	if(unit_isdead(src) || unit_isdead(dsrc) || unit_isdead(bl))	//すでに死んでいたら何もしない
 		return 0;
 
-	if(sc_data && sc_data[SC_HIDING].timer != -1) {	//ハイディング状態で
-		if(skill_get_pl(skillid) != 2)		//スキルの属性が地属性でなければ何もしない
+	if(ssc_data) {		// 自分が強制移動もしくは魅惑のウィンク中なら何もしない
+		if(ssc_data[SC_FORCEWALKING].timer != -1 || ssc_data[SC_WINKCHARM].timer != -1)
 			return 0;
 	}
+	if(sc_data) {
+		if(sc_data[SC_HIDING].timer != -1 && skill_get_pl(skillid) != 2)	//ハイディング状態でスキルの属性が地属性でないなら何もしない
+			return 0;
+		if(sc_data[SC_CHASEWALK].timer != -1 && skillid == AL_RUWACH)	//チェイスウォーク状態でルアフ無効
+			return 0;
+		if(sc_data[SC_TRICKDEAD].timer != -1) 				//死んだふり中は何もしない
+			return 0;
+		if(sc_data[SC_FORCEWALKING].timer != -1) 			//強制移動中は何もしない
+			return 0;
+		//凍結状態でストームガスト、フロストノヴァ、氷衝落は無効
+		if(sc_data[SC_FREEZE].timer != -1 && (skillid == WZ_STORMGUST || skillid == WZ_FROSTNOVA || skillid == NJ_HYOUSYOURAKU))
+			return 0;
+	}
+	if(skillid == WZ_FROSTNOVA && dsrc->x == bl->x && dsrc->y == bl->y)	//使用スキルがフロストノヴァで、dsrcとblが同じ場所なら何もしない
+		return 0;
+	if(sd && sd->chatID)	//発動元がPCでチャット中なら何もしない
+		return 0;
+	if(sd && mob_gvmobcheck(sd,bl)==0)
+		return 0;
 
 	/* 矢の消費 */
 	if(sd) {
@@ -3883,24 +3887,6 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			}
 		}
 	}
-
-	if(sc_data) {
-		if(sc_data[SC_CHASEWALK].timer != -1 && skillid == AL_RUWACH)	//チェイスウォーク状態でルアフ無効
-			return 0;
-		if(sc_data[SC_TRICKDEAD].timer != -1) 				//死んだふり中は何もしない
-			return 0;
-		if(sc_data[SC_FORCEWALKING].timer != -1) 			//強制移動中は何もしない
-			return 0;
-		//凍結状態でストームガスト、フロストノヴァ、氷衝落は無効
-		if(sc_data[SC_FREEZE].timer != -1 && (skillid == WZ_STORMGUST || skillid == WZ_FROSTNOVA || skillid == NJ_HYOUSYOURAKU))
-			return 0;
-	}
-	if(skillid == WZ_FROSTNOVA && dsrc->x == bl->x && dsrc->y == bl->y)	//使用スキルがフロストノヴァで、dsrcとblが同じ場所なら何もしない
-		return 0;
-	if(sd && sd->chatID)	//発動元がPCでチャット中なら何もしない
-		return 0;
-	if(sd && mob_gvmobcheck(sd,bl)==0)
-		return 0;
 
 	/* ダメージ計算 */
 	type=-1;

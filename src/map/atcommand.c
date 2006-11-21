@@ -176,10 +176,6 @@ ATCOMMAND_FUNC(itemmonster);
 ATCOMMAND_FUNC(mapflag);
 ATCOMMAND_FUNC(mannerpoint);
 ATCOMMAND_FUNC(connectlimit);
-ATCOMMAND_FUNC(help1);
-ATCOMMAND_FUNC(help2);
-ATCOMMAND_FUNC(help3);
-ATCOMMAND_FUNC(help4);
 ATCOMMAND_FUNC(econ);
 ATCOMMAND_FUNC(ecoff);
 ATCOMMAND_FUNC(icon);
@@ -242,10 +238,6 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_BaseLevelUp,        "@lvup",             0, atcommand_baselevelup },
 	{ AtCommand_JobLevelUp,         "@joblvup",          0, atcommand_joblevelup },
 	{ AtCommand_Help,               "@help",             0, atcommand_help },
-	{ AtCommand_Help1,              "@help1",            0, atcommand_help1 },
-	{ AtCommand_Help2,              "@help2",            0, atcommand_help2 },
-	{ AtCommand_Help3,              "@help3",            0, atcommand_help3 },
-	{ AtCommand_Help4,              "@help4",            0, atcommand_help4 },
 	{ AtCommand_GM,                 "@gm",               0, atcommand_gm },
 	{ AtCommand_PvPOff,             "@pvpoff",           0, atcommand_pvpoff },
 	{ AtCommand_PvPOn,              "@pvpon",            0, atcommand_pvpon },
@@ -1681,145 +1673,76 @@ atcommand_joblevelup(
  *
  *------------------------------------------
  */
-static void atcommand_help_sub(const int fd, const char *message, char *filename)
-{
-	FILE* fp;
-	char * p;
-	char buf[BUFSIZ];
-	char buf2[BUFSIZ];
-	int display = 1;
-	int i;
-
-	fp = fopen(filename, "r");
-	if (fp != NULL) {
-		clif_displaymessage(fd, msg_txt(26));
-		memset(buf, 0, sizeof(buf));
-		while (fgets(buf, sizeof buf - 20, fp) != NULL) {
-			for (i = 0; buf[i] != '\0'; i++) {
-				if (buf[i] == '\r' || buf[i] == '\n') {
-					buf[i] = '\0';
-					break;
-				}
-			}
-			if (message && *message && buf[0] == '@') {
-				if (strstr(buf, message)) {
-					display = 1;
-				} else {
-					display = 0;
-					continue;
-				}
-			}
-			if (display) {
-				p = buf;
-				while ((p = strchr(p, '@')) != NULL) {
-					for (i = 0; i < synonym_count; i++) {
-						memcpy(buf2, p + 1, strlen(synonym_table[i].synonym));
-						buf2[strlen(synonym_table[i].synonym)] = 0;
-						if (strcmpi(buf2, synonym_table[i].synonym) == 0) { // strncmpi will be better, but doesn't work under win32 (bcc32 don't recognize strncasecmp)
-							*p = command_symbol;
-							break;
-						}
-					}
-					if (i == synonym_count) {
-						for (i = 0; atcommand_info[i].type != AtCommand_Unknown; i++) {
-							memcpy(buf2, p + 1, strlen(atcommand_info[i].command + 1));
-							buf2[strlen(atcommand_info[i].command + 1)] = 0;
-							if (strcmpi(buf2, atcommand_info[i].command + 1) == 0) { // strncmpi will be better, but doesn't work under win32 (bcc32 don't recognize strncasecmp)
-								*p = command_symbol;
-								break;
-							}
-						}
-					}
-					p++;
-				}
-				clif_displaymessage(fd, buf);
-			}
-		}
-		fclose(fp);
-	} else
-		clif_displaymessage(fd, msg_txt(27));
-
-	return;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
 int
 atcommand_help(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	atcommand_help_sub(fd, message, help_txt);
+	FILE* fp;
+	char buf[1024], buf2[1024];
+	int start = 0, end = 0, lines = 0;
+	int i;
 
-	return 0;
-}
+	if(message && *message) {
+		sscanf(message, "%d %d", &start, &end);
+		if(start < 0 || end < 0 || (start > 0 && end > 0 && start > end)) {
+			clif_displaymessage(fd, msg_txt(27));
+			return 0;
+		}
+	}
 
-/*==========================================
- *
- *------------------------------------------
- */
+	fp = fopen(help_txt, "r");
+	if(fp == NULL) {
+		clif_displaymessage(fd, msg_txt(27));
+		return 0;
+	}
+	clif_displaymessage(fd, msg_txt(26));
+	memset(buf, 0, sizeof(buf));
 
-int
-atcommand_help1(
-	const int fd, struct map_session_data* sd,
-	const char* command, const char* message)
-{
-	char name[] = "conf/help1.txt";
-
-	atcommand_help_sub(fd, message, name);
-
-	return 0;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
-
-int
-atcommand_help2(
-	const int fd, struct map_session_data* sd,
-	const char* command, const char* message)
-{
-	char name[] = "conf/help2.txt";
-
-	atcommand_help_sub(fd, message, name);
-
-	return 0;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
-
-int
-atcommand_help3(
-	const int fd, struct map_session_data* sd,
-	const char* command, const char* message)
-{
-	char name[] = "conf/help3.txt";
-
-	atcommand_help_sub(fd, message, name);
-
-	return 0;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
-
-int
-atcommand_help4(
-	const int fd, struct map_session_data* sd,
-	const char* command, const char* message)
-{
-	char name[] = "conf/help4.txt";
-
-	atcommand_help_sub(fd, message, name);
+	while (fgets(buf, 1020, fp) != NULL) {
+		lines++;
+		if ((start > 0 && lines < start) || (end > 0 && lines > end))
+			continue;
+		if (buf[0] == '/' && buf[1] == '/')
+			continue;
+		for (i = 0; buf[i] != '\0'; i++) {
+			if (buf[i] == '\r' || buf[i] == '\n') {
+				buf[i] = '\0';
+				break;
+			}
+		}
+		if (buf[0] == '\0')	// 空文字は表示されないのでパケット送信しない
+			continue;
+		// symbolの置換
+		if(command_symbol != '@') {
+			char *p = buf;
+			while ((p = strchr(p, '@')) != NULL) {
+				for (i = 0; i < synonym_count; i++) {
+					memcpy(buf2, p + 1, strlen(synonym_table[i].synonym));
+					buf2[strlen(synonym_table[i].synonym)] = 0;
+					// strncmpi will be better, but doesn't work under win32 (bcc32 don't recognize strncasecmp)
+					if (strcmpi(buf2, synonym_table[i].synonym) == 0) {
+						*p = command_symbol;
+						break;
+					}
+				}
+				if (i == synonym_count) {
+					for (i = 0; atcommand_info[i].type != AtCommand_Unknown; i++) {
+						memcpy(buf2, p + 1, strlen(atcommand_info[i].command + 1));
+						buf2[strlen(atcommand_info[i].command + 1)] = 0;
+						// strncmpi will be better, but doesn't work under win32 (bcc32 don't recognize strncasecmp)
+						if (strcmpi(buf2, atcommand_info[i].command + 1) == 0) {
+							*p = command_symbol;
+							break;
+						}
+					}
+				}
+				p++;
+			}
+		}
+		clif_displaymessage(fd, buf);
+	}
+	fclose(fp);
 
 	return 0;
 }
