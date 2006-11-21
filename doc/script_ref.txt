@@ -1061,6 +1061,7 @@ AthenaNPCScript
 			color		数値
 
 			<gatname>全体に<string>をＧＭアナウンスで表示します。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			flag:0,黄色文字、16,青文字
 			<color>指定時はその色でＧＭアナウンスします。
 			このとき<flag>の値は無視されます。
@@ -1073,6 +1074,7 @@ AthenaNPCScript
 			color			数値
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内に対し<string>をＧＭアナウンスで表示します。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			flag:0,黄色文字、16,青文字
 			<color>指定時はその色でＧＭアナウンスします。
 			このとき<flag>の値は無視されます。
@@ -1304,6 +1306,7 @@ AthenaNPCScript
 			flag		数値
 
 			<gatname>のmapflagを追加します。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			<flag>はdb/const.txtを参照してください。
 
 		removemapflag命令
@@ -1313,6 +1316,7 @@ AthenaNPCScript
 			flag		数値
 
 			<gatname>のmapflagを消去します。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			<flag>はdb/const.txtを参照してください。
 
 		pvpon命令
@@ -1321,6 +1325,7 @@ AthenaNPCScript
 			gatname		文字列
 
 			<gatname>をPVP可能MAPにします。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 		pvpoff命令
 			pvpoff <gatname>;
@@ -1328,6 +1333,7 @@ AthenaNPCScript
 			gatname		文字列
 
 			<gatname>をPVP不可MAPにします。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 		gvgon命令
 			gvgon <gatname>;
@@ -1335,6 +1341,7 @@ AthenaNPCScript
 			gatname		文字列
 
 			<gatname>をシーズモードにします。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 		gvgoff命令
 			gvgoff <gatname>;
@@ -1342,6 +1349,7 @@ AthenaNPCScript
 			gatname		文字列
 
 			<gatname>を非シーズモードにします。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 		setmapflagnosave命令
 			setmapflagnosave <gatname>,<savegatname>,<x>,<y>;
@@ -1350,6 +1358,7 @@ AthenaNPCScript
 			x,y			数値
 
 			<gatname>のmapflagにnosave、引数として<savegatname>,<x>,<y>を設定します。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 		detachrid命令
 			detachrid;
@@ -1609,6 +1618,7 @@ AthenaNPCScript
 				+4	一部モンスターを削除します(mob class:1285-1288以外)
 
 			指定したマップにいるある特定のＰＣを最終セーブポイントに移動させ、一部モンスターを削除します
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 		agitstart命令
 			ギルド攻城戦を開始します。
@@ -2451,6 +2461,7 @@ AthenaNPCScript
 			<x0>,<y0>,<x1>,<y1>	数値
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内に落ちているアイテムの数を返します
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 		getscrate関数
 			getscrate(<type>,<percentage>[,<target>])

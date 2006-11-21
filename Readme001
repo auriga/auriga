@@ -1,4 +1,19 @@
 ----------------------------------------
+//004 [2006/11/22] by Rayce
+
+・battle_attr_fix() を少し改善
+・battle_calc_damage() の処理改善
+　特にダメージが発生する場合で、アジトの情報が不要な場合でも情報を検索していた無駄が省かれます
+
+・MAP名に "this" 指定可能なスクリプト命令/関数を考慮して、MAP番号を取得する処理をまとめた関数
+　script_mapname2mapid() を用意（script.c）
+・以下のスクリプト命令/関数においてMAP名の "this" 指定に対応
+	mapannounce, areaannounce, getareadropitem, setmapflagnosave, setmapflag, removemapflag,
+	pvpon, pvpoff, gvgon, gvgoff, maprespawnguildid
+・MAP非配置型のNPCからmap_foreachinarea() を呼び出す命令/関数を実行されるとアクセス違反が生じる可能性があるので
+　map_foreachinarea() でindexの値のチェックを入れるように修正（map.c）
+
+----------------------------------------
 //003 [2006/11/22] by Rayce
 
 ・battle_calc_weapon_attack() の構造変更によって、001の時点で矢のATKが計算されない

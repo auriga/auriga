@@ -3012,6 +3012,25 @@ int script_config_read(char *cfgName)
 }
 
 /*==========================================
+ * "this" を考慮してmap名からmap番号へ変換
+ *------------------------------------------
+ */
+static int script_mapname2mapid(struct script_state *st,char *mapname)
+{
+	if(strcmp(mapname,"this")==0)
+	{
+		struct npc_data *nd = map_id2nd(st->oid);
+		if(nd) {
+			return nd->bl.m;
+		} else {
+			struct map_session_data *sd = script_rid2sd(st);
+			return (sd != NULL)? sd->bl.m: -1;
+		}
+	}
+	return map_mapname2mapid(mapname);
+}
+
+/*==========================================
  * @コマンドによる変数の操作
  *------------------------------------------
  */
@@ -4118,22 +4137,9 @@ int buildin_areawarp(struct script_state *st)
 	x=conv_num(st,& (st->stack->stack_data[st->start+8]));
 	y=conv_num(st,& (st->stack->stack_data[st->start+9]));
 
-	if(strcmp(mapname,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else
-				return 0;
-		}
-	}
-	else if( (m=map_mapname2mapid(mapname))< 0)
-		return 0;
-
-	map_foreachinarea(buildin_areawarp_sub,m,x0,y0,x1,y1,BL_PC,str,x,y);
+	m = script_mapname2mapid(st,mapname);
+	if(m >= 0)
+		map_foreachinarea(buildin_areawarp_sub,m,x0,y0,x1,y1,BL_PC,str,x,y);
 	return 0;
 }
 
@@ -6042,19 +6048,8 @@ int buildin_killmonster(struct script_state *st)
 	int m,allflag=0;
 	mapname=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	event=conv_str(st,& (st->stack->stack_data[st->start+3]));
-	if(strcmp(mapname,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else
-				return 0;
-		}
-	}
-	else if( (m=map_mapname2mapid(mapname))<0 )
+
+	if((m = script_mapname2mapid(st,mapname)) < 0)
 		return 0;
 
 	if(strcmp(event,"All")==0)
@@ -6075,22 +6070,9 @@ int buildin_killmonsterall(struct script_state *st)
 	int m;
 	mapname=conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	if(strcmp(mapname,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else
-				return 0;
-		}
-	}
-	else if( (m=map_mapname2mapid(mapname))< 0)
-		return 0;
-	map_foreachinarea(buildin_killmonsterall_sub,
-		m,0,0,map[m].xs,map[m].ys,BL_MOB);
+	m = script_mapname2mapid(st,mapname);
+	if(m >= 0)
+		map_foreachinarea(buildin_killmonsterall_sub,m,0,0,map[m].xs,map[m].ys,BL_MOB);
 	return 0;
 }
 int buildin_areakillmonster(struct script_state *st)
@@ -6102,22 +6084,10 @@ int buildin_areakillmonster(struct script_state *st)
 	y0=conv_num(st,& (st->stack->stack_data[st->start+4]));
 	x1=conv_num(st,& (st->stack->stack_data[st->start+5]));
 	y1=conv_num(st,& (st->stack->stack_data[st->start+6]));
-	if(strcmp(mapname,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else
-				return 0;
-		}
-	}
-	else if( (m=map_mapname2mapid(mapname))< 0)
-		return 0;
-	map_foreachinarea(buildin_killmonsterall_sub,
-		m,x0,y0,x1,y1,BL_MOB);
+
+	m = script_mapname2mapid(st,mapname);
+	if(m >= 0)
+		map_foreachinarea(buildin_killmonsterall_sub,m,x0,y0,x1,y1,BL_MOB);
 	return 0;
 }
 /*==========================================
@@ -6327,10 +6297,9 @@ int buildin_mapannounce(struct script_state *st)
 	if (st->end>st->start+5)
 		color=conv_str(st,& (st->stack->stack_data[st->start+5]));
 
-	if( (m=map_mapname2mapid(mapname))<0 )
-		return 0;
-	map_foreachinarea(buildin_mapannounce_sub,
-		m,0,0,map[m].xs,map[m].ys,BL_PC, str,strlen(str)+1,flag&0x10,color);
+	m = script_mapname2mapid(st,mapname);
+	if(m >= 0)
+		map_foreachinarea(buildin_mapannounce_sub,m,0,0,map[m].xs,map[m].ys,BL_PC, str,strlen(str)+1,flag&0x10,color);
 	return 0;
 }
 /*==========================================
@@ -6353,11 +6322,9 @@ int buildin_areaannounce(struct script_state *st)
 	if (st->end>st->start+9)
 		color=conv_str(st,& (st->stack->stack_data[st->start+9]));
 
-	if( (m=map_mapname2mapid(map))<0 )
-		return 0;
-
-	map_foreachinarea(buildin_mapannounce_sub,
-		m,x0,y0,x1,y1,BL_PC, str,strlen(str)+1,flag&0x10,color);
+	m = script_mapname2mapid(st,map);
+	if(m >= 0)
+		map_foreachinarea(buildin_mapannounce_sub,m,x0,y0,x1,y1,BL_PC, str,strlen(str)+1,flag&0x10,color);
 	return 0;
 }
 /*==========================================
@@ -6416,25 +6383,11 @@ int buildin_getmapusers(struct script_state *st)
 	int m;
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	if(strcmp(str,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else {
-				push_val(st->stack,C_INT,-1);
-				return 0;
-			}
-		}
-	}
-	else if( (m=map_mapname2mapid(str))< 0){
+	m = script_mapname2mapid(st,str);
+	if(m < 0)
 		push_val(st->stack,C_INT,-1);
-		return 0;
-	}
-	push_val(st->stack,C_INT,map[m].users);
+	else
+		push_val(st->stack,C_INT,map[m].users);
 	return 0;
 }
 /*==========================================
@@ -6456,26 +6409,13 @@ int buildin_getareausers(struct script_state *st)
 	y0=conv_num(st,& (st->stack->stack_data[st->start+4]));
 	x1=conv_num(st,& (st->stack->stack_data[st->start+5]));
 	y1=conv_num(st,& (st->stack->stack_data[st->start+6]));
-	if(strcmp(str,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else {
-				push_val(st->stack,C_INT,-1);
-				return 0;
-			}
-		}
-	}
-	else if( (m=map_mapname2mapid(str))< 0){
+
+	m = script_mapname2mapid(st,str);
+	if(m < 0) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	map_foreachinarea(buildin_getareausers_sub,
-		m,x0,y0,x1,y1,BL_PC,&users);
+	map_foreachinarea(buildin_getareausers_sub,m,x0,y0,x1,y1,BL_PC,&users);
 	push_val(st->stack,C_INT,users);
 	return 0;
 }
@@ -6518,12 +6458,12 @@ int buildin_getareadropitem(struct script_state *st)
 	}else
 		item=conv_num(st,data);
 
-	if( (m=map_mapname2mapid(str))< 0){
+	m = script_mapname2mapid(st,str);
+	if(m < 0) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	map_foreachinarea(buildin_getareadropitem_sub,
-		m,x0,y0,x1,y1,BL_ITEM,item,&amount);
+	map_foreachinarea(buildin_getareadropitem_sub,m,x0,y0,x1,y1,BL_ITEM,item,&amount);
 	push_val(st->stack,C_INT,amount);
 	return 0;
 }
@@ -7305,7 +7245,8 @@ int buildin_setmapflagnosave(struct script_state *st)
 	str2=conv_str(st,& (st->stack->stack_data[st->start+3]));
 	x=conv_num(st,& (st->stack->stack_data[st->start+4]));
 	y=conv_num(st,& (st->stack->stack_data[st->start+5]));
-	m = map_mapname2mapid(str);
+
+	m = script_mapname2mapid(st,str);
 	if(m >= 0) {
 		map[m].flag.nosave=1;
 		memcpy(map[m].save.map,str2,16);
@@ -7392,8 +7333,8 @@ int buildin_setmapflag(struct script_state *st)
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	type=conv_num(st,& (st->stack->stack_data[st->start+3]));
-	m = map_mapname2mapid(str);
 
+	m = script_mapname2mapid(st,str);
 	if(m >= 0)
 		script_change_mapflag(m, type, 1);
 	return 0;
@@ -7406,8 +7347,8 @@ int buildin_removemapflag(struct script_state *st)
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	type=conv_num(st,& (st->stack->stack_data[st->start+3]));
-	m = map_mapname2mapid(str);
 
+	m = script_mapname2mapid(st,str);
 	if(m >= 0)
 		script_change_mapflag(m, type, 0);
 	return 0;
@@ -7420,7 +7361,7 @@ int buildin_pvpon(struct script_state *st)
 	struct map_session_data *pl_sd=NULL;
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	m = map_mapname2mapid(str);
+	m = script_mapname2mapid(st,str);
 	if(m >= 0 && !map[m].flag.pvp) {
 		map[m].flag.pvp = 1;
 		clif_send0199(m,1);
@@ -7446,7 +7387,7 @@ int buildin_pvpoff(struct script_state *st)
 	struct map_session_data *pl_sd=NULL;
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	m = map_mapname2mapid(str);
+	m = script_mapname2mapid(st,str);
 	if(m >= 0 && map[m].flag.pvp) {
 		map[m].flag.pvp = 0;
 		clif_send0199(m,0);
@@ -7473,7 +7414,7 @@ int buildin_gvgon(struct script_state *st)
 	char *str;
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	m = map_mapname2mapid(str);
+	m = script_mapname2mapid(st,str);
 	if(m >= 0 && !map[m].flag.gvg) {
 		map[m].flag.gvg = 1;
 		clif_send0199(m,3);
@@ -7488,7 +7429,7 @@ int buildin_gvgoff(struct script_state *st)
 	char *str;
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	m = map_mapname2mapid(str);
+	m = script_mapname2mapid(st,str);
 	if(m >= 0 && map[m].flag.gvg) {
 		map[m].flag.gvg = 0;
 		clif_send0199(m,0);
@@ -7546,8 +7487,8 @@ int buildin_maprespawnguildid(struct script_state *st)
 	char *mapname=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int g_id=conv_num(st,& (st->stack->stack_data[st->start+3]));
 	int flag=conv_num(st,& (st->stack->stack_data[st->start+4]));
+	int m = script_mapname2mapid(st,mapname);
 
-	int m = map_mapname2mapid(mapname);
 	if(m >= 0)
 		map_foreachinarea(buildin_maprespawnguildid_sub,m,0,0,map[m].xs-1,map[m].ys-1,BL_PC|BL_MOB,g_id,flag);
 	return 0;
@@ -8177,21 +8118,9 @@ int buildin_areamisceffect(struct script_state *st)
 	y1   = conv_num(st,& (st->stack->stack_data[st->start+6]));
 	type = conv_num(st,& (st->stack->stack_data[st->start+7]));
 
-	if(strcmp(str,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else
-				return 0;
-		}
-	}
-	else if( (m=map_mapname2mapid(str))< 0)
-		return 0;
-	map_foreachinarea(buildin_misceffect_sub,m,x0,y0,x1,y1,BL_PC,type);
+	m = script_mapname2mapid(st,str);
+	if(m >= 0)
+		map_foreachinarea(buildin_misceffect_sub,m,x0,y0,x1,y1,BL_PC,type);
 	return 0;
 }
 
@@ -8245,21 +8174,9 @@ int buildin_areasoundeffect(struct script_state *st)
 	name=conv_str(st,& (st->stack->stack_data[st->start+7]));
 	type=conv_num(st,& (st->stack->stack_data[st->start+8]));
 
-	if(strcmp(str,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else
-				return 0;
-		}
-	}
-	else if( (m=map_mapname2mapid(str))< 0)
-		return 0;
-	map_foreachinarea(buildin_soundeffect_sub,m,x0,y0,x1,y1,BL_PC,name,type);
+	m = script_mapname2mapid(st,str);
+	if(m >= 0)
+		map_foreachinarea(buildin_soundeffect_sub,m,x0,y0,x1,y1,BL_PC,name,type);
 	return 0;
 }
 
@@ -8572,23 +8489,8 @@ int buildin_getmapmobs(struct script_state *st)
 	int m,count=0;
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	if(strcmp(str,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else {
-				push_val(st->stack,C_INT,-1);
-				return 0;
-			}
-		}
-	}else
-		m=map_mapname2mapid(str);
-
-	if(m < 0){
+	m = script_mapname2mapid(st,str);
+	if(m < 0) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
@@ -8607,23 +8509,8 @@ int buildin_getareamobs(struct script_state *st)
 	x1=conv_num(st,& (st->stack->stack_data[st->start+5]));
 	y1=conv_num(st,& (st->stack->stack_data[st->start+6]));
 
-	if(strcmp(str,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else {
-				push_val(st->stack,C_INT,-1);
-				return 0;
-			}
-		}
-	}else
-		m=map_mapname2mapid(str);
-
-	if(m < 0){
+	m = script_mapname2mapid(st,str);
+	if(m < 0) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
@@ -9132,23 +9019,8 @@ int buildin_getpkflag(struct script_state *st)
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	if(strcmp(str,"this")==0){
-		struct npc_data *nd = map_id2nd(st->oid);
-		if(nd)
-			m=nd->bl.m;
-		else {
-			struct map_session_data *sd=script_rid2sd(st);
-			if(sd)
-				m=sd->bl.m;
-			else {
-				push_val(st->stack,C_INT,-1);
-				return 0;
-			}
-		}
-	}else
-		m=map_mapname2mapid(str);
-
-	if(m < 0){
+	m = script_mapname2mapid(st,str);
+	if(m < 0) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}

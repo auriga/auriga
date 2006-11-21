@@ -555,8 +555,12 @@ void map_foreachinarea_sub(int (*func)(struct block_list*,va_list),int m,int x0,
 void map_foreachinarea(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,...)
 {
 	va_list ap;
+
 	va_start(ap,type);
-	map_foreachinarea_sub(func, m, x0, y0, x1, y1, type, ap);
+	if (m < 0)
+		printf("map_foreachinarea: invalid map index!! func = 0x%08x\n",(int)func);
+	else
+		map_foreachinarea_sub(func, m, x0, y0, x1, y1, type, ap);
 	va_end(ap);
 }
 

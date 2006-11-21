@@ -265,7 +265,7 @@ int battle_attr_fix(int damage,int atk_elem,int def_elem)
 		return damage;
 	}
 
-	return damage*attr_fix_table[def_lv-1][atk_elem][def_type]/100;
+	return ((damage > 0)? damage*attr_fix_table[def_lv-1][atk_elem][def_type]/100: 0);
 }
 
 /*==========================================
@@ -280,6 +280,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 	struct status_change *sc_data,*sc;
 	short *sc_count;
 	int class;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, src);
 	nullpo_retr(0, bl);
@@ -293,7 +294,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 	class = status_get_class(bl);
 
 	//スキルダメージ補正
-	if(skill_num>0){
+	if(damage > 0 && skill_num > 0){
 		int damage_rate=100;
 		if(map[bl->m].flag.normal)
 			damage_rate = skill_get_damage_rate(skill_num,0);
@@ -303,10 +304,10 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 			damage_rate = skill_get_damage_rate(skill_num,1);
 		else if(map[bl->m].flag.pk)
 			damage_rate = skill_get_damage_rate(skill_num,3);
-		if(damage>0 && damage_rate!=100)
+		if(damage_rate!=100)
 			damage = damage*damage_rate/100;
 	}
-	if(sc_count!=NULL && *sc_count>0){
+	if(sc_count!=NULL && *sc_count>0 && sc_data){
 		if(sc_data[SC_ASSUMPTIO].timer != -1 && damage > 0 && skill_num!=PA_PRESSURE && skill_num!=HW_GRAVITATION) { //アスムプティオ
 			if(map[bl->m].flag.pvp || map[bl->m].flag.gvg)
 				damage=damage*2/3;
@@ -318,7 +319,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 		if(sc_data[SC_INCDAMAGE].timer != -1 && damage > 0 && skill_num!=PA_PRESSURE && skill_num!=HW_GRAVITATION)
 			damage += damage * sc_data[SC_INCDAMAGE].val1/100;
 
-		if (sc_data[SC_BASILICA].timer!=-1 && !(status_get_mode(src)&0x20) && damage > 0)
+		if (sc_data[SC_BASILICA].timer!=-1 && damage > 0 && !(status_get_mode(src)&0x20))
 			damage = 0;
 
 		if (sc_data[SC_FOGWALL].timer!=-1 && damage>0 && flag&BF_WEAPON && flag&BF_LONG)
@@ -418,14 +419,14 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 				else
 					delay = 100;
 				if(tsd){
-					tsd->ud.canmove_tick = gettick() + delay;
+					tsd->ud.canmove_tick = tick + delay;
 					if(sc_data[SC_SHRINK].timer != -1 && atn_rand()%100<5*sc_data[SC_AUTOGUARD].val1)
 					{
 						skill_blown(bl,src,2);
 					}
 
 				}else if(tmd)
-					tmd->ud.canmove_tick = gettick() + delay;
+					tmd->ud.canmove_tick = tick + delay;
 			}
 		}
 		/* パリイング */
@@ -437,7 +438,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 				clif_skill_nodamage(bl,bl,LK_PARRYING,sc_data[SC_PARRYING].val1,1);
 				clif_changedir(bl,dir,dir);
 				if(ud)
-					ud->attackabletime = gettick() + 500;	// 値適当
+					ud->attackabletime = tick + 500;	// 値適当
 			}
 		}
 		// リジェクトソード
@@ -462,31 +463,42 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 		}
 	}
 
-	if(damage > 0) { //GvG PK
-		struct guild_castle *gc=guild_mapname2gc(map[bl->m].name);
-		struct guild *g;
+	if(damage > 0) { // GvG PK
+		struct guild_castle *gc = NULL;
+		int noflag = 0;
 
 		if(class == 1288) {	// 1288:エンペリウム
-			if(flag&BF_SKILL && skill_num!=PA_PRESSURE && skill_num!=HW_GRAVITATION)//プレッシャー
+			if(flag&BF_SKILL && skill_num!=PA_PRESSURE && skill_num!=HW_GRAVITATION)	// プレッシャー
 				return 0;
 			if(src->type == BL_PC) {
-				g=guild_search(((struct map_session_data *)src)->status.guild_id);
+				struct guild *g = guild_search(((struct map_session_data *)src)->status.guild_id);
 
 				if(g == NULL)
-					return 0;//ギルド未加入ならダメージ無し
-				else if((gc != NULL) && g->guild_id == gc->guild_id)
-					return 0;//自占領ギルドのエンペならダメージ無し
-				else if(guild_checkskill(g,GD_APPROVAL) <= 0)
-					return 0;//正規ギルド承認がないとダメージ無し
-				else if (g && gc && guild_check_alliance(gc->guild_id, g->guild_id, 0) == 1)
-					return 0;	// 同盟ならダメージ無し
-			}
-			else
+					return 0;		// ギルド未加入ならダメージ無し
+				if(guild_checkskill(g,GD_APPROVAL) <= 0)
+					return 0;		// 正規ギルド承認がないとダメージ無し
+				if((gc = guild_mapname2gc(map[bl->m].name)) != NULL) {
+					if(g->guild_id == gc->guild_id)
+						return 0;	// 自占領ギルドのエンペならダメージ無し
+					if(guild_check_alliance(gc->guild_id, g->guild_id, 0))
+						return 0;	// 同盟ならダメージ無し
+				} else {
+					noflag = 1;
+				}
+			} else {
 				return 0;
+			}
 		}
+
+		// GvG
 		if(map[bl->m].flag.gvg && skill_num!=PA_PRESSURE && skill_num!=HW_GRAVITATION){
-			if(gc && bl->type == BL_MOB){	//defenseがあればダメージが減るらしい？
-				damage -= damage*(gc->defense/100)*(battle_config.castle_defense_rate/100);
+			if(bl->type == BL_MOB) {
+				if(gc == NULL && !noflag)	// エンペリウムの項で既に検索してNULLなら再度検索しない
+					gc = guild_mapname2gc(map[bl->m].name);
+				if(gc) {
+					// defenseがあればダメージが減るらしい？
+					damage -= damage*(gc->defense/100)*(battle_config.castle_defense_rate/100);
+				}
 			}
 			if(flag&BF_WEAPON) {
 				if(flag&BF_SHORT)
@@ -500,8 +512,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 				damage=damage*battle_config.gvg_misc_damage_rate/100;
 			if(damage < 1) damage = (!battle_config.skill_min_damage && flag&BF_MAGIC && src->type==BL_PC)? 0: 1;
 		}
-
-		//PK
+		// PK
 		if(map[bl->m].flag.pk && bl->type == BL_PC && skill_num!=PA_PRESSURE && skill_num!=HW_GRAVITATION){
 			if(flag&BF_WEAPON) {
 				if(flag&BF_SHORT)
@@ -541,7 +552,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 	}
 
 	//PCの反撃オートスペル
-	if(tsd && tsd->bl.type == BL_PC && src && src!=bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0)
+	if(tsd && src!=bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0)
 	{
 		long asflag = EAS_REVENGE;
 
@@ -574,11 +585,11 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 				asflag += EAS_MISC;
 		}
 
-		skill_bonus_autospell(&tsd->bl,src,asflag,gettick(),0);
+		skill_bonus_autospell(&tsd->bl,src,asflag,tick,0);
 	}
 
 	//PCの反撃
-	if(tsd && tsd->bl.type == BL_PC && src && src!=bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0 && flag&BF_WEAPON)
+	if(tsd && src!=bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0 && flag&BF_WEAPON)
 	{
 		//反撃状態異常
 		if(tsd->addreveff_flag){
