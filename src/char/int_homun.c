@@ -86,7 +86,7 @@ int homun_tostr(char *str,struct mmo_homunstatus *h)
 int homun_fromstr(char *str,struct mmo_homunstatus *h)
 {
 	int i,s,next,set,len;
-	int tmp_int[22];
+	int tmp_int[23];
 	char tmp_str[256];
 
 	if(!h) return 0;

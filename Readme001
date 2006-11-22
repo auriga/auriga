@@ -1,4 +1,19 @@
 ----------------------------------------
+//006 [2006/11/23] by Rayce
+
+・005でatcommand_athena.confの変更を忘れてたので同根
+・スタック破壊を修正（int_homun.c）
+	merged from Athena-2262, thanks to T.Nさん
+
+・スクリプト命令/関数のバグ修正（script.c）
+	-> 以下のスクリプト関数のおいて、スタックに返り値がプッシュされずサーバクラッシュを引き起こすため修正
+	　 またこのようなクラッシュを応急処置的に防止するために run_func() を少し修正
+	　 　getarraysize, getequipid, getnpctimer, sc_ison, getguildcastle, getrepairableitemcount,
+	　 　countitem, countcartitem, checkoption
+	-> menu/selectでキャラクターがアタッチされてないときはキャンセル扱いにして終了させる
+	-> sc_ison関数で状態異常のtypeが不正な値かどうかをチェックするよう強化
+
+----------------------------------------
 //005 [2006/11/22] by Rayce
 
 ・battle_skill_attack() で「何もしない」判定されたときは矢を消費しないようにしてみる

@@ -2525,7 +2525,7 @@ int run_func(struct script_state *st)
 	}
 #endif
 	for(i=end_sp-1;i>=0 && st->stack->stack_data[i].type!=C_ARG;i--);
-	if(i==0){
+	if(i<=0){
 		if(battle_config.error_log)
 			printf("function not found\n");
 //		st->stack->sp=0;
@@ -3974,7 +3974,10 @@ int buildin_menu(struct script_state *st)
 	int len,i;
 	struct map_session_data *sd = script_rid2sd(st);
 
-	nullpo_retr(0, sd);
+	if(sd == NULL) {	// キャンセル扱いにする
+		st->state = END;
+		return 0;
+	}
 
 	if(sd->state.menu_or_input==0){
 		st->state=RERUNLINE;
@@ -4412,6 +4415,7 @@ int buildin_getarraysize(struct script_state *st)
 
 	if( prefix!='$' && prefix!='@' && prefix!='\''){
 		printf("buildin_getarraysize: illegal scope !\n");
+		push_val(st->stack,C_INT,0);
 		return 0;
 	}
 
@@ -4630,11 +4634,9 @@ int buildin_viewpoint(struct script_state *st)
  */
 int buildin_countitem(struct script_state *st)
 {
-	int nameid,count,i;
+	int nameid,count=0,i;
 	struct map_session_data *sd = script_rid2sd(st);
 	struct script_data *data;
-
-	nullpo_retr(0, sd);
 
 	data=&(st->stack->stack_data[st->start+2]);
 	get_val(st,data);
@@ -4647,11 +4649,12 @@ int buildin_countitem(struct script_state *st)
 	}else
 		nameid=conv_num(st,data);
 
-	for(i=0,count=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid==nameid)
-			count+=sd->status.inventory[i].amount;
+	if(sd) {
+		for(i=0;i<MAX_INVENTORY;i++) {
+			if(sd->status.inventory[i].nameid==nameid)
+				count+=sd->status.inventory[i].amount;
+		}
 	}
-
 	push_val(st->stack,C_INT,count);
 
 	return 0;
@@ -4662,11 +4665,9 @@ int buildin_countitem(struct script_state *st)
  */
 int buildin_countcartitem(struct script_state *st)
 {
-	int nameid,count,i;
+	int nameid,count=0,i;
 	struct map_session_data *sd = script_rid2sd(st);
 	struct script_data *data;
-
-	nullpo_retr(0, sd);
 
 	data=&(st->stack->stack_data[st->start+2]);
 	get_val(st,data);
@@ -4679,10 +4680,12 @@ int buildin_countcartitem(struct script_state *st)
 	}else
 		nameid=conv_num(st,data);
 
-	for(i=0,count=0;i<MAX_CART;i++)
-		if(sd->status.cart[i].nameid == nameid && sd->status.cart[i].amount)
-			count+=sd->status.cart[i].amount;
-
+	if(sd) {
+		for(i=0;i<MAX_CART;i++) {
+			if(sd->status.cart[i].nameid == nameid && sd->status.cart[i].amount)
+				count+=sd->status.cart[i].amount;
+		}
+	}
 	push_val(st->stack,C_INT,count);
 
 	return 0;
@@ -4698,8 +4701,6 @@ int buildin_checkweight(struct script_state *st)
 	struct map_session_data *sd = script_rid2sd(st);
 	struct script_data *data;
 
-	nullpo_retr(0, sd);
-
 	data=&(st->stack->stack_data[st->start+2]);
 	get_val(st,data);
 	if( isstr(data) ){
@@ -4713,7 +4714,7 @@ int buildin_checkweight(struct script_state *st)
 
 	amount=conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	if(amount > MAX_AMOUNT || itemdb_weight(nameid)*amount + sd->weight > sd->max_weight || pc_search_inventory(sd,0) < 0){
+	if(!sd || amount > MAX_AMOUNT || itemdb_weight(nameid)*amount + sd->weight > sd->max_weight || pc_search_inventory(sd,0) < 0){
 		push_val(st->stack,C_INT,0);
 	} else {
 		push_val(st->stack,C_INT,1);
@@ -5239,6 +5240,7 @@ int buildin_getequipid(struct script_state *st)
 	if(sd == NULL)
 	{
 		printf("getequipid: sd == NULL\n");
+		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
@@ -5661,11 +5663,9 @@ int buildin_checkoption(struct script_state *st)
 	int type;
 	struct map_session_data *sd = script_rid2sd(st);
 
-	nullpo_retr(0, sd);
-
 	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	if(sd->status.option & type){
+	if(sd && sd->status.option & type){
 		push_val(st->stack,C_INT,1);
 	} else {
 		push_val(st->stack,C_INT,0);
@@ -6210,12 +6210,12 @@ int buildin_getnpctimer(struct script_state *st)
 	else
 		nd = map_id2nd(st->oid);
 
-	nullpo_retr(0, nd);
-
-	switch(type){
-		case 0: val = npc_gettimerevent_tick(nd); break;
-		case 1: val = (nd->u.scr.nexttimer >= 0); break;
-		case 2: val = nd->u.scr.timeramount; break;
+	if(nd) {
+		switch(type){
+			case 0: val = npc_gettimerevent_tick(nd); break;
+			case 1: val = (nd->u.scr.nexttimer >= 0); break;
+			case 2: val = nd->u.scr.timeramount; break;
+		}
 	}
 	push_val(st->stack,C_INT,val);
 	return 0;
@@ -6363,7 +6363,7 @@ int buildin_getusersname(struct script_state *st)
 
 	nullpo_retr(0, sd);
 
-	for (i=0;i<fd_max;i++)
+	for (i=0;i<fd_max;i++) {
 		if(session[i] && (pl_sd=session[i]->session_data) && pl_sd->state.auth){
 			if( !(battle_config.hide_GM_session && pc_isGM(pl_sd)) ){
 				if((disp_num++)%10==0)
@@ -6371,6 +6371,7 @@ int buildin_getusersname(struct script_state *st)
 				clif_scriptmes(sd,st->oid,pl_sd->status.name);
 			}
 		}
+	}
 	return 0;
 }
 /*==========================================
@@ -6706,10 +6707,15 @@ int buildin_sc_end(struct script_state *st)
 int buildin_sc_ison(struct script_state *st)
 {
 	struct block_list *bl = map_id2bl(st->rid);
-	struct status_change *sc_data;
 	int type;
 
-	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	if(type < 0 || type >= MAX_STATUSCHANGE) {
+		printf("buildin_sc_ison: invaild type %d\n", type);
+		push_val(st->stack,C_INT,0);
+		return 0;
+	}
 
 	if(bl && bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)bl;
@@ -6717,12 +6723,13 @@ int buildin_sc_ison(struct script_state *st)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
 	if(bl) {
-		sc_data = status_get_sc_data(bl);
-		if(sc_data && sc_data[type].timer != -1)
+		struct status_change *sc_data = status_get_sc_data(bl);
+		if(sc_data && sc_data[type].timer != -1) {
 			push_val(st->stack,C_INT,1);
-	} else {
-		push_val(st->stack,C_INT,0);
+			return 0;
+		}
 	}
+	push_val(st->stack,C_INT,0);
 	return 0;
 }
 
@@ -7577,7 +7584,11 @@ int buildin_getcastledata(struct script_state *st)
 		if( (gc=guild_castle_search(i)) != NULL ){
 			if(strcmp(mapname,gc->map_name)==0){
 				switch(index){
-				case 0: for(j=1;j<18;j++) guild_castledataload(gc->castle_id,j); break;  // Initialize[AgitInit]
+				case 0:	// Initialize[AgitInit]
+					for(j=1;j<18;j++)
+						guild_castledataload(gc->castle_id,j);
+					push_val(st->stack,C_INT,0);
+					break;
 				case 1: push_val(st->stack,C_INT,gc->guild_id); break;
 				case 2: push_val(st->stack,C_INT,gc->economy); break;
 				case 3: push_val(st->stack,C_INT,gc->defense); break;
@@ -8031,8 +8042,8 @@ int buildin_getrepairableitemcount(struct script_state *st)
 				c++;
 			}
 		}
-		push_val(st->stack,C_INT,c);
 	}
+	push_val(st->stack,C_INT,c);
 	return 0;
 }
 int buildin_repairitem(struct script_state *st)
@@ -8428,7 +8439,10 @@ int buildin_select(struct script_state *st)
 	int len,i;
 	struct map_session_data *sd = script_rid2sd(st);
 
-	nullpo_retr(0, sd);
+	if(sd == NULL) {	// キャンセル扱いにする
+		st->state = END;
+		return 0;
+	}
 
 	if(sd->state.menu_or_input==0){
 		st->state=RERUNLINE;
