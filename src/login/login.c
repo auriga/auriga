@@ -1643,7 +1643,7 @@ int parse_login(int fd)
 
 	while(RFIFOREST(fd)>=2){
 		if(RFIFOW(fd,0)<30000) {
-			if(RFIFOW(fd,0) == 0x64 || RFIFOW(fd,0) == 0x01dd || RFIFOW(fd,0) == 0x027c)
+			if(RFIFOW(fd,0) == 0x64 || RFIFOW(fd,0) == 0x01dd || RFIFOW(fd,0) == 0x027c || RFIFOW(fd,0) == 0x0277)
 				printf("parse_login : %d %3d 0x%04x %-24s\n",fd,RFIFOREST(fd),RFIFOW(fd,0),(char*)RFIFOP(fd,6));
 			else
 				printf("parse_login : %d %3d 0x%04x\n",fd,RFIFOREST(fd),RFIFOW(fd,0));
@@ -1675,15 +1675,17 @@ int parse_login(int fd)
 			RFIFOSKIP(fd,18);
 			break;
 
-		case 0x64:		// クライアントログイン要求
+		case 0x64:	// クライアントログイン要求
 		case 0x01dd:	// 暗号化ログイン要求
 		case 0x027c:	// 暗号化ログイン要求
+		case 0x0277:	// New Login Packet?
 		{
 			int length = 55; // default: 0x64
 			switch(RFIFOW(fd,0)) {
 			//case 0x64: length = 55; break;
 			case 0x01dd: length = 47; break;
 			case 0x027c: length = 60; break;
+			case 0x0277: length = 84; break;
 			}
 			if(RFIFOREST(fd)< length)
 				return 0;
@@ -1701,7 +1703,7 @@ int parse_login(int fd)
 				result = 0x03;
 			if(strlen(RFIFOP(fd,6)) < 4)	//IDが4字未満を拒否
 				result = 0x03;
-			if( RFIFOW(fd,0) == 0x64 && strlen(RFIFOP(fd,30)) < 4 ) // 0x01ddのPASSはmd5符号なので、\0 が含まれる可能性有り
+			if( RFIFOW(fd,0) == 0x64 && strlen(RFIFOP(fd,30)) < 4 ) // 0x64以外のPASSはmd5符号なので、\0 が含まれる可能性有り
 				result = 0x03;
 
 			memcpy(sd->userid,RFIFOP(fd, 6),24);
