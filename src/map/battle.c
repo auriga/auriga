@@ -1031,7 +1031,6 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	int tk_power_damage=0, tk_power_damage2=0;	//TK_POWER用
 	int cardfix, skill;
 	int i;
-	int cri = 0;
 	struct {
 		int rh;			// 右手
 		int lh;			// 左手
@@ -1081,28 +1080,10 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	t_def1    = status_get_def(target);
 	t_def2    = status_get_def2(target);
 
-	calc_flag.hitrate = status_get_hit(src) - t_flee + 80;	//命中率計算
-
-	// 属性無し(!=無属性)
-	if ((src_sd && battle_config.pc_attack_attr_none) ||
-		(src_md && battle_config.mob_attack_attr_none) ||
-		(src_pd && battle_config.pet_attack_attr_none) ||
-		 src_hd)
-	{
-		if (s_ele == 0) { s_ele = -1; }
-		if (s_ele_ == 0) { s_ele_ = -1; }
-	}
-
-	//霧のHIT補正
-	if(t_sc_data && t_sc_data[SC_FOGWALL].timer!=-1 && skill_num==0)
-	{
-		calc_flag.hitrate -= 50;
-	}
-
 	if(src_sd && skill_num != CR_GRANDCROSS && skill_num != NPC_DARKGRANDCROSS) //グランドクロスでないなら
 		src_sd->state.attack_type = BF_WEAPON; //攻撃タイプは武器攻撃
 
-	//オートカウンター処理ここから
+	/* オートカウンター処理 */
 	if(skill_lv >= 0 && (skill_num == 0 || (target_sd && battle_config.pc_auto_counter_type&2) ||
 		(target_md && battle_config.monster_auto_counter_type&2))
 	) {
@@ -1134,7 +1115,24 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			else calc_flag.autocounter = 1;
 		}
 	}
-	//オートカウンター処理ここまで
+
+	/* 初期化補正 */
+	// 属性無し(!=無属性)
+	if ((src_sd && battle_config.pc_attack_attr_none) ||
+	    (src_md && battle_config.mob_attack_attr_none) ||
+	    (src_pd && battle_config.pet_attack_attr_none) ||
+	     src_hd)
+	{
+		if (s_ele == 0)
+			s_ele  = -1;
+		if (s_ele_ == 0)
+			s_ele_ = -1;
+	}
+
+	calc_flag.hitrate = status_get_hit(src) - t_flee + 80;	//命中率計算
+	//霧のHIT補正
+	if(skill_num == 0 && t_sc_data && t_sc_data[SC_FOGWALL].timer!=-1)
+		calc_flag.hitrate -= 50;
 
 	/* wd構造体の初期設定 */
 	wd.type      = 0;	// normal
@@ -1145,10 +1143,6 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	if(wd.div_ <= 0 || wd.div_ >= 251)			// 251〜254 = テコン蹴り、255 = 三段掌として予約済
 		wd.div_ = 1;
 
-	if(src_md || src_pd) {
-		if(status_get_range(src) > 3)
-			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
-	}
 	if(src_sd) {
 		if(src_sd->status.weapon == WT_BOW || (src_sd->status.weapon >= WT_HANDGUN && src_sd->status.weapon <= WT_GRENADE)) {	//武器が弓矢の場合
 			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// 遠距離攻撃フラグを有効
@@ -1158,59 +1152,91 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		} else {
 			src_sd->state.arrow_atk = 0;	// 初期化
 		}
-
-		//ダブルアタック判定
-		if(skill_num == 0 && skill_lv >= 0 && (skill = pc_checkskill(src_sd,TF_DOUBLE)) > 0 && src_sd->weapontype1 == WT_DAGGER && atn_rand()%100 < (skill*5)) {
-			calc_flag.da = 1;
-			calc_flag.hitrate = calc_flag.hitrate*(100+skill)/100;
-		}
-		//チェインアクション
-		if(skill_num == 0 && skill_lv >= 0 && calc_flag.da == 0 && (skill = pc_checkskill(src_sd,GS_CHAINACTION)) > 0 && src_sd->weapontype1 == WT_HANDGUN)
-			calc_flag.da = (atn_rand()%100 < (skill*5)) ? 1:0;
-		//三段掌
-		if( skill_num == 0 && skill_lv >= 0 && calc_flag.da == 0 && (skill = pc_checkskill(src_sd,MO_TRIPLEATTACK)) > 0 && src_sd->status.weapon <= WT_HUUMA && !src_sd->state.arrow_atk)
-		{
-			if(sc_data && sc_data[SC_TRIPLEATTACK_RATE_UP].timer!=-1)
-			{
-				int triple_rate = (30 - skill)*(150+50*sc_data[SC_TRIPLEATTACK_RATE_UP].val1)/100;
-				calc_flag.da = (atn_rand()%100 < triple_rate) ? 2:0;
-				status_change_end(src,SC_TRIPLEATTACK_RATE_UP,-1);
-			}else
-				calc_flag.da = (atn_rand()%100 < (30 - skill)) ? 2:0;
-		}
-
-		if(skill_num == 0 && skill_lv >= 0 && calc_flag.da == 0 && sc_data && sc_data[SC_READYCOUNTER].timer!=-1 && pc_checkskill(src_sd,TK_COUNTER) > 0)
-		{
-			if(sc_data[SC_COUNTER_RATE_UP].timer!=-1 && (skill = pc_checkskill(src_sd,SG_FRIEND)) > 0)
-			{
-				calc_flag.da = (atn_rand()%100 <  30+10*skill) ? 6:0;
-				status_change_end(src,SC_COUNTER_RATE_UP,-1);
-			}else
-				calc_flag.da = (atn_rand()%100 < 20) ? 6:0;
-		}
-		//旋風
-		if(skill_num == 0 && skill_lv >= 0 && calc_flag.da == 0 && sc_data && sc_data[SC_READYSTORM].timer!=-1 && pc_checkskill(src_sd,TK_STORMKICK) > 0 && atn_rand()%100 < 15) {
-			calc_flag.da = 3;
-		}else if(skill_num == 0 && skill_lv >= 0 && calc_flag.da == 0 && sc_data && sc_data[SC_READYDOWN].timer!=-1 && pc_checkskill(src_sd,TK_DOWNKICK) > 0 && atn_rand()%100 < 15) {
-			calc_flag.da = 4;
-		}else if(skill_num == 0 && skill_lv >= 0 && calc_flag.da == 0 && sc_data && sc_data[SC_READYTURN].timer!=-1 &&  pc_checkskill(src_sd,TK_TURNKICK) > 0 && atn_rand()%100 < 15) {
-			calc_flag.da = 5;
-		}
-
-		//サイドワインダー等
-		if(src_sd->double_rate > 0 && calc_flag.da == 0 && skill_num == 0 && skill_lv >= 0)
-		{
-			calc_flag.da = (atn_rand()%100 < src_sd->double_rate) ? 1:0;
-		}
+	} else if(src_md || src_pd) {
+		if(status_get_range(src) > 3)
+			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
 	}
 
-	if(calc_flag.da == 0){ //ダブルアタックが発動していない
-		// クリティカル計算
-		cri = status_get_critical(src);
-		if(src_sd) cri += src_sd->critical_race[t_race];
+	/* 連撃判定 */
+	if(src_sd && skill_num == 0 && skill_lv >= 0) {
+		do {
+			// ダブルアタック
+			if((skill = pc_checkskill(src_sd,TF_DOUBLE)) > 0 && src_sd->weapontype1 == WT_DAGGER && atn_rand()%100 < skill*5) {
+				calc_flag.da = 1;
+				calc_flag.hitrate = calc_flag.hitrate*(100+skill)/100;
+				break;
+			}
+			// チェインアクション
+			if((skill = pc_checkskill(src_sd,GS_CHAINACTION)) > 0 && src_sd->weapontype1 == WT_HANDGUN && atn_rand()%100 < skill*5) {
+				calc_flag.da = 1;
+				break;
+			}
+			// 三段掌
+			if((skill = pc_checkskill(src_sd,MO_TRIPLEATTACK)) > 0 && src_sd->status.weapon <= WT_HUUMA && !src_sd->state.arrow_atk)
+			{
+				int triple_rate = 0;
+				if(sc_data && sc_data[SC_TRIPLEATTACK_RATE_UP].timer!=-1) {
+					triple_rate = (30 - skill)*(150+50*sc_data[SC_TRIPLEATTACK_RATE_UP].val1)/100;
+					status_change_end(src,SC_TRIPLEATTACK_RATE_UP,-1);
+				} else {
+					triple_rate = 30 - skill;
+				}
+				if(atn_rand()%100 < triple_rate) {
+					calc_flag.da = 2;
+					break;
+				}
+			}
+			// フェオリチャギ
+			if(sc_data && sc_data[SC_READYSTORM].timer!=-1 && pc_checkskill(src_sd,TK_STORMKICK) > 0 && atn_rand()%100 < 15) {
+				calc_flag.da = 3;
+				break;
+			}
+			// ネリョチャギ
+			if(sc_data && sc_data[SC_READYDOWN].timer!=-1 && pc_checkskill(src_sd,TK_DOWNKICK) > 0 && atn_rand()%100 < 15) {
+				calc_flag.da = 4;
+				break;
+			}
+			// トルリョチャギ
+			if(sc_data && sc_data[SC_READYTURN].timer!=-1 &&  pc_checkskill(src_sd,TK_TURNKICK) > 0 && atn_rand()%100 < 15) {
+				calc_flag.da = 5;
+				break;
+			}
+			// アプチャオルリギ
+			if(sc_data && sc_data[SC_READYCOUNTER].timer!=-1 && pc_checkskill(src_sd,TK_COUNTER) > 0)
+			{
+				int counter_rate = 0;
+				if(sc_data[SC_COUNTER_RATE_UP].timer!=-1 && (skill = pc_checkskill(src_sd,SG_FRIEND)) > 0) {
+					counter_rate = 30+10*skill;
+					status_change_end(src,SC_COUNTER_RATE_UP,-1);
+				} else {
+					counter_rate = 20;
+				}
+				if(atn_rand()%100 < counter_rate) {
+					calc_flag.da = 6;
+					break;
+				}
+			}
+			//サイドワインダー等
+			if(src_sd->double_rate > 0 && atn_rand()%100 < src_sd->double_rate) {
+				calc_flag.da = 1;
+				break;
+			}
+		} while(0);
+	}
 
-		if(src_sd && src_sd->state.arrow_atk) cri += src_sd->arrow_cri;
-		if(src_sd && src_sd->status.weapon == WT_KATAR) cri <<=1; // カタールの場合、クリティカルを倍に
+	/* クリティカル計算 */
+	if( calc_flag.da == 0 && (skill_num == 0 || skill_num == KN_AUTOCOUNTER || skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE) &&
+	    (!src_md || battle_config.enemy_critical) && skill_lv >= 0 )
+	{
+		// 連撃が発動してなくて、通常攻撃・オートカウンター・シャープシューティング・影斬りならば
+		int cri = status_get_critical(src);
+		if(src_sd) {
+			cri += src_sd->critical_race[t_race];
+			if(src_sd->state.arrow_atk)
+				cri += src_sd->arrow_cri;
+			if(src_sd->status.weapon == WT_KATAR)
+				cri <<= 1;	// カタールの場合、クリティカルを倍に
+		}
 		cri -= status_get_luk(target) * 3;
 		if(src_md && battle_config.enemy_critical_rate != 100) {
 			cri = cri*battle_config.enemy_critical_rate/100;
@@ -1231,26 +1257,29 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			cri += 200;
 		if(skill_num == NJ_KIRIKAGE)
 			cri += (250+skill_lv*50);
-	}
 
-	if(target_sd && target_sd->critical_def) {
-		if(target_sd->critical_def > 100)
-			cri = 0;
-		else
-			cri = cri * (100-target_sd->critical_def) / 100;
-	}
+		if(target_sd && target_sd->critical_def) {
+			if(target_sd->critical_def > 100)
+				cri = 0;
+			else
+				cri = cri * (100-target_sd->critical_def) / 100;
+		}
 
-	if(calc_flag.da == 0 && (skill_num==0 || skill_num == KN_AUTOCOUNTER) &&
-		(!src_md || battle_config.enemy_critical) &&
-		skill_lv >= 0 && (atn_rand() % 1000) < cri
-	) { // 判定（スキルの場合は無視）
-		wd.type = 0x0a;		// クリティカル攻撃
+		// 確率判定
+		if(atn_rand() % 1000 < cri) {
+			if(skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE) {
+				// DEF無視フラグ
+				calc_flag.idef = calc_flag.idef_ = 1;
+			} else {
+				wd.type = 0x0a;	// クリティカル攻撃
+			}
+		}
 	}
 
 	/* 基本ダメージの計算 */
 	battle_calc_base_damage(&wd, src, target, skill_num);
 
-	if(wd.type == 0) {		// 通常攻撃かスキル攻撃のとき
+	if(wd.type == 0) {		// クリティカルでないとき
 		if(src_sd && src_sd->state.arrow_atk) {
 			if(src_sd->arrow_atk > 0)
 				wd.damage += atn_rand()%(src_sd->arrow_atk+1);
@@ -2192,7 +2221,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 				if(target->type!=BL_HOM) {
 					target_count = unit_counttargeted(target,battle_config.vit_penaly_count_lv);
 				}
-				if(battle_config.vit_penaly_type > 0 && (t_sc_data?(t_sc_data[SC_STEELBODY].timer==-1):1)) {
+				if(battle_config.vit_penaly_type > 0 && (!t_sc_data || t_sc_data[SC_STEELBODY].timer==-1)) {
 					if(target_count >= battle_config.vit_penaly_count) {
 						if(battle_config.vit_penaly_type == 1) {
 							t_def1 = (t_def1 * (100 - (target_count - (battle_config.vit_penaly_count - 1))*battle_config.vit_penaly_num))/100;
@@ -2211,13 +2240,6 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 				}
 				t_def = t_def2*8/10;
 				vitbonusmax = (t_vit/20)*(t_vit/20)-1;
-
-				// シャープシューティングはCRI+20(計算済み)でDEF無視
-				// 位置ここでいいのか…？
-				if ((skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE) && (atn_rand() % 1000) < cri)
-				{
-					calc_flag.idef = calc_flag.idef_ = 1;
-				}
 
 				//太陽と月と星の融合 DEF無視
 				if(sc_data && sc_data[SC_FUSION].timer != -1)

@@ -16,6 +16,7 @@
 #include "grfio.h"
 #include "nullpo.h"
 #include "malloc.h"
+#include "version.h"
 #include "map.h"
 #include "chrif.h"
 #include "clif.h"
@@ -2229,7 +2230,7 @@ static int map_config_read(char *cfgName)
 		} else if (strcmpi(w1, "char_ip") == 0) {
 			h = gethostbyname(w2);
 			if (h != NULL) {
-				printf("Character sever IP address : %s -> %d.%d.%d.%d\n", w2, (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
+				printf("Character server IP address : %s -> %d.%d.%d.%d\n", w2, (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
 				sprintf(w2, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
 			}
 			chrif_setip(w2);
@@ -2488,6 +2489,16 @@ void do_final(void)
  */
 int do_init(int argc,char *argv[])
 {
+	printf("Athena Map Server [%s] v%d.%d.%d mod%d\n",
+#ifdef TXT_ONLY
+		"TXT",
+#else
+		"SQL",
+#endif
+		ATHENA_MAJOR_VERSION,ATHENA_MINOR_VERSION,ATHENA_REVISION,
+		ATHENA_MOD_VERSION
+	);
+
 #ifdef _WIN32
 	srand(gettick() ^ (GetCurrentProcessId() << 8) );
 	atn_srand(gettick() ^ (GetCurrentProcessId() << 8) );
