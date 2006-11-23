@@ -855,69 +855,62 @@ int battle_addmastery(struct map_session_data *sd,struct block_list *target,int 
  * 基本武器ダメージ計算
  *------------------------------------------
  */
-static void battle_calc_base_damage(struct Damage *wd,struct block_list *src,struct block_list *target,int skill_num)
+static int battle_calc_base_damage(struct block_list *src,struct block_list *target,int skill_num,int type,int lh)
 {
-	int damage=0, damage2=0;
-	int atkmin, atkmax, atkmin2, atkmax2;
-	struct map_session_data *src_sd = NULL;
-	struct status_change *sc_data   = NULL;
+	int damage=0;
+	int atkmin, atkmax;
+	struct map_session_data *sd   = NULL;
+	struct status_change *sc_data = NULL;
 
-	nullpo_retv(wd);
-	nullpo_retv(src);
-	nullpo_retv(target);
+	nullpo_retr(0, src);
+	nullpo_retr(0, target);
 
 	sc_data = status_get_sc_data(src);
 	if(src->type == BL_PC)
-		src_sd = (struct map_session_data *)src;
+		sd = (struct map_session_data *)src;
 
-	if(src_sd) {
-		int watk  = status_get_atk(src);	//ATK
-		int watk2 = status_get_atk_(src);	//ATK左手
-		int dex = status_get_dex(src);
+	if(sd) {
+		int watk   = (lh == 0)? status_get_atk(src): status_get_atk_(src);
+		int dex    = status_get_dex(src);
 		int t_size = status_get_size(target);
+		int idx    = (lh == 0)? sd->equip_index[9]: sd->equip_index[8];
 
 		if(skill_num == HW_MAGICCRASHER) {		// マジッククラッシャーはMATKで殴る
-			damage = damage2 = status_get_matk1(src);
+			damage = status_get_matk1(src);
 		} else {
-			damage = damage2 = status_get_baseatk(src);
+			damage = status_get_baseatk(src);
 		}
-		atkmin = atkmin2 = dex;		//最低ATKはDEXで初期化？
 
-		if(src_sd->equip_index[9] >= 0 && src_sd->inventory_data[src_sd->equip_index[9]])
-			atkmin  = atkmin *(80 + src_sd->inventory_data[src_sd->equip_index[9]]->wlv*20)/100;
-		if(src_sd->equip_index[8] >= 0 && src_sd->inventory_data[src_sd->equip_index[8]])
-			atkmin2 = atkmin2*(80 + src_sd->inventory_data[src_sd->equip_index[8]]->wlv*20)/100;
-		if(src_sd->status.weapon == WT_BOW || (src_sd->status.weapon >= WT_HANDGUN && src_sd->status.weapon <= WT_GRENADE))	//武器が弓矢の場合
-			atkmin  = watk * ((atkmin < watk)? atkmin: watk)/100;								//弓用最低ATK計算
+		atkmin = dex;	// 最低ATKはDEXで初期化？
+
+		if(idx >= 0 && sd->inventory_data[idx])
+			atkmin = atkmin * (80 + sd->inventory_data[idx]->wlv*20)/100;
+		if(sd->state.arrow_atk)						// 武器が弓矢の場合
+			atkmin = watk * ((atkmin < watk)? atkmin: watk)/100;	// 弓用最低ATK計算
 
 		/* サイズ修正 */
 		if(skill_num == MO_EXTREMITYFIST) {
 			// 阿修羅
-			atkmax  = watk;
-			atkmax2 = watk2;
-		} else if(pc_isriding(src_sd) && (src_sd->status.weapon == WT_1HSPEAR || src_sd->status.weapon == WT_2HSPEAR) && t_size==1) {
+			atkmax = watk;
+		} else if(pc_isriding(sd) && (sd->status.weapon == WT_1HSPEAR || sd->status.weapon == WT_2HSPEAR) && t_size==1) {
 			// ペコ騎乗していて、槍で中型を攻撃した場合はサイズ修正を100にする
-			atkmax  = watk;
-			atkmax2 = watk2;
+			atkmax = watk;
 		} else {
-			atkmax  = (watk    * src_sd->atkmods [ t_size ]) / 100;
-			atkmin  = (atkmin  * src_sd->atkmods [ t_size ]) / 100;
-			atkmax2 = (watk2   * src_sd->atkmods_[ t_size ]) / 100;
-			atkmin2 = (atkmin2 * src_sd->atkmods_[ t_size ]) / 100;
+			int rate = (lh == 0)? sd->atkmods[t_size]: sd->atkmods_[t_size];
+			atkmax = (watk   * rate) / 100;
+			atkmin = (atkmin * rate) / 100;
 		}
 		if(sc_data && sc_data[SC_WEAPONPERFECTION].timer != -1) {
 			// ウェポンパーフェクション
-			atkmax  = watk;
-			atkmax2 = watk2;
-		} else if(src_sd->special_state.no_sizefix) {
+			atkmax = watk;
+		} else if(sd->special_state.no_sizefix) {
 			// ドレイクカード
-			atkmax  = watk;
-			atkmax2 = watk2;
+			atkmax = watk;
 		}
-		if( !(src_sd->state.arrow_atk) && atkmin > atkmax)
-			atkmin = atkmax;	//弓は最低が上回る場合あり
-		if(atkmin2 > atkmax2)
-			atkmin2 = atkmax2;
+		if(!sd->state.arrow_atk && atkmin > atkmax)
+			atkmin = atkmax;	// 弓は最低が上回る場合あり
+		if(lh && atkmin > atkmax)
+			atkmin = atkmax;
 
 		/* 太陽と月と星の怒り */
 		if(target->type == BL_PC || target->type == BL_MOB || target->type== BL_HOM)
@@ -927,31 +920,28 @@ static void battle_calc_base_damage(struct Damage *wd,struct block_list *src,str
 			int luk = status_get_luk(src);
 			int tclass = status_get_class(target);
 
-			if(sc_data && sc_data[SC_MIRACLE].timer!=-1)	//太陽と月と星の奇跡
+			if(sc_data && sc_data[SC_MIRACLE].timer!=-1)	// 太陽と月と星の奇跡
 			{
-				//全ての敵が月
-				atk_rate = (src_sd->status.base_level + dex + luk + str)/(12-3*pc_checkskill(src_sd,SG_STAR_ANGER));
+				// 全ての敵が月
+				atk_rate = (sd->status.base_level + dex + luk + str)/(12-3*pc_checkskill(sd,SG_STAR_ANGER));
 			}else{
-				if(tclass == src_sd->hate_mob[0] && pc_checkskill(src_sd,SG_SUN_ANGER)>0)	//太陽の怒り
-					atk_rate = (src_sd->status.base_level + dex + luk)/(12-3*pc_checkskill(src_sd,SG_SUN_ANGER));
-				else if(tclass == src_sd->hate_mob[1] && pc_checkskill(src_sd,SG_MOON_ANGER)>0)	//月の怒り
-					atk_rate = (src_sd->status.base_level + dex + luk)/(12-3*pc_checkskill(src_sd,SG_MOON_ANGER));
-				else if(tclass == src_sd->hate_mob[2] && pc_checkskill(src_sd,SG_STAR_ANGER)>0)	//星の怒り
-					atk_rate = (src_sd->status.base_level + dex + luk + str)/(12-3*pc_checkskill(src_sd,SG_STAR_ANGER));
+				if(tclass == sd->hate_mob[0] && pc_checkskill(sd,SG_SUN_ANGER)>0)	//太陽の怒り
+					atk_rate = (sd->status.base_level + dex + luk)/(12-3*pc_checkskill(sd,SG_SUN_ANGER));
+				else if(tclass == sd->hate_mob[1] && pc_checkskill(sd,SG_MOON_ANGER)>0)	//月の怒り
+					atk_rate = (sd->status.base_level + dex + luk)/(12-3*pc_checkskill(sd,SG_MOON_ANGER));
+				else if(tclass == sd->hate_mob[2] && pc_checkskill(sd,SG_STAR_ANGER)>0)	//星の怒り
+					atk_rate = (sd->status.base_level + dex + luk + str)/(12-3*pc_checkskill(sd,SG_STAR_ANGER));
 			}
-			if(atk_rate > 0)
-			{
-				atkmin  += atkmin  * atk_rate / 100;
-				atkmax  += atkmax  * atk_rate / 100;
-				atkmin2 += atkmin2 * atk_rate / 100;
-				atkmax2 += atkmax2 * atk_rate / 100;
+			if(atk_rate > 0) {
+				atkmin += atkmin * atk_rate / 100;
+				atkmax += atkmax * atk_rate / 100;
 			}
 		}
 		/* 過剰精錬ボーナス */
-		if(src_sd->overrefine>0 )
-			damage  += (atn_rand() % src_sd->overrefine ) + 1;
-		if(src_sd->overrefine_>0 )
-			damage2 += (atn_rand() % src_sd->overrefine_) + 1;
+		if(!lh && sd->overrefine > 0)
+			damage += (atn_rand() % sd->overrefine ) + 1;
+		if(lh && sd->overrefine_ > 0)
+			damage += (atn_rand() % sd->overrefine_) + 1;
 	} else {
 		if(battle_config.enemy_str)
 			damage = status_get_baseatk(src);
@@ -966,50 +956,36 @@ static void battle_calc_base_damage(struct Damage *wd,struct block_list *src,str
 		}
 		if(atkmin > atkmax)
 			atkmin = atkmax;
-		atkmin2 = atkmax2 = damage2 = 0;
 	}
 
 	if(sc_data && sc_data[SC_MAXIMIZEPOWER].timer!=-1 ){
 		// マキシマイズパワー
-		atkmin  = atkmax;
-		atkmin2 = atkmax2;
+		atkmin = atkmax;
 	}
 
-	if(wd->type == 0x0a) {
+	if(type == 0x0a) {
 		/* クリティカル攻撃 */
-		damage  += atkmax;
-		damage2 += atkmax2;
-		if(src_sd && (src_sd->atk_rate != 100 || src_sd->weapon_atk_rate != 0)) {
-			damage  = (damage  * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->status.weapon]))/100;
-			damage2 = (damage2 * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->status.weapon]))/100;
+		damage += atkmax;
+		if(sd && (sd->atk_rate != 100 || sd->weapon_atk_rate != 0)) {
+			damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon]))/100;
 
-			//クリティカル時ダメージ増加
-			damage  += damage *src_sd->critical_damage/100;
-			damage2 += damage2*src_sd->critical_damage/100;
+			// クリティカル時ダメージ増加
+			damage += damage *sd->critical_damage/100;
 		}
-		if(src_sd && src_sd->state.arrow_atk)
-			damage += src_sd->arrow_atk;
+		if(sd && sd->state.arrow_atk)
+			damage += sd->arrow_atk;
 	} else {
-		/* 通常攻撃/スキル攻撃 */
+		/* 通常攻撃・スキル攻撃 */
 		if(atkmax > atkmin)
 			damage += atkmin + atn_rand() % (atkmax-atkmin + 1);
 		else
 			damage += atkmin;
-		if(atkmax2 > atkmin2)
-			damage2 += atkmin2 + atn_rand() % (atkmax2-atkmin2 + 1);
-		else
-			damage2 += atkmin2;
-		if(src_sd && (src_sd->atk_rate != 100 || src_sd->weapon_atk_rate != 0)) {
-			damage  = (damage  * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->status.weapon]))/100;
-			damage2 = (damage2 * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->status.weapon]))/100;
+		if(sd && (sd->atk_rate != 100 || sd->weapon_atk_rate != 0)) {
+			damage  = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon]))/100;
 		}
 	}
 
-	// 計算結果を構造体に格納して終了
-	wd->damage  = damage;
-	wd->damage2 = damage2;
-
-	return;
+	return damage;
 }
 
 /*==========================================
@@ -1288,7 +1264,9 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	}
 
 	/* ７．基本ダメージの算出 */
-	battle_calc_base_damage(&wd, src, target, skill_num);
+	wd.damage = battle_calc_base_damage(src, target, skill_num, wd.type, 0);
+	if(calc_flag.lh)
+		wd.damage2 = battle_calc_base_damage(src, target, skill_num, wd.type, 1);
 
 	if(wd.type == 0) {		// クリティカルでないとき
 		if(src_sd && src_sd->state.arrow_atk) {

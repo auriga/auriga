@@ -1511,10 +1511,12 @@ R 027b <val1>.l <val2>.l <val3>.l
 	オレンジ色で文字化けアナウンスが流れる
 	PC部屋イベント : 経験値増加 <val1>%, 死亡時経験値 <val2>%, ドロップ率増加 <val3>%
 
-S 027c <version>.l <account name>.24B <password>.24B <?>.5B <version2>.B
-	アカウントID&パスワード送信
+S 027c <version>.l <account name>.24B <md5 binary>.16B <?>.14B
+	id&暗号化済みpass送信
 R 027d <?>.24B <?>.w*15 <?>.4B?
 	未調査
+S 0277 <version>.l <account name>.24B <md5 binary>.16B <?>.38B
+	id&暗号化済みpass送信
 R 0280 <point>.l <total>.l <type>.w
 	テイミングミッションランキングポイントが<point>上昇して<total>になりました。
 	type=0xfd2固定

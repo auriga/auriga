@@ -9108,6 +9108,10 @@ int buildin_getnpcposition(struct script_state *st)
 }
 
 #if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
+/*==========================================
+ * CSVアクセス命令/関数群
+ *------------------------------------------
+ */
 static struct dbt* script_csvdb;
 
 int script_csvinit( void ) {
@@ -9124,6 +9128,20 @@ static int script_csvfinal_sub( void *key, void *data, va_list ap ) {
 int script_csvfinal( void ) {
 	strdb_final( script_csvdb, script_csvfinal_sub );
 	return 0;
+}
+
+// ファイル名が妥当なものかチェックする
+static int script_csvfilename_check(const char *file, const char *func)
+{
+	int i;
+
+	for(i = 0; file[i]; i++) {
+		if( !isalnum( (unsigned char)file[i] ) ) {
+			printf("%s: invalid file name %s\n", func, file);
+			return 0;
+		}
+	}
+	return 1;
 }
 
 static struct csvdb_data* script_csvload( const char *file ) {
@@ -9268,15 +9286,9 @@ int buildin_csvwrite(struct script_state *st)
 	int  row   = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	int  col   = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	struct csvdb_data *csv;
-	int  i;
 
-	// ファイル名が妥当なものかチェックする
-	for(i = 0; file[i]; i++) {
-		if( !isalnum( (unsigned char)file[i] ) ) {
-			printf("buildin_csvwrite: invalid file name %s\n", file);
-			return 0;
-		}
-	}
+	if( !script_csvfilename_check(file, "buildin_csvwrite") )
+		return 0;
 	csv = script_csvload( file );
 
 	if( isstr(&st->stack->stack_data[st->start+5]) ) {
@@ -9306,13 +9318,8 @@ int buildin_csvwritearray(struct script_state *st)
 		return 0;
 	}
 
-	// ファイル名が妥当なものかチェックする
-	for(i = 0; file[i]; i++) {
-		if( !isalnum( (unsigned char)file[i] ) ) {
-			printf("buildin_csvwrite: invalid file name %s\n", file);
-			return 0;
-		}
-	}
+	if( !script_csvfilename_check(file, "buildin_csvwritearray") )
+		return 0;
 
 	csv = script_csvload( file );
 	if( csv ) {
@@ -9353,18 +9360,12 @@ int buildin_csvreload(struct script_state *st) {
 
 // csvinsert <file>, <row>
 int buildin_csvinsert(struct script_state *st) {
-	int  i;
 	char *file  = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int   row   = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	struct csvdb_data *csv;
 
-	// ファイル名が妥当なものかチェックする
-	for(i = 0; file[i]; i++) {
-		if( !isalnum( (unsigned char)file[i] ) ) {
-			printf("buildin_csvinsert: invalid file name %s\n", file);
-			return 0;
-		}
-	}
+	if( !script_csvfilename_check(file, "buildin_csvinsert") )
+		return 0;
 	csv = script_csvload( file );
 
 	if( csv ) {
@@ -9375,18 +9376,12 @@ int buildin_csvinsert(struct script_state *st) {
 
 // csvdelete <file>, <row>
 int buildin_csvdelete(struct script_state *st) {
-	int  i;
 	char *file  = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int   row   = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	struct csvdb_data *csv;
 
-	// ファイル名が妥当なものかチェックする
-	for(i = 0; file[i]; i++) {
-		if( !isalnum( (unsigned char)file[i] ) ) {
-			printf("buildin_csvdelete: invalid file name %s\n", file);
-			return 0;
-		}
-	}
+	if( !script_csvfilename_check(file, "buildin_csvdelete") )
+		return 0;
 	csv = script_csvload( file );
 
 	if( csv ) {
@@ -9398,19 +9393,13 @@ int buildin_csvdelete(struct script_state *st) {
 
 // csvsort <file>, <col>, <order>
 int buildin_csvsort(struct script_state *st) {
-	int  i;
 	char *file  = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int   col   = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	int   order = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	struct csvdb_data *csv;
 
-	// ファイル名が妥当なものかチェックする
-	for(i = 0; file[i]; i++) {
-		if( !isalnum( (unsigned char)file[i] ) ) {
-			printf("buildin_csvsort: invalid file name %s\n", file);
-			return 0;
-		}
-	}
+	if( !script_csvfilename_check(file, "buildin_csvsort") )
+		return 0;
 	csv = script_csvload( file );
 
 	if( csv ) {
@@ -9425,13 +9414,8 @@ int buildin_csvflush(struct script_state *st) {
 	int i;
 	struct csvdb_data *csv;
 
-	// ファイル名が妥当なものかチェックする
-	for(i = 0; file[i]; i++) {
-		if( !isalnum( (unsigned char)file[i] ) ) {
-			printf("buildin_csvflush: invalid file name %s\n", file);
-			return 0;
-		}
-	}
+	if( !script_csvfilename_check(file, "buildin_csvflush") )
+		return 0;
 
 	csv = strdb_search( script_csvdb, file );
 	if( csv ) {
