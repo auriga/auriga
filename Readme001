@@ -1,4 +1,16 @@
 ----------------------------------------
+//011 [2006/11/25] by Rayce
+
+・battle_calc_weapon_attack() の修繕その５
+	-> 左手判定があるときだけwd.damage2を計算するようにする
+	　 計算用のマクロ ATK_FIX, ATK_ADD を追加
+	-> ブランディッシュスピアの攻撃力計算式がおかしかったので修正（Lv上昇に伴う倍率加算がなくなってた）
+	-> 細かい整形
+・010において警告が出るので修正（script.c）
+・カイトで反射時にエフェクトを表示するように修正（battle.c）
+	reported by rei in Athena Project Forum and refered to eAthena, thx
+
+----------------------------------------
 //010 [2006/11/24] by Rayce
 
 ・スクリプトのcsvアクセス命令/関数において、ファイル名のチェック処理をまとめた script_csvfilename_check() を追加

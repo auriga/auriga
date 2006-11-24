@@ -9411,7 +9411,6 @@ int buildin_csvsort(struct script_state *st) {
 // csvflush <file>
 int buildin_csvflush(struct script_state *st) {
 	char *file  = conv_str(st,& (st->stack->stack_data[st->start+2]));
-	int i;
 	struct csvdb_data *csv;
 
 	if( !script_csvfilename_check(file, "buildin_csvflush") )
