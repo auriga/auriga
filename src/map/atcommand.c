@@ -842,20 +842,21 @@ atcommand_where(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	char character[100];
-
 	nullpo_retr(-1, sd);
 
-	if (!message || !*message)
-		return -1;
-	memset(character, '\0', sizeof character);
-	if (sscanf(message, "%99[^\n]", character) < 1)
-		return -1;
-	if (strlen(character) > 24 || strncmp(sd->status.name, character, 24) == 0)
-		return -1;
-
-	intif_where(sd->status.account_id, character);
-
+	if (message && *message) {
+		char character[100];
+		memset(character, '\0', sizeof character);
+		if (sscanf(message, "%99[^\n]", character) < 1)
+			return -1;
+		if (strlen(character) > 24)
+			return -1;
+		intif_where(sd->status.account_id, character);
+	} else {
+		char output[100];
+		snprintf(output, sizeof output, "%s %s %d %d",sd->status.name,sd->mapname,sd->bl.x,sd->bl.y);
+		clif_displaymessage(sd->fd, output);
+	}
 	return 0;
 }
 

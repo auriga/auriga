@@ -1399,17 +1399,17 @@ R 023a <flag>.w
 	倉庫？
 	0 - passwd set plz
 	1 - passwd req
-S 023b <flag>.w <?>.32B
-	2 - passwd set
-	3 - passwd send
+S 023b <type>.w <pass>.32B
+	type=2 : キャラクターロックパスワードの変更内容の送信
+	type=3 : キャラクターロックパスワードの送信
 R 023c <type>.w <val>.w
 	4 passwd set ok
 	5 passwd miss
 	6 ok
-R 023e <flag>.w
-	キャラ？
-	0 - passwd set plz
-	1 - passwd req
+R 023e <type>.w
+	type=0 : キャラクターロックパスワードの変更応答
+	type=1 : キャラクターロックパスワードの送信要求
+	type=2 : キャラクターロックパスワードの変更成功通知
 S 023f
 	メールBOXの更新要求
 R 0240 <len>.w <num>.l { <mail_num>.l <title>.40B <read>.B <nick>.24B <time>.l }*

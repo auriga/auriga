@@ -198,13 +198,19 @@ int chrif_cram_connect( int fd )
  */
 int chrif_sendmap(int fd)
 {
-	int i;
+	int i,len;
 
 	WFIFOW(fd,0)=0x2afa;
-	for(i=0;i<map_num;i++)
-		memcpy(WFIFOP(fd,4+i*16),map[i].name,16);
-	WFIFOW(fd,2)=4+i*16;
-	WFIFOSET(fd,WFIFOW(fd,2));
+	for(i=0,len=4; i<map_num; i++,len+=16) {
+		memcpy(WFIFOP(fd,len), map[i].name, 16);
+		if(strcmp(map[i].name, map[i].ref_name) != 0) {	// availmapならばnameの後を\0で区切ってref_nameを連結する
+			WFIFOB(fd,len+16) = '\0';
+			memcpy(WFIFOP(fd,len+17), map[i].ref_name, 16);
+			len += 17;
+		}
+	}
+	WFIFOW(fd,2)=len;
+	WFIFOSET(fd,len);
 
 	return 0;
 }
@@ -290,16 +296,19 @@ int chrif_changemapserver(struct map_session_data *sd,char *name,int x,int y,int
  */
 int chrif_changemapserverack(int fd)
 {
-	struct map_session_data *sd=map_id2sd(RFIFOL(fd,2));
+	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
+	char *mapname = RFIFOP(fd,14);
+	int m;
+
 	if(sd==NULL || sd->status.char_id!=RFIFOL(fd,10) )
 		return -1;
-	if(RFIFOL(fd,6)==1){
+	if( RFIFOL(fd,6)==1 || (m = map_mapname2mapid(mapname)) < 0 ){
 		if(battle_config.error_log)
 			printf("map server change failed.\n");
 		pc_authfail(sd->fd);
 		return 0;
 	}
-	clif_changemapserver(sd,RFIFOP(fd,14),RFIFOW(fd,30),RFIFOW(fd,32),
+	clif_changemapserver(sd,map[m].ref_name,RFIFOW(fd,30),RFIFOW(fd,32),
 		RFIFOL(fd,34),RFIFOW(fd,38));
 	return 0;
 }

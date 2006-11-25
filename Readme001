@@ -1,4 +1,31 @@
 ----------------------------------------
+//012 [2006/11/26] by Rayce
+
+・マップのduplicateシステムとしてmap_athena.confのキーに availmap を追加（char.*, chrif.c, map.*, pc.c）
+	例えばpronteraを常設のイベントMAPとして利用したいと考えた場合、元々のpronteraは使えなくなってしまいます。
+	そのためgrf内のpronteraのMAPファイルをコピーし、別の名前に変更してユーザーにパッチとして配布する必要がありました。
+	このシステムはパッチ配布という煩わしさを解消し、手軽にMAPのコピーを作成できるようにサーバ側で「すり替え」を行うためのものです。
+	map_athena.confに例として以下のように記述。
+		availmap: duplicate.gat,prontera.gat
+	サーバ側ではduplicate.gatとして読み込みますが、クライアント側にはprontera.gatとして認識させます。
+	要するにitem_avail.txtやmob_avail.txtのすり替えと同じもので、pronteraが擬似的にコピーされます。
+	詳細はdoc/conf_ref.txtを参照のこと。
+
+・@whereを少し仕様変更（atcommand.c）
+　　@where [キャラ名] のようにキャラ名の部分は可変にします。
+　　キャラ名が指定されない場合は自分自身のMAP情報が出力されます。
+　　これは上記のコピーマップに対応するためのもので、自分が居る実際のMAP名を得ることができます。
+　　（ /whereだとpronteraとして表示されてしまいますが、@whereだと正常にduplicateとして表示されます ）
+
+・map_athena.confで指定したMAP名が不正な場合、mapデータベースから削除されなかった問題を修正（map.c）
+　MAP名の判定は map_readallmap() ではなく map_addmap() で行うようにします
+　参照元のMAP名は記述が間違っていても map_readmap() 内部で弾かれますが、コピーのMAP名はそれがないので厳密にMAP名のチェックを行います
+　また不正な名前であった場合には "invalid map name!! (???)" が出力されます
+
+・doc周りの更新
+	conf/help.txt, doc/client_packet.txt, doc/conf_ref.txt
+
+----------------------------------------
 //011 [2006/11/25] by Rayce
 
 ・battle_calc_weapon_attack() の修繕その５
@@ -63,7 +90,7 @@
 ----------------------------------------
 //006 [2006/11/23] by Rayce
 
-・005でatcommand_athena.confの変更を忘れてたので同根
+・005でatcommand_athena.confの変更を忘れてたので同梱
 ・スタック破壊を修正（int_homun.c）
 	merged from Athena-2262, thanks to T.Nさん
 
