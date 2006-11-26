@@ -3448,10 +3448,11 @@ int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrt
 	} else {
 		// 違うマップなのでダンスユニット削除
 		skill_stop_dancing(&sd->bl, 1);
-		if(strlen(sd->mapname) > 4)	//新規ログイン時はfalseとしてflagを与えない
-			flag = 1;
 	}
-	if(sd->bl.prev != NULL){
+	if(sd->bl.prev != NULL) {
+		if(m != sd->bl.m) {
+			flag = 1;	// 新規ログインでなくて違うMAPへ移動ならflagオン
+		}
 		unit_remove_map(&sd->bl,clrtype);
 		if(sd->status.pet_id > 0 && sd->pd) {
 			if(sd->pd->bl.m != m && sd->pet.intimate <= 0) {
@@ -5546,7 +5547,7 @@ int pc_heal(struct map_session_data *sd,int hp,int sp)
 			struct party *p;
 			p = party_search(sd->status.party_id);
 			if (p != NULL)
-				clif_party_hp(p,sd);
+				clif_party_hp(sd);
 		}
 	}
 	if(sp)

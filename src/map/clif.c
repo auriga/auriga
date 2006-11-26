@@ -6626,7 +6626,7 @@ void clif_party_message(struct party *p, int account_id, char *mes, int len)
  * パーティ座標通知
  *------------------------------------------
  */
-void clif_party_xy(struct party *p, struct map_session_data *sd)
+void clif_party_xy(struct map_session_data *sd)
 {
 	unsigned char buf[16];
 
@@ -6647,7 +6647,7 @@ void clif_party_xy(struct party *p, struct map_session_data *sd)
  * パーティHP通知
  *------------------------------------------
  */
-void clif_party_hp(struct party *p, struct map_session_data *sd)
+void clif_party_hp(struct map_session_data *sd)
 {
 	unsigned char buf[16];
 

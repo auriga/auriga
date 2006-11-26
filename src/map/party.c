@@ -604,13 +604,13 @@ static int party_send_xyhp_timer_sub(void *key, void *data, va_list ap)
 		if((sd=p->member[i].sd)!=NULL){
 			// 座標通知
 			if(sd->party_x!=sd->bl.x || sd->party_y!=sd->bl.y){
-				clif_party_xy(p,sd);
+				clif_party_xy(sd);
 				sd->party_x=sd->bl.x;
 				sd->party_y=sd->bl.y;
 			}
 			// ＨＰ通知
 			if(sd->party_hp!=sd->status.hp){
-				clif_party_hp(p,sd);
+				clif_party_hp(sd);
 				sd->party_hp=sd->status.hp;
 			}
 		}

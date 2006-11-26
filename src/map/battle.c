@@ -2069,23 +2069,30 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			if(src_sd && t_def1 < 1000000)
 			{
 				int mask = (1<<t_race) | ( (t_mode&0x20)? (1<<10): (1<<11) );
-				if( src_sd->ignore_def_ele & (1<<t_ele) || src_sd->ignore_def_race & mask || src_sd->ignore_def_enemy & (1<<t_enemy) )
+
+				// bIgnoreDef系
+				if( !calc_flag.idef && (src_sd->ignore_def_ele & (1<<t_ele) || src_sd->ignore_def_race & mask || src_sd->ignore_def_enemy & (1<<t_enemy)) )
 					calc_flag.idef = 1;
-				if( src_sd->ignore_def_ele_ & (1<<t_ele) || src_sd->ignore_def_race_ & mask || src_sd->ignore_def_enemy_ & (1<<t_enemy) ) {
-					calc_flag.idef_ = 1;
-					if(battle_config.left_cardfix_to_right)
-						calc_flag.idef = 1;
+				if( calc_flag.lh ) {
+					if( !calc_flag.idef_ && (src_sd->ignore_def_ele_ & (1<<t_ele) || src_sd->ignore_def_race_ & mask || src_sd->ignore_def_enemy_ & (1<<t_enemy)) ) {
+						calc_flag.idef_ = 1;
+						if(battle_config.left_cardfix_to_right)
+							calc_flag.idef = 1;
+					}
 				}
+				// bDefRatioATK系
 				if( !calc_flag.idef && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy)) ) {
 					wd.damage = (wd.damage * (t_def1 + t_def2))/100;
 					calc_flag.idef = 1;
 				}
-				if( !calc_flag.idef_ && (src_sd->def_ratio_atk_ele_ & (1<<t_ele) || src_sd->def_ratio_atk_race_ & mask || src_sd->def_ratio_atk_enemy_ & (1<<t_enemy)) ) {
-					wd.damage2 = (wd.damage2 * (t_def1 + t_def2))/100;
-					calc_flag.idef_ = 1;
-					if(!calc_flag.idef && battle_config.left_cardfix_to_right){
-						wd.damage = (wd.damage * (t_def1 + t_def2))/100;
-						calc_flag.idef = 1;
+				if( calc_flag.lh ) {
+					if( !calc_flag.idef_ && (src_sd->def_ratio_atk_ele_ & (1<<t_ele) || src_sd->def_ratio_atk_race_ & mask || src_sd->def_ratio_atk_enemy_ & (1<<t_enemy)) ) {
+						wd.damage2 = (wd.damage2 * (t_def1 + t_def2))/100;
+						calc_flag.idef_ = 1;
+						if(!calc_flag.idef && battle_config.left_cardfix_to_right){
+							wd.damage = (wd.damage * (t_def1 + t_def2))/100;
+							calc_flag.idef = 1;
+						}
 					}
 				}
 			}
@@ -2108,7 +2115,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 				calc_flag.idef = 1;
 
 			// DEF無視フラグがないとき
-			if( (!calc_flag.idef || !calc_flag.idef_) && t_def1 < 1000000 )
+			if( ((calc_flag.rh && !calc_flag.idef) || (calc_flag.lh && !calc_flag.idef_)) && t_def1 < 1000000 )
 			{
 				int t_def, vitbonusmax;
 				int target_count=1;
@@ -2136,17 +2143,21 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 				t_def = t_def2*8/10;
 				vitbonusmax = (t_vit/20)*(t_vit/20)-1;
 
-				if(!calc_flag.idef){
+				if(calc_flag.rh && !calc_flag.idef) {
 					if(battle_config.player_defense_type) {
 						wd.damage = wd.damage - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)?0: atn_rand()%(vitbonusmax+1) );
-						wd.damage2 = wd.damage2 - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)?0: atn_rand()%(vitbonusmax+1) );
 						damage_ot = damage_ot - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)?0: atn_rand()%(vitbonusmax+1) );
-						damage_ot2 = damage_ot2 - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)?0: atn_rand()%(vitbonusmax+1) );
-					}
-					else{
+					} else {
 						wd.damage = wd.damage * (100 - t_def1) /100 - t_def - ((vitbonusmax < 1)?0: atn_rand()%(vitbonusmax+1) );
-						wd.damage2 = wd.damage2 * (100 - t_def1) /100 - t_def - ((vitbonusmax < 1)?0: atn_rand()%(vitbonusmax+1) );
 						damage_ot = damage_ot * (100 - t_def1) /100;
+					}
+				}
+				if(calc_flag.lh && !calc_flag.idef_) {
+					if(battle_config.player_defense_type) {
+						wd.damage2 = wd.damage2 - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)?0: atn_rand()%(vitbonusmax+1) );
+						damage_ot2 = damage_ot2 - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)?0: atn_rand()%(vitbonusmax+1) );
+					} else {
+						wd.damage2 = wd.damage2 * (100 - t_def1) /100 - t_def - ((vitbonusmax < 1)?0: atn_rand()%(vitbonusmax+1) );
 						damage_ot2 = damage_ot2 * (100 - t_def1) /100;
 					}
 				}
@@ -2347,7 +2358,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	}
 
 	/* 16．カードによるダメージ追加処理 */
-	if( src_sd && !calc_flag.nocardfix ) {
+	if( src_sd && !calc_flag.nocardfix && calc_flag.rh ) {
 		cardfix = 100;
 		if(!src_sd->state.arrow_atk) {	// 弓矢以外
 			if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
@@ -2421,7 +2432,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	}
 
 	/* 17．カードによる左手ダメージ追加処理 */
-	if( src_sd && !calc_flag.nocardfix ) {
+	if( src_sd && !calc_flag.nocardfix && calc_flag.lh ) {
 		cardfix = 100;
 		if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
 			cardfix=cardfix*(100+src_sd->addrace_[t_race])/100;	// 種族によるダメージ修正左手

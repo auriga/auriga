@@ -1,4 +1,17 @@
 ----------------------------------------
+//013 [2006/11/27] by Rayce
+
+・battle_calc_weapon_attack() の修繕その６
+	-> 「防御無視判定および錐効果ダメージ計算」の項目において、左手がある場合にのみ
+	　 battle_athena.confのleft_cardfix_to_rightを適用するように修正
+	-> 「対象の防御力によるダメージ減少」の項目において、左手用の防御無視フラグ calc_flag.idef_ が
+	　 判定に全く関与していなかった問題を修正
+	-> 「カードによる左手ダメージ追加処理」の項目は左手があるときだけ行うように改善
+
+・clif_party_xy() と clif_party_hp() の引数 *p は未使用なので削除（clif.*, party.c, pc.c）
+・cp_setpos() でOnPCMapMoveを実行するかどうかの判定処理を少し修正（pc.c）
+
+----------------------------------------
 //012 [2006/11/26] by Rayce
 
 ・マップのduplicateシステムとしてmap_athena.confのキーに availmap を追加（char.*, chrif.c, map.*, pc.c）
