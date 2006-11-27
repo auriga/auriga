@@ -11,6 +11,8 @@
 #include "socket.h"
 #include "nullpo.h"
 #include "malloc.h"
+#include "utils.h"
+
 #include "pc.h"
 #include "map.h"
 #include "intif.h"

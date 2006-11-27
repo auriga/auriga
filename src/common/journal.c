@@ -186,12 +186,14 @@ void journal_final( struct journal* j )
 		char newname[1040], newname2[1040];
 		sprintf( newname,"%s.debug1", j->filename );
 		sprintf( newname2,"%s.debug0", j->filename );
-		unlink( newname );
+		//unlink( newname );
+		remove( newname );
 		rename( newname2, newname );
 		rename( j->filename, newname2 );
 	}
 #else
-		unlink( j->filename );
+		//unlink( j->filename );
+		remove( j->filename );
 #endif
 }
 

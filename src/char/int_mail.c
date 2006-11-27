@@ -8,13 +8,14 @@
 #include <time.h>
 
 #include "mmo.h"
-#include "inter.h"
-#include "int_mail.h"
-#include "char.h"
 #include "socket.h"
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
+
+#include "char.h"
+#include "inter.h"
+#include "int_mail.h"
 
 static char mail_dir[1024]="save/mail_data/";
 static char mail_txt[1024]="save/mail.txt";

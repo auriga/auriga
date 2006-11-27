@@ -29,6 +29,7 @@
 #include "mmo.h"
 #include "grfio.h"
 #include "malloc.h"
+#include "utils.h"
 
 #define GRF_HEADER "Master of Magic"
 

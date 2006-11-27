@@ -6,14 +6,16 @@
 #include <string.h>
 
 #include "mmo.h"
-#include "inter.h"
-#include "int_homun.h"
-#include "char.h"
 #include "socket.h"
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
+#include "utils.h"
+
+#include "char.h"
+#include "inter.h"
+#include "int_homun.h"
 
 #ifdef TXT_ONLY
 

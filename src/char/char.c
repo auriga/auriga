@@ -29,12 +29,13 @@
 #include "lock.h"
 #include "nullpo.h"
 #include "malloc.h"
-#include "char.h"
 #include "httpd.h"
 #include "graph.h"
 #include "journal.h"
 #include "md5calc.h"
+#include "utils.h"
 
+#include "char.h"
 #include "inter.h"
 #include "int_pet.h"
 #include "int_homun.h"
@@ -428,10 +429,10 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 		set=sscanf(str+next,"%d,%d%n",&tmp_int[0],&tmp_int[1],&len);
 		if(set!=2)
 			return 0;
-		if(ATHENA_MOD_VERSION<=1586 && tmp_int[1]==11){
-			next+=len;
-			continue;
-		}
+		//if(ATHENA_MOD_VERSION<=1586 && tmp_int[1]==11){
+		//	next+=len;
+		//	continue;
+		//}
 		if(tmp_int[0] >= 0 && tmp_int[0] < MAX_SKILL) {
 			p->st.skill[tmp_int[0]].id = tmp_int[0];
 			p->st.skill[tmp_int[0]].lv = tmp_int[1];
@@ -3575,13 +3576,13 @@ int parse_char(int fd)
 
 		case 0x7530:	// Athena情報所得
 			WFIFOW(fd,0)=0x7531;
-			WFIFOB(fd,2)=ATHENA_MAJOR_VERSION;
-			WFIFOB(fd,3)=ATHENA_MINOR_VERSION;
-			WFIFOB(fd,4)=ATHENA_REVISION;
-			WFIFOB(fd,5)=ATHENA_RELEASE_FLAG;
-			WFIFOB(fd,6)=ATHENA_OFFICIAL_FLAG;
-			WFIFOB(fd,7)=ATHENA_SERVER_INTER | ATHENA_SERVER_CHAR;
-			WFIFOW(fd,8)=ATHENA_MOD_VERSION;
+			WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
+			WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
+			WFIFOB(fd,4)=AURIGA_REVISION;
+			WFIFOB(fd,5)=AURIGA_RELEASE_FLAG;
+			WFIFOB(fd,6)=AURIGA_OFFICIAL_FLAG;
+			WFIFOB(fd,7)=AURIGA_SERVER_INTER | AURIGA_SERVER_CHAR;
+			WFIFOW(fd,8)=AURIGA_MOD_VERSION;
 			WFIFOSET(fd,10);
 			RFIFOSKIP(fd,2);
 			return 0;
@@ -3956,8 +3957,8 @@ int do_init(int argc,char **argv)
 #else
 		"SQL",
 #endif
-		ATHENA_MAJOR_VERSION,ATHENA_MINOR_VERSION,ATHENA_REVISION,
-		ATHENA_MOD_VERSION
+		AURIGA_MAJOR_VERSION,AURIGA_MINOR_VERSION,AURIGA_REVISION,
+		AURIGA_MOD_VERSION
 	);
 
 	char_config_read((argc < 2) ? CHAR_CONF_NAME : argv[1]);

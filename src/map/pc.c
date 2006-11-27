@@ -7,6 +7,9 @@
 #include "db.h"
 #include "nullpo.h"
 #include "malloc.h"
+#include "lock.h"
+#include "utils.h"
+
 #include "map.h"
 #include "chrif.h"
 #include "clif.h"
@@ -32,7 +35,6 @@
 #include "friend.h"
 #include "date.h"
 #include "unit.h"
-#include "lock.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

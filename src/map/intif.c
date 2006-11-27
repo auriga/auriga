@@ -16,6 +16,8 @@
 
 #include "socket.h"
 #include "timer.h"
+#include "utils.h"
+
 #include "map.h"
 #include "battle.h"
 #include "chrif.h"

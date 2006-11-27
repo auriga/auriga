@@ -7,23 +7,26 @@
 #include <memory.h>
 #include <math.h>
 
+#include "db.h"
+#include "malloc.h"
+#include "nullpo.h"
+#include "timer.h"
+#include "utils.h"
+
 #include "pc.h"
 #include "map.h"
 #include "pet.h"
 #include "homun.h"
 #include "mob.h"
 #include "clif.h"
-#include "timer.h"
 #include "skill.h"
 #include "itemdb.h"
 #include "battle.h"
 #include "status.h"
-#include "nullpo.h"
 #include "script.h"
 #include "guild.h"
 #include "unit.h"
-#include "db.h"
-#include "malloc.h"
+
 static int max_weight_base[MAX_PC_CLASS];
 static int hp_coefficient[MAX_PC_CLASS];
 static int hp_coefficient2[MAX_PC_CLASS];

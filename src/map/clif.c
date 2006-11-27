@@ -22,6 +22,9 @@
 #include "malloc.h"
 #include "version.h"
 #include "nullpo.h"
+#include "httpd.h"
+#include "grfio.h"
+#include "utils.h"
 
 #include "map.h"
 #include "chrif.h"
@@ -43,12 +46,10 @@
 #include "vending.h"
 #include "pet.h"
 #include "status.h"
-#include "httpd.h"
 #include "friend.h"
 #include "unit.h"
 #include "mail.h"
 #include "homun.h"
-#include "grfio.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -12286,13 +12287,13 @@ int clif_parse(int fd)
 			switch(cmd){
 			case 0x7530:	// Athena情報所得
 				WFIFOW(fd,0)=0x7531;
-				WFIFOB(fd,2)=ATHENA_MAJOR_VERSION;
-				WFIFOB(fd,3)=ATHENA_MINOR_VERSION;
-				WFIFOB(fd,4)=ATHENA_REVISION;
-				WFIFOB(fd,5)=ATHENA_RELEASE_FLAG;
-				WFIFOB(fd,6)=ATHENA_OFFICIAL_FLAG;
-				WFIFOB(fd,7)=ATHENA_SERVER_MAP;
-				WFIFOW(fd,8)=ATHENA_MOD_VERSION;
+				WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
+				WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
+				WFIFOB(fd,4)=AURIGA_REVISION;
+				WFIFOB(fd,5)=AURIGA_RELEASE_FLAG;
+				WFIFOB(fd,6)=AURIGA_OFFICIAL_FLAG;
+				WFIFOB(fd,7)=AURIGA_SERVER_MAP;
+				WFIFOW(fd,8)=AURIGA_MOD_VERSION;
 				WFIFOSET(fd,10);
 				RFIFOSKIP(fd,2);
 				break;

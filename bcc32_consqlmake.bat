@@ -19,7 +19,7 @@ del src\converter\*.exe > NUL
 @rem パスの追加ですが環境変数に既に組み込んでいる人は不要です。
 set path=%path%;C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib
 
-set __common__=..\common\core.c ..\common\db.c ..\common\grfio.c ..\common\lock.c ..\common\malloc.c ..\common\nullpo.c ..\common\socket.c ..\common\timer.c ..\common\httpd.c ..\common\graph.c ..\common\md5calc.c
+set __common__=..\common\core.c ..\common\db.c ..\common\grfio.c ..\common\lock.c ..\common\malloc.c ..\common\nullpo.c ..\common\socket.c ..\common\timer.c ..\common\httpd.c ..\common\graph.c ..\common\md5calc.c ..\common\utils.c
 
 @rem コンパイルオプション
 @rem SQL⇔TEXTの切り替え、SQL版にする場合は以下のコンパイルオプションをコメントアウトしてください

@@ -1,4 +1,4 @@
-all: core.o socket.o timer.o grfio.o db.o lock.o nullpo.o malloc.o md5calc.o httpd.o graph.o journal.o
+all: core.o socket.o timer.o grfio.o db.o lock.o nullpo.o malloc.o md5calc.o httpd.o graph.o journal.o utils.o
 
 clean:
 	rm -f *.o

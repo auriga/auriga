@@ -3,17 +3,20 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "inter.h"
-#include "int_storage.h"
-#include "int_pet.h"
-#include "int_guild.h"
+
 #include "mmo.h"
-#include "char.h"
 #include "socket.h"
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
+#include "utils.h"
+
+#include "char.h"
+#include "inter.h"
+#include "int_storage.h"
+#include "int_pet.h"
+#include "int_guild.h"
 
 #ifdef TXT_ONLY
 

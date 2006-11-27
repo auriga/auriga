@@ -6,14 +6,16 @@
 #include <string.h>
 
 #include "mmo.h"
-#include "inter.h"
-#include "int_status.h"
-#include "char.h"
 #include "socket.h"
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
+#include "utils.h"
+
+#include "char.h"
+#include "inter.h"
+#include "int_status.h"
 
 #ifdef NO_SCDATA_SAVING
 // ダミー関数群

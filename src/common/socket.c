@@ -25,6 +25,7 @@
 #include "timer.h"
 #include "socket.h"
 #include "malloc.h"
+#include "utils.h"
 
 // socket.h でdefine されたcloseを置き換え
 #ifdef _WIN32

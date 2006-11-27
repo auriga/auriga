@@ -3,12 +3,12 @@
 #include <string.h>
 #include <math.h>
 
-#include "battle.h"
-
 #include "timer.h"
 #include "nullpo.h"
 #include "malloc.h"
+#include "utils.h"
 
+#include "battle.h"
 #include "map.h"
 #include "pc.h"
 #include "skill.h"

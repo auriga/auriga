@@ -2,13 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "guild.h"
-#include "storage.h"
 #include "db.h"
 #include "timer.h"
 #include "socket.h"
 #include "nullpo.h"
 #include "malloc.h"
+#include "utils.h"
+
+#include "guild.h"
+#include "storage.h"
 #include "battle.h"
 #include "npc.h"
 #include "pc.h"

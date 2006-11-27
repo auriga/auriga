@@ -5,11 +5,13 @@
 #include <string.h>
 #include <time.h>
 
+#include "db.h"
 #include "timer.h"
 #include "nullpo.h"
 #include "malloc.h"
-
 #include "mmo.h"
+#include "utils.h"
+
 #include "guild.h"
 #include "skill.h"
 #include "map.h"
@@ -25,7 +27,6 @@
 #include "status.h"
 #include "date.h"
 #include "unit.h"
-#include "db.h"
 #include "homun.h"
 #include "atcommand.h"
 

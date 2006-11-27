@@ -22,6 +22,7 @@
 #include "malloc.h"
 #include "timer.h"
 #include "md5calc.h"
+#include "utils.h"
 
 
 
@@ -484,7 +485,7 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 
 	len = sprintf( head,
 		"HTTP/1.%d %d %s\r\n"
-		"Server: %s/mod%d\r\n", sd->http_ver,status,msg, servername, ATHENA_MOD_VERSION );
+		"Server: %s/mod%d\r\n", sd->http_ver,status,msg, servername, AURIGA_MOD_VERSION );
 	
 	if( content_type )	// コンテントタイプ
 	{
@@ -2809,7 +2810,7 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 	i += sprintf( envp[ j++ ] = env + i, "REMOTE_PORT=%d", port ) + 1;
 	i += sprintf( envp[ j++ ] = env + i, "DOCUMENT_ROOT=%s", path ) + 1;
 	i += sprintf( envp[ j++ ] = env + i, "SCRIPT_NAME=/%s", sd->url ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SERVER_SOFTWARE=%s/mod%d", servername, ATHENA_MOD_VERSION ) + 1;
+	i += sprintf( envp[ j++ ] = env + i, "SERVER_SOFTWARE=%s/mod%d", servername, AURIGA_MOD_VERSION ) + 1;
 	i += sprintf( envp[ j++ ] = env + i, "SERVER_PROTOCOL=HTTP/1.0" ) + 1;
 	i += sprintf( envp[ j++ ] = env + i, "SERVER_NAME=%s", httpd_cgi_server_name ) + 1;
 	i += sprintf( envp[ j++ ] = env + i, "SERVER_PORT=%d", session[sd->fd]->server_port ) + 1;
@@ -2959,7 +2960,7 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 		sd->http_ver= 0;
 		sd->persist = 0;
 		i = sprintf( WFIFOP( sd->fd, 0 ),
-				"HTTP/1.0 %sServer: %s/mod%d\r\n", status, servername, ATHENA_MOD_VERSION );
+				"HTTP/1.0 %sServer: %s/mod%d\r\n", status, servername, AURIGA_MOD_VERSION );
 		memcpy( WFIFOP( sd->fd, i ), out, y );
 		i += y;
 		memcpy( WFIFOP( sd->fd, i ), buf + x, bytes - x );

@@ -10,6 +10,7 @@
 #include "timer.h"
 #include "nullpo.h"
 #include "malloc.h"
+#include "utils.h"
 
 #include "map.h"
 #include "chrif.h"

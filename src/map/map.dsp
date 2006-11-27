@@ -235,6 +235,10 @@ SOURCE=..\..\src\map\homun.c
 
 SOURCE=..\..\src\map\mail.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\common\utils.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -397,11 +401,7 @@ SOURCE=..\..\src\common\version.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\common\zconf_win32.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\common\zlib_win32.h
+SOURCE=..\..\src\common\utils.h
 # End Source File
 # End Group
 # End Target

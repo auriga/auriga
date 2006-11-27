@@ -127,6 +127,10 @@ SOURCE=..\common\socket.c
 
 SOURCE=..\common\timer.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\common\utils.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 

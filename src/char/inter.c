@@ -1,14 +1,16 @@
 #include <string.h>
 #include <stdlib.h>
+
 #include "mmo.h"
-#include "char.h"
 #include "socket.h"
 #include "timer.h"
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
+#include "utils.h"
 
+#include "char.h"
 #include "inter.h"
 #include "int_party.h"
 #include "int_guild.h"

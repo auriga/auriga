@@ -8,6 +8,8 @@
 #include "grfio.h"
 #include "nullpo.h"
 #include "malloc.h"
+#include "utils.h"
+
 #include "map.h"
 #include "battle.h"
 #include "itemdb.h"

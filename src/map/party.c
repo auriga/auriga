@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "party.h"
 #include "db.h"
 #include "timer.h"
 #include "socket.h"
 #include "nullpo.h"
 #include "malloc.h"
+#include "utils.h"
+
+#include "party.h"
 #include "pc.h"
 #include "map.h"
 #include "battle.h"

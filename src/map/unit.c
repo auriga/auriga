@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "db.h"
 #include "timer.h"
 #include "nullpo.h"
+#include "malloc.h"
+#include "utils.h"
+
 #include "map.h"
 #include "pc.h"
 #include "mob.h"
@@ -19,9 +23,7 @@
 #include "trade.h"
 #include "guild.h"
 #include "friend.h"
-#include "malloc.h"
 #include "mob.h"
-#include "db.h"
 #include "vending.h"
 #include "intif.h"
 

@@ -6,10 +6,12 @@
 
 #include "timer.h"
 #include "socket.h"
-#include "atcommand.h"
 #include "db.h"
 #include "nullpo.h"
 #include "malloc.h"
+#include "utils.h"
+
+#include "atcommand.h"
 #include "map.h"
 #include "clif.h"
 #include "intif.h"

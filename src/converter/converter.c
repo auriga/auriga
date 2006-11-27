@@ -9,6 +9,7 @@
 #include "inter-converter.h"
 #include "../common/db.h"
 #include "../common/timer.h"
+#include "../common/utils.h"
 
 MYSQL mysql_handle;
 

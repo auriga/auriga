@@ -5,15 +5,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "inter.h"
-#include "int_pet.h"
 #include "mmo.h"
-#include "char.h"
 #include "socket.h"
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
+#include "utils.h"
+
+#include "char.h"
+#include "inter.h"
+#include "int_pet.h"
 
 #ifdef TXT_ONLY
 

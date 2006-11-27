@@ -1,21 +1,23 @@
 
 #define _INT_GUILD_C_
 
-#include "../map/skill.h"
-#include "inter.h"
-#include "int_guild.h"
-#include "int_storage.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "mmo.h"
-#include "char.h"
 #include "socket.h"
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
+#include "utils.h"
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "char.h"
+#include "inter.h"
+#include "int_guild.h"
+#include "int_storage.h"
+#include "../map/skill.h"
 
 static int guild_exp[MAX_GUILDLEVEL];
 

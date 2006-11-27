@@ -20,12 +20,14 @@
 #include <time.h>
 #include <setjmp.h>
 
+#include "db.h"
 #include "socket.h"
 #include "timer.h"
 #include "malloc.h"
-#include "lock.h"
-
 #include "mmo.h"
+#include "lock.h"
+#include "nullpo.h"
+#include "utils.h"
 
 #include "map.h"
 #include "guild.h"
@@ -39,7 +41,6 @@
 #include "npc.h"
 #include "pet.h"
 #include "intif.h"
-#include "db.h"
 #include "skill.h"
 #include "chat.h"
 #include "battle.h"
@@ -48,7 +49,6 @@
 #include "status.h"
 #include "itemdb.h"
 #include "unit.h"
-#include "nullpo.h"
 #include "homun.h"
 
 #ifdef MEMWATCH

@@ -1,4 +1,20 @@
 ----------------------------------------
+//014 [2006/11/28] by Rayce
+
+・mmo.hに定義されていて実体がcore.cにある状況が気持ち悪いので、eAのようにutils.c, utils.hを追加
+　共通で汎用的に使う関数をここに集めることにします
+・各ファイルにおけるincludeの整理と整形
+
+・version.hの ATHENA_*** を AURIGA_*** に改名しておく（httpd.c, version.h, login.c, char.c, clif.c, map.c）
+・AurigaはModではないので、AURIGA_MOD_VERSION は未定義にする予定です
+　パッチ番号はRevisionに合わせるつもりです
+　つまり現在のversionは「Auriga-0.0.14」になります
+　今のところAURIGA_MOD_VERSIONに関しては改名してmodを0にしただけであり、正式に修正されていません
+
+・既に廃止されている zlib_win32.h, zconf_win32.h を削除するためにdspファイルの修正
+・ジャーナルをオンにしてVCでコンパイルすると unlink() で警告が出るので remove() に変更しておく（journal.c）
+
+----------------------------------------
 //013 [2006/11/27] by Rayce
 
 ・battle_calc_weapon_attack() の修繕その６

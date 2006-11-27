@@ -17,6 +17,11 @@
 #include "nullpo.h"
 #include "malloc.h"
 #include "version.h"
+#include "httpd.h"
+#include "graph.h"
+#include "socket.h"
+#include "utils.h"
+
 #include "map.h"
 #include "chrif.h"
 #include "clif.h"
@@ -36,9 +41,6 @@
 #include "pet.h"
 #include "atcommand.h"
 #include "status.h"
-#include "httpd.h"
-#include "graph.h"
-#include "socket.h"
 #include "friend.h"
 #include "unit.h"
 #include "homun.h"
@@ -2509,8 +2511,8 @@ int do_init(int argc,char *argv[])
 #else
 		"SQL",
 #endif
-		ATHENA_MAJOR_VERSION,ATHENA_MINOR_VERSION,ATHENA_REVISION,
-		ATHENA_MOD_VERSION
+		AURIGA_MAJOR_VERSION,AURIGA_MINOR_VERSION,AURIGA_REVISION,
+		AURIGA_MOD_VERSION
 	);
 
 #ifdef _WIN32
