@@ -2914,6 +2914,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 
 			if(sc_data && sc_data[SC_KAITE].timer != -1) {	// カイト
+				clif_misceffect2(bl,438);
 				if(--sc_data[SC_KAITE].val2 <= 0)
 					status_change_end(bl, SC_KAITE, -1);
 				if(src == bl) {		// 自分自身に対しては回復量0
@@ -2952,6 +2953,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(sc_data && sc_data[SC_BERSERK].timer!=-1) /* バーサーク中はヒール０ */
 				heal=0;
 			if(sc_data && sc_data[SC_KAITE].timer != -1) {	// カイト
+				clif_misceffect2(bl,438);
 				if(--sc_data[SC_KAITE].val2 <= 0)
 					status_change_end(bl, SC_KAITE, -1);
 				if(src == bl) {		// 自分自身に対しては回復量0
@@ -4478,6 +4480,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				break;
 			//ソウルリンカーは無効
 			if(dstsd && dstsd->status.class == PC_CLASS_SL)
+				break;
+			sc_data = status_get_sc_data(bl);
+			if(sc_data && sc_data[SC_ROGUE].timer != -1)	// ローグの魂中は無効
 				break;
 			if(atn_rand()%100 >= skilllv*10+50)
 				break;
