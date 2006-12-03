@@ -51,6 +51,7 @@ static int mob_dummy_class[MAX_RANDOMMONSTER];	// ランダムモンスター選
  *------------------------------------------
  */
 static int mob_makedummymobdb(int);
+static void mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned int tick);
 int mobskill_use(struct mob_data *md,unsigned int tick,int event);
 int mobskill_deltimer(struct mob_data *md );
 int mob_skillid2skillidx(int class,int skillid);
@@ -1557,32 +1558,10 @@ int mob_deleteslave(struct mob_data *md)
  */
 int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 {
-	int i,count;
-	struct map_session_data *sd = NULL,*tmpsd = NULL;
-	struct block_list **tmpbl = NULL;
-	struct {
-		struct party *p;
-		int id;
-		atn_bignumber base_exp,job_exp;
-	} *pt = NULL;
-	struct {
-		struct block_list *bl;
-		int dmg;
-	} mvp[3];
-	int mvp_damage,max_hp;
+	int max_hp;
 	unsigned int tick = gettick();
-	atn_bignumber tdmg;
-	struct item item;
-	int drop_rate;
-	struct linkdb_node *node;
 
-	nullpo_retr(0, md); //srcはNULLで呼ばれる場合もあるので、他でチェック
-
-	max_hp = status_get_max_hp(&md->bl);
-
-	if(src && src->type == BL_PC) {
-		sd = (struct map_session_data *)src;
-	}
+	nullpo_retr(0, md);	// srcはNULLで呼ばれる場合もあるので、他でチェック
 
 //	if(battle_config.battle_log)
 //		printf("mob_damage %d %d %d\n",md->hp,max_hp,damage);
@@ -1600,6 +1579,8 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		return 0;
 	}
 
+	max_hp = status_get_max_hp(&md->bl);
+
 	if((md->sc_data[SC_ENDURE].timer == -1 || map[md->bl.m].flag.gvg) && md->sc_data[SC_BERSERK].timer == -1)
 		unit_stop_walking(&md->bl,3);
 	if(damage > max_hp>>2)
@@ -1612,60 +1593,60 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 	if(damage>md->hp)
 		damage=md->hp;
 
-	if(!(type&2)) {
-		if(sd!=NULL) {
+	if(!(type&2) && src)
+	{
+		struct map_session_data *src_sd = NULL;
+		struct mob_data         *src_md = NULL;
+		struct pet_data         *src_pd = NULL;
+		struct homun_data       *src_hd = NULL;
+		int damage2 = 0;
+		int id = 0;
+
+		src_sd = BL_DOWNCAST( BL_PC , src );
+		src_md = BL_DOWNCAST( BL_MOB, src );
+		src_pd = BL_DOWNCAST( BL_PET, src );
+		src_hd = BL_DOWNCAST( BL_HOM, src );
+
+		if(src_sd)
+		{
 			// ダメージを与えた人と個人累計ダメージを保存(Exp計算用)
-			int damage2 = (int)linkdb_search( &md->dmglog, (void*)sd->bl.id );
+			damage2 = (int)linkdb_search( &md->dmglog, (void*)src_sd->bl.id );
 			damage2 += (damage2==-1)? damage+1: damage; // 先制を受けていた場合-1で戦闘参加者に登録されている
 			if(damage2<=0)
 				damage2=-1;
-			linkdb_replace( &md->dmglog, (void*)sd->bl.id, (void*)damage2 );
-
-			if(md->attacked_id <= 0 && md->state.special_mob_ai==0 &&
-				atn_rand() % 1000 < 1000 / (++md->attacked_players)
-			) {
-				md->attacked_id = sd->bl.id;
-			}
+			linkdb_replace( &md->dmglog, (void*)src_sd->bl.id, (void*)damage2 );
+			id = src_sd->bl.id;
 		}
-		if(src && src->type == BL_PET && battle_config.pet_attack_exp_to_master) {
-			struct pet_data *pd = (struct pet_data *)src;
-			int damage2;
-			nullpo_retr(0, pd);
+		if(src_pd && battle_config.pet_attack_exp_to_master)
+		{
 			damage2 = damage*(battle_config.pet_attack_exp_rate)/100;
-			damage2 += (int)linkdb_search( &md->dmglog, (void*)pd->msd->bl.id );
-			linkdb_replace( &md->dmglog, (void*)pd->msd->bl.id, (void*)damage2 );
+			damage2 += (int)linkdb_search( &md->dmglog, (void*)src_pd->msd->bl.id );
+			linkdb_replace( &md->dmglog, (void*)src_pd->msd->bl.id, (void*)damage2 );
+			id = 0;
 		}
-		if(src && src->type == BL_MOB && ((struct mob_data*)src)->state.special_mob_ai){
-			int damage2;
-			struct mob_data *md2 = (struct mob_data *)src;
-			struct map_session_data *msd;
-
-			nullpo_retr(0, md2);
+		if(src_md && src_md->state.special_mob_ai)
+		{
+			struct map_session_data *msd = map_id2sd(src_md->master_id);
 			// msdがNULLのときはダメージログに記録しない
-			if((msd = map_id2sd(md2->master_id)) != NULL && msd->bl.type == BL_PC)
-			{
+			if(msd) {
 				damage2 = damage + (int)linkdb_search( &md->dmglog, (void*)msd->bl.id );
 				linkdb_replace( &md->dmglog, (void*)msd->bl.id, (void*)damage2 );
-
-				if(md->attacked_id <= 0 && md->state.special_mob_ai==0 &&
-					atn_rand() % 1000 < 1000 / (++md->attacked_players)
-				) {
-					md->attacked_id = md2->master_id;
-				}
+				id = src_md->master_id;
 			}
 		}
-		if(src && src->type == BL_HOM) {
-			struct homun_data *hd = (struct homun_data *)src;
-			int damage2;
-			nullpo_retr(0, hd);
+		if(src_hd)
+		{
 			damage2 = damage;
-			damage2 += (int)linkdb_search( &md->dmglog, (void*)hd->bl.id );
-			linkdb_replace( &md->dmglog, (void*)hd->bl.id, (void*)damage2 );
-			if(md->attacked_id <= 0 && md->state.special_mob_ai==0 &&
-				atn_rand() % 1000 < 1000 / (++md->attacked_players)
-			) {
-				md->attacked_id = hd->bl.id;
-			}
+			damage2 += (int)linkdb_search( &md->dmglog, (void*)src_hd->bl.id );
+			linkdb_replace( &md->dmglog, (void*)src_hd->bl.id, (void*)damage2 );
+			id = src_hd->bl.id;
+		}
+
+		// ターゲットの変更
+		if(md->attacked_id <= 0 && md->state.special_mob_ai==0 && id > 0 &&
+			atn_rand() % 1000 < 1000 / (++md->attacked_players)
+		) {
+			md->attacked_id = id;
 		}
 	}
 
@@ -1692,48 +1673,57 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		}
 	}
 
-	if(md->hp>0){
-		return 0;
+	if(md->hp <= 0) {
+		// 死亡処理
+		map_freeblock_lock();
+		mob_dead(src, md, type, tick);
+		map_freeblock_unlock();
 	}
+	return 0;
+}
 
-	// ----- ここから死亡処理 -----
-	map_freeblock_lock();
+/*==========================================
+ * mdの死亡処理
+ *------------------------------------------
+ */
+static void mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned int tick)
+{
+	int i,count = 0;
+	int mvp_damage = 0;
+	int drop_rate;
+	atn_bignumber tdmg = 0;
+	struct map_session_data *sd = NULL;
+	struct block_list **tmpbl = NULL;
+	struct linkdb_node *node;
+	struct item item;
+
+	struct {
+		struct party *p;
+		int id;
+		atn_bignumber base_exp,job_exp;
+	} *pt = NULL;
+	struct {
+		struct block_list *bl;
+		int dmg;
+	} mvp[3];
+
+	nullpo_retv(md);	// srcはNULLで呼ばれる場合もあるので、他でチェック
+
 	mobskill_use(md,tick,-1);	// 死亡時スキル
 
 	memset(mvp,0,sizeof(mvp));
 
-	max_hp = status_get_max_hp(&md->bl);
+	if(src && src->type == BL_PC)
+		sd = (struct map_session_data *)src;
 
 	if(src && src->type == BL_MOB)
 		mob_unlocktarget((struct mob_data *)src,tick);
 
-	if(sd && sd->status.class == PC_CLASS_TK && md->class == sd->tk_mission_target)
-	{
-		ranking_gain_point(sd,RK_TAEKWON,1);
-		ranking_setglobalreg(sd,RK_TAEKWON);
-		ranking_update(sd,RK_TAEKWON);
-		if(ranking_get_point(sd,RK_TAEKWON)%100==0)
-		{
-			while(1){
-				sd->tk_mission_target = atn_rand()%(MOB_ID_MAX-MOB_ID_MIN)+MOB_ID_MIN;
-				if(mob_db[sd->tk_mission_target].max_hp <= 0)
-					continue;
-				if(mob_db[sd->tk_mission_target].summonper[0]==0) //枝で呼ばれないのは除外
-					continue;
-				if(mob_db[sd->tk_mission_target].mode&0x20)//ボス属性除外
-					continue;
-				break;
-			}
-			pc_setglobalreg(sd,"PC_MISSION_TARGET",sd->tk_mission_target);
-			clif_mission_mob(sd,sd->tk_mission_target,0);
-		}
-	}
-
-	//カードによる死亡時HPSP吸収処理
-	if(sd)
-	{
+	if(sd) {
 		int hp = 0,sp = 0;
 		int race_id = status_get_race(&md->bl);
+
+		// カードによる死亡時HPSP吸収処理
 		sp += sd->sp_gain_value;
 		hp += sd->hp_gain_value;
 		if(atn_rand()%100 < sd->hp_drain_rate_race[race_id])
@@ -1742,15 +1732,41 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		if(atn_rand()%100 < sd->sp_drain_rate_race[race_id])
 			sp = sd->sp_drain_value_race[race_id];
 
-		if(hp || sp) pc_heal(sd,hp,sp);
+		if(hp || sp)
+			pc_heal(sd,hp,sp);
+
+		// テコンミッションターゲット
+		if(sd->status.class == PC_CLASS_TK && md->class == sd->tk_mission_target) {
+			ranking_gain_point(sd,RK_TAEKWON,1);
+			ranking_setglobalreg(sd,RK_TAEKWON);
+			ranking_update(sd,RK_TAEKWON);
+			if(ranking_get_point(sd,RK_TAEKWON)%100==0)
+			{
+				int c=0;
+				while(c++ < 1000){
+					sd->tk_mission_target = atn_rand()%(MOB_ID_MAX-MOB_ID_MIN)+MOB_ID_MIN;
+					if(mob_db[sd->tk_mission_target].max_hp <= 0)
+						continue;
+					if(mob_db[sd->tk_mission_target].summonper[0]==0) //枝で呼ばれないのは除外
+						continue;
+					if(mob_db[sd->tk_mission_target].mode&0x20)//ボス属性除外
+						continue;
+					break;
+				}
+				if(c >= 1000)
+					sd->tk_mission_target = 0;
+				pc_setglobalreg(sd,"PC_MISSION_TARGET",sd->tk_mission_target);
+				clif_mission_mob(sd,sd->tk_mission_target,0);
+			}
+		}
 	}
 
 	//無条件
 
 	// map外に消えた人は計算から除くので
 	// overkill分は無いけどsumはmax_hpとは違う
-	i     = 0;
-	node  = md->dmglog;
+	i    = 0;
+	node = md->dmglog;
 	while( node ) {
 		node = node->next;
 		i++;
@@ -1759,14 +1775,11 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		pt    = aCalloc( i, sizeof(*pt) );
 		tmpbl = aCalloc( i, sizeof(*tmpbl) );
 	}
+	node = md->dmglog;
 
-	tdmg  = 0;
-	count = 0;
-	node  = md->dmglog;
-	mvp_damage = 0;
 	for(i=0; node; node = node->next,i++) {
 		struct block_list *tbl;
-		int damage2;
+		int damage;
 		tbl = map_id2bl((int)node->key);
 		if(tbl && (tbl->type==BL_PC || tbl->type==BL_HOM))
 			tmpbl[i] = tbl;
@@ -1777,34 +1790,31 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		if(tmpbl[i]->m != md->bl.m || unit_isdead(tmpbl[i]))
 			continue;
 
-		damage2 = (int)node->data;
-		tdmg += (atn_bignumber)((damage2==-1)? 0: damage2);
-		if(mvp_damage < damage2) {
-			if( mvp[0].bl == NULL || damage2 > mvp[0].dmg ) {
+		damage = (int)node->data;
+		if(damage > 0)
+			tdmg += damage;	// トータルダメージ
+		if(mvp_damage < damage) {
+			if( mvp[0].bl == NULL || damage > mvp[0].dmg ) {
 				// 一番大きいダメージ
 				mvp[2] = mvp[1];
 				mvp[1] = mvp[0];
 				mvp[0].bl  = tmpbl[i];
-				mvp[0].dmg = damage2;
+				mvp[0].dmg = damage;
 				mvp_damage = (mvp[2].bl == NULL ? 0 : mvp[2].dmg );
-			} else if( mvp[1].bl == NULL || damage2 > mvp[1].dmg ) {
+			} else if( mvp[1].bl == NULL || damage > mvp[1].dmg ) {
 				// ２番目に大きいダメージ
 				mvp[2]     = mvp[1];
 				mvp[1].bl  = tmpbl[i];
-				mvp[1].dmg = damage2;
+				mvp[1].dmg = damage;
 				mvp_damage = (mvp[2].bl == NULL ? 0 : mvp[2].dmg );
 			} else {
 				// ３番目に大きいダメージ
 				mvp[2].bl  = tmpbl[i];
-				mvp[2].dmg = damage2;
-				mvp_damage = damage2;
+				mvp[2].dmg = damage;
+				mvp_damage = damage;
 			}
 		}
 	}
-
-//	if((double)max_hp < tdmg)
-//		dmg_rate = ((double)max_hp) / tdmg;
-//	else dmg_rate = 1;
 
 	// 経験値の分配
 	if(!md->state.noexp && tdmg > 0) {
@@ -1812,11 +1822,10 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		node = md->dmglog;
 		for(i=0; node; node = node->next,i++) {
 			int pid,flag=1;
-			int damage2;
-			double per;
-			atn_bignumber base_exp,job_exp;
+			int damage;
+			atn_bignumber per,base_exp,job_exp;
 			int base_exp_rate,job_exp_rate;
-			struct party *p;
+			struct map_session_data *tmpsd = NULL;
 
 			if(tmpbl[i]==NULL || tmpbl[i]->m != md->bl.m || unit_isdead(tmpbl[i]))
 				continue;
@@ -1833,15 +1842,15 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			per = 100 + (count-1)*battle_config.joint_struggle_exp_bonus;
 			if(battle_config.joint_struggle_limit && per > battle_config.joint_struggle_limit)
 				per = battle_config.joint_struggle_limit;
-			damage2 = (int)node->data;
-			per = per/100 * ((damage2==-1)? 0: damage2)/tdmg;
+			damage = (int)node->data;
+			per = (damage==-1)? 0: per * damage/100;
 
-			base_exp = (atn_bignumber)(mob_db[md->class].base_exp * per * base_exp_rate/100);
-			if(mob_db[md->class].base_exp > 0 && base_exp < 1 && damage2>0) base_exp = 1;
+			base_exp = (atn_bignumber)mob_db[md->class].base_exp * per/tdmg * base_exp_rate/100;
+			if(mob_db[md->class].base_exp > 0 && base_exp < 1 && damage>0) base_exp = 1;
 			if(base_exp < 0) base_exp = 0;
 
-			job_exp = (atn_bignumber)(mob_db[md->class].job_exp * per * job_exp_rate/100);
-			if(mob_db[md->class].job_exp > 0 && job_exp < 1 && damage2>0) job_exp = 1;
+			job_exp = (atn_bignumber)mob_db[md->class].job_exp * per/tdmg * job_exp_rate/100;
+			if(mob_db[md->class].job_exp > 0 && job_exp < 1 && damage>0) job_exp = 1;
 			if(job_exp < 0) job_exp = 0;
 
 			if( tmpbl[i]->type==BL_PC )
@@ -1862,7 +1871,8 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 						break;
 				}
 				if(j==pnum){	// いないときは公平かどうか確認
-					if((p=party_search(pid))!=NULL && p->exp!=0){
+					struct party *p = party_search(pid);
+					if(p && p->exp!=0){
 						pt[pnum].id=pid;
 						pt[pnum].p=p;
 						pt[pnum].base_exp = base_exp;
@@ -1881,9 +1891,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 				if( !tmpsd->sc_data ||
 						((tmpsd->sc_data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead ) && 	// 死んだふり していない
 						 (tmpsd->sc_data[SC_HIDING].timer == -1    || !battle_config.noexp_hiding    ) ) )	// ハイド していない
-					pc_gainexp(tmpsd,md,
-						(base_exp > 0x7fffffff)? 0x7fffffff : (int)base_exp,
-						(job_exp  > 0x7fffffff)? 0x7fffffff : (int)job_exp  );
+					pc_gainexp(tmpsd, md, base_exp, job_exp);
 			}
 		}
 		// 公平分配
@@ -2099,9 +2107,8 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		md->hp = 0;
 		unit_remove_map(&md->bl, 1);
 	}
-	map_freeblock_unlock();
 
-	return 0;
+	return;
 }
 
 /*==========================================

@@ -656,7 +656,7 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 {
 	struct map_session_data *sd;
 	int i,c;
-	atn_bignumber base_bonus, job_bonus;
+	int base_bonus, job_bonus;
 	struct map_session_data *sdlist[MAX_PARTY];
 
 	nullpo_retv(p);
@@ -678,15 +678,10 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 	job_bonus  = 100 + (battle_config.pt_bonus_j*(c-1));
 	for(i=0;i<c;i++)
 	{
-		atn_bignumber bexp = base_bonus * base_exp / 100 / c + 1;
-		atn_bignumber jexp = job_bonus * job_exp / 100 / c + 1;
+		atn_bignumber bexp = base_exp * base_bonus / 100 / c + 1;
+		atn_bignumber jexp = job_exp  * job_bonus  / 100 / c + 1;
 
-		pc_gainexp(sdlist[i],md,
-			(bexp>0x7fffffff)? 0x7fffffff: (int)bexp ,
-			(jexp>0x7fffffff)? 0x7fffffff: (int)jexp  );
-
-//		pc_gainexp(sd,md,(base_exp/c)*(1+battle_config.pt_bonus_b*0.01*(c-1))+1,(job_exp/c)*(1+battle_config.pt_bonus_j*0.01*(c-1))+1);
-//		pc_gainexp(sd,md,base_exp/c+1,job_exp/c+1);//
+		pc_gainexp(sdlist[i],md,bexp,jexp);
 	}
 
 	return;

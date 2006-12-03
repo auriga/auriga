@@ -1199,7 +1199,7 @@ void guild_emblem_changed(int len, int guild_id, int emblem_id, const char *data
 }
 
 // ギルドのEXP上納
-int guild_payexp(struct map_session_data *sd,int exp)
+atn_bignumber guild_payexp(struct map_session_data *sd,atn_bignumber exp)
 {
 	struct guild *g;
 	struct guild_expcache *c;
@@ -1216,7 +1216,7 @@ int guild_payexp(struct map_session_data *sd,int exp)
 		return 0;
 	if( per>100 )
 		per=100;
-	if( (exp2=((atn_bignumber)exp*per/100))<=0 )
+	if( (exp2=exp*per/100)<=0 )
 		return 0;
 
 	if(battle_config.guild_exp_rate!=100)
@@ -1235,7 +1235,7 @@ int guild_payexp(struct map_session_data *sd,int exp)
 	else
 		c->exp += (int)exp2;
 
-	return (int)exp2;
+	return exp2;
 }
 
 // スキルポイント割り振り

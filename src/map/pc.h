@@ -132,7 +132,7 @@ int pc_modifysellvalue(struct map_session_data*,int);
 
 int pc_checkbaselevelup(struct map_session_data *sd);
 int pc_checkjoblevelup(struct map_session_data *sd);
-int pc_gainexp(struct map_session_data*,struct mob_data*,int,int);
+int pc_gainexp(struct map_session_data*,struct mob_data*,atn_bignumber,atn_bignumber);
 int pc_nextbaseexp(struct map_session_data *);
 int pc_nextjobexp(struct map_session_data *);
 int pc_need_status_point(struct map_session_data *,int);

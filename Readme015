@@ -1,4 +1,25 @@
 ----------------------------------------
+//018 [2006/12/04] by Rayce
+
+・被弾共闘が入らないのを修正（pc.c）
+　応急処置的にbl.idで管理するようにはしてますが、本来ならPCの場合はキャラIDを利用すべきなので
+　いずれ修正する必要はあります
+	merged from Athena-2262, thanks to T.Nさん
+
+・doc/script_ref.txtにおいてmapflagの base_exp_rate, job_exp_rate に関して追記
+・一閃を必中に修正（battle.c）
+・mob_damage() から死亡処理の部分を切り離して mob_dead() を用意、および少し整理（mob.c）
+・mob_damage() にあるテコンミッションのターゲット選定でも無限ループに陥る可能性があったので修正（mob.c）
+
+・経験値取得系の関数において、引数をint型からatn_bignumber型に変更
+　および無駄なキャストを排除して整理し直し
+	guild_payexp(), homun_gainexp(), party_exp_share(), pc_gainexp()
+・ホムの取得経験値がオーバーフローする可能性を修正（homun.c）
+・ホムが取得した経験値を主人へ渡すときの倍率をbattle_athena.confで指定できるように変更/拡張（battle.c, homun.c）
+	master_get_homun_base_exp はデフォルトで100（%）です
+	master_get_homun_job_exp  はデフォルトで0（%）です
+
+----------------------------------------
 //017 [2006/12/01] by Rayce
 
 ・battle_calc_weapon_attack() の修繕その８

@@ -1149,54 +1149,61 @@ int homun_checkbaselevelup(struct homun_data *hd)
  * 経験値取得
  *------------------------------------------
  */
-int homun_gainexp(struct homun_data *hd,struct mob_data *md,int base_exp,int job_exp)
+int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp)
 {
-	int next;
-	atn_bignumber bexp=base_exp,jexp=job_exp;
-	int mbexp=0,mjexp=0;
-	atn_bignumber per;
+	int per;
+	atn_bignumber next;
 
 	nullpo_retr(0, hd);
+
 	if(hd->bl.prev == NULL || unit_isdead(&hd->bl))
 		return 0;
 
 	if(md && md->sc_data && md->sc_data[SC_RICHMANKIM].timer != -1) {
-		bexp = bexp*(125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
-		jexp = jexp*(125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
+		base_exp = base_exp * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
+		job_exp  = job_exp  * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
 	}
-	base_exp = (bexp>0x7fffffff)? 0x7fffffff: (int)bexp;
-	job_exp  = (jexp>0x7fffffff)? 0x7fffffff: (int)jexp;
-	if(battle_config.master_get_homun_base_exp)
-		mbexp = base_exp;
-	if(battle_config.master_get_homun_job_exp)
-		mjexp = job_exp;
 
-	if(hd->msd)	// 主人へ同じだけ経験値
-		pc_gainexp(hd->msd,md,mbexp,mjexp);
+	if(hd->msd) {	// 主人へ指定倍の経験値
+		atn_bignumber mbexp=0, mjexp=0;
+		if(battle_config.master_get_homun_base_exp)
+			mbexp = base_exp * battle_config.master_get_homun_base_exp / 100;
+		if(battle_config.master_get_homun_job_exp)
+			mjexp = job_exp  * battle_config.master_get_homun_job_exp / 100;
+
+		if(mbexp || mjexp)
+			pc_gainexp(hd->msd,md,mbexp,mjexp);
+	}
 
 	per = battle_config.next_exp_limit;
-	if(base_exp>0){
-		if((next=homun_nextbaseexp(hd))>0){
-			while((hd->status.base_exp + base_exp) >= next){	// LvUP
-				int temp_exp;
-				temp_exp = next - hd->status.base_exp;
-				if( (per-(100-(atn_bignumber)hd->status.base_exp*100/next)) <0)
+	if(base_exp > 0) {
+		if((next = homun_nextbaseexp(hd)) > 0) {
+			while(base_exp + hd->status.base_exp >= next) {	// LvUP
+				atn_bignumber temp_exp = next - hd->status.base_exp;
+				int rate = (int)(100 - (atn_bignumber)hd->status.base_exp * 100 / next);
+				if(per - rate < 0)
 					break;
-				per -= (100-(atn_bignumber)hd->status.base_exp*100/next);
-				hd->status.base_exp = next;
-				if(!homun_checkbaselevelup(hd) || (next = homun_nextbaseexp(hd))<=0) break;
+				per -= rate;
+				hd->status.base_exp = (int)next;
+				if(!homun_checkbaselevelup(hd) || (next = homun_nextbaseexp(hd)) <= 0)
+					break;
 				base_exp -= temp_exp;
 			}
-			if((next=homun_nextbaseexp(hd))>0 && ((atn_bignumber)base_exp * 100 / next) > per)
-				hd->status.base_exp = (int)( next * per / 100 );
+			if((next = homun_nextbaseexp(hd)) > 0 && (base_exp * 100 / next) > per)
+				hd->status.base_exp = (int)(next * per / 100);
+			else if(base_exp + hd->status.base_exp > 0x7fffffff)
+				hd->status.base_exp = 0x7fffffff;
 			else
-				hd->status.base_exp += base_exp;
+				hd->status.base_exp += (int)base_exp;
 
 			if(hd->status.base_exp < 0)
 				hd->status.base_exp = 0;
 			homun_checkbaselevelup(hd);
-		}else{
-			hd->status.base_exp += base_exp;
+		} else {
+			if(base_exp + hd->status.base_exp > 0x7fffffff)
+				hd->status.base_exp = 0x7fffffff;
+			else
+				hd->status.base_exp += (int)base_exp;
 		}
 		if(hd->msd)
 			clif_send_homstatus(hd->msd,0);

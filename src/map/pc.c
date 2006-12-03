@@ -4133,19 +4133,16 @@ int pc_checkjoblevelup(struct map_session_data *sd)
  * 経験値取得
  *------------------------------------------
  */
-int pc_gainexp(struct map_session_data *sd, struct mob_data *md, int base_exp, int job_exp)
+int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber base_exp, atn_bignumber job_exp)
 {
+	int per;
 	atn_bignumber next;
-	atn_bignumber bexp, jexp;
-	atn_bignumber per;
 
 	nullpo_retr(0, sd);
 
 	if (sd->bl.prev == NULL || unit_isdead(&sd->bl))
 		return 0;
 
-	bexp = (atn_bignumber)base_exp;
-	jexp = (atn_bignumber)job_exp;
 	if (md) {
 		int race_id = status_get_race(&md->bl);
 		int tk_exp_rate = 0;
@@ -4161,101 +4158,99 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, int base_exp, i
 				tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
 		}
 
-		bexp = bexp * (atn_bignumber)(100 + sd->exp_rate[race_id] + tk_exp_rate) / 100;
-		jexp = jexp * (atn_bignumber)(100 + sd->job_rate[race_id] + tk_exp_rate) / 100;
+		base_exp = base_exp * (100 + sd->exp_rate[race_id] + tk_exp_rate) / 100;
+		job_exp  = job_exp  * (100 + sd->job_rate[race_id] + tk_exp_rate) / 100;
 
 		if (md->sc_data && md->sc_data[SC_RICHMANKIM].timer != -1) {
-			bexp = bexp * (atn_bignumber)(125 + md->sc_data[SC_RICHMANKIM].val1 * 11) / 100;
-			jexp = jexp * (atn_bignumber)(125 + md->sc_data[SC_RICHMANKIM].val1 * 11) / 100;
+			base_exp = base_exp * (125 + md->sc_data[SC_RICHMANKIM].val1 * 11) / 100;
+			job_exp  = job_exp  * (125 + md->sc_data[SC_RICHMANKIM].val1 * 11) / 100;
 		}
 	}
 	if (sd->sc_data[SC_MEAL_INCEXP].timer != -1) {
-		bexp = bexp * sd->sc_data[SC_MEAL_INCEXP].val1 / 100;
+		base_exp = base_exp * sd->sc_data[SC_MEAL_INCEXP].val1 / 100;
 	}
 	if (sd->sc_data[SC_MEAL_INCJOB].timer != -1) {
-		jexp = jexp * sd->sc_data[SC_MEAL_INCJOB].val1 / 100;
-	}
-	if (bexp > 0x7fffffff)
-		bexp = 0x7fffffff;
-	if (jexp > 0x7fffffff)
-		jexp = 0x7fffffff;
-
-	if (sd->status.guild_id>0){	// ギルドに上納
-		bexp -= guild_payexp(sd, (int)bexp);
-		if (bexp < 0)
-			bexp = 0;
+		job_exp  = job_exp  * sd->sc_data[SC_MEAL_INCJOB].val1 / 100;
 	}
 
-	if (battle_config.disp_experience && (bexp || jexp)) {
+	if (sd->status.guild_id > 0){	// ギルドに上納
+		base_exp -= guild_payexp(sd, base_exp);
+		if (base_exp < 0)
+			base_exp = 0;
+	}
+
+	if (battle_config.disp_experience && (base_exp || job_exp)) {
 		char output[128];
-		snprintf(output, sizeof output, msg_txt(131), (int)bexp, (int)jexp);
+		int bexp = (base_exp > 0x7fffffff)? 0x7fffffff: (int)base_exp;
+		int jexp = (job_exp  > 0x7fffffff)? 0x7fffffff: (int)job_exp;
+		snprintf(output, sizeof output, msg_txt(131), bexp, jexp);
 		clif_disp_onlyself(sd, output, strlen(output));
 	}
 
 	//------------- Base ----------------
 	per = battle_config.next_exp_limit;
-	if (bexp > 0) {
+	if (base_exp > 0) {
 		if ((next = pc_nextbaseexp(sd)) > 0) {
-			while((atn_bignumber)sd->status.base_exp + bexp >= next) {	// LvUP
-				atn_bignumber temp_exp;
-				temp_exp = next - (atn_bignumber)sd->status.base_exp;
-				if ((per - (100 - (atn_bignumber)sd->status.base_exp * 100 / next)) < 0)
+			while(base_exp + sd->status.base_exp >= next) {	// LvUP
+				atn_bignumber temp_exp = next - sd->status.base_exp;
+				int rate = (int)(100 - (atn_bignumber)sd->status.base_exp * 100 / next);
+				if (per - rate < 0)
 					break;
-				per -= (100 - (atn_bignumber)sd->status.base_exp * 100 / next);
+				per -= rate;
 				sd->status.base_exp = (int)next;
 				if (!pc_checkbaselevelup(sd) || (next = pc_nextbaseexp(sd)) <= 0)
 					break;
-				bexp -= temp_exp;
+				base_exp -= temp_exp;
 			}
-			if ((next = pc_nextbaseexp(sd)) > 0 && (bexp * 100 / next) > per)
+			if ((next = pc_nextbaseexp(sd)) > 0 && (base_exp * 100 / next) > per)
 				sd->status.base_exp = (int)(next * per / 100);
-			else if ((atn_bignumber)sd->status.base_exp + bexp > 0x7fffffff)
+			else if (base_exp + sd->status.base_exp > 0x7fffffff)
 				sd->status.base_exp = 0x7fffffff;
 			else
-				sd->status.base_exp += (int)bexp;
+				sd->status.base_exp += (int)base_exp;
 
 			if (sd->status.base_exp < 0)
 				sd->status.base_exp = 0;
 			pc_checkbaselevelup(sd);
 		} else {
-			if ((atn_bignumber)sd->status.base_exp + bexp > 0x7fffffff)
+			if (base_exp + sd->status.base_exp > 0x7fffffff)
 				sd->status.base_exp = 0x7fffffff;
 			else
-				sd->status.base_exp += (int)bexp;
+				sd->status.base_exp += (int)base_exp;
 		}
 		clif_updatestatus(sd, SP_BASEEXP);
 	}
 
 	//------------- Job ----------------
 	per = battle_config.next_exp_limit;
-	if (jexp > 0) {
+	if (job_exp > 0) {
 		if ((next = pc_nextjobexp(sd)) > 0) {
-			while((atn_bignumber)sd->status.job_exp + jexp >= next) {	// LvUP
-				atn_bignumber temp_exp;
-				temp_exp = next - (atn_bignumber)sd->status.job_exp;
-				if ((per - (100 - (atn_bignumber)sd->status.job_exp * 100 / next)) <= 0)
+			while(job_exp + sd->status.job_exp >= next) {	// LvUP
+				atn_bignumber temp_exp = next - sd->status.job_exp;
+				int rate = (int)(100 - (atn_bignumber)sd->status.job_exp * 100 / next);
+				if (per - rate <= 0)
 					break;
-				per -= (100 - (atn_bignumber)sd->status.job_exp * 100 / next);
+				per -= rate;
 				sd->status.job_exp = (int)next;
 				if (!pc_checkjoblevelup(sd) || (next = pc_nextjobexp(sd)) <= 0)
 					break;
-				jexp -= temp_exp;
+				job_exp -= temp_exp;
 			}
-			if ((next = pc_nextjobexp(sd))>0 && (jexp * 100 / next) > per)
+			if ((next = pc_nextjobexp(sd)) > 0 && (job_exp * 100 / next) > per)
 				sd->status.job_exp = (int)(next * per / 100);
-			else if ((atn_bignumber)sd->status.job_exp + jexp > 0x7fffffff)
+			else if (job_exp + sd->status.job_exp > 0x7fffffff)
 				sd->status.job_exp = 0x7fffffff;
 			else
-				sd->status.job_exp += (int)jexp;
+				sd->status.job_exp += (int)job_exp;
 
 			if (sd->status.job_exp < 0)
 				sd->status.job_exp = 0;
 			pc_checkjoblevelup(sd);
 		} else {
-			if ((atn_bignumber)sd->status.job_exp + jexp > 0x7fffffff)
+			if (job_exp + sd->status.job_exp > 0x7fffffff)
 				sd->status.job_exp = 0x7fffffff;
 			else
-				sd->status.job_exp += (int)jexp;
+				sd->status.job_exp += (int)job_exp;
 		}
 		clif_updatestatus(sd, SP_JOBEXP);
 	}
@@ -4744,8 +4739,8 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		skill_stop_gravitation(&sd->bl);
 
 	// 先制された場合ダメージ-1で戦闘参加者入り(0にするとリスト未登録のNULLとかぶって困る)
-	if(src && src->type == BL_MOB && linkdb_search( &((struct mob_data*)src)->dmglog, (void*)sd->status.char_id ) == NULL)
-		linkdb_insert( &((struct mob_data*)src)->dmglog, (void*)sd->status.char_id, (void*)-1 );
+	if(src && src->type == BL_MOB && linkdb_search( &((struct mob_data*)src)->dmglog, (void*)sd->bl.id ) == NULL)
+		linkdb_insert( &((struct mob_data*)src)->dmglog, (void*)sd->bl.id, (void*)-1 );
 
 	sd->status.hp-=damage;
 	if(sd->status.pet_id > 0 && sd->pd && sd->petDB && battle_config.pet_damage_support)

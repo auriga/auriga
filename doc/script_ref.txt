@@ -209,8 +209,10 @@ AthenaNPCScript
 				MAP内の全セルを水場にします。
 			base_exp_rate<tab>,<rate>
 				Base経験値取得倍率を<rate>に変更します。
+				<rate>が負の値のときは経験値なしになります。
 			job_exp_rate<tab>,<rate>
 				Job経験値取得倍率を<rate>に変更します。
+				<rate>が負の値のときは経験値なしになります。
 			monster_noteleport<tab>dummy
 				モンスターのテレポートの使用を禁止します。
 			pvp<tab>dummy
