@@ -1,4 +1,21 @@
 ----------------------------------------
+//019 [2006/12/05] by Rayce
+
+・mob_dead() の処理改善および整形
+・ホムがMVPを取ったときのMVP経験値に対しても battle_athena.conf の master_get_homun_base_exp
+　の倍率を適用するように修正（mob.c）
+
+・一部のスキルの倍率計算において、double型ではなくatn_bignumber型を使うように変更（battle.c）
+　少しオーバーフローしやすくなってる可能性はあります…
+・battle_calc_weapon_attack() で利用するマクロ名が紛らわしいので
+　ATK_FIX → DMG_FIX, ATK_ADD → DMG_ADD に変更、新たに DMG_SET 追加（ダメージ値の置換用）
+
+・atn_bignumber型の変換指定子を統一して使えるようにマクロ BIGNUMCODE を用意（mmo.h）
+　基本的にprintf用で10進数のみ対応です。
+　用意しただけで実際のコードには今のところ出現してませんが、数値をダンプしたいとき等に利用してください。
+	printf("i = %"BIGNUMCODE, i);
+
+----------------------------------------
 //018 [2006/12/04] by Rayce
 
 ・被弾共闘が入らないのを修正（pc.c）

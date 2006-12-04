@@ -342,6 +342,17 @@ struct mail_data {
 #endif
 
 // =====================
+// 大きな数字用の変換指定子
+// ---------------------
+#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
+#	define BIGNUMCODE ".0f"
+#elif defined(_WIN32) && defined(_MSC_VER)
+#	define BIGNUMCODE "I64d"
+#else
+#	define BIGNUMCODE "lld"
+#endif
+
+// =====================
 // VC での追加処理
 // ---------------------
 #if defined(_WIN32) && defined(_MSC_VER)
