@@ -1496,7 +1496,7 @@ atcommand_item3(
 				item_tmp.attribute = 0;
 				item_tmp.card[0] = (equip_item) ? 0x00ff : 0x00fe;
 				item_tmp.card[1] = 0;
-				*((unsigned long *)(&item_tmp.card[2])) = pl_sd->char_id;
+				*((unsigned long *)(&item_tmp.card[2])) = pl_sd->status.char_id;
 				if ((flag = pc_additem(sd, &item_tmp, get_count)))
 					clif_additem(sd, 0, 0, flag);
 			}
@@ -2229,7 +2229,7 @@ atcommand_produce(
 			tmp_item.identify = 1;
 			tmp_item.card[0] = 0x00ff;
 			tmp_item.card[1] = ((star * 5) << 8) + attribute;
-			*((unsigned long *)(&tmp_item.card[2])) = sd->char_id;
+			*((unsigned long *)(&tmp_item.card[2])) = sd->status.char_id;
 			clif_produceeffect(sd, 0, item_id); // 製造エフェクトパケット
 			clif_misceffect(&sd->bl, 3); // 他人にも成功を通知
 			if ((flag = pc_additem(sd, &tmp_item, 1)))

@@ -4895,7 +4895,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		item_tmp.identify=1;
 		item_tmp.card[0]=0x00fe;
 		item_tmp.card[1]=0;
-		*((unsigned long *)(&item_tmp.card[2]))=sd->char_id;	/* キャラID */
+		*((unsigned long *)(&item_tmp.card[2]))=sd->status.char_id;	/* キャラID */
 		map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
 	}
 

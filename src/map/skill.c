@@ -4182,7 +4182,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(battle_config.holywater_name_input) {
 				item_tmp.card[0] = 0xfe;
 				item_tmp.card[1] = 0;
-				*((unsigned long *)(&item_tmp.card[2]))=sd->char_id;	/* キャラID */
+				*((unsigned long *)(&item_tmp.card[2]))=sd->status.char_id;	/* キャラID */
 			}
 			eflag = pc_additem(sd,&item_tmp,1);
 			if(eflag) {
@@ -11040,13 +11040,13 @@ void skill_produce_mix(struct map_session_data *sd,
 		if(equip && itemdb_type(nameid)==4){	/* 武器の場合 */
 			tmp_item.card[0]=0x00ff; /* 製造武器フラグ */
 			tmp_item.card[1]=((sc*5)<<8)+ele;	/* 属性とつよさ */
-			*((unsigned long *)(&tmp_item.card[2]))=sd->char_id;	/* キャラID */
+			*((unsigned long *)(&tmp_item.card[2]))=sd->status.char_id;	/* キャラID */
 		}
 		else if((battle_config.produce_item_name_input && skill_produce_db[idx].req_skill!=AM_PHARMACY) ||
 			(battle_config.produce_potion_name_input && skill_produce_db[idx].req_skill==AM_PHARMACY)) {
 			tmp_item.card[0]=0x00fe;
 			tmp_item.card[1]=0;
-			*((unsigned long *)(&tmp_item.card[2]))=sd->char_id;	/* キャラID */
+			*((unsigned long *)(&tmp_item.card[2]))=sd->status.char_id;	/* キャラID */
 		}
 
 		switch (skill_produce_db[idx].req_skill) {
@@ -11225,7 +11225,7 @@ int skill_am_twilight_sub(struct map_session_data* sd,int nameid,int make_per)
 		tmp_item.identify=1;
 		tmp_item.card[0]=0x00fe;
 		tmp_item.card[1]=0;
-		*((unsigned long *)(&tmp_item.card[2]))=sd->char_id;	/* キャラID */
+		*((unsigned long *)(&tmp_item.card[2]))=sd->status.char_id;	/* キャラID */
 		//
 		//clif_produceeffect(sd,2,nameid);/* 製薬エフェクト */
 		//clif_misceffect(&sd->bl,5); /* 他人にも成功を通知 */
@@ -11408,7 +11408,7 @@ void skill_arrow_create(struct map_session_data *sd, int nameid)
 		if(battle_config.making_arrow_name_input) {
 			tmp_item.card[0]=0x00fe;
 			tmp_item.card[1]=0;
-			*((unsigned long *)(&tmp_item.card[2]))=sd->char_id;	/* キャラID */
+			*((unsigned long *)(&tmp_item.card[2]))=sd->status.char_id;	/* キャラID */
 		}
 		if((flag = pc_additem(sd,&tmp_item,tmp_item.amount))) {
 			clif_additem(sd,0,0,flag);

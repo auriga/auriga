@@ -1,13 +1,15 @@
-//npc_monster.txt＠Athena 2006/10/09 20:47:07 (JST)
+//npc_monster.txt＠Athena 2006/12/06 16:17:44 (JST)
 
 //タナトスタワー最上階(thana_boss.gat)
 thana_boss.gat,135,119,0,0	monster	魔剣士タナトスの記憶	1708,1,7200000,3600000,0
 
 //ゲフェニアダンジョン(gef_dun03.gat)
-gef_dun03.gat,0,0,0,0	monster	ヘリオン	1626,1,600000,300000,0
-gef_dun03.gat,0,0,0,0	monster	レイス	1192,5,180000,90000,0
-gef_dun03.gat,0,0,0,0	monster	ウィンドゴースト	1263,5,180000,90000,0
-gef_dun03.gat,0,0,0,0	monster	デッドリーレイス	1291,1,1800000,900000,0
+gef_dun03.gat,0,0,0,0	monster	ヘリオン・レボノント	1626,1,600000,300000,0
+gef_dun03.gat,0,0,0,0	monster	レイス	1192,8,60000,30000,0
+gef_dun03.gat,0,0,0,0	monster	ウィンドゴースト	1263,3,60000,30000,0
+gef_dun03.gat,0,0,0,0	monster	デッドリーレイス	1291,2,60000,30000,0
+gef_dun03.gat,0,0,0,0	monster	輝く草	1083,3,1800000,900000,0
+gef_dun03.gat,0,0,0,0	monster	白い草	1082,10,180000,90000,0
 
 //オーディン神殿(odin_tem01.gat)
 odin_tem01.gat,0,0,0,0	monster	スケッギョルド	1755,1,3600000,1800000,0
@@ -98,7 +100,7 @@ ra_fild01.gat,0,0,0,0	monster	ムスキプラー	1780,40,0,0,0
 ra_fild01.gat,0,0,0,0	monster	ジオグラファー	1368,40,0,0,0
 ra_fild01.gat,0,0,0,0	monster	ガリオン	1783,1,0,0,0
 ra_fild01.gat,0,0,0,0	monster	ロウィーン	1782,10,0,0,0
-ra_fild01.gat,0,0,0,0	monster	グリフォン	1259,1,0,0,0
+ra_fild01.gat,0,0,0,0	monster	グリフォン	1259,3,3600000,1800000,0
 ra_fild01.gat,0,0,0,0	monster	ドロセラ	1781,40,0,0,0
 
 //オッズ峡谷(ra_fild02.gat)
@@ -106,9 +108,10 @@ ra_fild02.gat,0,0,0,0	monster	ムスキプラー	1780,30,0,0,0
 ra_fild02.gat,0,0,0,0	monster	ドロセラ	1781,30,0,0,0
 ra_fild02.gat,0,0,0,0	monster	ガリオン	1783,1,0,0,0
 ra_fild02.gat,0,0,0,0	monster	ロウィーン	1782,15,0,0,0
+ra_fild02.gat,0,0,0,0	monster	アトラス	1785,1,14400000,7200000,0
 
 //ラッセル平原(ra_fild03.gat)
-ra_fild03.gat,0,0,0,0	monster	アトラス	1785,1,7200000,3600000,0
+ra_fild03.gat,0,0,0,0	monster	アトラス	1785,1,10800000,5400000,0
 ra_fild03.gat,0,0,0,0	monster	ガリオン	1783,1,0,0,0
 ra_fild03.gat,0,0,0,0	monster	ロウィーン	1782,40,0,0,0
 ra_fild03.gat,0,0,0,0	monster	スタポ	1784,45,0,0,0
@@ -116,6 +119,7 @@ ra_fild03.gat,0,0,0,0	monster	スタポ	1784,45,0,0,0
 //アウドムラ草原(ra_fild04.gat)
 ra_fild04.gat,0,0,0,0	monster	スタポ	1784,10,0,0,0
 ra_fild04.gat,0,0,0,0	monster	ロウィーン	1782,10,0,0,0
+ra_fild04.gat,0,0,0,0	monster	アトラス	1785,1,18000000,9000000,0
 
 //アウドムラ草原(ra_fild05.gat)
 ra_fild05.gat,0,0,0,0	monster	ヒルウィンド	1629,35,0,0,0
@@ -162,7 +166,7 @@ ra_fild13.gat,0,0,0,0	monster	ドロップス	1113,20,0,0,0
 ra_fild13.gat,0,0,0,0	monster	ロウィーン	1782,25,0,0,0
 
 //神殿聖域(ra_san05.gat)
-ra_san05.gat,0,0,0,0	monster	グルームアンダーナイト	1768,1,0,0,0
+ra_san05.gat,0,0,0,0	monster	グルームアンダーナイト	1768,1,7200000,3600000,0
 ra_san05.gat,0,0,0,0	monster	アガヴ	1769,10,0,0,0
 ra_san05.gat,0,0,0,0	monster	エキオ	1770,10,0,0,0
 ra_san05.gat,0,0,0,0	monster	イシラ	1772,10,0,0,0

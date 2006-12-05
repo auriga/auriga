@@ -1,4 +1,4 @@
-//npc_monster.txt＠Athena 2006/10/09 20:47:03 (JST)
+//npc_monster.txt＠Athena 2006/12/06 16:17:38 (JST)
 
 //おもちゃ分類所(xmas_dun02.gat)
 xmas_dun02.gat,0,0,0,0	monster	クッキー	1246,20,0,0,0
@@ -734,6 +734,7 @@ moc_fild17.gat,0,0,0,0	monster	白蓮玉	1138,10,0,0,0
 moc_fild17.gat,0,0,0,0	monster	ピエール	1160,20,0,0,0
 moc_fild17.gat,0,0,0,0	monster	サンドマン	1165,5,0,0,0
 moc_fild17.gat,0,0,0,0	monster	デニーロ	1105,20,0,0,0
+moc_fild17.gat,0,0,0,0	monster	スコーピオン	1001,5,0,0,0
 
 //ソグラト砂漠 18(moc_fild18.gat)
 moc_fild18.gat,0,0,0,0	monster	チョンチョン	1011,40,0,0,0
@@ -2164,15 +2165,22 @@ tur_dun05.gat,0,0,0,0	monster	アサルトタートル	1315,1,20000,0,0
 tur_dun05.gat,0,0,0,0	monster	フリーズタートル	1319,5,30000,0,0
 
 //ノーグロード 2層(mag_dun02.gat)
-mag_dun02.gat,0,0,0,0	monster	ブレイザー	1367,20,600000,300000,0
-mag_dun02.gat,0,0,0,0	monster	ナイトメアテラー	1379,30,600000,300000,0
-mag_dun02.gat,0,0,0,0	monster	ディアボリック	1382,10,600000,300000,0
-mag_dun02.gat,0,0,0,0	monster	デリーター	1384,10,600000,300000,0
-mag_dun02.gat,0,0,0,0	monster	デリーター	1385,10,600000,300000,0
-mag_dun02.gat,0,0,0,0	monster	ギグ	1387,20,600000,300000,0
+mag_dun02.gat,70,190,20,40	monster	ブレイザー	1367,5,300000,150000,0
+mag_dun02.gat,200,120,40,20	monster	ブレイザー	1367,15,300000,150000,0
+mag_dun02.gat,70,100,40,80	monster	ナイトメアテラー	1379,10,300000,150000,0
+mag_dun02.gat,207,155,15,15	monster	ナイトメアテラー	1379,3,60000,30000,0
+mag_dun02.gat,135,152,20,20	monster	ナイトメアテラー	1379,3,60000,30000,0
+mag_dun02.gat,0,0,0,0	monster	ディアボリック	1382,5,60000,30000,0
+mag_dun02.gat,200,75,20,40	monster	ディアボリック	1382,10,300000,150000,0
+mag_dun02.gat,135,72,20,20	monster	ディアボリック	1382,5,300000,150000,0
+mag_dun02.gat,115,197,30,20	monster	デリーター	1384,5,60000,30000,0
+mag_dun02.gat,200,75,20,40	monster	デリーター	1384,5,300000,150000,0
+mag_dun02.gat,200,200,120,120	monster	デリーター	1385,10,300000,150000,0
+mag_dun02.gat,0,0,0,0	monster	ギグ	1387,10,0,0,0
+mag_dun02.gat,0,0,0,0	monster	ナイトメアテラー	1379,12,60000,30000,0
 
 //ノーグロード 1層(mag_dun01.gat)
-mag_dun01.gat,0,0,0,0	monster	ラーヴァゴーレム	1366,20,300000,150000,0
+mag_dun01.gat,0,0,0,0	monster	ラーヴァゴーレム	1366,20,600000,300000,0
 mag_dun01.gat,0,0,0,0	monster	ブレイザー	1367,20,0,0,0
 mag_dun01.gat,0,0,0,0	monster	グリズリー	1381,10,0,0,0
 mag_dun01.gat,0,0,0,0	monster	エクスプロージョン	1383,30,0,0,0
@@ -2248,7 +2256,7 @@ ama_dun02.gat,0,0,0,0	monster	銃奇兵	1403,20,60000,30000,0
 ama_dun02.gat,0,0,0,0	monster	雅人形	1404,5,0,0,0
 
 //畳の迷宮(ama_dun01.gat)
-ama_dun01.gat,0,0,0,0	monster	カブキ忍者	1401,2,0,0,0
+ama_dun01.gat,0,0,0,0	monster	カブキ忍者	1401,2,180000,90000,0
 ama_dun01.gat,0,0,0,0	monster	銃奇兵	1403,45,0,0,0
 ama_dun01.gat,0,0,0,0	monster	雅人形	1404,65,0,0,0
 
