@@ -1,9 +1,6 @@
 #ifndef _NPC_H_
 #define _NPC_H_
 
-#define START_NPC_NUM	 5100000
-#define END_NPC_NUM  	16777215	// SL_SMAのエフェクト表現可能上限 = 0x00ffffff
-
 #define WARP_CLASS 45
 #define WARP_DEBUG_CLASS 722
 #define INVISIBLE_CLASS 32767

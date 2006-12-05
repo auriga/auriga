@@ -739,24 +739,24 @@ void map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4
 int map_addobject(struct block_list *bl)
 {
 	int i;
-	if( bl == NULL ){
+	if(bl == NULL) {
 		printf("map_addobject nullpo?\n");
 		return 0;
 	}
-	if(first_free_object_id<2 || first_free_object_id>=MAX_FLOORITEM)
-		first_free_object_id=2;
-	for(i=first_free_object_id;i<MAX_FLOORITEM;i++)
-		if(object[i]==NULL)
+	if(first_free_object_id < MIN_FLOORITEM || first_free_object_id >= MAX_FLOORITEM)
+		first_free_object_id = MIN_FLOORITEM;
+	for(i = first_free_object_id; i < MAX_FLOORITEM; i++)
+		if(object[i] == NULL)
 			break;
-	if(i>=MAX_FLOORITEM){
+	if(i >= MAX_FLOORITEM) {
 		if(battle_config.error_log)
 			printf("no free object id\n");
 		return 0;
 	}
-	first_free_object_id=i;
-	if(last_object_id<i)
-		last_object_id=i;
-	object[i]=bl;
+	first_free_object_id = i;
+	if(last_object_id < i)
+		last_object_id = i;
+	object[i] = bl;
 	//numdb_insert(id_db,i,bl);
 	//numdb_insert(address_db,bl,1);
 	return i;
@@ -769,18 +769,18 @@ int map_addobject(struct block_list *bl)
  */
 int map_delobjectnofree(int id)
 {
-	if(object[id]==NULL)
+	if(object[id] == NULL)
 		return 0;
 
 	map_delblock(object[id]);
 	//numdb_erase(id_db,id);
 	//numdb_erase(address_db,object[id]);
-	object[id]=NULL;
+	object[id] = NULL;
 
-	if(first_free_object_id>id)
-		first_free_object_id=id;
+	if(first_free_object_id > id)
+		first_free_object_id = id;
 
-	while(last_object_id>2 && object[last_object_id]==NULL)
+	while(last_object_id > MIN_FLOORITEM && object[last_object_id] == NULL)
 		last_object_id--;
 
 	return 0;
@@ -796,9 +796,9 @@ int map_delobjectnofree(int id)
  */
 int map_delobject(int id)
 {
-	struct block_list *obj=object[id];
+	struct block_list *obj = object[id];
 
-	if(obj==NULL)
+	if(obj == NULL)
 		return 0;
 
 	map_delobjectnofree(id);
@@ -814,27 +814,27 @@ int map_delobject(int id)
 void map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
 {
 	int i;
-	int blockcount=bl_list_count;
+	int blockcount = bl_list_count;
 	va_list ap;
 
 	va_start(ap,type);
 
-	for(i=2;i<=last_object_id;i++){
-		if(object[i]){
+	for(i = MIN_FLOORITEM; i <= last_object_id; i++){
+		if(object[i]) {
 			if(type && !(object[i]->type & type))
 				continue;
-			if(bl_list_count>=BL_LIST_MAX) {
+			if(bl_list_count >= BL_LIST_MAX) {
 				if(battle_config.error_log)
 					printf("map_foreachobject: too many block !\n");
+			} else {
+				bl_list[bl_list_count++] = object[i];
 			}
-			else
-				bl_list[bl_list_count++]=object[i];
 		}
 	}
 
 	map_freeblock_lock();
 
-	for(i=blockcount;i<bl_list_count;i++)
+	for(i = blockcount; i < bl_list_count; i++)
 		if( bl_list[i]->prev || bl_list[i]->next )
 			func(bl_list[i],ap);
 

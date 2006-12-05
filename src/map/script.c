@@ -6865,8 +6865,8 @@ int buildin_changebase(struct script_state *st)
 	if(vclass == 22 && !battle_config.wedding_modifydisplay)
 		return 0;
 
-	if(vclass == 22 || vclass == 26)
-		pc_unequipitem(sd,sd->equip_index[9],1);	// 装備外し
+	//if(vclass == 22 || vclass == 26)
+	//	pc_unequipitem(sd,sd->equip_index[9],1);	// 装備外し
 
 	sd->view_class = vclass;
 	clif_changelook(&sd->bl, LOOK_BASE, vclass);

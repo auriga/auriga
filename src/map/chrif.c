@@ -362,9 +362,6 @@ int chrif_authreq(struct map_session_data *sd)
 {
 	nullpo_retr(-1, sd);
 
-	if (sd->sex < 0 || sd->sex > 1) // invalid sex
-		return -1;
-
 	if (char_fd < 0)
 		return -1;
 

@@ -6442,7 +6442,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 		if(sd->inventory_data[n])
 			sd->weapontype1 = sd->inventory_data[n]->look;
 		else
-			sd->weapontype1 = 0;
+			sd->weapontype1 = WT_FIST;
 		pc_calcweapontype(sd);
 		clif_changelook(&sd->bl,LOOK_WEAPON,sd->status.weapon);
 	}
@@ -6453,15 +6453,16 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 				if(sd->status.inventory[n].equip == 0x0020)
 					sd->weapontype2 = sd->inventory_data[n]->look;
 				else
-					sd->weapontype2 = 0;
+					sd->weapontype2 = WT_FIST;
 			}
 			else if(sd->inventory_data[n]->type == 5) {
 				sd->status.shield = sd->inventory_data[n]->look;
-				sd->weapontype2 = 0;
+				sd->weapontype2 = WT_FIST;
 			}
+		} else {
+			sd->status.shield = 0;
+			sd->weapontype2 = WT_FIST;
 		}
-		else
-			sd->status.shield = sd->weapontype2 = 0;
 		pc_calcweapontype(sd);
 		clif_changelook(&sd->bl,LOOK_SHIELD,sd->status.shield);
 	}
@@ -6558,13 +6559,14 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 			}
 		}
 		if(sd->status.inventory[n].equip & 0x0002) {
-			sd->weapontype1 = 0;
+			sd->weapontype1 = WT_FIST;
 			sd->status.weapon = sd->weapontype2;
 			pc_calcweapontype(sd);
 			clif_changelook(&sd->bl,LOOK_WEAPON,sd->status.weapon);
 		}
 		if(sd->status.inventory[n].equip & 0x0020) {
-			sd->status.shield = sd->weapontype2 = 0;
+			sd->weapontype2 = WT_FIST;
+			sd->status.shield = 0;
 			pc_calcweapontype(sd);
 			clif_changelook(&sd->bl,LOOK_SHIELD,sd->status.shield);
 		}

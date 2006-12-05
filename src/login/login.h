@@ -12,9 +12,6 @@
 							// passwordencrypt2のときは2にする。
 							// 3にすると両方に対応
 
-#define START_ACCOUNT_NUM	2000000
-#define END_ACCOUNT_NUM		5000000
-
 struct login_session_data {
 	long account_id;
 	long login_id1;

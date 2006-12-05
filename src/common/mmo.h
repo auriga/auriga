@@ -67,6 +67,14 @@
 
 #define GRF_PATH_FILENAME "conf/grf-files.txt"
 
+// ブロックID定義
+#define MIN_FLOORITEM            2
+#define MAX_FLOORITEM       500000
+#define START_ACCOUNT_NUM  2000000
+#define END_ACCOUNT_NUM    5000000
+#define START_NPC_NUM      5100000
+#define END_NPC_NUM       16777215	// SL_SMAのエフェクト表現可能上限 = 0x00ffffff
+
 struct item {
 	int id;
 	short nameid;

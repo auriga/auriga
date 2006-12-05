@@ -1,4 +1,38 @@
 ----------------------------------------
+//020 [2006/12/06] by Rayce
+
+・ブロックIDの定義が各ファイルに散らばってて把握しずらいのでmmo.hに集める
+	-> MIN_FLOORITEM を追加、MAX_FLOORITEM をmap.hから移動
+	-> START_ACCOUNT_NUM, END_ACCOUNT_NUM をlogin.hから移動
+	-> START_NPC_NUM, END_NPC_NUM をnpc.hから移動
+
+・clif_parse_WantToConnection() における不正パケットのチェックを強化（chrif.c, clif.c）
+	-> 送られてきたアカウントIDが不正な値でないかチェックする
+	　 （例えばIDの値がMAX_FLOORITEM以内だと、存在しているのに map_id2sd() で検索されないキャラが出来る）
+	-> Sexの不正チェックを chrif_authreq() から移動
+	-> session_dataをcallocする前に判定は行う、不正だった場合はタイムアウトで落とす
+	-> 「invalid Account ID !!」および「invalid Sex !!」が出力された場合は、
+	　 不正なアクセスが行われたことを意味します
+
+・一部の weapontype1, weapontype2 変数への代入について、0を WT_FIST に置換（pc.c）
+・map.cを少しだけ整形
+
+・scriptのchangebase命令で、職業IDが22（ウェディング）および26（拳聖2）のときは武器を外す処理が含まれていたが
+　この部分をコメントアウト（script.c）
+	装備を外すとHPやSPが減少する効果（bSPPenaltyUnrig等）を持つ装備品を装備している状態（三葉蟲カード等）で、
+	EquipScriptに changebase 22; が記述された装備品（ウェディングドレス等）を装備すると
+	HPとSPが共に0になり死亡してしまう現象を修正するための処置です。
+	武器を外す処理を省いてもウェディング状態のときは clif_changelook() で武器の表示をしないように処置される
+	ためクライアントエラーにはなりません。
+
+　※詳細
+	上記の例の場合、呼び出される主な関数は以下の通り。
+	pc_equipitem() → status_calc_pc() → run_script() → buildin_changebase() → pc_unequip() → pc_heal()
+	bSPPenaltyUnrigの効果により装備の解除時に pc_heal() が呼ばれますが、status_calc_pc() ではmax_hpの値は
+	まだ計算されていない状態なので max_hp = 0 です。
+	従って pc_heal() で最初に呼ばれる pc_checkoverhp() によってHPが0にされてしまいます。
+
+----------------------------------------
 //019 [2006/12/05] by Rayce
 
 ・mob_dead() の処理改善および整形

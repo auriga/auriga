@@ -8712,9 +8712,26 @@ static void clif_parse_WantToConnection(int fd,struct map_session_data *sd, int 
 	int account_id,char_id,login_id1,sex;
 	unsigned int client_tick;
 
-	if(sd){
+	if(sd) {
 		if(battle_config.error_log)
 			printf("clif_parse_WantToConnection : invalid request?\n");
+		return;
+	}
+
+	account_id  = RFIFOL(fd,GETPACKETPOS(cmd,0));
+	char_id     = RFIFOL(fd,GETPACKETPOS(cmd,1));
+	login_id1   = RFIFOL(fd,GETPACKETPOS(cmd,2));
+	client_tick = RFIFOL(fd,GETPACKETPOS(cmd,3));
+	sex         = RFIFOB(fd,GETPACKETPOS(cmd,4));
+
+	// アカウントIDの不正チェック
+	if(account_id < START_ACCOUNT_NUM || account_id > END_ACCOUNT_NUM) {
+		printf("clif_parse_WantToConnection : invalid Account ID !!\n");
+		return;
+	}
+	// Sexのチェック
+	if(sex < 0 || sex > 1) {
+		printf("clif_parse_WantToConnection : invalid Sex !!\n");
 		return;
 	}
 
@@ -8722,14 +8739,8 @@ static void clif_parse_WantToConnection(int fd,struct map_session_data *sd, int 
 	sd = session[fd]->session_data;
 	sd->fd = fd;
 
-	account_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
-	char_id = RFIFOL(fd,GETPACKETPOS(cmd,1));
-	login_id1 = RFIFOL(fd,GETPACKETPOS(cmd,2));
-	client_tick = RFIFOL(fd,GETPACKETPOS(cmd,3));
-	sex = RFIFOB(fd,GETPACKETPOS(cmd,4));
-
 	pc_setnewpc(sd, account_id, char_id, login_id1, client_tick, sex);
-	if((old_sd=map_id2sd(account_id)) != NULL){
+	if((old_sd = map_id2sd(account_id)) != NULL) {
 		// 2重loginなので切断用のデータを保存する
 		old_sd->new_fd=fd;
 		sd->new_fd = -1; // 新しいデータはセーブしないフラグ
@@ -8737,10 +8748,10 @@ static void clif_parse_WantToConnection(int fd,struct map_session_data *sd, int 
 		map_addiddb(&sd->bl);
 	}
 
-	if (chrif_authreq(sd))
+	if(chrif_authreq(sd))
 		session[fd]->eof = 1;
 
-	WFIFOL(fd,0)=sd->bl.id; // account_id
+	WFIFOL(fd,0) = sd->bl.id; // account_id
 	WFIFOSET(fd,4);
 
 	return;
