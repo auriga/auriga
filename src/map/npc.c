@@ -1768,190 +1768,172 @@ int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
 static int npc_parse_mapflag(char *w1,char *w2,char *w3,char *w4)
 {
 	int m;
-	char mapname[24],savemap[16];
-	int savex,savey;
-	char drop_arg1[16],drop_arg2[16];
-	int drop_id=0,drop_type=0,drop_per=0;
+	char mapname[24];
 
 	// 引数の個数チェック
-//	if (	sscanf(w1,"%[^,],%d,%d,%d",mapname,&x,&y,&dir) != 4 )
-	if (	sscanf(w1,"%23[^,]",mapname) != 1 )
+	if ( sscanf(w1,"%23[^,]",mapname) != 1 )
 		return 0;
 
 	m=map_mapname2mapid(mapname);
 	if (m<0)
 		return 0;	// assignされてないMAPなので終了
 
-//マップフラグ
-	if ( strcmpi(w3,"nosave")==0) {
+	if(npc_set_mapflag(m, w3, w4) < 0) {
+		printf("npc_parse_mapflag: mapflag \"%s\" not exist!!\a\n",w3);
+	}
+	return 0;
+}
+
+/*==========================================
+ * ナイトメアモードの設定
+ *------------------------------------------
+ */
+static int npc_set_mapflag_sub(int m,char *str,short flag)
+{
+	char drop_arg1[16],drop_arg2[16];
+	int drop_id=0, drop_type=0, drop_per=0;
+
+	if(sscanf(str, "%15[^,],%15[^,],%d", drop_arg1, drop_arg2, &drop_per) != 3)
+		return 0;
+
+	if(strcmp(drop_arg1,"random")==0)
+		drop_id = -1;
+	else if(itemdb_exists( (drop_id=atoi(drop_arg1)) )==NULL)
+		drop_id = 0;
+	if(strcmp(drop_arg2,"inventory")==0)
+		drop_type = 1;
+	else if(strcmp(drop_arg2,"equip")==0)
+		drop_type = 2;
+	else if(strcmp(drop_arg2,"all")==0)
+		drop_type = 3;
+
+	if(drop_id != 0) {
+		int i;
+		for(i=0; i<MAX_DROP_PER_MAP; i++) {
+			if(map[m].drop_list[i].drop_id == 0) {
+				map[m].drop_list[i].drop_id   = drop_id;
+				map[m].drop_list[i].drop_type = drop_type;
+				map[m].drop_list[i].drop_per  = drop_per;
+				map[m].drop_list[i].drop_flag = flag;
+				break;
+			}
+		}
+		if(i >= MAX_DROP_PER_MAP)
+			printf("npc_set_mapflag_sub: drop list is full (%s, size = %d)\n", map[m].name, i);
+		return 1;
+	}
+	return 0;
+}
+
+/*==========================================
+ * マップフラグの設定
+ *------------------------------------------
+ */
+int npc_set_mapflag(int m,char *w3,char *w4)
+{
+	if(m < 0 || m >= map_num)
+		return 0;
+
+	if (strcmpi(w3,"nosave")==0) {
+		char savemap[16];
+		int savex,savey;
 		if (strcmp(w4,"SavePoint")==0) {
 			memcpy(map[m].save.map,"SavePoint",16);
-			map[m].save.x=-1;
-			map[m].save.y=-1;
-		}else if (sscanf(w4,"%23[^,],%d,%d",savemap,&savex,&savey)==3) {
+			map[m].save.x = -1;
+			map[m].save.y = -1;
+			map[m].flag.nosave = 1;
+		} else if (sscanf(w4,"%23[^,],%d,%d",savemap,&savex,&savey)==3) {
 			memcpy(map[m].save.map,savemap,16);
-			map[m].save.x=savex;
-			map[m].save.y=savey;
+			map[m].save.x = savex;
+			map[m].save.y = savey;
+			map[m].flag.nosave = 1;
 		} else {
-			printf("mapflag 'nosave' require \"SavePoint\" or mapname\n");
-			return 1;
+			map[m].flag.nosave = 0;
 		}
-		map[m].flag.nosave=1;
+	} else if (strcmpi(w3,"nomemo")==0) {
+		map[m].flag.nomemo ^= 1;
+	} else if (strcmpi(w3,"noteleport")==0) {
+		map[m].flag.noteleport ^= 1;
+	} else if (strcmpi(w3,"noportal")==0) {
+		map[m].flag.noportal ^= 1;
+	} else if (strcmpi(w3,"noreturn")==0) {
+		map[m].flag.noreturn ^= 1;
+	} else if (strcmpi(w3,"monster_noteleport")==0) {
+		map[m].flag.monster_noteleport ^= 1;
+	} else if (strcmpi(w3,"nobranch")==0) {
+		map[m].flag.nobranch ^= 1;
+	} else if (strcmpi(w3,"nopenalty")==0) {
+		map[m].flag.nopenalty ^= 1;
+	} else if (strcmpi(w3,"pvp")==0) {
+		map[m].flag.pvp ^= 1;
+	} else if (strcmpi(w3,"pvp_noparty")==0) {
+		map[m].flag.pvp_noparty ^= 1;
+	} else if (strcmpi(w3,"pvp_noguild")==0) {
+		map[m].flag.pvp_noguild ^= 1;
+	} else if (strcmpi(w3,"pvp_nightmaredrop")==0) {
+		if (npc_set_mapflag_sub(m, w4, MF_PVP_NIGHTMAREDROP))
+			map[m].flag.pvp_nightmaredrop = 1;
+	} else if (strcmpi(w3,"pvp_nocalcrank")==0) {
+		map[m].flag.pvp_nocalcrank ^= 1;
+	} else if (strcmpi(w3,"gvg")==0) {
+		map[m].flag.gvg ^= 1;
+	} else if (strcmpi(w3,"gvg_noparty")==0) {
+		map[m].flag.gvg_noparty ^= 1;
+	} else if (strcmpi(w3,"gvg_nightmaredrop")==0) {
+		if (npc_set_mapflag_sub(m, w4, MF_GVG_NIGHTMAREDROP))
+			map[m].flag.gvg_nightmaredrop = 1;
+	} else if (strcmpi(w3,"nozenypenalty")==0) {
+		map[m].flag.nozenypenalty ^= 1;
+	} else if (strcmpi(w3,"notrade")==0) {
+		map[m].flag.notrade ^= 1;
+	} else if (strcmpi(w3,"noskill")==0) {
+		map[m].flag.noskill ^= 1;
+	} else if (strcmpi(w3,"noabra")==0) {
+		map[m].flag.noabra ^= 1;
+	} else if (strcmpi(w3,"nodrop")==0) {
+		map[m].flag.nodrop ^= 1;
+	} else if (strcmpi(w3,"snow")==0) {
+		map[m].flag.snow ^= 1;
+	} else if (strcmpi(w3,"fog")==0) {
+		map[m].flag.fog ^= 1;
+	} else if (strcmpi(w3,"sakura")==0) {
+		map[m].flag.sakura ^= 1;
+	} else if (strcmpi(w3,"leaves")==0) {
+		map[m].flag.leaves ^= 1;
+	} else if (strcmpi(w3,"rain")==0) {
+		map[m].flag.rain ^= 1;
+	} else if (strcmpi(w3,"fireworks")==0) {
+		map[m].flag.fireworks ^= 1;
+	} else if (strcmpi(w3,"cloud1")==0) {
+		map[m].flag.cloud1 ^= 1;
+	} else if (strcmpi(w3,"cloud2")==0) {
+		map[m].flag.cloud2 ^= 1;
+	} else if (strcmpi(w3,"cloud3")==0) {
+		map[m].flag.cloud3 ^= 1;
+	} else if (strcmpi(w3,"base_exp_rate")==0) {
+		map[m].base_exp_rate = atoi(w4);
+	} else if (strcmpi(w3,"job_exp_rate")==0) {
+		map[m].job_exp_rate = atoi(w4);
+	} else if (strcmpi(w3,"pk")==0) {
+		map[m].flag.pk ^= 1;
+	} else if (strcmpi(w3,"pk_noparty")==0) {
+		map[m].flag.pk_noparty ^= 1;
+	} else if (strcmpi(w3,"pk_noguild")==0) {
+		map[m].flag.pk_noguild ^= 1;
+	} else if (strcmpi(w3,"pk_nightmaredrop")==0) {
+		if (npc_set_mapflag_sub(m, w4, MF_PK_NIGHTMAREDROP))
+			map[m].flag.pk_nightmaredrop = 1;
+	} else if (strcmpi(w3,"pk_nocalcrank")==0) {
+		map[m].flag.pk_nocalcrank ^= 1;
+	} else if (strcmpi(w3,"noicewall")==0) {
+		map[m].flag.noicewall ^= 1;
+	} else if (strcmpi(w3,"turbo")==0) {
+		map[m].flag.turbo ^= 1;
+	} else if (strcmpi(w3,"norevive")==0) {
+		map[m].flag.norevive ^= 1;
+	} else {
+		return -1;	// 存在しないマップフラグなのでエラー
 	}
-	else if (strcmpi(w3,"nomemo")==0) {
-		map[m].flag.nomemo=1;
-	}
-	else if (strcmpi(w3,"noteleport")==0) {
-		map[m].flag.noteleport=1;
-	}
-	else if (strcmpi(w3,"noportal")==0) {
-		map[m].flag.noportal=1;
-	}
-	else if (strcmpi(w3,"noreturn")==0) {
-		map[m].flag.noreturn=1;
-	}
-	else if (strcmpi(w3,"monster_noteleport")==0) {
-		map[m].flag.monster_noteleport=1;
-	}
-	else if (strcmpi(w3,"nobranch")==0) {
-		map[m].flag.nobranch=1;
-	}
-	else if (strcmpi(w3,"nopenalty")==0) {
-		map[m].flag.nopenalty=1;
-	}
-	else if (strcmpi(w3,"pvp")==0) {
-		map[m].flag.pvp=1;
-	}
-	else if (strcmpi(w3,"pvp_noparty")==0) {
-		map[m].flag.pvp_noparty=1;
-	}
-	else if (strcmpi(w3,"pvp_noguild")==0) {
-		map[m].flag.pvp_noguild=1;
-	}
-	else if (strcmpi(w3,"pvp_nightmaredrop")==0) {
-		if (sscanf(w4,"%15[^,],%15[^,],%d",drop_arg1,drop_arg2,&drop_per)==3) {
-			int i;
-			if(strcmp(drop_arg1,"random")==0)
-				drop_id = -1;
-			else if(itemdb_exists( (drop_id=atoi(drop_arg1)) )==NULL)
-				drop_id = 0;
-			if(strcmp(drop_arg2,"inventory")==0)
-				drop_type = 1;
-			else if(strcmp(drop_arg2,"equip")==0)
-				drop_type = 2;
-			else if(strcmp(drop_arg2,"all")==0)
-				drop_type = 3;
-
-			if(drop_id != 0){
-				for (i=0;i<MAX_DROP_PER_MAP;i++){
-					if(map[m].drop_list[i].drop_id==0){
-						map[m].drop_list[i].drop_id = drop_id;
-						map[m].drop_list[i].drop_type = drop_type;
-						map[m].drop_list[i].drop_per = drop_per;
-						break;
-					}
-				}
-				map[m].flag.pvp_nightmaredrop=1;
-			}
-		}
-	}
-	else if (strcmpi(w3,"pvp_nocalcrank")==0) {
-		map[m].flag.pvp_nocalcrank=1;
-	}
-	else if (strcmpi(w3,"gvg")==0) {
-		map[m].flag.gvg=1;
-	}
-	else if (strcmpi(w3,"gvg_noparty")==0) {
-		map[m].flag.gvg_noparty=1;
-	}
-	else if (strcmpi(w3,"nozenypenalty")==0) {
-		map[m].flag.nozenypenalty=1;
-	}
-	else if (strcmpi(w3,"notrade")==0) {
-		map[m].flag.notrade=1;
-	}
-	else if (strcmpi(w3,"noskill")==0) {
-		map[m].flag.noskill=1;
-	}
-	else if (strcmpi(w3,"noabra")==0) {
-		map[m].flag.noabra=1;
-	}
-	else if (strcmpi(w3,"nodrop")==0) {
-		map[m].flag.nodrop=1;
-	}
-	else if (strcmpi(w3,"snow")==0) {
-		map[m].flag.snow=1;
-	}
-	else if (strcmpi(w3,"fog")==0) {
-		map[m].flag.fog=1;
-	}
-	else if (strcmpi(w3,"sakura")==0) {
-		map[m].flag.sakura=1;
-	}
-	else if (strcmpi(w3,"leaves")==0) {
-		map[m].flag.leaves=1;
-	}
-	else if (strcmpi(w3,"rain")==0) {
-		map[m].flag.rain=1;
-	}
-	else if (strcmpi(w3,"base_exp_rate")==0) {
-		int temp=atoi(w4);
-		if(temp>=0)
-			map[m].base_exp_rate=temp;
-	}
-	else if (strcmpi(w3,"job_exp_rate")==0) {
-		int temp=atoi(w4);
-		if(temp>=0)
-			map[m].job_exp_rate=temp;
-	}else if (strcmpi(w3,"pk")==0) {
-		map[m].flag.pk=1;
-	}
-	else if (strcmpi(w3,"pk_noparty")==0) {
-		map[m].flag.pk_noparty=1;
-	}
-	else if (strcmpi(w3,"pk_noguild")==0) {
-		map[m].flag.pk_noguild=1;
-	}
-	else if (strcmpi(w3,"pk_nightmaredrop")==0) {
-		if (sscanf(w4,"%15[^,],%15[^,],%d",drop_arg1,drop_arg2,&drop_per)==3) {
-			int i;
-			if(strcmp(drop_arg1,"random")==0)
-				drop_id = -1;
-			else if(itemdb_exists( (drop_id=atoi(drop_arg1)) )==NULL)
-				drop_id = 0;
-			if(strcmp(drop_arg2,"inventory")==0)
-				drop_type = 1;
-			else if(strcmp(drop_arg2,"equip")==0)
-				drop_type = 2;
-			else if(strcmp(drop_arg2,"all")==0)
-				drop_type = 3;
-
-			if(drop_id != 0){
-				for (i=0;i<MAX_DROP_PER_MAP;i++){
-					if(map[m].drop_list[i].drop_id==0){
-						map[m].drop_list[i].drop_id = drop_id;
-						map[m].drop_list[i].drop_type = drop_type;
-						map[m].drop_list[i].drop_per = drop_per;
-						break;
-					}
-				}
-				map[m].flag.pk_nightmaredrop=1;
-			}
-		}
-	}
-	else if (strcmpi(w3,"pk_nocalcrank")==0) {
-		map[m].flag.pk_nocalcrank=1;
-	}
-	else if (strcmpi(w3,"noicewall")==0) {
-		map[m].flag.noicewall=1;
-	}
-	else if (strcmpi(w3,"turbo")==0) {
-		map[m].flag.turbo=1;
-	}
-	else if (strcmpi(w3,"norevive")==0) {
-		map[m].flag.norevive=1;
-	}
-	
 	return 0;
 }
 

@@ -174,28 +174,6 @@ enum {
 	C_XOR,C_OR,C_AND,C_ADD,C_SUB,C_MUL,C_DIV,C_MOD,C_NEG,C_LNOT,C_NOT,C_R_SHIFT,C_L_SHIFT
 };
 
-enum {
-	MF_NOMEMO,
-	MF_NOTELEPORT,
-	MF_NOPORTAL,
-	MF_NORETURN,
-	MF_MONSTER_NOTELEPORT,
-	MF_NOBRANCH,
-	MF_NOPENALTY,
-	MF_PVP_NOPARTY,
-	MF_PVP_NOGUILD,
-	MF_PVP_NOCALCRANK,
-	MF_GVG_NOPARTY,
-	MF_NOZENYPENALTY,
-	MF_NOTRADE,
-	MF_NOSKILL,
-	MF_NOABRA,
-	MF_NODROP,
-	MF_NOICEWALL,
-	MF_TURBO,
-	MF_NOREVIVE
-};
-
 /*==========================================
  * エラーメッセージ出力
  *------------------------------------------

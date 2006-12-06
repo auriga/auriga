@@ -51,7 +51,7 @@ static int mob_dummy_class[MAX_RANDOMMONSTER];	// ランダムモンスター選
  *------------------------------------------
  */
 static int mob_makedummymobdb(int);
-static void mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned int tick);
+static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned int tick);
 int mobskill_use(struct mob_data *md,unsigned int tick,int event);
 int mobskill_deltimer(struct mob_data *md );
 int mob_skillid2skillidx(int class,int skillid);
@@ -1686,7 +1686,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
  * mdの死亡処理
  *------------------------------------------
  */
-static void mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned int tick)
+static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned int tick)
 {
 	int i,count = 0;
 	int mvp_damage = 0;
@@ -1706,7 +1706,7 @@ static void mob_dead(struct block_list *src,struct mob_data *md,int type,unsigne
 		int dmg;
 	} mvp[3];
 
-	nullpo_retv(md);	// srcはNULLで呼ばれる場合もあるので、他でチェック
+	nullpo_retr(0, md);	// srcはNULLで呼ばれる場合もあるので、他でチェック
 
 	mobskill_use(md,tick,-1);	// 死亡時スキル
 
@@ -1845,17 +1845,25 @@ static void mob_dead(struct block_list *src,struct mob_data *md,int type,unsigne
 			damage = (int)node->data;
 			rate = (damage <= 0)? 0: per * damage / 100;
 
-			base_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class].base_exp * rate/tdmg * base_exp_rate/100;
-			if(mob_db[md->class].base_exp > 0 && base_exp < 1 && damage > 0)
-				base_exp = 1;
-			if(base_exp < 0)
+			if(base_exp_rate <= 0) {
 				base_exp = 0;
+			} else {
+				base_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class].base_exp * rate/tdmg * base_exp_rate/100;
+				if(mob_db[md->class].base_exp > 0 && base_exp < 1 && damage > 0)
+					base_exp = 1;
+				if(base_exp < 0)
+					base_exp = 0;
+			}
 
-			job_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class].job_exp * rate/tdmg * job_exp_rate/100;
-			if(mob_db[md->class].job_exp > 0 && job_exp < 1 && damage > 0)
-				job_exp = 1;
-			if(job_exp < 0)
+			if(job_exp_rate <= 0) {
 				job_exp = 0;
+			} else {
+				job_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class].job_exp * rate/tdmg * job_exp_rate/100;
+				if(mob_db[md->class].job_exp > 0 && job_exp < 1 && damage > 0)
+					job_exp = 1;
+				if(job_exp < 0)
+					job_exp = 0;
+			}
 
 			if( tmpbl[i]->type == BL_HOM ) {
 				struct homun_data *thd = (struct homun_data *)tmpbl[i];
@@ -2114,7 +2122,7 @@ static void mob_dead(struct block_list *src,struct mob_data *md,int type,unsigne
 		unit_remove_map(&md->bl, 1);
 	}
 
-	return;
+	return 0;
 }
 
 /*==========================================

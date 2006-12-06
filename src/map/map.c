@@ -2198,16 +2198,31 @@ int map_pk_server(int flag)
 //PKフィールドのアイテムドロップを一括変更
 int map_pk_nightmaredrop(int flag)
 {
-	int i,count=0;
+	int m,i,count=0;
+
 	if(!flag)
 		return 0;
+
 	printf("server setting:pk nightmaredrop ");
-	for(i=0;i<map_num;i++)
+	for(m=0; m<map_num; m++)
 	{
-		if(map[i].flag.pk){
-			map[i].flag.pk_nightmaredrop = 1;
-			count++;
+		if(!map[m].flag.pk)
+			continue;
+		for(i=0; i<MAX_DROP_PER_MAP; i++) {
+			if(map[m].drop_list[i].drop_id == 0) {
+				map[m].drop_list[i].drop_id   = -1;			// random
+				map[m].drop_list[i].drop_type = 2;			// equip
+				map[m].drop_list[i].drop_per  = 1000;			// 10%
+				map[m].drop_list[i].drop_flag = MF_PK_NIGHTMAREDROP;	// PK
+				break;
+			}
 		}
+		if(i >= MAX_DROP_PER_MAP) {	// 空きがない場合はマップフラグをセットしない
+			printf("\nmap_pk_nightmaredrop: drop list is full (%s, size = %d)\a\n", map[m].name, i);
+			continue;
+		}
+		map[m].flag.pk_nightmaredrop = 1;
+		count++;
 	}
 	printf("(count:%d/%d)\n",count,map_num);
 	return 1;
@@ -2349,23 +2364,7 @@ static int map_config_read(char *cfgName)
 }
 
 /*==========================================
- * マップが通常マップであるか調べ調査する
- *------------------------------------------
- */
-int map_check_normalmap(int m)
-{
-	/*
-	if(map[m].flag.pk || map[m].flag.pvp || map[m].flag.gvg)
-		return 0;//map[m].flag.normalfield = 0;
-	else
-		return 1;//map[m].flag.normalfield = 1;
-*/
-
-	return map[m].flag.normal;
-}
-
-/*==========================================
- * マップが通常マップであるか調べ調査する
+ * マップが通常マップであるかを排他的に設定
  *------------------------------------------
  */
 int map_field_setting(void)

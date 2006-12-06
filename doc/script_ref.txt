@@ -167,6 +167,10 @@ AthenaNPCScript
 		gatname			ルールを設定するMAPファイル名を指定します。
 		const			ルールの内容を指定します。
 
+		同じMAPに同じルールを設定すると、そのルールは解除されます。
+		ただし pvp_nightmaredrop, gvg_nightmaredrop, pk_nightmaredrop は解除できません。
+		また base_exp_rate, job_exp_rate の場合は最後に書かれた倍率が適用されます。
+
 		constの一覧。
 			nosave<tab><gatname>,<x>,<y>
 				リログインした際<gatname>の座標<x>,<y>に移動します。
@@ -179,24 +183,43 @@ AthenaNPCScript
 				battle.confのnoportal_flagが1のときに有効で、ワープポータルを禁止します。
 			noreturn<tab>dummy
 				warp命令によるSavePointへの帰還、および蝶の羽の使用を禁止します。
+			monster_noteleport<tab>dummy
+				モンスターのテレポートの使用を禁止します。
 			nobranch<tab>dummy
 				古木の枝、血のついた木の枝、ポリン箱の使用を禁止します。
 			nopenalty<tab>dummy
 				デスペナルティ無しになります。
+			pvp<tab>dummy
+				PVP可能MAPになります。
+			pvp_noparty<tab>dummy
+				PVPにおいて、同パーティー攻撃不可になります。
+			pvp_noguild<tab>dummy
+				PVPにおいて、同ギルド攻撃不可になります。
+			pvp_nightmaredrop<tab><item>,<type>,<per>
+				PVPナイトメアモードの設定です。
+				PvPにて死亡した場合、<per>の確率でアイテムをドロップします。
+				<item>: ドロップするアイテムIDを指定します。randomと記述すると所持品からランダムにドロップします。
+				<type>: ドロップするアイテムのタイプを指定します。inventory:所持品 equip:装備品 all:全部
+				<per> : ドロップする確率です。万分率で指定します。
+			pvp_nocalcrank<tab>dummy
+				PVPにおいて、ランキングを計算しません。
+			gvg<tab>dummy
+				シーズモードになります。
+			gvg_noparty<tab>dummy
+				シーズモードにおいて、同パーティー攻撃不可になります。
+			gvg_nightmaredrop
+				シーズモードで且つナイトメアモードになります。
+				設定方法はpvp_nightmaredropを参照してください。
 			nozenypenalty<tab>dummy
 				死亡時にゼニーのペナルティ無しになります。
 			notrade<tab>dummy
 				プレイヤー間の取引を禁止します。
-			norevive<tab>dummy
-				死亡時にセーブポイントへ強制送還されます。
 			noskill<tab>dummy
 				全てのスキルの使用を禁止します。
-			nodrop<tab>dummy
-				モンスターを倒したときのアイテムドロップを無効にします。
 			noabra<tab>dummy
 				アブラカタブラの使用を禁止します。
-			noicewall<tab>dummy
-				アイスウォールの使用を禁止します。
+			nodrop<tab>dummy
+				モンスターを倒したときのアイテムドロップを無効にします。
 			snow<tab>dummy
 				雪を降らせます。
 			fog<tab>dummy
@@ -207,42 +230,39 @@ AthenaNPCScript
 				落ち葉が散ります。
 			rain<tab>dummy
 				MAP内の全セルを水場にします。
-			base_exp_rate<tab>,<rate>
+			fireworks<tab>dummy
+				花火が打ち上げられます。
+			cloud1
+				低層雲が立ち込めます。
+			cloud2
+				上層雲が立ち込めます。
+			cloud3
+				流れの速い雲が立ち込めます。
+			base_exp_rate<tab><rate>
 				Base経験値取得倍率を<rate>に変更します。
+				battle_athena.confのbase_exp_rateの値は無視します。
 				<rate>が負の値のときは経験値なしになります。
-			job_exp_rate<tab>,<rate>
+			job_exp_rate<tab><rate>
 				Job経験値取得倍率を<rate>に変更します。
+				battle_athena.confのjob_exp_rateの値は無視します。
 				<rate>が負の値のときは経験値なしになります。
-			monster_noteleport<tab>dummy
-				モンスターのテレポートの使用を禁止します。
-			pvp<tab>dummy
-				PVP可能MAPになります。
-			pvp_nopenalty<tab>dummy
-				PVPにおいて、デスペナルティ無しになります。
-			pvp_noparty<tab>dummy
-				PVPにおいて、同パーティー攻撃不可になります。
-			pvp_noguild<tab>dummy
-				PVPにおいて、同ギルド攻撃不可になります。
-			pvp_nightmaredrop<tab>random,equip,<x>
-				PVPナイトメアモードの設定です。<x>の部位の装備をドロップします。
-			pvp_nocalcrank<tab>dummy
-				PVPにおいて、ランキングを計算しません。
-			gvg<tab>dummy
-				シーズモードになります。
-			gvg_noparty<tab>dummy
-				シーズモードにおいて、同パーティー攻撃不可になります。
 			pk<rab>dummy
 				PK可能MAPになります。
 			pk_noparty<tab>dummy
 				PKモードにおいて、同パーティー攻撃不可になります。
 			pk_noguild<tab>dummy
 				PKモードにおいて、同ギルド攻撃不可になります。
-			pk_nightmaredrop<tab>random,equip,<x>
-				PKナイトメアモードの設定です。<x>の部位の装備をドロップします。
+			pk_nightmaredrop<tab><tab><item>,<type>,<per>
+				PKナイトメアモードの設定です。
+				設定方法はpvp_nightmaredropを参照してください。
 			pk_nocalcrank<tab>dummy
 				PKモードにおいて、ランキングを計算しません。
+			noicewall<tab>dummy
+				アイスウォールの使用を禁止します。
 			turbo<tab>dummy
 				ターボトラックモードになります。
+			norevive<tab>dummy
+				死亡時にセーブポイントへ強制送還されます。
 
 	注釈１）
 		NPCの名前は識別子によって管理されています（表示名ではありません）。

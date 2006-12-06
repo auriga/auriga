@@ -73,6 +73,18 @@ static struct {
 	short class_level;//再振り時の不正防止　ノビ:0 一次:1 二次:2
 } skill_tree[3][MAX_PC_CLASS][100];
 
+/*==========================================
+ * ローカルプロトタイプ宣言 (必要な物のみ)
+ *------------------------------------------
+ */
+static int pc_dead(struct block_list *src,struct map_session_data *sd,int job);
+static int pc_nightmare_drop(struct map_session_data *sd,short flag);
+
+
+/*==========================================
+ * GM関連
+ *------------------------------------------
+ */
 void pc_set_gm_account_fname(char *str)
 {
 	strncpy(GM_account_filename,str,1023);
@@ -4702,21 +4714,12 @@ void pc_resetskill(struct map_session_data* sd)
  */
 int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 {
-	int i=0,j=0;
+	int i;
 	struct pc_base_job s_class;
-	int raise_flag = 0;
-	int raise_hp_per = 0;
-	int raise_sp_per = 0;
-	int raise_sp_rec_flag = 0;
-	int kaizel_lv = 0;
-	struct map_session_data *ssd = NULL;
 
 	nullpo_retr(0, sd);
 
-	if(src && src->type==BL_PC)
-		ssd = (struct map_session_data *)src;
-
-	//転生や養子の場合の元の職業を算出する
+	// 転生や養子の場合の元の職業を算出する
 	s_class = pc_calc_base_job(sd->status.class);
 	// 既に死んでいたら無効
 	if(unit_isdead(&sd->bl))
@@ -4753,15 +4756,15 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	if (pc_ischasewalk(sd))
 		status_change_end(&sd->bl, SC_CHASEWALK, -1);
 
-	//敵の攻撃を受けると一定確率で装備が壊れる
-	if(sd->loss_equip_flag&0x1000 && damage > 0) {	//魔法でも壊れる
+	// 敵の攻撃を受けると一定確率で装備が壊れる
+	if(sd->loss_equip_flag&0x1000 && damage > 0) {	// 魔法でも壊れる
 		for(i=0;i<11;i++) {
 			if(atn_rand()%10000 < sd->break_myequip_rate_when_hit[i])
 				pc_break_equip2(sd,(unsigned short)i);
 		}
 	}
 
-	//敵の攻撃を受けると一定確率で装備が消滅
+	// 敵の攻撃を受けると一定確率で装備が消滅
 	if(sd->loss_equip_flag&0x0020 && damage > 0) {
 		for(i=0;i<11;i++) {
 			if(atn_rand()%10000 < sd->loss_equip_rate_when_hit[i])
@@ -4780,7 +4783,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 
 		return 0;
 	}
-	//スパノビがExp99%でHPが0になるとHPが回復して金剛状態になる
+	// スパノビがExp99%でHPが0になるとHPが回復して金剛状態になる
 	if(s_class.job == 23 && pc_nextbaseexp(sd) && 100*sd->status.base_exp/pc_nextbaseexp(sd)>=99 && sd->sc_data && sd->sc_data[SC_STEELBODY].timer==-1){
 		clif_skill_nodamage(&sd->bl,&sd->bl,MO_STEELBODY,5,1);
 		status_change_start(&sd->bl,SkillStatusChangeTable[MO_STEELBODY],5,0,0,0,skill_get_time(MO_STEELBODY,5),0 );
@@ -4788,14 +4791,31 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		clif_updatestatus(sd,SP_HP);
 		return 0;
 	}
+	// 死亡処理
+	pc_dead(src, sd, s_class.job);
 
-	//死亡前処理
+	return 0;
+}
 
-	//OnPCDieイベント
+/*==========================================
+ * pcの死亡処理
+ *------------------------------------------
+ */
+static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
+{
+	int i, kaizel_lv = 0;
+	struct map_session_data *ssd = NULL;
+
+	nullpo_retr(0, sd);
+
+	if(src && src->type == BL_PC)
+		ssd = (struct map_session_data *)src;
+
+	// OnPCDieイベント
 	if(battle_config.pc_die_script)
 		npc_event_doall_id("OnPCDie",sd->bl.id,sd->bl.m);
 
-	//殺害者のID取得およびOnPCKillイベント
+	// 殺害者のID取得およびOnPCKillイベント
 	if(ssd && ssd != sd) {
 		if(battle_config.set_pckillerid)
 			pc_setglobalreg(sd,"PC_KILLER_ID",ssd->status.account_id);
@@ -4803,19 +4823,11 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 			npc_event_doall_id("OnPCKill",sd->bl.id,sd->bl.m);
 	}
 
-	//カイゼル
+	// カイゼル
 	if(sd->sc_data && sd->sc_data[SC_KAIZEL].timer!=-1)
 		kaizel_lv = sd->sc_data[SC_KAIZEL].val1;	// ステータス異常が解除される前にスキルLvを保存
 
-	//自動蘇生
-	if(atn_rand()%10000 < sd->autoraise.rate)
-	{
-		raise_flag = 1;
-		raise_hp_per      = sd->autoraise.hp_per;
-		raise_sp_per      = sd->autoraise.sp_per;
-		raise_sp_rec_flag = sd->autoraise.flag;
-	}
-	//アイテム消滅
+	// アイテム消滅
 	if(sd->loss_equip_flag&0x0001) {
 		for(i=0;i<11;i++) {
 			if(atn_rand()%10000 < sd->loss_equip_rate_when_die[i])
@@ -4823,21 +4835,21 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		}
 	}
 
-	//蘇生
-	if(raise_flag)
+	// 自動蘇生
+	if(atn_rand()%10000 < sd->autoraise.rate)
 	{
-		//判りにくいのでリザのエフェクト
+		// 判りにくいのでリザのエフェクト
 		clif_skill_nodamage(&sd->bl,&sd->bl,ALL_RESURRECTION,4,1);
-		//HPSP回復
-		sd->status.hp = sd->status.max_hp*raise_hp_per/100;
+		// HPSP回復
+		sd->status.hp = sd->status.max_hp * sd->autoraise.hp_per/100;
 		if(sd->status.hp < 1)
 			sd->status.hp = 1;
 		if(sd->status.hp > sd->status.max_hp)
 			sd->status.hp = sd->status.max_hp;
 		clif_updatestatus(sd,SP_HP);
 
-		if(raise_sp_rec_flag){
-			sd->status.sp = sd->status.max_sp*raise_sp_per/100;
+		if(sd->autoraise.flag) {
+			sd->status.sp = sd->status.max_sp * sd->autoraise.sp_per/100;
 			if(sd->status.sp < 0)
 				sd->status.sp = 0;
 			if(sd->status.sp > sd->status.max_sp)
@@ -4846,9 +4858,9 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		}
 		return 0;
 	}
-	//
+
 	sd->status.hp = 0;
-	//
+
 	if(sd->vender_id)
 		vending_closevending(sd);
 
@@ -4864,19 +4876,19 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	skill_stop_dancing(&sd->bl, 0);
 	clif_clearchar_area(&sd->bl,1);
 	skill_unit_move(&sd->bl,gettick(),0);
-	if(sd->sc_data[SC_BLADESTOP].timer!=-1)//白刃は事前に解除
+	if(sd->sc_data[SC_BLADESTOP].timer!=-1)		// 白刃は事前に解除
 		status_change_end(&sd->bl,SC_BLADESTOP,-1);
-	if(sd->sc_data[SC_CLOSECONFINE].timer!=-1)//白刃は事前に解除
+	if(sd->sc_data[SC_CLOSECONFINE].timer!=-1)	// 白刃は事前に解除
 		status_change_end(&sd->bl,SC_CLOSECONFINE,-1);
 	if(sd->sc_data[SC_HOLDWEB].timer!=-1)
 		status_change_end(&sd->bl,SC_HOLDWEB,-1);
-	pc_setglobalreg(sd,"PC_DIE_COUNTER",++sd->die_counter); //死にカウンター書き込み
+	pc_setglobalreg(sd,"PC_DIE_COUNTER",++sd->die_counter);	// 死にカウンター書き込み
 	status_change_clear(&sd->bl,0);	// ステータス異常を解除する
 
 	pc_setdead(sd);
 
-	if(s_class.job == 0) {
-		if(battle_config.restart_hp_rate <= 50)		//ノビでレート50以下は半分回復
+	if(job == 0) {
+		if(battle_config.restart_hp_rate <= 50)		// ノビでレート50以下は半分回復
 			sd->status.hp = sd->status.max_hp / 2;
 		else
 			sd->status.hp = sd->status.max_hp * battle_config.restart_hp_rate /100;
@@ -4885,7 +4897,8 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	clif_updatestatus(sd,SP_HP);
 	status_calc_pc(sd,0);
 
-	if(battle_config.bone_drop==2 || (battle_config.bone_drop==1 && map[sd->bl.m].flag.pvp) || (battle_config.bone_drop==3 && map[sd->bl.m].flag.pk)){	// ドクロドロップ
+	// ドクロドロップ
+	if(battle_config.bone_drop==2 || (battle_config.bone_drop==1 && map[sd->bl.m].flag.pvp) || (battle_config.bone_drop==3 && map[sd->bl.m].flag.pk)){
 		struct item item_tmp;
 		memset(&item_tmp,0,sizeof(item_tmp));
 		if(battle_config.bone_drop_itemid)
@@ -4907,7 +4920,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	}
 
 	if(battle_config.death_penalty_type&1) {
-		if(s_class.job != 0 && !map[sd->bl.m].flag.nopenalty && !map[sd->bl.m].flag.gvg){
+		if(job != 0 && !map[sd->bl.m].flag.nopenalty && !map[sd->bl.m].flag.gvg){
 			int per = 100;
 			int loss_base=0,loss_job=0;
 			if(sd->sc_data[SC_REDEMPTIO].timer!=-1){
@@ -4965,71 +4978,21 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		}
 	}
 
-	//PK
-	if(map[sd->bl.m].flag.pk){
-		//ランキング計算
+	// PK
+	if(map[sd->bl.m].flag.pk) {
+		// ランキング計算
 		/*
-		if(!map[sd->bl.m].flag.pk_nocalcrank){
-			sd->pvp_point-=5;
-			if(src && src->type==BL_PC )
-				((struct map_session_data *)src)->pvp_point++;
+		if(!map[sd->bl.m].flag.pk_nocalcrank) {
+			sd->pvp_point -= 5;
+			if(ssd)
+				ssd->pvp_point++;
 		}
 		*/
-		//ナイトメアモードアイテムドロップ
-		if(ssd && ssd!=sd && map[sd->bl.m].flag.pk_nightmaredrop){
-			for(j=0;j<MAX_DROP_PER_MAP;j++){
-				int id  = -1;//map[sd->bl.m].drop_list[j].drop_id;
-				int type=  2;//map[sd->bl.m].drop_list[j].drop_type;
-				int per = 1000;//map[sd->bl.m].drop_list[j].drop_per;
-				if(id == 0)
-					continue;
-				if(id == -1){//ランダムドロップ
-					int eq_num=0,eq_n[MAX_INVENTORY];
-					memset(eq_n,0,sizeof(eq_n));
-					//先ず装備しているアイテム数をカウント
-					for(i=0;i<MAX_INVENTORY;i++){
-						int k;
-						if( (type == 1 && !sd->status.inventory[i].equip)
-							|| (type == 2 && sd->status.inventory[i].equip)
-							||  type == 3){
-							//InventoryIndexを格納
-							for(k=0;k<MAX_INVENTORY;k++){
-								if(eq_n[k] <= 0){
-									eq_n[k]=i;
-									break;
-								}
-							}
-							eq_num++;
-						}
-					}
-					if(eq_num > 0){
-						int n = eq_n[atn_rand()%eq_num];//該当アイテムの中からランダム
-						if(atn_rand()%10000 < per){
-							if(sd->status.inventory[n].equip)
-								pc_unequipitem(sd,n,0);
-							pc_dropitem(sd,n,1);
-						}
-					}
-				}
-				else if(id > 0){
-					for(i=0;i<MAX_INVENTORY;i++){
-						if(sd->status.inventory[i].nameid == id              //ItemIDが一致していて
-							&& atn_rand()%10000 < per                         //ドロップ率判定もOKで
-							&& ((type == 1 && !sd->status.inventory[i].equip) //タイプ判定もOKならドロップ
-								||(type == 2 && sd->status.inventory[i].equip)
-								|| type == 3)
-							){
-							if(sd->status.inventory[i].equip)
-								pc_unequipitem(sd,i,0);
-							pc_dropitem(sd,i,1);
-							break;
-						}
-					}
-				}
-			}
+		// ナイトメアモードアイテムドロップ
+		if(ssd && ssd != sd && map[sd->bl.m].flag.pk_nightmaredrop) {
+			pc_nightmare_drop(sd,MF_PK_NIGHTMAREDROP);
 			pc_setdead(sd);
 		}
-
 		if(ssd && ssd!=sd){
 			//被虐殺者
 			ranking_gain_point(sd,RK_PK,-5);
@@ -5037,91 +5000,49 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 			ranking_update(sd,RK_PK);
 			//虐殺者
 			ranking_gain_point(ssd,RK_PK,1);
-			ranking_setglobalreg(ssd,RK_PK);//MOBなど更新回数が多いい場合は定期的に更新
-			ranking_update(ssd,RK_PK);		//MOBなど更新回数が多いい場合は定期的に更新
+			ranking_setglobalreg(ssd,RK_PK);//MOBなど更新回数が多い場合は定期的に更新
+			ranking_update(ssd,RK_PK);		//MOBなど更新回数が多い場合は定期的に更新
 			status_change_start(&ssd->bl,SC_PK_PENALTY,0,0,0,0,battle_config.pk_penalty_time,0);
 		}
 	}
-	// pvp
-	if( map[sd->bl.m].flag.pvp){
-		//ランキング計算
-		if(!map[sd->bl.m].flag.pvp_nocalcrank){
-			sd->pvp_point-=5;
-			if(src && src->type==BL_PC )
-				((struct map_session_data *)src)->pvp_point++;
+	// PvP
+	if(map[sd->bl.m].flag.pvp) {
+		// ランキング計算
+		if(!map[sd->bl.m].flag.pvp_nocalcrank) {
+			sd->pvp_point -= 5;
+			if(ssd)
+				ssd->pvp_point++;
 		}
-		//ナイトメアモードアイテムドロップ
-		if(map[sd->bl.m].flag.pvp_nightmaredrop){
-			for(j=0;j<MAX_DROP_PER_MAP;j++){
-				int id  = map[sd->bl.m].drop_list[j].drop_id;
-				int type= map[sd->bl.m].drop_list[j].drop_type;
-				int per = map[sd->bl.m].drop_list[j].drop_per;
-				if(id == 0)
-					continue;
-				if(id == -1){//ランダムドロップ
-					int eq_num=0,eq_n[MAX_INVENTORY];
-					memset(eq_n,0,sizeof(eq_n));
-					//先ず装備しているアイテム数をカウント
-					for(i=0;i<MAX_INVENTORY;i++){
-						int k;
-						if( (type == 1 && !sd->status.inventory[i].equip)
-							|| (type == 2 && sd->status.inventory[i].equip)
-							||  type == 3){
-							//InventoryIndexを格納
-							for(k=0;k<MAX_INVENTORY;k++){
-								if(eq_n[k] <= 0){
-									eq_n[k]=i;
-									break;
-								}
-							}
-							eq_num++;
-						}
-					}
-					if(eq_num > 0){
-						int n = eq_n[atn_rand()%eq_num];//該当アイテムの中からランダム
-						if(atn_rand()%10000 < per){
-							if(sd->status.inventory[n].equip)
-								pc_unequipitem(sd,n,0);
-							pc_dropitem(sd,n,1);
-						}
-					}
-				}
-				else if(id > 0){
-					for(i=0;i<MAX_INVENTORY;i++){
-						if(sd->status.inventory[i].nameid == id              //ItemIDが一致していて
-							&& atn_rand()%10000 < per                         //ドロップ率判定もOKで
-							&& ((type == 1 && !sd->status.inventory[i].equip) //タイプ判定もOKならドロップ
-								||(type == 2 && sd->status.inventory[i].equip)
-								|| type == 3)
-							){
-							if(sd->status.inventory[i].equip)
-								pc_unequipitem(sd,i,0);
-							pc_dropitem(sd,i,1);
-							break;
-						}
-					}
-				}
-			}
+		// ナイトメアモードアイテムドロップ
+		if(map[sd->bl.m].flag.pvp_nightmaredrop) {
+			pc_nightmare_drop(sd,MF_PVP_NIGHTMAREDROP);
 			pc_setdead(sd);
 		}
 
 		/*
 		//ランキングサンプル
-		if(src->type == BL_PC){
-			struct map_session_data* ssd = (struct map_session_data*)src;
+		if(ssd) {
 			ranking_gain_point(ssd,RK_PVP,1);
-			ranking_setglobalreg(ssd,RK_PVP);	//MOBなど更新回数が多いい場合は定期的に更新
-			ranking_update(ssd,RK_PVP);			//MOBなど更新回数が多いい場合は定期的に更新
+			ranking_setglobalreg(ssd,RK_PVP);	//MOBなど更新回数が多い場合は定期的に更新
+			ranking_update(ssd,RK_PVP);			//MOBなど更新回数が多い場合は定期的に更新
 
 			//死んだ場合ポイントを減らすなら
 			//if(ranking_get_point(sd,RK_PVP)>=1){
 			//	ranking_gain_point(sd,RK_PVP,-1);
-			//	ranking_setglobalreg(sd,RK_PVP);	//MOBなど更新回数が多いい場合は定期的に更新
-			//	ranking_update(sd,RK_PVP);			//MOBなど更新回数が多いい場合は定期的に更新
+			//	ranking_setglobalreg(sd,RK_PVP);	//MOBなど更新回数が多い場合は定期的に更新
+			//	ranking_update(sd,RK_PVP);			//MOBなど更新回数が多い場合は定期的に更新
 			//}
 		}
 		*/
 	}
+	// GvG
+	if(map[sd->bl.m].flag.gvg) {
+		// ナイトメアモードアイテムドロップ
+		if(map[sd->bl.m].flag.gvg_nightmaredrop) {
+			pc_nightmare_drop(sd,MF_GVG_NIGHTMAREDROP);
+		}
+	}
+
 	// 強制送還
 	if((map[sd->bl.m].flag.pvp && sd->pvp_point < 0) || map[sd->bl.m].flag.gvg || map[sd->bl.m].flag.norevive){
 		sd->pvp_point=0;
@@ -5145,6 +5066,62 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	return 0;
 }
 
+/*==========================================
+ * ナイトメアモードのアイテムドロップ
+ *------------------------------------------
+ */
+static int pc_nightmare_drop(struct map_session_data *sd,short flag)
+{
+	int i;
+
+	nullpo_retr(0, sd);
+
+	for(i=0; i<MAX_DROP_PER_MAP; i++) {
+		int itemid, type, per, j;
+		int idx = -1, count = 0;
+
+		// アイテムIDが0のときは末尾なので終了
+		if((itemid = map[sd->bl.m].drop_list[i].drop_id) == 0)
+			break;
+		// マップフラグ番号が合わない
+		if(flag != map[sd->bl.m].drop_list[i].drop_flag)
+			continue;
+
+		type = map[sd->bl.m].drop_list[i].drop_type;
+		per  = map[sd->bl.m].drop_list[i].drop_per;
+
+		if(type < 1 || type > 3 || per <= 0)
+			continue;
+
+		for(j=0; j<MAX_INVENTORY; j++) {
+			if(sd->status.inventory[j].nameid <= 0 || sd->status.inventory[j].amount <= 0)
+				continue;
+
+			// type=1,2は装備チェック、type=3なら無条件で許可
+			if( (type == 1 && sd->status.inventory[j].equip) ||
+			    (type == 2 && !sd->status.inventory[j].equip) )
+				continue;
+
+			// IDがある場合、IDが一致していて確率OKならドロップ処理へ
+			if(itemid > 0 && itemid == sd->status.inventory[j].nameid && atn_rand()%10000 < per) {
+				idx = j;
+				break;
+			}
+			// IDが負の場合、ランダムに対象を選択する（確率はまだ計算しない）
+			if(itemid < 0 && atn_rand()%(++count) == 0) {
+				idx = j;
+			}
+		}
+
+		if(idx >= 0 && (itemid > 0 || atn_rand()%10000 < per)) {	// IDが負の場合に限りここで確率計算する
+			// ドロップ処理
+			if(sd->status.inventory[idx].equip)
+				pc_unequipitem(sd,idx,0);
+			pc_dropitem(sd,idx,1);
+		}
+	}
+	return 0;
+}
 
 //
 // script関連

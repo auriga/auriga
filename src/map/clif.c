@@ -10892,6 +10892,7 @@ static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int 
 	case 0:	// ギルド基本情報、同盟敵対情報
 		clif_guild_basicinfo(sd, g);
 		clif_guild_allianceinfo(sd, g);
+		clif_guild_emblem(sd, g);
 		break;
 	case 1:	// メンバーリスト、役職名リスト
 		clif_guild_positionnamelist(sd, g);

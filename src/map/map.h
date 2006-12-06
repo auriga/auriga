@@ -45,7 +45,7 @@
 #define NATURAL_HEAL_INTERVAL 500
 #define MAX_LEVEL 255
 #define MAX_WALKPATH 32
-#define MAX_DROP_PER_MAP 48
+#define MAX_DROP_PER_MAP 8
 #define MAX_WIS_REFUSAL 14
 #define MAX_MOBGROUP	11
 #define MAX_ITEMGROUP	10
@@ -738,6 +738,7 @@ struct map_data {
 		unsigned pvp_nocalcrank : 1;
 		unsigned gvg : 1;
 		unsigned gvg_noparty : 1;
+		unsigned gvg_nightmaredrop : 1;
 		unsigned nozenypenalty : 1;
 		unsigned notrade : 1;
 		unsigned noskill : 1;
@@ -768,6 +769,7 @@ struct map_data {
 		int drop_id;
 		int drop_type;
 		int drop_per;
+		short drop_flag;
 	} drop_list[MAX_DROP_PER_MAP];
 };
 struct map_data_other_server {
@@ -845,6 +847,16 @@ enum {
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005
 	SP_NO_CASTCANCEL2,SP_INFINITE_ENDURE,SP_ITEM_NO_USE,SP_FIX_DAMAGE,SP_NO_KNOCKBACK,	// 2006-2010
+};
+
+// マップフラグ用定数
+enum {
+	MF_NOSAVE=0,MF_NOMEMO,MF_NOTELEPORT,MF_NOPORTAL,MF_NORETURN,MF_MONSTER_NOTELEPORT,MF_NOBRANCH,		// 0-6
+	MF_NOPENALTY,MF_PVP,MF_PVP_NOPARTY,MF_PVP_NOGUILD,MF_PVP_NIGHTMAREDROP,MF_PVP_NOCALCRANK,		// 7-12
+	MF_GVG,MF_GVG_NOPARTY,MF_GVG_NIGHTMAREDROP,MF_NOZENYPENALTY,MF_NOTRADE,MF_NOSKILL,MF_NOABRA,MF_NODROP,	// 13-20
+	MF_SNOW,MF_FOG,MF_SAKURA,MF_LEAVES,MF_RAIN,MF_FIREWORKS,MF_CLOUD1,MF_CLOUD2,MF_CLOUD3,MF_BASEEXP_RATE,	// 21-30
+	MF_JOBEXP_RATE,MF_PK,MF_PK_NOPARTY,MF_PK_NOGUILD,MF_PK_NIGHTMAREDROP,MF_PK_NOCALCRANK,MF_NOICEWALL,	// 31-37
+	MF_TURBO,MF_NOREVIVE,											// 38-39
 };
 
 enum {
@@ -940,7 +952,6 @@ void map_foreachobject(int (*)(struct block_list*,va_list),int,...);
 int map_quit(struct map_session_data *);
 // npc
 int map_addnpc(int,struct npc_data *);
-int map_check_normalmap(int m);
 
 // 床アイテム関連
 int map_clearflooritem_timer(int,unsigned int,int,int);

@@ -14,7 +14,7 @@ void npc_scriptcont(struct map_session_data *sd, int id);
 void npc_buysellsel(struct map_session_data *sd, int id, unsigned char type);
 int npc_buylist(struct map_session_data *,int,unsigned short *);
 int npc_selllist(struct map_session_data *,int,unsigned short *);
-int npc_parse_mob(char *w1,char *w2,char *w3,char *w4);
+int npc_set_mapflag(int m,char *w3,char *w4);
 int npc_globalmessage(const char *name,char *mes);
 
 int npc_enable(const char *name,int flag);

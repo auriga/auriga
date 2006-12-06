@@ -1,4 +1,35 @@
 ----------------------------------------
+//022 [2006/12/07] by Rayce
+
+・mapflag関連の最適化や機能追加
+　（atcommand.c, map.*, mob.c, npc.*, pc.c, script.c, skill.c）
+	-> mapflagを設定する処理をまとめて npc_set_mapflag() を用意
+	　 スクリプトからの読み込みと@mapflagからの読み込みで共用します
+	-> base_exp_rateとjob_exp_rateで負の値を設定しても取得経験値倍率が0にならなかった問題を修正
+	-> MF_***系定数をscript.cからmap.hへ移動
+	-> map_session_data構造体内のdrop_list構造体に drop_flag メンバを追加
+	　 Pv, Gv, PK でドロップリストを共存させるためのものです
+	-> ナイトメアモードの場合のアイテムドロップ処理をまとめて pc_nightmare_drop() を用意
+	　 処理がゴチャゴチャしてたので書き直し
+	-> MAX_DROP_PER_MAP の値が大きすぎるので、48 → 8 に縮める
+	　 越えてしまった場合は「drop list is full」が出力されます
+	　 ナイトメアモードで多くのアイテムIDを設定したい場合にはこの値を大きくしてください
+	-> PKフィールドをナイトメアモードに一括変更するとき（map_athena.confのmap_pk_nightmaredrop有効時）
+	　 drop_listに空きがない場合はモード設定しないように変更
+	-> 存在しないマップフラグをスクリプトに書いていた場合は警報が鳴るように
+	-> 利用価値が低いので map_check_normalmap() を削除
+	-> 以下の4つのマップフラグをスクリプトから設定できるように
+		fireworks, cloud1, cloud2, cloud3
+	-> ついでなので新しく gvg_nightmaredrop を追加
+	　 シーズモードで且つアイテムをドロップする特殊なMAPを作ることができます
+	-> db/const.txtを変更
+	-> doc/script_ref.txt更新
+
+・pc_damage() から死亡処理を切り離して pc_dead() を用意（pc.c）
+・ALT+Gをしたときギルドエンブレムが時々表示されないバグを多分修正（clif.c）
+	merged from eAthena, thx a lot!!
+
+----------------------------------------
 //021 [2006/12/06] by Rayce
 
 ・キャラIDは出来るだけsd->char_idではなくsd->status.char_idを参照するように修正

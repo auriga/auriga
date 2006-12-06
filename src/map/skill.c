@@ -6487,7 +6487,7 @@ int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsigned int
 		if(status_check_no_magic_damage(bl))
 			break;
 		//霧の中
-		if(map_check_normalmap(bl->m))//通常マップ
+		if(map[bl->m].flag.normal)//通常マップ
 		{
 			if(bl->type==BL_PC)
 				status_change_start(bl,SC_FOGWALL,sg->skill_id,sg->skill_lv,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
