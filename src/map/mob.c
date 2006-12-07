@@ -1819,12 +1819,12 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		int pnum=0;
 		int base_exp_rate, job_exp_rate, per;
 
-		if(map[md->bl.m].base_exp_rate)
-			base_exp_rate = (map[md->bl.m].base_exp_rate < 0)? 0: map[md->bl.m].base_exp_rate;
+		if(map[md->bl.m].flag.base_exp_rate)
+			base_exp_rate = (map[md->bl.m].flag.base_exp_rate < 0)? 0: map[md->bl.m].flag.base_exp_rate;
 		else
 			base_exp_rate = battle_config.base_exp_rate;
-		if(map[md->bl.m].job_exp_rate)
-			job_exp_rate  = (map[md->bl.m].job_exp_rate < 0)? 0: map[md->bl.m].job_exp_rate;
+		if(map[md->bl.m].flag.job_exp_rate)
+			job_exp_rate  = (map[md->bl.m].flag.job_exp_rate < 0)? 0: map[md->bl.m].flag.job_exp_rate;
 		else
 			job_exp_rate  = battle_config.job_exp_rate;
 

@@ -1785,47 +1785,6 @@ static int npc_parse_mapflag(char *w1,char *w2,char *w3,char *w4)
 }
 
 /*==========================================
- * ナイトメアモードの設定
- *------------------------------------------
- */
-static int npc_set_mapflag_sub(int m,char *str,short flag)
-{
-	char drop_arg1[16],drop_arg2[16];
-	int drop_id=0, drop_type=0, drop_per=0;
-
-	if(sscanf(str, "%15[^,],%15[^,],%d", drop_arg1, drop_arg2, &drop_per) != 3)
-		return 0;
-
-	if(strcmp(drop_arg1,"random")==0)
-		drop_id = -1;
-	else if(itemdb_exists( (drop_id=atoi(drop_arg1)) )==NULL)
-		drop_id = 0;
-	if(strcmp(drop_arg2,"inventory")==0)
-		drop_type = 1;
-	else if(strcmp(drop_arg2,"equip")==0)
-		drop_type = 2;
-	else if(strcmp(drop_arg2,"all")==0)
-		drop_type = 3;
-
-	if(drop_id != 0) {
-		int i;
-		for(i=0; i<MAX_DROP_PER_MAP; i++) {
-			if(map[m].drop_list[i].drop_id == 0) {
-				map[m].drop_list[i].drop_id   = drop_id;
-				map[m].drop_list[i].drop_type = drop_type;
-				map[m].drop_list[i].drop_per  = drop_per;
-				map[m].drop_list[i].drop_flag = flag;
-				break;
-			}
-		}
-		if(i >= MAX_DROP_PER_MAP)
-			printf("npc_set_mapflag_sub: drop list is full (%s, size = %d)\n", map[m].name, i);
-		return 1;
-	}
-	return 0;
-}
-
-/*==========================================
  * マップフラグの設定
  *------------------------------------------
  */
@@ -1911,9 +1870,9 @@ int npc_set_mapflag(int m,char *w3,char *w4)
 	} else if (strcmpi(w3,"cloud3")==0) {
 		map[m].flag.cloud3 ^= 1;
 	} else if (strcmpi(w3,"base_exp_rate")==0) {
-		map[m].base_exp_rate = atoi(w4);
+		map[m].flag.base_exp_rate = atoi(w4);
 	} else if (strcmpi(w3,"job_exp_rate")==0) {
-		map[m].job_exp_rate = atoi(w4);
+		map[m].flag.job_exp_rate = atoi(w4);
 	} else if (strcmpi(w3,"pk")==0) {
 		map[m].flag.pk ^= 1;
 	} else if (strcmpi(w3,"pk_noparty")==0) {
@@ -1933,6 +1892,47 @@ int npc_set_mapflag(int m,char *w3,char *w4)
 		map[m].flag.norevive ^= 1;
 	} else {
 		return -1;	// 存在しないマップフラグなのでエラー
+	}
+	return 0;
+}
+
+/*==========================================
+ * ナイトメアモードの設定
+ *------------------------------------------
+ */
+int npc_set_mapflag_sub(int m,char *str,short flag)
+{
+	char drop_arg1[16],drop_arg2[16];
+	int drop_id=0, drop_type=0, drop_per=0;
+
+	if(sscanf(str, "%15[^,],%15[^,],%d", drop_arg1, drop_arg2, &drop_per) != 3)
+		return 0;
+
+	if(strcmp(drop_arg1,"random")==0)
+		drop_id = -1;
+	else if(itemdb_exists( (drop_id=atoi(drop_arg1)) )==NULL)
+		drop_id = 0;
+	if(strcmp(drop_arg2,"inventory")==0)
+		drop_type = 1;
+	else if(strcmp(drop_arg2,"equip")==0)
+		drop_type = 2;
+	else if(strcmp(drop_arg2,"all")==0)
+		drop_type = 3;
+
+	if(drop_id != 0) {
+		int i;
+		for(i=0; i<MAX_DROP_PER_MAP; i++) {
+			if(map[m].drop_list[i].drop_id == 0) {
+				map[m].drop_list[i].drop_id   = drop_id;
+				map[m].drop_list[i].drop_type = drop_type;
+				map[m].drop_list[i].drop_per  = drop_per;
+				map[m].drop_list[i].drop_flag = flag;
+				break;
+			}
+		}
+		if(i >= MAX_DROP_PER_MAP)
+			printf("npc_set_mapflag_sub: drop list is full (%s, size = %d)\n", map[m].name, i);
+		return 1;
 	}
 	return 0;
 }

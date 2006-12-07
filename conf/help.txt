@@ -181,7 +181,7 @@
 @shuffle 数字       ---- PC、MOBを配置(シャッフル)しなおす。 (0:PC,1:MOB,2:PC+MOB)
 @maintenance 数字   ---- 1:メンテナンス状態にする 2:メンテナンス状態を解除する
 
-@mapflag フラグ名 [文字列]     ---- マップフラグOn/Off、必要なら文字列を入力
+@mapflag フラグ名 [文字列]     ---- マップフラグOn/Off、必要なら文字列を入力。(doc/script_ref.txt参照)
 @mannerpoint 数字 キャラ名   ---- 指定キャラのマナーポイントを減らす
 @connectlimit 数字           ---- キャラサーバーに接続可能な最大人数を変更する。
 

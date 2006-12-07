@@ -3324,9 +3324,9 @@ int buildin_getwaitingpcid(struct script_state *st);
 int buildin_attachrid(struct script_state *st);
 int buildin_detachrid(struct script_state *st);
 int buildin_isloggedin(struct script_state *st);
-int buildin_setmapflagnosave(struct script_state *st);
 int buildin_setmapflag(struct script_state *st);
 int buildin_removemapflag(struct script_state *st);
+int buildin_checkmapflag(struct script_state *st);
 int buildin_pvpon(struct script_state *st);
 int buildin_pvpoff(struct script_state *st);
 int buildin_gvgon(struct script_state *st);
@@ -3562,9 +3562,9 @@ struct script_function buildin_func[] = {
 	{buildin_attachrid,"attachrid","i"},
 	{buildin_detachrid,"detachrid",""},
 	{buildin_isloggedin,"isloggedin","i"},
-	{buildin_setmapflag,"setmapflagnosave","ssii"},
-	{buildin_setmapflag,"setmapflag","si"},
+	{buildin_setmapflag,"setmapflag","si*"},
 	{buildin_removemapflag,"removemapflag","si"},
+	{buildin_checkmapflag,"checkmapflag","si"},
 	{buildin_pvpon,"pvpon","s"},
 	{buildin_pvpoff,"pvpoff","s"},
 	{buildin_gvgon,"gvgon","s"},
@@ -7147,126 +7147,175 @@ int buildin_isloggedin(struct script_state *st)
 	return 0;
 }
 
-
 /*==========================================
- *
+ * マップフラグのindexからアドレスを返す
  *------------------------------------------
  */
-int buildin_setmapflagnosave(struct script_state *st)
+static int* script_conv_mapflag(int m,short type)
 {
-	int m,x,y;
-	char *str,*str2;
+	if(m < 0)
+		return NULL;
 
-	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	str2=conv_str(st,& (st->stack->stack_data[st->start+3]));
-	x=conv_num(st,& (st->stack->stack_data[st->start+4]));
-	y=conv_num(st,& (st->stack->stack_data[st->start+5]));
-
-	m = script_mapname2mapid(st,str);
-	if(m >= 0) {
-		map[m].flag.nosave=1;
-		memcpy(map[m].save.map,str2,16);
-		map[m].save.x=x;
-		map[m].save.y=y;
+	switch(type) {
+		case MF_NOSAVE:             return &map[m].flag.nosave;
+		case MF_NOMEMO:             return &map[m].flag.nomemo;
+		case MF_NOTELEPORT:         return &map[m].flag.noteleport;
+		case MF_NOPORTAL:           return &map[m].flag.noportal;
+		case MF_NORETURN:           return &map[m].flag.noreturn;
+		case MF_MONSTER_NOTELEPORT: return &map[m].flag.monster_noteleport;
+		case MF_NOBRANCH:           return &map[m].flag.nobranch;
+		case MF_NOPENALTY:          return &map[m].flag.nopenalty;
+		case MF_PVP:                return &map[m].flag.pvp;
+		case MF_PVP_NOPARTY:        return &map[m].flag.pvp_noparty;
+		case MF_PVP_NOGUILD:        return &map[m].flag.pvp_noguild;
+		case MF_PVP_NIGHTMAREDROP:  return &map[m].flag.pvp_nightmaredrop;
+		case MF_PVP_NOCALCRANK:     return &map[m].flag.pvp_nocalcrank;
+		case MF_GVG:                return &map[m].flag.gvg;
+		case MF_GVG_NOPARTY:        return &map[m].flag.gvg_noparty;
+		case MF_GVG_NIGHTMAREDROP:  return &map[m].flag.gvg_nightmaredrop;
+		case MF_NOZENYPENALTY:      return &map[m].flag.nozenypenalty;
+		case MF_NOTRADE:            return &map[m].flag.notrade;
+		case MF_NOSKILL:            return &map[m].flag.noskill;
+		case MF_NOABRA:             return &map[m].flag.noabra;
+		case MF_NODROP:             return &map[m].flag.nodrop;
+		case MF_SNOW:               return &map[m].flag.snow;
+		case MF_FOG:                return &map[m].flag.fog;
+		case MF_SAKURA:             return &map[m].flag.sakura;
+		case MF_LEAVES:             return &map[m].flag.leaves;
+		case MF_RAIN:               return &map[m].flag.rain;
+		case MF_FIREWORKS:          return &map[m].flag.fireworks;
+		case MF_CLOUD1:             return &map[m].flag.cloud1;
+		case MF_CLOUD2:             return &map[m].flag.cloud2;
+		case MF_CLOUD3:             return &map[m].flag.cloud3;
+		case MF_BASEEXP_RATE:       return &map[m].flag.base_exp_rate;
+		case MF_JOBEXP_RATE:        return &map[m].flag.job_exp_rate;
+		case MF_PK:                 return &map[m].flag.pk;
+		case MF_PK_NOPARTY:         return &map[m].flag.pk_noparty;
+		case MF_PK_NOGUILD:         return &map[m].flag.pk_noguild;
+		case MF_PK_NIGHTMAREDROP:   return &map[m].flag.pk_nightmaredrop;
+		case MF_PK_NOCALCRANK:      return &map[m].flag.pk_nocalcrank;
+		case MF_NOICEWALL:          return &map[m].flag.noicewall;
+		case MF_TURBO:              return &map[m].flag.turbo;
+		case MF_NOREVIVE:           return &map[m].flag.norevive;
 	}
-
-	return 0;
+	return NULL;
 }
 
-static int script_change_mapflag(int m,int type,int val)
+/*==========================================
+ * マップフラグを設定する
+ *------------------------------------------
+ */
+int buildin_setmapflag(struct script_state *st)
 {
-	if( m >= 0 && (val == 0 || val == 1) ) {
-		switch(type) {
-			case MF_NOMEMO:
-				map[m].flag.nomemo = val;
-				break;
-			case MF_NOTELEPORT:
-				map[m].flag.noteleport = val;
-				break;
-			case MF_NOPORTAL:
-				map[m].flag.noportal = val;
-				break;
-			case MF_NORETURN:
-				map[m].flag.noreturn = val;
-				break;
-			case MF_MONSTER_NOTELEPORT:
-				map[m].flag.monster_noteleport = val;
-				break;
-			case MF_NOBRANCH:
-				map[m].flag.nobranch = val;
-				break;
-			case MF_NOPENALTY:
-				map[m].flag.nopenalty = val;
-				break;
-			case MF_PVP_NOPARTY:
-				map[m].flag.pvp_noparty = val;
-				break;
-			case MF_PVP_NOGUILD:
-				map[m].flag.pvp_noguild = val;
-				break;
-			case MF_PVP_NOCALCRANK:
-				map[m].flag.pvp_nocalcrank = val;
-				break;
-			case MF_GVG_NOPARTY:
-				map[m].flag.gvg_noparty = val;
-				break;
-			case MF_NOZENYPENALTY:
-				map[m].flag.nozenypenalty = val;
-				break;
-			case MF_NOTRADE:
-				map[m].flag.notrade = val;
-				break;
-			case MF_NOSKILL:
-				map[m].flag.noskill = val;
-				break;
-			case MF_NOABRA:
-				map[m].flag.noabra = val;
-				break;
-			case MF_NODROP:
-				map[m].flag.nodrop = val;
-				break;
-			case MF_NOICEWALL:
-				map[m].flag.noicewall = val;
-				break;
-			case MF_TURBO:
-				map[m].flag.turbo = val;
-				break;
-			case MF_NOREVIVE:
-				map[m].flag.norevive = val;
-				break;
-			default:
-				return 0;
+	char *mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	short type = (short)conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int m;
+	int *flag;
+
+	if((m = script_mapname2mapid(st,mapname)) < 0)
+		return 0;
+	flag = script_conv_mapflag(m, type);
+
+	if(flag)
+	{
+		*flag = 1;
+		switch (type) {		// 特殊処理が必要なマップフラグ
+		case MF_NOSAVE:
+			if(st->end > st->start+6) {
+				char *str = conv_str(st,& (st->stack->stack_data[st->start+4]));
+				int x     = conv_num(st,& (st->stack->stack_data[st->start+5]));
+				int y     = conv_num(st,& (st->stack->stack_data[st->start+6]));
+				memcpy(map[m].save.map, str, 16);
+				map[m].save.x = x;
+				map[m].save.y = y;
+			}
+			break;
+		case MF_BASEEXP_RATE:
+		case MF_JOBEXP_RATE:
+			if(st->end > st->start+4) {
+				*flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
+			}
+			break;
+		case MF_PVP_NIGHTMAREDROP:
+		case MF_GVG_NIGHTMAREDROP:
+		case MF_PK_NIGHTMAREDROP:
+			if(st->end > st->start+6) {
+				char buf[64];
+				char *arg1 = conv_str(st,& (st->stack->stack_data[st->start+4]));
+				char *arg2 = conv_str(st,& (st->stack->stack_data[st->start+5]));
+				int  per   = conv_num(st,& (st->stack->stack_data[st->start+6]));
+				snprintf(buf, sizeof(buf), "%s,%s,%d", arg1, arg2, per);
+				npc_set_mapflag_sub(m, buf, type);
+			}
+			break;
 		}
 		map_field_setting();
 	}
 	return 0;
 }
 
-int buildin_setmapflag(struct script_state *st)
+/*==========================================
+ * マップフラグを削除する
+ *------------------------------------------
+ */
+int buildin_removemapflag(struct script_state *st)
 {
-	int m,type;
-	char *str;
+	char *mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	short type = (short)conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int m;
+	int *flag;
 
-	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	type=conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if((m = script_mapname2mapid(st,mapname)) < 0)
+		return 0;
+	flag = script_conv_mapflag(m, type);
 
-	m = script_mapname2mapid(st,str);
-	if(m >= 0)
-		script_change_mapflag(m, type, 1);
+	if(flag)
+	{
+		*flag = 0;
+		switch (type) {		// 特殊処理が必要なマップフラグ
+		case MF_PVP_NIGHTMAREDROP:
+		case MF_GVG_NIGHTMAREDROP:
+		case MF_PK_NIGHTMAREDROP:
+			{
+				int i,j;
+				for(i=0; i<MAX_DROP_PER_MAP; i++) {	// 該当のドロップリストを削除して空きを詰める
+					if(map[m].drop_list[i].drop_id == 0)
+						break;
+					if(map[m].drop_list[i].drop_flag != type)
+						continue;
+					for(j=i+1; j<MAX_DROP_PER_MAP && map[m].drop_list[j].drop_id != 0; j++);
+					j--;
+					if(i != j) {
+						memcpy(&map[m].drop_list[i], &map[m].drop_list[j], sizeof(map[m].drop_list[0]));
+					}
+					memset(&map[m].drop_list[j], 0, sizeof(map[m].drop_list[0]));
+					i--;
+				}
+			}
+			break;
+		}
+		map_field_setting();
+	}
 	return 0;
 }
 
-int buildin_removemapflag(struct script_state *st)
+/*==========================================
+ * マップフラグのチェック
+ *------------------------------------------
+ */
+int buildin_checkmapflag(struct script_state *st)
 {
-	int m,type;
-	char *str;
+	char *mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	short type = (short)conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int m;
+	int *flag;
 
-	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	type=conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if((m = script_mapname2mapid(st,mapname)) < 0)
+		return 0;
 
-	m = script_mapname2mapid(st,str);
-	if(m >= 0)
-		script_change_mapflag(m, type, 0);
+	flag = script_conv_mapflag(m ,type);
+
+	push_val(st->stack,C_INT,((flag)? *flag: -1));
 	return 0;
 }
 

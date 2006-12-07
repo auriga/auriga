@@ -174,19 +174,19 @@ AthenaNPCScript
 		constの一覧。
 			nosave<tab><gatname>,<x>,<y>
 				リログインした際<gatname>の座標<x>,<y>に移動します。
-				"nosave SavePoint"とするとセーブポイントに移動
+				<gatname>を SavePoint とするとセーブポイントに移動になります。
 			nomemo<tab>dummy
 				メモを取ることを禁止します。
 			noteleport<tab>dummy
-				SavePointまたはRandomを指定したwarp文、ワープポータル、テレポートを禁止します。
+				ワープポータル、テレポートを禁止します。
 			noportal<tab>dummy
-				battle.confのnoportal_flagが1のときに有効で、ワープポータルを禁止します。
+				battle.confのnoportal_flagが1のときに有効で、ワープポータルのみを禁止します。
 			noreturn<tab>dummy
-				warp命令によるSavePointへの帰還、および蝶の羽の使用を禁止します。
+				リターン禁止にします。蝶の羽など。
 			monster_noteleport<tab>dummy
 				モンスターのテレポートの使用を禁止します。
 			nobranch<tab>dummy
-				古木の枝、血のついた木の枝、ポリン箱の使用を禁止します。
+				枝の使用を禁止します。古木の枝、血のついた木の枝、ポリン箱のなど。
 			nopenalty<tab>dummy
 				デスペナルティ無しになります。
 			pvp<tab>dummy
@@ -1322,14 +1322,19 @@ AthenaNPCScript
 				2	繰り返しの停止
 
 		setmapflag命令
-			setmapflag <gatname>,<flag>;
+			setmapflag <gatname>,<flag>[,<arg1>,<arg2>,<arg3>];
 
-			gatname		文字列
-			flag		数値
+			gatname			文字列
+			flag			数値
+			arg1, arg2, arg3	数値または文字列、省略可
 
 			<gatname>のmapflagを追加します。
 			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			<flag>はdb/const.txtを参照してください。
+
+			更に引数が必要なmapflagについては<arg1>,<arg2>,<arg3>を指定してください。
+			設定方法は「１．NPCの定義」のマップフラグの項に従ってください。
+			（setmapflag "this",mf_pvp_nightmaredrop,"random","equip",100; 等）
 
 		removemapflag命令
 			removemapflag <gatname>,<flag>;
@@ -1340,6 +1345,7 @@ AthenaNPCScript
 			<gatname>のmapflagを消去します。
 			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			<flag>はdb/const.txtを参照してください。
+			ナイトメアモード系のmapflagについては該当マップのドロップリストも削除されます。
 
 		pvpon命令
 			pvpon <gatname>;
@@ -1371,15 +1377,6 @@ AthenaNPCScript
 			gatname		文字列
 
 			<gatname>を非シーズモードにします。
-			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
-
-		setmapflagnosave命令
-			setmapflagnosave <gatname>,<savegatname>,<x>,<y>;
-
-			gatname,nosavegat	文字列
-			x,y			数値
-
-			<gatname>のmapflagにnosave、引数として<savegatname>,<x>,<y>を設定します。
 			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 		detachrid命令
@@ -2335,8 +2332,10 @@ AthenaNPCScript
 		getmapmobs関数
 			getmapmobs(<gatname>)
 
+			gatname		文字列
+
 			指定マップ内に居るmobの数を返します。
-			マップ名を"this"にすると、今居るマップを参照します。
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 
 		getareamobs関数
 			getareamobs(<gatname>,<x0>,<y0>,<y0>,<y1>)
@@ -2345,7 +2344,7 @@ AthenaNPCScript
 			x0,y0,x1,y1	数値
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内にいるmobの数を返します。
-			マップ名を"this"にすると、今居るマップを参照します。
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 
 		getguildrelation関数
 			getguildrelation(<gld1>[,<gld2>])
@@ -2373,11 +2372,21 @@ AthenaNPCScript
 
 			指定マップのmapflag pvp,gvgがdennyか調べ、
 			以下の数値(該当するものの合計)を返します。
-			マップ名を"this"にすると、今居るマップを参照します。
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 			  -1 : 失敗 ( -1 & 1 : true, -1 & 2 : true なので注意 )
 			   0 : どれも立っていない
 			  +1 : pvpフラグが立っている
 			  +2 : gvgフラグが立っている
+
+		checkmapflag 関数
+			checkmapflag(<gatname>,<flag>)
+
+			<gatname>	文字列
+			<flag>		数値
+
+			指定マップのに<flag>のmapflagが設定されているかどうかを調べます。
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
+			<flag>はdb/const.txtを参照してください。
 
 		getequipid関数
 			getequipid(<num>)
@@ -2483,7 +2492,7 @@ AthenaNPCScript
 			<x0>,<y0>,<x1>,<y1>	数値
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内に落ちているアイテムの数を返します
-			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 
 		getscrate関数
 			getscrate(<type>,<percentage>[,<target>])
