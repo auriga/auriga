@@ -796,7 +796,7 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned short *item_list)
 			z = (log(z * (double)skill) * (double)battle_config.shop_exp/100.);
 			if (z < 1.)
 				z = 1.;
-			pc_gainexp(sd,NULL,0,(int)z);
+			pc_gainexp(sd,NULL,0,(atn_bignumber)z);
 		}
 	}
 
@@ -873,7 +873,7 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 			z = (log(z * (double)skill) * (double)battle_config.shop_exp/100.);
 			if (z < 1.)
 				z = 1.;
-			pc_gainexp(sd,NULL,0,(int)z);
+			pc_gainexp(sd,NULL,0,(atn_bignumber)z);
 		}
 	}
 

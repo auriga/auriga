@@ -2968,86 +2968,81 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case ALL_RESURRECTION:		/* リザレクション */
-		if(dstsd){
-			int per=0;
-			if( (map[bl->m].flag.pvp) && dstsd->pvp_point<0 )
-				break;			/* PVPで復活不可能状態 */
+		if(!dstsd)
+			break;
+		if(map[bl->m].flag.pvp && dstsd->pvp_point < 0)	/* PVPで復活不可能状態 */
+			break;
+		if(!unit_isdead(&dstsd->bl))			/* 死亡判定 */
+			break;
 
-			if(unit_isdead(&dstsd->bl)){	/* 死亡判定 */
-				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				switch(skilllv){
-				case 1: per=10; break;
-				case 2: per=30; break;
-				case 3: per=50; break;
-				case 4: per=80; break;
-				}
-				dstsd->status.hp=dstsd->status.max_hp*per/100;
-				if(dstsd->status.hp<=0) dstsd->status.hp=1;
-				if(dstsd->special_state.restart_full_recover ){	/* オシリスカード */
-					dstsd->status.hp=dstsd->status.max_hp;
-					dstsd->status.sp=dstsd->status.max_sp;
-				}
-				pc_setstand(dstsd);
-				if(battle_config.pc_invincible_time > 0)
-					pc_setinvincibletimer(dstsd,battle_config.pc_invincible_time);
-				clif_updatestatus(dstsd,SP_HP);
-				clif_resurrection(&dstsd->bl,1);
-				if(src != bl && sd && battle_config.resurrection_exp > 0) {
-					int exp = 0,jexp = 0;
-					int lv = dstsd->status.base_level - sd->status.base_level, jlv = dstsd->status.job_level - sd->status.job_level;
-					if(lv > 0) {
-						exp = (int)((atn_bignumber)dstsd->status.base_exp * lv * battle_config.resurrection_exp / 1000000);
-						if(exp < 1) exp = 1;
-					}
-					if(jlv > 0) {
-						jexp = (int)((atn_bignumber)dstsd->status.job_exp * lv * battle_config.resurrection_exp / 1000000);
-						if(jexp < 1) jexp = 1;
-					}
-					if(exp > 0 || jexp > 0)
-						pc_gainexp(sd,NULL,exp,jexp);
-				}
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		dstsd->status.hp = dstsd->status.max_hp * ((skilllv >= 4)? 80: skilllv*20-10)/100;
+		if(dstsd->status.hp <= 0)
+			dstsd->status.hp = 1;
+		if(dstsd->special_state.restart_full_recover) {	/* オシリスカード */
+			dstsd->status.hp = dstsd->status.max_hp;
+			dstsd->status.sp = dstsd->status.max_sp;
+		}
+		pc_setstand(dstsd);
+		if(battle_config.pc_invincible_time > 0)
+			pc_setinvincibletimer(dstsd,battle_config.pc_invincible_time);
+		clif_updatestatus(dstsd,SP_HP);
+		clif_resurrection(&dstsd->bl,1);
 
-				if( dstsd->sc_data[SC_REDEMPTIO].timer!=-1
-				 && battle_config.death_penalty_type&1
-				 && !map[dstsd->bl.m].flag.nopenalty
-				 && !map[dstsd->bl.m].flag.gvg)
-				{
-					int base_exp=0,job_exp=0;
-					int per = dstsd->sc_data[SC_REDEMPTIO].val1;
-					if(per > 100)
-						per = 100;
-					if(battle_config.death_penalty_type&1 && battle_config.death_penalty_base > 0)
-						base_exp = (int)((atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000);
-					else if(battle_config.death_penalty_base > 0) {
-						if(pc_nextbaseexp(sd) > 0)
-						base_exp = (int)((atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000);
-					}
+		if(src != bl && sd && battle_config.resurrection_exp > 0)
+		{
+			atn_bignumber exp = 0,jexp = 0;
+			int lv = dstsd->status.base_level - sd->status.base_level;
+			int jlv = dstsd->status.job_level - sd->status.job_level;
+			if(lv > 0) {
+				exp = (atn_bignumber)dstsd->status.base_exp * lv * battle_config.resurrection_exp / 1000000;
+				if(exp < 1)
+					exp = 1;
+			}
+			if(jlv > 0) {
+				jexp = (atn_bignumber)dstsd->status.job_exp * jlv * battle_config.resurrection_exp / 1000000;
+				if(jexp < 1)
+					jexp = 1;
+			}
+			if(exp > 0 || jexp > 0)
+				pc_gainexp(sd,NULL,exp,jexp);
+		}
 
-					if(battle_config.death_penalty_type&1 && battle_config.death_penalty_job > 0)
-						job_exp = (int)((atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000);
-					else if(battle_config.death_penalty_job > 0) {
-						if(pc_nextjobexp(sd) > 0)
-						job_exp = (int)((atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000);
-					}
+		if( dstsd->sc_data[SC_REDEMPTIO].timer != -1 && battle_config.death_penalty_type&1 &&
+		    !map[dstsd->bl.m].flag.nopenalty && !map[dstsd->bl.m].flag.gvg )
+		{
+			atn_bignumber base_exp=0,job_exp=0;
+			int per = dstsd->sc_data[SC_REDEMPTIO].val1;
+			if(per > 100)
+				per = 100;
+			if(battle_config.death_penalty_base > 0) {
+				if(battle_config.death_penalty_type&2)
+					base_exp = (atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000;
+				else if(pc_nextbaseexp(sd) > 0)
+					base_exp = (atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000;
+			}
+			if(battle_config.death_penalty_job > 0) {
+				if(battle_config.death_penalty_type&2)
+					job_exp = (atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000;
+				else if(pc_nextjobexp(sd) > 0)
+					job_exp = (atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000;
+			}
 
-					if(per!=100){
-						base_exp = base_exp * per/100;
-						job_exp =  job_exp * per/100;
-					}
-					if(dstsd->status.base_exp && base_exp){
-						sd->status.base_exp += base_exp;
-						clif_updatestatus(sd,SP_BASEEXP);
-					}
-
-					if(dstsd->status.job_exp && base_exp){
-						sd->status.job_exp += job_exp;
-						clif_updatestatus(sd,SP_JOBEXP);
-					}
-				}
-				if(dstsd->sc_data[SC_REDEMPTIO].timer!=-1)
-					status_change_end(bl,SC_REDEMPTIO,-1);
+			if(per != 100) {
+				base_exp = base_exp * per/100;
+				job_exp = job_exp * per/100;
+			}
+			if(dstsd->status.base_exp && base_exp) {
+				sd->status.base_exp += (int)base_exp;
+				clif_updatestatus(sd,SP_BASEEXP);
+			}
+			if(dstsd->status.job_exp && job_exp) {
+				sd->status.job_exp += (int)job_exp;
+				clif_updatestatus(sd,SP_JOBEXP);
 			}
 		}
+		if(dstsd->sc_data[SC_REDEMPTIO].timer != -1)
+			status_change_end(bl,SC_REDEMPTIO,-1);
 		break;
 
 	case AL_DECAGI:			/* 速度減少 */
@@ -3061,16 +3056,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case AL_CRUCIS:
 		if(flag&1) {
-			int race = status_get_race(bl),ele = status_get_elem_type(bl);
-			if(battle_check_target(src,bl,BCT_ENEMY) && (race == 6 || battle_check_undead(race,ele))) {
-				int slv=status_get_lv(src),tlv=status_get_lv(bl),rate;
-				rate = 23 + skilllv*4 + slv - tlv;
+			int race = status_get_race(bl);
+			int ele = status_get_elem_type(bl);
+			if(race == 6 || battle_check_undead(race,ele)) {
+				int rate = 23 + skilllv*4 + status_get_lv(src) - status_get_lv(bl);
 				if(atn_rand()%100 < rate)
 					status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,0,0);
 			}
 		}
 		else {
-			int range = 15;
+			const int range = AREA_SIZE;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-range,src->y-range,src->x+range,src->y+range,0,
@@ -3132,16 +3127,19 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SA_SUMMONMONSTER:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if (sd) mob_once_spawn(sd,map[sd->bl.m].name,sd->bl.x,sd->bl.y,"--ja--",-1,1,"");
+		if (sd)
+			mob_once_spawn(sd,map[sd->bl.m].name,sd->bl.x,sd->bl.y,"--ja--",-1,1,"");
 		break;
 	case SA_LEVELUP:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if (sd && pc_nextbaseexp(sd)) pc_gainexp(sd,NULL,pc_nextbaseexp(sd)*10/100,0);
+		if (sd && pc_nextbaseexp(sd))
+			pc_gainexp(sd,NULL,(atn_bignumber)pc_nextbaseexp(sd)*10/100,0);
 		break;
 
 	case SA_INSTANTDEATH:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if (sd) pc_damage(NULL,sd,sd->status.max_hp);
+		if (sd)
+			pc_damage(NULL,sd,sd->status.max_hp);
 		break;
 
 	case SA_QUESTION:
@@ -3169,18 +3167,20 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SA_DEATH:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if (dstsd) pc_damage(NULL,dstsd,dstsd->status.max_hp);
-		if (dstmd) mob_damage(NULL,dstmd,dstmd->hp,1);
+		if (dstsd)
+			pc_damage(NULL,dstsd,dstsd->status.max_hp);
+		if (dstmd)
+			mob_damage(NULL,dstmd,dstmd->hp,1);
 		break;
 	case SA_REVERSEORCISH:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstsd)
 			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-		// pc_setoption(dstsd,dstsd->status.option|0x0800);
 		break;
 	case SA_FORTUNE:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if(sd) pc_getzeny(sd,status_get_lv(bl)*100);
+		if(sd)
+			pc_getzeny(sd,status_get_lv(bl)*100);
 		break;
 	case SA_TAMINGMONSTER:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -3318,9 +3318,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case TK_HIGHJUMP://走り高跳び（ノピティギ）
 		{
-			int x,y,dir = status_get_dir(src);
-			x = src->x + dirx[dir]*skilllv*2;
-			y = src->y + diry[dir]*skilllv*2;
+			int dir = status_get_dir(src);
+			int x = src->x + dirx[dir]*skilllv*2;
+			int y = src->y + diry[dir]*skilllv*2;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			// 着地地点とその一歩先が移動可能セルでPC,MOB,NPCいずれも居ないなら
 			if( !map[src->m].flag.pvp && (!map[src->m].flag.noteleport || map[src->m].flag.gvg) &&
@@ -3532,7 +3532,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SM_PROVOKE:		/* プロボック */
 		{
-			struct unit_data *ud = unit_bl2ud(bl);
+			struct unit_data *ud = NULL;
 
 			/* MVPmobと不死には効かない */
 			if((bl->type==BL_MOB && status_get_mode(bl)&0x20) || battle_check_undead(status_get_race(bl),status_get_elem_type(bl))) //不死には効かない
@@ -3564,7 +3564,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 
 			// 詠唱妨害
-			if(ud && ud->skilltimer != -1 && ud->state.skillcastcancel) {
+			if((ud = unit_bl2ud(bl)) != NULL && ud->skilltimer != -1 && ud->state.skillcastcancel) {
 				if(dstsd) {
 					if(dstsd->special_state.no_castcancel && !map[bl->m].flag.gvg)
 						break;
@@ -4125,7 +4125,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case MC_IDENTIFY:			/* アイテム鑑定 */
-//		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(sd)
 			clif_item_identify_list(sd);
 		break;
@@ -4814,7 +4813,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case NPC_REBIRTH:
 		if(md){
-			md->hp 	= mob_db[md->class].max_hp*10*skilllv/100;
+			md->hp = mob_db[md->class].max_hp*10*skilllv/100;
 		}
 		unit_stop_walking(src,1);
 		unit_stopattack(src);
@@ -4860,7 +4859,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(md)
 			status_change_start(src,SC_NPC_DEFENDER,skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0);
-		//	status_change_start(src,SkillStatusChangeTable[skillid],skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0);
 		break;
 
 	case WE_MALE:				/* 君だけは護るよ */
@@ -5016,33 +5014,32 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case HT_SPRINGTRAP:				/* スプリングトラップ */
-		if(sd && !pc_isfalcon(sd))
+		if(sd && !pc_isfalcon(sd)) {
 			clif_skill_fail(sd,skillid,0,0);
-		else{
+		} else {
+			struct skill_unit *su = NULL;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			{
-				struct skill_unit *su=NULL;
-				if((bl->type==BL_SKILL) && (su=(struct skill_unit *)bl) && (su->group) ){
-					switch(su->group->unit_id){
-						case 0x91:	/* アンクルスネア */
-							if(su->group->val2 > 0) {	// 捕捉中は破壊不可
-								break;
-							}
-							// fall through
-						case 0x8f:	/* ブラストマイン */
-						case 0x90:	/* スキッドトラップ */
-						case 0x93:	/* ランドマイン */
-						case 0x94:	/* ショックウェーブトラップ */
-						case 0x95:	/* サンドマン */
-						case 0x96:	/* フラッシャー */
-						case 0x97:	/* フリージングトラップ */
-						case 0x98:	/* クレイモアートラップ */
-						case 0x99:	/* トーキーボックス */
-							su->group->unit_id = 0x8c;
-							clif_changelook(bl,LOOK_BASE,su->group->unit_id);
-							su->group->limit=DIFF_TICK(tick+1500,su->group->tick);
-							su->limit=DIFF_TICK(tick+1500,su->group->tick);
-					}
+			if(bl->type == BL_SKILL && (su = (struct skill_unit *)bl) && su->group ){
+				switch(su->group->unit_id){
+					case 0x91:	/* アンクルスネア */
+						if(su->group->val2 > 0) {	// 捕捉中は破壊不可
+							break;
+						}
+						// fall through
+					case 0x8f:	/* ブラストマイン */
+					case 0x90:	/* スキッドトラップ */
+					case 0x93:	/* ランドマイン */
+					case 0x94:	/* ショックウェーブトラップ */
+					case 0x95:	/* サンドマン */
+					case 0x96:	/* フラッシャー */
+					case 0x97:	/* フリージングトラップ */
+					case 0x98:	/* クレイモアートラップ */
+					case 0x99:	/* トーキーボックス */
+						su->group->unit_id = 0x8c;
+						clif_changelook(bl,LOOK_BASE,su->group->unit_id);
+						su->group->limit=DIFF_TICK(tick+1500,su->group->tick);
+						su->limit=DIFF_TICK(tick+1500,su->group->tick);
+						break;
 				}
 			}
 		}
@@ -5053,7 +5050,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			unit_skilluse_id(&sd->bl,src->id,sd->skillid_dance,sd->skilllv_dance);
 		break;
 	case AS_SPLASHER:		/* ベナムスプラッシャー */
-		if((double)status_get_max_hp(bl)*3/4 < status_get_hp(bl)) {
+		if((atn_bignumber)status_get_max_hp(bl)*3/4 < status_get_hp(bl)) {
 			//HPが3/4以上残っていたら失敗
 			map_freeblock_unlock();
 			return 1;
@@ -5443,13 +5440,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				//HOM,PC,MOB
 				struct block_list* heal_tearget=NULL;
 				int heal = skill_calc_heal( src, 1+atn_rand()%skilllv );
-				static const int per[10][2]={{20,50},{50,60},{25,75},{60,64},{34,67},
-											 {34,67},{34,67},{34,67},{34,67},{34,67}};//10まで拡張
+				static const int per[5][2]={{20,50},{50,60},{25,75},{60,64},{34,67}};
+				int n = (skilllv < 5)? skilllv-1: 4;
 				int rnd = atn_rand()%100;
-				if(rnd<per[skilllv-1][0])//ホム
+				if(rnd<per[n][0])//ホム
 				{
 					heal_tearget = &hd->bl;
-				}else if(rnd<per[skilllv-1][1])//主人
+				}else if(rnd<per[n][1])//主人
 				{
 					if(!unit_isdead(&hd->msd->bl))//生存
 						heal_tearget = &hd->msd->bl;
@@ -9137,7 +9134,7 @@ ITEM_NOCOST:
 		clif_send_homstatus(msd,0);
 	}
 	if(zeny > 0)					// Zeny消費
-		pc_payzeny(msd,zeny);	
+		pc_payzeny(msd,zeny);
 	return 1;
 }
 /*==========================================

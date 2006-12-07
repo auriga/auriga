@@ -1,4 +1,15 @@
 ----------------------------------------
+//024 [2006/12/08] by Rayce
+
+・pc_dead() でのデスペナルティ処理を最適化（pc.c）
+・カオティックベネディクションのスキルLvが11以上のときサーバクラッシュする問題を修正（skill.c）
+・battle_athena.confでresurrection_expを設定していたとき、JobExpの計算が間違っていたバグを修正（skill.c）
+・レデムプティオで取得できる経験値の計算において、battle_athena.confのdeath_penalty_typeの設定が
+　正しく反映されてなかったバグを修正（skill.c）
+・経験値計算処理は出来るだけdouble型ではなくatn_bignumber型を利用するように修正
+・skill_castend_nodamage_id() を少し整形
+
+----------------------------------------
 //023 [2006/12/08] by Rayce
 
 ・setmapflag命令の機能拡張

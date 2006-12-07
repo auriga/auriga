@@ -4919,63 +4919,64 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 		}
 	}
 
-	if(battle_config.death_penalty_type&1) {
-		if(job != 0 && !map[sd->bl.m].flag.nopenalty && !map[sd->bl.m].flag.gvg){
-			int per = 100;
-			int loss_base=0,loss_job=0;
-			if(sd->sc_data[SC_REDEMPTIO].timer!=-1){
-				per -= sd->sc_data[SC_REDEMPTIO].val1;
-				if(per<0)
-					per = 0;
-			}
-			if(sd->sc_data[SC_BABY].timer!=-1){
+	// 死亡直後にデスペナルティを発生させる場合
+	if(battle_config.death_penalty_type&1 && job != 0 && !map[sd->bl.m].flag.nopenalty && !map[sd->bl.m].flag.gvg)
+	{
+		int per = 100;
+		if(sd->sc_data[SC_REDEMPTIO].timer != -1) {
+			per -= sd->sc_data[SC_REDEMPTIO].val1;
+			if(per < 0)
 				per = 0;
-			}
-			if(battle_config.death_penalty_type&2 && battle_config.death_penalty_base > 0){
-				loss_base = (int)((atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000*per/100);
-				sd->status.base_exp -= (int)((atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000*per/100);
-			}else if(battle_config.death_penalty_base > 0) {
-				if(pc_nextbaseexp(sd) > 0){
-					loss_base = (int)((atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000*per/100);
+		}
+		if(sd->sc_data[SC_BABY].timer != -1) {
+			per = 0;
+		}
+		if(per > 0) {
+			atn_bignumber loss_base=0, loss_job=0;
+			if(battle_config.death_penalty_base > 0) {
+				if(battle_config.death_penalty_type&2) {
+					loss_base = (atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000 * per/100;
+				} else if(pc_nextbaseexp(sd) > 0) {
+					loss_base = (atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000 * per/100;
 					if(sd->status.base_exp < loss_base)
 						loss_base = sd->status.base_exp;
-					sd->status.base_exp -= (int)((atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000*per/100);
 				}
 			}
-			if(sd->status.base_exp < 0)
-				sd->status.base_exp = 0;
-
-			clif_updatestatus(sd,SP_BASEEXP);
-
-			if(battle_config.death_penalty_type&2 && battle_config.death_penalty_job > 0){
-				loss_job = (int)((atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000*per/100);
-				sd->status.job_exp -= (int)((atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000*per/100);
+			if(loss_base > 0) {
+				sd->status.base_exp -= (int)loss_base;
+				if(sd->status.base_exp < 0)
+					sd->status.base_exp = 0;
+				clif_updatestatus(sd,SP_BASEEXP);
 			}
-			else if(battle_config.death_penalty_job > 0) {
-				if(pc_nextjobexp(sd) > 0){
-					loss_job = (int)((atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000*per/100);
+
+			if(battle_config.death_penalty_job > 0) {
+				if(battle_config.death_penalty_type&2) {
+					loss_job = (atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000 * per/100;
+				} else if(pc_nextjobexp(sd) > 0) {
+					loss_job = (atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000 * per/100;
 					if(sd->status.job_exp < loss_job)
 						loss_job = sd->status.job_exp;
-					sd->status.job_exp -= (int)((atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000*per/100);
 				}
 			}
-			if(sd->status.job_exp < 0)
-				sd->status.job_exp = 0;
-			clif_updatestatus(sd,SP_JOBEXP);
+			if(loss_job > 0) {
+				sd->status.job_exp -= (int)loss_job;
+				if(sd->status.job_exp < 0)
+					sd->status.job_exp = 0;
+				clif_updatestatus(sd,SP_JOBEXP);
+			}
 
 			//PK仕様
 			//pkマップで攻撃が人間かつ自分でない(GXなどの対策)
 			if(ssd && map[sd->bl.m].flag.pk && per>0 && sd->bl.id != ssd->bl.id && ranking_get_point(ssd,RK_PK)>=100)
 			{
-				if(loss_base>0 || loss_job>0)
+				if(loss_base > 0 || loss_job > 0)
 					pc_gainexp(ssd,NULL,loss_base,loss_job);
 			}
-
-			if(sd->sc_data[SC_BABY].timer!=-1)
-				status_change_end(&sd->bl,SC_BABY,-1);
-			if(sd->sc_data[SC_REDEMPTIO].timer!=-1)
-				status_change_end(&sd->bl,SC_REDEMPTIO,0);
 		}
+		if(sd->sc_data[SC_BABY].timer != -1)
+			status_change_end(&sd->bl,SC_BABY,-1);
+		if(sd->sc_data[SC_REDEMPTIO].timer != -1)
+			status_change_end(&sd->bl,SC_REDEMPTIO,0);
 	}
 
 	// PK
