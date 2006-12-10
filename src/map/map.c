@@ -2308,11 +2308,11 @@ static int map_config_read(char *cfgName)
 		} else if (strcmpi(w1, "read_grf_files_txt") == 0) {
 			read_grf_files_txt = atoi(w2);
 		} else if (strcmpi(w1, "data_grf") == 0) {
-			grfio_setdatafile(w2);
+			grfio_setdatafile("data", w2);
 		} else if (strcmpi(w1, "sdata_grf") == 0) {
-			grfio_setsdatafile(w2);
+			grfio_setdatafile("sdata", w2);
 		} else if (strcmpi(w1, "adata_grf") == 0) {
-			grfio_setadatafile(w2);
+			grfio_setdatafile("adata", w2);
 		} else if (strcmpi(w1, "packet_parse_time") == 0) {
 			packet_parse_time = atoi(w2);
 			if (packet_parse_time < 0) {

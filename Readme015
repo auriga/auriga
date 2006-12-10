@@ -1,4 +1,15 @@
 ----------------------------------------
+//027 [2006/12/11] by Rayce
+
+・conf/grf-files.txtでdata, sdata, adataの制限を取り払うように拡張（grfio.*, map.c）
+	-> MAX_GRF_FILES（デフォルトでは10個）まで読み込み可能
+	-> : の前の名前は15文字以内で任意に指定することができます
+	　 同じ名前がある場合は下に記述されたもので上書きされます
+	-> 行頭に // を入れるとコメントアウトとして扱われます
+	-> map_athena.confの方はdata, sdata, adata固定のままです
+	　 grf-files.txtを利用することを推奨します
+
+----------------------------------------
 //026 [2006/12/11] by Rayce
 
 ・db/produce_db.txtの拡張をAthena Projectの投稿分からmerge, thanks to Rohypnolさん（skill.*）

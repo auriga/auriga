@@ -18,6 +18,7 @@
  *	2003/11/10 ... Ready new grf format.
  *	2003/11/11 ... version check fix & bug fix
  *	2006/05/27 ... Reading of customed GRF (by Yor)
+ *	2006/12/11 ... data,sdata,adataの制限を無くしてMAX_GRF_FILES個まで読み込み対応
  */
 
 #include <stdio.h>
@@ -79,14 +80,15 @@
 	typedef unsigned long DWORD;
 #endif
 
-static char data_file[1024] = ""; // data.grf
-static char adata_file[1024] = ""; // adata.grf
-static char sdata_file[1024] = ""; // sdata.grf
+// grf-files.txtで読み込み可能なファイルの最大数
+#define MAX_GRF_FILES 10
 
-// accessor to data_file,adata_file,sdata_file
-char *grfio_setdatafile(const char *str){ strncpy(data_file, str, sizeof(data_file)); data_file[sizeof(data_file)-1] = '\0'; return data_file; }
-char *grfio_setadatafile(const char *str){ strncpy(adata_file, str, sizeof(adata_file)); adata_file[sizeof(adata_file)-1] = '\0'; return adata_file; }
-char *grfio_setsdatafile(const char *str){ strncpy(sdata_file, str, sizeof(sdata_file)); sdata_file[sizeof(sdata_file)-1] = '\0'; return sdata_file; }
+static int file_number = 0;
+
+static struct {
+	char name[16];
+	char path[1024];
+} data_file[MAX_GRF_FILES];
 
 //----------------------------
 //	file entry table struct
@@ -894,7 +896,7 @@ static void grfio_resourcecheck(void)
  */
 #define GENTRY_ADDS 16 // gentry_tableエントリ数増分
 
-int grfio_add(char *fname)
+int grfio_add(char *str, char *fname)
 {
 	int len,result;
 	char *buf;
@@ -904,7 +906,7 @@ int grfio_add(char *fname)
 		exit(1);
 	}
 
-	printf("'%s' file reading...\n",fname);
+	printf("%s:'%s' file reading...\n",str,fname);
 
 	if (gentry_entrys>=gentry_maxentry) {
 		char **new_gentry = (char**)aRealloc((void*)gentry_table, (gentry_maxentry+GENTRY_ADDS) * sizeof(char*));
@@ -927,6 +929,36 @@ int grfio_add(char *fname)
 	}
 
 	return result;
+}
+
+/*==========================================
+ * Grfio : Resource file setting
+ *------------------------------------------
+ */
+int grfio_setdatafile(const char *w1, const char *w2)
+{
+	int i;
+
+	for(i=0; i<file_number; i++) {	// 同名があればパスを上書きするので検索する
+		if(strcmp(data_file[i].name, w1) == 0)
+			break;
+	}
+	if(i >= MAX_GRF_FILES) {
+		printf("Can't read grf-file (%s), over MAX_GRF_FILES %d\a\n", w1, MAX_GRF_FILES);
+		return -1;
+	}
+
+	strncpy(data_file[i].name, w1, sizeof(data_file[0].name));
+	strncpy(data_file[i].path, w2, sizeof(data_file[0].path));
+	data_file[i].name[sizeof(data_file[0].name)-1] = '\0';
+	data_file[i].path[sizeof(data_file[0].path)-1] = '\0';
+
+	if(i >= file_number)
+		file_number++;
+	if(file_number >= MAX_GRF_FILES)
+		file_number = MAX_GRF_FILES;
+
+	return 0;
 }
 
 /*==========================================
@@ -1002,7 +1034,7 @@ void grfio_init(char *fname)
 {
 	FILE *data_conf;
 	char line[1024],w1[1024],w2[1024];
-	int result = 0, result2 = 0, result3 = 0;
+	int i, result = 0;
 
 	grfio_load_zlib();
 
@@ -1013,17 +1045,10 @@ void grfio_init(char *fname)
 		// grf-files.txt があるなら読み込む
 		if( data_conf!=NULL ) {
 			while(fgets(line,sizeof(line)-1,data_conf)) {
+				if(line[0] == '/' && line[1] == '/')
+					continue;
 				if(sscanf(line,"%[^:]: %[^\r\n]", w1, w2) == 2) {
-					if(strcmp(w1,"data") == 0) {
-						strncpy(data_file, w2, sizeof(data_file));
-						data_file[sizeof(data_file)-1] = '\0';
-					} else if(strcmp(w1,"sdata") == 0) {
-						strncpy(sdata_file, w2, sizeof(sdata_file));
-						sdata_file[sizeof(sdata_file)-1] = '\0';
-					} else if(strcmp(w1,"adata") == 0) {
-						strncpy(adata_file, w2, sizeof(adata_file));
-						adata_file[sizeof(adata_file)-1] = '\0';
-					}
+					grfio_setdatafile(w1, w2);
 				}
 			}
 			fclose(data_conf);
@@ -1042,25 +1067,14 @@ void grfio_init(char *fname)
 	atexit(grfio_final);	// 終了処理定義
 
 	// エントリーテーブル読込
-	if (strcmp(data_file, "") != 0) {	// If data directive exists in grf-files.txt
-		result  = grfio_add(data_file);	// Standard data file
-	} else {
-		printf("No file name in grf-files.txt for data directive.\n");
+	for(i=0; i<file_number; i++) {
+		result += grfio_add(data_file[i].name, data_file[i].path);
 	}
-	if (strcmp(sdata_file, "") != 0) {	// If sdata directive exists in grf-files.txt
-		result2 = grfio_add(sdata_file);	// Sakray addon data file
-	} else {
-		printf("No file name in grf-files.txt for sdata directive.\n");
-	}
-	if (strcmp(adata_file, "") != 0) {	// If adata directive exists in grf-files.txt
-		result3 = grfio_add(adata_file);	// alpha data file
-	} else {
-		printf("No file name in grf-files.txt for adata directive.\n");
-	}
-/*
-	if (result!=0 && result2!=0 && result3!=0) {
+
+	/*
+	if (result != 0) {
 		printf("not grf file readed exit!!\n");
 		exit(1);			// リソースが一つも読めなければ終了
 	}
-*/
+	*/
 }
