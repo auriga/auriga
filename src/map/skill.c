@@ -3684,7 +3684,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case AM_PHARMACY:			/* ポーション作成 */
 		if(sd) {
-			clif_skill_produce_mix_list(sd,32);
+			clif_skill_produce_mix_list(sd,PRD_PHARMACY);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
@@ -3729,25 +3729,25 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case ASC_CDP:				/* デッドリーポイズン作成 */
 		if(sd) {
-			clif_skill_produce_mix_list(sd,256);
+			clif_skill_produce_mix_list(sd,PRD_CDP);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case WS_CREATECOIN:			/* クリエイトコイン */
 		if(sd) {
-			clif_skill_produce_mix_list(sd,64);
+			clif_skill_produce_mix_list(sd,PRD_COIN);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case WS_CREATENUGGET:			/* 塊製造 */
 		if(sd) {
-			clif_skill_produce_mix_list(sd,128);
+			clif_skill_produce_mix_list(sd,PRD_NUGGET);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case SA_CREATECON:
 		if(sd) {
-			clif_skill_produce_mix_list(sd,512);
+			clif_skill_produce_mix_list(sd,PRD_CONVERTER);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
@@ -10806,22 +10806,7 @@ int skill_can_produce_mix( struct map_session_data *sd, int idx, int trigger)
 			return 0;
 	}
 
-	/*
-	//スキルチェック skillid==0ならそのまま
-	switch(skill_produce_db[i].trigger)
-	{
-		case 1://
-		case 2://
-		case 3://指定レベルと同等のみ(武器用)
-			if((j=skill_produce_db[i].req_skill)>0 && pc_checkskill(sd,j) != skill_produce_db[i].req_skilllv )
-				return 0;
-			break;
-		default://指定レベル以上のみ通過
-			if((j=skill_produce_db[i].req_skill)>0 && pc_checkskill(sd,j) < skill_produce_db[i].req_skilllv )
-				return 0;
-			break;
-	}
-	*/
+	// req_skillが0以下のときはreq_skilllvの判定をしない
 	if((req_skill = skill_produce_db[idx].req_skill) > 0 && pc_checkskill(sd,req_skill) < skill_produce_db[idx].req_skilllv)
 		return 0;
 
@@ -10831,7 +10816,6 @@ int skill_can_produce_mix( struct map_session_data *sd, int idx, int trigger)
 
 		if(id <= 0)	// これ以上は材料要らない
 			break;
-
 		amount = skill_produce_db[idx].mat_amount[i];
 		if(amount <= 0)
 			amount = 1;	// 消耗されないが作る時必要なアイテム
@@ -10855,130 +10839,119 @@ int skill_can_produce_mix( struct map_session_data *sd, int idx, int trigger)
  */
 static int skill_calc_produce_rate(struct map_session_data *sd, int idx, int sc, int ele)
 {
-	int make_per = 0;
-	int nameid;
+	int make_per, skill_lv;
+	int int_ = sd->paramc[3];
+	int dex  = sd->paramc[4];
+	int luk  = sd->paramc[5];
 
 	nullpo_retr(0, sd);
 
 	if(idx < 0 || idx >= MAX_SKILL_PRODUCE_DB)
 		return 0;
 
-	nameid = skill_produce_db[idx].nameid;
+	make_per = skill_produce_db[idx].per;
+	skill_lv = pc_checkskill(sd,skill_produce_db[idx].req_skill);
 
-	/* 確率判定 */
-	if( !itemdb_isequip(nameid) ) {
-		if(skill_produce_db[idx].req_skill==AM_PHARMACY) {
-			make_per = pc_checkskill(sd,AM_LEARNINGPOTION)*100
-					+pc_checkskill(sd,AM_PHARMACY)*300+sd->status.job_level*20
-					+sd->paramc[4]*10+sd->paramc[3]*5+sd->paramc[5]*10;
-			if (nameid==501 || nameid==503 || nameid==504) // 普通ポーション
-				make_per += 2000;
-			else if (nameid==545 || nameid==505) // 赤スリム or 青ポーション
-				make_per -= 500;
-			else if (nameid==546) // 黄スリム
-				make_per -= 700;
-			else if (nameid==547 || nameid==7139) // 白スリム or コーティング薬
-				make_per -= 1000;
-			else if(nameid == 970) // アルコール
-				make_per += 1000;
-			else if(nameid == 7142){ // エンブリオ(生命倫理未修得時は成功率0)
-				if(pc_checkskill(sd,AM_BIOETHICS)>0)
-					make_per -= 500;
-				else
-					make_per = 0;
-			}
-			else	//レジストポーション(通常ポーション並にしておく?)
-				make_per += 2000;
-		} else if (skill_produce_db[idx].req_skill==ASC_CDP) {
-			make_per = 2000 + sd->paramc[4] * 40 + sd->paramc[5] * 20;
-		}else if(skill_produce_db[idx].req_skill == SA_CREATECON)
+	/* 基本確率を算出してmake_perに加算 */
+
+	switch (skill_produce_db[idx].itemlv)
+	{
+	case PRD_WEAPON_L1:	// 武器製造
+	case PRD_WEAPON_L2:
+	case PRD_WEAPON_L3:
+		make_per += sd->status.job_level*20 + dex*10 + luk*10 + skill_lv*500 + pc_checkskill(sd,BS_WEAPONRESEARCH)*100;
+
+		if(pc_search_inventory(sd,989) >= 0)		// エンペリウムの金敷
+			make_per += 1000;
+		else if(pc_search_inventory(sd,988) >= 0)	// 黄金の金敷
+			make_per += 500;
+		else if(pc_search_inventory(sd,987) >= 0)	// オリデオコンの金敷
+			make_per += 300;
+		//else if(pc_search_inventory(sd,986) >= 0)	// 金敷
+		//	make_per += 0:
+
+		if(ele)
+			make_per -= 2000;	// 属性石の確率低下
+		if(sc > 0)
+			make_per -= sc * 1500;	// 星の確率低下
+
+		if(skill_produce_db[idx].itemlv == PRD_WEAPON_L3)
+			make_per += pc_checkskill(sd,BS_ORIDEOCON)*100;	// オリデオコン研究は暫定
+
+		if(battle_config.wp_rate != 100)
+			make_per = make_per * battle_config.wp_rate/100;
+		break;
+
+	case PRD_ORE:		// 鉱石
+		make_per += sd->status.job_level*20 + dex+10 + luk*10 + skill_lv*500;
+		if(battle_config.wp_rate != 100)
+			make_per = make_per * battle_config.wp_rate/100;
+		break;
+
+	case PRD_PHARMACY:	// ファーマシー
+		if(skill_produce_db[idx].nameid == 7142 && pc_checkskill(sd,AM_BIOETHICS) <= 0) {	// 生命倫理未修得時は成功率0
+			make_per = 0;
+		} else {
+			make_per += pc_checkskill(sd,AM_LEARNINGPOTION)*100 + skill_lv*300 + sd->status.job_level*20 + dex*10 + luk*10 + int_*5;
+			if(battle_config.pp_rate != 100)
+				make_per = make_per * battle_config.pp_rate/100;
+		}
+		break;
+
+	case PRD_CDP:		// デッドリーポイズン
+		make_per += dex*40 + luk*20;
+		if(battle_config.cdp_rate != 100)
+			make_per = make_per * battle_config.cdp_rate/100;
+		break;
+
+	case PRD_CONVERTER:	// コンバーター
+		switch(skill_produce_db[idx].nameid)
 		{
-			int skilllv;
-			switch(nameid)
-			{
-				case 12114: skilllv = pc_checkskill(sd,SA_FLAMELAUNCHER); break;
-				case 12115: skilllv = pc_checkskill(sd,SA_FROSTWEAPON); break;
-				case 12116: skilllv = pc_checkskill(sd,SA_LIGHTNINGLOADER); break;
-				case 12117: skilllv = pc_checkskill(sd,SA_SEISMICWEAPON); break;
-				default:  skilllv = 5; break;
-			}
-			make_per = -500 + 1000*skilllv + sd->status.job_level*20 + sd->paramc[3]*10 + sd->paramc[4]*10;
-		}else if(skill_produce_db[idx].itemlv>=1000){
-			switch(skill_produce_db[idx].itemlv)
-			{
-				case 1000://料理
-					make_per = 2000 + sd->making_base_success_per + sd->status.job_level*10 + sd->paramc[3]*10 + sd->paramc[4]*10 + sd->paramc[5]*10 - skill_produce_db[idx].req_skilllv*200;
-					break;
-				case 1001://スクロール
-					make_per = 3000 + sd->making_base_success_per + sd->status.job_level*10 + sd->paramc[3]*10 + sd->paramc[4]*10 - skill_produce_db[idx].req_skilllv*200;
-					break;
-				default:
-					make_per = sd->making_base_success_per + sd->status.job_level*10 + sd->paramc[3]*10 + sd->paramc[4]*10 - skill_produce_db[idx].req_skilllv*200;
-					break;
-			}
-		}else{
-			if(nameid >= 994 && nameid <= 997) // 属性石
-				make_per = sd->status.job_level*20 + sd->paramc[4]*10 + sd->paramc[5]*10 + pc_checkskill(sd,skill_produce_db[idx].req_skill)*500 + 1500;
-			else if(nameid == 998) // 鉄
-				make_per = sd->status.job_level*20 + sd->paramc[4]*10 + sd->paramc[5]*10 + pc_checkskill(sd,skill_produce_db[idx].req_skill)*500 + 4500;
-			else if(nameid == 999) // 鋼鉄
-				make_per = sd->status.job_level*20 + sd->paramc[4]*10 + sd->paramc[5]*10 + pc_checkskill(sd,skill_produce_db[idx].req_skill)*500 + 3500;
-			else if(nameid == 1000) // 星のかけら
-				make_per = 10000;
-			else if(nameid == 985)
-				make_per = 1000 + sd->status.base_level*30 + sd->paramc[4]*20 + sd->paramc[5]*10 + (pc_checkskill(sd,skill_produce_db[idx].req_skill)-1)*500;
-			else
-				make_per = 1000 + sd->status.base_level*30 + sd->paramc[4]*20 + sd->paramc[5]*10 + pc_checkskill(sd,skill_produce_db[idx].req_skill)*500;
+			case 12114: skill_lv = pc_checkskill(sd,SA_FLAMELAUNCHER);	break;
+			case 12115: skill_lv = pc_checkskill(sd,SA_FROSTWEAPON);	break;
+			case 12116: skill_lv = pc_checkskill(sd,SA_LIGHTNINGLOADER);	break;
+			case 12117: skill_lv = pc_checkskill(sd,SA_SEISMICWEAPON);	break;
+			default: skill_lv = 5; break;
 		}
-	} else {
-		/* 武器製造*/
-		int add_per, wlv;
-		if(pc_search_inventory(sd,989) >= 0) add_per = 1000; //エンペリウムの金敷
-		else if(pc_search_inventory(sd,988) >= 0) add_per = 500; //黄金の金敷
-		else if(pc_search_inventory(sd,987) >= 0) add_per = 300; //オリデオコンの金敷
-		else if(pc_search_inventory(sd,986) >= 0) add_per = 0; //金敷
-		else add_per = 0; //金敷無し
-		if(ele) add_per -= 2500; //属性
-		add_per -= sc*1500; //星のかけら
-		wlv = itemdb_wlv(nameid);
-		make_per = sd->status.job_level*20 + sd->paramc[4]*10 + sd->paramc[5]*10
-			+ pc_checkskill(sd,skill_produce_db[idx].req_skill)*500 + 4500
-			+ pc_checkskill(sd,BS_WEAPONRESEARCH)*100 + add_per
-			+ ((wlv >= 3)? pc_checkskill(sd,BS_ORIDEOCON)*100 : 0) //オリデオコン研究は仮の値
-			- ((wlv >= 2)? wlv*1000: 0);
+		make_per += skill_lv*1000 + sd->status.job_level*20 + int_*10 + dex*10;
+		if(battle_config.scroll_produce_rate != 100)
+			make_per = make_per * battle_config.scroll_produce_rate/100;
+		break;
+
+	case PRD_COOKING:	// 料理
+		make_per += sd->making_base_success_per + sd->status.job_level*10 + int_*10 + dex*10 + luk*10;
+		if(battle_config.cooking_rate != 100)
+			make_per = make_per * battle_config.cooking_rate/100;
+		break;
+
+	/* 以下未実装製造 */
+	case PRD_SCROLL:	// スクロール
+		make_per += sd->making_base_success_per + sd->status.job_level*10 + int_*10 + dex*10;
+		if(battle_config.scroll_produce_rate != 100)
+			make_per = make_per * battle_config.scroll_produce_rate/100;
+		break;
+
+	case PRD_SYN_POTION:	// ポーション合成
+		make_per += sd->making_base_success_per + sd->status.job_level*10 + int_*10 + dex*10 - skill_lv*200;
+		if(battle_config.making_rate != 100)
+			make_per = make_per * battle_config.making_rate/100;
+		break;
+
+	case PRD_COIN:		// コイン
+	case PRD_NUGGET:	// 塊
+	case PRD_ORIDEOCON:	// オリデオコン研究
+		make_per += sd->status.base_level*30 + dex*20 + luk*10 + skill_lv*500;
+		if(battle_config.wp_rate != 100)
+			make_per = make_per * battle_config.wp_rate/100;
+		break;
 	}
 
-	if(make_per < 1) make_per = 1;
+	if(make_per < 1)
+		make_per = 1;
 
-	if(skill_produce_db[idx].req_skill==AM_PHARMACY) {
-		if( battle_config.pp_rate!=100 )
-			make_per=make_per*battle_config.pp_rate/100;
-	} else if (skill_produce_db[idx].req_skill == ASC_CDP) {
-		if (battle_config.cdp_rate != 100)
-			make_per = make_per*battle_config.cdp_rate/100;
-	} else if (skill_produce_db[idx].itemlv >= 1000) {
-		switch(skill_produce_db[idx].itemlv){
-			case 1000:
-				if (battle_config.cooking_rate != 100)
-					make_per = make_per*battle_config.cooking_rate/100;
-				break;
-			case 1001:
-				if (battle_config.scroll_produce_rate != 100)
-					make_per = make_per*battle_config.scroll_produce_rate/100;
-				break;
-			default:
-				if (battle_config.making_rate != 100)
-					make_per = make_per*battle_config.making_rate/100;
-				break;
-		}
-	} else  {
-		if( battle_config.wp_rate!=100 )	/* 確率補正 */
-			make_per=make_per*battle_config.wp_rate/100;
-	}
-
-	//養子の成功率70%
+	// 養子の成功率70%
 	if(pc_isbaby(sd))
-		make_per = make_per*70/100;
+		make_per = make_per * 70/100;
 
 	return make_per;
 }
@@ -11048,7 +11021,7 @@ static int skill_am_ranking_point(struct map_session_data *sd, int nameid, int s
 void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int slot2, int slot3)
 {
 	int slot[3];
-	int i, sc, ele, make_per;
+	int i, sc, ele, type;
 	int idx= -1, cnt=0;
 
 	nullpo_retv(sd);
@@ -11065,7 +11038,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 	if(idx < 0)
 		return;
 
-	if(skill_can_produce_mix(sd,idx,-1) < 0)	/* 条件不足 */
+	if(!skill_can_produce_mix(sd,idx,-1))	/* 条件不足 */
 		return;
 
 	slot[0] = slot1;
@@ -11075,72 +11048,84 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 	/* 埋め込み処理 */
 	for(i=0, sc=0, ele=0; i<3; i++) {
 		int j;
-		if( slot[i]<=0 )
+		if(slot[i] <= 0)
 			continue;
 		j = pc_search_inventory(sd,slot[i]);
 		if(j < 0)	/* 不正パケット(アイテム存在)チェック */
 			continue;
-		if(slot[i]==1000){	/* 星のかけら */
+		if(slot[i] == 1000) {	/* 星のかけら */
 			pc_delitem(sd,j,1,1);
 			sc++;
 			cnt++;
 		}
-		if(slot[i]>=994 && slot[i]<=997 && ele==0){	/* 属性石 */
-			static const int ele_table[4]={3,1,4,2};
+		if(slot[i] >= 994 && slot[i] <= 997 && ele == 0) {	/* 属性石 */
+			static const int ele_table[4] = { 3, 1, 4, 2 };
 			pc_delitem(sd,j,1,1);
-			ele=ele_table[slot[i]-994];
+			ele = ele_table[slot[i]-994];
 			cnt++;
 		}
 	}
 
 	/* 材料消費 */
-	for(i=0;i<MAX_PRODUCE_RESOURCE;i++){
-		int j,id,x;
-		if( (id=skill_produce_db[idx].mat_id[i]) <= 0 )
-			continue;
-		x=skill_produce_db[idx].mat_amount[i];	/* 必要な個数 */
-		do{	/* ２つ以上のインデックスにまたがっているかもしれない */
-			int y=0;
-			j = pc_search_inventory(sd,id);
+	for(i=0; i<MAX_PRODUCE_RESOURCE; i++) {
+		int j, amount;
+		int id = skill_produce_db[idx].mat_id[i];
 
-			if(j >= 0){
-				y = sd->status.inventory[j].amount;
-				if(y>x)y=x;	/* 足りている */
-				pc_delitem(sd,j,y,0);
-			}else {
+		if(id <= 0)	// これ以上は材料要らない
+			break;
+		amount = skill_produce_db[idx].mat_amount[i];	/* 必要な個数 */
+		do {	/* ２つ以上のインデックスにまたがっているかもしれない */
+			int c = 0;
+
+			j = pc_search_inventory(sd,id);
+			if(j >= 0) {
+				c = sd->status.inventory[j].amount;
+				if(c > amount)
+					c = amount;	/* 足りている */
+				pc_delitem(sd,j,c,0);
+			} else {
 				if(battle_config.error_log)
 					printf("skill_produce_mix: material item error\n");
+				return;
 			}
-
-			x-=y;	/* まだ足りない個数を計算 */
-		}while( j>=0 && x>0 );	/* 材料を消費するか、エラーになるまで繰り返す */
+			amount -= c;	/* まだ足りない個数を計算 */
+		} while(amount > 0);	/* 材料を消費するまで繰り返す */
 	}
 
-	make_per = skill_calc_produce_rate(sd, idx, sc, ele);
+	type = skill_produce_db[idx].itemlv;
 
-	if(atn_rand()%10000 < make_per){
-		// 成功
-		int flag;
+	if(atn_rand()%10000 < skill_calc_produce_rate(sd, idx, sc, ele)) {	// 確率判定
+		/* 成功 */
 		struct item tmp_item;
-		memset(&tmp_item,0,sizeof(tmp_item));
-		tmp_item.nameid=nameid;
-		tmp_item.amount=1;
-		tmp_item.identify=1;
-		if(itemdb_isequip(nameid) && itemdb_type(nameid)==4){	/* 武器の場合 */
-			tmp_item.card[0]=0x00ff; /* 製造武器フラグ */
-			tmp_item.card[1]=((sc*5)<<8)+ele;	/* 属性とつよさ */
-			*((unsigned long *)(&tmp_item.card[2]))=sd->status.char_id;	/* キャラID */
+		memset(&tmp_item, 0, sizeof(tmp_item));
+		tmp_item.nameid   = nameid;
+		tmp_item.amount   = 1;
+		tmp_item.identify = 1;
+
+		if(type == PRD_WEAPON_L1 || type == PRD_WEAPON_L2 || type == PRD_WEAPON_L3)
+		{
+			tmp_item.card[0] = 0x00ff;					// 製造武器フラグ
+			tmp_item.card[1] = ((sc * 5) << 8) + ele;			// 属性石と星
+			*((unsigned long *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
 		}
-		else if((battle_config.produce_item_name_input && skill_produce_db[idx].req_skill!=AM_PHARMACY) ||
-		        (battle_config.produce_potion_name_input && skill_produce_db[idx].req_skill==AM_PHARMACY)) {
-			tmp_item.card[0]=0x00fe;
-			tmp_item.card[1]=0;
-			*((unsigned long *)(&tmp_item.card[2]))=sd->status.char_id;	/* キャラID */
+		else {
+			int flag = 0;
+			if(type == PRD_PHARMACY || type == PRD_SYN_POTION)
+				flag = battle_config.produce_potion_name_input;
+			else if(type == PRD_CONVERTER || type == PRD_SCROLL)
+				flag = battle_config.scroll_item_name_input;
+			else
+				flag = battle_config.produce_item_name_input;
+
+			if(flag) {
+				tmp_item.card[0] = 0x00fe;
+				tmp_item.card[1] = 0;
+				*((unsigned long *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
+			}
 		}
 
-		switch (skill_produce_db[idx].req_skill)
-		{
-			case AM_PHARMACY:
+		switch (type) {
+			case PRD_PHARMACY:
 			{
 				int point = skill_am_ranking_point(sd, nameid, 1);
 				if(point > 0) {
@@ -11152,28 +11137,16 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 				clif_misceffect(&sd->bl,5);		/* 他人にも成功を通知 */
 				break;
 			}
-			case ASC_CDP:
+			case PRD_CDP:
+			case PRD_CONVERTER:
+			case PRD_SYN_POTION:
 				clif_produceeffect(sd,2,nameid);	/* 暫定で製薬エフェクト */
 				clif_misceffect(&sd->bl,5);
 				break;
-			case SA_CREATECON:
-				clif_produceeffect(sd,2,nameid);	/* 暫定で製薬エフェクト */
-				clif_misceffect(&sd->bl,5);
-				break;
-			case BS_IRON:	/* 武器製造 コイン製造 */
-			case BS_STEEL:
-			case BS_ENCHANTEDSTONE:
-			case BS_ORIDEOCON:
-			case BS_DAGGER:
-			case BS_SWORD:
-			case BS_TWOHANDSWORD:
-			case BS_AXE:
-			case BS_MACE:
-			case BS_KNUCKLE:
-			case BS_SPEAR:
-			case WS_CREATECOIN:
-				if(tmp_item.card[0]==0x00ff && itemdb_wlv(nameid)==3 && cnt==3)
-				{
+			case PRD_WEAPON_L1:
+			case PRD_WEAPON_L2:
+			case PRD_WEAPON_L3:
+				if(tmp_item.card[0] == 0x00ff && cnt == 3 && itemdb_wlv(nameid) == 3) {
 					ranking_gain_point(sd,RK_BLACKSMITH,10);
 					ranking_setglobalreg(sd,RK_BLACKSMITH);
 					ranking_update(sd,RK_BLACKSMITH);
@@ -11181,27 +11154,25 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 				clif_produceeffect(sd,0,nameid);	/* 武器製造エフェクト */
 				clif_misceffect(&sd->bl,3);
 				break;
-			default:
-				switch(skill_produce_db[idx].itemlv)
-				{
-					case 1000:	// 料理
-						clif_misceffect2(&sd->bl,608);
-						break;
-					default:
-						clif_misceffect2(&sd->bl,610);
-						break;
-				}
+			case PRD_ORE:
+			case PRD_COIN:
+			case PRD_NUGGET:
+			case PRD_ORIDEOCON:
+				clif_produceeffect(sd,0,nameid);	/* 武器製造エフェクト */
+				clif_misceffect(&sd->bl,3);
+				break;
+			case PRD_COOKING:
+				clif_misceffect2(&sd->bl,608);
+				break;
+			case PRD_SCROLL:
+				clif_misceffect2(&sd->bl,610);
 				break;
 		}
-
-		if((flag = pc_additem(sd,&tmp_item,1))) {
-			clif_additem(sd,0,0,flag);
-			map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
-		}
+		pc_additem(sd,&tmp_item,1);	// 重量オーバーなら消滅
 	} else {
-		// 失敗
-		switch (skill_produce_db[idx].req_skill) {
-			case AM_PHARMACY:
+		/* 失敗 */
+		switch (type) {
+			case PRD_PHARMACY:
 			{
 				int point = skill_am_ranking_point(sd, nameid, 0);
 				if(point > 0) {
@@ -11213,44 +11184,34 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 				clif_misceffect(&sd->bl,6);		/* 他人にも失敗を通知 */
 				break;
 			}
-			case ASC_CDP:
+			case PRD_CDP:
 				clif_produceeffect(sd,3,nameid);	/* 暫定で製薬エフェクト */
 				clif_misceffect(&sd->bl,6);		/* 他人にも失敗を通知 */
 				pc_heal(sd, -(sd->status.max_hp>>2), 0);
 				break;
-			case SA_CREATECON:
+			case PRD_CONVERTER:
+			case PRD_SYN_POTION:
 				clif_produceeffect(sd,3,nameid);	/* 暫定で製薬エフェクト */
 				clif_misceffect(&sd->bl,6);		/* 他人にも失敗を通知 */
 				break;
-			case BS_IRON:	/* 武器製造 コイン製造 */
-			case BS_STEEL:
-			case BS_ENCHANTEDSTONE:
-			case BS_ORIDEOCON:
-			case BS_DAGGER:
-			case BS_SWORD:
-			case BS_TWOHANDSWORD:
-			case BS_AXE:
-			case BS_MACE:
-			case BS_KNUCKLE:
-			case BS_SPEAR:
-			case WS_CREATECOIN:
+			case PRD_WEAPON_L1:
+			case PRD_WEAPON_L2:
+			case PRD_WEAPON_L3:
+			case PRD_ORE:
+			case PRD_COIN:
+			case PRD_NUGGET:
+			case PRD_ORIDEOCON:
 				clif_produceeffect(sd,1,nameid);	/* 武器製造失敗エフェクト */
 				clif_misceffect(&sd->bl,2);		/* 他人にも失敗を通知 */
 				break;
-			default:
-				switch(skill_produce_db[idx].itemlv)
-				{
-					case 1000:	// 料理
-						clif_misceffect2(&sd->bl,609);
-						break;
-					default:
-						clif_misceffect2(&sd->bl,611);
-						break;
-				}
+			case PRD_COOKING:
+				clif_misceffect2(&sd->bl,609);
+				break;
+			case PRD_SCROLL:
+				clif_misceffect2(&sd->bl,611);
 				break;
 		}
 	}
-
 	return;
 }
 
@@ -11258,20 +11219,20 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
  * トワイライトファーマシー
  *------------------------------------------
  */
-static int skill_am_twilight_sub(struct map_session_data* sd,int nameid,int make_per,int count)
+static int skill_am_twilight_sub(struct map_session_data* sd,int nameid,int count)
 {
-	int i, amount = 0, point = 0;
+	int i, make_per = 0, amount = 0, point = 0;
 
 	nullpo_retr(0, sd);
 
-	if(make_per < 1)
-		make_per = 1;
-	if(battle_config.pp_rate != 100)
-		make_per = make_per*battle_config.pp_rate/100;
+	for(i=0; i<MAX_SKILL_PRODUCE_DB; i++) {
+		if(skill_produce_db[i].nameid == nameid)
+			break;
+	}
+	if(i >= MAX_SKILL_PRODUCE_DB)
+		return 0;	// 存在しない製造アイテム
 
-	//養子の成功率70%
-	if(pc_isbaby(sd))
-		make_per = make_per*70/100;
+	make_per = skill_calc_produce_rate(sd, i, 0, 0);
 
 	for(i=0; i<count; i++) {
 		int n = (atn_rand()%10000 < make_per)? 1: 0;
@@ -11288,9 +11249,13 @@ static int skill_am_twilight_sub(struct map_session_data* sd,int nameid,int make
 		tmp_item.nameid   = nameid;
 		tmp_item.amount   = amount;
 		tmp_item.identify = 1;
-		tmp_item.card[0]  = 0x00fe;
-		tmp_item.card[1]  = 0;
-		*((unsigned long *)(&tmp_item.card[2])) = sd->status.char_id;	/* キャラID */
+
+		if(battle_config.produce_potion_name_input)
+		{
+			tmp_item.card[0] = 0x00fe;
+			tmp_item.card[1] = 0;
+			*((unsigned long *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
+		}
 		pc_additem(sd, &tmp_item, amount);	// 重量オーバーなら消滅
 	} else {
 		// 失敗
@@ -11308,49 +11273,25 @@ static int skill_am_twilight_sub(struct map_session_data* sd,int nameid,int make
 
 int skill_am_twilight1(struct map_session_data* sd)
 {
-	int make_per;
-
 	nullpo_retr(0, sd);
 
-	//白ポ
-	make_per = pc_checkskill(sd,AM_LEARNINGPOTION)*100
-				+pc_checkskill(sd,AM_PHARMACY)*300+sd->status.job_level*20
-				+sd->status.dex*10+sd->status.luk*10+sd->status.int_*5+2000;
-
-	skill_am_twilight_sub(sd,504,make_per,200);
-
+	skill_am_twilight_sub(sd,504,200);
 	return 1;
 }
 int skill_am_twilight2(struct map_session_data* sd)
 {
-	int make_per;
-
 	nullpo_retr(0, sd);
 
-	//白スリム
-	make_per = pc_checkskill(sd,AM_LEARNINGPOTION)*100
-				+pc_checkskill(sd,AM_PHARMACY)*300+sd->status.job_level*20
-				+sd->status.dex*10+sd->status.luk*10+sd->status.int_*5-1000;
-
-	skill_am_twilight_sub(sd,547,make_per,200);
-
+	skill_am_twilight_sub(sd,547,200);
 	return 1;
 }
 int skill_am_twilight3(struct map_session_data* sd)
 {
-	int make_per;
-
 	nullpo_retr(0, sd);
 
-	//アルコール
-	make_per = pc_checkskill(sd,AM_LEARNINGPOTION)*100
-				+pc_checkskill(sd,AM_PHARMACY)*300+sd->status.job_level*20
-				+sd->status.dex*10+sd->status.luk*10+sd->status.int_*5+1000;
-
-	skill_am_twilight_sub(sd,970,make_per,100);
-	skill_am_twilight_sub(sd,7135,make_per,50);
-	skill_am_twilight_sub(sd,7136,make_per,50);
-
+	skill_am_twilight_sub(sd,970,100);
+	skill_am_twilight_sub(sd,7135,50);
+	skill_am_twilight_sub(sd,7136,50);
 	return 1;
 }
 
@@ -11446,7 +11387,7 @@ int skill_repair_weapon(struct map_session_data *sd, int idx)
 	dstsd = map_id2sd(sd->repair_target);
 	if (dstsd && (nameid = dstsd->status.inventory[idx].nameid) > 0
 	    && dstsd->status.inventory[idx].attribute != 0 && (material = skill_can_repair(sd, nameid))) {
-		//アイテム消費
+		// アイテム消費
 		pc_delitem(sd,pc_search_inventory(sd,material),1,0);
 		dstsd->status.inventory[idx].attribute = 0;
 		clif_delitem(dstsd, idx, 1);
@@ -12510,7 +12451,7 @@ int skill_readdb(void)
 			if(line[0]=='/' && line[1]=='/')
 				continue;
 			memset(split,0,sizeof(split));
-			for(j=0,p=line;j<3 + MAX_PRODUCE_RESOURCE * 2 && p;j++){
+			for(j=0,p=line;j<6 + MAX_PRODUCE_RESOURCE * 2 && p;j++){
 				split[j]=p;
 				p=strchr(p,',');
 				if(p) *p++=0;
@@ -12532,8 +12473,9 @@ int skill_readdb(void)
 			skill_produce_db[k].itemlv=atoi(split[1]);
 			skill_produce_db[k].req_skill=atoi(split[2]);
 			skill_produce_db[k].req_skilllv=atoi(split[3]);
+			skill_produce_db[k].per=atoi(split[4]);
 
-			for(x=4,y=0; split[x] && split[x+1] && y<MAX_PRODUCE_RESOURCE; x+=2,y++){
+			for(x=5,y=0; split[x] && split[x+1] && y<MAX_PRODUCE_RESOURCE; x+=2,y++){
 				skill_produce_db[k].mat_id[y]=atoi(split[x]);
 				skill_produce_db[k].mat_amount[y]=atoi(split[x+1]);
 			}

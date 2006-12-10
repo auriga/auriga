@@ -1,4 +1,23 @@
 ----------------------------------------
+//026 [2006/12/11] by Rayce
+
+・db/produce_db.txtの拡張をAthena Projectの投稿分からmerge, thanks to Rohypnolさん（skill.*）
+	-> dbに新しくFixPerの項目を挿入
+	　 基本成功確率にこの値を加算することで確率の補正を個別に設定します
+	-> skill_produce_db構造体から使われてないメンバ trigger を削除し、perを追加
+	-> skill.hに製造グループ定数 PRD_*** を追加
+	　 製造の種別はスキルIDではなくこのグループ定数で分類する
+	-> battle_athena.confの以下3項目が全く利用されてなかったので修正
+		scroll_produce_rate, making_rate, scroll_item_name_input
+	-> クリエイトコンバーターは100%成功にしておく
+	　 db/produce_db.txtのFixPerを10000に設定しただけで、計算式自体はskill.cに残してます
+	-> オリデオコン/エルニウム作成は本鯖にはない機能なので、ItemLvを1003に変更しておく
+	-> 説明についてはdoc/db_ref.txtに記載
+
+・012のMAPコピー機能の追加以後、担当MAPを決める処理が誤作動を起こしそうな気がしたので少し修正（map.h）
+・login.cから使われてない変数 m_start, gm_last を削除（login.c）
+
+----------------------------------------
 //025 [2006/12/09] by Rayce
 
 ・製造系の修正をAthena2262-fix4よりmerge、thanks to T.Nさん（clif.c, skill.*）

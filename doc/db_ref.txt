@@ -20,7 +20,8 @@ item_db2.txt		アイテムの追加情報を設定
 item_value_db.txt	アイテム価格のオーバーライド
 mob_db.txt		モンスターのデータを設定
 mob_skill_db.txt	モンスターの使用するスキルを設定
-homun_db.txt		ホムンクルスのデータを設定。
+homun_db.txt		ホムンクルスのデータを設定
+produce_db.txt		製造に関連するデータを設定
 
 
 ==========================================================================
@@ -645,6 +646,55 @@ Str,Agi,Vit,Int,Dex,Luk : レベルが１上がった時に、上昇する確率
 
 Aspd : 固有Aspd係数
 homun_script: ホムンクルスを持っている時適用されるステータスボーナスを設定(未実装)
+
+==========================================================================
+13. db/produce_db.txt
+--------------------------------------------------------------------------
+ID,ItemLV,RequireSkillid,RequireSkilllv,FixPer,MaterialID1,MaterialAmount1,MaterialID2,MaterialAmount2,MaterialID3,MaterialAmount3,MaterialID4,MaterialAmount4,MaterialID5,MaterialAmount5,MaterialID6,MaterialAmount6,MaterialID7,MaterialAmount7,MaterialID8,MaterialAmount8,MaterialID9,MaterialAmount9,MaterialID10,MaterialAmount10
+
+ID    : 製造されるアイテムID
+ItemLv: グループ定義
+	   1 = 武器製造Lv1
+	   2 = 武器製造Lv2
+	   3 = 武器製造Lv3
+	  16 = 鉱石
+	  32 = ファーマシー
+	  64 = クリエイトコイン（*）
+	 128 = 塊製造（*）
+	 256 = クリエイトデッドリーポイズン
+	 512 = クリエイトコンバーター
+	1000 = 料理
+	1001 = スクロール（*）
+	1002 = ポーション合成（*）
+	1003 = オリデオコン研究（*）
+
+	（*）の項目は本鯖未実装ですが、暫定的な計算式を用いて機能するように作られています
+
+RequireSkillid: 必要となるスキルID、0のときは不要になります
+RequireSkilllv: 必要となるスキルLv、スキルIDが0の場合は判定しません
+FixPer        : 成功確率補正値（万分率）、各グループの基本確率に加算します
+
+MaterialID1     : 材料となるアイテムID
+MaterialAmount1 : 必要な材料の数
+                  ただし0にした場合は、所持している必要はあるが消費されないアイテムになります
+MaterialID2     : 同上
+MaterialAmount2 : 同上
+MaterialID3     : 同上
+MaterialAmount3 : 同上
+MaterialID4     : 同上
+MaterialAmount4 : 同上
+MaterialID5     : 同上
+MaterialAmount5 : 同上
+MaterialID6     : 同上
+MaterialAmount6 : 同上
+MaterialID7     : 同上
+MaterialAmount7 : 同上
+MaterialID8     : 同上
+MaterialAmount8 : 同上
+MaterialID9     : 同上
+MaterialAmount9 : 同上
+MaterialID10    : 同上
+MaterialAmount10: 同上
 
 ==========================================================================
 EOF

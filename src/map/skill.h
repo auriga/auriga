@@ -55,12 +55,29 @@ enum {
 	UF_ENSEMBLE			= 0x0200,	// 合奏スキル
 };
 
+enum {
+	PRD_WEAPON_L1	=    1,
+	PRD_WEAPON_L2	=    2,
+	PRD_WEAPON_L3	=    3,
+	PRD_ORE		=   16,
+	PRD_PHARMACY	=   32,
+	PRD_COIN	=   64,
+	PRD_NUGGET	=  128,
+	PRD_CDP		=  256,
+	PRD_CONVERTER	=  512,
+	PRD_COOKING	= 1000,
+	PRD_SCROLL	= 1001,
+	PRD_SYN_POTION	= 1002,
+	PRD_ORIDEOCON	= 1003,
+};
+
 extern struct skill_db skill_db[MAX_SKILL_DB+MAX_HOMSKILL_DB+MAX_GUILDSKILL_DB];
 
 // アイテム作成データベース
 struct skill_produce_db {
-	int nameid, trigger;
+	int nameid;
 	int req_skill,req_skilllv,itemlv;
+	int per;
 	int mat_id[MAX_PRODUCE_RESOURCE],mat_amount[MAX_PRODUCE_RESOURCE];
 };
 extern struct skill_produce_db skill_produce_db[MAX_SKILL_PRODUCE_DB];

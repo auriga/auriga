@@ -66,7 +66,6 @@ static int auth_fifo_pos=0;
 
 static char admin_pass[64]=""; // for account creation
 static char ladmin_pass[64]=""; // for remote administration
-static const int gm_start=704554,gm_last=704583;
 static char login_log_filename[1024] = "log/login.log";
 static int login_version = 0, login_type = 0;
 int login_log(char *fmt,...);

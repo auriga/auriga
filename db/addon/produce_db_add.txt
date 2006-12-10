@@ -1,2 +1,2 @@
 //produce_db.txtへオーバーライド
-//ID,ItemLV,RequireSkillid,Skilllv,MaterialID1,MaterialAmount1,MaterialID2,MaterialAmount2,MaterialID3,MaterialAmount3,MaterialID4,MaterialAmount4,MaterialID5,MaterialAmount5
+//ID,ItemLV,RequireSkillid,Skilllv,FixPer,MaterialID1,MaterialAmount1,MaterialID2,MaterialAmount2,MaterialID3,MaterialAmount3,MaterialID4,MaterialAmount4,MaterialID5,MaterialAmount5
