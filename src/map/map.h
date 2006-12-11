@@ -992,6 +992,8 @@ int map_field_setting(void);
 int map_check_dir(int s_dir,int t_dir);
 int map_calc_dir( struct block_list *src,int x,int y);
 
+extern const int dirx[], diry[];
+
 // path.cより
 int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1,int flag,int flag2);
 #define path_search(wpd,m,x0,y0,x1,y1,flag)  path_search_real(wpd,m,x0,y0,x1,y1,flag,CELL_CHKNOPASS)

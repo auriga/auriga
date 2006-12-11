@@ -89,6 +89,10 @@ char motd_txt[256]="conf/motd.txt";
 char help_txt[256]="conf/help.txt";
 char extra_add_file_txt[1024] = "map_extra_add.txt"; // to add items from external software (use append to add a line)
 
+// 向き計算用
+const int dirx[8] = { 0,-1,-1,-1, 0, 1, 1, 1 };
+const int diry[8] = { 1, 1, 0,-1,-1,-1, 0, 1 };
+
 /*==========================================
  * 全map鯖総計での接続数設定
  * (char鯖から送られてくる)

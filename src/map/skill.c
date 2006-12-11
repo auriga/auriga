@@ -350,9 +350,6 @@ int GuildSkillStatusChangeTable[]={	/* skill.hのenumのSC_***とあわせるこ
 	SC_BATTLEORDER,SC_REGENERATION,-1,-1,-1,-1,-1,-1,-1,-1,
 };
 
-static const int dirx[8]={0,-1,-1,-1, 0, 1,1,1};
-static const int diry[8]={1, 1, 0,-1,-1,-1,0,1};
-
 /* スキルデータベース */
 struct skill_db skill_db[MAX_SKILL_DB+MAX_HOMSKILL_DB+MAX_GUILDSKILL_DB];
 
@@ -3531,49 +3528,34 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SM_PROVOKE:		/* プロボック */
+		/* MVPmobと不死には効かない */
+		if((bl->type==BL_MOB && status_get_mode(bl)&0x20) || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)))
 		{
-			struct unit_data *ud = NULL;
-
-			/* MVPmobと不死には効かない */
-			if((bl->type==BL_MOB && status_get_mode(bl)&0x20) || battle_check_undead(status_get_race(bl),status_get_elem_type(bl))) //不死には効かない
-			{
-				if(sd)
-					clif_skill_fail(sd,skillid,0,0);
-				map_freeblock_unlock();
-				return 1;
-			}
-
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-
-			sc_data = status_get_sc_data(bl);
-			if(sc_data){
-				if(sc_data[SC_FREEZE].timer!=-1)
-					status_change_end(bl,SC_FREEZE,-1);
-				if(sc_data[SC_STONE].timer!=-1 && sc_data[SC_STONE].val2==0)
-					status_change_end(bl,SC_STONE,-1);
-				if(sc_data[SC_SLEEP].timer!=-1)
-					status_change_end(bl,SC_SLEEP,-1);
-			}
-
-			if( dstmd ) {
-				int range = skill_get_range(skillid,skilllv);
-				if(range < 0)
-					range = status_get_range(src) - (range + 1);
-				mob_target(dstmd,src,range);
-			}
-
-			// 詠唱妨害
-			if((ud = unit_bl2ud(bl)) != NULL && ud->skilltimer != -1 && ud->state.skillcastcancel) {
-				if(dstsd) {
-					if(dstsd->special_state.no_castcancel && !map[bl->m].flag.gvg)
-						break;
-					if(dstsd->special_state.no_castcancel2)
-						break;
-				}
-				unit_skillcastcancel(bl,0);
-			}
+			if(sd)
+				clif_skill_fail(sd,skillid,0,0);
+			map_freeblock_unlock();
+			return 1;
 		}
+
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+
+		sc_data = status_get_sc_data(bl);
+		if(sc_data) {
+			if(sc_data[SC_FREEZE].timer!=-1)
+				status_change_end(bl,SC_FREEZE,-1);
+			if(sc_data[SC_STONE].timer!=-1 && sc_data[SC_STONE].val2==0)
+				status_change_end(bl,SC_STONE,-1);
+			if(sc_data[SC_SLEEP].timer!=-1)
+				status_change_end(bl,SC_SLEEP,-1);
+		}
+		if(dstmd) {
+			int range = skill_get_range(skillid,skilllv);
+			if(range < 0)
+				range = status_get_range(src) - (range + 1);
+			mob_target(dstmd,src,range);
+		}
+		unit_skillcastcancel(bl,2);	// 詠唱妨害
 		break;
 
 	case CG_MARIONETTE:		/* マリオネットコントロール */
@@ -4136,7 +4118,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case BS_REPAIRWEAPON:			/* 武器修理 */
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(sd && dstsd)
 			clif_item_repair_list(sd,dstsd);
 		break;
@@ -4653,7 +4634,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case PF_MINDBREAKER:
 		if (atn_rand()%100<(55+skilllv*5)) {
-			struct unit_data *ud = unit_bl2ud(bl);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,
 				0,0,0,skill_get_time(skillid,skilllv),0);
@@ -4674,18 +4654,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					range = status_get_range(src) - (range + 1);
 				mob_target(dstmd,src,range);
 			}
-
-			// 詠唱妨害
-			if(ud && ud->skilltimer != -1 && ud->state.skillcastcancel) {
-				if(dstsd) {
-					if(dstsd->special_state.no_castcancel && !map[bl->m].flag.gvg)
-						break;
-					if(dstsd->special_state.no_castcancel2)
-						break;
-				}
-				unit_skillcastcancel(bl,0);
-			}
-		} else if (sd)
+			unit_skillcastcancel(bl,2);	// 詠唱妨害
+		}
+		else if (sd)
 			clif_skill_fail(sd,skillid,0,0);
 		break;
 	case PF_SOULCHANGE:		/* ソウルチェンジ */
@@ -11340,62 +11311,54 @@ void skill_arrow_create(struct map_session_data *sd, int nameid)
  * 武器修理
  *------------------------------------------
  */
-int skill_can_repair( struct map_session_data *sd, int nameid )
+void skill_repair_weapon(struct map_session_data *sd, int idx)
 {
-	int wlv;
-
-	nullpo_retr(0, sd);
-
-	if(nameid <= 0 || itemdb_isequip(nameid)==0)
-		return 0;
-
-	wlv = itemdb_wlv(nameid);
-	if(itemdb_isequip(nameid) && itemdb_type(nameid)!=4 && itemdb_type(nameid)!=7)
-		wlv=5;
-
-	switch(wlv){
-		case 1:
-			if(pc_search_inventory(sd,1002) >= 0)	//鉄鉱石
-				return 1002;
-			break;
-		case 2:
-			if(pc_search_inventory(sd,998) >= 0)	//鉄
-				return 998;
-			break;
-		case 3:
-		case 5:
-			if(pc_search_inventory(sd,999) >= 0)	//鋼鉄
-				return 999;
-			break;
-		case 4:
-			if(pc_search_inventory(sd,756) >= 0)	//オリデオコン原石
-				return 756;
-			break;
-		default:
-			break;
-	}
-	return 0;
-}
-
-int skill_repair_weapon(struct map_session_data *sd, int idx)
-{
-	int nameid,material;
+	const int material[5] = { 1002, 998, 999, 756, 999 };	// 鉄鉱石・鉄・鋼鉄・オリデオコン原石・鋼鉄
+	int itemid, n;
+	int skillid = BS_REPAIRWEAPON;
 	struct map_session_data *dstsd;
+	struct item_data *data;
 
-	nullpo_retr(0, sd);
+	nullpo_retv(sd);
+
+	if(idx == 0xffff || idx < 0 || idx >= MAX_INVENTORY)	// cencel or invalid range
+		return;
 
 	dstsd = map_id2sd(sd->repair_target);
-	if (dstsd && (nameid = dstsd->status.inventory[idx].nameid) > 0
-	    && dstsd->status.inventory[idx].attribute != 0 && (material = skill_can_repair(sd, nameid))) {
-		// アイテム消費
-		pc_delitem(sd,pc_search_inventory(sd,material),1,0);
+	if(!dstsd || dstsd->status.inventory[idx].nameid <= 0 || dstsd->status.inventory[idx].attribute == 0) {
+		clif_skill_fail(sd,skillid,0,0);
+		return;
+	}
+
+	if(sd != dstsd) {	// 対象が自分でないなら射程チェック
+		int range = skill_get_range(skillid,1);
+		if(range < 0)
+			range = status_get_range(&sd->bl) - (range + 1);
+		if(!battle_check_range(&sd->bl, &dstsd->bl, range+1)) {
+			clif_item_repaireffect(sd, 1, dstsd->status.inventory[idx].nameid);
+			return;
+		}
+	}
+
+	data = dstsd->inventory_data[idx];
+
+	if(data && data->type == 4 && data->wlv >= 1 && data->wlv <= 4)
+		itemid = material[data->wlv-1];		// 武器
+	else
+		itemid = material[4];			// それ以外なら防具とみなす
+
+	if((n = pc_search_inventory(sd, itemid)) < 0) {
+		clif_item_repaireffect(sd, 1, dstsd->status.inventory[idx].nameid);
+	} else {
+		clif_skill_nodamage(&sd->bl,&dstsd->bl,skillid,1,1);
+		pc_delitem(sd,n,1,0);
 		dstsd->status.inventory[idx].attribute = 0;
 		clif_delitem(dstsd, idx, 1);
 		clif_additem(dstsd, idx, 1, 0);
-		return nameid;
+		clif_item_repaireffect(sd, 0, dstsd->status.inventory[idx].nameid);
 	}
 
-	return 0;
+	return;
 }
 
 //int mode	攻撃時1 反撃 2

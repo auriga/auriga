@@ -226,8 +226,7 @@ int skill_am_twilight2(struct map_session_data* sd);
 int skill_am_twilight3(struct map_session_data* sd);
 
 void skill_arrow_create(struct map_session_data *sd, int nameid);
-int skill_can_repair( struct map_session_data *sd, int nameid );
-int skill_repair_weapon(struct map_session_data *sd, int idx);
+void skill_repair_weapon(struct map_session_data *sd, int idx);
 
 // mobスキルのため
 int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag );

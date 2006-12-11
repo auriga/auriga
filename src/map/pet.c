@@ -33,9 +33,6 @@
 struct pet_db pet_db[MAX_PET_DB];
 static int pet_count;
 
-static int dirx[8]={0,-1,-1,-1,0,1,1,1};
-static int diry[8]={1,1,0,-1,-1,-1,0,1};
-
 static int pet_performance_val(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);

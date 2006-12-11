@@ -32,9 +32,6 @@
 #pragma warning(disable : 4996)
 #endif
 
-static int dirx[8]={0,-1,-1,-1,0,1,1,1};
-static int diry[8]={1,1,0,-1,-1,-1,0,1};
-
 /*==========================================
  * 二点間の距離を返す
  * 戻りは整数で0以上
@@ -1593,59 +1590,68 @@ int unit_attack_timer(int tid,unsigned int tick,int id,int data) {
 
 /*==========================================
  * スキル詠唱キャンセル
+ *   type= 0: 詠唱の強制中止
+ *   type=+1: キャストキャンセル用
+ *   type=+2: 詠唱の妨害
  *------------------------------------------
  */
 int unit_skillcastcancel(struct block_list *bl,int type)
 {
-	int inf;
+	int skillid;
 	int ret=0;
 	struct map_session_data *sd = NULL;
 	struct mob_data         *md = NULL;
-	struct homun_data       *hd = NULL;
 	struct unit_data        *ud = NULL;
-	unsigned long tick=gettick();
+	struct status_change    *sc_data = NULL;
+	unsigned long tick = gettick();
 
 	nullpo_retr(0, bl);
-	nullpo_retr(0, ud = unit_bl2ud(bl));
 
-	sd = BL_DOWNCAST(BL_PC,  bl);
-	md = BL_DOWNCAST(BL_MOB, bl);
-	hd = BL_DOWNCAST(BL_HOM, bl);
+	if( (ud = unit_bl2ud(bl)) == NULL || ud->skilltimer == -1 )
+		return 0;
 
-	ud->canact_tick=tick;
-	ud->canmove_tick = tick;
-	if( ud->skilltimer!=-1 ) {
-		struct status_change *sc_data = status_get_sc_data(bl);
-		if( sd && pc_checkskill(sd,SA_FREECAST) > 0) {
-			sd->speed = sd->prev_speed;
-			clif_updatestatus(sd,SP_SPEED);
-		}
-		if(!type || !sd) {
-			if((inf = skill_get_inf( ud->skillid )) == 2 || inf == 32)
-				ret=delete_timer( ud->skilltimer, skill_castend_pos );
-			else
-				ret=delete_timer( ud->skilltimer, skill_castend_id );
-			if(ret<0)
-				printf("delete timer error : skillid : %d\n",ud->skillid);
-		}
-		else {
-			if((inf = skill_get_inf( sd->skillid_old )) == 2 || inf == 32)
-				ret=delete_timer( ud->skilltimer, skill_castend_pos );
-			else
-				ret=delete_timer( ud->skilltimer, skill_castend_id );
-			if(ret<0)
-				printf("delete timer error : skillid : %d\n",sd->skillid_old);
-		}
-		if( md ) {
-			md->skillidx  = -1;
-		}
+	sd = BL_DOWNCAST( BL_PC,  bl );
+	md = BL_DOWNCAST( BL_MOB, bl );
 
-		ud->skilltimer = -1;
-		clif_skillcastcancel(bl);
-
-		if(sc_data && sc_data[SC_SELFDESTRUCTION].timer != -1)
-			status_change_end(bl,SC_SELFDESTRUCTION,-1);
+	if(type&2) {	// キャンセル可能な状態か判定
+		if(!ud->state.skillcastcancel)
+			return 0;
+		if(sd) {
+			if(sd->special_state.no_castcancel && !map[bl->m].flag.gvg)
+				return 0;
+			if(sd->special_state.no_castcancel2)
+				return 0;
+		}
 	}
+
+	ud->canact_tick  = tick;
+	ud->canmove_tick = tick;
+
+	if(sd && pc_checkskill(sd,SA_FREECAST) > 0) {
+		sd->speed = sd->prev_speed;
+		clif_updatestatus(sd,SP_SPEED);
+	}
+
+	skillid = (type&1 && sd)? sd->skillid_old: ud->skillid;
+
+	if(skill_get_inf(skillid)&34)
+		ret = delete_timer( ud->skilltimer, skill_castend_pos );
+	else
+		ret = delete_timer( ud->skilltimer, skill_castend_id );
+	if(ret < 0)
+		printf("delete timer error : skillid : %d\n", skillid);
+
+	if( md ) {
+		md->skillidx = -1;
+	}
+
+	ud->skilltimer = -1;
+	clif_skillcastcancel(bl);
+
+	sc_data = status_get_sc_data(bl);
+	if(sc_data && sc_data[SC_SELFDESTRUCTION].timer != -1)
+		status_change_end(bl,SC_SELFDESTRUCTION,-1);
+
 	return 1;
 }
 
@@ -1831,7 +1837,6 @@ int unit_changeviewsize(struct block_list *bl,short size)
  * マップから離脱する
  *------------------------------------------
  */
-
 int unit_remove_map(struct block_list *bl, int clrtype)
 {
 	struct unit_data *ud;

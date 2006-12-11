@@ -437,8 +437,6 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 #if 0
 		// test
 		{
-			int dirx[8]={0,-1,-1,-1,0,1,1,1};
-			int diry[8]={1,1,0,-1,-1,-1,0,1};
 			x = x0; y = y0;
 			for(i = 0; i < wpd->path_len; i++) {
 				x += dirx[ wpd->path[i] ];

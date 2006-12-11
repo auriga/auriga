@@ -5354,7 +5354,7 @@ void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger)
 {
 	int i,c,view,fd;
 
-	nullpo_retv( sd);
+	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd, 0)=0x18d;
@@ -5842,7 +5842,7 @@ void clif_item_repair_list(struct map_session_data *sd, struct map_session_data 
 
 	WFIFOW(fd,0)=0x1fc;
 	for(i=c=0;i<MAX_INVENTORY;i++){
-		if((nameid=dstsd->status.inventory[i].nameid) > 0 && dstsd->status.inventory[i].attribute!=0){// && skill_can_repair(sd,nameid)){
+		if((nameid=dstsd->status.inventory[i].nameid) > 0 && dstsd->status.inventory[i].attribute!=0){
 			WFIFOW(fd,c*13+4) = i;
 			WFIFOW(fd,c*13+6) = nameid;
 			WFIFOL(fd,c*13+8) = sd->status.char_id;
@@ -10321,19 +10321,10 @@ static void clif_parse_ProduceMix(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_RepairItem(int fd,struct map_session_data *sd, int cmd)
 {
-	int idx, itemid = 0;
-
 	nullpo_retv(sd);
 
-	idx = RFIFOW(fd,GETPACKETPOS(cmd,0));
-	if (idx != 0xFFFF && (idx < 0 || idx >= MAX_INVENTORY)) // invalid range
-		return;
-
 	sd->state.produce_flag = 0;
-	if (idx != 0xFFFF && (itemid = skill_repair_weapon(sd, idx)) > 0)
-		clif_item_repaireffect(sd,0,itemid);
-	else
-		clif_item_repaireffect(sd,1,itemid);
+	skill_repair_weapon(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
 
 	return;
 }

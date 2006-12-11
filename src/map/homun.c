@@ -38,9 +38,6 @@ int embryo_default=6001;
 
 static int homun_exp_table[6][MAX_LEVEL];
 
-static int dirx[8]={0,-1,-1,-1,0,1,1,1};
-static int diry[8]={1,1,0,-1,-1,-1,0,1};
-
 static struct {
 	int id;
 	int max;
