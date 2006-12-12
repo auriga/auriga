@@ -150,30 +150,36 @@ set __opt1__=/I "../common/zlib/" /I "../common/" /D "PACKETVER=7" /D "NEW_006b"
 set __opt2__=/DEBUG %__FIXOPT2__% user32.lib ../common/zlib/*.obj ../common/*.obj *.obj
 
 rem ----------------------------------------------------------------
+rem 警告の抑制
+rem   C4018 : unsigned と singed の比較
+rem   C4819 : 表示できない文字を含んでいます
+set __warning__=/wd4018 /wd4819
+
+rem ----------------------------------------------------------------
 rem ビルド作業本体
 
 rem 共通コンポーネントのコンパイル
 cd src\common\zlib
-cl %__cpu__% %__opt1__% *.c
+cl %__warning__% %__cpu__% %__opt1__% *.c
 cd ..\
-cl %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% *.c
 
 rem サーバー本体のビルド
 cd ..\login
-cl %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% *.c
 link %__opt2__% /out:"../../login-server.exe"
 cd ..\char
-cl %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% *.c
 link %__opt2__% /out:"../../char-server.exe"
 cd ..\map
-cl %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% *.c
 link %__opt2__% /out:"../../map-server.exe"
 
 rem 必要なら txt-converter をビルド
 if NOT "%__TXT_MODE__%"=="" goto NOCONVERTER1
 if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER1
 cd ..\converter
-cl %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% *.c
 link %__opt2__% /out:"../../txt-converter.exe"
 :NOCONVERTER1
 

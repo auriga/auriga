@@ -101,6 +101,8 @@ int auth_fifo_pos=0;
 int max_connect_user=0;
 int autosave_interval=DEFAULT_AUTOSAVE_INTERVAL_CS;
 static int start_zeny = 500;
+static int start_weapon = 1201;		/* Knife */
+static int start_armor = 2301;		/* Cotton Shirt */
 
 // map.hより
 #define PC_CLASS_SNV    23
@@ -202,8 +204,8 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	int set,next,len,i;
 
 	nullpo_retr(0,p);
-	// 1882以降の形式読み込み
-	if( (set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
+
+	set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 		"\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%[^,],%d,%d\t%[^,],%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
@@ -218,100 +220,11 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 		&tmp_int[30],&tmp_int[31],&tmp_int[32],&tmp_int[33],&tmp_int[34],
 		p->st.last_point.map,&tmp_int[35],&tmp_int[36], //
 		p->st.save_point.map,&tmp_int[37],&tmp_int[38],&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&next
-		)
-	)!=47 ){
-		tmp_int[43]=0;
-		// 1426以降の形式読み込み
-		if( (set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-			"\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-			"\t%[^,],%d,%d\t%[^,],%d,%d,%d,%d,%d,%d%n",
-			&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
-			&tmp_int[3],&tmp_int[4],&tmp_int[5],
-			&tmp_int[6],&tmp_int[7],&tmp_int[8],
-			&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
-			&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
-			&tmp_int[19],&tmp_int[20],
-			&tmp_int[21],&tmp_int[22],&tmp_int[23], //
-			&tmp_int[24],&tmp_int[25],&tmp_int[26],
-			&tmp_int[27],&tmp_int[28],&tmp_int[29],
-			&tmp_int[30],&tmp_int[31],&tmp_int[32],&tmp_int[33],&tmp_int[34],
-			p->st.last_point.map,&tmp_int[35],&tmp_int[36], //
-			p->st.save_point.map,&tmp_int[37],&tmp_int[38],&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&next
-			)
-		)!=46 ){
-			tmp_int[40]=0;
-			tmp_int[41]=0;
-			tmp_int[42]=0;
-			// 1008以降の形式読み込み
-			if( (set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-				"\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-				"\t%[^,],%d,%d\t%[^,],%d,%d,%d%n",
-				&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
-				&tmp_int[3],&tmp_int[4],&tmp_int[5],
-				&tmp_int[6],&tmp_int[7],&tmp_int[8],
-				&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
-				&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
-				&tmp_int[19],&tmp_int[20],
-				&tmp_int[21],&tmp_int[22],&tmp_int[23], //
-				&tmp_int[24],&tmp_int[25],&tmp_int[26],
-				&tmp_int[27],&tmp_int[28],&tmp_int[29],
-				&tmp_int[30],&tmp_int[31],&tmp_int[32],&tmp_int[33],&tmp_int[34],
-				p->st.last_point.map,&tmp_int[35],&tmp_int[36], //
-				p->st.save_point.map,&tmp_int[37],&tmp_int[38],&tmp_int[39],&next
-				)
-			)!=43 ){
-				// 384以降1008以前の形式読み込み
-				tmp_int[39]=0;
-				if( (set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-					"\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-					"\t%[^,],%d,%d\t%[^,],%d,%d%n",
-					&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
-					&tmp_int[3],&tmp_int[4],&tmp_int[5],
-					&tmp_int[6],&tmp_int[7],&tmp_int[8],
-					&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
-					&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
-					&tmp_int[19],&tmp_int[20],
-					&tmp_int[21],&tmp_int[22],&tmp_int[23], //
-					&tmp_int[24],&tmp_int[25],&tmp_int[26],
-					&tmp_int[27],&tmp_int[28],&tmp_int[29],
-					&tmp_int[30],&tmp_int[31],&tmp_int[32],&tmp_int[33],&tmp_int[34],
-					p->st.last_point.map,&tmp_int[35],&tmp_int[36], //
-					p->st.save_point.map,&tmp_int[37],&tmp_int[38],&next
-					)
-				)!=42 ){
-				// 384以前の形式の読み込み
-					tmp_int[26]=0;
-					set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-						"\t%d,%d,%d\t%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-						"\t%[^,],%d,%d\t%[^,],%d,%d%n",
-						&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
-						&tmp_int[3],&tmp_int[4],&tmp_int[5],
-						&tmp_int[6],&tmp_int[7],&tmp_int[8],
-						&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
-						&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
-						&tmp_int[19],&tmp_int[20],
-						&tmp_int[21],&tmp_int[22],&tmp_int[23], //
-						&tmp_int[24],&tmp_int[25],//
-						&tmp_int[27],&tmp_int[28],&tmp_int[29],
-						&tmp_int[30],&tmp_int[31],&tmp_int[32],&tmp_int[33],&tmp_int[34],
-						p->st.last_point.map,&tmp_int[35],&tmp_int[36], //
-						p->st.save_point.map,&tmp_int[37],&tmp_int[38],&next
-						);
-					set+=6;
-					printf("char: old char data ver.1\n");
-				}else{// 383~1008Verでの読み込みに成功しているならsetを正常値へ
-					set+=5;
-					printf("char: old char data ver.2\n");
-				}
-			}else{
-				set+=4;
-				printf("char: old char data ver.3\n");
-			}
-		}else{
-			set+=1;
-			printf("char: old char data ver.4\n");
-		}
-	}
+		);
+
+	if(set != 47)
+		return 0;	// Athena1881以前の古い形式はサポートしない
+
 	p->st.char_id=tmp_int[0];
 	p->st.account_id=tmp_int[1];
 	p->st.char_num=tmp_int[2];
@@ -356,8 +269,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	p->st.parent_id[0]=tmp_int[40];
 	p->st.parent_id[1]=tmp_int[41];
 	p->st.baby_id=tmp_int[42];
-	if(set!=47)
-		return 0;
+
 	if(str[next]=='\n' || str[next]=='\r')
 		return 1;	// 新規データ
 	next++;
@@ -429,10 +341,6 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 		set=sscanf(str+next,"%d,%d%n",&tmp_int[0],&tmp_int[1],&len);
 		if(set!=2)
 			return 0;
-		//if(ATHENA_MOD_VERSION<=1586 && tmp_int[1]==11){
-		//	next+=len;
-		//	continue;
-		//}
 		if(tmp_int[0] >= 0 && tmp_int[0] < MAX_SKILL) {
 			p->st.skill[tmp_int[0]].id = tmp_int[0];
 			p->st.skill[tmp_int[0]].lv = tmp_int[1];
@@ -460,7 +368,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	p->reg.global_num = (i < GLOBAL_REG_NUM)? i: GLOBAL_REG_NUM;
 	next++;
 
-	for(i=0;str[next] && str[next]!='\t' && str[next]!='\n' && str[next]!='\r';i++){ //friend実装以前のathena.txt互換のため一応'\n'チェック
+	for(i=0;str[next] && str[next]!='\t';i++){
 		set=sscanf(str+next,"%d,%d%n",&tmp_int[0],&tmp_int[1],&len); // name は後で解決する
 		if(set!=2)
 			return 0;
@@ -667,7 +575,7 @@ void char_txt_final(void) {
 
 const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned char *dat,int *flag)
 {
-	int i;
+	int i,j;
 
 	for(i=0;i<24 && dat[i];i++){
 		if(dat[i]<0x20 || dat[i]==0x7f)
@@ -752,15 +660,22 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 	char_dat[i].st.hair=dat[33];
 	char_dat[i].st.hair_color=dat[31];
 	char_dat[i].st.clothes_color=0;
-	char_dat[i].st.inventory[0].nameid = 1201; /* Knife */
-	char_dat[i].st.inventory[0].amount = 1;
-	char_dat[i].st.inventory[0].equip = 0x02;
-	char_dat[i].st.inventory[0].identify = 1;
-	char_dat[i].st.inventory[1].nameid = 2301; /* Cotton Shirt */
-	char_dat[i].st.inventory[1].amount = 1;
-	char_dat[i].st.inventory[1].equip = 0x10;
-	char_dat[i].st.inventory[1].identify = 1;
-	char_dat[i].st.weapon = 1;
+
+	j = 0;
+	if(start_weapon > 0) {
+		char_dat[i].st.inventory[j].nameid = start_weapon;
+		char_dat[i].st.inventory[j].amount = 1;
+		char_dat[i].st.inventory[j].equip = 0x02;
+		char_dat[i].st.inventory[j].identify = 1;
+		char_dat[i].st.weapon = 1;
+		j++;
+	}
+	if(start_armor > 0) {
+		char_dat[i].st.inventory[j].nameid = start_armor;
+		char_dat[i].st.inventory[j].amount = 1;
+		char_dat[i].st.inventory[j].equip = 0x10;
+		char_dat[i].st.inventory[j].identify = 1;
+	}
 	char_dat[i].st.shield=0;
 	char_dat[i].st.head_top=0;
 	char_dat[i].st.head_mid=0;
@@ -3829,6 +3744,10 @@ static void char_config_read(const char *cfgName)
 				printf("char_config_read: Invalid start_zeny value: %d. Set to 0 (default).\n", start_zeny);
 				start_zeny = 0;
 			}
+		} else if (strcmpi(w1, "start_weapon") == 0) {
+			start_weapon = atoi(w2);
+		} else if (strcmpi(w1, "start_armor") == 0) {
+			start_armor = atoi(w2);
 		} else if (strcmpi(w1, "unknown_char_name") == 0) {
 			strncpy(unknown_char_name, w2, sizeof(unknown_char_name) - 1);
 			unknown_char_name[24] = 0;

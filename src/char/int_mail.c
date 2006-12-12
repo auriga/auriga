@@ -12,6 +12,7 @@
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
+#include "utils.h"
 
 #include "char.h"
 #include "inter.h"

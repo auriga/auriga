@@ -55,11 +55,6 @@
 #include "memwatch.h"
 #endif
 
-// for VC.NET 2005
-#if _MSC_VER >= 1400
-#pragma warning(disable : 4996)
-#endif
-
 #define SCRIPT_BLOCK_SIZE 512
 enum { LABEL_NEXTLINE=1,LABEL_START };
 

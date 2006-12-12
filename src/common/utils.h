@@ -1,6 +1,47 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+
+// =====================
+// 改行コード
+// ---------------------
+#ifdef CYGWIN
+#	define RETCODE "\r\n"	// (CR/LF：Windows系)
+#else
+#	define RETCODE "\n"	// (LF：Unix系）
+#endif
+
+
+// =====================
+// longlong 型定義
+// ---------------------
+#if defined(_WIN32) && ( defined(__BORLANDC__) || defined(_MSC_VER) )
+	typedef __int64 atn_int64;
+#else
+	typedef long long int atn_int64;
+#endif
+
+// =====================
+// 大きな数字用の型
+// ---------------------
+#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
+	typedef double atn_bignumber;
+#else
+	typedef atn_int64 atn_bignumber;
+#endif
+
+// =====================
+// 大きな数字用の変換指定子
+// ---------------------
+#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
+#	define BIGNUMCODE ".0f"
+#elif defined(_WIN32) && defined(_MSC_VER)
+#	define BIGNUMCODE "I64d"
+#else
+#	define BIGNUMCODE "lld"
+#endif
+
+
 // =====================
 // strcmp 系のエイリアス
 // ---------------------

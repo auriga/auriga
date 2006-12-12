@@ -27,11 +27,6 @@
 #include "vending.h"
 #include "intif.h"
 
-// for VC.NET 2005
-#if _MSC_VER >= 1400
-#pragma warning(disable : 4996)
-#endif
-
 /*==========================================
  * 二点間の距離を返す
  * 戻りは整数で0以上

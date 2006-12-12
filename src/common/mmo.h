@@ -8,13 +8,6 @@
 
 #pragma pack(4)
 
-#ifdef CYGWIN
-// txtやlogなどの書き出すファイルの改行コード
-#	define RETCODE "\r\n"	// (CR/LF：Windows系)
-#else
-#	define RETCODE "\n"	// (LF：Unix系）
-#endif
-
 #define AUTH_FIFO_SIZE 256
 
 #define MAX_INVENTORY 100
@@ -330,44 +323,6 @@ struct mail_data {
 	int zeny;
 	struct item item;
 };
-
-// =====================
-// longlong 型定義
-// ---------------------
-#if defined(_WIN32) && ( defined(__BORLANDC__) || defined(_MSC_VER) )
-	typedef __int64 atn_int64;
-#else
-	typedef long long int atn_int64;
-#endif
-
-// =====================
-// 大きな数字用の型
-// ---------------------
-#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
-	typedef double atn_bignumber;
-#else
-	typedef atn_int64 atn_bignumber;
-#endif
-
-// =====================
-// 大きな数字用の変換指定子
-// ---------------------
-#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
-#	define BIGNUMCODE ".0f"
-#elif defined(_WIN32) && defined(_MSC_VER)
-#	define BIGNUMCODE "I64d"
-#else
-#	define BIGNUMCODE "lld"
-#endif
-
-// =====================
-// VC での追加処理
-// ---------------------
-#if defined(_WIN32) && defined(_MSC_VER)
-	// signed と unsigned の比較の警告抑制
-#	pragma warning( disable: 4018 )
-
-#endif	// if VC
 
 #pragma pack()
 

@@ -204,7 +204,7 @@ int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 	int set, next, len, i;
 
 	// 1882以降の形式読み込み
-	if( (set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
+	set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 		"\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%[^,],%d,%d\t%[^,],%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
@@ -219,100 +219,10 @@ int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 		&tmp_int[30],&tmp_int[31],&tmp_int[32],&tmp_int[33],&tmp_int[34],
 		p->st.last_point.map,&tmp_int[35],&tmp_int[36], //
 		p->st.save_point.map,&tmp_int[37],&tmp_int[38],&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&next
-		)
-	)!=47 ){
-		tmp_int[43]=0;
-		// If it's not char structure of version 1425 and after
-		if((set = sscanf(str, "%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		   		"\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-		   		"\t%[^,],%d,%d\t%[^,],%d,%d,%d,%d,%d,%d%n",
-		   	&tmp_int[0], &tmp_int[1], &tmp_int[2], p->st.name, //
-		   	&tmp_int[3], &tmp_int[4], &tmp_int[5],
-		   	&tmp_int[6], &tmp_int[7], &tmp_int[8],
-		   	&tmp_int[9], &tmp_int[10], &tmp_int[11], &tmp_int[12],
-		   	&tmp_int[13], &tmp_int[14], &tmp_int[15], &tmp_int[16], &tmp_int[17], &tmp_int[18],
-		   	&tmp_int[19], &tmp_int[20],
-		   	&tmp_int[21], &tmp_int[22], &tmp_int[23], //
-		   	&tmp_int[24], &tmp_int[25], &tmp_int[26],
-		   	&tmp_int[27], &tmp_int[28], &tmp_int[29],
-		   	&tmp_int[30], &tmp_int[31], &tmp_int[32], &tmp_int[33], &tmp_int[34],
-		   	p->st.last_point.map, &tmp_int[35], &tmp_int[36], //
-		   	p->st.save_point.map, &tmp_int[37], &tmp_int[38], &tmp_int[39], &tmp_int[40],
-		   	&tmp_int[41],&tmp_int[42],&next)) != 46) 
-		{
-			tmp_int[40] = 0;
-		   	tmp_int[41] = 0;
-		   	tmp_int[42] = 0;
-			// If it's not char structure of version 1008 and after
-			if ((set = sscanf(str, "%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		   		"\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-		   		"\t%[^,],%d,%d\t%[^,],%d,%d,%d%n",
-		   	&tmp_int[0], &tmp_int[1], &tmp_int[2], p->st.name, //
-		   	&tmp_int[3], &tmp_int[4], &tmp_int[5],
-		   	&tmp_int[6], &tmp_int[7], &tmp_int[8],
-		   	&tmp_int[9], &tmp_int[10], &tmp_int[11], &tmp_int[12],
-		   	&tmp_int[13], &tmp_int[14], &tmp_int[15], &tmp_int[16], &tmp_int[17], &tmp_int[18],
-		   	&tmp_int[19], &tmp_int[20],
-		   	&tmp_int[21], &tmp_int[22], &tmp_int[23], //
-		   	&tmp_int[24], &tmp_int[25], &tmp_int[26],
-		   	&tmp_int[27], &tmp_int[28], &tmp_int[29],
-		   	&tmp_int[30], &tmp_int[31], &tmp_int[32], &tmp_int[33], &tmp_int[34],
-		   	p->st.last_point.map, &tmp_int[35], &tmp_int[36], //
-		   	p->st.save_point.map, &tmp_int[37], &tmp_int[38], &tmp_int[39], &next)) != 43) 
-		   	{
-				tmp_int[39] = 0; // partner id
-				// If not char structure from version 384 to 1007
-				if ((set = sscanf(str, "%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-				   "\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-				   "\t%[^,],%d,%d\t%[^,],%d,%d%n",
-				   &tmp_int[0], &tmp_int[1], &tmp_int[2], p->st.name, //
-				   &tmp_int[3], &tmp_int[4], &tmp_int[5],
-				   &tmp_int[6], &tmp_int[7], &tmp_int[8],
-				   &tmp_int[9], &tmp_int[10], &tmp_int[11], &tmp_int[12],
-				   &tmp_int[13], &tmp_int[14], &tmp_int[15], &tmp_int[16], &tmp_int[17], &tmp_int[18],
-				   &tmp_int[19], &tmp_int[20],
-				   &tmp_int[21], &tmp_int[22], &tmp_int[23], //
-				   &tmp_int[24], &tmp_int[25], &tmp_int[26],
-				   &tmp_int[27], &tmp_int[28], &tmp_int[29],
-				   &tmp_int[30], &tmp_int[31], &tmp_int[32], &tmp_int[33], &tmp_int[34],
-				   p->st.last_point.map, &tmp_int[35], &tmp_int[36], //
-				   p->st.save_point.map, &tmp_int[37], &tmp_int[38], &next)) != 42) 
-				  {
-					// It's char structure of a version before 384
-					tmp_int[26] = 0; // pet id
-					set = sscanf(str, "%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-				      	"\t%d,%d,%d\t%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-				      	"\t%[^,],%d,%d\t%[^,],%d,%d%n",
-				      	&tmp_int[0], &tmp_int[1], &tmp_int[2], p->st.name, //
-				      	&tmp_int[3], &tmp_int[4], &tmp_int[5],
-				      	&tmp_int[6], &tmp_int[7], &tmp_int[8],
-				      	&tmp_int[9], &tmp_int[10], &tmp_int[11], &tmp_int[12],
-				      	&tmp_int[13], &tmp_int[14], &tmp_int[15], &tmp_int[16], &tmp_int[17], &tmp_int[18],
-				      	&tmp_int[19], &tmp_int[20],
-				      	&tmp_int[21], &tmp_int[22], &tmp_int[23], //
-				      	&tmp_int[24], &tmp_int[25], //
-				      	&tmp_int[27], &tmp_int[28], &tmp_int[29],
-				      	&tmp_int[30], &tmp_int[31], &tmp_int[32], &tmp_int[33], &tmp_int[34],
-				      	p->st.last_point.map, &tmp_int[35], &tmp_int[36], //
-				      	p->st.save_point.map, &tmp_int[37], &tmp_int[38], &next);
-					set += 6;
-				//printf("char: old char data ver.1\n");
-				// Char structure of version 1007 or older
-				} else {
-					set+=5;
-					//printf("char: old char data ver.2\n");
-				}
-			// Char structure of version 1008+
-			} else {
-				//printf("char: new char data ver.3\n");
-				set+=4;
-			}
-		} else {
-			set += 1;
-		}
-	}
+		);
+
 	if (set != 47)
-		return 0;
+		return 0;	// 1881以前の古い形式はサポートしない
 
 	p->st.char_id = tmp_int[0];
 	p->st.account_id = tmp_int[1];

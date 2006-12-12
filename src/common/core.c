@@ -15,7 +15,6 @@
 #include "core.h"
 #include "socket.h"
 #include "timer.h"
-#include "mmo.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -25,7 +24,6 @@
 
 // for VC.NET 2005
 #if _MSC_VER >= 1400
-#pragma warning(disable : 4996)
 #pragma comment(lib, "user32.lib")
 #endif
 
@@ -64,7 +62,7 @@ static void sig_proc(int sn)
 char pid_file[256];
 
 void pid_delete(void) {
-	unlink(pid_file);
+	remove(pid_file);
 }
 
 void pid_create(const char* file) {

@@ -7987,17 +7987,27 @@ static void clif_onlymessage(struct map_session_data *sd, char *mes, int len)
 {
 	unsigned char *buf = malloc(len+32);
 
-	if(battle_config.mes_send_type){
-		WBUFW(buf, 0)=0x08d;
-		WBUFW(buf, 2)=len+8;
-		WBUFL(buf, 4)=0;
-		memcpy(WBUFP(buf,8),mes,len);
-	} else {
-		WBUFW(buf, 0)=0x17f;
-		WBUFW(buf, 2)=len+4;
-		memcpy(WBUFP(buf,4),mes,len);
+	switch (battle_config.mes_send_type) {
+		case 0:	// ギルド会話
+			WBUFW(buf, 0)=0x17f;
+			WBUFW(buf, 2)=len+4;
+			memcpy(WBUFP(buf,4),mes,len);
+			break;
+		case 1:	// オープン会話
+			WBUFW(buf, 0)=0x08d;
+			WBUFW(buf, 2)=len+8;
+			WBUFL(buf, 4)=0;
+			memcpy(WBUFP(buf,8),mes,len);
+			break;
+		case 2:	// パーティ会話
+			WBUFW(buf, 0)=0x109;
+			WBUFW(buf, 2)=len+8;
+			WBUFL(buf, 4)=1;	// account_idは0だと無反応なのでダミーで1を入れておく
+			memcpy(WBUFP(buf,8),mes,len);
+			break;
+		default:
+			return;
 	}
-
 	clif_send(buf,WBUFW(buf,2),NULL,ALL_CLIENT);
 	free(buf);
 

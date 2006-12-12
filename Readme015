@@ -1,3 +1,20 @@
+---------------------------------------
+//030 [2006/12/13] by Rayce
+
+・@mesで従来のギルド会話、オープン会話に加えてパーティ会話が選択できるように拡張（clif.c）
+・Athena1881以前の古い形式のキャラクターセーブデータは今後サポートしないようにする
+・conf/char_athena.confで、キャラ作成時に持たせる武器と防具を任意に設定できるように拡張（merged from Freya）
+	デフォルトではナイフとコットンシャツですが、start_weaponとstart_armorの値を変えることで
+	違うものを持たせることが可能です
+	また0にすることで初期装備を無しに設定できます。
+
+・httpd.cでAURIGA_MOD_VERSIONではなくAURIGA_REVISIONを参照するように変更
+・atn_bignumber型の定義とRETCODEをmmo.hからutils.hへ移動
+・VCの警告関連
+	pragma(disable : 4996) は削除、core.cのunlinkをremoveに置換
+	エンコード問題があるので 4819 の警告をvc_make.batで抑制するように追加
+	ついでに 4018 もvc_make.batで定義する
+
 ----------------------------------------
 //029 [2006/12/13] by Rayce
 

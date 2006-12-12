@@ -1,6 +1,7 @@
 #ifndef _PC_H_
 #define _PC_H_
 
+#include "utils.h"
 #include "map.h"
 
 #define OPTION_MASK 0xd7b8
