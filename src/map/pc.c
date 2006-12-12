@@ -3489,12 +3489,7 @@ int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrt
 	sd->bl.x = x;
 	sd->bl.y = y;
 
-	if (sd->status.option & 0x02)
-		status_change_end(&sd->bl, SC_HIDING, -1);
-	if (pc_iscloaking(sd))
-		status_change_end(&sd->bl, SC_CLOAKING, -1);
-	if (pc_ischasewalk(sd))
-		status_change_end(&sd->bl, SC_CHASEWALK, -1);
+	status_change_hidden_end(&sd->bl);
 
 	// ペットの移動
 	if(sd->status.pet_id > 0 && sd->pd && sd->pet.intimate > 0) {
@@ -4746,12 +4741,8 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	if(sd->status.pet_id > 0 && sd->pd && sd->petDB && battle_config.pet_damage_support)
 		pet_target_check(sd,src,1);
 
-	if (sd->status.option & 0x02)
-		status_change_end(&sd->bl, SC_HIDING, -1);
-	if (pc_iscloaking(sd))
-		status_change_end(&sd->bl, SC_CLOAKING, -1);
-	if (pc_ischasewalk(sd))
-		status_change_end(&sd->bl, SC_CHASEWALK, -1);
+	// ハイド状態を解除
+	status_change_hidden_end(&sd->bl);
 
 	// 敵の攻撃を受けると一定確率で装備が壊れる
 	if(sd->loss_equip_flag&0x1000 && damage > 0) {	// 魔法でも壊れる

@@ -55,8 +55,6 @@
 #include "memwatch.h"
 #endif
 
-const unsigned char grounddrift_unit_id[] = {0xc2,0xbe,0xc0,0xbf,0xc1};	//グラウンドドリフト個別エフェクト
-
 /* パケットデータベース */
 struct packet_db packet_db[MAX_PACKET_DB];
 
@@ -4516,7 +4514,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 	fd=sd->fd;
 
 #if PACKETVER >= 3
-	if(unit->group->unit_id == 0xb0) {	//グラフィティ
+	if(unit->group->unit_id == UNT_GRAFFITI) {	//グラフィティ
 		memset(WFIFOP(fd,0),0,packet_db[0x1c9].len);
 		WFIFOW(fd, 0)=0x1c9;
 		WFIFOL(fd, 2)=unit->bl.id;
@@ -4538,13 +4536,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 	WFIFOL(fd, 6)=unit->group->src_id;
 	WFIFOW(fd,10)=unit->bl.x;
 	WFIFOW(fd,12)=unit->bl.y;
-	//旧GS_GROUNDDRIFT?
-	if(unit->group->skill_id!=GS_GROUNDDRIFT)
-	{
-		WFIFOB(fd,14)=unit->group->unit_id;
-	}else{
-		WFIFOB(fd,14)=grounddrift_unit_id[unit->group->val1-13203];
-	}
+	WFIFOB(fd,14)=unit->group->unit_id;
 	WFIFOB(fd,15)=0;
 	WFIFOSET(fd,packet_db[0x11f].len);
 
@@ -5198,7 +5190,7 @@ void clif_skill_setunit(struct skill_unit *unit)
 	nullpo_retv(unit);
 
 #if PACKETVER >= 3
-	if(unit->group->unit_id == 0xb0) {	//グラフィティ
+	if(unit->group->unit_id == UNT_GRAFFITI) {	//グラフィティ
 		memset(WBUFP(buf, 0),0,packet_db[0x1c9].len);
 		WBUFW(buf, 0)=0x1c9;
 		WBUFL(buf, 2)=unit->bl.id;
@@ -5220,13 +5212,7 @@ void clif_skill_setunit(struct skill_unit *unit)
 	WBUFL(buf, 6)=unit->group->src_id;
 	WBUFW(buf,10)=unit->bl.x;
 	WBUFW(buf,12)=unit->bl.y;
-	//旧GS_GROUNDDRIFT?
-	if(unit->group->skill_id!=GS_GROUNDDRIFT)
-	{
-		WBUFB(buf,14)=unit->group->unit_id;
-	}else{
-		WBUFB(buf,14)=grounddrift_unit_id[unit->group->val1-13203];
-	}
+	WBUFB(buf,14)=unit->group->unit_id;
 	WBUFB(buf,15)=0;
 	clif_send(buf,packet_db[0x11f].len,&unit->bl,AREA);
 

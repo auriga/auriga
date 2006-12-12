@@ -83,6 +83,8 @@ int status_enchant_armor_eremental_end(struct block_list *bl,int type);
 int status_encchant_eremental_end(struct block_list *bl,int type);
 int status_change_clear(struct block_list *bl,int type);
 int status_clearpretimer(struct block_list *bl);
+int status_change_attacked_end(struct block_list *bl);
+int status_change_hidden_end(struct block_list *bl);
 
 //状態チェック
 //int status_check_tigereye(struct block_list *bl);

@@ -1266,12 +1266,8 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
 
 	hd->status.hp-=damage;
 
-	if (hd->status.option & 0x02)
-		status_change_end(&hd->bl, SC_HIDING, -1);
-	if ((hd->status.option & 0x4004) == 4)
-		status_change_end(&hd->bl, SC_CLOAKING, -1);
-	if ((hd->status.option & 0x4004) == 0x4004)
-		status_change_end(&hd->bl, SC_CHASEWALK, -1);
+	// ハイド状態を解除
+	status_change_hidden_end(&hd->bl);
 
 	clif_send_homstatus(sd,0);
 

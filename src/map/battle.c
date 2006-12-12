@@ -68,8 +68,6 @@ int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_li
 int battle_damage(struct block_list *bl,struct block_list *target,int damage,int flag)
 {
 	struct map_session_data *sd=NULL;
-	struct status_change *sc_data;
-	short *sc_count;
 	int race = 7, ele = 0;
 
 	nullpo_retr(0, target); //blはNULLで呼ばれることがあるので他でチェック
@@ -90,17 +88,8 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	if(damage<0)
 		return battle_heal(bl,target,-damage,0,flag);
 
-	sc_data = status_get_sc_data(target);
-
-	if((sc_count=status_get_sc_count(target))!=NULL && *sc_count>0){
-		// 凍結、石化、睡眠を消去
-		if(sc_data[SC_FREEZE].timer!=-1)
-			status_change_end(target,SC_FREEZE,-1);
-		if(sc_data[SC_STONE].timer!=-1 && sc_data[SC_STONE].val2==0)
-			status_change_end(target,SC_STONE,-1);
-		if(sc_data[SC_SLEEP].timer!=-1)
-			status_change_end(target,SC_SLEEP,-1);
-	}
+	// 凍結・石化・睡眠を消去
+	status_change_attacked_end(target);
 
 	// 種族・属性取得
 	race = status_get_race(target);
@@ -2003,9 +1992,6 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;
-		case GS_GROUNDDRIFT:	// グラウンドドリフト
-			wd.damage += skill_lv*50;
-			break;
 		case NJ_SYURIKEN:	// 手裏剣投げ
 			if(src_sd){
 				if(!src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
@@ -3121,12 +3107,12 @@ struct Damage  battle_calc_misc_attack(
 	int int_, dex;
 	int skill,ele,race,cardfix;
 	struct map_session_data *sd=NULL,*tsd=NULL;
+	struct skill_unit *unit = NULL;
 	int damage=0,div_=1;
 	int blewcount=skill_get_blewcount(skill_num,skill_lv);
 	struct Damage md;
 	int damagefix=1;
 	long asflag = EAS_ATTACK;
-
 	int aflag=BF_MISC|BF_SHORT|BF_SKILL;
 
 	//return前の処理があるので情報出力部のみ変更
@@ -3139,6 +3125,13 @@ struct Damage  battle_calc_misc_attack(
 	if(target->type == BL_PET) {
 		memset(&md,0,sizeof(md));
 		return md;
+	}
+
+	// グラウンドドリフトのときはblを設置者に置換する
+	if(bl->type == BL_SKILL) {
+		unit = (struct skill_unit *)bl;
+		if(unit && unit->group)
+			bl = map_id2bl(unit->group->src_id);
 	}
 
 	sd  = BL_DOWNCAST( BL_PC, bl );
@@ -3221,6 +3214,14 @@ struct Damage  battle_calc_misc_attack(
 		flag &= ~(BF_WEAPONMASK|BF_RANGEMASK|BF_WEAPONMASK);
 		aflag = flag|(aflag&~BF_RANGEMASK)|BF_LONG;
 		break;
+	case GS_GROUNDDRIFT:	// グラウンドドリフト
+		if(unit && unit->group)
+		{
+			const int ele_type[5] = { 4, 7, 5, 1, 3 };
+			ele = ele_type[unit->group->unit_id - UNT_GROUNDDRIFT_WIND];
+			damage = status_get_baseatk(bl);
+		}
+		break;
 	default:
 		damage = status_get_baseatk(bl);
 		break;
@@ -3241,6 +3242,12 @@ struct Damage  battle_calc_misc_attack(
 		}
 		if(damage < 0) damage = 0;
 		damage=battle_attr_fix(damage, ele, status_get_element(target) );		// 属性修正
+
+		if(skill_num == GS_GROUNDDRIFT) {	// 固定ダメージを加算してさらに無属性として属性計算する
+			damage += skill_lv*50;
+			damage = battle_attr_fix(damage, 0, status_get_element(target));
+		}
+
 	}
 
 	div_=skill_get_num( skill_num,skill_lv );
@@ -3772,7 +3779,12 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	/* ダメージ計算 */
 	type=-1;
 	lv=(flag>>20)&0xf;
-	dmg=battle_calc_attack(attack_type,src,bl,skillid,skilllv,flag&0xff );
+
+	// グラウンドドリフトはdsrcを引数として渡す
+	if(skillid == GS_GROUNDDRIFT)
+		dmg = battle_calc_attack(attack_type,dsrc,bl,skillid,skilllv,flag&0xff);
+	else
+		dmg = battle_calc_attack(attack_type,src,bl,skillid,skilllv,flag&0xff);
 
 	/* マジックロッド */
 	if(attack_type&BF_MAGIC && sc_data && sc_data[SC_MAGICROD].timer != -1 && src == dsrc) {
@@ -4035,8 +4047,14 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* ダメージがあるなら追加効果判定 */
 	if(bl->prev != NULL && !unit_isdead(bl)) {
-		if(damage > 0 || skillid==TF_POISON)
-			skill_additional_effect(src,bl,skillid,skilllv,attack_type,tick);
+		if(damage > 0 || skillid==TF_POISON) {
+			// グラウンドドリフトはdsrcを引数として渡す
+			if(skillid == GS_GROUNDDRIFT)
+				skill_additional_effect(dsrc,bl,skillid,skilllv,attack_type,tick);
+			else
+				skill_additional_effect(src,bl,skillid,skilllv,attack_type,tick);
+		}
+
 		if(bl->type==BL_MOB && src!=bl)	// スキル使用条件のMOBスキル
 		{
 			struct mob_data *md=(struct mob_data *)bl;

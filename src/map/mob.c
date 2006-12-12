@@ -1652,12 +1652,8 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 
 	md->hp-=damage;
 
-	if (md->option & 0x02)
-		status_change_end(&md->bl, SC_HIDING, -1);
-	if ((md->option & 0x4004) == 4)
-		status_change_end(&md->bl, SC_CLOAKING, -1);
-	if ((md->option & 0x4004) == 0x4004)
-		status_change_end(&md->bl, SC_CHASEWALK, -1);
+	// ハイド状態を解除
+	status_change_hidden_end(&md->bl);
 
 	if(md->state.special_mob_ai == 2) {	// スフィアーマイン
 		int skillidx = mob_skillid2skillidx(md->class,NPC_SELFDESTRUCTION2);
@@ -3217,7 +3213,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 				{
 					int target_id = md->target_id;
 					int c=0, range = skill_get_range(ms[i].skill_id,ms[i].skill_lv);
-	
+
 					if(range < 0)
 						range = status_get_range(&md->bl) - (range+1);
 					map_foreachinarea( mobskill_anothertarget,

@@ -5150,272 +5150,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 
 	return 0;
 }
-/*==========================================
- * ステータス異常全解除
- *------------------------------------------
- */
-int status_change_clear(struct block_list *bl,int type)
-{
-	struct status_change* sc_data;
-	short *sc_count, *option, *opt1, *opt2, *opt3;
-	int i;
 
-	nullpo_retr(0, bl);
-#ifdef DYNAMIC_SC_DATA
-	if(status_check_dummy_sc_data(bl))
-		return 0;
-#endif
-	nullpo_retr(0, sc_data=status_get_sc_data(bl));
-	nullpo_retr(0, sc_count=status_get_sc_count(bl));
-	nullpo_retr(0, option=status_get_option(bl));
-	nullpo_retr(0, opt1=status_get_opt1(bl));
-	nullpo_retr(0, opt2=status_get_opt2(bl));
-	nullpo_retr(0, opt3=status_get_opt3(bl));
-
-	if(*sc_count == 0)
-		return 0;
-	status_calc_pc_stop_begin(bl);
-	for(i = 0; i < MAX_STATUSCHANGE; i++){
-		if(i==SC_BABY || i==SC_REDEMPTIO)
-		{
-			if(unit_isdead(bl))
-				continue;
-		}
-		if(sc_data[i].timer != -1){	/* 異常があるならタイマーを削除する */
-/*
-			delete_timer(sc_data[i].timer, status_change_timer);
-			sc_data[i].timer = -1;
-
-			if(!type && i<SC_SENDMAX)
-				clif_status_change(bl,i,0);
-*/
-
-			status_change_end(bl,i,-1);
-		}
-	}
-	status_calc_pc_stop_end(bl);
-	*sc_count = 0;
-	*opt1 = 0;
-	*opt2 = 0;
-	*opt3 = 0;
-	*option &= OPTION_MASK;
-
-	if(!type || type&2) {
-		clif_changeoption(bl);
-		clif_send_clothcolor(bl);
-	}
-
-	return 0;
-}
-
-/*==========================================
- * ステータス異常終了
- *------------------------------------------
- */
-int status_change_end_by_jumpkick( struct block_list* bl)
-{
-	struct status_change* sc_data = NULL;
-
-	nullpo_retr(0, bl);
-
-	if(bl->type!=BL_PC && bl->type!=BL_MOB) {
-		//if(battle_config.error_log)
-		//	printf("status_change_end: neither MOB nor PC !\n");
-		return 0;
-	}
-
-	//ソウルリンカーは無視
-	if(bl->type==BL_PC)
-	{
-		if(((struct map_session_data*)bl)->status.class == PC_CLASS_SL)
-			return 0;
-	}
-
-	sc_data=status_get_sc_data(bl);
-	if(sc_data)
-	{
-		//プリザーブでは切れない
-		if(sc_data[SC_PRESERVE].timer!=-1)
-			return 0;
-
-		status_calc_pc_stop_begin(bl);
-		//バーサークピッチャー
-		if(sc_data[SC_SPEEDPOTION3].timer!=-1)
-			status_change_end(bl,SC_SPEEDPOTION3,-1);
-		if(sc_data[SC_SUN_WARM].timer!=-1)
-			status_change_end(bl,SC_SUN_WARM,-1);
-		if(sc_data[SC_MOON_WARM].timer!=-1)
-			status_change_end(bl,SC_MOON_WARM,-1);
-		if(sc_data[SC_STAR_WARM].timer!=-1)
-			status_change_end(bl,SC_STAR_WARM,-1);
-		if(sc_data[SC_SUN_COMFORT].timer!=-1)
-			status_change_end(bl,SC_SUN_COMFORT,-1);
-		if(sc_data[SC_MOON_COMFORT].timer!=-1)
-			status_change_end(bl,SC_MOON_COMFORT,-1);
-		if(sc_data[SC_STAR_COMFORT].timer!=-1)
-			status_change_end(bl,SC_STAR_COMFORT,-1);
-		if(sc_data[SC_FUSION].timer!=-1)
-			status_change_end(bl,SC_FUSION,-1);
-		//魂解除
-		status_change_soulclear(bl);
-
-		//
-		if(sc_data[SC_ADRENALINE2].timer!=-1)
-			status_change_end(bl,SC_ADRENALINE2,-1);
-		if(sc_data[SC_KAIZEL].timer!=-1)
-			status_change_end(bl,SC_KAIZEL,-1);
-		if(sc_data[SC_KAAHI].timer!=-1)
-			status_change_end(bl,SC_KAAHI,-1);
-		if(sc_data[SC_KAUPE].timer!=-1)
-			status_change_end(bl,SC_KAUPE,-1);
-		if(sc_data[SC_KAITE].timer!=-1)
-			status_change_end(bl,SC_KAITE,-1);
-		if(sc_data[SC_ONEHAND].timer!=-1)
-			status_change_end(bl,SC_ONEHAND,-1);
-
-		status_calc_pc_stop_end(bl);
-	}
-
-	return 0;
-}
-/*==========================================
- * 支援魔法終了
- *------------------------------------------
- */
-int status_support_magic_skill_end( struct block_list* bl)
-{
-	struct status_change* sc_data = NULL;
-
-	nullpo_retr(0, bl);
-
-	nullpo_retr(0, sc_data=status_get_sc_data(bl));
-
-	if(sc_data)
-	{
-		status_calc_pc_stop_begin(bl);
-		if(sc_data[SC_BLESSING].timer!=-1)
-			status_change_end(bl,SC_BLESSING,-1);
-		if(sc_data[SC_ASSUMPTIO].timer!=-1)
-			status_change_end(bl,SC_ASSUMPTIO,-1);
-		if(sc_data[SC_KYRIE].timer!=-1)
-			status_change_end(bl,SC_KYRIE,-1);
-		if(sc_data[SC_INCREASEAGI].timer!=-1 )
-			status_change_end(bl,SC_INCREASEAGI,-1);
-		if(sc_data[SC_MAGNIFICAT].timer!=-1 )
-			status_change_end(bl,SC_MAGNIFICAT,-1);
-		if(sc_data[SC_GLORIA].timer!=-1 )
-			status_change_end(bl,SC_GLORIA,-1);
-		if(sc_data[SC_ANGELUS].timer!=-1 )
-			status_change_end(bl,SC_ANGELUS,-1);
-		if(sc_data[SC_SLOWPOISON].timer!=-1)
-			status_change_end(bl,SC_SLOWPOISON,-1);
-		if(sc_data[SC_IMPOSITIO].timer!=-1)
-			status_change_end(bl,SC_IMPOSITIO,-1);
-		if(sc_data[SC_SUFFRAGIUM].timer!=-1)
-			status_change_end(bl,SC_SUFFRAGIUM,-1);
-		status_encchant_eremental_end(bl,-1);//武器
-		status_enchant_armor_eremental_end(bl,-1);//鎧
-		/*
-		if(sc_data[SC_ENDURE].timer!=-1)
-			status_change_end(bl,SC_ENDURE,-1);
-		if(sc_data[SC_CONCENTRATE].timer!=-1)
-			status_change_end(bl,SC_CONCENTRATE,-1);
-		if(sc_data[SC_OVERTHRUST].timer!=-1)
-			status_change_end(bl,SC_OVERTHRUST,-1);
-		if(sc_data[SC_WEAPONPERFECTION].timer!=-1)
-			status_change_end(bl,SC_WEAPONPERFECTION,-1);
-		if(sc_data[SC_MAXIMIZEPOWER].timer!=-1)
-			status_change_end(bl,SC_MAXIMIZEPOWER,-1);
-		if(sc_data[SC_LOUD].timer!=-1)
-			status_change_end(bl,SC_LOUD,-1);
-		if(sc_data[SC_ENERGYCOAT].timer!=-1)
-			status_change_end(bl,SC_ENERGYCOAT,-1);
-		if(sc_data[SC_PARRYING].timer!=-1)
-			status_change_end(bl,SC_PARRYING,-1);
-		if(sc_data[SC_CONCENTRATION].timer!=-1 )
-			status_change_end(bl,SC_CONCENTRATION,-1);
-		if(sc_data[SC_TWOHANDQUICKEN].timer!=-1 )
-			status_change_end(bl,SC_TWOHANDQUICKEN,-1);
-		if(sc_data[SC_SPEARSQUICKEN].timer!=-1 )
-			status_change_end(bl,SC_SPEARSQUICKEN,-1);
-		if(sc_data[SC_ADRENALINE].timer!=-1 )
-			status_change_end(bl,SC_ADRENALINE,-1);
-
-		if(sc_data[SC_TRUESIGHT].timer!=-1 )	// トゥルーサイト
-			status_change_end(bl,SC_TRUESIGHT,-1);
-		if(sc_data[SC_WINDWALK].timer!=-1 )	// ウインドウォーク
-			status_change_end(bl,SC_WINDWALK,-1);
-		if(sc_data[SC_CARTBOOST].timer!=-1 )	// カートブースト
-			status_change_end(bl,SC_CARTBOOST,-1);
-
-		//バーサークピッチャー
-		if(sc_data[SC_SPEEDPOTION3].timer!=-1)
-			status_change_end(bl,SC_SPEEDPOTION3,-1);
-
-		if(sc_data[SC_SUN_WARM].timer!=-1)
-			status_change_end(bl,SC_SUN_WARM,-1);
-		if(sc_data[SC_MOON_WARM].timer!=-1)
-			status_change_end(bl,SC_MOON_WARM,-1);
-		if(sc_data[SC_STAR_WARM].timer!=-1)
-			status_change_end(bl,SC_STAR_WARM,-1);
-		if(sc_data[SC_SUN_COMFORT].timer!=-1)
-			status_change_end(bl,SC_SUN_COMFORT,-1);
-		if(sc_data[SC_MOON_COMFORT].timer!=-1)
-			status_change_end(bl,SC_MOON_COMFORT,-1);
-		if(sc_data[SC_STAR_COMFORT].timer!=-1)
-			status_change_end(bl,SC_STAR_COMFORT,-1);
-		if(sc_data[SC_FUSION].timer!=-1)
-			status_change_end(bl,SC_FUSION,-1);
-		//魂解除
-		if(sc_data[SC_ALCHEMIST].timer!=-1)
-			status_change_end(bl,SC_ALCHEMIST,-1);
-		if(sc_data[SC_MONK].timer!=-1)
-			status_change_end(bl,SC_MONK,-1);
-		if(sc_data[SC_STAR].timer!=-1)
-			status_change_end(bl,SC_STAR,-1);
-		if(sc_data[SC_SAGE].timer!=-1)
-			status_change_end(bl,SC_SAGE,-1);
-		if(sc_data[SC_CRUSADER].timer!=-1)
-			status_change_end(bl,SC_CRUSADER,-1);
-		if(sc_data[SC_SUPERNOVICE].timer!=-1)
-			status_change_end(bl,SC_SUPERNOVICE,-1);
-		if(sc_data[SC_KNIGHT].timer!=-1)
-			status_change_end(bl,SC_KNIGHT,-1);
-		if(sc_data[SC_WIZARD].timer!=-1)
-			status_change_end(bl,SC_WIZARD,-1);
-		if(sc_data[SC_PRIEST].timer!=-1)
-			status_change_end(bl,SC_PRIEST,-1);
-		if(sc_data[SC_BARDDANCER].timer!=-1)
-			status_change_end(bl,SC_BARDDANCER,-1);
-		if(sc_data[SC_ROGUE].timer!=-1)
-			status_change_end(bl,SC_ROGUE,-1);
-		if(sc_data[SC_ASSASIN].timer!=-1)
-			status_change_end(bl,SC_ASSASIN,-1);
-		if(sc_data[SC_BLACKSMITH].timer!=-1)
-			status_change_end(bl,SC_BLACKSMITH,-1);
-		if(sc_data[SC_HUNTER].timer!=-1)
-			status_change_end(bl,SC_HUNTER,-1);
-		if(sc_data[SC_HIGH].timer!=-1)
-			status_change_end(bl,SC_HIGH,-1);
-		//
-		if(sc_data[SC_ADRENALINE2].timer!=-1)
-			status_change_end(bl,SC_ADRENALINE2,-1);
-		if(sc_data[SC_KAIZEL].timer!=-1)
-			status_change_end(bl,SC_KAIZEL,-1);
-		if(sc_data[SC_KAAHI].timer!=-1)
-			status_change_end(bl,SC_KAAHI,-1);
-		if(sc_data[SC_KAUPE].timer!=-1)
-			status_change_end(bl,SC_KAUPE,-1);
-		if(sc_data[SC_KAITE].timer!=-1)
-			status_change_end(bl,SC_KAITE,-1);
-		if(sc_data[SC_ONEHAND].timer!=-1)
-			status_change_end(bl,SC_ONEHAND,-1);
-		*/
-		status_calc_pc_stop_end(bl);
-	}
-
-	return 0;
-}
 /*==========================================
  * ステータス異常終了
  *------------------------------------------
@@ -6657,9 +6392,275 @@ int status_change_timer_sub(struct block_list *bl, va_list ap )
 	return 0;
 }
 
+/*==========================================
+ * ステータス異常全解除
+ *------------------------------------------
+ */
+int status_change_clear(struct block_list *bl,int type)
+{
+	struct status_change* sc_data;
+	short *sc_count, *option, *opt1, *opt2, *opt3;
+	int i;
+
+	nullpo_retr(0, bl);
+#ifdef DYNAMIC_SC_DATA
+	if(status_check_dummy_sc_data(bl))
+		return 0;
+#endif
+	nullpo_retr(0, sc_data=status_get_sc_data(bl));
+	nullpo_retr(0, sc_count=status_get_sc_count(bl));
+	nullpo_retr(0, option=status_get_option(bl));
+	nullpo_retr(0, opt1=status_get_opt1(bl));
+	nullpo_retr(0, opt2=status_get_opt2(bl));
+	nullpo_retr(0, opt3=status_get_opt3(bl));
+
+	if(*sc_count == 0)
+		return 0;
+	status_calc_pc_stop_begin(bl);
+	for(i = 0; i < MAX_STATUSCHANGE; i++){
+		if(i==SC_BABY || i==SC_REDEMPTIO)
+		{
+			if(unit_isdead(bl))
+				continue;
+		}
+		if(sc_data[i].timer != -1){	/* 異常があるならタイマーを削除する */
+/*
+			delete_timer(sc_data[i].timer, status_change_timer);
+			sc_data[i].timer = -1;
+
+			if(!type && i<SC_SENDMAX)
+				clif_status_change(bl,i,0);
+*/
+
+			status_change_end(bl,i,-1);
+		}
+	}
+	status_calc_pc_stop_end(bl);
+	*sc_count = 0;
+	*opt1 = 0;
+	*opt2 = 0;
+	*opt3 = 0;
+	*option &= OPTION_MASK;
+
+	if(!type || type&2) {
+		clif_changeoption(bl);
+		clif_send_clothcolor(bl);
+	}
+
+	return 0;
+}
 
 /*==========================================
- * ステータス異常終了
+ * ステータス異常(ティオアプチャギ)終了
+ *------------------------------------------
+ */
+int status_change_end_by_jumpkick( struct block_list* bl)
+{
+	struct status_change* sc_data = NULL;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type!=BL_PC && bl->type!=BL_MOB) {
+		//if(battle_config.error_log)
+		//	printf("status_change_end: neither MOB nor PC !\n");
+		return 0;
+	}
+
+	//ソウルリンカーは無視
+	if(bl->type==BL_PC)
+	{
+		if(((struct map_session_data*)bl)->status.class == PC_CLASS_SL)
+			return 0;
+	}
+
+	sc_data=status_get_sc_data(bl);
+	if(sc_data)
+	{
+		//プリザーブでは切れない
+		if(sc_data[SC_PRESERVE].timer!=-1)
+			return 0;
+
+		status_calc_pc_stop_begin(bl);
+		//バーサークピッチャー
+		if(sc_data[SC_SPEEDPOTION3].timer!=-1)
+			status_change_end(bl,SC_SPEEDPOTION3,-1);
+		if(sc_data[SC_SUN_WARM].timer!=-1)
+			status_change_end(bl,SC_SUN_WARM,-1);
+		if(sc_data[SC_MOON_WARM].timer!=-1)
+			status_change_end(bl,SC_MOON_WARM,-1);
+		if(sc_data[SC_STAR_WARM].timer!=-1)
+			status_change_end(bl,SC_STAR_WARM,-1);
+		if(sc_data[SC_SUN_COMFORT].timer!=-1)
+			status_change_end(bl,SC_SUN_COMFORT,-1);
+		if(sc_data[SC_MOON_COMFORT].timer!=-1)
+			status_change_end(bl,SC_MOON_COMFORT,-1);
+		if(sc_data[SC_STAR_COMFORT].timer!=-1)
+			status_change_end(bl,SC_STAR_COMFORT,-1);
+		if(sc_data[SC_FUSION].timer!=-1)
+			status_change_end(bl,SC_FUSION,-1);
+		//魂解除
+		status_change_soulclear(bl);
+
+		//
+		if(sc_data[SC_ADRENALINE2].timer!=-1)
+			status_change_end(bl,SC_ADRENALINE2,-1);
+		if(sc_data[SC_KAIZEL].timer!=-1)
+			status_change_end(bl,SC_KAIZEL,-1);
+		if(sc_data[SC_KAAHI].timer!=-1)
+			status_change_end(bl,SC_KAAHI,-1);
+		if(sc_data[SC_KAUPE].timer!=-1)
+			status_change_end(bl,SC_KAUPE,-1);
+		if(sc_data[SC_KAITE].timer!=-1)
+			status_change_end(bl,SC_KAITE,-1);
+		if(sc_data[SC_ONEHAND].timer!=-1)
+			status_change_end(bl,SC_ONEHAND,-1);
+
+		status_calc_pc_stop_end(bl);
+	}
+
+	return 0;
+}
+/*==========================================
+ * 支援魔法終了
+ *------------------------------------------
+ */
+int status_support_magic_skill_end( struct block_list* bl)
+{
+	struct status_change* sc_data = NULL;
+
+	nullpo_retr(0, bl);
+
+	nullpo_retr(0, sc_data=status_get_sc_data(bl));
+
+	if(sc_data)
+	{
+		status_calc_pc_stop_begin(bl);
+		if(sc_data[SC_BLESSING].timer!=-1)
+			status_change_end(bl,SC_BLESSING,-1);
+		if(sc_data[SC_ASSUMPTIO].timer!=-1)
+			status_change_end(bl,SC_ASSUMPTIO,-1);
+		if(sc_data[SC_KYRIE].timer!=-1)
+			status_change_end(bl,SC_KYRIE,-1);
+		if(sc_data[SC_INCREASEAGI].timer!=-1 )
+			status_change_end(bl,SC_INCREASEAGI,-1);
+		if(sc_data[SC_MAGNIFICAT].timer!=-1 )
+			status_change_end(bl,SC_MAGNIFICAT,-1);
+		if(sc_data[SC_GLORIA].timer!=-1 )
+			status_change_end(bl,SC_GLORIA,-1);
+		if(sc_data[SC_ANGELUS].timer!=-1 )
+			status_change_end(bl,SC_ANGELUS,-1);
+		if(sc_data[SC_SLOWPOISON].timer!=-1)
+			status_change_end(bl,SC_SLOWPOISON,-1);
+		if(sc_data[SC_IMPOSITIO].timer!=-1)
+			status_change_end(bl,SC_IMPOSITIO,-1);
+		if(sc_data[SC_SUFFRAGIUM].timer!=-1)
+			status_change_end(bl,SC_SUFFRAGIUM,-1);
+		status_encchant_eremental_end(bl,-1);//武器
+		status_enchant_armor_eremental_end(bl,-1);//鎧
+		/*
+		if(sc_data[SC_ENDURE].timer!=-1)
+			status_change_end(bl,SC_ENDURE,-1);
+		if(sc_data[SC_CONCENTRATE].timer!=-1)
+			status_change_end(bl,SC_CONCENTRATE,-1);
+		if(sc_data[SC_OVERTHRUST].timer!=-1)
+			status_change_end(bl,SC_OVERTHRUST,-1);
+		if(sc_data[SC_WEAPONPERFECTION].timer!=-1)
+			status_change_end(bl,SC_WEAPONPERFECTION,-1);
+		if(sc_data[SC_MAXIMIZEPOWER].timer!=-1)
+			status_change_end(bl,SC_MAXIMIZEPOWER,-1);
+		if(sc_data[SC_LOUD].timer!=-1)
+			status_change_end(bl,SC_LOUD,-1);
+		if(sc_data[SC_ENERGYCOAT].timer!=-1)
+			status_change_end(bl,SC_ENERGYCOAT,-1);
+		if(sc_data[SC_PARRYING].timer!=-1)
+			status_change_end(bl,SC_PARRYING,-1);
+		if(sc_data[SC_CONCENTRATION].timer!=-1 )
+			status_change_end(bl,SC_CONCENTRATION,-1);
+		if(sc_data[SC_TWOHANDQUICKEN].timer!=-1 )
+			status_change_end(bl,SC_TWOHANDQUICKEN,-1);
+		if(sc_data[SC_SPEARSQUICKEN].timer!=-1 )
+			status_change_end(bl,SC_SPEARSQUICKEN,-1);
+		if(sc_data[SC_ADRENALINE].timer!=-1 )
+			status_change_end(bl,SC_ADRENALINE,-1);
+
+		if(sc_data[SC_TRUESIGHT].timer!=-1 )	// トゥルーサイト
+			status_change_end(bl,SC_TRUESIGHT,-1);
+		if(sc_data[SC_WINDWALK].timer!=-1 )	// ウインドウォーク
+			status_change_end(bl,SC_WINDWALK,-1);
+		if(sc_data[SC_CARTBOOST].timer!=-1 )	// カートブースト
+			status_change_end(bl,SC_CARTBOOST,-1);
+
+		//バーサークピッチャー
+		if(sc_data[SC_SPEEDPOTION3].timer!=-1)
+			status_change_end(bl,SC_SPEEDPOTION3,-1);
+
+		if(sc_data[SC_SUN_WARM].timer!=-1)
+			status_change_end(bl,SC_SUN_WARM,-1);
+		if(sc_data[SC_MOON_WARM].timer!=-1)
+			status_change_end(bl,SC_MOON_WARM,-1);
+		if(sc_data[SC_STAR_WARM].timer!=-1)
+			status_change_end(bl,SC_STAR_WARM,-1);
+		if(sc_data[SC_SUN_COMFORT].timer!=-1)
+			status_change_end(bl,SC_SUN_COMFORT,-1);
+		if(sc_data[SC_MOON_COMFORT].timer!=-1)
+			status_change_end(bl,SC_MOON_COMFORT,-1);
+		if(sc_data[SC_STAR_COMFORT].timer!=-1)
+			status_change_end(bl,SC_STAR_COMFORT,-1);
+		if(sc_data[SC_FUSION].timer!=-1)
+			status_change_end(bl,SC_FUSION,-1);
+		//魂解除
+		if(sc_data[SC_ALCHEMIST].timer!=-1)
+			status_change_end(bl,SC_ALCHEMIST,-1);
+		if(sc_data[SC_MONK].timer!=-1)
+			status_change_end(bl,SC_MONK,-1);
+		if(sc_data[SC_STAR].timer!=-1)
+			status_change_end(bl,SC_STAR,-1);
+		if(sc_data[SC_SAGE].timer!=-1)
+			status_change_end(bl,SC_SAGE,-1);
+		if(sc_data[SC_CRUSADER].timer!=-1)
+			status_change_end(bl,SC_CRUSADER,-1);
+		if(sc_data[SC_SUPERNOVICE].timer!=-1)
+			status_change_end(bl,SC_SUPERNOVICE,-1);
+		if(sc_data[SC_KNIGHT].timer!=-1)
+			status_change_end(bl,SC_KNIGHT,-1);
+		if(sc_data[SC_WIZARD].timer!=-1)
+			status_change_end(bl,SC_WIZARD,-1);
+		if(sc_data[SC_PRIEST].timer!=-1)
+			status_change_end(bl,SC_PRIEST,-1);
+		if(sc_data[SC_BARDDANCER].timer!=-1)
+			status_change_end(bl,SC_BARDDANCER,-1);
+		if(sc_data[SC_ROGUE].timer!=-1)
+			status_change_end(bl,SC_ROGUE,-1);
+		if(sc_data[SC_ASSASIN].timer!=-1)
+			status_change_end(bl,SC_ASSASIN,-1);
+		if(sc_data[SC_BLACKSMITH].timer!=-1)
+			status_change_end(bl,SC_BLACKSMITH,-1);
+		if(sc_data[SC_HUNTER].timer!=-1)
+			status_change_end(bl,SC_HUNTER,-1);
+		if(sc_data[SC_HIGH].timer!=-1)
+			status_change_end(bl,SC_HIGH,-1);
+		//
+		if(sc_data[SC_ADRENALINE2].timer!=-1)
+			status_change_end(bl,SC_ADRENALINE2,-1);
+		if(sc_data[SC_KAIZEL].timer!=-1)
+			status_change_end(bl,SC_KAIZEL,-1);
+		if(sc_data[SC_KAAHI].timer!=-1)
+			status_change_end(bl,SC_KAAHI,-1);
+		if(sc_data[SC_KAUPE].timer!=-1)
+			status_change_end(bl,SC_KAUPE,-1);
+		if(sc_data[SC_KAITE].timer!=-1)
+			status_change_end(bl,SC_KAITE,-1);
+		if(sc_data[SC_ONEHAND].timer!=-1)
+			status_change_end(bl,SC_ONEHAND,-1);
+		*/
+		status_calc_pc_stop_end(bl);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * ステータス異常(武器の属性)終了
  *------------------------------------------
  */
 int status_encchant_eremental_end(struct block_list *bl,int type)
@@ -6878,7 +6879,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 }
 
 /*==========================================
- * ステータス異常(種族変更)終了
+ * ステータス異常(魂)終了
  *------------------------------------------
  */
 int status_change_soulclear(struct block_list *bl)
@@ -6928,6 +6929,51 @@ int status_change_soulclear(struct block_list *bl)
 		status_change_end(bl,SC_DEATHKINGHT,-1);
 	if(sc_data[SC_COLLECTOR].timer!=-1)
 		status_change_end(bl,SC_COLLECTOR,-1);
+	return 0;
+}
+
+/*==========================================
+ * ステータス異常(凍結・石化・睡眠)終了
+ *------------------------------------------
+ */
+int status_change_attacked_end(struct block_list *bl)
+{
+	struct status_change *sc_data;
+
+	nullpo_retr(0, bl);
+
+	sc_data = status_get_sc_data(bl);
+	if(sc_data) {
+		if(sc_data[SC_FREEZE].timer!=-1)
+			status_change_end(bl,SC_FREEZE,-1);
+		if(sc_data[SC_STONE].timer!=-1 && sc_data[SC_STONE].val2==0)
+			status_change_end(bl,SC_STONE,-1);
+		if(sc_data[SC_SLEEP].timer!=-1)
+			status_change_end(bl,SC_SLEEP,-1);
+	}
+	return 0;
+}
+
+/*==========================================
+ * ステータス異常(ハイド)終了
+ *------------------------------------------
+ */
+int status_change_hidden_end(struct block_list *bl)
+{
+	short *option;
+
+	nullpo_retr(0, bl);
+
+	option = status_get_option(bl);
+
+	if (option && *option > 0) {
+		if (*option & 0x02)
+			status_change_end(bl,SC_HIDING,-1);
+		if (*option & 0x4004 == 4)
+			status_change_end(bl,SC_CLOAKING,-1);
+		if (*option & 0x4004 == 0x4004)
+			status_change_end(bl,SC_CHASEWALK,-1);
+	}
 	return 0;
 }
 
