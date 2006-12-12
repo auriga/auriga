@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 
+#include "db.h"
 #include "timer.h"
 #include "nullpo.h"
 #include "malloc.h"
@@ -1529,7 +1530,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
 			}
-			DMG_FIX( 100+160*(s_str/10), 100 );
+			DMG_FIX( 100+16*s_str, 100 );
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;
@@ -4474,6 +4475,10 @@ int battle_check_range(struct block_list *src,struct block_list *bl,int range)
 	return path_search_long(NULL,src->m,src->x,src->y,bl->x,bl->y);
 }
 
+/*==========================================
+ * 矢の消費
+ *------------------------------------------
+ */
 int battle_delarrow(struct map_session_data* sd,int num,int skillid)
 {
 	int mask = 0, idx = -1;
@@ -4516,6 +4521,24 @@ int battle_delarrow(struct map_session_data* sd,int num,int skillid)
 		return 0;
 	}
 	return 1;
+}
+
+/*==========================================
+ * ダメージなしで共闘に参加
+ *------------------------------------------
+ */
+void battle_join_struggle(struct mob_data *md,struct block_list *src)
+{
+	nullpo_retv(md);
+	nullpo_retv(src);
+
+	if(src->type == BL_PC) {
+		// ダメージ-1で戦闘参加者入り(0にするとリスト未登録のNULLとかぶって困る)
+		if(linkdb_search( &md->dmglog, (void*)src->id ) == NULL) {
+			linkdb_insert( &md->dmglog, (void*)src->id, (void*)-1 );
+		}
+	}
+	return;
 }
 
 /*==========================================

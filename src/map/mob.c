@@ -1898,7 +1898,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					flag = 0;
 				}
 			}
-			if(flag)	// 各自所得
+			if(flag && (base_exp > 0 || job_exp > 0))	// 各自所得
 			{
 				if( (tmpsd->sc_data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// 死んだふりしていない
 				    (tmpsd->sc_data[SC_HIDING].timer == -1    || !battle_config.noexp_hiding) )		// ハイドしていない

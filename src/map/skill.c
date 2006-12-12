@@ -1947,7 +1947,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case HT_POWER:			/* ピーストストレイフィング*/
-		//if(sc_data[SC_DOUBLE].timer!=-1)
 		status_change_end(src,SC_DOUBLE,-1);
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
@@ -2084,6 +2083,28 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	}
 	case MO_COMBOFINISH:	/* 猛龍拳 */
+		{
+			struct status_change *sc_data = status_get_sc_data(src);
+			/* モンクの魂状態の場合は範囲攻撃 */
+			if(sc_data && sc_data[SC_MONK].timer != -1) {
+				if(flag&1) {
+					if(bl->id != skill_area_temp[1])
+						battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+				} else {
+					skill_area_temp[1] = bl->id;
+					skill_area_temp[2] = bl->x;
+					skill_area_temp[3] = bl->y;
+					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+					map_foreachinarea(skill_area_sub,
+						src->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,0,
+						src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+						skill_castend_damage_id);
+				}
+			} else {
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			}
+		}
+		break;
 	case CH_TIGERFIST:		/* 伏虎拳 */
 	case CH_CHAINCRUSH:		/* 連柱崩撃 */
 	case CH_PALMSTRIKE:		/* 猛虎硬派山 */
@@ -2301,13 +2322,19 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* 個別にダメージを与える */
 			if(bl->id == skill_area_temp[1])
 				break;
-			if(battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500)) {
-				if(bl->x == skill_area_temp[2] && bl->y == skill_area_temp[3])
-					skill_blown(src,bl,skill_area_temp[4]|(6<<20));		//ターゲットと同一座標なら西へノックバック
-				else
-					skill_blown(src,bl,skill_area_temp[4]);
+			if(battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500))
+			{
+				if(bl->x == skill_area_temp[2] && bl->y == skill_area_temp[3]) {
+					skill_blown(src,bl,skill_area_temp[4]|(6<<20));		// ターゲットと同一座標なら西へノックバック
+				} else {
+					struct block_list pos;
+					memset(&pos,0,sizeof(pos));
+					pos.x = skill_area_temp[2];
+					pos.y = skill_area_temp[3];
+					skill_blown(&pos,bl,skill_area_temp[4]);		// ターゲットとの位置関係で飛ばす方向を決める
+				}
 			}
-		}else{
+		} else {
 			skill_area_temp[1] = bl->id;
 			skill_area_temp[2] = bl->x;
 			skill_area_temp[3] = bl->y;
@@ -2337,11 +2364,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				break;
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
 			c = skill_get_blewcount(skillid,skilllv);
-			dir = status_get_dir(src);
-			if(dir <= 3)
-				dir += 4;
-			else
-				dir -= 4;
+			dir = (status_get_dir(src)+4) & 0x07;
 			if(dir == 0)
 				dir = 8;
 			if(map[bl->m].flag.gvg) c = 0;
@@ -3554,6 +3577,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(range < 0)
 				range = status_get_range(src) - (range + 1);
 			mob_target(dstmd,src,range);
+			battle_join_struggle(dstmd, src);
 		}
 		unit_skillcastcancel(bl,2);	// 詠唱妨害
 		break;
@@ -3639,6 +3663,17 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(atn_rand()%100<20){
 					val=2*mob_db[dstmd->class].lv;
 					mob_target(dstmd,src,0);
+					battle_join_struggle(dstmd, src);
+
+					sc_data = status_get_sc_data(bl);
+					if(sc_data){
+						if(sc_data[SC_FREEZE].timer!=-1)
+							status_change_end(bl,SC_FREEZE,-1);
+						if(sc_data[SC_STONE].timer!=-1 && sc_data[SC_STONE].val2==0)
+							status_change_end(bl,SC_STONE,-1);
+						if(sc_data[SC_SLEEP].timer!=-1)
+							status_change_end(bl,SC_SLEEP,-1);
+					}
 				}
 			}
 			if(sd) {
@@ -4030,6 +4065,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					range = status_get_range(src) - (range + 1);
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 				mob_target(dstmd,src,range);
+				battle_join_struggle(dstmd, src);
 			}
 			else
 				clif_skill_fail(sd,skillid,0,0);
@@ -4653,6 +4689,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(range < 0)
 					range = status_get_range(src) - (range + 1);
 				mob_target(dstmd,src,range);
+				battle_join_struggle(dstmd, src);
 			}
 			unit_skillcastcancel(bl,2);	// 詠唱妨害
 		}
@@ -7722,11 +7759,15 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 		}
 		break;
 	case HT_POWER:		/* ビーストストレイピング */
-		if(status_get_race(target)!=2){
-			if(sd) clif_skill_fail(sd,sc->id,0,0);
-			return 0;
+		if(sc_data && sc_data[SC_HUNTER].timer != -1 && sc_data[SC_DOUBLE].timer != -1) {
+			int race = status_get_race(target);
+			if(race == 2 || race == 4)
+				break;
 		}
-		break;
+		if(sd)
+			clif_skill_fail(sd,sc->id,0,0);
+		return 0;
+
 	case AM_TWILIGHT1:
 		if(!sc_data || sc_data[SC_ALCHEMIST].timer==-1){
 			if(sd) clif_skill_fail(sd,sc->id,0,0);

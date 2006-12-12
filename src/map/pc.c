@@ -4738,9 +4738,9 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	if(damage>0)
 		skill_stop_gravitation(&sd->bl);
 
-	// 先制された場合ダメージ-1で戦闘参加者入り(0にするとリスト未登録のNULLとかぶって困る)
-	if(src && src->type == BL_MOB && linkdb_search( &((struct mob_data*)src)->dmglog, (void*)sd->bl.id ) == NULL)
-		linkdb_insert( &((struct mob_data*)src)->dmglog, (void*)sd->bl.id, (void*)-1 );
+	// 先制された場合は共闘参加
+	if(src && src->type == BL_MOB)
+		battle_join_struggle((struct mob_data *)src, &sd->bl);
 
 	sd->status.hp-=damage;
 	if(sd->status.pet_id > 0 && sd->pd && sd->petDB && battle_config.pet_damage_support)
