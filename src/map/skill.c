@@ -2724,8 +2724,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				if(flag&0xf00000) {
 					map_foreachinarea(skill_area_sub,bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
 						src,skillid,skilllv,tick, flag|BCT_ENEMY ,skill_area_sub_count);
-					map_foreachinarea(skill_area_trap_sub,bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,BL_SKILL,
-						src,skillid,skilllv,tick, flag|BCT_ENEMY ,skill_area_sub_count);
 				}
 				/* まずターゲットに攻撃を加える */
 				battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]|(flag&0xf00000));
@@ -4998,8 +4996,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if((bl->type==BL_SKILL) &&
 			   (su=(struct skill_unit *)bl) &&
 			   (su->group->src_id == src->id || map[bl->m].flag.pvp || map[bl->m].flag.gvg) &&
-			   (su->group->unit_id >= UNT_BLASTMINE && su->group->unit_id <= UNT_TALKIEBOX) &&
-			   (su->group->unit_id != UNT_VENOMDUST)
+			   skill_unit_istrap(su->group->unit_id)
 			) { //罠を取り返す
 				if(sd && (su->group->unit_id != UNT_ANKLESNARE || su->group->val2 == 0)) {
 					if(battle_config.skill_removetrap_type == 1){
@@ -5041,28 +5038,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		} else {
 			struct skill_unit *su = NULL;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			if(bl->type == BL_SKILL && (su = (struct skill_unit *)bl) && su->group ){
-				switch(su->group->unit_id){
-					case UNT_ANKLESNARE:	/* アンクルスネア */
-						if(su->group->val2 > 0) {	// 捕捉中は破壊不可
-							break;
-						}
-						// fall through
-					case UNT_BLASTMINE:	/* ブラストマイン */
-					case UNT_SKIDTRAP:	/* スキッドトラップ */
-					case UNT_LANDMINE:	/* ランドマイン */
-					case UNT_SHOCKWAVE:	/* ショックウェーブトラップ */
-					case UNT_SANDMAN:	/* サンドマン */
-					case UNT_FLASHER:	/* フラッシャー */
-					case UNT_FREEZINGTRAP:	/* フリージングトラップ */
-					case UNT_CLAYMORETRAP:	/* クレイモアートラップ */
-					case UNT_TALKIEBOX:	/* トーキーボックス */
-						su->group->unit_id = UNT_USED_TRAPS;
-						clif_changelook(bl,LOOK_BASE,su->group->unit_id);
-						su->group->limit=DIFF_TICK(tick+1500,su->group->tick);
-						su->limit=DIFF_TICK(tick+1500,su->group->tick);
-						break;
-				}
+			if(bl->type == BL_SKILL && (su = (struct skill_unit *)bl) && su->group && skill_unit_istrap(su->group->unit_id))
+			{
+				if(su->group->unit_id == UNT_ANKLESNARE && su->group->val2 > 0)		// 補足中は破壊不可
+					break;
+				su->group->unit_id = UNT_USED_TRAPS;
+				clif_changelook(bl,LOOK_BASE,su->group->unit_id);
+				su->group->limit=DIFF_TICK(tick+1500,su->group->tick);
+				su->limit=DIFF_TICK(tick+1500,su->group->tick);
 			}
 		}
 		break;
@@ -10699,27 +10682,11 @@ int skill_unit_move_unit_group( struct skill_unit_group *group, int m,int dx,int
 	if (group->unit==NULL)
 		return 0;
 
-	// 移動可能なスキルはダンス系と未発動の罠のみ
-	if (!(skill_get_unit_flag(group->skill_id)&UF_DANCE)) {
-		switch (group->unit_id) {
-			case UNT_BLASTMINE:	/* ブラストマイン */
-			case UNT_SKIDTRAP:	/* スキッドトラップ */
-			case UNT_LANDMINE:	/* ランドマイン */
-			case UNT_SHOCKWAVE:	/* ショックウェーブトラップ */
-			case UNT_SANDMAN:	/* サンドマン */
-			case UNT_FLASHER:	/* フラッシャー */
-			case UNT_FREEZINGTRAP:	/* フリージングトラップ */
-			case UNT_CLAYMORETRAP:	/* クレイモアートラップ */
-			case UNT_TALKIEBOX:	/* トーキーボックス */
-				break;
-			case UNT_ANKLESNARE:	/* アンクルスネア */
-				if(group->val2 > 0)	// 捕捉中なら移動不可
-					return 0;
-				break;
-			default:
-				return 0;
-		}
-	}
+	// 移動可能なスキルはダンス系と罠のみ
+	if ( !(skill_get_unit_flag(group->skill_id)&UF_DANCE) && !skill_unit_istrap(group->unit_id) )
+		return 0;
+	if ( group->unit_id == UNT_ANKLESNARE && group->val2 > 0 )	// 補足中のアンクルは移動不可
+		return 0;
 
 	// 移動フラグ
 	memset(m_flag, 0, sizeof(m_flag));

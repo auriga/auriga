@@ -4536,7 +4536,10 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 	WFIFOL(fd, 6)=unit->group->src_id;
 	WFIFOW(fd,10)=unit->bl.x;
 	WFIFOW(fd,12)=unit->bl.y;
-	WFIFOB(fd,14)=unit->group->unit_id;
+	if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+		WFIFOB(fd,14)=UNT_ATTACK_SKILLS;
+	else
+		WFIFOB(fd,14)=unit->group->unit_id;
 	WFIFOB(fd,15)=0;
 	WFIFOSET(fd,packet_db[0x11f].len);
 
@@ -5212,7 +5215,10 @@ void clif_skill_setunit(struct skill_unit *unit)
 	WBUFL(buf, 6)=unit->group->src_id;
 	WBUFW(buf,10)=unit->bl.x;
 	WBUFW(buf,12)=unit->bl.y;
-	WBUFB(buf,14)=unit->group->unit_id;
+	if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+		WBUFB(buf,14)=UNT_ATTACK_SKILLS;
+	else
+		WBUFB(buf,14)=unit->group->unit_id;
 	WBUFB(buf,15)=0;
 	clif_send(buf,packet_db[0x11f].len,&unit->bl,AREA);
 

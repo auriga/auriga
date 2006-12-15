@@ -6967,11 +6967,11 @@ int status_change_hidden_end(struct block_list *bl)
 	option = status_get_option(bl);
 
 	if (option && *option > 0) {
-		if (*option & 0x02)
+		if ((*option) & 0x02)
 			status_change_end(bl,SC_HIDING,-1);
-		if (*option & 0x4004 == 4)
+		if (((*option) & 0x4004) == 4)
 			status_change_end(bl,SC_CLOAKING,-1);
-		if (*option & 0x4004 == 0x4004)
+		if (((*option) & 0x4004) == 0x4004)
 			status_change_end(bl,SC_CHASEWALK,-1);
 	}
 	return 0;

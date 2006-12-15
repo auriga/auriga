@@ -252,6 +252,9 @@ int skill_castend_delay (struct block_list* src, struct block_list *bl,int skill
 // バシリカ発動停止
 void skill_basilica_cancel( struct block_list *bl );
 
+// 罠スキルかどうか
+#define skill_unit_istrap(id) (((id) >= UNT_BLASTMINE) && ((id) <= UNT_TALKIEBOX) && ((id) != UNT_VENOMDUST))
+
 void skill_reload(void);
 
 enum {

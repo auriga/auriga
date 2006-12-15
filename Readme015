@@ -1,4 +1,13 @@
 ----------------------------------------
+//032 [2006/12/16] by Rayce
+
+・status.cでコンパイル時に警告が出てたので修正（status.c）
+・スキルユニットが罠かどうかを判定する skill_unit_istrap() を用意（skill.h）
+・アンクルに敵が乗った状態で自動鷹が発動するとダメージが分散してしまう問題を修正（skill.c）
+・battle_athena.confにtrap_is_invisibleを追加（battle.*, clif.c）
+	yesにすると設置した罠が見えないようになります、merged from eA
+
+----------------------------------------
 //031 [2006/12/16] by Rayce
 
 ・凍結、石化、睡眠を解除する処理をまとめた status_change_attacked_end() を用意（battle.c, skill.c, status.*）
