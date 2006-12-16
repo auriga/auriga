@@ -1142,7 +1142,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 					status_change_start(bl,SC_FREEZE,7,0,0,0,skill_get_time2(MG_FROSTDIVER,7),0);
 				break;
 			case UNT_GROUNDDRIFT_FIRE:
-				skill_blown(&unit->bl,bl,3);
+				skill_blown(&unit->bl,bl,3|SAB_NODAMAGE);
 				break;
 			}
 		}
@@ -1775,6 +1775,10 @@ static int skill_timerskill(int tid, unsigned int tick, int id,int data )
 							skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
 					}
 					break;
+				case GS_DESPERADO:
+					if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
+						skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
+					break;
 			}
 		}
 	} while(0);
@@ -2249,12 +2253,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			memset(&pos,0,sizeof(struct block_list));
 			pos.x = skill_area_temp[2];
 			pos.y = skill_area_temp[3];
-			if( battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(skill_area_temp[4] == 0)? 0: 0x0500) ) {
+			if( battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500) ) {
 				int count = skill_get_blewcount(skillid,skilllv)|SAB_NOPATHSTOP;
 				if(bl->x == pos.x && bl->y == pos.y)
 					count |= 6<<20;		//指定座標と同一なら西へノックバック
 				skill_blown(&pos,bl,count);
-				skill_area_temp[4]++;
 			}
 		}
 		break;
@@ -2836,9 +2839,22 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
 		break;
 	case GS_DESPERADO:	/*デスペラード*/
-		bl=src;
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
+		{
+			int tmpx, tmpy, i, num;
+			bl = src;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			if(sd) {
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
+					break;
+			}
+			num = skill_get_num(skillid,skilllv);
+			for(i=0; i<num; i++) {
+				tmpx = src->x + (atn_rand()%5 - 2);
+				tmpy = src->y + (atn_rand()%5 - 2);
+				skill_addtimerskill(src,tick+i*150,0,tmpx,tmpy,skillid,skilllv,0,0);
+			}
+		}
 		break;
 	/* HP吸収/HP吸収魔法 */
 	case NPC_BLOODDRAIN:
@@ -5713,10 +5729,14 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	switch(skillid)
 	{
 	case AC_SHOWER:				/* アローシャワー */
+		if(sd) {
+			int cost = skill_get_arrow_cost(skillid,skilllv);
+			if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
+				break;
+		}
 		skill_area_temp[1] = src->id;
 		skill_area_temp[2] = x;
 		skill_area_temp[3] = y;
-		skill_area_temp[4] = 0;		// 矢消費判定用
 		map_foreachinarea(skill_area_sub,
 			src->m,x-1,y-1,x+1,y+1,0,
 			src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
@@ -5789,8 +5809,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case PF_SPIDERWEB:			/* スパイダーウェッブ */
 	case PF_FOGWALL:			/* フォグウォール */
 	case HT_TALKIEBOX:			/* トーキーボックス */
-	case GS_DESPERADO:			/* デスペラード*/
-	case GS_GROUNDDRIFT:		/* グラウンドドリフト*/
 	case NJ_TATAMIGAESHI:		/* 畳返し */
 	case NJ_BAKUENRYU:			/* 爆炎龍*/
 		skill_unitsetting(src,skillid,skilllv,x,y,0);
@@ -5800,6 +5818,14 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case RG_GRAFFITI:			/* グラフィティ */
 		status_change_start(src,SkillStatusChangeTable[skillid],skilllv,x,y,0,skill_get_time(skillid,skilllv),0 );
+		break;
+	case GS_GROUNDDRIFT:			/* グラウンドドリフト*/
+		if(sd) {
+			int cost = skill_get_arrow_cost(skillid,skilllv);
+			if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
+				break;
+		}
+		skill_unitsetting(src,skillid,skilllv,x,y,0);
 		break;
 
 	case SA_VOLCANO:		/* ボルケーノ */
@@ -6236,9 +6262,6 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				unit_id = drift_id[atn_rand()%5];
 			}
 		}
-		break;
-	case GS_DESPERADO:		/* デスペラード */
-		val1 = 0;		// 弾丸消費を1回にする処理用に0を明示する
 		break;
 	}
 
@@ -6974,9 +6997,6 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 		}
 		break;
 	case UNT_DESPERADO:	/* デスペラード */
-		if( battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val1 == 0)? 0: 1) )
-			sg->val1++;
-		break;
 	case UNT_TATAMIGAESHI:	/* 畳返し */
 		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0x0500);
 		break;

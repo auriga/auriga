@@ -1099,6 +1099,8 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	wd.blewcount = skill_get_blewcount(skill_num,skill_lv);
 	wd.flag      = BF_SHORT | BF_WEAPON | BF_NORMAL;	// 攻撃の種類の設定
 
+	if(skill_num == GS_DESPERADO)
+		wd.div_ = 1;
 	if(wd.div_ <= 0 || wd.div_ >= 251)			// 251〜254 = テコン蹴り、255 = 三段掌として予約済
 		wd.div_ = 1;
 
@@ -3752,23 +3754,20 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			case BA_MUSICALSTRIKE:
 			case DC_THROWARROW:
 			case CG_ARROWVULCAN:
-			case AS_VENOMKNIFE:	//ベナムナイフ消費
-			case NJ_SYURIKEN:	//手裏剣消費
-			case NJ_KUNAI:		//クナイ消費
-			case GS_TRACKING:	//銃弾消費
+			case AS_VENOMKNIFE:
+			case NJ_SYURIKEN:
+			case NJ_KUNAI:
+			case GS_TRACKING:
 			case GS_DISARM:
 			case GS_PIERCINGSHOT:
 			case GS_DUST:
-			case GS_RAPIDSHOWER:	//複数消費
+			case GS_RAPIDSHOWER:
 			case GS_FULLBUSTER:
-			case GS_GROUNDDRIFT:	//グレネード弾消費
 				if( !battle_delarrow(sd, cost, skillid) )
 					return 0;
 				break;
-			case AC_SHOWER:
 			case SN_SHARPSHOOTING:
 			case GS_SPREADATTACK:
-			case GS_DESPERADO:
 				if( flag == 0 && !battle_delarrow(sd, cost, skillid) )
 					return 0;
 				break;
