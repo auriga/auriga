@@ -1,4 +1,25 @@
 ----------------------------------------
+//034 [2006/12/19] by Rayce
+
+・ホムがunit_free() されるときにも status_change_clear() を呼ぶように修正（unit.c）
+・unit.cを少しだけ整理
+・SI_BREAKARMOR, SI_BREAKWEAPON, SI_MAGNUM を追加（status.h）
+・マグナムブレイク中ならSI_MAGNUMを送信するように修正（status.c）
+
+・status_change_clear() の修正
+	-> コメントアウト部分はもはや必要すらないので抹消
+	-> type=0のときにのみSC_BABYとSC_REDEMPTIOのスキップ判定を行うように変更
+	　 つまりtype=1（PC, HOMのunit_free）とtype=2（MOBのunit_remove_map）のときは全ステータス異常
+	　 を強制的に解除するということになります
+	-> sc_countを0にしないように修正
+
+・Himmel氏発案のGMハイドの改造をmerge, thx a lot!!（atcommand.c, battle.*, clif.c）
+	battle_athena.confにgm_perfect_hideを追加しました。デフォルトはno。
+	yesにすると@hideが完全なインビジブルモードとなり、ツールによって姿が検出されなくなります。
+	@hideでハイドした際は一旦キャラクターを消滅させ、解除時に再度出現パケットを送信しています。
+	これによりハイドの瞬間に位置を悟られることを防止し、また出現の際に座標がズレるのを解消しています。
+
+----------------------------------------
 //033 [2006/12/17] by Rayce
 
 ・グラウンドドリフトをファイアスフィアで設置した場合、吹き飛ばすときにSAB_NODAMAGEを入れるように修正

@@ -85,7 +85,7 @@ static int StatusIconChangeTable[] = {
 /* 180- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 /* 190- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_MAGNUM,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 /* 200- */
 	SI_BLANK,SI_PRESERVE,SI_OVERTHRUSTMAX,SI_CHASEWALK_STR,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 /* 210- */
@@ -6417,32 +6417,23 @@ int status_change_clear(struct block_list *bl,int type)
 	if(*sc_count == 0)
 		return 0;
 	status_calc_pc_stop_begin(bl);
-	for(i = 0; i < MAX_STATUSCHANGE; i++){
+	for(i = 0; i < MAX_STATUSCHANGE; i++) {
 		if(i==SC_BABY || i==SC_REDEMPTIO)
 		{
-			if(unit_isdead(bl))
+			if(type == 0 && unit_isdead(bl))
 				continue;
 		}
-		if(sc_data[i].timer != -1){	/* 異常があるならタイマーを削除する */
-/*
-			delete_timer(sc_data[i].timer, status_change_timer);
-			sc_data[i].timer = -1;
-
-			if(!type && i<SC_SENDMAX)
-				clif_status_change(bl,i,0);
-*/
-
+		if(sc_data[i].timer != -1)	/* 異常があるならタイマーを削除する */
 			status_change_end(bl,i,-1);
-		}
 	}
 	status_calc_pc_stop_end(bl);
-	*sc_count = 0;
+
 	*opt1 = 0;
 	*opt2 = 0;
 	*opt3 = 0;
 	*option &= OPTION_MASK;
 
-	if(!type || type&2) {
+	if(type != 1) {
 		clif_changeoption(bl);
 		clif_send_clothcolor(bl);
 	}

@@ -1953,12 +1953,16 @@ void clif_movechar(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	fd=sd->fd;
+	// 完全なインビジブルモードなら送信しない
+	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd))
+	{
+		fd=sd->fd;
 
-	len = clif_set007b(sd,WFIFOP(fd,0));
-	clif_send(WFIFOP(fd,0),len,&sd->bl,AREA_WOS);
+		len = clif_set007b(sd,WFIFOP(fd,0));
+		clif_send(WFIFOP(fd,0),len,&sd->bl,AREA_WOS);
 
-	clif_send_clothcolor(&sd->bl);
+		clif_send_clothcolor(&sd->bl);
+	}
 
 	return;
 }
@@ -4272,33 +4276,36 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 	nullpo_retv(sd);
 	nullpo_retv(dstsd);
 
-	if(dstsd->ud.walktimer != -1){
-		len = clif_set007b(dstsd,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
-	} else {
-		len = clif_set0078(dstsd,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
+	// 完全なインビジブルモードなら送信しない
+	if(!battle_config.gm_perfect_hide || !pc_isinvisible(dstsd))
+	{
+		if(dstsd->ud.walktimer != -1) {
+			len = clif_set007b(dstsd,WFIFOP(sd->fd,0));
+			WFIFOSET(sd->fd,len);
+		} else {
+			len = clif_set0078(dstsd,WFIFOP(sd->fd,0));
+			WFIFOSET(sd->fd,len);
+		}
+		clif_send_clothcolor(&dstsd->bl);
 	}
 
-	if(dstsd->chatID){
+	if(dstsd->chatID) {
 		struct chat_data *cd = map_id2cd(dstsd->chatID);
 		if(cd && cd->usersd[0]==dstsd)
 			clif_dispchat(cd,sd->fd);
 	}
-	if(dstsd->vender_id){
+	if(dstsd->vender_id) {
 		clif_showvendingboard(&dstsd->bl,dstsd->message,sd->fd);
 	}
 
-	//if(!pc_ishiding(dstsd) && dstsd->spiritball > 0 && dstsd->it_is_found==0) {
 	if(dstsd->spiritball > 0) {
 		clif_set01e1(dstsd,WFIFOP(sd->fd,0));
 		WFIFOSET(sd->fd,packet_db[0x1e1].len);
 	}
 
-	clif_send_clothcolor(&dstsd->bl);
 	if(sd->status.manner < 0)
 		clif_changestatus(&sd->bl,SP_MANNER,sd->status.manner);
-	if(dstsd->view_size!=0)
+	if(dstsd->view_size != 0)
 		clif_misceffect2(&dstsd->bl,422+dstsd->view_size);
 
 	return;
@@ -8812,7 +8819,9 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	}
 
 	map_addblock(&sd->bl);	// ブロック登録
-	clif_spawnpc(sd);	// spawn
+	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd)) {
+		clif_spawnpc(sd);	// spawn
+	}
 	mob_ai_hard_spawn( &sd->bl, 1 );
 
 	// weight max , now

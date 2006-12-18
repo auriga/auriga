@@ -5019,6 +5019,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.cancel_race = 1;
 		battle_config.allow_es_magic_all = 0;
 		battle_config.trap_is_invisible = 0;
+		battle_config.gm_perfect_hide = 0;
 	}
 
 	fp=fopen(cfgName,"r");
@@ -5468,6 +5469,7 @@ int battle_config_read(const char *cfgName)
 			{ "cancel_race",						&battle_config.cancel_race							},
 			{ "allow_es_magic_all",					&battle_config.allow_es_magic_all					},
 			{ "trap_is_invisible",					&battle_config.trap_is_invisible					},
+			{ "gm_perfect_hide",					&battle_config.gm_perfect_hide					},
 		};
 		const int max = sizeof(data)/sizeof(data[0]);
 

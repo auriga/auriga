@@ -1107,12 +1107,16 @@ atcommand_hide(
 {
 	nullpo_retr(-1, sd);
 
-	if (sd->status.option & 0x40) {
+	if (pc_isinvisible(sd)) {
 		sd->status.option &= ~0x40;
 		clif_displaymessage(fd, msg_txt(10));
+		if(battle_config.gm_perfect_hide)	// 完全なインビジブルモードなら出現させる
+			clif_spawnpc(sd);
 	} else {
 		sd->status.option |= 0x40;
 		clif_displaymessage(fd, msg_txt(11));
+		if(battle_config.gm_perfect_hide)	// 完全なインビジブルモードなら消滅させる
+			clif_clearchar(&sd->bl,0);
 	}
 	clif_changeoption(&sd->bl);
 	clif_send_clothcolor(&sd->bl);

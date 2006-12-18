@@ -525,6 +525,7 @@ extern struct Battle_Config {
 	int cancel_race;
 	int allow_es_magic_all;
 	int trap_is_invisible;
+	int gm_perfect_hide;
 } battle_config;
 
 #define BATTLE_CONF_FILENAME "conf/battle_athena.conf"

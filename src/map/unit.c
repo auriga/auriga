@@ -1829,6 +1829,34 @@ int unit_changeviewsize(struct block_list *bl,short size)
 }
 
 /*==========================================
+ * スキル詠唱中かどうかを返す
+ *------------------------------------------
+ */
+
+int unit_iscasting(struct block_list *bl) {
+	struct unit_data *ud = unit_bl2ud(bl);
+
+	if( ud == NULL )
+		return 0;
+	else
+		return (ud->skilltimer != -1);
+}
+
+/*==========================================
+ * 歩行中かどうかを返す
+ *------------------------------------------
+ */
+
+int unit_iswalking(struct block_list *bl) {
+	struct unit_data *ud = unit_bl2ud(bl);
+
+	if( ud == NULL )
+		return 0;
+	else
+		return (ud->walktimer != -1);
+}
+
+/*==========================================
  * マップから離脱する
  *------------------------------------------
  */
@@ -1996,11 +2024,11 @@ int unit_remove_map(struct block_list *bl, int clrtype)
 			add_timer(spawntime,mob_delayspawn,bl->id,0);
 		}
 	} else if(bl->type == BL_PET) {
-		struct pet_data *pd         = (struct pet_data*)bl;
+		struct pet_data *pd = (struct pet_data*)bl;
 		clif_clearchar_area(&pd->bl,0);
 		map_delblock(&pd->bl);
 	} else if(bl->type == BL_HOM) {
-		struct homun_data *hd       = (struct homun_data*)bl;
+		struct homun_data *hd = (struct homun_data*)bl;
 		clif_clearchar_area(&hd->bl,clrtype);
 		mob_ai_hard_spawn( &hd->bl, 0 );
 		map_delblock(&hd->bl);
@@ -2010,38 +2038,9 @@ int unit_remove_map(struct block_list *bl, int clrtype)
 }
 
 /*==========================================
- * スキル詠唱中かどうかを返す
- *------------------------------------------
- */
-
-int unit_iscasting(struct block_list *bl) {
-	struct unit_data *ud = unit_bl2ud(bl);
-
-	if( ud == NULL )
-		return 0;
-	else
-		return (ud->skilltimer != -1);
-}
-
-/*==========================================
- * 歩行中かどうかを返す
- *------------------------------------------
- */
-
-int unit_iswalking(struct block_list *bl) {
-	struct unit_data *ud = unit_bl2ud(bl);
-
-	if( ud == NULL )
-		return 0;
-	else
-		return (ud->walktimer != -1);
-}
-
-/*==========================================
  * マップから離脱後、領域を解放する
  *------------------------------------------
  */
-
 int unit_free(struct block_list *bl, int clrtype) {
 	struct unit_data *ud = unit_bl2ud( bl );
 	nullpo_retr(0, ud);
@@ -2102,7 +2101,7 @@ int unit_free(struct block_list *bl, int clrtype) {
 			aFree(pd->s_skill);
 			pd->s_skill = NULL;
 		}
-		if(sd->pet_hungry_timer != -1)
+		if(sd && sd->pet_hungry_timer != -1)
 			pet_hungry_timer_delete(sd);
 		map_deliddb(&pd->bl);
 		free(pd->lootitem);
@@ -2110,6 +2109,8 @@ int unit_free(struct block_list *bl, int clrtype) {
 	} else if( bl->type == BL_HOM ) {
 		struct homun_data *hd = (struct homun_data*)bl;
 		struct map_session_data *sd = hd->msd;
+
+		status_change_clear(&hd->bl,1);			// ステータス異常を解除する
 		if(sd && sd->hd) {
 		//	sd->hd->status.incubate = 0;
 			homun_save_data(sd);
@@ -2136,4 +2137,3 @@ int do_final_unit(void) {
 	// nothing to do
 	return 0;
 }
-
