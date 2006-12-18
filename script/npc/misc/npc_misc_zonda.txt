@@ -51,7 +51,7 @@ lighthalzen.gat,94,248,4	script	ジョンダ職員#Zonda	874,{
 		cutin "zonda_01",255;
 		end;
 	case 3:
-		if(Class != 5 || Class != 10 || Class != 18) {
+		if(Class != 5 && Class != 10 && Class != 18) {
 			mes "[ジョンダ職員]";
 			mes "お客様、大変申し訳ございませんが、";
 			mes "カートサービスは、商人とその上位職";

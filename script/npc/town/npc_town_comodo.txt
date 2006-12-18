@@ -636,6 +636,7 @@ cmd_in02.gat,32,140,4	script	村長	49,{
 			case 3:
 				break;
 		}
+		break;
 	case 3:
 		mes "[タウスプ]";
 		mes "私の友達が喜ぶだろうか…";

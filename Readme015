@@ -1,4 +1,24 @@
 ----------------------------------------
+//035 [2006/12/19] by Rayce
+
+・AthenaProject2266よりmerge, thanks to Blazeさん
+　以下Readmeをそのまま転載
+	・忍者・ガンスリンガーのJOBEXPテーブルLv49〜更新（exp.txt）
+	・テコン系列のHP・SP係数など修正（job_db1.txt）
+	・item_fabox.txt、item_arrowtype.txt、mob_boss.txt更新
+	・ハンター転職員の座標を修正（npc_job_11hunter.txt）
+	・ジョンダ職員からカートを借りられない不具合を修正（npc_misc_zonda.txt）
+	・コモドクエスト修正（npc_town_comodo.txt）
+	・アインブロッククエスト修正と料理人クエスト追加（npc_town_einbroch.txt）
+	・2006ハロウィンイベント新規追加（npc_event_halloween.txt）
+	・神器、TheSign、タナトスクエスト関連マップのmapflagを追加（mapflag.txt）
+
+・AthenaProject2267より部分的にmerge, thanks to Cocoaさん
+　以下変更箇所のみそのまま転載
+	・リザレクションホムンクルスの詠唱を中断可能に変更(skil_db.txt)
+	・アシッドテラー、デモンストレーション、ケミカルチャージのディレイ追加(skill_cast_db.txt)
+
+----------------------------------------
 //034 [2006/12/19] by Rayce
 
 ・ホムがunit_free() されるときにも status_change_clear() を呼ぶように修正（unit.c）
