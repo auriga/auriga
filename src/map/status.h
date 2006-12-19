@@ -100,7 +100,7 @@ int status_calc_pc_stop_begin(struct block_list *bl);
 int status_calc_pc_stop_end(struct block_list *bl);
 int status_calc_pc(struct map_session_data* sd,int first);
 int status_calc_skilltree(struct map_session_data *sd);
-int status_getrefinebonus(int lv,int type);
+int status_get_overrefine_bonus(int lv);
 int status_percentrefinery(struct map_session_data *sd,struct item *item);
 int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item *item);
 extern int current_equip_item_index;

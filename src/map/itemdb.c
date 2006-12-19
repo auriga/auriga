@@ -369,6 +369,9 @@ static int itemdb_read_itemdb(void)
 				id->equip=atoi(str[13]);
 			}
 			id->wlv=atoi(str[14]);
+			if(id->wlv < 0 || id->wlv > MAX_WEAPON_LEVEL) {
+				id->wlv = 0;
+			}
 			id->elv=atoi(str[15]);
 			id->look=atoi(str[16]);
 			id->refine=atoi(str[17]);

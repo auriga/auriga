@@ -38,6 +38,7 @@ enum {
 	WT_DOUBLE_DS,		// 短剣+片手剣
 	WT_DOUBLE_DA,		// 短剣+片手斧
 	WT_DOUBLE_SA,		// 片手剣+片手斧
+	WT_MAX,			// 最大値
 };
 
 #define pc_setdead(sd) ((sd)->state.dead_sit = 1)

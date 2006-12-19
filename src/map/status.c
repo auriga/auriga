@@ -27,16 +27,25 @@
 #include "guild.h"
 #include "unit.h"
 
-static int max_weight_base[MAX_PC_CLASS];
-static int hp_coefficient[MAX_PC_CLASS];
-static int hp_coefficient2[MAX_PC_CLASS];
-static int hp_sigma_val[MAX_PC_CLASS][MAX_LEVEL];
-static int sp_coefficient[MAX_PC_CLASS];
-static int aspd_base[MAX_PC_CLASS][30];
-static int refinebonus[5][3];	// 精錬ボーナステーブル(refine_db.txt)
-static int percentrefinery[5][10];	// 精錬成功率(refine_db.txt)
-static int atkmods[3][30];	// 武器ATKサイズ修正(size_fix.txt)
-static char job_bonus[3][MAX_PC_CLASS][MAX_LEVEL];
+static struct job_db {
+	int max_weight_base;
+	int hp_coefficient;
+	int hp_coefficient2;
+	int sp_coefficient;
+	int hp_sigma[MAX_LEVEL];
+	int bonus[3][MAX_LEVEL];
+	int aspd_base[WT_MAX];
+} job_db[MAX_PC_CLASS];
+
+static int atkmods[3][WT_MAX];	// 武器ATKサイズ修正(size_fix.txt)
+
+static struct refine_db {
+	int safety_bonus;
+	int over_bonus;
+	int limit;
+	int per[MAX_REFINE];
+} refine_db[MAX_WEAPON_LEVEL+1];
+
 int current_equip_item_index;//ステータス計算用
 int current_equip_card_id;
 static char race_name[11][5] = {{"無形"},{"不死"},{"動物"},{"植物"},{"昆虫"},{""},{"魚貝"},{"悪魔"},{"人間"},{"天使"},{"竜"}};
@@ -123,13 +132,13 @@ static int StatusIconChangeTable[] = {
 };
 
 /*==========================================
- * 精錬ボーナス
+ * 過剰精錬ボーナス
  *------------------------------------------
  */
-int status_getrefinebonus(int lv,int type)
+int status_get_overrefine_bonus(int lv)
 {
-	if(lv >= 0 && lv < 5 && type >= 0 && type < 3)
-		return refinebonus[lv][type];
+	if(lv >= 0 && lv <= MAX_WEAPON_LEVEL)
+		return refine_db[lv].over_bonus;
 	return 0;
 }
 
@@ -142,7 +151,11 @@ int status_percentrefinery(struct map_session_data *sd,struct item *item)
 	int percent;
 
 	nullpo_retr(0, item);
-	percent=percentrefinery[itemdb_wlv(item->nameid)][(int)item->refine];
+
+	if(item->refine < 0 || item->refine >= MAX_REFINE)	// 値がエラーもしくは既に最大値なら0%
+		return 0;
+
+	percent = refine_db[itemdb_wlv(item->nameid)].per[(int)item->refine];
 
 	percent += pc_checkskill(sd,BS_WEAPONRESEARCH);	// 武器研究スキル所持
 
@@ -168,9 +181,12 @@ int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item 
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, item);
-	joblv = sd->status.job_level > 70? 70 : sd->status.job_level;
 
-	percent = percentrefinery[itemdb_wlv(item->nameid)][(int)item->refine]*100 + (joblv - 50)*50;
+	if(item->refine < 0 || item->refine >= MAX_REFINE)	// 値がエラーもしくは既に最大値なら0%
+		return 0;
+
+	joblv = sd->status.job_level > 70? 70 : sd->status.job_level;
+	percent = refine_db[itemdb_wlv(item->nameid)].per[(int)item->refine]*100 + (joblv - 50)*50;
 
 	if(battle_config.allow_weaponrearch_to_weaponrefine)
 		percent += pc_checkskill(sd,BS_WEAPONRESEARCH)*100;	// 武器研究スキル所持
@@ -213,7 +229,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
 	struct skill b_skill[MAX_SKILL];
-	int i,bl,index;
+	int i,blv,calc_val,index;
 	int skill,aspd_rate,wele,wele_,def_ele,refinedef;
 	int pele,pdef_ele;
 	int str,dstr,dex;
@@ -285,13 +301,13 @@ L_RECALC:
 
 	pc_calc_skilltree(sd);	// スキルツリーの計算
 
-	sd->max_weight = max_weight_base[s_class.job]+sd->status.str*300;
+	sd->max_weight = job_db[s_class.job].max_weight_base+sd->status.str*300;
 
 	if(battle_config.baby_weight_rate !=100 && pc_isbaby(sd))
 		sd->max_weight = sd->max_weight*battle_config.baby_weight_rate/100;
 
 
-//ペコ騎乗時増えるよう移動
+	//ペコ騎乗時増えるよう移動
 	if( (skill=pc_checkskill(sd,MC_INCCARRY))>0)	// 所持量増加
 		sd->max_weight += skill*2000;
 
@@ -574,9 +590,9 @@ L_RECALC:
 					//二刀流用データ入力
 					sd->watk_ += sd->inventory_data[index]->atk;
 					sd->watk_2 = (r=sd->status.inventory[index].refine)*	// 精錬攻撃力
-						refinebonus[wlv][0];
-					if( (r-=refinebonus[wlv][2])>0 )	// 過剰精錬ボーナス
-						sd->overrefine_ = r*refinebonus[wlv][1];
+						refine_db[wlv].safety_bonus;
+					if( (r-=refine_db[wlv].limit)>0 )	// 過剰精錬ボーナス
+						sd->overrefine_ = r*refine_db[wlv].over_bonus;
 
 					if(sd->status.inventory[index].card[0]==0x00ff){	// 製造武器
 						sd->star_ = (sd->status.inventory[index].card[1]>>8);	// 星のかけら
@@ -596,9 +612,9 @@ L_RECALC:
 				else {	//二刀流武器以外
 					sd->watk += sd->inventory_data[index]->atk;
 					sd->watk2 += (r=sd->status.inventory[index].refine)*	// 精錬攻撃力
-						refinebonus[wlv][0];
-					if( (r-=refinebonus[wlv][2])>0 )	// 過剰精錬ボーナス
-						sd->overrefine += r*refinebonus[wlv][1];
+						refine_db[wlv].safety_bonus;
+					if( (r-=refine_db[wlv].limit)>0 )	// 過剰精錬ボーナス
+						sd->overrefine += r*refine_db[wlv].over_bonus;
 
 					if(sd->status.inventory[index].card[0]==0x00ff){	// 製造武器
 						sd->star += (sd->status.inventory[index].card[1]>>8);	// 星のかけら
@@ -616,7 +632,7 @@ L_RECALC:
 			}
 			else if(sd->inventory_data[index]->type == 5) {
 				sd->watk += sd->inventory_data[index]->atk;
-				refinedef += sd->status.inventory[index].refine*refinebonus[0][0];
+				refinedef += sd->status.inventory[index].refine*refine_db[0].safety_bonus;
 				if(calclimit == 2)
 					run_script(sd->inventory_data[index]->use_script,0,sd->bl.id,0);
 				run_script(sd->inventory_data[index]->equip_script,0,sd->bl.id,0);
@@ -677,8 +693,8 @@ L_RECALC:
 
 	// jobボーナス分
 	for(i=0;i<sd->status.job_level && i<MAX_LEVEL;i++){
-		if(job_bonus[s_class.upper][s_class.job][i])
-			sd->paramb[job_bonus[s_class.upper][s_class.job][i]-1]++;
+		if(job_db[s_class.job].bonus[s_class.upper][i])
+			sd->paramb[job_db[s_class.job].bonus[s_class.upper][i]-1]++;
 	}
 
 	if( (skill=pc_checkskill(sd,AC_OWL))>0 )	// ふくろうの目
@@ -1213,11 +1229,11 @@ L_RECALC:
 
 	// 二刀流 ASPD 修正
 	if (sd->status.weapon <= WT_HUUMA)
-		sd->aspd += aspd_base[s_class.job][sd->status.weapon]-(sd->paramc[1]*4+sd->paramc[4])*aspd_base[s_class.job][sd->status.weapon]/1000;
+		sd->aspd += job_db[s_class.job].aspd_base[sd->status.weapon]-(sd->paramc[1]*4+sd->paramc[4])*job_db[s_class.job].aspd_base[sd->status.weapon]/1000;
 	else
 		sd->aspd += (
-			(aspd_base[s_class.job][sd->weapontype1]-(sd->paramc[1]*4+sd->paramc[4])*aspd_base[s_class.job][sd->weapontype1]/1000) +
-			(aspd_base[s_class.job][sd->weapontype2]-(sd->paramc[1]*4+sd->paramc[4])*aspd_base[s_class.job][sd->weapontype2]/1000)
+			(job_db[s_class.job].aspd_base[sd->weapontype1]-(sd->paramc[1]*4+sd->paramc[4])*job_db[s_class.job].aspd_base[sd->weapontype1]/1000) +
+			(job_db[s_class.job].aspd_base[sd->weapontype2]-(sd->paramc[1]*4+sd->paramc[4])*job_db[s_class.job].aspd_base[sd->weapontype2]/1000)
 			) * 140 / 200;
 
 	aspd_rate = sd->aspd_rate;
@@ -1369,8 +1385,6 @@ L_RECALC:
 		sd->subele[0] += skill*1;
 	}
 
-	bl=sd->status.base_level;
-
 	//bAtkRange2,bAtkRangeRate2の射程計算
 	sd->attackrange += sd->add_attackrange;
 	sd->attackrange_ += sd->add_attackrange;
@@ -1381,13 +1395,18 @@ L_RECALC:
 	if(sd->attackrange < sd->attackrange_)
 		sd->attackrange = sd->attackrange_;
 
+	blv = sd->status.base_level;
+
 	//最大HP計算
 	//転生職の場合最大HP25%UP
+	calc_val = (3500 + blv * job_db[s_class.job].hp_coefficient2 + job_db[s_class.job].hp_sigma[(blv > 0)? blv-1: 0])/100 *
+			(100 + sd->paramc[2])/100 + (sd->parame[2] - sd->paramcard[2]);
 	if(pc_isupper(sd))
-		sd->status.max_hp += ((3500 + bl*hp_coefficient2[s_class.job] + hp_sigma_val[s_class.job][(bl > 0)? bl-1:0])/100 * (100 + sd->paramc[2])/100 + (sd->parame[2] - sd->paramcard[2])) * battle_config.upper_hp_rate/100;
-	else if(pc_isbaby(sd))//養子の場合最大HP70%
-		sd->status.max_hp += ((3500 + bl*hp_coefficient2[s_class.job] + hp_sigma_val[s_class.job][(bl > 0)? bl-1:0])/100 * (100 + sd->paramc[2])/100 + (sd->parame[2] - sd->paramcard[2])) * battle_config.baby_hp_rate/100;
-	else sd->status.max_hp +=((3500 + bl*hp_coefficient2[s_class.job] + hp_sigma_val[s_class.job][(bl > 0)? bl-1:0])/100 * (100 + sd->paramc[2])/100 + (sd->parame[2] - sd->paramcard[2])) * battle_config.normal_hp_rate/100;
+		sd->status.max_hp += calc_val * battle_config.upper_hp_rate/100;
+	else if(pc_isbaby(sd))	//養子の場合最大HP70%
+		sd->status.max_hp += calc_val * battle_config.baby_hp_rate/100;
+	else
+		sd->status.max_hp += calc_val * battle_config.normal_hp_rate/100;
 
 	if(sd->hprate!=100)
 		sd->status.max_hp = sd->status.max_hp*sd->hprate/100;
@@ -1401,11 +1420,14 @@ L_RECALC:
 
 	// 最大SP計算
 	//転生職の場合最大SP125%
+	calc_val = (1000 + blv * job_db[s_class.job].sp_coefficient)/100 *
+			(100 + sd->paramc[3])/100 + (sd->parame[3] - sd->paramcard[3]);
 	if(pc_isupper(sd))
-		sd->status.max_sp += (((sp_coefficient[s_class.job] * bl) + 1000)/100 * (100 + sd->paramc[3])/100 + (sd->parame[3] - sd->paramcard[3])) * battle_config.upper_sp_rate/100;
-	else if(pc_isbaby(sd)) //養子の場合最大SP70%
-		sd->status.max_sp += (((sp_coefficient[s_class.job] * bl) + 1000)/100 * (100 + sd->paramc[3])/100 + (sd->parame[3] - sd->paramcard[3])) * battle_config.baby_sp_rate/100;
-	else sd->status.max_sp +=(((sp_coefficient[s_class.job] * bl) + 1000)/100 * (100 + sd->paramc[3])/100 + (sd->parame[3] - sd->paramcard[3])) * battle_config.normal_sp_rate/100;
+		sd->status.max_sp += calc_val * battle_config.upper_sp_rate/100;
+	else if(pc_isbaby(sd))	//養子の場合最大SP70%
+		sd->status.max_sp += calc_val * battle_config.baby_sp_rate/100;
+	else
+		sd->status.max_sp += calc_val * battle_config.normal_sp_rate/100;
 
 	if(sd->sprate!=100)
 		sd->status.max_sp = sd->status.max_sp*sd->sprate/100;
@@ -6973,11 +6995,11 @@ static int status_calc_sigma(void)
 	int i,j,k;
 
 	for(i=0;i<MAX_PC_CLASS;i++) {
-		memset(hp_sigma_val[i],0,sizeof(hp_sigma_val[i]));
+		memset(job_db[i].hp_sigma,0,sizeof(job_db[i].hp_sigma));
 		for(k=0,j=2;j<=MAX_LEVEL;j++) {
-			k += hp_coefficient[i]*j + 50;
+			k += job_db[i].hp_coefficient*j + 50;
 			k -= k%100;
-			hp_sigma_val[i][j-1] = k;
+			job_db[i].hp_sigma[j-1] = k;
 		}
 	}
 	return 0;
@@ -7006,17 +7028,18 @@ int status_readdb(void) {
 		}
 		if(j<27)
 			continue;
-		max_weight_base[i]=atoi(split[0]);
-		hp_coefficient[i]=atoi(split[1]);
-		hp_coefficient2[i]=atoi(split[2]);
-		sp_coefficient[i]=atoi(split[3]);
-		for(j=0;j<23;j++)
-			aspd_base[i][j]=atoi(split[j+4]);
+		job_db[i].max_weight_base = atoi(split[0]);
+		job_db[i].hp_coefficient  = atoi(split[1]);
+		job_db[i].hp_coefficient2 = atoi(split[2]);
+		job_db[i].sp_coefficient  = atoi(split[3]);
+		for(j=0;j<23 && j<WT_MAX;j++)
+			job_db[i].aspd_base[j] = atoi(split[j+4]);
 		i++;
-		if(i==MAX_VALID_PC_CLASS)
+		if(i >= MAX_VALID_PC_CLASS)
 			break;
 	}
 	fclose(fp);
+	status_calc_sigma();
 	printf("read db/job_db1.txt done\n");
 
 	// JOBボーナス
@@ -7032,13 +7055,13 @@ int status_readdb(void) {
 		for(j=0,p=line;j<MAX_LEVEL && p;j++){
 			if(sscanf(p,"%d",&k)==0)
 				break;
-			job_bonus[0][i][j]=k;
-			job_bonus[2][i][j]=k; //養子職のボーナスは分からないので仮
+			job_db[i].bonus[0][j] = k;
+			job_db[i].bonus[2][j] = k; //養子職のボーナスは分からないので仮
 			p=strchr(p,',');
 			if(p) p++;
 		}
 		i++;
-		if(i==MAX_VALID_PC_CLASS)
+		if(i >= MAX_VALID_PC_CLASS)
 			break;
 	}
 	fclose(fp);
@@ -7057,12 +7080,12 @@ int status_readdb(void) {
 		for(j=0,p=line;j<MAX_LEVEL && p;j++){
 			if(sscanf(p,"%d",&k)==0)
 				break;
-			job_bonus[1][i][j]=k;
+			job_db[i].bonus[1][j]=k;
 			p=strchr(p,',');
 			if(p) p++;
 		}
 		i++;
-		if(i==MAX_VALID_PC_CLASS)
+		if(i >= MAX_VALID_PC_CLASS)
 			break;
 	}
 	fclose(fp);
@@ -7070,11 +7093,11 @@ int status_readdb(void) {
 
 	// 精錬データテーブル
 	for(i=0;i<5;i++){
-		for(j=0;j<10;j++)
-			percentrefinery[i][j]=100;
-		refinebonus[i][0]=0;
-		refinebonus[i][1]=0;
-		refinebonus[i][2]=10;
+		refine_db[i].safety_bonus = 0;
+		refine_db[i].over_bonus   = 0;
+		refine_db[i].limit        = MAX_REFINE;
+		for(j=0;j<MAX_REFINE;j++)
+			refine_db[i].per[j] = 0;
 	}
 	fp=fopen("db/refine_db.txt","r");
 	if(fp==NULL){
@@ -7083,30 +7106,31 @@ int status_readdb(void) {
 	}
 	i=0;
 	while(fgets(line,1020,fp)){
-		char *split[16];
+		char *split[MAX_REFINE+3];
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		if(atoi(line)<=0)
 			continue;
 		memset(split,0,sizeof(split));
-		for(j=0,p=line;j<16 && p;j++){
+		for(j=0,p=line;j<MAX_REFINE+3 && p;j++){
 			split[j]=p;
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		refinebonus[i][0]=atoi(split[0]);	// 精錬ボーナス
-		refinebonus[i][1]=atoi(split[1]);	// 過剰精錬ボーナス
-		refinebonus[i][2]=atoi(split[2]);	// 安全精錬限界
-		for(j=0;j<10 && split[j];j++)
-			percentrefinery[i][j]=atoi(split[j+3]);
-		i++;
+		refine_db[i].safety_bonus = atoi(split[0]);	// 精錬ボーナス
+		refine_db[i].over_bonus   = atoi(split[1]);	// 過剰精錬ボーナス
+		refine_db[i].limit        = atoi(split[2]);	// 安全精錬限界
+		for(j=0;j<MAX_REFINE && split[j+3];j++)
+			refine_db[i].per[j] = atoi(split[j+3]);
+		if(++i > MAX_WEAPON_LEVEL)
+			break;
 	}
 	fclose(fp);
 		printf("read db/refine_db.txt done\n");
 
 	// サイズ補正テーブル
 	for(i=0;i<3;i++)
-		for(j=0;j<30;j++)
+		for(j=0;j<WT_MAX;j++)
 			atkmods[i][j]=100;
 	fp=fopen("db/size_fix.txt","r");
 	if(fp==NULL){
@@ -7115,24 +7139,25 @@ int status_readdb(void) {
 	}
 	i=0;
 	while(fgets(line,1020,fp)){
-		char *split[30];
+		char *split[WT_MAX];
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		if(atoi(line)<=0)
 			continue;
 		memset(split,0,sizeof(split));
-		for(j=0,p=line;j<30 && p;j++){
+		for(j=0,p=line;j<WT_MAX && p;j++){
 			split[j]=p;
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		for(j=0;j<30 && split[j];j++)
+		for(j=0;j<WT_MAX && split[j];j++)
 			atkmods[i][j]=atoi(split[j]);
 		i++;
 	}
 	fclose(fp);
 	printf("read db/size_fix.txt done\n");
 
+	// ステータス異常テーブル
 	fp=fopen("db/scdata_db.txt","r");
 	if(fp==NULL){
 		printf("can't read db/scdata_db.txt\n");
@@ -7176,7 +7201,6 @@ int do_init_status(void)
 	add_timer_func_list(status_change_timer,"status_change_timer");
 	add_timer_func_list(status_pretimer,"status_pretimer");
 	status_readdb();
-	status_calc_sigma();
 	return 0;
 }
 

@@ -11370,7 +11370,7 @@ void skill_arrow_create(struct map_session_data *sd, int nameid)
  */
 void skill_repair_weapon(struct map_session_data *sd, int idx)
 {
-	const int material[5] = { 1002, 998, 999, 756, 999 };	// 鉄鉱石・鉄・鋼鉄・オリデオコン原石・鋼鉄
+	const int material[5] = { 999, 1002, 998, 999, 756 };	// 鋼鉄・鉄鉱石・鉄・鋼鉄・オリデオコン原石
 	int itemid, n;
 	int skillid = BS_REPAIRWEAPON;
 	struct map_session_data *dstsd;
@@ -11399,10 +11399,14 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 
 	data = dstsd->inventory_data[idx];
 
-	if(data && data->type == 4 && data->wlv >= 1 && data->wlv <= 4)
-		itemid = material[data->wlv-1];		// 武器
-	else
-		itemid = material[4];			// それ以外なら防具とみなす
+	if(data && data->type == 4) {	// 武器
+		if(data->wlv >= 1 && data->wlv <= 4)
+			itemid = material[data->wlv];
+		else
+			itemid = material[4];		// 武器Lvが5以上ならLv4と同じ材料にしておく
+	} else {			// 防具
+		itemid = material[0];
+	}
 
 	if((n = pc_search_inventory(sd, itemid)) < 0) {
 		clif_item_repaireffect(sd, 1, dstsd->status.inventory[idx].nameid);
@@ -11623,6 +11627,9 @@ void skill_weapon_refine(struct map_session_data *sd, int idx)
 		return;
 	}
 
+	if(wlv < 1 || wlv > 4)	// 武器Lv5以上はLv4と同じとみなす
+		wlv = 4;
+
 	//アイテムチェック
 	if(pc_search_inventory(sd,refine_item[wlv])==-1){
 		clif_weapon_refine_res(sd,3,refine_item[wlv]);
@@ -11656,11 +11663,14 @@ int skill_success_weaponrefine(struct map_session_data *sd,int idx)
 
 	if(idx >= 0) {
 		sd->status.inventory[idx].refine++;
+		if(sd->status.inventory[idx].refine > MAX_REFINE)
+			sd->status.inventory[idx].refine = MAX_REFINE;
+
 		clif_refine(sd->fd,sd,0,idx,sd->status.inventory[idx].refine);
 		clif_misceffect(&sd->bl,3);
 
 		//ブラックスミス 名声値
-		if(sd->status.inventory[idx].refine==10 && (*((unsigned long *)(&sd->status.inventory[idx].card[2]))) == sd->status.char_id)
+		if(sd->status.inventory[idx].refine==MAX_REFINE && (*((unsigned long *)(&sd->status.inventory[idx].card[2]))) == sd->status.char_id)
 		{
 			switch(itemdb_wlv(sd->status.inventory[idx].nameid))
 			{

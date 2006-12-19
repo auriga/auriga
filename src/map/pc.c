@@ -712,7 +712,7 @@ int pc_isequip(struct map_session_data *sd,int n)
 		{
 			if(sd->sc_data[SC_STRIPWEAPON].timer != -1)
 				return 0;
-			if(item->wlv == 4 && item->type==4)
+			if(item->wlv >= 4 && item->type==4)
 			{
 				//片手剣   : 1100〜1149
 				if(1100<=item->nameid && item->nameid<=1149)
@@ -4812,12 +4812,12 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 	}
 
 	// カイゼル
-	if(sd->sc_data && sd->sc_data[SC_KAIZEL].timer!=-1)
+	if(sd->sc_data && sd->sc_data[SC_KAIZEL].timer != -1)
 		kaizel_lv = sd->sc_data[SC_KAIZEL].val1;	// ステータス異常が解除される前にスキルLvを保存
 
 	// アイテム消滅
 	if(sd->loss_equip_flag&0x0001) {
-		for(i=0;i<11;i++) {
+		for(i=0; i<11; i++) {
 			if(atn_rand()%10000 < sd->loss_equip_rate_when_die[i])
 				pc_lossequipitem(sd,i,0);
 		}
@@ -4886,7 +4886,8 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 	status_calc_pc(sd,0);
 
 	// ドクロドロップ
-	if(battle_config.bone_drop==2 || (battle_config.bone_drop==1 && map[sd->bl.m].flag.pvp) || (battle_config.bone_drop==3 && map[sd->bl.m].flag.pk)){
+	if(battle_config.bone_drop==2 || (battle_config.bone_drop==1 && map[sd->bl.m].flag.pvp) || (battle_config.bone_drop==3 && map[sd->bl.m].flag.pk))
+	{
 		struct item item_tmp;
 		memset(&item_tmp,0,sizeof(item_tmp));
 		if(battle_config.bone_drop_itemid)
@@ -4900,8 +4901,8 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 		map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
 	}
 
-	for(i=0;i<5;i++) {
-		if(sd->dev.val1[i]){
+	for(i=0; i<5; i++) {
+		if(sd->dev.val1[i]) {
 			status_change_end(map_id2bl(sd->dev.val1[i]),SC_DEVOTION,-1);
 			sd->dev.val1[i] = sd->dev.val2[i]=0;
 		}
@@ -4982,7 +4983,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 			pc_nightmare_drop(sd,MF_PK_NIGHTMAREDROP);
 			pc_setdead(sd);
 		}
-		if(ssd && ssd!=sd){
+		if(ssd && ssd != sd) {
 			//被虐殺者
 			ranking_gain_point(sd,RK_PK,-5);
 			ranking_setglobalreg(sd,RK_PK);
@@ -5033,7 +5034,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 	}
 
 	// 強制送還
-	if((map[sd->bl.m].flag.pvp && sd->pvp_point < 0) || map[sd->bl.m].flag.gvg || map[sd->bl.m].flag.norevive){
+	if((map[sd->bl.m].flag.pvp && sd->pvp_point < 0) || map[sd->bl.m].flag.gvg || map[sd->bl.m].flag.norevive) {
 		sd->pvp_point=0;
 		pc_setstand(sd);
 		pc_setrestartvalue(sd,3);

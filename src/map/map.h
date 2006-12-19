@@ -56,6 +56,8 @@
 #define MAX_RANKER  10	//ランキング人数
 #define MAX_DEAL_ITEMS 10
 #define MAX_VENDING 12
+#define MAX_WEAPON_LEVEL 4
+#define MAX_REFINE 10
 
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL

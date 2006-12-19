@@ -2258,7 +2258,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 					int idx = src_sd->equip_index[8];
 					if(src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == 5) {
 						wd.damage += src_sd->inventory_data[idx]->weight/10;
-						wd.damage += src_sd->status.inventory[idx].refine * status_getrefinebonus(0,1);
+						wd.damage += src_sd->status.inventory[idx].refine * status_get_overrefine_bonus(0);
 					}
 				}
 				break;

@@ -1,4 +1,28 @@
 ----------------------------------------
+//036 [2006/12/20] by Rayce
+
+・定数の追加と精錬に関する拡張（map.h, pc.h）
+	MAX_WEAPON_LEVEL : 武器Lvの最大値でデフォルトは4
+	MAX_REFINE : 最大精錬値でデフォルトは10
+	WT_MAX : 武器タイプの最大値、自動的に設定される
+
+　※Lv5以上の武器を追加したい場合はMAX_WEAPON_LEVELの値を増やし、refine_dbの行を書き加えてください
+　　+11以上の精錬を設定したい場合はMAX_REFINEの値を増やし、refine_dbのLv10の成功確率の次の列に確率を書き加えてください
+
+・status.cでデータベースを読み込む変数の見通しをよくするための変更
+	-> refine_db.txtに利用する変数（refinebonusとpercentrefinery）をまとめてrefine_db構造体とする
+	-> job_db1.txt, job_db2.txt, job_db2-2.txtで利用する変数群をまとめてjob_db構造体とする
+	-> status_getrefinebonus() を status_get_overrefine_bonus() に改名して、過剰精錬ボーナスを返す
+	　 ためだけの関数に変更
+	-> status_calc_pc() で最大HP,SPを計算する部分を少し整理
+
+・+10装備に対してスクリプトのgetequippercentrefinery関数を実行すると、バッファオーバーフロー
+　（最悪の場合サーバクラッシュ）が発生するバグを修正
+・@reloadstatusdbを実行した際に、job_db1.txtのHP係数の値を変更しても最大HPが正しく再計算されない問題を
+　修正するために、status_calc_sigma() を status_readdb() 内に取り込み
+・スパノビの魂で装備可能になる武器LvをLv4以上に拡張（pc.c）
+
+----------------------------------------
 //035 [2006/12/19] by Rayce
 
 ・AthenaProject2266よりmerge, thanks to Blazeさん

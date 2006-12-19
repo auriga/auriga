@@ -4731,7 +4731,7 @@ int buildin_getitem2(struct script_state *st)
 		memset(&item_tmp,0,sizeof(item_tmp));
 		item_data=itemdb_search(nameid);
 		if(item_data->type==4 || item_data->type==5){
-			if(ref > 10) ref = 10;
+			if(ref > MAX_REFINE) ref = MAX_REFINE;
 		}
 		else if(item_data->type==7) {
 			iden = 1;

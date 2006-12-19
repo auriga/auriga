@@ -1415,8 +1415,8 @@ atcommand_item2(
 				}
 				if (item_data->type == 8)
 					refine = 0;
-				if (refine > 10)
-					refine = 10;
+				if (refine > MAX_REFINE)
+					refine = MAX_REFINE;
 			} else {
 				identify = 1;
 				refine = 0;
@@ -2157,10 +2157,10 @@ atcommand_refine(
 	if (sscanf(message, "%d %d", &position, &refine) < 2)
 		return -1;
 
-	if (refine < -10)
-		refine = -10;
-	else if (refine > 10)
-		refine = 10;
+	if (refine < -MAX_REFINE)
+		refine = -MAX_REFINE;
+	else if (refine > MAX_REFINE)
+		refine = MAX_REFINE;
 	else if (refine == 0)
 		refine = 1;
 
@@ -2175,8 +2175,8 @@ atcommand_refine(
 			continue;
 		current_refine = data->refine;
 		data->refine += refine;
-		if (data->refine > 10)
-			data->refine = 10;
+		if (data->refine > MAX_REFINE)
+			data->refine = MAX_REFINE;
 		else if (data->refine < 0)
 			data->refine = 0;
 		if (current_refine == data->refine)
@@ -4869,7 +4869,7 @@ int atcommand_reloadskilldb(
 /*==========================================
  * @reloadstatusdb
  *   job_db1.txt job_db2.txt job_db2-2.txt
- *   refine_db.txt size_fix.txt
+ *   refine_db.txt size_fix.txt scdata_db.txt
  *   のリロード
  *------------------------------------------
  */
