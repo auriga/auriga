@@ -1,4 +1,31 @@
 ----------------------------------------
+//037 [2006/12/24] by Rayce
+
+・NPCファイルの読み込み時に、MAP名のチェックを強化する（npc.c）
+・スクリプトエンジンの改善（script.c）
+	-> スクリプトのparse時にエラーが発生した場合、エラー箇所を正しく出力するように修正
+	-> check_script_buf() を expand_script_buf() に改名し、バッファサイズの拡張を行うだけの関数に変更
+	-> 不要なコメントアウト部分を抹消
+	-> getelementofarray関数の処理改善
+	　 頻繁に使われる可能性の高い1次元の配列に関しては、多次元配列をサポートしたAthena2099より前の方法
+	　 に近い形にして高速化を図っています
+	-> getcharid関数で引数の値の範囲チェックが抜けていたので修正
+	-> if, else-if, switch, while, do-whileの後には必ず () を付けることを強制する
+
+　※以下のようなコードは今後エラーとして扱われます
+	if Sex mes "true"; close;
+　　C言語ライクなスクリプトを指向するため、必ず if(Sex) のように () を付けなければなりません
+
+・上記変更に伴ってエラーが出るNPCスクリプトの修正
+	script/npc/town/npc_lighthalzen.txt
+
+・pvp_nopenaltyという存在しないmapflagを削除（script/mapflag/mapflag.txt）
+	022でmapflag系の整理を行った際に存在しないmapflagを指定した場合には警告を出すように強化
+	してましたが、mapflagファイル自体の修正が抜けてました
+・kh_dun02.gatのmapflagからnoteleportが欠けてたので修正
+・conf/map_athena.confに035で追加されたnpc_event_halloween.txtの記述が抜けてたので追記
+
+----------------------------------------
 //036 [2006/12/20] by Rayce
 
 ・定数の追加と精錬に関する拡張（map.h, pc.h）

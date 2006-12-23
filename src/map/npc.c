@@ -2091,8 +2091,10 @@ int do_init_npc(void)
 			// マップ名として記述されているか確認
 			// MAPの存在チェック自体は各parserで行う
 			if( strcmp(w1,"-")!=0 && strcmpi(w1,"function")!=0 ){
+				int len;
 				sscanf(w1,"%[^,]",mapname);
-				if (strlen(mapname) > 24 || !strstr(mapname,".gat")) {
+				len = strlen(mapname);
+				if (len <= 4 || len > 24 || strcmp(mapname+len-4,".gat")) {
 					printf("\nnpc file syntax error at line %d\a\n",lines);
 					break;
 				}

@@ -3131,7 +3131,7 @@ lhz_cube.gat,242,201,0	script	引き出し	111,{
 		close;
 	}
 	mes "-カギがかかっていて開かない-";
-	if!(LHZ_1QUE_CUBE&0x01)
+	if(!(LHZ_1QUE_CUBE&0x01))
 		close;
 	next;
 	input '@word$;
@@ -3175,7 +3175,7 @@ lhz_cube.gat,235,202,0	script	絵	111,{
 		close;
 	}
 	mes "-動かない-";
-	if!(LHZ_1QUE_CUBE&0x02)
+	if(!(LHZ_1QUE_CUBE&0x02))
 		close;
 	next;
 	input '@word$;
@@ -3253,7 +3253,7 @@ lhz_cube.gat,237,183,0	script	筒	111,{
 		close;
 	}
 	mes "-もろく見える筒がある-";
-	if!(LHZ_1QUE_CUBE&0x04)
+	if(!(LHZ_1QUE_CUBE&0x04))
 		close;
 	next;
 	input '@word$;
@@ -3390,7 +3390,7 @@ lhz_cube.gat,234,200,0	script	机	111,{
 		next;
 		mes "-^FF0000短い棒^000000を手に入れた-";
 		set LHZ_1QUE_CUBE,LHZ_1QUE_CUBE|0x200;
-		if!(LHZ_1QUE_CUBE&0x400)
+		if(!(LHZ_1QUE_CUBE&0x400))
 			close;
 		next;
 		mes "-ベッドの下で手に入れた「短い棒」と";
@@ -3446,7 +3446,7 @@ lhz_cube.gat,247,198,0	script	ベッド	111,{
 	next;
 	mes "-^FF0000短い棒^000000を手に入れた-";
 	set LHZ_1QUE_CUBE,LHZ_1QUE_CUBE|0x400;
-	if!(LHZ_1QUE_CUBE&0x200)
+	if(!(LHZ_1QUE_CUBE&0x200))
 		close;
 	next;
 	mes "-机の下で手に入れた「短い棒」と";

@@ -219,7 +219,7 @@ static int search_str(const unsigned char *p)
 // 既存のであれば番号、無ければ登録して新規番号
 static int add_str(const unsigned char *p)
 {
-	int i;
+	int i,len;
 	char *lowcase;
 
 	lowcase=strdup(p);
@@ -251,7 +251,8 @@ static int add_str(const unsigned char *p)
 		str_data=aRealloc(str_data,sizeof(str_data[0])*str_data_size);
 		memset(str_data + (str_data_size - 128), '\0', 128);
 	}
-	while(str_pos+(int)strlen(p)+1>=str_size){
+	len=(int)strlen(p);
+	while(str_pos+len+1>=str_size){
 		str_size+=256;
 		str_buf=(char *)aRealloc(str_buf,str_size);
 		memset(str_buf + (str_size - 256), '\0', 256);
@@ -263,39 +264,28 @@ static int add_str(const unsigned char *p)
 	str_data[str_num].func=NULL;
 	str_data[str_num].backpatch=-1;
 	str_data[str_num].label=-1;
-	str_pos+=strlen(p)+1;
+	str_pos+=len+1;
 	return str_num++;
 }
 
 
 /*==========================================
- * スクリプトバッファサイズの確認と拡張
+ * スクリプトバッファサイズの拡張
  *------------------------------------------
  */
-static void check_script_buf(int size)
+static void expand_script_buf(void)
 {
-	if(script_pos+size>=script_size){
-		script_size+=SCRIPT_BLOCK_SIZE;
-		script_buf=(unsigned char *)aRealloc(script_buf,script_size);
-		//memset(script_buf + script_size - SCRIPT_BLOCK_SIZE, '\0',
-		//	SCRIPT_BLOCK_SIZE);
-	}
+	script_size+=SCRIPT_BLOCK_SIZE;
+	script_buf=(unsigned char *)aRealloc(script_buf,script_size);
+	//memset(script_buf + script_size - SCRIPT_BLOCK_SIZE, '\0',
+	//	SCRIPT_BLOCK_SIZE);
 }
 
 /*==========================================
  * スクリプトバッファに１バイト書き込む
  *------------------------------------------
  */
- 
-#define add_scriptb(a) if( script_pos+1>=script_size ) check_script_buf(1); script_buf[script_pos++]=(a);
-
-#if 0
-static void add_scriptb(int a)
-{
-	check_script_buf(1);
-	script_buf[script_pos++]=a;
-}
-#endif
+#define add_scriptb(a) { if( script_pos+1>=script_size ) expand_script_buf(); script_buf[script_pos++]=(a); }
 
 /*==========================================
  * スクリプトバッファにデータタイプを書き込む
@@ -374,11 +364,9 @@ void set_label(int l,int pos,unsigned char *p)
 
 	if(str_data[l].type==C_INT || str_data[l].type==C_PARAM) {
 		disp_error_message("invalid label name ",p);
-		//exit(1);
 	}
 	if(str_data[l].label!=-1) {
 		disp_error_message("dup label ",p);
-		//exit(1);
 	}
 	str_data[l].type=(str_data[l].type == C_USERFUNC ? C_USERFUNC_POS : C_POS);
 	str_data[l].label=pos;
@@ -456,14 +444,12 @@ unsigned char* parse_simpleexpr(unsigned char *p)
 #endif
 	if(*p==';' || *p==','){
 		disp_error_message("unexpected expr end",p);
-		//exit(1);
 	}
 	if(*p=='('){
 		p=parse_subexpr(p+1,-1);
 		p=skip_space(p);
 		if((*p++)!=')'){
-			disp_error_message("unmatch ')'",p);
-			//exit(1);
+			disp_error_message("unmatch ')'",p-1);
 		}
 	} else if(isdigit(*p) || ((*p=='-' || *p=='+') && isdigit(p[1]))){
 		char *np;
@@ -478,13 +464,11 @@ unsigned char* parse_simpleexpr(unsigned char *p)
 				p++;
 			else if(*p=='\n'){
 				disp_error_message("unexpected newline @ string",p);
-				//exit(1);
 			}
 			add_scriptb(*p++);
 		}
 		if(!*p){
 			disp_error_message("unexpected eof @ string",p);
-			//exit(1);
 		}
 		add_scriptb(0);
 		p++;	//'"'
@@ -494,7 +478,6 @@ unsigned char* parse_simpleexpr(unsigned char *p)
 		// label , register , function etc
 		if(skip_word(p)==p){
 			disp_error_message("unexpected character",p);
-			//exit(1);
 		}
 		p2=skip_word(p);
 		c=*p2;	*p2=0;	// 名前をadd_strする
@@ -513,8 +496,7 @@ unsigned char* parse_simpleexpr(unsigned char *p)
 				p=parse_subexpr(p+1,-1);
 				p=skip_space(p);
 				if((*p++)!=']'){
-					disp_error_message("unmatch ']'",p);
-					//exit(1);
+					disp_error_message("unmatch ']'",p-1);
 				}
 			}
 			add_scriptc(C_FUNC);
@@ -598,10 +580,7 @@ unsigned char* parse_subexpr(unsigned char *p,int limit)
 				parse_cmd = search_str("callsub");
 				i++;
 			} else {
-				disp_error_message(
-					"expect command, missing function name or calling undeclared function",p
-				);
-				//exit(0);
+				disp_error_message("expect command, missing function name or calling undeclared function",p);
 			}
 			func=parse_cmd;
 			p=skip_space(p);
@@ -615,7 +594,7 @@ unsigned char* parse_subexpr(unsigned char *p,int limit)
 				}
 			}
 
-			while(*p && *p!=')' && i<127) {
+			while(*p && *p!=')' && i<128) {
 				plist[i]=p;
 				p=parse_subexpr(p,-1);
 				p=skip_space(p);
@@ -632,8 +611,7 @@ unsigned char* parse_subexpr(unsigned char *p,int limit)
 			}
 			plist[i]=p;
 			if(*(p++)!=')'){
-				disp_error_message("func request '(' ')'",p);
-				//exit(1);
+				disp_error_message("func request '(' ')'",p-1);
 			}
 			if(arg) {
 				if( (arg[j]==0 && i!=j) || (arg[j]=='*' && i<j) )
@@ -642,8 +620,8 @@ unsigned char* parse_subexpr(unsigned char *p,int limit)
 		} else if(op == C_OP3) {
 			p=parse_subexpr(p,-1);
 			p=skip_space(p);
-			if( *(p++) != ':')
-				disp_error_message("need ':'", p);
+			if(*(p++) != ':')
+				disp_error_message("need ':'", p-1);
 			p=parse_subexpr(p,-1);
 		} else {
 			p=parse_subexpr(p,opl);
@@ -668,21 +646,15 @@ unsigned char* parse_expr(unsigned char *p)
 	if(battle_config.etc_log)
 		printf("parse_expr %s\n",p);
 #endif
-	switch(*p){
-	case ')': case ';': case ':': case '[': case ']':
-	case '}':
-		disp_error_message("unexpected char",p);
-		//exit(1);
+	switch(*p) {
+		case ')':
+		case ';':
+		case ':':
+		case '[':
+		case ']':
+		case '}':
+			disp_error_message("unexpected char",p);
 	}
-	// mes (); が危険なのでスキップを許可しない
-	/*
-	if(*p == '(') {
-		unsigned char *p2 = skip_space(p + 1);
-		if(*p2 == ')') {
-			return p2 + 1;
-		}
-	}
-	*/
 	p=parse_subexpr(p,-1);
 #ifdef DEBUG_FUNCIN
 	if(battle_config.etc_log)
@@ -725,7 +697,8 @@ unsigned char* parse_line(unsigned char *p)
 
 	// 構文関連の処理
 	p2 = parse_syntax(p);
-	if(p2 != NULL) { return p2; }
+	if(p2 != NULL)
+		return p2;
 
 	// 最初は関数名
 	p2=p;
@@ -740,10 +713,7 @@ unsigned char* parse_line(unsigned char *p)
 		parse_cmd = search_str("callsub");
 		i++;
 	} else {
-		disp_error_message(
-			"expect command, missing function name or calling undeclared function",p2
-		);
-		//exit(0);
+		disp_error_message("expect command, missing function name or calling undeclared function",p2);
 	}
 	cmd=parse_cmd;
 
@@ -762,7 +732,7 @@ unsigned char* parse_line(unsigned char *p)
 		}
 	}
 
-	while(p && *p && *p != end && i<127){
+	while(p && *p && *p != end && i<128){
 		plist[i]=p;
 		p=parse_expr(p);
 		p=skip_space(p);
@@ -783,12 +753,13 @@ unsigned char* parse_line(unsigned char *p)
 	}
 	plist[i]=p;
 	if(!p || *(p++)!=end){
+		if(p)
+			p--;
 		if(parse_syntax_for_flag) {
 			disp_error_message("need ')'",p);
 		} else {
 			disp_error_message("need ';'",p);
 		}
-		//exit(1);
 	}
 	add_scriptc(C_FUNC);
 
@@ -900,7 +871,6 @@ unsigned char* parse_syntax(unsigned char *p) {
 			// case の処理
 			if(syntax.curly_count <= 0 || syntax.curly[syntax.curly_count - 1].type != TYPE_SWITCH) {
 				disp_error_message("unexpected 'case' ",p);
-				return p+1;
 			} else {
 				unsigned char *p2;
 				char label[256];
@@ -926,7 +896,6 @@ unsigned char* parse_syntax(unsigned char *p) {
 				p = skip_space(p);
 				if(*p != ':') {
 					disp_error_message("expect ':'",p);
-					//exit(1);
 				}
 				*p = 0;
 				sprintf(label,"if(%s != $@__SW%x_VAL) goto __SW%x_%x;",
@@ -988,10 +957,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 			// switch - default の処理
 			if(syntax.curly_count <= 0 || syntax.curly[syntax.curly_count - 1].type != TYPE_SWITCH) {
 				disp_error_message("unexpected 'default'",p);
-				return p+1;
 			} else if(syntax.curly[syntax.curly_count - 1].flag) {
 				disp_error_message("dup 'default'",p);
-				return p+1;
 			} else {
 				char label[256];
 				int l;
@@ -1022,8 +989,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 				syntax.curly[pos].count++;
 
 				p = skip_word(p);
-				return p + 1;
 			}
+			return p + 1;
 		} else if(!strncmp(p,"do",2) && !isalpha(*(p + 2))) {
 			int l;
 			char label[256];
@@ -1055,10 +1022,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 
 			p=skip_word(p);
 			p=skip_space(p);
-
 			if(*p != '(') {
 				disp_error_message("need '('",p);
-				return p+1;
 			}
 			p++;
 
@@ -1088,7 +1053,6 @@ unsigned char* parse_syntax(unsigned char *p) {
 			}
 			if(*p != ';') {
 				disp_error_message("need ';'",p);
-				return p+1;
 			}
 			p++;
 
@@ -1179,7 +1143,9 @@ unsigned char* parse_syntax(unsigned char *p) {
 			char label[256];
 			p=skip_word(p);
 			p=skip_space(p);
-
+			if(*p != '(') {
+				disp_error_message("need '('",p);
+			}
 			syntax.curly[syntax.curly_count].type  = TYPE_IF;
 			syntax.curly[syntax.curly_count].count = 1;
 			syntax.curly[syntax.curly_count].index = syntax.index++;
@@ -1199,6 +1165,11 @@ unsigned char* parse_syntax(unsigned char *p) {
 		if(!strncmp(p,"switch",6) && !isalpha(*(p + 6))) {
 			// switch() の処理
 			char label[256];
+			p=skip_word(p);
+			p=skip_space(p);
+			if(*p != '(') {
+				disp_error_message("need '('",p);
+			}
 			syntax.curly[syntax.curly_count].type  = TYPE_SWITCH;
 			syntax.curly[syntax.curly_count].count = 1;
 			syntax.curly[syntax.curly_count].index = syntax.index++;
@@ -1208,8 +1179,6 @@ unsigned char* parse_syntax(unsigned char *p) {
 			add_scriptl(add_str("set"));
 			add_scriptc(C_ARG);
 			add_scriptl(add_str(label));
-			p=skip_word(p);
-			p=skip_space(p);
 			p=parse_expr(p);
 			p=skip_space(p);
 			if(*p != '{') {
@@ -1225,7 +1194,9 @@ unsigned char* parse_syntax(unsigned char *p) {
 			char label[256];
 			p=skip_word(p);
 			p=skip_space(p);
-
+			if(*p != '(') {
+				disp_error_message("need '('",p);
+			}
 			syntax.curly[syntax.curly_count].type  = TYPE_WHILE;
 			syntax.curly[syntax.curly_count].count = 1;
 			syntax.curly[syntax.curly_count].index = syntax.index++;
@@ -1296,6 +1267,9 @@ unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag) {
 				// else - if
 				p=skip_word(p);
 				p=skip_space(p);
+				if(*p != '(') {
+					disp_error_message("need '('",p);
+				}
 				sprintf(label,"__IF%x_%x",syntax.curly[pos].index,syntax.curly[pos].count);
 				add_scriptl(add_str("jump_zero"));
 				add_scriptc(C_ARG);
@@ -1345,6 +1319,10 @@ unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag) {
 		}
 		p = p2;
 
+		p = skip_space(p);
+		if(*p != '(') {
+			disp_error_message("need '('",p);
+		}
 		sprintf(label,"__DO%x_FIN",syntax.curly[pos].index);
 		add_scriptl(add_str("jump_zero"));
 		add_scriptc(C_ARG);
@@ -1366,7 +1344,6 @@ unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag) {
 		p = skip_space(p);
 		if(*p != ';') {
 			disp_error_message("need ';'",p);
-			return p+1;
 		}
 		p++;
 		syntax.curly_count--;
@@ -1604,7 +1581,6 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 			if(*p == 0) {
 				*p2 = c;
 				disp_error_message("label length 0 ",p);
-				//exit(1);
 			}
 			l=add_str(p);
 			*p2 = c;
@@ -4371,49 +4347,58 @@ int buildin_deletearray(struct script_state *st)
  */
 int buildin_getelementofarray(struct script_state *st)
 {
-	if( st->stack->stack_data[st->start+2].type == C_NAME ) {
-		int num = st->stack->stack_data[st->start+2].u.num;
-		char *name = str_buf+str_data[num&0x00ffffff].str;
-		char postfix = name[strlen(name)-1];
-		int i,j,len,flag=0;
-		char *var, *p, array[6];
+	int i,j=0,count=0;
+	int list[128];
 
-		len = strlen(name) + (st->end - st->start+3)*5;	// 1つ当たり最大で "[128]" の5文字
-		var = (char *)aCalloc(len+1, sizeof(char));
+	if(st->stack->stack_data[st->start+2].type != C_NAME) {
+		printf("script: getelementofarray (operator[]): param1 not name !\n");
+		push_val(st->stack,C_INT,0);
+		return 0;
+	}
+
+	for(i=st->start+3; i<st->end && count < 128; i++) {
+		j = conv_num(st,& (st->stack->stack_data[i]));
+		if(j < 0 || j >= 128) {
+			printf("script: getelementofarray (operator[]): param2 illegal number %d\n",j);
+			push_val(st->stack,C_INT,0);
+			return 0;
+		}
+		if(j == 0 && count == 0)	// @hoge[0][1] は @hoge[1] として登録するための処理
+			continue;
+
+		if(i < st->end-1)
+			list[count++] = j;
+	}
+
+	if(count == 0) {
+		push_val2(st->stack,C_NAME,
+			(j<<24) | st->stack->stack_data[st->start+2].u.num,
+			st->stack->stack_data[st->start+2].ref);
+	} else {
+		int num      = st->stack->stack_data[st->start+2].u.num;
+		char *name   = str_buf+str_data[num&0x00ffffff].str;
+		int len      = strlen(name);
+		char postfix = name[len-1];
+		char *var    = (char *)aCalloc(1+len+count*5, sizeof(char));	// 1つ当たり最大で "[128]" の5文字
+		char *p;
+
+		// postfixと[]を削った変数名そのものにする
 		strcpy(var,name);
-
 		if(postfix == '$')
-			var[strlen(var)-1] = 0;
-		p = strchr(var,'[');
-		if(p != NULL)
-			memset(p,'\0',sizeof(p));	// postfixと[]を削った変数名そのものにする
+			var[len-1] = 0;
+		if((p = strchr(var,'[')) != NULL)
+			*p = 0;
 
-		for(i=st->start+3,j=0; i<st->end; i++) {
-			j = conv_num(st,& (st->stack->stack_data[i]));
-			if(j>127 || j<0) {
-				printf("script: getelementofarray (operator[]): param2 illegal number %d\n",j);
-				push_val(st->stack,C_INT,0);
-				aFree(var);
-				return 0;
-			}
-			if(j == 0 && !flag)	// @hoge[0][1] は @hoge[1] として登録するための処理
-				continue;
-
-			if(i < st->end-1) {
-				memset(array,'\0',sizeof(array));
-				sprintf(array,"[%d]",j);
-				strcat(var,array);
-				flag = 1;
-			}
+		for(i=0; i<count; i++) {
+			char array[6];
+			sprintf(array,"[%d]",list[i]);
+			strcat(var,array);
 		}
 		if(postfix == '$')
 			strcat(var,"$");
 
 		push_val2(st->stack,C_NAME,(j<<24) | add_str(var),st->stack->stack_data[st->start+2].ref);
 		aFree(var);
-	} else {
-		printf("script: getelementofarray (operator[]): param1 not name !\n");
-		push_val(st->stack,C_INT,0);
 	}
 	return 0;
 }
@@ -4910,7 +4895,7 @@ int buildin_getcharid(struct script_state *st)
 		sd=map_nick2sd(conv_str(st,& (st->stack->stack_data[st->start+3])));
 	else
 		sd=script_rid2sd(st);
-	if(sd==NULL){
+	if(sd==NULL || num < 0 || num > 3){
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
