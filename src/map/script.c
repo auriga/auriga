@@ -190,8 +190,7 @@ static int calc_hash(const unsigned char *p)
 	int h=0;
 	while(*p){
 		h=(h<<1)+(h>>3)+(h>>5)+(h>>8);
-		h+=(unsigned char)tolower(*p);
-		p++;
+		h+=(unsigned char)tolower(*p++);
 	}
 	return h&(SCRIPT_HASH_SIZE-1);
 }
@@ -1312,9 +1311,8 @@ unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag) {
 		if(p2 - p != 5 || strncmp("while",p,5)) {
 			disp_error_message("need 'while'",p);
 		}
-		p = p2;
 
-		p = skip_space(p);
+		p = skip_space(p2);
 		if(*p != '(') {
 			disp_error_message("need '('",p);
 		}
@@ -1599,7 +1597,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 	add_scriptc(C_NOP);
 
 	script_size = script_pos;
-	//script_buf=(unsigned char *)aRealloc(script_buf,script_pos);
+	script_buf=(unsigned char *)aRealloc(script_buf,script_pos);
 
 	// 未解決のラベルを解決
 	for(i=LABEL_START;i<str_num;i++){
@@ -2929,7 +2927,7 @@ int script_check_variable(const char *name,int array_flag,int read_only)
 	return 0;
 }
 
-void* script_read_vars(struct map_session_data *sd,struct npc_data *nd,char *var,int elem)
+void* script_read_vars(struct map_session_data *sd,char *var,int elem,struct linkdb_node **ref)
 {
 	struct script_state *st = NULL;
 	void *ret;
@@ -2938,16 +2936,16 @@ void* script_read_vars(struct map_session_data *sd,struct npc_data *nd,char *var
 		st = (struct script_state*)aCalloc(1,sizeof(struct script_state));
 		st->rid = sd->bl.id;
 	}
-	ret = get_val2(st, (elem<<24) | add_str(var), nd? &nd->u.scr.script->script_vars: NULL);
+	ret = get_val2(st, (elem<<24) | add_str(var), ref);
 	if(st)
 		aFree(st);
 
 	return ret;
 }
 
-void script_write_vars(struct map_session_data *sd,struct npc_data *nd,char *var,int elem,void *v)
+void script_write_vars(struct map_session_data *sd,char *var,int elem,void *v,struct linkdb_node **ref)
 {
-	set_reg(NULL, sd, (elem<<24) | add_str(var), var, v, nd? &nd->u.scr.script->script_vars: NULL);
+	set_reg(NULL, sd, (elem<<24) | add_str(var), var, v, ref);
 
 	return;
 }

@@ -5423,7 +5423,7 @@ atcommand_mailbox(
 static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,char *name,char *str)
 {
 	struct map_session_data *pl_sd = NULL;
-	struct npc_data *nd = NULL;
+	struct linkdb_node **ref = NULL;
 	char dst_var[100];
 	char *p, *output;
 	char prefix, postfix;
@@ -5431,7 +5431,7 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,ch
 	const int read_only = (str)? 0: 1;
 
 	strncpy(dst_var, src_var, 99);
-	dst_var[99] = 0;
+	dst_var[strlen(src_var)] = 0;
 
 	if((p = strchr(dst_var,'[')) != NULL)	// []の部分は削る
 		*p = 0;
@@ -5454,6 +5454,7 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,ch
 		}
 	}
 	if(prefix == '\'') {
+		struct npc_data *nd = NULL;
 		if(dst_var[1] == '@') {
 			return 56;
 		}
@@ -5461,6 +5462,7 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,ch
 		if(nd == NULL || nd->bl.subtype != SCRIPT || !nd->u.scr.script) {
 			return 58;
 		}
+		ref = &nd->u.scr.script->script_vars;
 	}
 
 	// []があるときはgetelementofarrayと同様の処理をする
@@ -5488,7 +5490,7 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,ch
 	}
 
 	if(read_only) {
-		void *ret = script_read_vars(pl_sd, nd, dst_var, elem);
+		void *ret = script_read_vars(pl_sd, dst_var, elem, ref);
 		if(postfix == '$') {
 			output = (char *)aCalloc(strlen(src_var)+strlen((char*)ret)+4, sizeof(char));
 			sprintf(output, "%s : %s", src_var, (char*)ret);
@@ -5497,7 +5499,7 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,ch
 			sprintf(output, "%s : %d", src_var, (int)ret);
 		}
 	} else {
-		script_write_vars(pl_sd, nd, dst_var, elem, (postfix == '$')? (void*)str: (void*)strtol(str,NULL,0));
+		script_write_vars(pl_sd, dst_var, elem, (postfix == '$')? (void*)str: (void*)strtol(str,NULL,0), ref);
 		output = (char *)aCalloc(1+strlen(msg_txt(67))+strlen(src_var)+strlen(str), sizeof(char));
 		sprintf(output, msg_txt(67), src_var, str);
 	}
