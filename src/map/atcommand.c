@@ -5417,6 +5417,97 @@ atcommand_mailbox(
 }
 
 /*==========================================
+ * スクリプト変数の操作
+ *------------------------------------------
+ */
+static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,char *name,char *str)
+{
+	struct map_session_data *pl_sd = NULL;
+	struct npc_data *nd = NULL;
+	char dst_var[100];
+	char *p, *output;
+	char prefix, postfix;
+	int elem = 0;
+	const int read_only = (str)? 0: 1;
+
+	strncpy(dst_var, src_var, 99);
+	dst_var[99] = 0;
+
+	if((p = strchr(dst_var,'[')) != NULL)	// []の部分は削る
+		*p = 0;
+
+	// 登録されていて参照可能な変数かどうか調べる
+	if( !script_check_variable(dst_var, ((p)? 1: 0), read_only) ) {
+		return 15;
+	}
+
+	prefix  = *dst_var;
+	postfix = dst_var[strlen(dst_var)-1];
+
+	if(prefix != '$' && prefix != '\'') {
+		if(name && name[0])
+			pl_sd = map_nick2sd(name);
+		else
+			pl_sd = sd;
+		if(!pl_sd) {
+			return 54;
+		}
+	}
+	if(prefix == '\'') {
+		if(dst_var[1] == '@') {
+			return 56;
+		}
+		nd = npc_name2id(name);
+		if(nd == NULL || nd->bl.subtype != SCRIPT || !nd->u.scr.script) {
+			return 58;
+		}
+	}
+
+	// []があるときはgetelementofarrayと同様の処理をする
+	if(p) {
+		int flag = 0;
+		if(postfix == '$')	// postfixは削る
+			dst_var[strlen(dst_var)-1] = 0;
+		while(1) {
+			char *np = NULL, array[6];
+			elem = strtoul(++p,&np,0);
+			if( elem < 0 || elem > 127 || !np || *np != ']' || (np[1] != '[' && np[1] != '\0') )
+				return 15;
+			p = np+1;
+			if(*p == '\0')
+				break;
+			if(elem == 0 && !flag)
+				continue;
+
+			sprintf(array,"[%d]",elem);
+			strcat(dst_var,array);
+			flag = 1;
+		}
+		if(postfix == '$')
+			strcat(dst_var,"$");
+	}
+
+	if(read_only) {
+		void *ret = script_read_vars(pl_sd, nd, dst_var, elem);
+		if(postfix == '$') {
+			output = (char *)aCalloc(strlen(src_var)+strlen((char*)ret)+4, sizeof(char));
+			sprintf(output, "%s : %s", src_var, (char*)ret);
+		} else {
+			output = (char *)aCalloc(strlen(src_var)+20, sizeof(char));
+			sprintf(output, "%s : %d", src_var, (int)ret);
+		}
+	} else {
+		script_write_vars(pl_sd, nd, dst_var, elem, (postfix == '$')? (void*)str: (void*)strtol(str,NULL,0));
+		output = (char *)aCalloc(1+strlen(msg_txt(67))+strlen(src_var)+strlen(str), sizeof(char));
+		sprintf(output, msg_txt(67), src_var, str);
+	}
+	clif_displaymessage(sd->fd, output);
+	aFree(output);
+
+	return -1;	// succeeded
+}
+
+/*==========================================
  * スクリプト変数を読み取る
  *------------------------------------------
  */
@@ -5424,23 +5515,24 @@ int atcommand_readvars(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
+	int errno;
 	char vars[100],name[100];
-	char *output;
 
 	nullpo_retr(-1, sd);
 
 	if(!message || !*message)
 		return -1;
 
-	memset(name, '\0', sizeof(name));
+	memset(name, 0, sizeof(name));
 	if(sscanf(message, "%99s %99[^\n]", vars, name) < 1)
 		return -1;
-	if(strlen(vars) < 1)
-		return -1;
 
-	output = script_operate_vars(sd, name, vars, NULL, 1);
-	clif_displaymessage(fd,output);
-	aFree(output);
+	errno = atcommand_vars_sub(sd, vars, name, NULL);
+	if(errno >= 0) {	// エラー時
+		char output[200];
+		sprintf(output, msg_txt(errno), vars);
+		clif_displaymessage(fd, output);
+	}
 
 	return 0;
 }
@@ -5453,46 +5545,48 @@ int atcommand_writevars(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
+	int errno,next=0;
 	char vars[100],name[100],str[100];
-	char *output;
+	char c=0;
 
 	nullpo_retr(-1, sd);
 
 	if(!message || !*message)
 		return -1;
 
-	memset(name, '\0', sizeof(name));
+	if(sscanf(message, "%99s %c%n", vars, &c, &next) < 2)
+		return -1;
+
+	memset(name, 0, sizeof(name));
 
 	// "で囲んである場合は簡易parseする
-	if(strchr(message,'\"')) {
+	if(c == '\"') {
 		int i=0;
-		char buf[204];	// '\"'+str+'\"'+' '+name+'\0' = 204
-		char *p;
+		const char *p = message + next;
 
-		memset(buf, '\0', sizeof(buf));
-		if(sscanf(message, "%99s %203[^\n]", vars, buf) < 2 || *buf != '\"')
-			return -1;
-		p = buf+1;
 		while(*p && *p != '\"' && i<99) {
 			if((unsigned char)p[-1] <= 0x7e && *p == '\\') {
 				p++;
 			}
 			str[i++] = *p++;
 		}
-		str[i] = '\0';
+		if(*p != '\"') {
+			return -1;
+		}
+		str[i] = 0;
 		if(*p && *(++p) == ' ' && *(++p))
-			memcpy(name, p, 99);
+			strncpy(name, p, 99);
 	} else {
-		if(sscanf(message, "%99s %99s %99[^\n]", vars, str, name) < 2)
+		if(sscanf(message + next -1, "%99s %99[^\n]", str, name) < 1)
 			return -1;
 	}
 
-	if(strlen(vars) < 1)
-		return -1;
-
-	output = script_operate_vars(sd, name, vars, str, 0);
-	clif_displaymessage(fd,output);
-	aFree(output);
+	errno = atcommand_vars_sub(sd, vars, name, str);
+	if(errno >= 0) {	// エラー時
+		char output[200];
+		sprintf(output, msg_txt(errno), vars);
+		clif_displaymessage(fd, output);
+	}
 
 	return 0;
 }

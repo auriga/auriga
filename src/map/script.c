@@ -56,6 +56,7 @@
 #endif
 
 #define SCRIPT_BLOCK_SIZE 512
+#define SCRIPT_HASH_SIZE 512
 enum { LABEL_NEXTLINE=1,LABEL_START };
 
 struct script_code error_code;	// エラー時のダミーデータ
@@ -74,7 +75,7 @@ static struct {
 	int next;
 } *str_data;
 int str_num=LABEL_START,str_data_size;
-int str_hash[16];
+int str_hash[SCRIPT_HASH_SIZE];
 
 static struct dbt *mapreg_db=NULL;
 static struct dbt *mapregstr_db=NULL;
@@ -189,9 +190,10 @@ static int calc_hash(const unsigned char *p)
 	int h=0;
 	while(*p){
 		h=(h<<1)+(h>>3)+(h>>5)+(h>>8);
-		h+=*p++;
+		h+=(unsigned char)tolower(*p);
+		p++;
 	}
-	return h&15;
+	return h&(SCRIPT_HASH_SIZE-1);
 }
 
 /*==========================================
@@ -204,7 +206,7 @@ static int search_str(const unsigned char *p)
 	int i;
 	i=str_hash[calc_hash(p)];
 	while(i){
-		if(strcmp(str_buf+str_data[i].str,p)==0){
+		if(strcmpi(str_buf+str_data[i].str,p)==0){
 			return i;
 		}
 		i=str_data[i].next;
@@ -219,17 +221,11 @@ static int search_str(const unsigned char *p)
 // 既存のであれば番号、無ければ登録して新規番号
 static int add_str(const unsigned char *p)
 {
-	int i,len;
-	char *lowcase;
+	int i;
+	size_t len;
 
-	lowcase=strdup(p);
-	for(i=0;lowcase[i];i++)
-		lowcase[i]=tolower(lowcase[i]);
-	if((i=search_str(lowcase))>=0){
-		free(lowcase);
+	if((i=search_str(p)) >= 0)
 		return i;
-	}
-	free(lowcase);
 
 	i=calc_hash(p);
 	if(str_hash[i]==0){
@@ -237,7 +233,7 @@ static int add_str(const unsigned char *p)
 	} else {
 		i=str_hash[i];
 		for(;;){
-			if(strcmp(str_buf+str_data[i].str,p)==0){
+			if(strcmpi(str_buf+str_data[i].str,p)==0){
 				return i;
 			}
 			if(str_data[i].next==0)
@@ -251,13 +247,13 @@ static int add_str(const unsigned char *p)
 		str_data=aRealloc(str_data,sizeof(str_data[0])*str_data_size);
 		memset(str_data + (str_data_size - 128), '\0', 128);
 	}
-	len=(int)strlen(p);
+	len=strlen(p);
 	while(str_pos+len+1>=str_size){
 		str_size+=256;
 		str_buf=(char *)aRealloc(str_buf,str_size);
 		memset(str_buf + (str_size - 256), '\0', 256);
 	}
-	strcpy(str_buf+str_pos,p);
+	memcpy(str_buf+str_pos,p,len+1);
 	str_data[str_num].type=C_NOP;
 	str_data[str_num].str=str_pos;
 	str_data[str_num].next=0;
@@ -267,7 +263,6 @@ static int add_str(const unsigned char *p)
 	str_pos+=len+1;
 	return str_num++;
 }
-
 
 /*==========================================
  * スクリプトバッファサイズの拡張
@@ -1419,7 +1414,7 @@ static void read_constdb(void)
 {
 	FILE *fp;
 	char line[1024],name[1024],val[1024];
-	int n,i,type;
+	int n,type;
 
 	fp=fopen("db/const.txt","r");
 	if(fp==NULL){
@@ -1432,8 +1427,6 @@ static void read_constdb(void)
 		type=0;
 		if(sscanf(line,"%[A-Za-z0-9_],%[-0-9xXA-Fa-f],%d",name,val,&type)>=2 ||
 		   sscanf(line,"%[A-Za-z0-9_] %[-0-9xXA-Fa-f] %d",name,val,&type)>=2){
-			for(i=0;name[i];i++)
-				name[i]=tolower(name[i]);
 			n=add_str(name);
 			if(type==0)
 				str_data[n].type=C_INT;
@@ -1531,7 +1524,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 		return NULL;
 	}
 
-	script_buf=(unsigned char *)aCalloc(SCRIPT_BLOCK_SIZE,sizeof(unsigned char));
+	script_buf=(unsigned char *)aMalloc(SCRIPT_BLOCK_SIZE*sizeof(unsigned char));
 	script_pos=0;
 	script_size=SCRIPT_BLOCK_SIZE;
 	str_data[LABEL_NEXTLINE].type=C_NOP;
@@ -1606,7 +1599,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 	add_scriptc(C_NOP);
 
 	script_size = script_pos;
-	script_buf=(unsigned char *)aRealloc(script_buf,script_pos);
+	//script_buf=(unsigned char *)aRealloc(script_buf,script_pos);
 
 	// 未解決のラベルを解決
 	for(i=LABEL_START;i<str_num;i++){
@@ -2911,115 +2904,52 @@ static int script_mapname2mapid(struct script_state *st,char *mapname)
 }
 
 /*==========================================
- * @コマンドによる変数の操作
+ * @readvars, @writevars用関数
  *------------------------------------------
  */
-char* script_operate_vars(struct map_session_data *sd,char *name,char *src_var,char *v,int type)
+int script_check_variable(const char *name,int array_flag,int read_only)
 {
-	int i,num,element=0;
-	char dst_var[100], *p;
-	char *output = (char*)aCalloc(strlen(src_var)+40,sizeof(char));
-	char prefix, postfix;
-	struct map_session_data *pl_sd = NULL;
-	struct npc_data *nd = NULL;
+	int i;
 
-	memset(dst_var, '\0', sizeof(dst_var));
-	strncpy(dst_var, src_var, 99);
-	p = strchr(dst_var,'[');
-	if(p != NULL)
-		memset(p,'\0',sizeof(p));
-
-	for(i=LABEL_START; i<str_num; i++) {	// 登録されている変数かどうか照合する
-		if( (str_data[i].type == C_NAME || str_data[i].type == C_INT ||  str_data[i].type == C_PARAM) &&
-		     strcmpi(dst_var, str_buf+str_data[i].str) == 0 )
-			break;
-	}
-	if(i == str_num) {
-		sprintf(output, msg_txt(15), dst_var);
-		return output;
-	}
-	prefix  = *dst_var;
-	postfix = dst_var[strlen(dst_var)-1];
-
-	if(prefix != '$' && prefix != '\'') {
-		if(name && name[0])
-			pl_sd = map_nick2sd(name);
-		else
-			pl_sd = sd;
-		if(!pl_sd) {
-			sprintf(output, msg_txt(54), dst_var);
-			return output;
-		}
-	}
-	if(prefix == '\'') {
-		if(dst_var[1] == '@') {
-			sprintf(output, msg_txt(56), dst_var);
-			return output;
-		}
-		nd = npc_name2id(name);
-		if(nd == NULL || nd->bl.subtype != SCRIPT || !nd->u.scr.script) {
-			sprintf(output, msg_txt(58), dst_var);
-			return output;
-		}
-	}
-
-	// []があるときはgetelementofarrayと同様の処理をする
-	p = strchr(src_var,'[');
-	if(p != NULL && str_data[i].type == C_NAME) {
-		int flag = 0;
-		if(postfix == '$')	// postfixは削る
-			dst_var[strlen(dst_var)-1] = 0;
-		while(1) {
-			char *np = NULL, array[6];
-			element = strtoul(++p,&np,0);
-			if( element < 0 || element > 127 || !np || *np != ']' || (np[1] != '[' && np[1] != '\0') ) {
-				sprintf(output, msg_txt(15), src_var);
-				return output;
-			}
-			p = np+1;
-			if(*p == '\0')
+	i = search_str(name);
+	if(i >= 0) {
+		switch(str_data[i].type) {
+			case C_NAME:		// 変数は無条件で許可
+				return 1;
+			case C_PARAM:		// 埋め込み変数は[]がなければ許可
+				if(!array_flag)
+					return 1;
 				break;
-			if(element == 0 && !flag)
-				continue;
-
-			memset(array, '\0', sizeof(array));
-			sprintf(array, "[%d]", element);
-			strcat(dst_var,array);
-			flag = 1;
+			case C_INT:		// 定数は[]がなくて読み取り時のみ許可
+				if(!array_flag && read_only)
+					return 1;
+				break;
 		}
-		if(postfix == '$')
-			strcat(dst_var,"$");
 	}
-	// 変数名の検索および新規登録
-	num = add_str(dst_var);
+	return 0;
+}
 
-	if(type) {	// @readvars
-		struct script_state *st = NULL;
-		void *ret;
-		if(prefix != '$' && prefix != '\'') {	// 読み取り時のみstが必要
-			st = (struct script_state*)aCalloc(1,sizeof(struct script_state));
-			st->rid = pl_sd->bl.id;
-		}
-		ret = get_val2(st, num|(element<<24), nd? &nd->u.scr.script->script_vars: NULL);
+void* script_read_vars(struct map_session_data *sd,struct npc_data *nd,char *var,int elem)
+{
+	struct script_state *st = NULL;
+	void *ret;
 
-		if(postfix == '$') {
-			char *str = (char*)ret;
-			output = (char*)aRealloc(output, (strlen(src_var)+strlen(str)+4)*sizeof(char));
-			sprintf(output, "%s : %s", src_var, str);
-		} else {
-			sprintf(output, "%s : %d", src_var, (int)ret);
-		}
-		if(st)
-			aFree(st);
-	} else {	// @writevars
-		set_reg(NULL, pl_sd, num|(element<<24), dst_var, (postfix=='$')? (void*)v: (void*)strtol(v,NULL,0), nd? &nd->u.scr.script->script_vars: NULL);
-
-		output = (char*)aRealloc(output, (strlen(src_var)+strlen(v)+24)*sizeof(char));
-		sprintf(output, msg_txt(67), src_var, v);
+	if(sd) {	// プレイヤーにアタッチする必要があるならstを用意
+		st = (struct script_state*)aCalloc(1,sizeof(struct script_state));
+		st->rid = sd->bl.id;
 	}
-	str_data[num].type = str_data[i].type;	// typeの書き換え
+	ret = get_val2(st, (elem<<24) | add_str(var), nd? &nd->u.scr.script->script_vars: NULL);
+	if(st)
+		aFree(st);
 
-	return output;
+	return ret;
+}
+
+void script_write_vars(struct map_session_data *sd,struct npc_data *nd,char *var,int elem,void *v)
+{
+	set_reg(NULL, sd, (elem<<24) | add_str(var), var, v, nd? &nd->u.scr.script->script_vars: NULL);
+
+	return;
 }
 
 /*==========================================

@@ -50,7 +50,10 @@ int do_final_script(void);
 extern struct script_code error_code;
 extern char mapreg_txt[256];
 
-char* script_operate_vars(struct map_session_data *sd,char *name,char *vars,char *v,int type);
+// @readvars, @writevars
+int script_check_variable(const char *name,int array_flag,int read_only);
+void* script_read_vars(struct map_session_data *sd,struct npc_data *nd,char *var,int elem);
+void script_write_vars(struct map_session_data *sd,struct npc_data *nd,char *var,int elem,void *v);
 
 #endif
 
