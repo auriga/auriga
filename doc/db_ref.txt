@@ -625,11 +625,13 @@ delay    : スキル使用後のディレイ時間（ms）、ただしディレ�
 ==========================================================================
 12. db/homun_db.txt
 --------------------------------------------------------------------------
-Class,Name,JName,AcceID,FoodID,HP,SP,Str,Agi,Vit,Int,Dex,Luk,[Rate->]Base,HP_max,HP_min,SP_max,SP_min,Str,Agi,Vit,Int,Dex,Luk,aspd,{homun_script}
+Class,ViewClass,Name,JName,Lv,AcceID,FoodID,HP,SP,Str,Agi,Vit,Int,Dex,Luk,[Rate->]Base,HP_max,HP_min,SP_max,SP_min,Str,Agi,Vit,Int,Dex,Luk,aspd,Size,Race,Element,EvoClass,ExpTable,{homun_script}
 
-Class : Ragexe Sakexeで定義されたID
-Name : 名前（英語）
+Class     : Ragexe Sakexeで定義されたID
+ViewClass : 見た目のID
+Name  : 名前（英語）
 Jname : 名前（日本語）
+Lv    : 作成直後のBaseLevel
 AcceID : ホムンクルスが装備することができるアクセサリのアイテムID
 FoodID : ホムンクルスのエサとなるアイテムのID
 HP : 作成直後のMHPの値
@@ -645,6 +647,11 @@ SP_min : レベルが１上がった時に、上昇するSPの最低値
 Str,Agi,Vit,Int,Dex,Luk : レベルが１上がった時に、上昇する確率を百分率で表した数値
 
 Aspd : 固有Aspd係数
+Size : サイズ（db/mob_db.txtの項を参照）
+Race : 種族（db/mob_db.txtの項を参照）
+Element : 属性（db/mob_db.txtの項を参照）
+EvoClass : 進化後のクラスID
+ExpTable : 経験値テーブル番号
 homun_script: ホムンクルスを持っている時適用されるステータスボーナスを設定(未実装)
 
 ==========================================================================

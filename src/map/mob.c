@@ -36,7 +36,7 @@
 
 #define MOB_LAZYMOVEPERC     50		// 手抜きモードMOBの移動確率（千分率）
 #define MOB_LAZYWARPPERC     20		// 手抜きモードMOBのワープ確率（千分率）
-#define MOB_LAZYSKILLUSEPERC  5		// 手抜きモードMOBのスキル使用確率（千分率）
+#define MOB_LAZYSKILLUSEPERC  2		// 手抜きモードMOBのスキル使用確率（千分率）
 
 struct mob_db mob_db_real[MOB_ID_MAX-MOB_ID_MIN];
 struct mob_db *mob_db = &mob_db_real[-MOB_ID_MIN];
@@ -1398,7 +1398,7 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
 				mob_randomwalk(md,tick);
 
 			// 時々スキルを使う
-			else if(atn_rand()%1000<MOB_LAZYSKILLUSEPERC)
+			else if(MOB_LAZYSKILLUSEPERC > 0 && atn_rand()%1000<MOB_LAZYSKILLUSEPERC)
 				mobskill_use(md,tick,-1);
 
 			// 召喚MOBでなく、BOSSでもないMOBは時々、沸きなおす
@@ -3424,7 +3424,7 @@ static int mob_makedummymobdb(int class)
 	mob_db[class].range3=10;
 	mob_db[class].size=0;
 	mob_db[class].race=0;
-	mob_db[class].element=0;
+	mob_db[class].element=ELE_NEUTRAL;
 	mob_db[class].mode=0;
 	mob_db[class].speed=300;
 	mob_db[class].adelay=1000;

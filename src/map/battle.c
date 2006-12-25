@@ -27,7 +27,7 @@
 #include "memwatch.h"
 #endif
 
-int attr_fix_table[4][10][10];
+int attr_fix_table[4][ELE_MAX][ELE_MAX];
 
 struct Battle_Config battle_config;
 
@@ -229,16 +229,16 @@ int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,in
  */
 int battle_attr_fix(int damage,int atk_elem,int def_elem)
 {
-	int def_type= def_elem%10, def_lv=def_elem/10/2;
+	int def_type= def_elem%20, def_lv=def_elem/20;
 
-	if( atk_elem == 10 )
-		atk_elem = atn_rand()%9;	//武器属性ランダムで付加
+	if( atk_elem == ELE_MAX )
+		atk_elem = atn_rand()%ELE_MAX;	//武器属性ランダムで付加
 
 	// 属性無し(!=無属性)
-	if (atk_elem == -1)
+	if (atk_elem == ELE_NONE)
 		return damage;
 
-	if(	atk_elem<0 || atk_elem>9 || def_type<0 || def_type>9 ||
+	if(	atk_elem < 0 || atk_elem >= ELE_MAX || def_type < 0 || def_type >= ELE_MAX ||
 		def_lv<1 || def_lv>4){	// 属性値がおかしいのでとりあえずそのまま返す
 		if(battle_config.error_log)
 			printf("battle_attr_fix: unknown attr type: atk=%d def_type=%d def_lv=%d\n",atk_elem,def_type,def_lv);
@@ -335,23 +335,23 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 
 		//属性場のダメージ増加
 		if(sc_data[SC_VOLCANO].timer!=-1 && damage>0){	// ボルケーノ
-			if(flag&BF_SKILL && skill_get_pl(skill_num)==3)
+			if(flag&BF_SKILL && skill_get_pl(skill_num)==ELE_FIRE)
 				damage += damage*sc_data[SC_VOLCANO].val4/100;
-			else if(!flag&BF_SKILL && status_get_attack_element(bl)==3)
+			else if(!flag&BF_SKILL && status_get_attack_element(bl)==ELE_FIRE)
 				damage += damage*sc_data[SC_VOLCANO].val4/100;
 		}
 
 		if(sc_data[SC_VIOLENTGALE].timer!=-1 && damage>0){	// バイオレントゲイル
-			if(flag&BF_SKILL && skill_get_pl(skill_num)==4)
+			if(flag&BF_SKILL && skill_get_pl(skill_num)==ELE_WIND)
 				damage += damage*sc_data[SC_VIOLENTGALE].val4/100;
-			else if(!flag&BF_SKILL && status_get_attack_element(bl)==4)
+			else if(!flag&BF_SKILL && status_get_attack_element(bl)==ELE_WIND)
 				damage += damage*sc_data[SC_VIOLENTGALE].val4/100;
 		}
 
 		if(sc_data[SC_DELUGE].timer!=-1 && damage>0){	// デリュージ
-			if(flag&BF_SKILL && skill_get_pl(skill_num)==1)
+			if(flag&BF_SKILL && skill_get_pl(skill_num)==ELE_WATER)
 				damage += damage*sc_data[SC_DELUGE].val4/100;
-			else if(!flag&BF_SKILL && status_get_attack_element(bl)==1)
+			else if(!flag&BF_SKILL && status_get_attack_element(bl)==ELE_WATER)
 				damage += damage*sc_data[SC_DELUGE].val4/100;
 		}
 
@@ -435,8 +435,8 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 			}
 		}
 		if(sc_data[SC_SPIDERWEB].timer!=-1 && damage > 0) {	// [Celest]
-			if( (flag&BF_SKILL && skill_get_pl(skill_num)==3) ||
-			  (!(flag&BF_SKILL) && status_get_attack_element(src)==3) ) {
+			if( (flag&BF_SKILL && skill_get_pl(skill_num)==ELE_FIRE) ||
+			  (!(flag&BF_SKILL) && status_get_attack_element(src)==ELE_FIRE) ) {
 				damage<<=1;
 				status_change_end(bl, SC_SPIDERWEB, -1);
 			}
@@ -1082,10 +1082,10 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	    (src_pd && battle_config.pet_attack_attr_none) ||
 	     src_hd)
 	{
-		if (s_ele == 0)
-			s_ele  = -1;
-		if (s_ele_ == 0)
-			s_ele_ = -1;
+		if (s_ele == ELE_NEUTRAL)
+			s_ele  = ELE_NONE;
+		if (s_ele_ == ELE_NEUTRAL)
+			s_ele_ = ELE_NONE;
 	}
 
 	calc_flag.hitrate = status_get_hit(src) - t_flee + 80;	// 命中率計算
@@ -1282,12 +1282,12 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			if(sc_data && sc_data[SC_CRUSADER].timer!=-1)
 				calc_flag.hitrate = 1000000;
 			calc_flag.dist = 1;
-			s_ele = s_ele_ = 0;
+			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case AM_ACIDTERROR:		// アシッドテラー
 			calc_flag.hitrate = 1000000;
 			calc_flag.dist = 1;
-			s_ele = s_ele_ = 0;
+			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case NPC_CRITICALSLASH:		// 防御無視攻撃
 		case NPC_GUIDEDATTACK:		// 必中攻撃
@@ -1296,7 +1296,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		case CR_ACIDDEMONSTRATION:	// アシッドデモンストレーション
 		case NJ_ISSEN:			// 一閃
 			calc_flag.hitrate = 1000000;
-			s_ele = s_ele_ = 0;
+			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case HVAN_EXPLOSION:		// バイオエクスプロージョン
 		case RG_BACKSTAP:		// バックスタブ
@@ -1345,22 +1345,22 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			break;
 		case NPC_COMBOATTACK:		// 多段攻撃
 		case NPC_RANDOMATTACK:		// ランダムATK攻撃
-			s_ele = s_ele_ = 0;
+			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case NPC_RANGEATTACK:		// 遠距離攻撃
 		case NJ_ZENYNAGE:		// 銭投げ
 			calc_flag.dist = 1;
-			s_ele = s_ele_ = 0;
+			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case PA_SHIELDCHAIN:		// シールドチェイン
 			calc_flag.hitrate = calc_flag.hitrate*(100+5*skill_lv)/100;
 			calc_flag.dist = 1;
-			s_ele = s_ele_ = 0;
+			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case NPC_PIERCINGATT:		// 突き刺し攻撃
 		case CR_SHIELDCHARGE:		// シールドチャージ
 			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
-			s_ele = s_ele_ = 0;
+			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case BA_MUSICALSTRIKE:		// ミュージカルストライク
 		case DC_THROWARROW:		// 矢撃ち
@@ -1396,7 +1396,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	// サクリファイス
 	if(sc_data && sc_data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {
 		calc_flag.hitrate = 1000000;
-		s_ele = s_ele_ = 0;
+		s_ele = s_ele_ = ELE_NEUTRAL;
 	}
 	// カード効果による必中ボーナス
 	if(src_sd && src_sd->perfect_hit > 0) {
@@ -2430,10 +2430,10 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		int s_group = status_get_group(src);
 		cardfix = 100;
 		cardfix=cardfix*(100-target_sd->subrace[s_race])/100;		// 種族によるダメージ耐性
-		if (s_ele >= 0)
-			cardfix=cardfix*(100-target_sd->subele[s_ele])/100;	// 属性によるダメージ耐性
-		if (s_ele == -1)
+		if (s_ele == ELE_NONE)
 			cardfix=cardfix*(100-target_sd->subele[0])/100;		// 属性無しの耐性は無属性
+		else
+			cardfix=cardfix*(100-target_sd->subele[s_ele])/100;	// 属性によるダメージ耐性
 		cardfix=cardfix*(100-target_sd->subenemy[s_enemy])/100;		// 敵タイプによるダメージ耐性
 		cardfix=cardfix*(100-target_sd->subsize[s_size])/100;		// サイズによるダメージ耐性
 		cardfix=cardfix*(100-target_sd->subgroup[s_group])/100;		// グループによるダメージ耐性
@@ -2493,7 +2493,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	/* 26．スキル修正４（追加ダメージ） */
 	// マグナムブレイク状態
 	if(sc_data && sc_data[SC_MAGNUM].timer != -1) {
-		int bonus_damage = battle_attr_fix(wd.damage, 3, status_get_element(target)) * 20/100;	// 火属性攻撃ダメージの20%を追加
+		int bonus_damage = battle_attr_fix(wd.damage, ELE_FIRE, status_get_element(target)) * 20/100;	// 火属性攻撃ダメージの20%を追加
 		if(bonus_damage > 0) {
 			DMG_ADD( bonus_damage );
 		}
@@ -2503,10 +2503,10 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		// intによる追加ダメージ
 		wd.damage += status_get_int(src) * skill_lv * 5;
 		if (target_sd) {
-			if (s_ele >= 0)
-				wd.damage = wd.damage * (100-target_sd->subele[s_ele])/100;
-			if (s_ele == -1)
+			if (s_ele == ELE_NONE)
 				wd.damage = wd.damage * (100-target_sd->subele[0])/100;
+			else
+				wd.damage = wd.damage * (100-target_sd->subele[s_ele])/100;
 		}
 		// ランダムダメージ
 		wd.damage += 500 + (atn_rand() % 500);
@@ -2593,7 +2593,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		wd.damage = battle_attr_fix(wd.damage + 15*skill_lv, s_ele, status_get_element(target) );
 	}
 	if(skill_num == MC_CARTREVOLUTION){
-		wd.damage = battle_attr_fix(wd.damage, 0, status_get_element(target) );
+		wd.damage = battle_attr_fix(wd.damage, ELE_NEUTRAL, status_get_element(target) );
 	}
 
 	/* 31．完全回避の判定 */
@@ -2794,7 +2794,7 @@ struct Damage battle_calc_magic_attack(
 			normalmagic_flag=0;
 			break;
 		case PR_SANCTUARY:	// サンクチュアリ
-			ele = 6;
+			ele = ELE_HOLY;
 			damage = (skill_lv>6)?388:skill_lv*50;
 			normalmagic_flag=0;
 			blewcount|=0x10000;
@@ -2845,7 +2845,7 @@ struct Damage battle_calc_magic_attack(
 			}
 			break;
 		case MG_FIREWALL:	// ファイヤーウォール
-			if((t_ele==3 || battle_check_undead(t_race,t_ele)) && target->type!=BL_PC)
+			if((t_ele==ELE_FIRE || battle_check_undead(t_race,t_ele)) && target->type!=BL_PC)
 				blewcount = 0;
 			else
 				blewcount |= 0x10000;
@@ -3219,7 +3219,7 @@ struct Damage  battle_calc_misc_attack(
 	case GS_GROUNDDRIFT:	// グラウンドドリフト
 		if(unit && unit->group)
 		{
-			const int ele_type[5] = { 4, 7, 5, 1, 3 };
+			const int ele_type[5] = { ELE_WIND, ELE_DARK, ELE_POISON, ELE_WATER, ELE_FIRE };
 			ele = ele_type[unit->group->unit_id - UNT_GROUNDDRIFT_WIND];
 			damage = status_get_baseatk(bl);
 		}
@@ -3247,7 +3247,7 @@ struct Damage  battle_calc_misc_attack(
 
 		if(skill_num == GS_GROUNDDRIFT) {	// 固定ダメージを加算してさらに無属性として属性計算する
 			damage += skill_lv*50;
-			damage = battle_attr_fix(damage, 0, status_get_element(target));
+			damage = battle_attr_fix(damage, ELE_NEUTRAL, status_get_element(target));
 		}
 
 	}
@@ -3661,7 +3661,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 
 	if (t_sc_data && t_sc_data[SC_POISONREACT].timer != -1) {
 		// 毒属性mobまたは毒属性による攻撃ならば反撃
-		if( (src->type==BL_MOB && status_get_elem_type(src) == 5) || status_get_attack_element(src) == 5 ) {
+		if( (src->type==BL_MOB && status_get_elem_type(src) == ELE_POISON) || status_get_attack_element(src) == ELE_POISON ) {
 			if( battle_check_range(target,src,status_get_range(target)+1) ) {
 				t_sc_data[SC_POISONREACT].val2 = 0;
 				battle_skill_attack(BF_WEAPON,target,target,src,AS_POISONREACT,t_sc_data[SC_POISONREACT].val1,tick,0);
@@ -3724,7 +3724,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			return 0;
 	}
 	if(sc_data) {
-		if(sc_data[SC_HIDING].timer != -1 && skill_get_pl(skillid) != 2)	//ハイディング状態でスキルの属性が地属性でないなら何もしない
+		if(sc_data[SC_HIDING].timer != -1 && skill_get_pl(skillid) != ELE_EARTH)	//ハイディング状態でスキルの属性が地属性でないなら何もしない
 			return 0;
 		if(sc_data[SC_CHASEWALK].timer != -1 && skillid == AL_RUWACH)	//チェイスウォーク状態でルアフ無効
 			return 0;
@@ -4188,10 +4188,10 @@ int battle_check_undead(int race,int element)
 {
 	// element に属性値＋lv(status_get_element の戻り値)が渡されるミスに
 	// 対応する為、elementから属性タイプだけを抜き出す。
-	element %= 10;
+	element %= 20;
 
 	if(battle_config.undead_detect_type == 0) {
-		if(element == 9)
+		if(element == ELE_UNDEAD)
 			return 1;
 	}
 	else if(battle_config.undead_detect_type == 1) {
@@ -4199,7 +4199,7 @@ int battle_check_undead(int race,int element)
 			return 1;
 	}
 	else {
-		if(element == 9 || race == 1)
+		if(element == ELE_UNDEAD || race == 1)
 			return 1;
 	}
 	return 0;

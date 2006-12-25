@@ -5702,6 +5702,8 @@ int atcommand_mobinfo(
 		i = mob->element % 20 + 1;
 		j = mob->element / 20;
 	}
+	if(i >= 11)
+		i = 0;
 	sprintf(output, " ATK:%d~%d  Range:%d~%d~%d  Size:%s  Race: %s  Element: %s (Lv:%d)", mob->atk1, mob->atk2, mob->range, mob->range2 , mob->range3, msize[mob->size], mrace[mob->race], melement[i], j);
 	clif_displaymessage(fd, output);
 	// drops

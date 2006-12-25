@@ -68,7 +68,7 @@ static struct {
 	short base_level;
 	short job_level;
 	short class_level;//再振り時の不正防止　ノビ:0 一次:1 二次:2
-} skill_tree[3][MAX_PC_CLASS][100];
+} skill_tree[3][MAX_PC_CLASS][MAX_SKILL_TREE];
 
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
@@ -2007,6 +2007,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 
 	switch(type){
 	case SP_ADDELE:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
 		if(!sd->state.lr_flag)
 			sd->addele[type2]+=val;
 		else if(sd->state.lr_flag == 1)
@@ -2039,6 +2041,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->arrow_addsize[type2]+=val;
 		break;
 	case SP_SUBELE:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->subele[type2]+=val;
 		break;
@@ -2075,6 +2079,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->reseff[type2]+=val;
 		break;
 	case SP_MAGIC_ADDELE:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->magic_addele[type2]+=val;
 		break;
@@ -2204,6 +2210,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		}
 		break;
 	case SP_WEAPON_COMA_ELE:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->weapon_coma_ele[type2] += val;
 		break;
@@ -2212,6 +2220,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->weapon_coma_race[type2] += val;
 		break;
 	case SP_WEAPON_COMA_ELE2:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->weapon_coma_ele2[type2] += val;
 		break;
@@ -7849,7 +7859,7 @@ int pc_check_skillup(struct map_session_data *sd,int skill_num)
 	else
 		upper = s_class.upper;
 
-	for(i=0;i<100;i++)
+	for(i=0;i<MAX_SKILL_TREE;i++)
 	{
 		if(skill_tree[upper][s_class.job][i].id==skill_num)
 		{
@@ -7879,7 +7889,7 @@ int pc_check_skillup(struct map_session_data *sd,int skill_num)
  */
 int pc_readdb(void)
 {
-	int i,j,k,upper=0;
+	int i,j,k;
 	FILE *fp;
 	char line[1024],*p;
 
@@ -7928,7 +7938,8 @@ int pc_readdb(void)
 		return 1;
 	}
 	while(fgets(line,1020,fp)){
-		char *split[50];
+		char *split[17];
+		int upper=0;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<17 && p;j++){
@@ -7939,11 +7950,19 @@ int pc_readdb(void)
 		if(j<17)
 			continue;
 		upper=atoi(split[0]);
-		if(upper>0 && battle_config.enable_upper_class==0){ //confで無効になっていたら
+		if(upper > 0 && battle_config.enable_upper_class == 0)	//confで無効になっていたら
 			continue;
-		}
+		if(upper < 0 || upper > 2)
+			continue;
+
 		i=atoi(split[1]);
+		if(i < 0 || i >= MAX_PC_CLASS)
+			continue;
+
 		for(j=0;skill_tree[upper][i][j].id;j++);
+		if(j+1 >= MAX_SKILL_TREE)	// 末尾はアンカーとして0にしておく必要がある
+			continue;
+
 		skill_tree[upper][i][j].id=atoi(split[2]);
 		skill_tree[upper][i][j].max=atoi(split[3]);
 		for(k=0;k<5;k++){
@@ -7978,9 +7997,8 @@ int pc_readdb(void)
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		lv=atoi(split[0]);
-		n=atoi(split[1]);
-//		printf("%d %d\n",lv,n);
+		lv = atoi(split[0]);
+		n  = atoi(split[1]);
 
 		for(i=0;i<n;){
 			if( !fgets(line,1024,fp) )
@@ -7991,13 +8009,15 @@ int pc_readdb(void)
 			for(j=0,p=line;j<n && p;j++){
 				while(*p==32 && *p>0)
 					p++;
+
+				if(lv < 1 || lv > 4 || i >= ELE_MAX || j >= ELE_MAX)
+					continue;
 				attr_fix_table[lv-1][i][j]=atoi(p);
 				if(battle_config.attr_recover == 0 && attr_fix_table[lv-1][i][j] < 0)
 					attr_fix_table[lv-1][i][j] = 0;
 				p=strchr(p,',');
 				if(p) *p++=0;
 			}
-
 			i++;
 		}
 	}

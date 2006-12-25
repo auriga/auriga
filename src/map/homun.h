@@ -7,6 +7,8 @@
 #define NATURAL_HEAL_HP_INTERVAL 2*1000
 #define NATURAL_HEAL_SP_INTERVAL 4*1000
 
+#define MAX_HOMSKILL_TREE 16
+
 struct homun_db {
 	short class;
 	char name[24],jname[24];

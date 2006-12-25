@@ -1376,13 +1376,13 @@ L_RECALC:
 	}
 
 	if((skill=pc_checkskill(sd,CR_TRUST))>0) { // フェイス
-		sd->status.max_hp += skill*200;
-		sd->subele[6] += skill*5;
+		sd->status.max_hp    += skill*200;
+		sd->subele[ELE_HOLY] += skill*5;
 	}
 
 	if((skill=pc_checkskill(sd,BS_SKINTEMPER))>0){ // スキンテンパリング
-		sd->subele[3] += skill*5;
-		sd->subele[0] += skill*1;
+		sd->subele[ELE_FIRE]    += skill*5;
+		sd->subele[ELE_NEUTRAL] += skill*1;
 	}
 
 	//bAtkRange2,bAtkRangeRate2の射程計算
@@ -1627,7 +1627,7 @@ L_RECALC:
 			//	sd->watk_ += sd->sc_data[SC_NIBELUNGEN].val2;
 		}
 
-		if(sd->sc_data[SC_VOLCANO].timer!=-1 && sd->def_ele==3){	// ボルケーノ
+		if(sd->sc_data[SC_VOLCANO].timer!=-1 && sd->def_ele==ELE_FIRE){	// ボルケーノ
 			sd->watk += sd->sc_data[SC_VOLCANO].val3;
 		}
 		if(sd->sc_data[SC_INCATK2].timer!=-1) {
@@ -1746,7 +1746,7 @@ L_RECALC:
 					+sd->sc_data[SC_HUMMING_].val3) * sd->hit/100;
 		}
 
-		if(sd->sc_data[SC_VIOLENTGALE].timer!=-1 && sd->def_ele==4){	// バイオレントゲイル
+		if(sd->sc_data[SC_VIOLENTGALE].timer!=-1 && sd->def_ele==ELE_WIND){	// バイオレントゲイル
 			sd->flee += sd->flee*sd->sc_data[SC_VIOLENTGALE].val3/100;
 		}
 		if(sd->sc_data[SC_BLIND].timer!=-1){	// 暗黒
@@ -1791,51 +1791,38 @@ L_RECALC:
 
 		// 耐性
 		if(sd->sc_data[SC_RESISTWATER].timer!=-1)
-			sd->subele[1] += sd->sc_data[SC_RESISTWATER].val1;
+			sd->subele[ELE_WATER]  += sd->sc_data[SC_RESISTWATER].val1;
 		if(sd->sc_data[SC_RESISTGROUND].timer!=-1)
-			sd->subele[2] += sd->sc_data[SC_RESISTGROUND].val1;
+			sd->subele[ELE_EARTH]  += sd->sc_data[SC_RESISTGROUND].val1;
 		if(sd->sc_data[SC_RESISTFIRE].timer!=-1)
-			sd->subele[3] += sd->sc_data[SC_RESISTFIRE].val1;
+			sd->subele[ELE_FIRE]   += sd->sc_data[SC_RESISTFIRE].val1;
 		if(sd->sc_data[SC_RESISTWIND].timer!=-1)
-			sd->subele[4] += sd->sc_data[SC_RESISTWIND].val1;
+			sd->subele[ELE_WIND]   += sd->sc_data[SC_RESISTWIND].val1;
 		if(sd->sc_data[SC_RESISTPOISON].timer!=-1)
-			sd->subele[5] += sd->sc_data[SC_RESISTPOISON].val1;
+			sd->subele[ELE_POISON] += sd->sc_data[SC_RESISTPOISON].val1;
 		if(sd->sc_data[SC_RESISTHOLY].timer!=-1)
-			sd->subele[6] += sd->sc_data[SC_RESISTHOLY].val1;
+			sd->subele[ELE_HOLY]   += sd->sc_data[SC_RESISTHOLY].val1;
 		if(sd->sc_data[SC_RESISTDARK].timer!=-1)
-			sd->subele[7] += sd->sc_data[SC_RESISTDARK].val1;
+			sd->subele[ELE_DARK]   += sd->sc_data[SC_RESISTDARK].val1;
 		if(sd->sc_data[SC_RESISTTELEKINESIS].timer!=-1)
-			sd->subele[8] += sd->sc_data[SC_RESISTTELEKINESIS].val1;
+			sd->subele[ELE_GHOST]  += sd->sc_data[SC_RESISTTELEKINESIS].val1;
 		if(sd->sc_data[SC_RESISTUNDEAD].timer!=-1)
-			sd->subele[9] += sd->sc_data[SC_RESISTUNDEAD].val1;
+			sd->subele[ELE_UNDEAD] += sd->sc_data[SC_RESISTUNDEAD].val1;
 
 		// 耐性
-		if(sd->sc_data[SC_RESISTALL].timer!=-1){
-			sd->subele[1] += sd->sc_data[SC_RESISTALL].val1;
-			sd->subele[2] += sd->sc_data[SC_RESISTALL].val1;
-			sd->subele[3] += sd->sc_data[SC_RESISTALL].val1;
-			sd->subele[4] += sd->sc_data[SC_RESISTALL].val1;
-			sd->subele[5] += sd->sc_data[SC_RESISTALL].val1;	// 全てに耐性増加
-			sd->subele[6] += sd->sc_data[SC_RESISTALL].val1;
-			sd->subele[7] += sd->sc_data[SC_RESISTALL].val1;
-			sd->subele[8] += sd->sc_data[SC_RESISTALL].val1;
-			sd->subele[9] += sd->sc_data[SC_RESISTALL].val1;
+		if(sd->sc_data[SC_RESISTALL].timer!=-1) {
+			for(i=1; i<ELE_MAX; i++)
+				sd->subele[i] += sd->sc_data[SC_RESISTALL].val1;	// 全てに耐性増加
 		}
-		// 耐性
-		if(sd->sc_data[SC_SIEGFRIED].timer!=-1){  // 不死身のジークフリード
-			sd->subele[1] += sd->sc_data[SC_SIEGFRIED].val2;
-			sd->subele[2] += sd->sc_data[SC_SIEGFRIED].val2;
-			sd->subele[3] += sd->sc_data[SC_SIEGFRIED].val2;
-			sd->subele[4] += sd->sc_data[SC_SIEGFRIED].val2;
-			sd->subele[5] += sd->sc_data[SC_SIEGFRIED].val2;	// 全てに耐性増加
-			sd->subele[6] += sd->sc_data[SC_SIEGFRIED].val2;
-			sd->subele[7] += sd->sc_data[SC_SIEGFRIED].val2;
-			sd->subele[8] += sd->sc_data[SC_SIEGFRIED].val2;
-			sd->subele[9] += sd->sc_data[SC_SIEGFRIED].val2;
+		// 不死身のジークフリード
+		if(sd->sc_data[SC_SIEGFRIED].timer!=-1) {
+			for(i=1; i<ELE_MAX; i++)
+				sd->subele[i] += sd->sc_data[SC_SIEGFRIED].val2;	// 全てに耐性増加
 		}
-		if(sd->sc_data[SC_PROVIDENCE].timer!=-1){	// プロヴィデンス
-			sd->subele[6] += sd->sc_data[SC_PROVIDENCE].val2;	// 対 聖属性
-			sd->subrace[6] += sd->sc_data[SC_PROVIDENCE].val2;	// 対 悪魔
+		// プロヴィデンス
+		if(sd->sc_data[SC_PROVIDENCE].timer!=-1) {
+			sd->subele[ELE_HOLY] += sd->sc_data[SC_PROVIDENCE].val2;	// 対 聖属性
+			sd->subrace[6]       += sd->sc_data[SC_PROVIDENCE].val2;	// 対 悪魔
 		}
 
 		// その他
@@ -1878,7 +1865,7 @@ L_RECALC:
 						+sd->sc_data[SC_APPLEIDUN_].val3/10) * sd->status.max_hp)/100;
 		}
 
-		if(sd->sc_data[SC_DELUGE].timer!=-1 && sd->def_ele==1){	// デリュージ
+		if(sd->sc_data[SC_DELUGE].timer!=-1 && sd->def_ele==ELE_WATER){	// デリュージ
 			sd->status.max_hp += sd->status.max_hp*sd->sc_data[SC_DELUGE].val3/100;
 		}
 		if(sd->sc_data[SC_SERVICE4U].timer!=-1) {	// サービスフォーユー
@@ -3485,7 +3472,38 @@ int status_get_element(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(ret, bl);
+
 	sc_data = status_get_sc_data(bl);
+	if(sc_data) {
+		if( sc_data[SC_BENEDICTIO].timer!=-1 )	// 聖体降福
+			ret=20 + ELE_HOLY;
+		if( sc_data[SC_ELEMENTWATER].timer!=-1 )	// 水
+			ret=20*sc_data[SC_ELEMENTWATER].val1 + ELE_WATER;
+		if( sc_data[SC_ELEMENTGROUND].timer!=-1 )	// 土
+			ret=20*sc_data[SC_ELEMENTGROUND].val1 + ELE_EARTH;
+		if( sc_data[SC_ELEMENTFIRE].timer!=-1 )		// 火
+			ret=20*sc_data[SC_ELEMENTFIRE].val1 + ELE_FIRE;
+		if( sc_data[SC_ELEMENTWIND].timer!=-1 )		// 風
+			ret=20*sc_data[SC_ELEMENTWIND].val1 + ELE_WIND;
+		if( sc_data[SC_ELEMENTPOISON].timer!=-1 )	// 毒
+			ret=20*sc_data[SC_ELEMENTPOISON].val1 + ELE_POISON;
+		if( sc_data[SC_ELEMENTHOLY].timer!=-1 )	// 聖
+			ret=20*sc_data[SC_ELEMENTHOLY].val1 + ELE_HOLY;
+		if( sc_data[SC_ELEMENTDARK].timer!=-1 )		// 闇
+			ret=20*sc_data[SC_ELEMENTDARK].val1 + ELE_DARK;
+		if( sc_data[SC_ELEMENTELEKINESIS].timer!=-1 )	// 念
+			ret=20*sc_data[SC_ELEMENTELEKINESIS].val1 + ELE_GHOST;
+		if( sc_data[SC_ELEMENTUNDEAD].timer!=-1 )	// 不死
+			ret=20*sc_data[SC_ELEMENTUNDEAD].val1 + ELE_UNDEAD;
+		if( sc_data[SC_FREEZE].timer!=-1 )	// 凍結
+			ret=20 + ELE_WATER;
+		if( sc_data[SC_STONE].timer!=-1 && sc_data[SC_STONE].val2==0)
+			ret=20 + ELE_EARTH;
+
+		if(ret != 20)
+			return ret;
+	}
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)	// 10の位＝Lv*2、１の位＝属性
 		ret=((struct mob_data *)bl)->def_ele;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -3494,33 +3512,6 @@ int status_get_element(struct block_list *bl)
 		ret = mob_db[((struct pet_data *)bl)->class].element;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
 		ret = homun_db[((struct homun_data *)bl)->status.class-HOM_ID].element;
-
-	if(sc_data) {
-		if( sc_data[SC_BENEDICTIO].timer!=-1 )	// 聖体降福
-			ret=26;
-		if( sc_data[SC_ELEMENTWATER].timer!=-1 )	// 水
-			ret=20*sc_data[SC_ELEMENTWATER].val1 + 1;
-		if( sc_data[SC_ELEMENTGROUND].timer!=-1 )	// 土
-			ret=20*sc_data[SC_ELEMENTGROUND].val1 + 2;
-		if( sc_data[SC_ELEMENTFIRE].timer!=-1 )		// 火
-			ret=20*sc_data[SC_ELEMENTFIRE].val1 + 3;
-		if( sc_data[SC_ELEMENTWIND].timer!=-1 )		// 風
-			ret=20*sc_data[SC_ELEMENTWIND].val1 + 4;
-		if( sc_data[SC_ELEMENTPOISON].timer!=-1 )	// 毒
-			ret=20*sc_data[SC_ELEMENTPOISON].val1 + 5;
-		if( sc_data[SC_ELEMENTHOLY].timer!=-1 )	// 聖
-			ret=20*sc_data[SC_ELEMENTHOLY].val1 + 6;
-		if( sc_data[SC_ELEMENTDARK].timer!=-1 )		// 闇
-			ret=20*sc_data[SC_ELEMENTDARK].val1 + 7;
-		if( sc_data[SC_ELEMENTELEKINESIS].timer!=-1 )	// 念
-			ret=20*sc_data[SC_ELEMENTELEKINESIS].val1 + 8;
-		if( sc_data[SC_ELEMENTUNDEAD].timer!=-1 )	// 不死
-			ret=20*sc_data[SC_ELEMENTUNDEAD].val1 + 9;
-		if( sc_data[SC_FREEZE].timer!=-1 )	// 凍結
-			ret=21;
-		if( sc_data[SC_STONE].timer!=-1 && sc_data[SC_STONE].val2==0)
-			ret=22;
-	}
 
 	return ret;
 }
@@ -3534,33 +3525,33 @@ int status_get_attack_element(struct block_list *bl)
 
 	sc_data = status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		ret=0;
+		ret = ELE_NEUTRAL;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		ret=((struct map_session_data *)bl)->atk_ele;
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		ret=0;
+		ret = ELE_NEUTRAL;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
-		ret=-1;// 無属性
+		ret = ELE_NONE;// 無属性
 
 	if(sc_data) {
 		if( sc_data[SC_FROSTWEAPON].timer!=-1)		// フロストウェポン
-			ret=1;
+			ret = ELE_WATER;
 		if( sc_data[SC_SEISMICWEAPON].timer!=-1)	// サイズミックウェポン
-			ret=2;
+			ret = ELE_EARTH;
 		if( sc_data[SC_FLAMELAUNCHER].timer!=-1)	// フレームランチャー
-			ret=3;
+			ret = ELE_FIRE;
 		if( sc_data[SC_LIGHTNINGLOADER].timer!=-1)	// ライトニングローダー
-			ret=4;
+			ret = ELE_WIND;
 		if( sc_data[SC_ENCPOISON].timer!=-1)		// エンチャントポイズン
-			ret=5;
+			ret = ELE_POISON;
 		if( sc_data[SC_ASPERSIO].timer!=-1)			// アスペルシオ
-			ret=6;
+			ret = ELE_HOLY;
 		if( sc_data[SC_DARKELEMENT].timer!=-1)		// 闇属性
-			ret=7;
+			ret = ELE_DARK;
 		if( sc_data[SC_ATTENELEMENT].timer!=-1)		// 念属性
-			ret=8;
+			ret = ELE_GHOST;
 		if( sc_data[SC_UNDEADELEMENT].timer!=-1)	// 不死属性
-			ret=9;
+			ret = ELE_UNDEAD;
 	}
 	return ret;
 }
@@ -3574,23 +3565,23 @@ int status_get_attack_element2(struct block_list *bl)
 		if(sc_data) {
 
 			if( sc_data[SC_FROSTWEAPON].timer!=-1)		// フロストウェポン
-				ret=1;
+				ret = ELE_WATER;
 			if( sc_data[SC_SEISMICWEAPON].timer!=-1)	// サイズミックウェポン
-				ret=2;
+				ret = ELE_EARTH;
 			if( sc_data[SC_FLAMELAUNCHER].timer!=-1)	// フレームランチャー
-				ret=3;
+				ret = ELE_FIRE;
 			if( sc_data[SC_LIGHTNINGLOADER].timer!=-1)	// ライトニングローダー
-				ret=4;
+				ret = ELE_WIND;
 			if( sc_data[SC_ENCPOISON].timer!=-1)		// エンチャントポイズン
-				ret=5;
+				ret = ELE_POISON;
 			if( sc_data[SC_ASPERSIO].timer!=-1)			// アスペルシオ
-				ret=6;
+				ret = ELE_HOLY;
 			if( sc_data[SC_DARKELEMENT].timer!=-1)		// 闇属性
-				ret=7;
+				ret = ELE_DARK;
 			if( sc_data[SC_ATTENELEMENT].timer!=-1)		// 念属性
-				ret=8;
+				ret = ELE_GHOST;
 			if( sc_data[SC_UNDEADELEMENT].timer!=-1)	// 不死属性
-				ret=9;
+				ret = ELE_UNDEAD;
 
 		}
 		return ret;
@@ -4052,7 +4043,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	}
 
 	//アンデッドは凍結・石化・出血無効
-	if((race==1 || elem==9) && !(flag&1) && (type==SC_STONE || type==SC_FREEZE || type==SC_BLEED))
+	if((race==1 || elem==ELE_UNDEAD) && !(flag&1) && (type==SC_STONE || type==SC_FREEZE || type==SC_BLEED))
 		return 0;
 
 	if((type == SC_ADRENALINE || type==SC_ADRENALINE2 || type == SC_WEAPONPERFECTION || type == SC_OVERTHRUST) &&

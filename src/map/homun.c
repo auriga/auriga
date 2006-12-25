@@ -46,7 +46,7 @@ static struct {
 	} need[6];
 	short base_level;
 	int   intimate;
-} homun_skill_tree[MAX_HOMUN_DB][100];
+} homun_skill_tree[MAX_HOMUN_DB][MAX_HOMSKILL_TREE];
 
 static int homun_calc_pos(struct homun_data *hd,int tx,int ty,int dir)
 {
@@ -414,7 +414,7 @@ int homun_calc_status(struct homun_data *hd)
 	dstr		= hd->str / 10;
 	bl			= hd->status.base_level;
 	aspd_k		= homun_db[hd->status.class-HOM_ID].aspd_k;
-	
+
 	hd->atk		+= hd->str * 2 + bl + dstr * dstr;
 	hd->matk	+= hd->int_+(hd->int_/ 5) * (hd->int_/ 5);
 	hd->hit		+= hd->dex + bl;
@@ -424,7 +424,7 @@ int homun_calc_status(struct homun_data *hd)
 	hd->critical+= hd->luk / 3 + 1;
 	hd->aspd	= aspd_k - (aspd_k * hd->agi / 250 + aspd_k * hd->dex / 1000);
 	hd->aspd	-= 200;
-	
+
 	//ディフェンス
 	if(hd->sc_data[SC_DEFENCE].timer!=-1)
 		hd->def += hd->sc_data[SC_DEFENCE].val1*2;
@@ -454,7 +454,7 @@ int homun_calc_status(struct homun_data *hd)
 		hd->aspd = hd->aspd*aspd_rate/100;
 	if(speed_rate!=100)
 		hd->speed = hd->speed*speed_rate/100;
-		
+
 	//メンタルチェンジ
 	if(hd->sc_data && hd->sc_data[SC_CHANGE].timer!=-1)
 	{
@@ -479,7 +479,7 @@ int homun_calc_status(struct homun_data *hd)
 		hd->nhealhp = hd->nhealhp*hd->hprecov_rate/100;
 	if(hd->sprecov_rate!=100)
 		hd->nhealsp = hd->nhealsp*hd->sprecov_rate/100;
-	
+
 	homun_calc_skilltree(hd);
 	return 0;
 }
@@ -577,7 +577,7 @@ int homun_create_hom(struct map_session_data *sd,int homunid)
 	hd->hungry = 50;
 	hd->incubate = 0;
 	hd->rename_flag = 0;
-	
+
 	if(battle_config.save_homun_temporal_intimate)
 		pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
 
@@ -795,7 +795,7 @@ int homun_revive(struct map_session_data *sd,int skilllv)
 		clif_skill_fail(sd,AM_RESURRECTHOMUN,0,0);
 		return 0;
 	}
-// 蘇生時HP = 死亡時HP（≦0）+ MAXHP * (Skill Lv * 0.2)
+	// 蘇生時HP = 死亡時HP（≦0）+ MAXHP * (Skill Lv * 0.2)
 	sd->hom.hp = sd->hom.hp + sd->hom.max_hp * skilllv / 5;
 	if(sd->hom.max_hp<sd->hom.hp)
 		sd->hom.hp=sd->hom.max_hp;
@@ -975,27 +975,17 @@ int homun_change_class( struct map_session_data *sd, int class )
 	nullpo_retr(1, sd);
 
 	if( !sd->hd )
-	{
 		return 1;
-	}
 
 	// use evolved class
 	if( class <= 0 )
-	{
-		int index = sd->hd->status.class - HOM_ID;
-		new_class = homun_db[ index ].evo_class;
-	}
+		new_class = homun_db[sd->hd->status.class - HOM_ID].evo_class;
 	else
-	{
 		new_class = class;
-	}
 
 	// validation
-	if( HOM_ID <= new_class && new_class < HOM_ID + MAX_HOMUN_DB );
-	else
-	{
+	if( new_class < HOM_ID || new_class >= HOM_ID + MAX_HOMUN_DB )
 		return 1;
-	}
 
 	// change class
 	sd->hd->status.class = new_class;
@@ -1028,9 +1018,13 @@ int homun_change_class( struct map_session_data *sd, int class )
  */
 int homun_checkskill(struct homun_data *hd,int skill_id)
 {
-	if(hd == NULL) return 0;
-	if(skill_id >= HOM_SKILLID) skill_id -= HOM_SKILLID;
-	if(skill_id >= MAX_HOMSKILL) return 0;
+	if(hd == NULL)
+		return 0;
+	if(skill_id >= HOM_SKILLID)
+		skill_id -= HOM_SKILLID;
+
+	if(skill_id >= MAX_HOMSKILL)
+		return 0;
 	if(hd->status.skill[skill_id].id == skill_id+HOM_SKILLID)
 		return (hd->status.skill[skill_id].lv);
 
@@ -1511,7 +1505,7 @@ int read_homundb(void)
 			homun_db[j].evo_class=atoi(str[30]);
 			homun_db[j].exp_table=atoi(str[31]);
 			homun_db[j].skillpoint = homun_db[j].base_level/3; //予約 とりあえずベース/3
-			
+
 			if((np=strchr(p,'{'))==NULL)
 				continue;
 
@@ -1577,7 +1571,7 @@ int homun_readdb(void)
 		return 1;
 	}
 	while(fgets(line,1020,fp)){
-		char *split[50];
+		char *split[15];
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<15 && p;j++){
@@ -1592,6 +1586,9 @@ int homun_readdb(void)
 		if(i<0 || i>=MAX_HOMUN_DB)
 			continue;
 		for(j=0;homun_skill_tree[i][j].id;j++);
+		if(j+1 >= MAX_HOMSKILL_TREE)	// 末尾はアンカーとして0にしておく必要がある
+			continue;
+
 		homun_skill_tree[i][j].id=atoi(split[1]);
 		homun_skill_tree[i][j].max=atoi(split[2]);
 		for(k=0;k<5;k++){

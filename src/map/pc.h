@@ -7,6 +7,8 @@
 #define OPTION_MASK 0xd7b8
 #define CART_MASK 0x788
 
+#define MAX_SKILL_TREE 100
+
 // status.weaponおよびweapontype1, weapontype2用の武器タイプ定義
 enum {
 	WT_FIST     = 0,

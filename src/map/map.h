@@ -79,6 +79,22 @@ enum {
 };
 
 enum { WARP, SHOP, SCRIPT, MONS };
+
+enum {
+	ELE_NONE = -1,
+	ELE_NEUTRAL = 0,
+	ELE_WATER,
+	ELE_EARTH,
+	ELE_FIRE,
+	ELE_WIND,
+	ELE_POISON,
+	ELE_HOLY,
+	ELE_DARK,
+	ELE_GHOST,
+	ELE_UNDEAD,
+	ELE_MAX
+};
+
 struct block_list {
 	struct block_list *next,*prev;
 	int id;
@@ -313,22 +329,22 @@ struct map_session_data {
 	int def,def2,mdef,mdef2,critical,matk1,matk2;
 	int atk_ele,def_ele,star,overrefine;
 	int castrate,hprate,sprate,dsprate;
-	int addele[10],addrace[12],addenemy[4],addsize[3];
-	int subele[10],subrace[12],subenemy[4],subsize[3];
+	int addele[ELE_MAX],addrace[12],addenemy[4],addsize[3];
+	int subele[ELE_MAX],subrace[12],subenemy[4],subsize[3];
 	int addeff[10],addeff2[10],reseff[10],addeff_range_flag[10];
-	int watk_,watk_2,atkmods_[3],addele_[10],addrace_[12],addenemy_[4],addsize_[3];	//二刀流のために追加
+	int watk_,watk_2,atkmods_[3],addele_[ELE_MAX],addrace_[12],addenemy_[4],addsize_[3];	//二刀流のために追加
 	int atk_ele_,star_,overrefine_;				//二刀流のために追加
 	int base_atk,atk_rate;
 	int weapon_atk[16],weapon_atk_rate[16];	//指貫
 	int arrow_atk,arrow_ele,arrow_cri,arrow_hit,arrow_range;
-	int arrow_addele[10],arrow_addrace[12],arrow_addenemy[4],arrow_addsize[3],arrow_addeff[10],arrow_addeff2[10];
+	int arrow_addele[ELE_MAX],arrow_addrace[12],arrow_addenemy[4],arrow_addsize[3],arrow_addeff[10],arrow_addeff2[10];
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
 	int aspd_rate,speed_rate,hprecov_rate,sprecov_rate,critical_def,double_rate;
 	int near_attack_def_rate,long_attack_def_rate,magic_def_rate,misc_def_rate,matk_rate;
 	int ignore_def_ele,ignore_def_race,ignore_def_enemy;
 	int ignore_def_ele_,ignore_def_race_,ignore_def_enemy_;
 	int ignore_mdef_ele,ignore_mdef_race,ignore_mdef_enemy;
-	int magic_addele[10],magic_addrace[12],magic_addenemy[4];
+	int magic_addele[ELE_MAX],magic_addrace[12],magic_addenemy[4];
 	int magic_subrace[12],magic_subsize[3];
 	int perfect_hit,get_zeny_num,get_zeny_num2;
 	int critical_rate,hit_rate,flee_rate,flee2_rate,def_rate,def2_rate,mdef_rate,mdef2_rate;
@@ -351,8 +367,8 @@ struct map_session_data {
 	short hp_drain_rate_,hp_drain_per_,sp_drain_rate_,sp_drain_per_;
 	short hp_drain_value,sp_drain_value,hp_drain_value_,sp_drain_value_;
 	int short_weapon_damage_return,long_weapon_damage_return,magic_damage_return;
-	int weapon_coma_ele[10],weapon_coma_race[12];
-	int weapon_coma_ele2[10],weapon_coma_race2[12];
+	int weapon_coma_ele[ELE_MAX],weapon_coma_race[12];
+	int weapon_coma_ele2[ELE_MAX],weapon_coma_race2[12];
 	short break_weapon_rate,break_armor_rate;
 	short add_steal_rate;
 	//新カード用

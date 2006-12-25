@@ -3300,16 +3300,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			//敵は属性レベルを維持する
 			switch(skillid){
 				case SA_ELEMENTWATER:	// 水
-					dstmd->def_ele = (dstmd->def_ele/20)*20 + 1;
+					dstmd->def_ele = (dstmd->def_ele/20)*20 + ELE_WATER;
 					break;
 				case SA_ELEMENTGROUND:	// 土
-					dstmd->def_ele = (dstmd->def_ele/20)*20 + 2;
+					dstmd->def_ele = (dstmd->def_ele/20)*20 + ELE_EARTH;
 					break;
 				case SA_ELEMENTFIRE:	// 火
-					dstmd->def_ele = (dstmd->def_ele/20)*20 + 3;
+					dstmd->def_ele = (dstmd->def_ele/20)*20 + ELE_FIRE;
 					break;
 				case SA_ELEMENTWIND:	// 風
-					dstmd->def_ele = (dstmd->def_ele/20)*20 + 4;
+					dstmd->def_ele = (dstmd->def_ele/20)*20 + ELE_WIND;
 					break;
 			}
 			//ディスペル対策を一応やる？
@@ -3326,7 +3326,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if( dstsd && dstsd->special_state.no_magic_damage ){
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}else{
-			if(status_get_elem_type(bl) == 7 || status_get_race(bl) == 6)
+			if(status_get_elem_type(bl) == ELE_DARK || status_get_race(bl) == 6)
 				break;
 			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -4736,37 +4736,40 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			pc_heal(dstsd,0,sp);
 		}
 		break;
-	/* ランダム属性変化、水属性変化、地、火、風 */
-	case NPC_ATTRICHANGE:
+	case NPC_ATTRICHANGE:	/* ランダム属性変化 */
+		if(md) {
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			md->def_ele = atn_rand()%ELE_MAX;
+			if(md->def_ele == ELE_UNDEAD)		// 不死は除く
+				md->def_ele = ELE_NEUTRAL;
+			md->def_ele += (1+atn_rand()%4)*20;	// 属性レベルはランダム
+		}
+		else if(sd) {
+			static int armor_element[]={SC_ELEMENTWATER,SC_ELEMENTGROUND,SC_ELEMENTFIRE,SC_ELEMENTWIND,SC_ELEMENTPOISON,
+							SC_ELEMENTHOLY,SC_ELEMENTDARK,SC_ELEMENTELEKINESIS,SC_ELEMENTUNDEAD};
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			status_change_start(bl,armor_element[atn_rand()%9],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+		}
+		break;
+	/* 火、地、火、風、毒、聖、念、闇属性変化 */
 	case NPC_CHANGEWATER:
 	case NPC_CHANGEGROUND:
 	case NPC_CHANGEFIRE:
 	case NPC_CHANGEWIND:
-	/* 毒、聖、念、闇 */
 	case NPC_CHANGEPOISON:
 	case NPC_CHANGEHOLY:
 	case NPC_CHANGETELEKINESIS:
 	case NPC_CHANGEDARKNESS:
-		if(md){
+		if(md) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			md->def_ele=skill_get_pl(skillid);
-			if(md->def_ele==0)			/* ランダム変化、ただし、*/
-				md->def_ele=atn_rand()%10;	/* 不死属性は除く */
-			md->def_ele+=(1+atn_rand()%4)*20;	/* 属性レベルはランダム */
-		}else if(sd)
-		{
-			static int armor_element[]={SC_ELEMENTWATER,SC_ELEMENTGROUND,SC_ELEMENTFIRE,SC_ELEMENTWIND,SC_ELEMENTPOISON,
-						SC_ELEMENTHOLY,SC_ELEMENTDARK,SC_ELEMENTELEKINESIS,SC_ELEMENTUNDEAD};
+			md->def_ele = skill_get_pl(skillid);
+			md->def_ele += (1+atn_rand()%4)*20;	// 属性レベルはランダム
+		}
+		else if(sd) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			if(skillid==NPC_ATTRICHANGE)			/* ランダム変化 */
-			{
-				status_change_start(bl,armor_element[atn_rand()%9],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-			}else{
-				status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-			}
+			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		}
 		break;
-
 	case NPC_PROVOCATION:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(md && md->skillidx != -1)
@@ -4798,7 +4801,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			if(dstsd && dstsd->special_state.no_magic_damage )
 				break;
-			if(status_get_elem_type(bl) == 7 || status_get_race(bl) == 6)
+			if(status_get_elem_type(bl) == ELE_DARK || status_get_race(bl) == 6)
 				break;
 			if(atn_rand()%100 < sc_def*(50+skilllv*5)/100) {
 				if(dstsd) {
@@ -6717,7 +6720,7 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 		do{
 			battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 		}while((--src->val2)>0 && !unit_isdead(bl) && bl->x==src->bl.x && bl->y == src->bl.y);
-		//}while(-src->val2 && !unit_isdead(bl) && (ele==3 || battle_check_undead(race,ele)) && bl->x==src->bl.x && bl->y == src->bl.y);
+		//}while(-src->val2 && !unit_isdead(bl) && (ele==ELE_FIRE || battle_check_undead(race,ele)) && bl->x==src->bl.x && bl->y == src->bl.y);
 		if (src->val2<=0)
 			skill_delunit(src);
 	}
@@ -11087,7 +11090,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 			cnt++;
 		}
 		if(slot[i] >= 994 && slot[i] <= 997 && ele == 0) {	/* 属性石 */
-			static const int ele_table[4] = { 3, 1, 4, 2 };
+			static const int ele_table[4] = { ELE_FIRE, ELE_WATER, ELE_WIND, ELE_EARTH };
 			pc_delitem(sd,j,1,1);
 			ele = ele_table[slot[i]-994];
 			cnt++;
