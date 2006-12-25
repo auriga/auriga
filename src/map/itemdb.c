@@ -294,7 +294,7 @@ static int itemdb_read_itemslottable(void)
 		if(!p) break;
 		p++;
 	}
-	free(buf);
+	aFree(buf);
 
 	return 0;
 }
@@ -752,7 +752,7 @@ static int itemdb_read_itemnametable(void)
 		if(!p) break;
 		p++;
 	}
-	free(buf);
+	aFree(buf);
 	printf("read data\\idnum2itemdisplaynametable.txt done.\n");
 
 	return 0;
@@ -787,7 +787,7 @@ static int itemdb_read_cardillustnametable(void)
 		if(!p) break;
 		p++;
 	}
-	free(buf);
+	aFree(buf);
 	printf("read data\\num2cardillustnametable.txt done.\n");
 
 	return 0;

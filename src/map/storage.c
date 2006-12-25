@@ -79,7 +79,7 @@ void storage_delete(int account_id)
 	struct storage *stor = numdb_search(storage_db,account_id);
 	if(stor) {
 		numdb_erase(storage_db,account_id);
-		free(stor);
+		aFree(stor);
 	}
 
 	return;
@@ -372,7 +372,7 @@ void guild_storage_delete(int guild_id)
 	struct guild_storage *gstor = numdb_search(guild_storage_db,guild_id);
 	if(gstor) {
 		numdb_erase(guild_storage_db,guild_id);
-		free(gstor);
+		aFree(gstor);
 	}
 
 	return;
@@ -661,12 +661,12 @@ void storage_guild_storagesave(struct map_session_data *sd)
  */
 static int storage_db_final(void *key,void *data,va_list ap)
 {
-	free(data);
+	aFree(data);
 	return 0;
 }
 static int guild_storage_db_final(void *key,void *data,va_list ap)
 {
-	free(data);
+	aFree(data);
 	return 0;
 }
 void do_final_storage(void) // map.c::do_final()から呼ばれる

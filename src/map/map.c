@@ -124,7 +124,7 @@ int map_getusers(void)
 int map_freeblock( void *bl )
 {
 	if(block_free_lock==0){
-		free(bl);
+		aFree(bl);
 		bl = NULL;
 	}
 	else{
@@ -161,7 +161,7 @@ int map_freeblock_unlock(void)
 //				printf("map_freeblock_unlock: free %d object\n",block_free_count);
 //		}
 		for(i=0;i<block_free_count;i++){
-			free(block_free[i]);
+			aFree(block_free[i]);
 			block_free[i] = NULL;
 		}
 		block_free_count=0;
@@ -961,7 +961,7 @@ int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,struct 
 
 	fitem->bl.id = map_addobject(&fitem->bl);
 	if(fitem->bl.id==0){
-		free(fitem);
+		aFree(fitem);
 		return 0;
 	}
 
@@ -1158,8 +1158,8 @@ int map_quit(struct map_session_data *sd)
 		p->ip   = 0;
 		p->port = 0;
 	}
-	free(sd->reg);
-	free(sd->regstr);
+	aFree(sd->reg);
+	aFree(sd->regstr);
 //printf("map quit:%s\n",sd->status.name);
 
 	return 0;
@@ -1585,7 +1585,7 @@ int map_setipport(char *name,unsigned long ip,int port)
 				// 読み込んでいるので置き換える
 				md = mdos->map;
 				strdb_insert(map_db,md->name,md);
-				free(mdos);
+				aFree(mdos);
 			}
 		} else {
 			// 他の鯖の担当マップなので置き換えるだけ
@@ -1604,7 +1604,7 @@ int map_eraseallipport_sub(void *key,void *data,va_list va) {
 	struct map_data_other_server *mdos = (struct map_data_other_server*)data;
 	if(mdos->gat == NULL && mdos->map == NULL) {
 		strdb_erase(map_db,key);
-		free(mdos);
+		aFree(mdos);
 	}
 	return 0;
 }
@@ -1635,7 +1635,7 @@ int map_eraseipport(char *name,unsigned long ip,int port)
 					return 1; // 呼び出し元で chrif_sendmap() をする
 				} else {
 					strdb_erase(map_db,name);
-					free(mdos);
+					aFree(mdos);
 				}
 //				if(battle_config.etc_log)
 //					printf("erase map %s %d.%d.%d.%d:%d\n",name,p[0],p[1],p[2],p[3],port);
@@ -1798,7 +1798,7 @@ static void map_cache_close(void)
 		fwrite(map_cache.map,map_cache.head.nmaps,sizeof(struct map_cache_info),map_cache.fp);
 	}
 	fclose(map_cache.fp);
-	free(map_cache.map);
+	aFree(map_cache.map);
 	map_cache.fp = NULL;
 	return;
 }
@@ -1824,7 +1824,10 @@ int map_cache_read(struct map_data *m)
 					return 1;
 				} else {
 					// なぜかファイル後半が欠けてるので読み直し
-					m->xs = 0; m->ys = 0; free(m->gat); m->gat = NULL;
+					m->xs = 0;
+					m->ys = 0;
+					aFree(m->gat);
+					m->gat = NULL;
 					return 0;
 				}
 			} else if(map_cache.map[i].compressed == 1) {
@@ -1840,19 +1843,25 @@ int map_cache_read(struct map_data *m)
 				if(fread(buf,1,size_compress,map_cache.fp) != size_compress) {
 					// なぜかファイル後半が欠けてるので読み直し
 					printf("fread error\n");
-					free(m->gat); m->xs = 0; m->ys = 0; m->gat = NULL;
-					free(buf);
+					m->xs = 0;
+					m->ys = 0;
+					aFree(m->gat);
+					m->gat = NULL;
+					aFree(buf);
 					return 0;
 				}
 				dest_len = m->xs * m->ys;
 				decode_zip(m->gat,&dest_len,buf,size_compress);
 				if(dest_len != map_cache.map[i].xs * map_cache.map[i].ys) {
 					// 正常に解凍が出来てない
-					free(m->gat); m->xs = 0; m->ys = 0; m->gat = NULL;
-					free(buf);
+					m->xs = 0;
+					m->ys = 0;
+					aFree(m->gat);
+					m->gat = NULL;
+					aFree(buf);
 					return 0;
 				}
-				free(buf);
+				aFree(buf);
 				return 1;
 			}
 		}
@@ -1907,7 +1916,7 @@ static int map_cache_write(struct map_data *m)
 			map_cache.map[i].water_height = map_waterheight(m->ref_name);
 			map_cache.dirty = 1;
 			if(map_read_flag == 2) {
-				free(write_buf);
+				aFree(write_buf);
 			}
 			return 0;
 		}
@@ -1938,7 +1947,7 @@ static int map_cache_write(struct map_data *m)
 			map_cache.head.filesize += len_new;
 			map_cache.dirty = 1;
 			if(map_read_flag == 2) {
-				free(write_buf);
+				aFree(write_buf);
 			}
 			return 0;
 		}
@@ -2070,7 +2079,7 @@ static int map_readmap(int m,char *fn,int *map_cache)
 			}
 		}
 		map_cache_write(&map[m]);
-		free(gat);
+		aFree(gat);
 	}
 	map[m].m=m;
 	map[m].npc_num=0;
@@ -2417,7 +2426,7 @@ static int map_db_final(void *key,void *data,va_list ap)
 
 //	nullpo_retr(0, name=data);
 
-//	free(name);
+//	aFree(name);
 
 	return 0;
 }
@@ -2427,7 +2436,7 @@ static int nick_db_final(void *key,void *data,va_list ap)
 
 	nullpo_retr(0, nick=data);
 
-	free(nick);
+	aFree(nick);
 
 	return 0;
 }
@@ -2437,7 +2446,7 @@ static int charid_db_final(void *key,void *data,va_list ap)
 
 	nullpo_retr(0, p=data);
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }
@@ -2473,11 +2482,13 @@ void do_final(void)
 
 	for(i=0;i<map_num;i++){
 		if(map[i].gat) {
-			free(map[i].gat);
+			aFree(map[i].gat);
 			map[i].gat=NULL;
 		}
-		if(map[i].block) free(map[i].block);
-		if(map[i].block_mob) free(map[i].block_mob);
+		if(map[i].block)
+			aFree(map[i].block);
+		if(map[i].block_mob)
+			aFree(map[i].block_mob);
 	}
 
 	if(map != NULL) {

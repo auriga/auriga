@@ -151,9 +151,8 @@ set __opt2__=/DEBUG %__FIXOPT2__% user32.lib ../common/zlib/*.obj ../common/*.ob
 
 rem ----------------------------------------------------------------
 rem 警告の抑制
-rem   C4018 : unsigned と singed の比較
 rem   C4819 : 表示できない文字を含んでいます
-set __warning__=/wd4018 /wd4819
+set __warning__=/wd4819
 
 rem ----------------------------------------------------------------
 rem ビルド作業本体
@@ -183,9 +182,7 @@ cl %__warning__% %__cpu__% %__opt1__% *.c
 link %__opt2__% /out:"../../txt-converter.exe"
 :NOCONVERTER1
 
-rem 結果確認用の一時停止
 cd ..\..\
-pause
 
 rem 不必要なファイルを削除
 del src\common\zlib\*.obj
@@ -198,3 +195,5 @@ if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER2
 del src\converter\*.obj
 :NOCONVERTER2
 
+rem 結果確認用の一時停止
+pause

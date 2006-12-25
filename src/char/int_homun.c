@@ -226,7 +226,7 @@ int homun_txt_init(void)
 			numdb_insert(homun_db,h->homun_id,h);
 		}else{
 			printf("int_homun: broken data [%s] line %d\n",homun_txt,c);
-			free(h);
+			aFree(h);
 		}
 		c++;
 	}
@@ -344,7 +344,7 @@ static int homun_txt_final_sub(void *key,void *data,va_list ap)
 {
 	struct mmo_homunstatus *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }
@@ -654,7 +654,7 @@ static int homun_sql_final_sub(void *key,void *data,va_list ap)
 {
 	struct mmo_homunstatus *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }

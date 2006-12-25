@@ -169,7 +169,7 @@ int pet_txt_init(void)
 			numdb_insert(pet_db,p->pet_id,p);
 		}else{
 			printf("int_pet: broken data [%s] line %d\n",pet_txt,c);
-			free(p);
+			aFree(p);
 		}
 		c++;
 	}
@@ -287,7 +287,7 @@ static int pet_txt_final_sub(void *key,void *data,va_list ap)
 {
 	struct s_pet *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }
@@ -467,7 +467,7 @@ static int pet_sql_final_sub(void *key,void *data,va_list ap)
 {
 	struct s_pet *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }

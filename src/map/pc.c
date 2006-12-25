@@ -6229,7 +6229,7 @@ int pc_eventtimer(int tid,unsigned int tick,int id,int data)
 			break;
 		}
 	}
-	free(p);
+	aFree(p);
 	if(i==MAX_EVENTTIMER) {
 		if(battle_config.error_log)
 			printf("pc_eventtimer: no such event timer\n");
@@ -6254,7 +6254,7 @@ int pc_addeventtimer(struct map_session_data *sd,int tick,const char *name)
 			break;
 	}
 	if(i<MAX_EVENTTIMER){
-		char *evname = strdup(name);
+		char *evname = aStrdup(name);
 		sd->eventtimer[i] = add_timer(gettick()+tick,pc_eventtimer,sd->bl.id,(int)evname);
 	}else {
 		if(battle_config.error_log)
@@ -6281,7 +6281,7 @@ int pc_deleventtimer(struct map_session_data *sd,const char *name)
 			if(strcmp(p, name)==0) {
 				delete_timer(sd->eventtimer[i],pc_eventtimer);
 				sd->eventtimer[i]=-1;
-				free(p);
+				aFree(p);
 				break;
 			}
 		}
@@ -6327,7 +6327,7 @@ int pc_cleareventtimer(struct map_session_data *sd)
 				continue;
 			p = (char *)(get_timer(sd->eventtimer[i])->data);
 			delete_timer(sd->eventtimer[i],pc_eventtimer);
-			free(p);
+			aFree(p);
 			sd->eventtimer[i]=-1;
 		}
 	}

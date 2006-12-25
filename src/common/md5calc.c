@@ -255,7 +255,7 @@ void HMAC_MD5_Binary( const char *key, int keylen, const char *str, int len, cha
 	
 	// 文字列が長いのでメモリを確保
 	if( len > STRMAXLENGTH )
-		hmackey = (char*)malloc( KEYLENGTH+len + 16 );
+		hmackey = (char*)aMalloc( KEYLENGTH+len + 16 );
 	
 	// 鍵の計算
 	memset( hmackey, 0, KEYLENGTH );
@@ -283,6 +283,6 @@ void HMAC_MD5_Binary( const char *key, int keylen, const char *str, int len, cha
 
 	// 必要ならメモリを解放
 	if( hmackey != hmackey2 )
-		free(hmackey);
+		aFree(hmackey);
 }
 

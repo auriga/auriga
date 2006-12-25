@@ -1077,7 +1077,7 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 						clif_additem(sd,0,0,flag);
 						map_addflooritem(&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,&ditem->first_sd->bl,&ditem->second_sd->bl,&ditem->third_sd->bl,0);
 					}
-					free(ditem);
+					aFree(ditem);
 				}
 				else
 					add_timer2(gettick()+540+i,pet_delay_item_drop2,(int)ditem,0,TIMER_FREE_ID);
@@ -1099,7 +1099,7 @@ int pet_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 
 	map_addflooritem(&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,&ditem->first_sd->bl,&ditem->second_sd->bl,&ditem->third_sd->bl,0);
 
-	free(ditem);
+	aFree(ditem);
 	return 0;
 }
 

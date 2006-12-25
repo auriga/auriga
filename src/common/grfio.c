@@ -590,7 +590,7 @@ void* grfio_reads(char *fname, int *size)
 		} else {
 			memcpy(buf2,buf,entry->declen);
 		}
-		free(buf);
+		aFree(buf);
 	}
 	if (size!=NULL && entry!=NULL)
 		*size = entry->declen;
@@ -598,8 +598,8 @@ void* grfio_reads(char *fname, int *size)
 	return buf2;
 
 errret:
-	if (buf!=NULL) free(buf);
-	if (buf2!=NULL) free(buf2);
+	if (buf!=NULL) aFree(buf);
+	if (buf2!=NULL) aFree(buf2);
 	if (in!=NULL) fclose(in);
 
 	// exit(1);
@@ -698,7 +698,7 @@ static int grfio_entryread(char *gfname,int gentry)
 				fname = decode_filename(grf_filelist+ofs+6,grf_filelist[ofs]-6);
 				if(strlen(fname)>sizeof(aentry.fn)-1){
 					printf("File name too long : %s.\n",fname);
-					free(grf_filelist);
+					aFree(grf_filelist);
 					exit(1);
 				}
 				srclen=0;
@@ -735,7 +735,7 @@ static int grfio_entryread(char *gfname,int gentry)
 			}
 			ofs = ofs2 + 17;
 		}
-		free(grf_filelist);
+		aFree(grf_filelist);
 		break;
 
 	case 0x0200: //****** Grf version 02xx ******
@@ -766,7 +766,7 @@ static int grfio_entryread(char *gfname,int gentry)
 		fclose(fp);
 		decode_zip(grf_filelist,&eSize,rBuf,rSize);	// Decode function
 		list_size = eSize;
-		free(rBuf);
+		aFree(rBuf);
 
 		// Get an entry
 		for(entry=0,ofs=0;entry<entrys;entry++){
@@ -792,7 +792,7 @@ static int grfio_entryread(char *gfname,int gentry)
 			fname = grf_filelist+ofs;
 			if (strlen(fname)>sizeof(aentry.fn)-1) {
 				printf("grf : file name too long : %s\n",fname);
-				free(grf_filelist);
+				aFree(grf_filelist);
 				exit(1);
 			}
 			ofs2 = ofs+strlen(grf_filelist+ofs)+1;
@@ -828,7 +828,7 @@ static int grfio_entryread(char *gfname,int gentry)
 			}
 			ofs = ofs2 + 17;
 		}
-		free(grf_filelist);
+		aFree(grf_filelist);
 	  }
 		break;
 
@@ -884,7 +884,7 @@ static void grfio_resourcecheck(void)
 		if (!ptr) break;
 		ptr++;
 	}
-	free(buf);
+	aFree(buf);
 	filelist_adjust();	// filelistの不要エリア解放
 
 	return;
@@ -970,7 +970,7 @@ void grfio_final(void)
 	int lop;
 
 	if (filelist != NULL) {
-		free(filelist);
+		aFree(filelist);
 		filelist = NULL;
 	}
 	filelist_entrys = 0;
@@ -979,10 +979,10 @@ void grfio_final(void)
 	if (gentry_table != NULL) {
 		for(lop=0;lop<gentry_entrys;lop++) {
 			if (gentry_table[lop]!=NULL) {
-				free(gentry_table[lop]);
+				aFree(gentry_table[lop]);
 			}
 		}
-		free(gentry_table);
+		aFree(gentry_table);
 		gentry_table = NULL;
 	}
 	gentry_entrys = 0;

@@ -46,7 +46,7 @@ int battle_delay_damage_sub(int tid,unsigned int tick,int id,int data)
 	struct block_list *target=map_id2bl(dat->target);
 	if( dat && map_id2bl(id)==dat->src && target && target->prev!=NULL)
 		battle_damage(dat->src,target,dat->damage,dat->flag);
-	free(dat);
+	aFree(dat);
 	return 0;
 }
 int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,int damage,int flag)

@@ -5796,7 +5796,7 @@ static int status_pretimer(int tid, unsigned int tick, int id, int data)
 		return 0;	//該当IDがすでに消滅している
 
 	if(bl->prev == NULL) {
-		free(stpt);
+		aFree(stpt);
 		return 0;
 	}
 
@@ -5810,18 +5810,18 @@ static int status_pretimer(int tid, unsigned int tick, int id, int data)
 	if(stpt->target_id){
 		struct block_list *target = map_id2bl(stpt->target_id);
 		if( target == NULL || bl->m != target->m || unit_isdead(bl) || unit_isdead(target) ) {
-			free(stpt);
+			aFree(stpt);
 			return 0;
 		}
 	}else{
 		if(bl->m != stpt->map){
-			free(stpt);
+			aFree(stpt);
 			return 0;
 		}
 	}
 
 	status_change_start(bl, stpt->type, stpt->val1, stpt->val2, stpt->val3, stpt->val4, stpt->tick, stpt->flag);
-	free(stpt);
+	aFree(stpt);
 
 	return 0;
 }
@@ -5841,7 +5841,7 @@ int status_clearpretimer(struct block_list *bl)
 			delete_timer(stpt->timer, status_pretimer);
 		}
 		node2 = node1->next;
-		free(stpt);
+		aFree(stpt);
 		node1 = node2;
 	}
 	linkdb_final(&ud->statuspretimer);
@@ -5856,7 +5856,7 @@ int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int 
 	nullpo_retr(1, bl);
 	nullpo_retr(1, ud = unit_bl2ud(bl));
 
-	stpt = calloc(1, sizeof(struct status_pretimer));
+	stpt = (struct status_pretimer *)aCalloc(1, sizeof(struct status_pretimer));
 	stpt->timer = add_timer(pre_tick, status_pretimer, bl->id, (int)stpt);
 	stpt->target_id = bl->id;
 	stpt->map = bl->m;

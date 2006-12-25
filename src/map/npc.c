@@ -172,7 +172,7 @@ int npc_event_timer(int tid,unsigned int tick,int id,int data)
 		return 0;
 
 	npc_event(sd,p);
-	free(p);
+	aFree(p);
 	return 0;
 }
 /*==========================================
@@ -893,7 +893,7 @@ void npc_clearsrcfile(struct npc_src_list *p)
 	while( p ) {
 		struct npc_src_list *p2=p;
 		p=p->next;
-		free(p2);
+		aFree(p2);
 	}
 	npc_src_first=NULL;
 	npc_src_last=NULL;
@@ -941,7 +941,7 @@ void npc_delsrcfile(char *name)
 			*lp=p->next;
 			if ( npc_src_last==p )
 				npc_src_last=pp;
-			free(p);
+			aFree(p);
 			break;
 		}
 	}
@@ -1324,7 +1324,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 			srcbuf[0]=0;
 		srclen = strlen(srcbuf);
 		if( npc_parse_script_line(srcbuf,&curly_count,*lines) ) {
-			free(srcbuf);
+			aFree(srcbuf);
 			return 1;
 		}
 		while(curly_count > 0) {
@@ -1332,7 +1332,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 			if(!fgets(line,1020,fp)) break;
 			(*lines)++;
 			if( npc_parse_script_line(line,&curly_count,*lines) ) {
-				free(srcbuf);
+				aFree(srcbuf);
 				return 1;
 			}
 			if (srclen+(j=strlen(line))+1>=srcsize) {
@@ -1352,18 +1352,18 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		}
 		if(curly_count > 0) {
 			script_error( srcbuf, file, startline, "missing right curly", srcbuf + strlen( srcbuf ) );
-			free(srcbuf);
+			aFree(srcbuf);
 			return 0;
 		}
 		if(strcmp(w1,"-") !=0 && m < 0) {	// assignされてないMAPなのでparseせずに終了
-			free(srcbuf);
+			aFree(srcbuf);
 			return 0;
 		}
 		// printf("Ok line %d\n",*lines);
 		script = parse_script(srcbuf,file,startline);
 		if(script == &error_code) {
 			// script parse error
-			free(srcbuf);
+			aFree(srcbuf);
 			return 0;
 		}
 	}else{
@@ -1493,7 +1493,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 			strdb_foreach(label_db,npc_convertlabel_db,nd);
 		}
 		// もう使わないのでバッファ解放
-		free(srcbuf);
+		aFree(srcbuf);
 
 	}else{
 		// duplicate
@@ -1524,8 +1524,8 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 				if(ev2 != NULL) {
 					printf("npc_parse_script : dup event %s\n",ev->key);
 					strdb_erase(ev_db,ev->key);
-					free(ev2->key);
-					free(ev2);
+					aFree(ev2->key);
+					aFree(ev2);
 				}
 				strdb_insert(ev_db,ev->key,ev);
 			}
@@ -1589,14 +1589,14 @@ static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_li
 		srcbuf[0]=0;
 	srclen = strlen(srcbuf);
 	if( npc_parse_script_line(srcbuf,&curly_count,*lines) ) {
-		free(srcbuf);
+		aFree(srcbuf);
 		return 1;
 	}
 	while(curly_count > 0) {
 		if(!fgets(line,1020,fp)) break;
 		(*lines)++;
 		if( npc_parse_script_line(line,&curly_count,*lines) ) {
-			free(srcbuf);
+			aFree(srcbuf);
 			return 1;
 		}
 		if (srclen+(j=strlen(line))+1>=srcsize) {
@@ -1616,13 +1616,13 @@ static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_li
 	}
 	if(curly_count > 0) {
 		script_error( srcbuf, file, startline, "missing right curly", srcbuf + strlen( srcbuf ) );
-		free(srcbuf);
+		aFree(srcbuf);
 		return 0;
 	}
 	script = parse_script(srcbuf,file,startline);
 
 	// もう使わないのでバッファ解放
-	free(srcbuf);
+	aFree(srcbuf);
 
 	if (script == &error_code) {
 		// script parse error
@@ -1939,9 +1939,9 @@ int npc_set_mapflag_sub(int m,char *str,short flag)
 
 static int ev_db_final(void *key,void *data,va_list ap)
 {
-	free(data);
+	aFree(data);
 	if(strstr(key,"::")!=NULL)
-		free(key);
+		aFree(key);
 	return 0;
 }
 static int npcname_db_final(void *key,void *data,va_list ap)
@@ -1979,34 +1979,34 @@ int do_final_npc(void)
 					map_deliddb( &nd->bl );
 				}
 				if(nd->chat_id && (cd = map_id2cd(nd->chat_id))){
-					free(cd);
+					aFree(cd);
 					cd = NULL;
 				}
 				if(nd->bl.subtype == SCRIPT){
 					if(nd->u.scr.timer_event)
-						free(nd->u.scr.timer_event);
+						aFree(nd->u.scr.timer_event);
 				 	if(nd->u.scr.src_id==0){
 						if(nd->u.scr.script){
 							script_free_code(nd->u.scr.script);
 							nd->u.scr.script=NULL;
 						}
 						if(nd->u.scr.label_list){
-							free(nd->u.scr.label_list);
+							aFree(nd->u.scr.label_list);
 							nd->u.scr.label_list = NULL;
 						}
 					}
 				}
-				free(nd);
+				aFree(nd);
 				nd = NULL;
 			}else if(bl->type == BL_MOB && (md = (struct mob_data *)bl)){
 				if(md->lootitem){
-					free(md->lootitem);
+					aFree(md->lootitem);
 					md->lootitem = NULL;
 				}
-				free(md);
+				aFree(md);
 				md = NULL;
 			}else if(bl->type == BL_PET && (pd = (struct pet_data *)bl)){
-				free(pd);
+				aFree(pd);
 				pd = NULL;
 			}
 		}
@@ -2034,7 +2034,7 @@ int do_init_npc(void)
 	for(nsl=npc_src_first;nsl;nsl=nsl->next) {
 		int comment_flag = 0;
 		if(nsl->prev){
-			free(nsl->prev);
+			aFree(nsl->prev);
 			nsl->prev = NULL;
 		}
 		fp=fopen(nsl->name,"r");
@@ -2139,7 +2139,7 @@ int do_init_npc(void)
 			npc_parse_script_line(NULL,0,0);	// scriptブロック内部のcomment_flagを初期化
 			nsl->next->prev = nsl;
 		} else{
-			free(nsl);
+			aFree(nsl);
 			break;
 		}
 	}

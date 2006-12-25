@@ -563,7 +563,7 @@ static void char_txt_sync(void)
 
 void char_txt_final(void) {
 //	char_txt_sync(); // do_final で呼んでるはず
-	free(char_dat);
+	aFree(char_dat);
 
 #ifdef TXT_JOURNAL
 	if( char_journal_enable )
@@ -1685,7 +1685,7 @@ static int char_db_final(void *key,void *data,va_list ap)
 {
 	struct mmo_chardata *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }
@@ -2522,7 +2522,7 @@ int parse_map_disconnect_sub(void *key,void *data,va_list ap) {
 		mapif_sendallwos(fd,buf,6);
 		numdb_erase(char_online_db,key);
 		char_set_offline( c->char_id );
-		free(c);
+		aFree(c);
 	}
 
 	return 0;
@@ -3810,7 +3810,7 @@ static int gm_account_db_final(void *key,void *data,va_list ap)
 {
 	struct gm_account *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }
@@ -3819,7 +3819,7 @@ static int char_online_db_final(void *key,void *data,va_list ap)
 {
 	struct char_online *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }

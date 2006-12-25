@@ -407,7 +407,7 @@ int login_txt_account_new(struct mmo_account* account,const char *tmpstr) {
 
 void login_txt_final(void) {
 	if(auth_dat)
-		free(auth_dat);
+		aFree(auth_dat);
 	if(gm_account_db)
 		numdb_final(gm_account_db,gm_account_db_final);
 
@@ -527,7 +527,7 @@ static int account_db_final(void *key,void *data,va_list ap)
 {
 	struct account *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }

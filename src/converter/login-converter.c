@@ -30,7 +30,7 @@ static int gm_account_db_final(void *key, void *data, va_list ap)
 {
 	struct gm_account *p = data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }
@@ -80,7 +80,7 @@ void read_gm_account() {
 				}
 				for (account_id = start_range; account_id <= end_range; account_id++) {
 					if ((p = numdb_search(gm_account_db, account_id)) == NULL) {
-						p = (struct gm_account*)malloc(sizeof(struct gm_account));
+						p = (struct gm_account*)aMalloc(sizeof(struct gm_account));
 						if (p == NULL) {
 							printf("gm_account: out of memory!\n");
 							exit(0);

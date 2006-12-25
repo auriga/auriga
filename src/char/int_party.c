@@ -164,14 +164,14 @@ int party_txt_init(void)
 				party_newid=p->party_id+1;
 			if(party_check_empty(p)) {
 				// 空パーティ
-				free(p);
+				aFree(p);
 			} else {
 				numdb_insert(party_db,p->party_id,p);
 			}
 		}
 		else{
 			printf("int_party: broken data [%s] line %d\n",party_txt,c+1);
-			free(p);
+			aFree(p);
 		}
 		c++;
 	}
@@ -287,7 +287,7 @@ int party_txt_delete(int party_id) {
 	struct party *p = numdb_search(party_db,party_id);
 	if(p) {
 		numdb_erase(party_db,p->party_id);
-		free(p);
+		aFree(p);
 #ifdef TXT_JOURNAL
 		if( party_journal_enable )
 			journal_write( &party_journal, party_id, NULL );
@@ -329,7 +329,7 @@ static int party_txt_final_sub(void *key,void *data,va_list ap)
 {
 	struct party *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }
@@ -579,7 +579,7 @@ static int party_sql_final_sub(void *key,void *data,va_list ap)
 {
 	struct party *p=data;
 
-	free(p);
+	aFree(p);
 
 	return 0;
 }

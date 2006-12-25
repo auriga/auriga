@@ -5415,7 +5415,7 @@ void clif_displaymessage(const int fd, char* mes)
  */
 void clif_GMmessage(struct block_list *bl, char* mes, int len, int flag)
 {
-	unsigned char *buf = malloc(len+16);
+	unsigned char *buf = aMalloc(len+16);
 	int lp=(flag&0x10)?8:4;
 
 	WBUFW(buf,0) = 0x9a;
@@ -5428,7 +5428,7 @@ void clif_GMmessage(struct block_list *bl, char* mes, int len, int flag)
 		(flag==2)? AREA:
 		(flag==3)? SELF:
 		ALL_CLIENT);
-	free(buf);
+	aFree(buf);
 
 	return;
 }
@@ -5464,7 +5464,7 @@ void clif_GlobalMessage(struct block_list *bl,char *message)
  */
 void clif_announce(struct block_list *bl, char* mes, int len, unsigned long color, int flag)
 {
-	unsigned char *buf = malloc(len+16);
+	unsigned char *buf = aMalloc(len+16);
 
 	WBUFW(buf,0) = 0x1c3;
 	WBUFW(buf,2) = len+16;
@@ -5480,7 +5480,7 @@ void clif_announce(struct block_list *bl, char* mes, int len, unsigned long colo
 	          (flag == 2) ? AREA:
 	          (flag == 3) ? SELF:
 	          ALL_CLIENT);
-	free(buf);
+	aFree(buf);
 
 	return;
 }
@@ -7679,7 +7679,7 @@ static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *
 void clif_guild_message(struct guild *g, int account_id, const char *mes, int len)
 {
 	struct map_session_data *sd;
-	unsigned char *buf = malloc(len+32);
+	unsigned char *buf = aMalloc(len+32);
 
 	WBUFW(buf, 0)=0x17f;
 	WBUFW(buf, 2)=len+4;
@@ -7687,7 +7687,7 @@ void clif_guild_message(struct guild *g, int account_id, const char *mes, int le
 
 	if( (sd=guild_getavailablesd(g))!=NULL )
 		clif_send(buf,WBUFW(buf,2),&sd->bl,GUILD);
-	free(buf);
+	aFree(buf);
 
 	return;
 }
@@ -7964,7 +7964,7 @@ void clif_sitting(struct map_session_data *sd)
  */
 void clif_disp_onlyself(struct map_session_data *sd, char *mes, int len)
 {
-	unsigned char *buf = malloc(len+32);
+	unsigned char *buf = aMalloc(len+32);
 
 	nullpo_retv(sd);
 
@@ -7973,7 +7973,7 @@ void clif_disp_onlyself(struct map_session_data *sd, char *mes, int len)
 	memcpy(WBUFP(buf,4),mes,len+4);
 
 	clif_send(buf,WBUFW(buf,2),&sd->bl,SELF);
-	free(buf);
+	aFree(buf);
 
 	return;
 }
@@ -7984,7 +7984,7 @@ void clif_disp_onlyself(struct map_session_data *sd, char *mes, int len)
  */
 static void clif_onlymessage(struct map_session_data *sd, char *mes, int len)
 {
-	unsigned char *buf = malloc(len+32);
+	unsigned char *buf = aMalloc(len+32);
 
 	switch (battle_config.mes_send_type) {
 		case 0:	// ギルド会話
@@ -8008,7 +8008,7 @@ static void clif_onlymessage(struct map_session_data *sd, char *mes, int len)
 			return;
 	}
 	clif_send(buf,WBUFW(buf,2),NULL,ALL_CLIENT);
-	free(buf);
+	aFree(buf);
 
 	return;
 }
@@ -10989,7 +10989,7 @@ static void clif_parse_GuildChangeEmblem(int fd,struct map_session_data *sd, int
 	int zipbitmap_len, bitmap_offset;
 	char dest_bitmap[4100]; // max possible (16/24 bits): 4086 (windows)-> (header1)14 + (header2)40 + (576 colors)2304 + (bitmap:24x24)1728 (no compression with palette)
 	unsigned long dest_bitmap_len;
-	int ncol;
+	unsigned int ncol;
 
 	// only guild master can change emblem.
 	if (sd->status.guild_id == 0 || (g = guild_search(sd->status.guild_id)) == NULL)

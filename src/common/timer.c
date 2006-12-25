@@ -338,13 +338,13 @@ void do_final_timer(void)
 
 	for(tfl = tfl_root;tfl;tfl=tfl_next) {
 		tfl_next = tfl->next;
-		free(tfl);
+		aFree(tfl);
 		tfl=NULL;
 	}
 	if(timer_heap)
-		free(timer_heap);
+		aFree(timer_heap);
 	if(free_timer_list)
-		free(free_timer_list);
+		aFree(free_timer_list);
 	if(timer_data) {
 		// add_timer2によるidとdataの解放
 		int i;
@@ -360,7 +360,7 @@ void do_final_timer(void)
 				aFree( v );
 			}
 		}
-		free(timer_data);
+		aFree(timer_data);
 	}
 }
 

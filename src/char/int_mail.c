@@ -29,7 +29,7 @@ int mail_store_mail(int char_id,struct mail_data *md)
 {
 	char filename[1024];
 	FILE *fp;
-	int i;
+	unsigned int i;
 
 	if(!md) return 0;
 
@@ -53,7 +53,8 @@ int mail_save_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX])
 {
 	char filename[1024];
 	FILE *fp;
-	int n=-1,i;
+	unsigned int i;
+	int n=-1;
 
 	if(!md) return 0;
 
@@ -91,7 +92,7 @@ int mail_save_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX])
 }
 int mail_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX])
 {
-	int i=-1,j,n;
+	int i=-1,j;
 	int tmp_int[17];
 	char tmp_char[4][1024],*p;
 	char line[65536];
@@ -100,6 +101,7 @@ int mail_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX])
 
 	sprintf(filename,"%s%d.txt",mail_dir,char_id);
 	if((fp=fopen(filename,"r"))!=NULL){
+		unsigned int n;
 		while(i+1<store && fgets(line,65535,fp) && i+1<MAIL_STORE_MAX){
 			n=sscanf(line,"%d,%d\t%[^\t]\t%[^\t]\t%[^\t]\t%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%[^\n]",
 				&tmp_int[0],&tmp_int[1],tmp_char[0],tmp_char[1],tmp_char[2],&tmp_int[2],

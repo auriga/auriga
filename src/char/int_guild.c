@@ -365,14 +365,14 @@ int guild_txt_init(void)
 			if(guild_check_empty(g)) {
 				// 空ギルド
 				guild_txt_delete(g->guild_id);
-				free(g);
+				aFree(g);
 			} else {
 				numdb_insert(guild_db,g->guild_id,g);
 				guild_calcinfo(g);
 			}
 		}else{
 			printf("int_guild: broken data [%s] line %d\n",guild_txt,c);
-			free(g);
+			aFree(g);
 		}
 		c++;
 	}
@@ -511,7 +511,7 @@ void guild_txt_delete(int guild_id) {
 		if( guild_journal_enable )
 			journal_write( &guild_journal, g->guild_id, NULL );
 #endif
-		free(g);
+		aFree(g);
 	}
 }
 
@@ -559,7 +559,7 @@ static int guild_txt_db_final(void *key,void *data,va_list ap)
 {
 	struct guild *g=data;
 
-	free(g);
+	aFree(g);
 
 	return 0;
 }
@@ -707,7 +707,7 @@ int guildcastle_txt_init(void) {
 			numdb_insert(castle_db,gc->castle_id,gc);
 		}else{
 			printf("int_guild: broken data [%s] line %d\n",castle_txt,c);
-			free(gc);
+			aFree(gc);
 		}
 		c++;
 	}
@@ -808,7 +808,7 @@ int guildcastle_txt_sync(void) {
 static int guildcastle_txt_db_final(void *key,void *data,va_list ap)
 {
 	struct guild_castle *gc=data;
-	free(gc);
+	aFree(gc);
 	return 0;
 }
 
@@ -1464,7 +1464,7 @@ void guild_sql_delete(int guild_id) {
 
 	if(g) {
 		numdb_erase(guild_db,g->guild_id);
-		free(g);
+		aFree(g);
 	}
 	numdb_foreach(guild_db,guild_sql_delete_sub,guild_id);
 	gstorage_delete(guild_id);
@@ -1595,14 +1595,14 @@ void guild_sql_config_read_sub(const char *w1,const char* w2) {
 static int guild_sql_db_final(void *key,void *data,va_list ap)
 {
 	struct guild *g=data;
-	free(g);
+	aFree(g);
 	return 0;
 }
 
 static int guildcastle_sql_db_final(void *key,void *data,va_list ap)
 {
 	struct guild_castle *gc=data;
-	free(gc);
+	aFree(gc);
 	return 0;
 }
 

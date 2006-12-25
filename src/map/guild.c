@@ -599,7 +599,7 @@ void guild_recv_info(struct guild *sg)
 		while(ev){
 			npc_event_do(ev->name);
 			ev2=ev->next;
-			free(ev);
+			aFree(ev);
 			ev=ev2;
 		}
 	}
@@ -1605,7 +1605,7 @@ void guild_broken(int guild_id, unsigned char flag)
 	numdb_foreach(guild_db,guild_broken_sub,guild_id);
 	numdb_erase(guild_db,guild_id);
 	guild_storage_delete(guild_id);
-	free(g);
+	aFree(g);
 
 	return;
 }
@@ -1704,7 +1704,7 @@ void guild_castledataloadack(int castle_id, int idx, int value)
 		while(ev){
 			npc_event_do(ev->name);
 			ev2=ev->next;
-			free(ev);
+			aFree(ev);
 			ev=ev2;
 		}
 	}
@@ -1881,7 +1881,7 @@ static int guild_db_final(void *key,void *data,va_list ap)
 {
 	struct guild *g=data;
 
-	free(g);
+	aFree(g);
 
 	return 0;
 }
@@ -1890,7 +1890,7 @@ static int castle_db_final(void *key,void *data,va_list ap)
 {
 	struct guild_castle *gc=data;
 
-	free(gc);
+	aFree(gc);
 
 	return 0;
 }
@@ -1899,7 +1899,7 @@ static int guild_infoevent_db_final(void *key,void *data,va_list ap)
 {
 	struct eventlist *ev=data;
 
-	free(ev);
+	aFree(ev);
 
 	return 0;
 }

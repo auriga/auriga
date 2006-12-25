@@ -141,7 +141,7 @@ static int recv_to_fifo(int fd) {
 					if (wait > recv_limit_rate_wait_max)
 						wait = recv_limit_rate_wait_max;
 					sd->rlr_tick += wait;
-					if ((sd->rlr_disc += wait) > recv_limit_rate_disconnect) {
+					if ((sd->rlr_disc += wait) > (unsigned int)recv_limit_rate_disconnect) {
 						sd->eof = 1;
 						return -1;
 					}
@@ -638,14 +638,14 @@ void delete_session(int fd) {
 		SessionRemoveSocket(sock(fd));
 #endif
 		if (session[fd]->rdata)
-			free(session[fd]->rdata);
+			aFree(session[fd]->rdata);
 		if (session[fd]->wdata)
-			free(session[fd]->wdata);
+			aFree(session[fd]->wdata);
 		if (session[fd]->session_data)
-			free(session[fd]->session_data);
+			aFree(session[fd]->session_data);
 		if (session[fd]->session_data2)
-			free(session[fd]->session_data2);
-		free(session[fd]);
+			aFree(session[fd]->session_data2);
+		aFree(session[fd]);
 	}
 	session[fd] = NULL;
 	//printf("delete_session:%d\n", fd);
@@ -846,7 +846,7 @@ static void SessionRemoveSocket(const SOCKET elem) {
 }
 
 static void process_fdset(fd_set* rfd, fd_set* wfd) {
-	int i;
+	unsigned int i;
 	size_t fd;
 
 	for(i = 0; i < rfd->fd_count; i++) {
@@ -1198,7 +1198,7 @@ static int connect_check_(unsigned int ip) {
 		hist = hist->next;
 	}
 	// IPリストに無いので新規作成
-	hist_new = calloc(1, sizeof(struct _connect_history));
+	hist_new = aCalloc(1, sizeof(struct _connect_history));
 	hist_new->ip   = ip;
 	hist_new->tick = gettick();
 	if (connect_history[ip & 0xFFFF] != NULL) {
@@ -1230,7 +1230,7 @@ static int connect_check_clear(int tid, unsigned int tick, int id, int data) {
 					connect_history[i] = hist->next;
 				if (hist->next)
 					hist->next->prev = hist->prev;
-				free(hist);
+				aFree(hist);
 				hist = hist2;
 				clear++;
 			} else {
@@ -1401,7 +1401,7 @@ void do_final_socket(void) {
 		hist = connect_history[i];
 		while(hist) {
 			hist2 = hist->next;
-			free(hist);
+			aFree(hist);
 			hist = hist2;
 		}
 	}
@@ -1409,9 +1409,9 @@ void do_final_socket(void) {
 	aFree(access_deny);
 
 	// session[0] のダミーデータを削除
-	free(session[0]->rdata);
-	free(session[0]->wdata);
-	free(session[0]);
+	aFree(session[0]->rdata);
+	aFree(session[0]->wdata);
+	aFree(session[0]);
 
 	return;
 }

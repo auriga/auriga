@@ -771,7 +771,7 @@ int party_check_same_map_member_count(struct map_session_data *sd)
  */
 static int party_db_final(void *key,void *data,va_list ap)
 {
-	free(data);
+	aFree(data);
 
 	return 0;
 }

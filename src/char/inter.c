@@ -94,7 +94,7 @@ int check_ttl_wisdata(void)
 			printf("inter: wis data id=%d time out : from %s to %s\n",
 				wd->id,wd->src,wd->dst);
 			numdb_erase(wis_db,wd->id);
-			free(wd);
+			aFree(wd);
 		}
 	}while(wis_delnum>=WISDELLIST_MAX);
 	return 0;
@@ -204,7 +204,7 @@ int accreg_txt_init(void)
 			numdb_insert(accreg_db,reg->account_id,reg);
 		}else{
 			printf("inter: accreg: broken data [%s] line %d\n",accreg_txt,c);
-			free(reg);
+			aFree(reg);
 		}
 		c++;
 	}
@@ -318,7 +318,7 @@ static int accreg_txt_final_sub(void *key,void *data,va_list ap)
 {
 	struct accreg *reg=data;
 
-	free(reg);
+	aFree(reg);
 
 	return 0;
 }
@@ -419,7 +419,7 @@ static int accreg_sql_final_sub(void *key,void *data,va_list ap)
 {
 	struct accreg *reg=data;
 
-	free(reg);
+	aFree(reg);
 
 	return 0;
 }
@@ -574,14 +574,14 @@ int inter_mapif_init(int fd)
 // GMメッセージ送信
 int mapif_GMmessage(unsigned char *mes,int len,unsigned long color)
 {
-	unsigned char *buf = (unsigned char*)malloc(len);
+	unsigned char *buf = (unsigned char*)aMalloc(len);
 	WBUFW(buf,0) = 0x3800;
 	WBUFW(buf,2) = len;
 	WBUFL(buf,4) = color;
 	memcpy(WBUFP(buf,8), mes, len-8);
 	mapif_sendall(buf,len);
 	//printf("inter server: GM:%d %s\n", len, mes);
-	free(buf);
+	aFree(buf);
 	return 0;
 }
 
@@ -694,7 +694,7 @@ int mapif_parse_WisReply(int fd)
 	if( (--wd->count)==0 || flag!=1){
 		mapif_wis_end(wd,flag);
 		numdb_erase(wis_db, id);
-		free(wd);
+		aFree(wd);
 	}
 	return 0;
 }
@@ -771,12 +771,12 @@ int mapif_parse_CharMoveReq(int fd)
 int mapif_parse_DisplayMessage(int fd)
 {
 	int len=RFIFOW(fd,2);
-	unsigned char *buf = (unsigned char*)malloc(len);
+	unsigned char *buf = (unsigned char*)(len);
 
 	WBUFW(buf,0)=0x3893;
 	memcpy(WBUFP(buf,2),RFIFOP(fd,2),len-2);
 	mapif_sendall(buf,len);
-	free(buf);
+	aFree(buf);
 	return 0;
 }
 //--------------------------------------------------------
@@ -850,7 +850,7 @@ static int wis_db_final(void *key,void *data,va_list ap)
 {
 	struct WisData *wd=data;
 
-	free(wd);
+	aFree(wd);
 
 	return 0;
 }

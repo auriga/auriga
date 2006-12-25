@@ -1534,13 +1534,13 @@ int intif_parse_MailBoxLoad(int fd)
 	if(RFIFOL(fd,4)<=0)
 		return 0;
 
-	for(i=0;i<RFIFOL(fd,4);i++){
+	for(i=0;i<(int)RFIFOL(fd,4);i++){
 		md[i]=(struct mail_data *)aCalloc(1,size);
 		memcpy(md[i],RFIFOP(fd,32+i*size),size);
 	}
 	clif_send_mailbox(sd,RFIFOL(fd,4),md);
-	for(i=0;i<RFIFOL(fd,4);i++)
-		free(md[i]);
+	for(i=0;i<(int)RFIFOL(fd,4);i++)
+		aFree(md[i]);
 	return 0;
 }
 int intif_parse_ArriveNewMail(int fd)

@@ -213,7 +213,7 @@ int storage_txt_delete(int account_id)
 				pet_delete(*((long *)(&s->storage[i].card[2])));
 		}
 		numdb_erase(storage_db,account_id);
-		free(s);
+		aFree(s);
 #ifdef TXT_JOURNAL
 		if( storage_journal_enable )
 			journal_write( &storage_journal, account_id, NULL );
@@ -337,7 +337,7 @@ static int storage_db_final(void *key,void *data,va_list ap)
 {
 	struct storage *s=data;
 
-	free(s);
+	aFree(s);
 
 	return 0;
 }
@@ -395,7 +395,7 @@ int gstorage_txt_delete(int guild_id)
 				pet_delete(*((long *)(&gs->storage[i].card[2])));
 		}
 		numdb_erase(gstorage_db,guild_id);
-		free(gs);
+		aFree(gs);
 #ifdef TXT_JOURNAL
 		if( guild_storage_journal_enable )
 			journal_write( &guild_storage_journal, guild_id, NULL );
@@ -507,7 +507,7 @@ int storage_txt_init()
 		}
 		else{
 			printf("int_storage: broken data [%s] line %d\n",storage_txt,c);
-			free(s);
+			aFree(s);
 		}
 		c++;
 	}
@@ -552,7 +552,7 @@ int storage_txt_init()
 		}
 		else{
 			printf("int_storage: broken data [%s] line %d\n",guild_storage_txt,c);
-			free(gs);
+			aFree(gs);
 		}
 		c++;
 	}
@@ -588,7 +588,7 @@ static int gstorage_db_final(void *key,void *data,va_list ap)
 {
 	struct guild_storage *gs=data;
 
-	free(gs);
+	aFree(gs);
 
 	return 0;
 }
@@ -690,7 +690,7 @@ static int storage_db_final(void *key,void *data,va_list ap)
 {
 	struct storage *s=data;
 
-	free(s);
+	aFree(s);
 
 	return 0;
 }
@@ -758,7 +758,7 @@ static int gstorage_db_final(void *key,void *data,va_list ap)
 {
 	struct guild_storage *gs=data;
 
-	free(gs);
+	aFree(gs);
 
 	return 0;
 }

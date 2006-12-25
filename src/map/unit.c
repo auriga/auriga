@@ -2104,7 +2104,7 @@ int unit_free(struct block_list *bl, int clrtype) {
 		if(sd && sd->pet_hungry_timer != -1)
 			pet_hungry_timer_delete(sd);
 		map_deliddb(&pd->bl);
-		free(pd->lootitem);
+		aFree(pd->lootitem);
 		map_freeblock(pd);
 	} else if( bl->type == BL_HOM ) {
 		struct homun_data *hd = (struct homun_data*)bl;

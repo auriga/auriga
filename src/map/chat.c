@@ -58,7 +58,7 @@ void chat_createchat(struct map_session_data *sd, unsigned short limit, unsigned
 	cd->bl.id = map_addobject(&cd->bl);
 	if(cd->bl.id==0){
 		clif_createchat(sd,1);
-		free(cd);
+		aFree(cd);
 		return;
 	}
 
@@ -101,7 +101,7 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 		clif_joinchatfail(sd,2);
 		return;
 	}
-	if(cd->zeny > sd->status.zeny){
+	if(cd->zeny > (unsigned int)sd->status.zeny){
 		clif_joinchatfail(sd,4);
 		return;
 	}
@@ -323,7 +323,7 @@ int chat_createnpcchat(
 		cd->owner   = &cd->owner_;
 		cd->bl.id   = map_addobject(&cd->bl);
 		if(cd->bl.id==0){
-			free(cd);
+			aFree(cd);
 			return 0;
 		}
 		nd->chat_id = cd->bl.id;

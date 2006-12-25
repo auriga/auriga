@@ -39,16 +39,16 @@ static void free_dbn(struct dbn* add_dbn)
 
 void exit_dbn(void)
 {
-   int i;
+	int i;
 
-   for (i=0;i<dbn_root_num;i++)
-     if (dbn_root[i])
-     	free(dbn_root[i]);
-   
-   dbn_root_rest=0;
-   dbn_root_num=0;
-   
-   return;
+	for (i=0;i<dbn_root_num;i++) {
+		if (dbn_root[i])
+			aFree(dbn_root[i]);
+	}
+	dbn_root_rest=0;
+	dbn_root_num=0;
+
+	return;
 }
 
 static int strdb_cmp(struct dbt* table,void* a,void* b)
@@ -338,12 +338,12 @@ void db_free_unlock(struct dbt *table) {
 		for(i = 0; i < table->free_count ; i++) {
 			db_rebalance_erase(table->free_list[i].z,table->free_list[i].root);
 			if(table->cmp == strdb_cmp) {
-				free(table->free_list[i].z->key);
+				aFree(table->free_list[i].z->key);
 			}
 #ifdef MALLOC_DBN
 			free_dbn(table->free_list[i].z);
 #else
-			free(table->free_list[i].z);
+			aFree(table->free_list[i].z);
 #endif
 			table->item_count--;
 		}
@@ -378,7 +378,7 @@ struct dbn* db_insert(struct dbt *table,void* key,void* data)
 				} else {
 					table->free_count--;
 					if(table->cmp == strdb_cmp) {
-						free(p->key);
+						aFree(p->key);
 					}
 				}
 			}
@@ -447,7 +447,7 @@ void* db_erase(struct dbt *table,void* key)
 	if(table->free_lock) {
 		if(table->free_count == table->free_max) {
 			table->free_max += 32;
-			table->free_list = (struct db_free*)realloc(table->free_list,sizeof(struct db_free) * table->free_max);
+			table->free_list = (struct db_free*)aRealloc(table->free_list,sizeof(struct db_free) * table->free_max);
 		}
 		table->free_list[table->free_count].z    = p;
 		table->free_list[table->free_count].root = &table->ht[hash];
@@ -456,11 +456,11 @@ void* db_erase(struct dbt *table,void* key)
 		p->data    = NULL;
 		if(table->cmp == strdb_cmp) {
 			if(table->maxlen) {
-				char *key = (char*)malloc(table->maxlen);
+				char *key = (char*)aMalloc(table->maxlen);
 				memcpy(key,p->key,table->maxlen);
 				p->key = key;
 			} else {
-				p->key = strdup((const char*)p->key);
+				p->key = aStrdup((const char*)p->key);
 			}
 		}
 	} else {
@@ -468,7 +468,7 @@ void* db_erase(struct dbt *table,void* key)
 #ifdef MALLOC_DBN
 		free_dbn(p);
 #else
-		free(p);
+		aFree(p);
 #endif
 		table->item_count--;
 	}
@@ -560,8 +560,8 @@ void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
 #endif
 		}
 	}
-	free(table->free_list);
-	free(table);
+	aFree(table->free_list);
+	aFree(table);
 	va_end(ap);
 }
 
@@ -676,8 +676,8 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment) {
 	int  i;
 	char buf[8192];
 	FILE *fp = fopen(file, "r");
-	struct csvdb_data *csv = (struct csvdb_data*)calloc( sizeof(struct csvdb_data), 1);
-	csv->file = strdup( file );
+	struct csvdb_data *csv = (struct csvdb_data*)aCalloc( sizeof(struct csvdb_data), 1);
+	csv->file = aStrdup( file );
 	if(fp == NULL) {
 		return csv;
 	}
@@ -690,9 +690,9 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment) {
 		if( skip_comment && buf[0] == '/' && buf[1] == '/' ) continue; // コメント
 		if( csv->row_count == csv->row_max ) {
 			csv->row_max += 64;
-			csv->data  = (struct csvdb_line*)realloc(
+			csv->data  = (struct csvdb_line*)aRealloc(
 				csv->data, sizeof(struct csvdb_line) * csv->row_max );
-			csv->index = (int*)realloc(
+			csv->index = (int*)aRealloc(
 				csv->index, sizeof(int) * csv->row_max );
 		}
 		max = (int)strlen(buf);
@@ -702,7 +702,7 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment) {
 		buf[max  ] = ' '; // ダミー文字
 		buf[max+1] = 0;
 		line = &csv->data[csv->row_count++];
-		line->buf = strdup( buf );
+		line->buf = aStrdup( buf );
 		line->num = 0;
 		line->buf[max  ] = 0;
 		line->buf[max+1] = 0;
@@ -805,16 +805,16 @@ int csvdb_resize(struct csvdb_data *csv, int row, int col) {
 	if( csv->row_count < row ) {
 		while( csv->row_max <= row ) {
 			csv->row_max += 32;
-			csv->data = (struct csvdb_line*)realloc(
+			csv->data = (struct csvdb_line*)aRealloc(
 				csv->data, sizeof(struct csvdb_data) * csv->row_max
 			);
-			csv->index = (int*)realloc(
+			csv->index = (int*)aRealloc(
 				csv->index, sizeof(int) * csv->row_max
 			);
 		}
 		for(i = csv->row_count; i < row; i++) {
 			csv->data[i].num = 0;
-			csv->data[i].buf = strdup("");
+			csv->data[i].buf = aStrdup("");
 			csv->index[i]    = i;
 		}
 		csv->row_count = row;
@@ -841,20 +841,20 @@ int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str) {
 	line = &csv->data[ csv->index[row] ];
 	if( line->buf != NULL ) {
 		for( i = 0; i < line->num; i++) {
-			line->data_p[i] = strdup( line->data_p[i] );
+			line->data_p[i] = aStrdup( line->data_p[i] );
 		}
-		free( line->buf );
+		aFree( line->buf );
 		line->buf = NULL;
 	}
 	for(i = line->num; i <= col; i++) {
-		line->data_p[i] = strdup("");
+		line->data_p[i] = aStrdup("");
 		line->data_v[i] = 0;
 	}
 	csv->dirty = 1;
 	if(line->num < col + 1)
 		line->num = col + 1;
-	free(line->data_p[col]);
-	line->data_p[col] = strdup(str);
+	aFree(line->data_p[col]);
+	line->data_p[col] = aStrdup(str);
 	line->data_v[col] = strtol( str, NULL, 0);
 	return 1;
 }
@@ -867,12 +867,12 @@ int csvdb_clear_row(struct csvdb_data *csv, int row) {
 	line = &csv->data[ csv->index[ row ] ];
 	if( line->buf == NULL ) {
 		for(i = 0; i < line->num; i++) {
-			free( line->data_p[i] );
+			aFree( line->data_p[i] );
 		}
 	} else {
-		free( line->buf );
+		aFree( line->buf );
 	}
-	line->buf = strdup("");
+	line->buf = aStrdup("");
 	line->num = 0;
 	csv->dirty = 1;
 	return 1;
@@ -987,16 +987,16 @@ void csvdb_close(struct csvdb_data *csv) {
 		if( csv->data[i].buf == NULL ) {
 			struct csvdb_line *line = &csv->data[i];
 			for(j = 0; j < line->num; j++) {
-				free( line->data_p[j] );
+				aFree( line->data_p[j] );
 			}
 		} else {
-			free( csv->data[i].buf );
+			aFree( csv->data[i].buf );
 		}
 	}
-	free( csv->file );
-	free( csv->data );
-	free( csv->index );
-	free( csv );
+	aFree( csv->file );
+	aFree( csv->data );
+	aFree( csv->index );
+	aFree( csv );
 }
 
 // デバッグ用

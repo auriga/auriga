@@ -247,7 +247,7 @@ static int add_str(const unsigned char *p)
 		memset(str_data + (str_data_size - 128), '\0', 128);
 	}
 	len=strlen(p);
-	while(str_pos+len+1>=str_size){
+	while(str_pos+len+1>=(unsigned int)str_size){
 		str_size+=256;
 		str_buf=(char *)aRealloc(str_buf,str_size);
 		memset(str_buf + (str_size - 256), '\0', 256);
@@ -1926,7 +1926,7 @@ int conv_num(struct script_state *st,struct script_data *data)
 		p=data->u.str;
 		data->u.num = atoi(p);
 		if(data->type==C_STR)
-			free(p);
+			aFree(p);
 		data->type=C_INT;
 	}
 	return data->u.num;
@@ -1995,7 +1995,7 @@ void push_copy(struct script_stack *stack,int pos)
 		push_str(stack,C_CONSTSTR,stack->stack_data[pos].u.str);
 		break;
 	case C_STR:
-		push_str(stack,C_STR,strdup(stack->stack_data[pos].u.str));
+		push_str(stack,C_STR,aStrdup(stack->stack_data[pos].u.str));
 		break;
 	default:
 		push_val2(
@@ -2015,7 +2015,7 @@ void pop_stack(struct script_stack* stack,int start,int end)
 	int i;
 	for(i=start;i<end;i++){
 		if(stack->stack_data[i].type==C_STR){
-			free(stack->stack_data[i].u.str);
+			aFree(stack->stack_data[i].u.str);
 		}
 	}
 	if(stack->sp>end){
@@ -2186,9 +2186,9 @@ void op_add(struct script_state* st)
 		strcpy(buf,st->stack->stack_data[st->stack->sp-1].u.str);
 		strcat(buf,st->stack->stack_data[st->stack->sp].u.str);
 		if(st->stack->stack_data[st->stack->sp-1].type==C_STR)
-			free(st->stack->stack_data[st->stack->sp-1].u.str);
+			aFree(st->stack->stack_data[st->stack->sp-1].u.str);
 		if(st->stack->stack_data[st->stack->sp].type==C_STR)
-			free(st->stack->stack_data[st->stack->sp].u.str);
+			aFree(st->stack->stack_data[st->stack->sp].u.str);
 		st->stack->stack_data[st->stack->sp-1].type= C_STR;
 		st->stack->stack_data[st->stack->sp-1].u.str=buf;
 	}
@@ -2249,8 +2249,8 @@ void op_2str(struct script_state *st,int op,int sp1,int sp2)
 		printf("Illegal string operator\n");
 		break;
 	}
-	if(st->stack->stack_data[sp1].type==C_STR)	free(s1);
-	if(st->stack->stack_data[sp2].type==C_STR)	free(s2);
+	if(st->stack->stack_data[sp1].type==C_STR)	aFree(s1);
+	if(st->stack->stack_data[sp2].type==C_STR)	aFree(s2);
 
 	push_val(st->stack,C_INT,a);
 }
@@ -2327,9 +2327,9 @@ void op_2(struct script_state *st,int op)
 		// si,is => error
 		printf("script: op_2: int&str, str&int not allow.\n");
 		if(s1 && st->stack->stack_data[st->stack->sp].type == C_STR)
-			free(s1);
+			aFree(s1);
 		if(s2 && st->stack->stack_data[st->stack->sp+1].type == C_STR)
-			free(s2);
+			aFree(s2);
 		push_val(st->stack,C_INT,0);
 	}
 }
@@ -2672,7 +2672,7 @@ void run_script_main(struct script_state *st)
 		sd->stack			= st->stack;
 		sd->npc_id          = st->oid;
 		sd->npc_pos         = st->pos;
-		free(st);
+		aFree(st);
 	} else {
 		// 実行が終わった or 続行不可能なのでスタッククリア
 		if(sd && st->oid == sd->npc_id) {
@@ -2682,7 +2682,7 @@ void run_script_main(struct script_state *st)
 		}
 		st->pos = -1;
 		script_free_stack(st->stack);
-		free(st);
+		aFree(st);
 	}
 
 	return;
@@ -2711,7 +2711,7 @@ int mapreg_setregstr(int num,const char *str)
 	char *p;
 
 	if( (p=numdb_search(mapregstr_db,num))!=NULL )
-		free(p);
+		aFree(p);
 
 	if( str==NULL || *str==0 ){
 		numdb_erase(mapregstr_db,num);
@@ -2960,12 +2960,12 @@ static int mapreg_db_final(void *key,void *data,va_list ap)
 }
 static int mapregstr_db_final(void *key,void *data,va_list ap)
 {
-	free(data);
+	aFree(data);
 	return 0;
 }
 static int userfunc_db_final(void *key,void *data,va_list ap)
 {
-	free(key);
+	aFree(key);
 	script_free_code(data);
 	return 0;
 }
@@ -3013,7 +3013,7 @@ int do_final_script()
 		while(n) {
 			struct script_state *st = (struct script_state *)n->data;
 			script_free_stack(st->stack);
-			free(st);
+			aFree(st);
 			n = n->next;
 		}
 		linkdb_final(&sleep_db);
@@ -3045,8 +3045,8 @@ int do_final_script()
 	}
 #endif
 
-	free(str_buf);
-	free(str_data);
+	aFree(str_buf);
+	aFree(str_data);
 
 #if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
 	script_csvfinal();
@@ -3810,7 +3810,7 @@ int buildin_menu(struct script_state *st)
 			}
 		}
 		clif_scriptmenu(script_rid2sd(st),st->oid,buf);
-		free(buf);
+		aFree(buf);
 	} else if(sd->npc_menu==0xff){	// cancel
 		sd->state.menu_or_input=0;
 		st->state=END;
@@ -8326,7 +8326,7 @@ int buildin_select(struct script_state *st)
 			}
 		}
 		clif_scriptmenu(script_rid2sd(st),st->oid,buf);
-		free(buf);
+		aFree(buf);
 	} else if(sd->npc_menu==0xff){	// cancel
 		sd->state.menu_or_input=0;
 		st->state=END;

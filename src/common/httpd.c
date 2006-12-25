@@ -293,7 +293,7 @@ static int httpd_db_final(void *key,void *data,va_list ap)
 {
 	char *url = key;
 
-	free(url);
+	aFree(url);
 
 	return 0;
 }
@@ -347,7 +347,7 @@ void httpd_pages(const char* url,void (*httpd_func)(struct httpd_session_data*,c
 		return;
 		
 	if(strdb_search(httpd_files,url+1) == NULL) {
-		strdb_insert(httpd_files,strdup(url+1),httpd_func);
+		strdb_insert(httpd_files,aStrdup(url+1),httpd_func);
 	} else {
 		strdb_insert(httpd_files,url+1,httpd_func);
 	}

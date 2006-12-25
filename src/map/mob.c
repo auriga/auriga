@@ -1273,7 +1273,7 @@ static int mob_ai_hard_createlist(void) {
 
 static int mob_ai_hard(int tid,unsigned int tick,int id,int data)
 {
-	int limit = MIN_MOBTHINKTIME * battle_config.mob_ai_cpu_usage / 100;
+	unsigned int limit = MIN_MOBTHINKTIME * battle_config.mob_ai_cpu_usage / 100;
 
 	map_freeblock_lock();
 	mob_ai_hard_graph2++; // タイマー呼び出し回数
