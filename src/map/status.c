@@ -524,7 +524,7 @@ L_RECALC:
 
 		if(sd->inventory_data[index]) {
 			if(sd->inventory_data[index]->type == 4) {
-				if(sd->status.inventory[index].card[0]!=0x00ff && sd->status.inventory[index].card[0]!=0x00fe && sd->status.inventory[index].card[0]!=(short)0xff00) {
+				if( !itemdb_isspecial(sd->status.inventory[index].card[0]) ) {
 					int j;
 					for(j=0;j<sd->inventory_data[index]->slot;j++){	// カード
 						int c=sd->status.inventory[index].card[j];
@@ -540,8 +540,8 @@ L_RECALC:
 					}
 				}
 			}
-			else if(sd->inventory_data[index]->type==5){ // 防具
-				if(sd->status.inventory[index].card[0]!=0x00ff && sd->status.inventory[index].card[0]!=0x00fe && sd->status.inventory[index].card[0]!=(short)0xff00) {
+			else if(sd->inventory_data[index]->type == 5) { // 防具
+				if( !itemdb_isspecial(sd->status.inventory[index].card[0]) ) {
 					int j;
 					for(j=0;j<sd->inventory_data[index]->slot;j++){	// カード
 						int c=sd->status.inventory[index].card[j];

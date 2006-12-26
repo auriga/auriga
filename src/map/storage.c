@@ -44,7 +44,7 @@ static void sortage_sortitem(struct storage* stor){
 	nullpo_retv(stor);
 
 	if(battle_config.storagesort_by_itemid & 1)
-		qsort(stor->storage, MAX_STORAGE, sizeof(struct item), storage_comp_item);
+		qsort(stor->store_item, MAX_STORAGE, sizeof(struct item), storage_comp_item);
 
 	return;
 }
@@ -53,7 +53,7 @@ static void sortage_gsortitem(struct guild_storage* gstor){
 	nullpo_retv(gstor);
 
 	if(battle_config.storagesort_by_itemid & 2)
-		qsort(gstor->storage, MAX_GUILD_STORAGE, sizeof(struct item), storage_comp_item);
+		qsort(gstor->store_item, MAX_GUILD_STORAGE, sizeof(struct item), storage_comp_item);
 
 	return;
 }
@@ -136,12 +136,12 @@ static int storage_additem(struct map_session_data *sd,struct storage *stor,stru
 	if(!itemdb_isequip2(data)){
 		// 装備品ではないので、既所有品なら個数のみ変化させる
 		for(i=0;i<MAX_STORAGE;i++){
-			if(stor->storage[i].nameid == item_data->nameid &&
-				stor->storage[i].card[0] == item_data->card[0] && stor->storage[i].card[1] == item_data->card[1] &&
-				stor->storage[i].card[2] == item_data->card[2] && stor->storage[i].card[3] == item_data->card[3]){
-				if(stor->storage[i].amount+amount > MAX_AMOUNT)
+			if(stor->store_item[i].nameid == item_data->nameid &&
+				stor->store_item[i].card[0] == item_data->card[0] && stor->store_item[i].card[1] == item_data->card[1] &&
+				stor->store_item[i].card[2] == item_data->card[2] && stor->store_item[i].card[3] == item_data->card[3]){
+				if(stor->store_item[i].amount+amount > MAX_AMOUNT)
 					return 1;
-				stor->storage[i].amount+=amount;
+				stor->store_item[i].amount+=amount;
 				clif_storageitemadded(sd,stor,i,amount);
 				return 0;
 			}
@@ -151,9 +151,9 @@ static int storage_additem(struct map_session_data *sd,struct storage *stor,stru
 
 	// 装備品か未所有品だったので空き欄へ追加
 	for(i=0;i<MAX_STORAGE;i++){
-		if(stor->storage[i].nameid==0){
-			memcpy(&stor->storage[i],item_data,sizeof(stor->storage[0]));
-			stor->storage[i].amount=amount;
+		if(stor->store_item[i].nameid==0){
+			memcpy(&stor->store_item[i],item_data,sizeof(stor->store_item[0]));
+			stor->store_item[i].amount=amount;
 			stor->storage_amount++;
 			clif_storageitemadded(sd,stor,i,amount);
 			clif_updatestorageamount(sd,stor);
@@ -173,12 +173,12 @@ static void storage_delitem(struct map_session_data *sd,struct storage *stor,int
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	if(stor->storage[n].nameid==0 || stor->storage[n].amount<amount)
+	if(stor->store_item[n].nameid==0 || stor->store_item[n].amount<amount)
 		return;
 
-	stor->storage[n].amount-=amount;
-	if(stor->storage[n].amount==0){
-		memset(&stor->storage[n],0,sizeof(stor->storage[0]));
+	stor->store_item[n].amount-=amount;
+	if(stor->store_item[n].amount==0){
+		memset(&stor->store_item[n],0,sizeof(stor->store_item[0]));
 		stor->storage_amount--;
 		clif_updatestorageamount(sd,stor);
 	}
@@ -229,10 +229,10 @@ void storage_storageget(struct map_session_data *sd, int idx, int amount)
 		return;
 	if (idx < 0 || idx >= MAX_STORAGE)
 		return;
-	if (amount < 1 || amount > stor->storage[idx].amount)
+	if (amount < 1 || amount > stor->store_item[idx].amount)
 		return;
 
-	if ((flag = pc_additem(sd, &stor->storage[idx], amount)) == 0)
+	if ((flag = pc_additem(sd, &stor->store_item[idx], amount)) == 0)
 		storage_delitem(sd, stor, idx, amount);
 	else
 		clif_additem(sd,0,0,flag);
@@ -281,12 +281,12 @@ void storage_storagegettocart(struct map_session_data *sd, int idx, int amount)
 		return;
 	if (idx < 0 || idx >= MAX_STORAGE)
 		return;
-	if (itemdb_iscartable(stor->storage[idx].nameid) == 0)	// カートへ出せるかチェック
+	if (itemdb_iscartable(stor->store_item[idx].nameid) == 0)	// カートへ出せるかチェック
 		return;
-	if (amount < 1 || amount > stor->storage[idx].amount)
+	if (amount < 1 || amount > stor->store_item[idx].amount)
 		return;
 
-	if (pc_cart_additem(sd, &stor->storage[idx], amount) == 0)
+	if (pc_cart_additem(sd, &stor->store_item[idx], amount) == 0)
 		storage_delitem(sd, stor, idx, amount);
 
 	return;
@@ -436,12 +436,12 @@ static int guild_storage_additem(struct map_session_data *sd,struct guild_storag
 	if(!itemdb_isequip2(data)){
 		// 装備品ではないので、既所有品なら個数のみ変化させる
 		for(i=0;i<MAX_GUILD_STORAGE;i++){
-			if(stor->storage[i].nameid == item_data->nameid &&
-				stor->storage[i].card[0] == item_data->card[0] && stor->storage[i].card[1] == item_data->card[1] &&
-				stor->storage[i].card[2] == item_data->card[2] && stor->storage[i].card[3] == item_data->card[3]){
-				if(stor->storage[i].amount+amount > MAX_AMOUNT)
+			if(stor->store_item[i].nameid == item_data->nameid &&
+				stor->store_item[i].card[0] == item_data->card[0] && stor->store_item[i].card[1] == item_data->card[1] &&
+				stor->store_item[i].card[2] == item_data->card[2] && stor->store_item[i].card[3] == item_data->card[3]){
+				if(stor->store_item[i].amount+amount > MAX_AMOUNT)
 					return 1;
-				stor->storage[i].amount+=amount;
+				stor->store_item[i].amount+=amount;
 				clif_guildstorageitemadded(sd,stor,i,amount);
 				return 0;
 			}
@@ -451,9 +451,9 @@ static int guild_storage_additem(struct map_session_data *sd,struct guild_storag
 
 	// 装備品か未所有品だったので空き欄へ追加
 	for(i=0;i<MAX_GUILD_STORAGE;i++){
-		if(stor->storage[i].nameid==0){
-			memcpy(&stor->storage[i],item_data,sizeof(stor->storage[0]));
-			stor->storage[i].amount=amount;
+		if(stor->store_item[i].nameid==0){
+			memcpy(&stor->store_item[i],item_data,sizeof(stor->store_item[0]));
+			stor->store_item[i].amount=amount;
 			stor->storage_amount++;
 			clif_guildstorageitemadded(sd,stor,i,amount);
 			clif_updateguildstorageamount(sd,stor);
@@ -473,12 +473,12 @@ static void guild_storage_delitem(struct map_session_data *sd,struct guild_stora
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	if(stor->storage[n].nameid==0 || stor->storage[n].amount<amount)
+	if(stor->store_item[n].nameid==0 || stor->store_item[n].amount<amount)
 		return;
 
-	stor->storage[n].amount-=amount;
-	if(stor->storage[n].amount==0){
-		memset(&stor->storage[n],0,sizeof(stor->storage[0]));
+	stor->store_item[n].amount-=amount;
+	if(stor->store_item[n].amount==0){
+		memset(&stor->store_item[n],0,sizeof(stor->store_item[0]));
 		stor->storage_amount--;
 		clif_updateguildstorageamount(sd,stor);
 	}
@@ -531,10 +531,10 @@ void storage_guild_storageget(struct map_session_data *sd, int idx, int amount)
 		return;
 	if (idx < 0 || idx >= MAX_GUILD_STORAGE)
 		return;
-	if (amount < 1 || amount > stor->storage[idx].amount)
+	if (amount < 1 || amount > stor->store_item[idx].amount)
 		return;
 
-	if ((flag = pc_additem(sd,&stor->storage[idx],amount)) == 0)
+	if ((flag = pc_additem(sd,&stor->store_item[idx],amount)) == 0)
 		guild_storage_delitem(sd, stor, idx, amount);
 	else
 		clif_additem(sd,0,0,flag);
@@ -585,12 +585,12 @@ void storage_guild_storagegettocart(struct map_session_data *sd, int idx, int am
 		return;
 	if (idx < 0 || idx >= MAX_GUILD_STORAGE)
 		return;
-	if (itemdb_iscartable(stor->storage[idx].nameid) == 0)	// カートへ出せるかチェック
+	if (itemdb_iscartable(stor->store_item[idx].nameid) == 0)	// カートへ出せるかチェック
 		return;
-	if (amount < 1 || amount > stor->storage[idx].amount)
+	if (amount < 1 || amount > stor->store_item[idx].amount)
 		return;
 
-	if (pc_cart_additem(sd, &stor->storage[idx], amount) == 0)
+	if (pc_cart_additem(sd, &stor->store_item[idx], amount) == 0)
 		guild_storage_delitem(sd, stor, idx, amount);
 
 	return;

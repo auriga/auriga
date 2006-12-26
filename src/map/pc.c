@@ -2621,33 +2621,33 @@ void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip)
 		int cardid=sd->status.inventory[idx_card].nameid;
 		int ep=sd->inventory_data[idx_card]->equip;
 
-		if( nameid <= 0 || sd->inventory_data[idx_equip] == NULL ||
-			(sd->inventory_data[idx_equip]->type!=4 && sd->inventory_data[idx_equip]->type!=5)||	// 装備じゃない
-			( sd->status.inventory[idx_equip].identify==0 ) ||		// 未鑑定
-			( sd->status.inventory[idx_equip].card[0]==0x00ff) ||		// 製造武器
-			( sd->status.inventory[idx_equip].card[0]==0x00fe) ||
-			( (sd->inventory_data[idx_equip]->equip&ep)==0 ) ||					// 装備個所違い
-			( sd->inventory_data[idx_equip]->type==4 && ep==32) ||			// 両手武器と盾カード
-			(sd->inventory_data[idx_card]->type!=6)|| // Prevent Hack [Ancyker]
-			( sd->status.inventory[idx_equip].card[0]==(short)0xff00) || sd->status.inventory[idx_equip].equip){
-
+		if( nameid <= 0 ||
+		    sd->inventory_data[idx_equip] == NULL ||
+		    (sd->inventory_data[idx_equip]->type != 4 && sd->inventory_data[idx_equip]->type != 5) ||	// 装備じゃない
+		    sd->status.inventory[idx_equip].identify == 0 ||						// 未鑑定
+		    itemdb_isspecial(sd->status.inventory[idx_equip].card[0]) ||				// 製造武器・名前入り・ペット
+		    (sd->inventory_data[idx_equip]->equip & ep) == 0 ||						// 装備個所違い
+		    (sd->inventory_data[idx_equip]->type == 4 && ep == 32) ||					// 両手武器と盾カード
+		    (sd->inventory_data[idx_card]->type != 6) ||						// Prevent Hack [Ancyker]
+		    sd->status.inventory[idx_equip].equip )
+		{
 			clif_insert_card(sd, idx_equip, idx_card, 1); // flag: 1=fail, 0:success
 			return;
 		}
 		for(i=0;i<sd->inventory_data[idx_equip]->slot;i++){
 			if( sd->status.inventory[idx_equip].card[i] == 0){
-			// 空きスロットがあったので差し込む
+				// 空きスロットがあったので差し込む
 				sd->status.inventory[idx_equip].card[i]=cardid;
 
-			// カードは減らす
+				// カードは減らす
 				clif_insert_card(sd, idx_equip, idx_card, 0); // flag: 1=fail, 0:success
 				pc_delitem(sd,idx_card,1,1);
 				return;
 			}
 		}
-	}
-	else
+	} else {
 		clif_insert_card(sd, idx_equip, idx_card, 1); // flag: 1=fail, 0:success
+	}
 
 	return;
 }

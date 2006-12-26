@@ -66,6 +66,8 @@ struct item_data* itemdb_exists(int nameid);
 #define	itemdb_viewid(n) (itemdb_search(n)->view_id)
 #define	itemdb_group(n) (itemdb_search(n)->group)
 
+#define itemdb_isspecial(n) ((n) == 0x00ff || (n) == 0x00fe || (n) == (short)0xff00)
+
 int itemdb_searchrandomid(int flags);
 
 #define itemdb_value_buy(n) itemdb_search(n)->value_buy

@@ -1,14 +1,17 @@
 //#define DEBUG_FUNCIN
 //#define DEBUG_DISP
 
-//コンバートされた中間言語を表示
+// コンバートされた中間言語を表示
 //#define DEBUG_DISASM
 
 // 実行過程を表示
 //#define DEBUG_RUN
 
-//使用した変数名一覧を表示
+// 使用した変数名一覧を表示
 //#define DEBUG_VARS
+
+// ハッシュの計算結果を出力
+//#define DEBUG_HASH
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -3043,6 +3046,44 @@ int do_final_script()
 			fclose(fp);
 		}
 		numdb_final(vars_db, varsdb_final );
+	}
+#endif
+
+#ifdef DEBUG_HASH
+	{
+		FILE *fp = fopen("hash_dump.txt","wt");
+		if(fp) {
+			int i,count[SCRIPT_HASH_SIZE];
+			int min=0x7fffffff,max=0,zero=0;
+
+			memset(count, 0, sizeof(count));
+			printf("do_final_script: dumping script str hash information\n");
+			fprintf(fp,"num : calced_val -> hash : data_name\n");
+			fprintf(fp,"---------------------------------------------------------------\n");
+
+			for(i=LABEL_START; i<str_num; i++) {
+				int h=0;
+				char *p = str_buf+str_data[i].str;
+				while(*p){
+					h=(h<<1)+(h>>3)+(h>>5)+(h>>8);
+					h+=(unsigned char)tolower(*p++);
+				}
+				fprintf(fp,"%04d: %10d ->  %3d : %s\n",i,h,h&(SCRIPT_HASH_SIZE-1),str_buf+str_data[i].str);
+				count[h&(SCRIPT_HASH_SIZE-1)]++;
+			}
+			fprintf(fp,"--------------------\n\n");
+			for(i=0; i<sizeof(count)/sizeof(count[0]); i++) {
+				fprintf(fp,"  hash %3d = %d\n",i,count[i]);
+				if(min > count[i])
+					min = count[i];		// minimun count of collision
+				if(max < count[i])
+					max = count[i];		// maximun count of collision
+				if(count[i] == 0)
+					zero++;
+			}
+			fprintf(fp,"--------------------\n    min = %d, max = %d, zero = %d\n",min,max,zero);
+			fclose(fp);
+		}
 	}
 #endif
 

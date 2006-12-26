@@ -175,17 +175,17 @@ int storage_fromstr(char *str, struct storage *p)
 		      &tmp_int[7], &tmp_int[8], &tmp_int[9], &tmp_int[10], &len) == 11) {
 
 			if(i < MAX_STORAGE) {
-				p->storage[i].id = tmp_int[0];
-				p->storage[i].nameid = tmp_int[1];
-				p->storage[i].amount = tmp_int[2];
-				p->storage[i].equip = tmp_int[3];
-				p->storage[i].identify = tmp_int[4];
-				p->storage[i].refine = tmp_int[5];
-				p->storage[i].attribute = tmp_int[6];
-				p->storage[i].card[0] = tmp_int[7];
-				p->storage[i].card[1] = tmp_int[8];
-				p->storage[i].card[2] = tmp_int[9];
-				p->storage[i].card[3] = tmp_int[10];
+				p->store_item[i].id = tmp_int[0];
+				p->store_item[i].nameid = tmp_int[1];
+				p->store_item[i].amount = tmp_int[2];
+				p->store_item[i].equip = tmp_int[3];
+				p->store_item[i].identify = tmp_int[4];
+				p->store_item[i].refine = tmp_int[5];
+				p->store_item[i].attribute = tmp_int[6];
+				p->store_item[i].card[0] = tmp_int[7];
+				p->store_item[i].card[1] = tmp_int[8];
+				p->store_item[i].card[2] = tmp_int[9];
+				p->store_item[i].card[3] = tmp_int[10];
 			}
 			next += len;
 			if (str[next] == ' ')
@@ -967,17 +967,17 @@ int gstorage_fromstr(char *str,struct guild_storage *p)
 		if(set!=11)
 			return 1;
 		if(i < MAX_GUILD_STORAGE) {
-			p->storage[i].id=tmp_int[0];
-			p->storage[i].nameid=tmp_int[1];
-			p->storage[i].amount=tmp_int[2];
-			p->storage[i].equip=tmp_int[3];
-			p->storage[i].identify=tmp_int[4];
-			p->storage[i].refine=tmp_int[5];
-			p->storage[i].attribute=tmp_int[6];
-			p->storage[i].card[0]=tmp_int[7];
-			p->storage[i].card[1]=tmp_int[8];
-			p->storage[i].card[2]=tmp_int[9];
-			p->storage[i].card[3]=tmp_int[10];
+			p->store_item[i].id=tmp_int[0];
+			p->store_item[i].nameid=tmp_int[1];
+			p->store_item[i].amount=tmp_int[2];
+			p->store_item[i].equip=tmp_int[3];
+			p->store_item[i].identify=tmp_int[4];
+			p->store_item[i].refine=tmp_int[5];
+			p->store_item[i].attribute=tmp_int[6];
+			p->store_item[i].card[0]=tmp_int[7];
+			p->store_item[i].card[1]=tmp_int[8];
+			p->store_item[i].card[2]=tmp_int[9];
+			p->store_item[i].card[3]=tmp_int[10];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -1186,7 +1186,7 @@ int char_convert(void){
 				memset(&p,0,sizeof(p));
 				p.account_id=tmp_int[0];
 				storage_fromstr(line,&p);
-				char_sql_saveitem(p.storage,MAX_STORAGE,p.account_id,TABLE_STORAGE);
+				char_sql_saveitem(p.store_item,MAX_STORAGE,p.account_id,TABLE_STORAGE);
 			}else{
 				printf("int_storage: broken data [%s] line %d\n",storage_txt,c);
 			}
@@ -1275,7 +1275,7 @@ int char_convert(void){
 			if(sscanf(line,"%d",&tmp_int[0]) == 1)
 				gs.guild_id=tmp_int[0];
 			if(gs.guild_id > 0 && gstorage_fromstr(line,&gs) == 0) {
-				char_sql_saveitem(gs.storage,MAX_GUILD_STORAGE,gs.guild_id,TABLE_GUILD_STORAGE);
+				char_sql_saveitem(gs.store_item,MAX_GUILD_STORAGE,gs.guild_id,TABLE_GUILD_STORAGE);
 			}
 			else{
 				printf("int_storage: broken data [%s] line %d\n",guild_storage_txt,c);

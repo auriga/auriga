@@ -78,11 +78,11 @@ int storage_tostr(char *str,struct storage *p)
 	str_p += sprintf(str_p,"%d,%d\t",p->account_id,p->storage_amount);
 
 	for(i=0;i<MAX_STORAGE;i++)
-		if( (p->storage[i].nameid) && (p->storage[i].amount) ){
+		if( (p->store_item[i].nameid) && (p->store_item[i].amount) ){
 			str_p += sprintf(str_p,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
-				p->storage[i].id,p->storage[i].nameid,p->storage[i].amount,p->storage[i].equip,
-				p->storage[i].identify,p->storage[i].refine,p->storage[i].attribute,
-				p->storage[i].card[0],p->storage[i].card[1],p->storage[i].card[2],p->storage[i].card[3]);
+				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
+				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
+				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3]);
 			f++;
 		}
 
@@ -116,17 +116,17 @@ int storage_fromstr(char *str,struct storage *p)
 		if(set!=11)
 			return 1;
 		if(i < MAX_STORAGE) {
-			p->storage[i].id=tmp_int[0];
-			p->storage[i].nameid=tmp_int[1];
-			p->storage[i].amount=tmp_int[2];
-			p->storage[i].equip=tmp_int[3];
-			p->storage[i].identify=tmp_int[4];
-			p->storage[i].refine=tmp_int[5];
-			p->storage[i].attribute=tmp_int[6];
-			p->storage[i].card[0]=tmp_int[7];
-			p->storage[i].card[1]=tmp_int[8];
-			p->storage[i].card[2]=tmp_int[9];
-			p->storage[i].card[3]=tmp_int[10];
+			p->store_item[i].id=tmp_int[0];
+			p->store_item[i].nameid=tmp_int[1];
+			p->store_item[i].amount=tmp_int[2];
+			p->store_item[i].equip=tmp_int[3];
+			p->store_item[i].identify=tmp_int[4];
+			p->store_item[i].refine=tmp_int[5];
+			p->store_item[i].attribute=tmp_int[6];
+			p->store_item[i].card[0]=tmp_int[7];
+			p->store_item[i].card[1]=tmp_int[8];
+			p->store_item[i].card[2]=tmp_int[9];
+			p->store_item[i].card[3]=tmp_int[10];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -209,8 +209,8 @@ int storage_txt_delete(int account_id)
 	if(s) {
 		int i;
 		for(i=0;i<s->storage_amount;i++){
-			if(s->storage[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&s->storage[i].card[2])));
+			if(s->store_item[i].card[0] == (short)0xff00)
+				pet_delete(*((long *)(&s->store_item[i].card[2])));
 		}
 		numdb_erase(storage_db,account_id);
 		aFree(s);
@@ -233,11 +233,11 @@ static int gstorage_tostr(char *str,struct guild_storage *p)
 	str_p+=sprintf(str,"%d,%d\t",p->guild_id,p->storage_amount);
 
 	for(i=0;i<MAX_GUILD_STORAGE;i++)
-		if( (p->storage[i].nameid) && (p->storage[i].amount) ){
+		if( (p->store_item[i].nameid) && (p->store_item[i].amount) ){
 			str_p += sprintf(str_p,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
-				p->storage[i].id,p->storage[i].nameid,p->storage[i].amount,p->storage[i].equip,
-				p->storage[i].identify,p->storage[i].refine,p->storage[i].attribute,
-				p->storage[i].card[0],p->storage[i].card[1],p->storage[i].card[2],p->storage[i].card[3]);
+				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
+				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
+				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3]);
 			f++;
 		}
 
@@ -270,17 +270,17 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 		if(set!=11)
 			return 1;
 		if(i < MAX_GUILD_STORAGE) {
-			p->storage[i].id=tmp_int[0];
-			p->storage[i].nameid=tmp_int[1];
-			p->storage[i].amount=tmp_int[2];
-			p->storage[i].equip=tmp_int[3];
-			p->storage[i].identify=tmp_int[4];
-			p->storage[i].refine=tmp_int[5];
-			p->storage[i].attribute=tmp_int[6];
-			p->storage[i].card[0]=tmp_int[7];
-			p->storage[i].card[1]=tmp_int[8];
-			p->storage[i].card[2]=tmp_int[9];
-			p->storage[i].card[3]=tmp_int[10];
+			p->store_item[i].id=tmp_int[0];
+			p->store_item[i].nameid=tmp_int[1];
+			p->store_item[i].amount=tmp_int[2];
+			p->store_item[i].equip=tmp_int[3];
+			p->store_item[i].identify=tmp_int[4];
+			p->store_item[i].refine=tmp_int[5];
+			p->store_item[i].attribute=tmp_int[6];
+			p->store_item[i].card[0]=tmp_int[7];
+			p->store_item[i].card[1]=tmp_int[8];
+			p->store_item[i].card[2]=tmp_int[9];
+			p->store_item[i].card[3]=tmp_int[10];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -391,8 +391,8 @@ int gstorage_txt_delete(int guild_id)
 	if(gs) {
 		int i;
 		for(i=0;i<gs->storage_amount;i++){
-			if(gs->storage[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&gs->storage[i].card[2])));
+			if(gs->store_item[i].card[0] == (short)0xff00)
+				pet_delete(*((long *)(&gs->store_item[i].card[2])));
 		}
 		numdb_erase(gstorage_db,guild_id);
 		aFree(gs);
@@ -638,7 +638,7 @@ const struct storage* storage_sql_load(int account_id) {
 		s = (struct storage *)aCalloc(1,sizeof(struct storage));
 		s->account_id = account_id;
 		numdb_insert(storage_db,s->account_id,s);
-		s->storage_amount = char_sql_loaditem(s->storage,MAX_STORAGE,account_id,TABLE_STORAGE);
+		s->storage_amount = char_sql_loaditem(s->store_item,MAX_STORAGE,account_id,TABLE_STORAGE);
 	}
 	return s;
 }
@@ -647,7 +647,7 @@ int  storage_sql_save(struct storage *s2) {
 	const struct storage *s1 = storage_sql_load(s2->account_id);
 	if(memcmp(s1,s2,sizeof(struct storage))) {
 		struct storage *s3 = (struct storage *)numdb_search(storage_db, s2->account_id);
-		char_sql_saveitem(s2->storage,MAX_STORAGE,s2->account_id,TABLE_STORAGE);
+		char_sql_saveitem(s2->store_item,MAX_STORAGE,s2->account_id,TABLE_STORAGE);
 		if(s3)
 			memcpy(s3, s2, sizeof(struct storage));
 	}
@@ -667,8 +667,8 @@ int  storage_sql_delete(int account_id) {
 	if(s) {
 		int i;
 		for(i=0;i<s->storage_amount;i++){
-			if(s->storage[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&s->storage[i].card[2])));
+			if(s->store_item[i].card[0] == (short)0xff00)
+				pet_delete(*((long *)(&s->store_item[i].card[2])));
 		}
 	}
 
@@ -706,7 +706,7 @@ const struct guild_storage *gstorage_sql_load(int guild_id) {
 		s = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
 		s->guild_id = guild_id;
 		numdb_insert(gstorage_db,s->guild_id,s);
-		s->storage_amount = char_sql_loaditem(s->storage,MAX_GUILD_STORAGE,guild_id,TABLE_GUILD_STORAGE);
+		s->storage_amount = char_sql_loaditem(s->store_item,MAX_GUILD_STORAGE,guild_id,TABLE_GUILD_STORAGE);
 	}
 	return s;
 }
@@ -715,7 +715,7 @@ int  gstorage_sql_save(struct guild_storage *gs2) {
 	const struct guild_storage *gs1 = gstorage_sql_load(gs2->guild_id);
 	if(memcmp(gs1,gs2,sizeof(struct guild_storage))) {
 		struct guild_storage *gs3 = (struct guild_storage*)numdb_search( gstorage_db, gs2->guild_id );
-		char_sql_saveitem(gs2->storage,MAX_GUILD_STORAGE,gs2->guild_id,TABLE_GUILD_STORAGE);
+		char_sql_saveitem(gs2->store_item,MAX_GUILD_STORAGE,gs2->guild_id,TABLE_GUILD_STORAGE);
 		if(gs3)
 			memcpy( gs3, gs2, sizeof(struct guild_storage));
 	}
@@ -735,8 +735,8 @@ int  gstorage_sql_delete(int guild_id) {
 	if(s) {
 		int i;
 		for(i=0;i<s->storage_amount;i++){
-			if(s->storage[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&s->storage[i].card[2])));
+			if(s->store_item[i].card[0] == (short)0xff00)
+				pet_delete(*((long *)(&s->store_item[i].card[2])));
 		}
 	}
 
