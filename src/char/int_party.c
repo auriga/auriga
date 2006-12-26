@@ -102,7 +102,7 @@ int party_fromstr(char *str,struct party *p)
 // ------------------------------------------
 int party_journal_rollforward( int key, void* buf, int flag )
 {
-	struct party* p = numdb_search( party_db, key );
+	struct party* p = (struct party *)numdb_search( party_db, key );
 	
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct party*)buf)->party_id )
@@ -266,13 +266,14 @@ const struct party* party_txt_load_str(char *str)
 
 const struct party* party_txt_load_num(int party_id)
 {
-	return numdb_search(party_db,party_id);
+	return (const struct party *)numdb_search(party_db,party_id);
 }
 
-int party_txt_save(struct party* p2) {
-	struct party *p1 = numdb_search(party_db,p2->party_id);
+int party_txt_save(struct party* p2)
+{
+	struct party *p1 = (struct party *)numdb_search(party_db,p2->party_id);
 	if(p1 == NULL) {
-		p1 = aMalloc(sizeof(struct party));
+		p1 = (struct party *)aMalloc(sizeof(struct party));
 		numdb_insert(party_db,p2->party_id,p1);
 	}
 	memcpy(p1,p2,sizeof(struct party));
@@ -283,8 +284,9 @@ int party_txt_save(struct party* p2) {
 	return 1;
 }
 
-int party_txt_delete(int party_id) {
-	struct party *p = numdb_search(party_db,party_id);
+int party_txt_delete(int party_id)
+{
+	struct party *p = (struct party *)numdb_search(party_db,party_id);
 	if(p) {
 		numdb_erase(party_db,p->party_id);
 		aFree(p);
@@ -327,7 +329,7 @@ int party_txt_new(struct party *p) {
 
 static int party_txt_final_sub(void *key,void *data,va_list ap)
 {
-	struct party *p=data;
+	struct party *p = (struct party *)data;
 
 	aFree(p);
 
@@ -338,7 +340,7 @@ void party_txt_final(void)
 {
 	if(party_db)
 		numdb_final(party_db,party_txt_final_sub);
-		
+
 #ifdef TXT_JOURNAL
 	if( party_journal_enable )
 	{

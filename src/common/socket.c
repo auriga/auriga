@@ -1198,7 +1198,7 @@ static int connect_check_(unsigned int ip) {
 		hist = hist->next;
 	}
 	// IPリストに無いので新規作成
-	hist_new = aCalloc(1, sizeof(struct _connect_history));
+	hist_new = (struct _connect_history *)aCalloc(1, sizeof(struct _connect_history));
 	hist_new->ip   = ip;
 	hist_new->tick = gettick();
 	if (connect_history[ip & 0xFFFF] != NULL) {
@@ -1312,7 +1312,7 @@ static void socket_config_read2(const char *filename) {
 				}
 				access_allownum = 0;
 			} else {
-				access_allow = aRealloc(access_allow, (access_allownum + 1) * sizeof(struct _access_control));
+				access_allow = (struct _access_control *)aRealloc(access_allow, (access_allownum + 1) * sizeof(struct _access_control));
 				if (access_ipmask(w2, &access_allow[access_allownum]))
 					access_allownum++;
 			}
@@ -1325,7 +1325,7 @@ static void socket_config_read2(const char *filename) {
 				}
 				access_denynum = 0;
 			} else {
-				access_deny = aRealloc(access_deny, (access_denynum + 1) * sizeof(struct _access_control));
+				access_deny = (struct _access_control *)aRealloc(access_deny, (access_denynum + 1) * sizeof(struct _access_control));
 				if (access_ipmask(w2, &access_deny[access_denynum]))
 					access_denynum++;
 			}

@@ -33,7 +33,7 @@ struct mmo_char_server {
 	short port;
 	int users;
 	int maintenance;
-	int new;
+	int new_;
 };
 
 struct mmo_account {

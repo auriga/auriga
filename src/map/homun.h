@@ -10,7 +10,7 @@
 #define MAX_HOMSKILL_TREE 16
 
 struct homun_db {
-	short class;
+	short class_;
 	char name[24],jname[24];
 	int base_level;
 	int hp,sp,hp_kmax,hp_kmin,sp_kmax,sp_kmin;
@@ -43,7 +43,7 @@ int homun_callhom(struct map_session_data *sd);
 int homun_recv_homdata(int account_id,struct mmo_homunstatus *p,int flag);
 int homun_return_embryo(struct map_session_data *sd);
 int homun_revive(struct map_session_data *sd,int skilllv);
-int homun_change_class( struct map_session_data *sd, int class );
+int homun_change_class( struct map_session_data *sd, int class_ );
 
 int homun_checkskill(struct homun_data *hd,int skill_id);
 void homun_skillup(struct map_session_data *sd, int skill_num);

@@ -5,13 +5,13 @@
 #include "../common/mmo.h"
 
 
-static struct accreg {
+struct accreg {
 	int account_id;
 	int reg_num;
 	struct global_reg reg[ACCOUNT_REG_NUM];
 };
 
-static struct status_change_data {
+struct status_change_data {
 	int account_id;
 	int char_id;
 	short count;

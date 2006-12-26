@@ -259,7 +259,6 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 	//struct homun_data *thd=NULL;
 	struct status_change *sc_data,*sc;
 	short *sc_count;
-	int class;
 	unsigned int tick = gettick();
 
 	nullpo_retr(0, src);
@@ -271,7 +270,6 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 
 	sc_data = status_get_sc_data(bl);
 	sc_count= status_get_sc_count(bl);
-	class = status_get_class(bl);
 
 	//スキルダメージ補正
 	if(damage > 0 && skill_num > 0){
@@ -335,23 +333,23 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 
 		//属性場のダメージ増加
 		if(sc_data[SC_VOLCANO].timer!=-1 && damage>0){	// ボルケーノ
-			if(flag&BF_SKILL && skill_get_pl(skill_num)==ELE_FIRE)
+			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE )
 				damage += damage*sc_data[SC_VOLCANO].val4/100;
-			else if(!flag&BF_SKILL && status_get_attack_element(bl)==ELE_FIRE)
+			else if( !(flag&BF_SKILL) && status_get_attack_element(bl) == ELE_FIRE )
 				damage += damage*sc_data[SC_VOLCANO].val4/100;
 		}
 
 		if(sc_data[SC_VIOLENTGALE].timer!=-1 && damage>0){	// バイオレントゲイル
-			if(flag&BF_SKILL && skill_get_pl(skill_num)==ELE_WIND)
+			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_WIND )
 				damage += damage*sc_data[SC_VIOLENTGALE].val4/100;
-			else if(!flag&BF_SKILL && status_get_attack_element(bl)==ELE_WIND)
+			else if( !(flag&BF_SKILL) && status_get_attack_element(bl) == ELE_WIND )
 				damage += damage*sc_data[SC_VIOLENTGALE].val4/100;
 		}
 
 		if(sc_data[SC_DELUGE].timer!=-1 && damage>0){	// デリュージ
-			if(flag&BF_SKILL && skill_get_pl(skill_num)==ELE_WATER)
+			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_WATER )
 				damage += damage*sc_data[SC_DELUGE].val4/100;
-			else if(!flag&BF_SKILL && status_get_attack_element(bl)==ELE_WATER)
+			else if( !(flag&BF_SKILL) && status_get_attack_element(bl) == ELE_WATER )
 				damage += damage*sc_data[SC_DELUGE].val4/100;
 		}
 
@@ -447,7 +445,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 		struct guild_castle *gc = NULL;
 		int noflag = 0;
 
-		if(class == 1288) {	// 1288:エンペリウム
+		if(status_get_class(bl) == 1288) {	// 1288:エンペリウム
 			if(flag&BF_SKILL && skill_num!=PA_PRESSURE && skill_num!=HW_GRAVITATION)	// プレッシャー
 				return 0;
 			if(src->type == BL_PC) {
@@ -4325,9 +4323,9 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 	if(ss->type == BL_PET && target->type==BL_MOB) {
 		struct pet_data *pd = (struct pet_data*)ss;
 		struct mob_data *md = (struct mob_data*)target;
-		int mode=mob_db[pd->class].mode;
-		int race=mob_db[pd->class].race;
-		if(mob_db[pd->class].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race != 4 && race != 6) ) {
+		int mode=mob_db[pd->class_].mode;
+		int race=mob_db[pd->class_].race;
+		if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race != 4 && race != 6) ) {
 			return 1; // 失敗
 		} else {
 			return 0; // 成功
@@ -4360,8 +4358,8 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 			struct map_session_data* ssd = (struct map_session_data*)ss;
 			struct map_session_data* tsd = (struct map_session_data*)target;
 			struct pc_base_job s_class,t_class;
-			s_class = pc_calc_base_job(ssd->status.class);
-			t_class = pc_calc_base_job(tsd->status.class);
+			s_class = pc_calc_base_job(ssd->status.class_);
+			t_class = pc_calc_base_job(tsd->status.class_);
 			//battle_config.no_pk_level以下　1次は味方　転生は駄目
 			if((ssd->sc_data && ssd->sc_data[SC_PK_PENALTY].timer!=-1) ||
 				(ssd->status.base_level <= battle_config.no_pk_level && (s_class.job <=6 || s_class.job==24) && s_class.upper!=1))

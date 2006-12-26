@@ -91,7 +91,7 @@ int inter_pet_fromstr(char *str, struct s_pet *p)
 		return 1;
 
 	p->pet_id = tmp_int[0];
-	p->class  = tmp_int[1];
+	p->class_ = tmp_int[1];
 	memcpy(p->name, tmp_str, 24);
 	p->account_id = tmp_int[2];
 	p->char_id = tmp_int[3];
@@ -140,11 +140,11 @@ int inter_pet_tosql(int pet_id, struct s_pet *p) {
 	sql_row = mysql_fetch_row(sql_res);	//row fetching
 	if (!sql_row) //no row -> insert
 		sprintf(tmp_sql,"INSERT INTO `pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`) VALUES ('%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d')",
-			p->pet_id, p->class, t_name, p->account_id, p->char_id, p->level, p->egg_id,
+			p->pet_id, p->class_, t_name, p->account_id, p->char_id, p->level, p->egg_id,
 			p->equip, p->intimate, p->hungry, p->rename_flag, p->incubate);
 	else //row reside -> updating
 		sprintf(tmp_sql, "UPDATE `pet` SET `class`='%d',`name`='%s',`account_id`='%d',`char_id`='%d',`level`='%d',`egg_id`='%d',`equip`='%d',`intimate`='%d',`hungry`='%d',`rename_flag`='%d',`incubate`='%d' WHERE `pet_id`='%d'",
-			p->class,  t_name, p->account_id, p->char_id, p->level, p->egg_id,
+			p->class_, t_name, p->account_id, p->char_id, p->level, p->egg_id,
 			p->equip, p->intimate, p->hungry, p->rename_flag, p->incubate, p->pet_id);
 	mysql_free_result(sql_res) ; //resource free
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
@@ -227,7 +227,7 @@ int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 	p->st.char_id = tmp_int[0];
 	p->st.account_id = tmp_int[1];
 	p->st.char_num = tmp_int[2];
-	p->st.class    = tmp_int[3];
+	p->st.class_ = tmp_int[3];
 	p->st.base_level = tmp_int[4];
 	p->st.job_level = tmp_int[5];
 	p->st.base_exp = tmp_int[6];
@@ -436,7 +436,7 @@ int mmo_char_tosql(int char_id, struct mmo_chardata *p){
 		"`hair`='%d',`hair_color`='%d',`clothes_color`='%d',`weapon`='%d',`shield`='%d',`head_top`='%d',`head_mid`='%d',`head_bottom`='%d',"
 		"`last_map`='%s',`last_x`='%d',`last_y`='%d',`save_map`='%s',`save_x`='%d',`save_y`='%d',"
 		"`partner_id` = '%d', `parent_id` = '%d', `parent_id2` = '%d', `baby_id` = '%d', `homun_id` = '%d'",
-		char_id,p->st.account_id,p->st.char_num,strecpy(buf,p->st.name),p->st.class , p->st.base_level, p->st.job_level,
+		char_id,p->st.account_id,p->st.char_num,strecpy(buf,p->st.name),p->st.class_ , p->st.base_level, p->st.job_level,
 		p->st.base_exp, p->st.job_exp, p->st.zeny,
 		p->st.max_hp, p->st.hp, p->st.max_sp, p->st.sp, p->st.status_point, p->st.skill_point,
 		p->st.str, p->st.agi, p->st.vit, p->st.int_, p->st.dex, p->st.luk,
@@ -666,7 +666,7 @@ int guild_fromstr(char *str,struct guild *g)
 		m->hair=tmp_int[2];
 		m->hair_color=tmp_int[3];
 		m->gender=tmp_int[4];
-		m->class=tmp_int[5];
+		m->class_=tmp_int[5];
 		m->lv=tmp_int[6];
 		m->exp=tmp_int[7];
 		m->exp_payper=tmp_int[8];
@@ -818,7 +818,7 @@ int guild_tosql(struct guild* g2) {
 				p,
 				"%c('%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%s')",
 				sep,g2->guild_id,m->account_id,m->char_id,m->hair,m->hair_color,m->gender,
-				m->class,m->lv,m->exp,m->exp_payper,(int)m->online,m->position,0,0,
+				m->class_,m->lv,m->exp,m->exp_payper,(int)m->online,m->position,0,0,
 				strecpy(buf,m->name)
 			);
 			sep = ',';
@@ -1004,7 +1004,7 @@ int homun_fromstr(char *str,struct mmo_homunstatus *h)
 		return 1;
 
 	h->homun_id = tmp_int[0];
-	h->class = tmp_int[1];
+	h->class_ = tmp_int[1];
 	memcpy(h->name,tmp_str,24);
 	h->account_id = tmp_int[2];
 	h->char_id = tmp_int[3];
@@ -1074,7 +1074,7 @@ int homun_tosql(int homun_id, struct mmo_homunstatus *h){
 	sprintf(tmp_sql ,"INSERT INTO `homunculus` SET `homun_id`='%d', `class`='%d', `name`='%s', `account_id`='%d', `char_id`='%d', `base_level`='%d', `base_exp`='%d',"
 		"`max_hp`='%d', `hp`='%d', `max_sp`='%d', `sp`='%d', `str`='%d',`agi`='%d',`vit`='%d',`int`='%d',`dex`='%d',`luk`='%d',"
 		"`status_point`='%d',`skill_point`='%d',`equip`='%d',`intimate`='%d',`hungry`='%d',`rename_flag`='%d',`incubate`='%d'",
-		homun_id, h->class, strecpy(name,h->name), h->account_id , h->char_id, h->base_level, h->base_exp,
+		homun_id, h->class_, strecpy(name,h->name), h->account_id , h->char_id, h->base_level, h->base_exp,
 		h->max_hp, h->hp, h->max_sp, h->sp, h->str, h->agi, h->vit, h->int_, h->dex, h->luk,
 		h->status_point, h->skill_point, h->equip, h->intimate, h->hungry, h->rename_flag, h->incubate
 	);

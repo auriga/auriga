@@ -226,8 +226,9 @@ static void guild_read_castledb(void)
 // 検索
 struct guild *guild_search(int guild_id)
 {
-	return numdb_search(guild_db,guild_id);
+	return (struct guild *)numdb_search(guild_db,guild_id);
 }
+
 int guild_searchname_sub(void *key,void *data,va_list ap)
 {
 	struct guild *g=(struct guild *)data,**dst;
@@ -242,7 +243,7 @@ int guild_searchname_sub(void *key,void *data,va_list ap)
 
 struct guild_castle *guild_castle_search(int gcid)
 {
-	return numdb_search(castle_db,gcid);
+	return (struct guild_castle *)numdb_search(castle_db,gcid);
 }
 
 // ギルド名検索
@@ -325,7 +326,7 @@ void guild_makemember(struct guild_member *m,struct map_session_data *sd)
 	m->hair       =sd->status.hair;
 	m->hair_color =sd->status.hair_color;
 	m->gender     =sd->sex;
-	m->class      =sd->status.class;
+	m->class_     =sd->status.class_;
 	m->lv         =sd->status.base_level;
 //	m->exp        =0; // memset init to 0 the value -> commented
 //	m->exp_payper =0; // memset init to 0 the value -> commented
@@ -377,8 +378,9 @@ int guild_payexp_timer(int tid,unsigned int tick,int id,int data)
 	if(guild_expcache_db) {
 		struct linkdb_node *node = (struct linkdb_node *)guild_expcache_db;
 		while(node) {
-			guild_payexp_timer_sub(node->data);
-			aFree(node->data);
+			struct guild_expcache *c = (struct guild_expcache *)node->data;
+			guild_payexp_timer_sub(c);
+			aFree(c);
 			node = node->next;
 		}
 		linkdb_final(&guild_expcache_db);
@@ -486,7 +488,7 @@ static void guild_check_member(struct guild *g)
 	nullpo_retv(g);
 
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (sd=session[i]->session_data) && sd->state.auth && !sd->state.waitingdisconnect){
+		if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth && !sd->state.waitingdisconnect){
 			if(sd->status.guild_id==g->guild_id){
 				int j,f=1;
 				for(j=0;j<MAX_GUILD;j++){	// データがあるか
@@ -520,7 +522,7 @@ void guild_recv_noinfo(int guild_id)
 	struct map_session_data *sd;
 
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (sd=session[i]->session_data) && sd->state.auth && !sd->state.waitingdisconnect){
+		if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth && !sd->state.waitingdisconnect){
 			if(sd->status.guild_id==guild_id)
 				sd->status.guild_id=0;
 		}
@@ -539,15 +541,15 @@ void guild_recv_info(struct guild *sg)
 
 	nullpo_retv(sg);
 
-	if((g=numdb_search(guild_db,sg->guild_id))==NULL){
-		g=(struct guild *)aCalloc(1,sizeof(struct guild));
+	if((g = (struct guild *)numdb_search(guild_db,sg->guild_id)) == NULL){
+		g = (struct guild *)aCalloc(1,sizeof(struct guild));
 		numdb_insert(guild_db,sg->guild_id,g);
-		before=*sg;
+		before = *sg;
 
 		// 最初のロードなのでユーザーのチェックを行う
 		guild_check_member(sg);
 	}else
-		before=*g;
+		before = *g;
 
 	memcpy(g,sg,sizeof(struct guild));
 
@@ -594,7 +596,7 @@ void guild_recv_info(struct guild *sg)
 	}
 
 	// イベントの発生
-	if( (ev=numdb_search(guild_infoevent_db,sg->guild_id))!=NULL ){
+	if( (ev = (struct eventlist *)numdb_search(guild_infoevent_db,sg->guild_id)) != NULL ){
 		numdb_erase(guild_infoevent_db,sg->guild_id);
 		while(ev){
 			npc_event_do(ev->name);
@@ -933,7 +935,7 @@ void guild_send_memberinfoshort(struct map_session_data *sd, unsigned char onlin
 		return;
 
 	intif_guild_memberinfoshort(g->guild_id,
-		sd->status.account_id,sd->status.char_id,online,sd->status.base_level,sd->status.class);
+		sd->status.account_id,sd->status.char_id,online,sd->status.base_level,sd->status.class_);
 
 	if( !online ){	// ログアウトするならsdをクリアして終了
 		int i=guild_getindex(g,sd->status.account_id,sd->status.char_id);
@@ -988,7 +990,7 @@ void guild_send_memberinfoshort(struct map_session_data *sd, unsigned char onlin
 }
 
 // ギルドメンバのオンライン状態/Lv更新通知
-void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsigned char online, int lv, int class)
+void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsigned char online, int lv, int class_)
 {
 	int i,alv,c,idx=-1,om=0;
 	unsigned char oldonline = !online;
@@ -1002,11 +1004,11 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
 		struct guild_member *m=&g->member[i];
 		if(!m) continue;
 		if(m->account_id==account_id && m->char_id==char_id ){
-			oldonline=m->online;
-			m->online=online;
-			m->lv=lv;
-			m->class=class;
-			idx=i;
+			oldonline = m->online;
+			m->online = online;
+			m->lv     = lv;
+			m->class_ = class_;
+			idx       = i;
 		}
 		if(m->account_id>0){
 			alv+=m->lv;
@@ -1222,7 +1224,7 @@ atn_bignumber guild_payexp(struct map_session_data *sd,atn_bignumber exp)
 	if(battle_config.guild_exp_rate!=100)
 		exp2 = exp2*battle_config.guild_exp_rate/100;
 
-	if( (c=linkdb_search(&guild_expcache_db,(void*)sd->status.char_id))==NULL ){
+	if( (c = (struct guild_expcache *)linkdb_search(&guild_expcache_db,(void*)sd->status.char_id)) == NULL ){
 		c=(struct guild_expcache *)aCalloc(1,sizeof(struct guild_expcache));
 		c->guild_id=sd->status.guild_id;
 		c->account_id=sd->status.account_id;
@@ -1658,9 +1660,9 @@ void guild_addcastleinfoevent(int castle_id, int idx, const char *name)
 		return;
 
 	code = castle_id | (idx << 16);
-	ev=(struct eventlist *)aCalloc(1,sizeof(struct eventlist));
+	ev = (struct eventlist *)aCalloc(1,sizeof(struct eventlist));
 	memcpy(ev->name,name,sizeof(ev->name));
-	ev->next=numdb_search(guild_castleinfoevent_db,code);
+	ev->next = (struct eventlist *)numdb_search(guild_castleinfoevent_db,code);
 	numdb_insert(guild_castleinfoevent_db,code,ev);
 
 	return;
@@ -1699,7 +1701,7 @@ void guild_castledataloadack(int castle_id, int idx, int value)
 		printf("guild_castledataloadack ERROR!! (Not found index=%d)\n", idx);
 		return;
 	}
-	if( (ev=numdb_search(guild_castleinfoevent_db,code))!=NULL ){
+	if( (ev = (struct eventlist *)numdb_search(guild_castleinfoevent_db,code)) != NULL ){
 		numdb_erase(guild_castleinfoevent_db,code);
 		while(ev){
 			npc_event_do(ev->name);
@@ -1879,7 +1881,7 @@ void guild_getexp(struct map_session_data *sd, int exp)
 
 static int guild_db_final(void *key,void *data,va_list ap)
 {
-	struct guild *g=data;
+	struct guild *g = (struct guild *)data;
 
 	aFree(g);
 
@@ -1888,7 +1890,7 @@ static int guild_db_final(void *key,void *data,va_list ap)
 
 static int castle_db_final(void *key,void *data,va_list ap)
 {
-	struct guild_castle *gc=data;
+	struct guild_castle *gc = (struct guild_castle *)data;
 
 	aFree(gc);
 
@@ -1897,7 +1899,7 @@ static int castle_db_final(void *key,void *data,va_list ap)
 
 static int guild_infoevent_db_final(void *key,void *data,va_list ap)
 {
-	struct eventlist *ev=data;
+	struct eventlist *ev = (struct eventlist *)data;
 
 	aFree(ev);
 

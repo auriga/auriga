@@ -65,7 +65,7 @@ static int script_pos,script_size;
 
 static char *str_buf;
 static int str_pos,str_size;
-static struct {
+static struct script_str_data {
 	int type;
 	int str;
 	int backpatch;
@@ -176,8 +176,8 @@ enum {
  */
 static void disp_error_message(const char *mes,unsigned char *pos)
 {
-	error_msg = aStrdup(mes);
-	error_pos = pos;
+	error_msg = (unsigned char *)aStrdup(mes);
+	error_pos = (unsigned char *)pos;
 	longjmp( error_jump, 1 );
 }
 
@@ -241,25 +241,26 @@ static int add_str(const unsigned char *p)
 		}
 		str_data[i].next=str_num;
 	}
-	if(str_num>=str_data_size){
-		str_data_size+=128;
-		str_data=aRealloc(str_data,sizeof(str_data[0])*str_data_size);
+	if(str_num >= str_data_size){
+		str_data_size += 128;
+		str_data = (struct script_str_data *)aRealloc(str_data,sizeof(str_data[0])*str_data_size);
 		memset(str_data + (str_data_size - 128), '\0', 128);
 	}
 	len=strlen(p);
-	while(str_pos+len+1>=(unsigned int)str_size){
-		str_size+=256;
-		str_buf=(char *)aRealloc(str_buf,str_size);
+	while(str_pos+len+1 >= (unsigned int)str_size){
+		str_size += 256;
+		str_buf = (char *)aRealloc(str_buf,str_size);
 		memset(str_buf + (str_size - 256), '\0', 256);
 	}
 	memcpy(str_buf+str_pos,p,len+1);
-	str_data[str_num].type=C_NOP;
-	str_data[str_num].str=str_pos;
-	str_data[str_num].next=0;
-	str_data[str_num].func=NULL;
-	str_data[str_num].backpatch=-1;
-	str_data[str_num].label=-1;
-	str_pos+=len+1;
+	str_data[str_num].type      = C_NOP;
+	str_data[str_num].str       = str_pos;
+	str_data[str_num].next      = 0;
+	str_data[str_num].func      = NULL;
+	str_data[str_num].backpatch = -1;
+	str_data[str_num].label     = -1;
+	str_pos += len+1;
+
 	return str_num++;
 }
 
@@ -1451,7 +1452,7 @@ void script_error(char *src,const char *file,int start_line, const char *error_m
 	const char *linestart[5] = { NULL, NULL, NULL, NULL, NULL };
 
 	for(p=src;p && *p;line++){
-		char *lineend=strchr(p,'\n');
+		const char *lineend=strchr(p,'\n');
 		if(lineend==NULL || error_pos<lineend){
 			break;
 		}
@@ -1753,7 +1754,7 @@ int get_val(struct script_state*st,struct script_data* data)
 				} else {
 					n = &st->script->script_vars;
 				}
-				data->u.str = linkdb_search(n, (void*)data->u.num );
+				data->u.str = (char *)linkdb_search(n, (void*)data->u.num );
 			}else{
 				printf("script: get_val: illegal scope string variable.\n");
 				data->u.str = "!!ERROR!!";
@@ -1840,7 +1841,7 @@ static int set_reg(struct script_state*st,struct map_session_data *sd,int num,ch
 			} else {
 				n = &st->script->script_vars;
 			}
-			p = linkdb_search(n, (void*)num);
+			p = (char *)linkdb_search(n, (void*)num);
 			if(p) {
 				linkdb_erase(n, (void*)num);
 				aFree(p);
@@ -5738,10 +5739,10 @@ int buildin_makepet(struct script_state *st)
 	if (pet_id < 0)
 		pet_id = search_petDB_index(id, PET_EGG);
 	if (pet_id >= 0 && sd) {
-		sd->catch_target_class = pet_db[pet_id].class;
+		sd->catch_target_class = pet_db[pet_id].class_;
 		intif_create_pet(
 			sd->status.account_id, sd->status.char_id,
-			pet_db[pet_id].class, mob_db[pet_db[pet_id].class].lv,
+			pet_db[pet_id].class_, mob_db[pet_db[pet_id].class_].lv,
 			pet_db[pet_id].EggID, 0, pet_db[pet_id].intimate,
 			100, 0, 1, pet_db[pet_id].jname);
 	}
@@ -6674,7 +6675,7 @@ int buildin_changebase(struct script_state *st)
 		return 0;
 
 	if(upper < 0) {
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class);
+		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
 		upper = s_class.upper;
 	}
 	vclass = pc_calc_class_job(job, upper);
@@ -6704,16 +6705,16 @@ int buildin_changesex(struct script_state *st)
 	nullpo_retr(0, sd);
 
 	//転生や養子の場合の元の職業を算出する
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	if(sd->sex==0){
 		sd->sex=1;
 		if(s_class.job == 20)
-			sd->status.class -= 1;
+			sd->status.class_ -= 1;
 	} else {
 		sd->sex=0;
 		if(s_class.job == 19)
-			sd->status.class += 1;
+			sd->status.class_ += 1;
 	}
 	chrif_changesex(sd->status.account_id,sd->sex);
 	chrif_save(sd);
@@ -7350,7 +7351,7 @@ static int buildin_maprespawnguildid_sub(struct block_list *bl,va_list ap)
 			pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,3);
 	}
 	if(flag&4 && md){
-		if(md->class < 1285 || md->class > 1288)
+		if(md->class_ < 1285 || md->class_ > 1288)
 			unit_remove_map(&md->bl,1);
 	}
 	return 0;
@@ -7936,13 +7937,13 @@ int buildin_repairitem(struct script_state *st)
  */
 int buildin_classchange(struct script_state *st)
 {
-	int class,type;
+	int class_,type;
 	struct block_list *bl = map_id2bl(st->oid);
 
 	if(bl) {
-		class = conv_num(st,& (st->stack->stack_data[st->start+2]));
-		type  = conv_num(st,& (st->stack->stack_data[st->start+3]));
-		clif_class_change(bl,class,type);
+		class_ = conv_num(st,& (st->stack->stack_data[st->start+2]));
+		type   = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		clif_class_change(bl,class_,type);
 	}
 	return 0;
 }
@@ -8156,8 +8157,8 @@ int buildin_getpetinfo(struct script_state *st)
 				push_val(st->stack,C_INT,sd->status.pet_id);
 				break;
 			case 1:
-				if(sd->pet.class)
-					push_val(st->stack,C_INT,sd->pet.class);
+				if(sd->pet.class_)
+					push_val(st->stack,C_INT,sd->pet.class_);
 				else
 					push_val(st->stack,C_INT,0);
 				break;
@@ -8227,7 +8228,7 @@ int buildin_gethomuninfo(struct script_state *st)
 				break;
 			case 5:
 				if( sd->hd )
-					push_val(st->stack,C_INT,sd->hd->status.class);
+					push_val(st->stack,C_INT,sd->hd->status.class_);
 				else
 					push_val(st->stack,C_INT,0);
 				break;
@@ -8549,7 +8550,7 @@ int buildin_summon(struct script_state *st)
 	if( (md = map_id2md(id)) ){
 		md->master_id=sd->bl.id;
 		md->state.special_mob_ai=1;
-		md->mode=mob_db[md->class].mode|0x04;
+		md->mode=mob_db[md->class_].mode|0x04;
 		md->deletetimer=add_timer(tick+60000,mob_timer_delete,id,0);
 		clif_misceffect2(&md->bl,344);
 	}

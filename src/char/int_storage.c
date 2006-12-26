@@ -138,7 +138,7 @@ int storage_fromstr(char *str,struct storage *p)
 // アカウントから倉庫データインデックスを得る（新規倉庫追加可能）
 const struct storage* storage_txt_load(int account_id)
 {
-	struct storage *s = numdb_search(storage_db,account_id);
+	struct storage *s = (struct storage *)numdb_search(storage_db,account_id);
 	if(s == NULL) {
 		s = (struct storage *)aCalloc(1,sizeof(struct storage));
 		s->account_id = account_id;
@@ -149,7 +149,7 @@ const struct storage* storage_txt_load(int account_id)
 
 int storage_txt_save(struct storage *s2)
 {
-	struct storage *s1 = numdb_search(storage_db,s2->account_id);
+	struct storage *s1 = (struct storage *)numdb_search(storage_db,s2->account_id);
 	if(s1 == NULL) {
 		s1 = (struct storage *)aCalloc(1,sizeof(struct storage));
 		s1->account_id = s2->account_id;
@@ -205,7 +205,7 @@ int storage_txt_sync(void)
 // 倉庫データ削除
 int storage_txt_delete(int account_id)
 {
-	struct storage *s = numdb_search(storage_db,account_id);
+	struct storage *s = (struct storage *)numdb_search(storage_db,account_id);
 	if(s) {
 		int i;
 		for(i=0;i<s->storage_amount;i++){
@@ -293,7 +293,7 @@ const struct guild_storage *gstorage_txt_load(int guild_id)
 {
 	struct guild_storage *gs = NULL;
 	if(guild_load_num(guild_id) != NULL) {
-		gs=numdb_search(gstorage_db,guild_id);
+		gs = (struct guild_storage *)numdb_search(gstorage_db,guild_id);
 		if(gs == NULL) {
 			gs = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
 			gs->guild_id=guild_id;
@@ -305,7 +305,7 @@ const struct guild_storage *gstorage_txt_load(int guild_id)
 
 int gstorage_txt_save(struct guild_storage *gs2)
 {
-	struct guild_storage *gs1 = numdb_search(gstorage_db,gs2->guild_id);
+	struct guild_storage *gs1 = (struct guild_storage *)numdb_search(gstorage_db,gs2->guild_id);
 	if(gs1 == NULL) {
 		gs1 = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
 		gs1->guild_id = gs2->guild_id;
@@ -335,7 +335,7 @@ int gstorage_txt_sync_sub(void *key,void *data,va_list ap)
 
 static int storage_db_final(void *key,void *data,va_list ap)
 {
-	struct storage *s=data;
+	struct storage *s = (struct storage *)data;
 
 	aFree(s);
 
@@ -346,7 +346,7 @@ void storage_txt_final(void)
 {
 	if(storage_db)
 		numdb_final(storage_db,storage_db_final);
-		
+
 #ifdef TXT_JOURNAL
 	if( storage_journal_enable )
 	{
@@ -360,10 +360,10 @@ int gstorage_txt_sync(void)
 {
 	FILE *fp;
 	int  lock;
-	
+
 	if( !gstorage_db )
 		return 1;
-	
+
 	if( (fp=lock_fopen(guild_storage_txt,&lock))==NULL ){
 		printf("int_storage: cant write [%s] !!! data is lost !!!\n",guild_storage_txt);
 		return 1;
@@ -387,7 +387,7 @@ int gstorage_txt_sync(void)
 // ギルド倉庫データ削除
 int gstorage_txt_delete(int guild_id)
 {
-	struct guild_storage *gs = numdb_search(gstorage_db,guild_id);
+	struct guild_storage *gs = (struct guild_storage *)numdb_search(gstorage_db,guild_id);
 	if(gs) {
 		int i;
 		for(i=0;i<gs->storage_amount;i++){
@@ -410,7 +410,7 @@ int gstorage_txt_delete(int guild_id)
 // ------------------------------------------
 int storage_journal_rollforward( int key, void* buf, int flag )
 {
-	struct storage* s = numdb_search( storage_db, key );
+	struct storage* s = (struct storage *)numdb_search( storage_db, key );
 	
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct storage*)buf)->account_id )
@@ -447,7 +447,7 @@ int storage_journal_rollforward( int key, void* buf, int flag )
 // ------------------------------------------
 int guild_storage_journal_rollforward( int key, void* buf, int flag )
 {
-	struct guild_storage* gs = numdb_search( gstorage_db, key );
+	struct guild_storage* gs = (struct guild_storage *)numdb_search( gstorage_db, key );
 	
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct guild_storage*)buf)->guild_id )
@@ -586,7 +586,7 @@ int storage_txt_init()
 
 static int gstorage_db_final(void *key,void *data,va_list ap)
 {
-	struct guild_storage *gs=data;
+	struct guild_storage *gs = (struct guild_storage *)data;
 
 	aFree(gs);
 
@@ -633,7 +633,7 @@ int  storage_sql_init(void) {
 }
 
 const struct storage* storage_sql_load(int account_id) {
-	struct storage *s = numdb_search(storage_db,account_id);
+	struct storage *s = (struct storage *)numdb_search(storage_db,account_id);
 	if(s == NULL) {
 		s = (struct storage *)aCalloc(1,sizeof(struct storage));
 		s->account_id = account_id;
@@ -701,7 +701,7 @@ void storage_sql_final(void)
 }
 
 const struct guild_storage *gstorage_sql_load(int guild_id) {
-	struct guild_storage *s = numdb_search(gstorage_db,guild_id);
+	struct guild_storage *s = (struct guild_storage *)numdb_search(gstorage_db,guild_id);
 	if(s == NULL) {
 		s = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
 		s->guild_id = guild_id;

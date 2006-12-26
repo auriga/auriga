@@ -4,7 +4,7 @@
 #define MAX_PET_DB	100
 
 struct pet_db {
-	short class;
+	short class_;
 	char name[24],jname[24];
 	short itemID;
 	short EggID;

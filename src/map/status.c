@@ -287,12 +287,12 @@ L_RECALC:
 	pele=0;
 	pdef_ele=0;
 	refinedef=0;
-	sd->view_class = sd->status.class;
+	sd->view_class = sd->status.class_;
 	if(sd->view_class == PC_CLASS_GS || sd->view_class==PC_CLASS_NJ)
 		sd->view_class = sd->view_class-4;
 
 	//転生や養子の場合の元の職業を算出する
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	sd->race = 7;
 	sd->ranker_weapon_bonus  = 0;
@@ -1946,7 +1946,7 @@ L_RECALC:
 		*/
 	}
 	//テコンランカーボーナス
-	if(sd->status.class==PC_CLASS_TK && sd->status.base_level>=90 && ranking_get_pc_rank(sd,RK_TAEKWON)>0)
+	if(sd->status.class_ == PC_CLASS_TK && sd->status.base_level >= 90 && ranking_get_pc_rank(sd,RK_TAEKWON) > 0)
 	{
 		sd->status.max_hp*=3;
 		sd->status.max_sp*=3;
@@ -2120,7 +2120,7 @@ int status_get_group(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class].group_id;
+		return mob_db[((struct mob_data *)bl)->class_].group_id;
 	//PC PETは0（未設定)
 
 	return 0;
@@ -2134,13 +2134,13 @@ int status_get_class(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		return ((struct mob_data *)bl)->class;
+		return ((struct mob_data *)bl)->class_;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
-		return ((struct map_session_data *)bl)->status.class;
+		return ((struct map_session_data *)bl)->status.class_;
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		return ((struct pet_data *)bl)->class;
+		return ((struct pet_data *)bl)->class_;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
-		return ((struct homun_data *)bl)->status.class;
+		return ((struct homun_data *)bl)->status.class_;
 	else
 		return 0;
 }
@@ -2172,7 +2172,7 @@ int status_get_lv(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class].lv;
+		return mob_db[((struct mob_data *)bl)->class_].lv;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->status.base_level;
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
@@ -2192,11 +2192,11 @@ int status_get_range(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class].range;
+		return mob_db[((struct mob_data *)bl)->class_].range;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->attackrange;
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		return mob_db[((struct pet_data *)bl)->class].range;
+		return mob_db[((struct pet_data *)bl)->class_].range;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
 		return 2;//((struct homun_data *)bl)->attackrange;
 	else
@@ -2251,8 +2251,8 @@ int status_get_max_hp(struct block_list *bl)
 		struct status_change *sc_data=status_get_sc_data(bl);
 		int max_hp=1;
 		if(bl->type==BL_MOB && ((struct mob_data*)bl)) {
-			max_hp = mob_db[((struct mob_data*)bl)->class].max_hp;
-			if(mob_db[((struct mob_data*)bl)->class].mexp > 0) {
+			max_hp = mob_db[((struct mob_data*)bl)->class_].max_hp;
+			if(mob_db[((struct mob_data*)bl)->class_].mexp > 0) {
 				if(battle_config.mvp_hp_rate != 100) {
 					double hp = (double)max_hp * battle_config.mvp_hp_rate / 100.0;
 					max_hp = (hp > 0x7FFFFFFF ? 0x7FFFFFFF : (int)hp);
@@ -2264,8 +2264,8 @@ int status_get_max_hp(struct block_list *bl)
 			}
 		}
 		else if(bl->type==BL_PET && ((struct pet_data*)bl)) {
-			max_hp = mob_db[((struct pet_data*)bl)->class].max_hp;
-			if(mob_db[((struct pet_data*)bl)->class].mexp > 0) {
+			max_hp = mob_db[((struct pet_data*)bl)->class_].max_hp;
+			if(mob_db[((struct pet_data*)bl)->class_].mexp > 0) {
 				if(battle_config.mvp_hp_rate != 100) {
 					double hp = (double)max_hp * battle_config.mvp_hp_rate / 100.0;
 					max_hp = (hp > 0x7FFFFFFF ? 0x7FFFFFFF : (int)hp);
@@ -2300,11 +2300,11 @@ int status_get_str(struct block_list *bl)
 	nullpo_retr(0, bl);
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && ((struct mob_data *)bl))
-		str = mob_db[((struct mob_data *)bl)->class].str;
+		str = mob_db[((struct mob_data *)bl)->class_].str;
 	else if(bl->type==BL_PC && ((struct map_session_data *)bl))
 		return ((struct map_session_data *)bl)->paramc[0];
 	else if(bl->type==BL_PET && ((struct pet_data *)bl))
-		str = mob_db[((struct pet_data *)bl)->class].str;
+		str = mob_db[((struct pet_data *)bl)->class_].str;
 	else if(bl->type==BL_HOM && ((struct homun_data *)bl))
 		str = ((struct homun_data *)bl)->status.str;
 
@@ -2338,11 +2338,11 @@ int status_get_agi(struct block_list *bl)
 	nullpo_retr(0, bl);
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		agi=mob_db[((struct mob_data *)bl)->class].agi;
+		agi=mob_db[((struct mob_data *)bl)->class_].agi;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		agi=((struct map_session_data *)bl)->paramc[1];
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		agi=mob_db[((struct pet_data *)bl)->class].agi;
+		agi=mob_db[((struct pet_data *)bl)->class_].agi;
 	else if(bl->type==BL_HOM && ((struct homun_data *)bl))
 		agi = ((struct homun_data *)bl)->agi;
 
@@ -2383,11 +2383,11 @@ int status_get_vit(struct block_list *bl)
 	nullpo_retr(0, bl);
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		vit=mob_db[((struct mob_data *)bl)->class].vit;
+		vit=mob_db[((struct mob_data *)bl)->class_].vit;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		vit=((struct map_session_data *)bl)->paramc[2];
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		vit=mob_db[((struct pet_data *)bl)->class].vit;
+		vit=mob_db[((struct pet_data *)bl)->class_].vit;
 	else if(bl->type==BL_HOM && ((struct homun_data *)bl))
 		vit = ((struct homun_data *)bl)->vit;
 	if(sc_data && bl->type!=BL_HOM) {
@@ -2413,11 +2413,11 @@ int status_get_int(struct block_list *bl)
 	nullpo_retr(0, bl);
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		int_=mob_db[((struct mob_data *)bl)->class].int_;
+		int_=mob_db[((struct mob_data *)bl)->class_].int_;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		int_=((struct map_session_data *)bl)->paramc[3];
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		int_=mob_db[((struct pet_data *)bl)->class].int_;
+		int_=mob_db[((struct pet_data *)bl)->class_].int_;
 	else if(bl->type==BL_HOM && ((struct homun_data *)bl))
 		int_= ((struct homun_data *)bl)->int_;
 
@@ -2448,11 +2448,11 @@ int status_get_dex(struct block_list *bl)
 	nullpo_retr(0, bl);
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		dex=mob_db[((struct mob_data *)bl)->class].dex;
+		dex=mob_db[((struct mob_data *)bl)->class_].dex;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		dex=((struct map_session_data *)bl)->paramc[4];
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		dex=mob_db[((struct pet_data *)bl)->class].dex;
+		dex=mob_db[((struct pet_data *)bl)->class_].dex;
 	else if(bl->type==BL_HOM && ((struct homun_data *)bl))
 		dex = ((struct homun_data *)bl)->dex;
 
@@ -2490,11 +2490,11 @@ int status_get_luk(struct block_list *bl)
 	nullpo_retr(0, bl);
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		luk=mob_db[((struct mob_data *)bl)->class].luk;
+		luk=mob_db[((struct mob_data *)bl)->class_].luk;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		luk=((struct map_session_data *)bl)->paramc[5];
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		luk=mob_db[((struct pet_data *)bl)->class].luk;
+		luk=mob_db[((struct pet_data *)bl)->class_].luk;
 	else if(bl->type==BL_HOM && ((struct homun_data *)bl))
 		luk = ((struct homun_data *)bl)->luk;
 
@@ -2746,12 +2746,12 @@ int status_get_atk(struct block_list *bl)
 		struct mob_data *md = (struct mob_data *)bl;
 		if(md) {
 			int guardup_lv = md->guardup_lv;
-			atk = mob_db[md->class].atk1;
+			atk = mob_db[md->class_].atk1;
 			if(guardup_lv>0)
 				atk += 1000*guardup_lv;
 		}
 	}else if(bl->type==BL_PET && (struct pet_data *)bl)
-		atk = mob_db[((struct pet_data*)bl)->class].atk1;
+		atk = mob_db[((struct pet_data*)bl)->class_].atk1;
 
 	if(sc_data) {
 		if(sc_data[SC_PROVOKE].timer!=-1 && bl->type != BL_PC)
@@ -2822,13 +2822,13 @@ int status_get_atk2(struct block_list *bl)
 			struct mob_data *md = (struct mob_data *)bl;
 			if(md) {
 				int guardup_lv = md->guardup_lv;
-				atk2 = mob_db[md->class].atk2;
+				atk2 = mob_db[md->class_].atk2;
 				if(guardup_lv>0)
 					atk2 += 1000*guardup_lv;
 			}
 		}
 		else if(bl->type==BL_PET && (struct pet_data *)bl)
-			atk2 = mob_db[((struct pet_data*)bl)->class].atk2;
+			atk2 = mob_db[((struct pet_data*)bl)->class_].atk2;
 		if(sc_data) {
 			if( sc_data[SC_IMPOSITIO].timer!=-1)
 				atk2 += sc_data[SC_IMPOSITIO].val1*5;
@@ -2991,10 +2991,10 @@ int status_get_def(struct block_list *bl)
 		def = ((struct map_session_data *)bl)->def;
 	}
 	else if(bl->type==BL_MOB && (struct mob_data *)bl) {
-		def = mob_db[((struct mob_data *)bl)->class].def;
+		def = mob_db[((struct mob_data *)bl)->class_].def;
 	}
 	else if(bl->type==BL_PET && (struct pet_data *)bl) {
-		def = mob_db[((struct pet_data *)bl)->class].def;
+		def = mob_db[((struct pet_data *)bl)->class_].def;
 	}
 	else {
 		def = 0;
@@ -3066,11 +3066,11 @@ int status_get_mdef(struct block_list *bl)
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		mdef = ((struct map_session_data *)bl)->mdef;
 	else if(bl->type==BL_MOB && (struct mob_data *)bl)
-		mdef = mob_db[((struct mob_data *)bl)->class].mdef;
+		mdef = mob_db[((struct mob_data *)bl)->class_].mdef;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
 		mdef = ((struct homun_data *)bl)->mdef;
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		mdef = mob_db[((struct pet_data *)bl)->class].mdef;
+		mdef = mob_db[((struct pet_data *)bl)->class_].mdef;
 
 	if(mdef < 1000000) {
 		if(sc_data) {
@@ -3102,9 +3102,9 @@ int status_get_def2(struct block_list *bl)
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		def2 = ((struct map_session_data *)bl)->def2;
 	else if(bl->type==BL_MOB && (struct mob_data *)bl)
-		def2 = mob_db[((struct mob_data *)bl)->class].vit;
+		def2 = mob_db[((struct mob_data *)bl)->class_].vit;
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		def2 = mob_db[((struct pet_data *)bl)->class].vit;
+		def2 = mob_db[((struct pet_data *)bl)->class_].vit;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
 		def2 = ((struct homun_data *)bl)->def;
 
@@ -3153,11 +3153,11 @@ int status_get_mdef2(struct block_list *bl)
 	sc_data=status_get_sc_data(bl);
 
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		mdef2 = mob_db[((struct mob_data *)bl)->class].int_ + (mob_db[((struct mob_data *)bl)->class].vit>>1);
+		mdef2 = mob_db[((struct mob_data *)bl)->class_].int_ + (mob_db[((struct mob_data *)bl)->class_].vit>>1);
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		mdef2 = ((struct map_session_data *)bl)->mdef2 + (((struct map_session_data *)bl)->paramc[2]>>1);
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		mdef2 = mob_db[((struct pet_data *)bl)->class].int_ + (mob_db[((struct pet_data *)bl)->class].vit>>1);
+		mdef2 = mob_db[((struct pet_data *)bl)->class_].int_ + (mob_db[((struct pet_data *)bl)->class_].vit>>1);
 	else if (bl->type==BL_HOM && (struct homun_data *)bl)
 		mdef2 = ((struct homun_data *)bl)->mdef;
 
@@ -3189,7 +3189,7 @@ int status_get_speed(struct block_list *bl)
 		struct status_change *sc_data=status_get_sc_data(bl);
 		int speed = 1000;
 		if(bl->type==BL_MOB && (struct mob_data *)bl)
-//			speed = mob_db[((struct mob_data *)bl)->class].speed;
+//			speed = mob_db[((struct mob_data *)bl)->class_].speed;
 			speed = ((struct mob_data *)bl)->speed;
 		else if(bl->type==BL_PET && (struct pet_data *)bl)
 			speed = ((struct pet_data *)bl)->speed;
@@ -3273,13 +3273,13 @@ int status_get_adelay(struct block_list *bl)
 		if(bl->type==BL_MOB && (struct mob_data *)bl)
 		{
 			int guardup_lv = ((struct mob_data*)bl)->guardup_lv;
-			adelay = mob_db[((struct mob_data *)bl)->class].adelay;
+			adelay = mob_db[((struct mob_data *)bl)->class_].adelay;
 
 			if(guardup_lv>0)
 				aspd_rate -= 5 + 5*guardup_lv;
 		}
 		else if(bl->type==BL_PET && (struct pet_data *)bl)
-			adelay = mob_db[((struct pet_data *)bl)->class].adelay;
+			adelay = mob_db[((struct pet_data *)bl)->class_].adelay;
 		else if(bl->type==BL_HOM && (struct homun_data *)bl)
 			adelay = (((struct homun_data *)bl)->aspd<<1);
 
@@ -3369,11 +3369,11 @@ int status_get_amotion(struct block_list *bl)
 		if(bl->type==BL_MOB && (struct mob_data *)bl)
 		{
 			int guardup_lv = ((struct mob_data*)bl)->guardup_lv;
-			amotion = mob_db[((struct mob_data *)bl)->class].amotion;
+			amotion = mob_db[((struct mob_data *)bl)->class_].amotion;
 			if(guardup_lv>0)
 				aspd_rate -= 5 + 5*guardup_lv;
 		}else if(bl->type==BL_PET && (struct pet_data *)bl)
-			amotion = mob_db[((struct pet_data *)bl)->class].amotion;
+			amotion = mob_db[((struct pet_data *)bl)->class_].amotion;
 		else if(bl->type==BL_HOM && (struct homun_data *)bl && ((struct homun_data *)bl)->msd)
 			amotion = ((struct homun_data *)bl)->aspd;
 
@@ -3440,7 +3440,7 @@ int status_get_dmotion(struct block_list *bl)
 	nullpo_retr(0, bl);
 
 	if(bl->type==BL_MOB && (struct mob_data *)bl){
-		ret=mob_db[((struct mob_data *)bl)->class].dmotion;
+		ret=mob_db[((struct mob_data *)bl)->class_].dmotion;
 		if(battle_config.monster_damage_delay_rate != 100)
 			ret = ret*battle_config.monster_damage_delay_rate/100;
 	}
@@ -3462,7 +3462,7 @@ int status_get_dmotion(struct block_list *bl)
 			ret = 400;
 	}
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		ret=mob_db[((struct pet_data *)bl)->class].dmotion;
+		ret=mob_db[((struct pet_data *)bl)->class_].dmotion;
 
 	return ret;
 }
@@ -3509,9 +3509,9 @@ int status_get_element(struct block_list *bl)
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		ret=20+((struct map_session_data *)bl)->def_ele;	// 防御属性Lv1
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		ret = mob_db[((struct pet_data *)bl)->class].element;
+		ret = mob_db[((struct pet_data *)bl)->class_].element;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
-		ret = homun_db[((struct homun_data *)bl)->status.class-HOM_ID].element;
+		ret = homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].element;
 
 	return ret;
 }
@@ -3616,7 +3616,7 @@ int status_get_guild_id(struct block_list *bl)
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->status.guild_id;
 	else if(bl->type==BL_MOB && (struct mob_data *)bl)
-		return ((struct mob_data *)bl)->class;
+		return ((struct mob_data *)bl)->class_;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl){
 		//struct homun_data *hd = (struct homun_data *)bl;
 		//return status_get_guild_id(&hd->msd->bl);
@@ -3635,13 +3635,13 @@ int status_get_race(struct block_list *bl)
 	nullpo_retr(0, bl);
 
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		race = mob_db[((struct mob_data *)bl)->class].race;
+		race = mob_db[((struct mob_data *)bl)->class_].race;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 		race = ((struct map_session_data *)bl)->race;
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		return mob_db[((struct pet_data *)bl)->class].race;
+		return mob_db[((struct pet_data *)bl)->class_].race;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
-		return homun_db[((struct homun_data *)bl)->status.class-HOM_ID].race;
+		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].race;
 	else
 		return 0;
 
@@ -3676,7 +3676,7 @@ int status_get_size(struct block_list *bl)
 {
 	nullpo_retr(1, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class].size;
+		return mob_db[((struct mob_data *)bl)->class_].size;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
 	{
 		if(pc_isbaby((struct map_session_data *)bl))
@@ -3684,9 +3684,9 @@ int status_get_size(struct block_list *bl)
 		else
 			return 1;
 	}else if(bl->type==BL_PET && (struct pet_data *)bl)
-		return mob_db[((struct pet_data *)bl)->class].size;
+		return mob_db[((struct pet_data *)bl)->class_].size;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
-		return homun_db[((struct homun_data *)bl)->status.class-HOM_ID].size;
+		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].size;
 	else
 		return 1;
 }
@@ -3695,10 +3695,10 @@ int status_get_mode(struct block_list *bl)
 	nullpo_retr(0x01, bl);
 	if(bl->type==BL_MOB) {
 		struct mob_data* md = (struct mob_data*)bl;
-		return (md->mode ? md->mode : mob_db[md->class].mode);
+		return (md->mode ? md->mode : mob_db[md->class_].mode);
 	}
 	else if(bl->type==BL_PET)
-		return mob_db[((struct pet_data *)bl)->class].mode;
+		return mob_db[((struct pet_data *)bl)->class_].mode;
 	else
 		return 0x01;	// とりあえず動くということで1
 }
@@ -3707,9 +3707,9 @@ int status_get_mexp(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class].mexp;
+		return mob_db[((struct mob_data *)bl)->class_].mexp;
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
-		return mob_db[((struct pet_data *)bl)->class].mexp;
+		return mob_db[((struct pet_data *)bl)->class_].mexp;
 	else
 		return 0;
 }
@@ -5827,7 +5827,7 @@ int status_clearpretimer(struct block_list *bl)
 
 	node1 = ud->statuspretimer;
 	while(node1){
-		struct status_pretimer *stpt = node1->data;
+		struct status_pretimer *stpt = (struct status_pretimer *)node1->data;
 		if(stpt->timer != -1){
 			delete_timer(stpt->timer, status_pretimer);
 		}
@@ -6473,7 +6473,7 @@ int status_change_end_by_jumpkick( struct block_list* bl)
 	//ソウルリンカーは無視
 	if(bl->type==BL_PC)
 	{
-		if(((struct map_session_data*)bl)->status.class == PC_CLASS_SL)
+		if(((struct map_session_data*)bl)->status.class_ == PC_CLASS_SL)
 			return 0;
 	}
 

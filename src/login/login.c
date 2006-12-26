@@ -127,7 +127,7 @@ int login_journal_rollforward( int key, void* buf, int flag )
 		{
 			// メモリが足りないなら拡張
 			auth_max+=256;
-			auth_dat=aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
+			auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
 		}
 
 		memcpy( &auth_dat[i], buf, sizeof(struct mmo_account) );
@@ -151,8 +151,8 @@ int login_txt_init(void)
 	char line[1024],*p,userid[24],pass[24],lastlogin[24],sex,str[64];
 	if((fp=fopen(account_filename,"r"))==NULL)
 		return 0;
-	auth_max=256;
-	auth_dat=aCalloc(auth_max,sizeof(auth_dat[0]));
+	auth_max = 256;
+	auth_dat = (struct mmo_account *)aCalloc(auth_max,sizeof(auth_dat[0]));
 	while(fgets(line,1023,fp)!=NULL){
 		p=line;
 		n=-1;
@@ -166,8 +166,8 @@ int login_txt_init(void)
 				continue;
 			}
 			if(auth_num>=auth_max){
-				auth_max+=256;
-				auth_dat=aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
+				auth_max += 256;
+				auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
 			}
 			auth_dat[auth_num].account_id=account_id;
 			strncpy(auth_dat[auth_num].userid,userid,24);
@@ -378,8 +378,8 @@ int login_txt_account_new(struct mmo_account* account,const char *tmpstr) {
 		return 0;
 	}
 	if(auth_num>=auth_max){
-		auth_max+=256;
-		auth_dat=aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
+		auth_max += 256;
+		auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
 	}
 	while(isGM(account_id_count) > 0)
 		account_id_count++;
@@ -901,7 +901,7 @@ static void read_gm_account(void) {
 					start_range = i;
 				}
 				for (account_id = start_range; account_id <= end_range; account_id++) {
-					if ((p = numdb_search(gm_account_db, account_id)) == NULL) {
+					if ((p = (struct gm_account *)numdb_search(gm_account_db, account_id)) == NULL) {
 						p = (struct gm_account *)aCalloc(1, sizeof(struct gm_account));
 						numdb_insert(gm_account_db, account_id, p);
 					}
@@ -925,7 +925,7 @@ static int isGM(int account_id) {
 
 	if (gm_account_db == NULL)
 		return 0;
-	p = numdb_search(gm_account_db, account_id);
+	p = (struct gm_account *)numdb_search(gm_account_db, account_id);
 	if (p == NULL)
 		return 0;
 
@@ -933,7 +933,7 @@ static int isGM(int account_id) {
 }
 
 static int gm_account_db_final(void *key, void *data, va_list ap) {
-	struct gm_account *p = data;
+	struct gm_account *p = (struct gm_account *)data;
 
 	aFree(p);
 
@@ -1523,7 +1523,7 @@ int parse_admin(int fd)
 					strncpy(WFIFOP(fd,4 + server_num * 32 + 6), server[i].name, 20);
 					WFIFOW(fd,4 + server_num * 32 + 26) = server[i].users;
 					WFIFOW(fd,4 + server_num * 32 + 28) = server[i].maintenance;
-					WFIFOW(fd,4 + server_num * 32 + 30) = server[i].new;
+					WFIFOW(fd,4 + server_num * 32 + 30) = server[i].new_;
 					server_num++;
 				}
 			}
@@ -1633,12 +1633,12 @@ int parse_login_disconnect(int fd) {
 
 int parse_login(int fd)
 {
-	struct login_session_data *sd = session[fd]->session_data;
+	struct login_session_data *sd = (struct login_session_data *)session[fd]->session_data;
 	int result=0,i;
 
 	if(sd == NULL) {
-		session[fd]->session_data = aCalloc(sizeof(struct login_session_data),1);
-		sd = session[fd]->session_data;
+		session[fd]->session_data = aCalloc(1,sizeof(struct login_session_data));
+		sd = (struct login_session_data *)session[fd]->session_data;
 	}
 
 	while(RFIFOREST(fd)>=2){
@@ -1728,7 +1728,7 @@ int parse_login(int fd)
 						memcpy(WFIFOP(fd,47+server_num*32+6), server[i].name, 20);
 						WFIFOW(fd,47+server_num*32+26) = server[i].users;
 						WFIFOW(fd,47+server_num*32+28) = server[i].maintenance;
-						WFIFOW(fd,47+server_num*32+30) = server[i].new;
+						WFIFOW(fd,47+server_num*32+30) = server[i].new_;
 						server_num++;
 					}
 				}
@@ -1827,7 +1827,7 @@ int parse_login(int fd)
 				memcpy(server[sd->account_id].name,RFIFOP(fd,60),20);
 				server[sd->account_id].users=0;
 				server[sd->account_id].maintenance=RFIFOW(fd,80);
-				server[sd->account_id].new=RFIFOW(fd,82);
+				server[sd->account_id].new_=RFIFOW(fd,82);
 				server_fd[sd->account_id]=fd;
 				WFIFOW(fd,0)=0x2711;
 				WFIFOB(fd,2)=0;
@@ -1864,7 +1864,7 @@ int parse_login(int fd)
 
 		case 0x7918:	// 管理モードログイン
 			{
-				struct login_session_data *ld=session[fd]->session_data;
+				struct login_session_data *ld = (struct login_session_data *)session[fd]->session_data;
 				if (RFIFOREST(fd) < 6 || RFIFOREST(fd)<RFIFOW(fd,2) || RFIFOREST(fd) < ((RFIFOW(fd,4) == 0) ? 30 : 22))
 					return 0;
 				if (RFIFOW(fd,2) != ((RFIFOW(fd,4) == 0) ? 30 : 22)) {
@@ -2179,7 +2179,7 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url) {
 void login_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 {
 	struct socket_data *sd = session[fd];
-	struct login_session_data *ld = sd->session_data;
+	struct login_session_data *ld = (struct login_session_data *)sd->session_data;
 	strcpy( usage,
 		( sd->func_parse == parse_login )? "login user" :
 		( sd->func_parse == parse_admin )? "administration" :

@@ -802,7 +802,7 @@ int chrif_breakadoption(int char_id, unsigned char *name)
 	sd->status.parent_id[1] = 0;
 
 	if(pc_isbaby(sd)) {	// 子供なら元の職に戻す
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class);
+		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
 		pc_jobchange(sd,s_class.job,0);
 	} else {		// 親ならWE_BABY破棄（離婚しててもいいのでpc_ismarriedは使わない）
 		pc_calc_skilltree(sd);

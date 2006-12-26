@@ -61,7 +61,7 @@ int pet_tostr(char *str,struct s_pet *p)
 		p->intimate = 1000;
 
 	len=sprintf(str,"%d,%d,%s\t%d,%d,%d,%d,%d,%d,%d,%d,%d",
-		p->pet_id,p->class,p->name,p->account_id,p->char_id,p->level,p->egg_id,
+		p->pet_id,p->class_,p->name,p->account_id,p->char_id,p->level,p->egg_id,
 		p->equip,p->intimate,p->hungry,p->rename_flag,p->incubate);
 
 	return 0;
@@ -83,7 +83,7 @@ int pet_fromstr(char *str,struct s_pet *p)
 		return 1;
 	
 	p->pet_id = tmp_int[0];
-	p->class = tmp_int[1];
+	p->class_ = tmp_int[1];
 	memcpy(p->name,tmp_str,24);
 	p->account_id = tmp_int[2];
 	p->char_id = tmp_int[3];
@@ -113,7 +113,7 @@ int pet_fromstr(char *str,struct s_pet *p)
 // ------------------------------------------
 int pet_journal_rollforward( int key, void* buf, int flag )
 {
-	struct s_pet* p = numdb_search( pet_db, key );
+	struct s_pet* p = (struct s_pet *)numdb_search( pet_db, key );
 	
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct s_pet*)buf)->pet_id )
@@ -238,16 +238,17 @@ int pet_txt_sync(void) {
 	return 0;
 }
 
-int pet_txt_delete(int pet_id) {
+int pet_txt_delete(int pet_id)
+{
 	struct s_pet *p;
-	p = numdb_search(pet_db,pet_id);
+	p = (struct s_pet *)numdb_search(pet_db,pet_id);
 	if( p == NULL)
 		return 1;
 	else {
 		numdb_erase(pet_db,pet_id);
 		aFree(p);
 		printf("pet_id: %d deleted\n",pet_id);
-	
+
 #ifdef TXT_JOURNAL
 		if( pet_journal_enable )
 			journal_write( &pet_journal, pet_id, NULL );
@@ -256,18 +257,20 @@ int pet_txt_delete(int pet_id) {
 	return 0;
 }
 
-const struct s_pet* pet_txt_load(int pet_id) {
-	return numdb_search(pet_db,pet_id);
+const struct s_pet* pet_txt_load(int pet_id)
+{
+	return (const struct s_pet *)numdb_search(pet_db,pet_id);
 }
 
-int pet_txt_save(struct s_pet* p2) {
-	struct s_pet* p1 = numdb_search(pet_db,p2->pet_id);
+int pet_txt_save(struct s_pet* p2)
+{
+	struct s_pet* p1 = (struct s_pet *)numdb_search(pet_db,p2->pet_id);
 	if(p1 == NULL) {
-		p1 = aMalloc(sizeof(struct s_pet));
+		p1 = (struct s_pet *)aMalloc(sizeof(struct s_pet));
 		numdb_insert(pet_db,p1,p2->pet_id);
 	}
 	memcpy(p1,p2,sizeof(struct s_pet));
-	
+
 #ifdef TXT_JOURNAL
 	if( pet_journal_enable )
 		journal_write( &pet_journal, p1->pet_id, p1 );
@@ -275,8 +278,9 @@ int pet_txt_save(struct s_pet* p2) {
 	return 1;
 }
 
-int pet_txt_new(struct s_pet *p2,int account_id,int char_id) {
-	struct s_pet *p1 = aMalloc(sizeof(struct s_pet));
+int pet_txt_new(struct s_pet *p2,int account_id,int char_id)
+{
+	struct s_pet *p1 = (struct s_pet *)aMalloc(sizeof(struct s_pet));
 	p2->pet_id = pet_newid++;
 	memcpy(p1,p2,sizeof(struct s_pet));
 	numdb_insert(pet_db,p2->pet_id,p1);
@@ -285,7 +289,7 @@ int pet_txt_new(struct s_pet *p2,int account_id,int char_id) {
 
 static int pet_txt_final_sub(void *key,void *data,va_list ap)
 {
-	struct s_pet *p=data;
+	struct s_pet *p = (struct s_pet *)data;
 
 	aFree(p);
 
@@ -296,7 +300,7 @@ void pet_txt_final(void)
 {
 	if(pet_db)
 		numdb_final(pet_db,pet_txt_final_sub);
-		
+
 #ifdef TXT_JOURNAL
 	if( pet_journal_enable )
 	{
@@ -375,7 +379,7 @@ const struct s_pet* pet_sql_load(int pet_id) {
 		sql_row = mysql_fetch_row(sql_res);
 
 		p->pet_id = pet_id;
-		p->class  = atoi(sql_row[1]);
+		p->class_  = atoi(sql_row[1]);
 		memcpy(p->name, sql_row[2],24);
 		p->account_id = atoi(sql_row[3]);
 		p->char_id = atoi(sql_row[4]);
@@ -420,7 +424,7 @@ int  pet_sql_save(struct s_pet* p2) {
 			tmp_sql,
 			"UPDATE `%s` SET `class`='%d',`name`='%s',`account_id`='%d',`char_id`='%d',`level`='%d',`egg_id`='%d',"
 			"`equip`='%d',`intimate`='%d',`hungry`='%d',`rename_flag`='%d',`incubate`='%d' WHERE `pet_id`='%d'",
-			pet_db_, p2->class, strecpy(t_name, p2->name), p2->account_id, p2->char_id, p2->level, p2->egg_id,
+			pet_db_, p2->class_, strecpy(t_name, p2->name), p2->account_id, p2->char_id, p2->level, p2->egg_id,
 			p2->equip, p2->intimate, p2->hungry, p2->rename_flag, p2->incubate, p2->pet_id
 		);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
@@ -448,7 +452,7 @@ int  pet_sql_new(struct s_pet *p,int account_id,int char_id) {
 		"INSERT INTO `%s` (`class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,"
 		"`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`) VALUES ('%d', '%s', '%d',"
 		"'%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d')",
-		pet_db_, p->class,strecpy(t_name, p->name), p->account_id, p->char_id, p->level, p->egg_id,
+		pet_db_, p->class_,strecpy(t_name, p->name), p->account_id, p->char_id, p->level, p->egg_id,
 		p->equip, p->intimate, p->hungry, p->rename_flag, p->incubate
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)){
@@ -565,7 +569,7 @@ int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,short pet
 		p->account_id = account_id;
 		p->char_id = char_id;
 	}
-	p->class = pet_class;
+	p->class_ = pet_class;
 	p->level = pet_lv;
 	p->egg_id = pet_egg_id;
 	p->equip = pet_equip;

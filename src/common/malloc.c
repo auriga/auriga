@@ -397,7 +397,7 @@ void* aStrdup_(const void* string, const char *file, int line, const char *func 
 	if(string == NULL) {
 		return NULL;
 	} else {
-		size_t  len = strlen(string);
+		size_t  len = strlen((const char *)string);
 		char    *p  = (char *)aMalloc_(len + 1,file,line,func);
 		memcpy(p,string,len+1);
 		return p;

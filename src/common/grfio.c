@@ -854,7 +854,7 @@ static void grfio_resourcecheck(void)
 	char w1[256],w2[256],src[256],dst[256];
 	FILELIST *entry;
 
-	buf=grfio_reads("data\\resnametable.txt",&size);
+	buf = (unsigned char *)grfio_reads("data\\resnametable.txt",&size);
 	if (buf == NULL) {
 		printf("WARNING: Could not read data\\resnametable.txt !\n");
 		return;

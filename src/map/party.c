@@ -30,12 +30,13 @@ static struct dbt* party_db = NULL;
 // 検索
 struct party *party_search(int party_id)
 {
-	return numdb_search(party_db,party_id);
+	return (struct party *)numdb_search(party_db,party_id);
 }
 
 static int party_searchname_sub(void *key, void *data, va_list ap)
 {
-	struct party *p=(struct party *)data,**dst;
+	struct party *p = (struct party *)data;
+	struct party **dst;
 	char *str;
 
 	str=va_arg(ap,char *);
@@ -134,7 +135,7 @@ static void party_check_member(struct party *p)
 	nullpo_retv(p);
 
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (sd=session[i]->session_data) && sd->state.auth){
+		if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth){
 			if(sd->status.party_id==p->party_id){
 				int j,f=1;
 				for(j=0;j<MAX_PARTY;j++){	// パーティにデータがあるか確認
@@ -164,7 +165,7 @@ void party_recv_noinfo(int party_id)
 	struct map_session_data *sd;
 
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (sd=session[i]->session_data) && sd->state.auth){
+		if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth){
 			if(sd->status.party_id==party_id)
 				sd->status.party_id=0;
 		}
@@ -182,8 +183,8 @@ void party_recv_info(struct party *sp)
 
 	nullpo_retv(sp);
 
-	if((p=numdb_search(party_db,sp->party_id))==NULL){
-		p=(struct party *)aCalloc(1,sizeof(struct party));
+	if((p = (struct party *)numdb_search(party_db,sp->party_id)) == NULL){
+		p = (struct party *)aCalloc(1,sizeof(struct party));
 		numdb_insert(party_db,sp->party_id,p);
 
 		// 最初のロードなのでユーザーのチェックを行う

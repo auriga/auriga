@@ -114,7 +114,7 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 		return;
 	}
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 	if(((1<<s_class.job)&cd->job) == 0){
 		clif_joinchatfail(sd,7);
 		return;

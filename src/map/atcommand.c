@@ -464,7 +464,7 @@ is_atcommand(const int fd, struct map_session_data* sd, const char* message, int
 	AtCommandInfo info;
 	AtCommandType type;
 
-	nullpo_retr(0, sd);
+	nullpo_retr(AtCommand_None, sd);
 
 	if (!message || !*message)
 		return AtCommand_None;
@@ -946,7 +946,7 @@ atcommand_whop(
 	nullpo_retr(-1, sd);
 
 	for (i = 0; i < fd_max; i++) {
-		if (session[i] && (pl_sd = session[i]->session_data) &&
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) &&
 		    pl_sd->state.auth) {
 			if (!(battle_config.hide_GM_session && pc_isGM(pl_sd))) {
 				snprintf(output, sizeof output, "%s [%d/%d] %s %d %d", 
@@ -1642,7 +1642,7 @@ atcommand_joblevelup(
 	if (!message || !*message)
 		return -1;
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 	up_level = max_job_table[s_class.upper][s_class.job];
 
 	level = atoi(message);
@@ -1806,7 +1806,7 @@ atcommand_pvpoff(
 		map[sd->bl.m].flag.pvp = 0;
 		clif_send0199(sd->bl.m, 0);
 		for (i = 0; i < fd_max; i++) {	//人数分ループ
-			if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth) {
+			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 				if (sd->bl.m == pl_sd->bl.m) {
 					clif_pvpset(pl_sd, 0, 0, 2);
 					if (pl_sd->pvp_timer != -1) {
@@ -1841,7 +1841,7 @@ atcommand_pvpon(
 		map[sd->bl.m].flag.pvp = 1;
 		clif_send0199(sd->bl.m, 1);
 		for (i = 0; i < fd_max; i++) {
-			if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth) {
+			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 				if (sd->bl.m == pl_sd->bl.m && pl_sd->pvp_timer == -1) {
 					pl_sd->pvp_timer = add_timer(gettick() + 200,pc_calc_pvprank_timer, pl_sd->bl.id, 0);
 					pl_sd->pvp_rank = 0;
@@ -1922,7 +1922,7 @@ atcommand_model(
 	    cloth_color >= 0 && cloth_color < MAX_CLOTH_COLOR) {
 		//服の色変更
 		if (MAX_CLOTH_COLOR <= 5 && cloth_color != 0 && sd->sex == 1 &&
-			(sd->status.class == 12 ||  sd->status.class == 17)
+			(sd->status.class_ == 12 ||  sd->status.class_ == 17)
 		) {
 			//服の色未実装職の判定
 			clif_displaymessage(fd, msg_txt(35));
@@ -2557,9 +2557,9 @@ atcommand_makepet(
 	if (pet_id < 0)
 		pet_id = search_petDB_index(id, PET_EGG);
 	if (pet_id >= 0) {
-		sd->catch_target_class = pet_db[pet_id].class;
+		sd->catch_target_class = pet_db[pet_id].class_;
 		intif_create_pet(sd->status.account_id, sd->status.char_id,
-		                 pet_db[pet_id].class, mob_db[pet_db[pet_id].class].lv,
+		                 pet_db[pet_id].class_, mob_db[pet_db[pet_id].class_].lv,
 		                 pet_db[pet_id].EggID, 0, pet_db[pet_id].intimate,
 		                 100, 0, 1, pet_db[pet_id].jname);
 	} else {
@@ -2754,7 +2754,7 @@ int atcommand_recallall(
 	memset(output, '\0', sizeof(output));
 
 	for (i = 0; i < fd_max; i++)
-		if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth &&
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth &&
 		    sd->status.account_id != pl_sd->status.account_id &&
 		    pc_isGM(sd) >= pc_isGM(pl_sd))
 				pc_setpos(pl_sd, sd->mapname, sd->bl.x, sd->bl.y, 2);
@@ -2787,7 +2787,7 @@ int atcommand_recallguild(
 	if ((g = guild_searchname(guild_name)) != NULL ||
 	    (g = guild_search(atoi(message))) != NULL) {
 		for (i = 0; i < fd_max; i++)
-			if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth &&
+			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth &&
 			    sd->status.account_id != pl_sd->status.account_id &&
 			    pl_sd->status.guild_id == g->guild_id)
 				pc_setpos(pl_sd, sd->mapname, sd->bl.x, sd->bl.y, 2);
@@ -2824,7 +2824,7 @@ int atcommand_recallparty(
 	if ((p = party_searchname(party_name)) != NULL ||
 	    (p = party_search(atoi(message))) != NULL) {
 		for (i = 0; i < fd_max; i++)
-			if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth &&
+			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth &&
 			    sd->status.account_id != pl_sd->status.account_id &&
 			    pl_sd->status.party_id == p->party_id)
 				pc_setpos(pl_sd, sd->mapname, sd->bl.x, sd->bl.y, 2);
@@ -3061,7 +3061,7 @@ atcommand_night(
 	int i;
 
 	for(i = 0; i < fd_max; i++) {
-		if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth) {
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 			pl_sd->opt2 |= 0x10;
 			clif_changeoption(&pl_sd->bl);
 			clif_send_clothcolor(&pl_sd->bl);
@@ -3085,7 +3085,7 @@ atcommand_day(
 	int i;
 
 	for(i = 0; i < fd_max; i++) {
-		if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth) {
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 			pl_sd->opt2 &= ~0x10;
 			clif_changeoption(&pl_sd->bl);
 			clif_send_clothcolor(&pl_sd->bl);
@@ -3109,8 +3109,7 @@ atcommand_doom(
 	int i;
 
 	for(i = 0; i < fd_max; i++) {
-		if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth) {
-			pl_sd = session[i]->session_data;
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 			if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
 				pc_damage(NULL, pl_sd, pl_sd->status.hp + 1);
 				clif_displaymessage(pl_sd->fd, msg_txt(61));
@@ -3136,7 +3135,7 @@ atcommand_doommap(
 	nullpo_retr(-1, sd);
 
 	for (i = 0; i < fd_max; i++) {
-		if (session[i] && (pl_sd = session[i]->session_data) &&
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) &&
 		    pl_sd->state.auth && sd->bl.m == pl_sd->bl.m &&
 		    pc_isGM(sd) >= pc_isGM(pl_sd)) {
 			pc_damage(NULL, pl_sd, pl_sd->status.hp + 1);
@@ -3179,7 +3178,7 @@ atcommand_raise(
 
 	for (i = 0; i < fd_max; i++) {
 		if (session[i])
-			atcommand_raise_sub(session[i]->session_data);
+			atcommand_raise_sub((struct map_session_data *)session[i]->session_data);
 	}
 	clif_displaymessage(fd, msg_txt(64));
 
@@ -3201,7 +3200,7 @@ atcommand_raisemap(
 	nullpo_retr(-1, sd);
 
 	for (i = 0; i < fd_max; i++) {
-		if (session[i] && (pl_sd = session[i]->session_data) &&
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) &&
 		    pl_sd->state.auth && unit_isdead(&pl_sd->bl) && sd->bl.m == pl_sd->bl.m)
 			atcommand_raise_sub(pl_sd);
 	}
@@ -3289,7 +3288,7 @@ atcommand_character_joblevel(
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
-		pl_s_class = pc_calc_base_job(pl_sd->status.class);
+		pl_s_class = pc_calc_base_job(pl_sd->status.class_);
 		if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
 			max_level = max_job_table[pl_s_class.upper][pl_s_class.job];
 			if (pl_sd->status.job_level == max_level && level > 0) {
@@ -3368,7 +3367,7 @@ atcommand_kickall(
 
 	for (i = 0; i < fd_max; i++) {
 		if (session[i] &&
-			(pl_sd = session[i]->session_data) && pl_sd->state.auth) {
+			(pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 			if (sd->status.account_id != pl_sd->status.account_id)
 				clif_GM_kick(sd, pl_sd, 0);
 		}
@@ -3641,7 +3640,7 @@ atcommand_mapexit(
 	nullpo_retr(-1, sd);
 
 	for (i = 0; i < fd_max; i++) {
-		if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth) {
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 			if (sd->status.account_id != pl_sd->status.account_id)
 				clif_GM_kick(sd, pl_sd, 0);
 		}
@@ -3732,7 +3731,7 @@ atcommand_shuffle(
 		struct map_session_data *pl_sd;
 		int i;
 		for (i = 0; i < fd_max; i++) {
-			if (session[i] && (pl_sd = session[i]->session_data) &&
+			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) &&
 			    pl_sd->state.auth && sd->bl.m == pl_sd->bl.m && pc_isGM(sd) >= pc_isGM(pl_sd))
 				pc_setpos(pl_sd, map[pl_sd->bl.m].name, 0, 0, 3);
 		}
@@ -3819,7 +3818,7 @@ atcommand_summon(
 	if( (md=map_id2md(id)) ){
 		md->master_id=sd->bl.id;
 		md->state.special_mob_ai=1;
-		md->mode=mob_db[md->class].mode|0x04;
+		md->mode=mob_db[md->class_].mode|0x04;
 		md->deletetimer=add_timer(tick+60000,mob_timer_delete,id,0);
 		clif_misceffect2(&md->bl,344);
 	}
@@ -4094,7 +4093,7 @@ int atcommand_mapinfo(
 	clif_displaymessage(fd, output);
 
 	for (i=chat_num=0; i<fd_max; i++)
-		if (session[i] && (pl_sd = session[i]->session_data)
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data)
 			 && pl_sd->state.auth && (cd = map_id2cd(pl_sd->chatID)))
 				chat_num++;
 
@@ -4150,7 +4149,9 @@ int atcommand_mapinfo(
 		case 1:
 			clif_displaymessage(fd, "----- Players in Map -----");
 			for (i = 0; i < fd_max; i++) {
-				if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth && strcmp(pl_sd->mapname, map_name) == 0) {
+				if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) &&
+				    pl_sd->state.auth && strcmp(pl_sd->mapname, map_name) == 0)
+				{
 					sprintf(output, "Player '%s' (session #%d) | Location: %d,%d",
 						pl_sd->status.name, i, pl_sd->bl.x, pl_sd->bl.y);
 					clif_displaymessage(fd, output);
@@ -4194,14 +4195,14 @@ int atcommand_mapinfo(
 					break;
 				}
 				sprintf(output, "NPC %d: %s | Direction: %s | Sprite: %d | Location: %d %d",
-				        ++i, nd->name, direction, nd->class, nd->bl.x, nd->bl.y);
+				        ++i, nd->name, direction, nd->class_, nd->bl.x, nd->bl.y);
 				clif_displaymessage(fd, output);
 			}
 			break;
 		case 3:
 			clif_displaymessage(fd, "----- Chats in Map -----");
 			for (i = 0; i < fd_max; i++) {
-				if (session[i] && (pl_sd = session[i]->session_data) && pl_sd->state.auth &&
+				if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth &&
 					(cd = map_id2cd(pl_sd->chatID)) &&
 					strcmp(pl_sd->mapname, map_name) == 0 &&
 					cd->usersd[0] == pl_sd) {
@@ -4258,11 +4259,11 @@ static int atmobsearch_sub(struct block_list *bl,va_list ap)
 				return 0;
 			break;
 		case -3:
-			if( !(status_get_mode(&md->bl)&0x20) || mob_db[md->class].mexp <= 0 )
+			if( !(status_get_mode(&md->bl)&0x20) || mob_db[md->class_].mexp <= 0 )
 				return 0;
 			break;
 		default:
-			if( md->class != mob_id )
+			if( md->class_ != mob_id )
 				return 0;
 			break;
 	}
@@ -4458,7 +4459,7 @@ atcommand_giveitem(
 		clif_displaymessage(fd, output);
 	} else if(strcmp(character,"ALL")==0){			// 名前がALLなら、接続者全員へ
 		for (i = 0; i < fd_max; i++) {
-			if (session[i] && (pl_sd = session[i]->session_data)){
+			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data)){
 				atcommand_giveitem_sub(pl_sd,item_data,number);
 				snprintf(output, sizeof output, msg_txt(97),item_name,number);
 				clif_displaymessage(pl_sd->fd, output);
@@ -4640,7 +4641,7 @@ atcommand_weather(
 	}
 	// 指定マップ内に既に居るキャラは即時に天候変化
 	for(i=0; effno && i < fd_max; i++) {
-		if (session[i] && (psd = session[i]->session_data) != NULL && psd->state.auth){
+		if (session[i] && (psd = (struct map_session_data *)session[i]->session_data) != NULL && psd->state.auth){
 			if(strcmp(map_name,"all.gat") && !strcmp(map_name,psd->mapname))
 				clif_misceffect3(&psd->bl,effno);
 		}
@@ -5787,10 +5788,10 @@ atcommand_homlevel(
 				hd->status.skill_point++;
 
 			// 実測値の、最大値〜最小値でランダム上昇
-			hp = homun_db[hd->status.class-HOM_ID].hp_kmax-homun_db[hd->status.class-HOM_ID].hp_kmin;
-			hd->status.max_hp += homun_db[hd->status.class-HOM_ID].hp_kmin + atn_rand()%hp;
-			sp = homun_db[hd->status.class-HOM_ID].sp_kmax-homun_db[hd->status.class-HOM_ID].sp_kmin;
-			hd->status.max_sp += homun_db[hd->status.class-HOM_ID].sp_kmin + atn_rand()%sp;
+			hp = homun_db[hd->status.class_-HOM_ID].hp_kmax-homun_db[hd->status.class_-HOM_ID].hp_kmin;
+			hd->status.max_hp += homun_db[hd->status.class_-HOM_ID].hp_kmin + atn_rand()%hp;
+			sp = homun_db[hd->status.class_-HOM_ID].sp_kmax-homun_db[hd->status.class_-HOM_ID].sp_kmin;
+			hd->status.max_sp += homun_db[hd->status.class_-HOM_ID].sp_kmin + atn_rand()%sp;
 
 		//	homun_upstatus(&hd->status);	// オートステ振り(statuspoint方式)
 			homun_upstatus2(&hd->status);	// ステアップ計算

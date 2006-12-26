@@ -1008,7 +1008,7 @@ struct charid2nick *char_search(int char_id)
 {
 	struct charid2nick *p;
 
-	p=numdb_search(charid_db,char_id);
+	p = (struct charid2nick *)numdb_search(charid_db,char_id);
 	if(p==NULL){	// データベースにない
 		chrif_searchcharid(char_id);
 		return NULL;
@@ -1025,7 +1025,7 @@ void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, i
 {
 	struct charid2nick *p;
 	int req=0;
-	p=numdb_search(charid_db,charid);
+	p = (struct charid2nick *)numdb_search(charid_db,charid);
 	if(p==NULL){	// データベースにない
 		p = (struct charid2nick *)aCalloc(1,sizeof(struct charid2nick));
 		p->req_id=0;
@@ -1054,7 +1054,7 @@ void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, i
 void map_delchariddb(int charid)
 {
 	struct charid2nick *p;
-	p=numdb_search(charid_db,charid);
+	p = (struct charid2nick *)numdb_search(charid_db,charid);
 	if(p){	// データベースにあった
 		p->ip=0;	//実際に削除すると武器の名前とか取れなくなるのでmap-serverのIPとPortだけ削除
 		p->port=0;
@@ -1074,7 +1074,7 @@ void map_reqchariddb(struct map_session_data * sd, int charid)
 
 	nullpo_retv(sd);
 
-	p=numdb_search(charid_db,charid);
+	p = (struct charid2nick *)numdb_search(charid_db,charid);
 	if(p!=NULL)	// データベースにすでにある
 		return;
 
@@ -1153,7 +1153,7 @@ int map_quit(struct map_session_data *sd)
 		numdb_erase(id_db,sd->bl.id);
 
 	strdb_erase(nick_db,sd->status.name);
-	p = numdb_search(charid_db,sd->status.char_id);
+	p = (struct charid2nick *)numdb_search(charid_db,sd->status.char_id);
 	if(p) {
 		p->ip   = 0;
 		p->port = 0;
@@ -1174,7 +1174,7 @@ struct map_session_data * map_id2sd(int id)
 	struct block_list *bl;
 
 	if(id > 0) {
-		bl = numdb_search(id_db,id);
+		bl = (struct block_list *)numdb_search(id_db,id);
 		if(bl && bl->type == BL_PC)
 			return (struct map_session_data *)bl;
 	}
@@ -1190,7 +1190,7 @@ struct mob_data * map_id2md(int id)
 	struct block_list *bl;
 
 	if(id > 0) {
-		bl = numdb_search(id_db,id);
+		bl = (struct block_list *)numdb_search(id_db,id);
 		if(bl && bl->type == BL_MOB)
 			return (struct mob_data *)bl;
 	}
@@ -1206,7 +1206,7 @@ struct homun_data * map_id2hd(int id)
 	struct block_list *bl;
 
 	if(id > 0) {
-		bl = numdb_search(id_db,id);
+		bl = (struct block_list *)numdb_search(id_db,id);
 		if(bl && bl->type == BL_HOM)
 			return (struct homun_data *)bl;
 	}
@@ -1222,7 +1222,7 @@ struct npc_data * map_id2nd(int id)
 	struct block_list *bl;
 
 	if(id > 0) {
-		bl = numdb_search(id_db,id);
+		bl = (struct block_list *)numdb_search(id_db,id);
 		if(bl && bl->type == BL_NPC)
 			return (struct npc_data *)bl;
 	}
@@ -1293,7 +1293,7 @@ struct block_list * map_id2bl(int id)
  */
 char * map_charid2nick(int id)
 {
-	struct charid2nick *p=numdb_search(charid_db,id);
+	struct charid2nick *p = (struct charid2nick *)numdb_search(charid_db,id);
 	if(p==NULL)
 		return NULL;
 	if(p->req_id!=0)
@@ -1309,7 +1309,7 @@ struct map_session_data * map_nick2sd(char *nick)
 {
 	if(nick == NULL)
 		return NULL;
-	return strdb_search(nick_db,nick);
+	return (struct map_session_data *)strdb_search(nick_db,nick);
 }
 
 /*==========================================
@@ -1363,7 +1363,7 @@ int map_mapname2mapid(char *name)
 {
 	struct map_data *md;
 
-	md=strdb_search(map_db,name);
+	md = (struct map_data *)strdb_search(map_db,name);
 	if(md==NULL || md->gat==NULL)
 		return -1;
 	return md->m;
@@ -1377,7 +1377,7 @@ int map_mapname2ipport(char *name,int *ip,int *port)
 {
 	struct map_data_other_server *mdos;
 
-	mdos=strdb_search(map_db,name);
+	mdos = (struct map_data_other_server *)strdb_search(map_db,name);
 	if(mdos==NULL || mdos->gat)
 		return -1;
 	*ip=mdos->ip;
@@ -1548,7 +1548,7 @@ int map_setipport(char *name,unsigned long ip,int port)
 	struct map_data *md;
 	struct map_data_other_server *mdos;
 
-	md=strdb_search(map_db,name);
+	md = (struct map_data *)strdb_search(map_db,name);
 	if(md==NULL){
 		// 存在しないデータ
 		mdos=(struct map_data_other_server *)aCalloc(1,sizeof(struct map_data_other_server));
@@ -1623,7 +1623,7 @@ int map_eraseipport(char *name,unsigned long ip,int port)
 	struct map_data_other_server *mdos;
 //	unsigned char *p=(unsigned char *)&ip;
 
-	md=strdb_search(map_db,name);
+	md = (struct map_data *)strdb_search(map_db,name);
 	if(md){
 		if(md->gat) // local -> check data
 			return 0;
@@ -1692,9 +1692,9 @@ static void map_readwater(const char *watertxt)
 			printf("Error: Duplicated map [%s] in waterlist (file '%s').\n", w1, watertxt);
 		} else {
 			if (waterlist_num == 0) {
-				waterlist = aCalloc(1, sizeof(struct waterlist));
+				waterlist = (struct waterlist *)aCalloc(1, sizeof(struct waterlist));
 			} else {
-				waterlist = aRealloc(waterlist, sizeof(struct waterlist) * (waterlist_num + 1));
+				waterlist = (struct waterlist *)aRealloc(waterlist, sizeof(struct waterlist) * (waterlist_num + 1));
 				//memset(waterlist + waterlist_num, 0, sizeof(struct waterlist));
 			}
 			memset(waterlist[waterlist_num].mapname, 0, sizeof(waterlist[waterlist_num].mapname));
@@ -1764,7 +1764,7 @@ static int map_cache_open(char *fn)
 			map_cache.head.filesize      == ftell(map_cache.fp)
 		) {
 			// キャッシュ読み込み成功
-			map_cache.map = aMalloc(sizeof(struct map_cache_info) * map_cache.head.nmaps);
+			map_cache.map = (struct map_cache_info *)aMalloc(sizeof(struct map_cache_info) * map_cache.head.nmaps);
 			fseek(map_cache.fp,sizeof(struct map_cache_head),SEEK_SET);
 			fread(map_cache.map,sizeof(struct map_cache_info),map_cache.head.nmaps,map_cache.fp);
 			return 1;
@@ -1775,7 +1775,7 @@ static int map_cache_open(char *fn)
 	map_cache.fp = fopen(fn,"wb");
 	if(map_cache.fp) {
 		memset(&map_cache.head,0,sizeof(struct map_cache_head));
-		map_cache.map   = aCalloc(sizeof(struct map_cache_info),MAX_MAP_CACHE);
+		map_cache.map = (struct map_cache_info *)aCalloc(sizeof(struct map_cache_info),MAX_MAP_CACHE);
 		map_cache.head.nmaps         = MAX_MAP_CACHE;
 		map_cache.head.sizeof_header = sizeof(struct map_cache_head);
 		map_cache.head.sizeof_map    = sizeof(struct map_cache_info);
@@ -1889,7 +1889,7 @@ static int map_cache_write(struct map_data *m)
 			if(map_read_flag == 2) {
 				// 圧縮保存
 				// さすがに２倍に膨れる事はないという事で
-				write_buf = aMalloc(m->xs * m->ys * 2);
+				write_buf = (char *)aMalloc(m->xs * m->ys * 2);
 				len_new = m->xs * m->ys * 2;
 				encode_zip(write_buf,&len_new,m->gat,m->xs * m->ys);
 				map_cache.map[i].compressed     = 1;
@@ -1926,7 +1926,7 @@ static int map_cache_write(struct map_data *m)
 		if(map_cache.map[i].fn[0] == 0) {
 			// 新しい場所に登録
 			if(map_read_flag == 2) {
-				write_buf = aMalloc(m->xs * m->ys * 2);
+				write_buf = (char *)aMalloc(m->xs * m->ys * 2);
 				len_new = m->xs * m->ys * 2;
 				encode_zip(write_buf,&len_new,m->gat,m->xs * m->ys);
 				map_cache.map[i].compressed     = 1;
@@ -2049,7 +2049,7 @@ static int map_readmap(int m,char *fn,int *map_cache)
 		int x,y,xs,ys;
 		struct gat_1cell {float high[4]; int type;} *p;
 		// read & convert fn
-		gat=grfio_read(fn);
+		gat = (unsigned char *)grfio_read(fn);
 		if(gat==NULL) {
 			// さすがにマップが読めないのはまずいので終了する
 			printf("Map '%s' not found: removed from maplist.\n", fn);
@@ -2407,7 +2407,7 @@ void map_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 
 	if( sd->func_parse == clif_parse && sd->auth )
 	{
-		struct map_session_data *sd2 = sd->session_data;
+		struct map_session_data *sd2 = (struct map_session_data *)sd->session_data;
 		sprintf( user, "%d %d(%s)", sd2->bl.id, sd2->char_id, sd2->status.name );
 	}
 }
@@ -2434,7 +2434,7 @@ static int nick_db_final(void *key,void *data,va_list ap)
 {
 	char *nick;
 
-	nullpo_retr(0, nick=data);
+	nullpo_retr(0, nick = (char *)data);
 
 	aFree(nick);
 
@@ -2444,7 +2444,7 @@ static int charid_db_final(void *key,void *data,va_list ap)
 {
 	struct charid2nick *p;
 
-	nullpo_retr(0, p=data);
+	nullpo_retr(0, p = (struct charid2nick *)data);
 
 	aFree(p);
 

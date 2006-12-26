@@ -1170,7 +1170,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			int sc_def_card=100;
 
 			for(i=SC_STONE;i<=SC_BLEED;i++){
-				if(!dstmd || dstmd->class != 1288){
+				if(!dstmd || dstmd->class_ != 1288){
 					if(sd->addeff_range_flag[i-SC_STONE]>2){
 						sd->addeff_range_flag[i-SC_STONE]-=2;	// レンジフラグがあれば元に戻す
 						continue;
@@ -1265,8 +1265,8 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		}
 
 		//殴ってmob変化
-		if(sd && dstmd && mob_db[dstmd->class].race != 7 && !map[dstmd->bl.m].flag.nobranch
-			&& !(mob_db[dstmd->class].mode&0x20) && dstmd->class != 1288 && dstmd->state.special_mob_ai != 1)
+		if(sd && dstmd && mob_db[dstmd->class_].race != 7 && !map[dstmd->bl.m].flag.nobranch
+			&& !(mob_db[dstmd->class_].mode&0x20) && dstmd->class_ != 1288 && dstmd->state.special_mob_ai != 1)
 		{
 			if(atn_rand()%10000 < sd->mob_class_change_rate)
 			{
@@ -1318,9 +1318,9 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 			return 0;
 	} else if(target->type == BL_MOB) {
 		struct mob_data *md=(struct mob_data *)target;
-		if(battle_config.boss_no_knockbacking==1 && mob_db[md->class].mode&0x20)
+		if(battle_config.boss_no_knockbacking==1 && mob_db[md->class_].mode&0x20)
 			return 0;
-		if(battle_config.boss_no_knockbacking==2 && mob_db[md->class].mexp > 0)
+		if(battle_config.boss_no_knockbacking==2 && mob_db[md->class_].mexp > 0)
 			return 0;
 	} else if(target->type == BL_PET || target->type == BL_SKILL) {
 		// 何もしない
@@ -1828,7 +1828,7 @@ int skill_cleartimerskill(struct block_list *src)
 
 	node1 = ud->skilltimerskill;
 	while( node1 ) {
-		struct skill_timerskill *skl = node1->data;
+		struct skill_timerskill *skl = (struct skill_timerskill *)node1->data;
 		if( skl->timer != -1 ) {
 			delete_timer(skl->timer, skill_timerskill);
 		}
@@ -1875,7 +1875,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	if(md)
 	{
 		struct mob_skill *ms=NULL;
-		ms = mob_db[md->class].skill;
+		ms = mob_db[md->class_].skill;
 		if(ms && md->skillidx!=-1 && ms[md->skillidx].emotion >= 0)
 			clif_emotion(&md->bl,ms[md->skillidx].emotion);
 	}
@@ -2950,7 +2950,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	if(md)
 	{
 		struct mob_skill *ms=NULL;
-		ms = mob_db[md->class].skill;
+		ms = mob_db[md->class_].skill;
 		if(ms && md->skillidx!=-1 && ms[md->skillidx].emotion >= 0)
 			clif_emotion(&md->bl,ms[md->skillidx].emotion);
 	}
@@ -2974,7 +2974,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(sc_data && sc_data[SC_BERSERK].timer!=-1) /* バーサーク中はヒール０ */
 				heal=0;
 			if (sd){
-				s_class = pc_calc_base_job(sd->status.class);
+				s_class = pc_calc_base_job(sd->status.class_);
 				if((skill=pc_checkskill(sd,HP_MEDITATIO))>0) // メディテイティオ
 					heal += heal*(skill*2)/100;
 				if(sd && dstsd && sd->status.partner_id == dstsd->status.char_id && s_class.job == 23 && sd->sex == 0) //自分も対象もPC、対象が自分のパートナー、自分がスパノビ、自分が♀なら
@@ -3255,8 +3255,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if (dstmd){
 			int i;
 			for(i=0;i<MAX_PET_DB;i++){
-				if(dstmd->class == pet_db[i].class){
-					pet_catch_process1(sd,dstmd->class);
+				if(dstmd->class_ == pet_db[i].class_){
+					pet_catch_process1(sd,dstmd->class_);
 					break;
 				}
 			}
@@ -3403,7 +3403,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(sd && pc_checkskill(sd,TK_MISSION)>0)
 		{
-			if(sd->status.class == PC_CLASS_TK)
+			if(sd->status.class_ == PC_CLASS_TK)
 			{
 				int count = ranking_get_point(sd,RK_TAEKWON)%100;
 				if(sd->tk_mission_target == 0 || (count==0 && atn_rand()%100 == 0))
@@ -3635,7 +3635,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case CR_DEVOTION:		/* ディボーション */
 		if(sd && dstsd){
 			//転生や養子の場合の元の職業を算出する
-			struct pc_base_job dst_s_class = pc_calc_base_job(dstsd->status.class);
+			struct pc_base_job dst_s_class = pc_calc_base_job(dstsd->status.class_);
 			int i, n, max, lv = abs(sd->status.base_level-dstsd->status.base_level);
 
 			if((dstsd->bl.type!=BL_PC)	// 相手はPCじゃないとだめ
@@ -3703,7 +3703,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			} else if(dstmd) { //対象がモンスターの場合
 				//20%の確率で対象のLv*2のSPを回復する。成功したときはターゲット(σ゜Д゜)σゲッツ!!
 				if(atn_rand()%100<20){
-					val=2*mob_db[dstmd->class].lv;
+					val=2*mob_db[dstmd->class_].lv;
 					mob_target(dstmd,src,0);
 					battle_join_struggle(dstmd, src);
 
@@ -4530,7 +4530,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if( dstsd && dstsd->special_state.no_magic_damage )
 				break;
 			//ソウルリンカーは無効
-			if(dstsd && dstsd->status.class == PC_CLASS_SL)
+			if(dstsd && dstsd->status.class_ == PC_CLASS_SL)
 				break;
 			sc_data = status_get_sc_data(bl);
 			if(sc_data && sc_data[SC_ROGUE].timer != -1)	// ローグの魂中は無効
@@ -4773,7 +4773,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_PROVOCATION:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(md && md->skillidx != -1)
-			clif_pet_performance(src,mob_db[md->class].skill[md->skillidx].val[0]);
+			clif_pet_performance(src,mob_db[md->class_].skill[md->skillidx].val[0]);
 		break;
 
 	case NPC_HALLUCINATION:
@@ -4836,7 +4836,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_SUMMONSLAVE:		/* 手下召喚 */
 	case NPC_SUMMONMONSTER:		/* MOB召喚 */
 		if(md && md->skillidx != -1)
-			mob_summonslave(md,mob_db[md->class].skill[md->skillidx].val,skilllv,(skillid==NPC_SUMMONSLAVE)?1:0);
+			mob_summonslave(md,mob_db[md->class_].skill[md->skillidx].val,skilllv,(skillid==NPC_SUMMONSLAVE)?1:0);
 		break;
 	case NPC_RECALL:		//取り巻き呼び戻し
 		if(md){
@@ -4852,7 +4852,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case NPC_REBIRTH:
 		if(md){
-			md->hp = mob_db[md->class].max_hp*10*skilllv/100;
+			md->hp = mob_db[md->class_].max_hp*10*skilllv/100;
 		}
 		unit_stop_walking(src,1);
 		unit_stopattack(src);
@@ -4886,12 +4886,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_TRANSFORMATION:
 	case NPC_METAMORPHOSIS:
 		if(md && md->skillidx != -1)
-			mob_class_change(md,mob_db[md->class].skill[md->skillidx].val,sizeof(mob_db[md->class].skill[md->skillidx].val)/sizeof(mob_db[md->class].skill[md->skillidx].val[0]));
+			mob_class_change(md,mob_db[md->class_].skill[md->skillidx].val,sizeof(mob_db[md->class_].skill[md->skillidx].val)/sizeof(mob_db[md->class_].skill[md->skillidx].val[0]));
 		break;
 
 	case NPC_EMOTION:			/* エモーション */
 		if(md && md->skillidx != -1)
-			clif_emotion(&md->bl,mob_db[md->class].skill[md->skillidx].val[0]);
+			clif_emotion(&md->bl,mob_db[md->class_].skill[md->skillidx].val[0]);
 		break;
 
 	case NPC_DEFENDER:
@@ -4952,7 +4952,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				int c = 0;
 				struct linkdb_node *node = sd->ud.skillunit;
 				while( node ) {
-					struct skill_unit_group *group = node->data;
+					struct skill_unit_group *group = (struct skill_unit_group *)node->data;
 					if( group->alive_count > 0 && group->skill_id == sd->ud.skillid) {
 						c++;
 					}
@@ -5298,7 +5298,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 			if(dstsd)//登録相手がPC
 			{
-				sd->hate_mob[skilllv-1] = dstsd->status.class;
+				sd->hate_mob[skilllv-1] = dstsd->status.class_;
 				if(battle_config.save_hate_mob)
 					pc_setglobalreg(sd,"PC_HATE_MOB_STAR",sd->hate_mob[skilllv-1]+1);
 				clif_skill_nodamage(src,src,skillid,skilllv,1);
@@ -5307,7 +5307,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				switch(skilllv) {
 				case 1:
 					if(status_get_size(bl) == 0) {
-						sd->hate_mob[0] = dstmd->class;
+						sd->hate_mob[0] = dstmd->class_;
 						if(battle_config.save_hate_mob)
 							pc_setglobalreg(sd, "PC_HATE_MOB_SUN", sd->hate_mob[0]+1);
 						clif_skill_nodamage(src,src,skillid,skilllv,1);
@@ -5318,7 +5318,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					break;
 				case 2:
 					if(status_get_size(bl) == 1 && status_get_max_hp(bl) >= 6000) {
-						sd->hate_mob[1] = dstmd->class;
+						sd->hate_mob[1] = dstmd->class_;
 						if(battle_config.save_hate_mob)
 							pc_setglobalreg(sd, "PC_HATE_MOB_MOON", sd->hate_mob[1]+1);
 						clif_skill_nodamage(src,src,skillid,skilllv,1);
@@ -5329,7 +5329,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					break;
 				case 3:
 					if(status_get_size(bl) == 2 && status_get_max_hp(bl) >= 20000) {
-						sd->hate_mob[2] = dstmd->class;
+						sd->hate_mob[2] = dstmd->class_;
 						if(battle_config.save_hate_mob)
 							pc_setglobalreg(sd, "PC_HATE_MOB_STAR", sd->hate_mob[2]+1);
 						clif_skill_nodamage(src,src,skillid,skilllv,1);
@@ -5597,7 +5597,7 @@ int skill_castend_id( int tid, unsigned int tick, int id,int data )
 				if(src_md->sc_data[SC_ROKISWEIL].timer != -1)
 					return 0;
 
-				if(!(mob_db[src_md->class].mode & 0x20) && src_md->sc_data[SC_HERMODE].timer != -1)
+				if(!(mob_db[src_md->class_].mode & 0x20) && src_md->sc_data[SC_HERMODE].timer != -1)
 					return 0;
 
 				if(src_md->opt1>0 || src_md->sc_data[SC_SILENCE].timer != -1 || src_md->sc_data[SC_STEELBODY].timer != -1)
@@ -5667,7 +5667,7 @@ int skill_castend_id( int tid, unsigned int tick, int id,int data )
 				!(src_md && target->type == BL_MOB)	// MOB→MOBならアンデッドでも回復
 			) {
 				if(target->type != BL_PC ||
-					(src_md && src_md->skillidx >= 0 && !mob_db[src_md->class].skill[src_md->skillidx].val[0])
+					(src_md && src_md->skillidx >= 0 && !mob_db[src_md->class_].skill[src_md->skillidx].val[0])
 				) {
 					skill_castend_damage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
 				} else if (map[src->m].flag.pvp || map[src->m].flag.gvg) {
@@ -5724,7 +5724,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	if(md)
 	{
 		struct mob_skill *ms=NULL;
-		ms = mob_db[md->class].skill;
+		ms = mob_db[md->class_].skill;
 		if(ms && md->skillidx!=-1 && ms[md->skillidx].emotion >= 0)
 			clif_emotion(&md->bl,ms[md->skillidx].emotion);
 	}
@@ -7305,7 +7305,7 @@ int skill_castend_pos( int tid, unsigned int tick, int id,int data )
 		if(src_md && src_md->sc_data){
 			if(src_md->sc_data[SC_ROKISWEIL].timer != -1)
 				break;
-			if(!(mob_db[src_md->class].mode & 0x20) && src_md->sc_data[SC_HERMODE].timer != -1)
+			if(!(mob_db[src_md->class_].mode & 0x20) && src_md->sc_data[SC_HERMODE].timer != -1)
 				break;
 			if(src_md->opt1>0 || src_md->sc_data[SC_SILENCE].timer != -1 || src_md->sc_data[SC_STEELBODY].timer != -1)
 				break;
@@ -7376,7 +7376,7 @@ int skill_castend_pos( int tid, unsigned int tick, int id,int data )
 		if(src_sd && battle_config.pc_skill_log)
 			printf("PC %d skill castend skill=%d\n",src->id,src_ud->skillid);
 		if(src_md && battle_config.mob_skill_log)
-			printf("MOB skill castend skill=%d, class = %d\n",src_ud->skillid,src_md->class);
+			printf("MOB skill castend skill=%d, class = %d\n",src_ud->skillid,src_md->class_);
 
 		unit_stop_walking(src,0);
 		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
@@ -7421,14 +7421,14 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 
 	skill_id = (sc ? sc->id : ssd->ud.skillid);
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 	//チェックしない設定ならcにありえない大きな数字を返して終了
 	if(!battle_config.player_skill_partner_check){	//本当はforeachの前にやりたいけど設定適用箇所をまとめるためにここへ
 		(*c)=99;
 		return 0;
 	}
 
-	ss_class = pc_calc_base_job(ssd->status.class);
+	ss_class = pc_calc_base_job(ssd->status.class_);
 
 	switch(skill_id){
 	case PR_BENEDICTIO:				/* 聖体降福 */
@@ -7481,7 +7481,7 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 	nullpo_retr(0, c=va_arg(ap,int *));
 	nullpo_retr(0, ssd=(struct map_session_data*)src);
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	//チェックしない設定ならcにありえない大きな数字を返して終了
 	if(!battle_config.player_skill_partner_check){	//本当はforeachの前にやりたいけど設定適用箇所をまとめるためにここへ
@@ -7489,7 +7489,7 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 		return 0;
 	}
 
-	ss_class = pc_calc_base_job(ssd->status.class);
+	ss_class = pc_calc_base_job(ssd->status.class_);
 	skillid=ssd->ud.skillid;
 	skilllv=ssd->ud.skilllv;
 	switch(skillid){
@@ -7550,7 +7550,7 @@ static int skill_check_condition_mob_master_sub(struct block_list *bl,va_list ap
 	nullpo_retr(0, mob_class=va_arg(ap,int));
 	nullpo_retr(0, c=va_arg(ap,int *));
 
-	if(md->class==mob_class && md->master_id==src_id)
+	if(md->class_ == mob_class && md->master_id == src_id)
 		(*c)++;
 	return 0;
 }
@@ -7677,7 +7677,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 	//魂用 こちらでもチェック
 	if( soul_skill )
 	{
-		struct pc_base_job s_class = pc_calc_base_job(target_sd->status.class);
+		struct pc_base_job s_class = pc_calc_base_job(target_sd->status.class_);
 		int job  = s_class.job;
 		int fail = 0;
 
@@ -7826,7 +7826,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 					for(i=0;i<MAX_PARTY;i++)
 					{
 						psd = pt->member[i].sd;
-						if(psd && (psd->status.class == PC_CLASS_SNV || psd->status.class == PC_CLASS_SNV3))
+						if(psd && (psd->status.class_ == PC_CLASS_SNV || psd->status.class_ == PC_CLASS_SNV3))
 						{
 							f = 1;
 							break;
@@ -7857,7 +7857,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 					for(i=0;i<MAX_PARTY;i++)
 					{
 						psd = pt->member[i].sd;
-						if(psd && psd->status.class == PC_CLASS_TK)
+						if(psd && psd->status.class_ == PC_CLASS_TK)
 						{
 							f = 1;
 							break;
@@ -7908,7 +7908,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 			struct pc_base_job ts_class;
 
 			if(!target_sd) return 0;
-			ts_class = pc_calc_base_job(target_sd->status.class);
+			ts_class = pc_calc_base_job(target_sd->status.class_);
 
 			if(ts_class.job==14||ts_class.job==21){
 				if(sd)
@@ -7936,8 +7936,8 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 				return 0;
 			}
 
-			ss_class = pc_calc_base_job(sd->status.class);
-			ts_class = pc_calc_base_job(target_sd->status.class);
+			ss_class = pc_calc_base_job(sd->status.class_);
+			ts_class = pc_calc_base_job(target_sd->status.class_);
 
 			//自分・同じクラス・マリオネット状態なら失敗
 			if(	sd == target_sd  || ss_class.job == ts_class.job ||
@@ -7990,7 +7990,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	 	return 0;
 
 	//ソウルリンカーで使えないスキル
-	if(sd->status.class==PC_CLASS_SL)
+	if(sd->status.class_ == PC_CLASS_SL)
 	{
 		if(
 			(battle_config.soul_linker_battle_mode != 1) ||
@@ -8602,7 +8602,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case SG_HATE:
 		{
 			struct mob_data *md = map_id2md(sc->target);
-			if(md && md->class == 1288) {	// エンペは登録不可
+			if(md && md->class_ == 1288) {	// エンペは登録不可
 				clif_skill_fail(sd,sc->id,0,0);
 				return 0;
 			}
@@ -9057,10 +9057,10 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 		amount[i] = skill_db[skilldb_id].amount[i];
 	}
 
-	switch( sc->id ) {
-		default:
-			break;
-	}
+	//switch( sc->id ) {
+	//	default:
+	//		break;
+	//}
 
 	if(!(type&2)){
 		if( hp>0 && hd->status.hp < hp) {				/* HPチェック */
@@ -9691,7 +9691,7 @@ int skill_frostjoke_scream(struct block_list *bl,va_list ap)
 int skill_abra_dataset(struct map_session_data *sd, int skilllv)
 {
 	int skill = atn_rand()%MAX_SKILL_ABRA_DB;
-	struct pc_base_job s_class = pc_calc_base_job(sd->status.class);
+	struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
 
 	// セージの転生スキル使用を許可しない
 	if(battle_config.extended_abracadabra == 0 && s_class.upper == 0 &&
@@ -9746,7 +9746,7 @@ void skill_basilica_cancel( struct block_list *bl )
 	node = ud->skillunit;
 	while( node ) {
 		node2 = node->next;
-		group = node->data;
+		group = (struct skill_unit_group *)node->data;
 		if(group->skill_id == HP_BASILICA)
 			skill_delunitgroup(group);
 		node = node2;
@@ -9769,7 +9769,7 @@ int skill_clear_element_field(struct block_list *bl)
 	node = ud->skillunit;
 	while( node ) {
 		node2   = node->next;
-		group   = node->data;
+		group   = (struct skill_unit_group *)node->data;
 		skillid = group->skill_id;
 		if(skillid==SA_DELUGE || skillid==SA_VOLCANO || skillid==SA_VIOLENTGALE || skillid==SA_LANDPROTECTOR || skillid==NJ_SUITON || skillid == NJ_KAENSIN)
 			skill_delunitgroup(group);
@@ -10382,7 +10382,7 @@ int skill_clear_unitgroup(struct block_list *src)
 	node = ud->skillunit;
 	while( node ) {
 		node2 = node->next;
-		group = node->data;
+		group = (struct skill_unit_group *)node->data;
 		if(group->src_id == src->id)
 			skill_delunitgroup(group);
 		node = node2;
@@ -10566,7 +10566,7 @@ static int skill_hermode_wp_check_sub(struct block_list *bl, va_list ap )
 		return 1;
 
 	if(bl->type == BL_NPC && (nd = (struct npc_data *)bl) != NULL) {
-		if(nd->bl.subtype == WARP || (nd->bl.subtype == SCRIPT && nd->class == WARP_CLASS))
+		if(nd->bl.subtype == WARP || (nd->bl.subtype == SCRIPT && nd->class_ == WARP_CLASS))
 			*flag = 1;
 	}
 	return *flag;
@@ -10802,7 +10802,7 @@ int skill_count_unitgroup(struct unit_data *ud,int skillid)
 
 	node = ud->skillunit;
 	while( node ) {
-		group = node->data;
+		group = (struct skill_unit_group *)node->data;
 		if( group->alive_count > 0 && group->skill_id == skillid ) {
 			c++;
 		}
@@ -11892,7 +11892,7 @@ int skill_clone(struct map_session_data* sd,int skillid,int skilllv)
 	if(pc_checkskill(sd,skillid)>=skilllv)
 		return 0;
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	//取得可能スキルか？
 	if(skill_get_cloneable(skillid)&(1<<s_class.upper))

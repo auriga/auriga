@@ -63,8 +63,8 @@ static struct graph* graph_create(unsigned int x, unsigned int y) {
 	// 256 * 3   : パレットデータ
 	// x * y * 2 : イメージのバッファ
 	// 256       : チャンクデータなどの予備
-	g->png_data = aMalloc(4 * 256 + (x + 1) * y * 2);
-	g->raw_data = aCalloc( (x + 1) * y , 1);
+	g->png_data = (unsigned char *)aMalloc(4 * 256 + (x + 1) * y * 2);
+	g->raw_data = (unsigned char *)aCalloc( (x + 1) * y , sizeof(unsigned char));
 	memcpy(
 		g->png_data,
 		"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A\x00\x00\x00\x0D\x49\x48\x44\x52"
@@ -80,7 +80,7 @@ static struct graph* graph_create(unsigned int x, unsigned int y) {
 	g->png_dirty    = 1;
 	g->line_pos     = NULL;
 	g->line_count   = 0;
-	g->graph_value  = aCalloc(x,sizeof(double));
+	g->graph_value  = (double *)aCalloc(x,sizeof(double));
 	g->graph_max    = 0;
 	g->graph_max_value = 0;
 
@@ -286,7 +286,7 @@ static void graph_data(struct graph* g,double value) {
 		if( div <= 2 ) { div *= 2;  base /= 2;       }
 		if( div >  5 ) { div = (div+1)/2; base *= 2; }
 		aFree( g->line_pos );
-		g->line_pos   = aMalloc( (int)(div < 0 ? 4 : (div+1) * sizeof(int)) );
+		g->line_pos   = (int *)aMalloc( (int)(div < 0 ? 4 : (div+1) * sizeof(int)) );
 		g->line_count = div+1;
 		g->graph_max  = div * base; // グラフ上の最大値
 
@@ -371,9 +371,9 @@ void graph_add_sensor(const char* string, int interval, double (*callback_func)(
 	graph_pallet(g,1,graph_rgb(0,0,0));
 	graph_pallet(g,2,GRP_COLOR);
 
-	sensor = aRealloc(sensor, sizeof(struct graph_sensor) * (sensor_max + 1));
+	sensor = (struct graph_sensor *)aRealloc(sensor, sizeof(struct graph_sensor) * (sensor_max + 1));
 	sensor[sensor_max].graph    = g;
-	sensor[sensor_max].str      = aStrdup(string);
+	sensor[sensor_max].str      = (char *)aStrdup(string);
 	sensor[sensor_max].func     = callback_func;
 	sensor[sensor_max].tid      = add_timer_interval(gettick(),graph_timer,sensor_max,0,interval);
 	sensor[sensor_max].interval = interval;

@@ -192,7 +192,7 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e) {
 	WriteFile( hFile, buf, len, &temp, NULL);
 #endif
 
-	symbol = GlobalAlloc( GMEM_FIXED, sizeof(symbol) + 512 );
+	symbol = (IMAGEHLP_SYMBOL *)GlobalAlloc( GMEM_FIXED, sizeof(symbol) + 512 );
 	ZeroMemory( symbol, sizeof(symbol) + 512 );
 	symbol->SizeOfStruct  = sizeof(symbol);
 	symbol->MaxNameLength = 512;

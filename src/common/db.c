@@ -53,16 +53,19 @@ void exit_dbn(void)
 
 static int strdb_cmp(struct dbt* table,void* a,void* b)
 {
+	const char *p1 = (const char *)a;
+	const char *p2 = (const char *)b;
+
 	if(table->maxlen)
-		return strncmp(a,b,table->maxlen);
-	return strcmp(a,b);
+		return strncmp(p1,p2,table->maxlen);
+	return strcmp(p1,p2);
 }
 
 static unsigned int strdb_hash(struct dbt* table,void* a)
 {
 	int i;
 	unsigned int h;
-	unsigned char *p=a;
+	unsigned char *p = (unsigned char *)a;
 
 	i=table->maxlen;
 	if(i==0) i=0x7fffffff;
@@ -395,9 +398,9 @@ struct dbn* db_insert(struct dbt *table,void* key,void* data)
 		}
 	}
 #ifdef MALLOC_DBN
-	p=malloc_dbn();
+	p = (struct dbn *)malloc_dbn();
 #else
-	p=(struct dbn *)aCalloc(1,sizeof(struct dbn));
+	p = (struct dbn *)aCalloc(1,sizeof(struct dbn));
 #endif
 	p->parent= NULL;
 	p->left  = NULL;
@@ -568,7 +571,7 @@ void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
 void  linkdb_insert( struct linkdb_node** head, void *key, void* data) {
 	struct linkdb_node *node;
 	if( head == NULL ) return ;
-	node = aMalloc( sizeof(struct linkdb_node) );
+	node = (struct linkdb_node *)aMalloc( sizeof(struct linkdb_node) );
 	if( *head == NULL ) {
 		// first node
 		*head      = node;
@@ -677,7 +680,7 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment) {
 	char buf[8192];
 	FILE *fp = fopen(file, "r");
 	struct csvdb_data *csv = (struct csvdb_data*)aCalloc( sizeof(struct csvdb_data), 1);
-	csv->file = aStrdup( file );
+	csv->file = (char *)aStrdup( file );
 	if(fp == NULL) {
 		return csv;
 	}
@@ -702,7 +705,7 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment) {
 		buf[max  ] = ' '; // ダミー文字
 		buf[max+1] = 0;
 		line = &csv->data[csv->row_count++];
-		line->buf = aStrdup( buf );
+		line->buf = (char *)aStrdup( buf );
 		line->num = 0;
 		line->buf[max  ] = 0;
 		line->buf[max+1] = 0;
@@ -814,7 +817,7 @@ int csvdb_resize(struct csvdb_data *csv, int row, int col) {
 		}
 		for(i = csv->row_count; i < row; i++) {
 			csv->data[i].num = 0;
-			csv->data[i].buf = aStrdup("");
+			csv->data[i].buf = (char *)aStrdup("");
 			csv->index[i]    = i;
 		}
 		csv->row_count = row;
@@ -841,20 +844,20 @@ int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str) {
 	line = &csv->data[ csv->index[row] ];
 	if( line->buf != NULL ) {
 		for( i = 0; i < line->num; i++) {
-			line->data_p[i] = aStrdup( line->data_p[i] );
+			line->data_p[i] = (char *)aStrdup( line->data_p[i] );
 		}
 		aFree( line->buf );
 		line->buf = NULL;
 	}
 	for(i = line->num; i <= col; i++) {
-		line->data_p[i] = aStrdup("");
+		line->data_p[i] = (char *)aStrdup("");
 		line->data_v[i] = 0;
 	}
 	csv->dirty = 1;
 	if(line->num < col + 1)
 		line->num = col + 1;
 	aFree(line->data_p[col]);
-	line->data_p[col] = aStrdup(str);
+	line->data_p[col] = (char *)aStrdup(str);
 	line->data_v[col] = strtol( str, NULL, 0);
 	return 1;
 }
@@ -872,7 +875,7 @@ int csvdb_clear_row(struct csvdb_data *csv, int row) {
 	} else {
 		aFree( line->buf );
 	}
-	line->buf = aStrdup("");
+	line->buf = (char *)aStrdup("");
 	line->num = 0;
 	csv->dirty = 1;
 	return 1;

@@ -99,7 +99,7 @@ int guild_tostr(char *str,struct guild *g)
 		len+=sprintf(str+len,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%s\t",
 			m->account_id,m->char_id,
 			m->hair,m->hair_color,m->gender,
-			m->class,m->lv,m->exp,m->exp_payper,m->position,
+			m->class_,m->lv,m->exp,m->exp_payper,m->position,
 			((m->account_id>0)?m->name:"-"));
 	}
 	// 役職
@@ -190,7 +190,7 @@ int guild_fromstr(char *str,struct guild *g)
 		m->hair=tmp_int[2];
 		m->hair_color=tmp_int[3];
 		m->gender=tmp_int[4];
-		m->class=tmp_int[5];
+		m->class_=tmp_int[5];
 		m->lv=tmp_int[6];
 		m->exp=tmp_int[7];
 		m->exp_payper=tmp_int[8];
@@ -300,7 +300,7 @@ int guild_fromstr(char *str,struct guild *g)
 // ------------------------------------------
 int guild_journal_rollforward( int key, void* buf, int flag )
 {
-	struct guild* g = numdb_search( guild_db, key );
+	struct guild* g = (struct guild *)numdb_search( guild_db, key );
 	
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct guild*)buf)->guild_id )
@@ -412,8 +412,9 @@ const struct guild *guild_txt_load_num(int guild_id)
 {
 	struct guild *g;
 
-	g = numdb_search(guild_db,guild_id);
-	if(g) guild_calcinfo(g);
+	g = (struct guild *)numdb_search(guild_db,guild_id);
+	if(g)
+		guild_calcinfo(g);
 
 	return g;
 }
@@ -501,7 +502,7 @@ int guild_txt_delete_sub(void *key,void *data,va_list ap)
 }
 
 void guild_txt_delete(int guild_id) {
-	struct guild *g = numdb_search(guild_db,guild_id);
+	struct guild *g = (struct guild *)numdb_search(guild_db,guild_id);
 	if(g) {
 		numdb_foreach(guild_db,guild_txt_delete_sub,g->guild_id);
 		numdb_erase(guild_db,g->guild_id);
@@ -516,7 +517,7 @@ void guild_txt_delete(int guild_id) {
 }
 
 void guild_txt_new(struct guild *g2) {
-	struct guild* g1 = aMalloc(sizeof(struct guild));
+	struct guild* g1 = (struct guild *)aMalloc(sizeof(struct guild));
 	g2->guild_id = guild_newid++;
 	memcpy(g1,g2,sizeof(struct guild));
 	numdb_insert(guild_db,g2->guild_id,g1);
@@ -557,7 +558,7 @@ void guild_txt_config_read_sub(const char* w1,const char *w2) {
 
 static int guild_txt_db_final(void *key,void *data,va_list ap)
 {
-	struct guild *g=data;
+	struct guild *g = (struct guild *)data;
 
 	aFree(g);
 
@@ -585,9 +586,9 @@ void guild_txt_final(void) {
 }
 
 int guild_txt_save(struct guild* g2) {
-	struct guild *g1 = numdb_search(guild_db,g2->guild_id);
+	struct guild *g1 = (struct guild *)numdb_search(guild_db,g2->guild_id);
 	if(g1 == NULL) {
-		g1 = aMalloc(sizeof(struct guild));
+		g1 = (struct guild *)aMalloc(sizeof(struct guild));
 		numdb_insert(guild_db,g2->guild_id,g1);
 	}
 	memcpy(g1,g2,sizeof(struct guild));
@@ -655,7 +656,7 @@ int guildcastle_fromstr(char *str,struct guild_castle *gc)
 // ------------------------------------------
 int guildcastle_journal_rollforward( int key, void* buf, int flag )
 {
-	struct guild_castle* gc = numdb_search( castle_db, key );
+	struct guild_castle* gc = (struct guild_castle *)numdb_search( castle_db, key );
 	
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct guild_castle*)buf)->castle_id )
@@ -807,7 +808,7 @@ int guildcastle_txt_sync(void) {
 
 static int guildcastle_txt_db_final(void *key,void *data,va_list ap)
 {
-	struct guild_castle *gc=data;
+	struct guild_castle *gc = (struct guild_castle *)data;
 	aFree(gc);
 	return 0;
 }
@@ -1068,7 +1069,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 			m->hair=atoi(sql_row[3]);
 			m->hair_color=atoi(sql_row[4]);
 			m->gender=atoi(sql_row[5]);
-			m->class=atoi(sql_row[6]);
+			m->class_=atoi(sql_row[6]);
 			m->lv=atoi(sql_row[7]);
 			m->exp=atoi(sql_row[8]);
 			m->exp_payper=atoi(sql_row[9]);
@@ -1290,7 +1291,7 @@ int  guild_sql_save(struct guild* g2) {
 					p,
 					"%c('%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%s')",
 					sep,g2->guild_id,m->account_id,m->char_id,m->hair,m->hair_color,m->gender,
-					m->class,m->lv,m->exp,m->exp_payper,(int)m->online,m->position,0,0,
+					m->class_,m->lv,m->exp,m->exp_payper,(int)m->online,m->position,0,0,
 					strecpy(buf,m->name)
 				);
 				sep = ',';
@@ -1805,7 +1806,7 @@ int mapif_guild_memberinfoshort(struct guild *g,int idx)
 	WBUFL(buf,10)=g->member[idx].char_id;
 	WBUFB(buf,14)=(unsigned char)g->member[idx].online;
 	WBUFW(buf,15)=g->member[idx].lv;
-	WBUFW(buf,17)=g->member[idx].class;
+	WBUFW(buf,17)=g->member[idx].class_;
 	mapif_sendall(buf,19);
 	return 0;
 }
@@ -2108,7 +2109,7 @@ int mapif_parse_GuildLeave(int fd,int guild_id,int account_id,int char_id,int fl
 
 // オンライン/Lv更新
 static int mapif_parse_GuildChangeMemberInfoShort(int fd,int guild_id,
-	int account_id,int char_id,unsigned char online,int lv,int class)
+	int account_id,int char_id,unsigned char online,int lv,int class_)
 {
 	const struct guild *g1 = guild_load_num(guild_id);
 	int i,alv,c;
@@ -2126,7 +2127,7 @@ static int mapif_parse_GuildChangeMemberInfoShort(int fd,int guild_id,
 			
 			g2.member[i].online=online;
 			g2.member[i].lv=lv;
-			g2.member[i].class=class;
+			g2.member[i].class_=class_;
 			mapif_guild_memberinfoshort(&g2,i);
 		}
 		if( g2.member[i].account_id>0 ){
@@ -2371,7 +2372,7 @@ int mapif_parse_GuildEmblem(int fd,int len,int guild_id,int dummy,const char *da
 }
 int mapif_parse_GuildCastleDataLoad(int fd,int castle_id,int index)
 {
-	struct guild_castle *gc=numdb_search(castle_db,castle_id);
+	struct guild_castle *gc = (struct guild_castle *)numdb_search(castle_db,castle_id);
 	if(gc==NULL){
 		return mapif_guild_castle_dataload(castle_id,0,0);
 	}
@@ -2402,7 +2403,7 @@ int mapif_parse_GuildCastleDataLoad(int fd,int castle_id,int index)
 
 int mapif_parse_GuildCastleDataSave(int fd,int castle_id,int index,int value)
 {
-	struct guild_castle *gc=numdb_search(castle_db,castle_id);
+	struct guild_castle *gc = (struct guild_castle *)numdb_search(castle_db,castle_id);
 	if(gc==NULL){
 		return mapif_guild_castle_datasave(castle_id,index,value);
 	}

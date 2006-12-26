@@ -291,7 +291,7 @@ struct dbt* httpd_files = NULL;
 // ------------------------------------------
 static int httpd_db_final(void *key,void *data,va_list ap)
 {
-	char *url = key;
+	char *url = (char *)key;
 
 	aFree(url);
 
@@ -1538,7 +1538,7 @@ void httpd_parse_request_ok(struct httpd_session_data *sd) {
 char* httpd_get_value(struct httpd_session_data* sd,const char* val) {
 	int src_len = strlen(val);
 	const unsigned char* src_p = sd->query;
-	if(src_p == NULL) return aStrdup("");
+	if(src_p == NULL) return (char *)aStrdup("");
 
 	do {
 		if(!memcmp(src_p,val,src_len) && src_p[src_len] == '=') {
@@ -1560,7 +1560,7 @@ char* httpd_get_value(struct httpd_session_data* sd,const char* val) {
 		} else {
 			src_len = (p2 - src_p);
 		}
-		dest_p   = aMalloc(src_len + 1);
+		dest_p   = (char *)aMalloc(src_len + 1);
 		dest_len = 0;
 		while(src_len > 0) {
 			if(*src_p == '%' && src_len > 2) {
@@ -1583,7 +1583,7 @@ char* httpd_get_value(struct httpd_session_data* sd,const char* val) {
 		dest_p[dest_len] = 0;
 		return dest_p;
 	}
-	return aStrdup("");
+	return (char *)aStrdup("");
 }
 
 // ==========================================
@@ -3042,7 +3042,7 @@ int httpd_get_external_cgi_process_count(){ return 0; }
 // URL エンコード
 // ------------------------------------------
 char* httpd_binary_encode(const char* val) {
-	char *buf = aMalloc(strlen(val) * 3 + 1);
+	char *buf = (char *)aMalloc(strlen(val) * 3 + 1);
 	char *p   = buf;
 	while(*val) {
 		if(isalnum((unsigned char)*val)) {
@@ -3064,7 +3064,7 @@ char* httpd_binary_encode(const char* val) {
 // http のメタ文字のクォート
 // ------------------------------------------
 char* httpd_quote_meta(const char* p1) {
-	char *buf = aMalloc(strlen(p1) * 6 + 1);
+	char *buf = (char *)aMalloc(strlen(p1) * 6 + 1);
 	char *p2  = buf;
 	while(*p1) {
 		switch(*p1) {
@@ -3117,7 +3117,7 @@ void httpd_config_read_add_authuser( struct httpd_access *a, const char *name, c
 	// 必要ならメモリを拡張
 	if( a->user_count == a->user_max )
 	{
-		struct httpd_access_user* au = aMalloc( sizeof(struct httpd_access_user) * (a->user_max + 16) );
+		struct httpd_access_user* au = (struct httpd_access_user *)aMalloc( sizeof(struct httpd_access_user) * (a->user_max + 16) );
 		if( a->user )
 		{
 			memcpy( au, a->user, sizeof(struct httpd_access_user) * a->user_count );
@@ -3198,7 +3198,7 @@ void httpd_config_read_add_ip( unsigned int **list, int *count, int *max, const 
 	// 必要ならメモリを拡張
 	if( *count == *max )
 	{
-		unsigned int *iplist = aMalloc( sizeof(unsigned int) * (*max + 16) );
+		unsigned int *iplist = (unsigned int *)aMalloc( sizeof(unsigned int) * (*max + 16) );
 		if( *list )
 		{
 			memcpy( iplist, *list, sizeof(unsigned int) * (*count) );
@@ -3360,7 +3360,7 @@ int httpd_config_read(char *cfgName)
 					int j;
 					if( htaccess_count==htaccess_max )
 					{
-						struct httpd_access **a = aMalloc( sizeof( struct httpd_access* ) * htaccess_max+16 );
+						struct httpd_access **a = (struct httpd_access **)aMalloc( sizeof( struct httpd_access* ) * htaccess_max+16 );
 						if( htaccess )
 						{
 							memcpy( a, htaccess, sizeof( struct httpd_access* ) * htaccess_count );
@@ -3370,7 +3370,7 @@ int httpd_config_read(char *cfgName)
 						htaccess_max += 16;
 					}
 					// データの追加＆初期化
-					a = htaccess[ htaccess_count++ ] = aMalloc( sizeof( struct httpd_access ) ) ;
+					a = htaccess[ htaccess_count++ ] = (struct httpd_access *)aMalloc( sizeof( struct httpd_access ) ) ;
 					a->type = HTTPD_ACCESS_ALWAYS;
 					a->aip_count = a->aip_max = 0;
 					a->dip_count = a->dip_max = 0;

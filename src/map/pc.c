@@ -93,7 +93,7 @@ int pc_isGM(struct map_session_data *sd)
 
 	nullpo_retr(0, sd);
 
-	if( (p = numdb_search(gm_account_db,sd->status.account_id)) == NULL )
+	if( (p = (struct gm_account *)numdb_search(gm_account_db,sd->status.account_id)) == NULL )
 		return 0;
 	return p->level;
 }
@@ -102,7 +102,7 @@ int pc_numisGM(int account_id)
 {
 	struct gm_account *p;
 
-	if( (p = numdb_search(gm_account_db,account_id)) == NULL )
+	if( (p = (struct gm_account *)numdb_search(gm_account_db,account_id)) == NULL )
 		return 0;
 	return p->level;
 }
@@ -365,7 +365,7 @@ int pc_setrestartvalue(struct map_session_data *sd,int type)
 
 	nullpo_retr(0, sd);
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	//-----------------------
 	// 死亡した
@@ -548,7 +548,7 @@ int pc_equippoint(struct map_session_data *sd,int n)
 
 	nullpo_retr(0, sd);
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	if(sd->inventory_data[n]) {
 		int look = sd->inventory_data[n]->look;
@@ -695,7 +695,7 @@ int pc_isequip(struct map_session_data *sd,int n)
 	nullpo_retr(0, sd);
 
 	item = sd->inventory_data[n];
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	if( battle_config.gm_allequip>0 && pc_isGM(sd)>=battle_config.gm_allequip )
 		return 1;
@@ -761,7 +761,7 @@ int pc_isequip(struct map_session_data *sd,int n)
 	}
 	if(item->elv > 0 && sd->status.base_level < item->elv)
 		return 0;
-	if(((1<<s_class.job)&item->class) == 0)
+	if(((1<<s_class.job)&item->class_) == 0)
 		return 0;
 
 	if(item->upper){
@@ -868,11 +868,11 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->state.connect_new = 1;
 	sd->bl.prev = sd->bl.next = NULL;
 	sd->weapontype1 = sd->weapontype2 = 0;
-	if(sd->status.class == PC_CLASS_GS || sd->status.class ==PC_CLASS_NJ)
+	if(sd->status.class_ == PC_CLASS_GS || sd->status.class_ ==PC_CLASS_NJ)
 	{
-		sd->view_class = sd->status.class-4;
+		sd->view_class = sd->status.class_-4;
 	}else{
-		sd->view_class = sd->status.class;
+		sd->view_class = sd->status.class_;
 	}
 	sd->speed = DEFAULT_WALK_SPEED;
 	sd->state.dead_sit=0;
@@ -1146,11 +1146,11 @@ int pc_calc_skilltree(struct map_session_data *sd)
 
 	nullpo_retr(0, sd);
 
-	if(sd->status.class==PC_CLASS_TK && pc_checkskill2(sd,TK_MISSION)>0 && sd->status.base_level>=90 &&
+	if(sd->status.class_==PC_CLASS_TK && pc_checkskill2(sd,TK_MISSION)>0 && sd->status.base_level>=90 &&
 	   sd->status.skill_point==0 && ranking_get_pc_rank(sd,RK_TAEKWON)>0)
 		tk_ranker_bonus=1;
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 	c = s_class.job;
 	s = (s_class.upper==1) ? 1 : 0 ; //転生以外は通常のスキル？
 
@@ -3020,13 +3020,13 @@ int pc_isUseitem(struct map_session_data *sd,int n)
 	if(item->type != 0 && item->type != 2)
 		return 0;
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	if(item->sex != 2 && sd->sex != item->sex)
 		return 0;
 	if(item->elv > 0 && sd->status.base_level < item->elv)
 		return 0;
-	if(((1<<s_class.job)&item->class) == 0)
+	if(((1<<s_class.job)&item->class_) == 0)
 		return 0;
 
 	if(item->upper){
@@ -3316,21 +3316,21 @@ int pc_steal_item(struct map_session_data *sd,struct block_list *bl)
 
 	if(battle_config.item_rate <= 0 || md->state.steal_flag)
 		return 0;
-	if(mob_db[md->class].mexp > 0 || mob_db[md->class].mode&0x20)
+	if(mob_db[md->class_].mexp > 0 || mob_db[md->class_].mode&0x20)
 		return 0;
 	if(md->sc_data && (md->sc_data[SC_STONE].timer != -1 || md->sc_data[SC_FREEZE].timer != -1))
 		return 0;
 
-	skill = (sd->paramc[4] - mob_db[md->class].dex)/2 + pc_checkskill(sd,TF_STEAL) * 6 + 10;
+	skill = (sd->paramc[4] - mob_db[md->class_].dex)/2 + pc_checkskill(sd,TF_STEAL) * 6 + 10;
 	if(skill > 0) {
 		for(i=0;i<ITEM_DROP_COUNT-1;i++) {
-			itemid = mob_db[md->class].dropitem[i].nameid;
+			itemid = mob_db[md->class_].dropitem[i].nameid;
 			if(itemid > 0 && itemdb_type(itemid) != 6) {
-				rate = mob_db[md->class].dropitem[i].p * skill * battle_config.steal_rate / 10000 + 1;
+				rate = mob_db[md->class_].dropitem[i].p * skill * battle_config.steal_rate / 10000 + 1;
 				rate += sd->add_steal_rate;
 #ifdef _DEBUG
 				printf( "skill=%d, mob base=%d, rate=%d, bc.rate=%d, add=%d\n"
-					, skill, mob_db[md->class].dropitem[i].p, rate, battle_config.steal_rate, sd->add_steal_rate );
+					, skill, mob_db[md->class_].dropitem[i].p, rate, battle_config.steal_rate, sd->add_steal_rate );
 #endif	// #ifdef _DEBUG
 				if(atn_rand()%10000 < rate) {
 					struct item tmp_item;
@@ -3376,10 +3376,10 @@ int pc_steal_coin(struct map_session_data *sd,struct block_list *bl)
 		return 0;
 
 	skill = pc_checkskill(sd,RG_STEALCOIN)*10;
-	rate = skill + (sd->status.base_level - mob_db[md->class].lv)*3 + sd->paramc[4]*2 + sd->paramc[5]*2;
+	rate = skill + (sd->status.base_level - mob_db[md->class_].lv)*3 + sd->paramc[4]*2 + sd->paramc[5]*2;
 
 	if(atn_rand()%1000 < rate) {
-		pc_getzeny(sd,mob_db[md->class].lv*10 + atn_rand()%100);
+		pc_getzeny(sd,mob_db[md->class_].lv*10 + atn_rand()%100);
 		md->state.steal_coin_flag = 1;
 		return 1;
 	}
@@ -3859,8 +3859,8 @@ int pc_checkskill(struct map_session_data *sd,int skill_id)
 		        sd->cloneskill_lv : sd->status.skill[skill_id].lv);
 	}else if(sd->status.skill[skill_id].id == skill_id)
 	{
-		if(sd->status.class==PC_CLASS_TK && sd->status.skill[skill_id].flag==0 && pc_checkskill2(sd,TK_MISSION)>0 && sd->status.base_level>=90 &&
-		   sd->status.skill_point==0 && ranking_get_pc_rank(sd,RK_TAEKWON))
+		if(sd->status.class_ == PC_CLASS_TK && sd->status.skill[skill_id].flag == 0 && pc_checkskill2(sd,TK_MISSION) > 0 && sd->status.base_level >= 90 &&
+		   sd->status.skill_point == 0 && ranking_get_pc_rank(sd,RK_TAEKWON))
 		{
 			return skill_get_max(skill_id);
 		}else{
@@ -4076,7 +4076,7 @@ int pc_checkbaselevelup(struct map_session_data *sd)
 	next = pc_nextbaseexp(sd);
 
 	if(sd->status.base_exp >= next && next > 0){
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class);
+		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
 
 		// base側レベルアップ処理
 		sd->status.base_exp -= next;
@@ -4132,7 +4132,7 @@ int pc_checkjoblevelup(struct map_session_data *sd)
 		sd->status.skill_point ++;
 		clif_updatestatus(sd,SP_SKILLPOINT);
 		status_calc_pc(sd,0);
-		if(sd->status.class == 23)
+		if(sd->status.class_ == 23)
 			clif_misceffect(&sd->bl,8);
 		else
 			clif_misceffect(&sd->bl,1);
@@ -4164,11 +4164,11 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		if (sd->sc_data[SC_MIRACLE].timer != -1){ // 太陽と月と星の奇跡
 			tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
 		} else {                                  // 太陽の祝福、月の祝福、星の祝福
-			if ((battle_config.allow_skill_without_day || is_day_of_sun()) && md->class == sd->hate_mob[0])
+			if ((battle_config.allow_skill_without_day || is_day_of_sun()) && md->class_ == sd->hate_mob[0])
 				tk_exp_rate = 10 * pc_checkskill(sd, SG_SUN_BLESS);
-			else if ((battle_config.allow_skill_without_day || is_day_of_moon()) && md->class == sd->hate_mob[1])
+			else if ((battle_config.allow_skill_without_day || is_day_of_moon()) && md->class_ == sd->hate_mob[1])
 				tk_exp_rate = 10 * pc_checkskill(sd, SG_MOON_BLESS);
-			else if ((battle_config.allow_skill_without_day || is_day_of_star()) && md->class == sd->hate_mob[2])
+			else if ((battle_config.allow_skill_without_day || is_day_of_star()) && md->class_ == sd->hate_mob[2])
 				tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
 		}
 
@@ -4285,22 +4285,22 @@ int pc_nextbaseexp(struct map_session_data *sd)
 	if(sd->status.base_level>=MAX_LEVEL || sd->status.base_level<=0)
 		return 0;
 
-	if(sd->status.class==0)                        i=0;
-	else if(sd->status.class<=6)                   i=1;
-	else if(sd->status.class<=22)                  i=2;
-	else if(sd->status.class==23)                  i=3;
-	else if(sd->status.class== PC_CLASS_GS)        i=3;//ガンスリンガー
-	else if(sd->status.class== PC_CLASS_NJ)        i=3;//忍者
-	else if(sd->status.class== PC_CLASS_DK)        i=3;//デスナイト
-	else if(sd->status.class== PC_CLASS_DC)        i=3;//ダークコレクター
-	else if(sd->status.class==PC_CLASS_BASE2)      i=4;
-	else if(sd->status.class<=PC_CLASS_BASE2 + 6)  i=5;
-	else if(sd->status.class<=PC_CLASS_BASE2 + 21) i=6;
-	else if(sd->status.class == PC_CLASS_BASE3)    i=0;//養子ノビ
-	else if(sd->status.class<= PC_CLASS_BASE3+6)   i=1;//養子一次
-	else if(sd->status.class<= PC_CLASS_BASE3+21)  i=2;//養子二次
-	else if(sd->status.class== PC_CLASS_SNV3)      i=3;//養子スパノビ
-	else if(sd->status.class<= PC_CLASS_SL)        i=1;//追加職 転生前の値
+	if(sd->status.class_ == 0)                       i=0;
+	else if(sd->status.class_ <= 6)                  i=1;
+	else if(sd->status.class_ <= 22)                 i=2;
+	else if(sd->status.class_ == 23)                 i=3;
+	else if(sd->status.class_ == PC_CLASS_GS)        i=3;//ガンスリンガー
+	else if(sd->status.class_ == PC_CLASS_NJ)        i=3;//忍者
+	else if(sd->status.class_ == PC_CLASS_DK)        i=3;//デスナイト
+	else if(sd->status.class_ == PC_CLASS_DC)        i=3;//ダークコレクター
+	else if(sd->status.class_ ==PC_CLASS_BASE2)      i=4;
+	else if(sd->status.class_ <=PC_CLASS_BASE2 + 6)  i=5;
+	else if(sd->status.class_ <=PC_CLASS_BASE2 + 21) i=6;
+	else if(sd->status.class_ == PC_CLASS_BASE3)     i=0;//養子ノビ
+	else if(sd->status.class_ <= PC_CLASS_BASE3+6)   i=1;//養子一次
+	else if(sd->status.class_ <= PC_CLASS_BASE3+21)  i=2;//養子二次
+	else if(sd->status.class_ == PC_CLASS_SNV3)      i=3;//養子スパノビ
+	else if(sd->status.class_ <= PC_CLASS_SL)        i=1;//追加職 転生前の値
 	else  i=1;//それ以外なら転生前
 
 	return exp_table[i][sd->status.base_level-1];
@@ -4319,24 +4319,24 @@ int pc_nextjobexp(struct map_session_data *sd)
 	if(sd->status.job_level>=MAX_LEVEL || sd->status.job_level<=0)
 		return 0;
 
-	if(sd->status.class == 0)                        i=7;  //ノービス
-	else if(sd->status.class <= 6)                   i=8;  //一次職
-	else if(sd->status.class <= 22)                  i=9;  //二次職
-	else if(sd->status.class == 23)                  i=10; //スーパーノービス
-	else if(sd->status.class == PC_CLASS_GS)         i=15; //ガンスリンガー
-	else if(sd->status.class == PC_CLASS_NJ)         i=15; //忍者
-	else if(sd->status.class == PC_CLASS_DK)         i=15; //デスナイト
-	else if(sd->status.class == PC_CLASS_DC)         i=15; //ダークコレクター
-	else if(sd->status.class == PC_CLASS_BASE2)      i=11; //転生ノービス
-	else if(sd->status.class <= PC_CLASS_BASE2 + 6)  i=12; //転生一次職
-	else if(sd->status.class <= PC_CLASS_BASE2 + 21) i=13; //転生二次職
-	else if(sd->status.class == PC_CLASS_BASE3)      i=7;  //養子ノビ
-	else if(sd->status.class <= PC_CLASS_BASE3+6)    i=8;  //養子一次
-	else if(sd->status.class <= PC_CLASS_BASE3+21)   i=9;  //養子二次
-	else if(sd->status.class == PC_CLASS_SNV3)       i=10; //養子スパノビ
-	else if(sd->status.class == PC_CLASS_TK)         i=8;  //テコンキッド
-	else if(sd->status.class <= PC_CLASS_SG2)        i=14; //拳聖
-	else if(sd->status.class == PC_CLASS_SL)         i=9; //ソウルリンカー
+	if(sd->status.class_ == 0)                        i=7;  //ノービス
+	else if(sd->status.class_ <= 6)                   i=8;  //一次職
+	else if(sd->status.class_ <= 22)                  i=9;  //二次職
+	else if(sd->status.class_ == 23)                  i=10; //スーパーノービス
+	else if(sd->status.class_ == PC_CLASS_GS)         i=15; //ガンスリンガー
+	else if(sd->status.class_ == PC_CLASS_NJ)         i=15; //忍者
+	else if(sd->status.class_ == PC_CLASS_DK)         i=15; //デスナイト
+	else if(sd->status.class_ == PC_CLASS_DC)         i=15; //ダークコレクター
+	else if(sd->status.class_ == PC_CLASS_BASE2)      i=11; //転生ノービス
+	else if(sd->status.class_ <= PC_CLASS_BASE2 + 6)  i=12; //転生一次職
+	else if(sd->status.class_ <= PC_CLASS_BASE2 + 21) i=13; //転生二次職
+	else if(sd->status.class_ == PC_CLASS_BASE3)      i=7;  //養子ノビ
+	else if(sd->status.class_ <= PC_CLASS_BASE3+6)    i=8;  //養子一次
+	else if(sd->status.class_ <= PC_CLASS_BASE3+21)   i=9;  //養子二次
+	else if(sd->status.class_ == PC_CLASS_SNV3)       i=10; //養子スパノビ
+	else if(sd->status.class_ == PC_CLASS_TK)         i=8;  //テコンキッド
+	else if(sd->status.class_ <= PC_CLASS_SG2)        i=14; //拳聖
+	else if(sd->status.class_ == PC_CLASS_SL)         i=9; //ソウルリンカー
 	else i = 9;//それ以外なら二次テーブル
 
 	return exp_table[i][sd->status.job_level-1];
@@ -4616,7 +4616,7 @@ int pc_allskillup(struct map_session_data *sd)
 				sd->status.skill[i].lv=skill_get_max(i);
 		}
 	} else {
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class);
+		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
 		int c = s_class.job;
 		int s = (s_class.upper==1)?1:0;	//転生以外は通常のスキル？
 
@@ -4722,7 +4722,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	nullpo_retr(0, sd);
 
 	// 転生や養子の場合の元の職業を算出する
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 	// 既に死んでいたら無効
 	if(unit_isdead(&sd->bl))
 		return 0;
@@ -5137,7 +5137,7 @@ int pc_readparam(struct map_session_data *sd,int type)
 
 	nullpo_retr(0, sd);
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	switch(type){
 	case SP_SKILLPOINT:
@@ -5336,7 +5336,7 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 	case SP_JOBLEVEL:
 		if (val > 0) {
 			if (val >= sd->status.job_level) {
-				struct pc_base_job s_class = pc_calc_base_job(sd->status.class);
+				struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
 				int up_level = max_job_table[s_class.upper][s_class.job];
 
 				if (val > up_level)
@@ -5695,7 +5695,7 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	nullpo_retr(0, sd);
 
 	//転生や養子の場合の元の職業を算出する
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	if(job >= MAX_VALID_PC_CLASS)
 		return 1;
@@ -5737,13 +5737,13 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	}
 
 	if((sd->sex == 0 && job == 19) || (sd->sex == 1 && job == 20) ||
-	   job == 13 || job == 21 || job ==22 || job ==26 || sd->status.class == b_class) //♀はバードになれない、♂はダンサーになれない、結婚衣裳もお断り
+	   job == 13 || job == 21 || job ==22 || job ==26 || sd->status.class_ == b_class) //♀はバードになれない、♂はダンサーになれない、結婚衣裳もお断り
 		return 1;
 
-	sd->status.class = sd->view_class = b_class;
-	if(sd->status.class == PC_CLASS_GS || sd->status.class ==PC_CLASS_NJ)
+	sd->status.class_ = sd->view_class = b_class;
+	if(sd->status.class_ == PC_CLASS_GS || sd->status.class_ ==PC_CLASS_NJ)
 	{
-		sd->view_class = sd->status.class-4;
+		sd->view_class = sd->status.class_-4;
 	}
 
 	if(joblv_nochange==0)
@@ -6264,7 +6264,7 @@ int pc_addeventtimer(struct map_session_data *sd,int tick,const char *name)
 			break;
 	}
 	if(i<MAX_EVENTTIMER){
-		char *evname = aStrdup(name);
+		char *evname = (char *)aStrdup(name);
 		sd->eventtimer[i] = add_timer(gettick()+tick,pc_eventtimer,sd->bl.id,(int)evname);
 	}else {
 		if(battle_config.error_log)
@@ -6361,7 +6361,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	nullpo_retv(sd);
 	nullpo_retv(id = sd->inventory_data[n]);
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 
 	nameid = sd->status.inventory[n].nameid;
 	pos = pc_equippoint(sd,n);
@@ -6847,7 +6847,7 @@ int pc_adoption_sub(struct map_session_data* sd,struct map_session_data *papa,st
 	nullpo_retr(0, sd);
 
 	if(pc_check_adopt_condition(sd, papa, mama, 0)) {
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class);
+		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
 
 		sd->status.parent_id[0] = papa->status.char_id;
 		sd->status.parent_id[1] = mama->status.char_id;
@@ -6891,7 +6891,7 @@ int pc_check_adopt_condition(struct map_session_data *dstsd, struct map_session_
 		return 0;
 
 	//養子チェック
-	s_class = pc_calc_base_job(dstsd->status.class);
+	s_class = pc_calc_base_job(dstsd->status.class_);
 	if(s_class.upper != 0 || s_class.job == 22 || s_class.job >= 24)
 		return 0;
 	//パーティー同じマップに３人
@@ -6979,7 +6979,7 @@ int pc_break_adoption(struct map_session_data *sd)
 
 	// 解体処理の実行、見つからなければchar鯖に依頼
 	if(baby) {		// 子供の離縁
-		struct pc_base_job s_class = pc_calc_base_job(baby->status.class);
+		struct pc_base_job s_class = pc_calc_base_job(baby->status.class_);
 		baby->status.parent_id[0] = 0;
 		baby->status.parent_id[1] = 0;
 		pc_jobchange(baby,s_class.job,0);
@@ -7355,7 +7355,7 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 
 	bsp=sd->status.sp;
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 	inc_num = pc_spheal(sd);
 	if(s_class.job == 23 || sd->sc_data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc_data[SC_MONK].timer!=-1)
 		sd->sp_sub += inc_num;
@@ -7759,7 +7759,7 @@ int pc_autosave(int tid,unsigned int tick,int id,int data)
 
 static int gm_account_db_final(void *key,void *data,va_list ap)
 {
-	struct gm_account *p=data;
+	struct gm_account *p = (struct gm_account *)data;
 
 	aFree(p);
 
@@ -7810,7 +7810,7 @@ void pc_read_gm_account() {
 					start_range = i;
 				}
 				for (account_id = start_range; account_id <= end_range; account_id++) {
-					if ((p = numdb_search(gm_account_db, account_id)) == NULL) {
+					if ((p = (struct gm_account *)numdb_search(gm_account_db, account_id)) == NULL) {
 						p = (struct gm_account *)aCalloc(1, sizeof(struct gm_account));
 						numdb_insert(gm_account_db, account_id, p);
 					}
@@ -7845,7 +7845,7 @@ int pc_check_skillup(struct map_session_data *sd,int skill_num)
 
 	nullpo_retr(0, sd);
 
-	s_class = pc_calc_base_job(sd->status.class);
+	s_class = pc_calc_base_job(sd->status.class_);
 	skill_point = pc_calc_skillpoint(sd);
 
 	if(skill_point < 9)

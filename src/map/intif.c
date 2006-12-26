@@ -567,7 +567,7 @@ int intif_guild_leave(int guild_id,int account_id,int char_id,int flag,const cha
 
 // ギルドメンバのオンライン状況/Lv更新要求
 void intif_guild_memberinfoshort(int guild_id,
-	int account_id, int char_id, unsigned char online, int lv, int class)
+	int account_id, int char_id, unsigned char online, int lv, int class_)
 {
 	if (inter_fd < 0)
 		return;
@@ -578,7 +578,7 @@ void intif_guild_memberinfoshort(int guild_id,
 	WFIFOL(inter_fd,10) = char_id;
 	WFIFOB(inter_fd,14) = online;
 	WFIFOW(inter_fd,15) = lv;
-	WFIFOW(inter_fd,17) = class;
+	WFIFOW(inter_fd,17) = class_;
 	WFIFOSET(inter_fd,19);
 
 	return;

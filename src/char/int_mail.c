@@ -287,21 +287,21 @@ int mail_sync(void) {
 }
 
 const struct mail* mail_load(int char_id) {
-	return numdb_search(mail_db,char_id);
+	return (const struct mail *)numdb_search(mail_db,char_id);
 }
 
 int mail_save(struct mail* m2) {
-	struct mail *m1 = numdb_search(mail_db,m2->char_id);
+	struct mail *m1 = (struct mail *)numdb_search(mail_db,m2->char_id);
 	if(m1 == NULL) {
-		m1 = aCalloc(1,sizeof(struct mail));
+		m1 = (struct mail *)aCalloc(1,sizeof(struct mail));
 		numdb_insert(mail_db,m1,m2->char_id);
 	}
 	memcpy(m1,m2,sizeof(struct mail));
 	return 1;
 }
 int mail_new(int account_id,int char_id) {
-	struct mail *m = aCalloc(1,sizeof(struct mail));
-	m->account_id=account_id;
+	struct mail *m = (struct mail *)aCalloc(1,sizeof(struct mail));
+	m->account_id = account_id;
 	m->char_id = char_id;
 	m->rates = 1;
 	m->store = 1;
@@ -310,7 +310,7 @@ int mail_new(int account_id,int char_id) {
 }
 static int mail_final_sub(void *key,void *data,va_list ap)
 {
-	struct mail *md=data;
+	struct mail *md = (struct mail *)data;
 	aFree(md);
 	return 0;
 }

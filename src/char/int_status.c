@@ -101,7 +101,7 @@ static int status_fromstr(char *str, struct status_change_data *sc)
 // ------------------------------------------
 int status_journal_rollforward( int key, void* buf, int flag )
 {
-	struct status_change_data *sc = numdb_search( scdata_db, key );
+	struct status_change_data *sc = (struct status_change_data *)numdb_search( scdata_db, key );
 
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct status_change_data *)buf)->char_id )
@@ -230,7 +230,7 @@ int status_txt_sync(void)
 
 int status_txt_delete(int char_id)
 {
-	struct status_change_data *sc = numdb_search(scdata_db,char_id);
+	struct status_change_data *sc = (struct status_change_data *)numdb_search(scdata_db,char_id);
 
 	if(sc == NULL)
 		return 1;
@@ -249,12 +249,12 @@ int status_txt_delete(int char_id)
 /* 負荷軽減を優先してconstを付けない */
 struct status_change_data *status_txt_load(int char_id)
 {
-	return numdb_search(scdata_db,char_id);
+	return (struct status_change_data *)numdb_search(scdata_db,char_id);
 }
 
 int status_txt_save(struct status_change_data *sc2)
 {
-	struct status_change_data *sc1 = numdb_search(scdata_db,sc2->char_id);
+	struct status_change_data *sc1 = (struct status_change_data *)numdb_search(scdata_db,sc2->char_id);
 
 	if(sc1 == NULL) {
 		sc1 = (struct status_change_data *)aCalloc(1,sizeof(struct status_change_data));

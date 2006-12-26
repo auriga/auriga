@@ -65,7 +65,7 @@ int homun_tostr(char *str,struct mmo_homunstatus *h)
 		h->intimate = 100000;
 
 	str_p += sprintf(str,"%d,%d,%s\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d",
-		h->homun_id,h->class,h->name,
+		h->homun_id,h->class_,h->name,
 		h->account_id,h->char_id,
 		h->base_level,h->base_exp,h->max_hp,h->hp,h->max_sp,h->sp,
 		h->str,h->agi,h->vit,h->int_,h->dex,h->luk,
@@ -107,7 +107,7 @@ int homun_fromstr(char *str,struct mmo_homunstatus *h)
 		return 1;
 
 	h->homun_id = tmp_int[0];
-	h->class = tmp_int[1];
+	h->class_ = tmp_int[1];
 	memcpy(h->name,tmp_str,24);
 	h->account_id = tmp_int[2];
 	h->char_id = tmp_int[3];
@@ -170,7 +170,7 @@ int homun_fromstr(char *str,struct mmo_homunstatus *h)
 // ------------------------------------------
 int homun_journal_rollforward( int key, void* buf, int flag )
 {
-	struct mmo_homunstatus* h = numdb_search( homun_db, key );
+	struct mmo_homunstatus* h = (struct mmo_homunstatus *)numdb_search( homun_db, key );
 
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct mmo_homunstatus*)buf)->homun_id )
@@ -268,7 +268,8 @@ int homun_txt_sync_sub(void *key,void *data,va_list ap)
 	return 0;
 }
 
-int homun_txt_sync(void) {
+int homun_txt_sync(void)
+{
 	FILE *fp;
 	int lock;
 
@@ -295,9 +296,11 @@ int homun_txt_sync(void) {
 	return 0;
 }
 
-int homun_txt_delete(int homun_id) {
+int homun_txt_delete(int homun_id)
+{
 	struct mmo_homunstatus *p;
-	p = numdb_search(homun_db,homun_id);
+
+	p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
 	if( p == NULL)
 		return 1;
 	else {
@@ -313,14 +316,17 @@ int homun_txt_delete(int homun_id) {
 	return 0;
 }
 
-const struct mmo_homunstatus* homun_txt_load(int homun_id) {
-	return numdb_search(homun_db,homun_id);
+const struct mmo_homunstatus* homun_txt_load(int homun_id)
+{
+	return (const struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
 }
 
-int homun_txt_save(struct mmo_homunstatus* p2) {
-	struct mmo_homunstatus* p1 = numdb_search(homun_db,p2->homun_id);
+int homun_txt_save(struct mmo_homunstatus* p2)
+{
+	struct mmo_homunstatus* p1 = (struct mmo_homunstatus *)numdb_search(homun_db,p2->homun_id);
+
 	if(p1 == NULL) {
-		p1 = aMalloc(sizeof(struct mmo_homunstatus));
+		p1 = (struct mmo_homunstatus *)aMalloc(sizeof(struct mmo_homunstatus));
 		numdb_insert(homun_db,p2->homun_id,p1);
 	}
 	memcpy(p1,p2,sizeof(struct mmo_homunstatus));
@@ -332,8 +338,10 @@ int homun_txt_save(struct mmo_homunstatus* p2) {
 	return 1;
 }
 
-int homun_txt_new(struct mmo_homunstatus *p2,int account_id,int char_id) {
-	struct mmo_homunstatus *p1 = aMalloc(sizeof(struct mmo_homunstatus));
+int homun_txt_new(struct mmo_homunstatus *p2,int account_id,int char_id)
+{
+	struct mmo_homunstatus *p1 = (struct mmo_homunstatus *)aMalloc(sizeof(struct mmo_homunstatus));
+
 	p2->homun_id = homun_newid++;
 	memcpy(p1,p2,sizeof(struct mmo_homunstatus));
 	numdb_insert(homun_db,p2->homun_id,p1);
@@ -342,7 +350,7 @@ int homun_txt_new(struct mmo_homunstatus *p2,int account_id,int char_id) {
 
 static int homun_txt_final_sub(void *key,void *data,va_list ap)
 {
-	struct mmo_homunstatus *p=data;
+	struct mmo_homunstatus *p = (struct mmo_homunstatus *)data;
 
 	aFree(p);
 
@@ -441,7 +449,7 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id) {
 		sql_row = mysql_fetch_row(sql_res);
 
 		p->homun_id = homun_id;
-		p->class = atoi(sql_row[1]);
+		p->class_ = atoi(sql_row[1]);
 		memcpy(p->name,sql_row[2],24);
 		p->account_id = atoi(sql_row[3]);
 		p->char_id = atoi(sql_row[4]);
@@ -536,7 +544,7 @@ int  homun_sql_save(struct mmo_homunstatus* p2) {
 	// basic information
 	p =  tmp_sql;
 	p += sprintf(p,"UPDATE `%s` SET",homun_db_);
-	UPDATE_NUM(class       ,"class");
+	UPDATE_NUM(class_      ,"class");
 	UPDATE_STR(name        ,"name");
 	UPDATE_NUM(account_id  ,"account_id");
 	UPDATE_NUM(char_id     ,"char_id");
@@ -613,7 +621,7 @@ int  homun_sql_new(struct mmo_homunstatus *p,int account_id,int char_id) {
 		"VALUES ('%d', '%s', '%d', '%d',"
 		"'%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d',"
 		"'%d', '%d', '%d', '%d', '%d', '%d', '%d')",
-		homun_db_, p->class, strecpy(t_name, p->name), p->account_id, p->char_id, p->base_level,
+		homun_db_, p->class_, strecpy(t_name, p->name), p->account_id, p->char_id, p->base_level,
 		p->base_exp, p->max_hp, p->hp, p->max_sp, p->sp, p->str, p->agi, p->vit, p->int_, p->dex, p->luk,
 		p->status_point, p->skill_point, p->equip, p->intimate,
 		p->hungry, p->rename_flag, p->incubate

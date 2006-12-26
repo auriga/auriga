@@ -1981,7 +1981,7 @@ int unit_remove_map(struct block_list *bl, int clrtype)
 		md->attacked_players = 0;
 
 		clif_clearchar_area(&md->bl,clrtype);
-		if(mob_get_viewclass(md->class) < MAX_VALID_PC_CLASS) {
+		if(mob_get_viewclass(md->class_) < MAX_VALID_PC_CLASS) {
 			clif_clearchar_delay(gettick()+3000,&md->bl,0);
 		}
 		mob_ai_hard_spawn( &md->bl, 0 );

@@ -211,8 +211,8 @@ struct pc_base_job{
 	int upper; //通常 0, 転生 1, 養子 2
 };
 
-#define pc_isupper(sd) (((sd)->status.class >= PC_CLASS_NV2) && ((sd)->status.class < PC_CLASS_NV3))
-#define pc_isbaby(sd) (((sd)->status.class >= PC_CLASS_NV3) && ((sd)->status.class <= PC_CLASS_SNV3))
+#define pc_isupper(sd) (((sd)->status.class_ >= PC_CLASS_NV2) && ((sd)->status.class_ < PC_CLASS_NV3))
+#define pc_isbaby(sd) (((sd)->status.class_ >= PC_CLASS_NV3) && ((sd)->status.class_ <= PC_CLASS_SNV3))
 
 struct pc_base_job pc_calc_base_job(int b_class);//転生や養子職の元の職業を返す
 int pc_calc_class_job(int job,int upper);

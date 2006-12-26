@@ -32,7 +32,7 @@ void intif_guild_request_info(int guild_id);
 int intif_guild_addmember(int guild_id,struct guild_member *m);
 int intif_guild_leave(int guild_id,int account_id,int char_id,int flag,const char *mes);
 void intif_guild_memberinfoshort(int guild_id,
-	int account_id, int char_id, unsigned char online, int lv, int class);
+	int account_id, int char_id, unsigned char online, int lv, int class_);
 int intif_guild_break(int guild_id);
 int intif_guild_message(int guild_id,int account_id,char *mes,int len);
 int intif_guild_checkconflict(int guild_id,int account_id,int char_id);

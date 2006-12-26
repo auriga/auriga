@@ -11,7 +11,7 @@ struct item_data {
 	int value_buy;
 	int value_sell;
 	int type;
-	unsigned int class;
+	unsigned int class_;
 	int sex;
 	int equip;
 	int weight;

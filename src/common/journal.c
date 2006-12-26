@@ -100,7 +100,7 @@ static void journal_push_free( struct journal *j, int pos ) {
 	if( j->unusedchunk_size==0 )
 	{
 		j->unusedchunk_size = UNUSEDCHUNK_DEFAULT_QUEUESIZE;
-		j->unusedchunk_queue = aCalloc( sizeof(int), UNUSEDCHUNK_DEFAULT_QUEUESIZE );
+		j->unusedchunk_queue = (int *)aCalloc( sizeof(int), UNUSEDCHUNK_DEFAULT_QUEUESIZE );
 	}
 	
 	// キューに登録
@@ -110,7 +110,7 @@ static void journal_push_free( struct journal *j, int pos ) {
 	if( j->unusedchunk_read == j->unusedchunk_write )
 	{
 		// キューがいっぱいになったので拡張する ( キュー内部の順番は入れ替わってもよい )
-		int* p = aCalloc( sizeof(int), j->unusedchunk_size*2 );
+		int* p = (int *)aCalloc( sizeof(int), j->unusedchunk_size*2 );
 		memcpy( p, j->unusedchunk_queue, sizeof(int)*j->unusedchunk_size );
 		aFree( j->unusedchunk_queue );
 		j->unusedchunk_read  = 0;
@@ -215,7 +215,7 @@ int journal_write( struct journal* j, int key, const void* data )
 	// ジャーナルデータの登録
 	if( !dat )
 	{
-		dat = aCalloc( 1,sizeof(struct journal_data ) );
+		dat = (struct journal_data *)aCalloc( 1,sizeof(struct journal_data ) );
 		numdb_insert( j->db, key, dat );
 		dat->idx = -1;
 	}
@@ -284,7 +284,7 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 	jhd.timestamp = timestamp;
 	jhd.tick = tick;
 	jhd.flag = dat->flag;
-	jhd.crc32 = grfio_crc32( dat->buf, j->datasize );
+	jhd.crc32 = grfio_crc32( (const char *)dat->buf, j->datasize );
 	
 	// データ書き込み
 	fseek( j->fp, dat->idx * j->chunksize, SEEK_SET );
@@ -355,7 +355,7 @@ const char* journal_get( struct journal* j, int key, int* flag )
 	if( dat )
 	{
 		if( flag ) *flag = dat->flag;
-		return dat->buf;
+		return (const char *)dat->buf;
 	}
 	return NULL;
 }
@@ -393,7 +393,7 @@ int journal_load( struct journal* j, size_t datasize, const char* filename )
 	{
 		struct journal_data *dat;
 		int x;
-		char* buf = aCalloc( 1, datasize );
+		char* buf = (char *)aCalloc( 1, datasize );
 		
 		// データ本体の読み込みと crc32 チェック
 		if( (x=fread( buf, datasize, 1, j->fp )) == 0 || grfio_crc32( buf, datasize ) != jhd.crc32 )

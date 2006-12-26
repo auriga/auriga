@@ -126,16 +126,16 @@ int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
 
 	pd = sd->pd;
 
-	if(bl && pd && bl->type == BL_MOB && sd->pet.intimate > 900 && sd->pet.hungry > 0 && pd->class != status_get_class(bl) &&
+	if(bl && pd && bl->type == BL_MOB && sd->pet.intimate > 900 && sd->pet.hungry > 0 && pd->class_ != status_get_class(bl) &&
 	   pd->ud.skilltimer == -1 && pd->ud.attacktimer == -1) {
-		mode=mob_db[pd->class].mode;
-		race=mob_db[pd->class].race;
+		mode=mob_db[pd->class_].mode;
+		race=mob_db[pd->class_].race;
 		md=(struct mob_data *)bl;
 		if(md) {
 			if(pd->bl.m != md->bl.m || md->bl.prev == NULL ||
 				unit_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13)
 				return 0;
-			if(mob_db[pd->class].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race!=4 && race!=6) )
+			if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race!=4 && race!=6) )
 				return 0;
 		}
 		if(!type) {
@@ -217,11 +217,11 @@ int search_petDB_index(int key,int type)
 	int i;
 
 	for(i=0;i<pet_count;i++) {
-		if(pet_db[i].class <= 0)
+		if(pet_db[i].class_ <= 0)
 			continue;
 		switch(type) {
 			case PET_CLASS:
-				if(pet_db[i].class == key)
+				if(pet_db[i].class_ == key)
 					return i;
 				break;
 			case PET_CATCH:
@@ -346,7 +346,7 @@ int pet_data_init(struct map_session_data *sd)
 		return 1;
 	}
 
-	i = search_petDB_index(sd->pet.class,PET_CLASS);
+	i = search_petDB_index(sd->pet.class_,PET_CLASS);
 	if(i < 0) {
 		sd->status.pet_id = 0;
 		return 1;
@@ -363,7 +363,7 @@ int pet_data_init(struct map_session_data *sd)
 	pd->bl.y = pd->ud.to_y;
 	pd->bl.id = npc_get_new_npc_id();
 	memcpy(pd->name,sd->pet.name,24);
-	pd->class = sd->pet.class;
+	pd->class_ = sd->pet.class_;
 	pd->equip = sd->pet.equip;
 	pd->dir = sd->dir;
 	if(battle_config.pet_speed_is_same_as_pc == 1)
@@ -395,7 +395,7 @@ int pet_data_init(struct map_session_data *sd)
 	pd->lootitem_count = 0;
 	pd->lootitem_weight = 0;
 	pd->lootitem_timer = gettick();
-	pd->view_size = mob_db[pd->class].view_size;
+	pd->view_size = mob_db[pd->class_].view_size;
 
 	return 0;
 }
@@ -427,7 +427,7 @@ int pet_birth_process(struct map_session_data *sd)
 	storage_storage_save(sd);
 	map_addblock(&sd->pd->bl);
 
-	sd->pd->view_size = mob_db[sd->pd->class].view_size;
+	sd->pd->view_size = mob_db[sd->pd->class_].view_size;
 	clif_spawnpet(sd->pd);
 	clif_send_petdata(sd,0,0);
 	clif_send_petdata(sd,5,0x14);
@@ -510,17 +510,17 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 		return 1;
 	}
 
-	i = search_petDB_index(md->class,PET_CLASS);
-	if(md == NULL || md->bl.type != BL_MOB || md->bl.prev == NULL || i < 0 || sd->catch_target_class != md->class) {
+	i = search_petDB_index(md->class_,PET_CLASS);
+	if(md == NULL || md->bl.type != BL_MOB || md->bl.prev == NULL || i < 0 || sd->catch_target_class != md->class_) {
 		clif_pet_rulet(sd,0);
 		return 1;
 	}
 
 	//target_idによる敵→卵判定
 //	if(battle_config.etc_log)
-//		printf("mob_id = %d, mob_class = %d\n",md->bl.id,md->class);
+//		printf("mob_id = %d, mob_class = %d\n",md->bl.id,md->class_);
 		//成功の場合
-	pet_catch_rate = (pet_db[i].capture + (sd->status.base_level - mob_db[md->class].lv)*30 + sd->paramc[5]*20)*(200 - md->hp*100/mob_db[md->class].max_hp)/100;
+	pet_catch_rate = (pet_db[i].capture + (sd->status.base_level - mob_db[md->class_].lv)*30 + sd->paramc[5]*20)*(200 - md->hp*100/mob_db[md->class_].max_hp)/100;
 	if(pet_catch_rate < 1) pet_catch_rate = 1;
 	if(battle_config.pet_catch_rate != 100)
 		pet_catch_rate = (pet_catch_rate*battle_config.pet_catch_rate)/100;
@@ -530,7 +530,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 		clif_pet_rulet(sd,1);
 //		if(battle_config.etc_log)
 //			printf("rulet success %d\n",target_id);
-		intif_create_pet(sd->status.account_id,sd->status.char_id,pet_db[i].class,mob_db[pet_db[i].class].lv,
+		intif_create_pet(sd->status.account_id,sd->status.char_id,pet_db[i].class_,mob_db[pet_db[i].class_].lv,
 			pet_db[i].EggID,0,pet_db[i].intimate,100,0,1,md->name);
 	}
 	else
@@ -754,7 +754,7 @@ static int pet_randomwalk(struct pet_data *pd,int tick)
 				pd->move_fail_count++;
 				if(pd->move_fail_count>1000){
 					if(battle_config.error_log)
-						printf("PET cant move. hold position %d, class = %d\n",pd->bl.id,pd->class);
+						printf("PET cant move. hold position %d, class = %d\n",pd->bl.id,pd->class_);
 					pd->move_fail_count=0;
 					pd->ud.canmove_tick = gettick() + 60000;
 					return 0;
@@ -861,15 +861,15 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 				pet_randomwalk(pd,tick);
 		}
 		else if(pd->target_id  > MAX_FLOORITEM) {
-			int mode=mob_db[pd->class].mode;
-			int race=mob_db[pd->class].race;
+			int mode=mob_db[pd->class_].mode;
+			int race=mob_db[pd->class_].race;
 			md = map_id2md(pd->target_id);
 			if(md == NULL || pd->bl.m != md->bl.m || md->bl.prev == NULL ||
 				unit_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13)
 				pet_unlocktarget(pd);
-			else if(mob_db[pd->class].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race!=4 && race!=6) )
+			else if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race!=4 && race!=6) )
 				pet_unlocktarget(pd);
-			else if(!battle_check_range(&pd->bl,&md->bl,mob_db[pd->class].range)){
+			else if(!battle_check_range(&pd->bl,&md->bl,mob_db[pd->class_].range)){
 				if(pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,md->bl.x,md->bl.y) < 2)
 					return 0;
 				if( !unit_can_reach(&pd->bl,md->bl.x,md->bl.y))
@@ -1210,7 +1210,7 @@ int read_petdb()
 			//printf("j %d: k %d\n",j,k);
 
 			//MobID,Name,JName,ItemID,EggID,AcceID,FoodID,"Fullness (1回の餌での満腹度増加率%)","HungryDeray (/min)","R_Hungry (空腹時餌やり親密度増加率%)","R_Full (とても満腹時餌やり親密度減少率%)","Intimate (捕獲時親密度%)","Die (死亡時親密度減少率%)","Capture (捕獲率%)",(Name)
-			pet_db[j].class = nameid;
+			pet_db[j].class_ = nameid;
 			memcpy(pet_db[j].name,str[1],24);
 			memcpy(pet_db[j].jname,str[2],24);
 			pet_db[j].itemID=atoi(str[3]);

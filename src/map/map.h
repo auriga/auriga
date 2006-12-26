@@ -560,7 +560,7 @@ struct npc_item_list {
 struct npc_data {
 	struct block_list bl;
 	short n;
-	short class,dir;
+	short class_,dir;
 	short speed;
 	char name[24];
 	char exname[24];
@@ -594,7 +594,7 @@ struct mob_data {
 	struct block_list bl;
 	struct unit_data  ud;
 	short n;
-	short base_class,class,dir,mode;
+	short base_class,class_,dir,mode;
 	short m,x0,y0,xs,ys;
 	char name[24];
 	int spawndelay1,spawndelay2;
@@ -648,7 +648,7 @@ struct mob_data {
 struct pet_data {
 	struct block_list bl;
 	struct unit_data  ud;
-	short class,dir;
+	short class_,dir;
 	short speed;
 	char name[24];
 	short view_size;

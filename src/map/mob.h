@@ -30,8 +30,14 @@ struct mob_db {
 	int size,race,element,mode;
 	int speed,adelay,amotion,dmotion;
 	int mexp,mexpper;
-	struct { int nameid,p; } dropitem[ITEM_DROP_COUNT];
-	struct { int nameid,p; } mvpitem[3];
+	struct {
+		int nameid;
+		int p;
+	} dropitem[ITEM_DROP_COUNT];
+	struct {
+		int nameid;
+		int p;
+	} mvpitem[3];
 	int view_class,sex;
 	short hair,hair_color,clothes_color,weapon,shield,head_top,head_mid,head_buttom,option,trans,group_id,view_size;
 	int summonper[MAX_RANDOMMONSTER];
@@ -41,76 +47,79 @@ struct mob_db {
 extern struct mob_db *mob_db;
 
 enum {
-	MST_TARGET				=	0,
-	MST_SELF				=	1,
-	MST_FRIEND				=	2,
-	MST_SLAVE				=	3,
-	MST_MASTER				=	4,
-	MST_COMMAND				=	5,
-	MST_MODECHANGE				=	6,
-	MST_TARGETCHANGE			=	7,
-	MST_ANOTHERTARGET			=	8,
-	MST_AROUND5				=	9,
-	MST_AROUND6				=	10,
-	MST_AROUND7				=	11,
-	MST_AROUND8				=	12,
-	MST_AROUND1				=	13,
-	MST_AROUND2				=	14,
-	MST_AROUND3				=	15,
-	MST_AROUND4				=	16,
-	MST_AROUND				=	MST_AROUND4,
+	MST_TARGET = 0,
+	MST_SELF,
+	MST_FRIEND,
+	MST_SLAVE,
+	MST_MASTER,
+	MST_COMMAND,
+	MST_MODECHANGE,
+	MST_TARGETCHANGE,
+	MST_ANOTHERTARGET,
+	MST_AROUND5,
+	MST_AROUND6,
+	MST_AROUND7,
+	MST_AROUND8,
+	MST_AROUND1,
+	MST_AROUND2,
+	MST_AROUND3,
+	MST_AROUND4,
+	MST_AROUND = MST_AROUND4,
+};
 
-	MSC_ALWAYS			=	0x0000,
-	MSC_MYHPLTMAXRATE	=	0x0001,
-	MSC_FRIENDHPLTMAXRATE=	0x0010,
-	MSC_MYSTATUSON		=	0x0020,
-	MSC_MYSTATUSOFF		=	0x0021,
-	MSC_FRIENDSTATUSON	=	0x0030,
-	MSC_FRIENDSTATUSOFF	=	0x0031,
-	MSC_TARGETHPGTMAXRATE=	0x0040,
-	MSC_TARGETHPLTMAXRATE=	0x0041,
-	MSC_TARGETHPGT		=	0x0042,
-	MSC_TARGETHPLT		=	0x0043,
-	MSC_TARGETSTATUSON	=	0x0044,
-	MSC_TARGETSTATUSOFF	=	0x0045,
-	MSC_MASTERHPGTMAXRATE=	0x0050,
-	MSC_MASTERHPLTMAXRATE=	0x0051,
-	MSC_MASTERSTATUSON	=	0x0052,
-	MSC_MASTERSTATUSOFF	=	0x0053,
+enum {
+	MSC_ALWAYS            = 0x0000,
+	MSC_MYHPLTMAXRATE     = 0x0001,
+	MSC_FRIENDHPLTMAXRATE = 0x0010,
+	MSC_MYSTATUSON        = 0x0020,
+	MSC_MYSTATUSOFF       = 0x0021,
+	MSC_FRIENDSTATUSON    = 0x0030,
+	MSC_FRIENDSTATUSOFF   = 0x0031,
+	MSC_TARGETHPGTMAXRATE = 0x0040,
+	MSC_TARGETHPLTMAXRATE = 0x0041,
+	MSC_TARGETHPGT        = 0x0042,
+	MSC_TARGETHPLT        = 0x0043,
+	MSC_TARGETSTATUSON    = 0x0044,
+	MSC_TARGETSTATUSOFF   = 0x0045,
+	MSC_MASTERHPGTMAXRATE = 0x0050,
+	MSC_MASTERHPLTMAXRATE = 0x0051,
+	MSC_MASTERSTATUSON    = 0x0052,
+	MSC_MASTERSTATUSOFF   = 0x0053,
+	MSC_ATTACKPCGT        = 0x0100,
+	MSC_ATTACKPCGE        = 0x0101,
+	MSC_SLAVELT           = 0x0110,
+	MSC_SLAVELE           = 0x0111,
+	MSC_AREASLAVEGT       = 0x0112,
+	MSC_AREASLAVELE       = 0x0113,
+	MSC_CLOSEDATTACKED    = 0x1000,
+	MSC_LONGRANGEATTACKED = 0x1001,
+	MSC_SKILLUSED         = 0x1010,
+	MSC_CASTTARGETED      = 0x1011,
+	MSC_RUDEATTACKED      = 0x1020,
+	MSC_SPAWN             = 0x1030,
+};
 
-	MSC_ATTACKPCGT		=	0x0100,
-	MSC_ATTACKPCGE		=	0x0101,
-	MSC_SLAVELT			=	0x0110,
-	MSC_SLAVELE			=	0x0111,
-	MSC_AREASLAVEGT		=	0x0112,
-	MSC_AREASLAVELE		=	0x0113,
-	MSC_CLOSEDATTACKED	=	0x1000,
-	MSC_LONGRANGEATTACKED=	0x1001,
-	MSC_SKILLUSED		=	0x1010,
-	MSC_CASTTARGETED	=	0x1011,
-	MSC_RUDEATTACKED	=	0x1020,
-	MSC_SPAWN	=	0x1030,
-	
-	MCT_TARGET			=   1,
-	MCT_SELF			=	2,
-	MCT_SLAVE 			=	3,
-	MCT_SLAVES			=	4,
-	MCT_GROUP			=	5,
-	MCT_FRIEND  		=	6,
-	MCT_FRIENDS 		=	7,
-	MCT_COMMANDER		=	8,
-	MCT_MASTER			=	9,
+enum {
+	MCT_TARGET = 1,
+	MCT_SELF,
+	MCT_SLAVE,
+	MCT_SLAVES,
+	MCT_GROUP,
+	MCT_FRIEND,
+	MCT_FRIENDS,
+	MCT_COMMANDER,
+	MCT_MASTER,
 };
 
 enum {
 	MSS_DISABLE = -2,	// 無効
 	MSS_ANY     = -1,	// 常時発動
-	MSS_IDLE,			// 待機
-	MSS_WALK,			// 移動
-	MSS_ATTACK,			// 攻撃
-	MSS_DEAD,			// 死亡
-	MSS_LOOT,			// ルート
-	MSS_CHASE,			// 突撃
+	MSS_IDLE    =  0,	// 待機
+	MSS_WALK,		// 移動
+	MSS_ATTACK,		// 攻撃
+	MSS_DEAD,		// 死亡
+	MSS_LOOT,		// ルート
+	MSS_CHASE,		// 突撃
 	MSS_COMMANDONLY,	//命令専用
 };
 
@@ -118,10 +127,10 @@ int mobdb_searchname(const char *str);
 int mobdb_checkid(const int mob_id);
 
 int mob_once_spawn(struct map_session_data *sd,char *mapname,
-	int x,int y,const char *mobname,int class,int amount,const char *event);
+	int x,int y,const char *mobname,int class_,int amount,const char *event);
 int mob_once_spawn_area(struct map_session_data *sd,char *mapname,
 	int x0,int y0,int x1,int y1,
-	const char *mobname,int class,int amount,const char *event);
+	const char *mobname,int class_,int amount,const char *event);
 
 int mob_target(struct mob_data *md,struct block_list *bl,int dist);
 int mob_spawn(int);

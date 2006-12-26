@@ -136,7 +136,7 @@ int itemdb_searchrandomid(int flags)
  */
 struct item_data* itemdb_exists(int nameid)
 {
-	return numdb_search(item_db,nameid);
+	return (struct item_data *)numdb_search(item_db,nameid);
 }
 /*==========================================
  * DBの検索
@@ -146,19 +146,20 @@ struct item_data* itemdb_search(int nameid)
 {
 	struct item_data *id;
 
-	id=numdb_search(item_db,nameid);
-	if(id) return id;
+	id = (struct item_data *)numdb_search(item_db,nameid);
+	if(id)
+		return id;
 
-	id=(struct item_data *)aCalloc(1,sizeof(struct item_data));
+	id = (struct item_data *)aCalloc(1,sizeof(struct item_data));
 	numdb_insert(item_db,nameid,id);
 
-	id->nameid=nameid;
-	id->value_buy=10;
-	id->value_sell=id->value_buy/2;
-	id->weight=10;
-	id->sex=2;
-	id->elv=0;
-	id->class=0xffffffff;
+	id->nameid     = nameid;
+	id->value_buy  = 10;
+	id->value_sell = id->value_buy/2;
+	id->weight     = 10;
+	id->sex        = 2;
+	id->elv        = 0;
+	id->class_     = 0xffffffff;
 
 	if(nameid>500 && nameid<600)
 		id->type=0;   //heal item
@@ -278,8 +279,8 @@ static int itemdb_read_itemslottable(void)
 	char *buf,*p;
 	int s;
 
-	buf=grfio_read("data\\itemslottable.txt");
-	if(buf==NULL)
+	buf = (char *)grfio_read("data\\itemslottable.txt");
+	if(buf == NULL)
 		return -1;
 	s=grfio_size("data\\itemslottable.txt");
 	buf[s]=0;
@@ -363,7 +364,7 @@ static int itemdb_read_itemdb(void)
 			id->def=atoi(str[8]);
 			id->range=atoi(str[9]);
 			id->slot=atoi(str[10]);
-			id->class=(unsigned int)strtoul(str[11],NULL,0);
+			id->class_=(unsigned int)strtoul(str[11],NULL,0);
 			id->sex=atoi(str[12]);
 			if(id->equip != atoi(str[13])){
 				id->equip=atoi(str[13]);
@@ -725,9 +726,9 @@ static int itemdb_read_itemnametable(void)
 	char *buf,*p;
 	int s;
 
-	buf=grfio_reads("data\\idnum2itemdisplaynametable.txt",&s);
+	buf = (char *)grfio_reads("data\\idnum2itemdisplaynametable.txt",&s);
 
-	if(buf==NULL)
+	if(buf == NULL)
 		return -1;
 
 	buf[s]=0;
@@ -767,9 +768,9 @@ static int itemdb_read_cardillustnametable(void)
 	char *buf,*p;
 	int s;
 
-	buf=grfio_reads("data\\num2cardillustnametable.txt",&s);
+	buf = (char *)grfio_reads("data\\num2cardillustnametable.txt",&s);
 
-	if(buf==NULL)
+	if(buf == NULL)
 		return -1;
 
 	buf[s]=0;
@@ -801,7 +802,7 @@ static int itemdb_final(void *key,void *data,va_list ap)
 {
 	struct item_data *id;
 
-	nullpo_retr(0, id=data);
+	nullpo_retr(0, id = (struct item_data *)data);
 
 	if(id->use_script)
 		script_free_code(id->use_script);

@@ -147,7 +147,7 @@ int clif_countusers(void)
 	struct map_session_data *sd;
 
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (sd=session[i]->session_data) && sd->state.auth
+		if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth
 			&& !(battle_config.hide_GM_session && pc_isGM(sd)) )
 			users++;
 	}
@@ -169,7 +169,7 @@ int clif_foreachclient(int (*func)(struct map_session_data*,va_list),...)
 	for(i=0;i<fd_max;i++){
 		if(
 			session[i] && session[i]->func_parse == clif_parse &&
-			(sd=session[i]->session_data) && sd->state.auth &&
+			(sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth &&
 			!sd->state.waitingdisconnect
 		) {
 			func(sd,ap);
@@ -287,7 +287,7 @@ static void clif_send(unsigned char *buf, int len, struct block_list *bl, int ty
 	switch(type){
 	case ALL_CLIENT:	// 全クライアントに送信
 		for(i=0;i<fd_max;i++){
-			if(session[i] && (sd=session[i]->session_data) && sd->state.auth){
+			if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth){
 				memcpy(WFIFOP(i,0),buf,len);
 				WFIFOSET(i,len);
 			}
@@ -295,8 +295,7 @@ static void clif_send(unsigned char *buf, int len, struct block_list *bl, int ty
 		break;
 	case ALL_SAMEMAP:	// 同じマップの全クライアントに送信
 		for(i=0;i<fd_max;i++){
-			if(session[i] && (sd=session[i]->session_data) && sd->state.auth &&
-			   sd->bl.m == bl->m){
+			if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth && sd->bl.m == bl->m){
 				memcpy(WFIFOP(i,0),buf,len);
 				WFIFOSET(i,len);
 			}
@@ -896,17 +895,17 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
  * クラスチェンジ typeはMobの場合は1で他は0？
  *------------------------------------------
  */
-void clif_class_change(struct block_list *bl,int class,int type)
+void clif_class_change(struct block_list *bl,int class_,int type)
 {
 	char buf[16];
 
 	nullpo_retv(bl);
 
-	if(class >= MAX_VALID_PC_CLASS) {
+	if(class_ >= MAX_VALID_PC_CLASS) {
 		WBUFW(buf,0)=0x1b0;
 		WBUFL(buf,2)=bl->id;
 		WBUFB(buf,6)=type;
-		WBUFL(buf,7)=class;
+		WBUFL(buf,7)=class_;
 		clif_send(buf,packet_db[0x1b0].len,bl,AREA);
 	}
 
@@ -923,7 +922,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 
 	nullpo_retr(0, md);
 
-	if(mob_get_viewclass(md->class) < MAX_VALID_PC_CLASS) {
+	if(mob_get_viewclass(md->class_) < MAX_VALID_PC_CLASS) {
 #if PACKETVER < 4
 		memset(buf,0,packet_db[0x78].len);
 
@@ -933,15 +932,15 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFW(buf,12)=md->option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class),mob_db[md->class].trans);
-		WBUFW(buf,16)=mob_get_hair(md->class);
-		WBUFW(buf,18)=mob_get_weapon(md->class);
-		WBUFW(buf,20)=mob_get_head_buttom(md->class);
-		WBUFW(buf,22)=mob_get_shield(md->class);
-		WBUFW(buf,24)=mob_get_head_top(md->class);
-		WBUFW(buf,26)=mob_get_head_mid(md->class);
-		WBUFW(buf,28)=mob_get_hair_color(md->class);
-		WBUFW(buf,30)=mob_get_clothes_color(md->class);
+		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,16)=mob_get_hair(md->class_);
+		WBUFW(buf,18)=mob_get_weapon(md->class_);
+		WBUFW(buf,20)=mob_get_head_buttom(md->class_);
+		WBUFW(buf,22)=mob_get_shield(md->class_);
+		WBUFW(buf,24)=mob_get_head_top(md->class_);
+		WBUFW(buf,26)=mob_get_head_mid(md->class_);
+		WBUFW(buf,28)=mob_get_hair_color(md->class_);
+		WBUFW(buf,30)=mob_get_clothes_color(md->class_);
 		if(md->guild_id){
 			struct guild *g=guild_search(md->guild_id);
 			if(g)
@@ -950,7 +949,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		}
 		WBUFW(buf,42)=md->opt3;
 		WBUFB(buf,44)=1;
-		WBUFB(buf,45)=mob_get_sex(md->class);
+		WBUFB(buf,45)=mob_get_sex(md->class_);
 		WBUFPOS(buf,46,md->bl.x,md->bl.y);
 		WBUFB(buf,48)|=md->dir&0x0f;
 		WBUFB(buf,49)=5;
@@ -967,15 +966,15 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFW(buf,12)=md->option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class),mob_db[md->class].trans);
-		WBUFW(buf,16)=mob_get_hair(md->class);
-		WBUFW(buf,18)=mob_get_weapon(md->class);
-		WBUFW(buf,20)=mob_get_shield(md->class);
-		WBUFW(buf,22)=mob_get_head_buttom(md->class);
-		WBUFW(buf,24)=mob_get_head_top(md->class);
-		WBUFW(buf,26)=mob_get_head_mid(md->class);
-		WBUFW(buf,28)=mob_get_hair_color(md->class);
-		WBUFW(buf,30)=mob_get_clothes_color(md->class);
+		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,16)=mob_get_hair(md->class_);
+		WBUFW(buf,18)=mob_get_weapon(md->class_);
+		WBUFW(buf,20)=mob_get_shield(md->class_);
+		WBUFW(buf,22)=mob_get_head_buttom(md->class_);
+		WBUFW(buf,24)=mob_get_head_top(md->class_);
+		WBUFW(buf,26)=mob_get_head_mid(md->class_);
+		WBUFW(buf,28)=mob_get_hair_color(md->class_);
+		WBUFW(buf,30)=mob_get_clothes_color(md->class_);
 		if(md->guild_id){
 			struct guild *g=guild_search(md->guild_id);
 			if(g)
@@ -984,7 +983,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		}
 		WBUFW(buf,42)=md->opt3;
 		WBUFB(buf,44)=1;
-		WBUFB(buf,45)=mob_get_sex(md->class);
+		WBUFB(buf,45)=mob_get_sex(md->class_);
 		WBUFPOS(buf,46,md->bl.x,md->bl.y);
 		WBUFB(buf,48)|=md->dir&0x0f;
 		WBUFB(buf,49)=5;
@@ -1001,15 +1000,15 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFL(buf,12)=md->option;
-		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(md->class),mob_db[md->class].trans);
-		WBUFW(buf,18)=mob_get_hair(md->class);
-		WBUFW(buf,20)=mob_get_weapon(md->class);
-		WBUFW(buf,22)=mob_get_shield(md->class);
-		WBUFW(buf,24)=mob_get_head_buttom(md->class);
-		WBUFW(buf,26)=mob_get_head_top(md->class);
-		WBUFW(buf,28)=mob_get_head_mid(md->class);
-		WBUFW(buf,30)=mob_get_hair_color(md->class);
-		WBUFW(buf,32)=mob_get_clothes_color(md->class);
+		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,18)=mob_get_hair(md->class_);
+		WBUFW(buf,20)=mob_get_weapon(md->class_);
+		WBUFW(buf,22)=mob_get_shield(md->class_);
+		WBUFW(buf,24)=mob_get_head_buttom(md->class_);
+		WBUFW(buf,26)=mob_get_head_top(md->class_);
+		WBUFW(buf,28)=mob_get_head_mid(md->class_);
+		WBUFW(buf,30)=mob_get_hair_color(md->class_);
+		WBUFW(buf,32)=mob_get_clothes_color(md->class_);
 		if(md->guild_id){
 			struct guild *g=guild_search(md->guild_id);
 			if(g)
@@ -1018,7 +1017,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		}
 		WBUFL(buf,44)=md->opt3;
 		WBUFB(buf,48)=1;
-		WBUFB(buf,49)=mob_get_sex(md->class);
+		WBUFB(buf,49)=mob_get_sex(md->class_);
 		WBUFPOS(buf,50,md->bl.x,md->bl.y);
 		WBUFB(buf,52)|=md->dir&0x0f;
 		WBUFB(buf,53)=5;
@@ -1036,8 +1035,8 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 	WBUFW(buf,8)=md->opt1;
 	WBUFW(buf,10)=md->opt2;
 	WBUFW(buf,12)=md->option;
-	WBUFW(buf,14)=mob_get_viewclass(md->class);
-	if((md->class == 1285 || md->class == 1286 || md->class == 1287) && md->guild_id){
+	WBUFW(buf,14)=mob_get_viewclass(md->class_);
+	if((md->class_ == 1285 || md->class_ == 1286 || md->class_ == 1287) && md->guild_id){
 		struct guild *g=guild_search(md->guild_id);
 		if(g)
 			WBUFL(buf,22)=g->emblem_id;
@@ -1063,7 +1062,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 
 	nullpo_retr(0, md);
 
-	if(mob_get_viewclass(md->class) < MAX_VALID_PC_CLASS) {
+	if(mob_get_viewclass(md->class_) < MAX_VALID_PC_CLASS) {
 #if PACKETVER < 4
 		memset(buf,0,packet_db[0x7b].len);
 
@@ -1073,16 +1072,16 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFW(buf,12)=md->option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class),mob_db[md->class].trans);
-		WBUFW(buf,16)=mob_get_hair(md->class);
-		WBUFW(buf,18)=mob_get_weapon(md->class);
-		WBUFW(buf,20)=mob_get_head_buttom(md->class);
+		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,16)=mob_get_hair(md->class_);
+		WBUFW(buf,18)=mob_get_weapon(md->class_);
+		WBUFW(buf,20)=mob_get_head_buttom(md->class_);
 		WBUFL(buf,22)=gettick();
-		WBUFW(buf,26)=mob_get_shield(md->class);
-		WBUFW(buf,28)=mob_get_head_top(md->class);
-		WBUFW(buf,30)=mob_get_head_mid(md->class);
-		WBUFW(buf,32)=mob_get_hair_color(md->class);
-		WBUFW(buf,34)=mob_get_clothes_color(md->class);
+		WBUFW(buf,26)=mob_get_shield(md->class_);
+		WBUFW(buf,28)=mob_get_head_top(md->class_);
+		WBUFW(buf,30)=mob_get_head_mid(md->class_);
+		WBUFW(buf,32)=mob_get_hair_color(md->class_);
+		WBUFW(buf,34)=mob_get_clothes_color(md->class_);
 		if(md->guild_id){
 			struct guild *g=guild_search(md->guild_id);
 			if(g)
@@ -1091,7 +1090,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		}
 		WBUFW(buf,46)=md->opt3;
 		WBUFB(buf,48)=1;
-		WBUFB(buf,49)=mob_get_sex(md->class);
+		WBUFB(buf,49)=mob_get_sex(md->class_);
 		WBUFPOS2(buf,50,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y);
 		WBUFB(buf,56)=5;
 		WBUFB(buf,57)=5;
@@ -1107,16 +1106,16 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFW(buf,12)=md->option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class),mob_db[md->class].trans);
-		WBUFW(buf,16)=mob_get_hair(md->class);
-		WBUFW(buf,18)=mob_get_weapon(md->class);
-		WBUFW(buf,20)=mob_get_shield(md->class);
-		WBUFW(buf,22)=mob_get_head_buttom(md->class);
+		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,16)=mob_get_hair(md->class_);
+		WBUFW(buf,18)=mob_get_weapon(md->class_);
+		WBUFW(buf,20)=mob_get_shield(md->class_);
+		WBUFW(buf,22)=mob_get_head_buttom(md->class_);
 		WBUFL(buf,24)=gettick();
-		WBUFW(buf,28)=mob_get_head_top(md->class);
-		WBUFW(buf,30)=mob_get_head_mid(md->class);
-		WBUFW(buf,32)=mob_get_hair_color(md->class);
-		WBUFW(buf,34)=mob_get_clothes_color(md->class);
+		WBUFW(buf,28)=mob_get_head_top(md->class_);
+		WBUFW(buf,30)=mob_get_head_mid(md->class_);
+		WBUFW(buf,32)=mob_get_hair_color(md->class_);
+		WBUFW(buf,34)=mob_get_clothes_color(md->class_);
 		if(md->guild_id){
 			struct guild *g=guild_search(md->guild_id);
 			if(g)
@@ -1125,7 +1124,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		}
 		WBUFW(buf,46)=md->opt3;
 		WBUFB(buf,48)=1;
-		WBUFB(buf,49)=mob_get_sex(md->class);
+		WBUFB(buf,49)=mob_get_sex(md->class_);
 		WBUFPOS2(buf,50,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y);
 		WBUFB(buf,56)=5;
 		WBUFB(buf,57)=5;
@@ -1141,16 +1140,16 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFL(buf,12)=md->option;
-		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(md->class),mob_db[md->class].trans);
-		WBUFW(buf,18)=mob_get_hair(md->class);
-		WBUFW(buf,20)=mob_get_weapon(md->class);
-		WBUFW(buf,22)=mob_get_shield(md->class);
-		WBUFW(buf,24)=mob_get_head_buttom(md->class);
+		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,18)=mob_get_hair(md->class_);
+		WBUFW(buf,20)=mob_get_weapon(md->class_);
+		WBUFW(buf,22)=mob_get_shield(md->class_);
+		WBUFW(buf,24)=mob_get_head_buttom(md->class_);
 		WBUFL(buf,26)=gettick();
-		WBUFW(buf,30)=mob_get_head_top(md->class);
-		WBUFW(buf,32)=mob_get_head_mid(md->class);
-		WBUFW(buf,34)=mob_get_hair_color(md->class);
-		WBUFW(buf,36)=mob_get_clothes_color(md->class);
+		WBUFW(buf,30)=mob_get_head_top(md->class_);
+		WBUFW(buf,32)=mob_get_head_mid(md->class_);
+		WBUFW(buf,34)=mob_get_hair_color(md->class_);
+		WBUFW(buf,36)=mob_get_clothes_color(md->class_);
 		if(md->guild_id){
 			struct guild *g=guild_search(md->guild_id);
 			if(g)
@@ -1159,7 +1158,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		}
 		WBUFL(buf,48)=md->opt3;
 		WBUFB(buf,52)=1;
-		WBUFB(buf,53)=mob_get_sex(md->class);
+		WBUFB(buf,53)=mob_get_sex(md->class_);
 		WBUFPOS2(buf,54,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y);
 		WBUFB(buf,59)=0x88;
 		WBUFB(buf,60)=0;
@@ -1177,9 +1176,9 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFW(buf,8)=md->opt1;
 	WBUFW(buf,10)=md->opt2;
 	WBUFW(buf,12)=md->option;
-	WBUFW(buf,14)=mob_get_viewclass(md->class);
+	WBUFW(buf,14)=mob_get_viewclass(md->class_);
 	WBUFL(buf,22)=gettick();
-	if((md->class == 1285 || md->class == 1286 || md->class == 1287) && md->guild_id){
+	if((md->class_ == 1285 || md->class_ == 1286 || md->class_ == 1287) && md->guild_id){
 		struct guild *g=guild_search(md->guild_id);
 		if(g)
 			WBUFL(buf,26)=g->emblem_id;
@@ -1210,9 +1209,9 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFL(buf,2)=nd->bl.id;
 	WBUFW(buf,6)=nd->speed;
 	WBUFW(buf,12)=nd->option;
-	WBUFW(buf,14)=nd->class;
+	WBUFW(buf,14)=nd->class_;
 	if( (nd->bl.subtype!=WARP) &&
-		(nd->class == 722) &&
+		(nd->class_ == 722) &&
 		(nd->u.scr.guild_id > 0) &&
 		((g=guild_search(nd->u.scr.guild_id))) )
 	{
@@ -1237,24 +1236,24 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 
 	nullpo_retr(0, pd);
 
-	if(mob_get_viewclass(pd->class) < MAX_VALID_PC_CLASS) {
+	if(mob_get_viewclass(pd->class_) < MAX_VALID_PC_CLASS) {
 #if PACKETVER < 4
 		memset(buf,0,packet_db[0x78].len);
 
 		WBUFW(buf,0)=0x78;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFW(buf,12)=mob_db[pd->class].option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class),mob_db[pd->class].trans);
-		WBUFW(buf,16)=mob_get_hair(pd->class);
-		WBUFW(buf,18)=mob_get_weapon(pd->class);
-		WBUFW(buf,20)=mob_get_head_buttom(pd->class);
-		WBUFW(buf,22)=mob_get_shield(pd->class);
-		WBUFW(buf,24)=mob_get_head_top(pd->class);
-		WBUFW(buf,26)=mob_get_head_mid(pd->class);
-		WBUFW(buf,28)=mob_get_hair_color(pd->class);
-		WBUFW(buf,30)=mob_get_clothes_color(pd->class);
-		WBUFB(buf,45)=mob_get_sex(pd->class);
+		WBUFW(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,16)=mob_get_hair(pd->class_);
+		WBUFW(buf,18)=mob_get_weapon(pd->class_);
+		WBUFW(buf,20)=mob_get_head_buttom(pd->class_);
+		WBUFW(buf,22)=mob_get_shield(pd->class_);
+		WBUFW(buf,24)=mob_get_head_top(pd->class_);
+		WBUFW(buf,26)=mob_get_head_mid(pd->class_);
+		WBUFW(buf,28)=mob_get_hair_color(pd->class_);
+		WBUFW(buf,30)=mob_get_clothes_color(pd->class_);
+		WBUFB(buf,45)=mob_get_sex(pd->class_);
 		WBUFPOS(buf,46,pd->bl.x,pd->bl.y);
 		WBUFB(buf,48)|=pd->dir&0x0f;
 		WBUFB(buf,49)=0;
@@ -1268,17 +1267,17 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x1d8;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFW(buf,12)=mob_db[pd->class].option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class),mob_db[pd->class].trans);
-		WBUFW(buf,16)=mob_get_hair(pd->class);
-		WBUFW(buf,18)=mob_get_weapon(pd->class);
-		WBUFW(buf,20)=mob_get_shield(pd->class);
-		WBUFW(buf,22)=mob_get_head_buttom(pd->class);
-		WBUFW(buf,24)=mob_get_head_top(pd->class);
-		WBUFW(buf,26)=mob_get_head_mid(pd->class);
-		WBUFW(buf,28)=mob_get_hair_color(pd->class);
-		WBUFW(buf,30)=mob_get_clothes_color(pd->class);
-		WBUFB(buf,45)=mob_get_sex(pd->class);
+		WBUFW(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,16)=mob_get_hair(pd->class_);
+		WBUFW(buf,18)=mob_get_weapon(pd->class_);
+		WBUFW(buf,20)=mob_get_shield(pd->class_);
+		WBUFW(buf,22)=mob_get_head_buttom(pd->class_);
+		WBUFW(buf,24)=mob_get_head_top(pd->class_);
+		WBUFW(buf,26)=mob_get_head_mid(pd->class_);
+		WBUFW(buf,28)=mob_get_hair_color(pd->class_);
+		WBUFW(buf,30)=mob_get_clothes_color(pd->class_);
+		WBUFB(buf,45)=mob_get_sex(pd->class_);
 		WBUFPOS(buf,46,pd->bl.x,pd->bl.y);
 		WBUFB(buf,48)|=pd->dir&0x0f;
 		WBUFB(buf,49)=0;
@@ -1292,17 +1291,17 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x22a;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFL(buf,12)=mob_db[pd->class].option;
-		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(pd->class),mob_db[pd->class].trans);
-		WBUFW(buf,18)=mob_get_hair(pd->class);
-		WBUFW(buf,20)=mob_get_weapon(pd->class);
-		WBUFW(buf,22)=mob_get_shield(pd->class);
-		WBUFW(buf,24)=mob_get_head_buttom(pd->class);
-		WBUFW(buf,26)=mob_get_head_top(pd->class);
-		WBUFW(buf,28)=mob_get_head_mid(pd->class);
-		WBUFW(buf,30)=mob_get_hair_color(pd->class);
-		WBUFW(buf,32)=mob_get_clothes_color(pd->class);
-		WBUFB(buf,49)=mob_get_sex(pd->class);
+		WBUFL(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,18)=mob_get_hair(pd->class_);
+		WBUFW(buf,20)=mob_get_weapon(pd->class_);
+		WBUFW(buf,22)=mob_get_shield(pd->class_);
+		WBUFW(buf,24)=mob_get_head_buttom(pd->class_);
+		WBUFW(buf,26)=mob_get_head_top(pd->class_);
+		WBUFW(buf,28)=mob_get_head_mid(pd->class_);
+		WBUFW(buf,30)=mob_get_hair_color(pd->class_);
+		WBUFW(buf,32)=mob_get_clothes_color(pd->class_);
+		WBUFB(buf,49)=mob_get_sex(pd->class_);
 		WBUFPOS(buf,50,pd->bl.x,pd->bl.y);
 		WBUFB(buf,52)|=pd->dir&0x0f;
 		WBUFB(buf,53)=0;
@@ -1317,7 +1316,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 	WBUFW(buf,0)=0x78;
 	WBUFL(buf,2)=pd->bl.id;
 	WBUFW(buf,6)=pd->speed;
-	WBUFW(buf,14)=mob_get_viewclass(pd->class);
+	WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 	WBUFW(buf,16)=battle_config.pet0078_hair_id;
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,20)=view;
@@ -1342,25 +1341,25 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 
 	nullpo_retr(0, pd);
 
-	if(mob_get_viewclass(pd->class) < MAX_VALID_PC_CLASS) {
+	if(mob_get_viewclass(pd->class_) < MAX_VALID_PC_CLASS) {
 #if PACKETVER < 4
 		memset(buf,0,packet_db[0x7b].len);
 
 		WBUFW(buf,0)=0x7b;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFW(buf,12)=mob_db[pd->class].option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class),mob_db[pd->class].trans);
-		WBUFW(buf,16)=mob_get_hair(pd->class);
-		WBUFW(buf,18)=mob_get_weapon(pd->class);
-		WBUFW(buf,20)=mob_get_head_buttom(pd->class);
+		WBUFW(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,16)=mob_get_hair(pd->class_);
+		WBUFW(buf,18)=mob_get_weapon(pd->class_);
+		WBUFW(buf,20)=mob_get_head_buttom(pd->class_);
 		WBUFL(buf,22)=gettick();
-		WBUFW(buf,26)=mob_get_shield(pd->class);
-		WBUFW(buf,28)=mob_get_head_top(pd->class);
-		WBUFW(buf,30)=mob_get_head_mid(pd->class);
-		WBUFW(buf,32)=mob_get_hair_color(pd->class);
-		WBUFW(buf,34)=mob_get_clothes_color(pd->class);
-		WBUFB(buf,49)=mob_get_sex(pd->class);
+		WBUFW(buf,26)=mob_get_shield(pd->class_);
+		WBUFW(buf,28)=mob_get_head_top(pd->class_);
+		WBUFW(buf,30)=mob_get_head_mid(pd->class_);
+		WBUFW(buf,32)=mob_get_hair_color(pd->class_);
+		WBUFW(buf,34)=mob_get_clothes_color(pd->class_);
+		WBUFB(buf,49)=mob_get_sex(pd->class_);
 		WBUFPOS2(buf,50,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y);
 		WBUFB(buf,56)=0;
 		WBUFB(buf,57)=0;
@@ -1373,18 +1372,18 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x1da;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFW(buf,12)=mob_db[pd->class].option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class),mob_db[pd->class].trans);
-		WBUFW(buf,16)=mob_get_hair(pd->class);
-		WBUFW(buf,18)=mob_get_weapon(pd->class);
-		WBUFW(buf,20)=mob_get_shield(pd->class);
-		WBUFW(buf,22)=mob_get_head_buttom(pd->class);
+		WBUFW(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,16)=mob_get_hair(pd->class_);
+		WBUFW(buf,18)=mob_get_weapon(pd->class_);
+		WBUFW(buf,20)=mob_get_shield(pd->class_);
+		WBUFW(buf,22)=mob_get_head_buttom(pd->class_);
 		WBUFL(buf,24)=gettick();
-		WBUFW(buf,28)=mob_get_head_top(pd->class);
-		WBUFW(buf,30)=mob_get_head_mid(pd->class);
-		WBUFW(buf,32)=mob_get_hair_color(pd->class);
-		WBUFW(buf,34)=mob_get_clothes_color(pd->class);
-		WBUFB(buf,49)=mob_get_sex(pd->class);
+		WBUFW(buf,28)=mob_get_head_top(pd->class_);
+		WBUFW(buf,30)=mob_get_head_mid(pd->class_);
+		WBUFW(buf,32)=mob_get_hair_color(pd->class_);
+		WBUFW(buf,34)=mob_get_clothes_color(pd->class_);
+		WBUFB(buf,49)=mob_get_sex(pd->class_);
 		WBUFPOS2(buf,50,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y);
 		WBUFB(buf,56)=0;
 		WBUFB(buf,57)=0;
@@ -1397,18 +1396,18 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x22c;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFL(buf,12)=mob_db[pd->class].option;
-		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(pd->class),mob_db[pd->class].trans);
-		WBUFW(buf,18)=mob_get_hair(pd->class);
-		WBUFW(buf,20)=mob_get_weapon(pd->class);
-		WBUFW(buf,22)=mob_get_shield(pd->class);
-		WBUFW(buf,24)=mob_get_head_buttom(pd->class);
+		WBUFL(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,18)=mob_get_hair(pd->class_);
+		WBUFW(buf,20)=mob_get_weapon(pd->class_);
+		WBUFW(buf,22)=mob_get_shield(pd->class_);
+		WBUFW(buf,24)=mob_get_head_buttom(pd->class_);
 		WBUFL(buf,26)=gettick();
-		WBUFW(buf,30)=mob_get_head_top(pd->class);
-		WBUFW(buf,32)=mob_get_head_mid(pd->class);
-		WBUFW(buf,34)=mob_get_hair_color(pd->class);
-		WBUFW(buf,36)=mob_get_clothes_color(pd->class);
-		WBUFB(buf,53)=mob_get_sex(pd->class);
+		WBUFW(buf,30)=mob_get_head_top(pd->class_);
+		WBUFW(buf,32)=mob_get_head_mid(pd->class_);
+		WBUFW(buf,34)=mob_get_hair_color(pd->class_);
+		WBUFW(buf,36)=mob_get_clothes_color(pd->class_);
+		WBUFB(buf,53)=mob_get_sex(pd->class_);
 		WBUFPOS2(buf,54,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y);
 		WBUFB(buf,59)=0x88;
 		WBUFB(buf,60)=0;
@@ -1423,7 +1422,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 	WBUFW(buf,0)=0x7b;
 	WBUFL(buf,2)=pd->bl.id;
 	WBUFW(buf,6)=pd->speed;
-	WBUFW(buf,14)=mob_get_viewclass(pd->class);
+	WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 	WBUFW(buf,16)=battle_config.pet0078_hair_id;
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,20)=view;
@@ -1597,7 +1596,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	nullpo_retv(nd);
 
-	if(nd->class < 0 || (nd->flag&1 && nd->option != 0x0002) || nd->class == INVISIBLE_CLASS)
+	if(nd->class_ < 0 || (nd->flag&1 && nd->option != 0x0002) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
 	memset(buf,0,packet_db[0x7c].len);
@@ -1606,7 +1605,7 @@ void clif_spawnnpc(struct npc_data *nd)
 	WBUFL(buf,2)=nd->bl.id;
 	WBUFW(buf,6)=nd->speed;
 	WBUFW(buf,12)=nd->option;
-	WBUFW(buf,20)=nd->class;
+	WBUFW(buf,20)=nd->class_;
 	WBUFPOS(buf,36,nd->bl.x,nd->bl.y);
 
 	clif_send(buf,packet_db[0x7c].len,&nd->bl,AREA);
@@ -1631,7 +1630,7 @@ void clif_spawnmob(struct mob_data *md)
 
 	nullpo_retv(md);
 
-	if(mob_get_viewclass(md->class) >= MAX_VALID_PC_CLASS) {
+	if(mob_get_viewclass(md->class_) >= MAX_VALID_PC_CLASS) {
 		memset(buf,0,packet_db[0x7c].len);
 
 		WBUFW(buf,0)=0x7c;
@@ -1640,7 +1639,7 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFW(buf,12)=md->option;
-		WBUFW(buf,20)=mob_get_viewclass(md->class);
+		WBUFW(buf,20)=mob_get_viewclass(md->class_);
 
 		WBUFPOS(buf,36,md->bl.x,md->bl.y);
 
@@ -1670,13 +1669,13 @@ void clif_spawnpet(struct pet_data *pd)
 
 	nullpo_retv(pd);
 
-	if(mob_get_viewclass(pd->class) >= MAX_VALID_PC_CLASS) {
+	if(mob_get_viewclass(pd->class_) >= MAX_VALID_PC_CLASS) {
 		memset(buf,0,packet_db[0x7c].len);
 
 		WBUFW(buf,0)=0x7c;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFW(buf,20)=mob_get_viewclass(pd->class);
+		WBUFW(buf,20)=mob_get_viewclass(pd->class_);
 		WBUFPOS(buf,36,pd->bl.x,pd->bl.y);
 
 		clif_send(buf,packet_db[0x7c].len,&pd->bl,AREA);
@@ -1747,11 +1746,11 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFW(buf,0) =0x7c;
 	WBUFL(buf,2) =hd->bl.id;
 	WBUFW(buf,6) =hd->speed;
-	//WBUFW(buf,20)=hd->status.class;
+	//WBUFW(buf,20)=hd->status.class_;
 	//if(hd->view_class)
 	WBUFW(buf,20)=hd->view_class;
 	//else
-	//	WBUFW(buf,20)=hd->status.class;
+	//	WBUFW(buf,20)=hd->status.class_;
 	WBUFB(buf,28)=8;		// 調べた限り固定
 	WBUFPOS(buf,36,hd->bl.x,hd->bl.y);
 
@@ -2983,7 +2982,7 @@ static void clif_hpmeter(struct map_session_data *sd)
 	WBUFW(buf,8)=sd->bl.y;
 
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (md=session[i]->session_data) && md->state.auth &&
+		if(session[i] && (md = (struct map_session_data *)session[i]->session_data) && md->state.auth &&
 		   md->bl.m == sd->bl.m && pc_isGM(md) && sd != md){
 			memcpy(WFIFOP(i,0),buf,packet_db[0x107].len);
 			WFIFOSET(i,packet_db[0x107].len);
@@ -2995,7 +2994,7 @@ static void clif_hpmeter(struct map_session_data *sd)
 	WBUFW(buf2,6)=(sd->status.hp > 0x7fff)? 0x7fff:sd->status.hp;
 	WBUFW(buf2,8)=(sd->status.max_hp > 0x7fff)? 0x7fff:sd->status.max_hp;
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (md=session[i]->session_data) && md->state.auth &&
+		if(session[i] && (md = (struct map_session_data *)session[i]->session_data) && md->state.auth &&
 		   sd->bl.m == md->bl.m && pc_isGM(md) && sd != md){
 			memcpy(WFIFOP(i,0),buf2,packet_db[0x106].len);
 			WFIFOSET(i,packet_db[0x106].len);
@@ -4322,7 +4321,7 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 	nullpo_retv(sd);
 	nullpo_retv(nd);
 
-	if(nd->class < 0 ||(nd->flag&1 && nd->option != 0x0002) || nd->class == INVISIBLE_CLASS)
+	if(nd->class_ < 0 ||(nd->flag&1 && nd->option != 0x0002) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
 	len = clif_npc0078(nd,WFIFOP(sd->fd,0));
@@ -4664,7 +4663,7 @@ int clif_pcoutsight(struct block_list *bl,va_list ap)
 		}
 		break;
 	case BL_NPC:
-		if( ((struct npc_data *)bl)->class != INVISIBLE_CLASS )
+		if( ((struct npc_data *)bl)->class_ != INVISIBLE_CLASS )
 			clif_clearchar_id(bl->id,0,sd->fd);
 		break;
 	case BL_MOB:
@@ -4859,7 +4858,7 @@ void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int rang
 	if( skillid!=sd->cloneskill_id && (id=sd->status.skill[skillid].id) <= 0 )
 		return;
 
-	if(sd->status.class==PC_CLASS_TK && pc_checkskill2(sd,TK_MISSION)>0 && sd->status.base_level>=90 &&
+	if(sd->status.class_==PC_CLASS_TK && pc_checkskill2(sd,TK_MISSION)>0 && sd->status.base_level>=90 &&
 			sd->status.skill_point==0 && ranking_get_pc_rank(sd,RK_TAEKWON)>0)
 		tk_ranker_bonus=1;
 
@@ -4912,7 +4911,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	if(sd->status.class==PC_CLASS_TK && pc_checkskill2(sd,TK_MISSION)>0 && sd->status.base_level>=90 &&
+	if(sd->status.class_==PC_CLASS_TK && pc_checkskill2(sd,TK_MISSION)>0 && sd->status.base_level>=90 &&
 			sd->status.skill_point==0 && ranking_get_pc_rank(sd,RK_TAEKWON)>0)
 		tk_ranker_bonus=1;
 
@@ -5323,13 +5322,13 @@ void clif_skill_estimation(struct map_session_data *sd, struct block_list *dst)
 			return;
 
 		WBUFW(buf, 0)=0x18c;
-		WBUFW(buf, 2)=mob_get_viewclass(md->class);
-		WBUFW(buf, 4)=mob_db[md->class].lv;
-		WBUFW(buf, 6)=mob_db[md->class].size;
+		WBUFW(buf, 2)=mob_get_viewclass(md->class_);
+		WBUFW(buf, 4)=mob_db[md->class_].lv;
+		WBUFW(buf, 6)=mob_db[md->class_].size;
 		WBUFL(buf, 8)=md->hp;
 		WBUFW(buf,12)=status_get_def2(&md->bl);
-		WBUFW(buf,14)=mob_db[md->class].race;
-		WBUFW(buf,16)=status_get_mdef2(&md->bl) - (mob_db[md->class].vit>>1);
+		WBUFW(buf,14)=mob_db[md->class_].race;
+		WBUFW(buf,16)=status_get_mdef2(&md->bl) - (mob_db[md->class_].vit>>1);
 		WBUFW(buf,18)=status_get_elem_type(&md->bl);
 		for(i=0;i<9;i++)
 			WBUFB(buf,20+i)= battle_attr_fix(100,i+1,md->def_ele);
@@ -6854,7 +6853,7 @@ static void clif_pet_emotion(struct pet_data *pd,int param)
 		if(sd->petDB->talk_convert_class < 0)
 			return;
 		else if(sd->petDB->talk_convert_class > 0) {
-			param -= (pd->class - 100)*100;
+			param -= (pd->class_ - 100)*100;
 			param += (sd->petDB->talk_convert_class - 100)*100;
 		}
 	}
@@ -7361,7 +7360,7 @@ void clif_guild_memberlist(struct map_session_data *sd, struct guild *g)
 		WFIFOW(fd,c*104+12)=m->hair;
 		WFIFOW(fd,c*104+14)=m->hair_color;
 		WFIFOW(fd,c*104+16)=m->gender;
-		WFIFOW(fd,c*104+18)=m->class;
+		WFIFOW(fd,c*104+18)=m->class_;
 		WFIFOW(fd,c*104+20)=m->lv;
 		WFIFOL(fd,c*104+22)=m->exp;
 		WFIFOL(fd,c*104+26)=(int)m->online;
@@ -8871,10 +8870,10 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		// pc_authok() で呼び出すとクライアントにエフェクトが反映されない
 		intif_request_scdata(sd->status.account_id,sd->status.char_id);
 
-		if(sd->status.class != sd->view_class)
+		if(sd->status.class_ != sd->view_class)
 			clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
 		if(sd->status.pet_id > 0 && sd->pd && sd->pet.intimate > 900)
-			clif_pet_emotion(sd->pd,(sd->pd->class - 100)*100 + 50 + pet_hungry_val(sd));
+			clif_pet_emotion(sd->pd,(sd->pd->class_ - 100)*100 + 50 + pet_hungry_val(sd));
 	}
 
 	// view equipment item
@@ -11471,7 +11470,7 @@ static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, i
 {
 	if(sd){
 		int nextbaseexp=pc_nextbaseexp(sd);
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class);
+		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
 		if (battle_config.etc_log){
 			printf("SuperNovice explosionspirits!! %d %d %d ",sd->bl.id,s_class.job,sd->status.base_exp);
 			if(nextbaseexp != 0)

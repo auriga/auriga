@@ -133,7 +133,7 @@ int clif_petoutsight(struct block_list *bl, va_list ap);
 int clif_hominsight(struct block_list *bl, va_list ap);
 int clif_homoutsight(struct block_list *bl, va_list ap);
 
-void clif_class_change(struct block_list *bl, int class, int type);
+void clif_class_change(struct block_list *bl, int class_, int type);
 
 void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int range);
 void clif_skillinfoblock(struct map_session_data *sd);

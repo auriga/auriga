@@ -8,10 +8,11 @@
 #include "converter.h"
 #include "../common/mmo.h"
 #include "../common/db.h"
+#include "../common/malloc.h"
 
 static struct dbt *gm_account_db;
 
-static struct accreg {
+struct accreg {
 	int account_id;
 	int reg_num;
 	struct global_reg reg[ACCOUNT_REG2_NUM];
@@ -28,7 +29,7 @@ static int isGM(int account_id)
 
 static int gm_account_db_final(void *key, void *data, va_list ap)
 {
-	struct gm_account *p = data;
+	struct gm_account *p = (struct gm_account *)data;
 
 	aFree(p);
 
@@ -79,7 +80,7 @@ void read_gm_account() {
 					start_range = i;
 				}
 				for (account_id = start_range; account_id <= end_range; account_id++) {
-					if ((p = numdb_search(gm_account_db, account_id)) == NULL) {
+					if ((p = (struct gm_account *)numdb_search(gm_account_db, account_id)) == NULL) {
 						p = (struct gm_account*)aMalloc(sizeof(struct gm_account));
 						if (p == NULL) {
 							printf("gm_account: out of memory!\n");

@@ -65,9 +65,9 @@ static void sortage_gsortitem(struct guild_storage* gstor){
 struct storage *account2storage(int account_id)
 {
 	struct storage *stor;
-	stor=numdb_search(storage_db,account_id);
+	stor = (struct storage *)numdb_search(storage_db,account_id);
 	if(stor == NULL) {
-		stor = aCalloc(1,sizeof(struct storage));
+		stor = (struct storage *)aCalloc(1,sizeof(struct storage));
 		stor->account_id=account_id;
 		numdb_insert(storage_db,stor->account_id,stor);
 	}
@@ -76,7 +76,7 @@ struct storage *account2storage(int account_id)
 
 void storage_delete(int account_id)
 {
-	struct storage *stor = numdb_search(storage_db,account_id);
+	struct storage *stor = (struct storage *)numdb_search(storage_db,account_id);
 	if(stor) {
 		numdb_erase(storage_db,account_id);
 		aFree(stor);
@@ -95,7 +95,7 @@ int storage_storageopen(struct map_session_data *sd)
 
 	nullpo_retr(0, sd);
 
-	if((stor = numdb_search(storage_db,sd->status.account_id)) != NULL) {
+	if((stor = (struct storage *)numdb_search(storage_db,sd->status.account_id)) != NULL) {
 		if(stor->storage_status)
 			return 1;
 		stor->storage_status = 1;
@@ -322,7 +322,7 @@ void storage_storage_quit(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	stor = numdb_search(storage_db,sd->status.account_id);
+	stor = (struct storage *)numdb_search(storage_db,sd->status.account_id);
 	if(stor) {
 		stor->storage_status = 0;
 	}
@@ -340,7 +340,7 @@ void storage_storage_save(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	stor=numdb_search(storage_db,sd->status.account_id);
+	stor = (struct storage *)numdb_search(storage_db,sd->status.account_id);
 	if(stor)
 		intif_send_storage(stor);
 
@@ -356,9 +356,9 @@ struct guild_storage *guild2storage(int guild_id)
 {
 	struct guild_storage *gs = NULL;
 	if(guild_search(guild_id) != NULL) {
-		gs=numdb_search(guild_storage_db,guild_id);
+		gs = (struct guild_storage *)numdb_search(guild_storage_db,guild_id);
 		if(gs == NULL) {
-			gs = aCalloc(1,sizeof(struct guild_storage));
+			gs = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
 			gs->guild_id=guild_id;
 			numdb_insert(guild_storage_db,gs->guild_id,gs);
 		}
@@ -369,7 +369,7 @@ struct guild_storage *guild2storage(int guild_id)
 
 void guild_storage_delete(int guild_id)
 {
-	struct guild_storage *gstor = numdb_search(guild_storage_db,guild_id);
+	struct guild_storage *gstor = (struct guild_storage *)numdb_search(guild_storage_db,guild_id);
 	if(gstor) {
 		numdb_erase(guild_storage_db,guild_id);
 		aFree(gstor);
@@ -390,7 +390,7 @@ int storage_guild_storageopen(struct map_session_data *sd)
 
 	if(sd->status.guild_id <= 0)
 		return 2;
-	if((gstor = numdb_search(guild_storage_db,sd->status.guild_id)) != NULL) {
+	if((gstor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) != NULL) {
 		if(gstor->storage_status)
 			return 1;
 		gstor->storage_status = 1;
@@ -627,7 +627,7 @@ void storage_guild_storage_quit(struct map_session_data *sd, char flag)
 
 	nullpo_retv(sd);
 
-	stor = numdb_search(guild_storage_db,sd->status.guild_id);
+	stor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id);
 	if(stor) {
 		if(!flag)
 			intif_send_guild_storage(sd->status.account_id,stor);

@@ -90,7 +90,7 @@ int check_ttl_wisdata(void)
 		wis_delnum=0;
 		numdb_foreach( wis_db, check_ttl_wisdata_sub, tick );
 		for(i=0;i<wis_delnum;i++){
-			struct WisData *wd=numdb_search(wis_db,wis_dellist[i]);
+			struct WisData *wd = (struct WisData *)numdb_search(wis_db,wis_dellist[i]);
 			printf("inter: wis data id=%d time out : from %s to %s\n",
 				wd->id,wd->src,wd->dst);
 			numdb_erase(wis_db,wd->id);
@@ -150,7 +150,7 @@ int accreg_fromstr(const char *str,struct accreg *reg)
 // ------------------------------------------
 int accreg_journal_rollforward( int key, void* buf, int flag )
 {
-	struct accreg* reg = numdb_search( accreg_db, key );
+	struct accreg* reg = (struct accreg *)numdb_search( accreg_db, key );
 
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct accreg*)buf)->account_id )
@@ -297,13 +297,13 @@ void accreg_txt_config_read_sub(const char *w1,const char *w2) {
 }
 
 const struct accreg* accreg_txt_load(int account_id) {
-	return numdb_search(accreg_db,account_id);
+	return (const struct accreg* )numdb_search(accreg_db,account_id);
 }
 
 void accreg_txt_save(struct accreg* reg2) {
-	struct accreg* reg1 = numdb_search(accreg_db,reg2->account_id);
+	struct accreg* reg1 = (struct accreg *)numdb_search(accreg_db,reg2->account_id);
 	if(reg1 == NULL) {
-		reg1 = aMalloc(sizeof(struct accreg));
+		reg1 = (struct accreg *)aMalloc(sizeof(struct accreg));
 		numdb_insert(accreg_db,reg2->account_id,reg1);
 	}
 	memcpy(reg1,reg2,sizeof(struct accreg));
@@ -316,7 +316,7 @@ void accreg_txt_save(struct accreg* reg2) {
 
 static int accreg_txt_final_sub(void *key,void *data,va_list ap)
 {
-	struct accreg *reg=data;
+	struct accreg *reg = (struct accreg *)data;
 
 	aFree(reg);
 
@@ -686,7 +686,7 @@ int mapif_parse_WisReply(int fd)
 {
 	int id=RFIFOL(fd,2),flag=RFIFOB(fd,6);
 
-	struct WisData *wd = numdb_search(wis_db, id);
+	struct WisData *wd = (struct WisData *)numdb_search(wis_db, id);
 
 	if(wd==NULL)
 		return 0;	// タイムアウトしたかIDが存在しない
@@ -848,7 +848,7 @@ int inter_check_length(int fd,int length)
 
 static int wis_db_final(void *key,void *data,va_list ap)
 {
-	struct WisData *wd=data;
+	struct WisData *wd = (struct WisData *)data;
 
 	aFree(wd);
 

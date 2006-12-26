@@ -133,7 +133,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 		"\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%s,%d,%d\t%s,%d,%d,%d,%d,%d,%d\t",
 		p->st.char_id,p->st.account_id,p->st.char_num,p->st.name, //
-		p->st.class,p->st.base_level,p->st.job_level,
+		p->st.class_,p->st.base_level,p->st.job_level,
 		p->st.base_exp,p->st.job_exp,p->st.zeny,
 		p->st.hp,p->st.max_hp,p->st.sp,p->st.max_sp,
 		p->st.str,p->st.agi,p->st.vit,p->st.int_,p->st.dex,p->st.luk,
@@ -228,7 +228,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	p->st.char_id=tmp_int[0];
 	p->st.account_id=tmp_int[1];
 	p->st.char_num=tmp_int[2];
-	p->st.class=tmp_int[3];
+	p->st.class_=tmp_int[3];
 	p->st.base_level=tmp_int[4];
 	p->st.job_level=tmp_int[5];
 	p->st.base_exp=tmp_int[6];
@@ -611,13 +611,13 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 		// 強制的に置き換える処理をしないとダメ。
 		int i,j;
 		struct mmo_chardata *char_dat_old = char_dat;
-		struct mmo_chardata *char_dat_new = aMalloc(sizeof(struct mmo_chardata) * (char_max + 256));
+		struct mmo_chardata *char_dat_new = (struct mmo_chardata *)aMalloc(sizeof(struct mmo_chardata) * (char_max + 256));
 		memcpy(char_dat_new,char_dat_old,sizeof(struct mmo_chardata) * char_max);
 		memset(char_dat_new + char_max,0,256 * sizeof(struct mmo_chardata));
 		char_max += 256;
 		for(i = 0; i <= fd_max; i++) {
 			struct char_session_data *sd;
-			if(session[i] && session[i]->func_parse == parse_char && (sd = session[i]->session_data)) {
+			if(session[i] && session[i]->func_parse == parse_char && (sd = (struct char_session_data *)session[i]->session_data)) {
 				for(j = 0; j < max_char_slot; j++) {
 					if(sd->found_char[j]) {
 						sd->found_char[j] = char_dat_new + (sd->found_char[j] - char_dat_old);
@@ -634,7 +634,7 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 	char_dat[i].st.account_id=sd->account_id;
 	char_dat[i].st.char_num=dat[30];
 	strncpy(char_dat[i].st.name,dat,24);
-	char_dat[i].st.class=0;
+	char_dat[i].st.class_=0;
 	char_dat[i].st.base_level=1;
 	char_dat[i].st.job_level=1;
 	char_dat[i].st.base_exp=0;
@@ -1051,8 +1051,8 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	sql_res = mysql_store_result(&mysql_handle);
 
 	if (sql_res) {
-		// 0       1          2        3    4     5          6         7        8       9    10
-		// char_id account_id char_num name class base_level job_level base_exp job_exp zeny str
+		// 0       1          2        3    4      5          6         7        8       9    10
+		// char_id account_id char_num name class_ base_level job_level base_exp job_exp zeny str
 		// 11  12  13  14  15  16     17 18     19 20
 		// agi vit int dex luk max_hp hp max_sp sp status_point
 		// 21          22     23    24     25       26       27     28   29         30
@@ -1074,7 +1074,7 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 		p->st.account_id    = atoi(sql_row[ 1]);
 		p->st.char_num      = atoi(sql_row[ 2]);
 		strncpy(p->st.name, sql_row[3], 24);
-		p->st.class         = atoi(sql_row[ 4]);
+		p->st.class_        = atoi(sql_row[ 4]);
 		p->st.base_level    = atoi(sql_row[ 5]);
 		p->st.job_level     = atoi(sql_row[ 6]);
 		p->st.base_exp      = atoi(sql_row[ 7]);
@@ -1330,7 +1330,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 	UPDATE_NUM(account_id    ,"account_id");
 	UPDATE_NUM(char_num      ,"char_num");
 	UPDATE_STR(name          ,"name");
-	UPDATE_NUM(class         ,"class");
+	UPDATE_NUM(class_        ,"class");
 	UPDATE_NUM(base_level    ,"base_level");
 	UPDATE_NUM(job_level     ,"job_level");
 	UPDATE_NUM(base_exp      ,"base_exp");
@@ -1781,7 +1781,7 @@ int isGM(int account_id)
 {
 	struct gm_account *p;
 
-	p = numdb_search(gm_account_db,account_id);
+	p = (struct gm_account *)numdb_search(gm_account_db,account_id);
 	if( p == NULL)
 		return 0;
 
@@ -1830,7 +1830,7 @@ void read_gm_account(void) {
 					start_range = i;
 				}
 				for (account_id = start_range; account_id <= end_range; account_id++) {
-					if ((p = numdb_search(gm_account_db, account_id)) == NULL) {
+					if ((p = (struct gm_account *)numdb_search(gm_account_db, account_id)) == NULL) {
 						p = (struct gm_account *)aCalloc(1, sizeof(struct gm_account));
 						numdb_insert(gm_account_db, account_id, p);
 					}
@@ -1954,10 +1954,10 @@ int mmo_char_send006b(int fd,struct char_session_data *sd)
 		WFIFOW(fd,offset+(i*106)+ 46) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
 		WFIFOW(fd,offset+(i*106)+ 48) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
 		WFIFOW(fd,offset+(i*106)+ 50) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
-		if(st->class==28 || st->class==29)
-			WFIFOW(fd,offset+(i*106)+ 52) = st->class-4;
+		if(st->class_ == 28 || st->class_ == 29)
+			WFIFOW(fd,offset+(i*106)+ 52) = st->class_-4;
 		else
-			WFIFOW(fd,offset+(i*106)+ 52) = st->class;
+			WFIFOW(fd,offset+(i*106)+ 52) = st->class_;
 		WFIFOW(fd,offset+(i*106)+ 54) = st->hair;
 		WFIFOW(fd,offset+(i*106)+ 56) = st->weapon;
 		WFIFOW(fd,offset+(i*106)+ 58) = st->base_level;
@@ -2042,11 +2042,11 @@ int char_break_adoption(const struct mmo_charstatus *st)
 		struct mmo_charstatus s1;
 		memcpy(&s1,st,sizeof(struct mmo_charstatus));
 		// 養子であれば元の職に戻す
-		if(s1.class >= PC_CLASS_NV3 && s1.class <= PC_CLASS_SNV3) {
-			if(s1.class == PC_CLASS_SNV3)
-				s1.class = PC_CLASS_SNV;
+		if(s1.class_ >= PC_CLASS_NV3 && s1.class_ <= PC_CLASS_SNV3) {
+			if(s1.class_ == PC_CLASS_SNV3)
+				s1.class_ = PC_CLASS_SNV;
 			else
-				s1.class -= PC_CLASS_BASE3;
+				s1.class_ -= PC_CLASS_BASE3;
 		}
 		s1.baby_id = 0;
 		s1.parent_id[0] = 0;
@@ -2151,7 +2151,7 @@ int parse_tologin(int fd)
 	struct char_session_data *sd;
 
 //	printf("parse_tologin : %d %d %d\n",fd,RFIFOREST(fd),RFIFOW(fd,0));
-	sd=session[fd]->session_data;
+	sd = (struct char_session_data *)session[fd]->session_data;
 	while(RFIFOREST(fd)>=2){
 		switch(RFIFOW(fd,0)){
 		case 0x2711:
@@ -2168,7 +2168,7 @@ int parse_tologin(int fd)
 			if(RFIFOREST(fd)<15)
 				return 0;
 			for(i=0;i<fd_max;i++){
-				if(session[i] && (sd=session[i]->session_data)){
+				if(session[i] && (sd = (struct char_session_data *)session[i]->session_data)){
 					if(sd->account_id==RFIFOL(fd,2))
 						break;
 				}
@@ -2282,12 +2282,12 @@ int parse_tologin(int fd)
 					int flag = 0;
 					memcpy(&st,&sd.found_char[i]->st,sizeof(struct mmo_charstatus));
 					//雷鳥は職も変更
-					if(st.class == 19 || st.class == 20){
-						flag = 1; st.class = (sex ? 19 : 20);
-					} else if(st.class == 19 + PC_CLASS_BASE2 || st.class == 20 + PC_CLASS_BASE2) {
-						flag = 1; st.class = (sex ? 19 : 20) + PC_CLASS_BASE2;
-					} else if(st.class == 19 + PC_CLASS_BASE3 || st.class == 20 + PC_CLASS_BASE3) {
-						flag = 1; st.class = (sex ? 19 : 20) + PC_CLASS_BASE3;
+					if(st.class_ == 19 || st.class_ == 20){
+						flag = 1; st.class_ = (sex ? 19 : 20);
+					} else if(st.class_ == 19 + PC_CLASS_BASE2 || st.class_ == 20 + PC_CLASS_BASE2) {
+						flag = 1; st.class_ = (sex ? 19 : 20) + PC_CLASS_BASE2;
+					} else if(st.class_ == 19 + PC_CLASS_BASE3 || st.class_ == 20 + PC_CLASS_BASE3) {
+						flag = 1; st.class_ = (sex ? 19 : 20) + PC_CLASS_BASE3;
 					}
 					if(flag) {
 						// 雷鳥装備外し
@@ -2697,9 +2697,9 @@ int parse_frommap(int fd)
 					WFIFOSET(fd,WFIFOW(fd,2));
 
 					// オンラインdbに挿入
-					c = numdb_search(char_online_db,RFIFOL(fd,2));
+					c = (struct char_online *)numdb_search(char_online_db,RFIFOL(fd,2));
 					if(c == NULL) {
-						c = aCalloc(sizeof(struct char_online),1);
+						c = (struct char_online *)aCalloc(1,sizeof(struct char_online));
 					}
 					c->ip         = server[id].ip;
 					c->port       = server[id].port;
@@ -2808,7 +2808,7 @@ int parse_frommap(int fd)
 				WFIFOW(fd,0) = 0x2b09;
 				WFIFOL(fd,2) = RFIFOL(fd,2);
 				if(cd){
-					struct char_online* c = numdb_search(char_online_db,cd->st.account_id);
+					struct char_online* c = (struct char_online *)numdb_search(char_online_db,cd->st.account_id);
 					memcpy(WFIFOP(fd,6),cd->st.name,24);
 					WFIFOL(fd,30) = cd->st.account_id;
 					WFIFOL(fd,34) = (c && c->char_id == cd->st.char_id ? c->ip   : 0);
@@ -2921,7 +2921,7 @@ int parse_frommap(int fd)
 				return 0;
 			{
 				unsigned char buf[8];
-				struct char_online *c = numdb_search(char_online_db,RFIFOL(fd,2));
+				struct char_online *c = (struct char_online *)numdb_search(char_online_db,RFIFOL(fd,2));
 				if(c){
 					numdb_erase(char_online_db,RFIFOL(fd,2));
 					char_set_offline( c->char_id );
@@ -3102,7 +3102,7 @@ int parse_char(int fd)
 		return 0;
 	}
 
-	sd=session[fd]->session_data;
+	sd = (struct char_session_data *)session[fd]->session_data;
 
 	while(RFIFOREST(fd)>=2){
 		cmd = RFIFOW(fd,0);
@@ -3156,8 +3156,10 @@ int parse_char(int fd)
 		case 0x65:	// 接続要求
 			if(RFIFOREST(fd)<17)
 				return 0;
-			if(sd==NULL)
-				sd=session[fd]->session_data=(struct char_session_data *)aCalloc(1,sizeof(*sd));
+			if(sd==NULL) {
+				session[fd]->session_data = aCalloc(1,sizeof(*sd));
+				sd = (struct char_session_data *)session[fd]->session_data;
+			}
 			sd->account_id=RFIFOL(fd,2);
 			sd->login_id1=RFIFOL(fd,6);
 			sd->login_id2=RFIFOL(fd,10);
@@ -3257,7 +3259,7 @@ int parse_char(int fd)
 				}
 				// ２重ログイン撃退（違うマップサーバの場合）
 				// 同じマップサーバの場合は、マップサーバー内で処理される
-				c = numdb_search(char_online_db,sd->found_char[ch]->st.account_id);
+				c = (struct char_online *)numdb_search(char_online_db,sd->found_char[ch]->st.account_id);
 				if(c && (c->ip != server[i].ip || c->port != server[i].port) ) {
 					// ２重ログイン検出
 					// mapに切断要求
@@ -3326,7 +3328,7 @@ int parse_char(int fd)
 				WFIFOW(fd,2+ 46) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
 				WFIFOW(fd,2+ 48) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
 				WFIFOW(fd,2+ 50) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,2+ 52) = st->class;
+				WFIFOW(fd,2+ 52) = st->class_;
 				WFIFOW(fd,2+ 54) = st->hair;
 				WFIFOW(fd,2+ 58) = st->base_level;
 				WFIFOW(fd,2+ 60) = st->skill_point;
@@ -3571,7 +3573,7 @@ int mapif_send(int fd,unsigned char *buf,unsigned int len)
 	int i;
 
 	for(i = 0; i < MAX_MAP_SERVERS; i++) {
-		if ((fd == server_fd[i]) >= 0) {
+		if (fd == server_fd[i]) {
 			memcpy(WFIFOP(fd,0), buf, len);
 			WFIFOSET(fd, len);
 			return 1;
@@ -3786,7 +3788,7 @@ static void char_config_read(const char *cfgName)
 static void char_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 {
 	struct socket_data *sd = session[fd];
-	struct char_session_data *cd = sd->session_data;
+	struct char_session_data *cd = (struct char_session_data *)sd->session_data;
 
 	strcpy( usage,
 		( sd->func_parse == parse_char )? "char user" :
@@ -3808,7 +3810,7 @@ static void char_socket_ctrl_panel_func(int fd,char* usage,char* user,char* stat
 
 static int gm_account_db_final(void *key,void *data,va_list ap)
 {
-	struct gm_account *p=data;
+	struct gm_account *p = (struct gm_account *)data;
 
 	aFree(p);
 
@@ -3817,7 +3819,7 @@ static int gm_account_db_final(void *key,void *data,va_list ap)
 
 static int char_online_db_final(void *key,void *data,va_list ap)
 {
-	struct char_online *p=data;
+	struct char_online *p = (struct char_online *)data;
 
 	aFree(p);
 
