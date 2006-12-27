@@ -13,7 +13,7 @@ struct mmo_map_server {
 	long ip;
 	short port;
 	int users;
-	char *map, *ref_map;
+	char *map;
 	short map_num;
 	short active;
 };

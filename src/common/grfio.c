@@ -19,6 +19,7 @@
  *	2003/11/11 ... version check fix & bug fix
  *	2006/05/27 ... Reading of customed GRF (by Yor)
  *	2006/12/11 ... data,sdata,adataの制限を無くしてMAX_GRF_FILES個まで読み込み対応
+ *	2006/12/29 ・・・ メモリ使用量削減のためgat,txt以外はentryしない、resnametable.txtの指定対応
  */
 
 #include <stdio.h>
@@ -79,16 +80,6 @@
 #ifndef DWORD
 	typedef unsigned long DWORD;
 #endif
-
-// grf-files.txtで読み込み可能なファイルの最大数
-#define MAX_GRF_FILES 10
-
-static int file_number = 0;
-
-static struct {
-	char name[16];
-	char path[1024];
-} data_file[MAX_GRF_FILES];
 
 //----------------------------
 //	file entry table struct
@@ -468,6 +459,7 @@ static FILELIST* filelist_modify(FILELIST *entry)
  */
 static void filelist_adjust(void)
 {
+
 	if (filelist!=NULL) {
 		if (filelist_maxentry>filelist_entrys) {
 			FILELIST *new_filelist = (FILELIST*)aRealloc(
@@ -548,7 +540,7 @@ void* grfio_reads(char *fname, int *size)
 				lentry.declen = ftell(in);
 			}
 			fseek(in,0,0);	// SEEK_SET
-			buf2 = (char *)aCalloc(1,lentry.declen+1024);
+			buf2 = (unsigned char *)aCalloc(1,lentry.declen+1024);
 			fread(buf2,1,lentry.declen,in);
 			fclose(in);
 			in = NULL;
@@ -559,23 +551,23 @@ void* grfio_reads(char *fname, int *size)
 			if (entry!=NULL && entry->gentry<0) {
 				entry->gentry = -entry->gentry;	// local file checked
 			} else {
-				printf("%s not found. %24s\n", fname, "");
+				printf("%s not found.\n", fname);
 				goto errret;
 			}
 		}
 	}
 	if (entry!=NULL && entry->gentry>0) {	// Archive[GRF] File Read
-		buf = (char *)aCalloc(1,entry->srclen_aligned+1024);
+		buf = (unsigned char *)aCalloc(1,entry->srclen_aligned+1024);
 		gfname = gentry_table[entry->gentry-1];
 		in = fopen(gfname,"rb");
 		if(in==NULL) {
-			printf("%s not found. %24s\n", gfname, "");
+			printf("%s not found.\n", gfname);
 			goto errret;
 		}
 		fseek(in,entry->srcpos,0);
 		fread(buf,1,entry->srclen_aligned,in);
 		fclose(in);
-		buf2=(char *)aCalloc(1,entry->declen+1024);
+		buf2=(unsigned char *)aCalloc(1,entry->declen+1024);
 		if(entry->type==1 || entry->type==3 || entry->type==5) {
 			uLongf len;
 			if (entry->cycle>=0) {
@@ -637,7 +629,7 @@ static unsigned char * decode_filename(unsigned char *buf,int len)
  * Grfio : Entry table read
  *------------------------------------------
  */
-static int grfio_entryread(char *gfname,int gentry)
+static int grfio_entryread(const char *gfname,int gentry)
 {
 	/* GRF header (size: 46 bytes (0x2e), version 0x0100 and 0x0200)
 	struct GRF_Header {                    // Offset
@@ -651,14 +643,15 @@ static int grfio_entryread(char *gfname,int gentry)
 	FILE *fp;
 	int grf_size,list_size;
 	unsigned char grf_header[0x2e];
-	int lop,entry,entrys,ofs,grf_version;
+	int lop,entry,entrys,ofs,ofs2,grf_version;
 	unsigned char *fname;
 	unsigned char *grf_filelist;
+	int count=0;
 
 	fp = fopen(gfname,"rb");
 	if(fp==NULL) {
-		printf("GRF Data File not found: '%s'.\n",gfname);
-		return 1;	// 1:not found error
+		printf("GRF Data File not found.\n");
+		return 2;	// 2:not found error
 	}
 
 	fseek(fp,0,2);	// SEEK_END
@@ -667,8 +660,8 @@ static int grfio_entryread(char *gfname,int gentry)
 	fread(grf_header, 1, 0x2e, fp);
 	if (strcmp((char*)grf_header, GRF_HEADER) || fseek(fp, getlong(grf_header + 0x1e), 1)) { // SEEK_CUR
 		fclose(fp);
-		printf("%s read error\n",gfname);
-		return 2;	// 2:file format error
+		printf("GRF Data File read error.\n");
+		return 4;	// 4:file format error
 	}
 
 	/* Read the version */
@@ -676,7 +669,7 @@ static int grfio_entryread(char *gfname,int gentry)
 	/* Read the number of files */
 	entrys = getlong(grf_header + 0x26) - getlong(grf_header + 0x22) - 7;
 
-	printf("GRF version: 0x%04X. Number of files: %d.\n", grf_version, entrys);
+	printf("GRF version: 0x%04X. Number of files: %d.", grf_version, entrys);
 
 	switch (grf_version & 0xFF00) {
 	case 0x0100: //****** Grf version 01xx ******
@@ -686,10 +679,10 @@ static int grfio_entryread(char *gfname,int gentry)
 		fclose(fp);
 
 		// Get an entry
-		for(entry=0,ofs=0;entry<entrys;entry++){
-			int ofs2,srclen,srccount;
+		for(entry=0,ofs=0; entry<entrys; entry++,ofs=ofs2+17){
+			int srclen,srccount;
 			char type;
-			char *period_ptr;
+			unsigned char *ext_ptr;
 			FILELIST aentry;
 
 			ofs2 = ofs+getlong(grf_filelist+ofs)+4;
@@ -697,25 +690,21 @@ static int grfio_entryread(char *gfname,int gentry)
 			if( type!=0 ){	// Directory Index ... skip
 				fname = decode_filename(grf_filelist+ofs+6,grf_filelist[ofs]-6);
 				if(strlen(fname)>sizeof(aentry.fn)-1){
-					printf("File name too long : %s.\n",fname);
+					printf("\nFile name too long : %s.\n",fname);
 					aFree(grf_filelist);
 					exit(1);
 				}
-				srclen=0;
-				if((period_ptr=strrchr(fname,'.'))!=NULL){
-					for(lop=0;lop<4;lop++) {
-						if(strcasecmp(period_ptr,".gnd\0.gat\0.act\0.str"+lop*5)==0)
-							break;
-					}
-					srclen=getlong(grf_filelist+ofs2)-getlong(grf_filelist+ofs2+8)-715;
-					if(lop==4) {
-						for(lop=10,srccount=1;srclen>=lop;lop=lop*10,srccount++)
-							;
-					} else {
-						srccount=0;
-					}
+				srclen=getlong(grf_filelist+ofs2)-getlong(grf_filelist+ofs2+8)-715;
+
+				// gatとtxt以外は不要なので読み込まない
+				ext_ptr = fname + strlen(fname) -4;
+				if(strcasecmp(ext_ptr,".gat") == 0) {	// もし必要ならばgnd,act,sprもsrccount=0
+					srccount = 0;
+				} else if(strcasecmp(ext_ptr,".txt") == 0) {
+					for(lop=10,srccount=1;srclen>=lop;lop=lop*10,srccount++)
+						;
 				} else {
-					srccount=0;
+					continue;
 				}
 
 				aentry.srclen         = srclen;
@@ -733,8 +722,9 @@ static int grfio_entryread(char *gfname,int gentry)
 #endif
 				filelist_modify(&aentry);
 			}
-			ofs = ofs2 + 17;
+			count++;
 		}
+		printf(" Entered files: %d.\n",count);
 		aFree(grf_filelist);
 		break;
 
@@ -756,12 +746,12 @@ static int grfio_entryread(char *gfname,int gentry)
 
 		if ((int)rSize > grf_size-ftell(fp)) {
 			fclose(fp);
-			printf("Illegal data format : grf compress entry size.\n");
-			return 4;
+			printf("\nIllegal data format : grf compress entry size.\n");
+			return 8;	// 8:compress format error
 		}
 
-		rBuf = (char *)aCalloc(1,rSize);	// Get a Read Size
-		grf_filelist = (char *)aCalloc(1,eSize);	// Get a Extend Size
+		rBuf = (unsigned char *)aCalloc(1,rSize);	// Get a Read Size
+		grf_filelist = (unsigned char *)aCalloc(1,eSize);	// Get a Extend Size
 		fread(rBuf,1,rSize,fp);
 		fclose(fp);
 		decode_zip(grf_filelist,&eSize,rBuf,rSize);	// Decode function
@@ -769,7 +759,7 @@ static int grfio_entryread(char *gfname,int gentry)
 		aFree(rBuf);
 
 		// Get an entry
-		for(entry=0,ofs=0;entry<entrys;entry++){
+		for(entry=0,ofs=0; entry<entrys; entry++,ofs=ofs2+17){
 			/* Size: sizeof(filename) + 17
 			Note: The notation sizeof(filename) is the size of the filename, including terminating NULL.
 			struct GRF2_FileTableItem {          // Offset
@@ -785,17 +775,24 @@ static int grfio_entryread(char *gfname,int gentry)
 			    0x02 (MIXCRYPT) - Indicates that the file uses mixed crypto.
 			    0x04 (DES) - Indicates that only the first 0x14 blocks are encrypted.
 			*/
-			int ofs2,srclen,srccount;
+			int srclen,srccount;
 			char type;
+			unsigned char *ext_ptr;
 			FILELIST aentry;
 
 			fname = grf_filelist+ofs;
 			if (strlen(fname)>sizeof(aentry.fn)-1) {
-				printf("grf : file name too long : %s\n",fname);
+				printf("\ngrf : file name too long : %s\n",fname);
 				aFree(grf_filelist);
 				exit(1);
 			}
 			ofs2 = ofs+strlen(grf_filelist+ofs)+1;
+
+			// gatとtxt以外は不要なので読み込まない
+			ext_ptr = fname + strlen(fname) -4;
+			if(strcasecmp(ext_ptr,".gat") != 0 && strcasecmp(ext_ptr,".txt") != 0)
+				continue;
+
 			type = grf_filelist[ofs2+12];
 			if ((type & 0x01) == 0x01) { // type 1, 2 or 3
 				srclen=getlong(grf_filelist+ofs2);
@@ -826,66 +823,71 @@ static int grfio_entryread(char *gfname,int gentry)
 #endif
 				filelist_modify(&aentry);
 			}
-			ofs = ofs2 + 17;
+			count++;
 		}
+		printf(" Entered files: %d.\n",count);
 		aFree(grf_filelist);
 	  }
 		break;
 
 	default: //****** Grf Other version ******
 		fclose(fp);
-		printf("Not support grf version: 0x%04x.\n", grf_version);
-		return 4;
+		printf("\nNot support grf version: 0x%04x.\n", grf_version);
+		return 8;	// 8:compress format error
 	}
 
-	filelist_adjust();	// filelistの不要エリア解放
-
-	return 0;	// 0:no error
+	return 1;	// 1:no error
 }
 
 /*==========================================
  * Grfio : Resource file check
  *------------------------------------------
  */
-static void grfio_resourcecheck(void)
+static void grfio_resourcecheck(const char *data_dir)
 {
-	int size;
+	int size,count=0;
 	unsigned char *buf,*ptr;
-	char w1[256],w2[256],src[256],dst[256];
+	char w1[256],w2[256],src[256],dst[256],res_txt[1024];
 	FILELIST *entry;
 
-	buf = (unsigned char *)grfio_reads("data\\resnametable.txt",&size);
+	snprintf(res_txt, sizeof(res_txt), "%sdata\\resnametable.txt", data_dir);
+
+	buf = (unsigned char *)grfio_reads(res_txt,&size);
 	if (buf == NULL) {
-		printf("WARNING: Could not read data\\resnametable.txt !\n");
+		printf("WARNING: Could not read %s !\n",res_txt);
 		return;
 	}
 	buf[size] = 0;
 
 	for(ptr=buf;ptr-buf<size;) {
 		if(sscanf(ptr,"%[^#]#%[^#]#",w1,w2)==2){
-			if(strstr(w2,"bmp")){
-				sprintf(src,"data\\texture\\%s",w1);
-				sprintf(dst,"data\\texture\\%s",w2);
-			} else {
-				sprintf(src,"data\\%s",w1);
+			char *ext_ptr;
+			w2[sizeof(w2)-1] = 0;
+
+			// gatとtxtのみチェック
+			ext_ptr = w2 + strlen(w2) -4;
+			if(strcasecmp(ext_ptr,".gat") == 0 || strcasecmp(ext_ptr,".txt") == 0) {
 				sprintf(dst,"data\\%s",w2);
-			}
-			entry = filelist_find(dst);
-			if (entry!=NULL) {
-				FILELIST fentry;
-				memcpy( &fentry, entry, sizeof(FILELIST) );
-				strncpy( fentry.fn ,src, sizeof(fentry.fn)-1 );
-				filelist_modify(&fentry);
-			} else {
-				//printf("File not found in data.grf : %s < %s\n", dst, src);
+
+				entry = filelist_find(dst);
+				if(entry) {
+					FILELIST fentry;
+					memcpy( &fentry, entry, sizeof(FILELIST) );
+					sprintf(src,"data\\%s",w1);
+					strncpy( fentry.fn ,src, sizeof(fentry.fn)-1 );
+					filelist_modify(&fentry);
+					count++;
+				} else {
+					//printf("File not found in %s : %s < %s\n", data_dir, dst, src);
+				}
 			}
 		}
 		ptr = strchr(ptr,'\n');	// Next line
 		if (!ptr) break;
 		ptr++;
 	}
+	printf("read %d entries in %s done\n",count,res_txt);
 	aFree(buf);
-	filelist_adjust();	// filelistの不要エリア解放
 
 	return;
 }
@@ -896,17 +898,14 @@ static void grfio_resourcecheck(void)
  */
 #define GENTRY_ADDS 16 // gentry_tableエントリ数増分
 
-int grfio_add(char *str, char *fname)
+int grfio_add(const char *fname)
 {
-	int len,result;
-	char *buf;
-
 	if (gentry_entrys>=GENTRY_LIMIT) {
 		printf("gentrys limit : grfio_add\n");
 		exit(1);
 	}
 
-	printf("%s:'%s' file reading...\n",str,fname);
+	printf("%s file reading...\n",fname);
 
 	if (gentry_entrys>=gentry_maxentry) {
 		char **new_gentry = (char**)aRealloc((void*)gentry_table, (gentry_maxentry+GENTRY_ADDS) * sizeof(char*));
@@ -916,49 +915,9 @@ int grfio_add(char *str, char *fname)
 		for(lop=gentry_entrys;lop<gentry_maxentry;lop++)
 			gentry_table[lop] = NULL;
 	}
-	len = strlen( fname );
-	buf = (char *)aCalloc(1,len+1);
-	strncpy( buf, fname, len+1 );
-	gentry_table[gentry_entrys++] = buf;
+	gentry_table[gentry_entrys++] = (char *)aStrdup(fname);
 
-	result = grfio_entryread(fname,gentry_entrys-1);
-
-	if (result==0) {
-		// リソースチェック
-		grfio_resourcecheck();
-	}
-
-	return result;
-}
-
-/*==========================================
- * Grfio : Resource file setting
- *------------------------------------------
- */
-int grfio_setdatafile(const char *w1, const char *w2)
-{
-	int i;
-
-	for(i=0; i<file_number; i++) {	// 同名があればパスを上書きするので検索する
-		if(strcmp(data_file[i].name, w1) == 0)
-			break;
-	}
-	if(i >= MAX_GRF_FILES) {
-		printf("Can't read grf-file (%s), over MAX_GRF_FILES %d\a\n", w1, MAX_GRF_FILES);
-		return -1;
-	}
-
-	strncpy(data_file[i].name, w1, sizeof(data_file[0].name));
-	strncpy(data_file[i].path, w2, sizeof(data_file[0].path));
-	data_file[i].name[sizeof(data_file[0].name)-1] = '\0';
-	data_file[i].path[sizeof(data_file[0].path)-1] = '\0';
-
-	if(i >= file_number)
-		file_number++;
-	if(file_number >= MAX_GRF_FILES)
-		file_number = MAX_GRF_FILES;
-
-	return 0;
+	return grfio_entryread(fname,gentry_entrys-1);
 }
 
 /*==========================================
@@ -1004,7 +963,6 @@ void grfio_final(void)
  * Grfio : Initialize
  *------------------------------------------
  */
-
 void grfio_load_zlib(void) {
 #if defined(_WIN32) && !defined(LOCALZLIB)
 	if(!zlib_dll) {
@@ -1034,47 +992,41 @@ void grfio_init(char *fname)
 {
 	FILE *data_conf;
 	char line[1024],w1[1024],w2[1024];
-	int i, result = 0;
+	char data_dir[1024] = "";
+	int result = 0;
 
 	grfio_load_zlib();
-
-	if( fname )
-	{
-		data_conf = fopen(fname, "r");
-
-		// grf-files.txt があるなら読み込む
-		if( data_conf!=NULL ) {
-			while(fgets(line,sizeof(line)-1,data_conf)) {
-				if(line[0] == '/' && line[1] == '/')
-					continue;
-				if(sscanf(line,"%[^:]: %[^\r\n]", w1, w2) == 2) {
-					grfio_setdatafile(w1, w2);
-				}
-			}
-			fclose(data_conf);
-			printf("read %s done\n",fname);
-		} // end of reading grf-files.txt
-	}
-
-	hashinit();	// hashテーブル初期化
-
-	filelist = NULL;
-	filelist_entrys = 0;
-	filelist_maxentry = 0;
-	gentry_table = NULL;
-	gentry_entrys = 0;
-	gentry_maxentry = 0;
+	hashinit();		// hashテーブル初期化
 	atexit(grfio_final);	// 終了処理定義
 
-	// エントリーテーブル読込
-	for(i=0; i<file_number; i++) {
-		result += grfio_add(data_file[i].name, data_file[i].path);
+	if(fname == NULL)
+		return;
+
+	// grf-files.txt があるなら読み込む
+	data_conf = fopen(fname, "r");
+	if(data_conf) {
+		while(fgets(line,sizeof(line)-1,data_conf)) {
+			if(line[0] == '/' && line[1] == '/')
+				continue;
+			if(sscanf(line,"%[^:]: %[^\r\n]", w1, w2) == 2) {
+				if(strcmp(w1,"grf") == 0)
+					result |= grfio_add(w2);
+				else if(strcmp(w1,"datadir") == 0)
+					strcpy(data_dir, w2);
+			}
+		}
+		fclose(data_conf);
+		printf("read %s done\n",fname);
+	} // end of reading grf-files.txt
+
+	if(!(result&1)) {
+		// リソースが一つも読めなかった
+		printf("not grf file readed exit!!\n");
+		return;
 	}
 
-	/*
-	if (result != 0) {
-		printf("not grf file readed exit!!\n");
-		exit(1);			// リソースが一つも読めなければ終了
-	}
-	*/
+	grfio_resourcecheck(data_dir);	// リソースチェック
+	filelist_adjust();		// filelistの不要エリア解放
+
+	return;
 }

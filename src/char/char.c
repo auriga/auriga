@@ -2458,28 +2458,6 @@ static int search_mapserver_char(char *map, struct mmo_charstatus *cd)
 	return -1;
 }
 
-/*==========================================
- * mapの参照元の名前を返す
- *------------------------------------------
- */
-static char* search_refmap(char *map,int id)
-{
-	int j;
-	char map_temp[16];
-
-	if(id < 0 || id >= MAX_MAP_SERVERS)
-		return NULL;
-
-	strncpy(map_temp, map, 16);
-	map_temp[15] = '\0';
-
-	for(j = 0; j < server[id].map_num; j++) {
-		if (!strcmp(server[id].map + (j * 16), map_temp))
-			return server[id].ref_map + (j * 16);
-	}
-	return NULL;
-}
-
 int char_erasemap(int fd, int id)
 {
 	unsigned char buf[16384];
@@ -2500,9 +2478,7 @@ int char_erasemap(int fd, int id)
 	printf("char: map erase: %d (%d maps)\n", id, server[id].map_num);
 
 	aFree(server[id].map);
-	aFree(server[id].ref_map);
 	server[id].map = NULL;
-	server[id].ref_map = NULL;
 	server[id].map_num = 0;
 
 	return 0;
@@ -2565,24 +2541,15 @@ int parse_frommap(int fd)
 			j = server[id].map_num; // get actual quantity of maps for the server
 			for(i = 4; i < RFIFOW(fd,2); i += 16) {
 				int k = search_mapserver(RFIFOP(fd,i));
-				int avail_flag = 0;
-
-				if (i+16 < RFIFOW(fd,2) && RFIFOB(fd,i+16) == '\0') {	// 次に\0があるならavailmapが連結されている
-					avail_flag = 1;
-				}
 				if (k == -1) { // the map isn't assigned to any server
 					// 担当マップサーバーが決まっていないマップなら設定
 					if (j == 0) {
 						server[id].map = (char *)aCalloc(16, sizeof(char));
-						server[id].ref_map = (char *)aCalloc(16, sizeof(char));
 					} else {
 						server[id].map = (char *)aRealloc(server[id].map, sizeof(char) * 16 * (j + 1));
-						server[id].ref_map = (char *)aRealloc(server[id].ref_map, sizeof(char) * 16 * (j + 1));
 					}
 					memcpy(server[id].map + (j * 16), RFIFOP(fd,i), 16);
-					memcpy(server[id].ref_map + (j * 16), (avail_flag? RFIFOP(fd,i+17): RFIFOP(fd,i)), 16);
 					server[id].map[j * 16 + 15] = '\0';
-					server[id].ref_map[j * 16 + 15] = '\0';
 					j++;
 				} else if (k != id) { // if same map-server, it's probably an error (duplicated packet)
 					// printf("Error to fix: 2 map-servers have same map: %16s\n", RFIFOP(fd,i));
@@ -2604,8 +2571,6 @@ int parse_frommap(int fd)
 					// two or more servers. If one server encountered serious trouble which cannot
 					// recover soon, all players, however, can login to other servers by this system.
 				}
-				if (avail_flag)
-					i += 17;
 			}
 			server[id].map_num = j;
 			//
@@ -3221,8 +3186,6 @@ int parse_char(int fd)
 			{
 				struct char_online *c;
 				struct mmo_charstatus st;
-				const char *ref_map = NULL;
-
 				for(ch=0;ch<max_char_slot;ch++) {
 					if(sd->found_char[ch] && sd->found_char[ch]->st.char_num == RFIFOB(fd,2))
 						break;
@@ -3251,7 +3214,7 @@ int parse_char(int fd)
 					strcat(st.last_point.map,".gat");
 					char_save(&st);
 				}
-				if(i < 0 || server[i].active==0 || (ref_map = search_refmap(st.last_point.map, i)) == NULL) {
+				if(i < 0 || server[i].active==0) {
 					WFIFOW(fd,0)=0x6c;
 					WFIFOW(fd,2)=0;
 					WFIFOSET(fd,3);
@@ -3277,7 +3240,7 @@ int parse_char(int fd)
 
 				WFIFOW(fd,0) = 0x71;
 				WFIFOL(fd,2) = st.char_id;
-				memcpy(WFIFOP(fd,6),ref_map,16);	// 参照元のマップ名を送る
+				memcpy(WFIFOP(fd,6),st.last_point.map,16);
 				WFIFOL(fd,22) = server[i].ip;
 				WFIFOW(fd,26) = server[i].port;
 				WFIFOSET(fd,28);
@@ -3467,9 +3430,7 @@ int parse_char(int fd)
 				server[i].map_num = 0;
 				if (server[i].map != NULL) {
 					aFree(server[i].map);
-					aFree(server[i].ref_map);
 					server[i].map = NULL;
-					server[i].ref_map = NULL;
 				}
 				WFIFOSET(fd,3);
 				numdb_foreach(char_online_db,parse_char_sendonline,fd);

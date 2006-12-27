@@ -3492,7 +3492,7 @@ int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrt
 		if(sd->status.homun_id > 0 && sd->hd){
 			unit_remove_map( &sd->hd->bl, clrtype&0xffff );
 		}
-		clif_changemap(sd,map[m].ref_name,x,y);
+		clif_changemap(sd,map[m].name,x,y);
 	}
 	memcpy(sd->mapname,mapname,24);
 	sd->bl.m = m;

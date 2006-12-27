@@ -1808,8 +1808,8 @@ int map_cache_read(struct map_data *m)
 	int i;
 	if(!map_cache.fp) { return 0; }
 	for(i = 0;i < map_cache.head.nmaps ; i++) {
-		if(!strcmp(m->ref_name,map_cache.map[i].fn)) {
-			if(map_cache.map[i].water_height != map_waterheight(m->ref_name)) {
+		if(!strcmp(m->name,map_cache.map[i].fn)) {
+			if(map_cache.map[i].water_height != map_waterheight(m->name)) {
 				// 水場の高さが違うので読み直し
 				return 0;
 			} else if(map_cache.map[i].compressed == 0) {
@@ -1876,7 +1876,7 @@ static int map_cache_write(struct map_data *m)
 	char *write_buf;
 	if(!map_cache.fp) { return 0; }
 	for(i = 0;i < map_cache.head.nmaps ; i++) {
-		if(!strcmp(m->ref_name,map_cache.map[i].fn)) {
+		if(!strcmp(m->name,map_cache.map[i].fn)) {
 			// 同じエントリーがあれば上書き
 			if(map_cache.map[i].compressed == 0) {
 				len_old = map_cache.map[i].xs * map_cache.map[i].ys;
@@ -1913,7 +1913,7 @@ static int map_cache_write(struct map_data *m)
 			}
 			map_cache.map[i].xs  = m->xs;
 			map_cache.map[i].ys  = m->ys;
-			map_cache.map[i].water_height = map_waterheight(m->ref_name);
+			map_cache.map[i].water_height = map_waterheight(m->name);
 			map_cache.dirty = 1;
 			if(map_read_flag == 2) {
 				aFree(write_buf);
@@ -1937,13 +1937,13 @@ static int map_cache_write(struct map_data *m)
 				map_cache.map[i].compressed     = 0;
 				map_cache.map[i].compressed_len = 0;
 			}
-			strncpy(map_cache.map[i].fn,m->ref_name,sizeof(map_cache.map[0].fn));
+			strncpy(map_cache.map[i].fn,m->name,sizeof(map_cache.map[0].fn));
 			fseek(map_cache.fp,map_cache.head.filesize,SEEK_SET);
 			fwrite(write_buf,1,len_new,map_cache.fp);
 			map_cache.map[i].pos = map_cache.head.filesize;
 			map_cache.map[i].xs  = m->xs;
 			map_cache.map[i].ys  = m->ys;
-			map_cache.map[i].water_height = map_waterheight(m->ref_name);
+			map_cache.map[i].water_height = map_waterheight(m->name);
 			map_cache.head.filesize += len_new;
 			map_cache.dirty = 1;
 			if(map_read_flag == 2) {
@@ -1960,10 +1960,9 @@ static int map_cache_write(struct map_data *m)
  * 読み込むmapを追加する
  *------------------------------------------
  */
-static void map_addmap(char *mapname, char *ref)
+static void map_addmap(char *mapname)
 {
 	int i;
-	char *p;
 
 	if(strcmpi(mapname, "clear") == 0) {
 		if(map != NULL) {
@@ -1971,16 +1970,6 @@ static void map_addmap(char *mapname, char *ref)
 			map = NULL;
 		}
 		map_num = 0;
-		return;
-	}
-
-	if(strstr(ref,".gat") == NULL) {
-		printf("map_addmap: invalid map name!! (%s)\a\n", ref);
-		return;
-	}
-	// mapnameは任意に指定できるので厳密にチェックする必要がある
-	if(strlen(mapname) > 23 || (p = strrchr(mapname,'.')) == NULL || strcmp(p,".gat")) {
-		printf("map_addmap: invalid map name!! (%s)\a\n", mapname);
 		return;
 	}
 
@@ -1996,7 +1985,6 @@ static void map_addmap(char *mapname, char *ref)
 		memset(map + map_num, 0, sizeof(struct map_data));
 	}
 	memcpy(map[map_num].name, mapname, 24);
-	memcpy(map[map_num].ref_name, ref, 24);
 	map_num++;
 
 	return;
@@ -2065,7 +2053,7 @@ static int map_readmap(int m,char *fn,int *map_cache)
 		map[m].xs = xs;
 		map[m].ys = ys;
 		map[m].gat = (unsigned char *)aCalloc(s = map[m].xs * map[m].ys,sizeof(unsigned char));
-		wh=map_waterheight(map[m].ref_name);
+		wh=map_waterheight(map[m].name);
 		for(y=0;y<ys;y++){
 			p=(struct gat_1cell*)(gat+y*xs*20+14);
 			for(x=0;x<xs;x++){
@@ -2124,7 +2112,9 @@ static void map_readallmap(void)
 		grfio_size(fn);
 	}*/
 	for(i=0;i<map_num;i++){
-		sprintf(fn,"data\\%s",map[i].ref_name);	// 参照元のMAPを読み込ませる
+		if(strstr(map[i].name,".gat")==NULL)
+			continue;
+		sprintf(fn,"data\\%s",map[i].name);
 		if (map_readmap(i, fn, &map_cache) == -1) {
 			map_delmap(map[i].name);
 			maps_removed++;
@@ -2307,11 +2297,7 @@ static int map_config_read(char *cfgName)
 		} else if (strcmpi(w1, "gm_account_filename") == 0) {
 			pc_set_gm_account_fname(w2);
 		} else if (strcmpi(w1, "map") == 0) {
-			map_addmap(w2, w2);
-		} else if (strcmpi(w1, "availmap") == 0) {
-			char w3[1024], w4[1024];
-			if(sscanf(w2, "%[^,],%[^,]", w3, w4) == 2)
-				map_addmap(w3, w4);
+			map_addmap(w2);
 		} else if (strcmpi(w1, "delmap") == 0) {
 			map_delmap(w2);
 		} else if (strcmpi(w1, "npc") == 0) {
@@ -2320,12 +2306,6 @@ static int map_config_read(char *cfgName)
 			npc_delsrcfile(w2);
 		} else if (strcmpi(w1, "read_grf_files_txt") == 0) {
 			read_grf_files_txt = atoi(w2);
-		} else if (strcmpi(w1, "data_grf") == 0) {
-			grfio_setdatafile("data", w2);
-		} else if (strcmpi(w1, "sdata_grf") == 0) {
-			grfio_setdatafile("sdata", w2);
-		} else if (strcmpi(w1, "adata_grf") == 0) {
-			grfio_setdatafile("adata", w2);
 		} else if (strcmpi(w1, "packet_parse_time") == 0) {
 			packet_parse_time = atoi(w2);
 			if (packet_parse_time < 0) {

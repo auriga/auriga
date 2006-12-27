@@ -1,4 +1,56 @@
 ----------------------------------------
+//044 [2006/12/28] by Rayce
+
+・grfファイルの読み込みに関する大幅な変更と拡張（grfio.*, map.c）
+　基本的にはeAを参考にしました、thx a lot!!
+
+　　今まではgrfファイルを読み込む際に、grf内に格納されているファイル全てに対してデコード情報を保存していました。
+　　しかしサーバ側はgatとtxtファイルしか必要としないので、他のファイルに関しては情報を保存しないように変更しました。
+　　これによりメモリ使用量が約5MB近く削減されます（約40000 files × 132 = 5,280,000 byte）。
+
+	GRF version: 0x0200. Number of files: 29977. Entered files: 462.
+	               ↑                      ↑                    ↑
+	      [grfファイルのversion]           ｜                    ｜
+	                        [grf内に存在するファイルの総数]      ｜
+	                                          [実際にエントリーされたgat,txtのファイル数]
+
+　　conf/grf-files.txtの記述方式を変更し、10個までしか読み込めなかった制限を取り払います（上限127個）。
+　　詳細はconf/grf-files.txtに直接記載しているので参考のこと。
+　　またdataフォルダに置いてあるresnametable.txtを読み込んでduplicateするmapを指定できるように拡張しました。
+
+	datadir:                   → data\resnametable.txt
+		指定なしなのでgrfファイルを展開した後のファイルを自動で参照する
+	datadir: C:\Program Files\ → C:\Program Files\data\resnametable.txt
+		指定されたパスにあるresnametable.txtを読み込む
+
+　　resnametable.txtをgrfファイルから抽出し、例えば
+	dummy.gat#prontera.gat#
+　　のように記述するとdummy.gatという名前のプロンテラを作ることができるのは周知の事実ですが、
+　　これをdataフォルダに置いてパスを指定することで、grfファイルを作成することなく簡便にmapのduplicateを
+　　行うことが可能になります。
+
+　　今回の変更によりconf/grf-files.txtの機能性が向上したため、map_athena.confにある
+　　read_grf_files_txt, data_grf, sdata_grf, adata_grfキーは廃止します。
+　　今後はgrfファイルの読み込みはconf/grf-files.txtに一任されますので注意してください。
+
+　　補足事項は以下の通り
+	-> エントリテーブルを作成せずに直接 grfio_add() を呼び出して読み込み開始する
+	-> MAX_GRF_FILES, data_file構造体を削除
+	-> リソースチェックは全てのgrfファイルを解析し終えた後に行う
+	　 grfio_resourcecheck() は対象ファイル名を引数に取るように変更
+	-> filelist_adjust() は最後だけでよい
+	-> grfio_setdatafile() は不要になったので削除
+
+・上記のresnametable.txtの指定対応に伴い、012で実装したavailmapシステムは廃止（char.*, chrif.c, map.*, pc.c）
+　　availmapは全てサーバ側で制御できるため、ユーザーにパッチを配布することなくmapのコピーを作成できるという利点
+　　がありました。
+　　しかし、例えば別のMAPへワープする際に現在のMAPとduplicateされたMAPの参照元が同じだった場合、ミニMAPに表示
+　　されるPTメンバーのドットが消えずに残ったりするという気持ち悪さがありました。
+　　もちろん修正することは可能でしたが、resnametable.txtを利用する方が遥かにスマート（/whereも正常に働くし）だと
+　　判断したため、システムそのものを白紙に戻すことに決めました。
+　　今後はresnametable.txtに必要な情報を追加し、ユーザーに配布する形式を取ってください。
+
+----------------------------------------
 //043 [2006/12/27] by Rayce
 
 ・042のキャストの明示が抜けている箇所を修正

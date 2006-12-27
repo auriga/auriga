@@ -447,27 +447,6 @@ mapreg_txt
 	MAPサーバー内キャラクター共有変数を保存するファイルを指定します。
 	省略可能で、デフォルトはsave/mapreg_txtです。
 
-read_grf_files_txt
-	data.grf 等ののパス指定ファイル grf-files.txt を読むかどうかを指定します。
-	0 を指定すると、ファイル grf-files.txt が存在しても読まなくなり、
-	以下の data_grf などの設定を利用するようになります。
-	デフォルトは 1 です。
-
-data_grf
-	ROデータファイル data.grf へのパスです。
-	省略可能で、デフォルトは ./data.grf です。
-	grf-files.txt を読み込む場合、そちらの設定が優先されます。
-
-sdata_grf
-	サクライデータファイル sdata.grf へのパスです。
-	省略可能で、デフォルトは ./sdata.grf です。
-	grf-files.txt を読み込む場合、そちらの設定が優先されます。
-
-adata_grf
-	αデータファイル adata.grf へのパスです。
-	省略可能で、デフォルトは ./adata.grf です。
-	grf-files.txt を読み込む場合、そちらの設定が優先されます。
-
 read_map_from_cache
 	マップキャッシュを使用するかどうか
 	 0 : 使用しない 1 : 非圧縮で保存 2 : 圧縮して保存
@@ -489,13 +468,6 @@ map
 	複数指定可能で、指定した順にロードします。
 	存在しないマップを指定した場合エラーになります。
 	clear を指定するとそれまでに登録したファイル名を全て削除します。
-
-availmap
-	コピーマップとして読み込みます。
-	<コピーマップ名>,<参照元マップファイル名> の形式を採ります。（下記の例を参照）
-	同じマップデータで別名のマップを用意したい場合に利用します。
-	参照元マップファイル名はgrfファイルに存在するマップである必要がありますが、
-	コピーマップ名は任意に名前を付けることができます。
 
 delmap
 	読み込まないマップファイルへのパスです。
@@ -529,8 +501,6 @@ autosave_time: 60
 nullpo_check: 1
 gm_account_filename: conf/GM_account.txt
 water_height: conf/water_height.txt
-data_grf: ./data.grf
-sdata_grf: ./sdata.grf
 httpd_enable: -1
 httpd_document_root: httpd/
 httpd_config: conf/httpd_map.conf
@@ -545,7 +515,6 @@ delnpc: conf/sample/npc_test.txt
 npc: clear
 delmap: prontera.gat
 delmap: all
-availmap: duplicate.gat,prontera.gat
 
 ==========================================================================
 5. conf/battle_athena.conf

@@ -728,9 +728,8 @@ enum {
 };
 
 struct map_data {
-	unsigned char *gat;	// NULLなら下のmap_data_other_serverとして扱う
 	char name[24];
-	char ref_name[24];
+	unsigned char *gat;	// NULLなら下のmap_data_other_serverとして扱う
 	struct block_list **block;
 	struct block_list **block_mob;
 //	int *block_count,*block_mob_count;
@@ -792,8 +791,8 @@ struct map_data {
 	} drop_list[MAX_DROP_PER_MAP];
 };
 struct map_data_other_server {
-	unsigned char *gat;	// NULL固定にして判断
 	char name[24];
+	unsigned char *gat;	// NULL固定にして判断
 	unsigned long ip;
 	unsigned int port;
 	// 一度他map サーバーの担当になって、
