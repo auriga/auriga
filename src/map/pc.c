@@ -70,6 +70,8 @@ static struct {
 	short class_level;//再振り時の不正防止　ノビ:0 一次:1 二次:2
 } skill_tree[3][MAX_PC_CLASS][MAX_SKILL_TREE];
 
+static int dummy_gm_account = 0;
+
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
  *------------------------------------------
@@ -105,6 +107,11 @@ int pc_numisGM(int account_id)
 	if( (p = (struct gm_account *)numdb_search(gm_account_db,account_id)) == NULL )
 		return 0;
 	return p->level;
+}
+
+int pc_get_gm_account_dummy(void)
+{
+	return dummy_gm_account;
 }
 
 /*==========================================
@@ -7817,6 +7824,8 @@ void pc_read_gm_account() {
 					p->account_id = account_id;
 					p->level = level;
 					c++;
+					if (dummy_gm_account == 0)
+						dummy_gm_account = account_id;	// ダミー用のGMアカウントを設定
 				}
 			}
 		} else {

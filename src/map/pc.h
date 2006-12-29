@@ -231,6 +231,8 @@ int pc_check_dir_cell(struct map_session_data *sd);
 
 int pc_check_skillup(struct map_session_data *sd,int skill_num);
 
+int pc_get_gm_account_dummy(void);
+
 //DB再読込用
 int pc_readdb(void);
 

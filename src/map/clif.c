@@ -7997,10 +7997,17 @@ static void clif_onlymessage(struct map_session_data *sd, char *mes, int len)
 		case 2:	// パーティ会話
 			WBUFW(buf, 0)=0x109;
 			WBUFW(buf, 2)=len+8;
-			WBUFL(buf, 4)=1;	// account_idは0だと無反応なのでダミーで1を入れておく
+			WBUFL(buf, 4)=0xffffffff;	// account_idは0だと無反応なのでダミーを入れておく
+			memcpy(WBUFP(buf,8),mes,len);
+			break;
+		case 3:	// オープンGM会話
+			WBUFW(buf, 0)=0x08d;
+			WBUFW(buf, 2)=len+8;
+			WBUFL(buf, 4)=pc_get_gm_account_dummy();	// ダミー用GMアカウントを入れる
 			memcpy(WBUFP(buf,8),mes,len);
 			break;
 		default:
+			aFree(buf);
 			return;
 	}
 	clif_send(buf,WBUFW(buf,2),NULL,ALL_CLIENT);

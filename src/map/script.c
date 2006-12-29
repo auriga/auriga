@@ -59,7 +59,7 @@
 #endif
 
 #define SCRIPT_BLOCK_SIZE 512
-#define SCRIPT_HASH_SIZE 512
+#define SCRIPT_HASH_SIZE 521
 enum { LABEL_NEXTLINE=1,LABEL_START };
 
 struct script_code error_code;	// エラー時のダミーデータ
@@ -67,7 +67,6 @@ static unsigned char * script_buf;
 static int script_pos,script_size;
 
 static char *str_buf;
-static int str_pos,str_size;
 static struct script_str_data {
 	int type;
 	int str;
@@ -179,8 +178,8 @@ enum {
  */
 static void disp_error_message(const char *mes,unsigned char *pos)
 {
-	error_msg = (unsigned char *)aStrdup(mes);
-	error_pos = (unsigned char *)pos;
+	error_msg = (char *)aStrdup(mes);
+	error_pos = (char *)pos;
 	longjmp( error_jump, 1 );
 }
 
@@ -188,14 +187,24 @@ static void disp_error_message(const char *mes,unsigned char *pos)
  * 文字列のハッシュを計算
  *------------------------------------------
  */
-static int calc_hash(const unsigned char *p)
+static unsigned int calc_hash(const unsigned char *p)
 {
+	// SDBM Algorithm
+	unsigned int h=0;
+	while(*p){
+		h=(h<<6)+(h<<16)-h;
+		h+=(unsigned char)tolower(*p++);
+	}
+	return h;
+
+#if 0
 	int h=0;
 	while(*p){
 		h=(h<<1)+(h>>3)+(h>>5)+(h>>8);
 		h+=(unsigned char)tolower(*p++);
 	}
-	return h&(SCRIPT_HASH_SIZE-1);
+	return h;
+#endif
 }
 
 /*==========================================
@@ -206,7 +215,7 @@ static int calc_hash(const unsigned char *p)
 static int search_str(const unsigned char *p)
 {
 	int i;
-	i=str_hash[calc_hash(p)];
+	i=str_hash[calc_hash(p)%SCRIPT_HASH_SIZE];
 	while(i){
 		if(strcmpi(str_buf+str_data[i].str,p)==0){
 			return i;
@@ -223,13 +232,10 @@ static int search_str(const unsigned char *p)
 // 既存のであれば番号、無ければ登録して新規番号
 static int add_str(const unsigned char *p)
 {
-	int i;
-	size_t len;
+	static int str_pos=0,str_size=0;
+	int i,len;
 
-	if((i=search_str(p)) >= 0)
-		return i;
-
-	i=calc_hash(p);
+	i=calc_hash(p)%SCRIPT_HASH_SIZE;
 	if(str_hash[i]==0){
 		str_hash[i]=str_num;
 	} else {
@@ -249,8 +255,8 @@ static int add_str(const unsigned char *p)
 		str_data = (struct script_str_data *)aRealloc(str_data,sizeof(str_data[0])*str_data_size);
 		memset(str_data + (str_data_size - 128), '\0', 128);
 	}
-	len=strlen(p);
-	while(str_pos+len+1 >= (unsigned int)str_size){
+	len=(int)strlen(p);
+	while(str_pos+len+1 >= str_size){
 		str_size += 256;
 		str_buf = (char *)aRealloc(str_buf,str_size);
 		memset(str_buf + (str_size - 256), '\0', 256);
@@ -1611,10 +1617,10 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 			str_data[i].label=i;
 #ifdef DEBUG_VARS
 			if( str_data[i].backpatch != -1 ) {
-				struct vars_info *v = numdb_search(vars_db, i);
+				struct vars_info *v = (struct vars_info *)numdb_search(vars_db, i);
 				if( v == NULL ) {
-					v            = aMalloc( sizeof( struct vars_info ) );
-					v->file      = aStrdup( file );
+					v            = (struct vars_info *)aMalloc( sizeof( struct vars_info ) );
+					v->file      = (char *)aStrdup( file );
 					v->line      = line;
 					v->use_count = 1;
 					numdb_insert(vars_db, i, v);
@@ -2955,6 +2961,107 @@ void script_write_vars(struct map_session_data *sd,char *var,int elem,void *v,st
 }
 
 /*==========================================
+ * デバッグ情報の出力
+ *------------------------------------------
+ */
+#ifdef DEBUG_VARS
+
+static int varlist_sort1(void *key,void *data,va_list ap) {
+	int *count  = va_arg(ap, int*);
+	int *v      = va_arg(ap, int*);
+	v[(*count)++] = (int)key;
+	return 0;
+}
+
+static int varlist_sort2(const void *a, const void *b) {
+	char *name1 = str_buf + str_data[*(const int*)a].str;
+	char *name2 = str_buf + str_data[*(const int*)b].str;
+	return strcmp(name1, name2);
+}
+
+static int varsdb_final(void *key,void *data,va_list ap) {
+	struct vars_info *v = (struct vars_info*)data;
+
+	aFree( v->file );
+	aFree( v );
+	return 0;
+}
+
+static int varsdb_output(void)
+{
+	if( vars_db ) {
+		FILE *fp = fopen("variables.txt", "wt");
+		if( fp ) {
+			int i;
+			int *vlist = (int *)aMalloc( vars_count * sizeof(int) );
+			int count  = 0;
+			numdb_foreach(vars_db, varlist_sort1, &count, vlist);
+			qsort( vlist, count, sizeof(int), varlist_sort2 );
+
+			printf("do_final_script: enum used variables\n");
+			for(i = 0; i < count; i++) {
+				char *name = str_buf + str_data[ vlist[i] ].str;
+				struct vars_info *v = (struct vars_info *)numdb_search( vars_db, (void*)vlist[i] );
+				if( strncmp(name, "$@__", 4) != 0 ) {
+					// switch の内部変数は除外
+					fprintf(fp, "%-20s % 4d %s line %d\n", name, v->use_count, v->file, v->line);
+				}
+			}
+			aFree( vlist );
+			fclose(fp);
+		}
+		numdb_final(vars_db, varsdb_final );
+	}
+	return 0;
+}
+
+#endif
+
+#ifdef DEBUG_HASH
+
+static int debug_hash_output(void)
+{
+	FILE *fp = fopen("hash_dump.txt", "wt");
+	if(fp) {
+		int i,count[SCRIPT_HASH_SIZE];
+		int max=0;
+		int *buckets;
+
+		printf("do_final_script: dumping script str hash information\n");
+		memset(count, 0, sizeof(count));
+		fprintf(fp,"--------------------------------------\n");
+		fprintf(fp," num :  calced_val -> hash : data_name\n");
+		fprintf(fp,"--------------------------------------\n");
+
+		for(i=LABEL_START; i<str_num; i++) {
+			unsigned int h1 = calc_hash(str_buf+str_data[i].str);
+			unsigned int h2 = h1%SCRIPT_HASH_SIZE;
+			fprintf(fp,"%04d :  %10u -> %4u : %s\n",i,h1,h2,str_buf+str_data[i].str);
+			if(++count[h2] > max)
+				max = count[h2];
+		}
+		buckets = (int *)aCalloc((max+1),sizeof(int));
+
+		fprintf(fp,"\n--------------------------------------\n");
+		fprintf(fp,"hash : count\n--------------------------------------\n");
+		for(i=0; i<SCRIPT_HASH_SIZE; i++) {
+			fprintf(fp,"%4d : %5d\n",i,count[i]);
+			buckets[count[i]]++;
+		}
+		fprintf(fp,"\n--------------------------------------\n");
+		fprintf(fp,"items : buckets : percent\n--------------------------------------\n");
+		for(i=0; i<=max; i++) {
+			fprintf(fp,"%5d : %7d : %6.2f%\n",i,buckets[i],(double)buckets[i]/SCRIPT_HASH_SIZE*100.);
+		}
+		aFree(buckets);
+		fclose(fp);
+	}
+	return 0;
+}
+
+#endif
+
+/*==========================================
  * 終了
  *------------------------------------------
  */
@@ -2973,31 +3080,6 @@ static int userfunc_db_final(void *key,void *data,va_list ap)
 	script_free_code(data);
 	return 0;
 }
-
-#ifdef DEBUG_VARS
-
-static int varlist_sort1(void *key,void *data,va_list ap) {
-	int *count  = va_arg(ap, int*);
-	int *v      = va_arg(ap, int*);
-	v[(*count)++] = (int)key;
-	return 0;
-}
-
-static int varlist_sort2(const void *a, const void *b) {
-	char *name1 = str_buf + str_data[*(const int*)a].str;
-	char *name2 = str_buf + str_data[*(const int*)b].str;
-	return strcmp(name1, name2);
-}
-
-
-static int varsdb_final(void *key,void *data,va_list ap) {
-	struct vars_info *v = (struct vars_info*)data;
-	
-	aFree( v->file );
-	aFree( v );
-	return 0;
-}
-#endif
 
 int do_final_script()
 {
@@ -3024,75 +3106,19 @@ int do_final_script()
 	}
 
 #ifdef DEBUG_VARS
-	if( vars_db ) {
-		FILE *fp = fopen("variables.txt", "wt");
-		if( fp ) {
-			int i;
-			int *vlist = aMalloc( vars_count * sizeof(int) );
-			int count  = 0;
-			numdb_foreach(vars_db, varlist_sort1, &count, vlist);
-			qsort( vlist, count, sizeof(int), varlist_sort2 );
-
-			printf("do_final_script: enum used variables\n");
-			for(i = 0; i < count; i++) {
-				char *name = str_buf + str_data[ vlist[i] ].str;
-				struct vars_info *v = numdb_search( vars_db, (void*)vlist[i] );
-				if( strncmp(name, "$@__", 4) != 0 ) {
-					// switch の内部変数は除外
-					fprintf(fp, "%-20s % 4d %s line %d\n", name, v->use_count, v->file, v->line);
-				}
-			}
-			aFree( vlist );
-			fclose(fp);
-		}
-		numdb_final(vars_db, varsdb_final );
-	}
+	varsdb_output();
 #endif
 
 #ifdef DEBUG_HASH
-	{
-		FILE *fp = fopen("hash_dump.txt","wt");
-		if(fp) {
-			int i,count[SCRIPT_HASH_SIZE];
-			int min=0x7fffffff,max=0,zero=0;
-
-			memset(count, 0, sizeof(count));
-			printf("do_final_script: dumping script str hash information\n");
-			fprintf(fp,"num : calced_val -> hash : data_name\n");
-			fprintf(fp,"---------------------------------------------------------------\n");
-
-			for(i=LABEL_START; i<str_num; i++) {
-				int h=0;
-				char *p = str_buf+str_data[i].str;
-				while(*p){
-					h=(h<<1)+(h>>3)+(h>>5)+(h>>8);
-					h+=(unsigned char)tolower(*p++);
-				}
-				fprintf(fp,"%04d: %10d ->  %3d : %s\n",i,h,h&(SCRIPT_HASH_SIZE-1),str_buf+str_data[i].str);
-				count[h&(SCRIPT_HASH_SIZE-1)]++;
-			}
-			fprintf(fp,"--------------------\n\n");
-			for(i=0; i<sizeof(count)/sizeof(count[0]); i++) {
-				fprintf(fp,"  hash %3d = %d\n",i,count[i]);
-				if(min > count[i])
-					min = count[i];		// minimun count of collision
-				if(max < count[i])
-					max = count[i];		// maximun count of collision
-				if(count[i] == 0)
-					zero++;
-			}
-			fprintf(fp,"--------------------\n    min = %d, max = %d, zero = %d\n",min,max,zero);
-			fclose(fp);
-		}
-	}
+	debug_hash_output();
 #endif
-
-	aFree(str_buf);
-	aFree(str_data);
 
 #if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
 	script_csvfinal();
 #endif
+
+	aFree(str_buf);
+	aFree(str_data);
 
 	return 0;
 }
