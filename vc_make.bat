@@ -72,6 +72,9 @@ rem set __TXT_MODE__=/D "TXT_ONLY" /D "TXT_JOURNAL"
 rem データ保存方法が SQL の時、txt-converter が不要ならコメントアウトをはずす
 rem set __TXTCONVERTER__=SKIP
 
+rem zlib.dllをコンパイルするならコメントアウトをはずす
+rem set __ZLIB__=/D "LOCALZLIB"
+
 rem login_id2 や IP で AUTHFIFO を比較する場合はコメントアウトをはずす
 rem set __CMP_AFL2__=/D "CMP_AUTHFIFO_LOGIN2"
 rem set __CMP_AFIP__=/D "CMP_AUTHFIFO_IP"
@@ -146,8 +149,12 @@ if "%_model_%"=="mode09" set __cpu__=/c /W3 /Ox /Gr /GA /TC /Zi
 
 rem ----------------------------------------------------------------
 rem 最終的なビルドオプションを生成
-set __opt1__=/I "../common/zlib/" /I "../common/" /D "PACKETVER=7" /D "NEW_006b" /D "FD_SETSIZE=4096"  /D "LOCALZLIB" /D "NDEBUG" /D "_CONSOLE" /D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS" /D "_CRT_SECURE_NO_DEPRECATE" %__TXT_MODE__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
-set __opt2__=/DEBUG %__FIXOPT2__% user32.lib ../common/zlib/*.obj ../common/*.obj *.obj
+if "%__ZLIB__%"=="" goto NOZLIB1
+set __LINKZLIB__=../common/zlib/*.obj
+:NOZLIB1
+
+set __opt1__=/I "../common/zlib/" /I "../common/" /D "PACKETVER=7" /D "NEW_006b" /D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS" /D "_CRT_SECURE_NO_DEPRECATE" %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
+set __opt2__=/DEBUG %__FIXOPT2__% user32.lib %__LINKZLIB__% ../common/*.obj *.obj
 
 rem ----------------------------------------------------------------
 rem 警告の抑制
@@ -159,7 +166,9 @@ rem ビルド作業本体
 
 rem 共通コンポーネントのコンパイル
 cd src\common\zlib
+if "%__ZLIB__%"=="" goto NOZLIB2
 cl %__warning__% %__cpu__% %__opt1__% *.c
+:NOZLIB2
 cd ..\
 cl %__warning__% %__cpu__% %__opt1__% *.c
 
@@ -185,7 +194,9 @@ link %__opt2__% /out:"../../txt-converter.exe"
 cd ..\..\
 
 rem 不必要なファイルを削除
+if "%__ZLIB__%"=="" goto NOZLIB3
 del src\common\zlib\*.obj
+:NOZLIB3
 del src\common\*.obj
 del src\char\*.obj
 del src\login\*.obj

@@ -2,11 +2,8 @@
 @echo 古いオブジェクトファイル等のクリーンアップ
 
 del src\char\*.obj > NUL
-del src\char\char.exe > NUL
 del src\login\*.obj > NUL
-del src\login\login.exe > NUL
 del src\map\*.obj > NUL
-del src\map\map.exe > NUL
 del login-server.exe > NUL
 del char-server.exe > NUL
 del map-server.exe > NUL
@@ -15,8 +12,6 @@ del map-server.exe > NUL
 @rem パスの追加ですが環境変数に既に組み込んでいる人は不要です。
 set path=%path%;C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib
 
-set __common__=..\common\core.c ..\common\db.c ..\common\grfio.c ..\common\lock.c ..\common\malloc.c ..\common\nullpo.c ..\common\socket.c ..\common\timer.c ..\common\httpd.c ..\common\graph.c ..\common\journal.c ..\common\md5calc.c ..\common\utils.c
-
 @rem コンパイルオプション
 @rem SQL⇔TEXTの切り替え、SQL版にする場合は以下のコンパイルオプションをコメントアウトしてください
 set __base__=-DTXT_ONLY
@@ -24,7 +19,7 @@ set __base__=-DTXT_ONLY
 @rem txt モードでジャーナルを使うならコメントアウトをはずす
 :set __base__=-DTXT_ONLY -DTXT_JOURNAL
 
-@rem Zlib.dllをコンパイルする(通常はコメントアウト)
+@rem zlib.dllをコンパイルする(通常はコメントアウト)
 :set __ZLIB__=-DLOCALZLIB
 
 @rem Login_ID2で、IPを見るようにします(通常はコメントアウト)
@@ -99,7 +94,13 @@ if "%_model_%"=="AMD64" set __cpu__=-6 -Oc -Ov -f -ff -tWM
 if "%_model_%"=="DCORE" set __cpu__=-6 -a16 -C -d -f -ff -Hc -i133 -Jgd -k- -Oc -Oxt -Ve -VF -xf -xp
 
 set __define__=%__cpu__% -DPACKETVER=7 -DNEW_006b -DFD_SETSIZE=4096 %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
-set __include__=-I../common/
+set __include__=-I../common/ -I../common/zlib/
+
+if "%__ZLIB__%"=="" goto NOZLIB
+set __LINKZLIB__=..\common\zlib\adler32.c ..\common\zlib\compress.c ..\common\zlib\crc32.c ..\common\zlib\deflate.c ..\common\zlib\inffast.c ..\common\zlib\inflate.c ..\common\zlib\inftrees.c ..\common\zlib\trees.c ..\common\zlib\zutil.c
+:NOZLIB
+set __common__=..\common\core.c ..\common\db.c ..\common\grfio.c ..\common\lock.c ..\common\malloc.c ..\common\nullpo.c ..\common\socket.c ..\common\timer.c ..\common\httpd.c ..\common\graph.c ..\common\journal.c ..\common\md5calc.c ..\common\utils.c %__LINKZLIB__%
+
 
 @echo ■コンパイルオプション表示■
 @echo ◆───────────────────────────────◆
@@ -109,13 +110,14 @@ set __include__=-I../common/
 @rem Warning が900個弱出てきて何がなんだか分からないので、全部抑制。
 @rem 修正する気力起きないので他力本願モードっぽいです。
 @rem     W8004 : **** に代入した値は使われていない
+@rem     W8008 : 条件が常に真
 @rem     W8012 : 符号付き値と符号なし値の比較
 @rem     W8057 : パラメータ **** は一度も使用されない
 @rem     W8060 : おそらく不正な代入
 @rem     W8066 : 実行されないコード
 @rem 取敢えずコンパイル出来なくなる深刻なものとエラーのみの表示
 
-set __warning__=-w-8004 -w-8012 -w-8057 -w-8060 -w-8066
+set __warning__=-w-8004 -w-8008 -w-8012 -w-8057 -w-8060 -w-8066
 
 @echo ログインサーバーコンパイル
 cd src\login
@@ -135,4 +137,3 @@ del src\char\*.obj > NUL
 del src\login\*.obj > NUL
 del src\map\*.obj > NUL
 pause
-

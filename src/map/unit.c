@@ -909,8 +909,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			return 0;
 		target_id = src_ud->attacktarget;
 		if( sc_data && sc_data[SC_BLADESTOP].timer!=-1 ){
-			struct block_list *tbl;
-			if((tbl=(struct block_list *)sc_data[SC_BLADESTOP].val4) == NULL) //ターゲットがいない？
+			struct block_list *tbl = map_id2bl(sc_data[SC_BLADESTOP].val4);
+			if(tbl == NULL) //ターゲットがいない？
 				return 0;
 			target_id = tbl->id;
 		}
