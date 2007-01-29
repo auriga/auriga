@@ -6250,7 +6250,6 @@ int pc_eventtimer(int tid,unsigned int tick,int id,int data)
 	return 0;
 }
 
-
 /*==========================================
  * イベントタイマー追加
  *------------------------------------------
@@ -6276,7 +6275,6 @@ int pc_addeventtimer(struct map_session_data *sd,int tick,const char *name)
 	return 0;
 }
 
-
 /*==========================================
  * イベントタイマー削除
  *------------------------------------------
@@ -6301,7 +6299,6 @@ int pc_deleventtimer(struct map_session_data *sd,const char *name)
 	return 0;
 }
 
-
 /*==========================================
  * イベントタイマーカウント値追加
  *------------------------------------------
@@ -6321,6 +6318,28 @@ int pc_addeventtimercount(struct map_session_data *sd,const char *name,int tick)
 	return 0;
 }
 
+/*==========================================
+ * イベントタイマー残り時間取得
+ *------------------------------------------
+ */
+int pc_geteventtimerdiff(struct map_session_data *sd,const char *name)
+{
+	int i;
+	struct TimerData *td;
+
+	nullpo_retr(-1, sd);
+
+	for(i=0;i<MAX_EVENTTIMER;i++) {
+		if(sd->eventtimer[i] != -1) {
+			td = get_timer(sd->eventtimer[i]);
+			if(strcmp((char *)(td->data), name) == 0) {
+				int diff = DIFF_TICK(td->tick, gettick());
+				return (diff > 0)? diff: 0;
+			}
+		}
+	}
+	return -1;
+}
 
 /*==========================================
  * イベントタイマー全削除

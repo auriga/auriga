@@ -90,7 +90,7 @@ struct dbt* script_get_label_db(){ return scriptlabel_db; }
 struct dbt* script_get_userfunc_db(){ if(!userfunc_db) userfunc_db=strdb_init(50); return userfunc_db; }
 
 static int scriptlabel_final(void *k,void *d,va_list ap){ return 0; }
-static char refine_posword[11][100] = {"頭","体","左手","右手","ローブ","靴","アクセサリー1","アクセサリー2","頭2","頭3","装着していない"};
+static char refine_posword[11][32] = {"頭","体","左手","右手","ローブ","靴","アクセサリー1","アクセサリー2","頭2","頭3","装着していない"};
 
 static struct Script_Config {
 	int warn_func_no_comma;
@@ -2647,7 +2647,7 @@ void run_script_main(struct script_state *st)
 			if(st->state==GOTO){
 				st->state = RUN;
 				if( gotocount>0 && (--gotocount)<=0 ){
-					printf("run_script: infinity loop !\n");
+					printf("run_script: infinity loop ! gotocount %d\n", script_config.check_gotocount);
 					st->state=END;
 				}
 			}
@@ -2698,7 +2698,7 @@ void run_script_main(struct script_state *st)
 			break;
 		}
 		if( cmdcount>0 && (--cmdcount)<=0 ){
-			printf("run_script: infinity loop !\n");
+			printf("run_script: infinity loop ! cmdcount %d\n", script_config.check_cmdcount);
 			st->state=END;
 		}
 	}
@@ -2757,7 +2757,7 @@ int mapreg_setregstr(int num,const char *str,int eternal)
 {
 	char *p;
 
-	if( (p=numdb_search(mapregstr_db,num))!=NULL )
+	if( (p = (char *)numdb_search(mapregstr_db,num)) != NULL )
 		aFree(p);
 
 	if( str==NULL || *str==0 ){
@@ -3228,7 +3228,7 @@ static int mapregstr_db_final(void *key,void *data,va_list ap)
 static int userfunc_db_final(void *key,void *data,va_list ap)
 {
 	aFree(key);
-	script_free_code(data);
+	script_free_code((struct script_code *)data);
 	return 0;
 }
 
@@ -3400,6 +3400,7 @@ int buildin_donpcevent(struct script_state *st);
 int buildin_addtimer(struct script_state *st);
 int buildin_deltimer(struct script_state *st);
 int buildin_addtimercount(struct script_state *st);
+int buildin_gettimerdiff(struct script_state *st);
 int buildin_initnpctimer(struct script_state *st);
 int buildin_stopnpctimer(struct script_state *st);
 int buildin_startnpctimer(struct script_state *st);
@@ -3536,7 +3537,8 @@ int buildin_npcskillsupport(struct script_state *st);
 int buildin_npcskillpos(struct script_state *st);
 int buildin_strnpcinfo(struct script_state *st);
 int buildin_getpartyleader(struct script_state *st);
-int buildin_strcut(struct script_state *st);
+int buildin_getstrlen(struct script_state *st);
+int buildin_substr(struct script_state *st);
 int buildin_setusescript(struct script_state *st);
 int buildin_setequipscript(struct script_state *st);
 int buildin_distance(struct script_state *st);
@@ -3557,7 +3559,7 @@ struct script_function buildin_func[] = {
 	{buildin_return,"return","*"},
 	{buildin_getarg,"getarg","i"},
 	{buildin_jobchange,"jobchange","i*"},
-	{buildin_input,"input","*"},
+	{buildin_input,"input","s"},
 	{buildin_warp,"warp","sii"},
 	{buildin_areawarp,"areawarp","siiiisii"},
 	{buildin_setlook,"setlook","ii"},
@@ -3585,7 +3587,7 @@ struct script_function buildin_func[] = {
 	{buildin_checkweight,"checkweight","ii"},
 	{buildin_readparam,"readparam","i*"},
 	{buildin_getcharid,"getcharid","i*"},
-	{buildin_getcharname,"getcharname","i*"},
+	{buildin_getcharname,"getcharname","i"},
 	{buildin_getpartyname,"getpartyname","i"},
 	{buildin_getpartymember,"getpartymember","i"},
 	{buildin_getguildname,"getguildname","i"},
@@ -3638,6 +3640,7 @@ struct script_function buildin_func[] = {
 	{buildin_addtimer,"addtimer","is"},
 	{buildin_deltimer,"deltimer","s"},
 	{buildin_addtimercount,"addtimercount","si"},
+	{buildin_gettimerdiff,"gettimerdiff","s"},
 	{buildin_initnpctimer,"initnpctimer","*"},
 	{buildin_stopnpctimer,"stopnpctimer","*"},
 	{buildin_startnpctimer,"startnpctimer","*"},
@@ -3702,7 +3705,7 @@ struct script_function buildin_func[] = {
 	{buildin_failedremovecards,"failedremovecards","ii*"},
 	{buildin_marriage,"marriage","s"},
 	{buildin_wedding_effect,"wedding",""},
-	{buildin_divorce,"divorce","*"},
+	{buildin_divorce,"divorce","i"},
 	{buildin_getitemname,"getitemname","i"},
 	{buildin_makepet,"makepet","i"},
 	{buildin_getinventorylist,"getinventorylist",""},
@@ -3777,7 +3780,8 @@ struct script_function buildin_func[] = {
 	{buildin_npcskillpos,"npcskillpos","iiii"},
 	{buildin_strnpcinfo,"strnpcinfo","i"},
 	{buildin_getpartyleader,"getpartyleader","i"},
-	{buildin_strcut,"strcut","si"},
+	{buildin_getstrlen,"getstrlen","s"},
+	{buildin_substr,"substr","si*"},
 	{buildin_setusescript,"setusescript","is"},
 	{buildin_setequipscript,"setequipscript","is"},
 	{buildin_distance,"distance","i*"},
@@ -3808,7 +3812,7 @@ int buildin_goto(struct script_state *st)
 	int pos;
 
 	if( st->stack->stack_data[st->start+2].type!=C_POS ){
-		printf("script: goto: not label !\n");
+		printf("buildin_goto: not label !\n");
 		st->state=END;
 		return 0;
 	}
@@ -3828,17 +3832,17 @@ int buildin_callfunc(struct script_state *st)
 	struct script_code *scr, *oldscr;
 	char *str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	if( (scr=strdb_search(script_get_userfunc_db(),str)) ){
+	if( (scr = (struct script_code *)strdb_search(script_get_userfunc_db(),str)) ){
 		int i,j;
 		struct linkdb_node **oldval = st->stack->var_function;
 		for(i=st->start+3,j=0;i<st->end;i++,j++)
 			push_copy(st->stack,i);
 
-		push_val(st->stack,C_INT,j);							// 引数の数をプッシュ
-		push_val(st->stack,C_INT,st->stack->defsp);				// 現在の基準スタックポインタをプッシュ
-		push_val(st->stack,C_INT,(int)st->script);				// 現在のスクリプトをプッシュ
+		push_val(st->stack,C_INT,j);				// 引数の数をプッシュ
+		push_val(st->stack,C_INT,st->stack->defsp);		// 現在の基準スタックポインタをプッシュ
+		push_val(st->stack,C_INT,(int)st->script);		// 現在のスクリプトをプッシュ
 		push_val(st->stack,C_INT,(int)st->stack->var_function);	// 現在の関数依存変数をプッシュ
-		push_val(st->stack,C_RETINFO,st->pos);					// 現在のスクリプト位置をプッシュ
+		push_val(st->stack,C_RETINFO,st->pos);			// 現在のスクリプト位置をプッシュ
 
 		oldscr = st->script;
 		st->pos=0;
@@ -3862,7 +3866,7 @@ int buildin_callfunc(struct script_state *st)
 		}
 
 	}else{
-		printf("script:callfunc: function not found! [%s]\n",str);
+		printf("buildin_callfunc: function not found! [%s]\n",str);
 		st->state=END;
 	}
 	return 0;
@@ -3876,9 +3880,8 @@ int buildin_callsub(struct script_state *st)
 	int pos  = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	int i,j;
 	if(st->stack->stack_data[st->start+2].type != C_POS && st->stack->stack_data[st->start+2].type != C_USERFUNC_POS) {
-		printf("script: callsub: not label !\n");
+		printf("buildin_callsub: not label !\n");
 		st->state=END;
-		return 0;
 	} else {
 		struct linkdb_node **oldval = st->stack->var_function;
 
@@ -3886,11 +3889,11 @@ int buildin_callsub(struct script_state *st)
 			push_copy(st->stack,i);
 		}
 
-		push_val(st->stack,C_INT,j);							// 引数の数をプッシュ
-		push_val(st->stack,C_INT,st->stack->defsp);				// 現在の基準スタックポインタをプッシュ
-		push_val(st->stack,C_INT,(int)st->script);				// 現在のスクリプトをプッシュ
+		push_val(st->stack,C_INT,j);				// 引数の数をプッシュ
+		push_val(st->stack,C_INT,st->stack->defsp);		// 現在の基準スタックポインタをプッシュ
+		push_val(st->stack,C_INT,(int)st->script);		// 現在のスクリプトをプッシュ
 		push_val(st->stack,C_INT,(int)st->stack->var_function);	// 現在の関数依存変数をプッシュ
-		push_val(st->stack,C_RETINFO,st->pos);					// 現在のスクリプト位置をプッシュ
+		push_val(st->stack,C_RETINFO,st->pos);			// 現在のスクリプト位置をプッシュ
 
 		st->pos=pos;
 		st->stack->defsp=st->start+5+j;
@@ -3908,13 +3911,12 @@ int buildin_callsub(struct script_state *st)
 				}
 			}
 		}
-
-		return 0;
 	}
+	return 0;
 }
 
 /*==========================================
- * 引数の所得
+ * 引数の取得
  *------------------------------------------
  */
 int buildin_getarg(struct script_state *st)
@@ -3922,14 +3924,14 @@ int buildin_getarg(struct script_state *st)
 	int num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	int max,stsp;
 	if( st->stack->defsp<5 || st->stack->stack_data[st->stack->defsp-1].type!=C_RETINFO ){
-		printf("script:getarg without callfunc or callsub!\n");
+		printf("buildin_getarg: without callfunc or callsub!\n");
 		st->state=END;
 		return 0;
 	}
 	max=conv_num(st,& (st->stack->stack_data[st->stack->defsp-5]));
 	stsp=st->stack->defsp - max -5;
 	if( num >= max ){
-		printf("script:getarg arg1(%d) out of range(%d) !\n",num,max);
+		printf("buildin_getarg: arg1(%d) out of range(%d) !\n",num,max);
 		st->state=END;
 		return 0;
 	}
@@ -3954,11 +3956,11 @@ int buildin_return(struct script_state *st)
 				get_val(st,sd);
 				if(isstr(sd)) {		// 文字列の場合はaStrdupしないといけない
 					sd->type  = C_STR;
-					sd->u.str = aStrdup(sd->u.str);
+					sd->u.str = (char *)aStrdup(sd->u.str);
 				}
 			} else if( name[0] == '\'' && !sd->ref) {
 				// ' 変数は参照渡しでも良いが、参照元が設定されていないと
-				// 元のスクリプトの値を差してしまうので補正する。
+				// 元のスクリプトの値を差してしまうので補正する
 				sd->ref = &st->script->script_vars;
 			}
 		}
@@ -4025,7 +4027,6 @@ int buildin_menu(struct script_state *st)
 			len+=strlen(st->stack->stack_data[i].u.str)+1;
 		}
 		buf=(char *)aCalloc(len+1,sizeof(char));
-		buf[0]=0;
 		for(i=st->start+2,len=0;i<st->end;i+=2){
 			if( st->stack->stack_data[i].u.str[0] ) {
 				strcat(buf,st->stack->stack_data[i].u.str);
@@ -4040,7 +4041,7 @@ int buildin_menu(struct script_state *st)
 	} else {	// goto動作
 		sd->state.menu_or_input=0;
 		if(sd->npc_menu>0){
-			//空文字メニューの補正
+			// 空文字メニューの補正
 			for(i=st->start+2;i<=(st->start+sd->npc_menu*2) && sd->npc_menu<(st->end-st->start)/2;i+=2) {
 				conv_str(st,& (st->stack->stack_data[i]));
 				if(strlen(st->stack->stack_data[i].u.str) < 1)
@@ -4052,7 +4053,7 @@ int buildin_menu(struct script_state *st)
 			}
 			pc_setreg(sd,add_str("@menu"),sd->npc_menu);
 			if( st->stack->stack_data[st->start+sd->npc_menu*2+1].type!=C_POS ){
-				printf("script: menu: not label !\n");
+				printf("buildin_menu: not label !\n");
 				st->state=END;
 				return 0;
 			}
@@ -4073,11 +4074,11 @@ int buildin_menu(struct script_state *st)
  */
 int buildin_rand(struct script_state *st)
 {
-	int range,min,max;
+	int range;
 
 	if(st->end>st->start+3){
-		min=conv_num(st,& (st->stack->stack_data[st->start+2]));
-		max=conv_num(st,& (st->stack->stack_data[st->start+3]));
+		int min=conv_num(st,& (st->stack->stack_data[st->start+2]));
+		int max=conv_num(st,& (st->stack->stack_data[st->start+3]));
 		if(max<min){
 			int tmp;
 			tmp=min;
@@ -4229,13 +4230,7 @@ int buildin_jobchange(struct script_state *st)
 	if( st->end>st->start+3 )
 		upper=conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	if(job>=MAX_VALID_PC_CLASS)
-		return 0;
-
-	if(job>=24)
-		upper = 0;
-
-	if ((job >= 0 && job < MAX_VALID_PC_CLASS))
+	if(job >= 0 && job < MAX_VALID_PC_CLASS)
 		pc_jobchange(script_rid2sd(st),job, upper);
 
 	return 0;
@@ -4248,31 +4243,36 @@ int buildin_jobchange(struct script_state *st)
 int buildin_input(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
-	int num      = (st->end>st->start+2)? st->stack->stack_data[st->start+2].u.num: 0;
-	char *name   = (st->end>st->start+2)? str_buf+str_data[num&0x00ffffff].str: "";
-	char postfix = (st->end>st->start+2)? name[strlen(name)-1]: '\0';
+	int num;
+	char *name;
+	char postfix;
 
-	nullpo_retr(0, sd);
+	if(sd == NULL) {	// エラー扱いにする
+		st->state = END;
+		return 0;
+	}
+	if(st->stack->stack_data[st->start+2].type != C_NAME) {
+		// 変数ではないのでエラー扱い
+		printf("buildin_input: param not name\n");
+		st->state = END;
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	postfix = name[strlen(name)-1];
 
-	if(sd->state.menu_or_input){
+	if(sd->state.menu_or_input) {
 		sd->state.menu_or_input=0;
-		if( postfix=='$' ){
-			// 文字列
-			if(st->end>st->start+2){ // 引数1個
-				set_reg(st,sd,num,name,(void*)sd->npc_str,st->stack->stack_data[st->start+2].ref);
-			}else{
-				printf("buildin_input: string discarded !!\n");
-			}
-		}else{
-			// 数値
-			if(st->end>st->start+2){ // 引数1個
-				set_reg(st,sd,num,name,(void*)sd->npc_amount,st->stack->stack_data[st->start+2].ref);
-			}
-		}
+		if(postfix == '$')
+			set_reg(st,sd,num,name,(void*)sd->npc_str,st->stack->stack_data[st->start+2].ref);
+		else
+			set_reg(st,sd,num,name,(void*)sd->npc_amount,st->stack->stack_data[st->start+2].ref);
 	} else {
 		st->state=RERUNLINE;
-		if(postfix=='$')clif_scriptinputstr(sd,st->oid);
-		else			clif_scriptinput(sd,st->oid);
+		if(postfix == '$')
+			clif_scriptinputstr(sd,st->oid);
+		else
+			clif_scriptinput(sd,st->oid);
 		sd->state.menu_or_input=1;
 	}
 	return 0;
@@ -4284,25 +4284,28 @@ int buildin_input(struct script_state *st)
  */
 int buildin_set(struct script_state *st)
 {
-	struct map_session_data *sd=NULL;
-	int num=st->stack->stack_data[st->start+2].u.num;
-	char *name=str_buf+str_data[num&0x00ffffff].str;
-	char prefix=*name;
-	char postfix=name[strlen(name)-1];
+	struct map_session_data *sd = NULL;
+	int num;
+	char *name;
+	char prefix, postfix;
 
-	if( st->stack->stack_data[st->start+2].type!=C_NAME ){
-		printf("script: buildin_set: not name\n");
+	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
+		printf("buildin_set: param not name\n");
 		return 0;
 	}
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
 
-	if( prefix!='$' && prefix!='\'' )
-		sd=script_rid2sd(st);
+	if( prefix != '$' && prefix != '\'' )
+		sd = script_rid2sd(st);
 
-	if( postfix=='$' ){
+	if( postfix == '$' ) {
 		// 文字列
 		char *str = conv_str(st,& (st->stack->stack_data[st->start+3]));
 		set_reg(st,sd,num,name,(void*)str,st->stack->stack_data[st->start+2].ref);
-	}else{
+	} else {
 		// 数値
 		int val = conv_num(st,& (st->stack->stack_data[st->start+3]));
 		set_reg(st,sd,num,name,(void*)val,st->stack->stack_data[st->start+2].ref);
@@ -4317,26 +4320,35 @@ int buildin_set(struct script_state *st)
  */
 int buildin_setarray(struct script_state *st)
 {
-	struct map_session_data *sd=NULL;
-	int num=st->stack->stack_data[st->start+2].u.num;
-	char *name=str_buf+str_data[num&0x00ffffff].str;
-	char prefix=*name;
-	char postfix=name[strlen(name)-1];
-	int i,j;
+	struct map_session_data *sd = NULL;
+	int num;
+	char *name;
+	char prefix, postfix;
+	int i,j,max;
 
-	if( prefix!='$' && prefix!='@' && prefix!='\''){
+	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
+		printf("buildin_setarray: param not name\n");
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
 		printf("buildin_setarray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix!='$' && prefix!='\'' )
-		sd=script_rid2sd(st);
+	if( prefix != '$' && prefix != '\'' )
+		sd = script_rid2sd(st);
 
-	for(j=0,i=st->start+3; i<st->end && j<128;i++,j++){
+	max = 128 - (num>>24);
+	for(j=0,i=st->start+3; i<st->end && j<max; i++,j++){
 		void *v;
-		if( postfix=='$' )
-			v=(void*)conv_str(st,& (st->stack->stack_data[i]));
+		if( postfix == '$' )
+			v = (void*)conv_str(st,& (st->stack->stack_data[i]));
 		else
-			v=(void*)conv_num(st,& (st->stack->stack_data[i]));
+			v = (void*)conv_num(st,& (st->stack->stack_data[i]));
 		set_reg( st, sd, num+(j<<24), name, v, st->stack->stack_data[st->start+2].ref);
 	}
 	return 0;
@@ -4347,26 +4359,37 @@ int buildin_setarray(struct script_state *st)
  */
 int buildin_cleararray(struct script_state *st)
 {
-	struct map_session_data *sd=NULL;
-	int num=st->stack->stack_data[st->start+2].u.num;
-	char *name=str_buf+str_data[num&0x00ffffff].str;
-	char prefix=*name;
-	char postfix=name[strlen(name)-1];
-	int sz=conv_num(st,& (st->stack->stack_data[st->start+4]));
-	int i;
+	struct map_session_data *sd = NULL;
+	int num;
+	char *name;
+	char prefix, postfix;
+	int i, sz;
 	void *v;
 
-	if( prefix!='$' && prefix!='@' && prefix!='\''){
+	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
+		printf("buildin_cleararray: param not name\n");
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
 		printf("buildin_cleararray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix!='$' && prefix!='\'')
-		sd=script_rid2sd(st);
+	if( prefix != '$' && prefix != '\'' )
+		sd = script_rid2sd(st);
 
-	if( postfix=='$' )
-		v=(void*)conv_str(st,& (st->stack->stack_data[st->start+3]));
+	sz = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	if(sz > 128 - (num>>24))
+		sz = 128 - (num>>24);
+
+	if( postfix == '$' )
+		v = (void*)conv_str(st,& (st->stack->stack_data[st->start+3]));
 	else
-		v=(void*)conv_num(st,& (st->stack->stack_data[st->start+3]));
+		v = (void*)conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	for(i=0;i<sz;i++)
 		set_reg(st,sd,num+(i<<24),name,v,st->stack->stack_data[st->start+2].ref);
@@ -4378,48 +4401,70 @@ int buildin_cleararray(struct script_state *st)
  */
 int buildin_copyarray(struct script_state *st)
 {
-	struct map_session_data *sd=NULL;
-	int num=st->stack->stack_data[st->start+2].u.num;
-	char *name=str_buf+str_data[num&0x00ffffff].str;
-	char prefix=*name;
-	char postfix=name[strlen(name)-1];
-	int num2=st->stack->stack_data[st->start+3].u.num;
-	char *name2=str_buf+str_data[num2&0x00ffffff].str;
-	char prefix2=*name2;
-	char postfix2=name2[strlen(name2)-1];
-	int sz=conv_num(st,& (st->stack->stack_data[st->start+4]));
-	int i;
+	struct map_session_data *sd = NULL;
+	int num, num2;
+	char *name, *name2;
+	char prefix, postfix, prefix2, postfix2;
+	int i, sz;
 
-	if( prefix!='$' && prefix!='@' && prefix!='\'' ){
+	if( st->stack->stack_data[st->start+2].type != C_NAME ||
+	    st->stack->stack_data[st->start+3].type != C_NAME )
+	{
+		printf("buildin_copyarray: param not name\n");
+		return 0;
+	}
+	num      = st->stack->stack_data[st->start+2].u.num;
+	name     = str_buf+str_data[num&0x00ffffff].str;
+	prefix   = *name;
+	postfix  = name[strlen(name)-1];
+	num2     = st->stack->stack_data[st->start+3].u.num;
+	name2    = str_buf+str_data[num2&0x00ffffff].str;
+	prefix2  = *name2;
+	postfix2 = name2[strlen(name2)-1];
+
+	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
 		printf("buildin_copyarray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix2!='$' && prefix2!='@' && prefix2!='\'' ) {
+	if( prefix2 != '$' && prefix2 != '@' && prefix2 != '\'' ) {
 		printf("buildin_copyarray: illegal scope !\n");
 		return 0;
 	}
-	if( (postfix=='$' || postfix2=='$') && postfix!=postfix2 ){
+	if( postfix != postfix2 && (postfix == '$' || postfix2 == '$') ) {
 		printf("buildin_copyarray: type mismatch !\n");
 		return 0;
 	}
-	if( (prefix!='$' && prefix != '\'') || (prefix2!='$' && prefix2 != '\'') )
-		sd=script_rid2sd(st);
+	if( (prefix != '$' && prefix != '\'') || (prefix2 != '$' && prefix2 != '\'') )
+		sd = script_rid2sd(st);
+
+	sz = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	if(sz > 128 - (num>>24))
+		sz = 128 - (num>>24);
 
 	if((num & 0x00FFFFFF) == (num2 & 0x00FFFFFF) && (num & 0xFF000000) > (num2 & 0xFF000000)) {
 		// 同じ配列で、num > num2 の場合大きい方からコピーしないといけない
-		for(i=sz-1;i>=0;i--)
+		for(i=sz-1; i>=0; i--)
 			set_reg(
 				st,sd,num+(i<<24),name,
 				get_val2(st,num2+(i<<24),st->stack->stack_data[st->start+3].ref),
 				st->stack->stack_data[st->start+2].ref
 			);
 	} else {
-		for(i=0;i<sz;i++)
-			set_reg(
-				st,sd,num+(i<<24),name,
-				get_val2(st,num2+(i<<24),st->stack->stack_data[st->start+3].ref),
-				st->stack->stack_data[st->start+2].ref
-			);
+		for(i=0; i<sz; i++) {
+			if((num2>>24)+i < 128) {
+				set_reg(
+					st,sd,num+(i<<24),name,
+					get_val2(st,num2+(i<<24),st->stack->stack_data[st->start+3].ref),
+					st->stack->stack_data[st->start+2].ref
+				);
+			} else {	// num2が配列上限を超えたら残りは0で埋める
+				set_reg(
+					st,sd,num+(i<<24),name,
+					(postfix == '$')? "": 0,
+					st->stack->stack_data[st->start+2].ref
+				);
+			}
+		}
 	}
 	return 0;
 }
@@ -4427,30 +4472,43 @@ int buildin_copyarray(struct script_state *st)
  * 配列変数のサイズ所得
  *------------------------------------------
  */
-static int getarraysize(struct script_state *st,int num,int postfix,struct linkdb_node** ref)
+static int getarraysize(struct script_state *st,int num,char postfix,struct linkdb_node** ref)
 {
-	int i=(num>>24),c=(i==0? -1:i);
-	for(;i<128;i++){
-		void *v=get_val2(st,(num & 0x00FFFFFF)+(i<<24),ref);
-		if(postfix=='$' && *((char*)v) ) c=i;
-		if(postfix!='$' && (int)v )c=i;
+	int i = num>>24;
+	int c = (i == 0)? -1: i;
+
+	for(; i<128; i++) {
+		void *v = get_val2(st,(num & 0x00FFFFFF)+(i<<24),ref);
+		if( postfix == '$' && *((char*)v) )
+			c = i;
+		if( postfix != '$' && (int)v )
+			c = i;
 	}
 	return c+1;
 }
 int buildin_getarraysize(struct script_state *st)
 {
-	int num=st->stack->stack_data[st->start+2].u.num;
-	char *name=str_buf+str_data[num&0x00ffffff].str;
-	char prefix=*name;
-	char postfix=name[strlen(name)-1];
+	int num;
+	char *name;
+	char prefix, postfix;
 
-	if( prefix!='$' && prefix!='@' && prefix!='\''){
+	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
+		printf("buildin_getarraysize: param not name\n");
+		push_val(st->stack,C_INT,0);
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
 		printf("buildin_getarraysize: illegal scope !\n");
 		push_val(st->stack,C_INT,0);
 		return 0;
 	}
 
-	push_val(st->stack,C_INT,getarraysize(st,num,postfix,st->stack->stack_data[st->start+2].ref) );
+	push_val(st->stack,C_INT,getarraysize(st,num,postfix,st->stack->stack_data[st->start+2].ref));
 	return 0;
 }
 /*==========================================
@@ -4459,24 +4517,30 @@ int buildin_getarraysize(struct script_state *st)
  */
 int buildin_deletearray(struct script_state *st)
 {
-	struct map_session_data *sd=NULL;
-	int num=st->stack->stack_data[st->start+2].u.num;
-	char *name=str_buf+str_data[num&0x00ffffff].str;
-	char prefix=*name;
-	char postfix=name[strlen(name)-1];
-	int count=1;
-	int i,j,sz;
+	struct map_session_data *sd = NULL;
+	int num;
+	char *name;
+	char prefix, postfix;
+	int i,j,count,sz;
 
-	if( (st->end > st->start+3) )
-		count=conv_num(st,& (st->stack->stack_data[st->start+3]));
-	sz = getarraysize(st,num,postfix,st->stack->stack_data[st->start+2].ref)-(num>>24)-count;
+	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
+		printf("buildin_deletearray: param not name\n");
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
 
-	if( prefix!='$' && prefix!='@' && prefix!='\''){
+	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
 		printf("buildin_deletearray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix!='$' && prefix != '\'')
-		sd=script_rid2sd(st);
+	if( prefix != '$' && prefix != '\'' )
+		sd = script_rid2sd(st);
+
+	count = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	sz = getarraysize(st,num,postfix,st->stack->stack_data[st->start+2].ref)-(num>>24)-count;
 
 	for(i=0;i<sz;i++){
 		set_reg(
@@ -4485,9 +4549,10 @@ int buildin_deletearray(struct script_state *st)
 			st->stack->stack_data[st->start+2].ref
 		);
 	}
+	if(count > 128 - (num>>24))
+		count = 128 - (num>>24);
 	for(j=0;j<count;j++){
-		if( postfix!='$' ) set_reg(st,sd,num+((i+j)<<24),name, 0,st->stack->stack_data[st->start+2].ref);
-		if( postfix=='$' ) set_reg(st,sd,num+((i+j)<<24),name, "",st->stack->stack_data[st->start+2].ref);
+		set_reg(st,sd,num+((i+j)<<24),name, (postfix == '$')? "": 0, st->stack->stack_data[st->start+2].ref);
 	}
 	return 0;
 }
@@ -4501,8 +4566,8 @@ int buildin_getelementofarray(struct script_state *st)
 	int i,j=0,count=0;
 	int list[128];
 
-	if(st->stack->stack_data[st->start+2].type != C_NAME) {
-		printf("script: getelementofarray (operator[]): param1 not name !\n");
+	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
+		printf("buildin_getelementofarray: (operator[]) param1 not name !\n");
 		push_val(st->stack,C_INT,0);
 		return 0;
 	}
@@ -4510,7 +4575,7 @@ int buildin_getelementofarray(struct script_state *st)
 	for(i=st->start+3; i<st->end && count < 128; i++) {
 		j = conv_num(st,& (st->stack->stack_data[i]));
 		if(j < 0 || j >= 128) {
-			printf("script: getelementofarray (operator[]): param2 illegal number %d\n",j);
+			printf("buildin_getelementofarray: (operator[]) param illegal number %d\n",j);
 			push_val(st->stack,C_INT,0);
 			return 0;
 		}
@@ -4540,10 +4605,9 @@ int buildin_getelementofarray(struct script_state *st)
 		if((p = strchr(var,'[')) != NULL)
 			*p = 0;
 
+		p = var + strlen(var);
 		for(i=0; i<count; i++) {
-			char array[6];
-			sprintf(array,"[%d]",list[i]);
-			strcat(var,array);
+			p += sprintf(p,"[%d]",list[i]);
 		}
 		if(postfix == '$')
 			strcat(var,"$");
@@ -4770,7 +4834,6 @@ int buildin_checkweight(struct script_state *st)
 int buildin_getitem(struct script_state *st)
 {
 	int nameid,amount,flag = 0;
-	struct item item_tmp;
 	struct map_session_data *sd;
 	struct script_data *data;
 
@@ -4788,15 +4851,21 @@ int buildin_getitem(struct script_state *st)
 		nameid=conv_num(st,data);
 
 	amount=conv_num(st,& (st->stack->stack_data[st->start+3]));
-	if( st->end>st->start+4 ) //鑑定した状態で渡すかどうか
-		flag=(conv_num(st,& (st->stack->stack_data[st->start+4]))==0)?1:0;
-	if(nameid<0) { // ランダム
+	if( st->end>st->start+4 )	// 鑑定した状態で渡すかどうか
+		flag=(conv_num(st,& (st->stack->stack_data[st->start+4])) == 0)? 1: 0;
+	if( st->end>st->start+5 )	// アイテムを指定したIDに渡す
+		sd=map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+5])));
+	if(sd == NULL)			// アイテムを渡す相手がいなかったらお帰り
+		return 0;
+
+	if(nameid<0) {	// ランダム
 		nameid=itemdb_searchrandomid(-nameid);
-	//	flag = 1;
 	}
 
 	if(nameid > 0) {
+		struct item item_tmp;
 		int ret = 0;
+
 		memset(&item_tmp,0,sizeof(item_tmp));
 		item_tmp.nameid=nameid;
 		if(!flag)
@@ -4805,10 +4874,6 @@ int buildin_getitem(struct script_state *st)
 			item_tmp.identify=!itemdb_isequip3(nameid);
 		if(battle_config.itemidentify)
 			item_tmp.identify = 1;
-		if( st->end>st->start+5 ) //アイテムを指定したIDに渡す
-			sd=map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+5])));
-		if(sd == NULL) //アイテムを渡す相手がいなかったらお帰り
-			return 0;
 		if((ret = pc_additem(sd,&item_tmp,amount))) {
 			clif_additem(sd,0,0,ret);
 			if(!pc_candrop(sd,nameid))
@@ -4853,9 +4918,9 @@ int buildin_getitem2(struct script_state *st)
 	c2=conv_num(st,& (st->stack->stack_data[st->start+8]));
 	c3=conv_num(st,& (st->stack->stack_data[st->start+9]));
 	c4=conv_num(st,& (st->stack->stack_data[st->start+10]));
-	if( st->end>st->start+11 ) //アイテムを指定したIDに渡す
+	if( st->end>st->start+11 )	// アイテムを指定したIDに渡す
 		sd=map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+11])));
-	if(sd == NULL) //アイテムを渡す相手がいなかったらお帰り
+	if(sd == NULL)			// アイテムを渡す相手がいなかったらお帰り
 		return 0;
 
 	if(nameid<0) { // ランダム
@@ -4901,7 +4966,7 @@ int buildin_getitem2(struct script_state *st)
 }
 
 /*==========================================
- *
+ * 指定IDのアイテムを削除する
  *------------------------------------------
  */
 int buildin_delitem(struct script_state *st)
@@ -4925,22 +4990,18 @@ int buildin_delitem(struct script_state *st)
 
 	amount=conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	for(i=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL ||
-		   sd->inventory_data[i]->type!=7 || sd->status.inventory[i].amount<=0)
-			continue;
-		if(sd->status.inventory[i].nameid == nameid){
-			if(sd->status.inventory[i].card[0] == (short)0xff00){
-				if(search_petDB_index(nameid, PET_EGG) >= 0){
-					intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
-					break;
-				}
+	for(i=0; i<MAX_INVENTORY; i++) {
+		if(sd->status.inventory[i].nameid == nameid) {
+			if(sd->status.inventory[i].nameid > 0 &&
+			   sd->inventory_data[i]->type == 7 &&
+			   sd->status.inventory[i].amount > 0 &&
+			   sd->status.inventory[i].card[0] == (short)0xff00 &&
+			   search_petDB_index(nameid, PET_EGG) >= 0)
+			{
+				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
 			}
-		}
-	}
-	for(i=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid==nameid){
-			if(sd->status.inventory[i].amount>amount){
+
+			if(sd->status.inventory[i].amount>=amount){
 				pc_delitem(sd,i,amount,0);
 				break;
 			} else {
@@ -4976,7 +5037,7 @@ int buildin_delinventory(struct script_state *st)
 				intif_delete_petdata(*((long *)(&sd->status.inventory[idx].card[1])));
 		}
 	}
-	if(sd->status.inventory[idx].amount > amount)
+	if(sd->status.inventory[idx].amount >= amount)
 		pc_delitem(sd,idx,amount,0);
 	else
 		pc_delitem(sd,idx,sd->status.inventory[idx].amount,0);
@@ -4985,7 +5046,7 @@ int buildin_delinventory(struct script_state *st)
 }
 
 /*==========================================
- *キャラ関係の装備取得
+ * キャラ関係の装備取得
  *------------------------------------------
  */
 int buildin_equippeditem(struct script_state *st)
@@ -5009,7 +5070,7 @@ int buildin_equippeditem(struct script_state *st)
 	return 0;
 }
 /*==========================================
- *キャラ関係のパラメータ取得
+ * キャラ関係のパラメータ取得
  *------------------------------------------
  */
 int buildin_readparam(struct script_state *st)
@@ -5033,7 +5094,7 @@ int buildin_readparam(struct script_state *st)
 	return 0;
 }
 /*==========================================
- *キャラ関係のID取得
+ * キャラ関係のID取得
  *------------------------------------------
  */
 int buildin_getcharid(struct script_state *st)
@@ -5061,21 +5122,17 @@ int buildin_getcharid(struct script_state *st)
 	return 0;
 }
 /*==========================================
- *指定IDのPT名取得
+ * 指定IDのPT名取得
  *------------------------------------------
  */
 static char *buildin_getpartyname_sub(int party_id)
 {
-	struct party *p;
-
-	p=NULL;
-	p=party_search(party_id);
+	struct party *p = party_search(party_id);
 
 	if(p!=NULL){
 		return (char *)aStrdup(p->name);
 	}
-
-	return 0;
+	return NULL;
 }
 int buildin_getpartyname(struct script_state *st)
 {
@@ -5084,7 +5141,7 @@ int buildin_getpartyname(struct script_state *st)
 
 	party_id=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	name=buildin_getpartyname_sub(party_id);
-	if(name!=0)
+	if(name)
 		push_str(st->stack,C_STR,name);
 	else
 		push_str(st->stack,C_CONSTSTR,"");
@@ -5092,46 +5149,35 @@ int buildin_getpartyname(struct script_state *st)
 	return 0;
 }
 /*==========================================
- *指定IDのキャラクタ名取得
+ * 指定IDのキャラクタ名取得
  *------------------------------------------
  */
 static char *buildin_getcharname_sub(int char_id)
 {
-	struct charid2nick *c = NULL;
-
-	c=char_search(char_id);
-//	c=map_charid2nick(char_id);
+	struct charid2nick *c = char_search(char_id);
 
 	if(c!=NULL){
 		return (char *)aStrdup(c->nick);
 	}
-
-	return 0;
+	return NULL;
 }
 int buildin_getcharname(struct script_state *st)
 {
 	char *name;
 	int char_id;
-	int type;
 
 	char_id=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	name=buildin_getcharname_sub(char_id);
-	type=0;
-	if( st->end>st->start+3 )	// type
-		type=(conv_num(st,& (st->stack->stack_data[st->start+3]))!=0)?1:0;
-//	printf("script getcharname: %d[%s] type: %d\n",char_id,name,type);
-	if(type==0){
-		if(name!=0)
-			push_str(st->stack,C_STR,name);
-		else
-			push_str(st->stack,C_CONSTSTR,"");
-	} else
+
+	if(name)
+		push_str(st->stack,C_STR,name);
+	else
 		push_str(st->stack,C_CONSTSTR,"");
 
 	return 0;
 }
 /*==========================================
- *指定IDのPT人数とメンバーID取得
+ * 指定IDのPT人数とメンバーID取得
  *------------------------------------------
  */
 int buildin_getpartymember(struct script_state *st)
@@ -5144,7 +5190,6 @@ int buildin_getpartymember(struct script_state *st)
 	if(p!=NULL){
 		for(i=0;i<MAX_PARTY && i<128;i++){
 			if(p->member[i].account_id){
-//				printf("name:%s %d\n",p->member[i].name,i);
 				mapreg_setregstr(add_str("$@partymembername$")+(i<<24),p->member[i].name,0);
 				j++;
 			}
@@ -5155,25 +5200,24 @@ int buildin_getpartymember(struct script_state *st)
 	return 0;
 }
 /*==========================================
- *指定IDのギルド名取得
+ * 指定IDのギルド名取得
  *------------------------------------------
  */
 static char *buildin_getguildname_sub(int guild_id)
 {
-	struct guild *g=NULL;
-	g=guild_search(guild_id);
+	struct guild *g = guild_search(guild_id);
 
 	if(g!=NULL){
 		return (char *)aStrdup(g->name);
 	}
-	return 0;
+	return NULL;
 }
 int buildin_getguildname(struct script_state *st)
 {
 	char *name;
 	int guild_id=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	name=buildin_getguildname_sub(guild_id);
-	if(name!=0)
+	if(name)
 		push_str(st->stack,C_STR,name);
 	else
 		push_str(st->stack,C_CONSTSTR,"");
@@ -5181,44 +5225,36 @@ int buildin_getguildname(struct script_state *st)
 }
 
 /*==========================================
- *指定IDのGuildMaster名取得
+ * 指定IDのGuildMaster名取得
  *------------------------------------------
  */
-static char *buildin_getguildmaster_sub(int guild_id)
-{
-	struct guild *g=NULL;
-	g=guild_search(guild_id);
-
-	if(g!=NULL){
-		return (char *)aStrdup(g->master);
-	}
-
-	return 0;
-}
 int buildin_getguildmaster(struct script_state *st)
 {
-	char *master;
-	int guild_id=conv_num(st,& (st->stack->stack_data[st->start+2]));
-	master=buildin_getguildmaster_sub(guild_id);
-	if(master!=0)
-		push_str(st->stack,C_STR,master);
-	else
-		push_str(st->stack,C_CONSTSTR,"");
+	int guild_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	if(guild_id > 0) {
+		struct guild *g = guild_search(guild_id);
+		if(g) {
+			push_str(st->stack,C_STR,(unsigned char *)aStrdup(g->master));
+			return 0;
+		}
+	}
+	push_str(st->stack,C_CONSTSTR,"");
 	return 0;
 }
 
 int buildin_getguildmasterid(struct script_state *st)
 {
-	char *master;
 	int guild_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	master = buildin_getguildmaster_sub(guild_id);
-	if(master != 0) {
-		struct map_session_data *sd = map_nick2sd(master);
-		aFree(master);
-		if(sd) {
-			push_val(st->stack,C_INT,sd->status.char_id);
-			return 0;
+	if(guild_id > 0) {
+		struct guild *g = guild_search(guild_id);
+		if(g) {
+			struct map_session_data *sd = map_nick2sd(g->master);
+			if(sd) {
+				push_val(st->stack,C_INT,sd->status.char_id);
+				return 0;
+			}
 		}
 	}
 	push_val(st->stack,C_INT,0);
@@ -5245,14 +5281,14 @@ int buildin_strcharinfo(struct script_state *st)
 			return 0;
 		case 1:
 			buf=buildin_getpartyname_sub(sd->status.party_id);
-			if(buf!=0)
+			if(buf)
 				push_str(st->stack,C_STR,buf);
 			else
 				push_str(st->stack,C_CONSTSTR,"");
 			return 0;
 		case 2:
 			buf=buildin_getguildname_sub(sd->status.guild_id);
-			if(buf!=0)
+			if(buf)
 				push_str(st->stack,C_STR,buf);
 			else
 				push_str(st->stack,C_CONSTSTR,"");
@@ -5267,19 +5303,17 @@ int buildin_strcharinfo(struct script_state *st)
 static const unsigned int equip_pos[11]={0x0100,0x0010,0x0020,0x0002,0x0004,0x0040,0x0008,0x0080,0x0200,0x0001,0x8000};
 
 /*==========================================
- * GetEquipID(Pos);	 Pos: 1-10
+ * 指定位置の装備品のIDを取得
  *------------------------------------------
  */
 int buildin_getequipid(struct script_state *st)
 {
 	int num, i = -1;
 	struct map_session_data *sd;
-	struct item_data* item;
 
 	sd=script_rid2sd(st);
 	if(sd == NULL)
 	{
-		printf("getequipid: sd == NULL\n");
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
@@ -5287,7 +5321,7 @@ int buildin_getequipid(struct script_state *st)
 	if(num > 0 && num <= 11)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0){
-		item=sd->inventory_data[i];
+		struct item_data *item = sd->inventory_data[i];
 		if(item)
 			push_val(st->stack,C_INT,item->nameid);
 		else
@@ -5304,18 +5338,17 @@ int buildin_getequipid(struct script_state *st)
  */
 int buildin_getequipname(struct script_state *st)
 {
-	int i,num;
+	int num;
 	struct map_session_data *sd;
-	struct item_data* item;
 
 	sd=script_rid2sd(st);
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 
 	if(num > 0 && num <= 11) {
-		char *buf=(char *)aCalloc(64,sizeof(char));
-		i=pc_checkequip(sd,equip_pos[num-1]);
+		char *buf=(char *)aCalloc(128,sizeof(char));
+		int i=pc_checkequip(sd,equip_pos[num-1]);
 		if(i >= 0){
-			item=sd->inventory_data[i];
+			struct item_data *item = sd->inventory_data[i];
 			if(item)
 				sprintf(buf,"%s-[%s]",refine_posword[num-1],item->jname);
 			else
@@ -5466,7 +5499,7 @@ int buildin_getequippercentrefinery(struct script_state *st)
  */
 int buildin_successrefitem(struct script_state *st)
 {
-	int num,ep,i = -1;
+	int num, i = -1;
 	struct map_session_data *sd;
 
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
@@ -5475,7 +5508,7 @@ int buildin_successrefitem(struct script_state *st)
 	if(num > 0 && num <= 11)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0) {
-		ep=sd->status.inventory[i].equip;
+		int ep=sd->status.inventory[i].equip;
 		pc_unequipitem(sd,i,1);
 		skill_success_weaponrefine(sd,i);
 		pc_equipitem(sd,i,ep);
@@ -5616,7 +5649,7 @@ int buildin_skill(struct script_state *st)
  */
 int buildin_guildskill(struct script_state *st)
 {
-	int id,level,flag=0;
+	int id,level,flag=1;
 	int i=0;
 
 	id=conv_num(st,& (st->stack->stack_data[st->start+2]));
@@ -5647,23 +5680,9 @@ int buildin_getgdskilllv(struct script_state *st)
 	int guild_id=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	int skill_id=conv_num(st,& (st->stack->stack_data[st->start+3]));
 	struct guild *g=guild_search(guild_id);
-	push_val(st->stack,C_INT, (g==NULL)?-1:guild_checkskill(g,skill_id) );
-	return 0;
-/*
-	struct map_session_data *sd=NULL;
-	struct guild *g=NULL;
-	int skill_id;
 
-	skill_id=conv_num(st,& (st->stack->stack_data[st->start+2]));
-	sd=script_rid2sd(st);
-	if(sd && sd->status.guild_id > 0) g=guild_search(sd->status.guild_id);
-	if(sd && g) {
-		push_val(st->stack,C_INT, guild_checkskill(g,skill_id+9999) );
-	} else {
-		push_val(st->stack,C_INT,-1);
-	}
+	push_val(st->stack,C_INT, (g==NULL)? -1: guild_checkskill(g,skill_id) );
 	return 0;
-*/
 }
 /*==========================================
  *
@@ -5759,7 +5778,7 @@ int buildin_setriding(struct script_state *st)
 }
 
 /*==========================================
- *	セーブポイントの保存
+ * セーブポイントの保存
  *------------------------------------------
  */
 int buildin_savepoint(struct script_state *st)
@@ -5781,27 +5800,30 @@ int buildin_savepoint(struct script_state *st)
 int buildin_gettimetick(struct script_state *st)	/* Asgard Version */
 {
 	int type;
-	time_t timer;
-	struct tm *t;
 
 	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
 
 	switch(type){
-	case 2:
-		//type 2:(Get the number of seconds elapsed since 00:00 hours, Jan 1, 1970 UTC
-		//        from the system clock.)
-		push_val(st->stack,C_INT,(int)time(NULL));
+	case 0:
+		// System Ticks
+		push_val(st->stack,C_INT,gettick());
 		break;
 	case 1:
-		//type 1:(Second Ticks: 0-86399, 00:00:00-23:59:59)
-		time(&timer);
-		t=localtime(&timer);
-		push_val(st->stack,C_INT,((t->tm_hour)*3600+(t->tm_min)*60+t->tm_sec));
+		// Second Ticks: 0-86399, 00:00:00-23:59:59
+		{
+			time_t timer;
+			struct tm *t;
+			time(&timer);
+			t=localtime(&timer);
+			push_val(st->stack,C_INT,((t->tm_hour)*3600+(t->tm_min)*60+t->tm_sec));
+		}
 		break;
-	case 0:
+	case 2:
+		// Get the number of seconds elapsed since 00:00 hours, Jan 1, 1970 UTC from the system clock
+		push_val(st->stack,C_INT,(int)time(NULL));
+		break;
 	default:
-		//type 0:(System Ticks)
-		push_val(st->stack,C_INT,gettick());
+		push_val(st->stack,C_INT,0);
 		break;
 	}
 	return 0;
@@ -5826,28 +5848,28 @@ int buildin_gettime(struct script_state *st)	/* Asgard Version */
 	t=localtime(&timer);
 
 	switch(type){
-	case 1://Sec(0~59)
+	case 1:	// Sec(0~59)
 		push_val(st->stack,C_INT,t->tm_sec);
 		break;
-	case 2://Min(0~59)
+	case 2:	// Min(0~59)
 		push_val(st->stack,C_INT,t->tm_min);
 		break;
-	case 3://Hour(0~23)
+	case 3:	// Hour(0~23)
 		push_val(st->stack,C_INT,t->tm_hour);
 		break;
-	case 4://WeekDay(0~6)
+	case 4:	// WeekDay(0~6)
 		push_val(st->stack,C_INT,t->tm_wday);
 		break;
-	case 5://MonthDay(01~31)
+	case 5:	// MonthDay(01~31)
 		push_val(st->stack,C_INT,t->tm_mday);
 		break;
-	case 6://Month(01~12)
+	case 6:	// Month(01~12)
 		push_val(st->stack,C_INT,t->tm_mon+1);
 		break;
-	case 7://Year(20xx)
+	case 7:	// Year(20xx)
 		push_val(st->stack,C_INT,t->tm_year+1900);
 		break;
-	default://(format error)
+	default:
 		push_val(st->stack,C_INT,-1);
 		break;
 	}
@@ -5869,7 +5891,9 @@ int buildin_gettimestr(struct script_state *st)
 	maxlen=conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	tmpstr=(char *)aCalloc(maxlen+1,sizeof(char));
-	strftime(tmpstr,maxlen,fmtstr,localtime(&now));
+	if( !strftime(tmpstr,maxlen+1,fmtstr,localtime(&now)) ) {
+		printf("buildin_gettimestr: maxlen is too short!!\n");
+	}
 	tmpstr[maxlen]='\0';
 
 	push_str(st->stack,C_STR,tmpstr);
@@ -5910,7 +5934,7 @@ int buildin_guildopenstorage(struct script_state *st)
 		}
 		st->state = RERUNLINE;
 		sd->state.menu_or_input = 1;
-		sd->state.gstorage_lockreq = 1;
+		sd->state.gstorage_lockreq = 1;	// script経由フラグ
 		intif_trylock_guild_storage(sd,st->oid);
 	} else {
 		sd->state.menu_or_input = 0;
@@ -5961,13 +5985,12 @@ int buildin_itemskill(struct script_state *st)
  */
 int buildin_produce(struct script_state *st)
 {
-	int trigger;
 	struct map_session_data *sd=script_rid2sd(st);
 
 	nullpo_retr(0, sd);
 
 	if(sd->state.produce_flag != 1) {
-		trigger=conv_num(st,& (st->stack->stack_data[st->start+2]));
+		int trigger=conv_num(st,& (st->stack->stack_data[st->start+2]));
 		clif_skill_produce_mix_list(sd,trigger);
 	}
 	return 0;
@@ -6034,21 +6057,23 @@ int buildin_monster(struct script_state *st)
 		return 0;
 
 	id = mob_once_spawn(map_id2sd(st->rid),map,x,y,str,mob_id,amount,event);
-	if(!id) return 0;
+	if(!id)
+		return 0;
 	md = map_id2md(id);
-	if(!md) return 0;
+	if(!md)
+		return 0;
 	md->guardup_lv = 0;
-	if((g = guild_search(guild_id))!=NULL){
+	if(guild_id > 0 && (g = guild_search(guild_id))!=NULL){
 		md->guild_id = guild_id;
-		//ガーディアンならギルドスキル適用
+		// ガーディアンならギルドスキル適用
 		md->guardup_lv = guild_checkskill(g,GD_GUARDUP);
 	}
 
-	//ランダム召還じゃないならドロップあり
+	// ランダム召還じゃないならドロップあり
 	if (mob_id != -1)
 		return 0;
 
-	if(md->mode&0x20)//手抜きボス属性
+	if(md->mode&0x20)	// 手抜きボス属性
 	{
 		md->state.nodrop= battle_config.branch_boss_no_drop;
 		md->state.noexp = battle_config.branch_boss_no_exp;
@@ -6220,6 +6245,21 @@ int buildin_addtimercount(struct script_state *st)
 	pc_addeventtimercount(script_rid2sd(st),event,tick);
 	return 0;
 }
+/*==========================================
+ * イベントタイマーの残り時間取得
+ *------------------------------------------
+ */
+int buildin_gettimerdiff(struct script_state *st)
+{
+	char *event;
+	int ret;
+
+	event = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	ret = pc_geteventtimerdiff(script_rid2sd(st),event);
+
+	push_val(st->stack,C_INT,ret);
+	return 0;
+}
 
 /*==========================================
  * NPCタイマー初期化
@@ -6315,26 +6355,26 @@ int buildin_setnpctimer(struct script_state *st)
  */
 int buildin_announce(struct script_state *st)
 {
-	char *str,*color=NULL;
-	int flag;
-	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	flag=conv_num(st,& (st->stack->stack_data[st->start+3]));
-	if (st->end>st->start+4)
-		color=conv_str(st,& (st->stack->stack_data[st->start+4]));
+	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	int flag  = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int len;
+	char *color = NULL;
+
+	if(st->end > st->start+4)
+		color = conv_str(st,& (st->stack->stack_data[st->start+4]));
+	len = strlen(str)+1;
 
 	if(flag&0x07) {
-		struct block_list *bl=(flag&0x08)? map_id2bl(st->oid):
-						(struct block_list *)script_rid2sd(st);
+		struct block_list *bl = (flag&0x08)? map_id2bl(st->oid): (struct block_list *)script_rid2sd(st);
 		if(color)
-			clif_announce(bl,str,strlen(str)+1,strtol(color,NULL,0),flag);
+			clif_announce(bl,str,len,strtoul(color,NULL,0),flag);
 		else
-			clif_GMmessage(bl,str,strlen(str)+1,flag);
-	}
-	else {
+			clif_GMmessage(bl,str,len,flag);
+	} else {
 		if(color)
-			intif_announce(str,strlen(str)+1,strtol(color,NULL,0),flag);
+			intif_announce(str,len,strtoul(color,NULL,0),flag);
 		else
-			intif_GMmessage(str,strlen(str)+1,flag);
+			intif_GMmessage(str,len,flag);
 	}
 	return 0;
 }
@@ -6352,7 +6392,7 @@ static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 	color=va_arg(ap,char *);
 
 	if(color)
-		clif_announce(bl,str,len,strtol(color,NULL,0),flag|3);
+		clif_announce(bl,str,len,strtoul(color,NULL,0),flag|3);
 	else
 		clif_GMmessage(bl,str,len,flag|3);
 	return 0;
@@ -6435,7 +6475,7 @@ int buildin_getusersname(struct script_state *st)
 	nullpo_retr(0, sd);
 
 	for (i=0;i<fd_max;i++) {
-		if(session[i] && (pl_sd=session[i]->session_data) && pl_sd->state.auth){
+		if(session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth){
 			if( !(battle_config.hide_GM_session && pc_isGM(pl_sd)) ){
 				if((disp_num++)%10==0)
 					clif_scriptnext(sd,st->oid);
@@ -6647,7 +6687,7 @@ int buildin_sc_start(struct script_state *st)
 	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	tick=conv_num(st,& (st->stack->stack_data[st->start+3]));
 	val1=conv_num(st,& (st->stack->stack_data[st->start+4]));
-	if( st->end>st->start+5 ) //指定したキャラを状態異常にする
+	if( st->end>st->start+5 )	// 指定したキャラを状態異常にする
 		bl = map_id2bl(conv_num(st,& (st->stack->stack_data[st->start+5])));
 	else
 		bl = map_id2bl(st->rid);
@@ -6674,7 +6714,7 @@ int buildin_sc_start2(struct script_state *st)
 	tick=conv_num(st,& (st->stack->stack_data[st->start+3]));
 	val1=conv_num(st,& (st->stack->stack_data[st->start+4]));
 	per=conv_num(st,& (st->stack->stack_data[st->start+5]));
-	if( st->end>st->start+6 ) //指定したキャラを状態異常にする
+	if( st->end>st->start+6 )	// 指定したキャラを状態異常にする
 		bl = map_id2bl(conv_num(st,& (st->stack->stack_data[st->start+6])));
 	else
 		bl = map_id2bl(st->rid);
@@ -6700,7 +6740,7 @@ int buildin_sc_starte(struct script_state *st)
 	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	tick=conv_num(st,& (st->stack->stack_data[st->start+3]));
 	val1=conv_num(st,& (st->stack->stack_data[st->start+4]));
-	if( st->end>st->start+5 ) //指定したキャラを状態異常にする
+	if( st->end>st->start+5 )	// 指定したキャラを状態異常にする
 		bl = map_id2bl(conv_num(st,& (st->stack->stack_data[st->start+5])));
 	else
 		bl = map_id2bl(st->rid);
@@ -6730,7 +6770,7 @@ int buildin_sc_start3(struct script_state *st)
 	val4=conv_num(st,& (st->stack->stack_data[st->start+6]));
 	tick=conv_num(st,& (st->stack->stack_data[st->start+7]));
 	flag=conv_num(st,& (st->stack->stack_data[st->start+8]));
-	if( st->end>st->start+9 ) //指定したキャラを状態異常にする
+	if( st->end>st->start+9 )	// 指定したキャラを状態異常にする
 		bl = map_id2bl(conv_num(st,& (st->stack->stack_data[st->start+9])));
 	else
 		bl = map_id2bl(st->rid);
@@ -6754,7 +6794,7 @@ int buildin_sc_end(struct script_state *st)
 	struct block_list *bl;
 	int type;
 	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
-	if( st->end>st->start+3 ) //指定したキャラの状態異常を解除する
+	if( st->end>st->start+3 )	// 指定したキャラの状態異常を解除する
 		bl = map_id2bl(conv_num(st,& (st->stack->stack_data[st->start+3])));
 	else
 		bl = map_id2bl(st->rid);
@@ -6766,8 +6806,6 @@ int buildin_sc_end(struct script_state *st)
 	}
 	if(bl)
 		status_change_end(bl,type,-1);
-//	if(battle_config.etc_log)
-//		printf("sc_end : %d %d\n",st->rid,type);
 	return 0;
 }
 
@@ -6812,17 +6850,17 @@ int buildin_getscrate(struct script_state *st)
 {
 	struct block_list *bl;
 	int sc_def=100;
-	int type,rate=0,luk;
+	int type,rate=0;
 
 	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	rate=conv_num(st,& (st->stack->stack_data[st->start+3]));
-	if( st->end>st->start+4 ) //指定したキャラの耐性を計算する
+	if( st->end>st->start+4 )	// 指定したキャラの耐性を計算する
 		bl = map_id2bl(conv_num(st,& (st->stack->stack_data[st->start+6])));
 	else
 		bl = map_id2bl(st->rid);
 
 	if(bl) {
-		luk = status_get_luk(bl);
+		int luk = status_get_luk(bl);
 
 		switch (type) {
 			case SC_STONE:
@@ -6857,8 +6895,8 @@ int buildin_getscrate(struct script_state *st)
  */
 int buildin_debugmes(struct script_state *st)
 {
-	conv_str(st,& (st->stack->stack_data[st->start+2]));
-	printf("script debug : %d %d : %s\n",st->rid,st->oid,st->stack->stack_data[st->start+2].u.str);
+	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	printf("script debug : %d %d : %s\n",st->rid,st->oid,str);
 	return 0;
 }
 
@@ -6983,39 +7021,27 @@ int buildin_waitingroom(struct script_state *st)
 	char *name,*ev="";
 	int limit, trigger = 0,pub=1;
 	int zeny=0,lowlv=0,highlv=MAX_LEVEL;
-	//int job = ~(1<<MAX_PC_CLASS), upper = 0;
-	unsigned int job = 0xFFFFFFFF, upper = 0;
+	unsigned int job = 0xFFFFFFFF;
+	int upper = 0;
 
-	name=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	limit= conv_num(st,& (st->stack->stack_data[st->start+3]));
-	if(limit==0)
-		pub=3;
+	name  = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	limit = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(limit == 0)
+		pub = 3;
 
-	if( (st->end > st->start+5) ){
-		struct script_data* data=&(st->stack->stack_data[st->start+5]);
-		get_val(st,data);
-		if(data->type==C_INT){
-			// 新Athena仕様(旧Athena仕様と互換性あり)
-			ev=conv_str(st,& (st->stack->stack_data[st->start+4]));
-			trigger=conv_num(st,& (st->stack->stack_data[st->start+5]));
-		}else{
-			// eathena仕様
-			trigger=conv_num(st,& (st->stack->stack_data[st->start+4]));
-			ev=conv_str(st,& (st->stack->stack_data[st->start+5]));
-		}
-	}else{
-		// 旧Athena仕様
-		if( st->end > st->start+4 )
-			ev=conv_str(st,& (st->stack->stack_data[st->start+4]));
+	if(st->end > st->start+4) {
+		ev = conv_str(st,& (st->stack->stack_data[st->start+4]));
 	}
-
-	if(st->end>st->start+8) {
-		zeny 	= conv_num(st,& (st->stack->stack_data[st->start+6]));
-		lowlv 	= conv_num(st,& (st->stack->stack_data[st->start+7]));
-		highlv 	= conv_num(st,& (st->stack->stack_data[st->start+8]));
+	if(st->end > st->start+5) {
+		trigger = conv_num(st,& (st->stack->stack_data[st->start+5]));
 	}
-	if(st->end>st->start+10) {
-		job = conv_num(st,& (st->stack->stack_data[st->start+9]));
+	if(st->end > st->start+8) {
+		zeny   = conv_num(st,& (st->stack->stack_data[st->start+6]));
+		lowlv  = conv_num(st,& (st->stack->stack_data[st->start+7]));
+		highlv = conv_num(st,& (st->stack->stack_data[st->start+8]));
+	}
+	if(st->end > st->start+10) {
+		job   = conv_num(st,& (st->stack->stack_data[st->start+9]));
 		upper = conv_num(st,& (st->stack->stack_data[st->start+10]));
 	}
 	chat_createnpcchat( map_id2nd(st->oid),
@@ -7029,19 +7055,19 @@ int buildin_waitingroom(struct script_state *st)
  */
 int buildin_globalmes(struct script_state *st)
 {
-	struct npc_data *nd = map_id2nd(st->oid);
-	char *name=NULL,*mes;
+	char *mes, *name = NULL;
 
-	mes=conv_str(st,& (st->stack->stack_data[st->start+2]));	// メッセージの取得
-	if(mes==NULL) return 0;
+	mes = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	if(st->end>st->start+3){	// NPC名の取得(123#456)
-		name=conv_str(st,& (st->stack->stack_data[st->start+3]));
-	} else if(nd){
-		name=nd->exname;
+	if(st->end > st->start+3) {	// NPC名の取得(123#456)
+		name = conv_str(st,& (st->stack->stack_data[st->start+3]));
+	} else {
+		struct npc_data *nd = map_id2nd(st->oid);
+		if(nd)
+			name = nd->exname;
 	}
-
-	npc_globalmessage(name,mes);	// グローバルメッセージ送信
+	if(name)
+		npc_globalmessage(name,mes);	// グローバルメッセージ送信
 
 	return 0;
 }
@@ -7230,17 +7256,25 @@ int buildin_getwaitingpcid(struct script_state *st)
 	struct map_session_data *sd = NULL;
 	struct npc_data *nd;
 	struct chat_data *cd;
-	int num=st->stack->stack_data[st->start+2].u.num;
-	char *name=str_buf+str_data[num&0x00ffffff].str;
-	char prefix  = *name;
-	char postfix = name[strlen(name)-1];
+	int num;
+	char *name;
+	char prefix, postfix;
 
-	if( prefix!='$' && prefix!='@' && prefix!='\'' ){
+	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
+		printf("buildin_getwaitingpcid: param not name\n");
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
 		printf("buildin_getwaitingpcid: illegal scope !\n");
 		return 0;
 	}
-	if( prefix!='$' && prefix !='\'')
-		sd=script_rid2sd(st);
+	if( prefix != '$' && prefix != '\'' )
+		sd = script_rid2sd(st);
 
 	if(st->end > st->start+3)
 		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
@@ -7250,13 +7284,13 @@ int buildin_getwaitingpcid(struct script_state *st)
 	if(nd == NULL || (cd = map_id2cd(nd->chat_id)) == NULL)
 		return 0;
 
-	for(i=0; i<cd->users && j<128 ; i++) {
+	for(i=0; i<cd->users; i++) {
 		struct map_session_data *pl_sd;
 		pl_sd=cd->usersd[i];
 		if(pl_sd) {
 			void *v;
-			char str[16];
 			if( postfix == '$' ) {
+				char str[16];
 				sprintf(str,"%d",pl_sd->bl.id);
 				v = (void*)str;
 			} else {
@@ -7264,6 +7298,8 @@ int buildin_getwaitingpcid(struct script_state *st)
 			}
 			set_reg(st,sd,num+(j<<24),name,v,st->stack->stack_data[st->start+2].ref);
 			j++;
+			if((num>>24)+j >= 128)
+				break;
 		}
 	}
 	return 0;
@@ -7304,8 +7340,8 @@ int buildin_detachrid(struct script_state *st)
  */
 int buildin_isloggedin(struct script_state *st)
 {
-	push_val(st->stack,C_INT, map_id2sd(
-		conv_num(st,& (st->stack->stack_data[st->start+2])) )!=NULL );
+	int id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	push_val(st->stack,C_INT,(map_id2sd(id) != NULL));
 	return 0;
 }
 
@@ -7472,8 +7508,10 @@ int buildin_checkmapflag(struct script_state *st)
 	int m;
 	int *flag;
 
-	if((m = script_mapname2mapid(st,mapname)) < 0)
+	if((m = script_mapname2mapid(st,mapname)) < 0) {
+		push_val(st->stack,C_INT,-1);
 		return 0;
+	}
 
 	flag = script_conv_mapflag(m ,type);
 
@@ -7481,6 +7519,10 @@ int buildin_checkmapflag(struct script_state *st)
 	return 0;
 }
 
+/*==========================================
+ * PvP
+ *------------------------------------------
+ */
 int buildin_pvpon(struct script_state *st)
 {
 	int m,i;
@@ -7492,8 +7534,8 @@ int buildin_pvpon(struct script_state *st)
 	if(m >= 0 && !map[m].flag.pvp) {
 		map[m].flag.pvp = 1;
 		clif_send0199(m,1);
-		for(i=0;i<fd_max;i++){	//人数分ループ
-			if(session[i] && (pl_sd=session[i]->session_data) && pl_sd->state.auth){
+		for(i=0;i<fd_max;i++){	// 人数分ループ
+			if(session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth){
 				if(m == pl_sd->bl.m && pl_sd->pvp_timer == -1) {
 					pl_sd->pvp_timer=add_timer(gettick()+200,pc_calc_pvprank_timer,pl_sd->bl.id,0);
 					pl_sd->pvp_rank=0;
@@ -7518,8 +7560,8 @@ int buildin_pvpoff(struct script_state *st)
 	if(m >= 0 && map[m].flag.pvp) {
 		map[m].flag.pvp = 0;
 		clif_send0199(m,0);
-		for(i=0;i<fd_max;i++){	//人数分ループ
-			if(session[i] && (pl_sd=session[i]->session_data) && pl_sd->state.auth){
+		for(i=0;i<fd_max;i++){	// 人数分ループ
+			if(session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth){
 				if(m == pl_sd->bl.m) {
 					clif_pvpset(pl_sd,0,0,2);
 					if(pl_sd->pvp_timer != -1) {
@@ -7535,6 +7577,10 @@ int buildin_pvpoff(struct script_state *st)
 	return 0;
 }
 
+/*==========================================
+ * GvG
+ *------------------------------------------
+ */
 int buildin_gvgon(struct script_state *st)
 {
 	int m;
@@ -7566,7 +7612,7 @@ int buildin_gvgoff(struct script_state *st)
 	return 0;
 }
 /*==========================================
- *	NPCエモーション
+ * NPCエモーション
  *------------------------------------------
  */
 int buildin_emotion(struct script_state *st)
@@ -7580,7 +7626,7 @@ int buildin_emotion(struct script_state *st)
 	else
 		nd = map_id2nd(st->oid);
 
-	if(nd && type >= 0 && type <= 100) 
+	if(nd && type >= 0)
 		clif_emotion(&nd->bl,type);
 	return 0;
 }
@@ -7617,13 +7663,14 @@ int buildin_maprespawnguildid(struct script_state *st)
 	int m = script_mapname2mapid(st,mapname);
 
 	if(m >= 0)
-		map_foreachinarea(buildin_maprespawnguildid_sub,m,0,0,map[m].xs-1,map[m].ys-1,BL_PC|BL_MOB,g_id,flag);
+		map_foreachinarea(buildin_maprespawnguildid_sub,m,0,0,map[m].xs,map[m].ys,BL_PC|BL_MOB,g_id,flag);
 	return 0;
 }
 
 int buildin_agitstart(struct script_state *st)
 {
-	if(agit_flag==1) return 1;	  // Agit already Start.
+	if(agit_flag)
+		return 1;	  // Agit already Start.
 	agit_flag=1;
 	guild_agit_start();
 
@@ -7632,7 +7679,8 @@ int buildin_agitstart(struct script_state *st)
 
 int buildin_agitend(struct script_state *st)
 {
-	if(agit_flag==0) return 1;	  // Agit already End.
+	if(!agit_flag)
+		return 1;	  // Agit already End.
 	agit_flag=0;
 	guild_agit_end();
 	return 0;
@@ -7777,9 +7825,9 @@ int buildin_setcastledata(struct script_state *st)
 	return 0;
 }
 
-/* =====================================================================
+/*==========================================
  * ギルド情報を要求する
- * ---------------------------------------------------------------------
+ *------------------------------------------
  */
 int buildin_requestguildinfo(struct script_state *st)
 {
@@ -7794,9 +7842,9 @@ int buildin_requestguildinfo(struct script_state *st)
 	return 0;
 }
 
-/* =====================================================================
+/*==========================================
  * カードの数を得る
- * ---------------------------------------------------------------------
+ *------------------------------------------
  */
 int buildin_getequipcardcnt(struct script_state *st)
 {
@@ -7811,7 +7859,7 @@ int buildin_getequipcardcnt(struct script_state *st)
 
 	if(i >= 0) {
 		int n,c=0;
-		if(sd->status.inventory[i].card[0] == 0x00ff){ // 製造武器はカードなし
+		if(itemdb_isspecial(sd->status.inventory[i].card[0])){ // 製造・名前入りはカードなし
 			push_val(st->stack,C_INT,0);
 			return 0;
 		}
@@ -7842,7 +7890,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 
 	if(i < 0 || i > MAX_INVENTORY)
 		return 0;
-	if(sd->status.inventory[i].card[0] == 0x00ff)	// 製造武器は処理しない
+	if(itemdb_isspecial(sd->status.inventory[i].card[0]))	// 製造・名前入りは処理しない
 		return 0;
 
 	slot = sd->inventory_data[i]->slot;
@@ -7875,7 +7923,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 		if(typefail == 0 || typefail == 2) {		// 武具損失して終了
 			pc_delitem(sd,i,1,0);
 		}
-		else if(typefail == 1 || typefail == 3) {	// 指定カードを取り除いたアイテム所得
+		else if(typefail == 1 || typefail == 3) {	// 指定カードを取り除いたアイテム取得
 			flag = 0;
 			memset(&item_tmp, 0, sizeof(item_tmp));
 			item_tmp.nameid    = sd->status.inventory[i].nameid;
@@ -7884,7 +7932,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 			item_tmp.attribute = sd->status.inventory[i].attribute;
 			memcpy(&item_tmp.card, &card_set, sizeof(card_set));
 			pc_delitem(sd,i,1,0);
-			if( (flag=pc_additem(sd,&item_tmp,1)) ) {	// もてないならドロップ
+			if( (flag=pc_additem(sd,&item_tmp,1)) ) {	// 持てないならドロップ
 				clif_additem(sd,0,0,flag);
 				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
 			}
@@ -7894,9 +7942,9 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 	return 0;
 }
 
-/*=================================================================
+/*==========================================
  * カード取り外し成功
- *-----------------------------------------------------------------
+ *------------------------------------------
  */
 int buildin_successremovecards(struct script_state *st)
 {
@@ -7916,9 +7964,9 @@ int buildin_successremovecards(struct script_state *st)
 	return 0;
 }
 
-/*=================================================================
+/*==========================================
  * カード取り外し失敗
- *-----------------------------------------------------------------
+ *------------------------------------------
  */
 int buildin_failedremovecards(struct script_state *st)
 {
@@ -7939,9 +7987,9 @@ int buildin_failedremovecards(struct script_state *st)
 	return 0;
 }
 
-/* ================================================================
+/*==========================================
  * 結婚処理
- * ----------------------------------------------------------------
+ *------------------------------------------
  */
 int buildin_marriage(struct script_state *st)
 {
@@ -7958,9 +8006,9 @@ int buildin_marriage(struct script_state *st)
 	push_val(st->stack,C_INT,sd->status.partner_id);
 	return 0;
 }
-/* ================================================================
+/*==========================================
  * 結婚式用のエフェクト
- * ----------------------------------------------------------------
+ *------------------------------------------
  */
 int buildin_wedding_effect(struct script_state *st)
 {
@@ -7971,41 +8019,34 @@ int buildin_wedding_effect(struct script_state *st)
 	clif_wedding_effect(&sd->bl);
 	return 0;
 }
-/* ================================================================
+/*==========================================
  * 離婚処理
- * ----------------------------------------------------------------
+ *------------------------------------------
  */
 int buildin_divorce(struct script_state *st)
 {
-	int num;
-	int partner_id=0;
+	int num = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	struct map_session_data *sd=script_rid2sd(st);
 
-	if( st->end>st->start+2 )
-		num=conv_num(st,& (st->stack->stack_data[st->start+2]));
-	else
-		num=0;
 	if(sd==NULL){
 		push_val(st->stack,C_INT,0);
 		return 0;
 	}
-	partner_id = sd->status.partner_id;
+
 	if(num==0){
 		if(pc_divorce(sd) < 0){
 			push_val(st->stack,C_INT,0);
 			return 0;
 		}
-		push_val(st->stack,C_INT,partner_id);
 	}
-	if(num==1)
-		push_val(st->stack,C_INT,partner_id);
+	push_val(st->stack,C_INT,sd->status.partner_id);
 
 	return 0;
 }
 
-/* ================================================================
+/*==========================================
  * 養子処理
- * ----------------------------------------------------------------
+ *------------------------------------------
  */
 int buildin_adoption(struct script_state *st)
 {
@@ -8028,9 +8069,9 @@ int buildin_adoption(struct script_state *st)
 	return 0;
 }
 
-/* ================================================================
+/*==========================================
  * 養子解体
- * ----------------------------------------------------------------
+ *------------------------------------------
  */
 int buildin_breakadoption(struct script_state *st)
 {
@@ -8063,8 +8104,8 @@ int buildin_getitemname(struct script_state *st)
 
 	item_id=conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	i_data = itemdb_search(item_id);
-	push_str(st->stack,C_CONSTSTR,i_data->jname);
+	i_data = itemdb_exists(item_id);
+	push_str(st->stack,C_CONSTSTR,(i_data? i_data->jname: ""));
 	return 0;
 }
 /*==========================================
@@ -8075,7 +8116,9 @@ int buildin_getinventorylist(struct script_state *st)
 {
 	struct map_session_data *sd=script_rid2sd(st);
 	int i,j=0;
-	if(!sd) return 0;
+
+	if(!sd)
+		return 0;
 	for(i=0;i<MAX_INVENTORY && j<128;i++){
 		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].amount > 0){
 			pc_setreg(sd,add_str("@inventorylist_id")+(j<<24),sd->status.inventory[i].nameid);
@@ -8103,7 +8146,9 @@ int buildin_getskilllist(struct script_state *st)
 {
 	struct map_session_data *sd=script_rid2sd(st);
 	int i,j=0,k=0;
-	if(!sd) return 0;
+
+	if(!sd)
+		return 0;
 	for(i=0;i<MAX_SKILL;i++){
 		if(sd->status.skill[i].id <= 0 || sd->status.skill[i].lv <= 0)
 			continue;
@@ -8138,17 +8183,18 @@ int buildin_clearitem(struct script_state *st)
 {
 	struct map_session_data *sd=script_rid2sd(st);
 	int i;
-	if(sd==NULL) return 0;
+
+	if(sd==NULL)
+		return 0;
 	for (i=0; i<MAX_INVENTORY; i++) {
 		if (sd->status.inventory[i].amount)
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0);
 	}
 	return 0;
 }
+
 /*==========================================
- * アイテム修理関連
- * 修理可能アイテムを数える buildin_getrepairableitemcount
- * 修理可能アイテムを修理する buildin_repairitem
+ * 修理可能アイテムを数える
  *------------------------------------------
  */
 int buildin_getrepairableitemcount(struct script_state *st)
@@ -8166,6 +8212,11 @@ int buildin_getrepairableitemcount(struct script_state *st)
 	push_val(st->stack,C_INT,c);
 	return 0;
 }
+
+/*==========================================
+ * 修理可能アイテムを修理する
+ *------------------------------------------
+ */
 int buildin_repairitem(struct script_state *st)
 {
 	struct map_session_data *sd=script_rid2sd(st);
@@ -8341,11 +8392,14 @@ int buildin_gmcommand(struct script_state *st)
 			dummy_sd.fd = 0;
 			dummy_sd.bl.prev = NULL;
 			dummy_sd.bl.next = NULL;
-			if(bl->type == BL_NPC)
+			if(bl->type == BL_NPC) {
+				char *p;
 				strncpy(dummy_sd.status.name, ((struct npc_data *)bl)->name, 24);
-			else
+				if((p = strchr(dummy_sd.status.name,'#')) != NULL)
+					*p = 0;
+			} else {
 				strncpy(dummy_sd.status.name, "dummy", 24);
-
+			}
 			snprintf(cmd, sizeof(cmd), "%s : %s", dummy_sd.status.name, str);
 			is_atcommand(dummy_sd.fd, &dummy_sd, cmd, 99);
 			return 0;
@@ -8376,7 +8430,7 @@ int buildin_recovery(struct script_state *st)
 	int i = 0;
 	for (i = 0; i < fd_max; i++) {
 		if (session[i]){
-			struct map_session_data *sd = session[i]->session_data;
+			struct map_session_data *sd = (struct map_session_data *)session[i]->session_data;
 			if (sd && sd->state.auth) {
 				sd->status.hp = sd->status.max_hp;
 				sd->status.sp = sd->status.max_sp;
@@ -8386,7 +8440,7 @@ int buildin_recovery(struct script_state *st)
 					pc_setstand(sd);
 					clif_resurrection(&sd->bl, 1);
 				}
-				clif_displaymessage(sd->fd, msg_txt(178)); // 完全回復しました！
+				//clif_displaymessage(sd->fd, msg_txt(178)); // 完全回復しました！
 			}
 		}
 	}
@@ -8396,7 +8450,6 @@ int buildin_recovery(struct script_state *st)
  * 孵化させて連れ歩いているペットの情報取得
  * 0:pet_id 1:pet_class 2:pet_name
  * 3:friendly 4:hungry
- * 連れてない時は、いずれの場合も0を返す
  *------------------------------------------
  */
 int buildin_getpetinfo(struct script_state *st)
@@ -8419,14 +8472,12 @@ int buildin_getpetinfo(struct script_state *st)
 				if(sd->pet.name)
 					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->pet.name));
 				else
-					push_val(st->stack,C_INT,0);
+					push_str(st->stack,C_CONSTSTR,"");
 				break;
 			case 3:
-				//if(sd->pet.intimate)
 				push_val(st->stack,C_INT,sd->pet.intimate);
 				break;
 			case 4:
-				//if(sd->pet.hungry)
 				push_val(st->stack,C_INT,sd->pet.hungry);
 				break;
 			default:
@@ -8442,7 +8493,6 @@ int buildin_getpetinfo(struct script_state *st)
  * 連れ歩いているホムンクルスの情報取得
  * 0:homun_id 1:homun_base_lv 2:homun_name
  * 3:friendly 4:hungry 5:homun_class
- * 連れてない時は、いずれの場合も0を返す
  *------------------------------------------
  */
 int buildin_gethomuninfo(struct script_state *st)
@@ -8465,7 +8515,7 @@ int buildin_gethomuninfo(struct script_state *st)
 				if(sd->hd && sd->hd->status.name)
 					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->hd->status.name));
 				else
-					push_val(st->stack,C_INT,0);
+					push_str(st->stack,C_CONSTSTR,"");
 				break;
 			case 3:
 				if( sd->hd ) 
@@ -8505,22 +8555,12 @@ int buildin_checkequipedcard(struct script_state *st)
 	c=conv_num(st,& (st->stack->stack_data[st->start+2]));
 
 	if(sd){
-		// 所持アイテム
 		for(i=0;i<MAX_INVENTORY;i++){
 			if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].amount){
+				if(itemdb_isspecial(sd->status.inventory[i].card[0]))
+					continue;
 				for(n=0;n<4;n++){
 					if(sd->status.inventory[i].card[n]==c){
-						push_val(st->stack,C_INT,1);
-						return 0;
-					}
-				}
-			}
-		}
-		// カート内アイテム
-		for(i=0;i<MAX_CART;i++){
-			if(sd->status.cart[i].nameid > 0 && sd->status.cart[i].amount){
-				for(n=0;n<4;n++){
-					if(sd->status.cart[i].card[n]==c){
 						push_val(st->stack,C_INT,1);
 						return 0;
 					}
@@ -8538,7 +8578,7 @@ int buildin_jump_zero(struct script_state *st) {
 	if(!sel) {
 		int pos;
 		if( st->stack->stack_data[st->start+3].type!=C_POS ){
-			printf("script: jump_zero: not label !\n");
+			printf("buildin_jump_zero: not label !\n");
 			st->state=END;
 			return 0;
 		}
@@ -8546,9 +8586,6 @@ int buildin_jump_zero(struct script_state *st) {
 		pos=conv_num(st,& (st->stack->stack_data[st->start+3]));
 		st->pos=pos;
 		st->state=GOTO;
-		// printf("script: jump_zero: jumpto : %d\n",pos);
-	} else {
-		// printf("script: jump_zero: fail\n");
 	}
 	return 0;
 }
@@ -8572,7 +8609,6 @@ int buildin_select(struct script_state *st)
 			len+=strlen(st->stack->stack_data[i].u.str)+1;
 		}
 		buf=(char *)aCalloc(len+1,sizeof(char));
-		buf[0]=0;
 		for(i=st->start+2,len=0;i<st->end;i++){
 			if( st->stack->stack_data[i].u.str[0] ) {
 				strcat(buf,st->stack->stack_data[i].u.str);
@@ -8587,7 +8623,7 @@ int buildin_select(struct script_state *st)
 	} else {
 		sd->state.menu_or_input=0;
 		if(sd->npc_menu>0){
-			//空文字メニューの補正
+			// 空文字メニューの補正
 			for(i=st->start+2;i<=(st->start+sd->npc_menu+1) && sd->npc_menu < st->end-st->start-1;i++) {
 				conv_str(st,& (st->stack->stack_data[i]));
 				if(strlen(st->stack->stack_data[i].u.str) < 1)
@@ -8654,45 +8690,38 @@ int buildin_getareamobs(struct script_state *st)
 }
 
 /*==========================================
- *ギルド同士の関係を調べる
+ * ギルド同士の関係を調べる
  *------------------------------------------
  */
 int buildin_getguildrelation(struct script_state *st)
 {
-	int gld1, gld2, result;
-	struct map_session_data *sd;
-	struct guild *g=NULL;
+	int gld1, gld2, result = 0;
+	struct guild *g = NULL;
 
 	gld1 = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	g = guild_search(gld1);
-	if(g == NULL)
+	if(gld1 <= 0 || (g = guild_search(gld1)) == NULL)
 	{
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
 
-	if( st->end>st->start+3 )
+	if(st->end > st->start+3) {
 		gld2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
-	else
-	{
-		sd = script_rid2sd(st);
-		if(sd==NULL)
-		{
+	} else {
+		struct map_session_data *sd = script_rid2sd(st);
+		if(sd == NULL) {
 			push_val(st->stack,C_INT,-1);
 			return 0;
 		}
 		gld2 = sd->status.guild_id;
 	}
 
-	g = NULL;
-	g = guild_search(gld2);
-	if(g == NULL)
+	if(gld2 <= 0 || (g = guild_search(gld2)) == NULL)
 	{
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
 
-	result = 0;
 	if(gld1 == gld2)
 		result += 1;
 	if(guild_check_alliance(gld1, gld2, 0))
@@ -8815,65 +8844,55 @@ int buildin_summon(struct script_state *st)
 /*==========================================
   * Get position for  char/npc/pet/mob objects. Added by Lorky
   *
-  *	 int getMapXY(MapName$,MaxX,MapY,type,[CharName$]);
-  *		 where type:
-  *			 MapName$ - String variable for output map name
-  *			 MapX	 - Integer variable for output coord X
-  *			 MapY	 - Integer variable for output coord Y
-  *			 type	 - type of object
+  *	getmapxy(MapName$,MaxX,MapY,type,[CharName$]);
+  *		where type:
+  *			MapName$ - String variable for output map name
+  *			MapX	 - Integer variable for output coord X
+  *			MapY	 - Integer variable for output coord Y
+  *			type	 - type of object
   *				0 - Character coord
   *				1 - NPC coord
   *				2 - Pet coord
   *				3 - Mob coord (not released)
   *				4 - HOM coord
-  *			 CharName$ - Name object. If miss or "this" the current object
+  *			CharName$ - Name object. If miss or "this" the current object
   *
-  *		 Return:
+  *		Return:
   *			 0	- success
-  *			 -1	   - some error, MapName$,MapX,MapY contains unknown value.
+  *			-1	- some error, MapName$,MapX,MapY contains unknown value.
   *------------------------------------------
-*/ //[#cbf145a0]
+  */
 int buildin_getmapxy(struct script_state *st){
-	struct map_session_data *sd=NULL;
-	struct npc_data *nd;
-	struct pet_data *pd;
-	struct homun_data *hd;
-
+	struct map_session_data *sd = NULL;
+	struct npc_data         *nd = NULL;
+	struct pet_data         *pd = NULL;
+	struct homun_data       *hd = NULL;
 	int num;
 	char *name;
 	char prefix;
-
 	int x,y,type;
 	char mapname[24];
 
-	if( st->stack->stack_data[st->start+2].type!=C_NAME ){
-		printf("script: buildin_getmapxy: not mapname variable\n");
-		push_val(st->stack,C_INT,-1);
-		return 0;
-	}
-	if( st->stack->stack_data[st->start+3].type!=C_NAME ){
-		printf("script: buildin_getmapxy: not mapx variable\n");
-		push_val(st->stack,C_INT,-1);
-		return 0;
-	}
-	if( st->stack->stack_data[st->start+4].type!=C_NAME ){
-		printf("script: buildin_getmapxy: not mapy variable\n");
+	if( st->stack->stack_data[st->start+2].type != C_NAME ||
+	    st->stack->stack_data[st->start+3].type != C_NAME ||
+	    st->stack->stack_data[st->start+4].type != C_NAME )
+	{
+		printf("buildin_getmapxy: param not name\n");
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
 
-	//??????????? >>>  Possible needly check function parameters on C_STR,C_INT,C_INT <<< ???????????//
 	type=conv_num(st,& (st->stack->stack_data[st->start+5]));
 
 	memset(&mapname,'\0',sizeof(mapname));
 	switch (type){
-		case 0:						 //Get Character Position
+		case 0:		// Get Character Position
 			if( st->end>st->start+6 )
 				sd=map_nick2sd(conv_str(st,& (st->stack->stack_data[st->start+6])));
 			else
 				sd=script_rid2sd(st);
 
-			if ( sd==NULL ) {		//wrong char name or char offline
+			if ( sd==NULL ) {	// wrong char name or char offline
 				push_val(st->stack,C_INT,-1);
 				return 0;
 			}
@@ -8881,33 +8900,33 @@ int buildin_getmapxy(struct script_state *st){
 			y=sd->bl.y;
 			memcpy(mapname,sd->mapname,24);
 			break;
-		case 1:						//Get NPC Position
+		case 1:		// Get NPC Position
 			if( st->end > st->start+6 )
 				nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+6])));
 			else
 				nd = map_id2nd(st->oid);
-			if ( nd==NULL ) {		//wrong npc name or char offline
+			if ( nd==NULL ) {	// wrong npc name
 				push_val(st->stack,C_INT,-1);
 				return 0;
 			}
 			x=nd->bl.x;
 			y=nd->bl.y;
 			if(nd->bl.m == -1)
-				mapname[0] = '-';		//マップに配置されないNPC
+				mapname[0] = '-';	// マップに配置されないNPC
 			else
 				memcpy(mapname,map[nd->bl.m].name,24);
 			break;
-		case 2:						//Get Pet Position
+		case 2:		// Get Pet Position
 			if( st->end>st->start+6 )
 				sd=map_nick2sd(conv_str(st,& (st->stack->stack_data[st->start+6])));
 			else
 				sd=script_rid2sd(st);
-			if ( sd==NULL ) {		//wrong char name or char offline
+			if ( sd==NULL ) {	// wrong char name or char offline
 				push_val(st->stack,C_INT,-1);
 				return 0;
 			}
 			pd=sd->pd;
-			if ( pd==NULL ){			//pet data not found
+			if ( pd==NULL ){	// pet data not found
 				push_val(st->stack,C_INT,-1);
 				return 0;
 			}
@@ -8915,20 +8934,20 @@ int buildin_getmapxy(struct script_state *st){
 			y=pd->bl.y;
 			memcpy(mapname,map[pd->bl.m].name,24);
 			break;
-		case 3:						//Get Mob Position
+		case 3:		// Get Mob Position
 			push_val(st->stack,C_INT,-1);
 			return 0;
-		case 4:
+		case 4:		// Get Homun Position
 			if( st->end>st->start+6 )
 				sd=map_nick2sd(conv_str(st,& (st->stack->stack_data[st->start+6])));
 			else
 				sd=script_rid2sd(st);
-			if ( sd==NULL ) {			//wrong char name or char offline
+			if ( sd==NULL ) {	// wrong char name or char offline
 				push_val(st->stack,C_INT,-1);
 				return 0;
 			}
 			hd=sd->hd;
-			if ( hd==NULL ){			//homun data not found
+			if ( hd==NULL ){	// homun data not found
 				push_val(st->stack,C_INT,-1);
 				return 0;
 			}
@@ -8936,47 +8955,47 @@ int buildin_getmapxy(struct script_state *st){
 			y=hd->bl.y;
 			memcpy(mapname,map[hd->bl.m].name,24);
 			break;
-		default:					//Wrong type parameter
+		default:	// Wrong type parameter
 			push_val(st->stack,C_INT,-1);
 			return 0;
 	}
 
-	//Set MapName$
-	num=st->stack->stack_data[st->start+2].u.num;
-	name=(char *)(str_buf+str_data[num&0x00ffffff].str);
-	prefix=*name;
+	// Set MapName$
+	num    = st->stack->stack_data[st->start+2].u.num;
+	name   = str_buf+str_data[num&0x00ffffff].str;
+	prefix = *name;
 
-	if( prefix!='$' && prefix != '\'')
-		sd=script_rid2sd(st);
+	if( prefix != '$' && prefix != '\'' )
+		sd = script_rid2sd(st);
 	else
-		sd=NULL;
+		sd = NULL;
 
 	set_reg(st,sd,num,name,(void*)mapname,st->stack->stack_data[st->start+2].ref);
 
-	//Set MapX
-	num=st->stack->stack_data[st->start+3].u.num;
-	name=(char *)(str_buf+str_data[num&0x00ffffff].str);
-	prefix=*name;
+	// Set MapX
+	num    = st->stack->stack_data[st->start+3].u.num;
+	name   = str_buf+str_data[num&0x00ffffff].str;
+	prefix = *name;
 
-	if( prefix!='$' && prefix != '\'')
-		sd=script_rid2sd(st);
+	if( prefix != '$' && prefix != '\'' )
+		sd = script_rid2sd(st);
 	else
-		sd=NULL;
+		sd = NULL;
 	set_reg(st,sd,num,name,(void*)x,st->stack->stack_data[st->start+3].ref);
 
-	//Set MapY
-	num=st->stack->stack_data[st->start+4].u.num;
-	name=(char *)(str_buf+str_data[num&0x00ffffff].str);
-	prefix=*name;
+	// Set MapY
+	num    = st->stack->stack_data[st->start+4].u.num;
+	name   = str_buf+str_data[num&0x00ffffff].str;
+	prefix = *name;
 
-	if( prefix!='$' && prefix != '\'')
-		sd=script_rid2sd(st);
+	if( prefix != '$' && prefix != '\'' )
+		sd = script_rid2sd(st);
 	else
-		sd=NULL;
+		sd = NULL;
 
 	set_reg(st,sd,num,name,(void*)y,st->stack->stack_data[st->start+4].ref);
 
-	//Return Success value
+	// Return Success value
 	push_val(st->stack,C_INT,0);
 	return 0;
 }
@@ -8985,7 +9004,6 @@ int buildin_getmapxy(struct script_state *st){
  * Checkcart [Valaris]
  *------------------------------------------
  */
-
 int buildin_checkcart(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
@@ -9001,7 +9019,6 @@ int buildin_checkcart(struct script_state *st)
  * checkfalcon [Valaris]
  *------------------------------------------
  */
-
 int buildin_checkfalcon(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
@@ -9018,7 +9035,6 @@ int buildin_checkfalcon(struct script_state *st)
  * Checkriding [Valaris]
  *------------------------------------------
  */
-
 int buildin_checkriding(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
@@ -9163,8 +9179,6 @@ int buildin_getpkflag(struct script_state *st)
 		count+=1;
 	if(map[m].flag.gvg)
 		count+=2;
-//	if(map[m].flag.pk)
-//		count+=4;
 
 	push_val(st->stack,C_INT,count);
 	return 0;
@@ -9264,7 +9278,8 @@ static int script_csvfilename_check(const char *file, const char *func)
 	return 1;
 }
 
-static struct csvdb_data* script_csvload( const char *file ) {
+static struct csvdb_data* script_csvload( const char *file )
+{
 	struct csvdb_data *csv = strdb_search( script_csvdb, file);
 	if( csv == NULL ) {
 		// ファイル名に変なものが入っていないか確認
@@ -9290,8 +9305,9 @@ static struct csvdb_data* script_csvload( const char *file ) {
 	return csv;
 }
 
-int buildin_csvgetrows(struct script_state *st) {
-	char *file   = conv_str(st,& (st->stack->stack_data[st->start+2]));
+int buildin_csvgetrows(struct script_state *st)
+{
+	char *file = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	struct csvdb_data *csv = script_csvload( file );
 	if( csv == NULL ) {
 		push_val(st->stack,C_INT,-1);
@@ -9301,9 +9317,10 @@ int buildin_csvgetrows(struct script_state *st) {
 	return 0;
 }
 
-int buildin_csvgetcols(struct script_state *st) {
-	char *file   = conv_str(st,& (st->stack->stack_data[st->start+2]));
-	int  row     = conv_num(st,& (st->stack->stack_data[st->start+3]));
+int buildin_csvgetcols(struct script_state *st)
+{
+	char *file = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	int  row   = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	struct csvdb_data *csv = script_csvload( file );
 	if( csv == NULL) {
 		push_val(st->stack,C_INT,-1);
@@ -9336,40 +9353,46 @@ int buildin_csvreadarray(struct script_state *st)
 {
 	int i;
 	struct map_session_data *sd = NULL;
-	char *file   = conv_str(st,& (st->stack->stack_data[st->start+2]));
-	int  row     = conv_num(st,& (st->stack->stack_data[st->start+3]));
-	int  num     = st->stack->stack_data[st->start+4].u.num;
-	char *name   = str_buf+str_data[num&0x00ffffff].str;
-	char prefix  = *name;
-	char postfix = name[strlen(name)-1];
+	char *file = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	int  row   = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int  num;
+	char *name;
+	char prefix, postfix;
 	struct csvdb_data* csv = script_csvload( file );
 
-	// clear array
-	if( prefix!='$' && prefix!='@' && prefix!='\'' ){
+	if( st->stack->stack_data[st->start+4].type != C_NAME ) {
+		printf("buildin_csvreadarray: param not name\n");
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+4].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
 		printf("buildin_csvreadarray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix!='$' && prefix != '\'') {
-		sd=script_rid2sd(st);
-		if( sd == NULL) return 0;
+	if( prefix != '$' && prefix != '\'' ) {
+		sd = script_rid2sd(st);
+		if(sd == NULL)
+			return 0;
 	}
 
+	// clear array
 	for(i = getarraysize(st,num,postfix,st->stack->stack_data[st->start+4].ref) - (num >> 24) - 1;i >= 0;i--) {
-		if( postfix=='$' )
-			set_reg(st,sd,num+(i<<24),name,"",st->stack->stack_data[st->start+4].ref);
-		else
-			set_reg(st,sd,num+(i<<24),name,0,st->stack->stack_data[st->start+4].ref);
+		set_reg(st,sd,num+(i<<24),name,(postfix == '$')? "": 0,st->stack->stack_data[st->start+4].ref);
 	}
 
 	if( csv ) {
-		int i, max = csvdb_get_columns( csv, row );
-		if( max + (num >> 24) > 127 ) {
-			max = 127 - (num>>24);
+		int max = csvdb_get_columns( csv, row );
+		if( max + (num >> 24) > 128 ) {
+			max = 128 - (num>>24);
 		}
 		for( i = 0; i < max; i++ ) {
 			if( postfix == '$' ) {
 				// set_regはconstが付いてないので、一端strdupしている
-				char *v = (char *)aStrdup(csvdb_get_str(csv, row, i));
+				void *v = aStrdup(csvdb_get_str(csv, row, i));
 				set_reg(st,sd,num+(i<<24),name,v,st->stack->stack_data[st->start+4].ref);
 				aFree(v);
 			} else {
@@ -9425,15 +9448,23 @@ int buildin_csvwrite(struct script_state *st)
 int buildin_csvwritearray(struct script_state *st)
 {
 	int i;
-	char *file   = conv_str(st,& (st->stack->stack_data[st->start+2]));
-	int  row     = conv_num(st,& (st->stack->stack_data[st->start+3]));
-	int  num     = st->stack->stack_data[st->start+4].u.num;
-	char *name   = str_buf+str_data[num&0x00ffffff].str;
-	char prefix  = *name;
-	char postfix = name[strlen(name)-1];
+	char *file = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	int  row   = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int  num;
+	char *name;
+	char prefix, postfix;
 	struct csvdb_data* csv;
 
-	if( prefix!='$' && prefix!='@' && prefix!='\'' ){
+	if( st->stack->stack_data[st->start+4].type != C_NAME ) {
+		printf("buildin_csvwritearray: param not name\n");
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+4].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
 		printf("buildin_csvwritearray: illegal scope !\n");
 		return 0;
 	}
@@ -9447,7 +9478,7 @@ int buildin_csvwritearray(struct script_state *st)
 		csvdb_clear_row( csv, row );
 		for( i = 0; i < max; i++ ) {
 			if( postfix == '$' ) {
-				csvdb_set_str(csv, row, i, get_val2(st, num+(i<<24),st->stack->stack_data[st->start+4].ref));
+				csvdb_set_str(csv, row, i, (char*)get_val2(st, num+(i<<24),st->stack->stack_data[st->start+4].ref));
 			} else {
 				csvdb_set_num(csv, row, i, (int)get_val2(st, num+(i<<24),st->stack->stack_data[st->start+4].ref));
 			}
@@ -9458,20 +9489,19 @@ int buildin_csvwritearray(struct script_state *st)
 
 static int script_csvreload_sub( void *key, void *data, va_list ap ) {
 	char *file = va_arg(ap, char*);
-	if( strcmp(key, file) == 0 ) {
-		char *p = key;
+	if( strcmp((char*)key, file) == 0 ) {
 		strdb_erase( script_csvdb, key );
-		aFree( p );
+		aFree( key );
 	}
 	return 0;
 }
 
 // csvreload <file>
-int buildin_csvreload(struct script_state *st) {
+int buildin_csvreload(struct script_state *st)
+{
 	char *file = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	struct csvdb_data *csv = strdb_search( script_csvdb, file );
 	if( csv ) {
-		//strdb_insert( script_csvdb, file, NULL );
 		strdb_foreach( script_csvdb, script_csvreload_sub, file );
 		csvdb_close( csv );
 	}
@@ -9479,7 +9509,8 @@ int buildin_csvreload(struct script_state *st) {
 }
 
 // csvinsert <file>, <row>
-int buildin_csvinsert(struct script_state *st) {
+int buildin_csvinsert(struct script_state *st)
+{
 	char *file  = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int   row   = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	struct csvdb_data *csv;
@@ -9495,7 +9526,8 @@ int buildin_csvinsert(struct script_state *st) {
 }
 
 // csvdelete <file>, <row>
-int buildin_csvdelete(struct script_state *st) {
+int buildin_csvdelete(struct script_state *st)
+{
 	char *file  = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int   row   = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	struct csvdb_data *csv;
@@ -9508,11 +9540,11 @@ int buildin_csvdelete(struct script_state *st) {
 		csvdb_delete_row(csv, row);
 	}
 	return 0;
-
 }
 
 // csvsort <file>, <col>, <order>
-int buildin_csvsort(struct script_state *st) {
+int buildin_csvsort(struct script_state *st)
+{
 	char *file  = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int   col   = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	int   order = conv_num(st,& (st->stack->stack_data[st->start+4]));
@@ -9529,7 +9561,8 @@ int buildin_csvsort(struct script_state *st) {
 }
 
 // csvflush <file>
-int buildin_csvflush(struct script_state *st) {
+int buildin_csvflush(struct script_state *st)
+{
 	char *file  = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	struct csvdb_data *csv;
 
@@ -9546,7 +9579,8 @@ int buildin_csvflush(struct script_state *st) {
 #endif
 
 // sleep <mili sec>
-int buildin_sleep(struct script_state *st) {
+int buildin_sleep(struct script_state *st)
+{
 	int tick = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	struct map_session_data *sd = map_id2sd(st->rid);
 	if(sd && sd->npc_id == st->oid) {
@@ -9567,7 +9601,8 @@ int buildin_sleep(struct script_state *st) {
 }
 
 // sleep2 <mili sec>
-int buildin_sleep2(struct script_state *st) {
+int buildin_sleep2(struct script_state *st)
+{
 	int tick = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	if( tick <= 0 ) {
 		// 0ms の待機時間を指定された
@@ -9598,7 +9633,7 @@ int buildin_awake(struct script_state *st)
 
 	while( node ) {
 		if( (int)node->key == nd->bl.id) {
-			struct script_state *tst    = node->data;
+			struct script_state *tst    = (struct script_state *)node->data;
 			struct map_session_data *sd = map_id2sd(tst->rid);
 
 			if( tst->sleep.timer == -1 ) {
@@ -9624,7 +9659,7 @@ int buildin_getvariableofnpc(struct script_state *st)
 {
 	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
 		// 第一引数が変数名じゃない
-		printf("getvariableofnpc: param not name\n");
+		printf("buildin_getvariableofnpc: param not name\n");
 		push_val(st->stack,C_INT,0);
 	} else {
 		int num = st->stack->stack_data[st->start+2].u.num;
@@ -9633,11 +9668,11 @@ int buildin_getvariableofnpc(struct script_state *st)
 		struct npc_data *nd = npc_name2id(npc_name);
 		if( var_name[0] != '\'' || var_name[1] == '@' ) {
 			// ' 変数以外はダメ
-			printf("getvariableofnpc: invalid scope %s\n", var_name);
+			printf("buildin_getvariableofnpc: invalid scope %s\n", var_name);
 			push_val(st->stack,C_INT,0);
 		} else if( nd == NULL || nd->bl.subtype != SCRIPT || !nd->u.scr.script) {
 			// NPC が見つからない or SCRIPT以外のNPC
-			printf("getvariableofnpc: can't find npc %s\n", npc_name);
+			printf("buildin_getvariableofnpc: can't find npc %s\n", npc_name);
 			push_val(st->stack,C_INT,0);
 		} else {
 			push_val2(st->stack,C_NAME,num, &nd->u.scr.script->script_vars );
@@ -9829,37 +9864,41 @@ int buildin_strnpcinfo(struct script_state *st)
 {
 	struct npc_data *nd = map_id2nd(st->oid);
 	int type;
-	char *buf,*name=NULL;
+	char *p, *name = NULL;
 
-	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	if(nd==NULL) {
+	if(nd == NULL) {
 		push_str(st->stack,C_CONSTSTR,"");
 		return 0;
 	}
 	switch(type) {
 		case 0:
-			name=(char *)aStrdup(nd->name);
+			name = (char *)aStrdup(nd->name);
 			break;
 		case 1:
-			name=strtok((char *)aStrdup(nd->name),"#");
+			name = (char *)aStrdup(nd->name);
+			if((p = strchr(name,'#')) != NULL)
+				*p = 0;
 			break;
 		case 2:
-			if((buf=strchr(nd->name,'#')) != NULL)
-				name=(char *)aStrdup(buf+1);
+			if((p = strchr(nd->name,'#')) != NULL)
+				name = (char *)aStrdup(p+1);
 			break;
 		case 3:
-			name=(char *)aStrdup(nd->exname);
+			name = (char *)aStrdup(nd->exname);
 			break;
 		case 4:
-			name=strtok((char *)aStrdup(nd->exname),"#");
+			name = (char *)aStrdup(nd->exname);
+			if((p = strchr(name,'#')) != NULL)
+				*p = 0;
 			break;
 		case 5:
-			if((buf=strchr(nd->exname,'#')) != NULL)
-				name=(char *)aStrdup(buf+1);
+			if((p = strchr(nd->exname,'#')) != NULL)
+				name = (char *)aStrdup(p+1);
 			break;
 		case 6:
-			name=(char *)aStrdup(nd->position);
+			name = (char *)aStrdup(nd->position);
 			break;
 	}
 	if(name)
@@ -9891,27 +9930,55 @@ int buildin_getpartyleader(struct script_state *st)
 			return 0;
 		}
 	}
-	push_str(st->stack,C_CONSTSTR,"");	//リーダーが見つからない
+	push_str(st->stack,C_CONSTSTR,"");	// リーダーが見つからない
 	return 0;
 }
 
 /*==========================================
- * 文字列中の<n>番目の文字１バイトを返す
+ * 文字列長を返す
  *------------------------------------------
  */
-int buildin_strcut(struct script_state *st)
+int buildin_getstrlen(struct script_state *st)
+{
+	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	push_val(st->stack,C_INT,strlen(str));
+
+	return 0;
+}
+
+/*==========================================
+ * 文字列の任意の部分を取得する
+ *------------------------------------------
+ */
+int buildin_substr(struct script_state *st)
 {
 	char *str;
-	int n,len;
+	int len, offset, count;
 
-	str = conv_str(st,& (st->stack->stack_data[st->start+2]));
-	n = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	str    = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	offset = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	len = strlen(str);
-	if(len > 0 && n >= 0 && n < len) {
-		char *buf = (char *)aMalloc(sizeof(char)*2);
-		buf[0] = *(str+n);
-		buf[1] = '\0';
+	if(offset < 0)		// 開始位置が負なので末尾から位置を計算
+		offset = len + offset;
+	if(offset < 0 || offset >= len) {
+		push_str(st->stack,C_CONSTSTR,"");
+		return 0;
+	}
+
+	if(st->end > st->start+4) {
+		count = conv_num(st,& (st->stack->stack_data[st->start+4]));
+		if(count > 0 && offset + count > len)
+			count = len - offset;		// 文字列長を超えるので補正
+		else if(count < 0)
+			count = len - offset + count;	// 個数が負なので末尾から個数分削る
+	} else {
+		count = len - offset;			// 引数省略時は最後まで
+	}
+
+	if(count > 0) {
+		char *buf = (char *)aCalloc(count+1, sizeof(char));
+		memcpy(buf, str+offset, count);
 		push_str(st->stack,C_STR,buf);
 	} else {
 		push_str(st->stack,C_CONSTSTR,"");

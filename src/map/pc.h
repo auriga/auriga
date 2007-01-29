@@ -146,6 +146,7 @@ int pc_addeventtimer(struct map_session_data *sd,int tick,const char *name);
 int pc_deleventtimer(struct map_session_data *sd,const char *name);
 int pc_cleareventtimer(struct map_session_data *sd);
 int pc_addeventtimercount(struct map_session_data *sd,const char *name,int tick);
+int pc_geteventtimerdiff(struct map_session_data *sd,const char *name);
 
 int pc_calc_pvprank(struct map_session_data *sd);
 int pc_calc_pvprank_timer(int tid,unsigned int tick,int id,int data);

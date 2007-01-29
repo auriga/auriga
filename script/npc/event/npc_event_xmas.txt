@@ -1875,8 +1875,8 @@ alberta.gat,54,237,3	duplicate(オーリー#xmas)	オーリー	79
 	mes "こ、こら、離せ〜っ!!";
 	next;
 	//呼び出し元のMAPコードとデビルチ番号を切り出す
-	set '@code$,strcut(strnpcinfo(2),4);
-	set '@num,strcut(strnpcinfo(2),5);
+	set '@code$,substr(strnpcinfo(0),-2,1);
+	set '@num,substr(strnpcinfo(0),-1,1);
 	hideonnpc;
 	setarray '@ref,0,1,2;
 	deletearray '@ref['@num],1;
@@ -1927,7 +1927,7 @@ alberta.gat,54,237,3	duplicate(オーリー#xmas)	オーリー	79
 	}
 OnInit:
 	//duplicate元以外で、且つ0番以外ならハイド
-	if(strnpcinfo(2) != "Xmas" && strcut(strnpcinfo(2),5) != "0") {
+	if(strnpcinfo(2) != "Xmas" && substr(strnpcinfo(0),-1,1) != "0") {
 		hideonnpc;
 	}
 	end;

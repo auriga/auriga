@@ -683,13 +683,12 @@ AthenaNPCScript
 			jobを22,26にしたときは自動的に装備が外れます。
 			
 		input命令
-			input [<variable>];
+			input <variable>;
 
-			variable	変数、省略可
+			variable	変数
 
 			入力ウィンドウを開き、入力データを<variable>に代入します。
 			変数の型が文字列型のときは文字列入力ウィンドウ、整数型のときは数値入力ウィンドウになります。
-			<variable>を省略した場合には数値入力ウィンドウを出しますがデータは捨てられます。
 
 		warp命令
 			warp <gatname>,<x>,<y>;
@@ -1156,23 +1155,26 @@ AthenaNPCScript
 			<st>は bStr, bVit, bInt, bAgi, bDex, bLuk で指定する。
 
 		skill命令
-			skill <skillid>,<skilllv>,<flag>;
+			skill <skillid>,<skilllv>[,<flag>];
 
-			skillid,skilllv,flag	数値
+			skillid,skilllv		数値
+			flag			数値、省略可
 
 			<skillid>に指定されたIDを持つLV<skilllv>スキルを習得します。
-			flag:0,恒久的なスキル取得(スキルツリーにない物は無効)、1,一時的(範囲は不明)な取得、
+			flag:0,恒久的なスキル取得(スキルツリーにない物は無効)、1,一時的(範囲は不明)な取得。
+			<flag>を省略した場合、<flag>の値は1になります。
 			<skilllv>を0にするとこでそのスキルを忘れさせることも可能です。
 
 		guildskill命令
-			guildskill <skillid>,<skilllv>,<flag>;
+			guildskill <skillid>,<skilllv>[,<flag>];
 
 			skillid,skilllv,flag	数値
 
 			<skillid>に指定されたIDを持つLV<skilllv>スキルを習得します。
-			flag:0,ギルドスキルポイントを消費します、1,ギルドスキルポイントを消費しません
+			flag:0,ギルドスキルポイントを消費します、1,ギルドスキルポイントを消費しません。
+			<flag>を省略した場合、<flag>の値は1になります。
 			<skilllv>を0にするとこでそのスキルを忘れさせることも可能です。
-			
+
 		waitingroom命令
 			waitingroom <title>,<limit>[,<event>[,<trigger>[,<zeny>,<lowlv>,<highlv>,[<job>,<upper>]]]];
 
@@ -1270,12 +1272,13 @@ AthenaNPCScript
 			<name>を省略すると、命令を実行したNPCが対象になります。
 
 		classchange命令
-			classchange <class>, <type>;
+			classchange <class>,<type>;
 
 			class	数値
 			type	数値
 
 			<class>で指定したClassにクラスチェンジします。
+			<type>はmobのときは1で他は0?（詳細不明）
 
 		misceffect命令
 			misceffect <type>[,<name>];
@@ -1481,7 +1484,7 @@ AthenaNPCScript
 			allowuseitem [<id>];
 
 			id		数値または文字列、省略可
-			
+
 			指定した ID のアイテムを NPC 会話中に使用可能にします。
 			id を省略するか、 0 を指定すると、全てのアイテムが使用可能になります。
 			id に -1 を指定すると、通常の状態（アイテム使用不可）になります。
@@ -1522,7 +1525,7 @@ AthenaNPCScript
 			getpartymember <n>;
 			
 			n		数値
-			
+
 			<n>で指定したIDを持つパーティーの人数を $@partymembercount に返します。
 			配列 $@partymembername$ にパーティメンバーの名前をセットします。
 
@@ -1914,6 +1917,7 @@ AthenaNPCScript
 			itemid		数値
 
 			<itemid>に指定されたIDを持つアイテムのjnameを文字列で返します。
+			見つからない場合は ""（空文字）を返します。
 			なお、アイテム名はitem_db.txtを参照します
 
 		countitem関数
@@ -2170,6 +2174,14 @@ AthenaNPCScript
 			num=32	チャットルームが満員かどうか（数値）
 			num=33	チャットルームでイベントが起こる人数かどうか（数値）
 
+		gettimerdiff関数
+			gettimerdiff(<event>)
+
+			event		文字列
+
+			現在のプレイヤーの<event>を開始するタイマーの開始までの時間を返します。
+			<event>が見つからない、あるいはタイマーが作動してない場合は-1を返します。
+
 		getnpctimer関数
 			getnpctimer(<num>[,<name>])
 
@@ -2285,7 +2297,7 @@ AthenaNPCScript
 
 			numに対応した孵化させて連れ歩いているペットの情報を取得します。
 			0:pet_id 1:pet_class 2:pet_name 3:friendly 4:hungry
-			連れてない時は、いずれの場合も0を返します。
+			連れてない場合、pet_nameのときは ""（空文字）、それ以外は0を返します。
 
 		checkequipedcard関数
 			checkequipedcard(<num>)
@@ -2298,9 +2310,9 @@ AthenaNPCScript
 
 		equippeditem関数
 			equippeditem(<num>)
-			
+
 			num		数字
-			
+
 			numで指定したidを持つアイテムを装備している個数を返します。
 			装備品に挿入されているカードも判定します。
 			見つからなかった場合は0を返します。
@@ -2327,11 +2339,11 @@ AthenaNPCScript
 
 			num	数値
 
-			num=0	
+			num=0
 			離婚処理を行ないます。対象は話しかけたプレイヤーで、離婚する相手のIDを返します。
 			未婚の場合は失敗して、0を返します。
 			この関数によって双方の結婚指輪は失われます。
-			num=1	
+			num=1
 			結婚している相手のIDを返します。
 
 		getmapmobs関数
@@ -2369,6 +2381,7 @@ AthenaNPCScript
 			Char_name	キャラ名
 
 			指定したキャラが居るマップのgatnameが返ります。
+			Char_nameが4文字未満の場合はスクリプトを実行したプレイヤーが居るマップになります。
 
 		getpkflag関数
 			getpkflag(<gatname>)
@@ -2390,6 +2403,7 @@ AthenaNPCScript
 			<flag>		数値
 
 			指定マップのに<flag>のmapflagが設定されているかどうかを調べます。
+			設定されていれば1、設定されていなければ0、エラー時は-1が返ります。
 			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 			<flag>はdb/const.txtを参照してください。
 
@@ -2414,26 +2428,13 @@ AthenaNPCScript
 
 			<num>で指定された状態にかかっている場合は１を
 			そうでない場合は０を返します。
+			conf/help.txtの@optionにある y の項目を参照してください。
 
-			fig1.主要な定数リスト(他の定数はskill.hを参照のこと)
+			主要な定数リスト
 
-			29    死んだふり
-			128   状態異常：石化
-			129   状態異常：氷結
-			130   状態異常：スタン
-			131   状態異常：睡眠
-			132   状態異常：毒
-			133   状態異常：呪い
-			134   状態異常：沈黙
-			135   状態異常：混乱
-			136   状態異常：暗闇
-			137   状態異常：出血
-			187   結婚用(結婚衣裳になって歩くのが遅いとか)
-			188   赤エモ状態
-			5035  重量50％オーバー
-			9036  重量90％オーバー
-
-			※この値は仕様変更により変わることがあります
+			+8     カードレベル1
+			+16    鷹付き
+			+32    ペコペコ乗り
 
 		gettimetick関数
 			gettimetick(<num>)
@@ -2552,8 +2553,7 @@ AthenaNPCScript
 		getequipcardcnt関数
 			getequipcardcnt(<num>)
 
-			<num>	1-11までの整数を指定します。詳しくはgetequipidを
-					参照のこと。
+			<num>	1-11までの整数を指定します。詳しくはgetequipidを参照のこと。
 
 			指定した部位のアイテムに刺さっているカードの数を返します
 
@@ -2693,21 +2693,35 @@ AthenaNPCScript
 			外見の値を参照します。
 			n：1,髪型、2,武器、3,頭上段、4,頭中段、5,頭下段、6,髪色、7,服色、8,盾
 
-		strcut 関数
-			strcut(<string>,<n>)
+		getstrlen 関数
+			getstrlen(<string>)
 
 			<string>	文字列
-			<n>		数値
 
-			文字列の中の<n>番目の文字１バイトを返します。
-			先頭バイトを0番目として数えます。
-			２バイト文字を取得したい場合は、隣接するバイトを取得して結合してください。
+			文字列長を返します。
 
-			例：strcut("あいう",2) + strcut("あいう",3) -> "い"
+		substr 関数
+			substr(<string>,<offset>[,<length>])
 
-			この関数を利用することにより広範囲な文字列処理を行うことが出来ます。
-			汎用ユーザー定義関数スクリプトをサンプル（npc_func_library.txt）に用意してますので
-			参照してください。
+			<string>	文字列
+			<offset>	数値
+			<length>	数値、省略可
+
+			文字列の任意の部分を取得します。
+			<offset>番目の文字を開始位置として<length>文字分が返ります。
+			ただし先頭文字を0番目として数えます。
+			<offset>が負のとき、文字列の最後から-<offset>文字戻った所を開始位置とします。
+			<length>が負のとき、文字列の最後から-<length>文字を削って返します。
+			また<length>を省略したときは文字列の最後までとなります。
+
+			文字の取得は１バイト単位です。
+			従って２バイト文字を取得したい場合は２バイト切り出す必要があります。
+
+			例：substr("あいう",2,2) -> "い"
+
+			この関数を利用することにより広範囲な文字列処理が可能です。
+			関数の仕様の確認と、汎用ユーザー定義関数スクリプトがサンプル（npc_func_library.txt）
+			にありますので参照してください。
 
 		distance 関数
 			distance(<id>[,<name>])
@@ -2727,7 +2741,7 @@ AthenaNPCScript
 
 			numに対応した連れ歩いているホムンクルスの情報を取得します。
 			0:homun_id 1:homun_base_lv 2:homun_name 3:friendly 4:hungry 5:class
-			連れてない時は、いずれの場合も0を返します。
+			連れてない場合、homun_nameのときは ""（空文字））、それ以外は0を返します。
 
 	＊csv アクセス命令 / 関数
 
@@ -3067,7 +3081,7 @@ AthenaNPCScript
 			NPC主体イベントでannounceしたときにフラグ0x08を指定していない
 			場合もこのエラーがでます。
 
-		illegal scope string variable.
+		illegal scope string variable
 			文字列変数のスコープが不正です。
 			未対応のプレフィックスで文字列変数が使用されました。
 			プレフィックスを確認してください。
@@ -3077,28 +3091,24 @@ AthenaNPCScript
 			持つ変数に配列変数系の命令を実行した場合など。
 
 		not label !
-			goto/menu命令でラベルが指定されるべきところに
+			ラベルが指定されるべきところに
 			ラベル以外のシンボルが指定されています。
 			もしくは、ラベル名と変数名がバッティングしています。
 
-		buildin_set: not name
-			set命令で第一引数が変数名ではありません。
-
-		getelementofarray (operator[]): param2 illegal number
-			配列変数で[]内の値が不正です
-			[]内の値が0未満か128以上になりました
-
-		getelementofarray (operator[]): param1 not name
-			配列変数で[]の前のシンボルが変数名ではありません。
+		param not name
+			引数が変数名ではありません。
 
 		op_2: int&str, str&int not allow.
 			関係演算子（比較演算子）で、数値と文字列、もしくは
 			文字列と数値が指定されました。
 
 		infinity loop !
-			スクリプトの実行命令数か、goto/menu命令実行回数が
+			スクリプトの実行命令数（cmdcount）か、goto/menu命令実行回数（gotocount）が
 			多すぎるので、無限ループと判断しました。
 			スクリプトの実行は強制的に中断されました。
+
+			for構文などでループを作る場合、特にgotocountがリミットに達しやすいので
+			状況に合わせてscript_athena.confのgotocountの値を増やしてみるといいかもしれません。
 
 		not function and command !
 			関数実行/命令実行部分で、関数でも命令でもない
@@ -3114,9 +3124,18 @@ AthenaNPCScript
 			関数を命令として実行した可能性があります。
 
 		label has used as argument !
-			ラベルが引数として使われました。
+			ラベルが引数として不正に使われました。
 			安全のため文字列「** SCRIPT ERROR **」が返却されます。
 
+		buildin_getelementofarray: (operator[]) param1 not name
+			配列変数で[]の前のシンボルが変数名ではありません。
+
+		buildin_getelementofarray: (operator[]) param illegal number
+			配列変数で[]内の値が不正です
+			[]内の値が0未満か128以上になりました
+
+		buildin_gettimestr: maxlen is too short!!
+			maxlenの値が小さすぎます。
 
 ５．あとがき
 	この文章を作成するにあたり、snapshotに含まれるNPCを参考にしました。

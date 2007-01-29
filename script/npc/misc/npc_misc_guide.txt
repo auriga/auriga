@@ -2040,13 +2040,13 @@ lighthalzen.gat,207,310,5	script	案内要員#West_Lhz1	852,{
 		next;
 		switch (select("街の案内を受ける","ミニMAP上の位置表示を消す","告知事項","やめる")) {
 		case 1:
-			set '@code$,strcut(strnpcinfo(2),0);	//West or East
+			set '@code$,substr(strnpcinfo(2),0,4);	//West or East
 			mes "[リヒタルゼン案内要員]";
-			if('@code$ == "W") {
+			if('@code$ == "West") {
 				mes "私はリヒタルゼンの^FF0000西区域^000000の案内を";
 				mes "担当しております。";
 			}
-			if('@code$ == "E") {
+			else if('@code$ == "East") {
 				mes "私はリヒタルゼンの^FF0000東区域-貧民街^000000の";
 				mes "案内を担当しております。";
 			}

@@ -38,7 +38,7 @@ OnPCKill:
 
 -	script	Login/Logout	-1,{
 	function Area {
-		set '@name$,strcut(getarg(0),0) + strcut(getarg(0),1) + strcut(getarg(0),2);
+		set '@name$,substr(getarg(0),0,3);
 		if('@name$ == "prt" || '@name$ == "pro")
 			return "プロンテラ";
 		if('@name$ == "gef")

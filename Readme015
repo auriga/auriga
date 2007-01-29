@@ -1,5 +1,39 @@
 ----------------------------------------
-//068 [2006/01/29] by Rayce
+//069 [2007/01/30] by Rayce
+
+・scriptに関して全体的な細かい修正（script.c）
+	-> infinity loopになったとき、gotocountとcmdcountのどちらが原因かわかるように表示する
+	-> 引数として変数が必要な命令/関数で、C_NAMEかどうか必ずチェックするように強化
+	　 他の変数を参照したり最悪の場合サーバクラッシュするのを防ぐために、C_NAMEのチェック後に変数名を取得する
+	-> 配列の上限128を越えてデータを格納しないようにチェック強化
+	-> input命令、divorce関数は引数省略不可に変更
+	-> deletearray命令の第二引数を省略不可に変更
+	-> getcharname関数の省略可能な第二引数は意味がないので削除
+	-> delitem命令でペットの卵を複数個削除すると、ペット情報が1個しか削除されずセーブデータに
+	　 ゴミが残り続ける問題を修正
+	-> delitem命令の処理を改善
+	-> guildskill命令で第三引数を省略したときは、skill命令と同じく値に1を入れるように変更
+	-> gettimestr関数でmaxlenの値が小さすぎた場合は警告文を出力するように強化
+	-> getequipcardcnt関数、successremovecards命令、failedremovecards命令、checkequipedcard関数で
+	　 名前入り装備品もカードとしてみなされる可能性を修正
+	-> recovery命令を実行したときにPCにメッセージを表示しないように変更
+	-> getpetinfo関数、gethomuninfo関数において名前を返すタイプのもので取得失敗したときは
+	　 0ではなく "" （空文字）を返すように変更
+	-> checkequipedcard関数がカート内のアイテムを検索しないように変更
+
+・イベントタイマーの残り時間を返すgettimerdiff関数を追加（pc.*, script.c）
+・文字列長を返すgetstrlen関数を追加
+・strcutを廃止して、より柔軟に文字列を取得できるsubstr関数を追加
+
+・strcut関数を利用していたNPCスクリプトを全てsubstr関数に書き換え
+　特にnpc_test_library.txtは根本的に書き直し
+	script/npc/event/npc_event_xmas.txt
+	script/npc/misc/npc_misc_guide.txt
+	script/sample/npc_test_library.txt
+	script/sample/npc_test_pcevent.txt
+
+----------------------------------------
+//068 [2007/01/29] by Rayce
 
 ・return命令で文字列型の '@変数 を返すときダングリングポインタになるバグを修正（script.c）
 	return命令が終わった時点で '@変数 は全て解放されてしまうため、文字列型の場合は
@@ -11,7 +45,7 @@
 ・@npctalkやglobalmes命令でNPCに発言させるとき、NPC名に含まれる#以下の文字列は表示しないように修正（npc.c）
 
 ----------------------------------------
-//067 [2006/01/26] by Rayce
+//067 [2007/01/26] by Rayce
 
 ・共闘をbl.idではなくchar_idで管理するように修正（battle.c, mob.c）
 	PCの場合はキャラIDをそのまま使います。
@@ -19,7 +53,7 @@
 	苦肉の策であることに変わりありませんが、一応PCとホムの区別は出来ています。
 
 ----------------------------------------
-//066 [2006/01/25] by Rayce
+//066 [2007/01/25] by Rayce
 
 ・aStrdupをキャストするように修正（script.c）
 ・map.dspを少し修正、map_sql.dsp追加
@@ -30,7 +64,7 @@
 ・SQL: 049の最適化が不完全だった部分を修正および巻き戻し等（char.c, inter.c）
 
 ----------------------------------------
-//065 [2006/01/25] by Rayce
+//065 [2007/01/25] by Rayce
 
 ・MAPサーバからSQLを発行できるように追加（map.c）
 	map.cでSQLサーバの設定読み込み/connect/closeを行います。
@@ -61,7 +95,7 @@
 ・064のskill.cで警告が出ていたので修正（skill.c）
 
 ----------------------------------------
-//064 [2006/01/24] by Rayce
+//064 [2007/01/24] by Rayce
 
 ・特定条件でステータス異常が解除可能かどうか、また特定条件下でステータス異常開始を無効にするか、を
 　db/scdata_db.txtで設定できるように拡張（battle.c, pc.c, skill.c, status.*）
@@ -82,7 +116,7 @@
 ・battle_athena.confの cancel_race は不要になったので削除（battle.*, skill.c）
 
 ----------------------------------------
-//063 [2006/01/22] by Rayce
+//063 [2007/01/22] by Rayce
 
 ・ランキングの処理方法を修正
 	各ランキングのデータはcharサーバで管理するように修正。
@@ -149,7 +183,7 @@
        login-converter.cから既に削除されたフィールドを参照しないように変更、およびクラッシュ対策
 
 ----------------------------------------
-//062 [2006/01/20] by Rayce
+//062 [2007/01/20] by Rayce
 
 ・057でcase構文を変更して以後、const.txtに記載されている定数をcaseラベルに指定できなくなった問題を修正（script.c）
 　以下の例は正常なコードとして扱われます。
@@ -161,7 +195,7 @@
 	}
 
 ----------------------------------------
-//061 [2006/01/19] by Rayce
+//061 [2007/01/19] by Rayce
 
 ・種族を示す定数を RCT_*** として定義（map.h）
 　種極に関連する値を気付いた範囲で置き換え
@@ -184,7 +218,7 @@
 	guild_checkskill() でギルド拡張以外のギルドスキルも参照できる可能性を作るための処置です
 
 ----------------------------------------
-//060 [2006/01/18] by Rayce
+//060 [2007/01/18] by Rayce
 
 ・mmo_auth() で認証OKだった場合は100ではなく-1を返すように変更（login.c）
 	ログイン時のエラーメッセージ0x6aを詳細に調べた結果、100もエラー番号の一部として使われていました。
@@ -195,7 +229,7 @@
 ・doc/client_packet.txtに情報追記
 
 ----------------------------------------
-//059 [2006/01/17] by Rayce
+//059 [2007/01/17] by Rayce
 
 ・マヤパープルカードの効果によるハイド見破りを本鯖仕様に修正（clif.c, pc.c, status.*）
 　SI_TIGEREYE追加
@@ -204,7 +238,7 @@
 ・status_check_attackable_by_tigereye() と status_check_tigereye() は本当に不要なので抹消
 
 ----------------------------------------
-//058 [2006/01/16] by Rayce
+//058 [2007/01/16] by Rayce
 
 ・ギルド倉庫に関する処理の変更
 　（int_storage.c, inter.c, atcommand.c, intif.*, map.h, script.c, storage.c）
@@ -240,7 +274,7 @@
 ・057のスクリプトエンジンの修正に対して、case構文を少し最適化
 
 ----------------------------------------
-//057 [2006/01/13] by Rayce
+//057 [2007/01/13] by Rayce
 
 ・スクリプトエンジンの構文関連についてチェック機能強化（script.c）
 
@@ -301,7 +335,7 @@
 	script/npc/job/npc_job_14crusader.txt
 
 ----------------------------------------
-//056 [2006/01/11] by Rayce
+//056 [2007/01/11] by Rayce
 
 ・取引直後にサーバクラッシュすると稀にアイテムがデュープされる危険性を修正（trade.c）
 	露店と同様に取引完了時には双方のプレイヤーのデータをセーブします
@@ -314,7 +348,7 @@
 	・ハリネズミの針から岩石の矢が作成されなかったのを修正(create_arrow_db.txt)
 
 ----------------------------------------
-//055 [2006/01/11] by Rayce
+//055 [2007/01/11] by Rayce
 
 ・ROメールシステムのバグ修正（int_mail.c, inter.c, clif.c, intif.*, mail.*）
 　　-> clif_parse_SendMail() 内で送信処理が行われているのは良くないので、mail.cに移動
@@ -361,7 +395,7 @@
 			mes getcharname(150000);	// Unknownが返る、このときfailedが出力されていた
 
 ----------------------------------------
-//054 [2006/01/11] by Rayce
+//054 [2007/01/11] by Rayce
 
 ・オプション系の型をパケットの仕様に正しく合わせる
 	option : short → unsigned int
@@ -385,7 +419,7 @@
 		Auriga054_changetable.sql追加、mail.sql更新
 
 ----------------------------------------
-//053 [2006/01/10] by Rayce
+//053 [2007/01/10] by Rayce
 
 ・pc_makesavestatus() が二重に呼ばれていた無駄を修正（atcommand.c, homun.c, pc.c pet.c）
 ・ギルドメンバーの情報を参照しようとすると0x157のパケットが飛んで来るので、clif_parse_GuildMemberInfo()
@@ -399,7 +433,7 @@
 	尚、値は100以上しか設定できません（短くすることは不可）。
 
 ----------------------------------------
-//052 [2006/01/09] by Rayce
+//052 [2007/01/09] by Rayce
 
 ・SQL: charasetにSJISを利用する環境下において、MySQL側のバグを回避できるようにスイッチを用意（utils.c）
 	MySQLに付き纏う「文字コード問題」をAurigaサーバ側で補正するものです。
@@ -426,7 +460,7 @@
 ・doc/mysql.txtの内容をdoc/sqllogin.txtに吸収合併
 
 ----------------------------------------
-//051 [2006/01/09] by Rayce
+//051 [2007/01/09] by Rayce
 
 ・converter_athena.conf, msg_athena.conf, script_athena.conf のimportをデフォルトでサポートする
 　conf/importに対応するファイルを3つ追加
@@ -439,14 +473,14 @@
 ・SQL: 048で同梱したsql-files/drop_table.sqlの書式が間違っていたので修正
 
 ----------------------------------------
-//050 [2006/01/07] by Rayce
+//050 [2007/01/07] by Rayce
 
 ・utils.cを少し整理
 ・SQL: SQLで使う変数（mysql_handle, tmp_sql）と strecpy() を utils.c, utils.h にまとめる
        login鯖、char鯖、converterで必要となるので共通化しておくべきだと考えました
 
 ----------------------------------------
-//049 [2006/01/06] by Rayce
+//049 [2007/01/06] by Rayce
 
 ・キャラ削除時に保存してあるROメールを削除するように修正（char.c, int_mail.*）
 	mail_delete() 追加
@@ -463,7 +497,7 @@
 ・SQL: 「void*型から型変換する際にキャストを明示する」が抜けていた部分を修正
 
 ----------------------------------------
-//048 [2006/01/05] by Rayce
+//048 [2007/01/05] by Rayce
 
 ・ROメールに関する変更および修正（mmo.h, inter.c, int_mail.c, clif.c, intif.c）
 　　-> mail構造体のメンバ rates を unsigned int型に変更
@@ -498,7 +532,7 @@
 ・SQL: 使われてないテーブル login_error, ragsrvinfo, sstatus を作成しないように削除（sql_files/mail.sql）
 
 ----------------------------------------
-//047 [2006/01/02] by Rayce
+//047 [2007/01/02] by Rayce
 
 ・path_search_real(), path_search_long_real() で参照する引数の型をcell_t型に修正（map.h, path.c）
 　path_search2() 用に CHK_NONE を追加
