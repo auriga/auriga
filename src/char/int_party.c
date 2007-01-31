@@ -396,8 +396,6 @@ const struct party* party_sql_load_str(char *str) {
 	mysql_free_result(sql_res);
 	if(id_num >= 0) {
 		return party_sql_load_num(id_num);
-	} else {
-		return NULL;
 	}
 	return NULL;
 }

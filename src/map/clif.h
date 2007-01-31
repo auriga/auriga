@@ -168,7 +168,7 @@ void clif_skill_delunit(struct skill_unit *unit);
 void clif_01ac(struct block_list *bl);
 
 void clif_autospell(struct map_session_data *sd, int skilllv);
-void clif_devotion(struct map_session_data *sd, int target);
+void clif_devotion(struct map_session_data *sd);
 
 void clif_spiritball(struct map_session_data *sd);
 void clif_coin(struct map_session_data *sd);
@@ -253,8 +253,8 @@ void clif_guild_notice(struct map_session_data *sd, struct guild *g);
 void clif_guild_invite(struct map_session_data *sd, struct guild *g);
 void clif_guild_inviteack(struct map_session_data *sd, unsigned char flag);
 void clif_guild_leave(struct map_session_data *sd, const char *name, const char *mes);
-void clif_guild_explusion(struct map_session_data *sd, const char *name, const char *mes, int account_id);
-void clif_guild_message(struct guild *g, int account_id, const char *mes, int len);
+void clif_guild_explusion(struct map_session_data *sd, const char *name, const char *mes);
+void clif_guild_message(struct guild *g, const char *mes, int len);
 void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv);
 void clif_guild_reqalliance(struct map_session_data *sd, int account_id, const char *name);
 void clif_guild_allianceack(struct map_session_data *sd, unsigned int flag);
@@ -274,7 +274,7 @@ void clif_resurrection(struct block_list *bl, unsigned short type);
 void clif_set0199(int fd, unsigned short type);
 void clif_pvpset(struct map_session_data *sd, int pvprank, int pvpnum, char type);
 void clif_send0199(int map, unsigned short type);
-void clif_refine(int fd, struct map_session_data *sd, unsigned short fail, int idx, int val);
+void clif_refine(int fd, unsigned short fail, int idx, int val);
 void clif_send_packet(struct map_session_data *sd, const char *message);
 
 //petsystem

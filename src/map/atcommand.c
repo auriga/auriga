@@ -1246,7 +1246,7 @@ atcommand_kami(
 		if (sscanf(message, "%lx %199[^\n]", &color, output) < 2)
 			return -1;
 		color = color & 0x00FFFFFF;
-		intif_announce(output, strlen(output) + 1, color, 0);
+		intif_announce(output, strlen(output) + 1, color);
 	}
 
 	return 0;
@@ -2182,7 +2182,7 @@ atcommand_refine(
 			continue;
 		current_position = data->equip;
 		pc_unequipitem(sd, i, 0);
-		clif_refine(fd, sd, 0, i, data->refine);
+		clif_refine(fd, 0, i, data->refine);
 		clif_delitem(sd, i, 1);
 		clif_additem(sd, i, 1, 0);
 		pc_equipitem(sd, i, current_position);

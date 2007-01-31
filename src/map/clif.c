@@ -1925,7 +1925,7 @@ void clif_movechar(struct map_session_data *sd)
  *
  *------------------------------------------
  */
-static void clif_quitsave(int fd, struct map_session_data *sd)
+static void clif_quitsave(struct map_session_data *sd)
 {
 	map_quit(sd);
 	chrif_chardisconnect(sd);
@@ -5539,7 +5539,7 @@ void clif_send0199(int map, unsigned short type)
  * 精錬エフェクトを送信する
  *------------------------------------------
  */
-void clif_refine(int fd, struct map_session_data *sd, unsigned short fail, int idx, int val)
+void clif_refine(int fd, unsigned short fail, int idx, int val)
 {
 	WFIFOW(fd,0)=0x188;
 	WFIFOW(fd,2)=fail;
@@ -6553,7 +6553,7 @@ void clif_party_leaved(struct party *p, struct map_session_data *sd, int account
  */
 void clif_party_message(struct party *p, int account_id, char *mes, int len)
 {
-	struct map_session_data *sd;
+	struct map_session_data *sd = NULL;
 	int i;
 
 	nullpo_retv(p);
@@ -6920,7 +6920,7 @@ void clif_autospell(struct map_session_data *sd, int skilllv)
  * ディボーションの青い糸
  *------------------------------------------
  */
-void clif_devotion(struct map_session_data *sd, int target)
+void clif_devotion(struct map_session_data *sd)
 {
 	unsigned char buf[32];
 	int n;
@@ -6929,10 +6929,8 @@ void clif_devotion(struct map_session_data *sd, int target)
 
 	WBUFW(buf,0)=0x1cf;
 	WBUFL(buf,2)=sd->bl.id;
-//	WBUFL(buf,6)=target;
 	for(n=0;n<5;n++)
 		WBUFL(buf,6+4*n)=sd->dev.val2[n];
-//		WBUFL(buf,10+4*n)=0;
 	WBUFB(buf,26)=8;
 	WBUFB(buf,27)=0;
 	clif_send(buf,packet_db[0x1cf].len,&sd->bl,AREA);
@@ -7576,7 +7574,7 @@ void clif_guild_leave(struct map_session_data *sd, const char *name, const char 
  * ギルドメンバ追放通知
  *------------------------------------------
  */
-void clif_guild_explusion(struct map_session_data *sd, const char *name, const char *mes, int account_id)
+void clif_guild_explusion(struct map_session_data *sd, const char *name, const char *mes)
 {
 	unsigned char buf[128];
 
@@ -7627,7 +7625,7 @@ static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *
  * ギルド会話
  *------------------------------------------
  */
-void clif_guild_message(struct guild *g, int account_id, const char *mes, int len)
+void clif_guild_message(struct guild *g, const char *mes, int len)
 {
 	struct map_session_data *sd;
 	unsigned char *buf = (unsigned char *)aMalloc(len+32);
@@ -7933,7 +7931,7 @@ void clif_disp_onlyself(struct map_session_data *sd, char *mes, int len)
  * 叫ぶ
  *------------------------------------------
  */
-static void clif_onlymessage(struct map_session_data *sd, char *mes, int len)
+static void clif_onlymessage(char *mes, int len)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+32);
 
@@ -12045,7 +12043,7 @@ static void clif_parse_FeelSaveAck(int fd,struct map_session_data *sd, int cmd)
 int clif_disconnect(int fd) {
 	struct map_session_data *sd = (struct map_session_data *)session[fd]->session_data;
 	if(sd && sd->state.auth)
-		clif_quitsave(fd,sd);
+		clif_quitsave(sd);
 	close(fd);
 	if (sd) {
 		struct map_session_data *tmpsd = map_id2sd(sd->bl.id);
@@ -12405,7 +12403,7 @@ void clif_webchat_message(const char* head,const char *mes1,const char *mes2) {
 			return;
 		}
 	}
-	clif_onlymessage(NULL,temp,strlen(temp) + 1);
+	clif_onlymessage(temp,strlen(temp) + 1);
 
 	memmove(&webchat_message[1],&webchat_message[0],sizeof(webchat_message[0]) * (MAX_CHAT_MESSAGE - 1));
 	strcpy(webchat_message[0],p);

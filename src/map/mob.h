@@ -150,8 +150,6 @@ short mob_get_head_buttom(int);
 int do_init_mob(void);
 int do_final_mob(void);
 
-int mob_change_summon_monster_data(struct mob_data* ma);
-
 int mob_timer_delete(int tid, unsigned int tick, int id, int data);
 
 int mob_deleteslave(struct mob_data *md);

@@ -2245,11 +2245,6 @@ int mob_class_change(struct mob_data *md,int *value,int value_count)
 	return mob_class_change_id(md,value[atn_rand()%count]);
 }
 
-int mob_change_summon_monster_data(struct mob_data* ma)
-{
-	return 0;
-}
-
 /*==========================================
  * mob回復
  *------------------------------------------
@@ -3830,7 +3825,7 @@ static int mob_readskilldb(void)
 		while(fgets(line,1020,fp)){
 			char *sp[20],*p;
 			int mob_id;
-			struct mob_skill *ms;
+			struct mob_skill *ms = NULL;
 			int j=0;
 
 			lineno++;
@@ -3863,7 +3858,7 @@ static int mob_readskilldb(void)
 			for(i=0;i<MAX_MOBSKILL;i++)
 				if( (ms=&mob_db[mob_id].skill[i])->skill_id == 0)
 					break;
-			if(i==MAX_MOBSKILL){
+			if(!ms){
 				printf("mob_skill: readdb: too many skill ! [%s] in %d[%s]\n",
 					sp[1],mob_id,mob_db[mob_id].jname);
 				continue;

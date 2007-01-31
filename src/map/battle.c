@@ -126,7 +126,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 		if(tsd && tsd->sc_data && tsd->sc_data[SC_DEVOTION].val1){	// ディボーションをかけられている
 			struct map_session_data *md = map_id2sd(tsd->sc_data[SC_DEVOTION].val1);
 			if(md && skill_devotion3(md,target->id)){
-				skill_devotion(md,target->id);
+				skill_devotion(md);
 			}
 			else if(md && bl) {
 				int i;

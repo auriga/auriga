@@ -1,4 +1,21 @@
 ----------------------------------------
+//070 [2007/02/01] by Rayce
+
+・スクリプトの DEBUG_DISASM および DEBUG_RUN で出力される書式を少し修正（script.c）
+・使われていない関数 mob_change_summon_monster_data() を削除（mob.*）
+・VC++で警告レベルを /W4 にした際に得られた結果の中で気になった箇所を修正
+　（char.c, int_guild.c, int_party.c, login.c, mob.c, npc.c）
+・関数内で参照されない不要な引数を削除
+	clif_quitsave()
+	clif_refine()
+	clif_devotion()
+	clif_guild_explusion()
+	clif_guild_message()
+	clif_onlymessage()
+	intif_announce()
+	skill_devotion()
+
+----------------------------------------
 //069 [2007/01/30] by Rayce
 
 ・scriptに関して全体的な細かい修正（script.c）

@@ -188,7 +188,7 @@ int skill_gangsterparadise(struct map_session_data *sd ,int type);
 void skill_brandishspear_first(struct square *tc,int dir,int x,int y);
 void skill_brandishspear_dir(struct square *tc,int dir,int are);
 void skill_autospell(struct map_session_data *sd, int skillid);
-void skill_devotion(struct map_session_data *md,int target);
+void skill_devotion(struct map_session_data *md);
 void skill_devotion2(struct block_list *bl,int crusader);
 int skill_devotion3(struct map_session_data *sd,int target);
 void skill_devotion_end(struct map_session_data *md,struct map_session_data *sd,int target);

@@ -1081,7 +1081,7 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4)
 static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4)
 {
 	char *p;
-	int x, y, dir, m;
+	int x, y, dir=0, m;
 	int pos = 0;
 	char mapname[24];
 	struct npc_data *nd;

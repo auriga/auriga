@@ -701,8 +701,6 @@ const struct mmo_account* login_sql_account_load_idx(int index) {
 	mysql_free_result(sql_res);
 	if(id_num >= 0) {
 		return login_sql_account_load_num(id_num);
-	} else {
-		return NULL;
 	}
 	return NULL;
 }

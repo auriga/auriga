@@ -1811,6 +1811,7 @@ static int char_sql_build_ranking(void)
 	memset(&ranking_data, 0, sizeof(ranking_data));
 
 	for(i=0; i<MAX_RANKING; i++) {
+		max = 0;
 		sprintf(
 			tmp_sql,
 			"SELECT `value`,`char_id` FROM `%s` WHERE `type` = 3 AND `str` = '%s' AND `value` > 0 ORDER BY `value` DESC LIMIT 0,%d",
@@ -1827,10 +1828,10 @@ static int char_sql_build_ranking(void)
 				ranking_data[i][j].char_id = atoi(sql_row[1]);
 			}
 			mysql_free_result(sql_res);
+			max = j;
 		}
 
 		// キャラ名の補完
-		max = j;
 		for(j=0; j<max; j++) {
 			sprintf(tmp_sql, "SELECT `name` FROM `%s` WHERE `char_id` = '%d'", char_db, ranking_data[i][j].char_id);
 			if (mysql_query(&mysql_handle, tmp_sql)) {
@@ -1842,7 +1843,7 @@ static int char_sql_build_ranking(void)
 				memcpy(ranking_data[i][j].name, sql_row[0], 24);
 				mysql_free_result(sql_res);
 			} else {
-				printf("char_build_ranking: char_name not found (ID = %d, Rank = %d)\n", ranking_data[i][j].char_id, j+1);
+				printf("char_build_ranking: char_name not found in %s (ID = %d, Rank = %d)\n", ranking_reg[i], ranking_data[i][j].char_id, j+1);
 				memcpy(ranking_data[i][j].name, unknown_char_name, 24);
 				if(sql_res)
 					mysql_free_result(sql_res);

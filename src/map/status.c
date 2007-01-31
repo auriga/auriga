@@ -5489,7 +5489,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 					struct map_session_data *dsd = map_id2sd(sc_data[type].val1);
 					sc_data[type].val1=sc_data[type].val2=0;
 					if(dsd)
-						skill_devotion(dsd,bl->id);
+						skill_devotion(dsd);
 					calc_flag = 1;
 				}
 				break;

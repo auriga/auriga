@@ -202,7 +202,7 @@ void intif_GMmessage(char* mes, int len, int flag)
 }
 
 // GMメッセージ（マルチカラー）を送信
-int intif_announce(char* mes,int len,unsigned long color,int flag)
+int intif_announce(char* mes,int len,unsigned long color)
 {
 	if (inter_fd < 0)
 		return -1;

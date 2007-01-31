@@ -1207,8 +1207,6 @@ const struct guild* guild_sql_load_str(char *str) {
 	mysql_free_result(sql_res);
 	if(id_num >= 0) {
 		return guild_sql_load_num(id_num);
-	} else {
-		return NULL;
 	}
 	return NULL;
 }
@@ -2395,7 +2393,7 @@ int mapif_parse_GuildCastleDataLoad(int fd,int castle_id,int index)
 	case 17: return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleG7); break;
 	default:
 		printf("mapif_parse_GuildCastleDataLoad ERROR!! (Not found index=%d)\n", index);
-		return 0;
+		break;
 	}
 	return 0;
 }

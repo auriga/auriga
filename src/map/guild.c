@@ -850,7 +850,7 @@ void guild_member_leaved(int guild_id, int account_id, int char_id, unsigned cha
 					if(flag==0)
 						clif_guild_leave(sd2,name,mes);
 					else
-						clif_guild_explusion(sd2,name,mes,account_id);
+						clif_guild_explusion(sd2,name,mes);
 				}
 				g->member[i].account_id=0;
 				g->member[i].sd=NULL;
@@ -1073,7 +1073,7 @@ void guild_recv_message(int guild_id, int account_id, char *mes, int len)
 
 	if((g=guild_search(guild_id))==NULL)
 		return;
-	clif_guild_message(g,account_id,mes,len);
+	clif_guild_message(g,mes,len);
 
 	return;
 }

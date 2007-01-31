@@ -3667,7 +3667,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			sd->dev.val1[n] = dstsd->bl.id;
 			sd->dev.val2[n] = dstsd->bl.id;
 			clif_skill_nodamage(&sd->bl,&dstsd->bl,skillid,skilllv,1);
-			clif_devotion(sd,dstsd->bl.id);
+			clif_devotion(sd);
 			status_change_start(&dstsd->bl,SkillStatusChangeTable[skillid],sd->bl.id,1,0,0,skill_get_time(skillid,skilllv),0 );
 		}
 		else if(sd)
@@ -9384,7 +9384,7 @@ void skill_brandishspear_dir(struct square *tc,int dir,int are){
  * ディボーション 有効確認
  *------------------------------------------
  */
-void skill_devotion(struct map_session_data *md,int target)
+void skill_devotion(struct map_session_data *md)
 {
 	// 総確認
 	int n;
@@ -9429,7 +9429,7 @@ int skill_devotion3(struct map_session_data *md,int target)
 		for(n=0;n<5;n++)
 			if(md->dev.val1[n]==target)
 				md->dev.val2[n]=0;	// 離れた時は、糸を切るだけ
-		clif_devotion(md,sd->bl.id);
+		clif_devotion(md);
 		return 1;
 	}
 	return 0;
@@ -9447,7 +9447,7 @@ void skill_devotion_end(struct map_session_data *md,struct map_session_data *sd,
 		sd->sc_data[SC_DEVOTION].val1=0;
 		sd->sc_data[SC_DEVOTION].val2=0;
 		clif_status_change(&sd->bl,SC_DEVOTION,0);
-		clif_devotion(md,sd->bl.id);
+		clif_devotion(md);
 	}
 }
 
@@ -11629,7 +11629,7 @@ int skill_success_weaponrefine(struct map_session_data *sd,int idx)
 		if(sd->status.inventory[idx].refine > MAX_REFINE)
 			sd->status.inventory[idx].refine = MAX_REFINE;
 
-		clif_refine(sd->fd,sd,0,idx,sd->status.inventory[idx].refine);
+		clif_refine(sd->fd,0,idx,sd->status.inventory[idx].refine);
 		clif_misceffect(&sd->bl,3);
 
 		//ブラックスミス 名声値
@@ -11672,7 +11672,7 @@ int skill_fail_weaponrefine(struct map_session_data *sd,int idx)
 		sd->status.inventory[idx].refine = 0;
 		pc_delitem(sd,idx,1,0);
 		// 精錬失敗エフェクトのパケット
-		clif_refine(sd->fd,sd,1,idx,sd->status.inventory[idx].refine);
+		clif_refine(sd->fd,1,idx,sd->status.inventory[idx].refine);
 		// 他の人にも失敗を通知
 		clif_misceffect(&sd->bl,2);
 	}

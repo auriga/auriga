@@ -781,12 +781,11 @@ unsigned char* parse_line(unsigned char *p)
 unsigned char* parse_curly_close(unsigned char *p) {
 	if(syntax.curly_count <= 0) {
 		disp_error_message("unexpected string",p);
-		return p + 1;
-	} else if(syntax.curly[syntax.curly_count-1].type == TYPE_NULL) {
+	}
+	if(syntax.curly[syntax.curly_count-1].type == TYPE_NULL) {
 		syntax.curly_count--;
 		// if, for , while の閉じ判定
 		p = parse_syntax_close(p + 1);
-		return p;
 	} else if(syntax.curly[syntax.curly_count-1].type == TYPE_SWITCH) {
 		// switch() 閉じ判定
 		int pos = syntax.curly_count-1;
@@ -824,11 +823,11 @@ unsigned char* parse_curly_close(unsigned char *p) {
 
 		linkdb_final(&syntax.curly[pos].case_label);	// caseラベルのリストを解放
 		syntax.curly_count--;
-		return p+1;
+		p++;
 	} else {
 		disp_error_message("unexpected string",p);
-		return p + 1;
 	}
+	return p;
 }
 
 // 構文関連の処理
@@ -1687,6 +1686,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 #ifdef DEBUG_DISASM
 	{
 		int i = 0,j;
+		printf("------------------------------\n");
 		while(i < script_pos) {
 			printf("%06x ",i);
 			j = i;
@@ -1737,6 +1737,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 			}
 			printf("\n");
 		}
+		printf("\n");
 	}
 #endif
 
@@ -2427,7 +2428,7 @@ int run_func(struct script_state *st)
 				printf(" arg");
 				break;
 			case C_POS:
-				printf(" pos(%d)",st->stack->stack_data[i].u.num);
+				printf(" pos(0x%x)",st->stack->stack_data[i].u.num);
 				break;
 			case C_STR:
 				printf(" str(%s)",st->stack->stack_data[i].u.str);
@@ -2463,7 +2464,7 @@ int run_func(struct script_state *st)
 	}
 #ifdef DEBUG_RUN
 	printf("run_func : %s (func_no : %d , func_type : %d pos : 0x%x)\n",
-		str_buf+str_data[func].str,func,str_data[func].type,st->pos
+		str_buf+str_data[func].str,func,str_data[func].type,st->pos-1
 	);
 #endif
 	if(str_data[func].func){
@@ -6372,7 +6373,7 @@ int buildin_announce(struct script_state *st)
 			clif_GMmessage(bl,str,len,flag);
 	} else {
 		if(color)
-			intif_announce(str,len,strtoul(color,NULL,0),flag);
+			intif_announce(str,len,strtoul(color,NULL,0));
 		else
 			intif_GMmessage(str,len,flag);
 	}
