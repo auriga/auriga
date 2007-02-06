@@ -14,7 +14,7 @@ void do_final_party(void);
 struct party *party_search(int party_id);
 struct party* party_searchname(char *str);
 
-void party_create(struct map_session_data *sd, char *name);
+void party_create(struct map_session_data *sd, char *name, int item, int item2);
 void party_created(int account_id, unsigned char fail, int party_id, char *name);
 void party_request_info(int party_id);
 void party_invite(struct map_session_data *sd, int account_id);

@@ -379,7 +379,7 @@ int intif_unlock_guild_storage(int guild_id)
 }
 
 // パーティ作成要求
-void intif_create_party(struct map_session_data *sd, char *name)
+void intif_create_party(struct map_session_data *sd, char *name, int item, int item2)
 {
 	nullpo_retv(sd);
 
@@ -389,10 +389,12 @@ void intif_create_party(struct map_session_data *sd, char *name)
 	WFIFOW(inter_fd,0) = 0x3020;
 	WFIFOL(inter_fd,2) = sd->status.account_id;
 	memcpy(WFIFOP(inter_fd, 6),name,24);
-	memcpy(WFIFOP(inter_fd,30),sd->status.name,24);
-	memcpy(WFIFOP(inter_fd,54),map[sd->bl.m].name,16);
-	WFIFOW(inter_fd,70)= sd->status.base_level;
-	WFIFOSET(inter_fd,72);
+	WFIFOB(inter_fd,30) = item;
+	WFIFOB(inter_fd,31) = item2;
+	memcpy(WFIFOP(inter_fd,32),sd->status.name,24);
+	memcpy(WFIFOP(inter_fd,56),map[sd->bl.m].name,16);
+	WFIFOW(inter_fd,72)= sd->status.base_level;
+	WFIFOSET(inter_fd,74);
 
 	return;
 }

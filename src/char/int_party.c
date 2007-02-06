@@ -768,34 +768,34 @@ int mapif_party_message(int party_id,int account_id,char *mes,int len)
 
 
 // パーティ
-int mapif_parse_CreateParty(int fd,int account_id,char *name,char *nick,char *map,int lv)
+int mapif_parse_CreateParty(int fd,int account_id,char *name,int item,int item2,char *nick,char *map,int lv)
 {
 	struct party *p;
 	int i;
 	
-	for(i=0;i<24 && name[i];i++){
-		if( !(name[i]&0xe0) || name[i]==0x7f){
+	for(i=0; i<24 && name[i]; i++) {
+		if(!(name[i]&0xe0) || name[i]==0x7f) {
 			printf("int_party: illegal party name [%s]\n",name);
 			mapif_party_created(fd,account_id,NULL);
 			return 0;
 		}
 	}
-
-	if( party_load_str(name) != NULL){
+	if(party_load_str(name) != NULL) {
 		printf("int_party: same name party exists [%s]\n",name);
 		mapif_party_created(fd,account_id,NULL);
 		return 0;
 	}
-	p=(struct party *)aCalloc(1,sizeof(struct party));
+
+	p = (struct party *)aCalloc(1,sizeof(struct party));
 	memcpy(p->name,name,24);
-	p->exp=0;
-	p->item=0;
-	p->member[0].account_id=account_id;
+	p->exp  = 0;
+	p->item = (item? 1: 0) | (item2? 2: 0);
+	p->member[0].account_id = account_id;
 	memcpy(p->member[0].name,nick,24);
 	memcpy(p->member[0].map,map,16);
-	p->member[0].leader=1;
-	p->member[0].online=1;
-	p->member[0].lv=lv;
+	p->member[0].leader = 1;
+	p->member[0].online = 1;
+	p->member[0].lv     = lv;
 
 	if(party_new(p)) {
 		// 成功
@@ -805,7 +805,7 @@ int mapif_parse_CreateParty(int fd,int account_id,char *name,char *nick,char *ma
 		// 失敗
 		mapif_party_created(fd,account_id,NULL);
 	}
-	
+
 	return 0;
 }
 
@@ -986,7 +986,7 @@ int mapif_parse_PartyCheck(int fd,int party_id,int account_id,char *nick)
 int inter_party_parse_frommap(int fd)
 {
 	switch(RFIFOW(fd,0)){
-	case 0x3020: mapif_parse_CreateParty(fd,RFIFOL(fd,2),RFIFOP(fd,6),RFIFOP(fd,30),RFIFOP(fd,54),RFIFOW(fd,70)); break;
+	case 0x3020: mapif_parse_CreateParty(fd,RFIFOL(fd,2),RFIFOP(fd,6),RFIFOB(fd,30),RFIFOB(fd,31),RFIFOP(fd,32),RFIFOP(fd,56),RFIFOW(fd,72)); break;
 	case 0x3021: mapif_parse_PartyInfo(fd,RFIFOL(fd,2)); break;
 	case 0x3022: mapif_parse_PartyAddMember(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10),RFIFOP(fd,34),RFIFOW(fd,50)); break;
 	case 0x3023: mapif_parse_PartyChangeOption(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOW(fd,10),RFIFOW(fd,12)); break;

@@ -58,7 +58,7 @@ struct party* party_searchname(char *str)
 }
 
 // 作成要求
-void party_create(struct map_session_data *sd, char *name)
+void party_create(struct map_session_data *sd, char *name, int item, int item2)
 {
 	int i;
 	char party_name[24]; // 23 + NULL
@@ -85,7 +85,7 @@ void party_create(struct map_session_data *sd, char *name)
 		}
 
 		// ask char-server for creation
-		intif_create_party(sd, party_name);
+		intif_create_party(sd, party_name, item, item2);
 	} else
 		clif_party_created(sd,2); // 0xfa <flag>.B: 0: Party has successfully been organized, 1: That Party Name already exists., 2: The Character is already in a party.
 

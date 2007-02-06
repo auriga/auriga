@@ -539,12 +539,12 @@ int clif_clearchar_delay(unsigned int tick,struct block_list *bl,int type)
  */
 void clif_clearchar_id(int id, unsigned char type, int fd)
 {
-	unsigned char buf[16];
+	if(fd < 0)
+		return;
 
-	WBUFW(buf,0) = 0x80;
-	WBUFL(buf,2) = id;
-	WBUFB(buf,6) = type;
-	memcpy(WFIFOP(fd,0),buf,7);
+	WFIFOW(fd,0) = 0x80;
+	WFIFOL(fd,2) = id;
+	WFIFOB(fd,6) = type;
 	WFIFOSET(fd,packet_db[0x80].len);
 
 	return;
@@ -1165,10 +1165,10 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFW(buf,6)=nd->speed;
 	WBUFW(buf,12)=nd->option;
 	WBUFW(buf,14)=nd->class_;
-	if( (nd->bl.subtype!=WARP) &&
-		(nd->class_ == 722) &&
-		(nd->u.scr.guild_id > 0) &&
-		((g=guild_search(nd->u.scr.guild_id))) )
+	if( nd->bl.subtype != WARP &&
+	    nd->class_ == WARP_DEBUG_CLASS &&
+	    nd->u.scr.guild_id > 0 &&
+	    (g = guild_search(nd->u.scr.guild_id)) )
 	{
 		WBUFL(buf,22)=g->emblem_id;
 		WBUFL(buf,26)=g->guild_id;
@@ -1902,16 +1902,14 @@ void clif_walkok(struct map_session_data *sd)
  */
 void clif_movechar(struct map_session_data *sd)
 {
-	int fd;
-	int len;
-
 	nullpo_retv(sd);
 
 	// 完全なインビジブルモードなら送信しない
 	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd))
 	{
-		fd=sd->fd;
+		int fd,len;
 
+		fd  = sd->fd;
 		len = clif_set007b(sd,WFIFOP(fd,0));
 		clif_send(WFIFOP(fd,0),len,&sd->bl,AREA_WOS);
 
@@ -3875,7 +3873,6 @@ void clif_traderequest(struct map_session_data *sd, char *name)
 /*==========================================
  * 取り引き要求応答
  *------------------------------------------
-
  */
 void clif_tradestart(struct map_session_data *sd, unsigned char type)
 {
@@ -4638,7 +4635,7 @@ int clif_pcoutsight(struct block_list *bl,va_list ap)
 }
 
 /*==========================================
- *視野
+ * 視野
  *------------------------------------------
  */
 int clif_pcinsight(struct block_list *bl,va_list ap)
@@ -5402,6 +5399,8 @@ void clif_GlobalMessage(struct block_list *bl,char *message)
 		return;
 
 	len=strlen(message)+1;
+	if(len > sizeof(buf))
+		len = sizeof(buf);
 
 	WBUFW(buf,0)=0x8d;
 	WBUFW(buf,2)=len+8;
@@ -5423,9 +5422,9 @@ void clif_announce(struct block_list *bl, char* mes, int len, unsigned long colo
 	WBUFW(buf,0) = 0x1c3;
 	WBUFW(buf,2) = len+16;
 	WBUFL(buf,4) = color;
-	WBUFW(buf,8) = 0x190; //Font style? Type?
-	WBUFW(buf,10) = 0x0c;  //12? Font size?
-	WBUFL(buf,12) = 0;	//Unknown!
+	WBUFW(buf,8) = 0x190;	// Font style? Type?
+	WBUFW(buf,10) = 0x0c;	// 12? Font size?
+	WBUFL(buf,12) = 0;	// Unknown!
 	memcpy(WBUFP(buf,16), mes, len);
 
 	flag &= 0x07;
@@ -6993,7 +6992,7 @@ void clif_combo_delay(struct block_list *bl, int wait)
 }
 
 /*==========================================
- *白刃取り
+ * 白刃取り
  *------------------------------------------
  */
 void clif_bladestop(struct block_list *src, int dst_id, int flag)
@@ -7038,9 +7037,11 @@ void clif_changemapcell(int m, int x, int y, int cell_type, int type)
 	struct block_list bl;
 	char buf[32];
 
+	memset(&bl, 0, sizeof(bl));
 	bl.m = m;
 	bl.x = x;
 	bl.y = y;
+
 	WBUFW(buf,0) = 0x192;
 	WBUFW(buf,2) = x;
 	WBUFW(buf,4) = y;
@@ -7248,7 +7249,7 @@ void clif_guild_basicinfo(struct map_session_data *sd, struct guild *g)
 	memcpy(WFIFOP(fd,46),g->name,24);
 	memcpy(WFIFOP(fd,70),g->master,24);
 	memcpy(WFIFOP(fd,94),"",20);	// 本拠地
-	WFIFOSET(fd,packet_db[WFIFOW(fd,0)].len);
+	WFIFOSET(fd,packet_db[0x1b6].len);
 
 	return;
 }
@@ -7894,15 +7895,14 @@ void clif_divorced(struct map_session_data *sd, char *name)
  */
 void clif_sitting(struct map_session_data *sd)
 {
-	int fd;
+	unsigned char buf[32];
 
 	nullpo_retv(sd);
 
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x8a;
-	WFIFOL(fd,2)=sd->bl.id;
-	WFIFOB(fd,26)=2;
-	clif_send(WFIFOP(fd,0),packet_db[0x8a].len,&sd->bl,AREA);
+	WBUFW(buf,0)=0x8a;
+	WBUFL(buf,2)=sd->bl.id;
+	WBUFB(buf,26)=2;
+	clif_send(buf,packet_db[0x8a].len,&sd->bl,AREA);
 
 	return;
 }
@@ -8415,8 +8415,8 @@ void clif_deletemail_res(const int fd,int mail_num,int flag)
  * 方向転換
  *------------------------------------------
  */
-
-void clif_changedir( struct block_list *bl, int headdir, int dir ){
+void clif_changedir( struct block_list *bl, int headdir, int dir )
+{
 	char buf[16];
 
 	nullpo_retv(bl);
@@ -9955,9 +9955,9 @@ static void clif_parse_SkillUp(int fd,struct map_session_data *sd, int cmd)
 {
 	int skill_num = RFIFOW(fd,GETPACKETPOS(cmd,0));
 
-	if( skill_num>=10000 )				// ギルドスキル
+	if( skill_num >= GUILD_SKILLID )	// ギルドスキル
 		guild_skillup(sd,skill_num,0);
-	else if( skill_num>=HOM_SKILLID )	// ホムンクルススキル
+	else if( skill_num >= HOM_SKILLID )	// ホムンクルススキル
 		homun_skillup(sd,skill_num);
 	else
 		pc_skillup(sd,skill_num);
@@ -9993,7 +9993,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 	if( packet_db[cmd].pos[0]==0 && packet_db[cmd].pos[1]==0 && packet_db[cmd].pos[2]==0)
 	{
 		int tmp = g_packet_len % 3;
-		static const int t1[]={ 138,43,170 }, t2[]={ 103,4,80 }, t3[]={ 130,33,84 }, t4[]={ 134, 39, 166 };
+		const int t1[]={ 138,43,170 }, t2[]={ 103,4,80 }, t3[]={ 130,33,84 }, t4[]={ 134, 39, 166 };
 		int tmp2 = (g_packet_len - t1[tmp]) / 3;
 		skilllv  = RFIFOW(fd, tmp2   + t2[tmp] );
 		skillnum = RFIFOW(fd, tmp2*2 + t3[tmp] );
@@ -10627,12 +10627,8 @@ static void clif_parse_CloseKafra(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_CreateParty(int fd,struct map_session_data *sd, int cmd)
 {
-	// アイテム分配未対応
-	//int item1 = RFIFOP(fd,GETPACKETPOS(cmd,1));
-	//int item2 = RFIFOP(fd,GETPACKETPOS(cmd,2));
-
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 7){
-		party_create(sd,RFIFOP(fd,GETPACKETPOS(cmd,0)));
+		party_create(sd,RFIFOP(fd,GETPACKETPOS(cmd,0)),0,0);
 	}
 	else
 		clif_skill_fail(sd,1,0,4);
@@ -10646,8 +10642,12 @@ static void clif_parse_CreateParty(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_CreateParty2(int fd,struct map_session_data *sd, int cmd)
 {
+	// アイテム分配未対応
+	int item1 = (int)RFIFOB(fd,GETPACKETPOS(cmd,1));
+	int item2 = (int)RFIFOB(fd,GETPACKETPOS(cmd,2));
+
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 7){
-		party_create(sd,RFIFOP(fd,GETPACKETPOS(cmd,0)));
+		party_create(sd,RFIFOP(fd,GETPACKETPOS(cmd,0)),item1,item2);
 	}
 	else
 		clif_skill_fail(sd,1,0,4);

@@ -1,4 +1,25 @@
 ----------------------------------------
+//071 [2007/02/07] by Rayce
+
+・パーティのアイテム分配フラグをinterサーバに渡すための修正
+　clif_parse_CreateParty2() でitem, item2の読み取りを有効化
+　（int_party.c, inter.c, atcommand.c, intif.*, party.*）
+・clif.cの細かい修正
+
+・getelementofarray関数の一次元目の配列において、参照する要素が中途半端な相対位置になっていたので
+　絶対位置を参照するように修正（script.c）
+
+　※以下のコードは今までは4が返ってきましたが、2が返るようになります
+
+	function Test {
+		mes getelementofarray(getarg(0),1);
+		return;
+	}
+	setarray '@data,1,2,3,4,5,6,7;
+	Test '@data[2];
+	close;
+
+----------------------------------------
 //070 [2007/02/01] by Rayce
 
 ・スクリプトの DEBUG_DISASM および DEBUG_RUN で出力される書式を少し修正（script.c）

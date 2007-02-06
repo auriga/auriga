@@ -4589,7 +4589,7 @@ int buildin_getelementofarray(struct script_state *st)
 
 	if(count == 0) {
 		push_val2(st->stack,C_NAME,
-			(j<<24) | st->stack->stack_data[st->start+2].u.num,
+			(j<<24) | (st->stack->stack_data[st->start+2].u.num&0x00ffffff),
 			st->stack->stack_data[st->start+2].ref);
 	} else {
 		int num      = st->stack->stack_data[st->start+2].u.num;

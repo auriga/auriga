@@ -3554,7 +3554,7 @@ atcommand_party(
 
 	memset(party, '\0', sizeof(party));
 	if (sscanf(message, "%99[^\n]", party))
-		party_create(sd, party);
+		party_create(sd, party,0,0);
 
 	return 0;
 }
