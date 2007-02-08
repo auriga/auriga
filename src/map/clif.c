@@ -517,18 +517,22 @@ void clif_clearchar(struct block_list *bl, int type)
 static int clif_clearchar_delay_sub(int tid,unsigned int tick,int id,int data)
 {
 	struct block_list *bl = (struct block_list *)id;
+	unsigned char buf[8];
 
-	clif_clearchar(bl,data);
+	WBUFW(buf,0) = 0x80;
+	WBUFL(buf,2) = bl->id;
+	WBUFB(buf,6) = 0;
+	clif_send(buf,packet_db[0x80].len,bl,(data == 1)? AREA_WOS: ALL_SAMEMAP);
+
 	aFree(bl);
-
 	return 0;
 }
 
-int clif_clearchar_delay(unsigned int tick,struct block_list *bl,int type)
+int clif_clearchar_delay(unsigned int tick,struct block_list *bl)
 {
-	struct block_list *tmpbl=(struct block_list *)aCalloc(1,sizeof(struct block_list));
+	struct block_list *tmpbl=(struct block_list *)aMalloc(sizeof(struct block_list));
 	memcpy(tmpbl,bl,sizeof(struct block_list));
-	add_timer2(tick,clif_clearchar_delay_sub,(int)tmpbl,type,TIMER_FREE_ID);
+	add_timer2(tick,clif_clearchar_delay_sub,(int)tmpbl,battle_config.pcview_mob_clear_type,TIMER_FREE_ID);
 
 	return 0;
 }
@@ -2236,6 +2240,38 @@ void clif_selllist(struct map_session_data *sd)
 }
 
 /*==========================================
+ * 課金アイテム販売リスト
+ *------------------------------------------
+ */
+void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
+{
+	struct item_data *id;
+	int fd,i,val;
+
+	nullpo_retv(sd);
+	nullpo_retv(nd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0x287;
+	WFIFOL(fd,4) = 0;	// point
+	for(i=0; nd->u.shop_item[i].nameid > 0; i++) {
+		id  = itemdb_search(nd->u.shop_item[i].nameid);
+		val = nd->u.shop_item[i].value;
+		WFIFOL(fd,8+i*11)  = val;
+		WFIFOL(fd,12+i*11) = val;	// DCはないので価格は同じ
+		WFIFOB(fd,16+i*11) = 0x12;	// id->type? 0x12で固定?
+		if(id->view_id > 0)
+			WFIFOW(fd,17+i*11) = id->view_id;
+		else
+			WFIFOW(fd,17+i*11) = nd->u.shop_item[i].nameid;
+	}
+	WFIFOW(fd,2) = 8+i*11;
+	WFIFOSET(fd,WFIFOW(fd,2));
+
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -3222,8 +3258,7 @@ void clif_changelook(struct block_list *bl, int type, int val)
 		WBUFB(buf,6)=type;
 		WBUFB(buf,7)=val;
 		clif_send(buf,packet_db[0xc3].len,bl,AREA);
-	}
-	else {
+	} else {
 		int idx=0, shield=0;
 		if(sd) {
 			switch (type) {
@@ -3294,7 +3329,7 @@ void clif_send_clothcolor(struct block_list *bl)
 	WBUFL(buf,2) = bl->id;
 	WBUFB(buf,6) = LOOK_CLOTHES_COLOR;
 	WBUFW(buf,7) = color;
-	WBUFW(buf,9)=0;
+	WBUFW(buf,9) = 0;
 	clif_send(buf,packet_db[0x1d7].len,bl,AREA);
 #endif
 	return;
@@ -6398,6 +6433,52 @@ void clif_party_created(struct map_session_data *sd, unsigned char flag)
 }
 
 /*==========================================
+ * パーティメイン情報
+ *------------------------------------------
+ */
+void clif_party_main_info(struct party *p, int fd)
+{
+	unsigned char buf[96];
+	int i;
+	struct map_session_data *sd = NULL;
+
+	nullpo_retv(p);
+
+	for(i=0; i<MAX_PARTY && !p->member[i].leader; i++);
+
+	if(i >= MAX_PARTY)
+		return;
+
+	sd = p->member[i].sd;
+	WBUFW(buf,0)  = 0x1e9;
+	WBUFL(buf,2)  = p->member[i].account_id;
+	WBUFL(buf,6)  = 0;				// unknown
+	WBUFW(buf,10) = (sd)? sd->bl.x: 0;
+	WBUFW(buf,12) = (sd)? sd->bl.y: 0;
+	WBUFB(buf,14) = (p->member[i].online)? 0: 1;	// unknown
+	memcpy(WBUFP(buf,15), p->name, 24);
+	memcpy(WBUFP(buf,39), p->member[i].name, 24);
+	memcpy(WBUFP(buf,63), p->member[i].map, 24);
+	WBUFB(buf,79) = (p->item&1)? 1: 0;
+	WBUFB(buf,80) = (p->item&2)? 1: 0;
+
+	if(fd >= 0){	// fdが設定されてるならそれに送る
+		memcpy(WFIFOP(fd,0),buf,packet_db[0x1e9].len);
+		WFIFOSET(fd,packet_db[0x1e9].len);
+		return;
+	}
+	if(!sd) {	// リーダーがオフラインなのでログイン中のメンバーを探す
+		for(i=0; i<MAX_PARTY && !p->member[i].sd; i++);
+		if(i >= MAX_PARTY)
+			return;
+		sd = p->member[i].sd;
+	}
+
+	clif_send(buf,packet_db[0x1e9].len,&sd->bl,PARTY);
+	return;
+}
+
+/*==========================================
  * パーティ情報送信
  *------------------------------------------
  */
@@ -6503,8 +6584,7 @@ void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
 	if(sd==NULL)
 		return;
 	WBUFW(buf,0)=0x101;
-	WBUFW(buf,2)=((flag&0x01)?2:p->exp);
-	WBUFW(buf,4)=((flag&0x10)?2:p->item);
+	WBUFL(buf,2)=((flag&0x01)?2:p->exp);
 	if(flag==0)
 		clif_send(buf,packet_db[0x101].len,&sd->bl,PARTY);
 	else{

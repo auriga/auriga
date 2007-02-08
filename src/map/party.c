@@ -197,6 +197,7 @@ void party_recv_info(struct party *sp)
 		p->member[i].sd=(sd!=NULL && sd->status.party_id==p->party_id && !sd->state.waitingdisconnect)?sd:NULL;
 	}
 
+	clif_party_main_info(p,-1);
 	clif_party_info(p,-1);
 
 	for(i=0;i<MAX_PARTY;i++){	// 設定情報の送信
@@ -514,6 +515,7 @@ void party_recv_movemap(int party_id, int account_id, char *map, int online, int
 
 	party_send_xy_clear(p);	// 座標再通知要請
 
+	clif_party_main_info(p,-1);
 	clif_party_info(p,-1);
 
 	return;
@@ -541,6 +543,7 @@ void party_send_movemap(struct map_session_data *sd)
 	if( (p=party_search(sd->status.party_id))!=NULL ){
 		party_check_member(p);	// 所属を確認する
 		if(sd->status.party_id==p->party_id){
+			clif_party_main_info(p,sd->fd);
 			clif_party_info(p,sd->fd);
 			clif_party_option(p,sd,0x100);
 			sd->party_sended=1;

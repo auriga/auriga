@@ -5029,6 +5029,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.allow_es_magic_all = 0;
 		battle_config.trap_is_invisible = 0;
 		battle_config.gm_perfect_hide = 0;
+		battle_config.pcview_mob_clear_type = 1;
 	}
 
 	fp=fopen(cfgName,"r");
@@ -5478,6 +5479,7 @@ int battle_config_read(const char *cfgName)
 			{ "allow_es_magic_all",					&battle_config.allow_es_magic_all					},
 			{ "trap_is_invisible",					&battle_config.trap_is_invisible					},
 			{ "gm_perfect_hide",					&battle_config.gm_perfect_hide					},
+			{ "pcview_mob_clear_type",					&battle_config.pcview_mob_clear_type					},
 		};
 		const int max = sizeof(data)/sizeof(data[0]);
 

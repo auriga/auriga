@@ -1834,7 +1834,6 @@ int unit_changeviewsize(struct block_list *bl,short size)
  * スキル詠唱中かどうかを返す
  *------------------------------------------
  */
-
 int unit_iscasting(struct block_list *bl) {
 	struct unit_data *ud = unit_bl2ud(bl);
 
@@ -1848,7 +1847,6 @@ int unit_iscasting(struct block_list *bl) {
  * 歩行中かどうかを返す
  *------------------------------------------
  */
-
 int unit_iswalking(struct block_list *bl) {
 	struct unit_data *ud = unit_bl2ud(bl);
 
@@ -1984,7 +1982,10 @@ int unit_remove_map(struct block_list *bl, int clrtype)
 
 		clif_clearchar_area(&md->bl,clrtype);
 		if(mob_get_viewclass(md->class_) < MAX_VALID_PC_CLASS) {
-			clif_clearchar_delay(gettick()+3000,&md->bl,0);
+			if(battle_config.pcview_mob_clear_type == 2)
+				clif_clearchar(&md->bl,0);
+			else
+				clif_clearchar_delay(gettick()+3000,&md->bl);
 		}
 		mob_ai_hard_spawn( &md->bl, 0 );
 		if(!battle_config.monster_damage_delay || battle_config.monster_damage_delay_rate == 0)

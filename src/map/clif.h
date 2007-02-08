@@ -35,7 +35,7 @@ void clif_charselectok(int id);
 void clif_dropflooritem(struct flooritem_data *fitem);
 void clif_clearflooritem(struct flooritem_data *fitem, int fd);
 void clif_clearchar(struct block_list *bl, int type); // area or fd
-int clif_clearchar_delay(unsigned int,struct block_list *,int);
+int clif_clearchar_delay(unsigned int,struct block_list *);
 #define clif_clearchar_area(bl,type) clif_clearchar(bl,type)
 void clif_spawnpc(struct map_session_data *sd);	//area
 void clif_spawnnpc(struct npc_data *nd);	// area
@@ -228,6 +228,7 @@ void clif_movetoattack(struct map_session_data *sd, struct block_list *bl);
 
 // party
 void clif_party_created(struct map_session_data *sd, unsigned char flag);
+void clif_party_main_info(struct party *p, int fd);
 void clif_party_info(struct party *p, int fd);
 void clif_party_invite(struct map_session_data *sd, struct map_session_data *tsd);
 void clif_party_inviteack(struct map_session_data *sd, char *nick, unsigned char flag);

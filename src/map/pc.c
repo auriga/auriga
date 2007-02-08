@@ -5848,7 +5848,7 @@ int pc_changelook(struct map_session_data *sd,int type,int val)
 	clif_changelook(&sd->bl,type,val);
 
 	if(type == LOOK_CLOTHES_COLOR && sd->status.clothes_color == 0)
-		clif_changelook(&sd->bl,LOOK_BASE,val);
+		clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
 
 	return 0;
 }

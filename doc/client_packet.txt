@@ -476,7 +476,7 @@ S 00ff <ID>.l <fail>.l
 	パーティに誘われた時の返答。fail=1 ok返答?
 S 0100
 	パーティ脱退要求
-R 0101 <exp>.w <item?>.w
+R 0101 <exp>.l
 	パーティ設定現状? exp=2の場合は公平配分設定失敗?
 S 0102 <exp>.w <item?>.w
 	パーティ設定変更
@@ -704,6 +704,7 @@ S 014f <page>.l
 	ギルド表示タブ送信
 R 0150 <guildID>.l <guildLv>.l <接続数>.l <定員>.l <Avl.lvl>.l <経験値>.l <next_exp>.l <上納ポイント>.l <性向左右VW>.l <性向上下RF>.l <人数？>.l <guild name>.24B <guild master>.24B <本拠地>.16B
 	ギルド情報
+	0x1b6があるため現在未使用？
 S 0151 <guild ID>.l
 	エンブレム要求
 R 0152 <len>.w <guild ID>.l <emblem ID(変更回数？)>.l <emblem data>.?B
@@ -1064,7 +1065,7 @@ R 01b3 <filename>.64B <type>.B
 R 01b4 <?>.l <?>.l <?>.w
 	何もしない
 R 01b6 <guildID>.l <guildLv>.l <connum>.l <定員>.l <Avl.lvl>.l <now_exp>.l <next_exp>.l <上納ポイント>.l <性向F-V>.l <性向R-W>.l <members>.l <guild name>.24B <guild master>.24B <agit?>.20B
-	ギルド情報
+	ギルド情報、0x150の上位互換
 R 01b8 <type>.B
 	ギルド共用銀行システム？未実装？
 	type=1 : 成功？無反応
@@ -1211,8 +1212,8 @@ S 01e8 <party name>.24B <item1>B <item2>B
 	<item1>アイテム収集方法。0で個人別、1でパーティ公有
 	<item2>アイテム分配方法。0で個人別、1でパーティに均等分配
 	(00f9の上位バーション)
-R 01e9
-	未調査
+R 01e9 <ID>.l <?>.l <x>.w <y>.w <online?>.B <party_name>.24B <char_name>.24B <map_name>.24B <item>.B <item2>.B
+	パーティメイン情報
 R 01ea <ID>.l
 	結婚エフェクト(音楽、紙吹雪)
 	IDは新婦のものが入る？
@@ -1548,3 +1549,5 @@ R 0285 <val1>.w <val2>.w
 	val1が01,02,03,04,05,0b,0c,0fのとき反応、今のところ「NO MSG」
 	それ以外の場合は「???」が画面上部にピンク文字で表示される
 	val1が04のとき、val2=0〜5でswitchあり（STRとか？）、今のところ「NO MSG」
+R 0287 <len>.w <point>.l { <value>.l <value>.l <type?>.B <item ID>.w }.11B*
+	課金アイテム販売リスト？

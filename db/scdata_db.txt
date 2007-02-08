@@ -37,8 +37,8 @@
 32,SC_PK_PENALTY,0,0,0			// PKのペナルティ
 33,SC_REVERSEORCISH,1,15,0		// リバースオーキッシュ
 34,SC_HALLUCINATION,0,9,0		// 幻覚
-35,SC_WEIGHT50,-1,1,0			// 重量50％オーバー
-36,SC_WEIGHT90,-1,1,0			// 重量90％オーバー
+35,SC_WEIGHT50,-1,0,0			// 重量50％オーバー
+36,SC_WEIGHT90,-1,0,0			// 重量90％オーバー
 37,SC_SPEEDPOTION0,1,7,0		// スピードアップポーション
 38,SC_SPEEDPOTION1,1,7,0		// ハイスピードアップポーション
 39,SC_SPEEDPOTION2,1,7,0		// バーサークポーション
