@@ -98,6 +98,7 @@ enum AtCommandType {
 	AtCommand_CharLostSkill,
 	AtCommand_SpiritBall,
 	AtCommand_Party,
+	AtCommand_PartyOption,
 	AtCommand_Guild,
 	AtCommand_AgitStart,
 	AtCommand_AgitEnd,

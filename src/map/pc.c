@@ -2956,37 +2956,50 @@ void pc_takeitem(struct map_session_data *sd, struct flooritem_data *fitem)
 {
 	int flag;
 	unsigned int tick = gettick();
-	struct map_session_data *first_sd = NULL,*second_sd = NULL,*third_sd = NULL;
+	struct map_session_data *first_sd = NULL, *second_sd = NULL, *third_sd = NULL;
+	struct party *p = NULL;
 
 	nullpo_retv(sd);
 	nullpo_retv(fitem);
 
-	if(unit_distance(fitem->bl.x,fitem->bl.y,sd->bl.x,sd->bl.y)>2)
+	if(unit_distance(fitem->bl.x,fitem->bl.y,sd->bl.x,sd->bl.y) > 2)
 		return;	// 距離が遠い
 
-	if(fitem->first_get_id > 0) {
+	if(sd->status.party_id)
+		p = party_search(sd->status.party_id);
+
+	if(fitem->first_get_id > 0 && fitem->first_get_id != sd->bl.id) {
 		first_sd = map_id2sd(fitem->first_get_id);
 		if(tick < fitem->first_get_tick) {
-			if(fitem->first_get_id != sd->bl.id && !(first_sd && first_sd->status.party_id == sd->status.party_id)) {
+			if( p && p->item&1 &&
+			    first_sd && first_sd->status.party_id == sd->status.party_id ) {
+				;	// PT共有設定で同一PTならOK
+			} else {
 				clif_additem(sd,0,0,6);
 				return;
 			}
 		}
-		else if(fitem->second_get_id > 0) {
+		else if(fitem->second_get_id > 0 && fitem->second_get_id != sd->bl.id) {
 			second_sd = map_id2sd(fitem->second_get_id);
 			if(tick < fitem->second_get_tick) {
-				if(fitem->first_get_id != sd->bl.id && fitem->second_get_id != sd->bl.id &&
-					!(first_sd && first_sd->status.party_id == sd->status.party_id) && !(second_sd && second_sd->status.party_id == sd->status.party_id)) {
+				if( p && p->item&1 &&
+				    ((first_sd && first_sd->status.party_id == sd->status.party_id) ||
+				    (second_sd && second_sd->status.party_id == sd->status.party_id)) ) {
+					;	// PT共有設定で同一PTならOK
+				} else {
 					clif_additem(sd,0,0,6);
 					return;
 				}
 			}
-			else if(fitem->third_get_id > 0) {
+			else if(fitem->third_get_id > 0 && fitem->third_get_id != sd->bl.id) {
 				third_sd = map_id2sd(fitem->third_get_id);
 				if(tick < fitem->third_get_tick) {
-					if(fitem->first_get_id != sd->bl.id && fitem->second_get_id != sd->bl.id && fitem->third_get_id != sd->bl.id &&
-						!(first_sd && first_sd->status.party_id == sd->status.party_id) && !(second_sd && second_sd->status.party_id == sd->status.party_id) &&
-						!(third_sd && third_sd->status.party_id == sd->status.party_id)) {
+					if( p && p->item&1 &&
+					    ((first_sd && first_sd->status.party_id == sd->status.party_id) ||
+					    (second_sd && second_sd->status.party_id == sd->status.party_id) ||
+					    (third_sd && third_sd->status.party_id == sd->status.party_id)) ) {
+						;	// PT共有設定で同一PTならOK
+					} else {
 						clif_additem(sd,0,0,6);
 						return;
 					}
@@ -2994,11 +3007,11 @@ void pc_takeitem(struct map_session_data *sd, struct flooritem_data *fitem)
 			}
 		}
 	}
-	if((flag = pc_additem(sd,&fitem->item_data,fitem->item_data.amount)))
+	if((flag = party_share_loot(p,sd,&fitem->item_data,fitem->first_get_id))) {
 		// 重量overで取得失敗
 		clif_additem(sd,0,0,flag);
-	else {
-		/* 取得成功 */
+	} else {
+		// 取得成功
 		unit_stopattack(&sd->bl);
 		clif_takeitem(&sd->bl,&fitem->bl);
 		map_clearflooritem(fitem->bl.id);

@@ -18,6 +18,7 @@
 #include "status.h"
 #include "skill.h"
 #include "unit.h"
+#include "atcommand.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -420,7 +421,7 @@ void party_broken(int party_id)
 }
 
 // パーティの設定変更要求
-void party_changeoption(struct map_session_data *sd, unsigned short exp, unsigned short item)
+void party_changeoption(struct map_session_data *sd, int exp, int item)
 {
 	struct party *p;
 	int i;
@@ -435,6 +436,8 @@ void party_changeoption(struct map_session_data *sd, unsigned short exp, unsigne
 		if (p->member[i].account_id == sd->status.account_id &&
 		    strncmp(p->member[i].name, sd->status.name, 24) == 0) {
 			if (p->member[i].leader) {
+				if(item < 0)	// 負のときはアイテム分配設定を変更しない
+					item = p->item;
 				intif_party_changeoption(sd->status.party_id, sd->status.account_id, exp, item);
 				return;
 			}
@@ -453,8 +456,14 @@ void party_optionchanged(int party_id, int account_id, int exp, int item, int fl
 	if( (p=party_search(party_id))==NULL)
 		return;
 
-	if(!(flag&0x01)) p->exp=exp;
-	if(!(flag&0x10)) p->item=item;
+	if(!(flag&0x01))
+		p->exp = exp;
+	if(!(flag&0x10)) {
+		int old_item = p->item;
+		p->item = item;
+		if(old_item != item)
+			clif_party_main_info(p,-1);
+	}
 	clif_party_option(p,sd,flag);
 
 	return;
@@ -689,6 +698,41 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 	}
 
 	return;
+}
+
+// アイテム分配
+int party_share_loot(struct party *p, struct map_session_data *sd, struct item *item_data, int first)
+{
+	nullpo_retr(1, sd);
+	nullpo_retr(1, item_data);
+
+	if(p && p->item&2 && (first || battle_config.party_item_share_type)) {
+		struct map_session_data *psd[MAX_PARTY];
+		int i, c=0;
+
+		for(i=0; i<MAX_PARTY; i++) {
+			if((psd[c] = p->member[i].sd) && psd[c]->bl.prev && psd[c]->bl.m == sd->bl.m && !unit_isdead(&psd[c]->bl))
+				c++;
+		}
+		while(c > 0) {	// ランダム選択
+			i = rand()%c;
+			if(pc_additem(psd[i],item_data,item_data->amount)) {
+				// 取得失敗
+				psd[i] = psd[c-1];
+				c--;
+			} else {
+				if(battle_config.party_item_share_show && psd[i] != sd) {
+					char output[64];
+					sprintf(output, msg_txt(177), psd[i]->status.name);
+					clif_displaymessage(sd->fd,output);
+				}
+				return 0;
+			}
+		}
+	}
+
+	// 分配できないので元のsdに渡す
+	return pc_additem(sd,item_data,item_data->amount);
 }
 
 // 同じマップのパーティメンバー全体に処理をかける

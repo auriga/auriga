@@ -133,6 +133,7 @@
 
 @party パーティー名      ---- パーティを作る(制限なしで)
 @guild ギルド名          ---- ギルドを作る(制限なしで)
+@partyoption exp分配 item収集方式 item分配方式   ---- パーティ設定変更(リーダーのみ)
 
 @reloadatcommand   ---- atcommand_athena.confを再読込する
 @reloadbattleconf  ---- battle_athena.confを再読込する

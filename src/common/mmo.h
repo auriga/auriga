@@ -39,13 +39,6 @@
 #define MAX_HAIR_COLOR 9
 #define MAX_CLOTH_COLOR 5
 
-// for produce
-#define MIN_ATTRIBUTE 0
-#define MAX_ATTRIBUTE 4
-#define ATTRIBUTE_NORMAL 0
-#define MIN_STAR 0
-#define MAX_STAR 3
-
 #define MAX_PORTAL_MEMO 3
 
 #define WEDDING_RING_M 2634

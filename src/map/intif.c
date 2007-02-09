@@ -436,7 +436,7 @@ void intif_party_addmember(struct map_session_data *sd)
 }
 
 // パーティ設定変更
-void intif_party_changeoption(int party_id, int account_id, unsigned short exp, unsigned short item)
+void intif_party_changeoption(int party_id, int account_id, int exp, int item)
 {
 	if (inter_fd < 0)
 		return;

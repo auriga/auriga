@@ -11,6 +11,7 @@
 #include "nullpo.h"
 #include "malloc.h"
 #include "utils.h"
+#include "db.h"
 
 #include "map.h"
 #include "chrif.h"
@@ -31,9 +32,6 @@
 #include "status.h"
 #include "ranking.h"
 #include "homun.h"
-//#include "trade.h"
-//#include "core.h"
-#include "db.h"
 #include "unit.h"
 
 #ifdef MEMWATCH
@@ -136,6 +134,7 @@ ATCOMMAND_FUNC(lostskill);
 ATCOMMAND_FUNC(charlostskill);
 ATCOMMAND_FUNC(spiritball);
 ATCOMMAND_FUNC(party);
+ATCOMMAND_FUNC(partyoption);
 ATCOMMAND_FUNC(guild);
 ATCOMMAND_FUNC(agitstart);
 ATCOMMAND_FUNC(agitend);
@@ -298,6 +297,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_CharLostSkill,      "@charlostskill",    0, atcommand_charlostskill },
 	{ AtCommand_SpiritBall,         "@spiritball",       0, atcommand_spiritball },
 	{ AtCommand_Party,              "@party",            0, atcommand_party },
+	{ AtCommand_PartyOption,        "@partyoption",      0, atcommand_partyoption },
 	{ AtCommand_Guild,              "@guild",            0, atcommand_guild },
 	{ AtCommand_AgitStart,          "@agitstart",        0, atcommand_agitstart },
 	{ AtCommand_AgitEnd,            "@agitend",          0, atcommand_agitend },
@@ -636,13 +636,10 @@ static void atcommand_synonym_free(void) {
 
 	for (i = 0; i < synonym_count; i++) {
 		aFree(synonym_table[i].synonym);
-		//synonym_table[i].synonym = NULL;
 		aFree(synonym_table[i].command);
-		//synonym_table[i].command = NULL;
 	}
 	if (synonym_table != NULL) {
 		aFree(synonym_table);
-		synonym_table = NULL;
 	}
 	synonym_count = 0;
 
@@ -1260,12 +1257,12 @@ int atcommand_onlymes(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	char temp0[200];
+	char temp[200];
 
 	nullpo_retr(-1, sd);
 
-	sscanf(message, "%199[^#\n]", temp0);
-	clif_webchat_message(msg_txt(156), sd->status.name, temp0); // [mes]
+	sscanf(message, "%199[^#\n]", temp);
+	clif_webchat_message(msg_txt(156), sd->status.name, temp); // [mes]
 
 	return 0;
 }
@@ -2222,9 +2219,9 @@ atcommand_produce(
 		    (item_id <  7001 || item_id > 10019) &&
 			itemdb_isequip(item_id)) {
 			struct item tmp_item;
-			if (attribute < MIN_ATTRIBUTE || attribute > MAX_ATTRIBUTE)
-				attribute = ATTRIBUTE_NORMAL;
-			if (star < MIN_STAR || star > MAX_STAR)
+			if (attribute < 0 || attribute > 4)
+				attribute  = 0;
+			if (star < 0 || star > 3)
 				star = 0;
 			memset(&tmp_item, 0, sizeof tmp_item);
 			tmp_item.nameid = item_id;
@@ -2448,12 +2445,10 @@ atcommand_param(
 	const char* command, const char* message)
 {
 	int i = 0, value = 0, index = -1, new_value = 0;
+	const char* param[] = { "@str", "@agi", "@vit", "@int", "@dex", "@luk", NULL };
+	short* status[6];
 	int max_parameter[6];
 
-	const char* param[] = {
-		"@str", "@agi", "@vit", "@int", "@dex", "@luk", NULL
-	};
-	short* status[6];
 	status[0] = &sd->status.str;
 	status[1] = &sd->status.agi;
 	status[2] = &sd->status.vit;
@@ -2720,7 +2715,6 @@ atcommand_recall(
 	const char* command, const char* message)
 {
 	char character[100];
-//	struct map_session_data *pl_sd = NULL;
 
 	nullpo_retr(-1, sd);
 
@@ -3033,7 +3027,7 @@ atcommand_character_save(
 				strcat(map_name, ".gat");
 			}
 			m = map_mapname2mapid(map_name);
-			if (x < 0 || x >= 400 || y < 0 || y >= 400 || (m >= 0 && (x >= map[m].xs || y >= map[m].ys))) {
+			if (x < 0 || y < 0 || (m >= 0 && (x >= map[m].xs || y >= map[m].ys))) {
 				clif_displaymessage(fd, msg_txt(2));
 				return -1;
 			} else {
@@ -3555,6 +3549,28 @@ atcommand_party(
 	memset(party, '\0', sizeof(party));
 	if (sscanf(message, "%99[^\n]", party))
 		party_create(sd, party,0,0);
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int
+atcommand_partyoption(
+	const int fd, struct map_session_data* sd,
+	const char* command, const char* message)
+{
+	int exp, item, item2;
+
+	if (!message || !*message)
+		return -1;
+
+	if (sscanf(message, "%d %d %d", &exp, &item, &item2) < 3)
+		return -1;
+
+	party_changeoption(sd, exp&1, (item? 1 : 0) | (item2? 2: 0));
 
 	return 0;
 }
@@ -5109,7 +5125,7 @@ atcommand_icon(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	int	a1=0,a2=1;
+	int a1=0,a2=1;
 	nullpo_retr( -1, sd );
 
 	if (sscanf(message, "%d %d", &a1, &a2) < 2)

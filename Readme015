@@ -1,4 +1,17 @@
 ----------------------------------------
+//073 [2007/02/10] by Rayce
+
+・PTのアイテム分配実装 from eA（int_party.c, clif.c, intif.*, party.*, pc.c）
+	完全にランダムで取得者を選定します
+・battle_athena.confにparty_item_share_type, party_item_share_showを追加（battle.*）
+・パーティ設定を変更するコマンド@partyoption追加（atcommand.*）
+	通常クライアントからは変更できないアイテム収集方式・分配に関する設定を
+	変更するためのコマンドで、PTリーダーのみ効果があります
+
+・あまり意味がないので MIN_ATTRIBUTE, MAX_ATTRIBUTE, ATTRIBUTE_NORMAL, MIN_STAR, MAX_STAR
+　のdefineを削除（mmo.h, atcommand.c）
+
+----------------------------------------
 //072 [2007/02/09] by Rayce
 
 ・PC型Mobが死亡して消滅するときの挙動をbattle_athena.confで決定できるように追加（battle.*, clif.*, unit.c）

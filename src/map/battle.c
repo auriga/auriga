@@ -5030,6 +5030,8 @@ int battle_config_read(const char *cfgName)
 		battle_config.trap_is_invisible = 0;
 		battle_config.gm_perfect_hide = 0;
 		battle_config.pcview_mob_clear_type = 1;
+		battle_config.party_item_share_type = 1;
+		battle_config.party_item_share_show = 0;
 	}
 
 	fp=fopen(cfgName,"r");
@@ -5480,6 +5482,8 @@ int battle_config_read(const char *cfgName)
 			{ "trap_is_invisible",					&battle_config.trap_is_invisible					},
 			{ "gm_perfect_hide",					&battle_config.gm_perfect_hide					},
 			{ "pcview_mob_clear_type",					&battle_config.pcview_mob_clear_type					},
+			{ "party_item_share_type",					&battle_config.party_item_share_type					},
+			{ "party_item_share_show",					&battle_config.party_item_share_show					},
 		};
 		const int max = sizeof(data)/sizeof(data[0]);
 

@@ -6563,7 +6563,7 @@ void clif_party_inviteack(struct map_session_data *sd, char *nick, unsigned char
 /*==========================================
  * パーティ設定送信
  * flag & 0x001=exp変更ミス
- *        0x010=item変更ミス
+ *        0x010=item変更ミス（現在は存在しない）
  *        0x100=一人にのみ送信
  *------------------------------------------
  */
@@ -6573,8 +6573,6 @@ void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
 
 	nullpo_retv(p);
 
-//	if(battle_config.etc_log)
-//		printf("clif_party_option: %d %d %d\n",p->exp,p->item,flag);
 	if(sd==NULL && flag==0){
 		int i;
 		for(i=0;i<MAX_PARTY;i++)
@@ -10791,7 +10789,7 @@ static void clif_parse_RemovePartyMember(int fd,struct map_session_data *sd, int
  */
 static void clif_parse_PartyChangeOption(int fd,struct map_session_data *sd, int cmd)
 {
-	party_changeoption(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOW(fd,GETPACKETPOS(cmd,1)));
+	party_changeoption(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),-1);
 
 	return;
 }

@@ -55,41 +55,35 @@ int party_fromstr(char *str,struct party *p)
 	int i,j,s;
 	int tmp_int[16];
 	char tmp_str[256];
-	
+
 	memset(p,0,sizeof(struct party));
-	
-//	printf("sscanf party main info\n");
+
 	s=sscanf(str,"%d\t%[^\t]\t%d,%d\t",&tmp_int[0],
 		tmp_str,&tmp_int[1],&tmp_int[2]);
 	if(s!=4)
 		return 1;
-	
+
 	p->party_id=tmp_int[0];
 	strncpy(p->name,tmp_str,24);
 	p->exp=tmp_int[1];
-	p->item=tmp_int[2];	
-//	printf("%d [%s] %d %d\n",tmp_int[0],tmp_str[0],tmp_int[1],tmp_int[2]);
-	
+	p->item=tmp_int[2];
+
 	for(j=0;j<3 && str!=NULL;j++)
 		str=strchr(str+1,'\t');
-	
+
 	for(i=0;i<MAX_PARTY;i++){
 		struct party_member *m = &p->member[i];
 		if(str==NULL)
 			return 1;
-//		printf("sscanf party member info %d\n",i);
-
 		s=sscanf(str+1,"%d,%d\t%[^\t]\t",
 			&tmp_int[0],&tmp_int[1],tmp_str);
 		if(s!=3)
 			return 1;
-		
+
 		m->account_id=tmp_int[0];
 		m->leader=tmp_int[1];
 		strncpy(m->name,tmp_str,sizeof(m->name));
-//		printf(" %d %d [%s]\n",tmp_int[0],tmp_int[1],tmp_str);
-		
-		
+
 		for(j=0;j<2 && str!=NULL;j++)
 			str=strchr(str+1,'\t');
 	}
@@ -103,14 +97,14 @@ int party_fromstr(char *str,struct party *p)
 int party_journal_rollforward( int key, void* buf, int flag )
 {
 	struct party* p = (struct party *)numdb_search( party_db, key );
-	
+
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct party*)buf)->party_id )
 	{
 		printf("int_party: journal: key != party_id !\n");
 		return 0;
 	}
-	
+
 	// データの置き換え
 	if( p )
 	{
@@ -122,7 +116,7 @@ int party_journal_rollforward( int key, void* buf, int flag )
 		}
 		return 1;
 	}
-	
+
 	// 追加
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
@@ -133,7 +127,7 @@ int party_journal_rollforward( int key, void* buf, int flag )
 			party_newid=p->party_id+1;
 		return 1;
 	}
-	
+
 	return 0;
 }
 int party_txt_sync(void);
@@ -146,9 +140,9 @@ int party_txt_init(void)
 	struct party *p;
 	FILE *fp;
 	int c=0;
-	
+
 	party_db=numdb_init();
-	
+
 	if( (fp=fopen(party_txt,"r"))==NULL )
 		return 1;
 	while(fgets(line,sizeof(line),fp)){
@@ -157,7 +151,7 @@ int party_txt_init(void)
 			party_newid=i;
 			continue;
 		}
-	
+
 		p=(struct party *)aCalloc(1,sizeof(struct party));
 		if(party_fromstr(line,p)==0 && p->party_id>0){
 			if( p->party_id >= party_newid)
@@ -176,7 +170,6 @@ int party_txt_init(void)
 		c++;
 	}
 	fclose(fp);
-//	printf("int_party: %s read done (%d parties)\n",party_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( party_journal_enable )
@@ -219,18 +212,16 @@ int party_txt_sync(void)
 {
 	FILE *fp;
 	int  lock;
-	
+
 	if( !party_db )
 		return 1;
-	
+
 	if( (fp=lock_fopen(party_txt,&lock))==NULL ){
 		printf("int_party: cant write [%s] !!! data is lost !!!\n",party_txt);
 		return 1;
 	}
 	numdb_foreach(party_db,party_txt_sync_sub,fp);
-//	fprintf(fp,"%d\t%%newid%%\n",party_newid);
 	lock_fclose(fp,party_txt,&lock);
-//	printf("int_party: %s saved.\n",party_txt);
 
 #ifdef TXT_JOURNAL
 	if( party_journal_enable )
@@ -414,7 +405,7 @@ const struct party* party_sql_load_num(int party_id) {
 		numdb_insert(party_db,party_id,p);
 	}
 	memset(p, 0, sizeof(struct party));
-	// printf("Request load party(%06d)[",party_id);
+
 	sprintf(
 		tmp_sql,
 		"SELECT `party_id`, `name`,`exp`,`item`, `leader_id` FROM `%s` WHERE `party_id`='%d'",
@@ -466,7 +457,7 @@ const struct party* party_sql_load_num(int party_id) {
 		}
 	}
 	mysql_free_result(sql_res);
-	// printf("]\n");
+
 	return p;
 }
 
@@ -474,7 +465,6 @@ int party_sql_save(struct party* p2) {
 	// 'party' ('party_id','name','exp','item','leader')
 	const struct party *p1 = party_sql_load_num(p2->party_id);
 	char t_name[64];
-	// printf("Request save party(%06d)[",p2->party_id);
 
 	if(p1 == NULL) return 0;
 
@@ -488,7 +478,7 @@ int party_sql_save(struct party* p2) {
 			printf("DB server Error (update `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
 		}
 	}
-	// printf("]\n");
+
 	{
 		struct party *p3 = (struct party *)numdb_search(party_db,p2->party_id);
 		if(p3)
@@ -504,12 +494,11 @@ int party_sql_delete(int party_id) {
 		numdb_erase(party_db,p->party_id);
 		aFree(p);
 	}
-	// printf("Request del party(%06d)[",party_id);
+
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `party_id`='%d'",party_db_, party_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (delete `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
 	}
-	// printf("]\n");
 	return 0;
 }
 
@@ -525,7 +514,6 @@ int party_sql_new(struct party *p) {
 	char t_name[64];
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
-	// printf("Request make party(------)[");
 
 	for(i = 0; i < MAX_PARTY; i++) {
 		if(p->member[i].account_id > 0 && p->member[i].leader) {
@@ -570,7 +558,7 @@ int party_sql_new(struct party *p) {
 		printf("DB server Error (inset `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
 		return 0;
 	}
-	// printf("]\n");
+
 	numdb_insert(party_db,p->party_id,p);
 	return 1;
 }
@@ -619,7 +607,7 @@ int party_check_exp_share(struct party *p)
 int party_check_empty(const struct party *p)
 {
 	int i;
-//	printf("party check empty %08X\n",(int)p);
+
 	for(i=0;i<MAX_PARTY;i++){
 		if(p->member[i].account_id>0){
 			return 0;
@@ -672,7 +660,7 @@ int mapif_party_info(int fd,const struct party *p)
 		mapif_sendall(buf,WBUFW(buf,2));
 	else
 		mapif_send(fd,buf,WBUFW(buf,2));
-//	printf("int_party: info %d %s\n",p->party_id,p->name);
+
 	aFree(buf);
 	return 0;
 }
@@ -772,7 +760,7 @@ int mapif_parse_CreateParty(int fd,int account_id,char *name,int item,int item2,
 {
 	struct party *p;
 	int i;
-	
+
 	for(i=0; i<24 && name[i]; i++) {
 		if(!(name[i]&0xe0) || name[i]==0x7f) {
 			printf("int_party: illegal party name [%s]\n",name);
@@ -831,7 +819,7 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,char *nick,cha
 		return 0;
 	}
 	memcpy(&p2,p1,sizeof(struct party));
-	
+
 	for(i=0;i<MAX_PARTY;i++){
 		if (p2.member[i].account_id==account_id &&
 		    strncmp(p2.member[i].name, nick, 24) == 0)
@@ -869,18 +857,18 @@ int mapif_parse_PartyChangeOption(int fd,int party_id,int account_id,int exp,int
 	const struct party *p1 = party_load_num(party_id);
 	struct party p2;
 	int flag=0;
+
 	if(p1 == NULL){
 		return 0;
 	}
 	memcpy(&p2,p1,sizeof(struct party));
-	
+
 	p2.exp = exp;
 	if( exp>0 && !party_check_exp_share(&p2) ){
 		flag|=0x01;
 		p2.exp=0;
 	}
-	
-	p2.item=item;
+	p2.item = item;
 
 	mapif_party_optionchanged(fd,&p2,account_id,flag);
 	party_save(&p2);
