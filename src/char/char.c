@@ -1785,7 +1785,7 @@ int char_sql_nick2id(const char *char_name)
 }
 
 int char_sql_set_online(int char_id) {
-	// so we have a char don't we? 
+	// so we have a char don't we?
 	sprintf(tmp_sql, "UPDATE `%s` SET `online` = '1' WHERE `char_id` = '%d'",char_db, char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (update set_online)- %s\n", mysql_error(&mysql_handle));
@@ -2019,63 +2019,71 @@ int mmo_char_send006b(int fd,struct char_session_data *sd)
 	int offset=4;
 #endif
 
+#if PACKETVER >= 8
+	int len = 108;
+#else
+	int len = 106;
+#endif
+
 	session[fd]->auth = 1; // 認証終了を socket.c に伝える
 
 	sd->state = CHAR_STATE_AUTHOK;
 	found_num = char_load_all(sd,sd->account_id);
 
-	memset(WFIFOP(fd,0),0,offset+found_num*106);
+	memset(WFIFOP(fd,0),0,offset+found_num*len);
 	WFIFOW(fd,0)=0x6b;
-	WFIFOW(fd,2)=offset+found_num*106;
+	WFIFOW(fd,2)=offset+found_num*len;
 
 	for( i = 0; i < max_char_slot ; i++ ) {
 		if(sd->found_char[i] == NULL)
 			continue;
 		st = &sd->found_char[i]->st;
-		WFIFOL(fd,offset+(i*106)    ) = st->char_id;
-		WFIFOL(fd,offset+(i*106)+  4) = st->base_exp;
-		WFIFOL(fd,offset+(i*106)+  8) = st->zeny;
-		WFIFOL(fd,offset+(i*106)+ 12) = st->job_exp;
-		WFIFOL(fd,offset+(i*106)+ 16) = st->job_level;
-		WFIFOL(fd,offset+(i*106)+ 20) = 0;
-		WFIFOL(fd,offset+(i*106)+ 24) = 0;
-		WFIFOL(fd,offset+(i*106)+ 28) = st->option;
-		WFIFOL(fd,offset+(i*106)+ 32) = st->karma;
-		WFIFOL(fd,offset+(i*106)+ 36) = st->manner;
-		WFIFOW(fd,offset+(i*106)+ 40) = st->status_point;
-		WFIFOW(fd,offset+(i*106)+ 42) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
-		WFIFOW(fd,offset+(i*106)+ 44) = (st->max_hp > 0x7fff) ? 0x7fff : st->max_hp;
-		WFIFOW(fd,offset+(i*106)+ 46) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-		WFIFOW(fd,offset+(i*106)+ 48) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-		WFIFOW(fd,offset+(i*106)+ 50) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
+		WFIFOL(fd,offset+(i*len)    ) = st->char_id;
+		WFIFOL(fd,offset+(i*len)+  4) = st->base_exp;
+		WFIFOL(fd,offset+(i*len)+  8) = st->zeny;
+		WFIFOL(fd,offset+(i*len)+ 12) = st->job_exp;
+		WFIFOL(fd,offset+(i*len)+ 16) = st->job_level;
+		WFIFOL(fd,offset+(i*len)+ 20) = 0;
+		WFIFOL(fd,offset+(i*len)+ 24) = 0;
+		WFIFOL(fd,offset+(i*len)+ 28) = st->option;
+		WFIFOL(fd,offset+(i*len)+ 32) = st->karma;
+		WFIFOL(fd,offset+(i*len)+ 36) = st->manner;
+		WFIFOW(fd,offset+(i*len)+ 40) = st->status_point;
+		WFIFOW(fd,offset+(i*len)+ 42) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
+		WFIFOW(fd,offset+(i*len)+ 44) = (st->max_hp > 0x7fff) ? 0x7fff : st->max_hp;
+		WFIFOW(fd,offset+(i*len)+ 46) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+		WFIFOW(fd,offset+(i*len)+ 48) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+		WFIFOW(fd,offset+(i*len)+ 50) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
 		if(st->class_ == 28 || st->class_ == 29)
-			WFIFOW(fd,offset+(i*106)+ 52) = st->class_-4;
+			WFIFOW(fd,offset+(i*len)+ 52) = st->class_-4;
 		else
-			WFIFOW(fd,offset+(i*106)+ 52) = st->class_;
-		WFIFOW(fd,offset+(i*106)+ 54) = st->hair;
-		WFIFOW(fd,offset+(i*106)+ 56) = st->weapon;
-		WFIFOW(fd,offset+(i*106)+ 58) = st->base_level;
-		WFIFOW(fd,offset+(i*106)+ 60) = st->skill_point;
-		WFIFOW(fd,offset+(i*106)+ 62) = st->head_bottom;
-		WFIFOW(fd,offset+(i*106)+ 64) = st->shield;
-		WFIFOW(fd,offset+(i*106)+ 66) = st->head_top;
-		WFIFOW(fd,offset+(i*106)+ 68) = st->head_mid;
-		WFIFOW(fd,offset+(i*106)+ 70) = st->hair_color;
-		WFIFOW(fd,offset+(i*106)+ 72) = st->clothes_color;
-		memcpy( WFIFOP(fd,offset+(i*106)+74), st->name, 24 );
-		WFIFOB(fd,offset+(i*106)+ 98) = (st->str > 255)?  255:st->str;
-		WFIFOB(fd,offset+(i*106)+ 99) = (st->agi > 255)?  255:st->agi;
-		WFIFOB(fd,offset+(i*106)+100) = (st->vit > 255)?  255:st->vit;
-		WFIFOB(fd,offset+(i*106)+101) = (st->int_ > 255)? 255:st->int_;
-		WFIFOB(fd,offset+(i*106)+102) = (st->dex > 255)?  255:st->dex;
-		WFIFOB(fd,offset+(i*106)+103) = (st->luk > 255)?  255:st->luk;
-		WFIFOB(fd,offset+(i*106)+104) = st->char_num;
+			WFIFOW(fd,offset+(i*len)+ 52) = st->class_;
+		WFIFOW(fd,offset+(i*len)+ 54) = st->hair;
+		WFIFOW(fd,offset+(i*len)+ 56) = st->weapon;
+		WFIFOW(fd,offset+(i*len)+ 58) = st->base_level;
+		WFIFOW(fd,offset+(i*len)+ 60) = st->skill_point;
+		WFIFOW(fd,offset+(i*len)+ 62) = st->head_bottom;
+		WFIFOW(fd,offset+(i*len)+ 64) = st->shield;
+		WFIFOW(fd,offset+(i*len)+ 66) = st->head_top;
+		WFIFOW(fd,offset+(i*len)+ 68) = st->head_mid;
+		WFIFOW(fd,offset+(i*len)+ 70) = st->hair_color;
+		WFIFOW(fd,offset+(i*len)+ 72) = st->clothes_color;
+		memcpy( WFIFOP(fd,offset+(i*len)+74), st->name, 24 );
+		WFIFOB(fd,offset+(i*len)+ 98) = (st->str > 255)?  255:st->str;
+		WFIFOB(fd,offset+(i*len)+ 99) = (st->agi > 255)?  255:st->agi;
+		WFIFOB(fd,offset+(i*len)+100) = (st->vit > 255)?  255:st->vit;
+		WFIFOB(fd,offset+(i*len)+101) = (st->int_ > 255)? 255:st->int_;
+		WFIFOB(fd,offset+(i*len)+102) = (st->dex > 255)?  255:st->dex;
+		WFIFOB(fd,offset+(i*len)+103) = (st->luk > 255)?  255:st->luk;
+		WFIFOW(fd,offset+(i*len)+104) = st->char_num;
+		if(len >= 108)
+			WFIFOW(fd,offset+(i*len)+106) = 1;	// キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
 
 		// ロードナイト/パラディンのログイン時のエラー対策
 		if (st->option == 32)
-			WFIFOL(fd,offset+(i*106)+28) = 0;
+			WFIFOL(fd,offset+(i*len)+28) = 0;
 		else
-			WFIFOL(fd,offset+(i*106)+28) = st->option;
+			WFIFOL(fd,offset+(i*len)+28) = st->option;
 	}
 
 	WFIFOSET(fd,WFIFOW(fd,2));
@@ -2585,7 +2593,7 @@ int parse_tologin(int fd)
 				// 暗号化ログイン
 				WFIFOW(login_fd,0)=0x272f;
 				memcpy(WFIFOP(login_fd,2),userid,24);
-				HMAC_MD5_Binary( passwd, strlen(passwd), 
+				HMAC_MD5_Binary( passwd, strlen(passwd),
 								 RFIFOP(login_fd,4), RFIFOW(login_fd,2)-4,
 								 WFIFOP(login_fd,26) );
 				WFIFOL(login_fd,42)=0;
@@ -3506,6 +3514,11 @@ int parse_char(int fd)
 				int flag=0x00;
 				const struct mmo_chardata *cd = char_make(sd,RFIFOP(fd,2),&flag);
 				const struct mmo_charstatus *st;
+#if PACKETVER >= 8
+				int len = 108;
+#else
+				int len = 106;
+#endif
 				if(cd == NULL){
 					WFIFOW(fd,0)=0x6e;
 					WFIFOB(fd,2)=flag;
@@ -3515,8 +3528,8 @@ int parse_char(int fd)
 				}
 
 				st = &cd->st;
-				memset(WFIFOP(fd,2),0x00,106);
-				WFIFOW(fd,0)   = 0x6d;
+				memset(WFIFOP(fd,2),0x00,len);
+				WFIFOW(fd,0)     = 0x6d;
 				WFIFOL(fd,2    ) = st->char_id;
 				WFIFOL(fd,2+  4) = st->base_exp;
 				WFIFOL(fd,2+  8) = st->zeny;
@@ -3545,8 +3558,10 @@ int parse_char(int fd)
 				WFIFOB(fd,2+101) = (st->int_ > 255) ? 255 : st->int_;
 				WFIFOB(fd,2+102) = (st->dex  > 255) ? 255 : st->dex;
 				WFIFOB(fd,2+103) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOB(fd,2+104) = st->char_num;
-				WFIFOSET(fd,108);
+				WFIFOW(fd,2+104) = st->char_num;
+				if(len >= 108)
+					WFIFOW(fd,2+106) = 1;
+				WFIFOSET(fd,len+2);
 				RFIFOSKIP(fd,37);
 				for(ch=0;ch<max_char_slot;ch++) {
 					if(sd->found_char[ch] == NULL) {
@@ -3601,7 +3616,7 @@ int parse_char(int fd)
 			else
 			{
 				struct cram_session_data *csd=(struct cram_session_data *)(session[fd]->session_data=aCalloc(1,sizeof(struct cram_session_data)));
-				
+
 				// 暗号化用のチャレンジ生成
 				csd->md5keylen = rand()%(sizeof(csd->md5key)/4)+(sizeof(csd->md5key)-sizeof(csd->md5key)/4);
 				for(i=0;i<csd->md5keylen;i++)
@@ -3613,7 +3628,7 @@ int parse_char(int fd)
 				WFIFOSET(fd,WFIFOW(fd,2));
 			}
 			break;
-			
+
 		case 0x2af8:	// マップサーバーログイン (map-server connection)
 		case 0x2b2c:	// マップサーバー暗号化ログイン
 		{
@@ -3681,7 +3696,7 @@ int parse_char(int fd)
 			}
 			break;
 		}
-		
+
 		case 0x187:	// Alive信号？
 			if (RFIFOREST(fd) < 6)
 				return 0;

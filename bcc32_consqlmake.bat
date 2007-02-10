@@ -86,7 +86,7 @@ if "%_model_%"=="Pentium4C" set __cpu__=-5 -Ov -Oi
 if "%_model_%"=="AMD32" set __cpu__=-5 -Oc -Ov -f -ff
 if "%_model_%"=="AMD64" set __cpu__=-6 -Oc -Ov -f -ff -tWM
 
-set __define__=%__cpu__% -DPACKETVER=7 -DNEW_006b -DFD_SETSIZE=4096 %__base__% %__NO_HTTPD__% %__ZLIB__% %__SKIP__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__%
+set __define__=%__cpu__% -DPACKETVER=8 -DNEW_006b -DFD_SETSIZE=4096 %__base__% %__NO_HTTPD__% %__ZLIB__% %__SKIP__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__%
 set __include__=-I../common/
 
 @echo ■コンパイルオプション表示■

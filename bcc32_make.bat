@@ -93,7 +93,7 @@ if "%_model_%"=="AMD32" set __cpu__=-5 -Oc -Ov -f -ff
 if "%_model_%"=="AMD64" set __cpu__=-6 -Oc -Ov -f -ff -tWM
 if "%_model_%"=="DCORE" set __cpu__=-6 -a16 -C -d -f -ff -Hc -i133 -Jgd -k- -Oc -Oxt -Ve -VF -xf -xp
 
-set __define__=%__cpu__% -DPACKETVER=7 -DNEW_006b -DFD_SETSIZE=4096 %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
+set __define__=%__cpu__% -DPACKETVER=8 -DNEW_006b -DFD_SETSIZE=4096 %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
 set __include__=-I../common/ -I../common/zlib/
 
 if "%__ZLIB__%"=="" goto NOZLIB

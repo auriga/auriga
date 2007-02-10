@@ -1,4 +1,15 @@
 ----------------------------------------
+//077 [2007/02/11] by Rayce
+
+・AthenaProject2272, 2273とhugeさんの作成されたdebugパッチをベースにmerge
+　thanks to KIAさん、Mizukiさん、hugeさん
+
+　　・2006-10-23aSakexe以降のキャラセレパケットに対応（char.c）
+　　　PACKERVERが8になっているので、これより古いクライアントの場合は7に変更してください
+　　・2007-01-08aSakexeのパケットに対応（db/packet_db.txt）
+　　・doc/client_packet.txt更新
+
+----------------------------------------
 //076 [2007/02/11] by Rayce
 
 ・AthenaProject2271よりmerge, thanks to 名無し＠さん
