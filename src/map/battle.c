@@ -1310,6 +1310,10 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		case AS_SPLASHER:		// ベナムスプラッシャー
 			calc_flag.hitrate = 1000000;
 			break;
+		case GS_TRACKING:		// トラッキング
+			calc_flag.hitrate = calc_flag.hitrate*4+5;
+			calc_flag.dist = 1;
+			break;
 		case AC_DOUBLE:			// ダブルストレイフィング
 		case HT_POWER:			// ビーストストレイフィング
 		case AC_SHOWER:			// アローシャワー
@@ -1328,7 +1332,6 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		case GS_TRIPLEACTION:		// トリプルアクション
 		case GS_BULLSEYE:		// ブルズアイ
 		case GS_MAGICALBULLET:		// マジカルバレット
-		case GS_TRACKING:		// トラッキング
 		case GS_DISARM:			// ディスアーム
 		case GS_PIERCINGSHOT:		// ピアーシングショット
 		case GS_RAPIDSHOWER:		// ラピッドシャワー
@@ -1356,7 +1359,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case PA_SHIELDCHAIN:		// シールドチェイン
-			calc_flag.hitrate = calc_flag.hitrate*(100+5*skill_lv)/100;
+			calc_flag.hitrate += 20;;
 			calc_flag.dist = 1;
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
@@ -1382,7 +1385,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 
 		// ここから距離による判定
 		if(calc_flag.dist){				// 距離によってレンジが変化するスキルか
-			if(battle_config.calc_dist_flag&1) {	// 物理の時計算するか？ &1で計算
+			if(battle_config.calc_dist_flag&1 && src->type != BL_PC && target->type != BL_PC) {	// PC vs PCは強制無視
 				int target_dist = unit_distance2(src,target)-1;	// 距離を取得
 				if(target_dist >= battle_config.allow_sw_dist){				// SWで防げる距離より多い＝遠距離からの攻撃
 					if(battle_config.sw_def_type & 1 && src->type == BL_PC)		// 人間からのを判定するか　&1でする
@@ -1391,10 +1394,9 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 						wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;		// 遠距離に設定
 				}
 			} else {	// 本来遠距離のスキルで使用者と許可フラグが全て一致しないから遠距離攻撃だ
-				//wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// 遠距離に設定
+				wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// 遠距離に設定
 			}
 		}
-		// 距離によるフラグ処理にひっかかった場合はBF_LONGで処理終了
 	}
 	// サクリファイス
 	if(sc_data && sc_data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {
@@ -1918,10 +1920,11 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			calc_flag.nocardfix = 1;
 			break;
 		case GS_TRIPLEACTION:	// トリプルアクション
-			DMG_FIX( 300, 100 );
+			DMG_FIX( 450, 100 );
 			break;
 		case GS_BULLSEYE:	// ブルズアイ
 			DMG_FIX( 500, 100 );
+			calc_flag.nocardfix = 1;
 			break;
 		case GS_MAGICALBULLET:	// マジカルバレット
 			{
@@ -1937,7 +1940,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
 			}
-			DMG_FIX( 120*skill_lv, 100 );
+			DMG_FIX( 200+100*skill_lv, 100 );
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;

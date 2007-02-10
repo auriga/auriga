@@ -881,7 +881,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 
 	case CR_GRANDCROSS:		/* グランドクロス */
-	case NPC_DARKGRANDCROSS:	/*闇グランドクロス*/
+	case NPC_DARKGRANDCROSS:	/* 闇グランドクロス */
 		{
 			int race = status_get_race(bl);
 			if( (battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON) && atn_rand()%100 < 100000*sc_def_int/100)	//強制付与だが完全耐性には無効
@@ -896,7 +896,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	case RG_RAID:		/* サプライズアタック */
 		if( atn_rand()%100 < (10+3*skilllv)*sc_def_vit/100 )
-			status_change_start(bl,SC_STAN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+			status_change_start(bl,SC_STAN,skilllv,0,0,0,3000,0);
 		if( atn_rand()%100 < (10+3*skilllv)*sc_def_int/100 )
 			status_change_start(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
