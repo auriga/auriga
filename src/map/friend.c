@@ -24,11 +24,6 @@ void do_init_friend(void)
 	online_db = numdb_init();
 }
 
-static int online_db_final(void *key,void *data,va_list ap)
-{
-	return 0;
-}
-
 /*==========================================
  * 終了
  *------------------------------------------
@@ -36,7 +31,7 @@ static int online_db_final(void *key,void *data,va_list ap)
 void do_final_friend(void)
 {
 	if(online_db)
-		numdb_final(online_db,online_db_final);
+		numdb_final(online_db,NULL);
 }
 
 /*==========================================

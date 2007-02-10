@@ -2514,20 +2514,6 @@ void map_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
  * map鯖終了時処理
  *------------------------------------------
  */
-static int id_db_final(void *key,void *data,va_list ap)
-{
-	return 0;
-}
-static int map_db_final(void *key,void *data,va_list ap)
-{
-//	char *name;
-
-//	nullpo_retr(0, name=data);
-
-//	aFree(name);
-
-	return 0;
-}
 static int nick_db_final(void *key,void *data,va_list ap)
 {
 	char *nick;
@@ -2597,13 +2583,13 @@ void do_final(void)
 	map_num = 0;
 
 	if(map_db)
-		strdb_final(map_db,map_db_final);
+		strdb_final(map_db,NULL);
 	if(nick_db)
 		strdb_final(nick_db,nick_db_final);
 	if(charid_db)
 		numdb_final(charid_db,charid_db_final);
 	if(id_db)
-		numdb_final(id_db,id_db_final);
+		numdb_final(id_db,NULL);
 	//if(address_db)
 	//	numdb_final(address_db,NULL);
 	exit_dbn();

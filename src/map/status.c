@@ -2272,7 +2272,7 @@ int status_get_max_hp(struct block_list *bl)
 			max_hp = mob_db[((struct mob_data*)bl)->class_].max_hp;
 			if(mob_db[((struct mob_data*)bl)->class_].mexp > 0) {
 				if(battle_config.mvp_hp_rate != 100) {
-					double hp = (double)max_hp * battle_config.mvp_hp_rate / 100.0;
+					atn_bignumber hp = (atn_bignumber)max_hp * battle_config.mvp_hp_rate / 100;
 					max_hp = (hp > 0x7FFFFFFF ? 0x7FFFFFFF : (int)hp);
 				}
 			}
@@ -2285,7 +2285,7 @@ int status_get_max_hp(struct block_list *bl)
 			max_hp = mob_db[((struct pet_data*)bl)->class_].max_hp;
 			if(mob_db[((struct pet_data*)bl)->class_].mexp > 0) {
 				if(battle_config.mvp_hp_rate != 100) {
-					double hp = (double)max_hp * battle_config.mvp_hp_rate / 100.0;
+					atn_bignumber hp = (atn_bignumber)max_hp * battle_config.mvp_hp_rate / 100;
 					max_hp = (hp > 0x7FFFFFFF ? 0x7FFFFFFF : (int)hp);
 				}
 			}
@@ -4395,7 +4395,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sc_data[SC_ASSUMPTIO].timer!=-1)
 				status_change_end(bl,SC_ASSUMPTIO,-1);
 			/* キリエを掛ける */
-			val2 = (int)((double)status_get_max_hp(bl) * (val1 * 2 + 10) / 100);/* 耐久度 */
+			val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 10) / 100);/* 耐久度 */
 			val3 = (val1 / 2 + 5);	/* 回数 */
 			break;
 		case SC_QUAGMIRE:			/* クァグマイア */

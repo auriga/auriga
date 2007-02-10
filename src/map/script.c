@@ -59,10 +59,8 @@
 #endif
 
 #define SCRIPT_BLOCK_SIZE 512
-#define SCRIPT_HASH_SIZE 521
 enum { LABEL_NEXTLINE=1,LABEL_START };
 
-struct script_code error_code;	// エラー時のダミーデータ
 static unsigned char * script_buf;
 static int script_pos,script_size;
 
@@ -77,6 +75,8 @@ static struct script_str_data {
 	int next;
 } *str_data;
 int str_num=LABEL_START,str_data_size;
+
+#define SCRIPT_HASH_SIZE 521
 int str_hash[SCRIPT_HASH_SIZE];
 
 static struct dbt *mapreg_db=NULL;
@@ -86,10 +86,9 @@ static int mapreg_dirty = 0;
 
 static struct dbt *scriptlabel_db=NULL;
 static struct dbt *userfunc_db=NULL;
-struct dbt* script_get_label_db(){ return scriptlabel_db; }
+struct dbt* script_get_label_db() { return scriptlabel_db; }
 struct dbt* script_get_userfunc_db(){ if(!userfunc_db) userfunc_db=strdb_init(50); return userfunc_db; }
 
-static int scriptlabel_final(void *k,void *d,va_list ap){ return 0; }
 static char refine_posword[11][32] = {"頭","体","左手","右手","ローブ","靴","アクセサリー1","アクセサリー2","頭2","頭3","装着していない"};
 
 static struct Script_Config {
@@ -106,6 +105,7 @@ static int parse_cmd;
 static jmp_buf error_jump;
 static char*   error_msg;
 static char*   error_pos;
+struct script_code error_code;	// エラー時のダミーデータ
 
 // if , switch の実装
 enum { TYPE_NULL = 0 , TYPE_IF , TYPE_SWITCH , TYPE_WHILE , TYPE_FOR , TYPE_DO , TYPE_USERFUNC};
@@ -137,9 +137,6 @@ struct vars_info {
 static int varsdb_final(void *key,void *data,va_list ap);
 #endif
 
-int get_com(unsigned char *script,int *pos);
-int get_num(unsigned char *script,int *pos);
-
 extern struct script_function {
 	int (*func)(struct script_state *st);
 	char *name;
@@ -153,8 +150,9 @@ static struct linkdb_node *sleep_db;
  *------------------------------------------
  */
 unsigned char* parse_subexpr(unsigned char *,int);
-void push_val(struct script_stack *stack,int type,int val);
-int run_func(struct script_state *st);
+int get_com(unsigned char *script,int *pos);
+int get_num(unsigned char *script,int *pos);
+
 #if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
 int script_csvinit( void );
 int script_csvfinal( void );
@@ -415,11 +413,11 @@ static unsigned char *skip_space(unsigned char *p)
 static unsigned char *skip_word(unsigned char *p)
 {
 	// prefix
-	if(*p=='\'')p++;	// スクリプト依存変数
-	if(*p=='$') p++;	// MAP鯖内共有変数用
-	if(*p=='@') p++;	// 一時的変数用(like weiss)
-	if(*p=='#') p++;	// account変数用
-	if(*p=='#') p++;	// ワールドaccount変数用
+	if(*p=='\'') p++;	// スクリプト依存変数
+	if(*p=='$')  p++;	// MAP鯖内共有変数用
+	if(*p=='@')  p++;	// 一時的変数用(like weiss)
+	if(*p=='#')  p++;	// account変数用
+	if(*p=='#')  p++;	// ワールドaccount変数用
 
 	while(isalnum(*p)||*p=='_'|| *p>=0x81) {
 		if(*p>=0x81 && p[1]){
@@ -1584,7 +1582,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 
 	// 外部用label dbの初期化
 	if(scriptlabel_db!=NULL)
-		strdb_final(scriptlabel_db,scriptlabel_final);
+		strdb_final(scriptlabel_db,NULL);
 	scriptlabel_db=strdb_init(50);
 
 	// 例外処理
@@ -1699,7 +1697,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 			case C_EOL:	 printf("C_EOL"); break;
 			case C_INT:	 printf("C_INT %d",get_num(script_buf,&i)); break;
 			case C_POS:
-				printf("C_POS  0x%06x",*(int*)(script_buf+i)&0xffffff);
+				printf("C_POS 0x%06x",*(int*)(script_buf+i)&0xffffff);
 				i += 3;
 				break;
 			case C_NAME:
@@ -1707,31 +1705,31 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 				printf("C_NAME %s",j == 0xffffff ? "?? unknown ??" : str_buf + str_data[j].str);
 				i += 3;
 				break;
-			case C_ARG:		printf("C_ARG"); break;
-			case C_FUNC:	printf("C_FUNC"); break;
-			case C_ADD:	 	printf("C_ADD"); break;
-			case C_SUB:		printf("C_SUB"); break;
-			case C_MUL:		printf("C_MUL"); break;
-			case C_DIV:		printf("C_DIV"); break;
-			case C_MOD:		printf("C_MOD"); break;
-			case C_EQ:		printf("C_EQ"); break;
-			case C_NE:		printf("C_NE"); break;
-			case C_GT:		printf("C_GT"); break;
-			case C_GE:		printf("C_GE"); break;
-			case C_LT:		printf("C_LT"); break;
-			case C_LE:		printf("C_LE"); break;
-			case C_AND:		printf("C_AND"); break;
-			case C_OR:		printf("C_OR"); break;
-			case C_XOR:		printf("C_XOR"); break;
-			case C_LAND:	printf("C_LAND"); break;
-			case C_LOR:		printf("C_LOR"); break;
-			case C_R_SHIFT:	printf("C_R_SHIFT"); break;
-			case C_L_SHIFT:	printf("C_L_SHIFT"); break;
-			case C_NEG:		printf("C_NEG"); break;
-			case C_NOT:		printf("C_NOT"); break;
-			case C_LNOT:	printf("C_LNOT"); break;
-			case C_NOP:		printf("C_NOP"); break;
-			case C_OP3:		printf("C_OP3"); break;
+			case C_ARG:     printf("C_ARG");     break;
+			case C_FUNC:    printf("C_FUNC");    break;
+			case C_ADD:     printf("C_ADD");     break;
+			case C_SUB:     printf("C_SUB");     break;
+			case C_MUL:     printf("C_MUL");     break;
+			case C_DIV:     printf("C_DIV");     break;
+			case C_MOD:     printf("C_MOD");     break;
+			case C_EQ:      printf("C_EQ");      break;
+			case C_NE:      printf("C_NE");      break;
+			case C_GT:      printf("C_GT");      break;
+			case C_GE:      printf("C_GE");      break;
+			case C_LT:      printf("C_LT");      break;
+			case C_LE:      printf("C_LE");      break;
+			case C_AND:     printf("C_AND");     break;
+			case C_OR:      printf("C_OR");      break;
+			case C_XOR:     printf("C_XOR");     break;
+			case C_LAND:    printf("C_LAND");    break;
+			case C_LOR:     printf("C_LOR");     break;
+			case C_R_SHIFT: printf("C_R_SHIFT"); break;
+			case C_L_SHIFT: printf("C_L_SHIFT"); break;
+			case C_NEG:     printf("C_NEG");     break;
+			case C_NOT:     printf("C_NOT");     break;
+			case C_LNOT:    printf("C_LNOT");    break;
+			case C_NOP:     printf("C_NOP");     break;
+			case C_OP3:     printf("C_OP3");     break;
 			case C_STR:
 				j = strlen(script_buf + i);
 				printf("C_STR %s",script_buf + i);
@@ -1776,7 +1774,7 @@ struct map_session_data *script_rid2sd(struct script_state *st)
  * 変数の読み取り
  *------------------------------------------
  */
-int get_val(struct script_state*st,struct script_data* data)
+int get_val(struct script_state *st,struct script_data *data)
 {
 	struct map_session_data *sd=NULL;
 	if(data->type==C_NAME){
@@ -1859,12 +1857,13 @@ int get_val(struct script_state*st,struct script_data* data)
 void* get_val2(struct script_state*st,int num,struct linkdb_node **ref)
 {
 	struct script_data dat;
+
 	dat.type  = C_NAME;
 	dat.u.num = num;
 	dat.ref   = ref;
 	get_val(st,&dat);
-	if( dat.type==C_INT ) return (void*)dat.u.num;
-	else return (void*)dat.u.str;
+
+	return (dat.type == C_INT)? (void*)dat.u.num: (void*)dat.u.str;
 }
 
 /*==========================================
@@ -1956,12 +1955,10 @@ char* conv_str(struct script_state *st,struct script_data *data)
 		data->type  = C_CONSTSTR;
 		data->u.str = "** SCRIPT ERROR **";
 		printf("script: conv_str: label has used as argument !\n");
-#if 1
 	} else if(data->type==C_NAME){
 		// テンポラリ。本来無いはず
 		data->type=C_CONSTSTR;
 		data->u.str=str_buf+str_data[data->u.num].str;
-#endif
 	}
 	return data->u.str;
 }
@@ -2167,13 +2164,13 @@ void unget_com(int c)
 }
 
 /*==========================================
- * 数値の所得
+ * 数値の取得
  *------------------------------------------
  */
 int get_num(unsigned char *script,int *pos)
 {
-	int i,j;
-	i=0; j=0;
+	int i=0,j=0;
+
 	while(script[*pos]>=0xc0){
 		i+=(script[(*pos)++]&0x7f)<<j;
 		j+=6;
@@ -2196,7 +2193,12 @@ int pop_val(struct script_state* st)
 	return 0;
 }
 
-int isstr(struct script_data *c) {
+/*==========================================
+ * 文字列型かどうか判定
+ *------------------------------------------
+ */
+int isstr(struct script_data *c)
+{
 	if( c->type == C_STR || c->type == C_CONSTSTR )
 		return 1;
 	else if( c->type == C_NAME ) {
@@ -2225,10 +2227,10 @@ void op_add(struct script_state* st)
 		int *i1 = &st->stack->stack_data[st->stack->sp-1].u.num;
 		int *i2 = &st->stack->stack_data[st->stack->sp].u.num;
 		int ret = *i1 + *i2;
-		double ret_double = (double)*i1 + (double)*i2;
-		if(ret_double > 0x7FFFFFFF || ret_double < -1 * 0x7FFFFFFF) {
+		atn_bignumber ret_bignum = (atn_bignumber)*i1 + (atn_bignumber)*i2;
+		if(ret_bignum > 0x7FFFFFFF || ret_bignum < -1 * 0x7FFFFFFF) {
 			printf("script::op_add overflow detected op:%d rid:%d\n",C_ADD,st->rid);
-			ret = (ret_double > 0x7FFFFFFF ? 0x7FFFFFFF : -1 * 0x7FFFFFFF);
+			ret = (ret_bignum > 0x7FFFFFFF ? 0x7FFFFFFF : -1 * 0x7FFFFFFF);
 		}
 		*i1 = ret;
 	} else { // ssの予定
@@ -2251,7 +2253,6 @@ void op_add(struct script_state* st)
  * 三項演算子
  *------------------------------------------
  */
-
 void op_3(struct script_state *st) {
 	int flag = 0;
 	if( isstr(&st->stack->stack_data[st->stack->sp-3])) {
@@ -2314,39 +2315,47 @@ void op_2str(struct script_state *st,int op,int sp1,int sp2)
 void op_2num(struct script_state *st,int op,int i1,int i2)
 {
 	int ret = 0;
-	double ret_double = 0;
-	switch(op){
-	case C_MOD:  ret = i1 % i2;		break;
-	case C_AND:  ret = i1 & i2;		break;
-	case C_OR:   ret = i1 | i2;		break;
-	case C_XOR:  ret = i1 ^ i2;		break;
-	case C_LAND: ret = (i1 && i2);	break;
-	case C_LOR:  ret = (i1 || i2);	break;
-	case C_EQ:   ret = (i1 == i2);	break;
-	case C_NE:   ret = (i1 != i2);	break;
-	case C_GT:   ret = (i1 >  i2);	break;
-	case C_GE:   ret = (i1 >= i2);	break;
-	case C_LT:   ret = (i1 <  i2);	break;
-	case C_LE:   ret = (i1 <= i2);	break;
-	case C_R_SHIFT: ret = i1>>i2;	break;
-	case C_L_SHIFT: ret = i1<<i2;	break;
+	atn_bignumber ret_bignum = 0;
+
+	switch(op) {
+	case C_MOD:     ret = i1 % i2;		break;
+	case C_AND:     ret = i1 & i2;		break;
+	case C_OR:      ret = i1 | i2;		break;
+	case C_XOR:     ret = i1 ^ i2;		break;
+	case C_LAND:    ret = (i1 && i2);	break;
+	case C_LOR:     ret = (i1 || i2);	break;
+	case C_EQ:      ret = (i1 == i2);	break;
+	case C_NE:      ret = (i1 != i2);	break;
+	case C_GT:      ret = (i1 >  i2);	break;
+	case C_GE:      ret = (i1 >= i2);	break;
+	case C_LT:      ret = (i1 <  i2);	break;
+	case C_LE:      ret = (i1 <= i2);	break;
+	case C_R_SHIFT: ret = i1>>i2;		break;
+	case C_L_SHIFT: ret = i1<<i2;		break;
 	default:
 		switch(op) {
-		case C_SUB: ret = i1 - i2; ret_double = (double)i1 - (double)i2; break;
-		case C_MUL: ret = i1 * i2; ret_double = (double)i1 * (double)i2; break;
+		case C_SUB:
+			ret = i1 - i2;
+			ret_bignum = (atn_bignumber)i1 - (atn_bignumber)i2;
+			break;
+		case C_MUL:
+			ret = i1 * i2;
+			ret_bignum = (atn_bignumber)i1 * (atn_bignumber)i2;
+			break;
 		case C_DIV:
 			if(i2 == 0) {
 				printf("script::op_2num division by zero.\n");
 				ret = 0x7FFFFFFF;
-				ret_double = 0; // doubleの精度が怪しいのでオーバーフロー対策を飛ばす
+				ret_bignum = 0;	// オーバーフロー対策を飛ばす
 			} else {
-				ret = i1 / i2; ret_double = (double)i1 / (double)i2;
+				ret = i1 / i2;
+				ret_bignum = (atn_bignumber)i1 / (atn_bignumber)i2;
 			}
 			break;
 		}
-		if(ret_double > 0x7FFFFFFF || ret_double < -1 * 0x7FFFFFFF) {
+		if(ret_bignum > 0x7FFFFFFF || ret_bignum < -1 * 0x7FFFFFFF) {
 			printf("script::op_2num overflow detected op:%d rid:%d\n",op,st->rid);
-			ret = (ret_double > 0x7FFFFFFF ? 0x7FFFFFFF : -1 * 0x7FFFFFFF);
+			ret = (ret_bignum > 0x7FFFFFFF ? 0x7FFFFFFF : -1 * 0x7FFFFFFF);
 		}
 	}
 	push_val(st->stack,C_INT,ret);
@@ -2452,7 +2461,6 @@ int run_func(struct script_state *st)
 	if(i<=0){
 		if(battle_config.error_log)
 			printf("function not found\n");
-//		st->stack->sp=0;
 		st->state=END;
 		return 0;
 	}
@@ -2463,7 +2471,6 @@ int run_func(struct script_state *st)
 	func=st->stack->stack_data[st->start].u.num;
 	if(str_data[func].type!=C_FUNC ){
 		printf("run_func: not function and command! \n");
-//		st->stack->sp=0;
 		st->state=END;
 		return 0;
 	}
@@ -2718,10 +2725,10 @@ void run_script_main(struct script_state *st)
 	}
 	else if(st->state != END && sd){
 		// 再開するためにスタック情報を保存
-		sd->npc_script		= st->script;
-		sd->npc_scriptroot	= st->scriptroot;
-		sd->npc_scriptstate	= st->state;
-		sd->stack			= st->stack;
+		sd->npc_script      = st->script;
+		sd->npc_scriptroot  = st->scriptroot;
+		sd->npc_scriptstate = st->state;
+		sd->stack           = st->stack;
 		sd->npc_id          = st->oid;
 		sd->npc_pos         = st->pos;
 		aFree(st);
@@ -2988,8 +2995,9 @@ static int script_autosave_mapreg(int tid,unsigned int tick,int id,int data)
  */
 static int set_posword(char *p)
 {
-	char* np,* str[15];
+	char *np, *str[11];
 	int i=0;
+
 	for(i=0;i<11;i++) {
 		if((np=strchr(p,','))!=NULL) {
 			str[i]=p;
@@ -3222,10 +3230,6 @@ static int debug_hash_output(void)
  * 終了
  *------------------------------------------
  */
-static int mapreg_db_final(void *key,void *data,va_list ap)
-{
-	return 0;
-}
 static int mapregstr_db_final(void *key,void *data,va_list ap)
 {
 	aFree(data);
@@ -3244,11 +3248,11 @@ int do_final_script()
 		script_save_mapreg();
 
 	if(mapreg_db)
-		numdb_final(mapreg_db,mapreg_db_final);
+		numdb_final(mapreg_db,NULL);
 	if(mapregstr_db)
 		strdb_final(mapregstr_db,mapregstr_db_final);
 	if(scriptlabel_db)
-		strdb_final(scriptlabel_db,scriptlabel_final);
+		strdb_final(scriptlabel_db,NULL);
 	if(userfunc_db)
 		strdb_final(userfunc_db,userfunc_db_final);
 	if(sleep_db) {
@@ -3295,7 +3299,7 @@ int do_init_script()
 
 	// do init が呼ばれる順番が違う場合の対策
 	if(scriptlabel_db) {
-		strdb_final(scriptlabel_db,scriptlabel_final);
+		strdb_final(scriptlabel_db,NULL);
 	}
 	scriptlabel_db=strdb_init(50);
 

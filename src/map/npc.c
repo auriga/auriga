@@ -743,7 +743,7 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned short *item_list)
 		if (amount <= 0)
 			return 3;
 		nameid = (int)item_list[i * 2 + 1];
-		if (nameid <= 0 || (item_data = itemdb_search(nameid)) == NULL)
+		if (nameid <= 0 || (item_data = itemdb_exists(nameid)) == NULL)
 			return 3;
 
 		for(j=0;nd->u.shop_item[j].nameid;j++) {
@@ -847,7 +847,7 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 			return 1;
 		inventory[idx].amount = inventory[idx].amount - amount;
 		nameid = inventory[idx].nameid;
-		if (nameid <= 0 || (item_data = itemdb_search(nameid)) == NULL)
+		if (nameid <= 0 || (item_data = itemdb_exists(nameid)) == NULL)
 			return 1;
 		if (item_data->flag.value_notoc)
 			z += ((double)item_data->value_sell * (double)amount);
@@ -1954,10 +1954,7 @@ static int ev_db_final(void *key,void *data,va_list ap)
 		aFree(key);
 	return 0;
 }
-static int npcname_db_final(void *key,void *data,va_list ap)
-{
-	return 0;
-}
+
 /*==========================================
  * 終了
  *------------------------------------------
@@ -1974,7 +1971,7 @@ int do_final_npc(void)
 	if(ev_db)
 		strdb_final(ev_db,ev_db_final);
 	if(npcname_db)
-		strdb_final(npcname_db,npcname_db_final);
+		strdb_final(npcname_db,NULL);
 
 	for(i=START_NPC_NUM;i<npc_id;i++){
 		if((bl=map_id2bl(i))){

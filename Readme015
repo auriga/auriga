@@ -1,4 +1,15 @@
 ----------------------------------------
+//075 [2007/02/11] by Rayce
+
+・ギルドExpのキャッシュ guild_expcache_db をtreedbに戻す（guild.c）
+・numdb_final() および strdb_final() を呼ぶ際、各ノードに対して実行すべき関数がない場合は
+　引数にNULLを入れるだけにする
+　（friend.c, map.c, npc.c, script.c）
+・npc_buylist() および npc_selllist() で使っている itemdb_search() を itemdb_exists() に修正（npc.c）
+・double型へキャストしている部分をatn_bignumber型に変更（script.c, status.c）
+・script.cを少し整形
+
+----------------------------------------
 //074 [2007/02/11] by Rayce
 
 ・スクリプト命令のsetusescript, setequipscriptの廃止

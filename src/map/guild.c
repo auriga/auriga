@@ -29,9 +29,9 @@
 
 static struct dbt *guild_db;
 static struct dbt *castle_db;
+static struct dbt *guild_expcache_db;
 static struct dbt *guild_infoevent_db;
 static struct dbt *guild_castleinfoevent_db;
-static struct linkdb_node *guild_expcache_db;
 
 struct eventlist {
 	char name[50];
@@ -349,13 +349,14 @@ static void guild_check_conflict(struct map_session_data *sd)
 }
 
 // ギルドのEXPキャッシュをinter鯖にフラッシュする
-int guild_payexp_timer_sub(struct guild_expcache *c)
+int guild_payexp_timer_sub(void *key,void *data,va_list ap)
 {
 	int i;
+	struct guild_expcache *c;
 	struct guild *g;
 	atn_bignumber tmp;
 
-	nullpo_retr(0, c);
+	nullpo_retr(0, c = (struct guild_expcache *)data);
 
 	if( (g=guild_search(c->guild_id))==NULL )
 		return 0;
@@ -370,22 +371,15 @@ int guild_payexp_timer_sub(struct guild_expcache *c)
 		GMI_EXP,&c->exp,sizeof(c->exp));
 	c->exp=0;
 
+	numdb_erase(guild_expcache_db,key);
+	aFree(c);
+
 	return 0;
 }
 
 int guild_payexp_timer(int tid,unsigned int tick,int id,int data)
 {
-	if(guild_expcache_db) {
-		struct linkdb_node *node = (struct linkdb_node *)guild_expcache_db;
-		while(node) {
-			struct guild_expcache *c = (struct guild_expcache *)node->data;
-			guild_payexp_timer_sub(c);
-			aFree(c);
-			node = node->next;
-		}
-		linkdb_final(&guild_expcache_db);
-	}
-
+	numdb_foreach(guild_expcache_db,guild_payexp_timer_sub);
 	return 0;
 }
 
@@ -1224,12 +1218,12 @@ atn_bignumber guild_payexp(struct map_session_data *sd,atn_bignumber exp)
 	if(battle_config.guild_exp_rate!=100)
 		exp2 = exp2*battle_config.guild_exp_rate/100;
 
-	if( (c = (struct guild_expcache *)linkdb_search(&guild_expcache_db,(void*)sd->status.char_id)) == NULL ){
+	if( (c = (struct guild_expcache *)numdb_search(guild_expcache_db,sd->status.char_id)) == NULL ){
 		c=(struct guild_expcache *)aCalloc(1,sizeof(struct guild_expcache));
 		c->guild_id=sd->status.guild_id;
 		c->account_id=sd->status.account_id;
 		c->char_id=sd->status.char_id;
-		linkdb_insert(&guild_expcache_db,(void*)c->char_id,c);
+		numdb_insert(guild_expcache_db,c->char_id,c);
 	}
 
 	if(0x7fffffff - c->exp <= (int)exp2)
@@ -1866,12 +1860,12 @@ void guild_getexp(struct map_session_data *sd, int exp)
 	if (sd->status.guild_id == 0 || (g = guild_search(sd->status.guild_id)) == NULL)
 		return;
 
-	if ((c = (struct guild_expcache *)linkdb_search(&guild_expcache_db,(void*)sd->status.char_id)) == NULL) {
+	if ((c = (struct guild_expcache *)numdb_search(guild_expcache_db,sd->status.char_id)) == NULL) {
 		c = (struct guild_expcache *)aCalloc(1,sizeof(struct guild_expcache));
 		c->guild_id = sd->status.guild_id;
 		c->account_id = sd->status.account_id;
 		c->char_id = sd->status.char_id;
-		linkdb_insert(&guild_expcache_db,(void*)c->char_id,c);
+		numdb_insert(guild_expcache_db,c->char_id,c);
 	}
 	tmp = (atn_bignumber)c->exp + exp;
 	c->exp = (tmp > 0x7fffffff) ? 0x7fffffff : (int)tmp;
@@ -1897,6 +1891,15 @@ static int castle_db_final(void *key,void *data,va_list ap)
 	return 0;
 }
 
+static int guild_expcache_db_final(void *key,void *data,va_list ap)
+{
+	struct guild_expcache *c = (struct guild_expcache *)data;
+
+	aFree(c);
+
+	return 0;
+}
+
 static int guild_infoevent_db_final(void *key,void *data,va_list ap)
 {
 	struct eventlist *ev = (struct eventlist *)data;
@@ -1912,18 +1915,12 @@ void do_final_guild(void)
 		numdb_final(guild_db,guild_db_final);
 	if(castle_db)
 		numdb_final(castle_db,castle_db_final);
+	if(guild_expcache_db)
+		numdb_final(guild_expcache_db,guild_expcache_db_final);
 	if(guild_infoevent_db)
 		numdb_final(guild_infoevent_db,guild_infoevent_db_final);
 	if(guild_castleinfoevent_db)
 		numdb_final(guild_castleinfoevent_db,guild_infoevent_db_final);
-	if(guild_expcache_db) {
-		struct linkdb_node *node = (struct linkdb_node *)guild_expcache_db;
-		while(node) {
-			aFree(node->data);
-			node = node->next;
-		}
-		linkdb_final(&guild_expcache_db);
-	}
 
 	return;
 }
@@ -1933,6 +1930,7 @@ void do_init_guild(void)
 {
 	guild_db=numdb_init();
 	castle_db=numdb_init();
+	guild_expcache_db=numdb_init();
 	guild_infoevent_db=numdb_init();
 	guild_castleinfoevent_db=numdb_init();
 
