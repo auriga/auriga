@@ -1851,28 +1851,6 @@ AthenaNPCScript
 			例 → LoVは正常に表示されます。
 			      MEは初期エフェクトのみで、地面にユニットは表示されません。
 
-		setusescript命令
-			setusescript <id>,<script>;
-
-			id		アイテムID
-			script		文字列
-
-			指定アイテムのUseScript部分を変更します。
-			<script>はスクリプトの記述法に従ってください。
-			ただし必ず "{" から始め、"}" で終了してください。
-
-			例 → setusescript 501,"{ if(Class==0) killmonsterall \"this\"; else heal -HP+1,0; }";
-
-		setequipscript命令
-			setequipscript <id>,<script>;
-
-			id		アイテムID
-			script		文字列
-
-			指定アイテムのEquipScript部分を変更します。
-			<script>はスクリプトの記述法に従ってください。
-			ただし必ず "{" から始め、"}" で終了してください。
-
 		homundel命令
 			homundel;
 
@@ -3014,6 +2992,10 @@ AthenaNPCScript
 		expect ',' or ')' at func params
 			関数の引数において','か')'を期待していました
 			おそらく引数区切りの','か')'を忘れています。
+
+		expect space ' '
+			スペースを期待していました
+			命令やcaseの後にスペースを忘れています。
 
 		func request '(' ')'
 			関数呼び出しの括弧対応問題

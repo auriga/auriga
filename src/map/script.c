@@ -707,7 +707,6 @@ unsigned char* parse_line(unsigned char *p)
 	// 最初は関数名
 	p2=p;
 	p=parse_simpleexpr(p);
-	p=skip_space(p);
 
 	if(str_data[parse_cmd].type == C_FUNC){
 		// 通常の関数
@@ -736,8 +735,14 @@ unsigned char* parse_line(unsigned char *p)
 		}
 	}
 
+	p2=p;
+	p=skip_space(p);
+
 	while(p && *p && *p != end && i<128){
 		plist[i]=p;
+		if(p2 == p) {
+			disp_error_message("expect space ' '",p);
+		}
 		p=parse_expr(p);
 		p=skip_space(p);
 		// 引数区切りの,処理
@@ -3540,8 +3545,6 @@ int buildin_strnpcinfo(struct script_state *st);
 int buildin_getpartyleader(struct script_state *st);
 int buildin_getstrlen(struct script_state *st);
 int buildin_substr(struct script_state *st);
-int buildin_setusescript(struct script_state *st);
-int buildin_setequipscript(struct script_state *st);
 int buildin_distance(struct script_state *st);
 int buildin_homundel(struct script_state *st);
 int buildin_homunrename(struct script_state *st);
@@ -3783,8 +3786,6 @@ struct script_function buildin_func[] = {
 	{buildin_getpartyleader,"getpartyleader","i"},
 	{buildin_getstrlen,"getstrlen","s"},
 	{buildin_substr,"substr","si*"},
-	{buildin_setusescript,"setusescript","is"},
-	{buildin_setequipscript,"setequipscript","is"},
 	{buildin_distance,"distance","i*"},
 	{buildin_recalcstatus,"recalcstatus","*"},
 	{NULL,NULL,NULL}
@@ -9983,78 +9984,6 @@ int buildin_substr(struct script_state *st)
 		push_str(st->stack,C_STR,buf);
 	} else {
 		push_str(st->stack,C_CONSTSTR,"");
-	}
-	return 0;
-}
-
-/*==========================================
- * 指定アイテムのUseScriptを変更する
- *------------------------------------------
- */
-int buildin_setusescript(struct script_state *st)
-{
-	int nameid, type;
-	char *p;
-	struct item_data *id;
-	struct script_code *script = NULL;
-
-	nameid	= conv_num(st,& (st->stack->stack_data[st->start+2]));
-	p = conv_str(st,& (st->stack->stack_data[st->start+3]));
-	type = st->stack->stack_data[st->start+3].type;
-
-	if( (id=itemdb_exists(nameid)) == NULL )
-		return 0;
-	if(*p != '{') {
-		printf("buildin_setusescript: not found '{'\n");
-		return 0;
-	}
-	if(id->use_script) {
-		script_free_code(id->use_script);
-	}
-	if( type == C_CONSTSTR ) {
-		p = (char *)aStrdup( p );
-	}
-	script = parse_script(p,"buildin_setusescript",0);
-
-	id->use_script = (script != &error_code)? script: NULL;
-	if( type == C_CONSTSTR ) {
-		aFree( p );
-	}
-	return 0;
-}
-
-/*==========================================
- * 指定アイテムのEquipScriptを変更する
- *------------------------------------------
- */
-int buildin_setequipscript(struct script_state *st)
-{
-	int nameid, type;
-	char *p;
-	struct item_data *id;
-	struct script_code *script = NULL;
-
-	nameid	= conv_num(st,& (st->stack->stack_data[st->start+2]));
-	p = conv_str(st,& (st->stack->stack_data[st->start+3]));
-	type = st->stack->stack_data[st->start+3].type;
-
-	if( (id=itemdb_exists(nameid)) == NULL )
-		return 0;
-	if(*p != '{') {
-		printf("buildin_setequipscript: not found '{'\n");
-		return 0;
-	}
-	if(id->equip_script) {
-		script_free_code(id->equip_script);
-	}
-	if( type == C_CONSTSTR ) {
-		p = (char *)aStrdup( p );
-	}
-	script = parse_script(p,"buildin_setequipscript",0);
-
-	id->equip_script = (script != &error_code)? script: NULL;
-	if( type == C_CONSTSTR ) {
-		aFree( p );
 	}
 	return 0;
 }
