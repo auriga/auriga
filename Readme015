@@ -1,4 +1,11 @@
 ----------------------------------------
+//078 [2007/02/12] by Rayce
+
+・map_athena.confにベインズ系のMAPを追加
+・2007-02-05aSakexeを解析したパケット長を追加（db/packet_db.txt）
+・db群の更新 thanks to huge cgi
+
+----------------------------------------
 //077 [2007/02/11] by Rayce
 
 ・AthenaProject2272, 2273とhugeさんの作成されたdebugパッチをベースにmerge

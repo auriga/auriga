@@ -1,4 +1,4 @@
-//npc_monster.txt＠Athena 2006/12/06 16:17:38 (JST)
+//npc_monster.txt＠Athena 2007/02/12 00:30:56 (JST)
 
 //おもちゃ分類所(xmas_dun02.gat)
 xmas_dun02.gat,0,0,0,0	monster	クッキー	1246,20,0,0,0
@@ -2074,7 +2074,7 @@ beach_dun.gat,0,0,0,0	monster	ペノメナ	1216,5,0,0,0
 beach_dun.gat,0,0,0,0	monster	ネレイド	1255,15,0,0,0
 beach_dun.gat,0,0,0,0	monster	ペスト	1256,15,0,0,0
 beach_dun.gat,0,0,0,0	monster	半漁人	1264,3,0,0,0
-beach_dun.gat,0,0,0,0	monster	タオグンカ	1583,1,7200000,3600000,0
+beach_dun.gat,0,0,0,0	monster	タオグンカ	1583,1,7280000,3600000,0
 
 //コードの森(gef_fild12.gat)
 gef_fild12.gat,0,0,0,0	monster	ポポリン	1031,20,0,0,0
@@ -2503,8 +2503,8 @@ new_5-3.gat,0,0,0,0	monster	ファブル	1184,5,0,0,0
 lou_dun03.gat,0,0,0,0	monster	ヒェグン	1512,25,0,0,0
 lou_dun03.gat,0,0,0,0	monster	ミョグェ	1513,15,0,0,0
 lou_dun03.gat,0,0,0,0	monster	小龍舞	1514,25,0,0,0
-lou_dun03.gat,0,0,0,0	monster	チュンイー	1631,5,3600000,1800000,0
-lou_dun03.gat,0,0,0,0	monster	ペクソジン	1630,1,7200000,3600000,0
+lou_dun03.gat,0,0,0,0	monster	チュンイー	1631,5,3000000,1800000,0
+lou_dun03.gat,0,0,0,0	monster	ペクソジン	1630,1,7000000,5000000,0
 
 //王陵 内部(lou_dun02.gat)
 lou_dun02.gat,0,0,0,0	monster	ムナック	1026,25,0,0,0
@@ -2535,7 +2535,7 @@ lou_fild01.gat,0,0,0,0	monster	土精	1516,30,0,0,0
 ayo_dun02.gat,0,0,0,0	monster	ウィスパー	1179,20,0,0,0
 ayo_dun02.gat,0,0,0,0	monster	タムラン	1584,70,0,0,0
 ayo_dun02.gat,0,0,0,0	monster	クラベン	1587,20,0,0,0
-ayo_dun02.gat,0,0,0,0	monster	レディータニー	1688,1,7200000,3600000,0
+ayo_dun02.gat,0,0,0,0	monster	レディータニー	1688,1,25200000,18000000,0
 
 //古代神殿迷宮(ayo_dun01.gat)
 ayo_dun01.gat,0,0,0,0	monster	グール	1036,30,0,0,0
@@ -2596,7 +2596,7 @@ ein_fild07.gat,0,0,0,0	monster	ポポリン	1031,20,0,0,0
 ein_fild07.gat,0,0,0,0	monster	フローラ	1118,20,0,0,0
 ein_fild07.gat,0,0,0,0	monster	ジオグラファー	1368,20,0,0,0
 ein_fild07.gat,0,0,0,0	monster	メタリン	1613,60,0,0,0
-ein_fild07.gat,0,0,0,0	monster	ウンゴリアント	1618,1,3600000,1800000,0
+ein_fild07.gat,0,0,0,0	monster	ウンゴリアント	1618,1,86400000,86000000,0
 ein_fild07.gat,0,0,0,0	monster	赤い草	1078,10,180000,90000,0
 ein_fild07.gat,0,0,0,0	monster	黄色草	1081,10,180000,90000,0
 ein_fild07.gat,0,0,0,0	monster	赤いきのこ	1085,10,180000,90000,0
@@ -2616,7 +2616,7 @@ ein_dun01.gat,0,0,0,0	monster	ノクシャス	1620,40,0,0,0
 ein_dun01.gat,0,0,0,0	monster	ポルセリオ	1619,30,0,0,0
 ein_dun01.gat,0,0,0,0	monster	ベノマス	1621,20,0,0,0
 ein_dun01.gat,0,0,0,0	monster	ジャンクポット	1617,5,600000,300000,0
-ein_dun01.gat,0,0,0,0	monster	ウンゴリアント	1618,1,1800000,900000,0
+ein_dun01.gat,0,0,0,0	monster	ウンゴリアント	1618,1,3600000,3000000,0
 
 //鉱山ダンジョン(ein_dun02.gat)
 ein_dun02.gat,0,0,0,0	monster	ミネラル	1614,50,0,0,0
@@ -2624,7 +2624,7 @@ ein_dun02.gat,0,0,0,0	monster	オブシディアン	1615,40,0,0,0
 ein_dun02.gat,0,0,0,0	monster	ベアドール	1622,30,0,0,0
 ein_dun02.gat,0,0,0,0	monster	ジャンクポット	1617,30,0,0,0
 ein_dun02.gat,0,0,0,0	monster	ベノマス	1621,20,0,0,0
-ein_dun02.gat,0,0,0,0	monster	RSX-0806	1623,1,7200000,3600000,0
+ein_dun02.gat,0,0,0,0	monster	RSX-0806	1623,1,7500000,7200000,0
 
 //シュバルツバルド警備隊野営地(yuno_fild09.gat)
 yuno_fild09.gat,97,237,20,20	monster	ゴブリン	1122,3,600000,300000,0
@@ -3181,3 +3181,19 @@ tha_t12.gat,0,0,0,0	monster	保護する者	1701,5,420000,210000,0
 tha_t12.gat,0,0,0,0	monster	執行する者	1702,5,420000,210000,0
 tha_t12.gat,0,0,0,0	monster	タナトスの憎悪	1704,1,1800000,900000,0
 tha_t12.gat,0,0,0,0	monster	タナトスの憎悪	1709,3,180000,90000,0
+
+//アインブロックフィールド(ein_fild01.gat)
+ein_fild01.gat,0,0,0,0	monster	デーモンパンク	1378,50,0,0,0
+ein_fild01.gat,0,0,0,0	monster	パンク	1199,50,0,0,0
+
+//アインブロックフィールド(ein_fild02.gat)
+ein_fild02.gat,0,0,0,0	monster	ドリラー	1380,40,0,0,0
+ein_fild02.gat,0,0,0,0	monster	デーモンパンク	1378,25,0,0,0
+ein_fild02.gat,0,0,0,0	monster	ウンゴリアント	1618,1,86400000,86000000,0
+
+//アインブロックフィールド(ein_fild05.gat)
+ein_fild05.gat,0,0,0,0	monster	ミネラル	1614,35,0,0,0
+ein_fild05.gat,0,0,0,0	monster	ウィレス	1627,30,0,0,0
+ein_fild05.gat,0,0,0,0	monster	オブシディアン	1615,20,0,0,0
+ein_fild05.gat,0,0,0,0	monster	デーモンパンク	1378,20,0,0,0
+ein_fild05.gat,0,0,0,0	monster	ジオグラファー	1368,10,0,0,0
