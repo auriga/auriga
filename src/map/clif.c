@@ -2240,7 +2240,7 @@ void clif_selllist(struct map_session_data *sd)
 }
 
 /*==========================================
- * 課金アイテム販売リスト
+ * スペシャルアイテム販売リスト
  *------------------------------------------
  */
 void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
@@ -4365,9 +4365,9 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 	}
 	if(sc_data && sc_data[SC_HALLUCINATION].timer != -1) {
 		if(damage > 0)
-			damage = damage*(5+sc_data[SC_HALLUCINATION].val1) + rand()%100;
+			damage = damage*(5+sc_data[SC_HALLUCINATION].val1) + atn_rand()%100;
 		if(damage2 > 0)
-			damage2 = damage2*(5+sc_data[SC_HALLUCINATION].val1) + rand()%100;
+			damage2 = damage2*(5+sc_data[SC_HALLUCINATION].val1) + atn_rand()%100;
 	}
 
 	WBUFW(buf,0)=0x8a;
@@ -5051,7 +5051,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 		if(type != 5 && (sc_data[SC_ENDURE].timer != -1 || sc_data[SC_BERSERK].timer != -1))
 			type = 9;
 		if(sc_data[SC_HALLUCINATION].timer != -1 && damage > 0)
-			damage = damage*(5+sc_data[SC_HALLUCINATION].val1) + rand()%100;
+			damage = damage*(5+sc_data[SC_HALLUCINATION].val1) + atn_rand()%100;
 	}
 
 #if PACKETVER < 3
@@ -5106,7 +5106,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 		if(type != 5 && (sc_data[SC_ENDURE].timer != -1 || sc_data[SC_BERSERK].timer != -1))
 			type = 9;
 		if(sc_data[SC_HALLUCINATION].timer != -1 && damage > 0)
-			damage = damage*(5+sc_data[SC_HALLUCINATION].val1) + rand()%100;
+			damage = damage*(5+sc_data[SC_HALLUCINATION].val1) + atn_rand()%100;
 	}
 
 	WBUFW(buf,0)=0x115;
@@ -9135,7 +9135,7 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 			*-------------------------------------------------------------
 			*/
 			WFIFOSET(fd,packet_db[0x95].len);
-		} 
+		}
 		break;
 	case BL_HOM:
 		{
@@ -10693,8 +10693,10 @@ static void clif_parse_CloseKafra(int fd,struct map_session_data *sd, int cmd)
 		storage_guild_storageclose(sd);
 	else if(sd->state.storage_flag==1)
 		storage_storageclose(sd);
-	else
+	else {
+		sd->state.storage_flag = 0;
 		clif_storageclose(sd);
+	}
 
 	return;
 }

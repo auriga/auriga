@@ -1769,7 +1769,7 @@ int parse_login(int fd)
 				return 0;
 			}
 			// 暗号化用のチャレンジ生成
-			sd->md5keylen = rand()%(sizeof(sd->md5key)/4)+(sizeof(sd->md5key)-sizeof(sd->md5key)/4);
+			sd->md5keylen = atn_rand()%(sizeof(sd->md5key)/4)+(sizeof(sd->md5key)-sizeof(sd->md5key)/4);
 			for(i=0;i<sd->md5keylen;i++)
 				sd->md5key[i]=rand()%255+1;
 

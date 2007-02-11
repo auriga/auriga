@@ -1406,13 +1406,16 @@ S 0233 <?>.4B <target_id>.l <type>.B
 	ホム攻撃要求
 S 0234 <ID>.l
 	ホムをマスターの元へ戻す
+R 0235 <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
+	スキル情報の塊、0x10fと同じ
 R 0236 <point>.L <total>.L
 	虐殺者ランキングポイントが<point>上昇して、<total>になりました。
 S 0237
 	/pk
 R 0238 { <charname>.24B }*10 { <point>.L }*10
 	虐殺者ランキング
-
+R 0239 <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
+	スキル情報更新、0x10eと同じ
 R 023a <flag>.w
 	倉庫？
 	0 - passwd set plz
@@ -1545,10 +1548,54 @@ R 0282 { <charname>.24B }*10 { <point>.l }*10
 	テイミングランキング
 R 0284 <ID>.l <type>.l <?>.4B?
 	blから発生するエフェクト、1f3の上位互換？
-R 0285 <val1>.w <val2>.w
-	未調査、謎。
-	val1が01,02,03,04,05,0b,0c,0fのとき反応、今のところ「NO MSG」
-	それ以外の場合は「???」が画面上部にピンク文字で表示される
-	val1が04のとき、val2=0〜5でswitchあり（STRとか？）、今のところ「NO MSG」
-R 0287 <len>.w <point>.l { <value>.l <value>.l <type?>.B <item ID>.w }.11B*
-	課金アイテム販売リスト？
+R 0285 <type>.w <flag>.w
+	[天使の質問] 少女に教えてください
+	type=01 : スキル取得について、flagはスキルID
+	type=02 : ゼニーについて、flagは無視
+	type=03 : 日付について、flagは無視
+	type=04 : ステータスについて
+	          flag = 0 STR, 1 AGI, 2 VIT, 3 INT, 4 DEX, 5 LUK
+	type=05 : flag = 0x00〜0x09ならクイズ出題
+	          flag = 0x0a〜0x0cならクイズに対する反応
+	          flag = 0x0dなら「ランキングポイントが5上昇して2ポイントになりました。」
+	          flag = 0x0eならエラー
+	          flag = 0x0fなら「選択していないキャラクターは削除されます。」
+	          flag = 0x10なら「9個以上選択することはできません。」
+	type=0b : type=05, flag=0x0aと同じ
+	type=0c : type=05, flag=0x0bと同じ
+	type=0f : type=05, flag=0x0cと同じ
+R 0287 <len>.w <point>.l { <value>.l <value>.l <0x12固定>.B <item ID>.w }.11B*
+	スペシャルアイテム販売リスト
+S 0288 <itemid>.w <amount>.w
+	スペシャルアイテム購入要求
+R 0289 <account_id>.l <type>.w
+	スペシャルアイテム取引結果？
+	type=0 : 取引できました。
+	type=1 : NPCが存在しないため、購入に失敗しました。
+	type=2 : スペシャルアイテムシステムが正常に動作していないため、購入に失敗しました。
+	type=3 : 重量オーバーです。
+	type=4 : アイテム交換中にアイテムを購入することはできません。
+	type=5 : アイテム情報が正しくないため、購入に失敗しました。
+	type=6 : ^ff0000破棄日時: %s^000000 ポイントが不足です。
+R 028a
+	未調査
+S 028b
+	サーバ統合の際のキャラクターセレクト、残すキャラを選択する
+R 028c
+	0x28bの応答
+S 028d
+	キャラクターセレクト画面で名前を変えるボタンを押した
+R 0291 <type>.w
+	msgstringtableのメッセージが白文字で出力される
+R 0293 <type>.B <?>.l <?>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
+	凸面鏡使用
+	type=0 : この地域ではボスモンスターの出現確認ができません。
+	type=2 : ボスモンスター<boss_name>の位置がミニマップに表示されます。
+	type=3 : ボスモンスター<boss_name>の出現予定時刻<hour>時<minute>分
+R 0294
+	文字化けメッセージが赤文字で出力される
+	未調査
+R 029d <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
+	スキル情報の塊、0x10fと同じ
+R 029e <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
+	スキル情報更新、0x10eと同じ

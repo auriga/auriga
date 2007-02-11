@@ -715,7 +715,7 @@ int party_share_loot(struct party *p, struct map_session_data *sd, struct item *
 				c++;
 		}
 		while(c > 0) {	// ランダム選択
-			i = rand()%c;
+			i = atn_rand()%c;
 			if(pc_additem(psd[i],item_data,item_data->amount)) {
 				// 取得失敗
 				psd[i] = psd[c-1];

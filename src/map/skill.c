@@ -3464,7 +3464,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					type = SC_ASPERSIO;
 					break;
 			}
-			status_change_start(src,type,0,0,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(bl,type,0,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 	case SL_KAIZEL://カイゼル
@@ -9696,7 +9696,7 @@ void skill_basilica_cell(struct skill_unit *unit,int flag)
  * バジリカの発動を止める
  *------------------------------------------
  */
-void skill_basilica_cancel( struct block_list *bl ) 
+void skill_basilica_cancel( struct block_list *bl )
 {
 	struct unit_data *ud = unit_bl2ud( bl );
 	struct linkdb_node *node, *node2;

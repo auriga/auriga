@@ -408,8 +408,9 @@ int unit_walktoxy( struct block_list *bl, int x, int y) {
 	}
 	if( ud == NULL) return 0;
 
-	// 移動出来ないユニットは弾く
-	if( ! ( status_get_mode( bl ) & 1) ) return 0;
+	// 移動出来ないユニットは弾く(ペットは除く)
+	if( !pd && !(status_get_mode(bl)&0x01) )
+		return 0;
 
 	if( !unit_can_move(bl) )
 		return 0;

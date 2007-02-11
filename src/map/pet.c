@@ -523,7 +523,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 	if(battle_config.pet_catch_rate != 100)
 		pet_catch_rate = (pet_catch_rate*battle_config.pet_catch_rate)/100;
 
-	if(rand()%10000 < pet_catch_rate) {
+	if(atn_rand()%10000 < pet_catch_rate) {
 		unit_remove_map(&md->bl,0);
 		clif_pet_rulet(sd,1);
 //		if(battle_config.etc_log)
@@ -889,8 +889,8 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 							else if(dy>0) dy--;
 						}
 						else {	// だめならAthena式(ランダム)
-							dx=md->bl.x - pd->bl.x + rand()%3 - 1;
-							dy=md->bl.y - pd->bl.y + rand()%3 - 1;
+							dx=md->bl.x - pd->bl.x + atn_rand()%3 - 1;
+							dy=md->bl.y - pd->bl.y + atn_rand()%3 - 1;
 						}
 						ret=unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
 						i++;
@@ -913,7 +913,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 				if ( /*battle_config.pet_status_support && */
 					pd->a_skill &&
 					/* (!battle_config.pet_equip_required || pd->equip > 0) && */
-					(rand()%100 < (pd->a_skill->rate +pd->msd->pet.intimate*pd->a_skill->bonusrate/1000))
+					(atn_rand()%100 < (pd->a_skill->rate +pd->msd->pet.intimate*pd->a_skill->bonusrate/1000))
 				) {
 					if( skill_get_inf( pd->a_skill->id ) & 2 ) {
 						// 場所指定

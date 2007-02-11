@@ -76,7 +76,7 @@ int mobdb_searchname(const char *str)
 }
 
 /*==========================================
- * 
+ *
  *------------------------------------------
  */
 int mobdb_checkid(const int mob_id) {
@@ -873,7 +873,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 
 	nullpo_retr(0, md);
 	if( md->bl.prev == NULL ) return 0;
-	
+
 	if(DIFF_TICK(tick,md->last_thinktime)<MIN_MOBTHINKTIME)
 		return 0;
 	md->last_thinktime=tick;
@@ -996,6 +996,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		if( tsd && !(mode&0x20) && (
 			tsd->sc_data[SC_TRICKDEAD].timer != -1 ||
 			tsd->sc_data[SC_FORCEWALKING].timer!=-1 ||
+			md->sc_data[SC_TRICKDEAD].timer != -1 ||
 			md->sc_data[SC_WINKCHARM].timer != -1 ||
 			tsd->state.gangsterparadise ||
 			(pc_ishiding(tsd) && race != RCT_INSECT && race != RCT_DEMON)) ) {
@@ -1240,7 +1241,7 @@ int mob_ai_hard_spawn_sub(struct block_list *tbl, va_list ap) {
  */
 int mob_ai_hard_spawn( struct block_list *bl, int flag ) {
 	nullpo_retr(0, bl);
-	
+
 	if( bl->type == BL_PC || bl->type == BL_MOB || bl->type == BL_HOM ) {
 		map_foreachinarea( mob_ai_hard_spawn_sub , bl->m,
 			bl->x - AREA_SIZE * 2, bl->y - AREA_SIZE * 2,
@@ -1255,7 +1256,6 @@ int mob_ai_hard_spawn( struct block_list *bl, int flag ) {
  * PC視界内のmob用まじめ処理 (interval timer関数)
  *------------------------------------------
  */
-
 static int mob_ai_hard_createlist(void) {
 	int i;
 	struct mob_data *md = mob_ai_hard_head;
@@ -1959,7 +1959,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 					ditem=(struct delay_item_drop *)aCalloc(1,sizeof(struct delay_item_drop));
 					if(sd->monster_drop_itemid[i]<0)
-						itemid = itemdb_searchrandomid(sd->monster_drop_itemid[i]);
+						itemid = itemdb_searchrandomid(-sd->monster_drop_itemid[i]);
 					else
 						itemid = sd->monster_drop_itemid[i];
 					ditem->nameid = itemid;

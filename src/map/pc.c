@@ -2003,7 +2003,7 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 }
 
 /*==========================================
- * 装 備品による能力等のボーナス設定
+ * 装備品による能力等のボーナス設定
  *------------------------------------------
  */
 int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
@@ -3341,7 +3341,8 @@ int pc_steal_item(struct map_session_data *sd,struct block_list *bl)
 			itemid = mob_db[md->class_].dropitem[i].nameid;
 			if(itemid > 0 && itemdb_type(itemid) != 6) {
 				rate = mob_db[md->class_].dropitem[i].p * skill * battle_config.steal_rate / 10000 + 1;
-				rate += sd->add_steal_rate;
+				if(sd->add_steal_rate > 0)
+					rate *= sd->add_steal_rate/100;
 
 				if(battle_config.battle_log)
 					printf( "skill=%d, mob base=%d, rate=%d, bc.rate=%d, add=%d\n",
