@@ -20,27 +20,14 @@
 #include "memwatch.h"
 #endif
 
-#define MAX_RANDITEM	2000
+#define MAX_RANDTYPE	20
 
 // ** ITEMDB_OVERRIDE_NAME_VERBOSE **
 //   定義すると、itemdb.txtとgrfで名前が異なる場合、表示します.
 //#define ITEMDB_OVERRIDE_NAME_VERBOSE	1
 
 static struct dbt* item_db;
-
-static struct random_item_data blue_box[MAX_RANDITEM],violet_box[MAX_RANDITEM],card_album[MAX_RANDITEM],
-				gift_box[MAX_RANDITEM],scroll[MAX_RANDITEM], finding_ore[MAX_RANDITEM],arrow_quiver[MAX_RANDITEM],
-				diamond_weapon[MAX_RANDITEM],diamond_armor[MAX_RANDITEM],diamond_hood[MAX_RANDITEM],diamond_helm[MAX_RANDITEM],
-				diamond_shoes[MAX_RANDITEM],diamond_shield[MAX_RANDITEM],jewel_box[MAX_RANDITEM],meiji_almond[MAX_RANDITEM],
-				pet_box[MAX_RANDITEM],mask[MAX_RANDITEM],fabox[MAX_RANDITEM],food[MAX_RANDITEM],rjc2006[MAX_RANDITEM];
-static int blue_box_count,violet_box_count,card_album_count,gift_box_count,scroll_count,finding_ore_count,arrow_quiver_count,
-				diamond_weapon_count,diamond_armor_count,diamond_hood_count,diamond_helm_count,diamond_shoes_count,
-				diamond_shield_count,jewel_box_count,meiji_almond_count,pet_box_count,mask_count,fabox_count,food_count,rjc2006_count;
-static int blue_box_default=0,violet_box_default=0,card_album_default=0,gift_box_default=0,scroll_default=0, finding_ore_default = 0,
-				arrow_quiver_default = 0,diamond_weapon_default=0,diamond_armor_default=0,diamond_hood_default=0,
-				diamond_helm_default=0,diamond_shoes_default=0,diamond_shield_default=0,jewel_box_default=0,meiji_almond_default=0,
-				pet_box_default=0,mask_default=0,fabox_default=0,food_default=0,rjc2006_default=0;
-
+static struct random_item_data random_item[MAX_RANDTYPE];
 static int max_itemid;
 
 /*==========================================
@@ -58,19 +45,25 @@ int itemdb_getmaxid(void)
  */
 static int itemdb_searchname_sub(void *key,void *data,va_list ap)
 {
-	struct item_data *item=(struct item_data *)data,**dst;
+	struct item_data *item, **dst;
 	char *str;
-	str=va_arg(ap,char *);
-	dst=va_arg(ap,struct item_data **);
-	if( strcmpi(item->name,str)==0 || strcmp(item->jname,str)==0 ||
-	    memcmp(item->name,str,32)==0 || memcmp(item->jname,str,32)==0 )
-		*dst=item;
+
+	item = (struct item_data *)data;
+	str  = va_arg(ap,char *);
+	dst  = va_arg(ap,struct item_data **);
+
+	if(*dst)
+		return 0;
+
+	if( strcmpi(item->name,str) == 0 || strcmp(item->jname,str) == 0 )
+		*dst = item;
+
 	return 0;
 }
 
 struct item_data* itemdb_searchname(const char *str)
 {
-	struct item_data *item=NULL;
+	struct item_data *item = NULL;
 	numdb_foreach(item_db,itemdb_searchname_sub,str,&item);
 	return item;
 }
@@ -79,51 +72,26 @@ struct item_data* itemdb_searchname(const char *str)
  * 箱系アイテム検索
  *------------------------------------------
  */
-int itemdb_searchrandomid(int flags)
+int itemdb_searchrandomid(int type)
 {
-	int nameid=0,i,index,count;
-	struct random_item_data *list=NULL;
+	struct random_item_data *p;
+	int nameid;
 
-	struct {
-		int nameid,count;
-		struct random_item_data *list;
-	} data[21];
+	// typeは1以上なのでデクリメントする
+	type--;
+	if(type < 0 || type > MAX_RANDTYPE)
+		return 0;
 
-	// for BCC32 compile error
-	data[0].nameid = 0;							data[0].count = 0; 						data[0].list = NULL;
-	data[1].nameid = blue_box_default;			data[1].count = blue_box_count;			data[1].list = blue_box;
-	data[2].nameid = violet_box_default;		data[2].count = violet_box_count;		data[2].list = violet_box;
-	data[3].nameid = card_album_default;		data[3].count = card_album_count;		data[3].list = card_album;
-	data[4].nameid = gift_box_default;			data[4].count = gift_box_count;			data[4].list = gift_box;
-	data[5].nameid = scroll_default;			data[5].count = scroll_count;			data[5].list = scroll;
-	data[6].nameid = finding_ore_default;		data[6].count = finding_ore_count;		data[6].list = finding_ore;
-	data[7].nameid = arrow_quiver_default;		data[7].count = arrow_quiver_count;		data[7].list = arrow_quiver;
-	data[8].nameid = diamond_weapon_default;	data[8].count = diamond_weapon_count;	data[8].list = diamond_weapon;
-	data[9].nameid = diamond_armor_default;		data[9].count = diamond_armor_count;	data[9].list = diamond_armor;
-	data[10].nameid = diamond_hood_default;		data[10].count = diamond_hood_count;	data[10].list = diamond_hood;
-	data[11].nameid = diamond_helm_default;		data[11].count = diamond_helm_count;	data[11].list = diamond_helm;
-	data[12].nameid = diamond_shoes_default;	data[12].count = diamond_shoes_count;	data[12].list = diamond_shoes;
-	data[13].nameid = diamond_shield_default;	data[13].count = diamond_shield_count;	data[13].list = diamond_shield;
-	data[14].nameid = jewel_box_default;		data[14].count = jewel_box_count;		data[14].list = jewel_box;
-	data[15].nameid = meiji_almond_default;		data[15].count = meiji_almond_count;	data[15].list = meiji_almond;
-	data[16].nameid = pet_box_default;			data[16].count = pet_box_count;			data[16].list = pet_box;
-	data[17].nameid = mask_default;				data[17].count = mask_count;			data[17].list = mask;
-	data[18].nameid = fabox_default;			data[18].count = fabox_count;			data[18].list = fabox;
-	data[19].nameid = food_default;				data[19].count = food_count;			data[19].list = food;
-	data[20].nameid = rjc2006_default;			data[20].count = rjc2006_count;			data[20].list = rjc2006;
-	
-	if(flags>=1 && flags<=20){
-		nameid=data[flags].nameid;
-		count=data[flags].count;
-		list=data[flags].list;
+	p = &random_item[type];
+	nameid = p->default_id;
 
-		if(count > 0) {
-			for(i=0;i<1000;i++) {
-				index = atn_rand()%count;
-				if(atn_rand()%1000000 < list[index].per) {
-					nameid = list[index].nameid;
-					break;
-				}
+	if(p->count > 0) {
+		int idx,i=0;
+		while(i++ < 1000) {
+			idx = atn_rand()%p->count;
+			if(atn_rand()%1000000 < p->data[idx].per) {
+				nameid = p->data[idx].nameid;
+				break;
 			}
 		}
 	}
@@ -138,6 +106,7 @@ struct item_data* itemdb_exists(int nameid)
 {
 	return (struct item_data *)numdb_search(item_db,nameid);
 }
+
 /*==========================================
  * DBの検索
  *------------------------------------------
@@ -161,28 +130,24 @@ struct item_data* itemdb_search(int nameid)
 	id->elv        = 0;
 	id->class_     = 0xffffffff;
 
-	if(nameid>500 && nameid<600)
-		id->type=0;   //heal item
-	else if(nameid>600 && nameid<700)
-		id->type=2;   //use item
-	else if((nameid>700 && nameid<1100) ||
-			(nameid>7000 && nameid<8000))
-		id->type=3;   //correction
-	else if((nameid>=1750 && nameid<1771) ||
-			(nameid>=13200 && nameid<13300))
-		id->type=10;  //arrow
-	else if((nameid>1100 && nameid<2000) ||
-			(nameid>=13000 && nameid<13350))
-		id->type=4;   //weapon
-	else if((nameid>2100 && nameid<3000) ||
-			(nameid>5000 && nameid<6000))
-		id->type=5;   //armor
-	else if(nameid>4000 && nameid<5000)
-		id->type=6;   //card
-	else if(nameid>9000 && nameid<10000)
-		id->type=7;   //egg
-	else if(nameid>10000)
-		id->type=8;   //petequip
+	if(nameid > 500 && nameid < 600)
+		id->type = 0;   // heal item
+	else if(nameid > 600 && nameid < 700)
+		id->type = 2;   // use item
+	else if((nameid > 700 && nameid < 1100) || (nameid > 7000 && nameid < 8000))
+		id->type = 3;   // correction
+	else if((nameid >= 1750 && nameid < 1771) || (nameid >= 13200 && nameid < 13300))
+		id->type = 10;  // arrow
+	else if((nameid > 1100 && nameid < 2000) || (nameid >= 13000 && nameid < 13350))
+		id->type = 4;   // weapon
+	else if((nameid > 2100 && nameid < 3000) || (nameid > 5000 && nameid < 6000))
+		id->type = 5;   // armor
+	else if(nameid > 4000 && nameid < 5000)
+		id->type = 6;   // card
+	else if(nameid > 9000 && nameid < 10000)
+		id->type = 7;   // egg
+	else if(nameid > 10000)
+		id->type = 8;   // petequip
 
 	return id;
 }
@@ -288,10 +253,10 @@ static int itemdb_read_itemslottable(void)
 		int nameid,equip;
 		sscanf(p,"%d#%d#",&nameid,&equip);
 		itemdb_search(nameid)->equip=equip;
-		p=strchr(p,10);
+		p=strchr(p,'\n');
 		if(!p) break;
 		p++;
-		p=strchr(p,10);
+		p=strchr(p,'\n');
 		if(!p) break;
 		p++;
 	}
@@ -510,7 +475,7 @@ static int itemdb_read_itemvaluedb(void)
 	char line[1024];
 	int ln=0;
 	int nameid,j;
-	char *str[32],*p;
+	char *str[7],*p;
 	struct item_data *id;
 
 	if( (fp=fopen("db/item_value_db.txt","r"))==NULL){
@@ -565,74 +530,42 @@ static int itemdb_read_randomitem(void)
 {
 	FILE *fp;
 	char line[1024];
-	int ln=0;
 	int nameid,i,j;
-	char *str[10],*p;
-
-	const struct {
-		char filename[64];
-		struct random_item_data *pdata;
-		int *pcount,*pdefault;
-	} data[] = {
-		{"db/item_bluebox.txt",		blue_box,	&blue_box_count,	&blue_box_default	},
-		{"db/item_violetbox.txt",	violet_box,	&violet_box_count,	&violet_box_default	},
-		{"db/item_cardalbum.txt",	card_album,	&card_album_count,	&card_album_default	},
-		{"db/item_giftbox.txt",		gift_box,	&gift_box_count,	&gift_box_default	},
-		{"db/item_scroll.txt",		scroll,		&scroll_count,		&scroll_default		},
-		{"db/item_findingore.txt",	finding_ore,&finding_ore_count,	&finding_ore_default},
-		{"db/item_arrowquiver.txt",	arrow_quiver,&arrow_quiver_count,	&arrow_quiver_default},
-		{"db/item_diamond_weapon.txt",diamond_weapon	,&diamond_weapon_count,	&diamond_weapon_default},
-		{"db/item_diamond_armor.txt",diamond_armor	,&diamond_armor_count,	&diamond_armor_default},
-		{"db/item_diamond_hood.txt",	diamond_hood,&diamond_hood_count,	&diamond_hood_default},
-		{"db/item_diamond_helm.txt",diamond_helm	,&diamond_helm_count,	&diamond_helm_default},
-		{"db/item_diamond_shoes.txt",diamond_shoes,&diamond_shoes_count,	&diamond_shoes_default},
-		{"db/item_diamond_shield.txt",diamond_shield	,&diamond_shield_count,	&diamond_shield_default},
-		{"db/item_jewel_box.txt",jewel_box	,&jewel_box_count,	&jewel_box_default},
-		{"db/item_meiji_almond.txt",meiji_almond	,&meiji_almond_count,	&meiji_almond_default},
-		{"db/item_petbox.txt",pet_box	,&pet_box_count,	&pet_box_default},
-		{"db/item_mask.txt",mask	,&mask_count,	&mask_default},
-		{"db/item_fabox.txt",fabox	,&fabox_count,	&fabox_default},
-		{"db/item_food.txt",food	,&food_count,	&food_default},
-		{"db/item_rjc2006.txt",rjc2006	,&rjc2006_count,	&rjc2006_default},
+	char *str[3],*p;
+	const char *filename[MAX_RANDTYPE] = {
+		"db/item_bluebox.txt",
+		"db/item_violetbox.txt",
+		"db/item_cardalbum.txt",
+		"db/item_giftbox.txt",
+		"db/item_scroll.txt",
+		"db/item_findingore.txt",
+		"db/item_arrowquiver.txt",
+		"db/item_diamond_weapon.txt",
+		"db/item_diamond_armor.txt",
+		"db/item_diamond_hood.txt",
+		"db/item_diamond_helm.txt",
+		"db/item_diamond_shoes.txt",
+		"db/item_diamond_shield.txt",
+		"db/item_jewel_box.txt",
+		"db/item_meiji_almond.txt",
+		"db/item_petbox.txt",
+		"db/item_mask.txt",
+		"db/item_fabox.txt",
+		"db/item_food.txt",
+		"db/item_rjc2006.txt",
 	};
 
 	// 読み込む度、初期化
-	blue_box_count		= 0;
-	violet_box_count	= 0;
-	card_album_count	= 0;
-	gift_box_count		= 0;
-	scroll_count		= 0;
-	finding_ore_count	= 0;
-	arrow_quiver_count	= 0;
-	diamond_weapon_count= 0;
-	diamond_armor_count	= 0;
-	diamond_helm_count	= 0;
-	diamond_helm_count	= 0;
-	diamond_shoes_count	= 0;
-	diamond_shield_count= 0;
-	jewel_box_count		= 0;
-	meiji_almond_count  = 0;
-	pet_box_count  		= 0;
-	mask_count  		= 0;
-	fabox_count  		= 0;
-	food_count  		= 0;
-	rjc2006_count  		= 0;
+	memset(&random_item, 0, sizeof(random_item));
 
-	for(i=0;i<sizeof(data)/sizeof(data[0]);i++){
-		struct random_item_data *pd=data[i].pdata;
-		int *pc=data[i].pcount;
-		int *pdefault=data[i].pdefault;
-		const char *fn=data[i].filename;
-
-		ln = 0;
-		*pdefault = 0;
-		if( (fp=fopen(fn,"r"))==NULL ){
-			printf("can't read %s\n",fn);
+	for(i=0; i<MAX_RANDTYPE; i++) {
+		if((fp = fopen(filename[i],"r")) == NULL) {
+			printf("can't read %s\n",filename[i]);
 			continue;
 		}
 
-		while(fgets(line,1020,fp)){
-			if(line[0]=='/' && line[1]=='/')
+		while(fgets(line,1020,fp)) {
+			if(line[0] == '/' && line[1] == '/')
 				continue;
 			memset(str,0,sizeof(str));
 			for(j=0,p=line;j<3 && p;j++){
@@ -644,26 +577,26 @@ static int itemdb_read_randomitem(void)
 			if(str[0]==NULL)
 				continue;
 
-			nameid=atoi(str[0]);
-			if(nameid<0)
+			nameid = atoi(str[0]);
+			if(nameid < 0)
 				continue;
 			if(nameid == 0) {
 				if(str[2])
-					*pdefault = atoi(str[2]);
+					random_item[i].default_id = atoi(str[2]);
 				continue;
 			}
 
 			if(str[2]){
-				pd[ *pc   ].nameid = nameid;
-				pd[(*pc)++].per = atoi(str[2]);
-			}
+				int c = random_item[i].count;
+				random_item[i].data[c].nameid = nameid;
+				random_item[i].data[c].per    = atoi(str[2]);
 
-			if(ln >= MAX_RANDITEM)
-				break;
-			ln++;
+				if(++random_item[i].count >= MAX_RANDITEM)
+					break;
+			}
 		}
 		fclose(fp);
-		printf("read %s done (count=%d)\n",fn,*pc);
+		printf("read %s done (count=%d)\n",filename[i],random_item[i].count);
 	}
 
 	return 0;
@@ -679,7 +612,7 @@ static int itemdb_read_itemavail(void)
 	char line[1024];
 	int ln=0;
 	int nameid,j,k;
-	char *str[10],*p;
+	char *str[2],*p;
 
 	if( (fp=fopen("db/item_avail.txt","r"))==NULL ){
 		printf("can't read db/item_avail.txt\n");
@@ -749,7 +682,7 @@ static int itemdb_read_itemnametable(void)
 			memcpy(itemdb_search(nameid)->jname,buf2,32);
 		}
 
-		p=strchr(p,10);
+		p=strchr(p,'\n');
 		if(!p) break;
 		p++;
 	}
@@ -781,10 +714,9 @@ static int itemdb_read_cardillustnametable(void)
 		if( sscanf(p,"%d#%[^#]#",&nameid,buf2)==2 ){
 			strcat(buf2,".bmp");
 			memcpy(itemdb_search(nameid)->cardillustname,buf2,64);
-//			printf("%d %s\n",nameid,itemdb_search(nameid)->cardillustname);
 		}
 
-		p=strchr(p,10);
+		p=strchr(p,'\n');
 		if(!p) break;
 		p++;
 	}
@@ -793,6 +725,31 @@ static int itemdb_read_cardillustnametable(void)
 
 	return 0;
 }
+
+/*==========================================
+ * デバッガ
+ *------------------------------------------
+ */
+#if 0
+static int itemdb_debug_sub(void *key,void *data,va_list ap)
+{
+	struct item_data *id = (struct item_data *)data;
+	FILE *fp = va_arg(ap,FILE *);
+
+	fprintf(fp,"%6d : %s\n",(int)key,id->jname);
+	return 0;
+}
+
+void itemdb_debug_txt(void)
+{
+	FILE *fp = fopen("itemdebug.txt","wt");
+
+	if(fp) {
+		numdb_foreach(item_db,itemdb_debug_sub,fp);
+		fclose(fp);
+	}
+}
+#endif
 
 /*==========================================
  *
@@ -813,7 +770,6 @@ static int itemdb_final(void *key,void *data,va_list ap)
 	return 0;
 }
 
-
 /*==========================================
  *
  *------------------------------------------
@@ -825,21 +781,6 @@ void do_final_itemdb(void)
 		item_db=NULL;
 	}
 }
-
-/*
-static FILE *dfp;
-static int itemdebug(void *key,void *data,va_list ap){
-//	struct item_data *id=(struct item_data *)data;
-	fprintf(dfp,"%6d",(int)key);
-	return 0;
-}
-void itemdebugtxt()
-{
-	dfp=fopen("itemdebug.txt","wt");
-	numdb_foreach(item_db,itemdebug);
-	fclose(dfp);
-}
-*/
 
 /*==========================================
  *

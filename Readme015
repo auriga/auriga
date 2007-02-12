@@ -1,4 +1,36 @@
 ----------------------------------------
+//080 [2007/02/13] by Rayce
+
+・itemdb.cの整理
+	-> random_item_data構造体を変更
+	-> 新しくMAX_RANDTYPEを定義、ランダム系アイテムの種類を示す
+	-> ランダム系アイテムの読み込みおよび検索の処理を最適化
+	-> デバッグコードを itemdb_debug_txt() に改名して整理し直し
+	-> アイテム名でデータベースを検索する際、見つかった時点で検索終了にする
+	   また余計な処理を省くためmemcmpは行わないようにする
+
+　※新しくランダム系アイテムを増やしたい場合は、MAX_RANDTYPEの値を増やし
+　　itemdb_read_randomitem() 内でfilenameを追加するだけでよくなりました
+
+・MOBがランダム系アイテムをドロップする場合、該当アイテムIDが取得できなかったときに
+　IDが0のアイテムをドロップしてしまう問題を修正（mob.c）
+
+・successremovecards命令およびfailedremovecards命令の修正（script.c）
+	-> エフェクトが出るように修正
+	   clif_misceffect() だと「精錬成功/失敗しました」のメッセージが出力されてしまうので
+	   clif_misceffect2() を使っています
+	-> failedremovecards命令でfailtypeが3のときは失敗エフェクトを出すだけで何もしないように修正
+	-> successremovecards命令は武具とカードを返却して成功エフェクトを出す必要があるので
+	   removecards_sub() ではfailtype = 4として処理します
+
+・ランダム系アイテムdbにおいて、デフォルト設定のアイテムの確率が間違っているものを修正
+	db/item_bluebox.txt
+	db/item_cardalbum.txt
+	db/item_violetbox.txt
+・鉱石発見dbのデフォルトアイテムのIDが間違っていたので修正
+	db/item_findingore.txt
+
+----------------------------------------
 //079 [2007/02/12] by Rayce
 
 ・hugeさん作成のdebugパッチを部分的にmerge, thx a lot!!

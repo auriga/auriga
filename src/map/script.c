@@ -4695,12 +4695,10 @@ int buildin_getlook(struct script_state *st)
  */
 int buildin_cutin(struct script_state *st)
 {
-	int type;
+	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	int type  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	conv_str(st,& (st->stack->stack_data[st->start+2]));
-	type=conv_num(st,& (st->stack->stack_data[st->start+3]));
-
-	clif_cutin(script_rid2sd(st),st->stack->stack_data[st->start+2].u.str,type);
+	clif_cutin(script_rid2sd(st),str,type);
 
 	return 0;
 }
@@ -4710,9 +4708,7 @@ int buildin_cutin(struct script_state *st)
  */
 int buildin_cutincard(struct script_state *st)
 {
-	int itemid;
-
-	itemid=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	int itemid = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
 	clif_cutin(script_rid2sd(st),itemdb_search(itemid)->cardillustname,4);
 
@@ -7883,7 +7879,7 @@ int buildin_getequipcardcnt(struct script_state *st)
 
 /*=================================================================
  * カード取り外し
- * type=0: 両方損失、1:カード損失、2:武具損失、3:損失無し
+ * type=0: 両方損失、1:カード損失、2:武具損失、3:損失無し、4:成功
  *-----------------------------------------------------------------
  */
 static int removecards_sub(struct map_session_data *sd,int i,int typefail,int pos)
@@ -7911,7 +7907,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 			continue;
 		if(pos == 0 || pos-1 == n) {			// 指定ポジションと一致した場合
 			removed_flag = 1;
-			if(typefail == 2 || typefail == 3) {	// カード返却
+			if(typefail == 2 || typefail == 4) {	// カード返却
 				memset(&item_tmp, 0, sizeof(item_tmp));
 				item_tmp.nameid = card_id;
 				item_tmp.identify = 1;
@@ -7929,7 +7925,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 		if(typefail == 0 || typefail == 2) {		// 武具損失して終了
 			pc_delitem(sd,i,1,0);
 		}
-		else if(typefail == 1 || typefail == 3) {	// 指定カードを取り除いたアイテム取得
+		else if(typefail == 1 || typefail == 4) {	// 指定カードを取り除いたアイテム取得
 			flag = 0;
 			memset(&item_tmp, 0, sizeof(item_tmp));
 			item_tmp.nameid    = sd->status.inventory[i].nameid;
@@ -7943,7 +7939,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
 			}
 		}
-		clif_misceffect(&sd->bl,(typefail<3)? 2: 3);
+		return 1;	// 処理完了
 	}
 	return 0;
 }
@@ -7961,12 +7957,16 @@ int buildin_successremovecards(struct script_state *st)
 
 	num = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	if(num > 0 && num <= 11)
-		i=pc_checkequip(sd,equip_pos[num-1]);
+		i = pc_checkequip(sd,equip_pos[num-1]);
 
 	if(st->end > st->start+3) {
 		pos = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	}
-	removecards_sub(sd, i, 3, pos);		// 損傷無しと同義
+
+	if(removecards_sub(sd, i, 4, pos)) {	// failtype=4とする
+		// 成功エフェクト
+		clif_misceffect2(&sd->bl,154);
+	}
 	return 0;
 }
 
@@ -7983,13 +7983,20 @@ int buildin_failedremovecards(struct script_state *st)
 
 	num = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	typefail = conv_num(st,& (st->stack->stack_data[st->start+3]));
-	if(num > 0 && num <= 11)
-		i=pc_checkequip(sd,equip_pos[num-1]);
 
-	if(st->end > st->start+4) {
+	if(typefail < 0 || typefail > 3)
+		return 0;
+
+	if(num > 0 && num <= 11)
+		i = pc_checkequip(sd,equip_pos[num-1]);
+
+	if(st->end > st->start+4)
 		pos = conv_num(st,& (st->stack->stack_data[st->start+4]));
+
+	if(removecards_sub(sd, i, typefail, pos)) {
+		// 失敗エフェクト
+		clif_misceffect2(&sd->bl,155);
 	}
-	removecards_sub(sd, i, typefail, pos);
 	return 0;
 }
 

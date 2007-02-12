@@ -3,6 +3,8 @@
 
 #include "map.h"
 
+#define MAX_RANDITEM	2000
+
 struct item_data {
 	int nameid;
 	char name[32];
@@ -42,8 +44,12 @@ struct item_data {
 };
 
 struct random_item_data {
-	int nameid;
-	int per;
+	int count;
+	int default_id;
+	struct {
+		int nameid;
+		int per;
+	} data[MAX_RANDITEM];
 };
 
 int itemdb_getmaxid(void);
@@ -68,7 +74,7 @@ struct item_data* itemdb_exists(int nameid);
 
 #define itemdb_isspecial(n) ((n) == 0x00ff || (n) == 0x00fe || (n) == (short)0xff00)
 
-int itemdb_searchrandomid(int flags);
+int itemdb_searchrandomid(int type);
 
 #define itemdb_value_buy(n) itemdb_search(n)->value_buy
 #define itemdb_value_sell(n) itemdb_search(n)->value_sell

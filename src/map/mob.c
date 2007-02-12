@@ -1958,10 +1958,13 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 						continue;
 
 					ditem=(struct delay_item_drop *)aCalloc(1,sizeof(struct delay_item_drop));
-					if(sd->monster_drop_itemid[i]<0)
+					if(sd->monster_drop_itemid[i]<0) {
 						itemid = itemdb_searchrandomid(-sd->monster_drop_itemid[i]);
-					else
+						if(itemid <= 0)
+							continue;
+					} else {
 						itemid = sd->monster_drop_itemid[i];
+					}
 					ditem->nameid = itemid;
 					ditem->amount = 1;
 					ditem->m = md->bl.m;
