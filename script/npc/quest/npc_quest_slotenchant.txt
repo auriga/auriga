@@ -1,0 +1,691 @@
+//==============================================================================
+// Ragnarok Online Slot Enchant Script     by Blaze
+//==============================================================================
+prt_in.gat,33,69,4	script	セヤブルレム#slot	84,{
+	mes "[セヤブルレム]";
+	mes "私は一般的な武器や防具に";
+	mes "スロットエンチャントが";
+	mes "できる技術者です。";
+	mes "スロットエンチャントとは、";
+	mes "装備品にスロットを追加する";
+	mes "技術の事です。";
+	next;
+	mes "[セヤブルレム]";
+	mes "スロットの追加とだけ聞くと";
+	mes "簡単そうに思うでしょうが、";
+	mes "そんな事はありません。";
+	next;
+	mes "[セヤブルレム]";
+	mes "その証拠に、私以外にこんな技術を";
+	mes "持った人がいませんよね？";
+	mes "それだけスロットを追加する技術は";
+	mes "難しいという事です。";
+	next;
+	mes "[セヤブルレム]";
+	mes "さて、スロットを追加したい";
+	mes "装備品はありますか？";
+	mes "品によって、手数料や必要な材料、";
+	mes "成功確率が違いますのでご注意を。";
+	next;
+	switch(select("武器","防具","説明を詳しく聞く","話をやめる")) {
+	case 1:
+		set '@equip$,"武器";
+		break;
+	case 2:
+		set '@equip$,"防具";
+		break;
+	case 3:
+		mes "[セヤブルレム]";
+		mes "スロットエンチャントとは、";
+		mes "装備品にスロットを追加する技術。";
+		mes "成否に関わらず材料は全て消滅します。";
+		mes "また、例え成功したとしても";
+		mes "精錬・カード・属性等の付与効果は";
+		mes "全て消滅します。";
+		next;
+		mes "[セヤブルレム]";
+		mes "さらに、一部の装備品だけですが";
+		mes "スロットが同時に複数追加されたり、";
+		mes "基本性能が変化する物があります。";
+		next;
+		mes "[セヤブルレム]";
+		mes "そして、気をつけなければならない点が";
+		mes "一つあります。";
+		mes "例えば……「+7マント [0]」と";
+		mes "ただの「マント [0]」を持って、";
+		mes "私にスロットエンチャントを依頼すると";
+		mes "どちらが対象になると思いますか？";
+		next;
+		mes "[セヤブルレム]";
+		mes "正解はわからない……";
+		mes "つまり、対象のアイテムが";
+		mes "どういった物か、私は一切";
+		mes "気にせずに作業するという事です。";
+		next;
+		mes "[セヤブルレム]";
+		mes "^FF0000スロット数以外は、";
+		mes "一切関係ありません。";
+		mes "例え未鑑定だろうが、";
+		mes "破損していようが、";
+		mes "スロットエンチャントを行います。^000000";
+		next;
+		mes "[セヤブルレム]";
+		mes "^FF0000しかし、誰かが作った製造品だと";
+		mes "スロットの数に関係なく";
+		mes "スロットエンチャントの";
+		mes "対象アイテムとなります。^000000";
+		next;
+		mes "[セヤブルレム]";
+		mes "^FF0000特定のアイテムだけに";
+		mes "スロットエンチャントを";
+		mes "行いたいのなら、同じ名前の";
+		mes "アイテムを倉庫にでも";
+		mes "預けておいた方がいいです。^000000";
+		next;
+		mes "[セヤブルレム]";
+		mes "この事を忘れ、別のアイテムが";
+		mes "スロットエンチャントの対象になっても";
+		mes "私は一切責任を取りません。";
+		mes "十分に注意してください。";
+		next;
+		mes "[セヤブルレム]";
+		mes "他に説明する事は特にありません。";
+		mes "百聞は一見にしかず。";
+		mes "まずはスロットエンチャントに";
+		mes "挑戦してみたらどうですか？";
+		close;
+	case 4:
+		mes "[セヤブルレム]";
+		mes "そうですか……";
+		close;
+	}
+	mes "[セヤブルレム]";
+	mes "OK、" +'@equip$+ "ですね。";
+	mes '@equip$+ "となると……";
+	mes "手数料や材料などによって";
+	mes "4階級に分かれています。";
+	mes "まず、スロットを追加したいアイテムの";
+	mes "階級を選んでください。";
+	next;
+	set '@class,select("C級","B級","A級","S級");
+	switch('@class) {
+	case 1:
+		mes "[セヤブルレム]";
+		mes "わかりました。";
+		mes "C級のどの" +'@equip$+ "にしますか？";
+		next;
+		if('@equip$ == "武器") {
+			switch(select("トライデント [2]","ロープ [3]","バイオリン [3]")) {
+			case 1: //トライデント
+				set '@slot,2;
+				setarray '@delid,1460,1462;
+				set '@getid,1461;
+				break;
+			case 2: //ロープ
+				set '@slot,3;
+				set '@delid,1950;
+				set '@getid,1951;
+				break;
+			case 3: //バイオリン
+				set '@slot,3;
+				set '@delid,1901;
+				set '@getid,1902;
+				break;
+			}
+			set '@need,1010;
+			set '@amount,10;
+		}
+		else {
+			switch(select("メントル [0]","ロングコート [0]","サークレット [0]","ビレタ [0]")) {
+			case 1: //メントル
+				set '@delid,2307;
+				set '@getid,2308;
+				break;
+			case 2: //ロングコート
+				set '@delid,2309;
+				set '@getid,2310;
+				break;
+			case 3: //サークレット
+				set '@delid,2232;
+				set '@getid,2233;
+				break;
+			case 4: //ビレタ
+				set '@delid,2216;
+				set '@getid,2217;
+				break;
+			}
+			set '@slot,0;
+			set '@need,999;
+			set '@amount,3;
+		}
+		set '@zeny,200000;
+		break;
+	case 2:
+		mes "[セヤブルレム]";
+		mes "無難なB級ですね。";
+		mes "どの" +'@equip$+ "にしますか？";
+		next;
+		if('@equip$ == "武器") {
+			switch(select("チェイン [2]","グラディウス [2]","角弓 [1]","パイク [3]","海東剣 [1]","リュート [2]","ワイヤー [2]","バグナウ [3]","アーバレスト [1]")) {
+			case 1: //チェイン
+				set '@slot,2;
+				setarray '@delid,1519,1521;
+				set '@getid,1520;
+				set '@need,1010;
+				set '@amount,10;
+				break;
+			case 2: //グラディウス
+				set '@slot,2;
+				setarray '@delid,1219,1221;
+				set '@getid,1220;
+				setarray '@need,984,999;
+				setarray '@amount,1,5;
+				break;
+			case 3: //角弓
+				set '@slot,1;
+				set '@delid,1714;
+				set '@getid,1716;
+				setarray '@need,984,999;
+				setarray '@amount,2,5;
+				break;
+			case 4: //パイク
+				set '@slot,3;
+				setarray '@delid,1407,1409;
+				set '@getid,1408;
+				set '@need,1010;
+				set '@amount,10;
+				break;
+			case 5: //海東剣
+				set '@slot,1;
+				set '@delid,1123;
+				set '@getid,1128;
+				setarray '@need,984,999;
+				setarray '@amount,2,5;
+				break;
+			case 6: //リュート
+				set '@slot,2;
+				set '@delid,1905;
+				set '@getid,1906;
+				set '@need,1011;
+				set '@amount,10;
+				break;
+			case 7: //ワイヤー
+				set '@slot,2;
+				set '@delid,1954;
+				set '@getid,1955;
+				set '@need,1011;
+				set '@amount,10;
+				break;
+			case 8: //バグナウ
+				set '@slot,3;
+				set '@delid,1801;
+				set '@getid,1802;
+				set '@need,1010;
+				set '@amount,10;
+				break;
+			case 9: //アーバレスト
+				set '@slot,1;
+				set '@delid,1713;
+				set '@getid,1715;
+				setarray '@need,984,999;
+				setarray '@amount,2,5;
+				break;
+			}
+			set '@zeny,300000;
+		}
+		else {
+			switch(select("ミラーシールド [0]","メイル [0]","セイントローブ [0]","シルクローブ [0]","ブーツ [0]","シューズ [0]","マフラー [0]","ガード [0]","バックラー [0]","シールド [0]","ボンゴン帽 [0]")) {
+			case 1: //ミラーシールド
+				set '@delid,2107;
+				set '@getid,2108;
+				set '@zeny,250000;
+				break;
+			case 2: //メイル
+				set '@delid,2314;
+				set '@getid,2315;
+				set '@zeny,250000;
+				break;
+			case 3: //セイントローブ
+				set '@delid,2325;
+				set '@getid,2326;
+				set '@zeny,300000;
+				break;
+			case 4: //シルクローブ
+				set '@delid,2321;
+				set '@getid,2322;
+				set '@zeny,300000;
+				break;
+			case 5: //ブーツ
+				set '@delid,2405;
+				set '@getid,2406;
+				set '@zeny,300000;
+				break;
+			case 6: //シューズ
+				set '@delid,2403;
+				set '@getid,2404;
+				set '@zeny,300000;
+				break;
+			case 7: //マフラー
+				set '@delid,2503;
+				set '@getid,2504;
+				set '@zeny,300000;
+				break;
+			case 8: //ガード
+				set '@delid,2101;
+				set '@getid,2102;
+				set '@zeny,300000;
+				break;
+			case 9: //バックラー
+				set '@delid,2103;
+				set '@getid,2104;
+				set '@zeny,300000;
+				break;
+			case 10: //シールド
+				set '@delid,2105;
+				set '@getid,2106;
+				set '@zeny,250000;
+				break;
+			case 11: //ボンゴン帽
+				set '@delid,5046;
+				set '@getid,5168;
+				set '@zeny,250000;
+				break;
+			}
+			set '@slot,0;
+			set '@need,999;
+			set '@amount,5;
+		}
+		break;
+	case 3:
+		mes "[セヤブルレム]";
+		mes "A級……少し難しいですね。";
+		mes "どの" +'@equip$+ "にしますか？";
+		next;
+		if('@equip$ == "武器") {
+			switch(select("ハンターボウ [0]","サバイバルロッド(INT) [0]","ツヴァイハンダー [0]","フランベルジェ [0]","裏切り者 [0]","バリスタ [0]","スタナー [0]","ベルセルク [0]","クレイモア [0]")) {
+			case 1: //ハンターボウ
+				set '@delid,1718;
+				set '@getid,1726;
+				setarray '@need,984,999;
+				setarray '@amount,2,10;
+				set '@zeny,500000;
+				break;
+			case 2: //サバイバルロッド（INT）
+				set '@delid,1619;
+				set '@getid,1620;
+				setarray '@need,984,999;
+				setarray '@amount,5,10;
+				set '@zeny,500000;
+				break;
+			case 3: //ツヴァイハンダー
+				set '@delid,1168;
+				set '@getid,1171;
+				setarray '@need,984,999;
+				setarray '@amount,5,10;
+				set '@zeny,800000;
+				break;
+			case 4: //フランベルジェ
+				set '@delid,1129;
+				set '@getid,1149;
+				setarray '@need,984,999;
+				setarray '@amount,2,10;
+				set '@zeny,500000;
+				break;
+			case 5: //裏切り者
+				set '@delid,1261;
+				set '@getid,1266;
+				setarray '@need,984,999;
+				setarray '@amount,5,10;
+				set '@zeny,700000;
+				break;
+			case 6: //バリスタ
+				set '@delid,1722;
+				set '@getid,1727;
+				setarray '@need,984,999;
+				setarray '@amount,5,10;
+				set '@zeny,500000;
+				break;
+			case 7: //スタナー
+				set '@delid,1522;
+				set '@getid,1532;
+				setarray '@need,984,999;
+				setarray '@amount,2,10;
+				set '@zeny,500000;
+				break;
+			case 8: //ベルセルク
+				set '@delid,1814;
+				set '@getid,1816;
+				setarray '@need,984,999;
+				setarray '@amount,5,10;
+				set '@zeny,500000;
+				break;
+			case 9: //クレイモア
+				set '@delid,1163;
+				set '@getid,1172;
+				setarray '@need,984,999;
+				setarray '@amount,2,10;
+				set '@zeny,500000;
+				break;
+			}
+		}
+		else {
+			switch(select("ジュエルヘルム [0]","やわらかい帽子 [0]","メモライズブック [0]","タイツ [0]","フルプレート [0]","プレート [0]","シーフクロース [0]","グリーブ [0]","修道女のヴェール [0]","マント [0]","ヘルム [0]","忍者スーツ [0]","オーク族のヘルム [0]","昔の領主のマント [0]","聖職者の帽子 [0]","ゴールデンヘッドギア [0]","ブローチ [0]","ムナック帽 [0]")) {
+			case 1: //ジュエルヘルム
+				set '@delid,2230;
+				set '@getid,2231;
+				set '@zeny,400000;
+				break;
+			case 2: //やわらかい帽子
+				set '@delid,5114;
+				set '@getid,5120;
+				set '@zeny,400000;
+				break;
+			case 3: //メモライズブック
+				set '@delid,2109;
+				set '@getid,2121;
+				set '@zeny,400000;
+				break;
+			case 4: //タイツ
+				set '@delid,2330;
+				set '@getid,2331;
+				set '@zeny,400000;
+				break;
+			case 5: //フルプレート
+				set '@delid,2341;
+				set '@getid,2342;
+				set '@zeny,400000;
+				break;
+			case 6: //プレート
+				set '@delid,2316;
+				set '@getid,2317;
+				set '@zeny,400000;
+				break;
+			case 7: //シーフクロース
+				set '@delid,2335;
+				set '@getid,2336;
+				set '@zeny,400000;
+				break;
+			case 8: //グリーブ
+				set '@delid,2411;
+				set '@getid,2412;
+				set '@zeny,400000;
+				break;
+			case 9: //修道女のヴェール
+				set '@delid,5092;
+				set '@getid,5093;
+				set '@zeny,400000;
+				break;
+			case 10: //マント
+				set '@delid,2505;
+				set '@getid,2506;
+				set '@zeny,400000;
+				break;
+			case 11: //ヘルム
+				set '@delid,2228;
+				set '@getid,2229;
+				set '@zeny,400000;
+				break;
+			case 12: //忍者スーツ
+				set '@delid,2337;
+				set '@getid,2359;
+				set '@zeny,400000;
+				break;
+			case 13: //オーク族のヘルム
+				set '@delid,2299;
+				set '@getid,5157;
+				set '@zeny,400000;
+				break;
+			case 14: //昔の領主のマント
+				set '@delid,2507;
+				set '@getid,2525;
+				set '@zeny,400000;
+				break;
+			case 15: //聖職者の帽子
+				set '@delid,2251;
+				set '@getid,5158;
+				set '@zeny,400000;
+				break;
+			case 16: //ゴールデンヘッドギア
+				set '@delid,2246;
+				set '@getid,5159;
+				set '@zeny,400000;
+				break;
+			case 17: //ブローチ
+				set '@delid,2605;
+				set '@getid,2625;
+				set '@zeny,400000;
+				break;
+			case 18: //ムナック帽
+				set '@delid,2264;
+				set '@getid,5167;
+				set '@zeny,300000;
+				break;
+			}
+			set '@need,985;
+			set '@amount,1;
+		}
+		set '@slot,0;
+		break;
+	case 4:
+		mes "[セヤブルレム]";
+		mes "え……S級ですか！";
+		mes "……どの" +'@equip$+ "ですか？";
+		next;
+		if('@equip$ == "武器") {
+			switch(select("グングニール [0]","ポイズンナイフ [0]","錐 [0]","スクサマッド [0]","ギンヌンガガップ [0]","カトラス [0]","クレセントサイダー [0]","サバイバルロッド(DEX) [0]")) {
+			case 1: //グングニール
+				set '@delid,1413;
+				set '@getid,1418;
+				set '@zeny,1000000;
+				break;
+			case 2: //ポイズンナイフ
+				set '@delid,1239;
+				set '@getid,13016;
+				set '@zeny,1000000;
+				break;
+			case 3: //錐
+				set '@delid,1230;
+				set '@getid,13017;
+				set '@zeny,1000000;
+				break;
+			case 4: //スクサマッド
+				set '@delid,1236;
+				set '@getid,13018;
+				set '@zeny,1000000;
+				break;
+			case 5: //ギンヌンガガップ
+				set '@delid,13002;
+				set '@getid,13019;
+				set '@zeny,700000;
+				break;
+			case 6: //カトラス
+				set '@delid,1135;
+				set '@getid,13400;
+				set '@zeny,1000000;
+				break;
+			case 7: //クレセントサイダー
+				set '@delid,1466;
+				set '@getid,1476;
+				set '@zeny,1000000;
+				break;
+			case 8: //サバイバルロッド(DEX)
+				set '@delid,1617;
+				set '@getid,1618;
+				set '@zeny,2000000;
+				break;
+			}
+			setarray '@need,984,999;
+			setarray '@amount,5,10;
+		}
+		else {
+			switch(select("マジェスティックゴート [0]","シャープヘッドギア [0]","ボーンヘルム [0]","コルセア [0]","クラウン [0]","ティアラ [0]","スフィンクス帽 [0]","キャスティングローブ [0]","イヤリング [0]","リング [0]","弓用の指貫 [0]")) {
+			case 1: //マジェスティックゴート
+				set '@delid,2256;
+				set '@getid,5160;
+				set '@zeny,2000000;
+				break;
+			case 2: //シャープヘッドギア
+				set '@delid,2258;
+				set '@getid,5161;
+				set '@zeny,2000000;
+				break;
+			case 3: //ボーンヘルム
+				set '@delid,5017;
+				set '@getid,5162;
+				set '@zeny,2000000;
+				break;
+			case 4: //コルセア
+				set '@delid,5019;
+				set '@getid,5163;
+				set '@zeny,2000000;
+				break;
+			case 5: //クラウン
+				set '@delid,2235;
+				set '@getid,5165;
+				set '@zeny,2000000;
+				break;
+			case 6: //ティアラ
+				set '@delid,2234;
+				set '@getid,5164;
+				set '@zeny,2000000;
+				break;
+			case 7: //スフィンクス帽
+				set '@delid,5053;
+				set '@getid,5166;
+				set '@zeny,1000000;
+				break;
+			case 8: //キャスティングローブ
+				set '@delid,2343;
+				set '@getid,2360;
+				set '@zeny,1000000;
+				break;
+			case 9: //イヤリング
+				set '@delid,2602;
+				set '@getid,2622;
+				set '@zeny,1000000;
+				break;
+			case 10: //リング
+				set '@delid,2601;
+				set '@getid,2621;
+				set '@zeny,1000000;
+				break;
+			case 11: //弓用の指貫
+				set '@delid,2619;
+				set '@getid,2671;
+				set '@zeny,1000000;
+				break;
+			}
+			set '@need,985;
+			set '@amount,2;
+		}
+		set '@slot,0;
+		break;
+	}
+	mes "[セヤブルレム]";
+	mes getitemname('@delid)+ " [" +'@slot+ "]ですね。";
+	mes "手数料は^FF0000" +'@zeny/10000+ "万Zeny^000000、";
+	if('@amount[1]) {
+		mes "材料は" +getitemname('@need[0])+'@amount[0]+ "個^000000、";
+		mes "^FF0000" +getitemname('@need[1])+'@amount[1]+ "個^000000です。";
+	}
+	else
+		mes "材料は" +getitemname('@need)+'@amount+ "個^000000です。";
+	mes "もちろん、" +getitemname('@delid)+ " [" +'@slot+ "]も必要です。";
+	next;
+	mes "[セヤブルレム]";
+	mes "なお、注意点として";
+	mes "スロットエンチャントを行うと";
+	mes "成否に関わらず材料は全て消滅します。";
+	mes "また、例え成功したとしても";
+	mes "精錬・カード・属性等の付与効果は";
+	mes "全て消滅します。";
+	next;
+	if(select("スロットエンチャントを頼む","話をやめる")==2) {
+		mes "[セヤブルレム]";
+		mes "また来てください。";
+		close;
+	}
+	if((countitem('@delid[0]) < 1 && countitem('@delid[1]) < 1) || Zeny < '@zeny) {
+		mes "[セヤブルレム]";
+		mes "材料かお金が足りませんよ？";
+		close;
+	}
+	for(set '@i,0; '@amount['@i]!=0; set '@i,'@i+1) {
+		if(countitem('@need['@i]) < '@amount['@i]) {
+			mes "[セヤブルレム]";
+			mes "材料かお金が足りませんよ？";
+			close;
+		}
+	}
+	if(countitem('@delid))
+		delitem '@delid,1;
+	else
+		delitem '@delid[1],1;
+	for(set '@i,0; '@amount['@i]!=0; set '@i,'@i+1)
+		delitem '@need['@i],'@amount['@i];
+	set Zeny,Zeny-'@zeny;
+	switch('@class) {
+	case 1: set '@rand,2; break; //C級
+	case 2: set '@rand,4; break; //B級
+	case 3: set '@rand,8; break; //A級
+	case 4: set '@rand,16; break; //S級
+	}
+	if(rand('@rand)) {
+		misceffect 183;
+		mes "[セヤブルレム]";
+		mes "う……失敗です。";
+		mes "どうやら運が無かったようです。";
+		mes "……そう落ち込まないでください。";
+		mes "今度はきっと成功しますよ。";
+	}
+	else {
+		if('@class == 4)
+			misceffect 90;
+		else
+			misceffect 83;
+		mes "[セヤブルレム]";
+		mes "OK、成功しました。";
+		mes "おめでとうございます。";
+		getitem '@getid,1;
+	}
+	next;
+	mes "[セヤブルレム]";
+	mes "それでは、またご利用ください。";
+	close;
+}
+
+prt_in.gat,31,57,0	script	青年#slot	97,{
+	mes "[青年]";
+	mes "気をつけてください。";
+	mes "スロットエンチャントを行うと、";
+	mes "装備品に付与された効果は";
+	mes "消えてしまいます。";
+	next;
+	mes "[青年]";
+	mes "また、スロットエンチャントの";
+	mes "副作用により、基本性能が";
+	mes "変化する装備品もあります。";
+	next;
+	mes "[青年]";
+	mes "そして、とても珍しい事ですが、";
+	mes "スロットが複数追加される";
+	mes "装備品があります。";
+	mes "もちろん、全ての装備品で";
+	mes "起きる事ではありません。";
+	mes "あくまで一部の装備品のみです。";
+	next;
+	mes "[青年]";
+	mes "私も今から勉強して、";
+	mes "セヤブルレムさんのように";
+	mes "スロットを追加する技術を";
+	mes "身につけたいです。";
+	close;
+}
+
+//==============================================================================
+morocc.gat,51,41,5	duplicate(セヤブルレム#slot)	セヤブルレム	84
+morocc.gat,60,42,3	duplicate(青年#slot)	青年	97
+payon.gat,140,151,5	duplicate(セヤブルレム#slot)	セヤブルレム	84
+payon.gat,143,143,7	duplicate(青年#slot)	青年	97
+lhz_in02.gat,281,35,4	duplicate(セヤブルレム#slot)	セヤブルレム	84
+lhz_in02.gat,269,33,4	duplicate(青年#slot)	青年	97

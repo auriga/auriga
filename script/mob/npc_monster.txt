@@ -2522,6 +2522,20 @@ lou_dun01.gat,0,0,0,0	monster	グリズリー	1381,15,0,0,0
 lou_dun01.gat,0,0,0,0	monster	土精	1516,15,0,0,0
 lou_dun01.gat,0,0,0,0	monster	虎人	1517,45,0,0,0
 
+//常夏の島 ジャワイ(jawaii.gat)
+jawaii.gat,0,0,0,0		monster	お化け貝	1074,5,600000,300000
+jawaii.gat,0,0,0,0		monster	ヒトデ	1266,5,600000,300000
+jawaii.gat,0,0,0,0		monster	フェン	1158,5,600000,300000
+jawaii.gat,194,299,224,286	monster	フェン	1158,1,600000,300000
+jawaii.gat,168,257,251,228	monster	フェン	1158,1,600000,300000
+
+//ジャワイ 室内(jawaii_in.gat)
+jawaii_in.gat,124,76,0,0	monster	黒いきのこ	1084,1,600000,300000
+jawaii_in.gat,128,118,0,3	monster	赤いきのこ	1085,1,600000,300000
+jawaii_in.gat,77,116,7,7	monster	盗蟲	1051,2,600000,300000
+jawaii_in.gat,73,74,1,0		monster	黒いきのこ	1084,1,600000,300000
+jawaii_in.gat,76,74,1,0		monster	黒いきのこ	1084,1,600000,300000
+
 //龍之城フィールド(lou_fild01.gat)
 lou_fild01.gat,0,0,0,0	monster	ビッグフット	1060,15,0,0,0
 lou_fild01.gat,0,0,0,0	monster	黄色草	1081,10,0,0,0

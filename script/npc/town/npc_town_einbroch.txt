@@ -1,7 +1,10 @@
+//= Athena Script ==============================================================
+// Ragnarok Online Einbroch Town Script	by Blaze
 //==============================================================================
-// Ragnarok Online Einbroch Town Script    by Blaze
-//==============================================================================
-// ショップ
+
+//============================================================
+// Shop
+//------------------------------------------------------------
 ein_in01.gat,106,27,4	shop	片手武器商人	850,1101:100,1104:1500,1107:2900,1110:10000,1113:17000,1119:51000,1122:24000,1123:50000,1126:49000,1129:60000,1201:50,1204:1250,1207:2400,1210:8500,1213:14000,1216:19500,1219:43000,1222:49000,1301:500,1401:150,1404:1700,1407:3450,1501:120,1504:1600,1507:9000,1510:16000,1513:41000,1516:50000,1519:23000,1522:60000,1801:8000,1803:25000,1805:32000,1807:53000,1809:55000,1811:58000
 ein_in01.gat,109,27,4	shop	両手武器商人	850,1116:2000,1151:15000,1154:22500,1157:60000,1160:65000,1351:5400,1354:15500,1357:34000,1360:55000,1410:60000,1451:13000,1454:20000,1457:27000,1460:51000,1463:54000,1250:19500,1252:41000,1254:37200
 ein_in01.gat,189,15,0	shop	道具商人	850,1750:1,1752:3,1751:3,611:40,501:50,502:200,503:550,504:1200,506:40,645:800,656:1500,601:60,602:300,1065:100
@@ -9,8 +12,9 @@ einbroch.gat,82,199,4	shop	雑貨商人#einbroch	855,512:15,645:800,1750:1,501:5
 einbroch.gat,138,66,4	shop	マスク商人#einbroch	850,2218:300
 ein_in01.gat,119,26,4	shop	武器商人	855,1247:10000,1248:10000,1249:10000,13000:10000
 
-
-// アインブロック⇔アインベフ移動NPC
+//============================================================
+// アインブロック⇔アインベフ転送NPC
+//------------------------------------------------------------
 einbroch.gat,232,272,3	script	駅員#einbroch1	852,{
 	mes "[駅員]";
 	mes "こんにちは。こちらは";
@@ -19,9 +23,9 @@ einbroch.gat,232,272,3	script	駅員#einbroch1	852,{
 	mes "アインベフまでの料金は";
 	mes "200zenyです。乗りますか？";
 	next;
-	switch (select("乗る","乗らない","空気がよくないですね")) {
+	switch(select("乗る","乗らない","空気がよくないですね")) {
 	case 1:
-		if(Zeny<200) {
+		if(Zeny < 200) {
 			mes "[駅員]";
 			mes "お客様、お金が足りないようです。";
 			close;
@@ -51,7 +55,6 @@ einbroch.gat,232,272,3	script	駅員#einbroch1	852,{
 
 einbroch.gat,252,301,4	duplicate(駅員#einbroch1)	駅員#einbroch2	852
 
-
 einbech.gat,39,215,5	script	駅員#einbech	852,{
 	mes "[駅員]";
 	mes "こんにちは。こちらが";
@@ -65,7 +68,7 @@ einbech.gat,39,215,5	script	駅員#einbech	852,{
 		mes "それではごきげんよう。";
 		close;
 	}
-	if(Zeny<200) {
+	if(Zeny < 200) {
 		mes "[駅員]";
 		mes "お客様、お金が足りないようです。";
 		close;
@@ -79,85 +82,9 @@ einbech.gat,39,215,5	script	駅員#einbech	852,{
 	end;
 }
 
-//==============================================================================
+//============================================================
 // アインブロックNPC
-//==============================================================================
-// 大気汚染イベント
-einbroch.gat,0,0,0	script	環境管理員#einbroch	-1,{
-OnInit:
-	initnpctimer;
-	end;
-OnTimer3600000:
-	if(rand(2)) {
-		initnpctimer;
-		end;
-	}
-	areamonster "einbroch.gat",0,0,0,0,"酸の煙",1620,10,"環境管理員#einbroch::OnKilled";
-	areamonster "einbroch.gat",0,0,0,0,"毒の煙",1621,40,"環境管理員#einbroch::OnKilled";
-	announce "環境管理員: 非常事態発生!!　工場の煤煙が街に広がっています。アインブロック住民の皆さん、速やかに避難してください！",9;
-	hideonnpc "カプラ職員#einbroch1";
-	hideonnpc "カプラ職員#einbroch2";
-	hideonnpc "案内要員#einbroch";
-	hideonnpc "案内要員#einbrochdummy1";
-	hideonnpc "案内要員#einbrochdummy2";
-	hideonnpc "雑貨商人#einbroch";
-	hideonnpc "マスク商人#einbroch";
-	hideonnpc "駅員#einbroch1";
-	hideonnpc "駅員#einbroch2";
-	hideonnpc "カム#einbroch";
-	hideonnpc "オベ#einbroch";
-	hideonnpc "マーク#einbroch";
-	hideonnpc "ケティン#einbroch";
-	hideonnpc "ケネッシオ#einbroch";
-	hideonnpc "スリーキ#einbroch";
-	hideonnpc "街の青年#einbroch1";
-	hideonnpc "街の青年#einbroch2";
-	hideonnpc "センツ#einbroch";
-	hideonnpc "カロパー#einbroch";
-	hideonnpc "センボ#einbroch";
-	hideonnpc "乗客#einbroch";
-	hideonnpc "飛行船の技師#einbroch";
-	hideonnpc "リュッツ#einbroch";
-	hideonnpc "アーク・クライン#einbroch";
-	hideonnpc "研究所の警備員#einbroch1";
-	hideonnpc "研究所の警備員#einbroch2";
-	end;
-OnTimer4200000:
-	killmonster "einbroch.gat","環境管理員#einbroch::OnKilled";
-	announce "環境管理員: 避難警報解除!!　大気汚染度が安全値に戻りました。アインブロック住民の皆さん、ご安心ください。",9;
-	hideoffnpc "カプラ職員#einbroch1";
-	hideoffnpc "カプラ職員#einbroch2";
-	hideoffnpc "案内要員#einbroch";
-	hideoffnpc "案内要員#einbrochdummy1";
-	hideoffnpc "案内要員#einbrochdummy2";
-	hideoffnpc "雑貨商人#einbroch";
-	hideoffnpc "マスク商人#einbroch";
-	hideoffnpc "駅員#einbroch1";
-	hideoffnpc "駅員#einbroch2";
-	hideoffnpc "カム#einbroch";
-	hideoffnpc "オベ#einbroch";
-	hideoffnpc "マーク#einbroch";
-	hideoffnpc "ケティン#einbroch";
-	hideoffnpc "ケネッシオ#einbroch";
-	hideoffnpc "スリーキ#einbroch";
-	hideoffnpc "街の青年#einbroch1";
-	hideoffnpc "街の青年#einbroch2";
-	hideoffnpc "センツ#einbroch";
-	hideoffnpc "カロパー#einbroch";
-	hideoffnpc "センボ#einbroch";
-	hideoffnpc "乗客#einbroch";
-	hideoffnpc "飛行船の技師#einbroch";
-	hideoffnpc "リュッツ#einbroch";
-	hideoffnpc "アーク・クライン#einbroch";
-	hideoffnpc "研究所の警備員#einbroch1";
-	hideoffnpc "研究所の警備員#einbroch2";
-	initnpctimer;
-	end;
-OnKilled:
-	end;	//ダミーイベント
-}
-
-// 表示板
+//------------------------------------------------------------
 einbroch.gat,151,46,5	script	表示板	858,{
 	mes "西−研究所、飛行船修理所";
 	mes "南−アインブロック正門";
@@ -245,126 +172,6 @@ einbroch.gat,244,255,5	script	表示板	858,{
 	close;
 }
 
-// 見晴台NPC
-// callfunc "見晴台#einbroch",X,Y;
-function	script	見晴台#einbroch	{
-	mes "["+strnpcinfo(1)+"]";
-	mes "こんにちは。";
-	mes "アインブロック見晴台案内員の";
-	mes strnpcinfo(1)+ "と言います。";
-	mes "この見晴台からは";
-	mes "アインブロックを一目で";
-	mes "見渡せるんですよ。";
-	next;
-	mes "["+strnpcinfo(1)+"]";
-	mes "下に広がる景色は";
-	mes "とても涼しげですよ。";
-	mes "友達や恋人との待ち合わせに";
-	mes "ピッタリの場所です。";
-	next;
-	mes "["+strnpcinfo(1)+"]";
-	mes "見晴台の利用料は、10zenyです。";
-	mes "只今、一般のご利用に新鮮なリンゴを";
-	mes "付けた、お得なリンゴセット";
-	mes "キャンペーンも実施中です。";
-	next;
-	mes "["+strnpcinfo(1)+"]";
-	mes "リンゴセットは20zenyです。";
-	mes "見晴台をご利用しますか？";
-	next;
-	switch (select("一般でお願い","リンゴセットでお願い","やめる")) {
-	case 1:
-		if(Zeny<10) {
-			mes "["+strnpcinfo(1)+"]";
-			mes "見晴台の利用料は、10zenyです。";
-			close;
-		}
-		set Zeny,Zeny-10;
-		mes "["+strnpcinfo(1)+"]";
-		mes "ご利用、ありがとうございます。";
-		mes "すぐにご案内しましょう。";
-		break;
-	case 2:
-		if(Zeny<20) {
-			mes "["+strnpcinfo(1)+"]";
-			mes "リンゴセットは、20zenyです。";
-			close;
-		}
-		mes "["+strnpcinfo(1)+"]";
-		mes "ご利用、ありがとうございます。";
-		mes "では安全のため、重量チェックを";
-		mes "行わせていただきます。";
-		next;
-		if(checkweight(512,1)==0) {
-			mes "["+strnpcinfo(1)+"]";
-			mes "お客様、申し訳ございません。";
-			mes "お荷物が重すぎるため、見晴台へ";
-			mes "行くには少々危険が伴います。";
-			mes "お荷物を減らすなどしてから";
-			mes "再度お越しいただけないでしょうか。";
-			close;
-		}
-		set Zeny,Zeny-20;
-		getitem 512,1;
-		mes "["+strnpcinfo(1)+"]";
-		mes "はい、合格です。";
-		mes "それでは、すぐにご案内しましょう。";
-		break;
-	case 3:
-		mes "["+strnpcinfo(1)+"]";
-		mes "次は、是非ご利用ください。";
-		mes "お待ちしています。";
-		close;
-	}
-	close2;
-	warp "einbroch.gat",getarg(0),getarg(1);
-	return;
-}
-
-einbroch.gat,176,171,5	script	カム#einbroch	855,{
-	callfunc "見晴台#einbroch",181,196;
-	end;
-}
-
-einbroch.gat,173,229,5	script	オベ#einbroch	855,{
-	callfunc "見晴台#einbroch",179,204;
-	end;
-}
-
-einbroch.gat,218,198,5	script	マーク#einbroch	855,{
-	callfunc "見晴台#einbroch",174,204;
-	end;
-}
-
-einbroch.gat,175,196,5	script	シン#einbroch	854,{
-	mes "[シン]";
-	mes "こんにちは。";
-	mes "見晴台管理人のシンです。";
-	mes "下にお戻りの際は、";
-	mes "私にご連絡ください。";
-	next;
-	mes "[シン]";
-	mes "下に戻りますか？";
-	next;
-	if(select("はい、戻ります","いいえ、もうちょっとここにいます")==2) {
-		mes "[シン]";
-		mes "はい、わかりました。";
-		mes "ごゆっくりどうぞ。";
-		close;
-	}
-	mes "[シン]";
-	mes "ご利用、ありがとうございました。";
-	mes "またのお越しをお待ちしております。";
-	close2;
-	switch(rand(3)) {
-		case 0:	warp "einbroch.gat",178,167; break;
-		case 1:	warp "einbroch.gat",216,188; break;
-		case 2:	warp "einbroch.gat",170,229; break;
-	}
-	end;
-}
-
-// アインブロックNPC
 einbroch.gat,143,109,5	script	ケティン#einbroch	855,{
 	mes "[ケティン]";
 	mes "街の南に、使われていない";
@@ -584,7 +391,9 @@ einbroch.gat,51,56,5	script	研究所の警備員#einbroch2	852,{
 	close;
 }
 
-// 工場NPC
+//============================================================
+// アインブロック室内NPC
+//------------------------------------------------------------
 ein_in01.gat,43,252,3	script	カンポティ	852,{
 	mes "[カンポティ]";
 	mes "ぐずぐずしてないで、";
@@ -841,10 +650,207 @@ ein_in01.gat,33,275,1	script	ペプティン	848,{
 	close;
 }
 
-//==============================================================================
+//============================================================
+// 見晴台NPC
+//------------------------------------------------------------
+// callfunc "見晴台#einbroch",X,Y;
+function	script	見晴台#einbroch	{
+	mes "["+strnpcinfo(1)+"]";
+	mes "こんにちは。";
+	mes "アインブロック見晴台案内員の";
+	mes strnpcinfo(1)+ "と言います。";
+	mes "この見晴台からは";
+	mes "アインブロックを一目で";
+	mes "見渡せるんですよ。";
+	next;
+	mes "["+strnpcinfo(1)+"]";
+	mes "下に広がる景色は";
+	mes "とても涼しげですよ。";
+	mes "友達や恋人との待ち合わせに";
+	mes "ピッタリの場所です。";
+	next;
+	mes "["+strnpcinfo(1)+"]";
+	mes "見晴台の利用料は、10zenyです。";
+	mes "只今、一般のご利用に新鮮なリンゴを";
+	mes "付けた、お得なリンゴセット";
+	mes "キャンペーンも実施中です。";
+	next;
+	mes "["+strnpcinfo(1)+"]";
+	mes "リンゴセットは20zenyです。";
+	mes "見晴台をご利用しますか？";
+	next;
+	switch(select("一般でお願い","リンゴセットでお願い","やめる")) {
+	case 1:
+		if(Zeny < 10) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "見晴台の利用料は、10zenyです。";
+			close;
+		}
+		set Zeny,Zeny-10;
+		mes "["+strnpcinfo(1)+"]";
+		mes "ご利用、ありがとうございます。";
+		mes "すぐにご案内しましょう。";
+		break;
+	case 2:
+		if(Zeny < 20) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "リンゴセットは、20zenyです。";
+			close;
+		}
+		mes "["+strnpcinfo(1)+"]";
+		mes "ご利用、ありがとうございます。";
+		mes "では安全のため、重量チェックを";
+		mes "行わせていただきます。";
+		next;
+		if(checkweight(512,1)==0) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "お客様、申し訳ございません。";
+			mes "お荷物が重すぎるため、見晴台へ";
+			mes "行くには少々危険が伴います。";
+			mes "お荷物を減らすなどしてから";
+			mes "再度お越しいただけないでしょうか。";
+			close;
+		}
+		set Zeny,Zeny-20;
+		getitem 512,1;
+		mes "["+strnpcinfo(1)+"]";
+		mes "はい、合格です。";
+		mes "それでは、すぐにご案内しましょう。";
+		break;
+	case 3:
+		mes "["+strnpcinfo(1)+"]";
+		mes "次は、是非ご利用ください。";
+		mes "お待ちしています。";
+		close;
+	}
+	close2;
+	warp "einbroch.gat",getarg(0),getarg(1);
+	return;
+}
+
+einbroch.gat,176,171,5	script	カム#einbroch	855,{
+	callfunc "見晴台#einbroch",181,196;
+	end;
+}
+
+einbroch.gat,173,229,5	script	オベ#einbroch	855,{
+	callfunc "見晴台#einbroch",179,204;
+	end;
+}
+
+einbroch.gat,218,198,5	script	マーク#einbroch	855,{
+	callfunc "見晴台#einbroch",174,204;
+	end;
+}
+
+einbroch.gat,175,196,5	script	シン#einbroch	854,{
+	mes "[シン]";
+	mes "こんにちは。";
+	mes "見晴台管理人のシンです。";
+	mes "下にお戻りの際は、";
+	mes "私にご連絡ください。";
+	next;
+	mes "[シン]";
+	mes "下に戻りますか？";
+	next;
+	if(select("はい、戻ります","いいえ、もうちょっとここにいます")==2) {
+		mes "[シン]";
+		mes "はい、わかりました。";
+		mes "ごゆっくりどうぞ。";
+		close;
+	}
+	mes "[シン]";
+	mes "ご利用、ありがとうございました。";
+	mes "またのお越しをお待ちしております。";
+	close2;
+	switch(rand(3)) {
+	case 0:	warp "einbroch.gat",178,167; break;
+	case 1:	warp "einbroch.gat",216,188; break;
+	case 2:	warp "einbroch.gat",170,229; break;
+	}
+	end;
+}
+
+//============================================================
+// 大気汚染イベントNPC
+//------------------------------------------------------------
+einbroch.gat,0,0,0	script	環境管理員#einbroch	-1,{
+OnInit:
+	initnpctimer;
+	end;
+OnTimer3600000:
+	if(rand(2)) {
+		initnpctimer;
+		end;
+	}
+	areamonster "einbroch.gat",0,0,0,0,"酸の煙",1620,10,"環境管理員#einbroch::OnKilled";
+	areamonster "einbroch.gat",0,0,0,0,"毒の煙",1621,40,"環境管理員#einbroch::OnKilled";
+	announce "環境管理員: 非常事態発生!!　工場の煤煙が街に広がっています。アインブロック住民の皆さん、速やかに避難してください！",9;
+	hideonnpc "カプラ職員#einbroch1";
+	hideonnpc "カプラ職員#einbroch2";
+	hideonnpc "案内要員#einbroch";
+	hideonnpc "案内要員#einbrochdummy1";
+	hideonnpc "案内要員#einbrochdummy2";
+	hideonnpc "雑貨商人#einbroch";
+	hideonnpc "マスク商人#einbroch";
+	hideonnpc "駅員#einbroch1";
+	hideonnpc "駅員#einbroch2";
+	hideonnpc "カム#einbroch";
+	hideonnpc "オベ#einbroch";
+	hideonnpc "マーク#einbroch";
+	hideonnpc "ケティン#einbroch";
+	hideonnpc "ケネッシオ#einbroch";
+	hideonnpc "スリーキ#einbroch";
+	hideonnpc "街の青年#einbroch1";
+	hideonnpc "街の青年#einbroch2";
+	hideonnpc "センツ#einbroch";
+	hideonnpc "カロパー#einbroch";
+	hideonnpc "センボ#einbroch";
+	hideonnpc "乗客#einbroch";
+	hideonnpc "飛行船の技師#einbroch";
+	hideonnpc "リュッツ#einbroch";
+	hideonnpc "アーク・クライン#einbroch";
+	hideonnpc "研究所の警備員#einbroch1";
+	hideonnpc "研究所の警備員#einbroch2";
+	end;
+OnTimer4200000:
+	killmonster "einbroch.gat","環境管理員#einbroch::OnKilled";
+	announce "環境管理員: 避難警報解除!!　大気汚染度が安全値に戻りました。アインブロック住民の皆さん、ご安心ください。",9;
+	hideoffnpc "カプラ職員#einbroch1";
+	hideoffnpc "カプラ職員#einbroch2";
+	hideoffnpc "案内要員#einbroch";
+	hideoffnpc "案内要員#einbrochdummy1";
+	hideoffnpc "案内要員#einbrochdummy2";
+	hideoffnpc "雑貨商人#einbroch";
+	hideoffnpc "マスク商人#einbroch";
+	hideoffnpc "駅員#einbroch1";
+	hideoffnpc "駅員#einbroch2";
+	hideoffnpc "カム#einbroch";
+	hideoffnpc "オベ#einbroch";
+	hideoffnpc "マーク#einbroch";
+	hideoffnpc "ケティン#einbroch";
+	hideoffnpc "ケネッシオ#einbroch";
+	hideoffnpc "スリーキ#einbroch";
+	hideoffnpc "街の青年#einbroch1";
+	hideoffnpc "街の青年#einbroch2";
+	hideoffnpc "センツ#einbroch";
+	hideoffnpc "カロパー#einbroch";
+	hideoffnpc "センボ#einbroch";
+	hideoffnpc "乗客#einbroch";
+	hideoffnpc "飛行船の技師#einbroch";
+	hideoffnpc "リュッツ#einbroch";
+	hideoffnpc "アーク・クライン#einbroch";
+	hideoffnpc "研究所の警備員#einbroch1";
+	hideoffnpc "研究所の警備員#einbroch2";
+	initnpctimer;
+	end;
+OnKilled:
+	end;	//ダミーイベント
+}
+
+//============================================================
 // アインベフNPC
-//==============================================================================
-// 表示板
+//------------------------------------------------------------
 einbech.gat,77,105,5	script	表示板	858,{
 	mes "採鉱の村アインベフへようこそ";
 	next;
@@ -895,7 +901,6 @@ einbech.gat,135,250,5	script	表示板	858,{
 	close;
 }
 
-// アインベフNPC
 einbech.gat,93,139,5	script	レスト	847,{
 	mes "[レスト]";
 	mes "一体！　どうして！";
@@ -1076,8 +1081,7 @@ einbech.gat,172,113,4	script	ネムク	855,{
 	mes "いきなり聞くのもなんだが……";
 	mes "ここ、どう思う？";
 	next;
-	switch (select("いいんじゃないですか","正直に言いますと、大変そうです")) {
-	case 1:
+	if(select("いいんじゃないですか","正直に言いますと、大変そうです")==1) {
 		mes "[ネムク]";
 		mes "うーん、どこを見たら";
 		mes "そう見えるんだろう。";
@@ -1093,25 +1097,24 @@ einbech.gat,172,113,4	script	ネムク	855,{
 		mes "お金さえあれば、";
 		mes "こんな場所にいないさ。";
 		close;
-	case 2:
-		mes "[ネムク]";
-		mes "うん、やっぱりそう見えるか。";
-		next;
-		mes "[ネムク]";
-		mes "ここじゃ、仕事仕事の毎日だ。";
-		mes "どれだけ働いても変わらない。";
-		mes "いくらあがいても無理だ。";
-		next;
-		mes "[ネムク]";
-		mes "去りたいと思っても、それは心だけ……";
-		mes "実際、身は動くことができない……";
-		mes "心だけ、遠い空の向こうを";
-		mes "夢見るばかり……";
-		next;
-		mes "[ネムク]";
-		mes "はぁ、お金があればな……";
-		close;
 	}
+	mes "[ネムク]";
+	mes "うん、やっぱりそう見えるか。";
+	next;
+	mes "[ネムク]";
+	mes "ここじゃ、仕事仕事の毎日だ。";
+	mes "どれだけ働いても変わらない。";
+	mes "いくらあがいても無理だ。";
+	next;
+	mes "[ネムク]";
+	mes "去りたいと思っても、それは心だけ……";
+	mes "実際、身は動くことができない……";
+	mes "心だけ、遠い空の向こうを";
+	mes "夢見るばかり……";
+	next;
+	mes "[ネムク]";
+	mes "はぁ、お金があればな……";
+	close;
 }
 
 einbech.gat,197,139,4	script	青年	855,{
@@ -1233,7 +1236,9 @@ einbech.gat,149,154,3	script	ミュニア	850,{
 	close;
 }
 
-// 酒場NPC
+//============================================================
+// アインベフ室内NPC
+//------------------------------------------------------------
 ein_in01.gat,277,95,6	script	青年	855,{
 	mes "[青年]";
 	mes "お嬢ちゃん、可愛いね。";
@@ -1278,7 +1283,6 @@ ein_in01.gat,281,85,3	script	酔っている男	849,{
 	close;
 }
 
-// 共同住宅
 ein_in01.gat,208,86,3	script	トシ	855,{
 	mes "[トシ]";
 	mes "ああ、息苦しいな！";
@@ -1298,7 +1302,9 @@ ein_in01.gat,192,90,3	script	スピナー	849,{
 	close;
 }
 
-// モンスター情報
+//============================================================
+// モンスター情報NPC
+//------------------------------------------------------------
 einbech.gat,46,106,6	script	サナ#einbech	846,{
 	mes "[サナ]";
 	mes "昔は当たり前だった話なのに";
@@ -1355,7 +1361,7 @@ einbech.gat,46,106,6	script	サナ#einbech	846,{
 	}
 	next;
 	while(1) {	//「やめる」を選択するまでループ
-		switch (select("メタリンについて","ミネラルについて","ピットマンについて","ジャンクポットについて","やめる")) {
+		switch(select("メタリンについて","ミネラルについて","ピットマンについて","ジャンクポットについて","やめる")) {
 		case 1:
 			mes "[サナ]";
 			mes "人間が生まれるはるか昔に";
@@ -1524,7 +1530,6 @@ einbech.gat,46,106,6	script	サナ#einbech	846,{
 
 einbech.gat,48,106,3	duplicate(サナ#einbech)	ルイーダ	850
 
-
 einbech.gat,148,242,5	script	ユング	855,{
 	mes "[ユング]";
 	mes "私はアインブロックとアインベフを";
@@ -1544,7 +1549,7 @@ einbech.gat,148,242,5	script	ユング	855,{
 	mes "説明してあげよう。";
 	mes "どれについて聞きたい？";
 	next;
-	switch (select("ノクシャス、ベノマス","ポルセリオ","オブシディアン")) {
+	switch(select("ノクシャス、ベノマス","ポルセリオ","オブシディアン")) {
 	case 1:
 		mes "[ユング]";
 		mes "ノクシャスとベノマスか……";
@@ -1668,8 +1673,7 @@ einbech.gat,148,246,5	script	テス	851,{
 	mes "ここら近辺の化け物、";
 	mes "どっちの話を聞きたい？";
 	next;
-	switch (select("鉱山の化け物の話","近辺の化け物の話")) {
-	case 1:
+	if(select("鉱山の化け物の話","近辺の化け物の話")==1) {
 		mes "[テス]";
 		mes "鉱山にはね……";
 		mes "鉱山の主と呼ばれる";
@@ -1725,91 +1729,90 @@ einbech.gat,148,246,5	script	テス	851,{
 		mes "鉱山では、ことさら気をつけた方が";
 		mes "いいよ。";
 		close;
-	case 2:
-		mes "[テス]";
-		mes "ベアドールなんだけどね……";
-		mes "最近、そのモンスターが";
-		mes "大問題になっているんだ。";
-		mes "どこから話したらいいかな……";
-		next;
-		mes "[テス]";
-		mes "以前、アインブロック郊外の空き地に";
-		mes "大量の熊の人形、ベアドールが";
-		mes "廃棄処分されていたことがあったんだ。";
-		next;
-		mes "[テス]";
-		mes "その人形、元々は子供用の";
-		mes "動くおもちゃだったんだ。";
-		mes "ちょっと重いんだけど、安いし";
-		mes "手頃な値段だったから、";
-		mes "けっこう売れたんだって。";
-		next;
-		mes "[テス]";
-		mes "ところが、その人形を買った";
-		mes "家族が殺される事件が";
-		mes "発生するようになったんだ。";
-		mes "そのうち、その人形が";
-		mes "自力で動いてるって話が";
-		mes "出回り始めてさ。";
-		next;
-		mes "[テス]";
-		mes "人気商品だったから、";
-		mes "その噂が世間に広まるのに、";
-		mes "そう時間はかからなかったさ。";
-		mes "そんな事があって";
-		mes "調査が始まったんだけど、";
-		mes "奇妙なことが判ってね。";
-		next;
-		mes "[テス]";
-		mes "このベアドールの仕入先なんだけど、";
-		mes "これを仕入れてきた商人達の話だと、";
-		mes "どうやら誰もが同じ人間から";
-		mes "仕入れていたらしい。";
-		mes "そして、その人物は、どうやら";
-		mes "アインブロックの人間じゃないらしい。";
-		next;
-		mes "[テス]";
-		mes "他にも何かあったのかもしれないけど、";
-		mes "そのベアドール回収に、とうとう";
-		mes "軍隊が派遣されることになった。";
-		next;
-		mes "[テス]";
-		mes "回収は問題なく進んだ。";
-		mes "簡単すぎたくらいさ。";
-		mes "そして、最後の最後で";
-		mes "トラブルが発生した！";
-		next;
-		mes "[テス]";
-		mes "軍が、街外れの空き地で";
-		mes "廃棄処理をしようとした途端！";
-		mes "回収したベアドール全部が動きだして";
-		mes "混乱に乗じて逃げてしまったんだ！";
-		next;
-		mes "[テス]";
-		mes "ベアドール達は、本当は";
-		mes "何か目的があって作られ、";
-		mes "誰かに操作されていた、";
-		mes "そう思わないかい？";
-		next;
-		mes "[テス]";
-		mes "ベアドールを倒した奴の話によると、";
-		mes "こいつらは無形の小型モンスターで";
-		mes "倒すと、^FF0000ハチ蜜^000000、";
-		mes "^FF0000錆びたネジ^000000、^FF0000オリデオコンの金槌^000000を";
-		mes "得られるんだってさ。";
-		next;
-		mes "[テス]";
-		mes "僕が知ってるのはこれくらいかな。";
-		mes "それじゃあ、気をつけてね。";
-		close;
 	}
+	mes "[テス]";
+	mes "ベアドールなんだけどね……";
+	mes "最近、そのモンスターが";
+	mes "大問題になっているんだ。";
+	mes "どこから話したらいいかな……";
+	next;
+	mes "[テス]";
+	mes "以前、アインブロック郊外の空き地に";
+	mes "大量の熊の人形、ベアドールが";
+	mes "廃棄処分されていたことがあったんだ。";
+	next;
+	mes "[テス]";
+	mes "その人形、元々は子供用の";
+	mes "動くおもちゃだったんだ。";
+	mes "ちょっと重いんだけど、安いし";
+	mes "手頃な値段だったから、";
+	mes "けっこう売れたんだって。";
+	next;
+	mes "[テス]";
+	mes "ところが、その人形を買った";
+	mes "家族が殺される事件が";
+	mes "発生するようになったんだ。";
+	mes "そのうち、その人形が";
+	mes "自力で動いてるって話が";
+	mes "出回り始めてさ。";
+	next;
+	mes "[テス]";
+	mes "人気商品だったから、";
+	mes "その噂が世間に広まるのに、";
+	mes "そう時間はかからなかったさ。";
+	mes "そんな事があって";
+	mes "調査が始まったんだけど、";
+	mes "奇妙なことが判ってね。";
+	next;
+	mes "[テス]";
+	mes "このベアドールの仕入先なんだけど、";
+	mes "これを仕入れてきた商人達の話だと、";
+	mes "どうやら誰もが同じ人間から";
+	mes "仕入れていたらしい。";
+	mes "そして、その人物は、どうやら";
+	mes "アインブロックの人間じゃないらしい。";
+	next;
+	mes "[テス]";
+	mes "他にも何かあったのかもしれないけど、";
+	mes "そのベアドール回収に、とうとう";
+	mes "軍隊が派遣されることになった。";
+	next;
+	mes "[テス]";
+	mes "回収は問題なく進んだ。";
+	mes "簡単すぎたくらいさ。";
+	mes "そして、最後の最後で";
+	mes "トラブルが発生した！";
+	next;
+	mes "[テス]";
+	mes "軍が、街外れの空き地で";
+	mes "廃棄処理をしようとした途端！";
+	mes "回収したベアドール全部が動きだして";
+	mes "混乱に乗じて逃げてしまったんだ！";
+	next;
+	mes "[テス]";
+	mes "ベアドール達は、本当は";
+	mes "何か目的があって作られ、";
+	mes "誰かに操作されていた、";
+	mes "そう思わないかい？";
+	next;
+	mes "[テス]";
+	mes "ベアドールを倒した奴の話によると、";
+	mes "こいつらは無形の小型モンスターで";
+	mes "倒すと、^FF0000ハチ蜜^000000、";
+	mes "^FF0000錆びたネジ^000000、^FF0000オリデオコンの金槌^000000を";
+	mes "得られるんだってさ。";
+	next;
+	mes "[テス]";
+	mes "僕が知ってるのはこれくらいかな。";
+	mes "それじゃあ、気をつけてね。";
+	close;
 }
 
-
-//==============================================================================
-// 恋人クエスト
-//   ■ EIN_1QUE -> 0〜15
-//==============================================================================
+//============================================================
+// 恋人クエストNPC
+//- Registry -------------------------------------------------
+// EIN_1QUE -> 0〜15
+//------------------------------------------------------------
 ein_in01.gat,31,137,3	script	カーラ	90,{
 	switch(EIN_1QUE) {
 	case 2:
@@ -2141,27 +2144,26 @@ ein_in01.gat,200,101,5	script	クルト	854,{
 			mes "[クルト]";
 			mes "あ、そんなに緊張しないで。";
 			mes "お名前、教えてもらえませんか？";
+			close;
 		}
-		else {
-			mes "[クルト]";
-			mes strcharinfo(0)+ "さんですか。";
-			mes "良いお名前ですね。";
-			mes "ありがとうございました。";
-			mes "このご恩は一生忘れません。";
-			next;
-			mes "[クルト]";
-			mes "もうカーラと会うことは";
-			mes "ないでしょうが、";
-			mes strcharinfo(0)+ "さんの";
-			mes "おかげで少し気が楽になりました。";
-			next;
-			mes "[クルト]";
-			mes "ありがとうございました。";
-			mes "そうだ、母が話をしたいと";
-			mes "言っていました。帰りにでも";
-			mes "会ってもらえますか。";
-			set EIN_1QUE,7;
-		}
+		mes "[クルト]";
+		mes strcharinfo(0)+ "さんですか。";
+		mes "良いお名前ですね。";
+		mes "ありがとうございました。";
+		mes "このご恩は一生忘れません。";
+		next;
+		mes "[クルト]";
+		mes "もうカーラと会うことは";
+		mes "ないでしょうが、";
+		mes strcharinfo(0)+ "さんの";
+		mes "おかげで少し気が楽になりました。";
+		next;
+		mes "[クルト]";
+		mes "ありがとうございました。";
+		mes "そうだ、母が話をしたいと";
+		mes "言っていました。帰りにでも";
+		mes "会ってもらえますか。";
+		set EIN_1QUE,7;
 		close;
 	default:	//7〜11のとき
 		mes "[クルト]";
@@ -2426,7 +2428,7 @@ ein_in01.gat,31,151,3	script	サトラ	850,{
 		if(EIN_1QUE != 8)
 			close;
 		next;
-		if(countitem(1003)<10) {
+		if(countitem(1003) < 10) {
 			mes "[サトラ]";
 			mes "アインブロック、いや、";
 			mes "カペルタ家にとってアインベフは、";
@@ -2445,35 +2447,34 @@ ein_in01.gat,31,151,3	script	サトラ	850,{
 			mes "ん、そろそろ帰るのかい？";
 			mes "カペルタ家で話をたくさん聞けたんだ。";
 			mes "自慢していいさ。ワハハ！";
+			close;
 		}
-		else {
-			mes "[サトラ]";
-			mes "おお、石炭か。当然、";
-			mes "カペルタへの献上品ね。";
-			mes "ありがたく受け取ってあげましょう。";
-			mes "ワハハハ！";
-			next;
-			mes "[サトラ]";
-			mes "ところで、旅人かと思っていたけど";
-			mes "アインベフの住人だったのかい？";
-			mes "まぁ、どっちでも、私達より";
-			mes "劣る存在には変わらないけどね。";
-			mes "ワハハハ！";
-			next;
-			mes "[サトラ]";
-			mes "この石炭は、カペルタの";
-			mes "役に立ってもらうわね。";
-			mes "まだ石炭があるなら";
-			mes "もっと献上するといいわ。";
-			mes "ワハハハ！";
-			delitem 1003,10;
-			set EIN_1QUE,9;
-		}
+		mes "[サトラ]";
+		mes "おお、石炭か。当然、";
+		mes "カペルタへの献上品ね。";
+		mes "ありがたく受け取ってあげましょう。";
+		mes "ワハハハ！";
+		next;
+		mes "[サトラ]";
+		mes "ところで、旅人かと思っていたけど";
+		mes "アインベフの住人だったのかい？";
+		mes "まぁ、どっちでも、私達より";
+		mes "劣る存在には変わらないけどね。";
+		mes "ワハハハ！";
+		next;
+		mes "[サトラ]";
+		mes "この石炭は、カペルタの";
+		mes "役に立ってもらうわね。";
+		mes "まだ石炭があるなら";
+		mes "もっと献上するといいわ。";
+		mes "ワハハハ！";
+		delitem 1003,10;
+		set EIN_1QUE,9;
 		close;
 	case 9:
 	case 10:
 	case 11:
-		if(countitem(1003)<10) {
+		if(countitem(1003) < 10) {
 			mes "[サトラ]";
 			mes "大して^FF0000石炭^000000を";
 			mes "持っていないようだね。";
@@ -2481,170 +2482,170 @@ ein_in01.gat,31,151,3	script	サトラ	850,{
 			close;
 		}
 		switch(EIN_1QUE) {
-			case 9:
+		case 9:
+			mes "[サトラ]";
+			mes "また石炭を献上しに来たのね。";
+			mes "今度も、遠慮なくいただくとするわ。";
+			mes "あなたは、下等な人間の中でも、";
+			mes "少しは役に立つ方みたいね。";
+			next;
+			mes "[サトラ]";
+			mes "そういえば知ってる？";
+			mes "昔、アインブロックはなく、";
+			mes "隣の採鉱の村アインベフだけが";
+			mes "あったのよ。";
+			next;
+			mes "[サトラ]";
+			mes "やがてやがて、アインベフで";
+			mes "発掘された鉱物を利用する工場が";
+			mes "一つ二つとでき始めたの。そして";
+			mes "いつしか、工場の集まりと、それを";
+			mes "管理する裕福な者達が生まれたの。";
+			next;
+			mes "[サトラ]";
+			mes "そんな富豪が集まって形成されたのが、";
+			mes "このアインブロック。もちろん、";
+			mes "アインブロックの住民全てが豊かな";
+			mes "わけじゃないけど、あの隣村より";
+			mes "ずっとマシ！";
+			next;
+			mes "[サトラ]";
+			mes "それがアインブロックの由来よ。";
+			mes "どう？　ためになったでしょう？";
+			next;
+			mes "[サトラ]";
+			mes "この石炭は、カペルタの";
+			mes "役に立ってもらうわね。";
+			mes "まだ石炭があるなら";
+			mes "もっと献上するといいわ。";
+			mes "ワハハハ！";
+			set EIN_1QUE,10;
+			break;
+		case 10:
+			mes "[サトラ]";
+			mes "また献上しに来たのね。";
+			mes "このまま頑張れば、きっと";
+			mes "良いことがあるわよ。ワハハ！";
+			next;
+			mes "[サトラ]";
+			mes "また、アインブロックについて";
+			mes "教えてあげましょうか。";
+			mes "この私から直接教われるなんて";
+			mes "珍しいのよ。光栄なのよ。";
+			mes "ワハハハハ！";
+			next;
+			mes "[サトラ]";
+			mes "アインブロックの由来は、";
+			mes "前回話したわよね？";
+			mes "その続きの話になるけど……";
+			mes "アインブロックとアインベフの間で";
+			mes "生活水準の差が広がり始めたの。";
+			next;
+			mes "[サトラ]";
+			mes "やがて、アインブロックの人々は";
+			mes "アインベフを見下すようになり、";
+			mes "アインベフの人々は、そんな";
+			mes "アインブロックを憎み始めたの。";
+			next;
+			mes "[サトラ]";
+			mes "それが次第に酷くなり、";
+			mes "アインブロックとアインベフは";
+			mes "どんどん険悪になっていったわ。";
+			next;
+			mes "[サトラ]";
+			mes "でも、お互いに相手を利用する";
+			mes "関係は変わらなかったの。もちろん";
+			mes "アインベフの方が利用された";
+			mes "と言った方が正しいけどね。";
+			next;
+			mes "[サトラ]";
+			mes "所詮卑しい者など……";
+			mes "過去はともかく、いまだに貧しくて";
+			mes "あんな有様なんだから、";
+			mes "見下されて当然よね？";
+			mes "ワーハッハッハ！";
+			next;
+			mes "[サトラ]";
+			mes "だから、私達はアインベフのような";
+			mes "貧しい人とは、一緒に暮らせないのよ。";
+			next;
+			mes "[サトラ]";
+			mes "また石炭を持ってきたら、";
+			mes "何かお話してあげましょう。";
+			mes "ワハハハハ！";
+			set EIN_1QUE,11;
+			break;
+		case 11:
+			mes "[サトラ]";
+			mes "また献上しに来たのね。";
+			mes "根性あるわね。あなたは、";
+			mes "アインベフの人間の中でも";
+			mes "かなり優れた者のようね。";
+			next;
+			mes "[サトラ]";
+			mes "アインベフの人は、現状に安住して";
+			mes "暮らしを良くするための努力を";
+			mes "しないと思っていたのだけど、";
+			mes "考え直すべきかしら？";
+			next;
+			mes "[サトラ]";
+			mes "あなたのように、努力を怠らない";
+			mes "人間が増えれば、アインベフも";
+			mes "もっと良くなっていくでしょうに。";
+			next;
+			mes "[サトラ]";
+			mes "何だって？";
+			mes "この石炭はあなたが";
+			mes "集めたわけじゃないって？";
+			mes "代わりに届けていただけだって？";
+			mes "じゃあ、これを集めた張本人は誰だい？";
+			next;
+			input '@name$;
+			if('@name$ != "クルト") {
 				mes "[サトラ]";
-				mes "また石炭を献上しに来たのね。";
-				mes "今度も、遠慮なくいただくとするわ。";
-				mes "あなたは、下等な人間の中でも、";
-				mes "少しは役に立つ方みたいね。";
-				next;
-				mes "[サトラ]";
-				mes "そういえば知ってる？";
-				mes "昔、アインブロックはなく、";
-				mes "隣の採鉱の村アインベフだけが";
-				mes "あったのよ。";
-				next;
-				mes "[サトラ]";
-				mes "やがてやがて、アインベフで";
-				mes "発掘された鉱物を利用する工場が";
-				mes "一つ二つとでき始めたの。そして";
-				mes "いつしか、工場の集まりと、それを";
-				mes "管理する裕福な者達が生まれたの。";
-				next;
-				mes "[サトラ]";
-				mes "そんな富豪が集まって形成されたのが、";
-				mes "このアインブロック。もちろん、";
-				mes "アインブロックの住民全てが豊かな";
-				mes "わけじゃないけど、あの隣村より";
-				mes "ずっとマシ！";
-				next;
-				mes "[サトラ]";
-				mes "それがアインブロックの由来よ。";
-				mes "どう？　ためになったでしょう？";
-				next;
-				mes "[サトラ]";
-				mes "この石炭は、カペルタの";
-				mes "役に立ってもらうわね。";
-				mes "まだ石炭があるなら";
-				mes "もっと献上するといいわ。";
-				mes "ワハハハ！";
-				set EIN_1QUE,10;
-				break;
-			case 10:
-				mes "[サトラ]";
-				mes "また献上しに来たのね。";
-				mes "このまま頑張れば、きっと";
-				mes "良いことがあるわよ。ワハハ！";
-				next;
-				mes "[サトラ]";
-				mes "また、アインブロックについて";
-				mes "教えてあげましょうか。";
-				mes "この私から直接教われるなんて";
-				mes "珍しいのよ。光栄なのよ。";
-				mes "ワハハハハ！";
-				next;
-				mes "[サトラ]";
-				mes "アインブロックの由来は、";
-				mes "前回話したわよね？";
-				mes "その続きの話になるけど……";
-				mes "アインブロックとアインベフの間で";
-				mes "生活水準の差が広がり始めたの。";
-				next;
-				mes "[サトラ]";
-				mes "やがて、アインブロックの人々は";
-				mes "アインベフを見下すようになり、";
-				mes "アインベフの人々は、そんな";
-				mes "アインブロックを憎み始めたの。";
-				next;
-				mes "[サトラ]";
-				mes "それが次第に酷くなり、";
-				mes "アインブロックとアインベフは";
-				mes "どんどん険悪になっていったわ。";
-				next;
-				mes "[サトラ]";
-				mes "でも、お互いに相手を利用する";
-				mes "関係は変わらなかったの。もちろん";
-				mes "アインベフの方が利用された";
-				mes "と言った方が正しいけどね。";
-				next;
-				mes "[サトラ]";
-				mes "所詮卑しい者など……";
-				mes "過去はともかく、いまだに貧しくて";
-				mes "あんな有様なんだから、";
-				mes "見下されて当然よね？";
-				mes "ワーハッハッハ！";
-				next;
-				mes "[サトラ]";
-				mes "だから、私達はアインベフのような";
-				mes "貧しい人とは、一緒に暮らせないのよ。";
-				next;
-				mes "[サトラ]";
-				mes "また石炭を持ってきたら、";
-				mes "何かお話してあげましょう。";
-				mes "ワハハハハ！";
-				set EIN_1QUE,11;
-				break;
-			case 11:
-				mes "[サトラ]";
-				mes "また献上しに来たのね。";
-				mes "根性あるわね。あなたは、";
-				mes "アインベフの人間の中でも";
-				mes "かなり優れた者のようね。";
-				next;
-				mes "[サトラ]";
-				mes "アインベフの人は、現状に安住して";
-				mes "暮らしを良くするための努力を";
-				mes "しないと思っていたのだけど、";
-				mes "考え直すべきかしら？";
-				next;
-				mes "[サトラ]";
-				mes "あなたのように、努力を怠らない";
-				mes "人間が増えれば、アインベフも";
-				mes "もっと良くなっていくでしょうに。";
-				next;
-				mes "[サトラ]";
-				mes "何だって？";
-				mes "この石炭はあなたが";
-				mes "集めたわけじゃないって？";
-				mes "代わりに届けていただけだって？";
-				mes "じゃあ、これを集めた張本人は誰だい？";
-				next;
-				input '@name$;
-				if ('@name$ != "クルト") {
-					mes "[サトラ]";
-					mes "何？";
-					mes '@name$+ "？";
-					mes "初耳だな。";
-					close;
-				}
-				mes "[サトラ]";
-				mes "^FF0000クルト^000000？";
-				mes "優雅さに欠ける名前だね。";
-				mes "まぁ、努力しそうな感じだけど……";
-				mes "ん？　クルト……クルト……";
-				mes "その名前は……";
-				next;
-				mes "[サトラ]";
-				mes "うちの娘に恋している、";
-				mes "アインベフの青年じゃないか。";
-				mes "そうだ、そうだ。";
-				mes "名前だけじゃなく見かけも";
-				mes "優雅さの欠片すらない貧しい青年だ。";
-				next;
-				mes "[サトラ]";
-				mes "そいつが、こんなにたくさん石炭を集め";
-				mes "私達に持っていけと言ったのかい……";
-				mes "勇気がない馬鹿な男だが";
-				mes "真面目ってことなのかね？";
-				next;
-				mes "[サトラ]";
-				mes "娘と付き合うのは許可できないが、";
-				mes "少し会うくらいなら、許してやっても";
-				mes "いいかもしれないね。";
-				next;
-				mes "[サトラ]";
-				mes "下等な奴にしては、";
-				mes "かなりの出世じゃないか！";
-				mes "ワーハッハッハッハ！";
-				next;
-				mes "[サトラ]";
-				mes "一度こちらに来るよう";
-				mes "アインベフへ戻って";
-				mes "クルトに伝えなさい。";
-				mes "但し、服装はキチッとしていないと";
-				mes "家に上げるわけにはいかないがね！";
-				set EIN_1QUE,12;
-				break;
+				mes "何？";
+				mes '@name$+ "？";
+				mes "初耳だな。";
+				close;
+			}
+			mes "[サトラ]";
+			mes "^FF0000クルト^000000？";
+			mes "優雅さに欠ける名前だね。";
+			mes "まぁ、努力しそうな感じだけど……";
+			mes "ん？　クルト……クルト……";
+			mes "その名前は……";
+			next;
+			mes "[サトラ]";
+			mes "うちの娘に恋している、";
+			mes "アインベフの青年じゃないか。";
+			mes "そうだ、そうだ。";
+			mes "名前だけじゃなく見かけも";
+			mes "優雅さの欠片すらない貧しい青年だ。";
+			next;
+			mes "[サトラ]";
+			mes "そいつが、こんなにたくさん石炭を集め";
+			mes "私達に持っていけと言ったのかい……";
+			mes "勇気がない馬鹿な男だが";
+			mes "真面目ってことなのかね？";
+			next;
+			mes "[サトラ]";
+			mes "娘と付き合うのは許可できないが、";
+			mes "少し会うくらいなら、許してやっても";
+			mes "いいかもしれないね。";
+			next;
+			mes "[サトラ]";
+			mes "下等な奴にしては、";
+			mes "かなりの出世じゃないか！";
+			mes "ワーハッハッハッハ！";
+			next;
+			mes "[サトラ]";
+			mes "一度こちらに来るよう";
+			mes "アインベフへ戻って";
+			mes "クルトに伝えなさい。";
+			mes "但し、服装はキチッとしていないと";
+			mes "家に上げるわけにはいかないがね！";
+			set EIN_1QUE,12;
+			break;
 		}
 		delitem 1003,10;
 		close;
@@ -2660,10 +2661,11 @@ ein_in01.gat,31,151,3	script	サトラ	850,{
 	}
 }
 
-//==============================================================================
-// 船員の過去クエスト
-//   ■ EIN_2QUE -> 0〜14
-//==============================================================================
+//============================================================
+// 船員の過去クエストNPC
+//- Registry -------------------------------------------------
+// EIN_2QUE -> 0〜14
+//------------------------------------------------------------
 airplane.gat,47,61,6	script	乗務員	833,{
 	mes "[カイン]";
 	mes "こんにちは。";
@@ -2736,20 +2738,19 @@ airplane.gat,47,61,6	script	乗務員	833,{
 		mes "言ってくれ。";
 		next;
 		input '@word$;
-		if ('@word$ == "0") {
+		if('@word$ == "0") {
 			mes "[カイン]";
 			mes "大丈夫そうだな。";
 			mes "それでは、よい旅を。";
+			close;
 		}
-		else {
-			mes "["+strcharinfo(0)+"]";
-			mes '@word$;
-			next;
-			mes "[カイン]";
-			mes "そうか。わかった。";
-			mes "上司に伝えておこう。";
-			mes "貴重な意見をありがとう。";
-		}
+		mes "[" +strcharinfo(0)+ "]";
+		mes '@word$;
+		next;
+		mes "[カイン]";
+		mes "そうか。わかった。";
+		mes "上司に伝えておこう。";
+		mes "貴重な意見をありがとう。";
 		close;
 	case 2:
 		menu "飛行船について",-;
@@ -2925,7 +2926,7 @@ airplane.gat,47,61,6	script	乗務員	833,{
 			next;
 		}
 		if(select("アインブロック","ジュノー")==2) {
-			mes "["+strcharinfo(0)+"]";
+			mes "[" +strcharinfo(0)+ "]";
 			mes "ジュノーです。";
 			next;
 			mes "[カイン]";
@@ -2936,7 +2937,7 @@ airplane.gat,47,61,6	script	乗務員	833,{
 			mes "よい旅を。";
 			close;
 		}
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "アインブロックです。";
 		next;
 		mes "[カイン]";
@@ -3004,7 +3005,7 @@ airplane.gat,47,61,6	script	乗務員	833,{
 			mes "ダルシャって誰だい？";
 		}
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "アインブロックに暮らしている";
 		mes "小さな子供が坑夫の歌を";
 		mes "歌っていました。";
@@ -3012,7 +3013,7 @@ airplane.gat,47,61,6	script	乗務員	833,{
 		mes "[カイン]";
 		mes "ハハ、そうか。";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "その子のお母さんの名前がダルシャ。";
 		mes "その子は、ダルシャさんから";
 		mes "坑夫の歌を教わったそうです。";
@@ -3021,7 +3022,7 @@ airplane.gat,47,61,6	script	乗務員	833,{
 		mes "坑夫の歌は、坑夫が歌う歌なのに。";
 		mes "珍しいね。";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "ダルシャさんは、お父さんがよく";
 		mes "その歌を歌っていたと言っていました。";
 		mes "幼い時に別れてしまったので、";
@@ -3033,7 +3034,7 @@ airplane.gat,47,61,6	script	乗務員	833,{
 		mes "[カイン]";
 		mes "まさか、まさか……";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "まだ確信はありません。";
 		mes "何か、家族だということを";
 		mes "証明できる物はありませんか？";
@@ -3081,7 +3082,7 @@ airplane.gat,47,61,6	script	乗務員	833,{
 		mes "まず、エルちゃんに会ってみよう-";
 		close;
 	case 13:
-		if(countitem(7276)==0) {
+		if(countitem(7276) < 1) {
 			mes "-そういえば、エルの絵ハガキを";
 			mes "持ってきていない-";
 			mes "-取ってこよう-";
@@ -3133,28 +3134,27 @@ airplane.gat,47,61,6	script	乗務員	833,{
 }
 
 ein_in01.gat,227,279,0	script	#201号室	139,5,5,{
-	if(EIN_2QUE == 4) {
-		mes "["+strcharinfo(0)+"]";
-		mes "失礼します。";
-		next;
-		mes "-部屋には誰もいない-";
-		next;
-		mes "["+strcharinfo(0)+"]";
-		mes "ここで間違いないはずなんだが……";
-		mes "配達させておいて";
-		mes "留守だなんて、何事だ!!";
-		next;
-		mes "["+strcharinfo(0)+"]";
-		mes "……けど、これじゃあ本人か";
-		mes "どうかすら確認できないよ。";
-		mes "だから、荷物を置いていく";
-		mes "わけにもいかないし……";
-		mes "仕方ない、おじさんに";
-		mes "返しに行くか。";
-		set EIN_2QUE,5;
-		close;
-	}
-	end;
+	if(EIN_2QUE != 4)
+		end;
+	mes "["+strcharinfo(0)+"]";
+	mes "失礼します。";
+	next;
+	mes "-部屋には誰もいない-";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "ここで間違いないはずなんだが……";
+	mes "配達させておいて";
+	mes "留守だなんて、何事だ!!";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……けど、これじゃあ本人か";
+	mes "どうかすら確認できないよ。";
+	mes "だから、荷物を置いていく";
+	mes "わけにもいかないし……";
+	mes "仕方ない、おじさんに";
+	mes "返しに行くか。";
+	set EIN_2QUE,5;
+	close;
 }
 
 ein_in01.gat,261,241,3	script	エル・ギルナー	703,3,3,{
@@ -3211,10 +3211,7 @@ OnTouch:
 		mes "あっ！";
 		mes "まさか、ママは病気なのかな？";
 		mes "どうしよう、ふぇ……";
-		if(Sex==0)
-			mes "お姉ちゃん！　ママに会って！";
-		if(Sex==1)
-			mes "お兄ちゃん！　ママに会って！";
+		mes "お" +(Sex? "兄": "姉")+ "ちゃん！　ママに会って！";
 		next;
 		mes "[エル・ギルナー]";
 		mes "ママに会って、痛くなくしてあげて。";
@@ -3254,7 +3251,6 @@ OnTouch:
 
 //callfunc "ギルナー夫妻#Einbroch","Name";
 //  呼び出し元がダルシャのときは引数にゲロルドを入れる
-
 function	script	ギルナー夫妻#Einbroch	{
 	for(set '@i,0; '@i<3; set '@i,'@i+1) {
 		misceffect '@i+186,"#Ein_Effect";
@@ -3296,7 +3292,7 @@ function	script	ギルナー夫妻#Einbroch	{
 	mes "え？";
 	mes "エルが何か？";
 	next;
-	mes "["+strcharinfo(0)+"]";
+	mes "[" +strcharinfo(0)+ "]";
 	mes "お母さんが寂しそうなので、";
 	mes "病気じゃないかと心配していましたよ。";
 	next;
@@ -3321,7 +3317,7 @@ function	script	ギルナー夫妻#Einbroch	{
 	mes "よろしいですか？";
 	next;
 	gmcommand "@emotion 18";
-	mes "["+strcharinfo(0)+"]";
+	mes "[" +strcharinfo(0)+ "]";
 	mes strcharinfo(0)+ "です。";
 	next;
 	mes "[ダルシャ・ギルナー]";
@@ -3349,7 +3345,7 @@ function	script	ギルナー夫妻#Einbroch	{
 	mes "研究しているのです。";
 	mes "まだまだ、実用にはほど遠いですが。";
 	next;
-	mes "["+strcharinfo(0)+"]";
+	mes "[" +strcharinfo(0)+ "]";
 	mes "そういえば、不思議な物が";
 	mes "いっぱいありますね。";
 	next;
@@ -3375,7 +3371,7 @@ ein_in01.gat,125,99,5	script	ダルシャ・ギルナー	850,{
 		mes "発明したものばかりですよ。";
 		close;
 	case 8:
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "あの、奥さん。";
 		mes "肩の所のそれは、傷跡ですか？";
 		next;
@@ -3406,7 +3402,7 @@ ein_in01.gat,125,99,5	script	ダルシャ・ギルナー	850,{
 		next;
 		emotion 23,"ゲロルド・ギルナー";
 		emotion 23;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "そう言えば、お嬢さんが";
 		mes "「坑夫の歌」を歌っていましたね。";
 		next;
@@ -3428,31 +3424,31 @@ ein_in01.gat,125,99,5	script	ダルシャ・ギルナー	850,{
 		mes "[ダルシャ・ギルナー]";
 		mes "きっと、父は坑夫だったのでしょうね。";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "そう言えば、娘を探しているって";
 		mes "言っていた飛行船のおじさんも、";
 		mes "元坑夫だって言っていたっけ。";
 		mes "あれ…………？";
 		next;
 		gmcommand "@emotion 0";
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "!!";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "ダルシャさん、もしかしたら";
 		mes "あなたのお父さんは生きているかも！";
 		next;
 		mes "[ダルシャ・ギルナー]";
 		mes "……え？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "ちょっと確かめてきます！";
 		mes "待っててください！";
 		set EIN_2QUE,9;
 		close;
 	case 9:
 	case 10:
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "あなたのお父さんかもしれない人に";
 		mes "心当たりがあります！";
 		mes "確かめてきますから、";
@@ -3464,7 +3460,7 @@ ein_in01.gat,125,99,5	script	ダルシャ・ギルナー	850,{
 		mes "あ、あの、本当に父は";
 		mes "生きているのですか？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "それを確かめています。";
 		mes "ちょっと失礼。";
 		next;
@@ -3480,7 +3476,7 @@ ein_in01.gat,125,99,5	script	ダルシャ・ギルナー	850,{
 		mes "-ぼんやりとだが、";
 		mes "やけどの跡らしいものを見つけた-";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "間違いない。";
 		mes "ダルシャさん、あなたのお父さんの";
 		mes "名前は^3333FFカイン^000000。";
@@ -3497,7 +3493,7 @@ ein_in01.gat,125,99,5	script	ダルシャ・ギルナー	850,{
 		mes "ありがとうございます！";
 		next;
 		mes "[ダルシャ・ギルナー]";
-		mes strcharinfo(0)+"さん、";
+		mes strcharinfo(0)+ "さん、";
 		mes "本当にありがとうございます……";
 		next;
 		mes "-彼女の頬に熱い涙が流れた-";
@@ -3575,8 +3571,7 @@ ein_in01.gat,123,94,7	script	ゲロルド・ギルナー	851,{
 	}
 }
 
-//エフェクト発生用
-ein_in01.gat,127,94,0	script	#Ein_Effect	111,{}
+ein_in01.gat,127,94,0	script	#Ein_Effect	111,{}	//エフェクト発生用
 
 ein_in01.gat,121,99,0	script	鏡	111,{
 	if(EIN_2QUE == 7) {
@@ -3598,7 +3593,7 @@ ein_in01.gat,117,80,0	script	不思議な機械	111,{
 		mes "-奇妙な機械が置かれている-";
 		close;
 	}
-	mes "["+strcharinfo(0)+"]";
+	mes "[" +strcharinfo(0)+ "]";
 	mes "これが^FF0000万能修理マシーン^000000かな？";
 	mes "試してみよう……";
 	next;
@@ -3826,11 +3821,11 @@ einbech.gat,53,94,0	duplicate(木#einbrochQ2)	木	111
 einbech.gat,44,90,0	duplicate(木#einbrochQ2)	木	111
 einbech.gat,36,100,0	duplicate(木#einbrochQ2)	木	111
 
-
-//==============================================================================
-// シドクスクエスト
-//   ■ EIN_3QUE -> 0〜11
-//==============================================================================
+//============================================================
+// シドクスクエストNPC
+//- Registry -------------------------------------------------
+// EIN_3QUE -> 0〜11
+//------------------------------------------------------------
 einbech.gat,165,105,6	script	ビンデハイム	847,{
 	cutin "ein_hicman",2;
 	switch(EIN_3QUE) {
@@ -4157,7 +4152,7 @@ einbech.gat,165,105,6	script	ビンデハイム	847,{
 		if(EIN_3QUE != 10)
 			break;
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "あの……";
 		next;
 		mes "[ビンデハイム]";
@@ -4165,7 +4160,7 @@ einbech.gat,165,105,6	script	ビンデハイム	847,{
 		mes "……!!";
 		mes "この、よくも逃げたな卑怯者!!!!";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "よく見てください。";
 		mes "シドクスさんじゃないでしょう。";
 		mes "憎い相手の顔も忘れましたか？";
@@ -4201,7 +4196,7 @@ einbech.gat,165,105,6	script	ビンデハイム	847,{
 		mes "誤解を解こうとわざわざ";
 		mes "戻ってきたのか？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "それは……";
 		next;
 		if(select("シドクスの死を知らせる","誤解を解きに来ました")==2) {
@@ -4220,14 +4215,14 @@ einbech.gat,165,105,6	script	ビンデハイム	847,{
 			mes "すまない。";
 			break;
 		}
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "シドクスさんは、ついこの間、";
 		mes "アインブロックで亡くなりました。";
 		next;
 		mes "[ビンデハイム]";
 		mes "何だと…………？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "陥没事故の後、あの人も裏切られ、";
 		mes "逃亡生活を送っていました。";
 		mes "そして、アインブロックで……";
@@ -4260,29 +4255,29 @@ einbech.gat,165,105,6	script	ビンデハイム	847,{
 		mes "もう二度と訪ねてくるな。";
 		mes "一人にさせろ。";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "……………………";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "彼は、本当にシドクスさんに";
 		mes "復讐しようと思っていたのだろうか？";
 		mes "あれほど信頼していた仲間なのだから、";
 		mes "どんなお粗末でも、言い訳が";
 		mes "聞きたかったのではないだろうか……";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "ユミルの心臓について話してしまえば";
 		mes "この人も、シドクスさんの";
 		mes "二の舞になってしまうかもしれない……";
 		mes "ユミルの心臓については、";
 		mes "胸にしまっておこう。";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "それにしても、今回の件の影に";
 		mes "潜んでいる^3333FF彼ら^000000とは、一体誰なんだ？";
 		mes "どうしてこんな残酷なことをするのか？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "私が、この件に深く関わる必要はない。";
 		mes "時がくれば、全てが明かされるだろう。";
 		next;
@@ -4345,7 +4340,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "苦しい、ぐわっ！";
 		mes "死ぬ〜〜〜!!";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "あなたがシドクスさんですね。";
 		next;
 		mes "[病んでいる老人]";
@@ -4354,13 +4349,13 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "私はシドクスじゃなくて、";
 		mes "シノータスです。";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "この老人こそが、アインベフの老人が";
 		mes "言っていた人に違いない。";
 		mes "しかしどうやって";
 		mes "その事実を認めさせよう？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "あのですね……";
 		next;
 		while(1) {
@@ -4395,7 +4390,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 			}
 			break;	//while文を抜ける
 		}
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "^3333FFビンデハイム^000000さんについて";
 		mes "何も知らないんですか？";
 		next;
@@ -4409,7 +4404,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "私は何て言った？";
 		next;
 		gmcommand "@emotion 29";
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "やはりあなたがシドクスさんですね。";
 		next;
 		emotion 23;
@@ -4417,7 +4412,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "いや、違う！";
 		mes "何だ、あれだ、卑怯だな、君は！";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "あなたの良心にかけて、";
 		mes "本当に私が卑怯だと言えますか？";
 		next;
@@ -4433,7 +4428,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "[シドクス]";
 		mes "何が望みだね？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "陥没事故について教えてください。";
 		next;
 		emotion 1;
@@ -4441,7 +4436,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "ん？";
 		mes "君は私を殺しに来たのではないのか？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "私は真実が知りたいだけです。";
 		next;
 		mes "[シドクス]";
@@ -4577,7 +4572,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "[シドクス]";
 		mes "戻ってきたか、どうだった？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "家中探しましたが、";
 		mes "それらしい物はありませんでした。";
 		next;
@@ -4604,7 +4599,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "[シドクス]";
 		mes "どうだった？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "見てきましたが、その鉱物とは";
 		mes "特に関係はなさそうでした。";
 		next;
@@ -4617,67 +4612,66 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "あの鉱物がありそうな場所に";
 		mes "心当たりはないか？";
 		next;
-		switch (select("空港","工場","駅","飛行船修理所","研究所")) {
-			case 1:
-				mes "[シドクス]";
-				mes "空港にはいつも人がたくさんいるし";
-				mes "そんな重要な物を置くには";
-				mes "危険なのではないか。";
-				break;
-			case 2:
-				mes "[シドクス]";
-				mes "さっき、君が関係なさそうだと";
-				mes "言ったではないか。";
-				break;
-			case 3:
-				mes "[シドクス]";
-				mes "駅にはいつも人がたくさんいるし";
-				mes "そんな重要な物を置くには";
-				mes "危険なのではないか。";
-				break;
-			case 4:
-				mes "[シドクス]";
-				mes "飛行船……";
-				mes "確かに、聞いたことがある。";
-				mes "あの鉱石を移動するのに、";
-				mes "使ったらしいとね。";
-				next;
-				mes "[シドクス]";
-				mes "だが、あそこは既に";
-				mes "調査し終わってる。";
-				mes "あそこには何もなかった。";
-				break;
-			case 5:
-				mes "[シドクス]";
-				mes "!!!!";
-				mes "そうか、研究所か！";
-				next;
-				mes "[シドクス]";
-				mes "珍しい鉱物……研究所……";
-				mes "うん、何だか最後のパズルの";
-				mes "ピースが見つかった気分だ。";
-				next;
-				mes "[シドクス]";
-				mes "うん、今度は良い予感がする。";
-				mes "研究所に忍び込んで、";
-				mes "あの鉱物があるかどうか、";
-				mes "調べてきてくれないか。";
-				next;
-				mes "[シドクス]";
-				mes "ただ、あそこは一般人では";
-				mes "そう簡単に入れないと聞いている。";
-				mes "気をつけてくれ。";
-				set EIN_3QUE,7;
-				break;
+		switch(select("空港","工場","駅","飛行船修理所","研究所")) {
+		case 1:
+			mes "[シドクス]";
+			mes "空港にはいつも人がたくさんいるし";
+			mes "そんな重要な物を置くには";
+			mes "危険なのではないか。";
+			close;
+		case 2:
+			mes "[シドクス]";
+			mes "さっき、君が関係なさそうだと";
+			mes "言ったではないか。";
+			close;
+		case 3:
+			mes "[シドクス]";
+			mes "駅にはいつも人がたくさんいるし";
+			mes "そんな重要な物を置くには";
+			mes "危険なのではないか。";
+			close;
+		case 4:
+			mes "[シドクス]";
+			mes "飛行船……";
+			mes "確かに、聞いたことがある。";
+			mes "あの鉱石を移動するのに、";
+			mes "使ったらしいとね。";
+			next;
+			mes "[シドクス]";
+			mes "だが、あそこは既に";
+			mes "調査し終わってる。";
+			mes "あそこには何もなかった。";
+			close;
+		case 5:
+			mes "[シドクス]";
+			mes "!!!!";
+			mes "そうか、研究所か！";
+			next;
+			mes "[シドクス]";
+			mes "珍しい鉱物……研究所……";
+			mes "うん、何だか最後のパズルの";
+			mes "ピースが見つかった気分だ。";
+			next;
+			mes "[シドクス]";
+			mes "うん、今度は良い予感がする。";
+			mes "研究所に忍び込んで、";
+			mes "あの鉱物があるかどうか、";
+			mes "調べてきてくれないか。";
+			next;
+			mes "[シドクス]";
+			mes "ただ、あそこは一般人では";
+			mes "そう簡単に入れないと聞いている。";
+			mes "気をつけてくれ。";
+			set EIN_3QUE,7;
+			close;
 		}
-		close;
 	case 7:
 	case 8:
 		mes "[シドクス]";
 		mes "……………………";
 		close;
 	case 9:
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "シドクスさん!!";
 		mes "見つけましたよ！";
 		mes "見つけましたよ!!!!";
@@ -4688,7 +4682,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "-倒れている彼を助け起こすと、";
 		mes "黒い血が手に触れた-";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "アァ、血、血が!!";
 		mes "シドクスさん！";
 		mes "一体何が?!";
@@ -4708,11 +4702,11 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "[シドクス]";
 		mes "それより……あれは……？";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "それは……";
 		next;
 		input '@word$;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "それは……";
 		mes "^3333FF" +'@word$+ "^000000";
 		mes "でした！";
@@ -4754,7 +4748,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 			mes "……………………";
 		}
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "しっかり!!";
 		mes "一体誰が、こんなことを!!!!";
 		mes "どこの誰です!?";
@@ -4770,13 +4764,13 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "[シドクス]";
 		mes "…………に……ッ…だ……";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "シドクスさん!!!";
 		mes "しっかり!!!!!!!!";
 		next;
 		mes "-彼の腕は力を失い、崩れ落ちた-";
 		next;
-		mes "["+strcharinfo(0)+"]";
+		mes "[" +strcharinfo(0)+ "]";
 		mes "……彼らって、誰なんだ？";
 		mes "どうして、こんなことをするんだ！";
 		mes "何故!?";
@@ -4819,7 +4813,7 @@ einbroch.gat,51,52,0	script	einbrochwarp	45,1,1,{
 			end;
 		set 'flag,getcharid(3);		//アカウントIDを重複防止フラグとして保存
 	}
-	if(EIN_3QUE < 7) {
+	if(EIN_3QUE < 7 && AIR_2QUE != 9 && AIR_2QUE != 10) {
 		mes "-鍵がかかっていて";
 		mes "入ることができない-";
 		close;
@@ -4830,7 +4824,7 @@ einbroch.gat,51,52,0	script	einbrochwarp	45,1,1,{
 	mes "関係者の方は認証手続きを";
 	mes "お受けください。";
 	next;
-	switch (select("認証手続きを受ける","認証手続きの説明を聞く","取り消し")) {
+	switch(select("認証手続きを受ける","認証手続きの説明を聞く","取り消し")) {
 	case 1:
 		mes "[セキュリティシステム]";
 		mes "認証手続きを行います。";
@@ -4890,7 +4884,7 @@ ein_in01.gat,254,35,0	script	科学者	749,{
 	mes "ここは一般人が出入りする";
 	mes "場所ではありませんよ！";
 	next;
-	mes "["+strcharinfo(0)+"]";
+	mes "[" +strcharinfo(0)+ "]";
 	mes "あ、ああ、";
 	mes "私は新しい警備員です。";
 	mes "よろしくお願いします。";
@@ -4952,7 +4946,7 @@ airplane.gat,31,77,5	script	酔った男	853,{
 	mes "おし！";
 	mes "^3333FFユミルの心臓^000000!!!!!";
 	next;
-	mes "["+strcharinfo(0)+"]";
+	mes "[" +strcharinfo(0)+ "]";
 	mes "うん？";
 	mes "この人、今、何て言った？";
 	mes "確か、はっきりと……";
@@ -4979,13 +4973,13 @@ airplane.gat,31,77,5	script	酔った男	853,{
 	mes "[酔った男]";
 	mes "リンゴ、リンゴ！";
 	mes "私にリンゴをくれ！";
-	if(countitem(512)==0)
+	if(countitem(512) == 0)
 		close;
 	next;
 	mes "["+strcharinfo(0)+"]";
 	mes "このリンゴ、使いますか？";
 	next;
-	if(countitem(512)<100) {
+	if(countitem(512) < 100) {
 		mes "[酔った男]";
 		mes "何、ナンだって!!!!";
 		mes "それっぽっちのリンゴをどうしろと?!";
@@ -5049,7 +5043,7 @@ airplane.gat,31,77,5	script	酔った男	853,{
 	mes "お前がどうしてそれを知っている？";
 	mes "ヒック？";
 	next;
-	mes "["+strcharinfo(0)+"]";
+	mes "[" +strcharinfo(0)+ "]";
 	mes "おじさん、サイコロを振りながら";
 	mes "そう言ってましたよ。";
 	next;
@@ -5123,7 +5117,7 @@ airplane.gat,31,77,5	script	酔った男	853,{
 	mes "-男は不安を打ち消すかのように";
 	mes "大声で笑った-";
 	next;
-	mes "["+strcharinfo(0)+"]";
+	mes "[" +strcharinfo(0)+ "]";
 	mes "研究所で見た、あの物体が";
 	mes "^3333FFユミルの心臓の欠片^000000なのだろうか？";
 	mes "早くシドクスさんに知らせなくては！";
@@ -5132,27 +5126,27 @@ airplane.gat,31,77,5	script	酔った男	853,{
 }
 
 ein_in01.gat,231,170,0	script	#シドクスの部屋	139,2,2,{
-	if(EIN_3QUE >= 9) {
-		mes "-冷たい空気が流れてくる-";
-		mes "-部屋の床には、足跡のような赤い砂が";
-		mes "あちらこちらに散らばっている-";
-		next;
-		mes "-黒い染みが広がっているシーツは";
-		mes "荒々しく崩れ落ちている……-";
-		next;
-		mes "-辺りを見回すと、";
-		mes "開け放たれた窓から";
-		mes "寂しげな通りが見えた-";
-		close;
-	}
-	end;
+	if(EIN_3QUE < 9)
+		end;
+	mes "-冷たい空気が流れてくる-";
+	mes "-部屋の床には、足跡のような赤い砂が";
+	mes "あちらこちらに散らばっている-";
+	next;
+	mes "-黒い染みが広がっているシーツは";
+	mes "荒々しく崩れ落ちている……-";
+	next;
+	mes "-辺りを見回すと、";
+	mes "開け放たれた窓から";
+	mes "寂しげな通りが見えた-";
+	close;
 }
 
-//==============================================================================
-// 工場修理クエスト
-//   ■ EIN_4QUE -> 0〜9
-//   ■ @ein_check -> チェックフラグ 0or1
-//==============================================================================
+//============================================================
+// 工場修理クエストNPC
+//- Registry -------------------------------------------------
+// EIN_4QUE -> 0〜9
+// @ein_check -> チェックフラグ
+//------------------------------------------------------------
 ein_in01.gat,67,241,3	script	ゼルメト	851,{
 	switch(EIN_4QUE) {
 	case 0:
@@ -5536,7 +5530,7 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		set EIN_4QUE,8;
 		close;
 	case 8:
-		if(countitem(7325)<20 || countitem(7317)<10 || countitem(7319)<10) {
+		if(countitem(7325) < 20 || countitem(7317) < 10 || countitem(7319) < 10) {
 			mes "[ゼルメト]";
 			mes "少なくとも^FF0000チューブ^00000020個と";
 			mes "^FF0000錆びたネジ^00000010個、";
@@ -5588,9 +5582,13 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		delitem 7317,10;
 		delitem 7319,10;
 		set EIN_4QUE,9;
-		if(BaseLevel >= 90) 			set BASEEXP,BASEEXP+290675;
-		if(BaseLevel >= 80 && BaseLevel < 90) 	set BASEEXP,BASEEXP+76026;
-		if(BaseLevel < 80) 			set BASEEXP,BASEEXP+32062;
+		if(BaseLevel >= 90) 				set BASEEXP,BASEEXP+290675;
+		else if(BaseLevel >= 80 && BaseLevel < 90) 	set BASEEXP,BASEEXP+76026;
+		else if(BaseLevel >= 70 && BaseLevel < 80) 	set BASEEXP,BASEEXP+32062;
+		else if(BaseLevel >= 60 && BaseLevel < 70) 	set BASEEXP,BASEEXP+18508;
+		else if(BaseLevel >= 50 && BaseLevel < 60) 	set BASEEXP,BASEEXP+6604;
+		else if(BaseLevel >= 40 && BaseLevel < 50) 	set BASEEXP,BASEEXP+3075;
+		else						set BASEEXP,BASEEXP+615;
 		next;
 		mes "[ゼルメト]";
 		mes "ありがとうございます。";
@@ -5696,31 +5694,185 @@ einbroch.gat,132,84,4	script	リュッツ#einbroch	853,{
 		mes "いちいち金を使っていたら、";
 		mes "儲けにならんだろうが！";
 		set @ein_check,1;
+		close;
 	}
-	else {
-		mes "[リュッツ]";
-		mes "わしがこの工場の工場長だ！";
-		mes "ワッハッハ！";
-		next;
-		mes "[リュッツ]";
-		mes "この工場のおかげで、わしだけでなく";
-		mes "工場の労働者達も生活できているんだ！";
-		mes "しかも、わしが直接現場にいなくても、";
-		mes "現場監督のゼルメトがきちんと";
-		mes "やってくれているから、";
-		mes "工場自体も安泰だしな！";
-		next;
-		mes "[リュッツ]";
-		mes "今後も発展し続ける";
-		mes "我が工場を見ているがいい！";
-		mes "ガーハッハッハ!!";
-	}
+	mes "[リュッツ]";
+	mes "わしがこの工場の工場長だ！";
+	mes "ワッハッハ！";
+	next;
+	mes "[リュッツ]";
+	mes "この工場のおかげで、わしだけでなく";
+	mes "工場の労働者達も生活できているんだ！";
+	mes "しかも、わしが直接現場にいなくても、";
+	mes "現場監督のゼルメトがきちんと";
+	mes "やってくれているから、";
+	mes "工場自体も安泰だしな！";
+	next;
+	mes "[リュッツ]";
+	mes "今後も発展し続ける";
+	mes "我が工場を見ているがいい！";
+	mes "ガーハッハッハ!!";
 	close;
 }
 
-//==============================================================================
-// 料理人クエスト
-//==============================================================================
+//============================================================
+// 病院クエストNPC（未完成）
+//- Registry -------------------------------------------------
+// EIN_5QUE -> 0〜1
+//------------------------------------------------------------
+einbech.gat,97,167,5	script	サビタ	847,{
+	if(EIN_5QUE) {
+		mes "[サビタ]";
+		mes "よく来たな。この間、";
+		mes "約束したもんは揃ったか？";
+		next;
+		switch(select("はい","いいえ")) {
+		case 1:
+			if(countitem(7126)<40 || countitem(1011)<10 || countitem(1003)<3 || countitem(912)<10) {
+				mes "[サビタ]";
+				mes "もう一度教えるぜ。";
+				break;
+			}
+			mes "[サビタ]";
+			mes "おし、見せてくれ。";
+			next;
+			mes "[サビタ]";
+			mes "うん、数も全部揃ってるな。";
+			mes "ほら、約束のオリデオコンだ。";
+			next;
+			delitem 7124,40;
+			delitem 1011,10;
+			delitem 1003,3;
+			delitem 912,10;
+			getitem 984,1;
+			set EIN_5QUE,0;
+			mes "[サビタ]";
+			mes "それじゃあ、元気でな。";
+			close;
+		case 2:
+			mes "[サビタ]";
+			break;
+		}
+		mes "大きなゼロピー40個";
+		mes "エンベルタコン10個";
+		mes "石炭3個、ジャルゴン10個を";
+		mes "オリデオコン1個と交換だ。";
+		mes "忘れるなよ。";
+		close;
+	}
+	if(BaseLevel >= 40) {
+		if(Zeny < 1000) {
+			mes "[サビタ]";
+			mes "あんた、随分景気悪そうだな。";
+			mes "こんな貧しい俺でも同情しちゃうよ……";
+			close;
+		}
+		mes "[サビタ]";
+		mes "何だ？";
+		mes "悪いが、俺は今、あまり";
+		mes "喋りたい気分じゃないんだ。";
+		mes "妻が坑道の陥没で大怪我をして、";
+		mes "大変なんだ。";
+		next;
+		mes "[サビタ]";
+		mes "以前の^FF0000陥没事故^000000に比べれば";
+		mes "死者数は少ないが、妻が……";
+		mes "手伝うつもりがないなら、";
+		mes "あっちに行ってくれ。";
+		switch(select("手伝いましょうか？","そうですか、さようなら","前の陥没事故？")) {
+		case 1:
+			mes "[サビタ]";
+			mes "ああ、本当か？";
+			mes "ありがとう、ありがとう、ありがとう！";
+			mes "本当は、一刻も早く妻を病院に連れて";
+			mes "いきたいところだが、1日の稼ぎで、";
+			mes "1日の食い分を稼ぐ身にとっては";
+			mes "それすらままならないんだ。";
+			next;
+			menu "どんなお手伝いをすればいいですか？",-;
+			mes "[サビタ]";
+			mes "妻の病院の費用と、1日分の食費を";
+			mes "俺に恵んでくれないか。";
+			mes "1000zenyなんだが。";
+			next;
+			if(select("あげる","やめる")==2) {
+				mes "[サビタ]";
+				mes "そっちにも、そっちの事情が";
+				mes "あるもんな。";
+				mes "無理言って悪かったよ。";
+				close;
+			}
+			mes "[サビタ]";
+			mes "ありがとう!!";
+			next;
+			mes "[サビタ]";
+			mes "それと、もし手持ちがあるなら";
+			mes "大きなゼロピー40個と石炭3個、";
+			mes "ジャルゴン10個に、";
+			mes "エンベルタコン10個を";
+			mes "オリデオコン1個と";
+			mes "交換してくれないか。";
+			next;
+			if(select("いいですよ","いやです")==2) {
+				mes "[サビタ]";
+				mes "うん、まぁ、ありがとよ。";
+				mes "少ないが、これやるよ。";
+				set Zeny,Zeny-1000;
+				getitem 1010,1;
+				close;
+			}
+			mes "[サビタ]";
+			mes "よし、これで妻を医者に見せに行ける！";
+			mes "じゃあ、約束したもの、";
+			mes "忘れないでくれよ。";
+			set Zeny,Zeny-1000;
+			set EIN_5QUE,1;
+			next;
+			mes "[サビタ]";
+			mes "またな。";
+			close;
+		case 2:
+			mes "[サビタ]";
+			mes "そ、それだけかい？";
+			mes "お前には血も涙もないのかい……";
+			close;
+		case 3:
+			break;
+		}
+	}
+	//Lv40未満のとき
+	mes "[サビタ]";
+	mes "最近、ここでは坑道の";
+	mes "陥没事故が頻発してるんだ。";
+	mes "被害者もたくさんいて、";
+	mes "今、村は色々と困ってる。";
+	next;
+	mes "[サビタ]";
+	mes "どうやら、鉱山で何かが坑道を";
+	mes "崩して回っているらしい……";
+	mes "^FF0000鉱山の主^000000の怒りを買ったみたいだ……";
+	next;
+	mes "[サビタ]";
+	mes "昔の^FF0000あの事故^000000以来、^FF0000鉱山の主^000000が";
+	mes "頻繁に現われるようになりやがった。";
+	mes "だから、仕事がより一層";
+	mes "危険になってな。";
+	next;
+	mes "[サビタ]";
+	mes "俺は^FF0000事故^000000の日、非番だったから";
+	mes "命を落とさずにすんださ。";
+	mes "ただ、その事故の唯一の生存者が";
+	mes "俺の友人なんだが……";
+	mes "精神に異常をきたしちまった。";
+	mes "今でも、そいつを見ると胸が痛むよ……";
+	close;
+}
+
+//============================================================
+// 料理人クエストNPC（未完成）
+//- Registry -------------------------------------------------
+// EIN_6QUE -> 0〜
+//------------------------------------------------------------
 einbroch.gat,215,180,5	script	アーク・クライン#einbroch	85,{
 	switch(EIN_6QUE) {
 	case 0:
@@ -6044,157 +6196,4 @@ einbroch.gat,215,180,5	script	アーク・クライン#einbroch	85,{
 		mes "ウフフ。";
 		close;
 	}
-}
-
-//==============================================================================
-// 病院クエスト
-//
-//  ■ EIN_5QUE -> 0:初期、1:クエスト進行中
-//==============================================================================
-einbech.gat,97,167,5	script	サビタ	847,{
-	if(EIN_5QUE) {
-		mes "[サビタ]";
-		mes "よく来たな。この間、";
-		mes "約束したもんは揃ったか？";
-		next;
-		switch (select("はい","いいえ")) {
-		case 1:
-			if(countitem(7126)<40 || countitem(1011)<10 || countitem(1003)<3 || countitem(912)<10) {
-				mes "[サビタ]";
-				mes "もう一度教えるぜ。";
-				break;
-			}
-			mes "[サビタ]";
-			mes "おし、見せてくれ。";
-			next;
-			mes "[サビタ]";
-			mes "うん、数も全部揃ってるな。";
-			mes "ほら、約束のオリデオコンだ。";
-			next;
-			delitem 7124,40;
-			delitem 1011,10;
-			delitem 1003,3;
-			delitem 912,10;
-			getitem 984,1;
-			set EIN_5QUE,0;
-			mes "[サビタ]";
-			mes "それじゃあ、元気でな。";
-			close;
-		case 2:
-			mes "[サビタ]";
-			break;
-		}
-		mes "大きなゼロピー40個";
-		mes "エンベルタコン10個";
-		mes "石炭3個、ジャルゴン10個を";
-		mes "オリデオコン1個と交換だ。";
-		mes "忘れるなよ。";
-		close;
-	}
-	if(BaseLevel>=40) {
-		if(Zeny<1000) {
-			mes "[サビタ]";
-			mes "あんた、随分景気悪そうだな。";
-			mes "こんな貧しい俺でも同情しちゃうよ……";
-			close;
-		}
-		mes "[サビタ]";
-		mes "何だ？";
-		mes "悪いが、俺は今、あまり";
-		mes "喋りたい気分じゃないんだ。";
-		mes "妻が坑道の陥没で大怪我をして、";
-		mes "大変なんだ。";
-		next;
-		mes "[サビタ]";
-		mes "以前の^FF0000陥没事故^000000に比べれば";
-		mes "死者数は少ないが、妻が……";
-		mes "手伝うつもりがないなら、";
-		mes "あっちに行ってくれ。";
-		switch (select("手伝いましょうか？","そうですか、さようなら","前の陥没事故？")) {
-		case 1:
-			mes "[サビタ]";
-			mes "ああ、本当か？";
-			mes "ありがとう、ありがとう、ありがとう！";
-			mes "本当は、一刻も早く妻を病院に連れて";
-			mes "いきたいところだが、1日の稼ぎで、";
-			mes "1日の食い分を稼ぐ身にとっては";
-			mes "それすらままならないんだ。";
-			next;
-			menu "どんなお手伝いをすればいいですか？",-;
-			mes "[サビタ]";
-			mes "妻の病院の費用と、1日分の食費を";
-			mes "俺に恵んでくれないか。";
-			mes "1000zenyなんだが。";
-			next;
-			if(select("あげる","やめる")==2) {
-				mes "[サビタ]";
-				mes "そっちにも、そっちの事情が";
-				mes "あるもんな。";
-				mes "無理言って悪かったよ。";
-				close;
-			}
-			mes "[サビタ]";
-			mes "ありがとう!!";
-			next;
-			mes "[サビタ]";
-			mes "それと、もし手持ちがあるなら";
-			mes "大きなゼロピー40個と石炭3個、";
-			mes "ジャルゴン10個に、";
-			mes "エンベルタコン10個を";
-			mes "オリデオコン1個と";
-			mes "交換してくれないか。";
-			next;
-			if(select("いいですよ","いやです")==2) {
-				mes "[サビタ]";
-				mes "うん、まぁ、ありがとよ。";
-				mes "少ないが、これやるよ。";
-				set Zeny,Zeny-1000;
-				getitem 1010,1;
-				close;
-			}
-			mes "[サビタ]";
-			mes "よし、これで妻を医者に見せに行ける！";
-			mes "じゃあ、約束したもの、";
-			mes "忘れないでくれよ。";
-			set Zeny,Zeny-1000;
-			set EIN_5QUE,1;
-			next;
-			mes "[サビタ]";
-			mes "またな。";
-			close;
-		case 2:
-			mes "[サビタ]";
-			mes "そ、それだけかい？";
-			mes "お前には血も涙もないのかい……";
-			close;
-		case 3:
-			break;
-		}
-	}
-	//Lv40未満のとき
-	mes "[サビタ]";
-	mes "最近、ここでは坑道の";
-	mes "陥没事故が頻発してるんだ。";
-	mes "被害者もたくさんいて、";
-	mes "今、村は色々と困ってる。";
-	next;
-	mes "[サビタ]";
-	mes "どうやら、鉱山で何かが坑道を";
-	mes "崩して回っているらしい……";
-	mes "^FF0000鉱山の主^000000の怒りを買ったみたいだ……";
-	next;
-	mes "[サビタ]";
-	mes "昔の^FF0000あの事故^000000以来、^FF0000鉱山の主^000000が";
-	mes "頻繁に現われるようになりやがった。";
-	mes "だから、仕事がより一層";
-	mes "危険になってな。";
-	next;
-	mes "[サビタ]";
-	mes "俺は^FF0000事故^000000の日、非番だったから";
-	mes "命を落とさずにすんださ。";
-	mes "ただ、その事故の唯一の生存者が";
-	mes "俺の友人なんだが……";
-	mes "精神に異常をきたしちまった。";
-	mes "今でも、そいつを見ると胸が痛むよ……";
-	close;
 }
