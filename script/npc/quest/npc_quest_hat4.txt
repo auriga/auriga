@@ -1336,7 +1336,7 @@ OnTouch:
 		delitem 7099,30;
 		delitem 7263,1;
 		delitem 660,1;
-		getitem2 5121,1,1,0,0,254,0,getcharid(0),(getcharid(0)>>16)&0xffff;
+		getitem2 5121,1,1,0,0,254,0,getcharid(0)&0xffff,(getcharid(0)>>16)&0xffff;
 		close2;
 		emotion 30;
 		end;

@@ -1,7 +1,7 @@
 //=====================================================================
 // ■ 変数名補償NPC
 //						created by Rayce
-//　NPCスクリプトの改修に伴い変数名の統廃合を行いました。
+//  NPCスクリプトの改修に伴い変数名の統廃合を行いました。
 //  以下のスクリプトを各プレイヤーに実行してもらうことで
 //  変数の値を引き継ぐことができます。
 //  ただし一部の変数については補償しません。
@@ -13,8 +13,9 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 	next;
 	if(select("はい","いいえ")==2)
 		close;
-	//townフォルダ
-	//補償しない
+
+	// townフォルダ
+	// 補償しない
 	set turtle_npc,0;
 	set kame_quest,0;
 	if(event_sushi) {
@@ -57,7 +58,7 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 		set EIN_4QUE,ein_Q4;
 		set ein_Q4,0;
 	}
-	//補償しない
+	// 補償しない
 	set event_gonryun,0;
 	set gonryun_ken,0;
 	if(KF_PIT) {
@@ -100,7 +101,8 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 		set YUNO_1QUE,npc_yunoalc;
 		set npc_yunoalc,0;
 	}
-	//questフォルダ
+
+	// questフォルダ
 	if(arena_point) {
 		set ARENA_PIT,arena_point;
 		set arena_point,0;
@@ -117,7 +119,7 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 		set DYE_EVE,MOLGENSTAIN;
 		set MOLGENSTAIN,0;
 	}
-	if(hairColor) {		//廃止
+	if(hairColor) {		// 廃止
 		set hairColor,0;
 	}
 	if(hat_orchero) {
@@ -208,8 +210,9 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 		set NEWY_QUE,newyear_quest;
 		set NEWY_QUE,0;
 	}
-	//jobフォルダ
-	//補償しない
+
+	// jobフォルダ
+	// 補償しない
 	set NEW_GETITEM,0;
 	set NEW_JOBLVUP,0;
 	set NEW_LVUP0,0;
@@ -253,7 +256,7 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 			case 30: set CAHNGE_AL,4; break;
 		}
 	}
-	//補償しない
+	// 補償しない
 	set FIRST_JOB_QUEST,0;
 	set JOB_MERCHANT_Q,0;
 	set JOB_MERCHANT_Q2,0;
@@ -274,7 +277,7 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 		set CHANGE_PR,change_priest;
 		set change_priest,0;
 	}
-	set priest_meet1,0;	//廃止
+	set priest_meet1,0;	// 廃止
 	set priest_meet2,0;
 	set priest_meet3,0;
 	if(job_wiz) {
@@ -282,7 +285,7 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 		set job_wiz,0;
 	}
 	if(change_blacksmith) {
-		set change_blacksmith,0;	//補償しない
+		set change_blacksmith,0;	// 補償しない
 	}
 	if(change_hunter) {
 		set CHANGE_HT,change_hunter;
@@ -297,7 +300,7 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 		set job2nd_sage,0;
 	}
 	if(job2nd_sage2) {
-		set job2nd_sage2,0;	//廃止
+		set job2nd_sage2,0;	// 廃止
 	}
 	if(sagecheck) {
 		set SCORE_SA,sagecheck;
@@ -327,8 +330,9 @@ prontera.gat,155,192,4	script	変数名補償	114,{
 			set TRANSMIGRATE,job_transmigration;
 		set job_transmigration,0;
 	}
-	//warpフォルダ
-	set anthell,0;	//廃止
+
+	// warpフォルダ
+	set anthell,0;	// 廃止
 	mes "[変数名変更]";
 	mes "変更しました。";
 	close;

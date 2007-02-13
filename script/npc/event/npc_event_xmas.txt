@@ -77,7 +77,7 @@ xmas_in.gat,87,89,6	script	カプラテーリング	116,{
 			set '@itemid,666;
 		if(BaseLevel>=90)
 			set '@itemid,667;
-		getitem2 '@itemid,1,1,0,0,254,0,getcharid(0),(getcharid(0)>>16)&0xffff;
+		getitem2 '@itemid,1,1,0,0,254,0,getcharid(0)&0xffff,(getcharid(0)>>16)&0xffff;
 		next;
 		mes "[カプラテーリング]";
 		mes "また包装したい贈り物がございましたら";
@@ -408,7 +408,7 @@ xmas_in.gat,87,102,0	script	カプラＷ	112,{
 			delitem 666,1;
 		else
 			delitem 667,1;
-		getitem2 '@gain,1,1,0,0,254,0,getcharid(0),(getcharid(0)>>16)&0xffff;
+		getitem2 '@gain,1,1,0,0,254,0,getcharid(0)&0xffff,(getcharid(0)>>16)&0xffff;
 		break;
 	case 2:
 		emotion 6;

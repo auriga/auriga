@@ -1,4 +1,3 @@
-
 prontera.gat,157,181,6	script	Time Sample	105,{
 	mes "[Time Sample]";
 	mes "System Tick : " + gettimetick(0);
@@ -13,7 +12,4 @@ prontera.gat,157,181,6	script	Time Sample	105,{
 	mes " GetTime(7) : " + gettime(7) + " (Year)";
 	mes " GetTimeStr : " + gettimestr("%Y-%m/%d %H:%M:%S",19);
 	close;
-	end;
 }
-
-

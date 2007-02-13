@@ -3025,7 +3025,7 @@ OnTouch:
 	mes "認められたからには、それなりの";
 	mes "兜が必要だからな……";
 	next;
-	getitem2 5094,1,1,0,0,254,0,getcharid(0),(getcharid(0)>>16)&0xffff;
+	getitem2 5094,1,1,0,0,254,0,getcharid(0)&0xffff,(getcharid(0)>>16)&0xffff;
 	set ORC_EVE,0;	//フラグ消して終了
 	mes "[オークヒーロー]";
 	mes "これだ。お前だけが使えるように";

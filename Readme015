@@ -1,4 +1,43 @@
 ----------------------------------------
+//081 [2007/02/14] by Rayce
+
+・script/sample内のスクリプトの改修
+　推奨される記述を浸透させるためサンプルも書き換えることに決めました
+	npc_custom_branch.txt
+	npc_custom_cardremover.txt
+	npc_custom_gldcheck.txt
+	npc_custom_jobchange.txt
+	npc_custom_produce.txt
+	npc_debug_arrow.txt
+	npc_debug_convertvar.txt
+	npc_debug_pota.txt
+	npc_debug_questskill2.txt
+	npc_debug_reset.txt
+	npc_debug_revive.txt
+	npc_test_bank.txt
+	npc_test_chat.txt
+	npc_test_chkoption.txt
+	npc_test_func.txt
+	npc_test_getequip.txt
+	npc_test_gettime.txt
+	npc_test_gstorage.txt
+	npc_test_npctimer.txt
+
+・以下のスクリプトは削除
+	npc_custom_extendshop.txt（npc_debug_shop.txtと同じため）
+	npc_test_arena.txt（イベントでタイマーを使う場合はNPCタイマーを推奨しているため）
+	npc_test_skill.txt（npc_debug_questskill.txtと同じため）
+
+・npc_test_bank.txtをnpc_custom_bank.txtに改名
+・npc_debug_questskill2.txtをnpc_debug_questskill.txtに改名
+・npc_debug_sample.txtは削除、一部の解説はdoc/script_ref.txtに補完
+
+・getitem2命令を使っているスクリプトを少し修正
+	npc_event_xmas.txt
+	npc_quest_hat3.txt
+	npc_quest_hat4.txt
+
+----------------------------------------
 //080 [2007/02/13] by Rayce
 
 ・itemdb.cの整理

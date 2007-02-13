@@ -1,4 +1,3 @@
-
 // 値を返さない関数
 function	script	func001	{
 	mes "ユーザー定義関数";
@@ -24,4 +23,3 @@ L_SUB001:
 	mes "サブルーティン";
 	return;		// 省略できない
 }
-

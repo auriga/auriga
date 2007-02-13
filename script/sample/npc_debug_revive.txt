@@ -2,117 +2,72 @@ izlude.gat,125,65,4	script	バグりましたか？	825,{
 	cutin "ein_soldier",2;
 	mes "[バグりましたか？]";
 	mes "ども、バグりましたか？";
-	mes "ここではキャラクターのスキルについての";
-	mes "救済措置となる初期化を行います";
-	mes "拡張１次職まで対応しています";
+	mes "ここではキャラクターのスキルについて";
+	mes "救済措置となる初期化を行います。";
+	mes "拡張１次職まで対応しています。";
 	next;
 	mes "[バグりましたか？]";
-	mes "救済の事なら僕にお任せ下さい";
-	mes "プレイヤーのジョブレベル・職業を判別して";
-	mes "スキルリセットを行い、ポイントを初期化して";
-	mes "再配布しています";
+	mes "救済の事なら僕にお任せ下さい。";
+	mes "プレイヤーのジョブレベル・職業を判別";
+	mes "してスキルリセットを行い、ポイントを";
+	mes "初期化して再配布しています。";
 	next;
 	mes "[バグりましたか？]";
 	mes "また、不正チートの事も考えて";
-	mes "転職ＮＰＣから離して設置しております";
-	cutin "ein_soldier",255;
+	mes "転職NPCから離して設置しております。";
 	next;
-	menu "また今度します",L_CANCEL,"了解です",zikkou;
-
-zikkou:
+	if(select("また今度にします","了解です") == 1) {
+		close2;
+		cutin "ein_soldier",255;
+		end;
+	}
 	mes "[バグりましたか？]";
 	mes "職業判別";
-	mes "1次職業であれば9P+現在のJoblv-1P";
-	mes "2次職業、または転生であれば9P+Job49P+現在のJoblv-1P";
-	mes "と言う風に配布されます";
+	mes "1次職であれば9P+現在のJoblv-1P";
+	mes "2次職または転生であれば";
+	mes "9P+Job49P+現在のJoblv-1P";
+	mes "という風に配布されます。";
 	next;
-	if (Class == 0) goto L0jobclass;	//ノビ
-	if (Class <= 6) goto L1jobclass;	//1次職業を判別後移動
-	if (Class <= 21) goto L2jobclass;	//2次職業の場合
-	if (Class == 23) goto Lsjobclass;	//スパノビ
-	if (Class == 24) goto L1jobclass;	//テコン職業を判別後移動
-	if (Class <= 26) goto L2jobclass;	//拳聖職業を判別後移動
-	if (Class == 27) goto L2jobclass;	//ソウルリンカ職業を判別後移動
-	if (Class == 28) goto L1jobclass;	//忍者を判別後移動
-	if (Class == 29) goto L1jobclass;	//ソウルリンカ職業を判別後移動
-	if (Class <= 30) goto EndEnd;
-L0jobclass:
-	cutin "ein_soldier",2;
+	switch(Class) {
+	case 0:
+		mes "[バグりましたか？]";
+		mes "ノビさんの初期化しますね。";
+		next;
+		resetskill;
+		set SkillPoint,JobLevel-1;
+		break;
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 24:
+	case 28:
+	case 29:
+	case 30:
+	case 31:
+		mes "[バグりましたか？]";
+		mes "1次職さんの初期化しますね。";
+		next;
+		resetskill;
+		set SkillPoint,9+JobLevel-1;	// ノビの9Point+今のJob-1
+		break;
+	default:
+		mes "[バグりましたか？]";
+		mes "2次職さんの初期化しますね。";
+		next;
+		resetskill;
+		set SkillPoint,58+JobLevel-1;	// ノビの9Point+1次Job50(49P)+現在
+		break;
+	}
 	mes "[バグりましたか？]";
-	mes "ノビさんの初期化しますね"; //アットマークは一時的な変数
-	next;
-	resetskill;
-	set @nobiepoint,0;
-	set SkillPoint,0;
-	set @nobiepoint,JobLevel-1; //ノビのＪｏｂＬｖからー１ポイント＝ノビポイント
-	set SkillPoint,@nobiepoint;
-
-	mes "[バグりましたか？]";
-	mes "初期化完了。キャラクターのスキルポイントが";
-	mes "元通りになりました、またご利用下さい";
-	mes "ありがとうございました＾〜＾";
-	mes "";
+	mes "初期化完了。";
+	mes "キャラクターのスキルポイントが";
+	mes "元通りになりました。";
+	mes "またご利用下さい。";
+	mes "ありがとうございました。";
+	close2;
 	cutin "ein_soldier",255;
-	close;
-L1jobclass:
-	cutin "ein_soldier",2;
-	mes "[バグりましたか？]";
-	mes "1次職さんの初期化しますね"; //アットマークは一時的な変数
-	next;
-	resetskill;
-	set @1zipoint,0;
-	set SkillPoint,0;
-	set @1zipoint,JobLevel-1+9; //ノビの9Point+今のJob-1ポイント〜
-	set SkillPoint,@1zipoint;
-
-	mes "[バグりましたか？]";
-	mes "初期化完了。キャラクターのスキルポイントが";
-	mes "元通りになりました、またご利用下さい";
-	mes "ありがとうございました＾〜＾";
-	cutin "ein_soldier",255;
-	close;
-Lsjobclass:
-	cutin "ein_soldier",255;
-	mes "[バグりましたか？]";
-	mes "スパノビさんの初期化しますね"; //アットマークは一時的な変数
-	next;
-	resetskill;
-	set @snobipoint,0;
-	set SkillPoint,0;
-	set @snobipoint,JobLevel-1+9; //ノビの9Point+今のJob-1ポイント〜
-	set SkillPoint,@snobipoint;
-
-	mes "[バグりましたか？]";
-	mes "初期化完了。キャラクターのスキルポイントが";
-	mes "元通りになりました、またご利用下さい";
-	mes "ありがとうございました＾〜＾";
-	cutin "ein_soldier",255;
-	close;
-L2jobclass:
-	cutin "ein_soldier",255;
-	mes "[バグりましたか？]";
-	mes "2次職さんの初期化しますね"; //アットマークは一時的な変数
-	next;
-	resetskill;
-	set @2zipoint,0;
-	set SkillPoint,0;
-	set @2zipoint,JobLevel-1+58; //Nov9+1次Job50(49P)+現在
-	set SkillPoint,@2zipoint;
-
-	mes "[バグりましたか？]";
-	mes "初期化完了。キャラクターのスキルポイントが";
-	mes "元通りになりました、またご利用下さい";
-	mes "ありがとうございました＾〜＾";
-	cutin "ein_soldier",255;
-	close;
-EndEnd:
-	mes "[バグりましたか？]";
-	mes "初期化不能。テコンよりも新しい職業には";
-	mes "対応しておりません";
-	mes "ありがとうございました＾−＾";
-	cutin "ein_soldier",255;
-	close;
-L_CANCEL:
-	close;
 	end;
 }
