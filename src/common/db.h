@@ -39,11 +39,13 @@ struct dbt {
 #define strdb_insert(t,k,d) db_insert((t),(void*)(k),(void*)(d))
 #define strdb_erase(t,k)    db_erase ((t),(void*)(k))
 #define strdb_foreach       db_foreach
+#define strdb_clear         db_clear
 #define strdb_final         db_final
 #define numdb_search(t,k)   db_search((t),(void*)(k))
 #define numdb_insert(t,k,d) db_insert((t),(void*)(k),(void*)(d))
 #define numdb_erase(t,k)    db_erase ((t),(void*)(k))
 #define numdb_foreach       db_foreach
+#define numdb_clear         db_clear
 #define numdb_final         db_final
 
 #define strdb_init(a)       strdb_init_(a,__FILE__,__LINE__)
@@ -56,6 +58,7 @@ struct dbn* db_insert(struct dbt *table,void* key,void* data);
 void* db_erase(struct dbt *table,void* key);
 void db_foreach(struct dbt*,int(*)(void*,void*,va_list),...);
 void db_foreach_sub(struct dbt*,int(*)(void*,void*,va_list), va_list ap);
+void db_clear(struct dbt*,int(*)(void*,void*,va_list),...);
 void db_final(struct dbt*,int(*)(void*,void*,va_list),...);
 void exit_dbn(void);
 

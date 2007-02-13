@@ -7817,8 +7817,9 @@ void pc_read_gm_account() {
 	int range, start_range, end_range;
 
 	if (gm_account_db)
-		numdb_final(gm_account_db, gm_account_db_final);
-	gm_account_db = numdb_init();
+		numdb_clear(gm_account_db, gm_account_db_final);
+	else
+		gm_account_db = numdb_init();
 
 	if ((fp = fopen(GM_account_filename, "r")) == NULL) {
 		printf("File not found: %s.\n", GM_account_filename);

@@ -1,5 +1,4 @@
 // $Id: db.c,v 1.6 2003/06/29 05:49:37 lemit Exp $
-#define MALLOC_DBN
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,12 +9,19 @@
 #include "memwatch.h"
 #endif
 
+/*==========================================
+ * 平衡木データベース
+ *------------------------------------------
+ */
+#define MALLOC_DBN
 #define ROOT_SIZE 4096
-static struct dbn *dbn_root[512], *dbn_free;
+
+static struct dbn *dbn_root[512], *dbn_free = NULL;
 static int dbn_root_rest=0,dbn_root_num=0;
 
 static void * malloc_dbn(void)
 {
+#ifdef MALLOC_DBN
 	struct dbn* ret;
 
 	if(dbn_free==NULL){
@@ -29,12 +35,19 @@ static void * malloc_dbn(void)
 	ret=dbn_free;
 	dbn_free = dbn_free->parent;
 	return ret;
+#else
+	return aCalloc(1,sizeof(struct dbn));
+#endif
 }
 
 static void free_dbn(struct dbn* add_dbn)
 {
+#ifdef MALLOC_DBN
 	add_dbn->parent = dbn_free;
 	dbn_free = add_dbn;
+#else
+	aFree(add_dbn);
+#endif
 }
 
 void exit_dbn(void)
@@ -343,11 +356,7 @@ void db_free_unlock(struct dbt *table) {
 			if(table->cmp == strdb_cmp) {
 				aFree(table->free_list[i].z->key);
 			}
-#ifdef MALLOC_DBN
 			free_dbn(table->free_list[i].z);
-#else
-			aFree(table->free_list[i].z);
-#endif
 			table->item_count--;
 		}
 		table->free_count = 0;
@@ -397,11 +406,7 @@ struct dbn* db_insert(struct dbt *table,void* key,void* data)
 			p=p->right;
 		}
 	}
-#ifdef MALLOC_DBN
 	p = (struct dbn *)malloc_dbn();
-#else
-	p = (struct dbn *)aCalloc(1,sizeof(struct dbn));
-#endif
 	p->parent= NULL;
 	p->left  = NULL;
 	p->right = NULL;
@@ -468,11 +473,7 @@ void* db_erase(struct dbt *table,void* key)
 		}
 	} else {
 		db_rebalance_erase(p,&table->ht[hash]);
-#ifdef MALLOC_DBN
 		free_dbn(p);
-#else
-		aFree(p);
-#endif
 		table->item_count--;
 	}
 	return data;
@@ -529,9 +530,64 @@ void db_foreach_sub(struct dbt* table,int(*func)(void*,void*,va_list), va_list a
 			count,table->alloc_file,table->alloc_line
 		);
 	}
-	// else {
-	// 	printf("db_foreach : ok\n");
-	// }
+}
+
+void db_clear(struct dbt *table,int (*func)(void*,void*,va_list),...)
+{
+	int i,sp;
+	int count;
+	// red-black treeなので64個stackがあれば2^32個ノードまで大丈夫
+	struct dbn *p, *pn, *stack[64];
+	va_list ap;
+
+	if(table == NULL)
+		return;
+	count = table->item_count;
+	if(count == 0) {
+		// nothing to do
+		return;
+	}
+
+	va_start(ap, func);
+	for(i=0; i<HASH_SIZE; i++) {
+		if((p  = table->ht[i]) == NULL)
+			continue;
+		sp = 0;
+		while(p) {
+			if(func) {
+				func(p->key,p->data,ap);
+			}
+			count--;
+			if((pn = p->left) != NULL) {
+				if(p->right) {
+					stack[sp++] = p->right;
+					p->right = NULL;
+				}
+				p->left = NULL;
+			} else {
+				if(p->right) {
+					pn = p->right;
+					p->right = NULL;
+				} else {
+					if(sp == 0)
+						pn = NULL;	// 巡回終了
+					else
+						pn = stack[--sp];
+				}
+			}
+			free_dbn(p);
+			p = pn;
+		}
+		table->ht[i] = NULL;
+	}
+	if(count) {
+		printf(
+			"db_clear : data lost %d item(s) allocated from %s line %d\n",
+			count,table->alloc_file,table->alloc_line
+		);
+	}
+	table->item_count = 0;
+	va_end(ap);
 }
 
 void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
@@ -556,11 +612,7 @@ void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
 			}
 			if( func ) 
 				func( p->key, p->data, ap );
-#ifdef MALLOC_DBN
 			free_dbn(p);
-#else
-			aFree(p);
-#endif
 		}
 	}
 	aFree(table->free_list);
@@ -568,7 +620,11 @@ void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
 	va_end(ap);
 }
 
-void  linkdb_insert( struct linkdb_node** head, void *key, void* data) {
+/*==========================================
+ * 線形リストデータベース
+ *------------------------------------------
+ */
+void linkdb_insert( struct linkdb_node** head, void *key, void* data) {
 	struct linkdb_node *node;
 	if( head == NULL ) return ;
 	node = (struct linkdb_node *)aMalloc( sizeof(struct linkdb_node) );
@@ -659,7 +715,7 @@ void linkdb_replace( struct linkdb_node** head, void *key, void *data ) {
 	linkdb_insert( head, key, data );
 }
 
-void  linkdb_final( struct linkdb_node** head ) {
+void linkdb_final( struct linkdb_node** head ) {
 	struct linkdb_node *node, *node2;
 	if( head == NULL ) return ;
 	node = *head;
@@ -671,6 +727,10 @@ void  linkdb_final( struct linkdb_node** head ) {
 	*head = NULL;
 }
 
+/*==========================================
+ * CSVデータベース
+ *------------------------------------------
+ */
 #ifndef NO_CSVDB
 // csvdb -- csv のデータ読み込み関数
 

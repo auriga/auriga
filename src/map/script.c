@@ -143,7 +143,7 @@ extern struct script_function {
 	char *arg;
 } buildin_func[];
 
-static struct linkdb_node *sleep_db;
+static struct linkdb_node *sleep_db = NULL;
 
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
@@ -1581,9 +1581,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 	}
 
 	// 外部用label dbの初期化
-	if(scriptlabel_db!=NULL)
-		strdb_final(scriptlabel_db,NULL);
-	scriptlabel_db=strdb_init(50);
+	strdb_clear(scriptlabel_db,NULL);
 
 	// 例外処理
 	if( setjmp( error_jump ) != 0 ) {
@@ -9500,22 +9498,27 @@ int buildin_csvwritearray(struct script_state *st)
 	return 0;
 }
 
+// csvreload <file>
 static int script_csvreload_sub( void *key, void *data, va_list ap ) {
 	char *file = va_arg(ap, char*);
-	if( strcmp((char*)key, file) == 0 ) {
+	int  *find = va_arg(ap, int*);
+
+	if( *find == 0 && strcmp((char*)key, file) == 0 ) {
 		strdb_erase( script_csvdb, key );
 		aFree( key );
+		*find = 1;
 	}
 	return 0;
 }
 
-// csvreload <file>
 int buildin_csvreload(struct script_state *st)
 {
 	char *file = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	struct csvdb_data *csv = strdb_search( script_csvdb, file );
+
 	if( csv ) {
-		strdb_foreach( script_csvdb, script_csvreload_sub, file );
+		int find = 0;
+		strdb_foreach( script_csvdb, script_csvreload_sub, file, &find );
 		csvdb_close( csv );
 	}
 	return 0;

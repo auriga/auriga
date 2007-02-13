@@ -358,20 +358,17 @@ int guild_payexp_timer_sub(void *key,void *data,va_list ap)
 
 	nullpo_retr(0, c = (struct guild_expcache *)data);
 
-	if( (g=guild_search(c->guild_id))==NULL )
+	if( (g = guild_search(c->guild_id)) == NULL )
 		return 0;
-	if( ( i=guild_getindex(g,c->account_id,c->char_id) )<0 )
+	if( (i = guild_getindex(g,c->account_id,c->char_id)) < 0 )
 		return 0;
 
 	tmp = (atn_bignumber)g->member[i].exp + c->exp;
 	g->member[i].exp = (tmp > 0x7fffffff)? 0x7fffffff: (tmp < 0)? 0: (int)tmp;
 
 	// メンバーのExpがMAX値でも上納は行う
-	intif_guild_change_memberinfo(g->guild_id,c->account_id,c->char_id,
-		GMI_EXP,&c->exp,sizeof(c->exp));
-	c->exp=0;
+	intif_guild_change_memberinfo(g->guild_id,c->account_id,c->char_id,GMI_EXP,&c->exp,sizeof(c->exp));
 
-	numdb_erase(guild_expcache_db,key);
 	aFree(c);
 
 	return 0;
@@ -379,7 +376,7 @@ int guild_payexp_timer_sub(void *key,void *data,va_list ap)
 
 int guild_payexp_timer(int tid,unsigned int tick,int id,int data)
 {
-	numdb_foreach(guild_expcache_db,guild_payexp_timer_sub);
+	numdb_clear(guild_expcache_db,guild_payexp_timer_sub);
 	return 0;
 }
 

@@ -1,4 +1,24 @@
 ----------------------------------------
+//083 [2007/02/14] by Rayce
+
+・treedbの全要素を削除する db_clear() を追加（db.*）
+	今までは全要素を削除したい場合以下の2通りの方法がありましたが、いずれの方法も無駄な処理が発生します。
+	　１．db_foreach() 内で 一つずつ db_erase()
+	　２．db_final() したあと再度 db_init()
+	db_clear() の利用法は基本的に db_final() とほぼ同じです。
+	ただしfree_listとtableは解放しないので再利用が効率的に行えます。
+	また巡回は db_foreach() の処理を用いているので db_final() よりも若干高速に作動します。
+
+・以下の関数において numdb_clear() を使うように最適化
+	guild_payexp_timer_sub()
+	pc_read_gm_account()
+	parse_script()
+
+・script_csvreload_sub() でファイル名を検索する際、見つかったらそこで検索終了するように修正（script.c）
+・doc/client_packet.txtにパケット0x12bの情報を追加 from eA
+　ただし現状では無くても問題なさそうなので使っていません
+
+----------------------------------------
 //082 [2007/02/14] by Rayce
 
 ・AthenaProject2274よりmerge, thanks to Blazeさん
