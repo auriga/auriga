@@ -1,4 +1,1396 @@
 ----------------------------------------
+//083 [2007/02/14] by Rayce
+
+・treedbの全要素を削除する db_clear() を追加（db.*）
+	今までは全要素を削除したい場合以下の2通りの方法がありましたが、いずれの方法も無駄な処理が発生します。
+	　１．db_foreach() 内で 一つずつ db_erase()
+	　２．db_final() したあと再度 db_init()
+	db_clear() の利用法は基本的に db_final() とほぼ同じです。
+	ただしfree_listとtableは解放しないので再利用が効率的に行えます。
+	また巡回は db_foreach() の処理を用いているので db_final() よりも若干高速に作動します。
+
+・以下の関数において numdb_clear() を使うように最適化
+	guild_payexp_timer_sub()
+	pc_read_gm_account()
+	parse_script()
+
+・script_csvreload_sub() でファイル名を検索する際、見つかったらそこで検索終了するように修正（script.c）
+・doc/client_packet.txtにパケット0x12bの情報を追加 from eA
+　ただし現状では無くても問題なさそうなので使っていません
+
+----------------------------------------
+//082 [2007/02/14] by Rayce
+
+・AthenaProject2274よりmerge, thanks to Blazeさん
+　以下Readmeより転載
+	・飛行船クエスト第2部実装
+	・スロットエンチャント実装
+	・新春イベント2007年版実装
+	・クリスマスイベント2006年版実装
+	・2次職クエストスキル習得クエスト一部実装
+	・アマツ属性石交換修正
+	・アマツ通行手形クエスト修正
+	・アマツモモタロ体験クエスト修正
+	・ジュノー錬金術修正
+	・リヒタルゼン友情クエスト修正
+	・ナイト転職クエスト修正
+	・ブラックスミス転職クエスト修正
+	・ハンター転職クエスト修正
+	・アルケミスト転職クエスト修正
+	・衝突している変数名を一部変更
+	・全ての街スクリプトの手直し
+	・jawaiiのモンスターをnpc_monster.txtに移動
+
+----------------------------------------
+//081 [2007/02/14] by Rayce
+
+・script/sample内のスクリプトの改修
+　推奨される記述を浸透させるためサンプルも書き換えることに決めました
+	npc_custom_branch.txt
+	npc_custom_cardremover.txt
+	npc_custom_gldcheck.txt
+	npc_custom_jobchange.txt
+	npc_custom_produce.txt
+	npc_debug_arrow.txt
+	npc_debug_convertvar.txt
+	npc_debug_pota.txt
+	npc_debug_questskill2.txt
+	npc_debug_reset.txt
+	npc_debug_revive.txt
+	npc_test_bank.txt
+	npc_test_chat.txt
+	npc_test_chkoption.txt
+	npc_test_func.txt
+	npc_test_getequip.txt
+	npc_test_gettime.txt
+	npc_test_gstorage.txt
+	npc_test_npctimer.txt
+
+・以下のスクリプトは削除
+	npc_custom_extendshop.txt（npc_debug_shop.txtと同じため）
+	npc_test_arena.txt（イベントでタイマーを使う場合はNPCタイマーを推奨しているため）
+	npc_test_skill.txt（npc_debug_questskill.txtと同じため）
+
+・npc_test_bank.txtをnpc_custom_bank.txtに改名
+・npc_debug_questskill2.txtをnpc_debug_questskill.txtに改名
+・npc_debug_sample.txtは削除、一部の解説はdoc/script_ref.txtに補完
+
+・getitem2命令を使っているスクリプトを少し修正
+	npc_event_xmas.txt
+	npc_quest_hat3.txt
+	npc_quest_hat4.txt
+
+----------------------------------------
+//080 [2007/02/13] by Rayce
+
+・itemdb.cの整理
+	-> random_item_data構造体を変更
+	-> 新しくMAX_RANDTYPEを定義、ランダム系アイテムの種類を示す
+	-> ランダム系アイテムの読み込みおよび検索の処理を最適化
+	-> デバッグコードを itemdb_debug_txt() に改名して整理し直し
+	-> アイテム名でデータベースを検索する際、見つかった時点で検索終了にする
+	   また余計な処理を省くためmemcmpは行わないようにする
+
+　※新しくランダム系アイテムを増やしたい場合は、MAX_RANDTYPEの値を増やし
+　　itemdb_read_randomitem() 内でfilenameを追加するだけでよくなりました
+
+・MOBがランダム系アイテムをドロップする場合、該当アイテムIDが取得できなかったときに
+　IDが0のアイテムをドロップしてしまう問題を修正（mob.c）
+
+・successremovecards命令およびfailedremovecards命令の修正（script.c）
+	-> エフェクトが出るように修正
+	   clif_misceffect() だと「精錬成功/失敗しました」のメッセージが出力されてしまうので
+	   clif_misceffect2() を使っています
+	-> failedremovecards命令でfailtypeが3のときは失敗エフェクトを出すだけで何もしないように修正
+	-> successremovecards命令は武具とカードを返却して成功エフェクトを出す必要があるので
+	   removecards_sub() ではfailtype = 4として処理します
+
+・ランダム系アイテムdbにおいて、デフォルト設定のアイテムの確率が間違っているものを修正
+	db/item_bluebox.txt
+	db/item_cardalbum.txt
+	db/item_violetbox.txt
+・鉱石発見dbのデフォルトアイテムのIDが間違っていたので修正
+	db/item_findingore.txt
+
+----------------------------------------
+//079 [2007/02/12] by Rayce
+
+・hugeさん作成のdebugパッチを部分的にmerge, thx a lot!!
+	-> clif_parse_CloseKafra() を少し修正（clif.c）
+	-> MobがドロップするアイテムIDが負のとき、箱系ランダムアイテムにならなかった問題を修正（mob.c）
+	-> スティールの確率補正を少し修正（pc.c）
+	-> 暖かい風の発動元の引数を少し変更（skill.c）
+	-> 移動不可モードなMobをペットにした場合でも移動できるように改善（unit.c）
+
+・一部の rand() を atn_rand() に変更（login.c, clif.c, party.c, pet.c）
+・doc/packet_db.txtに解析できた範囲での情報を追記
+
+----------------------------------------
+//078 [2007/02/12] by Rayce
+
+・map_athena.confにベインズ系のMAPを追加
+・2007-02-05aSakexeを解析したパケット長を追加（db/packet_db.txt）
+・db群の更新 thanks to huge cgi
+
+----------------------------------------
+//077 [2007/02/11] by Rayce
+
+・AthenaProject2272, 2273とhugeさんの作成されたdebugパッチをベースにmerge
+　thanks to KIAさん、Mizukiさん、hugeさん
+
+　　・2006-10-23aSakexe以降のキャラセレパケットに対応（char.c）
+　　　PACKERVERが8になっているので、これより古いクライアントの場合は7に変更してください
+　　・2007-01-08aSakexeのパケットに対応（db/packet_db.txt）
+　　・doc/client_packet.txt更新
+
+----------------------------------------
+//076 [2007/02/11] by Rayce
+
+・AthenaProject2271よりmerge, thanks to 名無し＠さん
+
+　　・スタン状態の時間が異常に長いスキルを修正(db/skill_cast_db.txt)
+　　・スキルユニットを本鯖に合わせて修正(db/skill_unit_db.txt)
+　　	マグヌスエクソシズムを重ね置き禁止
+　　・以前追加した遠距離フラグの修正と本鯖に合わせた修正(src/map/battle.c)
+　　・サプライズアタックのスタン時間だけ強制3秒になるように修正(src/map/skill.c)
+　　	暗闇の時間だけをskill_cast_db.txtから読み込みます
+　　・シールドチェインのヒット補正修正
+　　・トリプルアクション、トラッキングのダメージ倍率修正
+　　・トラッキングにヒット補正追加
+　　・ブルズアイにカード補正が乗らないように修正
+
+----------------------------------------
+//075 [2007/02/11] by Rayce
+
+・ギルドExpのキャッシュ guild_expcache_db をtreedbに戻す（guild.c）
+・numdb_final() および strdb_final() を呼ぶ際、各ノードに対して実行すべき関数がない場合は
+　引数にNULLを入れるだけにする
+　（friend.c, map.c, npc.c, script.c）
+・npc_buylist() および npc_selllist() で使っている itemdb_search() を itemdb_exists() に修正（npc.c）
+・double型へキャストしている部分をatn_bignumber型に変更（script.c, status.c）
+・script.cを少し整形
+
+----------------------------------------
+//074 [2007/02/11] by Rayce
+
+・スクリプト命令のsetusescript, setequipscriptの廃止
+	実行中のアイテムスクリプトから自身のスクリプトを変更するとサーバクラッシュしたり、
+	sleepと相性が極めて悪いなどの不安定要素があるので思い切って削除することにします
+
+・命令の後に引数が必要な場合、必ずスペースを入れることを強制する
+	以下のようにスペースがないコードは今後エラーとして扱われます
+
+	input(@val);
+	mes@val;
+
+----------------------------------------
+//073 [2007/02/10] by Rayce
+
+・PTのアイテム分配実装 from eA（int_party.c, clif.c, intif.*, party.*, pc.c）
+	完全にランダムで取得者を選定します
+・battle_athena.confにparty_item_share_type, party_item_share_showを追加（battle.*）
+・パーティ設定を変更するコマンド@partyoption追加（atcommand.*）
+	通常クライアントからは変更できないアイテム収集方式・分配に関する設定を
+	変更するためのコマンドで、PTリーダーのみ効果があります
+
+・あまり意味がないので MIN_ATTRIBUTE, MAX_ATTRIBUTE, ATTRIBUTE_NORMAL, MIN_STAR, MAX_STAR
+　のdefineを削除（mmo.h, atcommand.c）
+
+----------------------------------------
+//072 [2007/02/09] by Rayce
+
+・PC型Mobが死亡して消滅するときの挙動をbattle_athena.confで決定できるように追加（battle.*, clif.*, unit.c）
+	デフォルトは1で、従来通りの方法です。
+	しかし1の場合、消滅するまでの間に画面外に移動するとMobの残像が残り続けてしまいます。
+	0に設定することでこの問題は解消されますが、ALL_SAMEMAPでパケットを送り付けるので
+	関係の無い人にまでパケットを送られることになります。
+	2は最も無駄がない設定ですが、Mobがすぐに消滅してしまいます。
+	環境に合わせて好きな設定を選択してください。
+
+・パーティメイン情報パケット0x1e9追加 from eA（clif.*, party.c）
+	clif_party_option() にはアイテム分配に関する情報は含まれていませんでした。
+	クライアントは経験値分配フラグをDWORDで読み取るようです。
+	アイテム分配フラグは clif_party_main_info() が受け持ちます。
+
+・課金アイテム販売リスト用のパケット0x287を用意（clif.*）
+　ただし動作未確認
+	clif_pointshop_list() 追加
+
+・恐らくAthena2240以降、服色を0に変更すると見た目がノービスになる問題を修正（pc.c）
+・重量50/90%オーバーは死亡時に解除されないようにdb/scdata_db.txtを修正
+・doc/client_packet.txt更新
+
+----------------------------------------
+//071 [2007/02/07] by Rayce
+
+・パーティのアイテム分配フラグをinterサーバに渡すための修正
+　clif_parse_CreateParty2() でitem, item2の読み取りを有効化
+　（int_party.c, inter.c, atcommand.c, intif.*, party.*）
+・clif.cの細かい修正
+
+・getelementofarray関数の一次元目の配列において、参照する要素が中途半端な相対位置になっていたので
+　絶対位置を参照するように修正（script.c）
+
+　※以下のコードは今までは4が返ってきましたが、2が返るようになります
+
+	function Test {
+		mes getelementofarray(getarg(0),1);
+		return;
+	}
+	setarray '@data,1,2,3,4,5,6,7;
+	Test '@data[2];
+	close;
+
+----------------------------------------
+//070 [2007/02/01] by Rayce
+
+・スクリプトの DEBUG_DISASM および DEBUG_RUN で出力される書式を少し修正（script.c）
+・使われていない関数 mob_change_summon_monster_data() を削除（mob.*）
+・VC++で警告レベルを /W4 にした際に得られた結果の中で気になった箇所を修正
+　（char.c, int_guild.c, int_party.c, login.c, mob.c, npc.c）
+・関数内で参照されない不要な引数を削除
+	clif_quitsave()
+	clif_refine()
+	clif_devotion()
+	clif_guild_explusion()
+	clif_guild_message()
+	clif_onlymessage()
+	intif_announce()
+	skill_devotion()
+
+----------------------------------------
+//069 [2007/01/30] by Rayce
+
+・scriptに関して全体的な細かい修正（script.c）
+	-> infinity loopになったとき、gotocountとcmdcountのどちらが原因かわかるように表示する
+	-> 引数として変数が必要な命令/関数で、C_NAMEかどうか必ずチェックするように強化
+	　 他の変数を参照したり最悪の場合サーバクラッシュするのを防ぐために、C_NAMEのチェック後に変数名を取得する
+	-> 配列の上限128を越えてデータを格納しないようにチェック強化
+	-> input命令、divorce関数は引数省略不可に変更
+	-> deletearray命令の第二引数を省略不可に変更
+	-> getcharname関数の省略可能な第二引数は意味がないので削除
+	-> delitem命令でペットの卵を複数個削除すると、ペット情報が1個しか削除されずセーブデータに
+	　 ゴミが残り続ける問題を修正
+	-> delitem命令の処理を改善
+	-> guildskill命令で第三引数を省略したときは、skill命令と同じく値に1を入れるように変更
+	-> gettimestr関数でmaxlenの値が小さすぎた場合は警告文を出力するように強化
+	-> getequipcardcnt関数、successremovecards命令、failedremovecards命令、checkequipedcard関数で
+	　 名前入り装備品もカードとしてみなされる可能性を修正
+	-> recovery命令を実行したときにPCにメッセージを表示しないように変更
+	-> getpetinfo関数、gethomuninfo関数において名前を返すタイプのもので取得失敗したときは
+	　 0ではなく "" （空文字）を返すように変更
+	-> checkequipedcard関数がカート内のアイテムを検索しないように変更
+
+・イベントタイマーの残り時間を返すgettimerdiff関数を追加（pc.*, script.c）
+・文字列長を返すgetstrlen関数を追加
+・strcutを廃止して、より柔軟に文字列を取得できるsubstr関数を追加
+
+・strcut関数を利用していたNPCスクリプトを全てsubstr関数に書き換え
+　特にnpc_test_library.txtは根本的に書き直し
+	script/npc/event/npc_event_xmas.txt
+	script/npc/misc/npc_misc_guide.txt
+	script/sample/npc_test_library.txt
+	script/sample/npc_test_pcevent.txt
+
+----------------------------------------
+//068 [2007/01/29] by Rayce
+
+・return命令で文字列型の '@変数 を返すときダングリングポインタになるバグを修正（script.c）
+	return命令が終わった時点で '@変数 は全て解放されてしまうため、文字列型の場合は
+	get_val() を実行しただけでは完全な値渡しになりません。
+	文字列のコピーを渡す必要があります。
+
+・ステータス異常をセーブデータからロードする際、効果時間が0以下の場合は status_change_start() を
+　実行しないように修正（intif.c）
+・@npctalkやglobalmes命令でNPCに発言させるとき、NPC名に含まれる#以下の文字列は表示しないように修正（npc.c）
+
+----------------------------------------
+//067 [2007/01/26] by Rayce
+
+・共闘をbl.idではなくchar_idで管理するように修正（battle.c, mob.c）
+	PCの場合はキャラIDをそのまま使います。
+	ホムの場合はブロックIDを負に反転させて使います。
+	苦肉の策であることに変わりありませんが、一応PCとホムの区別は出来ています。
+
+----------------------------------------
+//066 [2007/01/25] by Rayce
+
+・aStrdupをキャストするように修正（script.c）
+・map.dspを少し修正、map_sql.dsp追加
+
+・SQL: マップ永続変数のconvert対応（converter.*, map-converter.*）
+	converter_athena.confに map_server_tag を設定する項目を追加しているので、
+	複数のデータがある場合にはタグ名を変更して読み込ませてください。
+・SQL: 049の最適化が不完全だった部分を修正および巻き戻し等（char.c, inter.c）
+
+----------------------------------------
+//065 [2007/01/25] by Rayce
+
+・MAPサーバからSQLを発行できるように追加（map.c）
+	map.cでSQLサーバの設定読み込み/connect/closeを行います。
+	map_athena.confにMySQL用の設定項目を追加していますので、SQLユーザは自身の環境に合わせて適宜変更してください。
+
+	do_init_map() 追加
+	do_final_map() 追加
+	map_config_read_sub() 追加
+
+・マップ永続変数をSQLへセーブできるように追加（map.*, script.c）
+	`mapreg` テーブルに保存されます。
+	`server_tag` フィールドはMAPサーバのタグ名で、map_athena.confの map_server_tag で設定します。
+	マップ永続変数は他のマップサーバと干渉しない独立な変数であるため、SQL内で一括管理するために
+	このタグ名を使ってサーバを識別します。
+	サーバ分割する場合はタグ名を全てのマップサーバで別々のものに設定してください。
+	同一に設定することも可能ですが、変数の値が正しく得られる保証がないので推奨されません。
+	詳細はdoc/conf_ref.txtおよびdoc/distribute_servers.txtを参照してください。
+
+　※これでようやくsaveフォルダ内の全てのファイルをSQLに移行できました。
+　　txt-converter.exeは次回対応予定です。
+
+・マップ永続変数が変更されたときだけmapreg_dirtyを1にするように最適化（script.c）
+	セーブの必要がないマップ一時変数が変更されたときもmapreg_dirtyが1になっていたため、
+	自動セーブのタイミングで無駄にセーブ処理が行われていました。
+	mapreg_setreg(), mapreg_setregstr() に引数を一つ増やし、マップ永続変数であるかどうかを判定しています。
+
+・map.cから read_grf_files_txt が完全に削除されてなかったので修正（map.c）
+・064のskill.cで警告が出ていたので修正（skill.c）
+
+----------------------------------------
+//064 [2007/01/24] by Rayce
+
+・特定条件でステータス異常が解除可能かどうか、また特定条件下でステータス異常開始を無効にするか、を
+　db/scdata_db.txtで設定できるように拡張（battle.c, pc.c, skill.c, status.*）
+	詳細はdoc/db_ref.txtを参照。
+	基本的には今までソースコードに記述されていた部分をtxtに追い出しただけです。
+	設定はあくまでも適当暫定なので修正できる方に任せます。
+
+　※死亡時は落法、PKペナルティ、赤エモだけ解除されません。
+　　ディスペルは一部wikiを参考にして解除可否を修正しています。
+　　ゴスペルの全状態異常解除はeAを参考に設定しました。
+
+	scdata_db構造体にメンバ releasable, disable を追加
+	status_is_disable() 追加
+	status_change_release() 追加
+	status_change_end_by_jumpkick() 削除
+	status_support_magic_skill_end() 削除
+
+・battle_athena.confの cancel_race は不要になったので削除（battle.*, skill.c）
+
+----------------------------------------
+//063 [2007/01/22] by Rayce
+
+・ランキングの処理方法を修正
+	各ランキングのデータはcharサーバで管理するように修正。
+	これによりキャラがログインするまでランキングに登録されない問題や、サーバ分割をしている状況でサーバ移動
+	するとランキングが変動する問題などが解決されます。
+
+	追加
+		char_build_ranking()
+		char_set_ranking_send()
+		char_ranking_update()
+		char_ranking_delete()
+		chrif_ranking_request()
+		chrif_ranking_update()
+		chrif_ranking_recv()
+		ranking_set_data()
+		パケット 0x2b2e, 0x2b2f, 0x2b30
+	移動
+		MAX_RANKING, MAX_RANKER の定義をmmo.hへ
+		struct Ranking_Data の宣言をmmo.hへ
+		compare_ranking_data() をchar.cへ
+	削除
+		ranking_sort()
+		ranking_update_all()
+		ranking_init_data()
+
+　　※charサーバ起動時に char_build_ranking() を実行し、ランキングデータを作成します。
+　　　TXTの場合はchar_datを全走査しながらキャラ永続変数を参照するので、かなり頭の悪い方法になっています。
+　　　SQLの場合は ORDER BY でソートしたデータを取得できるので一見簡潔に見えますが、`value` には
+　　　KEYが設定されていないため結局は Using filesort となりパフォーマンスが低下する可能性があります。
+
+　　※mapサーバがcharサーバに接続完了した時点でcharサーバにランキングデータを要求します。
+　　　そのため OnCharIfInit, OnInterIfInit でランキングに関するデータを操作することはできません。
+　　　sleepなどを使ってウェイトを置く必要があります。
+
+　　※mapサーバが持っているランキングデータはmapサーバ内の処理で直接変更されることはありません。
+　　　データの参照や、データを更新する必要があるかどうかの判定に利用するだけです。
+　　　元となるデータはcharサーバにあり、更新処理もcharサーバで行います。
+　　　データが更新されたときにはそのデータを全サーバにフラッシュします。
+
+　　※サーバ分割をしている場合、複数のmapサーバから同時にデータが更新される可能性がありますが、考慮した
+　　　つもりなので問題ないと思います。
+
+　　※キャラクター削除した場合、もしランカーであればデータの削除を行います。
+　　　ただしデータの再構築はしないので、10位にUnknownというキャラ名が0ポイントでランクされる状態になります。
+　　　これは仕様ということにしておきます。
+
+　　※ランキングデータはMAX_RANKER（デフォルトは10）位までしか保持していません。
+　　　従ってランカーのポイントが減少し11位以下になるような場合であっても10位のままです。
+　　　PKランキングは減少する機会が有り得ますが、現状ではこれを仕様としておきます。
+
+　　※ランキングデータへの登録は職業を考慮しません。
+　　　例えば職業がBSであっても PC_ALCHEMIST_POINT さえ持っていればアルケミストランキングに掲載されます。
+　　　これを回避したいのであれば、転職を行うスクリプトでランキング変数を0にする処理を入れてください。
+
+　　※いくつかの問題点はFreya方式（mmo_charstatusにfame_pointを用意する）を採用すると改善される可能性があります。
+　　　しかし一長一短なので、現状はこのままキャラ永続変数を利用する方式です。
+
+・MAX_RANKERが10より小さいとき、ランキングを参照するとバッファオーバーフローが起こる問題を修正（ranking.c）
+	ranking_clif_display() 修正
+
+・SQL: `global_reg_value` テーブルの `value` フィールドが文字列型なっていたのでint型に修正
+       sql-files/Auriga063_changetable.sql追加
+・SQL: 054で不要なフィールドを削除した影響のため、account.txtデータのconvert時にサーバクラッシュした問題を修正
+       login-converter.cから既に削除されたフィールドを参照しないように変更、およびクラッシュ対策
+
+----------------------------------------
+//062 [2007/01/20] by Rayce
+
+・057でcase構文を変更して以後、const.txtに記載されている定数をcaseラベルに指定できなくなった問題を修正（script.c）
+　以下の例は正常なコードとして扱われます。
+	thanks for indication and fix, Skotlex in eAthena
+
+	switch(Class) {
+		case Job_Knight: ...
+		case Job_Monk: ...
+	}
+
+----------------------------------------
+//061 [2007/01/19] by Rayce
+
+・種族を示す定数を RCT_*** として定義（map.h）
+　種極に関連する値を気付いた範囲で置き換え
+	eAと同じく RC_*** にしても良かったんですが、ユニークなものにし易いよう3文字（RaCeType）にしました。
+	また人間は DEMIHUMAN ではなく単に HUMAN にしています。
+・bWeaponAtk, bWeaponAtkRateに銃、手裏剣、両手武器が指定できるように拡張（map.h, pc.h）
+　元々は指貫用として実装されてたみたいだけど使われてない？
+　WT_*** のenumをpc.hからmap.hへ移動
+
+・battle_calc_magic_attack() と battle_calc_misc_attack() を battle_calc_weapon_attack() と同様の書式に統一（battle.c）
+	Damage構造体のポインタ *md は mob_data と混同しやすいので別の名前に変更しています
+
+・doc/item_bonus.txtに bCriticalRaceRate の説明が欠けてたので追記
+・ガンスリンガーと忍者のスキル名をjROの呼び名に統一
+
+・HOM_SKILLID と HM_SKILLBASE は同じなので、全て HOM_SKILLID に統一して HM_SKILLBASE を削除（skill.c, skill.h）
+・int_guild.cが GD_SKILLBASE を参照するために skill.h をincludeするという悲惨な状態だったので
+　mmo.hに GUILD_SKILLID を定義、さらにギルドスキルのenumはmmo.hに移動
+　（mmo.h, int_guild.c, clif.c, guild.c, skill.c, skill.h）
+	guild_checkskill() でギルド拡張以外のギルドスキルも参照できる可能性を作るための処置です
+
+----------------------------------------
+//060 [2007/01/18] by Rayce
+
+・mmo_auth() で認証OKだった場合は100ではなく-1を返すように変更（login.c）
+	ログイン時のエラーメッセージ0x6aを詳細に調べた結果、100もエラー番号の一部として使われていました。
+	混乱を避けるため、OKだった場合はeAやFreyaと同様に-1を返します。
+
+・パケット0x1dd, 0x27c, 0x277のログインタイプの位置が間違っていたので修正（login.c）
+　login_athena.confで "login_type" を指定していたのに正常にブロックできなかった不具合が解消されます
+・doc/client_packet.txtに情報追記
+
+----------------------------------------
+//059 [2007/01/17] by Rayce
+
+・マヤパープルカードの効果によるハイド見破りを本鯖仕様に修正（clif.c, pc.c, status.*）
+　SI_TIGEREYE追加
+	merged from eA, thanks to HelloKitty2
+
+・status_check_attackable_by_tigereye() と status_check_tigereye() は本当に不要なので抹消
+
+----------------------------------------
+//058 [2007/01/16] by Rayce
+
+・ギルド倉庫に関する処理の変更
+　（int_storage.c, inter.c, atcommand.c, intif.*, map.h, script.c, storage.c）
+
+　　ギルド倉庫はデュープの危険性を避けるために利用者は常に一人という制約があります。
+　　しかしMAPサーバを分割している場合はこの制約が効かず、容易にデュープが可能となっていました。
+　　そこでMAPサーバではなくInterサーバで排他制御を行うように変更しました。
+
+　　1. inter_trylock_guild_storageを呼び出す
+　　　　　　まず初めにInterサーバにロック権が取得できるか問い合わせます。
+　　　　　　いきなりstorage_guild_storageopenを呼んではいけません！
+　　2. sd->state.gstorage_lockreqに値を入れる
+　　　　　　ロック要求中を示すフラグ。
+　　　　　　1ならscriptのguildopenstorage経由、2ならatcommandの@gstorage経由。
+　　3. mapif_parse_TrylockGuildStorageで処理する
+　　　　　　誰も利用してなければロックをかけて成功フラグをMAPサーバに返す。
+　　　　　　既にロック中ならば失敗フラグをMAPサーバに返す。
+　　4. intif_parse_TrylockGuildStorageAckで確認
+　　　　　　gstorage_lockreqの値で処理が異なります。
+　　　　　　script経由なら成功/失敗フラグをnpc_menuに入れてスクリプトを再開します。
+　　　　　　atcommand経由なら成功時のみ倉庫を開きます。
+
+　　最初に必ずInterサーバに問い合わせる必要があるため、guildopenstorage関数の処理を変更しています。
+　　この関数は呼び出されたらInterサーバにロック権の取得を要求し、一時停止します。
+　　返答があったときにスクリプトは再開し、成功ならギルド倉庫が開かれます。
+　　この一連の処理は自動的に行われるのでロックの取得/解放を明示する必要はありません。
+　　（今まで通りの書き方で問題ないということです）
+
+　　またギルド倉庫を閉じるときにinter_unlock_guild_storageを呼び出してロックの解放を行います。
+　　lock/unlockが全て対応していると仮定しているのでデッドロックのチェック機構は今のところ実装されていません。
+
+・カプラ倉庫を開くとき、既にカプラ倉庫を開いている状態なら開けないように修正（storage.c）
+・057のスクリプトエンジンの修正に対して、case構文を少し最適化
+
+----------------------------------------
+//057 [2007/01/13] by Rayce
+
+・スクリプトエンジンの構文関連についてチェック機能強化（script.c）
+
+　　１．syntaxとして誤認されるバグを修正
+　　　　strncmpだけで文字列のマッチングを行っていたのでユーザー定義関数が区別されない等の問題がありました。
+　　　　以下の例文は今後正常なコードとして扱われます。
+		function do_func {
+			mes "string";
+			return;
+		}
+		do_func;	// do構文として解釈しようとするのでエラーだった
+
+　　２．default: の直後に命令が連結していると解析エラーとなるバグを修正
+　　　　skip_word() が一つ多くdefaultの終了位置がおかしくなってました。
+　　　　以下の例文は今後正常なコードとして扱われます。
+		switch('@num) {
+			default:mes "string";	// スペースを入れずいきなり命令があるとアウトだった
+		}
+
+　　３．break, continue の後は必ず ; を付けることを要求する
+　　　　; のチェックが全くなかったので奇妙な記述が平然と許可されていました。
+　　　　以下の例文は今後エラーとして扱われます。
+		while('@num < 3) {
+			if('@num == 1)
+				continue%	// continueの後に何があってもOKだった
+			set '@num,'@num+rand(4);
+		}
+
+　　４．caseラベルに指定できるのは数値型定数のみに規定
+　　　　変数やラベルが指定出来るのは気持ち悪いのでC言語の形式に従います。
+　　　　「'case' label not integer」の警告が出る場合はこのチェックに引っ掛かっています。
+　　　　以下の例文は今後エラーとして扱われます。
+		switch('@num) {
+			case $@MapVal: mes "match"; break;	// 数値定数以外でも場合によってはOKだった
+			default: mes "misimatch"; break;
+		}
+
+　　５．caseラベルに負の値を指定出来るように修正
+　　　　'-' が skip_word() できないため上手く解釈できなかったのが原因でした。
+　　　　以下の例文は今後正常なコードとして扱われます。
+		switch(-rand(2)) {
+			case  0: mes "zero"; break;
+			case -1: mes "minus"; break;	// '-' の部分でエラーだった
+		}
+
+　　６．caseラベルが重複するときはエラーとなるように修正
+　　　　syntax構造体内のcurly構造体に struct linkdb_node *case_label メンバを追加しました。
+　　　　case構文がparseされたときはその値をリストに書き込み、同じ値があるかどうかチェックを行います。
+　　　　switchが閉じたときにこのリストは解放されます。
+	「dup 'case'」の警告が出る場合はこのチェックに引っ掛かっています。
+　　　　以下の例文は今後エラーとして扱われます。
+		switch('@num) {
+			case 0: mes "first"; break;
+			case 0: mes "second"; break;	// case 0 が重複していても警告されなかった
+		}
+
+・上記変更によってエラーが検出されるスクリプトの修正
+	script/npc/job/npc_job_14crusader.txt
+
+----------------------------------------
+//056 [2007/01/11] by Rayce
+
+・取引直後にサーバクラッシュすると稀にアイテムがデュープされる危険性を修正（trade.c）
+	露店と同様に取引完了時には双方のプレイヤーのデータをセーブします
+
+・AthenaProject2270-fixよりmerge, thanks to Cocoaさん
+　以下Readmeをそのまま転載
+	・ガンスリンガー、忍者のJob補正修正(db/job_db2.txt)
+	・マグナムブレイクの表示ダメージが5分の1になっていたのを修正(skill_db.txt)
+	・聖体降福の属性を聖属性に修正(skill_db.txt)
+	・ハリネズミの針から岩石の矢が作成されなかったのを修正(create_arrow_db.txt)
+
+----------------------------------------
+//055 [2007/01/11] by Rayce
+
+・ROメールシステムのバグ修正（int_mail.c, inter.c, clif.c, intif.*, mail.*）
+　　-> clif_parse_SendMail() 内で送信処理が行われているのは良くないので、mail.cに移動
+　　-> 本文に何も記入されてない状態で送信を試みると、それ以後メール送信が出来なくなる不具合を修正
+　　　 　　失敗時には必ず返答パケット0x245を送らなければならないようです。
+　　　 　　clif_res_sendmail() のflagに2を入れてやるとメッセージを出さずにこの問題を解決できる模様。
+
+　　-> メール送信失敗時には必ず mail_removeitem() を呼ぶようにする
+　　　 zenyもリセットされるように修正
+　　　 　　アイテムを添付した状態で一度送信を試みて失敗し、次にアイテムは添付せずに正しく入力し直して
+　　　 　　送信すると、失敗したときに置いたアイテムが勝手に添付される不具合が解消されます。
+
+　　-> 受信者名の欄に存在しないキャラ名を指定してしまうと添付したアイテム/Zenyが消失する致命的なバグを修正
+　　　 　　これはInter鯖から成功可否判定が返ってくる前にアイテム/Zenyを減らす処理を行っていたためでした。
+　　　 　　安全性を確保するために処理の流れを変更しました。
+　　　 　　キャラクターがそのMAP鯖に登録されてない場合は一旦Inter鯖にキャラクターの存在確認を要求し、
+　　　 　　OKなら再度メールを送信する形式となります。
+　　　 　　手抜きによりInter鯖から返ってきたキャラクター名はcharid_dbに登録されません！
+
+　※変更後の処理の流れ
+	1. clif_parse_SendMail
+　　　  2. mail_checkmail (キャラが居れば7にジャンプ)
+　　　  3. intif_mail_checkmail
+　　　  4. mapif_parse_CheckMail
+　　　  5. mapif_mail_checkok
+　　　  6. intif_parse_MailCheckOK
+　　　  7. mail_sendmail
+　　　  8. mail_checkappend
+　　　  9. intif_sendmail
+
+・ROメール関連でInter鯖とMAP鯖間でやり取りするパケット番号を整理し直し（int_mail.c, intif.c）
+　送信と受信がきちんと正しく対応するように変更、詳細は doc/inter_server_packet.txt
+・mail_data構造体のメンバ receive_id は使われてないので削除（mmo.h）
+
+・char鯖にキャラクター名の検索を要求したが見つからずに0x2b09が返ってくる場合、map_addchariddb() で
+　charid_dbに登録しないように修正（map.c）
+
+・SQL: char_sql_load() でキャラが見つからないときに「char - failed」が出力されないように修正（char.c）
+　     例えば以下のようなスクリプトはエラーとして扱われるべきではないからです
+
+		// ID 150000を持つキャラは既に削除されてると仮定
+		set '@dummy$,getcharname(150000);
+		if(sleep2(2000))
+			mes getcharname(150000);	// Unknownが返る、このときfailedが出力されていた
+
+----------------------------------------
+//054 [2007/01/11] by Rayce
+
+・オプション系の型をパケットの仕様に正しく合わせる
+	option : short → unsigned int
+	opt1   : short → unsigned short
+	opt2   : short → unsigned short
+	opt3   : short → unsigned int
+・上記変更により浮遊とサンタ服が混ざる問題が解決したので、
+　太陽と月と星の融合を使用時に浮遊するよう修正（status.c）
+・オプション系についてhelp.txtに追記
+
+・map_session_data構造体内のstate構造体のメンバ pass_through は使用されてないので削除（map.h）
+・path_search_long_real() の引数がcell_t型になっていなかった部分を修正（mob.c）
+・@charoptionも@optionと同様にopt3を指定できるように（atcommand.c）
+・自動セーブ処理を少し最適化（pc.c）
+・clif_changeoption() で使われていたループを展開（pc.c）
+　clif_changelook() を少し修正
+
+・SQL: charテーブルの `option` を unsigned int型に変更
+・SQL: 使われていないフィールドを削除
+・SQL: セキュリティ向上のため、標準で提供されるサーバアカウントを15個からTXTと同じ5個に変更
+		Auriga054_changetable.sql追加、mail.sql更新
+
+----------------------------------------
+//053 [2007/01/10] by Rayce
+
+・pc_makesavestatus() が二重に呼ばれていた無駄を修正（atcommand.c, homun.c, pc.c pet.c）
+・ギルドメンバーの情報を参照しようとすると0x157のパケットが飛んで来るので、clif_parse_GuildMemberInfo()
+　を追加、ただしパケットがダンプされるのを抑制するためだけであり、関数自体は何もしません（clif.c）
+
+・map_athena.confに「autosave_gvg_rate」を追加（map.*, pc.c）
+		merged from Freya, thx a lot!!
+	GvG中に限り、自動セーブのインターバルを長く取ることでラグを緩和することを目的とします。
+	デフォルトでは150（1.5倍）に設定されています。
+	GvG中のラグが酷い場合には倍率を上げてみるといいかもしれません。
+	尚、値は100以上しか設定できません（短くすることは不可）。
+
+----------------------------------------
+//052 [2007/01/09] by Rayce
+
+・SQL: charasetにSJISを利用する環境下において、MySQL側のバグを回避できるようにスイッチを用意（utils.c）
+	MySQLに付き纏う「文字コード問題」をAurigaサーバ側で補正するものです。
+	SJISで0x5c（バックスラッシュ \）を含む2バイト文字があると、mysql_real_escape_string() によって
+	\ が付加されますが、以下のような状況ではこの処理が災いしてクエリを発行できなくなります。
+
+	例）'表'（0x955C）→　'表\'（0x955C5C）→ '?\'（0x955C）
+		\\ が \ となり、続いて \' となるので、SQLの構文上 ' は文字列の一部として認識されます。
+		そのため ' が閉じられてないと判定され、エラーとなります。
+
+	これを強制的に解消するための暫定措置として、文字列の最後に「表・能・申」などの文字がある場合は
+	mysql_real_escape_string() でサニタイズした後にさらに末端の余計なエスケープシーケンスを除去
+	する機能を追加しました。
+
+	utils.c の strecpy() にある #define TRIM_ESCAPE_AS_SJIS のコメントアウトを外してください。
+	SJISの環境下において、上記の文字で終わるキャラクターやギルドが作成できなかったり、TXTセーブデータ
+	からSQLへconvertできなかった問題を解決できるようになります。
+	ただしMySQLがマルチバイト文字を正常に扱えるようになるまでの暫定処置です。
+	（現在最新である 5.1.14 betaでも未解決でした・・・というか色々と迷走中？）
+	また、あまり正しい方法ではないので何かしらの危険性を生み出す可能性を孕んでいます。
+	SJIS以外の環境下ではこのスイッチを有効にしないで下さい。動作保証外です。
+
+・SQL: save/account.txtからconvertする際、`loginlog` で警告が出るので修正（login-converter.c）
+・doc/mysql.txtの内容をdoc/sqllogin.txtに吸収合併
+
+----------------------------------------
+//051 [2007/01/09] by Rayce
+
+・converter_athena.conf, msg_athena.conf, script_athena.conf のimportをデフォルトでサポートする
+　conf/importに対応するファイルを3つ追加
+
+・TXT: ROメールのデータを読み込む際に、復帰コード \r が考慮されてなかったので修正（int_mail.c）
+　     ついでにコメントを少し追加
+
+・SQL: ROメールのセーブデータをTXTからSQLにconvert対応化（converter.*, inter-converter.c）
+・SQL: save/castle.txtがconvert出来なかったので対応化（converter.*, char-converter.c）
+・SQL: 048で同梱したsql-files/drop_table.sqlの書式が間違っていたので修正
+
+----------------------------------------
+//050 [2007/01/07] by Rayce
+
+・utils.cを少し整理
+・SQL: SQLで使う変数（mysql_handle, tmp_sql）と strecpy() を utils.c, utils.h にまとめる
+       login鯖、char鯖、converterで必要となるので共通化しておくべきだと考えました
+
+----------------------------------------
+//049 [2007/01/06] by Rayce
+
+・キャラ削除時に保存してあるROメールを削除するように修正（char.c, int_mail.*）
+	mail_delete() 追加
+
+・SQL: char_athena.confの start_weapon, start_armor が反映されてなかった問題を修正（char.c）
+・SQL: status_sql_load() でステータス異常のデータをロードするとき、ゼロクリアやmysql_free_result()
+       を呼び忘れてた箇所を修正（int_status.c）
+・SQL: accreg_sql_save() において文字列エスケープ用のバッファサイズが小さかったので修正
+       ついでに処理方法を少し改善（inter.c）
+・SQL: converter_athena.confで account.txt と athena.txt を指定出来るように追加
+       （char-converter.c, converter.*, login-converter.c）
+
+・SQL: クエリ発行時にエラーが発生したとき、正しいテーブル名が出力されなかった問題を修正
+・SQL: 「void*型から型変換する際にキャストを明示する」が抜けていた部分を修正
+
+----------------------------------------
+//048 [2007/01/05] by Rayce
+
+・ROメールに関する変更および修正（mmo.h, inter.c, int_mail.c, clif.c, intif.c）
+　　-> mail構造体のメンバ rates を unsigned int型に変更
+　　-> mail_data構造体のメンバ mail_num を unsigned int型に変更
+　　-> ROメールのデータ保存場所をinter_athena.confから設定出来るように追加
+　　　 mail_txtにはメール全体のデータを保存するファイル名、mail_dirはメール本体のデータを格納する
+　　　 ディレクトリを指定します
+		mail_config_read_sub() 追加
+　　-> メールの削除時にfreeし忘れる可能性を修正
+		mail_txt_deletemail() 修正
+　　-> メールを削除すると最後にあるデータが消去されずに残るバグを修正
+		mail_txt_save_mail() 修正
+　　-> 受信メールがBOXにある状態でキャラチェンジをすると、チェンジ後のキャラでもそのメールを閲覧
+　　　 および添付アイテム/Zenyの取得が出来たバグを修正
+		clif_send_mailbox()
+		intif_parse_MailBoxLoad()
+
+　※clif_send_mailbox() で mail_num に0を入れて送信すると画面がクリアできるようです
+　　0だとエラーというコメントが気になりましたが、とりあえず問題なさそうなので0を許可しています
+
+・ROメールの保存をSQLに対応（int_mail.*）
+	`mail` にはメール全体の情報、`mail_data` には個人のメール本体の情報が格納されます
+	残念ながら、文字化け対策のためメール本文（body）はTXTと同じくバイナリデータに変換されます
+
+・mail_save_mail() の引数を一つ増やす
+	この関数が呼ばれるのは、メール既読もしくは添付アイテム/Zenyの取得時にデータを書き換える時だけです
+	SQLではTXTとは違い対象データをUPDATEするだけで済むので、mail_dataのindexを渡せるようにして
+	無駄な処理を行わないようにしています
+	TXTではこの引数は使われません
+
+・SQL: sql-files/Auriga048_changetable.sqlを追加、main.sqlおよびdrop_table.sqlの更新
+・SQL: 使われてないテーブル login_error, ragsrvinfo, sstatus を作成しないように削除（sql_files/mail.sql）
+
+----------------------------------------
+//047 [2007/01/02] by Rayce
+
+・path_search_real(), path_search_long_real() で参照する引数の型をcell_t型に修正（map.h, path.c）
+　path_search2() 用に CHK_NONE を追加
+・細かい修正および整形
+	battle_calc_damage()
+	battle_calc_magic_attack()
+	clif_skill_nodamage()
+	clif_guild_message()
+	pc_payzeny()
+	pc_getzeny()
+	pc_steal_item()
+
+----------------------------------------
+//046 [2007/01/01] by Rayce
+
+・白羽取り中に連打掌を使うと鯖落ちするバグを修正（unit.c）
+	reported by 16な人 in Athena Project
+
+・bcc32_make.batで「zlib.dllをコンパイルする」を有効にしてもコンパイルされなかったのを修正
+	有効にすればzlib.dllがなくても正常に起動するようになります
+・vc_make.batにzlib.dllを読み込むかどうかのスイッチを追加
+	BCCと同じくデフォルトでは無効にしておくのでコンパイルされません
+	有効に変更しない限りはVCでもzlib.dllが必要になります
+・BCCのとき、crc32.cとdeflate.cで「条件が常に真」と誤認されて警告が出るので強制的に抑制
+	__warning__ に -w-8008 を追加
+
+----------------------------------------
+//045 [2006/12/30] by Rayce
+
+・@mesでさらにオープンGM会話（黄色）が設定できるように拡張（clif.c, pc.*）
+　ただしconf/GM_account.txtでGMを一人も設定していない場合は通常発言になります
+・clif_onlymessage() でメモリリークが発生する可能性を修正（clif.c）
+
+・スクリプトエンジンに関して、038をさらに改善
+	merged from eA, thanks to FlavioJS
+	-> add_str() で search_str() を呼ぶ必要はないので修正
+	-> ハッシュのアルゴリズムを変更、SDBMを採用
+	　 分散性が向上することが確認できたのでより高速に処理されるはず
+	-> SCRIPT_HASH_SIZEを素数521に変更
+	-> hash_dump.txtに吐き出す情報の追加、および整理
+
+----------------------------------------
+//044 [2006/12/28] by Rayce
+
+・grfファイルの読み込みに関する大幅な変更と拡張（grfio.*, map.c）
+　基本的にはeAを参考にしました、thx a lot!!
+
+　　今まではgrfファイルを読み込む際に、grf内に格納されているファイル全てに対してデコード情報を保存していました。
+　　しかしサーバ側はgatとtxtファイルしか必要としないので、他のファイルに関しては情報を保存しないように変更しました。
+　　これによりメモリ使用量が約5MB近く削減されます（約40000 files × 132 = 5,280,000 byte）。
+
+	GRF version: 0x0200. Number of files: 29977. Entered files: 462.
+	               ↑                      ↑                    ↑
+	      [grfファイルのversion]           ｜                    ｜
+	                        [grf内に存在するファイルの総数]      ｜
+	                                          [実際にエントリーされたgat,txtのファイル数]
+
+　　conf/grf-files.txtの記述方式を変更し、10個までしか読み込めなかった制限を取り払います（上限127個）。
+　　詳細はconf/grf-files.txtに直接記載しているので参考のこと。
+　　またdataフォルダに置いてあるresnametable.txtを読み込んでduplicateするmapを指定できるように拡張しました。
+
+	datadir:                   → data\resnametable.txt
+		指定なしなのでgrfファイルを展開した後のファイルを自動で参照する
+	datadir: C:\Program Files\ → C:\Program Files\data\resnametable.txt
+		指定されたパスにあるresnametable.txtを読み込む
+
+　　resnametable.txtをgrfファイルから抽出し、例えば
+	dummy.gat#prontera.gat#
+　　のように記述するとdummy.gatという名前のプロンテラを作ることができるのは周知の事実ですが、
+　　これをdataフォルダに置いてパスを指定することで、grfファイルを作成することなく簡便にmapのduplicateを
+　　行うことが可能になります。
+
+　　今回の変更によりconf/grf-files.txtの機能性が向上したため、map_athena.confにある
+　　read_grf_files_txt, data_grf, sdata_grf, adata_grfキーは廃止します。
+　　今後はgrfファイルの読み込みはconf/grf-files.txtに一任されますので注意してください。
+
+　　補足事項は以下の通り
+	-> エントリテーブルを作成せずに直接 grfio_add() を呼び出して読み込み開始する
+	-> MAX_GRF_FILES, data_file構造体を削除
+	-> リソースチェックは全てのgrfファイルを解析し終えた後に行う
+	　 grfio_resourcecheck() は対象ファイル名を引数に取るように変更
+	-> filelist_adjust() は最後だけでよい
+	-> grfio_setdatafile() は不要になったので削除
+
+・上記のresnametable.txtの指定対応に伴い、012で実装したavailmapシステムは廃止（char.*, chrif.c, map.*, pc.c）
+　　availmapは全てサーバ側で制御できるため、ユーザーにパッチを配布することなくmapのコピーを作成できるという利点
+　　がありました。
+　　しかし、例えば別のMAPへワープする際に現在のMAPとduplicateされたMAPの参照元が同じだった場合、ミニMAPに表示
+　　されるPTメンバーのドットが消えずに残ったりするという気持ち悪さがありました。
+　　もちろん修正することは可能でしたが、resnametable.txtを利用する方が遥かにスマート（/whereも正常に働くし）だと
+　　判断したため、システムそのものを白紙に戻すことに決めました。
+　　今後はresnametable.txtに必要な情報を追加し、ユーザーに配布する形式を取ってください。
+
+----------------------------------------
+//043 [2006/12/27] by Rayce
+
+・042のキャストの明示が抜けている箇所を修正
+・storage, guild_storage構造体のメンバ storage を store_item に名称変更（mmo.h）
+・アイテムが製造武器、名前入り、ペット情報埋め込み済みかどうかを判定するマクロ itemdb_isspecial() を追加
+	merged from eA
+
+・せっかく作ったので、ハッシュの計算結果をダンプするコードを追加しておく（script.c）
+	script.cにある DEBUG_HASH のコメントアウトを外すと、サーバ終了時にstr_dataに関する情報を
+	hash_dump.txtに書き出すようになります。
+	これは元々038で行ったスクリプトの解析速度の高速化を検証するために作ったデバッグ用のコード
+	でしたが、もし利用者が自分の環境に合わせて速度を改善したい場合にはこれを用いて SCRIPT_HASH_SIZE
+	の最適値を見積もることができます。
+	特に独自に作ったスクリプトがかなり巨大で多くの変数/ラベルを使っている場合は、このサイズを
+	大きくすることで読み込み速度が向上する可能性があります。
+
+----------------------------------------
+//042 [2006/12/27] by Rayce
+
+・void*型から型変換する際はキャストを明示するように修正
+・C++の予約語である classやnew キーワードを別の名称に変更
+・login-converter.cで malloc.h のインクルードがなくてエラーを起こしていた問題を修正
+
+----------------------------------------
+//041 [2006/12/26] by Rayce
+
+・各職に設定可能なスキルツリーのサイズを MAX_SKILL_TREE として定義、デフォルトは100（pc.h）
+・ホムのスキルツリーのサイズを MAX_HOMSKILL_TREE として定義、デフォルトは16（homun.h）
+・スキルツリー関連でバッファオーバーフローを起こす可能性を修正（homun.c, pc.c）
+
+・属性を示す定数を ELE_*** として定義（map.h）
+　属性に関連する値を気付いた範囲で置き換え
+　現在は無(0)〜不死(9)までしかありませんが、拡張要素でさらに種類を（19まで）増やしてもある程度
+　正常に作動することを考慮して部分的に修正
+
+・全体的に細かい修正
+・doc/db_ref.txtのhomun_db.txtに関する記述が古いままだったので追記
+
+----------------------------------------
+//040 [2006/12/26] by Rayce
+
+・malloc, calloc, realloc, strdup, free を全て aMalloc, aCalloc, aRealloc, aStrdup, aFree に置換
+　#define による置き換えはそのままですが、出来る限りこれらのマクロを利用すること
+
+・「unsigned と signed の比較」で警告が出る部分を修正
+	BCC: -w-7035 を bcc32_make.batより削除
+	VC : /wd4018 を vc_make.batより削除
+
+----------------------------------------
+//039 [2006/12/25] by Rayce
+
+・gccでコンパイルする際、038においてscript.hで警告が出力されるので修正（atcommand.c, script.*）
+	script_read_vars(), script_write_vars() の引数変更
+
+・scriptのdo-while構文を少しだけ修正
+・038でコメントアウトした aRealloc を有効に戻す（サイズ縮小される可能性を考慮して）
+
+----------------------------------------
+//038 [2006/12/25] by Rayce
+
+・スクリプトの解析速度を高速化（script.c）
+　　SCRIPT_HASH_SIZEを定義し、文字列のハッシュサイズを16から512に拡張
+　　parse_script() の script_buf を aCalloc → aMalloc に置き換え
+　　parse完了時の aRealloc をコメントアウト（サイズ縮小されないので意味がない）
+　　search_str() と add_str() の改善
+	-> 今までは小文字で検索し、見つからなかったらそのままの文字で検索し直すという手法だったため
+	　 小文字で登録されてないものは検索時間が無駄に必要となる状態でした。
+	　 そこで小文字としてハッシュ計算し、strcmpiで文字列の照合を行うようにしました。
+
+　※デフォルトで付属のscript全てを読み込ませた場合、現時点でstr_dataは約3300くらいあります。
+　　ハッシュサイズが16だとcollisionが多すぎなので拡張することにしました。
+　　512だと外部ハッシュリストに繋がるのが多くても20程度なのでresonableな値だと判断しました。
+
+　※今までは @Buf, @BUF のみがスクリプトに記述されていた場合（全部小文字の @buf は書かれていない時）、
+　　@Bufと@BUFが別の変数として扱われるという奇妙な現象が起こっていました。
+　　今後はスクリプトの仕様に完全に従う形で、全ての変数/定数/関数/ラベルを小文字として扱うようにします。
+
+　※簡単で非常に荒い実験ですが、読み込み速度が40%近く高速化されていることを確認しました。
+　　初期化時だけでなく add_str() を呼び出すスクリプト命令/関数においても高速化されていることが見込まれます。
+
+・@readvars, @writevarsの修正（atcommand.c, script.*）
+	-> データ取得と保存部分のみscript.cに記述し、文字列解析部分はatcommand.cに記述する
+	-> 変数が登録されているかどうかのチェックは search_str() を利用するように高速化
+	-> C_PARAMとC_INTは配列指定 [] があるときは参照できないように修正
+	-> 書き込み時に定数を書き換えてしまう危険性を修正
+	-> typeの書き換えを行わないように巻き戻し（C_NOPのままで問題ない）
+
+　※atcommand_vars_sub(), script_check_variable(), script_read_vars(), script_write_vars() 追加
+　※script_operate_vars() の削除
+
+----------------------------------------
+//037 [2006/12/24] by Rayce
+
+・NPCファイルの読み込み時に、MAP名のチェックを強化する（npc.c）
+・スクリプトエンジンの改善（script.c）
+	-> スクリプトのparse時にエラーが発生した場合、エラー箇所を正しく出力するように修正
+	-> check_script_buf() を expand_script_buf() に改名し、バッファサイズの拡張を行うだけの関数に変更
+	-> 不要なコメントアウト部分を抹消
+	-> getelementofarray関数の処理改善
+	　 頻繁に使われる可能性の高い1次元の配列に関しては、多次元配列をサポートしたAthena2099より前の方法
+	　 に近い形にして高速化を図っています
+	-> getcharid関数で引数の値の範囲チェックが抜けていたので修正
+	-> if, else-if, switch, while, do-whileの後には必ず () を付けることを強制する
+
+　※以下のようなコードは今後エラーとして扱われます
+	if Sex mes "true"; close;
+　　C言語ライクなスクリプトを指向するため、必ず if(Sex) のように () を付けなければなりません
+
+・上記変更に伴ってエラーが出るNPCスクリプトの修正
+	script/npc/town/npc_lighthalzen.txt
+
+・pvp_nopenaltyという存在しないmapflagを削除（script/mapflag/mapflag.txt）
+	022でmapflag系の整理を行った際に存在しないmapflagを指定した場合には警告を出すように強化
+	してましたが、mapflagファイル自体の修正が抜けてました
+・kh_dun02.gatのmapflagからnoteleportが欠けてたので修正
+・conf/map_athena.confに035で追加されたnpc_event_halloween.txtの記述が抜けてたので追記
+
+----------------------------------------
+//036 [2006/12/20] by Rayce
+
+・定数の追加と精錬に関する拡張（map.h, pc.h）
+	MAX_WEAPON_LEVEL : 武器Lvの最大値でデフォルトは4
+	MAX_REFINE : 最大精錬値でデフォルトは10
+	WT_MAX : 武器タイプの最大値、自動的に設定される
+
+　※Lv5以上の武器を追加したい場合はMAX_WEAPON_LEVELの値を増やし、refine_dbの行を書き加えてください
+　　+11以上の精錬を設定したい場合はMAX_REFINEの値を増やし、refine_dbのLv10の成功確率の次の列に確率を書き加えてください
+
+・status.cでデータベースを読み込む変数の見通しをよくするための変更
+	-> refine_db.txtに利用する変数（refinebonusとpercentrefinery）をまとめてrefine_db構造体とする
+	-> job_db1.txt, job_db2.txt, job_db2-2.txtで利用する変数群をまとめてjob_db構造体とする
+	-> status_getrefinebonus() を status_get_overrefine_bonus() に改名して、過剰精錬ボーナスを返す
+	　 ためだけの関数に変更
+	-> status_calc_pc() で最大HP,SPを計算する部分を少し整理
+
+・+10装備に対してスクリプトのgetequippercentrefinery関数を実行すると、バッファオーバーフロー
+　（最悪の場合サーバクラッシュ）が発生するバグを修正
+・@reloadstatusdbを実行した際に、job_db1.txtのHP係数の値を変更しても最大HPが正しく再計算されない問題を
+　修正するために、status_calc_sigma() を status_readdb() 内に取り込み
+・スパノビの魂で装備可能になる武器LvをLv4以上に拡張（pc.c）
+
+----------------------------------------
+//035 [2006/12/19] by Rayce
+
+・AthenaProject2266よりmerge, thanks to Blazeさん
+　以下Readmeをそのまま転載
+	・忍者・ガンスリンガーのJOBEXPテーブルLv49〜更新（exp.txt）
+	・テコン系列のHP・SP係数など修正（job_db1.txt）
+	・item_fabox.txt、item_arrowtype.txt、mob_boss.txt更新
+	・ハンター転職員の座標を修正（npc_job_11hunter.txt）
+	・ジョンダ職員からカートを借りられない不具合を修正（npc_misc_zonda.txt）
+	・コモドクエスト修正（npc_town_comodo.txt）
+	・アインブロッククエスト修正と料理人クエスト追加（npc_town_einbroch.txt）
+	・2006ハロウィンイベント新規追加（npc_event_halloween.txt）
+	・神器、TheSign、タナトスクエスト関連マップのmapflagを追加（mapflag.txt）
+
+・AthenaProject2267より部分的にmerge, thanks to Cocoaさん
+　以下変更箇所のみそのまま転載
+	・リザレクションホムンクルスの詠唱を中断可能に変更(skil_db.txt)
+	・アシッドテラー、デモンストレーション、ケミカルチャージのディレイ追加(skill_cast_db.txt)
+
+----------------------------------------
+//034 [2006/12/19] by Rayce
+
+・ホムがunit_free() されるときにも status_change_clear() を呼ぶように修正（unit.c）
+・unit.cを少しだけ整理
+・SI_BREAKARMOR, SI_BREAKWEAPON, SI_MAGNUM を追加（status.h）
+・マグナムブレイク中ならSI_MAGNUMを送信するように修正（status.c）
+
+・status_change_clear() の修正
+	-> コメントアウト部分はもはや必要すらないので抹消
+	-> type=0のときにのみSC_BABYとSC_REDEMPTIOのスキップ判定を行うように変更
+	　 つまりtype=1（PC, HOMのunit_free）とtype=2（MOBのunit_remove_map）のときは全ステータス異常
+	　 を強制的に解除するということになります
+	-> sc_countを0にしないように修正
+
+・Himmel氏発案のGMハイドの改造をmerge, thx a lot!!（atcommand.c, battle.*, clif.c）
+	battle_athena.confにgm_perfect_hideを追加しました。デフォルトはno。
+	yesにすると@hideが完全なインビジブルモードとなり、ツールによって姿が検出されなくなります。
+	@hideでハイドした際は一旦キャラクターを消滅させ、解除時に再度出現パケットを送信しています。
+	これによりハイドの瞬間に位置を悟られることを防止し、また出現の際に座標がズレるのを解消しています。
+
+----------------------------------------
+//033 [2006/12/17] by Rayce
+
+・グラウンドドリフトをファイアスフィアで設置した場合、吹き飛ばすときにSAB_NODAMAGEを入れるように修正
+	skill_additional_effect() が呼ばれるのはダメージ発生後なので、clif_blown() で飛ばすと位置ズレ
+	を引き起こす可能性があるためです
+
+・デスペラード修正
+	5x5の範囲にランダムでオブジェクトが10回発生する、オブジェクトの攻撃範囲は3x3
+	ウォーターボールとメテオストームのロジックを組み合わせてやってます
+
+・アローシャワー、デスペラード、グラウンドドリフトは発動時に矢/弾を消費するように修正（battle.c, skill.c）
+	敵が範囲内に居なくても消費されるようになります
+	特にグラウンドドリフトは敵がヒットしたときに弾が減るという奇妙な現象が解消されます
+	battle_skill_attack() ではなく自前で battle_delarrow() を呼び出すことで処理するように変更しています
+
+----------------------------------------
+//032 [2006/12/16] by Rayce
+
+・status.cでコンパイル時に警告が出てたので修正（status.c）
+・スキルユニットが罠かどうかを判定する skill_unit_istrap() を用意（skill.h）
+・アンクルに敵が乗った状態で自動鷹が発動するとダメージが分散してしまう問題を修正（skill.c）
+・battle_athena.confにtrap_is_invisibleを追加（battle.*, clif.c）
+	yesにすると設置した罠が見えないようになります、merged from eA
+
+----------------------------------------
+//031 [2006/12/16] by Rayce
+
+・凍結、石化、睡眠を解除する処理をまとめた status_change_attacked_end() を用意（battle.c, skill.c, status.*）
+・ハイド状態を解除する処理をまとめた status_change_hidden_end() を用意（homun.c, mob.c, pc.c, status.*）
+・スキルユニットのIDを定数 UNT_*** として定義する（skill.*）
+	merged from eA
+
+・グラウンドドリフトの暫定修正（battle.c, clif.c, skill.c）
+	-> clif.cで弾薬の種類に応じて見かけを変えるのではなく、実際にスキルユニットIDを変えるように修正
+	-> 足元置き、重ね置き可能にしてみる
+	-> BF_WEAPONではくBF_MISCとして扱うようにしてみる
+	　 スキルユニットからの攻撃を武器スキルとして扱うとダメージディレイが異常に遅れたり
+	　 矢のATKが加算されたりするなど不可思議なことが起こり得るので罠と同じ扱いにしておきます
+	-> battle_calc_attack() および skill_additional_effect() に引数を渡すとき、グラウンドドリフトだけは
+	　 スキルユニットのIDが必要になるのでsrcの代わりにdsrcを渡すようにする
+	-> 100%ダメージを属性込みで計算したあと、固定部分を加算してさらに無属性で属性補正するように修正
+	-> ウィンドスフィアならスタン、ダークスフィアなら盲目、ポイズンスフィアなら毒、アイススフィアなら凍結
+	　 の効果が追加されるように修正、確率は不明なので基本50%で設定
+	-> ファイアスフィアなら必ず3セル吹き飛ぶように修正
+
+---------------------------------------
+//030 [2006/12/13] by Rayce
+
+・@mesで従来のギルド会話、オープン会話に加えてパーティ会話が選択できるように拡張（clif.c）
+・Athena1881以前の古い形式のキャラクターセーブデータは今後サポートしないようにする
+・conf/char_athena.confで、キャラ作成時に持たせる武器と防具を任意に設定できるように拡張（merged from Freya）
+	デフォルトではナイフとコットンシャツですが、start_weaponとstart_armorの値を変えることで
+	違うものを持たせることが可能です
+	また0にすることで初期装備を無しに設定できます。
+
+・httpd.cでAURIGA_MOD_VERSIONではなくAURIGA_REVISIONを参照するように変更
+・atn_bignumber型の定義とRETCODEをmmo.hからutils.hへ移動
+・VCの警告関連
+	pragma(disable : 4996) は削除、core.cのunlinkをremoveに置換
+	エンコード問題があるので 4819 の警告をvc_make.batで抑制するように追加
+	ついでに 4018 もvc_make.batで定義する
+
+----------------------------------------
+//029 [2006/12/13] by Rayce
+
+・Athena Projectに投稿されたRohypnolさんのパッチから、独自修正項目についてmerge, thx a lot!!
+	-> モンクの魂状態なら猛龍拳が5×5の範囲攻撃になるように修正
+	-> ビーストストレイピングはダブルストレイピング使用後2sec以内でしか使えないように修正
+	-> ビーストストレイピングが動物だけでなく昆虫種族にも使えるように修正
+	-> 以下のスキル使用時に共闘ボーナスが付くように修正、battle_join_struggle() 追加
+	　 （プロボック、気奪、マインドブレイカー、スティールコイン）
+
+・カートレボリューションの吹き飛び方向を修正
+　ターゲット以外の周囲の相手は、発動者ではなくターゲットとの位置関係で飛ぶ方向を決める
+
+----------------------------------------
+//028 [2006/12/12] by Rayce
+
+・武器修理についてeAを参考して修正（clif.c, skill.*）
+	-> メニュー選択後に射程内に対象が居ない場合は失敗するように修正
+	-> 成功したときのみエフェクトを出すように修正
+	-> clif.cでは判定を行わず、全てskill_repair_weapon() 内で処理するように変更
+	-> skill_can_repair() は skill_repair_weapon() に吸収したので削除
+	-> 処理方法の改善
+
+・向き判定用の配列 dirx[], diry[] をmap.cに集める（homun.c, map.*, pc.c, pet.c, skill.c, unit.c）
+・unit_skillcastcancel() に詠唱妨害可能かどうかの判定を取り込む
+　引数に2を指定すれば、関数内部でフェンカードやGvGマップかなどを調べます
+
+----------------------------------------
+//027 [2006/12/11] by Rayce
+
+・conf/grf-files.txtでdata, sdata, adataの制限を取り払うように拡張（grfio.*, map.c）
+	-> MAX_GRF_FILES（デフォルトでは10個）まで読み込み可能
+	-> : の前の名前は15文字以内で任意に指定することができます
+	　 同じ名前がある場合は下に記述されたもので上書きされます
+	-> 行頭に // を入れるとコメントアウトとして扱われます
+	-> map_athena.confの方はdata, sdata, adata固定のままです
+	　 grf-files.txtを利用することを推奨します
+
+----------------------------------------
+//026 [2006/12/11] by Rayce
+
+・db/produce_db.txtの拡張をAthena Projectの投稿分からmerge, thanks to Rohypnolさん（skill.*）
+	-> dbに新しくFixPerの項目を挿入
+	　 基本成功確率にこの値を加算することで確率の補正を個別に設定します
+	-> skill_produce_db構造体から使われてないメンバ trigger を削除し、perを追加
+	-> skill.hに製造グループ定数 PRD_*** を追加
+	　 製造の種別はスキルIDではなくこのグループ定数で分類する
+	-> battle_athena.confの以下3項目が全く利用されてなかったので修正
+		scroll_produce_rate, making_rate, scroll_item_name_input
+	-> クリエイトコンバーターは100%成功にしておく
+	　 db/produce_db.txtのFixPerを10000に設定しただけで、計算式自体はskill.cに残してます
+	-> オリデオコン/エルニウム作成は本鯖にはない機能なので、ItemLvを1003に変更しておく
+	-> 説明についてはdoc/db_ref.txtに記載
+
+・012のMAPコピー機能の追加以後、担当MAPを決める処理が誤作動を起こしそうな気がしたので少し修正（map.h）
+・login.cから使われてない変数 m_start, gm_last を削除（login.c）
+
+----------------------------------------
+//025 [2006/12/09] by Rayce
+
+・製造系の修正をAthena2262-fix4よりmerge、thanks to T.Nさん（clif.c, skill.*）
+	-> skill_produce_mix() から確率計算部分を切り離して skill_calc_produce_rate() とする
+	-> 同様にファーマシー成功時のランキング計算部分を切り離して skill_am_ranking_point() とする
+	-> skill_can_produce_mix() はnameidではなくインデックスを直接受け取るように変更し、検索の無駄を省く
+	-> トワイライトファーマシーで成功個数/ランキングを一度に獲得するように修正
+	-> トワイライトファーマシー成功後、重量オーバーになってしまう場合は地面に落ちずに消滅するように
+
+----------------------------------------
+//024 [2006/12/08] by Rayce
+
+・pc_dead() でのデスペナルティ処理を最適化（pc.c）
+・カオティックベネディクションのスキルLvが11以上のときサーバクラッシュする問題を修正（skill.c）
+・battle_athena.confでresurrection_expを設定していたとき、JobExpの計算が間違っていたバグを修正（skill.c）
+・レデムプティオで取得できる経験値の計算において、battle_athena.confのdeath_penalty_typeの設定が
+　正しく反映されてなかったバグを修正（skill.c）
+・経験値計算処理は出来るだけdouble型ではなくatn_bignumber型を利用するように修正
+・skill_castend_nodamage_id() を少し整形
+
+----------------------------------------
+//023 [2006/12/08] by Rayce
+
+・setmapflag命令の機能拡張
+	const.txtに記載されているマップフラグ全てをこの命令で設定できます。
+	mf_nosave, mf_baseexp_rate, mf_jobexp_rate, mf_pvp_nightmaredrop, mf_gvg_nightmaredrop, mf_pk_nightmaredrop
+	については更に引数を指定することで必要な情報を設定します。
+・setmapflag命令でナイトメアモード用の設定を行うために npc_set_mapflag_sub() を利用するので
+　staticを外してnpc.hで宣言するように変更
+・setmapflagnosave命令は不要になったので抹消
+
+・removemapflag命令の機能拡張
+	ナイトメアモード系を削除する場合には該当マップのドロップリストを削除し、
+	空き詰め処理を行います。
+
+・checkmapflag関数の追加
+	指定マップに該当のmapflagが設定されているかどうかを調べます。
+	mf_baseexp_rate, mf_jobexp_rateの場合には設定した経験値取得倍率が返ってきます。
+	ナイトメアモード系のドロップリストに関する情報は取得できません。
+
+・上記を実装するに当たり、処理を一括でまとめたかったので変数にビットフィールドを使わないように変更
+	全てint型にして、script_conv_mapflag() でアドレスを取得できるようにしています。
+	base_exp_rateとjob_exp_rateをflag構造体のメンバとして取り込み。
+
+　※checkmapflag関数はgetpkflag関数の上位互換版です。
+　　if(getpkflag("this")) は if(checkmapflag("this",mf_pvp) || checkmapflag("this",mf_gvg))
+　　と等価ということになります。。
+　　マップフラグに応じてスクリプトの挙動やアイテムの効果を変化させたいときなどに。
+
+----------------------------------------
+//022 [2006/12/07] by Rayce
+
+・mapflag関連の最適化や機能追加
+　（atcommand.c, map.*, mob.c, npc.*, pc.c, script.c, skill.c）
+	-> mapflagを設定する処理をまとめて npc_set_mapflag() を用意
+	　 スクリプトからの読み込みと@mapflagからの読み込みで共用します
+	-> base_exp_rateとjob_exp_rateで負の値を設定しても取得経験値倍率が0にならなかった問題を修正
+	-> MF_***系定数をscript.cからmap.hへ移動
+	-> map_data構造体内のdrop_list構造体に drop_flag メンバを追加
+	　 Pv, Gv, PK でドロップリストを共存させるためのものです
+	-> ナイトメアモードの場合のアイテムドロップ処理をまとめて pc_nightmare_drop() を用意
+	　 処理がゴチャゴチャしてたので書き直し
+	-> MAX_DROP_PER_MAP の値が大きすぎるので、48 → 8 に縮める
+	　 越えてしまった場合は「drop list is full」が出力されます
+	　 ナイトメアモードで多くのアイテムIDを設定したい場合にはこの値を大きくしてください
+	-> PKフィールドをナイトメアモードに一括変更するとき（map_athena.confのmap_pk_nightmaredrop有効時）
+	　 drop_listに空きがない場合はモード設定しないように変更
+	-> 存在しないマップフラグをスクリプトに書いていた場合は警報が鳴るように
+	-> 利用価値が低いので map_check_normalmap() を削除
+	-> 以下の4つのマップフラグをスクリプトから設定できるように
+		fireworks, cloud1, cloud2, cloud3
+	-> ついでなので新しく gvg_nightmaredrop を追加
+	　 シーズモードで且つアイテムをドロップする特殊なMAPを作ることができます
+	-> db/const.txtを変更
+	-> doc/script_ref.txt更新
+
+・pc_damage() から死亡処理を切り離して pc_dead() を用意（pc.c）
+・ALT+Gをしたときギルドエンブレムが時々表示されないバグを多分修正（clif.c）
+	merged from eAthena, thx a lot!!
+
+----------------------------------------
+//021 [2006/12/06] by Rayce
+
+・キャラIDは出来るだけsd->char_idではなくsd->status.char_idを参照するように修正
+　sd->char_idは認証用に使うだけに留める
+・スクリプト解析エンジンについてeAthenaより一部merge（script.c）
+
+・doc/script_ref.txt更新
+・db群の更新
+	thanks to huge cgi
+
+----------------------------------------
+//020 [2006/12/06] by Rayce
+
+・ブロックIDの定義が各ファイルに散らばってて把握しずらいのでmmo.hに集める
+	-> MIN_FLOORITEM を追加、MAX_FLOORITEM をmap.hから移動
+	-> START_ACCOUNT_NUM, END_ACCOUNT_NUM をlogin.hから移動
+	-> START_NPC_NUM, END_NPC_NUM をnpc.hから移動
+
+・clif_parse_WantToConnection() における不正パケットのチェックを強化（chrif.c, clif.c）
+	-> 送られてきたアカウントIDが不正な値でないかチェックする
+	　 （例えばIDの値がMAX_FLOORITEM以内だと、存在しているのに map_id2sd() で検索されないキャラが出来る）
+	-> Sexの不正チェックを chrif_authreq() から移動
+	-> session_dataをcallocする前に判定は行う、不正だった場合はタイムアウトで落とす
+	-> 「invalid Account ID !!」および「invalid Sex !!」が出力された場合は、
+	　 不正なアクセスが行われたことを意味します
+
+・一部の weapontype1, weapontype2 変数への代入について、0を WT_FIST に置換（pc.c）
+・map.cを少しだけ整形
+
+・scriptのchangebase命令で、職業IDが22（ウェディング）および26（拳聖2）のときは武器を外す処理が含まれていたが
+　この部分をコメントアウト（script.c）
+	装備を外すとHPやSPが減少する効果（bSPPenaltyUnrig等）を持つ装備品を装備している状態（三葉蟲カード等）で、
+	EquipScriptに changebase 22; が記述された装備品（ウェディングドレス等）を装備すると
+	HPとSPが共に0になり死亡してしまう現象を修正するための処置です。
+	武器を外す処理を省いてもウェディング状態のときは clif_changelook() で武器の表示をしないように処置される
+	ためクライアントエラーにはなりません。
+
+　※詳細
+	上記の例の場合、呼び出される主な関数は以下の通り。
+	pc_equipitem() → status_calc_pc() → run_script() → buildin_changebase() → pc_unequip() → pc_heal()
+	bSPPenaltyUnrigの効果により装備の解除時に pc_heal() が呼ばれますが、status_calc_pc() ではmax_hpの値は
+	まだ計算されていない状態なので max_hp = 0 です。
+	従って pc_heal() で最初に呼ばれる pc_checkoverhp() によってHPが0にされてしまいます。
+
+----------------------------------------
+//019 [2006/12/05] by Rayce
+
+・mob_dead() の処理改善および整形
+・ホムがMVPを取ったときのMVP経験値に対しても battle_athena.conf の master_get_homun_base_exp
+　の倍率を適用するように修正（mob.c）
+
+・一部のスキルの倍率計算において、double型ではなくatn_bignumber型を使うように変更（battle.c）
+　少しオーバーフローしやすくなってる可能性はあります…
+・battle_calc_weapon_attack() で利用するマクロ名が紛らわしいので
+　ATK_FIX → DMG_FIX, ATK_ADD → DMG_ADD に変更、新たに DMG_SET 追加（ダメージ値の置換用）
+
+・atn_bignumber型の変換指定子を統一して使えるようにマクロ BIGNUMCODE を用意（mmo.h）
+　基本的にprintf用で10進数のみ対応です。
+　用意しただけで実際のコードには今のところ出現してませんが、数値をダンプしたいとき等に利用してください。
+	printf("i = %"BIGNUMCODE, i);
+
+----------------------------------------
+//018 [2006/12/04] by Rayce
+
+・被弾共闘が入らないのを修正（pc.c）
+　応急処置的にbl.idで管理するようにはしてますが、本来ならPCの場合はキャラIDを利用すべきなので
+　いずれ修正する必要はあります
+	merged from Athena-2262, thanks to T.Nさん
+
+・doc/script_ref.txtにおいてmapflagの base_exp_rate, job_exp_rate に関して追記
+・一閃を必中に修正（battle.c）
+・mob_damage() から死亡処理の部分を切り離して mob_dead() を用意、および少し整理（mob.c）
+・mob_damage() にあるテコンミッションのターゲット選定でも無限ループに陥る可能性があったので修正（mob.c）
+
+・経験値取得系の関数において、引数をint型からatn_bignumber型に変更
+　および無駄なキャストを排除して整理し直し
+	guild_payexp(), homun_gainexp(), party_exp_share(), pc_gainexp()
+・ホムの取得経験値がオーバーフローする可能性を修正（homun.c）
+・ホムが取得した経験値を主人へ渡すときの倍率をbattle_athena.confで指定できるように変更/拡張（battle.c, homun.c）
+	master_get_homun_base_exp はデフォルトで100（%）です
+	master_get_homun_job_exp  はデフォルトで0（%）です
+
+----------------------------------------
+//017 [2006/12/01] by Rayce
+
+・battle_calc_weapon_attack() の修繕その８
+	-> 回避判定を先に行い、回避できなかったときだけ必要なダメージ計算を行うように改善
+	　 基本ダメージ計算 battle_calc_base_damage() などの処理が省略されますので、回避時の計算は
+	　 かなり改善されているものと期待します
+	-> ヒット・属性・レンジの補正は回避判定の前に集める
+	　 これら3つの要素は最終ダメージ計算 battle_calc_damage() に必要です
+	　 battle_calc_damage() は回避出来たときにも呼び出されるので、回避判定前に補正しておかなければなりません
+
+　※クリティカル時の処理をさらに改善する余地はありますが、長らく続いた修繕関連はこれでひとまず終了とします。
+
+----------------------------------------
+//016 [2006/11/29] by Rayce
+
+・ヒールと治療の助けをカイトで反射した際にもエフェクトを付ける（skill.c）
+・ローグの魂効果中はディスペル無効に修正（skill.c）
+
+・battle_calc_weapon_attack() の修繕その７
+	-> 「カードによるダメージ追加処理」「カードによる左手ダメージ追加処理」「カードによるダメージ減衰処理」
+	　 「対象にステータス異常がある場合のダメージ減算処理」の4項目は、ダメージがあるときだけ計算する
+	　 これらはダメージ倍率を計算する部分ですが、ダメージが0の場合は積を取っても結局0になるのは確定しているので
+	　 計算を行う必要はありません
+	-> スパイラルピアースのスキル倍率が間違っていたので修正、break抜け？
+	-> 細かい整形
+
+----------------------------------------
+//015 [2006/11/21] by Rayce
+
+・サーバースナップショット（version.h）
+・不要なファイルを削除
+　　conf/
+	help1.txt, help2.txt, help3.txt, help4.txt
+　　src/common/
+	zconf_win32.h, zlib_win32.h
+
+----------------------------------------
 //014 [2006/11/28] by Rayce
 
 ・mmo.hに定義されていて実体がcore.cにある状況が気持ち悪いので、eAのようにutils.c, utils.hを追加

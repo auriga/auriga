@@ -23,13 +23,13 @@ CastleID      : 砦ID、IDと砦名の関係はcastle_db.txtで設定する
 GuildID       : ギルドID
 Economy       : 商業値（Max100）
 Defense       : 防衛値（Max100）
-TriggerE      : １日に商業投資した回数（0～2）
-TriggerD      : １日に防衛投資した回数（0～2）
+TriggerE      : １日に商業投資した回数（0〜2）
+TriggerD      : １日に防衛投資した回数（0〜2）
 NextTime      : カプラへ費用を支払う時間（現在未使用）
 PayTime       : カプラに支払った時間（現在未使用）
 CreateTime    : カプラと契約した時間（現在未使用）
 VisibleC      : カプラを雇っているかどうか、0:雇ってない、1:雇用中
-VisibleG[0-7] : 0～7まで計８体それぞれガーディアンを設置しているかどうか、0:未設置、1:設置済
+VisibleG[0-7] : 0〜7まで計８体それぞれガーディアンを設置しているかどうか、0:未設置、1:設置済
                 番号と呼び出されるガーディアンの種類との関係はscript/npc/gvg/npc_gvg_monster.txtを参照すること
 
 
