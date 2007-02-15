@@ -1,4 +1,17 @@
 ----------------------------------------
+//086 [2007/02/16] by Rayce
+
+・ギルドメンバーの一覧でガンスリンガーと忍者が1_ETCと表示される問題を修正（clif.c）
+・DYNAMIC_SC_DATAがオンのとき、ストームガストの凍結挙動がおかしかったバグを修正（skill.c, status.c）
+
+・緊急回避とディフェンスの後にbreakが多分抜けていたので修正（skill.c）
+・skill_castend_nodamage_id() を少し修正
+・使われていない定数 CLASSCHANGE_BOSS_NUM を削除（mob.c）
+・mobdb_searchname() でmemcmpしないように変更（mob.c）
+・mob.cを少し整理
+・doc/client_packet.txt更新
+
+----------------------------------------
 //085 [2007/02/16] by Rayce
 
 ・キャラ名を赤文字にするパケット0x220が見つかったので実装（battle.*, clif.*, status.c）

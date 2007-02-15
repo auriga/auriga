@@ -3926,6 +3926,7 @@ int status_calloc_sc_data(struct block_list *bl)
 			md->sc_data[i].val1 = md->sc_data[i].val2 = md->sc_data[i].val3 = md->sc_data[i].val4 =0;
 		}
 		md->sc_count = 0;
+		return 1;	// calloced
 	}
 	return 0;
 }

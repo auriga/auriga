@@ -835,8 +835,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	case WZ_STORMGUST:		/* ストームガスト */
 #ifdef DYNAMIC_SC_DATA
-		status_calloc_sc_data(bl);
-		if(tsc_data == NULL)
+		if(status_calloc_sc_data(bl))
 			tsc_data = status_get_sc_data(bl);
 #endif
 		if(tsc_data) {
@@ -3265,8 +3264,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case PF_SPIDERWEB:		/* スパイダーウェッブ */
 		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
-		map_freeblock_unlock();
-		return 1;
+		break;
 
 	case AL_INCAGI:			/* 速度増加 */
 	case AL_BLESSING:		/* ブレッシング */
@@ -4442,58 +4440,39 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case CR_SLIMPITCHER://スリムポーションピッチャー
-		{
-			if (sd && flag&1) {
-				struct block_list tbl;
-				int hp = sd->potion_hp * (100 + pc_checkskill(sd,CR_SLIMPITCHER)*10 + pc_checkskill(sd,AM_POTIONPITCHER)*10 + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100;
-				hp = hp * (100 + (status_get_vit(bl)<<1))/100;
-				if (dstsd) {
-					hp = hp * (100 + pc_checkskill(dstsd,SM_RECOVERY)*10)/100;
-				}
-				tbl.id = 0;
-				tbl.type = BL_NUL;
-				tbl.m = src->m;
-				tbl.x = src->x;
-				tbl.y = src->y;
-				clif_skill_nodamage(&tbl,bl,AL_HEAL,hp,1);
-				battle_heal(NULL,bl,hp,0,0);
+		if (sd && flag&1) {
+			struct block_list tbl;
+			int hp = sd->potion_hp * (100 + pc_checkskill(sd,CR_SLIMPITCHER)*10 + pc_checkskill(sd,AM_POTIONPITCHER)*10 + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100;
+			hp = hp * (100 + (status_get_vit(bl)<<1))/100;
+			if (dstsd) {
+				hp = hp * (100 + pc_checkskill(dstsd,SM_RECOVERY)*10)/100;
 			}
+			tbl.id = 0;
+			tbl.type = BL_NUL;
+			tbl.m = src->m;
+			tbl.x = src->x;
+			tbl.y = src->y;
+			clif_skill_nodamage(&tbl,bl,AL_HEAL,hp,1);
+			battle_heal(NULL,bl,hp,0,0);
 		}
 		break;
 
 	case AM_BERSERKPITCHER:		/* バーサークピッチャー */
-		{
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,SC_SPEEDPOTION3,1,0,0,0,900000,0 );
-		}
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,SC_SPEEDPOTION3,1,0,0,0,900000,0 );
 		break;
 	case AM_CP_WEAPON:
-		sc_data = status_get_sc_data(bl);
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if(sc_data && sc_data[SC_STRIPWEAPON].timer != -1)
-			status_change_end(bl, SC_STRIPWEAPON, -1 );
-		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-		break;
 	case AM_CP_SHIELD:
-		sc_data = status_get_sc_data(bl);
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if(sc_data && sc_data[SC_STRIPSHIELD].timer != -1)
-			status_change_end(bl, SC_STRIPSHIELD, -1 );
-		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-		break;
 	case AM_CP_ARMOR:
-		sc_data = status_get_sc_data(bl);
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if(sc_data && sc_data[SC_STRIPARMOR].timer != -1)
-			status_change_end(bl, SC_STRIPARMOR, -1 );
-		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-		break;
 	case AM_CP_HELM:
-		sc_data = status_get_sc_data(bl);
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if(sc_data && sc_data[SC_STRIPHELM].timer != -1)
-			status_change_end(bl, SC_STRIPHELM, -1 );
-		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+		{
+			int type = SkillStatusChangeTable[skillid];
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			sc_data = status_get_sc_data(bl);
+			if(type >= 0 && sc_data && sc_data[type].timer != -1)
+				status_change_end(bl, type, -1);
+			status_change_start(bl,type,skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+		}
 		break;
 	case CR_FULLPROTECTION:			/* フルケミカルチャージ */
 		sc_data = status_get_sc_data(bl);
@@ -4513,20 +4492,18 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case SA_DISPELL:			/* ディスペル */
-		{
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			if( dstsd && dstsd->special_state.no_magic_damage )
-				break;
-			//ソウルリンカーは無効
-			if(dstsd && dstsd->status.class_ == PC_CLASS_SL)
-				break;
-			sc_data = status_get_sc_data(bl);
-			if(sc_data && sc_data[SC_ROGUE].timer != -1)	// ローグの魂中は無効
-				break;
-			if(atn_rand()%100 >= skilllv*10+50)
-				break;
-			status_change_release(bl,0x02);	// ディスペルによるステータス異常解除
-		}
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if( dstsd && dstsd->special_state.no_magic_damage )
+			break;
+		//ソウルリンカーは無効
+		if(dstsd && dstsd->status.class_ == PC_CLASS_SL)
+			break;
+		sc_data = status_get_sc_data(bl);
+		if(sc_data && sc_data[SC_ROGUE].timer != -1)	// ローグの魂中は無効
+			break;
+		if(atn_rand()%100 >= skilllv*10+50)
+			break;
+		status_change_release(bl,0x02);	// ディスペルによるステータス異常解除
 		break;
 
 	case TF_BACKSLIDING:		/* バックステップ */
@@ -4821,27 +4798,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case NPC_RUNAWAY:		//後退
 		if(md){
-			int check;
-			int dist=skilllv;//後退する距離
-			check = md->dir; //自分がどの方向に向いてるかチェック
-			mob_unlocktarget( md , tick);
-			if(check==0)				//自分の向いてる方向と逆に移動する
-				unit_walktoxy(&md->bl,md->bl.x,md->bl.y-dist);//そして、移動する
-			else if (check==1)
-				unit_walktoxy(&md->bl,md->bl.x-dist,md->bl.y-dist);
-			else if (check==2)
-				unit_walktoxy(&md->bl,md->bl.x+dist,md->bl.y);
-			else if (check==3)
-				unit_walktoxy(&md->bl,md->bl.x+dist,md->bl.y+dist);
-			else if (check==4)
-				unit_walktoxy(&md->bl,md->bl.x,md->bl.y+dist);
-			else if (check==5)
-				unit_walktoxy(&md->bl,md->bl.x-dist,md->bl.y+dist);
-			else if (check==6)
-				unit_walktoxy(&md->bl,md->bl.x-dist,md->bl.y);
-			else if (check==7)
-				unit_walktoxy(&md->bl,md->bl.x-dist,md->bl.y-dist);
-			}
+			int dx = dirx[md->dir] * skilllv;
+			int dy = diry[md->dir] * skilllv;
+			mob_unlocktarget(md,tick);
+			unit_walktoxy(&md->bl,md->bl.x-dx,md->bl.y-dy);	// 自分の向いている方向と逆向きに移動
+		}
 		break;
 
 	case NPC_TRANSFORMATION:
@@ -5056,11 +5017,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case NPC_HOLDWEB://#ホールドウェブ#
-		{
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(src,SkillStatusChangeTable[skillid],1,1,src->id,bl->id,skill_get_time(skillid,skilllv),0);
-			status_change_start(bl,SkillStatusChangeTable[skillid],1,2,bl->id,src->id,skill_get_time(skillid,skilllv),0);
-		}
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(src,SkillStatusChangeTable[skillid],1,1,src->id,bl->id,skill_get_time(skillid,skilllv),0);
+		status_change_start(bl,SkillStatusChangeTable[skillid],1,2,bl->id,src->id,skill_get_time(skillid,skilllv),0);
 		break;
 	case WZ_SIGHTBLASTER://サイトブラスター
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -5141,7 +5100,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case GD_REGENERATION://#激励#
-
 		if(sd){
 			int mi,range;
 			struct guild * g = guild_search(sd->status.guild_id);
@@ -5385,101 +5343,90 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case NJ_UTSUSEMI://空蝉の術
 	case NJ_NEN://念
-		{
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-		}
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
 	case HAMI_CASTLE://#キャストリング#
+		if(hd && atn_rand()%100 < 20*skilllv)
 		{
-			if(hd && atn_rand()%100 < 20*skilllv)
-			{
-				int x,y;
-				struct walkpath_data wpd;
-				struct map_session_data *sd = hd->msd;
-				if( path_search(&wpd,hd->bl.m,hd->bl.x,hd->bl.y,sd->bl.x,sd->bl.y,0) != 0 ) {
-					// キャストリングを用いた壁越え禁止
-					if(sd)
-						clif_skill_fail(sd,skillid,0,0);
-					break;
-				}
-
-				clif_skill_nodamage(&hd->bl,&sd->bl,skillid,skilllv,1);
-
-				x = hd->bl.x;
-				y = hd->bl.y;
-
-				unit_movepos(&hd->bl,sd->bl.x,sd->bl.y,0);
-				unit_movepos(&sd->bl,x,y,0);
-
-				map_foreachinarea(skill_chastle_mob_changetarget,hd->bl.m,
-						  hd->bl.x-AREA_SIZE,hd->bl.y-AREA_SIZE,
-						  hd->bl.x+AREA_SIZE,hd->bl.y+AREA_SIZE,
-						  BL_MOB,&hd->msd->bl,&hd->bl);
+			int x,y;
+			struct walkpath_data wpd;
+			struct map_session_data *sd = hd->msd;
+			if( path_search(&wpd,hd->bl.m,hd->bl.x,hd->bl.y,sd->bl.x,sd->bl.y,0) != 0 ) {
+				// キャストリングを用いた壁越え禁止
+				if(sd)
+					clif_skill_fail(sd,skillid,0,0);
+				break;
 			}
+
+			clif_skill_nodamage(&hd->bl,&sd->bl,skillid,skilllv,1);
+
+			x = hd->bl.x;
+			y = hd->bl.y;
+
+			unit_movepos(&hd->bl,sd->bl.x,sd->bl.y,0);
+			unit_movepos(&sd->bl,x,y,0);
+
+			map_foreachinarea(skill_chastle_mob_changetarget,hd->bl.m,
+					  hd->bl.x-AREA_SIZE,hd->bl.y-AREA_SIZE,
+					  hd->bl.x+AREA_SIZE,hd->bl.y+AREA_SIZE,
+					  BL_MOB,&hd->msd->bl,&hd->bl);
 		}
 		break;
 	case HVAN_CHAOTIC://カオティックベネディクション
-		{
-			if(hd){
-				//HOM,PC,MOB
-				struct block_list* heal_tearget=NULL;
-				int heal = skill_calc_heal( src, 1+atn_rand()%skilllv );
-				static const int per[5][2]={{20,50},{50,60},{25,75},{60,64},{34,67}};
-				int n = (skilllv < 5)? skilllv-1: 4;
-				int rnd = atn_rand()%100;
-				if(rnd<per[n][0])//ホム
-				{
+		if(hd){
+			//HOM,PC,MOB
+			struct block_list* heal_tearget=NULL;
+			int heal = skill_calc_heal( src, 1+atn_rand()%skilllv );
+			static const int per[5][2]={{20,50},{50,60},{25,75},{60,64},{34,67}};
+			int n = (skilllv < 5)? skilllv-1: 4;
+			int rnd = atn_rand()%100;
+			if(rnd<per[n][0])//ホム
+			{
+				heal_tearget = &hd->bl;
+			}else if(rnd<per[n][1])//主人
+			{
+				if(!unit_isdead(&hd->msd->bl))//生存
+					heal_tearget = &hd->msd->bl;
+				else
 					heal_tearget = &hd->bl;
-				}else if(rnd<per[n][1])//主人
-				{
-					if(!unit_isdead(&hd->msd->bl))//生存
-						heal_tearget = &hd->msd->bl;
-					else
-						heal_tearget = &hd->bl;
-				}else{//MOB
-					heal_tearget = map_id2bl(hd->target_id);
-					if(heal_tearget==NULL)
-						heal_tearget = &hd->bl;
-				}
-				//エフェクトでないのでヒール
-				clif_skill_nodamage(src,heal_tearget,AL_HEAL,heal,1);
-				clif_skill_nodamage(src,heal_tearget,skillid,heal,1);
-				battle_heal(NULL,heal_tearget,heal,0,0);
-				hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
+			}else{//MOB
+				heal_tearget = map_id2bl(hd->target_id);
+				if(heal_tearget==NULL)
+					heal_tearget = &hd->bl;
 			}
+			//エフェクトでないのでヒール
+			clif_skill_nodamage(src,heal_tearget,AL_HEAL,heal,1);
+			clif_skill_nodamage(src,heal_tearget,skillid,heal,1);
+			battle_heal(NULL,heal_tearget,heal,0,0);
+			hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
 	case HLIF_AVOID://#緊急回避#
 	case HAMI_DEFENCE://#ディフェンス#
+		if(hd && hd->msd && !unit_isdead(&hd->msd->bl))
 		{
-			if(hd && hd->msd && !unit_isdead(&hd->msd->bl))
-			{
-				clif_skill_nodamage(src,&hd->msd->bl,skillid,skilllv,1);
-				status_change_start(&hd->msd->bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-			}
+			clif_skill_nodamage(src,&hd->msd->bl,skillid,skilllv,1);
+			status_change_start(&hd->msd->bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		}
+		break;
 	case HAMI_BLOODLUST://#ブラッドラスト#
 	case HFLI_FLEET://#フリートムーブ#
 	case HFLI_SPEED://#オーバードスピード#
+		if(hd)
 		{
-			if(hd)
-			{
-				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				status_change_start(bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-				hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
-			}
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			status_change_start(bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+			hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
 	case HLIF_CHANGE://#メンタルチェンジ#
+		if(hd)
 		{
-			if(hd)
-			{
-				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				status_change_start(bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-				homun_heal(hd,hd->max_hp,0);
-				hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
-			}
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			status_change_start(bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+			homun_heal(hd,hd->max_hp,0);
+			hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
 	default:

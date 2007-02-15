@@ -1220,7 +1220,8 @@ R 01ea <ID>.l
 	IDは新婦のものが入る？
 R 01eb <ID>.l <X>.w <Y>.w
 	ギルドメンバ位置更新
-R 01ec
+R 01ec <?>.4B <?>.l <string>.16B
+	内部で何故か "izlude" と文字列比較が行われる
 	未調査
 S 01ed
 	スパノビが爆裂波動になるフラグを立てるパケット
@@ -1234,7 +1235,7 @@ R 01ef <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w ?.2B
 R 01f0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w ?.2B <card>.4w}.18B*
 	カプラさんに預けてある消耗品&収集品リスト
 	00a5から変更
-R 01f2
+R 01f2 <?>.l <?>.l <?>.l <?>.l <?>.w
 	未調査
 R 01f3 <ID>.l <type>.l
 	blから発生するエフェクト
@@ -1302,8 +1303,8 @@ R 020e <name>.24B <id>.l <val>.B <type>.B
 	type=21: テイミングミッションターゲット
 	type=30: 太陽と月と星の天使の初期化
 	type=40: Target HP <id>
-R 0210
-	PVPのポイント表示
+R 0210 <?>.8B <win>.l <lose>.l <point>.l
+	現在<win>勝、<lose>敗、PVPポイントは<point>です。
 S 0212 <charname>.24B
 	GMコマンド/rcにて発行。効果不明。
 S 0213 <charname>.24B

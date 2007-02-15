@@ -44,9 +44,6 @@ struct mob_db *mob_db = &mob_db_real[-MOB_ID_MIN];
 
 static int mob_dummy_class[MAX_RANDOMMONSTER];	// ランダムモンスター選択失敗時のダミーID
 
-/*	簡易設定	*/
-#define CLASSCHANGE_BOSS_NUM 21
-
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
  *------------------------------------------
@@ -68,8 +65,7 @@ int mobdb_searchname(const char *str)
 	int i;
 
 	for(i=MOB_ID_MIN;i<MOB_ID_MAX;i++){
-		if( strcmpi(mob_db[i].name,str)==0 || strcmp(mob_db[i].jname,str)==0 ||
-			memcmp(mob_db[i].name,str,24)==0 || memcmp(mob_db[i].jname,str,24)==0)
+		if( strcmpi(mob_db[i].name,str)==0 || strcmp(mob_db[i].jname,str)==0 )
 			return i;
 	}
 	return 0;
@@ -79,11 +75,12 @@ int mobdb_searchname(const char *str)
  *
  *------------------------------------------
  */
-int mobdb_checkid(const int mob_id) {
-	if (mob_id >= MOB_ID_MIN && mob_id < MOB_ID_MAX)
+int mobdb_checkid(const int mob_id)
+{
+	if (mob_id >= MOB_ID_MIN && mob_id < MOB_ID_MAX) {
 		if (mob_db[mob_id].name[0] != '\0' || mob_db[mob_id].jname[0] != '\0')
 			return mob_id;
-
+	}
 	return 0;
 }
 
@@ -223,8 +220,10 @@ int mob_once_spawn_area(struct map_session_data *sd,char *mapname,
 	m=map_mapname2mapid(mapname);
 
 	max=(y1-y0+1)*(x1-x0+1)*3;
-	if(x0<=0 && y0<=0) max=50;	//mob_spawnに倣って50
-	if(max>1000) max=1000;
+	if(x0<=0 && y0<=0)
+		max=50;	//mob_spawnに倣って50
+	else if(max>1000)
+		max=1000;
 
 	if( m<0 || amount <= 0 || (class_ >= 0 && !mobdb_checkid(class_)) )	// 値が異常なら召喚を止める
 		return 0;
@@ -1336,7 +1335,6 @@ static int mob_ai_hard(int tid,unsigned int tick,int id,int data)
  * mob のモニタリング
  *------------------------------------------
  */
-
 double mob_ai_hard_sensor(void) {
 	double ret = 100.0f;
 	if( mob_ai_hard_graph2 > 0 && mob_ai_hard_graph1 <= mob_ai_hard_graph2 ) {
@@ -1564,8 +1562,6 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 
 	nullpo_retr(0, md);	// srcはNULLで呼ばれる場合もあるので、他でチェック
 
-//	if(battle_config.battle_log)
-//		printf("mob_damage %d %d %d\n",md->hp,max_hp,damage);
 	if(md->bl.prev==NULL){
 		if(battle_config.error_log)
 			printf("mob_damage : BlockError!!\n");
@@ -2100,7 +2096,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	if(md->npc_event[0]) {
 		struct map_session_data *ssd = NULL;
 //		if(battle_config.battle_log)
-//			printf("mob_damage : run event : %s\n",md->npc_event);
+//			printf("mob_dead : run event : %s\n",md->npc_event);
 		if(sd)
 			ssd = sd;
 		else if(src && src->type == BL_PET)
@@ -2132,6 +2128,98 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	}
 
 	return 0;
+}
+
+/*==========================================
+ * ドロップ率に倍率を適用
+ *------------------------------------------
+ */
+int mob_droprate_fix(int item,int drop)
+{
+	int drop_fix = drop;
+
+	if(drop < 1) return 0;
+	if(drop > 10000) return 10000;
+
+	if(battle_config.item_rate_details==0){
+		drop_fix = drop * battle_config.item_rate / 100;
+	}
+	else if(battle_config.item_rate_details==1){
+		if(drop < 10)
+			drop_fix = drop * battle_config.item_rate_1 / 100;
+		else if(drop < 100)
+			drop_fix = drop * battle_config.item_rate_10 / 100;
+		else if(drop < 1000)
+			drop_fix = drop * battle_config.item_rate_100 / 100;
+		else
+			drop_fix = drop * battle_config.item_rate_1000 / 100;
+	}
+	else if(battle_config.item_rate_details==2){
+		if(drop < 10){
+			drop_fix = drop * battle_config.item_rate_1 / 100;
+			if(drop_fix < battle_config.item_rate_1_min)
+				drop_fix = battle_config.item_rate_1_min;
+			else if(drop_fix > battle_config.item_rate_1_max)
+				drop_fix = battle_config.item_rate_1_max;
+		}
+		else if(drop < 100){
+			drop_fix = drop * battle_config.item_rate_10 / 100;
+			if(drop_fix < battle_config.item_rate_10_min)
+				drop_fix = battle_config.item_rate_10_min;
+			else if(drop_fix > battle_config.item_rate_10_max)
+				drop_fix = battle_config.item_rate_10_max;
+		}
+		else if(drop < 1000){
+			drop_fix = drop * battle_config.item_rate_100 / 100;
+			if(drop_fix < battle_config.item_rate_100_min)
+				drop_fix = battle_config.item_rate_100_min;
+			else if(drop_fix > battle_config.item_rate_100_max)
+				drop_fix = battle_config.item_rate_100_max;
+		}
+		else{
+			drop_fix = drop * battle_config.item_rate_1000 / 100;
+			if(drop_fix < battle_config.item_rate_1000_min)
+				drop_fix = battle_config.item_rate_1000_min;
+			else if(drop_fix > battle_config.item_rate_1000_max)
+				drop_fix = battle_config.item_rate_1000_max;
+		}
+	}
+	else if(battle_config.item_rate_details==3){
+		switch(itemdb_type(item)) {
+			case 0:
+				drop_fix = drop * battle_config.potion_drop_rate / 100;
+				break;
+			case 2:
+				drop_fix = drop * battle_config.consume_drop_rate / 100;
+				break;
+			case 3:
+				if(item == 756 || item == 757 || item == 984 || item == 985 || item == 1010 || item == 1011)
+					drop_fix = drop * battle_config.refine_drop_rate / 100;
+				else
+					drop_fix = drop * battle_config.etc_drop_rate / 100;
+				break;
+			case 4:
+				drop_fix = drop * battle_config.weapon_drop_rate / 100;
+				break;
+			case 5:
+				drop_fix = drop * battle_config.equip_drop_rate / 100;
+				break;
+			case 6:
+				drop_fix = drop * battle_config.card_drop_rate / 100;
+				break;
+			case 8:
+				drop_fix = drop * battle_config.petequip_drop_rate / 100;
+				break;
+			case 10:
+				drop_fix = drop * battle_config.arrow_drop_rate / 100;
+				break;
+			default:
+				drop_fix = drop * battle_config.other_drop_rate / 100;
+				break;
+		}
+	}
+	if(drop_fix > 10000) drop_fix = 10000;
+	return drop_fix;
 }
 
 /*==========================================
@@ -2467,7 +2555,7 @@ int mob_summonslave(struct mob_data *md2,int *value,int amount,int flag)
 }
 
 /*==========================================
- *MOBskillから該当skillidのskillidxを返す
+ * MOBskillから該当skillidのskillidxを返す
  *------------------------------------------
  */
 int mob_skillid2skillidx(int class_,int skillid)
@@ -3376,7 +3464,6 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 			return 0;//正規ギルド承認がないとダメージ無し
 		else if (g && gc && guild_check_alliance(gc->guild_id, g->guild_id, 0) == 1)
 			return 0;	// 同盟ならダメージ無し
-
 	}
 
 	return 1;
@@ -3995,112 +4082,16 @@ static int mob_readskilldb(void)
 	return 0;
 }
 
+/*==========================================
+ * リロード
+ *------------------------------------------
+ */
 void mob_reload(void)
 {
-	/*
-
-	<empty monster database>
-	mob_read();
-
-	*/
-
-	/*do_init_mob();*/
 	mob_readdb();
 	mob_readdb_mobavail();
 	mob_read_randommonster();
 	mob_readskilldb();
-}
-
-/*==========================================
- * ドロップ率に倍率を適用
- *------------------------------------------
- */
-int mob_droprate_fix(int item,int drop)
-{
-	int drop_fix = drop;
-
-	if(drop < 1) return 0;
-	if(drop > 10000) return 10000;
-
-	if(battle_config.item_rate_details==0){
-		drop_fix = drop * battle_config.item_rate / 100;
-	}
-	else if(battle_config.item_rate_details==1){
-		if(drop < 10)
-			drop_fix = drop * battle_config.item_rate_1 / 100;
-		else if(drop < 100)
-			drop_fix = drop * battle_config.item_rate_10 / 100;
-		else if(drop < 1000)
-			drop_fix = drop * battle_config.item_rate_100 / 100;
-		else
-			drop_fix = drop * battle_config.item_rate_1000 / 100;
-	}
-	else if(battle_config.item_rate_details==2){
-		if(drop < 10){
-			drop_fix = drop * battle_config.item_rate_1 / 100;
-			if(drop_fix < battle_config.item_rate_1_min)
-				drop_fix = battle_config.item_rate_1_min;
-			else if(drop_fix > battle_config.item_rate_1_max)
-				drop_fix = battle_config.item_rate_1_max;
-		}
-		else if(drop < 100){
-			drop_fix = drop * battle_config.item_rate_10 / 100;
-			if(drop_fix < battle_config.item_rate_10_min)
-				drop_fix = battle_config.item_rate_10_min;
-			else if(drop_fix > battle_config.item_rate_10_max)
-				drop_fix = battle_config.item_rate_10_max;
-		}
-		else if(drop < 1000){
-			drop_fix = drop * battle_config.item_rate_100 / 100;
-			if(drop_fix < battle_config.item_rate_100_min)
-				drop_fix = battle_config.item_rate_100_min;
-			else if(drop_fix > battle_config.item_rate_100_max)
-				drop_fix = battle_config.item_rate_100_max;
-		}
-		else{
-			drop_fix = drop * battle_config.item_rate_1000 / 100;
-			if(drop_fix < battle_config.item_rate_1000_min)
-				drop_fix = battle_config.item_rate_1000_min;
-			else if(drop_fix > battle_config.item_rate_1000_max)
-				drop_fix = battle_config.item_rate_1000_max;
-		}
-	}
-	else if(battle_config.item_rate_details==3){
-		switch(itemdb_type(item)) {
-			case 0:
-				drop_fix = drop * battle_config.potion_drop_rate / 100;
-				break;
-			case 2:
-				drop_fix = drop * battle_config.consume_drop_rate / 100;
-				break;
-			case 3:
-				if(item == 756 || item == 757 || item == 984 || item == 985 || item == 1010 || item == 1011)
-					drop_fix = drop * battle_config.refine_drop_rate / 100;
-				else
-					drop_fix = drop * battle_config.etc_drop_rate / 100;
-				break;
-			case 4:
-				drop_fix = drop * battle_config.weapon_drop_rate / 100;
-				break;
-			case 5:
-				drop_fix = drop * battle_config.equip_drop_rate / 100;
-				break;
-			case 6:
-				drop_fix = drop * battle_config.card_drop_rate / 100;
-				break;
-			case 8:
-				drop_fix = drop * battle_config.petequip_drop_rate / 100;
-				break;
-			case 10:
-				drop_fix = drop * battle_config.arrow_drop_rate / 100;
-				break;
-			default:
-				drop_fix = drop * battle_config.other_drop_rate / 100;
-				break;
-		}
-	}
-	if(drop_fix > 10000) drop_fix = 10000;
-	return drop_fix;
 }
 
 /*==========================================
@@ -4126,9 +4117,12 @@ int do_init_mob(void)
 	return 0;
 }
 
+/*==========================================
+ *
+ *------------------------------------------
+ */
 int do_final_mob(void) {
 	aFree( mob_ai_hard_buf );
 	aFree( mob_ai_hard_next_id );
 	return 0;
 }
-
