@@ -724,28 +724,31 @@ L_RECALC:
 	}
 
 	//マーダラーボーナス
-	if(ranking_get_point(sd,RK_PK) >= 400)
-	{
-		sd->paramb[0]+= 5;
-		sd->paramb[1]+= 5;
-		sd->paramb[2]+= 5;
-		sd->paramb[3]+= 5;
-		sd->paramb[4]+= 5;
-		sd->paramb[5]+= 5;
+	if(battle_config.pk_murderer_point > 0) {
+		int point = ranking_get_point(sd,RK_PK);
+		if(point >= battle_config.pk_murderer_point * 4)
+		{
+			sd->paramb[0]+= 5;
+			sd->paramb[1]+= 5;
+			sd->paramb[2]+= 5;
+			sd->paramb[3]+= 5;
+			sd->paramb[4]+= 5;
+			sd->paramb[5]+= 5;
 
-		sd->atk_rate += 10;
-		sd->matk_rate += 10;
-	}else if(ranking_get_point(sd,RK_PK) >=100)
-	{
-		sd->paramb[0]+= 3;
-		sd->paramb[1]+= 3;
-		sd->paramb[2]+= 3;
-		sd->paramb[3]+= 3;
-		sd->paramb[4]+= 3;
-		sd->paramb[5]+= 3;
+			sd->atk_rate += 10;
+			sd->matk_rate += 10;
+		}else if(point >= battle_config.pk_murderer_point)
+		{
+			sd->paramb[0]+= 3;
+			sd->paramb[1]+= 3;
+			sd->paramb[2]+= 3;
+			sd->paramb[3]+= 3;
+			sd->paramb[4]+= 3;
+			sd->paramb[5]+= 3;
 
-		sd->atk_rate += 10;
-		sd->matk_rate += 10;
+			sd->atk_rate += 10;
+			sd->matk_rate += 10;
+		}
 	}
 	//1度も死んでないJob70スパノビに+10
 	if(s_class.job == 23 && sd->die_counter == 0 && sd->status.job_level >= 70){

@@ -1252,7 +1252,7 @@ int map_quit(struct map_session_data *sd)
 		if( sd->hd ) {
 			unit_free( &sd->hd->bl, 0);
 		}
-		unit_free(&sd->bl, 0);
+		unit_free(&sd->bl, 2);
 		chrif_save(sd);
 	}
 

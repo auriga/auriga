@@ -8674,6 +8674,25 @@ void clif_feel_display(struct map_session_data *sd, int skilllv)
 }
 
 /*==========================================
+ * マーダラー
+ *------------------------------------------
+ */
+void clif_send_murderer(struct map_session_data *sd,int target,int flag)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x220;
+	WFIFOL(fd,2) = target;
+	WFIFOL(fd,6) = flag;
+	WFIFOSET(fd,packet_db[0x220].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -9082,10 +9101,15 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 					else
 						strncpy(WFIFOP(fd,78), msg_txt(45), 24); // No Position
 				}
-				WFIFOSET(fd, packet_db[0x195].len);
-				break;
+				WFIFOSET(fd,packet_db[0x195].len);
+			} else {
+				WFIFOSET(fd,packet_db[0x95].len);
 			}
-			WFIFOSET(fd,packet_db[0x95].len);
+			// マーダラー
+			if(battle_config.pk_murderer_point > 0) {
+				if(ranking_get_point(ssd,RK_PK) >= battle_config.pk_murderer_point)
+					clif_send_murderer(sd,ssd->bl.id,1);
+			}
 		}
 		break;
 	case BL_PET:
@@ -9399,7 +9423,7 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 			unit_free( &sd->pd->bl, 0);
 		if( sd->hd )
 			unit_free( &sd->hd->bl, 0);
-		unit_free(&sd->bl, 0);
+		unit_free(&sd->bl, 2);
 		chrif_save(sd);
 		chrif_charselectreq(sd);
 		break;

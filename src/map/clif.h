@@ -215,6 +215,8 @@ void clif_mvp_item(struct map_session_data *sd, int nameid);
 void clif_mvp_fail_item(struct map_session_data *sd);
 void clif_mvp_exp(struct map_session_data *sd, int exp);
 
+void clif_send_murderer(struct map_session_data *sd,int target,int flag);
+
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);
 void clif_showvendingboard(struct block_list* bl, const char *shop_title, int fd);
@@ -264,7 +266,6 @@ void clif_guild_oppositionack(struct map_session_data *sd, unsigned char flag);
 void clif_guild_broken(struct map_session_data *sd, unsigned int flag);
 void clif_guild_xy(struct map_session_data *sd);
 
-
 // atcommand
 void clif_displaymessage(const int fd, char* mes);
 void clif_disp_onlyself(struct map_session_data *sd, char *mes, int len);
@@ -278,7 +279,7 @@ void clif_send0199(int map, unsigned short type);
 void clif_refine(int fd, unsigned short fail, int idx, int val);
 void clif_send_packet(struct map_session_data *sd, const char *message);
 
-//petsystem
+// petsystem
 void clif_catch_process(struct map_session_data *sd);
 void clif_pet_rulet(struct map_session_data *sd, unsigned char data);
 void clif_sendegg(struct map_session_data *sd);
@@ -288,14 +289,14 @@ void clif_pet_performance(struct block_list *bl, int param);
 void clif_pet_equip(struct pet_data *pd, int nameid);
 void clif_pet_food(struct map_session_data *sd, int foodid, unsigned char fail);
 
-//friend
+// friend
 void clif_friend_send_info( struct map_session_data *sd );
 void clif_friend_send_online(const int fd, int account_id, int char_id, int flag );
 void clif_friend_add_request(const int fd, struct map_session_data *from_sd );
 void clif_friend_add_ack(const int fd, int account_id, int char_id, char* name, unsigned short flag);
 void clif_friend_del_ack(const int fd, int account_id, int char_id );
 
-//ranking
+// ranking
 void clif_blacksmith_point(const int fd,const int total,const int point);
 void clif_alchemist_point(const int fd,const int total,const int point);
 void clif_taekwon_point(const int fd,const int total,const int point);
@@ -313,7 +314,7 @@ void clif_res_sendmail(const int fd,int flag);
 void clif_arrive_newmail(const int fd,struct mail_data *md);
 void clif_deletemail_res(const int fd,int mail_num,int flag);
 
-//homun
+// homun
 void clif_send_homdata(struct map_session_data *sd, int type, int param);
 void clif_spawnhom(struct homun_data *hd);
 void clif_send_homstatus(struct map_session_data *sd,int flag);
@@ -330,7 +331,6 @@ void do_final_clif(void);
 void do_init_clif(void);
 
 // httpd chat system
-
 struct httpd_session_data;
 void clif_webchat_message(const char* head,const char *mes1,const char *mes2);
 void clif_webchat(struct httpd_session_data* sd,const char* url);

@@ -5035,6 +5035,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.pcview_mob_clear_type = 1;
 		battle_config.party_item_share_type = 1;
 		battle_config.party_item_share_show = 0;
+		battle_config.pk_murderer_point = 100;
 	}
 
 	fp=fopen(cfgName,"r");
@@ -5487,6 +5488,7 @@ int battle_config_read(const char *cfgName)
 			{ "pcview_mob_clear_type",					&battle_config.pcview_mob_clear_type					},
 			{ "party_item_share_type",					&battle_config.party_item_share_type					},
 			{ "party_item_share_show",					&battle_config.party_item_share_show					},
+			{ "pk_murderer_point",					&battle_config.pk_murderer_point					},
 		};
 		const int max = sizeof(data)/sizeof(data[0]);
 
@@ -5715,6 +5717,8 @@ int battle_config_read(const char *cfgName)
 			battle_config.tax_rate = 100;
 		if(battle_config.steal_rate < 0)
 			battle_config.steal_rate = 0;
+		if(battle_config.pk_murderer_point < 0)
+			battle_config.pk_murderer_point = 0;
 
 		add_timer_func_list(battle_delay_damage_sub, "battle_delay_damage_sub");
 	}

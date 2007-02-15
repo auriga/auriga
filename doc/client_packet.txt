@@ -1347,10 +1347,13 @@ R 021c <point>.L <total>.L
 	アルケミランキングポイントが<point>上昇して、<total>になりました。
 S 021d <?>.l
 	/effectしてるかどうか？
-R 021f
+R 021f <ID?>.l <ID?>.l <name>.24B <kill_name>.24B <?>.l <?>.4B
+	temperタブへ情報送信
+	Killedに名前が表示されない？
 	未調査
-R 0220
-	未調査
+R 0220 <target_id>.l <flag>.l
+	マーダラーとしてキャラ名を赤文字にするかのON/OFF
+	flag=0でOFF、1でON
 R 0221 <len>.l { <?1>.w <RefineItemID>.w <?2>.9B }.13B*
 	精錬選択ウィンドウ
 S 0222 <?>.l
@@ -1568,15 +1571,15 @@ R 0287 <len>.w <point>.l { <value>.l <value>.l <0x12固定>.B <item ID>.w }.11B*
 	スペシャルアイテム販売リスト
 S 0288 <itemid>.w <amount>.w
 	スペシャルアイテム購入要求
-R 0289 <account_id>.l <type>.w
-	スペシャルアイテム取引結果？
+R 0289 <id>.l <type>.w
+	スペシャルアイテム取引結果
 	type=0 : 取引できました。
 	type=1 : NPCが存在しないため、購入に失敗しました。
 	type=2 : スペシャルアイテムシステムが正常に動作していないため、購入に失敗しました。
 	type=3 : 重量オーバーです。
 	type=4 : アイテム交換中にアイテムを購入することはできません。
 	type=5 : アイテム情報が正しくないため、購入に失敗しました。
-	type=6 : ^ff0000破棄日時: %s^000000 ポイントが不足です。
+	type=6 : Shop Pointが足りません。
 R 028a
 	未調査
 S 028b
