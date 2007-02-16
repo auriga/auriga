@@ -1,7 +1,8 @@
 # $Id: Makefile,v 1.1 2003/06/20 05:30:43 lemit Exp $
 
 CC = gcc -pipe
-PACKETDEF = -DPACKETVER=7 -DNEW_006b
+PACKETDEF = -DPACKETVER=8 -DNEW_006b
+#PACKETDEF = -DPACKETVER=7 -DNEW_006b
 #PACKETDEF = -DPACKETVER=6 -DNEW_006b
 #PACKETDEF = -DPACKETVER=5 -DNEW_006b
 #PACKETDEF = -DPACKETVER=4 -DNEW_006b
@@ -79,6 +80,9 @@ CFLAGS += -DNO_HTTPD_CGI
 
 # disable save of status change data
 #CFLAGS += -DNO_SCDATA_SAVING
+
+# output list of used variables in script
+#CFLAGS += -DDEBUG_VARS
 
 #-----------------CPU MARCH-------------------
 #GCC 3.2.x~

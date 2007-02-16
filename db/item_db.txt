@@ -1,4 +1,4 @@
-//item_db.txt＠Athena 2007/02/12 00:30:15 (JST)
+//item_db.txt＠Athena 2007/02/17 00:56:46 (JST)
 //ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine,{UseScript},{EquipScript}
 501,Red_Potion,赤ポーション,0,50,,70,,,,,1000333311,2,,,,,,{ itemheal rand(45,65),0; },{}
 502,Orange_Potion,紅ポーション,0,200,,100,,,,,1000333311,2,,,,,,{ itemheal rand(105,145),0; },{}
@@ -90,11 +90,11 @@
 588,Unknown_Item,スパゲッティ,0,100,,100,,,,,1000333311,2,,,,,,{ itemheal rand(40,70),0; },{}
 589,Unknown_Item,ピザ,0,1200,,150,,,,,1000333311,2,,,,,,{ itemheal rand(375,445),0; },{}
 590,Unknown_Item,プレッツェル,2,2,,20,,,,,1000333311,2,,,,,,{ itemheal rand(50,90),0; },{}
-591,Unknown_Item,キャビアパンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silenc; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
-592,Unknown_Item,イチゴジャムパンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silenc; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
-593,Unknown_Item,ハチ蜜パンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silenc; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
-594,Unknown_Item,サワークリームパンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silenc; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
-595,Unknown_Item,マッシュルームパンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silenc; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
+591,Unknown_Item,キャビアパンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silence; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
+592,Unknown_Item,イチゴジャムパンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silence; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
+593,Unknown_Item,ハチ蜜パンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silence; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
+594,Unknown_Item,サワークリームパンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silence; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
+595,Unknown_Item,マッシュルームパンケーキ,0,,,150,,,,,1000333311,2,,,,,,{ sc_end Eff_Blind; sc_end Eff_Sleep; sc_end Eff_Poison; sc_end Eff_Freeze; sc_end Eff_Silence; sc_end Eff_Stan; sc_end Eff_Curse; sc_end Eff_Confusion; sc_end Eff_Stone; sc_end Eff_Bleed; },{}
 596,Unknown_Item,微妙な形のストロベリーチョコ,0,,,100,,,,,1000333311,2,,,,,,{},{}
 597,Unknown_Item,微妙な味のチョコタルト,0,,,100,,,,,1000333311,2,,,,,,{},{}
 
@@ -1250,15 +1250,15 @@
 4055,Marina_Card,マリナカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEff,Eff_Freeze,500; bonus bBaseAtk,5; }
 4056,Dustiness_Card,ダスティネスカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bSubEle,4,30; bonus bFlee,5; }
 4057,Metaller_Card,メタルラカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEff,Eff_Silence,500; bonus bBaseAtk,5; }
-4058,Thara_Frog_Card,タラフロッグカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,7,30; }
-4059,Soldier_Andre_Card,兵隊アンドレカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,3,30; }
+4058,Thara_Frog_Card,タラフロッグカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,7,30; bonus2 bMagicSubRace,7,30;}
+4059,Soldier_Andre_Card,兵隊アンドレカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,3,50; bonus2 bMagicSubRace,3,50;}
 4060,Goblin_Card,ゴブリンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddRace,2,20; }
 4061,Cornutus_Card,カナトウスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bDef,1; bonus bUnbreakableArmor,0; }
 4062,Anacondaq_Card,アナコンダクカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEle,5,20; }
 4063,Caramel_Card,キャラメルカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddRace,4,20; }
 4064,Zerom_Card,ゼロムカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bDex,3; }
 4065,Kaho_Card,カホカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEle,2,20; }
-4066,Orc_Warrior_Card,オークウォリアーカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,2,30; }
+4066,Orc_Warrior_Card,オークウォリアーカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,2,30; bonus2 bMagicSubRace,2,30;}
 4067,Megalodon_Card,メガロドンカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bResEff,Eff_Freeze,2000; bonus bDef,1; }
 4068,Scorpion_Card,スコーピオンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddRace,3,20; }
 4069,Drainliar_Card,ドレインリアーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEle,1,20; }
@@ -1266,7 +1266,7 @@
 4071,Orc_Zombie_Card,オークゾンビカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bSubEle,9,30; bonus bFlee,5; }
 4072,Golem_Card,ゴーレムカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bBaseAtk,5; bonus bUnbreakableWeapon,0; }
 4073,Pirate_Skel_Card,パイレーツスケルカード,6,20,,10,,,,,,,136,,,,,{},{ skill 37,5; }
-4074,BigFoot_Card,ビッグフットカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,4,30; }
+4074,BigFoot_Card,ビッグフットカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,4,30; bonus2 bMagicSubRace,4,30;}
 4075,Argos_Card,アルゴスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bResEff,Eff_Stone,2000; bonus bDef,1; }
 4076,Magnolia_Card,白蓮玉カード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEff,Eff_Curse,500; bonus bBaseAtk,5; }
 4077,Phen_Card,フェンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bNoCastCancel,0; bonus bCastrate,25; }
@@ -1275,7 +1275,7 @@
 4080,Flora_Card,フローラカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddRace,5,20; }
 4081,Hode_Card,ホードカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bSubEle,2,30; bonus bFlee,5; }
 4082,Desert_Wolf_Card,デザートウルフカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddSize,0,15; bonus bBaseAtk,5; }
-4083,Rafflesia_Card,ラフレシアカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,5,30; }
+4083,Rafflesia_Card,ラフレシアカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,5,30; bonus2 bMagicSubRace,5,30;}
 4084,Marine_Sphere_Card,マリンスフィアーカード,6,20,,10,,,,,,,136,,,,,{},{ skill 7,3; }
 4085,Orc_Skeleton_Card,オークスケルトンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEle,6,20; }
 4086,Soldier_Skeleton_Card,ソルジャースケルトンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bCritical,9; }
@@ -1312,7 +1312,7 @@
 4117,Side_Winder_Card,サイドワインダーカード,6,20,,10,,,,,,,2,,,,,{},{ if(getskilllv(48)<10){ bonus bDoubleRate,5; end; } bonus bDoubleRate,50; }
 4118,Petit_Card,プティットカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddRace,9,20; }
 4119,Bathory_Card,バースリーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bDefEle,7; }
-4120,Petit__Card,プティットカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,9,30; }
+4120,Petit__Card,プティットカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,9,30; bonus2 bMagicSubRace,9,30;}
 4121,Phreeoni_Card,フリオニカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bHit,100; }
 4122,Deviruchi_Card,デビルチカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bStr,1; bonus2 bResEff,Eff_Blind,10000; }
 4123,Eddga_Card,エドガカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bInfiniteEndure,0; bonus bMaxHPrate,-25; }
@@ -1328,9 +1328,9 @@
 4133,Daydric_Card,レイドリックカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bSubEle,0,20; }
 4134,Dracula_Card,ドラキュラカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bSPDrainRate,10,5; }
 4135,Orc_Load_Card,オークロードカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bShortWeaponDamageReturn,30; }
-4136,Khalitzburg_Card,カーリッツバーグカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,6,30; }
+4136,Khalitzburg_Card,カーリッツバーグカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,6,30; bonus2 bMagicSubRace,6,30;}
 4137,Drake_Card,ドレイクカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bNoSizeFix,0; }
-4138,Anubis_Card,アヌビスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,8,30; }
+4138,Anubis_Card,アヌビスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,8,50; bonus2 bMagicSubRace,8,50;}
 4139,Joker_Card,ジョーカーカード,6,20,,10,,,,,,,136,,,,,{},{ skill 50,1; }
 4140,Knight_Of_Abyss_Card,深淵の騎士カード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddRace,10,25; }
 4141,Evil_Druid_Card,イビルドルイドカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bDefEle,9; bonus bInt,1; bonus bDef,1; }
@@ -1355,7 +1355,7 @@
 4160,Antique_Firelock_Card,銃奇兵カード,6,20,,10,,,,,,,64,,,,,{},{ bonus bStr,2; if(getequiprefinerycnt(6)<9) end; bonus bMaxHPrate,10; bonus bMaxSPrate,10; }
 4161,Grand_Peco_Card,グランペコカード,6,20,,10,,,,,,,769,,,,,{},{ bonus3 bRevAutoSelfSpell,75,1,200; }
 4162,Grizzly_Card,グリズリーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Blind,1000; if(equippeditem(4074)) bonus2 bAddRevEff,Eff_Blind,3000; }
-4163,Gryphon_Card,グリフォンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bFlee,2; bonus bCritical,7; if(Class == 1 || Class == 7 || CLASS == 13 || Class == 14 || Class == 21) bonus3 bAutoSpell,62,5,100; }
+4163,Gryphon_Card,グリフォンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bFlee,2; bonus bCritical,7; if(Class == 1 || Class == 7 || Class == 13 || Class == 14 || Class == 21) bonus3 bAutoSpell,62,5,100; }
 4164,Gullinbursti_Card,グリンブルスティカード,6,20,,10,,,,,,,64,,,,,{},{ bonus2 bExpRate,5,10; bonus2 bJobRate,5,10; bonus2 bAddRace,5,-20; }
 4165,Gig_Card,ギグカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bDefeatSPDrainValue,4,100,5; bonus bSPPenaltyUnrig,5; }
 4166,Nightmare_Terror_Card,ナイトメアテラーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Curse,1000; if(equippeditem(4127)==0) end; bonus2 bAddRevEff,Eff_Curse,3000; }
@@ -1445,7 +1445,7 @@
 4250,Executioner_Card,エクスキューショナーカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bDef,1; bonus2 bSubSize,2,25; bonus2 bMagicSubSize,2,25; }
 4251,Elder_Card,エルダーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddGroup,5,40; }
 4252,Alligator_Card,アリゲーターカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bLongAtkDef,5; }
-4253,Alice_Card,アリスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,10,40; bonus2 bSubRace,11,-40; }
+4253,Alice_Card,アリスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,10,40; bonus2 bSubRace,11,-40; bonus2 bMagicSubRace,10,40; bonus2 bMagicSubRace,11,-40;}
 4254,Tirfing_Card,オーガトゥースカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bDef,1; bonus2 bSubSize,1,25; bonus2 bMagicSubSize,1,25; }
 4255,Orc_Leady_Card,オークレディカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddGroup,2,30; }
 4256,Orc_Archer_Card,オークアーチャーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12034,7,300; }
@@ -1506,7 +1506,7 @@
 4311,Permeter_Card,パーメットタートルカード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bSubEle,7,15; bonus2 bSubEle,9,15; }
 4312,Fur_Seal_Card,オットーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bHit,10; bonus bFlee,3; if((Class==4 || Class==8 || Class==15)==0) end; bonus2 bCriticalRace,1,9; bonus2 bCriticalRace,6,9; }
 4313,Punk_Card,パンクカード,6,20,,10,,,,,,,4,,,,,{},{ if(getskilllv(92)<5){ bonus3 bRevAutoSelfSpell,92,1,200; end; } bonus3 bRevAutoSelfSpell,92,5,200; }
-4314,Penomena_Card,ペノメナカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,0,30; }
+4314,Penomena_Card,ペノメナカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,0,30; bonus2 bMagicSubRace,0,30;}
 4315,Pest_Card,ペストカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Stone,1000; if(readparam(bInt)<77) end; bonus2 bAddRevEff,Eff_Stone,3000; }
 4316,Fake_Angel_Card,フェイクエンジェルカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bDefeatSPDrainValue,8,100,5; bonus bSPPenaltyUnrig,5; }
 4317,Mobster_Card,チンピラカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAddCriticalDamage,15; if(Class == 6 || Class == 12 || Class ==17) bonus bCritical,4; }
@@ -1532,7 +1532,7 @@
 4337,Porcellio_Card,ポルセリオカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bAtk,25; bonus bDef,-5; }
 4338,Obsidian_Card,オブシディアンカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bVit,readparam(bDex)/18; }
 4339,Mineral_Card,ミネラルカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bAtk,-25; bonus bDef,3; }
-4340,Teddy_Bear_Card,ベアドールカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,1,30; }
+4340,Teddy_Bear_Card,ベアドールカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,1,30; bonus2 bMagicSubRace,1,30;}
 4341,Metaling_Card,メタリンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bAutoSpell,215,1,500; }
 4342,Rsx_0806_Card,RSX-0806カード,6,20,,10,,,,,,,16,,,,,{},{ bonus bVit,3; bonus bUnbreakableArmor,0; bonus bNoKnockback,0; }
 4343,Mole_Card,モルデンカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bLuk,2; if(equippeditem(4281)==0 || equippeditem(4233)==0 || equippeditem(4186)==0 || equippeditem(4036)==0) end; bonus bStr,4; bonus bMaxHPrate,7; bonus bMaxSPrate,7; bonus2 bAddSkillDamageRate,42,20; if(Class!=18) end; bonus3 bAutoSelfSpell,111,1,100; }
@@ -1870,6 +1870,11 @@
 5274,Shinny_Wig,Shinny Wig,5,,,100,,1,,0,1000333311,2,768,,,306,1,{},{ bonus bSpeedAddRate,5; bonus bDef,4; skill 51,1; }
 5275,Marvelous_Wig,Marvelous Wig,5,,,100,,1,,0,1000333311,2,768,,,307,1,{},{ bonus bSpeedAddRate,5; bonus bDef,4; skill 51,1; }
 5276,Fantastic_Wig,Fantastic Wig,5,,,100,,1,,0,1000333311,2,768,,,308,1,{},{ bonus bSpeedAddRate,5; bonus bDef,4; skill 51,1; }
+5277,Unknown_Item,黄色い頭巾,5,,,100,,1,,0,991944702,2,256,,20,309,1,{},{ bonus bLuk,2; bonus bVit,2; bonus bLongAtkDef,10; }
+5278,Unknown_Item,黄色いリボン,5,,,100,,1,,0,991944702,2,256,,20,310,1,{},{ bonus bLuk,2; bonus bVit,2; bonus bLongAtkDef,10; }
+
+5800,Unknown_Item,新郎のはにかみ,5,,,50,,0,,0,1000333311,2,512,,,125,,{},{ bonus2 bSubRace,7,3; }
+5801,Unknown_Item,嫁御のリボン,5,,,100,,,,,1000333311,2,256,,,167,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; bonus2 bSubRace,7,10; bonus4 bAutoSpell,28,5,3,EAS_REVENGE|EAS_SELF|EAS_USEMAX|EAS_NOSP; }
 
 7001,Mold_Powder,カビの粉,3,680,,10,,,,,,,,,,,,{},{}
 7002,Ogre_Tooth,オーガの牙,3,658,,10,,,,,,,,,,,,{},{}
@@ -2483,7 +2488,7 @@
 7610,Unknown_Item,食べ物引換券,3,,,10,,,,,,,,,,,,{},{}
 7611,Unknown_Item,狐の象徴,3,,,100,,,,,,,,,,,,{},{}
 7612,Unknown_Item,女王狐の心臓,3,,,100,,,,,,,,,,,,{},{}
-7613,Unknown_item,小さな餅,3,,,10,,,,,,,,,,,,{},{}
+7613,Unknown_Item,小さな餅,3,,,10,,,,,,,,,,,,{},{}
 7614,Unknown_Item,特別な包装紙,3,,,10,,,,,,,,,,,,{},{}
 7615,Unknown_Item,MVPチケット,3,,,10,,,,,,,,,,,,{},{}
 7616,Unknown_Item,ミニボスチケット,3,,,10,,,,,,,,,,,,{},{}
@@ -2514,6 +2519,10 @@
 7851,Unknown_Item,Wii応募券,3,,,10,,,,,,,,,,,,{},{}
 7852,Unknown_Item,Divxプレイヤー応募券,3,,,10,,,,,,,,,,,,{},{}
 7853,Unknown_Item,iPod nano応募券,3,,,10,,,,,,,,,,,,{},{}
+
+7855,Unknown_Item,ハート,3,,,10,,,,,,,,,,,,{},{}
+7856,Unknown_Item,少女の花束,3,,,50,,,,,,,,,,,,{},{}
+7857,Unknown_Item,手作り猫人形,3,,,30,,,,,,,,,,,,{},{}
 
 9001,Poring_Egg,ポリンの卵,7,20,,0,,,,,,,,,,,,{},{}
 9002,Drops_Egg,ドロップスの卵,7,20,,0,,,,,,,,,,,,{},{}
@@ -2804,7 +2813,7 @@
 
 12232,Unknown_Item,生姜パン,2,,,150,,,,,1000333311,2,,,,,,{},{}
 12233,Unknown_Item,クワス,2,,,200,,,,,1000333311,2,,,,,,{ percentheal 100,100; },{}
-12234,Unknown_Item,ビターチョコ,2,,,100,,,,,1000333311,2,,,,,,{},{}
+12234,Unknown_Item,ビターチョコ,2,20,,100,,,,,1000333311,2,,,,,,{ percentheal 25,0; },{}
 12235,Unknown_Item,ストロベリーチョコ,2,,,100,,,,,1000333311,2,,,,,,{},{}
 12236,Unknown_Item,チョコタルト,2,,,100,,,,,1000333311,2,,,,,,{},{}
 12237,Unknown_Item,チョコレートの塊,2,,,100,,,,,1000333311,2,,,,,,{},{}
@@ -2882,7 +2891,41 @@
 12962,Unknown_Item,ヴェスパーコア02の箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 2697,1; },{}
 12963,Unknown_Item,ヴェスパーコア03の箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 2698,1; },{}
 12964,Unknown_Item,ヴェスパーコア04の箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 2699,1; },{}
-
+12965,Unknown_Item,エマージェンシーLv1の箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12968,1; },{}
+12966,Unknown_Item,エマージェンシーLv2の箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12969,1; },{}
+12967,Unknown_Item,エマージェンシーLv3の箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12970,1; },{}
+12968,Unknown_Item,エマージェンシーLv1,2,,,10,,,,,1000333311,2,,,,,,{ skill 10013,1; },{}
+12969,Unknown_Item,エマージェンシーLv2,2,,,10,,,,,1000333311,2,,,,,,{ skill 10013,2; },{}
+12970,Unknown_Item,エマージェンシーLv3,2,,,10,,,,,1000333311,2,,,,,,{ skill 10013,3; },{}
+12971,Unknown_Item,空間移動スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12977,10; },{}
+12972,Unknown_Item,空間移動スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12978,10; },{}
+12973,Unknown_Item,空間移動スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12979,10; },{}
+12974,Unknown_Item,空間移動スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12980,10; },{}
+12975,Unknown_Item,空間移動スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12981,10; },{}
+12976,Unknown_Item,空間移動スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12982,10; },{}
+12977,Unknown_Item,空間移動スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12978,Unknown_Item,空間移動スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12979,Unknown_Item,空間移動スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12980,Unknown_Item,空間移動スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12981,Unknown_Item,空間移動スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12982,Unknown_Item,空間移動スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12983,Unknown_Item,ペットの卵スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12989,1; },{}
+12984,Unknown_Item,ペットの卵スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12990,1; },{}
+12985,Unknown_Item,ペットの卵スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12991,1; },{}
+12986,Unknown_Item,ペットの卵スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12992,1; },{}
+12987,Unknown_Item,ペットの卵スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12993,1; },{}
+12988,Unknown_Item,ペットの卵スクロールの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 12994,1; },{}
+12989,Unknown_Item,ペットの卵スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12990,Unknown_Item,ペットの卵スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12991,Unknown_Item,ペットの卵スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12992,Unknown_Item,ペットの卵スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12993,Unknown_Item,ペットの卵スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12994,Unknown_Item,ペットの卵スクロール,2,,,10,,,,,1000333311,2,,,,,,{},{}
+12995,Unknown_Item,白ハーブの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 509,15; },{}
+12996,Unknown_Item,青ハーブの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 510,15; },{}
+12997,Unknown_Item,エルニウムの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 985,5; },{}
+12998,Unknown_Item,オリデオコンの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 984,5; },{}
+12999,Unknown_Item,古木の枝の箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 604,3; },{}
 13000,Jujube_Dagger,ナツメの短剣,4,10000,,600,39,,1,0,681533167,2,2,1,,1,1,{},{ bonus bAtkEle,4; }
 13001,Dragon_Killer,ドラゴンキラー,4,20,,900,110,,1,0,681533167,2,2,4,60,1,1,{},{ bonus bIgnoreDefRace,9; bonus2 bExpRate,9,10; bonus2 bJobRate,9,10; }
 13002,Ginnungagap,ギンヌンガガップ,4,20,,700,148,,1,0,681533167,2,2,4,70,1,1,{},{ bonus2 bAddEff,Eff_Blind,500; bonus2 bAddEff2,Eff_Blind,50; bonus bAtkEle,7; }

@@ -7,9 +7,6 @@
 // 実行過程を表示
 //#define DEBUG_RUN
 
-// 使用した変数名一覧を表示
-//#define DEBUG_VARS
-
 // ハッシュの計算結果を出力
 //#define DEBUG_HASH
 

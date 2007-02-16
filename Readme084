@@ -1,4 +1,15 @@
 ----------------------------------------
+//087 [2007/02/17] by Rayce
+
+・MakefileのPACKETVERが 8 になっていなかったのを修正
+・script.cの DEBUG_VARS の定義をコンパイルオプションにする
+	Makefile, bcc32_make.bat, vc_make.bat参照
+・AthenaProjectからのmerge漏れを補完
+	-> vc_make.batにCPU最適化スイッチ NOOPTIMIZE を追加
+	-> doc/server_build.txt追加、内容を少し加筆および修正
+・item_db.txtにtypoがあったので更新, thanks to huge cgi
+
+----------------------------------------
 //086 [2007/02/16] by Rayce
 
 ・ギルドメンバーの一覧でガンスリンガーと忍者が1_ETCと表示される問題を修正（clif.c）
