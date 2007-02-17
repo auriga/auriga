@@ -11,11 +11,11 @@
 #define _MALLOC_C_
 #include "malloc.h"
 
-// 独自メモリマネージャを使用する場合、次のコメントを外してください。
+// 独自メモリマネージャを使用しない場合、次をコメントアウトしてください
 #define USE_MEMMGR
 
 // デバッグモード（エラーチェックの強化用、通常運営ではお勧めできない）
-// #define DEBUG_MEMMGR
+//#define DEBUG_MEMMGR
 
 #ifndef USE_MEMMGR
 
@@ -196,7 +196,7 @@ struct unit_head {
 	unsigned short line;
 	unsigned short size;
 #ifdef DEBUG_MEMMGR
-	char time_stamp[24];
+	time_t time_stamp;
 #endif
 	long           checksum;
 };
@@ -266,12 +266,8 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func) {
 #endif
 		if(p != NULL) {
 #ifdef DEBUG_MEMMGR
-			{
-				// タイムスタンプの記録
-				time_t now = time(NULL);
-				memset(p->unit_head.time_stamp, 0, sizeof(p->unit_head.time_stamp));
-				strftime(p->unit_head.time_stamp, sizeof(p->unit_head.time_stamp), "%Y/%m/%d %H:%M:%S", localtime(&now));
-			}
+			// タイムスタンプの記録
+			p->unit_head.time_stamp = time(NULL);
 #endif
 			p->size            = size;
 			p->unit_head.block = NULL;
@@ -332,7 +328,6 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func) {
 #ifdef DEBUG_MEMMGR
 	{
 		size_t i, sz = hash2size( size_hash );
-		time_t now = time(NULL);
 		for( i=0; i<sz; i++ )
 		{
 			if( ((unsigned char*)head)[ sizeof(struct unit_head) - sizeof(long) + i] != 0xfd )
@@ -350,8 +345,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func) {
 		}
 		memset( (char *)head + sizeof(struct unit_head) - sizeof(long), 0xcd, sz );
 		// タイムスタンプの記録
-		memset(head->time_stamp, 0, sizeof(head->time_stamp));
-		strftime(head->time_stamp, sizeof(head->time_stamp), "%Y/%m/%d %H:%M:%S", localtime(&now));
+		head->time_stamp = time(NULL);
 	}
 #endif
 
@@ -581,10 +575,14 @@ static void memmer_exit(void) {
 				struct unit_head *head = block2unit(block, i);
 				if(head->block != NULL) {
 #ifdef DEBUG_MEMMGR
-					fprintf(
-						fp,"%04d [%s] : %s line %d size %d\n",++count,head->time_stamp,
-						head->file,head->line,head->size
-					);
+					{
+						char buf[24];
+						strftime(buf, sizeof(buf), "%Y/%m/%d %H:%M:%S", localtime(&head->time_stamp));
+						fprintf(
+							fp,"%04d [%s] : %s line %d size %d\n",++count,buf,
+							head->file,head->line,head->size
+						);
+					}
 #else
 					fprintf(
 						fp,"%04d : %s line %d size %d\n",++count,
@@ -599,11 +597,15 @@ static void memmer_exit(void) {
 	while(large) {
 		if(!fp) { fp = memmgr_log(); }
 #ifdef DEBUG_MEMMGR
-		fprintf(
-			fp,"%04d [%s] : %s line %d size %d\n",++count,large->unit_head.time_stamp,
-			large->unit_head.file,
-			large->unit_head.line,large->unit_head.size
-		);
+		{
+			char buf[24];
+			strftime(buf, sizeof(buf), "%Y/%m/%d %H:%M:%S", localtime(&large->unit_head.time_stamp));
+			fprintf(
+				fp,"%04d [%s] : %s line %d size %d\n",++count,buf,
+				large->unit_head.file,
+				large->unit_head.line,large->unit_head.size
+			);
+		}
 #else
 		fprintf(
 			fp,"%04d : %s line %d size %d\n",++count,

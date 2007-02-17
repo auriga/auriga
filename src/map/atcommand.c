@@ -3381,7 +3381,12 @@ atcommand_allskill(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	pc_allskillup(sd);
+	int flag = 0;
+
+	if (message && *message)
+		flag = atoi(message);
+
+	pc_allskillup(sd,flag);
 	clif_displaymessage(fd, msg_txt(76));
 
 	return 0;
@@ -3402,7 +3407,7 @@ atcommand_questskill(
 		return -1;
 
 	skill_id = atoi(message);
-	if (skill_get_inf2(skill_id) & 0x01) {
+	if (skill_id > 0 && skill_id < MAX_SKILL && skill_get_inf2(skill_id) & 0x01) {
 		pc_skill(sd, skill_id, 1, 0);
 		clif_displaymessage(fd, msg_txt(70));
 	}
@@ -5629,10 +5634,14 @@ int atcommand_cloneskill(
 	if ((ret = sscanf(message, "%d %d", &skillid, &skilllv)) < 1)
 		return -1;
 
+	if (skillid < 0)
+		return 0;
+
 	if (ret == 1)
 		skilllv = skill_get_max(skillid);
 
-	skill_clone(sd, skillid, skilllv);
+	if (pc_checkskill(sd,RG_PLAGIARISM) && sd->sc_data[SC_PRESERVE].timer == -1)
+		skill_clone(sd, skillid, skilllv);
 
 	return 0;
 }
@@ -5655,8 +5664,13 @@ int atcommand_cloneskill2(
 	if ((ret = sscanf(message, "%d %d", &skillid, &skilllv)) < 1)
 		return -1;
 
+	if (skillid < 0)
+		return 0;
+
 	if (ret == 1)
 		skilllv = skill_get_max(skillid);
+	if (skilllv < 0)
+		skilllv = 0;
 
 	cloneskilllv = pc_checkskill(sd,RG_PLAGIARISM);
 	sd->cloneskill_id = skillid;

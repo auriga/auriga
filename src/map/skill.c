@@ -11787,16 +11787,21 @@ int skill_abraskill(int skillid)
 	return 0;
 }
 
+/*==========================================
+ * クローンスキル
+ *------------------------------------------
+ */
 int skill_clone(struct map_session_data* sd,int skillid,int skilllv)
 {
 	struct pc_base_job s_class;
+
 	nullpo_retr(0, sd);
+	printf("called %d %d\n",skillid,skilllv);
 	//クローンスキル
-	if(!skillid || !skilllv ||
-		!pc_checkskill(sd,RG_PLAGIARISM) || sd->sc_data[SC_PRESERVE].timer != -1)
+	if(skillid <= 0 || skilllv <= 0)
 		return 0;
 	//高レベルを取得している
-	if(pc_checkskill(sd,skillid)>=skilllv)
+	if(pc_checkskill(sd,skillid) >= skilllv)
 		return 0;
 
 	s_class = pc_calc_base_job(sd->status.class_);
@@ -11809,15 +11814,16 @@ int skill_clone(struct map_session_data* sd,int skillid,int skilllv)
 		if(skillid == PR_SANCTUARY)
 		{
 			skillid = AL_HEAL;
-			if(pc_checkskill(sd,skillid)>=skilllv)
+			if(pc_checkskill(sd,skillid) >= skilllv)
 				return 0;
 		}
-		cloneskilllv=pc_checkskill(sd,RG_PLAGIARISM);
+		cloneskilllv = pc_checkskill(sd,RG_PLAGIARISM);
 		sd->cloneskill_id = skillid;
-		sd->cloneskill_lv = skilllv>cloneskilllv?cloneskilllv:skilllv;
+		sd->cloneskill_lv = (skilllv > cloneskilllv)? cloneskilllv: skilllv;
 		clif_skillinfoblock(sd);
+		return 1;
 	}
-	return 1;
+	return 0;
 }
 
 /*----------------------------------------------------------------------------

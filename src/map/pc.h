@@ -109,7 +109,7 @@ int pc_need_status_point(struct map_session_data *,int);
 void pc_statusup(struct map_session_data *sd, unsigned short type);
 int pc_statusup2(struct map_session_data*,int,int);
 void pc_skillup(struct map_session_data *sd, int skill_num);
-int pc_allskillup(struct map_session_data*);
+int pc_allskillup(struct map_session_data* sd,int flag);
 void pc_resetstate(struct map_session_data* sd);
 void pc_resetskill(struct map_session_data* sd);
 void pc_equipitem(struct map_session_data*, int n, int pos);

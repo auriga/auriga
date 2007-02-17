@@ -1,4 +1,16 @@
 ----------------------------------------
+//088 [2007/02/18] by Rayce
+
+・@allskillの修正（atcommand.c, pc,*）
+	-> battle_athena.confのplayer_skillup_limitがyesのとき全てのスキルが表示されなかった問題を解消
+	-> 引数を一つ取れるように拡張
+	   「@allskill 1」とするとbattle_athena.confのquest_skill_learnの設定に関わらず
+	   クエストスキルも取得できるようになります
+
+・クローンスキル関連の細かい修正（atcommand.c, skill.c）
+・DEBUG_MEMMGRがオンのとき、メモリ消費削減のためタイムスタンプを最適化（malloc.c）
+
+----------------------------------------
 //087 [2007/02/17] by Rayce
 
 ・MakefileのPACKETVERが 8 になっていなかったのを修正

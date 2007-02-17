@@ -3859,7 +3859,7 @@ int pc_checkskill(struct map_session_data *sd,int skill_id)
 	if(sd == NULL)
 		return 0;
 
-	if( skill_id>=10000 ){
+	if(skill_id >= GUILD_SKILLID) {
 		struct guild *g;
 		if( sd->status.guild_id>0 && (g=guild_search(sd->status.guild_id))!=NULL)
 			return guild_checkskill(g,skill_id);
@@ -3880,7 +3880,7 @@ int pc_checkskill(struct map_session_data *sd,int skill_id)
 		{
 			return skill_get_max(skill_id);
 		}else{
-			return (sd->status.skill[skill_id].lv);
+			return sd->status.skill[skill_id].lv;
 		}
 	}
 
@@ -3896,7 +3896,7 @@ int pc_checkskill2(struct map_session_data *sd,int skill_id)
 	if(sd == NULL)
 		return 0;
 
-	if( skill_id>=10000 ){
+	if(skill_id >= GUILD_SKILLID) {
 		struct guild *g;
 		if( sd->status.guild_id>0 && (g=guild_search(sd->status.guild_id))!=NULL)
 			return guild_checkskill(g,skill_id);
@@ -4605,7 +4605,7 @@ void pc_skillup(struct map_session_data *sd, int skill_num)
  * /allskill
  *------------------------------------------
  */
-int pc_allskillup(struct map_session_data *sd)
+int pc_allskillup(struct map_session_data *sd,int flag)
 {
 	int i,id;
 
@@ -4639,11 +4639,17 @@ int pc_allskillup(struct map_session_data *sd)
 		for(i=0;(id=skill_tree[s][c][i].id)>0;i++){
 			if(id == SG_DEVIL) //ここで除外処理
 				continue;
-			if(sd->status.skill[id].id==0 && (!(skill_get_inf2(id)&0x01) || battle_config.quest_skill_learn) )
-				sd->status.skill[id].lv=skill_get_max(id);
+			// flagがあるならクエストスキルも取得する
+			if(skill_get_inf2(id)&0x01 && !flag && !battle_config.quest_skill_learn)
+				continue;
+			sd->status.skill[id].id = id;
+			sd->status.skill[id].lv = skill_get_max(id);
 		}
 	}
 	status_calc_pc(sd,0);
+
+	// status_calc_pc() 内でパケット送信されない場合があるのでここでもう一度送信する必要がある
+	clif_skillinfoblock(sd);
 
 	return 0;
 }
