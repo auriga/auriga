@@ -83,10 +83,6 @@ void read_gm_account() {
 				for (account_id = start_range; account_id <= end_range; account_id++) {
 					if ((p = (struct gm_account *)numdb_search(gm_account_db, account_id)) == NULL) {
 						p = (struct gm_account*)aMalloc(sizeof(struct gm_account));
-						if (p == NULL) {
-							printf("gm_account: out of memory!\n");
-							exit(0);
-						}
 						numdb_insert(gm_account_db, account_id, p);
 					}
 					p->account_id = account_id;

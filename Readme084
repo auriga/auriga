@@ -1,4 +1,47 @@
 ----------------------------------------
+//089 [2007/02/19] by Rayce
+
+・死亡カウンタをキャラ永続変数ではなくmmo_charstatus構造体としてセーブするように変更 from Freya
+　（char.c, mmo.h, map.h, pc.c, status.c）
+	死亡カウンタは全職で利用される上、比較的頻繁に更新されるデータなので
+	キャラデータの一つとしてまとめることにしました。
+	キャラ永続変数は先頭から線形検索するため、PC_DIE_COUNTERが後方に登録されていた場合は
+	速度的に不利になるという問題があったためです。
+
+	PC_DIE_COUNTERはdb/const.txtから削除されています。
+	死亡カウンタは今後は単なるパラメータとして扱われるので、スクリプトからはDieCounterという
+	名前でアクセスしてください。
+
+	セーブデータが変更されているので特にTXTの場合は注意してください。
+	PC_DIE_COUNTERの値はセーブデータに変換されないので、各自で移行してください。
+	TXTならmannerの次の項、SQLならcharテーブルに追加されたdie_counterです。
+	移行完了したらPC_DIE_COUNTERは削除しておくと良いかもしれません。
+
+　※以下のスクリプトを使って各プレイヤーにデータをコンバートさせることも可能です。
+　　ただしbattle_athena.confでOnPCLoginラベルが利用できるように設定しておく必要があります。
+
+	-	script	Conv_DieCounter	-1,{
+	OnPCLogin:
+		if(PC_DIE_COUNTER) {
+			set DieCounter,PC_DIE_COUNTER;
+			set PC_DIE_COUNTER,0;
+		}
+		end;
+	}
+
+・db/const.txtに記載されているパラメータの内、updatestatus出来ないものの値を変更しようとすると
+　警告メッセージが出るのを抑制（pc.c）
+	例えば「set Class,0;」を実行すると clif_updatestatus() でエラー扱いになっていました。
+	今後はエラーが出なくなりますが、あくまで警告抑制であって実質何もしないコードになります。
+・細かい修正（status.c）
+
+・TXT: JOURNAL_IDENTIFIERをバージョン02に変更しておく（journal.c）
+・SQL: main.sql更新、Auriga089_changetable.sql追加
+・SQL: converter.exe対応、ただし089より古いバージョンは読み込み非対応なので
+       必ず一度089以降のTXTモードでデータをセーブしてからコンバートしてください
+・SQL: login-converter.cの細かい修正
+
+----------------------------------------
 //088 [2007/02/18] by Rayce
 
 ・@allskillの修正（atcommand.c, pc,*）

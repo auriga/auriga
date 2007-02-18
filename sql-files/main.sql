@@ -47,6 +47,7 @@ CREATE TABLE `char` (
   `option` int(11) unsigned NOT NULL default '0',
   `karma` int(11) NOT NULL default '0',
   `manner` int(11) NOT NULL default '0',
+  `die_counter` int(11) NOT NULL default '0',
   `party_id` int(11) NOT NULL default '0',
   `guild_id` int(11) NOT NULL default '0',
   `pet_id` int(11) NOT NULL default '0',

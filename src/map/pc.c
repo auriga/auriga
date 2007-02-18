@@ -1019,8 +1019,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 //	if( map_charid2nick(sd->status.char_id)==NULL )
 	map_addchariddb(sd->status.char_id,sd->status.name,sd->status.account_id,clif_getip(),clif_getport());
 
-	//スパノビ用死にカウンターのスクリプト変数からの読み出しとsdへのセット
-	sd->die_counter = pc_readglobalreg(sd,"PC_DIE_COUNTER");
+	//テコンミッションターゲットのスクリプト変数からの読み出しとsdへのセット
 	sd->tk_mission_target = pc_readglobalreg(sd,"PC_MISSION_TARGET");
 
 	//ランキング用ポイントのスクリプト変数からの読み出しとsdへのセット
@@ -4902,7 +4901,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 		status_change_end(&sd->bl,SC_CLOSECONFINE,-1);
 	if(sd->sc_data[SC_HOLDWEB].timer!=-1)
 		status_change_end(&sd->bl,SC_HOLDWEB,-1);
-	pc_setglobalreg(sd,"PC_DIE_COUNTER",++sd->die_counter);	// 死にカウンター書き込み
+	sd->status.die_counter++;	// 死にカウンター書き込み
 	status_change_release(&sd->bl,0x01);	// ステータス異常を解除する
 
 	pc_setdead(sd);
@@ -5282,10 +5281,10 @@ int pc_readparam(struct map_session_data *sd,int type)
 	case SP_ASPD:
 		val= sd->aspd;
 		break;
-	// グローバル変数保存タイプ
 	case SP_DIE_COUNTER:
-		val=sd->die_counter;
+		val= sd->status.die_counter;
 		break;
+	// グローバル変数保存タイプ
 	case SP_CLONESKILL_ID:
 		val=sd->cloneskill_id;
 		break;
@@ -5422,12 +5421,20 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 			pc_checkjoblevelup(sd);
 		}
 		break;
-	// グローバル変数保存タイプ
+
+	// paramだがupdatestatus出来ないもの
+	case SP_CLASS:
+	case SP_SEX:
+	case SP_UPPER:
+	case SP_PARTNER:
+	case SP_CART:
+		return 0;
 	case SP_DIE_COUNTER:
-		sd->die_counter = val;
-		pc_setglobalreg(sd,"PC_DIE_COUNTER",val);
+		sd->status.die_counter = val;
 		status_calc_pc(sd,0);
 		return 0;
+
+	// グローバル変数保存タイプ
 	case SP_CLONESKILL_ID:
 		sd->cloneskill_id = val;
 		pc_setglobalreg(sd,"PC_CLONESKILL_ID",val);

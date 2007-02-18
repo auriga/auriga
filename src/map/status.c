@@ -751,7 +751,7 @@ L_RECALC:
 		}
 	}
 	//1度も死んでないJob70スパノビに+10
-	if(s_class.job == 23 && sd->die_counter == 0 && sd->status.job_level >= 70){
+	if(s_class.job == 23 && sd->status.die_counter == 0 && sd->status.job_level >= 70){
 		sd->paramb[0]+= 10;
 		sd->paramb[1]+= 10;
 		sd->paramb[2]+= 10;
@@ -4923,8 +4923,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_DEATHKINGHT:	//デスナイトの魂
 		case SC_COLLECTOR:		//コレクターの魂
 			if(sd && battle_config.disp_job_soul_state_change) {
-				char output[64];
-				strcpy(output,"魂状態になりました");
+				char output[] = "魂状態になりました";
 				clif_disp_onlyself(sd,output,strlen(output));
 			}
 			break;
@@ -4935,8 +4934,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_HUNTER://#ハンターの魂#
 		case SC_HIGH://#一次上位職業の魂#
 			if(sd && battle_config.disp_job_soul_state_change) {
-				char output[64];
-				strcpy(output,"魂状態になりました");
+				char output[] = "魂状態になりました";
 				clif_disp_onlyself(sd,output,strlen(output));
 			}
 			calc_flag = 1;
@@ -4945,10 +4943,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sd) {
 				//1%で死亡フラグ消す
 				if(sd->status.base_level >=90 && atn_rand()%10000 < battle_config.repeal_die_counter_rate)
-					pc_setglobalreg(sd,"PC_DIE_COUNTER",sd->die_counter = 0); //死にカウンターリセット
+					sd->status.die_counter = 0; //死にカウンターリセット
 				if(battle_config.disp_job_soul_state_change) {
-					char output[64];
-					strcpy(output,"魂状態になりました");
+					char output[] = "魂状態になりました";
 					clif_disp_onlyself(sd,output,strlen(output));
 				}
 			}
@@ -5419,8 +5416,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			case SC_DEATHKINGHT:	//デスナイトの魂
 			case SC_COLLECTOR:		//コレクターの魂
 				if(sd && battle_config.disp_job_soul_state_change) {
-					char output[64];
-					strcpy(output,"魂状態が終了しました");
+					char output[] = "魂状態が終了しました";
 					clif_disp_onlyself(sd,output,strlen(output));
 				}
 				break;
@@ -5431,8 +5427,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			case SC_HUNTER://#ハンターの魂#
 			case SC_HIGH://#一次上位職業の魂#
 				if(sd && battle_config.disp_job_soul_state_change) {
-					char output[64];
-					strcpy(output,"魂状態が終了しました");
+					char output[] = "魂状態が終了しました";
 					clif_disp_onlyself(sd,output,strlen(output));
 				}
 				calc_flag = 1;
@@ -5440,8 +5435,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			case SC_SUPERNOVICE://#スーパーノービスの魂#
 				if(sd) {
 					if(battle_config.disp_job_soul_state_change) {
-						char output[64];
-						strcpy(output,"魂状態が終了しました");
+						char output[] = "魂状態が終了しました";
 						clif_disp_onlyself(sd,output,strlen(output));
 					}
 				}

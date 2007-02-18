@@ -200,12 +200,11 @@ int storage_fromstr(char *str, struct storage *p)
 /////////////////////////////////
 int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 	char tmp_str[256];
-	int tmp_int[256];
+	int tmp_int[45];
 	int set, next, len, i;
 
-	// 1882以降の形式読み込み
 	set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%u,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+		"\t%u,%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%[^,],%d,%d\t%[^,],%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],
@@ -213,61 +212,62 @@ int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 		&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
 		&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
 		&tmp_int[19],&tmp_int[20],
-		&tmp_int[21],&tmp_int[22],&tmp_int[23], //
-		&tmp_int[24],&tmp_int[25],&tmp_int[26],&tmp_int[43],
-		&tmp_int[27],&tmp_int[28],&tmp_int[29],
-		&tmp_int[30],&tmp_int[31],&tmp_int[32],&tmp_int[33],&tmp_int[34],
-		p->st.last_point.map,&tmp_int[35],&tmp_int[36], //
-		p->st.save_point.map,&tmp_int[37],&tmp_int[38],&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&next
+		&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24], //
+		&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],
+		&tmp_int[29],&tmp_int[30],&tmp_int[31],
+		&tmp_int[32],&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],
+		p->st.last_point.map,&tmp_int[37],&tmp_int[38], //
+		p->st.save_point.map,&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&next
 		);
 
-	if (set != 47)
-		return 0;	// 1881以前の古い形式はサポートしない
+	if (set != 48)
+		return 0;	// Auriga-089より古い形式はサポートしない
 
-	p->st.char_id = tmp_int[0];
-	p->st.account_id = tmp_int[1];
-	p->st.char_num = tmp_int[2];
-	p->st.class_ = tmp_int[3];
-	p->st.base_level = tmp_int[4];
-	p->st.job_level = tmp_int[5];
-	p->st.base_exp = tmp_int[6];
-	p->st.job_exp = tmp_int[7];
-	p->st.zeny = tmp_int[8];
-	p->st.hp = tmp_int[9];
-	p->st.max_hp = tmp_int[10];
-	p->st.sp = tmp_int[11];
-	p->st.max_sp = tmp_int[12];
-	p->st.str = tmp_int[13];
-	p->st.agi = tmp_int[14];
-	p->st.vit = tmp_int[15];
-	p->st.int_ = tmp_int[16];
-	p->st.dex = tmp_int[17];
-	p->st.luk = tmp_int[18];
-	p->st.status_point = tmp_int[19];
-	p->st.skill_point = tmp_int[20];
-	p->st.option = (unsigned int)tmp_int[21];
-	p->st.karma = tmp_int[22];
-	p->st.manner = tmp_int[23];
-	p->st.party_id = tmp_int[24];
-	p->st.guild_id = tmp_int[25];
-	p->st.pet_id = tmp_int[26];
-	p->st.hair = tmp_int[27];
-	p->st.hair_color = tmp_int[28];
-	p->st.clothes_color = tmp_int[29];
-	p->st.weapon = tmp_int[30];
-	p->st.shield = tmp_int[31];
-	p->st.head_top = tmp_int[32];
-	p->st.head_mid = tmp_int[33];
-	p->st.head_bottom = tmp_int[34];
-	p->st.last_point.x = tmp_int[35];
-	p->st.last_point.y = tmp_int[36];
-	p->st.save_point.x = tmp_int[37];
-	p->st.save_point.y = tmp_int[38];
-	p->st.partner_id 	= tmp_int[39];
-	p->st.parent_id[0] = tmp_int[40];
-	p->st.parent_id[1] = tmp_int[41];
-	p->st.baby_id 		= tmp_int[42];
-	p->st.homun_id     = tmp_int[43];
+	p->st.char_id       = tmp_int[0];
+	p->st.account_id    = tmp_int[1];
+	p->st.char_num      = tmp_int[2];
+	p->st.class_        = tmp_int[3];
+	p->st.base_level    = tmp_int[4];
+	p->st.job_level     = tmp_int[5];
+	p->st.base_exp      = tmp_int[6];
+	p->st.job_exp       = tmp_int[7];
+	p->st.zeny          = tmp_int[8];
+	p->st.hp            = tmp_int[9];
+	p->st.max_hp        = tmp_int[10];
+	p->st.sp            = tmp_int[11];
+	p->st.max_sp        = tmp_int[12];
+	p->st.str           = tmp_int[13];
+	p->st.agi           = tmp_int[14];
+	p->st.vit           = tmp_int[15];
+	p->st.int_          = tmp_int[16];
+	p->st.dex           = tmp_int[17];
+	p->st.luk           = tmp_int[18];
+	p->st.status_point  = tmp_int[19];
+	p->st.skill_point   = tmp_int[20];
+	p->st.option        = (unsigned int)tmp_int[21];
+	p->st.karma         = tmp_int[22];
+	p->st.manner        = tmp_int[23];
+	p->st.die_counter   = tmp_int[24];
+	p->st.party_id      = tmp_int[25];
+	p->st.guild_id      = tmp_int[26];
+	p->st.pet_id        = tmp_int[27];
+	p->st.homun_id      = tmp_int[28];
+	p->st.hair          = tmp_int[29];
+	p->st.hair_color    = tmp_int[30];
+	p->st.clothes_color = tmp_int[31];
+	p->st.weapon        = tmp_int[32];
+	p->st.shield        = tmp_int[33];
+	p->st.head_top      = tmp_int[34];
+	p->st.head_mid      = tmp_int[35];
+	p->st.head_bottom   = tmp_int[36];
+	p->st.last_point.x  = tmp_int[37];
+	p->st.last_point.y  = tmp_int[38];
+	p->st.save_point.x  = tmp_int[39];
+	p->st.save_point.y  = tmp_int[40];
+	p->st.partner_id    = tmp_int[41];
+	p->st.parent_id[0]  = tmp_int[42];
+	p->st.parent_id[1]  = tmp_int[43];
+	p->st.baby_id       = tmp_int[44];
 
 	if (str[next] == '\n' || str[next] == '\r')
 		return 1;	// 新規データ
@@ -383,7 +383,7 @@ int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 	p->reg.global_num = (i < GLOBAL_REG_NUM)? i: GLOBAL_REG_NUM;
 	next++;
 
-	for(i=0;str[next] && str[next]!='\t' && str[next]!='\n' && str[next]!='\r';i++){ //friend実装以前のathena.txt互換のため一応'\n'チェック
+	for(i=0;str[next] && str[next]!='\t';i++){
 		set=sscanf(str+next,"%d,%d%n",&tmp_int[0],&tmp_int[1],&len); // name は後で解決する
 		if(set!=2)
 			return 0;
@@ -420,9 +420,10 @@ int mmo_char_tosql(int char_id, struct mmo_chardata *p){
 	//`char`( `char_id`,`account_id`,`char_num`,`name`,`class`,`base_level`,`job_level`,`base_exp`,`job_exp`,`zeny`, //9
 	//`str`,`agi`,`vit`,`int`,`dex`,`luk`, //15
 	//`max_hp`,`hp`,`max_sp`,`sp`,`status_point`,`skill_point`, //21
-	//`option`,`karma`,`manner`,`party_id`,`guild_id`,`pet_id`, //27
-	//`hair`,`hair_color`,`clothes_color`,`weapon`,`shield`,`head_top`,`head_mid`,`head_bottom`, //35
-	//`last_map`,`last_x`,`last_y`,`save_map`,`save_x`,`save_y`,`partner_id`, `parent_id`,`parent_id2`,`baby_id`)
+	//`option`,`karma`,`manner`,`die_counter`,`party_id`,`guild_id`,`pet_id`, //28
+	//`hair`,`hair_color`,`clothes_color`,`weapon`,`shield`,`head_top`,`head_mid`,`head_bottom`, //36
+	//`last_map`,`last_x`,`last_y`,`save_map`,`save_x`,`save_y`, //42
+	//`partner_id`, `parent_id`,`parent_id2`,`baby_id`,`homun_id`)
 
 	sprintf(tmp_sql,"DELETE FROM `char` WHERE `char_id`='%d'",char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
@@ -432,7 +433,7 @@ int mmo_char_tosql(int char_id, struct mmo_chardata *p){
 		"`base_exp`='%d', `job_exp`='%d', `zeny`='%d',"
 		"`max_hp`='%d',`hp`='%d',`max_sp`='%d',`sp`='%d',`status_point`='%d',`skill_point`='%d',"
 		"`str`='%d',`agi`='%d',`vit`='%d',`int`='%d',`dex`='%d',`luk`='%d',"
-		"`option`='%u',`karma`='%d',`manner`='%d',`party_id`='%d',`guild_id`='%d',`pet_id`='%d',"
+		"`option`='%u',`karma`='%d',`manner`='%d',`die_counter`='%d',`party_id`='%d',`guild_id`='%d',`pet_id`='%d',"
 		"`hair`='%d',`hair_color`='%d',`clothes_color`='%d',`weapon`='%d',`shield`='%d',`head_top`='%d',`head_mid`='%d',`head_bottom`='%d',"
 		"`last_map`='%s',`last_x`='%d',`last_y`='%d',`save_map`='%s',`save_x`='%d',`save_y`='%d',"
 		"`partner_id` = '%d', `parent_id` = '%d', `parent_id2` = '%d', `baby_id` = '%d', `homun_id` = '%d'",
@@ -440,7 +441,7 @@ int mmo_char_tosql(int char_id, struct mmo_chardata *p){
 		p->st.base_exp, p->st.job_exp, p->st.zeny,
 		p->st.max_hp, p->st.hp, p->st.max_sp, p->st.sp, p->st.status_point, p->st.skill_point,
 		p->st.str, p->st.agi, p->st.vit, p->st.int_, p->st.dex, p->st.luk,
-		p->st.option, p->st.karma, p->st.manner, p->st.party_id, p->st.guild_id, p->st.pet_id,
+		p->st.option, p->st.karma, p->st.manner, p->st.die_counter, p->st.party_id, p->st.guild_id, p->st.pet_id,
 		p->st.hair, p->st.hair_color, p->st.clothes_color,
 		p->st.weapon, p->st.shield, p->st.head_top, p->st.head_mid, p->st.head_bottom,
 		p->st.last_point.map, p->st.last_point.x, p->st.last_point.y,
@@ -1172,7 +1173,7 @@ int char_convert(void){
 		int i,j;
 		char buf[256];
 		struct mmo_chardata *cd;
-		struct linkdb_node *char_namedb;	// char.cのようにchar_txt_load() がなくて面倒なのでキャラ名リストを用意
+		struct linkdb_node *char_namedb = NULL;	// char.cのようにchar_txt_load() がなくて面倒なのでキャラ名リストを用意
 
 		printf("\nConverting Character Database...\n");
 		fp=fopen(char_txt,"r");

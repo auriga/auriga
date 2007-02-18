@@ -122,6 +122,7 @@ struct mmo_charstatus {
 	int hp,max_hp,sp,max_sp;
 	unsigned int option;
 	short karma,manner;
+	int die_counter;
 	short hair,hair_color,clothes_color;
 	int party_id,guild_id,pet_id,homun_id;
 

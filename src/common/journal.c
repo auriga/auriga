@@ -20,7 +20,7 @@
 							// ".debug0" は終了の過程で出るゴミ、".debug1" は終了時のジャーナル
 
 
-#define JOURNAL_IDENTIFIER	"ATHENA_JOURNAL01"	// 識別子（ファイル構造を変えたら、最後の数値を変えるべき）
+#define JOURNAL_IDENTIFIER	"ATHENA_JOURNAL02"	// 識別子（ファイル構造を変えたら、最後の数値を変えるべき）
 //                           0123456789abcdef
 
 struct journal_header
