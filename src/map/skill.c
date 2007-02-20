@@ -11796,8 +11796,7 @@ int skill_clone(struct map_session_data* sd,int skillid,int skilllv)
 	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
-	printf("called %d %d\n",skillid,skilllv);
-	//クローンスキル
+
 	if(skillid <= 0 || skilllv <= 0)
 		return 0;
 	//高レベルを取得している

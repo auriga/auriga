@@ -13,9 +13,6 @@ struct Damage {
 	int dmg_lv;	//囲まれ減算計算用　0:スキル攻撃 ATK_LUCKY,ATK_FLEE,ATK_DEF
 };
 
-// 属性表（読み込みはpc.c、battle_attr_fixで使用）
-extern int attr_fix_table[4][10][10];
-
 struct map_session_data;
 struct mob_data;
 struct block_list;

@@ -3,8 +3,6 @@
 #ifndef	_TIMER_H_
 #define	_TIMER_H_
 
-#define BASE_TICK 5
-
 #define TIMER_ONCE_AUTODEL 1
 #define TIMER_INTERVAL 2
 #define TIMER_REMOVE_HEAP 16

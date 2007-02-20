@@ -28,8 +28,6 @@
 #include "memwatch.h"
 #endif
 
-int attr_fix_table[4][ELE_MAX][ELE_MAX];
-
 struct Battle_Config battle_config;
 
 //-------------------------------------------------------------------
@@ -230,17 +228,22 @@ int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,in
  */
 int battle_attr_fix(int damage,int atk_elem,int def_elem)
 {
-	int def_type= def_elem%20, def_lv=def_elem/20;
-
-	if( atk_elem == ELE_MAX )
-		atk_elem = atn_rand()%ELE_MAX;	//武器属性ランダムで付加
+	int def_type, def_lv;
 
 	// 属性無し(!=無属性)
 	if (atk_elem == ELE_NONE)
 		return damage;
 
-	if(	atk_elem < 0 || atk_elem >= ELE_MAX || def_type < 0 || def_type >= ELE_MAX ||
-		def_lv<1 || def_lv>4){	// 属性値がおかしいのでとりあえずそのまま返す
+	def_type = def_elem%20;
+	def_lv   = def_elem/20;
+
+	if( atk_elem == ELE_MAX )
+		atk_elem = atn_rand()%ELE_MAX;	//武器属性ランダムで付加
+
+	if( atk_elem < 0 || atk_elem >= ELE_MAX ||
+	    def_type < 0 || def_type >= ELE_MAX ||
+	    def_lv <= 0 || def_lv > MAX_ELE_LEVEL )
+	{	// 属性値がおかしいのでとりあえずそのまま返す
 		if(battle_config.error_log)
 			printf("battle_attr_fix: unknown attr type: atk=%d def_type=%d def_lv=%d\n",atk_elem,def_type,def_lv);
 		return damage;
@@ -4615,7 +4618,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.defnotenemy=1;
 		battle_config.random_monster_checklv=1;
 		battle_config.attr_recover=1;
-		battle_config.flooritem_lifetime=LIFETIME_FLOORITEM*1000;
+		battle_config.flooritem_lifetime=60*1000;
 		battle_config.item_auto_get=0;
 		battle_config.item_first_get_time=3000;
 		battle_config.item_second_get_time=1000;
@@ -5519,7 +5522,7 @@ int battle_config_read(const char *cfgName)
 
 	if(--count==0){
 		if(battle_config.flooritem_lifetime < 1000)
-			battle_config.flooritem_lifetime = LIFETIME_FLOORITEM*1000;
+			battle_config.flooritem_lifetime = 60*1000;
 		if(battle_config.restart_hp_rate < 0)
 			battle_config.restart_hp_rate = 0;
 		else if(battle_config.restart_hp_rate > 100)

@@ -48,7 +48,10 @@ static int exp_table[16][MAX_LEVEL];
 extern int current_equip_item_index;
 extern int current_equip_card_id;
 
-//JOB TABLE
+// 属性表
+int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
+
+// JOB TABLE
 	//NV,SW,MG,AC,AL,MC,TF,KN,PR,WZ,BS,HT,AS,KNp,CR,MO,SA,RG,AM,BA,DC,CRp,  ,SNV,TK,SG,SG2,SL,GS,NJ,DK,DC
 int max_job_table[3][32]=
 	{{10,50,50,50,50,50,50,50,50,50,50,50,50, 50,50,50,50,50,50,50,50, 50, 1, 99,50,50,50,50,70,70,70,70}, //通常
@@ -68,7 +71,7 @@ static struct {
 	} need[6];
 	short base_level;
 	short job_level;
-	short class_level;//再振り時の不正防止　ノビ:0 一次:1 二次:2
+	short class_level;	// 再振り時の不正防止　ノビ:0 一次:1 二次:2
 } skill_tree[3][MAX_PC_CLASS][MAX_SKILL_TREE];
 
 static int dummy_gm_account = 0;
@@ -8035,9 +8038,9 @@ int pc_readdb(void)
 	printf("read db/skill_tree.txt done\n");
 
 	// 属性修正テーブル
-	for(i=0;i<4;i++)
-		for(j=0;j<10;j++)
-			for(k=0;k<10;k++)
+	for(i=0;i<MAX_ELE_LEVEL;i++)
+		for(j=0;j<ELE_MAX;j++)
+			for(k=0;k<ELE_MAX;k++)
 				attr_fix_table[i][j][k]=100;
 	fp=fopen("db/attr_fix.txt","r");
 	if(fp==NULL){
@@ -8058,17 +8061,17 @@ int pc_readdb(void)
 		n  = atoi(split[1]);
 
 		for(i=0;i<n;){
-			if( !fgets(line,1024,fp) )
+			if( !fgets(line,1020,fp) )
 				break;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
 
 			for(j=0,p=line;j<n && p;j++){
-				while(*p==32 && *p>0)
+				while(*p==' ' && *p>0)
 					p++;
 
-				if(lv < 1 || lv > 4 || i >= ELE_MAX || j >= ELE_MAX)
-					continue;
+				if(lv <= 0 || lv > MAX_ELE_LEVEL || i >= ELE_MAX || j >= ELE_MAX)
+					break;
 				attr_fix_table[lv-1][i][j]=atoi(p);
 				if(battle_config.attr_recover == 0 && attr_fix_table[lv-1][i][j] < 0)
 					attr_fix_table[lv-1][i][j] = 0;

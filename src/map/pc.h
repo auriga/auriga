@@ -27,6 +27,7 @@
 #define pc_is50overweight(sd) (sd->weight*2 >= sd->max_weight)
 #define pc_is90overweight(sd) (sd->weight*10 >= sd->max_weight*9)
 
+extern int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
 extern int max_job_table[3][32];
 
 void pc_set_gm_account_fname(char *str);

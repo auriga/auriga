@@ -1,4 +1,18 @@
 ----------------------------------------
+//090 [2007/02/21] by Rayce
+
+・属性Lvの最大値を MAX_ELE_LEVEL として定義、デフォルトは4（map.h）
+・attr_fix_tableの実体をbattle.cからpc.cへ移動（battle.*, pc.*）
+・attr_fix_tableに ELE_MAX を使うように修正
+	MAX_ELE_LEVEL を増やせば属性Lvが5以上を定義することができます。
+	属性は20種類までしか指定できませんが、属性Lvは無制限です。
+	属性を拡張する場合はdb/attr_fix_table.txtでテーブルを適切に設定してください。
+
+・076以降ハンマーフォールでスタンが発生しなくなっていた問題を修正（db/skill_cast_db.txt）
+・あまり意味がないので BASE_TICK, LIFETIME_FLOORITEM を削除（timer.h, map.h）
+・088で混入したゴミコードを除去（skill.c）
+
+----------------------------------------
 //089 [2007/02/19] by Rayce
 
 ・死亡カウンタをキャラ永続変数ではなくmmo_charstatus構造体としてセーブするように変更 from Freya
