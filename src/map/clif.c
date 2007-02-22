@@ -3092,7 +3092,7 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		WFIFOL(fd,4)=sd->matk2;
 		break;
 
-		// 00b1 終了
+		// 00b1
 	case SP_ZENY:
 		WFIFOW(fd,0)=0xb1;
 		WFIFOL(fd,4)=sd->status.zeny;
@@ -3114,7 +3114,7 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		WFIFOL(fd,4)=pc_nextjobexp(sd);
 		break;
 
-		// 00be 終了
+		// 00be
 	case SP_USTR:
 	case SP_UAGI:
 	case SP_UVIT:
@@ -3126,14 +3126,14 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		len=5;
 		break;
 
-		// 013a 終了
+		// 013a
 	case SP_ATTACKRANGE:
 		WFIFOW(fd,0)=0x13a;
 		WFIFOW(fd,2)=sd->attackrange;
 		len=4;
 		break;
 
-		// 0141 終了
+		// 0141
 	case SP_STR:
 		WFIFOW(fd,0)=0x141;
 		WFIFOL(fd,2)=type;

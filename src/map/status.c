@@ -38,7 +38,7 @@ static struct job_db {
 	int aspd_base[WT_MAX];
 } job_db[MAX_PC_CLASS];
 
-static int atkmods[3][WT_MAX];	// 武器ATKサイズ修正(size_fix.txt)
+static int atkmods[MAX_SIZE_FIX][WT_MAX];	// 武器ATKサイズ修正(size_fix.txt)
 
 static struct refine_db {
 	int safety_bonus;
@@ -696,14 +696,11 @@ L_RECALC:
 	if(sd->aspd_add_rate != 100)
 		sd->aspd_rate += sd->aspd_add_rate - 100;
 
-	// 武器ATKサイズ補正 (右手)
-	sd->atkmods[0] = atkmods[0][sd->weapontype1];
-	sd->atkmods[1] = atkmods[1][sd->weapontype1];
-	sd->atkmods[2] = atkmods[2][sd->weapontype1];
-	//武器ATKサイズ補正 (左手)
-	sd->atkmods_[0] = atkmods[0][sd->weapontype2];
-	sd->atkmods_[1] = atkmods[1][sd->weapontype2];
-	sd->atkmods_[2] = atkmods[2][sd->weapontype2];
+	// 武器ATKサイズ補正
+	for(i=0; i<MAX_SIZE_FIX; i++) {
+		sd->atkmods[i]  = atkmods[i][sd->weapontype1];	// 右手
+		sd->atkmods_[i] = atkmods[i][sd->weapontype2];	// 左手
+	}
 
 	// jobボーナス分
 	for(i=0;i<sd->status.job_level && i<MAX_LEVEL;i++){
@@ -7004,7 +7001,7 @@ int status_readdb(void) {
 		printf("read db/refine_db.txt done\n");
 
 	// サイズ補正テーブル
-	for(i=0;i<3;i++)
+	for(i=0;i<MAX_SIZE_FIX;i++)
 		for(j=0;j<WT_MAX;j++)
 			atkmods[i][j]=100;
 	fp=fopen("db/size_fix.txt","r");
@@ -7027,7 +7024,7 @@ int status_readdb(void) {
 		}
 		for(j=0;j<WT_MAX && split[j];j++)
 			atkmods[i][j]=atoi(split[j]);
-		if(++i > 3)
+		if(++i > MAX_SIZE_FIX)
 			break;
 	}
 	fclose(fp);

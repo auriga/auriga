@@ -1090,9 +1090,9 @@ int mmo_auth(struct login_session_data* sd)
 	if(ac->state){
 		login_log("auth banned account %s %s %s %d",tmpstr,sd->userid,ac->pass,ac->state);
 		switch(ac->state) {
-			case 1: return 2; break;
-			case 2: return 3; break;
-			case 3: return 4; break;
+			case 1: return 2;
+			case 2: return 3;
+			case 3: return 4;
 		}
 		return 2;
 	}
@@ -1118,7 +1118,7 @@ int mmo_auth(struct login_session_data* sd)
 	return -1;	// 認証OK
 }
 
-// 自分以外の全てのcharサーバーにデータ送信（送信したmap鯖の数を返す）
+// 自分以外の全てのcharサーバーにデータ送信（送信したchar鯖の数を返す）
 int charif_sendallwos(int sfd,unsigned char *buf,unsigned int len)
 {
 	int i,c;
@@ -1190,9 +1190,16 @@ int parse_fromchar(int fd)
 				}
 			}
 
-			if(i!=AUTH_FIFO_SIZE){	// account_reg送信
+			if(i >= AUTH_FIFO_SIZE) {
+				WFIFOW(fd,0)=0x2713;
+				WFIFOL(fd,2)=RFIFOL(fd,2);
+				WFIFOB(fd,6)=1;
+				WFIFOSET(fd,15);
+				printf("auth_fifo search error! account_id = %d\n",RFIFOL(fd,2));
+			} else {
 				int p,j;
 				const struct mmo_account *ac = account_load_num(auth_fifo[i].account_id);
+				// account_reg送信
 				if(ac){
 					WFIFOW(fd,0) = 0x2729;
 					WFIFOL(fd,4) = ac->account_id;
@@ -1202,20 +1209,16 @@ int parse_fromchar(int fd)
 					}
 					WFIFOW(fd,2)=p;
 					WFIFOSET(fd,p);
-//			printf("account_reg2 send : login->char (auth fifo)\n");
+//					printf("account_reg2 send : login->char (auth fifo)\n");
 				}
-			}
 
-			WFIFOW(fd,0)=0x2713;
-			WFIFOL(fd,2)=RFIFOL(fd,2);
-			if(i!=AUTH_FIFO_SIZE){
+				WFIFOW(fd,0)=0x2713;
+				WFIFOL(fd,2)=RFIFOL(fd,2);
 				WFIFOB(fd,6)=0;
-			} else {
-				WFIFOB(fd,6)=1;
+				WFIFOL(fd,7)=auth_fifo[i].account_id;
+				WFIFOL(fd,11)=auth_fifo[i].login_id1;
+				WFIFOSET(fd,15);
 			}
-			WFIFOL(fd,7)=auth_fifo[i].account_id;
-			WFIFOL(fd,11)=auth_fifo[i].login_id1;
-			WFIFOSET(fd,15);
 			RFIFOSKIP(fd,23);
 			break;
 
@@ -1617,13 +1620,12 @@ int parse_login_disconnect(int fd) {
 
 int parse_login(int fd)
 {
-	struct login_session_data *sd = (struct login_session_data *)session[fd]->session_data;
-	int result=-1,i;
+	struct login_session_data *sd;
 
-	if(sd == NULL) {
+	if(session[fd]->session_data == NULL) {
 		session[fd]->session_data = aCalloc(1,sizeof(struct login_session_data));
-		sd = (struct login_session_data *)session[fd]->session_data;
 	}
+	sd = (struct login_session_data *)session[fd]->session_data;
 
 	while(RFIFOREST(fd)>=2){
 		if(RFIFOW(fd,0)<30000) {
@@ -1664,14 +1666,16 @@ int parse_login(int fd)
 		case 0x027c:	// 暗号化ログイン要求
 		case 0x0277:	// New Login Packet?
 		{
+			int result = -1;
 			int length = 55; // default: 0x64
+
 			switch(RFIFOW(fd,0)) {
-			//case 0x64: length = 55; break;
-			case 0x01dd: length = 47; break;
-			case 0x027c: length = 60; break;
-			case 0x0277: length = 84; break;
+				//case 0x64: length = 55; break;
+				case 0x01dd: length = 47; break;
+				case 0x027c: length = 60; break;
+				case 0x0277: length = 84; break;
 			}
-			if(RFIFOREST(fd)< length)
+			if(RFIFOREST(fd) < length)
 				return 0;
 			{
 				unsigned char *p=(unsigned char *)&session[fd]->client_addr.sin_addr;
@@ -1704,6 +1708,7 @@ int parse_login(int fd)
 				result = mmo_auth(sd);
 			}
 			if(result == -1) {
+				int i;
 				server_num=0;
 				for(i=0;i<MAX_SERVERS;i++){
 					if(server_fd[i]>=0){
@@ -1761,6 +1766,8 @@ int parse_login(int fd)
 		case 0x791a:	// 管理パケットで暗号化key要求
 		{
 			int charlogin = (RFIFOW(fd,0)==0x272d);
+			int i;
+
 			RFIFOSKIP(fd, 2);
 			if(sd->md5keylen){
 				printf("login: illegal md5key request.");
@@ -1779,7 +1786,7 @@ int parse_login(int fd)
 			WFIFOSET(fd,WFIFOW(fd,2));
 			break;
 		}
-		
+
 		case 0x2710:	// Charサーバー接続要求
 		case 0x272f:	// Charサーバー接続要求(暗号化ログイン)
 			if(RFIFOREST(fd)<84)
@@ -1804,8 +1811,8 @@ int parse_login(int fd)
 			memcpy( sd->userid, RFIFOP(fd, 2), 24 );
 			memcpy( sd->pass, RFIFOP(fd, 26), sd->md5keylen ? 16 : 24 );
 			sd->passwdenc = sd->md5keylen ? RFIFOL(fd,46) : 0;
-			result = mmo_auth(sd);
-			if(result == -1 && sd->sex == 2 && sd->account_id<MAX_SERVERS && server_fd[sd->account_id]<0){
+
+			if(mmo_auth(sd) == -1 && sd->sex == 2 && sd->account_id<MAX_SERVERS && server_fd[sd->account_id]<0){
 				server[sd->account_id].ip=RFIFOL(fd,54);
 				server[sd->account_id].port=RFIFOW(fd,58);
 				memcpy(server[sd->account_id].name,RFIFOP(fd,60),20);

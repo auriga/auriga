@@ -47,14 +47,15 @@
 #define MAX_WIS_REFUSAL 14
 #define MAX_MOBGROUP	11
 #define MAX_ITEMGROUP	10
-#define MAX_SKILL_DAMAGE_UP	10	//スキルを強化できる数
-#define MAX_SKILL_BLOW  5		//スキルを吹き飛ばし化
-#define MAX_BONUS_AUTOSPELL  16		//オートスペルの容量
+#define MAX_SKILL_DAMAGE_UP	10	// スキルを強化できる数
+#define MAX_SKILL_BLOW  5		// スキルを吹き飛ばし化
+#define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
 #define MAX_DEAL_ITEMS 10
 #define MAX_VENDING 12
-#define MAX_WEAPON_LEVEL 4
-#define MAX_REFINE 10
-#define MAX_ELE_LEVEL 4
+#define MAX_WEAPON_LEVEL 4	// 最大武器Lv
+#define MAX_REFINE 10		// 最大精錬値
+#define MAX_ELE_LEVEL 4		// 最大属性Lv
+#define MAX_SIZE_FIX 3		// サイズの種類
 
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
@@ -372,20 +373,20 @@ struct map_session_data {
 	short weapontype1,weapontype2;
 	int paramb[6],paramc[6],parame[6],paramcard[6];
 	int hit,flee,flee2,aspd,amotion,dmotion;
-	int watk,watk2,atkmods[3];
+	int watk,watk2,atkmods[MAX_SIZE_FIX];
 	int fix_damage;
 	int def,def2,mdef,mdef2,critical,matk1,matk2;
 	int atk_ele,def_ele,star,overrefine;
 	int castrate,hprate,sprate,dsprate;
-	int addele[ELE_MAX],addrace[RCT_MAX],addenemy[4],addsize[3];
-	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[4],subsize[3];
+	int addele[ELE_MAX],addrace[RCT_MAX],addenemy[4],addsize[MAX_SIZE_FIX];
+	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[4],subsize[MAX_SIZE_FIX];
 	int addeff[10],addeff2[10],reseff[10],addeff_range_flag[10];
-	int watk_,watk_2,atkmods_[3],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[4],addsize_[3];	//二刀流のために追加
+	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[4],addsize_[MAX_SIZE_FIX];	//二刀流のために追加
 	int atk_ele_,star_,overrefine_;				//二刀流のために追加
 	int base_atk,atk_rate;
 	int weapon_atk[WT_MAX],weapon_atk_rate[WT_MAX];	//指貫
 	int arrow_atk,arrow_ele,arrow_cri,arrow_hit,arrow_range;
-	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[4],arrow_addsize[3],arrow_addeff[10],arrow_addeff2[10];
+	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[4],arrow_addsize[MAX_SIZE_FIX],arrow_addeff[10],arrow_addeff2[10];
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
 	int aspd_rate,speed_rate,hprecov_rate,sprecov_rate,critical_def,double_rate;
 	int near_attack_def_rate,long_attack_def_rate,magic_def_rate,misc_def_rate,matk_rate;
@@ -393,7 +394,7 @@ struct map_session_data {
 	int ignore_def_ele_,ignore_def_race_,ignore_def_enemy_;
 	int ignore_mdef_ele,ignore_mdef_race,ignore_mdef_enemy;
 	int magic_addele[ELE_MAX],magic_addrace[RCT_MAX],magic_addenemy[4];
-	int magic_subrace[RCT_MAX],magic_subsize[3];
+	int magic_subrace[RCT_MAX],magic_subsize[MAX_SIZE_FIX];
 	int perfect_hit,get_zeny_num,get_zeny_num2;
 	int critical_rate,hit_rate,flee_rate,flee2_rate,def_rate,def2_rate,mdef_rate,mdef2_rate;
 	int def_ratio_atk_ele,def_ratio_atk_race,def_ratio_atk_enemy;
