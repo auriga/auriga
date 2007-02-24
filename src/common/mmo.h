@@ -67,7 +67,7 @@
 #define END_NPC_NUM       16777215	// SL_SMAのエフェクト表現可能上限 = 0x00ffffff
 
 struct item {
-	int id;
+	unsigned int id;
 	short nameid;
 	short amount;
 	unsigned short equip;
@@ -188,6 +188,7 @@ struct storage {
 	int account_id;
 	short storage_status;
 	short storage_amount;
+	unsigned int sortkey;
 	struct item store_item[MAX_STORAGE];
 };
 
@@ -195,6 +196,7 @@ struct guild_storage {
 	int guild_id;
 	short storage_status;
 	short storage_amount;
+	unsigned int sortkey;
 	struct item store_item[MAX_GUILD_STORAGE];
 };
 

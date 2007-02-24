@@ -518,7 +518,8 @@ extern struct Battle_Config {
 	int sw_def_type;
 	int calc_dist_flag;
 	int allow_sw_dist;
-	int storagesort_by_itemid;
+	int personal_storage_sort;
+	int guild_storage_sort;
 	int allow_es_magic_all;
 	int trap_is_invisible;
 	int gm_perfect_hide;

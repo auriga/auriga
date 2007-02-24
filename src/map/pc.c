@@ -573,19 +573,6 @@ int pc_equippoint(struct map_session_data *sd,int n)
 	return ep;
 }
 
-int pc_setinventorydata(struct map_session_data *sd)
-{
-	int i,id;
-
-	nullpo_retr(0, sd);
-
-	for(i=0;i<MAX_INVENTORY;i++) {
-		id = sd->status.inventory[i].nameid;
-		sd->inventory_data[i] = itemdb_search(id);
-	}
-	return 0;
-}
-
 int pc_calcweapontype(struct map_session_data *sd)
 {
 	short right, left;
@@ -958,7 +945,8 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->status.option&=OPTION_MASK;
 
 	// アイテムチェックは必ずステータス異常の初期化後に行う
-	pc_setinventorydata(sd);
+	sd->state.inventory_dirty = 1;
+	sd->state.cart_dirty = 1;
 	pc_checkitem(sd);
 
 	//マナーポイントがプラスだった場合0に
@@ -2865,6 +2853,8 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 			}else{
 				sd->status.inventory[i].amount=amount;
 			}
+			sd->state.inventory_dirty = 1;
+			sd->status.inventory[i].id = ++sd->inventory_sortkey;
 			sd->inventory_data[i]=data;
 			clif_additem(sd,i,amount,0);
 		}
@@ -2909,6 +2899,7 @@ void pc_delitem(struct map_session_data *sd, int n, int amount, int type)
 		if(sd->status.inventory[n].equip)
 			pc_unequipitem(sd,n,0);
 		memset(&sd->status.inventory[n],0,sizeof(sd->status.inventory[0]));
+		sd->status.inventory[n].id = 0;
 		sd->inventory_data[n] = NULL;
 	}
 	if(!(type&1))
@@ -3148,6 +3139,8 @@ int pc_cart_additem(struct map_session_data *sd,struct item *item_data,int amoun
 					sd->status.cart[i].amount=amount;
 				}
 				sd->cart_num++;
+				sd->state.cart_dirty = 1;
+				sd->status.cart[i].id = ++sd->cart_sortkey;
 				clif_cart_additem(sd, i, amount);
 				break;
 			}
@@ -3178,6 +3171,7 @@ int pc_cart_delitem(struct map_session_data *sd,int n,int amount,int type)
 	if(sd->status.cart[n].amount <= 0){
 		memset(&sd->status.cart[n],0,sizeof(sd->status.cart[0]));
 		sd->cart_num--;
+		sd->status.cart[n].id = 0;
 	}
 	if(!type) {
 		clif_cart_delitem(sd,n,amount);
@@ -6614,6 +6608,8 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 			clif_changelook(&sd->bl,LOOK_SHOES,0);
 
 		clif_unequipitemack(sd,n,sd->status.inventory[n].equip,1);
+		sd->state.inventory_dirty = 1;
+		sd->status.inventory[n].id = ++sd->inventory_sortkey;	// インベントリに新規登録
 		sd->status.inventory[n].equip=0;
 		if(!type)
 			pc_checkallowskill(sd);
@@ -6669,57 +6665,95 @@ int pc_equippeditem(struct map_session_data *sd,int id)
 }
 
 /*==========================================
+ * アイテムソート
+ *------------------------------------------
+ */
+static int pc_comp_item(const void *_i1, const void *_i2)
+{
+	struct item *i1 = (struct item *)_i1;
+	struct item *i2 = (struct item *)_i2;
+
+	// idが0なら末尾に集める
+	if(i1->id == 0 && i2->id != 0)
+		return 1;
+	if(i1->id != 0 && i2->id == 0)
+		return -1;
+
+	if(i1->id > i2->id)
+		return 1;
+	if(i1->id < i2->id)
+		return -1;
+
+	return 0;
+}
+
+/*==========================================
  * アイテムのindex番号を詰めたり
  * 装備品の装備可能チェックを行なう
  *------------------------------------------
  */
 int pc_checkitem(struct map_session_data *sd)
 {
-	int i,j,k,id,calc_flag = 0;
+	int i,itemid,calc_flag = 0;
 
 	nullpo_retr(0, sd);
 
-	// 所持品空き詰め
-	for(i=j=0;i<MAX_INVENTORY;i++){
-		if( (id=sd->status.inventory[i].nameid)==0)
-			continue;
-		if( battle_config.item_check && !itemdb_available(id) ){
-			if(battle_config.error_log)
-				printf("illegal item id %d in %d[%s] inventory.\n",id,sd->bl.id,sd->status.name);
+	if(battle_config.item_check) {
+		// イベントリ内の不正チェック
+		for(i=0; i<MAX_INVENTORY; i++) {
+			if( (itemid = sd->status.inventory[i].nameid) == 0 )
+				continue;
+			if( itemdb_available(itemid) )
+				continue;
+			if( battle_config.error_log )
+				printf("illegal item id %d in %d[%s] inventory.\n",itemid,sd->bl.id,sd->status.name);
 			pc_delitem(sd,i,sd->status.inventory[i].amount,3);
-			continue;
 		}
-		if(i>j){
-			memcpy(&sd->status.inventory[j],&sd->status.inventory[i],sizeof(struct item));
-			sd->inventory_data[j] = sd->inventory_data[i];
-		}
-		j++;
-	}
-	if(j < MAX_INVENTORY)
-		memset(&sd->status.inventory[j],0,sizeof(struct item)*(MAX_INVENTORY-j));
-	for(k=j;k<MAX_INVENTORY;k++)
-		sd->inventory_data[k] = NULL;
-
-	// カート内空き詰め
-	for(i=j=0;i<MAX_CART;i++){
-		if( (id=sd->status.cart[i].nameid)==0 )
-			continue;
-		if( battle_config.item_check &&  !itemdb_available(id) ){
-			if(battle_config.error_log)
-				printf("illegal item id %d in %d[%s] cart.\n",id,sd->bl.id,sd->status.name);
+		// カート内の不正チェック
+		for(i=0; i<MAX_CART; i++) {
+			if( (itemid = sd->status.cart[i].nameid) == 0 )
+				continue;
+			if( itemdb_available(itemid) )
+				continue;
+			if( battle_config.error_log )
+				printf("illegal item id %d in %d[%s] cart.\n",itemid,sd->bl.id,sd->status.name);
 			pc_cart_delitem(sd,i,sd->status.cart[i].amount,1);
-			continue;
 		}
-		if(i>j){
-			memcpy(&sd->status.cart[j],&sd->status.cart[i],sizeof(struct item));
-		}
-		j++;
 	}
-	if(j < MAX_CART)
-		memset(&sd->status.cart[j],0,sizeof(struct item)*(MAX_CART-j));
+
+	// 変更があったらid順にソートする
+	if(sd->state.inventory_dirty) {
+		qsort(sd->status.inventory, MAX_INVENTORY, sizeof(struct item), pc_comp_item);
+		sd->state.inventory_dirty = 0;
+		sd->inventory_sortkey = 0;
+		for(i=0; i<MAX_INVENTORY; i++) {
+			itemid = sd->status.inventory[i].nameid;
+			if(itemid > 0) {
+				sd->status.inventory[i].id = ++sd->inventory_sortkey;
+				if(!sd->inventory_data[i] || sd->inventory_data[i]->nameid != itemid) {
+					// 位置が変わったのでデータベースを再設定
+					sd->inventory_data[i] = itemdb_search(itemid);
+				}
+			} else {
+				sd->status.inventory[i].id = 0;
+				sd->inventory_data[i] = NULL;
+			}
+		}
+	}
+	if(sd->state.cart_dirty) {
+		qsort(sd->status.cart, MAX_CART, sizeof(struct item), pc_comp_item);
+		sd->state.cart_dirty = 0;
+		sd->cart_sortkey = 0;
+		for(i=0; i<MAX_CART; i++) {
+			itemid = sd->status.cart[i].nameid;
+			if(itemid > 0)
+				sd->status.cart[i].id = ++sd->cart_sortkey;
+			else
+				sd->status.cart[i].id = 0;
+		}
+	}
 
 	// 装備位置チェック
-
 	for(i=0;i<MAX_INVENTORY;i++)
 	{
 		if(sd->status.inventory[i].nameid==0)
@@ -6728,7 +6762,7 @@ int pc_checkitem(struct map_session_data *sd)
 			sd->status.inventory[i].equip=0;
 			calc_flag = 1;
 		}
-		//装備制限チェック
+		// 装備制限チェック
 		nullpo_retr(0, sd->inventory_data[i]);
 		if(sd->status.inventory[i].equip) {
 			if(!pc_isequip(sd, i)) {

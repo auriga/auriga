@@ -164,7 +164,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 
 	for(i=0;i<MAX_INVENTORY;i++)
 		if(p->st.inventory[i].nameid){
-			str_p += sprintf(str_p,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
 			p->st.inventory[i].id,p->st.inventory[i].nameid,p->st.inventory[i].amount,p->st.inventory[i].equip,
 			p->st.inventory[i].identify,p->st.inventory[i].refine,p->st.inventory[i].attribute,
 			p->st.inventory[i].card[0],p->st.inventory[i].card[1],p->st.inventory[i].card[2],p->st.inventory[i].card[3]);
@@ -173,7 +173,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 
 	for(i=0;i<MAX_CART;i++)
 		if(p->st.cart[i].nameid){
-			str_p += sprintf(str_p,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
 			p->st.cart[i].id,p->st.cart[i].nameid,p->st.cart[i].amount,p->st.cart[i].equip,
 			p->st.cart[i].identify,p->st.cart[i].refine,p->st.cart[i].attribute,
 			p->st.cart[i].card[0],p->st.cart[i].card[1],p->st.cart[i].card[2],p->st.cart[i].card[3]);
@@ -320,14 +320,14 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	}
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 		&tmp_int[4],&tmp_int[5],&tmp_int[6],
 		&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
 		if(set!=11)
 			return 0;
 		if(i < MAX_INVENTORY) {
-			p->st.inventory[i].id=tmp_int[0];
+			p->st.inventory[i].id=(unsigned int)tmp_int[0];
 			p->st.inventory[i].nameid=tmp_int[1];
 			p->st.inventory[i].amount=tmp_int[2];
 			p->st.inventory[i].equip=tmp_int[3];
@@ -345,14 +345,14 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	}
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 		&tmp_int[4],&tmp_int[5],&tmp_int[6],
 		&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
 		if(set!=11)
 			return 0;
 		if(i < MAX_CART) {
-			p->st.cart[i].id=tmp_int[0];
+			p->st.cart[i].id=(unsigned int)tmp_int[0];
 			p->st.cart[i].nameid=tmp_int[1];
 			p->st.cart[i].amount=tmp_int[2];
 			p->st.cart[i].equip=tmp_int[3];
@@ -696,6 +696,7 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 
 	j = 0;
 	if(start_weapon > 0) {
+		char_dat[i].st.inventory[j].id     = 1;
 		char_dat[i].st.inventory[j].nameid = start_weapon;
 		char_dat[i].st.inventory[j].amount = 1;
 		char_dat[i].st.inventory[j].equip = 0x02;
@@ -704,6 +705,7 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 		j++;
 	}
 	if(start_armor > 0) {
+		char_dat[i].st.inventory[j].id     = 2;
 		char_dat[i].st.inventory[j].nameid = start_armor;
 		char_dat[i].st.inventory[j].amount = 1;
 		char_dat[i].st.inventory[j].equip = 0x10;
@@ -969,7 +971,7 @@ int char_sql_loaditem(struct item *item, int max, int id, int tableswitch) {
 	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res) {
 		for(i=0;(sql_row = mysql_fetch_row(sql_res)) && i < max;i++){
-			item[i].id        = atoi(sql_row[0]);
+			item[i].id        = (unsigned int)atoi(sql_row[0]);
 			item[i].nameid    = atoi(sql_row[1]);
 			item[i].amount    = atoi(sql_row[2]);
 			item[i].equip     = atoi(sql_row[3]);
@@ -1024,15 +1026,15 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch) {
 
 	p  = tmp_sql;
 	p += sprintf(
-		p,"INSERT INTO `%s`(`%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
+		p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
 		"`attribute`, `card0`, `card1`, `card2`, `card3` ) VALUES",tablename,selectoption
 	);
 
 	for(i = 0 ; i < max ; i++) {
 		if(item[i].nameid) {
 			p += sprintf(
-				p,"%c('%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
-				sep,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
+				p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
+				sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
 				item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
 				item[i].card[2],item[i].card[3]
 			);
@@ -1635,8 +1637,8 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 	// knife
 	if(start_weapon > 0) {
 		sprintf(
-			tmp_sql,"INSERT INTO `%s` (`char_id`,`nameid`, `amount`, `equip`, `identify`) "
-			"VALUES ('%d', '%d', '%d', '%d', '%d')",inventory_db, char_id, start_weapon,1,0x02,1
+			tmp_sql,"INSERT INTO `%s` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
+			"VALUES (1, '%d', '%d', '%d', '%d', '%d')",inventory_db, char_id, start_weapon,1,0x02,1
 		);
 		if (mysql_query(&mysql_handle, tmp_sql)){
 			printf("fail (insert in inventory ID %d), SQL error: %s\n", start_weapon, mysql_error(&mysql_handle));
@@ -1645,8 +1647,8 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 	}
 	//cotton shirt
 	if(start_armor > 0) {
-		sprintf(tmp_sql,"INSERT INTO `%s` (`char_id`,`nameid`, `amount`, `equip`, `identify`) "
-			"VALUES ('%d', '%d', '%d', '%d', '%d')", inventory_db, char_id, start_armor,1,0x10,1
+		sprintf(tmp_sql,"INSERT INTO `%s` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
+			"VALUES (2, '%d', '%d', '%d', '%d', '%d')", inventory_db, char_id, start_armor,1,0x10,1
 		);
 		if (mysql_query(&mysql_handle, tmp_sql)){
 			printf("fail (insert in inventory ID %d), SQL error: %s\n", start_armor, mysql_error(&mysql_handle));

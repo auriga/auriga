@@ -2,7 +2,7 @@
 # Table: 'cart_inventory'
 # 
 CREATE TABLE `cart_inventory` (
-  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `id` int(11) unsigned NOT NULL default '0',
   `char_id` int(11) NOT NULL default '0',
   `nameid` int(11) NOT NULL default '0',
   `amount` int(11) NOT NULL default '0',
@@ -14,7 +14,7 @@ CREATE TABLE `cart_inventory` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY  (`id`, `char_id`),
   KEY `char_id` (`char_id`)
 ) TYPE=MyISAM; 
 
@@ -274,7 +274,7 @@ CREATE TABLE `guild_skill` (
 # Table: 'guild_storage'
 # 
 CREATE TABLE `guild_storage` (
-  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `id` int(11) unsigned NOT NULL default '0',
   `guild_id` int(11) NOT NULL default '0',
   `nameid` int(11) NOT NULL default '0',
   `amount` int(11) NOT NULL default '0',
@@ -286,7 +286,7 @@ CREATE TABLE `guild_storage` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY  (`id`, `guild_id`),
   KEY `guild_id` (`guild_id`)
 ) TYPE=MyISAM; 
 
@@ -302,7 +302,7 @@ CREATE TABLE `interlog` (
 # Table: 'inventory'
 # 
 CREATE TABLE `inventory` (
-  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `id` int(11) unsigned NOT NULL default '0',
   `char_id` int(11) NOT NULL default '0',
   `nameid` int(11) NOT NULL default '0',
   `amount` int(11) NOT NULL default '0',
@@ -314,7 +314,7 @@ CREATE TABLE `inventory` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY  (`id`, `char_id`),
   KEY `char_id` (`char_id`)
 ) TYPE=MyISAM; 
 
@@ -422,7 +422,7 @@ CREATE TABLE `skill` (
 # Table: 'storage'
 # 
 CREATE TABLE `storage` (
-  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `id` int(11) unsigned NOT NULL default '0',
   `account_id` int(11) NOT NULL default '0',
   `nameid` int(11) NOT NULL default '0',
   `amount` int(11) NOT NULL default '0',
@@ -434,7 +434,7 @@ CREATE TABLE `storage` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY  (`id`, `account_id`),
   KEY `account_id` (`account_id`)
 ) TYPE=MyISAM; 
 

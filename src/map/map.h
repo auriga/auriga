@@ -310,6 +310,8 @@ struct map_session_data {
 		unsigned refuse_emergencycall : 1;
 		unsigned reg_dirty : 1;
 		unsigned gstorage_lockreq : 2;	// 0:無し, 1:scriptからロック要求中, 2:atcommandからロック要求中
+		unsigned inventory_dirty : 1;
+		unsigned cart_dirty : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -328,6 +330,8 @@ struct map_session_data {
 	struct mmo_charstatus status;
 	struct registry save_reg;
 	struct item_data *inventory_data[MAX_INVENTORY];
+	unsigned int inventory_sortkey;
+	unsigned int cart_sortkey;
 	short equip_index[11];
 	unsigned short unbreakable_equip;
 	int weight,max_weight;

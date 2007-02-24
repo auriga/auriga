@@ -5031,7 +5031,8 @@ int battle_config_read(const char *cfgName)
 		battle_config.sw_def_type = 0;
 		battle_config.calc_dist_flag = 0;
 		battle_config.allow_sw_dist = 4;
-		battle_config.storagesort_by_itemid = 3;
+		battle_config.personal_storage_sort = 1;
+		battle_config.guild_storage_sort = 1;
 		battle_config.allow_es_magic_all = 0;
 		battle_config.trap_is_invisible = 0;
 		battle_config.gm_perfect_hide = 0;
@@ -5484,7 +5485,8 @@ int battle_config_read(const char *cfgName)
 			{ "sw_def_type",						&battle_config.sw_def_type							},
 			{ "calc_dist_flag",						&battle_config.calc_dist_flag						},
 			{ "allow_sw_dist",						&battle_config.allow_sw_dist						},
-			{ "storagesort_by_itemid",				&battle_config.storagesort_by_itemid				},
+			{ "personal_storage_sort",				&battle_config.personal_storage_sort				},
+			{ "guild_storage_sort",					&battle_config.guild_storage_sort				},
 			{ "allow_es_magic_all",					&battle_config.allow_es_magic_all					},
 			{ "trap_is_invisible",					&battle_config.trap_is_invisible					},
 			{ "gm_perfect_hide",					&battle_config.gm_perfect_hide					},

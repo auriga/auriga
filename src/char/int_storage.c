@@ -79,7 +79,7 @@ int storage_tostr(char *str,struct storage *p)
 
 	for(i=0;i<MAX_STORAGE;i++)
 		if( (p->store_item[i].nameid) && (p->store_item[i].amount) ){
-			str_p += sprintf(str_p,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
 				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
 				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
 				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3]);
@@ -106,17 +106,17 @@ int storage_fromstr(char *str,struct storage *p)
 	if(set!=2)
 		return 1;
 	if(str[next]=='\n' || str[next]=='\r')
-		return 0;	
+		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 		  &tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 		  &tmp_int[4],&tmp_int[5],&tmp_int[6],
 		  &tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
 		if(set!=11)
 			return 1;
 		if(i < MAX_STORAGE) {
-			p->store_item[i].id=tmp_int[0];
+			p->store_item[i].id=(unsigned int)tmp_int[0];
 			p->store_item[i].nameid=tmp_int[1];
 			p->store_item[i].amount=tmp_int[2];
 			p->store_item[i].equip=tmp_int[3];
@@ -179,10 +179,10 @@ int storage_txt_sync(void)
 {
 	FILE *fp;
 	int lock;
-	
+
 	if( !storage_db )
 		return 1;
-	
+
 	if( (fp=lock_fopen(storage_txt,&lock))==NULL ){
 		printf("int_storage: cant write [%s] !!! data is lost !!!\n",storage_txt);
 		return 1;
@@ -234,7 +234,7 @@ static int gstorage_tostr(char *str,struct guild_storage *p)
 
 	for(i=0;i<MAX_GUILD_STORAGE;i++)
 		if( (p->store_item[i].nameid) && (p->store_item[i].amount) ){
-			str_p += sprintf(str_p,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
 				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
 				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
 				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3]);
@@ -260,17 +260,17 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 	if(set!=2)
 		return 1;
 	if(str[next]=='\n' || str[next]=='\r')
-		return 0;	
+		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 		  &tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 		  &tmp_int[4],&tmp_int[5],&tmp_int[6],
 		  &tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
 		if(set!=11)
 			return 1;
 		if(i < MAX_GUILD_STORAGE) {
-			p->store_item[i].id=tmp_int[0];
+			p->store_item[i].id=(unsigned int)tmp_int[0];
 			p->store_item[i].nameid=tmp_int[1];
 			p->store_item[i].amount=tmp_int[2];
 			p->store_item[i].equip=tmp_int[3];
@@ -597,7 +597,7 @@ void gstorage_txt_final(void)
 {
 	if(gstorage_db)
 		numdb_final(gstorage_db,gstorage_db_final);
-		
+
 #ifdef TXT_JOURNAL
 	if( guild_storage_journal_enable )
 	{

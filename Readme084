@@ -1,4 +1,44 @@
 ----------------------------------------
+//092 [2007/02/25] by Rayce
+
+・アイテムトグルが固定化されるように修正
+	取得したアイテムはインベントリの最後尾に格納される必要がありますが、現在の仕様では配列内で空いている場所
+	に格納されるようになっています。
+	従って clif_parse_LoadEndAck() でアイテムリストを再送信したときに以前と並びが異なるアイテムリストが
+	クライアントに渡されてしまい、トグルが固定化されない原因となっていました。
+	そこでアイテムを取得した順に番号を付け、pc_checkitem() でこの番号順にソートするように変更しました。
+	item構造体のidメンバがほとんど使われてなかったので、この番号を保存する変数として利用しています。
+	pc_checkitem() で行っていたアイテムの空き詰め処理の代わりにqsortを行う形になっていますが、インベントリに
+	関してはソート後にアイテムデータベースへのポインタを再設定しないといけないので、以前に比べて若干処理は
+	増えていることになります。
+
+	-> item構造体の id メンバを unsigned int型に変更
+	-> map_session_data構造体内、state構造体に inventory_dirty, cart_dirty 追加
+	   （qsortすべきかどうかを判定するフラグ）
+	-> map_session_data構造体に inventory_sortkey, cart_sortkey 追加
+	-> pc_setinventorydata() の処理を pc_checkitem() 内に吸収
+
+・倉庫内アイテムの並び換えを修正および拡張
+	上記のアイテムトグルと同様に倉庫内アイテムについても格納順に並ぶようにソートするように修正しました。
+	battle_athena.confでソート方法を選択することができます。
+	ただし今までの storagesort_by_itemid は削除されて personal_storage_sort, guild_storage_sort という項目に
+	変更されているので注意してください。
+
+	0のときはソートしません。速度重視。
+	1のときはitem構造体のidを使って格納順にソートします。本鯖準拠。
+	2のときはアイテムIDでソートします。091以前のバージョンの方法です。
+	3のときは種類でソートします。まずtypeでソートし、次に武器・防具ならLoc（装備箇所）でソートし、
+	最後にアイテムIDでソートします。これにより同じタイプのアイテムが近くに集まるようになります。
+
+	-> storage構造体、guild_storage構造体に sortkey 追加
+	-> storage_comp_item_by_key(), storage_comp_item_by_nameid(), storage_comp_item_by_type() 追加
+	-> sortage_gsortitem() を削除し storage_sortitem() で一括処理できるように変更
+
+・SQL: sql-filesにAuriga092_changetable.sql追加、main.sql更新
+       `id` フィールドの使い方が変更されているので注意してください
+・SQL: item構造体のidメンバが正しくコンバートされるように修正（char-converter.c）
+
+----------------------------------------
 //091 [2007/02/23] by Rayce
 
 ・login鯖で0x2712を受け取ったとき、auth_fifoに該当データが見つからなかった場合に

@@ -25,7 +25,25 @@ static struct dbt *guild_storage_db;
  * 倉庫内アイテムソート
  *------------------------------------------
  */
-static int storage_comp_item(const void *_i1, const void *_i2){
+static int storage_comp_item_by_key(const void *_i1, const void *_i2)
+{
+	struct item *i1 = (struct item *)_i1;
+	struct item *i2 = (struct item *)_i2;
+
+	if(i1->id == 0 && i2->id != 0)
+		return 1;
+	if(i1->id != 0 && i2->id == 0)
+		return -1;
+
+	if(i1->id > i2->id)
+		return 1;
+	if(i1->id < i2->id)
+		return -1;
+
+	return 0;
+}
+static int storage_comp_item_by_nameid(const void *_i1, const void *_i2)
+{
 	struct item *i1=(struct item *)_i1;
 	struct item *i2=(struct item *)_i2;
 
@@ -39,22 +57,68 @@ static int storage_comp_item(const void *_i1, const void *_i2){
 		return i1->nameid - i2->nameid;
 	}
 }
+static int storage_comp_item_by_type(const void *_i1, const void *_i2)
+{
+	struct item *i1 = (struct item *)_i1;
+	struct item *i2 = (struct item *)_i2;
+	struct item_data *data1, *data2;
 
-static void sortage_sortitem(struct storage* stor){
-	nullpo_retv(stor);
+	if(i1->nameid == 0 || i2->nameid == 0) {
+		// 末尾に集めるので反転
+		return i2->nameid - i1->nameid;
+	}
 
-	if(battle_config.storagesort_by_itemid & 1)
-		qsort(stor->store_item, MAX_STORAGE, sizeof(struct item), storage_comp_item);
+	data1 = itemdb_search(i1->nameid);
+	data2 = itemdb_search(i2->nameid);
 
-	return;
+	if(data1->type > data2->type)
+		return 1;
+	if(data1->type < data2->type)
+		return -1;
+
+	// 武器・防具ならLOCでソート
+	if(data1->type == 4 || data1->type == 5) {
+		if(data1->equip > data2->equip)
+			return 1;
+		if(data1->equip < data2->equip)
+			return -1;
+	}
+
+	// 最後はアイテムIDでソート
+	if(data1->nameid > data2->nameid)
+		return 1;
+	if(data1->nameid < data2->nameid)
+		return -1;
+
+	return 0;
 }
 
-static void sortage_gsortitem(struct guild_storage* gstor){
-	nullpo_retv(gstor);
+static void sortage_sortitem(struct item *item,int max,unsigned int *sortkey,int flag)
+{
+	int (*cmp)(const void *,const void *) = NULL;
 
-	if(battle_config.storagesort_by_itemid & 2)
-		qsort(gstor->store_item, MAX_GUILD_STORAGE, sizeof(struct item), storage_comp_item);
+	nullpo_retv(item);
 
+	switch(flag) {
+		case 1: cmp = storage_comp_item_by_key;    break;
+		case 2: cmp = storage_comp_item_by_nameid; break;
+		case 3: cmp = storage_comp_item_by_type;   break;
+	}
+
+	if(cmp) {
+		int i;
+		qsort(item, max, sizeof(struct item), cmp);
+
+		// ソートキーのリナンバリング
+		*sortkey = 0;
+		for(i=0; i<max; i++) {
+			if(item->nameid > 0)
+				item->id = ++(*sortkey);
+			else
+				item->id = 0;
+			item++;
+		}
+	}
 	return;
 }
 
@@ -160,7 +224,8 @@ static int storage_additem(struct map_session_data *sd,struct storage *stor,stru
 	for(i=0;i<MAX_STORAGE;i++){
 		if(stor->store_item[i].nameid==0){
 			memcpy(&stor->store_item[i],item_data,sizeof(stor->store_item[0]));
-			stor->store_item[i].amount=amount;
+			stor->store_item[i].id     = ++stor->sortkey;
+			stor->store_item[i].amount = amount;
 			stor->storage_amount++;
 			clif_storageitemadded(sd,stor,i,amount);
 			clif_updatestorageamount(sd,stor);
@@ -186,6 +251,7 @@ static void storage_delitem(struct map_session_data *sd,struct storage *stor,int
 	stor->store_item[n].amount-=amount;
 	if(stor->store_item[n].amount==0){
 		memset(&stor->store_item[n],0,sizeof(stor->store_item[0]));
+		stor->store_item[n].id = 0;
 		stor->storage_amount--;
 		clif_updatestorageamount(sd,stor);
 	}
@@ -314,7 +380,7 @@ void storage_storageclose(struct map_session_data *sd)
 	sd->state.storage_flag = 0;
 	clif_storageclose(sd);
 
-	sortage_sortitem(stor);
+	sortage_sortitem(stor->store_item, MAX_STORAGE, &stor->sortkey, battle_config.personal_storage_sort);
 
 	return;
 }
@@ -458,7 +524,8 @@ static int guild_storage_additem(struct map_session_data *sd,struct guild_storag
 	for(i=0;i<MAX_GUILD_STORAGE;i++){
 		if(stor->store_item[i].nameid==0){
 			memcpy(&stor->store_item[i],item_data,sizeof(stor->store_item[0]));
-			stor->store_item[i].amount=amount;
+			stor->store_item[i].id     = ++stor->sortkey;
+			stor->store_item[i].amount = amount;
 			stor->storage_amount++;
 			clif_guildstorageitemadded(sd,stor,i,amount);
 			clif_updateguildstorageamount(sd,stor);
@@ -484,6 +551,7 @@ static void guild_storage_delitem(struct map_session_data *sd,struct guild_stora
 	stor->store_item[n].amount-=amount;
 	if(stor->store_item[n].amount==0){
 		memset(&stor->store_item[n],0,sizeof(stor->store_item[0]));
+		stor->store_item[n].id = 0;
 		stor->storage_amount--;
 		clif_updateguildstorageamount(sd,stor);
 	}
@@ -614,7 +682,7 @@ void storage_guild_storageclose(struct map_session_data *sd)
 	if((stor=guild2storage(sd->status.guild_id)) != NULL) {
 		intif_send_guild_storage(sd->status.account_id,stor);
 		stor->storage_status = 0;
-		sortage_gsortitem(stor);
+		sortage_sortitem(stor->store_item, MAX_GUILD_STORAGE, &stor->sortkey, battle_config.guild_storage_sort);
 	}
 	sd->state.storage_flag = 0;
 	clif_storageclose(sd);

@@ -20,7 +20,7 @@
 
 
 int char_sql_saveitem(struct item *item, int max, int id, int tableswitch) {
-	int i;
+	int i,num = 0;
 	const char *tablename;
 	const char *selectoption;
 	char *p;
@@ -56,15 +56,15 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch) {
 
 	p  = tmp_sql;
 	p += sprintf(
-		p,"INSERT INTO `%s`(`%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
+		p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
 		"`attribute`, `card0`, `card1`, `card2`, `card3` ) VALUES",tablename,selectoption
 	);
 
 	for(i = 0 ; i < max ; i++) {
 		if(item[i].nameid) {
 			p += sprintf(
-				p,"%c('%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
-				sep,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
+				p,"%c('%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
+				sep,++num,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
 				item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
 				item[i].card[2],item[i].card[3]
 			);
@@ -169,13 +169,13 @@ int storage_fromstr(char *str, struct storage *p)
 		return 1;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		if(sscanf(str + next, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		if(sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 		      &tmp_int[0], &tmp_int[1], &tmp_int[2], &tmp_int[3],
 		      &tmp_int[4], &tmp_int[5], &tmp_int[6],
 		      &tmp_int[7], &tmp_int[8], &tmp_int[9], &tmp_int[10], &len) == 11) {
 
 			if(i < MAX_STORAGE) {
-				p->store_item[i].id = tmp_int[0];
+				p->store_item[i].id = (unsigned int)tmp_int[0];
 				p->store_item[i].nameid = tmp_int[1];
 				p->store_item[i].amount = tmp_int[2];
 				p->store_item[i].equip = tmp_int[3];
@@ -1016,14 +1016,14 @@ int gstorage_fromstr(char *str,struct guild_storage *p)
 		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 		  &tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 		  &tmp_int[4],&tmp_int[5],&tmp_int[6],
 		  &tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
 		if(set!=11)
 			return 1;
 		if(i < MAX_GUILD_STORAGE) {
-			p->store_item[i].id=tmp_int[0];
+			p->store_item[i].id=(unsigned int)tmp_int[0];
 			p->store_item[i].nameid=tmp_int[1];
 			p->store_item[i].amount=tmp_int[2];
 			p->store_item[i].equip=tmp_int[3];
