@@ -48,7 +48,7 @@ static int exp_table[16][MAX_LEVEL];
 extern int current_equip_item_index;
 extern int current_equip_card_id;
 
-// 属性表
+// 属性テーブル
 int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
 
 // JOB TABLE

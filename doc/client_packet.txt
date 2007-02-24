@@ -1097,8 +1097,8 @@ R 01c2
 
 R 01c3 <len>.w <color>.l <font?>.w <size?>.w <?>.l <message>.?B
 	GMからの天の声（R 009aのマルチカラー版）
-R 01c4 <index>.w <amount>.l <itemID>.w <item data>.12B
-	カプラ倉庫アイテム
+R 01c4 <index>.w <amount>.l <itemID>.w <type>.B <identify flag>.B <attribute>.B <refine>.B <card>.4w
+	カプラ倉庫アイテム、0xf4の上位版
 R 01c5 <index>.w <amount>.l <itemID>.w <item data>.12B
 	カプラ倉庫アイテム？
 R 01c8 <index>.w <item ID>.w <ID>.l <amount left>.w <type>.B
@@ -1587,7 +1587,7 @@ S 028b
 	サーバ統合の際のキャラクターセレクト、残すキャラを選択する
 R 028c
 	0x28bの応答
-S 028d
+S 028d <account_id>.l <char_id>.l <name>.24B
 	キャラクターセレクト画面で名前を変えるボタンを押した
 R 0291 <type>.w
 	msgstringtableのメッセージが白文字で出力される
@@ -1597,9 +1597,14 @@ R 0293 <type>.B <?>.l <?>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
 	type=2 : ボスモンスター<boss_name>の位置がミニマップに表示されます。
 	type=3 : ボスモンスター<boss_name>の出現予定時刻<hour>時<minute>分
 R 0294
-	文字化けメッセージが赤文字で出力される
-	未調査
+	<book_id>.l <page_num>.l
+	読書システム
 R 029d <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	スキル情報の塊、0x10fと同じ
 R 029e <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
 	スキル情報更新、0x10eと同じ
+R 02a3 <?>.l <?>.12B
+	jROのログイン時に観測、未調査
+S 02a5 <?>.w <?>.l
+	マウスのスクロールを高速で動かすと飛んでくる
+	未調査
