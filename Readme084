@@ -1,4 +1,14 @@
 ----------------------------------------
+//096 [2007/02/26] by Rayce
+
+・ギルド名およびパーティ名の検索をcase-sensitiveに修正（int_guild.c, int_party.c, guild.c, party.c）
+	本鯖の仕様に従って半角英字は大文字/小文字が区別されるようになります。
+	ついでに guild_searchname(), party_searchname() を最適化。
+
+・SQL: アカウントIDの検索をcase-sensitiveに修正（login.c）
+・SQL: キャラ名の検索をcase-sensitiveに修正（char.c）
+
+----------------------------------------
 //095 [2007/02/26] by Rayce
 
 ・ワープポータルがSP消費なしになっていたバグを修正、thanks to hugeさん（skill.c）

@@ -283,11 +283,11 @@ int guild_fromstr(char *str,struct guild *g)
 		g->skill[i].lv=tmp_int[1];
 		str=strchr(str+1,' ');	
 	}
-	
+
 	//新ギルドスキルへ移行
 	for(i=0;i<MAX_GUILDSKILL;i++)
 		g->skill[i].id=GUILD_SKILLID+i;
-	
+
 	str=strchr(str+1,'\t');
 //	printf("GuildSkillInfo OK\n");
 	return 0;
@@ -356,7 +356,7 @@ int guild_txt_init(void)
 			guild_newid=i;
 			continue;
 		}
-	
+
 		g=(struct guild *)aCalloc(1,sizeof(struct guild));
 		if(guild_fromstr(line,g)==0 && g->guild_id>0){
 			if( g->guild_id >= guild_newid)
@@ -434,10 +434,10 @@ int guild_txt_sync(void)
 {
 	FILE *fp;
 	int lock;
-	
+
 	if( !guild_db )
 		return 1;
-	
+
 	if( (fp=lock_fopen(guild_txt,&lock))==NULL ){
 		printf("int_guild: cant write [%s] !!! data is lost !!!\n",guild_txt);
 		return 1;
@@ -463,12 +463,17 @@ int guild_txt_sync(void)
 // ギルド名検索用
 int guild_txt_load_str_sub(void *key,void *data,va_list ap)
 {
-	struct guild *g=(struct guild *)data,**dst;
+	struct guild *g, **dst;
 	char *str;
-	str=va_arg(ap,char *);
-	dst=va_arg(ap,struct guild **);
-	if(strcmpi(g->name,str)==0)
-		*dst=g;
+
+	g   = (struct guild *)data;
+	str = va_arg(ap,char *);
+	dst = va_arg(ap,struct guild **);
+
+	if(*dst == NULL) {
+		if(strcmp(g->name,str) == 0)
+			*dst = g;
+	}
 	return 0;
 }
 
@@ -486,7 +491,7 @@ int guild_txt_delete_sub(void *key,void *data,va_list ap)
 	struct guild *g=(struct guild *)data;
 	int guild_id=va_arg(ap,int);
 	int i;
-	
+
 	for(i=0;i<MAX_GUILDALLIANCE;i++){
 		if(g->alliance[i].guild_id==guild_id)
 		{
@@ -570,7 +575,7 @@ void guild_txt_final(void) {
 		numdb_final(guild_db,guild_txt_db_final);
 	if(castle_db)
 		numdb_final(castle_db,guildcastle_txt_db_final);
-		
+
 #ifdef TXT_JOURNAL
 	if( guild_journal_enable )
 	{
@@ -781,17 +786,17 @@ int guildcastle_txt_sync_sub(void *key,void *data,va_list ap)
 int guildcastle_txt_sync(void) {
 	FILE *fp;
 	int lock;
-	
+
 	if( !castle_db )
 		return 1;
-	
+
 	if( (fp=lock_fopen(castle_txt,&lock))==NULL ){
 		printf("int_guild: cant write [%s] !!! data is lost !!!\n",castle_txt);
 		return 1;
 	}
 	numdb_foreach(castle_db,guildcastle_txt_sync_sub,fp);
 	lock_fclose(fp,castle_txt,&lock);
-	
+
 #ifdef TXT_JOURNAL
 	if( guildcastle_journal_enable )
 	{
@@ -851,7 +856,7 @@ int guildcastle_sql_init(void)
 	MYSQL_ROW  sql_row = NULL;
 	struct guild_castle *gc;
 	int i;
-	
+
 	castle_db=numdb_init();
 
 	sprintf (tmp_sql , "SELECT * FROM `%s` ORDER BY `castle_id`", guild_castle_db);
@@ -1167,7 +1172,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 			g->skill[i].id=atoi(sql_row[1]);
 			g->skill[i].lv=atoi(sql_row[2]);
 		}
-		
+
 		//移行用
 		for(i = 0; i< MAX_GUILDSKILL;i++)
 			g->skill[i].id=GUILD_SKILLID+i;
@@ -1191,7 +1196,7 @@ const struct guild* guild_sql_load_str(char *str) {
 	MYSQL_ROW  sql_row = NULL;
 
 	sprintf(
-		tmp_sql,"SELECT `guild_id` FROM `%s` WHERE `name` = '%s'",
+		tmp_sql,"SELECT `guild_id`,`name` FROM `%s` WHERE `name` = '%s'",
 		guild_db_,strecpy(buf,str)
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
@@ -1199,12 +1204,14 @@ const struct guild* guild_sql_load_str(char *str) {
 	}
 	sql_res = mysql_store_result(&mysql_handle) ;
 	if (sql_res) {
-		sql_row = mysql_fetch_row(sql_res);
-		if(sql_row) {
-			id_num  = atoi(sql_row[0]);
+		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+			if(strcmp(str, sql_row[1]) == 0) {
+				id_num = atoi(sql_row[0]);
+				break;
+			}
 		}
+		mysql_free_result(sql_res);
 	}
-	mysql_free_result(sql_res);
 	if(id_num >= 0) {
 		return guild_sql_load_num(id_num);
 	}
@@ -1448,7 +1455,7 @@ int guild_sql_delete_sub(void *key,void *data,va_list ap)
 	struct guild *g=(struct guild *)data;
 	int guild_id=va_arg(ap,int);
 	int i;
-	
+
 	for(i=0;i<MAX_GUILDALLIANCE;i++){
 		if(g->alliance[i].guild_id==guild_id)
 			g->alliance[i].guild_id=0;
@@ -1703,7 +1710,7 @@ int guild_calcinfo(struct guild *g)
 		if(g->member[i].account_id>0){
 			g->average_lv+=g->member[i].lv;
 			c++;
-			
+
 			if(g->member[i].online>0)
 				g->connect_member++;
 		}
@@ -1973,7 +1980,7 @@ int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member
 {
 	struct guild g;
 	int i;
-	
+
 	for(i=0;i<24 && name[i];i++){
 		if( !(name[i]&0xe0) || name[i]==0x7f){
 			printf("int_guild: illegal guild name [%s]\n",name);
@@ -1981,7 +1988,7 @@ int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member
 			return 0;
 		}
 	}
-	
+
 	if(guild_load_str(name) !=NULL) {
 		printf("int_guild: same name guild exists [%s]\n",name);
 		mapif_guild_created(fd,account_id,NULL);
@@ -1997,14 +2004,14 @@ int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member
 	strncpy(g.position[MAX_GUILDPOSITION-1].name,"Newbie",24);
 	for(i=1;i<MAX_GUILDPOSITION-1;i++)
 		sprintf(g.position[i].name,"Position %d",i+1);
-	
+
 	// ここでギルド情報計算が必要と思われる
 	g.max_member = (MAX_GUILD > 16)? 16: MAX_GUILD;
 	g.average_lv = master->lv;
 	g.guild_lv   = 1;
 	for(i=0;i<MAX_GUILDSKILL;i++)
 		g.skill[i].id=i+GUILD_SKILLID;
-	
+
 	guild_new(&g);
 
 	mapif_guild_created(fd,account_id,&g);
@@ -2086,10 +2093,10 @@ int mapif_parse_GuildLeave(int fd,int guild_id,int account_id,int char_id,int fl
 					memcpy(g2.explusion[j].name,g2.member[i].name,24);
 					memcpy(g2.explusion[j].mes,mes,40);
 				}
-				
+
 				mapif_guild_leaved(guild_id,account_id,char_id,flag,g2.member[i].name,mes);
 				memset(&g2.member[i],0,sizeof(struct guild_member));
-				
+
 				if( guild_check_empty(&g2) ) {
 					// 空データ
 					guild_delete(g2.guild_id);
@@ -2121,7 +2128,7 @@ static int mapif_parse_GuildChangeMemberInfoShort(int fd,int guild_id,
 	for(i=0,alv=0,c=0;i<MAX_GUILD;i++){
 		if(	g2.member[i].account_id==account_id &&
 			g2.member[i].char_id==char_id){
-			
+
 			g2.member[i].online=online;
 			g2.member[i].lv=lv;
 			g2.member[i].class_=class_;
@@ -2292,7 +2299,7 @@ int mapif_parse_GuildAlliance(int fd,int guild_id1,int guild_id2,
 	g1[0] = guild_load_num(guild_id1);
 	g1[1] = guild_load_num(guild_id2);
 	if(g1[0]==NULL || g1[1]==NULL) return 0;
-	
+
 	memcpy(&g2[0],g1[0],sizeof(struct guild));
 	memcpy(&g2[1],g1[1],sizeof(struct guild));
 	if(!(flag&0x8)){

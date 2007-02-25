@@ -238,12 +238,17 @@ int party_txt_sync(void)
 // パーティ名検索用
 int party_txt_load_name_sub(void *key,void *data,va_list ap)
 {
-	struct party *p=(struct party *)data,**dst;
+	struct party *p, **dst;
 	char *str;
-	str=va_arg(ap,char *);
-	dst=va_arg(ap,struct party **);
-	if(strcmpi(p->name,str)==0)
-		*dst=p;
+
+	p   = (struct party *)data;
+	str = va_arg(ap,char *);
+	dst = va_arg(ap,struct party **);
+
+	if(*dst == NULL) {
+		if(strcmp(p->name,str) == 0)
+			*dst = p;
+	}
 	return 0;
 }
 
@@ -371,7 +376,7 @@ const struct party* party_sql_load_str(char *str) {
 	MYSQL_ROW  sql_row = NULL;
 
 	sprintf(
-		tmp_sql,"SELECT `party_id` FROM `%s` WHERE `name` = '%s'",
+		tmp_sql,"SELECT `party_id`,`name` FROM `%s` WHERE `name` = '%s'",
 		party_db_,strecpy(buf,str)
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
@@ -379,12 +384,14 @@ const struct party* party_sql_load_str(char *str) {
 	}
 	sql_res = mysql_store_result(&mysql_handle) ;
 	if (sql_res) {
-		sql_row = mysql_fetch_row(sql_res);
-		if(sql_row) {
-			id_num  = atoi(sql_row[0]);
+		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+			if(strcmp(str, sql_row[1]) == 0) {
+				id_num = atoi(sql_row[0]);
+				break;
+			}
 		}
+		mysql_free_result(sql_res);
 	}
-	mysql_free_result(sql_res);
 	if(id_num >= 0) {
 		return party_sql_load_num(id_num);
 	}
@@ -826,7 +833,7 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,char *nick,cha
 			break;
 		if(p2.member[i].account_id==0){
 			int flag=0;
-			
+
 			p2.member[i].account_id=account_id;
 			memcpy(p2.member[i].name,nick,24);
 			memcpy(p2.member[i].map,map,16);

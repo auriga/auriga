@@ -634,10 +634,9 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 
 	for(i=0;i<char_num;i++){
 		if(strcmp(char_dat[i].st.name,dat)==0 || (char_dat[i].st.account_id==sd->account_id && char_dat[i].st.char_num==dat[30]))
-			break;
+			return NULL;
 	}
-	if(i!=char_num)
-		return NULL;
+
 	if(char_num>=char_max) {
 		// realloc() するとchar_datの位置が変わるので、session のデータを見て
 		// 強制的に置き換える処理をしないとダメ。
@@ -1578,7 +1577,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 //		if(dat[i]<0x20 || dat[i]==0x7f || dat[i]>=0xfd)
 			return NULL;
 	}
-	for(i = 24;i<=29;i++) {
+	for(i=24;i<=29;i++) {
 		if(dat[i] > 9) return NULL;
 	}
 	if(dat[30] >= max_char_slot){
@@ -1596,15 +1595,16 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 		return NULL;
 	}
 	char_log("make new char %d %s",dat[30],dat);
-	// 同名チェック
+
+	// 同一アカウントID、同一キャラスロットチェック
 	sprintf(
 		tmp_sql,
-		"SELECT COUNT(*) FROM `%s` WHERE (`account_id` = '%d' AND `char_num` = '%d') OR "
-		"`name` = '%s'",char_db, sd->account_id,dat[30],strecpy(buf,dat)
+		"SELECT COUNT(*) FROM `%s` WHERE `account_id` = '%d' AND `char_num` = '%d'",
+		char_db, sd->account_id, dat[30]
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
-		return 0;
+		return NULL;
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 	if (!sql_res) return NULL;
@@ -1612,6 +1612,23 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 	i = atoi(sql_row[0]);
 	mysql_free_result(sql_res);
 	if(i) return NULL;
+
+	// 同名チェック
+	sprintf(tmp_sql, "SELECT `name` FROM `%s` WHERE `name` = '%s'", char_db, strecpy(buf,dat));
+	if (mysql_query(&mysql_handle, tmp_sql)) {
+		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
+		return NULL;
+	}
+	sql_res = mysql_store_result(&mysql_handle);
+	if(sql_res) {
+		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+			if(strncmp(dat, sql_row[0], 24) == 0) {
+				mysql_free_result(sql_res);
+				return NULL;
+			}
+		}
+		mysql_free_result(sql_res);
+	}
 
 	//Insert the char to the 'chardb' ^^
 	sprintf(
@@ -1802,17 +1819,20 @@ int char_sql_nick2id(const char *char_name)
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
-	sprintf(tmp_sql,"SELECT `char_id` FROM `%s` WHERE `name` = '%s'",char_db,strecpy(buf,char_name));
+	sprintf(tmp_sql,"SELECT `char_id`,`name` FROM `%s` WHERE `name` = '%s'",char_db,strecpy(buf,char_name));
 	if(mysql_query(&mysql_handle, tmp_sql)){
-		printf("DB server Error (Mail Find char_id) : %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`) : %s\n", char_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 	if(sql_res){
-		sql_row = mysql_fetch_row(sql_res);
-		if(sql_row)
-			char_id = atoi(sql_row[0]);
+		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+			if(strcmp(char_name, sql_row[1]) == 0) {
+				char_id = atoi(sql_row[0]);
+				break;
+			}
+		}
+		mysql_free_result(sql_res);
 	}
-	mysql_free_result(sql_res);
 
 	return char_id;
 }

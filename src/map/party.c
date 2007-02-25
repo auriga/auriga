@@ -36,14 +36,17 @@ struct party *party_search(int party_id)
 
 static int party_searchname_sub(void *key, void *data, va_list ap)
 {
-	struct party *p = (struct party *)data;
-	struct party **dst;
+	struct party *p, **dst;
 	char *str;
 
-	str=va_arg(ap,char *);
-	dst=va_arg(ap,struct party **);
-	if(strcmpi(p->name,str)==0)
-		*dst=p;
+	p   = (struct party *)data;
+	str = va_arg(ap,char *);
+	dst = va_arg(ap,struct party **);
+
+	if(*dst == NULL) {
+		if(strcmp(p->name,str) == 0)
+			*dst = p;
+	}
 
 	return 0;
 }

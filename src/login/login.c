@@ -658,20 +658,22 @@ const struct mmo_account* login_sql_account_load_str(const char *account_id) {
 
 	if( !account_id[0] ) return NULL;
 	sprintf(
-		tmp_sql,"SELECT `%s` FROM `%s` WHERE `%s` = '%s'",
-		login_db_account_id,login_db,login_db_userid,strecpy(buf,account_id)
+		tmp_sql,"SELECT `%s`,`%s` FROM `%s` WHERE `%s` = '%s'",
+		login_db_account_id,login_db_userid,login_db,login_db_userid,strecpy(buf,account_id)
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle) ;
 	if (sql_res) {
-		sql_row = mysql_fetch_row(sql_res);
-		if(sql_row) {
-			id_num  = atoi(sql_row[0]);
+		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+			if(strcmp(account_id, sql_row[1]) == 0) {
+				id_num = atoi(sql_row[0]);
+				break;
+			}
 		}
+		mysql_free_result(sql_res);
 	}
-	mysql_free_result(sql_res);
 	if(id_num >= 0) {
 		return login_sql_account_load_num(id_num);
 	} else {

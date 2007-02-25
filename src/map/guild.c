@@ -231,12 +231,17 @@ struct guild *guild_search(int guild_id)
 
 int guild_searchname_sub(void *key,void *data,va_list ap)
 {
-	struct guild *g=(struct guild *)data,**dst;
+	struct guild *g, **dst;
 	char *str;
-	str=va_arg(ap,char *);
-	dst=va_arg(ap,struct guild **);
-	if(strcmpi(g->name,str)==0)
-		*dst=g;
+
+	g   = (struct guild *)data;
+	str = va_arg(ap,char *);
+	dst = va_arg(ap,struct guild **);
+
+	if(*dst == NULL) {
+		if(strcmp(g->name,str) == 0)
+			*dst = g;
+	}
 
 	return 0;
 }
