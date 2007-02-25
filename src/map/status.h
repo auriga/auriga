@@ -570,6 +570,7 @@ enum {
 	SI_FROSTWEAPON			=91,	/* フロストウェポン */
 	SI_LIGHTNINGLOADER		=92,	/* ライトニングローダー */
 	SI_SEISMICWEAPON		=93,	/* サイズミックウェポン */
+	SI_HOLDWEB			=95,	/* ホールドウェブ */
 	SI_AURABLADE			=103,	/* オーラブレード */
 	SI_PARRYING				=104,	/* パリイング */
 	SI_CONCENTRATION		=105,	/* コンセントレーション */

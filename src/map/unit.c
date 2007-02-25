@@ -763,13 +763,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 //	struct unit_data        *target_ud = NULL;
 	int forcecast = 0,zone = 0;
 	struct status_change *sc_data;
-	struct status_change *tsc_data;
 
 	nullpo_retr(0, src);
-
-	if( (target=map_id2bl(target_id)) == NULL ) return 0;
-	if(src->m != target->m)                     return 0; // 同じマップかどうか
-	if(!src->prev || !target->prev)             return 0; // map 上に存在するか
 
 	if( (src_sd = BL_DOWNCAST( BL_PC,  src ) ) ) {
 		src_ud = &src_sd->ud;
@@ -780,21 +775,17 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	} else if( (src_hd = BL_DOWNCAST( BL_HOM, src ) ) ) {
 		src_ud = &src_hd->ud;
 	}
-	if( src_ud == NULL) return 0;
+	if( src_ud == NULL ) return 0;
 
-	target_sd = BL_DOWNCAST( BL_PC,  target );
-	target_md = BL_DOWNCAST( BL_MOB, target );
-	target_hd = BL_DOWNCAST( BL_HOM, target );
-
-	if(unit_isdead(src))		return 0; // 死んでいないか
-	if(src_sd && src_sd->opt1>0 )   return 0; /* 沈黙や異常（ただし、グリムなどの判定をする） */
+	if( unit_isdead(src) )		 return 0;	// 死んでいないか
+	if( src_sd && src_sd->opt1 > 0 ) return 0;	// 沈黙や異常（ただし、グリムなどの判定をする）
 
 	//スキル制限
 	zone = skill_get_zone(skill_num);
 	if(zone){
 		int m = src->m;
 		int ban = 0;
-		 if(map[m].flag.turbo && zone&16)
+		if(map[m].flag.turbo && zone&16)
 			ban = 1;
 		else if(map[m].flag.normal && zone&1)
 			ban = 1;
@@ -817,11 +808,59 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		}
 	}
 
-	sc_data  = status_get_sc_data(src);
-	tsc_data = status_get_sc_data(target);
+	sc_data = status_get_sc_data(src);
+
+	// ターゲットの自動選択
+	switch(skill_num) {
+	case TK_STORMKICK:		/* 旋風蹴り */
+	case TK_DOWNKICK:		/* 下段蹴り */
+	case TK_TURNKICK:		/* 回転蹴り */
+	case TK_COUNTER:		/* カウンター蹴り */
+	case MO_COMBOFINISH:		/* 猛龍拳 */
+	case CH_TIGERFIST:		/* 伏虎拳 */
+	case CH_CHAINCRUSH:		/* 連柱崩撃 */
+		target_id = src_ud->attacktarget;
+		break;
+	case MO_CHAINCOMBO:		/* 連打掌 */
+		target_id = src_ud->attacktarget;
+		if(sc_data && sc_data[SC_BLADESTOP].timer != -1)
+			target_id = sc_data[SC_BLADESTOP].val4;
+		break;
+	case TK_JUMPKICK:		/* 飛び蹴り（ティオアプチャギ）*/
+		if(sc_data && sc_data[SC_DODGE_DELAY].timer != -1 && src->id == target_id)
+			target_id = sc_data[SC_DODGE_DELAY].val2;
+		break;
+	case MO_EXTREMITYFIST:		/* 阿修羅覇鳳拳 */
+		if(sc_data && sc_data[SC_COMBO].timer != -1 && (sc_data[SC_COMBO].val1 == MO_COMBOFINISH || sc_data[SC_COMBO].val1 == CH_CHAINCRUSH) )
+			target_id = src_ud->attacktarget;
+		break;
+	case WE_MALE:
+	case WE_FEMALE:
+		{
+			struct map_session_data *p_sd = NULL;
+			if(src_sd) {
+				p_sd = pc_get_partner(src_sd);
+			}
+			target_id = (p_sd)? p_sd->bl.id: 0;
+		}
+		break;
+	}
+
+	if( (target = map_id2bl(target_id)) == NULL ) {
+		if(src_sd)
+			clif_skill_fail(src_sd,skill_num,0,0);
+		return 0;
+	}
 
 	if(skill_get_inf2(skill_num)&0x200 && src->id == target_id)
 		return 0;
+
+	if(src->m != target->m)         return 0; // 同じマップかどうか
+	if(!src->prev || !target->prev) return 0; // map 上に存在するか
+
+	target_sd = BL_DOWNCAST( BL_PC,  target );
+	target_md = BL_DOWNCAST( BL_MOB, target );
+	target_hd = BL_DOWNCAST( BL_HOM, target );
 
 	//直前のスキル状況の記録
 	if(src_sd) {
@@ -905,17 +944,6 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		if(src_sd)
 			casttime += casttime * ((skill_lv > src_sd->spiritball)? src_sd->spiritball:skill_lv);
 		break;
-	case MO_CHAINCOMBO:		/*連打掌*/
-		if( !src_ud || !src_ud->attacktarget )
-			return 0;
-		target_id = src_ud->attacktarget;
-		if( sc_data && sc_data[SC_BLADESTOP].timer!=-1 ){
-			struct block_list *tbl = map_id2bl(sc_data[SC_BLADESTOP].val4);
-			if(tbl == NULL) //ターゲットがいない？
-				return 0;
-			target_id = tbl->id;
-		}
-		break;
 	case CR_SHIELDBOOMERANG:
 		if(sc_data && sc_data[SC_CRUSADER].timer!=-1)
 			delay = delay/2;
@@ -924,44 +952,15 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		if(sc_data && sc_data[SC_ASSASIN].timer!=-1 && map[src->m].flag.gvg==0)
 			delay = delay/2;
 		break;
-	case TK_STORMKICK://旋風蹴り
-	case TK_DOWNKICK://下段蹴り
-	case TK_TURNKICK://回転蹴り
-	case TK_COUNTER://カウンター蹴り
-	case MO_COMBOFINISH:	/*猛龍拳*/
-	case CH_TIGERFIST:		/* 伏虎拳 */
-	case CH_CHAINCRUSH:		/* 連柱崩撃 */
-		if( !src_ud || !src_ud->attacktarget )
-			return 0;
-		target_id = src_ud->attacktarget;
-		break;
-	case MO_EXTREMITYFIST:	/*阿修羅覇鳳拳*/
-		if(! src_ud || !sc_data) return 0;
-		if(sc_data[SC_COMBO].timer != -1 && (sc_data[SC_COMBO].val1 == MO_COMBOFINISH || sc_data[SC_COMBO].val1 == CH_CHAINCRUSH)) {
+	case MO_EXTREMITYFIST:	/* 阿修羅覇鳳拳 */
+		if(sc_data && sc_data[SC_COMBO].timer != -1 && (sc_data[SC_COMBO].val1 == MO_COMBOFINISH || sc_data[SC_COMBO].val1 == CH_CHAINCRUSH)) {
 			casttime = 0;
-			target_id = src_ud->attacktarget;
 		}
 		forcecast=1;
 		break;
 	case SA_MAGICROD:
 	case SA_SPELLBREAKER:
 		forcecast=1;
-		break;
-	case WE_MALE:
-	case WE_FEMALE:
-		{
-			struct map_session_data *p_sd = NULL;
-			if(!src_sd) return 0;
-			if((p_sd = pc_get_partner(src_sd)) == NULL)
-				return 0;
-			target_id = p_sd->bl.id;
-			//rangeをもう1回検査
-			range = skill_get_range(skill_num,skill_lv);
-			if(range < 0)
-				range = status_get_range(src) - (range + 1);
-			if( !battle_check_range(src,&p_sd->bl,range) )
-				return 0;
-		}
 		break;
 	case SA_ABRACADABRA:
 		delay=skill_get_delay(SA_ABRACADABRA,skill_lv);
@@ -970,7 +969,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		if(sc_data && sc_data[SC_BASILICA].timer != -1)
 			casttime = 0;
 		break;
-	case KN_CHARGEATK:			//チャージアタック
+	case KN_CHARGEATK:	/* チャージアタック */
 		{
 			int dist = unit_distance(src->x,src->y,target->x,target->y);
 			if(dist >= 4 && dist <= 6)
@@ -979,15 +978,11 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 				casttime = casttime * 3;
 		}
 		break;
-	case TK_RUN:		// 駆け足（タイリギ）
+	case TK_RUN:		/* 駆け足（タイリギ）*/
 		if(sc_data && sc_data[SC_RUN].timer != -1)
 			casttime = 0;
 		break;
-	case TK_JUMPKICK:	// 飛び蹴り（ティオアプチャギ）
-		if(sc_data && sc_data[SC_DODGE_DELAY].timer != -1 && src->id == target->id)
-			target_id = sc_data[SC_DODGE_DELAY].val2;
-		break;
-	case GD_EMERGENCYCALL:	// 緊急召集
+	case GD_EMERGENCYCALL:	/* 緊急召集 */
 		if(src_sd && pc_checkskill(src_sd,TK_HIGHJUMP) > 0)
 			casttime <<= 1;
 		break;

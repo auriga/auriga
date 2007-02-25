@@ -5017,9 +5017,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case NPC_HOLDWEB://#ホールドウェブ#
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(src,SkillStatusChangeTable[skillid],1,1,src->id,bl->id,skill_get_time(skillid,skilllv),0);
 		status_change_start(bl,SkillStatusChangeTable[skillid],1,2,bl->id,src->id,skill_get_time(skillid,skilllv),0);
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		break;
 	case WZ_SIGHTBLASTER://サイトブラスター
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -8864,19 +8864,17 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	if(!(type&1))
 		return 1;
 
-	if(skill_get_inf2(sc->id)&8192){
-		int idx = sc->lv -1;
-		if(sc->id == AL_WARP && !(type&2))
-			return 1;
-		if(index[idx] >= 0)
-			pc_delitem(sd,index[idx],amount[idx],0);	// アイテム消費
-	}else{
-		if(sc->id != AM_POTIONPITCHER && sc->id != CR_SLIMPITCHER) {
-			if(sc->id == AL_WARP && !(type&2))
-				return 1;
-			for(i=0;i<10;i++) {
-				if(index[i] >= 0)
-					pc_delitem(sd,index[i],amount[i],0);		// アイテム消費
+	if(sc->id != AL_WARP || type&2) {
+		if(skill_get_inf2(sc->id)&8192){
+			int idx = sc->lv -1;
+			if(index[idx] >= 0)
+				pc_delitem(sd,index[idx],amount[idx],0);	// アイテム消費
+		}else{
+			if(sc->id != AM_POTIONPITCHER && sc->id != CR_SLIMPITCHER) {
+				for(i=0;i<10;i++) {
+					if(index[i] >= 0)
+						pc_delitem(sd,index[i],amount[i],0);		// アイテム消費
+				}
 			}
 		}
 	}
@@ -8932,7 +8930,7 @@ static int skill_check_condition2_pet(struct pet_data *pd, struct skill_conditio
 	//ペットが使えないほうがよいスキル
 	switch(sc->id)
 	{
-		case CG_MOONLIT: //月明りの下で (ペットに使われると通行の邪魔))
+		case CG_MOONLIT: //月明りの下で (ペットに使われると通行の邪魔)
 			return 0;
 	}
 	return 1;
@@ -9057,22 +9055,21 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 	if(!(type&1))
 		return 1;
 
-	if(skill_get_inf2(sc->id)&8192){
-		int idx = sc->lv -1;
-		if(sc->id == AL_WARP && !(type&2))
-			return 1;
-		if(index[idx] >= 0)
-			pc_delitem(msd,index[idx],amount[idx],0);	// アイテム消費
-	}else{
-		if(sc->id != AM_POTIONPITCHER && sc->id != CR_SLIMPITCHER) {
-			if(sc->id == AL_WARP && !(type&2))
-				return 1;
-			for(i=0;i<10;i++) {
-				if(index[i] >= 0)
-					pc_delitem(msd,index[i],amount[i],0);		// アイテム消費
+	if(sc->id != AL_WARP || type&2) {
+		if(skill_get_inf2(sc->id)&8192){
+			int idx = sc->lv -1;
+			if(index[idx] >= 0)
+				pc_delitem(msd,index[idx],amount[idx],0);	// アイテム消費
+		}else{
+			if(sc->id != AM_POTIONPITCHER && sc->id != CR_SLIMPITCHER) {
+				for(i=0;i<10;i++) {
+					if(index[i] >= 0)
+						pc_delitem(msd,index[i],amount[i],0);		// アイテム消費
+				}
 			}
 		}
 	}
+
 ITEM_NOCOST:
 	if(!(type&1))
 		return 1;
