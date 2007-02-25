@@ -2124,6 +2124,7 @@ int mmo_char_send006b(int fd,struct char_session_data *sd)
 	return 0;
 }
 
+// ##変数の保存
 int set_account_reg2(int acc,int num,struct global_reg *reg)
 {
 	int i;
@@ -2141,6 +2142,26 @@ int set_account_reg2(int acc,int num,struct global_reg *reg)
 	}
 
 	return max;
+}
+
+// ##変数の取得
+int get_account_reg2(struct char_session_data *sd,struct global_reg *reg)
+{
+	int i;
+
+	if(sd == NULL)
+		return 0;
+
+	for(i=0;i<max_char_slot;i++) {
+		const struct mmo_chardata *cd = sd->found_char[i];
+		if(cd) {
+			if(cd->reg.account2_num > 0) {
+				memcpy(reg, &cd->reg.account2, sizeof(cd->reg.account2));
+				return cd->reg.account2_num;
+			}
+		}
+	}
+	return 0;
 }
 
 // 離婚
@@ -3547,6 +3568,7 @@ int parse_char(int fd)
 				int flag=0x00;
 				const struct mmo_chardata *cd = char_make(sd,RFIFOP(fd,2),&flag);
 				const struct mmo_charstatus *st;
+				struct global_reg reg[ACCOUNT_REG2_NUM];
 #if PACKETVER >= 8
 				int len = 108;
 #else
@@ -3596,12 +3618,17 @@ int parse_char(int fd)
 					WFIFOW(fd,2+106) = 1;
 				WFIFOSET(fd,len+2);
 				RFIFOSKIP(fd,37);
+
 				for(ch=0;ch<max_char_slot;ch++) {
 					if(sd->found_char[ch] == NULL) {
 						sd->found_char[ch] = cd;
 						break;
 					}
 				}
+				// ##変数を再設定する
+				i = get_account_reg2(sd,reg);
+				if(i > 0)
+					set_account_reg2(sd->account_id,i,reg);
 			}
 
 		case 0x68:	// 削除
