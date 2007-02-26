@@ -1,4 +1,17 @@
 ----------------------------------------
+//097 [2007/02/27] by Rayce
+
+・atcommand.cを全体的に修正（atcommand.c）
+・古いPACKETVERでもコンパイルできるように修正（clif.c）
+
+・以下の項目でアイテムを削除するとき、ペットの卵のデータが削除されずセーブデータにゴミが残り続ける問題を修正
+	@itemreset
+	@charitemreset
+	extra system
+	clearitem命令
+	pc_checkitem()
+
+----------------------------------------
 //096 [2007/02/26] by Rayce
 
 ・ギルド名およびパーティ名の検索をcase-sensitiveに修正（int_guild.c, int_party.c, guild.c, party.c）

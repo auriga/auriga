@@ -6707,6 +6707,8 @@ int pc_checkitem(struct map_session_data *sd)
 				continue;
 			if( battle_config.error_log )
 				printf("illegal item id %d in %d[%s] inventory.\n",itemid,sd->bl.id,sd->status.name);
+			if( sd->status.inventory[i].card[0] == (short)0xff00 )
+				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd,i,sd->status.inventory[i].amount,3);
 		}
 		// カート内の不正チェック
@@ -6717,6 +6719,8 @@ int pc_checkitem(struct map_session_data *sd)
 				continue;
 			if( battle_config.error_log )
 				printf("illegal item id %d in %d[%s] cart.\n",itemid,sd->bl.id,sd->status.name);
+			if( sd->status.cart[i].card[0] == (short)0xff00 )
+				intif_delete_petdata(*((long *)(&sd->status.cart[i].card[1])));
 			pc_cart_delitem(sd,i,sd->status.cart[i].amount,1);
 		}
 	}
@@ -8296,6 +8300,8 @@ int pc_extra(int tid, unsigned int tick, int id, int data)
 							if ((long)pl_sd->status.inventory[j].amount < -quantity)
 								quantity = -((long)pl_sd->status.inventory[j].amount);
 							if (quantity < 0) {
+								if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
+									intif_delete_petdata(*((long *)(&pl_sd->status.inventory[i].card[1])));
 								pc_delitem(pl_sd, j, -quantity, 0);
 								snprintf(output, sizeof output, msg_txt(151), -quantity, item_data->jname); // Server (special action): you lost %ld %s.
 								clif_displaymessage(pl_sd->fd, output);

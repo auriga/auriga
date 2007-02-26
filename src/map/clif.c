@@ -585,7 +585,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,34)=sd->status.guild_id;
 	WBUFL(buf,38)=sd->guild_emblem_id;
 	WBUFW(buf,42)=sd->status.manner;
-	WBUFB(buf,44)=sd->status.karma;
+	WBUFB(buf,44)=(unsigned char)sd->status.karma;
 	WBUFB(buf,45)=sd->sex;
 	WBUFPOS(buf,46,sd->bl.x,sd->bl.y);
 	WBUFB(buf,48)|=sd->dir&0x0f;
@@ -734,9 +734,9 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,38)=sd->status.guild_id;
 	WBUFL(buf,42)=sd->guild_emblem_id;
 	WBUFW(buf,46)=sd->status.manner;
-	WBUFB(buf,48)=sd->status.karma;
+	WBUFB(buf,48)=(unsigned char)sd->status.karma;
 	WBUFB(buf,49)=sd->sex;
-	WBUFPOS2(buf,50,sd->bl.x,sd->bl.y,sd->to_x,sd->to_y);
+	WBUFPOS2(buf,50,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y);
 	WBUFB(buf,55)=0;
 	WBUFB(buf,56)=5;
 	WBUFB(buf,57)=5;
@@ -3322,7 +3322,7 @@ void clif_send_clothcolor(struct block_list *bl)
 	WBUFW(buf,0) = 0xc3;
 	WBUFL(buf,2) = bl->id;
 	WBUFB(buf,6) = LOOK_CLOTHES_COLOR;
-	WBUFB(buf,7) = color;
+	WBUFB(buf,7) = (unsigned char)color;
 	clif_send(buf,packet_db[0xc3].len,bl,AREA);
 #else
 	WBUFW(buf,0) = 0x1d7;

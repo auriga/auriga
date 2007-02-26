@@ -779,14 +779,14 @@ atcommand_rurap(
 	pl_sd = map_nick2sd(character);
 	if (pl_sd == NULL) {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
+		return 0;
 	}
 
 	if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
 		if (strstr(map_name, ".gat") == NULL && strlen(map_name) < 13)
 			strcat(map_name, ".gat");
 		m = map_mapname2mapid(map_name);
-		if (x < 0 || x >= 400 || y < 0 || y >= 400 || (m >= 0 && (x >= map[m].xs || y >= map[m].ys))) {
+		if (x < 0 || y < 0 || (m >= 0 && (x >= map[m].xs || y >= map[m].ys))) {
 			clif_displaymessage(fd, msg_txt(2));
 		} else {
 			if (pc_setpos(pl_sd, map_name, x, y, 3) == 0) {
@@ -823,7 +823,7 @@ atcommand_rura(
 		strcat(map_name, ".gat");
 
 	m = map_mapname2mapid(map_name);
-	if (x < 0 || x >= 400 || y < 0 || y >= 400 || (m >= 0 && (x >= map[m].xs || y >= map[m].ys)))
+	if (x < 0 || y < 0 || (m >= 0 && (x >= map[m].xs || y >= map[m].ys)))
 		clif_displaymessage(fd, msg_txt(2));
 	else
 		clif_displaymessage(fd, (pc_setpos(sd, map_name, x, y, 3) == 0) ? msg_txt(0) : msg_txt(1));
@@ -1187,7 +1187,6 @@ atcommand_kill(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -1435,7 +1434,6 @@ atcommand_item2(
 			clif_displaymessage(fd, msg_txt(18));
 		} else {
 			clif_displaymessage(fd, msg_txt(19));
-			return -1;
 		}
 	} else {
 		return -1;
@@ -1467,7 +1465,7 @@ atcommand_item3(
 			number = 1;
 		if ((pl_sd = map_nick2sd(character)) == NULL) {
 			clif_displaymessage(fd, msg_txt(3));
-			return -1;
+			return 0;
 		}
 
 		if ((item_id = atoi(item_name)) > 0) {
@@ -1504,10 +1502,9 @@ atcommand_item3(
 			clif_displaymessage(fd, msg_txt(18));
 		} else {
 			clif_displaymessage(fd, msg_txt(19));
-			return 1;
 		}
 	} else
-		return 1;
+		return -1;
 
 	return 0;
 }
@@ -1526,9 +1523,11 @@ atcommand_itemreset(
 	nullpo_retr(-1, sd);
 
 	for (i = 0; i < MAX_INVENTORY; i++) {
-		if (sd->status.inventory[i].amount &&
-		    sd->status.inventory[i].equip == 0)
+		if (sd->status.inventory[i].amount && sd->status.inventory[i].equip == 0) {
+			if (sd->status.inventory[i].card[0] == (short)0xff00)
+				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0);
+		}
 	}
 	clif_displaymessage(fd, msg_txt(20));
 
@@ -1555,15 +1554,16 @@ atcommand_charitemreset(
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		for (i = 0; i < MAX_INVENTORY; i++) {
-			if (pl_sd->status.inventory[i].amount &&
-			    pl_sd->status.inventory[i].equip == 0)
+			if (pl_sd->status.inventory[i].amount && pl_sd->status.inventory[i].equip == 0) {
+				if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
+					intif_delete_petdata(*((long *)(&pl_sd->status.inventory[i].card[1])));
 				pc_delitem(pl_sd, i, pl_sd->status.inventory[i].amount, 0);
+			}
 		}
 		clif_displaymessage(fd, msg_txt(20));
 		clif_displaymessage(pl_sd->fd, msg_txt(20));
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -1930,7 +1930,6 @@ atcommand_model(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(37));
-		return -1;
 	}
 
 	return 0;
@@ -1946,7 +1945,10 @@ atcommand_go(
 	const char* command, const char* message)
 {
 	int town = 0;
-	struct { char map_name[16]; int x,y; } data[] = {
+	static struct {
+		char map_name[16];
+		int x,y;
+	} data[] = {
 		{	"prontera.gat",   156, 191	},	//	0=プロンテラ
 		{	"morocc.gat",     156,  93	},	//	1=モロク
 		{	"geffen.gat",     119,  59	},	//	2=ゲフェン
@@ -2368,7 +2370,6 @@ atcommand_statuspoint(
 		clif_updatestatus(sd, SP_STATUSPOINT);
 	} else {
 		clif_displaymessage(fd, msg_txt(41));
-		return -1;
 	}
 
 	return 0;
@@ -2396,7 +2397,6 @@ atcommand_skillpoint(
 		clif_updatestatus(sd, SP_SKILLPOINT);
 	} else {
 		clif_displaymessage(fd, msg_txt(41));
-		return -1;
 	}
 
 	return 0;
@@ -2426,7 +2426,6 @@ atcommand_zeny(
 
 	if (zeny == 0) {
 		clif_displaymessage(fd, msg_txt(41));
-		return -1;
 	} else {
 		sd->status.zeny += zeny;
 		clif_updatestatus(sd, SP_ZENY);
@@ -2520,11 +2519,10 @@ atcommand_guildlevelup(
 	}
 
 	if (guild_info->guild_lv + level >= 1 &&
-		guild_info->guild_lv + level <= MAX_GUILDLEVEL)
+	    guild_info->guild_lv + level <= MAX_GUILDLEVEL) {
 		intif_guild_change_basicinfo(guild_info->guild_id, GBI_GUILDLV, &level, 2);
-	else {
+	} else {
 		clif_displaymessage(fd, msg_txt(41));
-		return -1;
 	}
 
 	return 0;
@@ -2699,7 +2697,6 @@ int atcommand_charpetrename(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -2788,7 +2785,6 @@ int atcommand_recallguild(
 		clif_displaymessage(fd, output);
 	} else {
 		clif_displaymessage(fd, msg_txt(107));
-		return -1;
 	}
 
 	return 0;
@@ -2825,7 +2821,6 @@ int atcommand_recallparty(
 		clif_displaymessage(fd, output);
 	} else {
 		clif_displaymessage(fd, msg_txt(109));
-		return -1;
 	}
 
 	return 0;
@@ -2866,7 +2861,6 @@ atcommand_character_job(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -2900,7 +2894,6 @@ atcommand_revive(
 		clif_displaymessage(fd, msg_txt(51));
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -2956,7 +2949,6 @@ atcommand_character_stats(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -2994,7 +2986,6 @@ atcommand_character_option(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -3029,7 +3020,6 @@ atcommand_character_save(
 			m = map_mapname2mapid(map_name);
 			if (x < 0 || y < 0 || (m >= 0 && (x >= map[m].xs || y >= map[m].ys))) {
 				clif_displaymessage(fd, msg_txt(2));
-				return -1;
 			} else {
 				pc_setsavepoint(pl_sd, map_name, x, y);
 				clif_displaymessage(fd, msg_txt(57));
@@ -3037,7 +3027,6 @@ atcommand_character_save(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -3146,8 +3135,7 @@ atcommand_doommap(
  *
  *------------------------------------------
  */
-static void
-atcommand_raise_sub(struct map_session_data* sd)
+static void atcommand_raise_sub(struct map_session_data* sd)
 {
 	if (sd && sd->state.auth && unit_isdead(&sd->bl)) {
 		sd->status.hp = sd->status.max_hp;
@@ -3255,7 +3243,6 @@ atcommand_character_baselevel(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0; //正常終了
@@ -3309,7 +3296,6 @@ atcommand_character_joblevel(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -3335,7 +3321,7 @@ atcommand_kick(
 
 	if ((pl_sd = map_nick2sd(character)) == NULL) {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
+		return 0;
 	}
 
 	if (pc_isGM(sd) >= pc_isGM(pl_sd))
@@ -3442,7 +3428,6 @@ int atcommand_charquestskill(
 				clif_displaymessage(fd, output);
 		} else {
 			clif_displaymessage(fd, msg_txt(3));
-			return -1;
 		}
 	} else
 		return -1;
@@ -3504,7 +3489,6 @@ int atcommand_charlostskill(
 				clif_displaymessage(fd, output);
 		} else {
 			clif_displaymessage(fd, msg_txt(3));
-			return -1;
 		}
 	} else
 		return -1;
@@ -3618,7 +3602,7 @@ atcommand_agitstart(
 {
 	if (agit_flag == 1) {
 		clif_displaymessage(fd, msg_txt(73));
-		return 1;
+		return 0;
 	}
 	agit_flag = 1;
 	guild_agit_start();
@@ -3638,7 +3622,7 @@ atcommand_agitend(
 {
 	if (agit_flag == 0) {
 		clif_displaymessage(fd, msg_txt(75));
-		return 1;
+		return 0;
 	}
 	agit_flag = 0;
 	guild_agit_end();
@@ -3876,7 +3860,6 @@ int atcommand_charskreset(
 			return -1;
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -3909,7 +3892,6 @@ int atcommand_charstreset(
 			return -1;
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -3943,7 +3925,6 @@ int atcommand_charreset(
 			return -1;
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -3983,7 +3964,6 @@ int atcommand_charstpoint(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -4024,7 +4004,6 @@ int atcommand_charskpoint(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -4063,7 +4042,6 @@ int atcommand_charzeny(
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -4240,7 +4218,6 @@ int atcommand_mapinfo(
 		default: // normally impossible to arrive here
 			sprintf(output, "Please, enter at least a valid list number (usage: %cmapinfo <0-3> [map]).", command_symbol);
 			clif_displaymessage(fd, output);
-			return -1;
 			break;
 	}
 
@@ -5031,7 +5008,6 @@ atcommand_mannerpoint(
 		clif_displaymessage(fd, msg_txt(155));
 	}else{
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;
@@ -5241,7 +5217,6 @@ atcommand_rankingpoint(
 		ranking_update(pl_sd,type);
 	}else{
 		clif_displaymessage(fd, msg_txt(3));
-		return -1;
 	}
 
 	return 0;

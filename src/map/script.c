@@ -8195,8 +8195,11 @@ int buildin_clearitem(struct script_state *st)
 	if(sd==NULL)
 		return 0;
 	for (i=0; i<MAX_INVENTORY; i++) {
-		if (sd->status.inventory[i].amount)
+		if (sd->status.inventory[i].amount) {
+			if (sd->status.inventory[i].card[0] == (short)0xff00)
+				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0);
+		}
 	}
 	return 0;
 }
