@@ -859,7 +859,8 @@ int chrif_ranking_recv(int fd)
  * クライアントを切断する
  *------------------------------------------
  */
-int chrif_disconnect_sub(struct map_session_data* sd,va_list va) {
+int chrif_disconnect_sub(struct map_session_data* sd,va_list va)
+{
 	delete_session(sd->fd);
 	return 0;
 }
@@ -879,8 +880,7 @@ int chrif_disconnect(int fd) {
 		map_eraseallipport();
 
 		// 倉庫キャッシュを消す
-		do_final_storage();
-		do_init_storage();
+		storage_clear_cache();
 	}
 	close(fd);
 
@@ -1001,6 +1001,9 @@ int check_connect_char_server(int tid,unsigned int tick,int id,int data)
  */
 int do_final_chrif(void)
 {
+	// char,interサーバへデータ送信
+	flush_fifo(char_fd);
+
 	delete_session(char_fd);
 
 	return 0;

@@ -2872,6 +2872,9 @@ AthenaNPCScript
 		OnCharIfInitラベル
 			MAPサーバーがCharサーバーに接続したときに実行します。
 
+		OnFinalラベル
+			MAPサーバーが停止する直前に実行します。
+
 		OnMinuteXXラベル
 			毎時XX分に実行します。数値は十進数２桁です。
 

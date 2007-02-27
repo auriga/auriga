@@ -731,7 +731,7 @@ void storage_guild_storagesave(struct map_session_data *sd)
 }
 
 /*==========================================
- * 終了
+ *
  *------------------------------------------
  */
 static int storage_db_final(void *key,void *data,va_list ap)
@@ -744,12 +744,35 @@ static int guild_storage_db_final(void *key,void *data,va_list ap)
 	aFree(data);
 	return 0;
 }
-void do_final_storage(void) // map.c::do_final()から呼ばれる
+
+/*==========================================
+ * キャッシュのクリア
+ *------------------------------------------
+ */
+void storage_clear_cache(void)
 {
 	if(storage_db)
-		numdb_final(storage_db,storage_db_final);
+		numdb_clear(storage_db,storage_db_final);
 	if(guild_storage_db)
+		numdb_clear(guild_storage_db,guild_storage_db_final);
+
+	return;
+}
+
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+void do_final_storage(void) // map.c::do_final()から呼ばれる
+{
+	if(storage_db) {
+		numdb_final(storage_db,storage_db_final);
+		storage_db = NULL;
+	}
+	if(guild_storage_db) {
 		numdb_final(guild_storage_db,guild_storage_db_final);
+		guild_storage_db = NULL;
+	}
 
 	return;
 }

@@ -379,9 +379,15 @@ int guild_payexp_timer_sub(void *key,void *data,va_list ap)
 	return 0;
 }
 
-int guild_payexp_timer(int tid,unsigned int tick,int id,int data)
+void guild_flush_expcache(void)
 {
 	numdb_clear(guild_expcache_db,guild_payexp_timer_sub);
+	return;
+}
+
+int guild_payexp_timer(int tid,unsigned int tick,int id,int data)
+{
+	guild_flush_expcache();
 	return 0;
 }
 

@@ -2539,18 +2539,13 @@ void do_final(void)
 	int i;
 	unsigned int tick = gettick();
 
-	chrif_mapactive(0); //マップサーバー停止中
+	chrif_mapactive(0);	//マップサーバー停止中
 
-	for(i=0;i<MAX_FLOORITEM;i++) {
-		if( object[i] == NULL ) continue;
-		if( object[i]->type == BL_ITEM ) {
-			map_clearflooritem_timer(-1, tick, i, 1);
-		}
-	}
+	do_final_script();				// スクリプトは最優先で実行
+	guild_flush_expcache();				// ギルドExpをフラッシュ
+	clif_foreachclient(chrif_disconnect_sub);	// ここで先にキャラを全て切断しておく
 
-	do_final_chrif(); // この内部でキャラを全て切断する
 	do_final_npc();
-	do_final_script();
 	do_final_itemdb();
 	do_final_storage();
 	do_final_guild();
@@ -2564,6 +2559,16 @@ void do_final(void)
 	do_final_mob();
 	do_final_atcommand();
 	do_final_map();
+
+	for(i=0;i<MAX_FLOORITEM;i++) {
+		if( object[i] == NULL ) continue;
+		if( object[i]->type == BL_ITEM ) {
+			map_clearflooritem_timer(-1, tick, i, 1);
+		}
+	}
+
+	// 最後にこの内部でchar_fdを閉じる
+	do_final_chrif();
 
 	for(i=0;i<map_num;i++){
 		if(map[i].gat) {

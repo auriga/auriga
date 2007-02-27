@@ -27,5 +27,6 @@ void storage_guild_storagesave(struct map_session_data *sd);
 
 void do_init_storage(void);
 void do_final_storage(void);
+void storage_clear_cache(void);
 
 #endif

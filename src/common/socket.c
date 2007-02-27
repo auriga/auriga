@@ -1063,6 +1063,14 @@ void do_parsepacket(void) {
 	return;
 }
 
+void flush_fifo(int fd)
+{
+	if(fd >= 0 && session[fd] && session[fd]->func_send == send_from_fifo) {
+		send_from_fifo(fd);
+	}
+	return;
+}
+
 int parsepacket_timer(int tid, unsigned int tick, int id, int data) {
 	do_parsepacket();
 

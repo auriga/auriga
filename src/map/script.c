@@ -2824,7 +2824,6 @@ static int script_txt_load_mapreg(void)
 		}
 	}
 	fclose(fp);
-	mapreg_dirty=0;
 	return 0;
 }
 /*==========================================
@@ -3239,7 +3238,10 @@ static int userfunc_db_final(void *key,void *data,va_list ap)
 
 int do_final_script()
 {
-	if(mapreg_dirty>=0)
+	// OnFinalイベント実行
+	printf("script: OnFinal Event done. (%d npc)\n", npc_event_doall("OnFinal"));
+
+	if(mapreg_dirty)
 		script_save_mapreg();
 
 	if(mapreg_db)

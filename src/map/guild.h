@@ -88,6 +88,7 @@ void guild_agit_end(void);
 void guild_agit_break(struct mob_data *md);
 
 void guild_getexp(struct map_session_data *sd,int exp);
+void guild_flush_expcache(void);
 int guild_read_db();
 
 void do_final_guild(void);
