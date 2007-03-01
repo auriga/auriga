@@ -259,18 +259,6 @@ int pet_hungry_timer_delete(struct map_session_data *sd)
 	return 0;
 }
 
-struct delay_item_drop {
-	int m,x,y;
-	int nameid,amount;
-	struct map_session_data *first_sd,*second_sd,*third_sd;
-};
-
-struct delay_item_drop2 {
-	int m,x,y;
-	struct item item_data;
-	struct map_session_data *first_sd,*second_sd,*third_sd;
-};
-
 int pet_performance(struct map_session_data *sd)
 {
 	struct pet_data *pd;
@@ -1065,14 +1053,14 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 				ditem->m = pd->bl.m;
 				ditem->x = pd->bl.x;
 				ditem->y = pd->bl.y;
-				ditem->first_sd = 0;
-				ditem->second_sd = 0;
-				ditem->third_sd = 0;
+				ditem->first_bl  = NULL;
+				ditem->second_bl = NULL;
+				ditem->third_bl  = NULL;
 				// 落とさないで直接PCのItem欄へ
 				if(sd){
 					if((flag = pc_additem(sd,&ditem->item_data,ditem->item_data.amount))){
 						clif_additem(sd,0,0,flag);
-						map_addflooritem(&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,&ditem->first_sd->bl,&ditem->second_sd->bl,&ditem->third_sd->bl,0);
+						map_addflooritem(&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,ditem->first_bl,ditem->second_bl,ditem->third_bl,0);
 					}
 					aFree(ditem);
 				}
@@ -1094,7 +1082,7 @@ int pet_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 
 	ditem=(struct delay_item_drop2 *)id;
 
-	map_addflooritem(&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,&ditem->first_sd->bl,&ditem->second_sd->bl,&ditem->third_sd->bl,0);
+	map_addflooritem(&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,ditem->first_bl,ditem->second_bl,ditem->third_bl,0);
 
 	aFree(ditem);
 	return 0;

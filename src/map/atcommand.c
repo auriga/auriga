@@ -1332,7 +1332,11 @@ atcommand_item(
 	if (number <= 0)
 		number = 1;
 
-	if ((item_id = atoi(item_name)) > 0) {
+	item_id = atoi(item_name);
+	if (item_id < 0)
+		item_id = itemdb_searchrandomid(-item_id);
+
+	if (item_id > 0) {
 		if (battle_config.item_check) {
 			item_id = (((item_data = itemdb_exists(item_id)) &&
 			           itemdb_available(item_id)) ? item_id : 0);

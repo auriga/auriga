@@ -333,17 +333,23 @@ int  pet_sql_sync(void) {
 }
 
 int  pet_sql_delete(int pet_id) {
-	struct s_pet *p = (struct s_pet *)numdb_search(pet_db,pet_id);
-	if(p) {
-		numdb_erase(pet_db,p->pet_id);
-		aFree(p);
-	}
+	struct s_pet *p;
+
 	// printf("Request del  pet  (%6d)[",pet_id);
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `pet_id`='%d'",pet_db_, pet_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (delete `%s`)- %s\n", pet_db_, mysql_error(&mysql_handle) );
 	}
 	// printf("]\n");
+
+	p = (struct s_pet *)numdb_search(pet_db,pet_id);
+	if(p == NULL)
+		return 1;
+
+	numdb_erase(pet_db,p->pet_id);
+	aFree(p);
+	printf("pet_id: %d deleted\n",pet_id);
+
 	return 0;
 }
 

@@ -2145,8 +2145,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case CH_TIGERFIST:		/* 伏虎拳 */
 	case CH_CHAINCRUSH:		/* 連柱崩撃 */
-	case CH_PALMSTRIKE:		/* 猛虎硬派山 */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		break;
+	case CH_PALMSTRIKE:		/* 猛虎硬爬山 */
+		clif_damage(src,bl,tick,status_get_amotion(src),0,-1,1,4,0);	// 攻撃モーションのみ入れる
+		skill_addtimerskill(src,tick+1000,bl->id,0,0,skillid,skilllv,BF_WEAPON,flag);
 		break;
 	case MO_EXTREMITYFIST:	/* 阿修羅覇鳳拳 */
 		{

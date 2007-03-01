@@ -865,6 +865,18 @@ struct flooritem_data {
 	struct item item_data;
 };
 
+struct delay_item_drop {
+	int m,x,y;
+	int nameid,amount;
+	struct block_list *first_bl,*second_bl,*third_bl;
+};
+
+struct delay_item_drop2 {
+	int m,x,y;
+	struct item item_data;
+	struct block_list *first_bl,*second_bl,*third_bl;
+};
+
 enum {
 	SP_SPEED,SP_BASEEXP,SP_JOBEXP,SP_KARMA,SP_MANNER,SP_HP,SP_MAXHP,SP_SP,	// 0-7
 	SP_MAXSP,SP_STATUSPOINT,SP_0a,SP_BASELEVEL,SP_SKILLPOINT,SP_STR,SP_AGI,SP_VIT,	// 8-15

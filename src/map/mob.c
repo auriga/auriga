@@ -1428,25 +1428,6 @@ static int mob_ai_lazy(int tid,unsigned int tick,int id,int data)
 	return 0;
 }
 
-
-/*==========================================
- * delay付きitem drop用構造体
- * timer関数に渡せるのint 2つだけなので
- * この構造体にデータを入れて渡す
- *------------------------------------------
- */
-struct delay_item_drop {
-	int m,x,y;
-	int nameid,amount;
-	struct block_list *first_bl,*second_bl,*third_bl;
-};
-
-struct delay_item_drop2 {
-	int m,x,y;
-	struct item item_data;
-	struct block_list *first_bl,*second_bl,*third_bl;
-};
-
 /*==========================================
  * delay付きitem drop (timer関数)
  *------------------------------------------
