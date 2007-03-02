@@ -1103,6 +1103,22 @@ int pet_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 	return 0;
 }
 
+int pet_lootitem_free(struct pet_data *pd)
+{
+	int i;
+
+	nullpo_retr(0, pd);
+
+	if(pd->lootitem) {
+		for(i=0; i<pd->lootitem_count; i++) {
+			if(pd->lootitem[i].card[0] == (short)0xff00)
+				intif_delete_petdata(*((long *)(&pd->lootitem[i].card[1])));
+		}
+		aFree(pd->lootitem);
+	}
+	return 0;
+}
+
 /*==========================================
  * pet support skills [Skotlex]
  *------------------------------------------

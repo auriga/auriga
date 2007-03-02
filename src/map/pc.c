@@ -3437,8 +3437,10 @@ int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrt
 		int ip,port;
 		if(map_mapname2ipport(mapname,&ip,&port) == 0) {
 			// 違うマップサーバーに割り当てられているマップに移動
-			if( sd->pd )
+			if( sd->pd ) {
+				pet_lootitem_drop(sd->pd,sd);
 				unit_free(&sd->pd->bl, 0);
+			}
 			if( sd->hd ){
 				if(battle_config.save_homun_temporal_intimate)
 					pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",sd->hd->intimate);

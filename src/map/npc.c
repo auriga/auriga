@@ -2007,6 +2007,11 @@ int do_final_npc(void)
 				nd = NULL;
 			}else if(bl->type == BL_MOB && (md = (struct mob_data *)bl)){
 				if(md->lootitem){
+					int j;
+					for(j=0; j<md->lootitem_count; j++) {
+						if(md->lootitem[j].card[0] == (short)0xff00)
+							intif_delete_petdata(*((long *)(&md->lootitem[j].card[1])));
+					}
 					aFree(md->lootitem);
 					md->lootitem = NULL;
 				}

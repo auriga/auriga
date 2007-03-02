@@ -9506,10 +9506,13 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 			WFIFOSET(fd,packet_db[0x18b].len);
 			return;
 		}
-		if( sd->pd )
+		if( sd->pd ) {
+			pet_lootitem_drop(sd->pd,sd);
 			unit_free( &sd->pd->bl, 0);
-		if( sd->hd )
+		}
+		if( sd->hd ) {
 			unit_free( &sd->hd->bl, 0);
+		}
 		unit_free(&sd->bl, 2);
 		chrif_save(sd);
 		chrif_charselectreq(sd);

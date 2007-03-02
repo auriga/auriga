@@ -47,6 +47,7 @@ int pet_unequipitem(struct map_session_data *sd);
 int pet_food(struct map_session_data *sd);
 int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd);
 int pet_delay_item_drop2(int tid,unsigned int tick,int id,int data);
+int pet_lootitem_free(struct pet_data *pd);
 int pet_skill_support_timer(int tid,unsigned int tick,int id,int data);
 int do_init_pet(void);
 int do_final_pet(void);

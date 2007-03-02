@@ -960,7 +960,8 @@ void map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
  * 床アイテムを消す
  *
  * data==0の時はtimerで消えた時
- * data!=0の時は拾う等で消えた時として動作
+ * data==1の時は拾う等で消えた時として動作
+ * data==2の時はサーバ停止時
  *
  * 後者は、map_clearflooritem(id)へ
  * map.h内で#defineしてある
@@ -979,7 +980,7 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,int data)
 			printf("map_clearflooritem_timer : error\n");
 		return 1;
 	}
-	if(data)
+	if(data == 1)
 		delete_timer(fitem->cleartimer,map_clearflooritem_timer);
 	else if(fitem->item_data.card[0] == (short)0xff00)
 		intif_delete_petdata(*((long *)(&fitem->item_data.card[1])));
@@ -1044,68 +1045,71 @@ int map_searchrandfreecell(int m,int x,int y,int range)
 int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,struct block_list *first_bl,
 	struct block_list *second_bl,struct block_list *third_bl,int type)
 {
-	int xy,r;
-	unsigned int tick;
-	struct flooritem_data *fitem;
+	int xy;
 
 	nullpo_retr(0, item_data);
 
-	if((xy=map_searchrandfreecell(m,x,y,1))<0)
-		return 0;
-	r=atn_rand();
+	if((xy = map_searchrandfreecell(m,x,y,1)) >= 0) {
+		struct flooritem_data *fitem = (struct flooritem_data *)aCalloc(1,sizeof(*fitem));
+		fitem->bl.type = BL_ITEM;
+		fitem->bl.prev = NULL;
+		fitem->bl.next = NULL;
+		fitem->bl.m    = m;
+		fitem->bl.x    = xy&0xffff;
+		fitem->bl.y    = (xy>>16)&0xffff;
+		fitem->first_get_id    = 0;
+		fitem->first_get_tick  = 0;
+		fitem->second_get_id   = 0;
+		fitem->second_get_tick = 0;
+		fitem->third_get_id    = 0;
+		fitem->third_get_tick  = 0;
 
-	fitem = (struct flooritem_data *)aCalloc(1,sizeof(*fitem));
-	fitem->bl.type=BL_ITEM;
-	fitem->bl.prev = fitem->bl.next = NULL;
-	fitem->bl.m=m;
-	fitem->bl.x=xy&0xffff;
-	fitem->bl.y=(xy>>16)&0xffff;
-	fitem->first_get_id = 0;
-	fitem->first_get_tick = 0;
-	fitem->second_get_id = 0;
-	fitem->second_get_tick = 0;
-	fitem->third_get_id = 0;
-	fitem->third_get_tick = 0;
+		fitem->bl.id = map_addobject(&fitem->bl);
 
-	fitem->bl.id = map_addobject(&fitem->bl);
-	if(fitem->bl.id==0){
+		if(fitem->bl.id > 0) {
+			int r = atn_rand();
+			unsigned int tick = gettick();
+
+			if(first_bl) {
+				fitem->first_get_id = first_bl->id;
+				if(type)
+					fitem->first_get_tick = tick + battle_config.mvp_item_first_get_time;
+				else
+					fitem->first_get_tick = tick + battle_config.item_first_get_time;
+			}
+			if(second_bl) {
+				fitem->second_get_id = second_bl->id;
+				if(type)
+					fitem->second_get_tick = tick + battle_config.mvp_item_first_get_time + battle_config.mvp_item_second_get_time;
+				else
+					fitem->second_get_tick = tick + battle_config.item_first_get_time + battle_config.item_second_get_time;
+			}
+			if(third_bl) {
+				fitem->third_get_id = third_bl->id;
+				if(type)
+					fitem->third_get_tick = tick + battle_config.mvp_item_first_get_time + battle_config.mvp_item_second_get_time + battle_config.mvp_item_third_get_time;
+				else
+					fitem->third_get_tick = tick + battle_config.item_first_get_time + battle_config.item_second_get_time + battle_config.item_third_get_time;
+			}
+
+			memcpy(&fitem->item_data,item_data,sizeof(*item_data));
+			fitem->item_data.amount = amount;
+			fitem->subx = (r&3)*3+3;
+			fitem->suby = ((r>>2)&3)*3+3;
+			fitem->cleartimer = add_timer(tick+battle_config.flooritem_lifetime,map_clearflooritem_timer,fitem->bl.id,0);
+
+			map_addblock(&fitem->bl);
+			clif_dropflooritem(fitem);
+
+			return fitem->bl.id;
+		}
 		aFree(fitem);
-		return 0;
 	}
 
-	tick = gettick();
-	if(first_bl) {
-		fitem->first_get_id = first_bl->id;
-		if(type)
-			fitem->first_get_tick = tick + battle_config.mvp_item_first_get_time;
-		else
-			fitem->first_get_tick = tick + battle_config.item_first_get_time;
-	}
-	if(second_bl) {
-		fitem->second_get_id = second_bl->id;
-		if(type)
-			fitem->second_get_tick = tick + battle_config.mvp_item_first_get_time + battle_config.mvp_item_second_get_time;
-		else
-			fitem->second_get_tick = tick + battle_config.item_first_get_time + battle_config.item_second_get_time;
-	}
-	if(third_bl) {
-		fitem->third_get_id = third_bl->id;
-		if(type)
-			fitem->third_get_tick = tick + battle_config.mvp_item_first_get_time + battle_config.mvp_item_second_get_time + battle_config.mvp_item_third_get_time;
-		else
-			fitem->third_get_tick = tick + battle_config.item_first_get_time + battle_config.item_second_get_time + battle_config.item_third_get_time;
-	}
+	if(item_data->card[0] == (short)0xff00)
+		intif_delete_petdata(*((long *)(item_data->card[1])));
 
-	memcpy(&fitem->item_data,item_data,sizeof(*item_data));
-	fitem->item_data.amount=amount;
-	fitem->subx=(r&3)*3+3;
-	fitem->suby=((r>>2)&3)*3+3;
-	fitem->cleartimer=add_timer(gettick()+battle_config.flooritem_lifetime,map_clearflooritem_timer,fitem->bl.id,0);
-
-	map_addblock(&fitem->bl);
-	clif_dropflooritem(fitem);
-
-	return fitem->bl.id;
+	return 0;
 }
 
 /*==========================================
@@ -2629,7 +2633,7 @@ void do_final(void)
 	for(i=0;i<MAX_FLOORITEM;i++) {
 		if( object[i] == NULL ) continue;
 		if( object[i]->type == BL_ITEM ) {
-			map_clearflooritem_timer(-1, tick, i, 1);
+			map_clearflooritem_timer(-1, tick, i, 2);
 		}
 	}
 	map_clear_delayitem_que();
