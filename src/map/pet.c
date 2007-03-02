@@ -1043,12 +1043,21 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 {
 	int i,flag=0;
 
-	if(pd){
-		if(pd->lootitem) {
-			for(i=0;i<pd->lootitem_count;i++) {
+	if(pd && pd->lootitem) {
+		unsigned int tick = gettick();
+		for(i=0;i<pd->lootitem_count;i++) {
+			if(sd) {
+				struct item *item_data = &pd->lootitem[i];
+
+				// 落とさないで直接PCのItem欄へ
+				if((flag = pc_additem(sd,item_data,item_data->amount))){
+					clif_additem(sd,0,0,flag);
+					map_addflooritem(item_data,item_data->amount,pd->bl.m,pd->bl.x,pd->bl.y,NULL,NULL,NULL,0);
+				}
+			} else {
 				struct delay_item_drop2 *ditem;
 
-				ditem=(struct delay_item_drop2 *)aCalloc(1,sizeof(struct delay_item_drop2));
+				ditem = (struct delay_item_drop2 *)aCalloc(1,sizeof(struct delay_item_drop2));
 				memcpy(&ditem->item_data,&pd->lootitem[i],sizeof(pd->lootitem[0]));
 				ditem->m = pd->bl.m;
 				ditem->x = pd->bl.x;
@@ -1056,22 +1065,21 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 				ditem->first_bl  = NULL;
 				ditem->second_bl = NULL;
 				ditem->third_bl  = NULL;
-				// 落とさないで直接PCのItem欄へ
-				if(sd){
-					if((flag = pc_additem(sd,&ditem->item_data,ditem->item_data.amount))){
-						clif_additem(sd,0,0,flag);
-						map_addflooritem(&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,ditem->first_bl,ditem->second_bl,ditem->third_bl,0);
-					}
-					aFree(ditem);
+				ditem->next      = NULL;
+
+				if(ditem->item_data.card[0] == (short)0xff00) {
+					// ペットの卵はドロップディレイキューに保存する
+					map_push_delayitem_que(ditem);
+					add_timer(tick+540,pet_delay_item_drop2,(int)ditem,0);
+				} else {
+					add_timer2(tick+540+i,pet_delay_item_drop2,(int)ditem,0,TIMER_FREE_ID);
 				}
-				else
-					add_timer2(gettick()+540+i,pet_delay_item_drop2,(int)ditem,0,TIMER_FREE_ID);
 			}
-			memset(pd->lootitem,0,LOOTITEM_SIZE * sizeof(struct item));
-			pd->lootitem_count = 0;
-			pd->lootitem_weight = 0;
-			pd->lootitem_timer = gettick()+10000;	//	10*1000msの間拾わない
 		}
+		memset(pd->lootitem,0,LOOTITEM_SIZE * sizeof(struct item));
+		pd->lootitem_count  = 0;
+		pd->lootitem_weight = 0;
+		pd->lootitem_timer  = tick+10000;	// 10*1000msの間拾わない
 	}
 	return 1;
 }
@@ -1081,6 +1089,13 @@ int pet_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 	struct delay_item_drop2 *ditem;
 
 	ditem=(struct delay_item_drop2 *)id;
+
+	// ペットの卵ならドロップディレイキューからpopする
+	if(ditem->item_data.card[0] == (short)0xff00) {
+		struct delay_item_drop2 *p = map_pop_delayitem_que();
+		if(p != ditem)
+			printf("pet_delay_item_drop2: que pop error!!\n");
+	}
 
 	map_addflooritem(&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,ditem->first_bl,ditem->second_bl,ditem->third_bl,0);
 

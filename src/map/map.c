@@ -69,6 +69,8 @@ static int block_free_count=0,block_free_lock=0;
 static struct block_list *bl_list[BL_LIST_MAX];
 static int bl_list_count = 0;
 
+static struct delay_item_drop2 *delayitem_head = NULL, *delayitem_tail = NULL;
+
 struct map_data *map = NULL;
 int map_num=0;
 
@@ -1104,6 +1106,70 @@ int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,struct 
 	clif_dropflooritem(fitem);
 
 	return fitem->bl.id;
+}
+
+/*==========================================
+ * ドロップディレイキューへpush
+ *------------------------------------------
+ */
+void map_push_delayitem_que(struct delay_item_drop2 *ditem)
+{
+	nullpo_retv(ditem);
+
+	if(delayitem_head == NULL && delayitem_tail == NULL) {
+		// 最初のキュー
+		delayitem_head = ditem;
+		delayitem_tail = ditem;
+	} else if(delayitem_tail) {
+		// 最後尾に連結
+		delayitem_tail->next = ditem;
+		delayitem_tail       = ditem;
+	} else {
+		// 有り得ないエラー
+		printf("map_push_delayitem_que: delayitem_tail is NULL !!");
+		map_clear_delayitem_que();
+		map_push_delayitem_que(ditem);
+	}
+	ditem->next = NULL;
+
+	return;
+}
+
+/*==========================================
+ * ドロップディレイキューからpop
+ *------------------------------------------
+ */
+struct delay_item_drop2 *map_pop_delayitem_que(void)
+{
+	struct delay_item_drop2 *node = delayitem_head;
+
+	if(node) {
+		delayitem_head = node->next;
+		if(delayitem_head == NULL)
+			delayitem_tail = NULL;
+	}
+	return node;
+}
+
+/*==========================================
+ * ドロップディレイキューのクリア
+ *------------------------------------------
+ */
+void map_clear_delayitem_que(void)
+{
+	struct delay_item_drop2 *node, *node2;
+
+	node = delayitem_head;
+	while(node) {
+		node2 = node->next;
+		intif_delete_petdata(*((long *)(&node->item_data.card[1])));
+		aFree(node);
+		node = node2;
+	}
+	delayitem_head = NULL;
+	delayitem_tail = NULL;
+
+	return;
 }
 
 /*==========================================
@@ -2566,6 +2632,7 @@ void do_final(void)
 			map_clearflooritem_timer(-1, tick, i, 1);
 		}
 	}
+	map_clear_delayitem_que();
 
 	// 最後にこの内部でchar_fdを閉じる
 	do_final_chrif();

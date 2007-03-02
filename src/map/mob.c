@@ -1473,6 +1473,13 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 
 	nullpo_retr(0, ditem=(struct delay_item_drop2 *)id);
 
+	// ペットの卵ならドロップディレイキューからpopする
+	if(ditem->item_data.card[0] == (short)0xff00) {
+		struct delay_item_drop2 *p = map_pop_delayitem_que();
+		if(p != ditem)
+			printf("mob_delay_item_drop2: que pop error!!\n");
+	}
+
 	if(ditem->first_bl && ditem->first_bl->prev != NULL && ditem->first_bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)ditem->first_bl;
 		if(sd && sd->state.autoloot && !unit_isdead(&sd->bl)) {
@@ -1993,7 +2000,15 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->first_bl  = mvp[0].bl;
 				ditem->second_bl = mvp[1].bl;
 				ditem->third_bl  = mvp[2].bl;
-				add_timer2(tick+540+i,mob_delay_item_drop2,(int)ditem,0,TIMER_FREE_ID);
+				ditem->next      = NULL;
+
+				if(ditem->item_data.card[0] == (short)0xff00) {
+					// ペットの卵はドロップディレイキューに保存する
+					map_push_delayitem_que(ditem);
+					add_timer(tick+540,mob_delay_item_drop2,(int)ditem,0);
+				} else {
+					add_timer2(tick+540+i,mob_delay_item_drop2,(int)ditem,0,TIMER_FREE_ID);
+				}
 			}
 		}
 	}

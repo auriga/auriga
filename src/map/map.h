@@ -875,6 +875,7 @@ struct delay_item_drop2 {
 	int m,x,y;
 	struct item item_data;
 	struct block_list *first_bl,*second_bl,*third_bl;
+	struct delay_item_drop2 *next;
 };
 
 enum {
@@ -1045,6 +1046,11 @@ int map_addnpc(int,struct npc_data *);
 int map_clearflooritem_timer(int,unsigned int,int,int);
 #define map_clearflooritem(id) map_clearflooritem_timer(0,0,id,1)
 int map_addflooritem(struct item *,int,int,int,int,struct block_list *,struct block_list *,struct block_list *,int);
+
+// ドロップディレイキュー
+void map_push_delayitem_que(struct delay_item_drop2 *ditem);
+struct delay_item_drop2 *map_pop_delayitem_que(void);
+void map_clear_delayitem_que(void);
 
 // キャラid＝＞キャラ名 変換関連
 struct charid2nick *char_search(int char_id);
