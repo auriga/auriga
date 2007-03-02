@@ -962,7 +962,7 @@ int chrif_parse(int fd)
 // 今このmap鯖に繋がっているクライアント人数をchar鯖へ送る
 int send_users_tochar(int tid,unsigned int tick,int id,int data)
 {
-	if (char_fd < 0 || session[char_fd] == NULL)
+	if (char_fd < 0 || session[char_fd] == NULL || session[char_fd]->auth == 0)
 		return 0;
 
 	WFIFOW(char_fd,0)=0x2aff;

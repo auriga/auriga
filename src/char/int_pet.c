@@ -72,16 +72,16 @@ int pet_fromstr(char *str,struct s_pet *p)
 	int s;
 	int tmp_int[16];
 	char tmp_str[256];
-	
+
 	memset(p,0,sizeof(struct s_pet));
-	
+
 //	printf("sscanf pet main info\n");
 	s=sscanf(str,"%d,%d,%[^\t]\t%d,%d,%d,%d,%d,%d,%d,%d,%d",&tmp_int[0],&tmp_int[1],tmp_str,&tmp_int[2],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10]);
 
 	if(s!=12)
 		return 1;
-	
+
 	p->pet_id = tmp_int[0];
 	p->class_ = tmp_int[1];
 	memcpy(p->name,tmp_str,24);
@@ -214,10 +214,10 @@ int pet_txt_sync_sub(void *key,void *data,va_list ap)
 int pet_txt_sync(void) {
 	FILE *fp;
 	int lock;
-	
+
 	if( !pet_db )
 		return 1;
-	
+
 	if( (fp=lock_fopen(pet_txt,&lock))==NULL ){
 		printf("int_pet: cant write [%s] !!! data is lost !!!\n",pet_txt);
 		return 1;
@@ -343,11 +343,14 @@ int  pet_sql_delete(int pet_id) {
 	// printf("]\n");
 
 	p = (struct s_pet *)numdb_search(pet_db,pet_id);
-	if(p == NULL)
-		return 1;
+	if(p) {
+		numdb_erase(pet_db,p->pet_id);
+		aFree(p);
+	} else {
+		if(mysql_affected_rows(&mysql_handle) <= 0)
+			return 1;	// SQLから削除できないときだけfail
+	}
 
-	numdb_erase(pet_db,p->pet_id);
-	aFree(p);
 	printf("pet_id: %d deleted\n",pet_id);
 
 	return 0;
@@ -592,7 +595,7 @@ int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,short pet
 		p->intimate = 0;
 	else if(p->intimate > 1000)
 		p->intimate = 1000;
-	
+
 	if(pet_new(p,account_id,char_id) == 0) {
 		mapif_pet_created(fd,account_id,p);
 	}

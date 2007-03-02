@@ -1451,6 +1451,7 @@ void do_socket(void) {
 	realloc_fifo(0, RFIFO_SIZE, WFIFO_SIZE);
 
 	// とりあえず５分ごとに不要なデータを削除する
+	add_timer_func_list(connect_check_clear,"connect_check_clear");
 	add_timer_interval(gettick() + 1000, connect_check_clear, 0, 0, 300 * 1000);
 
 	return;

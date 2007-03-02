@@ -144,6 +144,7 @@ static void push_timer_heap(int index)
 
 	// timer_heap[0]   : タイマーヒープの数
 	// timer_heap[1..] : タイマーヒープ（大　→　小）
+	// tickが等しい場合は大の方に挿入される
 	if(timer_heap[0] == 0) {
 		// データが無い : 先頭に追加
 		timer_heap[0]++;
@@ -151,7 +152,7 @@ static void push_timer_heap(int index)
 	} else if(DIFF_TICK(timer_data[timer_heap[timer_heap[0]]].tick,timer_data[index].tick) > 0) {
 		// 最後尾に追加
 		timer_heap[++timer_heap[0]] = index;
-	} else if(DIFF_TICK(timer_data[timer_heap[1]].tick,timer_data[index].tick) < 0) {
+	} else if(DIFF_TICK(timer_data[timer_heap[1]].tick,timer_data[index].tick) <= 0) {
 		// 先頭に追加
 		memmove(&timer_heap[2],&timer_heap[1],timer_heap[0] * sizeof(int));
 		timer_heap[0]++;
@@ -161,7 +162,7 @@ static void push_timer_heap(int index)
 		int max = timer_heap[0] + 1;
 		while(max != min + 1) {
 			int mid = (min + max)/2;
-			if(DIFF_TICK(timer_data[index].tick,timer_data[timer_heap[mid]].tick) > 0) {
+			if(DIFF_TICK(timer_data[index].tick,timer_data[timer_heap[mid]].tick) >= 0) {
 				max = mid;
 			} else {
 				min = mid;

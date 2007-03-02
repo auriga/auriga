@@ -3880,7 +3880,7 @@ int mapif_send(int fd,unsigned char *buf,unsigned int len)
 
 int send_users_tologin(int tid,unsigned int tick,int id,int data)
 {
-	if (login_fd >= 0 && session[login_fd]) {
+	if (login_fd >= 0 && session[login_fd] && session[login_fd]->auth) {
 		int i, users;
 
 		users = 0;

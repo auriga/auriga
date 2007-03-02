@@ -3290,7 +3290,9 @@ int do_init_script()
 	mapregstr_db=numdb_init();
 	script_load_mapreg();
 
+	add_timer_func_list(run_script_timer,"run_script_timer");
 	add_timer_func_list(script_autosave_mapreg,"script_autosave_mapreg");
+
 	add_timer_interval(gettick()+MAPREG_AUTOSAVE_INTERVAL,
 		script_autosave_mapreg,0,0,MAPREG_AUTOSAVE_INTERVAL);
 
