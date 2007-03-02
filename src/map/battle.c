@@ -4819,6 +4819,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.pt_bonus_j = 0;
 		battle_config.mvp_announce = 0;
 		battle_config.petowneditem = 0;
+		battle_config.pet_loot_type = 1;
 		battle_config.buyer_name = 0;
 		battle_config.once_autospell = 1;
 		battle_config.allow_same_autospell = 0;
@@ -5273,6 +5274,7 @@ int battle_config_read(const char *cfgName)
 			{ "pt_bonus_j",							&battle_config.pt_bonus_j							},
 			{ "mvp_announce",						&battle_config.mvp_announce							},
 			{ "petowneditem",						&battle_config.petowneditem							},
+			{ "pet_loot_type",						&battle_config.pet_loot_type							},
 			{ "buyer_name",							&battle_config.buyer_name							},
 			{ "noportal_flag",						&battle_config.noportal_flag						},
 			{ "once_autospell",						&battle_config.once_autospell						},

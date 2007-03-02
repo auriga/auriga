@@ -288,6 +288,7 @@ extern struct Battle_Config {
 	int equip_autospell_nocost;
 	int mvp_announce;
 	int petowneditem;
+	int pet_loot_type;
 	int buyer_name;
 	int once_autospell;
 	int allow_same_autospell;

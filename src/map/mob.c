@@ -866,7 +866,7 @@ static int mob_randomwalk(struct mob_data *md,int tick)
 static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 {
 	struct block_list *tbl=NULL;
-	int i,dx,dy,ret,dist=0;
+	int dist=0;
 	int attack_type=0;
 	int mode, race, search_flag = 0;
 
@@ -1020,7 +1020,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				mob_unlocktarget(md,tick);	// 移動できないのでタゲ解除（IWとか？）
 			else {
 				// 追跡
-				i=0;
+				int dx,dy,ret,i=0;
 				do {
 					if(i==0) {	// 最初はAEGISと同じ方法で検索
 						dx=tbl->x - md->bl.x; dy=tbl->y - md->bl.y;
@@ -1063,8 +1063,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			mobskill_use(md,tick,-1);
 			if(md->ud.walktimer != -1 && unit_distance(md->ud.to_x,md->ud.to_y,tbl->x,tbl->y) <= 0)
 				return search_flag; // 既に移動中
-			ret=unit_walktoxy(&md->bl,tbl->x,tbl->y);
-			if(ret)
+			if( unit_walktoxy(&md->bl,tbl->x,tbl->y) )
 				mob_unlocktarget(md,tick);// 移動できないのでタゲ解除（IWとか？）
 		} else {
 			// アイテムまでたどり着いた
@@ -1084,8 +1083,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			else {
 				if(md->lootitem[0].card[0] == (short)0xff00)
 					intif_delete_petdata(*((long *)(&md->lootitem[0].card[1])));
-				for(i=0;i<LOOTITEM_SIZE-1;i++)
-					memcpy(&md->lootitem[i],&md->lootitem[i+1],sizeof(md->lootitem[0]));
+				memmove(&md->lootitem[0],&md->lootitem[1],sizeof(md->lootitem[0])*(LOOTITEM_SIZE-1));
 				memcpy(&md->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(md->lootitem[0]));
 			}
 			map_clearflooritem(tbl->id);

@@ -3492,7 +3492,6 @@ int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrt
 		if(sd->status.pet_id > 0 && sd->pd) {
 			if(sd->pd->bl.m != m && sd->pet.intimate <= 0) {
 				unit_free(&sd->pd->bl, 0);
-				intif_delete_petdata(sd->status.pet_id);
 				sd->status.pet_id = 0;
 				sd->pd = NULL;
 				sd->petDB = NULL;

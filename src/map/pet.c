@@ -789,9 +789,9 @@ static int pet_ai_sub_hard_lootsearch(struct block_list *bl,va_list ap)
 		// 重量オーバー
 		if((pd->lootitem_weight + (itemdb_search(fitem->item_data.nameid))->weight * fitem->item_data.amount) > battle_config.pet_weight)
 			return 0;
-
-		if(!pd->lootitem || (pd->lootitem_count >= LOOTITEM_SIZE) || (sd && sd->pd != pd))
+		if(sd && sd->pd != pd)
 			return 0;
+
 		if(bl->m == pd->bl.m && (dist=unit_distance(pd->bl.x,pd->bl.y,bl->x,bl->y))<range){
 			if( unit_can_reach(&pd->bl,bl->x,bl->y)		// 到達可能性判定
 				 && atn_rand()%1000<1000/(++(*itc)) ){	// 範囲内PCで等確率にする
@@ -805,8 +805,6 @@ static int pet_ai_sub_hard_lootsearch(struct block_list *bl,va_list ap)
 static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 {
 	struct map_session_data *sd = NULL;
-	struct mob_data *md = NULL;
-	int dist,i=0,dx,dy;
 
 	nullpo_retr(0, pd);
 
@@ -825,14 +823,23 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 	pd->last_thinktime=tick;
 
 	// ペットによるルート
-	if(!pd->target_id && pd->lootitem_count < LOOTITEM_SIZE &&
-		battle_config.pet_lootitem && pd->loottype>0 && DIFF_TICK(gettick(),pd->lootitem_timer)>0)
+	if( !pd->target_id &&
+	    battle_config.pet_lootitem &&
+	    (!battle_config.pet_loot_type || pd->lootitem_count < LOOTITEM_SIZE) &&
+	    pd->loottype > 0 &&
+	    DIFF_TICK(tick,pd->lootitem_timer) > 0 &&
+	    pd->lootitem )
+	{
+		int count = 0;
 		map_foreachinarea(pet_ai_sub_hard_lootsearch,pd->bl.m,
 						  pd->bl.x-AREA_SIZE*2,pd->bl.y-AREA_SIZE*2,
 						  pd->bl.x+AREA_SIZE*2,pd->bl.y+AREA_SIZE*2,
-						  BL_ITEM,pd,&i);
+						  BL_ITEM,pd,&count);
+	}
 
 	if(sd->pet.intimate > 0) {
+		int dist,dx,dy;
+
 		dist = unit_distance(sd->bl.x,sd->bl.y,pd->bl.x,pd->bl.y);
 		if(dist > 12) {
 			if(pd->target_id > 0)
@@ -849,7 +856,8 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		else if(pd->target_id  > MAX_FLOORITEM) {
 			int mode=mob_db[pd->class_].mode;
 			int race=mob_db[pd->class_].race;
-			md = map_id2md(pd->target_id);
+			struct mob_data *md = map_id2md(pd->target_id);
+
 			if(md == NULL || pd->bl.m != md->bl.m || md->bl.prev == NULL ||
 				unit_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13)
 				pet_unlocktarget(pd);
@@ -861,8 +869,8 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 				if( !unit_can_reach(&pd->bl,md->bl.x,md->bl.y))
 					pet_unlocktarget(pd);
 				else {
-					int ret;
-					i=0;
+					int ret,i=0;
+
 					if(battle_config.pet_speed_is_same_as_pc == 1)
 						pd->speed = status_get_speed(&sd->bl);
 					else
@@ -950,15 +958,14 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 						memcpy(&pd->lootitem[pd->lootitem_count++],&fitem->item_data,sizeof(pd->lootitem[0]));
 						pd->lootitem_weight += itemdb_search(fitem->item_data.nameid)->weight*fitem->item_data.amount;
 					}
-					else if(pd->lootitem_count >= LOOTITEM_SIZE) {
+					else if(battle_config.pet_loot_type && pd->lootitem_count >= LOOTITEM_SIZE) {
 						pet_unlocktarget(pd);
 						return 0;
 					}
 					else {
 						if(pd->lootitem[0].card[0] == (short)0xff00)
 							intif_delete_petdata(*((long *)(&pd->lootitem[0].card[1])));
-						for(i=0;i<LOOTITEM_SIZE-1;i++)
-							memcpy(&pd->lootitem[i],&pd->lootitem[i+1],sizeof(pd->lootitem[0]));
+						memmove(&pd->lootitem[0],&pd->lootitem[1],sizeof(pd->lootitem[0])*(LOOTITEM_SIZE-1));
 						memcpy(&pd->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(pd->lootitem[0]));
 					}
 				}else if(pd->loottype==2){					// ペットが拾った瞬間に飼い主へ
@@ -1001,7 +1008,6 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			unit_free(&sd->pd->bl,0);
 			sd->status.pet_id = 0;
 			sd->pd = NULL;
-			intif_delete_petdata(sd->pet.pet_id);
 			chrif_save(sd);
 			storage_storage_save(sd);
 		}else{
