@@ -3238,9 +3238,6 @@ static int userfunc_db_final(void *key,void *data,va_list ap)
 
 int do_final_script()
 {
-	// OnFinalイベント実行
-	printf("script: OnFinal Event done. (%d npc)\n", npc_event_doall("OnFinal"));
-
 	if(mapreg_dirty)
 		script_save_mapreg();
 

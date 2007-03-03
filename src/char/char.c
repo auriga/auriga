@@ -843,12 +843,8 @@ int char_txt_nick2id(const char *char_name)
 	return -1;
 }
 
-int char_txt_set_online(int char_id) {
-	// nothing to do
-	return 0;
-}
-
-int char_txt_set_offline(int char_id) {
+int char_txt_set_online(int char_id,int online)
+{
 	// nothing to do
 	return 0;
 }
@@ -904,10 +900,10 @@ static int char_txt_build_ranking(void)
 #define char_final           char_txt_final
 #define char_load_all        char_txt_load_all
 #define char_delete_sub      char_txt_delete_sub
-#define char_set_online      char_txt_set_online
-#define char_set_offline     char_txt_set_offline
 #define char_build_ranking   char_txt_build_ranking
 #define char_config_read_sub char_txt_config_read_sub
+#define char_set_online(id)  char_txt_set_online(id,1)
+#define char_set_offline(id) char_txt_set_online(id,0)
 
 #else /* TXT_ONLY */
 
@@ -1837,19 +1833,18 @@ int char_sql_nick2id(const char *char_name)
 	return char_id;
 }
 
-int char_sql_set_online(int char_id) {
-	// so we have a char don't we?
-	sprintf(tmp_sql, "UPDATE `%s` SET `online` = '1' WHERE `char_id` = '%d'",char_db, char_id);
+int char_sql_set_online(int char_id,int online)
+{
+	char *p = tmp_sql;
+
+	p += sprintf(p, "UPDATE `%s` SET `online` = '%d' WHERE ", char_db, online);
+	if(char_id > 0)
+		sprintf(p, "`char_id` = '%d'", char_id);
+	else
+		sprintf(p, "`online` = '%d'", online^1);
+
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (update set_online)- %s\n", mysql_error(&mysql_handle));
-	}
-	return 0;
-}
-
-int char_sql_set_offline(int char_id) {
-	sprintf(tmp_sql, "UPDATE `%s` SET `online` = '0' WHERE `char_id` = '%d'",char_db, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (update set_offline)- %s\n", mysql_error(&mysql_handle));
 	}
 	return 0;
 }
@@ -1916,10 +1911,10 @@ static int char_sql_build_ranking(void)
 #define char_final           char_sql_final
 #define char_load_all        char_sql_load_all
 #define char_delete_sub      char_sql_delete_sub
-#define char_set_online      char_sql_set_online
-#define char_set_offline     char_sql_set_offline
 #define char_build_ranking   char_sql_build_ranking
 #define char_config_read_sub char_sql_config_read_sub
+#define char_set_online(id)  char_sql_set_online(id,1)
+#define char_set_offline(id) char_sql_set_online(id,0)
 
 #endif /* TXT_ONLY */
 
@@ -4125,13 +4120,7 @@ void do_final(void)
 {
 	int i;
 
-#ifndef TXT_ONLY
-	// let's 0 all chars (we are going down after all)
-	sprintf(tmp_sql, "UPDATE `%s` SET `online` = '0' WHERE `online` = '1'",char_db);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (update do_final)- %s\n", mysql_error(&mysql_handle));
-	}
-#endif
+	char_set_offline(-1);
 
 	char_sync();
 	inter_sync();
@@ -4214,13 +4203,7 @@ int do_init(int argc,char **argv)
 	graph_add_sensor("Memory Usage(KB)",60*1000,memmgr_usage);
 	httpd_default_page(httpd_send_file);
 
-#ifndef TXT_ONLY
-	// and let's nullate all online chars too
-	sprintf(tmp_sql, "UPDATE `%s` SET `online` = '0' WHERE `online` = '1'",char_db);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (update do_init)- %s\n", mysql_error(&mysql_handle));
-	}
-#endif
+	char_set_offline(-1);
 
 	return 0;
 }

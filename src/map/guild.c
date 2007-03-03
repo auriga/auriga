@@ -1034,10 +1034,6 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
 	g->average_lv=alv/c;
 	g->connect_member=om;
 
-	if(oldonline!=online)	// オンライン状態が変わったので通知
-		clif_guild_memberlogin_notice(g,idx,online);
-
-
 	for(i=0;i<g->max_member;i++){	// sd再設定
 		sd= map_id2sd(g->member[i].account_id);
 		g->member[i].sd=(sd!=NULL &&
@@ -1045,6 +1041,9 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
 			sd->status.guild_id==guild_id &&
 			!sd->state.waitingdisconnect)?sd:NULL;
 	}
+
+	if(oldonline!=online)	// オンライン状態が変わったので通知
+		clif_guild_memberlogin_notice(g,idx,online);
 
 	//マップ移動,接続などでギルドスキルの有効チェック＆ステータス更新
 	if(g->member[0].sd)

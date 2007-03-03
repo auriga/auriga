@@ -1,4 +1,19 @@
 ----------------------------------------
+//0104 [2007/03/04] by Rayce
+
+・098のOnFinalラベル実装において致命的なバグがあったので修正（map.c, script.c）
+	do_final_script() のあとに do_final_npc() が実行されるようになっていたので
+	do_final_npc() 内で script_free_code() が呼ばれるときには既に str_buf, str_data が
+	解放されているという最悪の状態になっていました。
+	do_final_script() からOnFinalイベントの実行処理を切り離し、do_final_npc() の
+	後に呼び出すように修正しました。
+
+・map_addflooritem() のミスを修正（map.c）
+・guild_recv_memberinfoshort() を少し修正（guild.c）
+
+・SQL: char_set_online() と char_set_offline() の処理をまとめる（char.c）
+
+----------------------------------------
 //0103 [2007/03/03] by Rayce
 
 ・親密度が0になってペットが消えるとき intif_delete_petdata() が二重に呼ばれていたため
