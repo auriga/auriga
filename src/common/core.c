@@ -316,7 +316,7 @@ int main(int argc,char **argv)
 			do_parsepacket();
 		}
 	}
-	
+	do_pre_final();
 	exit(0);
 	return 0;
 }

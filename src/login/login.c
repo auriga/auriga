@@ -2204,6 +2204,11 @@ int login_httpd_auth_func( struct httpd_access* a, struct httpd_session_data* sd
 	return 1;
 }
 
+void do_pre_final(void)
+{
+	// nothing to do
+	return;
+}
 
 void do_final(void)
 {

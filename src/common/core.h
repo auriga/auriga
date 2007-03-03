@@ -5,6 +5,7 @@
 
 int do_init(int,char**);
 void do_final(void);
+void do_pre_final(void);
 double uptime(void);
 
 #endif	// _CORE_H_

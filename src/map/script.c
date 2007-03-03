@@ -429,6 +429,35 @@ static unsigned char *skip_word(unsigned char *p)
 }
 
 /*==========================================
+ * 制御コード書き込み
+ *------------------------------------------
+ */
+static int set_control_code(unsigned char p)
+{
+	switch(p) {
+	case 'n':
+		add_scriptb('\r');
+		add_scriptb('\n');
+		break;
+	case 'r':
+		add_scriptb('\r');
+		break;
+	case 't':
+		add_scriptb('\t');
+		break;
+	case 'a':
+		add_scriptb('\a');
+		break;
+	case 'b':
+		add_scriptb('\b');
+		break;
+	default:
+		return 0;
+	}
+	return 1;
+}
+
+/*==========================================
  * 項の解析
  *------------------------------------------
  */
@@ -456,18 +485,30 @@ unsigned char* parse_simpleexpr(unsigned char *p)
 		add_scripti(i);
 		p=np;
 	} else if(*p=='"'){
+		unsigned char *p2;
 		add_scriptc(C_STR);
-		p++;
-		while(*p && *p!='"'){
-			if(p[-1]<=0x7e && *p=='\\')
-				p++;
-			else if(*p=='\n'){
-				disp_error_message("unexpected newline @ string",p);
+		while(1) {
+			p++;
+			while(*p && *p!='"'){
+				if(p[-1]<=0x7e && *p=='\\') {
+					p++;
+					if(set_control_code(*p)) {
+						p++;
+						continue;
+					}
+				}
+				else if(*p=='\n'){
+					disp_error_message("unexpected newline @ string",p);
+				}
+				add_scriptb(*p++);
 			}
-			add_scriptb(*p++);
-		}
-		if(!*p){
-			disp_error_message("unexpected eof @ string",p);
+			if(!*p){
+				disp_error_message("unexpected eof @ string",p);
+			}
+			p2 = skip_space(p+1);
+			if(*p2 != '"')
+				break;
+			p = p2;
 		}
 		add_scriptb(0);
 		p++;	//'"'

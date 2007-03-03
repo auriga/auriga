@@ -224,6 +224,12 @@ int do_init(int argc,char **argv) {
 	return 0;
 }
 
+void do_pre_final(void)
+{
+	// nothing to do
+	return;
+}
+
 void do_final(void)
 {
 	exit_dbn();

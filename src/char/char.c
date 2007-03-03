@@ -4116,6 +4116,12 @@ static int char_online_db_final(void *key,void *data,va_list ap)
 	return 0;
 }
 
+void do_pre_final(void)
+{
+	// nothing to do
+	return;
+}
+
 void do_final(void)
 {
 	int i;

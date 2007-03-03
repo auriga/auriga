@@ -2581,6 +2581,18 @@ void map_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 }
 
 /*==========================================
+ * map鯖正常終了直前処理
+ *------------------------------------------
+ */
+void do_pre_final(void)
+{
+	// OnFinalイベント実行
+	printf("do_final: OnFinal Event done. (%d npc)\n", npc_event_doall("OnFinal"));
+
+	return;
+}
+
+/*==========================================
  * map鯖終了時処理
  *------------------------------------------
  */
@@ -2610,9 +2622,6 @@ void do_final(void)
 	unsigned int tick = gettick();
 
 	chrif_mapactive(0);	//マップサーバー停止中
-
-	// OnFinalイベント実行
-	printf("do_final: OnFinal Event done. (%d npc)\n", npc_event_doall("OnFinal"));
 
 	guild_flush_expcache();				// ギルドExpをフラッシュ
 	clif_foreachclient(chrif_disconnect_sub);	// ここで先にキャラを全て切断しておく
