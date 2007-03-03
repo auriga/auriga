@@ -45,20 +45,41 @@
 // =====================
 // strcmp 系のエイリアス
 // ---------------------
-#ifndef strcmpi
-#	define strcmpi strcasecmp
-#endif
-
-#ifndef stricmp
-#	define stricmp strcasecmp
-#endif
-
-#ifndef strncmpi
-#	define strncmpi strncasecmp
-#endif
-
-#ifndef strnicmp
-#	define strnicmp strncasecmp
+#ifndef _WIN32
+	#ifndef strcmpi
+		#define strcmpi  strcasecmp
+	#endif
+	#ifndef stricmp
+		#define stricmp  strcasecmp
+	#endif
+	#ifndef strncmpi
+		#define strncmpi strncasecmp
+	#endif
+	#ifndef strnicmp
+		#define strnicmp strncasecmp
+	#endif
+#else
+	#if defined(_MSC_VER)
+		#define strcmpi     _stricmp
+		#define stricmp     _stricmp
+		#define strcasecmp  _stricmp
+		#define strncmpi    _strnicmp
+		#define strnicmp    _strnicmp
+		#define strncasecmp _strnicmp
+	#else
+		#ifndef strcmpi
+			#define strcmpi     stricmp
+		#endif
+		#ifndef strcasecmp
+			#define strcasecmp  stricmp
+		#endif
+		#ifndef strncmpi
+			#define strncmpi    strnicmp
+		#endif
+		#ifndef strncasecmp
+			#define strncasecmp strnicmp
+		#endif
+	#endif
 #endif
 
 
@@ -66,8 +87,6 @@
 // BCC での追加処理
 // ---------------------
 #if defined(_WIN32) && defined(__BORLANDC__)
-
-	int strcasecmp(const char *s1, const char *s2);
 
 	// random のビット数を上げる
 #	if !defined(RANDOM32) && !defined(RANDOM64) && !defined(RANDOM32X) && !defined(RANDOM64X) && !defined(RANDOMMT) && !defined(RANDOMSTD) && !defined(RANDOMSTD2) && !defined(RANDOMSTD2X) && !defined(RANDOMSTD3X)
@@ -83,15 +102,13 @@
 // ---------------------
 #if defined(_WIN32) && defined(_MSC_VER)
 
-#	define strcasecmp _stricmp
-#	define snprintf _snprintf
+#	define snprintf  _snprintf
 #	define vsnprintf _vsnprintf
 
 	// random の精度とビット数を上げる
 #	if !defined(RANDOM32) && !defined(RANDOM64) && !defined(RANDOM32X) && !defined(RANDOM64X) && !defined(RANDOMMT) && !defined(RANDOMSTD) && !defined(RANDOMSTD2) && !defined(RANDOMSTD2X) && !defined(RANDOMSTD3X)
 #		define RANDOM64
 #	endif
-
 
 #endif	// if VC
 

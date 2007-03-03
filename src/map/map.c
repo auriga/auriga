@@ -999,41 +999,28 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,int data)
  */
 int map_searchrandfreecell(int m,int x,int y,int range)
 {
-	int free_cell,i,j;
+	int i,j;
+	int dx = 0, dy = 0, free_cell = 0;
 
-	for(free_cell=0,i=-range;i<=range;i++){
-		if(i+y<0 || i+y>=map[m].ys)
+	for(i=-range; i<=range; i++) {
+		if(i+y < 0 || i+y >= map[m].ys)
 			continue;
-		for(j=-range;j<=range;j++){
-			if(j+x<0 || j+x>=map[m].xs)
+		for(j=-range; j<=range; j++) {
+			if(j+x < 0 || j+x >= map[m].xs)
 				continue;
 			if(map_getcell(m,j+x,i+y,CELL_CHKNOPASS))
 				continue;
 			free_cell++;
-		}
-	}
-	if(free_cell==0)
-		return -1;
-	free_cell=atn_rand()%free_cell;
-	for(i=-range;i<=range;i++){
-		if(i+y<0 || i+y>=map[m].ys)
-			continue;
-		for(j=-range;j<=range;j++){
-			if(j+x<0 || j+x>=map[m].xs)
-				continue;
-			if(map_getcell(m,j+x,i+y,CELL_CHKNOPASS))
-				continue;
-			if(free_cell==0){
-				x+=j;
-				y+=i;
-				i=range+1;
-				break;
+			if(atn_rand()%free_cell == 0) {
+				dx = x+j;
+				dy = y+i;
 			}
-			free_cell--;
 		}
 	}
+	if(free_cell == 0)
+		return -1;
 
-	return x+(y<<16);
+	return dx+(dy<<16);
 }
 
 /*==========================================

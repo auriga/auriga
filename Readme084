@@ -1,4 +1,12 @@
 ----------------------------------------
+//0106 [2007/03/04] by Rayce
+
+・BCC, VCでstrncasecmpが使えるようにdefineを書き換え（utils.*）
+　utils.cにあった自作のstrcasecmpは不要になったので削除
+・@helpの一部のコードをstrncasecmpに最適化（atcommand.c）
+・map_searchrandfreecell() の処理を最適化（map.c）
+
+----------------------------------------
 //0105 [2007/03/04] by Rayce
 
 ・MAPサーバが正常に終了するときのみOnFinalラベルを実行するように変更

@@ -1686,7 +1686,7 @@ atcommand_help(
 	const char* command, const char* message)
 {
 	FILE* fp;
-	char buf[1024], buf2[1024];
+	char buf[1024];
 	int start = 0, end = 0, lines = 0;
 	int i;
 
@@ -1725,20 +1725,14 @@ atcommand_help(
 			char *p = buf;
 			while ((p = strchr(p, '@')) != NULL) {
 				for (i = 0; i < synonym_count; i++) {
-					memcpy(buf2, p + 1, strlen(synonym_table[i].synonym));
-					buf2[strlen(synonym_table[i].synonym)] = 0;
-					// strncmpi will be better, but doesn't work under win32 (bcc32 don't recognize strncasecmp)
-					if (strcmpi(buf2, synonym_table[i].synonym) == 0) {
+					if (strncasecmp(p+1, synonym_table[i].synonym, strlen(synonym_table[i].synonym)) == 0) {
 						*p = command_symbol;
 						break;
 					}
 				}
 				if (i == synonym_count) {
 					for (i = 0; atcommand_info[i].type != AtCommand_Unknown; i++) {
-						memcpy(buf2, p + 1, strlen(atcommand_info[i].command + 1));
-						buf2[strlen(atcommand_info[i].command + 1)] = 0;
-						// strncmpi will be better, but doesn't work under win32 (bcc32 don't recognize strncasecmp)
-						if (strcmpi(buf2, atcommand_info[i].command + 1) == 0) {
+						if (strncasecmp(p+1, atcommand_info[i].command+1, strlen(atcommand_info[i].command+1)) == 0) {
 							*p = command_symbol;
 							break;
 						}
