@@ -2737,6 +2737,35 @@ AthenaNPCScript
 			0:homun_id 1:homun_base_lv 2:homun_name 3:friendly 4:hungry 5:class
 			連れてない場合、homun_nameのときは ""（空文字））、それ以外は0を返します。
 
+		sqlquery 関数
+			sqlquery(<query>[,<variable>])
+
+			<query>		文字列
+			<variable>	配列変数
+
+			SQLモード専用です。TXTモードでは無効です。
+
+			SQLクエリを発行します。
+			INSERT, UPDATE, DELETEのように結果セットがない場合、変数は省略可能です。
+			エラー時は-1を、成功時は mysql_affected_rows の値を返します。
+			SELECTのように結果セットがある場合、変数は省略不可です。
+			データは二次元配列として<variable>に格納されます。
+			<variable>は配列名を指定すると最初から、要素番号も指定すれば途中から代入できます。
+			エラー時は-1を、成功時は取得した行数を返します。
+			詳細は、サンプル（npc_test_sqlquery.txt）を参照してください。
+
+		strescape 関数
+			strescape(<string>)
+
+			<string>	文字列
+
+			SQLモード専用です。TXTモードでは無効です。
+
+			SQL文で使用する文字列の特殊文字をエスケープします。
+			セキュリティの面から、sqlquery関数でデータに文字列が含まれる場合には必ずこの関数を
+			通してください。
+
+
 	＊csv アクセス命令 / 関数
 
 		csv とはカンマで区切られたテキストファイルのことで、表計算ソフトなどで
@@ -2884,7 +2913,7 @@ AthenaNPCScript
 			MAPサーバーがCharサーバーに接続したときに実行します。
 
 		OnFinalラベル
-			MAPサーバーが停止する直前に実行します。
+			MAPサーバーが正常に停止する直前に実行します。
 
 		OnMinuteXXラベル
 			毎時XX分に実行します。数値は十進数２桁です。

@@ -3591,6 +3591,8 @@ int buildin_homundel(struct script_state *st);
 int buildin_homunrename(struct script_state *st);
 int buildin_homunevolution(struct script_state *st);
 int buildin_recalcstatus(struct script_state *st);
+int buildin_sqlquery(struct script_state *st);
+int buildin_strescape(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -3829,6 +3831,8 @@ struct script_function buildin_func[] = {
 	{buildin_substr,"substr","si*"},
 	{buildin_distance,"distance","i*"},
 	{buildin_recalcstatus,"recalcstatus","*"},
+	{buildin_sqlquery,"sqlquery","s*"},
+	{buildin_strescape,"strescape","s"},
 	{NULL,NULL,NULL}
 };
 
@@ -10131,5 +10135,125 @@ int buildin_recalcstatus(struct script_state *st)
 
 	if(sd)
 		status_calc_pc(sd,0);
+	return 0;
+}
+
+/*==========================================
+ * SQLクエリ発行
+ *------------------------------------------
+ */
+int buildin_sqlquery(struct script_state *st)
+{
+#ifndef TXT_ONLY
+	int count = -1;
+	MYSQL_RES* sql_res;
+	char *query = conv_str(st,& (st->stack->stack_data[st->start+2]));
+
+	if(strlen(query) >= sizeof(tmp_sql)) {	// クエリが長すぎる
+		push_val(st->stack,C_INT,-1);
+		return 0;
+	}
+	if(mysql_query(&mysql_handle, query)) {
+		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+		push_val(st->stack,C_INT,-1);
+		return 0;
+	}
+	sql_res = mysql_store_result(&mysql_handle);
+
+	// SELECT以外はここで完了
+	if(sql_res == NULL) {
+		count = (int)mysql_affected_rows(&mysql_handle);
+		push_val(st->stack,C_INT,count);
+		return 0;
+	}
+
+	do {
+		int num, len, elem, max;
+		char *name, *var, *p;
+		char prefix, postfix;
+		struct map_session_data *sd = NULL;
+		MYSQL_ROW sql_row = NULL;
+
+		if(st->end <= st->start+3 || st->stack->stack_data[st->start+3].type != C_NAME) {
+			printf("buildin_sqlquery: param not name\n");
+			break;
+		}
+		num     = st->stack->stack_data[st->start+3].u.num;
+		name    = str_buf+str_data[num&0x00ffffff].str;
+		prefix  = *name;
+		postfix = name[strlen(name)-1];
+
+		if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+			printf("buildin_sqlquery: illegal scope !\n");
+			break;
+		}
+		if( prefix != '$' && prefix != '\'' ) {
+			sd = script_rid2sd(st);
+			if(sd == NULL)
+				break;
+		}
+
+		var = (char *)aCalloc(strlen(name)+6,sizeof(char));	// [xxx] + \0 = 6文字
+		strcpy(var,name);
+
+		if((p = strrchr(var,'[')) != NULL) {
+			elem = atoi(p+1);	// 配列の二次元目の要素を取得
+			len  = p - var;
+		} else {
+			elem = 0;
+			len = strlen(var);
+			if(postfix == '$')
+				len--;
+		}
+
+		max = mysql_num_fields(sql_res);
+		if(max + (num >> 24) > 128) {
+			max = 128 - (num>>24);
+		}
+
+		for(count = 0; elem < 128 && (sql_row = mysql_fetch_row(sql_res)); count++) {
+			int i,tmp_num;
+
+			if(count > 0) {	// 結果セットが複数行あるので変数名を合成する
+				sprintf(var+len, "[%d]%s", elem, (postfix == '$')? "$": "");
+				tmp_num = add_str(var) + (num&0xff000000);
+			} else {
+				tmp_num = num;
+			}
+			for(i=0; i<max; i++) {
+				void *v = (postfix == '$')? sql_row[i]: (void*)atoi(sql_row[i]);
+				set_reg(st,sd,tmp_num+(i<<24),var,v,st->stack->stack_data[st->start+3].ref);
+			}
+			elem++;
+		}
+		aFree(var);
+	} while(0);
+
+	mysql_free_result(sql_res);
+	push_val(st->stack,C_INT,count);
+#else
+	// TXTは何もしない
+	push_val(st->stack,C_INT,-1);
+#endif
+	return 0;
+}
+
+/*==========================================
+ * SQL用の文字列エスケープ
+ *------------------------------------------
+ */
+int buildin_strescape(struct script_state *st)
+{
+	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+
+#ifndef TXT_ONLY
+	char *buf = (char *)aCalloc(strlen(str)*2+1,sizeof(char));
+
+	strecpy(buf,str);
+	push_str(st->stack,C_STR,buf);
+#else
+	// TXTは何もしない
+	push_str(st->stack,C_STR,(unsigned char *)aStrdup(str));
+#endif
 	return 0;
 }
