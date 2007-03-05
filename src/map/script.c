@@ -150,7 +150,7 @@ unsigned char* parse_subexpr(unsigned char *,int);
 int get_com(unsigned char *script,int *pos);
 int get_num(unsigned char *script,int *pos);
 
-#if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
+#ifndef NO_CSVDB_SCRIPT
 int script_csvinit( void );
 int script_csvfinal( void );
 #endif
@@ -2923,6 +2923,7 @@ static int script_txt_save_mapreg(void)
 
 #else /* TXT_ONLY */
 
+MYSQL mysql_handle_script;
 char mapreg_sqldb[256] = "mapreg";
 
 /*==========================================
@@ -3319,7 +3320,7 @@ int do_final_script()
 	debug_hash_output();
 #endif
 
-#if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
+#ifndef NO_CSVDB_SCRIPT
 	script_csvfinal();
 #endif
 
@@ -3350,7 +3351,7 @@ int do_init_script()
 	}
 	scriptlabel_db=strdb_init(50);
 
-#if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
+#ifndef NO_CSVDB_SCRIPT
 	script_csvinit();
 #endif
 
@@ -3567,7 +3568,7 @@ int buildin_getpkflag(struct script_state *st);
 int buildin_guildgetexp(struct script_state *st);
 int buildin_flagname(struct script_state *st);
 int buildin_getnpcposition(struct script_state *st);
-#if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
+#ifndef NO_CSVDB_SCRIPT
 int buildin_csvgetrows(struct script_state *st);
 int buildin_csvgetcols(struct script_state *st);
 int buildin_csvread(struct script_state *st);
@@ -3810,7 +3811,7 @@ struct script_function buildin_func[] = {
 	{buildin_homundel,"homundel",""},
 	{buildin_homunrename,"homunrename","s*"},
 	{buildin_homunevolution,"homunevolution",""},
-#if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
+#ifndef NO_CSVDB_SCRIPT
 	{buildin_csvgetrows,"csvgetrows","s"},
 	{buildin_csvgetcols,"csvgetcols","si"},
 	{buildin_csvread,"csvread","sii"},
@@ -9308,7 +9309,7 @@ int buildin_getnpcposition(struct script_state *st)
 	return 0;
 }
 
-#if !defined(NO_CSVDB) && !defined(NO_CSVDB_SCRIPT)
+#ifndef NO_CSVDB_SCRIPT
 /*==========================================
  * CSVアクセス命令/関数群
  *------------------------------------------
@@ -10160,20 +10161,21 @@ int buildin_sqlquery(struct script_state *st)
 	MYSQL_RES* sql_res;
 	char *query = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	if(strlen(query) >= sizeof(tmp_sql)) {	// クエリが長すぎる
+	// SQLクエリ利用不可、もしくはクエリが長すぎるならエラー
+	if(!sql_script_enable || strlen(query) >= sizeof(tmp_sql)) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	if(mysql_query(&mysql_handle, query)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+	if(mysql_query(&mysql_handle_script, query)) {
+		printf("DB server Error - %s\n", mysql_error(&mysql_handle_script));
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sql_res = mysql_store_result(&mysql_handle_script);
 
 	// SELECT以外はここで完了
 	if(sql_res == NULL) {
-		count = (int)mysql_affected_rows(&mysql_handle);
+		count = (int)mysql_affected_rows(&mysql_handle_script);
 		push_val(st->stack,C_INT,count);
 		return 0;
 	}

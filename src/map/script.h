@@ -1,6 +1,8 @@
 #ifndef _SCRIPT_H_
 #define _SCRIPT_H_
 
+#include "utils.h"
+
 struct script_data {
 	int type;
 	union {
@@ -56,6 +58,8 @@ void script_write_vars(struct map_session_data *sd,char *var,int elem,void *v,st
 
 #ifdef TXT_ONLY
 extern char mapreg_txt[256];
+#else
+extern MYSQL mysql_handle_script;
 #endif /* TXT_ONLY */
 
 #endif

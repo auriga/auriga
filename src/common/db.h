@@ -80,7 +80,6 @@ void* linkdb_search ( struct linkdb_node** head, void *key);
 void* linkdb_erase  ( struct linkdb_node** head, void *key);
 void  linkdb_final  ( struct linkdb_node** head );
 
-#ifndef NO_CSVDB
 // csvdb -- csv ファイルの読み込み関数
 
 // 最大列数
@@ -119,6 +118,5 @@ int         csvdb_insert_row(struct csvdb_data *csv, int row);
 int         csvdb_flush(struct csvdb_data *csv);
 void        csvdb_close(struct csvdb_data *csv);
 void        csvdb_dump(struct csvdb_data* csv);
-#endif
 
 #endif

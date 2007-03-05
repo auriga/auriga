@@ -79,6 +79,7 @@ int autosave_gvg_rate=100;
 int agit_flag=0;
 int map_pk_server_flag = 0;
 int map_pk_nightmaredrop_flag = 0;
+int sql_script_enable = 0;
 
 extern int packet_parse_time;
 
@@ -134,6 +135,13 @@ static char map_server_pw[32]      = "ragnarok";
 static char map_server_db[32]      = "ragnarok";
 static char map_server_charset[32] = "";
 
+static int  script_server_port        = 3306;
+static char script_server_ip[32]      = "127.0.0.1";
+static char script_server_id[32]      = "ragnarok";
+static char script_server_pw[32]      = "ragnarok";
+static char script_server_db[32]      = "ragnarok";
+static char script_server_charset[32] = "";
+
 int do_sql_init_map(void)
 {
 	//DB connection initialized
@@ -159,12 +167,37 @@ int do_sql_init_map(void)
 		}
 	}
 
+	if(sql_script_enable) {
+		mysql_init(&mysql_handle_script);
+		printf("Connect Script server");
+		if(script_server_charset[0]) {
+			printf(" (charset: %s)",script_server_charset);
+		}
+		printf("...\n");
+
+		if(!mysql_real_connect(&mysql_handle_script, script_server_ip, script_server_id, script_server_pw,
+			script_server_db ,script_server_port, (char *)NULL, 0)
+		) {
+			printf("%s\n",mysql_error(&mysql_handle_script));
+			exit(1);
+		} else {
+			printf ("Connect Success!\n");
+		}
+		if(script_server_charset[0]) {
+			sprintf(tmp_sql,"SET NAMES %s",script_server_charset);
+			if (mysql_query(&mysql_handle_script, tmp_sql)) {
+				printf("DB server Error (charset)- %s\n", mysql_error(&mysql_handle_script));
+			}
+		}
+	}
+
 	return 0;
 }
 
 int do_sql_final_map(void)
 {
 	mysql_close(&mysql_handle);
+	mysql_close(&mysql_handle_script);
 	printf("close DB connect....\n");
 
 	return 0;
@@ -189,6 +222,24 @@ int map_sql_config_read_sub(const char* w1,const char* w2)
 	}
 	else if(strcmpi(w1,"map_server_charset")==0){
 		strcpy(map_server_charset, w2);
+	}
+	else if(strcmpi(w1,"script_server_ip")==0){
+		strcpy(script_server_ip, w2);
+	}
+	else if(strcmpi(w1,"script_server_port")==0){
+		script_server_port=atoi(w2);
+	}
+	else if(strcmpi(w1,"script_server_id")==0){
+		strcpy(script_server_id, w2);
+	}
+	else if(strcmpi(w1,"script_server_pw")==0){
+		strcpy(script_server_pw, w2);
+	}
+	else if(strcmpi(w1,"script_server_db")==0){
+		strcpy(script_server_db, w2);
+	}
+	else if(strcmpi(w1,"script_server_charset")==0){
+		strcpy(script_server_charset, w2);
 	}
 
 	return 0;
@@ -2522,6 +2573,8 @@ static int map_config_read(char *cfgName)
 			map_pk_server_flag = atoi(w2);
 		} else if (strcmpi(w1, "map_pk_nightmaredrop") == 0) {
 			map_pk_nightmaredrop_flag = atoi(w2);
+		} else if (strcmpi(w1, "sql_script_enable") == 0) {
+			sql_script_enable = atoi(w2);
 		} else {
 			map_config_read_sub(w1, w2);
 		}

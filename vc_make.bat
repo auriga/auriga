@@ -85,9 +85,6 @@ rem set __NO_HTTPD__=/D "NO_HTTPD"
 rem httpd で外部 CGI を使う場合はコメントアウトする
 set __NO_HTTPD_CGI__=/D "NO_HTTPD_CGI"
 
-rem csvdb を完全に無効にする場合コメントアウトをはずす
-rem set __NO_CSVDB__=/D "NO_CSVDB"
-
 rem csvdb のスクリプトからの利用を無効にする場合コメントアウトをはずす
 rem set __NO_CSVDB_SCRIPT__=/D "NO_CSVDB_SCRIPT"
 
@@ -159,7 +156,7 @@ if "%__ZLIB__%"=="" goto NOZLIB1
 set __LINKZLIB__=../common/zlib/*.obj
 :NOZLIB1
 
-set __opt1__=/I "../common/zlib/" /I "../common/" /D "PACKETVER=8" /D "NEW_006b" /D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS" /D "_CRT_SECURE_NO_DEPRECATE" %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__% %__DEBUG_VARS__%
+set __opt1__=/I "../common/zlib/" /I "../common/" /D "PACKETVER=8" /D "NEW_006b" /D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS" /D "_CRT_SECURE_NO_DEPRECATE" %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__% %__DEBUG_VARS__%
 set __opt2__=/DEBUG %__FIXOPT2__% user32.lib %__LINKZLIB__% ../common/*.obj *.obj
 
 rem ----------------------------------------------------------------

@@ -731,7 +731,6 @@ void linkdb_final( struct linkdb_node** head ) {
  * CSVデータベース
  *------------------------------------------
  */
-#ifndef NO_CSVDB
 // csvdb -- csv のデータ読み込み関数
 
 // csv の読み込み。skip_comment が真のときは、行頭に//がある行を読み飛ばす。
@@ -1086,4 +1085,3 @@ void csvdb_dump(struct csvdb_data* csv) {
 		printf("\n");
 	}
 }
-#endif

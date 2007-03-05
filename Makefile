@@ -28,7 +28,7 @@ else
 MAKE = make
 endif
 
-CFLAGS = -D_XOPEN_SOURCE -D_BSD_SOURCE -Wall -Wno-sign-compare -I../common $(PACKETDEF) $(OS_TYPE)
+CFLAGS = -D_XOPEN_SOURCE -D_BSD_SOURCE -Wall -I../common $(PACKETDEF) $(OS_TYPE)
 
 ifdef SQLFLAG
 	CFLAGS += -I$(MYSQL_INCLUDE)
@@ -59,9 +59,6 @@ CFLAGS += -O3
 
 # disable httpd-external-CGI
 CFLAGS += -DNO_HTTPD_CGI
-
-# disable csvdb
-#CFLAGS += -DNO_CSVDB
 
 # disable csvdb via script
 #CFLAGS += -DNO_CSVDB_SCRIPT
