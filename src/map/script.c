@@ -879,7 +879,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 
 	switch(*p) {
 	case 'b':
-		if(p2 - p == 5 && !strncmp(p,"break",5)) {
+	case 'B':
+		if(p2 - p == 5 && !strncasecmp(p,"break",5)) {
 			// break の処理
 			char label[256];
 			int pos = syntax.curly_count - 1;
@@ -917,7 +918,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 		}
 		break;
 	case 'c':
-		if(p2 - p == 4 && !strncmp(p,"case",4)) {
+	case 'C':
+		if(p2 - p == 4 && !strncasecmp(p,"case",4)) {
 			// case の処理
 			int pos = syntax.curly_count-1;
 			if(pos < 0 || syntax.curly[pos].type != TYPE_SWITCH) {
@@ -996,7 +998,7 @@ unsigned char* parse_syntax(unsigned char *p) {
 				syntax.curly[pos].count++;
 			}
 			return p + 1;
-		} else if(p2 - p == 8 && !strncmp(p,"continue",8)) {
+		} else if(p2 - p == 8 && !strncasecmp(p,"continue",8)) {
 			// continue の処理
 			char label[256];
 			int pos = syntax.curly_count - 1;
@@ -1032,7 +1034,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 		}
 		break;
 	case 'd':
-		if(p2 - p == 7 && !strncmp(p,"default",7)) {
+	case 'D':
+		if(p2 - p == 7 && !strncasecmp(p,"default",7)) {
 			// switch - default の処理
 			int pos = syntax.curly_count-1;
 			if(pos < 0 || syntax.curly[pos].type != TYPE_SWITCH) {
@@ -1066,7 +1069,7 @@ unsigned char* parse_syntax(unsigned char *p) {
 				syntax.curly[pos].count++;
 			}
 			return p + 1;
-		} else if(p2 - p == 2 && !strncmp(p,"do",2)) {
+		} else if(p2 - p == 2 && !strncasecmp(p,"do",2)) {
 			int l;
 			char label[256];
 			p=skip_space(p2);
@@ -1084,7 +1087,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 		}
 		break;
 	case 'f':
-		if(p2 - p == 3 && !strncmp(p,"for",3)) {
+	case 'F':
+		if(p2 - p == 3 && !strncasecmp(p,"for",3)) {
 			int l;
 			char label[256];
 			int  pos = syntax.curly_count;
@@ -1159,7 +1163,7 @@ unsigned char* parse_syntax(unsigned char *p) {
 			l=add_str(label);
 			set_label(l,script_pos,p);
 			return p;
-		} else if(p2 - p == 8 && !strncmp(p,"function",8)) {
+		} else if(p2 - p == 8 && !strncasecmp(p,"function",8)) {
 			unsigned char *func_name;
 			// function
 			p=skip_space(p2);
@@ -1213,7 +1217,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 		}
 		break;
 	case 'i':
-		if(p2 - p == 2 && !strncmp(p,"if",2)) {
+	case 'I':
+		if(p2 - p == 2 && !strncasecmp(p,"if",2)) {
 			// if() の処理
 			char label[256];
 			p=skip_space(p2);
@@ -1236,7 +1241,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 		}
 		break;
 	case 's':
-		if(p2 - p == 6 && !strncmp(p,"switch",6)) {
+	case 'S':
+		if(p2 - p == 6 && !strncasecmp(p,"switch",6)) {
 			// switch() の処理
 			char label[256];
 			p=skip_space(p2);
@@ -1262,7 +1268,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 		}
 		break;
 	case 'w':
-		if(p2 - p == 5 && !strncmp(p,"while",5)) {
+	case 'W':
+		if(p2 - p == 5 && !strncasecmp(p,"while",5)) {
 			int l;
 			char label[256];
 			p=skip_space(p2);
@@ -1333,11 +1340,11 @@ unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag) {
 		syntax.curly[pos].count++;
 		p = skip_space(p);
 		p2 = skip_word(p);
-		if(!syntax.curly[pos].flag && p2 - p == 4 && !strncmp(p,"else",4)) {
+		if(!syntax.curly[pos].flag && p2 - p == 4 && !strncasecmp(p,"else",4)) {
 			// else  or else - if
 			p = skip_space(p2);
 			p2 = skip_word(p);
-			if(p2 - p == 2 && !strncmp(p,"if",2)) {
+			if(p2 - p == 2 && !strncasecmp(p,"if",2)) {
 				// else - if
 				p=skip_space(p2);
 				if(*p != '(') {
@@ -1387,7 +1394,7 @@ unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag) {
 		// 条件が偽なら終了地点に飛ばす
 		p = skip_space(p);
 		p2 = skip_word(p);
-		if(p2 - p != 5 || strncmp(p,"while",5)) {
+		if(p2 - p != 5 || strncasecmp(p,"while",5)) {
 			disp_error_message("need 'while'",p);
 		}
 
@@ -1647,7 +1654,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 		p=skip_space(p);
 		// labelだけ特殊処理
 		tmpp=skip_space(skip_word(p));
-		if(*tmpp==':' && !(!strncmp(p,"default:",8) && p + 7 == tmpp)){
+		if(*tmpp==':' && !(!strncasecmp(p,"default:",8) && p + 7 == tmpp)){
 			int l,c;
 			unsigned char *p2 = skip_word(p);
 
@@ -3057,13 +3064,16 @@ int script_config_read(char *cfgName)
 	int i;
 	char line[1024],w1[1024],w2[1024];
 	FILE *fp;
+	static int count = 0;
 
-	script_config.warn_func_no_comma=1;
-	script_config.warn_cmd_no_comma=1;
-	script_config.warn_func_mismatch_paramnum=1;
-	script_config.warn_cmd_mismatch_paramnum=1;
-	script_config.check_cmdcount=65536;
-	script_config.check_gotocount=2048;
+	if(count++ == 0) {
+		script_config.warn_func_no_comma = 1;
+		script_config.warn_cmd_no_comma  = 1;
+		script_config.warn_func_mismatch_paramnum = 1;
+		script_config.warn_cmd_mismatch_paramnum  = 1;
+		script_config.check_cmdcount  = 65536;
+		script_config.check_gotocount = 16384;
+	}
 
 	fp=fopen(cfgName,"r");
 	if(fp==NULL){
@@ -9324,13 +9334,14 @@ int script_csvfinal( void ) {
 // ファイル名が妥当なものかチェックする
 static int script_csvfilename_check(const char *file, const char *func)
 {
-	int i;
+	const unsigned char *p = file;
 
-	for(i = 0; file[i]; i++) {
-		if( !isalnum( (unsigned char)file[i] ) ) {
+	while(*p) {
+		if( !isalnum(*p) && *p != '/' && *p != '_' ) {
 			printf("%s: invalid file name %s\n", func, file);
 			return 0;
 		}
+		p++;
 	}
 	return 1;
 }
