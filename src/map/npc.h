@@ -38,6 +38,4 @@ int npc_timerevent_stop(struct npc_data *nd);
 int npc_gettimerevent_tick(struct npc_data *nd);
 int npc_settimerevent_tick(struct npc_data *nd,int newtimer);
 
-
 #endif
-
