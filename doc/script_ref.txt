@@ -55,7 +55,7 @@ AthenaNPCScript
 		ワープ先の座標が移動禁止セルだった場合、そのMAPのどこかにワープします。
 
 	＊モンスター：モンスターの出現を管理します。
-		<gatname>,<x>,<y>,<xs>,<ys><tab>monster<tab><displayname><tab><npcid>,<number>,<spawn_delay1>,<spawn_delay2>[,<event>]
+		<gatname>,<x>,<y>,<xs>,<ys><tab>monster<tab><displayname><tab><npcid>,<number>,<spawn_delay1>,<spawn_delay2>[,<event>[,<guild_id>]]
 
 		gatname			出現するMAPファイル名を指定します。
 		x			出現する横座標を指定します。0でランダム。
@@ -76,9 +76,15 @@ AthenaNPCScript
 		spawn_delay1		出現してから指定されたミリ秒待って再出現します。
 		spawn_delay2		死亡してから指定されたミリ秒待って再出現します。
 		event			指定したイベントを発生させます。省略可。
+		guild_id		指定したギルドのエンブレムを表示します。省略可。
 
-		注意事項：
+		注意事項１：
 		spawn_delay1とspawn_delay2は、結果としてどちらを基準にした方が最も遅く再出現するかを判断し、優先します。
+
+		注意事項２：
+		イベント不要でギルドIDだけが必要な場合はイベント指定無しにしてください。
+		以下の例ではギルドIDが10001として設定されます。
+			prontera.gat,0,0,0,0	monster	--ja--	1002,1,0,0,,10001
 
 	＊店：アイテムの販売を行います。
 		<gatname>,<x>,<y>,<direction><tab>shop<tab><displayname><tab><npcid>,<item_id>:<price>
@@ -931,11 +937,12 @@ AthenaNPCScript
 			ペコペコに乗ります。
 
 		monster命令
-			monster <gatname>,<x>,<y>,<mobname>,<mobid>,<num>[,<event>];
+			monster <gatname>,<x>,<y>,<mobname>,<mobid>,<num>[,<event>[,<guild_id>]];
 
 			gatname,mobname	文字列
 			x,y,mobid,num	数値
 			event		文字列、省略可
+			guild_id	数値、省略可
 
 			<gatname>の座標<x>,<y>に<mobname>を持つ<mobid>に指定されたID、もしくは名前を持つモンスターを<num>体出現させます。
 			<gatname>がthisの場合スクリプトを実行したプレイヤーがいるMAP、
@@ -2918,18 +2925,18 @@ AthenaNPCScript
 		OnMinuteXXラベル
 			毎時XX分に実行します。数値は十進数２桁です。
 
-		OnClockXXXXラベル
-			毎日XX時XX分に実行します。数値は十進数４桁です。
+		OnClockXXYYラベル
+			毎日XX時YY分に実行します。数値は十進数４桁です。
 
 		OnHourXXラベル
 			毎日XX時00分に実行します。数値は十進数２桁です。
 
-		OnWeekTimeXXXXXXラベル
-			毎週XX曜日XX時XX分に実行します。数値は十進数６桁です。
+		OnWeekTimeXXYYZZラベル
+			毎週XX曜日YY時ZZ分に実行します。数値は十進数６桁です。
 			     曜日 : 00=日,01=月,02=火,03=水,04=木,05=金,06=土
 
-		OnDayXXラベル
-			毎月XX日00時00分に実行します。数値は十進数２桁です。
+		OnDayXXYYラベル
+			毎年XX月XX日00時00分に実行します。数値は十進数４桁です。
 
 		OnTimerXラベル
 			NPCタイマーのカウントがXになったときに実行されます。
@@ -3079,6 +3086,8 @@ AthenaNPCScript
 		invalid label name
 			ラベル名が不正です
 			const.txtに記載されている定数をラベルとして使っています。
+			またはOnで始まるラベル名の場合において、半角英数字と _（アンダーバー）以外
+			が含まれています。
 
 		dup label
 			ラベルの重複

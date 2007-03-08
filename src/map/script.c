@@ -6099,86 +6099,90 @@ int buildin_makepet(struct script_state *st)
 int buildin_monster(struct script_state *st)
 {
 	int mob_id,amount,x,y,guild_id=0,id;
+	char *str,*map,*mobname;
+	char *event = "";
 	struct mob_data *md;
-	char *str,*map,*mobname,*event="";
-	struct guild* g;
 
-	map	=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	x	=conv_num(st,& (st->stack->stack_data[st->start+3]));
-	y	=conv_num(st,& (st->stack->stack_data[st->start+4]));
-	str	=conv_str(st,& (st->stack->stack_data[st->start+5]));
-	mobname	=conv_str(st,& (st->stack->stack_data[st->start+6]));
-	if((mob_id = atoi(mobname))==0)
+	map	= conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x	= conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y	= conv_num(st,& (st->stack->stack_data[st->start+4]));
+	str	= conv_str(st,& (st->stack->stack_data[st->start+5]));
+	mobname	= conv_str(st,& (st->stack->stack_data[st->start+6]));
+
+	if((mob_id = atoi(mobname)) == 0)
 		mob_id = mobdb_searchname(mobname);
-
-	amount=conv_num(st,& (st->stack->stack_data[st->start+7]));
-	if( st->end > st->start+9 ){	// Guild_ID入り
-		guild_id=conv_num(st,& (st->stack->stack_data[st->start+8]));
-		event=conv_str(st,& (st->stack->stack_data[st->start+9]));
-	}
-	else if(st->end > st->start+8)
-		event=conv_str(st,& (st->stack->stack_data[st->start+8]));
-
-	if (mob_id >= 0 && !mobdb_checkid(mob_id))
+	if(mob_id >= 0 && !mobdb_checkid(mob_id))
 		return 0;
+
+	amount = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	if(st->end > st->start+8) {
+		event = conv_str(st,& (st->stack->stack_data[st->start+8]));
+	}
+	if(st->end > st->start+9) {	// Guild_ID入り
+		guild_id = conv_num(st,& (st->stack->stack_data[st->start+9]));
+	}
 
 	id = mob_once_spawn(map_id2sd(st->rid),map,x,y,str,mob_id,amount,event);
-	if(!id)
-		return 0;
-	md = map_id2md(id);
-	if(!md)
-		return 0;
-	md->guardup_lv = 0;
-	if(guild_id > 0 && (g = guild_search(guild_id))!=NULL){
-		md->guild_id = guild_id;
-		// ガーディアンならギルドスキル適用
-		md->guardup_lv = guild_checkskill(g,GD_GUARDUP);
-	}
 
-	// ランダム召還じゃないならドロップあり
-	if (mob_id != -1)
-		return 0;
-
-	if(md->mode&0x20)	// 手抜きボス属性
+	if((md = map_id2md(id)) != NULL)
 	{
-		md->state.nodrop= battle_config.branch_boss_no_drop;
-		md->state.noexp = battle_config.branch_boss_no_exp;
-		md->state.nomvp = battle_config.branch_boss_no_mvp;
-	}else{
-		md->state.nodrop= battle_config.branch_mob_no_drop;
-		md->state.noexp = battle_config.branch_mob_no_exp;
-		md->state.nomvp = battle_config.branch_mob_no_mvp;
+		md->guardup_lv = 0;
+		if(guild_id > 0) {
+			struct guild *g = guild_search(guild_id);
+			if(g) {
+				// ガーディアンならギルドスキル適用
+				md->guild_id   = guild_id;
+				md->guardup_lv = guild_checkskill(g,GD_GUARDUP);
+			}
+		}
+
+		// ランダム召還じゃないならドロップあり
+		if(mob_id == -1) {
+			if(md->mode&0x20) {	// 手抜きボス属性
+				md->state.nodrop = battle_config.branch_boss_no_drop;
+				md->state.noexp  = battle_config.branch_boss_no_exp;
+				md->state.nomvp  = battle_config.branch_boss_no_mvp;
+			} else {
+				md->state.nodrop = battle_config.branch_mob_no_drop;
+				md->state.noexp  = battle_config.branch_mob_no_exp;
+				md->state.nomvp  = battle_config.branch_mob_no_mvp;
+			}
+		}
 	}
 
 	return 0;
 }
+
 /*==========================================
- * モンスター発生
+ * モンスター発生エリア指定
  *------------------------------------------
  */
 int buildin_areamonster(struct script_state *st)
 {
 	int mob_id,amount,x0,y0,x1,y1;
-	char *str,*map,*mobname,*event="";
+	char *str,*map,*mobname;
+	char *event = "";
 
-	map	=conv_str(st,& (st->stack->stack_data[st->start+2]));
-	x0	=conv_num(st,& (st->stack->stack_data[st->start+3]));
-	y0	=conv_num(st,& (st->stack->stack_data[st->start+4]));
-	x1	=conv_num(st,& (st->stack->stack_data[st->start+5]));
-	y1	=conv_num(st,& (st->stack->stack_data[st->start+6]));
-	str	=conv_str(st,& (st->stack->stack_data[st->start+7]));
-	mobname	=conv_str(st,& (st->stack->stack_data[st->start+8]));
-	if((mob_id = atoi(mobname))==0)
+	map	= conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x0	= conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y0	= conv_num(st,& (st->stack->stack_data[st->start+4]));
+	x1	= conv_num(st,& (st->stack->stack_data[st->start+5]));
+	y1	= conv_num(st,& (st->stack->stack_data[st->start+6]));
+	str	= conv_str(st,& (st->stack->stack_data[st->start+7]));
+	mobname	= conv_str(st,& (st->stack->stack_data[st->start+8]));
+
+	if((mob_id = atoi(mobname)) == 0)
 		mob_id = mobdb_searchname(mobname);
 
-	amount=conv_num(st,& (st->stack->stack_data[st->start+9]));
-	if( st->end>st->start+10 )
-		event=conv_str(st,& (st->stack->stack_data[st->start+10]));
+	amount = conv_num(st,& (st->stack->stack_data[st->start+9]));
+	if(st->end > st->start+10)
+		event = conv_str(st,& (st->stack->stack_data[st->start+10]));
 
 	mob_once_spawn_area(map_id2sd(st->rid), map, x0, y0, x1, y1, str, mob_id, amount, event);
 
 	return 0;
 }
+
 /*==========================================
  * モンスター削除
  *------------------------------------------

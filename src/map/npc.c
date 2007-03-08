@@ -1663,15 +1663,13 @@ int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
 	int m,x,y,xs,ys,class_,num,delay1,delay2;
 	int i,guild_id=0;
 	char mapname[24];
-	char eventname[24]="";
-	char eventtemp[24]="";
+	char eventname[50] = "";
+	char eventtemp[64] = "";
 	struct mob_data *md;
 
-	xs=ys=0;
-	delay1=delay2=0;
 	// 引数の個数チェック
-	if (sscanf(w1,"%23[^,],%d,%d,%d,%d",mapname,&x,&y,&xs,&ys) < 3 ||
-	   sscanf(w4,"%d,%d,%d,%d,%23s",&class_,&num,&delay1,&delay2,eventtemp) < 2 ) {
+	if (sscanf(w1,"%23[^,],%d,%d,%d,%d",mapname,&x,&y,&xs,&ys) != 5 ||
+	    sscanf(w4,"%d,%d,%d,%d,%63[^\n]",&class_,&num,&delay1,&delay2,eventtemp) < 4 ) {
 		printf("bad monster line : %s\n",w3);
 		return 0;
 	}
@@ -1681,30 +1679,35 @@ int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
 
 	if (!mobdb_checkid(class_)){
 		// 定期沸きでID異常は注意を促す
-		printf("npc_monster bad class :%d\n",class_);
+		printf("npc_monster bad class: %d\a\n",class_);
 		return 0;
 	}
 
-	if(sscanf(eventtemp,"%d,%s",&guild_id,eventname)<2){
-		guild_id = 0;
-		strcpy(eventname,eventtemp);
+	if(eventtemp[0]) {
+		char *p = eventtemp;
+		// ,,<guild_id> のようにイベント指定無しのパターンがあるのでsscanfしない
+		if((p = strchr(p,',')) != NULL) {
+			*p = 0;
+			guild_id = atoi(p+1);
+		}
+		strncpy(eventname,eventtemp,50);
 	}
 	if ( num>1 && battle_config.mob_count_rate!=100) {
 		if ( (num=num*battle_config.mob_count_rate/100)<1 )
 			num=1;
 	}
 
-	if(100 != battle_config.mob_delay_rate) {
-		if(0 >= battle_config.mob_delay_rate) {
+	if(battle_config.mob_delay_rate != 100) {
+		if(battle_config.mob_delay_rate <= 0) {
 			delay1 = 0;
 			delay2 = 0;
 		} else {
-			if(0 > delay1) {
+			if(delay1 < 0) {
 				delay1 = 0;
 			} else {
 				delay1 = delay1 * battle_config.mob_delay_rate / 100;
 			}
-			if(0 > delay2) {
+			if(delay2 < 0) {
 				delay2 = 0;
 			} else {
 				delay2 = delay2 * battle_config.mob_delay_rate / 100;
@@ -1748,16 +1751,14 @@ int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
 		else
 			md->lootitem=NULL;
 
-		if (strlen(eventname)>=4) {
-			memcpy(md->npc_event,eventname,24);
-		}else
-			memset(md->npc_event,0,24);
+		if (eventname[0])
+			memcpy(md->npc_event,eventname,50);
 
 		md->bl.type=BL_MOB;
 		map_addiddb(&md->bl);
 		mob_spawn(md->bl.id);
 
-		if(guild_id)
+		if(guild_id > 0)
 			md->guild_id=guild_id;
 		npc_mob++;
 	}
@@ -2091,7 +2092,7 @@ int do_init_npc(void)
 
 			// 最初はタブ区切りでチェックしてみて、ダメならスペース区切りで確認
 			if ((count=sscanf(lp,"%[^\t]\t%[^\t]\t%[^\t\r\n]\t%n%[^\t\r\n]",w1,w2,w3,&w4pos,w4)) < 3 &&
-			   (count=sscanf(lp,"%s%s%s%n%s",w1,w2,w3,&w4pos,w4)) < 3) {
+			    (count=sscanf(lp,"%s%s%s%n%s",w1,w2,w3,&w4pos,w4)) < 3) {
 				printf("\nnpc file syntax error at line %d\a\n",lines);
 				break;
 			}
@@ -2101,7 +2102,7 @@ int do_init_npc(void)
 				int len;
 				sscanf(w1,"%[^,]",mapname);
 				len = strlen(mapname);
-				if (len <= 4 || len > 24 || strcmp(mapname+len-4,".gat")) {
+				if (len <= 4 || len > 24 || strcmp(mapname+len-4,".gat") != 0) {
 					printf("\nnpc file syntax error at line %d\a\n",lines);
 					break;
 				}
