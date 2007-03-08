@@ -612,7 +612,7 @@ enum {
 	SI_KAAHI				=157,	//カアヒ
 	SI_KAUPE				=158,	//カウプ
 	SI_SMA					=159,	//エスマ可能状態
-	//160 SI_SOULLINKと同じ？
+	SI_NIGHT				=160,	//夜（SI_SOULLINK）
 	SI_ONEHAND				=161,	//ワンハンドクイッケン
 	SI_SUN_WARM				=165,	//太陽の温もり
 	SI_MOON_WARM			=166,	//月の温もり
