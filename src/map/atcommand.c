@@ -4333,8 +4333,6 @@ atcommand_cleanmap(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	int i = 0;
-
 	map_foreachinarea(atcommand_cleanmap_sub, sd->bl.m, sd->bl.x-AREA_SIZE*2,sd->bl. y-AREA_SIZE*2,
 		sd->bl.x+AREA_SIZE*2, sd->bl.y+AREA_SIZE*2, BL_ITEM);
 	clif_displaymessage(fd, msg_txt(95));
@@ -4693,10 +4691,10 @@ static int users_all;
 
 static int atcommand_users_sub1(struct map_session_data* sd,va_list ap)
 {
-	int users = (int)numdb_search(users_db,sd->bl.m) + 1;
+	int users = (int)numdb_search(users_db,(int)sd->bl.m) + 1;
 
 	users_all++;
-	numdb_insert(users_db,sd->bl.m,users);
+	numdb_insert(users_db,(int)sd->bl.m,users);
 
 	return 0;
 }

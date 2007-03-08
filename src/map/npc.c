@@ -34,7 +34,7 @@ struct npc_src_list {
 	struct npc_src_list * next;
 	struct npc_src_list * prev;
 	char name[4];
-} ;
+};
 
 static struct npc_src_list *npc_src_first,*npc_src_last;
 static int npc_id=START_NPC_NUM;
@@ -72,7 +72,7 @@ int npc_get_new_npc_id(void)
  * npc_enable_sub 有効時にOnTouchイベントを実行
  *------------------------------------------
  */
-int npc_enable_sub( struct block_list *bl, va_list ap )
+static int npc_enable_sub( struct block_list *bl, va_list ap )
 {
 	struct map_session_data *sd;
 	struct npc_data *nd;
@@ -131,6 +131,24 @@ struct npc_data* npc_name2id(const char *name)
 {
 	return (struct npc_data *)strdb_search(npcname_db,name);
 }
+
+/*==========================================
+ * イベントの遅延実行
+ *------------------------------------------
+ */
+static int npc_event_timer(int tid,unsigned int tick,int id,int data)
+{
+	struct map_session_data *sd=map_id2sd(id);
+	char *p = (char *)data;
+
+	if (sd==NULL)
+		return 0;
+
+	npc_event(sd,p);
+	aFree(p);
+	return 0;
+}
+
 /*==========================================
  * イベントキューのイベント処理
  *------------------------------------------
@@ -161,25 +179,10 @@ int npc_event_dequeue(struct map_session_data *sd)
 }
 
 /*==========================================
- * イベントの遅延実行
- *------------------------------------------
- */
-int npc_event_timer(int tid,unsigned int tick,int id,int data)
-{
-	struct map_session_data *sd=map_id2sd(id);
-	char *p = (char *)data;
-	if (sd==NULL)
-		return 0;
-
-	npc_event(sd,p);
-	aFree(p);
-	return 0;
-}
-/*==========================================
  * 全てのNPCのOn*イベント実行
  *------------------------------------------
  */
-int npc_event_doall_sub(void *key,void *data,va_list ap)
+static int npc_event_doall_sub(void *key,void *data,va_list ap)
 {
 	char *p=(char *)key;
 	struct event_data *ev;
@@ -209,43 +212,11 @@ int npc_event_doall(const char *name)
 	return c;
 }
 
-int npc_event_do_sub(void *key,void *data,va_list ap)
-{
-	char *p=(char *)key;
-	struct event_data *ev;
-	int *c;
-	const char *name;
-
-	nullpo_retr(0, ev=(struct event_data *)data);
-	nullpo_retr(0, ap);
-	nullpo_retr(0, c=va_arg(ap,int *));
-
-	name=va_arg(ap,const char *);
-
-	if (p && strcasecmp(name,p)==0 ) {
-		run_script(ev->nd->u.scr.script,ev->pos,0,ev->nd->bl.id);
-		(*c)++;
-	}
-
-	return 0;
-}
-int npc_event_do(const char *name)
-{
-	int c=0;
-
-	if (*name==':' && name[1]==':') {
-		return npc_event_doall(name+2);
-	}
-
-	strdb_foreach(ev_db,npc_event_do_sub,&c,name);
-	return c;
-}
-
 /*==========================================
  * OnPC*イベント実行
  *------------------------------------------
  */
-int npc_event_doall_id_sub(void *key,void *data,va_list ap)
+static int npc_event_doall_id_sub(void *key,void *data,va_list ap)
 {
 	char *p=(char *)key;
 	struct event_data *ev;
@@ -282,10 +253,46 @@ int npc_event_doall_id(const char *name, int rid, int m)
 }
 
 /*==========================================
+ * NPCイベント実行
+ *------------------------------------------
+ */
+static int npc_event_do_sub(void *key,void *data,va_list ap)
+{
+	char *p=(char *)key;
+	struct event_data *ev;
+	int *c;
+	const char *name;
+
+	nullpo_retr(0, ev=(struct event_data *)data);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, c=va_arg(ap,int *));
+
+	name=va_arg(ap,const char *);
+
+	if (p && strcasecmp(name,p)==0 ) {
+		run_script(ev->nd->u.scr.script,ev->pos,0,ev->nd->bl.id);
+		(*c)++;
+	}
+
+	return 0;
+}
+int npc_event_do(const char *name)
+{
+	int c=0;
+
+	if (*name==':' && name[1]==':') {
+		return npc_event_doall(name+2);
+	}
+
+	strdb_foreach(ev_db,npc_event_do_sub,&c,name);
+	return c;
+}
+
+/*==========================================
  * 時計イベント実行
  *------------------------------------------
  */
-int npc_event_do_clock(int tid,unsigned int tick,int id,int data)
+static int npc_event_do_clock(int tid,unsigned int tick,int id,int data)
 {
 	time_t timer;
 	struct tm *t;
@@ -295,7 +302,7 @@ int npc_event_do_clock(int tid,unsigned int tick,int id,int data)
 	time(&timer);
 	t=localtime(&timer);
 
-	if (t->tm_min != ev_tm_b.tm_min ) {
+	if (t->tm_min != ev_tm_b.tm_min) {
 		sprintf(buf,"OnMinute%02d",t->tm_min);
 		c+=npc_event_doall(buf);
 		sprintf(buf,"OnClock%02d%02d",t->tm_hour,t->tm_min);
@@ -303,17 +310,18 @@ int npc_event_do_clock(int tid,unsigned int tick,int id,int data)
 		sprintf(buf,"OnWeekTime0%d%02d%02d",t->tm_wday,t->tm_hour,t->tm_min);
 		c+=npc_event_doall(buf);
 	}
-	if (t->tm_hour!= ev_tm_b.tm_hour) {
+	if (t->tm_hour != ev_tm_b.tm_hour) {
 		sprintf(buf,"OnHour%02d",t->tm_hour);
 		c+=npc_event_doall(buf);
 	}
-	if (t->tm_mday!= ev_tm_b.tm_mday) {
+	if (t->tm_mday != ev_tm_b.tm_mday) {
 		sprintf(buf,"OnDay%02d%02d",t->tm_mon+1,t->tm_mday);
 		c+=npc_event_doall(buf);
 	}
 	memcpy(&ev_tm_b,t,sizeof(ev_tm_b));
 	return c;
 }
+
 /*==========================================
  * OnInitイベント実行(&時計イベント開始)
  *------------------------------------------
@@ -321,10 +329,9 @@ int npc_event_do_clock(int tid,unsigned int tick,int id,int data)
 int npc_event_do_oninit(void)
 {
 	int c = npc_event_doall("OnInit");
-	printf("npc: OnInit Event done. (%d npc)\n",c);
 
-	add_timer_interval(gettick()+100,
-		npc_event_do_clock,0,0,1000);
+	printf("npc: OnInit Event done. (%d npc)\n",c);
+	add_timer_interval(gettick()+100,npc_event_do_clock,0,0,1000);
 
 	return 0;
 }
@@ -1025,9 +1032,7 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4)
 	nd->dir=0;
 	nd->flag=0;
 
-	while((p=strchr(w3,':'))) {
-		if (p[1]==':') break;
-	}
+	p = strstr(w3,"::");
 	if (p) {
 		*p=0;
 		memcpy(nd->name,w3,24);
@@ -1160,9 +1165,7 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4)
 	nd->dir = dir;
 	nd->flag = 0;
 
-	while((p=strchr(w3,':'))) {
-		if (p[1]==':') break;
-	}
+	p = strstr(w3,"::");
 	if (p) {
 		*p=0;
 		memcpy(nd->name,w3,24);
@@ -1432,9 +1435,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		class_ = atoi(w4);
 	}
 
-	while((p=strchr(w3,':'))) {
-		if (p[1]==':') break;
-	}
+	p = strstr(w3,"::");
 	if (p) {
 		*p=0;
 		memcpy(nd->name,w3,24);
@@ -1513,63 +1514,57 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 
 	//-----------------------------------------
 	// イベント用ラベルデータのエクスポート
-	for(i=0;i<nd->u.scr.label_list_num;i++){
-		char *lname=nd->u.scr.label_list[i].name;
-		int pos=nd->u.scr.label_list[i].pos;
+	for(i = 0; i < nd->u.scr.label_list_num; i++) {
+		struct event_data *ev, *ev2;
+		char *lname = nd->u.scr.label_list[i].name;
+		int pos = nd->u.scr.label_list[i].pos;
 
-		if ((lname[0]=='O' || lname[0]=='o')&&(lname[1]=='N' || lname[1]=='n')) {
-			struct event_data *ev;
-			// エクスポートされる
-			ev=(struct event_data *)aCalloc(1,sizeof(struct event_data));
-			ev->key=(char *)aCalloc(50,sizeof(char));
-			if (strlen(lname)>24) {
-				printf("npc_parse_script: label name error !\n");
-				return 1;
-			} else {
-				struct event_data *ev2;
-				ev->nd=nd;
-				ev->pos=pos;
-				sprintf(ev->key,"%s::%s",nd->exname,lname);
-				ev2 = (struct event_data *)strdb_search(ev_db,ev->key);
-				if(ev2 != NULL) {
-					printf("npc_parse_script : dup event %s\n",ev->key);
-					strdb_erase(ev_db,ev->key);
-					aFree(ev2->key);
-					aFree(ev2);
-				}
-				strdb_insert(ev_db,ev->key,ev);
-			}
+		// エクスポートされる
+		ev      = (struct event_data *)aCalloc(1,sizeof(struct event_data));
+		ev->key = (char *)aCalloc(50,sizeof(char));
+		ev->nd  = nd;
+		ev->pos = pos;
+		sprintf(ev->key, "%s::%s", nd->exname, lname);
+		ev2 = (struct event_data *)strdb_search(ev_db,ev->key);
+		if(ev2 != NULL) {
+			printf("npc_parse_script : dup event %s\n",ev->key);
+			strdb_erase(ev_db,ev->key);
+			aFree(ev2->key);
+			aFree(ev2);
 		}
+		strdb_insert(ev_db,ev->key,ev);
 	}
 
 	//-----------------------------------------
 	// ラベルデータからタイマーイベント取り込み
-	for(i=0;i<nd->u.scr.label_list_num;i++){
-		int t=0,k=0;
-		char *lname=nd->u.scr.label_list[i].name;
-		int pos=nd->u.scr.label_list[i].pos;
-		if(sscanf(lname,"OnTimer%d%n",&t,&k)==1 && lname[k]=='\0') {
+	for(i = 0; i < nd->u.scr.label_list_num; i++) {
+		int t=0, k=0;
+		char *lname = nd->u.scr.label_list[i].name;
+		int pos = nd->u.scr.label_list[i].pos;
+
+		if(sscanf(lname,"OnTimer%d%n",&t,&k) == 1 && lname[k] == '\0') {
 			// タイマーイベント
-			struct npc_timerevent_list *te=nd->u.scr.timer_event;
-			int j,k=nd->u.scr.timeramount;
-			if(te==NULL)
-				te=(struct npc_timerevent_list *)aCalloc(1,sizeof(struct npc_timerevent_list));
+			struct npc_timerevent_list *te = nd->u.scr.timer_event;
+			int j, k = nd->u.scr.timeramount;
+
+			if(te == NULL)
+				te = (struct npc_timerevent_list *)aCalloc(1,sizeof(struct npc_timerevent_list));
 			else
-				te=(struct npc_timerevent_list *)aRealloc( te, sizeof(struct npc_timerevent_list) * (k+1) );
-			for(j=0;j<k;j++){
-				if(te[j].timer>t){
+				te = (struct npc_timerevent_list *)aRealloc(te,sizeof(struct npc_timerevent_list)*(k+1));
+			for(j = 0; j < k; j++) {
+				if(te[j].timer > t) {
 					memmove(te+j+1,te+j,sizeof(struct npc_timerevent_list)*(k-j));
 					break;
 				}
 			}
-			te[j].timer=t;
-			te[j].pos=pos;
-			nd->u.scr.timer_event=te;
-			nd->u.scr.timeramount=k+1;
+			te[j].timer = t;
+			te[j].pos   = pos;
+			nd->u.scr.timer_event = te;
+			nd->u.scr.timeramount = k+1;
 		}
 	}
-	nd->u.scr.nexttimer=-1;
-	nd->u.scr.timerid=-1;
+	nd->u.scr.nexttimer = -1;
+	nd->u.scr.timerid   = -1;
 
 	return ret;
 }
@@ -2161,8 +2156,6 @@ int do_init_npc(void)
 	add_timer_func_list(npc_event_timer,"npc_event_timer");
 	add_timer_func_list(npc_event_do_clock,"npc_event_do_clock");
 	add_timer_func_list(npc_timerevent,"npc_timerevent");
-
-	//exit(1);
 
 	return 0;
 }

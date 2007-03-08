@@ -6,7 +6,6 @@
 #define INVISIBLE_CLASS 32767
 
 int npc_event_dequeue(struct map_session_data *sd);
-int npc_event_timer(int tid,unsigned int tick,int id,int data);
 int npc_event(struct map_session_data *sd,const char *npcname);
 int npc_touch_areanpc(struct map_session_data *,int,int,int);
 void npc_click(struct map_session_data *sd, int id);
@@ -30,8 +29,8 @@ int do_init_npc(void);
 int npc_event_do_oninit(void);
 
 int npc_event_doall(const char *name);
-int npc_event_do(const char *name);
 int npc_event_doall_id(const char *name,int rid,int m);
+int npc_event_do(const char *name);
 
 int npc_timerevent_start(struct npc_data *nd);
 int npc_timerevent_stop(struct npc_data *nd);

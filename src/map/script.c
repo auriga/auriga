@@ -361,9 +361,6 @@ void set_label(int l,int pos,unsigned char *p)
 {
 	int i,next;
 
-	if(str_data[l].type==C_INT || str_data[l].type==C_PARAM) {
-		disp_error_message("invalid label name ",p);
-	}
 	if(str_data[l].label!=-1) {
 		disp_error_message("dup label ",p);
 	}
@@ -1182,6 +1179,8 @@ unsigned char* parse_syntax(unsigned char *p) {
 				*p = c;
 				if(str_data[l].type == C_NOP) {
 					str_data[l].type = C_USERFUNC;
+				} else if(str_data[l].type == C_INT || str_data[l].type == C_PARAM) {
+					disp_error_message("invalid label name",p);
 				}
 				return skip_space(p) + 1;
 			} else {
@@ -1204,14 +1203,13 @@ unsigned char* parse_syntax(unsigned char *p) {
 				// 関数名のラベルを付ける
 				*p = 0;
 				l=add_str(func_name);
+				*p = c;
 				if(str_data[l].type == C_NOP) {
 					str_data[l].type = C_USERFUNC;
+				} else if(str_data[l].type == C_INT || str_data[l].type == C_PARAM) {
+					disp_error_message("invalid label name",p);
 				}
-				*p = c;
 				set_label(l,script_pos,p);
-				*p = 0;
-				strdb_insert(scriptlabel_db,func_name,script_pos);	// 外部用label db登録
-				*p = c;
 				return skip_space(p);
 			}
 		}
@@ -1666,9 +1664,23 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 			}
 			l=add_str(p);
 			*p2 = c;
+			if(str_data[l].type == C_INT || str_data[l].type == C_PARAM) {
+				disp_error_message("invalid label name",p);
+			}
 			set_label(l,script_pos,p);
+
+			// エクスポートされるラベルならチェック
 			*p2 = 0;
-			strdb_insert(scriptlabel_db,p,script_pos);	// 外部用label db登録
+			if((p[0] == 'O' || p[0] == 'o') && (p[1] == 'N' || p[1] == 'n')) {
+				int i;
+				for(i=2; p[i]; i++) {
+					if(i >= 24 || (!isalnum(p[i]) && p[i] != '_')) {
+						*p2 = c;
+						disp_error_message("invalid label name",p);
+					}
+				}
+				strdb_insert(scriptlabel_db,p,script_pos);	// 外部用label db登録
+			}
 			*p2 = c;
 			p=tmpp+1;
 			continue;
@@ -3349,7 +3361,7 @@ int do_init_script()
 	if(scriptlabel_db) {
 		strdb_final(scriptlabel_db,NULL);
 	}
-	scriptlabel_db=strdb_init(50);
+	scriptlabel_db=strdb_init(24);
 
 #ifndef NO_CSVDB_SCRIPT
 	script_csvinit();
