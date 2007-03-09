@@ -76,6 +76,7 @@ AthenaNPCScript
 		spawn_delay1		出現してから指定されたミリ秒待って再出現します。
 		spawn_delay2		死亡してから指定されたミリ秒待って再出現します。
 		event			指定したイベントを発生させます。省略可。
+					数字1文字だけの場合は指定無しと同じ扱いになります。
 		guild_id		指定したギルドのエンブレムを表示します。省略可。
 
 		注意事項１：
@@ -1704,6 +1705,7 @@ AthenaNPCScript
 				17 ガーディアン8
 
 			ギルドが所有する城のデータを<value>にセットします
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 
 		requestguildinfo命令
 			requestguildinfo <guild_id>[,<event_name>];
@@ -2522,6 +2524,7 @@ AthenaNPCScript
 			<map>	マップ名を指定します
 
 			指定したマップに存在する城の名前を返します。
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 
 		getcastledata関数
 			getcastledata(<map>,<index>[,<event_name>])
@@ -2545,11 +2548,12 @@ AthenaNPCScript
 				15 ガーディアン6
 				16 ガーディアン7
 				17 ガーディアン8
-			<event_name>	情報を要求したときに発生するイベント名を指定します。
+			<event_name>	indexが0のとき、情報を要求したときに発生するイベント名を指定します。
 					イベントを起こす必要が無ければ省略することもできます
 
 			ギルドが所有する城のデータを返します。
 			存在しないインデックスを指定した場合は0が返ります。
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 
 		getequipcardcnt関数
 			getequipcardcnt(<num>)

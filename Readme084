@@ -1,4 +1,24 @@
 ----------------------------------------
+//0115 [2007/03/10] by Rayce
+
+・スクリプト命令/関数に関して全体的に修正（script.c）
+　　-> 以下の命令/関数でアイテムが見つからなかったとき、リンゴのIDで補正しないように変更
+　　　　　　countitem
+　　　　　　countcartitem
+　　　　　　checkweight
+　　　　　　getitem
+　　　　　　getitem2
+　　　　　　delitem
+　　　　　　getareadropitem
+　-> 以下の命令/関数においてMAP名の "this" 指定に対応
+　　　　　　getcastlename
+　　　　　　getcastledata
+　　　　　　setcastledata
+　-> getequipid関数で何も装備してない場合は-1ではなく0を返すように修正
+　-> getwaitingroomstate関数で文字列を取得する際、特定の状況でサーバクラッシュするバグを修正
+　-> 細かい整形
+
+----------------------------------------
 //0114 [2007/03/10] by Rayce
 
 ・0113のmonster定義について修正（npc.c）
