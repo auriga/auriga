@@ -1684,13 +1684,18 @@ int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
 	}
 
 	if(eventtemp[0]) {
-		char *p = eventtemp;
+		char *p;
 		// ,,<guild_id> のようにイベント指定無しのパターンがあるのでsscanfしない
-		if((p = strchr(p,',')) != NULL) {
+		if((p = strchr(eventtemp,',')) != NULL) {
 			*p = 0;
 			guild_id = atoi(p+1);
 		}
-		strncpy(eventname,eventtemp,50);
+		p = eventtemp;
+		if(*p) {
+			// 数字1文字だけの場合は指定無しとして扱う
+			if( !isdigit((unsigned char)p[0]) || p[1] )
+				strncpy(eventname,p,50);
+		}
 	}
 	if ( num>1 && battle_config.mob_count_rate!=100) {
 		if ( (num=num*battle_config.mob_count_rate/100)<1 )
@@ -1762,7 +1767,7 @@ int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
 			md->guild_id=guild_id;
 		npc_mob++;
 	}
-	//printf("warp npc %s %d read done\n",mapname,nd->bl.id);
+	//printf("mob npc %s %d read done\n",mapname,nd->bl.id);
 
 	return 0;
 }

@@ -1790,6 +1790,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			break;
 		case TK_TURNKICK:	// 回転蹴り
 			DMG_FIX( 190+30*skill_lv, 100 );
+			wd.blewcount = 0;
 			break;
 		case TK_COUNTER:	// カウンター蹴り
 			DMG_FIX( 190+30*skill_lv, 100 );

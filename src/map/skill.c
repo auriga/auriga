@@ -2068,9 +2068,36 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 
 	case TK_DOWNKICK:
-	case TK_TURNKICK:
 	case TK_COUNTER:
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		break;
+
+	case TK_TURNKICK:
+		if(flag&1){
+			/* 個別処理 */
+			if(bl->id != skill_area_temp[1]) {
+				struct block_list pos;
+				memset(&pos,0,sizeof(pos));
+				pos.x = skill_area_temp[2];
+				pos.y = skill_area_temp[3];
+				skill_blown(&pos,bl,skill_area_temp[4] | SAB_NODAMAGE);
+				// 確率不明なのでとりあえず100%
+				status_change_start(bl,SC_STAN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+			}
+		} else {
+			skill_area_temp[1] = bl->id;
+			skill_area_temp[2] = bl->x;
+			skill_area_temp[3] = bl->y;
+			skill_area_temp[4] = skill_get_blewcount(skillid,skilllv);
+			/* まずターゲットに攻撃を加える */
+			if(!battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0))
+				break;
+			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
+			map_foreachinarea(skill_area_sub,
+				bl->m,skill_area_temp[2]-1,skill_area_temp[3]-1,skill_area_temp[2]+1,skill_area_temp[3]+1,0,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
 		break;
 
 	case KN_CHARGEATK:			//チャージアタック
