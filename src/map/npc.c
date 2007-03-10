@@ -195,7 +195,7 @@ static int npc_event_doall_sub(void *key,void *data,va_list ap)
 
 	name=va_arg(ap,const char *);
 
-	if( (p=strchr(p,':')) && p && strcasecmp(name,p)==0 ){
+	if( (p = strstr(p,"::")) && strcmp(name,p) == 0 ) {
 		run_script(ev->nd->u.scr.script,ev->pos,0,ev->nd->bl.id);
 		(*c)++;
 	}
@@ -204,8 +204,8 @@ static int npc_event_doall_sub(void *key,void *data,va_list ap)
 }
 int npc_event_doall(const char *name)
 {
-	int c=0;
-	char buf[64]="::";
+	int c = 0;
+	char buf[64] = "::";
 
 	strncpy(buf+2,name,62);
 	strdb_foreach(ev_db,npc_event_doall_sub,&c,buf);
@@ -234,7 +234,7 @@ static int npc_event_doall_id_sub(void *key,void *data,va_list ap)
 
 	//同一MAPかマップ非配置型NPCでのみ発動
 	if(ev->nd->bl.m == m || ev->nd->bl.m == -1) {
-		if( (p=strchr(p,':')) && p && strcasecmp(name,p)==0 ){
+		if( (p = strstr(p,"::")) && strcmp(name,p) == 0 ) {
 			run_script(ev->nd->u.scr.script,ev->pos,rid,ev->nd->bl.id);
 			(*c)++;
 		}
@@ -244,8 +244,8 @@ static int npc_event_doall_id_sub(void *key,void *data,va_list ap)
 }
 int npc_event_doall_id(const char *name, int rid, int m)
 {
-	int c=0;
-	char buf[64]="::";
+	int c = 0;
+	char buf[64] = "::";
 
 	strncpy(buf+2,name,62);
 	strdb_foreach(ev_db,npc_event_doall_id_sub,&c,buf,rid,m);
@@ -256,35 +256,19 @@ int npc_event_doall_id(const char *name, int rid, int m)
  * NPCイベント実行
  *------------------------------------------
  */
-static int npc_event_do_sub(void *key,void *data,va_list ap)
-{
-	char *p=(char *)key;
-	struct event_data *ev;
-	int *c;
-	const char *name;
-
-	nullpo_retr(0, ev=(struct event_data *)data);
-	nullpo_retr(0, ap);
-	nullpo_retr(0, c=va_arg(ap,int *));
-
-	name=va_arg(ap,const char *);
-
-	if (p && strcasecmp(name,p)==0 ) {
-		run_script(ev->nd->u.scr.script,ev->pos,0,ev->nd->bl.id);
-		(*c)++;
-	}
-
-	return 0;
-}
 int npc_event_do(const char *name)
 {
-	int c=0;
+	int c = 0;
 
-	if (*name==':' && name[1]==':') {
-		return npc_event_doall(name+2);
+	if(name[0] == ':' && name[1] == ':') {
+		c = npc_event_doall(name+2);
+	} else {
+		struct event_data *ev = (struct event_data *)strdb_search(ev_db,name);
+		if(ev) {
+			run_script(ev->nd->u.scr.script,ev->pos,0,ev->nd->bl.id);
+			c = 1;
+		}
 	}
-
-	strdb_foreach(ev_db,npc_event_do_sub,&c,name);
 	return c;
 }
 
@@ -450,18 +434,20 @@ int npc_settimerevent_tick(struct npc_data *nd,int newtimer)
  */
 int npc_event(struct map_session_data *sd,const char *eventname)
 {
-	struct event_data *ev = (struct event_data *)strdb_search(ev_db,eventname);
+	struct event_data *ev;
 	struct npc_data *nd;
 	int xs,ys;
 
-	if( sd == NULL ){
-		printf("npc_event nullpo?\n");
-		return 1;
+	nullpo_retr(1, sd);
+	nullpo_retr(1, eventname);
+
+	ev = (struct event_data *)strdb_search(ev_db,eventname);
+
+	if (ev==NULL) {
+		int len = strlen(eventname);
+		if (len >= 9 && strcmp(eventname+len-9,"::OnTouch") == 0)
+			return 1;
 	}
-
-	if(ev==NULL && eventname && strcmp(((eventname)+strlen(eventname)-9),"::OnTouch") == 0)
-		return 1;
-
 	if (ev==NULL || (nd=ev->nd)==NULL) {
 		if (battle_config.error_log)
 			printf("npc_event: event not found [%s]\n",eventname);
@@ -2060,9 +2046,9 @@ int do_init_npc(void)
 		}
 		lines=0;
 		while(fgets(line,1020,fp)) {
-			char w1[1024],w2[1024],w3[1024],w4[1024],mapname[1024];
+			char w1[1024],w2[1024],w3[1024],w4[1024];
 			char *lp;
-			int i,j,w4pos,count;
+			int i,j,w4pos=0,count;
 			lines++;
 
 			// 不要なスペースやタブの連続は詰める
@@ -2098,17 +2084,18 @@ int do_init_npc(void)
 			// 最初はタブ区切りでチェックしてみて、ダメならスペース区切りで確認
 			if ((count=sscanf(lp,"%[^\t]\t%[^\t]\t%[^\t\r\n]\t%n%[^\t\r\n]",w1,w2,w3,&w4pos,w4)) < 3 &&
 			    (count=sscanf(lp,"%s%s%s%n%s",w1,w2,w3,&w4pos,w4)) < 3) {
-				printf("\nnpc file syntax error at line %d\a\n",lines);
+				script_error(lp, nsl->name, lines, "npc file syntax error", lp+w4pos);
 				break;
 			}
 			// マップ名として記述されているか確認
 			// MAPの存在チェック自体は各parserで行う
 			if( strcmp(w1,"-")!=0 && strcmpi(w1,"function")!=0 ){
 				int len;
+				char mapname[1024] = "";
 				sscanf(w1,"%[^,]",mapname);
 				len = strlen(mapname);
 				if (len <= 4 || len > 24 || strcmp(mapname+len-4,".gat") != 0) {
-					printf("\nnpc file syntax error at line %d\a\n",lines);
+					script_error(lp, nsl->name, lines, "npc file syntax error", lp);
 					break;
 				}
 			}
@@ -2132,7 +2119,7 @@ int do_init_npc(void)
 			} else if (strcmpi(w2,"mapflag")==0 && count >= 3) {
 				ret = npc_parse_mapflag(w1,w2,w3,w4);
 			} else {
-				printf("\nnpc file syntax error at line %d\a\n",lines);
+				script_error(lp, nsl->name, lines, "npc file syntax error", lp+strlen(w1)+1);
 				break;
 			}
 			if(ret) {	// エラー時はfreeしてからexit
