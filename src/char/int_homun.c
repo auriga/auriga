@@ -688,14 +688,15 @@ void homun_sql_config_read_sub(const char* w1,const char *w2) {
 
 #endif
 
-int mapif_hom_info(int fd,int account_id,const struct mmo_homunstatus *h)
+int mapif_hom_info(int fd,int account_id,int char_id,const struct mmo_homunstatus *h,unsigned char flag)
 {
 	if(!h) return 0;
 	WFIFOW(fd,0)=0x3888;
-	WFIFOW(fd,2)=sizeof(struct mmo_homunstatus) + 9;
+	WFIFOW(fd,2)=sizeof(struct mmo_homunstatus) + 13;
 	WFIFOL(fd,4)=account_id;
-	WFIFOB(fd,8)=(unsigned char)h->incubate;
-	memcpy(WFIFOP(fd,9),h,sizeof(struct mmo_homunstatus));
+	WFIFOL(fd,8)=char_id;
+	WFIFOB(fd,12)=flag;
+	memcpy(WFIFOP(fd,13),h,sizeof(struct mmo_homunstatus));
 	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return 0;
@@ -725,7 +726,7 @@ int mapif_create_hom(int fd,int account_id,int char_id,struct mmo_homunstatus *h
 	if(!h || account_id <= 0 || char_id <= 0)
 		return 0;
 	if(homun_new(h,account_id,char_id) == 0) {
-		mapif_hom_info(fd,account_id,h);
+		mapif_hom_info(fd,account_id,char_id,h,1);
 	}
 	return 0;
 }
@@ -734,7 +735,7 @@ int mapif_load_hom(int fd,int account_id,int char_id,int homun_id)
 {
 	const struct mmo_homunstatus *h = homun_load(homun_id);
 	if(h!=NULL) {
-		mapif_hom_info(fd,account_id,h);
+		mapif_hom_info(fd,account_id,char_id,h,0);
 	}else
 		printf("inter hom: data load error %d %d %d\n",account_id,char_id,homun_id);
 	return 0;
@@ -770,13 +771,11 @@ int mapif_delete_hom(int fd,int homun_id)
 // ホムを新規作成
 int mapif_parse_CreateHom(int fd)
 {
-	int size = sizeof(struct mmo_homunstatus);
 	int account_id   = RFIFOL(fd,4);
 	int char_id      = RFIFOL(fd,8);
 	struct mmo_homunstatus h;
 
-	memset(&h,0,size);
-	memcpy(&h,RFIFOP(fd,12),size);
+	memcpy(&h,RFIFOP(fd,12),sizeof(struct mmo_homunstatus));
 
 	mapif_create_hom(fd,account_id,char_id,&h);
 	return 0;

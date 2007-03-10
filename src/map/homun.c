@@ -544,45 +544,45 @@ int homun_get_create_homunid()
 int homun_create_hom(struct map_session_data *sd,int homunid)
 {
 	// 作成初期値　新密度:2000/100000　満腹度:50/100
-	struct mmo_homunstatus *hd;
+	struct mmo_homunstatus hd;
 	int class_ = homunid-HOM_ID;	// 作成されるホムの選定方法不明
 
 	nullpo_retr(1, sd);
-	hd = (struct mmo_homunstatus *)aCalloc(1,sizeof(struct mmo_homunstatus));
 
-	hd->class_ = class_+HOM_ID;
-	hd->account_id = sd->status.account_id;
-	hd->char_id = sd->status.char_id;
-	memcpy(hd->name,homun_db[class_].jname,24);
-	hd->base_level = homun_db[class_].base_level;
-	hd->base_exp = 0;
-	hd->max_hp = 1;
-	hd->max_sp = 0;
-	hd->status_point = 0;
-	hd->skill_point = homun_db[class_].skillpoint; //初期スキルポイント導入するかも…成長しないホム用
+	memset(&hd, 0, sizeof(hd));
+	hd.class_ = class_+HOM_ID;
+	hd.account_id = sd->status.account_id;
+	hd.char_id = sd->status.char_id;
+	memcpy(hd.name,homun_db[class_].jname,24);
+	hd.base_level = homun_db[class_].base_level;
+	hd.base_exp = 0;
+	hd.max_hp = 1;
+	hd.max_sp = 0;
+	hd.status_point = 0;
+	hd.skill_point = homun_db[class_].skillpoint; //初期スキルポイント導入するかも…成長しないホム用
 
 // 初期ステータスをDBから埋め込み
-	hd->max_hp = hd->hp = homun_db[class_].hp;
-	hd->max_sp = hd->sp = homun_db[class_].sp;
+	hd.max_hp = hd.hp = homun_db[class_].hp;
+	hd.max_sp = hd.sp = homun_db[class_].sp;
 
-	hd->str = homun_db[class_].str;
-	hd->agi = homun_db[class_].agi;
-	hd->vit = homun_db[class_].vit;
-	hd->int_= homun_db[class_].int_;
-	hd->dex = homun_db[class_].dex;
-	hd->luk = homun_db[class_].luk;
+	hd.str = homun_db[class_].str;
+	hd.agi = homun_db[class_].agi;
+	hd.vit = homun_db[class_].vit;
+	hd.int_= homun_db[class_].int_;
+	hd.dex = homun_db[class_].dex;
+	hd.luk = homun_db[class_].luk;
 
-	hd->equip =  0;
-	hd->intimate = 2000;
-	hd->hungry = 50;
-	hd->incubate = 0;
-	hd->rename_flag = 0;
+	hd.equip =  0;
+	hd.intimate = 2000;
+	hd.hungry = 50;
+	hd.incubate = 0;
+	hd.rename_flag = 0;
 
 	if(battle_config.save_homun_temporal_intimate)
-		pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
+		pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd.intimate);
 
-	intif_create_hom(sd->status.account_id,sd->status.char_id,hd);
-	aFree(hd);
+	intif_create_hom(sd->status.account_id,sd->status.char_id,&hd);
+
 	return 0;
 }
 
@@ -728,17 +728,23 @@ int homun_callhom(struct map_session_data *sd)
  * interからホムのデータ受信
  *------------------------------------------
  */
-int homun_recv_homdata(int account_id,struct mmo_homunstatus *p,int flag)
+int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int flag)
 {
 	struct map_session_data *sd;
 
+	nullpo_retr(0, p);
+
 	sd = map_id2sd(account_id);
 
-	if(!p || sd == NULL)
-		return 0;
-
-	if( !pc_checkskill( sd, AM_CALLHOMUN ) && sd->status.homun_id == 0 ) {
+	if( sd == NULL ||
+	    sd->status.char_id != char_id ||
+	    (!pc_checkskill(sd, AM_CALLHOMUN) && sd->status.homun_id == 0) )
+	{
 		// コールホムンクルス未習得かつ未所持で無視(転生やリセットなど)
+		if(flag) {
+			// 新規作成時ならホムデータを削除する
+			intif_delete_homdata(account_id,char_id,p->homun_id);
+		}
 		return 0;
 	}
 

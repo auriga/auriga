@@ -1576,13 +1576,13 @@ int intif_parse_RecvHomData(int fd)
 {
 	struct mmo_homunstatus p;
 	int len=RFIFOW(fd,2);
-	if(sizeof(struct mmo_homunstatus)!=len-9) {
+	if(sizeof(struct mmo_homunstatus)!=len-13) {
 		if(battle_config.etc_log)
-			printf("intif: hom data: data size error %d %d\n",sizeof(struct mmo_homunstatus),len-9);
+			printf("intif: hom data: data size error %d %d\n",sizeof(struct mmo_homunstatus),len-13);
 	}
 	else{
-		memcpy(&p,RFIFOP(fd,9),sizeof(struct mmo_homunstatus));
-		homun_recv_homdata(RFIFOL(fd,4),&p,RFIFOB(fd,8));
+		memcpy(&p,RFIFOP(fd,13),sizeof(struct mmo_homunstatus));
+		homun_recv_homdata(RFIFOL(fd,4),RFIFOL(fd,8),&p,RFIFOB(fd,12));
 	}
 
 	return 0;

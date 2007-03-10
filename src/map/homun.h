@@ -40,7 +40,7 @@ int homun_change_name(struct map_session_data *sd,char *name);
 int homun_return_master(struct map_session_data *sd);
 
 int homun_callhom(struct map_session_data *sd);
-int homun_recv_homdata(int account_id,struct mmo_homunstatus *p,int flag);
+int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int flag);
 int homun_return_embryo(struct map_session_data *sd);
 int homun_revive(struct map_session_data *sd,int skilllv);
 int homun_change_class( struct map_session_data *sd, int class_ );
