@@ -2678,7 +2678,37 @@ int parse_tologin(int fd)
 				RFIFOSKIP(login_fd,RFIFOW(fd,2));
 			}
 			break;
+		// 新規ログインのため同一アカウントを切断
+		case 0x2730:
+			if(RFIFOREST(fd)<6)
+				return 0;
+			{
+				int account_id = RFIFOL(fd,2);
+				for(i=0; i<fd_max; i++) {
+					if(session[i] && (sd = session[i]->session_data) && sd->account_id == account_id) {
+						WFIFOW(i,0) = 0x81;
+						WFIFOB(i,2) = 2;
+						WFIFOSET(i,3);
+						session[i]->auth = 0;	// 認証取消し
+					}
+				}
 
+				// 同一アカウントの未認証データを全て破棄しておく
+				for(i=0; i<AUTH_FIFO_SIZE; i++) {
+					if(auth_fifo[i].account_id == account_id && !auth_fifo[i].delflag) {
+						auth_fifo[i].delflag = 1;
+					}
+				}
+				if(numdb_search(char_online_db,account_id)) {
+					// 全mapサーバに切断要求
+					char buf[8];
+					WBUFW(buf,0) = 0x2b1a;
+					WBUFL(buf,2) = account_id;
+					mapif_sendall(buf,6);
+				}
+				RFIFOSKIP(fd,6);
+			}
+			break;
 		default:
 			close(fd);
 			session[fd]->eof=1;
@@ -3561,6 +3591,12 @@ int parse_char(int fd)
 				WFIFOW(fd,26) = server[i].port;
 				WFIFOSET(fd,28);
 
+				// 同一アカウントの未認証データを全て破棄しておく
+				for(i=0; i<AUTH_FIFO_SIZE; i++) {
+					if(auth_fifo[i].account_id == sd->account_id && !auth_fifo[i].delflag) {
+						auth_fifo[i].delflag = 1;
+					}
+				}
 				if(auth_fifo_pos>=AUTH_FIFO_SIZE){
 					auth_fifo_pos=0;
 				}

@@ -68,6 +68,7 @@ static char admin_pass[64]=""; // for account creation
 static char ladmin_pass[64]=""; // for remote administration
 static char login_log_filename[1024] = "log/login.log";
 static int login_version = 0, login_type = 0;
+static int detect_multiple_login = 1;
 int login_log(char *fmt,...);
 
 static char GM_account_filename[1024] = "conf/GM_account.txt";
@@ -1197,7 +1198,7 @@ int parse_fromchar(int fd)
 				WFIFOL(fd,2)=RFIFOL(fd,2);
 				WFIFOB(fd,6)=1;
 				WFIFOSET(fd,15);
-				printf("auth_fifo search error! account_id = %d\n",RFIFOL(fd,2));
+				//printf("auth_fifo search error! account_id = %d\n",RFIFOL(fd,2));
 			} else {
 				int p,j;
 				const struct mmo_account *ac = account_load_num(auth_fifo[i].account_id);
@@ -1711,6 +1712,32 @@ int parse_login(int fd)
 			}
 			if(result == -1) {
 				int i;
+				char buf[8];
+
+				if(detect_multiple_login) {
+					int c = 0;
+
+					// 全charサーバへ同一アカウントの切断要求
+					WBUFW(buf,0) = 0x2730;
+					WBUFL(buf,2) = sd->account_id;
+					charif_sendallwos(-1,buf,6);
+
+					for(i=0; i<AUTH_FIFO_SIZE; i++) {
+						if(auth_fifo[i].account_id == sd->account_id && !auth_fifo[i].delflag) {
+							auth_fifo[i].delflag = 1;
+							c++;
+						}
+					}
+					if(c > 0) {
+						// 二重ログインの可能性があるので認証失敗にする
+						WFIFOW(fd,0) = 0x81;
+						WFIFOB(fd,2) = 8;
+						WFIFOSET(fd,3);
+						RFIFOSKIP(fd,length);
+						break;
+					}
+				}
+
 				server_num=0;
 				for(i=0;i<MAX_SERVERS;i++){
 					if(server_fd[i]>=0){
@@ -1971,10 +1998,6 @@ static void login_config_read(const char *cfgName)
 			login_sip = inet_addr(login_sip_str);
 		} else if (strcmpi(w1, "login_sport") == 0) {
 			login_sport = atoi(w2);
-		} else if (strcmpi(w1, "order") == 0 || strcmpi(w1, "deny") == 0 || strcmpi(w1, "allow") == 0) {
-			// login_athena.conf のアクセス制限は、socket.conf に統合しました。
-			printf("login_config_read: Access control in login_athena.conf is no more\n");
-			printf("                   supported. Please use socket.conf instead of this.\n");
 		} else if (strcmpi(w1, "login_version") == 0) {
 			login_version = atoi(w2);
 		} else if (strcmpi(w1, "login_type") == 0) {
@@ -1987,6 +2010,8 @@ static void login_config_read(const char *cfgName)
 		} else if (strcmpi(w1, "ladmin_pass") == 0) {
 			strncpy(ladmin_pass, w2, sizeof(ladmin_pass) -1);
 			ladmin_pass[sizeof(ladmin_pass) - 1] = '\0';
+		} else if (strcmpi(w1, "detect_multiple_login") == 0) {
+			detect_multiple_login = atoi(w2);
 		} else if (strcmpi(w1, "httpd_enable")==0){
 			socket_enable_httpd(atoi(w2));
 		} else if (strcmpi(w1, "httpd_document_root") == 0) {
