@@ -561,116 +561,6 @@ struct skill_unit *map_find_skill_unit_oncell(struct block_list *target,int x,in
 }
 
 /*==========================================
- * For checking a path between two points
- * (x0, y0) and (x1, y1)
- *------------------------------------------
- */
-void map_foreachinpath(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,...)
-{
-	va_list ap;
-	int i, blockcount = bl_list_count;
-	struct block_list *bl;
-
-	//////////////////////////////////////////////////////////////
-	// linear parametric equation
-	// x=(x1-x0)*t+x0; y=(y1-y0)*t+y0; t=[0,1]
-	//////////////////////////////////////////////////////////////
-	// linear equation for finding a single line between (x0,y0)->(x1,y1)
-	// independent of the given xy-values
-	int dx = 0;
-	int dy = 0;
-	int bx=-1;	// initialize block coords to some impossible value
-	int by=-1;
-
-	int t;
-	///////////////////////////////
-	// find maximum runindex
-	int tmax = abs(y1-y0);
-
-	if(x0 != x1 && y0 != y1 && abs(x1-x0) != abs(y1-y0)) {
-		printf("map_foreachinpath: not supported size\n");
-		return;
-	}
-	if(tmax < abs(x1-x0))
-		tmax = abs(x1-x0);
-	// pre-calculate delta values for x and y destination
-	// should speed up cause you don't need to divide in the loop
-	if(tmax>0)
-	{
-		dx = (x1-x0) / tmax;
-		dy = (y1-y0) / tmax;
-	}
-	// go along the index
-	for(t=0; t<=tmax; t++)
-	{	// xy-values of the line including start and end point
-		int x = dx * t + x0;
-		int y = dy * t + y0;
-
-		// check the block index of the calculated xy
-		if( (bx!=x/BLOCK_SIZE) || (by!=y/BLOCK_SIZE) )
-		{	// we have reached a new block
-			// so we store the current block coordinates
-			bx = x/BLOCK_SIZE;
-			by = y/BLOCK_SIZE;
-			if( bx < 0 || bx >= map[m].bxs ) continue;
-			if( by < 0 || by >= map[m].bys ) continue;
-
-			// and process the data
-
-			if(type==0 || type&~BL_MOB) {
-				bl = map[m].block[bx+by*map[m].bxs];		// a block with the elements
-				for(;bl;bl=bl->next){		// go through all elements
-					if( bl_list_count >= BL_LIST_MAX )
-						break;
-					if( type && !(bl->type & type) )
-						continue;
-					// check if block xy is on the line
-					if( (bl->x-x0)*(y1-y0) != (bl->y-y0)*(x1-x0) )
-						continue;
-					// and if it is within start and end point
-					if( (((x0<=x1)&&(x0<=bl->x)&&(bl->x<=x1)) || ((x0>=x1)&&(x0>=bl->x)&&(bl->x>=x1))) &&
-					    (((y0<=y1)&&(y0<=bl->y)&&(bl->y<=y1)) || ((y0>=y1)&&(y0>=bl->y)&&(bl->y>=y1))) )
-						bl_list[bl_list_count++]=bl;
-				}//end for elements
-			}
-
-			if(type==0 || type&BL_MOB) {
-				bl = map[m].block_mob[bx+by*map[m].bxs];	// and the mob block
-				for(;bl;bl=bl->next){
-					if( bl_list_count >= BL_LIST_MAX )
-						break;
-					// check if mob xy is on the line
-					if( (bl->x-x0)*(y1-y0) != (bl->y-y0)*(x1-x0) )
-						continue;
-					// and if it is within start and end point
-					if( (((x0<=x1)&&(x0<=bl->x)&&(bl->x<=x1)) || ((x0>=x1)&&(x0>=bl->x)&&(bl->x>=x1))) &&
-					    (((y0<=y1)&&(y0<=bl->y)&&(bl->y<=y1)) || ((y0>=y1)&&(y0>=bl->y)&&(bl->y>=y1))) )
-						bl_list[bl_list_count++]=bl;
-				}//end for mobs
-			}
-		}
-	}//end for index
-
-	if(bl_list_count >= BL_LIST_MAX) {
-		if(battle_config.error_log)
-			printf("map_foreachinpath: *WARNING* block count too many!\n");
-	}
-
-	va_start(ap,type);
-	map_freeblock_lock();	// メモリからの解放を禁止する
-
-	for(i=blockcount;i<bl_list_count;i++)
-		if(bl_list[i]->prev) {	// 有?かどうかチェック
-			func(bl_list[i],ap);
-		}
-
-	map_freeblock_unlock();	// 解放を許可する
-	va_end(ap);
-
-	bl_list_count = blockcount;
-}
-
-/*==========================================
  * map m (x0,y0)-(x1,y1)内の全objに対して
  * funcを呼ぶ
  * type!=0 ならその種類のみ
@@ -745,11 +635,194 @@ void map_foreachinarea(int (*func)(struct block_list*,va_list),int m,int x0,int 
 }
 
 /*==========================================
+ * (x0,y0)からdx,dy方向へ射線の通る範囲
+ * (矩形か斜方五角形)内のobjに対してfuncを呼ぶ
+ *
+ * dx,dyは-1,0,1のみとする
+ *------------------------------------------
+ */
+#define swap(x,y) { int t; t = x; x = y; y = t; }
+
+void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
+	int m,int x0,int y0,int dx,int dy,int range,int width,int type,...)
+{
+	int x1,y1,x2,y2,x3,y3,bx,by;
+	int i, blockcount = bl_list_count;
+	struct block_list *bl;
+	va_list ap;
+
+	x1 = x0;
+	y1 = y0;
+
+	if(dx == 0 || dy == 0) {
+		// 矩形領域の場合
+		// map_foreachinarea + path_search_long
+
+		// 射線上に壁があるかチェック、壁のセルは射程に含まない
+		for(i=0; i<range; i++) {
+			if(map_getcell(m,x1+dx,y1+dy,CELL_CHKWALL))
+				break;
+			x1 += dx;
+			y1 += dy;
+		}
+
+		if(dx == 0) {
+			x2 = x0 - width;
+			y2 = y0;
+			x3 = x1 + width;
+			y3 = y1;
+		} else {
+			x2 = x0;
+			y2 = y0 - width;
+			x3 = x1;
+			y3 = y1 + width;
+		}
+
+		if(x2 > x3) {
+			swap(x2,x3);
+		}
+		if(y2 > y3) {
+			swap(y2,y3);
+		}
+		if(x2 < 0) x2 = 0;
+		if(y2 < 0) y2 = 0;
+		if(x3 >= map[m].xs) x3 = map[m].xs-1;
+		if(y3 >= map[m].ys) y3 = map[m].ys-1;
+
+		if(type == 0 || type&~BL_MOB) {
+			for(by = y2 / BLOCK_SIZE; by <= y3 / BLOCK_SIZE; by++) {
+				for(bx = x2 / BLOCK_SIZE; bx <= x3 / BLOCK_SIZE; bx++) {
+					bl = map[m].block[bx+by*map[m].bxs];
+					for(;bl;bl=bl->next) {
+						if(bl_list_count >= BL_LIST_MAX)
+							break;
+						if(type && !(bl->type & type))
+							continue;
+						if(bl->x>=x2 && bl->x<=x3 && bl->y>=y2 && bl->y<=y3 &&
+						   path_search_long(NULL,m,x0,y0,bl->x,bl->y))
+							bl_list[bl_list_count++]=bl;
+					}
+				}
+			}
+		}
+		if(type == 0 || type&BL_MOB) {
+			for(by = y2 / BLOCK_SIZE; by <= y3 / BLOCK_SIZE; by++) {
+				for(bx = x2 / BLOCK_SIZE; bx <= x3 / BLOCK_SIZE; bx++) {
+					bl = map[m].block_mob[bx+by*map[m].bxs];
+					for(;bl;bl=bl->next) {
+						if(bl_list_count >= BL_LIST_MAX)
+							break;
+						if(bl->x>=x2 && bl->x<=x3 && bl->y>=y2 && bl->y<=y3 &&
+						   path_search_long(NULL,m,x0,y0,bl->x,bl->y))
+							bl_list[bl_list_count++]=bl;
+					}
+				}
+			}
+		}
+	} else {
+		// 斜方五角形領域の場合
+		// (x0,y0) を原点、射線方向のベクトルをxu軸、これに対する法線ベクトルをyu軸とした
+		// 座標系に変換して領域チェックを行う
+		// 対象オブジェクトの座標 (x,y) は平行移動と回転移動によって (xu,yu) に変換できる
+		//   xu = (x-x0) * cos@ - (y-y0) * sin@
+		//   yu = (x-x0) * sin@ + (y-y0) * cos@
+		// xu軸がx軸に重なるまで回転して正規化する、例えばdx=1,dy=1なら @ = -45度
+		// このときxuは距離（range）、yuは幅（width）に相当する
+		// ただし浮動小数点演算を避けるため 1/sqrt(2) を座標単位としている
+
+		int xu,yu;
+
+		range /= 2;	// 距離は半分にする
+
+		// 射線上に壁があるかチェック、壁のセルは射程に含む
+		for(i=0; i<range; i++) {
+			if(map_getcell(m,x1,y1,CELL_CHKWALL))
+				break;
+			x1 += dx;
+			y1 += dy;
+		}
+
+		x2 = x0 - dx * width;
+		y2 = y0 - dy * width;
+		x3 = x1 + dx * width;
+		y3 = y1 + dy * width;
+
+		if(x2 > x3) {
+			swap(x2,x3);
+		}
+		if(y2 > y3) {
+			swap(y2,y3);
+		}
+		if(x2 < 0) x2 = 0;
+		if(y2 < 0) y2 = 0;
+		if(x3 >= map[m].xs) x3 = map[m].xs-1;
+		if(y3 >= map[m].ys) y3 = map[m].ys-1;
+
+		if(type == 0 || type&~BL_MOB) {
+			for(by = y2 / BLOCK_SIZE; by <= y3 / BLOCK_SIZE; by++) {
+				for(bx = x2 / BLOCK_SIZE; bx <= x3 / BLOCK_SIZE; bx++) {
+					bl = map[m].block[bx+by*map[m].bxs];
+					for(;bl;bl=bl->next) {
+						if(bl_list_count >= BL_LIST_MAX)
+							break;
+						if(type && !(bl->type & type))
+							continue;
+						if((bl->x - x1) * dx > 0 || (bl->y - y1) * dy > 0)
+							continue;
+						xu =  (bl->x - x0) * dx + (bl->y - y0) * dy;
+						yu = -(bl->x - x0) * dy + (bl->y - y0) * dx;
+						if(xu >= 0 && xu <= range*2 && abs(yu) <= width*2 &&
+						   path_search_long(NULL,m,x0,y0,bl->x,bl->y))
+							bl_list[bl_list_count++]=bl;
+					}
+				}
+			}
+		}
+		if(type == 0 || type&BL_MOB) {
+			for(by = y2 / BLOCK_SIZE; by <= y3 / BLOCK_SIZE; by++) {
+				for(bx = x2 / BLOCK_SIZE; bx <= x3 / BLOCK_SIZE; bx++) {
+					bl = map[m].block_mob[bx+by*map[m].bxs];
+					for(;bl;bl=bl->next) {
+						if(bl_list_count >= BL_LIST_MAX)
+							break;
+						if((bl->x - x1) * dx > 0 || (bl->y - y1) * dy > 0)
+							continue;
+						xu =  (bl->x - x0) * dx + (bl->y - y0) * dy;
+						yu = -(bl->x - x0) * dy + (bl->y - y0) * dx;
+						if(xu >= 0 && xu <= range*2 && abs(yu) <= width*2 &&
+						   path_search_long(NULL,m,x0,y0,bl->x,bl->y))
+							bl_list[bl_list_count++]=bl;
+					}
+				}
+			}
+		}
+	}
+
+	if(bl_list_count >= BL_LIST_MAX) {
+		if(battle_config.error_log)
+			printf("map_foreachinpath: *WARNING* block count too many!\n");
+	}
+
+	va_start(ap,type);
+	map_freeblock_lock();	// メモリからの解放を禁止する
+
+	for(i=blockcount;i<bl_list_count;i++) {
+		if(bl_list[i]->prev)	// 有効かどうかチェック
+			func(bl_list[i],ap);
+	}
+
+	map_freeblock_unlock();	// 解放を許可する
+	va_end(ap);
+
+	bl_list_count = blockcount;
+}
+
+/*==========================================
  * 矩形(x0,y0)-(x1,y1)が(dx,dy)移動した時の
  * 領域外になる領域(矩形かL字形)内のobjに
  * 対してfuncを呼ぶ
  *
- * dx,dyは-1,0,1のみとする（どんな値でもいいっぽい？）
+ * dx,dyは-1,0,1のみとする
  *------------------------------------------
  */
 void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int dx,int dy,int type,...)

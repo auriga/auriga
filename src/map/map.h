@@ -1025,7 +1025,7 @@ int map_addblock(struct block_list *);
 int map_delblock(struct block_list *);
 int map_is_valid_address(struct block_list *bl, const char *file, int line );
 void map_foreachinarea(int (*)(struct block_list*,va_list),int,int,int,int,int,int,...);
-void map_foreachinpath(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,...);
+void map_foreachinshootpath(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int dx,int dy,int range,int width,int type,...);
 void map_foreachinmovearea(int (*)(struct block_list*,va_list),int,int,int,int,int,int,int,int,...);
 void map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4],int y[4],int type,...);
 

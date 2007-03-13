@@ -2494,29 +2494,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		} else {
 			int dir = map_calc_dir(src,bl->x,bl->y);
 			skill_area_temp[1] = 0;
-			map_foreachinpath(
-				skill_area_sub,bl->m,src->x,src->y,src->x + 12*dirx[dir],src->y + 12*diry[dir],0,
+			map_foreachinshootpath(
+				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],12,1,0,
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
 			);
-			if(diry[dir] == 0) {
-				map_foreachinpath(
-					skill_area_sub,bl->m,src->x,src->y + 1,src->x + 12*dirx[dir],src->y + 12*diry[dir] + 1,0,
-					src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
-				);
-				map_foreachinpath(
-					skill_area_sub,bl->m,src->x,src->y - 1,src->x + 12*dirx[dir],src->y + 12*diry[dir] - 1,0,
-					src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
-				);
-			} else {
-				map_foreachinpath(
-					skill_area_sub,bl->m,src->x + 1,src->y,src->x + 12*dirx[dir] + 1,src->y + 12*diry[dir],0,
-					src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
-				);
-				map_foreachinpath(
-					skill_area_sub,bl->m,src->x - 1,src->y,src->x + 12*dirx[dir] - 1,src->y + 12*diry[dir],0,
-					src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
-				);
-			}
 			if(skill_area_temp[1] == 0) {
 				/* ターゲットに攻撃 */
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
@@ -2731,10 +2712,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[1]++;
 		} else {
 			int dir = map_calc_dir(src,bl->x,bl->y);
-			int ar = skill_get_range(skillid,skilllv);
 			skill_area_temp[1] = 0;
-			map_foreachinpath(
-				skill_area_sub,bl->m,src->x,src->y,src->x + ar*dirx[dir],src->y + ar*diry[dir],0,
+			map_foreachinshootpath(
+				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],skill_get_range(skillid,skilllv),1,0,
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
 			);
 			if(skill_area_temp[1] == 0) {
