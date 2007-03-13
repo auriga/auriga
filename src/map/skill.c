@@ -2128,7 +2128,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			clif_skill_poseffect(&sd->bl,skillid,skilllv,sd->bl.x,sd->bl.y,tick);
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
 			clif_walkok(sd);
-			clif_movechar(sd);
+			clif_move(&sd->bl);
 			if(dx < 0) dx = -dx;
 			if(dy < 0) dy = -dy;
 			sd->ud.attackabletime = sd->ud.canmove_tick = tick + sd->speed * ((dx > dy)? dx:dy);
@@ -2205,7 +2205,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				sd->ud.to_y = sd->bl.y + dy;
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 				clif_walkok(sd);
-				clif_movechar(sd);
+				clif_move(&sd->bl);
 				if(dx < 0) dx = -dx;
 				if(dy < 0) dy = -dy;
 				sd->ud.attackabletime = sd->ud.canmove_tick = tick + 100 + sd->speed * ((dx > dy)? dx:dy);
@@ -2258,7 +2258,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				clif_skill_poseffect(&sd->bl,skillid,skilllv,sd->bl.x,sd->bl.y,tick);
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
 				clif_walkok(sd);
-				clif_movechar(sd);
+				clif_move(&sd->bl);
 				if(dx < 0) dx = -dx;
 				if(dy < 0) dy = -dy;
 				sd->ud.attackabletime = sd->ud.canmove_tick = tick + sd->speed * ((dx > dy)? dx:dy);

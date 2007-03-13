@@ -145,8 +145,8 @@ R 0081 <type>.B
 		type=11 チケットが買われていないか、有効期限が切れています
 S 0085 <X_Y>.3B
 	移動要求
-R 0086
-	未調査
+R 0086 <ID>.l <X_Y_X_Y>.5B <?>.B <server_tick>.l
+	移動情報
 R 0087 <server tick>.l <X_Y_X_Y>.5B ?(0固定).B
 	移動応答
 R 0088 <ID>.l <X>.w <Y>.w

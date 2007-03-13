@@ -1,4 +1,18 @@
 ----------------------------------------
+//0119 [2007/03/14] by Rayce
+
+・移動情報パケットに0x86を使う（clif.*, skill.c, unit.c）
+　merged from eA, thanks a lot!!
+	0x7bよりもサイズが遥かに小さく、また服色パケットを再送信しなくても服色を維持出来るようです。
+	これにより通信量の大幅な削減が見込まれます。
+
+	clif_movepc(), clif_movemob(), clif_movepet(), clif_movehom() 削除
+	clif_move() 追加
+
+・0111の@modelの修正が間違っていたので修正（atcommand.c）
+・doc/client_packet.txt更新
+
+----------------------------------------
 //0118 [2007/03/14] by Rayce
 
 ・シャープシューティング、朔風の攻撃範囲を本鯖仕様に修正（map.*, skill.c）

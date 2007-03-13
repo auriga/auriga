@@ -1654,25 +1654,6 @@ void clif_spawnpet(struct pet_data *pd)
  *
  *------------------------------------------
  */
-void clif_movepet(struct pet_data *pd)
-{
-	unsigned char buf[128];
-	int len;
-
-	nullpo_retv(pd);
-
-	len = clif_pet007b(pd,buf);
-	clif_send(buf,len,&pd->bl,AREA);
-
-	clif_send_clothcolor(&pd->bl);
-
-	return;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
 void clif_send_homdata(struct map_session_data *sd, int type, int param)
 {
 	int fd;
@@ -1720,23 +1701,6 @@ void clif_spawnhom(struct homun_data *hd)
 
 	if(hd->view_size!=0)
 		clif_misceffect2(&hd->bl,422+hd->view_size);
-
-	return;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
-void clif_movehom(struct homun_data *hd)
-{
-	unsigned char buf[128];
-	int len;
-
-	nullpo_retv(hd);
-
-	len = clif_hom007b(hd,buf);
-	clif_send(buf,len,&hd->bl,AREA);
 
 	return;
 }
@@ -1904,21 +1868,26 @@ void clif_walkok(struct map_session_data *sd)
  *
  *------------------------------------------
  */
-void clif_movechar(struct map_session_data *sd)
+void clif_move(struct block_list *bl)
 {
-	nullpo_retv(sd);
+	unsigned char buf[16];
+	struct unit_data *ud;
+
+	nullpo_retv(bl);
+	nullpo_retv(ud = unit_bl2ud(bl));
 
 	// 完全なインビジブルモードなら送信しない
-	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd))
-	{
-		int fd,len;
-
-		fd  = sd->fd;
-		len = clif_set007b(sd,WFIFOP(fd,0));
-		clif_send(WFIFOP(fd,0),len,&sd->bl,AREA_WOS);
-
-		clif_send_clothcolor(&sd->bl);
+	if(bl->type == BL_PC && battle_config.gm_perfect_hide) {
+		struct map_session_data *sd = (struct map_session_data *)bl;
+		if(sd && pc_isinvisible(sd))
+			return;
 	}
+
+	WBUFW(buf,0)=0x86;
+	WBUFL(buf,2)=bl->id;
+	WBUFPOS2(buf,6,bl->x,bl->y,ud->to_x,ud->to_y);
+	WBUFL(buf,12)=gettick();
+	clif_send(buf, packet_db[0x86].len, bl, AREA_WOS);
 
 	return;
 }
@@ -4404,25 +4373,6 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 
 	if(nd->view_size!=0)
 		clif_misceffect2(&nd->bl,422+nd->view_size);
-
-	return;
-}
-
-/*==========================================
- * 移動停止
- *------------------------------------------
- */
-void clif_movemob(struct mob_data *md)
-{
-	unsigned char buf[128];
-	int len;
-
-	nullpo_retv(md);
-
-	len = clif_mob007b(md,buf);
-	clif_send(buf,len,&md->bl,AREA);
-
-	clif_send_clothcolor(&md->bl);
 
 	return;
 }

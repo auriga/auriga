@@ -1899,21 +1899,21 @@ atcommand_model(
 	{
 		if (MAX_CLOTH_COLOR <= 5 && cloth_color > 0) {
 			if ( (sd->sex == 1 && (sd->status.class_ == 12 ||  sd->status.class_ == 17)) ||
-			     (sd->status.class_ >= PC_CLASS_TK && sd->status.class_ <= PC_CLASS_SL)
-			) {
+			     (sd->status.class_ >= PC_CLASS_TK && sd->status.class_ <= PC_CLASS_SL) )
+			{
 				// 服の色未実装職の判定
 				clif_displaymessage(fd, msg_txt(35));
+				return 0;
 			}
-		} else {
-			// -1指定の箇所は変更しない
-			if (hair_style >= 0)
-				pc_changelook(sd, LOOK_HAIR, hair_style);
-			if (hair_color >= 0)
-				pc_changelook(sd, LOOK_HAIR_COLOR, hair_color);
-			if (cloth_color >= 0)
-				pc_changelook(sd, LOOK_CLOTHES_COLOR, cloth_color);
-			clif_displaymessage(fd, msg_txt(36));
 		}
+		// -1指定の箇所は変更しない
+		if (hair_style >= 0)
+			pc_changelook(sd, LOOK_HAIR, hair_style);
+		if (hair_color >= 0)
+			pc_changelook(sd, LOOK_HAIR_COLOR, hair_color);
+		if (cloth_color >= 0)
+			pc_changelook(sd, LOOK_CLOTHES_COLOR, cloth_color);
+		clif_displaymessage(fd, msg_txt(36));
 	} else {
 		clif_displaymessage(fd, msg_txt(37));
 	}

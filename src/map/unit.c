@@ -60,29 +60,22 @@ struct unit_data* unit_bl2ud(struct block_list *bl) {
 
 static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data);
 
-int unit_walktoxy_sub(struct block_list *bl)
+static int unit_walktoxy_sub(struct block_list *bl)
 {
 	int i;
 	struct walkpath_data wpd;
 	struct map_session_data *sd = NULL;
-	struct pet_data         *pd = NULL;
-	struct mob_data         *md = NULL;
-	struct homun_data       *hd = NULL;
 	struct unit_data        *ud = NULL;
 	struct status_change    *sc_data = NULL;
 
 	nullpo_retr(1, bl);
 
-	if( (sd = BL_DOWNCAST( BL_PC,  bl ) ) ) {
-		ud = &sd->ud;
-	} else if( (md = BL_DOWNCAST( BL_MOB, bl ) ) ) {
-		ud = &md->ud;
-	} else if( (pd = BL_DOWNCAST( BL_PET, bl ) ) ) {
-		ud = &pd->ud;
-	} else if( (hd = BL_DOWNCAST( BL_HOM, bl ) ) ) {
-		ud = &hd->ud;
-	}
-	if(ud == NULL) return 1;
+	ud = unit_bl2ud(bl);
+	if(ud == NULL)
+		return 1;
+
+	if(bl->type == BL_PC)
+		sd = (struct map_session_data *)bl;
 
 	if(sd && pc_iscloaking(sd))// クローキング時再計算
 		status_calc_pc(sd,0);
@@ -96,12 +89,15 @@ int unit_walktoxy_sub(struct block_list *bl)
 			return 1;
 	}
 
-	if(md) {
-		int x = md->bl.x+dirx[wpd.path[0]];
-		int y = md->bl.y+diry[wpd.path[0]];
-		if (map_getcell(bl->m,x,y,CELL_CHKBASILICA) && !(status_get_mode(bl)&0x20)) {
-			ud->state.change_walk_target=0;
-			return 1;
+	if(bl->type == BL_MOB) {
+		struct mob_data *md = (struct mob_data *)bl;
+		if(md) {
+			int x = md->bl.x+dirx[wpd.path[0]];
+			int y = md->bl.y+diry[wpd.path[0]];
+			if (map_getcell(bl->m,x,y,CELL_CHKBASILICA) && !(status_get_mode(bl)&0x20)) {
+				ud->state.change_walk_target=0;
+				return 1;
+			}
 		}
 	}
 
@@ -109,13 +105,8 @@ int unit_walktoxy_sub(struct block_list *bl)
 
 	if(sd) {
 		clif_walkok(sd);
-	} else if(md) {
-		clif_movemob(md);
-	} else if(pd) {
-		clif_movepet(pd);
-	} else if(hd) {
-		clif_movehom(hd);
 	}
+	clif_move(bl);
 
 	ud->state.change_walk_target=0;
 
@@ -128,9 +119,6 @@ int unit_walktoxy_sub(struct block_list *bl)
 	if(i>0) {
 		i = i>>1;
 		ud->walktimer = add_timer(gettick()+i,unit_walktoxy_timer,bl->id,0);
-	}
-	if(sd) {
-		clif_movechar(sd);
 	}
 
 	return 0;
