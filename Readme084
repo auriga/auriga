@@ -1,4 +1,11 @@
 ----------------------------------------
+//0121 [2007/03/15] by Rayce
+
+・AthenaProject2278からpacket_db.txtを更新、2007-02-12aSakexeに対応
+・skill_unit_move_unit_group() を少し修正（skill.c）
+・pid_create() の警告抑制（core.c）
+
+----------------------------------------
 //0120 [2007/03/14] by Rayce
 
 ・二重ログインをloginサーバで検出できるように修正（login.c, char.c）

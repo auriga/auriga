@@ -10606,15 +10606,16 @@ int skill_unit_move(struct block_list *bl,unsigned int tick,int flag)
  * 引数はグループと移動量
  *------------------------------------------
  */
-int skill_unit_move_unit_group( struct skill_unit_group *group, int m,int dx,int dy)
+int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int dy)
 {
 	int i,j;
 	unsigned int tick = gettick();
-	static int m_flag[MAX_SKILL_UNIT_COUNT];	// group->unit_countはMAX_SKILL_UNIT_COUNTを越えることはない
+	unsigned char m_flag[MAX_SKILL_UNIT_COUNT];	// group->unit_countはMAX_SKILL_UNIT_COUNTを越えることはない
 	struct skill_unit *unit1;
 	struct skill_unit *unit2;
 
 	nullpo_retr(0, group);
+
 	if (group->unit_count<=0)
 		return 0;
 	if (group->unit==NULL)
