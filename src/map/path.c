@@ -93,7 +93,6 @@ static int pop_heap_path(int *heap,struct tmp_path *tp)
  * 現在の点のcost計算
  *------------------------------------------
  */
-
 static int calc_cost(struct tmp_path *p,int x1,int y1)
 {
 	int xd,yd;
@@ -142,7 +141,6 @@ static int add_path(int *heap,struct tmp_path *tp,int x,int y,int dist,int befor
 
 	return 0;
 }
-
 
 /*==========================================
  * (x,y)が移動不可能地帯かどうか
@@ -227,6 +225,7 @@ int path_blownpos(int m,int x0,int y0,int dx,int dy,int count,int flag)
  *------------------------------------------
  */
 #define swap(x,y) { int t; t = x; x = y; y = t; }
+
 int path_search_long_real(struct shootpath_data *spd,int m,int x0,int y0,int x1,int y1,cell_t flag)
 {
 	int dx, dy;
@@ -368,7 +367,8 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 	xs = md->xs-1; // あらかじめ１減算しておく
 	ys = md->ys-1;
 	while(1){
-		int e=0,f=0,dist,cost,dc[4];
+		int e=0,f=0,dist,cost;
+		int dc[4] = { 0,0,0,0 };
 
 		if(heap[0]==0)
 			return -1;

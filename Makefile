@@ -1,6 +1,10 @@
 # $Id: Makefile,v 1.1 2003/06/20 05:30:43 lemit Exp $
 
 CC = gcc -pipe
+
+# Detecting gcc version
+GCC_VERSION = $(shell $(CC) -v 2>&1 | grep version | cut -d' ' -f3  | cut -d'.' -f1)
+
 PACKETDEF = -DPACKETVER=8 -DNEW_006b
 #PACKETDEF = -DPACKETVER=7 -DNEW_006b
 #PACKETDEF = -DPACKETVER=6 -DNEW_006b
@@ -16,25 +20,20 @@ MYSQL_INCLUDE = /usr/local/include/mysql
 MYSQL_LIBS = /usr/local/lib/mysql
 
 ifeq ($(findstring CYGWIN,$(PLATFORM)), CYGWIN)
-OS_TYPE = -DCYGWIN -DFD_SETSIZE=4096
-
-else
-OS_TYPE =
+    OS_TYPE = -DCYGWIN -DFD_SETSIZE=4096
+endif
+ifeq ($(findstring MINGW,$(PLATFORM)), MINGW)
+    OS_TYPE = -DMINGW -DFD_SETSIZE=4096
 endif
 
 ifeq ($(findstring FreeBSD,$(PLATFORM)), FreeBSD)
-MAKE = gmake
+    MAKE = gmake
 else
-MAKE = make
+    MAKE = make
 endif
 
 CFLAGS = -D_XOPEN_SOURCE -D_BSD_SOURCE -Wall -I../common $(PACKETDEF) $(OS_TYPE)
-
-ifdef SQLFLAG
-	CFLAGS += -I$(MYSQL_INCLUDE)
-else
-	CFLAGS += -DTXT_ONLY
-endif
+LIBS = -lm
 
 #Link Zlib(NOTrecommended)
 #CFLAGS += -DLOCALZLIB
@@ -42,14 +41,31 @@ endif
 #debug(recommended)
 CFLAGS += -g
 
-#-------Low CPU-----
 #optimize(recommended)
 #CFLAGS += -O2
-
-#-------High CPU----
-#optimize(recommended)
 CFLAGS += -O3
+CFLAGS += -ffast-math
 
+ifeq ($(GCC_VERSION), 4)
+    CFLAGS += -Wno-unused-parameter -Wno-pointer-sign
+endif
+
+ifdef SQLFLAG
+    CFLAGS += -I$(MYSQL_INCLUDE)
+else
+    CFLAGS += -DTXT_ONLY
+endif
+
+ifeq ($(findstring MINGW32,$(PLATFORM)), MINGW32)
+    CFLAGS += -Wno-unknown-pragmas
+    LIBS += -lwsock32 -limagehlp
+else
+    ifneq ($(findstring LOCALZLIB,$(CFLAGS)), LOCALZLIB)
+        LIBS += -lz
+    endif
+endif
+
+#-----------------BUILD OPTION-------------------
 # change authfifo comparing data
 #CFLAGS += -DCMP_AUTHFIFO_IP
 #CFLAGS += -DCMP_AUTHFIFO_LOGIN2
@@ -160,8 +176,7 @@ CFLAGS += -DNO_HTTPD_CGI
 #Athlon XP XX00+
 #CFLAGS +=-march=athlon-xp -m3dnow -msse -mfpmath=sse -mmmx 
 #-fforce-addr -fomit-frame-pointer -funroll-loops -frerun-cse-after-loop
-#-frerun-loop-opt -falign-functions=4 -maccumulate-outgoing-args -ffast-math
-#-fprefetch-loop-arrays
+#-frerun-loop-opt -falign-functions=4 -maccumulate-outgoing-args -fprefetch-loop-arrays
 
 #optimize for Athlon-4(mobile Athlon)
 #CFLAGS += -march=athlon -m3dnow -msse -mcpu=athlon-4 -mfpmath=sse
@@ -206,11 +221,11 @@ CFLAGS += -DNO_HTTPD_CGI
 #CFLAGS +=-fomit-frame-pointer
 
 #Linux Zaurus (SL-C7xx)
-#CFLAGS +=-pipe -fomit-frame-pointer -Wall -Wstrict-prototypes
+#CFLAGS +=-pipe -fomit-frame-pointer -Wstrict-prototypes
 
 #---------------------------------------------------
 
-MKDEF = CC="$(CC)" CFLAGS="$(CFLAGS)" MYSQL_LIBS="$(MYSQL_LIBS)"
+MKDEF = CC="$(CC)" CFLAGS="$(CFLAGS)" LIBS="$(LIBS)" MYSQL_LIBS="$(MYSQL_LIBS)"
 
 all clean: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakefile src/char/GNUmakefile src/map/GNUmakefile src/converter/GNUmakefile
 	cd src ; cd common ; $(MAKE) $(MKDEF) $@ ; cd ..
@@ -227,10 +242,10 @@ sql: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakefile sr
 	cd src ; cd login ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
 	cd src ; cd char ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
 	cd src ; cd converter ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
-	cd src ; cd map ; $(MAKE) $(MKDEF) $@ ; cd ..
+	cd src ; cd map ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
 else
 sql:
-	$(MAKE) CC="$(CC)" OPT="$(OPT)" SQLFLAG=1
+	$(MAKE) CC="$(CC)" SQLFLAG=1
 endif
 
 src/common/GNUmakefile: src/common/Makefile

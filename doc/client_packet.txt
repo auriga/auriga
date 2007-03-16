@@ -97,6 +97,9 @@ R 006d <charactor select data>.106B <flag>.w
 	flagはキャラ名の変更が可能な状態かどうか(0でON 1でOFF)
 R 006e <error No>.B
 	キャラクタ作成失敗
+		err No=00 同じ名前のキャラクターがいます
+		err No=01 このサーバーは18歳未満はアクセスできません
+		err No=02 キャラクターの作成が拒否されました
 R 006f
 	キャラクタ削除成功
 R 0070 <error No>.B
@@ -509,12 +512,27 @@ R 010f <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill 
 	スキル情報の塊。skill nameは一部流れて来ない物がある＞AL_PNEUMA,PR_SLOWPOISON等
 	target typeは0-パッシブ、1-敵、2-場所、4-即時発動、16-味方
 	lv=0 up=0の場合はリストに出してない?
-R 0110 <skill ID>.w <basic type>.w ?.w <fail>.B <type>.B
+R 0110 <skill ID>.w <basic type>.l <fail>.B <type>.B
 	fail=00の時にスキル利用失敗?
-	type 00:basic typeの方 01:SP不足 02:HP不足 03:memo無し 04:delay中
-	05:お金無し(めまー) 06:武器がよろしくない 07:赤ジェム無し 08:青ジェム無し 09:謎
-	basic type 00:取り引き 01:emotion 02:座り 03:チャット 04:パーティ
-	05:shout? 06:PK 07:マナーポイント
+	basic type 00: 取り引き
+	           01: emotion
+	           02: 座り
+	           03: チャット
+	           04: パーティ
+	           05: shout?
+	           06: PK
+	           07: マナーポイント
+	type 00: basic typeの方
+	     01: SP不足
+	     02: HP不足
+	     03: memo無し
+	     04: delay中
+	     05: お金無し(めまー)
+	     06: 武器がよろしくない
+	     07: 赤ジェム無し
+	     08: 青ジェム無し
+	     09: Weightが90%を越えている
+	     0a: スキル使用失敗
 R 0111 <skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B
 	010fの1つ分。β2だと未使用?
 	20040415転職時に観測
@@ -1544,8 +1562,7 @@ S 0277 <version>.l <account name>.24B <md5 binary>.16B <version2>.B <?>.37B
 	id&暗号化済みpass送信
 R 0280 <point>.l <total>.l <type>.w
 	テイミングミッションランキングポイントが<point>上昇して<total>になりました。
-	type=0xfd2固定
-	他は文字化けする
+	type=0xfd2 or 0xfd3固定
 S 0281 <54000固定?>.w
 	未調査、たぶんテイミングランキング要求パケットとして実装される
 R 0282 { <charname>.24B }*10 { <point>.l }*10

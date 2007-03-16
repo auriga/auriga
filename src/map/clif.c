@@ -5055,8 +5055,7 @@ void clif_skill_fail(struct map_session_data *sd, int skill_id, unsigned char ty
 
 	WFIFOW(fd,0) = 0x110;
 	WFIFOW(fd,2) = skill_id;
-	WFIFOW(fd,4) = btype;
-	WFIFOW(fd,6) = 0;
+	WFIFOL(fd,4) = btype;
 	WFIFOB(fd,8) = 0;
 	WFIFOB(fd,9) = type;
 	WFIFOSET(fd,packet_db[0x110].len);
@@ -5950,7 +5949,6 @@ void clif_weapon_refine_res(struct map_session_data *sd, int flag, int nameid)
 
 	WFIFOW(fd, 0)=0x223;
 	WFIFOL(fd, 2)=flag;
-	WFIFOW(fd, 4)=0;
 	if((view = itemdb_viewid(nameid)) > 0)
 		WFIFOW(fd, 6)=view;
 	else

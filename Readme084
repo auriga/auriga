@@ -1,4 +1,23 @@
 ----------------------------------------
+//0122 [2007/03/17] by Rayce
+
+・MinGWでのコンパイルに関する修正
+	-> LOCALZLIB無しでコンパイル出来るように修正（grfio.c）
+	   Win系と同じく動的にdllをロードするので -lz は付けない
+	-> 今のところ利用してないが一応 MINGW をdefineしておく
+	-> #pragma で警告が出るので -Wno-unknown-pragmas を付ける
+
+・Makefileに関してeAよりmerge
+	-> gcc4.X系で大量に出る警告の抑制
+	   自動でgccのversionを取得して -Wno-unused-parameter と -Wno-pointer-sign を付ける
+	-> -ffast-math をデフォルトで付けておく
+
+・変数の初期化を忘れている箇所を修正（path.c, pc.c）
+・0121の警告抑制が不完全だったので修正（core.c）
+・パケット0x110と0x223についてeAの情報を追加（clif.c）
+・doc/client_packet.txt更新
+
+----------------------------------------
 //0121 [2007/03/15] by Rayce
 
 ・AthenaProject2278からpacket_db.txtを更新、2007-02-12aSakexeに対応

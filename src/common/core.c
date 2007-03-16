@@ -76,7 +76,7 @@ void pid_create(const char* file) {
 	fp = fopen(pid_file,"w");
 	if(fp) {
 #ifdef _WIN32
-		fprintf(fp,"%u",(unsigned long)GetCurrentProcessId());
+		fprintf(fp,"%lu",(unsigned long)GetCurrentProcessId());
 #else
 		fprintf(fp,"%d",getpid());
 #endif

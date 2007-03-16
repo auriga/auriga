@@ -42,13 +42,20 @@
 	#define zlib_inflateInit(strm) zlib_inflateInit_((strm),ZLIB_VERSION, sizeof(z_stream))
 	#define zlib_deflateInit(strm, level) zlib_deflateInit_((strm),(level),ZLIB_VERSION,sizeof(z_stream))
 
-	int (WINAPI* zlib_inflateInit_)      (z_streamp strm, const char *version, int stream_size);
-	int (WINAPI* zlib_inflate)           (z_streamp strm, int flush);
-	int (WINAPI* zlib_inflateEnd)        (z_streamp strm);
-	int (WINAPI* zlib_deflateInit_)      (z_streamp strm, int level, const char *version, int stream_size);
-	int (WINAPI* zlib_deflate)           (z_streamp strm, int flush);
-	int (WINAPI* zlib_deflateEnd)        (z_streamp strm);
-	unsigned long (WINAPI* zlib_crc32)   (unsigned long crc, const char *buf, unsigned int len);
+	typedef int (WINAPI* API_ZINIT1)         (z_streamp strm, const char *version, int stream_size);
+	typedef int (WINAPI* API_ZINIT2)         (z_streamp strm, int level, const char *version, int stream_size);
+	typedef int (WINAPI* API_ZFUNC)          (z_streamp strm, int flush);
+	typedef int (WINAPI* API_ZEND)           (z_streamp strm);
+	typedef unsigned long (WINAPI* API_ZCRC) (unsigned long crc, const char *buf, unsigned int len);
+
+	API_ZINIT1 zlib_inflateInit_;
+	API_ZFUNC  zlib_inflate;
+	API_ZEND   zlib_inflateEnd;
+	API_ZINIT2 zlib_deflateInit_;
+	API_ZFUNC  zlib_deflate;
+	API_ZEND   zlib_deflateEnd;
+	API_ZCRC   zlib_crc32;
+
 #else
 	#ifdef LOCALZLIB
 		#include "zlib/zlib.h"
@@ -947,13 +954,11 @@ void grfio_final(void)
 	gentry_entrys = 0;
 	gentry_maxentry = 0;
 
-#ifdef _WIN32
-	#ifndef LOCALZLIB
+#if defined(_WIN32) && !defined(LOCALZLIB)
 	FreeLibrary(zlib_dll);
 	zlib_inflateInit_ = NULL;
 	zlib_inflate      = NULL;
 	zlib_inflateEnd   = NULL;
-	#endif
 #endif
 
 	return;
@@ -967,17 +972,17 @@ void grfio_load_zlib(void) {
 #if defined(_WIN32) && !defined(LOCALZLIB)
 	if(!zlib_dll) {
 		zlib_dll = LoadLibrary("zlib.dll");
-		(FARPROC)zlib_inflateInit_ = GetProcAddress(zlib_dll,"inflateInit_");
-		(FARPROC)zlib_inflate      = GetProcAddress(zlib_dll,"inflate");
-		(FARPROC)zlib_inflateEnd   = GetProcAddress(zlib_dll,"inflateEnd");
-		(FARPROC)zlib_deflateInit_ = GetProcAddress(zlib_dll,"deflateInit_");
-		(FARPROC)zlib_deflate      = GetProcAddress(zlib_dll,"deflate");
-		(FARPROC)zlib_deflateEnd   = GetProcAddress(zlib_dll,"deflateEnd");
-		(FARPROC)zlib_crc32        = GetProcAddress(zlib_dll,"crc32");
 		if(zlib_dll == NULL) {
 			MessageBox(NULL,"Can't load zlib.dll","grfio.c",MB_OK);
 			exit(1);
 		}
+		zlib_inflateInit_ = (API_ZINIT1) GetProcAddress(zlib_dll,"inflateInit_");
+		zlib_inflate      = (API_ZFUNC)  GetProcAddress(zlib_dll,"inflate");
+		zlib_inflateEnd   = (API_ZEND)   GetProcAddress(zlib_dll,"inflateEnd");
+		zlib_deflateInit_ = (API_ZINIT2) GetProcAddress(zlib_dll,"deflateInit_");
+		zlib_deflate      = (API_ZFUNC)  GetProcAddress(zlib_dll,"deflate");
+		zlib_deflateEnd   = (API_ZEND)   GetProcAddress(zlib_dll,"deflateEnd");
+		zlib_crc32        = (API_ZCRC)   GetProcAddress(zlib_dll,"crc32");
 	}
 #endif
 

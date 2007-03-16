@@ -6,22 +6,12 @@ ifeq ($(findstring LOCALZLIB,$(CFLAGS)), LOCALZLIB)
 COMMON_OBJ += ../common/zlib/inflate.o ../common/zlib/deflate.o ../common/zlib/crc32.o ../common/zlib/trees.o ../common/zlib/zutil.o ../common/zlib/inftrees.o ../common/zlib/adler32.o ../common/zlib/inffast.o ../common/zlib/compress.o
 endif
 
-ifeq ($(findstring MINGW32,$(shell uname)), MINGW32)
-LIBS = -lm -lwsock32 -limagehlp
-else
-LIBS = -lm
-endif
-
 ifdef SQLFLAG
-	LIBS += -L$(MYSQL_LIBS) -lmysqlclient
-endif
-
-ifneq ($(findstring LOCALZLIB,$(CFLAGS)), LOCALZLIB)
-	LIBS += -lz
+	LIBS_S = -L$(MYSQL_LIBS) -lmysqlclient
 endif
 
 char-server: char.o inter.o int_party.o int_guild.o int_storage.o int_pet.o int_mail.o int_homun.o int_status.o $(COMMON_OBJ)
-	$(CC) -o ../../bin/$@ $> $(LIBS)
+	$(CC) -o ../../bin/$@ $> $(LIBS) $(LIBS_S)
 
 clean:
 	rm -f *.o

@@ -3993,6 +3993,8 @@ int pc_checkequip(struct map_session_data *sd,int pos)
 struct pc_base_job pc_calc_base_job(int b_class)
 {
 	struct pc_base_job bj;
+
+	memset(&bj, 0, sizeof(bj));
 	//転生や養子の場合の元の職業を算出する
 	if(b_class <= PC_CLASS_SNV || b_class==PC_CLASS_GS || b_class==PC_CLASS_NJ )
 	{
