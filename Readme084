@@ -1,4 +1,15 @@
 ----------------------------------------
+//0123 [2007/03/18] by Rayce
+
+・メモライズと緊急召集はメモライズで詠唱短縮できないように修正（unit.c）
+・職業定義をmap.hからmmo.hに移動（char.c, clif.c, guild.c, mmo.h, map.h）
+・guild_send_memberinfoshort() を少し修正（guild.c）
+・db/scdata_dbのReleasableの項目にSC_DANCINGを許可した場合、演奏状態が正常に解除されるように修正（status.c）
+　ただし死亡時だけは安全性維持のためdbの設定に関わらず必ず解除されます
+
+・gccでLOCALZLIBを指定しないときはsrc/common/zlibをコンパイルしないように修正
+
+----------------------------------------
 //0122 [2007/03/17] by Rayce
 
 ・MinGWでのコンパイルに関する修正

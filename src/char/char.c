@@ -114,14 +114,6 @@ const char ranking_reg[MAX_RANKING][32] =
 	//"PC_PVP_POINT",
 };
 
-// map.hより
-#define PC_CLASS_SNV    23
-#define PC_CLASS_NV3  4023
-#define PC_CLASS_SNV3 4045
-#define PC_CLASS_BASE 0
-#define PC_CLASS_BASE2 (PC_CLASS_BASE + 4001)
-#define PC_CLASS_BASE3 (PC_CLASS_BASE2 + 22)
-
 // 初期位置（confファイルから再設定可能）
 static struct point start_point = {"new_1-1.gat", 53, 111};
 
@@ -2102,7 +2094,7 @@ int mmo_char_send006b(int fd,struct char_session_data *sd)
 		WFIFOW(fd,offset+(i*len)+ 46) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
 		WFIFOW(fd,offset+(i*len)+ 48) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
 		WFIFOW(fd,offset+(i*len)+ 50) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
-		if(st->class_ == 28 || st->class_ == 29)
+		if(st->class_ == PC_CLASS_GS || st->class_ == PC_CLASS_NJ)
 			WFIFOW(fd,offset+(i*len)+ 52) = st->class_-4;
 		else
 			WFIFOW(fd,offset+(i*len)+ 52) = st->class_;

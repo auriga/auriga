@@ -749,7 +749,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	struct mob_data         *target_md = NULL;
 	struct homun_data       *target_hd = NULL;
 //	struct unit_data        *target_ud = NULL;
-	int forcecast = 0,zone = 0;
+	int forcecast = 0,zone = 0,nomemorize = 0;
 	struct status_change *sc_data;
 
 	nullpo_retr(0, src);
@@ -957,6 +957,9 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		if(sc_data && sc_data[SC_BASILICA].timer != -1)
 			casttime = 0;
 		break;
+	case PF_MEMORIZE:
+		nomemorize = 1;
+		break;
 	case KN_CHARGEATK:	/* チャージアタック */
 		{
 			int dist = unit_distance(src->x,src->y,target->x,target->y);
@@ -971,13 +974,15 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			casttime = 0;
 		break;
 	case GD_EMERGENCYCALL:	/* 緊急召集 */
-		if(src_sd && pc_checkskill(src_sd,TK_HIGHJUMP) > 0)
+		if(src_sd && pc_checkskill(src_sd,TK_HIGHJUMP) > 0) {
 			casttime <<= 1;
+		}
+		nomemorize = 1;
 		break;
 	}
 
 	//メモライズ状態ならキャストタイムが1/2
-	if(sc_data && sc_data[SC_MEMORIZE].timer != -1 && casttime > 0){
+	if(sc_data && sc_data[SC_MEMORIZE].timer != -1 && casttime > 0 && !nomemorize) {
 		casttime = casttime/2;
 		if((--sc_data[SC_MEMORIZE].val2)<=0)
 			status_change_end(src, SC_MEMORIZE, -1);

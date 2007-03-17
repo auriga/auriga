@@ -5,30 +5,6 @@
 #include "mmo.h"
 #include "script.h"
 
-#ifdef CLASS_DKDC
-	#define MAX_VALID_PC_CLASS 32
-#else
-	#define MAX_VALID_PC_CLASS 30
-#endif
-
-#define PC_CLASS_NV      0  	//ノビ
-#define PC_CLASS_NV2  4001  	//転生ノビ
-#define PC_CLASS_NV3  4023  	//養子ノビ
-#define PC_CLASS_SNV    23  	//スパノビ
-#define PC_CLASS_SNV3 4045  	//養子スパノビ
-#define PC_CLASS_TK   4046	//テコン
-#define PC_CLASS_SG   4047	//拳聖
-#define PC_CLASS_SG2  4048	//拳聖2
-#define PC_CLASS_SL   4049	//ソウルリンカー
-#define PC_CLASS_GS     28	//ガンスリンガー
-#define PC_CLASS_NJ     29	//忍者
-#define PC_CLASS_DK   4051	//デスナイト
-#define PC_CLASS_DC   4052	//ダークコレクター
-
-#define MAX_PC_CLASS (1+6+6+1+6+1+1+1+1+4+2+2)
-#define PC_CLASS_BASE 0
-#define PC_CLASS_BASE2 (PC_CLASS_BASE + 4001)
-#define PC_CLASS_BASE3 (PC_CLASS_BASE2 + 22)
 #define MAX_NPC_PER_MAP 512
 #define BLOCK_SIZE 8
 //#define AREA_SIZE 20
@@ -788,7 +764,6 @@ struct map_data {
 	unsigned char *gat;	// NULLなら下のmap_data_other_serverとして扱う
 	struct block_list **block;
 	struct block_list **block_mob;
-//	int *block_count,*block_mob_count;
 	int m;
 	short xs,ys;
 	short bxs,bys;

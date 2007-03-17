@@ -962,15 +962,13 @@ void guild_send_memberinfoshort(struct map_session_data *sd, unsigned char onlin
 	// 競合確認
 	guild_check_conflict(sd);
 
-	// あるならギルド初期送信データ送信
-	if( (g=guild_search(sd->status.guild_id))!=NULL ){
-		guild_check_member(g);	// 所属を確認する
-		if(sd->status.guild_id==g->guild_id){
-			clif_guild_belonginfo(sd,g);
-			clif_guild_notice(sd,g);
-			sd->guild_sended=1;
-			sd->guild_emblem_id=g->emblem_id;
-		}
+	// ギルド初期送信データ送信
+	guild_check_member(g);	// 所属を確認する
+	if(sd->status.guild_id==g->guild_id){
+		clif_guild_belonginfo(sd,g);
+		clif_guild_notice(sd,g);
+		sd->guild_sended=1;
+		sd->guild_emblem_id=g->emblem_id;
 	}
 	/*
 	//guild_recv_memberinfoshortで更新されるからいらない？
