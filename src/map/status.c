@@ -6530,10 +6530,13 @@ int status_change_release(struct block_list *bl,int mask)
 	for(i = 0; i < MAX_STATUSCHANGE; i++) {
 		// 異常があって且つフラグがあるならタイマーを削除
 		if( (scdata_db[i].releasable & mask) && sc_data[i].timer != -1 ) {
-			if(i == SC_DANCING)
+			if(i == SC_DANCING) {
 				skill_stop_dancing(bl,0);
-			else
+			} else {
+				if(i == SC_BASILICA)
+					skill_basilica_cancel(bl);
 				status_change_end(bl,i,-1);
+			}
 		}
 	}
 	status_calc_pc_stop_end(bl);

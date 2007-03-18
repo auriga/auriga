@@ -2777,8 +2777,17 @@ void run_script_main(struct script_state *st)
 		st->sleep.charid = (sd) ? sd->status.char_id : 0;
 		st->sleep.timer  = add_timer(gettick()+st->sleep.tick, run_script_timer, st->sleep.charid, (int)st);
 		linkdb_insert(&sleep_db, (void*)st->oid, st);
+		return;
 	}
-	else if(st->state != END && sd){
+
+	if(sd && sd->stack) {
+		// 元のスタック情報を破棄
+		script_free_stack(sd->stack);
+		sd->stack = NULL;
+		sd->state.menu_or_input = 0;
+	}
+
+	if(st->state != END && sd) {
 		// 再開するためにスタック情報を保存
 		sd->npc_script      = st->script;
 		sd->npc_scriptroot  = st->scriptroot;
@@ -2786,7 +2795,6 @@ void run_script_main(struct script_state *st)
 		sd->stack           = st->stack;
 		sd->npc_id          = st->oid;
 		sd->npc_pos         = st->pos;
-		aFree(st);
 	} else {
 		// 実行が終わった or 続行不可能なのでスタッククリア
 		if(sd && st->oid == sd->npc_id) {
@@ -2796,8 +2804,8 @@ void run_script_main(struct script_state *st)
 		}
 		st->pos = -1;
 		script_free_stack(st->stack);
-		aFree(st);
 	}
+	aFree(st);
 
 	return;
 }
@@ -5281,7 +5289,7 @@ int buildin_getcharname(struct script_state *st)
  */
 int buildin_getpartymember(struct script_state *st)
 {
-	int count = 0;
+	int j = 0;
 	struct party *p = NULL;
 
 	p = party_search(conv_num(st,& (st->stack->stack_data[st->start+2])));
@@ -5289,14 +5297,14 @@ int buildin_getpartymember(struct script_state *st)
 	if(p) {
 		int i,num;
 		num = add_str("$@partymembername$");
-		for(i=0; i<MAX_PARTY && i<128; i++) {
+		for(i=0; i<MAX_PARTY && j<128; i++) {
 			if(p->member[i].account_id) {
-				mapreg_setregstr(num+(i<<24),p->member[i].name,0);
-				count++;
+				mapreg_setregstr(num+(j<<24),p->member[i].name,0);
+				j++;
 			}
 		}
 	}
-	mapreg_setreg(add_str("$@partymembercount"),count,0);
+	mapreg_setreg(add_str("$@partymembercount"),j,0);
 
 	return 0;
 }
@@ -7375,7 +7383,7 @@ int buildin_getwaitingroomstate(struct script_state *st)
  */
 int buildin_warpwaitingpc(struct script_state *st)
 {
-	int x,y,i,n,num;
+	int x,y,i,j,n,num;
 	char *str;
 	struct npc_data *nd = map_id2nd(st->oid);
 	struct chat_data *cd;
@@ -7393,12 +7401,13 @@ int buildin_warpwaitingpc(struct script_state *st)
 		n = cd->trigger&0x7f;
 
 	num = add_str("$@warpwaitingpc");
-	for(i=0; i<n && i<128; i++) {
+	for(i=0, j=0; i<n && i<128; i++) {
 		struct map_session_data *sd = cd->usersd[0];	// リスト先頭のPCを次々に。
 
 		if(sd == NULL)
 			continue;
-		mapreg_setreg(num+(i<<24),sd->bl.id,0);
+		mapreg_setreg(num+(j<<24),sd->bl.id,0);
+		j++;
 
 		if(strcmp(str,"Random") == 0)
 			pc_randomwarp(sd,3);
@@ -7407,7 +7416,7 @@ int buildin_warpwaitingpc(struct script_state *st)
 		else
 			pc_setpos(sd,str,x,y,0);
 	}
-	mapreg_setreg(add_str("$@warpwaitingpcnum"),n,0);
+	mapreg_setreg(add_str("$@warpwaitingpcnum"),j,0);
 	return 0;
 }
 

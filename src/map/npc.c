@@ -564,22 +564,25 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
  * 近くかどうかの判定
  *------------------------------------------
  */
-int npc_checknear(struct map_session_data *sd, struct npc_data *nd)
+static int npc_checknear(struct map_session_data *sd, struct npc_data *nd)
 {
-	nullpo_retr(0, sd);
+	nullpo_retr(1, sd);
 
-	if (nd == NULL || nd->bl.type != BL_NPC)
+	if (nd == NULL || nd->bl.type != BL_NPC) {
+		printf("npc_checknear: npc not found!!");
 		return 1;
+	}
 
 	if (nd->class_ < 0)	// イベント系は常にOK
 		return 0;
 
 	// エリア判定
-	if (nd->bl.m!=sd->bl.m ||
-	   nd->bl.x<sd->bl.x-AREA_SIZE-1 || nd->bl.x>sd->bl.x+AREA_SIZE+1 ||
-	   nd->bl.y<sd->bl.y-AREA_SIZE-1 || nd->bl.y>sd->bl.y+AREA_SIZE+1)
+	if (nd->bl.m != sd->bl.m ||
+	    nd->bl.x < sd->bl.x-AREA_SIZE-1 || nd->bl.x > sd->bl.x+AREA_SIZE+1 ||
+	    nd->bl.y < sd->bl.y-AREA_SIZE-1 || nd->bl.y > sd->bl.y+AREA_SIZE+1) {
+		printf("npc_checknear: npc too far!! %s\n",nd->exname);
 		return 1;
-
+	}
 	return 0;
 }
 
