@@ -7702,13 +7702,16 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 		) return 0;
 		break;
 	case HP_BASILICA:		/* バジリカ */
-		if (skill_check_unit_range(bl->m,bl->x,bl->y,sc->id,sc->lv)) {
-			if(sd) clif_skill_fail(sd,sc->id,0,0);
-			return 0;
-		}
-		if (skill_check_unit_range2(bl->m,bl->x,bl->y,sc->id,sc->lv)) {
-			if(sd) clif_skill_fail(sd,sc->id,0,0);
-			return 0;
+		if(!type) {
+			// 詠唱開始時のみチェック
+			if (skill_check_unit_range(bl->m,bl->x,bl->y,sc->id,sc->lv)) {
+				if(sd) clif_skill_fail(sd,sc->id,0,0);
+				return 0;
+			}
+			if (skill_check_unit_range2(bl->m,bl->x,bl->y,sc->id,sc->lv)) {
+				if(sd) clif_skill_fail(sd,sc->id,0,0);
+				return 0;
+			}
 		}
 		break;
 	case HT_POWER:		/* ビーストストレイピング */

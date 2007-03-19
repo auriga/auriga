@@ -346,7 +346,6 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 		if(x==x1 && y==y1){
 			wpd->path_len=i;
 			wpd->path_pos=0;
-			wpd->path_half=0;
 			return 0;
 		}
 	}
@@ -420,7 +419,6 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 			return -1;
 		wpd->path_len=len;
 		wpd->path_pos=0;
-		wpd->path_half=0;
 		for(i=rp,j=len-1;j>=0;i=tp[i].before,j--) {
 			int dx  = tp[i].x - tp[tp[i].before].x;
 			int dy  = tp[i].y - tp[tp[i].before].y;

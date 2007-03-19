@@ -9045,8 +9045,6 @@ static void clif_parse_TickSend(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_WalkToXY(int fd,struct map_session_data *sd, int cmd)
 {
-	int x,y;
-
 	nullpo_retv(sd);
 
 	if(unit_isdead(&sd->bl)) {
@@ -9059,16 +9057,15 @@ static void clif_parse_WalkToXY(int fd,struct map_session_data *sd, int cmd)
 	if( pc_issit(sd) )
 		return;
 
-	if(unit_can_move(&sd->bl) && !unit_isrunning(&sd->bl)) {
-		if(sd->invincible_timer != -1)
-			pc_delinvincibletimer(sd);
+	if( !unit_isrunning(&sd->bl) ) {
+		int x = RFIFOB(fd,GETPACKETPOS(cmd,0))*4+(RFIFOB(fd,GETPACKETPOS(cmd,0)+1)>>6);
+		int y = ((RFIFOB(fd,GETPACKETPOS(cmd,0)+1)&0x3f)<<4)+(RFIFOB(fd,GETPACKETPOS(cmd,0)+2)>>4);
 
-		unit_stopattack(&sd->bl);
-
-		x = RFIFOB(fd,GETPACKETPOS(cmd,0))*4+(RFIFOB(fd,GETPACKETPOS(cmd,0)+1)>>6);
-		y = ((RFIFOB(fd,GETPACKETPOS(cmd,0)+1)&0x3f)<<4)+(RFIFOB(fd,GETPACKETPOS(cmd,0)+2)>>4);
-
-		unit_walktoxy(&sd->bl,x,y);
+		if( unit_walktoxy(&sd->bl,x,y) ) {
+			unit_stopattack(&sd->bl);
+			if(sd->invincible_timer != -1)
+				pc_delinvincibletimer(sd);
+		}
 	}
 	return;
 }

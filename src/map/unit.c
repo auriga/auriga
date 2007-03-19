@@ -68,11 +68,11 @@ static int unit_walktoxy_sub(struct block_list *bl)
 	struct unit_data        *ud = NULL;
 	struct status_change    *sc_data = NULL;
 
-	nullpo_retr(1, bl);
+	nullpo_retr(0, bl);
 
 	ud = unit_bl2ud(bl);
 	if(ud == NULL)
-		return 1;
+		return 0;
 
 	if(bl->type == BL_PC)
 		sd = (struct map_session_data *)bl;
@@ -83,10 +83,10 @@ static int unit_walktoxy_sub(struct block_list *bl)
 	sc_data = status_get_sc_data(bl);
 	if(sc_data && sc_data[SC_FORCEWALKING].timer!=-1) {
 		if(path_search2(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
-			return 1;
+			return 0;
 	} else {
 		if(path_search(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
-			return 1;
+			return 0;
 	}
 
 	if(bl->type == BL_MOB) {
@@ -96,7 +96,7 @@ static int unit_walktoxy_sub(struct block_list *bl)
 			int y = md->bl.y+diry[wpd.path[0]];
 			if (map_getcell(bl->m,x,y,CELL_CHKBASILICA) && !(status_get_mode(bl)&0x20)) {
 				ud->state.change_walk_target=0;
-				return 1;
+				return 0;
 			}
 		}
 	}
@@ -117,11 +117,10 @@ static int unit_walktoxy_sub(struct block_list *bl)
 	else
 		i = status_get_speed(bl);
 	if(i>0) {
-		i = i>>1;
 		ud->walktimer = add_timer(gettick()+i,unit_walktoxy_timer,bl->id,0);
 	}
 
-	return 0;
+	return 1;
 }
 
 
@@ -167,29 +166,137 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 	if(sd) {
 		sd->inchealspirithptick = 0;
 		sd->inchealspiritsptick = 0;
-		sd->warp_waiting		= 0;
+		sd->warp_waiting        = 0;
 	}
 
 	sc_data = status_get_sc_data(bl);
-	ud->walkpath.path_half ^= 1;
 
-	if(ud->walkpath.path_half==0){ // マス目中心へ到着
-		if( (md || pd) && ud->walkpath.path[ud->walkpath.path_pos]>=8)
-			return 1;
-		x = bl->x;
-		y = bl->y;
+	//if( (md || pd) && ud->walkpath.path[ud->walkpath.path_pos]>=8)
+	//	return 1;
+	x = bl->x;
+	y = bl->y;
 
-		dir = ud->walkpath.path[ud->walkpath.path_pos];
-		if(sd) pc_setdir(sd, dir, dir);
-		if(md) md->dir = dir;
-		if(pd) pd->dir = dir;
-		if(hd) hd->dir = dir;
+	dir = ud->walkpath.path[ud->walkpath.path_pos];
+	if(sd) pc_setdir(sd, dir, dir);
+	if(md) md->dir = dir;
+	if(pd) pd->dir = dir;
+	if(hd) hd->dir = dir;
 
-		dx = dirx[(int)dir];
-		dy = diry[(int)dir];
+	dx = dirx[(int)dir];
+	dy = diry[(int)dir];
 
-		// 障害物に当たった
-		if(sd && sd->sc_data[SC_RUN].timer != -1) {
+	moveblock = ( x/BLOCK_SIZE != (x+dx)/BLOCK_SIZE || y/BLOCK_SIZE != (y+dy)/BLOCK_SIZE);
+
+	ud->walktimer = 1;
+	if(sd) {
+		map_foreachinmovearea(clif_pcoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,0,sd);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_MOB,sd,0);
+	} else if(md) {
+		map_foreachinmovearea(clif_moboutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,md);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_PC|BL_HOM,md,0);
+	} else if(pd) {
+		map_foreachinmovearea(clif_petoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,pd);
+	} else if(hd) {
+		map_foreachinmovearea(clif_homoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,hd);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_MOB,hd,0);
+	}
+	ud->walktimer = -1;
+
+	x += dx;
+	y += dy;
+
+	if(md && md->min_chase>13)
+		md->min_chase--;
+
+	if(!pd) skill_unit_move(bl,tick,0);
+	if(moveblock) map_delblock(bl);
+	bl->x = x;
+	bl->y = y;
+	if(moveblock) map_addblock(bl);
+	if(!pd) skill_unit_move(bl,tick,1);
+
+	if(sd && sd->sc_data[SC_DANCING].timer != -1 && sd->sc_data[SC_LONGINGFREEDOM].timer == -1) // Not 拘束しないで
+	{
+		skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_DANCING].val2,sd->bl.m,dx,dy);
+		sd->dance.x += dx;
+		sd->dance.y += dy;
+	}
+
+	ud->walktimer = 1;
+	if(sd) {
+		map_foreachinmovearea(clif_pcinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,0,sd);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_MOB,sd,1);
+	} else if(md) {
+		map_foreachinmovearea(clif_mobinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,md);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_PC|BL_HOM,md,1);
+	} else if(pd) {
+		map_foreachinmovearea(clif_petinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,pd);
+	} else if(hd) {
+		map_foreachinmovearea(clif_hominsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,hd);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_MOB,hd,1);
+	}
+	ud->walktimer = -1;
+
+	if(md && md->option&4)
+		skill_check_cloaking(bl);
+
+	if(sd) {
+		if(sd->status.party_id > 0 && party_search(sd->status.party_id) != NULL) {	// パーティのＨＰ情報通知検査
+			int p_flag=0;
+			map_foreachinmovearea(party_send_hp_check,sd->bl.m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id,&p_flag);
+			if(p_flag)
+				sd->party_hp=-1;
+		}
+		if(pc_iscloaking(sd) && pc_checkskill(sd,AS_CLOAKING) < 3) {	// クローキングの消滅検査
+			skill_check_cloaking(&sd->bl);
+		}
+		/* ディボーション検査 */
+		for(i=0;i<5;i++)
+			if(sd->dev.val1[i]){
+				skill_devotion3(sd,sd->dev.val1[i]);
+				break;
+			}
+		if(sd->sc_data)
+		{
+			/* 被ディボーション検査 */
+			if(sd->sc_data[SC_DEVOTION].val1){
+				skill_devotion2(&sd->bl,sd->sc_data[SC_DEVOTION].val1);
+			}
+			/* マリオネット検査 */
+			if(sd->sc_data[SC_MARIONETTE].timer!=-1){
+				skill_marionette(sd,sd->sc_data[SC_MARIONETTE].val2);
+			}
+			/* 被マリオネット検査 */
+			if(sd->sc_data[SC_MARIONETTE2].timer!=-1){
+				skill_marionette2(sd,sd->sc_data[SC_MARIONETTE2].val2);
+			}
+			//ダンスチェック
+			if(sd->sc_data[SC_LONGINGFREEDOM].timer!=-1)
+			{
+				//範囲外に出たら止める
+				if(unit_distance(sd->bl.x,sd->bl.y,sd->dance.x,sd->dance.y)>4)
+				{
+					skill_stop_dancing(&sd->bl,0);
+				}
+			}
+			//ヘルモードチェック
+			if(battle_config.hermode_wp_check &&
+				sd->sc_data[SC_DANCING].timer !=-1 && sd->sc_data[SC_DANCING].val1 ==CG_HERMODE)
+			{
+				if(skill_hermode_wp_check(&sd->bl,battle_config.hermode_wp_check_range)==0)
+					skill_stop_dancing(&sd->bl,0);
+			}
+		}
+		//ギルドスキル有効
+		pc_check_guild_skill_effective_range(sd);
+
+		if(map_getcell(sd->bl.m,x,y,CELL_CHKNPC))
+			npc_touch_areanpc(sd,sd->bl.m,x,y);
+		else
+			sd->areanpc_id=0;
+
+		if(sd->sc_data[SC_RUN].timer != -1) {
+			// タイリギの障害物に当たった
 			if(map_getcell(sd->bl.m,x+dx,y+dy,CELL_CHKNOPASS) ||
 			   map_getcell(sd->bl.m,x   ,y+dy,CELL_CHKNOPASS) ||
 			   map_getcell(sd->bl.m,x+dx,y   ,CELL_CHKNOPASS) ||
@@ -200,143 +307,29 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 				pc_setdir(sd, dir, dir);
 				return 0;
 			}
-		} else if(map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {
-			if(!sc_data || sc_data[SC_FORCEWALKING].timer==-1) {
-				clif_fixwalkpos(bl);
-				return 0;
-			}
+			sd->sc_data[SC_RUN].val4++;	// 継続中なら歩数カウント
 		}
+	}
 
-		// バシリカ判定
-		if(md && map_getcell(bl->m,x+dx,y+dy,CELL_CHKBASILICA) && !(status_get_mode(bl)&0x20)) {
+	// 障害物に当たった
+	if(map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {
+		if(!sc_data || sc_data[SC_FORCEWALKING].timer==-1) {
 			clif_fixwalkpos(bl);
 			return 0;
 		}
-
-		moveblock = ( x/BLOCK_SIZE != (x+dx)/BLOCK_SIZE || y/BLOCK_SIZE != (y+dy)/BLOCK_SIZE);
-
-		ud->walktimer = 1;
-		if(sd) {
-			map_foreachinmovearea(clif_pcoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,0,sd);
-			map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_MOB,sd,0);
-		} else if(md) {
-			map_foreachinmovearea(clif_moboutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,md);
-			map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_PC|BL_HOM,md,0);
-		} else if(pd) {
-			map_foreachinmovearea(clif_petoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,pd);
-		} else if(hd) {
-			map_foreachinmovearea(clif_homoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,hd);
-			map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_MOB,hd,0);
-		}
-		ud->walktimer = -1;
-
-		x += dx;
-		y += dy;
-
-		if(md && md->min_chase>13)
-			md->min_chase--;
-
-		if(!pd) skill_unit_move(bl,tick,0);
-		if(moveblock) map_delblock(bl);
-		bl->x = x;
-		bl->y = y;
-		if(moveblock) map_addblock(bl);
-		if(!pd) skill_unit_move(bl,tick,1);
-
-		if(sd && sd->sc_data[SC_DANCING].timer != -1 && sd->sc_data[SC_LONGINGFREEDOM].timer == -1) // Not 拘束しないで
-		{
-			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_DANCING].val2,sd->bl.m,dx,dy);
-			sd->dance.x += dx;
-			sd->dance.y += dy;
-		}
-
-		ud->walktimer = 1;
-		if(sd) {
-			map_foreachinmovearea(clif_pcinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,0,sd);
-			map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_MOB,sd,1);
-		} else if(md) {
-			map_foreachinmovearea(clif_mobinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,md);
-			map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_PC|BL_HOM,md,1);
-		} else if(pd) {
-			map_foreachinmovearea(clif_petinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,pd);
-		} else if(hd) {
-			map_foreachinmovearea(clif_hominsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,hd);
-			map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_MOB,hd,1);
-		}
-		ud->walktimer = -1;
-
-		if(md && md->option&4)
-			skill_check_cloaking(bl);
-
-		if(sd) {
-			if(sd->status.party_id > 0 && party_search(sd->status.party_id) != NULL) {	// パーティのＨＰ情報通知検査
-				int p_flag=0;
-				map_foreachinmovearea(party_send_hp_check,sd->bl.m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id,&p_flag);
-				if(p_flag)
-					sd->party_hp=-1;
-			}
-			if(pc_iscloaking(sd) && pc_checkskill(sd,AS_CLOAKING) < 3) {	// クローキングの消滅検査
-				skill_check_cloaking(&sd->bl);
-			}
-			/* ディボーション検査 */
-			for(i=0;i<5;i++)
-				if(sd->dev.val1[i]){
-					skill_devotion3(sd,sd->dev.val1[i]);
-					break;
-				}
-			if(sd->sc_data)
-			{
-				/* 被ディボーション検査 */
-				if(sd->sc_data[SC_DEVOTION].val1){
-					skill_devotion2(&sd->bl,sd->sc_data[SC_DEVOTION].val1);
-				}
-				/* マリオネット検査 */
-				if(sd->sc_data[SC_MARIONETTE].timer!=-1){
-					skill_marionette(sd,sd->sc_data[SC_MARIONETTE].val2);
-				}
-				/* 被マリオネット検査 */
-				if(sd->sc_data[SC_MARIONETTE2].timer!=-1){
-					skill_marionette2(sd,sd->sc_data[SC_MARIONETTE2].val2);
-				}
-				//ダンスチェック
-				if(sd->sc_data[SC_LONGINGFREEDOM].timer!=-1)
-				{
-					//範囲外に出たら止める
-					if(unit_distance(sd->bl.x,sd->bl.y,sd->dance.x,sd->dance.y)>4)
-					{
-						skill_stop_dancing(&sd->bl,0);
-					}
-				}
-				//ヘルモードチェック
-				if(battle_config.hermode_wp_check &&
-					sd->sc_data[SC_DANCING].timer !=-1 && sd->sc_data[SC_DANCING].val1 ==CG_HERMODE)
-				{
-					if(skill_hermode_wp_check(&sd->bl,battle_config.hermode_wp_check_range)==0)
-						skill_stop_dancing(&sd->bl,0);
-				}
-			}
-			//ギルドスキル有効
-			pc_check_guild_skill_effective_range(sd);
-
-			if(map_getcell(sd->bl.m,x,y,CELL_CHKNPC))
-				npc_touch_areanpc(sd,sd->bl.m,x,y);
-			else
-				sd->areanpc_id=0;
-
-			if(sd->sc_data[SC_RUN].timer != -1)	// タイリギ継続中なら歩数カウント
-				sd->sc_data[SC_RUN].val4++;
-		}
-
-		ud->walkpath.path_pos++;
-		if(ud->state.change_walk_target) {
-			unit_walktoxy_sub(bl);
-			return 0;
-		}
-	}/*
-	 else { // マス目境界へ到着
-		
 	}
-	*/
+
+	// バシリカ判定
+	if(md && map_getcell(bl->m,x+dx,y+dy,CELL_CHKBASILICA) && !(status_get_mode(bl)&0x20)) {
+		clif_fixwalkpos(bl);
+		return 0;
+	}
+
+	ud->walkpath.path_pos++;
+	if(ud->state.change_walk_target) {
+		unit_walktoxy_sub(bl);
+		return 0;
+	}
 
 	if(ud->walkpath.path_pos>=ud->walkpath.path_len)
 		i = -1;
@@ -346,9 +339,6 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 		i = status_get_speed(bl);
 
 	if(i > 0) {
-		i = i>>1;
-//		if(i < 1 && ud->walkpath.path_half == 0)
-//			i = 1;
 		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,ud->walkpath.path_pos);
 	} else {
 		// 目的地に着いた
@@ -417,10 +407,9 @@ int unit_walktoxy( struct block_list *bl, int x, int y) {
 		// 現在歩いている最中の目的地変更なのでマス目の中心に来た時に
 		// timer関数からunit_walktoxy_subを呼ぶようにする
 		ud->state.change_walk_target = 1;
-		return 0;
-	} else {
-		return unit_walktoxy_sub(bl);
+		return 1;
 	}
+	return unit_walktoxy_sub(bl);
 }
 
 /*==========================================
@@ -1293,7 +1282,6 @@ int unit_can_reach(struct block_list *bl,int x,int y)
 	// 障害物判定
 	wpd.path_len=0;
 	wpd.path_pos=0;
-	wpd.path_half=0;
 	return (path_search(&wpd,bl->m,bl->x,bl->y,x,y,0)!=-1)?1:0;
 }
 

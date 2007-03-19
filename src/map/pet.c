@@ -732,7 +732,7 @@ static int pet_randomwalk(struct pet_data *pd,int tick)
 			int r=atn_rand();
 			x=pd->bl.x+r%(d*2+1)-d;
 			y=pd->bl.y+r/(d*2+1)%(d*2+1)-d;
-			if((map_getcell(pd->bl.m,x,y,CELL_CHKPASS))&&( unit_walktoxy(&pd->bl,x,y)==0)){
+			if(map_getcell(pd->bl.m,x,y,CELL_CHKPASS) && unit_walktoxy(&pd->bl,x,y)){
 				pd->move_fail_count=0;
 				break;
 			}
@@ -850,7 +850,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			if(pd->speed <= 0)
 				pd->speed = 1;
 			pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
-			if(unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
+			if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
 				pet_randomwalk(pd,tick);
 		}
 		else if(pd->target_id  > MAX_FLOORITEM) {
@@ -890,7 +890,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 						}
 						ret=unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
 						i++;
-					} while(ret && i<5);
+					} while(ret == 0 && i<5);
 
 					if(ret) { // 移動不可能な所からの攻撃なら2歩下る
 						if(dx<0) dx=2;
@@ -983,7 +983,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			// 待機時、適当に歩き回る
 /*			if(pc_issit(sd)){
 				if(dist < 5 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 5){
-					if(unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
+					if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
 						pet_randomwalk(pd,tick);
 					return 0;
 				}
@@ -999,7 +999,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			else
 				pd->speed = sd->petDB->speed;
 			pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
-			if(unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
+			if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
 				pet_randomwalk(pd,tick);
 		}
 	}

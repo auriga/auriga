@@ -503,7 +503,6 @@ int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 	// 障害物判定
 	wpd.path_len=0;
 	wpd.path_pos=0;
-	wpd.path_half=0;
 	if(path_search(&wpd,md->bl.m,md->bl.x,md->bl.y,bl->x,bl->y,0)!=-1 && wpd.path_len<=AREA_SIZE)
 		return 1;
 
@@ -735,7 +734,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 
 				ret=unit_walktoxy(&md->bl,md->bl.x+dx,md->bl.y+dy);
 				i++;
-			} while(ret && i<5);
+			} while(ret == 0 && i<5);
 		}
 		else {
 			do {
@@ -750,7 +749,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 
 				ret=unit_walktoxy(&md->bl,mmd->bl.x+dx,mmd->bl.y+dy);
 				i++;
-			} while(ret && i<5);
+			} while(ret == 0 && i<5);
 		}
 
 		md->next_walktime=tick+500;
@@ -832,7 +831,7 @@ static int mob_randomwalk(struct mob_data *md,int tick)
 			int r=atn_rand();
 			x=md->bl.x+r%(d*2+1)-d;
 			y=md->bl.y+r/(d*2+1)%(d*2+1)-d;
-			if((map_getcell(md->bl.m,x,y,CELL_CHKPASS)) && unit_walktoxy(&md->bl,x,y)==0){
+			if(map_getcell(md->bl.m,x,y,CELL_CHKPASS) && unit_walktoxy(&md->bl,x,y)){
 				md->move_fail_count=0;
 				break;
 			}
@@ -1032,7 +1031,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 					}
 					ret=unit_walktoxy(&md->bl,md->bl.x+dx,md->bl.y+dy);
 					i++;
-				} while(ret && i<5);
+				} while(ret == 0 && i<5);
 				if(ret){ // 移動不可能な所からの攻撃なら2歩下る
 					if(dx<0) dx=2; else if(dx>0) dx=-2;
 					if(dy<0) dy=2; else if(dy>0) dy=-2;
@@ -1063,7 +1062,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			mobskill_use(md,tick,-1);
 			if(md->ud.walktimer != -1 && unit_distance(md->ud.to_x,md->ud.to_y,tbl->x,tbl->y) <= 0)
 				return search_flag; // 既に移動中
-			if( unit_walktoxy(&md->bl,tbl->x,tbl->y) )
+			if( !unit_walktoxy(&md->bl,tbl->x,tbl->y) )
 				mob_unlocktarget(md,tick);// 移動できないのでタゲ解除（IWとか？）
 		} else {
 			// アイテムまでたどり着いた

@@ -128,7 +128,7 @@ struct block_list {
 };
 
 struct walkpath_data {
-	unsigned char path_len,path_pos,path_half;
+	unsigned char path_len,path_pos;
 	unsigned char path[MAX_WALKPATH];
 };
 
