@@ -1302,66 +1302,57 @@ L_RECALC:
 	if( (skill=pc_checkskill(sd,BS_WEAPONRESEARCH))>0)	// 武器研究の命中率増加
 		sd->hit += skill*2;
 
-	if(sd->status.option&2 && (skill = pc_checkskill(sd,RG_TUNNELDRIVE))>0 )	// トンネルドライブ	// トンネルドライブ
-		sd->speed += (short)(1.2*DEFAULT_WALK_SPEED - skill*9);
+	if(sd->status.option&2 && (skill = pc_checkskill(sd,RG_TUNNELDRIVE))>0 )	// トンネルドライブ
+		sd->speed += (12*DEFAULT_WALK_SPEED - skill*90) / 10;
+
+	if(s_class.job == 12 && (skill=pc_checkskill(sd,TF_MISS))>0)	// アサシン系の回避率上昇による移動速度増加
+		sd->speed -= sd->speed * skill / 100;
 
 	if (pc_iscarton(sd) && (skill=pc_checkskill(sd,MC_PUSHCART))>0)	// カートによる速度低下
-		sd->speed += (short)((10-skill) * (DEFAULT_WALK_SPEED * 0.1));
-	else if (pc_isriding(sd)){// ペコペコ乗りによる速度増加
-			sd->max_weight += battle_config.riding_weight; // Weight+α(初期設定は0)10000で本鯖;
-			if(sd->sc_data[SC_DEFENDER].timer != -1)//ディフェンダー時は歩行速度と同じ
-				sd->speed -= 0;
-			else
-			sd->speed -= (short)(0.25 * DEFAULT_WALK_SPEED);
+		sd->speed += (10-skill) * DEFAULT_WALK_SPEED / 10;
+	else if (pc_isriding(sd)){					// ペコペコ乗りによる速度増加
+		sd->max_weight += battle_config.riding_weight;		// Weight+α(初期設定は0)10000で本鯖;
+		if(sd->sc_data[SC_DEFENDER].timer == -1)		// ディフェンダー時は速度増加しない
+			sd->speed -= DEFAULT_WALK_SPEED / 4;
 	}
 
 	if(sd->sc_count && sd->sc_data){
 		int sc_speed_rate=100;
-		if(sd->sc_data[SC_AVOID].timer!=-1)//緊急回避
+		if(sd->sc_data[SC_AVOID].timer!=-1)				// 緊急回避
 			sc_speed_rate -= sd->sc_data[SC_AVOID].val1*10;
-		if((sd->sc_data[SC_INCREASEAGI].timer!=-1)&&(sc_speed_rate > 75))	// 速度増加による移動速度増加
-				sc_speed_rate = 75;
-		if((sd->sc_data[SC_RUN].timer!=-1)&&(sc_speed_rate > 50))	// 駆け足による移動速度増加
-				sc_speed_rate = 50;
-		if((sd->sc_data[SC_BERSERK].timer!=-1)&&(sc_speed_rate > 75))	// バーサークによる移動速度増加
-				sc_speed_rate = 75;
-		if((sd->sc_data[SC_CARTBOOST].timer!=-1)&&(sc_speed_rate > 80))	// カートブーストによる移動速度増加
-				sc_speed_rate = 80;
-		if((sd->sc_data[SC_WINDWALK].timer!=-1)&&(sc_speed_rate > 100-(sd->sc_data[SC_WINDWALK].val1*2)))	// ウィンドウォークによる移動速度増加
-				sc_speed_rate = 100-(sd->sc_data[SC_WINDWALK].val1*2);
-		if( s_class.job == 12 && (skill=pc_checkskill(sd,TF_MISS))>0 &&(sc_speed_rate > 100-skill))	// アサシン系の回避率上昇による移動速度増加
-				sc_speed_rate = 100-skill;
+		if(sd->sc_data[SC_INCREASEAGI].timer!=-1 && sc_speed_rate > 75)	// 速度増加による移動速度増加
+			sc_speed_rate = 75;
+		if(sd->sc_data[SC_RUN].timer!=-1 && sc_speed_rate > 50)		// 駆け足による移動速度増加
+			sc_speed_rate = 50;
+		if(sd->sc_data[SC_BERSERK].timer!=-1 && sc_speed_rate > 75)	// バーサークによる移動速度増加
+			sc_speed_rate = 75;
+		if(sd->sc_data[SC_CARTBOOST].timer!=-1 && sc_speed_rate > 80)	// カートブーストによる移動速度増加
+			sc_speed_rate = 80;
+		if(sd->sc_data[SC_WINDWALK].timer!=-1 && sc_speed_rate > 100-(sd->sc_data[SC_WINDWALK].val1*2))	// ウィンドウォークによる移動速度増加
+			sc_speed_rate = 100-(sd->sc_data[SC_WINDWALK].val1*2);
 
 		sd->speed = sd->speed*sc_speed_rate/100;
 
-
-		if(sd->sc_data[SC_CLOAKING].timer!=-1)//クローキングによる速度変化
+		if(sd->sc_data[SC_CLOAKING].timer!=-1)	// クローキングによる速度変化
 		{
-			skill=pc_checkskill(sd,AS_CLOAKING);
-			if ((skill=pc_checkskill(sd,AS_CLOAKING))>2)
-			{
-				static int dx[]={-1, 0, 1,-1, 1,-1, 0, 1};
-				static int dy[]={-1,-1,-1, 0, 0, 1, 1, 1};
-				struct block_list *bl = &sd->bl;
-				int check=1,ii;
-				nullpo_retr(0, bl);
-				for(ii=0;ii<sizeof(dx)/sizeof(dx[0]);ii++){
-					if(map_getcell(bl->m,bl->x+dx[ii],bl->y+dy[ii],CELL_CHKNOPASS)){
-						check=0;
-						break;
-					}
-				}
-				if(check){
-					// 平地移動速度
-					sd->speed += ((10-skill) * 3);
-				}else{
-					// 壁沿い移動速度
-					int cloak_speed_table[11]={100,100,103,106,109,112,115,118,121,124,125};
-					sd->speed -= (sd->speed * (cloak_speed_table[skill]-100) )/100;
+			int check=1;
+			for(i=0;i<8;i++){
+				if(map_getcell(sd->bl.m,sd->bl.x+dirx[i],sd->bl.y+diry[i],CELL_CHKNOPASS)){
+					check=0;
+					break;
 				}
 			}
+			if(check){
+				// 平地移動速度
+				sd->speed += sd->speed * (30-sd->sc_data[SC_CLOAKING].val1*3) / 100;
+			}else{
+				// 壁沿い移動速度
+				int rate = (sd->sc_data[SC_CLOAKING].val1 -1)*3;
+				if(rate > 25)
+					rate = 25;
+				sd->speed -= sd->speed * rate / 100;
+			}
 		}
-
 
 		if(sd->sc_data[SC_CHASEWALK].timer!=-1)/*チェイスウォークによる速度変化*/
 		{
@@ -1369,11 +1360,10 @@ L_RECALC:
 				sd->speed += sd->speed*(35 - (5*sd->sc_data[SC_CHASEWALK].val1))/100;
 		}
 
-		if(sd->sc_data[SC_DECREASEAGI].timer!=-1){	// 速度減少(agiはbattle.cで)
-			if(sd->sc_data[SC_DEFENDER].timer != -1)//ディフェンダー時は速度低下しない
-				sd->speed += 0;
-			else
+		if(sd->sc_data[SC_DECREASEAGI].timer!=-1){		// 速度減少(agiはbattle.cで)
+			if(sd->sc_data[SC_DEFENDER].timer == -1) {	// ディフェンダー時は速度低下しない
 				sd->speed = sd->speed *((sd->sc_data[SC_DECREASEAGI].val1>5)?150:133)/100;
+			}
 		}
 
 		if(sd->sc_data[SC_WEDDING].timer!=-1)	//結婚中は歩くのが遅い
@@ -4689,7 +4679,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			{
 				calc_flag = 1;
 				val2 = tick;
-				val3 = type==SC_CLOAKING ? 130-val1*3 : 135-val1*5;
 			}
 			else
 				tick = 5000*val1;

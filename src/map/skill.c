@@ -10009,9 +10009,8 @@ int skill_trap_splash(struct block_list *bl, va_list ap )
 /* クローキング検査（周りに移動不可能地帯があるか） */
 int skill_check_cloaking(struct block_list *bl)
 {
-	static int dx[]={-1, 0, 1,-1, 1,-1, 0, 1};
-	static int dy[]={-1,-1,-1, 0, 0, 1, 1, 1};
-	int end=1,i;
+	int i;
+	unsigned int *option;
 
 	nullpo_retr(0, bl);
 
@@ -10020,17 +10019,16 @@ int skill_check_cloaking(struct block_list *bl)
 	if(bl->type == BL_MOB && battle_config.monster_cloak_check_type&1)
 		return 0;
 
-	for(i=0;i<sizeof(dx)/sizeof(dx[0]);i++){
-		if(map_getcell(bl->m,bl->x+dx[i],bl->y+dy[i],CELL_CHKNOPASS))
-			end=0;
+	for(i=0;i<8;i++){
+		if(map_getcell(bl->m,bl->x+dirx[i],bl->y+diry[i],CELL_CHKNOPASS))
+			return 0;
 	}
-	if(end){
-		unsigned int *option = status_get_option(bl);
-		status_change_end(bl, SC_CLOAKING, -1);
-		if( option )
-			*option &= ~4;	/* 念のための処理 */
-	}
-	return end;
+	status_change_end(bl, SC_CLOAKING, -1);
+	option = status_get_option(bl);
+	if( option )
+		*option &= ~4;	/* 念のための処理 */
+
+	return 1;
 }
 
 /*

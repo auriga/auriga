@@ -247,9 +247,6 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 			if(p_flag)
 				sd->party_hp=-1;
 		}
-		if(pc_iscloaking(sd) && pc_checkskill(sd,AS_CLOAKING) < 3) {	// クローキングの消滅検査
-			skill_check_cloaking(&sd->bl);
-		}
 		/* ディボーション検査 */
 		for(i=0;i<5;i++)
 			if(sd->dev.val1[i]){
@@ -270,21 +267,26 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 			if(sd->sc_data[SC_MARIONETTE2].timer!=-1){
 				skill_marionette2(sd,sd->sc_data[SC_MARIONETTE2].val2);
 			}
-			//ダンスチェック
+			/* ダンスチェック */
 			if(sd->sc_data[SC_LONGINGFREEDOM].timer!=-1)
 			{
-				//範囲外に出たら止める
+				// 範囲外に出たら止める
 				if(unit_distance(sd->bl.x,sd->bl.y,sd->dance.x,sd->dance.y)>4)
 				{
 					skill_stop_dancing(&sd->bl,0);
 				}
 			}
-			//ヘルモードチェック
+			/* ヘルモードチェック */
 			if(battle_config.hermode_wp_check &&
 				sd->sc_data[SC_DANCING].timer !=-1 && sd->sc_data[SC_DANCING].val1 ==CG_HERMODE)
 			{
 				if(skill_hermode_wp_check(&sd->bl,battle_config.hermode_wp_check_range)==0)
 					skill_stop_dancing(&sd->bl,0);
+			}
+			/* クローキングの消滅検査 */
+			if(pc_iscloaking(sd) && sd->sc_data[SC_CLOAKING].timer != -1) {
+				if(sd->sc_data[SC_CLOAKING].val1 < 3)
+					skill_check_cloaking(&sd->bl);
 			}
 		}
 		//ギルドスキル有効
@@ -311,20 +313,6 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 		}
 	}
 
-	// 障害物に当たった
-	if(map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {
-		if(!sc_data || sc_data[SC_FORCEWALKING].timer==-1) {
-			clif_fixwalkpos(bl);
-			return 0;
-		}
-	}
-
-	// バシリカ判定
-	if(md && map_getcell(bl->m,x+dx,y+dy,CELL_CHKBASILICA) && !(status_get_mode(bl)&0x20)) {
-		clif_fixwalkpos(bl);
-		return 0;
-	}
-
 	ud->walkpath.path_pos++;
 	if(ud->state.change_walk_target) {
 		unit_walktoxy_sub(bl);
@@ -339,6 +327,16 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 		i = status_get_speed(bl);
 
 	if(i > 0) {
+		if(map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {	// 障害物に当たった
+			if(!sc_data || sc_data[SC_FORCEWALKING].timer==-1) {
+				clif_fixwalkpos(bl);
+				return 0;
+			}
+		}
+		if(md && map_getcell(bl->m,x+dx,y+dy,CELL_CHKBASILICA) && !(status_get_mode(bl)&0x20)) {	// バシリカ判定
+			clif_fixwalkpos(bl);
+			return 0;
+		}
 		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,ud->walkpath.path_pos);
 	} else {
 		// 目的地に着いた
@@ -599,19 +597,19 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	else			// 位置変更情報送信
 		clif_fixpos2(bl,x,y);
 
-	if(sd && sd->status.party_id > 0 && party_search(sd->status.party_id) != NULL) {	// パーティのＨＰ情報通知検査
-		map_foreachinmovearea(party_send_hp_check,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id,&flag);
-		if(flag)
-			sd->party_hp=-1;
-	}
-
-	if(sd && !(sd->status.option&0x4000) && sd->status.option&4)	// クローキングの消滅検査
-	{
-		if(pc_checkskill(sd,AS_CLOAKING) < 3)
-			skill_check_cloaking(&sd->bl);
-	}
-
 	if(sd) {
+		if(sd->status.party_id > 0 && party_search(sd->status.party_id) != NULL) {	// パーティのＨＰ情報通知検査
+			int p_flag = 0;
+			map_foreachinmovearea(party_send_hp_check,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id,&p_flag);
+			if(p_flag)
+				sd->party_hp=-1;
+		}
+
+		// クローキングの消滅検査
+		if(pc_iscloaking(sd) && sd->sc_data[SC_CLOAKING].timer != -1 && sd->sc_data[SC_CLOAKING].val1 < 3) {
+			skill_check_cloaking(&sd->bl);
+		}
+
 		if(map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
 			npc_touch_areanpc(sd,sd->bl.m,sd->bl.x,sd->bl.y);
 		else
@@ -1182,10 +1180,13 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	src_ud->skilly       = skill_y;
 	src_ud->skilltarget  = 0;
 
-	if(src_sd && !(battle_config.pc_cloak_check_type&2) && sc_data && sc_data[SC_CLOAKING].timer != -1)
-		status_change_end(src,SC_CLOAKING,-1);
-	if(src_md && !(battle_config.monster_cloak_check_type&2) && sc_data && sc_data[SC_CLOAKING].timer != -1)
-		status_change_end(src,SC_CLOAKING,-1);
+	if(
+		(src_sd && !(battle_config.pc_cloak_check_type&2) ) ||
+		(src_md && !(battle_config.monster_cloak_check_type&2) )
+	) {
+		if( sc_data && sc_data[SC_CLOAKING].timer != -1 )
+			status_change_end(src,SC_CLOAKING,-1);
+	}
 
 	if(casttime > 0) {
 		int skill;
@@ -1632,6 +1633,8 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 // unit_data の初期化処理
 int unit_dataset(struct block_list *bl) {
 	struct unit_data *ud;
+	unsigned int tick = gettick();
+
 	nullpo_retr(0, ud = unit_bl2ud(bl));
 
 	memset( ud, 0, sizeof( struct unit_data) );
@@ -1639,9 +1642,9 @@ int unit_dataset(struct block_list *bl) {
 	ud->walktimer      = -1;
 	ud->skilltimer     = -1;
 	ud->attacktimer    = -1;
-	ud->attackabletime = gettick();
-	ud->canact_tick    = gettick();
-	ud->canmove_tick   = gettick();
+	ud->attackabletime = tick;
+	ud->canact_tick    = tick;
+	ud->canmove_tick   = tick;
 
 	return 0;
 }
