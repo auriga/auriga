@@ -37,7 +37,7 @@ static int gm_account_db_final(void *key, void *data, va_list ap)
 	return 0;
 }
 
-void read_gm_account() {
+void read_gm_account(void) {
 	char line[8192];
 	struct gm_account *p;
 	FILE *fp;

@@ -45,6 +45,8 @@
 // =====================
 // strcmp 系のエイリアス
 // ---------------------
+#include <string.h>
+
 #ifndef _WIN32
 	#ifndef strcmpi
 		#define strcmpi  strcasecmp

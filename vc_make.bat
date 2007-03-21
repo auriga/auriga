@@ -47,6 +47,10 @@ rem call "C:\Program Files\Microsoft Visual Studio\VC98\Bin\vcvars32.bat"
 rem set __VCVER__=6
 rem ---- VC++ 6.0 の設定ここまで
 
+rem ----------------------------------------------------------------
+rem SQL の設定 / 必要ならコメントアウトをはずす
+rem set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.0\Include;%INCLUDE%
+rem set LIB=C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt;%LIB%
 
 rem ----------------------------------------------------------------
 rem VC8 で指定できないオプションの回避処理

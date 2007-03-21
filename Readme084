@@ -1,4 +1,17 @@
 ----------------------------------------
+//0128 [2007/03/22] by Rayce
+
+・BCCとVCでSQLの設定が容易に出来るようにbatファイル修正（bcc32_clean.bat, bcc32_make.bat, vc_make.bat）
+　BCCでのtxt-converter.exeの作成はbcc32_make.batに吸収
+　bcc32_consqlmake.batは不要になったので削除予定
+
+・doc/sqllogin.txtの内容を適切なものに編集
+・doc/server_build.txtに少し加筆
+
+・SQL: BCCでstrcmp系のエイリアスが重複定義エラーとなる場合があったので修正（utils.h）
+・SQL: login-converter.cの read_gm_account() がおかしかったので修正（login-converter.c）
+
+----------------------------------------
 //0127 [2007/03/22] by Rayce
 
 ・httpd.cで警告が出ていたので修正（httpd.c）

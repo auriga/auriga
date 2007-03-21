@@ -28,6 +28,7 @@ Athena は C 言語で記述されているため、C コンパイラが必要�
 
 	Windows の場合
 	・Cygwin + gcc
+	・MinGW + gcc
 	・Borland C++    (以下 bcc)
 	・Visual C++     (以下 vc)
 	などのどれか一つを用意すればいいでしょう。

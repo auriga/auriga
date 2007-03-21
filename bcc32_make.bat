@@ -1,16 +1,12 @@
 @ECHO OFF
-@echo 古いオブジェクトファイル等のクリーンアップ
-
-del src\char\*.obj > NUL
-del src\login\*.obj > NUL
-del src\map\*.obj > NUL
-del login-server.exe > NUL
-del char-server.exe > NUL
-del map-server.exe > NUL
 
 @echo コンパイル開始
 @rem パスの追加ですが環境変数に既に組み込んでいる人は不要です。
-set path=%path%;C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib
+set PATH=C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib;%PATH%
+
+@rem SQLで必要ならコメントアウトをはずして設定する
+:set __sqlinclude__=-I"C:\Program Files\MySQL\MySQL Server 5.0\Include"
+:set __sqllib__=-L"C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt" libmysql.lib
 
 @rem コンパイルオプション
 @rem SQL⇔TEXTの切り替え、SQL版にする場合は以下のコンパイルオプションをコメントアウトしてください
@@ -18,6 +14,9 @@ set __base__=-DTXT_ONLY
 
 @rem txt モードでジャーナルを使うならコメントアウトをはずす
 :set __base__=-DTXT_ONLY -DTXT_JOURNAL
+
+@rem データ保存方法が SQL の時、txt-converter が不要ならコメントアウトをはずす
+:set __TXTCONVERTER__=SKIP
 
 @rem zlib.dllをコンパイルする(通常はコメントアウト)
 :set __ZLIB__=-DLOCALZLIB
@@ -94,12 +93,12 @@ if "%_model_%"=="AMD64" set __cpu__=-6 -Oc -Ov -f -ff -tWM
 if "%_model_%"=="DCORE" set __cpu__=-6 -a16 -C -d -f -ff -Hc -i133 -Jgd -k- -Oc -Oxt -Ve -VF -xf -xp
 
 set __define__=%__cpu__% -DPACKETVER=8 -DNEW_006b -DFD_SETSIZE=4096 %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__% %__DEBUG_VARS__%
-set __include__=-I../common/ -I../common/zlib/
+set __include__=-I../common/ -I../common/zlib/ %__sqlinclude__%
 
 if "%__ZLIB__%"=="" goto NOZLIB
-set __LINKZLIB__=..\common\zlib\adler32.c ..\common\zlib\compress.c ..\common\zlib\crc32.c ..\common\zlib\deflate.c ..\common\zlib\inffast.c ..\common\zlib\inflate.c ..\common\zlib\inftrees.c ..\common\zlib\trees.c ..\common\zlib\zutil.c
+set __common__=..\common\zlib\*.c
 :NOZLIB
-set __common__=..\common\core.c ..\common\db.c ..\common\grfio.c ..\common\lock.c ..\common\malloc.c ..\common\nullpo.c ..\common\socket.c ..\common\timer.c ..\common\httpd.c ..\common\graph.c ..\common\journal.c ..\common\md5calc.c ..\common\utils.c %__LINKZLIB__%
+set __common__=..\common\*.c %__common__%
 
 
 @echo ■コンパイルオプション表示■
@@ -121,19 +120,32 @@ set __warning__=-w-8004 -w-8008 -w-8012 -w-8057 -w-8060 -w-8066
 
 @echo ログインサーバーコンパイル
 cd src\login
-bcc32 -j255 -M -e..\..\login-server.exe %__warning__% %__define__% %__include__% login.c %__common__%
+bcc32 -j255 -M -e..\..\login-server.exe %__warning__% %__define__% %__include__% *.c %__common__% %__sqllib__%
 
 @echo キャラクターサーバーコンパイル
 cd ..\char
-bcc32 -j255 -M -e..\..\char-server.exe %__warning__% %__define__% %__include__% char.c int_pet.c int_guild.c int_party.c int_storage.c inter.c int_mail.c int_homun.c int_status.c %__common__%
+bcc32 -j255 -M -e..\..\char-server.exe %__warning__% %__define__% %__include__% *.c %__common__% %__sqllib__%
 
 @echo マップサーバーコンパイル
 cd ..\map
-bcc32 -j255 -M -e..\..\map-server.exe %__warning__% %__define__% %__include__% map.c npc.c battle.c chat.c chrif.c clif.c guild.c intif.c itemdb.c mob.c atcommand.c party.c path.c pc.c pet.c status.c script.c skill.c storage.c trade.c vending.c friend.c date.c ranking.c unit.c mail.c homun.c %__common__%
+bcc32 -j255 -M -e..\..\map-server.exe %__warning__% %__define__% %__include__% *.c %__common__% %__sqllib__%
+
+@rem 必要なら txt-converter をコンパイル
+if NOT "%__base__%"=="" goto NOCONVERTER1
+if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER1
+@echo コンバーターコンパイル
+cd ..\converter
+bcc32 -j255 -M -e..\..\txt-converter.exe %__warning__% %__define__% %__include__% *.c %__common__% %__sqllib__%
+:NOCONVERTER1
 
 cd ..\..\
 @echo オブジェクトファイル等のクリーンアップ
 del src\char\*.obj > NUL
 del src\login\*.obj > NUL
 del src\map\*.obj > NUL
+if NOT "%__base__%"=="" goto NOCONVERTER2
+if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER2
+del src\converter\*.obj > NUL
+:NOCONVERTER2
+
 pause

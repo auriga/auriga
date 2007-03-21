@@ -147,93 +147,89 @@ Windows 64bit-CPU+OS なら
 
 
 
-【TextのathenaデータをSQLにコンバートする方法】
+【TextのathenaセーブデータをSQLにコンバートする方法】
 注意！！　古すぎるデータだと失敗する場合があります。
 
+・BCCの場合
 
-・コンバーター作成方法
-Windows上でコンバートしてしまおう。
-VisualC++を利用してSQLでコンパイルする場合はそのままで作成されます。
-
-なお、SQLコンパイル時はvc_make.batを編集し
-rem set PATH=C:\
-rem set INCLUDE=C:\
-rem set LIB=C:\
-それぞれのPCのMySQLファイルへのパス設定を行なう事(;で区切る事で追記可能)
-
-
-・BCCの場合の事前準備
 １．bccが利用できる環境(コンパイルできる環境)にする。
 
-２．bcc32_consqlmake.bat内の以下の文を編集する
-set __sqlinclude__=-I../sql/include/
-set __sqllib__=../sql/bcclib/libmysql.lib
+２．bcc32_make.bat内の以下の文のコメントアウトを外し
 
-をご自身の環境に書き換えてください。
+　　set __sqlinclude__=-I"C:\Program Files\MySQL\MySQL Server 5.0\Include"
+　　set __sqllib__=-L"C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt" libmysql.lib
 
-３．includeファイル群はインストールしたMySQLフォルダ内にあります。
-　　libmysql.libはimplibコマンドを使ってMySQLにあるlibmysql.dllから取り出してください。
+　　をそれぞれのPCのMySQLファイルへのパス設定を行なってください。
 
-４．bcc32_consqlmake.batを使用しコンバーター実行ファイルを作成します。
-　（binフォルダ内にあるtxt-converter.exeを使用）
+３．MySQLにあるlibmysql.libはVC用なのでBCCではそのまま使えません。
+　　implibコマンドを使ってlibmysql.dllから取り出したものを使ってください。
+　　　　> implib libmysql.lib libmysql.dll
 
-５．bin\txt-converter.exeを実行するとconfフォルダのconverter_athena.confが読み取られる。
-・converter_athena.conf
-・char_athena.conf
-・login_athena.conf
-のそれぞれの
-// MySQL Login SQL Server
+４．SQLモードに切り替えます。
+　　bcc32_make.bat内の set __base__=-DTXT_ONLY をコメントアウトしてください。
 
-部分を書き換えておく。binフォルダにZlib.dllも入れておく。
+５．bcc32_make.batを使用しコンバーター実行ファイルを作成します。
+　　set __TXTCONVERTER__=SKIP がコメントアウトされていないことを確認してください。
 
-※
+６．confフォルダのconverter_athena.confを編集します。
+　　// SQL version options only
+　　// for TXT -> SQL convertors
+　　の部分を上記のMySQLの設定(アカウント名やパスワードなど)に合わせます。
+
+７．txt-converter.exeを実行します。
+
+
+・VCの場合
+
+１．VCが利用できる環境(コンパイルできる環境)にする。
+
+２．vc_make.bat内の以下の文のコメントアウトを外し
+
+　　set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.0\Include;%INCLUDE%
+　　set LIB=C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt;%LIB%
+
+　　をそれぞれのPCのMySQLファイルへのパス設定を行なってください。
+
+３．vc_make.batSQLモードに切り替えます。
+　　vc_make.bat内の set __TXT_MODE__=/D "TXT_ONLY" をコメントアウトしてください。
+
+５．vc_make.batを使用しコンバーター実行ファイルを作成します。
+　　set __TXTCONVERTER__=SKIP がコメントアウトされていないことを確認してください。
+
+６．confフォルダのconverter_athena.confを編集します。
+　　// SQL version options only
+　　// for TXT -> SQL convertors
+　　の部分を上記のMySQLの設定(アカウント名やパスワードなど)に合わせます。
+
+７．txt-converter.exeを実行します。
+
+
+【特記事項】
+
 [-v4.0]
 	MySQL v4.0では、文字コード指定はサポートされていないので、設定ファイルの
-　　　　文字コードの欄をコメントアウトしてください。
+　　　　文字コードの欄(confファイル中に記述されているcharsetの項目)
+　　　　をコメントアウトしてください。
 
 [v4.1-] [v5.0-]
 	テーブルの文字コードと設定ファイルの文字コードが違う場合、データベースに
 　　　　正常にアクセス出来ない可能性があります。
 	MySQLのサーバサイドの文字コードを確認してください。
-	4.1.15以降、および5.0.13以降であればskip-character-set-client-handshakeキーワードを利用できます。
+	4.1.15以降、および5.0.13以降であれば skip-character-set-client-handshake キーワードを利用できます。
 
-６．アカウントはhttp://127.0.0.1:6900/　等で作成。
-　　またはmail.sqlを実行した時点でs1 ... s15までのアカウントが作成されているので、
-　　そちらのパスワードを変更するという方法もあります。
+・アカウントはhttp://127.0.0.1:6900/　等で作成。
+　またはmail.sqlを実行した時点でs1 ... s5までのアカウントが作成されているので、
+　そちらのパスワードを変更するという方法もあります。
 
 	USE `ragnarok` INSERT INTO `login` (`userid`,`user_pass`,`sex`) VALUES ('inter-server_chaos','password','S');
 
-７．新たにアカウントを作成する場合、今まで通りの方法(ladmin)に加えて、データベース
-　　上に直接作成することもできます。（任意）
+・新たにアカウントを作成する場合、今まで通りの方法(ladmin)に加えて、データベース
+　上に直接作成することもできます。（任意）
 
 	USE `ragnarok` INSERT INTO `login` (`userid`,`user_pass`,`sex`,`level`) VALUES ('<username>','<password>','<gender>','<game master level>');
 
-　　性別の欄には、M(男) F(女) S(サーバー) のいずれかを指定してください。サーバー用のアカウントは、
-　　アカウントID(数字)が大きくなりすぎると、ログイン出来ない事がありますので、0-31を使うようにしてください。
-
-
-・BCCの場合の事前準備
-
-１．MYSQL,MicrosoftSDK,VCToolKit2003をインストールし
-　　VCが利用できる環境(コンパイルできる環境)にする。
-
-２．vc07_make.batを以下のように編集する
-
-編集前→編集後
-rem set __sqlinclude__=-I../sql/include/　→　set __sqlinclude__=-I../sql/include/
-rem set __sqllib__=../sql/vclib/libmysql.lib　→　set __sqllib__=../sql/vclib/libmysql.lib
-
-編集前→編集後
- set __TXT_MODE__=/D "TXT_ONLY"　→　rem set __TXT_MODE__=/D "TXT_ONLY"
-するとtxt-converter.exeがBinフォルダに作成されます
-
-３．includeファイル群はインストールしたMySQLフォルダ内にあります。
-　　libmysql.libはインストールしたMySQLフォルダ内にあります。
-
-４．vc07_make.batを使用しコンバーター実行ファイルを作成します。
-　（binフォルダ内にあるtxt-converter.exeを使用）
-
-以下BCC 手順５．から同様に進める
+　性別の欄には、M(男) F(女) S(サーバー) のいずれかを指定してください。サーバー用のアカウントは、
+　アカウントID(数字)が大きくなりすぎると、ログイン出来ない事がありますので、0-31を使うようにしてください。
 
 
 【情報】

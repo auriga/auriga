@@ -1,12 +1,16 @@
 del login-server.exe
 del char-server.exe
 del map-server.exe
+del txt-converter.exe
 del src\char\*.obj
 del src\login\*.obj
 del src\map\*.obj
+del src\converter\*.obj
 del login-server.map
 del char-server.map
 del map-server.map
+del txt-converter.map
 del login-server.tds
 del char-server.tds
 del map-server.tds
+del txt-converter.tds
