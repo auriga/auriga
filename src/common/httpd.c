@@ -1958,7 +1958,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 			return;
 		}
 
-		if( !WriteFile( sd->cgi_hPIn, sd->query, sd->query_len, &dwWritten, NULL ) || dwWritten < sd->query_len )
+		if( !WriteFile( sd->cgi_hPIn, sd->query, sd->query_len, &dwWritten, NULL ) || dwWritten < (DWORD)sd->query_len )
 		{
 			// POST の送信でエラーが起きた
 			CLOSEHANDLES();
@@ -2221,8 +2221,7 @@ void httpd_page_external_cgi( struct httpd_session_data* sd )
 // ------------------------------------------
 int httpd_page_external_cgi_abort( struct httpd_cgi_kill* p )
 {
-	unsigned int tick = gettick();
-	BOOL bRunning = ( WaitForSingleObject( p->hProcess, 0 ) != WAIT_OBJECT_0 );
+	BOOL bRunning;
 
 	switch( p->state )
 	{
@@ -2239,6 +2238,7 @@ int httpd_page_external_cgi_abort( struct httpd_cgi_kill* p )
 	// CGI の中断待ち
 	// ------------
 	case 2:
+		bRunning = ( WaitForSingleObject( p->hProcess, 0 ) != WAIT_OBJECT_0 );
 		if( bRunning )
 		{
 			if( DIFF_TICK( gettick(), p->tick ) > httpd_cgi_kill_timeout )
@@ -2794,7 +2794,8 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 	static const unsigned char* method[] = { "UNKNOWN", "GET", "POST" };
 	unsigned char* ip = (unsigned char *)( &session[sd->fd]->client_addr.sin_addr );
 	unsigned short port = ntohs( session[sd->fd]->client_addr.sin_port );
-	int i,j=0,x;
+	int i,x;
+	unsigned int j=0;
 	char* envp3[256];
 	char** envp = envp2;
 	
@@ -2873,7 +2874,8 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 {
 	char out[8192];
 	char status[256]="200 OK\r\n";
-	int x = 0 ,y = 0, i;
+	unsigned int x = 0 ,y = 0;
+	int i;
 	int ctype_flag = 0; 
 	int status_flag = 0;
 	
@@ -2890,7 +2892,7 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 		{
 			if( httpd_strcasencmp( buf+x, "Status: ", 8 )==0 )	// Status
 			{
-				int z = 0;
+				unsigned int z = 0;
 				x+=8;
 				while( buf[x] && buf[x]!='\r' && buf[x]!='\n' && bytes > x + 2 && sizeof(status) > z + 2 )
 				{

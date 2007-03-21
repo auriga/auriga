@@ -39,7 +39,7 @@ Package=<4>
     Project_Dep_Name login_sql
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name map
+    Project_Dep_Name map_sql
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name converter
@@ -109,6 +109,18 @@ Package=<4>
 ###############################################################################
 
 Project: "map"=.\src\map\map.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "map_sql"=.\src\map\map_sql.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

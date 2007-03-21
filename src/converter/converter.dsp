@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D PACKETVER=8 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D PACKETVER=8 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /FD /c
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
 # ADD RSC /l 0x411 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D PACKETVER=8 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D PACKETVER=8 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /FD /GZ /c
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
 # ADD RSC /l 0x411 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -149,6 +149,14 @@ SOURCE=.\converter.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\common\core.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\db.h
+# End Source File
+# Begin Source File
+
 SOURCE=".\inter-converter.h"
 # End Source File
 # Begin Source File
@@ -157,11 +165,31 @@ SOURCE=".\login-converter.h"
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\md5calc.h
+SOURCE=..\common\malloc.h
 # End Source File
 # Begin Source File
 
 SOURCE=".\map-converter.h"
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\md5calc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\mmo.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\socket.h
+# End Source File
+# Begin Source File
+
+SOURCE="..\common\timer.h"
+# End Source File
+# Begin Source File
+
+SOURCE="..\common\utils.h"
 # End Source File
 # End Group
 # End Target

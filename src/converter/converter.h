@@ -1,5 +1,5 @@
 #ifndef _CONVERTER_H_
-#define _CINVERTER_H_
+#define _CONVERTER_H_
 
 extern int  db_server_port;
 extern char db_server_ip[16];
@@ -32,4 +32,3 @@ extern char mail_dir[1024];
 extern char mapreg_txt[1024];
 
 #endif
-

@@ -2,8 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../common/mmo.h"
+#include "../common/core.h"
 #include "../common/db.h"
+#include "../common/mmo.h"
+#include "../common/malloc.h"
 #include "../common/timer.h"
 #include "../common/utils.h"
 
