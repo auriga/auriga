@@ -4,13 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if __STDC_VERSION__ < 199901L
-# if __GNUC__ >= 2
-#  define __func__ __FUNCTION__
-# else
-#  define __func__ ""
-# endif
-#endif
+#include "utils.h"
 
 #define ALC_MARK __FILE__, __LINE__, __func__
 

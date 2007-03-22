@@ -3,6 +3,18 @@
 
 
 // =====================
+// 関数名マクロ
+// ---------------------
+#if __STDC_VERSION < 199901L
+  #if __GNUC__ >= 2 || _MSC_VER >= 1300
+    #define __func__ __FUNCTION__
+  #else
+    #define __func__ ""
+  #endif
+#endif
+
+
+// =====================
 // 改行コード
 // ---------------------
 #ifdef CYGWIN

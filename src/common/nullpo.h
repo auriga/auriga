@@ -1,19 +1,11 @@
 #ifndef _NULLPO_H_
 #define _NULLPO_H_
 
+#include "utils.h"
 
 #define NULLPO_CHECK 1
 		// 全体のスイッチを宣言しているヘッダがあれば
 		// そこに移動していただけると
-
-
-#if __STDC_VERSION__ < 199901L
-# if __GNUC__ >= 2
-#  define __func__ __FUNCTION__
-# else
-#  define __func__ ""
-# endif
-#endif
 
 #define NLP_MARK __FILE__, __LINE__, __func__
 

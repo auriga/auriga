@@ -1,4 +1,14 @@
 ----------------------------------------
+//0129 [2007/03/23] by Rayce
+
+・socket_athena.confの socket_ctrl_panel_url の読み込みを少し修正（socket.c）
+・httpd_erase_pages() でメモリリークが発生する可能性を修正（httpd.c）
+
+・関数名マクロ __func__ をVCでも使えるように修正（malloc.h, nullpo.h, utils.h）
+	malloc.hとnullpo.hでの定義をutils.hにまとめる
+	VC7.0以上であればgccと同様にnullpoエラーが出たとき関数名が出力されるようになります
+
+----------------------------------------
 //0128 [2007/03/22] by Rayce
 
 ・BCCとVCでSQLの設定が容易に出来るようにbatファイル修正（bcc32_clean.bat, bcc32_make.bat, vc_make.bat）

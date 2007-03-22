@@ -345,19 +345,29 @@ void do_init_httpd(void) {
 void httpd_pages(const char* url,void (*httpd_func)(struct httpd_session_data*,const char*)) {
 	if( !httpd_files )
 		return;
-		
-	if(strdb_search(httpd_files,url+1) == NULL) {
-		strdb_insert(httpd_files,aStrdup(url+1),httpd_func);
-	} else {
-		strdb_insert(httpd_files,url+1,httpd_func);
+
+	if(strdb_search(httpd_files,url+1)) {
+		httpd_erase_pages(url);
 	}
+	strdb_insert(httpd_files,aStrdup(url+1),httpd_func);
 }
+
 // ==========================================
 // httpd のページを削除
 // ------------------------------------------
+static int httpd_erase_pages_sub(void *key,void *data,va_list ap) {
+	char *url = va_arg(ap, char*);
+
+	if( strcmp((char *)key, url) == 0 ) {
+		strdb_erase( httpd_files, key );
+		aFree( key );
+	}
+	return 0;
+}
+
 void httpd_erase_pages(const char* url) {
 	if( httpd_files )
-		strdb_erase( httpd_files, url+1 );
+		strdb_foreach( httpd_files, httpd_erase_pages_sub, url+1);
 }
 
 static void(*httpd_default)(struct httpd_session_data* sd,const char* url);
@@ -2089,7 +2099,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	// 変数の設定
 	// ------------
 	sd->tick = gettick();
-    sd->status = HTTPD_WAITING_CGI;
+	sd->status = HTTPD_WAITING_CGI;
 	sd->cgi_hProcess = pi.hProcess;
 	sd->cgi_dwProcessID = pi.dwProcessId;
 

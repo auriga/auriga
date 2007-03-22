@@ -1338,21 +1338,11 @@ static void socket_config_read2(const char *filename) {
 					access_denynum++;
 			}
 
-		} else if (strcmpi(w1, "httpd") == 0 ||
-		           strcmpi(w1, "httpd_request_timeout_first") == 0 ||
-		           strcmpi(w1, "httpd_request_timeout_persist") == 0 ||
-		           strcmpi(w1, "httpd_max_persist_requests") == 0) {
-			// socket.conf の httpd に関する設定は、httpd.conf に統合しました。
-			printf("socket_config_read: httpd setting in socket_athena.conf is no more\n");
-			printf("                    supported. Please use httpd.conf instead of this.\n\a");
-
 		} else if (strcmpi(w1, "httpd_config") == 0) {
 			httpd_config_read(w2);
 
 		} else if (strcmpi(w1, "socket_ctrl_panel_url") == 0) {
-			httpd_erase_pages(socket_ctrl_panel_url);
 			strcpy(socket_ctrl_panel_url, w2);
-			httpd_pages(socket_ctrl_panel_url, socket_httpd_page);
 
 		} else if (strcmpi(w1, "import") == 0) {
 			socket_config_read2(w2);
@@ -1699,13 +1689,13 @@ void socket_httpd_page(struct httpd_session_data* sd, const char* url) {
 	int i, len;
 	char *p;
 
-	struct {
+	static struct {
 		char mode[32];
 		void (*func)(struct httpd_session_data*, const char*);
 	} pages[] = {
-		{"dosattack",  socket_httpd_page_dos_attack},
-		{"access",     socket_httpd_page_access_settings},
-		{"connection", socket_httpd_page_connection},
+		{ "dosattack",  socket_httpd_page_dos_attack      },
+		{ "access",     socket_httpd_page_access_settings },
+		{ "connection", socket_httpd_page_connection      },
 	};
 
 	if (socket_ctrl_panel_httpd == 0) {
