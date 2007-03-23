@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 ##########################################################################
-# Athena用サーバーバージョン所得ツール
+# Auriga用サーバーバージョン所得ツール
 #
-# 　起動中のAthenaの各サーバーに接続して情報を表示する
+# 　起動中のAurigaの各サーバーに接続して情報を表示する
 #
 #-------------------------------------------------------------------------
 #   ./checkversion IP:port として使用します
@@ -54,7 +54,7 @@ $so->flush();
 
 # 所得
 if( read($so,$buf,10)<10 ){
-	print "socket read error. not athena or too old version ?\n";
+	print "socket read error. not auriga or too old version ?\n";
 	exit(5);
 }
 
@@ -66,12 +66,12 @@ $so->flush();
 my($ret,$maver,$miver,$rev,$dev,$mod,$type,$mdver)=unpack("v c6 v",$buf);
 
 if($ret!=30001){
-	print "server error. not athena or too old version ?\n";
+	print "server error. not auriga or too old version ?\n";
 	exit(6);
 }
 
 print "[$server:$port]\n";
-printf "Athena %s-%d.%d", ("stable","dev")[$dev], $maver,$miver;
+printf "Auriga %s-%d.%d", ("stable","dev")[$dev], $maver,$miver;
 printf ".%d",$rev if $rev;
 printf "%s%d\n",("","-mod")[$mod],$mdver;
 my(@stype)=();

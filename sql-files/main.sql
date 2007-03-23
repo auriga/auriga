@@ -344,16 +344,16 @@ CREATE TABLE `login` (
   `state` int(11) NOT NULL default '0',
   PRIMARY KEY  (`account_id`),
   KEY `name` (`userid`)
-) TYPE=MyISAM AUTO_INCREMENT=2000000; 
+) TYPE=MyISAM AUTO_INCREMENT=2000000;
 
 # added standard accounts for servers, VERY INSECURE!!!
 # inserted into the table called login which is above
 
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('1', 's1', 'p1', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('2', 's2', 'p2', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('3', 's3', 'p3', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('4', 's4', 'p4', 'S','athena@athena.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('5', 's5', 'p5', 'S','athena@athena.com');
+INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('1', 's1', 'p1', 'S','auriga@auriga.com');
+INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('2', 's2', 'p2', 'S','auriga@auriga.com');
+INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('3', 's3', 'p3', 'S','auriga@auriga.com');
+INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('4', 's4', 'p4', 'S','auriga@auriga.com');
+INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('5', 's5', 'p5', 'S','auriga@auriga.com');
 
 # Database: Ragnarok
 # Table: 'loginlog'

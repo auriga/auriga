@@ -34,12 +34,12 @@ int packet_parse_time = 0;
  *--------------------------------------
  */
 
-static volatile int athena_is_running = 1;
+static volatile int auriga_is_running = 1;
 
 #ifdef _WIN32
 BOOL WINAPI core_CtrlHandlerRoutine( DWORD dwCtrlType )
 {
-	athena_is_running = 0;
+	auriga_is_running = 0;
 	return TRUE;
 }
 #else
@@ -48,7 +48,7 @@ static void sig_proc(int sn)
 	switch(sn){
 	case SIGINT:
 	case SIGTERM:
-		athena_is_running = 0;
+		auriga_is_running = 0;
 		break;
 	}
 }
@@ -305,12 +305,12 @@ int main(int argc,char **argv)
 		add_timer_func_list(parsepacket_timer,"parsepacket_timer");
 		add_timer_interval(gettick()+packet_parse_time,parsepacket_timer,0,0,packet_parse_time);
 
-		while(athena_is_running) {
+		while(auriga_is_running) {
 			next=do_timer(gettick_nocache());
 			do_sendrecv(next);
 		}
 	} else {
-		while(athena_is_running) {
+		while(auriga_is_running) {
 			next=do_timer(gettick_nocache());
 			do_sendrecv(next);
 			do_parsepacket();

@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 ##########################################################################
-# Athenaのログインサーバー保守ツール Ver.1.06  by 胡蝶蘭
+# Aurigaのログインサーバー保守ツール Ver.1.06  by 胡蝶蘭
 #
-# 　起動中のAthenaのlogin.exeに接続してアカウントの保守を行うツール.
+# 　起動中のAurigaのlogin.exeに接続してアカウントの保守を行うツール.
 # 　アカウントの追加、削除、パスワードの変更、リスト表示ができます.
 #
 ##########################################################################
@@ -69,18 +69,18 @@ my($passenc)=2;					# パスワード暗号化タイプ
 # シェルの単一コマンドとしての作業
 #	./ladmin --mode param1 ...
 #
-#	--add <account_name> <gender> <password> アカウントの追加(-aでも可)
-#	--check <account_name> <password>        アカウントパスワードの有効性をチェック(-check)
-#	--del <account_name>                     アカウントの削除(-d)
-#	--getcount                               オンラインプレイヤーの人数を取得(-g)
-#	--info <account_id>                      アカウントの全情報を表示(-info)
-#	--list [start_id [end_id]]               アカウントリスト表示(-l)
-#	--passwd <account_name> <newpassword>    パスワードの変更(-p)
-#	--search <keyword>                       アカウント検索(-s)
-#	--search --regex <expression>            正規表現検索(-s -e)
-#	--state <account_name> <newstate>        バン状態変更(-t)
-#	--version                                ログインサーバのヴァージョンを表示(-v)
-#	--who <account_name>                     アカウントの全情報を表示(-w)
+#	--add <account_name> <gender> <password> [<email>] アカウントの追加(-aでも可)
+#	--check <account_name> <password>                  アカウントパスワードの有効性をチェック(-check)
+#	--del <account_name>                               アカウントの削除(-d)
+#	--getcount                                         オンラインプレイヤーの人数を取得(-g)
+#	--info <account_id>                                アカウントの全情報を表示(-info)
+#	--list [start_id [end_id]]                         アカウントリスト表示(-l)
+#	--passwd <account_name> <newpassword>              パスワードの変更(-p)
+#	--search <keyword>                                 アカウント検索(-s)
+#	--search --regex <expression>                      正規表現検索(-s -e)
+#	--state <account_name> <newstate>                  バン状態変更(-t)
+#	--version                                          ログインサーバのヴァージョンを表示(-v)
+#	--who <account_name>                               アカウントの全情報を表示(-w)
 #	<例> ./ladmin --addaccount testname Male testpass
 #
 #-------------------------------------------------------------------------
@@ -169,7 +169,7 @@ sub cooked(){
 }
 END{ cooked() }
 
-print "Athena login-server administration tool Ver.$ver\n";
+print "Auriga login-server administration tool Ver.$ver\n";
 
 # シンボリックリンク作成
 if( $ARGV[0] eq "--makesymlink" ){
@@ -374,17 +374,17 @@ sub checkloginversion() {
 	$so->flush();
 	$buf=readso(10);
 	# Packet analyse
-	my($ret,$maver,$miver,$rev,$dev,$mod,$type,$mdver)=unpack("vc6v",$buf);
+	my($ret,$maver,$miver,$rev,$dev,$mod,$type,$mdver)=unpack("vc2vc4",$buf);
 	if ($ret != 30001) { #0x7531
 		print "Connection error to the server (incorrect answer).\n";
 		exit(6);
 	}
 
 	print "  Login-Server [$loginserverip:$loginserverport]\n";
-	printf "  Athena version %s-%d.%d", ("stable", "dev")[$dev], $maver, $miver;
+	printf "  Auriga version %s-%d.%d", ("stable", "dev")[$dev], $maver, $miver;
 	printf " revision %d", $rev if $rev;
 	if ($mod != 0) {
-		printf "%s%d", ("", "-mod","-Athena mod")[$mod], $mdver;
+		printf "%s%d", ("", "-mod","-Auriga mod")[$mod], $mdver;
 	}
 	print ".\n";
 

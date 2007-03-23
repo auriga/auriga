@@ -1,12 +1,11 @@
 ==========================================================================
- //Athena dev 2.1.1 mod1250 現在のconfのリファレンス＋α
  Aurigaのconfファイルのリファレンス
 --------------------------------------------------------------------------
 
 < このファイルは何？ >
 
- Athena設定ファイルの設定方法のリファレンスです。
- HowToではありませんが、これを見てもAthenaが動かせない人は
+ Auriga設定ファイルの設定方法のリファレンスです。
+ HowToではありませんが、これを見てもAurigaが動かせない人は
  素直にあきらめたほうが無難です。
 
 
@@ -17,13 +16,13 @@
 
  conf/socket.conf		全サーバー共通の通信関係の設定
  conf/httpd.conf		全サーバー共通の httpd の設定
- conf/login_athena.conf		login-server の設定
- conf/char_athena.conf		char-server の設定
- conf/inter_athena.conf		inter-server の設定
- conf/map_athena.conf		map-server の設定
- conf/battle_athena.conf	map-server の設定(特殊ルールなどの設定)
- conf/atcommand_athena.conf	map-server の設定(GMコマンドや@コマンドの設定)
- conf/script_athena.conf	map-server の設定(スクリプト関連の設定)
+ conf/login_auriga.conf		login-server の設定
+ conf/char_auriga.conf		char-server の設定
+ conf/inter_auriga.conf		inter-server の設定
+ conf/map_auriga.conf		map-server の設定
+ conf/battle_auriga.conf	map-server の設定(特殊ルールなどの設定)
+ conf/atcommand_auriga.conf	map-server の設定(GMコマンドや@コマンドの設定)
+ conf/script_auriga.conf	map-server の設定(スクリプト関連の設定)
 
 
 < 設定の変更 >
@@ -36,15 +35,15 @@
  
  conf/socket.conf		→  conf/import/socket_conf.txt
  conf/httpd.conf		→  conf/import/httpd_conf.txt
- conf/login_athena.conf		→  conf/import/login_conf.txt
- conf/char_athena.conf		→  conf/import/char_conf.txt
- conf/inter_athena.conf		→  conf/import/inter_conf.txt
- conf/map_athena.conf		→  conf/import/map_conf.txt
- conf/battle_athena.conf	→  conf/import/battle_conf.txt
- conf/atcommand_athena.conf	→  conf/import/atcommand_conf.txt
- conf/script_athena.conf	→  conf/import/script_conf.txt
+ conf/login_auriga.conf		→  conf/import/login_conf.txt
+ conf/char_auriga.conf		→  conf/import/char_conf.txt
+ conf/inter_auriga.conf		→  conf/import/inter_conf.txt
+ conf/map_auriga.conf		→  conf/import/map_conf.txt
+ conf/battle_auriga.conf	→  conf/import/battle_conf.txt
+ conf/atcommand_auriga.conf	→  conf/import/atcommand_conf.txt
+ conf/script_auriga.conf	→  conf/import/script_conf.txt
 
- * map_athena.conf の map や npc などは clear でクリアしたり、
+ * map_auriga.conf の map や npc などは clear でクリアしたり、
    delmap や delnpc などでリストから削除できます。
    map_conf.txt で不要なマップを消す場合などに利用しましょう。
 
@@ -64,11 +63,11 @@ key: value
 
 同じ項目を複数書くと、特に明記されてない限り後に書いたものが優先されます。
 socket.conf / httpd.conf の allow 、deny および
-map_athena.confの map 、npc などは複数行書くと別の処理をします。
+map_auriga.confの map 、npc などは複数行書くと別の処理をします。
 
 
 ==========================================================================
-1. conf/login_athena.conf
+1. conf/login_auriga.conf
 --------------------------------------------------------------------------
 
 < このファイルは何？ >
@@ -107,7 +106,7 @@ ladmin_pass
 
 httpd_enable
 	httpd が有効の無効を切り替えます。
-	1 で有効, 0 で無効, -1 で socket_athena.conf の設定を引き継ぎます。
+	1 で有効, 0 で無効, -1 で socket.conf の設定を引き継ぎます。
 	省略可能で、デフォルトは -1 です。
 
 httpd_document_root
@@ -150,7 +149,7 @@ httpd_new_account: 1
 httpd_config: conf/httpd_login.conf
 
 ==========================================================================
-2. conf/char_athena.conf
+2. conf/char_auriga.conf
 --------------------------------------------------------------------------
 
 < このファイルは何？ >
@@ -237,7 +236,7 @@ char_log_filename
 
 httpd_enable
 	httpd が有効の無効を切り替えます。
-	1 で有効, 0 で無効, -1 で socket_athena.conf の設定を引き継ぎます。
+	1 で有効, 0 で無効, -1 で socket.conf の設定を引き継ぎます。
 	省略可能で、デフォルトは -1 です。
 
 httpd_document_root
@@ -264,12 +263,12 @@ import
 < 例 >
 userid: s1
 passwd: p1
-server_name: Athena
+server_name: Auriga
 login_ip: 127.0.0.1
 login_port: 6900
 char_ip: 127.0.0.1
 char_port: 6121
-char_txt: save/athena.txt
+char_txt: save/auriga.txt
 gm_account_filename: conf/GM_account.txt
 max_connect_user: 0
 autosave_time: 300
@@ -285,7 +284,7 @@ httpd_config: conf/httpd_char.conf
 
 
 ==========================================================================
-3. conf/inter_athena.conf
+3. conf/inter_auriga.conf
 --------------------------------------------------------------------------
 
 < このファイルは何？ >
@@ -393,7 +392,7 @@ inter_log_file: log/inter.log
 
 
 ==========================================================================
-4. conf/map_athena.conf
+4. conf/map_auriga.conf
 --------------------------------------------------------------------------
 
 < このファイルは何？ >
@@ -480,7 +479,7 @@ delmap
 
 httpd_enable
 	httpd が有効の無効を切り替えます。
-	1 で有効, 0 で無効, -1 で socket_athena.conf の設定を引き継ぎます。
+	1 で有効, 0 で無効, -1 で socket.conf の設定を引き継ぎます。
 	省略可能で、デフォルトは -1 です。
 
 httpd_document_root
@@ -521,7 +520,7 @@ delmap: prontera.gat
 delmap: all
 
 ==========================================================================
-5. conf/battle_athena.conf
+5. conf/battle_auriga.conf
 --------------------------------------------------------------------------
 
 < このファイルは何？ >
@@ -798,7 +797,7 @@ mob_skill_use
 	MOBがスキルを使ってくるかどうかです。デフォルトはyesです。
 
 mob_count_rate
-	map_athena.confで指定されたnpcデータを読み込む際、
+	map_auriga.confで指定されたnpcデータを読み込む際、
 	monsterで定義された配置MOBの数を百分率で調整します。
 	例外として、配置数1として定義されたMOBの数は変わりません。(BOSS対策)
 	また、配置数を下方修正したとき、1未満になった場合は1として処理します。
@@ -1259,16 +1258,16 @@ hide_GM_session
 	デフォルトはnoです
 unit_movement_type
 	ユニット移動処理方法を選択します。
-	0で本鯖仕様(回線負荷→重、鯖処理→軽)、1でAthena仕様(回線負荷→軽、鯖処理→重)
+	0で本鯖仕様(回線負荷→重、鯖処理→軽)、1でAuriga仕様(回線負荷→軽、鯖処理→重)
 	デフォルトは0(本鯖仕様)です
 invite_request_check
 	プレイヤーが各種要請中(PT加入、Guild加入、取引)に他の要請を受け入れるかどうかです。
-	yesで本鯖仕様、noでAthena仕様(受け入れない)
+	yesで本鯖仕様、noでAuriga仕様(受け入れない)
 	デフォルトはyes(受け入れる)です。
 skill_removetrap_type
 	リムーブトラップの仕様を選択します。
 	0:本鯖仕様で罠1個を取得する
-	1:Athena仕様で使ったアイテムを使った個数を取得する
+	1:Auriga仕様で使ったアイテムを使った個数を取得する
 disp_experience
 	経験値を表示するかどうかです。
 	yesにすると、敵を倒した時など経験値が入った時に本人にのみ表示されます。
@@ -2059,7 +2058,7 @@ mob_take_over_sp: 0
 
 
 ==========================================================================
-6. atcommand_athena.conf
+6. atcommand_auriga.conf
 --------------------------------------------------------------------------
 
 < このファイルは何？ >
@@ -2276,7 +2275,7 @@ reloadpcdb
 	@コマンド @reloadpcdb
 mesweb
 	ブラウザ上からのチャットの有効/無効を設定。0: 有効 1:無効。
-	ただし、battle_athena.conf でatcommand_gm_only: no が設定
+	ただし、battle_auriga.conf でatcommand_gm_only: no が設定
 	されている場合、必ず有効になります（ここでの設定は無視されます）。
 kamib
 	@コマンド @kamib
@@ -2751,12 +2750,12 @@ cgi_kill_timeout
 
 cgi_temp_dir
 	外部 CGI 実行用のテンポラリファイルを作るディレクトリ
-	athena_httpd_ から始まるファイルが作られます。
+	auriga_httpd_ から始まるファイルが作られます。
 
 cgi_server_name
 	外部 CGI にメタ変数 SERVER_NAME で渡すサーバーのホスト名
 	（通常、グローバルアドレスか DNS 名を設定する）
-	Athena 自体はこの値を使いません。外部 CGI に直接渡します。
+	Auriga 自体はこの値を使いません。外部 CGI に直接渡します。
 	一部の CGI が自分自身への URL を生成するために利用することがあります。
 
  ** url 単位での設定 **
@@ -2806,11 +2805,11 @@ authtype
 
 authfunc
 	認証のアカウント情報として、 authuser で追加するもの以外に 
-	Athena の機能を用いてアカウント情報を得るかどうかを設定します。
+	Auriga の機能を用いてアカウント情報を得るかどうかを設定します。
 	指定する値は以下の通りです。
 	
 	  0 : authuser で指定されたユーザー情報のみ使います
-	  1 : Athena のアカウント情報も利用できるようになります
+	  1 : Auriga のアカウント情報も利用できるようになります
 	
 	login サーバーでは 0 か 1 を指定できます。
 	char、map サーバーでは 0 しか指定できません。
@@ -2881,7 +2880,7 @@ deny: all
 allow: 127.0.0.1
 allow: 192.168.0.0/24
 authtype: basic
-authname: Athena Authorization
+authname: Auriga Authorization
 authuser: testuser:testpass
 authuser: user2:passwd2
 

@@ -3,7 +3,7 @@
 // *****************************************************************
 
 // note: player must confirm old password, and its e-mail if you want better protection (default)
-//       This php need only 'class ladmin' included in 'athena.php'.
+//       This php need only 'class ladmin' included in 'auriga.php'.
 
 // By Yor (alias DarkRaven)
 
@@ -71,7 +71,7 @@ $lang = array (
 		// Success
 		'Success' => 'パスワード変更に成功',
 		// Copyright
-		'Copyright' => 'Powered by Yor for Athena Project.',
+		'Copyright' => 'Powered by Yor for Athena Project and Modified for Auriga.',
 	),
 	'English' => array (
 		// Language definition
@@ -111,7 +111,7 @@ $lang = array (
 		// Success
 		'Success' => 'Your password have been changed.',
 		// Copyright
-		'Copyright' => 'Powered by Yor for Athena Project.',
+		'Copyright' => 'Powered by Yor for Athena Project and Modified for Auriga.',
 	),
 	'French' => array (
 		// Language definition
@@ -151,7 +151,7 @@ $lang = array (
 		// Success
 		'Success' => 'Votre mot de passe a été modifié.',
 		// Copyright
-		'Copyright' => 'Créé par Yor pour le Projet Athéna.',
+		'Copyright' => 'Créé par Yor pour le Projet Athéna et a Modifié pour Auriga.',
 	),
 	'Russian' => array (
 		// Language definition
@@ -191,7 +191,7 @@ $lang = array (
 		// Success
 		'Success' => 'Ваш пароль изменен.',
 		// Copyright
-		'Copyright' => 'Автор: Yor для Athena Project.',
+		'Copyright' => 'Автор: Yor для Athena Project и модифицированные для Auriga.',
 	),
 );
 	
@@ -279,7 +279,7 @@ $lang = array (
 		}
 	?>
 
-	<title>Athena - <?php echo htmlspecialchars($lang[$Language]['Title'], ENT_QUOTES) ?></title>
+	<title>Auriga - <?php echo htmlspecialchars($lang[$Language]['Title'], ENT_QUOTES) ?></title>
 
 </head>
 
@@ -360,14 +360,14 @@ $lang = array (
 
 <?php
 	// If include doesn't exist!
-	if (!file_exists('athena.php')) {
+	if (!file_exists('auriga.php')) {
 		// display simple page for maintenance
 printf('
 			<h3>'.htmlspecialchars($lang[$Language]['Maintenance'], ENT_QUOTES).'</h3>
 ');
 
 	} else {
-		include('athena.php');
+		include('auriga.php');
 ?>
 
 <?php
@@ -530,7 +530,7 @@ if ($CheckEmail) {
 			</table>
 <?php
 	} // if ($result == true) {
-} // if (!file_exists('athena.php')) {
+} // if (!file_exists('auriga.php')) {
 ?>
 		</td>
 	</tr>

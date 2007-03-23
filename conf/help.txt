@@ -135,8 +135,8 @@
 @guild ギルド名          ---- ギルドを作る(制限なしで)
 @partyoption exp分配 item収集方式 item分配方式   ---- パーティ設定変更(リーダーのみ)
 
-@reloadatcommand   ---- atcommand_athena.confを再読込する
-@reloadbattleconf  ---- battle_athena.confを再読込する
+@reloadatcommand   ---- atcommand_auriga.confを再読込する
+@reloadbattleconf  ---- battle_auriga.confを再読込する
 @reloadgmaccount   ---- gm_account_filenameを再読込する
 @reloadhomundb     ---- ホムンクルス関連DBを再読込する
 @reloaditemdb      ---- itemdbを再読込する

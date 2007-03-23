@@ -109,7 +109,7 @@ Windows 64bit-CPU+OS なら
 
 
 
-【AthenaのDB設定方法】
+【AurigaのDB設定方法】
 １．コマンドプロンプトを立ち上げて下記のコマンドを実行
 　　mysql -u root
 		
@@ -133,7 +133,7 @@ Windows 64bit-CPU+OS なら
 ４．一度下記のコマンドを実行し、MySQLClientを終了させる。
 　　quit
 
-５．最後にデータテーブルを作成します。athenaのフォルダ内にある \sql-files\main.sqlを
+５．最後にデータテーブルを作成します。Aurigaのフォルダ内にある \sql-files\main.sqlを
 　　dataフォルダへコピーします。（デフォルトではC:\Program Files\MySQL\MySQL Server 5.0\data）
 
 ６．コピーしたら、下記のコマンドを実行してディレクトリ移動
@@ -147,7 +147,7 @@ Windows 64bit-CPU+OS なら
 
 
 
-【TextのathenaセーブデータをSQLにコンバートする方法】
+【TextのAurigaセーブデータをSQLにコンバートする方法】
 注意！！　古すぎるデータだと失敗する場合があります。
 
 ・BCCの場合
@@ -171,7 +171,7 @@ Windows 64bit-CPU+OS なら
 ５．bcc32_make.batを使用しコンバーター実行ファイルを作成します。
 　　set __TXTCONVERTER__=SKIP がコメントアウトされていないことを確認してください。
 
-６．confフォルダのconverter_athena.confを編集します。
+６．confフォルダのconverter_auriga.confを編集します。
 　　// SQL version options only
 　　// for TXT -> SQL convertors
 　　の部分を上記のMySQLの設定(アカウント名やパスワードなど)に合わせます。
@@ -196,7 +196,7 @@ Windows 64bit-CPU+OS なら
 ５．vc_make.batを使用しコンバーター実行ファイルを作成します。
 　　set __TXTCONVERTER__=SKIP がコメントアウトされていないことを確認してください。
 
-６．confフォルダのconverter_athena.confを編集します。
+６．confフォルダのconverter_auriga.confを編集します。
 　　// SQL version options only
 　　// for TXT -> SQL convertors
 　　の部分を上記のMySQLの設定(アカウント名やパスワードなど)に合わせます。
@@ -238,12 +238,6 @@ Windows 64bit-CPU+OS なら
 ある　drop_table.sql　を実行した後、再度main.sqlを実行してください。
 
 
-○Windows環境下やリモートでデータベースを弄る場合下記のソフトが使い勝手がいいです。
-Common SQL Environment（CSE）
-http://www.hi-ho.ne.jp/tsumiki/
-なお、上記サイトでAthena関係の質問はやめてください。全く関係がないですので。
-
-
 【わかりにくい表現などがあれば修正お願いします】
 
 
@@ -252,8 +246,7 @@ http://www.hi-ho.ne.jp/tsumiki/
 　可能性があります。login テーブル以外を操作する場合、一回charサーバーを止めて
 　から行ってください
 
-最後に、MySQL 対応にあたって大いに参考にさせて頂いた、eAthena の開発メンバーに感
-謝します。
+最後に、MySQL 対応にあたって大いに参考にさせて頂いた、eAthena の開発メンバーに感謝します。
 
 
 【変更履歴】（敬称略）

@@ -1,29 +1,29 @@
 #!/bin/sh
 # athena starting script by rowla
+# and modified for Auriga
 
 # chkconfig: 345 99 01
-# description: start and stop athena service
+# description: start and stop auriga service
 
 PATH=./:$PATH
 
 L_SRV=./bin/login-server
 C_SRV=./bin/char-server
 M_SRV=./bin/map-server
-L_SRV_C=./conf/login_athena.conf
-C_SRV_C=./conf/char_athena.conf
-C_SRV_C2=./conf/inter_athena.conf
-M_SRV_C=./conf/map_athena.conf
-M_SRV_C2=./conf/battle_athena.conf
-M_SRV_C3=./conf/atcommand_athena.conf
-M_SRV_C4=./conf/script_athena.conf
-M_SRV_C5=./conf/msg_athena.conf
+L_SRV_C=./conf/login_auriga.conf
+C_SRV_C=./conf/char_auriga.conf
+C_SRV_C2=./conf/inter_auriga.conf
+M_SRV_C=./conf/map_auriga.conf
+M_SRV_C2=./conf/battle_auriga.conf
+M_SRV_C3=./conf/atcommand_auriga.conf
+M_SRV_C4=./conf/script_auriga.conf
+M_SRV_C5=./conf/msg_auriga.conf
 M_SRV_C6=./conf/grf-files.txt
 
 print_start() {
 #	more << EOF
-echo "Athena Starting..."
+echo "Auriga Starting..."
 echo "			(c) 2003 Athena Project."
-echo "			URL:http://project-yare.de/"
 echo ""
 echo "Debug informations will appear,"
 echo "since this is a test release."
@@ -54,8 +54,8 @@ check_account() {
 		done
 	fi
 
-	if [ ! -f ./save/athena.txt ]; then
-		echo -n > save/athena.txt
+	if [ ! -f ./save/auriga.txt ]; then
+		echo -n > save/auriga.txt
 	fi
 
 	if [ ! -f ./save/homun.txt ]; then
@@ -126,15 +126,15 @@ check_files() {
 	for i in ${L_SRV} ${C_SRV} ${M_SRV} ${L_SRV_C} ${C_SRV_C} ${C_SRV_C2} ${M_SRV_C} ${M_SRV_C2} ${M_SRV_C3} ${M_SRV_C4} ${M_SRV_C5} ${M_SRV_C6}
 	do
 		if [ ! -f ./$i ]; then
-    		echo "$i does not exist, or can't run."
-    		echo "Stoped, Check your compile or configuration file."
-    		exit 1;
+		echo "$i does not exist, or can't run."
+		echo "Stoped, Check your compile or configuration file."
+		exit 1;
 		fi
 	done
 
 #	more << EOF
 echo "Check done."
-echo "Looks good, have a nice athena!"
+echo "Looks good, have a nice auriga!"
 #EOF
 }
 
@@ -181,9 +181,9 @@ case $1 in
 #			exec nice -n -20 ${M_SRV} ${M_SRV_C} ${M_SRV_C2} ${M_SRV_C3} ${M_SRV_C4} ${M_SRV_C5} ${M_SRV_C6}&
 			exec ${M_SRV} ${M_SRV_C} ${M_SRV_C2} ${M_SRV_C3} ${M_SRV_C4} ${M_SRV_C5} ${M_SRV_C6}&
 
-			echo "Now Started Athena."
+			echo "Now Started Auriga."
 		else
-			echo "Athena is already running..."
+			echo "Auriga is already running..."
 		fi
 ;;
 	'stop')
@@ -281,6 +281,6 @@ case $1 in
 		fi
 	;;
 	*)
-		echo "Usage: athena-start { start | stop | kill | restart }"
+		echo "Usage: auriga-start { start | stop | kill | restart }"
 	;;
 esac

@@ -3,7 +3,7 @@
 
 void do_init_graph(void);
 
-// athenaの状態を調査するセンサーを追加する。
+// aurigaの状態を調査するセンサーを追加する。
 // string        : センサーの名称(Login Users など)
 // inetrval      : センサーの値を所得する間隔(msec)
 // callback_func : センサーの値を返す関数( unsigned int login_users(void); など) 

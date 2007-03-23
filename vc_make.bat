@@ -10,7 +10,7 @@ rem  - Visual C++ 2005 (Express Edition 含む)
 
 rem ----------------------------------------------------------------
 rem 共通設定
-echo vc_make.bat - Athena makefile for Visual C++
+echo vc_make.bat - Auriga makefile for Visual C++
 set __VCVER__=7
 
 rem ----------------------------------------------------------------

@@ -1,5 +1,5 @@
 @echo off
-@echo →Athenaをサービスから抹消します
+@echo →Aurigaをサービスから抹消します
 
 set reskit=
 set svname=
@@ -7,9 +7,9 @@ if "%svname%"=="" goto error3
 if "%reskit%"=="" goto error2
 if not exist %reskit%sc.exe goto error1
 
-%reskit%sc.exe %svname% Delete AthenaLogin
-%reskit%sc.exe %svname% Delete AthenaChar
-%reskit%sc.exe %svname% Delete AthenaMap
+%reskit%sc.exe %svname% Delete AurigaLogin
+%reskit%sc.exe %svname% Delete AurigaChar
+%reskit%sc.exe %svname% Delete AurigaMap
 
 @echo ★Login.Char.MapサーバをWindowsのサービスからの解除を試みました。
 @echo ★エラーが発生している場合は、あらかじめサービスを停止してから再度実行してください。

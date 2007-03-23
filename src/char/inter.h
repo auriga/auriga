@@ -10,7 +10,7 @@ int inter_check_length(int fd,int length);
 
 int inter_log(char *fmt,...);
 
-#define inter_cfgName "conf/inter_athena.conf"
+#define inter_cfgName "conf/inter_auriga.conf"
 
 void do_final_inter(void);
 

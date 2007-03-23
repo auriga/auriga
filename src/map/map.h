@@ -38,7 +38,7 @@
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
 #endif
 
-#define MAP_CONF_NAME "conf/map_athena.conf"
+#define MAP_CONF_NAME "conf/map_auriga.conf"
 
 enum {
 	BL_NUL   = 0x000,

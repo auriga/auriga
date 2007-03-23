@@ -9,13 +9,13 @@
 //   ladmin->get_version();
 //      answer in a $array:
 //        $array['string'] - complete/detailled version
-//        $array['ATHENA_MAJOR_VERSION']
-//        $array['ATHENA_MINOR_VERSION']
-//        $array['ATHENA_REVISION']
-//        $array['ATHENA_RELEASE_FLAG']
-//        $array['ATHENA_OFFICIAL_FLAG']
-//        $array['ATHENA_SERVER_LOGIN']
-//        $array['ATHENA_MOD_VERSION']
+//        $array['AURIGA_MAJOR_VERSION']
+//        $array['AURIGA_MINOR_VERSION']
+//        $array['AURIGA_REVISION']
+//        $array['AURIGA_RELEASE_FLAG']
+//        $array['AURIGA_OFFICIAL_FLAG']
+//        $array['AURIGA_SERVER_LOGIN']
+//        $array['AURIGA_MOD_VERSION']
 //   ladmin->accountinfo($id); -- based on list of account
 //      answer in a $array:
 //        $array['id']
@@ -196,7 +196,7 @@ class ladmin {
 	function get_version() {
 		// do we have connection?
 		if (!$this->sock) return false;
-		// ask for athena version
+		// ask for auriga version
 		if (fwrite($this->sock, pack('v',0x7530))==false) {
 			fclose($this->sock);
 			$this->sock=false;
@@ -211,11 +211,11 @@ class ladmin {
 		}
 		// read answer
 		$data = fread($this->sock, 8);
-		$data = unpack('cATHENA_MAJOR_VERSION/cATHENA_MINOR_VERSION/cATHENA_REVISION/cATHENA_RELEASE_FLAG/cATHENA_OFFICIAL_FLAG/cATHENA_SERVER_LOGIN/vATHENA_MOD_VERSION',$data);
+		$data = unpack('cAURIGA_MAJOR_VERSION/cAURIGA_MINOR_VERSION/vAURIGA_REVISION/cAURIGA_RELEASE_FLAG/cAURIGA_OFFICIAL_FLAG/cAURIGA_SERVER_LOGIN/cAURIGA_MOD_VERSION',$data);
 		// create string
-		$data['string']='Athena version '.($data['ATHENA_RELEASE_FLAG']?'dev':'stable').'-'.$data['ATHENA_MAJOR_VERSION'].'.'.$data['ATHENA_MINOR_VERSION'];
-		if ($data['ATHENA_REVISION']) $data['string'].='r'.$data['ATHENA_REVISION'];
-		if ($data['ATHENA_OFFICIAL_FLAG']) $data['string'].='-mod'.$data['ATHENA_MOD_VERSION'];
+		$data['string']='Auriga version '.($data['AURIGA_RELEASE_FLAG']?'dev':'stable').'-'.$data['AURIGA_MAJOR_VERSION'].'.'.$data['AURIGA_MINOR_VERSION'];
+		if ($data['AURIGA_REVISION']) $data['string'].='r'.$data['AURIGA_REVISION'];
+		if ($data['AURIGA_OFFICIAL_FLAG']) $data['string'].='-mod'.$data['AURIGA_MOD_VERSION'];
 		return $data;
 	}
 
@@ -377,4 +377,3 @@ class ladmin {
 	}
 
 }
-

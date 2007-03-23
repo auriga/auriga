@@ -3,7 +3,7 @@
 // *********************************************************
 
 // note: player must confirm password, and its e-mail if you want better protection (default)
-//       This php need only 'class ladmin' included in 'athena.php'.
+//       This php need only 'class ladmin' included in 'auriga.php'.
 
 // By Yor (alias DarkRaven)
 
@@ -71,7 +71,7 @@ $lang = array (
 		'Success' => 'アカウント \'%s\' の作成に成功',
 		'Failed' => 'アカウント作成に失敗(同名のアカウントが存在するか、不正な文字が含まれている)',
 		// Copyright
-		'Copyright' => 'Powered by Yor for Athena Project.',
+		'Copyright' => 'Powered by Yor for Athena Project and Modified for Auriga.',
 	),
 	'English' => array (
 		// Language definition
@@ -111,7 +111,7 @@ $lang = array (
 		'Success' => 'Account \'%s\' successfully created.',
 		'Failed' => 'Your account can not be created. (Possible reasons: Account name already exists, or you use incorrect characters in account name).',
 		// Copyright
-		'Copyright' => 'Powered by Yor for Athena Project.',
+		'Copyright' => 'Powered by Yor for Athena Project and Modified for Auriga.',
 	),
 	'French' => array (
 		// Language definition
@@ -151,7 +151,7 @@ $lang = array (
 		'Success' => 'Compte \'%s\' créé avec succès.',
 		'Failed' => 'Votre compte ne peut pas être créé. (Raisons possibles: Le nom du compte existe déjà, ou vous utilisez des caractères incorrects dans le nom du compte).',
 		// Copyright
-		'Copyright' => 'Créé par Yor pour le Projet Athéna.',
+		'Copyright' => 'Créé par Yor pour le Projet Athéna et a Modifié pour Auriga.',
 	),
 	'Russian' => array (
 		// Language definition
@@ -191,7 +191,7 @@ $lang = array (
 		'Success' => 'Учетная запись \'%s\' успешно создана.',
 		'Failed' => 'Учетная запись не была создана (возможные причины: учетная запись уже существует, запрещенные символы в имени учетной записи).',
 		// Copyright
-		'Copyright' => 'Автор: Yor для Athena Project.',
+		'Copyright' => 'Автор: Yor для Athena Project и модифицированные для Auriga.',
 	),
 );
 	
@@ -279,7 +279,7 @@ $lang = array (
 		}
 	?>
 
-	<title>Athena - <?php echo htmlspecialchars($lang[$Language]['Title'], ENT_QUOTES) ?></title>
+	<title>Auriga - <?php echo htmlspecialchars($lang[$Language]['Title'], ENT_QUOTES) ?></title>
 
 </head>
 
@@ -354,14 +354,14 @@ $lang = array (
 
 <?php
 	// If include doesn't exist!
-	if (!file_exists('athena.php')) {
+	if (!file_exists('auriga.php')) {
 		// display simple page for maintenance
 printf('
 			<h3>'.htmlspecialchars($lang[$Language]['Maintenance'], ENT_QUOTES).'</h3>
 ');
 
 	} else {
-		include('athena.php');
+		include('auriga.php');
 ?>
 
 <?php
@@ -507,7 +507,7 @@ if ($AddEmail) {
 			</table>
 <?php
 	} // if ($result == true) {
-} // if (!file_exists('Athena.php')) {
+} // if (!file_exists('auriga.php')) {
 ?>
 		</td>
 	</tr>

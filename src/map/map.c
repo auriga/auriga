@@ -821,8 +821,6 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
  * 矩形(x0,y0)-(x1,y1)が(dx,dy)移動した時の
  * 領域外になる領域(矩形かL字形)内のobjに
  * 対してfuncを呼ぶ
- *
- * dx,dyは-1,0,1のみとする
  *------------------------------------------
  */
 void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int dx,int dy,int type,...)
@@ -2791,7 +2789,7 @@ void do_final(void)
  */
 int do_init(int argc,char *argv[])
 {
-	printf("Athena Map Server [%s] v%d.%d.%d mod%d\n",
+	printf("Auriga Map Server [%s] v%d.%d.%d mod%d\n",
 #ifdef TXT_ONLY
 		"TXT",
 #else

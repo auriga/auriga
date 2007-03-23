@@ -31,7 +31,7 @@ char login_db_level[1024]      = "level";
 char map_server_tag[16]        = "map01";
 
 char account_filename[1024]    = "save/account.txt";
-char char_txt[1024]            = "save/athena.txt";
+char char_txt[1024]            = "save/auriga.txt";
 char GM_account_filename[1024] = "conf/GM_account.txt";
 char pet_txt[1024]             = "save/pet.txt";
 char storage_txt[1024]         = "save/storage.txt";
@@ -184,7 +184,7 @@ int config_read(const char *cfgName) {
 
 int do_init(int argc,char **argv) {
 	// read config
-	config_read("conf/converter_athena.conf");
+	config_read("conf/converter_auriga.conf");
 
 	// DB connection initialized
 	mysql_init(&mysql_handle);

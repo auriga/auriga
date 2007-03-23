@@ -5,7 +5,7 @@
 
 #define MAX_SERVERS 30
 
-#define LOGIN_CONF_NAME	"conf/login_athena.conf"
+#define LOGIN_CONF_NAME	"conf/login_auriga.conf"
 
 #define PASSWORDENC		3	// 暗号化パスワードに対応させるとき定義する
 							// passwordencryptのときは1、

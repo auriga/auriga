@@ -83,7 +83,7 @@ int parse_char(int fd);
 #ifdef TXT_JOURNAL
 static int char_journal_enable = 1;
 static struct journal char_journal;
-static char char_journal_file[1024]="./save/athena.journal";
+static char char_journal_file[1024]="./save/auriga.journal";
 static int char_journal_cache = 1000;
 #endif
 
@@ -1561,7 +1561,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 
 	for(i=0;i<24 && dat[i];i++){
 		if(dat[i]<0x20 || dat[i]==0x7f)
-//		MySQLのバグをAthena側で抑制
+//		MySQLのバグをAuriga側で抑制
 //		if(dat[i]<0x20 || dat[i]==0x7f || dat[i]>=0xfd)
 			return NULL;
 	}
@@ -3809,15 +3809,15 @@ int parse_char(int fd)
 			RFIFOSKIP(fd, 6);
 			break;
 
-		case 0x7530:	// Athena情報所得
+		case 0x7530:	// Auriga情報所得
 			WFIFOW(fd,0)=0x7531;
 			WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 			WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
-			WFIFOB(fd,4)=AURIGA_REVISION;
-			WFIFOB(fd,5)=AURIGA_RELEASE_FLAG;
-			WFIFOB(fd,6)=AURIGA_OFFICIAL_FLAG;
-			WFIFOB(fd,7)=AURIGA_SERVER_INTER | AURIGA_SERVER_CHAR;
-			WFIFOW(fd,8)=AURIGA_MOD_VERSION;
+			WFIFOW(fd,4)=AURIGA_REVISION;
+			WFIFOB(fd,6)=AURIGA_RELEASE_FLAG;
+			WFIFOB(fd,7)=AURIGA_OFFICIAL_FLAG;
+			WFIFOB(fd,8)=AURIGA_SERVER_INTER | AURIGA_SERVER_CHAR;
+			WFIFOB(fd,9)=AURIGA_MOD_VERSION;
 			WFIFOSET(fd,10);
 			RFIFOSKIP(fd,2);
 			return 0;
@@ -4189,7 +4189,7 @@ int do_init(int argc,char **argv)
 {
 	int i;
 
-	printf("Athena Char Server [%s] v%d.%d.%d mod%d\n",
+	printf("Auriga Char Server [%s] v%d.%d.%d mod%d\n",
 #ifdef TXT_ONLY
 		"TXT",
 #else

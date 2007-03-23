@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# Athena自動再起動スクリプト
+# Auriga自動再起動スクリプト
 #
 #  [USAGE] ./start
 #
-#  既にAthenaを起動した状態では実行しないで下さい。
+#  既にAurigaを起動した状態では実行しないで下さい。
 #  サーバーの状態を確認するスクリプトが動作するので、シェルに戻りません。
-#  Athenaを止めたいときは Ctrl+C で終了してください。
+#  Aurigaを止めたいときは Ctrl+C で終了してください。
 #　
 #  もしくは ./start & としてバックグラウンドで起動すると
 #  シェルに戻ってきますが、サーバーの停止が少し面倒です。
@@ -45,9 +45,9 @@ process_check() {
 }
 
 if [ `process_check` -ne 0 ]; then
-	echo "Athena is already running..."
+	echo "Auriga is already running..."
 else
-	./athena-start start
+	./auriga-start start
 	sleep 30
 
 	while true
@@ -63,7 +63,7 @@ else
 				date
 				printf "Restoration:"
 				date
-				./athena-start restart
+				./auriga-start restart
 				else
 				printf "Check Miss Sorry:"
 				date

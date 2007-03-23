@@ -33,7 +33,7 @@ struct script_state {
 	} sleep;
 };
 
-#define SCRIPT_CONF_NAME	"conf/script_athena.conf"
+#define SCRIPT_CONF_NAME	"conf/script_auriga.conf"
 
 struct script_code* parse_script(unsigned char *,const char*,int);
 void run_script(struct script_code*,int,int,int);

@@ -189,8 +189,8 @@ is_atcommand(const int fd, struct map_session_data* sd, const char* message, int
 char GM_Symbol(void);
 int get_atcommand_level(const AtCommandType type);
 
-#define ATCOMMAND_CONF_FILENAME "conf/atcommand_athena.conf"
-#define MSG_CONF_NAME "conf/msg_athena.conf"
+#define ATCOMMAND_CONF_FILENAME "conf/atcommand_auriga.conf"
+#define MSG_CONF_NAME "conf/msg_auriga.conf"
 int atcommand_config_read(const char *cfgName);
 int msg_config_read(const char *cfgName);
 

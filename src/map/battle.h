@@ -529,7 +529,7 @@ extern struct Battle_Config {
 	int pk_murderer_point;
 } battle_config;
 
-#define BATTLE_CONF_FILENAME "conf/battle_athena.conf"
+#define BATTLE_CONF_FILENAME "conf/battle_auriga.conf"
 int battle_config_read(const char *cfgName);
 
 #endif

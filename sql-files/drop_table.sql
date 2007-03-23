@@ -1,4 +1,4 @@
-#Athena SQL Table Drop Sprict
+#Auriga SQL Table Drop Sprict
 #2005/12/02 yoran
 #まれにテーブル構築失敗するので、その時は下記スプリクトを実行してから
 #再度、main.sqlを実行してください。

@@ -5,7 +5,7 @@
 
 #define MAX_MAP_SERVERS 30
 
-#define CHAR_CONF_NAME "conf/char_athena.conf"
+#define CHAR_CONF_NAME "conf/char_auriga.conf"
 
 #define DEFAULT_AUTOSAVE_INTERVAL_CS 300*1000
 

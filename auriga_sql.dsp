@@ -1,25 +1,25 @@
-# Microsoft Developer Studio Project File - Name="athena_sql" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="auriga_sql" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** 編集しないでください **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=athena_sql - Win32 Debug
+CFG=auriga_sql - Win32 Debug
 !MESSAGE これは有効なメイクファイルではありません。 このプロジェクトをビルドするためには NMAKE を使用してください。
 !MESSAGE [メイクファイルのエクスポート] コマンドを使用して実行してください
-!MESSAGE 
-!MESSAGE NMAKE /f "athena_sql.mak".
-!MESSAGE 
+!MESSAGE
+!MESSAGE NMAKE /f "auriga_sql.mak".
+!MESSAGE
 !MESSAGE NMAKE の実行時に構成を指定できます
 !MESSAGE コマンド ライン上でマクロの設定を定義します。例:
-!MESSAGE 
-!MESSAGE NMAKE /f "athena_sql.mak" CFG="athena_sql - Win32 Debug"
-!MESSAGE 
+!MESSAGE
+!MESSAGE NMAKE /f "auriga_sql.mak" CFG="auriga_sql - Win32 Debug"
+!MESSAGE
 !MESSAGE 選択可能なビルド モード:
-!MESSAGE 
-!MESSAGE "athena_sql - Win32 Release" ("Win32 (x86) Console Application" 用)
-!MESSAGE "athena_sql - Win32 Debug" ("Win32 (x86) Console Application" 用)
-!MESSAGE 
+!MESSAGE
+!MESSAGE "auriga_sql - Win32 Release" ("Win32 (x86) Console Application" 用)
+!MESSAGE "auriga_sql - Win32 Debug" ("Win32 (x86) Console Application" 用)
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -28,7 +28,7 @@ CFG=athena_sql - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "athena_sql - Win32 Release"
+!IF  "$(CFG)" == "auriga_sql - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -49,9 +49,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib /nologo /subsystem:console /incremental:yes /map:"../../athena_sql.map" /machine:I386
+# ADD LINK32 kernel32.lib user32.lib /nologo /subsystem:console /incremental:yes /map:"../../auriga_sql.map" /machine:I386
 
-!ELSEIF  "$(CFG)" == "athena_sql - Win32 Debug"
+!ELSEIF  "$(CFG)" == "auriga_sql - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -72,13 +72,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib /nologo /subsystem:console /map:"../../athena_sql.map" /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib /nologo /subsystem:console /map:"../../auriga_sql.map" /debug /machine:I386 /pdbtype:sept
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
-# Name "athena_sql - Win32 Release"
-# Name "athena_sql - Win32 Debug"
+# Name "auriga_sql - Win32 Release"
+# Name "auriga_sql - Win32 Debug"
 # End Target
 # End Project

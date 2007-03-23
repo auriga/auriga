@@ -4731,7 +4731,7 @@ atcommand_users(
 
 /*==========================================
  * @reloadatcommand
- *   atcommand_athena.conf のリロード
+ *   atcommand_auriga.conf のリロード
  *------------------------------------------
  */
 int
@@ -4747,7 +4747,7 @@ atcommand_reloadatcommand(
 
 /*==========================================
  * @reloadbattleconf
- *   battle_athena.conf のリロード
+ *   battle_auriga.conf のリロード
  *------------------------------------------
  */
 int

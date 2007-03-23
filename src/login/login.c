@@ -462,7 +462,7 @@ char loginlog_db[256] = "loginlog";
 char reg_db[256]      = "global_reg_value";
 
 // added to help out custom login tables, without having to recompile
-// source so options are kept in the login_athena.conf or the inter_athena.conf
+// source so options are kept in the login_auriga.conf or the inter_auriga.conf
 char login_db_account_id[256] = "account_id";
 char login_db_userid[256]     = "userid";
 char login_db_user_pass[256]  = "user_pass";
@@ -1343,15 +1343,15 @@ int parse_admin(int fd)
 
 	while(RFIFOREST(fd)>=2){
 		switch(RFIFOW(fd,0)){
-		case 0x7530:	// Athena情報所得
+		case 0x7530:	// Auriga情報所得
 			WFIFOW(fd,0)=0x7531;
 			WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 			WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
-			WFIFOB(fd,4)=AURIGA_REVISION;
-			WFIFOB(fd,5)=AURIGA_RELEASE_FLAG;
-			WFIFOB(fd,6)=AURIGA_OFFICIAL_FLAG;
-			WFIFOB(fd,7)=AURIGA_SERVER_LOGIN;
-			WFIFOW(fd,8)=AURIGA_MOD_VERSION;
+			WFIFOW(fd,4)=AURIGA_REVISION;
+			WFIFOB(fd,6)=AURIGA_RELEASE_FLAG;
+			WFIFOB(fd,7)=AURIGA_OFFICIAL_FLAG;
+			WFIFOB(fd,8)=AURIGA_SERVER_LOGIN;
+			WFIFOB(fd,9)=AURIGA_MOD_VERSION;
 			WFIFOSET(fd,10);
 			RFIFOSKIP(fd,2);
 			break;
@@ -1864,15 +1864,15 @@ int parse_login(int fd)
 			RFIFOSKIP(fd,84);
 			return 0;
 
-		case 0x7530:	// Athena情報所得
+		case 0x7530:	// Auriga情報所得
 			WFIFOW(fd,0)=0x7531;
 			WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 			WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
-			WFIFOB(fd,4)=AURIGA_REVISION;
-			WFIFOB(fd,5)=AURIGA_RELEASE_FLAG;
-			WFIFOB(fd,6)=AURIGA_OFFICIAL_FLAG;
-			WFIFOB(fd,7)=AURIGA_SERVER_LOGIN;
-			WFIFOW(fd,8)=AURIGA_MOD_VERSION;
+			WFIFOW(fd,4)=AURIGA_REVISION;
+			WFIFOB(fd,6)=AURIGA_RELEASE_FLAG;
+			WFIFOB(fd,7)=AURIGA_OFFICIAL_FLAG;
+			WFIFOB(fd,8)=AURIGA_SERVER_LOGIN;
+			WFIFOB(fd,9)=AURIGA_MOD_VERSION;
 			WFIFOSET(fd,10);
 			RFIFOSKIP(fd,2);
 			break;
@@ -2259,7 +2259,7 @@ int do_init(int argc,char **argv)
 {
 	int i;
 
-	printf("Athena Login Server [%s] v%d.%d.%d mod%d\n",
+	printf("Auriga Login Server [%s] v%d.%d.%d mod%d\n",
 #ifdef TXT_ONLY
 		"TXT",
 #else

@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "athena"=.\athena.dsp - Package Owner=<4>
+Project: "auriga"=.\auriga.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -24,7 +24,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "athena_sql"=.\athena_sql.dsp - Package Owner=<4>
+Project: "auriga_sql"=.\auriga_sql.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -143,4 +143,3 @@ Package=<3>
 }}}
 
 ###############################################################################
-

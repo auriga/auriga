@@ -12376,15 +12376,15 @@ int clif_parse(int fd)
 		// 管理用パケット処理
 		if(cmd>=30000){
 			switch(cmd){
-			case 0x7530:	// Athena情報所得
+			case 0x7530:	// Auriga情報所得
 				WFIFOW(fd,0)=0x7531;
 				WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 				WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
-				WFIFOB(fd,4)=AURIGA_REVISION;
-				WFIFOB(fd,5)=AURIGA_RELEASE_FLAG;
-				WFIFOB(fd,6)=AURIGA_OFFICIAL_FLAG;
-				WFIFOB(fd,7)=AURIGA_SERVER_MAP;
-				WFIFOW(fd,8)=AURIGA_MOD_VERSION;
+				WFIFOW(fd,4)=AURIGA_REVISION;
+				WFIFOB(fd,6)=AURIGA_RELEASE_FLAG;
+				WFIFOB(fd,7)=AURIGA_OFFICIAL_FLAG;
+				WFIFOB(fd,8)=AURIGA_SERVER_MAP;
+				WFIFOB(fd,9)=AURIGA_MOD_VERSION;
 				WFIFOSET(fd,10);
 				RFIFOSKIP(fd,2);
 				break;
@@ -12530,7 +12530,7 @@ static void packetdb_readdb(void)
 	return;
 }
 
-// athena chat system
+// auriga chat system
 
 #define MAX_CHAT_MESSAGE 15
 
@@ -12588,7 +12588,7 @@ void clif_webchat(struct httpd_session_data* sd,const char* url) {
 		// ３０秒ごとに更新
 		p += sprintf(p,"<html><head>\n");
 		p += sprintf(p,"<meta http-equiv=\"Refresh\" content=\"30;URL=/chat?name=%s\">\n",name2);
-		p += sprintf(p,"<title>Athena Chat</title></head>\n\n<body>\n");
+		p += sprintf(p,"<title>Auriga Chat</title></head>\n\n<body>\n");
 		p += sprintf(p,"<form action=\"/chat\" method=\"POST\">\n");
 		p += sprintf(p,"%s : <input type=\"text\" name=\"mes\" size=\"32\">\n",name3);
 		p += sprintf(p,"<input type=\"hidden\" name=\"name\" value=\"%s\">\n",name3);

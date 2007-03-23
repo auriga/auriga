@@ -32,9 +32,9 @@
 
 # 準備
 #
-# 1. athena ディレクトリに置く (Readme があるディレクトリ）。
+# 1. auriga ディレクトリに置く (Readme があるディレクトリ）。
 # 
-# 2. パッチファイルを解凍し、athena ディレクトリに放り込んでおく。
+# 2. パッチファイルを解凍し、auriga ディレクトリに放り込んでおく。
 #    + 解凍は複数ファイル同時に解凍できるソフトを使うと楽
 #      WinRAR のコンテキストメニューとか。Lhaca とかもできるのかな？
 #      UNIX 系統はわからないけど unzip とかでできる？
@@ -43,7 +43,7 @@
 #    + fix パッチがあるときは、最新の fix のみを入れる。
 #
 #     こんな感じになれば OK
-#       /athena-dev-2.1.1-modXXXX/ReadmeXXXX
+#       /auriga-XXXX/ReadmeXXXX
 #                                /bin/*
 #                                /src/*
 #                                /1500/*
@@ -57,7 +57,7 @@
 #    + 数字の付いてない Readme はそのままでいい。
 #
 # 4. patchup を実行
-#    Athena のディレクトリで、 perl bin/tool/patchup として実行。
+#    Auriga のディレクトリで、 perl bin/tool/patchup として実行。
 #
 #    + Windows で pl に関連付けしていてダブルクリックで実行する場合や、
 #      コマンドプロンプトでも bin/tool ディレクトリで実行する場合は
@@ -66,7 +66,7 @@
 
 # 実行
 #
-# 1. 最初に現在の Athena の mod version が表示されます。
+# 1. 最初に現在の Auriga の version が表示されます。
 #    正しいか確認しましょう。
 #    + ReadmeXXXX が無いよって怒られたらディレクトリ配置などが
 #      間違ってないかチェック。
@@ -82,7 +82,7 @@
 #      終了しましょう。
 #    + パッチの範囲が意図したものと違う場合は Ctrl+C でとめましょう。
 #
-# 4. パッチの中に現在の Athena に存在しないディレクトリやファイルが
+# 4. パッチの中に現在の Auriga に存在しないディレクトリやファイルが
 #    含まれていた場合、警告を出します。
 #    + ディレクトリ構造が間違っているときも警告が出ます。
 #      新しいファイルやディレクトリが追加されたときにも警告が出ます。
@@ -103,18 +103,18 @@
 #
 # 7. "完了" とでてプログラムが終了したならパッチが当たりました。
 #    make するなり、conf や db を設定するなりして、調整したら
-#    新バージョンの athena ができあがるでしょう。
+#    新バージョンの Auriga ができあがるでしょう。
 
 # その他
 # $fromdir と $todir を変えたら、別のパスからでも実行できます。
-# パッチを athena と同じディレクトリに置かなくても構いません。
+# パッチを Auriga と同じディレクトリに置かなくても構いません。
 
 
 
 # --- 設定
 
 $fromdir = "./";	# パッチディレクトリのあるディレクトリのパス
-$todir = "./";		# Athena のディレクトリのパス
+$todir = "./";		# Auriga のディレクトリのパス
 
 
 
@@ -127,7 +127,7 @@ $todir = "./";		# Athena のディレクトリのパス
 
 die "Error: 無効な \$todir [$todir].\n" if !(-d "$todir/src" ) || !(-d "$todir/conf");
 
-print "\n現在の Athena の mod バージョンを取得しています ...\n";
+print "\n現在の Auriga の mod バージョンを取得しています ...\n";
 
 my ( $filename, $x ) = ();
 
@@ -151,7 +151,7 @@ foreach $x ( <FH> )
 	}
 }
 
-print "現在の Athena の mod バージョンは $currentpatch です\n";
+print "現在の Auriga のバージョンは $currentpatch です\n";
 
 
 print "\nパッチのバージョンをチェックしています ...\n";
@@ -213,13 +213,13 @@ for( $i = $currentpatch+1; $i < $maxpatch; $i++ )
 
 if($warn)
 {
-	print	"通常、パッチを飛ばして当てると、Athena は正常に動作しません.\n".
+	print	"通常、パッチを飛ばして当てると、Auriga は正常に動作しません.\n".
 			"続行しますか？ ( yes=Enter, no=Ctrl+C ) ?";
 	$x=<STDIN>;
 	$warn=0;
 }
 
-print "\n現在の Athena のディレクトリ情報を取得しています ...\n";
+print "\n現在の Auriga のディレクトリ情報を取得しています ...\n";
 %dirs = (""=>1);
 @cdirs = ("");
 %files = ();
@@ -352,6 +352,6 @@ if($err)
 }
 else
 {
-	print	"\n完了.\nmake してから Athena を起動しましょう.\n";
+	print	"\n完了.\nmake してから Auriga を起動しましょう.\n";
 }
 

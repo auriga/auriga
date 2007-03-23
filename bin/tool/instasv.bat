@@ -1,22 +1,22 @@
 @echo off
-@echo →Athenaをサービスとして登録します。
+@echo →Aurigaをサービスとして登録します。
 
 @rem -----設定部---------
-set athenasrv="c:\athena"
-@rem athenaのバイナリのある場所を指定します。
+set aurigasrv="c:\auriga"
+@rem Aurigaのバイナリのある場所を指定します。
 @rem --------------------
-if "%athenasrv%"=="" goto error
+if "%aurigasrv%"=="" goto error
 
-sc.exe Create AthenaLogin binPath= %athenasrv%\login-server.exe
-sc.exe Create AthenaChar binPath= %athenasrv%\char-server.exe
-sc.exe Create AthenaMap binPath= %athenasrv%\map-server.exe
+sc.exe Create AurigaLogin binPath= %aurigasrv%\login-server.exe
+sc.exe Create AurigaChar binPath= %aurigasrv%\char-server.exe
+sc.exe Create AurigaMap binPath= %aurigasrv%\map-server.exe
 
 @echo ★Login.Char.MapサーバをWindowsのサービスとして登録しました。
 @echo ★障害時の自動起動をONにする場合はWindowsの「管理ツール」から「サービス」を選択してください。
 goto end
 
 :error
-@echo ●環境変数　set athenasrv=　にサーバプログラムのパスが設定されていない状態です。
-@echo 環境変数設定例　set athenasrv="c:\athena"　など
+@echo ●環境変数　set aurigasrv=　にサーバプログラムのパスが設定されていない状態です。
+@echo 環境変数設定例　set aurigasrv="c:\auriga"　など
 :end
 pause

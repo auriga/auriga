@@ -17,7 +17,7 @@ HTTPD の設定方法 − サーバー全体
 ・doc/conf_ref.txt に従えば OK です。一部わかりにくい物を解説しておきます。
 
 	server_max_requests_per_second, server_max_requests_period
-		これは Athena 本体の動作を妨げないように httpd 側にアクセスが集中すると
+		これは Auriga 本体の動作を妨げないように httpd 側にアクセスが集中すると
 		503 エラーを返すようにするための機能です。
 		
 		内部処理的には _period 期間中に _per_second * _period 回のアクセスが
@@ -42,7 +42,7 @@ HTTPD の設定方法 − URL ごとの設定
 	
 	
 	// メンバー専用ページの設定
-	//   localhost, LAN 内部 からか、または Athena の
+	//   localhost, LAN 内部 からか、または Auriga の
 	//   アカウントで認証しないと入れないようにする
 	target: /members/
 	
@@ -55,7 +55,7 @@ HTTPD の設定方法 − URL ごとの設定
 	
 	authtype: Basic
 	authfunc: 1
-	authname: Athena server members site
+	authname: Auriga server members site
 
 	
 	// 管理者用のページの設定
@@ -69,7 +69,7 @@ HTTPD の設定方法 − URL ごとの設定
 	allow: 127.0.0.1
 	
 	authtype: Digest
-	authname: Athena server administrator site
+	authname: Auriga server administrator site
 	authuser: admin:$Digest$aa4a5443cb91ee1810785314651e5dd1
 	
 	
@@ -97,7 +97,7 @@ HTTPD の細かな仕様
 
 ・ユーザー認証方式
 	・Basic 認証と Digest 認証の両方に対応しています。
-	・Athena のアカウントを認証に利用できます（ログインサーバーのみ）
+	・Auriga のアカウントを認証に利用できます（ログインサーバーのみ）
 
 ・アクセス数の制限
 	・サーバー内での秒間リクエスト数を制限できます。
@@ -252,7 +252,7 @@ HTTPD の細かな仕様
 　（バックドアをアップロードして CGI として起動されるなど）
 
 ・CGI プロセスの権限
-　Athena を実行しているプロセスと同じユーザー権限で起動します。
+　Auriga を実行しているプロセスと同じユーザー権限で起動します。
 　別のユーザー権限に切り替えて起動する機能はありません。
 
 ・cygwin での CGI

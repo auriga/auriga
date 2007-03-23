@@ -1,12 +1,12 @@
-Athenaサービス化キット Ver2000/XP/2003 Ver.4
+Aurigaサービス化キット Ver2000/XP/2003 Ver.4
                                                            by nameless
 
 概要
-　AthenaのLogin / Char / Mapサーバをwindowsのサービスとして組み込みます
+　AurigaのLogin / Char / Mapサーバをwindowsのサービスとして組み込みます
 
 用意するもの
 　BCCもしくはVC、Gcc for MinGw(-mnoオプション付きで)でコンパイルした
-　Athena本体(login-server.exe/char-server.exe/map-server.exe)
+　Auriga本体(login-server.exe/char-server.exe/map-server.exe)
 
 　※Gcc for Cygwinでコンパイルしたバイナリを使用する場合はstartのある
 　フォルダに./bin/からサーババイナリとCygz.dll/Cygwin1.dllを移動して
@@ -22,15 +22,15 @@ Athenaサービス化キット Ver2000/XP/2003 Ver.4
 設定方法
 　１．はじめにinstsrv.batをメモ帳等で開きます
 　先頭付近に
-　　set athenasrv=
+　　set aurigasrv=
 　という行があるので、ここに設定を書き込んで上書きします
 　設定例を上げておくと
 
-　　set athenasrv="c:\athena"
-　　　└Athenaのバイナリがあるフォルダを指定します
+　　set aurigasrv="c:\auriga"
+　　　└Aurigaのバイナリがあるフォルダを指定します
 
-　２．Athenaの設定をします。confファイルの設定が無かったりすると
-　サービスが暴走したりしますので、はじめにAthenaが通常起動できるか確認してください
+　２．Aurigaの設定をします。confファイルの設定が無かったりすると
+　サービスが暴走したりしますので、はじめにAurigaが通常起動できるか確認してください
 
 　３．設定を確認したらinstasv.batをダブルクリックで実行してください。
 　エラーが出なければサービスに登録されているはずです
@@ -38,7 +38,7 @@ Athenaサービス化キット Ver2000/XP/2003 Ver.4
   <<登録成功時のログはこうなります>>
   ----------------------------------------------------------------
   instasv
-  →Athenaをサービスとして登録します。
+  →Aurigaをサービスとして登録します。
   [SC] CreateService SUCCESS
   [SC] CreateService SUCCESS
   [SC] CreateService SUCCESS
@@ -67,7 +67,7 @@ Athenaサービス化キット Ver2000/XP/2003 Ver.4
 　を設定して上書き保存します
 
 　２．管理ツール内のサービスで該当のサービスを停止させてください
-　(AthenaLogin/AthenaChar/AthenaMap)
+　(AurigaLogin/AurigaChar/AurigaMap)
 
 　３．サービスの停止を確認したら、delasv.batをダブルクリックで実行してください。
 　delasv実行後、再起動をしておくことをお勧めします。

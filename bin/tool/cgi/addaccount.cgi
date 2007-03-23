@@ -36,7 +36,7 @@ use CGI;
 
 my($cgi)= new CGI;
 my(%langconv)=(
-	'Athena login-server administration tool.*' => '',
+	'Auriga login-server administration tool.*' => '',
 	'logged on.*' => '',
 );
 
@@ -155,10 +155,10 @@ else{
 Content-type: text/html\n
 <html>
 <head>
-  <title>Athena account making cgi</title>
+  <title>Auriga account making cgi</title>
  </head>
  <body>
-  <h1>Athena account making cgi</h1>
+  <h1>Auriga account making cgi</h1>
   <form action="$cgiuri" method="post">
    <table border=2>
     <tr>

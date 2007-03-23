@@ -17,7 +17,7 @@
 < 目次 >
 
  * ladmin によるアカウント作成        [強く推奨]
-     Athenaに添付されているladminによるアカウント作成
+     Aurigaに添付されているladminによるアカウント作成
 
  * ROクライアントによるアカウント作成
      クライアントのログイン画面からのアカウント作成
@@ -42,7 +42,7 @@
    $ perl bin/tool/ladmin
 　　　　最後に「ladmin>」というプロンプトがでればOK
 	失敗するなら次の項目をチェック。
-	・login_athena.cnfのadmin_passを変更した場合、
+	・login_auriga.confのadmin_passを変更した場合、
 	  ladminをエディタで開いて$loginserveradminpasswordを変更する。
 
  アカウントの追加
@@ -78,7 +78,7 @@
   のように、IDに _M 、PASSWORDに @admin を付けてログインしようとすると、
   新しい男性アカウントが作成され、そのアカウントでログインできる。
   _M を _F にすると性別が女になる。
-　また、login_athena.cnfでadmin_passを変更した場合、@adminのadminの部分を
+　また、login_auriga.confでadmin_passを変更した場合、@adminのadminの部分を
   そのパスワードに変更する必要がある。
 
   次回からは、ID: testid 、PASSWORD: testpass でログインできる。

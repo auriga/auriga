@@ -1,4 +1,4 @@
-AthenaNPCScript
+AurigaNPCScript
 
 ・目次
 	０．はじめに
@@ -22,7 +22,7 @@ AthenaNPCScript
 	(  0,  0)--(200,  0)→Xの増加
 
 １．NPCの定義
-	athenaディレクトリ以下ならどこでもよい（できればathena/script以下）ので、とりあえずtxtを作成してください。
+	Aurigaディレクトリ以下ならどこでもよい（できればAuriga/script以下）ので、とりあえずtxtを作成してください。
 	まずそのNPCが何を示すのか記述します（場合によってはNPCという言い方は不適切）。
 
 	＊ワープポイント：MAP間の移動を行います。
@@ -247,11 +247,11 @@ AthenaNPCScript
 				流れの速い雲が立ち込めます。
 			base_exp_rate<tab><rate>
 				Base経験値取得倍率を<rate>に変更します。
-				battle_athena.confのbase_exp_rateの値は無視します。
+				battle_auriga.confのbase_exp_rateの値は無視します。
 				<rate>が負の値のときは経験値なしになります。
 			job_exp_rate<tab><rate>
 				Job経験値取得倍率を<rate>に変更します。
-				battle_athena.confのjob_exp_rateの値は無視します。
+				battle_auriga.confのjob_exp_rateの値は無視します。
 				<rate>が負の値のときは経験値なしになります。
 			pk<rab>dummy
 				PK可能MAPになります。
@@ -1522,7 +1522,7 @@ AthenaNPCScript
 			bonusrate	友情値に応じて上がる発動確率(友情値 * 0.01% * n)
 
 			ペットに指定した攻撃スキル(対象指定のみ)を使用出来る状態にします。
-			この命令はeAthena との互換性がありますが、Athena 特有の仕様として、
+			この命令はeAthena との互換性がありますが、Auriga 特有の仕様として、
 			skill_idに-1を指定すると、スキルを削除できます。
 
 		petskillsupport命令
@@ -1535,7 +1535,7 @@ AthenaNPCScript
 			percent sp	スキル使用条件( プレイヤーのSPが n% 以下 )
 
 			ペットに指定した支援スキルを使用出来る状態にします。
-			この命令はeAthena との互換性がありますが、Athena 特有の仕様として、
+			この命令はeAthena との互換性がありますが、Auriga 特有の仕様として、
 			skill_idに-1を指定すると、スキルを削除できます。
 
 		guildgetexp命令
@@ -2131,7 +2131,7 @@ AthenaNPCScript
 		basicskillcheck関数
 			basicskillcheck();
 
-			battle_athena.confのbasic_skill_checkの設定値を返します。
+			battle_auriga.confのbasic_skill_checkの設定値を返します。
 			basic_skill_checkとカプラの倉庫利用を合わせる為に作った物でそれ以外の機能はありません。戻った数値が0ならbasic_skill_checkがno、1ならyesです。
 
 		getgmlevel関数
@@ -2982,7 +2982,7 @@ AthenaNPCScript
 		ラベル実行後はそのプレイヤーにアタッチしますので、プレイヤーの情報を取得することができます。
 
 		OnPCイベントラベルはデフォルトの状態では全て無効化されています。
-		利用する場合にはbattle_athena.confにて該当の項目を有効化してください。
+		利用する場合にはbattle_auriga.confにて該当の項目を有効化してください。
 			参考：npc_test_pcevent.txt
 
 		OnPCDieラベル
@@ -3151,7 +3151,7 @@ AthenaNPCScript
 			スクリプトの実行は強制的に中断されました。
 
 			for構文などでループを作る場合、特にgotocountがリミットに達しやすいので
-			状況に合わせてscript_athena.confのgotocountの値を増やしてみるといいかもしれません。
+			状況に合わせてscript_auriga.confのgotocountの値を増やしてみるといいかもしれません。
 
 		not function and command !
 			関数実行/命令実行部分で、関数でも命令でもない

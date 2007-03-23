@@ -57,7 +57,7 @@ static int bigfile_splitsize = 256*1024;	// 巨大ファイル転送モードの
 
 static int max_uri_length = 255;	// URI の長さを制限
 
-static char servername[] = "Athena httpd";
+static char servername[] = "Auriga httpd";
 
 static int server_max_requests_per_second = 10;		// 全体の秒間のリクエスト数制限
 static int server_max_requests_period = 5000;		// 全体のリクエスト数制限のチェック間隔
@@ -1986,8 +1986,8 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	{
 		int i = rand() ^ gettick();
 		char tmp_out[256], tmp_err[256];
-		sprintf( tmp_out, "%sathena_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
-		sprintf( tmp_err, "%sathena_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+		sprintf( tmp_out, "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+		sprintf( tmp_err, "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
 		sd->cgi_hOut = CreateFile( tmp_out, GENERIC_READ | GENERIC_WRITE, 0, &sa, CREATE_ALWAYS,
 									FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL );
 		sd->cgi_hErr = CreateFile( tmp_err, GENERIC_READ | GENERIC_WRITE, 0, &sa, CREATE_ALWAYS,
@@ -2347,9 +2347,9 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		int i = rand() ^ gettick();
 		char tmp_in[256], tmp_out[256], tmp_err[256];
 		// 名前を作る
-		sprintf( tmp_in,  "%sathena_httpd_in%04x%08x.tmp",  httpd_cgi_temp_dir, sd->fd, i );
-		sprintf( tmp_out, "%sathena_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
-		sprintf( tmp_err, "%sathena_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+		sprintf( tmp_in,  "%sauriga_httpd_in%04x%08x.tmp",  httpd_cgi_temp_dir, sd->fd, i );
+		sprintf( tmp_out, "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+		sprintf( tmp_err, "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
 		
 		// 開く
 		sd->cgi_in  = open( tmp_in , O_RDWR | O_CREAT | O_TRUNC, 0644 );
@@ -3392,7 +3392,7 @@ int httpd_config_read(char *cfgName)
 					a->url[0]= '\0';
 					a->urllen = 0;
 					a->auth_func_id = 0;
-					strcpy( a->realm, "Athena Authorization" );
+					strcpy( a->realm, "Auriga Authorization" );
 					if( strlen(w2)>=sizeof(a->url) )
 						printf("httpd_config_read: too long target url [%s]\n", w2);
 					else

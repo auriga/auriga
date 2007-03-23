@@ -396,8 +396,8 @@ static void graph_parse_httpd(struct httpd_session_data *sd,const char* url) {
 		char buf[8192];
 		char *p = buf;
 		int  i;
-		p += sprintf(p,"<html><head><title>Athena Sensors</title></head>\n\n<body>\n");
-		p += sprintf(p,"<h1>Athena Sensors</h1>\n\n");
+		p += sprintf(p,"<html><head><title>Auriga Sensors</title></head>\n\n<body>\n");
+		p += sprintf(p,"<h1>Auriga Sensors</h1>\n\n");
 		for(i = 0; i < sensor_max; i++) {
 			struct graph *g = sensor[i].graph;
 			p += sprintf(p,"<h2>%s</h2>\n\n",sensor[i].str);
