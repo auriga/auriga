@@ -4772,7 +4772,6 @@ int battle_config_read(const char *cfgName)
 		battle_config.player_skill_partner_check = 1;
 		battle_config.sole_concert_type = 3;
 		battle_config.hide_GM_session = 0;
-		battle_config.unit_movement_type = 0;
 		battle_config.invite_request_check = 1;
 		battle_config.gvg_trade_request_refused = 1;
 		battle_config.pvp_trade_request_refused = 1;
@@ -5227,7 +5226,6 @@ int battle_config_read(const char *cfgName)
 			{ "player_skill_partner_check",			&battle_config.player_skill_partner_check			},
 			{ "sole_concert_type",					&battle_config.sole_concert_type					},
 			{ "hide_GM_session",					&battle_config.hide_GM_session						},
-			{ "unit_movement_type",					&battle_config.unit_movement_type					},
 			{ "invite_request_check",				&battle_config.invite_request_check					},
 			{ "gvg_trade_request_refused",			&battle_config.gvg_trade_request_refused			},
 			{ "pvp_trade_request_refused",			&battle_config.pvp_trade_request_refused			},

@@ -251,7 +251,6 @@ extern struct Battle_Config {
 	int player_skill_partner_check;
 	int sole_concert_type;
 	int hide_GM_session;
-	int unit_movement_type;
 	int invite_request_check;
 	int gvg_trade_request_refused;
 	int pvp_trade_request_refused;

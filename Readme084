@@ -1,4 +1,11 @@
 ----------------------------------------
+//0130 [2007/03/24] by Rayce
+
+・使われてない battle_config.unit_movement_type を削除（battle.*）
+・char.dspの一部が間違っていたので修正
+・db類の更新 thanks to huge cgi
+
+----------------------------------------
 //0129 [2007/03/23] by Rayce
 
 ・socket_athena.confの socket_ctrl_panel_url の読み込みを少し修正（socket.c）
