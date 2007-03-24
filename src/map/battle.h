@@ -191,12 +191,12 @@ extern struct Battle_Config {
 	int pc_auto_counter_type;
 	int monster_auto_counter_type;
 	int min_hitrate;
-	int agi_penaly_type;
-	int agi_penaly_count;
-	int agi_penaly_num;
-	int vit_penaly_type;
-	int vit_penaly_count;
-	int vit_penaly_num;
+	int agi_penalty_type;
+	int agi_penalty_count;
+	int agi_penalty_num;
+	int vit_penalty_type;
+	int vit_penalty_count;
+	int vit_penalty_num;
 	int player_defense_type;
 	int monster_defense_type;
 	int pet_defense_type;
@@ -220,7 +220,7 @@ extern struct Battle_Config {
 	int monster_attack_direction_change;
 	int pc_land_skill_limit;
 	int monster_land_skill_limit;
-	int party_skill_penaly;
+	int party_skill_penalty;
 	int monster_class_change_full_recover;
 	int produce_item_name_input;
 	int produce_potion_name_input;
@@ -240,8 +240,8 @@ extern struct Battle_Config {
 	int mob_attack_attr_none;
 	int pc_attack_attr_none;
 
-	int agi_penaly_count_lv;
-	int vit_penaly_count_lv;
+	int agi_penalty_count_lv;
+	int vit_penalty_count_lv;
 
 	int gx_allhit;
 	int gx_cardfix;
@@ -318,7 +318,7 @@ extern struct Battle_Config {
 	int dance_and_play_duration;
 	int soulcollect_max_fail;
 	int gvg_flee_rate;
-	int gvg_flee_penaly;
+	int gvg_flee_penalty;
 	int equip_sex;
 	int weapon_attack_autospell;
 	int magic_attack_autospell;

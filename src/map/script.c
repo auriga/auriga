@@ -6978,8 +6978,15 @@ int buildin_sc_end(struct script_state *st)
 		if(sd && sd->state.potionpitcher_flag)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
-	if(bl)
-		status_change_end(bl,type,-1);
+	if(bl) {
+		if(type == SC_DANCING) {
+			skill_stop_dancing(bl,0);
+		} else {
+			if(type == SC_BASILICA)
+				skill_basilica_cancel(bl);
+			status_change_end(bl,type,-1);
+		}
+	}
 	return 0;
 }
 

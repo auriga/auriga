@@ -1,4 +1,17 @@
 ----------------------------------------
+//0132 [2007/03/25] by Rayce
+
+・battle_auriga.confを少し整形
+・typo修正 penaly → penalty（battle.*, status.c）
+・スクリプトのsc_end命令でダンス状態とバジリカが正常に解除されるように修正（script.c）
+
+・ゴスペルに関する修正（skill.c, status.c, unit.c）
+	-> ゴスペル中にハエの羽などでテレポートすると動けなくなる問題を修正してみる（unit.c）
+	-> status_change_end() 内でスキルユニットを削除する
+	-> skill_unit_group のアドレスの保存先をsc_dataのval3からval4に変更
+	   グラフィティに合わせるため
+
+----------------------------------------
 //0131 [2007/03/24] by Rayce
 
 ・サーバースナップショット（version.h）

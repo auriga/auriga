@@ -2169,19 +2169,19 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 				int target_count=1;
 
 				if(target->type!=BL_HOM) {
-					target_count = unit_counttargeted(target,battle_config.vit_penaly_count_lv);
+					target_count = unit_counttargeted(target,battle_config.vit_penalty_count_lv);
 				}
-				if(battle_config.vit_penaly_type > 0 && (!t_sc_data || t_sc_data[SC_STEELBODY].timer==-1)) {
-					if(target_count >= battle_config.vit_penaly_count) {
-						if(battle_config.vit_penaly_type == 1) {
-							t_def1 = (t_def1 * (100 - (target_count - (battle_config.vit_penaly_count - 1))*battle_config.vit_penaly_num))/100;
-							t_def2 = (t_def2 * (100 - (target_count - (battle_config.vit_penaly_count - 1))*battle_config.vit_penaly_num))/100;
-							t_vit = (t_vit * (100 - (target_count - (battle_config.vit_penaly_count - 1))*battle_config.vit_penaly_num))/100;
+				if(battle_config.vit_penalty_type > 0 && (!t_sc_data || t_sc_data[SC_STEELBODY].timer==-1)) {
+					if(target_count >= battle_config.vit_penalty_count) {
+						if(battle_config.vit_penalty_type == 1) {
+							t_def1 = (t_def1 * (100 - (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num))/100;
+							t_def2 = (t_def2 * (100 - (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num))/100;
+							t_vit  = (t_vit  * (100 - (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num))/100;
 						}
-						else if(battle_config.vit_penaly_type == 2) {
-							t_def1 -= (target_count - (battle_config.vit_penaly_count - 1))*battle_config.vit_penaly_num;
-							t_def2 -= (target_count - (battle_config.vit_penaly_count - 1))*battle_config.vit_penaly_num;
-							t_vit -= (target_count - (battle_config.vit_penaly_count - 1))*battle_config.vit_penaly_num;
+						else if(battle_config.vit_penalty_type == 2) {
+							t_def1 -= (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num;
+							t_def2 -= (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num;
+							t_vit  -= (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num;
 						}
 						if(t_def1 < 0) t_def1 = 0;
 						if(t_def2 < 1) t_def2 = 1;
@@ -4714,14 +4714,14 @@ int battle_config_read(const char *cfgName)
 		battle_config.pc_auto_counter_type = 1;
 		battle_config.monster_auto_counter_type = 1;
 		battle_config.min_hitrate = 5;
-		battle_config.agi_penaly_type = 0;
-		battle_config.agi_penaly_count = 3;
-		battle_config.agi_penaly_num = 0;
-		battle_config.agi_penaly_count_lv = ATK_FLEE;
-		battle_config.vit_penaly_type = 0;
-		battle_config.vit_penaly_count = 3;
-		battle_config.vit_penaly_num = 0;
-		battle_config.vit_penaly_count_lv = ATK_DEF;
+		battle_config.agi_penalty_type = 0;
+		battle_config.agi_penalty_count = 3;
+		battle_config.agi_penalty_num = 0;
+		battle_config.agi_penalty_count_lv = ATK_FLEE;
+		battle_config.vit_penalty_type = 0;
+		battle_config.vit_penalty_count = 3;
+		battle_config.vit_penalty_num = 0;
+		battle_config.vit_penalty_count_lv = ATK_DEF;
 		battle_config.player_defense_type = 0;
 		battle_config.monster_defense_type = 0;
 		battle_config.pet_defense_type = 0;
@@ -4745,7 +4745,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.monster_attack_direction_change = 1;
 		battle_config.pc_land_skill_limit = 1;
 		battle_config.monster_land_skill_limit = 1;
-		battle_config.party_skill_penaly = 1;
+		battle_config.party_skill_penalty = 1;
 		battle_config.monster_class_change_full_recover = 0;
 		battle_config.produce_item_name_input = 1;
 		battle_config.produce_potion_name_input = 1;
@@ -4850,7 +4850,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.dance_and_play_duration = 20000;
 		battle_config.soulcollect_max_fail = 0;
 		battle_config.gvg_flee_rate	= 100;
-		battle_config.gvg_flee_penaly	= 0;
+		battle_config.gvg_flee_penalty	= 0;
 		battle_config.equip_sex = 0;
 		battle_config.noportal_flag = 0;
 		battle_config.noexp_hiding = 0;
@@ -5168,14 +5168,14 @@ int battle_config_read(const char *cfgName)
 			{ "player_auto_counter_type",			&battle_config.pc_auto_counter_type					},
 			{ "monster_auto_counter_type",			&battle_config.monster_auto_counter_type			},
 			{ "min_hitrate",						&battle_config.min_hitrate							},
-			{ "agi_penaly_type",					&battle_config.agi_penaly_type						},
-			{ "agi_penaly_count",					&battle_config.agi_penaly_count						},
-			{ "agi_penaly_num",						&battle_config.agi_penaly_num						},
-			{ "agi_penaly_count_lv",				&battle_config.agi_penaly_count_lv					},
-			{ "vit_penaly_type",					&battle_config.vit_penaly_type						},
-			{ "vit_penaly_count",					&battle_config.vit_penaly_count						},
-			{ "vit_penaly_num",						&battle_config.vit_penaly_num						},
-			{ "vit_penaly_count_lv",				&battle_config.vit_penaly_count_lv					},
+			{ "agi_penalty_type",					&battle_config.agi_penalty_type						},
+			{ "agi_penalty_count",					&battle_config.agi_penalty_count						},
+			{ "agi_penalty_num",					&battle_config.agi_penalty_num						},
+			{ "agi_penalty_count_lv",				&battle_config.agi_penalty_count_lv					},
+			{ "vit_penalty_type",					&battle_config.vit_penalty_type						},
+			{ "vit_penalty_count",					&battle_config.vit_penalty_count						},
+			{ "vit_penalty_num",					&battle_config.vit_penalty_num						},
+			{ "vit_penalty_count_lv",				&battle_config.vit_penalty_count_lv					},
 			{ "player_defense_type",				&battle_config.player_defense_type					},
 			{ "monster_defense_type",				&battle_config.monster_defense_type					},
 			{ "pet_defense_type",					&battle_config.pet_defense_type						},
@@ -5199,7 +5199,7 @@ int battle_config_read(const char *cfgName)
 			{ "monster_attack_direction_change",	&battle_config.monster_attack_direction_change		},
 			{ "player_land_skill_limit",			&battle_config.pc_land_skill_limit					},
 			{ "monster_land_skill_limit",			&battle_config.monster_land_skill_limit				},
-			{ "party_skill_penaly",					&battle_config.party_skill_penaly					},
+			{ "party_skill_penalty",				&battle_config.party_skill_penalty					},
 			{ "monster_class_change_full_recover",	&battle_config.monster_class_change_full_recover	},
 			{ "produce_item_name_input",			&battle_config.produce_item_name_input				},
 			{ "produce_potion_name_input",			&battle_config.produce_potion_name_input			},
@@ -5305,7 +5305,7 @@ int battle_config_read(const char *cfgName)
 			{ "dance_and_play_duration",			&battle_config.dance_and_play_duration				},
 			{ "soulcollect_max_fail",				&battle_config.soulcollect_max_fail					},
 			{ "gvg_flee_rate",						&battle_config.gvg_flee_rate						},
-			{ "gvg_flee_penaly",					&battle_config.gvg_flee_penaly						},
+			{ "gvg_flee_penalty",					&battle_config.gvg_flee_penalty						},
 			{ "equip_sex",							&battle_config.equip_sex							},
 			{ "noexp_hiding",						&battle_config.noexp_hiding							},
 			{ "noexp_trickdead",					&battle_config.noexp_trickdead						},
@@ -5491,9 +5491,9 @@ int battle_config_read(const char *cfgName)
 			{ "allow_es_magic_all",					&battle_config.allow_es_magic_all					},
 			{ "trap_is_invisible",					&battle_config.trap_is_invisible					},
 			{ "gm_perfect_hide",					&battle_config.gm_perfect_hide					},
-			{ "pcview_mob_clear_type",					&battle_config.pcview_mob_clear_type					},
-			{ "party_item_share_type",					&battle_config.party_item_share_type					},
-			{ "party_item_share_show",					&battle_config.party_item_share_show					},
+			{ "pcview_mob_clear_type",				&battle_config.pcview_mob_clear_type					},
+			{ "party_item_share_type",				&battle_config.party_item_share_type					},
+			{ "party_item_share_show",				&battle_config.party_item_share_show					},
 			{ "pk_murderer_point",					&battle_config.pk_murderer_point					},
 		};
 		const int max = sizeof(data)/sizeof(data[0]);
@@ -5617,10 +5617,10 @@ int battle_config_read(const char *cfgName)
 			battle_config.max_cart_weight = 100;
 		battle_config.max_cart_weight *= 10;
 
-		if(battle_config.agi_penaly_count < 2)
-			battle_config.agi_penaly_count = 2;
-		if(battle_config.vit_penaly_count < 2)
-			battle_config.vit_penaly_count = 2;
+		if(battle_config.agi_penalty_count < 2)
+			battle_config.agi_penalty_count = 2;
+		if(battle_config.vit_penalty_count < 2)
+			battle_config.vit_penalty_count = 2;
 
 		if(battle_config.guild_exp_limit > 99)
 			battle_config.guild_exp_limit = 99;

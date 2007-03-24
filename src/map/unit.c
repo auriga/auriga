@@ -1886,6 +1886,10 @@ int unit_remove_map(struct block_list *bl, int clrtype)
 		if(sc_data[SC_ANKLE].timer != -1) {
 			status_change_end(bl, SC_ANKLE, -1);
 		}
+		// ゴスペル削除
+		if(sc_data[SC_GOSPEL].timer != -1) {
+			status_change_end(bl, SC_GOSPEL, -1);
+		}
 		sc_data = NULL;
 	}
 

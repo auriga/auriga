@@ -1677,13 +1677,13 @@ L_RECALC:
 
 		if(sd->sc_data[SC_ADRENALINE2].timer != -1 && sd->sc_data[SC_TWOHANDQUICKEN].timer == -1 && sd->sc_data[SC_ONEHAND].timer == -1 &&
 			sd->sc_data[SC_QUAGMIRE].timer == -1 && sd->sc_data[SC_DONTFORGETME].timer == -1 && sd->sc_data[SC_DECREASEAGI].timer==-1) {	// アドレナリンラッシュ2
-			if(sd->sc_data[SC_ADRENALINE2].val2 || !battle_config.party_skill_penaly)
+			if(sd->sc_data[SC_ADRENALINE2].val2 || !battle_config.party_skill_penalty)
 				aspd_rate -= 30;
 			else
 				aspd_rate -= 25;
 		}else if(sd->sc_data[SC_ADRENALINE].timer != -1 && sd->sc_data[SC_TWOHANDQUICKEN].timer == -1 && sd->sc_data[SC_ONEHAND].timer == -1 &&
 			sd->sc_data[SC_QUAGMIRE].timer == -1 && sd->sc_data[SC_DONTFORGETME].timer == -1 && sd->sc_data[SC_DECREASEAGI].timer==-1) {	// アドレナリンラッシュ
-			if(sd->sc_data[SC_ADRENALINE].val2 || !battle_config.party_skill_penaly)
+			if(sd->sc_data[SC_ADRENALINE].val2 || !battle_config.party_skill_penalty)
 				aspd_rate -= 30;
 			else
 				aspd_rate -= 25;
@@ -2565,24 +2565,24 @@ int status_get_flee(struct block_list *bl)
 
 	// 回避率補正
 	if(bl->type!=BL_HOM)
-		target_count = unit_counttargeted(bl,battle_config.agi_penaly_count_lv);
+		target_count = unit_counttargeted(bl,battle_config.agi_penalty_count_lv);
 
-	if(battle_config.agi_penaly_type > 0 && target_count >= battle_config.agi_penaly_count) {
+	if(battle_config.agi_penalty_type > 0 && target_count >= battle_config.agi_penalty_count) {
 		//ペナルティ設定より対象が多い
-		if(battle_config.agi_penaly_type == 1) {
-			//回避率がagi_penaly_num%ずつ減少
-			int flee_rate = (target_count-(battle_config.agi_penaly_count-1)) * battle_config.agi_penaly_num;
+		if(battle_config.agi_penalty_type == 1) {
+			//回避率がagi_penalty_num%ずつ減少
+			int flee_rate = (target_count-(battle_config.agi_penalty_count-1)) * battle_config.agi_penalty_num;
 			flee = flee * (100 - flee_rate) / 100;
-		} else if(battle_config.agi_penaly_type == 2) {
-			//回避率がagi_penaly_num分減少
-			flee -= (target_count - (battle_config.agi_penaly_count - 1))*battle_config.agi_penaly_num;
+		} else if(battle_config.agi_penalty_type == 2) {
+			//回避率がagi_penalty_num分減少
+			flee -= (target_count - (battle_config.agi_penalty_count - 1))*battle_config.agi_penalty_num;
 		}
 	}
 	// 対人MAPでの減少効果
-	if(battle_config.gvg_flee_penaly & 1 && map[bl->m].flag.gvg) {
+	if(battle_config.gvg_flee_penalty & 1 && map[bl->m].flag.gvg) {
 		flee = flee*(200 - battle_config.gvg_flee_rate)/100;	//実際にGvGでFleeを減少
 	}
-	if(battle_config.gvg_flee_penaly & 2 && map[bl->m].flag.pvp) {
+	if(battle_config.gvg_flee_penalty & 2 && map[bl->m].flag.pvp) {
 		flee = flee*(200 - battle_config.gvg_flee_rate)/100;	//実際にPvPでFleeを減少
 	}
 	if(flee < 1) flee = 1;
@@ -3308,7 +3308,7 @@ int status_get_adelay(struct block_list *bl)
 			if(sc_data[SC_ADRENALINE2].timer != -1 && sc_data[SC_TWOHANDQUICKEN].timer == -1 && sc_data[SC_ONEHAND].timer == -1 &&
 				sc_data[SC_QUAGMIRE].timer == -1 && sc_data[SC_DONTFORGETME].timer == -1) {	// アドレナリンラッシュ
 				//使用者とパーティメンバーで格差が出る設定でなければ3割減算
-				if(sc_data[SC_ADRENALINE2].val2 || !battle_config.party_skill_penaly)
+				if(sc_data[SC_ADRENALINE2].val2 || !battle_config.party_skill_penalty)
 					aspd_rate -= 30;
 				//そうでなければ2.5割減算
 				else
@@ -3316,7 +3316,7 @@ int status_get_adelay(struct block_list *bl)
 			}else if(sc_data[SC_ADRENALINE].timer != -1 && sc_data[SC_TWOHANDQUICKEN].timer == -1 && sc_data[SC_ONEHAND].timer == -1 &&
 				sc_data[SC_QUAGMIRE].timer == -1 && sc_data[SC_DONTFORGETME].timer == -1) {	// アドレナリンラッシュ
 				//使用者とパーティメンバーで格差が出る設定でなければ3割減算
-				if(sc_data[SC_ADRENALINE].val2 || !battle_config.party_skill_penaly)
+				if(sc_data[SC_ADRENALINE].val2 || !battle_config.party_skill_penalty)
 					aspd_rate -= 30;
 				//そうでなければ2.5割減算
 				else
@@ -3402,13 +3402,13 @@ int status_get_amotion(struct block_list *bl)
 
 			if(sc_data[SC_ADRENALINE2].timer != -1 && sc_data[SC_TWOHANDQUICKEN].timer == -1 &&
 				sc_data[SC_ONEHAND].timer == -1 && sc_data[SC_QUAGMIRE].timer == -1 && sc_data[SC_DONTFORGETME].timer == -1) {	// フルアドレナリンラッシ
-				if(sc_data[SC_ADRENALINE2].val2 || !battle_config.party_skill_penaly)
+				if(sc_data[SC_ADRENALINE2].val2 || !battle_config.party_skill_penalty)
 					aspd_rate -= 30;
 				else
 					aspd_rate -= 25;
 			}else if(sc_data[SC_ADRENALINE].timer != -1 && sc_data[SC_TWOHANDQUICKEN].timer == -1 &&
 				sc_data[SC_ONEHAND].timer == -1 && sc_data[SC_QUAGMIRE].timer == -1 && sc_data[SC_DONTFORGETME].timer == -1) {	// アドレナリンラッシュ
-				if(sc_data[SC_ADRENALINE].val2 || !battle_config.party_skill_penaly)
+				if(sc_data[SC_ADRENALINE].val2 || !battle_config.party_skill_penalty)
 					aspd_rate -= 30;
 				else
 					aspd_rate -= 25;
@@ -4629,7 +4629,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_SILENCE:			/* 沈黙（レックスデビーナ） */
 			if (sc_data[SC_GOSPEL].timer!=-1) {
-				skill_delunitgroup((struct skill_unit_group *)sc_data[SC_GOSPEL].val3);
 				status_change_end(bl,SC_GOSPEL,-1);
 				break;
 			}
@@ -5535,9 +5534,11 @@ int status_change_end( struct block_list* bl , int type,int tid)
 				}
 				calc_flag = 1;
 				break;
+			case SC_GOSPEL:
 			case SC_GRAFFITI:
 				{
-					struct skill_unit_group *sg=(struct skill_unit_group *)sc_data[type].val4;	//val4がグラフィティのgroup_id
+					struct skill_unit_group *sg=(struct skill_unit_group *)sc_data[type].val4;	// val4がgroup_id
+					sc_data[type].val4 = 0;
 					if(sg)
 						skill_delunitgroup(sg);
 				}
