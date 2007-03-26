@@ -492,7 +492,7 @@ static void party_send_xy_clear(struct party *p)
 }
 
 // パーティメンバの移動通知
-void party_recv_movemap(int party_id, int account_id, char *map, int online, int lv, const char* name)
+void party_recv_movemap(int party_id, int account_id, char *map, unsigned char online, unsigned short lv, const char* name)
 {
 	struct map_session_data *sd;
 	struct party *p;
@@ -704,7 +704,7 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 }
 
 // アイテム分配
-int party_share_loot(struct party *p, struct map_session_data *sd, struct item *item_data, int first)
+int party_loot_share(struct party *p, struct map_session_data *sd, struct item *item_data, int first)
 {
 	nullpo_retr(1, sd);
 	nullpo_retr(1, item_data);

@@ -1,4 +1,16 @@
 ----------------------------------------
+//0133 [2007/03/27] by Rayce
+
+・clif_homskillup() は0x10eではなく0x239のパケットを使うように修正（clif.c）
+・ホムの腹減り値に使うパケット0x230のtypeを0x200に修正（homun.c）
+
+・party_share_loot() を party_loot_share() に改名（party.*, pc.c）
+・party_member構造体のメンバのサイズ変更（mmo.h, int_party.c, party.*）
+	leader : unsigned char
+	online : unsigned char
+	lv     : unsigned short
+
+----------------------------------------
 //0132 [2007/03/25] by Rayce
 
 ・battle_auriga.confを少し整形

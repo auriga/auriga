@@ -1812,7 +1812,7 @@ void clif_homskillup(struct map_session_data *sd, int skill_num)
 	skillid = skill_num-HOM_SKILLID;
 
 	fd=sd->fd;
-	WFIFOW(fd,0) = 0x10e;
+	WFIFOW(fd,0) = 0x239;
 	WFIFOW(fd,2) = skill_num;
 	WFIFOW(fd,4) = hd->status.skill[skillid].lv;
 	WFIFOW(fd,6) = skill_get_sp(skill_num,sd->status.skill[skillid].lv);
@@ -1821,7 +1821,7 @@ void clif_homskillup(struct map_session_data *sd, int skill_num)
 		range = status_get_range(&sd->bl) - (range + 1);
 	WFIFOW(fd,8) = range;
 	WFIFOB(fd,10) = (sd->status.skill[skillid].lv < skill_get_max(sd->status.skill[skillid].id)) ? 1 : 0;
-	WFIFOSET(fd,packet_db[0x10e].len);
+	WFIFOSET(fd,packet_db[0x239].len);
 
 	return;
 }

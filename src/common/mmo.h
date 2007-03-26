@@ -236,7 +236,8 @@ struct gm_account {
 struct party_member {
 	int account_id;
 	char name[24],map[24];
-	int leader,online,lv;
+	unsigned char leader,online;
+	unsigned short lv;
 	struct map_session_data *sd;
 };
 struct party {

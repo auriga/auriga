@@ -166,7 +166,7 @@ static int homun_hungry(int tid,unsigned int tick,int id,int data)
 		sd->hd->hungry_cry_timer = -1;
 	}
 
-	clif_send_homdata(sd,2,sd->hd->status.hungry);
+	clif_send_homdata(sd,0x200,sd->hd->status.hungry);
 	// 本鯖ではここでステータスを送らないが、送らないと"ホムが腹ぺこです！"が出ない
 	clif_send_homstatus(sd,0);
 
@@ -872,7 +872,7 @@ int homun_food(struct map_session_data *sd)
 	}
 
 	clif_emotion(&sd->hd->bl,emotion);
-	clif_send_homdata(sd,2,sd->hd->status.hungry);
+	clif_send_homdata(sd,0x200,sd->hd->status.hungry);
 	clif_send_homdata(sd,0x100,sd->hd->intimate/100);
 	clif_send_homstatus(sd,0);
 	clif_hom_food(sd,food,1);

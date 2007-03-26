@@ -3000,7 +3000,7 @@ void pc_takeitem(struct map_session_data *sd, struct flooritem_data *fitem)
 			}
 		}
 	}
-	if((flag = party_share_loot(p,sd,&fitem->item_data,fitem->first_get_id))) {
+	if((flag = party_loot_share(p,sd,&fitem->item_data,fitem->first_get_id))) {
 		// 重量overで取得失敗
 		clif_additem(sd,0,0,flag);
 	} else {

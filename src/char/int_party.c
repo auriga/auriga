@@ -913,7 +913,7 @@ void mapif_parse_PartyLeave(int fd, int party_id, int account_id, const char * n
 }
 
 // パーティマップ更新要求
-static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, char *map, int online, int lv, const char* name)
+static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, char *map, unsigned char online, unsigned short lv, const char* name)
 {
 	const struct party *p1 = party_load_num(party_id);
 	struct party p2;
