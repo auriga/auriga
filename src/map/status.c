@@ -6394,7 +6394,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap )
 			status_change_end( bl, SC_HIDING, -1);
 			status_change_end( bl, SC_CLOAKING, -1);
 		}
-		if(battle_check_target( src,bl, BCT_ENEMY ) > 0) {
+		if(battle_check_target( src,bl, BCT_ENEMY ) > 0 && !unit_isdead(bl)) {
 			struct status_change *sc_data = status_get_sc_data(src);
 			if(sc_data) {
 				battle_skill_attack(BF_MAGIC,src,src,bl,WZ_SIGHTBLASTER,sc_data[type].val1,tick,0);

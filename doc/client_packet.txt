@@ -171,8 +171,10 @@ R 008a <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1
 	type=09 ダメージモーションなしにダメージだけ表示される物(インデュア)
 	type=0a クリティカル
 	type=0b 完全回避
-R 008b
-	未調査
+R 008b <src ID>.l <dst ID>.l <server tick>.l <X>.w <Y>.w <damage>.w <div>.w <type>.B
+	吹き飛ばし通常攻撃＆ダメージ
+	現在未使用？
+	damageはダメージの合計、divはダメージ分割数
 S 008c <len>.w <str>.?B
 	通常発言送信。チャット中はチャット内発言用になる
 	先頭の"<nick> : "の部分はクライアント側で付ける事
@@ -877,11 +879,11 @@ S 018e <MakeItemID>.w <slot1ItemID>.w <slot2ItemID>,w <slot3.ItemID>.w
 	製造アイテムの選択
 R 018f <flag>.w [00] <MakeItemID>.w
 	製造結果(flag = 00なら成功 01なら失敗)
-S 0190 <skill lv>.w <skill code>.w <x & y>.l <message>.80b
+S 0190 <skill lv>.w <skill code>.w <X>.w <Y>.w <message>.80B
 	メッセージ(トーキーボックス）
 R 0191 <ID>.l <message>.80B
 	トーキーボックスのメッセージ
-R 0192 <x & y>.l <type>.w <mapname>.16b
+R 0192 <X>.w <Y>.w <type>.w <mapname>.16B
 	アイスウォール等による地形属性変化
 S 0193 <ID>.l
 	ギルドメンバ名前引き?
@@ -889,29 +891,8 @@ R 0194 <ID>.l <nick>.24B
 	ギルドメンバ名前引き応答?
 R 0195 <ID>.l <nick>.24B <party name>.24B <guild name>.24B <class name>.24B
 	ギルド所属PCの場合の0094返答
-R 0196 <type>.w <ID>.l
-	増強系スキル使用時のメッセージ色々。IDはtargetと思われるが自分相手のみしか来ない?
-	type=00	2HQ付与「攻撃速度が増加しました。」
-	type=01	2HQ解除「攻撃速度が減少しました。」
-	type=02 IMPOSITIO付与「武器の攻撃力が増加しました。」
-	type=03 IMPOSITIO解除「武器の攻撃力が減少しました。」
-	type=04	「スキル使用ディレイが減少しました。」
-	type=05	「スキル使用ディレイが元に戻りました。」
-	type=06	「武器に毒属性が付与されました。」
-	type=07 ASPERSIO付与「武器に聖属性が付与されました。」
-	type=08 ASPERSIO解除「武器の属性が元に戻りました。」
-	type=09	「防具に聖属性が付与されました。」
-	type=0a	「防具の属性が元に戻りました。」
-	type=0b KYRIE付与「バリア状態になりました。」
-	type=0c KYRIE解除「バリア状態が解除されました。」
-	type=0d	「ウェポンパーフェクションモードになりました。」
-	type=0e	「ウェポンパーフェクションモードが解除されました。」
-	type=0f	「オーバートラストモードになりました。」
-	type=10	「オーバートラストモードが解除されました。」
-	type=11	「マキシマイズパワーモードになりました。」
-	type=12	「マキシマイズパワーモードが解除されました。」
-R 0196 <type>.w <ID>.l <switch>.b	（コモド以降）
-	switch=0で解除,1で付加
+R 0196 <type>.w <ID>.l <switch>.B
+	増強系スキル使用時のメッセージ色々、switch=0で解除,1で付加
 	type=00	プロボック
 	type=01	インデュア
 	type=02	「攻撃速度が増加しました。」（2HQ）
@@ -979,10 +960,9 @@ R 0196 <type>.w <ID>.l <switch>.b	（コモド以降）
 S 0197 <type>.w
 	type=0 /resetstate
 	type=1 /resetskill
-	効能は無し?
-S 0198 <?>.w <?>.w <Flag>.w
-	GMコマンド/cmt(=/changemaptype)にて発行。おそらく、MAP属性変更コマンド
-	Flagのみ1か0
+S 0198 <X?>.w <Y?>.w <flag>.w
+	GMコマンド/cmt(=/changemaptype)にて発行。MAP属性変更コマンド
+	flagのみ1か0
 R 0199 <type>.w
 	type=1 pvpモード開始?
 	type=3 gvgモード開始?
@@ -996,7 +976,7 @@ R 019b <ID>.l <type>.l
 	type=3 武器精錬成功
 S 019c <len>.w <message>.?B
 	GMコマンド/nlb,/lbにて発行。MAP内ブロードキャスト
-R 019d <?>.4B
+R 019d <0x40固定>.l
 	GMコマンド/hideにて発行。
 R 019e
 	捕獲モンスター決め
@@ -1113,8 +1093,8 @@ R 01c1 <type>.l <?>.8B
 R 01c2
 	何もしないようにフラグが規定されている
 
-R 01c3 <len>.w <color>.l <font?>.w <size?>.w <?>.l <message>.?B
-	GMからの天の声（R 009aのマルチカラー版）
+R 01c3 <len>.w <color>.l <font?>.w <size>.w <?>.l <message>.?B
+	GMからの天の声（0x9aのマルチカラー版）
 R 01c4 <index>.w <amount>.l <itemID>.w <type>.B <identify flag>.B <attribute>.B <refine>.B <card>.4w
 	カプラ倉庫アイテム、0xf4の上位版
 R 01c5 <index>.w <amount>.l <itemID>.w <item data>.12B
@@ -1253,7 +1233,8 @@ R 01ef <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w ?.2B
 R 01f0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w ?.2B <card>.4w}.18B*
 	カプラさんに預けてある消耗品&収集品リスト
 	00a5から変更
-R 01f2 <?>.l <?>.l <?>.l <?>.l <?>.w
+R 01f2 <ID>.l <charactor ID>.l <online>.l <?>.l <?>.w
+	ギルドメンバがloginした抜けた等、0x16dの上位版？
 	未調査
 R 01f3 <ID>.l <type>.l
 	blから発生するエフェクト
@@ -1417,9 +1398,9 @@ R 022f <fail>.B <itemID>.w
 R 0230 <type>.w <ID>.l <param>.l
 	ホム関連通知、0x1a4のホム版
 	type=0, param=0 : ホム生成時に送られる
-	type=0x002 : 腹減り
 	type=0x100 : 親密度
-	（0〜3のswitchあり？）
+	type=0x200 : 腹減り
+	type=0x300 : アイテム？リソースエラーになる
 S 0231 <name>.24B
 	ホムの名前変更要求
 S 0232 <X_Y>.3B
@@ -1429,7 +1410,7 @@ S 0233 <?>.4B <target_id>.l <type>.B
 S 0234 <ID>.l
 	ホムをマスターの元へ戻す
 R 0235 <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
-	スキル情報の塊、0x10fと同じ
+	ホム用スキル情報の塊、0x10fと同じ
 R 0236 <point>.L <total>.L
 	虐殺者ランキングポイントが<point>上昇して、<total>になりました。
 S 0237
@@ -1437,7 +1418,7 @@ S 0237
 R 0238 { <charname>.24B }*10 { <point>.L }*10
 	虐殺者ランキング
 R 0239 <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
-	スキル情報更新、0x10eと同じ
+	ホム用スキル情報更新、0x10eと同じ
 R 023a <flag>.w
 	倉庫？
 	0 - passwd set plz
@@ -1550,6 +1531,9 @@ S 0273 <mail_num>.l <nick>.24B
 R 0274 <mail_num>.l <fail>.w
 	fail=0 : メールが返送されました
 	fail=1 : メールが存在しません
+R 027a <len>.w <message>.*B
+	ハンティングリスト
+	<message>は5000文字まで
 R 027b <val1>.l <val2>.l <val3>.l
 	オレンジ色で文字化けアナウンスが流れる
 	PC部屋イベント : 経験値増加 <val1>%, 死亡時経験値 <val2>%, ドロップ率増加 <val3>%
@@ -1567,8 +1551,19 @@ S 0281 <54000固定?>.w
 	未調査、たぶんテイミングランキング要求パケットとして実装される
 R 0282 { <charname>.24B }*10 { <point>.l }*10
 	テイミングランキング
-R 0284 <ID>.l <type>.l <?>.4B?
-	blから発生するエフェクト、1f3の上位互換？
+R 0284 <ID>.l <type>.l <val>.l
+	回復エフェクトの色違い
+	type=14b : 緑
+	type=14c : 青
+	type=291 : 緑
+	type=292 : 青
+	type=293 : 赤
+	type=294 : 紫
+	type=295 : 黒
+	type=296 : 白
+	type=297 : 黄
+	type=298 : 紫
+	それ以外 : 0x1f3と同じblから発生するエフェクト、valは無視
 R 0285 <type>.w <flag>.w
 	[天使の質問] 少女に教えてください
 	type=01 : スキル取得について、flagはスキルID
@@ -1598,7 +1593,8 @@ R 0289 <id>.l <type>.w
 	type=4 : アイテム交換中にアイテムを購入することはできません。
 	type=5 : アイテム情報が正しくないため、購入に失敗しました。
 	type=6 : Shop Pointが足りません。
-R 028a
+R 028a <ID>.l <option>.l <level>.l <opt3>.l
+	表示パケット系？
 	未調査
 S 028b
 	サーバ統合の際のキャラクターセレクト、残すキャラを選択する
@@ -1613,15 +1609,30 @@ R 0293 <type>.B <?>.l <?>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
 	type=0 : この地域ではボスモンスターの出現確認ができません。
 	type=2 : ボスモンスター<boss_name>の位置がミニマップに表示されます。
 	type=3 : ボスモンスター<boss_name>の出現予定時刻<hour>時<minute>分
-R 0294
-	<book_id>.l <page_num>.l
+
+R 0294 <book_id>.l <page_num>.l
 	読書システム
+R 029b <ID?>.l <?>.w * 8 <name?>.24B <?>.w * 5 <?>.l <?>.w <?>.l <?>.l <?>.w
+	未調査
+	傭兵のステータス情報まとめて送り付けか？
 R 029d <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
-	スキル情報の塊、0x10fと同じ
+	傭兵用スキル情報の塊、0x10fと同じ
 R 029e <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
-	スキル情報更新、0x10eと同じ
+	傭兵用スキル情報更新、0x10eと同じ
+R 02a2 <type>.w <?>.l
+	未調査
+	type=05 : WM_SIZE
+	type=06 : WM_ACTIVATE
+	type=07 : WM_SETFOCUS
+	type=08 : WM_KILLFOCUS
+	type=29 : WM_ALTTABACTIVE
+	type=31 : WM_GETFONT
+	type=35 : WM_ISACTIVEICON
+	type=a5 : WM_NCRBUTTONUP
+	type=bd : EM_GETHANDLE
+	type=be : EM_GETTHUMB
 R 02a3 <?>.l <?>.12B
-	jROのログイン時に観測、未調査
+	jROのログイン時に観測？、未調査
 S 02a5 <?>.w <?>.l
 	マウスのスクロールを高速で動かすと飛んでくる
 	未調査

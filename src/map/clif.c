@@ -11699,7 +11699,7 @@ static void clif_parse_wisall(int fd,struct map_session_data *sd, int cmd)
 	}
 }
 /*==========================================
- * GMコマンド/killall
+ * GMコマンド /killall
  *------------------------------------------
  */
 static void clif_parse_GMkillall(int fd,struct map_session_data *sd, int cmd)
@@ -11720,7 +11720,7 @@ static void clif_parse_GMkillall(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMコマンド/summon
+ * GMコマンド /summon
  *------------------------------------------
  */
 static void clif_parse_GMsummon(int fd,struct map_session_data *sd, int cmd)
@@ -11742,7 +11742,7 @@ static void clif_parse_GMsummon(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMコマンド/item /monster
+ * GMコマンド /item /monster
  *------------------------------------------
  */
 static void clif_parse_GMitemmonster( int fd, struct map_session_data *sd, int cmd )
@@ -11764,7 +11764,7 @@ static void clif_parse_GMitemmonster( int fd, struct map_session_data *sd, int c
 }
 
 /*==========================================
- * GMコマンド/shift
+ * GMコマンド /shift
  *------------------------------------------
  */
 static void clif_parse_GMshift(int fd,struct map_session_data *sd, int cmd)
@@ -12332,7 +12332,6 @@ struct {
 	{clif_parse_FriendAddRequest,"friendaddrequest"},
 	{clif_parse_FriendAddReply,"friendaddreply"},
 	{clif_parse_FriendDeleteRequest,"frienddeleterequest"},
-	{clif_parse_debug,"debug"},
 	{clif_parse_clientsetting,"clientsetting"},
 	{clif_parse_BabyRequest,"babyrequest"},
 	{clif_parse_BabyReply,"babyreply"},
