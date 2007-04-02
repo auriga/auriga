@@ -933,22 +933,22 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	/* MOBの追加効果付きスキル */
 
 	case NPC_PETRIFYATTACK:
-		if(atn_rand()%100 < sc_def_mdef)
+		if(atn_rand()%100 < (skilllv*20)*sc_def_mdef/100)
 			status_change_start(bl,sc[skillid-NPC_POISON],skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case NPC_POISON:
 	case NPC_SILENCEATTACK:
 	case NPC_STUNATTACK:
-		if(atn_rand()%100 < sc_def_vit)
+		if(atn_rand()%100 < (skilllv*20)*sc_def_vit/100)
 			status_change_start(bl,sc[skillid-NPC_POISON],skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case NPC_CURSEATTACK:
-		if(atn_rand()%100 < sc_def_luk)
+		if(atn_rand()%100 < (skilllv*20)*sc_def_luk/100)
 			status_change_start(bl,sc[skillid-NPC_POISON],skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case NPC_SLEEPATTACK:
 	case NPC_BLINDATTACK:
-		if(atn_rand()%100 < sc_def_int)
+		if(atn_rand()%100 < (skilllv*20)*sc_def_int/100)
 			status_change_start(bl,sc[skillid-NPC_POISON],skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case NPC_MENTALBREAKER:
@@ -959,19 +959,19 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case NPC_BREAKARMOR:
-		if(dstsd)
+		if(dstsd && atn_rand()%100 < skilllv*10)
 			pc_break_equip(dstsd, EQP_ARMOR);
 		break;
 	case NPC_BREAKWEAPON:
-		if(dstsd)
+		if(dstsd && atn_rand()%100 < skilllv*10)
 			pc_break_equip(dstsd, EQP_WEAPON);
 		break;
 	case NPC_BREAKHELM:
-		if(dstsd)
+		if(dstsd && atn_rand()%100 < skilllv*10)
 			pc_break_equip(dstsd, EQP_HELM);
 		break;
 	case NPC_BREAKSIELD:
-		if(dstsd)
+		if(dstsd && atn_rand()%100 < skilllv*10)
 			pc_break_equip(dstsd, EQP_SHIELD);
 		break;
 	case LK_HEADCRUSH:				/* ヘッドクラッシュ */
@@ -985,7 +985,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if( atn_rand()%100 < skilllv*5+5-status_get_str(bl)*27/100 )
 			status_change_start(bl,SC_JOINTBEAT,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
-	case PF_SPIDERWEB:		/* スパイダーウェッブ */
+	case PF_SPIDERWEB:		/* スパイダーウェブ */
 		{
 			int sec=skill_get_time2(skillid,skilllv);
 			if( map[src->m].flag.pvp || map[src->m].flag.gvg ) //対人フィールドでは拘束時間半減
@@ -2100,8 +2100,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 
-	case KN_CHARGEATK:			//チャージアタック
-	case TK_JUMPKICK:
+	case KN_CHARGEATK:	/* チャージアタック */
+	case TK_JUMPKICK:	/* ティオアプチャギ */
+	case NJ_ISSEN:		/* 一閃 */
 	{
 		int dist = unit_distance(src->x,src->y,bl->x,bl->y);
 		if(sd) {
@@ -2271,9 +2272,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			}
 			status_change_end(src, SC_HIDING, -1);	// ハイディング解除
 		}
-		break;
-	case NJ_ISSEN:
-		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	/* 武器系範囲攻撃スキル */
 	case AC_SHOWER:			/* アローシャワー */
@@ -2664,9 +2662,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					ar = 2;
 					skill_area_temp[2]=bl->x;
 					skill_area_temp[3]=bl->y;
-					/* ターゲットに攻撃を加える(スキルエフェクト表示) */
-					battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,
-							skill_area_temp[0]);
 					break;
 				case WZ_FROSTNOVA:
 					ar = 2;
@@ -6171,7 +6166,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			}
 		}
 		break;
-	case GS_GROUNDDRIFT:
+	case GS_GROUNDDRIFT:	/* グラウンドドリフト */
 		{
 			const unsigned char drift_id[] = { UNT_GROUNDDRIFT_FIRE, UNT_GROUNDDRIFT_WIND,
 								UNT_GROUNDDRIFT_POISON, UNT_GROUNDDRIFT_DARK, UNT_GROUNDDRIFT_WATER };
@@ -6242,8 +6237,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				val1 = 3500;	// 罠の耐久HP
 				break;
 			case NJ_KAENSIN:		/* 火炎陣 */
-				if(x == ux && y == uy)
-					continue;	// 足元には設置されない
+				val1 = 4+(skilllv+1)/2;
 				break;
 		}
 		//直上スキルの場合設置座標上にランドプロテクターがないかチェック
@@ -6929,7 +6923,8 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 		break;
 	case UNT_KAENSIN:	/* 火炎陣 */
 		battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
-		skill_delunit(src);
+		if(--src->val1 <= 0)
+			skill_delunit(src);
 		break;
 	case UNT_GROUNDDRIFT_WIND:	/* グラウンドドリフト */
 	case UNT_GROUNDDRIFT_DARK:
