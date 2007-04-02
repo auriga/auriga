@@ -1,4 +1,15 @@
 ----------------------------------------
+//0136 [2007/04/03] by Rayce
+
+・AthenaProject2280よりmerge, thanks to Blazeさん
+　以下Readmeより転載
+　　・スキル「火炎陣」のHIT数を修正 (db/skill_db.txt)
+　　・アサシン転職クエストのJob50時の処理を修正 (npc_job_12assassin.txt)
+　　・混乱発動時の挙動を修正 (src/map/status.c)
+　　・ゴスペル効果「全状態異常耐性」を耐性計算している状態異常のみに対して発動するように (status.c)
+　　・ジークフリードの状態異常耐性実装 (status.c)
+
+----------------------------------------
 //0135 [2007/04/03] by Rayce
 
 ・AthenaProject2279よりmerge, thanks to Blazeさん

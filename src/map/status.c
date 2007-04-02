@@ -4046,6 +4046,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		default:
 			scdef=0;
 	}
+	if(scdef) {
+		if(sc_data[SC_STATUS_UNCHANGE].timer != -1) {
+			if(status_is_disable(type,0x10))	// ゴスペルの全状態異常耐性中なら無効
+				return 0;
+		}
+		if(sc_data[SC_SIEGFRIED].timer != -1)		// ジークフリードの状態異常耐性
+			scdef += 50;
+	}
+
 	if(!(flag&8) && scdef>=100)	//flagが+8なら完全耐性計算しない
 		return 0;
 
@@ -5029,6 +5038,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_POISON:
 		case SC_CURSE:
 		case SC_SILENCE:
+		case SC_CONFUSION:
 			*opt2 |= 1<<(type-SC_POISON);
 			break;
 		case SC_FOGWALLPENALTY:
@@ -5629,6 +5639,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			break;
 		case SC_CURSE:
 		case SC_SILENCE:
+		case SC_CONFUSION:
 			*opt2 &= ~(1<<(type-SC_POISON));
 			break;
 		case SC_FOGWALLPENALTY:

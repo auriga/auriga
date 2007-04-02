@@ -277,12 +277,13 @@ OnTouch:
 		mes "どれ… " +strcharinfo(0)+ " と…";
 		mes "JobLvは " +JobLevel+ " …";
 		next;
-		if(JobLevel >= 50) {	//メッセージ未調査
+		if(JobLevel >= 50) {
 			mes "[アサシン・カイ]";
-			mes "ほう、大分修練を積んできたようだな。";
-			mes "お前のような根性のある奴は";
-			mes "久しぶりに見たよ。";
-			mes "歓迎する。";
+			mes "なに！ 50 だと！";
+			mes "お前…相当な修練を積んだな！";
+			mes "久々に使える奴が入って来たと";
+			mes "上層部が喜ぶだろう…";
+			mes "あ、独り言だ。早く書くように。";
 		}
 		else {
 			mes "[アサシン・カイ]";
@@ -2003,14 +2004,31 @@ OnTouch:
 	mes "「名も無き者」お前は賛成だな。";
 	mes "ヒュイは？";
 	next;
-	mes "[ヒュイ]";
-	mes "まぁ基本はできてますよ。";
-	mes "賛成です。";
-	mes "それではお先に失礼します。";
-	mes "席に戻らなければなりませんので…";
-	next;
-	mes "[ギルドマスター]";
-	mes "うむ、そうしてくれ。";
+	if(JobLevel >= 50) {
+		mes "[ヒュイ]";
+		mes "最近見た中で一番根性がある";
+		mes "シーフでした。";
+		next;
+		mes "[ヒュイ]";
+		mes "賛成です。";
+		mes "それでは私はお先に失礼します。";
+		mes "席に戻らなければなりませんので…";
+		mes "あ、マスター…私の代わりに何か";
+		mes "プレゼントでも与えてやってください。";
+		next;
+		mes "[ギルドマスター]";
+		mes "うむ。約束しよう。";
+	}
+	else {
+		mes "[ヒュイ]";
+		mes "まぁ基本はできてますよ。";
+		mes "賛成です。";
+		mes "それではお先に失礼します。";
+		mes "席に戻らなければなりませんので…";
+		next;
+		mes "[ギルドマスター]";
+		mes "うむ、そうしてくれ。";
+	}
 	next;
 	mes "[ギルドマスター]";
 	mes "では「監視者」お前はどうか？";
@@ -2030,11 +2048,26 @@ OnTouch:
 	next;
 	mes "[ギルドマスター]";
 	mes "ん…話が長くなったな。";
-	mes "まずはこれを受け取れ。";
-	next;
-	set CHANGE_AS,5;
-	savepoint "morocc.gat",100,101;
-	if(JobLevel < 50) {
+	if(JobLevel >= 50) {
+		mes "ここに以下の武器がある。";
+		mes "ジュル カタール";
+		mes "マインゴーシュ グラディウス";
+		mes "以上全て私が愛用した武器だ。";
+		next;
+		switch(select("ジュル","カタール","マインゴーシュ","グラディウス")) {
+			case 0: getitem 1251,1; break;
+			case 1: getitem 1253,1; break;
+			case 2: getitem 1208,1; break;
+			case 3: getitem 1220,1; break;
+		}
+		mes "[ギルドマスター]";
+		mes "これ一つあれば十分という";
+		mes "時代もあったな…";
+
+	}
+	else {
+		mes "まずはこれを受け取れ。";
+		next;
 		switch(rand(4)) {
 			case 0: getitem 1207,1; break;
 			case 1: getitem 1219,1; break;
@@ -2042,14 +2075,9 @@ OnTouch:
 			case 3: getitem 1252,1; break;
 		}
 	}
-	else {
-		switch(rand(4)) {
-			case 0: getitem 1208,1; break;
-			case 1: getitem 1220,1; break;
-			case 2: getitem 1251,1; break;
-			case 3: getitem 1253,1; break;
-		}
-	}
+	set CHANGE_AS,5;
+	next;
+	savepoint "morocc.gat",100,101;
 	getitem 1008,1;
 	mes "[ギルドマスター]";
 	mes "では、合格の印を与えるから";
