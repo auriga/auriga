@@ -1342,7 +1342,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		while(1) {
 			next;
 			input '@apple;
-			if('@apple==0) {
+			if('@apple<=0) {
 				mes "[" +strnpcinfo(1)+ "]";
 				mes "退屈だったら、後でまた来てね。";
 				mes "じゃあね！";

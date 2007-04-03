@@ -1,4 +1,16 @@
 ----------------------------------------
+//0137 [2007/04/04] by Rayce
+
+・AthenaProject2281よりmerge, thanks to 暇人さん
+　以下Readmeより転載
+　　・スキル「マグヌスエクソシズム」のFlag値をエラーが出ない様に修正 (db/skill_uniti_db.txt)
+　　・飛行船NPCの一部修正 (npc_town_airport.txt)
+
+・AthenaProject2282よりmerge, thanks to Paraさん
+　以下Readmeより転載
+　　・追加された2種類のペット「クリスマスゴブリン」「餅」を実装（db/pet_db.txt）
+
+----------------------------------------
 //0136 [2007/04/03] by Rayce
 
 ・AthenaProject2280よりmerge, thanks to Blazeさん
