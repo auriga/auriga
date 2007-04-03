@@ -1,4 +1,22 @@
 ----------------------------------------
+//0138 [2007/04/04] by Rayce
+
+・AthenaProject2284よりmergeおよび一部改変、thanks to Blazeさん
+　以下Readmeより転載
+　　・Mobスキル「エモーション」によるモードチェンジ実装（skill.c)
+	　　mob_skill_db.txt、エモーションの値2にmodeを入れるとその値へモードチェンジします。
+	　　例）アルギオペ追跡時にノンアクティブ化（移動1+攻撃128=129）
+	　　1099,エモーション＠アルギオペ,chase,197,1,100,0,5000,no,self,always,0,19,129,,,,
+　　・Mobの複数の同じスキルは使用後ディレイを共有するように修正（mob.c)
+
+・不要なローカルプロトタイプ宣言を削除（mob.c）
+・mobskill_use_id() および mobskill_use_pos() を移動（mob.c）
+・使われてないプロトタイプ宣言を削除（mob.h）
+	mobskill_use_id2()
+	mobskill_use_pos2()
+	mobskill_use_id_sub_command_to_slave()
+
+----------------------------------------
 //0137 [2007/04/04] by Rayce
 
 ・AthenaProject2281よりmerge, thanks to 暇人さん

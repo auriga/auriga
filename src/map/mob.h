@@ -164,12 +164,6 @@ int mob_attacktarget(struct mob_data *md,struct block_list *target,int flag);
 int mobskill_use(struct mob_data *md,unsigned int tick,int event);
 int mobskill_event(struct mob_data *md,int flag);
 
-int mobskill_use_id2(struct mob_data *md, int target_id, int skill_id, int skill_lv, int casttime, int cancel);
-int mobskill_use_pos2( struct mob_data *md,
-	int skill_x, int skill_y, int skill_id, int skill_lv, int casttime, int cancel);
-
-int mobskill_use_id_sub_command_to_slave(struct block_list *bl, va_list ap );
-
 int mob_summonslave(struct mob_data *md2,int *value,int amount,int flag);
 int mob_countslave(struct mob_data *md);
 

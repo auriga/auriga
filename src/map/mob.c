@@ -50,11 +50,8 @@ static int mob_dummy_class[MAX_RANDOMMONSTER];	// ランダムモンスター選
  */
 static int mob_makedummymobdb(int);
 static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned int tick);
-int mobskill_use(struct mob_data *md,unsigned int tick,int event);
-int mobskill_deltimer(struct mob_data *md );
-int mob_skillid2skillidx(int class_,int skillid);
-int mobskill_use_id(struct mob_data *md,struct block_list *target,int skill_idx);
-int mob_unlocktarget(struct mob_data *md,int tick);
+static int mob_skillid2skillidx(int class_,int skillid);
+static int mobskill_use_id(struct mob_data *md,struct block_list *target,int skill_idx);
 
 /*==========================================
  * mobを名前で検索
@@ -116,7 +113,6 @@ int mob_spawn_dataset(struct mob_data *md,const char *mobname,int class_)
 
 	return 0;
 }
-
 
 /*==========================================
  * 一発MOB出現(スクリプト用)
@@ -202,10 +198,10 @@ int mob_once_spawn(struct map_session_data *sd,char *mapname,
 		md->bl.type=BL_MOB;
 		map_addiddb(&md->bl);
 		mob_spawn(md->bl.id);
-
 	}
 	return (amount>0)?md->bl.id:0;
 }
+
 /*==========================================
  * 一発MOB出現(スクリプト用＆エリア指定)
  *------------------------------------------
@@ -254,6 +250,7 @@ int mob_once_spawn_area(struct map_session_data *sd,char *mapname,
 	}
 	return id;
 }
+
 /*==========================================
  * mobの見かけ所得
  *------------------------------------------
@@ -2541,7 +2538,6 @@ int mob_summonslave(struct mob_data *md2,int *value,int amount,int flag)
 				md->state.noexp  = battle_config.summonmonster_no_exp;
 				md->state.nomvp  = battle_config.summonmonster_no_mvp;
 			}
-
 		}
 	}
 	return 0;
@@ -2551,7 +2547,7 @@ int mob_summonslave(struct mob_data *md2,int *value,int amount,int flag)
  * MOBskillから該当skillidのskillidxを返す
  *------------------------------------------
  */
-int mob_skillid2skillidx(int class_,int skillid)
+static int mob_skillid2skillidx(int class_,int skillid)
 {
 	int i;
 	struct mob_skill *ms=mob_db[class_].skill;
@@ -2564,28 +2560,6 @@ int mob_skillid2skillidx(int class_,int skillid)
 			return i;
 	}
 	return -1;
-
-}
-
-/*==========================================
- * スキル使用（詠唱開始、ID指定）
- *------------------------------------------
- */
-int mobskill_use_id(struct mob_data *md,struct block_list *target,int skill_idx)
-{
-	struct mob_skill *ms;
-	int casttime;
-
-	nullpo_retr(0, md);
-	nullpo_retr(0, ms=&mob_db[md->class_].skill[skill_idx]);
-
-	casttime                  = skill_castfix(&md->bl, ms->casttime);
-	md->skillidx              = skill_idx;
-	md->skilldelay[skill_idx] = gettick() + casttime;
-	return unit_skilluse_id2(
-		&md->bl, target ? target->id : md->target_id, ms->skill_id,
-		ms->skill_lv, casttime, ms->cancel
-	);
 }
 
 /*==========================================
@@ -2919,25 +2893,6 @@ static int mobskill_anothertarget(struct block_list *bl, va_list ap)
 }
 
 /*==========================================
- * スキル使用（場所指定）
- *------------------------------------------
- */
-int mobskill_use_pos( struct mob_data *md, int skill_x, int skill_y, int skill_idx)
-{
-	int casttime=0;
-	struct mob_skill *ms;
-
-	nullpo_retr(0, md);
-	nullpo_retr(0, ms=&mob_db[md->class_].skill[skill_idx]);
-
-	casttime                  = skill_castfix(&md->bl, ms->casttime);
-	md->skillidx              = skill_idx;
-	md->skilldelay[skill_idx] = gettick() + casttime;
-
-	return unit_skilluse_pos2( &md->bl, skill_x, skill_y, ms->skill_id, ms->skill_lv, casttime, ms->cancel);
-}
-
-/*==========================================
  * 近くの味方でHPの減っているものを探す
  *------------------------------------------
  */
@@ -3089,6 +3044,61 @@ static int mob_can_counterattack(struct mob_data *md)
 		md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,0,md,MST_ANOTHERTARGET,&c,&id);
 
 	return (id != 0);
+}
+
+/*==========================================
+ * スキル使用（詠唱開始、ID指定）
+ *------------------------------------------
+ */
+static int mobskill_use_id(struct mob_data *md,struct block_list *target,int skill_idx)
+{
+	struct mob_skill *mds, *ms;
+	int i, casttime;
+	unsigned int tick = gettick();
+
+	nullpo_retr(0, md);
+
+	mds = mob_db[md->class_].skill;
+	ms  = &mds[skill_idx];
+
+	casttime     = skill_castfix(&md->bl, ms->casttime);
+	md->skillidx = skill_idx;
+
+	for(i=0; i<mob_db[md->class_].maxskill; i++) {
+		if(mds[i].skill_id == ms->skill_id)
+			md->skilldelay[i] = tick + casttime;
+	}
+
+	return unit_skilluse_id2(
+		&md->bl, target ? target->id : md->target_id, ms->skill_id,
+		ms->skill_lv, casttime, ms->cancel
+	);
+}
+
+/*==========================================
+ * スキル使用（場所指定）
+ *------------------------------------------
+ */
+static int mobskill_use_pos( struct mob_data *md, int skill_x, int skill_y, int skill_idx)
+{
+	struct mob_skill *mds, *ms;
+	int i, casttime;
+	unsigned int tick = gettick();
+
+	nullpo_retr(0, md);
+
+	mds = mob_db[md->class_].skill;
+	ms  = &mds[skill_idx];
+
+	casttime     = skill_castfix(&md->bl, ms->casttime);
+	md->skillidx = skill_idx;
+
+	for(i=0; i<mob_db[md->class_].maxskill; i++) {
+		if(mds[i].skill_id == ms->skill_id)
+			md->skilldelay[i] = tick + casttime;
+	}
+
+	return unit_skilluse_pos2(&md->bl, skill_x, skill_y, ms->skill_id, ms->skill_lv, casttime, ms->cancel);
 }
 
 /*==========================================

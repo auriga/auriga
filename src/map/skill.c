@@ -4818,8 +4818,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case NPC_EMOTION:			/* エモーション */
-		if(md && md->skillidx != -1)
+		if(md && md->skillidx != -1) {
 			clif_emotion(&md->bl,mob_db[md->class_].skill[md->skillidx].val[0]);
+			if(mob_db[md->class_].skill[md->skillidx].val[1]) {	// モードチェンジ
+				md->mode = mob_db[md->class_].skill[md->skillidx].val[1];
+				mob_unlocktarget(md, tick);
+			}
+		}
 		break;
 
 	case NPC_DEFENDER:
