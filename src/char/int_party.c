@@ -443,7 +443,7 @@ const struct party* party_sql_load_num(int party_id) {
 	// Load members
 	sprintf(
 		tmp_sql,
-		"SELECT `account_id`,`name`,`base_level`,`last_map` FROM `%s` WHERE `party_id`='%d'",
+		"SELECT `account_id`,`name` FROM `%s` WHERE `party_id`='%d'",
 		char_db, party_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
@@ -459,8 +459,6 @@ const struct party* party_sql_load_num(int party_id) {
 			m->account_id = atoi(sql_row[0]);
 			m->leader     = (m->account_id == leader_id) ? 1 : 0;
 			strncpy(m->name,sql_row[1],sizeof(m->name));
-			m->lv         = atoi(sql_row[2]);
-			strncpy(m->map,sql_row[3],sizeof(m->map));
 		}
 	}
 	mysql_free_result(sql_res);
@@ -557,7 +555,7 @@ int party_sql_new(struct party *p) {
 	// DBに挿入
 	sprintf(
 		tmp_sql,
-		"INSERT INTO `%s`  (`party_id`, `name`, `exp`, `item`, `leader_id`) "
+		"INSERT INTO `%s` (`party_id`, `name`, `exp`, `item`, `leader_id`) "
 		"VALUES ('%d','%s', '%d', '%d', '%d')",
 		party_db_,p->party_id,strecpy(t_name,p->name), p->exp, p->item,leader_id
 	);
@@ -600,6 +598,7 @@ int party_check_exp_share(struct party *p)
 {
 	int i;
 	int maxlv=0,minlv=0x7fffffff;
+
 	for(i=0;i<MAX_PARTY;i++){
 		int lv=p->member[i].lv;
 		if( p->member[i].online ){
@@ -639,7 +638,6 @@ int mapif_party_created(int fd,int account_id,struct party *p)
 	} else {
 		WFIFOB(fd,6)=1;
 		WFIFOL(fd,7)=0;
-		memcpy(WFIFOP(fd,11),"error",24);
 	}
 	WFIFOSET(fd,35);
 	return 0;
@@ -659,10 +657,12 @@ int mapif_party_noinfo(int fd,int party_id)
 // パーティ情報まとめ送り
 int mapif_party_info(int fd,const struct party *p)
 {
-	unsigned char *buf = (unsigned char *)aMalloc(4+sizeof(struct party));
+	size_t size = sizeof(struct party);
+	unsigned char *buf = (unsigned char *)aMalloc(size+4);
+
 	WBUFW(buf,0)=0x3821;
-	memcpy(buf+4,p,sizeof(struct party));
-	WBUFW(buf,2)=4+sizeof(struct party);
+	WBUFW(buf,2)=size+4;
+	memcpy(WBUFP(buf,4),p,size);
 	if(fd<0)
 		mapif_sendall(buf,WBUFW(buf,2));
 	else
@@ -689,6 +689,7 @@ void mapif_party_memberadded(int fd, int party_id, int account_id, const char * 
 int mapif_party_optionchanged(int fd,struct party *p,int account_id,int flag)
 {
 	unsigned char buf[16];
+
 	WBUFW(buf,0)=0x3823;
 	WBUFL(buf,2)=p->party_id;
 	WBUFL(buf,6)=account_id;
@@ -707,6 +708,7 @@ int mapif_party_optionchanged(int fd,struct party *p,int account_id,int flag)
 int mapif_party_leaved(int party_id,int account_id,char *name)
 {
 	unsigned char buf[64];
+
 	WBUFW(buf,0)=0x3824;
 	WBUFL(buf,2)=party_id;
 	WBUFL(buf,6)=account_id;
@@ -737,6 +739,7 @@ static void mapif_party_membermoved(struct party *p,int idx)
 int mapif_party_broken(int party_id,int flag)
 {
 	unsigned char buf[16];
+
 	WBUFW(buf,0)=0x3826;
 	WBUFL(buf,2)=party_id;
 	WBUFB(buf,6)=flag;
@@ -749,6 +752,7 @@ int mapif_party_broken(int party_id,int flag)
 int mapif_party_message(int party_id,int account_id,char *mes,int len)
 {
 	unsigned char buf[512];
+
 	WBUFW(buf,0)=0x3827;
 	WBUFW(buf,2)=len+12;
 	WBUFL(buf,4)=party_id;
@@ -808,6 +812,7 @@ int mapif_parse_CreateParty(int fd,int account_id,char *name,int item,int item2,
 int mapif_parse_PartyInfo(int fd,int party_id)
 {
 	const struct party *p = party_load_num(party_id);
+
 	if(p!=NULL)
 		mapif_party_info(fd,p);
 	else
@@ -821,6 +826,7 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,char *nick,cha
 	const struct party *p1 = party_load_num(party_id);
 	struct party p2;
 	int i;
+
 	if(p1 == NULL){
 		mapif_party_memberadded(fd, party_id, account_id, nick, 1);
 		return 0;
@@ -832,8 +838,6 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,char *nick,cha
 		    strncmp(p2.member[i].name, nick, 24) == 0)
 			break;
 		if(p2.member[i].account_id==0){
-			int flag=0;
-
 			p2.member[i].account_id=account_id;
 			memcpy(p2.member[i].name,nick,24);
 			memcpy(p2.member[i].map,map,16);
@@ -845,10 +849,8 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,char *nick,cha
 
 			if( p2.exp>0 && !party_check_exp_share(&p2) ){
 				p2.exp=0;
-				flag=0x01;
-			}
-			if(flag)
 				mapif_party_optionchanged(fd,&p2,0,0);
+			}
 			party_save(&p2);
 			return 0;
 		}
@@ -886,26 +888,28 @@ int mapif_parse_PartyChangeOption(int fd,int party_id,int account_id,int exp,int
 void mapif_parse_PartyLeave(int fd, int party_id, int account_id, const char * name)
 {
 	const struct party *p1 = party_load_num(party_id);
-	if(p1 != NULL){
-		int i;
-		struct party p2;
-		memcpy(&p2,p1,sizeof(struct party));
-		for(i=0;i<MAX_PARTY;i++){
-			if (p2.member[i].account_id == account_id &&
-			    strncmp(p2.member[i].name, name, 24) == 0) {
-				mapif_party_leaved(party_id,account_id,p2.member[i].name);
-				memset(&p2.member[i],0,sizeof(struct party_member));
-				if( party_check_empty(&p2) ) {
-					// 空になったので解散
-					mapif_party_broken(p2.party_id,0);
-					party_delete(p2.party_id);
-				} else {
-					// まだ人がいるのでデータ送信
-					mapif_party_info(-1,&p2);
-					party_save(&p2);
-				}
-				return;
+	struct party p2;
+	int i;
+
+	if(p1 == NULL)
+		return;
+
+	memcpy(&p2,p1,sizeof(struct party));
+	for(i=0;i<MAX_PARTY;i++){
+		if (p2.member[i].account_id == account_id &&
+		    strncmp(p2.member[i].name, name, 24) == 0) {
+			mapif_party_leaved(party_id,account_id,p2.member[i].name);
+			memset(&p2.member[i],0,sizeof(struct party_member));
+			if( party_check_empty(&p2) ) {
+				// 空になったので解散
+				mapif_party_broken(p2.party_id,0);
+				party_delete(p2.party_id);
+			} else {
+				// まだ人がいるのでデータ送信
+				mapif_party_info(-1,&p2);
+				party_save(&p2);
 			}
+			return;
 		}
 	}
 
@@ -919,16 +923,13 @@ static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, cha
 	struct party p2;
 	int i;
 
-	if(p1 == NULL) {
+	if(p1 == NULL)
 		return;
-	}
 
 	memcpy(&p2,p1,sizeof(struct party));
 	for(i=0;i<MAX_PARTY;i++){
 		if (p2.member[i].account_id == account_id &&
 		    strncmp(p2.member[i].name, name, 24) == 0) {
-			int flag=0;
-
 			memcpy(p2.member[i].map,map,16);
 			p2.member[i].online=online;
 			p2.member[i].lv=lv;
@@ -936,10 +937,8 @@ static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, cha
 
 			if( p2.exp>0 && !party_check_exp_share(&p2) ){
 				p2.exp=0;
-				flag=1;
-			}
-			if(flag)
 				mapif_party_optionchanged(fd,&p2,0,0);
+			}
 			break;
 		}
 	}
@@ -952,6 +951,7 @@ static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, cha
 int mapif_parse_BreakParty(int fd,int party_id)
 {
 	const struct party *p = party_load_num(party_id);
+
 	if(p==NULL){
 		return 0;
 	}

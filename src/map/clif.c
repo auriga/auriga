@@ -12112,23 +12112,6 @@ static void clif_parse_ChangeHomName(int fd,struct map_session_data *sd, int cmd
 }
 
 /*==========================================
- * パケットデバッグ
- *------------------------------------------
- */
-static void clif_parse_debug(int fd,struct map_session_data *sd, int cmd)
-{
-	int i;
-
-	printf("packet debug 0x%4X\n",cmd);
-	printf("---- 00-01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F");
-	for(i=0;i<packet_db[cmd].len;i++){
-		if((i&15)==0)
-			printf("\n%04X ",i);
-		printf("%02X ",RFIFOB(fd,i));
-	}
-	printf("\n");
-}
-/*==========================================
  * /effectとか
  *------------------------------------------
  */

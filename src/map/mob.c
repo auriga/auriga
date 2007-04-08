@@ -122,7 +122,7 @@ int mob_once_spawn(struct map_session_data *sd,char *mapname,
 	int x,int y,const char *mobname,int class_,int amount,const char *event)
 {
 	struct mob_data *md=NULL;
-	int m,count,lv=255,r=class_;
+	int m,count,lv=MAX_LEVEL,r=class_;
 
 	if( sd && strcmp(mapname,"this")==0)
 		m=sd->bl.m;

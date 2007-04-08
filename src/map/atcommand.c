@@ -467,7 +467,7 @@ is_atcommand(const int fd, struct map_session_data* sd, const char* message, int
 
 	str = message + strlen(sd->status.name);
 	s_flag = 0;
-	while (*str && (isspace(*str) || (s_flag == 0 && *str == ':'))) {
+	while (*str && (isspace((unsigned char)*str) || (s_flag == 0 && *str == ':'))) {
 		if (*str == ':')
 			s_flag = 1;
 		str++;
@@ -476,13 +476,13 @@ is_atcommand(const int fd, struct map_session_data* sd, const char* message, int
 		return AtCommand_None;
 
 	p = str;
-	while (*p && !isspace(*p))
+	while (*p && !isspace((unsigned char)*p))
 		p++;
 	if (p - str >= sizeof command) // too long
 		return AtCommand_None;
 	memset(command, '\0', sizeof command);
 	strncpy(command, str, p - str);
-	if (isspace(*p))
+	if (isspace((unsigned char)*p))
 		p++;
 
 	type = atcommand((gmlvl > 0) ? gmlvl : pc_isGM(sd), command, &info);

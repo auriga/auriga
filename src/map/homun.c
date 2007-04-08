@@ -44,7 +44,7 @@ static struct {
 	struct {
 		short id,lv;
 	} need[6];
-	short base_level;
+	unsigned short base_level;
 	int   intimate;
 } homun_skill_tree[MAX_HOMUN_DB][MAX_HOMSKILL_TREE];
 
@@ -198,6 +198,7 @@ int homun_hungry_timer_delete(struct map_session_data *sd)
 int homun_upstatus(struct mmo_homunstatus *hd)
 {
 	int total,class_,ret=0;
+
 	nullpo_retr(1, hd);
 
 	class_ = hd->class_-HOM_ID;
@@ -274,7 +275,9 @@ int homun_upstatus(struct mmo_homunstatus *hd)
 int homun_upstatus2(struct mmo_homunstatus *hd)
 {
 	int class_;
+
 	nullpo_retr(1, hd);
+
 	class_ = hd->class_-HOM_ID;
 	// 各BasePointに1割くらいの追加でボーナス上昇？
 	if(atn_rand()%100 < homun_db[class_].str_k)
@@ -297,10 +300,12 @@ int homun_upstatus2(struct mmo_homunstatus *hd)
  */
 int homun_calc_status(struct homun_data *hd)
 {
-	int dstr,bl,aspd_k,lv;
+	int dstr,blv,aspd_k,lv;
 	int aspd_rate=100,speed_rate=100,atk_rate=100,matk_rate=100,hp_rate=100,sp_rate=100;
 	int flee_rate=100,def_rate=100,mdef_rate=100,critical_rate=100,hit_rate=100;
+
 	nullpo_retr(1, hd);
+
 	hd->atk		= 0;
 	hd->matk	= 0;
 	hd->hit		= 0;
@@ -321,6 +326,7 @@ int homun_calc_status(struct homun_data *hd)
 	hd->nhealsp=0;
 	hd->hprecov_rate=100;
 	hd->sprecov_rate=100;
+
 	//チェンジインストラクション
 	if((lv = homun_checkskill(hd,HVAN_INSTRUCT))>0)
 	{
@@ -411,19 +417,19 @@ int homun_calc_status(struct homun_data *hd)
 		}
 	}
 
-	dstr		= hd->str / 10;
-	bl			= hd->status.base_level;
-	aspd_k		= homun_db[hd->status.class_-HOM_ID].aspd_k;
+	dstr   = hd->str / 10;
+	blv    = hd->status.base_level;
+	aspd_k = homun_db[hd->status.class_-HOM_ID].aspd_k;
 
-	hd->atk		+= hd->str * 2 + bl + dstr * dstr;
-	hd->matk	+= hd->int_+(hd->int_/ 5) * (hd->int_/ 5);
-	hd->hit		+= hd->dex + bl;
-	hd->flee	+= hd->agi + bl;
-	hd->def		+= hd->vit + hd->vit / 5 + bl / 10;
-	hd->mdef	+= hd->int_/ 5 + bl / 10;
-	hd->critical+= hd->luk / 3 + 1;
-	hd->aspd	= aspd_k - (aspd_k * hd->agi / 250 + aspd_k * hd->dex / 1000);
-	hd->aspd	-= 200;
+	hd->atk      += hd->str * 2 + blv + dstr * dstr;
+	hd->matk     += hd->int_+(hd->int_/ 5) * (hd->int_/ 5);
+	hd->hit      += hd->dex + blv;
+	hd->flee     += hd->agi + blv;
+	hd->def      += hd->vit + hd->vit / 5 + blv / 10;
+	hd->mdef     += hd->int_/ 5 + blv / 10;
+	hd->critical += hd->luk / 3 + 1;
+
+	hd->aspd = aspd_k - (aspd_k * hd->agi / 250 + aspd_k * hd->dex / 1000) - 200;
 
 	//ディフェンス
 	if(hd->sc_data[SC_DEFENCE].timer!=-1)
@@ -459,12 +465,12 @@ int homun_calc_status(struct homun_data *hd)
 	if(hd->sc_data && hd->sc_data[SC_CHANGE].timer!=-1)
 	{
 		int atk_,hp_;
-		//
-		atk_= hd->atk;
-		hd->atk = hd->matk;
+
+		atk_ = hd->atk;
+		hd->atk  = hd->matk;
 		hd->matk = atk_;
-		//
-		hp_= hd->max_hp;
+
+		hp_ = hd->max_hp;
 		hd->max_hp = hd->max_sp;
 		hd->max_sp = hp_;
 	}
@@ -490,7 +496,9 @@ int homun_calc_status(struct homun_data *hd)
 int homun_recalc_status(struct homun_data *hd)
 {
 	int lv,class_,hp,sp;
+
 	nullpo_retr(1, hd);
+
 	class_ = hd->status.class_-HOM_ID;
 	hd->status.max_hp = hd->status.hp = homun_db[class_].hp;
 	hd->status.max_sp = hd->status.sp = homun_db[class_].sp;
@@ -500,6 +508,7 @@ int homun_recalc_status(struct homun_data *hd)
 	hd->status.int_= homun_db[class_].int_;
 	hd->status.dex = homun_db[class_].dex;
 	hd->status.luk = homun_db[class_].luk;
+
 	for(lv=1;lv<hd->status.base_level;lv++)
 	{
 		// 実測値の、最大値〜最小値でランダム上昇
@@ -561,7 +570,7 @@ int homun_create_hom(struct map_session_data *sd,int homunid)
 	hd.status_point = 0;
 	hd.skill_point = homun_db[class_].skillpoint; //初期スキルポイント導入するかも…成長しないホム用
 
-// 初期ステータスをDBから埋め込み
+	// 初期ステータスをDBから埋め込み
 	hd.max_hp = hd.hp = homun_db[class_].hp;
 	hd.max_sp = hd.sp = homun_db[class_].sp;
 
@@ -628,7 +637,7 @@ int homun_data_init(struct map_session_data *sd)
 
 	for(i=0;i<MAX_HOMSKILL;i++)
 		hd->homskillstatictimer[i] = tick;
-	////親密度
+	//親密度
 	if(battle_config.save_homun_temporal_intimate)
 	{
 		hd->intimate = pc_readglobalreg(sd,"HOM_TEMP_INTIMATE");
@@ -772,8 +781,10 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 int homun_return_embryo(struct map_session_data *sd)
 {
 	struct homun_data *hd;
+
 	nullpo_retr(0, sd);
 	nullpo_retr(0,(hd=sd->hd));
+
 	if(sd->status.homun_id > 0){
 		//親密度保存
 		if(battle_config.save_homun_temporal_intimate)
@@ -817,6 +828,7 @@ int homun_food(struct map_session_data *sd)
 	int i,t,food,class_,emotion;
 
 	nullpo_retr(1, sd);
+
 	if(!sd->hd)
 		return 1;
 
@@ -886,6 +898,7 @@ int homun_food(struct map_session_data *sd)
 int homun_delete_data(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
+
 	if(sd->status.homun_id > 0 && sd->hd){
 		//親密度保存
 		if(battle_config.save_homun_temporal_intimate)
@@ -906,7 +919,9 @@ int homun_delete_data(struct map_session_data *sd)
 int homun_menu(struct map_session_data *sd,int menunum)
 {
 	nullpo_retr(0, sd);
-	if(!sd->hd) return 0;
+
+	if(!sd->hd)
+		return 0;
 
 	switch(menunum) {
 		case 0:
@@ -928,8 +943,10 @@ int homun_menu(struct map_session_data *sd,int menunum)
 int homun_return_master(struct map_session_data *sd)
 {
 	struct homun_data *hd;
+
 	nullpo_retr(0, sd);
 	nullpo_retr(0,(hd=sd->hd));
+
 	homun_calc_pos(hd,sd->bl.x,sd->bl.y,sd->dir);
 	unit_walktoxy(&hd->bl,hd->ud.to_x,hd->ud.to_y);
 	return 0;
@@ -1075,6 +1092,7 @@ int homun_calc_skilltree(struct homun_data *hd)
 	int c=0,flag;
 
 	nullpo_retr(0, hd);
+
 	c = hd->status.class_-HOM_ID;
 
 	for(i=0;i<MAX_HOMSKILL;i++)
@@ -1099,6 +1117,7 @@ int homun_calc_skilltree(struct homun_data *hd)
 			}
 		}
 	}while(flag);
+
 	return 0;
 }
 /*==========================================
@@ -1214,6 +1233,7 @@ int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_e
 int homun_nextbaseexp(struct homun_data *hd)
 {
 	int i;
+
 	nullpo_retr(0, hd);
 
 	if(hd->status.base_level>=MAX_LEVEL || hd->status.base_level<=0)
@@ -1290,9 +1310,6 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
  */
 int homun_heal(struct homun_data *hd,int hp,int sp)
 {
-//	if(battle_config.battle_log)
-//		printf("heal %d %d\n",hp,sp);
-
 	nullpo_retr(0, hd);
 
 	// バーサーク中は回復させない
@@ -1411,6 +1428,7 @@ int homun_natural_heal_timer_delete(struct homun_data *hd)
 int homun_save_data(struct map_session_data *sd)
 {
 	struct homun_data *hd;
+
 	nullpo_retr(0, sd);
 	nullpo_retr(0,(hd=sd->hd));
 

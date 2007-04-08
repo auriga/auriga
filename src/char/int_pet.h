@@ -8,7 +8,7 @@ int  pet_txt_sync(void);
 int  pet_txt_delete(int pet_id);
 const struct s_pet* pet_txt_load(int pet_id);
 int  pet_txt_save(struct s_pet* p2);
-int  pet_txt_new(struct s_pet *p2,int account_id,int char_id);
+int  pet_txt_new(struct s_pet *p);
 void pet_txt_final(void);
 void pet_txt_config_read_sub(const char* w1,const char *w2);
 
@@ -30,7 +30,7 @@ int  pet_sql_sync(void);
 int  pet_sql_delete(int pet_id);
 const struct s_pet* pet_sql_load(int pet_id);
 int  pet_sql_save(struct s_pet* p2);
-int  pet_sql_new(struct s_pet *p2,int account_id,int char_id);
+int  pet_sql_new(struct s_pet *p);
 void pet_sql_final(void);
 void pet_sql_config_read_sub(const char* w1,const char *w2);
 

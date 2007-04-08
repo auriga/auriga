@@ -118,7 +118,7 @@ struct s_pet {
 	int char_id;
 	int pet_id;
 	short class_;
-	short level;
+	unsigned short level;
 	short egg_id;//pet egg id
 	short equip;//pet equip name_id
 	short intimate;//pet friendly
@@ -156,7 +156,7 @@ struct mmo_charstatus {
 	short head_top,head_mid,head_bottom;
 
 	char name[24];
-	unsigned char base_level,job_level;
+	unsigned short base_level,job_level;
 	short str,agi,vit,int_,dex,luk;
 	unsigned char char_num;
 
@@ -196,7 +196,7 @@ struct mmo_homunstatus {
 	int hp,max_hp,sp,max_sp;
 
 	char name[24];
-	unsigned char base_level;
+	unsigned short base_level;
 	short str,agi,vit,int_,dex,luk;
 
 	unsigned int option;
@@ -250,7 +250,8 @@ struct party {
 
 struct guild_member {
 	int account_id, char_id;
-	short hair,hair_color,gender,class_,lv;
+	short hair,hair_color,gender,class_;
+	unsigned short lv;
 	int exp,exp_payper;
 	unsigned char online;
 	short position;
@@ -280,7 +281,8 @@ struct guild_skill {
 };
 struct guild {
 	int guild_id;
-	short guild_lv, connect_member, max_member, average_lv;
+	short guild_lv, connect_member, max_member;
+	unsigned short average_lv;
 	int exp,next_exp,skill_point,castle_id;
 	char name[24],master[24];
 	struct guild_member member[MAX_GUILD];

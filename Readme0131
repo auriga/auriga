@@ -1,4 +1,16 @@
 ----------------------------------------
+//0139 [2007/04/09] by Rayce
+
+・プレイヤーの base_level, job_level を保存する変数をunsigned short型に変更（mmo.h, mob.*, pc.c）
+	map.hのMAX_LEVELを増やせば255以上にも対応可能になります
+
+・isspace() に渡す引数をunsigned char型にキャストするように修正（atcommand.c）
+・clif_packet_debug() の関数本体を削除し忘れ（clif.c）
+・細かい修正や整形（int_homun.*, int_party.c, int_pet.c, homun.c）
+
+・SQL: levelに関連するフィールドの型を変更（main.sql, Auriga139_changetable.sql）
+
+----------------------------------------
 //0138 [2007/04/04] by Rayce
 
 ・AthenaProject2284よりmergeおよび一部改変、thanks to Blazeさん

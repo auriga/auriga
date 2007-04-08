@@ -278,12 +278,10 @@ int pet_txt_save(struct s_pet* p2)
 	return 1;
 }
 
-int pet_txt_new(struct s_pet *p2,int account_id,int char_id)
+int pet_txt_new(struct s_pet *p)
 {
-	struct s_pet *p1 = (struct s_pet *)aMalloc(sizeof(struct s_pet));
-	p2->pet_id = pet_newid++;
-	memcpy(p1,p2,sizeof(struct s_pet));
-	numdb_insert(pet_db,p2->pet_id,p1);
+	p->pet_id = pet_newid++;
+	numdb_insert(pet_db,p->pet_id,p);
 	return 0;
 }
 
@@ -322,17 +320,17 @@ void pet_txt_final(void)
 static char pet_db_[256] = "pet";
 static struct dbt *pet_db;
 
-int  pet_sql_init(void) {
+int pet_sql_init(void) {
 	pet_db = numdb_init();
 	return 0;
 }
 
-int  pet_sql_sync(void) {
+int pet_sql_sync(void) {
 	// nothing to do
 	return 0;
 }
 
-int  pet_sql_delete(int pet_id) {
+int pet_sql_delete(int pet_id) {
 	struct s_pet *p;
 
 	// printf("Request del  pet  (%6d)[",pet_id);
@@ -419,7 +417,7 @@ const struct s_pet* pet_sql_load(int pet_id) {
 	return p;
 }
 
-int  pet_sql_save(struct s_pet* p2) {
+int pet_sql_save(struct s_pet* p2) {
 	//`pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	char t_name[100];
 	const struct s_pet *p1 = pet_sql_load(p2->pet_id);
@@ -450,7 +448,7 @@ int  pet_sql_save(struct s_pet* p2) {
 	return 1;
 }
 
-int  pet_sql_new(struct s_pet *p,int account_id,int char_id) {
+int pet_sql_new(struct s_pet *p) {
 	// ペットIDを読み出す
 	char t_name[100];
 
@@ -566,10 +564,11 @@ int mapif_delete_pet_ack(int fd,int flag)
 	return 0;
 }
 
-int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,short pet_lv,short pet_egg_id,
+int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,unsigned short pet_lv,short pet_egg_id,
 	short pet_equip,short intimate,short hungry,char rename_flag,char incubate,char *pet_name)
 {
 	struct s_pet *p;
+
 	p=(struct s_pet *)aCalloc(1,sizeof(struct s_pet));
 	memcpy(p->name,pet_name,24);
 	if(incubate == 1)
@@ -578,14 +577,14 @@ int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,short pet
 		p->account_id = account_id;
 		p->char_id = char_id;
 	}
-	p->class_ = pet_class;
-	p->level = pet_lv;
-	p->egg_id = pet_egg_id;
-	p->equip = pet_equip;
-	p->intimate = intimate;
-	p->hungry = hungry;
+	p->class_      = pet_class;
+	p->level       = pet_lv;
+	p->egg_id      = pet_egg_id;
+	p->equip       = pet_equip;
+	p->intimate    = intimate;
+	p->hungry      = hungry;
 	p->rename_flag = rename_flag;
-	p->incubate = incubate;
+	p->incubate    = incubate;
 
 	if(p->hungry < 0)
 		p->hungry = 0;
@@ -596,12 +595,9 @@ int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,short pet
 	else if(p->intimate > 1000)
 		p->intimate = 1000;
 
-	if(pet_new(p,account_id,char_id) == 0) {
+	if(pet_new(p) == 0) {
 		mapif_pet_created(fd,account_id,p);
 	}
-#ifdef TXT_ONLY
-	aFree(p);
-#endif
 	return 0;
 }
 
@@ -654,21 +650,9 @@ int mapif_delete_pet(int fd,int pet_id)
 
 int mapif_parse_CreatePet(int fd)
 {
-	int account_id   = RFIFOL(fd,2);
-	int char_id      = RFIFOL(fd,6);
-	short pet_class  = RFIFOW(fd,10);
-	short pet_lv     = RFIFOW(fd,12);
-	short pet_egg_id = RFIFOW(fd,14);
-	short pet_equip  = RFIFOW(fd,16);
-	short intimate   = RFIFOL(fd,18);
-	short hungry     = RFIFOL(fd,20);
-	char rename_flag = RFIFOB(fd,22);
-	char incubate    = RFIFOB(fd,23);
-	char *pet_name   = RFIFOP(fd,24);
-
 	mapif_create_pet(
-		fd,account_id,char_id,pet_class,pet_lv,pet_egg_id,
-		pet_equip,intimate,hungry,rename_flag,incubate,pet_name
+		fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOW(fd,10),RFIFOW(fd,12),RFIFOW(fd,14),
+		RFIFOW(fd,16),RFIFOW(fd,18),RFIFOW(fd,20),RFIFOB(fd,22),RFIFOB(fd,23),RFIFOP(fd,24)
 	);
 	return 0;
 }

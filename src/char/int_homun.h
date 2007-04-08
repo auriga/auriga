@@ -8,7 +8,7 @@ int  homun_txt_sync(void);
 int  homun_txt_delete(int homun_id);
 const struct mmo_homunstatus* homun_txt_load(int homun_id);
 int  homun_txt_save(struct mmo_homunstatus* p2);
-int  homun_txt_new(struct mmo_homunstatus *p2,int account_id,int char_id);
+int  homun_txt_new(struct mmo_homunstatus *p);
 void homun_txt_final(void);
 void homun_txt_config_read_sub(const char* w1,const char *w2);
 
@@ -30,7 +30,7 @@ int  homun_sql_sync(void);
 int  homun_sql_delete(int homun_id);
 const struct mmo_homunstatus* homun_sql_load(int homun_id);
 int  homun_sql_save(struct mmo_homunstatus* p2);
-int  homun_sql_new(struct mmo_homunstatus *p2,int account_id,int char_id);
+int  homun_sql_new(struct mmo_homunstatus *p2);
 void homun_sql_final(void);
 void homun_sql_config_read_sub(const char* w1,const char *w2);
 

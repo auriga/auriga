@@ -69,8 +69,8 @@ static struct {
 	struct {
 		short id,lv;
 	} need[6];
-	short base_level;
-	short job_level;
+	unsigned short base_level;
+	unsigned short job_level;
 	short class_level;	// 再振り時の不正防止　ノビ:0 一次:1 二次:2
 } skill_tree[3][MAX_PC_CLASS][MAX_SKILL_TREE];
 

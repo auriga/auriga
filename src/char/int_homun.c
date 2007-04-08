@@ -338,7 +338,7 @@ int homun_txt_save(struct mmo_homunstatus* p2)
 	return 1;
 }
 
-int homun_txt_new(struct mmo_homunstatus *p2,int account_id,int char_id)
+int homun_txt_new(struct mmo_homunstatus *p2)
 {
 	struct mmo_homunstatus *p1 = (struct mmo_homunstatus *)aMalloc(sizeof(struct mmo_homunstatus));
 
@@ -607,7 +607,7 @@ int  homun_sql_save(struct mmo_homunstatus* p2) {
 	return 1;
 }
 
-int  homun_sql_new(struct mmo_homunstatus *p,int account_id,int char_id) {
+int  homun_sql_new(struct mmo_homunstatus *p) {
 	// ホムIDを読み出す
 	int i;
 	char t_name[100], sep, *buf;
@@ -725,7 +725,7 @@ int mapif_create_hom(int fd,int account_id,int char_id,struct mmo_homunstatus *h
 {
 	if(!h || account_id <= 0 || char_id <= 0)
 		return 0;
-	if(homun_new(h,account_id,char_id) == 0) {
+	if(homun_new(h) == 0) {
 		mapif_hom_info(fd,account_id,char_id,h,1);
 	}
 	return 0;

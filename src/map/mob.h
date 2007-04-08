@@ -20,7 +20,7 @@ struct mob_skill {
 
 struct mob_db {
 	char name[24],jname[24];
-	short lv;
+	unsigned short lv;
 	int max_hp,max_sp;
 	int base_exp,job_exp;
 	int atk1,atk2;
