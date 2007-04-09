@@ -594,19 +594,40 @@ void party_sql_final(void)
 #endif
 
 // EXP公平分配できるかチェック
-int party_check_exp_share(struct party *p)
+int party_check_exp_share(struct party *p,int baby_id)
 {
 	int i;
-	int maxlv=0,minlv=0x7fffffff;
+	int maxlv=0, minlv=0x7fffffff;
 
-	for(i=0;i<MAX_PARTY;i++){
-		int lv=p->member[i].lv;
-		if( p->member[i].online ){
-			if( lv < minlv ) minlv=lv;
-			if( maxlv < lv ) maxlv=lv;
+	for(i=0; i<MAX_PARTY; i++) {
+		int lv = p->member[i].lv;
+		if( p->member[i].online ) {
+			if( lv < minlv ) minlv = lv;
+			if( maxlv < lv ) maxlv = lv;
 		}
 	}
-	return (maxlv==0 || maxlv-minlv<=party_share_level);
+	if(maxlv == 0 || maxlv - minlv <= party_share_level)
+		return 1;
+
+	if(baby_id > 0) {
+		// 家族公平の可能性があるのでチェックする
+		const struct mmo_chardata *b, *p1, *p2;
+
+		if((b = char_load(baby_id)) == NULL)
+			return 0;
+
+		p1 = char_load(b->st.parent_id[0]);
+		p2 = char_load(b->st.parent_id[1]);
+
+		if(p1 && p2) {
+			if( p1->st.party_id == b->st.party_id && p1->st.baby_id == baby_id && p1->st.base_level >= 70 &&
+			    p2->st.party_id == b->st.party_id && p2->st.baby_id == baby_id && p2->st.base_level >= 70 &&
+			    p1->st.partner_id == p2->st.char_id && p2->st.partner_id == p1->st.char_id ) {
+				return 1;
+			}
+		}
+	}
+	return 0;
 }
 
 // パーティが空かどうかチェック
@@ -693,13 +714,13 @@ int mapif_party_optionchanged(int fd,struct party *p,int account_id,int flag)
 	WBUFW(buf,0)=0x3823;
 	WBUFL(buf,2)=p->party_id;
 	WBUFL(buf,6)=account_id;
-	WBUFW(buf,10)=p->exp;
-	WBUFW(buf,12)=p->item;
-	WBUFB(buf,14)=flag;
+	WBUFB(buf,10)=p->exp;
+	WBUFB(buf,11)=p->item;
+	WBUFB(buf,12)=flag;
 	if(flag==0)
-		mapif_sendall(buf,15);
+		mapif_sendall(buf,13);
 	else
-		mapif_send(fd,buf,15);
+		mapif_send(fd,buf,13);
 	printf("int_party: option changed %d %d %d %d %d\n",p->party_id,account_id,p->exp,p->item,flag);
 	return 0;
 }
@@ -847,7 +868,7 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,char *nick,cha
 			mapif_party_memberadded(fd, party_id, account_id, nick, 0);
 			mapif_party_info(-1,&p2);
 
-			if( p2.exp>0 && !party_check_exp_share(&p2) ){
+			if( p2.exp>0 && !party_check_exp_share(&p2,0) ){
 				p2.exp=0;
 				mapif_party_optionchanged(fd,&p2,0,0);
 			}
@@ -861,7 +882,7 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,char *nick,cha
 }
 
 // パーティー設定変更要求
-int mapif_parse_PartyChangeOption(int fd,int party_id,int account_id,int exp,int item)
+int mapif_parse_PartyChangeOption(int fd,int party_id,int account_id,int baby_id,unsigned char exp,unsigned char item)
 {
 	const struct party *p1 = party_load_num(party_id);
 	struct party p2;
@@ -873,7 +894,7 @@ int mapif_parse_PartyChangeOption(int fd,int party_id,int account_id,int exp,int
 	memcpy(&p2,p1,sizeof(struct party));
 
 	p2.exp = exp;
-	if( exp>0 && !party_check_exp_share(&p2) ){
+	if( exp>0 && !party_check_exp_share(&p2,baby_id) ){
 		flag|=0x01;
 		p2.exp=0;
 	}
@@ -907,6 +928,11 @@ void mapif_parse_PartyLeave(int fd, int party_id, int account_id, const char * n
 			} else {
 				// まだ人がいるのでデータ送信
 				mapif_party_info(-1,&p2);
+
+				if( p2.exp>0 && !party_check_exp_share(&p2,0) ){
+					p2.exp=0;
+					mapif_party_optionchanged(fd,&p2,0,0);
+				}
 				party_save(&p2);
 			}
 			return;
@@ -935,7 +961,7 @@ static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, cha
 			p2.member[i].lv=lv;
 			mapif_party_membermoved(&p2,i);
 
-			if( p2.exp>0 && !party_check_exp_share(&p2) ){
+			if( p2.exp>0 && !party_check_exp_share(&p2,0) ){
 				p2.exp=0;
 				mapif_party_optionchanged(fd,&p2,0,0);
 			}
@@ -984,7 +1010,7 @@ int inter_party_parse_frommap(int fd)
 	case 0x3020: mapif_parse_CreateParty(fd,RFIFOL(fd,2),RFIFOP(fd,6),RFIFOB(fd,30),RFIFOB(fd,31),RFIFOP(fd,32),RFIFOP(fd,56),RFIFOW(fd,72)); break;
 	case 0x3021: mapif_parse_PartyInfo(fd,RFIFOL(fd,2)); break;
 	case 0x3022: mapif_parse_PartyAddMember(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10),RFIFOP(fd,34),RFIFOW(fd,50)); break;
-	case 0x3023: mapif_parse_PartyChangeOption(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOW(fd,10),RFIFOW(fd,12)); break;
+	case 0x3023: mapif_parse_PartyChangeOption(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOB(fd,14),RFIFOB(fd,15)); break;
 	case 0x3024: mapif_parse_PartyLeave(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10)); break;
 	case 0x3025: mapif_parse_PartyChangeMap(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10),RFIFOB(fd,26),RFIFOW(fd,27),RFIFOP(fd,29)); break;
 	case 0x3026: mapif_parse_BreakParty(fd,RFIFOL(fd,2)); break;

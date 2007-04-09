@@ -243,8 +243,8 @@ struct party_member {
 struct party {
 	int party_id;
 	char name[24];
-	int exp;
-	int item;
+	unsigned char exp;
+	unsigned char item;
 	struct party_member member[MAX_PARTY];
 };
 

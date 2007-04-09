@@ -295,7 +295,7 @@ static void party_check_conflict(struct map_session_data *sd)
 // パーティが追加された
 void party_member_added(int party_id, int account_id, unsigned char flag, const char* name)
 {
-	struct map_session_data *sd= map_id2sd(account_id),*sd2;
+	struct map_session_data *sd = map_id2sd(account_id),*sd2;
 
 	if(sd==NULL && flag==0){
 		if(battle_config.error_log)
@@ -423,11 +423,50 @@ void party_broken(int party_id)
 	return;
 }
 
+// 家族公平に必要な最低条件をチェックして養子キャラのIDを返す
+static int party_check_family_share(struct party *p)
+{
+	int i, count = 0;
+	int p1_idx = -1, p2_idx = -1, baby_idx = -1;
+	struct party_member *m;
+
+	nullpo_retr(0, p);
+
+	for(i=0; i<MAX_PARTY; i++) {
+		m = &p->member[i];
+		if(m->account_id > 0) {
+			count++;
+			if(m->online && m->sd) {
+				if(m->sd->status.baby_id > 0) {
+					if(p1_idx <= 0)
+						p1_idx = i;
+					else
+						p2_idx = i;
+				}
+				if(m->sd->status.parent_id[0] > 0 && m->sd->status.parent_id[1] > 0) {
+					baby_idx = i;
+				}
+			}
+		}
+	}
+
+	// 3人PTで養子キャラが居てどちらかの親と同一MAP上にいるなら許可
+	// ただし親子関係が正しいかどうかのチェックはint_party.cで行う
+
+	if(count == 3 && baby_idx >= 0) {
+		m = &p->member[baby_idx];
+		if( (p1_idx >= 0 && strcmp(m->map, p->member[p1_idx].map) == 0) ||
+		    (p2_idx >= 0 && strcmp(m->map, p->member[p2_idx].map) == 0) )
+			return m->sd->status.char_id;
+	}
+	return 0;
+}
+
 // パーティの設定変更要求
 void party_changeoption(struct map_session_data *sd, int exp, int item)
 {
 	struct party *p;
-	int i;
+	int i, baby_id = 0;
 
 	nullpo_retv(sd);
 
@@ -439,9 +478,13 @@ void party_changeoption(struct map_session_data *sd, int exp, int item)
 		if (p->member[i].account_id == sd->status.account_id &&
 		    strncmp(p->member[i].name, sd->status.name, 24) == 0) {
 			if (p->member[i].leader) {
-				if(item < 0)	// 負のときはアイテム分配設定を変更しない
+				if(exp > 0 && !p->exp) {
+					baby_id = party_check_family_share(p);
+				}
+				if(item < 0) {	// 負のときはアイテム分配設定を変更しない
 					item = p->item;
-				intif_party_changeoption(sd->status.party_id, sd->status.account_id, exp, item);
+				}
+				intif_party_changeoption(sd->status.party_id, sd->status.account_id, baby_id, exp, item);
 				return;
 			}
 		}
@@ -451,7 +494,7 @@ void party_changeoption(struct map_session_data *sd, int exp, int item)
 }
 
 // パーティの設定変更通知
-void party_optionchanged(int party_id, int account_id, int exp, int item, int flag)
+void party_optionchanged(int party_id, int account_id, unsigned char exp, unsigned char item, int flag)
 {
 	struct party *p;
 	struct map_session_data *sd=map_id2sd(account_id);

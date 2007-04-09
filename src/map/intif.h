@@ -21,7 +21,7 @@ int intif_unlock_guild_storage(int guild_id);
 void intif_create_party(struct map_session_data *sd, char *name, int item, int item2);
 int intif_request_partyinfo(int party_id);
 void intif_party_addmember(struct map_session_data *sd);
-void intif_party_changeoption(int party_id, int account_id, int exp, int item);
+void intif_party_changeoption(int party_id, int account_id, int baby_id, int exp, int item);
 void intif_party_leave(int party_id, int account_id, const char * name);
 void intif_party_changemap(struct map_session_data *sd, unsigned char online);
 int intif_break_party(int party_id);
@@ -33,14 +33,12 @@ void intif_guild_create(const char *name, const struct guild_member *master);
 void intif_guild_request_info(int guild_id);
 int intif_guild_addmember(int guild_id,struct guild_member *m);
 int intif_guild_leave(int guild_id,int account_id,int char_id,int flag,const char *mes);
-void intif_guild_memberinfoshort(int guild_id,
-	int account_id, int char_id, unsigned char online, int lv, int class_);
+void intif_guild_memberinfoshort(int guild_id, int account_id, int char_id, unsigned char online, int lv, int class_);
 int intif_guild_break(int guild_id);
 int intif_guild_message(int guild_id,int account_id,char *mes,int len);
 int intif_guild_checkconflict(int guild_id,int account_id,int char_id);
 int intif_guild_change_basicinfo(int guild_id,int type,const void *data,int len);
-int intif_guild_change_memberinfo(int guild_id,int account_id,int char_id,
-	int type,const void *data,int len);
+int intif_guild_change_memberinfo(int guild_id,int account_id,int char_id,int type,const void *data,int len);
 void intif_guild_position(int guild_id, int idx, struct guild_position *p);
 int intif_guild_skillup(int guild_id,int skill_num,int account_id,int flag);
 int intif_guild_alliance(int guild_id1,int guild_id2,int account_id1,int account_id2,int flag);

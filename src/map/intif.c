@@ -43,7 +43,7 @@
 static const int packet_len_table[]={
 	-1,-1,27, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  0, 0,  0, 0,	// 3810-
-	35,-1,35,15, 34,53, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
+	35,-1,35,13, 34,53, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 14,67,186,-1,	// 3830-
 	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
@@ -436,7 +436,7 @@ void intif_party_addmember(struct map_session_data *sd)
 }
 
 // パーティ設定変更
-void intif_party_changeoption(int party_id, int account_id, int exp, int item)
+void intif_party_changeoption(int party_id, int account_id, int baby_id, int exp, int item)
 {
 	if (inter_fd < 0)
 		return;
@@ -444,9 +444,10 @@ void intif_party_changeoption(int party_id, int account_id, int exp, int item)
 	WFIFOW(inter_fd, 0)=0x3023;
 	WFIFOL(inter_fd, 2)=party_id;
 	WFIFOL(inter_fd, 6)=account_id;
-	WFIFOW(inter_fd,10)=exp;
-	WFIFOW(inter_fd,12)=item;
-	WFIFOSET(inter_fd,14);
+	WFIFOL(inter_fd,10)=baby_id;
+	WFIFOB(inter_fd,14)=exp;
+	WFIFOB(inter_fd,15)=item;
+	WFIFOSET(inter_fd,16);
 
 	return;
 }
@@ -1325,7 +1326,7 @@ static void intif_parse_PartyMemberAdded(int fd)
 // パーティ設定変更通知
 int intif_parse_PartyOptionChanged(int fd)
 {
-	party_optionchanged(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOW(fd,10),RFIFOW(fd,12),RFIFOB(fd,14));
+	party_optionchanged(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOB(fd,10),RFIFOB(fd,11),RFIFOB(fd,12));
 	return 0;
 }
 // パーティ脱退通知
