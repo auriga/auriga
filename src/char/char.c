@@ -118,10 +118,31 @@ const char ranking_reg[MAX_RANKING][32] =
 static struct point start_point = {"new_1-1.gat", 53, 111};
 
 #ifdef TXT_ONLY
-static struct mmo_chardata *char_dat;
+
+static struct mmo_chardata *char_dat = NULL;
 static int  char_num,char_max;
 static char char_txt[1024];
 static int  char_id_count=150000;
+
+// キャラIDからchar_datのインデックスを返す
+static int char_id2idx(int char_id)
+{
+	int min = -1;
+	int max = char_num;
+
+	// binary search
+	while(max - min > 1) {
+		int mid = (min + max) / 2;
+		if(char_dat[mid].st.char_id == char_id)
+			return mid;
+
+		if(char_dat[mid].st.char_id > char_id)
+			max = mid;
+		else
+			min = mid;
+	}
+	return -1;
+}
 
 static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 {
@@ -422,15 +443,13 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	return 1;
 }
 
-static void char_txt_sync(void);
-
 #ifdef TXT_JOURNAL
 // ==========================================
 // キャラクターデータのジャーナルのロールフォワード用コールバック関数
 // ------------------------------------------
 static int char_journal_rollforward( int key, void* buf, int flag )
 {
-	int i=0;
+	int idx = char_id2idx( key );
 
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct mmo_chardata*)buf)->st.char_id )
@@ -440,17 +459,14 @@ static int char_journal_rollforward( int key, void* buf, int flag )
 	}
 
 	// データの置き換え
-	for( i=0; i<char_num; i++ )
+	if( idx >= 0 )
 	{
-		if( char_dat[i].st.char_id == key )
-		{
-			if( flag == JOURNAL_FLAG_DELETE ) {
-				memset( &char_dat[i], 0, sizeof(struct mmo_chardata) );
-			} else {
-				memcpy( &char_dat[i], buf, sizeof(struct mmo_chardata) );
-			}
-			return 1;
+		if( flag == JOURNAL_FLAG_DELETE ) {
+			memset( &char_dat[idx], 0, sizeof(struct mmo_chardata) );
+		} else {
+			memcpy( &char_dat[idx], buf, sizeof(struct mmo_chardata) );
 		}
+		return 1;
 	}
 
 	// 追加
@@ -461,24 +477,26 @@ static int char_journal_rollforward( int key, void* buf, int flag )
 			// メモリが足りないなら拡張
 			char_max+=256;
 			char_dat=(struct mmo_chardata *)aRealloc(char_dat,sizeof(char_dat[0])*char_max);
-			memset(char_dat + (char_max - 256), '\0', 256 * sizeof(*char_dat));
+			memset(char_dat + (char_max - 256), '\0', 256 * sizeof(char_dat[0]));
 		}
 
-		memcpy( &char_dat[i], buf, sizeof(struct mmo_chardata) );
-		if(char_dat[i].st.char_id>=char_id_count)
-			char_id_count=char_dat[i].st.char_id+1;
+		memcpy( &char_dat[char_num], buf, sizeof(struct mmo_chardata) );
+		if(char_dat[char_num].st.char_id>=char_id_count)
+			char_id_count=char_dat[char_num].st.char_id+1;
 		char_num++;
 		return 1;
 	}
 
 	return 0;
 }
+
+static void char_txt_sync(void);
 #endif
 
 static int char_txt_init(void)
 {
 	char line[65536];
-	int ret, i;
+	int ret, i, j;
 	FILE *fp;
 
 	fp=fopen(char_txt,"r");
@@ -487,7 +505,7 @@ static int char_txt_init(void)
 	if(fp==NULL)
 		return 0;
 	while(fgets(line,65535,fp)){
-		int i,j = -1;
+		j = -1;
 		if( sscanf(line,"%d\t%%newid%%%n",&i,&j)==1 && j > 0 && (line[j]=='\n' || line[j]=='\r') ){
 			if(char_id_count<i)
 				char_id_count=i;
@@ -497,13 +515,27 @@ static int char_txt_init(void)
 		if(char_num>=char_max){
 			char_max+=256;
 			char_dat=(struct mmo_chardata *)aRealloc(char_dat,sizeof(char_dat[0])*char_max);
-			memset(char_dat + (char_max - 256), '\0', 256 * sizeof(*char_dat));
+			memset(char_dat + (char_max - 256), '\0', 256 * sizeof(char_dat[0]));
 		}
-		//memset(&char_dat[char_num],0,sizeof(char_dat[0]));
+
 		ret=mmo_char_fromstr(line,&char_dat[char_num]);
 		if(ret){
-			if(char_dat[char_num].st.char_id>=char_id_count)
-				char_id_count=char_dat[char_num].st.char_id+1;
+			int char_id = char_dat[char_num].st.char_id;
+			if(char_id >= char_id_count)
+				char_id_count = char_id+1;
+
+			if(char_num > 0 && char_id < char_dat[char_num-1].st.char_id) {
+				struct mmo_chardata tmp;
+				int k = char_num;
+
+				// 何故かキャラIDの昇順に並んでない場合は挿入ソートする
+				while(k > 0 && char_id < char_dat[k-1].st.char_id) {
+					k--;
+				}
+				memcpy(&tmp, &char_dat[char_num], sizeof(char_dat[0]));
+				memmove(&char_dat[k+1], &char_dat[k], (char_num-k)*sizeof(char_dat[0]));
+				memcpy(&char_dat[k], &tmp, sizeof(char_dat[0]));
+			}
 			char_num++;
 		}
 	}
@@ -534,19 +566,16 @@ static int char_txt_init(void)
 	// 友達リストの名前を解決
 	for( i=0; i<char_num; i++ )
 	{
-		int j;
 		for( j=0; j<char_dat[i].st.friend_num; j++ )
 		{
 			struct friend_data* frd = char_dat[i].st.friend_data;
 			const struct mmo_chardata* p = char_txt_load( frd[j].char_id);
-			if( p )
+			if( p ) {
 				memcpy( frd[j].name, p->st.name, 24 );
-			else
-			{
+			} else {
 				char_dat[i].st.friend_num--;
 				memmove( &frd[j], &frd[j+1], sizeof(frd[0])*( char_dat[i].st.friend_num - j ) );
 				j--;
-				continue;
 			}
 		}
 	}
@@ -718,7 +747,8 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 	return &char_dat[i];
 }
 
-int char_txt_load_all(struct char_session_data* sd,int account_id) {
+int char_txt_load_all(struct char_session_data* sd,int account_id)
+{
 	int i;
 	int found_num = 0;
 
@@ -736,28 +766,24 @@ int char_txt_load_all(struct char_session_data* sd,int account_id) {
 	return found_num;
 }
 
-const struct mmo_chardata* char_txt_load(int char_id) {
-	int i;
+const struct mmo_chardata* char_txt_load(int char_id)
+{
+	int idx = char_id2idx(char_id);
 
-	for(i=0;i<char_num;i++){
-		if(char_dat[i].st.char_id == char_id) {
-			return &char_dat[i];
-		}
-	}
-
-	return NULL;
+	return (idx >= 0) ? &char_dat[idx] : NULL;
 }
 
-int char_txt_save_reg(int account_id,int char_id,int num,struct global_reg *reg) {
-	int i;
+int char_txt_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
+{
+	int idx = char_id2idx(char_id);
 
-	for(i=0;i<char_num;i++){
-		if(char_dat[i].st.account_id == account_id && char_dat[i].st.char_id == char_id) {
-			memcpy(&char_dat[i].reg.global,reg,sizeof(char_dat[i].reg.global));
-			char_dat[i].reg.global_num = num;
+	if(idx >= 0) {
+		if(char_dat[idx].st.account_id == account_id) {
+			memcpy(&char_dat[idx].reg.global,reg,sizeof(char_dat[idx].reg.global));
+			char_dat[idx].reg.global_num = num;
 #ifdef TXT_JOURNAL
 			if( char_journal_enable )
-				journal_write( &char_journal, char_id, &char_dat[i] );
+				journal_write( &char_journal, char_id, &char_dat[idx] );
 #endif
 			return 1;
 		}
@@ -766,37 +792,35 @@ int char_txt_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
 	return 0;
 }
 
-int char_txt_save(struct mmo_charstatus *st) {
-	int i;
+int char_txt_save(struct mmo_charstatus *st)
+{
+	int idx = char_id2idx(st->char_id);
 
-	for(i=0;i<char_num;i++){
-		if(char_dat[i].st.account_id == st->account_id && char_dat[i].st.char_id == st->char_id) {
-			memcpy(&char_dat[i].st,st,sizeof(struct mmo_charstatus));
+	if(idx >= 0) {
+		if(char_dat[idx].st.account_id == st->account_id) {
+			memcpy(&char_dat[idx].st,st,sizeof(struct mmo_charstatus));
 #ifdef TXT_JOURNAL
 			if( char_journal_enable )
-				journal_write( &char_journal, st->char_id, &char_dat[i] );
+				journal_write( &char_journal, st->char_id, &char_dat[idx] );
 #endif
 			return 1;
 		}
 	}
-
 	return 0;
 }
 
-int char_txt_delete_sub(int char_id) {
-	int i;
+int char_txt_delete_sub(int char_id)
+{
+	int idx = char_id2idx(char_id);
 
-	for(i=0;i<char_num;i++){
-		if(char_dat[i].st.char_id == char_id) {
-			memset(&char_dat[i],0,sizeof(char_dat[0]));
+	if(idx >= 0) {
+		memset(&char_dat[idx],0,sizeof(char_dat[0]));
 #ifdef TXT_JOURNAL
-			if( char_journal_enable )
-				journal_write( &char_journal, char_id, NULL );
+		if( char_journal_enable )
+			journal_write( &char_journal, char_id, NULL );
 #endif
-			return 1;
-		}
+		return 1;
 	}
-
 	return 0;
 }
 
@@ -1777,7 +1801,7 @@ void char_sql_final(void) {
 	return;
 }
 
-int  char_sql_config_read_sub(const char* w1,const char* w2) {
+int char_sql_config_read_sub(const char* w1,const char* w2) {
 	if(strcmpi(w1,"char_server_ip")==0){
 		strcpy(char_server_ip, w2);
 	}

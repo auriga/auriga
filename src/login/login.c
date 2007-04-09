@@ -71,6 +71,13 @@ static int login_version = 0, login_type = 0;
 static int detect_multiple_login = 1;
 int login_log(char *fmt,...);
 
+#ifdef TXT_JOURNAL
+static int login_journal_enable = 1;
+static struct journal login_journal;
+static char login_journal_file[1024]="./save/account.journal";
+static int login_journal_cache = 1000;
+#endif
+
 static char GM_account_filename[1024] = "conf/GM_account.txt";
 static struct dbt *gm_account_db = NULL;
 static void read_gm_account(void);
@@ -82,14 +89,27 @@ static int gm_account_db_final(void *key, void *data, va_list ap);
 static char account_filename[1024] = "save/account.txt";
 static int  auth_num=0,auth_max=0;
 static int  account_id_count = START_ACCOUNT_NUM;
-static struct mmo_account *auth_dat;
+static struct mmo_account *auth_dat = NULL;
 
-#ifdef TXT_JOURNAL
-static int login_journal_enable = 1;
-static struct journal login_journal;
-static char login_journal_file[1024]="./save/account.journal";
-static int login_journal_cache = 1000;
-#endif
+// アカウントIDからauth_datのインデックスを返す
+static int login_id2idx(int account_id)
+{
+	int min = -1;
+	int max = auth_num;
+
+	// binary search
+	while(max - min > 1) {
+		int mid = (min + max) / 2;
+		if(auth_dat[mid].account_id == account_id)
+			return mid;
+
+		if(auth_dat[mid].account_id > account_id)
+			max = mid;
+		else
+			min = mid;
+	}
+	return -1;
+}
 
 #ifdef TXT_JOURNAL
 // ==========================================
@@ -97,7 +117,7 @@ static int login_journal_cache = 1000;
 // ------------------------------------------
 int login_journal_rollforward( int key, void* buf, int flag )
 {
-	int i=0;
+	int idx = login_id2idx( key );
 
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct mmo_account*)buf)->account_id )
@@ -107,18 +127,15 @@ int login_journal_rollforward( int key, void* buf, int flag )
 	}
 
 	// データの置き換え
-	for( i=0; i<auth_num; i++ )
+	if( idx >= 0 )
 	{
-		if( auth_dat[i].account_id == key )
-		{
-			if( flag == JOURNAL_FLAG_DELETE ) {
-				memset( &auth_dat[i], 0, sizeof(struct mmo_account) );
-				auth_dat[i].account_id = -1;
-			} else {
-				memcpy( &auth_dat[i], buf, sizeof(struct mmo_account) );
-			}
-			return 1;
+		if( flag == JOURNAL_FLAG_DELETE ) {
+			memset( &auth_dat[idx], 0, sizeof(struct mmo_account) );
+			auth_dat[idx].account_id = -1;
+		} else {
+			memcpy( &auth_dat[idx], buf, sizeof(struct mmo_account) );
 		}
+		return 1;
 	}
 
 	// 追加
@@ -131,10 +148,10 @@ int login_journal_rollforward( int key, void* buf, int flag )
 			auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
 		}
 
-		memcpy( &auth_dat[i], buf, sizeof(struct mmo_account) );
+		memcpy( &auth_dat[auth_num], buf, sizeof(struct mmo_account) );
+		if(auth_dat[auth_num].account_id>=account_id_count)
+			account_id_count=auth_dat[auth_num].account_id+1;
 		auth_num++;
-		if(auth_dat[i].account_id>=account_id_count)
-			account_id_count=auth_dat[i].account_id+1;
 		return 1;
 	}
 
@@ -148,12 +165,14 @@ int login_txt_init(void)
 {
 	// アカウントデータベースの読み込み
 	FILE *fp;
-	int i,account_id,logincount,state,n,j,v;
+	int i,n,account_id,logincount,state;
 	char line[1024],*p,userid[24],pass[24],lastlogin[24],sex,str[64];
+
 	if((fp=fopen(account_filename,"r"))==NULL)
 		return 0;
 	auth_max = 256;
 	auth_dat = (struct mmo_account *)aCalloc(auth_max,sizeof(auth_dat[0]));
+
 	while(fgets(line,1023,fp)!=NULL){
 		p=line;
 		n=-1;
@@ -161,64 +180,7 @@ int login_txt_init(void)
 		i=sscanf(line,"%d\t%[^\t]\t%[^\t]\t%[^\t]\t%c\t%d\t%d\t%n",
 			&account_id,userid,pass,lastlogin,&sex,&logincount,&state,&n);
 
-		if(i>=5){
-			if(account_id > END_ACCOUNT_NUM) {
-				printf("reading %s error : invalid ID %d\n",account_filename,account_id);
-				continue;
-			}
-			if(auth_num>=auth_max){
-				auth_max += 256;
-				auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
-			}
-			auth_dat[auth_num].account_id=account_id;
-			strncpy(auth_dat[auth_num].userid,userid,24);
-			strncpy(auth_dat[auth_num].pass,pass,24);
-			strncpy(auth_dat[auth_num].lastlogin,lastlogin,24);
-			auth_dat[auth_num].sex = sex == 'S' ? 2 : sex=='M';
-
-			//データが足りないときの補完
-			if(i>=6)
-				auth_dat[auth_num].logincount=logincount;
-			else
-				auth_dat[auth_num].logincount=1;
-			if(i>=7)
-				auth_dat[auth_num].state=state;
-			else
-				auth_dat[auth_num].state=0;
-
-			// メールアドレスがあれば読み込む
-			if( n > 0 )
-			{
-				int n2=0;
-				char mail[40]="";
-				if( sscanf( line + n, "%[^\t]\t%n", mail, &n2 )==1 && strchr( mail, '@' ) )
-				{
-					if( strcmp( mail, "@" )==0 )
-						strcpy( auth_dat[auth_num].mail, "" );
-					else
-						strcpy( auth_dat[auth_num].mail, mail );
-					n = (n2>0)? n+n2 : 0;
-				}
-			}
-
-			// 全ワールド共有アカウント変数 ( ## 変数 ) 読み込み
-			if(n > 0) {
-				for(j=0;j<ACCOUNT_REG2_NUM;j++){
-					p+=n;
-					if(sscanf(p,"%[^\t,],%d %n",str,&v,&n)!=2)
-						break;
-					strncpy(auth_dat[auth_num].account_reg2[j].str,str,32);
-					auth_dat[auth_num].account_reg2[j].value=v;
-				}
-				auth_dat[auth_num].account_reg2_num=j;
-			} else {
-				auth_dat[auth_num].account_reg2_num=0;
-			}
-
-			auth_num++;
-			if(account_id>=account_id_count)
-				account_id_count=account_id+1;
-		} else {
+		if(i < 5) {
 			i=0;
 			if( sscanf(line,"%d\t%%newid%%\n%n",&account_id,&i)==1 && i>0) {
 				if(account_id > END_ACCOUNT_NUM+1) {	// newidは+1まで許可
@@ -228,7 +190,79 @@ int login_txt_init(void)
 				if(account_id > account_id_count)
 					account_id_count=account_id;
 			}
+			continue;
 		}
+
+		if(account_id > END_ACCOUNT_NUM) {
+			printf("reading %s error : invalid ID %d\n",account_filename,account_id);
+			continue;
+		}
+		if(auth_num>=auth_max){
+			auth_max += 256;
+			auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
+		}
+		auth_dat[auth_num].account_id=account_id;
+		strncpy(auth_dat[auth_num].userid,userid,24);
+		strncpy(auth_dat[auth_num].pass,pass,24);
+		strncpy(auth_dat[auth_num].lastlogin,lastlogin,24);
+		auth_dat[auth_num].sex = sex == 'S' ? 2 : sex=='M';
+
+		// データが足りないときの補完
+		if(i>=6)
+			auth_dat[auth_num].logincount=logincount;
+		else
+			auth_dat[auth_num].logincount=1;
+		if(i>=7)
+			auth_dat[auth_num].state=state;
+		else
+			auth_dat[auth_num].state=0;
+
+		// メールアドレスがあれば読み込む
+		if(n > 0)
+		{
+			int n2=0;
+			char mail[40]="";
+			if( sscanf( line + n, "%[^\t]\t%n", mail, &n2 )==1 && strchr( mail, '@' ) )
+			{
+				if( strcmp( mail, "@" )==0 )
+					strcpy( auth_dat[auth_num].mail, "" );
+				else
+					strcpy( auth_dat[auth_num].mail, mail );
+				n = (n2>0)? n+n2 : 0;
+			}
+		}
+
+		// 全ワールド共有アカウント変数 ( ## 変数 ) 読み込み
+		if(n > 0) {
+			int j,v;
+			for(j=0;j<ACCOUNT_REG2_NUM;j++){
+				p+=n;
+				if(sscanf(p,"%[^\t,],%d %n",str,&v,&n)!=2)
+					break;
+				strncpy(auth_dat[auth_num].account_reg2[j].str,str,32);
+				auth_dat[auth_num].account_reg2[j].value=v;
+			}
+			auth_dat[auth_num].account_reg2_num=j;
+		} else {
+			auth_dat[auth_num].account_reg2_num=0;
+		}
+
+		if(account_id>=account_id_count)
+			account_id_count=account_id+1;
+
+		if(auth_num > 0 && account_id < auth_dat[auth_num-1].account_id) {
+			struct mmo_account tmp;
+			int k = auth_num;
+
+			// 何故かアカウントIDの昇順に並んでない場合は挿入ソートする
+			while(k > 0 && account_id < auth_dat[k-1].account_id) {
+				k--;
+			}
+			memcpy(&tmp, &auth_dat[auth_num], sizeof(auth_dat[0]));
+			memmove(&auth_dat[k+1], &auth_dat[k], (auth_num-k)*sizeof(auth_dat[0]));
+			memcpy(&auth_dat[k], &tmp, sizeof(auth_dat[0]));
+		}
+		auth_num++;
 	}
 	fclose(fp);
 
@@ -261,7 +295,7 @@ int login_txt_init(void)
 void login_txt_sync(void)
 {
 	FILE *fp;
-	int i,maxid=0,lock,j;
+	int i,j,lock;
 
 	if( !auth_dat )
 		return;
@@ -284,11 +318,8 @@ void login_txt_sync(void)
 				auth_dat[i].account_reg2[j].value);
 		}
 		fprintf(fp,RETCODE);
-
-		if(maxid<auth_dat[i].account_id)
-			maxid=auth_dat[i].account_id;
 	}
-	fprintf(fp,"%d\t%%newid%%\n",account_id_count);
+	fprintf(fp,"%d\t%%newid%%" RETCODE,account_id_count);
 
 	lock_fclose(fp,account_filename,&lock);
 
@@ -303,19 +334,19 @@ void login_txt_sync(void)
 
 }
 
-const struct mmo_account* login_txt_account_load_num(int account_id) {
-	int x;
-	for(x=0;x<auth_num;x++){
-		if(auth_dat[x].account_id == account_id) {
-			return &auth_dat[x];
-		}
-	}
-	return NULL;
+const struct mmo_account* login_txt_account_load_num(int account_id)
+{
+	int idx = login_id2idx(account_id);
+
+	return (idx >= 0) ? &auth_dat[idx] : NULL;
 }
 
-const struct mmo_account* login_txt_account_load_str(const char *account_id) {
+const struct mmo_account* login_txt_account_load_str(const char *account_id)
+{
 	int x;
-	if( !account_id[0] ) return NULL;
+
+	if( !account_id[0] )
+		return NULL;
 	for(x=0;x<auth_num;x++){
 		if(!strncmp(auth_dat[x].userid,account_id,24)) {
 			return &auth_dat[x];
@@ -324,43 +355,39 @@ const struct mmo_account* login_txt_account_load_str(const char *account_id) {
 	return NULL;
 }
 
-const struct mmo_account* login_txt_account_load_idx(int index) {
-	if(index >= 0 && index < auth_num) {
-		return &auth_dat[index];
-	} else {
-		return NULL;
-	}
+const struct mmo_account* login_txt_account_load_idx(int idx)
+{
+	return (idx >= 0 && idx < auth_num) ? &auth_dat[idx] : NULL;
 }
 
-int login_txt_account_save(struct mmo_account *account) {
-	int x;
-	int account_id = account->account_id;
-	for(x=0;x<auth_num;x++){
-		if(auth_dat[x].account_id == account_id) {
-			memcpy(&auth_dat[x],account,sizeof(struct mmo_account));
+int login_txt_account_save(struct mmo_account *account)
+{
+	int idx = login_id2idx(account->account_id);
+
+	if(idx >= 0) {
+		memcpy(&auth_dat[idx],account,sizeof(struct mmo_account));
 #ifdef TXT_JOURNAL
-			if( login_journal_enable )
-				journal_write( &login_journal, account->account_id, account );
+		if( login_journal_enable )
+			journal_write( &login_journal, account->account_id, account );
 #endif
-			return 1;
-		}
+		return 1;
 	}
 	return 0;
 }
 
 // アカウント削除
-int login_txt_account_delete(int account_id) {
-	int x;
-	for(x=0;x<auth_num;x++){
-		if(auth_dat[x].account_id == account_id) {
-			memset(&auth_dat[x],0,sizeof(struct mmo_account));
-			auth_dat[x].account_id = -1;
+int login_txt_account_delete(int account_id)
+{
+	int idx = login_id2idx(account_id);
+
+	if(idx >= 0) {
+		memset(&auth_dat[idx],0,sizeof(struct mmo_account));
+		auth_dat[idx].account_id = -1;
 #ifdef TXT_JOURNAL
-			if( login_journal_enable )
-				journal_write( &login_journal, account_id, NULL );
+		if( login_journal_enable )
+			journal_write( &login_journal, account_id, NULL );
 #endif
-			return 1;
-		}
+		return 1;
 	}
 	return 0;
 }
@@ -438,16 +465,16 @@ int login_txt_config_read_sub(const char* w1,const char* w2) {
 	return 0;
 }
 
-#define login_init  login_txt_init
-#define login_sync  login_txt_sync
-#define login_final login_txt_final
+#define login_init             login_txt_init
+#define login_sync             login_txt_sync
+#define login_final            login_txt_final
 #define login_config_read_sub  login_txt_config_read_sub
-#define account_new      login_txt_account_new
-#define account_save     login_txt_account_save
-#define account_delete   login_txt_account_delete
-#define account_load_num login_txt_account_load_num
-#define account_load_str login_txt_account_load_str
-#define account_load_idx login_txt_account_load_idx
+#define account_new            login_txt_account_new
+#define account_save           login_txt_account_save
+#define account_delete         login_txt_account_delete
+#define account_load_num       login_txt_account_load_num
+#define account_load_str       login_txt_account_load_str
+#define account_load_idx       login_txt_account_load_idx
 
 #else /* TXT_ONLY */
 
@@ -470,7 +497,7 @@ char login_db_level[256]      = "level";
 
 static struct dbt *account_db;
 
-int  login_sql_init(void) {
+int login_sql_init(void) {
 
 	// DB connection start
 	mysql_init(&mysql_handle);
@@ -543,7 +570,7 @@ void login_sql_sync(void) {
 	// nothing to do
 }
 
-int  login_sql_config_read_sub(const char* w1,const char* w2) {
+int login_sql_config_read_sub(const char* w1,const char* w2) {
 	if(strcmpi(w1,"login_server_ip")==0){
 		strncpy(login_server_ip, w2, 32);
 	}
@@ -682,14 +709,14 @@ const struct mmo_account* login_sql_account_load_str(const char *account_id) {
 	}
 }
 
-const struct mmo_account* login_sql_account_load_idx(int index) {
+const struct mmo_account* login_sql_account_load_idx(int idx) {
 	int  id_num = -1;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
-	if(index < 0) return NULL;
+	if(idx < 0) return NULL;
 	sprintf(
 		tmp_sql,"SELECT `%s` FROM `%s` ORDER BY `%s` ASC LIMIT %d,1",
-		login_db_account_id,login_db,login_db_account_id,index
+		login_db_account_id,login_db,login_db_account_id,idx
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
@@ -708,7 +735,7 @@ const struct mmo_account* login_sql_account_load_idx(int index) {
 	return NULL;
 }
 
-int  login_sql_account_save(struct mmo_account *ac2) {
+int login_sql_account_save(struct mmo_account *ac2) {
 	char *p;
 	char buf[256];
 	const struct mmo_account *ac1;
@@ -805,7 +832,7 @@ int  login_sql_account_save(struct mmo_account *ac2) {
 	return 0;
 }
 
-int  login_sql_account_new(struct mmo_account* account,const char *tmpstr) {
+int login_sql_account_new(struct mmo_account* account,const char *tmpstr) {
 	int j,c;
 	char buf1[256],buf2[256],buf3[256];
 	char sex_str[] = "FMS";
@@ -833,16 +860,16 @@ int  login_sql_account_new(struct mmo_account* account,const char *tmpstr) {
 	return 1;
 }
 
-#define login_init  login_sql_init
-#define login_sync  login_sql_sync
-#define login_final login_sql_final
-#define login_config_read_sub  login_sql_config_read_sub
-#define account_new      login_sql_account_new
-#define account_save     login_sql_account_save
-#define account_delete   login_sql_account_delete
-#define account_load_num login_sql_account_load_num
-#define account_load_str login_sql_account_load_str
-#define account_load_idx login_sql_account_load_idx
+#define login_init            login_sql_init
+#define login_sync            login_sql_sync
+#define login_final           login_sql_final
+#define login_config_read_sub login_sql_config_read_sub
+#define account_new           login_sql_account_new
+#define account_save          login_sql_account_save
+#define account_delete        login_sql_account_delete
+#define account_load_num      login_sql_account_load_num
+#define account_load_str      login_sql_account_load_str
+#define account_load_idx      login_sql_account_load_idx
 
 #endif /* TXT_ONLY */
 
