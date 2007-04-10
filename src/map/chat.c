@@ -316,10 +316,10 @@ int chat_createnpcchat(
 	}
 	else {
 		cd = (struct chat_data *)aCalloc(1,sizeof(struct chat_data));
-		memcpy(cd->pass,"",8);
+		cd->pass[0] = 0;
 		cd->users   = 0;
 		cd->bl.type = BL_CHAT;
-		cd->owner_  = (struct block_list *)nd;
+		cd->owner_  = &nd->bl;
 		cd->owner   = &cd->owner_;
 		cd->bl.id   = map_addobject(&cd->bl);
 		if(cd->bl.id==0){

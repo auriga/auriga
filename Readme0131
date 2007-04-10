@@ -1,4 +1,17 @@
 ----------------------------------------
+//0142 [2007/04/11] by Rayce
+
+・guild_member構造体から使われないメンバ rsv1, rsv2 を削除
+・guild_explusion構造体から使われてないメンバ acc, rsv1, rsv2, rsv3 を削除
+	セーブデータの形式が変更されているのでご注意を
+
+・mapif_parse_GuildLeave() を少し修正（int_guild.c）
+・一部のmemcpyをstrncpyに修正（chat.c, clif.c, npc.c）
+
+・TXT: JOURNAL_IDENTIFIERをバージョン03に変更しておく（journal.c）
+・SQL: main.sql修正、Auriga-0142_changetable.sql添付
+
+----------------------------------------
 //0141 [2007/04/10] by Rayce
 
 ・家族PTによるLv差を無視した経験値公平機能実装（int_party.c, intif.*, party.c）

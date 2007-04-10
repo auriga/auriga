@@ -132,9 +132,8 @@ int guild_tostr(char *str,struct guild *g)
 	for(i=0;i<MAX_GUILDEXPLUSION;i++){
 		struct guild_explusion *e=&g->explusion[i];
 		if(e->account_id>0)
-			len+=sprintf(str+len,"%d,%d,%d,%d\t%s\t%s\t%s#\t",
-				e->account_id,e->rsv1,e->rsv2,e->rsv3,
-				e->name,e->acc,e->mes );
+			len+=sprintf(str+len,"%d\t%s\t%s#\t",
+				e->account_id,e->name,e->mes );
 	}
 	// ギルドスキル
 	for(i=0;i<MAX_GUILDSKILL;i++){
@@ -218,7 +217,7 @@ int guild_fromstr(char *str,struct guild *g)
 	// エンブレム
 	tmp_int[1]=0;
 	if( sscanf(str+1,"%d,%d,%[^\t]\t",&tmp_int[0],&tmp_int[1],tmp_str2)< 3 &&
-		sscanf(str+1,"%d,%[^\t]\t",&tmp_int[0],tmp_str2) < 2	)
+		sscanf(str+1,"%d,%[^\t]\t",&tmp_int[0],tmp_str2) < 2 )
 		return 1;
 	g->emblem_len=tmp_int[0];
 	g->emblem_id=tmp_int[1];
@@ -258,20 +257,27 @@ int guild_fromstr(char *str,struct guild *g)
 	str=strchr(str+1,'\t');	// 位置スキップ
 	for(i=0;i<c && i<MAX_GUILDEXPLUSION;i++){
 		struct guild_explusion *e = &g->explusion[i];
-		if( sscanf(str+1,"%d,%d,%d,%d\t%[^\t]\t%[^\t]\t%[^\t]\t",
-			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
-			tmp_str[0],tmp_str[1],tmp_str[2]) < 6)
-			return 1;
-		e->account_id=tmp_int[0];
-		e->rsv1=tmp_int[1];
-		e->rsv2=tmp_int[2];
-		e->rsv3=tmp_int[3];
-		memcpy(e->name,tmp_str[0],24);
-		memcpy(e->acc,tmp_str[1],24);
-		tmp_str[2][strlen(tmp_str[2])-1]=0;
-		memcpy(e->mes,tmp_str[2],40);
+		int ret,step;
 
-		for(j=0;j<4 && str!=NULL;j++)	// 位置スキップ
+		ret = sscanf(str+1,"%d,%d,%d,%d\t%[^\t]\t%[^\t]\t%[^\t]\t",
+			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+			tmp_str[0],tmp_str[2],tmp_str[1]);
+		if(ret != 7) {
+			// Auriga-0142以降の形式
+			ret = sscanf(str+1,"%d\t%[^\t]\t%[^\t]\t",
+				&tmp_int[0],tmp_str[0],tmp_str[1]);
+			if(ret != 3)
+				return 1;
+			step = 3;
+		} else {
+			step = 4;
+		}
+		e->account_id=tmp_int[0];
+		memcpy(e->name,tmp_str[0],24);
+		tmp_str[1][strlen(tmp_str[1])-1]=0;
+		memcpy(e->mes,tmp_str[1],40);
+
+		for(j=0;j<step && str!=NULL;j++)	// 位置スキップ
 			str=strchr(str+1,'\t');	
 	}
 //	printf("GuildExplusionInfo OK\n");
@@ -1054,8 +1060,8 @@ const struct guild *guild_sql_load_num(int guild_id) {
 	sprintf(
 		tmp_sql,
 		"SELECT `guild_id`,`account_id`,`char_id`,`hair`,`hair_color`,`gender`,`class`,`lv`,"
-		"`exp`,`exp_payper`,`online`,`position`,`rsv1`,`rsv2`,`name` FROM `%s` "
-		"WHERE `guild_id`='%d'  ORDER BY `position`", guild_member_db, guild_id
+		"`exp`,`exp_payper`,`online`,`position`,`name` FROM `%s` "
+		"WHERE `guild_id`='%d' ORDER BY `position`", guild_member_db, guild_id
 	);
 	//printf("  %s\n",tmp_sql);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
@@ -1082,7 +1088,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 				m->position = MAX_GUILDPOSITION - 1;
 			else
 				m->position = atoi(sql_row[11]);
-			strncpy(m->name,sql_row[14],24);
+			strncpy(m->name,sql_row[12],24);
 		}
 	}
 	mysql_free_result(sql_res);
@@ -1135,7 +1141,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 	// printf("alliance ");
 
 	//printf("- Read guild_expulsion %d from sql \n",guild_id);
-	sprintf(tmp_sql,"SELECT `guild_id`,`name`,`mes`,`acc`,`account_id`,`rsv1`,`rsv2`,`rsv3` FROM `%s` WHERE `guild_id`='%d'",guild_expulsion_db, guild_id);
+	sprintf(tmp_sql,"SELECT `guild_id`,`name`,`mes`,`account_id` FROM `%s` WHERE `guild_id`='%d'",guild_expulsion_db, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (select `%s`)- %s\n", guild_expulsion_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
@@ -1148,11 +1154,7 @@ const struct guild *guild_sql_load_num(int guild_id) {
 			struct guild_explusion *e = &g->explusion[i];
 			strncpy(e->name,sql_row[1],24);
 			strncpy(e->mes,sql_row[2],40);
-			strncpy(e->acc,sql_row[3],24);
-			e->account_id=atoi(sql_row[4]);
-			e->rsv1=atoi(sql_row[5]);
-			e->rsv2=atoi(sql_row[6]);
-			e->rsv3=atoi(sql_row[7]);
+			e->account_id=atoi(sql_row[3]);
 		}
 	}
 	mysql_free_result(sql_res);
@@ -1282,7 +1284,7 @@ int  guild_sql_save(struct guild* g2) {
 		p += sprintf(
 			tmp_sql,
 			"INSERT INTO `%s` (`guild_id`,`account_id`,`char_id`,`hair`,`hair_color`,`gender`,"
-			"`class`,`lv`,`exp`,`exp_payper`,`online`,`position`,`rsv1`,`rsv2`,`name`) VALUES",
+			"`class`,`lv`,`exp`,`exp_payper`,`online`,`position`,`name`) VALUES",
 			guild_member_db
 		);
 		sep = ' ';
@@ -1293,10 +1295,9 @@ int  guild_sql_save(struct guild* g2) {
 				struct guild_member *m = &g2->member[i];
 				p += sprintf(
 					p,
-					"%c('%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%s')",
+					"%c('%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%s')",
 					sep,g2->guild_id,m->account_id,m->char_id,m->hair,m->hair_color,m->gender,
-					m->class_,m->lv,m->exp,m->exp_payper,(int)m->online,m->position,0,0,
-					strecpy(buf,m->name)
+					m->class_,m->lv,m->exp,m->exp_payper,(int)m->online,m->position,strecpy(buf,m->name)
 				);
 				sep = ',';
 			}
@@ -1387,7 +1388,7 @@ int  guild_sql_save(struct guild* g2) {
 		p  = tmp_sql;
 		p += sprintf(
 			tmp_sql,
-			"INSERT INTO `%s` (`guild_id`,`name`,`mes`,`acc`,`account_id`,`rsv1`,`rsv2`,`rsv3`) VALUES",
+			"INSERT INTO `%s` (`guild_id`,`name`,`mes`,`account_id`) VALUES",
 			guild_expulsion_db
 		);
 		sep = ' ';
@@ -1395,9 +1396,8 @@ int  guild_sql_save(struct guild* g2) {
 			struct guild_explusion *e = &g2->explusion[i];
 			if(e->account_id>0) {
 				p += sprintf(
-					p,"%c('%d','%s','%s','%s','%d','%d','%d','%d')",
-					sep,g2->guild_id,strecpy(buf,e->name),strecpy(buf2,e->mes),e->acc,e->account_id,
-					e->rsv1,e->rsv2,e->rsv3
+					p,"%c('%d','%s','%s','%d')",
+					sep,g2->guild_id,strecpy(buf,e->name),strecpy(buf2,e->mes),e->account_id
 				);
 				sep = ',';
 			}
@@ -2084,12 +2084,10 @@ int mapif_parse_GuildLeave(int fd,int guild_id,int account_id,int char_id,int fl
 							break;
 					}
 					if(j==MAX_GUILDEXPLUSION) {	// 一杯なので古いのを消す
-						for(j=0;j<MAX_GUILDEXPLUSION-1;j++)
-							g2.explusion[j] = g2.explusion[j+1];
 						j=MAX_GUILDEXPLUSION-1;
+						memmove(&g2.explusion[0],&g2.explusion[1],j*sizeof(g2.explusion[0]));
 					}
 					g2.explusion[j].account_id=account_id;
-					memcpy(g2.explusion[j].acc,"dummy",24);
 					memcpy(g2.explusion[j].name,g2.member[i].name,24);
 					memcpy(g2.explusion[j].mes,mes,40);
 				}

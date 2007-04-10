@@ -1797,7 +1797,7 @@ int npc_set_mapflag(int m,char *w3,char *w4)
 		char savemap[16];
 		int savex,savey;
 		if (strcmp(w4,"SavePoint")==0) {
-			memcpy(map[m].save.map,"SavePoint",16);
+			strncpy(map[m].save.map,"SavePoint",16);
 			map[m].save.x = -1;
 			map[m].save.y = -1;
 			map[m].flag.nosave = 1;

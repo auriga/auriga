@@ -221,7 +221,7 @@ int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 		);
 
 	if (set != 48)
-		return 0;	// Auriga-089より古い形式はサポートしない
+		return 0;
 
 	p->st.char_id       = tmp_int[0];
 	p->st.account_id    = tmp_int[1];
@@ -655,7 +655,7 @@ int guild_fromstr(char *str,struct guild *g)
 		str=strchr(str+1,'\t');
 
 	// メンバー
-	for(i=0;i<g->max_member;i++){
+	for(i=0;i<g->max_member && i<MAX_GUILD;i++){
 		struct guild_member *m = &g->member[i];
 		if( sscanf(str+1,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%[^\t]\t",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],&tmp_int[4],
@@ -716,7 +716,7 @@ int guild_fromstr(char *str,struct guild *g)
 	if( sscanf(str+1,"%d\t",&c)< 1)
 		return 1;
 	str=strchr(str+1,'\t');	// 位置スキップ
-	for(i=0;i<c;i++){
+	for(i=0;i<c && i<MAX_GUILDALLIANCE;i++){
 		struct guild_alliance *a = &g->alliance[i];
 		if( sscanf(str+1,"%d,%d\t%[^\t]\t",
 			&tmp_int[0],&tmp_int[1],tmp_str[0]) < 3)
@@ -733,22 +733,17 @@ int guild_fromstr(char *str,struct guild *g)
 	if( sscanf(str+1,"%d\t",&c)< 1)
 		return 1;
 	str=strchr(str+1,'\t');	// 位置スキップ
-	for(i=0;i<c;i++){
+	for(i=0;i<c && i<MAX_GUILDEXPLUSION;i++){
 		struct guild_explusion *e = &g->explusion[i];
-		if( sscanf(str+1,"%d,%d,%d,%d\t%[^\t]\t%[^\t]\t%[^\t]\t",
-			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
-			tmp_str[0],tmp_str[1],tmp_str[2]) < 6)
+		if( sscanf(str+1,"%d\t%[^\t]\t%[^\t]\t",
+			&tmp_int[0],tmp_str[0],tmp_str[1]) != 3 )
 			return 1;
 		e->account_id=tmp_int[0];
-		e->rsv1=tmp_int[1];
-		e->rsv2=tmp_int[2];
-		e->rsv3=tmp_int[3];
 		memcpy(e->name,tmp_str[0],24);
-		memcpy(e->acc,tmp_str[1],24);
-		tmp_str[2][strlen(tmp_str[2])-1]=0;
-		memcpy(e->mes,tmp_str[2],40);
+		tmp_str[1][strlen(tmp_str[1])-1]=0;
+		memcpy(e->mes,tmp_str[1],40);
 
-		for(j=0;j<4 && str!=NULL;j++)	// 位置スキップ
+		for(j=0;j<3 && str!=NULL;j++)	// 位置スキップ
 			str=strchr(str+1,'\t');
 	}
 
@@ -807,7 +802,7 @@ int guild_tosql(struct guild* g2) {
 	p += sprintf(
 		tmp_sql,
 		"INSERT INTO `%s` (`guild_id`,`account_id`,`char_id`,`hair`,`hair_color`,`gender`,"
-		"`class`,`lv`,`exp`,`exp_payper`,`online`,`position`,`rsv1`,`rsv2`,`name`) VALUES",
+		"`class`,`lv`,`exp`,`exp_payper`,`online`,`position`,`name`) VALUES",
 		"guild_member"
 	);
 	sep = ' ';
@@ -817,10 +812,9 @@ int guild_tosql(struct guild* g2) {
 			struct guild_member *m = &g2->member[i];
 			p += sprintf(
 				p,
-				"%c('%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%s')",
+				"%c('%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%s')",
 				sep,g2->guild_id,m->account_id,m->char_id,m->hair,m->hair_color,m->gender,
-				m->class_,m->lv,m->exp,m->exp_payper,(int)m->online,m->position,0,0,
-				strecpy(buf,m->name)
+				m->class_,m->lv,m->exp,m->exp_payper,(int)m->online,m->position,strecpy(buf,m->name)
 			);
 			sep = ',';
 		}
@@ -897,7 +891,7 @@ int guild_tosql(struct guild* g2) {
 	p  = tmp_sql;
 	p += sprintf(
 		tmp_sql,
-		"INSERT INTO `%s` (`guild_id`,`name`,`mes`,`acc`,`account_id`,`rsv1`,`rsv2`,`rsv3`) VALUES",
+		"INSERT INTO `%s` (`guild_id`,`name`,`mes`,`account_id`) VALUES",
 		"guild_expulsion"
 	);
 	sep = ' ';
@@ -905,9 +899,8 @@ int guild_tosql(struct guild* g2) {
 		struct guild_explusion *e = &g2->explusion[i];
 		if(e->account_id>0) {
 			p += sprintf(
-				p,"%c('%d','%s','%s','%s','%d','%d','%d','%d')",
-				sep,g2->guild_id,strecpy(buf,e->name),strecpy(buf2,e->mes),e->acc,e->account_id,
-				e->rsv1,e->rsv2,e->rsv3
+				p,"%c('%d','%s','%s','%d')",
+				sep,g2->guild_id,strecpy(buf,e->name),strecpy(buf2,e->mes),e->account_id
 			);
 			sep = ',';
 		}

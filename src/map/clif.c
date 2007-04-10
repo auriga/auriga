@@ -7358,7 +7358,7 @@ void clif_guild_basicinfo(struct map_session_data *sd, struct guild *g)
 	WFIFOL(fd,42)=0;	// 人数？
 	memcpy(WFIFOP(fd,46),g->name,24);
 	memcpy(WFIFOP(fd,70),g->master,24);
-	memcpy(WFIFOP(fd,94),"",20);	// 本拠地
+	strncpy(WFIFOP(fd,94),"",20);	// 本拠地
 	WFIFOSET(fd,packet_db[0x1b6].len);
 
 	return;
@@ -7697,7 +7697,7 @@ void clif_guild_explusion(struct map_session_data *sd, const char *name, const c
 	WBUFW(buf, 0)=0x15c;
 	memcpy(WBUFP(buf, 2),name,24);
 	memcpy(WBUFP(buf,26),mes,40);
-	memcpy(WBUFP(buf,66),"dummy",24);
+	strncpy(WBUFP(buf,66),"dummy",24);
 	clif_send(buf,packet_db[0x15c].len,&sd->bl,GUILD);
 
 	return;
@@ -7710,7 +7710,7 @@ void clif_guild_explusion(struct map_session_data *sd, const char *name, const c
 static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *g)
 {
 	int fd;
-	int i,c;
+	int i,c=0;
 
 	nullpo_retv(sd);
 
@@ -7719,13 +7719,12 @@ static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x163;
-	c = 0;
 	for(i = 0; i < MAX_GUILDEXPLUSION; i++) {
 		struct guild_explusion *e=&g->explusion[i];
 		if(e->account_id>0){
 			memcpy(WFIFOP(fd,c*88+ 4),e->name,24);
-			memcpy(WFIFOP(fd,c*88+28),e->acc,24);
-			memcpy(WFIFOP(fd,c*88+52),e->mes,44);
+			strncpy(WFIFOP(fd,c*88+28),"dummy",24);
+			memcpy(WFIFOP(fd,c*88+52),e->mes,40);
 			c++;
 		}
 	}
@@ -11556,7 +11555,6 @@ static void clif_parse_GMReqNoChatCount(int fd,struct map_session_data *sd, int 
 	WFIFOW(fd,0)=0x1e0;
 	WFIFOL(fd,2)=tid;
 	snprintf(WFIFOP(fd,6),24,"%d",tid);
-//	memcpy(WFIFOP(fd,6),"TESTNAME",24);
 	WFIFOSET(fd,packet_db[0x1e0].len);
 
 	return;

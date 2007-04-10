@@ -216,11 +216,7 @@ CREATE TABLE `guild_expulsion` (
   `guild_id` int(11) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
   `mes` varchar(40) NOT NULL default '',
-  `acc` varchar(40) NOT NULL default '',
   `account_id` int(11) NOT NULL default '0',
-  `rsv1` int(11) NOT NULL default '0',
-  `rsv2` int(11) NOT NULL default '0',
-  `rsv3` int(11) NOT NULL default '0',
   KEY `guild_id` (`guild_id`)
 ) TYPE=MyISAM; 
 
@@ -240,8 +236,6 @@ CREATE TABLE `guild_member` (
   `exp_payper` int(11) NOT NULL default '0',
   `online` tinyint(4) NOT NULL default '0',
   `position` smallint(6) NOT NULL default '0',
-  `rsv1` int(11) NOT NULL default '0',
-  `rsv2` int(11) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
   KEY `guild_id` (`guild_id`),
   KEY `account_id` (`account_id`),
@@ -382,8 +376,8 @@ CREATE TABLE `memo` (
 CREATE TABLE `party` (
   `party_id` int(11) NOT NULL default '100',
   `name` varchar(24) NOT NULL default '',
-  `exp` int(11) NOT NULL default '0',
-  `item` int(11) NOT NULL default '0',
+  `exp` tinyint(4) unsigned NOT NULL default '0',
+  `item` tinyint(4) unsigned NOT NULL default '0',
   `leader_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`party_id`)
 ) TYPE=MyISAM; 

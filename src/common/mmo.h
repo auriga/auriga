@@ -255,7 +255,6 @@ struct guild_member {
 	int exp,exp_payper;
 	unsigned char online;
 	short position;
-	int rsv1,rsv2;
 	char name[24];
 	struct map_session_data *sd;
 };
@@ -272,9 +271,7 @@ struct guild_alliance {
 struct guild_explusion {
 	char name[24];
 	char mes[40];
-	char acc[40];
 	int account_id;
-	int rsv1,rsv2,rsv3;
 };
 struct guild_skill {
 	int id,lv;
@@ -375,8 +372,7 @@ struct mail_data {
 	struct item item;
 };
 
-struct Ranking_Data
-{
+struct Ranking_Data {
 	char name[24];
 	int point;
 	int char_id;
