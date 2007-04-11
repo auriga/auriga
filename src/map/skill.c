@@ -276,9 +276,9 @@ int SkillStatusChangeTable[]={	/* skill.hのenumのSC_***とあわせること *
 /* 410- */
 	-1,SC_RUN,SC_READYSTORM,-1,SC_READYDOWN,-1,SC_READYTURN,-1,SC_READYCOUNTER,-1,
 /* 420- */
-	SC_DODGE,-1,-1,-1,-1,-1,-1,-1,SC_SUN_WARM,SC_MOON_WARM,
+	SC_DODGE,-1,-1,-1,-1,-1,-1,-1,SC_WARM,SC_WARM,
 /* 430- */
-	SC_STAR_WARM,SC_SUN_COMFORT,SC_MOON_COMFORT,SC_STAR_COMFORT,-1,-1,-1,-1,-1,-1,
+	SC_WARM,SC_SUN_COMFORT,SC_MOON_COMFORT,SC_STAR_COMFORT,-1,-1,-1,-1,-1,-1,
 /* 440- */
 	-1,-1,-1,-1,SC_FUSION,SC_ALCHEMIST,-1,SC_MONK,SC_STAR,SC_SAGE,
 /* 450- */
@@ -3436,8 +3436,18 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SG_SUN_WARM://太陽の温もり
 	case SG_MOON_WARM://月の温もり
 	case SG_STAR_WARM://星の温もり
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skill_get_time(skillid,skilllv)/1000,skill_get_range(skillid,skilllv),0,1000,0);
+		{
+			struct skill_unit_group *sg;
+			sc_data = status_get_sc_data(src);
+			if(sc_data && sc_data[SC_WARM].timer != -1) {
+				skill_delunitgroup((struct skill_unit_group *)sc_data[SC_WARM].val3);
+			}
+			sg = skill_unitsetting(src,skillid,skilllv,src->x,src->y,0);
+			if(sg) {
+				clif_skill_nodamage(src,bl,skillid,skilllv,1);
+				status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,bl->id,(int)sg,0,skill_get_time(skillid,skilllv),0);
+			}
+		}
 		break;
 	case TK_SEVENWIND: //暖かい風
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -6875,7 +6885,7 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 			}
 		}
 		break;
-	case UNT_BASILICA:				/* バジリカ */
+	case UNT_BASILICA:	/* バジリカ */
 	   	if ( battle_check_target(&src->bl,bl,BCT_ENEMY)>0 && !(status_get_mode(bl)&0x20) )
 			skill_blown(&src->bl,bl,SAB_NODAMAGE|1);
 		if (sg->src_id==bl->id)
@@ -6886,6 +6896,9 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 			status_change_start(bl,type,sg->skill_lv,sg->val1,sg->val2,
 				src->bl.id,sg->interval+100,0);
 		}
+		break;
+	case UNT_WARM:		/* 温もり */
+		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 		break;
 	case UNT_SPIDERWEB:	/* スパイダーウェッブ */
 		sc_data = status_get_sc_data(bl);
@@ -6898,7 +6911,7 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 			src->range = 0;
 		}
 		break;
-	case UNT_MOONLIT: //月明りの下で
+	case UNT_MOONLIT: 	/* 月明りの下で */
 		sc_data = status_get_sc_data(bl);
 		if(bl->type!= BL_MOB && bl->type!=BL_PC)
 			break;
@@ -6938,7 +6951,7 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 	case UNT_GROUNDDRIFT_FIRE:
 		battle_skill_attack(BF_MISC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 		sg->unit_id = UNT_USED_TRAPS;
-		clif_changelook(&src->bl,LOOK_BASE,sg->unit_id);
+		clif_changelook(&src->bl,LOOK_BASE,UNT_FIREPILLAR_ACTIVE);
 		sg->limit=DIFF_TICK(tick,sg->tick)+1500;
 		break;
 	}
@@ -10628,8 +10641,10 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 	if (group->unit==NULL)
 		return 0;
 
-	// 移動可能なスキルはダンス系と罠のみ
-	if ( !(skill_get_unit_flag(group->skill_id)&UF_DANCE) && !skill_unit_istrap(group->unit_id) )
+	// 移動可能なスキルはダンス系と罠と温もりのみ
+	if ( !(skill_get_unit_flag(group->skill_id)&UF_DANCE) &&
+	     !skill_unit_istrap(group->unit_id) &&
+	     group->unit_id != UNT_WARM )
 		return 0;
 	if ( group->unit_id == UNT_ANKLESNARE && group->val2 > 0 )	// 補足中のアンクルは移動不可
 		return 0;

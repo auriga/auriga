@@ -356,9 +356,8 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_HERMODE				= 234,
 	SC_TRIPLEATTACK_RATE_UP	= 235,	//三段発動率アップ
 	SC_COUNTER_RATE_UP		= 236,	//カウンターキック発動率アップ
-	SC_SUN_WARM				= 237,
-	SC_MOON_WARM			= 238,
-	SC_STAR_WARM			= 239,
+	SC_WARM					= 237,
+	//
 	SC_SUN_COMFORT			= 240,
 	SC_MOON_COMFORT			= 241,
 	SC_STAR_COMFORT			= 242,
@@ -405,7 +404,7 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_ATTENELEMENT			= 283,//念
 	SC_MIRACLE				= 284,//太陽と月と星の奇跡
 	SC_ANGEL				= 285,//太陽と月と星の天使
-	SC_FORCEWALKING				= 286,//SC_HIGHJUMPを強制移動状態として再利用
+	SC_FORCEWALKING			= 286,//SC_HIGHJUMPを強制移動状態として再利用
 	SC_DOUBLE				= 287,//ダブルストレイフィング状態
 	SC_ACTION_DELAY			= 288,//
 	SC_BABY					= 289,//パパ、ママ、大好き
@@ -570,7 +569,7 @@ enum {
 	SI_FROSTWEAPON			=91,	/* フロストウェポン */
 	SI_LIGHTNINGLOADER		=92,	/* ライトニングローダー */
 	SI_SEISMICWEAPON		=93,	/* サイズミックウェポン */
-	SI_HOLDWEB			=95,	/* ホールドウェブ */
+	SI_HOLDWEB				=95,	/* ホールドウェブ */
 	SI_AURABLADE			=103,	/* オーラブレード */
 	SI_PARRYING				=104,	/* パリイング */
 	SI_CONCENTRATION		=105,	/* コンセントレーション */
@@ -592,10 +591,10 @@ enum {
 	SI_HEADCRUSH			=124,	/* ヘッドクラッシュ */
 	SI_JOINTBEAT			=125,	/* ジョイントビート */
 	SI_BABY					=130,	//パパ、ママ、大好き
-	SI_MAGNUM			=131,	//マグナムブレイク
+	SI_MAGNUM				=131,	//マグナムブレイク
 	SI_AUTOBERSERK			=132,	//オートバーサーク
-	SI_RUN				=133,	//タイリギ
-	SI_RUN_STOP			=134,	//タイリギ衝突
+	SI_RUN					=133,	//タイリギ
+	SI_RUN_STOP				=134,	//タイリギ衝突
 	SI_READYSTORM			=135,	//旋風準備
 	SI_READYDOWN			=137,	//下段準備
 	SI_READYTURN			=139,	//回転準備
@@ -614,15 +613,16 @@ enum {
 	SI_SMA					=159,	//エスマ可能状態
 	SI_NIGHT				=160,	//夜（SI_SOULLINK）
 	SI_ONEHAND				=161,	//ワンハンドクイッケン
-	SI_SUN_WARM				=165,	//太陽の温もり
-	SI_MOON_WARM			=166,	//月の温もり
-	SI_STAR_WARM			=167,	//星の温もり
+	SI_WARM					=165,	//温もり
+	//SI_SUN_WARM			=165,	//太陽の温もり
+	//SI_MOON_WARM			=166,	//月の温もり
+	//SI_STAR_WARM			=167,	//星の温もり
 	SI_SUN_COMFORT			=169,	//太陽の安楽
 	SI_MOON_COMFORT			=170,	//月の安楽
 	SI_STAR_COMFORT			=171,	//星の安楽
 	SI_PRESERVE				=181,	//プリザーブ
 	SI_CHASEWALK_STR		=182,	//チェイスウォークのSTR?
-	SI_TIGEREYE			=184,	//タイガーアイ（ハイド見破り）
+	SI_TIGEREYE				=184,	//タイガーアイ（ハイド見破り）
 	SI_DOUBLECASTING		=186,	//ダブルキャスティング
 	SI_OVERTHRUSTMAX		=188,	//オーバートラストマックス
 	SI_TAROTCARD			=191,

@@ -1966,7 +1966,7 @@ int do_final_npc(void)
 	for(i=START_NPC_NUM;i<npc_id;i++){
 		if((bl=map_id2bl(i))){
 			if(bl->type == BL_PET || bl->type == BL_MOB) {
-				unit_remove_map(bl,0);
+				unit_remove_map(bl,0,0);
 			}
 		}
 		if((bl=map_id2bl(i))){

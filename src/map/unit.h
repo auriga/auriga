@@ -60,7 +60,7 @@ int unit_iscasting(struct block_list *bl);
 int unit_iswalking(struct block_list *bl);
 
 struct unit_data* unit_bl2ud(struct block_list *bl);
-int unit_remove_map(struct block_list *bl, int clrtype);
+int unit_remove_map(struct block_list *bl, int clrtype, int flag);
 int unit_distance(int x0,int y0,int x1,int y1);
 int unit_free(struct block_list *bl, int clrtype);
 int unit_changeviewsize(struct block_list *bl,short size);

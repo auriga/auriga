@@ -215,11 +215,15 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 	if(moveblock) map_addblock(bl);
 	if(!pd) skill_unit_move(bl,tick,1);
 
-	if(sd && sd->sc_data[SC_DANCING].timer != -1 && sd->sc_data[SC_LONGINGFREEDOM].timer == -1) // Not 拘束しないで
-	{
-		skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_DANCING].val2,sd->bl.m,dx,dy);
-		sd->dance.x += dx;
-		sd->dance.y += dy;
+	if(sd) {
+		if(sd->sc_data[SC_DANCING].timer != -1 && sd->sc_data[SC_LONGINGFREEDOM].timer == -1)	// Not 拘束しないで
+		{
+			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_DANCING].val2,sd->bl.m,dx,dy);
+			sd->dance.x += dx;
+			sd->dance.y += dy;
+		}
+		if(sd->sc_data[SC_WARM].timer != -1)
+			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_WARM].val3,sd->bl.m,dx,dy);
 	}
 
 	ud->walktimer = 1;
@@ -608,6 +612,11 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		// クローキングの消滅検査
 		if(pc_iscloaking(sd) && sd->sc_data[SC_CLOAKING].timer != -1 && sd->sc_data[SC_CLOAKING].val1 < 3) {
 			skill_check_cloaking(&sd->bl);
+		}
+
+		// 温もりの位置変更
+		if(sd->sc_data[SC_WARM].timer != -1) {
+			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_WARM].val3,sd->bl.m,dx,dy);
 		}
 
 		if(map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
@@ -1840,7 +1849,7 @@ int unit_iswalking(struct block_list *bl) {
  * マップから離脱する
  *------------------------------------------
  */
-int unit_remove_map(struct block_list *bl, int clrtype)
+int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 {
 	struct unit_data *ud;
 	struct status_change *sc_data;
@@ -1858,7 +1867,8 @@ int unit_remove_map(struct block_list *bl, int clrtype)
 	unit_stopattack(bl);				// 攻撃中断
 	unit_skillcastcancel(bl,0);			// 詠唱中断
 	skill_stop_dancing(bl,1);			// ダンス中断
-	skill_clear_unitgroup(bl);			// スキルユニットグループの削除
+	if(!flag)
+		skill_clear_unitgroup(bl);		// スキルユニットグループの削除
 	if(!unit_isdead(bl))
 		skill_unit_move(bl,gettick(),0);	// スキルユニットから離脱
 
@@ -1997,7 +2007,7 @@ int unit_remove_map(struct block_list *bl, int clrtype)
 			unsigned int spawntime,spawntime1,spawntime2,spawntime3;
 			spawntime1=md->last_spawntime+md->spawndelay1;
 			spawntime2=md->last_deadtime+md->spawndelay2;
-			spawntime3=gettick()+5000;
+			spawntime3=gettick()+1000;
 			// spawntime = max(spawntime1,spawntime2,spawntime3);
 			if(DIFF_TICK(spawntime1,spawntime2)>0){
 				spawntime=spawntime1;
@@ -2034,7 +2044,7 @@ int unit_free(struct block_list *bl, int clrtype) {
 
 	map_freeblock_lock();
 	if( bl->prev )
-		unit_remove_map(bl, clrtype);
+		unit_remove_map(bl, clrtype, 0);
 
 	if( bl->type == BL_PC ) {
 		struct map_session_data *sd = (struct map_session_data*)bl;

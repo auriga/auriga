@@ -6244,10 +6244,10 @@ static int buildin_killmonster_sub(struct block_list *bl,va_list ap)
 
 	if(!allflag) {
 		if(strcmp(event,md->npc_event) == 0)
-			unit_remove_map(bl,1);
+			unit_remove_map(bl,1,0);
 	} else {
 		if(md->spawndelay1 == -1 && md->spawndelay2 == -1)
-			unit_remove_map(bl,1);
+			unit_remove_map(bl,1,0);
 	}
 	return 0;
 }
@@ -6276,7 +6276,7 @@ int buildin_killmonster(struct script_state *st)
  */
 static int buildin_killmonsterall_sub(struct block_list *bl,va_list ap)
 {
-	unit_remove_map(bl,1);
+	unit_remove_map(bl,1,0);
 	return 0;
 }
 
@@ -7855,7 +7855,7 @@ static int buildin_maprespawnguildid_sub(struct block_list *bl,va_list ap)
 		struct mob_data *md = (struct mob_data *)bl;
 		if(md) {
 			if(md->class_ < 1285 || md->class_ > 1288)
-				unit_remove_map(&md->bl,1);
+				unit_remove_map(&md->bl,1,0);
 		}
 	}
 	return 0;

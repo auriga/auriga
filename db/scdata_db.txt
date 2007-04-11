@@ -2,6 +2,7 @@
 // ID,Name,SaveFlag,Releasable,Disable
 // 状態異常ID,名前（ダミー）,セーブ可否,解除可否フラグ,無効可否フラグ
 // 　※注：SaveFlagが-1のものは基本的に変更しないでください、サーバクラッシュする可能性があります
+
 0,SC_PROVOKE,1,7,1			// プロボック
 1,SC_ENDURE,1,7,0			// インデュア
 2,SC_TWOHANDQUICKEN,1,7,14		// ツーハンドクイッケン
@@ -203,9 +204,8 @@
 234,SC_HERMODE,0,1,0			// ヘルモードの杖
 235,SC_TRIPLEATTACK_RATE_UP,0,1,0	// 三段発動率アップ
 236,SC_COUNTER_RATE_UP,0,1,0		// アプチャオルリギ発動率アップ
-237,SC_SUN_WARM,0,17,0			// 太陽の温もり
-238,SC_MOON_WARM,0,17,0			// 月の温もり
-239,SC_STAR_WARM,0,17,0			// 星の温もり
+237,SC_WARM,0,17,0			// 温もり
+//
 240,SC_SUN_COMFORT,0,17,0		// 太陽の安楽
 241,SC_MOON_COMFORT,0,17,0		// 月の安楽
 242,SC_STAR_COMFORT,0,17,0		// 星の安楽
@@ -334,7 +334,7 @@
 365,SC_ADRENALINE2,0,17,14		// フルアドレナリンラッシュ
 366,SC_STATUS_UNCHANGE,0,1,0		// 状態異常耐性（ゴスペル用）
 367,SC_INCDAMAGE,0,1,0			// 被ダメージが%上昇（ゴスペル用）
-//
+
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除
 //1002,SC_RACECLEAR		// 全種族変化解除

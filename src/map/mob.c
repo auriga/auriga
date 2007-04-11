@@ -358,7 +358,7 @@ int mob_spawn(int id)
 		} else {
 	//		if(battle_config.error_log)
 	//			printf("MOB spawn error %d @ %s\n",id,map[md->bl.m].name);
-			add_timer(tick+5000,mob_delayspawn,id,0);
+			add_timer(tick+1000,mob_delayspawn,id,0);
 			return 1;
 		}
 	}
@@ -663,9 +663,9 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 
 	if((bl = map_id2bl(md->master_id)) == NULL || unit_isdead(bl)) {	//主が死亡しているか見つからない
 		if(md->state.special_mob_ai>0)
-			unit_remove_map(&md->bl,3);
+			unit_remove_map(&md->bl,3,0);
 		else
-			unit_remove_map(&md->bl,1);
+			unit_remove_map(&md->bl,1,0);
 		return 0;
 	}
 	if(md->state.special_mob_ai>0)		// 主がPCの場合は、以降の処理は要らない
@@ -1497,7 +1497,7 @@ int mob_timer_delete(int tid, unsigned int tick, int id, int data)
 
 	nullpo_retr(0, bl);
 
-	unit_remove_map(bl,3);
+	unit_remove_map(bl,3,0);
 	return 0;
 }
 
@@ -1516,7 +1516,7 @@ int mob_deleteslave_sub(struct block_list *bl,va_list ap)
 
 	id=va_arg(ap,int);
 	if(md->master_id > 0 && md->master_id == id )
-		unit_remove_map(&md->bl,1);
+		unit_remove_map(&md->bl,1,0);
 	return 0;
 }
 /*==========================================
@@ -1553,7 +1553,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 	if(md->hp<=0) {
 		if(md->bl.prev != NULL) {
 			mobskill_use(md,tick,-1);	// 死亡時スキル
-			unit_remove_map(&md->bl ,1);
+			unit_remove_map(&md->bl,1,0);
 		}
 		return 0;
 	}
@@ -2114,7 +2114,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		md->hp = 1;
 		skill_unit_move(&md->bl,gettick(),0);
 		md->hp = 0;
-		unit_remove_map(&md->bl, 1);
+		unit_remove_map(&md->bl, 1, 0);
 	}
 
 	return 0;

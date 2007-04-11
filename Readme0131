@@ -1,4 +1,20 @@
 ----------------------------------------
+//0143 [2007/04/12] by Rayce
+
+・AthenaProject2286-fixよりmerge、thanks to Blazeさん
+　以下Readmeより転載
+　　・拳聖スキル「太陽・月・星の温もり」実装（skill.c、battle.c、status.c、unit.c、pc.c)
+　　・マップを移動した時、拳聖スキル「太陽・月・星の安楽」の効果を削除するように修正（pc.c)
+　　・スキルユニットを設置後、ハエやマップ移動で消えてしまうのを修正（pc.c、unit.c)
+　　・上記変更に伴うunit_remove_map関数の仕様変更
+　　	（unit.c、unit.h、pc.c、mob.c、npc.c、pet.c、script.c、atcommand.c)
+　　・テコン系列の各種スキルの使用SPや詠唱時間などが間違っていたのを修正
+　　	（skill_require_db.txt、skill_cast_db.txt）
+　　・テコン系列の蹴りスキルを3段HITするように修正（skill_db.txt）
+　　・ガンスリンガースキル「グラウンドドリフト」の発動時エフェクトを修正（skill.c、skill_unit_db.txt）
+　　・モンスターの最低沸き間隔時間を5秒から1秒（本鯖仕様）に修正（mob.c、unit.c）
+
+----------------------------------------
 //0142 [2007/04/11] by Rayce
 
 ・guild_member構造体から使われないメンバ rsv1, rsv2 を削除

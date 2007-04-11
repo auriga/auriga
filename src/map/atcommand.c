@@ -2063,7 +2063,7 @@ static int atkillmonster_sub(struct block_list *bl,va_list ap)
 		if (flag)
 			mob_damage(NULL, md, md->hp, 2);
 		else
-			unit_remove_map(&md->bl, 1);
+			unit_remove_map(&md->bl, 1, 0);
 	}
 	return 0;
 }

@@ -101,7 +101,7 @@ static int StatusIconChangeTable[] = {
 /* 220- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 /* 230- */
-	SI_RUN,SI_SPURT,SI_BLANK,SI_DODGE,SI_BLANK,SI_BLANK,SI_BLANK,SI_SUN_WARM,SI_MOON_WARM,SI_STAR_WARM,
+	SI_RUN,SI_SPURT,SI_BLANK,SI_DODGE,SI_BLANK,SI_BLANK,SI_BLANK,SI_WARM,SI_BLANK,SI_BLANK,
 /* 240- */
 	SI_SUN_COMFORT,SI_MOON_COMFORT,SI_STAR_COMFORT,SI_BLANK,SI_SOULLINK,SI_SOULLINK,SI_SOULLINK,SI_SOULLINK,SI_SOULLINK,SI_SOULLINK,
 /* 250- */
@@ -4864,9 +4864,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_TKCOMBO://テコン系用コンボ
 		case SC_TRIPLEATTACK_RATE_UP:
 		case SC_COUNTER_RATE_UP:
-		case SC_SUN_WARM://#太陽の温もり#
-		case SC_MOON_WARM://#月の温もり#
-		case SC_STAR_WARM://#星の温もり#
+		case SC_WARM://#温もり#
 		case SC_KAIZEL://#カイゼル#
 		case SC_KAAHI://#カアヒ#
 		case SC_SMA://#エスマ#
@@ -5090,9 +5088,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			*opt3 |= 2048;
 			clif_misceffect2(bl,375);
 			break;
-		case SC_SUN_WARM://#太陽の温もり#
-		case SC_MOON_WARM://#月の温もり#
-		case SC_STAR_WARM://#星の温もり#
+		case SC_WARM://#温もり#
 			*opt3 |= 4096;
 			break;
 		case SC_KAITE:
@@ -5661,22 +5657,22 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			*opt2 &= ~64;
 			break;
 		// opt3
-		case SC_ONEHAND:			/* 1HQ */
+		case SC_ONEHAND:		/* 1HQ */
 		case SC_TWOHANDQUICKEN:		/* 2HQ */
 		case SC_SPEARSQUICKEN:		/* スピアクイッケン */
 		case SC_CONCENTRATION:		/* コンセントレーション */
 			*opt3 &= ~1;
 			break;
-		case SC_OVERTHRUST:			/* オーバートラスト */
+		case SC_OVERTHRUST:		/* オーバートラスト */
 			*opt3 &= ~2;
 			break;
-		case SC_ENERGYCOAT:			/* エナジーコート */
+		case SC_ENERGYCOAT:		/* エナジーコート */
 			*opt3 &= ~4;
 			break;
-		case SC_EXPLOSIONSPIRITS:	// 爆裂波動
+		case SC_EXPLOSIONSPIRITS:	/* 爆裂波動 */
 			*opt3 &= ~8;
 			break;
-		case SC_STEELBODY:			// 金剛
+		case SC_STEELBODY:		/* 金剛 */
 			*opt3 &= ~16;
 			break;
 		case SC_BLADESTOP:		/* 白刃取り */
@@ -5692,16 +5688,8 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_ASSUMPTIO:		/* アスムプティオ */
 			*opt3 &= ~2048;
 			break;
-		case SC_SUN_WARM://#太陽の温もり#
-		case SC_MOON_WARM://#月の温もり#
-		case SC_STAR_WARM://#星の温もり#
-			if(sc_data[SC_SUN_WARM].timer==-1
-				&& sc_data[SC_MOON_WARM].timer==-1
-				&& sc_data[SC_STAR_WARM].timer==-1){
-				*opt3 &= ~4096;
-			} else {
-				opt_flag = 0;
-			}
+		case SC_WARM:			/* 温もり */
+			*opt3 &= ~4096;
 			break;
 		case SC_KAITE:
 			*opt3 &= ~8192;
@@ -6088,21 +6076,6 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 		}
 		break;
 
-	case SC_SUN_WARM://太陽の温もり
-	case SC_MOON_WARM://月の温もり
-	case SC_STAR_WARM://星の温もり
-		if( (--sc_data[type].val2)>0){
-			int range = sc_data[type].val3;
-			if(range < 0)
-				range = 0;
-			map_foreachinarea( status_change_timer_sub,
-				bl->m, bl->x-range, bl->y-range, bl->x+range,bl->y+range,0,
-				bl,type,tick);
-			sc_data[type].timer=add_timer(1000+tick, status_change_timer,bl->id, data);
-			return 0;
-		}
-		break;
-
 	case SC_LULLABY:	/* 子守唄 */
 		if( (--sc_data[type].val2)>0){
 			struct skill_unit *unit = map_id2su(sc_data[type].val4);
@@ -6419,36 +6392,6 @@ int status_change_timer_sub(struct block_list *bl, va_list ap )
 			status_change_end( bl, SC_HIDING, -1);
 			status_change_end( bl, SC_CLOAKING, -1);
 			status_change_end( bl, SC_INVISIBLE, -1);
-		}
-		break;
-	case SC_SUN_WARM://太陽の温もり
-	case SC_MOON_WARM://月の温もり
-	case SC_STAR_WARM://星の温もり
-		if(battle_check_target( src,bl, BCT_ENEMY ) > 0) {
-			struct map_session_data *sd=NULL, *tsd=NULL;
-			if(src->type == BL_PC && (sd = (struct map_session_data *)src))
-			{
-				if(sd->status.sp<2)
-				{
-					status_change_end(&sd->bl,type,-1);
-				}else{
-					sd->status.sp -= 2;
-					clif_updatestatus(sd,SP_SP);
-				}
-			}
-			if(bl->type == BL_PC && (tsd = (struct map_session_data *)bl))
-			{
-				tsd->status.sp -= 5;
-				if(tsd->status.sp < 0)
-					tsd->status.sp = 0;
-				clif_updatestatus(tsd,SP_SP);
-			}
-			battle_weapon_attack(src,bl,tick,0);
-			//2セル吹き飛ばし
-			if(map[bl->m].flag.gvg==0)
-			{
-				skill_blown(src,bl,SAB_NODAMAGE|SAB_NOPATHSTOP|2);
-			}
 		}
 		break;
 	}

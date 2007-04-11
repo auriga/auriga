@@ -3479,16 +3479,37 @@ int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrt
 		// 同じマップなのでダンスユニット引き継ぎ
 		sd->ud.to_x = x;
 		sd->ud.to_y = y;
-		skill_stop_dancing(&sd->bl, 2); //移動先にユニットを移動するかどうかの判断もする
+		skill_stop_dancing(&sd->bl, 2);	// 移動先にユニットを移動するかどうかの判断もする
+
+		// 温もりユニット移動
+		if(sd->sc_data[SC_WARM].timer != -1) {
+			struct skill_unit_group *sg = (struct skill_unit_group *)sd->sc_data[SC_WARM].val3;
+			if(sg)
+				skill_unit_move_unit_group(sg, sd->bl.m, x-sd->bl.x, y-sd->bl.y);
+		}
 	} else {
 		// 違うマップなのでダンスユニット削除
 		skill_stop_dancing(&sd->bl, 1);
+
+		// 温もりユニット削除
+		if(sd->sc_data[SC_WARM].timer != -1) {
+			status_change_end(&sd->bl, SC_WARM, -1);
+			skill_delunitgroup((struct skill_unit_group *)sd->sc_data[SC_WARM].val3);
+		}
+
+		// 太陽・月・星の安楽効果削除
+		if(sd->sc_data[SC_SUN_COMFORT].timer != -1)
+			status_change_end(&sd->bl, SC_SUN_COMFORT, -1);
+		if(sd->sc_data[SC_MOON_COMFORT].timer != -1)
+			status_change_end(&sd->bl, SC_MOON_COMFORT, -1);
+		if(sd->sc_data[SC_STAR_COMFORT].timer != -1)
+			status_change_end(&sd->bl, SC_STAR_COMFORT, -1);
 	}
 	if(sd->bl.prev != NULL) {
 		if(m != sd->bl.m) {
 			flag = 1;	// 新規ログインでなくて違うMAPへ移動ならflagオン
 		}
-		unit_remove_map(&sd->bl,clrtype);
+		unit_remove_map(&sd->bl,clrtype,1);
 		if(sd->status.pet_id > 0 && sd->pd) {
 			if(sd->pd->bl.m != m && sd->pet.intimate <= 0) {
 				unit_free(&sd->pd->bl, 0);
@@ -3499,11 +3520,11 @@ int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrt
 					status_calc_pc(sd,2);
 			}
 			else if(sd->pet.intimate > 0) {
-				unit_remove_map( &sd->pd->bl, clrtype&0xffff );
+				unit_remove_map( &sd->pd->bl, clrtype&0xffff, 1 );
 			}
 		}
 		if(sd->status.homun_id > 0 && sd->hd){
-			unit_remove_map( &sd->hd->bl, clrtype&0xffff );
+			unit_remove_map( &sd->hd->bl, clrtype&0xffff, 1 );
 		}
 		clif_changemap(sd,map[m].name,x,y);
 	}
@@ -4897,10 +4918,12 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 	skill_unit_move(&sd->bl,gettick(),0);
 	if(sd->sc_data[SC_BLADESTOP].timer!=-1)		// 白刃は事前に解除
 		status_change_end(&sd->bl,SC_BLADESTOP,-1);
-	if(sd->sc_data[SC_CLOSECONFINE].timer!=-1)	// 白刃は事前に解除
+	if(sd->sc_data[SC_CLOSECONFINE].timer!=-1)	// クローズコンファインは事前に解除
 		status_change_end(&sd->bl,SC_CLOSECONFINE,-1);
 	if(sd->sc_data[SC_HOLDWEB].timer!=-1)
 		status_change_end(&sd->bl,SC_HOLDWEB,-1);
+	if(sd->sc_data[SC_WARM].timer!=-1)		// 温もり効果解除
+		skill_delunitgroup((struct skill_unit_group *)sd->sc_data[SC_WARM].val3);
 	sd->status.die_counter++;	// 死にカウンター書き込み
 	status_change_release(&sd->bl,0x01);	// ステータス異常を解除する
 
