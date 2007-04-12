@@ -1,4 +1,12 @@
 ----------------------------------------
+//0144 [2007/04/13] by Rayce
+
+・0143の温もりに関する修正（battle.c, pc.c, skill.c, status.c, unit.c）
+	-> status_change_end() 内でスキルユニットを削除する
+	-> skill_unit_group のアドレスの保存先をsc_dataのval3からval4に変更
+	-> battle_calc_weapon_attack() の一部を修正
+
+----------------------------------------
 //0143 [2007/04/12] by Rayce
 
 ・AthenaProject2286-fixよりmerge、thanks to Blazeさん

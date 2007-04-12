@@ -223,7 +223,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 			sd->dance.y += dy;
 		}
 		if(sd->sc_data[SC_WARM].timer != -1)
-			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_WARM].val3,sd->bl.m,dx,dy);
+			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_WARM].val4,sd->bl.m,dx,dy);
 	}
 
 	ud->walktimer = 1;
@@ -616,7 +616,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 
 		// 温もりの位置変更
 		if(sd->sc_data[SC_WARM].timer != -1) {
-			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_WARM].val3,sd->bl.m,dx,dy);
+			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc_data[SC_WARM].val4,sd->bl.m,dx,dy);
 		}
 
 		if(map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))

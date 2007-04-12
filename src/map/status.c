@@ -5542,8 +5542,9 @@ int status_change_end( struct block_list* bl , int type,int tid)
 				break;
 			case SC_GOSPEL:
 			case SC_GRAFFITI:
+			case SC_WARM:
 				{
-					struct skill_unit_group *sg=(struct skill_unit_group *)sc_data[type].val4;	// val4がgroup_id
+					struct skill_unit_group *sg = (struct skill_unit_group *)sc_data[type].val4;	// val4がgroup_id
 					sc_data[type].val4 = 0;
 					if(sg)
 						skill_delunitgroup(sg);

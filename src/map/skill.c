@@ -3440,12 +3440,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			struct skill_unit_group *sg;
 			sc_data = status_get_sc_data(src);
 			if(sc_data && sc_data[SC_WARM].timer != -1) {
-				skill_delunitgroup((struct skill_unit_group *)sc_data[SC_WARM].val3);
+				status_change_end(src,SC_WARM,-1);
 			}
 			sg = skill_unitsetting(src,skillid,skilllv,src->x,src->y,0);
 			if(sg) {
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,bl->id,(int)sg,0,skill_get_time(skillid,skilllv),0);
+				status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,bl->id,0,(int)sg,skill_get_time(skillid,skilllv),0);
 			}
 		}
 		break;

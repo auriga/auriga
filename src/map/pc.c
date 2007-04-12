@@ -3483,7 +3483,7 @@ int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrt
 
 		// 温もりユニット移動
 		if(sd->sc_data[SC_WARM].timer != -1) {
-			struct skill_unit_group *sg = (struct skill_unit_group *)sd->sc_data[SC_WARM].val3;
+			struct skill_unit_group *sg = (struct skill_unit_group *)sd->sc_data[SC_WARM].val4;
 			if(sg)
 				skill_unit_move_unit_group(sg, sd->bl.m, x-sd->bl.x, y-sd->bl.y);
 		}
@@ -3492,10 +3492,8 @@ int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrt
 		skill_stop_dancing(&sd->bl, 1);
 
 		// 温もりユニット削除
-		if(sd->sc_data[SC_WARM].timer != -1) {
+		if(sd->sc_data[SC_WARM].timer != -1)
 			status_change_end(&sd->bl, SC_WARM, -1);
-			skill_delunitgroup((struct skill_unit_group *)sd->sc_data[SC_WARM].val3);
-		}
 
 		// 太陽・月・星の安楽効果削除
 		if(sd->sc_data[SC_SUN_COMFORT].timer != -1)
@@ -4922,8 +4920,6 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 		status_change_end(&sd->bl,SC_CLOSECONFINE,-1);
 	if(sd->sc_data[SC_HOLDWEB].timer!=-1)
 		status_change_end(&sd->bl,SC_HOLDWEB,-1);
-	if(sd->sc_data[SC_WARM].timer!=-1)		// 温もり効果解除
-		skill_delunitgroup((struct skill_unit_group *)sd->sc_data[SC_WARM].val3);
 	sd->status.die_counter++;	// 死にカウンター書き込み
 	status_change_release(&sd->bl,0x01);	// ステータス異常を解除する
 
