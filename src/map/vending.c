@@ -31,7 +31,7 @@ void vending_closevending(struct map_session_data *sd)
 
 	sd->vender_id = 0;
 	sd->vend_num = 0; // on principle
-	clif_closevendingboard(&sd->bl,0);
+	clif_closevendingboard(&sd->bl,-1);
 
 	return;
 }
@@ -268,7 +268,7 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 		memset(sd->message, 0, sizeof(sd->message));
 		strncpy(sd->message, shop_title, 80);
 		if (clif_openvending(sd) > 0)
-			clif_showvendingboard(&sd->bl, shop_title, 0);
+			clif_showvendingboard(&sd->bl, shop_title, -1);
 		else {
 			sd->vender_id = 0;
 			sd->vend_num = 0; // on principle

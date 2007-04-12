@@ -593,7 +593,7 @@ static int npc_checknear(struct map_session_data *sd, struct npc_data *nd)
 int npc_globalmessage(const char *name,char *mes)
 {
 	struct npc_data *nd = npc_name2id(name);
-	char temp[128], *p;
+	char temp[100], *p;
 	int len;
 
 	if(!nd)
@@ -605,7 +605,7 @@ int npc_globalmessage(const char *name,char *mes)
 		*p = 0;
 
 	len = strlen(temp);
-	snprintf(temp+len, sizeof(temp)-len-1, " : %s", mes);
+	snprintf(temp+len, sizeof(temp)-len, " : %s", mes);
 	clif_GlobalMessage(&nd->bl,temp);
 
 	return 0;

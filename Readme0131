@@ -1,4 +1,25 @@
 ----------------------------------------
+//0145 [2007/04/13] by Rayce
+
+・clif.cの全面的な修正や整形
+	-> バッファオーバーフローする可能性を修正
+		clif_GlobalMessage()
+		clif_party_message()
+	-> 引数の仕様を変更
+		clif_clearflooritem()
+		clif_dispchat()
+		clif_clearchat()
+		clif_showvendingboard()
+		clif_closevendingboard()
+	-> ホムの情報を参照すべきところがPCの情報を参照しているバグを修正
+		clif_homskillinfoblock()
+		clif_homskillup()
+	-> clif_set009e() を clif_dropflooritem() に吸収
+	-> clif_set01e1() の処理を変更
+	-> パケット送信用のバッファをunsigned char型に修正
+	-> nullpoチェックが抜けてる箇所を修正
+
+----------------------------------------
 //0144 [2007/04/13] by Rayce
 
 ・0143の温もりに関する修正（battle.c, pc.c, skill.c, status.c, unit.c）

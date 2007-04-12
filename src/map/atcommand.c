@@ -4322,7 +4322,7 @@ static int atcommand_cleanmap_sub(struct block_list *bl,va_list ap)
 	delete_timer(fitem->cleartimer,map_clearflooritem_timer);
 	if(fitem->item_data.card[0] == (short)0xff00)
 		intif_delete_petdata(*((long *)(&fitem->item_data.card[1])));
-	clif_clearflooritem(fitem,0);
+	clif_clearflooritem(fitem,-1);
 	map_delobject(fitem->bl.id);
 
 	return 0;

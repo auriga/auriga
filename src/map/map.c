@@ -1133,7 +1133,7 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,int data)
 		delete_timer(fitem->cleartimer,map_clearflooritem_timer);
 	else if(fitem->item_data.card[0] == (short)0xff00)
 		intif_delete_petdata(*((long *)(&fitem->item_data.card[1])));
-	clif_clearflooritem(fitem,0);
+	clif_clearflooritem(fitem,-1);
 	map_delobject(fitem->bl.id);
 
 	return 0;
