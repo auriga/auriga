@@ -3311,10 +3311,8 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			case MST_ANOTHERTARGET:
 				{
 					int target_id = md->target_id;
-					int c=0, range = skill_get_range(ms[i].skill_id,ms[i].skill_lv);
+					int c=0, range = skill_get_fixed_range(&md->bl,ms[i].skill_id,ms[i].skill_lv);
 
-					if(range < 0)
-						range = status_get_range(&md->bl) - (range+1);
 					map_foreachinarea( mobskill_anothertarget,
 						md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,0,md,MST_ANOTHERTARGET,&c,&target_id);
 					tbl = map_id2bl(target_id);

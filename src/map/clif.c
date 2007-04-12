@@ -1747,7 +1747,7 @@ void clif_hom_food(struct map_session_data *sd, int foodid, unsigned char fail)
 void clif_homskillinfoblock(struct map_session_data *sd)
 {
 	int fd;
-	int i,c,len=4,id,range,skill_lv;
+	int i,c,len=4,id,skill_lv;
 	struct homun_data *hd;
 
 	nullpo_retv(sd);
@@ -1762,10 +1762,7 @@ void clif_homskillinfoblock(struct map_session_data *sd)
 			skill_lv = hd->status.skill[i].lv;
 			WFIFOW(fd,len+6) = skill_lv;
 			WFIFOW(fd,len+8) = skill_get_sp(id,skill_lv);
-			range = skill_get_range(id,skill_lv);
-			if(range < 0)
-				range = status_get_range(&hd->bl) - (range + 1);
-			WFIFOW(fd,len+10)= range;
+			WFIFOW(fd,len+10)= skill_get_fixed_range(&hd->bl,id,skill_lv);
 			memset(WFIFOP(fd,len+12),0,24);
 			if(!(skill_get_inf2(id)&0x01))
 				WFIFOB(fd,len+36)= (skill_lv < skill_get_max(id) && hd->status.skill[i].flag ==0 )? 1:0;
@@ -1787,7 +1784,7 @@ void clif_homskillinfoblock(struct map_session_data *sd)
  */
 void clif_homskillup(struct map_session_data *sd, int skill_num)
 {
-	int range,fd,skillid;
+	int fd,skillid;
 	struct homun_data *hd;
 
 	nullpo_retv(sd);
@@ -1800,10 +1797,7 @@ void clif_homskillup(struct map_session_data *sd, int skill_num)
 	WFIFOW(fd,2) = skill_num;
 	WFIFOW(fd,4) = hd->status.skill[skillid].lv;
 	WFIFOW(fd,6) = skill_get_sp(skill_num,hd->status.skill[skillid].lv);
-	range = skill_get_range(skill_num,hd->status.skill[skillid].lv);
-	if(range < 0)
-		range = status_get_range(&hd->bl) - (range + 1);
-	WFIFOW(fd,8) = range;
+	WFIFOW(fd,8) = skill_get_fixed_range(&hd->bl,skill_num,hd->status.skill[skillid].lv);
 	WFIFOB(fd,10) = (hd->status.skill[skillid].lv < skill_get_max(hd->status.skill[skillid].id)) ? 1 : 0;
 	WFIFOSET(fd,packet_db[0x239].len);
 
@@ -4878,12 +4872,8 @@ void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int rang
 	WFIFOW(fd,6) = 0;
 	WFIFOW(fd,8) = skill_lv;
 	WFIFOW(fd,10) = skill_get_sp(id,skill_lv);
-	if(range < 0) {
-		range = skill_get_range(id,skill_lv);
-		if(range < 0)
-			range = status_get_range(&sd->bl) - (range + 1);
-		WFIFOW(fd,12)= range;
-	}
+	if(range < 0)
+		WFIFOW(fd,12)= skill_get_fixed_range(&sd->bl,id,skill_lv);
 	else
 		WFIFOW(fd,12)= range;
 	memset(WFIFOP(fd,14),0,24);
@@ -4905,7 +4895,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 {
 	unsigned char buf[4+37*MAX_SKILL];
 	int fd;
-	int i,len=4,id,range,skill_lv,tk_ranker_bonus=0;
+	int i,len=4,id,skill_lv,tk_ranker_bonus=0;
 
 	nullpo_retv(sd);
 
@@ -4928,10 +4918,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 				skill_lv = sd->status.skill[i].lv;
 			WBUFW(buf,len+6) = skill_lv;
 			WBUFW(buf,len+8) = skill_get_sp(id,skill_lv);
-			range = skill_get_range(id,skill_lv);
-			if(range < 0)
-				range = status_get_range(&sd->bl) - (range + 1);
-			WBUFW(buf,len+10)= range;
+			WBUFW(buf,len+10)= skill_get_fixed_range(&sd->bl,id,skill_lv);
 			memset(WBUFP(buf,len+12),0,24);
 			if(!(skill_get_inf2(id)&0x01) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
 				WBUFB(buf,len+36)= (skill_lv < skill_get_max(id) && i!=sd->cloneskill_id && sd->status.skill[i].flag ==0 )? 1:0;
@@ -4954,7 +4941,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
  */
 void clif_skillup(struct map_session_data *sd, int skill_num)
 {
-	int range,fd;
+	int fd;
 
 	nullpo_retv(sd);
 
@@ -4963,10 +4950,7 @@ void clif_skillup(struct map_session_data *sd, int skill_num)
 	WFIFOW(fd,2) = skill_num;
 	WFIFOW(fd,4) = sd->status.skill[skill_num].lv;
 	WFIFOW(fd,6) = skill_get_sp(skill_num,sd->status.skill[skill_num].lv);
-	range = skill_get_range(skill_num,sd->status.skill[skill_num].lv);
-	if(range < 0)
-		range = status_get_range(&sd->bl) - (range + 1);
-	WFIFOW(fd,8) = range;
+	WFIFOW(fd,8) = skill_get_fixed_range(&sd->bl,skill_num,sd->status.skill[skill_num].lv);
 	WFIFOB(fd,10) = (sd->status.skill[skill_num].lv < skill_get_max(sd->status.skill[skill_num].id)) ? 1 : 0;
 	WFIFOSET(fd,packet_db[0x10e].len);
 
@@ -5935,7 +5919,7 @@ void clif_weapon_refine_res(struct map_session_data *sd, int flag, int nameid)
  */
 void clif_item_skill(struct map_session_data *sd, int skillid, int skilllv, const char *name)
 {
-	int range,fd;
+	int fd;
 
 	nullpo_retv(sd);
 
@@ -5949,10 +5933,7 @@ void clif_item_skill(struct map_session_data *sd, int skillid, int skilllv, cons
 	WFIFOW(fd, 6)=0;
 	WFIFOW(fd, 8)=skilllv;
 	WFIFOW(fd,10)=skill_get_sp(skillid,skilllv);
-	range = skill_get_range(skillid,skilllv);
-	if(range < 0)
-		range = status_get_range(&sd->bl) - (range + 1);
-	WFIFOW(fd,12)=range;
+	WFIFOW(fd,12)=skill_get_fixed_range(&sd->bl,skillid,skilllv);
 	memcpy(WFIFOP(fd,14),name,24);
 	WFIFOB(fd,38)=0;
 	WFIFOSET(fd,packet_db[0x147].len);

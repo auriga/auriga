@@ -405,17 +405,6 @@ struct skill_unit_layout *skill_get_unit_layout(int skillid,int skilllv,struct b
 	printf("unknown unit layout for skill %d, %d\n",skillid,skilllv);
 	return &skill_unit_layout[0];
 }
-/**/
-/*
-*/
-int skill_get_skilldb_id(int id)
-{
-	if(id>=GUILD_SKILLID)
-		id = id - GUILD_SKILLID + MAX_HOMSKILL_DB + MAX_SKILL_DB;
-	if(id >= HOM_SKILLID)
-		id = id - HOM_SKILLID + MAX_SKILL_DB;
-	return id;
-}
 
 int GetSkillStatusChangeTable(int id)
 {
@@ -425,7 +414,7 @@ int GetSkillStatusChangeTable(int id)
 	if(id < GUILD_SKILLID)
 		return HomSkillStatusChangeTable[id - HOM_SKILLID];
 
-	return 	GuildSkillStatusChangeTable[id - GUILD_SKILLID];
+	return GuildSkillStatusChangeTable[id - GUILD_SKILLID];
 }
 int skill_get_hit(int id)
 {
@@ -454,16 +443,15 @@ int skill_get_max(int id)
 }
 int skill_get_range(int id,int lv)
 {
-	if(lv<=0)
-		return 0;
+	if(lv<=0) return 0;
+
 	id = skill_get_skilldb_id(id);
 	if(lv > MAX_SKILL_LEVEL) lv = MAX_SKILL_LEVEL;
 	return skill_db[id].range[lv-1];
 }
 int skill_get_hp(int id,int lv)
 {
-	if(lv<=0)
-		return 0;
+	if(lv<=0) return 0;
 
 	id = skill_get_skilldb_id(id);
 	if(lv > MAX_SKILL_LEVEL) lv = MAX_SKILL_LEVEL;
@@ -471,8 +459,7 @@ int skill_get_hp(int id,int lv)
 }
 int skill_get_sp(int id,int lv)
 {
-	if(lv<=0)
-		return 0;
+	if(lv<=0) return 0;
 
 	id = skill_get_skilldb_id(id);
 	if(lv > MAX_SKILL_LEVEL) lv = MAX_SKILL_LEVEL;
@@ -480,8 +467,7 @@ int skill_get_sp(int id,int lv)
 }
 int skill_get_zeny(int id,int lv)
 {
-	if(lv<=0)
-		return 0;
+	if(lv<=0) return 0;
 
 	id = skill_get_skilldb_id(id);
 	if(lv > MAX_SKILL_LEVEL) lv = MAX_SKILL_LEVEL;
@@ -489,8 +475,7 @@ int skill_get_zeny(int id,int lv)
 }
 int skill_get_num(int id,int lv)
 {
-	if(lv<=0)
-		return 0;
+	if(lv<=0) return 0;
 
 	id = skill_get_skilldb_id(id);
 	if(lv > MAX_SKILL_LEVEL) lv = MAX_SKILL_LEVEL;
@@ -506,8 +491,7 @@ int skill_get_cast(int id,int lv)
 }
 int skill_get_fixedcast(int id ,int lv)
 {
-	if(lv<=0)
-		return 0;
+	if(lv<=0) return 0;
 
 	id = skill_get_skilldb_id(id);
 	if(lv > MAX_SKILL_LEVEL) lv = MAX_SKILL_LEVEL;
@@ -515,8 +499,7 @@ int skill_get_fixedcast(int id ,int lv)
 }
 int skill_get_delay(int id,int lv)
 {
-	if(lv<=0)
-		return 0;
+	if(lv<=0) return 0;
 
 	id = skill_get_skilldb_id(id);
 	if(lv > MAX_SKILL_LEVEL) lv = MAX_SKILL_LEVEL;
@@ -635,6 +618,21 @@ int skill_get_damage_rate(int id,int type)
 	id = skill_get_skilldb_id(id);
 	return skill_db[id].damage_rate[type];
 }
+
+/* 補正済み射程を返す */
+int skill_get_fixed_range(struct block_list *bl,int id,int lv)
+{
+	int range;
+
+	nullpo_retr(0, bl);
+
+	range = skill_get_range(id,lv);
+	if(range < 0)
+		range = status_get_range(bl) - (range + 1);
+
+	return range;
+}
+
 /*==========================================
  * スキル追加効果
  *------------------------------------------
@@ -2709,7 +2707,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			int dir = map_calc_dir(src,bl->x,bl->y);
 			skill_area_temp[1] = 0;
 			map_foreachinshootpath(
-				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],skill_get_range(skillid,skilllv),1,0,
+				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],skill_get_fixed_range(src,skillid,skilllv),1,0,
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
 			);
 			if(skill_area_temp[1] == 0) {
@@ -3629,9 +3627,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		status_change_attacked_end(bl);
 
 		if(dstmd) {
-			int range = skill_get_range(skillid,skilllv);
-			if(range < 0)
-				range = status_get_range(src) - (range + 1);
+			int range = skill_get_fixed_range(src,skillid,skilllv);
 			mob_target(dstmd,src,range);
 			battle_join_struggle(dstmd, src);
 		}
@@ -4098,9 +4094,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case RG_STEALCOIN:		// スティールコイン
 		if(sd) {
 			if(dstmd && pc_steal_coin(sd,bl)) {
-				int range = skill_get_range(skillid,skilllv);
-				if(range < 0)
-					range = status_get_range(src) - (range + 1);
+				int range = skill_get_fixed_range(src,skillid,skilllv);
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 				mob_target(dstmd,src,range);
 				battle_join_struggle(dstmd, src);
@@ -4120,7 +4114,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if (dstsd && dstsd->special_state.no_magic_damage)
 			break;
 		if (dstmd)
-			mob_target(dstmd,src,skill_get_range(skillid,skilllv));
+			mob_target(dstmd,src,skill_get_fixed_range(src,skillid,skilllv));
 
 		sc_data = status_get_sc_data(bl);
 		if (sc_data && sc_data[SC_STONE].timer != -1)
@@ -4667,9 +4661,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_attacked_end(bl);
 
 			if( dstmd ) {
-				int range = skill_get_range(skillid,skilllv);
-				if(range < 0)
-					range = status_get_range(src) - (range + 1);
+				int range = skill_get_fixed_range(src,skillid,skilllv);
 				mob_target(dstmd,src,range);
 				battle_join_struggle(dstmd, src);
 			}
@@ -5099,9 +5091,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sd){
 			int mi,range;
 			struct guild *g = guild_search(sd->status.guild_id);
-			struct map_session_data * member = NULL;
+			struct map_session_data *member = NULL;
+
+			if(g == NULL)
+				break;
 			range = skill_get_range(skillid,skilllv);
-			if(g)
 			for(mi = 0;mi < g->max_member;mi++)
 			{
 				member = g->member[mi].sd;
@@ -5123,8 +5117,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case GD_REGENERATION://#激励#
 		if(sd){
 			int mi,range;
-			struct guild * g = guild_search(sd->status.guild_id);
-			struct map_session_data * member = NULL;
+			struct guild *g = guild_search(sd->status.guild_id);
+			struct map_session_data *member = NULL;
+
+			if(g == NULL)
+				break;
 			range = skill_get_range(skillid,skilllv);
 			for(mi = 0;mi < g->max_member;mi++)
 			{
@@ -5147,8 +5144,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case GD_RESTORE://##治療
 		if(sd){
 			int mi,range;
-			struct guild * g = guild_search(sd->status.guild_id);
-			struct map_session_data * member = NULL;
+			struct guild *g = guild_search(sd->status.guild_id);
+			struct map_session_data *member = NULL;
+
+			if(g == NULL)
+				break;
 			range = skill_get_range(skillid,skilllv);
 			for(mi = 0;mi < g->max_member;mi++)
 			{
@@ -5171,8 +5171,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case GD_EMERGENCYCALL://#緊急招集#
 		if(sd){
 			int mi,px,py,d;
-			struct guild * g = guild_search(sd->status.guild_id);
-			struct map_session_data * member = NULL;
+			struct guild *g = guild_search(sd->status.guild_id);
+			struct map_session_data *member = NULL;
+
+			if(g == NULL)
+				break;
 			clif_skill_nodamage(src,src,skillid,skilllv,1);
 
 			if(battle_config.emergencycall_point_randam)
@@ -7287,9 +7290,7 @@ int skill_castend_pos( int tid, unsigned int tick, int id,int data )
 				break;
 		}
 
-		range = skill_get_range(src_ud->skillid,src_ud->skilllv);
-		if(range < 0)
-			range = status_get_range(src) - (range + 1);
+		range = skill_get_fixed_range(src,src_ud->skillid,src_ud->skilllv);
 		if(src_sd)
 			range += battle_config.pc_skill_add_range;
 		if(src_md)
@@ -7647,37 +7648,6 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 		{
 			status_change_start(&sd->bl,SC_STAN,7,0,0,0,3000,0);
 			return 0;
-		}
-	}
-
-	// GVGギルドスキル
-	if(sc->id >= GUILD_SKILLID)
-	{
-		if( !sd ) return 0;
-		switch(sc->id){
-		case GD_BATTLEORDER:	//#臨戦態勢#
-		case GD_REGENERATION:	//#激励#
-		case GD_RESTORE:	//##治療
-		case GD_EMERGENCYCALL:	//#緊急招集#
-			if(!battle_config.guild_skill_available) {
-				clif_skill_fail(sd,sc->id,0,0);
-				return 0;
-			}
-			if(battle_config.allow_guild_skill_in_gvg_only && !map[bl->m].flag.gvg) {
-				clif_skill_fail(sd,sc->id,0,0);
-				return 0;
-			}
-			if(battle_config.guild_skill_in_pvp_limit && map[bl->m].flag.pvp) {
-				clif_skill_fail(sd,sc->id,0,0);
-				return 0;
-			}
-			if(sc_data && sc_data[SC_BATTLEORDER_DELAY + sc->id - GD_BATTLEORDER].timer != -1) {
-				clif_skill_fail(sd,sc->id,0,0);
-				return 0;
-			}
-			break;
-		default:
-			break;
 		}
 	}
 
@@ -8649,7 +8619,6 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 				clif_skill_fail(sd,sc->id,0,0);
 				return 0;
 			}
-
 			break;
 		default:
 			break;
@@ -11329,9 +11298,7 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 	}
 
 	if(sd != dstsd) {	// 対象が自分でないなら射程チェック
-		int range = skill_get_range(skillid,1);
-		if(range < 0)
-			range = status_get_range(&sd->bl) - (range + 1);
+		int range = skill_get_fixed_range(&sd->bl,skillid,1);
 		if(!battle_check_range(&sd->bl, &dstsd->bl, range+1)) {
 			clif_item_repaireffect(sd, 1, dstsd->status.inventory[idx].nameid);
 			return;
@@ -12157,11 +12124,10 @@ int skill_readdb(void)
 			if(split[13]==NULL || j<14)
 				continue;
 
-			i=atoi(split[0]);
-			if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
-				continue;
-
+			i = atoi(split[0]);
 			i = skill_get_skilldb_id(i);
+			if(i == 0)
+				continue;
 
 			skill_split_atoi(split[1],skill_db[i].range,MAX_SKILL_LEVEL);
 			skill_db[i].hit=atoi(split[2]);
@@ -12208,11 +12174,11 @@ int skill_readdb(void)
 		if(split[8]==NULL || j<9)
 			continue;
 
-		i=atoi(split[0]);
-
-		if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
-			continue;
+		i = atoi(split[0]);
 		i = skill_get_skilldb_id(i);
+		if(i == 0)
+			continue;
+
 		skill_db[i].cloneable=atoi(split[1]);
 		skill_db[i].misfire=atoi(split[2]);
 		skill_db[i].zone=atoi(split[3]);
@@ -12241,11 +12207,10 @@ int skill_readdb(void)
 			if(split[28]==NULL || j<29)
 				continue;
 
-			i=atoi(split[0]);
-			if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
-				continue;
-
+			i = atoi(split[0]);
 			i = skill_get_skilldb_id(i);
+			if(i == 0)
+				continue;
 
 			skill_split_atoi(split[1],skill_db[i].hp,MAX_SKILL_LEVEL);
 			skill_split_atoi(split[2],skill_db[i].sp,MAX_SKILL_LEVEL);
@@ -12325,11 +12290,10 @@ int skill_readdb(void)
 		if(split[5]==NULL || j<6)
 			continue;
 
-		i=atoi(split[0]);
-		if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
-			continue;
-
+		i = atoi(split[0]);
 		i = skill_get_skilldb_id(i);
+		if(i == 0)
+			continue;
 
 		skill_split_atoi(split[1],skill_db[i].coin,MAX_SKILL_LEVEL);
 		skill_db[i].arrow_type=atoi(split[2]);
@@ -12357,11 +12321,10 @@ int skill_readdb(void)
 			if(split[5]==NULL || j<6)
 				continue;
 
-			i=atoi(split[0]);
-			if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
-				continue;
-
+			i = atoi(split[0]);
 			i = skill_get_skilldb_id(i);
+			if(i == 0)
+				continue;
 
 			skill_split_atoi(split[1],skill_db[i].cast,MAX_SKILL_LEVEL);
 			skill_split_atoi(split[2],skill_db[i].fixedcast,MAX_SKILL_LEVEL);
@@ -12389,11 +12352,10 @@ int skill_readdb(void)
 		if (split[7]==NULL || j<8)
 			continue;
 
-		i=atoi(split[0]);
-		if(! ( (0<=i && i<=MAX_SKILL_DB) || (HOM_SKILLID <= i && i<= (HOM_SKILLID+MAX_HOMSKILL_DB)) || (GUILD_SKILLID <= i && i<= (GUILD_SKILLID+MAX_GUILDSKILL_DB)) ))
-			continue;
-
+		i = atoi(split[0]);
 		i = skill_get_skilldb_id(i);
+		if(i == 0)
+			continue;
 
 		skill_db[i].unit_id[0] = strtol(split[1],NULL,16);
 		skill_db[i].unit_id[1] = strtol(split[2],NULL,16);
@@ -12541,11 +12503,6 @@ int skill_readdb(void)
 
 void skill_reload(void)
 {
-	/*
-	<empty skill database>
-	<?>
-	*/
-	/*do_init_skill();*/
 	skill_readdb();
 }
 

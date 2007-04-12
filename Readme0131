@@ -1,4 +1,17 @@
 ----------------------------------------
+//0146 [2007/04/13] by Rayce
+
+・高速化のため skill_get_skilldb_id() をマクロに変更（skill.h）
+・db/skill_db.txtの読み込みの際、skill_get_skilldb_id() を使って
+　スキルIDの範囲チェックを行うように最適化（skill.c）
+・unit_skilluse_id() および unit_skilluse_pos() を最適化（unit.c）
+・補正済み射程を返す skill_get_fixed_range() を追加（clif.c, mob.c, skill.*, unit.c）
+
+・ギルドスキル使用時のNULLチェック追加（skill.c）
+・skill_check_condition2() からギルドスキルに関するチェックを削除（skill.c）
+	チェックが二重になるので skill_check_condition2_pc() だけで良い
+
+----------------------------------------
 //0145 [2007/04/13] by Rayce
 
 ・clif.cの全面的な修正や整形

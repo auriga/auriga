@@ -99,11 +99,16 @@ extern struct skill_abra_db skill_abra_db[MAX_SKILL_ABRA_DB];
 
 int do_init_skill(void);
 
-//
 int GetSkillStatusChangeTable(int id);
-//マクロから関数化
-//ギルドIDも使用可能に
-int skill_get_skilldb_id(int id);
+
+#define skill_get_skilldb_id(id) \
+	( ((id) >= 0 && (id) < MAX_SKILL_DB) ? (id) : \
+	  ((id) >= HOM_SKILLID && (id) < HOM_SKILLID + MAX_HOMSKILL_DB) ? ((id) - HOM_SKILLID + MAX_SKILL_DB) : \
+	  ((id) >= GUILD_SKILLID && (id) < GUILD_SKILLID + MAX_GUILDSKILL_DB) ? ((id) - GUILD_SKILLID + MAX_HOMSKILL_DB + MAX_SKILL_DB) : \
+	  0 )
+
+// マクロから関数化
+// ギルドIDも使用可能に
 int skill_get_hit(int id);
 int skill_get_inf(int id);
 int skill_get_pl(int id);
@@ -136,6 +141,8 @@ int skill_get_cloneable(int id);
 int skill_get_misfire(int id);
 int skill_get_zone(int id);
 int skill_get_damage_rate(int id,int type);
+
+int skill_get_fixed_range(struct block_list *bl,int id,int lv);
 
 // スキルの使用
 void skill_castend_map(struct map_session_data *sd, int skill_num, const char *map);
@@ -258,8 +265,20 @@ void skill_basilica_cancel( struct block_list *bl );
 void skill_reload(void);
 
 enum {
-	SST_NONE,SST_HIDING,SST_CLOAKING,SST_CHASEWALKING,SST_HIDDEN,SST_RIDING,SST_FALCON,SST_CART,SST_SHIELD,SST_SIGHT,SST_EXPLOSIONSPIRITS,
-	SST_RECOV_WEIGHT_RATE,SST_MOVE_ENABLE,SST_WATER,
+	SST_NONE,
+	SST_HIDING,
+	SST_CLOAKING,
+	SST_CHASEWALKING,
+	SST_HIDDEN,
+	SST_RIDING,
+	SST_FALCON,
+	SST_CART,
+	SST_SHIELD,
+	SST_SIGHT,
+	SST_EXPLOSIONSPIRITS,
+	SST_RECOV_WEIGHT_RATE,
+	SST_MOVE_ENABLE,
+	SST_WATER,
 };
 
 enum {

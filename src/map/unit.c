@@ -721,18 +721,20 @@ int unit_skilluse_id(struct block_list *src, int target_id, int skill_num, int s
 {
 	int id = skill_get_skilldb_id(skill_num);
 
-	if( id < 0 || id >= MAX_SKILL_DB+MAX_HOMSKILL_DB+MAX_GUILDSKILL_DB) {
+	if( id == 0 )
 		return 0;
-	} else {
-		return unit_skilluse_id2(
-			src, target_id, skill_num, skill_lv,
-			skill_castfix(src, skill_get_cast( skill_num, skill_lv) ) + skill_get_fixedcast(skill_num, skill_lv),
-			skill_db[id].castcancel
-		);
-	}
+	if( skill_lv <= 0 || skill_lv > MAX_SKILL_LEVEL )
+		return 0;
+
+	return unit_skilluse_id2(
+		src, target_id, skill_num, skill_lv,
+		skill_castfix(src, skill_db[id].cast[skill_lv-1]) + skill_db[id].fixedcast[skill_lv-1],
+		skill_db[id].castcancel
+	);
 }
 
-int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int skill_lv, int casttime, int castcancel) {
+int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int skill_lv, int casttime, int castcancel)
+{
 	struct map_session_data *src_sd = NULL;
 	struct pet_data         *src_pd = NULL;
 	struct mob_data         *src_md = NULL;
@@ -884,9 +886,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	}
 
 	/* 射程と障害物チェック */
-	range = skill_get_range(skill_num,skill_lv);
-	if(range < 0)
-		range = status_get_range(src) - (range + 1);
+	range = skill_get_fixed_range(src,skill_num,skill_lv);
 	if (!battle_check_range(src,target,range + 1))
 		return 0;
 
@@ -1050,18 +1050,20 @@ int unit_skilluse_pos(struct block_list *src, int skill_x, int skill_y, int skil
 {
 	int id = skill_get_skilldb_id(skill_num);
 
-	if( id < 0 || id >= MAX_SKILL_DB+MAX_HOMSKILL_DB+MAX_GUILDSKILL_DB) {
+	if( id == 0 )
 		return 0;
-	} else {
-		return unit_skilluse_pos2(
-			src, skill_x, skill_y, skill_num, skill_lv,
-			skill_castfix(src, skill_get_cast( skill_num, skill_lv) ) + skill_get_fixedcast(skill_num, skill_lv),
-			skill_db[id].castcancel
-		);
-	}
+	if( skill_lv <= 0 || skill_lv > MAX_SKILL_LEVEL )
+		return 0;
+
+	return unit_skilluse_pos2(
+		src, skill_x, skill_y, skill_num, skill_lv,
+		skill_castfix(src, skill_db[id].cast[skill_lv-1]) + skill_db[id].fixedcast[skill_lv-1],
+		skill_db[id].castcancel
+	);
 }
 
-int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int skill_num, int skill_lv, int casttime, int castcancel) {
+int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int skill_num, int skill_lv, int casttime, int castcancel)
+{
 	struct map_session_data *src_sd = NULL;
 	struct pet_data         *src_pd = NULL;
 	struct mob_data         *src_md = NULL;
@@ -1146,10 +1148,8 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	bl.m = src->m;
 	bl.x = skill_x;
 	bl.y = skill_y;
-	range = skill_get_range(skill_num,skill_lv);
-	if(range < 0)
-		range = status_get_range(src) - (range + 1);
 
+	range = skill_get_fixed_range(src,skill_num,skill_lv);
 	if(!battle_check_range(src,&bl,range+1))
 		return 0;
 
