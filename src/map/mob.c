@@ -2464,10 +2464,10 @@ int mob_countslave_area(struct mob_data *md,int range)
  * 手下MOB召喚
  *------------------------------------------
  */
-int mob_summonslave(struct mob_data *md2,int *value,int amount,int flag)
+int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag)
 {
 	struct mob_data *md;
-	int bx,by,m,count = 0,class_,k,a = amount;
+	int bx,by,m,count = 0,class_,k;
 
 	nullpo_retr(0, md2);
 	nullpo_retr(0, value);
@@ -2476,68 +2476,66 @@ int mob_summonslave(struct mob_data *md2,int *value,int amount,int flag)
 	by=md2->bl.y;
 	m=md2->bl.m;
 
-	if(!mobdb_checkid(value[0]))	// 値が異常なら召喚を止める
+	while(count < size && mobdb_checkid(value[count])) {
+		count++;
+	}
+	if(count < 1)	// 値が異常なら召喚を止める
 		return 0;
-	while(count < 5 && mobdb_checkid(value[count])) count++;
-	if(count < 1) return 0;
 
-	for(k=0;k<count;k++) {
-		amount = a;
-		class_ = value[k];
-		if(!mobdb_checkid(class_)) continue;
-		for(;amount>0;amount--){
-			int x=0,y=0,i=0;
-			md=(struct mob_data *)aCalloc(1,sizeof(struct mob_data));
-			if(mob_db[class_].mode&0x02)
-				md->lootitem=(struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
-			else
-				md->lootitem=NULL;
+	for(k=0;k<amount;k++) {
+		int x=0,y=0,i=0;
 
-			while((x<=0 || y<=0 || map_getcell(m,x,y,CELL_CHKNOPASS)) && (i++)<100){
-				x=atn_rand()%9-4+bx;
-				y=atn_rand()%9-4+by;
-			}
-			if(i>=100){
-				x=bx;
-				y=by;
-			}
+		class_ = value[k%count];
+		md=(struct mob_data *)aCalloc(1,sizeof(struct mob_data));
+		if(mob_db[class_].mode&0x02)
+			md->lootitem=(struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
+		else
+			md->lootitem=NULL;
 
-			mob_spawn_dataset(md,"--ja--",class_);
-			md->bl.m=m;
-			md->bl.x=x;
-			md->bl.y=y;
+		while((x<=0 || y<=0 || map_getcell(m,x,y,CELL_CHKNOPASS)) && (i++)<100){
+			x=atn_rand()%5-2+bx;
+			y=atn_rand()%5-2+by;
+		}
+		if(i>=100){
+			x=bx;
+			y=by;
+		}
 
-			md->m =m;
-			md->x0=x;
-			md->y0=y;
-			md->xs=0;
-			md->ys=0;
-			md->speed=md2->speed;
-			md->spawndelay1=-1;	// 一度のみフラグ
-			md->spawndelay2=-1;	// 一度のみフラグ
-			md->ai_pc_count = 0;
-			md->ai_prev = md->ai_next = NULL;
+		mob_spawn_dataset(md,"--ja--",class_);
+		md->bl.m=m;
+		md->bl.x=x;
+		md->bl.y=y;
+
+		md->m =m;
+		md->x0=x;
+		md->y0=y;
+		md->xs=0;
+		md->ys=0;
+		md->speed=md2->speed;
+		md->spawndelay1=-1;	// 一度のみフラグ
+		md->spawndelay2=-1;	// 一度のみフラグ
+		md->ai_pc_count = 0;
+		md->ai_prev = md->ai_next = NULL;
 #ifdef DYNAMIC_SC_DATA
-			//ダミー挿入
-			md->sc_data = dummy_sc_data;
+		//ダミー挿入
+		md->sc_data = dummy_sc_data;
 #endif
-			memset(md->npc_event,0,sizeof(md->npc_event));
-			md->bl.type=BL_MOB;
-			map_addiddb(&md->bl);
-			mob_spawn(md->bl.id);
+		memset(md->npc_event,0,sizeof(md->npc_event));
+		md->bl.type=BL_MOB;
+		map_addiddb(&md->bl);
+		mob_spawn(md->bl.id);
 
-			clif_skill_nodamage(&md->bl,&md->bl,(flag)? NPC_SUMMONSLAVE:NPC_SUMMONMONSTER,a,1);
+		clif_skill_nodamage(&md->bl,&md->bl,(flag)? NPC_SUMMONSLAVE:NPC_SUMMONMONSTER,amount,1);
 
-			if(flag){
-				md->master_id=md2->bl.id;
-				md->state.nodrop = battle_config.summonslave_no_drop;
-				md->state.noexp  = battle_config.summonslave_no_exp;
-				md->state.nomvp  = battle_config.summonslave_no_mvp;
-			}else{
-				md->state.nodrop = battle_config.summonmonster_no_drop;
-				md->state.noexp  = battle_config.summonmonster_no_exp;
-				md->state.nomvp  = battle_config.summonmonster_no_mvp;
-			}
+		if(flag){
+			md->master_id=md2->bl.id;
+			md->state.nodrop = battle_config.summonslave_no_drop;
+			md->state.noexp  = battle_config.summonslave_no_exp;
+			md->state.nomvp  = battle_config.summonslave_no_mvp;
+		}else{
+			md->state.nodrop = battle_config.summonmonster_no_drop;
+			md->state.noexp  = battle_config.summonmonster_no_exp;
+			md->state.nomvp  = battle_config.summonmonster_no_mvp;
 		}
 	}
 	return 0;

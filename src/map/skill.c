@@ -1298,6 +1298,10 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 	nullpo_retr(0, src);
 	nullpo_retr(0, target);
 
+	// 吹き飛ばしセル数が0
+	if((count&0xffff) == 0)
+		return 0;
+
 	//シーズなら吹き飛ばし失敗
 	if(map[target->m].flag.gvg)
 		return 0;
@@ -4781,8 +4785,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case NPC_SUMMONSLAVE:		/* 手下召喚 */
 	case NPC_SUMMONMONSTER:		/* MOB召喚 */
-		if(md && md->skillidx != -1)
-			mob_summonslave(md,mob_db[md->class_].skill[md->skillidx].val,skilllv,(skillid==NPC_SUMMONSLAVE)?1:0);
+		if(md && md->skillidx != -1) {
+			struct mob_skill *ms = &mob_db[md->class_].skill[md->skillidx];
+			mob_summonslave(md,ms->val,sizeof(ms->val)/sizeof(ms->val[0]),skilllv,(skillid==NPC_SUMMONSLAVE)?1:0);
+		}
 		break;
 	case NPC_RECALL:		//取り巻き呼び戻し
 		if(md){
@@ -6901,7 +6907,10 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 		}
 		break;
 	case UNT_WARM:		/* 温もり */
-		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
+		if(battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0)) {
+			int count = skill_get_blewcount(sg->skill_id,sg->skill_lv);
+			skill_blown(&src->bl,bl,count|SAB_REVERSEBLOW|SAB_NOPATHSTOP);
+		}
 		break;
 	case UNT_SPIDERWEB:	/* スパイダーウェッブ */
 		sc_data = status_get_sc_data(bl);

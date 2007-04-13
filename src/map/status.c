@@ -1328,6 +1328,8 @@ L_RECALC:
 			sc_speed_rate = 75;
 		if(sd->sc_data[SC_CARTBOOST].timer!=-1 && sc_speed_rate > 80)	// カートブーストによる移動速度増加
 			sc_speed_rate = 80;
+		if(sd->sc_data[SC_FUSION].timer!=-1 && sc_speed_rate > 75)	// 太陽と月と星の融合による移動速度増加
+			sc_speed_rate = 75;
 		if(sd->sc_data[SC_WINDWALK].timer!=-1 && sc_speed_rate > 100-(sd->sc_data[SC_WINDWALK].val1*2))	// ウィンドウォークによる移動速度増加
 			sc_speed_rate = 100-(sd->sc_data[SC_WINDWALK].val1*2);
 
@@ -5056,22 +5058,25 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			*opt2 |= 64;
 			break;
 		// opt3
-		case SC_ONEHAND:			/* 1HQ */
+		case SC_ONEHAND:		/* 1HQ */
 		case SC_TWOHANDQUICKEN:		/* 2HQ */
 		case SC_SPEARSQUICKEN:		/* スピアクイッケン */
 		case SC_CONCENTRATION:		/* コンセントレーション */
 			*opt3 |= 1;
 			break;
-		case SC_OVERTHRUST:			/* オーバートラスト */
+		case SC_OVERTHRUST:		/* オーバートラスト */
+		case SC_SWOO:			/* エスウ */
 			*opt3 |= 2;
 			break;
-		case SC_ENERGYCOAT:			/* エナジーコート */
+		case SC_ENERGYCOAT:		/* エナジーコート */
+		case SC_SKE:			/* エスク */
 			*opt3 |= 4;
 			break;
-		case SC_EXPLOSIONSPIRITS:	// 爆裂波動
+		case SC_EXPLOSIONSPIRITS:	/* 爆裂波動 */
 			*opt3 |= 8;
 			break;
-		case SC_STEELBODY:			// 金剛
+		case SC_STEELBODY:		/* 金剛 */
+		case SC_SKA:			/* エスカ */
 			*opt3 |= 16;
 			break;
 		case SC_BLADESTOP:		/* 白刃取り */
@@ -5088,7 +5093,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			*opt3 |= 2048;
 			clif_misceffect2(bl,375);
 			break;
-		case SC_WARM://#温もり#
+		case SC_WARM:			/* 温もり */
 			*opt3 |= 4096;
 			break;
 		case SC_KAITE:
@@ -5665,15 +5670,18 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			*opt3 &= ~1;
 			break;
 		case SC_OVERTHRUST:		/* オーバートラスト */
+		case SC_SWOO:			/* エスウ */
 			*opt3 &= ~2;
 			break;
 		case SC_ENERGYCOAT:		/* エナジーコート */
+		case SC_SKE:			/* エスク */
 			*opt3 &= ~4;
 			break;
 		case SC_EXPLOSIONSPIRITS:	/* 爆裂波動 */
 			*opt3 &= ~8;
 			break;
 		case SC_STEELBODY:		/* 金剛 */
+		case SC_SKA:			/* エスカ */
 			*opt3 &= ~16;
 			break;
 		case SC_BLADESTOP:		/* 白刃取り */
