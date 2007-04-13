@@ -1,4 +1,13 @@
 ----------------------------------------
+//0148 [2007/04/14] by Rayce
+
+・AthenaProject2289-fixよりmerge、thanks to 暇人さん
+　以下Readmeより転載
+　　・料理使用時のアイコン(STR〜LUK、HIT、FLEE、CRITICAL)を表示するように修正 (status.c、status.h)
+　　　AthenaProject BTS報告chaさん thank's
+　　・料理使用時ログアウトしても効果が残るように修正 (scdata_db.txt)
+
+----------------------------------------
 //0147 [2007/04/14] by Rayce
 
 ・AthenaProject2288よりmerge、thanks to Blazeさん
