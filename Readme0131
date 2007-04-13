@@ -1,4 +1,15 @@
 ----------------------------------------
+//0149 [2007/04/14] by Rayce
+
+・AthenaProject2290の一部をmerge、thanks to Blazeさん
+　以下Readmeより転載
+　　・NPCスキル「不死属性付与」効果時の挙動を修正（status.c、status.h)
+　　・拳聖スキル「太陽と月と星の奇跡」を暫定実装（battle.c、battle.h)
+　　・太陽と月と星の奇跡の発動確率を変更できるように修正（battle_athena.conf）
+
+・SI_NIGHT が SI_MIRACLE に変更されたので@night, @dayのエフェクト表示部分をコメントアウト（atcommand.c）
+
+----------------------------------------
 //0148 [2007/04/14] by Rayce
 
 ・AthenaProject2289-fixよりmerge、thanks to 暇人さん

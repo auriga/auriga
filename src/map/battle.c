@@ -902,14 +902,14 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 
 			if(sc_data && sc_data[SC_MIRACLE].timer!=-1)	// 太陽と月と星の奇跡
 			{
-				// 全ての敵が月
+				// 全ての敵が星
 				atk_rate = (sd->status.base_level + dex + luk + str)/(12-3*pc_checkskill(sd,SG_STAR_ANGER));
 			}else{
-				if(tclass == sd->hate_mob[0] && pc_checkskill(sd,SG_SUN_ANGER)>0)	//太陽の怒り
+				if(tclass == sd->hate_mob[0] && pc_checkskill(sd,SG_SUN_ANGER)>0)	// 太陽の怒り
 					atk_rate = (sd->status.base_level + dex + luk)/(12-3*pc_checkskill(sd,SG_SUN_ANGER));
-				else if(tclass == sd->hate_mob[1] && pc_checkskill(sd,SG_MOON_ANGER)>0)	//月の怒り
+				else if(tclass == sd->hate_mob[1] && pc_checkskill(sd,SG_MOON_ANGER)>0)	// 月の怒り
 					atk_rate = (sd->status.base_level + dex + luk)/(12-3*pc_checkskill(sd,SG_MOON_ANGER));
-				else if(tclass == sd->hate_mob[2] && pc_checkskill(sd,SG_STAR_ANGER)>0)	//星の怒り
+				else if(tclass == sd->hate_mob[2] && pc_checkskill(sd,SG_STAR_ANGER)>0)	// 星の怒り
 					atk_rate = (sd->status.base_level + dex + luk + str)/(12-3*pc_checkskill(sd,SG_STAR_ANGER));
 			}
 			if(atk_rate > 0) {
@@ -2694,7 +2694,11 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		}
 	}
 
-	/* 37．計算結果の最終補正 */
+	/* 37．太陽と月と星の奇跡 */
+	if(src_sd && wd.flag&BF_WEAPON && pc_checkskill(src_sd,SG_FEEL) > 2 && atn_rand()%10000 < battle_config.sg_miracle_rate)
+		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
+
+	/* 38．計算結果の最終補正 */
 	if(!calc_flag.lh)
 		wd.damage2 = 0;
 	wd.amotion = status_get_amotion(src);
@@ -5033,6 +5037,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.party_item_share_type = 1;
 		battle_config.party_item_share_show = 0;
 		battle_config.pk_murderer_point = 100;
+		battle_config.sg_miracle_rate = 1;
 	}
 
 	fp=fopen(cfgName,"r");
@@ -5487,6 +5492,7 @@ int battle_config_read(const char *cfgName)
 			{ "party_item_share_type",				&battle_config.party_item_share_type					},
 			{ "party_item_share_show",				&battle_config.party_item_share_show					},
 			{ "pk_murderer_point",					&battle_config.pk_murderer_point					},
+			{ "sg_miracle_rate",					&battle_config.sg_miracle_rate				},
 		};
 		const int max = sizeof(data)/sizeof(data[0]);
 

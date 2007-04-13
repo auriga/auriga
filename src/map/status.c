@@ -111,13 +111,13 @@ static int StatusIconChangeTable[] = {
 /* 270- */
 	SI_BLANK,SI_BLANK,SI_ONEHAND,SI_READYSTORM,SI_READYDOWN,SI_READYTURN,SI_READYCOUNTER,SI_BLANK,SI_AUTOBERSERK,SI_DEVIL,
 /* 280- */
-	SI_DOUBLECASTING,SI_ELEMENTFIELD,SI_DARKELEMENT,SI_ATTENELEMENT,SI_SOULLINK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BABY,
+	SI_DOUBLECASTING,SI_ELEMENTFIELD,SI_DARKELEMENT,SI_ATTENELEMENT,SI_MIRACLE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BABY,
 /* 290- */
 	SI_BLANK,SI_SHRINK,SI_CLOSECONFINE,SI_SIGHTBLASTER,SI_BLANK,SI_MEAL_INCHIT,SI_MEAL_INCFLEE,SI_BLANK,SI_MEAL_INCCRITICAL,SI_BLANK,
 /* 300- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 /* 310- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_BLANK,SI_UNDEAD,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 /* 320- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 /* 330- */
@@ -4368,9 +4368,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_ELEMENTUNDEAD:		// 不死
 			status_enchant_armor_eremental_end(bl,SC_ELEMENTUNDEAD);
-			if(sd){
-				clif_displaymessage(sd->fd,"防具に不死属性が付与されました。");
-			}
+			//if(sd){
+			//	clif_displaymessage(sd->fd,"防具に不死属性が付与されました。");
+			//}
 			break;
 		case SC_RACEUNKNOWN:
 		case SC_RACEUNDEAD:
@@ -5376,7 +5376,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			case SC_ELEMENTDARK:		// 闇
 			case SC_ELEMENTELEKINESIS:	// 念
 			case SC_ELEMENTPOISON:		// 毒
-			case SC_ELEMENTUNDEAD:		// 不死
+			//case SC_ELEMENTUNDEAD:		// 不死
 				if(sd){
 					clif_displaymessage(sd->fd,"防具の属性が元に戻りました");
 				}

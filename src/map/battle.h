@@ -527,6 +527,7 @@ extern struct Battle_Config {
 	int party_item_share_type;
 	int party_item_share_show;
 	int pk_murderer_point;
+	int sg_miracle_rate;
 } battle_config;
 
 #define BATTLE_CONF_FILENAME "conf/battle_auriga.conf"

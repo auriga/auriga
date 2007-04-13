@@ -570,6 +570,7 @@ enum {
 	SI_LIGHTNINGLOADER		=92,	/* ライトニングローダー */
 	SI_SEISMICWEAPON		=93,	/* サイズミックウェポン */
 	SI_HOLDWEB				=95,	/* ホールドウェブ */
+	SI_UNDEAD				=97,	/* 不死属性付与 */
 	SI_AURABLADE			=103,	/* オーラブレード */
 	SI_PARRYING				=104,	/* パリイング */
 	SI_CONCENTRATION		=105,	/* コンセントレーション */
@@ -611,7 +612,7 @@ enum {
 	SI_KAAHI				=157,	//カアヒ
 	SI_KAUPE				=158,	//カウプ
 	SI_SMA					=159,	//エスマ可能状態
-	SI_NIGHT				=160,	//夜（SI_SOULLINK）
+	SI_MIRACLE				=160,	//太陽と月と星の奇跡
 	SI_ONEHAND				=161,	//ワンハンドクイッケン
 	SI_WARM					=165,	//温もり
 	//SI_SUN_WARM			=165,	//太陽の温もり

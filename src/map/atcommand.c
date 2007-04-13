@@ -3034,7 +3034,7 @@ atcommand_night(
 
 	for(i = 0; i < fd_max; i++) {
 		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
-			clif_status_change(&pl_sd->bl,SI_NIGHT,1);
+			//clif_status_change(&pl_sd->bl,SI_MIRACLE,1);
 			clif_displaymessage(pl_sd->fd, msg_txt(59));
 		}
 	}
@@ -3056,7 +3056,7 @@ atcommand_day(
 
 	for(i = 0; i < fd_max; i++) {
 		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
-			clif_status_change(&pl_sd->bl,SI_NIGHT,0);
+			//clif_status_change(&pl_sd->bl,SI_MIRACLE,0);
 			clif_displaymessage(pl_sd->fd, msg_txt(60));
 		}
 	}
