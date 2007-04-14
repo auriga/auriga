@@ -1588,6 +1588,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 					target_sd->status.sp = 0;
 				clif_updatestatus(target_sd,SP_SP);
 			}
+			wd.blewcount = 0;
 			break;
 		case KN_PIERCE:		// ピアース
 			wd.div_ = t_size+1;
