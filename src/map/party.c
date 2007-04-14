@@ -198,7 +198,13 @@ void party_recv_info(struct party *sp)
 
 	for(i=0;i<MAX_PARTY;i++){	// sdの設定
 		sd = map_id2sd(p->member[i].account_id);
-		p->member[i].sd=(sd!=NULL && sd->status.party_id==p->party_id && !sd->state.waitingdisconnect)?sd:NULL;
+		if( sd != NULL &&
+		    strncmp(sd->status.name, p->member[i].name, 24) == 0 &&
+		    sd->status.party_id == p->party_id &&
+		    !sd->state.waitingdisconnect )
+			p->member[i].sd = sd;
+		else
+			p->member[i].sd = NULL;
 	}
 
 	clif_party_main_info(p,-1);
@@ -417,8 +423,8 @@ void party_broken(int party_id)
 			p->member[i].sd->party_sended=0;
 		}
 	}
-	aFree(p);
 	numdb_erase(party_db,party_id);
+	aFree(p);
 
 	return;
 }
@@ -564,8 +570,14 @@ void party_recv_movemap(int party_id, int account_id, char *map, unsigned char o
 	}
 
 	for(i=0;i<MAX_PARTY;i++){	// sd再設定
-		sd= map_id2sd(p->member[i].account_id);
-		p->member[i].sd=(sd!=NULL && sd->status.party_id==p->party_id && !sd->state.waitingdisconnect)?sd:NULL;
+		sd = map_id2sd(p->member[i].account_id);
+		if( sd != NULL &&
+		    strncmp(sd->status.name, p->member[i].name, 24) == 0 &&
+		    sd->status.party_id == p->party_id &&
+		    !sd->state.waitingdisconnect )
+			p->member[i].sd = sd;
+		else
+			p->member[i].sd = NULL;
 	}
 
 	party_send_xy_clear(p);	// 座標再通知要請
@@ -723,12 +735,11 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 
 	for(i=c=0;i<MAX_PARTY;i++)
 	{
-		if((sd=p->member[i].sd)!=NULL && sd->bl.m==md->bl.m && !unit_isdead(&sd->bl) && sd->bl.prev != NULL &&
-			(!sd->sc_data ||
-				((sd->sc_data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead ) && 	// 死んだふり していない
-				 (sd->sc_data[SC_HIDING].timer == -1	|| !battle_config.noexp_hiding    ) ))	// ハイド していない
-			)
-			sdlist[c++] = sd;
+		if((sd = p->member[i].sd) != NULL && sd->bl.prev && sd->bl.m == md->bl.m && !unit_isdead(&sd->bl)) {
+			if( (sd->sc_data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// 死んだふりしていない
+			    (sd->sc_data[SC_HIDING].timer == -1	   || !battle_config.noexp_hiding   ) )		// ハイドしていない
+				sdlist[c++] = sd;
+		}
 	}
 	if(c==0)
 		return;

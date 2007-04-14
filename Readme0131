@@ -1,4 +1,10 @@
 ----------------------------------------
+//0151 [2007/04/15] by Rayce
+
+・battle_auriga.confの party_join_limit がnoのときに、パーティの機能が誤作動するバグを修正（party.c）
+	refered from AthenaProject2291, thanks
+
+----------------------------------------
 //0150 [2007/04/15] by Rayce
 
 ・AthenaProject2291の一部をmerge、thanks to 暇人さん
