@@ -255,7 +255,7 @@
 286,SC_FORCEWALKING,0,1,0		// 強制移動状態
 287,SC_DOUBLE,0,1,0			// ダブルストレイフィング状態
 288,SC_ACTION_DELAY,0,1,0		// アイテムドロップ不可状態（異常検出用）
-289,SC_BABY,0,1,0			// パパ、ママ、大好き
+289,SC_BABY,0,0,0			// パパ、ママ、大好き
 290,SC_LONGINGFREEDOM,0,1,0		// 私を縛らないで
 291,SC_SHRINK,0,1,0			// シュリンク
 292,SC_CLOSECONFINE,0,1,0		// クローズコンファイン
@@ -308,7 +308,7 @@
 339,SC_GRAVITATION,0,1,0		// グラビテーションフィールド
 340,SC_FOGWALL,0,1,0			// ウォールオブフォグ
 341,SC_FOGWALLPENALTY,0,1,1		// ウォールオブフォグによるペナルティ
-342,SC_REDEMPTIO,-1,1,0			// レディムプティオ
+342,SC_REDEMPTIO,-1,0,0			// レディムプティオ
 343,SC_TAROTCARD,0,1,0			// タロットカード
 344,SC_HOLDWEB,-1,1,0			// ホールドウェブ
 345,SC_INVISIBLE,0,1,0			// インビジブル
@@ -334,6 +334,16 @@
 365,SC_ADRENALINE2,0,17,14		// フルアドレナリンラッシュ
 366,SC_STATUS_UNCHANGE,0,1,0		// 状態異常耐性（ゴスペル用）
 367,SC_INCDAMAGE,0,1,0			// 被ダメージが%上昇（ゴスペル用）
+368,SC_COMBATHAN,1,0,0			// 戦闘教範
+369,SC_LIFEINSURANCE,1,0,0		// 生命保険証
+//370：バブルガム
+//371：凸面鏡
+372,SC_MEAL_INCSTR2,1,0,0		// STR上昇（食事用、死亡しても効果維持）
+373,SC_MEAL_INCAGI2,1,0,0		// AGI上昇（食事用、死亡しても効果維持）
+374,SC_MEAL_INCVIT2,1,0,0		// VIT上昇（食事用、死亡しても効果維持）
+375,SC_MEAL_INCDEX2,1,0,0		// DEX上昇（食事用、死亡しても効果維持）
+376,SC_MEAL_INCINT2,1,0,0		// INT上昇（食事用、死亡しても効果維持）
+377,SC_MEAL_INCLUK2,1,0,0		// LUK上昇（食事用、死亡しても効果維持）
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

@@ -1,4 +1,21 @@
 ----------------------------------------
+//0150 [2007/04/15] by Rayce
+
+・AthenaProject2291の一部をmerge、thanks to 暇人さん
+　以下Readmeより転載
+　　・料理(課金用)、戦闘教範50、生命保険証の効果を実装 (pc.c、status.c、status.h)
+　　・上記の効果実装の為、関連dbを更新 (const.txt、item_db.txt、scdata_db.txt)
+
+・Expペナルティ処理を修正してまとめた pc_exp_penalty() を追加（pc.c）
+・レディムプティオ使用時、mapflagにnopenaltyが設定されていてもExpペナルティを受けるように修正（pc.c）
+
+・064以降、「レディムプティオ」と「パパ、ママ、大好き」によるデスペナルティ回避効果が
+　発動しなくなっていたのを修正（db/scdata_db.txt）
+・battle_auriga.confの death_penalty_type を2に変更しておく
+・db/const.txtからギルドスキル系の定数を削除
+・db/const.txtのオートスペル系の定義を16進数に変更
+
+----------------------------------------
 //0149 [2007/04/14] by Rayce
 
 ・AthenaProject2290の一部をmerge、thanks to Blazeさん

@@ -369,9 +369,78 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 	return 0;
 }
 
+/*==========================================
+ * Expペナルティ
+ *------------------------------------------
+ */
+static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, int job, int type)
+{
+	int per = 100;
+	atn_bignumber loss_base = 0, loss_job = 0;
+
+	nullpo_retr(0, sd);
+
+	if(sd->sc_data[SC_REDEMPTIO].timer != -1) {
+		status_change_end(&sd->bl,SC_REDEMPTIO,-1);
+		per -= sd->sc_data[SC_REDEMPTIO].val1;
+		if(per <= 0)
+			return 0;
+	} else {
+		if(map[sd->bl.m].flag.nopenalty)
+			return 0;
+		if(sd->sc_data[SC_BABY].timer != -1)
+			return 0;
+		if(sd->sc_data[SC_LIFEINSURANCE].timer != -1) {
+			status_change_end(&sd->bl,SC_LIFEINSURANCE,-1);
+			return 0;
+		}
+	}
+	if(job == 0 || map[sd->bl.m].flag.gvg)
+		return 0;
+
+	if(battle_config.death_penalty_base > 0) {
+		if(battle_config.death_penalty_type&2) {
+			loss_base = (atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000 * per/100;
+		} else {
+			loss_base = (atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000 * per/100;
+		}
+		if(sd->status.base_exp < loss_base)
+			loss_base = sd->status.base_exp;
+		sd->status.base_exp -= (int)loss_base;
+		if(sd->status.base_exp < 0)
+			sd->status.base_exp = 0;
+		if(type&1)
+			clif_updatestatus(sd,SP_BASEEXP);
+	}
+
+	if(battle_config.death_penalty_job > 0) {
+		if(battle_config.death_penalty_type&2) {
+			loss_job = (atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000 * per/100;
+		} else {
+			loss_job = (atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000 * per/100;
+		}
+		if(sd->status.job_exp < loss_job)
+			loss_job = sd->status.job_exp;
+		sd->status.job_exp -= (int)loss_job;
+		if(sd->status.job_exp < 0)
+			sd->status.job_exp = 0;
+		if(type&1)
+			clif_updatestatus(sd,SP_JOBEXP);
+	}
+
+	if(ssd) {
+		// PK仕様、PKマップで攻撃が人間かつ自分でない(GXなどの対策)
+		if(map[sd->bl.m].flag.pk && sd->bl.id != ssd->bl.id && ranking_get_point(ssd,RK_PK) >= 100) {
+			if(loss_base > 0 || loss_job > 0)
+				pc_gainexp(ssd,NULL,loss_base,loss_job);
+		}
+	}
+	return 1;
+}
+
 int pc_setrestartvalue(struct map_session_data *sd,int type)
 {
-	//転生や養子の場合の元の職業を算出する
+	// 転生や養子の場合の元の職業を算出する
 	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
@@ -385,7 +454,7 @@ int pc_setrestartvalue(struct map_session_data *sd,int type)
 		sd->status.sp=sd->status.max_sp;
 	}
 	else {
-		if(s_class.job != 0) {	//ノビは既に死亡直後でHP補正済み
+		if(s_class.job != 0) {	// ノビは既に死亡直後でHP補正済み
 			if(battle_config.restart_hp_rate <= 0)
 				sd->status.hp = 1;
 			else {
@@ -406,44 +475,10 @@ int pc_setrestartvalue(struct map_session_data *sd,int type)
 	}
 
 	if(type&2) {
-		if(!(battle_config.death_penalty_type&1)) { //デスペナ
-			int per = 100;
-			if(sd->sc_data[SC_REDEMPTIO].timer!=-1){
-				per -= sd->sc_data[SC_REDEMPTIO].val1;
-				if(per<0)
-					per = 0;
-			}
-			if(sd->sc_data[SC_BABY].timer!=-1)
-				per = 0;
+		if(!(battle_config.death_penalty_type&1))	// デスペナ
+			pc_exp_penalty(sd, NULL, s_class.job, type);
 
-			if(s_class.job != 0 && !map[sd->bl.m].flag.nopenalty && !map[sd->bl.m].flag.gvg){
-				if(battle_config.death_penalty_type&2 && battle_config.death_penalty_base > 0)
-					sd->status.base_exp -= (int)((atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000*per/100);
-				else if(battle_config.death_penalty_base > 0) {
-					if(pc_nextbaseexp(sd) > 0)
-						sd->status.base_exp -= (int)((atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000*per/100);
-				}
-				if(sd->status.base_exp < 0)
-					sd->status.base_exp = 0;
-				if(type&1)
-					clif_updatestatus(sd,SP_BASEEXP);
-
-				if(battle_config.death_penalty_type&2 && battle_config.death_penalty_job > 0)
-					sd->status.job_exp -= (int)((atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000*per/100);
-				else if(battle_config.death_penalty_job > 0) {
-					if(pc_nextjobexp(sd) > 0)
-						sd->status.job_exp -= (int)((atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000*per/100);
-				}
-				if(sd->status.job_exp < 0)
-					sd->status.job_exp = 0;
-				if(type&1)
-					clif_updatestatus(sd,SP_JOBEXP);
-			}
-			if(sd->sc_data[SC_REDEMPTIO].timer!=-1)
-				status_change_end(&sd->bl,SC_REDEMPTIO,0);
-		}
-
-		if (!map[sd->bl.m].flag.nozenypenalty) {
+		if(!map[sd->bl.m].flag.nozenypenalty) {
 			atn_bignumber zeny_penalty;
 			zeny_penalty = (atn_bignumber)battle_config.zeny_penalty + ((atn_bignumber)sd->status.base_level * (atn_bignumber)battle_config.zeny_penalty_by_lvl);
 			if (battle_config.zeny_penalty_percent > 0)
@@ -4220,6 +4255,10 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 	if (sd->sc_data[SC_MEAL_INCJOB].timer != -1) {
 		job_exp  = job_exp  * sd->sc_data[SC_MEAL_INCJOB].val1 / 100;
 	}
+	if (sd->sc_data[SC_COMBATHAN].timer != -1) {
+		base_exp = base_exp * sd->sc_data[SC_COMBATHAN].val1 / 100;
+		job_exp  = job_exp  * sd->sc_data[SC_COMBATHAN].val1 / 100;
+	}
 
 	if (sd->status.guild_id > 0){	// ギルドに上納
 		base_exp -= guild_payexp(sd, base_exp);
@@ -4959,64 +4998,8 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 	}
 
 	// 死亡直後にデスペナルティを発生させる場合
-	if(battle_config.death_penalty_type&1 && job != 0 && !map[sd->bl.m].flag.nopenalty && !map[sd->bl.m].flag.gvg)
-	{
-		int per = 100;
-		if(sd->sc_data[SC_REDEMPTIO].timer != -1) {
-			per -= sd->sc_data[SC_REDEMPTIO].val1;
-			if(per < 0)
-				per = 0;
-		}
-		if(sd->sc_data[SC_BABY].timer != -1) {
-			per = 0;
-		}
-		if(per > 0) {
-			atn_bignumber loss_base=0, loss_job=0;
-			if(battle_config.death_penalty_base > 0) {
-				if(battle_config.death_penalty_type&2) {
-					loss_base = (atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000 * per/100;
-				} else if(pc_nextbaseexp(sd) > 0) {
-					loss_base = (atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000 * per/100;
-					if(sd->status.base_exp < loss_base)
-						loss_base = sd->status.base_exp;
-				}
-			}
-			if(loss_base > 0) {
-				sd->status.base_exp -= (int)loss_base;
-				if(sd->status.base_exp < 0)
-					sd->status.base_exp = 0;
-				clif_updatestatus(sd,SP_BASEEXP);
-			}
-
-			if(battle_config.death_penalty_job > 0) {
-				if(battle_config.death_penalty_type&2) {
-					loss_job = (atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000 * per/100;
-				} else if(pc_nextjobexp(sd) > 0) {
-					loss_job = (atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000 * per/100;
-					if(sd->status.job_exp < loss_job)
-						loss_job = sd->status.job_exp;
-				}
-			}
-			if(loss_job > 0) {
-				sd->status.job_exp -= (int)loss_job;
-				if(sd->status.job_exp < 0)
-					sd->status.job_exp = 0;
-				clif_updatestatus(sd,SP_JOBEXP);
-			}
-
-			//PK仕様
-			//pkマップで攻撃が人間かつ自分でない(GXなどの対策)
-			if(ssd && map[sd->bl.m].flag.pk && per>0 && sd->bl.id != ssd->bl.id && ranking_get_point(ssd,RK_PK)>=100)
-			{
-				if(loss_base > 0 || loss_job > 0)
-					pc_gainexp(ssd,NULL,loss_base,loss_job);
-			}
-		}
-		if(sd->sc_data[SC_BABY].timer != -1)
-			status_change_end(&sd->bl,SC_BABY,-1);
-		if(sd->sc_data[SC_REDEMPTIO].timer != -1)
-			status_change_end(&sd->bl,SC_REDEMPTIO,0);
-	}
+	if(battle_config.death_penalty_type&1)
+		pc_exp_penalty(sd, ssd, job, 1);
 
 	// PK
 	if(map[sd->bl.m].flag.pk) {

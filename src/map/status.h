@@ -491,6 +491,16 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_ADRENALINE2			= 365,
 	SC_STATUS_UNCHANGE		= 366,/* 状態異常耐性（ゴスペル用）*/
 	SC_INCDAMAGE			= 367,/* 被ダメージが%上昇（ゴスペル用）*/
+	SC_COMBATHAN			= 368,//戦闘教範
+	SC_LIFEINSURANCE		= 369,//生命保険証
+	//370：バブルガム
+	//371：凸面鏡
+	SC_MEAL_INCSTR2			= 372,//食事用(課金アイテム)
+	SC_MEAL_INCAGI2			= 373,
+	SC_MEAL_INCVIT2			= 374,
+	SC_MEAL_INCDEX2			= 375,
+	SC_MEAL_INCINT2			= 376,
+	SC_MEAL_INCLUK2			= 377,
 
 	//startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR			= 1001,
@@ -647,6 +657,18 @@ enum {
 	SI_MEAL_INCFLEE			=247,
 	SI_MEAL_INCHIT			=248,
 	SI_MEAL_INCCRITICAL		=249,
+	SI_COMBATHAN			=250,	//戦闘教範
+	SI_LIFEINSURANCE		=251,	//生命保険証
+	//252：バブルガム
+	//253：凸面鏡
+	SI_MEAL_INCSTR2			=271,	//食事用(課金アイテム)
+	SI_MEAL_INCAGI2			=272,
+	SI_MEAL_INCVIT2			=273,
+	SI_MEAL_INCDEX2			=274,
+	SI_MEAL_INCINT2			=275,
+	SI_MEAL_INCLUK2			=276,
+	//282：詠唱遅延化
+	//286：致命傷
 };
 
 #endif
