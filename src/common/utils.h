@@ -36,7 +36,7 @@
 // =====================
 // 大きな数字用の型
 // ---------------------
-#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
+#if defined(BIGNUMBER_DOUBLE)
 	typedef double atn_bignumber;
 #else
 	typedef atn_int64 atn_bignumber;
@@ -45,9 +45,9 @@
 // =====================
 // 大きな数字用の変換指定子
 // ---------------------
-#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
+#if defined(BIGNUMBER_DOUBLE)
 #	define BIGNUMCODE ".0f"
-#elif defined(_WIN32) && defined(_MSC_VER)
+#elif defined(_WIN32) && ( defined(__BORLANDC__) || defined(_MSC_VER) )
 #	define BIGNUMCODE "I64d"
 #else
 #	define BIGNUMCODE "lld"

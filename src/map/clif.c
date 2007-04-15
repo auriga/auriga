@@ -3320,13 +3320,6 @@ static void clif_initialstatus(struct map_session_data *sd)
 
 	WFIFOSET(fd,packet_db[0xbd].len);
 
-	clif_updatestatus(sd,SP_STR);
-	clif_updatestatus(sd,SP_AGI);
-	clif_updatestatus(sd,SP_VIT);
-	clif_updatestatus(sd,SP_INT);
-	clif_updatestatus(sd,SP_DEX);
-	clif_updatestatus(sd,SP_LUK);
-
 	clif_updatestatus(sd,SP_ATTACKRANGE);
 	clif_updatestatus(sd,SP_ASPD);
 
@@ -8839,15 +8832,9 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		sd->state.menu_or_input = 0;
 		npc_event_dequeue(sd);
 	}
-	clif_skillinfoblock(sd);
-	pc_checkitem(sd);
 
-	// next exp
-	clif_updatestatus(sd,SP_NEXTBASEEXP);
-	clif_updatestatus(sd,SP_NEXTJOBEXP);
-	// skill point
-	clif_updatestatus(sd,SP_SKILLPOINT);
 	// item
+	pc_checkitem(sd);
 	clif_itemlist(sd);
 	clif_equiplist(sd);
 	// cart
@@ -8856,15 +8843,9 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_cart_equiplist(sd);
 		clif_updatestatus(sd,SP_CARTINFO);
 	}
-	// param all
-	clif_initialstatus(sd);
-	// party
-	party_send_movemap(sd);
-	// guild
-	guild_send_memberinfoshort(sd,1);
-	// friend
-	friend_send_info(sd);
-	friend_send_online( sd, 0 );
+	// weight max , now
+	clif_updatestatus(sd,SP_MAXWEIGHT);
+	clif_updatestatus(sd,SP_WEIGHT);
 
 	if(battle_config.pc_invincible_time > 0) {
 		if(map[sd->bl.m].flag.gvg)
@@ -8877,32 +8858,36 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd)) {
 		clif_spawnpc(sd);	// spawn
 	}
-	mob_ai_hard_spawn( &sd->bl, 1 );
+	mob_ai_hard_spawn(&sd->bl, 1);
 
-	// weight max , now
-	clif_updatestatus(sd,SP_MAXWEIGHT);
-	clif_updatestatus(sd,SP_WEIGHT);
+	// party
+	party_send_movemap(sd);
+	// guild
+	guild_send_memberinfoshort(sd,1);
+	// friend
+	friend_send_info(sd);
+	friend_send_online(sd, 0);
 
 	// pvp
-	if(sd->pvp_timer!=-1)
+	if(sd->pvp_timer != -1)
 		delete_timer(sd->pvp_timer,pc_calc_pvprank_timer);
-	if(map[sd->bl.m].flag.pk){
-		sd->pvp_timer=-1;
+
+	if(map[sd->bl.m].flag.pk) {
+		sd->pvp_timer = -1;
 		if(battle_config.pk_noshift)
 			clif_set0199(sd->fd,1);
-	}else if(map[sd->bl.m].flag.pvp){
-		sd->pvp_timer=add_timer(gettick()+200,pc_calc_pvprank_timer,sd->bl.id,0);
-		sd->pvp_rank=0;
-		sd->pvp_lastusers=0;
-		sd->pvp_point=5;
+	} else if(map[sd->bl.m].flag.pvp) {
+		sd->pvp_timer     = add_timer(gettick()+200,pc_calc_pvprank_timer,sd->bl.id,0);
+		sd->pvp_rank      = 0;
+		sd->pvp_lastusers = 0;
+		sd->pvp_point     = 5;
 		clif_set0199(sd->fd,1);
+	} else {
+		sd->pvp_timer = -1;
 	}
-	else {
-		sd->pvp_timer=-1;
-	}
-	if(map[sd->bl.m].flag.gvg) {
+
+	if(map[sd->bl.m].flag.gvg)
 		clif_set0199(sd->fd,3);
-	}
 
 	// pet
 	if(sd->status.pet_id > 0 && sd->pd && sd->pet.intimate > 0) {
@@ -8912,25 +8897,40 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_send_petdata(sd,5,0x14);
 		clif_send_petstatus(sd);
 	}
-	// ホムンクルス
-	if(sd->hd){
+	// hom
+	if(sd->hd) {
 		map_addblock(&sd->hd->bl);
-		mob_ai_hard_spawn( &sd->hd->bl, 1 );
+		mob_ai_hard_spawn(&sd->hd->bl, 1);
 		clif_spawnhom(sd->hd);
 		clif_send_homdata(sd,0,0);
 		clif_send_homstatus(sd,1);
 		clif_send_homstatus(sd,0);
 	}
+
 	if(sd->state.connect_new) {
 		// ステータス異常データ要求
 		// pc_authok() で呼び出すとクライアントにエフェクトが反映されない
 		intif_request_scdata(sd->status.account_id,sd->status.char_id);
+
+		clif_skillinfoblock(sd);
+		clif_updatestatus(sd,SP_NEXTBASEEXP);
+		clif_updatestatus(sd,SP_NEXTJOBEXP);
+		clif_updatestatus(sd,SP_SKILLPOINT);
+		clif_initialstatus(sd);
 
 		if(sd->status.class_ != sd->view_class)
 			clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
 		if(sd->status.pet_id > 0 && sd->pd && sd->pet.intimate > 900)
 			clif_pet_emotion(sd->pd,(sd->pd->class_ - 100)*100 + 50 + pet_hungry_val(sd));
 	}
+
+	// param
+	clif_updatestatus(sd,SP_STR);
+	clif_updatestatus(sd,SP_AGI);
+	clif_updatestatus(sd,SP_VIT);
+	clif_updatestatus(sd,SP_INT);
+	clif_updatestatus(sd,SP_DEX);
+	clif_updatestatus(sd,SP_LUK);
 
 	// view equipment item
 #if PACKETVER < 4
@@ -8940,37 +8940,36 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	clif_changelook(&sd->bl,LOOK_WEAPON,0);
 #endif
 
-	if(sd->status.hp<sd->status.max_hp>>2 && pc_checkskill(sd,SM_AUTOBERSERK)>0 &&
-		(sd->sc_data[SC_PROVOKE].timer==-1 || sd->sc_data[SC_PROVOKE].val2==0 ))
-		// オートバーサーク発動
-		status_change_start(&sd->bl,SC_PROVOKE,10,1,0,0,0,0);
-
-	//暫定　赤エモ防止処理
-	if(battle_config.nomanner_mode && sd->status.manner < 0)
-		sd->status.manner = 0;
-
-	if(sd->status.manner < 0)
-		status_change_start(&sd->bl,SC_NOCHAT,0,0,0,0,0,0);
-
 	// option系初期化(クライアントに対する...)
 	// 同一パケを2回送ることでも十分ですが、気持ち悪いので0で初期化という形に
-	//clif_changeoption_clear(&sd->bl); これが削除されたので下を追加しました(1577)
 	clif_changeoption(&sd->bl);
-	// option
 	clif_changeoption(&sd->bl);
 
 	clif_send_clothcolor(&sd->bl);
 
-	if(sd->sc_data[SC_TRICKDEAD].timer != -1)
-		status_change_end(&sd->bl,SC_TRICKDEAD,-1);
-	if(sd->sc_data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(7,sd->def_ele))
-		status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
+	// 暫定赤エモ防止処理
+	if(battle_config.nomanner_mode && sd->status.manner < 0)
+		sd->status.manner = 0;
+	else if(sd->status.manner < 0)
+		status_change_start(&sd->bl,SC_NOCHAT,0,0,0,0,0,0);
+
+	// オートバーサーク発動
+	if(sd->status.hp < sd->status.max_hp>>2 && pc_checkskill(sd,SM_AUTOBERSERK) > 0) {
+		if(sd->sc_data[SC_PROVOKE].timer == -1 || sd->sc_data[SC_PROVOKE].val2 == 0)
+			status_change_start(&sd->bl,SC_PROVOKE,10,1,0,0,0,0);
+	}
+	if(sd->sc_count > 0) {
+		if(sd->sc_data[SC_TRICKDEAD].timer != -1)
+			status_change_end(&sd->bl,SC_TRICKDEAD,-1);
+		if(sd->sc_data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(7,sd->def_ele))
+			status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
+	}
 
 	map_foreachinarea(clif_getareachar,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,0,sd);
 
 	if(sd->state.connect_new) {
 		sd->state.connect_new = 0;
-		//OnPCLoginイベント
+		// OnPCLoginイベント
 		if(battle_config.pc_login_script)
 			npc_event_doall_id("OnPCLogin",sd->bl.id,sd->bl.m);
 	}
