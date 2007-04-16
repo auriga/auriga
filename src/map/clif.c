@@ -8839,6 +8839,11 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if(sd->bl.prev != NULL)
 		return;
 
+	if(!sd->state.auth) {	// 認証完了してない
+		clif_authfail_fd(fd,0);
+		return;
+	}
+
 	if(sd->npc_id) {
 		if(sd->stack) {
 			// 元のスタック情報を破棄
@@ -9298,19 +9303,23 @@ static void clif_parse_ChangeDir(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_Emotion(int fd,struct map_session_data *sd, int cmd)
 {
-	int emotion;
-
 	nullpo_retv(sd);
 
-	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 2){
-		emotion=RFIFOB(fd,GETPACKETPOS(cmd,0));
-		WFIFOW(fd,0)=0xc0;
-		WFIFOL(fd,2)=sd->bl.id;
-		WFIFOB(fd,6)=emotion;
-		clif_send(WFIFOP(fd,0),packet_db[0xc0].len,&sd->bl,AREA);
-	}
-	else
+	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 2) {
+		unsigned int tick = gettick();
+
+		// anti hacker
+		if(DIFF_TICK(tick, sd->emotion_lasttick) >= 1000) {
+			sd->emotion_lasttick = tick;
+
+			WFIFOW(fd,0)=0xc0;
+			WFIFOL(fd,2)=sd->bl.id;
+			WFIFOB(fd,6)=RFIFOB(fd,GETPACKETPOS(cmd,0));
+			clif_send(WFIFOP(fd,0),packet_db[0xc0].len,&sd->bl,AREA);
+		}
+	} else {
 		clif_skill_fail(sd,1,0,1);
+	}
 
 	return;
 }
