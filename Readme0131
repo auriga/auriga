@@ -1,4 +1,29 @@
 ----------------------------------------
+//0154 [2007/04/17] by Rayce
+
+・アイコンパケットを送信するだけの状態異常を廃止
+	以下の5つの状態異常はsc_dataとして実装する必要がありません。
+	状況に応じてアイコンパケット0x196を送り付けるだけで良いからです。
+
+	SC_RIDING   : pc_isriding() で状態の取得が可能
+	SC_FALCON   : pc_isfalcon() で状態の取得が可能
+	SC_WEIGHT50 : pc_50overweight() で状態の取得が可能
+	SC_WEIGHT90 : pc_90overweight() で状態の取得が可能
+	SC_DEVIL    : SG_DEVILを覚えているかどうかで判断可能
+
+	-> 重量オーバーのアイコンを送信したかどうかの判定のためmap_session_data構造体にicon_weightメンバ追加
+	-> pc_checkweighticon() 変更
+	-> pc_setoption() 変更
+
+・1プレイヤーにのみアイコンパケットを送りつける clif_status_load() 追加（clif.*）
+	merged from eA, thx a lot!!
+・カートを外すときにクライアント側で保存されているアイテムデータを消去するように修正（clif.*, pc.c）
+	clif_cart_clear() 追加
+・チェンジカートを使用したときサーバ側でベースレベルのチェックをするように強化（pc.c）
+・clif_status_change() に SI_*** ではなく SC_*** を渡していた箇所を修正（skill.c, status.c）
+・タイガーアイのパケット送信に clif_status_load() を使うように改善（pc.c, status.c）
+
+----------------------------------------
 //0153 [2007/04/16] by Rayce
 
 ・BCCのときも__int64型をatn_bignumber型として使うように変更（utils.h）

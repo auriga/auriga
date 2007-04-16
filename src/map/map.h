@@ -288,6 +288,7 @@ struct map_session_data {
 		unsigned gstorage_lockreq : 2;	// 0:無し, 1:scriptからロック要求中, 2:atcommandからロック要求中
 		unsigned inventory_dirty : 1;
 		unsigned cart_dirty : 1;
+		unsigned icon_weight : 2;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;

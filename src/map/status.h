@@ -145,16 +145,14 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_WEAPONPERFECTION		=24,	/* ウェポンパーフェクション */
 	SC_OVERTHRUST			=25,	/* オーバートラスト */
 	SC_MAXIMIZEPOWER		=26,	/* マキシマイズパワー */
-	SC_RIDING				=27,	/* ライディング */
-	SC_FALCON				=28,	/* ファルコンマスタリー */
+	//
 	SC_TRICKDEAD			=29,	/* 死んだふり */
 	SC_LOUD					=30,	/* ラウドボイス */
 	SC_ENERGYCOAT			=31,	/* エナジーコート */
 	SC_PK_PENALTY			=32,	//PKのペナルティ
 	SC_REVERSEORCISH		=33,    //リバースオーキッシュ
 	SC_HALLUCINATION		=34,	/* 幻覚 */
-	SC_WEIGHT50				=35,	/* 重量50％オーバー */
-	SC_WEIGHT90				=36,	/* 重量90％オーバー */
+	//
 	SC_SPEEDPOTION0			=37,	/* 速度ポーション？ */
 	SC_SPEEDPOTION1			=38,	/* スピードアップポーション？ */
 	SC_SPEEDPOTION2			=39,	/* ハイスピードポーション？ */
@@ -397,7 +395,7 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_READYCOUNTER			= 276,
 	SC_DODGE_DELAY			= 277,
 	SC_AUTOBERSERK			= 278,
-	SC_DEVIL				= 279,
+	//
 	SC_DOUBLECASTING 		= 280,//ダブルキャスティング
 	SC_ELEMENTFIELD			= 281,//属性場
 	SC_DARKELEMENT			= 282,//闇

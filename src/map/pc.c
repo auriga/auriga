@@ -1484,28 +1484,32 @@ int pc_calc_skilltree(struct map_session_data *sd)
  */
 int pc_checkweighticon(struct map_session_data *sd)
 {
-	int flag=0;
+	int flag;
 
 	nullpo_retr(0, sd);
 
-	if((battle_config.natural_heal_weight_rate_icon==0 && sd->weight*2 >= sd->max_weight) ||
-	   (battle_config.natural_heal_weight_rate_icon!=0 && sd->weight*100/sd->max_weight >= battle_config.natural_heal_weight_rate))
-		flag=1;
-	if(sd->weight*10 >= sd->max_weight*9)
-		flag=2;
+	flag = (pc_is90overweight(sd)) ? 2 : (pc_is50overweight(sd)) ? 1 : 0;
 
-	if(flag==1){
-		if(sd->sc_data[SC_WEIGHT50].timer==-1)
-			status_change_start(&sd->bl,SC_WEIGHT50,0,0,0,0,0,0);
-	}else{
-		status_change_end(&sd->bl,SC_WEIGHT50,-1);
+	if(battle_config.natural_heal_weight_rate_icon && flag != 2) {
+		flag = (sd->weight * 100 / sd->max_weight >= battle_config.natural_heal_weight_rate) ? 1 : 0;
 	}
-	if(flag==2){
-		if(sd->sc_data[SC_WEIGHT90].timer==-1)
-			status_change_start(&sd->bl,SC_WEIGHT90,0,0,0,0,0,0);
-	}else{
-		status_change_end(&sd->bl,SC_WEIGHT90,-1);
-	}
+
+	// 変化しないので終了
+	if(flag == sd->state.icon_weight)
+		return 0;
+
+	if(sd->state.icon_weight == 1)
+		clif_status_load(sd,SI_WEIGHT50,0);
+	else if(sd->state.icon_weight == 2)
+		clif_status_load(sd,SI_WEIGHT90,0);
+
+	if(flag == 1)
+		clif_status_load(sd,SI_WEIGHT50,1);
+	else if(flag == 2)
+		clif_status_load(sd,SI_WEIGHT90,1);
+
+	sd->state.icon_weight = flag;
+
 	return 0;
 }
 
@@ -1997,7 +2001,7 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_TIGEREYE:
 		sd->infinite_tigereye = 1;
-		clif_status_change(&sd->bl, SI_TIGEREYE, 1);
+		clif_status_load(sd, SI_TIGEREYE, 1);
 		break;
 	case SP_AUTO_STATUS_CALC_PC:
 		//sd->auto_status_calc_pc = 1;
@@ -4358,23 +4362,23 @@ int pc_nextbaseexp(struct map_session_data *sd)
 	if(sd->status.base_level>=MAX_LEVEL || sd->status.base_level<=0)
 		return 0;
 
-	if(sd->status.class_ == 0)                       i=0;
-	else if(sd->status.class_ <= 6)                  i=1;
-	else if(sd->status.class_ <= 22)                 i=2;
-	else if(sd->status.class_ == 23)                 i=3;
-	else if(sd->status.class_ == PC_CLASS_GS)        i=3;//ガンスリンガー
-	else if(sd->status.class_ == PC_CLASS_NJ)        i=3;//忍者
-	else if(sd->status.class_ == PC_CLASS_DK)        i=3;//デスナイト
-	else if(sd->status.class_ == PC_CLASS_DC)        i=3;//ダークコレクター
-	else if(sd->status.class_ ==PC_CLASS_BASE2)      i=4;
-	else if(sd->status.class_ <=PC_CLASS_BASE2 + 6)  i=5;
-	else if(sd->status.class_ <=PC_CLASS_BASE2 + 21) i=6;
-	else if(sd->status.class_ == PC_CLASS_BASE3)     i=0;//養子ノビ
-	else if(sd->status.class_ <= PC_CLASS_BASE3+6)   i=1;//養子一次
-	else if(sd->status.class_ <= PC_CLASS_BASE3+21)  i=2;//養子二次
-	else if(sd->status.class_ == PC_CLASS_SNV3)      i=3;//養子スパノビ
-	else if(sd->status.class_ <= PC_CLASS_SL)        i=1;//追加職 転生前の値
-	else  i=1;//それ以外なら転生前
+	if(sd->status.class_ == 0)                         i=0;	// ノービス
+	else if(sd->status.class_ <= 6)                    i=1;	// 一次職
+	else if(sd->status.class_ <= 22)                   i=2;	// 二次職
+	else if(sd->status.class_ == 23)                   i=3;	// スーパーノービス
+	else if(sd->status.class_ == PC_CLASS_GS)          i=3;	// ガンスリンガー
+	else if(sd->status.class_ == PC_CLASS_NJ)          i=3;	// 忍者
+	else if(sd->status.class_ == PC_CLASS_DK)          i=3;	// デスナイト
+	else if(sd->status.class_ == PC_CLASS_DC)          i=3;	// ダークコレクター
+	else if(sd->status.class_ == PC_CLASS_BASE2)       i=4;	// 転生ノービス
+	else if(sd->status.class_ <= PC_CLASS_BASE2 + 6)   i=5;	// 転生一次職
+	else if(sd->status.class_ <= PC_CLASS_BASE2 + 21)  i=6;	// 転生二次職
+	else if(sd->status.class_ == PC_CLASS_BASE3)       i=0;	// 養子ノビ
+	else if(sd->status.class_ <= PC_CLASS_BASE3 + 6)   i=1;	// 養子一次
+	else if(sd->status.class_ <= PC_CLASS_BASE3 + 21)  i=2;	// 養子二次
+	else if(sd->status.class_ == PC_CLASS_SNV3)        i=3;	// 養子スパノビ
+	else if(sd->status.class_ <= PC_CLASS_SL)          i=1;	// 追加職 転生前の値
+	else                                               i=1;	// それ以外なら転生前
 
 	return exp_table[i][sd->status.base_level-1];
 }
@@ -4392,25 +4396,25 @@ int pc_nextjobexp(struct map_session_data *sd)
 	if(sd->status.job_level>=MAX_LEVEL || sd->status.job_level<=0)
 		return 0;
 
-	if(sd->status.class_ == 0)                        i=7;  //ノービス
-	else if(sd->status.class_ <= 6)                   i=8;  //一次職
-	else if(sd->status.class_ <= 22)                  i=9;  //二次職
-	else if(sd->status.class_ == 23)                  i=10; //スーパーノービス
-	else if(sd->status.class_ == PC_CLASS_GS)         i=15; //ガンスリンガー
-	else if(sd->status.class_ == PC_CLASS_NJ)         i=15; //忍者
-	else if(sd->status.class_ == PC_CLASS_DK)         i=15; //デスナイト
-	else if(sd->status.class_ == PC_CLASS_DC)         i=15; //ダークコレクター
-	else if(sd->status.class_ == PC_CLASS_BASE2)      i=11; //転生ノービス
-	else if(sd->status.class_ <= PC_CLASS_BASE2 + 6)  i=12; //転生一次職
-	else if(sd->status.class_ <= PC_CLASS_BASE2 + 21) i=13; //転生二次職
-	else if(sd->status.class_ == PC_CLASS_BASE3)      i=7;  //養子ノビ
-	else if(sd->status.class_ <= PC_CLASS_BASE3+6)    i=8;  //養子一次
-	else if(sd->status.class_ <= PC_CLASS_BASE3+21)   i=9;  //養子二次
-	else if(sd->status.class_ == PC_CLASS_SNV3)       i=10; //養子スパノビ
-	else if(sd->status.class_ == PC_CLASS_TK)         i=8;  //テコンキッド
-	else if(sd->status.class_ <= PC_CLASS_SG2)        i=14; //拳聖
-	else if(sd->status.class_ == PC_CLASS_SL)         i=9; //ソウルリンカー
-	else i = 9;//それ以外なら二次テーブル
+	if(sd->status.class_ == 0)                        i=7;	// ノービス
+	else if(sd->status.class_ <= 6)                   i=8;	// 一次職
+	else if(sd->status.class_ <= 22)                  i=9;	// 二次職
+	else if(sd->status.class_ == 23)                  i=10;	// スーパーノービス
+	else if(sd->status.class_ == PC_CLASS_GS)         i=15;	// ガンスリンガー
+	else if(sd->status.class_ == PC_CLASS_NJ)         i=15;	// 忍者
+	else if(sd->status.class_ == PC_CLASS_DK)         i=15;	// デスナイト
+	else if(sd->status.class_ == PC_CLASS_DC)         i=15;	// ダークコレクター
+	else if(sd->status.class_ == PC_CLASS_BASE2)      i=11;	// 転生ノービス
+	else if(sd->status.class_ <= PC_CLASS_BASE2 + 6)  i=12;	// 転生一次職
+	else if(sd->status.class_ <= PC_CLASS_BASE2 + 21) i=13;	// 転生二次職
+	else if(sd->status.class_ == PC_CLASS_BASE3)      i=7;	// 養子ノビ
+	else if(sd->status.class_ <= PC_CLASS_BASE3 + 6)  i=8;	// 養子一次
+	else if(sd->status.class_ <= PC_CLASS_BASE3 + 21) i=9;	// 養子二次
+	else if(sd->status.class_ == PC_CLASS_SNV3)       i=10;	// 養子スパノビ
+	else if(sd->status.class_ == PC_CLASS_TK)         i=8;	// テコンキッド
+	else if(sd->status.class_ <= PC_CLASS_SG2)        i=14;	// 拳聖
+	else if(sd->status.class_ == PC_CLASS_SL)         i=9;	// ソウルリンカー
+	else                                              i=9;	// それ以外なら二次テーブル
 
 	return exp_table[i][sd->status.job_level-1];
 }
@@ -5891,7 +5895,30 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 {
 	nullpo_retv(sd);
 
-	sd->status.option=type;
+	if( (type&0x0010) && !pc_isfalcon(sd) ) {
+		clif_status_load(sd,SI_FALCON,1);
+	}
+	else if( !(type&0x0010) && pc_isfalcon(sd) ) {
+		clif_status_load(sd,SI_FALCON,0);
+	}
+
+	if( (type&0x0020) && !pc_isriding(sd) ) {
+		clif_status_load(sd,SI_RIDING,1);
+	}
+	else if( !(type&0x0020) && pc_isriding(sd) ) {
+		clif_status_load(sd,SI_RIDING,0);
+	}
+
+	if( (type&CART_MASK) && !pc_iscarton(sd) ) {
+		clif_cart_itemlist(sd);
+		clif_cart_equiplist(sd);
+		clif_updatestatus(sd,SP_CARTINFO);
+	}
+	else if( !(type&CART_MASK) && pc_iscarton(sd) ) {
+		clif_cart_clear(sd);
+	}
+
+	sd->status.option = type;
 	clif_changeoption(&sd->bl);
 	clif_send_clothcolor(&sd->bl);
 	status_calc_pc(sd,0);
@@ -5906,29 +5933,27 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
  */
 void pc_setcart(struct map_session_data *sd, unsigned short type)
 {
-	unsigned int cart[6] = {0x0000,0x0008,0x0080,0x0100,0x0200,0x0400};
+	static struct {
+		const unsigned int opt;
+		const unsigned int level;
+	} cart[] = {
+		{ 0x0000,  0 },
+		{ 0x0008,  0 },
+		{ 0x0080, 40 },
+		{ 0x0100, 65 },
+		{ 0x0200, 80 },
+		{ 0x0400, 90 },
+	};
 
 	nullpo_retv(sd);
 
-	if (type >= (sizeof(cart) / sizeof(cart[0]))) // unsigned short: don't check 'type < 0'
+	if(type >= sizeof(cart) / sizeof(cart[0]))	// unsigned short: don't check 'type < 0'
 		return;
 
-	if (type == 0) { // I have nerver see type 0, but we know...
-		if (pc_iscarton(sd))
-			pc_setoption(sd, sd->status.option & ~CART_MASK); // suppress actual cart; conserv other options
-		return;
-	}
-
-	if(pc_checkskill(sd,MC_PUSHCART)>0){ // プッシュカートスキル所持
-		if(!pc_iscarton(sd)){ // カートを付けていない
-			pc_setoption(sd, sd->status.option | cart[type]);
-			clif_cart_itemlist(sd);
-			clif_cart_equiplist(sd);
-			clif_updatestatus(sd,SP_CARTINFO);
-			clif_status_change(&sd->bl,0x0c,0);
-		} else {
-			sd->status.option &= ~CART_MASK; // suppress actual cart; conserv other options
-			pc_setoption(sd, sd->status.option | cart[type]);
+	if(pc_checkskill(sd,MC_PUSHCART) > 0) {	// プッシュカートスキル所持
+		if(sd->status.base_level > cart[type].level) {
+			// suppress actual cart; conserv other options
+			pc_setoption(sd, (sd->status.option & ~CART_MASK) | cart[type].opt);
 		}
 	}
 
@@ -5944,7 +5969,7 @@ int pc_setfalcon(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
 
-	if(pc_checkskill(sd,HT_FALCON)>0){	// ファルコンマスタリースキル所持
+	if(pc_checkskill(sd,HT_FALCON) > 0) {	// ファルコンマスタリースキル所持
 		pc_setoption(sd,0x0010);
 	}
 
@@ -5960,7 +5985,7 @@ int pc_setriding(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
 
-	if(pc_checkskill(sd,KN_RIDING)>0){ // ライディングスキル所持
+	if(pc_checkskill(sd,KN_RIDING) > 0) { // ライディングスキル所持
 		pc_setoption(sd,0x0020);
 	}
 

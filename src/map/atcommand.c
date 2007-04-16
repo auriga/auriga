@@ -1062,14 +1062,9 @@ atcommand_option(
 	sd->opt1 = param1;
 	sd->opt2 = param2;
 	sd->opt3 = param4;
-	if (!(sd->status.option & CART_MASK) && param3 & CART_MASK) {
-		clif_cart_itemlist(sd);
-		clif_cart_equiplist(sd);
-		clif_updatestatus(sd, SP_CARTINFO);
-	}
-	sd->status.option = param3;
-	clif_changeoption(&sd->bl);
-	clif_send_clothcolor(&sd->bl);
+
+	pc_setoption(sd, param3);
+
 	clif_displaymessage(fd, msg_txt(9));
 
 	return 0;
@@ -2967,9 +2962,7 @@ atcommand_character_option(
 			pl_sd->opt1 = opt1;
 			pl_sd->opt2 = opt2;
 			pl_sd->opt3 = opt3;
-			pl_sd->status.option = option;
-			clif_changeoption(&pl_sd->bl);
-			clif_send_clothcolor(&pl_sd->bl);
+			pc_setoption(pl_sd, option);
 			clif_displaymessage(fd, msg_txt(55));
 		}
 	} else {
@@ -3034,7 +3027,7 @@ atcommand_night(
 
 	for(i = 0; i < fd_max; i++) {
 		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
-			//clif_status_change(&pl_sd->bl,SI_MIRACLE,1);
+			//clif_status_load(pl_sd,SI_MIRACLE,1);
 			clif_displaymessage(pl_sd->fd, msg_txt(59));
 		}
 	}
@@ -3056,7 +3049,7 @@ atcommand_day(
 
 	for(i = 0; i < fd_max; i++) {
 		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
-			//clif_status_change(&pl_sd->bl,SI_MIRACLE,0);
+			//clif_status_load(pl_sd,SI_MIRACLE,0);
 			clif_displaymessage(pl_sd->fd, msg_txt(60));
 		}
 	}

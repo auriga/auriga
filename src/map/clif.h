@@ -178,6 +178,7 @@ void clif_mission_mob(struct map_session_data *sd, int id, int count);
 void clif_angel_message(struct map_session_data *sd);
 void clif_feel_display(struct map_session_data *sd, int skilllv);
 
+void clif_status_load(struct map_session_data *sd, int type, unsigned char flag);
 void clif_status_change(struct block_list *bl, int type, unsigned char flag);
 
 void clif_wis_message(int fd,char *nick,char *mes, int mes_len);
@@ -194,6 +195,7 @@ void clif_cart_additem(struct map_session_data *sd, int n, int amount);
 void clif_cart_delitem(struct map_session_data *sd, int n, int amount);
 void clif_cart_itemlist(struct map_session_data *sd);
 void clif_cart_equiplist(struct map_session_data *sd);
+void clif_cart_clear(struct map_session_data *sd);
 
 void clif_item_identify_list(struct map_session_data *sd);
 void clif_weapon_refine_list(struct map_session_data *sd);

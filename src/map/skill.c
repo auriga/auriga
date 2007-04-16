@@ -9128,7 +9128,7 @@ int skill_castfix( struct block_list *bl, int time )
 		if (sc_data[SC_MAGICPOWER].val2 > 0) {
 			/* 最初に通った時にはアイコン消去だけ */
 			sc_data[SC_MAGICPOWER].val2--;
-			clif_status_change(bl, SC_MAGICPOWER, 0);
+			clif_status_change(bl, SI_MAGICPOWER, 0);
 		} else {
 			status_change_end( bl, SC_MAGICPOWER, -1);
 		}

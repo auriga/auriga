@@ -24,8 +24,8 @@
 #define pc_isfalcon(sd) ((sd)->status.option&0x0010)
 #define pc_isriding(sd) ((sd)->status.option&0x0020)
 #define pc_isinvisible(sd) ((sd)->status.option&0x0040)
-#define pc_is50overweight(sd) (sd->weight*2 >= sd->max_weight)
-#define pc_is90overweight(sd) (sd->weight*10 >= sd->max_weight*9)
+#define pc_is50overweight(sd) ((sd)->weight*2 >= (sd)->max_weight)
+#define pc_is90overweight(sd) ((sd)->weight*10 >= (sd)->max_weight*9)
 
 extern int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
 extern int max_job_table[3][32];

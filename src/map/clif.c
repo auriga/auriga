@@ -3520,8 +3520,6 @@ void clif_misceffect3(struct block_list *bl,int type)
 void clif_changeoption(struct block_list* bl)
 {
 	unsigned char buf[16];
-	unsigned int option;
-	struct status_change *sc_data;
 
 	nullpo_retv(bl);
 
@@ -3531,42 +3529,23 @@ void clif_changeoption(struct block_list* bl)
 			clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
 	}
 
-	option = *status_get_option(bl);
-	sc_data = status_get_sc_data(bl);
-
 #if PACKETVER < 7
 	WBUFW(buf, 0) = 0x119;
 	WBUFL(buf, 2) = bl->id;
 	WBUFW(buf, 6) = *status_get_opt1(bl);
 	WBUFW(buf, 8) = *status_get_opt2(bl);
-	WBUFW(buf,10) = option;
-	WBUFB(buf,12) = 0;	// ??
+	WBUFW(buf,10) = *status_get_option(bl);
+	WBUFB(buf,12) = 0;
 	clif_send(buf,packet_db[0x119].len,bl,AREA);
 #else
 	WBUFW(buf, 0) = 0x229;
 	WBUFL(buf, 2) = bl->id;
 	WBUFW(buf, 6) = *status_get_opt1(bl);
 	WBUFW(buf, 8) = *status_get_opt2(bl);
-	WBUFL(buf,10) = option;
+	WBUFL(buf,10) = *status_get_option(bl);
 	WBUFB(buf,14) = 0;
 	clif_send(buf,packet_db[0x229].len,bl,AREA);
 #endif
-
-	// アイコンの表示
-	if(sc_data) {
-		if(option&0x10) {
-			if(sc_data[SC_FALCON].timer == -1)
-				status_change_start(bl,SC_FALCON,0,0,0,0,0,0);
-			else
-				status_change_end(bl,SC_FALCON,-1);
-		}
-		if(option&0x20) {
-			if(sc_data[SC_RIDING].timer == -1)
-				status_change_start(bl,SC_RIDING,0,0,0,0,0,0);
-			else
-				status_change_end(bl,SC_RIDING,-1);
-		}
-	}
 
 	return;
 }
@@ -5348,6 +5327,26 @@ void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger)
  * 状態異常アイコン/メッセージ表示
  *------------------------------------------
  */
+void clif_status_load(struct map_session_data *sd, int type, unsigned char flag)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0x196;
+	WFIFOW(fd,2)=type;
+	WFIFOL(fd,4)=sd->bl.id;
+	WFIFOB(fd,8)=flag;
+	WFIFOSET(fd,packet_db[0x196].len);
+
+	return;
+}
+
+/*==========================================
+ * 状態異常アイコン/メッセージ表示（全体）
+ *------------------------------------------
+ */
 void clif_status_change(struct block_list *bl, int type, unsigned char flag)
 {
 	unsigned char buf[16];
@@ -6134,6 +6133,23 @@ void clif_cart_equiplist(struct map_session_data *sd)
 		WFIFOW(fd,2)=4+n*20;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
+
+	return;
+}
+
+/*==========================================
+ * カートのクリア
+ *------------------------------------------
+ */
+void clif_cart_clear(struct map_session_data *sd)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0x12b;
+	WFIFOSET(fd,packet_db[0x12b].len);
 
 	return;
 }
@@ -8969,6 +8985,12 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 
 	if(sd->state.connect_new) {
 		sd->state.connect_new = 0;
+
+		if(pc_isriding(sd))
+			clif_status_load(sd,SI_RIDING,1);
+		if(pc_isfalcon(sd))
+			clif_status_load(sd,SI_FALCON,1);
+
 		// OnPCLoginイベント
 		if(battle_config.pc_login_script)
 			npc_event_doall_id("OnPCLogin",sd->bl.id,sd->bl.m);

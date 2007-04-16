@@ -59,9 +59,9 @@ static int StatusIconChangeTable[] = {
 /* 10- */
 	SI_BLESSING,SI_SIGNUMCRUCIS,SI_INCREASEAGI,SI_DECREASEAGI,SI_SLOWPOISON,SI_IMPOSITIO,SI_SUFFRAGIUM,SI_ASPERSIO,SI_BENEDICTIO,SI_KYRIE,
 /* 20- */
-	SI_MAGNIFICAT,SI_GLORIA,SI_AETERNA,SI_ADRENALINE,SI_WEAPONPERFECTION,SI_OVERTHRUST,SI_MAXIMIZEPOWER,SI_RIDING,SI_FALCON,SI_TRICKDEAD,
+	SI_MAGNIFICAT,SI_GLORIA,SI_AETERNA,SI_ADRENALINE,SI_WEAPONPERFECTION,SI_OVERTHRUST,SI_MAXIMIZEPOWER,SI_BLANK,SI_BLANK,SI_TRICKDEAD,
 /* 30- */
-	SI_LOUD,SI_ENERGYCOAT,SI_BLANK,SI_BLANK,SI_HALLUCINATION,SI_WEIGHT50,SI_WEIGHT90,SI_SPEEDPOTION0,SI_SPEEDPOTION1,SI_SPEEDPOTION2,
+	SI_LOUD,SI_ENERGYCOAT,SI_BLANK,SI_BLANK,SI_HALLUCINATION,SI_BLANK,SI_BLANK,SI_SPEEDPOTION0,SI_SPEEDPOTION1,SI_SPEEDPOTION2,
 /* 40- */
 	SI_SPEEDPOTION3,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 /* 50- */
@@ -109,7 +109,7 @@ static int StatusIconChangeTable[] = {
 /* 260- */
 	SI_SOULLINK,SI_SOULLINK,SI_SOULLINK,SI_SOULLINK,SI_KAIZEL,SI_KAAHI,SI_KAUPE,SI_KAITE,SI_SMA,SI_BLANK,
 /* 270- */
-	SI_BLANK,SI_BLANK,SI_ONEHAND,SI_READYSTORM,SI_READYDOWN,SI_READYTURN,SI_READYCOUNTER,SI_BLANK,SI_AUTOBERSERK,SI_DEVIL,
+	SI_BLANK,SI_BLANK,SI_ONEHAND,SI_READYSTORM,SI_READYDOWN,SI_READYTURN,SI_READYCOUNTER,SI_BLANK,SI_AUTOBERSERK,SI_BLANK,
 /* 280- */
 	SI_DOUBLECASTING,SI_ELEMENTFIELD,SI_DARKELEMENT,SI_ATTENELEMENT,SI_MIRACLE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BABY,
 /* 290- */
@@ -1280,12 +1280,10 @@ L_RECALC:
 		sd->hit += skill*2;
 	}
 	//太陽と月と星の悪魔
-	if((skill = pc_checkskill(sd,SG_DEVIL)) > 0 && sd->status.job_level>=50)
+	if((skill = pc_checkskill(sd,SG_DEVIL)) > 0 && sd->status.job_level >= 50)
 	{
 		aspd_rate -= skill*3;
-		if(sd->sc_data[SC_DEVIL].timer!=-1 || sd->sc_data[SC_DEVIL].val1<skill)
-			status_change_start(&sd->bl,SC_DEVIL,skill,0,0,0,5000,0);
-		clif_status_change(&sd->bl,SI_DEVIL,1);
+		clif_status_load(sd,SI_DEVIL,1);
 	}
 
 	//太陽と月と星の融合
@@ -2024,7 +2022,7 @@ L_RECALC:
 
 	// bTigereyeがなくなっていたらパケット送って元に戻す
 	if(b_tigereye == 1 && sd->infinite_tigereye == 0 && sd->sc_data[SC_TIGEREYE].timer == -1)
-		clif_status_change(&sd->bl, SI_TIGEREYE, 0);
+		clif_status_load(sd, SI_TIGEREYE, 0);
 
 	// 計算処理ここまで
 	if( sd->status_calc_pc_process > 1 ) {
@@ -4129,7 +4127,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(sc_data[type].timer != -1){	/* すでに同じ異常になっている場合タイマ解除 */
 		if(sc_data[type].val1 > val1 && type != SC_COMBO && type != SC_DANCING && type != SC_DEVOTION &&
 			type != SC_SPEEDPOTION0 && type != SC_SPEEDPOTION1 && type != SC_SPEEDPOTION2 && type != SC_SPEEDPOTION3 &&
-			type!= SC_DEVIL && type!=SC_DOUBLE && type != SC_TKCOMBO && type!=SC_DODGE && type!=SC_SPURT)
+			type != SC_DOUBLE && type != SC_TKCOMBO && type!=SC_DODGE && type!=SC_SPURT)
 			return 0;
 		if ((type >=SC_STAN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING)
 			return 0;/* 継ぎ足しができない状態異常である時は状態異常を行わない */
@@ -4717,17 +4715,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_PNEUMA:
 			break;
 
-		/* スキルじゃない/時間に関係しない */
-		case SC_RIDING:
-			calc_flag = 1;
-			tick = 600*1000;
-			break;
-		case SC_FALCON:
-		case SC_WEIGHT50:
-		case SC_WEIGHT90:
-			tick=600*1000;
-			break;
-
 		case SC_AUTOGUARD:
 			{
 				int i,t;
@@ -4780,7 +4767,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sd){
 				sd->status.sp = 0;
 				clif_updatestatus(sd,SP_SP);
-				clif_status_change(bl,SC_INCREASEAGI,1);	/* アイコン表示 */
+				clif_status_change(bl,SI_INCREASEAGI,1);	/* アイコン表示 */
 			}
 			tick = 1000;
 			calc_flag = 1;
@@ -4983,7 +4970,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_DODGE:
 		case SC_DODGE_DELAY:
-		case SC_DEVIL:
 		case SC_DOUBLECASTING://ダブルキャスティング
 		case SC_SHRINK://シュリンク
 		case SC_WINKCHARM://魅惑のウィンク
@@ -5333,7 +5319,6 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_SPEEDPOTION1:
 		case SC_SPEEDPOTION2:
 		case SC_SPEEDPOTION3:
-		case SC_RIDING:
 		case SC_BLADESTOP_WAIT:
 		case SC_CONCENTRATION:		/* コンセントレーション */
 		case SC_WINDWALK:		/* ウインドウォーク */
@@ -5517,7 +5502,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			break;
 		case SC_BERSERK:			/* バーサーク */
 			calc_flag = 1;
-			clif_status_change(bl,SC_INCREASEAGI,0);	/* アイコン消去 */
+			clif_status_change(bl,SI_INCREASEAGI,0);	/* アイコン消去 */
 			break;
 		case SC_DEVOTION:		/* ディボーション */
 			{
@@ -6231,10 +6216,6 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 	/* 時間切れ無し？？ */
 	case SC_AETERNA:
 	case SC_TRICKDEAD:
-	case SC_RIDING:
-	case SC_FALCON:
-	case SC_WEIGHT50:
-	case SC_WEIGHT90:
 	case SC_MAGICPOWER:		/* 魔法力増幅 */
 	case SC_REJECTSWORD:	/* リジェクトソード */
 	case SC_MEMORIZE:		/* メモライズ */
@@ -6249,10 +6230,6 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 	case SC_MARIONETTE:
 	case SC_MARIONETTE2:
 		sc_data[type].timer=add_timer( 1000*600+tick,status_change_timer, bl->id, data );
-		return 0;
-	case SC_DEVIL:
-		clif_status_change(bl,SI_DEVIL,1);
-		sc_data[type].timer=add_timer( 1000*5+tick,status_change_timer, bl->id, data );
 		return 0;
 	case SC_LONGINGFREEDOM:
 		if(sd && sd->status.sp >= 3) {

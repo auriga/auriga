@@ -30,16 +30,14 @@
 24,SC_WEAPONPERFECTION,1,7,0		// ウェポンパーフェクション
 25,SC_OVERTHRUST,1,7,0			// オーバートラスト
 26,SC_MAXIMIZEPOWER,1,7,0		// マキシマイズパワー
-27,SC_RIDING,-1,1,0			// ライディング
-28,SC_FALCON,-1,1,0			// ファルコンマスタリー
+//
 29,SC_TRICKDEAD,0,7,0			// 死んだふり
 30,SC_LOUD,1,7,6			// ラウドボイス
 31,SC_ENERGYCOAT,1,7,0			// エナジーコート
 32,SC_PK_PENALTY,0,0,0			// PKのペナルティ
 33,SC_REVERSEORCISH,1,15,0		// リバースオーキッシュ
 34,SC_HALLUCINATION,0,9,0		// 幻覚
-35,SC_WEIGHT50,-1,0,0			// 重量50％オーバー
-36,SC_WEIGHT90,-1,0,0			// 重量90％オーバー
+//
 37,SC_SPEEDPOTION0,1,7,0		// スピードアップポーション
 38,SC_SPEEDPOTION1,1,7,0		// ハイスピードアップポーション
 39,SC_SPEEDPOTION2,1,7,0		// バーサークポーション
@@ -245,7 +243,7 @@
 276,SC_READYCOUNTER,0,1,0		// アプチャオルリギの構え
 277,SC_DODGE_DELAY,0,1,0		// 落法（スパート時）
 278,SC_AUTOBERSERK,0,1,0		// オートバーサーク
-279,SC_DEVIL,0,1,0			// 太陽と月と星の悪魔
+//
 280,SC_DOUBLECASTING,0,1,0		// ダブルキャスティング
 281,SC_ELEMENTFIELD,0,1,0		// 属性場
 282,SC_DARKELEMENT,0,99,0		// 闇（武器）
