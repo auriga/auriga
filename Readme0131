@@ -1,4 +1,16 @@
 ----------------------------------------
+//0156 [2007/04/17] by Rayce
+
+・AthenaProject2292の一部をmerge、thanks to Blazeさん
+	-> デスペラードのダメージ発生インターバルを150ms → 100msに変更（skill.c）
+	-> 実行範囲を持つNPCの範囲内でhideon→offをした時、スクリプトが再走しなかったのを修正（npc.c）
+
+・クローズコンファインをボス属性無効に修正（skill.c）
+・ストーンカースのLv6が以上のとき成功時にジェムが消費されないバグを修正（skill.c）
+・skill_check_condition2() を少しだけ書き換え（skill.c）
+・usediteminfo関数で製造者のIDを取得するとき、名前入りアイテムでない場合は0が返るように修正（pc.c）
+
+----------------------------------------
 //0155 [2007/04/17] by Rayce
 
 ・anti hacker、merged from eA（clif.c, map.h）

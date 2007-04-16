@@ -2862,7 +2862,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			for(i=0; i<num; i++) {
 				tmpx = src->x + (atn_rand()%5 - 2);
 				tmpy = src->y + (atn_rand()%5 - 2);
-				skill_addtimerskill(src,tick+i*150,0,tmpx,tmpy,skillid,skilllv,0,0);
+				skill_addtimerskill(src,tick+i*100,0,tmpx,tmpy,skillid,skilllv,0,0);
 			}
 		}
 		break;
@@ -4123,14 +4123,38 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			mob_target(dstmd,src,skill_get_fixed_range(src,skillid,skilllv));
 
 		sc_data = status_get_sc_data(bl);
-		if (sc_data && sc_data[SC_STONE].timer != -1)
+		if (sc_data && sc_data[SC_STONE].timer != -1) {
 			status_change_end(bl,SC_STONE,-1);
+		}
 		else if (!battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) && atn_rand()%100 < skilllv*4+20) {
 			status_change_start(bl,SC_STONE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		}
+		else {
+			if(sd)
+				clif_skill_fail(sd,skillid,0,0);
 			break;
 		}
-		if (sd)
-			clif_skill_fail(sd,skillid,0,0);
+
+		// 成功なのでLv6以上はジェム消費処理
+		if(skilllv >= 6) {
+			struct map_session_data *msd = (sd) ? sd : (hd) ? hd->msd : NULL;
+			if(msd == NULL)
+				break;
+			if( !msd->special_state.no_gemstone &&
+			    msd->sc_data[SC_WIZARD].timer == -1 &&
+			    msd->sc_data[SC_INTOABYSS].timer == -1 )
+			{
+				int i, idx;
+				for(i=0; i<10; i++) {
+					if(skill_db[skillid].itemid[i] < 715 || skill_db[skillid].itemid[i] > 717)
+						continue;
+					idx = pc_search_inventory(msd,skill_db[skillid].itemid[i]);
+					if(idx < 0)
+						continue;
+					pc_delitem(msd,idx,skill_db[skillid].amount[i],0);
+				}
+			}
+		}
 		break;
 
 	case NV_FIRSTAID:			/* 応急手当 */
@@ -5028,6 +5052,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case RG_CLOSECONFINE://#クローズコンファイン#
 		{
 			int dir;
+			if(status_get_mode(bl)&0x20) {
+				if(sd)
+					clif_skill_fail(sd,skillid,0,0);
+				break;
+			}
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(src,SkillStatusChangeTable[skillid],1,1,src->id,bl->id,skill_get_time(skillid,skilllv),0);
 
@@ -7549,7 +7578,6 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 	struct map_session_data *target_sd;
 	struct status_change    *sc_data;
 	struct block_list *target;
-	int soul_skill = 0;
 
 	nullpo_retr( 0, bl );
 	nullpo_retr( 0, sc );
@@ -7560,7 +7588,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 		target = NULL;
 	}
 
-	sd = BL_DOWNCAST( BL_PC, bl );
+	sd        = BL_DOWNCAST( BL_PC, bl );
 	target_sd = BL_DOWNCAST( BL_PC, target );
 
 	sc_data = status_get_sc_data( bl );
@@ -7568,7 +7596,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 	// PC, MOB, PET, HOM 共通の失敗はここに記述
 
 	// 状態異常関連
-	if(sc_data){
+	if(sc_data && *status_get_sc_count(bl) > 0) {
 		if(
 			sc_data[SC_SILENCE].timer!=-1 ||
 			sc_data[SC_ROKISWEIL].timer!=-1 ||
@@ -7592,8 +7620,6 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 		/* 演奏/ダンス中 */
 		if (sc_data[SC_DANCING].timer != -1 && sc_data[SC_LONGINGFREEDOM].timer == -1)
 		{
-//			if(battle_config.pc_skill_log)
-//				printf("dancing! %d\n",skill_num);
 			if (!battle_config.player_skill_partner_check && !(battle_config.sole_concert_type & 2) &&
 				sc->id != BD_ADAPTATION && sc->id != CG_LONGINGFREEDOM)	// 単独合奏中に矢撃ち/MSができない設定
 			{
@@ -7620,20 +7646,20 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 	}
 
 	// 魂スキルかどうかの判定
-	if( sc->id>=SL_ALCHEMIST && sc->id<=SL_SOULLINKER &&
-		sc->id!=AM_BERSERKPITCHER && sc->id!=BS_ADRENALINE2
-	) soul_skill = 1;
-	if( sc->id == SL_HIGH) soul_skill = 1;
-
-	// 検証に時間がかかるので塊系で２プレイヤーがいない場合は一律弾く
-	if( soul_skill && (!sd || !target_sd)) return 0;
-
-	//魂用 こちらでもチェック
-	if( soul_skill )
+	if( sc->id == SL_ALCHEMIST ||
+	    (sc->id >= SL_MONK && sc->id <= SL_SOULLINKER && sc->id != BS_ADRENALINE2) ||
+	    sc->id == SL_HIGH ||
+	    (sc->id >= SL_DEATHKNIGHT && sc->id <= SL_GUNNER) )
 	{
-		struct pc_base_job s_class = pc_calc_base_job(target_sd->status.class_);
-		int job  = s_class.job;
-		int fail = 0;
+		struct pc_base_job s_class;
+		int job, fail = 0;
+
+		// 検証に時間がかかるので塊系で２プレイヤーがいない場合は一律弾く
+		if(!sd || !target_sd)
+			return 0;
+
+		s_class = pc_calc_base_job(target_sd->status.class_);
+		job     = s_class.job;
 
 		switch(sc->id)
 		{
@@ -7659,7 +7685,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
-		//最終判定
+		// 最終判定
 		if(!battle_config.soulskill_can_be_used_for_myself && sd == target_sd)
 		{
 			status_change_start(&sd->bl,SC_STAN,7,0,0,0,3000,0);
@@ -8859,8 +8885,6 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			if(itemid[i] >= 715 && itemid[i] <= 717) {
 				if(sd->special_state.no_gemstone || sd->sc_data[SC_WIZARD].timer != -1)		//ウィザードの魂
 					continue;
-				if(sc->id == MG_STONECURSE && sc->lv > 5)					//ストーンカースでLv6以上はジェム消費なし
-					continue;
 			}
 
 			if(((itemid[i] >= 715 && itemid[i] <= 717) || itemid[i] == 1065) && sd->sc_data[SC_INTOABYSS].timer != -1)
@@ -8875,6 +8899,10 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 				else
 					clif_skill_fail(sd,sc->id,0,0);
 				return 0;
+			}
+			if(sc->id == MG_STONECURSE && sc->lv >= 6 && itemid[i] >= 715 && itemid[i] <= 717) {
+				// ストーンカースLv6以上はジェム消費なしにしておく
+				index[i] = -1;
 			}
 		}
 	}
@@ -8966,8 +8994,8 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 	nullpo_retr( 0, hd );
 	nullpo_retr( 0, sc );
 	nullpo_retr( 0, msd=hd->msd );
-	bl=&hd->bl;
 
+	bl=&hd->bl;
 	skilldb_id = skill_get_skilldb_id(sc->id);
 
 	hp=skill_get_hp(sc->id, sc->lv);	/* 消費HP */
@@ -9054,8 +9082,6 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 			if(itemid[i] >= 715 && itemid[i] <= 717) {
 				if(hd->sc_data[SC_WIZARD].timer != -1)		//ウィザードの魂
 					continue;
-				if(sc->id == MG_STONECURSE && sc->lv > 5)					//ストーンカースでLv6以上はジェム消費なし
-					continue;
 			}
 
 			if(((itemid[i] >= 715 && itemid[i] <= 717) || itemid[i] == 1065) && hd->sc_data[SC_INTOABYSS].timer != -1)
@@ -9070,6 +9096,10 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 				else
 					clif_skill_fail(msd,sc->id,0,0);
 				return 0;
+			}
+			if(sc->id == MG_STONECURSE && sc->lv >= 6 && itemid[i] >= 715 && itemid[i] <= 717) {
+				// ストーンカースLv6以上はジェム消費なしにしておく
+				index[i] = -1;
 			}
 		}
 	}

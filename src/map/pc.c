@@ -3109,7 +3109,10 @@ void pc_useitem(struct map_session_data *sd, int n)
 			return;
 		}
 		sd->use_itemid = nameid;
-		sd->use_nameditem = *((unsigned long *)(&sd->status.inventory[n].card[2]));
+		if(sd->status.inventory[n].card[0] == 0x00fe)
+			sd->use_nameditem = *((unsigned long *)(&sd->status.inventory[n].card[2]));
+		else
+			sd->use_nameditem = 0;
 		script = sd->inventory_data[n]->use_script;
 
 		if (battle_config.Item_res) {
