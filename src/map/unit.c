@@ -1790,7 +1790,7 @@ int unit_mobstopattacked(struct map_session_data *sd,va_list ap)
  * 見た目のサイズを変更する
  *------------------------------------------
  */
-int unit_changeviewsize(struct block_list *bl,short size)
+int unit_changeviewsize(struct block_list *bl,int size)
 {
 	nullpo_retr(0, bl);
 
