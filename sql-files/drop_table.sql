@@ -31,3 +31,4 @@ DROP TABLE `status_change`;
 DROP TABLE `mail`;
 DROP TABLE `mail_data`;
 DROP TABLE `mapreg`;
+DROP TABLE `feel_info`;

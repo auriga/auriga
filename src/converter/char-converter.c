@@ -19,7 +19,8 @@
 #endif
 
 
-int char_sql_saveitem(struct item *item, int max, int id, int tableswitch) {
+int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
+{
 	int i,num = 0;
 	const char *tablename;
 	const char *selectoption;
@@ -116,8 +117,10 @@ int inter_pet_fromstr(char *str, struct s_pet *p)
 
 	return 0;
 }
+
 //---------------------------------------------------------
-int inter_pet_tosql(int pet_id, struct s_pet *p) {
+int inter_pet_tosql(int pet_id, struct s_pet *p)
+{
 	//`pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	char t_name[256];
 	MYSQL_RES* 	sql_res ;
@@ -198,7 +201,8 @@ int storage_fromstr(char *str, struct storage *p)
 }
 
 /////////////////////////////////
-int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
+int mmo_char_fromstr(char *str, struct mmo_chardata *p)
+{
 	char tmp_str[256];
 	int tmp_int[45];
 	int set, next, len, i;
@@ -413,7 +417,8 @@ int mmo_char_fromstr(char *str, struct mmo_chardata *p) {
 }
 
 //==========================================================================================================
-int mmo_char_tosql(int char_id, struct mmo_chardata *p){
+int mmo_char_tosql(int char_id, struct mmo_chardata *p)
+{
 	char buf[256];
 	int i;
 
@@ -453,8 +458,8 @@ int mmo_char_tosql(int char_id, struct mmo_chardata *p){
 			printf("DB server Error (update `char`)- %s\n", mysql_error(&mysql_handle) );
 	}
 
-	//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
-	sprintf(tmp_sql,"DELETE FROM `memo` WHERE `type`='W' && `char_id`='%d'",char_id);
+	//`memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
+	sprintf(tmp_sql,"DELETE FROM `memo` WHERE `char_id`='%d'",char_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
 			printf("DB server Error (delete `memo`)- %s\n", mysql_error(&mysql_handle) );
 	}
@@ -462,7 +467,7 @@ int mmo_char_tosql(int char_id, struct mmo_chardata *p){
 	//insert here.
 	for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 		if(p->st.memo_point[i].map[0]){
-			sprintf(tmp_sql,"INSERT INTO `memo`(`char_id`,`type`,`map`,`x`,`y`) VALUES ('%d', 'W', '%s', '%d', '%d')",
+			sprintf(tmp_sql,"INSERT INTO `memo`(`char_id`,`map`,`x`,`y`) VALUES ('%d', '%s', '%d', '%d')",
 				char_id, strecpy(buf,p->st.memo_point[i].map), p->st.memo_point[i].x, p->st.memo_point[i].y);
 			if(mysql_query(&mysql_handle, tmp_sql) )
 				printf("DB server Error (insert `memo`)- %s\n", mysql_error(&mysql_handle) );
@@ -507,20 +512,20 @@ int mmo_char_tosql(int char_id, struct mmo_chardata *p){
 		}
 	}
 
-	// memo、拳聖の感情
-	//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
-	sprintf(tmp_sql,"DELETE FROM `memo` WHERE `type`='F' AND `char_id`='%d'", char_id);
+	// feel_info
+	//`feel_info` (`feel_id`,`char_id`,`map`,`lv`)
+	sprintf(tmp_sql,"DELETE FROM `feel_info` WHERE `char_id`='%d'", char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `memo`)- %s\n", mysql_error(&mysql_handle));
+			printf("DB server Error (delete `feel_info`)- %s\n", mysql_error(&mysql_handle));
 	}
 
 	//insert here.
 	for(i = 0; i < 3; i++) {
 		if(p->st.feel_map[i][0]) {
-			sprintf(tmp_sql,"INSERT INTO `memo`(`char_id`,`type`,`map`,`x`) VALUES ('%d', 'F', '%s', '%d')",
+			sprintf(tmp_sql,"INSERT INTO `feel_info`(`char_id`,`map`,`lv`) VALUES ('%d', '%s', '%d')",
 				char_id, strecpy(buf,p->st.feel_map[i]), i );
 			if(mysql_query(&mysql_handle, tmp_sql))
-				printf("DB server Error (insert `memo`)- %s\n", mysql_error(&mysql_handle));
+				printf("DB server Error (insert `feel_info`)- %s\n", mysql_error(&mysql_handle));
 		}
 	}
 
@@ -593,7 +598,8 @@ int party_fromstr(char *str,struct party *p)
 	return 0;
 }
 
-int party_tosql(struct party *p) {
+int party_tosql(struct party *p)
+{
 	int i = 0;
 	int leader_id = -1;
 	char t_name[64];
@@ -760,7 +766,8 @@ int guild_fromstr(char *str,struct guild *g)
 	return 0;
 }
 
-int guild_tosql(struct guild* g2) {
+int guild_tosql(struct guild* g2)
+{
 	int  i;
 	char buf[256],buf2[256],buf3[256],buf4[256];
 	char *p;
@@ -1108,7 +1115,8 @@ int homun_fromstr(char *str,struct mmo_homunstatus *h)
 	return 0;
 }
 
-int homun_tosql(int homun_id, struct mmo_homunstatus *h){
+int homun_tosql(int homun_id, struct mmo_homunstatus *h)
+{
 	char name[256];
 	int i;
 
@@ -1153,7 +1161,8 @@ int homun_tosql(int homun_id, struct mmo_homunstatus *h){
 	return 0;
 }
 
-int char_convert(void){
+int char_convert(void)
+{
 	char input, line[65536];
 	int tmp_int[2], c;
 	FILE *fp;

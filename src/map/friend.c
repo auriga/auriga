@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #include "friend.h"
 #include "map.h"
 #include "clif.h"
@@ -13,26 +12,7 @@
 #include "nullpo.h"
 #include "atcommand.h"
 
-static struct dbt * online_db;
-
-/*==========================================
- * 初期化
- *------------------------------------------
- */
-void do_init_friend(void)
-{
-	online_db = numdb_init();
-}
-
-/*==========================================
- * 終了
- *------------------------------------------
- */
-void do_final_friend(void)
-{
-	if(online_db)
-		numdb_final(online_db,NULL);
-}
+static struct dbt * online_db = NULL;
 
 /*==========================================
  * 友達リスト追加要請
@@ -57,7 +37,6 @@ int friend_add_request( struct map_session_data *sd, char* name )
 
 	if( sd->friend_invite > 0 || tsd->friend_invite > 0 )
 		return 0;
-		
 
 	sd->friend_invite = tsd->bl.id;
 	sd->friend_invite_char = tsd->status.char_id;
@@ -170,6 +149,7 @@ int friend_del_request( struct map_session_data *sd, int account_id, int char_id
 	struct map_session_data *tsd = map_id2sd( account_id );
 
 	nullpo_retr(0, sd);
+
 	// サーバー側管理かどうか
 	if( !battle_config.serverside_friendlist )
 		return 0;
@@ -185,6 +165,7 @@ int friend_del_request( struct map_session_data *sd, int account_id, int char_id
 	friend_delete( sd, account_id, char_id );
 	return 0;
 }
+
 /*==========================================
  * 別サーバーの友達リスト削除
  *------------------------------------------
@@ -203,7 +184,6 @@ int friend_del_from_otherserver( int account_id, int char_id, int account_id2, i
 	return 0;
 }
 
-
 /*==========================================
  * ロード直後の情報送信
  *------------------------------------------
@@ -213,6 +193,7 @@ int friend_send_info( struct map_session_data *sd )
 	int i;
 
 	nullpo_retr(0, sd);
+
 	// サーバー側管理かどうか
 	if( !battle_config.serverside_friendlist )
 		return 0;
@@ -244,6 +225,7 @@ int friend_send_online( struct map_session_data *sd, int flag )
 	int i;
 
 	nullpo_retr(0, sd);
+
 	// サーバー側管理かどうか
 	if( !battle_config.serverside_friendlist )
 		return 0;
@@ -252,10 +234,12 @@ int friend_send_online( struct map_session_data *sd, int flag )
 		return 0;
 
 	// オンライン情報を保存
-	if( flag==0 && numdb_search( online_db, sd->status.char_id )==0 )
-		numdb_insert( online_db, sd->status.char_id, 1 );
-	if( flag==1 )
+	if( flag==0 ) {
+		if( numdb_search( online_db, sd->status.char_id )==0 )
+			numdb_insert( online_db, sd->status.char_id, 1 );
+	} else {
 		numdb_erase( online_db, sd->status.char_id );
+	}
 
 	// 全員に通知
 	for( i=0; i<sd->status.friend_num; i++ )
@@ -274,7 +258,6 @@ int friend_send_online( struct map_session_data *sd, int flag )
 	return 0;
 }
 
-
 /*==========================================
  * 別マップサーバーの友人のオンライン情報送信
  *------------------------------------------
@@ -288,10 +271,12 @@ int friend_send_online_from_otherserver( int account_id, int char_id, int flag, 
 		return 0;
 
 	// オンライン情報を保存
-	if( flag==0 && numdb_search( online_db, char_id )==0 )
-		numdb_insert( online_db, char_id, 1 );
-	if( flag==1 )
+	if( flag==0 ) {
+		if( numdb_search( online_db, char_id )==0 )
+			numdb_insert( online_db, char_id, 1 );
+	} else {
 		numdb_erase( online_db, char_id );
+	}
 
 	// 全員に通知
 	for( i=0; i<num; i++ )
@@ -303,4 +288,23 @@ int friend_send_online_from_otherserver( int account_id, int char_id, int flag, 
 		}
 	}
 	return 0;
+}
+
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+void do_init_friend(void)
+{
+	online_db = numdb_init();
+}
+
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+void do_final_friend(void)
+{
+	if(online_db)
+		numdb_final(online_db,NULL);
 }

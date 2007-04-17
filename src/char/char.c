@@ -614,7 +614,8 @@ static void char_txt_sync(void)
 #endif
 }
 
-void char_txt_final(void) {
+void char_txt_final(void)
+{
 //	char_txt_sync(); // do_final で呼んでるはず
 	aFree(char_dat);
 
@@ -824,7 +825,8 @@ int char_txt_delete_sub(int char_id)
 	return 0;
 }
 
-int char_txt_config_read_sub(const char* w1,const char* w2) {
+int char_txt_config_read_sub(const char* w1,const char* w2)
+{
 	if(strcmpi(w1,"char_txt")==0){
 		strncpy(char_txt,w2,1024);
 	}
@@ -939,8 +941,10 @@ static char inventory_db[256]       = "inventory";
 static char charlog_db[256]         = "charlog";
 static char skill_db[256]           = "skill";
 static char memo_db[256]            = "memo";
+static char feel_db[256]            = "feel_info";
 
-int char_sql_loaditem(struct item *item, int max, int id, int tableswitch) {
+int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
+{
 	int i = 0;
 	const char *tablename;
 	const char *selectoption;
@@ -1000,7 +1004,8 @@ int char_sql_loaditem(struct item *item, int max, int id, int tableswitch) {
 	return i;
 }
 
-int char_sql_saveitem(struct item *item, int max, int id, int tableswitch) {
+int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
+{
 	int i;
 	const char *tablename;
 	const char *selectoption;
@@ -1061,7 +1066,8 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch) {
 	return 0;
 }
 
-static int char_sql_init(void) {
+static int char_sql_init(void)
+{
 	char_db_ = numdb_init();
 
 	//DB connection initialized
@@ -1090,11 +1096,13 @@ static int char_sql_init(void) {
 	return 1;
 }
 
-static void char_sql_sync(void) {
+static void char_sql_sync(void)
+{
 	// nothing to do
 }
 
-const struct mmo_chardata* char_sql_load(int char_id) {
+const struct mmo_chardata* char_sql_load(int char_id)
+{
 	int i, n;
 	struct mmo_chardata *p;
 	MYSQL_RES* sql_res;
@@ -1203,8 +1211,8 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	// printf("char ");
 
 	//read memo data
-	//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
-	sprintf(tmp_sql, "SELECT `map`,`x`,`y` FROM `%s` WHERE `type`='W' AND `char_id`='%d'",memo_db, char_id); // TBR
+	//`memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
+	sprintf(tmp_sql, "SELECT `map`,`x`,`y` FROM `%s` WHERE `char_id`='%d'",memo_db, char_id); // TBR
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 	}
@@ -1315,11 +1323,11 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	}
 	// printf("friend ");
 
-	// memo、拳聖の感情
-	//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
-	sprintf(tmp_sql, "SELECT `map`,`x` FROM `%s` WHERE `type`='F' AND `char_id`='%d'",memo_db, char_id);
+	// feel_info
+	//`feel_info` (`feel_id`,`char_id`,`map`,`lv`)
+	sprintf(tmp_sql, "SELECT `map`,`lv` FROM `%s` WHERE `char_id`='%d'",feel_db, char_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
+		printf("DB server Error (select `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
 	}
 	sql_res = mysql_store_result(&mysql_handle);
 
@@ -1337,7 +1345,8 @@ const struct mmo_chardata* char_sql_load(int char_id) {
 	return p;
 }
 
-int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg) {
+int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
+{
 	const struct mmo_chardata *cd = char_sql_load(char_id);
 	char buf[256];
 	int i;
@@ -1389,7 +1398,8 @@ int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
 		p += sprintf(p,"%c`"sql"` = '%s'",sep,strecpy(buf,st2->val)); sep = ',';\
 	}
 
-int  char_sql_save(struct mmo_charstatus *st2) {
+int char_sql_save(struct mmo_charstatus *st2)
+{
 	const struct mmo_chardata *cd = char_sql_load(st2->char_id);
 	const struct mmo_charstatus *st1;
 	char sep = ' ';
@@ -1464,8 +1474,8 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 
 	// memo
 	if (memcmp(st1->memo_point,st2->memo_point,sizeof(st1->memo_point))) {
-		//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
-		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`='W' AND `char_id`='%d'",memo_db, st2->char_id);
+		//`memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
+		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",memo_db, st2->char_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
 			printf("DB server Error (delete `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 		}
@@ -1474,7 +1484,7 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 		for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 			if(st2->memo_point[i].map[0]) {
 				sprintf(
-					tmp_sql,"INSERT INTO `%s`(`char_id`,`type`,`map`,`x`,`y`) VALUES ('%d', 'W', '%s', '%d', '%d')",
+					tmp_sql,"INSERT INTO `%s`(`char_id`,`map`,`x`,`y`) VALUES ('%d', '%s', '%d', '%d')",
 					memo_db, st2->char_id, strecpy(buf,st2->memo_point[i].map), st2->memo_point[i].x, st2->memo_point[i].y
 				);
 				if(mysql_query(&mysql_handle, tmp_sql))
@@ -1545,23 +1555,23 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 		// printf("friend ");
 	}
 
-	// memo、拳聖の感情
+	// feel_info
 	if (memcmp(st1->feel_map,st2->feel_map,sizeof(st1->feel_map))) {
-		//`memo` (`memo_id`,`char_id`,`type`,`map`,`x`,`y`)
-		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`='F' AND `char_id`='%d'",memo_db, st2->char_id);
+		//`feel_info` (`feel_id`,`char_id`,`map`,`lv`)
+		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",feel_db, st2->char_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
+			printf("DB server Error (delete `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
 		}
 
 		//insert here.
 		for(i = 0; i < 3; i++) {
-			if(st2->feel_map[i][0]) {	// スキルLvはxの項に保存することにする
+			if(st2->feel_map[i][0]) {
 				sprintf(
-					tmp_sql,"INSERT INTO `%s`(`char_id`,`type`,`map`,`x`) VALUES ('%d', 'F', '%s', '%d')",
-					memo_db, st2->char_id, strecpy(buf,st2->feel_map[i]), i
+					tmp_sql,"INSERT INTO `%s`(`char_id`,`map`,`lv`) VALUES ('%d', '%s', '%d')",
+					feel_db, st2->char_id, strecpy(buf,st2->feel_map[i]), i
 				);
 				if(mysql_query(&mysql_handle, tmp_sql))
-					printf("DB server Error (insert `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
+					printf("DB server Error (insert `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
 			}
 		}
 	}
@@ -1576,7 +1586,8 @@ int  char_sql_save(struct mmo_charstatus *st2) {
 	return 0;
 }
 
-const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned char *dat,int *flag) {
+const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned char *dat,int *flag)
+{
 	int  i;
 	int  char_id;
 	char buf[256];
@@ -1691,7 +1702,8 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 	return char_sql_load(char_id);
 }
 
-int  char_sql_load_all(struct char_session_data* sd,int account_id) {
+int char_sql_load_all(struct char_session_data* sd,int account_id)
+{
 	int i,j;
 	int found_id[9];
 	int found_num = 0;
@@ -1731,7 +1743,8 @@ int  char_sql_load_all(struct char_session_data* sd,int account_id) {
 	return j;
 }
 
-int  char_sql_delete_sub(int char_id) {
+int char_sql_delete_sub(int char_id)
+{
 	struct mmo_chardata *p = (struct mmo_chardata *)numdb_search(char_db_,char_id);
 	if(p) {
 		numdb_erase(char_db_,char_id);
@@ -1775,9 +1788,15 @@ int  char_sql_delete_sub(int char_id) {
 	}
 
 	// friend
-	sprintf( tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d'", friend_db, char_id );
+	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d'", friend_db, char_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (delete `%s`)- %s\n", friend_db, mysql_error(&mysql_handle));
+	}
+
+	// feel_info
+	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",feel_db, char_id);
+	if(mysql_query(&mysql_handle, tmp_sql)) {
+		printf("DB server Error (delete `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
 	}
 
 	return 1;
@@ -1792,7 +1811,8 @@ static int char_db_final(void *key,void *data,va_list ap)
 	return 0;
 }
 
-void char_sql_final(void) {
+void char_sql_final(void)
+{
 	mysql_close(&mysql_handle);
 	printf("close DB connect....\n");
 
@@ -1801,7 +1821,8 @@ void char_sql_final(void) {
 	return;
 }
 
-int char_sql_config_read_sub(const char* w1,const char* w2) {
+int char_sql_config_read_sub(const char* w1,const char* w2)
+{
 	if(strcmpi(w1,"char_server_ip")==0){
 		strcpy(char_server_ip, w2);
 	}
@@ -1935,6 +1956,7 @@ static int char_sql_build_ranking(void)
 #endif /* TXT_ONLY */
 
 static struct dbt *gm_account_db;
+
 int isGM(int account_id)
 {
 	struct gm_account *p;
@@ -1946,7 +1968,8 @@ int isGM(int account_id)
 	return p->level;
 }
 
-void read_gm_account(void) {
+void read_gm_account(void)
+{
 	char line[8192];
 	struct gm_account *p;
 	FILE *fp;

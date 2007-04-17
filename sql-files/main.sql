@@ -363,10 +363,9 @@ CREATE TABLE `loginlog` (
 CREATE TABLE `memo` (
   `memo_id` int(11) NOT NULL auto_increment,
   `char_id` int(11) NOT NULL default '0',
-  `type` char(1) NOT NULL default '',
   `map` varchar(24) NOT NULL default '',
-  `x` mediumint(9) NOT NULL default '-1',
-  `y` mediumint(9) NOT NULL default '-1',
+  `x` mediumint(9) NOT NULL default '0',
+  `y` mediumint(9) NOT NULL default '0',
   PRIMARY KEY  (`memo_id`)
 ) TYPE=MyISAM; 
 
@@ -551,4 +550,15 @@ CREATE TABLE `mapreg` (
   PRIMARY KEY (`server_tag`, `reg`, `index`),
   KEY `reg` (`reg`),
   KEY `index` (`index`)
+) TYPE=MyISAM;
+
+# Database: Ragnarok
+# Table: 'feel_info'
+#
+CREATE TABLE `feel_info` (
+  `feel_id` int(11) NOT NULL auto_increment,
+  `char_id` int(11) NOT NULL default '0',
+  `map` varchar(24) NOT NULL default '',
+  `lv` mediumint(9) NOT NULL default '-1',
+  PRIMARY KEY  (`feel_id`)
 ) TYPE=MyISAM;
