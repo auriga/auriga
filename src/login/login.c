@@ -1140,8 +1140,8 @@ int mmo_auth(struct login_session_data* sd)
 
 		// session data 初期化
 		sd->account_id = ac->account_id;
-		sd->login_id1  = (rand() << 16) ^ rand();
-		sd->login_id2  = (rand() << 16) ^ rand();
+		sd->login_id1  = atn_rand();
+		sd->login_id2  = atn_rand();
 		sd->sex        = ac->sex;
 		memcpy(sd->lastlogin,tmpstr,24);
 	}
@@ -1834,7 +1834,7 @@ int parse_login(int fd)
 			// 暗号化用のチャレンジ生成
 			sd->md5keylen = atn_rand()%(sizeof(sd->md5key)/4)+(sizeof(sd->md5key)-sizeof(sd->md5key)/4);
 			for(i=0;i<sd->md5keylen;i++)
-				sd->md5key[i]=rand()%255+1;
+				sd->md5key[i]=atn_rand()%255+1;
 
 			WFIFOW(fd,0)= charlogin ? 0x272e : 0x01dc;
 			WFIFOW(fd,2)=4+sd->md5keylen;

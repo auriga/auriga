@@ -2111,7 +2111,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	{
 		int dist = unit_distance(src->x,src->y,bl->x,bl->y);
 		if(sd) {
-			struct walkpath_data wpd;
 			int dx,dy;
 
 			dx = bl->x - sd->bl.x;
@@ -2121,10 +2120,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			if(dy > 0) dy++;
 			else if(dy < 0) dy--;
 			if(dx == 0 && dy == 0) dx++;
-			if(path_search(&wpd,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
+			if(path_search(NULL,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
 				dx = bl->x - sd->bl.x;
 				dy = bl->y - sd->bl.y;
-				if(path_search(&wpd,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
+				if(path_search(NULL,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
 					clif_skill_fail(sd,sd->ud.skillid,0,0);
 					break;
 				}
@@ -2189,7 +2188,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			struct status_change *sc_data = status_get_sc_data(src);
 
 			if(sd) {
-				struct walkpath_data wpd;
 				int dx,dy;
 
 				dx = bl->x - sd->bl.x;
@@ -2199,10 +2197,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				if(dy > 0) dy++;
 				else if(dy < 0) dy--;
 				if(dx == 0 && dy == 0) dx++;
-				if(path_search(&wpd,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
+				if(path_search(NULL,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
 					dx = bl->x - sd->bl.x;
 					dy = bl->y - sd->bl.y;
-					if(path_search(&wpd,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
+					if(path_search(NULL,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
 						clif_skill_fail(sd,sd->ud.skillid,0,0);
 						break;
 					}
@@ -2242,7 +2240,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		{
 			int dist = unit_distance(src->x,src->y,bl->x,bl->y);
 			if(sd && ((pc_checkskill(sd,NJ_SHADOWJUMP)+4) >= dist)) {
-				struct walkpath_data wpd;
 				int dx,dy;
 				dx = bl->x - sd->bl.x;
 				dy = bl->y - sd->bl.y;
@@ -2251,10 +2248,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				if(dy > 0) dy++;
 				else if(dy < 0) dy--;
 				if(dx == 0 && dy == 0) dx++;
-				if(path_search(&wpd,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
+				if(path_search(NULL,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
 					dx = bl->x - sd->bl.x;
 					dy = bl->y - sd->bl.y;
-					if(path_search(&wpd,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
+					if(path_search(NULL,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
 						clif_skill_fail(sd,sd->ud.skillid,0,0);
 						break;
 					}
@@ -5412,9 +5409,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(hd && atn_rand()%100 < 20*skilllv)
 		{
 			int x,y;
-			struct walkpath_data wpd;
 			struct map_session_data *sd = hd->msd;
-			if( path_search(&wpd,hd->bl.m,hd->bl.x,hd->bl.y,sd->bl.x,sd->bl.y,0) != 0 ) {
+			if( path_search(NULL,hd->bl.m,hd->bl.x,hd->bl.y,sd->bl.x,sd->bl.y,0) != 0 ) {
 				// キャストリングを用いた壁越え禁止
 				if(sd)
 					clif_skill_fail(sd,skillid,0,0);
@@ -8764,12 +8760,9 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case SST_MOVE_ENABLE:
-		{
-			struct walkpath_data wpd;
-			if(path_search(&wpd,bl->m,bl->x,bl->y,sc->x,sc->y,1)==-1) {
-				clif_skill_fail(sd,sc->id,0,0);
-				return 0;
-			}
+		if(path_search(NULL,bl->m,bl->x,bl->y,sc->x,sc->y,1)==-1) {
+			clif_skill_fail(sd,sc->id,0,0);
+			return 0;
 		}
 		break;
 	case SST_WATER:
@@ -9042,11 +9035,8 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 
 	switch(state) {
 	case SST_MOVE_ENABLE:
-		{
-			struct walkpath_data wpd;
-			if(path_search(&wpd,bl->m,bl->x,bl->y,sc->x,sc->y,1)==-1) {
-				return 0;
-			}
+		if(path_search(NULL,bl->m,bl->x,bl->y,sc->x,sc->y,1)==-1) {
+			return 0;
 		}
 		break;
 	}

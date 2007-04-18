@@ -17,6 +17,13 @@
 struct tmp_path { short x,y,dist,before,cost,flag;};
 #define calc_index(x,y) (((x)+(y)*MAX_WALKPATH) & (MAX_WALKPATH*MAX_WALKPATH-1))
 
+static const unsigned char walk_choice[3][3] =
+{
+	{ 1, 0, 7 },
+	{ 2, 8, 6 },
+	{ 3, 4, 5 },
+};
+
 /*==========================================
  * 経路探索補助heap push
  *------------------------------------------
@@ -208,11 +215,11 @@ int path_blownpos(int m,int x0,int y0,int dx,int dy,int count,int flag)
 			if( flag )
 				break;
 			if( fx && fy ){
-				if(rand()&1) dx=0;
-				else		 dy=0;
+				if(atn_rand()&1) dx=0;
+				else             dy=0;
 			}
-			if( !fx )		dx=0;
-			if( !fy )		dy=0;
+			if( !fx ) dx=0;
+			if( !fy ) dy=0;
 		}
 		x0+=dx;
 		y0+=dy;
@@ -295,7 +302,7 @@ int path_search_long_real(struct shootpath_data *spd,int m,int x0,int y0,int x1,
  * path探索 (x0,y0)->(x1,y1)
  *------------------------------------------
  */
-int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1,int flag,cell_t flag2)
+int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1,int easy,cell_t flag)
 {
 	int heap[MAX_HEAP+1];
 	struct tmp_path tp[MAX_WALKPATH*MAX_WALKPATH];
@@ -304,15 +311,13 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 	struct map_data *md;
 	int dx,dy;
 
-	nullpo_retr(0, wpd);
-
 	if(!map[m].gat)
 		return -1;
 	md=&map[m];
 	// path_search2() の場合map_getcellp() の返り値は常に0
-	if(x0<0 || x0>=md->xs || y0<0 || y0>=md->ys || map_getcellp(md,x0,y0,flag2))
+	if(x0<0 || x0>=md->xs || y0<0 || y0>=md->ys || map_getcellp(md,x0,y0,flag))
 		return -1;
-	if(x1<0 || x1>=md->xs || y1<0 || y1>=md->ys || map_getcellp(md,x1,y1,flag2))
+	if(x1<0 || x1>=md->xs || y1<0 || y1>=md->ys || map_getcellp(md,x1,y1,flag))
 		return -1;
 
 	// easy
@@ -320,36 +325,41 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 	dx = (x1-x0<0) ? -1 : 1;
 	dy = (y1-y0<0) ? -1 : 1;
 	for(x=x0,y=y0,i=0;x!=x1 || y!=y1;){
-		if(i>=sizeof(wpd->path))
+		if(i>=MAX_WALKPATH)
 			return -1;
 		if(x!=x1 && y!=y1){
-			if(map_getcellp(md,x+dx,y   ,flag2))
+			if(map_getcellp(md,x+dx,y   ,flag))
 				break;
-			if(map_getcellp(md,x   ,y+dy,flag2))
+			if(map_getcellp(md,x   ,y+dy,flag))
 				break;
-			if(map_getcellp(md,x+dx,y+dy,flag2))
+			if(map_getcellp(md,x+dx,y+dy,flag))
 				break;
 			x+=dx;
 			y+=dy;
-			wpd->path[i++]=(dx<0) ? ((dy>0)? 1 : 3) : ((dy<0)? 5 : 7);
+			if(wpd)
+				wpd->path[i++] = walk_choice[-dy+1][dx+1];
 		} else if(x!=x1){
-			if(map_getcellp(md,x+dx,y   ,flag2))
+			if(map_getcellp(md,x+dx,y   ,flag))
 				break;
 			x+=dx;
-			wpd->path[i++]=(dx<0) ? 2 : 6;
+			if(wpd)
+				wpd->path[i++] = walk_choice[1][dx+1];
 		} else { // y!=y1
-			if(map_getcellp(md,x   ,y+dy,flag2))
+			if(map_getcellp(md,x   ,y+dy,flag))
 				break;
 			y+=dy;
-			wpd->path[i++]=(dy>0) ? 0 : 4;
+			if(wpd)
+				wpd->path[i++] = walk_choice[-dy+1][1];
 		}
 		if(x==x1 && y==y1){
-			wpd->path_len=i;
-			wpd->path_pos=0;
+			if(wpd) {
+				wpd->path_len=i;
+				wpd->path_pos=0;
+			}
 			return 0;
 		}
 	}
-	if(flag&1)
+	if(easy)
 		return -1;
 
 	memset(tp,0,sizeof(tp));
@@ -383,29 +393,29 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 		// dc[2] : y-- の時のコスト増分
 		// dc[3] : x++ の時のコスト増分
 
-		if(y < ys && !map_getcellp(md,x  ,y+1,flag2)) {
+		if(y < ys && !map_getcellp(md,x  ,y+1,flag)) {
 			f |= 1; dc[0] = (y >= y1 ? 20 : 0);
 			e+=add_path(heap,tp,x  ,y+1,dist,rp,cost+dc[0]); // (x,   y+1)
 		}
-		if(x > 0  && !map_getcellp(md,x-1,y  ,flag2)) {
+		if(x > 0  && !map_getcellp(md,x-1,y  ,flag)) {
 			f |= 2; dc[1] = (x <= x1 ? 20 : 0);
 			e+=add_path(heap,tp,x-1,y  ,dist,rp,cost+dc[1]); // (x-1, y  )
 		}
-		if(y > 0  && !map_getcellp(md,x  ,y-1,flag2)) {
+		if(y > 0  && !map_getcellp(md,x  ,y-1,flag)) {
 			f |= 4; dc[2] = (y <= y1 ? 20 : 0);
 			e+=add_path(heap,tp,x  ,y-1,dist,rp,cost+dc[2]); // (x  , y-1)
 		}
-		if(x < xs && !map_getcellp(md,x+1,y  ,flag2)) {
+		if(x < xs && !map_getcellp(md,x+1,y  ,flag)) {
 			f |= 8; dc[3] = (x >= x1 ? 20 : 0);
 			e+=add_path(heap,tp,x+1,y  ,dist,rp,cost+dc[3]); // (x+1, y  )
 		}
-		if( (f & (2+1)) == (2+1) && !map_getcellp(md,x-1,y+1,flag2))
+		if( (f & (2+1)) == (2+1) && !map_getcellp(md,x-1,y+1,flag))
 			e+=add_path(heap,tp,x-1,y+1,dist+4,rp,cost+dc[1]+dc[0]-6);		// (x-1, y+1)
-		if( (f & (2+4)) == (2+4) && !map_getcellp(md,x-1,y-1,flag2))
+		if( (f & (2+4)) == (2+4) && !map_getcellp(md,x-1,y-1,flag))
 			e+=add_path(heap,tp,x-1,y-1,dist+4,rp,cost+dc[1]+dc[2]-6);		// (x-1, y-1)
-		if( (f & (8+4)) == (8+4) && !map_getcellp(md,x+1,y-1,flag2))
+		if( (f & (8+4)) == (8+4) && !map_getcellp(md,x+1,y-1,flag))
 			e+=add_path(heap,tp,x+1,y-1,dist+4,rp,cost+dc[3]+dc[2]-6);		// (x+1, y-1)
-		if( (f & (8+1)) == (8+1) && !map_getcellp(md,x+1,y+1,flag2))
+		if( (f & (8+1)) == (8+1) && !map_getcellp(md,x+1,y+1,flag))
 			e+=add_path(heap,tp,x+1,y+1,dist+4,rp,cost+dc[3]+dc[0]-6);		// (x+1, y+1)
 		tp[rp].flag=1;
 		if(e || heap[0]>=MAX_HEAP-5)
@@ -415,22 +425,18 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 		int len,j;
 
 		for(len=0,i=rp;len<100 && i!=calc_index(x0,y0);i=tp[i].before,len++);
-		if(len==100 || len>=sizeof(wpd->path))
+		if(len==100 || len>=MAX_WALKPATH)
 			return -1;
+
+		if(wpd == NULL)
+			return 0;
+
 		wpd->path_len=len;
 		wpd->path_pos=0;
 		for(i=rp,j=len-1;j>=0;i=tp[i].before,j--) {
 			int dx  = tp[i].x - tp[tp[i].before].x;
 			int dy  = tp[i].y - tp[tp[i].before].y;
-			int dir;
-			if( dx == 0 ) {
-				dir = (dy > 0 ? 0 : 4);
-			} else if( dx > 0 ) {
-				dir = (dy == 0 ? 6 : (dy < 0 ? 5 : 7) );
-			} else {
-				dir = (dy == 0 ? 2 : (dy > 0 ? 1 : 3) );
-			}
-			wpd->path[j] = dir;
+			wpd->path[j] = walk_choice[-dy+1][dx+1];
 		}
 #if 0
 		// test
@@ -439,7 +445,7 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 			for(i = 0; i < wpd->path_len; i++) {
 				x += dirx[ wpd->path[i] ];
 				y += diry[ wpd->path[i] ];
-				if( map_getcellp(md,x,y,flag2) ) {
+				if( map_getcellp(md,x,y,flag) ) {
 					printf("path_search_real: cannot move(%d, %d)\n", x, y);
 					return -1;
 				}

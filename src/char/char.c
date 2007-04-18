@@ -3768,9 +3768,9 @@ int parse_char(int fd)
 				struct cram_session_data *csd=(struct cram_session_data *)(session[fd]->session_data=aCalloc(1,sizeof(struct cram_session_data)));
 
 				// 暗号化用のチャレンジ生成
-				csd->md5keylen = rand()%(sizeof(csd->md5key)/4)+(sizeof(csd->md5key)-sizeof(csd->md5key)/4);
+				csd->md5keylen = atn_rand()%(sizeof(csd->md5key)/4)+(sizeof(csd->md5key)-sizeof(csd->md5key)/4);
 				for(i=0;i<csd->md5keylen;i++)
-					csd->md5key[i]=rand()%255+1;
+					csd->md5key[i]=atn_rand()%255+1;
 
 				WFIFOW(fd,0)= 0x2b2b;
 				WFIFOW(fd,2)=4+csd->md5keylen;

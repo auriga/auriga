@@ -3402,9 +3402,9 @@ int httpd_config_read(char *cfgName)
 					}
 					
 					// digest 認証用のプライベートキー作成
-					for( j=0; j<rand()%10+20; j++ )
+					for( j=0; j<atn_rand()%10+20; j++ )
 					{
-						a->privkey[j] = (rand()%250)+1;
+						a->privkey[j] = (atn_rand()%250)+1;
 					}
 					a->privkey[j]='\0';
 				}

@@ -86,7 +86,7 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 	// キャッシュするならタイマー設定
 	if( cache_interval > 0)
 	{
-		j->cache_timer = add_timer_interval( gettick()+ rand()%cache_interval + cache_interval,
+		j->cache_timer = add_timer_interval( gettick()+ atn_rand()%cache_interval + cache_interval,
 											 journal_flush_timer, 0, (int)j, cache_interval);
 	}
 }

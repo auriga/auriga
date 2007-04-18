@@ -27,6 +27,9 @@
 #include "vending.h"
 #include "intif.h"
 
+static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data);
+static int unit_attack_timer(int tid,unsigned int tick,int id,int data);
+
 /*==========================================
  * 二点間の距離を返す
  * 戻りは整数で0以上
@@ -38,6 +41,7 @@ int unit_distance(int x0,int y0,int x1,int y1)
 
 	dx=abs(x0-x1);
 	dy=abs(y0-y1);
+
 	return dx>dy ? dx : dy;
 }
 
@@ -49,7 +53,12 @@ int unit_distance2( struct block_list *bl, struct block_list *bl2)
 	return unit_distance(bl->x,bl->y,bl2->x,bl2->y);
 }
 
-struct unit_data* unit_bl2ud(struct block_list *bl) {
+/*==========================================
+ *
+ *------------------------------------------
+ */
+struct unit_data* unit_bl2ud(struct block_list *bl)
+{
 	if( bl == NULL) return NULL;
 	if( bl->type == BL_PC)  return &((struct map_session_data*)bl)->ud;
 	if( bl->type == BL_MOB) return &((struct mob_data*)bl)->ud;
@@ -58,8 +67,10 @@ struct unit_data* unit_bl2ud(struct block_list *bl) {
 	return NULL;
 }
 
-static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data);
-
+/*==========================================
+ *
+ *------------------------------------------
+ */
 static int unit_walktoxy_sub(struct block_list *bl)
 {
 	int i;
@@ -123,7 +134,10 @@ static int unit_walktoxy_sub(struct block_list *bl)
 	return 1;
 }
 
-
+/*==========================================
+ *
+ *------------------------------------------
+ */
 static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 {
 	int i;
@@ -252,17 +266,19 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 				sd->party_hp=-1;
 		}
 		/* ディボーション検査 */
-		for(i=0;i<5;i++)
+		for(i=0;i<5;i++) {
 			if(sd->dev.val1[i]){
 				skill_devotion3(sd,sd->dev.val1[i]);
 				break;
 			}
-		if(sd->sc_data)
+		}
+		/* 被ディボーション検査 */
+		if(sd->sc_data[SC_DEVOTION].val1){
+			skill_devotion2(&sd->bl,sd->sc_data[SC_DEVOTION].val1);
+		}
+
+		if(sd->sc_count > 0)
 		{
-			/* 被ディボーション検査 */
-			if(sd->sc_data[SC_DEVOTION].val1){
-				skill_devotion2(&sd->bl,sd->sc_data[SC_DEVOTION].val1);
-			}
 			/* マリオネット検査 */
 			if(sd->sc_data[SC_MARIONETTE].timer!=-1){
 				skill_marionette(sd,sd->sc_data[SC_MARIONETTE].val2);
@@ -282,7 +298,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 			}
 			/* ヘルモードチェック */
 			if(battle_config.hermode_wp_check &&
-				sd->sc_data[SC_DANCING].timer !=-1 && sd->sc_data[SC_DANCING].val1 ==CG_HERMODE)
+				sd->sc_data[SC_DANCING].timer !=-1 && sd->sc_data[SC_DANCING].val1 == CG_HERMODE)
 			{
 				if(skill_hermode_wp_check(&sd->bl,battle_config.hermode_wp_check_range)==0)
 					skill_stop_dancing(&sd->bl,0);
@@ -292,29 +308,18 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 				if(sd->sc_data[SC_CLOAKING].val1 < 3)
 					skill_check_cloaking(&sd->bl);
 			}
+			/* タイリギ歩数カウント */
+			if(sd->sc_data[SC_RUN].timer != -1) {
+				sd->sc_data[SC_RUN].val4++;
+			}
 		}
-		//ギルドスキル有効
+		// ギルドスキル有効
 		pc_check_guild_skill_effective_range(sd);
 
 		if(map_getcell(sd->bl.m,x,y,CELL_CHKNPC))
 			npc_touch_areanpc(sd,sd->bl.m,x,y);
 		else
 			sd->areanpc_id=0;
-
-		if(sd->sc_data[SC_RUN].timer != -1) {
-			// タイリギの障害物に当たった
-			if(map_getcell(sd->bl.m,x+dx,y+dy,CELL_CHKNOPASS) ||
-			   map_getcell(sd->bl.m,x   ,y+dy,CELL_CHKNOPASS) ||
-			   map_getcell(sd->bl.m,x+dx,y   ,CELL_CHKNOPASS) ||
-			   map_count_oncell(sd->bl.m,x+dx,y+dy,BL_PC|BL_MOB|BL_NPC) > 0) {
-				skill_blown(&sd->bl,&sd->bl,skill_get_blewcount(TK_RUN,sd->sc_data[SC_RUN].val1)|SAB_NODAMAGE);
-				status_change_end(&sd->bl,SC_RUN,-1);
-				clif_status_change(&sd->bl,SI_RUN_STOP,1);
-				pc_setdir(sd, dir, dir);
-				return 0;
-			}
-			sd->sc_data[SC_RUN].val4++;	// 継続中なら歩数カウント
-		}
 	}
 
 	ud->walkpath.path_pos++;
@@ -331,7 +336,24 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 		i = status_get_speed(bl);
 
 	if(i > 0) {
-		if(map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {	// 障害物に当たった
+		// 移動途中
+		dir = ud->walkpath.path[ud->walkpath.path_pos];
+		dx  = dirx[(int)dir];
+		dy  = diry[(int)dir];
+
+		if(sd && sd->sc_data[SC_RUN].timer != -1) {
+			// タイリギの障害物に当たった
+			if(map_getcell(sd->bl.m,x+dx,y+dy,CELL_CHKNOPASS) ||
+			   map_getcell(sd->bl.m,x   ,y+dy,CELL_CHKNOPASS) ||
+			   map_getcell(sd->bl.m,x+dx,y   ,CELL_CHKNOPASS) ||
+			   map_count_oncell(sd->bl.m,x+dx,y+dy,BL_PC|BL_MOB|BL_NPC) > 0) {
+				skill_blown(&sd->bl,&sd->bl,skill_get_blewcount(TK_RUN,sd->sc_data[SC_RUN].val1)|SAB_NODAMAGE);
+				status_change_end(&sd->bl,SC_RUN,-1);
+				clif_status_change(&sd->bl,SI_RUN_STOP,1);
+				pc_setdir(sd, dir, dir);
+				return 0;
+			}
+		} else if(map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {	// 障害物に当たった
 			if(!sc_data || sc_data[SC_FORCEWALKING].timer==-1) {
 				clif_fixwalkpos(bl);
 				return 0;
@@ -345,21 +367,23 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 	} else {
 		// 目的地に着いた
 		if(sd && sd->sc_data[SC_RUN].timer!=-1){
-			//継続判定
+			// 継続判定
 			pc_runtodir(sd);
 		}
-		if(sc_data && sc_data[SC_FORCEWALKING].timer != -1) {
-			if(sc_data[SC_FORCEWALKING].val4==0) {
-				sc_data[SC_FORCEWALKING].val4++;
+		if(sc_data) {
+			if(sc_data[SC_FORCEWALKING].timer != -1) {
+				if(sc_data[SC_FORCEWALKING].val4==0) {
+					sc_data[SC_FORCEWALKING].val4++;
+					unit_walktodir(bl,1);
+				}
+				else if(sc_data[SC_FORCEWALKING].val4==1) {
+					sc_data[SC_FORCEWALKING].val4++;
+				}
+			}
+			if(sc_data[SC_SELFDESTRUCTION].timer != -1 && md) {
+				md->dir = sc_data[SC_SELFDESTRUCTION].val4;
 				unit_walktodir(bl,1);
 			}
-			else if(sc_data[SC_FORCEWALKING].val4==1) {
-				sc_data[SC_FORCEWALKING].val4++;
-			}
-		}
-		if(md && sc_data && sc_data[SC_SELFDESTRUCTION].timer != -1) {
-			md->dir = sc_data[SC_SELFDESTRUCTION].val4;
-			unit_walktodir(bl,1);
 		}
 
 		// とまったときの位置の再送信は不要（カクカクするため）
@@ -369,7 +393,12 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 	return 0;
 }
 
-int unit_walktoxy( struct block_list *bl, int x, int y) {
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int unit_walktoxy( struct block_list *bl, int x, int y)
+{
 	struct unit_data        *ud = NULL;
 	struct map_session_data *sd = NULL;
 	struct pet_data         *pd = NULL;
@@ -377,6 +406,7 @@ int unit_walktoxy( struct block_list *bl, int x, int y) {
 	struct homun_data       *hd = NULL;
 
 	nullpo_retr(0, bl);
+
 	if( (sd = BL_DOWNCAST( BL_PC,  bl ) ) ) {
 		ud = &sd->ud;
 	} else if( (md = BL_DOWNCAST( BL_MOB, bl ) ) ) {
@@ -488,8 +518,6 @@ int unit_forcewalktodir(struct block_list *bl,int distance)
 	return 1;
 }
 
-int unit_attack_timer(int tid,unsigned int tick,int id,int data);
-
 /*==========================================
  * 位置移動
  *   flag -> 0xXY
@@ -507,7 +535,6 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	struct mob_data         *md = NULL;
 	struct homun_data       *hd = NULL;
 	struct unit_data        *ud = NULL;
-	struct walkpath_data wpd;
 
 	nullpo_retr(0, bl);
 	if( bl->prev == NULL ) return 1;
@@ -529,17 +556,17 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		ud->attacktimer = -1;
 	}
 
-	switch ( (flag&0xf0)>>4 ) {
+	switch ( (flag>>4)&0x0f ) {
 		case 0:
-			if(path_search(&wpd,bl->m,bl->x,bl->y,dst_x,dst_y,0))
+			if(path_search(NULL,bl->m,bl->x,bl->y,dst_x,dst_y,0))
 				return 1;
 			break;
 		case 1:
-			if(path_search2(&wpd,bl->m,bl->x,bl->y,dst_x,dst_y,0))
+			if(path_search2(NULL,bl->m,bl->x,bl->y,dst_x,dst_y,0))
 				return 1;
 			break;
 		case 2:
-			if(path_search3(&wpd,bl->m,bl->x,bl->y,dst_x,dst_y,0))
+			if(path_search3(NULL,bl->m,bl->x,bl->y,dst_x,dst_y,0))
 				return 1;
 			break;
 	}
@@ -628,9 +655,14 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	return 0;
 }
 
+/*==========================================
+ *
+ *------------------------------------------
+ */
 int unit_setdir(struct block_list *bl,int dir)
 {
 	nullpo_retr( 0, bl );
+
 	if(bl->type == BL_PC)
 		pc_setdir((struct map_session_data *)bl, dir, dir);
 	else if(bl->type == BL_MOB)
@@ -639,21 +671,28 @@ int unit_setdir(struct block_list *bl,int dir)
 		((struct pet_data *)bl)->dir = dir;
 	else if(bl->type == BL_HOM)
 		((struct homun_data *)bl)->dir = dir;
+
 	clif_changedir( bl, dir, dir );
 	return 0;
 }
 
+/*==========================================
+ *
+ *------------------------------------------
+ */
 int unit_getdir(struct block_list *bl)
 {
 	nullpo_retr( 0, bl );
+
 	if(bl->type == BL_PC)
 		return ((struct map_session_data *)bl)->dir;
 	else if(bl->type == BL_MOB)
-		return ((struct mob_data         *)bl)->dir;
+		return ((struct mob_data *)bl)->dir;
 	else if(bl->type == BL_PET)
-		return ((struct pet_data         *)bl)->dir;
+		return ((struct pet_data *)bl)->dir;
 	else if(bl->type == BL_HOM)
-		return ((struct homun_data       *)bl)->dir;
+		return ((struct homun_data *)bl)->dir;
+
 	return 0;
 }
 
@@ -668,6 +707,7 @@ int unit_stop_walking(struct block_list *bl,int type)
 	struct mob_data         *md = NULL;
 	struct homun_data       *hd = NULL;
 	struct unit_data        *ud = NULL;
+
 	nullpo_retr(0, bl);
 
 	if( (sd = BL_DOWNCAST( BL_PC,  bl ) ) ) {
@@ -717,6 +757,10 @@ int unit_stop_walking(struct block_list *bl,int type)
 	return 0;
 }
 
+/*==========================================
+ * スキル使用（ID指定）
+ *------------------------------------------
+ */
 int unit_skilluse_id(struct block_list *src, int target_id, int skill_num, int skill_lv)
 {
 	int id = skill_get_skilldb_id(skill_num);
@@ -746,7 +790,6 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	struct map_session_data *target_sd = NULL;
 	struct mob_data         *target_md = NULL;
 	struct homun_data       *target_hd = NULL;
-//	struct unit_data        *target_ud = NULL;
 	int forcecast = 0,zone = 0,nomemorize = 0;
 	struct status_change *sc_data;
 
@@ -1046,6 +1089,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	return 1;
 }
 
+/*==========================================
+ * スキル使用（場所指定）
+ *------------------------------------------
+ */
 int unit_skilluse_pos(struct block_list *src, int skill_x, int skill_y, int skill_num, int skill_lv)
 {
 	int id = skill_get_skilldb_id(skill_num);
@@ -1215,7 +1262,10 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	return 1;
 }
 
-// 攻撃停止
+/*==========================================
+ * 攻撃停止
+ *------------------------------------------
+ */
 void unit_stopattack(struct block_list *bl)
 {
 	struct unit_data *ud = NULL;
@@ -1235,10 +1285,15 @@ void unit_stopattack(struct block_list *bl)
 	return;
 }
 
-int unit_unattackable(struct block_list *bl) {
-	if( bl == NULL || bl->type != BL_MOB) return 0;
-
-	mob_unlocktarget( (struct mob_data*)bl, gettick()) ;
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static int unit_unattackable(struct block_list *bl)
+{
+	if(bl && bl->type == BL_MOB) {
+		mob_unlocktarget( (struct mob_data*)bl, gettick());
+	}
 	return 0;
 }
 
@@ -1277,22 +1332,18 @@ int unit_attack(struct block_list *src,int target_id,int type)
 }
 
 /*==========================================
- *
+ * 指定位置に到達可能かどうか
  *------------------------------------------
  */
 int unit_can_reach(struct block_list *bl,int x,int y)
 {
-	struct walkpath_data wpd;
-
 	nullpo_retr(0, bl);
 
 	if( bl->x==x && bl->y==y )	// 同じマス
 		return 1;
 
 	// 障害物判定
-	wpd.path_len=0;
-	wpd.path_pos=0;
-	return (path_search(&wpd,bl->m,bl->x,bl->y,x,y,0)!=-1)?1:0;
+	return (path_search(NULL,bl->m,bl->x,bl->y,x,y,0) != -1);
 }
 
 /*==========================================
@@ -1390,7 +1441,7 @@ int unit_isrunning(struct block_list *bl)
  * 攻撃 (timer関数)
  *------------------------------------------
  */
-int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
+static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 {
 	struct block_list *src, *target;
 	struct status_change *sc_data, *tsc_data;
@@ -1565,7 +1616,8 @@ int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 	return 1;
 }
 
-int unit_attack_timer(int tid,unsigned int tick,int id,int data) {
+static int unit_attack_timer(int tid,unsigned int tick,int id,int data)
+{
 	if(unit_attack_timer_sub(tid, tick, id, data) == 0) {
 		unit_unattackable( map_id2bl( id ) );
 	}
@@ -1639,8 +1691,12 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 	return 1;
 }
 
-// unit_data の初期化処理
-int unit_dataset(struct block_list *bl) {
+/*==========================================
+ * unit_data の初期化処理
+ *------------------------------------------
+ */
+int unit_dataset(struct block_list *bl)
+{
 	struct unit_data *ud;
 	unsigned int tick = gettick();
 
@@ -1662,10 +1718,10 @@ int unit_dataset(struct block_list *bl) {
  *
  *------------------------------------------
  */
-
 int unit_heal(struct block_list *bl,int hp,int sp)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type == BL_PC)
 	{
 		pc_heal((struct map_session_data*)bl,hp,sp);
@@ -1706,6 +1762,7 @@ int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int
 static int unit_counttargeted_sub(struct block_list *bl, va_list ap)
 {
 	int id, *c, target_lv;
+
 	nullpo_retr(0, bl);
 
 	id        = va_arg(ap,int);
@@ -1742,7 +1799,9 @@ static int unit_counttargeted_sub(struct block_list *bl, va_list ap)
 int unit_counttargeted(struct block_list *bl,int target_lv)
 {
 	int c = 0;
+
 	nullpo_retr(0, bl);
+
 	map_foreachinarea(unit_counttargeted_sub, bl->m,
 		bl->x-AREA_SIZE,bl->y-AREA_SIZE,
 		bl->x+AREA_SIZE,bl->y+AREA_SIZE,0,bl->id,&c,target_lv
@@ -1750,8 +1809,14 @@ int unit_counttargeted(struct block_list *bl,int target_lv)
 	return c;
 }
 
-int unit_isdead(struct block_list *bl) {
+/*==========================================
+ * 死亡しているかどうか
+ *------------------------------------------
+ */
+int unit_isdead(struct block_list *bl)
+{
 	nullpo_retr(1, bl);
+
 	if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data*)bl;
 		return (sd->state.dead_sit == 1);
@@ -1767,7 +1832,6 @@ int unit_isdead(struct block_list *bl) {
 		return 0;
 	}
 }
-
 
 /*==========================================
  * idを攻撃しているPCの攻撃を停止
@@ -1786,6 +1850,7 @@ int unit_mobstopattacked(struct map_session_data *sd,va_list ap)
 		unit_stopattack(&sd->bl);
 	return 0;
 }
+
 /*==========================================
  * 見た目のサイズを変更する
  *------------------------------------------
@@ -1823,7 +1888,8 @@ int unit_changeviewsize(struct block_list *bl,int size)
  * スキル詠唱中かどうかを返す
  *------------------------------------------
  */
-int unit_iscasting(struct block_list *bl) {
+int unit_iscasting(struct block_list *bl)
+{
 	struct unit_data *ud = unit_bl2ud(bl);
 
 	if( ud == NULL )
@@ -1836,7 +1902,8 @@ int unit_iscasting(struct block_list *bl) {
  * 歩行中かどうかを返す
  *------------------------------------------
  */
-int unit_iswalking(struct block_list *bl) {
+int unit_iswalking(struct block_list *bl)
+{
 	struct unit_data *ud = unit_bl2ud(bl);
 
 	if( ud == NULL )
@@ -2038,8 +2105,10 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
  * マップから離脱後、領域を解放する
  *------------------------------------------
  */
-int unit_free(struct block_list *bl, int clrtype) {
+int unit_free(struct block_list *bl, int clrtype)
+{
 	struct unit_data *ud = unit_bl2ud( bl );
+
 	nullpo_retr(0, ud);
 
 	map_freeblock_lock();
@@ -2125,13 +2194,23 @@ int unit_free(struct block_list *bl, int clrtype) {
 	return 0;
 }
 
-int do_init_unit(void) {
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+int do_init_unit(void)
+{
 	add_timer_func_list(unit_attack_timer,  "unit_attack_timer");
 	add_timer_func_list(unit_walktoxy_timer,"unit_walktoxy_timer");
 	return 0;
 }
 
-int do_final_unit(void) {
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+int do_final_unit(void)
+{
 	// nothing to do
 	return 0;
 }

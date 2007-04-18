@@ -1,4 +1,14 @@
 ----------------------------------------
+//0159 [2007/04/19] by Rayce
+
+・path_search_real() に渡す walkpath_data 構造体はNULLでも使えるように改善および処理の最適化（path.c）
+	based on eA, thx a lot!!
+
+・0125以降、一部の歩行経路で壁を回り込んでの移動ができなくなっていたバグを修正（unit.c）
+・rand() を atn_rand() に変更し忘れ箇所を修正（char.c, httpd.c, journal.c, login.c, path.c）
+・unit.cの細かい修正および整形
+
+----------------------------------------
 //0158 [2007/04/18] by Rayce
 
 ・friend.cを少し修正
