@@ -3018,7 +3018,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 
-	case HLIF_HEAL:	//治癒の手助け
+	case HLIF_HEAL:		/* 治癒の手助け */
 		{
 			int lv=0;
 			int heal=skill_calc_heal( src, skilllv );
@@ -3063,11 +3063,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(dstsd->special_state.restart_full_recover) {	/* オシリスカード */
 			dstsd->status.hp = dstsd->status.max_hp;
 			dstsd->status.sp = dstsd->status.max_sp;
+			clif_updatestatus(dstsd,SP_SP);
 		}
+		clif_updatestatus(dstsd,SP_HP);
 		pc_setstand(dstsd);
 		if(battle_config.pc_invincible_time > 0)
 			pc_setinvincibletimer(dstsd,battle_config.pc_invincible_time);
-		clif_updatestatus(dstsd,SP_HP);
 		clif_resurrection(&dstsd->bl,1);
 
 		if(src != bl && sd && battle_config.resurrection_exp > 0)
@@ -11622,37 +11623,38 @@ void skill_weapon_refine(struct map_session_data *sd, int idx)
 
 	wlv = itemdb_wlv(sd->status.inventory[idx].nameid);
 
-	//武器じゃない？
-	if(wlv == 0
-		|| sd->status.inventory[idx].nameid <= 0
-		|| sd->status.inventory[idx].identify != 1)
+	// 不正チェック
+	if( wlv <= 0 ||
+	    sd->status.inventory[idx].nameid <= 0 ||
+	    sd->status.inventory[idx].identify != 1 ||
+	    !sd->inventory_data[idx]->refine )
 		return;
 	if(sd->status.inventory[idx].refine >= skilllv){
 		clif_weapon_refine_res(sd,2,sd->status.inventory[idx].nameid);
 		return;
 	}
 
-	if(wlv < 1 || wlv > 4)	// 武器Lv5以上はLv4と同じとみなす
+	if(wlv > 4)	// 武器Lv5以上はLv4と同じとみなす
 		wlv = 4;
 
-	//アイテムチェック
+	// アイテムチェック
 	if(pc_search_inventory(sd,refine_item[wlv])==-1){
 		clif_weapon_refine_res(sd,3,refine_item[wlv]);
 		return;
 	}
 
-	//成功
+	// 成功
 	if(atn_rand()%10000 < status_percentrefinery_weaponrefine(sd,&sd->status.inventory[idx]))
 	{
 		clif_weapon_refine_res(sd,0,sd->status.inventory[idx].nameid);
 		skill_success_weaponrefine(sd,idx);
 	}else{
-	//失敗
+	// 失敗
 		clif_weapon_refine_res(sd,1,sd->status.inventory[idx].nameid);
 		skill_fail_weaponrefine(sd,idx);
 	}
 
-	//アイテム消費
+	// アイテム消費
 	pc_delitem(sd,pc_search_inventory(sd,refine_item[wlv]),1,0);
 
 	return;
@@ -11676,7 +11678,7 @@ int skill_success_weaponrefine(struct map_session_data *sd,int idx)
 	clif_refine(sd->fd,0,idx,sd->status.inventory[idx].refine);
 	clif_misceffect(&sd->bl,3);
 
-	//ブラックスミス 名声値
+	// ブラックスミス 名声値
 	if(sd->status.inventory[idx].refine==MAX_REFINE && (*((unsigned long *)(&sd->status.inventory[idx].card[2]))) == sd->status.char_id)
 	{
 		switch(itemdb_wlv(sd->status.inventory[idx].nameid))

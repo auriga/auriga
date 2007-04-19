@@ -391,7 +391,8 @@ static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *
 		if(sd->sc_data[SC_BABY].timer != -1)
 			return 0;
 		if(sd->sc_data[SC_LIFEINSURANCE].timer != -1) {
-			status_change_end(&sd->bl,SC_LIFEINSURANCE,-1);
+			if(--sd->sc_data[SC_LIFEINSURANCE].val1 <= 0)
+				status_change_end(&sd->bl,SC_LIFEINSURANCE,-1);
 			return 0;
 		}
 	}

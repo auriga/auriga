@@ -5867,8 +5867,12 @@ void clif_weapon_refine_list(struct map_session_data *sd)
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x221;
 	for(i=c=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].identify==1 &&
-			itemdb_wlv(sd->status.inventory[i].nameid) >=1 && !(sd->status.inventory[i].equip&0x0022)){
+		if( sd->status.inventory[i].nameid > 0 &&
+		    sd->status.inventory[i].identify == 1 &&
+		    sd->inventory_data[i]->refine &&
+		    itemdb_wlv(sd->status.inventory[i].nameid) >=1 &&
+		    !(sd->status.inventory[i].equip&0x0022) )
+		{
 			WFIFOW(fd,c*13+ 4)=i+2;
 			WFIFOW(fd,c*13+ 6)=sd->status.inventory[i].nameid;
 			WFIFOW(fd,c*13+ 8)=0;

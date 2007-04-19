@@ -1,4 +1,15 @@
 ----------------------------------------
+//0162 [2007/04/20] by Rayce
+
+・AthenaProject2293よりmerge、thanks to 名無しさん
+	-> 生命保険証のデスペナ軽減回数を設定可能に拡張（pc.c）
+	   例えば「sc_start SC_LIFEINSURANCE,1800000,3;」で3回デスペナを軽減します
+	-> 武器精錬で精錬不可のものがリストに出てしまうのを修正（clif.c, skill.c）
+	   AthenaProject BTS報告Cocoaさん thank's
+	-> オシリスカード装備時にリザレクションをするとSP表示が反映されなかったのを修正（skill.c）
+	   AthenaProject BTS報告masterさん thank's
+
+----------------------------------------
 //0161 [2007/04/20] by Rayce
 
 ・ダメージが負のときの属性補正計算が間違っていたので修正（battle.c）
