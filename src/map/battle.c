@@ -228,7 +228,7 @@ int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,in
  */
 int battle_attr_fix(int damage,int atk_elem,int def_elem)
 {
-	int def_type, def_lv;
+	int def_type, def_lv, rate;
 
 	// 属性無し(!=無属性)
 	if (atk_elem == ELE_NONE)
@@ -238,7 +238,7 @@ int battle_attr_fix(int damage,int atk_elem,int def_elem)
 	def_lv   = def_elem/20;
 
 	if( atk_elem == ELE_MAX )
-		atk_elem = atn_rand()%ELE_MAX;	//武器属性ランダムで付加
+		atk_elem = atn_rand()%ELE_MAX;	// 武器属性ランダムで付加
 
 	if( atk_elem < 0 || atk_elem >= ELE_MAX ||
 	    def_type < 0 || def_type >= ELE_MAX ||
@@ -249,7 +249,11 @@ int battle_attr_fix(int damage,int atk_elem,int def_elem)
 		return damage;
 	}
 
-	return ((damage > 0)? damage*attr_fix_table[def_lv-1][atk_elem][def_type]/100: 0);
+	rate = attr_fix_table[def_lv-1][atk_elem][def_type];
+	if(damage < 0 && rate < 0)	// 負×負の場合は結果を負にする
+		rate *= -1;
+
+	return damage * rate / 100;
 }
 
 /*==========================================
@@ -1131,19 +1135,8 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	/* ５．連撃判定 */
 	if(src_sd && skill_num == 0 && skill_lv >= 0) {
 		do {
-			// ダブルアタック
-			if((skill = pc_checkskill(src_sd,TF_DOUBLE)) > 0 && src_sd->weapontype1 == WT_DAGGER && atn_rand()%100 < skill*5) {
-				calc_flag.da = 1;
-				calc_flag.hitrate = calc_flag.hitrate*(100+skill)/100;
-				break;
-			}
-			// チェーンアクション
-			if((skill = pc_checkskill(src_sd,GS_CHAINACTION)) > 0 && src_sd->weapontype1 == WT_HANDGUN && atn_rand()%100 < skill*5) {
-				calc_flag.da = 1;
-				break;
-			}
 			// 三段掌
-			if((skill = pc_checkskill(src_sd,MO_TRIPLEATTACK)) > 0 && src_sd->status.weapon <= WT_HUUMA && !src_sd->state.arrow_atk)
+			if((skill = pc_checkskill(src_sd,MO_TRIPLEATTACK)) > 0 && src_sd->status.weapon <= WT_HUUMA)
 			{
 				int triple_rate = 0;
 				if(sc_data && sc_data[SC_TRIPLEATTACK_RATE_UP].timer!=-1) {
@@ -1156,6 +1149,17 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 					calc_flag.da = 2;
 					break;
 				}
+			}
+			// ダブルアタック
+			if((skill = pc_checkskill(src_sd,TF_DOUBLE)) > 0 && src_sd->weapontype1 == WT_DAGGER && atn_rand()%100 < skill*5) {
+				calc_flag.da = 1;
+				calc_flag.hitrate = calc_flag.hitrate*(100+skill)/100;
+				break;
+			}
+			// チェーンアクション
+			if((skill = pc_checkskill(src_sd,GS_CHAINACTION)) > 0 && src_sd->weapontype1 == WT_HANDGUN && atn_rand()%100 < skill*5) {
+				calc_flag.da = 1;
+				break;
 			}
 			// フェオリチャギ
 			if(sc_data && sc_data[SC_READYSTORM].timer!=-1 && pc_checkskill(src_sd,TK_STORMKICK) > 0 && atn_rand()%100 < 15) {

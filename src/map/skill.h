@@ -163,13 +163,10 @@ enum {	//吹き飛ばしフラグ
 int skill_add_blown( struct block_list *src, struct block_list *target,int skillid,int flag);
 
 //カード効果のオートスペル
-int skill_use_bonus_autospell(struct block_list * src,struct block_list * bl,int skill_id,int skill_lv,int rate,long skill_flag,int tick,int flag);
 int skill_bonus_autospell(struct block_list * src,struct block_list * bl,long mode,int tick,int flag);
 
 // ユニットスキル
-struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,int x,int y);
 int skill_delunit(struct skill_unit *unit);
-struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id);
 int skill_delunitgroup(struct skill_unit_group *group);
 int skill_clear_unitgroup(struct block_list *src);
 
@@ -192,8 +189,6 @@ void skill_stop_gravitation(struct block_list *src);
 int skill_castcancel(struct block_list *bl,int type);
 
 int skill_gangsterparadise(struct map_session_data *sd ,int type);
-void skill_brandishspear_first(struct square *tc,int dir,int x,int y);
-void skill_brandishspear_dir(struct square *tc,int dir,int are);
 void skill_autospell(struct map_session_data *sd, int skillid);
 void skill_devotion(struct map_session_data *md);
 void skill_devotion2(struct block_list *bl,int crusader);
@@ -201,7 +196,6 @@ int skill_devotion3(struct map_session_data *sd,int target);
 void skill_devotion_end(struct map_session_data *md,struct map_session_data *sd,int target);
 int skill_marionette(struct map_session_data *sd,int target);
 void skill_marionette2(struct map_session_data *sd,int src);
-int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,int tick,int flag,int wheel);
 
 #define skill_calc_heal(bl,skill_lv) (( status_get_lv(bl)+status_get_int(bl) )/8 *(4+ skill_lv*8))
 int skill_castend_id( int tid, unsigned int tick, int id,int data );
@@ -228,9 +222,6 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 // アイテム作成
 int skill_can_produce_mix(struct map_session_data *sd, int idx, int trigger);
 void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int slot2, int slot3);
-int skill_am_twilight1(struct map_session_data* sd);
-int skill_am_twilight2(struct map_session_data* sd);
-int skill_am_twilight3(struct map_session_data* sd);
 
 void skill_arrow_create(struct map_session_data *sd, int nameid);
 void skill_repair_weapon(struct map_session_data *sd, int idx);

@@ -157,7 +157,7 @@
 189,SC_SPLASHER,0,1,0			// ベナムスプラッシャー
 190,SC_SELFDESTRUCTION,-1,1,0		// 自爆
 191,SC_MAGNUM,0,1,0			// マグナムブレイク
-192,SC_GOSPEL,-1,5,0			// ゴスペル
+192,SC_GOSPEL,-1,1,0			// ゴスペル
 193,SC_INCALLSTATUS,0,5,0		// 全ステータス上昇（ゴスペル用）
 194,SC_INCHIT,0,5,0			// HIT上昇（ゴスペル用）
 195,SC_INCFLEE,0,5,0			// FLEE上昇（ゴスペル用）

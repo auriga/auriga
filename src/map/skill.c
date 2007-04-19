@@ -364,20 +364,29 @@ struct skill_arrow_db skill_arrow_db[MAX_SKILL_ARROW_DB];
 struct skill_abra_db skill_abra_db[MAX_SKILL_ABRA_DB];
 
 /* プロトタイプ */
-int skill_frostjoke_scream(struct block_list *bl,va_list ap);
-int skill_abra_dataset(struct map_session_data *sd, int skilllv);
-int skill_clear_element_field(struct block_list *bl);
-int skill_landprotector(struct block_list *bl, va_list ap );
-int skill_redemptio(struct block_list *bl, va_list ap );
-int skill_trap_splash(struct block_list *bl, va_list ap );
-int skill_count_target(struct block_list *bl, va_list ap );
-int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsigned int tick);
-int skill_unit_effect(struct block_list *bl,va_list ap);
-int skill_greed( struct block_list *bl,va_list ap );
-int skill_balkyoung( struct block_list *bl,va_list ap );
-int skill_chastle_mob_changetarget(struct block_list *bl,va_list ap);
-int skill_delunit_by_ganbatein(struct block_list *bl, va_list ap );
-int skill_count_unitgroup(struct unit_data *ud,int skillid);
+static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,int x,int y);
+static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id);
+
+static void skill_brandishspear_dir(struct square *tc,int dir,int are);
+static void skill_brandishspear_first(struct square *tc,int dir,int x,int y);
+static int skill_frostjoke_scream(struct block_list *bl,va_list ap);
+static int skill_abra_dataset(struct map_session_data *sd, int skilllv);
+static int skill_clear_element_field(struct block_list *bl);
+static int skill_landprotector(struct block_list *bl, va_list ap );
+static int skill_redemptio(struct block_list *bl, va_list ap );
+static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,int wheel);
+static int skill_trap_splash(struct block_list *bl, va_list ap );
+static int skill_count_target(struct block_list *bl, va_list ap );
+static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsigned int tick);
+static int skill_unit_effect(struct block_list *bl,va_list ap);
+static int skill_greed( struct block_list *bl,va_list ap );
+static int skill_balkyoung( struct block_list *bl,va_list ap );
+static int skill_chastle_mob_changetarget(struct block_list *bl,va_list ap);
+static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap );
+static int skill_count_unitgroup(struct unit_data *ud,int skillid);
+static int skill_am_twilight1(struct map_session_data* sd);
+static int skill_am_twilight2(struct map_session_data* sd);
+static int skill_am_twilight3(struct map_session_data* sd);
 
 /* スキルユニットの配置情報を返す */
 struct skill_unit_layout skill_unit_layout[MAX_SKILL_UNIT_LAYOUT];
@@ -2568,7 +2577,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case CG_TAROTCARD:		/* 運命のタロットカード */
-		skill_tarot_card_of_fate(src,bl,skillid,skilllv,tick,flag,0);
+		skill_tarot_card_of_fate(src,bl,skillid,skilllv,0);
 		break;
 	case MG_FROSTDIVER:		/* フロストダイバー */
 	{
@@ -5845,7 +5854,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case HW_GANBANTEIN:			//ガバンティン
 		if(atn_rand()%100 < 80)
 		{
-			map_foreachinarea(skill_delunit_by_ganbatein,src->m,x-1,y-1,x+1,y+1,BL_SKILL);
+			map_foreachinarea(skill_delunit_by_ganbantein,src->m,x-1,y-1,x+1,y+1,BL_SKILL);
 		}else
 			if(sd) clif_skill_fail(sd,skillid,0,0);
 		break;
@@ -6350,7 +6359,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
  * スキルユニットの発動イベント(位置発動)
  *------------------------------------------
  */
-int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsigned int tick)
+static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsigned int tick)
 {
 	struct skill_unit_group *sg;
 	struct skill_unit *unit2;
@@ -6808,7 +6817,6 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 				int sp = (sg->skill_lv <= 5) ? 20 : 35;
 				if((sd->status.hp - hp)<=0 || (sd->status.sp - sp)<=0){
 					status_change_end(bl,SC_GOSPEL,-1);
-					skill_delunitgroup(sg);
 					break;
 				}
 				pc_heal(sd,-hp,-sp);
@@ -6878,7 +6886,7 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 				if(type > 0 && sd)
 					clif_gospel_message(sd,type);
 			}
-			else if (battle_check_target(&src->bl,bl,BCT_ENEMY)>0) {	// 敵対象
+			else if (battle_check_target(&src->bl,bl,BCT_ENEMY)>0 && !(status_get_mode(bl)&0x20)) {	// 敵対象でボス以外
 				switch(atn_rand()%8) {
 				case 0:		// ランダムダメージ(1000〜9999？)
 					battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
@@ -7124,7 +7132,7 @@ int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigned int t
  *	bl: ユニット(BL_PC/BL_MOB)
  *------------------------------------------
  */
-int skill_unit_effect(struct block_list *bl,va_list ap)
+static int skill_unit_effect(struct block_list *bl,va_list ap)
 {
 	struct skill_unit *unit;
 	struct skill_unit_group *group;
@@ -8846,12 +8854,14 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		if(itemid[idx] <= 0)
 			goto ITEM_NOCOST;//消費なさそうなので
 
-		//ウィザードの魂
-		if(itemid[idx] >= 715 && itemid[idx] <= 717 && (sd->special_state.no_gemstone || sd->sc_data[SC_WIZARD].timer!=-1) )
-			goto ITEM_NOCOST;
+		if(sc->id != HW_GANBANTEIN) {
+			//ウィザードの魂
+			if(itemid[idx] >= 715 && itemid[idx] <= 717 && (sd->special_state.no_gemstone || sd->sc_data[SC_WIZARD].timer!=-1) )
+				goto ITEM_NOCOST;
 
-		if(((itemid[idx] >= 715 && itemid[idx] <= 717) || itemid[idx] == 1065) && sd->sc_data[SC_INTOABYSS].timer != -1)
-			goto ITEM_NOCOST;
+			if(((itemid[idx] >= 715 && itemid[idx] <= 717) || itemid[idx] == 1065) && sd->sc_data[SC_INTOABYSS].timer != -1)
+				goto ITEM_NOCOST;
+		}
 
 		index[idx] = pc_search_inventory(sd,itemid[idx]);
 		if(index[idx] < 0 || sd->status.inventory[index[idx]].amount < amount[idx]) {
@@ -8868,13 +8878,15 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			if(itemid[i] <= 0)
 				continue;
 
-			if(itemid[i] >= 715 && itemid[i] <= 717) {
-				if(sd->special_state.no_gemstone || sd->sc_data[SC_WIZARD].timer != -1)		//ウィザードの魂
+			if(sc->id != HW_GANBANTEIN) {
+				if(itemid[i] >= 715 && itemid[i] <= 717) {
+					if(sd->special_state.no_gemstone || sd->sc_data[SC_WIZARD].timer != -1)		//ウィザードの魂
+						continue;
+				}
+
+				if(((itemid[i] >= 715 && itemid[i] <= 717) || itemid[i] == 1065) && sd->sc_data[SC_INTOABYSS].timer != -1)
 					continue;
 			}
-
-			if(((itemid[i] >= 715 && itemid[i] <= 717) || itemid[i] == 1065) && sd->sc_data[SC_INTOABYSS].timer != -1)
-				continue;
 			if((sc->id == AM_POTIONPITCHER || sc->id == CR_SLIMPITCHER) && i != x)
 				continue;
 
@@ -9222,7 +9234,7 @@ int skill_delayfix( struct block_list *bl, int time, int cast )
  * ブランディッシュスピア 初期範囲決定
  *----------------------------------------
  */
-void skill_brandishspear_first(struct square *tc,int dir,int x,int y){
+static void skill_brandishspear_first(struct square *tc,int dir,int x,int y){
 
 	nullpo_retv(tc);
 
@@ -9322,15 +9334,14 @@ void skill_brandishspear_first(struct square *tc,int dir,int x,int y){
 		tc->val2[3]=y-2;
 		tc->val2[4]=y-3;
 	}
-
 }
 
 /*=========================================
  * ブランディッシュスピア 方向判定 範囲拡張
  *-----------------------------------------
  */
-void skill_brandishspear_dir(struct square *tc,int dir,int are){
-
+static void skill_brandishspear_dir(struct square *tc,int dir,int are)
+{
 	int c;
 
 	nullpo_retv(tc);
@@ -9355,6 +9366,7 @@ void skill_brandishspear_dir(struct square *tc,int dir,int are){
 		}
 	}
 }
+
 /*----------------------------------------------------------------------------
  * 個別スキルの関数
  */
@@ -9597,7 +9609,7 @@ int skill_gangsterparadise(struct map_session_data *sd ,int type)
  * 寒いジョーク・スクリーム判定処理(foreachinarea)
  *------------------------------------------
  */
-int skill_frostjoke_scream(struct block_list *bl,va_list ap)
+static int skill_frostjoke_scream(struct block_list *bl,va_list ap)
 {
 	struct block_list *src;
 	int skillnum,skilllv;
@@ -9625,10 +9637,10 @@ int skill_frostjoke_scream(struct block_list *bl,va_list ap)
 }
 
 /*==========================================
- *アブラカダブラの使用スキル決定(決定スキルがダメなら0を返す)
+ * アブラカダブラの使用スキル決定(決定スキルがダメなら0を返す)
  *------------------------------------------
  */
-int skill_abra_dataset(struct map_session_data *sd, int skilllv)
+static int skill_abra_dataset(struct map_session_data *sd, int skilllv)
 {
 	int skill = atn_rand()%MAX_SKILL_ABRA_DB;
 	struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
@@ -9639,15 +9651,15 @@ int skill_abra_dataset(struct map_session_data *sd, int skilllv)
 	)
 		return 0;
 
-	//dbに基づくレベル・確率判定
+	// dbに基づくレベル・確率判定
 	if(skill_abra_db[skill].req_lv > skilllv || atn_rand()%10000 >= skill_abra_db[skill].per)
 		return 0;
-	//NPC・結婚・養子・アイテムスキルはダメ
+	// NPC・結婚・養子・アイテムスキルはダメ
 	if( skill_mobskill( skill_abra_db[skill].nameid ) ||
 	   (skill_abra_db[skill].nameid >= WE_BABY && skill_abra_db[skill].nameid <= WE_CALLBABY))
 		return 0;
 
-	//演奏スキルはダメ
+	// 演奏スキルはダメ
 	if (skill_get_unit_flag(skill_abra_db[skill].nameid)&UF_DANCE)
 		return 0;
 
@@ -9658,7 +9670,7 @@ int skill_abra_dataset(struct map_session_data *sd, int skilllv)
  * バジリカのセルを設定する
  *------------------------------------------
  */
-void skill_basilica_cell(struct skill_unit *unit,int flag)
+static void skill_basilica_cell(struct skill_unit *unit,int flag)
 {
 	int i,x,y;
 	int range = skill_get_unit_range(HP_BASILICA);
@@ -9697,7 +9709,7 @@ void skill_basilica_cancel( struct block_list *bl )
  *
  *------------------------------------------
  */
-int skill_clear_element_field(struct block_list *bl)
+static int skill_clear_element_field(struct block_list *bl)
 {
 	struct unit_data *ud = unit_bl2ud( bl );
 	struct linkdb_node *node, *node2;
@@ -9721,7 +9733,7 @@ int skill_clear_element_field(struct block_list *bl)
  * ランドプロテクターチェック(foreachinarea)
  *------------------------------------------
  */
-int skill_landprotector(struct block_list *bl, va_list ap )
+static int skill_landprotector(struct block_list *bl, va_list ap )
 {
 	int skillid;
 	int *alive;
@@ -9763,7 +9775,7 @@ int skill_landprotector(struct block_list *bl, va_list ap )
  * レディムプティオ
  *------------------------------------------
  */
-int skill_redemptio(struct block_list *bl, va_list ap )
+static int skill_redemptio(struct block_list *bl, va_list ap )
 {
 	struct block_list * src = NULL;
 	int *count;
@@ -9787,7 +9799,7 @@ int skill_redemptio(struct block_list *bl, va_list ap )
  * イドゥンの林檎の回復処理(foreachinarea)
  *------------------------------------------
  */
-int skill_idun_heal(struct block_list *bl, va_list ap )
+static int skill_idun_heal(struct block_list *bl, va_list ap )
 {
 	struct skill_unit *unit;
 	struct skill_unit_group *sg;
@@ -9814,7 +9826,7 @@ int skill_idun_heal(struct block_list *bl, va_list ap )
  * 運命のタロットカード
  *------------------------------------------
  */
-int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,int tick,int flag,int wheel)
+static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,int wheel)
 {
 	struct map_session_data* tsd=NULL;
 	struct mob_data* tmd=NULL;
@@ -9917,10 +9929,10 @@ int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,in
 		case 6:
 			/* 運命の輪(Wheel of Fortune) - ランダムに他のタロットカード二枚の効果を同時に与える */
 			if(wheel > 0 && wheel < 50) {	// もう1度実行（50回で打ち切り）
-				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,flag,wheel+1);
+				skill_tarot_card_of_fate(src,target,skillid,skilllv,wheel+1);
 			} else {			// ２つ実行
-				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,flag,1);
-				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,flag,1);
+				skill_tarot_card_of_fate(src,target,skillid,skilllv,1);
+				skill_tarot_card_of_fate(src,target,skillid,skilllv,1);
 			}
 			break;
 		case 7:
@@ -9986,7 +9998,7 @@ int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,in
  * 指定範囲内でsrcに対して有効なターゲットのblの数を数える(foreachinarea)
  *------------------------------------------
  */
-int skill_count_target(struct block_list *bl, va_list ap )
+static int skill_count_target(struct block_list *bl, va_list ap )
 {
 	struct skill_unit *unit;
 	int *c;
@@ -10006,7 +10018,7 @@ int skill_count_target(struct block_list *bl, va_list ap )
  * トラップ範囲処理(foreachinarea)
  *------------------------------------------
  */
-int skill_trap_splash(struct block_list *bl, va_list ap )
+static int skill_trap_splash(struct block_list *bl, va_list ap )
 {
 	int tick;
 	int splash_count;
@@ -10168,7 +10180,7 @@ void skill_stop_gravitation(struct block_list *src)
  * スキルユニット初期化
  *------------------------------------------
  */
-struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,int x,int y)
+static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,int x,int y)
 {
 	struct skill_unit *unit;
 
@@ -10240,7 +10252,7 @@ int skill_delunit(struct skill_unit *unit)
  */
 static int skill_unit_group_newid = MAX_SKILL_DB;
 
-struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id)
+static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id)
 {
 	struct unit_data *ud = unit_bl2ud( src );
 	struct skill_unit_group *group;
@@ -10302,11 +10314,35 @@ int skill_delunitgroup(struct skill_unit_group *group)
 
 	src = map_id2bl(group->src_id);
 	ud  = unit_bl2ud( src );
-	//ダンススキルはダンス状態を解除する
+
+	// ダンススキルはダンス状態を解除する
 	if (skill_get_unit_flag(group->skill_id)&UF_DANCE) {
 		if(src)
 			status_change_end(src,SC_DANCING,-1);
 	}
+
+	// 状態異常にユニットグループが保存されている場合はクリアする
+	switch(group->unit_id) {
+	case UNT_GOSPEL:
+	case UNT_GRAFFITI:
+	case UNT_WARM:
+		{
+			struct status_change *sc_data;
+			int type;
+
+			if(src == NULL)
+				break;
+			if((sc_data = status_get_sc_data(src)) == NULL)
+				break;
+			type = SkillStatusChangeTable[group->skill_id];
+			if(type >= 0 && sc_data[type].timer != -1) {
+				sc_data[type].val4 = 0;
+				status_change_end(src,type,-1);
+			}
+		}
+		break;
+	}
+
 	if(ud) {
 		if( linkdb_erase( &ud->skillunit, group ) == NULL ) {
 			// 見つからなかった
@@ -10552,7 +10588,7 @@ int skill_hermode_wp_check(struct block_list *bl,int range)
  * GANVATIENによるユニット削除
  *------------------------------------------
  */
-int skill_delunit_by_ganbatein(struct block_list *bl, va_list ap )
+static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 {
 	struct skill_unit *unit;
 
@@ -10578,7 +10614,7 @@ int skill_delunit_by_ganbatein(struct block_list *bl, va_list ap )
 		case PF_FOGWALL:
 		case NJ_SUITON:
 			skill_delunit(unit);
-		break;
+			break;
 	}
 	return 0;
 }
@@ -10587,7 +10623,7 @@ int skill_delunit_by_ganbatein(struct block_list *bl, va_list ap )
  * スキルユニットタイマー処理
  *------------------------------------------
  */
-int skill_unit_timer( int tid,unsigned int tick,int id,int data)
+static int skill_unit_timer( int tid,unsigned int tick,int id,int data)
 {
 	map_freeblock_lock();
 
@@ -10761,7 +10797,7 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
  * 設置済みスキルユニットの数を返す
  *------------------------------------------
  */
-int skill_count_unitgroup(struct unit_data *ud,int skillid)
+static int skill_count_unitgroup(struct unit_data *ud,int skillid)
 {
 	int c = 0;
 	struct skill_unit_group *group;
@@ -11271,21 +11307,21 @@ static int skill_am_twilight_sub(struct map_session_data* sd,int nameid,int coun
 	return 1;
 }
 
-int skill_am_twilight1(struct map_session_data* sd)
+static int skill_am_twilight1(struct map_session_data* sd)
 {
 	nullpo_retr(0, sd);
 
 	skill_am_twilight_sub(sd,504,200);
 	return 1;
 }
-int skill_am_twilight2(struct map_session_data* sd)
+static int skill_am_twilight2(struct map_session_data* sd)
 {
 	nullpo_retr(0, sd);
 
 	skill_am_twilight_sub(sd,547,200);
 	return 1;
 }
-int skill_am_twilight3(struct map_session_data* sd)
+static int skill_am_twilight3(struct map_session_data* sd)
 {
 	nullpo_retr(0, sd);
 
@@ -11394,7 +11430,7 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 
 //int mode	攻撃時1 反撃 2
 //オートスペル
-int skill_use_bonus_autospell(struct block_list * src,struct block_list * bl,int skill_id,int skill_lv,int rate,long skill_flag,int tick,int flag)
+static int skill_use_bonus_autospell(struct block_list * src,struct block_list * bl,int skill_id,int skill_lv,int rate,long skill_flag,int tick,int flag)
 {
 	int skillid = skill_id;
 	int skilllv = skill_lv;
@@ -11693,7 +11729,7 @@ int skill_fail_weaponrefine(struct map_session_data *sd,int idx)
  * 貪欲
  *------------------------------------------
  */
-int skill_greed( struct block_list *bl,va_list ap )
+static int skill_greed( struct block_list *bl,va_list ap )
 {
 	int flag;
 	unsigned int tick = gettick();
@@ -11755,7 +11791,7 @@ int skill_greed( struct block_list *bl,va_list ap )
  * 気爆発
  *------------------------------------------
  */
-int skill_balkyoung( struct block_list *bl,va_list ap )
+static int skill_balkyoung( struct block_list *bl,va_list ap )
 {
 	struct block_list *src;
 	struct block_list *tbl;
@@ -11785,7 +11821,7 @@ int skill_balkyoung( struct block_list *bl,va_list ap )
  * キャスリングのターゲット変更
  *------------------------------------------
  */
-int skill_chastle_mob_changetarget(struct block_list *bl,va_list ap)
+static int skill_chastle_mob_changetarget(struct block_list *bl,va_list ap)
 {
 	struct mob_data* md;
 	struct block_list *from_bl;
