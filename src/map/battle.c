@@ -3705,7 +3705,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
  *-------------------------------------------------------------------------
  */
 int battle_skill_attack(int attack_type,struct block_list* src,struct block_list *dsrc,
-	 struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag)
+	struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag)
 {
 	struct Damage dmg;
 	struct map_session_data *sd = NULL, *tsd = NULL;
@@ -4891,7 +4891,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.guild_skill_check_range = 0;
 		battle_config.allow_guild_skill_in_gvg_only = 1;
 		battle_config.allow_me_guild_skill = 0;
-		battle_config.emergencycall_point_randam = 0;
+		battle_config.emergencycall_point_type = 1;
 		battle_config.emergencycall_call_limit = 0;
 		battle_config.allow_guild_skill_in_gvgtime_only = 0;
 		battle_config.guild_skill_in_pvp_limit = 1;
@@ -5346,7 +5346,7 @@ int battle_config_read(const char *cfgName)
 			{ "guild_skill_check_range",			&battle_config.guild_skill_check_range				},
 			{ "allow_guild_skill_in_gvg_only",		&battle_config.allow_guild_skill_in_gvg_only		},
 			{ "allow_me_guild_skill",				&battle_config.allow_me_guild_skill					},
-			{ "emergencycall_point_randam",			&battle_config.emergencycall_point_randam			},
+			{ "emergencycall_point_type",			&battle_config.emergencycall_point_type			},
 			{ "emergencycall_call_limit",			&battle_config.emergencycall_call_limit				},
 			{ "allow_guild_skill_in_gvgtime_only",	&battle_config.allow_guild_skill_in_gvgtime_only	},
 			{ "guild_skill_in_pvp_limit",			&battle_config.guild_skill_in_pvp_limit				},

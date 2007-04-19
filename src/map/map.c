@@ -1112,7 +1112,7 @@ void map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
  * data==1の時は拾う等で消えた時として動作
  * data==2の時はサーバ停止時
  *
- * 後者は、map_clearflooritem(id)へ
+ * data==1は、map_clearflooritem(id)へ
  * map.h内で#defineしてある
  *------------------------------------------
  */
@@ -1140,36 +1140,27 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,int data)
 }
 
 /*==========================================
- * (m,x,y)の周囲rangeマス内の空き(=侵入可能)cellの
- * 内から適当なマス目の座標をx+(y<<16)で返す
- *
- * 現状range=1でアイテムドロップ用途のみ
+ * (m,x,y)の周囲rangeマス内の空き(=侵入可能)
+ * cellをリストに格納してその数を返す
  *------------------------------------------
  */
-int map_searchrandfreecell(int m,int x,int y,int range)
+int map_searchrandfreecell(int m,int x,int y,struct cell_xy *list,int range)
 {
-	int i,j;
-	int dx = 0, dy = 0, free_cell = 0;
+	int i,j,dx,dy;
+	int count=0;
 
 	for(i=-range; i<=range; i++) {
-		if(i+y < 0 || i+y >= map[m].ys)
-			continue;
+		dy = y+i;
 		for(j=-range; j<=range; j++) {
-			if(j+x < 0 || j+x >= map[m].xs)
+			dx = x+j;
+			if(map_getcell(m,dx,dy,CELL_CHKNOPASS))
 				continue;
-			if(map_getcell(m,j+x,i+y,CELL_CHKNOPASS))
-				continue;
-			free_cell++;
-			if(atn_rand()%free_cell == 0) {
-				dx = x+j;
-				dy = y+i;
-			}
+			list[count].x = dx;
+			list[count].y = dy;
+			count++;
 		}
 	}
-	if(free_cell == 0)
-		return -1;
-
-	return dx+(dy<<16);
+	return count;
 }
 
 /*==========================================
@@ -1181,18 +1172,21 @@ int map_searchrandfreecell(int m,int x,int y,int range)
 int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,struct block_list *first_bl,
 	struct block_list *second_bl,struct block_list *third_bl,int type)
 {
-	int xy;
+	struct cell_xy free_cell[9];
+	int count;
 
 	nullpo_retr(0, item_data);
 
-	if((xy = map_searchrandfreecell(m,x,y,1)) >= 0) {
+	if((count = map_searchrandfreecell(m,x,y,free_cell,1)) > 0) {
 		struct flooritem_data *fitem = (struct flooritem_data *)aCalloc(1,sizeof(*fitem));
+		int idx = atn_rand()%count;
+
 		fitem->bl.type = BL_ITEM;
 		fitem->bl.prev = NULL;
 		fitem->bl.next = NULL;
 		fitem->bl.m    = m;
-		fitem->bl.x    = xy&0xffff;
-		fitem->bl.y    = (xy>>16)&0xffff;
+		fitem->bl.x    = free_cell[idx].x;
+		fitem->bl.y    = free_cell[idx].y;
 		fitem->first_get_id    = 0;
 		fitem->first_get_tick  = 0;
 		fitem->second_get_id   = 0;
@@ -2781,7 +2775,6 @@ void do_final(void)
 
 	do_final_timer();
 }
-
 
 /*==========================================
  * map鯖初期化の大元

@@ -233,6 +233,11 @@ struct status_pretimer {
 	int flag;
 };
 
+struct cell_xy {
+	short x;
+	short y;
+};
+
 //拡張オートスペル
 //EQUIP_AUTOSPELL_FLAG
 enum 	{
@@ -549,10 +554,8 @@ struct map_session_data {
 	short ranker_weapon_bonus;
 	short ranker_weapon_bonus_;
 
-	struct {
-		short x;
-		short y;
-	}dance;
+	struct cell_xy dance;
+
 	short infinite_tigereye;	//マヤパープル効果
 	short stop_status_calc_pc;
 	short call_status_calc_pc_while_stopping;
@@ -1025,6 +1028,7 @@ int map_addnpc(int,struct npc_data *);
 int map_clearflooritem_timer(int,unsigned int,int,int);
 #define map_clearflooritem(id) map_clearflooritem_timer(0,0,id,1)
 int map_addflooritem(struct item *,int,int,int,int,struct block_list *,struct block_list *,struct block_list *,int);
+int map_searchrandfreecell(int m,int x,int y,struct cell_xy *list,int range);
 
 // ドロップディレイキュー
 void map_push_delayitem_que(struct delay_item_drop2 *ditem);

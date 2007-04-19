@@ -1,4 +1,30 @@
 ----------------------------------------
+//0160 [2007/04/20] by Rayce
+
+・map_searchrandfreecell() の更なる最適化（map.*）
+	呼び出し元で配列変数を用意して、関数内部で空きセルの座標を順に格納します
+	あとは呼び出し元で atn_rand() を使って任意のセルを抽出してください
+	MAPの範囲チェックは map_getcell() でも行われるのでここでは省略しています
+	これに伴い cell_xy 構造体を新しく追加
+
+・緊急召集の修正（skill.c）
+	-> 範囲はギルドマスターの周囲7x7セル
+	-> battle_auriga.confの emergencycall_point_randam を emergencycall_point_type に改名
+	-> emergencycall_point_type が1の場合、出現位置は完全なランダム
+	   2の場合も同様にランダムだが「崖越えEMC」を禁止する
+	   デフォルトでは本鯖に近いと思われる1に設定
+
+・運命のタロットカードに関する修正（skill.c, status.*）
+	-> 出るカードの種類の出現確率に偏りを持たせる
+	   統計を取っていたサイトのデータを参考に適当に設定しました
+	-> 運命の輪が連続で出続けると理論上無限ループが起こる可能性を修正
+	-> 魔術師、力、悪魔、太陽の効果時間はskill_cast_db.txtのupkeep_time2を利用する
+
+・PC以外にも混乱が発揮するように修正（unit.c）
+・script_read_vars() でメモリをアロケートしなくて済むように修正（script.c）
+・battle_auriga.confの no_emergency_call をデフォルトでnoに変更しておく
+
+----------------------------------------
 //0159 [2007/04/19] by Rayce
 
 ・path_search_real() に渡す walkpath_data 構造体はNULLでも使えるように改善および処理の最適化（path.c）

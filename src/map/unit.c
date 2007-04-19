@@ -404,6 +404,7 @@ int unit_walktoxy( struct block_list *bl, int x, int y)
 	struct pet_data         *pd = NULL;
 	struct mob_data         *md = NULL;
 	struct homun_data       *hd = NULL;
+	struct status_change    *sc_data = NULL;
 
 	nullpo_retr(0, bl);
 
@@ -425,12 +426,13 @@ int unit_walktoxy( struct block_list *bl, int x, int y)
 	if( !unit_can_move(bl) )
 		return 0;
 
-	//強制移動中は混乱から除外
-	if(sd && sd->sc_data[SC_CONFUSION].timer!=-1 && sd->sc_data[SC_FORCEWALKING].timer==-1)
-	{
+	sc_data = status_get_sc_data(bl);
+
+	// 強制移動中は混乱から除外
+	if(sc_data && sc_data[SC_CONFUSION].timer != -1 && sc_data[SC_FORCEWALKING].timer == -1) {
 		ud->to_x = sd->bl.x + atn_rand()%7 - 3;
 		ud->to_y = sd->bl.y + atn_rand()%7 - 3;
-	}else{
+	} else {
 		ud->to_x = x;
 		ud->to_y = y;
 	}

@@ -2957,6 +2957,7 @@ static int script_txt_save_mapreg_intsub(void *key,void *data,va_list ap)
 	}
 	return 0;
 }
+
 static int script_txt_save_mapreg_strsub(void *key,void *data,va_list ap)
 {
 	FILE *fp=va_arg(ap,FILE*);
@@ -2971,6 +2972,7 @@ static int script_txt_save_mapreg_strsub(void *key,void *data,va_list ap)
 	}
 	return 0;
 }
+
 static int script_txt_save_mapreg(void)
 {
 	FILE *fp;
@@ -3052,6 +3054,7 @@ static int script_sql_save_mapreg_intsub(void *key,void *data,va_list ap)
 	}
 	return 0;
 }
+
 static int script_sql_save_mapreg_strsub(void *key,void *data,va_list ap)
 {
 	int num=((int)key)&0x00ffffff, i=((int)key)>>24;
@@ -3070,6 +3073,7 @@ static int script_sql_save_mapreg_strsub(void *key,void *data,va_list ap)
 	}
 	return 0;
 }
+
 static int script_sql_save_mapreg(void)
 {
 	char buf[64];
@@ -3198,40 +3202,40 @@ static int script_mapname2mapid(struct script_state *st,char *mapname)
  */
 int script_check_variable(const char *name,int array_flag,int read_only)
 {
-	int i;
+	int i = search_str(name);
 
-	i = search_str(name);
-	if(i >= 0) {
-		switch(str_data[i].type) {
-			case C_NAME:		// 変数は無条件で許可
+	if(i < 0)
+		return 0;
+
+	switch(str_data[i].type) {
+		case C_NAME:		// 変数は無条件で許可
+			return 1;
+		case C_PARAM:		// 埋め込み変数は[]がなければ許可
+			if(!array_flag)
 				return 1;
-			case C_PARAM:		// 埋め込み変数は[]がなければ許可
-				if(!array_flag)
-					return 1;
-				break;
-			case C_INT:		// 定数は[]がなくて読み取り時のみ許可
-				if(!array_flag && read_only)
-					return 1;
-				break;
-		}
+			break;
+		case C_INT:		// 定数は[]がなくて読み取り時のみ許可
+			if(!array_flag && read_only)
+				return 1;
+			break;
 	}
 	return 0;
 }
+
 void* script_read_vars(struct map_session_data *sd,char *var,int elem,struct linkdb_node **ref)
 {
-	struct script_state *st = NULL;
-	void *ret;
+	if(sd) {
+		// プレイヤーにアタッチする必要があるならstを用意
+		struct script_state st;
 
-	if(sd) {	// プレイヤーにアタッチする必要があるならstを用意
-		st = (struct script_state*)aCalloc(1,sizeof(struct script_state));
-		st->rid = sd->bl.id;
+		memset(&st, 0, sizeof(st));
+		st.rid = sd->bl.id;
+		return get_val2(&st, (elem<<24) | add_str(var), ref);
 	}
-	ret = get_val2(st, (elem<<24) | add_str(var), ref);
-	if(st)
-		aFree(st);
 
-	return ret;
+	return get_val2(NULL, (elem<<24) | add_str(var), ref);
 }
+
 void script_write_vars(struct map_session_data *sd,char *var,int elem,void *v,struct linkdb_node **ref)
 {
 	set_reg(NULL, sd, (elem<<24) | add_str(var), var, v, ref);
@@ -3355,6 +3359,7 @@ static int mapregstr_db_final(void *key,void *data,va_list ap)
 	aFree(data);
 	return 0;
 }
+
 static int userfunc_db_final(void *key,void *data,va_list ap)
 {
 	aFree(key);

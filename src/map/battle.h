@@ -356,7 +356,7 @@ extern struct Battle_Config {
 	int guild_skill_check_range;
 	int allow_guild_skill_in_gvg_only;
 	int allow_me_guild_skill;
-	int emergencycall_point_randam;
+	int emergencycall_point_type;
 	int emergencycall_call_limit;
 	int allow_guild_skill_in_gvgtime_only;
 	int guild_skill_in_pvp_limit;

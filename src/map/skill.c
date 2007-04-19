@@ -1048,8 +1048,6 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 				status_change_start(bl,SC_STRIPARMOR,1,0,0,0,skill_get_time(RG_STRIPARMOR,1),0);
 		}
 		break;
-	case CG_TAROTCARD:
-		break;
 	case TK_DOWNKICK://下段蹴り
 		status_change_start(bl,SC_STAN,7,0,0,0,3000,0);
 		break;
@@ -1955,8 +1953,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case WS_CARTTERMINATION:	/* カートターミネーション */
 	case CR_ACIDDEMONSTRATION:	/* アシッドデモンストレーション */
 	case ITM_TOMAHAWK:			/* トマホーク投げ */
-	case AS_VENOMKNIFE:			//ベナムナイフ
-	case HT_PHANTASMIC:			//ファンタスミックアロー
+	case AS_VENOMKNIFE:			/* ベナムナイフ */
+	case HT_PHANTASMIC:			/* ファンタスミックアロー */
 	case GS_FLING:			/* フライング */
 	case GS_TRIPLEACTION:	/* トリプルアクション */
 	case GS_MAGICALBULLET:	/* マジカルバレット */
@@ -2286,7 +2284,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			if( battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500) ) {
 				int count = skill_get_blewcount(skillid,skilllv)|SAB_NOPATHSTOP;
 				if(bl->x == pos.x && bl->y == pos.y)
-					count |= 6<<20;		//指定座標と同一なら西へノックバック
+					count |= 6<<20;		// 指定座標と同一なら西へノックバック
 				skill_blown(&pos,bl,count);
 			}
 		}
@@ -2351,7 +2349,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					skill_castend_damage_id);
 		}
 		break;
-	case HVAN_EXPLOSION:	//バイオエクスプロージョン
+	case HVAN_EXPLOSION:	/* バイオエクスプロージョン */
 		if(flag&1){
 			/* 個別にダメージを与える */
 			if(bl->id!=skill_area_temp[1])
@@ -2408,7 +2406,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[4] = skill_get_blewcount(skillid,skilllv);
 			/* まずターゲットに攻撃を加える */
 			if(battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0))
-				skill_blown(src,bl,skill_area_temp[4]|(6<<20));		//西に強制ノックバック
+				skill_blown(src,bl,skill_area_temp[4]|(6<<20));		// 西に強制ノックバック
 
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
@@ -2562,14 +2560,14 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NJ_HUUJIN:				/* 風刃 */
 		battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
 		break;
-	case HVAN_CAPRICE://カプリス
+	case HVAN_CAPRICE:		/* カプリス */
 		{
 			static int caprice[4] = { MG_COLDBOLT,MG_FIREBOLT,MG_LIGHTNINGBOLT,WZ_EARTHSPIKE};
 			battle_skill_attack(BF_MAGIC,src,src,bl,caprice[atn_rand()%4],skilllv,tick,flag);
 			clif_skill_nodamage(src,src,skillid,skilllv,1);
 		}
 		break;
-	case CG_TAROTCARD:		/*運命のタロットカード*/
+	case CG_TAROTCARD:		/* 運命のタロットカード */
 		skill_tarot_card_of_fate(src,bl,skillid,skilllv,tick,flag,0);
 		break;
 	case MG_FROSTDIVER:		/* フロストダイバー */
@@ -2751,7 +2749,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 
 	case CR_GRANDCROSS:			/* グランドクロス */
-	case NPC_DARKGRANDCROSS:		/*闇グランドクロス*/
+	case NPC_DARKGRANDCROSS:		/* 闇グランドクロス */
 		{
 			struct unit_data *ud = unit_bl2ud(src);
 			/* スキルユニット配置 */
@@ -5204,53 +5202,48 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case GD_EMERGENCYCALL://#緊急招集#
 		if(sd){
-			int mi,px,py,d;
+			int mi,px,py,count=0;
 			struct guild *g = guild_search(sd->status.guild_id);
 			struct map_session_data *member = NULL;
+			struct cell_xy free_cell[7*7];
 
 			if(g == NULL)
 				break;
 			clif_skill_nodamage(src,src,skillid,skilllv,1);
 
-			if(battle_config.emergencycall_point_randam)
-			{
-				int i;
-				// 目の前に呼び出す
-				for( i = 0; i < 8; i++ ){
-					if( i & 1 )
-						d = (sd->dir-((i+1)>>1))&7;
-					else
-						d = (sd->dir+((i+1)>>1))&7;
+			if(battle_config.emergencycall_point_type != 0)
+				count = map_searchrandfreecell(sd->bl.m,sd->bl.x,sd->bl.y,free_cell,3);
 
-					px = sd->bl.x + dirx[d];
-					py = sd->bl.y + diry[d];
-
-					if(map_getcell(sd->bl.m,px,py,CELL_CHKPASS))
-						break;
-				}
-
-				if( i >= 8 )
-				{
-					px = sd->bl.x;
-					py = sd->bl.y;
-				}
-			}else{//足元
-				px = sd->bl.x;
-				py = sd->bl.y;
-			}
-			for(mi = 1;mi < g->max_member;mi++)
+			for(mi = 0; mi < g->max_member; mi++)
 			{
 				member = g->member[mi].sd;
 				if(member == NULL)
 					continue;
-
-				//同マップのみ
-				if(battle_config.emergencycall_call_limit && sd->bl.m != member->bl.m)
+				if(member->bl.id == sd->bl.id)	// 自分自身は除外
 					continue;
-
+				if(battle_config.emergencycall_call_limit && sd->bl.m != member->bl.m)	// 同マップのみ
+					continue;
 				if(member->state.refuse_emergencycall)
 					continue;
 
+				if(count <= 0) {
+					// 足元
+					px = sd->bl.x;
+					py = sd->bl.y;
+				} else {
+					int idx = atn_rand()%count;
+					px = free_cell[idx].x;
+					py = free_cell[idx].y;
+					if(battle_config.emergencycall_point_type == 2 &&
+					   path_search(NULL,sd->bl.m,sd->bl.x,sd->bl.y,px,py,0))
+					{
+						// 崖越えEMC禁止
+						mi--;
+						count--;
+						free_cell[idx] = free_cell[count];
+						continue;
+					}
+				}
 				pc_setpos(member,map[sd->bl.m].name,px,py,3);
 			}
 			status_change_start(src,SC_EMERGENCYCALL_DELAY,0,0,0,0,300000,0 );
@@ -9817,11 +9810,15 @@ int skill_idun_heal(struct block_list *bl, va_list ap )
 	return 0;
 }
 
+/*==========================================
+ * 運命のタロットカード
+ *------------------------------------------
+ */
 int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,int tick,int flag,int wheel)
 {
 	struct map_session_data* tsd=NULL;
 	struct mob_data* tmd=NULL;
-	int card_num;
+	int card_num,rate;
 
 	nullpo_retr(0, src);
 	nullpo_retr(0, target);
@@ -9829,16 +9826,32 @@ int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,in
 	if(target->type != BL_PC && target->type != BL_MOB)
 		return 0;
 
+	// 運命の輪だと100%成功
+	if(wheel == 0 && atn_rand()%100 >= skilllv*8)
+		return 0;
+
 	tsd = BL_DOWNCAST( BL_PC,  target );
 	tmd = BL_DOWNCAST( BL_MOB, target );
 
-	//運命の輪だと100%成功
-	if(wheel == 0 && atn_rand()%10000 >= skilllv*800)
-		return 0;
+	rate = atn_rand()%10000;
 
-	card_num = atn_rand()%14;
+	// 統計サイトを参考に適当に確率設定
+	if(rate < 1022)      card_num =  0;	// 10.22%
+	else if(rate < 1911) card_num =  1;	//  8.89%
+	else if(rate < 3068) card_num =  2;	// 11.57%
+	else if(rate < 3839) card_num =  3;	//  7.71%
+	else if(rate < 4954) card_num =  4;	// 11.15%
+	else if(rate < 6454) card_num =  5;	// 15.00%
+	else if(rate < 6513) card_num =  6;	//  0.59%
+	else if(rate < 7150) card_num =  7;	//  6.37%
+	else if(rate < 7636) card_num =  8;	//  4.86%
+	else if(rate < 8374) card_num =  9;	//  7.38%
+	else if(rate < 8458) card_num = 10;	//  0.84%
+	else if(rate < 8642) card_num = 11;	//  1.84%
+	else if(rate < 9036) card_num = 12;	//  3.94%
+	else                 card_num = 13;	//  9.64%
 
-	if(wheel == 0)//運命の輪だとエフェクトなし？
+	if(wheel == 0)	// 運命の輪だとエフェクトなし？
 	{
 		switch(battle_config.tarotcard_display_position)
 		{
@@ -9856,49 +9869,44 @@ int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,in
 				break;
 		}
 	}
+
 	switch(card_num)
 	{
-		case 0: //愚者(The Fool) 523
-			if(tsd)//SP0
-			{
+		case 0:
+			/* 愚者(The Fool) - SPが0になる */
+			if(tsd) {
 				tsd->status.sp = 0;
 				clif_updatestatus(tsd,SP_SP);
 			}
 			break;
-		case 1://魔法師(The Magician) - 30秒間Matkが半分に落ちる
-			if(!(status_get_mode(target)&0x20))//ボス属性以外
-				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_THE_MAGICIAN,30000,0);
+		case 1:
+			/* 魔法師(The Magician) - 30秒間Matkが半分に落ちる */
+			if(!(status_get_mode(target)&0x20))	// ボス属性以外
+				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_THE_MAGICIAN,skill_get_time2(skillid,skilllv),0);
 			break;
-		case 2://女祭司(The High Priestess) - すべての補助魔法が消える
-			{
-				status_change_release(target,0x40);
-			}
+		case 2:
+			/* 女教皇(The High Priestess) - すべての補助魔法が消える */
+			status_change_release(target,0x40);
 			break;
-		case 3://戦車(The Chariot) - 防御力無視の1000ダメージ 防具がランダムに一つ破壊される
+		case 3:
+			/* 戦車(The Chariot) - 防御力無視の1000ダメージ 防具がランダムに一つ破壊される */
 			if(tsd){
-				switch(atn_rand()%4)
-				{
-					case 0:
-						pc_break_equip(tsd,EQP_WEAPON);
-						break;
-					case 1:
-						pc_break_equip(tsd,EQP_ARMOR);
-						break;
-					case 2:
-						pc_break_equip(tsd,EQP_SHIELD);
-						break;
-					case 3:
-						pc_break_equip(tsd,EQP_HELM);
-						break;
+				switch(atn_rand()%4) {
+					case 0: pc_break_equip(tsd,EQP_WEAPON); break;
+					case 1: pc_break_equip(tsd,EQP_ARMOR);  break;
+					case 2: pc_break_equip(tsd,EQP_SHIELD); break;
+					case 3: pc_break_equip(tsd,EQP_HELM);   break;
 				}
 			}
 			unit_fixdamage(src,target,0, 0, 0,1000,1, 4, 0);
 			break;
-		case 4://力(Strength) - 30秒間ATKが半分に落ちる
-			if(!(status_get_mode(target)&0x20))//ボス属性以外//ボス属性以外
-				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_STRENGTH,30000,0);
+		case 4:
+			/* 力(Strength) - 30秒間ATKが半分に落ちる */
+			if(!(status_get_mode(target)&0x20))	// ボス属性以外
+				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_STRENGTH,skill_get_time2(skillid,skilllv),0);
 			break;
-		case 5://恋人(The Lovers) - どこかにテレポートさせる- HPが2000回復される
+		case 5:
+			/* 恋人(The Lovers) - どこかにテレポートさせる- HPが2000回復される */
 			unit_heal(target, 2000, 0);
 			// テレポート不可の場合は回復のみ
 			if(tsd && !map[tsd->bl.m].flag.noteleport)
@@ -9906,66 +9914,74 @@ int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,in
 			if(tmd && !map[tmd->bl.m].flag.monster_noteleport)
 				mob_warp(tmd,tmd->bl.m,-1,-1,0);
 			break;
-		case 6://運命の輪(Wheel of Fortune) - ランダムに他のタロットカード二枚の効果を同時に与える
-			if(wheel == 1)//もう1度実行
-			{
-				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,flag,1);
-			}else{//２つ実行
+		case 6:
+			/* 運命の輪(Wheel of Fortune) - ランダムに他のタロットカード二枚の効果を同時に与える */
+			if(wheel > 0 && wheel < 50) {	// もう1度実行（50回で打ち切り）
+				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,flag,wheel+1);
+			} else {			// ２つ実行
 				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,flag,1);
 				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,flag,1);
 			}
 			break;
-		case 7://吊られた男(The Hanged Man) - 睡眠、凍結、石化の中から一つが無条件かかる
-
-			if(!(status_get_mode(target)&0x20))//ボス属性以外
+		case 7:
+			/* 吊られた男(The Hanged Man) - 睡眠、凍結、石化の中から一つが無条件かかる */
+			if(!(status_get_mode(target)&0x20))	// ボス属性以外
 			{
 				switch(atn_rand()%3)
 				{
-					case 0://睡眠
+					case 0:	// 睡眠
 						status_change_start(target,SC_SLEEP,7,0,0,0,skill_get_time2(NPC_SLEEPATTACK,7),0);
 						break;
-					case 1://凍結
+					case 1:	// 凍結
 						status_change_start(target,SC_FREEZE,7,0,0,0,skill_get_time2(MG_FROSTDIVER,7),0);
 						break;
-					case 2://石化
+					case 2:	// 石化
 						status_change_start(target,SC_STONE,7,0,0,0,skill_get_time2(MG_STONECURSE,7),0);
 						break;
 				}
 			}
 			break;
-		case 8://死神(Death) - 呪い + コーマ + 毒にかかる
+		case 8:
+			/* 死神(Death) - 呪い + コーマ + 毒にかかる */
 			status_change_start(target,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0);
 			status_change_start(target,SC_POISON,7,0,0,0,skill_get_time2(TF_POISON,7),0);
-			//コーマ
-			if(tsd){
+			// コーマ
+			if(tsd) {
 				tsd->status.hp = 1;
 				clif_updatestatus(tsd,SP_HP);
-			}else if(tmd && !(status_get_mode(&tmd->bl)&0x20))//ボス属性以外
+			} else if(tmd && !(status_get_mode(&tmd->bl)&0x20)) {	// ボス属性以外
 				tmd->hp = 1;
+			}
 			break;
-		case 9://節制(Temperance) - 30秒間混乱にかかる
-			if(!(status_get_mode(target)&0x20))//ボス属性以外
+		case 9:
+			/* 節制(Temperance) - 30秒間混乱にかかる */
+			if(!(status_get_mode(target)&0x20))	// ボス属性以外
 				status_change_start(target,SC_CONFUSION,7,0,0,0,30000,0);
 			break;
-		case 10://悪魔(The Devil) - 防御力無視6666ダメージ + 30秒間ATK半分、MATK半分、呪い
+		case 10:
+			/* 悪魔(The Devil) - 防御力無視6666ダメージ + 30秒間ATK半分、MATK半分、呪い */
 			status_change_start(target,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0);
-			if(!(status_get_mode(target)&0x20))//ボス属性以外
-				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_THE_DEVIL,30000,0);
+			if(!(status_get_mode(target)&0x20))	// ボス属性以外
+				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_THE_DEVIL,skill_get_time2(skillid,skilllv),0);
 			unit_fixdamage(src,target,0, 0, 0,6666,1, 4, 0);
 			break;
-		case 11://塔(The Tower) - 防御力無視4444固定ダメージ
+		case 11:
+			/* 塔(The Tower) - 防御力無視4444固定ダメージ */
 			unit_fixdamage(src,target,0, 0, 0,4444,1, 4, 0);
 			break;
-		case 12://星(The Star) - 星が回る すなわち、5秒間スタンにかかる
+		case 12:
+			/* 星(The Star) - 星が回る すなわち、5秒間スタンにかかる */
 			status_change_start(target,SC_STAN,7,0,0,0,5000,0);
 			break;
-		case 13://太陽(The Sun) - 30秒間ATK、MATK、回避、命中、防御力が全て20%ずつ下落する 536
-			if(!(status_get_mode(target)&0x20))//ボス属性以外
-				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_THE_SUN,30000,0);
+		case 13:
+			/* 太陽(The Sun) - 30秒間ATK、MATK、回避、命中、防御力が全て20%ずつ下落する */
+			if(!(status_get_mode(target)&0x20))	// ボス属性以外
+				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_THE_SUN,skill_get_time2(skillid,skilllv),0);
 			break;
 	}
 	return 1;
 }
+
 /*==========================================
  * 指定範囲内でsrcに対して有効なターゲットのblの数を数える(foreachinarea)
  *------------------------------------------
