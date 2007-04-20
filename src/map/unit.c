@@ -538,7 +538,8 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	struct homun_data       *hd = NULL;
 	struct unit_data        *ud = NULL;
 
-	nullpo_retr(0, bl);
+	nullpo_retr(1, bl);
+
 	if( bl->prev == NULL ) return 1;
 	if( (sd = BL_DOWNCAST( BL_PC,  bl ) ) ) {
 		ud = &sd->ud;

@@ -2149,6 +2149,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		case CR_ACIDDEMONSTRATION:
 		case NJ_ZENYNAGE:
 		case NPC_CRITICALSLASH:
+		case GS_PIERCINGSHOT:
 			break;
 		default:
 			if(wd.type != 0)	// クリティカル時は無効
@@ -3697,15 +3698,14 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	return wd.dmg_lv;
 }
 
-/*
- * =========================================================================
+/*=========================================================================
  * スキル攻撃効果処理まとめ
  * flagの説明。16進図
  * 	00XRTTff
- *  ff	= magicで計算に渡される
- *	TT	= パケットのtype部分(0でデフォルト)
- *  X   = パケットのスキルLv
- *  R	= 予約（skill_area_subで使用する)
+ *  ff = magicで計算に渡される(主に敵の巻き込み数)
+ *  TT = パケットのtype部分(0でデフォルト)
+ *   R = 予約（skill_area_subで使用するBCT_*)
+ *   X = パケットのスキルLv
  *-------------------------------------------------------------------------
  */
 int battle_skill_attack(int attack_type,struct block_list* src,struct block_list *dsrc,
@@ -5171,11 +5171,11 @@ int battle_config_read(const char *cfgName)
 			{ "monster_auto_counter_type",			&battle_config.monster_auto_counter_type			},
 			{ "min_hitrate",						&battle_config.min_hitrate							},
 			{ "agi_penalty_type",					&battle_config.agi_penalty_type						},
-			{ "agi_penalty_count",					&battle_config.agi_penalty_count						},
+			{ "agi_penalty_count",					&battle_config.agi_penalty_count					},
 			{ "agi_penalty_num",					&battle_config.agi_penalty_num						},
 			{ "agi_penalty_count_lv",				&battle_config.agi_penalty_count_lv					},
 			{ "vit_penalty_type",					&battle_config.vit_penalty_type						},
-			{ "vit_penalty_count",					&battle_config.vit_penalty_count						},
+			{ "vit_penalty_count",					&battle_config.vit_penalty_count					},
 			{ "vit_penalty_num",					&battle_config.vit_penalty_num						},
 			{ "vit_penalty_count_lv",				&battle_config.vit_penalty_count_lv					},
 			{ "player_defense_type",				&battle_config.player_defense_type					},
@@ -5275,7 +5275,7 @@ int battle_config_read(const char *cfgName)
 			{ "pt_bonus_j",							&battle_config.pt_bonus_j							},
 			{ "mvp_announce",						&battle_config.mvp_announce							},
 			{ "petowneditem",						&battle_config.petowneditem							},
-			{ "pet_loot_type",						&battle_config.pet_loot_type							},
+			{ "pet_loot_type",						&battle_config.pet_loot_type						},
 			{ "buyer_name",							&battle_config.buyer_name							},
 			{ "noportal_flag",						&battle_config.noportal_flag						},
 			{ "once_autospell",						&battle_config.once_autospell						},
@@ -5350,7 +5350,7 @@ int battle_config_read(const char *cfgName)
 			{ "guild_skill_check_range",			&battle_config.guild_skill_check_range				},
 			{ "allow_guild_skill_in_gvg_only",		&battle_config.allow_guild_skill_in_gvg_only		},
 			{ "allow_me_guild_skill",				&battle_config.allow_me_guild_skill					},
-			{ "emergencycall_point_type",			&battle_config.emergencycall_point_type			},
+			{ "emergencycall_point_type",			&battle_config.emergencycall_point_type				},
 			{ "emergencycall_call_limit",			&battle_config.emergencycall_call_limit				},
 			{ "allow_guild_skill_in_gvgtime_only",	&battle_config.allow_guild_skill_in_gvgtime_only	},
 			{ "guild_skill_in_pvp_limit",			&battle_config.guild_skill_in_pvp_limit				},
@@ -5489,15 +5489,15 @@ int battle_config_read(const char *cfgName)
 			{ "calc_dist_flag",						&battle_config.calc_dist_flag						},
 			{ "allow_sw_dist",						&battle_config.allow_sw_dist						},
 			{ "personal_storage_sort",				&battle_config.personal_storage_sort				},
-			{ "guild_storage_sort",					&battle_config.guild_storage_sort				},
+			{ "guild_storage_sort",					&battle_config.guild_storage_sort					},
 			{ "allow_es_magic_all",					&battle_config.allow_es_magic_all					},
 			{ "trap_is_invisible",					&battle_config.trap_is_invisible					},
-			{ "gm_perfect_hide",					&battle_config.gm_perfect_hide					},
-			{ "pcview_mob_clear_type",				&battle_config.pcview_mob_clear_type					},
-			{ "party_item_share_type",				&battle_config.party_item_share_type					},
-			{ "party_item_share_show",				&battle_config.party_item_share_show					},
+			{ "gm_perfect_hide",					&battle_config.gm_perfect_hide						},
+			{ "pcview_mob_clear_type",				&battle_config.pcview_mob_clear_type				},
+			{ "party_item_share_type",				&battle_config.party_item_share_type				},
+			{ "party_item_share_show",				&battle_config.party_item_share_show				},
 			{ "pk_murderer_point",					&battle_config.pk_murderer_point					},
-			{ "sg_miracle_rate",					&battle_config.sg_miracle_rate				},
+			{ "sg_miracle_rate",					&battle_config.sg_miracle_rate						},
 		};
 		const int max = sizeof(data)/sizeof(data[0]);
 

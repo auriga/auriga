@@ -1668,18 +1668,8 @@ int intif_parse_MailDeleteRes(int fd)
 }
 int intif_parse_MailGetAppend(int fd)
 {
-	struct map_session_data *sd = map_id2sd(RFIFOL(fd,4));
-	struct item item;
-	int zeny = RFIFOL(fd,8);
-	if(sd){
-		if(zeny > 0){
-			sd->status.zeny += zeny;
-			clif_updatestatus(sd,SP_ZENY);
-		}
-		memcpy(&item,RFIFOP(fd,12),sizeof(struct item));
-		if(item.nameid>0 && item.amount>0)
-			pc_additem(sd,&item,item.amount);
-	}
+	mail_getappend(RFIFOL(fd,4),RFIFOL(fd,8),(struct item *)RFIFOP(fd,12));
+
 	return 0;
 }
 int intif_parse_MailCheckOK(int fd)

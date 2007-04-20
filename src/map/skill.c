@@ -1397,10 +1397,10 @@ int skill_add_blown( struct block_list *src, struct block_list *target,int skill
 /*==========================================
  * スキル範囲攻撃用(map_foreachinareaから呼ばれる)
  * flagについて：16進図を確認
- * MSB <- 00fTffff ->LSB
- *	T	=ターゲット選択用(BCT_*)
- *  ffff=自由に使用可能
- *  0	=予約。0に固定
+ * MSB <- 00fTffff -> LSB
+ *  ffff = 自由に使用可能
+ *     T = ターゲット選択用(BCT_*)
+ *     0 = 予約。0に固定
  *------------------------------------------
  */
 static int skill_area_temp[8];	/* 一時変数。必要なら使う。 */
@@ -1607,7 +1607,7 @@ struct castend_delay {
 	int flag;
 };
 
-int skill_castend_delay_sub (int tid, unsigned int tick, int id, int data)
+static int skill_castend_delay_sub(int tid, unsigned int tick, int id, int data)
 {
 	struct castend_delay *dat = (struct castend_delay *)data;
 	struct block_list *target = map_id2bl(dat->target);
@@ -1618,7 +1618,7 @@ int skill_castend_delay_sub (int tid, unsigned int tick, int id, int data)
 	return 0;
 }
 
-int skill_castend_delay (struct block_list* src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag)
+int skill_castend_delay(struct block_list* src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag)
 {
 	struct castend_delay *dat;
 
@@ -1640,14 +1640,14 @@ int skill_castend_delay (struct block_list* src, struct block_list *bl,int skill
  * 範囲スキル使用処理小分けここから
  */
 /* 対象の数をカウントする。（skill_area_temp[0]を初期化しておくこと） */
-int skill_area_sub_count(struct block_list *src,struct block_list *target,int skillid,int skilllv,unsigned int tick,int flag)
+static int skill_area_sub_count(struct block_list *src,struct block_list *target,int skillid,int skilllv,unsigned int tick,int flag)
 {
 	if(skill_area_temp[0] < 0xffff)
 		skill_area_temp[0]++;
 	return 0;
 }
 
-int skill_count_water(struct block_list *src,int range)
+static int skill_count_water(struct block_list *src,int range)
 {
 	int i,x,y,cnt = 0,size = range*2+1;
 	struct skill_unit *unit;
@@ -2060,31 +2060,26 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				status_change_end(src,SC_BLADESTOP,-1);
 		}
 		break;
-	case TK_STORMKICK:
+	case TK_STORMKICK:	/* フェオリチャギ */
 		if(flag&1) {
-			if(bl->id != skill_area_temp[1]) {
-				int dist = unit_distance(bl->x, bl->y, skill_area_temp[2], skill_area_temp[3]);
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,
-					0x0500|dist);
-			}
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		} else {
 			skill_area_temp[1]=src->id;
-			skill_area_temp[2]=src->x;
-			skill_area_temp[3]=src->y;
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-2,src->y-2,src->x+2,src->y+2,0,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
-			clif_skill_nodamage (src,src,skillid,skilllv,1);
+			clif_skill_nodamage(src,src,skillid,skilllv,1);
 		}
 		break;
 
-	case TK_DOWNKICK:
-	case TK_COUNTER:
+	case TK_DOWNKICK:	/* ネリョチャギ */
+	case TK_COUNTER:	/* アプチャオルリギ */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 
-	case TK_TURNKICK:
+	case TK_TURNKICK:	/* トルリョチャギ */
 		if(flag&1){
 			/* 個別処理 */
 			if(bl->id != skill_area_temp[1]) {

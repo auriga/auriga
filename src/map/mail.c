@@ -90,16 +90,6 @@ int mail_checkappend(struct map_session_data *sd,struct mail_data *md)
 }
 
 /*==========================================
- * 送信時間
- *------------------------------------------
- */
-time_t mail_calctimes(void)
-{
-	time_t temp = time(NULL);
-	return mktime(localtime(&temp));
-}
-
-/*==========================================
  * 送信前チェック
  *------------------------------------------
  */
@@ -153,11 +143,30 @@ int mail_sendmail(struct map_session_data *sd,struct mail_data *md)
 	nullpo_retr(0, sd);
 
 	// 日付の保存
-	md->times = (unsigned int)mail_calctimes();
+	md->times = (unsigned int)time(NULL);
 	// アイテム・Zenyチェック
 	if(mail_checkappend(sd,md)==0)
 		intif_sendmail(md);
 
 	mail_removeitem(sd);
+	return 0;
+}
+
+/*==========================================
+ * 添付アイテムやZenyを取得
+ *------------------------------------------
+ */
+int mail_getappend(int account_id,int zeny,struct item *item)
+{
+	struct map_session_data *sd = map_id2sd(account_id);
+
+	if(sd) {
+		if(zeny > 0) {
+			sd->status.zeny += zeny;
+			clif_updatestatus(sd,SP_ZENY);
+		}
+		if(item->nameid > 0 && item->amount > 0)
+			pc_additem(sd,item,item->amount);
+	}
 	return 0;
 }

@@ -1,4 +1,15 @@
 ----------------------------------------
+//0163 [2007/04/21] by Rayce
+
+・AthenaProject2294を参考にして以下を修正、thanks to Blazeさん
+	-> フェオリチャギを多段HIT表示されるように修正（skill.c）
+	-> ピアーシングショットをDEF無視攻撃に修正（battle.c）
+
+・ROメールの添付アイテムを取得する部分を mail_getappend() として切り離す（intif.c, mail.*）
+・mail_calctimes() はほとんど意味がないので削除（mail.*）
+・unit_movepos() の返り値が間違っていた部分を修正（unit.c）
+
+----------------------------------------
 //0162 [2007/04/20] by Rayce
 
 ・AthenaProject2293よりmerge、thanks to 名無しさん
