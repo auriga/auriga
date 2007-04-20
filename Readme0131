@@ -1,4 +1,27 @@
 ----------------------------------------
+//0164 [2007/04/21] by Rayce
+
+・倉庫に関して
+	-> storage_flagがあるときは移動できないようにanti hackerチェック強化（clif.c）
+	-> ギルドを解散したときにギルド倉庫のロック解除をinterサーバに要求しないように修正（storage.c）
+	-> 倉庫データ受信時に既に倉庫を開いていないかチェックするように強化（intif.c）
+	-> 倉庫データを切断待ちのクライアントが受信するとデッドロック状態になる可能性を修正（intif.c）
+	-> アイテムをソートするタイミングが間違っていたので修正（storage.c）
+	-> 倉庫を開いたままログアウトするとアイテムがソートされないバグを修正（storage.c）
+	-> 紛らわしいので関数名の変更（guild.c, intif.c, storage.*）
+		guild_storage_delete  → storage_guild_delete
+		guild_storage_additem → storage_guild_additem
+		guild_storage_delitem → storage_guild_delitem
+
+	-> 試験的に、倉庫を開いている時のみデータをセーブするようにする（pc.c, unit.c）
+	   自動セーブの時に個人倉庫のデータを不必要にセーブしなくて済むようになります
+	   代わりにギルド倉庫と同様に倉庫を閉じるときや離脱するときにセーブするように変更しています
+
+	-> 倉庫を閉じた瞬間にサーバクラッシュされるとアイテムのデュープが起こる問題の対策
+	   battle_auriga.confに save_player_when_storage_closed を追加
+	   デフォルトではnoですが負荷が掛かることよりもデータの安全性を優先したい場合はyesにしてください
+
+----------------------------------------
 //0163 [2007/04/21] by Rayce
 
 ・AthenaProject2294を参考にして以下を修正、thanks to Blazeさん

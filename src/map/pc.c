@@ -7850,9 +7850,10 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 		if(sd->status.homun_id > 0 && sd->hd)
 			homun_save_data(sd);
 		chrif_save(sd);
-		storage_storage_save(sd);
-		if(sd->state.storage_flag==2)
+		if(sd->state.storage_flag == 2)
 			storage_guild_storagesave(sd);
+		else if(sd->state.storage_flag == 1)
+			storage_storage_save(sd);
 		save_flag=1;
 		last_save_fd = sd->fd;
 	}

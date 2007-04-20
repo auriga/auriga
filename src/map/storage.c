@@ -13,6 +13,7 @@
 #include "storage.h"
 #include "guild.h"
 #include "battle.h"
+#include "chrif.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -376,11 +377,13 @@ void storage_storageclose(struct map_session_data *sd)
 	nullpo_retv(sd);
 	nullpo_retv(stor = account2storage(sd->status.account_id));
 
+	sortage_sortitem(stor->store_item, MAX_STORAGE, &stor->sortkey, battle_config.personal_storage_sort);
+	intif_send_storage(stor);
+	if(battle_config.save_player_when_storage_closed)
+		chrif_save(sd);
 	stor->storage_status=0;
 	sd->state.storage_flag = 0;
 	clif_storageclose(sd);
-
-	sortage_sortitem(stor->store_item, MAX_STORAGE, &stor->sortkey, battle_config.personal_storage_sort);
 
 	return;
 }
@@ -397,6 +400,10 @@ void storage_storage_quit(struct map_session_data *sd)
 
 	stor = (struct storage *)numdb_search(storage_db,sd->status.account_id);
 	if(stor) {
+		sortage_sortitem(stor->store_item, MAX_STORAGE, &stor->sortkey, battle_config.personal_storage_sort);
+		intif_send_storage(stor);
+		if(battle_config.save_player_when_storage_closed)
+			chrif_save(sd);
 		stor->storage_status = 0;
 	}
 	sd->state.storage_flag = 0;
@@ -444,7 +451,7 @@ struct guild_storage *guild2storage(int guild_id)
  * ギルド倉庫を削除
  *------------------------------------------
  */
-void guild_storage_delete(int guild_id)
+void storage_guild_delete(int guild_id)
 {
 	struct guild_storage *gstor = (struct guild_storage *)numdb_search(guild_storage_db,guild_id);
 	if(gstor) {
@@ -490,7 +497,7 @@ int storage_guild_storageopen(struct map_session_data *sd)
  * ギルド倉庫へアイテム追加
  *------------------------------------------
  */
-static int guild_storage_additem(struct map_session_data *sd,struct guild_storage *stor,struct item *item_data,int amount)
+static int storage_guild_additem(struct map_session_data *sd,struct guild_storage *stor,struct item *item_data,int amount)
 {
 	struct item_data *data;
 	int i;
@@ -540,7 +547,7 @@ static int guild_storage_additem(struct map_session_data *sd,struct guild_storag
  * ギルド倉庫からアイテムを減らす
  *------------------------------------------
  */
-static void guild_storage_delitem(struct map_session_data *sd,struct guild_storage *stor,int n,int amount)
+static void storage_guild_delitem(struct map_session_data *sd,struct guild_storage *stor,int n,int amount)
 {
 	nullpo_retv(sd);
 	nullpo_retv(stor);
@@ -581,7 +588,7 @@ void storage_guild_storageadd(struct map_session_data *sd, int idx, int amount)
 	if (amount < 1 || amount > sd->status.inventory[idx].amount)
 		return;
 
-	if (guild_storage_additem(sd, stor, &sd->status.inventory[idx], amount) == 0)
+	if (storage_guild_additem(sd, stor, &sd->status.inventory[idx], amount) == 0)
 		pc_delitem(sd, idx, amount, 0);
 
 	return;
@@ -608,7 +615,7 @@ void storage_guild_storageget(struct map_session_data *sd, int idx, int amount)
 		return;
 
 	if ((flag = pc_additem(sd,&stor->store_item[idx],amount)) == 0)
-		guild_storage_delitem(sd, stor, idx, amount);
+		storage_guild_delitem(sd, stor, idx, amount);
 	else
 		clif_additem(sd,0,0,flag);
 
@@ -636,7 +643,7 @@ void storage_guild_storageaddfromcart(struct map_session_data *sd, int idx, int 
 	if (amount < 1 || amount > sd->status.cart[idx].amount)
 		return;
 
-	if (guild_storage_additem(sd, stor, &sd->status.cart[idx], amount) == 0)
+	if (storage_guild_additem(sd, stor, &sd->status.cart[idx], amount) == 0)
 		pc_cart_delitem(sd, idx, amount, 0);
 
 	return;
@@ -664,7 +671,7 @@ void storage_guild_storagegettocart(struct map_session_data *sd, int idx, int am
 		return;
 
 	if (pc_cart_additem(sd, &stor->store_item[idx], amount) == 0)
-		guild_storage_delitem(sd, stor, idx, amount);
+		storage_guild_delitem(sd, stor, idx, amount);
 
 	return;
 }
@@ -680,9 +687,11 @@ void storage_guild_storageclose(struct map_session_data *sd)
 	nullpo_retv(sd);
 
 	if((stor=guild2storage(sd->status.guild_id)) != NULL) {
-		intif_send_guild_storage(sd->status.account_id,stor);
-		stor->storage_status = 0;
 		sortage_sortitem(stor->store_item, MAX_GUILD_STORAGE, &stor->sortkey, battle_config.guild_storage_sort);
+		intif_send_guild_storage(sd->status.account_id,stor);
+		if(battle_config.save_player_when_storage_closed)
+			chrif_save(sd);
+		stor->storage_status = 0;
 	}
 	sd->state.storage_flag = 0;
 	clif_storageclose(sd);
@@ -703,12 +712,17 @@ void storage_guild_storage_quit(struct map_session_data *sd, char flag)
 
 	stor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id);
 	if(stor) {
-		if(!flag)
+		if(!flag) {
+			sortage_sortitem(stor->store_item, MAX_GUILD_STORAGE, &stor->sortkey, battle_config.guild_storage_sort);
 			intif_send_guild_storage(sd->status.account_id,stor);
+			if(battle_config.save_player_when_storage_closed)
+				chrif_save(sd);
+		}
 		stor->storage_status = 0;
 	}
 	sd->state.storage_flag = 0;
-	intif_unlock_guild_storage(sd->status.guild_id);
+	if(!flag)
+		intif_unlock_guild_storage(sd->status.guild_id);
 
 	return;
 }

@@ -1605,7 +1605,7 @@ void guild_broken(int guild_id, unsigned char flag)
 
 	numdb_foreach(guild_db,guild_broken_sub,guild_id);
 	numdb_erase(guild_db,guild_id);
-	guild_storage_delete(guild_id);
+	storage_guild_delete(guild_id);
 	aFree(g);
 
 	return;

@@ -1990,7 +1990,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		// 倉庫を開いてるなら保存する
 		if(sd->state.storage_flag == 2)
 			storage_guild_storage_quit(sd,0);
-		else
+		else if(sd->state.storage_flag == 1)
 			storage_storage_quit(sd);
 
 		// 友達リスト勧誘を拒否する
@@ -2138,7 +2138,7 @@ int unit_free(struct block_list *bl, int clrtype)
 		status_change_clear(&sd->bl,1);			// ステータス異常を解除する
 		pc_cleareventtimer(sd);					// イベントタイマを破棄する
 		pc_delspiritball(sd,sd->spiritball,1);	// 気功削除
-		storage_storage_save(sd);
+		//storage_storage_save(sd);
 		storage_delete(sd->status.account_id);
 		pc_makesavestatus(sd);
 		sd->state.waitingdisconnect = 1;

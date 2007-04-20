@@ -9043,6 +9043,8 @@ static void clif_parse_WalkToXY(int fd,struct map_session_data *sd, int cmd)
 
 	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->chatID != 0 )
 		return;
+	if( sd->state.storage_flag )
+		return;
 	if( pc_issit(sd) )
 		return;
 

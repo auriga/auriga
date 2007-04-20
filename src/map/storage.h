@@ -15,7 +15,7 @@ void storage_storage_quit(struct map_session_data *sd);
 void storage_storage_save(struct map_session_data *sd);
 
 struct guild_storage *guild2storage(int guild_id);
-void guild_storage_delete(int guild_id);
+void storage_guild_delete(int guild_id);
 int storage_guild_storageopen(struct map_session_data *sd);
 void storage_guild_storageadd(struct map_session_data *sd, int idx, int amount);
 void storage_guild_storageget(struct map_session_data *sd, int idx, int amount);

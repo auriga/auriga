@@ -5014,6 +5014,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.check_player_name_party_msg = 0;
 		battle_config.check_player_name_guild_msg = 0;
 		battle_config.save_player_when_drop_item = 0;
+		battle_config.save_player_when_storage_closed = 0;
 		battle_config.allow_homun_status_change = 1;
 		battle_config.save_homun_temporal_intimate = 1;
 		battle_config.homun_intimate_rate = 100;
@@ -5469,6 +5470,7 @@ int battle_config_read(const char *cfgName)
 			{ "check_player_name_party_msg",		&battle_config.check_player_name_party_msg			},
 			{ "check_player_name_guild_msg",		&battle_config.check_player_name_guild_msg			},
 			{ "save_player_when_drop_item",			&battle_config.save_player_when_drop_item			},
+			{ "save_player_when_storage_closed",	&battle_config.save_player_when_storage_closed		},
 			{ "allow_homun_status_change",			&battle_config.allow_homun_status_change			},
 			{ "save_homun_temporal_intimate",		&battle_config.save_homun_temporal_intimate			},
 			{ "homun_intimate_rate",				&battle_config.homun_intimate_rate					},

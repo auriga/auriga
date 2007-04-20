@@ -507,6 +507,7 @@ extern struct Battle_Config {
 	int check_player_name_party_msg;
 	int check_player_name_guild_msg;
 	int save_player_when_drop_item;
+	int save_player_when_storage_closed;
 
 	int extra_system_flag;
 	int mob_take_over_sp;
