@@ -1366,13 +1366,13 @@ void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, i
 void map_delchariddb(int charid)
 {
 	struct charid2nick *p;
+
 	p = (struct charid2nick *)numdb_search(charid_db,charid);
-	if(p){	// データベースにあった
-		p->ip=0;	//実際に削除すると武器の名前とか取れなくなるのでmap-serverのIPとPortだけ削除
-		p->port=0;
-//		printf("map delete chariddb:%s\n",p->nick);
-	}//else
-//		printf("map delete chariddb:notfound %d\n",charid);
+	if(p) {
+		// 実際に削除すると武器の名前とか取れなくなるのでmap-serverのIPとPortだけ削除
+		p->ip   = 0;
+		p->port = 0;
+	}
 
 	return;
 }
@@ -1440,8 +1440,6 @@ void map_addnickdb(struct map_session_data *sd)
  */
 int map_quit(struct map_session_data *sd)
 {
-	struct charid2nick *p;
-
 	nullpo_retr(0, sd);
 
 	if(!sd->state.waitingdisconnect && sd->new_fd != -1) {
@@ -1465,11 +1463,8 @@ int map_quit(struct map_session_data *sd)
 		numdb_erase(id_db,sd->bl.id);
 
 	strdb_erase(nick_db,sd->status.name);
-	p = (struct charid2nick *)numdb_search(charid_db,sd->status.char_id);
-	if(p) {
-		p->ip   = 0;
-		p->port = 0;
-	}
+	map_delchariddb(sd->status.char_id);
+
 	aFree(sd->reg);
 	aFree(sd->regstr);
 
@@ -1613,6 +1608,20 @@ char * map_charid2nick(int id)
 }
 
 /*==========================================
+ * char_id番号のPCを探す
+ *------------------------------------------
+ */
+struct map_session_data * map_charid2sd(int id)
+{
+	struct charid2nick *p = (struct charid2nick *)numdb_search(charid_db,id);
+
+	if(p == NULL)
+		return NULL;
+
+	return map_id2sd(p->account_id);
+}
+
+/*==========================================
  * 名前がnickのPCを探す。居なければNULL
  *------------------------------------------
  */
@@ -1620,6 +1629,7 @@ struct map_session_data * map_nick2sd(char *nick)
 {
 	if(nick == NULL)
 		return NULL;
+
 	return (struct map_session_data *)strdb_search(nick_db,nick);
 }
 
@@ -2822,7 +2832,7 @@ int do_init(int argc,char *argv[])
 
 	add_timer_func_list(map_freeblock_timer,"map_freeblock_timer");
 	add_timer_func_list(map_clearflooritem_timer,"map_clearflooritem_timer");
-	add_timer_interval(gettick()+1000,map_freeblock_timer,0,0,60*1000);
+	add_timer_interval(gettick()+1000,map_freeblock_timer,0,0,600*1000);
 
 	do_init_chrif();
 	do_init_clif();

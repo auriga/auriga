@@ -1264,7 +1264,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			{
 				if(atn_rand()%10000 < sd->break_myequip_rate_when_attack[i])
 				{
-					pc_break_equip2(sd,(unsigned short)i);
+					pc_break_equip2(sd,i);
 				}
 			}
 		}

@@ -11,11 +11,9 @@
 
 #define pc_setdead(sd) ((sd)->state.dead_sit = 1)
 #define pc_setsit(sd) ((sd)->state.dead_sit = 2)
-//#define pc_setstand(sd) ((sd)->state.dead_sit = 0)
 #define pc_issit(sd) ((sd)->state.dead_sit == 2)
 #define pc_setdir(sd,b,h) ((sd)->dir = (char)(b) ,(sd)->head_dir = (char)(h) )
 
-//#define pc_ishiding(sd) ((sd)->status.option&0x0006)
 #define pc_ishiding(sd) ((sd)->status.option&0x4006)
 #define pc_iscloaking(sd)   (!((sd)->status.option&0x4000) && ((sd)->status.option&0x0004))
 #define pc_ischasewalk(sd)  (((sd)->status.option&0x4000) && ((sd)->status.option&0x0004))
@@ -41,12 +39,10 @@ void pc_setnewpc(struct map_session_data*,int,int,int,int,int);
 int pc_authok(int,struct mmo_charstatus *st,struct registry *reg);
 int pc_authfail(int);
 
-int pc_isequip(struct map_session_data *sd,int n);
 int pc_equippoint(struct map_session_data *sd,int n);
 
 int pc_checkskill(struct map_session_data *sd,int skill_id);
 int pc_checkskill2(struct map_session_data *sd,int skill_id);
-int pc_checkallowskill(struct map_session_data *sd);
 int pc_checkequip(struct map_session_data *sd,int pos);
 
 int pc_checkoverhp(struct map_session_data*);
@@ -67,9 +63,6 @@ int pc_lossequipitem(struct map_session_data *sd,int pos,int type);
 void pc_delitem(struct map_session_data*, int n, int amount, int type);
 int pc_checkitem(struct map_session_data*);
 
-//int pc_check_equip_card_comb(struct map_session_data* sd,int check_num, ... );
-//int pc_check_equip_card(struct map_session_data* sd,int card_id);
-
 int pc_cart_additem(struct map_session_data *sd,struct item *item_data,int amount);
 int pc_cart_delitem(struct map_session_data *sd,int n,int amount,int type);
 void pc_putitemtocart(struct map_session_data *sd, int idx, int amount);
@@ -87,11 +80,6 @@ int pc_bonus3(struct map_session_data *sd,int,int,int,int);
 int pc_bonus4(struct map_session_data *sd,int,int,int,int,long);
 int pc_skill(struct map_session_data*,int,int,int);
 
-int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilllv,int rate, long flag);
-int pc_bonus_add_autospell_rate(struct map_session_data* sd,int skillid,int val);
-int pc_bonus_ban_autospell(struct map_session_data* sd,int skillid);
-
-
 void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip);
 
 void pc_item_identify(struct map_session_data *sd, int idx);
@@ -101,8 +89,6 @@ int pc_steal_coin(struct map_session_data *sd,struct block_list *bl);
 int pc_modifybuyvalue(struct map_session_data*,int);
 int pc_modifysellvalue(struct map_session_data*,int);
 
-int pc_checkbaselevelup(struct map_session_data *sd);
-int pc_checkjoblevelup(struct map_session_data *sd);
 int pc_gainexp(struct map_session_data*,struct mob_data*,atn_bignumber,atn_bignumber);
 int pc_nextbaseexp(struct map_session_data *);
 int pc_nextjobexp(struct map_session_data *);
@@ -128,7 +114,6 @@ void pc_setcart(struct map_session_data *sd, unsigned short type);
 int pc_setfalcon(struct map_session_data *sd);
 int pc_setriding(struct map_session_data *sd);
 int pc_changelook(struct map_session_data *,int,int);
-int pc_equiplookall(struct map_session_data *sd);
 
 int pc_readparam(struct map_session_data*,int);
 int pc_setparam(struct map_session_data*,int,int);
@@ -166,23 +151,24 @@ void pc_adopt_reply(struct map_session_data *sd,int src_id,int p_id,short flag);
 int pc_break_adoption(struct map_session_data *sd);
 
 int pc_break_equip(struct map_session_data *sd, unsigned short where);
-int pc_break_equip2(struct map_session_data *sd, unsigned short where);
+int pc_break_equip2(struct map_session_data *sd, int where);
 
 int pc_candrop(struct map_session_data *sd,int item_id);
 
 void pc_setstand(struct map_session_data *sd);
 int pc_calc_skilltree(struct map_session_data *sd);
 int pc_check_guild_skill_effective_range(struct map_session_data *sd);
-struct pc_base_job{
-	int job; //職業、ただし転生職や養子職の場合は元の職業を返す(廃プリ→プリ)
-	int type; //ノビ 0, 一次職 1, 二次職 2, スパノビ 3
-	int upper; //通常 0, 転生 1, 養子 2
+
+struct pc_base_job {
+	int job;	// 職業、ただし転生職や養子職の場合は元の職業を返す(廃プリ→プリ)
+	int type;	// ノビ 0, 一次職 1, 二次職 2, スパノビ 3
+	int upper;	// 通常 0, 転生 1, 養子 2
 };
 
 #define pc_isupper(sd) (((sd)->status.class_ >= PC_CLASS_NV2) && ((sd)->status.class_ < PC_CLASS_NV3))
 #define pc_isbaby(sd) (((sd)->status.class_ >= PC_CLASS_NV3) && ((sd)->status.class_ <= PC_CLASS_SNV3))
 
-struct pc_base_job pc_calc_base_job(int b_class);//転生や養子職の元の職業を返す
+struct pc_base_job pc_calc_base_job(int b_class);
 int pc_calc_class_job(int job,int upper);
 
 void pc_read_gm_account(void);
@@ -195,13 +181,9 @@ int pc_delcoin(struct map_session_data *sd,int,int);
 
 int pc_runtodir(struct map_session_data *sd);
 
-int pc_check_dir_cell(struct map_session_data *sd);
-
-int pc_check_skillup(struct map_session_data *sd,int skill_num);
-
 int pc_get_gm_account_dummy(void);
 
-//DB再読込用
+// DB再読込用
 int pc_readdb(void);
 
 int do_final_pc(void);
@@ -210,4 +192,3 @@ int do_init_pc(void);
 enum {ADDITEM_EXIST,ADDITEM_NEW,ADDITEM_OVERAMOUNT};
 
 #endif
-

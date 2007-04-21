@@ -1041,7 +1041,7 @@ void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, i
 void map_delchariddb(int charid);
 void map_reqchariddb(struct map_session_data * sd, int charid);
 char * map_charid2nick(int);
-#define map_charid2sd(id) map_nick2sd(map_charid2nick(id))
+struct map_session_data * map_charid2sd(int id);
 
 struct map_session_data * map_id2sd(int);
 struct mob_data * map_id2md(int);
