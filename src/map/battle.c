@@ -2026,7 +2026,12 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			DMG_FIX( 300, 100 );
 			break;
 		case NJ_HUUMA:		// 風魔手裏剣投げ
-			DMG_FIX( 150+150*skill_lv, 100 );
+			{
+				int rate = 150+150*skill_lv;
+				if(wflag > 1)
+					rate /= wflag;
+				DMG_FIX( rate, 100 );
+			}
 			break;
 		case NJ_ZENYNAGE:	// 銭投げ
 			{
@@ -2949,7 +2954,7 @@ struct Damage battle_calc_magic_attack(struct block_list *bl,struct block_list *
 			}
 			break;
 		case NJ_BAKUENRYU:	// 龍炎陣
-			MATK_FIX( 150+150*skill_lv, 100 );
+			MATK_FIX( 50+50*skill_lv, 100 );
 			break;
 		case NJ_HYOUSYOURAKU:	// 氷柱落し
 			MATK_FIX( 100+50*skill_lv, 100 );
@@ -3701,11 +3706,12 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 /*=========================================================================
  * スキル攻撃効果処理まとめ
  * flagの説明。16進図
- * 	00XRTTff
- *  ff = magicで計算に渡される(主に敵の巻き込み数)
- *  TT = パケットのtype部分(0でデフォルト)
- *   R = 予約（skill_area_subで使用するBCT_*)
- *   X = パケットのスキルLv
+ * 	0XYRTTff
+ *  ff = battle_calc_attackで各種計算に利用
+ *  TT = パケットのtype部分（0でデフォルト）
+ *   R = 予約（skill_area_subで使用されたBCT_*）
+ *   Y = パケットのスキルLv（fのときは-1に変換）
+ *   X = エフェクトのみでダメージなしフラグ
  *-------------------------------------------------------------------------
  */
 int battle_skill_attack(int attack_type,struct block_list* src,struct block_list *dsrc,
@@ -3758,6 +3764,10 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	if(sd && mob_gvmobcheck(sd,bl)==0)
 		return 0;
 
+	type = (flag >> 8) & 0xff;
+	if(skillid == 0)
+		type = 5;
+
 	/* 矢の消費 */
 	if(sd) {
 		int cost = skill_get_arrow_cost(skillid,skilllv);
@@ -3783,19 +3793,27 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				break;
 			case SN_SHARPSHOOTING:
 			case GS_SPREADATTACK:
-				if( flag == 0 && !battle_delarrow(sd, cost, skillid) )
+				if( type == 0 && !battle_delarrow(sd, cost, skillid) )
 					return 0;
 				break;
 			}
 		}
 	}
 
-	/* ダメージ計算 */
-	type=-1;
-	lv=(flag>>20)&0xf;
+	/* フラグ値チェック */
+	lv = (flag >> 20) & 0x0f;
+	if(lv == 0)
+		lv = skilllv;
+	else if(lv == 0x0f)
+		lv = -1;
 
-	// グラウンドドリフトはdsrcを引数として渡す
-	if(skillid == GS_GROUNDDRIFT)
+	if(flag & 0x01000000) {	// エフェクトだけ出してダメージなしで終了
+		clif_skill_damage(dsrc, bl, tick, status_get_amotion(src), 0, -1, 1, skillid, lv, type);
+		return -1;
+	}
+
+	/* ダメージ計算 */
+	if(skillid == GS_GROUNDDRIFT)	// グラウンドドリフトはdsrcを引数として渡す
 		dmg = battle_calc_attack(attack_type,dsrc,bl,skillid,skilllv,flag&0xff);
 	else
 		dmg = battle_calc_attack(attack_type,src,bl,skillid,skilllv,flag&0xff);
@@ -3826,18 +3844,14 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	damage = dmg.damage + dmg.damage2;
 
-	if(lv==15)
-		lv=-1;
-
-	if( flag&0xff00 )
-		type=(flag&0xff00)>>8;
-
-	if(damage <= 0 || damage < dmg.div_)	//吹き飛ばし判定？※
+	if(damage <= 0 || damage < dmg.div_)	// 吹き飛ばし判定
 		dmg.blewcount = 0;
 
-	if(skillid == CR_GRANDCROSS || skillid == NPC_DARKGRANDCROSS) {	//グランドクロス
-		if(battle_config.gx_disptype) dsrc = src;		// 敵ダメージ白文字表示
-		if( src == bl) type = 4;	// 反動はダメージモーションなし
+	if(skillid == CR_GRANDCROSS || skillid == NPC_DARKGRANDCROSS) {	// グランドクロス
+		if(battle_config.gx_disptype)
+			dsrc = src;	// 敵ダメージ白文字表示
+		if(src == bl)
+			type = 4;	// 反動はダメージモーションなし
 	}
 
 	/* コンボ */
@@ -3980,7 +3994,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		}
 		if(rdamage > 0){
 			//clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0);
-			clif_skill_damage(src,src,tick,dmg.amotion,dmg.dmotion, rdamage, dmg.div_, skillid, (lv!=0)?lv:skilllv, (skillid==0)? 5:type );
+			clif_skill_damage(src, src, tick, dmg.amotion, dmg.dmotion, rdamage, dmg.div_, skillid, lv, type);
 			if(dmg.blewcount > 0 && !map[src->m].flag.gvg) {
 				int dir = map_calc_dir(src,bl->x,bl->y);
 				if(dir == 0)
@@ -3990,18 +4004,17 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			memset(&dmg,0,sizeof(dmg));
 		}
 	}
+
 	/* ダメージパケット送信 */
 	if(damage != -1) {
 		switch(skillid){
-		case AS_SPLASHER:
-			clif_skill_damage(dsrc,bl,tick,dmg.amotion,dmg.dmotion, damage, dmg.div_, skillid, -1, 5);
-			break;
 		case NPC_SELFDESTRUCTION:
 		case NPC_SELFDESTRUCTION2:
 			dmg.blewcount |= SAB_NODAMAGE;
 			break;
 		default:
-			clif_skill_damage(dsrc,bl,tick,dmg.amotion,dmg.dmotion, damage, dmg.div_, skillid, (lv!=0)?lv:skilllv, (skillid==0)? 5:type );
+			clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skillid, lv, type);
+			break;
 		}
 	} else {	// ダメージ消失時はパケット送信しない
 		damage = 0;

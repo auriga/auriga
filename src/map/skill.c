@@ -1397,7 +1397,7 @@ int skill_add_blown( struct block_list *src, struct block_list *target,int skill
 /*==========================================
  * スキル範囲攻撃用(map_foreachinareaから呼ばれる)
  * flagについて：16進図を確認
- * MSB <- 00fTffff -> LSB
+ * MSB <- 0ffTffff -> LSB
  *  ffff = 自由に使用可能
  *     T = ターゲット選択用(BCT_*)
  *     0 = 予約。0に固定
@@ -1868,6 +1868,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	struct map_session_data *sd = NULL;
 	struct mob_data         *md = NULL;
 	struct homun_data       *hd = NULL;
+	int is_enemy = 1;
 
 	nullpo_retr(1, src);
 	nullpo_retr(1, bl);
@@ -1881,8 +1882,26 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	if(unit_isdead(bl))
 		return 1;
 
-	if((skillid == CR_GRANDCROSS || skillid == NPC_DARKGRANDCROSS) && src != bl)
-		bl = src;
+	switch(skillid) {
+		case CR_GRANDCROSS:
+		case NPC_DARKGRANDCROSS:
+			if(src != bl)
+				bl = src;
+			break;
+		case AS_GRIMTOOTH:
+		case KN_BRANDISHSPEAR:
+		case SN_SHARPSHOOTING:
+		case GS_SPREADATTACK:
+		case NJ_HUUMA:
+		case NJ_BAKUENRYU:
+		case NJ_KAMAITACHI:
+			// skill_castend_idで許可したスキルはここで敵チェック
+			if(skill_get_inf2(skillid) & 0x04 || skill_get_inf(skillid) & 0x01) {
+				if(battle_check_target(src,bl,BCT_ENEMY) <= 0)
+					is_enemy = 0;
+			}
+			break;
+	}
 
 	// エモ
 	if(md && md->skillidx != -1)
@@ -2063,7 +2082,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case TK_STORMKICK:	/* フェオリチャギ */
 		if(flag&1) {
 			if(bl->id != skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
 		} else {
 			skill_area_temp[1]=src->id;
 			map_foreachinarea(skill_area_sub,
@@ -2316,41 +2335,53 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
-	case AS_GRIMTOOTH:		/* グリムトゥース */
 	case NPC_SPLASHATTACK:	/* スプラッシュアタック */
-	case AS_SPLASHER:		/* ベナムスプラッシャー */
 		if(flag&1){
 			/* 個別にダメージを与える */
 			if(bl->id!=skill_area_temp[1])
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
 		}else{
-			int ar=2;
-			int x=bl->x,y=bl->y;
-			switch (skillid) {
-				case AS_GRIMTOOTH:	/* グリムトゥース */
-					ar=1;
-					break;
-				case NPC_SPLASHATTACK:	/* スプラッシュアタック */
-					ar=3;
-					break;
-				case AS_SPLASHER:	/* ベナムスプラッシャー */
-					break;
-			}
+			int ar=3;
 			skill_area_temp[1]=bl->id;
-			skill_area_temp[2]=x;
-			skill_area_temp[3]=y;
 			/* まずターゲットに攻撃を加える */
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,x-ar,y-ar,x+ar,y+ar,0,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
-			if(skillid == AS_GRIMTOOTH)
-				map_foreachinarea(skill_area_trap_sub,
-					bl->m,x-ar,y-ar,x+ar,y+ar,BL_SKILL,
-					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
-					skill_castend_damage_id);
+		}
+		break;
+	case AS_SPLASHER:		/* ベナムスプラッシャー */
+		if(flag&1){
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|0x500);
+		}else{
+			int ar=2;
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case AS_GRIMTOOTH:		/* グリムトゥース */
+		if(flag&1){
+			/* 個別にダメージを与える */
+			if(bl->id!=skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+		}else{
+			int ar=1;
+			skill_area_temp[1]=bl->id;
+			/* まずターゲットに攻撃を加える */
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
+			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			map_foreachinarea(skill_area_trap_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_SKILL,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
 		}
 		break;
 	case HVAN_EXPLOSION:	/* バイオエクスプロージョン */
@@ -2414,7 +2445,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,skill_area_temp[2]-1,skill_area_temp[3]-1,skill_area_temp[2]+1,skill_area_temp[3]+1,0,
+				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2502,7 +2533,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			);
 			if(skill_area_temp[1] == 0) {
 				/* ターゲットに攻撃 */
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
 			}
 		}
 		break;
@@ -2513,9 +2544,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}else{
 			int ar = (skilllv-1)/3+1;
 			skill_area_temp[1] = bl->id;
-			skill_area_temp[2] = bl->x;
-			skill_area_temp[3] = bl->y;
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
 			map_foreachinarea(skill_area_sub,
 				src->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
@@ -2525,13 +2554,18 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NJ_HUUMA:		/* 風魔手裏剣投げ */
 		if(flag&1){
 			if(bl->id!=skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
 		} else {
-			int x=bl->x,y=bl->y;
-			if (!battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0))
-				break;
+			skill_area_temp[0] = 0;
 			skill_area_temp[1] = bl->id;
-			map_foreachinarea(skill_area_sub,bl->m,x-1,y-1,x+1,y+1,0,
+			map_foreachinarea(skill_area_sub,
+					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
+					src,skillid,skilllv,tick,flag|BCT_ENEMY,
+					skill_area_sub_count);
+			if( !battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]|(is_enemy ? 0 : 0x01000000)) )
+				break;
+			map_foreachinarea(skill_area_sub,
+					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
 					src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 					skill_castend_damage_id);
 		}
@@ -2717,7 +2751,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
 			);
 			if(skill_area_temp[1] == 0) {
-				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,0);
+				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
 			}
 		}
 		break;
@@ -5041,8 +5075,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			unit_skilluse_id(&sd->bl,src->id,sd->skillid_dance,sd->skilllv_dance);
 		break;
 	case AS_SPLASHER:		/* ベナムスプラッシャー */
-		if((atn_bignumber)status_get_max_hp(bl)*3/4 < status_get_hp(bl)) {
-			//HPが3/4以上残っていたら失敗
+		if((atn_bignumber)status_get_max_hp(bl)*3/4 < status_get_hp(bl) || status_get_mode(bl)&0x20) {
+			// HPが3/4以上残っているか相手がボス属性なら失敗
+			clif_skill_fail(sd,skillid,0,0);
 			map_freeblock_unlock();
 			return 1;
 		}
@@ -5580,15 +5615,33 @@ int skill_castend_id( int tid, unsigned int tick, int id,int data )
 		}
 
 		inf2 = skill_get_inf2(src_ud->skillid);
-		if(((skill_get_inf(src_ud->skillid)&1) || inf2&4 ) && battle_check_target(src,target,BCT_ENEMY)<=0 && // 彼我敵対関係チェック
-		   (src_ud->skillid!=SA_SPELLBREAKER || !map[src->m].flag.nopenalty)){ // 街中のスペルブレイカーはPCに有効
-			break;
+		if(inf2 & 0x04 || skill_get_inf(src_ud->skillid) & 0x01) {
+			int fail_flag = 1;
+			switch(src_ud->skillid) {	// 敵以外をターゲットにしても良いスキル
+				case AS_GRIMTOOTH:
+				case KN_BRANDISHSPEAR:
+				case SN_SHARPSHOOTING:
+				case GS_SPREADATTACK:
+				case NJ_HUUMA:
+				case NJ_BAKUENRYU:
+				case NJ_KAMAITACHI:
+					fail_flag = 0;
+					break;
+				case SA_SPELLBREAKER:
+					if(map[src->m].flag.nopenalty)	// 街中のみPCに有効
+						fail_flag = 0;
+					break;
+			}
+			if(fail_flag) {
+				if(battle_check_target(src,target,BCT_ENEMY) <= 0)	// 彼我敵対関係チェック
+					break;
+			}
 		}
 		if(inf2 & 0xC00 && src->id != target->id) {
 			int fail_flag = 1;
 			if(inf2 & 0x400 && battle_check_target(src,target, BCT_PARTY) > 0)
 				fail_flag = 0;
-			if(src_sd && inf2 & 0x800 && src_sd->status.guild_id > 0 && src_sd->status.guild_id == status_get_guild_id(target))
+			else if(src_sd && inf2 & 0x800 && src_sd->status.guild_id > 0 && src_sd->status.guild_id == status_get_guild_id(target))
 				fail_flag = 0;
 			if(fail_flag) {
 				break;
