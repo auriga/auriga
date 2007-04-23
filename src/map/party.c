@@ -303,10 +303,12 @@ void party_member_added(int party_id, int account_id, unsigned char flag, const 
 {
 	struct map_session_data *sd = map_id2sd(account_id),*sd2;
 
-	if(sd==NULL && flag==0){
-		if(battle_config.error_log)
-			printf("party: member added error %d is not online\n",account_id);
-		intif_party_leave(party_id, account_id, name); // キャラ側に登録できなかったため脱退要求を出す
+	if(sd==NULL){
+		if(flag == 0) {
+			if(battle_config.error_log)
+				printf("party: member added error %d is not online\n",account_id);
+			intif_party_leave(party_id, account_id, name); // キャラ側に登録できなかったため脱退要求を出す
+		}
 		return;
 	}
 	sd2=map_id2sd(sd->party_invite_account);
@@ -795,8 +797,7 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 // 同じマップのパーティメンバー全体に処理をかける
 // type==0 同じマップ
 //     !=0 画面内
-void party_foreachsamemap(int (*func)(struct block_list*,va_list),
-	struct map_session_data *sd,int type,...)
+void party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_session_data *sd,int type,...)
 {
 	struct party *p;
 	va_list ap;

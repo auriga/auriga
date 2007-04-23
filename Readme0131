@@ -1,4 +1,16 @@
 ----------------------------------------
+//0167 [2007/04/24] by Rayce
+
+・pc_calc_base_job() でtypeの判定を行うとき、スパノビならtype=3にするように変更（pc.c）
+　今のところtypeは利用されてませんが一応残しておきます
+・map_session_data構造体から使われていないメンバ mob_view_class を削除（map.h, pc.c）
+
+・party_member_added() でサーバクラッシュする可能性を修正（party.c）
+・Mobが寒いジョークおよびスクリームを使うとき姿が消えないように修正（skill.c）
+・clif_displaymessage() と clif_disp_onlyself() を同調させる（clif.*）
+　引数の仕様を変更してメッセージにconstを付けるように修正
+
+----------------------------------------
 //0166 [2007/04/23] by Rayce
 
 ・以下の敵指定型の範囲攻撃スキルで他PCをshift+クリックしても発動するように修正（skill.c）

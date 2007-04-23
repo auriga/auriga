@@ -167,7 +167,7 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 		if (battle_config.buyer_name) {
 			char temp[1024];
 			sprintf(temp, msg_txt(148), sd->status.name);
-			clif_disp_onlyself(vsd, temp, strlen(temp));
+			clif_disp_onlyself(vsd->fd, temp);
 		}
 	}
 

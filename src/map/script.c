@@ -8726,7 +8726,7 @@ int buildin_dispbottom(struct script_state *st)
 
 	message=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	if(sd)
-		clif_disp_onlyself(sd,message,strlen(message));
+		clif_disp_onlyself(sd->fd,message);
 	return 0;
 }
 

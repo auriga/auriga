@@ -263,8 +263,8 @@ void clif_guild_broken(struct map_session_data *sd, unsigned int flag);
 void clif_guild_xy(struct map_session_data *sd);
 
 // atcommand
-void clif_displaymessage(const int fd, char* mes);
-void clif_disp_onlyself(struct map_session_data *sd, char *mes, int len);
+void clif_displaymessage(const int fd, const char* mes);
+void clif_disp_onlyself(const int fd, const char *mes);
 void clif_GMmessage(struct block_list *bl, char* mes, int len, int flag);
 void clif_announce(struct block_list *bl, char* mes, int len, unsigned long color, int flag);
 void clif_heal(int fd, int type, int val);

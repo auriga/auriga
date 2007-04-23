@@ -4932,10 +4932,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_NINJA:			//忍者の魂
 		case SC_DEATHKINGHT:	//デスナイトの魂
 		case SC_COLLECTOR:		//コレクターの魂
-			if(sd && battle_config.disp_job_soul_state_change) {
-				char output[] = "魂状態になりました";
-				clif_disp_onlyself(sd,output,strlen(output));
-			}
+			if(sd && battle_config.disp_job_soul_state_change)
+				clif_disp_onlyself(sd->fd,"魂状態になりました");
 			break;
 		case SC_KNIGHT://#ナイトの魂#
 		case SC_ALCHEMIST://#アルケミストの魂#
@@ -4943,21 +4941,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_BLACKSMITH://#ブラックスミスの魂#
 		case SC_HUNTER://#ハンターの魂#
 		case SC_HIGH://#一次上位職業の魂#
-			if(sd && battle_config.disp_job_soul_state_change) {
-				char output[] = "魂状態になりました";
-				clif_disp_onlyself(sd,output,strlen(output));
-			}
+			if(sd && battle_config.disp_job_soul_state_change)
+				clif_disp_onlyself(sd->fd,"魂状態になりました");
 			calc_flag = 1;
 			break;
 		case SC_SUPERNOVICE://#スーパーノービスの魂#
 			if(sd) {
-				//1%で死亡フラグ消す
+				// 1%で死亡フラグ消す
 				if(sd->status.base_level >=90 && atn_rand()%10000 < battle_config.repeal_die_counter_rate)
-					sd->status.die_counter = 0; //死にカウンターリセット
-				if(battle_config.disp_job_soul_state_change) {
-					char output[] = "魂状態になりました";
-					clif_disp_onlyself(sd,output,strlen(output));
-				}
+					sd->status.die_counter = 0;	// 死にカウンターリセット
+				if(battle_config.disp_job_soul_state_change)
+					clif_disp_onlyself(sd->fd,"魂状態になりました");
 			}
 			calc_flag = 1;
 			break;
@@ -5433,14 +5427,13 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_ROGUE://#ローグの魂#
 		case SC_ASSASIN://#アサシンの魂#
 		case SC_SOULLINKER://#ソウルリンカーの魂#
+		case SC_SUPERNOVICE://#スーパーノービスの魂#
 		case SC_GUNNER:		//ガンスリンガーの魂
 		case SC_NINJA:			//忍者の魂
 		case SC_DEATHKINGHT:	//デスナイトの魂
 		case SC_COLLECTOR:		//コレクターの魂
-			if(sd && battle_config.disp_job_soul_state_change) {
-				char output[] = "魂状態が終了しました";
-				clif_disp_onlyself(sd,output,strlen(output));
-			}
+			if(sd && battle_config.disp_job_soul_state_change)
+				clif_disp_onlyself(sd->fd,"魂状態が終了しました");
 			break;
 		case SC_KNIGHT://#ナイトの魂#
 		case SC_ALCHEMIST://#アルケミストの魂#
@@ -5448,19 +5441,9 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_BLACKSMITH://#ブラックスミスの魂#
 		case SC_HUNTER://#ハンターの魂#
 		case SC_HIGH://#一次上位職業の魂#
-			if(sd && battle_config.disp_job_soul_state_change) {
-				char output[] = "魂状態が終了しました";
-				clif_disp_onlyself(sd,output,strlen(output));
-			}
+			if(sd && battle_config.disp_job_soul_state_change)
+				clif_disp_onlyself(sd->fd,"魂状態が終了しました");
 			calc_flag = 1;
-			break;
-		case SC_SUPERNOVICE://#スーパーノービスの魂#
-			if(sd) {
-				if(battle_config.disp_job_soul_state_change) {
-					char output[] = "魂状態が終了しました";
-					clif_disp_onlyself(sd,output,strlen(output));
-				}
-			}
 			break;
 		case SC_POEMBRAGI:			/* ブラギ */
 		case SC_WHISTLE:			/* 口笛 */

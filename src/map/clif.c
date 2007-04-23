@@ -5366,12 +5366,30 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag)
  * メッセージ表示
  *------------------------------------------
  */
-void clif_displaymessage(const int fd, char* mes)
+void clif_displaymessage(const int fd, const char* mes)
 {
-	WFIFOW(fd,0) = 0x8e;
-	WFIFOW(fd,2) = 4+1+strlen(mes);
-	strncpy(WFIFOP(fd,4), mes, WFIFOW(fd,2)-4);
-	WFIFOSET(fd, WFIFOW(fd,2));
+	int len = strlen(mes)+1;
+
+	WFIFOW(fd,0)=0x8e;
+	WFIFOW(fd,2)=4+len;
+	strncpy(WFIFOP(fd,4),mes,len);
+	WFIFOSET(fd,WFIFOW(fd,2));
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_disp_onlyself(const int fd, const char *mes)
+{
+	int len = strlen(mes)+1;
+
+	WFIFOW(fd,0)=0x17f;
+	WFIFOW(fd,2)=4+len;
+	memcpy(WFIFOP(fd,4),mes,len);
+	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return;
 }
@@ -7982,25 +8000,6 @@ void clif_sitting(struct map_session_data *sd)
 	WBUFL(buf,2)=sd->bl.id;
 	WBUFB(buf,26)=2;
 	clif_send(buf,packet_db[0x8a].len,&sd->bl,AREA);
-
-	return;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
-void clif_disp_onlyself(struct map_session_data *sd, char *mes, int len)
-{
-	int fd;
-
-	nullpo_retv(sd);
-
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x17f;
-	WFIFOW(fd,2)=4+len+1;
-	memcpy(WFIFOP(fd,4),mes,len+1);
-	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return;
 }

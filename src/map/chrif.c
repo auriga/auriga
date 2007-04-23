@@ -806,7 +806,7 @@ int chrif_breakadoption(int char_id, unsigned char *name)
 
 	memset(output, 0, sizeof(output));
 	sprintf(output, msg_txt(174), name); // %sさんの要望により、養子関係が破棄されました
-	clif_disp_onlyself(sd, output, strlen(output));
+	clif_disp_onlyself(sd->fd, output);
 
 	return 0;
 }

@@ -3019,7 +3019,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				s_class = pc_calc_base_job(sd->status.class_);
 				if((skill=pc_checkskill(sd,HP_MEDITATIO))>0) // メディテイティオ
 					heal += heal*(skill*2)/100;
-				if(sd && dstsd && sd->status.partner_id == dstsd->status.char_id && s_class.job == 23 && sd->sex == 0) //自分も対象もPC、対象が自分のパートナー、自分がスパノビ、自分が♀なら
+				if(dstsd && sd->status.partner_id == dstsd->status.char_id && s_class.job == 23 && sd->sex == 0) //自分も対象もPC、対象が自分のパートナー、自分がスパノビ、自分が♀なら
 					heal = heal*2;	//スパノビの嫁が旦那にヒールすると2倍になる
 			}
 
@@ -4110,7 +4110,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case BA_FROSTJOKE:			/* 寒いジョーク */
 	case DC_SCREAM:				/* スクリーム */
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if(sd || mob_get_viewclass(status_get_class(src)) < MAX_VALID_PC_CLASS) {
+			// Mobは何故か姿が消えてしまうので除外する
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
 		skill_addtimerskill(src,tick+3000,bl->id,0,0,skillid,skilllv,0,flag);
 		if(md){		// Mobは喋れないから、スキル名を叫ばせてみる
 			char temp[100];

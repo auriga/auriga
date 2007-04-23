@@ -575,7 +575,6 @@ void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int logi
 	sd->sex            = sex;
 	sd->state.auth     = 0;
 	sd->bl.type        = BL_PC;
-	sd->mob_view_class = 0;
 	sd->status_calc_pc_process = 0;
 	sd->state.waitingdisconnect= 0;
 
@@ -4051,48 +4050,48 @@ struct pc_base_job pc_calc_base_job(int b_class)
 	struct pc_base_job bj;
 
 	memset(&bj, 0, sizeof(bj));
-	//転生や養子の場合の元の職業を算出する
-	if(b_class <= PC_CLASS_SNV || b_class==PC_CLASS_GS || b_class==PC_CLASS_NJ )
+
+	if(b_class <= PC_CLASS_SNV || b_class == PC_CLASS_GS || b_class == PC_CLASS_NJ)
 	{
-		bj.job = b_class;
+		bj.job   = b_class;
 		bj.upper = 0;
 	}
 	else if(b_class >= PC_CLASS_BASE2 && b_class < PC_CLASS_BASE3)
 	{
-		bj.job = b_class - PC_CLASS_BASE2;
+		bj.job   = b_class - PC_CLASS_BASE2;
 		bj.upper = 1;
 	}
-	else if(b_class >= PC_CLASS_BASE3 && b_class< PC_CLASS_SNV3)
+	else if(b_class >= PC_CLASS_BASE3 && b_class < PC_CLASS_SNV3)
 	{
-		bj.job = b_class - PC_CLASS_BASE3;
+		bj.job   = b_class - PC_CLASS_BASE3;
 		bj.upper = 2;
 	}else if(b_class == PC_CLASS_SNV3)
 	{
 		bj.job   = 23;
 		bj.upper = 2;
 	}
-	else if(b_class>=PC_CLASS_TK && b_class<= PC_CLASS_SL)//テコン〜
+	else if(b_class >= PC_CLASS_TK && b_class <= PC_CLASS_SL)	// テコン〜
 	{
-		bj.job = 24 + b_class - PC_CLASS_TK;
+		bj.job   = 24 + b_class - PC_CLASS_TK;
 		bj.upper = 0;
 	}
-	else if(b_class==PC_CLASS_DK || b_class==PC_CLASS_DC)
+	else if(b_class == PC_CLASS_DK || b_class == PC_CLASS_DC)
 	{
-		bj.job = 30 + b_class - PC_CLASS_DK;
+		bj.job   = 30 + b_class - PC_CLASS_DK;
 		bj.upper = 0;
 	}
 
-	if(battle_config.enable_upper_class==0){ //confで無効になっていたらupper=0
+	if(battle_config.enable_upper_class == 0)	// confで無効になっていたらupper=0
 		bj.upper = 0;
-	}
 
-	if(bj.job == 0){
+	if(bj.job == 0)
 		bj.type = 0;
-	}else if(bj.job < 7 || bj.job==23 || bj.job==24 || bj.job==28 || bj.job==29){
+	else if(bj.job < 7 || bj.job == 24 || bj.job >= 28)
 		bj.type = 1;
-	}else{
+	else if(bj.job == 23)
+		bj.type = 3;
+	else
 		bj.type = 2;
-	}
 
 	return bj;
 }
@@ -4273,7 +4272,7 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		int bexp = (base_exp > 0x7fffffff)? 0x7fffffff: (int)base_exp;
 		int jexp = (job_exp  > 0x7fffffff)? 0x7fffffff: (int)job_exp;
 		snprintf(output, sizeof output, msg_txt(131), bexp, jexp);
-		clif_disp_onlyself(sd, output, strlen(output));
+		clif_disp_onlyself(sd->fd, output);
 	}
 
 	//------------- Base ----------------
@@ -7091,7 +7090,7 @@ void pc_adopt_reply(struct map_session_data *sd,int src_id,int p_id,short flag)
  */
 int pc_break_adoption(struct map_session_data *sd)
 {
-	int b_id, p1_id, p2_id, len=0;
+	int b_id, p1_id, p2_id;
 	struct map_session_data *baby, *p1, *p2;
 	char output[100];
 
@@ -7122,7 +7121,6 @@ int pc_break_adoption(struct map_session_data *sd)
 
 	memset(output, 0, sizeof(output));
 	sprintf(output, msg_txt(174), sd->status.name); // %sさんの要望により、養子関係が破棄されました
-	len = strlen(output);
 
 	// 解体処理の実行、見つからなければchar鯖に依頼
 	if(baby) {		// 子供の離縁
@@ -7130,7 +7128,7 @@ int pc_break_adoption(struct map_session_data *sd)
 		baby->status.parent_id[0] = 0;
 		baby->status.parent_id[1] = 0;
 		pc_jobchange(baby,s_class.job,0);
-		clif_disp_onlyself(baby, output, len);
+		clif_disp_onlyself(baby->fd, output);
 	} else if(b_id > 0) {
 		chrif_req_break_adoption(b_id, sd->status.name);
 		chrif_searchcharid(b_id);
@@ -7140,7 +7138,7 @@ int pc_break_adoption(struct map_session_data *sd)
 		p1->status.baby_id = 0;
 		pc_calc_skilltree(p1);		// WE_BABYを破棄するためにスキルツリー再計算
 		clif_skillinfoblock(p1);
-		clif_disp_onlyself(p1, output, len);
+		clif_disp_onlyself(p1->fd, output);
 	} else if(p1_id > 0) {
 		chrif_req_break_adoption(p1_id, sd->status.name);
 		chrif_searchcharid(p1_id);
@@ -7150,7 +7148,7 @@ int pc_break_adoption(struct map_session_data *sd)
 		p2->status.baby_id = 0;
 		pc_calc_skilltree(p2);
 		clif_skillinfoblock(p2);
-		clif_disp_onlyself(p2, output, len);
+		clif_disp_onlyself(p2->fd, output);
 	} else if(p2_id > 0) {
 		chrif_req_break_adoption(p2_id, sd->status.name);
 		chrif_searchcharid(p2_id);
