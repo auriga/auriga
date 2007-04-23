@@ -4387,14 +4387,12 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 			struct guild *g=NULL;
 			struct map_session_data* ssd = (struct map_session_data*)ss;
 			struct map_session_data* tsd = (struct map_session_data*)target;
-			struct pc_base_job s_class,t_class;
-			s_class = pc_calc_base_job(ssd->status.class_);
-			t_class = pc_calc_base_job(tsd->status.class_);
+
 			//battle_config.no_pk_level以下　1次は味方　転生は駄目
 			if((ssd->sc_data && ssd->sc_data[SC_PK_PENALTY].timer!=-1) ||
-				(ssd->status.base_level <= battle_config.no_pk_level && (s_class.job <=6 || s_class.job==24) && s_class.upper!=1))
+				(ssd->status.base_level <= battle_config.no_pk_level && (ssd->s_class.job <=6 || ssd->s_class.job==24) && ssd->s_class.upper!=1))
 				return 1;
-			if(tsd->status.base_level <= battle_config.no_pk_level && (t_class.job <=6 || t_class.job==24) && t_class.upper!=1)
+			if(tsd->status.base_level <= battle_config.no_pk_level && (tsd->s_class.job <=6 || tsd->s_class.job==24) && tsd->s_class.upper!=1)
 				return 1;
 			if(su && su->group->target_flag==BCT_NOENEMY)
 				return 1;

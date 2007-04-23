@@ -11641,7 +11641,6 @@ static void clif_parse_sn_doridori(int fd,struct map_session_data *sd, int cmd)
 static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, int cmd)
 {
 	int nextbaseexp, rate;
-	struct pc_base_job s_class;
 
 	nullpo_retv(sd);
 
@@ -11650,13 +11649,12 @@ static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, i
 		return;
 
 	rate    = (int)((atn_bignumber)sd->status.base_exp*1000/nextbaseexp);
-	s_class = pc_calc_base_job(sd->status.class_);
 
 	if(battle_config.etc_log){
-		printf("SuperNovice explosionspirits!! %d %d %d %d\n",sd->bl.id,s_class.job,sd->status.base_exp,rate);
+		printf("SuperNovice explosionspirits!! %d %d %d %d\n",sd->bl.id,sd->s_class.job,sd->status.base_exp,rate);
 	}
 
-	if(s_class.job == 23 && sd->status.base_exp > 0 && nextbaseexp > 0 && rate%100==0){
+	if(sd->s_class.job == 23 && sd->status.base_exp > 0 && nextbaseexp > 0 && rate%100==0){
 		clif_skill_nodamage(&sd->bl,&sd->bl,MO_EXPLOSIONSPIRITS,5,1);
 		status_change_start(&sd->bl,SkillStatusChangeTable[MO_EXPLOSIONSPIRITS],5,0,0,0,skill_get_time(MO_EXPLOSIONSPIRITS,5),0 );
 	}

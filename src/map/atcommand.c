@@ -1612,16 +1612,13 @@ atcommand_joblevelup(
 	const char* command, const char* message)
 {
 	int up_level, level;
-	//転生や養子の場合の元の職業を算出する
-	struct pc_base_job s_class;
 
 	nullpo_retr(-1, sd);
 
 	if (!message || !*message)
 		return -1;
 
-	s_class = pc_calc_base_job(sd->status.class_);
-	up_level = max_job_table[s_class.upper][s_class.job];
+	up_level = max_job_table[sd->s_class.upper][sd->s_class.job];
 
 	level = atoi(message);
 	if (level > up_level)
@@ -3237,8 +3234,6 @@ atcommand_character_joblevel(
 	struct map_session_data *pl_sd = NULL;
 	char character[100];
 	int max_level = 50, level = 0;
-	//転生や養子の場合の元の職業を算出する
-	struct pc_base_job pl_s_class;
 
 	if (!message || !*message)
 		return -1;
@@ -3247,9 +3242,8 @@ atcommand_character_joblevel(
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
-		pl_s_class = pc_calc_base_job(pl_sd->status.class_);
 		if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
-			max_level = max_job_table[pl_s_class.upper][pl_s_class.job];
+			max_level = max_job_table[pl_sd->s_class.upper][pl_sd->s_class.job];
 			if (pl_sd->status.job_level == max_level && level > 0) {
 				clif_displaymessage(fd, msg_txt(23));
 			} else if (level >= 1) {

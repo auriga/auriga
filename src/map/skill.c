@@ -3005,7 +3005,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int heal=skill_calc_heal( src, skilllv );
 			int heal_get_jobexp;
 			int skill;
-			struct pc_base_job s_class;
 			sc_data=status_get_sc_data(bl);
 			if(battle_config.heal_counterstop){
 				if(skilllv>=battle_config.heal_counterstop)
@@ -3016,10 +3015,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(sc_data && sc_data[SC_BERSERK].timer!=-1) /* バーサーク中はヒール０ */
 				heal=0;
 			if (sd){
-				s_class = pc_calc_base_job(sd->status.class_);
 				if((skill=pc_checkskill(sd,HP_MEDITATIO))>0) // メディテイティオ
 					heal += heal*(skill*2)/100;
-				if(dstsd && sd->status.partner_id == dstsd->status.char_id && s_class.job == 23 && sd->sex == 0) //自分も対象もPC、対象が自分のパートナー、自分がスパノビ、自分が♀なら
+				if(dstsd && sd->status.partner_id == dstsd->status.char_id && sd->s_class.job == 23 && sd->sex == 0) //自分も対象もPC、対象が自分のパートナー、自分がスパノビ、自分が♀なら
 					heal = heal*2;	//スパノビの嫁が旦那にヒールすると2倍になる
 			}
 
@@ -3684,8 +3682,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case CR_DEVOTION:		/* ディボーション */
 		if(sd && dstsd){
-			//転生や養子の場合の元の職業を算出する
-			struct pc_base_job dst_s_class = pc_calc_base_job(dstsd->status.class_);
 			int i, n, max, lv = abs(sd->status.base_level-dstsd->status.base_level);
 
 			if((dstsd->bl.type!=BL_PC)	// 相手はPCじゃないとだめ
@@ -3694,7 +3690,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			 ||(!sd->status.party_id && !sd->status.guild_id)	// PTにもギルドにも所属無しはだめ
 			 ||((sd->status.party_id != dstsd->status.party_id)	// 同じパーティーか、
 			  &&(sd->status.guild_id != dstsd->status.guild_id))	// 同じギルドじゃないとだめ
-			 ||(dst_s_class.job==14 || dst_s_class.job==21)){	// クルセだめ
+			 ||(dstsd->s_class.job==14 || dstsd->s_class.job==21)){	// クルセだめ
 				clif_skill_fail(sd,skillid,0,0);
 				map_freeblock_unlock();
 				return 1;
@@ -7430,10 +7426,7 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 {
 	int *c;
 	struct block_list *src;
-	struct map_session_data *sd;
-	struct map_session_data *ssd;
-	struct pc_base_job s_class;
-	struct pc_base_job ss_class;
+	struct map_session_data *sd, *ssd;
 	struct skill_condition *sc;
 	int skill_id;
 
@@ -7446,20 +7439,22 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 
 	sc = va_arg( ap, struct skill_condition* );
 
-	skill_id = (sc ? sc->id : ssd->ud.skillid);
-
-	s_class = pc_calc_base_job(sd->status.class_);
 	//チェックしない設定ならcにありえない大きな数字を返して終了
 	if(!battle_config.player_skill_partner_check){	//本当はforeachの前にやりたいけど設定適用箇所をまとめるためにここへ
 		(*c)=99;
 		return 0;
 	}
 
-	ss_class = pc_calc_base_job(ssd->status.class_);
+	if(sd == ssd)
+		return 0;
+
+	skill_id = (sc ? sc->id : ssd->ud.skillid);
 
 	switch(skill_id){
 	case PR_BENEDICTIO:				/* 聖体降福 */
-		if(sd != ssd && (s_class.job == 4 || s_class.job == 8 || s_class.job == 15) && (sd->bl.x == ssd->bl.x - 1 || sd->bl.x == ssd->bl.x + 1) && sd->status.sp >= 10)
+		if( (sd->s_class.job == 4 || sd->s_class.job == 8 || sd->s_class.job == 15) &&
+		    (sd->bl.x == ssd->bl.x - 1 || sd->bl.x == ssd->bl.x + 1) &&
+		    sd->status.sp >= 10 )
 			(*c)++;
 		break;
 	case BD_LULLABY:				/* 子守歌 */
@@ -7472,15 +7467,12 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 	case BD_SIEGFRIED:				/* 不死身のジークフリード */
 	case BD_RAGNAROK:				/* 神々の黄昏 */
 	case CG_MOONLIT:				/* 月明りの下で */
-		if(sd != ssd &&
-		 ((ss_class.job==19 && s_class.job==20) ||
-		 (ss_class.job==20 && s_class.job==19)) &&
-		 pc_checkskill(sd,skill_id) > 0 &&
-		 (*c)==0 &&
-		 sd->status.party_id == ssd->status.party_id &&
-		 !pc_issit(sd) &&
-		 sd->sc_data[SC_DANCING].timer==-1
-		 )
+		if( (*c)==0 &&
+		    ((ssd->s_class.job==19 && sd->s_class.job==20) || (ssd->s_class.job==20 && sd->s_class.job==19)) &&
+		    pc_checkskill(sd,skill_id) > 0 &&
+		    sd->status.party_id == ssd->status.party_id &&
+		    !pc_issit(sd) &&
+		    sd->sc_data[SC_DANCING].timer==-1 )
 			(*c)=pc_checkskill(sd,skill_id);
 		break;
 	}
@@ -7495,10 +7487,7 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 {
 	int *c;
 	struct block_list *src;
-	struct map_session_data *sd;
-	struct map_session_data *ssd;
-	struct pc_base_job s_class;
-	struct pc_base_job ss_class;
+	struct map_session_data *sd, *ssd;
 	int skillid,skilllv;
 
 	nullpo_retr(0, bl);
@@ -7508,20 +7497,24 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 	nullpo_retr(0, c=va_arg(ap,int *));
 	nullpo_retr(0, ssd=(struct map_session_data*)src);
 
-	s_class = pc_calc_base_job(sd->status.class_);
-
 	//チェックしない設定ならcにありえない大きな数字を返して終了
 	if(!battle_config.player_skill_partner_check){	//本当はforeachの前にやりたいけど設定適用箇所をまとめるためにここへ
 		(*c)=99;
 		return 0;
 	}
 
-	ss_class = pc_calc_base_job(ssd->status.class_);
+	if(sd == ssd)
+		return 0;
+
 	skillid=ssd->ud.skillid;
 	skilllv=ssd->ud.skilllv;
+
 	switch(skillid){
 	case PR_BENEDICTIO:				/* 聖体降福 */
-		if(sd != ssd && (s_class.job == 4 || s_class.job == 8) && (sd->bl.x == ssd->bl.x - 1 || sd->bl.x == ssd->bl.x + 1) && sd->status.sp >= 10){
+		if( (sd->s_class.job == 4 || sd->s_class.job == 8) &&
+		    (sd->bl.x == ssd->bl.x - 1 || sd->bl.x == ssd->bl.x + 1) &&
+		    sd->status.sp >= 10 )
+		{
 			sd->status.sp -= 10;
 			status_calc_pc(sd,0);
 			(*c)++;
@@ -7537,15 +7530,13 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 	case BD_SIEGFRIED:				/* 不死身のジークフリード */
 	case BD_RAGNAROK:				/* 神々の黄昏 */
 	case CG_MOONLIT:				/* 月明りの下で */
-		if(sd != ssd && //本人以外で
-		  ((ss_class.job==19 && s_class.job==20) || //自分がバードならダンサーで
-		   (ss_class.job==20 && s_class.job==19)) && //自分がダンサーならバードで
-		   pc_checkskill(sd,skillid) > 0 && //スキルを持っていて
-		   (*c)==0 && //最初の一人で
-		   sd->status.party_id == ssd->status.party_id && //パーティーが同じで
-		   !pc_issit(sd) && //座ってない
-		   sd->sc_data[SC_DANCING].timer==-1 //ダンス中じゃない
-		  ){
+		if( (*c)==0 &&
+		    ((ssd->s_class.job==19 && sd->s_class.job==20) || (ssd->s_class.job==20 && sd->s_class.job==19)) &&
+		    pc_checkskill(sd,skillid) > 0 &&
+		    sd->status.party_id == ssd->status.party_id &&
+		    !pc_issit(sd) &&
+		    sd->sc_data[SC_DANCING].timer==-1 )
+		{
 			ssd->sc_data[SC_DANCING].val4=bl->id;
 			clif_skill_nodamage(bl,src,skillid,skilllv,1);
 			status_change_start(bl,SC_DANCING,skillid,ssd->sc_data[SC_DANCING].val2,0,src->id,skill_get_time(skillid,skilllv)+1000,0);
@@ -7553,7 +7544,6 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 			sd->skilllv_dance=sd->ud.skilllv=skilllv;
 			ssd->dance.x = sd->bl.x;
 			ssd->dance.y = sd->bl.y;
-
 			(*c)++;
 		}
 		break;
@@ -7700,15 +7690,13 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 	    sc->id == SL_HIGH ||
 	    (sc->id >= SL_DEATHKNIGHT && sc->id <= SL_GUNNER) )
 	{
-		struct pc_base_job s_class;
 		int job, fail = 0;
 
 		// 検証に時間がかかるので塊系で２プレイヤーがいない場合は一律弾く
 		if(!sd || !target_sd)
 			return 0;
 
-		s_class = pc_calc_base_job(target_sd->status.class_);
-		job     = s_class.job;
+		job = target_sd->s_class.job;
 
 		switch(sc->id)
 		{
@@ -7727,7 +7715,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 			case SL_BLACKSMITH:  if(job != 10) fail = 1; break; //#ブラックスミスの魂#
 			case SL_HUNTER:      if(job != 11) fail = 1; break; //#ハンターの魂#
 			case SL_SOULLINKER:  if(job != 27) fail = 1; break; //#ソウルリンカーの魂#
-			case SL_HIGH:        if(job<1 || job >6 || s_class.upper!=1) fail = 1; break; //一次上位職業の魂
+			case SL_HIGH:        if(job<1 || job >6 || target_sd->s_class.upper!=1) fail = 1; break; //一次上位職業の魂
 			default: fail = 1;
 		}
 		if(battle_config.job_soul_check && fail) {
@@ -7905,17 +7893,12 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 		}
 		break;
 	case CR_PROVIDENCE:	//プロヴィデンス
-		{
-			struct pc_base_job ts_class;
-
-			if(!target_sd) return 0;
-			ts_class = pc_calc_base_job(target_sd->status.class_);
-
-			if(ts_class.job==14||ts_class.job==21){
-				if(sd)
-					clif_skill_fail(sd,sc->id,0,0);
-				return 0;
-			}
+		if(!target_sd)
+			return 0;
+		if(target_sd->s_class.job==14 || target_sd->s_class.job==21){
+			if(sd)
+				clif_skill_fail(sd,sc->id,0,0);
+			return 0;
 		}
 		break;
 	case HP_ASSUMPTIO:	//アスムプティオ
@@ -7925,29 +7908,22 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 		}
 		break;
 	case CG_MARIONETTE://マリオネット
+		if( !sd || !target_sd ) return 0;
+
+		// 既に自分が接続していた相手なら止める
+		if(sc_data && sc_data[SC_MARIONETTE].timer!=-1 && sc_data[SC_MARIONETTE].val2 == target_sd->bl.id)
 		{
-			struct pc_base_job ss_class,ts_class;
+			status_change_end(bl,SC_MARIONETTE,-1);
+			return 0;
+		}
 
-			if( !sd || !target_sd ) return 0;
-
-			// 既に自分が接続していた相手なら止める
-			if(sc_data && sc_data[SC_MARIONETTE].timer!=-1 && sc_data[SC_MARIONETTE].val2 == target_sd->bl.id)
-			{
-				status_change_end(bl,SC_MARIONETTE,-1);
-				return 0;
-			}
-
-			ss_class = pc_calc_base_job(sd->status.class_);
-			ts_class = pc_calc_base_job(target_sd->status.class_);
-
-			//自分・同じクラス・マリオネット状態なら失敗
-			if(	sd == target_sd  || ss_class.job == ts_class.job ||
-				sd->sc_data[SC_MARIONETTE].timer!=-1 || sd->sc_data[SC_MARIONETTE2].timer!=-1 ||
-				target_sd->sc_data[SC_MARIONETTE].timer!=-1 || target_sd->sc_data[SC_MARIONETTE2].timer!=-1)
-			{
-				clif_skill_fail(sd,sc->id,0,0);
-				return 0;
-			}
+		//自分・同じクラス・マリオネット状態なら失敗
+		if( sd == target_sd || sd->s_class.job == target_sd->s_class.job ||
+		    sd->sc_data[SC_MARIONETTE].timer!=-1 || sd->sc_data[SC_MARIONETTE2].timer!=-1 ||
+		    target_sd->sc_data[SC_MARIONETTE].timer!=-1 || target_sd->sc_data[SC_MARIONETTE2].timer!=-1)
+		{
+			clif_skill_fail(sd,sc->id,0,0);
+			return 0;
 		}
 		break;
 	}
@@ -9695,10 +9671,9 @@ static int skill_frostjoke_scream(struct block_list *bl,va_list ap)
 static int skill_abra_dataset(struct map_session_data *sd, int skilllv)
 {
 	int skill = atn_rand()%MAX_SKILL_ABRA_DB;
-	struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
 
 	// セージの転生スキル使用を許可しない
-	if(battle_config.extended_abracadabra == 0 && s_class.upper == 0 &&
+	if(battle_config.extended_abracadabra == 0 && sd->s_class.upper == 0 &&
 		skill_upperskill( skill_abra_db[skill].nameid )
 	)
 		return 0;
@@ -11944,8 +11919,6 @@ int skill_abraskill(int skillid)
  */
 int skill_clone(struct map_session_data* sd,int skillid,int skilllv)
 {
-	struct pc_base_job s_class;
-
 	nullpo_retr(0, sd);
 
 	if(skillid <= 0 || skilllv <= 0)
@@ -11954,10 +11927,8 @@ int skill_clone(struct map_session_data* sd,int skillid,int skilllv)
 	if(pc_checkskill(sd,skillid) >= skilllv)
 		return 0;
 
-	s_class = pc_calc_base_job(sd->status.class_);
-
 	//取得可能スキルか？
-	if(skill_get_cloneable(skillid)&(1<<s_class.upper))
+	if(skill_get_cloneable(skillid)&(1<<sd->s_class.upper))
 	{
 		int cloneskilllv;
 		//サンクチュアリを受けた場合、同Lvのヒールをクローン

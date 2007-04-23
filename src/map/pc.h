@@ -159,12 +159,6 @@ void pc_setstand(struct map_session_data *sd);
 int pc_calc_skilltree(struct map_session_data *sd);
 int pc_check_guild_skill_effective_range(struct map_session_data *sd);
 
-struct pc_base_job {
-	int job;	// 職業、ただし転生職や養子職の場合は元の職業を返す(廃プリ→プリ)
-	int type;	// ノビ 0, 一次職 1, 二次職 2, スパノビ 3
-	int upper;	// 通常 0, 転生 1, 養子 2
-};
-
 #define pc_isupper(sd) (((sd)->status.class_ >= PC_CLASS_NV2) && ((sd)->status.class_ < PC_CLASS_NV3))
 #define pc_isbaby(sd) (((sd)->status.class_ >= PC_CLASS_NV3) && ((sd)->status.class_ <= PC_CLASS_SNV3))
 

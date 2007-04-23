@@ -7204,10 +7204,9 @@ int buildin_changebase(struct script_state *st)
 	if(sd == NULL)
 		return 0;
 
-	if(upper < 0) {
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
-		upper = s_class.upper;
-	}
+	if(upper < 0)
+		upper = sd->s_class.upper;
+
 	vclass = pc_calc_class_job(job, upper);
 
 	if(vclass == 22 && !battle_config.wedding_modifydisplay)
@@ -7230,20 +7229,16 @@ int buildin_changebase(struct script_state *st)
 int buildin_changesex(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
-	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
 
-	//転生や養子の場合の元の職業を算出する
-	s_class = pc_calc_base_job(sd->status.class_);
-
 	if(sd->sex==0){
 		sd->sex=1;
-		if(s_class.job == 20)
+		if(sd->s_class.job == 20)
 			sd->status.class_ -= 1;
 	} else {
 		sd->sex=0;
-		if(s_class.job == 19)
+		if(sd->s_class.job == 19)
 			sd->status.class_ += 1;
 	}
 	chrif_changesex(sd->status.account_id,sd->sex);

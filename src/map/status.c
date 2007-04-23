@@ -248,8 +248,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int skill,aspd_rate,wele,wele_,def_ele,refinedef;
 	int pele,pdef_ele;
 	int str,dstr,dex;
-	struct pc_base_job s_class;
-	int    calclimit = 2; // 初回はuse script込みで実行
+	int calclimit = 2; // 初回はuse script込みで実行
 
 	nullpo_retr(0, sd);
 
@@ -307,9 +306,6 @@ L_RECALC:
 	if(sd->view_class == PC_CLASS_GS || sd->view_class==PC_CLASS_NJ)
 		sd->view_class = sd->view_class-4;
 
-	//転生や養子の場合の元の職業を算出する
-	s_class = pc_calc_base_job(sd->status.class_);
-
 	sd->race = RCT_HUMAN;
 	sd->ranker_weapon_bonus  = 0;
 	sd->ranker_weapon_bonus_ = 0;
@@ -317,7 +313,7 @@ L_RECALC:
 
 	pc_calc_skilltree(sd);	// スキルツリーの計算
 
-	sd->max_weight = job_db[s_class.job].max_weight_base+sd->status.str*300;
+	sd->max_weight = job_db[sd->s_class.job].max_weight_base+sd->status.str*300;
 
 	if(battle_config.baby_weight_rate !=100 && pc_isbaby(sd))
 		sd->max_weight = sd->max_weight*battle_config.baby_weight_rate/100;
@@ -706,8 +702,8 @@ L_RECALC:
 
 	// jobボーナス分
 	for(i=0;i<sd->status.job_level && i<MAX_LEVEL;i++){
-		if(job_db[s_class.job].bonus[s_class.upper][i])
-			sd->paramb[job_db[s_class.job].bonus[s_class.upper][i]-1]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i])
+			sd->paramb[job_db[sd->s_class.job].bonus[sd->s_class.upper][i]-1]++;
 	}
 
 	if( (skill=pc_checkskill(sd,AC_OWL))>0 )	// ふくろうの目
@@ -750,7 +746,7 @@ L_RECALC:
 		}
 	}
 	//1度も死んでないJob70スパノビに+10
-	if(s_class.job == 23 && sd->status.die_counter == 0 && sd->status.job_level >= 70){
+	if(sd->s_class.job == 23 && sd->status.die_counter == 0 && sd->status.job_level >= 70){
 		sd->paramb[0]+= 10;
 		sd->paramb[1]+= 10;
 		sd->paramb[2]+= 10;
@@ -1257,11 +1253,11 @@ L_RECALC:
 
 	// 二刀流 ASPD 修正
 	if (sd->status.weapon <= WT_HUUMA)
-		sd->aspd += job_db[s_class.job].aspd_base[sd->status.weapon]-(sd->paramc[1]*4+sd->paramc[4])*job_db[s_class.job].aspd_base[sd->status.weapon]/1000;
+		sd->aspd += job_db[sd->s_class.job].aspd_base[sd->status.weapon]-(sd->paramc[1]*4+sd->paramc[4])*job_db[sd->s_class.job].aspd_base[sd->status.weapon]/1000;
 	else
 		sd->aspd += (
-			(job_db[s_class.job].aspd_base[sd->weapontype1]-(sd->paramc[1]*4+sd->paramc[4])*job_db[s_class.job].aspd_base[sd->weapontype1]/1000) +
-			(job_db[s_class.job].aspd_base[sd->weapontype2]-(sd->paramc[1]*4+sd->paramc[4])*job_db[s_class.job].aspd_base[sd->weapontype2]/1000)
+			(job_db[sd->s_class.job].aspd_base[sd->weapontype1]-(sd->paramc[1]*4+sd->paramc[4])*job_db[sd->s_class.job].aspd_base[sd->weapontype1]/1000) +
+			(job_db[sd->s_class.job].aspd_base[sd->weapontype2]-(sd->paramc[1]*4+sd->paramc[4])*job_db[sd->s_class.job].aspd_base[sd->weapontype2]/1000)
 			) * 140 / 200;
 
 	aspd_rate = sd->aspd_rate;
@@ -1317,7 +1313,7 @@ L_RECALC:
 	if(sd->status.option&2 && (skill = pc_checkskill(sd,RG_TUNNELDRIVE))>0 )	// トンネルドライブ
 		sd->speed += (12*DEFAULT_WALK_SPEED - skill*90) / 10;
 
-	if(s_class.job == 12 && (skill=pc_checkskill(sd,TF_MISS))>0)	// アサシン系の回避率上昇による移動速度増加
+	if(sd->s_class.job == 12 && (skill=pc_checkskill(sd,TF_MISS))>0)	// アサシン系の回避率上昇による移動速度増加
 		sd->speed -= sd->speed * skill / 100;
 
 	if (pc_iscarton(sd) && (skill=pc_checkskill(sd,MC_PUSHCART))>0)	// カートによる速度低下
@@ -1384,7 +1380,7 @@ L_RECALC:
 			sd->speed = 2*DEFAULT_WALK_SPEED;
 	}
 
-	if(s_class.job == 23 && sd->status.base_level >= 99)
+	if(sd->s_class.job == 23 && sd->status.base_level >= 99)
 	{
 		if(pc_isupper(sd))
 			 sd->status.max_hp +=  2000*(100 + sd->paramc[2])/100 * battle_config.upper_hp_rate/100;
@@ -1417,7 +1413,7 @@ L_RECALC:
 
 	//最大HP計算
 	//転生職の場合最大HP25%UP
-	calc_val = (3500 + blv * job_db[s_class.job].hp_coefficient2 + job_db[s_class.job].hp_sigma[(blv > 0)? blv-1: 0])/100 *
+	calc_val = (3500 + blv * job_db[sd->s_class.job].hp_coefficient2 + job_db[sd->s_class.job].hp_sigma[(blv > 0)? blv-1: 0])/100 *
 			(100 + sd->paramc[2])/100 + (sd->parame[2] - sd->paramcard[2]);
 	if(pc_isupper(sd))
 		sd->status.max_hp += calc_val * battle_config.upper_hp_rate/100;
@@ -1438,7 +1434,7 @@ L_RECALC:
 
 	// 最大SP計算
 	//転生職の場合最大SP125%
-	calc_val = (1000 + blv * job_db[s_class.job].sp_coefficient)/100 *
+	calc_val = (1000 + blv * job_db[sd->s_class.job].sp_coefficient)/100 *
 			(100 + sd->paramc[3])/100 + (sd->parame[3] - sd->paramcard[3]);
 	if(pc_isupper(sd))
 		sd->status.max_sp += calc_val * battle_config.upper_sp_rate/100;
@@ -1519,7 +1515,7 @@ L_RECALC:
 	}
 	//Flee上昇
 	if( (skill=pc_checkskill(sd,TF_MISS))>0 ) {	// 回避率増加
-		if( s_class.job == 12 || s_class.job == 17 )
+		if( sd->s_class.job == 12 || sd->s_class.job == 17 )
 			sd->flee += skill*4;
 		else
 			sd->flee += skill*3;
@@ -1911,7 +1907,7 @@ L_RECALC:
 		}
 
 		if(sd->sc_data[SC_EXPLOSIONSPIRITS].timer!=-1){	// 爆裂波動
-			if(s_class.job==23)
+			if(sd->s_class.job==23)
 				sd->critical += sd->sc_data[SC_EXPLOSIONSPIRITS].val1*100;
 			else
 				sd->critical += sd->sc_data[SC_EXPLOSIONSPIRITS].val2;
@@ -6641,15 +6637,14 @@ int status_change_resistclear(struct block_list *bl)
 int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int val4,int tick,int flag)
 {
 	int type = -1;
-	struct pc_base_job s_class;
+	struct map_session_data *sd;
 
 	nullpo_retr(0, bl);
 
-	if(bl->type!=BL_PC)
+	if(bl->type != BL_PC || (sd = (struct map_session_data *)bl) == NULL)
 		return 0;
-	s_class = pc_calc_base_job(status_get_class(bl));
 
-	switch(s_class.job){
+	switch(sd->s_class.job){
 		case 15:
 			type = SC_MONK;
 			break;
@@ -6709,7 +6704,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 			type = SC_COLLECTOR;
 			break;
 		default:
-			if(s_class.upper==1 && s_class.job>=1 && s_class.job<=6)
+			if(sd->s_class.upper==1 && sd->s_class.job>=1 && sd->s_class.job<=6)
 				type = SC_HIGH;
 			break;
 	}

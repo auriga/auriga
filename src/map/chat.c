@@ -8,7 +8,6 @@
 #include "malloc.h"
 #include "map.h"
 #include "clif.h"
-#include "pc.h"
 #include "chat.h"
 #include "npc.h"
 
@@ -78,7 +77,6 @@ void chat_createchat(struct map_session_data *sd, unsigned short limit, unsigned
 void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 {
 	struct chat_data *cd;
-	struct pc_base_job s_class;
 
 	nullpo_retv(sd);
 
@@ -114,13 +112,12 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 		return;
 	}
 
-	s_class = pc_calc_base_job(sd->status.class_);
-	if(((1<<s_class.job)&cd->job) == 0){
+	if(((1<<sd->s_class.job)&cd->job) == 0){
 		clif_joinchatfail(sd,7);
 		return;
 	}
 	if(cd->upper) {
-		if(((1<<s_class.upper)&cd->upper) == 0){
+		if(((1<<sd->s_class.upper)&cd->upper) == 0){
 			clif_joinchatfail(sd,7);
 			return;
 		}

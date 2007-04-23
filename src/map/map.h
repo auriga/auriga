@@ -238,6 +238,12 @@ struct cell_xy {
 	short y;
 };
 
+struct pc_base_job {
+	short job;	// 職業、ただし転生職や養子職の場合は元の職業を返す(廃プリ→プリ)
+	short type;	// ノビ 0, 一次職 1, 二次職 2, スパノビ 3
+	short upper;	// 通常 0, 転生 1, 養子 2
+};
+
 //拡張オートスペル
 //EQUIP_AUTOSPELL_FLAG
 enum 	{
@@ -355,6 +361,8 @@ struct map_session_data {
 	int inchealhptick,inchealsptick,inchealspirithptick,inchealspiritsptick;
 
 	short view_class;
+	struct pc_base_job s_class;
+
 	short weapontype1,weapontype2;
 	int paramb[6],paramc[6],parame[6],paramcard[6];
 	int hit,flee,flee2,aspd,amotion,dmotion;

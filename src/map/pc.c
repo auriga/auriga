@@ -78,7 +78,7 @@ static int dummy_gm_account = 0;
  * ローカルプロトタイプ宣言 (必要な物のみ)
  *------------------------------------------
  */
-static int pc_dead(struct block_list *src,struct map_session_data *sd,int job);
+static int pc_dead(struct block_list *src,struct map_session_data *sd);
 static int pc_nightmare_drop(struct map_session_data *sd,short flag);
 static int pc_equiplookall(struct map_session_data *sd);
 
@@ -372,7 +372,7 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
  * Expペナルティ
  *------------------------------------------
  */
-static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, int job, int type)
+static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, int type)
 {
 	int per = 100;
 	atn_bignumber loss_base = 0, loss_job = 0;
@@ -395,7 +395,7 @@ static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *
 			return 0;
 		}
 	}
-	if(job == 0 || map[sd->bl.m].flag.gvg)
+	if(sd->s_class.job == 0 || map[sd->bl.m].flag.gvg)
 		return 0;
 
 	if(battle_config.death_penalty_base > 0) {
@@ -440,12 +440,7 @@ static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *
 
 int pc_setrestartvalue(struct map_session_data *sd,int type)
 {
-	// 転生や養子の場合の元の職業を算出する
-	struct pc_base_job s_class;
-
 	nullpo_retr(0, sd);
-
-	s_class = pc_calc_base_job(sd->status.class_);
 
 	//-----------------------
 	// 死亡した
@@ -454,7 +449,7 @@ int pc_setrestartvalue(struct map_session_data *sd,int type)
 		sd->status.sp=sd->status.max_sp;
 	}
 	else {
-		if(s_class.job != 0) {	// ノビは既に死亡直後でHP補正済み
+		if(sd->s_class.job != 0) {	// ノビは既に死亡直後でHP補正済み
 			if(battle_config.restart_hp_rate <= 0)
 				sd->status.hp = 1;
 			else {
@@ -476,7 +471,7 @@ int pc_setrestartvalue(struct map_session_data *sd,int type)
 
 	if(type&2) {
 		if(!(battle_config.death_penalty_type&1))	// デスペナ
-			pc_exp_penalty(sd, NULL, s_class.job, type);
+			pc_exp_penalty(sd, NULL, type);
 
 		if(!map[sd->bl.m].flag.nozenypenalty) {
 			atn_bignumber zeny_penalty;
@@ -588,18 +583,14 @@ void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int logi
 int pc_equippoint(struct map_session_data *sd,int n)
 {
 	int ep = 0;
-	//転生や養子の場合の元の職業を算出する
-	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
-
-	s_class = pc_calc_base_job(sd->status.class_);
 
 	if(sd->inventory_data[n]) {
 		int look = sd->inventory_data[n]->look;
 		ep = sd->inventory_data[n]->equip;
 		if(look == 1 || look == 2 || look == 6) {
-			if(ep == 2 && (pc_checkskill(sd,AS_LEFT) > 0 || s_class.job == 12))
+			if(ep == 2 && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == 12))
 				return 34;
 		}
 	}
@@ -720,14 +711,12 @@ static int pc_check_prohibition(struct map_session_data *sd, int zone)
 static int pc_isequip(struct map_session_data *sd,int n)
 {
 	struct item_data *item, *card_data;
-	struct pc_base_job s_class;
 	int i;
 	short card_id;
 
 	nullpo_retr(0, sd);
 
 	item = sd->inventory_data[n];
-	s_class = pc_calc_base_job(sd->status.class_);
 
 	if( battle_config.gm_allequip>0 && pc_isGM(sd)>=battle_config.gm_allequip )
 		return 1;
@@ -793,11 +782,11 @@ static int pc_isequip(struct map_session_data *sd,int n)
 	}
 	if(item->elv > 0 && sd->status.base_level < item->elv)
 		return 0;
-	if(((1<<s_class.job)&item->class_) == 0)
+	if(((1<<sd->s_class.job)&item->class_) == 0)
 		return 0;
 
 	if(item->upper){
-		if(((1<<s_class.upper)&item->upper) == 0)
+		if(((1<<sd->s_class.upper)&item->upper) == 0)
 			return 0;
 	}
 
@@ -896,16 +885,19 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	session[sd->fd]->auth = 1;	// 認証終了を socket.c に伝える
 
 	memset(&sd->state,0,sizeof(sd->state));
+
 	// 基本的な初期化
 	sd->state.connect_new = 1;
 	sd->bl.prev = sd->bl.next = NULL;
 	sd->weapontype1 = sd->weapontype2 = 0;
+
 	if(sd->status.class_ == PC_CLASS_GS || sd->status.class_ ==PC_CLASS_NJ)
-	{
 		sd->view_class = sd->status.class_-4;
-	}else{
+	else
 		sd->view_class = sd->status.class_;
-	}
+
+	sd->s_class = pc_calc_base_job(sd->status.class_);
+
 	sd->speed = DEFAULT_WALK_SPEED;
 	sd->state.dead_sit=0;
 	sd->dir=0;
@@ -1170,8 +1162,6 @@ int pc_calc_skilltree(struct map_session_data *sd)
 {
 	int i,id=0;
 	int c=0, s=0,tk_ranker_bonus=0;
-	//転生や養子の場合の元の職業を算出する
-	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
 
@@ -1179,9 +1169,8 @@ int pc_calc_skilltree(struct map_session_data *sd)
 	   sd->status.skill_point==0 && ranking_get_pc_rank(sd,RK_TAEKWON)>0)
 		tk_ranker_bonus=1;
 
-	s_class = pc_calc_base_job(sd->status.class_);
-	c = s_class.job;
-	s = (s_class.upper==1) ? 1 : 0 ; //転生以外は通常のスキル？
+	c = sd->s_class.job;
+	s = (sd->s_class.upper==1) ? 1 : 0 ; //転生以外は通常のスキル？
 
 	if(battle_config.skillup_limit && c >= 0 && c < MAX_VALID_PC_CLASS) {
 		int skill_point = pc_calc_skillpoint(sd);
@@ -3050,7 +3039,6 @@ void pc_takeitem(struct map_session_data *sd, struct flooritem_data *fitem)
 static int pc_isUseitem(struct map_session_data *sd,int n)
 {
 	struct item_data *item;
-	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
 
@@ -3061,17 +3049,15 @@ static int pc_isUseitem(struct map_session_data *sd,int n)
 	if(item->type != 0 && item->type != 2)
 		return 0;
 
-	s_class = pc_calc_base_job(sd->status.class_);
-
 	if(item->sex != 2 && sd->sex != item->sex)
 		return 0;
 	if(item->elv > 0 && sd->status.base_level < item->elv)
 		return 0;
-	if(((1<<s_class.job)&item->class_) == 0)
+	if(((1<<sd->s_class.job)&item->class_) == 0)
 		return 0;
 
 	if(item->upper){
-		if(((1<<s_class.upper)&item->upper) == 0)
+		if(((1<<sd->s_class.upper)&item->upper) == 0)
 			return 0;
 	}
 
@@ -4146,8 +4132,6 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 	next = pc_nextbaseexp(sd);
 
 	if(sd->status.base_exp >= next && next > 0){
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
-
 		// base側レベルアップ処理
 		sd->status.base_exp -= next;
 
@@ -4160,7 +4144,7 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		pc_heal(sd,sd->status.max_hp,sd->status.max_sp);
 
 		//スパノビはキリエ、イムポ、マニピ、グロ、サフラがかかる
-		if(s_class.job == 23){
+		if(sd->s_class.job == 23){
 			status_change_start(&sd->bl,SkillStatusChangeTable[PR_KYRIE],10,0,0,0,skill_get_time(PR_KYRIE,10),0 );
 			status_change_start(&sd->bl,SkillStatusChangeTable[PR_IMPOSITIO],5,0,0,0,skill_get_time(PR_IMPOSITIO,5),0 );
 			status_change_start(&sd->bl,SkillStatusChangeTable[PR_MAGNIFICAT],5,0,0,0,skill_get_time(PR_MAGNIFICAT,5),0 );
@@ -4168,7 +4152,7 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 			status_change_start(&sd->bl,SkillStatusChangeTable[PR_SUFFRAGIUM],3,0,0,0,skill_get_time(PR_SUFFRAGIUM,3),0 );
 			clif_misceffect(&sd->bl,7);	// スパノビ天使
 		}
-		else if(s_class.job >= 24 && s_class.job <= 27){
+		else if(sd->s_class.job >= 24 && sd->s_class.job <= 27){
 			status_change_start(&sd->bl,SkillStatusChangeTable[AL_BLESSING],10,0,0,0,skill_get_time(AL_BLESSING,10),0 );
 			status_change_start(&sd->bl,SkillStatusChangeTable[AL_INCAGI],10,0,0,0,skill_get_time(AL_INCAGI,10),0 );
 			clif_misceffect(&sd->bl,9);	// テコン系天使
@@ -4631,30 +4615,28 @@ int pc_statusup2(struct map_session_data *sd,int type,int val)
  */
 static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 {
-	struct pc_base_job s_class;
 	int i,upper,skill_point=0,up_level=0;
 
 	nullpo_retr(0, sd);
 
-	s_class = pc_calc_base_job(sd->status.class_);
 	skill_point = pc_calc_skillpoint(sd);
 
 	if(skill_point < 9)
 		up_level = 0;
-	else if(sd->status.skill_point >= sd->status.job_level && skill_point < 58 && s_class.job > 6)
+	else if(sd->status.skill_point >= sd->status.job_level && skill_point < 58 && sd->s_class.job > 6)
 		up_level = 1;
 	else
 		up_level = 2;
-	if(s_class.upper==2)
+	if(sd->s_class.upper==2)
 		upper = 0;
 	else
-		upper = s_class.upper;
+		upper = sd->s_class.upper;
 
 	for(i=0;i<MAX_SKILL_TREE;i++)
 	{
-		if(skill_tree[upper][s_class.job][i].id==skill_num)
+		if(skill_tree[upper][sd->s_class.job][i].id==skill_num)
 		{
-			if(skill_tree[upper][s_class.job][i].class_level <= up_level)
+			if(skill_tree[upper][sd->s_class.job][i].class_level <= up_level)
 				return 1;
 			else
 				return 0;
@@ -4729,9 +4711,8 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 				sd->status.skill[i].lv=skill_get_max(i);
 		}
 	} else {
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
-		int c = s_class.job;
-		int s = (s_class.upper==1)?1:0;	//転生以外は通常のスキル？
+		int c = sd->s_class.job;
+		int s = (sd->s_class.upper==1)?1:0;	//転生以外は通常のスキル？
 
 		for(i=0;(id=skill_tree[s][c][i].id)>0;i++){
 			if(id == SG_DEVIL) //ここで除外処理
@@ -4836,12 +4817,9 @@ void pc_resetskill(struct map_session_data* sd)
 int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 {
 	int i;
-	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
 
-	// 転生や養子の場合の元の職業を算出する
-	s_class = pc_calc_base_job(sd->status.class_);
 	// 既に死んでいたら無効
 	if(unit_isdead(&sd->bl))
 		return 0;
@@ -4901,7 +4879,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		return 0;
 	}
 	// スパノビがExp99%でHPが0になるとHPが回復して金剛状態になる
-	if(s_class.job == 23 && pc_nextbaseexp(sd) && 100*sd->status.base_exp/pc_nextbaseexp(sd)>=99 && sd->sc_data && sd->sc_data[SC_STEELBODY].timer==-1){
+	if(sd->s_class.job == 23 && pc_nextbaseexp(sd) && 100*sd->status.base_exp/pc_nextbaseexp(sd)>=99 && sd->sc_data && sd->sc_data[SC_STEELBODY].timer==-1){
 		clif_skill_nodamage(&sd->bl,&sd->bl,MO_STEELBODY,5,1);
 		status_change_start(&sd->bl,SkillStatusChangeTable[MO_STEELBODY],5,0,0,0,skill_get_time(MO_STEELBODY,5),0 );
 		sd->status.hp = sd->status.max_hp;
@@ -4909,7 +4887,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		return 0;
 	}
 	// 死亡処理
-	pc_dead(src, sd, s_class.job);
+	pc_dead(src, sd);
 
 	return 0;
 }
@@ -4918,7 +4896,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
  * pcの死亡処理
  *------------------------------------------
  */
-static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
+static int pc_dead(struct block_list *src,struct map_session_data *sd)
 {
 	int i, kaizel_lv = 0;
 	struct map_session_data *ssd = NULL;
@@ -5004,7 +4982,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 
 	pc_setdead(sd);
 
-	if(job == 0) {
+	if(sd->s_class.job == 0) {
 		if(battle_config.restart_hp_rate <= 50)		// ノビでレート50以下は半分回復
 			sd->status.hp = sd->status.max_hp / 2;
 		else
@@ -5039,7 +5017,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd,int job)
 
 	// 死亡直後にデスペナルティを発生させる場合
 	if(battle_config.death_penalty_type&1)
-		pc_exp_penalty(sd, ssd, job, 1);
+		pc_exp_penalty(sd, ssd, 1);
 
 	// PK
 	if(map[sd->bl.m].flag.pk) {
@@ -5196,11 +5174,8 @@ static int pc_nightmare_drop(struct map_session_data *sd,short flag)
 int pc_readparam(struct map_session_data *sd,int type)
 {
 	int val=0;
-	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
-
-	s_class = pc_calc_base_job(sd->status.class_);
 
 	switch(type){
 	case SP_SKILLPOINT:
@@ -5219,10 +5194,10 @@ int pc_readparam(struct map_session_data *sd,int type)
 		val= sd->status.job_level;
 		break;
 	case SP_CLASS:
-		val= s_class.job;
+		val= sd->s_class.job;
 		break;
 	case SP_UPPER:
-		val= s_class.upper;
+		val= sd->s_class.upper;
 		break;
 	case SP_SEX:
 		val= sd->sex;
@@ -5399,8 +5374,7 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 	case SP_JOBLEVEL:
 		if (val > 0) {
 			if (val >= sd->status.job_level) {
-				struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
-				int up_level = max_job_table[s_class.upper][s_class.job];
+				int up_level = max_job_table[sd->s_class.upper][sd->s_class.job];
 
 				if (val > up_level)
 					val = up_level;
@@ -5756,12 +5730,8 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	int i;
 	int b_class = 0;
 	int joblv_nochange = 0;
-	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
-
-	//転生や養子の場合の元の職業を算出する
-	s_class = pc_calc_base_job(sd->status.class_);
 
 	if(job >= MAX_VALID_PC_CLASS)
 		return 1;
@@ -5771,7 +5741,7 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 		upper = 0;
 
 	//養子<->転生前の場合JOB1にしない
-	if(s_class.upper!=1 && upper!=1 && s_class.job == job)
+	if(sd->s_class.upper!=1 && upper!=1 && sd->s_class.job == job)
 		joblv_nochange = 1;
 
 	if(battle_config.enable_upper_class==0){ //confで無効になっていたらupper=0
@@ -5779,7 +5749,7 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	}
 
 	if(upper < 0) //現在転生かどうかを判断する
-		upper = s_class.upper;
+		upper = sd->s_class.upper;
 
 	if(upper == 0){ //通常職ならjobそのまんま
 		if(job >= 24 && job <= 27)
@@ -5811,6 +5781,9 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	{
 		sd->view_class = sd->status.class_-4;
 	}
+
+	// 元職業を再設定
+	sd->s_class = pc_calc_base_job(sd->status.class_);
 
 	if(joblv_nochange==0)
 	{
@@ -6455,13 +6428,9 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 {
 	int i,nameid;
 	struct item_data *id;
-	//転生や養子の場合の元の職業を算出する
-	struct pc_base_job s_class;
 
 	nullpo_retv(sd);
 	nullpo_retv(id = sd->inventory_data[n]);
-
-	s_class = pc_calc_base_job(sd->status.class_);
 
 	nameid = sd->status.inventory[n].nameid;
 	pos = pc_equippoint(sd,n);
@@ -6485,7 +6454,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	// 二刀流処理
 	if ((pos==0x22) // 一応、装備要求箇所が二刀流武器かチェックする
 	 && (id->equip==2)	// 単手武器
-	 && (pc_checkskill(sd, AS_LEFT) > 0 || s_class.job == 12) ) // 左手修錬有
+	 && (pc_checkskill(sd, AS_LEFT) > 0 || sd->s_class.job == 12) ) // 左手修錬有
 	{
 		int tpos=0;
 		if(sd->equip_index[8] >= 0)
@@ -6993,14 +6962,12 @@ int pc_adoption_sub(struct map_session_data* sd,struct map_session_data *papa,st
 	nullpo_retr(0, sd);
 
 	if(pc_check_adopt_condition(sd, papa, mama, 0)) {
-		struct pc_base_job s_class = pc_calc_base_job(sd->status.class_);
-
 		sd->status.parent_id[0] = papa->status.char_id;
 		sd->status.parent_id[1] = mama->status.char_id;
 		papa->status.baby_id = sd->status.char_id;
 		mama->status.baby_id = sd->status.char_id;
 
-		pc_jobchange(sd,s_class.job,2);
+		pc_jobchange(sd,sd->s_class.job,2);
 		// 親はWE_BABYを取得するためにスキルツリー再計算
 		pc_calc_skilltree(papa);
 		clif_skillinfoblock(papa);
@@ -7017,8 +6984,6 @@ int pc_adoption_sub(struct map_session_data* sd,struct map_session_data *papa,st
  */
 int pc_check_adopt_condition(struct map_session_data *dstsd, struct map_session_data *sd, struct map_session_data *psd, short flag)
 {
-	struct pc_base_job s_class;
-
 	if(dstsd == NULL || sd ==NULL || psd == NULL)
 		return 0;
 
@@ -7037,8 +7002,7 @@ int pc_check_adopt_condition(struct map_session_data *dstsd, struct map_session_
 		return 0;
 
 	//養子チェック
-	s_class = pc_calc_base_job(dstsd->status.class_);
-	if(s_class.upper != 0 || s_class.job == 22 || s_class.job >= 24)
+	if(dstsd->s_class.upper != 0 || dstsd->s_class.job == 22 || dstsd->s_class.job >= 24)
 		return 0;
 	//パーティー同じマップに３人
 	if(party_check_same_map_member_count(dstsd) != 2)
@@ -7124,10 +7088,9 @@ int pc_break_adoption(struct map_session_data *sd)
 
 	// 解体処理の実行、見つからなければchar鯖に依頼
 	if(baby) {		// 子供の離縁
-		struct pc_base_job s_class = pc_calc_base_job(baby->status.class_);
 		baby->status.parent_id[0] = 0;
 		baby->status.parent_id[1] = 0;
-		pc_jobchange(baby,s_class.job,0);
+		pc_jobchange(baby,baby->s_class.job,0);
 		clif_disp_onlyself(baby->fd, output);
 	} else if(b_id > 0) {
 		chrif_req_break_adoption(b_id, sd->status.name);
@@ -7486,7 +7449,6 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 {
 	int bsp;
 	int inc_num,bonus;
-	struct pc_base_job s_class;
 
 	nullpo_retr(0, sd);
 
@@ -7497,9 +7459,8 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 
 	bsp=sd->status.sp;
 
-	s_class = pc_calc_base_job(sd->status.class_);
 	inc_num = pc_spheal(sd);
-	if(s_class.job == 23 || sd->sc_data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc_data[SC_MONK].timer!=-1)
+	if(sd->s_class.job == 23 || sd->sc_data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc_data[SC_MONK].timer!=-1)
 		sd->sp_sub += inc_num;
 	if(sd->ud.walktimer == -1)
 		sd->inchealsptick += natural_heal_diff_tick;
@@ -7524,7 +7485,7 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 
 	if(sd->nshealsp > 0) {
 		if(sd->inchealsptick >= battle_config.natural_heal_skill_interval && sd->status.sp < sd->status.max_sp) {
-			if(sd->doridori_counter && s_class.job == 23)
+			if(sd->doridori_counter && sd->s_class.job == 23)
 				bonus = sd->nshealsp*2;
 			else
 				bonus = sd->nshealsp;
