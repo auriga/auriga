@@ -212,6 +212,7 @@ void clif_mvp_fail_item(struct map_session_data *sd);
 void clif_mvp_exp(struct map_session_data *sd, int exp);
 
 void clif_send_murderer(struct map_session_data *sd,int target,int flag);
+void clif_update_temper(struct map_session_data *sd);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

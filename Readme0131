@@ -1,4 +1,42 @@
 ----------------------------------------
+//0169 [2007/04/25] by Rayce
+
+・temperタブへのキラー情報表示実装
+	自分が最後に殺した相手の名前（Kill）と自分を最後に殺した相手の名前（Killed）を
+	temperタブで見ることができます。
+
+	-> charid2nick構造体をmmo.hからmap.hへ移動
+	-> map_session_data構造体にメンバ kill_charid, killed_charid を追加
+	-> clif_update_temper() 追加
+
+　　※battle_auriga.confの set_pckillerid を save_pckiller_type に改名しています。
+　　　また値の使い方が変更されているので確認してください。
+　　　デフォルトでは無効になっているので利用したい場合には設定してください。
+　　　PvP, GvG, PKで仕分けが可能になっています。
+
+　　※PC_KILLER_IDは廃止されます。
+　　　代わりに PC_KILL_CHAR, PC_KILLED_CHAR が用意されます。
+　　　今まではアカウントIDでしたが、本実装に伴いキャラクターIDに変更されています。
+　　　スクリプトから呼び出す場合には十分注意してください（script/sample/npc_test_pcevent.txt参照）。
+
+　　※PC_KILL_CHAR, PC_KILLED_CHAR は埋め込み変数として登録されています（db/const.txt参照）。
+　　　スクリプトや@writevarsから値を書き換えると即座に対象キャラのtemperタブへ反映されます。
+
+・map_reqchariddb() で返信付きキャラ名問い合わせを複数のプレイヤーが同時に行うと、最初の人にしか
+　返信されない問題を修正
+	charid2nick構造体のメンバ req_id を linkdb_node型の req に変更しています。
+	既に名前問い合わせ要求済みでキャラサーバからの返信待ちの場合、返信すべきプレイヤーのアカウントIDを
+	リンクリストに保存しておきます。
+	map_addchariddb() が呼び出されたときにリストにあるプレイヤー全員に返信します。
+	このときtypeに応じて clif_solved_charname() および clif_update_temper() を実行します。
+
+・接続完了時にパートナーの名前をキャラサーバに要求するように変更（clif.c, pc.c）
+	「あなたに逢いたい」を使用したとき、パートナーが一度もログインしてなくても
+	即座に名前が呼ばれるようになります。
+	スキル使用時にキャラ名の問い合わせを行うと map_reqchariddb() や map_addchariddb() がややこしく
+	なるからというのが理由。
+
+----------------------------------------
 //0168 [2007/04/24] by Rayce
 
 ・元職業の算出について最適化

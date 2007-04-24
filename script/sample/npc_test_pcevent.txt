@@ -24,7 +24,8 @@ pvp_y_1-1.gat,155,192,4	script	記録者	711,{
 	mes "^3355FF" +@pvcount+ " ^000000人です。";
 	close;
 OnPCKill:
-	if(attachrid(PC_KILLER_ID)) {
+	set '@aid,getcharid(3,getcharname(PC_KILLED_CHAR));
+	if(attachrid('@aid)) {
 		set @pvcount,@pvcount+1;	//殺した相手のカウンタを加算する
 		detachrid;
 	}

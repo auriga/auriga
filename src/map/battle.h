@@ -489,7 +489,7 @@ extern struct Battle_Config {
 	int pc_movemap_script;
 	int pc_login_script;
 	int pc_logout_script;
-	int set_pckillerid;
+	int save_pckiller_type;
 
 	int def_ratio_atk_to_shieldchain;
 	int def_ratio_atk_to_carttermination;

@@ -5621,15 +5621,15 @@ void clif_solved_charname(struct map_session_data *sd, int char_id)
 
 	nullpo_retv(sd);
 
-	p= map_charid2nick(char_id);
+	p = map_charid2nick(char_id);
 	if(p!=NULL){
 		int fd=sd->fd;
 		WFIFOW(fd,0)=0x194;
 		WFIFOL(fd,2)=char_id;
-		memcpy(WFIFOP(fd,6), p,24 );
+		memcpy(WFIFOP(fd,6), p, 24);
 		WFIFOSET(fd,packet_db[0x194].len);
 	}else{
-		map_reqchariddb(sd,char_id);
+		map_reqchariddb(sd,char_id,1);
 		chrif_searchcharid(char_id);
 	}
 
@@ -7956,13 +7956,10 @@ void clif_callpartner(struct map_session_data *sd)
 
 	WBUFW(buf,0)=0x1e6;
 	p = map_charid2nick(sd->status.partner_id);
-	if(p){
+	if(p)
 		memcpy(WBUFP(buf,2),p,24);
-	}else{
-		map_reqchariddb(sd,sd->status.partner_id);
-		chrif_searchcharid(sd->status.partner_id);
-		WBUFB(buf,2) = 0;
-	}
+	else
+		strncpy(WBUFP(buf,2),"",24);
 	clif_send(buf,packet_db[0x1e6].len,&sd->bl,AREA);
 
 	return;
@@ -8704,6 +8701,45 @@ void clif_send_murderer(struct map_session_data *sd,int target,int flag)
 }
 
 /*==========================================
+ * temper更新
+ *------------------------------------------
+ */
+void clif_update_temper(struct map_session_data *sd)
+{
+	int fd;
+	char *nick1 = NULL, *nick2 = NULL;
+
+	nullpo_retv(sd);
+
+	if(sd->kill_charid > 0) {
+		nick1 = map_charid2nick(sd->kill_charid);
+		if(nick1 == NULL) {
+			if(map_reqchariddb(sd,sd->kill_charid,2))
+				chrif_searchcharid(sd->kill_charid);
+		}
+	}
+	if(sd->killed_charid > 0) {
+		nick2 = map_charid2nick(sd->killed_charid);
+		if(nick2 == NULL) {
+			if(map_reqchariddb(sd,sd->killed_charid,2))
+				chrif_searchcharid(sd->killed_charid);
+		}
+	}
+
+	fd = sd->fd;
+	WFIFOW(fd,0)  = 0x21f;
+	WFIFOL(fd,2)  = 0;	// ??
+	WFIFOL(fd,6)  = 0;	// ??
+	strncpy(WFIFOP(fd,10), (nick1 ? nick1 : ""), 24);
+	strncpy(WFIFOP(fd,34), (nick2 ? nick2 : ""), 24);
+	WFIFOL(fd,58) = 0;	// ??
+	WFIFOL(fd,62) = 0;	// ??
+	WFIFOSET(fd,packet_db[0x21f].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -8941,6 +8977,10 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_updatestatus(sd,SP_NEXTJOBEXP);
 		clif_updatestatus(sd,SP_SKILLPOINT);
 		clif_initialstatus(sd);
+
+		// キラー情報送信
+		if(battle_config.save_pckiller_type)
+			clif_update_temper(sd);
 
 		if(sd->status.class_ != sd->view_class)
 			clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);

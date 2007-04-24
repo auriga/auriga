@@ -529,22 +529,28 @@ int pc_makesavestatus(struct map_session_data *sd)
 				memcpy(&sd->status.last_point,&m->save,sizeof(sd->status.last_point));
 		}
 
-		//アルケミの連続成功数保存
+		// アルケミの連続成功数保存
 		if(battle_config.save_am_pharmacy_success && (sd->am_pharmacy_success>0 || ranking_get_point(sd,RK_ALCHEMIST)>0))
 			pc_setglobalreg(sd,"PC_PHARMACY_SUCCESS_COUNT",sd->am_pharmacy_success);
 
-		//ランキングポイントの保存
+		// ランキングポイントの保存
 		if(battle_config.save_all_ranking_point_when_logout)
 			ranking_setglobalreg_all(sd);
 
-		if(sd->cloneskill_id || sd->cloneskill_lv)
-		{
+		// クローンスキル保存
+		if(sd->cloneskill_id || sd->cloneskill_lv) {
 			pc_setglobalreg(sd,"PC_CLONESKILL_ID",sd->cloneskill_id);
 			pc_setglobalreg(sd,"PC_CLONESKILL_LV",sd->cloneskill_lv);
 		}
+
+		// キラー情報保存
+		if(battle_config.save_pckiller_type) {
+			pc_setglobalreg(sd,"PC_KILL_CHAR",sd->kill_charid);
+			pc_setglobalreg(sd,"PC_KILLED_CHAR",sd->killed_charid);
+		}
 	}
 
-	//マナーポイントがプラスだった場合0に
+	// マナーポイントがプラスだった場合0に
 	if(sd->status.manner > 0)
 		sd->status.manner = 0;
 
@@ -1021,6 +1027,10 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	if( sd->status.guild_id > 0 && guild_search(sd->status.guild_id) == NULL )
 		guild_request_info(sd->status.guild_id);
 
+	// パートナーの名前要求
+	if( sd->status.partner_id > 0 && map_charid2nick(sd->status.partner_id) == NULL )
+		chrif_searchcharid(sd->status.partner_id);
+
 	// pvpの設定
 	sd->pvp_rank=0;
 	sd->pvp_point=0;
@@ -1066,6 +1076,15 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->hate_mob[0] = -1;
 		sd->hate_mob[1] = -1;
 		sd->hate_mob[2] = -1;
+	}
+
+	// キラー
+	if(battle_config.save_pckiller_type) {
+		sd->kill_charid   = pc_readglobalreg(sd,"PC_KILL_CHAR");
+		sd->killed_charid = pc_readglobalreg(sd,"PC_KILLED_CHAR");
+	} else {
+		sd->kill_charid   = 0;
+		sd->killed_charid = 0;
 	}
 
 	// ステータス初期計算など
@@ -4910,10 +4929,19 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 	if(battle_config.pc_die_script)
 		npc_event_doall_id("OnPCDie",sd->bl.id,sd->bl.m);
 
-	// 殺害者のID取得およびOnPCKillイベント
+	// キラー情報更新およびOnPCKillイベント
 	if(ssd && ssd != sd) {
-		if(battle_config.set_pckillerid)
-			pc_setglobalreg(sd,"PC_KILLER_ID",ssd->status.account_id);
+		if(battle_config.save_pckiller_type) {
+			if( (battle_config.save_pckiller_type & 1 && map[sd->bl.m].flag.pvp) ||
+			    (battle_config.save_pckiller_type & 2 && map[sd->bl.m].flag.gvg) ||
+			    (battle_config.save_pckiller_type & 4 && map[sd->bl.m].flag.pk) )
+			{
+				ssd->kill_charid  = sd->status.char_id;		// 自分が殺した相手のキャラID
+				sd->killed_charid = ssd->status.char_id;	// 自分を殺した相手のキャラID
+				clif_update_temper(ssd);
+				clif_update_temper(sd);
+			}
+		}
 		if(battle_config.pc_kill_script)
 			npc_event_doall_id("OnPCKill",sd->bl.id,sd->bl.m);
 	}
@@ -5035,14 +5063,14 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 			pc_setdead(sd);
 		}
 		if(ssd && ssd != sd) {
-			//被虐殺者
+			// 被虐殺者
 			ranking_gain_point(sd,RK_PK,-5);
 			ranking_setglobalreg(sd,RK_PK);
 			ranking_update(sd,RK_PK);
-			//虐殺者
+			// 虐殺者
 			ranking_gain_point(ssd,RK_PK,1);
-			ranking_setglobalreg(ssd,RK_PK);//MOBなど更新回数が多い場合は定期的に更新
-			ranking_update(ssd,RK_PK);		//MOBなど更新回数が多い場合は定期的に更新
+			ranking_setglobalreg(ssd,RK_PK);	// MOBなど更新回数が多い場合は定期的に更新
+			ranking_update(ssd,RK_PK);		// MOBなど更新回数が多い場合は定期的に更新
 			status_change_start(&ssd->bl,SC_PK_PENALTY,0,0,0,0,battle_config.pk_penalty_time,0);
 		}
 	}
@@ -5061,17 +5089,17 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		}
 
 		/*
-		//ランキングサンプル
+		// ランキングサンプル
 		if(ssd) {
 			ranking_gain_point(ssd,RK_PVP,1);
-			ranking_setglobalreg(ssd,RK_PVP);	//MOBなど更新回数が多い場合は定期的に更新
-			ranking_update(ssd,RK_PVP);			//MOBなど更新回数が多い場合は定期的に更新
+			ranking_setglobalreg(ssd,RK_PVP);	// MOBなど更新回数が多い場合は定期的に更新
+			ranking_update(ssd,RK_PVP);		// MOBなど更新回数が多い場合は定期的に更新
 
-			//死んだ場合ポイントを減らすなら
+			// 死んだ場合ポイントを減らすなら
 			//if(ranking_get_point(sd,RK_PVP)>=1){
 			//	ranking_gain_point(sd,RK_PVP,-1);
-			//	ranking_setglobalreg(sd,RK_PVP);	//MOBなど更新回数が多い場合は定期的に更新
-			//	ranking_update(sd,RK_PVP);			//MOBなど更新回数が多い場合は定期的に更新
+			//	ranking_setglobalreg(sd,RK_PVP);	// MOBなど更新回数が多い場合は定期的に更新
+			//	ranking_update(sd,RK_PVP);		// MOBなど更新回数が多い場合は定期的に更新
 			//}
 		}
 		*/
@@ -5341,6 +5369,12 @@ int pc_readparam(struct map_session_data *sd,int type)
 	case SP_PHARMACY_SUCCESS:
 		val=sd->am_pharmacy_success;
 		break;
+	case SP_KILL_CHAR:
+		val=sd->kill_charid;
+		break;
+	case SP_KILLED_CHAR:
+		val=sd->killed_charid;
+		break;
 	}
 
 	return val;
@@ -5513,6 +5547,16 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 	case SP_PHARMACY_SUCCESS:
 		sd->am_pharmacy_success = val;
 		pc_setglobalreg(sd,"PC_PHARMACY_SUCCESS_COUNT",val);
+		return 0;
+	case SP_KILL_CHAR:
+		sd->kill_charid = val;
+		pc_setglobalreg(sd,"PC_KILL_CHAR",val);
+		clif_update_temper(sd);
+		return 0;
+	case SP_KILLED_CHAR:
+		sd->killed_charid = val;
+		pc_setglobalreg(sd,"PC_KILLED_CHAR",val);
+		clif_update_temper(sd);
 		return 0;
 	}
 

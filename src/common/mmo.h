@@ -177,14 +177,6 @@ struct registry {
 	struct global_reg account2[ACCOUNT_REG2_NUM];
 };
 
-struct charid2nick {
-	char nick[24];
-	int req_id;
-	int account_id;
-	unsigned long ip;
-	unsigned int port;
-};
-
 struct mmo_homunstatus {
 	int account_id;
 	int char_id;

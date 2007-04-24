@@ -5002,7 +5002,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.pc_movemap_script = 0;
 		battle_config.pc_login_script = 0;
 		battle_config.pc_logout_script = 0;
-		battle_config.set_pckillerid = 0;
+		battle_config.save_pckiller_type = 0;
 		battle_config.def_ratio_atk_to_shieldchain = 0;
 		battle_config.def_ratio_atk_to_carttermination = 0;
 		battle_config.player_gravitation_type = 0;
@@ -5458,7 +5458,7 @@ int battle_config_read(const char *cfgName)
 			{ "pc_movemap_script",					&battle_config.pc_movemap_script					},
 			{ "pc_login_script",					&battle_config.pc_login_script						},
 			{ "pc_logout_script",					&battle_config.pc_logout_script						},
-			{ "set_pckillerid",						&battle_config.set_pckillerid						},
+			{ "save_pckiller_type",						&battle_config.save_pckiller_type						},
 			{ "def_ratio_atk_to_shieldchain",		&battle_config.def_ratio_atk_to_shieldchain			},
 			{ "def_ratio_atk_to_carttermination",	&battle_config.def_ratio_atk_to_carttermination		},
 			{ "player_gravitation_type",			&battle_config.player_gravitation_type				},

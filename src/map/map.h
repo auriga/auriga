@@ -579,6 +579,8 @@ struct map_session_data {
 
 	unsigned int emotion_lasttick;
 
+	int kill_charid, killed_charid;
+
 	// メール添付情報
 	int mail_zeny;
 	int mail_amount;
@@ -881,6 +883,7 @@ enum {
 	SP_CLONESKILL_ID=500,SP_CLONESKILL_LV,					//500-501
 	SP_BS_POINT,SP_AM_POINT,SP_TK_POINT,SP_PK_POINT,SP_MISSON_TARGET,	//502-506
 	SP_HATE_SUN,SP_HATE_MOON,SP_HATE_STAR,SP_HOM_INTIMATE,SP_PHARMACY_SUCCESS,	//507-511
+	SP_KILL_CHAR,SP_KILLED_CHAR,						//512-513
 
 	// original 1000-
 	SP_ATTACKRANGE=1000,	SP_ATKELE,SP_DEFELE,	// 1000-1002
@@ -984,6 +987,14 @@ struct chat_data {
 	struct linkdb_node *ban_list;
 };
 
+struct charid2nick {
+	char nick[24];
+	int account_id;
+	unsigned long ip;
+	unsigned int port;
+	struct linkdb_node *req;
+};
+
 extern struct map_data *map;
 extern int map_num;
 extern int autosave_interval;
@@ -1046,7 +1057,7 @@ void map_clear_delayitem_que(void);
 struct charid2nick *char_search(int char_id);
 void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, int port);
 void map_delchariddb(int charid);
-void map_reqchariddb(struct map_session_data * sd, int charid);
+int map_reqchariddb(struct map_session_data *sd, int charid, int type);
 char * map_charid2nick(int);
 struct map_session_data * map_charid2sd(int id);
 

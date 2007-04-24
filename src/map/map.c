@@ -1330,7 +1330,7 @@ struct charid2nick *char_search(int char_id)
 void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, int port)
 {
 	struct charid2nick *p;
-	int req = 0;
+	struct linkdb_node *head;
 
 	if(account_id <= 0)
 		return;
@@ -1338,27 +1338,35 @@ void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, i
 	p = (struct charid2nick *)numdb_search(charid_db,charid);
 	if(p == NULL) {	// データベースにない
 		p = (struct charid2nick *)aCalloc(1,sizeof(struct charid2nick));
-		p->req_id = 0;
-	} else {
-		numdb_erase(charid_db,charid);
+		p->req = NULL;
+		numdb_insert(charid_db,charid,p);
 	}
 
-	req = p->req_id;
+	head = p->req;
 	memcpy(p->nick, name, 24);
 	p->account_id = account_id;
 	p->ip         = ip;
 	p->port       = port;
-	p->req_id     = 0;
-	numdb_insert(charid_db,charid,p);
+	p->req        = NULL;
 
-	if(req) {	// 返信待ちがあれば返信
-		struct map_session_data *sd = map_id2sd(req);
-		if(sd != NULL)
-			clif_solved_charname(sd,charid);
+	if(head) {	// 返信待ちがあれば全員に返信
+		struct linkdb_node *node = head;
+		while(node) {
+			struct map_session_data *sd = map_id2sd((int)node->key);
+			if(sd) {
+				int type = (int)node->data;
+				if(type&1)
+					clif_solved_charname(sd,charid);
+				if(type&2)
+					clif_update_temper(sd);
+			}
+			node = node->next;
+		}
+		linkdb_final(&head);
 	}
-	//printf("map add chariddb:%s\n",p->nick);
 	return;
 }
+
 /*==========================================
  * charid_dbから削除
  *------------------------------------------
@@ -1376,25 +1384,33 @@ void map_delchariddb(int charid)
 
 	return;
 }
+
 /*==========================================
  * charid_dbへ追加（返信要求のみ）
+ * 新規追加時は1、それ以外は0を返す
  *------------------------------------------
  */
-void map_reqchariddb(struct map_session_data * sd, int charid)
+int map_reqchariddb(struct map_session_data *sd, int charid, int type)
 {
 	struct charid2nick *p;
 
-	nullpo_retv(sd);
+	nullpo_retr(0, sd);
 
 	p = (struct charid2nick *)numdb_search(charid_db,charid);
-	if(p!=NULL)	// データベースにすでにある
-		return;
+	if(p != NULL) {	// データベースにすでにある
+		if(p->req) {
+			// 返信待ち状態なのでリスト更新
+			int data = (int)linkdb_search(&p->req, (void*)sd->bl.id);
+			linkdb_replace(&p->req, (void*)sd->bl.id, (void*)(data | type));
+		}
+		return 0;
+	}
 
 	p = (struct charid2nick *)aCalloc(1,sizeof(struct charid2nick));
-	p->req_id=sd->bl.id;
+	linkdb_insert(&p->req, (void*)sd->bl.id, (void*)type);
 	numdb_insert(charid_db,charid,p);
 
-	return;
+	return 1;
 }
 
 /*==========================================
@@ -1600,10 +1616,10 @@ struct block_list * map_id2bl(int id)
 char * map_charid2nick(int id)
 {
 	struct charid2nick *p = (struct charid2nick *)numdb_search(charid_db,id);
-	if(p==NULL)
+
+	if(p == NULL || p->req)
 		return NULL;
-	if(p->req_id!=0)
-		return NULL;
+
 	return p->nick;
 }
 
@@ -1615,7 +1631,7 @@ struct map_session_data * map_charid2sd(int id)
 {
 	struct charid2nick *p = (struct charid2nick *)numdb_search(charid_db,id);
 
-	if(p == NULL)
+	if(p == NULL || p->req)
 		return NULL;
 
 	return map_id2sd(p->account_id);
@@ -2712,6 +2728,9 @@ static int charid_db_final(void *key,void *data,va_list ap)
 	struct charid2nick *p;
 
 	nullpo_retr(0, p = (struct charid2nick *)data);
+
+	if(p->req)
+		linkdb_final(&p->req);
 
 	aFree(p);
 
