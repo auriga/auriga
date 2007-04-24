@@ -7425,36 +7425,35 @@ int skill_castend_pos( int tid, unsigned int tick, int id,int data )
 static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 {
 	int *c;
-	struct block_list *src;
 	struct map_session_data *sd, *ssd;
 	struct skill_condition *sc;
-	int skill_id;
+	int sp;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, sd=(struct map_session_data*)bl);
-	nullpo_retr(0, src=va_arg(ap,struct block_list *));
-	nullpo_retr(0, c=va_arg(ap,int *));
-	nullpo_retr(0, ssd=(struct map_session_data*)src);
+	nullpo_retr(0, sd  = (struct map_session_data *)bl);
+	nullpo_retr(0, ssd = va_arg(ap,struct map_session_data *));
+	nullpo_retr(0, c   = va_arg(ap,int *));
+	nullpo_retr(0, sc  = va_arg(ap, struct skill_condition *));
 
-	sc = va_arg( ap, struct skill_condition* );
-
-	//チェックしない設定ならcにありえない大きな数字を返して終了
-	if(!battle_config.player_skill_partner_check){	//本当はforeachの前にやりたいけど設定適用箇所をまとめるためにここへ
-		(*c)=99;
+	// チェックしない設定ならcにありえない大きな数字を返して終了
+	// 本当はforeachの前にやりたいけど設定適用箇所をまとめるためにここへ
+	if(!battle_config.player_skill_partner_check) {
+		(*c) = 0x7fffffff;
 		return 0;
 	}
 
 	if(sd == ssd)
 		return 0;
 
-	skill_id = (sc ? sc->id : ssd->ud.skillid);
+	sp = skill_get_sp(sc->id,sc->lv);
 
-	switch(skill_id){
+	switch(sc->id){
 	case PR_BENEDICTIO:				/* 聖体降福 */
-		if( (sd->s_class.job == 4 || sd->s_class.job == 8 || sd->s_class.job == 15) &&
-		    (sd->bl.x == ssd->bl.x - 1 || sd->bl.x == ssd->bl.x + 1) &&
-		    sd->status.sp >= 10 )
+		if( (*c) < 2 &&
+		    (sd->s_class.job == 4 || sd->s_class.job == 8 || sd->s_class.job == 15) &&
+		    (sd->bl.y == ssd->bl.y && (sd->bl.x == ssd->bl.x-1 || sd->bl.x == ssd->bl.x+1)) &&
+		    sd->status.sp >= sp/2 )
 			(*c)++;
 		break;
 	case BD_LULLABY:				/* 子守歌 */
@@ -7467,13 +7466,17 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 	case BD_SIEGFRIED:				/* 不死身のジークフリード */
 	case BD_RAGNAROK:				/* 神々の黄昏 */
 	case CG_MOONLIT:				/* 月明りの下で */
-		if( (*c)==0 &&
-		    ((ssd->s_class.job==19 && sd->s_class.job==20) || (ssd->s_class.job==20 && sd->s_class.job==19)) &&
-		    pc_checkskill(sd,skill_id) > 0 &&
+		if( (*c) < 1 &&
+		    ((ssd->s_class.job == 19 && sd->s_class.job == 20) || (ssd->s_class.job == 20 && sd->s_class.job == 19)) &&
+		    sd->status.party_id > 0 &&
+		    ssd->status.party_id > 0 &&
 		    sd->status.party_id == ssd->status.party_id &&
+		    !unit_isdead(&sd->bl) &&
 		    !pc_issit(sd) &&
-		    sd->sc_data[SC_DANCING].timer==-1 )
-			(*c)=pc_checkskill(sd,skill_id);
+		    sd->sc_data[SC_DANCING].timer == -1 &&
+		    (skill_get_weapontype(sc->id) & (1<<sd->status.weapon)) &&
+		    sd->status.sp >= sp )
+			(*c) = pc_checkskill(sd,sc->id);
 		break;
 	}
 	return 0;
@@ -7486,37 +7489,39 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 {
 	int *c;
-	struct block_list *src;
 	struct map_session_data *sd, *ssd;
-	int skillid,skilllv;
+	int skillid, skilllv, sp;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, sd=(struct map_session_data*)bl);
-	nullpo_retr(0, src=va_arg(ap,struct block_list *));
-	nullpo_retr(0, c=va_arg(ap,int *));
-	nullpo_retr(0, ssd=(struct map_session_data*)src);
+	nullpo_retr(0, sd  = (struct map_session_data *)bl);
+	nullpo_retr(0, ssd = va_arg(ap,struct map_session_data *));
+	nullpo_retr(0, c   = va_arg(ap,int *));
 
-	//チェックしない設定ならcにありえない大きな数字を返して終了
-	if(!battle_config.player_skill_partner_check){	//本当はforeachの前にやりたいけど設定適用箇所をまとめるためにここへ
-		(*c)=99;
+	// チェックしない設定ならcにありえない大きな数字を返して終了
+	// 本当はforeachの前にやりたいけど設定適用箇所をまとめるためにここへ
+	if(!battle_config.player_skill_partner_check) {
+		(*c) = 0x7fffffff;
 		return 0;
 	}
 
 	if(sd == ssd)
 		return 0;
 
-	skillid=ssd->ud.skillid;
-	skilllv=ssd->ud.skilllv;
+	skillid = ssd->ud.skillid;
+	skilllv = ssd->ud.skilllv;
+
+	sp = skill_get_sp(skillid,skilllv);
 
 	switch(skillid){
 	case PR_BENEDICTIO:				/* 聖体降福 */
-		if( (sd->s_class.job == 4 || sd->s_class.job == 8) &&
-		    (sd->bl.x == ssd->bl.x - 1 || sd->bl.x == ssd->bl.x + 1) &&
-		    sd->status.sp >= 10 )
+		if( (*c) < 2 &&
+		    (sd->s_class.job == 4 || sd->s_class.job == 8 || sd->s_class.job == 15) &&
+		    (sd->bl.y == ssd->bl.y && (sd->bl.x == ssd->bl.x-1 || sd->bl.x == ssd->bl.x+1)) &&
+		    sd->status.sp >= sp/2 )
 		{
-			sd->status.sp -= 10;
-			status_calc_pc(sd,0);
+			sd->status.sp -= sp/2;
+			clif_updatestatus(sd,SP_SP);
 			(*c)++;
 		}
 		break;
@@ -7530,18 +7535,25 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 	case BD_SIEGFRIED:				/* 不死身のジークフリード */
 	case BD_RAGNAROK:				/* 神々の黄昏 */
 	case CG_MOONLIT:				/* 月明りの下で */
-		if( (*c)==0 &&
-		    ((ssd->s_class.job==19 && sd->s_class.job==20) || (ssd->s_class.job==20 && sd->s_class.job==19)) &&
+		if( (*c) < 1 &&
+		    ((ssd->s_class.job == 19 && sd->s_class.job == 20) || (ssd->s_class.job == 20 && sd->s_class.job == 19)) &&
 		    pc_checkskill(sd,skillid) > 0 &&
+		    sd->status.party_id > 0 &&
+		    ssd->status.party_id > 0 &&
 		    sd->status.party_id == ssd->status.party_id &&
+		    !unit_isdead(&sd->bl) &&
 		    !pc_issit(sd) &&
-		    sd->sc_data[SC_DANCING].timer==-1 )
+		    sd->sc_data[SC_DANCING].timer == -1 &&
+		    (skill_get_weapontype(skillid) & (1<<sd->status.weapon)) &&
+		    sd->status.sp >= sp )
 		{
-			ssd->sc_data[SC_DANCING].val4=bl->id;
-			clif_skill_nodamage(bl,src,skillid,skilllv,1);
-			status_change_start(bl,SC_DANCING,skillid,ssd->sc_data[SC_DANCING].val2,0,src->id,skill_get_time(skillid,skilllv)+1000,0);
-			sd->skillid_dance=sd->ud.skillid=skillid;
-			sd->skilllv_dance=sd->ud.skilllv=skilllv;
+			sd->status.sp -= sp;
+			clif_updatestatus(sd,SP_SP);
+			ssd->sc_data[SC_DANCING].val4 = bl->id;
+			clif_skill_nodamage(bl,&ssd->bl,skillid,skilllv,1);
+			status_change_start(bl,SC_DANCING,skillid,ssd->sc_data[SC_DANCING].val2,0,ssd->bl.id,skill_get_time(skillid,skilllv)+1000,0);
+			sd->skillid_dance = sd->ud.skillid = skillid;
+			sd->skilllv_dance = sd->ud.skilllv = skilllv;
 			ssd->dance.x = sd->bl.x;
 			ssd->dance.y = sd->bl.y;
 			(*c)++;
@@ -8153,14 +8165,14 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			int c=0;
 			map_foreachinarea(skill_check_condition_char_sub,bl->m,
 				bl->x-range,bl->y-range,
-				bl->x+range,bl->y+range,BL_PC,bl,&c,sc);
+				bl->x+range,bl->y+range,BL_PC,sd,&c,sc);
 			//ダンス開始位置(合奏用)
 			sd->dance.x = bl->x;
 			sd->dance.y = bl->y;
 			if(c<1){
 				clif_skill_fail(sd,sc->id,0,0);
 				return 0;
-			}else if(c==99){ //相方不要設定だった
+			}else if(c==0x7fffffff){ //相方不要設定だった
 				;
 			}else{
 				sc->lv = (c + sc->lv)/2;
@@ -8366,7 +8378,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			if(!(type&1)){
 				map_foreachinarea(skill_check_condition_char_sub,bl->m,
 					bl->x-range,bl->y-range,
-					bl->x+range,bl->y+range,BL_PC,bl,&c,sc);
+					bl->x+range,bl->y+range,BL_PC,sd,&c,sc);
 				if(c<2){
 					clif_skill_fail(sd,sc->id,0,0);
 					return 0;
@@ -8374,7 +8386,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			}else{
 				map_foreachinarea(skill_check_condition_use_sub,bl->m,
 					bl->x-range,bl->y-range,
-					bl->x+range,bl->y+range,BL_PC,bl,&c);
+					bl->x+range,bl->y+range,BL_PC,sd,&c);
 			}
 		}
 		break;
@@ -10318,7 +10330,7 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 		if (sd && skill_get_unit_flag(skillid)&UF_ENSEMBLE) {
 			int c=0;
 			map_foreachinarea(skill_check_condition_use_sub,sd->bl.m,
-				sd->bl.x-1,sd->bl.y-1,sd->bl.x+1,sd->bl.y+1,BL_PC,&sd->bl,&c);
+				sd->bl.x-1,sd->bl.y-1,sd->bl.x+1,sd->bl.y+1,BL_PC,sd,&c);
 		}
 	}
 	return group;

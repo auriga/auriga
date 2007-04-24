@@ -8690,7 +8690,7 @@ int buildin_gmcommand(struct script_state *st)
 		if(bl) {
 			memset(&dummy_sd, 0, sizeof(struct map_session_data));
 			memcpy(&dummy_sd.bl, bl, sizeof(struct block_list));
-			dummy_sd.fd = 0;
+			dummy_sd.fd = -1;
 			dummy_sd.bl.prev = NULL;
 			dummy_sd.bl.next = NULL;
 			if(bl->type == BL_NPC) {
