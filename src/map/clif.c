@@ -9407,7 +9407,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 
 	tick=gettick();
 
-	unit_stop_walking(&sd->bl,1);
+	unit_stop_walking(&sd->bl,0);
 	unit_stopattack(&sd->bl);
 
 	target_id = RFIFOL(fd,GETPACKETPOS(cmd,0));

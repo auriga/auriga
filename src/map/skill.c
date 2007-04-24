@@ -10734,7 +10734,7 @@ int skill_unit_move(struct block_list *bl,unsigned int tick,int flag)
  */
 int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int dy)
 {
-	int i,j;
+	int i,j,moveblock;
 	unsigned int tick = gettick();
 	unsigned char m_flag[MAX_SKILL_UNIT_COUNT];	// group->unit_countはMAX_SKILL_UNIT_COUNTを越えることはない
 	struct skill_unit *unit1;
@@ -10797,11 +10797,14 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 		}
 		if (m_flag[i]==0) {
 			// 単純移動
-			map_delblock(&unit1->bl);
+			moveblock = map_block_is_differ(&unit1->bl, m, unit1->bl.x+dx, unit1->bl.y+dy);
+			if(moveblock)
+				map_delblock(&unit1->bl);
 			unit1->bl.m = m;
 			unit1->bl.x += dx;
 			unit1->bl.y += dy;
-			map_addblock(&unit1->bl);
+			if(moveblock)
+				map_addblock(&unit1->bl);
 			clif_skill_setunit(unit1);
 		} else if (m_flag[i]==1) {
 			// フラグが2のものを探してそのユニットの移動先に移動
@@ -10811,11 +10814,14 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 					unit2 = &group->unit[j];
 					if (!unit2->alive)
 						continue;
-					map_delblock(&unit1->bl);
+					moveblock = map_block_is_differ(&unit1->bl, m, unit2->bl.x+dx, unit2->bl.y+dy);
+					if(moveblock)
+						map_delblock(&unit1->bl);
 					unit1->bl.m = m;
 					unit1->bl.x = unit2->bl.x+dx;
 					unit1->bl.y = unit2->bl.y+dy;
-					map_addblock(&unit1->bl);
+					if(moveblock)
+						map_addblock(&unit1->bl);
 					clif_skill_setunit(unit1);
 					j++;
 					break;

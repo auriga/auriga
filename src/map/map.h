@@ -1015,11 +1015,16 @@ extern char extra_add_file_txt[]; // to add items from external software (use ap
 // 鯖全体情報
 void map_setusers(int);
 int map_getusers(void);
+
 // block削除関連
 int map_freeblock(void *bl);
 int map_freeblock_lock(void);
 int map_freeblock_unlock(void);
+
 // block関連
+#define map_block_is_differ(bl,to_m,to_x,to_y) \
+	( (bl)->m != (to_m) || (bl)->x/BLOCK_SIZE != (to_x)/BLOCK_SIZE || (bl)->y/BLOCK_SIZE != (to_y)/BLOCK_SIZE )
+
 int map_addblock(struct block_list *);
 int map_delblock(struct block_list *);
 int map_is_valid_address(struct block_list *bl, const char *file, int line );

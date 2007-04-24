@@ -2348,6 +2348,7 @@ int mob_heal(struct mob_data *md,int heal)
  */
 int mob_warp(struct mob_data *md,int m,int x,int y,int type)
 {
+	int moveblock;
 	int i=0,xs=0,ys=0,bx=x,by=y;
 	unsigned int tick = gettick();
 
@@ -2363,9 +2364,6 @@ int mob_warp(struct mob_data *md,int m,int x,int y,int type)
 			return 0;
 		clif_clearchar_area(&md->bl,type);
 	}
-	mob_ai_hard_spawn( &md->bl, 0 );
-	skill_unit_move(&md->bl,tick,0);
-	map_delblock(&md->bl);
 
 	if(bx>0 && by>0){	// 位置指定の場合周囲９セルを探索
 		xs=ys=9;
@@ -2380,32 +2378,37 @@ int mob_warp(struct mob_data *md,int m,int x,int y,int type)
 			y=atn_rand()%(map[m].ys-2)+1;
 		}
 	}
-	md->dir=0;
-	if(i<1000){
-		md->bl.x=md->ud.to_x=x;
-		md->bl.y=md->ud.to_y=y;
-		md->bl.m=m;
-	}else {
-		m=md->bl.m;
+	md->dir = 0;
+	if(i >= 1000) {
+		m = md->bl.m;
+		x = md->bl.x;
+		y = md->bl.y;
 		if(battle_config.error_log)
-			printf("MOB %d warp failed, class = %d\n",md->bl.id,md->class_);
+			printf("MOB %d warp to (%d,%d) failed, class = %d\n",md->bl.id,bx,by,md->class_);
 	}
 
+	moveblock = map_block_is_differ(&md->bl,m,x,y);
+
+	mob_ai_hard_spawn( &md->bl, 0 );
+	skill_unit_move(&md->bl,tick,0);
+
+	if(moveblock)
+		map_delblock(&md->bl);
+	md->bl.m = m;
+	md->bl.x = md->ud.to_x = x;
+	md->bl.y = md->ud.to_y = y;
 	md->target_id   = 0;	// タゲを解除する
 	md->attacked_id = 0;
-	md->state.skillstate=MSS_IDLE;
+	md->state.skillstate = MSS_IDLE;
+	if(moveblock)
+		map_addblock(&md->bl);
 
-	if(type>0 && i==1000) {
-		if(battle_config.battle_log)
-			printf("MOB %d warp to (%d,%d), class = %d\n",md->bl.id,x,y,md->class_);
-	}
-
-	map_addblock(&md->bl);
 	skill_unit_move(&md->bl,tick,1);
-	if(type>0) {
+	if(type >= 0) {
 		clif_spawnmob(md);
 	}
 	mob_ai_hard_spawn( &md->bl, 1 );
+
 	return 0;
 }
 

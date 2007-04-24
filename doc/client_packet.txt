@@ -1347,9 +1347,8 @@ R 021c <point>.L <total>.L
 	アルケミランキングポイントが<point>上昇して、<total>になりました。
 S 021d <?>.l
 	/effectしてるかどうか？
-R 021f <ID?>.l <ID?>.l <name>.24B <kill_name>.24B <?>.l <?>.4B
+R 021f <ID?>.l <ID?>.l <kill_nick>.24B <killed_nick>.24B <?>.l <?>.l
 	temperタブへ情報送信
-	Killedに名前が表示されない？
 	未調査
 R 0220 <target_id>.l <flag>.l
 	マーダラーとしてキャラ名を赤文字にするかのON/OFF
@@ -1487,8 +1486,11 @@ R 0250 <type>.B
 	type=8 : ゼニーが十分ではありません。
 	type=9 : これ以上競売アイテムに入札することはできません。
 	他は全て無視
-S 0251 <?>.6B <name>.24B
+S 0251 <type>.w <?>.l <name?>.24B <flag?>.w
 	競売ウィンドウのアイテム検索
+	type=0 : 0x25f応答時、flag以外はゴミ
+	type=4 : 検索時？<?>.lはゴミ
+	type=5 : 謎。<name>はゴミ
 R 0252 <len>.w <?>.l <loop?>.l { <?>.80B <?>.w <?>.B }*
 	未調査
 R 0253 <skilllv>.B

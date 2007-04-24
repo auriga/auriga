@@ -88,7 +88,7 @@ static int unit_walktoxy_sub(struct block_list *bl)
 	if(bl->type == BL_PC)
 		sd = (struct map_session_data *)bl;
 
-	if(sd && pc_iscloaking(sd))// クローキング時再計算
+	if(sd && pc_iscloaking(sd))	// クローキング時再計算
 		status_calc_pc(sd,0);
 
 	sc_data = status_get_sc_data(bl);
@@ -127,7 +127,7 @@ static int unit_walktoxy_sub(struct block_list *bl)
 		i = status_get_speed(bl)*14/10;
 	else
 		i = status_get_speed(bl);
-	if(i>0) {
+	if(i > 0) {
 		ud->walktimer = add_timer(gettick()+i,unit_walktoxy_timer,bl->id,0);
 	}
 
@@ -176,7 +176,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 	if(ud->walkpath.path_pos>=ud->walkpath.path_len || ud->walkpath.path_pos!=data)
 		return 0;
 
-	//歩いたので息吹のタイマーを初期化
+	// 歩いたので息吹のタイマーを初期化
 	if(sd) {
 		sd->inchealspirithptick = 0;
 		sd->inchealspiritsptick = 0;
@@ -185,8 +185,6 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 
 	sc_data = status_get_sc_data(bl);
 
-	//if( (md || pd) && ud->walkpath.path[ud->walkpath.path_pos]>=8)
-	//	return 1;
 	x = bl->x;
 	y = bl->y;
 
@@ -199,7 +197,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 	dx = dirx[(int)dir];
 	dy = diry[(int)dir];
 
-	moveblock = ( x/BLOCK_SIZE != (x+dx)/BLOCK_SIZE || y/BLOCK_SIZE != (y+dy)/BLOCK_SIZE);
+	moveblock = map_block_is_differ(bl,bl->m,x+dx,y+dy);
 
 	ud->walktimer = 1;
 	if(sd) {
@@ -354,14 +352,10 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 				return 0;
 			}
 		} else if(map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {	// 障害物に当たった
-			if(!sc_data || sc_data[SC_FORCEWALKING].timer==-1) {
+			if(!sc_data || sc_data[SC_FORCEWALKING].timer == -1) {
 				clif_fixwalkpos(bl);
 				return 0;
 			}
-		}
-		if(md && map_getcell(bl->m,x+dx,y+dy,CELL_CHKBASILICA) && !(status_get_mode(bl)&0x20)) {	// バシリカ判定
-			clif_fixwalkpos(bl);
-			return 0;
 		}
 		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,ud->walkpath.path_pos);
 	} else {
