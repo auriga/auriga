@@ -43,11 +43,32 @@ static struct {
 	int max;
 	struct {
 		short id,lv;
-	} need[6];
+	} need[5];
 	unsigned short base_level;
-	int   intimate;
+	int intimate;
 } homun_skill_tree[MAX_HOMUN_DB][MAX_HOMSKILL_TREE];
 
+/*==========================================
+ * スキルのMaxLvを返す
+ *------------------------------------------
+ */
+int homun_get_skilltree_max(int class_,int id)
+{
+	int i,skillid;
+
+	class_ -= HOM_ID;
+
+	for(i=0; (skillid = homun_skill_tree[class_][i].id) > 0; i++) {
+		if(id == skillid)
+			return homun_skill_tree[class_][i].max;
+	}
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 static int homun_calc_pos(struct homun_data *hd,int tx,int ty,int dir)
 {
 	int x,y,dx,dy;
@@ -102,6 +123,7 @@ static int homun_calc_pos(struct homun_data *hd,int tx,int ty,int dir)
 	hd->ud.to_y = y;
 	return 0;
 }
+
 /*==========================================
  * 腹減り
  *------------------------------------------
@@ -125,6 +147,7 @@ static int homun_hungry_cry(int tid,unsigned int tick,int id,int data)
 
 	return 0;
 }
+
 static int homun_hungry(int tid,unsigned int tick,int id,int data)
 {
 	struct map_session_data *sd;
@@ -176,6 +199,7 @@ static int homun_hungry(int tid,unsigned int tick,int id,int data)
 
 	return 0;
 }
+
 int homun_hungry_timer_delete(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
@@ -191,6 +215,7 @@ int homun_hungry_timer_delete(struct map_session_data *sd)
 
 	return 0;
 }
+
 /*==========================================
  * オートステ振り(statuspoint方式)
  *------------------------------------------
@@ -204,70 +229,65 @@ int homun_upstatus(struct mmo_homunstatus *hd)
 	class_ = hd->class_-HOM_ID;
 
 	total = homun_db[class_].str_k+homun_db[class_].agi_k+homun_db[class_].vit_k+homun_db[class_].int_k+homun_db[class_].dex_k+homun_db[class_].luk_k;
-	if(total <= 0) return 0;
-// STポイントが足りなかった場合、
-//・次にレベルが上がるまでSTポイントを保存するか	return 0
-//・振れるだけ振るか								continue
-#define AUT_ST_RET return 0
-//#define AUT_ST_RET continue
-	while(hd->status_point && ret<64){
+	if(total <= 0)
+		return 0;
+
+	while(hd->status_point && ret++ < 64) {
 		int s = atn_rand()%total;
 		int require;
-		ret++;
-		if((s-=homun_db[class_].str_k) <0){
+
+		if((s-=homun_db[class_].str_k) < 0) {
 			require = (hd->str==0)?1:(hd->str-1)/10+2;
 			if(require < hd->status_point){
 				hd->str++;
 				hd->status_point-=require;
-			}else{
-				AUT_ST_RET;
+				continue;
 			}
-		}else if((s-=homun_db[class_].agi_k) <0){
+		} else if((s-=homun_db[class_].agi_k) < 0) {
 			require = (hd->agi==0)?1:(hd->agi-1)/10+2;
 			if(require < hd->status_point){
 				hd->agi++;
 				hd->status_point-=require;
-			}else{
-				AUT_ST_RET;
+				continue;
 			}
-		}else if((s-=homun_db[class_].vit_k) <0){
+		} else if((s-=homun_db[class_].vit_k) < 0) {
 			require = (hd->vit==0)?1:(hd->vit-1)/10+2;
 			if(require < hd->status_point){
 				hd->vit++;
 				hd->status_point-=require;
-			}else{
-				AUT_ST_RET;
+				continue;
 			}
-		}else if((s-=homun_db[class_].int_k)<0){
+		} else if((s-=homun_db[class_].int_k) < 0) {
 			require = (hd->int_==0)?1:(hd->int_-1)/10+2;
 			if(require < hd->status_point){
 				hd->int_++;
 				hd->status_point-=require;
-			}else{
-				AUT_ST_RET;
+				continue;
 			}
-		}else if((s-=homun_db[class_].dex_k) <0){
+		} else if((s-=homun_db[class_].dex_k) < 0) {
 			require = (hd->dex==0)?1:(hd->dex-1)/10+2;
 			if(require < hd->status_point){
 				hd->dex++;
 				hd->status_point-=require;
-			}else{
-				AUT_ST_RET;
+				continue;
 			}
-		}else if((s-=homun_db[class_].luk_k) <0){
+		} else if((s-=homun_db[class_].luk_k) < 0) {
 			require = (hd->luk==0)?1:(hd->luk-1)/10+2;
 			if(require < hd->status_point){
 				hd->luk++;
 				hd->status_point-=require;
-			}else{
-				AUT_ST_RET;
+				continue;
 			}
-		}else{
-			AUT_ST_RET;
 		}
+
+		/* STポイントが足りなかった場合 */
+
+		//continue;	// 振れるだけ振る
+		break;		// 次にレベルが上がるまでSTポイントを保存する
 	}
 	return 0;
 }
+
 /*==========================================
  * 上昇ステ計算(非statuspoint方式)
  *------------------------------------------
@@ -294,6 +314,7 @@ int homun_upstatus2(struct mmo_homunstatus *hd)
 		hd->luk += (atn_rand()%(homun_db[class_].base*100-90))/100+1;
 	return 0;
 }
+
 /*==========================================
  * 各ステ計算
  *------------------------------------------
@@ -327,7 +348,7 @@ int homun_calc_status(struct homun_data *hd)
 	hd->hprecov_rate=100;
 	hd->sprecov_rate=100;
 
-	//チェンジインストラクション
+	// チェンジインストラクション
 	if((lv = homun_checkskill(hd,HVAN_INSTRUCT))>0)
 	{
 		static int instruct_str[11]={0,1,1,3,4,4,6,7,7,9,10};//10まで拡張
@@ -336,13 +357,13 @@ int homun_calc_status(struct homun_data *hd)
 		hd->str+= instruct_str[lv];
 		hd->int_+= lv;
 	}
-	//脳手術
+	// 脳手術
 	if((lv = homun_checkskill(hd,HLIF_BRAIN))>0)
 	{
 		sp_rate += lv;
 		hd->sprecov_rate+=lv*3;
 	}
-	//アダマンティウムスキン
+	// アダマンティウムスキン
 	if((lv = homun_checkskill(hd,HAMI_SKIN))>0)
 	{
 		hp_rate += lv*2;
@@ -352,16 +373,16 @@ int homun_calc_status(struct homun_data *hd)
 	// ステータス変化による基本パラメータ補正ホムスキル
 	if(hd->sc_count && hd->sc_data)
 	{
-		//緊急回避
+		// 緊急回避
 		if(hd->sc_data[SC_AVOID].timer!=-1)
 			speed_rate -= hd->sc_data[SC_AVOID].val1*10;
-		//
+		// メンタルチェンジ
 		if(hd->sc_data[SC_CHANGE].timer!=-1)
 			hd->int_ += 60;
-		//ブラッドラスト
+		// ブラッドラスト
 		if(hd->sc_data[SC_BLOODLUST].timer!=-1)
 			atk_rate += hd->sc_data[SC_BLOODLUST].val1*10+20;
-		//フリットムーブ
+		// フリットムーブ
 		if(hd->sc_data[SC_FLEET].timer!=-1)
 		{
 			aspd_rate -= hd->sc_data[SC_FLEET].val1*3;
@@ -371,14 +392,14 @@ int homun_calc_status(struct homun_data *hd)
 	// ステータス変化による基本パラメータ補正
 	if(battle_config.allow_homun_status_change && hd->sc_count && hd->sc_data)
 	{
-		//ゴスペルALL+20
+		// ゴスペルALL+20
 		if(hd->sc_data[SC_INCALLSTATUS].timer!=-1){
-			hd->str+= hd->sc_data[SC_INCALLSTATUS].val1;
-			hd->agi+= hd->sc_data[SC_INCALLSTATUS].val1;
-			hd->vit+= hd->sc_data[SC_INCALLSTATUS].val1;
-			hd->int_+= hd->sc_data[SC_INCALLSTATUS].val1;
-			hd->dex+= hd->sc_data[SC_INCALLSTATUS].val1;
-			hd->luk+= hd->sc_data[SC_INCALLSTATUS].val1;
+			hd->str  += hd->sc_data[SC_INCALLSTATUS].val1;
+			hd->agi  += hd->sc_data[SC_INCALLSTATUS].val1;
+			hd->vit  += hd->sc_data[SC_INCALLSTATUS].val1;
+			hd->int_ += hd->sc_data[SC_INCALLSTATUS].val1;
+			hd->dex  += hd->sc_data[SC_INCALLSTATUS].val1;
+			hd->luk  += hd->sc_data[SC_INCALLSTATUS].val1;
 		}
 
 		if(hd->sc_data[SC_INCREASEAGI].timer!=-1)	// 速度増加
@@ -401,7 +422,7 @@ int homun_calc_status(struct homun_data *hd)
 
 		if(hd->sc_data[SC_GLORIA].timer!=-1)	// グロリア
 			hd->luk+= 30;
-			
+
 		if(hd->sc_data[SC_QUAGMIRE].timer!=-1){	// クァグマイア
 			short subagi = 0;
 			short subdex = 0;
@@ -431,13 +452,13 @@ int homun_calc_status(struct homun_data *hd)
 
 	hd->aspd = aspd_k - (aspd_k * hd->agi / 250 + aspd_k * hd->dex / 1000) - 200;
 
-	//ディフェンス
+	// ディフェンス
 	if(hd->sc_data[SC_DEFENCE].timer!=-1)
 		hd->def += hd->sc_data[SC_DEFENCE].val1*2;
-	//オーバードスピード
+	// オーバードスピード
 	if(hd->sc_data[SC_SPEED].timer!=-1)
 		hd->flee = hd->flee + 10 + hd->sc_data[SC_SPEED].val1*10;
-	//補正
+	// 補正
 	if(atk_rate!=100)
 		hd->atk = hd->atk*atk_rate/100;
 	if(matk_rate!=100)
@@ -461,7 +482,7 @@ int homun_calc_status(struct homun_data *hd)
 	if(speed_rate!=100)
 		hd->speed = hd->speed*speed_rate/100;
 
-	//メンタルチェンジ
+	// メンタルチェンジ
 	if(hd->sc_data && hd->sc_data[SC_CHANGE].timer!=-1)
 	{
 		int atk_,hp_;
@@ -476,7 +497,7 @@ int homun_calc_status(struct homun_data *hd)
 	}
 	if(hd->max_hp<=0) hd->max_hp=1;	// mhp 0 だとクライアントエラー
 	if(hd->max_sp<=0) hd->max_sp=1;
-	//自然回復
+	// 自然回復
 	hd->nhealhp = hd->max_hp/100 + hd->vit/5 + 2;
 	hd->nhealsp = (hd->int_/6)+(hd->max_sp/100)+1;
 	if(hd->int_ >= 120)
@@ -487,8 +508,10 @@ int homun_calc_status(struct homun_data *hd)
 		hd->nhealsp = hd->nhealsp*hd->sprecov_rate/100;
 
 	homun_calc_skilltree(hd);
+
 	return 0;
 }
+
 /*==========================================
  * 各ステ計算
  *------------------------------------------
@@ -523,7 +546,11 @@ int homun_recalc_status(struct homun_data *hd)
 	return 0;
 }
 
-int homun_get_create_homunid()
+/*==========================================
+ * ホムンクルスIDを取得
+ *------------------------------------------
+ */
+static int homun_get_create_homunid(void)
 {
 	int i,j,tmp,nameid;
 	int list[MAX_HOMUN_DB];
@@ -599,14 +626,14 @@ static int homun_natural_heal_hp(int tid,unsigned int tick,int id,int data);
 static int homun_natural_heal_sp(int tid,unsigned int tick,int id,int data);
 
 /*==========================================
- * 
+ *
  *------------------------------------------
  */
-int homun_data_init(struct map_session_data *sd)
+static int homun_data_init(struct map_session_data *sd)
 {
 	struct homun_data *hd;
 	int i,class_;
-	unsigned long tick = gettick();
+	unsigned int tick = gettick();
 
 	nullpo_retr(1, sd);
 	nullpo_retr(1, (hd=sd->hd));
@@ -625,7 +652,7 @@ int homun_data_init(struct map_session_data *sd)
 	hd->bl.id = npc_get_new_npc_id();
 	hd->equip = 0;
 	hd->dir = sd->dir;
-	hd->speed = status_get_speed(&sd->bl);	//歩行速度は、コール時の主人のspeedになる
+	hd->speed = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
 	hd->bl.subtype = MONS;
 	hd->bl.type = BL_HOM;
 	memset(&hd->state,0,sizeof(hd->state));
@@ -637,11 +664,11 @@ int homun_data_init(struct map_session_data *sd)
 
 	for(i=0;i<MAX_HOMSKILL;i++)
 		hd->homskillstatictimer[i] = tick;
-	//親密度
+	// 親密度
 	if(battle_config.save_homun_temporal_intimate)
 	{
 		hd->intimate = pc_readglobalreg(sd,"HOM_TEMP_INTIMATE");
-		if(hd->intimate==0)//旧互換
+		if(hd->intimate==0)	// 旧互換
 			hd->intimate = hd->status.intimate;
 	}
 	else
@@ -682,6 +709,7 @@ int homun_data_init(struct map_session_data *sd)
 
 	return 0;
 }
+
 /*==========================================
  * コールホムンクルス
  *------------------------------------------
@@ -733,6 +761,7 @@ int homun_callhom(struct map_session_data *sd)
 
 	return 0;
 }
+
 /*==========================================
  * interからホムのデータ受信
  *------------------------------------------
@@ -759,8 +788,8 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 
 	if(sd->status.homun_id > 0) {
 		memcpy(&sd->hom,p,sizeof(struct mmo_homunstatus));
-		//生命の倫理未習得時格納
-		if(!pc_checkskill( sd, AM_BIOETHICS))
+		// 生命倫理未習得時格納
+		if(!pc_checkskill(sd, AM_BIOETHICS))
 			sd->hom.incubate = 0;
 		if(sd->hom.incubate && sd->hom.hp > 0)
 		{
@@ -774,6 +803,7 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 	}
 	return 0;
 }
+
 /*==========================================
  * 安息	...エンブリオはインベントリには戻らない
  *------------------------------------------
@@ -786,7 +816,7 @@ int homun_return_embryo(struct map_session_data *sd)
 	nullpo_retr(0,(hd=sd->hd));
 
 	if(sd->status.homun_id > 0){
-		//親密度保存
+		// 親密度保存
 		if(battle_config.save_homun_temporal_intimate)
 			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
 		hd->status.incubate = 0;
@@ -795,6 +825,7 @@ int homun_return_embryo(struct map_session_data *sd)
 	}
 	return 0;
 }
+
 /*==========================================
  * リザホム
  *------------------------------------------
@@ -805,8 +836,8 @@ int homun_revive(struct map_session_data *sd,int skilllv)
 
 	if(sd->status.homun_id > 0 && sd->status.homun_id == sd->hom.homun_id){
 		if(sd->hom.hp > 0){
-		clif_skill_fail(sd,AM_RESURRECTHOMUN,0,0);
-		return 0;
+			clif_skill_fail(sd,AM_RESURRECTHOMUN,0,0);
+			return 0;
 		}
 	} else {
 		clif_skill_fail(sd,AM_RESURRECTHOMUN,0,0);
@@ -816,14 +847,16 @@ int homun_revive(struct map_session_data *sd,int skilllv)
 	sd->hom.hp = sd->hom.hp + sd->hom.max_hp * skilllv / 5;
 	if(sd->hom.max_hp<sd->hom.hp)
 		sd->hom.hp=sd->hom.max_hp;
-		homun_callhom(sd);
+	homun_callhom(sd);
+
 	return 0;
 }
+
 /*==========================================
  * エサをあげる
  *------------------------------------------
  */
-int homun_food(struct map_session_data *sd)
+static int homun_food(struct map_session_data *sd)
 {
 	int i,t,food,class_,emotion;
 
@@ -891,6 +924,7 @@ int homun_food(struct map_session_data *sd)
 
 	return 0;
 }
+
 /*==========================================
  * ホム削除
  *------------------------------------------
@@ -912,6 +946,7 @@ int homun_delete_data(struct map_session_data *sd)
 	}
 	return 0;
 }
+
 /*==========================================
  * ホムのメニューの応答
  *------------------------------------------
@@ -936,6 +971,7 @@ int homun_menu(struct map_session_data *sd,int menunum)
 	}
 	return 0;
 }
+
 /*==========================================
  * 待機命令などで、主人の下へ移動
  *------------------------------------------
@@ -951,6 +987,7 @@ int homun_return_master(struct map_session_data *sd)
 	unit_walktoxy(&hd->bl,hd->ud.to_x,hd->ud.to_y);
 	return 0;
 }
+
 /*==========================================
  * 名前の変更
  *------------------------------------------
@@ -987,7 +1024,8 @@ int homun_change_name(struct map_session_data *sd,char *name)
 /*==========================================
  * classを変更
  * class == -1 でホムを進化させる
- * class == 0 にすると、進化後のclassに変更（進化するわけではない==ステ上昇はなどはなし）
+ * class == 0 にすると、進化後のclassに変更
+ * （進化するわけではない==ステ上昇はなどはなし）
  *------------------------------------------
  */
 int homun_change_class( struct map_session_data *sd, int class_ )
@@ -1052,6 +1090,7 @@ int homun_checkskill(struct homun_data *hd,int skill_id)
 
 	return 0;
 }
+
 /*==========================================
  * スキルポイント割り振り
  *------------------------------------------
@@ -1070,7 +1109,7 @@ void homun_skillup(struct map_session_data *sd, int skill_num)
 
 	if( hd->status.skill_point>0 &&
 		hd->status.skill[skillid].id!=0 &&
-		hd->status.skill[skillid].lv < skill_get_max(skill_num) )
+		hd->status.skill[skillid].lv < homun_get_skilltree_max(hd->status.class_,skill_num) )
 	{
 		hd->status.skill[skillid].lv++;
 		hd->status.skill_point--;
@@ -1082,6 +1121,7 @@ void homun_skillup(struct map_session_data *sd, int skill_num)
 
 	return;
 }
+
 /*==========================================
  * 覚えられるスキルの計算
  *------------------------------------------
@@ -1109,7 +1149,7 @@ int homun_calc_skilltree(struct homun_data *hd)
 			if(hd->status.base_level < homun_skill_tree[c][i].base_level)
 				f=0;
 			if(hd->status.intimate < homun_skill_tree[c][j].intimate)
-				f = 0;
+				f=0;
 			id=id-HOM_SKILLID;
 			if(f && hd->status.skill[id].id==0 && id>=0){
 				hd->status.skill[id].id=id+HOM_SKILLID;
@@ -1120,11 +1160,12 @@ int homun_calc_skilltree(struct homun_data *hd)
 
 	return 0;
 }
+
 /*==========================================
  * レベルアップ
  *------------------------------------------
  */
-int homun_checkbaselevelup(struct homun_data *hd)
+static int homun_checkbaselevelup(struct homun_data *hd)
 {
 	int next = homun_nextbaseexp(hd);
 	int hp,sp;
@@ -1160,6 +1201,7 @@ int homun_checkbaselevelup(struct homun_data *hd)
 
 	return 0;
 }
+
 /*==========================================
  * 経験値取得
  *------------------------------------------
@@ -1226,6 +1268,7 @@ int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_e
 
 	return 0;
 }
+
 /*==========================================
  * base level側必要経験値計算
  *------------------------------------------
@@ -1249,6 +1292,7 @@ int homun_nextbaseexp(struct homun_data *hd)
 	*/
 	return homun_exp_table[i][hd->status.base_level-1];
 }
+
 /*==========================================
  * hdにdamageのダメージ
  *------------------------------------------
@@ -1304,6 +1348,7 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
 	}
 	return 0;
 }
+
 /*==========================================
  * HP/SP回復
  *------------------------------------------
@@ -1406,6 +1451,7 @@ static int homun_natural_heal_sp(int tid,unsigned int tick,int id,int data)
 
 	return 0;
 }
+
 int homun_natural_heal_timer_delete(struct homun_data *hd)
 {
 	nullpo_retr(0, hd);
@@ -1421,6 +1467,7 @@ int homun_natural_heal_timer_delete(struct homun_data *hd)
 
 	return 0;
 }
+
 /*==========================================
  * ホムのデータをセーブ
  *------------------------------------------
@@ -1439,10 +1486,14 @@ int homun_save_data(struct map_session_data *sd)
 
 	return 0;
 }
+
+//
+// 初期化物
+//
 /*==========================================
  * ホムンクルス初期ステータスデータ読み込み
  *------------------------------------------
- */ 
+ */
 int read_homundb(void)
 {
 	FILE *fp;
@@ -1544,9 +1595,7 @@ int read_homundb(void)
 	}
 	return 0;
 }
-//
-// 初期化物
-//
+
 /*==========================================
  * 設定ファイル読み込む
  * exp.txt 必要経験値
@@ -1594,6 +1643,7 @@ int homun_readdb(void)
 		return 1;
 	}
 	while(fgets(line,1020,fp)){
+		int skillid;
 		char *split[15];
 		if(line[0]=='/' && line[1]=='/')
 			continue;
@@ -1608,12 +1658,21 @@ int homun_readdb(void)
 		i=class_-HOM_ID;
 		if(i<0 || i>=MAX_HOMUN_DB)
 			continue;
-		for(j=0;homun_skill_tree[i][j].id;j++);
-		if(j+1 >= MAX_HOMSKILL_TREE)	// 末尾はアンカーとして0にしておく必要がある
-			continue;
 
-		homun_skill_tree[i][j].id=atoi(split[1]);
+		skillid = atoi(split[1]);
+		for(j=0; homun_skill_tree[i][j].id && homun_skill_tree[i][j].id != skillid; j++);
+
+		if(j >= MAX_HOMSKILL_TREE-1) {
+			// 末尾はアンカーとして0にしておく必要がある
+			printf("homun_readdb: skill (%d) is over max tree %d!!\n", skillid, MAX_HOMSKILL_TREE);
+			continue;
+		}
+		homun_skill_tree[i][j].id=skillid;
 		homun_skill_tree[i][j].max=atoi(split[2]);
+
+		if(homun_skill_tree[i][j].max > skill_get_max(skillid))
+			homun_skill_tree[i][j].max = skill_get_max(skillid);
+
 		for(k=0;k<5;k++){
 			homun_skill_tree[i][j].need[k].id=atoi(split[k*2+3]);
 			homun_skill_tree[i][j].need[k].lv=atoi(split[k*2+4]);
@@ -1628,7 +1687,7 @@ int homun_readdb(void)
 }
 
 /*==========================================
- * ランダムアイテム出現データの読み込み
+ * エンブリオデータの読み込み
  *------------------------------------------
  */
 static int homun_read_embryodb(void)
@@ -1707,11 +1766,18 @@ int do_init_homun(void)
 	add_timer_func_list(homun_natural_heal_sp,"homun_natural_heal_sp");
 	add_timer_func_list(homun_hungry,"homun_hungry");
 	add_timer_func_list(homun_hungry_cry,"homun_hungry_cry");
+
 	return 0;
 }
 
-int do_final_homun(void) {
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+int do_final_homun(void)
+{
 	int i;
+
 	for(i = 0;i < MAX_HOMUN_DB; i++) {
 		if(homun_db[i].script) {
 			script_free_code(homun_db[i].script);

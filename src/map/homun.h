@@ -32,7 +32,9 @@ struct random_homun_data {
 	int homunid;
 	int per;
 };
-int homun_data_init(struct map_session_data *sd);
+
+int homun_get_skilltree_max(int class_,int id);
+
 int homun_hungry_timer_delete(struct map_session_data *sd);
 
 int homun_menu(struct map_session_data *sd,int menunum);
@@ -48,7 +50,6 @@ int homun_change_class( struct map_session_data *sd, int class_ );
 int homun_checkskill(struct homun_data *hd,int skill_id);
 void homun_skillup(struct map_session_data *sd, int skill_num);
 int homun_calc_skilltree(struct homun_data *hd);
-int homun_checkbaselevelup(struct homun_data *hd);
 int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp);
 int homun_nextbaseexp(struct homun_data *hd);
 int homun_calc_status(struct homun_data *hd);
@@ -58,7 +59,6 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage);
 
 int homun_heal(struct homun_data *hd,int hp,int sp);
 int homun_natural_heal_timer_delete(struct homun_data *hd);
-int homun_get_create_homunid(void);
 int homun_create_hom(struct map_session_data *sd,int homunid);
 int homun_recalc_status(struct homun_data *hd);
 int homun_delete_data(struct map_session_data *sd);

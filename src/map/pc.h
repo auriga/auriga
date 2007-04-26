@@ -28,9 +28,12 @@
 extern int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
 extern int max_job_table[3][32];
 
+int pc_get_skilltree_max(struct pc_base_job *bj,int id);
+
 void pc_set_gm_account_fname(char *str);
 int pc_isGM(struct map_session_data *sd);
 int pc_numisGM(int account_id);
+int pc_get_gm_account_dummy(void);
 int pc_isquitable(struct map_session_data *sd);
 
 int pc_setrestartvalue(struct map_session_data *sd,int type);
@@ -174,8 +177,6 @@ int pc_addcoin(struct map_session_data *sd,int,int);
 int pc_delcoin(struct map_session_data *sd,int,int);
 
 int pc_runtodir(struct map_session_data *sd);
-
-int pc_get_gm_account_dummy(void);
 
 // DB再読込用
 int pc_readdb(void);

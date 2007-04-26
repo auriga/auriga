@@ -2855,22 +2855,22 @@ int do_init(int argc,char *argv[])
 
 	do_init_chrif();
 	do_init_clif();
-	do_init_script(); // parse_script を呼び出す前にこれを呼ぶ
+	do_init_script();	// parse_script を呼び出す前にこれを呼ぶ
 	do_init_itemdb();
-	do_init_mob();	// npcの初期化時内でmob_spawnして、mob_dbを参照するのでinit_npcより先
+	do_init_mob();		// npcの初期化時内でmob_spawnして、mob_dbを参照するのでinit_npcより先
 	do_init_npc();
+	do_init_skill();	// pc,homunの初期化時内でskill_dbを参照するのでinit_pc,init_homunより先
 	do_init_pc();
 	do_init_party();
 	do_init_guild();
 	do_init_storage();
-	do_init_skill();
 	do_init_pet();
 	do_init_homun();
 	do_init_status();
 	do_init_friend();
 	do_init_ranking();
 	do_init_unit();
-	//
+
 	map_pk_server(map_pk_server_flag);
 	map_pk_nightmaredrop(map_pk_nightmaredrop_flag);
 	map_field_setting();

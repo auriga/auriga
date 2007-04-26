@@ -1765,7 +1765,7 @@ void clif_homskillinfoblock(struct map_session_data *sd)
 			WFIFOW(fd,len+10)= skill_get_fixed_range(&hd->bl,id,skill_lv);
 			memset(WFIFOP(fd,len+12),0,24);
 			if(!(skill_get_inf2(id)&0x01))
-				WFIFOB(fd,len+36)= (skill_lv < skill_get_max(id) && hd->status.skill[i].flag ==0 )? 1:0;
+				WFIFOB(fd,len+36) = (skill_lv < homun_get_skilltree_max(hd->status.class_,id) && hd->status.skill[i].flag == 0)? 1: 0;
 			else
 				WFIFOB(fd,len+36) = 0;
 			len+=37;
@@ -1798,7 +1798,7 @@ void clif_homskillup(struct map_session_data *sd, int skill_num)
 	WFIFOW(fd,4) = hd->status.skill[skillid].lv;
 	WFIFOW(fd,6) = skill_get_sp(skill_num,hd->status.skill[skillid].lv);
 	WFIFOW(fd,8) = skill_get_fixed_range(&hd->bl,skill_num,hd->status.skill[skillid].lv);
-	WFIFOB(fd,10) = (hd->status.skill[skillid].lv < skill_get_max(hd->status.skill[skillid].id)) ? 1 : 0;
+	WFIFOB(fd,10) = (hd->status.skill[skillid].lv < homun_get_skilltree_max(hd->status.class_,hd->status.skill[skillid].id)) ? 1 : 0;
 	WFIFOSET(fd,packet_db[0x239].len);
 
 	return;
@@ -4827,7 +4827,7 @@ void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int rang
 		tk_ranker_bonus=1;
 
 	if(tk_ranker_bonus && sd->status.skill[skillid].flag == 0)
-		skill_lv = skill_get_max(id);
+		skill_lv = pc_get_skilltree_max(&sd->s_class,id);
 	else if(skillid==sd->cloneskill_id){
 		id = skillid;
 		skill_lv = sd->status.skill[skillid].lv>sd->cloneskill_lv?sd->status.skill[skillid].lv:sd->cloneskill_lv;
@@ -4850,7 +4850,7 @@ void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int rang
 		WFIFOW(fd,12)= range;
 	memset(WFIFOP(fd,14),0,24);
 	if(!(skill_get_inf2(id)&0x01) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
-		WFIFOB(fd,38)= (skill_lv < skill_get_max(id) && skillid!=sd->cloneskill_id && sd->status.skill[skillid].flag ==0 )? 1:0;
+		WFIFOB(fd,38) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && skillid!=sd->cloneskill_id && sd->status.skill[skillid].flag == 0)? 1: 0;
 	else
 		WFIFOB(fd,38) = 0;
 	WFIFOSET(fd,packet_db[0x147].len);
@@ -4883,7 +4883,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 			WBUFW(buf,len+2) = skill_get_inf(id);
 			WBUFW(buf,len+4) = 0;
 			if(tk_ranker_bonus && sd->status.skill[i].flag==0)
-				skill_lv = skill_get_max(id);
+				skill_lv = pc_get_skilltree_max(&sd->s_class,id);
 			else if(i==sd->cloneskill_id)
 				skill_lv = sd->status.skill[i].lv>sd->cloneskill_lv?sd->status.skill[i].lv:sd->cloneskill_lv;
 			else
@@ -4893,7 +4893,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 			WBUFW(buf,len+10)= skill_get_fixed_range(&sd->bl,id,skill_lv);
 			memset(WBUFP(buf,len+12),0,24);
 			if(!(skill_get_inf2(id)&0x01) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
-				WBUFB(buf,len+36)= (skill_lv < skill_get_max(id) && i!=sd->cloneskill_id && sd->status.skill[i].flag ==0 )? 1:0;
+				WBUFB(buf,len+36) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && i!=sd->cloneskill_id && sd->status.skill[i].flag == 0)? 1: 0;
 			else
 				WBUFB(buf,len+36) = 0;
 			len+=37;
@@ -4923,7 +4923,7 @@ void clif_skillup(struct map_session_data *sd, int skill_num)
 	WFIFOW(fd,4) = sd->status.skill[skill_num].lv;
 	WFIFOW(fd,6) = skill_get_sp(skill_num,sd->status.skill[skill_num].lv);
 	WFIFOW(fd,8) = skill_get_fixed_range(&sd->bl,skill_num,sd->status.skill[skill_num].lv);
-	WFIFOB(fd,10) = (sd->status.skill[skill_num].lv < skill_get_max(sd->status.skill[skill_num].id)) ? 1 : 0;
+	WFIFOB(fd,10) = (sd->status.skill[skill_num].lv < pc_get_skilltree_max(&sd->s_class,sd->status.skill[skill_num].id))? 1: 0;
 	WFIFOSET(fd,packet_db[0x10e].len);
 
 	return;

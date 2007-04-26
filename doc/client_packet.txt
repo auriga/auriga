@@ -61,7 +61,7 @@ S 0068 <charactor ID>.l <mail address>.40B
 	キャラクタ削除要求
 R 0069 <len>.w <login ID1>.l <account ID>.l <login ID2>.l ?.32B <sex>.B {<IP>.l <port>.w <server name>.20B <login users>.w <maintenance>.w <new>.w}.32B*
 	login成功&鯖情報
-R 006a <error No>.B
+R 006a <error No>.B <message>.20B
 	login失敗 その１
 		err No=00  未登録のIDです
 		err No=01  パスワードが違います
@@ -81,7 +81,7 @@ R 006a <error No>.B
 		err No=15  MSI_REFUSE_WAIT_FOR_SAKRAY_ACTIVE
 		err No=16  [No Msg]
 		err No=99  対象のアカウントは削除されたIDです
-		err No=100 %sに接続情報が残っています。前回ログインしたワールドグループでゲームを正常に終了してください。
+		err No=100 <message>に接続情報が残っています
 		err No=101 アカウント盗用の調査のためにログインが禁止されました。詳しいお問い合わせはアカウント盗用関連お問い合わせへメールしてください。
 		err No=102 あなたはバグ関連調査中なので、一時的に接続を禁じます。
 		err No=103 キャラクター削除処理中につき、接続が一時的に制限されます。
@@ -1610,7 +1610,7 @@ R 0293 <type>.B <?>.l <?>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
 	凸面鏡使用
 	type=0 : この地域ではボスモンスターの出現確認ができません。
 	type=2 : ボスモンスター<boss_name>の位置がミニマップに表示されます。
-	type=3 : ボスモンスター<boss_name>の出現予定時刻<hour>時<minute>分
+	type=3 : ボスモンスター<boss_name>が<hour>時間<minute>後に出現します。
 
 R 0294 <book_id>.l <page_num>.l
 	読書システム

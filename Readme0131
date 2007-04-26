@@ -1,4 +1,38 @@
 ----------------------------------------
+//0172 [2007/04/27] by Rayce
+
+・取得可能なスキルの最大Lvをdb/skill_db.txtではなく、db/skill_tree.txtおよびdb/homun_skill_tree.txtの
+　MaxLv設定に従うように拡張
+	各職業ごとにスキルの最大Lvを変更できるようになります。
+	例えばMagicianはファイヤーウォールをLv5までしか覚えられないが、WizardはLv10まで取得可能など。
+	ただしdb/skill_db.txtで設定したMaxLvを越えることはありません。
+
+	-> pc_get_skilltree_max() 追加
+	-> homun_get_skilltree_max() 追加
+	-> do_init() で do_init_skill() を do_init_pc() よりも優先して実行するように変更
+	-> skill_db.txtの読み込み時にMAX_SKILL_LEVELを越えてないかチェックするように強化
+
+　　※ただし @allskill は例外です。
+　　　プレイヤーがGMでbattle_auriga.confのgm_allskillが設定されている場合は、skill_tree.txtのMaxLvではなく
+　　　skill_db.txtのMaxLvまでスキルを取得します。
+
+・養子職のスキルツリーを独自に設定できるように拡張
+	今までは養子のスキルツリーは通常職と同じものを使っており、db/skill_tree.txtのUpperを2にしても
+	全く反映されていませんでした。
+	battle_auriga.confに追加されたbaby_copy_skilltreeをnoにすると、養子職専用のスキルツリーを作る
+	ことができるようになります。
+
+　　※noにした場合はskill_tree.txtに養子用のツリーを追加してください。
+　　　デフォルトのままだと一切のスキルが取得ができない状態になります。
+
+・db/skill_tree.txtおよびdb/homun_skill_tree.txtで、同一のスキルIDがある場合は下に書いたもので上書き
+　されるように修正
+・skill_use_bonus_autospell() の処理を少し最適化
+・homun.cおよびhomun.hの整理
+・db/skill_tree.txtのMaxLvの値が間違っていた部分を修正
+・doc/db_refにスキルツリーに関する説明を追加
+
+----------------------------------------
 //0171 [2007/04/25] by Rayce
 
 ・試験的に、攻撃開始時に歩行停止を実行するとき座標補正パケットを送信しないようにしてみる（clif.c）

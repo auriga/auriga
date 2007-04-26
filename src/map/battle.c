@@ -5055,6 +5055,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.party_item_share_show = 0;
 		battle_config.pk_murderer_point = 100;
 		battle_config.sg_miracle_rate = 1;
+		battle_config.baby_copy_skilltree = 1;
 	}
 
 	fp=fopen(cfgName,"r");
@@ -5458,7 +5459,7 @@ int battle_config_read(const char *cfgName)
 			{ "pc_movemap_script",					&battle_config.pc_movemap_script					},
 			{ "pc_login_script",					&battle_config.pc_login_script						},
 			{ "pc_logout_script",					&battle_config.pc_logout_script						},
-			{ "save_pckiller_type",						&battle_config.save_pckiller_type						},
+			{ "save_pckiller_type",					&battle_config.save_pckiller_type					},
 			{ "def_ratio_atk_to_shieldchain",		&battle_config.def_ratio_atk_to_shieldchain			},
 			{ "def_ratio_atk_to_carttermination",	&battle_config.def_ratio_atk_to_carttermination		},
 			{ "player_gravitation_type",			&battle_config.player_gravitation_type				},
@@ -5511,6 +5512,7 @@ int battle_config_read(const char *cfgName)
 			{ "party_item_share_show",				&battle_config.party_item_share_show				},
 			{ "pk_murderer_point",					&battle_config.pk_murderer_point					},
 			{ "sg_miracle_rate",					&battle_config.sg_miracle_rate						},
+			{ "baby_copy_skilltree",				&battle_config.baby_copy_skilltree					},
 		};
 		const int max = sizeof(data)/sizeof(data[0]);
 

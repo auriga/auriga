@@ -84,6 +84,23 @@ static int pc_equiplookall(struct map_session_data *sd);
 
 
 /*==========================================
+ * スキルのMaxLvを返す
+ *------------------------------------------
+ */
+int pc_get_skilltree_max(struct pc_base_job *bj,int id)
+{
+	int i,skillid;
+
+	nullpo_retr(0, bj);
+
+	for(i=0; (skillid = skill_tree[bj->upper][bj->job][i].id) > 0; i++) {
+		if(id == skillid)
+			return skill_tree[bj->upper][bj->job][i].max;
+	}
+	return 0;
+}
+
+/*==========================================
  * GM関連
  *------------------------------------------
  */
@@ -1189,7 +1206,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 		tk_ranker_bonus=1;
 
 	c = sd->s_class.job;
-	s = (sd->s_class.upper==1) ? 1 : 0 ; //転生以外は通常のスキル？
+	s = sd->s_class.upper;
 
 	if(battle_config.skillup_limit && c >= 0 && c < MAX_VALID_PC_CLASS) {
 		int skill_point = pc_calc_skillpoint(sd);
@@ -1278,7 +1295,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 				if(!battle_config.skillfree) {
 					for(j=0;j<5;j++) {
 						if( skill_tree[s][c][i].need[j].id &&
-							pc_checkskill2(sd,skill_tree[s][c][i].need[j].id) < skill_tree[s][c][i].need[j].lv)
+						    pc_checkskill2(sd,skill_tree[s][c][i].need[j].id) < skill_tree[s][c][i].need[j].lv)
 							f=0;
 					}
 					if(sd->status.base_level < skill_tree[s][c][i].base_level)
@@ -1290,7 +1307,6 @@ int pc_calc_skilltree(struct map_session_data *sd)
 					sd->status.skill[id].id=id;
 					flag=1;
 				}
-				//
 				if(tk_ranker_bonus && sd->status.skill[id].id==0)
 				{
 					sd->status.skill[id].id=id;
@@ -1478,9 +1494,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 			}
 		}
 	}
-	
-//	if(battle_config.etc_log)
-//		printf("calc skill_tree\n");
+
 	return 0;
 }
 
@@ -3935,7 +3949,7 @@ int pc_checkskill(struct map_session_data *sd,int skill_id)
 		if(sd->status.class_ == PC_CLASS_TK && sd->status.skill[skill_id].flag == 0 && pc_checkskill2(sd,TK_MISSION) > 0 && sd->status.base_level >= 90 &&
 		   sd->status.skill_point == 0 && ranking_get_pc_rank(sd,RK_TAEKWON))
 		{
-			return skill_get_max(skill_id);
+			return pc_get_skilltree_max(&sd->s_class,skill_id);
 		}else{
 			return sd->status.skill[skill_id].lv;
 		}
@@ -4634,7 +4648,8 @@ int pc_statusup2(struct map_session_data *sd,int type,int val)
  */
 static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 {
-	int i,upper,skill_point=0,up_level=0;
+	int i,id;
+	int skill_point,up_level;
 
 	nullpo_retr(0, sd);
 
@@ -4646,19 +4661,10 @@ static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 		up_level = 1;
 	else
 		up_level = 2;
-	if(sd->s_class.upper==2)
-		upper = 0;
-	else
-		upper = sd->s_class.upper;
 
-	for(i=0;i<MAX_SKILL_TREE;i++)
-	{
-		if(skill_tree[upper][sd->s_class.job][i].id==skill_num)
-		{
-			if(skill_tree[upper][sd->s_class.job][i].class_level <= up_level)
-				return 1;
-			else
-				return 0;
+	for(i=0; (id = skill_tree[sd->s_class.upper][sd->s_class.job][i].id) > 0; i++) {
+		if(id == skill_num) {
+			return (skill_tree[sd->s_class.upper][sd->s_class.job][i].class_level <= up_level);
 		}
 	}
 
@@ -4676,7 +4682,7 @@ void pc_skillup(struct map_session_data *sd, int skill_num)
 	if (skill_num < 0 || skill_num >= MAX_SKILL)
 		return;
 
-	if(battle_config.skillup_type && pc_check_skillup(sd,skill_num)==0)
+	if(battle_config.skillup_type && !pc_check_skillup(sd,skill_num))
 	{
 		clif_skillup(sd,skill_num);
 		clif_updatestatus(sd,SP_SKILLPOINT);
@@ -4684,9 +4690,9 @@ void pc_skillup(struct map_session_data *sd, int skill_num)
 		return;
 	}
 
-	if( sd->status.skill_point>0 &&
-		sd->status.skill[skill_num].id!=0 &&
-		sd->status.skill[skill_num].lv < skill_get_max(skill_num) )
+	if( sd->status.skill_point > 0 &&
+	    sd->status.skill[skill_num].id != 0 &&
+	    sd->status.skill[skill_num].lv < pc_get_skilltree_max(&sd->s_class,skill_num) )
 	{
 		sd->status.skill[skill_num].lv++;
 		sd->status.skill_point--;
@@ -4731,7 +4737,7 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 		}
 	} else {
 		int c = sd->s_class.job;
-		int s = (sd->s_class.upper==1)?1:0;	//転生以外は通常のスキル？
+		int s = sd->s_class.upper;
 
 		for(i=0;(id=skill_tree[s][c][i].id)>0;i++){
 			if(id == SG_DEVIL) //ここで除外処理
@@ -4740,7 +4746,7 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 			if(skill_get_inf2(id)&0x01 && !flag && !battle_config.quest_skill_learn)
 				continue;
 			sd->status.skill[id].id = id;
-			sd->status.skill[id].lv = skill_get_max(id);
+			sd->status.skill[id].lv = pc_get_skilltree_max(&sd->s_class,id);
 		}
 	}
 	status_calc_pc(sd,0);
@@ -5853,6 +5859,7 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	pc_checkallowskill(sd);
 	pc_equiplookall(sd);
 	clif_equiplist(sd);
+	clif_skillinfoblock(sd);
 
 	return 0;
 }
@@ -8005,12 +8012,8 @@ void pc_setstand(struct map_session_data *sd)
 /*==========================================
  * 設定ファイル読み込む
  * exp.txt 必要経験値
- * job_db1.txt 重量,hp,sp,攻撃速度 => status.c に移動
- * job_db2.txt job能力値ボーナス
  * skill_tree.txt 各職毎のスキルツリー
  * attr_fix.txt 属性修正テーブル
- * size_fix.txt サイズ補正テーブル
- * refine_db.txt 精錬データテーブル
  *------------------------------------------
  */
 int pc_readdb(void)
@@ -8065,7 +8068,7 @@ int pc_readdb(void)
 	}
 	while(fgets(line,1020,fp)){
 		char *split[17];
-		int upper=0;
+		int upper=0,skillid;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<17 && p;j++){
@@ -8076,7 +8079,7 @@ int pc_readdb(void)
 		if(j<17)
 			continue;
 		upper=atoi(split[0]);
-		if(upper > 0 && battle_config.enable_upper_class == 0)	//confで無効になっていたら
+		if(upper > 0 && battle_config.enable_upper_class == 0)	// confで無効になっていたら
 			continue;
 		if(upper < 0 || upper > 2)
 			continue;
@@ -8085,22 +8088,34 @@ int pc_readdb(void)
 		if(i < 0 || i >= MAX_PC_CLASS)
 			continue;
 
-		for(j=0;skill_tree[upper][i][j].id;j++);
-		if(j+1 >= MAX_SKILL_TREE)	// 末尾はアンカーとして0にしておく必要がある
-			continue;
+		skillid = atoi(split[2]);
+		for(j=0; skill_tree[upper][i][j].id && skill_tree[upper][i][j].id != skillid; j++);
 
-		skill_tree[upper][i][j].id=atoi(split[2]);
+		if(j >= MAX_SKILL_TREE-1) {
+			// 末尾はアンカーとして0にしておく必要がある
+			printf("pc_readdb: skill ID %d is over max tree %d!!\n", skillid, MAX_SKILL_TREE);
+			continue;
+		}
+		skill_tree[upper][i][j].id=skillid;
 		skill_tree[upper][i][j].max=atoi(split[3]);
+
+		if(skill_tree[upper][i][j].max > skill_get_max(skillid))
+			skill_tree[upper][i][j].max = skill_get_max(skillid);
+
 		for(k=0;k<5;k++){
 			skill_tree[upper][i][j].need[k].id=atoi(split[k*2+4]);
 			skill_tree[upper][i][j].need[k].lv=atoi(split[k*2+5]);
 		}
-
 		skill_tree[upper][i][j].base_level=atoi(split[14]);
 		skill_tree[upper][i][j].job_level=atoi(split[15]);
 		skill_tree[upper][i][j].class_level = atoi(split[16]);
 	}
 	fclose(fp);
+
+	if(battle_config.baby_copy_skilltree) {
+		// 養子のスキルツリーを通常職と同一にする場合
+		memcpy(&skill_tree[2], &skill_tree[0], sizeof(skill_tree[0]));
+	}
 	printf("read db/skill_tree.txt done\n");
 
 	// 属性修正テーブル

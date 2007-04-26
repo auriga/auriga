@@ -11473,33 +11473,28 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 	return;
 }
 
-//int mode	攻撃時1 反撃 2
-//オートスペル
-static int skill_use_bonus_autospell(struct block_list * src,struct block_list * bl,int skill_id,int skill_lv,int rate,long skill_flag,int tick,int flag)
+/*==========================================
+ * アイテムボーナスオートスペル
+ *  mode : 攻撃時1 反撃2
+ *------------------------------------------
+ */
+static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_list *bl,int skillid,int skilllv,int rate,long asflag,int tick,int flag)
 {
-	int skillid = skill_id;
-	int skilllv = skill_lv;
-	long asflag = skill_flag;
-	struct block_list *spell_target;
-	int f=0,sp = 0;
-	struct map_session_data *sd = NULL;
+	struct block_list *target;
+	int f=0,sp=0;
 
-	nullpo_retr(0, src);
+	nullpo_retr(0, sd);
 	nullpo_retr(0, bl);
 
-	//いつの間にか自分もしくは攻撃対象が死んでいた
-	if(unit_isdead(src) || unit_isdead(bl))
+	// いつの間にか自分もしくは攻撃対象が死んでいた
+	if(unit_isdead(&sd->bl) || unit_isdead(bl))
 		return 0;
 
-	if(src->type != BL_PC)
-		return 0;
-	nullpo_retr(0, sd = (struct map_session_data *)src);
-
-	//発動判定
+	// 発動判定
 	if(skillid <= 0 || skilllv <= 0)
 		return 0;
 
-	//遠距離物理半減
+	// 遠距離物理半減
 	if(flag&EAS_LONG)
 	{
 		if(atn_rand()%10000 > (rate/2))
@@ -11509,47 +11504,46 @@ static int skill_use_bonus_autospell(struct block_list * src,struct block_list *
 			return 0;
 	}
 
-	//スペル対象
-	//指定あるがいらないな
+	// スペル対象
+	// 指定あるがいらないな
 	//if(asflag&EAS_TARGET)
-	//	spell_target = (struct block_list *)bl;//相手
+	//	target = bl;	// 相手
 	//else
 	if(asflag&EAS_SELF)
-		spell_target = (struct block_list *)sd;//自分
-	else if(asflag&EAS_TARGET_RAND)
-	{
-		if(atn_rand()%100 < 50)
-			spell_target = (struct block_list *)sd;//自分
-		else
-			spell_target = (struct block_list *)bl;//相手
-	}else
-		spell_target = (struct block_list *)bl;//相手
+		target = &sd->bl;	// 自分
+	else if(asflag&EAS_TARGET_RAND && atn_rand()%100 < 50)
+		target = &sd->bl;	// 自分
+	else
+		target = bl;		// 相手
 
-	//レベル調整
-	if(battle_config.allow_cloneskill_at_autospell)
-	{
-		if(asflag&EAS_USEMAX && (pc_checkskill(sd,skillid) == skill_get_max(skillid)))//Maxがある場合のみ
-			skilllv = pc_checkskill(sd,skillid);
-		else if(asflag&EAS_USEBETTER && (pc_checkskill(sd,skillid) > skilllv))//現状以上のレベルがある場合のみ
-			skilllv = pc_checkskill(sd,skillid);
-	}else{
-		if(asflag&EAS_USEMAX && (pc_checkskill2(sd,skillid) == skill_get_max(skillid)))//Maxがある場合のみ
-			skilllv = pc_checkskill2(sd,skillid);
-		else if(asflag&EAS_USEBETTER && (pc_checkskill2(sd,skillid) > skilllv))//現状以上のレベルがある場合のみ
-			skilllv = pc_checkskill2(sd,skillid);
+	// レベル調整
+	if(asflag & (EAS_USEMAX | EAS_USEBETTER)) {
+		int lv;
+		if(battle_config.allow_cloneskill_at_autospell)
+			lv = pc_checkskill(sd,skillid);
+		else
+			lv = pc_checkskill2(sd,skillid);
+
+		if(asflag&EAS_USEMAX && lv == pc_get_skilltree_max(&sd->s_class,skillid)) {
+			// Maxがある場合のみ
+			skilllv = lv;
+		} else if(asflag&EAS_USEBETTER && lv > skilllv) {
+			// 現状以上のレベルがある場合のみ
+			skilllv = lv;
+		}
 	}
 
-	//レベルの変動
-	if(asflag&EAS_FLUCT) //レベル変動 武器ＡＳ用
+	// レベルの変動
+	if(asflag&EAS_FLUCT) // レベル変動 武器ＡＳ用
 	{
 		int j = atn_rand()%100;
 		if (j >= 50) skilllv -= 2;
 		else if(j >= 15) skilllv--;
 		if(skilllv < 1) skilllv = 1;
-	}else if(asflag&EAS_RANDOM)//1〜指定までのランダム
+	}else if(asflag&EAS_RANDOM)	// 1〜指定までのランダム
 		skilllv = atn_rand()%skilllv+1;
 
-	//SP消費
+	// SP消費
 	sp = skill_get_sp(skillid,skilllv);
 	if(asflag&EAS_NOSP)
 		sp = 0;
@@ -11560,37 +11554,38 @@ static int skill_use_bonus_autospell(struct block_list * src,struct block_list *
 	else if(asflag&EAS_SPCOST3)
 		sp = sp*3/2;
 
-	//SPが足りない！
+	// SPが足りない！
 	if(sd->status.sp < sp)
 		return 0;
 
-	//実行
+	// 実行
 	if(skillid == AL_TELEPORT && skilllv == 1)	// Lv1テレポはダイアログ表示なしで即座に飛ばす
 		f = pc_randomwarp(sd,3);
-	else if(skill_get_inf(skillid) == 2 || skill_get_inf(skillid) == 32) //場所と罠(設置系スキル)
-		f = skill_castend_pos2(&sd->bl,spell_target->x,spell_target->y,skillid,skilllv,tick,flag);
+	else if(skill_get_inf(skillid) == 2 || skill_get_inf(skillid) == 32)	// 場所と罠(設置系スキル)
+		f = skill_castend_pos2(&sd->bl,target->x,target->y,skillid,skilllv,tick,flag);
 	else {
-		int t_race = status_get_race(spell_target);
-		int t_ele  = status_get_element(spell_target);
+		int t_race = status_get_race(target);
+		int t_ele  = status_get_element(target);
 		switch( skill_get_nk(skillid)&3 ) {
-			case 0://通常
-			case 2://吹き飛ばし
-				f = skill_castend_damage_id(&sd->bl,spell_target,skillid,skilllv,tick,flag);
+			case 0:	// 通常
+			case 2:	// 吹き飛ばし
+				f = skill_castend_damage_id(&sd->bl,target,skillid,skilllv,tick,flag);
 				break;
-			case 1:// 支援系
-				if((skillid==AL_HEAL || (skillid==ALL_RESURRECTION && spell_target->type != BL_PC)) && battle_check_undead(t_race,t_ele))
-					f = skill_castend_damage_id(&sd->bl,spell_target,skillid,skilllv,tick,flag);
+			case 1:	// 支援系
+				if((skillid==AL_HEAL || (skillid==ALL_RESURRECTION && target->type != BL_PC)) && battle_check_undead(t_race,t_ele))
+					f = skill_castend_damage_id(&sd->bl,target,skillid,skilllv,tick,flag);
 				else
-					f = skill_castend_nodamage_id(&sd->bl,spell_target,skillid,skilllv,tick,flag);
+					f = skill_castend_nodamage_id(&sd->bl,target,skillid,skilllv,tick,flag);
 				break;
 		}
 	}
 	if(!f)
 		pc_heal(sd,0,-sp);
-	return 1;//成功
+
+	return 1;	// 成功
 }
 
-int skill_bonus_autospell(struct block_list * src,struct block_list * bl,long mode,int tick,int flag)
+int skill_bonus_autospell(struct block_list *src,struct block_list *bl,long mode,int tick,int flag)
 {
 	int i;
 	static int lock = 0;
@@ -11638,9 +11633,9 @@ int skill_bonus_autospell(struct block_list * src,struct block_list * bl,long mo
 		if(mode&EAS_SKILL && !(sd->autospell.flag[i]&EAS_SKILL))
 			continue;
 
-		if(skill_use_bonus_autospell(src,bl,sd->autospell.id[i],sd->autospell.lv[i],
+		if(skill_use_bonus_autospell(sd,bl,sd->autospell.id[i],sd->autospell.lv[i],
 									sd->autospell.rate[i],sd->autospell.flag[i],tick,flag) ) {
-			//オートスペルはどれか一度しか発動しない
+			// オートスペルはどれか一度しか発動しない
 			if(battle_config.once_autospell) break;
 		}
 	}
@@ -12242,10 +12237,12 @@ int skill_readdb(void)
 	int i,j,k,m;
 	FILE *fp;
 	char line[1024],*p;
-	char *filename[]={	"db/skill_db.txt","db/addon/skill_db_add.txt",
-			  	"db/skill_require_db.txt","db/addon/skill_require_db_add.txt",
-			  	"db/skill_cast_db.txt","db/addon/skill_cast_db_add.txt",
-			  	"db/produce_db.txt","db/addon/produce_db_add.txt"};
+	char *filename[]={
+		"db/skill_db.txt",         "db/addon/skill_db_add.txt",
+		"db/skill_require_db.txt", "db/addon/skill_require_db_add.txt",
+		"db/skill_cast_db.txt",    "db/addon/skill_cast_db_add.txt",
+		"db/produce_db.txt",       "db/addon/produce_db_add.txt"
+	};
 
 	memset(skill_db,0,sizeof(skill_db));
 
@@ -12277,7 +12274,11 @@ int skill_readdb(void)
 			skill_db[i].inf=atoi(split[3]);
 			skill_db[i].pl=atoi(split[4]);
 			skill_db[i].nk=atoi(split[5]);
+
 			skill_db[i].max=atoi(split[6]);
+			if(skill_db[i].max > MAX_SKILL_LEVEL)
+				skill_db[i].max = MAX_SKILL_LEVEL;
+
 			skill_split_atoi(split[7],skill_db[i].num,MAX_SKILL_LEVEL);
 
 			if(strcmpi(split[8],"yes") == 0)

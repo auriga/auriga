@@ -1,5 +1,5 @@
 ==========================================================================
- Aurigaのconfファイルのリファレンス
+ Aurigaのdbファイルのリファレンス
 --------------------------------------------------------------------------
 
 < このファイルは何？ >
@@ -9,18 +9,20 @@
 
 < dbのリスト >
 
-cast_db.txt		スキルのキャスティング時間とディレイ、維持時間等を設定。
-skill_db.txt		スキルのデータを設定。
-skill_require_db.txt	スキル使用条件を設定。
+skill_cast_db.txt	スキルのキャスティング時間とディレイ、維持時間等を設定
+skill_db.txt		スキルのデータを設定
+skill_require_db.txt	スキル使用条件を設定
+skill_tree.txt		スキルツリーを設定
 skill_unit_db.txt	スキルユニットに関する設定。
-pet_db.txt		ペットのデータを設定。
-packet_db.txt		map-server clif.cで使うパケット定義。
+pet_db.txt		ペットのデータを設定
+packet_db.txt		map-server clif.cで使うパケット定義
 item_db.txt		アイテムのデータを設定
 item_db2.txt		アイテムの追加情報を設定
 item_value_db.txt	アイテム価格のオーバーライド
 mob_db.txt		モンスターのデータを設定
 mob_skill_db.txt	モンスターの使用するスキルを設定
 homun_db.txt		ホムンクルスのデータを設定
+homun_skill_tree.txt	ホムンクルスのスキルツリーを設定
 produce_db.txt		製造に関連するデータを設定
 scdata_db.txt		ステータス異常のデータを設定
 
@@ -28,7 +30,6 @@ scdata_db.txt		ステータス異常のデータを設定
 ==========================================================================
 1. db/skill_cast_db.txt
 --------------------------------------------------------------------------
-
 id,cast_list,fixed_cast_list,delay_list,upkeep_time,upkeep_time2
 
 id: スキルのIDです。
@@ -38,7 +39,17 @@ delay_list: スキルのディレイ時間を設定します。レベル別に�
 upkeep_time:スキルの維持時間を設定します。レベル別に設定する場合は「:」を使います。
 upkeep_time2:スキルによって起こる状態異常の維持時間を設定します。レベル別に設定する場合は「:」を使います。(ただ速度減少はupkeep_timeを使いますので注意してください。)
 
-※武器の追加効果による状態異常はMG_STONECURSE(石化)、MG_FROSTDIVER(凍結)、NPC_STUNATTACK(スタン)、NPC_SLEEPATTACK(睡眠)、TF_POISON(毒)、NPC_CURSEATTACK(呪い)、NPC_SILENCEATTACK(沈黙)、NPC_BLINDATTACK(暗黒)、LK_HEADCRUSH(出血)のupkeep_time2を使います。(レベルは7で適用)
+※武器の追加効果による状態異常は以下のスキルのupkeep_time2を使います。
+　レベルは7で適用されます。
+	MG_STONECURSE(石化)
+	MG_FROSTDIVER(凍結)
+	NPC_STUNATTACK(スタン)
+	NPC_SLEEPATTACK(睡眠)
+	TF_POISON(毒)
+	NPC_CURSEATTACK(呪い)
+	NPC_SILENCEATTACK(沈黙)
+	NPC_BLINDATTACK(暗黒)
+	LK_HEADCRUSH(出血)
 ※急所攻撃の場合最大レベルは1ですがバッシュのレベルによって異常時間を変更できるので複数設定も可能です。
 ※マキシマイズパワーとクローキングのupkeep_timeは維持時間ではなくSPが1減る時間です。
 
@@ -46,7 +57,6 @@ upkeep_time2:スキルによって起こる状態異常の維持時間を設定�
 ==========================================================================
 2. db/skill_db.txt
 --------------------------------------------------------------------------
-
 id,range,hit,inf,pl,nk,max,list_num,castcancel,cast_defence_rate,inf2,maxcount,skill_type,blow_count
 
 id: スキルのIDです。
@@ -71,7 +81,6 @@ blow_count: スキルよるノックバック距離です。レベル別に設�
 ==========================================================================
 3. db/skill_require_db.txt
 --------------------------------------------------------------------------
-
 id,list_hp,list_sp,list_hp_rate,list_sp_rate,list_zeny,list_weapon,state,spiritball,itemid1,amount1,itemid2,amount2,itemid3,amount3,itemid4,amount4,itemid5,amount5,itemid6,amount6,itemid7,amount7,itemid8,amount8,itemid9,amount9,itemid10,amount10
 
 id: スキルのIDです。
@@ -129,9 +138,36 @@ amount10: 上同
 
 
 ==========================================================================
-4. db/skill_unit_db.txt
+4. db/skill_tree.txt
 --------------------------------------------------------------------------
+Upper,JobNo,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,計5個まで繰り返し,BaseLv,JobLv,Class
 
+Upper: 転生フラグ。ただしbattle_auriga.confのbaby_copy_skilltreeをyesにしていた場合、養子の設定は無視されて通常と同一になります。
+	0-通常 1-転生 2-養子
+JobNo: 職番号
+Skill-ID: 取得スキルID
+MaxLv: 取得可能なスキルの最大レベル。ただしskill_db.txtのMaxLv以下になります。
+PreSkill-ID-1: 前提スキルID
+PreSkill-Lv-1: 前提スキルレベル
+PreSkill-ID-2: 同上
+PreSkill-Lv-2: 同上
+PreSkill-ID-3: 同上
+PreSkill-Lv-3: 同上
+PreSkill-ID-4: 同上
+PreSkill-Lv-4: 同上
+PreSkill-ID-5: 同上
+PreSkill-Lv-5: 同上
+BaseLv: 前提Baseレベル
+JobLv: 前提Jobレベル
+Class: クラス区分。下位のスキルを規定以上取らないと上位スキルが取れません。
+	0-ノービス 1-１次職 2-２次職
+　※性質上一次の転職JOBレベルが当てにならないため
+　　ノビはJOB10まで上げきったものとして計算
+
+
+==========================================================================
+5. db/skill_unit_db.txt
+--------------------------------------------------------------------------
 ID,Unit1,Unit2,Layout,Range,Interval,Target,Flag
 
 ID : スキルID
@@ -166,10 +202,9 @@ Flag : スキルユニットの性質、加算すること
 
 
 ==========================================================================
-5. db/pet_db.txt
+6. db/pet_db.txt
 --------------------------------------------------------------------------
-
-MobID,Name,JName,ItemID,EggID,AcceID,FoodID,Fullness,HungryDelay ,R_Hungry,R_Full,Intimate,Die,Capture,Speed,S_Performance,talk_convert_class,attack_rate,defence_attack_rate,change_target_rate,pet_script
+MobID,Name,JName,ItemID,EggID,AcceID,FoodID,Fullness,HungryDelay,R_Hungry,R_Full,Intimate,Die,Capture,Speed,S_Performance,talk_convert_class,attack_rate,defence_attack_rate,change_target_rate,pet_script
 
 MobID: モンスターIDです。
 Name: 英語名前(ダミー)
@@ -195,13 +230,13 @@ pet_script: ペットを持っている時適用されるステータスボー�
 
 
 ==========================================================================
-6. db/packet_db.txt
+7. db/packet_db.txt
 --------------------------------------------------------------------------
+Num,Len,Cmd,Pos
+
 新規追加や変更されたパケット定義は一番下に追加していきます。
 日付の古いクライアントを使用する場合は、新しい日付の定義を削除かコメントアウトしてください。
 2004年9月時点のjROクライアントの場合は「//jROはここまで」以下を削除かコメントアウトしなければmap-serverに繋がりません。
-
- Num,Len,Cmd,Pos
 
 Num: パケット番号です(16進数)。
 Len: パケット長です(10進数)。
@@ -210,7 +245,7 @@ Pos: clif.c内の関数で使用される変数に使う項目のパケット位
 
 
 ==========================================================================
-7. db/item_db.txt		参考先 AthenaWiki
+8. db/item_db.txt
 --------------------------------------------------------------------------
 ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine,{UseScript},{EquipScript}
 
@@ -320,7 +355,7 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,V
 
 
 ==========================================================================
-8. db/item_db2.txt
+9. db/item_db2.txt
 --------------------------------------------------------------------------
 ID,Upper,Zone,Dropable,Storageable,Cartable,Dalay
 
@@ -351,7 +386,7 @@ Delay       = 使用後に指定した時間ディレイを付ける、単位は
 
 
 ==========================================================================
-9. db/item_value_db.txt
+10. db/item_value_db.txt
 --------------------------------------------------------------------------
 ID,Name,Jname,Price,Sell,DC_Notflag,OC_Notflag
 
@@ -368,7 +403,7 @@ OC_Notflag : OC可能かどうか	0で可、1で不可
 
 
 ==========================================================================
-10. db/mob_db.txt
+11. db/mob_db.txt
 --------------------------------------------------------------------------
 ID,Name,JName,LV,HP,SP,EXP,JEXP,Range1,ATK1,ATK2,DEF,MDEF,STR,AGI,VIT,INT,DEX,LUK,Range2,Range3,Scale,Race,Element,Mode,Speed,ADelay,aMotion,dMotion,Drop1id,Drop1per,Drop2id,Drop2per,Drop3id,Drop3per,Drop4id,Drop4per,Drop5id,Drop5per,Drop6id,Drop6per,Drop7id,Drop7per,Drop8id,Drop8per,Drop9id,Drop9per,Cardid,Cardper,MEXP,ExpPer,MVP1id,MVP1per,MVP2id,MVP2per,MVP3id,MVP3per
 
@@ -443,7 +478,7 @@ MVP1id(id),MVP1per,(per)〜MVP3id(id),MVP3per,(per) : MVPドロップアイテ�
 
 
 ==========================================================================
-11. db/mob_skill_db.txt
+12. db/mob_skill_db.txt
 --------------------------------------------------------------------------
 MOB_ID,ダミー文字列,STATE,SKILL_ID,SKILL_LV,万分率,casttime,delay,妨害可能,ターゲット,条件タイプ,条件値,値1,値2,値3,値4,値5,使用時エモーション
 
@@ -624,7 +659,7 @@ delay    : スキル使用後のディレイ時間（ms）、ただしディレ�
 		1131,モードチェンジ(ルート)＠ジョーカー,idle,0,0,500,0,30000,no,modechange,always,0,self,0,151,,,
 
 ==========================================================================
-12. db/homun_db.txt
+13. db/homun_db.txt
 --------------------------------------------------------------------------
 Class,ViewClass,Name,JName,Lv,AcceID,FoodID,HP,SP,Str,Agi,Vit,Int,Dex,Luk,[Rate->]Base,HP_max,HP_min,SP_max,SP_min,Str,Agi,Vit,Int,Dex,Luk,aspd,Size,Race,Element,EvoClass,ExpTable,{homun_script}
 
@@ -655,8 +690,31 @@ EvoClass : 進化後のクラスID
 ExpTable : 経験値テーブル番号
 homun_script: ホムンクルスを持っている時適用されるステータスボーナスを設定(未実装)
 
+
 ==========================================================================
-13. db/produce_db.txt
+14. db/homun_skill_tree.txt
+--------------------------------------------------------------------------
+Class,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,計5個まで繰り返し,BaseLv,Intimate
+
+Class: Ragexe Sakexeで定義されたID
+Skill-ID: 取得スキルID
+MaxLv: 取得可能なスキルの最大レベル。ただしskill_db.txtのMaxLv以下になります。
+PreSkill-ID-1: 前提スキルID
+PreSkill-Lv-1: 前提スキルレベル
+PreSkill-ID-2: 同上
+PreSkill-Lv-2: 同上
+PreSkill-ID-3: 同上
+PreSkill-Lv-3: 同上
+PreSkill-ID-4: 同上
+PreSkill-Lv-4: 同上
+PreSkill-ID-5: 同上
+PreSkill-Lv-5: 同上
+BaseLv: 前提Baseレベル
+Intimate: 必要な親密度
+
+
+==========================================================================
+15. db/produce_db.txt
 --------------------------------------------------------------------------
 ID,ItemLV,RequireSkillid,RequireSkilllv,FixPer,MaterialID1,MaterialAmount1,MaterialID2,MaterialAmount2,MaterialID3,MaterialAmount3,MaterialID4,MaterialAmount4,MaterialID5,MaterialAmount5,MaterialID6,MaterialAmount6,MaterialID7,MaterialAmount7,MaterialID8,MaterialAmount8,MaterialID9,MaterialAmount9,MaterialID10,MaterialAmount10
 
@@ -704,8 +762,9 @@ MaterialAmount9 : 同上
 MaterialID10    : 同上
 MaterialAmount10: 同上
 
+
 ==========================================================================
-14. db/scdata_db.txt
+16. db/scdata_db.txt
 --------------------------------------------------------------------------
 ID,Name,SaveFlag,Releasable,Disable
 
@@ -733,6 +792,7 @@ Disable: 以下の条件下でステータス異常開始を無効にするな�
 	 +4 = 私を忘れないで中
 	 +8 = 速度減少中
 	+16 = ゴスペルの全状態異常耐性中
+
 
 ==========================================================================
 EOF
