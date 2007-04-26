@@ -1,4 +1,17 @@
 ----------------------------------------
+//0173 [2007/04/27] by Rayce
+
+・PC型Mob/Petに関する処理方法の見直し（clif.c, mob.*, skill.c, status.c, unit.c）
+	mob_db構造体のメンバ view_class には pc_calc_class_job() の計算結果を保存しておきます。
+	transが不要になるので削除し、代わりに pcview_flag を追加しています。
+	view_class の値を使ってPC型であるかどうかを判定することもできますが、煩雑になるので
+	実行速度を重視してフラグをstaticに保存しておくようにしました。
+	今後は mob_is_pcview() を使って判定してください。
+
+・見かけ取得系の関数 mob_get_* はあまり意味がないので全てマクロに書き換え
+・typo修正、buttom → bottom
+
+----------------------------------------
 //0172 [2007/04/27] by Rayce
 
 ・取得可能なスキルの最大Lvをdb/skill_db.txtではなく、db/skill_tree.txtおよびdb/homun_skill_tree.txtの

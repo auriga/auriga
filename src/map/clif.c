@@ -864,7 +864,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 
 	nullpo_retr(0, md);
 
-	if(mob_get_viewclass(md->class_) < MAX_VALID_PC_CLASS) {
+	if(mob_is_pcview(md->class_)) {
 #if PACKETVER < 4
 		memset(buf,0,packet_db[0x78].len);
 
@@ -874,10 +874,10 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFW(buf,12)=md->option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,14)=mob_get_viewclass(md->class_);
 		WBUFW(buf,16)=mob_get_hair(md->class_);
 		WBUFW(buf,18)=mob_get_weapon(md->class_);
-		WBUFW(buf,20)=mob_get_head_buttom(md->class_);
+		WBUFW(buf,20)=mob_get_head_bottom(md->class_);
 		WBUFW(buf,22)=mob_get_shield(md->class_);
 		WBUFW(buf,24)=mob_get_head_top(md->class_);
 		WBUFW(buf,26)=mob_get_head_mid(md->class_);
@@ -908,11 +908,11 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFW(buf,12)=md->option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,14)=mob_get_viewclass(md->class_);
 		WBUFW(buf,16)=mob_get_hair(md->class_);
 		WBUFW(buf,18)=mob_get_weapon(md->class_);
 		WBUFW(buf,20)=mob_get_shield(md->class_);
-		WBUFW(buf,22)=mob_get_head_buttom(md->class_);
+		WBUFW(buf,22)=mob_get_head_bottom(md->class_);
 		WBUFW(buf,24)=mob_get_head_top(md->class_);
 		WBUFW(buf,26)=mob_get_head_mid(md->class_);
 		WBUFW(buf,28)=mob_get_hair_color(md->class_);
@@ -942,11 +942,11 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFL(buf,12)=md->option;
-		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,16)=mob_get_viewclass(md->class_);
 		WBUFW(buf,18)=mob_get_hair(md->class_);
 		WBUFW(buf,20)=mob_get_weapon(md->class_);
 		WBUFW(buf,22)=mob_get_shield(md->class_);
-		WBUFW(buf,24)=mob_get_head_buttom(md->class_);
+		WBUFW(buf,24)=mob_get_head_bottom(md->class_);
 		WBUFW(buf,26)=mob_get_head_top(md->class_);
 		WBUFW(buf,28)=mob_get_head_mid(md->class_);
 		WBUFW(buf,30)=mob_get_hair_color(md->class_);
@@ -1004,7 +1004,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 
 	nullpo_retr(0, md);
 
-	if(mob_get_viewclass(md->class_) < MAX_VALID_PC_CLASS) {
+	if(mob_is_pcview(md->class_)) {
 #if PACKETVER < 4
 		memset(buf,0,packet_db[0x7b].len);
 
@@ -1014,10 +1014,10 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFW(buf,12)=md->option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,14)=mob_get_viewclass(md->class_);
 		WBUFW(buf,16)=mob_get_hair(md->class_);
 		WBUFW(buf,18)=mob_get_weapon(md->class_);
-		WBUFW(buf,20)=mob_get_head_buttom(md->class_);
+		WBUFW(buf,20)=mob_get_head_bottom(md->class_);
 		WBUFL(buf,22)=gettick();
 		WBUFW(buf,26)=mob_get_shield(md->class_);
 		WBUFW(buf,28)=mob_get_head_top(md->class_);
@@ -1048,11 +1048,11 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFW(buf,12)=md->option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,14)=mob_get_viewclass(md->class_);
 		WBUFW(buf,16)=mob_get_hair(md->class_);
 		WBUFW(buf,18)=mob_get_weapon(md->class_);
 		WBUFW(buf,20)=mob_get_shield(md->class_);
-		WBUFW(buf,22)=mob_get_head_buttom(md->class_);
+		WBUFW(buf,22)=mob_get_head_bottom(md->class_);
 		WBUFL(buf,24)=gettick();
 		WBUFW(buf,28)=mob_get_head_top(md->class_);
 		WBUFW(buf,30)=mob_get_head_mid(md->class_);
@@ -1082,11 +1082,11 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,8)=md->opt1;
 		WBUFW(buf,10)=md->opt2;
 		WBUFL(buf,12)=md->option;
-		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(md->class_),mob_db[md->class_].trans);
+		WBUFW(buf,16)=mob_get_viewclass(md->class_);
 		WBUFW(buf,18)=mob_get_hair(md->class_);
 		WBUFW(buf,20)=mob_get_weapon(md->class_);
 		WBUFW(buf,22)=mob_get_shield(md->class_);
-		WBUFW(buf,24)=mob_get_head_buttom(md->class_);
+		WBUFW(buf,24)=mob_get_head_bottom(md->class_);
 		WBUFL(buf,26)=gettick();
 		WBUFW(buf,30)=mob_get_head_top(md->class_);
 		WBUFW(buf,32)=mob_get_head_mid(md->class_);
@@ -1178,7 +1178,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 
 	nullpo_retr(0, pd);
 
-	if(mob_get_viewclass(pd->class_) < MAX_VALID_PC_CLASS) {
+	if(mob_is_pcview(pd->class_)) {
 #if PACKETVER < 4
 		memset(buf,0,packet_db[0x78].len);
 
@@ -1186,10 +1186,10 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
 		WBUFW(buf,12)=mob_db[pd->class_].option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,16)=mob_get_hair(pd->class_);
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
-		WBUFW(buf,20)=mob_get_head_buttom(pd->class_);
+		WBUFW(buf,20)=mob_get_head_bottom(pd->class_);
 		WBUFW(buf,22)=mob_get_shield(pd->class_);
 		WBUFW(buf,24)=mob_get_head_top(pd->class_);
 		WBUFW(buf,26)=mob_get_head_mid(pd->class_);
@@ -1210,11 +1210,11 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
 		WBUFW(buf,12)=mob_db[pd->class_].option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,16)=mob_get_hair(pd->class_);
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
 		WBUFW(buf,20)=mob_get_shield(pd->class_);
-		WBUFW(buf,22)=mob_get_head_buttom(pd->class_);
+		WBUFW(buf,22)=mob_get_head_bottom(pd->class_);
 		WBUFW(buf,24)=mob_get_head_top(pd->class_);
 		WBUFW(buf,26)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,28)=mob_get_hair_color(pd->class_);
@@ -1234,11 +1234,11 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
 		WBUFL(buf,12)=mob_db[pd->class_].option;
-		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,16)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,18)=mob_get_hair(pd->class_);
 		WBUFW(buf,20)=mob_get_weapon(pd->class_);
 		WBUFW(buf,22)=mob_get_shield(pd->class_);
-		WBUFW(buf,24)=mob_get_head_buttom(pd->class_);
+		WBUFW(buf,24)=mob_get_head_bottom(pd->class_);
 		WBUFW(buf,26)=mob_get_head_top(pd->class_);
 		WBUFW(buf,28)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,30)=mob_get_hair_color(pd->class_);
@@ -1283,7 +1283,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 
 	nullpo_retr(0, pd);
 
-	if(mob_get_viewclass(pd->class_) < MAX_VALID_PC_CLASS) {
+	if(mob_is_pcview(pd->class_)) {
 #if PACKETVER < 4
 		memset(buf,0,packet_db[0x7b].len);
 
@@ -1291,10 +1291,10 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
 		WBUFW(buf,12)=mob_db[pd->class_].option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,16)=mob_get_hair(pd->class_);
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
-		WBUFW(buf,20)=mob_get_head_buttom(pd->class_);
+		WBUFW(buf,20)=mob_get_head_bottom(pd->class_);
 		WBUFL(buf,22)=gettick();
 		WBUFW(buf,26)=mob_get_shield(pd->class_);
 		WBUFW(buf,28)=mob_get_head_top(pd->class_);
@@ -1315,11 +1315,11 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
 		WBUFW(buf,12)=mob_db[pd->class_].option;
-		WBUFW(buf,14)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,16)=mob_get_hair(pd->class_);
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
 		WBUFW(buf,20)=mob_get_shield(pd->class_);
-		WBUFW(buf,22)=mob_get_head_buttom(pd->class_);
+		WBUFW(buf,22)=mob_get_head_bottom(pd->class_);
 		WBUFL(buf,24)=gettick();
 		WBUFW(buf,28)=mob_get_head_top(pd->class_);
 		WBUFW(buf,30)=mob_get_head_mid(pd->class_);
@@ -1339,11 +1339,11 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
 		WBUFL(buf,12)=mob_db[pd->class_].option;
-		WBUFW(buf,16)=pc_calc_class_job(mob_get_viewclass(pd->class_),mob_db[pd->class_].trans);
+		WBUFW(buf,16)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,18)=mob_get_hair(pd->class_);
 		WBUFW(buf,20)=mob_get_weapon(pd->class_);
 		WBUFW(buf,22)=mob_get_shield(pd->class_);
-		WBUFW(buf,24)=mob_get_head_buttom(pd->class_);
+		WBUFW(buf,24)=mob_get_head_bottom(pd->class_);
 		WBUFL(buf,26)=gettick();
 		WBUFW(buf,30)=mob_get_head_top(pd->class_);
 		WBUFW(buf,32)=mob_get_head_mid(pd->class_);
@@ -1577,7 +1577,7 @@ void clif_spawnmob(struct mob_data *md)
 
 	nullpo_retv(md);
 
-	if(mob_get_viewclass(md->class_) >= MAX_VALID_PC_CLASS) {
+	if(!mob_is_pcview(md->class_)) {
 		memset(buf,0,packet_db[0x7c].len);
 
 		WBUFW(buf,0)=0x7c;
@@ -1614,7 +1614,7 @@ void clif_spawnpet(struct pet_data *pd)
 
 	nullpo_retv(pd);
 
-	if(mob_get_viewclass(pd->class_) >= MAX_VALID_PC_CLASS) {
+	if(!mob_is_pcview(pd->class_)) {
 		memset(buf,0,packet_db[0x7c].len);
 
 		WBUFW(buf,0)=0x7c;

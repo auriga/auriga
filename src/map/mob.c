@@ -252,51 +252,6 @@ int mob_once_spawn_area(struct map_session_data *sd,char *mapname,
 }
 
 /*==========================================
- * mobの見かけ所得
- *------------------------------------------
- */
-int mob_get_viewclass(int class_)
-{
-	return mob_db[class_].view_class;
-}
-int mob_get_sex(int class_)
-{
-	return mob_db[class_].sex;
-}
-short mob_get_hair(int class_)
-{
-	return mob_db[class_].hair;
-}
-short mob_get_hair_color(int class_)
-{
-	return mob_db[class_].hair_color;
-}
-short mob_get_clothes_color(int class_)
-{
-	return mob_db[class_].clothes_color;
-}
-short mob_get_weapon(int class_)
-{
-	return mob_db[class_].weapon;
-}
-short mob_get_shield(int class_)
-{
-	return mob_db[class_].shield;
-}
-short mob_get_head_top(int class_)
-{
-	return mob_db[class_].head_top;
-}
-short mob_get_head_mid(int class_)
-{
-	return mob_db[class_].head_mid;
-}
-short mob_get_head_buttom(int class_)
-{
-	return mob_db[class_].head_buttom;
-}
-
-/*==========================================
  * delay付きmob spawn (timer関数)
  *------------------------------------------
  */
@@ -421,7 +376,7 @@ int mob_spawn(int id)
 	}
 	unit_dataset( &md->bl );
 
-	if(mob_get_viewclass(md->class_) < MAX_VALID_PC_CLASS)
+	if(mob_is_pcview(md->class_))
 		md->option |= mob_db[md->class_].option;
 
 	map_addblock(&md->bl);
@@ -3651,7 +3606,7 @@ static int mob_readdb(void)
 			mob_db[class_].shield=0;
 			mob_db[class_].head_top=0;
 			mob_db[class_].head_mid=0;
-			mob_db[class_].head_buttom=0;
+			mob_db[class_].head_bottom=0;
 		}
 		fclose(fp);
 		printf("read %s done\n",filename[n]);
@@ -3719,9 +3674,10 @@ static int mob_readdb_mobavail(void)
 				str[j]=p;
 				*np=0;
 				p=np+1;
-			} else
+			} else {
 				str[j]=p;
 			}
+		}
 
 		if(str[0]==NULL)
 			continue;
@@ -3731,12 +3687,16 @@ static int mob_readdb_mobavail(void)
 		if(!mobdb_checkid(class_))	// 値が異常なら処理しない。
 			continue;
 		k=atoi(str[1]);
-		if(k >= 0)
-			mob_db[class_].view_class=k;
-
+		if(k >= 0) {
+			mob_db[class_].view_class = k;
+			if(k < MAX_VALID_PC_CLASS)
+				mob_db[class_].pcview_flag = 1;
+			else
+				mob_db[class_].pcview_flag = 0;
+		}
 		mob_db[class_].view_size = atoi(str[2]);
 
-		if(mob_db[class_].view_class >= 0 && mob_db[class_].view_class < MAX_VALID_PC_CLASS) {
+		if(mob_db[class_].pcview_flag) {
 			mob_db[class_].sex=atoi(str[3]);
 			mob_db[class_].hair=atoi(str[4]);
 			mob_db[class_].hair_color=atoi(str[5]);
@@ -3745,9 +3705,10 @@ static int mob_readdb_mobavail(void)
 			mob_db[class_].shield=atoi(str[8]);
 			mob_db[class_].head_top=atoi(str[9]);
 			mob_db[class_].head_mid=atoi(str[10]);
-			mob_db[class_].head_buttom=atoi(str[11]);
+			mob_db[class_].head_bottom=atoi(str[11]);
 			mob_db[class_].option=((unsigned int)atoi(str[12]))&~0x46;
-			mob_db[class_].trans=atoi(str[13]);
+
+			mob_db[class_].view_class = pc_calc_class_job(mob_db[class_].view_class,atoi(str[13]));
 		}
 		ln++;
 	}

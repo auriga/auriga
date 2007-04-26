@@ -2039,7 +2039,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		md->attacked_players = 0;
 
 		clif_clearchar_area(&md->bl,clrtype);
-		if(mob_get_viewclass(md->class_) < MAX_VALID_PC_CLASS) {
+		if(mob_is_pcview(md->class_)) {
 			if(battle_config.pcview_mob_clear_type == 2)
 				clif_clearchar(&md->bl,0);
 			else

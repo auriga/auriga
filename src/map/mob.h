@@ -38,8 +38,11 @@ struct mob_db {
 		int nameid;
 		int p;
 	} mvpitem[3];
-	int view_class,sex;
-	short hair,hair_color,clothes_color,weapon,shield,head_top,head_mid,head_buttom,trans,group_id,view_size;
+	int view_class,view_size;
+	short hair,hair_color,clothes_color;
+	short weapon,shield,head_top,head_mid,head_bottom;
+	short group_id;
+	unsigned char sex,pcview_flag;
 	unsigned int option;
 	int summonper[MAX_RANDOMMONSTER];
 	int maxskill;
@@ -121,7 +124,7 @@ enum {
 	MSS_DEAD,		// 死亡
 	MSS_LOOT,		// ルート
 	MSS_CHASE,		// 突撃
-	MSS_COMMANDONLY,	//命令専用
+	MSS_COMMANDONLY,	// 命令専用
 };
 
 int mobdb_searchname(const char *str);
@@ -137,16 +140,20 @@ int mob_target(struct mob_data *md,struct block_list *bl,int dist);
 int mob_spawn(int);
 int mob_damage(struct block_list *,struct mob_data*,int,int);
 int mob_heal(struct mob_data*,int);
-int mob_get_viewclass(int);
-int mob_get_sex(int);
-short mob_get_hair(int);
-short mob_get_hair_color(int);
-short mob_get_clothes_color(int);
-short mob_get_weapon(int);
-short mob_get_shield(int);
-short mob_get_head_top(int);
-short mob_get_head_mid(int);
-short mob_get_head_buttom(int);
+
+// 見かけ取得
+#define mob_get_viewclass(a)     mob_db[(a)].view_class
+#define mob_get_sex(a)           mob_db[(a)].sex
+#define mob_get_hair(a)          mob_db[(a)].hair
+#define mob_get_hair_color(a)    mob_db[(a)].hair_color
+#define mob_get_clothes_color(a) mob_db[(a)].clothes_color
+#define mob_get_weapon(a)        mob_db[(a)].weapon
+#define mob_get_shield(a)        mob_db[(a)].shield
+#define mob_get_head_top(a)      mob_db[(a)].head_top
+#define mob_get_head_mid(a)      mob_db[(a)].head_mid
+#define mob_get_head_bottom(a)   mob_db[(a)].head_bottom
+#define mob_is_pcview(a)         mob_db[(a)].pcview_flag
+
 int do_init_mob(void);
 int do_final_mob(void);
 

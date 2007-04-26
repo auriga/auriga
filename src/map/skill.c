@@ -4106,8 +4106,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case BA_FROSTJOKE:			/* 寒いジョーク */
 	case DC_SCREAM:				/* スクリーム */
-		if(sd || mob_get_viewclass(status_get_class(src)) < MAX_VALID_PC_CLASS) {
-			// Mobは何故か姿が消えてしまうので除外する
+		if( sd || (md && mob_is_pcview(md->class_)) ) {
+			// 見た目がPCでない場合は何故か姿が消えてしまうので除外する
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		skill_addtimerskill(src,tick+3000,bl->id,0,0,skillid,skilllv,0,flag);

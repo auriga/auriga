@@ -3808,7 +3808,7 @@ short status_get_clothes_color(struct block_list *bl)
 	else if(bl->type == BL_MOB || bl->type == BL_PET)
 	{
 		int id = status_get_class(bl);
-		if(id >= 0 && mob_get_viewclass(id) < MAX_VALID_PC_CLASS)
+		if(id >= 0 && mob_is_pcview(id))
 			color = mob_get_clothes_color(id);
 	}
 	if(color >= 0 && color < MAX_CLOTH_COLOR)
