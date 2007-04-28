@@ -1798,9 +1798,10 @@ L_RECALC:
 		if(sd->sc_data[SC_INCREASING].timer!=-1) // インクリーシングアキュアラシー
 			sd->hit += 20;
 		if(sd->sc_data[SC_GATLINGFEVER].timer!=-1){ // ガトリングフィーバー
-			aspd_rate -= 20;
-			sd->flee -= sd->flee*(sd->sc_data[SC_GATLINGFEVER].val1*5)/100;
-			sd->speed += sd->flee*(sd->sc_data[SC_GATLINGFEVER].val1*5)/100;
+			sd->base_atk += 30+(sd->sc_data[SC_GATLINGFEVER].val1*10);
+			aspd_rate -= sd->sc_data[SC_GATLINGFEVER].val1*2;
+			sd->flee -= sd->sc_data[SC_GATLINGFEVER].val1*5;
+			sd->speed = (sd->speed * 135) / 100;
 		}
 
 		// 耐性
@@ -2567,7 +2568,7 @@ int status_get_flee(struct block_list *bl)
 		if(sc_data[SC_TAROTCARD].timer!=-1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN && bl->type != BL_PC)
 			flee = flee*80/100;
 		if(sc_data[SC_GATLINGFEVER].timer!=-1 && bl->type != BL_PC)	//ガトリングフィーバー
-			flee = flee*(100-sc_data[SC_GATLINGFEVER].val1*5)/100;
+			flee -= sc_data[SC_GATLINGFEVER].val1*5;
 		if(sc_data[SC_ADJUSTMENT].timer!=-1 && bl->type != BL_PC)	//アジャストメント
 			flee += 30;
 
@@ -3270,7 +3271,7 @@ int status_get_speed(struct block_list *bl)
 				speed *= 2;
 			//ガトリングフィーバー
 			if(sc_data[SC_GATLINGFEVER].timer!=-1 )
-				speed = speed*(100+sc_data[SC_GATLINGFEVER].val1*5)/100;
+				speed = speed*135/100;
 //			if(sc_data[SC_CURSE].timer!=-1)
 //				speed = speed + 450;
 		}
@@ -4082,7 +4083,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		// フルアドレナリンラッシュの武器判定
 		if( type == SC_ADRENALINE2 && !(skill_get_weapontype(BS_ADRENALINE2)&(1<<sd->status.weapon)) )
 			return 0;
-		if( SC_STONE <= type && type <= SC_BLIND ) {	/* カードによる耐性 */
+		if( SC_STONE <= type && type <= SC_BLEED ) {	/* カードによる耐性 */
 			if( !(flag&8) && sd->reseff[type-SC_STONE] > 0 && atn_rand()%10000 < sd->reseff[type-SC_STONE] ) {
 				if(battle_config.battle_log)
 					printf("PC %d skill_sc_start: cardによる異常耐性発動\n",sd->bl.id);

@@ -480,7 +480,7 @@ alberta_in.gat,16,28,4	script	薬師おじいさん	61,{
 				mes "話しかけるでない！";
 				close;
 		}
-		if(@menu==2) {	//紅だけは2種類のハーブが必要
+		if('@gain==502) {	//紅だけは2種類のハーブが必要
 			delitem 507,'@num;
 			delitem 508,'@num;
 		}

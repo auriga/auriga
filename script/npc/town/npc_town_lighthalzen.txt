@@ -5311,11 +5311,10 @@ lighthalzen.gat,319,321,0	script	#声	139,3,3,{
 		mes "[" +strcharinfo(0)+ "]";
 		mes "（^3131FFレッケンベル^000000に行ってみるか）";
 		set LHZ_2QUE,17;
-		if(BaseLevel >= 90) 			set BASEEXP,BASEEXP+2000000;
-		if(BaseLevel >= 80 && BaseLevel < 90) 	set BASEEXP,BASEEXP+1500000;
-		if(BaseLevel >= 70 && BaseLevel < 80) 	set BASEEXP,BASEEXP+1000000;
-		if(BaseLevel < 70) 			set BASEEXP,BASEEXP+800000;
-		set JOBEXP,JOBEXP+500000;
+		if(BaseLevel >= 90) 				getexp 2000000,500000;
+		else if(BaseLevel >= 80 && BaseLevel < 90) 	getexp 1500000,500000;
+		else if(BaseLevel >= 70 && BaseLevel < 80) 	getexp 1000000,500000;
+		else						getexp 800000,500000;
 		close;
 	}
 	end;
@@ -5980,7 +5979,7 @@ lighthalzen.gat,337,232,3	script	マク	870,{
 			mes "-もう制御不能なので、";
 			mes "放っておいて別の場所へ";
 			mes "行った方がよさそうだ-";
-			break;
+			close;
 		}
 		cutin "lhz_macu03",2;
 		mes "[マク]";
@@ -6194,12 +6193,9 @@ lighthalzen.gat,337,232,3	script	マク	870,{
 		mes "もういいから、話が終わったなら帰れ！";
 		delitem 7351,1;
 		set LHZ_3QUE,14;
-		if(BaseLevel > 90)
-			set BASEEXP,BASEEXP+700000;
-		else if(BaseLevel > 80)
-			set BASEEXP,BASEEXP+400000;
-		else
-			set BASEEXP,BASEEXP+200000;
+		if(BaseLevel > 90)	getexp 700000,0;
+		else if(BaseLevel > 80)	getexp 400000,0;
+		else			getexp 200000,0;
 		break;
 	case 14:
 		cutin "lhz_macu05",2;
@@ -6539,7 +6535,7 @@ lhz_in02.gat,201,210,4	script	ダイガツ	869,{
 		mes "状況は変わらないってば。";
 		mes "頭に来るはずさ。";
 		if(LHZ_3QUE != 12 || countitem(7351) < 1)
-			break;
+			close;
 		next;
 		cutin "lhz_diguts08",2;
 		mes "[ダイガツ]";
@@ -6917,7 +6913,7 @@ yuno_in04.gat,96,106,4	script	熱血学生	754,{
 		mes "黒魔法がなんちゃらかんちゃら……";
 		mes "他種族がなんちゃらかんちゃら……";
 		next;
-		if(LHZ_3QUE != 8) {
+		if(LHZ_3QUE < 8) {
 			mes "-何を言ってるのか全然分からない。";
 			mes "自分だけの世界に";
 			mes "閉じこもっているようだから";
@@ -7103,12 +7099,9 @@ yuno_in04.gat,96,106,4	script	熱血学生	754,{
 		mes "親切な旅人の方！";
 		getitem 7350,1;
 		set LHZ_3QUE,16;
-		if(BaseLevel > 90)
-			set BASEEXP,BASEEXP+700000;
-		else if(BaseLevel > 80)
-			set BASEEXP,BASEEXP+400000;
-		else
-			set BASEEXP,BASEEXP+200000;
+		if(BaseLevel > 90)	getexp 700000,0;
+		else if(BaseLevel > 80)	getexp 400000,0;
+		else			getexp 200000,0;
 		break;
 	}
 	close2;
@@ -7664,7 +7657,7 @@ lighthalzen.gat,179,170,4	script	平凡そうな男	98,{
 		mes "これで仕事は終了です。";
 		next;
 		set LHZ_4QUE,39;
-		set BASEEXP,BASEEXP+1800000;
+		getexp 1800000,0;
 		getitem 617,1;
 		close;
 	case 39:

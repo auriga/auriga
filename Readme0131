@@ -1,4 +1,30 @@
 ----------------------------------------
+//0174 [2007/04/29] by Rayce
+
+・AthenaProject2295よりmerge、thanks to Blazeさん
+　以下Readmeより転載
+　　・スクリプトに指定場所にアイテムをドロップするdropitem命令を追加（script.c）
+　　・スクリプトに経験値を取得するgetexp命令を追加（script.c）
+　　・カードの出血耐性の効果が反映されなかったのを修正（status.c）
+　　・ガトリングフィーバー状態の攻撃力・移動速度・Flee値を修正（status.c）
+　　・空蝉の回避方向を相手の位置関係から見て後方になるように修正（battle.c）
+　　・命令追加による各種スクリプトの修正
+	（npc_job_00novice.txt）
+	（npc_quest_arena.txt）
+	（npc_town_airport.txt）
+	（npc_town_ayothaya.txt）
+	（npc_town_einbroch.txt）
+	（npc_town_hugel.txt）
+	（npc_town_lighthalzen.txt）
+	（npc_town_louyang.txt）
+　　・初心者修練場の職業適性審査修正
+	（npc_job_00novice.txt）
+　　・ニブルヘイムのロードオブデスを修正
+	（npc_town_niflheim.txt）
+
+　　※dropitemの仕様はAthenaProjectをベースに改変しているので注意
+
+----------------------------------------
 //0173 [2007/04/27] by Rayce
 
 ・PC型Mob/Petに関する処理方法の見直し（clif.c, mob.*, skill.c, status.c, unit.c）

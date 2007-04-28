@@ -354,7 +354,7 @@ hu_in01.gat,15,372,3	script	ジレット・レビト	74,{
 		mes "これは感謝の印よ。";
 		mes "よかったら食べてちょうだい。";
 		set HU_1QUE,0;
-		set BASEEXP,BASEEXP+1000;
+		getexp 1000,0;
 		getitem 584,3;
 		next;
 		mes "[ジレット]";
@@ -771,7 +771,7 @@ hugel.gat,56,104,3	script	クルペ	709,3,3,{
 		gmcommand "@misceffect 71";
 		set HU_2QUE,10;
 		getitem 12063,3;
-		set BASEEXP,BASEEXP+100000;
+		getexp 100000,0;
 		next;
 		mes "[クルペ]";
 		mes "私たちはいつも忙しいから、";
@@ -2223,7 +2223,7 @@ hugel.gat,196,164,3	script	エルシャングト	50,{
 		mes "カナイン……";
 		gmcommand "@misceffect 71";
 		set HU_4QUE,12;
-		set BASEEXP,BASEEXP+50000;
+		getexp 50000,0;
 		getitem 603,1;
 		close;
 	case 12:
@@ -2810,7 +2810,7 @@ OnTouch:
 		close2;
 		gmcommand "@misceffect 71";
 		set HU_5QUE,13;
-		set BASEEXP,BASEEXP+50000;
+		getexp 50000,0;
 		getitem 603,1;
 		end;
 	}
@@ -3537,7 +3537,7 @@ ein_in01.gat,16,36,3	script	モリペン	86,{
 		mes "心配しないで。";
 		mes "じゃ、また来てくれよ。";
 		set HU_6QUE,9;
-		set BASEEXP,BASEEXP+700000;
+		getexp 700000,0;
 		close;
 	case 9:
 		mes "[モリペン]";
@@ -3766,7 +3766,7 @@ hu_in01.gat,326,307,3	script	シリア	90,{
 		mes "何かありましたら";
 		mes "お手伝いさせてください。";
 		set HU_6QUE,8;
-		set BASEEXP,BASEEXP+500000;
+		getexp 500000,0;
 		close;
 	case 8:
 		mes "[シリア]";

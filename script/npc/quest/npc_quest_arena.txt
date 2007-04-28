@@ -270,10 +270,10 @@ prt_are_in.gat,98,14,3	script	ギブ#arena	728,{
 			mes "所有ポイント数を確認してください。";
 			close;
 		}
-		if(BaseLevel >= 90) 			set BaseExp,BaseExp+30000;
-		if(BaseLevel >= 80 && BaseLevel < 90) 	set BaseExp,BaseExp+10000;
-		if(BaseLevel >= 70 && BaseLevel < 80) 	set BaseExp,BaseExp+9000;
-		if(BaseLevel < 70) 			set BaseExp,BaseExp+3000;
+		if(BaseLevel >= 90) 			getexp 30000,0;
+		if(BaseLevel >= 80 && BaseLevel < 90) 	getexp 10000,0;
+		if(BaseLevel >= 70 && BaseLevel < 80) 	getexp 9000,0;
+		if(BaseLevel < 70) 			getexp 3000,0;
 		set ARENA_PIT,ARENA_PIT-40;
 		mes "[ギブ]";
 		mes "アリーナポイントを経験値に";

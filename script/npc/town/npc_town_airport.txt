@@ -429,17 +429,17 @@ airplane.gat,64,94,0	script	ウンバラの子供	787,{
 
 airplane.gat,0,0,0	script	airplane	-1,{
 OnInit:
-	disablenpc "airplanewarp#ein1";
-	disablenpc "airplanewarp#ein2";
-	disablenpc "airplanewarp#lhz1";
-	disablenpc "airplanewarp#lhz2";
-	disablenpc "airplanewarp#hu1";
-	disablenpc "airplanewarp#hu2";
+	hideonnpc "airplanewarp#ein1";
+	hideonnpc "airplanewarp#ein2";
+	hideonnpc "airplanewarp#lhz1";
+	hideonnpc "airplanewarp#lhz2";
+	hideonnpc "airplanewarp#hu1";
+	hideonnpc "airplanewarp#hu2";
 	initnpctimer;
 	end;
 OnTimer1000:
-	disablenpc "airplanewarp#yuno1";
-	disablenpc "airplanewarp#yuno2";
+	hideonnpc "airplanewarp#yuno1";
+	hideonnpc "airplanewarp#yuno2";
 	announce "当船は離陸します。次の目的地はアインブロックです。",9,0x00FF00;
 	end;
 OnTimer16000:
@@ -449,16 +449,16 @@ OnTimer31000:
 	announce "まもなく、アインブロックに着陸いたします。",9,0x00FF00;
 	end;
 OnTimer41000:
-	enablenpc "airplanewarp#ein1";
-	enablenpc "airplanewarp#ein2";
+	hideoffnpc "airplanewarp#ein1";
+	hideoffnpc "airplanewarp#ein2";
 	announce "アインブロックに到着しました。またのご利用をお待ちしております。",9,0x00FF00;
 	end;
 OnTimer51000:
 	announce "現在、アインブロックに停船中です。出発まで、しばらくお待ちください。",9,0x00FF00;
 	end;
 OnTimer61000:
-	disablenpc "airplanewarp#ein1";
-	disablenpc "airplanewarp#ein2";
+	hideonnpc "airplanewarp#ein1";
+	hideonnpc "airplanewarp#ein2";
 	announce "飛行船、離陸します。次の目的地はリヒタルゼンです。",9,0x73DEDE;
 	end;
 OnTimer76000:
@@ -468,16 +468,16 @@ OnTimer91000:
 	announce "まもなく、リヒタルゼンに着陸いたします。",9,0x73DEDE;
 	end;
 OnTimer101000:
-	enablenpc "airplanewarp#lhz1";
-	enablenpc "airplanewarp#lhz2";
+	hideoffnpc "airplanewarp#lhz1";
+	hideoffnpc "airplanewarp#lhz2";
 	announce "リヒタルゼンに到着しました。またのご利用をお待ちしております。",9,0x73DEDE;
 	end;
 OnTimer111000:
 	announce "現在、リヒタルゼンに停船中です。出発まで、しばらくお待ちください。",9,0x73DEDE;
 	end;
 OnTimer121000:
-	disablenpc "airplanewarp#lhz1";
-	disablenpc "airplanewarp#lhz2";
+	hideonnpc "airplanewarp#lhz1";
+	hideonnpc "airplanewarp#lhz2";
 	announce "当船は離陸します。次の目的地はアインブロックです。",9,0x00FF00;
 	end;
 OnTimer136000:
@@ -487,16 +487,16 @@ OnTimer151000:
 	announce "まもなく、アインブロックに着陸いたします。",9,0x00FF00;
 	end;
 OnTimer161000:
-	enablenpc "airplanewarp#ein1";
-	enablenpc "airplanewarp#ein2";
+	hideoffnpc "airplanewarp#ein1";
+	hideoffnpc "airplanewarp#ein2";
 	announce "アインブロックに到着しました。またのご利用をお待ちしております。",9,0x00FF00;
 	end;
 OnTimer171000:
 	announce "現在、アインブロックに停船中です。出発まで、しばらくお待ちください。",9,0x00FF00;
 	end;
 OnTimer181000:
-	disablenpc "airplanewarp#ein1";
-	disablenpc "airplanewarp#ein2";
+	hideonnpc "airplanewarp#ein1";
+	hideonnpc "airplanewarp#ein2";
 	announce "当船は離陸します。次の目的地はジュノーです。",9,0xFF8400;
 	end;
 OnTimer196000:
@@ -506,16 +506,16 @@ OnTimer211000:
 	announce "まもなく、ジュノーに着陸いたします。",9,0xFF8400;
 	end;
 OnTimer221000:
-	enablenpc "airplanewarp#yuno1";
-	enablenpc "airplanewarp#yuno2";
+	hideoffnpc "airplanewarp#yuno1";
+	hideoffnpc "airplanewarp#yuno2";
 	announce "ジュノーに到着しました。またのご利用をお待ちしております。",9,0xFF8400;
 	end;
 OnTimer231000:
 	announce "現在、ジュノーに停船中です。出発まで、しばらくお待ちください。",9,0xFF8400;
 	end;
 OnTimer241000:
-	disablenpc "airplanewarp#yuno1";
-	disablenpc "airplanewarp#yuno2";
+	hideonnpc "airplanewarp#yuno1";
+	hideonnpc "airplanewarp#yuno2";
 	announce "飛行船、離陸します。次の目的地はフィゲルです。",9,0xCE4AF7;
 	end;
 OnTimer256000:
@@ -525,16 +525,16 @@ OnTimer271000:
 	announce "まもなく、フィゲルに着陸いたします。",9,0xCE4AF7;
 	end;
 OnTimer281000:
-	enablenpc "airplanewarp#hu1";
-	enablenpc "airplanewarp#hu2";
+	hideoffnpc "airplanewarp#hu1";
+	hideoffnpc "airplanewarp#hu2";
 	announce "フィゲルに到着しました。またのご利用をお待ちしております。",9,0xCE4AF7;
 	end;
 OnTimer291000:
 	announce "現在、フィゲルに停船中です。出発まで、しばらくお待ちください。",9,0xCE4AF7;
 	end;
 OnTimer301000:
-	disablenpc "airplanewarp#hu1";
-	disablenpc "airplanewarp#hu2";
+	hideonnpc "airplanewarp#hu1";
+	hideonnpc "airplanewarp#hu2";
 	announce "当船は離陸します。次の目的地はジュノーです。",9,0xFF8400;
 	end;
 OnTimer316000:
@@ -544,8 +544,8 @@ OnTimer331000:
 	announce "まもなく、ジュノーに着陸いたします。",9,0xFF8400;
 	end;
 OnTimer341000:
-	enablenpc "airplanewarp#yuno1";
-	enablenpc "airplanewarp#yuno2";
+	hideoffnpc "airplanewarp#yuno1";
+	hideoffnpc "airplanewarp#yuno2";
 	announce "ジュノーに到着しました。またのご利用をお待ちしております。",9,0xFF8400;
 	end;
 OnTimer351000:
@@ -702,13 +702,13 @@ airplane_01.gat,71,31,2	script	剣士	106,{
 
 airplane_01.gat,0,0,0	script	airplane_01	-1,{
 OnInit:
-	disablenpc "airplanewarp#iz1";
-	disablenpc "airplanewarp#iz2";
+	hideonnpc "airplanewarp#iz1";
+	hideonnpc "airplanewarp#iz2";
 	initnpctimer;
 	end;
 OnTimer1000:
-	disablenpc "airplanewarp#yuno1_";
-	disablenpc "airplanewarp#yuno2_";
+	hideonnpc "airplanewarp#yuno1_";
+	hideonnpc "airplanewarp#yuno2_";
 	announce "当船は離陸します。次の目的地はイズルードです。",9,0x00FF00;
 	end;
 OnTimer26000:
@@ -885,16 +885,16 @@ OnTimer51000:
 	announce "まもなく、イズルードに着陸いたします。",9,0x00FF00;
 	end;
 OnTimer61000:
-	enablenpc "airplanewarp#iz1";
-	enablenpc "airplanewarp#iz2";
+	hideoffnpc "airplanewarp#iz1";
+	hideoffnpc "airplanewarp#iz2";
 	announce "イズルードに到着しました。またのご利用をお待ちしております。",9,0x00FF00;
 	end;
 OnTimer71000:
 	announce "現在、イズルードに停船中です。出発まで、しばらくお待ちください。",9,0x00FF00;
 	end;
 OnTimer81000:
-	disablenpc "airplanewarp#iz1";
-	disablenpc "airplanewarp#iz2";
+	hideonnpc "airplanewarp#iz1";
+	hideonnpc "airplanewarp#iz2";
 	announce "当船は離陸します。次の目的地はジュノーです。",9,0x73DEDE;
 	end;
 OnTimer106000:
@@ -904,8 +904,8 @@ OnTimer131000:
 	announce "まもなく、ジュノーに着陸いたします。",9,0x73DEDE;
 	end;
 OnTimer141000:
-	enablenpc "airplanewarp#yuno1_";
-	enablenpc "airplanewarp#yuno2_";
+	hideoffnpc "airplanewarp#yuno1_";
+	hideoffnpc "airplanewarp#yuno2_";
 	announce "ジュノーに到着しました。またのご利用をお待ちしております。",9,0x73DEDE;
 	end;
 OnTimer151000:
@@ -1110,7 +1110,7 @@ airplane.gat,50,66,5	script	リンゴ商人#フルツ	86,{
 airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メルツ	86
 
 -	script	AirDice	-1,{
-	if(strnpcinfo(1) == "ケージ") {
+	if(strnpcinfo(0) == "ケージ") {
 		switch(AIR_2QUE) {
 		case 2:
 			mes "[ケージ]";
@@ -1324,16 +1324,16 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			close;
 		}
 	}
-	mes "[" +strnpcinfo(1)+ "]";
+	mes "[" +strnpcinfo(0)+ "]";
 	mes "こんにちは。";
-	mes "私の名前は" +strnpcinfo(1)+ "。";
+	mes "私の名前は" +strnpcinfo(0)+ "。";
 	mes "ちょっと退屈してるの。";
 	mes "暇つぶしに、私とサクっと軽く";
 	mes "サイコロゲームでもしない？";
 	next;
 	switch (select("する","ルールを教えて","しない")) {
 	case 1:
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "サイコロゲームをするには、";
 		mes "リンゴが必要よ。";
 		mes "リンゴ、何個賭ける？";
@@ -1343,28 +1343,28 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			next;
 			input '@apple;
 			if('@apple<=0) {
-				mes "[" +strnpcinfo(1)+ "]";
+				mes "[" +strnpcinfo(0)+ "]";
 				mes "退屈だったら、後でまた来てね。";
 				mes "じゃあね！";
 				close;
 			}
 			if('@apple>50) {
-				mes "[" +strnpcinfo(1)+ "]";
+				mes "[" +strnpcinfo(0)+ "]";
 				mes "最大は50までよ。";
 				mes "次は間違えないよう教えてね。";
 				continue;
 			}
-			mes "[" +strnpcinfo(1)+ "]";
+			mes "[" +strnpcinfo(0)+ "]";
 			mes "リンゴ^FF0000" +'@apple+ "個^000000で";
 			mes "間違いない？";
 			next;
 			if(select("はい","いいえ")==2) {
-				mes "[" +strnpcinfo(1)+ "]";
+				mes "[" +strnpcinfo(0)+ "]";
 				mes "今度は間違いなく入力してね。";
 				continue;
 			}
 			if(countitem(512) < '@apple) {
-				mes "[" +strnpcinfo(1)+ "]";
+				mes "[" +strnpcinfo(0)+ "]";
 				mes "リンゴが足りないみたいよ。";
 				mes "何個賭ける？";
 				continue;
@@ -1372,7 +1372,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			break;	//while文を抜ける
 		}
 		delitem 512,'@apple;
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "はーい。";
 		mes "では、ゲームの始まり始まり。";
 		mes "私が先に転がすわね。";
@@ -1384,7 +1384,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		setarray '@mine[1],rand(1,6),rand(1,6);
 		set '@enemy[0],'@enemy[1]+'@enemy[2];
 		set '@mine[0],'@mine[1]+'@mine[2];
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "私の手は^0000FF" +'@enemy[1]+ "^000000と^0000FF" +'@enemy[2]+ "^000000。";
 		mes "合計は^0000FF" +'@enemy+ "^000000ね。";
 		mes "今度は^FF0000" +strcharinfo(0)+ "^000000さんの";
@@ -1393,12 +1393,12 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		menu "サイコロを転がす",-;
 		mes "-コロ〜ン、コロコロ-";
 		next;
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "^FF0000" +strcharinfo(0)+ "^000000さんの手は";
 		mes "^FF0000" +'@mine[1]+ "^000000と^FF0000" +'@mine[2]+ "^000000ね。";
 		mes "合計は^FF0000" +'@mine+ "^000000！";
 		next;
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "私が^0000FF" +'@enemy+ "^000000で、";
 		mes "^FF0000" +strcharinfo(0)+ "^000000さんが^FF0000" +'@mine+ "^000000ね。";
 		if('@mine < '@enemy)  {	//負けてる場合
@@ -1420,7 +1420,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			next;
 			set '@mine[3],rand(1,6);
 			set '@mine[0],'@mine[0]+'@mine[3];
-			mes "[" +strnpcinfo(1)+ "]";
+			mes "[" +strnpcinfo(0)+ "]";
 			mes "^FF0000" +strcharinfo(0)+ "^000000さんの手は";
 			mes "^FF0000" +'@mine[3]+ "^000000だから";
 			mes "合計は^FF0000" +'@mine+ "^000000ね。";
@@ -1441,7 +1441,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 				mes "はい、最初に賭けたリンゴを返すわね。";
 				getitem 512,'@apple;
 				next;
-				mes "[" +strnpcinfo(1)+ "]";
+				mes "[" +strnpcinfo(0)+ "]";
 				mes "次は負けないわよ〜。";
 				close;
 			}
@@ -1450,7 +1450,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			}
 		}
 		else {
-			mes "[" +strnpcinfo(1)+ "]";
+			mes "[" +strnpcinfo(0)+ "]";
 			if('@mine < '@enemy) {	//負けてる場合
 				mes "えー、諦めるの？";
 				mes "転がすだけ転がしてみればいいのに。";
@@ -1473,7 +1473,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		next;
 		set '@enemy[3],rand(1,6);
 		set '@enemy[0],'@enemy[0]+'@enemy[3];
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "私の手は^0000FF" +'@enemy[3]+ "^000000だから、合計は^0000FF" +'@enemy+ "^000000ね。";
 		if('@enemy > 12) {	//12を超えた場合
 			mes "合計が12を超えちゃったから";
@@ -1503,14 +1503,14 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		}
 		close;
 	case 2:
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "じゃあ、サイコロゲームのルールを";
 		mes "説明するわね。とても簡単よ。";
 		mes "まず、賭ける分だけの";
 		mes "リンゴを私に預けてね。";
 		mes "リンゴは50個まで賭けられるわ。";
 		next;
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "次に、サイコロを2個転がすの。";
 		mes "それで、サイコロの目の";
 		mes "合計が多い方が勝ち！";
@@ -1518,24 +1518,24 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		mes "だから、サイコロをもう1個";
 		mes "転がすチャンスがあるのよ。";
 		next;
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "サイコロをもう1個、転がすかどうかは";
 		mes "本人の自由。但し！";
 		mes "この段階でサイコロの目の合計が";
 		mes "12を超えちゃったら、負けよ。";
 		next;
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "3個目のサイコロを転がした場合、";
 		mes "合計が12を超えちゃったら、";
 		mes "その時点で負け決定よ。いい？";
 		next;
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "ゲームで勝った方は、自分と相手の";
 		mes "賭けたリンゴを全部もらえるの。";
 		mes "ね、簡単でしょ。";
 		close;
 	case 3:
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "やってみたくなったら";
 		mes "いつでも声かけてね。";
 		mes "じゃあね〜。";
@@ -1543,8 +1543,8 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 	}
 }
 
-airplane.gat,33,69,4	duplicate(AirDice)	ケージ#Air	73
-airplane_01.gat,33,69,4	duplicate(AirDice)	クラリス#Air	74
+airplane.gat,33,69,4	duplicate(AirDice)	ケージ		73
+airplane_01.gat,33,69,4	duplicate(AirDice)	クラリス	74
 
 //callfunc "Typing#Einbroch","Name";
 //  呼び出し元のNPC名前が引数
@@ -1605,15 +1605,15 @@ function	script	Typing#Air	{
 	return (gettimetick(0)-'@t)/1000;
 }
 
-airplane.gat,32,61,4	script	ジョン#Air	51,{
-	mes "[" +strnpcinfo(1)+ "]";
+-	script	AirTyping	-1,{
+	mes "[" +strnpcinfo(0)+ "]";
 	mes "こんにちは！";
 	mes "^FF0000タイピングラグナロク^000000の";
-	mes "進行、" +strnpcinfo(1)+ "です！";
+	mes "進行、" +strnpcinfo(0)+ "です！";
 	next;
 	switch (select("^FF0000タイピングラグナロク^000000に挑戦する","^FF0000タイピングラグナロク^000000の説明を聞く","最高記録を見る","取り消す")) {
 	case 1:
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "^FF0000タイピングラグナロク^000000に";
 		mes "挑戦するのですね！";
 		mes "では、これから提示する文章を";
@@ -1621,24 +1621,24 @@ airplane.gat,32,61,4	script	ジョン#Air	51,{
 		mes "入力してください。";
 		mes "それでは始めます！";
 		next;
-		set '@time,callfunc("Typing#Air",strnpcinfo(1));	//タイピングタイムを取得
+		set '@time,callfunc("Typing#Air",strnpcinfo(0));	//タイピングタイムを取得
 		set '@score,(200-'@time)*10;
 		if('@time < 0 || '@score < 0)
 			set '@score,0;
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "^FF0000" +'@time+ "秒^000000で正確に入力完了！";
 		mes "スコアは" +'@score+ "と出ました！";
 		next;
 		if('@score >= $TypingScore) {	//メッセージ未取得
 			set $TypingScore,'@score;
 			set $TypingName$,strcharinfo(0);
-			mes "[" +strnpcinfo(1)+ "]";
+			mes "[" +strnpcinfo(0)+ "]";
 			mes "おめでとうございます！";
 			mes "最高記録更新です！";
 			mes "次もこの調子で頑張ってください。";
 		}
 		else {
-			mes "[" +strnpcinfo(1)+ "]";
+			mes "[" +strnpcinfo(0)+ "]";
 			mes "現在の最高スコアは、";
 			mes "^0000FF" +$TypingName$+ "様^000000の";
 			mes "^0000FF" +$TypingScore+ "^000000です。";
@@ -1647,25 +1647,25 @@ airplane.gat,32,61,4	script	ジョン#Air	51,{
 		}
 		close;
 	case 2:
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "^FF0000タイピングラグナロク^000000は";
 		mes "私が提示する文章を素早く、";
 		mes "正確に入力するゲームです。";
 		next;
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "スコアが一番高い方の記録は、";
 		mes "殿堂入りとなります。";
 		mes "タイピングに自信のある方は";
 		mes "是非挑戦してください！";
 		close;
 	case 3:
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "現在の最高スコアは、";
 		mes "^0000FF" +$TypingName$+ "様^000000の";
 		mes "^0000FF" +$TypingScore+ "^000000です。";
 		close;
 	case 4:
-		mes "[" +strnpcinfo(1)+ "]";
+		mes "[" +strnpcinfo(0)+ "]";
 		mes "^FF0000タイピングラグナロク^000000に";
 		mes "挑戦したくなったら、";
 		mes "いつでも来てください！";
@@ -1673,7 +1673,8 @@ airplane.gat,32,61,4	script	ジョン#Air	51,{
 	}
 }
 
-airplane_01.gat,32,61,4	duplicate(ジョン#Air)	ニルス	49
+airplane.gat,32,61,4	duplicate(AirTyping)	ジョン	51
+airplane_01.gat,32,61,4	duplicate(AirTyping)	ニルス	49
 
 //============================================================
 // ルーン機関クエストNPC
@@ -1905,8 +1906,7 @@ airplane_01.gat,238,154,2	script	飛行船船長	873,{
 		mes "ちょっと疲れたからな。";
 		gmcommand "@misceffect 231";
 		set AIR_1QUE,7;
-		set BASEEXP,BASEEXP+200000;
-		set JOBEXP,JOBEXP+10000;
+		getexp 200000,10000;
 		break;
 	case 7:
 		mes "[ペルロック]";
@@ -2227,8 +2227,7 @@ airplane.gat,236,163,2	script	飛行船船長	873,{
 		close2;
 		cutin "fly_trock",255;
 		set AIR_2QUE,13;
-		set BASEEXP,BASEEXP+700000;
-		set JOBEXP,JOBEXP+400000;
+		getexp 700000,400000;
 		gmcommand "@misceffect 253";
 		close2;
 		cutin "fly_trock",255;

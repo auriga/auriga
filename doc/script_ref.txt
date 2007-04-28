@@ -1905,6 +1905,28 @@ AurigaNPCScript
 
 			プレイヤーのステータスを再計算します。
 
+		dropitem命令
+			dropitem <gatname>,<x>,<y>,<itemid>,<num>,<tick>;
+
+			gatname		文字列
+			x,y		数値
+			itemid		数値または文字列
+			num,tick	数値
+
+			<itemid>で指定したアイテムを<num>個分、<gatname>で指定したMAPの座標<x>,<y>にドロップさせます。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
+			アイテムが消滅するまでの時間は、battle_auriga.confで設定されたflooritem_lifetimeの値に
+			<tick>ミリ秒を加算した時間になります。
+
+		getexp命令
+			getexp <base>,<job>;
+
+			base,job	数値
+
+			プレイヤーのBase経験値を<base>分、Job経験値を<job>分増加させます。
+			埋め込み変数であるBASEEXPやJOBEXPを直接操作するのとは異なり、戦闘教範による補正を受けたり、
+			ギルドへの上納などが自動的に行われます。
+
 	＊関数
 		rand関数
 			rand(<n1>[,<n2>])
@@ -2941,7 +2963,7 @@ AurigaNPCScript
 			     曜日 : 00=日,01=月,02=火,03=水,04=木,05=金,06=土
 
 		OnDayXXYYラベル
-			毎年XX月XX日00時00分に実行します。数値は十進数４桁です。
+			毎年XX月YY日00時00分に実行します。数値は十進数４桁です。
 
 		OnTimerXラベル
 			NPCタイマーのカウントがXになったときに実行されます。

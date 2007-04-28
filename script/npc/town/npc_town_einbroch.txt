@@ -1981,10 +1981,9 @@ ein_in01.gat,31,137,3	script	カーラ	90,{
 		next;
 		percentheal 100,100;
 		set EIN_1QUE,15;
-		if(BaseLevel >= 80)
-			set BASEEXP,BASEEXP+200000;
-		else
-			set BASEEXP,BASEEXP+30000;
+		if(BaseLevel > 80)	getexp 200000,0;
+		else if(BaseLevel > 60)	getexp 30000,0;
+		else			getexp 6000,0;
 		mes "-元気になった！";
 		mes "……気がする-";
 		next;
@@ -2102,10 +2101,9 @@ ein_in01.gat,200,101,5	script	クルト	854,{
 			delitem 1901,1;
 			percentheal 100,100;
 			set EIN_1QUE,5;
-			if(BaseLevel >= 80)
-				set BASEEXP,BASEEXP+200000;
-			else
-				set BASEEXP,BASEEXP+30000;
+			if(BaseLevel > 80)	getexp 200000,0;
+			else if(BaseLevel > 60)	getexp 30000,0;
+			else			getexp 6000,0;
 			mes "-元気になった！";
 			mes "……気がする-";
 			next;
@@ -4289,22 +4287,12 @@ einbech.gat,165,105,6	script	ビンデハイム	847,{
 		set EIN_3QUE,11;
 		if(LHZ_4QUE == 23)	//大統領クエスト進行中
 			set LHZ_4QUE,25;
-		if(BaseLevel >= 90) {
-			set BASEEXP,BASEEXP+700000;
-			set JOBEXP,JOBEXP+500000;
-		}
-		if(BaseLevel >= 80 && BaseLevel < 90) {
-			set BASEEXP,BASEEXP+500000;
-			set JOBEXP,JOBEXP+300000;
-		}
-		if(BaseLevel >= 70 && BaseLevel < 80) {
-			set BASEEXP,BASEEXP+300000;
-			set JOBEXP,JOBEXP+150000;
-		}
-		if(BaseLevel < 70) {
-			set BASEEXP,BASEEXP+100000;
-			set JOBEXP,JOBEXP+80000;
-		}
+		if(BaseLevel >= 90)		getexp 700000,500000;
+		else if(BaseLevel >= 80)	getexp 500000,300000;
+		else if(BaseLevel >= 70)	getexp 300000,100000;
+		else if(BaseLevel >= 60)	getexp 100000,50000;
+		else if(BaseLevel >= 50)	getexp 50000,20000;
+		else				getexp 20000,5000;
 		break;
 	}
 	close2;
@@ -5582,13 +5570,13 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		delitem 7317,10;
 		delitem 7319,10;
 		set EIN_4QUE,9;
-		if(BaseLevel >= 90) 				set BASEEXP,BASEEXP+290675;
-		else if(BaseLevel >= 80 && BaseLevel < 90) 	set BASEEXP,BASEEXP+76026;
-		else if(BaseLevel >= 70 && BaseLevel < 80) 	set BASEEXP,BASEEXP+32062;
-		else if(BaseLevel >= 60 && BaseLevel < 70) 	set BASEEXP,BASEEXP+18508;
-		else if(BaseLevel >= 50 && BaseLevel < 60) 	set BASEEXP,BASEEXP+6604;
-		else if(BaseLevel >= 40 && BaseLevel < 50) 	set BASEEXP,BASEEXP+3075;
-		else						set BASEEXP,BASEEXP+615;
+		if(BaseLevel >= 90) 				getexp 290675,0;
+		else if(BaseLevel >= 80 && BaseLevel < 90) 	getexp 76026,0;
+		else if(BaseLevel >= 70 && BaseLevel < 80) 	getexp 32062,0;
+		else if(BaseLevel >= 60 && BaseLevel < 70) 	getexp 18508,0;
+		else if(BaseLevel >= 50 && BaseLevel < 60) 	getexp 6604,0;
+		else if(BaseLevel >= 40 && BaseLevel < 50) 	getexp 3075,0;
+		else						getexp 615,0;
 		next;
 		mes "[ゼルメト]";
 		mes "ありがとうございます。";

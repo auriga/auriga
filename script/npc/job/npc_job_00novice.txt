@@ -132,7 +132,7 @@ new_1-1.gat,53,114,4	script	ファラ	727,{
 		mes "例えば……ほら";
 		mes "こんな風に経験も積めるのよ。";
 		set CHANGE_NV,CHANGE_NV|0x4;
-		set BaseExp,BaseExp+NextBaseExp;
+		getexp NextBaseExp,0;
 		next;
 		mes "[ファラ]";
 		mes "君にとってはちょっと";
@@ -172,7 +172,7 @@ new_1-1.gat,53,114,4	script	ファラ	727,{
 		mes "礼儀も身につけてきなさいな。";
 		mes "これは、私からの贈り物よ。";
 		set CHANGE_NV,CHANGE_NV|0x4;
-		set BaseExp,BaseExp+NextBaseExp;
+		getexp NextBaseExp,0;
 		close;
 	default:	//5,6のとき
 		mes "[ファラ]";
@@ -385,7 +385,7 @@ new_1-2.gat,99,105,3	script	インターフェース教官	751,{
 			mes "どのように変化するか見てください。";
 			mes "どうです？";
 			set CHANGE_NV,CHANGE_NV|0x10;
-			set BaseExp,BaseExp+NextBaseExp;
+			getexp NextBaseExp,0;
 			next;
 			mes "[教官クリス]";
 			mes "基本情報ウィンドウに表示";
@@ -440,7 +440,7 @@ new_1-2.gat,99,105,3	script	インターフェース教官	751,{
 			mes "スキルウィンドウを";
 			mes "開いて、基本スキルを";
 			mes "あげてみてください。";
-			set JobExp,JobExp+NextJobExp;
+			getexp 0,NextJobExp;
 			next;
 			mes "[教官クリス]";
 			mes "より詳しい内容については";
@@ -607,7 +607,7 @@ new_1-2.gat,83,111,3	script	スキル教官	753,{
 			mes "基本スキルのアイコンの横にある";
 			mes "「LvUp」という表示を押してみろ！";
 			set CHANGE_NV,CHANGE_NV|0x20;
-			set JobExp,JobExp+NextJobExp;
+			getexp 0,NextJobExp;
 			next;
 			mes "[教官サイ]";
 			mes "どうだ？";
@@ -627,7 +627,7 @@ new_1-2.gat,83,111,3	script	スキル教官	753,{
 			skill 142,1,0;
 			next;
 			mes "^4A4AFF- Job経験値を獲得した。-^000000";
-			set JobExp,JobExp+NextJobExp;
+			getexp 0,NextJobExp;
 			next;
 			percentheal -50,0;
 			mes "[教官サイ]";
@@ -648,7 +648,7 @@ new_1-2.gat,83,111,3	script	スキル教官	753,{
 			mes "話を聞くばかりでは疲れただろう。";
 			mes "ほら、ご褒美だ。";
 			mes "俺は太っ腹な男だからな。";
-			set BaseExp,BaseExp+NextBaseExp;
+			getexp NextBaseExp,0;
 			next;
 			mes "[教官サイ]";
 			mes "俺の講義はここまでだ。";
@@ -836,7 +836,7 @@ new_1-2.gat,115,111,3	script	アイテム教官	726,{
 				mes "[教官アリス]";
 				mes "よくできたわねー。";
 				mes "はい、ご褒美よ。";
-				set BaseExp,BaseExp+NextBaseExp;
+				getexp NextBaseExp,0;
 			}
 			else {
 				mes "[教官アリス]";
@@ -864,7 +864,7 @@ new_1-2.gat,115,111,3	script	アイテム教官	726,{
 				mes "[教官アリス]";
 				mes "よくできたわねー。";
 				mes "はい、ご褒美よ。";
-				set BaseExp,BaseExp+NextBaseExp;
+				getexp NextBaseExp,0;
 			}
 			else {
 				mes "[教官アリス]";
@@ -903,7 +903,7 @@ new_1-2.gat,115,111,3	script	アイテム教官	726,{
 			mes "では基本スキルはパッシブだから";
 			mes "ショートカットウィンドウには";
 			mes "登録できないけどね。";
-			set JobExp,JobExp+NextJobExp;
+			getexp 0,NextJobExp;
 			next;
 			mes "[教官アリス]";
 			mes "簡単でサポート万全なアリスの";
@@ -920,7 +920,7 @@ new_1-2.gat,115,111,3	script	アイテム教官	726,{
 			mes "そしてこれが……";
 			mes "転職応援としてのJob経験値！";
 			mes "お疲れさま！";
-			set JobExp,JobExp+NextJobExp;
+			getexp 0,NextJobExp;
 			next;
 			switch(select("これからどうする？","いざ実戦へ！","じゃあね！")) {
 				case 1:
@@ -1271,7 +1271,7 @@ new_1-2.gat,118,108,3	script	カプラ職員	117,{
 			next;
 			if(CHANGE_NV &0x80 == 0) {
 				set CHANGE_NV,CHANGE_NV|0x80;
-				set BaseExp,BaseExp+NextBaseExp;
+				getexp NextBaseExp,0;
 			}
 			mes "[カプラ職員]";
 			mes "この位置セーブサービスは無料ですので";
@@ -1327,7 +1327,7 @@ new_1-2.gat,118,108,3	script	カプラ職員	117,{
 			next;
 			if(CHANGE_NV &0x100 == 0) {
 				set CHANGE_NV,CHANGE_NV|0x100;
-				set JobExp,JobExp+NextJobExp;
+				getexp 0,NextJobExp;
 			}
 			mes "[カプラ職員]";
 			mes "同一アカウント内のキャラクターは";
@@ -2297,7 +2297,7 @@ new_1-2.gat,17,182,5	script	進行要員	84,{
 		mes "[エルミン]";
 		mes "えい！　やーっ!!";
 		set CHANGE_NV,CHANGE_NV|0x200;
-		set BaseExp,BaseExp+NextBaseExp;
+		getexp NextBaseExp,0;
 		next;
 		mes "[エルミン]";
 		mes "ふぅ……";
@@ -2534,7 +2534,7 @@ new_1-2.gat,38,182,3	script	受付要員	92,{
 		if(CHANGE_NV &0x800 == 0) {
 			mes "私からの応援の品です。";
 			set CHANGE_NV,CHANGE_NV|0x800;
-			set BaseExp,BaseExp+NextBaseExp;
+			getexp NextBaseExp,0;
 			getitem 569,50;
 		}
 		else {
@@ -3029,29 +3029,57 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 	mes "次の中で自分と一番近いと思われる";
 	mes "単語を選んでください。";
 	next;
-	switch (select("個人","団体")) {
-		case 1: set '@point[3],'@point[3]+1; break;
-		case 2: set '@point[6],'@point[6]+1; break;
+	switch( select("勤勉","活発","奉仕","乱暴") ) {
+		case 1:
+			set '@point[2],'@point[2]+1;
+			break;
+		case 2:
+			set '@point[1],'@point[1]+1;
+			set '@point[6],'@point[6]+1;
+			break;
+		case 3:
+			set '@point[4],'@point[4]+1;
+			break;
+		case 4:
+			set '@point[6],'@point[6]+1;
+			break;
 	}
-	switch (select("変化","永久")) {
+	switch( select("変化","永久") ) {
 		case 1: set '@point[2],'@point[2]+1; break;
 		case 2: set '@point[4],'@point[4]+1; break;
 	}
-	switch (select("消費者","販売者")) {
-		case 1: set '@point[1],'@point[1]+1; break;
-		case 2: set '@point[5],'@point[5]+1; break;
+	switch( select("消費者","販売者","生産者") ) {
+		case 1:
+			set '@point[1],'@point[1]+1;
+			set '@point[4],'@point[4]+1;
+			set '@point[6],'@point[6]+1;
+			break;
+		case 2:
+			set '@point[5],'@point[5]+1;
+			break;
+		case 3:
+			set '@point[2],'@point[2]+1;
+			break;
 	}
-	switch (select("迅速","慎重")) {
+	switch( select("迅速","慎重") ) {
 		case 1: set '@point[6],'@point[6]+1; break;
 		case 2: set '@point[3],'@point[3]+1; break;
 	}
-	switch (select("理論","経験")) {
+	switch( select("理論","経験") ) {
 		case 1: set '@point[2],'@point[2]+1; break;
 		case 2: set '@point[1],'@point[1]+1; break;
 	}
-	switch (select("現実","理想")) {
-		case 1: set '@point[5],'@point[5]+1; break;
-		case 2: set '@point[4],'@point[4]+1; break;
+	switch( select("過去","現在","未来") ) {
+		case 1:
+			set '@point[3],'@point[3]+1;
+			break;
+		case 2:
+			set '@point[5],'@point[5]+1;
+			set '@point[6],'@point[6]+1;
+			break;
+		case 3:
+			set '@point[2],'@point[2]+1;
+			break;
 	}
 	mes "[ヘイスン]";
 	mes "次の質問に「はい」と「いいえ」で";
@@ -3059,74 +3087,79 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 	next;
 	mes "[ヘイスン]";
 	mes "卑屈に生きるより";
-	mes "潔く死ぬ方がましだ。";
+	mes "潔く死ぬ方がマシだ。";
 	next;
-	switch (select("はい","いいえ")) {
-		case 1: set '@point[1],'@point[1]+1; break;
-		case 2: set '@point[6],'@point[6]+1; break;
+	switch( select("はい","いいえ") ) {
+		case 1:
+			set '@point[1],'@point[1]+1;
+			break;
+		case 2:
+			set '@point[5],'@point[5]+1;
+			set '@point[6],'@point[6]+1;
+			break;
 	}
 	mes "[ヘイスン]";
-	mes "人の不幸は蜜の味がする。";
+	mes "人の不幸は密の味がする。";
 	next;
-	switch (select("はい","いいえ")) {
+	switch( select("はい","いいえ") ) {
 		case 1: set '@point[5],'@point[5]+1; break;
 		case 2: set '@point[4],'@point[4]+1; break;
 	}
 	mes "[ヘイスン]";
-	mes "複雑な組立式の物や家電製品を";
-	mes "操作する前には、";
-	mes "いつも取扱説明書を先に読む。";
+	mes "危険な場所でも平気で進む。";
 	next;
-	switch (select("はい","いいえ")) {
-		case 1: set '@point[2],'@point[2]+1; break;
-		case 2: set '@point[3],'@point[3]+1; break;
+	switch( select("はい","いいえ") ) {
+		case 1: set '@point[1],'@point[1]+1; break;
+		case 2: set '@point[2],'@point[2]+1; break;
 	}
 	mes "[ヘイスン]";
 	mes "どんなことでも前に出るタイプだ。";
 	next;
-	switch (select("はい","いいえ")) {
+	switch( select("はい","いいえ") ) {
 		case 1: set '@point[1],'@point[1]+1; break;
 		case 2: set '@point[3],'@point[3]+1; break;
 	}
 	mes "[ヘイスン]";
-	mes "「引く」と書いている扉を見ると、";
-	mes "逆に押したくなる。";
+	mes "ダンジョンを探検中、突き当たりに";
+	mes "ぶつかった。壁をよく調べてみると";
+	mes "「押す」という文字が書かれていた";
+	mes "ような跡がある。その跡のそばには";
+	mes "ボタンのような突き出た石がある。";
+	mes "そういう時……";
 	next;
-	switch (select("はい","いいえ")) {
-		case 1: set '@point[6],'@point[6]+1; break;
-		case 2: set '@point[5],'@point[5]+1; break;
-	}
 	mes "[ヘイスン]";
-	mes "たまに現実世界にあるはずない";
-	mes "非現実的な現象が見える。";
+	mes "「押す」と書いてはあるが、";
+	mes "逆に引きたくなる。";
 	next;
-	switch (select("はい","いいえ")) {
-		case 1: set '@point[4],'@point[4]+1; break;
+	switch( select("はい","いいえ") ) {
+		case 1: set '@point[6],'@point[6]+1; break;
 		case 2: set '@point[1],'@point[1]+1; break;
 	}
 	mes "[ヘイスン]";
-	mes "屋上から飛び降りると、";
-	mes "空を飛べるかも知れない。";
+	mes "たまに現実にはあるはずがない";
+	mes "非現実的な現象が見える。";
 	next;
-	switch (select("はい","いいえ")) {
-		case 1: break;
+	switch( select("はい","いいえ") ) {
+		case 1: set '@point[4],'@point[4]+1; break;
 		case 2: set '@point[2],'@point[2]+1; break;
 	}
 	mes "[ヘイスン]";
-	mes "お金で、生きている生命体を";
+	mes "屋上から飛び降りると、";
+	mes "空を飛べるかもしれない。";
+	next;
+	switch( select("はい","いいえ") ) {
+		case 1: set '@point[4],'@point[4]+1; break;
+		case 2: set '@point[2],'@point[2]+1; break;
+	}
+	mes "[ヘイスン]";
+	mes "世の中はお金が全て。";
+	mes "お金さえあれば何でもできる。";
+	mes "お金さえあれば、生命体すら";
 	mes "売り買いできると思う。";
 	next;
-	switch (select("はい","いいえ")) {
-		case 1:
-			set '@point[2],'@point[2]+1;
-			set '@point[5],'@point[5]+1;
-			set '@point[6],'@point[6]+1;
-			break;
-		case 2:
-			set '@point[1],'@point[1]+1;
-			set '@point[3],'@point[3]+1;
-			set '@point[4],'@point[4]+1;
-			break;
+	switch( select("はい","いいえ") ) {
+		case 1: set '@point[5],'@point[5]+1; break;
+		case 2: set '@point[3],'@point[3]+1; break;
 	}
 	mes "[ヘイスン]";
 	mes "今度は問題形式をちょっと変えます。";
@@ -3136,99 +3169,104 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 	mes "ください。";
 	next;
 	mes "[ヘイスン]";
-	mes "時間通りに動くことは…";
+	mes "時間通りに動くことは……";
 	next;
-	switch (select("息苦しい","良い事","関心ない")) {
+	switch( select("機械のように感じて息苦しい","良い事だと思う","関係ない、私は何事にも縛られない") ) {
 		case 1:
 			set '@point[1],'@point[1]+1;
 			set '@point[6],'@point[6]+1;
 			break;
 		case 2:
+			set '@point[2],'@point[2]+1;
 			set '@point[4],'@point[4]+1;
-			set '@point[5],'@point[5]+1;
 			break;
 		case 3:
-			set '@point[2],'@point[2]+1;
 			set '@point[3],'@point[3]+1;
+			set '@point[5],'@point[5]+1;
 			break;
 	}
 	mes "[ヘイスン]";
-	mes "あなたは、ある物を買う前に…";
+	mes "お店でとても欲しいものを見つけた。";
+	mes "衝動買いの誘惑を感じる。";
+	mes "そこであなたはそれを買う前に……";
 	next;
-	switch (select("必要な物なのか確認する","今、お金がいくらあるか確認する","買った後に考える")) {
+	switch( select("必要な物か確認する","今、お金がいくらあるか確認する","買った後に考える") ) {
 		case 1: set '@point[3],'@point[3]+1; break;
 		case 2: set '@point[5],'@point[5]+1; break;
 		case 3: set '@point[6],'@point[6]+1; break;
 	}
 	mes "[ヘイスン]";
-	mes "あなたは多くの人達と競争することが…";
+	mes "あなたは多くの人達と";
+	mes "競争することが……";
 	next;
-	switch (select("好きだ","まあまあだ","嫌いだ")) {
+	switch( select("好きだ","嫌いだ","どちらとも言えない") ) {
 		case 1:
-			set '@point[1],'@point[1]+1;
-			set '@point[2],'@point[2]+1;
+			set '@point[5],'@point[5]+1;
 			break;
 		case 2:
-			set '@point[3],'@point[3]+1;
 			set '@point[6],'@point[6]+1;
 			break;
 		case 3:
+			set '@point[1],'@point[1]+1;
 			set '@point[4],'@point[4]+1;
 			break;
 	}
 	mes "[ヘイスン]";
-	mes "あなたの助けを求める人達が";
-	mes "いるとしたら…";
+	mes "一人では重い仕事をしなければ";
+	mes "ならない。自分だけでは途方もなく";
+	mes "時間がかかるが、大勢でやればかなり";
+	mes "早くやり終えることができる。";
+	mes "そんな時あなたなら……";
 	next;
-	switch (select("どんなことでも積極的に手伝う","大したことじゃないと、放っておく","私と関係ないなら無視する")) {
-		case 1: set '@point[4],'@point[4]+1; break;
-		case 2: set '@point[3],'@point[3]+1; break;
-		case 3: set '@point[2],'@point[2]+1; break;
-	}
-	mes "[ヘイスン]";
-	mes "あなたにクラス委員、クラス副委員、";
-	mes "その他の委員になる機会があるなら…";
-	next;
-	switch (select("クラス委員を目指す","クラス副委員を目指す","その他の委員を目指す","やめる")) {
-		case 1: set '@point[1],'@point[1]+1; break;
+	switch( select("大変だとしても自分だけでやる","知り合いに助けを求める") ) {
+		case 1: set '@point[2],'@point[2]+1; break;
 		case 2: set '@point[5],'@point[5]+1; break;
-		case 3: set '@point[6],'@point[6]+1; break;
-		case 4: break;
 	}
 	mes "[ヘイスン]";
-	mes "あなたは偶然、鋭い鋏を拾った。";
-	mes "その時どんな考えをするだろう…";
+	mes "あなたに助けを求める人がいたら……";
 	next;
-	switch (select("「よく出来た鋏だな…」","「この鋏の持ち主は誰だ？」","「気をつけないと危ないな…」","「有名ブランド社製品だ」")) {
+	switch( select("すぐに助ける","状況を見てから判断する","自分と関係なければ無視する") ) {
+		case 1:
+			set '@point[4],'@point[4]+1;
+			break;
+		case 2:
+			set '@point[1],'@point[1]+1;
+			set '@point[3],'@point[3]+1;
+			break;
+		case 3:
+			set '@point[2],'@point[2]+1;
+			set '@point[5],'@point[5]+1;
+			set '@point[6],'@point[6]+1;
+			break;
+	}
+	mes "[ヘイスン]";
+	mes "道を歩いていると偶然、服を見つけた。";
+	mes "あなたならどう思う？";
+	next;
+	switch( select("「有名ブランド社製だ」","「この服の持ち主は誰だ？」","「持って帰ろう」","「そのままにしておこう」") ) {
 		case 1: set '@point[1],'@point[1]+1; break;
 		case 2: set '@point[4],'@point[4]+1; break;
-		case 3: set '@point[2],'@point[2]+1; break;
-		case 4: set '@point[5],'@point[5]+1; break;
+		case 3: set '@point[5],'@point[5]+1; break;
+		case 4: set '@point[2],'@point[2]+1; break;
 	}
 	mes "[ヘイスン]";
-	mes "会話の途中で立場が苦しくなった時…";
+	mes "会話の途中で立場が苦しくなったとき……";
 	next;
-	switch (select("冗談にしてごまかす","話題を変える","徹底的に原因を追求","何はともあれ謝る")) {
+	switch( select("冗談にしてごまかす","話題を変える","徹底的に原因を追究","何はともあれ謝る") ) {
 		case 1: set '@point[6],'@point[6]+1; break;
 		case 2: set '@point[1],'@point[1]+1; break;
 		case 3: set '@point[2],'@point[2]+1; break;
 		case 4: set '@point[4],'@point[4]+1; break;
 	}
-	if(Sex == 0) {
-		mes "[ヘイスン]";
-		mes "あなたの恋人が必要もない";
-		mes "くだらない記念品を買おうとしたら";
-		mes "あなたは…";
-	}
-	else {
-		mes "あなたの恋人が、必要もない";
-		mes "くだらない記念品を買ってくれと";
-		mes "言って来たらあなたは…";
-	}
+	mes "[ヘイスン]";
+	mes "あなたの恋人が、必要もない";
+	mes "くだらない記念品を買ってくれと";
+	mes "言ってきたらあなたは……";
 	next;
-	switch (select("どんな物でも恋人が望むなら","自分の考えを正直言う")) {
-		case 1: set '@point[3],'@point[3]+1; break;
+	switch( select("どんな物でも恋人が望むなら買う","断る","今度買ってあげると言ってごまかす") ) {
+		case 1: set '@point[1],'@point[1]+1; break;
 		case 2: set '@point[5],'@point[5]+1; break;
+		case 3: set '@point[6],'@point[6]+1; break;
 	}
 	mes "[ヘイスン]";
 	mes "検査はこれで終了です。";

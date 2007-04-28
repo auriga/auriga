@@ -3684,6 +3684,8 @@ int buildin_homunevolution(struct script_state *st);
 int buildin_recalcstatus(struct script_state *st);
 int buildin_sqlquery(struct script_state *st);
 int buildin_strescape(struct script_state *st);
+int buildin_dropitem(struct script_state *st);
+int buildin_getexp(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -3924,6 +3926,8 @@ struct script_function buildin_func[] = {
 	{buildin_recalcstatus,"recalcstatus","*"},
 	{buildin_sqlquery,"sqlquery","s*"},
 	{buildin_strescape,"strescape","s"},
+	{buildin_dropitem,"dropitem","siiiii"},
+	{buildin_getexp,"getexp","ii"},
 	{NULL,NULL,NULL}
 };
 
@@ -10521,5 +10525,81 @@ int buildin_strescape(struct script_state *st)
 	// TXTは何もしない
 	push_str(st->stack,C_STR,(unsigned char *)aStrdup(str));
 #endif
+	return 0;
+}
+
+/*==========================================
+ * アイテムドロップ
+ *------------------------------------------
+ */
+int buildin_dropitem(struct script_state *st)
+{
+	int nameid=0, flag=0, amount;
+	int x,y,m,tick;
+	char *str;
+	struct script_data *data;
+
+	str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x   = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y   = conv_num(st,& (st->stack->stack_data[st->start+4]));
+
+	data = &(st->stack->stack_data[st->start+5]);
+	get_val(st,data);
+	if(isstr(data)) {
+		const char *name = conv_str(st,data);
+		struct item_data *item_data = itemdb_searchname(name);
+		if(item_data)
+			nameid = item_data->nameid;
+	} else {
+		nameid = conv_num(st,data);
+	}
+
+	amount = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	tick   = conv_num(st,& (st->stack->stack_data[st->start+7]));
+
+	m = script_mapname2mapid(st,str);
+	if(m < 0)
+		return 0;
+
+	if(nameid < 0) {
+		nameid = itemdb_searchrandomid(-nameid);
+		flag   = 1;
+	}
+
+	if(nameid > 0) {
+		struct item item_tmp;
+		memset(&item_tmp,0,sizeof(item_tmp));
+		item_tmp.nameid = nameid;
+		if(!flag)
+			item_tmp.identify = 1;
+		else
+			item_tmp.identify = !itemdb_isequip3(nameid);
+
+		battle_config.flooritem_lifetime += tick;
+		map_addflooritem(&item_tmp,amount,m,x,y,NULL,NULL,NULL,0);
+		battle_config.flooritem_lifetime -= tick;
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * 経験値取得
+ *------------------------------------------
+ */
+int buildin_getexp(struct script_state *st)
+{
+	int base,job;
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+
+	base = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	job  = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	if(base < 0 || job < 0)
+		return 0;
+	pc_gainexp(sd,NULL,base,job);
+
 	return 0;
 }
