@@ -2669,7 +2669,7 @@ static int mobskill_command(struct block_list *bl, va_list ap )
 			break;
 	}
 
-	//ターゲット選別
+	// ターゲット選別
 	switch(target_type)
 	{
 		case MCT_MASTER:
@@ -2843,18 +2843,18 @@ static int mobskill_anothertarget(struct block_list *bl, va_list ap)
 			}
 			break;
 	}
-	if( atn_rand()%1000 < 1000/(++(*c)) )	//範囲内で等確率にする
+	if( atn_rand()%1000 < 1000/(++(*c)) )	// 範囲内で等確率にする
 		*target_id = bl->id;
 	return 1;
 }
 
 /*==========================================
- * 近くの味方でHPの減っているものを探す
+ * 近くの味方でHPの条件が合うものを探す
  *------------------------------------------
  */
-static int mob_getfriendhpltmaxrate_sub(struct block_list *bl,va_list ap)
+static int mob_getfriendhpmaxrate_sub(struct block_list *bl,va_list ap)
 {
-	int rate;
+	int cond,rate,diff;
 	struct block_list **fr;
 	struct mob_data *mmd = NULL;
 
@@ -2869,17 +2869,22 @@ static int mob_getfriendhpltmaxrate_sub(struct block_list *bl,va_list ap)
 	if( battle_check_target(&mmd->bl,bl,BCT_ENEMY)>0 )
 		return 0;
 
+	cond=va_arg(ap,int);
 	rate=va_arg(ap,int);
 	fr=va_arg(ap,struct block_list **);
-	if( status_get_hp(bl) < status_get_max_hp(bl)*rate/100 ) {
+
+	diff = status_get_hp(bl) - status_get_max_hp(bl)*rate/100;
+	if( (diff < 0 && cond == MSC_FRIENDHPLTMAXRATE) ||
+	    (diff > 0 && cond == MSC_FRIENDHPGTMAXRATE) )
+	{
 		int *c = va_arg(ap,int *);
-		if( atn_rand()%1000 < 1000/(++(*c)) )	//範囲内で等確率にする
+		if( atn_rand()%1000 < 1000/(++(*c)) )	// 範囲内で等確率にする
 			(*fr)=bl;
 	}
 	return 0;
 }
 
-static struct block_list *mob_getfriendhpltmaxrate(struct mob_data *md,int rate)
+static struct block_list *mob_getfriendhpmaxrate(struct mob_data *md,int cond,int rate)
 {
 	struct block_list *fr=NULL;
 	const int r=8;
@@ -2892,11 +2897,12 @@ static struct block_list *mob_getfriendhpltmaxrate(struct mob_data *md,int rate)
 	else
 		type = BL_MOB;
 
-	map_foreachinarea(mob_getfriendhpltmaxrate_sub, md->bl.m,
+	map_foreachinarea(mob_getfriendhpmaxrate_sub, md->bl.m,
 		md->bl.x-r ,md->bl.y-r, md->bl.x+r, md->bl.y+r,
-		type,md,rate,&fr,&c);
+		type,md,cond,rate,&fr,&c);
 	return fr;
 }
+
 /*==========================================
  * 近くの味方でステータス状態が合うものを探す
  *------------------------------------------
@@ -2936,7 +2942,7 @@ static int mob_getfriendstatus_sub(struct block_list *bl,va_list ap)
 		}
 		if( flag^( cond1==MSC_FRIENDSTATUSOFF ) ) {
 			int *c = va_arg(ap,int *);
-			if( atn_rand()%1000 < 1000/(++(*c)) )	//範囲内で等確率にする
+			if( atn_rand()%1000 < 1000/(++(*c)) )	// 範囲内で等確率にする
 				(*fr)=bl;
 		}
 	}
@@ -2966,33 +2972,33 @@ static struct block_list *mob_getfriendstatus(struct mob_data *md,int cond1,int 
  * 反撃可能な状態かどうか
  *------------------------------------------
  */
-static int mob_can_counterattack(struct mob_data *md)
+static int mob_can_counterattack(struct mob_data *md,struct block_list *target)
 {
 	int range = 0;
 	int c = 0, id = 0;
-	struct block_list *target = NULL;
 
 	nullpo_retr(0, md);
 
-	range  = mob_db[md->class_].range;
-	if(md->target_id > 0)
-		target = map_id2bl(md->target_id);
+	range = mob_db[md->class_].range;
 
-	if(target && target->type != BL_ITEM)
+	if(target)
 	{
-		// ダメージディレイ中で動けない場合を考慮しないように一時置換
+		// ダメージディレイ中は動けるとみなすので一時置換
 		unsigned int tick = md->ud.canmove_tick;
+		int flag;
+
 		md->ud.canmove_tick = 0;
 
-		if( unit_can_move(&md->bl) && !unit_isrunning(&md->bl) ) {	// 動けるとき
-			int ret = mob_can_reach(md,target,AREA_SIZE);
-			md->ud.canmove_tick = tick;		// 元に戻す
-			if(ret > 0)
-				return 1;
-		} else {			// 動けないとき
-			if( battle_check_range(&md->bl,target,range) )
-				return 1;
+		if( unit_can_move(&md->bl) && !unit_isrunning(&md->bl) ) {
+			// 動けるとき
+			flag = mob_can_reach(md,target,AREA_SIZE);
+		} else {
+			// 動けないとき
+			flag = battle_check_range(&md->bl,target,range);
 		}
+		md->ud.canmove_tick = tick;
+		if(flag)
+			return 1;
 	}
 
 	// ターゲットに反撃できない状態なので近くに攻撃できる相手がいるか探す
@@ -3092,7 +3098,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 
 	// ターゲットとマスターの情報取得
 	target = map_id2bl(md->target_id);
-	if(target && target->type != BL_PC && target->type != BL_MOB)
+	if(target && target->type != BL_PC && target->type != BL_MOB && target->type != BL_HOM)
 		target = NULL;
 
 	master = map_id2bl(md->master_id);
@@ -3126,24 +3132,27 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		switch( ms[i].cond1 ){
 		case MSC_ALWAYS:
 			flag=1; break;
-		case MSC_MYHPLTMAXRATE:		// HP< maxhp%
+		case MSC_MYHPLTMAXRATE:		// HP < maxhp%
 			flag=( md->hp < status_get_max_hp(&md->bl)*c2/100 ); break;
+		case MSC_MYHPGTMAXRATE:		// HP > maxhp%
+			flag=( md->hp > status_get_max_hp(&md->bl)*c2/100 ); break;
 		case MSC_MYSTATUSON:		// status[num] on
 		case MSC_MYSTATUSOFF:		// status[num] off
-			if( ms[i].cond2==-1 ){
+			if( c2==-1 ){
 				int j;
 				for(j=SC_STONE;j<=SC_BLIND && !flag;j++){
 					flag=(md->sc_data[j].timer!=-1 );
 				}
 			}else{
-				flag=( md->sc_data[ms[i].cond2].timer!=-1 );
+				flag=( md->sc_data[c2].timer!=-1 );
 			}
 			flag^=( ms[i].cond1==MSC_MYSTATUSOFF ); break;
 		case MSC_FRIENDHPLTMAXRATE:	// friend HP < maxhp%
-			flag=(( tbl=mob_getfriendhpltmaxrate(md,ms[i].cond2) )!=NULL ); break;
+		case MSC_FRIENDHPGTMAXRATE:	// friend HP > maxhp%
+			flag=(( tbl=mob_getfriendhpmaxrate(md,ms[i].cond1,c2) )!=NULL ); break;
 		case MSC_FRIENDSTATUSON:	// friend status[num] on
 		case MSC_FRIENDSTATUSOFF:	// friend status[num] off
-			flag=(( tbl=mob_getfriendstatus(md,ms[i].cond1,ms[i].cond2) )!=NULL ); break;
+			flag=(( tbl=mob_getfriendstatus(md,ms[i].cond1,c2) )!=NULL ); break;
 		case MSC_SLAVELT:		// slave < num
 			flag=( mob_countslave(md) < c2 ); break;
 		case MSC_ATTACKPCGT:	// attack pc > num
@@ -3178,7 +3187,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 				struct status_change *sc_data = status_get_sc_data(target);
 				if( !sc_data ){
 					flag = 0;
-				}else if( ms[i].cond2==-1 ){
+				}else if( c2==-1 ){
 					int j = 0;
 					if(sc_data[SC_STONE].timer!=-1)
 						flag=(sc_data[SC_STONE].val2==0);
@@ -3186,7 +3195,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 						flag=(sc_data[j].timer!=-1 );
 					}
 				}else{
-					flag=( sc_data[ms[i].cond2].timer!=-1 );
+					flag=( sc_data[c2].timer!=-1 );
 				}
 				flag^=( ms[i].cond1==MSC_TARGETSTATUSOFF );
 			}
@@ -3205,7 +3214,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 				struct status_change *sc_data = status_get_sc_data(master);
 				if( !sc_data ){
 					flag = 0;
-				}else if( ms[i].cond2==-1 ){
+				}else if( c2==-1 ){
 					int j = 0;
 					if(sc_data[SC_STONE].timer!=-1)
 						flag=(sc_data[SC_STONE].val2==0);
@@ -3213,7 +3222,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 						flag=(sc_data[j].timer!=-1 );
 					}
 				}else{
-					flag=( sc_data[ms[i].cond2].timer!=-1 );
+					flag=( sc_data[c2].timer!=-1 );
 				}
 				flag^=( ms[i].cond1==MSC_MASTERSTATUSOFF );
 			}
@@ -3231,7 +3240,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			break;
 		case MSC_RUDEATTACKED:
 			if(event >= 0) {
-				if(!mob_can_counterattack(md))
+				if(!mob_can_counterattack(md,target))
 					flag = 1;
 			}
 			break;
@@ -3781,87 +3790,87 @@ static int mob_readskilldb(void)
 		char str[32];
 		int id;
 	} cond1[] = {
-		{	"always",			MSC_ALWAYS				},
-		{	"myhpltmaxrate",	MSC_MYHPLTMAXRATE		},
-		{	"friendhpltmaxrate",MSC_FRIENDHPLTMAXRATE	},
-		{	"mystatuson",		MSC_MYSTATUSON			},
-		{	"mystatusoff",		MSC_MYSTATUSOFF			},
-		{	"friendstatuson",	MSC_FRIENDSTATUSON		},
-		{	"friendstatusoff",	MSC_FRIENDSTATUSOFF		},
-		{	"attackpcgt",		MSC_ATTACKPCGT			},
-		{	"attackpcge",		MSC_ATTACKPCGE			},
-		{	"slavelt",			MSC_SLAVELT				},
-		{	"slavele",			MSC_SLAVELE				},
-		{	"closedattacked",	MSC_CLOSEDATTACKED		},
-		{	"longrangeattacked",MSC_LONGRANGEATTACKED	},
-		{	"skillused",		MSC_SKILLUSED			},
-		{	"casttargeted",		MSC_CASTTARGETED		},
-		{	"targethpgtmaxrate",MSC_TARGETHPGTMAXRATE	},
-		{	"targethpltmaxrate",MSC_TARGETHPLTMAXRATE	},
-		{	"targethpgt",		MSC_TARGETHPGT			},
-		{	"targethplt",		MSC_TARGETHPLT			},
-		{	"targetstatuson",	MSC_TARGETSTATUSON		},
-		{	"targetstatusoff",	MSC_TARGETSTATUSOFF		},
-		{	"masterhpgtmaxrate",MSC_MASTERHPGTMAXRATE	},
-		{	"masterhpltmaxrate",MSC_MASTERHPLTMAXRATE	},
-		{	"masterstatuson",	MSC_MASTERSTATUSON		},
-		{	"masterstatusoff",	MSC_MASTERSTATUSOFF		},
-		{	"areaslavegt",		MSC_AREASLAVEGT			},
-		{	"areaslavele",		MSC_AREASLAVELE			},
-		{	"rudeattacked",		MSC_RUDEATTACKED		},
-		{	"onspawn",		MSC_SPAWN},
+		{ "always",            MSC_ALWAYS            },
+		{ "myhpltmaxrate",     MSC_MYHPLTMAXRATE     },
+		{ "friendhpltmaxrate", MSC_FRIENDHPLTMAXRATE },
+		{ "mystatuson",        MSC_MYSTATUSON        },
+		{ "mystatusoff",       MSC_MYSTATUSOFF       },
+		{ "friendstatuson",    MSC_FRIENDSTATUSON    },
+		{ "friendstatusoff",   MSC_FRIENDSTATUSOFF   },
+		{ "attackpcgt",        MSC_ATTACKPCGT        },
+		{ "attackpcge",        MSC_ATTACKPCGE        },
+		{ "slavelt",           MSC_SLAVELT           },
+		{ "slavele",           MSC_SLAVELE           },
+		{ "closedattacked",    MSC_CLOSEDATTACKED    },
+		{ "longrangeattacked", MSC_LONGRANGEATTACKED },
+		{ "skillused",         MSC_SKILLUSED         },
+		{ "casttargeted",      MSC_CASTTARGETED      },
+		{ "targethpgtmaxrate", MSC_TARGETHPGTMAXRATE },
+		{ "targethpltmaxrate", MSC_TARGETHPLTMAXRATE },
+		{ "targethpgt",        MSC_TARGETHPGT        },
+		{ "targethplt",        MSC_TARGETHPLT        },
+		{ "targetstatuson",    MSC_TARGETSTATUSON    },
+		{ "targetstatusoff",   MSC_TARGETSTATUSOFF   },
+		{ "masterhpgtmaxrate", MSC_MASTERHPGTMAXRATE },
+		{ "masterhpltmaxrate", MSC_MASTERHPLTMAXRATE },
+		{ "masterstatuson",    MSC_MASTERSTATUSON    },
+		{ "masterstatusoff",   MSC_MASTERSTATUSOFF   },
+		{ "areaslavegt",       MSC_AREASLAVEGT       },
+		{ "areaslavele",       MSC_AREASLAVELE       },
+		{ "rudeattacked",      MSC_RUDEATTACKED      },
+		{ "onspawn",           MSC_SPAWN             },
 	}, cond2[] ={
-		{	"anybad",		-1				},
-		{	"stone",		SC_STONE		},
-		{	"freeze",		SC_FREEZE		},
-		{	"stan",			SC_STAN			},
-		{	"sleep",		SC_SLEEP		},
-		{	"poison",		SC_POISON		},
-		{	"curse",		SC_CURSE		},
-		{	"silence",		SC_SILENCE		},
-		{	"confusion",	SC_CONFUSION	},
-		{	"blind",		SC_BLIND		},
-		{	"hiding",		SC_HIDING		},
-		{	"sight",		SC_SIGHT		},
-		{	"lexaeterna",	SC_AETERNA		},
+		{ "anybad",            -1                    },
+		{ "stone",             SC_STONE              },
+		{ "freeze",            SC_FREEZE             },
+		{ "stan",              SC_STAN               },
+		{ "sleep",             SC_SLEEP              },
+		{ "poison",            SC_POISON             },
+		{ "curse",             SC_CURSE              },
+		{ "silence",           SC_SILENCE            },
+		{ "confusion",         SC_CONFUSION          },
+		{ "blind",             SC_BLIND              },
+		{ "hiding",            SC_HIDING             },
+		{ "sight",             SC_SIGHT              },
+		{ "lexaeterna",        SC_AETERNA            },
 	}, state[] = {
-		{	"any",		MSS_ANY			},
-		{	"idle",		MSS_IDLE		},
-		{	"walk",		MSS_WALK		},
-		{	"attack",	MSS_ATTACK		},
-		{	"dead",		MSS_DEAD		},
-		{	"loot",		MSS_LOOT		},
-		{	"chase",	MSS_CHASE		},
-		{	"command",	MSS_COMMANDONLY	}
+		{ "any",               MSS_ANY               },
+		{ "idle",              MSS_IDLE              },
+		{ "walk",              MSS_WALK              },
+		{ "attack",            MSS_ATTACK            },
+		{ "dead",              MSS_DEAD              },
+		{ "loot",              MSS_LOOT              },
+		{ "chase",             MSS_CHASE             },
+		{ "command",           MSS_COMMANDONLY       },
 	}, target[] = {
-		{	"target",		MST_TARGET			},
-		{	"self",			MST_SELF			},
-		{	"friend",		MST_FRIEND			},
-		{	"master",		MST_MASTER			},
-		{	"slave",		MST_SLAVE			},
-		{	"command",		MST_COMMAND 			},
-		{	"modechange",		MST_MODECHANGE			},
-		{	"targetchange",		MST_TARGETCHANGE		},
-		{	"anothertarget",	MST_ANOTHERTARGET		},
-		{	"around5",		MST_AROUND5			},
-		{	"around6",		MST_AROUND6			},
-		{	"around7",		MST_AROUND7			},
-		{	"around8",		MST_AROUND8			},
-		{	"around1",		MST_AROUND1			},
-		{	"around2",		MST_AROUND2			},
-		{	"around3",		MST_AROUND3			},
-		{	"around4",		MST_AROUND4			},
-		{	"around",		MST_AROUND			},
+		{ "target",            MST_TARGET            },
+		{ "self",              MST_SELF              },
+		{ "friend",            MST_FRIEND            },
+		{ "master",            MST_MASTER            },
+		{ "slave",             MST_SLAVE             },
+		{ "command",           MST_COMMAND           },
+		{ "modechange",        MST_MODECHANGE        },
+		{ "targetchange",      MST_TARGETCHANGE      },
+		{ "anothertarget",     MST_ANOTHERTARGET     },
+		{ "around5",           MST_AROUND5           },
+		{ "around6",           MST_AROUND6           },
+		{ "around7",           MST_AROUND7           },
+		{ "around8",           MST_AROUND8           },
+		{ "around1",           MST_AROUND1           },
+		{ "around2",           MST_AROUND2           },
+		{ "around3",           MST_AROUND3           },
+		{ "around4",           MST_AROUND4           },
+		{ "around",            MST_AROUND            },
 	}, command_target[] = {
-		{	"target",	MCT_TARGET		},
-		{	"self",		MCT_SELF		},
-		{	"commander",MCT_COMMANDER	},
-		{	"slave",	MCT_SLAVE		},
-		{	"slaves",	MCT_SLAVES		},
-		{	"group", 	MCT_GROUP		},
-		{	"friend",	MCT_FRIEND		},
-		{	"friends",	MCT_FRIENDS		},
-		{	"master",	MCT_MASTER		},
+		{ "target",            MCT_TARGET            },
+		{ "self",              MCT_SELF              },
+		{ "commander",         MCT_COMMANDER         },
+		{ "slave",             MCT_SLAVE             },
+		{ "slaves",            MCT_SLAVES            },
+		{ "group",             MCT_GROUP             },
+		{ "friend",            MCT_FRIEND            },
+		{ "friends",           MCT_FRIENDS           },
+		{ "master",            MCT_MASTER            },
 	};
 
 	int x, lineno;

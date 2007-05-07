@@ -389,11 +389,11 @@ static int skill_am_twilight2(struct map_session_data* sd);
 static int skill_am_twilight3(struct map_session_data* sd);
 
 /* スキルユニットの配置情報を返す */
-struct skill_unit_layout skill_unit_layout[MAX_SKILL_UNIT_LAYOUT];
-int firewall_unit_pos;
-int icewall_unit_pos;
+static struct skill_unit_layout skill_unit_layout[MAX_SKILL_UNIT_LAYOUT];
+static int firewall_unit_pos;
+static int icewall_unit_pos;
 
-struct skill_unit_layout *skill_get_unit_layout(int skillid,int skilllv,struct block_list *src,int x,int y)
+static struct skill_unit_layout *skill_get_unit_layout(int skillid,int skilllv,struct block_list *src,int x,int y)
 {
 	int pos = skill_get_unit_layout_type(skillid,skilllv);
 	int dir;
@@ -1295,7 +1295,8 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
  *		SAB_NODAMAGE    : ダメージを発生させずに吹飛ばす
  *		SAB_NOPATHSTOP  : 吹き飛び経路に壁があったらそこで止まる
  *	Z: 吹き飛ばしセル数
--------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------
+ */
 int skill_blown( struct block_list *src, struct block_list *target,int count)
 {
 	int dx=0,dy=0,nx,ny;
@@ -1373,7 +1374,8 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 
 /*=========================================================================
  * スキル攻撃吹き飛ばし処理(カード追加効果用)
--------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------
+ */
 int skill_add_blown( struct block_list *src, struct block_list *target,int skillid,int flag)
 {
 	nullpo_retr(0, src);
@@ -1537,7 +1539,7 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 	return 0;
 }
 
-int skill_check_unit_range(int m,int x,int y,int skillid,int skilllv)
+static int skill_check_unit_range(int m,int x,int y,int skillid,int skilllv)
 {
 	int c = 0;
 	int range = skill_get_unit_range(skillid);
@@ -1580,7 +1582,7 @@ static int skill_check_unit_range2_sub( struct block_list *bl,va_list ap )
 	return 0;
 }
 
-int skill_check_unit_range2(int m,int x,int y,int skillid, int skilllv)
+static int skill_check_unit_range2(int m,int x,int y,int skillid, int skilllv)
 {
 	int c = 0;
 	int range = skill_get_unit_range(skillid);
@@ -6611,7 +6613,7 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
  * スキルユニットの発動イベント(タイマー発動)
  *------------------------------------------
  */
-int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsigned int tick)
+static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsigned int tick)
 {
 	struct skill_unit_group *sg;
 	struct block_list *ss;

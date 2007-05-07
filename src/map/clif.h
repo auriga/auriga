@@ -79,7 +79,7 @@ void clif_misceffect2(struct block_list *bl, int type);	// area
 void clif_misceffect3(struct block_list *bl, int type);	// self
 void clif_changeoption(struct block_list *bl);	// area
 void clif_useitemack(struct map_session_data *sd, int idx, int amount, unsigned char ok);	// self
-void clif_GlobalMessage(struct block_list *bl,char *message);
+void clif_GlobalMessage(struct block_list *bl,const char *message);
 void clif_createchat(struct map_session_data *sd, unsigned char fail);	// self
 void clif_dispchat(struct chat_data *cd, int fd);	// area or fd
 void clif_joinchatfail(struct map_session_data *sd, unsigned char fail);	// self
@@ -266,8 +266,8 @@ void clif_guild_xy(struct map_session_data *sd);
 // atcommand
 void clif_displaymessage(const int fd, const char* mes);
 void clif_disp_onlyself(const int fd, const char *mes);
-void clif_GMmessage(struct block_list *bl, char* mes, int len, int flag);
-void clif_announce(struct block_list *bl, char* mes, int len, unsigned long color, int flag);
+void clif_GMmessage(struct block_list *bl, const char* mes, int len, int flag);
+void clif_announce(struct block_list *bl, const char* mes, int len, unsigned long color, int flag);
 void clif_heal(int fd, int type, int val);
 void clif_resurrection(struct block_list *bl, unsigned short type);
 void clif_set0199(int fd, unsigned short type);
@@ -290,7 +290,7 @@ void clif_pet_food(struct map_session_data *sd, int foodid, unsigned char fail);
 void clif_friend_send_info( struct map_session_data *sd );
 void clif_friend_send_online(const int fd, int account_id, int char_id, int flag );
 void clif_friend_add_request(const int fd, struct map_session_data *from_sd );
-void clif_friend_add_ack(const int fd, int account_id, int char_id, char* name, unsigned short flag);
+void clif_friend_add_ack(const int fd, int account_id, int char_id, const char* name, unsigned short flag);
 void clif_friend_del_ack(const int fd, int account_id, int char_id );
 
 // ranking
@@ -298,10 +298,10 @@ void clif_blacksmith_point(const int fd,const int total,const int point);
 void clif_alchemist_point(const int fd,const int total,const int point);
 void clif_taekwon_point(const int fd,const int total,const int point);
 void clif_pk_point(const int fd,const int total,const int point);
-void clif_blacksmith_ranking(const int fd,char *charname[10],const int point[10]);
-void clif_alchemist_ranking(const int fd,char *charname[10],const int point[10]);
-void clif_taekwon_ranking(const int fd,char *charname[10],const int point[10]);
-void clif_pk_ranking(const int fd,char *charname[10],const int point[10]);
+void clif_blacksmith_ranking(const int fd,const char *charname[10],const int point[10]);
+void clif_alchemist_ranking(const int fd,const char *charname[10],const int point[10]);
+void clif_taekwon_ranking(const int fd,const char *charname[10],const int point[10]);
+void clif_pk_ranking(const int fd,const char *charname[10],const int point[10]);
 
 // mail
 void clif_openmailbox(const int fd);

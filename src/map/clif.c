@@ -5398,7 +5398,7 @@ void clif_disp_onlyself(const int fd, const char *mes)
  * 天の声を送信する
  *------------------------------------------
  */
-void clif_GMmessage(struct block_list *bl, char* mes, int len, int flag)
+void clif_GMmessage(struct block_list *bl, const char* mes, int len, int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+8);
 	int lp = (flag&0x10)? 8: 4;
@@ -5422,7 +5422,7 @@ void clif_GMmessage(struct block_list *bl, char* mes, int len, int flag)
  * グローバルメッセージ
  *------------------------------------------
  */
-void clif_GlobalMessage(struct block_list *bl,char *message)
+void clif_GlobalMessage(struct block_list *bl,const char *message)
 {
 	unsigned char buf[128];
 	int len;
@@ -5449,7 +5449,7 @@ void clif_GlobalMessage(struct block_list *bl,char *message)
  * 天の声（マルチカラー）を送信
  *------------------------------------------
  */
-void clif_announce(struct block_list *bl, char* mes, int len, unsigned long color, int flag)
+void clif_announce(struct block_list *bl, const char* mes, int len, unsigned long color, int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+16);
 
@@ -8204,7 +8204,7 @@ void clif_friend_add_request(const int fd, struct map_session_data *sd)
  * 友達リスト追加要請返答
  *------------------------------------------
  */
-void clif_friend_add_ack(const int fd, int account_id, int char_id, char* name, unsigned short flag)
+void clif_friend_add_ack(const int fd, int account_id, int char_id, const char* name, unsigned short flag)
 {
 	WFIFOW(fd,0) = 0x209;
 	WFIFOW(fd,2) = flag;
@@ -8248,7 +8248,7 @@ void clif_blacksmith_point(const int fd,const int total,const int point)
  * BSランキング
  *------------------------------------------
  */
-void clif_blacksmith_ranking(const int fd,char *charname[10],const int point[10])
+void clif_blacksmith_ranking(const int fd,const char *charname[10],const int point[10])
 {
 	int i;
 
@@ -8280,7 +8280,7 @@ void clif_alchemist_point(const int fd,const int total,const int point)
  * アルケミランキング
  *------------------------------------------
  */
-void clif_alchemist_ranking(const int fd,char *charname[10],const int point[10])
+void clif_alchemist_ranking(const int fd,const char *charname[10],const int point[10])
 {
 	int i;
 
@@ -8312,7 +8312,7 @@ void clif_taekwon_point(const int fd,const int total,const int point)
  * テコンランキング
  *------------------------------------------
  */
-void clif_taekwon_ranking(const int fd,char *charname[10],const int point[10])
+void clif_taekwon_ranking(const int fd,const char *charname[10],const int point[10])
 {
 	int i;
 
@@ -8344,7 +8344,7 @@ void clif_pk_point(const int fd,const int total,const int point)
  * 虐殺者ランキング
  *------------------------------------------
  */
-void clif_pk_ranking(const int fd,char *charname[10],const int point[10])
+void clif_pk_ranking(const int fd,const char *charname[10],const int point[10])
 {
 	int i;
 

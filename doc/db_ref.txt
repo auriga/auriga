@@ -533,13 +533,15 @@ delay    : スキル使用後のディレイ時間（ms）、ただしディレ�
 条件: 		(条件タイプ)        	(条件値は指定する値)
 	[常時型 : AIからの呼び出し]
 		always            	無条件
+		myhpgtmaxrate     	自分のHPが指定％を超えていたら
 		myhpltmaxrate     	自分のHPが指定％未満になったら
 		mystatuson        	自分がステータス異常(条件値)に掛かっていたら
 		mystatusoff       	自分がステータス異常(条件値)に掛かっていなかったら
+		friendhpgtmaxrate 	仲間のHPが指定％を超えていたら、範囲は周囲8セル固定
 		friendhpltmaxrate 	仲間のHPが指定％未満になったら、範囲は周囲8セル固定
 		friendstatuson    	仲間がステータス異常(条件値)に掛かっていたら、範囲は周囲8セル固定
 		friendstatusoff   	仲間がステータス異常(条件値)に掛かっていなかったら、範囲は周囲8セル固定
-		attackpcgt        	攻撃PCが指定数を超えたら
+		attackpcgt        	攻撃PCが指定数を超えていたら
 		attackpcge        	攻撃PCが指定数以上になったら
 		slavelt           	総手下数が指定数未満になったら
 		slavele           	総手下数が指定数以下になったら

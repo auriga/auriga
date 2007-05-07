@@ -6151,7 +6151,7 @@ int pc_setregstr(struct map_session_data *sd,int reg,char *str)
  * script用グローバル変数の値を読む
  *------------------------------------------
  */
-int pc_readglobalreg(struct map_session_data *sd,char *reg)
+int pc_readglobalreg(struct map_session_data *sd,const char *reg)
 {
 	int i;
 
@@ -6170,7 +6170,7 @@ int pc_readglobalreg(struct map_session_data *sd,char *reg)
  * script用グローバル変数の値を設定
  *------------------------------------------
  */
-int pc_setglobalreg(struct map_session_data *sd,char *reg,int val)
+int pc_setglobalreg(struct map_session_data *sd,const char *reg,int val)
 {
 	int i;
 
@@ -6213,7 +6213,7 @@ int pc_setglobalreg(struct map_session_data *sd,char *reg,int val)
  * script用アカウント変数の値を読む
  *------------------------------------------
  */
-int pc_readaccountreg(struct map_session_data *sd,char *reg)
+int pc_readaccountreg(struct map_session_data *sd,const char *reg)
 {
 	int i;
 
@@ -6230,7 +6230,7 @@ int pc_readaccountreg(struct map_session_data *sd,char *reg)
  * script用アカウント変数の値を設定
  *------------------------------------------
  */
-int pc_setaccountreg(struct map_session_data *sd,char *reg,int val)
+int pc_setaccountreg(struct map_session_data *sd,const char *reg,int val)
 {
 	int i;
 
@@ -6270,7 +6270,7 @@ int pc_setaccountreg(struct map_session_data *sd,char *reg,int val)
  * script用アカウント変数2の値を読む
  *------------------------------------------
  */
-int pc_readaccountreg2(struct map_session_data *sd,char *reg)
+int pc_readaccountreg2(struct map_session_data *sd,const char *reg)
 {
 	int i;
 
@@ -6287,7 +6287,7 @@ int pc_readaccountreg2(struct map_session_data *sd,char *reg)
  * script用アカウント変数2の値を設定
  *------------------------------------------
  */
-int pc_setaccountreg2(struct map_session_data *sd,char *reg,int val)
+int pc_setaccountreg2(struct map_session_data *sd,const char *reg,int val)
 {
 	int i;
 

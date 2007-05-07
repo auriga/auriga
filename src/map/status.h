@@ -1,6 +1,16 @@
 #ifndef _STATUS_H_
 #define _STATUS_H_
 
+struct status_pretimer {
+	int timer;
+	int target_id;
+	int map;
+	int type;
+	int val1,val2,val3,val4;
+	int tick;
+	int flag;
+};
+
 // ステータス異常データベース
 struct scdata_db {
 	short save;
@@ -8,7 +18,7 @@ struct scdata_db {
 	int disable;
 };
 
-// パラメータ所得系 battle.c より移動
+// パラメータ所得系
 int status_get_class(struct block_list *bl);
 int status_get_dir(struct block_list *bl);
 int status_get_lv(struct block_list *bl);
@@ -88,18 +98,17 @@ int status_clearpretimer(struct block_list *bl);
 int status_change_attacked_end(struct block_list *bl);
 int status_change_hidden_end(struct block_list *bl);
 
-//状態チェック
+// 状態チェック
 int status_check_no_magic_damage(struct block_list *bl);
+
 #ifdef DYNAMIC_SC_DATA
 int status_calloc_sc_data(struct block_list *bl);
 int status_free_sc_data(struct block_list *bl);
 int status_check_dummy_sc_data(struct block_list *bl);
 #endif
+
 // ステータス計算
-int status_calc_pc_stop_begin(struct block_list *bl);
-int status_calc_pc_stop_end(struct block_list *bl);
 int status_calc_pc(struct map_session_data* sd,int first);
-int status_calc_skilltree(struct map_session_data *sd);
 int status_get_overrefine_bonus(int lv);
 int status_percentrefinery(struct map_session_data *sd,struct item *item);
 int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item *item);
@@ -108,14 +117,12 @@ extern int current_equip_card_id;
 
 extern struct status_change dummy_sc_data[MAX_STATUSCHANGE];
 
-//DB再読込用
+// DB再読込用
 int status_readdb(void);
 
 int do_init_status(void);
 
 enum {	// struct map_session_data の status_changeの番号テーブル
-// SC_SENDMAX未満はクライアントへの通知あり。
-// 2-2次職の値はなんかめちゃくちゃっぽいので暫定。たぶん変更されます。
 	//SC_SENDMAX				=128,
 
 	SC_PROVOKE				= 0,	/* プロボック */

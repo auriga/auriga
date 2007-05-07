@@ -12,6 +12,17 @@
 #define MAX_SKILL_ARROW_DB	 150
 #define MAX_SKILL_ABRA_DB	 350
 
+struct skill_timerskill {
+	int timer;
+	int src_id;
+	int target_id;
+	int map;
+	short x,y;
+	short skill_id,skill_lv;
+	int type;
+	int flag;
+};
+
 // スキルデータベース
 struct skill_db {
 	int range[MAX_SKILL_LEVEL],hit,inf,pl,nk,max;
@@ -39,6 +50,7 @@ struct skill_db {
 #define MAX_SKILL_UNIT_LAYOUT	50
 #define MAX_SQUARE_LAYOUT		5	// 11*11のユニット配置が最大
 #define MAX_SKILL_UNIT_COUNT ((MAX_SQUARE_LAYOUT*2+1)*(MAX_SQUARE_LAYOUT*2+1))
+
 struct skill_unit_layout {
 	int count;
 	int dx[MAX_SKILL_UNIT_COUNT];
@@ -46,29 +58,29 @@ struct skill_unit_layout {
 };
 
 enum {
-	UF_DEFNOTENEMY		= 0x0001,	// defnotenemy 設定でBCT_NOENEMYに切り替え
-	UF_NOREITERATION	= 0x0002,	// 重複置き禁止
-	UF_NOFOOTSET		= 0x0004,	// 足元置き禁止
-	UF_NOOVERLAP		= 0x0008,	// ユニット効果が重複しない
-	UF_PATHCHECK		= 0x0010,	// オブジェクト発生時に射線チェック
-	UF_DANCE			= 0x0100,	// ダンススキル
-	UF_ENSEMBLE			= 0x0200,	// 合奏スキル
+	UF_DEFNOTENEMY   = 0x0001,	// defnotenemy 設定でBCT_NOENEMYに切り替え
+	UF_NOREITERATION = 0x0002,	// 重複置き禁止
+	UF_NOFOOTSET     = 0x0004,	// 足元置き禁止
+	UF_NOOVERLAP     = 0x0008,	// ユニット効果が重複しない
+	UF_PATHCHECK     = 0x0010,	// オブジェクト発生時に射線チェック
+	UF_DANCE         = 0x0100,	// ダンススキル
+	UF_ENSEMBLE      = 0x0200,	// 合奏スキル
 };
 
 enum {
-	PRD_WEAPON_L1	=    1,
-	PRD_WEAPON_L2	=    2,
-	PRD_WEAPON_L3	=    3,
-	PRD_ORE		=   16,
-	PRD_PHARMACY	=   32,
-	PRD_COIN	=   64,
-	PRD_NUGGET	=  128,
-	PRD_CDP		=  256,
-	PRD_CONVERTER	=  512,
-	PRD_COOKING	= 1000,
-	PRD_SCROLL	= 1001,
-	PRD_SYN_POTION	= 1002,
-	PRD_ORIDEOCON	= 1003,
+	PRD_WEAPON_L1  =    1,
+	PRD_WEAPON_L2  =    2,
+	PRD_WEAPON_L3  =    3,
+	PRD_ORE        =   16,
+	PRD_PHARMACY   =   32,
+	PRD_COIN       =   64,
+	PRD_NUGGET     =  128,
+	PRD_CDP        =  256,
+	PRD_CONVERTER  =  512,
+	PRD_COOKING    = 1000,
+	PRD_SCROLL     = 1001,
+	PRD_SYN_POTION = 1002,
+	PRD_ORIDEOCON  = 1003,
 };
 
 extern struct skill_db skill_db[MAX_SKILL_DB+MAX_HOMSKILL_DB+MAX_GUILDSKILL_DB];
@@ -174,8 +186,6 @@ int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage
 
 int skill_castfix( struct block_list *bl, int time );
 int skill_delayfix( struct block_list *bl, int time, int cast );
-int skill_check_unit_range(int m,int x,int y,int skillid, int skilllv);
-int skill_check_unit_range2(int m,int x,int y,int skillid, int skilllv);
 int skill_unit_move(struct block_list *bl,unsigned int tick,int flag);
 int skill_unit_move_unit_group( struct skill_unit_group *group, int m,int dx,int dy);
 
@@ -245,7 +255,7 @@ int skill_fail_weaponrefine(struct map_session_data *sd,int idx);
 // スキル攻撃一括処理
 int skill_blown( struct block_list *src, struct block_list *target,int count);
 
-int skill_castend_delay (struct block_list* src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag);
+int skill_castend_delay(struct block_list* src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag);
 
 // バシリカ発動停止
 void skill_basilica_cancel( struct block_list *bl );
@@ -843,79 +853,79 @@ enum {
 	NJ_NEN,
 	NJ_ISSEN,
 
-	MB_FIGHTING = 545,//#ファイティング#
-	MB_NEUTRAL,//#ニュートラル,//#
-	MB_TAIMING_PUTI,//#テイミングプティ,//#
-	MB_WHITEPOTION,//#ホワイトポーション,//#
-	MB_CARDPITCHER,//#カードピッチャー,//#
-	MB_MENTAL,//#メンタル,//#
-	MB_PETPITCHER,//#ペットピッチャー,//#
-	MB_BODYSTUDY,//#ボディスタディ,//#
-	MB_BODYALTER,//#ボディオルター,//#
-	MB_PETMEMORY,//#ペットメモリー,//#
-	MB_M_TELEPORT,//#テレポート,//#
-	MB_B_GAIN,//#ゲイン,//#
-	MB_M_GAIN,//#ゲイン,//#
-	MB_MISSION,//#ミッション,//#
-	MB_MUNAKKNOWLEDGE,//#ムナックノウリッジ,//#
-	MB_MUNAKBALL,//#ムナックボール,//#
-	MB_SCROLL,//#スクロール,//#
-	MB_B_GATHERING,//#ギャザリング,//#
-	MB_B_EXCLUDE,//#エクスクルード,//#
-	MB_B_DRIFT,//#ドリフト,//#
-	MB_M_DRIFT,//#ドリフト,//#
-	MB_B_WALLRUSH,//#ウォールラッシュ,//#
-	MB_M_WALLRUSH,//#ウォールラッシュ,//#
-	MB_B_WALLSHIFT,//#ウォールシフト,//#
-	MB_M_WALLCRASH,//#ウォールクラッシュ,//#
-	MB_M_REINCARNATION,//#リインカーネーション,//#
-	MB_B_EQUIP,//#イクイップ,//#
+	MB_FIGHTING = 545,
+	MB_NEUTRAL,
+	MB_TAIMING_PUTI,
+	MB_WHITEPOTION,
+	MB_CARDPITCHER,
+	MB_MENTAL,
+	MB_PETPITCHER,
+	MB_BODYSTUDY,
+	MB_BODYALTER,
+	MB_PETMEMORY,
+	MB_M_TELEPORT,
+	MB_B_GAIN,
+	MB_M_GAIN,
+	MB_MISSION,
+	MB_MUNAKKNOWLEDGE,
+	MB_MUNAKBALL,
+	MB_SCROLL,
+	MB_B_GATHERING,
+	MB_B_EXCLUDE,
+	MB_B_DRIFT,
+	MB_M_DRIFT,
+	MB_B_WALLRUSH,
+	MB_M_WALLRUSH,
+	MB_B_WALLSHIFT,
+	MB_M_WALLCRASH,
+	MB_M_REINCARNATION,
+	MB_B_EQUIP,
 
-	SL_DEATHKNIGHT = 572,//#デスナイトの魂,//#
-	SL_COLLECTOR,//#ダークコレクターの魂,//#
-	SL_NINJA,//#忍者の魂,//#
-	SL_GUNNER,//#ガンスリンガーの魂,//#
-	AM_TWILIGHT4,//#トワイライトファーマシー4,//#
+	SL_DEATHKNIGHT = 572,
+	SL_COLLECTOR,
+	SL_NINJA,
+	SL_GUNNER,
+	AM_TWILIGHT4,
 
-	DE_PASSIVE = 577,//#パッシブ,//#
-	DE_PATTACK,//#Pアタック,//#
-	DE_PSPEED,//#Pスピード ,//#
-	DE_PDEFENSE,//#Pディフェンス ,//#
-	DE_PCRITICAL,//#Pクリティカル,//#
-	DE_PHP,//#PHP,//#
-	DE_PSP,//#PSP,//#
-	DE_RESET,//#リセット,//#
-	DE_RANKING,//#ランキング,//#
-	DE_PTRIPLE,//#Pトリプル,//#
-	DE_ENERGY,//#エナジー,//#
-	DE_NIGHTMARE,//#ナイトメア,//#
-	DE_SLASH,//#スラッシュ,//#
-	DE_COIL,//#コイル,//#
-	DE_WAVE,//#ウェーブ,//#
-	DE_REBIRTH,//#リバース,//#
-	DE_AURA,//#オーラ,//#
-	DE_FREEZER,//#フリーザー,//#
-	DE_CHANGEATTACK,//#チェンジアタック,//#
-	DE_PUNISH,//#パニッシュ,//#
-	DE_POISON,//#ポイズン,//#
-	DE_INSTANT,//#インスタント,//#
-	DE_WARNING,//#ワーニング,//#
-	DE_RANKEDKNIFE,//#ランクドナイフ,//#
-	DE_RANKEDGRADIUS,//#ランクドグラディウス,//#
-	DE_GAUGE,//#Gオージェ,//#
-	DE_GTIME,//#Gタイム,//#
-	DE_GPAIN,//#Gペイン,//#
-	DE_GSKILL,//#Gスキル,//#
-	DE_GKILL,//#Gキル,//#
-	DE_ACCEL,//#アクセル,//#
-	DE_BLOCKDOUBLE,//#ダブルブロック,//#
-	DE_BLOCKMELEE,//#メイレイブロック,//#
-	DE_BLOCKFAR,//#ファーブロック,//#
-	DE_FRONTATTACK,//#フロントアタック,//#
-	DE_DANGERATTACK,//#デンジャーアタック,//#
-	DE_TWINATTACK,//#ツインアタック,//#
-	DE_WINDATTACK,//#ウィンドアタック,//#
-	DE_WATERATTACK = 615,//#ウォーターアタック,//#
+	DE_PASSIVE = 577,
+	DE_PATTACK,
+	DE_PSPEED,
+	DE_PDEFENSE,
+	DE_PCRITICAL,
+	DE_PHP,
+	DE_PSP,
+	DE_RESET,
+	DE_RANKING,
+	DE_PTRIPLE,
+	DE_ENERGY,
+	DE_NIGHTMARE,
+	DE_SLASH,
+	DE_COIL,
+	DE_WAVE,
+	DE_REBIRTH,
+	DE_AURA,
+	DE_FREEZER,
+	DE_CHANGEATTACK,
+	DE_PUNISH,
+	DE_POISON,
+	DE_INSTANT,
+	DE_WARNING,
+	DE_RANKEDKNIFE,
+	DE_RANKEDGRADIUS,
+	DE_GAUGE,
+	DE_GTIME,
+	DE_GPAIN,
+	DE_GSKILL,
+	DE_GKILL,
+	DE_ACCEL,
+	DE_BLOCKDOUBLE,
+	DE_BLOCKMELEE,
+	DE_BLOCKFAR,
+	DE_FRONTATTACK,
+	DE_DANGERATTACK,
+	DE_TWINATTACK,
+	DE_WINDATTACK,
+	DE_WATERATTACK = 615,
 
 	KN_CHARGEATK = 1001,
 	CR_SHRINK,
@@ -1033,4 +1043,3 @@ extern int GuildSkillStatusChangeTable[];
 struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,int skilllv,int x,int y,int flag);
 
 #endif
-

@@ -5789,7 +5789,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
  * ステータス再計算を一時停止する
  *------------------------------------------
  */
-int status_calc_pc_stop_begin(struct block_list *bl)
+static int status_calc_pc_stop_begin(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_PC)
@@ -5801,7 +5801,7 @@ int status_calc_pc_stop_begin(struct block_list *bl)
  * ステータス再計算を再開する
  *------------------------------------------
  */
-int status_calc_pc_stop_end(struct block_list *bl)
+static int status_calc_pc_stop_end(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 	if(bl->type==BL_PC){

@@ -515,7 +515,7 @@ is_atcommand(const int fd, struct map_session_data* sd, const char* message, int
  * Return the message string of the specified number
  *------------------------------------------
  */
-char * msg_txt(int msg_number)
+const char * msg_txt(int msg_number)
 {
 	if (msg_number < 0 || msg_number >= MSG_NUMBER) {
 		if (battle_config.error_log)

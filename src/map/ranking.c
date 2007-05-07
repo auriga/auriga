@@ -216,7 +216,7 @@ int ranking_set_data(int ranking_id,struct Ranking_Data *rd)
 int ranking_clif_display(struct map_session_data * sd,int ranking_id)
 {
 	int i;
-	char *charname[10];
+	const char *charname[10];
 	int point[10];
 
 	nullpo_retr(0, sd);
@@ -280,7 +280,7 @@ int ranking_display(struct map_session_data * sd,int ranking_id,int begin,int en
 
 	for(i=begin; i<=end; i++)
 	{
-		char *name = (ranking_data[ranking_id][i].name[0] == 0)? msg_txt(143): ranking_data[ranking_id][i].name;
+		const char *name = (ranking_data[ranking_id][i].name[0] == 0)? msg_txt(143): ranking_data[ranking_id][i].name;
 		sprintf(output, msg_txt(141), i+1, name, ranking_data[ranking_id][i].point);
 		clif_displaymessage(sd->fd, output);
 	}

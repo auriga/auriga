@@ -212,27 +212,6 @@ struct skill_unit_group {
 	struct linkdb_node *tickset;
 };
 
-struct skill_timerskill {
-	int timer;
-	int src_id;
-	int target_id;
-	int map;
-	short x,y;
-	short skill_id,skill_lv;
-	int type;
-	int flag;
-};
-
-struct status_pretimer {
-	int timer;
-	int target_id;
-	int map;
-	int type;
-	int val1,val2,val3,val4;
-	int tick;
-	int flag;
-};
-
 struct cell_xy {
 	short x;
 	short y;

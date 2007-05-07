@@ -1,4 +1,19 @@
 ----------------------------------------
+//0175 [2007/05/08] by Rayce
+
+・AthenaProject2296を参考に以下を実装、thanks to Sheepさん
+	Mobスキルの使用条件に myhpgtmaxrate, friendhpgtmaxrate を追加（mob.c）
+
+・Mobが反撃可能かどうかを判定を行う際、ダメージディレイが消える場合があったので修正（mob.c）
+・Mobのスキル使用条件の一部でホムがターゲットとして認識されてなかったので修正（mob.c）
+・mob_can_counterattack() の引数を増やしてターゲットを二重に検索しないように改善（mob.c）
+
+・一部の関数および引数にconstを付ける
+・skill_timerskill構造体をmap.hからskill.hへ移動
+・status_pretimer構造体をmap.hからstatus.hへ移動
+・skill.cとstatus.cを少し整理
+
+----------------------------------------
 //0174 [2007/04/29] by Rayce
 
 ・AthenaProject2295よりmerge、thanks to Blazeさん
