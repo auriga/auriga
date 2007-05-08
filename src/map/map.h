@@ -1053,7 +1053,7 @@ struct chat_data * map_id2cd(int);
 struct skill_unit * map_id2su(int);
 struct block_list * map_id2bl(int);
 
-int map_mapname2mapid(char*);
+int map_mapname2mapid(const char*);
 int map_mapname2ipport(char*,int*,int*);
 int map_setipport(char *name,unsigned long ip,int port);
 int map_eraseipport(char *name,unsigned long ip,int port);

@@ -1,4 +1,17 @@
 ----------------------------------------
+//0176 [2007/05/09] by Rayce
+
+・mob.cの全体的な整形
+・以下の関数の処理を少し改善（mob.c）
+	mob_can_reach()
+	mobskill_anothertarget()
+	mobskill_use()
+
+・0175に引き続き一部の関数および引数にconstを付ける
+・0150以降、ギルド城にカプラとガーディアンが設置できなくなっていた問題を修正
+　（script/npc/gvg/npc_gvg_steward.txt）
+
+----------------------------------------
 //0175 [2007/05/08] by Rayce
 
 ・AthenaProject2296を参考に以下を実装、thanks to Sheepさん

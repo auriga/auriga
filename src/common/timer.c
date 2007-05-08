@@ -44,7 +44,7 @@ struct timer_func_list {
 static struct timer_func_list* tfl_root=NULL;
 
 //
-int add_timer_func_list(int (*func)(int,unsigned int,int,int),char* name)
+int add_timer_func_list(int (*func)(int,unsigned int,int,int),const char* name)
 {
 	struct timer_func_list* tfl;
 
@@ -57,7 +57,7 @@ int add_timer_func_list(int (*func)(int,unsigned int,int,int),char* name)
 	return 0;
 }
 
-char* search_timer_func_list(int (*func)(int,unsigned int,int,int))
+const char* search_timer_func_list(int (*func)(int,unsigned int,int,int))
 {
 	struct timer_func_list* tfl;
 	for(tfl = tfl_root;tfl;tfl = tfl->next) {

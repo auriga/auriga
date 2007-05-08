@@ -132,9 +132,9 @@ enum {
 int mobdb_searchname(const char *str);
 int mobdb_checkid(const int mob_id);
 
-int mob_once_spawn(struct map_session_data *sd,char *mapname,
+int mob_once_spawn(struct map_session_data *sd,const char *mapname,
 	int x,int y,const char *mobname,int class_,int amount,const char *event);
-int mob_once_spawn_area(struct map_session_data *sd,char *mapname,
+int mob_once_spawn_area(struct map_session_data *sd,const char *mapname,
 	int x0,int y0,int x1,int y1,
 	const char *mobname,int class_,int amount,const char *event);
 
@@ -178,8 +178,8 @@ int mob_countslave(struct mob_data *md);
 
 int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl);
 void mob_reload(void);
-int mob_delayspawn(int tid,unsigned int tick,int m,int n);
-int mob_unlocktarget(struct mob_data *md,int tick);
+int mob_delayspawn(int tid,unsigned int tick,int id,int data);
+int mob_unlocktarget(struct mob_data *md,unsigned int tick);
 int mob_droprate_fix(int item,int drop);
 
 int mob_ai_hard_add(struct mob_data *md);

@@ -245,7 +245,7 @@ function	script	StewardMain	{
 			mes "お勧め致します。";
 			close;
 		}
-		if(getgdskilllv(getcharid(2),GD_GUARDIANRESEARCH) == 0) {
+		if(getgdskilllv(getcharid(2),10002) == 0) {
 			mes "[執事"+strnpcinfo(0)+"]";
 			mes "マスター…ガーディアン設置に";
 			mes "必要な研究知識が不足しています。";
@@ -285,7 +285,7 @@ function	script	StewardMain	{
 				mes "なりません。";
 				close;
 			}
-			if(getgdskilllv(getcharid(2),GD_KAFRACONTACT) == 0) {
+			if(getgdskilllv(getcharid(2),10001) == 0) {
 				mes "[執事"+strnpcinfo(0)+"]";
 				mes "マスター…まだカプラ本社との";
 				mes "契約が結ばれていません。";

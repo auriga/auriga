@@ -7969,7 +7969,7 @@ void clif_callpartner(struct map_session_data *sd)
  * 離婚完了通知
  *------------------------------------------
  */
-void clif_divorced(struct map_session_data *sd, char *name)
+void clif_divorced(struct map_session_data *sd, const char *name)
 {
 	int fd;
 
@@ -12322,7 +12322,7 @@ int clif_disconnect(int fd)
  */
 struct {
 	void (*func)(int fd,struct map_session_data *sd, int cmd);
-	char *name;
+	const char *name;
 } clif_parse_func[]={
 	{clif_parse_WantToConnection,"wanttoconnection"},
 	{clif_parse_LoadEndAck,"loadendack"},
