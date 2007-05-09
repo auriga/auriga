@@ -952,9 +952,10 @@ int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 	MYSQL_ROW  sql_row = NULL;
 
 	memset(item,0,sizeof(struct item) * max);
+
 	switch (tableswitch) {
 	case TABLE_INVENTORY:
-		tablename    = inventory_db; // no need for sprintf here as *_db are char*.
+		tablename    = inventory_db;
 		selectoption = "char_id";
 		break;
 	case TABLE_CART:
@@ -977,7 +978,7 @@ int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 	sprintf(
 		tmp_sql,"SELECT `id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
 		"`card0`, `card1`, `card2`, `card3` FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id
-	); // TBR
+	);
 
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", tablename, mysql_error(&mysql_handle));
@@ -1014,7 +1015,7 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 
 	switch (tableswitch) {
 	case TABLE_INVENTORY:
-		tablename    = inventory_db; // no need for sprintf here as *_db are char*.
+		tablename    = inventory_db;
 		selectoption = "char_id";
 		break;
 	case TABLE_CART:
@@ -1070,7 +1071,7 @@ static int char_sql_init(void)
 {
 	char_db_ = numdb_init();
 
-	//DB connection initialized
+	// DB connection initialized
 	mysql_init(&mysql_handle);
 	printf("Connect Character DB server");
 	if(char_server_charset[0]) {
@@ -1712,6 +1713,7 @@ int char_sql_load_all(struct char_session_data* sd,int account_id)
 	MYSQL_ROW  sql_row = NULL;
 
 	memset(&found_id,0,sizeof(found_id));
+
 	//search char.
 	sprintf(tmp_sql, "SELECT `char_id` FROM `%s` WHERE `account_id` = '%d'",char_db, account_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
@@ -1746,6 +1748,7 @@ int char_sql_load_all(struct char_session_data* sd,int account_id)
 int char_sql_delete_sub(int char_id)
 {
 	struct mmo_chardata *p = (struct mmo_chardata *)numdb_search(char_db_,char_id);
+
 	if(p) {
 		numdb_erase(char_db_,char_id);
 		aFree(p);
@@ -1959,16 +1962,15 @@ static struct dbt *gm_account_db;
 
 int isGM(int account_id)
 {
-	struct gm_account *p;
+	struct gm_account *p = (struct gm_account *)numdb_search(gm_account_db,account_id);
 
-	p = (struct gm_account *)numdb_search(gm_account_db,account_id);
 	if( p == NULL)
 		return 0;
 
 	return p->level;
 }
 
-void read_gm_account(void)
+static void read_gm_account(void)
 {
 	char line[8192];
 	struct gm_account *p;
@@ -2030,7 +2032,7 @@ void read_gm_account(void)
 	return;
 }
 
-int mmo_char_sync_timer(int tid,unsigned int tick,int id,int data)
+static int mmo_char_sync_timer(int tid,unsigned int tick,int id,int data)
 {
 	char_sync();
 	inter_sync();
@@ -2081,7 +2083,7 @@ static int char_log(char *fmt,...)
 }
 #endif
 
-int count_users(void)
+static int count_users(void)
 {
 	if (login_fd >= 0 && session[login_fd]) {
 		int i, users;
@@ -2219,8 +2221,10 @@ int get_account_reg2(struct char_session_data *sd,struct global_reg *reg)
 }
 
 // 離婚
-int char_divorce(const struct mmo_charstatus *st){
-	if(st == NULL) return 0;
+int char_divorce(const struct mmo_charstatus *st)
+{
+	if(st == NULL)
+		return 0;
 
 	if(st->partner_id){
 		int i;
@@ -2348,7 +2352,7 @@ int char_ranking_update(int ranking_id,int rank,struct Ranking_Data *rd)
 }
 
 // ランキングデータ削除
-int char_ranking_delete(int char_id)
+static int char_ranking_delete(int char_id)
 {
 	int i,j;
 
@@ -2460,7 +2464,8 @@ int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,int ip)
 }
 
 // ソケットのデストラクタ
-int parse_login_disconnect(int fd) {
+int parse_login_disconnect(int fd)
+{
 	if (fd == login_fd)
 		login_fd = -1;
 
@@ -2474,6 +2479,7 @@ int parse_tologin(int fd)
 
 //	printf("parse_tologin : %d %d %d\n",fd,RFIFOREST(fd),RFIFOW(fd,0));
 	sd = (struct char_session_data *)session[fd]->session_data;
+
 	while(RFIFOREST(fd)>=2){
 		switch(RFIFOW(fd,0)){
 		case 0x2711:
@@ -2486,6 +2492,7 @@ int parse_tologin(int fd)
 			RFIFOSKIP(fd,3);
 			session[fd]->auth = -1; // 認証終了を socket.c に伝える
 			break;
+
 		case 0x2713:
 			if(RFIFOREST(fd)<15)
 				return 0;
@@ -2531,8 +2538,8 @@ int parse_tologin(int fd)
 			RFIFOSKIP(fd,15);
 			break;
 
-#ifdef AC_MAIL
-		case 0x2716:	// キャラ削除(メールアドレス確認後)
+		// キャラ削除(メールアドレス確認後)
+		case 0x2716:
 			if(RFIFOREST(fd)<11)
 				return 0;
 			{
@@ -2576,8 +2583,8 @@ int parse_tologin(int fd)
 			}
 			break;
 
-#endif//AC_MAIL
-		case 0x2721:	// gm reply
+		// gm reply
+		case 0x2721:
 			{
 				// SQL 化が面倒くさいので保留
 				unsigned char buf[16];
@@ -2588,10 +2595,11 @@ int parse_tologin(int fd)
 				WBUFL(buf,2)=RFIFOL(fd,2);
 				WBUFL(buf,6)=RFIFOL(fd,6);
 				mapif_sendall(buf,10);
-	//			printf("char -> map\n");
 			}
 			break;
-		case 0x2723:	// changesex reply
+
+		// changesex reply
+		case 0x2723:
 			if(RFIFOREST(fd)<7)
 				return 0;
 			{
@@ -2631,10 +2639,10 @@ int parse_tologin(int fd)
 				WBUFB(buf,6)=RFIFOB(fd,6);
 				mapif_sendall(buf,7);
 				RFIFOSKIP(fd,7);
-	//			printf("char -> map\n");
 			}
 			break;
-			// account_reg2変更通知
+
+		// account_reg2変更通知
 		case 0x2729:
 			{
 				struct global_reg reg[ACCOUNT_REG2_NUM];
@@ -2656,10 +2664,11 @@ int parse_tologin(int fd)
 				WBUFW(buf,0)=0x2b11;
 				mapif_sendall(buf,WBUFW(buf,2));
 				RFIFOSKIP(fd,RFIFOW(fd,2));
-	//			printf("char: save_account_reg_reply\n");
+				//printf("char: save_account_reg_reply\n");
 			}
 			break;
-			// アカウント削除通知
+
+		// アカウント削除通知
 		case 0x272a:
 			{
 				// 該当キャラクターの削除
@@ -2674,7 +2683,8 @@ int parse_tologin(int fd)
 				RFIFOSKIP(fd,6);
 			}
 			break;
-		//charメンテナンス状態変更応答
+
+		// charメンテナンス状態変更応答
 		case 0x272c:
 			{
 				unsigned char buf[4];
@@ -2687,6 +2697,7 @@ int parse_tologin(int fd)
 				RFIFOSKIP(fd,3);
 			}
 			break;
+
 		// 暗号化ログインのチャレンジ返答
 		case 0x272e:
 			{
@@ -2717,6 +2728,7 @@ int parse_tologin(int fd)
 				RFIFOSKIP(login_fd,RFIFOW(fd,2));
 			}
 			break;
+
 		// 新規ログインのため同一アカウントを切断
 		case 0x2730:
 			if(RFIFOREST(fd)<6)
@@ -2748,6 +2760,7 @@ int parse_tologin(int fd)
 				RFIFOSKIP(fd,6);
 			}
 			break;
+
 		default:
 			close(fd);
 			session[fd]->eof=1;
@@ -2762,8 +2775,9 @@ int parse_tologin(int fd)
  * mapが含まれているmap-serverを探す
  *------------------------------------------
  */
-static int search_mapserver(char *map) {
-	int i , j;
+static int search_mapserver(char *map)
+{
+	int i, j;
 	char map_temp[16]; // 15 + NULL
 
 	strncpy(map_temp, map, 16);
@@ -2836,7 +2850,8 @@ int char_erasemap(int fd, int id)
 	return 0;
 }
 
-int parse_map_disconnect_sub(void *key,void *data,va_list ap) {
+static int parse_map_disconnect_sub(void *key,void *data,va_list ap)
+{
 	int fd   = va_arg(ap,int);
 	int ip   = va_arg(ap,int);
 	int port = va_arg(ap,int);
@@ -2856,7 +2871,8 @@ int parse_map_disconnect_sub(void *key,void *data,va_list ap) {
 	return 0;
 }
 
-int parse_map_disconnect(int fd) {
+int parse_map_disconnect(int fd)
+{
 	int id;
 
 	for(id = 0; id < MAX_MAP_SERVERS; id++)
@@ -3157,7 +3173,7 @@ int parse_frommap(int fd)
 			RFIFOSKIP(fd,RFIFOW(fd,2));
 			break;
 
-		//性別変換要求
+		// 性別変換要求
 		case 0x2b0c:
 			if(RFIFOREST(fd)<4)
 				return 0;
@@ -3203,11 +3219,11 @@ int parse_frommap(int fd)
 				//WBUFW(buf,0)=0x2b11;
 				//mapif_sendall(buf,WBUFW(buf,2));
 				RFIFOSKIP(fd,RFIFOW(fd,2));
-	//			printf("char: save_account_reg (from map)\n");
+				//printf("char: save_account_reg (from map)\n");
 			}
 			break;
 
-		//mapサーバ 有効化
+		// mapサーバ 有効化
 		case 0x2b13:
 			if(RFIFOREST(fd)<3)
 				return 0;
@@ -3216,13 +3232,13 @@ int parse_frommap(int fd)
 			RFIFOSKIP(fd,3);
 			break;
 
-		//charサーバ メンテナンス状態に
+		// charサーバ メンテナンス状態に
 		case 0x2b14:
 			if(RFIFOREST(fd)<3)
 				return 0;
 			char_maintenance=RFIFOB(fd,2);
 			printf("char: maintenance: %d\n",char_maintenance);
-			//loginに通知
+			// loginに通知
 			if (login_fd >= 0 && session[login_fd])
 			{
 				WFIFOW(login_fd,0)=0x272b;
@@ -3232,7 +3248,7 @@ int parse_frommap(int fd)
 			RFIFOSKIP(fd,3);
 			break;
 
-		//キャラクター切断を他mapに通知
+		// キャラクター切断を他mapに通知
 		case 0x2b18:
 			if(RFIFOREST(fd)<10)
 				return 0;
@@ -3251,7 +3267,7 @@ int parse_frommap(int fd)
 			}
 			break;
 
-		//離婚
+		// 離婚
 		case 0x2b20:
 			if(RFIFOREST(fd)<6)
 				return 0;
@@ -3263,7 +3279,6 @@ int parse_frommap(int fd)
 					WBUFW(buf,0)=0x2b12;
 					WBUFL(buf,2)=cd1->st.char_id;
 					mapif_sendall(buf,6);
-					// 離婚
 					char_divorce(&cd1->st);
 				}
 				RFIFOSKIP(fd,6);
@@ -3332,7 +3347,6 @@ int parse_frommap(int fd)
 					WBUFL(buf,2)=cd1->st.char_id;
 					memcpy(buf, RFIFOP(fd,6), 24);
 					mapif_sendall(buf,30);
-					// 養子解体
 					char_break_adoption(&cd1->st);
 				}
 				RFIFOSKIP(fd,30);
@@ -3418,7 +3432,8 @@ static int char_mapif_init(int fd)
 	return inter_mapif_init(fd);
 }
 
-int parse_char_disconnect(int fd) {
+int parse_char_disconnect(int fd)
+{
 	if (fd == login_fd)
 		login_fd = -1;
 
@@ -3426,7 +3441,8 @@ int parse_char_disconnect(int fd) {
 }
 
 // 他マップにログインしているキャラクター情報を送信する
-int parse_char_sendonline(void *key,void *data,va_list ap) {
+static int parse_char_sendonline(void *key,void *data,va_list ap)
+{
 	int fd   = va_arg(ap,int);
 	struct char_online *c = (struct char_online*)data;
 
@@ -3481,20 +3497,20 @@ int parse_char(int fd)
 			cmd = 0xffff;	// パケットダンプを表示させる
 
 		switch(cmd){
-		case 0x20b:		//20040622暗号化ragexe対応
+		case 0x20b:		// 20040622暗号化ragexe対応
 			if(RFIFOREST(fd)<19)
 				return 0;
 			RFIFOSKIP(fd,19);
 			break;
 
-		case 0x258:		//20051214 nProtect関係 Part 1
+		case 0x258:		// 20051214 nProtect関係 Part 1
 			memset(WFIFOP(fd,0),0,18);
 			WFIFOW(fd,0)=0x0227;
 			WFIFOSET(fd,18);
 			RFIFOSKIP(fd,2);
 			break;
 
-		case 0x228:		//20051214 nProtect関係 Part 2
+		case 0x228:		// 20051214 nProtect関係 Part 2
 			if(RFIFOREST(fd)<18)
 				return 0;
 			WFIFOW(fd,0)=0x0259;
@@ -3724,7 +3740,6 @@ int parse_char(int fd)
 		case 0x68:	// 削除
 			if(RFIFOREST(fd)<46)
 				return 0;
-#if defined(TXT_ONLY) && defined(AC_MAIL)
 			if (login_fd >= 0) {
 				WFIFOW(login_fd,0)=0x2715;
 				WFIFOL(login_fd,2)=sd->account_id;
@@ -3732,39 +3747,17 @@ int parse_char(int fd)
 				memcpy(WFIFOP(login_fd,10), RFIFOP(fd,6), 40);
 				WFIFOSET(login_fd,50);
 			}
-#else /* TXT_ONLY && AC_MAIL */
-			for(i=0;i<max_char_slot;i++){
-				const struct mmo_chardata *cd = sd->found_char[i];
-				if(cd && cd->st.char_id == RFIFOL(fd,2)){
-					char_delete(cd);
-					for(ch=i;ch<max_char_slot-1;ch++)
-						sd->found_char[ch]=sd->found_char[ch+1];
-					sd->found_char[max_char_slot-1] = NULL;
-					break;
-				}
-			}
-			if( i==max_char_slot ){
-				WFIFOW(fd,0)=0x70;
-				WFIFOB(fd,2)=0;
-				WFIFOSET(fd,3);
-			} else {
-				WFIFOW(fd,0)=0x6f;
-				WFIFOSET(fd,2);
-			}
-#endif
 			RFIFOSKIP(fd,46);
 			break;
 
 		case 0x2b2a:	// マップサーバー暗号化ログインのチャレンジ要求
 			RFIFOSKIP(fd, 2);
-			if(sd){
+			if(sd) {
 				printf("char: illegal md5key request.");
 				close(fd);
 				session[fd]->eof=1;
 				return 0;
-			}
-			else
-			{
+			} else {
 				struct cram_session_data *csd=(struct cram_session_data *)(session[fd]->session_data=aCalloc(1,sizeof(struct cram_session_data)));
 
 				// 暗号化用のチャレンジ生成
@@ -3899,9 +3892,8 @@ int parse_char(int fd)
 // 全てのMAPサーバーにデータ送信（送信したmap鯖の数を返す）
 int mapif_sendall(unsigned char *buf,unsigned int len)
 {
-	int i, c;
+	int i, c = 0;
 
-	c = 0;
 	for(i = 0; i < MAX_MAP_SERVERS; i++) {
 		int fd;
 		if ((fd = server_fd[i]) >= 0) {
@@ -3917,9 +3909,8 @@ int mapif_sendall(unsigned char *buf,unsigned int len)
 // 自分以外の全てのMAPサーバーにデータ送信（送信したmap鯖の数を返す）
 int mapif_sendallwos(int sfd,unsigned char *buf,unsigned int len)
 {
-	int i,c;
+	int i, c = 0;
 
-	c = 0;
 	for(i = 0; i < MAX_MAP_SERVERS; i++) {
 		int fd;
 		if ((fd = server_fd[i]) >= 0 && fd != sfd) {
@@ -3948,12 +3939,23 @@ int mapif_send(int fd,unsigned char *buf,unsigned int len)
 	return 0;
 }
 
+void mapif_parse_CharConnectLimit(int fd)
+{
+	int limit = RFIFOL(fd,2);
+
+	if (limit < 0)
+		limit = 0;
+	printf("char:max_connect_user change %d->%d\n", max_connect_user, limit);
+	max_connect_user = limit;
+
+	return;
+}
+
 int send_users_tologin(int tid,unsigned int tick,int id,int data)
 {
 	if (login_fd >= 0 && session[login_fd] && session[login_fd]->auth) {
-		int i, users;
+		int i, users = 0;
 
-		users = 0;
 		for(i = 0; i < MAX_MAP_SERVERS; i++)
 			if (server_fd[i] >= 0)
 				users += server[i].users;
@@ -3975,7 +3977,7 @@ int send_users_tologin(int tid,unsigned int tick,int id,int data)
 	return 0;
 }
 
-int check_connect_login_server(int tid,unsigned int tick,int id,int data)
+static int check_connect_login_server(int tid,unsigned int tick,int id,int data)
 {
 	if (login_fd < 0 || session[login_fd] == NULL) {
 		login_fd = make_connection(login_ip, login_port);
@@ -4149,7 +4151,6 @@ static void char_config_read(const char *cfgName)
 	return;
 }
 
-
 static void char_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 {
 	struct socket_data *sd = session[fd];
@@ -4171,7 +4172,6 @@ static void char_socket_ctrl_panel_func(int fd,char* usage,char* user,char* stat
 
 	return;
 }
-
 
 static int gm_account_db_final(void *key,void *data,va_list ap)
 {
@@ -4287,15 +4287,4 @@ int do_init(int argc,char **argv)
 	char_set_offline(-1);
 
 	return 0;
-}
-
-void mapif_parse_CharConnectLimit(int fd) {
-	int limit = RFIFOL(fd,2);
-
-	if (limit < 0)
-		limit = 0;
-	printf("char:max_connect_user change %d->%d\n", max_connect_user, limit);
-	max_connect_user = limit;
-
-	return;
 }

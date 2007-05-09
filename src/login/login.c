@@ -1266,7 +1266,7 @@ int parse_fromchar(int fd)
 				//printf("login 0x2715 mail[%s:%s]\n",ac->mail,RFIFOP(fd,10));
 				WFIFOB(fd,10)=(ac && strcmp(ac->mail,RFIFOP(fd,10))==0)?0:1;
 #else
-				WFIFOB(fd,10)=( strcmp( "", RFIFOP(fd,10) )==0 )? 0:1;
+				WFIFOB(fd,10)=0;
 #endif
 				WFIFOW(fd, 0)=0x2716;
 				WFIFOL(fd, 2)=RFIFOL(fd,2);

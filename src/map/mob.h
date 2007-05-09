@@ -165,7 +165,6 @@ int mob_deleteslave(struct mob_data *md);
 
 int mob_class_change_randam(struct mob_data *md,int lv);
 int mob_class_change(struct mob_data *md,int *value,int value_count);
-int mob_class_change_id(struct mob_data *md,int mob_id);
 int mob_warp(struct mob_data *md,int m,int x,int y,int type);
 
 

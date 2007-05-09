@@ -364,8 +364,6 @@ int guild_txt_init(void)
 	if( (fp=fopen(guild_txt,"r"))==NULL )
 		return 1;
 	while(fgets(line,sizeof(line),fp)){
-		int i,j=0;
-
 		g=(struct guild *)aCalloc(1,sizeof(struct guild));
 		if(guild_fromstr(line,g)==0 && g->guild_id>0){
 			if( g->guild_id >= guild_newid)
@@ -1444,7 +1442,7 @@ void guild_sql_delete(int guild_id)
 	for(i=0;i<MAX_GUILDCASTLE;i++) {
 		if(castle_db[i].guild_id == guild_id) {
 			memset(&castle_db[i],0,sizeof(castle_db[0]));
-			gc->castle_id = i;
+			castle_db[i].castle_id = i;
 		}
 	}
 	// printf("]\n");
