@@ -22,8 +22,8 @@ struct npc_data* npc_name2id(const char *name);
 
 int npc_get_new_npc_id(void);
 
-void npc_addsrcfile(char *);
-void npc_delsrcfile(char *);
+void npc_addsrcfile(const char *);
+void npc_delsrcfile(const char *);
 int do_final_npc(void);
 int do_init_npc(void);
 int npc_event_do_oninit(void);

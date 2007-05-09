@@ -297,6 +297,7 @@ int map_freeblock( void *bl )
 	}
 	return block_free_lock;
 }
+
 /*==========================================
  * blockのfreeを一時的に禁止する
  *------------------------------------------
@@ -305,6 +306,7 @@ int map_freeblock_lock(void)
 {
 	return ++block_free_lock;
 }
+
 /*==========================================
  * blockのfreeのロックを解除する
  * このとき、ロックが完全になくなると
@@ -315,10 +317,7 @@ int map_freeblock_unlock(void)
 {
 	if( (--block_free_lock)==0 ){
 		int i;
-//		if(block_free_count>0) {
-//			if(battle_config.error_log)
-//				printf("map_freeblock_unlock: free %d object\n",block_free_count);
-//		}
+
 		for(i=0;i<block_free_count;i++){
 			aFree(block_free[i]);
 			block_free[i] = NULL;
@@ -332,11 +331,10 @@ int map_freeblock_unlock(void)
 	return block_free_lock;
 }
 
-// map_freeblock_lock() を呼んで map_freeblock_unlock() を呼ばない
-// 関数があったので、定期的にblock_free_lockをリセットするようにする。
-// この関数は、do_timer() のトップレベルから呼ばれるので、
-// block_free_lock を直接いじっても支障無いはず。
-
+/*==========================================
+ * 定期的にblock_free_lockをリセット
+ *------------------------------------------
+ */
 static int map_freeblock_timer(int tid,unsigned int tick,int id,int data)
 {
 	if(block_free_lock > 0) {
@@ -344,15 +342,13 @@ static int map_freeblock_timer(int tid,unsigned int tick,int id,int data)
 		block_free_lock = 1;
 		map_freeblock_unlock();
 	}
-	// else {
-	// 	printf("map_freeblock_timer: check ok\n");
-	// }
 	return 0;
 }
 
 //
 // block化処理
 //
+
 /*==========================================
  * map[]のblock_listから繋がっている場合に
  * bl->prevにbl_headのアドレスを入れておく
@@ -566,7 +562,7 @@ struct skill_unit *map_find_skill_unit_oncell(struct block_list *target,int x,in
  * type!=0 ならその種類のみ
  *------------------------------------------
  */
-void map_foreachinarea_sub(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,va_list ap)
+static void map_foreachinarea_sub(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,va_list ap)
 {
 	int bx,by;
 	struct block_list *bl;
@@ -1825,6 +1821,7 @@ int map_getcellp(struct map_data* m,int x,int y,cell_t cellchk)
 void map_setcell(int m,int x,int y,int cell)
 {
 	int j;
+
 	if(x<0 || x>=map[m].xs || y<0 || y>=map[m].ys)
 		return;
 	j=x+y*map[m].xs;
@@ -2020,20 +2017,20 @@ static void map_readwater(const char *watertxt)
 }
 
 /*==========================================
-* マップキャッシュに追加する
-*===========================================*/
-
+ * マップキャッシュに追加する
+ *------------------------------------------
+ */
 // マップキャッシュの最大値
 #define MAX_MAP_CACHE 768
 
-//各マップごとの最小限情報を入れるもの、READ_FROM_BITMAP用
+// 各マップごとの最小限情報を入れるもの、READ_FROM_BITMAP用
 struct map_cache_info {
-	char fn[32];//ファイル名
-	int xs,ys; //幅と高さ
+	char fn[32];		// ファイル名
+	int xs,ys;		// 幅と高さ
 	int water_height;
-	int pos;  // データが入れてある場所
-	int compressed;     // zilb通せるようにする為の予約
-	int compressed_len; // zilb通せるようにする為の予約
+	int pos;  		// データが入れてある場所
+	int compressed;		// zilb通せるようにする為の予約
+	int compressed_len;	// zilb通せるようにする為の予約
 }; // 56 byte
 
 struct {
@@ -2049,10 +2046,20 @@ struct {
 	int dirty;
 } map_cache;
 
-static int map_cache_open(char *fn);
-static void map_cache_close(void);
-static int map_cache_read(struct map_data *m);
-static int map_cache_write(struct map_data *m);
+static void map_cache_close(void)
+{
+	if(!map_cache.fp)
+		return;
+	if(map_cache.dirty) {
+		fseek(map_cache.fp,0,SEEK_SET);
+		fwrite(&map_cache.head,1,sizeof(struct map_cache_head),map_cache.fp);
+		fwrite(map_cache.map,map_cache.head.nmaps,sizeof(struct map_cache_info),map_cache.fp);
+	}
+	fclose(map_cache.fp);
+	aFree(map_cache.map);
+	map_cache.fp = NULL;
+	return;
+}
 
 static int map_cache_open(char *fn)
 {
@@ -2095,25 +2102,12 @@ static int map_cache_open(char *fn)
 	return 0;
 }
 
-static void map_cache_close(void)
-{
-	if(!map_cache.fp) { return; }
-	if(map_cache.dirty) {
-		fseek(map_cache.fp,0,SEEK_SET);
-		fwrite(&map_cache.head,1,sizeof(struct map_cache_head),map_cache.fp);
-		fwrite(map_cache.map,map_cache.head.nmaps,sizeof(struct map_cache_info),map_cache.fp);
-	}
-	fclose(map_cache.fp);
-	aFree(map_cache.map);
-	map_cache.fp = NULL;
-	return;
-}
-
-int map_cache_read(struct map_data *m)
+static int map_cache_read(struct map_data *m)
 {
 	int i;
 
-	if(!map_cache.fp) { return 0; }
+	if(!map_cache.fp)
+		return 0;
 	for(i = 0;i < map_cache.head.nmaps ; i++) {
 		if(!strcmp(m->name,map_cache.map[i].fn)) {
 			if(map_cache.map[i].water_height != map_waterheight(m->name)) {
@@ -2328,7 +2322,8 @@ static void map_delmap(char *mapname)
 
 /*==========================================
  * マップ1枚読み込み
- * ===================================================*/
+ *------------------------------------------
+ */
 static int map_readmap(int m,char *fn,int *map_cache)
 {
 	size_t size;
@@ -2463,14 +2458,18 @@ static int map_who_sub(void *key,void *data,va_list ap)
 
 	return 0;
 }
+
 int map_who(int fd)
 {
 	numdb_foreach( charid_db, map_who_sub, fd );
 	return 0;
 }
 
-//PKサーバーに一括変更
-int map_pk_server(int flag)
+/*==========================================
+ * PKサーバーに一括変更
+ *------------------------------------------
+ */
+static int map_pk_server(int flag)
 {
 	int i,count=0;
 
@@ -2494,8 +2493,11 @@ int map_pk_server(int flag)
 	return 1;
 }
 
-//PKフィールドのアイテムドロップを一括変更
-int map_pk_nightmaredrop(int flag)
+/*==========================================
+ * PKフィールドのアイテムドロップを一括変更
+ *------------------------------------------
+ */
+static int map_pk_nightmaredrop(int flag)
 {
 	int m,i,count=0;
 
@@ -2526,6 +2528,7 @@ int map_pk_nightmaredrop(int flag)
 	printf(" (count:%d/%d)\n",count,map_num);
 	return 1;
 }
+
 /*==========================================
  * 設定ファイルを読み込む
  *------------------------------------------
@@ -2723,6 +2726,7 @@ static int nick_db_final(void *key,void *data,va_list ap)
 
 	return 0;
 }
+
 static int charid_db_final(void *key,void *data,va_list ap)
 {
 	struct charid2nick *p;
@@ -2736,12 +2740,13 @@ static int charid_db_final(void *key,void *data,va_list ap)
 
 	return 0;
 }
+
 void do_final(void)
 {
 	int i;
 	unsigned int tick = gettick();
 
-	chrif_mapactive(0);	//マップサーバー停止中
+	chrif_mapactive(0);	// マップサーバー停止中
 
 	guild_flush_expcache();				// ギルドExpをフラッシュ
 	clif_foreachclient(chrif_disconnect_sub);	// ここで先にキャラを全て切断しておく
@@ -2789,6 +2794,11 @@ void do_final(void)
 		map = NULL;
 	}
 	map_num = 0;
+
+	if(waterlist) {
+		aFree(waterlist);
+		waterlist_num = 0;
+	}
 
 	if(map_db)
 		strdb_final(map_db,NULL);

@@ -59,7 +59,7 @@ int npc_get_new_npc_id(void)
 {
 	if(npc_id == END_NPC_NUM+1) {	// 警告は一度だけ
 		printf("npc_get_new_id : ID is over END_NPC_NUM %d\n",END_NPC_NUM);
-	} else if(npc_id >= 0x7fffffff) {
+	} else if(npc_id == 0x7fffffff) {
 		printf("npc_get_new_id : ID is overflow !!\n");
 		exit(1);		// 整合性が取れなくなるので落とす
 	}
@@ -99,6 +99,7 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 int npc_enable(const char *name,int flag)
 {
 	struct npc_data *nd = (struct npc_data *)strdb_search(npcname_db,name);
+
 	if (nd==NULL)
 		return 0;
 
@@ -202,6 +203,7 @@ static int npc_event_doall_sub(void *key,void *data,va_list ap)
 
 	return 0;
 }
+
 int npc_event_doall(const char *name)
 {
 	int c = 0;
@@ -242,6 +244,7 @@ static int npc_event_doall_id_sub(void *key,void *data,va_list ap)
 
 	return 0;
 }
+
 int npc_event_doall_id(const char *name, int rid, int m)
 {
 	int c = 0;
@@ -348,6 +351,7 @@ int npc_timerevent(int tid,unsigned int tick,int id,int data)
 	run_script(nd->u.scr.script,te->pos,0,nd->bl.id);
 	return 0;
 }
+
 /*==========================================
  * タイマーイベント開始
  *------------------------------------------
@@ -376,6 +380,7 @@ int npc_timerevent_start(struct npc_data *nd)
 	nd->u.scr.timerid = add_timer(gettick()+next,npc_timerevent,nd->bl.id,next);
 	return 0;
 }
+
 /*==========================================
  * タイマーイベント終了
  *------------------------------------------
@@ -393,6 +398,7 @@ int npc_timerevent_stop(struct npc_data *nd)
 	}
 	return 0;
 }
+
 /*==========================================
  * タイマー値の所得
  *------------------------------------------
@@ -409,6 +415,7 @@ int npc_gettimerevent_tick(struct npc_data *nd)
 		tick += (int)(gettick() - nd->u.scr.timertick);
 	return tick;
 }
+
 /*==========================================
  * タイマー値の設定
  *------------------------------------------
@@ -419,7 +426,7 @@ int npc_settimerevent_tick(struct npc_data *nd,int newtimer)
 
 	nullpo_retr(0, nd);
 
-	flag= nd->u.scr.nexttimer;
+	flag = nd->u.scr.nexttimer;
 
 	npc_timerevent_stop(nd);
 	nd->u.scr.timer=newtimer;
@@ -791,7 +798,7 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned short *item_list)
 		pc_additem(sd,&item_tmp,item_list[i*2]);
 	}
 
-	//商人経験値
+	// 商人経験値
 	if (battle_config.shop_exp > 0 && z > 0. && (skill = pc_checkskill(sd,MC_DISCOUNT)) > 0) {
 		if (sd->status.skill[MC_DISCOUNT].flag != 0)
 			skill = sd->status.skill[MC_DISCOUNT].flag - 2;
@@ -868,7 +875,7 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 	}
 	pc_getzeny(sd, (int)z);
 
-	//商人経験値
+	// 商人経験値
 	if (battle_config.shop_exp > 0 && z > 0. && (skill = pc_checkskill(sd,MC_OVERCHARGE)) > 0) {
 		if (sd->status.skill[MC_OVERCHARGE].flag != 0)
 			skill = sd->status.skill[MC_OVERCHARGE].flag - 2;
@@ -891,65 +898,78 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
  * 読み込むnpcファイルのクリア
  *------------------------------------------
  */
-void npc_clearsrcfile(struct npc_src_list *p)
+static void npc_clearsrcfile(void)
 {
-	while( p ) {
-		struct npc_src_list *p2=p;
-		p=p->next;
-		aFree(p2);
+	struct npc_src_list *node, *node2;
+
+	node = npc_src_first;
+	while( node ) {
+		node2 = node->next;
+		aFree( node );
+		node = node2;
 	}
-	npc_src_first=NULL;
-	npc_src_last=NULL;
+	npc_src_first = NULL;
+	npc_src_last  = NULL;
 }
 
 /*==========================================
  * 読み込むnpcファイルの追加
  *------------------------------------------
  */
-void npc_addsrcfile(char *name)
+void npc_addsrcfile(const char *name)
 {
-	struct npc_src_list *data;
-	size_t len;
+	struct npc_src_list *node;
 
-	if ( strcmpi(name,"clear") == 0 ) {
-		npc_clearsrcfile(npc_src_first);
+	if(strcmpi(name,"clear") == 0) {
+		npc_clearsrcfile();
 		return;
 	}
 
-	len = sizeof(*data) + strlen(name);
-	data = (struct npc_src_list *)aCalloc(1,len);
-	data->next = NULL;
-	strncpy(data->name, name, strlen(name)+1);
+	node = (struct npc_src_list *)aCalloc(1,sizeof(struct npc_src_list) + strlen(name));
+	strncpy(node->name, name, strlen(name)+1);
 
-	if (npc_src_first == NULL)
-		npc_src_first = data;
-	if (npc_src_last)
-		npc_src_last->next = data;
+	if(npc_src_first == NULL) {
+		node->prev = NULL;
+		npc_src_first = node;
+	}
+	if(npc_src_last) {
+		node->prev = npc_src_last;
+		npc_src_last->next = node;
+	}
 
-	npc_src_last = data;
+	node->next = NULL;
+	npc_src_last = node;
 }
 
 /*==========================================
  * 読み込むnpcファイルの削除
  *------------------------------------------
  */
-void npc_delsrcfile(char *name)
+void npc_delsrcfile(const char *name)
 {
-	struct npc_src_list *p=npc_src_first,*pp=NULL,**lp=&npc_src_first;
+	struct npc_src_list *node, *node2;
 
-	if ( strcmpi(name,"all")==0 ) {
-		npc_clearsrcfile(npc_src_first);
+	if(strcmpi(name,"all") == 0) {
+		npc_clearsrcfile();
 		return;
 	}
 
-	for( ; p; lp=&p->next,pp=p,p=p->next ) {
-		if ( strcmp(p->name,name)==0 ) {
-			*lp=p->next;
-			if ( npc_src_last==p )
-				npc_src_last=pp;
-			aFree(p);
-			break;
+	// 重複したファイルがあるので全ループ
+	node = npc_src_first;
+	while( node ) {
+		node2 = node->next;
+		if(strcmp(node->name,name) == 0) {
+			if(node->prev == NULL)
+				npc_src_first = node->next;
+			else
+				node->prev->next = node->next;
+			if(node->next == NULL)
+				npc_src_last = node->prev;
+			else
+				node->next->prev = node->prev;
+			aFree( node );
 		}
+		node = node2;
 	}
 }
 
@@ -957,7 +977,7 @@ void npc_delsrcfile(char *name)
  * npcファイル行の読み飛ばし
  *------------------------------------------
  */
-char *npc_skip_line(unsigned char *p, int *comment_flag)
+static char *npc_skip_line(unsigned char *p, int *comment_flag)
 {
 	while(isspace(*p))
 		p++;
@@ -1186,11 +1206,12 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4)
 
 	return 0;
 }
+
 /*==========================================
  * NPCのラベルデータコンバート
  *------------------------------------------
  */
-int npc_convertlabel_db(void *key,void *data,va_list ap)
+static int npc_convertlabel_db(void *key,void *data,va_list ap)
 {
 	char *lname=(char *)key;
 	int pos=(int)data;
@@ -1223,11 +1244,13 @@ int npc_convertlabel_db(void *key,void *data,va_list ap)
 	nd->u.scr.label_list_num=num+1;
 	return 0;
 }
+
 /*==========================================
  * script行解析
  *------------------------------------------
  */
-static int npc_parse_script_line(unsigned char *p,int *curly_count,int line) {
+static int npc_parse_script_line(unsigned char *p,int *curly_count,int line)
+{
 	int i,j;
 	int string_flag = 0;
 	static int comment_flag = 0;
@@ -1647,7 +1670,7 @@ static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_li
  * mob行解析
  *------------------------------------------
  */
-int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
+static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
 {
 	int m,x,y,xs,ys,class_,num,delay1,delay2;
 	int i,guild_id=0;
@@ -1958,6 +1981,9 @@ int do_final_npc(void)
 	struct chat_data *cd;
 	struct pet_data *pd;
 
+	if(npc_src_first)
+		npc_clearsrcfile();
+
 	if(ev_db)
 		strdb_final(ev_db,ev_db_final);
 	if(npcname_db)
@@ -2033,16 +2059,12 @@ int do_init_npc(void)
 
 	memset(&ev_tm_b,-1,sizeof(ev_tm_b));
 
-	for(nsl=npc_src_first;nsl;nsl=nsl->next) {
+	for(nsl=npc_src_first; nsl; nsl=nsl->next) {
 		int comment_flag = 0;
-		if(nsl->prev){
-			aFree(nsl->prev);
-			nsl->prev = NULL;
-		}
+
 		fp=fopen(nsl->name,"r");
 		if (fp==NULL) {
 			printf("reading npc file not found : %s\n",nsl->name);
-			npc_clearsrcfile(nsl);
 			exit(1);
 		} else {
 			printf("reading npc [%4d] %-60s",++count,nsl->name);
@@ -2125,8 +2147,7 @@ int do_init_npc(void)
 				script_error(lp, nsl->name, lines, "npc file syntax error", lp+strlen(w1)+1);
 				break;
 			}
-			if(ret) {	// エラー時はfreeしてからexit
-				npc_clearsrcfile(nsl);
+			if(ret) {
 				exit(1);
 			}
 		}
@@ -2135,17 +2156,12 @@ int do_init_npc(void)
 
 		if(comment_flag) {	// scriptブロック外部でマルチラインコメントを閉じ忘れ
 			printf("Missing */ on %s\n", nsl->name);
-			npc_clearsrcfile(nsl);
 			exit(1);
 		}
-		if(nsl->next) {
-			npc_parse_script_line(NULL,0,0);	// scriptブロック内部のcomment_flagを初期化
-			nsl->next->prev = nsl;
-		} else{
-			aFree(nsl);
-			break;
-		}
+		npc_parse_script_line(NULL,0,0);	// scriptブロック内部のcomment_flagを初期化
 	}
+	npc_clearsrcfile();
+
 	printf("\nread %d npcs done (%d warp, %d shop, %d script, %d mob)\n",
 		   npc_id-START_NPC_NUM,npc_warp,npc_shop,npc_script,npc_mob);
 

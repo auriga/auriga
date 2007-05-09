@@ -4740,7 +4740,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case PF_SOULCHANGE:		/* ソウルチェンジ */
 		if (sd && dstsd) {
 			int sp;
-			// PVP/GVG以外ではPTメンバーにのみ使用可能
+			// PVP,GVG以外ではPTメンバーにのみ使用可
 			if (battle_check_target(src,bl,BCT_PARTY)<=0 && !map[src->m].flag.pvp && !map[src->m].flag.gvg)
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
