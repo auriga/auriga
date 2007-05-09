@@ -94,7 +94,7 @@ static int storage_comp_item_by_type(const void *_i1, const void *_i2)
 	return 0;
 }
 
-static void sortage_sortitem(struct item *item,int max,unsigned int *sortkey,int flag)
+void sortage_sortitem(struct item *item,int max,unsigned int *sortkey,int flag)
 {
 	int (*cmp)(const void *,const void *) = NULL;
 
@@ -130,6 +130,7 @@ static void sortage_sortitem(struct item *item,int max,unsigned int *sortkey,int
 struct storage *account2storage(int account_id)
 {
 	struct storage *stor;
+
 	stor = (struct storage *)numdb_search(storage_db,account_id);
 	if(stor == NULL) {
 		stor = (struct storage *)aCalloc(1,sizeof(struct storage));
@@ -146,6 +147,7 @@ struct storage *account2storage(int account_id)
 void storage_delete(int account_id)
 {
 	struct storage *stor = (struct storage *)numdb_search(storage_db,account_id);
+
 	if(stor) {
 		numdb_erase(storage_db,account_id);
 		aFree(stor);
@@ -270,7 +272,7 @@ void storage_storageadd(struct map_session_data *sd, int idx, int amount)
 	struct storage *stor;
 
 	nullpo_retv(sd);
-	nullpo_retv(stor = account2storage(sd->status.account_id));
+	nullpo_retv(stor = (struct storage *)numdb_search(storage_db,sd->status.account_id));
 
 	if (!stor->storage_status)
 		return;
@@ -297,7 +299,7 @@ void storage_storageget(struct map_session_data *sd, int idx, int amount)
 	int flag;
 
 	nullpo_retv(sd);
-	nullpo_retv(stor = account2storage(sd->status.account_id));
+	nullpo_retv(stor = (struct storage *)numdb_search(storage_db,sd->status.account_id));
 
 	if (!stor->storage_status)
 		return;
@@ -323,7 +325,7 @@ void storage_storageaddfromcart(struct map_session_data *sd, int idx, int amount
 	struct storage *stor;
 
 	nullpo_retv(sd);
-	nullpo_retv(stor = account2storage(sd->status.account_id));
+	nullpo_retv(stor = (struct storage *)numdb_search(storage_db,sd->status.account_id));
 
 	if (!stor->storage_status)
 		return;
@@ -349,7 +351,7 @@ void storage_storagegettocart(struct map_session_data *sd, int idx, int amount)
 	struct storage *stor;
 
 	nullpo_retv(sd);
-	nullpo_retv(stor = account2storage(sd->status.account_id));
+	nullpo_retv(stor = (struct storage *)numdb_search(storage_db,sd->status.account_id));
 
 	if (!stor->storage_status)
 		return;
@@ -375,7 +377,7 @@ void storage_storageclose(struct map_session_data *sd)
 	struct storage *stor;
 
 	nullpo_retv(sd);
-	nullpo_retv(stor = account2storage(sd->status.account_id));
+	nullpo_retv(stor = (struct storage *)numdb_search(storage_db,sd->status.account_id));
 
 	sortage_sortitem(stor->store_item, MAX_STORAGE, &stor->sortkey, battle_config.personal_storage_sort);
 	intif_send_storage(stor);
@@ -435,6 +437,7 @@ void storage_storage_save(struct map_session_data *sd)
 struct guild_storage *guild2storage(int guild_id)
 {
 	struct guild_storage *gs = NULL;
+
 	if(guild_search(guild_id) != NULL) {
 		gs = (struct guild_storage *)numdb_search(guild_storage_db,guild_id);
 		if(gs == NULL) {
@@ -454,6 +457,7 @@ struct guild_storage *guild2storage(int guild_id)
 void storage_guild_delete(int guild_id)
 {
 	struct guild_storage *gstor = (struct guild_storage *)numdb_search(guild_storage_db,guild_id);
+
 	if(gstor) {
 		numdb_erase(guild_storage_db,guild_id);
 		aFree(gstor);
@@ -577,7 +581,7 @@ void storage_guild_storageadd(struct map_session_data *sd, int idx, int amount)
 
 	nullpo_retv(sd);
 
-	if ((stor=guild2storage(sd->status.guild_id)) == NULL)
+	if ((stor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) == NULL)
 		return;
 	if (!stor->storage_status)
 		return;
@@ -605,7 +609,7 @@ void storage_guild_storageget(struct map_session_data *sd, int idx, int amount)
 
 	nullpo_retv(sd);
 
-	if ((stor=guild2storage(sd->status.guild_id)) == NULL)
+	if ((stor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) == NULL)
 		return;
 	if (!stor->storage_status)
 		return;
@@ -632,7 +636,7 @@ void storage_guild_storageaddfromcart(struct map_session_data *sd, int idx, int 
 
 	nullpo_retv(sd);
 
-	if ((stor=guild2storage(sd->status.guild_id)) == NULL)
+	if ((stor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) == NULL)
 		return;
 	if (!stor->storage_status)
 		return;
@@ -659,7 +663,7 @@ void storage_guild_storagegettocart(struct map_session_data *sd, int idx, int am
 
 	nullpo_retv(sd);
 
-	if ((stor=guild2storage(sd->status.guild_id)) == NULL)
+	if ((stor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) == NULL)
 		return;
 	if (!stor->storage_status)
 		return;
@@ -686,7 +690,7 @@ void storage_guild_storageclose(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	if((stor=guild2storage(sd->status.guild_id)) != NULL) {
+	if((stor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) != NULL) {
 		sortage_sortitem(stor->store_item, MAX_GUILD_STORAGE, &stor->sortkey, battle_config.guild_storage_sort);
 		intif_send_guild_storage(sd->status.account_id,stor);
 		if(battle_config.save_player_when_storage_closed)
@@ -737,7 +741,7 @@ void storage_guild_storagesave(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	if((stor=guild2storage(sd->status.guild_id)) != NULL) {
+	if((stor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) != NULL) {
 		intif_send_guild_storage(sd->status.account_id,stor);
 	}
 

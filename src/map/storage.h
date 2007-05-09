@@ -3,6 +3,8 @@
 
 #include "mmo.h"
 
+void sortage_sortitem(struct item *item,int max,unsigned int *sortkey,int flag);
+
 struct storage *account2storage(int account_id);
 void storage_delete(int account_id);
 int storage_storageopen(struct map_session_data *sd);

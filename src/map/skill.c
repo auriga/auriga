@@ -3010,17 +3010,17 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			sc_data=status_get_sc_data(bl);
 			if(battle_config.heal_counterstop){
 				if(skilllv>=battle_config.heal_counterstop)
-					heal=9999; //9999ヒール
+					heal=9999; // 9999ヒール
 			}
 			if( dstsd && dstsd->special_state.no_magic_damage )
-				heal=0;	/* 黄金蟲カード（ヒール量０） */
-			if(sc_data && sc_data[SC_BERSERK].timer!=-1) /* バーサーク中はヒール０ */
+				heal=0;	// 黄金蟲カード（ヒール量０）
+			if(sc_data && sc_data[SC_BERSERK].timer!=-1) // バーサーク中はヒール０
 				heal=0;
 			if (sd){
 				if((skill=pc_checkskill(sd,HP_MEDITATIO))>0) // メディテイティオ
 					heal += heal*(skill*2)/100;
 				if(dstsd && sd->status.partner_id == dstsd->status.char_id && sd->s_class.job == 23 && sd->sex == 0) //自分も対象もPC、対象が自分のパートナー、自分がスパノビ、自分が♀なら
-					heal = heal*2;	//スパノビの嫁が旦那にヒールすると2倍になる
+					heal = heal*2;	// スパノビの嫁が旦那にヒールすると2倍になる
 			}
 
 			if(sc_data && sc_data[SC_KAITE].timer != -1) {	// カイト
@@ -3056,11 +3056,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				heal += heal*lv/50;
 			if(battle_config.heal_counterstop){
 				if(skilllv>=battle_config.heal_counterstop)
-					heal=9999; //9999ヒール
+					heal=9999; // 9999ヒール
 			}
 			if( dstsd && dstsd->special_state.no_magic_damage )
-				heal=0;	/* 黄金蟲カード（ヒール量０） */
-			if(sc_data && sc_data[SC_BERSERK].timer!=-1) /* バーサーク中はヒール０ */
+				heal=0;	// 黄金蟲カード（ヒール量０）
+			if(sc_data && sc_data[SC_BERSERK].timer!=-1) // バーサーク中はヒール０
 				heal=0;
 			if(sc_data && sc_data[SC_KAITE].timer != -1) {	// カイト
 				clif_misceffect2(bl,438);
@@ -3080,16 +3080,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case ALL_RESURRECTION:		/* リザレクション */
 		if(!dstsd)
 			break;
-		if(map[bl->m].flag.pvp && dstsd->pvp_point < 0)	/* PVPで復活不可能状態 */
+		if(map[bl->m].flag.pvp && dstsd->pvp_point < 0)	// PVPで復活不可能状態
 			break;
-		if(!unit_isdead(&dstsd->bl))			/* 死亡判定 */
+		if(!unit_isdead(&dstsd->bl))			// 死亡判定
 			break;
 
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		dstsd->status.hp = dstsd->status.max_hp * ((skilllv >= 4)? 80: skilllv*20-10)/100;
 		if(dstsd->status.hp <= 0)
 			dstsd->status.hp = 1;
-		if(dstsd->special_state.restart_full_recover) {	/* オシリスカード */
+		if(dstsd->special_state.restart_full_recover) {	// オシリスカード
 			dstsd->status.hp = dstsd->status.max_hp;
 			dstsd->status.sp = dstsd->status.max_sp;
 			clif_updatestatus(dstsd,SP_SP);
@@ -3209,7 +3209,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			sd->skillitem=abra_skillid;
 			sd->skillitemlv=abra_skilllv;
-			sd->skillitem_flag = 1;		//使用条件判定する
+			sd->skillitem_flag = 1;		// 使用条件判定する
 			clif_item_skill(sd, abra_skillid, abra_skilllv, msg_txt(179)); // アブラカダブラ
 		}
 		break;
@@ -3263,7 +3263,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SA_CLASSCHANGE:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstmd) {
-			//クラスチェンジ用ボスモンスターID
+			// クラスチェンジ用ボスモンスターID
 			static int changeclass[]={1038,1039,1046,1059,1086,1087,1112,1115,1147,1150,1157,1159,1190,1251,1252,1272,1312,1373,1389,1418,1492,1511};
 			mob_class_change(dstmd,changeclass,sizeof(changeclass)/sizeof(int));
 		}
@@ -3271,7 +3271,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SA_MONOCELL:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstmd) {
-			//チェンジポリン用モンスターID
+			// チェンジポリン用モンスターID
 			static int poringclass[]={1002,1002};
 			mob_class_change(dstmd,poringclass,sizeof(poringclass)/sizeof(int));
 		}
@@ -3317,10 +3317,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case PR_SUFFRAGIUM:		/* サフラギウム */
 	case PR_BENEDICTIO:		/* 聖体降福 */
 	case CR_PROVIDENCE:		/* プロヴィデンス */
-	case SA_FLAMELAUNCHER:	/* フレイムランチャー */
-	case SA_FROSTWEAPON:	/* フロストウェポン */
-	case SA_LIGHTNINGLOADER:/* ライトニングローダー */
-	case SA_SEISMICWEAPON:	/* サイズミックウェポン */
+	case SA_FLAMELAUNCHER:		/* フレイムランチャー */
+	case SA_FROSTWEAPON:		/* フロストウェポン */
+	case SA_LIGHTNINGLOADER:	/* ライトニングローダー */
+	case SA_SEISMICWEAPON:		/* サイズミックウェポン */
 		if( dstsd && dstsd->special_state.no_magic_damage ){
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}else{
@@ -3328,10 +3328,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
-	case SA_ELEMENTWATER:	// 水
-	case SA_ELEMENTGROUND:	// 土
-	case SA_ELEMENTFIRE:	// 火
-	case SA_ELEMENTWIND:	// 風
+	case SA_ELEMENTWATER:	/* ウォーターエレメンタルチェンジ */
+	case SA_ELEMENTGROUND:	/* アースエレメンタルチェンジ */
+	case SA_ELEMENTFIRE:	/* ファイアーエレメンタルチェンジ */
+	case SA_ELEMENTWIND:	/* ウィンドエレメンタルチェンジ */
 		if( dstmd ){
 			// ボス属性だった場合、使用失敗
 			if(battle_config.boss_no_element_change && dstmd && dstmd->mode&0x20){
@@ -3339,7 +3339,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					clif_skill_fail(sd,skillid,0,0);
 				break;
 			}
-			//敵は属性レベルを維持する
+			// 敵は属性レベルを維持する
 			switch(skillid){
 				case SA_ELEMENTWATER:	// 水
 					dstmd->def_ele = (dstmd->def_ele/20)*20 + ELE_WATER;
@@ -3354,7 +3354,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					dstmd->def_ele = (dstmd->def_ele/20)*20 + ELE_WIND;
 					break;
 			}
-			//ディスペル対策を一応やる？
+			// ディスペル対策を一応やる？
 			//status_change_start(bl,SkillStatusChangeTable[skillid],dstmd->def_ele/20,0,0,0,skill_get_time(skillid,skilllv),0 );
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}else if( dstsd && dstsd->special_state.no_magic_damage ){
@@ -3364,7 +3364,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
-	case NPC_ELEMENTUNDEAD:	// 不死属性付与
+	case NPC_ELEMENTUNDEAD:		/* 不死属性付与 */
 		if( dstsd && dstsd->special_state.no_magic_damage ){
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}else{
@@ -3375,14 +3375,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 
-	case BA_PANGVOICE://パンボイス
+	case BA_PANGVOICE:	/* パンボイス */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if( !(status_get_mode(bl)&0x20) && atn_rand()%10000 < 5000 )
 			status_change_start(bl,SC_CONFUSION,7,0,0,0,10000+7000,0);
 		else if(sd)
 			clif_skill_fail(sd,skillid,0,0);
 		break;
-	case DC_WINKCHARM://魅惑のウィンク
+	case DC_WINKCHARM:	/* 魅惑のウィンク */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstsd) {
 			if(atn_rand()%10000 < 7000) {
@@ -3400,7 +3400,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sd)
 			clif_skill_fail(sd,skillid,0,0);
 		break;
-	case TK_RUN://駆け足
+	case TK_RUN:		/* タイリギ */
 		if(sd)
 		{
 			if(sd->sc_data[SC_RUN].timer!=-1) {
@@ -3426,7 +3426,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
-	case TK_HIGHJUMP://走り高跳び（ノピティギ）
+	case TK_HIGHJUMP:	/* ノピティギ */
 		{
 			int dir = status_get_dir(src);
 			int x = src->x + dirx[dir]*skilllv*2;
@@ -3455,9 +3455,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						sd->tk_mission_target = MOB_ID_MIN + atn_rand()%(MOB_ID_MAX-MOB_ID_MIN);
 						if(mob_db[sd->tk_mission_target].max_hp <= 0)
 							continue;
-						if(mob_db[sd->tk_mission_target].summonper[0]==0) //枝で呼ばれないのは除外
+						if(mob_db[sd->tk_mission_target].summonper[0]==0)	// 枝で呼ばれないのは除外
 							continue;
-						if(mob_db[sd->tk_mission_target].mode&0x20)//ボス属性除外
+						if(mob_db[sd->tk_mission_target].mode&0x20)	// ボス属性除外
 							continue;
 						break;
 					}
@@ -3471,9 +3471,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 		}
 		break;
-	case SG_SUN_WARM://太陽の温もり
-	case SG_MOON_WARM://月の温もり
-	case SG_STAR_WARM://星の温もり
+	case SG_SUN_WARM:		/* 太陽の温もり */
+	case SG_MOON_WARM:		/* 月の温もり */
+	case SG_STAR_WARM:		/* 星の温もり */
 		{
 			struct skill_unit_group *sg;
 			sc_data = status_get_sc_data(src);
@@ -3487,7 +3487,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 		}
 		break;
-	case TK_SEVENWIND: //暖かい風
+	case TK_SEVENWIND:		/* 暖かい風 */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		{
 			int type;
@@ -3518,10 +3518,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_start(bl,type,0,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
-	case SL_KAIZEL://カイゼル
-	case SL_KAAHI://カアヒ
-	case SL_KAITE://カイト
-	case SL_KAUPE://カウプ
+	case SL_KAIZEL:			/* カイゼル */
+	case SL_KAAHI:			/* カアヒ */
+	case SL_KAITE:			/* カイト */
+	case SL_KAUPE:			/* カウプ */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
@@ -3651,7 +3651,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SM_PROVOKE:		/* プロボック */
-		/* MVPmobと不死には効かない */
+		// MVPmobと不死には効かない
 		if((bl->type==BL_MOB && status_get_mode(bl)&0x20) || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)))
 		{
 			if(sd)
@@ -3684,15 +3684,17 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case CR_DEVOTION:		/* ディボーション */
 		if(sd && dstsd){
-			int i, n, max, lv = abs(sd->status.base_level-dstsd->status.base_level);
+			int i, n, max;
+			int lv = abs(sd->status.base_level - dstsd->status.base_level);
 
-			if((dstsd->bl.type!=BL_PC)	// 相手はPCじゃないとだめ
-			 ||(sd->bl.id == dstsd->bl.id)	// 相手が自分はだめ
-			 ||(lv > battle_config.devotion_level_difference)	// レベル差
-			 ||(!sd->status.party_id && !sd->status.guild_id)	// PTにもギルドにも所属無しはだめ
-			 ||((sd->status.party_id != dstsd->status.party_id)	// 同じパーティーか、
-			  &&(sd->status.guild_id != dstsd->status.guild_id))	// 同じギルドじゃないとだめ
-			 ||(dstsd->s_class.job==14 || dstsd->s_class.job==21)){	// クルセだめ
+			if( sd->bl.id == dstsd->bl.id ||			// 相手は自分はダメ
+			    lv > battle_config.devotion_level_difference ||	// レベル差
+			    sd->status.party_id <= 0 ||				// 自分がPT未所属だとダメ
+			    dstsd->status.party_id <= 0 ||			// 相手がPT未所属だとダメ
+			    sd->status.party_id != dstsd->status.party_id ||	// 同じパーティじゃないとダメ
+			    dstsd->s_class.job == 14 ||				// 相手がクルセだとダメ
+			    dstsd->s_class.job == 21 )				// 相手がクルセだとダメ
+			{
 				clif_skill_fail(sd,skillid,0,0);
 				map_freeblock_unlock();
 				return 1;
@@ -3720,13 +3722,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		else if(sd)
 			clif_skill_fail(sd,skillid,0,0);
 		break;
-	case MO_CALLSPIRITS:	// 気功
+	case MO_CALLSPIRITS:	/* 気功 */
 		if(sd) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			pc_addspiritball(sd,skill_get_time(skillid,skilllv),skilllv);
 		}
 		break;
-	case CH_SOULCOLLECT:	// 練気功
+	case CH_SOULCOLLECT:	/* 練気功 */
 		if(sd) {
 			int i;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -3735,11 +3737,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				pc_addspiritball(sd,skill_get_time(skillid,skilllv),5);
 		}
 		break;
-	case MO_BLADESTOP:	// 白刃取り
+	case MO_BLADESTOP:	/* 白刃取り */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(src,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
-	case MO_ABSORBSPIRITS:	// 気奪
+	case MO_ABSORBSPIRITS:	/* 気奪 */
 		{
 			int val=0;
 			if(dstsd && dstsd->spiritball > 0) {
@@ -3748,8 +3750,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 				val = dstsd->spiritball * 7;
 				pc_delspiritball(dstsd,dstsd->spiritball,0);
-			} else if(dstmd) { //対象がモンスターの場合
-				//20%の確率で対象のLv*2のSPを回復する。成功したときはターゲット(σ゜Д゜)σゲッツ!!
+			} else if(dstmd) { // 対象がモンスターの場合
+				// 20%の確率で対象のLv*2のSPを回復する。成功したときはターゲット(σ゜Д゜)σゲッツ!!
 				if(atn_rand()%100<20){
 					val=2*mob_db[dstmd->class_].lv;
 					mob_target(dstmd,src,0);
@@ -3872,7 +3874,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 			skill_castend_damage_id);
 		break;
-	case KN_BRANDISHSPEAR:	/*ブランディッシュスピア*/
+	case KN_BRANDISHSPEAR:	/* ブランディッシュスピア */
 		{
 			int c,n=4,ar;
 			int dir = map_calc_dir(src,bl->x,bl->y);
@@ -4075,7 +4077,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case DC_FORTUNEKISS:		/* 幸運のキス */
 	case DC_SERVICEFORYOU:		/* サービスフォーユー */
 	case CG_MOONLIT:			/* 月明りの下で */
-	case CG_HERMODE:			//ヘルモードの杖
+	case CG_HERMODE:			/* ヘルモードの杖 */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		skill_unitsetting(src,skillid,skilllv,src->x,src->y,0);
 		break;
@@ -4123,7 +4125,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 
-	case TF_STEAL:			// スティール
+	case TF_STEAL:			/* スティール */
 		if(sd) {
 			if(pc_steal_item(sd,bl))
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -4132,7 +4134,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 
-	case RG_STEALCOIN:		// スティールコイン
+	case RG_STEALCOIN:		/* スティールコイン */
 		if(sd) {
 			if(dstmd && pc_steal_coin(sd,bl)) {
 				int range = skill_get_fixed_range(src,skillid,skilllv);
@@ -4220,7 +4222,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		status_change_end(bl, SC_STONE, -1);
 		status_change_end(bl, SC_SLEEP, -1);
 		status_change_end(bl, SC_STAN, -1);
-		if( battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) ){//アンデッドなら暗闇効果
+		if( battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) ){	// アンデッドなら暗闇効果
 			int blind_time;
 			//blind_time=30-status_get_vit(bl)/10-status_get_int/15;
 			blind_time=30*(100-(status_get_int(bl)+status_get_vit(bl))/2)/100;
@@ -4265,7 +4267,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int alive = 1;
 			map_foreachinarea(skill_landprotector,src->m,src->x,src->y,src->x,src->y,BL_SKILL,skillid,&alive);
 			if(sd && alive){
-				if(map[sd->bl.m].flag.noteleport){	/* テレポ禁止 */
+				if(map[sd->bl.m].flag.noteleport){	// テレポ禁止
 					clif_skill_teleportmessage(sd,0);
 					break;
 				}
@@ -4295,7 +4297,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(battle_config.holywater_name_input) {
 				item_tmp.card[0] = 0xfe;
 				item_tmp.card[1] = 0;
-				*((unsigned long *)(&item_tmp.card[2]))=sd->status.char_id;	/* キャラID */
+				*((unsigned long *)(&item_tmp.card[2]))=sd->status.char_id;	// キャラID
 			}
 			eflag = pc_additem(sd,&item_tmp,1);
 			if(eflag) {
@@ -4514,7 +4516,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 
-	case CR_SLIMPITCHER://スリムポーションピッチャー
+	case CR_SLIMPITCHER:	/* スリムポーションピッチャー */
 		if (sd && flag&1) {
 			struct block_list tbl;
 			int hp = sd->potion_hp * (100 + pc_checkskill(sd,CR_SLIMPITCHER)*10 + pc_checkskill(sd,AM_POTIONPITCHER)*10 + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100;
@@ -4570,7 +4572,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if( dstsd && dstsd->special_state.no_magic_damage )
 			break;
-		//ソウルリンカーは無効
+		// ソウルリンカーは無効
 		if(dstsd && dstsd->status.class_ == PC_CLASS_SL)
 			break;
 		sc_data = status_get_sc_data(bl);
@@ -4611,7 +4613,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			pc_heal(sd,0,-sp);
 		}
 		break;
-	case SA_SPELLBREAKER:	// スペルブレイカー
+	case SA_SPELLBREAKER:	/* スペルブレイカー */
 		{
 			int sp;
 			if(sd && status_get_mode(bl)&0x20 && atn_rand()%100 < 90){
@@ -4738,7 +4740,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case PF_SOULCHANGE:		/* ソウルチェンジ */
 		if (sd && dstsd) {
 			int sp;
-			/* PVP/GVG以外ではPTメンバーにのみ使用可能 */
+			// PVP/GVG以外ではPTメンバーにのみ使用可能
 			if (battle_check_target(src,bl,BCT_PARTY)<=0 && !map[src->m].flag.pvp && !map[src->m].flag.gvg)
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -4851,14 +4853,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			mob_summonslave(md,ms->val,sizeof(ms->val)/sizeof(ms->val[0]),skilllv,(skillid==NPC_SUMMONSLAVE)?1:0);
 		}
 		break;
-	case NPC_RECALL:		//取り巻き呼び戻し
+	case NPC_RECALL:		/* 取り巻き呼び戻し */
 		if(md){
 			int mobcount;
-			md->recallcount=0;//初期化
+			md->recallcount=0;	// 初期化
 			md->recall_flag=0;
 			mobcount=mob_countslave(md);
 			if(mobcount>0){
-				md->recall_flag=1; //mob.cの[取り巻きモンスターの処理]で利用
+				md->recall_flag=1;	// mob.cの[取り巻きモンスターの処理]で利用
 				md->recallmob_count=mobcount;
 			}
 		}
@@ -4871,7 +4873,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		unit_stopattack(src);
 		unit_skillcastcancel(src,0);
 		break;
-	case NPC_RUNAWAY:		//後退
+	case NPC_RUNAWAY:		/* 後退 */
 		if(md){
 			int dx = dirx[md->dir] * skilllv;
 			int dy = diry[md->dir] * skilllv;
@@ -4907,28 +4909,28 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(battle_config.new_marrige_skill)
 			{
 				int hp_rate=(skilllv <= 0)? 0:skill_db[skillid].hp_rate[skilllv-1];
-				int gain_hp=dstsd->status.max_hp*abs(hp_rate)/100;// 15%
+				int gain_hp=dstsd->status.max_hp*abs(hp_rate)/100;	// 15%
 				clif_skill_nodamage(src,bl,skillid,gain_hp,1);
 				battle_heal(NULL,bl,gain_hp,0,0);
 			}else{
 				int hp_rate=(skilllv <= 0)? 0:skill_db[skillid].hp_rate[skilllv-1];
-				int gain_hp=sd->status.max_hp*abs(hp_rate)/100;// 15%
+				int gain_hp=sd->status.max_hp*abs(hp_rate)/100;		// 15%
 				clif_skill_nodamage(src,bl,skillid,gain_hp,1);
 				battle_heal(NULL,bl,gain_hp,0,0);
 			}
 		}
 		break;
-	case WE_FEMALE:				/* あなたの為に犠牲になります */
+	case WE_FEMALE:				/* あなたに尽くします */
 		if(sd && dstsd){
 			if(battle_config.new_marrige_skill)
 			{
 				int sp_rate=(skilllv <= 0)? 0:skill_db[skillid].sp_rate[skilllv-1];
-				int gain_sp=dstsd->status.max_sp*abs(sp_rate)/100;// 15%
+				int gain_sp=dstsd->status.max_sp*abs(sp_rate)/100;	// 15%
 				clif_skill_nodamage(src,bl,skillid,gain_sp,1);
 				battle_heal(NULL,bl,0,gain_sp,0);
 			}else{
 				int sp_rate=(skilllv <= 0)? 0:skill_db[skillid].sp_rate[skilllv-1];
-				int gain_sp=sd->status.max_sp*abs(sp_rate)/100;// 15%
+				int gain_sp=sd->status.max_sp*abs(sp_rate)/100;		// 15%
 				clif_skill_nodamage(src,bl,skillid,gain_sp,1);
 				battle_heal(NULL,bl,0,gain_sp,0);
 			}
@@ -4998,7 +5000,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			} else {
 				int conv_hp=0, conv_sp=0;
 				clif_skill_nodamage(src, bl, skillid, skilllv, 1);
-				conv_hp = sd->status.max_hp / 10; //基本はMAXHPの10%
+				conv_hp = sd->status.max_hp / 10; // 基本はMAXHPの10%
 				conv_sp = conv_hp * 10 * skilllv / 100;
 				if (sd->status.sp + conv_sp > sd->status.max_sp)
 					conv_sp = sd->status.max_sp - sd->status.sp;
@@ -5018,7 +5020,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			   (su=(struct skill_unit *)bl) &&
 			   (su->group->src_id == src->id || map[bl->m].flag.pvp || map[bl->m].flag.gvg) &&
 			   skill_unit_istrap(su->group->unit_id)
-			) { //罠を取り返す
+			) {
+				// 罠を取り返す
 				if(sd && (su->group->unit_id != UNT_ANKLESNARE || su->group->val2 == 0)) {
 					if(battle_config.skill_removetrap_type == 1){
 						int i;
@@ -5085,7 +5088,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,skillid,src->id,0,skill_get_time(skillid,skilllv),0 );
 		break;
-	case RG_CLOSECONFINE://#クローズコンファイン#
+	case RG_CLOSECONFINE:		/* クローズコンファイン */
 		{
 			int dir;
 			if(status_get_mode(bl)&0x20) {
@@ -5102,22 +5105,22 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_start(bl,SkillStatusChangeTable[skillid],1,2,bl->id,src->id,skill_get_time(skillid,skilllv),0);
 		}
 		break;
-	case NPC_HOLDWEB://#ホールドウェブ#
+	case NPC_HOLDWEB:		/* ホールドウェブ */
 		status_change_start(src,SkillStatusChangeTable[skillid],1,1,src->id,bl->id,skill_get_time(skillid,skilllv),0);
 		status_change_start(bl,SkillStatusChangeTable[skillid],1,2,bl->id,src->id,skill_get_time(skillid,skilllv),0);
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		break;
-	case WZ_SIGHTBLASTER://サイトブラスター
+	case WZ_SIGHTBLASTER:		/* サイトブラスター */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
-	case PR_REDEMPTIO://#レデムプティオ#
+	case PR_REDEMPTIO:		/* レデムプティオ */
 		if(sd){
 			int penalty_flag = 1;
-			int raise_member_count=0;//生き返らせた数
+			int raise_member_count=0;	// 生き返らせた数
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			map_foreachinarea(skill_redemptio,sd->bl.m,sd->bl.x-7,sd->bl.y-7,sd->bl.x+7,sd->bl.y+7,BL_PC,&sd->bl,&raise_member_count);
-			//無条件にペナルティ無し
+			// 無条件にペナルティ無し
 			if(penalty_flag && battle_config.redemptio_penalty_type&8)
 				penalty_flag=0;
 
@@ -5146,21 +5149,21 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 
-	case MO_KITRANSLATION://気注入
+	case MO_KITRANSLATION:		/* 気注入 */
 		if(dstsd){
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			if(dstsd->spiritball<5)
 				pc_addspiritball(dstsd,skill_get_time(skillid,skilllv),5);
 		}
 		break;
-	case BS_GREED://貪欲
+	case BS_GREED:			/* 貪欲 */
 		if( sd && !map[src->m].flag.nopenalty && !map[src->m].flag.pvp && !map[src->m].flag.gvg ){	//街・PvP・GvGでは使用不可
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			map_foreachinarea(skill_greed,sd->bl.m,sd->bl.x-2,sd->bl.y-2,sd->bl.x+2,sd->bl.y+2,BL_ITEM,sd);
 		}
 		break;
 	//ギルドスキルはここから下に追加
-	case GD_BATTLEORDER://#臨戦態勢#
+	case GD_BATTLEORDER:		/* 臨戦態勢 */
 		if(sd){
 			int mi,range;
 			struct guild *g = guild_search(sd->status.guild_id);
@@ -5187,7 +5190,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_start(src,SC_BATTLEORDER_DELAY,0,0,0,0,300000,0 );
 		}
 		break;
-	case GD_REGENERATION://#激励#
+	case GD_REGENERATION:		/* 激励 */
 		if(sd){
 			int mi,range;
 			struct guild *g = guild_search(sd->status.guild_id);
@@ -5214,7 +5217,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_start(src,SC_REGENERATION_DELAY,0,0,0,0,300000,0 );
 		}
 		break;
-	case GD_RESTORE://##治療
+	case GD_RESTORE:		/* 治療 */
 		if(sd){
 			int mi,range;
 			struct guild *g = guild_search(sd->status.guild_id);
@@ -5241,7 +5244,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_start(src,SC_RESTORE_DELAY,0,0,0,0,300000,0 );
 		}
 		break;
-	case GD_EMERGENCYCALL://#緊急招集#
+	case GD_EMERGENCYCALL:		/* 緊急招集 */
 		if(sd){
 			int mi,px,py,count=0;
 			struct guild *g = guild_search(sd->status.guild_id);
@@ -5307,14 +5310,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				clif_hate_info(sd,skilllv,sd->hate_mob[skilllv-1]);
 				break;
 			}
-			if(dstsd)//登録相手がPC
+			if(dstsd)	// 登録相手がPC
 			{
 				sd->hate_mob[skilllv-1] = dstsd->status.class_;
 				if(battle_config.save_hate_mob)
 					pc_setglobalreg(sd,"PC_HATE_MOB_STAR",sd->hate_mob[skilllv-1]+1);
 				clif_skill_nodamage(src,src,skillid,skilllv,1);
 				clif_hate_mob(sd,skilllv,sd->hate_mob[skilllv-1]);
-			} else if(dstmd) {	//登録相手がMOB
+			} else if(dstmd) {	// 登録相手がMOB
 				switch(skilllv) {
 				case 1:
 					if(status_get_size(bl) == 0) {
@@ -5367,27 +5370,26 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
-	//魂
-	case SL_ALCHEMIST://#アルケミストの魂#
-	case SL_MONK://#モンクの魂#
-	case SL_STAR://#ケンセイの魂#
-	case SL_SAGE://#セージの魂#
-	case SL_CRUSADER://#クルセイダーの魂#
-	case SL_KNIGHT://#ナイトの魂#
-	case SL_WIZARD://#ウィザードの魂#
-	case SL_PRIEST://#プリーストの魂#
-	case SL_SUPERNOVICE://#スーパーノービスの魂#
-	case SL_BARDDANCER://#バードとダンサーの魂#
-	case SL_ROGUE://#ローグの魂#
-	case SL_ASSASIN://#アサシンの魂#
-	case SL_BLACKSMITH://#ブラックスミスの魂#
-	case SL_HUNTER://#ハンターの魂#
-	case SL_SOULLINKER://#ソウルリンカーの魂#
-	case SL_HIGH://#一次上位職業の魂#
-	case SL_DEATHKNIGHT://#デスナイトの魂#
-	case SL_COLLECTOR://#ダークコレクターの魂#
-	case SL_NINJA://#忍者の魂#
-	case SL_GUNNER://#ガンスリンガーの魂#
+	case SL_ALCHEMIST:		/* アルケミストの魂 */
+	case SL_MONK:			/* モンクの魂 */
+	case SL_STAR:			/* ケンセイの魂 */
+	case SL_SAGE:			/* セージの魂 */
+	case SL_CRUSADER:		/* クルセイダーの魂 */
+	case SL_KNIGHT:			/* ナイトの魂 */
+	case SL_WIZARD:			/* ウィザードの魂 */
+	case SL_PRIEST:			/* プリーストの魂 */
+	case SL_SUPERNOVICE:		/* スーパーノービスの魂 */
+	case SL_BARDDANCER:		/* バードとダンサーの魂 */
+	case SL_ROGUE:			/* ローグの魂 */
+	case SL_ASSASIN:		/* アサシンの魂 */
+	case SL_BLACKSMITH:		/* ブラックスミスの魂 */
+	case SL_HUNTER:			/* ハンターの魂 */
+	case SL_SOULLINKER:		/* ソウルリンカーの魂 */
+	case SL_HIGH:			/* 一次上位職業の魂 */
+	case SL_DEATHKNIGHT:		/* デスナイトの魂 */
+	case SL_COLLECTOR:		/* ダークコレクターの魂 */
+	case SL_NINJA:			/* 忍者の魂 */
+	case SL_GUNNER:			/* ガンスリンガーの魂 */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(src,SC_SMA,skilllv,0,0,0,3000,0);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
@@ -5426,20 +5428,19 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				clif_skill_fail(sd,skillid,0,0);
 		}
 		break;
-	//忍者
-	case NJ_BUNSINJYUTSU://影分身
+	case NJ_BUNSINJYUTSU:		/* 影分身 */
 		sc_data = status_get_sc_data(bl);
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		if(sc_data && sc_data[SC_NEN].timer != -1)
 			status_change_end(bl,SC_NEN,-1);
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		break;
-	case NJ_UTSUSEMI://空蝉の術
-	case NJ_NEN://念
+	case NJ_UTSUSEMI:		/* 空蝉の術 */
+	case NJ_NEN:			/* 念 */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
-	case HAMI_CASTLE://#キャストリング#
+	case HAMI_CASTLE:		/* キャストリング */
 		if(hd && atn_rand()%100 < 20*skilllv)
 		{
 			int x,y;
@@ -5465,46 +5466,46 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					  BL_MOB,&hd->msd->bl,&hd->bl);
 		}
 		break;
-	case HVAN_CHAOTIC://カオティックベネディクション
+	case HVAN_CHAOTIC:		/* カオティックベネディクション */
 		if(hd){
-			//HOM,PC,MOB
 			struct block_list* heal_tearget=NULL;
 			int heal = skill_calc_heal( src, 1+atn_rand()%skilllv );
 			static const int per[5][2]={{20,50},{50,60},{25,75},{60,64},{34,67}};
 			int n = (skilllv < 5)? skilllv-1: 4;
 			int rnd = atn_rand()%100;
-			if(rnd<per[n][0])//ホム
+
+			if(rnd<per[n][0])	// ホム
 			{
 				heal_tearget = &hd->bl;
-			}else if(rnd<per[n][1])//主人
+			}else if(rnd<per[n][1])	// 主人
 			{
-				if(!unit_isdead(&hd->msd->bl))//生存
+				if(!unit_isdead(&hd->msd->bl))	// 生存
 					heal_tearget = &hd->msd->bl;
 				else
 					heal_tearget = &hd->bl;
-			}else{//MOB
+			}else{			// MOB
 				heal_tearget = map_id2bl(hd->target_id);
 				if(heal_tearget==NULL)
 					heal_tearget = &hd->bl;
 			}
-			//エフェクトでないのでヒール
+			// エフェクトでないのでヒール
 			clif_skill_nodamage(src,heal_tearget,AL_HEAL,heal,1);
 			clif_skill_nodamage(src,heal_tearget,skillid,heal,1);
 			battle_heal(NULL,heal_tearget,heal,0,0);
 			hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
-	case HLIF_AVOID://#緊急回避#
-	case HAMI_DEFENCE://#ディフェンス#
+	case HLIF_AVOID:		/* 緊急回避 */
+	case HAMI_DEFENCE:		/* ディフェンス */
 		if(hd && hd->msd && !unit_isdead(&hd->msd->bl))
 		{
 			clif_skill_nodamage(src,&hd->msd->bl,skillid,skilllv,1);
 			status_change_start(&hd->msd->bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		}
 		break;
-	case HAMI_BLOODLUST://#ブラッドラスト#
-	case HFLI_FLEET://#フリートムーブ#
-	case HFLI_SPEED://#オーバードスピード#
+	case HAMI_BLOODLUST:		/* ブラッドラスト */
+	case HFLI_FLEET:		/* フリートムーブ */
+	case HFLI_SPEED:		/* オーバードスピード */
 		if(hd)
 		{
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -5512,7 +5513,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
-	case HLIF_CHANGE://#メンタルチェンジ#
+	case HLIF_CHANGE:		/* メンタルチェンジ */
 		if(hd)
 		{
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -9877,6 +9878,8 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 	nullpo_retr(0, target);
 
 	if(target->type != BL_PC && target->type != BL_MOB)
+		return 0;
+	if(status_get_class(target) == 1288)
 		return 0;
 
 	// 運命の輪だと100%成功
