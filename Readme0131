@@ -1,4 +1,23 @@
 ----------------------------------------
+//0177 [2007/05/10] by Rayce
+
+・int_guild.cとguild.cを全体的に整形
+・ギルド城データベース castle_db をツリーDBから配列に単純化（int_guild.c, guild.c）
+・エンブレム変更処理部分をclif.cからguild.cに移動（clif.c, guild.*）
+
+・0115以降、以下のスクリプト命令/関数において、assignされてないMAP名を入れたときに処理が
+　実行されなくなっていたバグを修正（script.c）
+	getcastlename
+	getcastledata
+	setcastledata
+
+・guild構造体から使われてないメンバ castle_id を削除（mmo.h, int_guild.c, char-converter.c）
+	セーブデータの形式が変更されているのでご注意を
+
+・TXT: JOURNAL_IDENTIFIERをバージョン04に変更しておく（journal.c）
+・SQL: main.sql修正、Auriga-0177_changetable.sql添付
+
+----------------------------------------
 //0176 [2007/05/09] by Rayce
 
 ・mob.cの全体的な整形

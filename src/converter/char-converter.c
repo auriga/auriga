@@ -639,17 +639,16 @@ int guild_fromstr(char *str,struct guild *g)
 	char *pstr;
 
 	// 基本データ
-	if( sscanf(str,"%d\t%[^\t]\t%[^\t]\t%d,%d,%d,%d,%d\t%[^\t]\t%[^\t]\t",&tmp_int[0],
-		tmp_str[0],tmp_str[1],
-		&tmp_int[1],&tmp_int[2],&tmp_int[3],&tmp_int[4],&tmp_int[5],
-		tmp_str[2],tmp_str[3]) <8)
+	if( sscanf(str,"%d\t%[^\t]\t%[^\t]\t%d,%d,%d,%d\t%[^\t]\t%[^\t]\t",
+		&tmp_int[0],tmp_str[0],tmp_str[1],
+		&tmp_int[1],&tmp_int[2],&tmp_int[3],&tmp_int[4],
+		tmp_str[2],tmp_str[3]) != 9)
 		return 1;
 	g->guild_id=tmp_int[0];
 	g->guild_lv=tmp_int[1];
 	g->max_member=tmp_int[2];
 	g->exp=tmp_int[3];
 	g->skill_point=tmp_int[4];
-	g->castle_id=tmp_int[5];
 	memcpy(g->name,tmp_str[0],24);
 	memcpy(g->master,tmp_str[1],24);
 	memcpy(g->mes1,tmp_str[2],60);
@@ -788,11 +787,12 @@ int guild_tosql(struct guild* g2)
 	sprintf(
 		tmp_sql,"INSERT INTO `%s` "
 		"(`guild_id`, `name`,`master`,`guild_lv`,`connect_member`,`max_member`,`average_lv`,`exp`,"
-		"`next_exp`,`skill_point`,`castle_id`,`mes1`,`mes2`,`emblem_len`,`emblem_id`,`emblem_data`) "
-		"VALUES ('%d', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%d',"
-		" '%d', '%s')","guild", g2->guild_id,strecpy(buf4,g2->name),strecpy(buf,g2->master),
+		"`next_exp`,`skill_point`,`mes1`,`mes2`,`emblem_len`,`emblem_id`,`emblem_data`) "
+		"VALUES ('%d', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%d',"
+		" '%d', '%s')",
+		"guild",g2->guild_id,strecpy(buf4,g2->name),strecpy(buf,g2->master),
 		g2->guild_lv,g2->connect_member,g2->max_member,g2->average_lv,g2->exp,g2->next_exp,
-		g2->skill_point,g2->castle_id,strecpy(buf2,g2->mes1),strecpy(buf3,g2->mes2),
+		g2->skill_point,strecpy(buf2,g2->mes1),strecpy(buf3,g2->mes2),
 		g2->emblem_len,g2->emblem_id,emblem_data
 	);
 

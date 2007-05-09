@@ -272,7 +272,7 @@ struct guild {
 	int guild_id;
 	short guild_lv, connect_member, max_member;
 	unsigned short average_lv;
-	int exp,next_exp,skill_point,castle_id;
+	int exp,next_exp,skill_point;
 	char name[24],master[24];
 	struct guild_member member[MAX_GUILD];
 	struct guild_position position[MAX_GUILDPOSITION];

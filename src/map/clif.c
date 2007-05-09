@@ -23,7 +23,6 @@
 #include "version.h"
 #include "nullpo.h"
 #include "httpd.h"
-#include "grfio.h"
 #include "utils.h"
 
 #include "map.h"
@@ -11147,157 +11146,10 @@ static void clif_parse_GuildRequestEmblem(int fd,struct map_session_data *sd, in
  */
 static void clif_parse_GuildChangeEmblem(int fd,struct map_session_data *sd, int cmd)
 {
-	struct guild *g;
-	int zipbitmap_len, bitmap_offset;
-	char dest_bitmap[4100]; // max possible (16/24 bits): 4086 (windows)-> (header1)14 + (header2)40 + (576 colors)2304 + (bitmap:24x24)1728 (no compression with palette)
-	unsigned long dest_bitmap_len;
-	unsigned int ncol;
+	int offset = (int)GETPACKETPOS(cmd,1);
+	int len    = (int)RFIFOW(fd,GETPACKETPOS(cmd,0)) - offset;
 
-	nullpo_retv(sd);
-
-	// only guild master can change emblem.
-	if (sd->status.guild_id == 0 || (g = guild_search(sd->status.guild_id)) == NULL)
-		return;
-	if (strcmp(sd->status.name, g->master))
-		return;
-
-	// length of zipbitmap (client doesn't send bmp structure, but a zipped BMP)
-	bitmap_offset = (int)GETPACKETPOS(cmd,1);
-	zipbitmap_len = (int)RFIFOW(fd,GETPACKETPOS(cmd,0)) - bitmap_offset;
-	if (zipbitmap_len < 0 || zipbitmap_len > 2000)
-		return;
-
-	// analyse of bmp
-	dest_bitmap_len = sizeof(dest_bitmap);
-	if (decode_zip(dest_bitmap, &dest_bitmap_len, RFIFOP(fd, bitmap_offset), zipbitmap_len) != 0) { // Z_OK = 0
-		return;
-	}
-	if (dest_bitmap_len < 14 + 40) { // strict minimum -> windows: header1(14) header2(40), os/2 v1 header1(14) header2(12) 256colors(768)
-		return;
-	}
-
-	/*Structure BITMAPFILEHEADER (14 bytes)
-	bfType       Word  (2 bytes)  0 Magic identifier (should be 'BM'=0x4D 0x4E)
-	bfSize       Dword (4 bytes)  2 File size in bytes
-	bfReserved1  Word  (2 bytes)  6 always 0
-	bfReserved2  Word  (2 bytes)  8 always 0
-	bfOffBits    Dword (4 bytes) 10 Offset to image data, bytes*/
-	if(strncmp(dest_bitmap, "BM", 2) != 0 ||
-	   RBUFL(dest_bitmap, 2) != dest_bitmap_len ||
-	   RBUFW(dest_bitmap, 6) != 0 ||
-	   RBUFW(dest_bitmap, 8) != 0) {
-		// check of Offset is done with colors.
-		return;
-	}
-
-	// Structure BITMAPINFOHEADER (40 bytes: Windows 3.1x, 95, NT, ..., 12 bytes: OS/2 1.x, 64 bytes: OS/2 2.x, ?? bytes: OS/2 3.x)
-	switch(RBUFL(dest_bitmap, 14)) {
-	case 40: // windows version
-		/*biSize           DWord (4 bytes) 14 Header size in bytes (must be: 40)
-			biWidth          Dword (4 bytes) 18 Width of image
-			biHeight         Dword (4 bytes) 22 Height of image
-			biPlanes         Word  (2 bytes) 26 Number of colour planes (always 1)
-			biBitCount       Word  (2 bytes) 28 Bits per pixel (1, 4, 8, 16, 24 or 32)
-			biCompression    Dword (4 bytes) 30 Compression type (0 - no compression, 1 - 8 bit run length encoding, 2 - 4 bit run length encoding, 3 - RGB bitmap with mask)
-			biSizeImage      Dword (4 bytes) 34 Image size in bytes (usefull for compression)
-			biXpelsPerMeter  Dword (4 bytes) 38 Pixels per meter
-			biYpelsPerMeter  Dword (4 bytes) 42 Pixels per meter
-			biClrUsed        Dword (4 bytes) 46 Number of used colours (number of colors in palette)
-			biClrImportant   Dword (4 bytes) 50 Number of important colours (0: all)*/
-		if (RBUFL(dest_bitmap, 18) != 24 || // ragnarok condition
-		    RBUFL(dest_bitmap, 22) != 24 || // ragnarok condition
-		    RBUFW(dest_bitmap, 26) != 1 ||
-		    // number of colors is checked after
-		    (RBUFL(dest_bitmap, 30) != 0 && RBUFL(dest_bitmap, 30) != 1 && RBUFL(dest_bitmap, 30) != 2 && RBUFL(dest_bitmap, 30) != 3)) {
-			return;
-		}
-		/* color structure (8 bits, always exist)
-		Windows RGBQUAD color map entry
-		0       rgbBlue     (1 bytes)  Blue value for color map entry.
-		1       rgbGreen    (1 bytes)  Green value for color map entry.
-		2       rgbRed      (1 bytes)  Red value for color map entry.
-		3       rgbReserved (1 bytes)  Zero*/
-		if (RBUFL(dest_bitmap, 28) == 8) { // 256 colors (ragnarok condition)
-			ncol = (RBUFL(dest_bitmap, 10) - 54) / 4; // compute number of colors recorded
-			// check offset of bitmap and number of colors
-			if (ncol > 256 || // 8 bits colored bitmap, used colors must be at maximum 256
-			    (RBUFL(dest_bitmap, 46) == 0 && ncol != 256) || // biClrUsed not used
-			    (RBUFL(dest_bitmap, 46) != 0 && ncol != RBUFL(dest_bitmap, 46))) { // biClrUsed used
-				return;
-			}
-			// check size of file (when no compression)
-			if (RBUFL(dest_bitmap, 10) < 14 + 40 + ncol * 4 || // check minimum position of bitmap data
-			    (RBUFL(dest_bitmap, 30) == 0 && (dest_bitmap_len < 14 + 40 + ncol * 4 + 576 || // no compression (check minimum)
-			                                     dest_bitmap_len - RBUFL(dest_bitmap, 10) < 576)) ||
-			    (RBUFL(dest_bitmap, 30) != 0 && dest_bitmap_len <= 14 + 40 + ncol * 4)) { // with compression (check minimum)
-				return;
-			}
-		// 16-24 bits colors (Additional ragnarok conditions)
-		} else if (((battle_config.guild_emblem_colors & 1) == 1 && RBUFL(dest_bitmap, 28) == 16) ||
-		           ((battle_config.guild_emblem_colors & 2) == 2 && RBUFL(dest_bitmap, 28) == 24)) {
-			ncol = RBUFL(dest_bitmap, 46); // compute number of colors recorded (could be 0 if not important colors)
-			// check offset of bitmap and number of colors
-			if (ncol > 576) { // can not have more colors than number of used pixels
-				return;
-			}
-			// check size of file (when no compression)
-			if (RBUFL(dest_bitmap, 10) < 14 + 40 + ncol * 4 || // check minimum position of bitmap data
-			    (RBUFL(dest_bitmap, 30) == 0 && (dest_bitmap_len < 14 + 40 + ncol * 4 + 576 * 3 || // no compression (check minimum)
-			                                     dest_bitmap_len - RBUFL(dest_bitmap, 10) < 576 * 3)) ||
-			    (RBUFL(dest_bitmap, 30) != 0 && dest_bitmap_len <= 14 + 40 + ncol * 4)) { // with compression (check minimum)
-				return;
-			}
-		} else // non supported number of colors
-			return;
-		break;
-
-	case 12: // os/2 v1.x version
-		/*biSize           DWord (4 bytes) 14 Header size in bytes (must be: 12)
-			biWidth          Word  (2 bytes) 18 Width of image
-			biHeight         Word  (2 bytes) 20 Height of image
-			biPlanes         Word  (2 bytes) 22 Number of colour planes (always 1)
-			biBitCount       Word  (2 bytes) 24 Bits per pixel (1, 4, 8, 24) -> color palette size: 2, 16, 256, 0
-			no compression*/
-		if (RBUFW(dest_bitmap, 18) != 24 || // ragnarok condition
-		    RBUFW(dest_bitmap, 20) != 24 || // ragnarok condition
-		    RBUFW(dest_bitmap, 22) != 1
-		    // number of colors is checked after
-		    ) {
-			return;
-		}
-		/* color structure (8 bits, always exist)
-		OS/2 RGBTRIPLE color map entry
-		0       rgbtBlue  (1 bytes)  Blue value for color map entry.
-		1       rgbtGreen (1 bytes)  Green value for color map entry.
-		2       rgbtRed   (1 bytes)  Red value for color map entry.*/
-		if (RBUFW(dest_bitmap, 24) == 8) { // 256 colors (ragnarok condition)
-			ncol = (RBUFL(dest_bitmap, 10) - 26) / 3; // compute number of colors recorded
-			// check offset of bitmap
-			if (ncol != 256) { // bmp start after the 2 headers and color structure
-				return;
-			}
-			// check size of file
-			if (dest_bitmap_len != 14 + 12 + ncol * 3 + 576) {
-				return;
-			}
-		// 24 bits colors (Additional ragnarok condition)
-		} else if ((battle_config.guild_emblem_colors & 2) == 2 && RBUFW(dest_bitmap, 24) == 24) {
-			// check size of file
-			if (dest_bitmap_len != 14 + 12 + 1728) { // bmp start after the 2 headers
-				return;
-			}
-		} else // non supported number of colors
-			return;
-		break;
-
-	default: // other -> not supported
-		/* note: Ragnarok run under windows, client don't support OS/2 1.x, 2.x or 3.x versions. OS/2 1.x version is here for example */
-		return;
-	}
-
-	guild_change_emblem(sd, (unsigned short)zipbitmap_len, RFIFOP(fd, bitmap_offset));
-
-	return;
+	guild_change_emblem(sd,len,RFIFOP(fd,offset));
 }
 
 /*==========================================

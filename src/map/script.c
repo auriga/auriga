@@ -7992,17 +7992,22 @@ int buildin_getcastlename(struct script_state *st)
 {
 	char *mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	struct guild_castle *gc;
-	int m,i;
+	int i;
 
-	m = script_mapname2mapid(st,mapname);
-	if(m >= 0) {
+	if(strcmp(mapname,"this") == 0) {
+		int m = script_mapname2mapid(st,mapname);
+		if(m < 0) {
+			push_str(st->stack,C_CONSTSTR,"");
+			return 0;
+		}
 		mapname = map[m].name;
-		for(i=0; i<MAX_GUILDCASTLE; i++) {
-			if((gc = guild_castle_search(i)) != NULL) {
-				if(strcmp(mapname,gc->map_name) == 0) {
-					push_str(st->stack,C_STR,(unsigned char *)aStrdup(gc->castle_name));
-					return 0;
-				}
+	}
+
+	for(i=0; i<MAX_GUILDCASTLE; i++) {
+		if((gc = guild_castle_search(i)) != NULL) {
+			if(strcmp(mapname,gc->map_name) == 0) {
+				push_str(st->stack,C_STR,(unsigned char *)aStrdup(gc->castle_name));
+				return 0;
 			}
 		}
 	}
@@ -8020,14 +8025,16 @@ int buildin_getcastledata(struct script_state *st)
 	char *mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int index     = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	struct guild_castle *gc;
-	int i,m,val = 0;
+	int i,val = 0;
 
-	m = script_mapname2mapid(st,mapname);
-	if(m < 0) {
-		push_val(st->stack,C_INT,0);
-		return 0;
+	if(strcmp(mapname,"this") == 0) {
+		int m = script_mapname2mapid(st,mapname);
+		if(m < 0) {
+			push_val(st->stack,C_INT,0);
+			return 0;
+		}
+		mapname = map[m].name;
 	}
-	mapname = map[m].name;
 
 	if(index == 0) {
 		int j = -1;
@@ -8084,13 +8091,15 @@ int buildin_setcastledata(struct script_state *st)
 	int index     = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	int value     = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	struct guild_castle *gc;
-	int i,m;
+	int i;
 
-	m = script_mapname2mapid(st,mapname);
-	if(m < 0)
-		return 0;
+	if(strcmp(mapname,"this") == 0) {
+		int m = script_mapname2mapid(st,mapname);
+		if(m < 0)
+			return 0;
+		mapname = map[m].name;
+	}
 
-	mapname = map[m].name;
 	for(i=0; i<MAX_GUILDCASTLE; i++) {
 		if((gc = guild_castle_search(i)) != NULL && strcmp(mapname,gc->map_name) == 0) {
 			switch(index) {
