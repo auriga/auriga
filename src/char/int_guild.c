@@ -1570,7 +1570,7 @@ int guild_calcinfo(struct guild *g)
 	struct guild before=*g;
 
 	// スキルIDの設定
-	for(i=0;i<5;i++)
+	for(i=0;i<MAX_GUILDSKILL;i++)
 		g->skill[i].id=i+GUILD_SKILLID;
 
 	// ギルドレベル

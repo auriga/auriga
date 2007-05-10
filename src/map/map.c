@@ -2869,7 +2869,7 @@ int do_init(int argc,char *argv[])
 	do_init_itemdb();
 	do_init_mob();		// npcの初期化時内でmob_spawnして、mob_dbを参照するのでinit_npcより先
 	do_init_npc();
-	do_init_skill();	// pc,homunの初期化時内でskill_dbを参照するのでinit_pc,init_homunより先
+	do_init_skill();	// skill_dbを参照するのでpc,homun,guildより先
 	do_init_pc();
 	do_init_party();
 	do_init_guild();

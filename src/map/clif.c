@@ -7566,7 +7566,7 @@ void clif_guild_skillinfo(struct map_session_data *sd, struct guild *g)
 			WFIFOW(fd,c*37+14) = skill_get_sp(id,g->skill[i].lv);
 			WFIFOW(fd,c*37+16) = skill_get_range(id,g->skill[i].lv);
 			memset(WFIFOP(fd,c*37+18),0,24);
-			if(g->skill[i].lv < guild_skill_get_max(id))
+			if(g->skill[i].lv < guild_get_skilltree_max(id))
 				WFIFOB(fd,c*37+42) = 1;
 			else
 				WFIFOB(fd,c*37+42) = 0;
@@ -11042,14 +11042,21 @@ static void clif_parse_GuildCheckMaster(int fd,struct map_session_data *sd, int 
 static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int cmd)
 {
 	struct guild *g;
+	int type = RFIFOL(fd,GETPACKETPOS(cmd,0));
 
 	nullpo_retv(sd);
+
+	// 初回データ送信済み
+	if(sd->state.guild_req_info & (1<<type))
+		return;
 
 	// only a guild member can ask for guild info
 	if(sd->status.guild_id == 0 || (g = guild_search(sd->status.guild_id)) == NULL)
 		return;
 
-	switch(RFIFOL(fd,GETPACKETPOS(cmd,0))){
+	sd->state.guild_req_info |= (1<<type);
+
+	switch(type) {
 	case 0:	// ギルド基本情報、同盟敵対情報
 		clif_guild_basicinfo(sd, g);
 		clif_guild_allianceinfo(sd, g);
@@ -11071,7 +11078,7 @@ static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int 
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("clif: guild request info: unknown type %d\n", RFIFOL(fd,GETPACKETPOS(cmd,0)));
+			printf("clif: guild request info: unknown type %d\n", type);
 		break;
 	}
 

@@ -1,3 +1,29 @@
+---------------------------------------
+//0182 [2007/05/11] by Rayce
+
+・取得可能なギルドスキルの最大Lvをdb/skill_db.txtではなく、db/guild_skill_tree.txtの
+　MaxLv設定に従うように変更（int_guild.c, map.c, guild.*）
+	ギルドスキルツリーの設定をdb/guild_skill_tree.txtに一括します。
+	ただしdb/skill_db.txtで設定したMaxLvを越えることはありません。
+	また、行をコメントアウトするかMaxLvの値を0にすると取得不可スキルになります。
+
+	-> guild_get_skilltree_max() 追加
+	-> guild_check_skill_require() でスキルツリーのidとmaxをチェック
+	-> guild_skillup() でスキルツリーを違反してスキルを振れないように不正チェック
+	-> guild_read_guildskill_tree_db() で最大Lvをチェック
+	-> guild_calcinfo() 修正
+
+・clif_parse_GuildRequestInfo() が不必要に呼ばれないように改善（clif.c, map.h, guild.c）
+	この関数はギルドウィンドのタブを切り替える度に呼ばれるので、その都度
+	クライアントにパケットを送信していました。
+	しかしギルド情報が変更されてないのに更新する必要はありません。
+	MAPをロードしても一度受け取った情報は消えないようなので、各項目に
+	ついて初回だけ呼び出せば良いことになります。
+
+	-> map_session_data構造体のstateに guild_req_info メンバ追加
+	-> clif_parse_GuildRequestInfo() で2回目以降の項目はブロックする
+	-> ギルド作成時とギルド加入時に guild_req_info を0に初期化する
+
 ----------------------------------------
 //0181 [2007/05/11] by Rayce
 

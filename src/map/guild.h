@@ -15,9 +15,11 @@ int guild_skill_get_inf(int id);
 int guild_skill_get_sp(int id,int lv);
 int guild_skill_get_range(int id,int lv);
 int guild_skill_get_max(int id);
-int guild_checkskill(struct guild *g,int id);
-int guild_check_skill_require(struct guild *g,int id);
 int guild_skill_get_lv(struct guild *g,int id);
+
+int guild_get_skilltree_max(int id);
+int guild_check_skill_require(struct guild *g,int id);
+int guild_checkskill(struct guild *g,int id);
 
 void do_init_guild(void);
 struct guild *guild_search(int guild_id);

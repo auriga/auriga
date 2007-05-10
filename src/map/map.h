@@ -279,6 +279,7 @@ struct map_session_data {
 		unsigned inventory_dirty : 1;
 		unsigned cart_dirty : 1;
 		unsigned icon_weight : 2;
+		unsigned guild_req_info : 5;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;

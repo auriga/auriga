@@ -93,24 +93,41 @@ int guild_skill_get_lv(struct guild *g,int id)
 }
 
 /*==========================================
- *
+ * スキルのMaxLvを返す
+ *------------------------------------------
+ */
+int guild_get_skilltree_max(int id)
+{
+	int idx = id - GUILD_SKILLID;
+
+	if(idx < 0 || idx >= MAX_GUILDSKILL)
+		return 0;
+
+	return guild_skill_tree[idx].max;
+}
+
+/*==========================================
+ * ギルドスキルツリーチェック
  *------------------------------------------
  */
 int guild_check_skill_require(struct guild *g,int id)
 {
-	int i;
-	int idx = id-GUILD_SKILLID;
+	int i,skillid;
+	int idx = id - GUILD_SKILLID;
 
 	if(g == NULL)
 		return 0;
 
-	if (idx < 0 || idx >= MAX_GUILDSKILL)
+	if(idx < 0 || idx >= MAX_GUILDSKILL)
+		return 0;
+	if(guild_skill_tree[idx].id <= 0)
+		return 0;
+	if(guild_skill_tree[idx].max <= 0)
 		return 0;
 
-	for(i=0;i<5;i++)
+	for(i=0; i<5 && (skillid = guild_skill_tree[idx].need[i].id) > 0; i++)
 	{
-		if(guild_skill_tree[idx].need[i].id == 0) break;
-		if(guild_skill_tree[idx].need[i].lv > guild_checkskill(g,guild_skill_tree[idx].need[i].id))
+		if(guild_skill_tree[idx].need[i].lv > guild_checkskill(g,skillid))
 			return 0;
 	}
 	return 1;
@@ -464,7 +481,8 @@ void guild_created(int account_id, int guild_id)
 
 	if(guild_id>0) {
 		sd->status.guild_id = guild_id;
-		sd->guild_sended    = 0;
+		sd->guild_sended = 0;
+		sd->state.guild_req_info = 0;
 		clif_guild_created(sd,0);
 		if(battle_config.guild_emperium_check)
 			pc_delitem(sd,pc_search_inventory(sd,714),1,0);	// エンペリウム消耗
@@ -779,7 +797,7 @@ void guild_reply_invite(struct map_session_data *sd, int guild_id, unsigned char
  */
 void guild_member_added(int guild_id, int account_id, int char_id, unsigned char flag)
 {
-	struct map_session_data *sd= map_id2sd(account_id),*sd2;
+	struct map_session_data *sd = map_id2sd(account_id),*sd2;
 	struct guild *g;
 
 	if( (g=guild_search(guild_id))==NULL )
@@ -803,9 +821,10 @@ void guild_member_added(int guild_id, int account_id, int char_id, unsigned char
 		return;
 	}
 
-		// 成功
-	sd->guild_sended=0;
-	sd->status.guild_id=guild_id;
+	// 成功
+	sd->state.guild_req_info = 0;
+	sd->guild_sended = 0;
+	sd->status.guild_id = guild_id;
 
 	if( sd2!=NULL )
 		clif_guild_inviteack(sd2,2);
@@ -1461,9 +1480,10 @@ void guild_skillup(struct map_session_data *sd, int skill_num, int flag)
 	if (idx < 0 || idx >= MAX_GUILDSKILL)
 		return;
 
-	if( (g->skill_point>0 || flag&1) &&
-	    g->skill[idx].id!=0 &&
-	    g->skill[idx].lv < guild_skill_get_max(skill_num) )
+	if( (g->skill_point > 0 || flag&1) &&
+	    g->skill[idx].id > 0 &&
+	    guild_check_skill_require(g,skill_num) &&
+	    g->skill[idx].lv < guild_skill_tree[idx].max )
 	{
 		// 情報更新
 		intif_guild_skillup(g->guild_id,skill_num,sd->status.account_id,flag);
@@ -2223,7 +2243,7 @@ static void guild_read_castledb(void)
  */
 static void guild_read_guildskill_tree_db(void)
 {
-	int i,k,id;
+	int i,k,id,skillid;
 	FILE *fp;
 	char line[1024],*p;
 
@@ -2247,11 +2267,17 @@ static void guild_read_guildskill_tree_db(void)
 		}
 		if(i<12)
 			continue;
-		id = atoi(split[0]) - GUILD_SKILLID;
-		if(id<0 || id>=MAX_GUILDSKILL)
+
+		skillid = atoi(split[0]);
+		id = skillid - GUILD_SKILLID;
+		if(id < 0 || id >= MAX_GUILDSKILL)
 			continue;
-		guild_skill_tree[id].id=atoi(split[0]);
-		guild_skill_tree[id].max=atoi(split[1]);
+		guild_skill_tree[id].id  = skillid;
+		guild_skill_tree[id].max = atoi(split[1]);
+
+		if(guild_skill_tree[id].max > guild_skill_get_max(skillid))
+			guild_skill_tree[id].max = guild_skill_get_max(skillid);
+
 		for(k=0;k<5;k++){
 			guild_skill_tree[id].need[k].id=atoi(split[k*2+2]);
 			guild_skill_tree[id].need[k].lv=atoi(split[k*2+3]);
