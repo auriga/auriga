@@ -16,7 +16,7 @@
 10,SC_BLESSING,1,103,1			// ブレッシング
 11,SC_SIGNUMCRUCIS,0,15,0		// シグナムクルシス
 12,SC_INCREASEAGI,1,103,6		// 速度増加
-13,SC_DECREASEAGI,1,15,17		// 速度減少
+13,SC_DECREASEAGI,0,15,17		// 速度減少
 14,SC_SLOWPOISON,0,103,0		// スローポイズン
 15,SC_IMPOSITIO,1,103,0			// イムポシティオマヌス
 16,SC_SUFFRAGIUM,0,103,0		// サフラギウム
@@ -35,7 +35,7 @@
 30,SC_LOUD,1,7,6			// ラウドボイス
 31,SC_ENERGYCOAT,1,7,0			// エナジーコート
 32,SC_PK_PENALTY,0,0,0			// PKのペナルティ
-33,SC_REVERSEORCISH,1,15,0		// リバースオーキッシュ
+33,SC_REVERSEORCISH,0,15,0		// リバースオーキッシュ
 34,SC_HALLUCINATION,0,9,0		// 幻覚
 //
 37,SC_SPEEDPOTION0,1,7,0		// スピードアップポーション
@@ -44,7 +44,7 @@
 40,SC_SPEEDPOTION3,0,23,0		// バーサークピッチャー
 41,SC_ITEM_DELAY,0,1,0			// アイテムディレイ
 //
-50,SC_STRIPWEAPON,1,13,0		// ストリップウェポン
+50,SC_STRIPWEAPON,0,13,0		// ストリップウェポン
 51,SC_STRIPSHIELD,1,13,0		// ストリップシールド
 52,SC_STRIPARMOR,1,13,0			// ストリップアーマー
 53,SC_STRIPHELM,1,13,0			// ストリップヘルム

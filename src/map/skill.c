@@ -5149,7 +5149,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 
-	case MO_KITRANSLATION:		/* 気注入 */
+	case MO_KITRANSLATION:		/* 気功転移 */
 		if(dstsd){
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			if(dstsd->spiritball<5)
@@ -7771,8 +7771,12 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 			return 0;
 		}
 		break;
-	case MO_KITRANSLATION:	/* 気注入 */
-		if(bl == target || status_get_party_id(bl) != status_get_party_id(target))
+	case MO_KITRANSLATION:	/* 気功転移 */
+		if( !target_sd ||
+		    bl == target ||
+		    target_sd->status.party_id <= 0 ||
+		    status_get_party_id(bl) != target_sd->status.party_id ||
+		    target_sd->status.class_ == PC_CLASS_GS )
 		{
 			if(sd)
 				clif_skill_fail(sd,sc->id,0,0);

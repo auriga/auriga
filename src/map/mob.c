@@ -1418,7 +1418,10 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,int data)
 		}
 	}
 
-	map_addflooritem(&temp_item,1,ditem->m,ditem->x,ditem->y,ditem->first_bl,ditem->second_bl,ditem->third_bl,0);
+	map_addflooritem(
+		&temp_item,temp_item.amount,ditem->m,ditem->x,ditem->y,
+		ditem->first_bl,ditem->second_bl,ditem->third_bl,0
+	);
 	aFree(ditem);
 	return 0;
 }
@@ -1452,7 +1455,10 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 		}
 	}
 
-	map_addflooritem(&ditem->item_data,1,ditem->m,ditem->x,ditem->y,ditem->first_bl,ditem->second_bl,ditem->third_bl,0);
+	map_addflooritem(
+		&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,
+		ditem->first_bl,ditem->second_bl,ditem->third_bl,0
+	);
 	aFree(ditem);
 	return 0;
 }

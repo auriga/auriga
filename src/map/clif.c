@@ -7566,7 +7566,7 @@ void clif_guild_skillinfo(struct map_session_data *sd, struct guild *g)
 			WFIFOW(fd,c*37+14) = skill_get_sp(id,g->skill[i].lv);
 			WFIFOW(fd,c*37+16) = skill_get_range(id,g->skill[i].lv);
 			memset(WFIFOP(fd,c*37+18),0,24);
-			if(g->skill[i].lv < guild_skill_get_max(id) && (sd == g->member[0].sd))
+			if(g->skill[i].lv < guild_skill_get_max(id))
 				WFIFOB(fd,c*37+42) = 1;
 			else
 				WFIFOB(fd,c*37+42) = 0;
