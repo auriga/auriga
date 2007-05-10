@@ -264,8 +264,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 {
 	struct map_session_data *tsd=NULL;
 	struct mob_data *tmd=NULL;
-	//struct homun_data *thd=NULL;
-	struct status_change *sc_data,*sc;
+	struct status_change *sc_data;
 	short *sc_count;
 	unsigned int tick = gettick();
 
@@ -274,7 +273,6 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 
 	tsd = BL_DOWNCAST( BL_PC,  bl );
 	tmd = BL_DOWNCAST( BL_MOB, bl );
-	//thd = BL_DOWNCAST( BL_HOM, bl );
 
 	sc_data  = status_get_sc_data(bl);
 	sc_count = status_get_sc_count(bl);
@@ -381,7 +379,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 		}
 
 		if(sc_data[SC_KYRIE].timer != -1 && damage > 0) {	// キリエエレイソン
-			sc = &sc_data[SC_KYRIE];
+			struct status_change *sc = &sc_data[SC_KYRIE];
 			sc->val2 -= damage;
 			if(flag&BF_WEAPON) {
 				if(sc->val2 >= 0)

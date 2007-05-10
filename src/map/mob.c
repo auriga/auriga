@@ -3811,7 +3811,9 @@ static int mob_readskilldb(void)
 	} cond1[] = {
 		{ "always",            MSC_ALWAYS            },
 		{ "myhpltmaxrate",     MSC_MYHPLTMAXRATE     },
+		{ "myhpgtmaxrate",     MSC_MYHPGTMAXRATE     },
 		{ "friendhpltmaxrate", MSC_FRIENDHPLTMAXRATE },
+		{ "friendhpgtmaxrate", MSC_FRIENDHPGTMAXRATE },
 		{ "mystatuson",        MSC_MYSTATUSON        },
 		{ "mystatusoff",       MSC_MYSTATUSOFF       },
 		{ "friendstatuson",    MSC_FRIENDSTATUSON    },

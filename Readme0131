@@ -1,3 +1,14 @@
+----------------------------------------
+//0183 [2007/05/19] by Rayce
+
+・0175で追加した myhpgtmaxrate, friendhpgtmaxrate が読み込めなかった問題を修正（mob.c）
+・status_pretimer() でデータの整合性チェックを強化（status.c）
+・pk_murderer_pointの設定が経験値取得と売り値補正に反映されてなかった問題を修正（pc.c）
+・battle_calc_damage() を少し修正（battle.c）
+
+・ハンマーフォールを素手では使用不可に修正（db/skill_require_db.txt）
+・zlibにあるMakefileの改行コードをCR/LFに変更
+
 ---------------------------------------
 //0182 [2007/05/11] by Rayce
 

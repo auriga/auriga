@@ -447,7 +447,7 @@ static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *
 
 	if(ssd) {
 		// PK仕様、PKマップで攻撃が人間かつ自分でない(GXなどの対策)
-		if(map[sd->bl.m].flag.pk && sd->bl.id != ssd->bl.id && ranking_get_point(ssd,RK_PK) >= 100) {
+		if(map[sd->bl.m].flag.pk && sd->bl.id != ssd->bl.id && ranking_get_point(ssd,RK_PK) >= battle_config.pk_murderer_point) {
 			if(loss_base > 0 || loss_job > 0)
 				pc_gainexp(ssd,NULL,loss_base,loss_job);
 		}
@@ -2746,7 +2746,7 @@ int pc_modifysellvalue(struct map_session_data *sd,int orig_value)
 	if((skill=pc_checkskill(sd,MC_OVERCHARGE))>0)	// オーバーチャージ
 		rate = 5+skill*2-((skill==10)? 1:0);
 	//マーダラーボーナス
-	if(ranking_get_point(sd,RK_PK)>=100)
+	if(ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point)
 		rate+=10;
 	if(rate)
 		val = (int)((atn_bignumber)orig_value*(100+rate)/100);

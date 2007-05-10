@@ -5827,7 +5827,7 @@ static int status_pretimer(int tid, unsigned int tick, int id, int data)
 	struct unit_data *ud;
 
 	if(bl == NULL)
-		return 0;	//該当IDがすでに消滅している
+		return 0;	// 該当IDがすでに消滅している
 
 	if(bl->prev == NULL) {
 		aFree(stpt);
@@ -5837,9 +5837,13 @@ static int status_pretimer(int tid, unsigned int tick, int id, int data)
 	nullpo_retr(0, ud = unit_bl2ud(bl));
 
 	stpt = (struct status_pretimer*)data;
-	linkdb_erase(&ud->statuspretimer, stpt);
-
 	stpt->timer = -1;
+
+	if(linkdb_erase(&ud->statuspretimer, stpt) == NULL) {
+		printf("status_pretimer: data lost !!\n");
+		aFree(stpt);
+		return 0;
+	}
 
 	if(stpt->target_id){
 		struct block_list *target = map_id2bl(stpt->target_id);
