@@ -9400,6 +9400,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		return;
 	if(sd->sc_data[SC_AUTOCOUNTER].timer != -1 ||	// オートカウンター
 	   sd->sc_data[SC_BLADESTOP].timer != -1 ||	// 白刃取り
+	   sd->sc_data[SC_RUN].timer != -1 ||		// タイリギ
 	   sd->sc_data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
 	   (sd->sc_data[SC_DANCING].timer != -1 && sd->sc_data[SC_LONGINGFREEDOM].timer == -1))	// ダンス中
 		return;
@@ -9591,6 +9592,7 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 
 	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->opt1 > 0 || sd->chatID ||
 	    sd->sc_data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
+	    sd->sc_data[SC_RUN].timer != -1 ||			// タイリギ
 	    sd->sc_data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中拾えない
 	    sd->sc_data[SC_BLADESTOP].timer != -1 )		// 白刃取り
 	{

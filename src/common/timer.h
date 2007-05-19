@@ -31,13 +31,13 @@ struct TimerData {
 unsigned int gettick_nocache(void);
 unsigned int gettick(void);
 
-int add_timer_sub(unsigned int,int (*)(int,unsigned int,int,int),int,int,unsigned short);
-#define add_timer(tick,func,id,data)       add_timer_sub(tick,func,id,data,0)
-#define add_timer2(tick,func,id,data,flag) add_timer_sub(tick,func,id,data,flag)
+int add_timer_real(unsigned int,int (*)(int,unsigned int,int,int),int,int,unsigned short);
+#define add_timer(tick,func,id,data)       add_timer_real(tick,func,id,data,0)
+#define add_timer2(tick,func,id,data,flag) add_timer_real(tick,func,id,data,flag)
 int add_timer_interval(unsigned int,int (*)(int,unsigned int,int,int),int,int,int);
 int delete_timer(int,int (*)(int,unsigned int,int,int));
 
-int addtick_timer(int tid,unsigned int tick);
+unsigned int addtick_timer(int tid,unsigned int tick);
 struct TimerData *get_timer(int tid);
 
 int do_timer(unsigned int tick);

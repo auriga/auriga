@@ -41,6 +41,7 @@ struct timer_func_list {
 	struct timer_func_list* next;
 	char name[4];
 };
+
 static struct timer_func_list* tfl_root=NULL;
 
 //
@@ -60,6 +61,7 @@ int add_timer_func_list(int (*func)(int,unsigned int,int,int),const char* name)
 const char* search_timer_func_list(int (*func)(int,unsigned int,int,int))
 {
 	struct timer_func_list* tfl;
+
 	for(tfl = tfl_root;tfl;tfl = tfl->next) {
 		if (func == tfl->func)
 			return tfl->name;
@@ -73,6 +75,7 @@ const char* search_timer_func_list(int (*func)(int,unsigned int,int,int))
 
 static unsigned int gettick_cache;
 static int gettick_count;
+
 unsigned int gettick_nocache(void)
 {
 #ifdef _WIN32
@@ -214,8 +217,10 @@ static int search_timer_heap(int index)
 	}
 }
 
-static void delete_timer_heap(int index) {
+static void delete_timer_heap(int index)
+{
 	int pos = search_timer_heap(index);
+
 	if(pos != -1) {
 		memmove(&timer_heap[pos],&timer_heap[pos+1],(timer_heap[0] - pos) * sizeof(int));
 		timer_heap[0]--;
@@ -250,10 +255,11 @@ static void pop_timer_heap(int i)
 	timer_heap[0]--;
 }
 
-int add_timer_sub(unsigned int tick,int (*func)(int,unsigned int,int,int),int id,int data,unsigned short flag)
+int add_timer_real(unsigned int tick,int (*func)(int,unsigned int,int,int),int id,int data,unsigned short flag)
 {
 	struct TimerData* td;
 	int i;
+
 	if (free_timer_list_pos) {
 		do {
 			i = free_timer_list[--free_timer_list_pos];
@@ -294,6 +300,7 @@ int add_timer_sub(unsigned int tick,int (*func)(int,unsigned int,int,int),int id
 int add_timer_interval(unsigned int tick,int (*func)(int,unsigned int,int,int),int id,int data,int interval)
 {
 	int tid;
+
 	tid = add_timer(tick,func,id,data);
 	timer_data[tid].type = TIMER_INTERVAL;
 	timer_data[tid].interval = interval;
@@ -321,13 +328,14 @@ int delete_timer(int id,int (*func)(int,unsigned int,int,int))
 	return 0;
 }
 
-int addtick_timer(int tid,unsigned int tick)
+unsigned int addtick_timer(int tid,unsigned int tick)
 {
 	delete_timer_heap(tid);
 	timer_data[tid].tick += tick;
 	push_timer_heap(tid);
 	return timer_data[tid].tick;
 }
+
 struct TimerData* get_timer(int tid)
 {
 	return &timer_data[tid];

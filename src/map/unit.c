@@ -59,11 +59,11 @@ int unit_distance2( struct block_list *bl, struct block_list *bl2)
  */
 struct unit_data* unit_bl2ud(struct block_list *bl)
 {
-	if( bl == NULL) return NULL;
-	if( bl->type == BL_PC)  return &((struct map_session_data*)bl)->ud;
-	if( bl->type == BL_MOB) return &((struct mob_data*)bl)->ud;
-	if( bl->type == BL_PET) return &((struct pet_data*)bl)->ud;
-	if( bl->type == BL_HOM) return &((struct homun_data*)bl)->ud;
+	if( bl == NULL ) return NULL;
+	if( bl->type == BL_PC  ) return &((struct map_session_data*)bl)->ud;
+	if( bl->type == BL_MOB ) return &((struct mob_data*)bl)->ud;
+	if( bl->type == BL_PET ) return &((struct pet_data*)bl)->ud;
+	if( bl->type == BL_HOM ) return &((struct homun_data*)bl)->ud;
 	return NULL;
 }
 
@@ -190,9 +190,9 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 
 	dir = ud->walkpath.path[ud->walkpath.path_pos];
 	if(sd) pc_setdir(sd, dir, dir);
-	if(md) md->dir = dir;
-	if(pd) pd->dir = dir;
-	if(hd) hd->dir = dir;
+	else if(md) md->dir = dir;
+	else if(pd) pd->dir = dir;
+	else if(hd) hd->dir = dir;
 
 	dx = dirx[(int)dir];
 	dy = diry[(int)dir];
@@ -806,7 +806,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	if( unit_isdead(src) )		 return 0;	// 死んでいないか
 	if( src_sd && src_sd->opt1 > 0 ) return 0;	// 沈黙や異常（ただし、グリムなどの判定をする）
 
-	//スキル制限
+	// スキル制限
 	zone = skill_get_zone(skill_num);
 	if(zone){
 		int m = src->m;
@@ -888,17 +888,17 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	target_md = BL_DOWNCAST( BL_MOB, target );
 	target_hd = BL_DOWNCAST( BL_HOM, target );
 
-	//直前のスキル状況の記録
+	// 直前のスキル状況の記録
 	if(src_sd) {
 		switch(skill_num){
 		case SA_CASTCANCEL:
-			if(src_ud->skillid != skill_num){ //キャストキャンセル自体は覚えない
+			if(src_ud->skillid != skill_num){ // キャストキャンセル自体は覚えない
 				src_sd->skillid_old = src_ud->skillid;
 				src_sd->skilllv_old = src_ud->skilllv;
 				break;
 			}
 		case BD_ENCORE:					/* アンコール */
-			 //前回使用した踊りがないとだめ
+			 // 前回使用した踊りがないとだめ
 			if(!src_sd->skillid_dance || (src_sd->skillid_dance && pc_checkskill(src_sd,src_sd->skillid_dance)<=0)){
 				clif_skill_fail(src_sd,skill_num,0,0);
 				return 0;
@@ -1017,7 +1017,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		break;
 	}
 
-	//メモライズ状態ならキャストタイムが1/2
+	// メモライズ状態ならキャストタイムが1/2
 	if(sc_data && sc_data[SC_MEMORIZE].timer != -1 && casttime > 0 && !nomemorize) {
 		casttime = casttime/2;
 		if((--sc_data[SC_MEMORIZE].val2)<=0)
@@ -1138,7 +1138,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 
 	sc_data = status_get_sc_data(src);
 
-	//スキル制限
+	// スキル制限
 	zone = skill_get_zone(skill_num);
 	if(zone){
 		int m = src->m;
@@ -1208,7 +1208,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	if(battle_config.pc_skill_log)
 		printf("PC %d skill use target_pos=(%d,%d) skill=%d lv=%d cast=%d\n",src->id,skill_x,skill_y,skill_num,skill_lv,casttime);
 
-	//メモライズ状態ならキャストタイムが1/2
+	// メモライズ状態ならキャストタイムが1/2
 	if(sc_data && sc_data[SC_MEMORIZE].timer != -1 && casttime > 0){
 		casttime = casttime/2;
 		if((--sc_data[SC_MEMORIZE].val2)<=0)
@@ -1381,17 +1381,17 @@ int unit_can_move(struct block_list *bl)
 
 	if(sc_data && sc_count && (*sc_count) > 0)
 	{
-		if(	sc_data[SC_ANKLE].timer != -1 ||		// アンクルスネア
-			sc_data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
-			sc_data[SC_TRICKDEAD].timer != -1 ||		// 死んだふり
-			sc_data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
-			sc_data[SC_SPIDERWEB].timer != -1 ||		// スパイダーウェッブ
-			sc_data[SC_TIGERFIST].timer != -1 ||		// 伏虎拳
-			sc_data[SC_HOLDWEB].timer != -1 ||		// ホールドウェブ
-			sc_data[SC_MADNESSCANCEL].timer != -1 ||	// マッドネスキャンセラー
-			sc_data[SC_CLOSECONFINE].timer != -1 ||		// クローズコンファイン
-			(sc_data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2) ||	//グラビテーションフィールド使用者
-			(battle_config.hermode_no_walking && sc_data[SC_DANCING].timer != -1 && sc_data[SC_DANCING].val1 == CG_HERMODE)
+		if( sc_data[SC_ANKLE].timer != -1 ||		// アンクルスネア
+		    sc_data[SC_AUTOCOUNTER].timer != -1 ||	// オートカウンター
+		    sc_data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
+		    sc_data[SC_BLADESTOP].timer != -1 ||	// 白刃取り
+		    sc_data[SC_SPIDERWEB].timer != -1 ||	// スパイダーウェッブ
+		    sc_data[SC_TIGERFIST].timer != -1 ||	// 伏虎拳
+		    sc_data[SC_HOLDWEB].timer != -1 ||		// ホールドウェブ
+		    sc_data[SC_MADNESSCANCEL].timer != -1 ||	// マッドネスキャンセラー
+		    sc_data[SC_CLOSECONFINE].timer != -1 ||	// クローズコンファイン
+		    (sc_data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2) ||	//グラビテーションフィールド使用者
+		    (battle_config.hermode_no_walking && sc_data[SC_DANCING].timer != -1 && sc_data[SC_DANCING].val1 == CG_HERMODE)
 		)
 			return 0;
 
@@ -1425,9 +1425,9 @@ int unit_isrunning(struct block_list *bl)
 
 	sc_data = status_get_sc_data(bl);
 	if(sc_data) {
-		if(	sc_data[SC_RUN].timer != -1 ||			// 駆け足
-			sc_data[SC_FORCEWALKING].timer != -1 ||		// 強制移動
-			sc_data[SC_SELFDESTRUCTION].timer != -1		// 自爆2
+		if( sc_data[SC_RUN].timer != -1 ||		// 駆け足
+		    sc_data[SC_FORCEWALKING].timer != -1 ||	// 強制移動
+		    sc_data[SC_SELFDESTRUCTION].timer != -1	// 自爆2
 		)
 			return 1;
 	}
@@ -1567,13 +1567,13 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 		int dir = map_calc_dir(src, target->x,target->y );
 		if(src_sd && battle_config.pc_attack_direction_change)
 			pc_setdir(src_sd, dir, dir);
-		if(src_pd && battle_config.monster_attack_direction_change)
+		else if(src_pd && battle_config.monster_attack_direction_change)
 			src_pd->dir = dir;
-		if(src_md && battle_config.monster_attack_direction_change)
+		else if(src_md && battle_config.monster_attack_direction_change)
 			src_md->dir = dir;
-		if(src_hd && battle_config.monster_attack_direction_change)
+		else if(src_hd && battle_config.monster_attack_direction_change)
 			src_hd->dir = dir;
-		if(src_ud->walktimer != -1)
+		else if(src_ud->walktimer != -1)
 			unit_stop_walking(src,1);
 
 		if( src_md && mobskill_use(src_md,tick,-2) ) {	// スキル使用
@@ -1743,7 +1743,7 @@ int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int
 
 	if(damage+damage2 <= 0)
 		return 0;
-	//タゲ
+	// タゲ
 	if(target->type==BL_MOB){
 		mob_attacktarget((struct mob_data*)target,src,0);
 	}
@@ -1891,8 +1891,8 @@ int unit_iscasting(struct block_list *bl)
 
 	if( ud == NULL )
 		return 0;
-	else
-		return (ud->skilltimer != -1);
+
+	return (ud->skilltimer != -1);
 }
 
 /*==========================================
@@ -1905,8 +1905,8 @@ int unit_iswalking(struct block_list *bl)
 
 	if( ud == NULL )
 		return 0;
-	else
-		return (ud->walktimer != -1);
+
+	return (ud->walktimer != -1);
 }
 
 /*==========================================
@@ -1922,7 +1922,6 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 	nullpo_retr(0, ud = unit_bl2ud(bl));
 
 	if(bl->prev == NULL) {
-		// printf("unit_remove_map: nullpo bl->prev\n");
 		return 1;
 	}
 	map_freeblock_lock();
@@ -2025,7 +2024,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		struct mob_data *md = (struct mob_data*)bl;
 
 		linkdb_final( &md->dmglog );
-//		mobskill_deltimer(md);
+		//mobskill_deltimer(md);
 		md->state.skillstate=MSS_DEAD;
 		md->last_deadtime=gettick();
 		// 死んだのでこのmobへの攻撃者全員の攻撃を止める
@@ -2176,7 +2175,7 @@ int unit_free(struct block_list *bl, int clrtype)
 
 		status_change_clear(&hd->bl,1);			// ステータス異常を解除する
 		if(sd && sd->hd) {
-		//	sd->hd->status.incubate = 0;
+			//sd->hd->status.incubate = 0;
 			homun_save_data(sd);
 			if(sd->hd->natural_heal_hp != -1 || sd->hd->natural_heal_sp != -1)
 				homun_natural_heal_timer_delete(sd->hd);

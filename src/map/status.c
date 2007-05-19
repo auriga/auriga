@@ -2078,9 +2078,12 @@ L_RECALC:
 		clif_updatestatus(sd,SP_MAXWEIGHT);
 		pc_checkweighticon(sd);
 	}
-	for(i=0;i<6;i++)
+
+	for(i=0;i<6;i++) {
 		if(b_paramb[i] + b_parame[i] != sd->paramb[i] + sd->parame[i])
 			clif_updatestatus(sd,SP_STR+i);
+	}
+
 	if(b_hit != sd->hit)
 		clif_updatestatus(sd,SP_HIT);
 	if(b_flee != sd->flee)
@@ -2138,12 +2141,14 @@ L_RECALC:
 int status_get_group(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return mob_db[((struct mob_data *)bl)->class_].group_id;
 	//PC PETは0（未設定)
 
 	return 0;
 }
+
 /*==========================================
  * 対象のClassを返す(汎用)
  * 戻りは整数で0以上
@@ -2152,6 +2157,7 @@ int status_get_group(struct block_list *bl)
 int status_get_class(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return ((struct mob_data *)bl)->class_;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -2163,6 +2169,7 @@ int status_get_class(struct block_list *bl)
 	else
 		return 0;
 }
+
 /*==========================================
  * 対象の方向を返す(汎用)
  * 戻りは整数で0以上
@@ -2171,6 +2178,7 @@ int status_get_class(struct block_list *bl)
 int status_get_dir(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return ((struct mob_data *)bl)->dir;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -2182,6 +2190,7 @@ int status_get_dir(struct block_list *bl)
 	else
 		return 0;
 }
+
 /*==========================================
  * 対象のレベルを返す(汎用)
  * 戻りは整数で0以上
@@ -2190,6 +2199,7 @@ int status_get_dir(struct block_list *bl)
 int status_get_lv(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return mob_db[((struct mob_data *)bl)->class_].lv;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -2210,6 +2220,7 @@ int status_get_lv(struct block_list *bl)
 int status_get_range(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return mob_db[((struct mob_data *)bl)->class_].range;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -2221,6 +2232,7 @@ int status_get_range(struct block_list *bl)
 	else
 		return 0;
 }
+
 /*==========================================
  * 対象のHPを返す(汎用)
  * 戻りは整数で0以上
@@ -2229,6 +2241,7 @@ int status_get_range(struct block_list *bl)
 int status_get_hp(struct block_list *bl)
 {
 	nullpo_retr(1, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return ((struct mob_data *)bl)->hp;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -2238,6 +2251,7 @@ int status_get_hp(struct block_list *bl)
 	else
 		return 1;
 }
+
 /*==========================================
  * 対象のSPを返す(汎用)
  * 戻りは整数で0以上
@@ -2254,6 +2268,7 @@ int status_get_sp(struct block_list *bl)
 	else
 		return 0;
 }
+
 /*==========================================
  * 対象のMHPを返す(汎用)
  * 戻りは整数で0以上
@@ -2262,6 +2277,7 @@ int status_get_sp(struct block_list *bl)
 int status_get_max_hp(struct block_list *bl)
 {
 	nullpo_retr(1, bl);
+
 	if(bl->type==BL_PC && ((struct map_session_data *)bl))
 		return ((struct map_session_data *)bl)->status.max_hp;
 	else if(bl->type==BL_HOM && ((struct homun_data *)bl))
@@ -2306,6 +2322,7 @@ int status_get_max_hp(struct block_list *bl)
 
 	return 1;
 }
+
 /*==========================================
  * 対象のStrを返す(汎用)
  * 戻りは整数で0以上
@@ -2317,6 +2334,7 @@ int status_get_str(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(0, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && ((struct mob_data *)bl))
 		str = mob_db[((struct mob_data *)bl)->class_].str;
@@ -2345,6 +2363,7 @@ int status_get_str(struct block_list *bl)
 	if(str < 0) str = 0;
 	return str;
 }
+
 /*==========================================
  * 対象のAgiを返す(汎用)
  * 戻りは整数で0以上
@@ -2357,6 +2376,7 @@ int status_get_agi(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(0, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		agi=mob_db[((struct mob_data *)bl)->class_].agi;
@@ -2391,6 +2411,7 @@ int status_get_agi(struct block_list *bl)
 	if(agi < 0) agi = 0;
 	return agi;
 }
+
 /*==========================================
  * 対象のVitを返す(汎用)
  * 戻りは整数で0以上
@@ -2402,6 +2423,7 @@ int status_get_vit(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(0, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		vit=mob_db[((struct mob_data *)bl)->class_].vit;
@@ -2421,6 +2443,7 @@ int status_get_vit(struct block_list *bl)
 	if(vit < 0) vit = 0;
 	return vit;
 }
+
 /*==========================================
  * 対象のIntを返す(汎用)
  * 戻りは整数で0以上
@@ -2432,6 +2455,7 @@ int status_get_int(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(0, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		int_=mob_db[((struct mob_data *)bl)->class_].int_;
@@ -2458,6 +2482,7 @@ int status_get_int(struct block_list *bl)
 	if(int_ < 0) int_ = 0;
 	return int_;
 }
+
 /*==========================================
  * 対象のDexを返す(汎用)
  * 戻りは整数で0以上
@@ -2469,6 +2494,7 @@ int status_get_dex(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(0, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		dex=mob_db[((struct mob_data *)bl)->class_].dex;
@@ -2502,6 +2528,7 @@ int status_get_dex(struct block_list *bl)
 	if(dex < 0) dex = 0;
 	return dex;
 }
+
 /*==========================================
  * 対象のLukを返す(汎用)
  * 戻りは整数で0以上
@@ -2513,6 +2540,7 @@ int status_get_luk(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(0, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		luk=mob_db[((struct mob_data *)bl)->class_].luk;
@@ -2546,6 +2574,7 @@ int status_get_flee(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(1, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		flee=((struct map_session_data *)bl)->flee;
@@ -2600,6 +2629,7 @@ int status_get_flee(struct block_list *bl)
 
 	return flee;
 }
+
 /*==========================================
  * 対象のHitを返す(汎用)
  * 戻りは整数で1以上
@@ -2611,6 +2641,7 @@ int status_get_hit(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(1, bl);
+
 	if (bl->type==BL_PC)
 		return ((struct map_session_data *)bl)->hit;
 	else if(bl->type==BL_HOM && ((struct homun_data *)bl))
@@ -2638,6 +2669,7 @@ int status_get_hit(struct block_list *bl)
 	if(hit < 1) hit = 1;
 	return hit;
 }
+
 /*==========================================
  * 対象の完全回避を返す(汎用)
  * 戻りは整数で1以上
@@ -2649,6 +2681,7 @@ int status_get_flee2(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(1, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_PC && (struct map_session_data *)bl){
 		flee2 = status_get_luk(bl) + 10;
@@ -2665,6 +2698,7 @@ int status_get_flee2(struct block_list *bl)
 	if(flee2 < 1) flee2 = 1;
 	return flee2;
 }
+
 /*==========================================
  * 対象のクリティカルを返す(汎用)
  * 戻りは整数で1以上
@@ -2676,6 +2710,7 @@ int status_get_critical(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(1, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_PC && (struct map_session_data *)bl){
 		critical = status_get_luk(bl)*3 + 10;
@@ -2698,6 +2733,7 @@ int status_get_critical(struct block_list *bl)
 	if(critical < 1) critical = 1;
 	return critical;
 }
+
 /*==========================================
  * base_atkの取得
  * 戻りは整数で1以上
@@ -2709,6 +2745,7 @@ int status_get_baseatk(struct block_list *bl)
 	int batk=1;
 
 	nullpo_retr(1, bl);
+
 	sc_data=status_get_sc_data(bl);
 
 	if(bl->type==BL_PC) {
@@ -2750,6 +2787,7 @@ int status_get_baseatk(struct block_list *bl)
 	if(batk < 1) batk = 1; //base_atkは最低でも1
 	return batk;
 }
+
 /*==========================================
  * 対象のAtkを返す(汎用)
  * 戻りは整数で0以上
@@ -2761,6 +2799,7 @@ int status_get_atk(struct block_list *bl)
 	int atk=0;
 
 	nullpo_retr(0, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		atk = ((struct map_session_data*)bl)->watk;
@@ -2808,6 +2847,7 @@ int status_get_atk(struct block_list *bl)
 	if(atk < 0) atk = 0;
 	return atk;
 }
+
 /*==========================================
  * 対象の左手Atkを返す(汎用)
  * 戻りは整数で0以上
@@ -2828,6 +2868,7 @@ int status_get_atk_(struct block_list *bl)
 	}
 	return 0;
 }
+
 /*==========================================
  * 対象のAtk2を返す(汎用)
  * 戻りは整数で0以上
@@ -2836,6 +2877,7 @@ int status_get_atk_(struct block_list *bl)
 int status_get_atk2(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data*)bl)->watk2;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
@@ -2893,6 +2935,7 @@ int status_get_atk2(struct block_list *bl)
 	}
 	return 0;
 }
+
 /*==========================================
  * 対象の左手Atk2を返す(汎用)
  * 戻りは整数で0以上
@@ -2901,11 +2944,13 @@ int status_get_atk2(struct block_list *bl)
 int status_get_atk_2(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data*)bl)->watk_2;
 	else
 		return 0;
 }
+
 /*==========================================
  * 対象のMAtk1を返す(汎用)
  * 戻りは整数で0以上
@@ -2915,6 +2960,7 @@ int status_get_matk1(struct block_list *bl)
 {
 	struct status_change *sc_data;
 	int matk1,int_;
+
 	nullpo_retr(0, bl);
 
 	if (bl->type==BL_PC)
@@ -2951,6 +2997,7 @@ int status_get_matk1(struct block_list *bl)
 	}
 	return matk1;
 }
+
 /*==========================================
  * 対象のMAtk2を返す(汎用)
  * 戻りは整数で0以上
@@ -2960,6 +3007,7 @@ int status_get_matk2(struct block_list *bl)
 {
 	struct status_change *sc_data;
 	int matk2,int_;
+
 	nullpo_retr(0, bl);
 
 	if (bl->type==BL_PC)
@@ -2996,6 +3044,7 @@ int status_get_matk2(struct block_list *bl)
 	}
 	return matk2;
 }
+
 /*==========================================
  * 対象のDefを返す(汎用)
  * 戻りは整数で0以上
@@ -3076,6 +3125,7 @@ int status_get_def(struct block_list *bl)
 	if(def < 0) def = 0;
 	return def;
 }
+
 /*==========================================
  * 対象のMDefを返す(汎用)
  * 戻りは整数で0以上
@@ -3087,6 +3137,7 @@ int status_get_mdef(struct block_list *bl)
 	int mdef=0;
 
 	nullpo_retr(0, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		mdef = ((struct map_session_data *)bl)->mdef;
@@ -3112,6 +3163,7 @@ int status_get_mdef(struct block_list *bl)
 	if(mdef < 0) mdef = 0;
 	return mdef;
 }
+
 /*==========================================
  * 対象のDef2を返す(汎用)
  * 戻りは整数で1以上
@@ -3123,6 +3175,7 @@ int status_get_def2(struct block_list *bl)
 	int def2=1;
 
 	nullpo_retr(1, bl);
+
 	sc_data=status_get_sc_data(bl);
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		def2 = ((struct map_session_data *)bl)->def2;
@@ -3163,6 +3216,7 @@ int status_get_def2(struct block_list *bl)
 	if(def2 < 1) def2 = 1;
 	return def2;
 }
+
 /*==========================================
  * 対象のMDef2を返す(汎用)
  * 戻りは整数で0以上
@@ -3193,6 +3247,7 @@ int status_get_mdef2(struct block_list *bl)
 	}
 	return mdef2;
 }
+
 /*==========================================
  * 対象のSpeed(移動速度)を返す(汎用)
  * 戻りは整数で1以上
@@ -3202,6 +3257,7 @@ int status_get_mdef2(struct block_list *bl)
 int status_get_speed(struct block_list *bl)
 {
 	nullpo_retr(1000, bl);
+
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->speed;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
@@ -3281,6 +3337,7 @@ int status_get_speed(struct block_list *bl)
 
 	return 1000;
 }
+
 /*==========================================
  * 対象のaDelay(攻撃時ディレイ)を返す(汎用)
  * aDelayは小さいほうが攻撃速度が速い
@@ -3289,6 +3346,7 @@ int status_get_speed(struct block_list *bl)
 int status_get_adelay(struct block_list *bl)
 {
 	nullpo_retr(4000, bl);
+
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return (((struct map_session_data *)bl)->aspd<<1);
 	else {
@@ -3381,6 +3439,7 @@ int status_get_adelay(struct block_list *bl)
 	}
 	return 4000;
 }
+
 /*==========================================
  * 対象のamotionを返す(汎用)
  *------------------------------------------
@@ -3388,6 +3447,7 @@ int status_get_adelay(struct block_list *bl)
 int status_get_amotion(struct block_list *bl)
 {
 	nullpo_retr(2000, bl);
+
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->amotion;
 	else {
@@ -3461,6 +3521,7 @@ int status_get_amotion(struct block_list *bl)
 	}
 	return 2000;
 }
+
 /*==========================================
  * 対象のdmotionを返す(汎用)
  *------------------------------------------
@@ -3498,6 +3559,7 @@ int status_get_dmotion(struct block_list *bl)
 
 	return ret;
 }
+
 /*==========================================
  * 対象の属性を返す(汎用)
  *------------------------------------------
@@ -3551,6 +3613,7 @@ int status_get_element(struct block_list *bl)
 
 	return ret;
 }
+
 /*==========================================
  * 対象の攻撃属性を返す(汎用)
  *------------------------------------------
@@ -3594,6 +3657,7 @@ int status_get_attack_element(struct block_list *bl)
 	}
 	return ret;
 }
+
 /*==========================================
  * 対象の攻撃属性（左手）を返す(汎用)
  *------------------------------------------
@@ -3601,6 +3665,7 @@ int status_get_attack_element(struct block_list *bl)
 int status_get_attack_element2(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_PC && (struct map_session_data *)bl) {
 		int ret = ((struct map_session_data *)bl)->atk_ele_;
 		struct status_change *sc_data = status_get_sc_data(bl);
@@ -3631,6 +3696,7 @@ int status_get_attack_element2(struct block_list *bl)
 	}
 	return 0;
 }
+
 /*==========================================
  * 対象のパーティIDを返す(汎用)
  *------------------------------------------
@@ -3638,6 +3704,7 @@ int status_get_attack_element2(struct block_list *bl)
 int status_get_party_id(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->status.party_id;
 	else if(bl->type==BL_MOB && (struct mob_data *)bl){
@@ -3656,6 +3723,7 @@ int status_get_party_id(struct block_list *bl)
 	else
 		return 0;
 }
+
 /*==========================================
  * 対象のギルドIDを返す(汎用)
  *------------------------------------------
@@ -3663,6 +3731,7 @@ int status_get_party_id(struct block_list *bl)
 int status_get_guild_id(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->status.guild_id;
 	else if(bl->type==BL_MOB && (struct mob_data *)bl)
@@ -3677,6 +3746,7 @@ int status_get_guild_id(struct block_list *bl)
 	else
 		return 0;
 }
+
 /*==========================================
  * 対象の種族を返す(汎用)
  *------------------------------------------
@@ -3726,6 +3796,7 @@ int status_get_race(struct block_list *bl)
 
 	return race;
 }
+
 /*==========================================
  * 対象のサイズを返す(汎用)
  *------------------------------------------
@@ -3733,6 +3804,7 @@ int status_get_race(struct block_list *bl)
 int status_get_size(struct block_list *bl)
 {
 	nullpo_retr(1, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return mob_db[((struct mob_data *)bl)->class_].size;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -3748,6 +3820,7 @@ int status_get_size(struct block_list *bl)
 	else
 		return 1;
 }
+
 /*==========================================
  * 対象のモードを返す(汎用)
  *------------------------------------------
@@ -3755,6 +3828,7 @@ int status_get_size(struct block_list *bl)
 int status_get_mode(struct block_list *bl)
 {
 	nullpo_retr(0x01, bl);
+
 	if(bl->type==BL_MOB) {
 		struct mob_data* md = (struct mob_data*)bl;
 		return (md->mode ? md->mode : mob_db[md->class_].mode);
@@ -3764,6 +3838,7 @@ int status_get_mode(struct block_list *bl)
 	else
 		return 0x01;	// とりあえず動くということで1
 }
+
 /*==========================================
  * 対象のMVPExpを返す(汎用)
  *------------------------------------------
@@ -3771,6 +3846,7 @@ int status_get_mode(struct block_list *bl)
 int status_get_mexp(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return mob_db[((struct mob_data *)bl)->class_].mexp;
 	else if(bl->type==BL_PET && (struct pet_data *)bl)
@@ -3778,6 +3854,7 @@ int status_get_mexp(struct block_list *bl)
 	else
 		return 0;
 }
+
 /*==========================================
  * 対象の敵タイプを返す(汎用)
  *------------------------------------------
@@ -3785,6 +3862,7 @@ int status_get_mexp(struct block_list *bl)
 int status_get_enemy_type(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if( bl->type == BL_PC )
 		return 1;
 	else if( bl->type == BL_MOB && !(status_get_mode(bl)&0x20) )
@@ -3794,6 +3872,7 @@ int status_get_enemy_type(struct block_list *bl)
 	else
 		return 0;
 }
+
 /*==========================================
  * 対象の服色を返す(汎用)
  *------------------------------------------
@@ -3825,6 +3904,7 @@ short status_get_clothes_color(struct block_list *bl)
 struct status_change *status_get_sc_data(struct block_list *bl)
 {
 	nullpo_retr(NULL, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return ((struct mob_data*)bl)->sc_data;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -3833,9 +3913,11 @@ struct status_change *status_get_sc_data(struct block_list *bl)
 		return ((struct homun_data*)bl)->sc_data;
 	return NULL;
 }
+
 short *status_get_sc_count(struct block_list *bl)
 {
 	nullpo_retr(NULL, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return &((struct mob_data*)bl)->sc_count;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -3844,9 +3926,11 @@ short *status_get_sc_count(struct block_list *bl)
 		return &((struct homun_data*)bl)->sc_count;
 	return NULL;
 }
+
 unsigned short *status_get_opt1(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return &((struct mob_data*)bl)->opt1;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -3857,9 +3941,11 @@ unsigned short *status_get_opt1(struct block_list *bl)
 		return &((struct homun_data*)bl)->opt1;
 	return 0;
 }
+
 unsigned short *status_get_opt2(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return &((struct mob_data*)bl)->opt2;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -3870,9 +3956,11 @@ unsigned short *status_get_opt2(struct block_list *bl)
 		return &((struct homun_data*)bl)->opt2;
 	return 0;
 }
+
 unsigned int *status_get_opt3(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return &((struct mob_data*)bl)->opt3;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -3883,9 +3971,11 @@ unsigned int *status_get_opt3(struct block_list *bl)
 		return &((struct homun_data*)bl)->opt3;
 	return 0;
 }
+
 unsigned int *status_get_option(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return &((struct mob_data*)bl)->option;
 	else if(bl->type==BL_PC && (struct map_session_data *)bl)
@@ -3900,6 +3990,7 @@ unsigned int *status_get_option(struct block_list *bl)
 int status_check_no_magic_damage(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type==BL_PC)
 	{
 		if(((struct map_session_data*)bl)->special_state.no_magic_damage)
@@ -3907,10 +3998,16 @@ int status_check_no_magic_damage(struct block_list *bl)
 	}
 	return 0;
 }
+
+/*==========================================
+ * ステータス異常データの動的確保
+ *------------------------------------------
+ */
 #ifdef DYNAMIC_SC_DATA
 int status_calloc_sc_data(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(status_check_dummy_sc_data(bl) == 0)
 		return 0;
 	if(bl->type == BL_MOB)
@@ -3928,9 +4025,11 @@ int status_calloc_sc_data(struct block_list *bl)
 	}
 	return 0;
 }
+
 int status_free_sc_data(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type == BL_MOB && status_check_dummy_sc_data(bl)==0)
 	{
 		struct mob_data *md = (struct mob_data *)bl;
@@ -3940,9 +4039,11 @@ int status_free_sc_data(struct block_list *bl)
 	}
 	return 0;
 }
+
 int status_check_dummy_sc_data(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
+
 	if(bl->type == BL_MOB)
 	{
 		if(((struct mob_data *)bl)->sc_data == dummy_sc_data)
@@ -5945,6 +6046,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 
 	if( (bl=map_id2bl(id)) == NULL )
 		return 0;	// 該当IDがすでに消滅しているというのはいかにもありそうなのでスルーしてみる
+
 	nullpo_retr(0, sc_data=status_get_sc_data(bl));
 
 	if(bl->type==BL_PC)
@@ -6816,7 +6918,6 @@ int status_change_hidden_end(struct block_list *bl)
 	}
 	return 0;
 }
-
 
 /*==========================================
  * データベース読み込み
