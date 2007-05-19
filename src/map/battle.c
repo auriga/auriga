@@ -973,7 +973,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 // 左手判定があるときだけdamage2を計算する
 #define DMG_FIX( a,b ) { wd.damage = wd.damage*(a)/(b); if(calc_flag.lh) wd.damage2 = wd.damage2*(a)/(b); }
 #define DMG_ADD( a ) { wd.damage += (a); if(calc_flag.lh) wd.damage2 += (a); }
-#define DMG_SET( a ) { wd.damage = (a); if(calc_flag.lh) wd.damage2 = (a); };
+#define DMG_SET( a ) { wd.damage = (a); if(calc_flag.lh) wd.damage2 = (a); }
 
 /*==========================================
  * 武器ダメージ計算
@@ -1502,10 +1502,6 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 			} else {	// 外周
 				DMG_FIX( 100+10*skill_lv, 100 );
 			}
-			break;
-		case HVAN_EXPLOSION:
-			DMG_SET( status_get_hp(src)*(50+50*skill_lv)/100 );
-			calc_flag.hitrate = 1000000;
 			break;
 		case MC_MAMMONITE:	// メマーナイト
 			DMG_FIX( 100+50*skill_lv, 100 );
@@ -3221,7 +3217,7 @@ struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_list *t
 				mcd.damage = t_hp*(skill_lv*6)/100;
 		}
 		break;
-	case SN_FALCONASSAULT:			/* ファルコンアサルト */
+	case SN_FALCONASSAULT:		// ファルコンアサルト
 		if(sd == NULL || (skill = pc_checkskill(sd,HT_STEELCROW)) <= 0)
 			skill = 0;
 		mcd.damage = ((dex/10+int_/2+skill*3+40)*2*(150+skill_lv*70)/100)*5;
@@ -3230,13 +3226,16 @@ struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_list *t
 		flag &= ~(BF_WEAPONMASK|BF_RANGEMASK|BF_WEAPONMASK);
 		mcd.flag = flag|(mcd.flag&~BF_RANGEMASK)|BF_LONG;
 		break;
-	case GS_GROUNDDRIFT:	// グラウンドドリフト
+	case GS_GROUNDDRIFT:		// グラウンドドリフト
 		if(unit && unit->group)
 		{
 			const int ele_type[5] = { ELE_WIND, ELE_DARK, ELE_POISON, ELE_WATER, ELE_FIRE };
 			ele = ele_type[unit->group->unit_id - UNT_GROUNDDRIFT_WIND];
 			mcd.damage = status_get_baseatk(bl);
 		}
+		break;
+	case HVAN_EXPLOSION:		// バイオエクスプロージョン
+		mcd.damage = status_get_hp(bl)*(50+50*skill_lv)/100;
 		break;
 	default:
 		mcd.damage = status_get_baseatk(bl);

@@ -5761,10 +5761,11 @@ atcommand_homlevel(
 	if (level > 1000 || level < -1000)
 		return -1;
 	if (level >= 1) {
-		int hp = 0, sp = 0;
+		int hp = 0, sp = 0, flag = 0;
 		for (i = 1; i <= level; i++){
 			if(homun_nextbaseexp(hd) <= 0)
 				break;
+			flag = 1;
 			hd->status.base_level++;
 		//	hd->status.status_point += 15 + (hd->status.base_level+14)/3;	// 微調整してもうまくいかず・・・
 			if(hd->status.base_level%3==0)	// 3レベル毎にSkillPoint加算
@@ -5779,12 +5780,14 @@ atcommand_homlevel(
 		//	homun_upstatus(&hd->status);	// オートステ振り(statuspoint方式)
 			homun_upstatus2(&hd->status);	// ステアップ計算
 		}
-		homun_calc_status(hd);			// ステータス計算
-		homun_heal(hd,hd->max_hp,hd->max_sp);
-		clif_misceffect2(&hd->bl,568);
-		if(hd->msd){
-			clif_send_homstatus(hd->msd,0);
-			clif_homskillinfoblock(hd->msd);
+		if (flag) {
+			homun_calc_status(hd);			// ステータス計算
+			homun_heal(hd,hd->max_hp,hd->max_sp);
+			clif_misceffect2(&hd->bl,568);
+			if(hd->msd){
+				clif_send_homstatus(hd->msd,0);
+				clif_homskillinfoblock(hd->msd);
+			}
 		}
 		clif_displaymessage(fd, msg_txt(50));
 	} else if (level < 0) {

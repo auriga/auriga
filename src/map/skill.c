@@ -2390,9 +2390,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		if(flag&1){
 			/* 個別にダメージを与える */
 			if(bl->id!=skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+				battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,0x0500);
 		}else{
-			int ar=2;
+			int ar=5;
 			int x=bl->x,y=bl->y;
 			skill_area_temp[1]=bl->id;
 			skill_area_temp[2]=x;
@@ -8963,7 +8963,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			if(sc->id != AM_POTIONPITCHER && sc->id != CR_SLIMPITCHER) {
 				for(i=0;i<10;i++) {
 					if(index[i] >= 0)
-						pc_delitem(sd,index[i],amount[i],0);		// アイテム消費
+						pc_delitem(sd,index[i],amount[i],0);	// アイテム消費
 				}
 			}
 		}
@@ -9157,7 +9157,7 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 			if(sc->id != AM_POTIONPITCHER && sc->id != CR_SLIMPITCHER) {
 				for(i=0;i<10;i++) {
 					if(index[i] >= 0)
-						pc_delitem(msd,index[i],amount[i],0);		// アイテム消費
+						pc_delitem(msd,index[i],amount[i],0);	// アイテム消費
 				}
 			}
 		}
