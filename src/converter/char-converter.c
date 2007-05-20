@@ -1161,6 +1161,28 @@ int homun_tosql(int homun_id, struct mmo_homunstatus *h)
 	return 0;
 }
 
+// キャラIDからキャラ名を取得
+const char *char_id2name(struct mmo_chardata *cd, int char_id, int max)
+{
+	int min = -1;
+
+	if(cd == NULL)
+		return NULL;
+
+	// binary search
+	while(max - min > 1) {
+		int mid = (min + max) / 2;
+		if(cd[mid].st.char_id == char_id)
+			return cd[mid].st.name;
+
+		if(cd[mid].st.char_id > char_id)
+			max = mid;
+		else
+			min = mid;
+	}
+	return NULL;
+}
+
 int char_convert(void)
 {
 	char input, line[65536];
@@ -1175,7 +1197,6 @@ int char_convert(void)
 		int i,j;
 		char buf[256];
 		struct mmo_chardata *cd;
-		struct linkdb_node *char_namedb = NULL;	// char.cのようにchar_txt_load() がなくて面倒なのでキャラ名リストを用意
 
 		printf("\nConverting Character Database...\n");
 		fp=fopen(char_txt,"r");
@@ -1195,31 +1216,36 @@ int char_convert(void)
 			}
 			if( mmo_char_fromstr(line, &cd[char_num]) ) {
 				mmo_char_tosql(cd[char_num].st.char_id , &cd[char_num]);
-				linkdb_replace(&char_namedb, (void*)cd[char_num].st.char_id, aStrdup(cd[char_num].st.name));
+
+				if(char_num > 0 && cd[char_num].st.char_id < cd[char_num-1].st.char_id) {
+					struct mmo_chardata tmp;
+					int k = char_num;
+
+					// 何故かキャラIDの昇順に並んでない場合は挿入ソートする
+					while(k > 0 && cd[char_num].st.char_id < cd[k-1].st.char_id) {
+						k--;
+					}
+					memcpy(&tmp, &cd[char_num], sizeof(cd[0]));
+					memmove(&cd[k+1], &cd[k], (char_num-k)*sizeof(cd[0]));
+					memcpy(&cd[k], &tmp, sizeof(cd[0]));
+				}
 				char_num++;
 			} else {
 				printf("mmo_char: broken data [%s] line %d\n", char_txt, c);
 			}
 		}
+
 		// 友達リストの名前を解決
 		for(i=0; i<char_num; i++) {
 			for(j=0; j<cd[i].st.friend_num; j++) {
 				struct friend_data *frd = &cd[i].st.friend_data[j];
-				const char *name = (char*)linkdb_search(&char_namedb, (void*)frd->char_id);
+				const char *name = char_id2name(cd, frd->char_id, char_num);
 				if(name)
 					strncpy(frd->name, name, 24);
 				else
 					strncpy(frd->name, "", 24);
 				mmo_friend_tosql(cd[i].st.char_id, &cd[i].st);
 			}
-		}
-		if(char_namedb) {	// 後始末
-			struct linkdb_node *node = (struct linkdb_node *)char_namedb;
-			while (node) {
-				aFree(node->data);
-				node = node->next;
-			}
-			linkdb_final(&char_namedb);
 		}
 		aFree(cd);
 		printf("char data convert end\n");

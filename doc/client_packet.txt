@@ -685,7 +685,7 @@ R 0142 <ID>.l
 	数値入力用窓表示
 S 0143 <ID>.l <amount>.l
 	0142の窓に入力した数値の送信
-R 0144 <ID>.l <type>.l <X>.l <Y>.l <point ID>.B <color>.3B ?.B
+R 0144 <ID>.l <type>.l <X>.l <Y>.l <point ID>.B <color>.l
 	案内員用、マップ上アイコン表示パケット
 	type=1 アイコンを表示
 	type=2 アイコンを消去
@@ -848,7 +848,7 @@ R 0181 <flag>.b
 	flag=1 敵対ギルド数が多すぎる
 	flag=2 すでに敵対関係
 R 0182 <accID>.l <charactorID>.l <髪型>.w <髪の色>.w <性別？>.w <job>.w <lvl?>.w <上納経験値>.l <online>.l <Position>.l ?.50B <nick>.24B
-	
+
 S 0183 <guild_id>.l <type>.l
 	ギルド関係解消
 R 0184 <guild_id>.l <type>.l

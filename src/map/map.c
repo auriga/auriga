@@ -1907,7 +1907,7 @@ static int map_eraseallipport_sub(void *key,void *data,va_list va)
 {
 	struct map_data_other_server *mdos = (struct map_data_other_server*)data;
 
-	if(mdos->gat == NULL && mdos->map == NULL) {
+	if(mdos->gat == NULL) {
 		strdb_erase(map_db,key);
 		aFree(mdos);
 	}

@@ -15,8 +15,9 @@
  */
 #define MALLOC_DBN
 #define ROOT_SIZE 4096
+#define ROOT_BUCKET 512
 
-static struct dbn *dbn_root[512], *dbn_free = NULL;
+static struct dbn *dbn_root[ROOT_BUCKET], *dbn_free = NULL;
 static int dbn_root_rest=0,dbn_root_num=0;
 
 static void * malloc_dbn(void)
@@ -26,6 +27,11 @@ static void * malloc_dbn(void)
 
 	if(dbn_free==NULL){
 		if(dbn_root_rest<=0){
+			if(dbn_root_num >= ROOT_BUCKET) {
+				// メモリ確保出来ないのでサーバを落とす
+				printf("malloc_dbn: dbn memory over %dx%d !!\n", ROOT_BUCKET, ROOT_SIZE);
+				exit(1);
+			}
 			dbn_root[dbn_root_num]=(struct dbn *)aCalloc(ROOT_SIZE,sizeof(struct dbn));
 			dbn_root_rest=ROOT_SIZE;
 			dbn_root_num++;
