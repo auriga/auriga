@@ -3926,7 +3926,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case GS_GLITTERING:		/* フリップザコイン */
 		if(sd){
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			if(atn_rand()%100<50+skilllv*5){
+			if(atn_rand()%100<20+skilllv*10){
 				pc_addcoin(sd,skill_get_time(skillid,skilllv),10);
 			}else{
 				pc_delcoin(sd,1,0);
@@ -4884,8 +4884,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case NPC_TRANSFORMATION:
 	case NPC_METAMORPHOSIS:
-		if(md && md->skillidx != -1)
+		if(md && md->skillidx != -1) {
+			if(skilllv > 1)
+				mob_summonslave(md,mob_db[md->class_].skill[md->skillidx].val,skilllv-1,0);
 			mob_class_change(md,mob_db[md->class_].skill[md->skillidx].val,sizeof(mob_db[md->class_].skill[md->skillidx].val)/sizeof(mob_db[md->class_].skill[md->skillidx].val[0]));
+		}
 		break;
 
 	case NPC_EMOTION:			/* エモーション */

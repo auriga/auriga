@@ -634,8 +634,8 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 	if(mmd->recall_flag == 1){
 		if(mmd->recallcount < (mmd->recallmob_count+2) ){
 			int dx,dy;
-			dx=atn_rand()%9-4+mmd->bl.x;
-			dy=atn_rand()%9-4+mmd->bl.y;
+			dx=atn_rand()%5-2+mmd->bl.x;
+			dy=atn_rand()%5-2+mmd->bl.y;
 			mob_warp(md,-1,dx,dy,3);
 			mmd->recallcount += 1;
 		}
@@ -668,18 +668,14 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 	if(!md->target_id && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) &&
 		(md->ud.walktimer == -1) && md->master_dist<15){
 		int i=0,dx,dy,ret;
-		if(md->master_dist>4) {
+		if(md->master_dist>2) {
 			do {
 				if(i<=2){
-					dx=mmd->bl.x - md->bl.x;
-					dy=mmd->bl.y - md->bl.y;
-					if(dx<0) dx+=(atn_rand()%( (dx<-3)?3:-dx )+1);
-					else if(dx>0) dx-=(atn_rand()%( (dx>3)?3:dx )+1);
-					if(dy<0) dy+=(atn_rand()%( (dy<-3)?3:-dy )+1);
-					else if(dy>0) dy-=(atn_rand()%( (dy>3)?3:dy )+1);
+					dx=atn_rand()%5-2+mmd->bl.x - md->bl.x;
+					dy=atn_rand()%5-2+mmd->bl.y - md->bl.y;
 				}else{
-					dx=mmd->bl.x - md->bl.x + atn_rand()%7 - 3;
-					dy=mmd->bl.y - md->bl.y + atn_rand()%7 - 3;
+					dx=mmd->bl.x - md->bl.x + atn_rand()%5 - 2;
+					dy=mmd->bl.y - md->bl.y + atn_rand()%5 - 2;
 				}
 
 				ret=unit_walktoxy(&md->bl,md->bl.x+dx,md->bl.y+dy);
@@ -688,8 +684,8 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 		}
 		else {
 			do {
-				dx = atn_rand()%9 - 5;
-				dy = atn_rand()%9 - 5;
+				dx = atn_rand()%5 - 2;
+				dy = atn_rand()%5 - 2;
 				if( dx == 0 && dy == 0) {
 					dx = (atn_rand()%2)? 1:-1;
 					dy = (atn_rand()%2)? 1:-1;
@@ -994,7 +990,6 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				}
 			}
 		} else { // 攻撃射程範囲内
-			md->state.skillstate=MSS_ATTACK;
 			if(md->ud.walktimer != -1)
 				unit_stop_walking(&md->bl,1);	// 歩行中なら停止
 			if(md->ud.attacktimer != -1 || md->ud.canact_tick > gettick())
@@ -1002,6 +997,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			if(battle_config.mob_attack_fixwalkpos)	//強制位置補正
 				clif_fixwalkpos(&md->bl);
 			unit_attack( &md->bl, md->target_id, attack_type);
+			md->state.skillstate=MSS_ATTACK;
 		}
 		return search_flag;
 	} else if(tbl->type == BL_ITEM && md->lootitem) {
@@ -2488,7 +2484,6 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 		md->y0=y;
 		md->xs=0;
 		md->ys=0;
-		md->speed=md2->speed;
 		md->spawndelay1=-1;	// 一度のみフラグ
 		md->spawndelay2=-1;	// 一度のみフラグ
 		md->ai_pc_count = 0;
@@ -2506,6 +2501,7 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 
 		if(flag){
 			md->master_id=md2->bl.id;
+			md->speed=md2->speed;
 			md->state.nodrop = battle_config.summonslave_no_drop;
 			md->state.noexp  = battle_config.summonslave_no_exp;
 			md->state.nomvp  = battle_config.summonslave_no_mvp;

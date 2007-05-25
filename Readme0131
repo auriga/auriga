@@ -1,4 +1,15 @@
 ----------------------------------------
+//0189 [2007/05/26] by Rayce
+
+・AthenaProject2298より一部をmerge、thanks to Cocoaさん
+	フリップザコインの成功率が異なっていた点を修正（skill.c）
+
+・AthenaProject2299よりmerge、thanks to Blazeさん
+	-> 取り巻きモンスターの挙動を修正（mob.c）
+	-> NPCスキル「取り巻き呼び戻し」の範囲を修正（mob.c）
+	-> NPCスキル「メタモルフォース」「トランスフォーメーション」のLv2以上実装（skill.c）
+
+----------------------------------------
 //0188 [2007/05/26] by Rayce
 
 ・AthenaProject2297よりmerge、thanks to Blazeさん
