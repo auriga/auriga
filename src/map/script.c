@@ -1962,7 +1962,7 @@ void* get_val2(struct script_state*st,int num,struct linkdb_node **ref)
  * 変数設定用
  *------------------------------------------
  */
-static int set_reg(struct script_state*st,struct map_session_data *sd,int num,char *name,void *v,struct linkdb_node** ref)
+static int set_reg(struct script_state *st,struct map_session_data *sd,int num,const char *name,void *v,struct linkdb_node** ref)
 {
 	char prefix=*name;
 	char postfix=name[strlen(name)-1];
@@ -3222,7 +3222,7 @@ int script_check_variable(const char *name,int array_flag,int read_only)
 	return 0;
 }
 
-void* script_read_vars(struct map_session_data *sd,char *var,int elem,struct linkdb_node **ref)
+void* script_read_vars(struct map_session_data *sd,const char *var,int elem,struct linkdb_node **ref)
 {
 	if(sd) {
 		// プレイヤーにアタッチする必要があるならstを用意
@@ -3236,7 +3236,7 @@ void* script_read_vars(struct map_session_data *sd,char *var,int elem,struct lin
 	return get_val2(NULL, (elem<<24) | add_str(var), ref);
 }
 
-void script_write_vars(struct map_session_data *sd,char *var,int elem,void *v,struct linkdb_node **ref)
+void script_write_vars(struct map_session_data *sd,const char *var,int elem,void *v,struct linkdb_node **ref)
 {
 	set_reg(NULL, sd, (elem<<24) | add_str(var), var, v, ref);
 
@@ -3713,8 +3713,8 @@ struct script_function buildin_func[] = {
 	{buildin_getelementofarray,"getelementofarray","ii*"},
 	{buildin_getitem,"getitem","ii**"},
 	{buildin_getitem2,"getitem2","iiiiiiiii*"},
-	{buildin_delitem,"delitem","ii"},
-	{buildin_delinventory,"delinventory","ii"},
+	{buildin_delitem,"delitem","ii*"},
+	{buildin_delinventory,"delinventory","ii*"},
 	{buildin_cutin,"cutin","si"},
 	{buildin_cutincard,"cutincard","i"},
 	{buildin_viewpoint,"viewpoint","iiiii"},
@@ -5137,6 +5137,7 @@ int buildin_getitem2(struct script_state *st)
 int buildin_delitem(struct script_state *st)
 {
 	int nameid=0,amount,i;
+	int skip_egg = 0;
 	struct map_session_data *sd = script_rid2sd(st);
 	struct script_data *data;
 
@@ -5154,10 +5155,13 @@ int buildin_delitem(struct script_state *st)
 	}
 
 	amount = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(st->end > st->start+4)
+		skip_egg = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	for(i=0; i<MAX_INVENTORY; i++) {
 		if(sd->status.inventory[i].nameid == nameid) {
-			if(sd->status.inventory[i].nameid > 0 &&
+			if(!skip_egg &&
+			   sd->status.inventory[i].nameid > 0 &&
 			   sd->inventory_data[i]->type == 7 &&
 			   sd->status.inventory[i].amount > 0 &&
 			   sd->status.inventory[i].card[0] == (short)0xff00 &&
@@ -5186,20 +5190,27 @@ int buildin_delitem(struct script_state *st)
 int buildin_delinventory(struct script_state *st)
 {
 	int idx,amount;
+	int skip_egg = 0;
 	struct map_session_data *sd = script_rid2sd(st);
 
 	nullpo_retr(0, sd);
 
 	idx = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	amount = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(st->end > st->start+4)
+		skip_egg = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	if(idx < 0 || idx >= MAX_INVENTORY || amount <= 0)
 		return 0;
 
 	if(sd->inventory_data[idx]->type == 7) {
 		if(sd->status.inventory[idx].nameid > 0) {
-			if(sd->status.inventory[idx].card[0] == (short)0xff00 && search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
+			if(!skip_egg &&
+			   sd->status.inventory[idx].card[0] == (short)0xff00 &&
+			   search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
+			{
 				intif_delete_petdata(*((long *)(&sd->status.inventory[idx].card[1])));
+			}
 		}
 	}
 	if(sd->status.inventory[idx].amount >= amount)
@@ -8430,6 +8441,7 @@ int buildin_getinventorylist(struct script_state *st)
 		return 0;
 	for(i=0;i<MAX_INVENTORY && j<128;i++){
 		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].amount > 0){
+			pc_setreg(sd,add_str("@inventorylist_index")+(j<<24),i);
 			pc_setreg(sd,add_str("@inventorylist_id")+(j<<24),sd->status.inventory[i].nameid);
 			pc_setreg(sd,add_str("@inventorylist_amount")+(j<<24),sd->status.inventory[i].amount);
 			pc_setreg(sd,add_str("@inventorylist_equip")+(j<<24),sd->status.inventory[i].equip);

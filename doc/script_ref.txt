@@ -818,18 +818,22 @@ AurigaNPCScript
 			ただし、アイテム名はitem_db.txtなどに依存するため、テスト目的以外では使用すべきではありません。
 
 		delitem命令
-			delitem <itemid>,<num>;
+			delitem <itemid>,<num>[,<flag>];
 
 			itemid,num	数値
+			flag		数値(省略可)
 
 			<itemid>に指定されたアイテムIDを持つアイテムを<num>個分失います。
+			<flag>を1にした場合はペットの卵情報の削除を行いません。
 
 		delinventory命令
-			delinventory <index>,<num>;
+			delinventory <index>,<num>[,<flag>];
 
 			index,num	数値
+			flag		数値(省略可)
 
 			PCの所持している<index>番目のアイテムを<num>個分失います。
+			<flag>を1にした場合はペットの卵情報の削除を行いません。
 
 		makepet命令
 			makepet <petid>;
@@ -1754,6 +1758,7 @@ AurigaNPCScript
 			現在アタッチされているプレイヤーの装備品含むアイテムデータを
 			配列変数@inventorylist_***にロードします。
 			以下変数の説明
+			@inventorylist_index : アイテムの配列位置
 			@inventorylist_id : アイテムのID
 			@inventorylist_amount : アイテムの量
 			@inventorylist_equip : 装備している場合の装備箇所
