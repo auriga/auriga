@@ -5,14 +5,14 @@
 //============================================================
 // Shop
 //------------------------------------------------------------
-gonryun.gat,147,84,4	shop	道具商人	777,1750:1,1751:2,611:40,501:50,502:200,503:550,504:1200,506:40,645:800,656:1500,601:60,602:300,1065:100
-gonryun.gat,174,101,4	shop	武器商人	774,1207:2400,1216:19500,1107:2900,1122:24000,1116:2000,1154:22500,1407:3450,1457:27000,1354:15500,1519:23000
-gonryun.gat,173,84,4	shop	防具商人	770,2211:400,2401:400,2403:3500,2501:1000,2503:5000,2101:500,2103:14000,2305:1000,2321:8000,2332:7000,2328:5500,2627:20000
+gonryun.gat,147,84,5	shop	道具商人	777,1750:1,1751:2,611:40,501:50,502:200,503:550,504:1200,506:40,645:800,656:1500,601:60,602:300,1065:100
+gonryun.gat,173,84,3	shop	防具商人	770,2211:400,2401:400,2403:3500,2501:1000,2503:5000,2101:500,2103:14000,2305:1000,2321:8000,2332:7000,2328:5500,2627:20000
+gonryun.gat,174,101,3	shop	武器商人	774,1207:2400,1216:19500,1107:2900,1122:24000,1116:2000,1154:22500,1407:3450,1457:27000,1354:15500,1519:23000
 
 //============================================================
 // アルベルタ⇔コンロン転送NPC
 //------------------------------------------------------------
-alberta.gat,245,69,4	script	コンロン広報官	776,{
+alberta.gat,245,69,3	script	コンロン広報官	776,{
 	mes "[ワバ]";
 	mes "こんにちは！";
 	mes "私は、皆さんを私の故郷であるコンロン";
@@ -45,28 +45,27 @@ alberta.gat,245,69,4	script	コンロン広報官	776,{
 		break;
 	case 2:
 		mes "[ワバ]";
-		mes "コンロンまでの旅費が^0000ff10,000zeny^000000";
+		mes "コンロンまでの旅費が^0000FF10,000zeny^000000";
 		mes "必要となります。帰りは無料です。";
 		mes "それでは、出発の準備を始めますが";
 		mes "よろしいですか？";
 		next;
 		if(select("出発！","やっぱりやめる")==2)
 			break;
-		mes "[ワバ]";
-		mes "それでは、出発しましょう！";
-		next;
 		if(Zeny < 10000) {
 			mes "[ワバ]";
 			mes "申し訳ありませんが、旅費として";
-			mes "^0000ff10,000zeny^000000必要です。";
+			mes "^0000FF10,000zeny^000000必要です。";
 			mes "所持金の確認をお願いします。";
 			close;
 		}
+		mes "[ワバ]";
+		mes "それでは、出発しましょう！";
+		next;
 		set Zeny,Zeny-10000;
 		warp "gon_fild01.gat",258,82;
 		end;
 	}
-	//case3なし
 	mes "[ワバ]";
 	mes "それでは、コンロンへ向かう際には";
 	mes "是非私にお言いつけください。";
@@ -75,7 +74,7 @@ alberta.gat,245,69,4	script	コンロン広報官	776,{
 	close;
 }
 
-gon_fild01.gat,255,79,6	script	コンロン広報官	776,{
+gon_fild01.gat,255,79,7	script	コンロン広報官	776,{
 	mes "[ワバ]";
 	mes "おや、お帰りになるのですか？";
 	mes "我がコンロンで楽しい時を過ごすことが";
@@ -98,7 +97,16 @@ gon_fild01.gat,255,79,6	script	コンロン広報官	776,{
 	close;
 }
 
-gonryun.gat,153,64,0	script	コンロン広報官	776,{
+gon_fild01.gat,187,239,7	script	コンロン広報官	776,{
+	mes "[チョウ セイリュウ]";
+	mes "コンロンへようこそ！";
+	mes "このまま上へ昇ればコンロンでございま";
+	mes "す。たくさんの思い出を作って行ってくだ";
+	mes "さいませ。";
+	close;
+}
+
+gonryun.gat,153,64,7	script	コンロン広報官	776,{
 	mes "[チョウ セイリュウ]";
 	mes "コンロンはいかがですか？";
 	mes "楽しんでいらっしゃいますか？";
@@ -122,18 +130,6 @@ gonryun.gat,153,64,0	script	コンロン広報官	776,{
 }
 
 //============================================================
-// コンロンフィールドNPC
-//------------------------------------------------------------
-gon_fild01.gat,187,239,4	script	コンロン広報官	776,{
-	mes "[チョウ セイリュウ]";
-	mes "コンロンへようこそ！";
-	mes "このまま上へ昇ればコンロンでございま";
-	mes "す。たくさんの思い出を作って行ってくだ";
-	mes "さいませ。";
-	close;
-}
-
-//============================================================
 // コンロンNPC
 //------------------------------------------------------------
 gonryun.gat,200,82,3	script	カン ソンソン	774,{
@@ -145,7 +141,89 @@ gonryun.gat,200,82,3	script	カン ソンソン	774,{
 	close;
 }
 
-gonryun.gat,169,71,4	script	案内員	770,{
+gonryun.gat,268,88,3	script	リャン チュンホ	776,{
+	mes "[リャン チュンホ]";
+	mes "我々は、独立した民族。";
+	mes "侵略者にも屈せず、";
+	mes "祝福を受けたこの地を";
+	mes "守り抜いてきた。";
+	next;
+	mes "[リャン チュンホ]";
+	mes "信じている。勝利を！";
+	mes "それが我々の栄光だ!!";
+	close;
+}
+
+gonryun.gat,118,111,5	script	チェン ウォンソク	89,{
+	mes "[チェン ウォンソク]";
+	mes "こちらの村長は、本当に";
+	mes "社交的な方だ。ところが、";
+	mes "その社交的な性格を嫌やがる";
+	mes "人もいるらしい。う〜む……。";
+	next;
+	mes "[チェン ウォンソク]";
+	mes "村長のおかげで、この村も";
+	mes "開放されていいんだが……。";
+	mes "悪さをする人間が";
+	mes "出ないといいがね";
+	close;
+}
+
+gonryun.gat,181,161,3	script	チョン ムンジン	773,{
+	mes "[チョン ムンジン]";
+	mes "コンロンの男どもは、皆、";
+	mes "たくましくて気が強いんだよ。";
+	mes "しかし、そんな男どもが最近、";
+	mes "結婚できないのよね……。";
+	next;
+	mes "[チョン ムンジン]";
+	mes "それがね、男があまりにも";
+	mes "多くなって、相対的に女が";
+	mes "不足しちゃったからなのよ。";
+	mes "私の息子も結構できる";
+	mes "のかしら……？ふう〜。";
+	close;
+}
+
+gonryun.gat,113,135,6	script	門番#gon1	780,{
+	mes "[門番]";
+	mes "ようこそ。こちらはコンロンを";
+	mes "統治していらっしゃる";
+	mes "サヨゥムンの邸宅です。";
+	next;
+	mes "[門番]";
+	mes "念の為に言っておきますが、";
+	mes "万が一、不審な動きがありましたら";
+	mes "私どもが、直ちに対処いたします。";
+	next;
+	mes "[門番]";
+	mes "まあ、そんな事は滅多にない";
+	mes "でしょうから、あまり気を使わずに。";
+	mes "では、ごゆっくりどうぞ。";
+	close;
+}
+
+gonryun.gat,113,127,6	duplicate(門番#gon1)	門番#gon2	780
+
+gon_in.gat,173,27,3	script	クーハーウー	774,{
+	mes "[クーハーウー]";
+	mes "やっぱり……。旅館に";
+	mes "行っても、僕だとお酒を売って";
+	mes "くれないんだね。大人たちが";
+	mes "よく飲むから、どんな味なのか";
+	mes "すごく知りたかったのに……はぁ。";
+	next;
+	mes "[クーハーウー]";
+	mes "でも、僕みたいな子供でも飲める";
+	mes "美味しいお茶が研究中だって";
+	mes "聞いたんだ。けど、いつ";
+	mes "出来るんだろう……。よく";
+	mes "分かんないけど、美味しいお茶が飲める";
+	mes "と思うと、胸がドキドキするんだ。";
+	close;
+}
+
+gonryun.gat,169,71,3	script	案内員	770,{
 	mes "[イーヒーミン]";
 	mes "いらっしゃいませ。";
 	mes "村に入る前に、村の下を";
@@ -168,93 +246,10 @@ gonryun.gat,169,71,4	script	案内員	770,{
 	close;
 }
 
-gonryun.gat,119,111,4	script	チェン ウォンソク	89,{
-	mes "[チェン ウォンソク]";
-	mes "こちらの村長は、本当に";
-	mes "社交的な方だ。ところが、";
-	mes "その社交的な性格を嫌やがる";
-	mes "人もいるらしい。う〜む……。";
-	next;
-	mes "[チェン ウォンソク]";
-	mes "村長のおかげで、この村も";
-	mes "開放されていいんだが……。";
-	mes "悪さをする人間が";
-	mes "出ないといいがね";
-	close;
-}
-
-gonryun.gat,268,88,4	script	リャン チュンホ	776,{
-	mes "[リャン チュンホ]";
-	mes "我々は、独立した民族。";
-	mes "侵略者にも屈せず、";
-	mes "祝福を受けたこの地を";
-	mes "守り抜いてきた。";
-	next;
-	mes "[リャン チュンホ]";
-	mes "信じている。勝利を！";
-	mes "それが我々の栄光だ!!";
-	close;
-}
-
-gonryun.gat,181,161,4	script	チョン ムンジン	773,{
-	mes "[チョン ムンジン]";
-	mes "コンロンの男どもは、皆、";
-	mes "たくましくて気が強いんだよ。";
-	mes "しかし、そんな男どもが最近、";
-	mes "結婚できないのよね……。";
-	next;
-	mes "[チョン ムンジン]";
-	mes "それがね、男があまりにも";
-	mes "多くなって、相対的に女が";
-	mes "不足しちゃったからなのよ。";
-	mes "私の息子も結構できる";
-	mes "のかしら……？ふう〜。";
-	close;
-}
-
-gon_in.gat,173,27,2	script	クーハーウー	774,{
-	mes "[クーハーウー]";
-	mes "やっぱり……。旅館に";
-	mes "行っても、僕だとお酒を売って";
-	mes "くれないんだね。大人たちが";
-	mes "よく飲むから、どんな味なのか";
-	mes "すごく知りたかったのに……はぁ。";
-	next;
-	mes "[クーハーウー]";
-	mes "でも、僕みたいな子供でも飲める";
-	mes "美味しいお茶が研究中だって";
-	mes "聞いたんだ。けど、いつ";
-	mes "出来るんだろう……。よく";
-	mes "分かんないけど、美味しいお茶が飲める";
-	mes "と思うと、胸がドキドキするんだ。";
-	close;
-}
-
-gonryun.gat,113,135,6	script	門番#Gonryun1	780,{
-	mes "[門番]";
-	mes "ようこそ。こちらはコンロンを";
-	mes "統治していらっしゃる";
-	mes "サヨゥムンの邸宅です。";
-	next;
-	mes "[門番]";
-	mes "念の為に言っておきますが、";
-	mes "万が一、不審な動きがありましたら";
-	mes "私どもが、直ちに対処いたします。";
-	next;
-	mes "[門番]";
-	mes "まあ、そんな事は滅多にない";
-	mes "でしょうから、あまり気を使わずに。";
-	mes "では、ごゆっくりどうぞ。";
-	close;
-}
-
-gonryun.gat,113,127,6	duplicate(門番#Gonryun1)	門番#Gonryun2	780
-
 //============================================================
 // 村長の剣クエストNPC
 //- Registry -------------------------------------------------
-// GON_1QUE -> 0〜31
-// GON_SWORD -> +1,+2,+4のビットフラグ
+// GON_1QUE -> 0〜33
 //------------------------------------------------------------
 gon_in.gat,17,93,4	script	村長	775,{
 	switch(GON_1QUE) {
@@ -286,7 +281,7 @@ gon_in.gat,17,93,4	script	村長	775,{
 		mes "[サヨゥムン]";
 		mes "それに最近、治安がの……。";
 		mes "泥棒がのさばり出しおってな……。";
-		if(BaseLevel >= 50 && GON_1QUE == 0)
+		if(BaseLevel >= 50)
 			set GON_1QUE,1;
 		close;
 	case 2:
@@ -310,24 +305,24 @@ gon_in.gat,17,93,4	script	村長	775,{
 		mes "聞いていたので、警備を強化してあった";
 		mes "のだが…";
 		next;
-		switch (select("……………","何か盗まれたんですか？","怪我人は？")) {
-			case 1:
-				mes "[サヨゥムン]";
-				mes "もし怪しい人物を見たら";
-				mes "知らせていただけるようお願い申す。";
-				set GON_1QUE,3;	//酔っ払い用に別のフラグが立つ
-				close;
-			case 2:
-				mes "[サヨゥムン]";
-				mes "それなのだが……";
-				mes "実は……我が家の家宝である剣が";
-				mes "盗まれてしまった。";
-				break;
-			case 3:
-				mes "[サヨゥムン]";
-				mes "あぁ、幸いに怪我人は出ておらん。";
-				mes "しかし大事な剣を盗まれてしまった……";
-				break;
+		switch(select("……………","何か盗まれたんですか？","怪我人は？")) {
+		case 1:
+			mes "[サヨゥムン]";
+			mes "もし怪しい人物を見たら";
+			mes "知らせていただけるようお願い申す。";
+			set GON_1QUE,3;
+			close;
+		case 2:
+			mes "[サヨゥムン]";
+			mes "それなのだが……";
+			mes "実は……我が家の家宝である剣が";
+			mes "盗まれてしまった。";
+			break;
+		case 3:
+			mes "[サヨゥムン]";
+			mes "あぁ、幸いに怪我人は出ておらん。";
+			mes "しかし大事な剣を盗まれてしまった……";
+			break;
 		}
 		next;
 		mes "[サヨゥムン]";
@@ -343,44 +338,57 @@ gon_in.gat,17,93,4	script	村長	775,{
 			mes "心使い、感謝いたす。";
 			mes "もし剣を見つけることがあれば";
 			mes "連絡いただけるようお願い申す。";
-			set GON_1QUE,30;	//クエスト消滅１
+			set GON_1QUE,11;
+			close;
 		}
-		else {
-			mes "[サヨゥムン]";
-			mes "おお、そうか！手伝っていただけるか。";
-			mes "村が開放されて以来、外からの者達と";
-			mes "村人をなんとか和解させようとしてきた";
-			mes "のだが……。";
-			mes "主が剣を探し出してくれれば、きっと";
-			mes "良いきっかけとなるであろう。";
-			set GON_1QUE,4;
-		}
+		mes "[サヨゥムン]";
+		mes "おお、そうか！手伝っていただけるか。";
+		mes "村が開放されて以来、外からの者達と";
+		mes "村人をなんとか和解させようとしてきた";
+		mes "のだが……。";
+		mes "主が剣を探し出してくれれば、きっと";
+		mes "良いきっかけとなるであろう。";
+		set GON_1QUE,3;
 		close;
 	case 3:
 	case 4:
 	case 5:
-	case 6:
-	case 7:
 		mes "[サヨゥムン]";
 		mes "なにか手掛かりは掴めただろうか？";
 		mes "いや、焦らずとも良い。";
 		mes "責任感が強いのは良いことだが";
 		mes "自分の身を大事にしなさい。";
 		close;
-	case 8:
+	case 6:
 		mes "[サヨゥムン]";
 		mes "おお、そうか。泥棒の逃げ込んだ場所を";
 		mes "突き止めてくれたか。ご苦労であった。";
 		mes "これは我が家に伝わる霊薬。";
 		mes "役立てて欲しい。";
 		getitem 504,3;
-		set GON_1QUE,9;
+		set GON_1QUE,7;
 		close;
-	case 9:
+	case 7:
 		mes "[サヨゥムン]";
 		mes "引き続き、よろしく頼み申す。";
 		mes "泥棒だが、少々負傷しているらしいとの";
 		mes "こと。そう遠くへは逃げていまい。";
+		close;
+	case 8:
+		mes "[サヨゥムン]";
+		mes "それは……";
+		mes "一体何故折れてしまったのだ……";
+		mes "うむ……困った……";
+		mes "とにかく、残りの部分も探し出して";
+		mes "欲しい。よろしく頼み申す。";
+		close;
+	case 9:
+		mes "[サヨゥムン]";
+		mes "うーん……";
+		mes "やはり難しいか……";
+		mes "しかし、頼む。お願い申す。";
+		mes "残りの部分も探し出して欲しい。";
+		mes "後生だ。";
 		close;
 	case 10:
 		mes "[サヨゥムン]";
@@ -395,21 +403,20 @@ gon_in.gat,17,93,4	script	村長	775,{
 		mes "もちろん、その分礼はいたす。";
 		next;
 		if(select("すみません……","やります")==1) {
-			set GON_1QUE,29;	//クエスト未完
 			mes "[サヨゥムン]";
 			mes "うむ……主がここまで苦労してくれた";
 			mes "だけでもありがたい。";
 			next;
-			getitem 603,1;
 			mes "[サヨゥムン]";
 			mes "これは感謝の印だ。十分とは言えないが";
 			mes "受け取ってくれたまえ。";
+			getitem 603,1;
+			set GON_1QUE,15;
 			next;
 			mes "[サヨゥムン]";
 			mes "それでは良き旅行を。";
 			close;
 		}
-		set GON_1QUE,11;
 		mes "[サヨゥムン]";
 		mes "おお、そうか。誠にかたじけない。";
 		mes "この剣を直すには、真に優れた鍛冶屋を";
@@ -421,7 +428,7 @@ gon_in.gat,17,93,4	script	村長	775,{
 		mes "うむ……そうだ。";
 		next;
 		mes "[サヨゥムン]";
-		mes "我が村に^555555サウンソ^000000と";
+		mes "我が村に ^555555サウンソ^000000と";
 		mes "いう者がおる。その者は前々から外の";
 		mes "大陸に良く通じておる。なにか知って";
 		mes "おるかもしれん。";
@@ -432,20 +439,43 @@ gon_in.gat,17,93,4	script	村長	775,{
 		mes "あまり役に立たないかもしれないが";
 		mes "持って行くがいい。";
 		getitem 603,1;
+		set GON_1QUE,14;
 		close;
-	default:	//11〜26とクエスト未完の29
+	case 11:
+		mes "[サヨゥムン]";
+		mes "今、村が少々ごたごたしているが";
+		mes "ゆっくりしていきなさい。";
+		close;
+	case 12:
+		mes "[サヨゥムン]";
+		mes "うむ、そうか……痕跡さえ探せなんだか";
+		mes "……仕方ない。ここまで良くやってくれ";
+		mes "た。ありがとう。";
+		next;
+		mes "[サヨゥムン]";
+		mes "これは気持ちばかりだ。";
+		mes "持って行くがいい。";
+		getitem 504,1;
+		set GON_1QUE,13;
+		close;
+	case 13:
+		mes "[サヨゥムン]";
+		mes "今、村は少々物騒なので";
+		mes "用心なさい。";
+		close;
+	default:	//14〜26とクエスト未完の29
 		mes "[サヨゥムン]";
 		mes "おかげで助かった。";
 		mes "村の治安も元に戻り、これで安心だ。";
 		mes "感謝いたす。";
-		if(GON_1QUE >= 13 && GON_1QUE <= 26) {
+		if(GON_1QUE >= 18) {
 			mes "[サヨゥムン]";
 			mes "剣も無事に戻ってきたし、これで";
 			mes "先祖に顔向けできる……。";
 		}
 		close;
-	case 27:
-		if(countitem(1123)<1) {
+	case 32:
+		if(countitem(1123) < 1) {
 			mes "[サヨゥムン]";
 			mes "そうかまだか……";
 			mes "引き続き、よろしく頼み申す。";
@@ -471,81 +501,58 @@ gon_in.gat,17,93,4	script	村長	775,{
 		mes "やはり私の目は確かだったか。";
 		mes "うむ、見事。";
 		next;
-		getitem 2404,1;
-		set GON_1QUE,28;
 		mes "[サヨゥムン]";
 		mes "これは私からの礼だ。";
 		mes "受け取りなさい。";
+		delitem 1123,1;
+		getitem 2404,1;
+		set GON_1QUE,33;
 		next;
 		mes "[サヨゥムン]";
 		mes "本当に感謝いたす。";
 		mes "これで先祖にも顔向けできる。";
 		mes "それでは、良き旅を。";
 		close;
-	case 28:	//クエスト完結
+	case 33:
 		mes "[サヨゥムン]";
 		mes "あぁ、主か。";
 		mes "以前は世話になった。";
 		mes "是非ゆっくりしていきなさい。";
 		close;
-	case 30:	//クエスト消滅１
-		mes "[サヨゥムン]";
-		mes "今、村が少々ごたごたしているが";
-		mes "ゆっくりしていきなさい。";
-		close;
-	case 31:	//クエスト消滅２
-		mes "[サヨゥムン]";
-		mes "うむ、そうか……痕跡さえ探せなんだか";
-		mes "……仕方ない。ここまで良くやってくれ";
-		mes "た。ありがとう。";
-		next;
-		getitem 504,1;
-		set GON_1QUE,32;
-		mes "[サヨゥムン]";
-		mes "これは気持ちばかりだ。";
-		mes "持って行くがいい。";
-		close;
-	case 32:
-		mes "[サヨゥムン]";
-		mes "今、村は少々物騒なので";
-		mes "用心なさい。";
-		close;
 	}
 }
 
-gon_in.gat,18,27,4	script	奥さん	771,{
+gon_in.gat,18,27,5	script	奥さん	771,{
 	mes "[サングファヨン]";
 	mes "ホホホホホホホ。これはこれは。";
 	mes "外からいらした大事なお客様では";
 	mes "ありませんか。";
 	next;
-	switch (select("こんにちは","村長さんはどこに？")) {
-	case 1:
+	if(select("こんにちは","村長さんはどこに？")==1) {
 		mes "[サングファヨン]";
 		mes "こんにちは";
 		mes "本当に久しぶりのお客様で。";
 		mes "歓迎いたしますので、ごゆっくり。";
 		mes "ホホホホホ";
 		close;
-	case 2:
-		mes "[サングファヨン]";
-		mes "ホホホ、宅の主人は上の階におります。";
-		if(Sex==0) {
-			mes "お嬢さん、淑やかなお顔をしております";
-			mes "こと。でも、宅の旦那に惚れないよう";
-			mes "お願いしますわ。ホホホホホ。";
-		}
-		else {
-			mes "あらあら、貴方もかなり男前ですこと。";
-			mes "でも、宅の主人ほどではありませんわね";
-			mes "ホホホホホ";
-		}
-		close;
 	}
+	mes "[サングファヨン]";
+	mes "ホホホ、宅の主人は上の階におります。";
+	if(Sex) {
+		mes "あらあら、貴方もかなり男前ですこと。";
+		mes "でも、宅の主人ほどではありませんわね";
+		mes "ホホホホホ";
+	}
+	else {
+		mes "お嬢さん、淑やかなお顔をしております";
+		mes "こと。でも、宅の旦那に惚れないよう";
+		mes "お願いしますわ。ホホホホホ。";
+	}
+	close;
 }
 
-gonryun.gat,166,196,4	script	兵士	780,{
-	if(GON_1QUE == 9) {
+gonryun.gat,166,196,3	script	兵士	780,{
+	if(GON_1QUE >= 7 && GON_1QUE <= 9) {
 		mes "[ワグオ]";
 		mes "昨晩は、そんなにうるさかった";
 		mes "のですか？その泥棒のせいで村中";
@@ -575,7 +582,7 @@ gonryun.gat,166,196,4	script	兵士	780,{
 	mes "住み着くようになり、モンスター達の";
 	mes "巣窟になってしまったんです。";
 	mes "おかげで祠堂も荒廃してしまって……。";
-	if(GON_1QUE < 9)
+	if(GON_1QUE < 7)
 		close;
 	next;
 	mes "[ワグオ]";
@@ -586,27 +593,26 @@ gonryun.gat,166,196,4	script	兵士	780,{
 	close;
 }
 
-gonryun.gat,139,142,0	script	少女	772,{
-	if(GON_1QUE <= 10 || GON_1QUE >= 30) {
+gonryun.gat,139,142,7	script	少女	772,{
+	if(GON_1QUE < 13) {
 		emotion 9;
 		mes "[サンファヨン]";
 		mes "………………";
 		mes "最近、村にお客さんが増えて、とても";
 		mes "楽しかったんですが……泥棒が出るよう";
 		mes "になってしまって、とても怖いです。";
+		close;
 	}
-	else {
-		mes "[サンファヨン]";
-		mes "最近、本当に楽しい事が増えました。";
-		mes "お客さんもたくさん来るし、村長さんの";
-		mes "盗まれた物も見つかったし。";
-		mes "泥棒を捕まえてくれた人は、とっても";
-		mes "素敵な方だと思います〜。";
-	}
+	mes "[サンファヨン]";
+	mes "最近、本当に楽しい事が増えました。";
+	mes "お客さんもたくさん来るし、村長さんの";
+	mes "盗まれた物も見つかったし。";
+	mes "泥棒を捕まえてくれた人は、とっても";
+	mes "素敵な方だと思います〜。";
 	close;
 }
 
-gon_in.gat,153,35,4	script	旅館の女将	702,{
+gon_in.gat,152,35,4	script	旅館の女将	702,{
 	switch(GON_1QUE) {
 	case 0:
 		mes "[マヨゥバン]";
@@ -629,12 +635,11 @@ gon_in.gat,153,35,4	script	旅館の女将	702,{
 			mes "取っておいたお酒があっと言う間に無く";
 			mes "なるんですわ〜。お客さんは増える一方";
 			mes "ですのに。本当、大変ですわ〜。";
+			close;
 		}
-		else {
-			mes "[マヨゥバン]";
-			mes "そうですか。では、良い旅路を〜。";
-			mes "また是非寄ってくださいまし〜。";
-		}
+		mes "[マヨゥバン]";
+		mes "そうですか。では、良い旅路を〜。";
+		mes "また是非寄ってくださいまし〜。";
 		close;
 	case 1:
 	case 2:
@@ -651,11 +656,9 @@ gon_in.gat,153,35,4	script	旅館の女将	702,{
 		mes "あ〜、すみません。お客さんにこんな";
 		mes "話をしてもうて。気にせず、ゆっくり";
 		mes "楽しんでっておくんなさい。";
-		if(GON_1QUE == 1)
-			set GON_1QUE,2;
+		set GON_1QUE,2;
 		close;
 	case 3:
-	case 4:
 		mes "[マヨゥバン]";
 		mes "あ〜、お客さん！聞きましたよ〜。";
 		mes "村長さんを手伝うんだそうで。";
@@ -668,9 +671,9 @@ gon_in.gat,153,35,4	script	旅館の女将	702,{
 		mes "あの人、昨夜酔い覚ましにフラリ";
 		mes "外歩いてたはずなんで、泥棒を";
 		mes "見てるかも知れませんで……";
-		if(GON_1QUE < 5)
-			set GON_1QUE,GON_1QUE+2;
+		set GON_1QUE,4;
 		close;
+	case 4:
 	case 5:
 	case 6:
 	case 7:
@@ -683,7 +686,13 @@ gon_in.gat,153,35,4	script	旅館の女将	702,{
 		mes "おかげで商売あがったり〜ですわ。";
 		mes "まったく……";
 		close;
-	default:	//11〜29のとき
+	case 11:
+	case 12:
+		mes "[マヨゥバン]";
+		mes "最近、村が沈み気味でね〜。";
+		mes "早く泥棒が捕まればいいんですけど。";
+		close;
+	default:
 		mes "[マヨゥバン]";
 		mes "聞きましたよ、お客さん！";
 		mes "泥棒を捕まえなさったと。";
@@ -699,13 +708,6 @@ gon_in.gat,153,35,4	script	旅館の女将	702,{
 		mes "また遊びに来てな〜。";
 		mes "歓迎しますわ〜。";
 		close;
-	case 30:
-	case 31:
-	case 32:
-		mes "[マヨゥバン]";
-		mes "最近、村が沈み気味でね〜。";
-		mes "早く泥棒が捕まればいいんですけど。";
-		close;
 	}
 }
 
@@ -715,24 +717,22 @@ gon_in.gat,165,16,4	script	二日酔いの人	748,{
 	case 1:
 	case 2:
 	case 3:
-	case 4:
-	case 30:	//クエスト消滅１のとき
+	case 11:
 		emotion 19;
 		mes "[ソルブン]";
 		mes "ウ〜ウウウウウウウウウウウ";
 		mes "やはり昨日飲み過ぎたのがいけなかった";
 		mes "ウ〜ウウウウウウウウウウウ";
 		close;
-	case 5:
-	case 6:
+	case 4:
 		mes "[ソルブン]";
 		mes "ウ〜ウウウウウウウウウウウ";
 		mes "飲みすぎた……頭がガンガンする……";
 		mes "誰か……ウウ……";
-		if(countitem(506)==0)
+		if(countitem(506) < 1)
 			close;
 		mes "ウウウウウ、そこの君……";
-		mes "^00ff00緑ポーション^000000を一つくれないか……";
+		mes "^00FF00緑ポーション^000000を一つくれないか……";
 		mes "ウウウ、頭がガンガンする……";
 		next;
 		if(select("あげない","あげる")==1) {
@@ -742,19 +742,17 @@ gon_in.gat,165,16,4	script	二日酔いの人	748,{
 			next;
 			if(select("本当にあげない","あげる")==1) {
 				mes "[ソルブン]";
-				mes "ウ〜ウウウウウウウウウウウ";
+				mes "ウ〜ウウウウウウウウウ";
 				mes "ヒトデナシ……";
-				set GON_1QUE,31;	//クエスト消滅２
+				set GON_1QUE,12;
 				close;
 			}
 		}
+		else
+			set '@word$,"一体いくら飲んだんだい……";
 		emotion 15;
 		delitem 506,1;
-		//2番目の選択肢はフラグによって出ない時がある
-		if(GON_1QUE == 6) {
-			set '@word$,"一体いくら飲んだんだい……";
-		}
-		set GON_1QUE,7;
+		set GON_1QUE,5;
 		mes "[ソルブン]";
 		mes "ウウ……あ、ありがとう。";
 		mes "ごくごく……ふぅ〜。";
@@ -764,6 +762,7 @@ gon_in.gat,165,16,4	script	二日酔いの人	748,{
 		next;
 		switch(select("泥棒について知らないか？",'@word$,"何でもないよ")) {
 		case 1:
+			mes "[ソルブン]";
 			mes "あ〜、泥棒か。";
 			mes "うん、実はね、お酒を飲んでから";
 			mes "ちょっと酔い覚ましに外に出たんだ。";
@@ -804,7 +803,7 @@ gon_in.gat,165,16,4	script	二日酔いの人	748,{
 			mes "人か猫かよく分からなかったけど、";
 			mes "体が大きかったから人だったのかな〜。";
 			mes "暗かったし、酔ってたからな〜。";
-			set GON_1QUE,8;
+			set GON_1QUE,6;
 			next;
 			mes "[ソルブン]";
 			mes "他に何かあるのかい？";
@@ -814,12 +813,11 @@ gon_in.gat,165,16,4	script	二日酔いの人	748,{
 				mes "[ソルブン]";
 				mes "えー";
 				mes "君が気を使うまでもないよ。";
+				close;
 			}
-			else {
-				mes "[ソルブン]";
-				mes "えー、そうなの？じゃあ、またね〜・";
-				mes "何かあったら、またおいで〜。";
-			}
+			mes "[ソルブン]";
+			mes "えー、そうなの？じゃあ、またね〜・";
+			mes "何かあったら、またおいで〜。";
 			close;
 		case 2:
 			mes "[ソルブン]";
@@ -838,7 +836,7 @@ gon_in.gat,165,16,4	script	二日酔いの人	748,{
 			mes "二日酔いには気をつけなね〜。";
 			close;
 		}
-	case 7:
+	case 5:
 		mes "[ソルブン]";
 		mes "あ〜、君かい。先程はどうも。";
 		mes "君もお酒は程ほどにね。";
@@ -870,8 +868,10 @@ gon_in.gat,165,16,4	script	二日酔いの人	748,{
 		mes "猫みたいにも見えたし……うーん……";
 		mes "あれはなんだったんだろうね。";
 		mes "暗かったし、酔ってたからな〜。";
-		set GON_1QUE,8;
+		set GON_1QUE,6;
 		close;
+	case 6:
+	case 7:
 	case 8:
 	case 9:
 	case 10:
@@ -879,7 +879,16 @@ gon_in.gat,165,16,4	script	二日酔いの人	748,{
 		mes "うん、頑張ってよ。村長が沈んでると";
 		mes "村の雰囲気も沈んでしまうんだ〜。";
 		close;
-	default:	//11〜29のとき
+	case 12:
+	case 13:
+		emotion 32;
+		mes "[ソルブン]";
+		mes "ウ〜ウウウウウウウウウウウ";
+		mes "どいつもこいつも…………";
+		mes "思いやりってもんが無いのか……";
+		mes "ウェップ……";
+		close;
+	default:
 		mes "[ソルブン]";
 		mes "ワッハッハッハッハ";
 		mes "村長さんの探し物を見つけたんだって";
@@ -888,29 +897,36 @@ gon_in.gat,165,16,4	script	二日酔いの人	748,{
 		mes "……なぁんてね。";
 		mes "冗談だよ、冗談。";
 		close;
-	case 31:	//クエスト消滅２のとき
-	case 32:
-		emotion 32;
-		mes "[ソルブン]";
-		mes "ウ〜ウウウウウウウウウウウ";
-		mes "どいつもこいつも…………";
-		mes "思いやりってもんが無いのか……";
-		mes "ウェップ……";
-		close;
 	}
 }
 
 gonryun.gat,0,0,0	script	GonQueTimer	-1,{
 	end;
-OnTimer300000:	//とりあえず適当に5分間隔
-	hideonnpc "#GonDrop1-"+'rand[0];
-	hideonnpc "#GonDrop2-"+'rand[1];
-	hideonnpc "#GonDrop3-"+'rand[2];
+OnTimer10000:
+	for(set '@i,1; '@i <= 3; set '@i,'@i+1) {
+		set 'time['@i],'time['@i]-1;
+		if('time['@i] == 0) {
+			hideonnpc "#GonDrop"+'@i+"-"+'rand['@i];
+			set 'rand['@i],rand(1,4+'@i);
+			hideoffnpc "#GonDrop"+'@i+"-"+'rand['@i];
+			set 'time['@i],'table['@i]['rand['@i]];
+		}
+	}
+	initnpctimer;
+	end;
 OnInit:
-	setarray 'rand,rand(1,6),rand(1,6),rand(1,6);
-	hideoffnpc "#GonDrop1-"+'rand[0];
-	hideoffnpc "#GonDrop2-"+'rand[1];
-	hideoffnpc "#GonDrop3-"+'rand[2];
+	setarray 'table[1][1],1,10,9,15,17;
+	setarray 'table[2][1],8,13,11,23,19,11;
+	setarray 'table[3][1],20,20,13,16,9,10,12;
+	setarray 'rand[1],rand(1,5),rand(1,6),rand(1,7);
+	for(set '@i,1; '@i <= 3; set '@i,'@i+1) {
+		set '@max,getarraysize('table['@i]);
+		for(set '@j,1; '@j <= '@max; set '@j,'@j+1)
+			hideonnpc "#GonDrop"+'@i+"-"+'@j;
+		set 'rand['@i],rand(1,'@max);
+		hideoffnpc "#GonDrop"+'@i+"-"+'rand['@i];
+		set 'time['@i],'table['@i]['rand['@i]];
+	}
 	initnpctimer;
 	end;
 }
@@ -920,91 +936,119 @@ OnInit:
 OnTouch:
 	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);
 	if('@map$ == "gon_dun01.gat")
-		set '@code,1;
+		set '@num,7;
 	else if('@map$ == "gon_dun02.gat")
-		set '@code,2;
+		set '@num,8;
 	else if('@map$ == "gon_dun03.gat")
-		set '@code,4;
-	if(GON_1QUE != 9 || GON_SWORD & '@code) {
+		set '@num,9;
+	if(GON_1QUE != '@num)
 		end;
-	}
 	hideonnpc;
-	mes "^ff0000折れた剣^000000を獲得";
+	set GON_1QUE,GON_1QUE+1;
+	mes "^FF0000折れた剣^000000を獲得";
 	mes "村長の家宝の剣の破片のようだ。";
-	set GON_SWORD,GON_SWORD|'@code;
-	if(GON_SWORD == 7) {
+	if(GON_SWORD == 10) {
 		mes "集めた破片を合わせたら、";
 		mes "一つの剣が出来そうだ。";
 		mes "一応、家宝の剣を探し出した。";
-		set GON_SWORD,0;		//もう使わないので消去
-		set GON_1QUE,10;
 	}
 	close;
-OnInit:
-	if(strnpcinfo(0) != "#GonDrop")
-		hideonnpc;
-	end;
 }
 
-gon_dun01.gat,134,183,0	duplicate(#GonDrop)	#GonDrop1-1	111,2,2
-gon_dun01.gat,140,257,0	duplicate(#GonDrop)	#GonDrop1-2	111,2,2
-gon_dun01.gat,202,25,0	duplicate(#GonDrop)	#GonDrop1-3	111,2,2
-gon_dun01.gat,191,159,0	duplicate(#GonDrop)	#GonDrop1-4	111,2,2
-gon_dun01.gat,164,53,0	duplicate(#GonDrop)	#GonDrop1-5	111,2,2
-gon_dun01.gat,147,157,0	duplicate(#GonDrop)	#GonDrop1-6	139,2,2		//これだけ吹き出しなし
+gon_dun01.gat,202,25,0	duplicate(#GonDrop)	#GonDrop1-1	111,2,1
+gon_dun01.gat,190,159,0	duplicate(#GonDrop)	#GonDrop1-2	111,2,1
+gon_dun01.gat,164,53,0	duplicate(#GonDrop)	#GonDrop1-3	111,2,1
+gon_dun01.gat,134,183,0	duplicate(#GonDrop)	#GonDrop1-4	111,2,1
+gon_dun01.gat,140,257,0	duplicate(#GonDrop)	#GonDrop1-5	111,2,1
 
-gon_dun02.gat,247,128,0	duplicate(#GonDrop)	#GonDrop2-1	111,2,2
-gon_dun02.gat,23,105,0	duplicate(#GonDrop)	#GonDrop2-2	111,2,2
-gon_dun02.gat,150,74,0	duplicate(#GonDrop)	#GonDrop2-3	111,2,2
-gon_dun02.gat,65,168,0	duplicate(#GonDrop)	#GonDrop2-4	111,2,2
-gon_dun02.gat,247,39,0	duplicate(#GonDrop)	#GonDrop2-5	111,2,2
-gon_dun02.gat,265,200,0	duplicate(#GonDrop)	#GonDrop2-6	111,2,2
+gon_dun02.gat,65,169,0	duplicate(#GonDrop)	#GonDrop2-1	111,2,1
+gon_dun02.gat,265,201,0	duplicate(#GonDrop)	#GonDrop2-2	111,2,1
+gon_dun02.gat,247,128,0	duplicate(#GonDrop)	#GonDrop2-3	111,2,1
+gon_dun02.gat,149,75,0	duplicate(#GonDrop)	#GonDrop2-4	111,2,1
+gon_dun02.gat,23,106,0	duplicate(#GonDrop)	#GonDrop2-5	111,2,1
+gon_dun02.gat,249,40,0	duplicate(#GonDrop)	#GonDrop2-6	111,2,1
 
-gon_dun03.gat,10,75,0	duplicate(#GonDrop)	#GonDrop3-1	111,2,2
-gon_dun03.gat,14,162,0	duplicate(#GonDrop)	#GonDrop3-2	111,2,2
-gon_dun03.gat,68,212,0	duplicate(#GonDrop)	#GonDrop3-3	111,2,2
-gon_dun03.gat,169,189,0	duplicate(#GonDrop)	#GonDrop3-4	111,2,2
-gon_dun03.gat,198,101,0	duplicate(#GonDrop)	#GonDrop3-5	111,2,2
-gon_dun03.gat,163,39,0	duplicate(#GonDrop)	#GonDrop3-6	111,2,2
+gon_dun03.gat,10,74,0	duplicate(#GonDrop)	#GonDrop3-1	111,2,1
+gon_dun03.gat,199,102,0	duplicate(#GonDrop)	#GonDrop3-2	111,2,1
+gon_dun03.gat,14,163,0	duplicate(#GonDrop)	#GonDrop3-3	111,2,1
+gon_dun03.gat,156,263,0	duplicate(#GonDrop)	#GonDrop3-4	111,2,1
+gon_dun03.gat,170,190,0	duplicate(#GonDrop)	#GonDrop3-5	111,2,1
+gon_dun03.gat,162,39,0	duplicate(#GonDrop)	#GonDrop3-6	111,1,2
+gon_dun03.gat,68,213,0	duplicate(#GonDrop)	#GonDrop3-7	111,1,2
 
-gon_dun03.gat,63,221,0	script	死骸	111,{
-	mes "モンスターに食われた死骸がある。";
-	mes "骨の間に、垂れ下がって揺れている";
-	mes "紙が見える。";
-	mes "紙をよく見ますか？";
-	next;
-	if(select("見る","通り過ぎる")==2) {
-		mes "死骸に挟まっている紙切れが気に";
-		mes "なるが、そのまま通り過ぎることに";
-		mes "した……";
+gon_dun03.gat,62,222,0	script	変な死骸	111,{
+	switch(GON_1QUE) {
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+		mes "死んでから、かなりたった死骸がある。";
+		mes "モンスターに食われたようだ。";
+		close;
+	case 7:
+	case 8:
+	case 9:
+	case 10:
+		mes "モンスターに食われた死骸がある。";
+		mes "骨の間に、垂れ下がって揺れている";
+		mes "紙が見える。";
+		mes "紙をよく見ますか？";
+		next;
+		if(select("見る","通り過ぎる")==2) {
+			mes "死骸に挟まっている紙切れが気に";
+			mes "なるが、そのまま通り過ぎることに";
+			mes "した……";
+			close;
+		}
+		mes "古くて読みにくい字が書かれている。";
+		mes "赤黒いのは血を使ったかららしい。";
+		mes "所々、言葉が読み取れる…………";
+		next;
+		mes "^FF0000ちくしょう……ここまで来……失敗……";
+		mes "サヨゥ……あいつにやら…なかったら…";
+		mes "くっ……";
+		mes "でも……あいつの……壊して…った";
+		mes "迷う……3……探せ……";
+		mes "これで……^000000";
+		next;
+		mes "後は力尽きたのか、血痕だけが";
+		mes "点々と残っている。";
+		close;
+	case 11:
+	case 12:
+		mes "なんだか気持ち悪い死骸がある。";
+		mes "通り過ぎるほうが良さそうだ。";
+		close;
+	default:
+		mes "モンスターに食われて";
+		mes "骨だけ残っている死骸だ。";
+		mes "可哀想だが、見ていて気持ち良いもの";
+		mes "ではない。";
 		close;
 	}
-	mes "古くて読み憎い字が書かれている。";
-	mes "赤黒いのは血を使ったかららしい。";
-	mes "所々、言葉が読み取れる…………";
-	next;
-	mes "^FF0000ちくしょう……ここまで来……失敗……";
-	mes "サヨゥ……あいつになら…なかったら…";
-	mes "くっ……";
-	mes "でも……あいつの……壊して…った";
-	mes "迷う……3……探せ……";
-	mes "これで……^000000";
-	next;
-	mes "後は力尽きたのか、血痕だけが";
-	mes "点々と残っている。";
-	close;
 }
 
 gonryun.gat,100,241,0	script	無愛想な男	733,{
-	if(GON_1QUE <= 10 || GON_1QUE >= 29) {	//後編フラグ(11〜28)がないとき
+	if(GON_1QUE < 14) {
 		emotion 9;
 		mes "[サウンソ]";
 		mes "ふん……";
 		mes "今は忙しい。出直して来い";
 		close;
 	}
+	if(GON_2QUE == 1 || GON_2QUE == 2 || (GON_1QUE == 16 && GON_2QUE == 0)) {
+		mes "[サウンソ]";
+		mes "ふん……";
+		mes "まだ、人助けをしてないようだな。";
+		mes "そっちが終わってから、また来い。";
+		close;
+	}
 	switch(GON_1QUE) {
-	case 11:
+	case 14:
+	case 16:
 		mes "[サウンソ]";
 		mes "ふん……";
 		mes "何だ。";
@@ -1033,7 +1077,7 @@ gonryun.gat,100,241,0	script	無愛想な男	733,{
 			mes "ふん……";
 			mes "私に物を頼むつもりなら";
 			mes "まず人助けでもしてこい。";
-			set GON_1QUE,12;	//ナイフクエストがまだ終わってない
+			set GON_1QUE,16;
 			close;
 		}
 		mes "[サウンソ]";
@@ -1041,15 +1085,9 @@ gonryun.gat,100,241,0	script	無愛想な男	733,{
 		mes "折れたからには直すのが筋だな。";
 		mes "^FF0000ゲフェン^000000に行って来い。";
 		mes "そこにその剣を直せる鍛冶屋がいる。";
-		set GON_1QUE,13;
+		set GON_1QUE,17;
 		close;
-	case 12:
-		mes "[サウンソ]";
-		mes "ふん……";
-		mes "まだ、人助けをしてないようだな。";
-		mes "そっちが終わってから、また来い。";
-		close;
-	default:	//13〜27のとき
+	default:
 		mes "[サウンソ]";
 		mes "ふん……";
 		mes "^FF0000ゲフェン^000000に行かないのか？";
@@ -1057,7 +1095,7 @@ gonryun.gat,100,241,0	script	無愛想な男	733,{
 		mes "いる。私が教えられるのはそれだけだ。";
 		mes "後は自分でやれ。";
 		close;
-	case 28:	//クエスト完結
+	case 33:
 		mes "[サウンソ]";
 		mes "ふん……";
 		close;
@@ -1071,7 +1109,7 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 		mes "……";
 		mes "あぁ……リル……";
 		mes "どうすれば……どうすれば……";
-		if(GON_1QUE != 13)
+		if(GON_1QUE != 17)
 			close;
 		next;
 		if(select("あの……","……………")==2) {
@@ -1088,31 +1126,29 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "[ウンゲル]";
 			mes "あー、悪い。";
 			mes "今は休業中だ。";
-			set GON_1QUE,14;
+			set GON_1QUE,18;
+			close;
 		}
-		else {
-			mes "[ウンゲル]";
-			mes "鍛冶屋は当ってるが";
-			mes "有名じゃねぇ。";
-			mes "んで、今は休業中だ。";
-		}
+		mes "[ウンゲル]";
+		mes "鍛冶屋は当ってるが";
+		mes "有名じゃねぇ。";
+		mes "んで、今は休業中だ。";
 		close;
-	case 14:
+	case 18:
 		mes "[ウンゲル]";
 		mes "休業中だと言っただろう。";
-		if(!rand(5)) {		//確率でフラグ獲得
+		if(!rand(8)) {
 			mes "しつこい奴だな。";
-			set GON_1QUE,15;
+			set GON_1QUE,19;
 		}
 		close2;
 		warp "geffen.gat",173,169;
 		end;
-	case 15:
+	case 19:
 		mes "[ウンゲル]";
 		mes "お前も相当しつこいな！";
 		mes "一体何用だ。";
 		next;
-		//swichの連続、breakがあるところが正解ルート
 		switch(select("孫娘を私にください","孫娘さん、きれいですね","剣を直してください")) {
 		case 1:
 			mes "[ウンゲル]";
@@ -1136,7 +1172,6 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "…………………………";
 			mes "…………………………";
 			mes "…………………………はぁ";
-			next;
 			break;
 		case 3:
 			mes "[ウンゲル]";
@@ -1147,6 +1182,7 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "帰ってくれ。";
 			close;
 		}
+		next;
 		switch(select("孫娘を私に……","剣を直してください","何か悩み事でも？")) {
 		case 1:
 			mes "[ウンゲル]";
@@ -1201,9 +1237,9 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "始めてよ。あちこちの有名な医者を訪ね";
 			mes "て回ったが、どいつもこいつも病名さえ";
 			mes "判別できやしねぇ。";
-			next;
 			break;
 		}
+		next;
 		switch(select("それは酷いですね","孫娘さんを幸せにします","孫娘さんを治してあげます")) {
 		case 1:
 			mes "[ウンゲル]";
@@ -1218,7 +1254,6 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "お前がどうやってリルを幸せに";
 			mes "してくれるって言うんだ。";
 			mes "いつ死ぬかもわからない子だぞ?!";
-			next;
 			break;
 		case 3:
 			mes "[ウンゲル]";
@@ -1229,6 +1264,7 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "てもらう。";
 			close;
 		}
+		next;
 		switch(select("いつも笑わせてあげます","私が連れて行って……","病気を治してあげます")) {
 		case 1:
 			mes "[ウンゲル]";
@@ -1245,7 +1281,6 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "…………………";
 			mes "リルを連れて行って、何を";
 			mes "しようってんだ？";
-			next;
 			break;
 		case 3:
 			mes "[ウンゲル]";
@@ -1284,6 +1319,7 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 				close;
 			}
 		}
+		next;
 		if(select("病気を直します","申し訳ありません")==1) {
 			mes "[ウンゲル]";
 			mes "でたらめ言うんじゃねぇ！";
@@ -1326,25 +1362,26 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 		next;
 		mes "[ウンゲル]";
 		mes "では、是非頼む……";
-		set GON_1QUE,16;
+		set GON_1QUE,20;
 		close;
-	case 16:
-	case 17:
-	case 18:
+	case 20:
+	case 21:
+	case 22:
+	case 23:
 		mes "[ウンゲル]";
 		mes "人が多い場所にいけば";
 		mes "何か情報が聞けるかもな。";
 		mes "頼んだぞ。";
 		close;
-	case 19:
-	case 20:
-	case 21:
+	case 24:
+	case 25:
+	case 26:
 		mes "[ウンゲル]";
 		mes "あぁ……リルは上の階だ。";
 		mes "状態が状態だから、あまり長く話し";
 		mes "込まないでくれ。";
 		close;
-	case 22:
+	case 27:
 		mes "[ウンゲル]";
 		mes "ありがたい……";
 		mes "お前がここまでしてくれるなんて";
@@ -1352,7 +1389,7 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 		mes "はやくリルに薬を持ってってやって";
 		mes "くれないか。";
 		close;
-	case 23:
+	case 28:
 		emotion 28;
 		mes "[ウンゲル]";
 		mes "本当にありがたい……";
@@ -1367,12 +1404,11 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "そうか……それは残念だ。もし後で、";
 			mes "なにか思いついたら遠慮なく来い。";
 			mes "何でもしよう。";
-			set GON_1QUE,24;
+			set GON_1QUE,29;
 			close;
 		}
-		//「剣を直してください」はfall through
-	case 24:
-		if(GON_1QUE == 24) {
+	case 29:
+		if(GON_1QUE == 29) {
 			mes "[ウンゲル]";
 			mes "おー、お前か。";
 			mes "何か用か？";
@@ -1422,18 +1458,15 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "すぐにでも渡してあげたいんだが……";
 			mes "考えがかわったら、また来い。";
 			mes "出来る限りのことはしよう。";
-			if(GON_1QUE == 23)
-				set GON_1QUE,24;
 			close;
 		}
-		set GON_1QUE,25;
 		mes "[ウンゲル]";
 		mes "そうか、そうか。ありがたい。";
 		mes "材料さえあれば、必ず直してやろう。";
 		mes "いいか、良く聞け。";
 		next;
 		mes "[ウンゲル]";
-		mes "^DDDDDD金敷 1個";
+		mes "^FF00FF金敷 1個";
 		mes "オリデオコン原石 2個";
 		mes "壊れた剣 5個";
 		mes "鋼鉄 2個";
@@ -1445,8 +1478,9 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 		mes "量が多くて悪いが……これだけでも";
 		mes "無いと直せないんだ。それじゃあ、";
 		mes "よろしく頼んだぞ。";
+		set GON_1QUE,30;
 		close;
-	case 25:
+	case 30:
 		if(countitem(986)<1 || countitem(756)<2 || countitem(7110)<5 ||
 				countitem(999)<2 || countitem(1005)<1 || countitem(1000)<2 || countitem(7098)<5) {
 			mes "[ウンゲル]";
@@ -1455,7 +1489,7 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "いいか、必要な材料は……";
 			next;
 			mes "[ウンゲル]";
-			mes "^DDDDDD金敷 1個";
+			mes "^FF00FF金敷 1個";
 			mes "オリデオコン原石 2個";
 			mes "壊れた剣 5個";
 			mes "鋼鉄 2個";
@@ -1468,6 +1502,10 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 			mes "私のほうでも、準備を進めておこう。";
 			close;
 		}
+		mes "[ウンゲル]";
+		mes "あー、お前か。どうだ、材料の方は？";
+		mes "お、全部集まったか！どれどれ……";
+		mes "よし、早速修理に入るからな！";
 		delitem 986,1;
 		delitem 756,1;
 		delitem 7110,5;
@@ -1475,13 +1513,9 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 		delitem 1005,1;
 		delitem 1000,2;
 		delitem 7098,5;
-		set GON_1QUE,26;
-		mes "[ウンゲル]";
-		mes "あー、お前か。どうだ、材料の方は？";
-		mes "お、全部集まったか！どれどれ……";
-		mes "よし、早速修理に入るからな！";
+		set GON_1QUE,31;
 		close;
-	case 26:
+	case 31:
 		if(rand(5)) {
 			mes "[ウンゲル]";
 			mes "あー、お前か。";
@@ -1500,17 +1534,17 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 		mes "剣は、一生に出会えるか出会えないかっ";
 		mes "てくらいだ……";
 		next;
-		getitem 1123,1;
-		set GON_1QUE,27;
 		mes "ウンゲルから完成された";
 		mes "^FF0000村長の剣^000000を受け取った。";
+		getitem 1123,1;
+		set GON_1QUE,32;
 		next;
 		mes "[ウンゲル]";
 		mes "お前とこの剣に出会えて、本当に良かっ";
 		mes "た……じゃ、元気でな。";
 		close;
-	case 27:
-	case 28:
+	case 32:
+	case 33:
 		mes "[ウンゲル]";
 		mes "本当にありがとう。";
 		mes "お前が来てくれなかったら、孫娘は……";
@@ -1522,7 +1556,7 @@ geffen_in.gat,71,112,2	script	鍛冶#サヨゥムン	731,{
 }
 
 geffen_in.gat,106,106,7	script	病弱な少女	716,{
-	if(GON_1QUE <= 15 || GON_1QUE >= 29) {
+	if(GON_1QUE < 20) {
 		mes "[リールー]";
 		mes "げほげほ……";
 		mes "あ……こん にち は……";
@@ -1532,12 +1566,13 @@ geffen_in.gat,106,106,7	script	病弱な少女	716,{
 		close;
 	}
 	switch(GON_1QUE) {
-	case 16:
-	case 17:
-	case 18:
+	case 20:
+	case 21:
+	case 22:
+	case 23:
 		mes "[リールー]";
 		mes "げほげほ……";
-		mes "あ……お兄さんが……";
+		mes "あ……お"+(Sex? "兄": "姉")+"さんが……";
 		mes "私の……病気を治して……";
 		mes "くれるって……げほげほ……";
 		mes "げほげほ……";
@@ -1549,12 +1584,12 @@ geffen_in.gat,106,106,7	script	病弱な少女	716,{
 		mes "早くなんとかしてあげないと、";
 		mes "手遅れになるかもしれない。^000000";
 		close;
-	case 19:
-	case 20:
-	case 21:
+	case 24:
+	case 25:
+	case 26:
 		mes "[リールー]";
 		mes "げほげほ……";
-		mes "あ……お兄さん……";
+		mes "あ……お"+(Sex? "兄": "姉")+"さん……";
 		mes "こんにちは……";
 		next;
 		if(select("体の調子を聞いて見る","ちょっと話をする")==2) {
@@ -1566,7 +1601,7 @@ geffen_in.gat,106,106,7	script	病弱な少女	716,{
 			mes "^0000FFリールーは疲れて眠ってしまった^000000";
 			close;
 		}
-		if(rand(3)) {
+		if(rand(4)) {
 			mes "[リールー]";
 			mes "んと……今は……";
 			mes "大変で……";
@@ -1593,10 +1628,10 @@ geffen_in.gat,106,106,7	script	病弱な少女	716,{
 		next;
 		mes "^0000FFリールーは眠ったようだ^000000";
 		close;
-	case 22:
+	case 27:
 		mes "[リールー]";
 		mes "ん……うん……";
-		mes "あ……お兄さん……";
+		mes "あ……お"+(Sex? "兄": "姉")+"さん……";
 		mes "げほげほ……それ何？";
 		next;
 		if(select("何でもないよ","君のお薬だよ")==1) {
@@ -1608,7 +1643,7 @@ geffen_in.gat,106,106,7	script	病弱な少女	716,{
 		}
 		mes "[リールー]";
 		mes "えっ!!";
-		mes "お兄さん、本当？本当に？";
+		mes "お"+(Sex? "兄": "姉")+"さん、本当？本当に？";
 		mes "エヘヘ……ありがとう……";
 		next;
 		mes "^0000FFシルネの薬をリールーに渡した。";
@@ -1616,21 +1651,21 @@ geffen_in.gat,106,106,7	script	病弱な少女	716,{
 		mes "静かに寝息を立て始めた。^000000";
 		if(countitem(606)) {	//アロエベラがないとフラグ獲得できない
 			delitem 606,1;
-			set GON_1QUE,23;
+			set GON_1QUE,28;
 		}
 		close;
-	default:	//23〜28のとき
+	default:
 		mes "[リールー]";
 		mes "エヘヘ……";
-		mes "お兄さん、ありがとう……";
+		mes "お"+(Sex? "兄": "姉")+"さん、ありがとう……";
 		mes "私、少しずつだけど元気になってるよ。";
-		mes "お兄さんも、元気でね。";
+		mes "お"+(Sex? "兄": "姉")+"さんも、元気でね。";
 		close;
 	}
 }
 
-prontera.gat,275,86,0	script	青年	97,{
-	if(GON_1QUE < 16) {
+prontera.gat,275,86,2	script	青年	97,{
+	if(GON_1QUE < 20) {
 		mes "[ネル]";
 		mes "うーん、元気っていいなぁ〜！";
 		mes "病院のベッドに横になって、窓の外を";
@@ -1638,8 +1673,7 @@ prontera.gat,275,86,0	script	青年	97,{
 		next;
 		mes "[ネル]";
 		mes "あなたも身体には気をつけたほうがいい";
-		mes "ですよ。誰が何と言っても健康が一番!";
-		mes "!";
+		mes "ですよ。誰が何と言っても健康が一番!!";
 		close;
 	}
 	mes "[ネル]";
@@ -1655,13 +1689,13 @@ prontera.gat,275,86,0	script	青年	97,{
 	mes "奇跡のようです！私も、あの女医さん";
 	mes "みたいに、どんな病でも治せる医者を";
 	mes "目指すつもりです！";
-	if(GON_1QUE == 16)
-		set GON_1QUE,17;
+	if(GON_1QUE == 20)
+		set GON_1QUE,21;
 	close;
 }
 
 yuno.gat,208,164,4	script	活発な少女	101,{
-	if(GON_1QUE <= 16 || GON_1QUE >= 29) {
+	if(GON_1QUE < 21) {
 		mes "[ハイシャ]";
 		mes "あぁあ〜〜";
 		mes "本〜当に退屈!!";
@@ -1691,7 +1725,7 @@ yuno.gat,208,164,4	script	活発な少女	101,{
 	mes "シルネ先生？あ、今は自宅にいるっぽい";
 	mes "よ〜。この間、治療の旅から帰ってきた";
 	mes "ばっかだし〜。";
-	if(!rand(3)) {	//ランダムで出たり出なかったり
+	if(rand(2)) {
 		next;
 		mes "[ハイシャ]";
 		mes "あ〜〜〜〜！";
@@ -1699,21 +1733,23 @@ yuno.gat,208,164,4	script	活発な少女	101,{
 		mes "気紛れだから〜。";
 		mes "それだけが困ったちゃんなのよね〜。";
 	}
+	if(GON_1QUE == 21)
+		set GON_1QUE,22;
 	close;
 }
 
-yuno_in01.gat,104,94,0	script	女医入り口	139,2,0,{
+yuno_in01.gat,104,94,0	script	女医入り口	139,2,1,{
 	end;
 OnTouch:
-	if(GON_1QUE >= 18 && GON_1QUE <= 28) {
+	if(GON_1QUE >= 23) {
 		mes "[シルネ]";
 		mes "どなた？";
 		close;
 	}
-	if(GON_1QUE == 17 && !rand(30)) {
+	if(GON_1QUE == 22 && !rand(10)) {
 		mes "[]";
 		mes "今は忙しい。出ていけ。";
-		set GON_1QUE,18;
+		set GON_1QUE,23;
 		close;
 	}
 	mes "[]";
@@ -1725,7 +1761,7 @@ OnTouch:
 }
 
 yuno_in01.gat,99,101,4	script	女医	744,{
-	if(GON_1QUE <= 17 || GON_1QUE >= 29) {
+	if(GON_1QUE < 23) {
 		mes "[]";
 		mes "どなた？";
 		mes "今、とても忙しいので、用がないよう";
@@ -1733,13 +1769,13 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 		close;
 	}
 	switch(GON_1QUE) {
-	case 18:
+	case 23:
 		mes "[シルネ]";
 		mes "何用でしょう？";
 		mes "特に用がないようでしたら";
 		mes "出て行っていただけません？";
 		next;
-		if(rand(10)) {
+		if(rand(4)) {
 			mes "[シルネ]";
 			mes "私、そんな暇人ではなくてよ。";
 			close;
@@ -1755,7 +1791,7 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 			mes "これでも忙しい身ですので。";
 			close;
 		}
-		if(rand(3)) {
+		if(rand(4)) {
 			mes "[シルネ]";
 			mes "くす……面白い方……";
 			mes "でも申し訳ないけど、その程度の";
@@ -1767,7 +1803,28 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 		mes "くす";
 		mes "おもしろい方ですこと。";
 		next;
-		if(select("はい、一目惚れしました！","実は頼みがあります")==2) {
+		if(select("はい、一目惚れしました！","実は頼みがあります")==1) {
+			if(rand(3)) {
+				mes "[シルネ]";
+				mes "……";
+				mes "やれやれ。お話はこれでおしまい？";
+				mes "つまーんない。";
+				mes "悪いけど、興ざめしちゃったわ。";
+				mes "出口はあちらよ。";
+				close;
+			}
+			mes "[シルネ]";
+			mes "くす……アハハハッ……";
+			mes "あぁ、ごめんなさい。";
+			mes "こんなに露骨な冗談は久しぶりだわ。";
+			next;
+			mes "[シルネ]";
+			mes "それで、本当の用件はなにかしら？";
+			mes "これでも人を見る目は確かなの。";
+			mes "大事な用がある方と無い方の見分け";
+			mes "るくらい出来るわ。";
+		}
+		else {
 			if(rand(3)) {
 				mes "[シルネ]";
 				mes "あらあら……";
@@ -1785,40 +1842,7 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 			mes "[シルネ]";
 			mes "フフッ……やっぱり……";
 			mes "話だけなら聞いてあげて良くってよ。";
-			next;
-			menu "実は……",-;
-			mes "^FF0000シルネにリールーの話をした。";
-			mes "もちろん鍛冶屋ウンゲルの頼みを受けた";
-			mes "ということも……^000000";
-			next;
-			mes "[シルネ]";
-			mes "へぇ…………";
-			mes "でも、信じがたいはね、その話。";
-			mes "どうして貴方は、そんな見ず知らずの";
-			mes "人のために一生懸命なのかしら？";
-			mes "悪いけど、あなたは信じるに値しない";
-			mes "感じがするわ。出直してちょうだい。";
-			close;
 		}
-		if(rand(3)) {
-			mes "[シルネ]";
-			mes "……";
-			mes "やれやれ。お話はこれでおしまい？";
-			mes "つまーんない。";
-			mes "悪いけど、興ざめしちゃったわ。";
-			mes "出口はあちらよ。";
-			close;
-		}
-		mes "[シルネ]";
-		mes "くす……アハハハッ……";
-		mes "あぁ、ごめんなさい。";
-		mes "こんなに露骨な冗談は久しぶりだわ。";
-		next;
-		mes "[シルネ]";
-		mes "それで、本当の用件はなにかしら？";
-		mes "これでも人を見る目は確かなの。";
-		mes "大事な用がある方と無い方の見分け";
-		mes "るくらい出来るわ。";
 		next;
 		menu "実は……",-;
 		mes "^FF0000シルネにリールーの話をした。";
@@ -1847,9 +1871,9 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 		mes "症状を聞いてきてくださる？";
 		mes "正確な情報がなければ、正確な診断は";
 		mes "出来ませんので。";
-		set GON_1QUE,19;
+		set GON_1QUE,24;
 		close;
-	case 19:
+	case 24:
 		mes "[シルネ]";
 		mes "あら、お帰りなさい。";
 		mes "それで？正確な症状は聞いていらして？";
@@ -1903,11 +1927,11 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 		mes "[シルネ]";
 		mes "内臓機関はどうかしら？";
 		next;
-		set '@ret4,select("お腹が裂けるように痛い","頭がガンガンに痛い","心臓が止めるような感じ","息がぐっと詰まる");
+		set '@ret4,select("お腹が裂けるように痛い","頭がガンガンに痛い","心臓が止まるような感じ","息がぐっと詰まる");
 		switch('@ret4) {
 		case 1: set '@word$[3],"お腹が裂けるように痛くなる"; 	break;
 		case 2: set '@word$[3],"頭がガンガンに痛くなる"; 	break;
-		case 3: set '@word$[3],"心臓が止めるような感じがする"; 	break;
+		case 3: set '@word$[3],"心臓が止まるような感じがする"; 	break;
 		case 4: set '@word$[3],"息がぐっとつまる"; 		break;
 		}
 		mes "[シルネ]";
@@ -1916,12 +1940,12 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 		mes "その子の症状は……";
 		mes "………………";
 		next;
-		mes "^FF0000";
-		mes '@word$[0];
+		mes "[シルネ]";
+		mes "^FF0000"+'@word$[0];
 		mes '@word$[1];
 		mes '@word$[2];
-		mes '@word$[3];
-		mes "^000000で、あってるわね？";
+		mes '@word$[3]+"^000000";
+		mes "で、あってるわね？";
 		next;
 		if(select("うーん……違ったかな……","はい、そうです")==2) {
 			mes "[シルネ]";
@@ -1932,14 +1956,14 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 			next;
 			if(select("うーん……また確認して来ます","確かです")==2) {
 				mes "[シルネ]";
-				mes "分かったは……あなたを信じます。";
+				mes "分かったわ……あなたを信じます。";
 				mes "それでは、これから教える材料を";
 				mes "集めてきてくださるかしら。";
 				mes "その子の症状を考えると、出来るだけ";
 				mes "早急にね。いい？";
 				next;
 				if('@ret1 == 4 && '@ret2 == 1 && '@ret3 == 2 && '@ret4 == 3) {	//正解ルート
-					set GON_1QUE,20;
+					set GON_1QUE,26;
 					mes "[シルネ]";
 					mes "^FF0000イグドラシルの種 2個";
 					mes "アロエ 3個";
@@ -1962,7 +1986,7 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 					next;
 				}
 				else {	//失敗ルート
-					set GON_1QUE,21;
+					set GON_1QUE,25;
 					mes "[シルネ]";
 					mes "^FF0000イグドラシルの種 1個";
 					mes "アロエ 1個";
@@ -1995,98 +2019,8 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 		mes "らも診断できないし、何が起こっても";
 		mes "責任は持てませんことよ。";
 		close;
-	case 20:
-		if(countitem(608)>=2 && countitem(704)>=3 && countitem(748)>=1 &&
-				countitem(1061)>=10 && countitem(7097)>=5 && countitem(7066)>=5) {
-			mes "[シルネ]";
-			mes "見事ですわ……";
-			mes "全て揃っているようですわね。";
-			mes "どれどれ……";
-			mes "………………";
-			next;
-			delitem 608,2;
-			delitem 704,3;
-			delitem 748,1;
-			delitem 1061,10;
-			delitem 7097,5;
-			delitem 7066,5;
-			set GON_1QUE,22;
-			mes "^FF0000シルネは材料から";
-			mes "薬の調合を始めた。";
-			mes "……………………";
-			mes "………………";
-			mes "…………";
-			mes "……^000000";
-			next;
-			mes "[シルネ]";
-			mes "これで完成ですわ！";
-			mes "この薬で、すぐに元気になると言うわけ";
-			mes "では行きませんが、きちんと養生すれば";
-			mes "きっと良い方へ向かうはずですわ。";
-			next;
-			getitem 606,1;
-			mes "[シルネ]";
-			mes "早くこれを持って行きなさい。";
-			mes "フフッ……久しぶりに燃えましたわ。";
-			mes "それでは、御機嫌よう。";
-			close;
-		}
-		mes "[シルネ]";
-		mes "………………";
-		mes "まだ材料が不足しているようね。";
-		mes "いい？";
-		next;
-		mes "[シルネ]";
-		mes "^FF0000イグドラシルの種 2個";
-		mes "アロエ 3個";
-		mes "しおれないバラ 1個";
-		mes "魔女の星の砂 10個";
-		mes "燃えている心臓 5個";
-		mes "氷片 5個";
-		next;
-		mes "[シルネ]";
-		mes "こうしている間にも、その子は苦しんで";
-		mes "いるのよ。早く材料を集めてきてくださ";
-		mes "いません？";
-		close2;
-		warp "yuno.gat",246,143;
-		end;
-	case 21:
-		if(countitem(608)>=1 && countitem(704)>=1 && countitem(1061)>=5 && countitem(7097)>=3 && countitem(7066)>=3) {
-			mes "[シルネ]";
-			mes "見事ですわ……";
-			mes "全て揃っているようですわね。";
-			mes "どれどれ……";
-			mes "………………";
-			next;
-			delitem 608,1;
-			delitem 704,1;
-			delitem 1061,5;
-			delitem 7097,3;
-			delitem 7066,3;
-			set GON_1QUE,19;	//再度問診に戻される
-			mes "^FF0000シルネは材料から";
-			mes "薬の調合を始めた。";
-			mes "……………………";
-			mes "………………";
-			mes "…………";
-			mes "……^000000";
-			next;
-			mes "[シルネ]";
-			mes "………………";
-			mes "えっ!!?!";
-			mes "これは……";
-			mes "はぁ……";
-			mes "駄目じゃない、まったく……";
-			next;
-			mes "[シルネ]";
-			mes "どうやら、あなたの教えてくれた病状に";
-			mes "は、なにか問題があったようね。";
-			mes "情報通りに調合してみたけど、薬は失敗";
-			mes "したわ。正確な病状を確かめてきなさい";
-			mes "速攻でね!!";
-		}
-		else {
+	case 25:
+		if(countitem(608) < 1 || countitem(704) < 1 || countitem(1061) < 5 || countitem(7097) < 3 || countitem(7066) < 3) {
 			mes "[シルネ]";
 			mes "………………";
 			mes "まだ材料が不足しているようね。";
@@ -2103,11 +2037,101 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 			mes "こうしている間にも、その子は苦しんで";
 			mes "いるのよ。早く材料を集めてきてくださ";
 			mes "いません？";
+			close2;
+			warp "yuno.gat",246,143;
+			end;
 		}
+		mes "[シルネ]";
+		mes "見事ですわ……";
+		mes "全て揃っているようですわね。";
+		mes "どれどれ……";
+		mes "………………";
+		next;
+		mes "^FF0000シルネは材料から";
+		mes "薬の調合を始めた。";
+		mes "……………………";
+		mes "………………";
+		mes "…………";
+		mes "……^000000";
+		next;
+		mes "[シルネ]";
+		mes "………………";
+		mes "えっ!!?!";
+		mes "これは……";
+		mes "はぁ……";
+		mes "駄目じゃない、まったく……";
+		delitem 608,1;
+		delitem 704,1;
+		delitem 1061,5;
+		delitem 7097,3;
+		delitem 7066,3;
+		set GON_1QUE,24;
+		next;
+		mes "[シルネ]";
+		mes "どうやら、あなたの教えてくれた病状に";
+		mes "は、なにか問題があったようね。";
+		mes "情報通りに調合してみたけど、薬は失敗";
+		mes "したわ。正確な病状を確かめてきなさい";
+		mes "速攻でね!!";
 		close2;
 		warp "yuno.gat",246,143;
 		end;
-	default:	//22〜28のとき
+	case 26:
+		if(countitem(608) < 2 || countitem(704) < 3 || countitem(748) < 1 || countitem(1061) < 10 || countitem(7097) < 5 || countitem(7066) < 5) {
+			mes "[シルネ]";
+			mes "………………";
+			mes "まだ材料が不足しているようね。";
+			mes "いい？";
+			next;
+			mes "[シルネ]";
+			mes "^FF0000イグドラシルの種 2個";
+			mes "アロエ 3個";
+			mes "しおれないバラ 1個";
+			mes "魔女の星の砂 10個";
+			mes "燃えている心臓 5個";
+			mes "氷片 5個";
+			next;
+			mes "[シルネ]";
+			mes "こうしている間にも、その子は苦しんで";
+			mes "いるのよ。早く材料を集めてきてくださ";
+			mes "いません？";
+			close2;
+			warp "yuno.gat",246,143;
+			end;
+		}
+		mes "[シルネ]";
+		mes "見事ですわ……";
+		mes "全て揃っているようですわね。";
+		mes "どれどれ……";
+		mes "………………";
+		next;
+		mes "^FF0000シルネは材料から";
+		mes "薬の調合を始めた。";
+		mes "……………………";
+		mes "………………";
+		mes "…………";
+		mes "……^000000";
+		next;
+		mes "[シルネ]";
+		mes "これで完成ですわ！";
+		mes "この薬で、すぐに元気になると言うわけ";
+		mes "では行きませんが、きちんと養生すれば";
+		mes "きっと良い方へ向かうはずですわ。";
+		next;
+		mes "[シルネ]";
+		mes "早くこれを持って行きなさい。";
+		mes "フフッ……久しぶりに燃えましたわ。";
+		mes "それでは、御機嫌よう。";
+		delitem 608,2;
+		delitem 704,3;
+		delitem 748,1;
+		delitem 1061,10;
+		delitem 7097,5;
+		delitem 7066,5;
+		getitem 606,1;
+		set GON_1QUE,27;
+		close;
+	default:
 		mes "[シルネ]";
 		mes "フフッ……";
 		mes "その後の調子はいかがです？";
@@ -2149,8 +2173,11 @@ yuno_in01.gat,99,101,4	script	女医	744,{
 //------------------------------------------------------------
 gonryun.gat,237,226,3	script	ハン ヨンキョウ	776,{
 	switch(GON_2QUE) {
+	default:
+		break;
 	case 2:
-		if(countitem(1201)==0) break;
+		if(countitem(1201) < 1)
+			break;
 		mes "[ハン ヨンキョウ]";
 		mes "ううう……どうすれば……ん？";
 		mes "私に何か用でもあるんですか？";
@@ -2204,8 +2231,6 @@ gonryun.gat,237,226,3	script	ハン ヨンキョウ	776,{
 		delitem 1201,1;
 		getitem 505,2;
 		set GON_2QUE,3;
-		if(GON_1QUE == 12)
-			set GON_1QUE,11;	//後編のクエスト続行可能
 		next;
 		mes "[ハン ヨンキョウ]";
 		mes "本当にありがとうございます。君が";
@@ -2220,11 +2245,12 @@ gonryun.gat,237,226,3	script	ハン ヨンキョウ	776,{
 		mes "まあ、私が関与する事ではないか。";
 		close;
 	}
-	//defaultはfall through
 	mes "[ハン ヨンキョウ]";
 	mes "うわぁ〜！どうすればいいんだ!?";
 	mes "大事なナイフを落とすなんて!!";
 	mes "うわぁぁ〜ん！";
+	if(BaseLevel < 20)
+		close;
 	next;
 	mes "[ハン ヨンキョウ]";
 	mes "降りたくても、モンスターが";
@@ -2235,7 +2261,7 @@ gonryun.gat,237,226,3	script	ハン ヨンキョウ	776,{
 	close;
 }
 
-gon_fild01.gat,245,257,0	script	#GonEvent	111,2,2,{
+gon_fild01.gat,245,257,0	script	#GonEvent	111,3,3,{
 	end;
 OnTouch:
 	if(GON_2QUE == 1) {
@@ -2250,7 +2276,7 @@ OnTouch:
 	end;
 }
 
-gon_in.gat,73,82,4	script	ギ ソンチョル	778,{
+gon_in.gat,73,82,5	script	ギ ソンチョル	778,{
 	if(GON_2QUE < 3) {
 		mes "[ギ ソンチョル]";
 		mes "……………。";
@@ -2287,13 +2313,75 @@ gon_in.gat,73,82,4	script	ギ ソンチョル	778,{
 // GON_3QUE -> 0〜1
 // @gon_watch -> 観戦者フラグ
 //------------------------------------------------------------
-gonryun.gat,180,117,0	script	ソン ムド	85,{
+gonryun.gat,180,118,4	script	ソン ムド	85,{
+	if(GON_3QUE == 3)
+		set GON_3QUE,1;
 	if(Class==0) {
 		mes "[ソン ムド]";
 		mes "ノービスは、街へ行け。";
 		close;
 	}
-	if(GON_3QUE) {
+	switch(GON_3QUE) {
+	case 0:
+		mes "[ソン ムド]";
+		mes "ああ〜、俺を楽しませる奴が";
+		mes "来ないかなあ。ん？君、力が";
+		mes "あるようだな。ちょっとしたものが";
+		mes "あるんだが、やってみるか？";
+		next;
+		switch(select("やってみる","興味ない","無視する")) {
+		case 1:
+			mes "[ソン ムド]";
+			mes "おお〜、やっぱり俺の目に狂いは";
+			mes "なかった。これを持ち上げたら";
+			mes "いいことを教えてやる。";
+			mes "さあ、準備しろ。";
+			next;
+			mes "^0000FFソン ムドは、あなたより";
+			mes "かなり大きそうな石を指し、";
+			mes "持ち上げてみろと言った。^000000";
+			if(Class <= 6)
+				set '@stone,690;
+			else if(Class == 7 || Class == 10 || Class == 12 ||
+				Class == 14 || Class == 15 || Class == 17 || Class == 18)
+				set '@stone,770;
+			else
+				set '@stone,730;
+			if(checkweight(7049,'@stone)==0) {
+				mes "^0000FFだが、重すぎて持ち上げられなかった。^000000";
+				next;
+				mes "[ソン ムド]";
+				mes "まだ修行不足だな。";
+				mes "もう少し修行してから来な。";
+				close;
+			}
+			getitem 7049,'@stone;
+			set GON_3QUE,1;
+			mes "^0000FFあなたは、軽々と石を持ち上げた。^000000";
+			next;
+			emotion 21;
+			mes "[ソン ムド]";
+			mes "ははっ、やっぱり俺の目に";
+			mes "狂いはなかった。今度来た時に、";
+			mes "いい所を教えてやるよ。";
+			mes "それじゃあな！";
+			close;
+		case 2:
+			mes "[ソン ムド]";
+			mes "そうか。";
+			mes "だが、ちょっと力があれば、";
+			mes "面白い体験ができるんだがね。";
+			mes "ははっ、気が向いたら、";
+			mes "挑戦してみな。";
+			close;
+		case 3:
+			emotion 32;
+			mes "[ソン ムド]";
+			mes "これは、人を見誤ったな。";
+			mes "はあぁ……。";
+			close;
+		}
+	case 1:
 		mes "[ソン ムド]";
 		mes "お〜、また会ったな！";
 		mes "面白い所に行ってみたいか？";
@@ -2304,6 +2392,7 @@ gonryun.gat,180,117,0	script	ソン ムド	85,{
 			mes "あははははっ。";
 			mes "それじゃあ、楽しんでこい！";
 			close2;
+			set GON_3QUE,1;
 			warp "gon_test.gat",53,6;
 			end;
 		}
@@ -2312,76 +2401,131 @@ gonryun.gat,180,117,0	script	ソン ムド	85,{
 		mes "それもいいかもな。";
 		mes "それじゃあな！";
 		close;
-	}
-	mes "[ソン ムド]";
-	mes "ああ〜、俺を楽しませる奴が";
-	mes "来ないかなあ。ん？君、力が";
-	mes "あるようだな。ちょっとしたものが";
-	mes "あるんだが、やってみるか？";
-	next;
-	switch(select("やってみる","興味ない","無視する")) {
-	case 1:
-		mes "[ソン ムド]";
-		mes "おお〜、やっぱり俺の目に狂いは";
-		mes "なかった。これを持ち上げたら";
-		mes "いいことを教えてやる。";
-		mes "さあ、準備しろ。";
-		next;
-		mes "^0000FFソン ムドは、あなたより";
-		mes "かなり大きそうな石を指し、";
-		mes "持ち上げてみろと言った。";
-		//プリ・ハンター・Wiz・Sage 730、アコ・商人 690、BS 770
-		if(checkweight(7049,730)==0) {
-			mes "だが、重すぎて持ち上げられなかった。^000000";
-			next;
-			mes "[ソン ムド]";
-			mes "まだ修行不足だな。";
-			mes "もう少し修行してから来な。";
-			close;
-		}
-		getitem 7049,730;
-		set GON_3QUE,1;
-		mes "あなたは、軽々と石を持ち上げた。^000000";
-		next;
-		emotion 21;
-		mes "[ソン ムド]";
-		mes "ははっ、やっぱり俺の目に";
-		mes "狂いはなかった。今度来た時に、";
-		mes "いい所を教えてやるよ。";
-		mes "それじゃあな！";
-		close;
-	case 2:
-		mes "[ソン ムド]";
-		mes "そうか。";
-		mes "だが、ちょっと力があれば、";
-		mes "面白い体験ができるんだがね。";
-		mes "ははっ、気が向いたら、";
-		mes "挑戦してみな。";
-		close;
-	case 3:
+	default:
 		emotion 32;
 		mes "[ソン ムド]";
-		mes "これは、人を見誤ったな。";
-		mes "はあぁ……。";
+		mes "はぁ〜……俺は人を見誤ったな。";
+		mes "あそこで逃げるなんて……ああ……。";
+		mes "仕方ない。俺が、もう一度";
+		mes "機会をやろう。後でまた来な。";
+		set GON_3QUE,1;
 		close;
 	}
 }
 
-gon_test.gat,50,14,4	script	控室管理者#Gon	780,{
+gon_test.gat,50,14,4	script	控室管理者#gon	780,{
 	end;
 OnInit:
-	waitingroom "入ってください!!",1,"控室管理者#Gon::OnWarp",1;
+	waitingroom "入ってください!!",10,"控室管理者#gon::OnWarp",1;
 	end;
 OnWarp:
-	warpwaitingpc "gon_test.gat",44,86;
-	hideonnpc;
-	initnpctimer "召喚者#Gon";
-	if(attachrid($@warpwaitingpc))
-		set @gon_watch,0;	//観戦者フラグをオフ
+	disablewaitingroomevent;
+	hideonnpc "Warp#gon";
+	warpwaitingpc "gon_test.gat",42,86;
+	initnpctimer "召喚者#gon";
 	end;
 }
 
-gon_test.gat,46,14,4	script	闘技場案内員	770,{
+gon_test.gat,42,89,4	script	召喚者#gon	774,{
+	switch(GON_3QUE) {
+	case 1:
+		mes "[ソン ヨンウ]";
+		mes "いらっしゃいませ。";
+		mes "どのモンスターを召喚しますか？";
+		next;
+		switch(select("グループ１","グループ２","グループ３","グループ４","グループ５","グループ６",
+					"グループ７","グループ８","グループ９","グループ１０","グループ１１")) {
+		case 1:
+			setarray '@name$,"めまい","食中毒","貧血","虫さされ","切り傷","狂犬病";
+			setarray '@mobid,1419,1428,1434,1430,1457,1432;
+			break;
+		case 2:
+			setarray '@name$,"サマエル","トロル","カンゲイシ","ブラックドック","メロウ","キョウシ";
+			setarray '@mobid,1462,1442,1469,1460,1425,1472;
+			break;
+		case 3:
+			setarray '@name$,"足元","蝕む","空っぽ","冷たい","熱い","腐る";
+			setarray '@mobid,1454,1443,1455,1426,1436,1423;
+			break;
+		case 4:
+			setarray '@name$,"祭司","タマネギ","大百足","操り人形","マッチ売りの少女","蠅";
+			setarray '@mobid,1458,1440,1429,1459,1444,1422;
+			break;
+		case 5:
+			setarray '@name$,"女禍","息壌","修蛇","毒龍","青龍","疫鬼";
+			setarray '@mobid,1421,1481,1424,1465,1466,1433;
+			break;
+		case 6:
+			setarray '@name$,"獏","おいてけ掘","雷神","怨霊","付喪神","飯綱";
+			setarray '@mobid,1427,1473,1431,1446,1474,1471;
+			break;
+		case 7:
+			setarray '@name$,"杖","斧","大槌","鎧","弓","鉄球";
+			setarray '@mobid,1450,1439,1461,1467,1453,1479;
+			break;
+		case 8:
+			setarray '@name$,"唇","歯","髪","手","筋肉","骨";
+			setarray '@mobid,1451,1475,1437,1441,1476,1435;
+			break;
+		case 9:
+			setarray '@name$,"球","鏡","本","手袋","鞄","服";
+			setarray '@mobid,1477,1448,1478,1489,1488,1438;
+			break;
+		case 10:
+			setarray '@name$,"女王","熱血男","死刑執行人","突然変異竜","合成獣","悪魔";
+			setarray '@mobid,1482,1464,1487,1449,1456,1486;
+			break;
+		case 11:
+			setarray '@name$,"狩人","暗殺者","侍","武道家","剣士";
+			setarray '@mobid,1447,1483,1490,1484,1485;
+			break;
+		}
+		set '@i,select('@name$[0],'@name$[1],'@name$[2],'@name$[3],'@name$[4],'@name$[5])-1;
+		monster "gon_test.gat",56,86,'@name$['@i],'@mobid['@i],1,"召喚者#gon::OnKilled";
+		set GON_3QUE,2;
+		close;
+	case 2:
+		mes "[ソン ヨンウ]";
+		mes "既にモンスターを召喚しました。";
+		mes "1回にモンスターを1匹だけ";
+		mes "他のモンスターを召喚するならば、";
+		mes "再入場してください。";
+		close;
+	case 3:
+		mes "[ソン ヨンウ]";
+		mes "正式に申し込みをしてから";
+		mes "ご来場ください。";
+		close;
+	}
+OnTimer120000:
+	announce "召喚者 : 残り１分です。",9;
+	end;
+OnTimer180000:
+OnKilled:
+	stopnpctimer;
+	killmonster "gon_test.gat","召喚者#gon::OnKilled";
+	if(getnpctimer(0) < 180000) {
+		announce "召喚者 : おめでとうございます！またのご来場をお待ちしております。",9;
+		sleep 4000;
+	}
+	else {
+		sleep 2000;
+		announce "召喚者 : 制限時間になりました。",9;
+		sleep 2000;
+	}
+	hideoffnpc "Warp#gon";
+	enablewaitingroomevent "控室管理者#gon";
+	end;
+}
+
+gon_test.gat,57,86,0	script	Warp#gon	139,16,5,{
+OnTouch:
+	set GON_3QUE,1;
+	warp "gon_test.gat",45,4;
+	end;
+}
+
+gon_test.gat,46,14,3	script	闘技場案内員	770,{
 	mes "[ソン フィヨン]";
 	mes "……";
 	mes "あ……いらっしゃいませ。";
@@ -2416,8 +2560,8 @@ gon_test.gat,46,14,4	script	闘技場案内員	770,{
 		mes "ありがとうございます。";
 		mes "楽しい時間をお過ごしください。";
 		close2;
-		set @gon_watch,1;
-		warp "gon_test.gat",25,99;
+		set GON_3QUE,3;
+		warp "gon_test.gat",25,98;
 		end;
 	case 4:
 		mes "[ソン フィヨン]";
@@ -2434,107 +2578,20 @@ gon_test.gat,46,14,4	script	闘技場案内員	770,{
 	}
 }
 
-gon_test.gat,42,89,4	script	召喚者#Gon	774,{
-	if(@gon_watch) {
-		mes "[ソン ヨンウ]";
-		mes "正式に申し込みをしてから";
-		mes "ご来場ください。";
-		close;
-	}
-	if('flag) {
-		mes "[ソン ヨンウ]";
-		mes "既にモンスターを召喚しました。";
-		mes "1回にモンスターを1匹だけ";
-		mes "他のモンスターを召喚するならば、";
-		mes "再入場してください。";
-		close;
-	}
-	mes "[ソン ヨンウ]";
-	mes "いらっしゃいませ。";
-	mes "どのモンスターを召喚しますか？";
-	next;
-	switch(select("グループ１","グループ２","グループ３","グループ４","グループ５","グループ６","グループ７",
-								"グループ８","グループ９","グループ１０","グループ１１")) {
-	case 1:
-		setarray '@name$,"めまい","食中毒","貧血","虫さされ","切り傷","狂犬病";
-		setarray '@mobid,1419,1428,1434,1430,1457,1432;
-		break;
-	case 2:
-		setarray '@name$,"サマエル","トロル","カンゲイシ","ブラックドック","メロウ","キョウシ";
-		setarray '@mobid,1462,1442,1469,1460,1425,1472;
-		break;
-	case 3:
-		setarray '@name$,"足元","蝕む","空っぽ","冷たい","熱い","腐る";
-		setarray '@mobid,1454,1443,1455,1426,1436,1423;
-		break;
-	case 4:
-		setarray '@name$,"祭司","タマネギ","大百足","操り人形","マッチ売りの少女","蠅";
-		setarray '@mobid,1458,1440,1429,1459,1444,1422;
-		break;
-	case 5:
-		setarray '@name$,"女禍","息壌","修蛇","毒龍","青竜","疫鬼";
-		setarray '@mobid,1421,1481,1424,1465,1466,1433;
-		break;
-	case 6:
-		setarray '@name$,"獏","おいてけ掘","雷神","怨霊","付喪神","飯綱";
-		setarray '@mobid,1427,1473,1431,1446,1474,1471;
-		break;
-	case 7:
-		setarray '@name$,"杖","斧","大槌","鎧","弓","鉄球";
-		setarray '@mobid,1450,1439,1461,1467,1453,1479;
-		break;
-	case 8:
-		setarray '@name$,"唇","歯","髪","手","筋肉","骨";
-		setarray '@mobid,1451,1475,1437,1441,1476,1435;
-		break;
-	case 9:
-		setarray '@name$,"球","鏡","本","手袋","鞄","服";
-		setarray '@mobid,1477,1448,1478,1489,1488,1438;
-		break;
-	case 10:
-		setarray '@name$,"女王","熱血男","死刑執行人","突然変異竜","合成獣","悪魔";
-		setarray '@mobid,1482,1464,1487,1449,1456,1486;
-		break;
-	case 11:
-		setarray '@name$,"狩人","暗殺者","侍","武道家","剣士";
-		setarray '@mobid,1447,1483,1490,1484,1485;
-		break;
-	}
-	set '@i,select('@name$[0],'@name$[1],'@name$[2],'@name$[3],'@name$[4],'@name$[5])-1;
-	monster "gon_test.gat",58,87,'@name$['@i],'@mobid['@i],1,"召喚者#Gon::OnKilled";
-	set 'flag,1;
-	close;
-OnTimer120000:
-	announce "召喚者 : 残り１分です。",9;
-	end;
-OnTimer180000:
-	announce "召喚者 : 制限時間になりました。",9;
-OnKilled:
-	stopnpctimer;
-	if(getnpctimer(0) < 180000)
-		announce "召喚者 : おめでとうございます！またのご来場をお待ちしております。",9;
-	sleep 3000;
-	areawarp "gon_test.gat",42,82,73,91,"gon_test.gat",44,4;
-	killmonster "gon_test.gat","召喚者#Gon::OnKilled";
-	set 'flag,0;
-	hideoffnpc "控室管理者#Gon";
-	end;
-}
-
 gon_test.gat,70,103,4	script	出口案内員	773,{
 	mes "[チェ エンエン]";
 	mes "帰りますか？";
 	next;
-	if(select("帰る","帰らない")==1) {
+	if(select("帰る","帰らない")==2) {
 		mes "[チェ エンエン]";
 		mes "ありがとうございました。";
-		mes "よければ、また来てくださいね。";
-		close2;
-		set @gon_watch,0;
-		warp "gon_test.gat",44,4;
-		end;
+		close;
 	}
 	mes "[チェ エンエン]";
 	mes "ありがとうございました。";
-	close;
+	mes "よければ、また来てくださいね。";
+	close2;
+	set GON_3QUE,1;
+	warp "gon_test.gat",44,4;
+	end;
 }

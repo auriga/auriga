@@ -2574,18 +2574,15 @@ lhz_in03.gat,192,93,2	script	お嬢さん	862,{
 lighthalzen.gat,0,0,0	script	治安維持局#Lhz	-1,{
 	end;
 OnEvent:
-	sleep 2000;
-	areamonster "lighthalzen.gat",0,0,400,350,"チンピラ",1592,20,"治安維持局#Lhz::OnKilled";
+	areamonster "lighthalzen.gat",0,0,400,350,"チンピラ",1592,30,"治安維持局#Lhz";
 	mapannounce "lighthalzen.gat","治安維持局: 現在、街の治安が悪化しているため、住民の皆様には気をつけていただくようお願い申し上げます。繰り返します。住民の皆様、お気をつけください。",8;
 	initnpctimer;
 	end;
-OnKilled:
-	if(getmapmobs("lighthalzen.gat")>0) end;
-OnTimer200000:
-	stopnpctimer;
+OnTimer220000:
 	killmonster "lighthalzen.gat","治安維持局#Lhz";
 	mapannounce "lighthalzen.gat","治安維持局: 我々治安維持局で力を尽くした結果、街の不穏分子を全て排除することができました。住民の皆様は安心してください。",8;
 	set getvariableofnpc('count,"治安維持員#Lhz"),0;
+	stopnpctimer;
 	end;
 }
 
@@ -2604,7 +2601,7 @@ lighthalzen.gat,267,200,3	script	治安維持員#Lhz	868,{
 			warp "lighthalzen.gat",260,199;
 		end;
 	}
-	if('count >= 20) {
+	if('count >= 15) {
 		mes "[治安維持員]";
 		mes "最近私達に気付かれないように";
 		mes "こっそりと向こうへ入る者が多くて、";
@@ -2612,9 +2609,13 @@ lighthalzen.gat,267,200,3	script	治安維持員#Lhz	868,{
 		mes "一体どんな者がこんなところを";
 		mes "行ったり来たりするのか……";
 		mes "まあ、とにかく問題なんです。";
+		if('count == 15) {
+			donpcevent "治安維持局#Lhz::OnEvent";
+			set 'count,'count+1;
+		}
 		close;
 	}
-	if(rand(4)) {
+	if(rand(6)) {
 		mes "[治安維持員]";
 		mes "おい。どこを通ろうとしている！";
 		mes "見覚えのない者をあの貧民街へ";
@@ -2623,7 +2624,7 @@ lighthalzen.gat,267,200,3	script	治安維持員#Lhz	868,{
 		mes "治安が守れん！";
 		close;
 	}
-	if(gettime(3)>=10 && gettime(3)<22) {
+	if(gettime(3)<22 && gettime(3)>=2) {
 		mes "-治安維持員がサボって";
 		mes "いるようだ。チャンスは今だ！";
 		mes "素早く通り抜けよう-";
@@ -2639,8 +2640,6 @@ lighthalzen.gat,267,200,3	script	治安維持員#Lhz	868,{
 	}
 	close2;
 	set 'count,'count+1;
-	if('count >= 10)
-		donpcevent "治安維持局#Lhz::OnEvent";
 	if(strnpcinfo(2)=="Lhz")
 		warp "lighthalzen.gat",303,229;
 	else
@@ -3740,7 +3739,7 @@ lhz_dun01.gat,147,106,0	script	呪い#Lhz1	139,3,3,{
 			else
 				soundeffect "tao_gunka_stand.wav",0;
 			mes "[？？？]";
-			if(strnpcinfo(2) == "Lhz1" || strnpcinfo(2) == "Lhz4")
+			if(rand(2))
 				mes "……くれ……いかしてくれ……";
 			else
 				mes "生きている者が……憎い……";
@@ -3757,10 +3756,10 @@ lhz_dun01.gat,66,213,0	duplicate(呪い#Lhz1)	呪い#Lhz2	139,3,3
 lhz_dun01.gat,225,198,0	duplicate(呪い#Lhz1)	呪い#Lhz2	139,3,3
 lhz_dun02.gat,244,229,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
 lhz_dun02.gat,94,199,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
-lhz_dun02.gat,267,278,0	duplicate(呪い#Lhz1)	呪い#Lhz4	139,3,3
-lhz_dun03.gat,244,51,0	duplicate(呪い#Lhz1)	呪い#Lhz1	139,3,3
-lhz_dun03.gat,123,191,0	duplicate(呪い#Lhz1)	呪い#Lhz1	139,3,3
-lhz_dun03.gat,74,140,0	duplicate(呪い#Lhz1)	呪い#Lhz1	139,3,3
+lhz_dun02.gat,267,278,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
+lhz_dun03.gat,244,51,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
+lhz_dun03.gat,123,191,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
+lhz_dun03.gat,74,140,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
 
 lighthalzen.gat,344,277,0	script	呪い	139,3,3,{
 	if(countitem(7345) && LHZ_2QUE < 17) {
@@ -5059,7 +5058,8 @@ lhz_que01.gat,99,74,3	script	#？？？	48,{
 	set LHZ_2QUE,9;
 	getitem 7341,1;
 	close2;
-	warp "lhz_in01.gat",278,162;
+	//warp "lhz_in01.gat",278,162;	//スタック位置なので位置補正
+	warp "lhz_in01.gat",278,169;
 	end;
 }
 
@@ -5311,10 +5311,10 @@ lighthalzen.gat,319,321,0	script	#声	139,3,3,{
 		mes "[" +strcharinfo(0)+ "]";
 		mes "（^3131FFレッケンベル^000000に行ってみるか）";
 		set LHZ_2QUE,17;
-		if(BaseLevel >= 90) 				getexp 2000000,500000;
-		else if(BaseLevel >= 80 && BaseLevel < 90) 	getexp 1500000,500000;
-		else if(BaseLevel >= 70 && BaseLevel < 80) 	getexp 1000000,500000;
-		else						getexp 800000,500000;
+		if(BaseLevel >= 90) 			getexp 2000000,1000000;
+		if(BaseLevel >= 80 && BaseLevel < 90) 	getexp 1500000,800000;
+		if(BaseLevel >= 70 && BaseLevel < 80) 	getexp 1000000,500000;
+		if(BaseLevel < 70) 			getexp 800000,300000;
 		close;
 	}
 	end;
@@ -5671,11 +5671,6 @@ lhz_que01.gat,97,33,0		warp	lighthalzenwarp	1,1,lhz_in01.gat,43,120
 //- Registry -------------------------------------------------
 // LHZ_3QUE -> 0〜16
 //------------------------------------------------------------
-//==============================================================================
-// 隔たりの友情クエストNPC
-//
-//　■ LHZ_3QUE -> 0:初期、1〜15:進行中、16:クリア
-//==============================================================================
 lighthalzen.gat,337,232,3	script	マク	870,{
 	switch(LHZ_3QUE) {
 	case 0:
@@ -5979,7 +5974,7 @@ lighthalzen.gat,337,232,3	script	マク	870,{
 			mes "-もう制御不能なので、";
 			mes "放っておいて別の場所へ";
 			mes "行った方がよさそうだ-";
-			close;
+			break;
 		}
 		cutin "lhz_macu03",2;
 		mes "[マク]";
@@ -6194,7 +6189,7 @@ lighthalzen.gat,337,232,3	script	マク	870,{
 		delitem 7351,1;
 		set LHZ_3QUE,14;
 		if(BaseLevel > 90)	getexp 700000,0;
-		else if(BaseLevel > 80)	getexp 400000,0;
+		else if(BaseLevel > 75)	getexp 400000,0;
 		else			getexp 200000,0;
 		break;
 	case 14:
@@ -6535,7 +6530,7 @@ lhz_in02.gat,201,210,4	script	ダイガツ	869,{
 		mes "状況は変わらないってば。";
 		mes "頭に来るはずさ。";
 		if(LHZ_3QUE != 12 || countitem(7351) < 1)
-			close;
+			break;
 		next;
 		cutin "lhz_diguts08",2;
 		mes "[ダイガツ]";
@@ -6913,7 +6908,7 @@ yuno_in04.gat,96,106,4	script	熱血学生	754,{
 		mes "黒魔法がなんちゃらかんちゃら……";
 		mes "他種族がなんちゃらかんちゃら……";
 		next;
-		if(LHZ_3QUE < 8) {
+		if(LHZ_3QUE != 8) {
 			mes "-何を言ってるのか全然分からない。";
 			mes "自分だけの世界に";
 			mes "閉じこもっているようだから";
@@ -7100,7 +7095,7 @@ yuno_in04.gat,96,106,4	script	熱血学生	754,{
 		getitem 7350,1;
 		set LHZ_3QUE,16;
 		if(BaseLevel > 90)	getexp 700000,0;
-		else if(BaseLevel > 80)	getexp 400000,0;
+		else if(BaseLevel > 75)	getexp 400000,0;
 		else			getexp 200000,0;
 		break;
 	}
@@ -10207,14 +10202,3 @@ lhz_dun02.gat,150,122,4	script	警告文#Lhz	837,{
 lhz_dun02.gat,149,178,4	duplicate(警告文#Lhz)	警告文	837
 lhz_dun02.gat,122,149,4	duplicate(警告文#Lhz)	警告文	837
 lhz_dun02.gat,177,150,4	duplicate(警告文#Lhz)	警告文	837
-
-lhz_dun03.gat,0,0,0	script	#LhzMVP	-1,{
-OnInit:
-OnTimer7200000:
-	stopnpctimer;
-	areamonster "lhz_dun03.gat",20,28,256,264,"--ja--",1646+rand(6),1,"#LhzMVP::OnKilled";
-	end;
-OnKilled:
-	initnpctimer;
-	end;
-}

@@ -805,13 +805,35 @@ force_1-1.gat,0,0,0	script	ArenaStage0	-1,{
 OnSummon1:
 	set 'mob,5;
 	disablenpc "Arena0warp#2";
-	areamonster "force_1-1.gat",14,14,33,37,"スモーキー",1561,5,"ArenaStage0::OnKilled1";
-	areamonster "force_1-1.gat",14,14,33,37,"大口蛙",1556,10;
-	areamonster "force_1-1.gat",14,14,33,37,"ドロップス",1572,10;
-	monster "force_1-1.gat",35,21,"ヒドラ",1579,1;
-	monster "force_1-1.gat",35,25,"ヒドラ",1579,1;
-	monster "force_1-1.gat",35,28,"ヒドラ",1579,1;
+	monster "force_1-1.gat",25,25,"スモーキー",1561,1,"ArenaStage0::OnKilled1";
+	monster "force_1-1.gat",18,25,"スモーキー",1561,1,"ArenaStage0::OnKilled1";
+	monster "force_1-1.gat",32,25,"スモーキー",1561,1,"ArenaStage0::OnKilled1";
+	monster "force_1-1.gat",25,32,"スモーキー",1561,1,"ArenaStage0::OnKilled1";
+	monster "force_1-1.gat",25,18,"スモーキー",1561,1,"ArenaStage0::OnKilled1";
+	monster "force_1-1.gat",25,26,"ドロップス",1572,1;
+	monster "force_1-1.gat",15,25,"ドロップス",1572,1;
+	monster "force_1-1.gat",30,25,"ドロップス",1572,1;
+	monster "force_1-1.gat",25,31,"ドロップス",1572,1;
+	monster "force_1-1.gat",24,19,"ドロップス",1572,1;
+	monster "force_1-1.gat",25,28,"ドロップス",1572,1;
+	monster "force_1-1.gat",18,23,"ドロップス",1572,1;
+	monster "force_1-1.gat",24,25,"ドロップス",1572,1;
+	monster "force_1-1.gat",23,18,"ドロップス",1572,1;
+	monster "force_1-1.gat",20,18,"ドロップス",1572,1;
 	monster "force_1-1.gat",35,31,"ヒドラ",1579,1;
+	monster "force_1-1.gat",35,28,"ヒドラ",1579,1;
+	monster "force_1-1.gat",35,25,"ヒドラ",1579,1;
+	monster "force_1-1.gat",35,21,"ヒドラ",1579,1;
+	monster "force_1-1.gat",26,16,"大口蛙",1556,1;
+	monster "force_1-1.gat",26,15,"大口蛙",1556,1;
+	monster "force_1-1.gat",26,14,"大口蛙",1556,1;
+	monster "force_1-1.gat",23,17,"大口蛙",1556,1;
+	monster "force_1-1.gat",23,18,"大口蛙",1556,1;
+	monster "force_1-1.gat",23,19,"大口蛙",1556,1;
+	monster "force_1-1.gat",29,20,"大口蛙",1556,1;
+	monster "force_1-1.gat",23,16,"大口蛙",1556,1;
+	monster "force_1-1.gat",19,16,"大口蛙",1556,1;
+	monster "force_1-1.gat",32,19,"大口蛙",1556,1;
 	sleep 500;
 	announce "ヒルト: クリア条件 : スモーキーを全て退治してください",9;
 	end;
@@ -822,25 +844,33 @@ OnSummon2:
 	monster "force_1-1.gat",24,76,"ファミリアー",1419,1;
 	monster "force_1-1.gat",28,76,"ファミリアー",1419,1;
 	monster "force_1-1.gat",24,86,"ファミリアー",1419,1;
+	monster "force_1-1.gat",26,86,"グール",1423,1;
+	monster "force_1-1.gat",25,100,"グール",1423,1;
+	monster "force_1-1.gat",26,118,"グール",1423,1;
 	monster "force_1-1.gat",28,79,"マミー",1393,1;
 	monster "force_1-1.gat",23,87,"マミー",1393,1;
-	monster "force_1-1.gat",28,96,"マミー",1393,1;
-	monster "force_1-1.gat",24,126,"マミー",1393,1;
-	monster "force_1-1.gat",27,126,"マミー",1393,1;
-	monster "force_1-1.gat",26,86,"グール",1423,1;
-	monster "force_1-1.gat",23,101,"グール",1423,1;
-	monster "force_1-1.gat",26,111,"グール",1423,1;
+	monster "force_1-1.gat",28,99,"マミー",1393,1;
+	monster "force_1-1.gat",23,112,"マミー",1393,1;
+	monster "force_1-1.gat",28,128,"マミー",1393,1;
 	sleep 500;
 	announce "ヒルト: クリア条件 : モンスターを避けて北出口から脱出してください！",9;
 	end;
 OnSummon3:
 	set 'mob,5;
 	disablenpc "Arena0warp#4";
-	areamonster "force_1-1.gat",14,162,37,185,"カラ傘",1544,5,"ArenaStage0::OnKilled3";
-	areamonster "force_1-1.gat",14,162,37,185,"マルス",1551,5;
-	monster "force_1-1.gat",21,173,"ヒドラ",1579,1;
+	monster "force_1-1.gat",23,174,"カラ傘",1544,1,"ArenaStage0::OnKilled3";
+	monster "force_1-1.gat",18,173,"カラ傘",1544,1,"ArenaStage0::OnKilled3";
+	monster "force_1-1.gat",33,173,"カラ傘",1544,1,"ArenaStage0::OnKilled3";
+	monster "force_1-1.gat",26,181,"カラ傘",1544,1,"ArenaStage0::OnKilled3";
+	monster "force_1-1.gat",26,166,"カラ傘",1544,1,"ArenaStage0::OnKilled3";
 	monster "force_1-1.gat",26,173,"ヒドラ",1579,1;
+	monster "force_1-1.gat",21,173,"ヒドラ",1579,1;
 	monster "force_1-1.gat",31,173,"ヒドラ",1579,1;
+	monster "force_1-1.gat",26,186,"マルス",1551,1;
+	monster "force_1-1.gat",26,161,"マルス",1551,1;
+	monster "force_1-1.gat",13,173,"マルス",1551,1;
+	monster "force_1-1.gat",38,173,"マルス",1551,1;
+	monster "force_1-1.gat",29,174,"マルス",1551,1;
 	sleep 500;
 	announce "ヒルト: クリア条件 : カラ傘を全て退治してください",9;
 	end;
@@ -850,15 +880,23 @@ OnKilled3:
 OnSummon4:
 	set 'mob,3;
 	disablenpc "Arena0warp#5";
-	monster "force_1-1.gat",118,175,"コボルド",1545,1,"ArenaStage0::OnKilled4";
-	monster "force_1-1.gat",80,172,"コボルド",1546,1,"ArenaStage0::OnKilled4";
-	monster "force_1-1.gat",99,175,"コボルド",1546,1,"ArenaStage0::OnKilled4";
-	areamonster "force_1-1.gat",75,169,124,178,"ファミリアー",1419,9;
-	monster "force_1-1.gat",105,178,"フローラ",1575,1;
+	monster "force_1-1.gat",85,172,"コボルド",1546,1,"ArenaStage0::OnKilled4";
+	monster "force_1-1.gat",95,172,"コボルド",1546,1,"ArenaStage0::OnKilled4";
+	monster "force_1-1.gat",120,172,"コボルド",1545,1,"ArenaStage0::OnKilled4";
+	monster "force_1-1.gat",99,174,"ファミリアー",1419,1;
+	monster "force_1-1.gat",103,174,"ファミリアー",1419,1;
+	monster "force_1-1.gat",107,174,"ファミリアー",1419,1;
+	monster "force_1-1.gat",111,176,"ファミリアー",1419,1;
+	monster "force_1-1.gat",115,176,"ファミリアー",1419,1;
+	monster "force_1-1.gat",119,172,"ファミリアー",1419,1;
+	monster "force_1-1.gat",95,178,"ファミリアー",1419,1;
+	monster "force_1-1.gat",100,178,"ファミリアー",1419,1;
+	monster "force_1-1.gat",105,172,"ファミリアー",1419,1;
 	monster "force_1-1.gat",110,172,"フローラ",1575,1;
 	monster "force_1-1.gat",115,172,"フローラ",1575,1;
 	monster "force_1-1.gat",120,172,"フローラ",1575,1;
 	monster "force_1-1.gat",125,172,"フローラ",1575,1;
+	monster "force_1-1.gat",105,178,"フローラ",1575,1;
 	sleep 500;
 	announce "ヒルト: クリア条件 : コボルドを全て退治してください",9;
 	end;
@@ -868,39 +906,42 @@ OnKilled4:
 OnSummon5:
 	set 'mob,6;
 	disablenpc "Arena0warp#6";
-	areamonster "force_1-1.gat",162,162,185,185,"オークレディ",1452,2,"ArenaStage0::OnKilled5";
-	areamonster "force_1-1.gat",162,162,185,185,"ゴーレム",1540,1,"ArenaStage0::OnKilled5";
-	monster "force_1-1.gat",171,170,"ヒドラ",1579,1,"ArenaStage0::OnKilled5";
 	monster "force_1-1.gat",173,166,"ヒドラ",1579,1,"ArenaStage0::OnKilled5";
+	monster "force_1-1.gat",171,170,"ヒドラ",1579,1,"ArenaStage0::OnKilled5";
 	monster "force_1-1.gat",177,170,"ヒドラ",1579,1,"ArenaStage0::OnKilled5";
+	monster "force_1-1.gat",183,173,"オークレディ",1452,1,"ArenaStage0::OnKilled5";
+	monster "force_1-1.gat",173,173,"オークレディ",1452,1,"ArenaStage0::OnKilled5";
+	monster "force_1-1.gat",181,173,"ゴーレム",1540,1,"ArenaStage0::OnKilled5";
+//	monster "force_1-1.gat",171,177,"ゴーレム",1540,1,"ArenaStage0::OnKilled5";
 	sleep 500;
 	announce "ヒルト: クリア条件 : 最初からいるモンスターを全て退治してください",9;
 	end;
 OnKilled5:
 	if(rand(2))
-		areamonster "force_1-1.gat",169,169,178,178,"ゼロム",1470,1;
+		monster "force_1-1.gat",174,174,"デザートウルフ",1432,1;
 	else
-		areamonster "force_1-1.gat",169,169,178,178,"デザートウルフ",1432,1;
+		monster "force_1-1.gat",173,173,"ゼロム",1470,1;
 	callfunc "ArenaKilled",0,6,"ヒルト",'mob;
 	end;
 OnSummon6:
 	set 'mob,5;
 	disablenpc "Arena0warp#7";
+	monster "force_1-1.gat",173,90,"ドロップス",1572,1,"ArenaStage0::OnKilled6";
+	monster "force_1-1.gat",173,79,"ドロップス",1572,1,"ArenaStage0::OnKilled6";
+	monster "force_1-1.gat",172,70,"ドロップス",1572,1,"ArenaStage0::OnKilled6";
+	monster "force_1-1.gat",175,70,"ドロップス",1572,1,"ArenaStage0::OnKilled6";
 	monster "force_1-1.gat",171,118,"ドロップス",1572,1,"ArenaStage0::OnKilled6";
-	monster "force_1-1.gat",175,88,"ドロップス",1572,1,"ArenaStage0::OnKilled6";
-	monster "force_1-1.gat",173,78,"ドロップス",1572,1,"ArenaStage0::OnKilled6";
-	monster "force_1-1.gat",171,68,"ドロップス",1572,1,"ArenaStage0::OnKilled6";
-	monster "force_1-1.gat",175,68,"ドロップス",1572,1,"ArenaStage0::OnKilled6";
-	monster "force_1-1.gat",175,98,"スケルワーカー",1469,1;
-	monster "force_1-1.gat",175,78,"スケルワーカー",1469,1;
-	monster "force_1-1.gat",171,108,"ゴーレム",1540,1;
-	monster "force_1-1.gat",171,88,"ゴーレム",1540,1;
-	monster "force_1-1.gat",175,108,"サンドマン",1558,1;
-	monster "force_1-1.gat",171,98,"サンドマン",1558,1;
-	monster "force_1-1.gat",175,118,"スコーピオン",1559,1;
-	monster "force_1-1.gat",171,78,"スコーピオン",1559,1;
 	monster "force_1-1.gat",173,118,"スモーキー",1561,1;
 	monster "force_1-1.gat",173,108,"スモーキー",1561,1;
+	monster "force_1-1.gat",173,99,"スモーキー",1561,1;
+	monster "force_1-1.gat",171,108,"ゴーレム",1540,1;
+	monster "force_1-1.gat",171,99,"スケルワーカー",1469,1;
+	monster "force_1-1.gat",171,85,"スケルワーカー",1469,1;
+	monster "force_1-1.gat",171,90,"ゴーレム",1540,1;
+	monster "force_1-1.gat",171,79,"スコーピオン",1559,1;
+	monster "force_1-1.gat",175,118,"スコーピオン",1559,1;
+	monster "force_1-1.gat",175,108,"サンドマン",1558,1;
+	monster "force_1-1.gat",175,99,"サンドマン",1558,1;
 	sleep 500;
 	announce "ヒルト: クリア条件 : ドロップスを全て退治してください",9;
 	end;
@@ -911,27 +952,28 @@ OnSummon7:
 	set 'mob,1;
 	disablenpc "Arena0warp#8";
 	monster "force_1-1.gat",174,25,"赤い草",1078,1,"ArenaStage0::OnKilled7";
-	areamonster "force_1-1.gat",155,14,160,37,"パンク",1481,2;
+	monster "force_1-1.gat",163,36,"ヒドラ",1579,1;
+	monster "force_1-1.gat",167,36,"ヒドラ",1579,1;
+	monster "force_1-1.gat",171,36,"ヒドラ",1579,1;
+	monster "force_1-1.gat",175,36,"ヒドラ",1579,1;
+	monster "force_1-1.gat",179,36,"ヒドラ",1579,1;
+	monster "force_1-1.gat",183,36,"ヒドラ",1579,1;
+	monster "force_1-1.gat",183,32,"ヒドラ",1579,1;
+	monster "force_1-1.gat",183,28,"ヒドラ",1579,1;
+	monster "force_1-1.gat",183,24,"ヒドラ",1579,1;
+	monster "force_1-1.gat",183,20,"ヒドラ",1579,1;
+	monster "force_1-1.gat",183,16,"ヒドラ",1579,1;
+	monster "force_1-1.gat",179,16,"ヒドラ",1579,1;
+	monster "force_1-1.gat",175,16,"ヒドラ",1579,1;
+	monster "force_1-1.gat",171,16,"ヒドラ",1579,1;
+	monster "force_1-1.gat",167,16,"ヒドラ",1579,1;
 	monster "force_1-1.gat",163,16,"ヒドラ",1579,1;
 	monster "force_1-1.gat",163,20,"ヒドラ",1579,1;
 	monster "force_1-1.gat",163,24,"ヒドラ",1579,1;
 	monster "force_1-1.gat",163,28,"ヒドラ",1579,1;
 	monster "force_1-1.gat",163,32,"ヒドラ",1579,1;
-	monster "force_1-1.gat",163,36,"ヒドラ",1579,1;
-	monster "force_1-1.gat",167,16,"ヒドラ",1579,1;
-	monster "force_1-1.gat",167,36,"ヒドラ",1579,1;
-	monster "force_1-1.gat",171,16,"ヒドラ",1579,1;
-	monster "force_1-1.gat",171,36,"ヒドラ",1579,1;
-	monster "force_1-1.gat",175,16,"ヒドラ",1579,1;
-	monster "force_1-1.gat",175,36,"ヒドラ",1579,1;
-	monster "force_1-1.gat",179,16,"ヒドラ",1579,1;
-	monster "force_1-1.gat",179,36,"ヒドラ",1579,1;
-	monster "force_1-1.gat",183,16,"ヒドラ",1579,1;
-	monster "force_1-1.gat",183,20,"ヒドラ",1579,1;
-	monster "force_1-1.gat",183,24,"ヒドラ",1579,1;
-	monster "force_1-1.gat",183,28,"ヒドラ",1579,1;
-	monster "force_1-1.gat",183,32,"ヒドラ",1579,1;
-	monster "force_1-1.gat",183,36,"ヒドラ",1579,1;
+	monster "force_1-1.gat",163,31,"パンク",1481,1;
+	monster "force_1-1.gat",163,23,"パンク",1481,1;
 	sleep 500;
 	announce "ヒルト: クリア条件 : ヒドラの攻撃を避けながら、中央の赤い草を駆除してください",9;
 	end;
@@ -947,15 +989,22 @@ OnSummon8:
 OnSummon9:
 	set 'mob,1;
 	disablenpc "Arena0warp#10";
-	monster "force_1-1.gat",99,98,"ボーカル",1581,1,"ArenaStage0::OnKilled9";
-	monster "force_1-1.gat",89,89,"ファミリアー",1419,2;
-	monster "force_1-1.gat",89,110,"ファミリアー",1419,2;
-	monster "force_1-1.gat",94,94,"ファミリアー",1419,2;
-	monster "force_1-1.gat",94,105,"ファミリアー",1419,2;
-	monster "force_1-1.gat",105,94,"ファミリアー",1419,2;
-	monster "force_1-1.gat",105,105,"ファミリアー",1419,2;
-	monster "force_1-1.gat",110,90,"ファミリアー",1419,2;
-	monster "force_1-1.gat",110,110,"ファミリアー",1419,2;
+	monster "force_1-1.gat",99,99,"ボーカル",1581,1,"ArenaStage0::OnKilled9";
+	monster "force_1-1.gat",110,110,"ファミリアー",1419,1;
+	monster "force_1-1.gat",89,110,"ファミリアー",1419,1;
+	monster "force_1-1.gat",89,89,"ファミリアー",1419,1;
+	monster "force_1-1.gat",110,89,"ファミリアー",1419,1;
+	monster "force_1-1.gat",105,105,"ファミリアー",1419,1;
+	monster "force_1-1.gat",94,105,"ファミリアー",1419,1;
+	monster "force_1-1.gat",94,94,"ファミリアー",1419,1;
+	monster "force_1-1.gat",110,110,"ファミリアー",1419,1;
+	monster "force_1-1.gat",89,110,"ファミリアー",1419,1;
+	monster "force_1-1.gat",89,89,"ファミリアー",1419,1;
+	monster "force_1-1.gat",110,89,"ファミリアー",1419,1;
+	monster "force_1-1.gat",105,105,"ファミリアー",1419,1;
+	monster "force_1-1.gat",94,105,"ファミリアー",1419,1;
+	monster "force_1-1.gat",94,94,"ファミリアー",1419,1;
+	monster "force_1-1.gat",105,94,"ファミリアー",1419,1;
 	sleep 500;
 	announce "ヒルト: クリア条件 : ボスモンスター、ボーカル出現！ボーカルを倒してください",9;
 	end;
@@ -1155,11 +1204,22 @@ force_2-1.gat,0,0,0	script	ArenaStage1	-1,{
 OnSummon1:
 	set 'mob,5;
 	disablenpc "Arena1warp#2";
-	areamonster "force_2-1.gat",14,14,37,37,"ゴブリン",1534,2,"ArenaStage1::OnKilled1";
-	areamonster "force_2-1.gat",14,14,37,37,"ゴブリン",1535,1,"ArenaStage1::OnKilled1";
-	areamonster "force_2-1.gat",14,14,37,37,"ゴブリン",1536,4,"ArenaStage1::OnKilled1";
-	areamonster "force_2-1.gat",14,14,37,37,"ゴブリンアーチャー",1577,2,"ArenaStage1::OnKilled1";
-	areamonster "force_2-1.gat",18,18,33,33,"ロータージャイロ",1557,1;
+	monster "force_2-1.gat",25,32,"ゴブリンアーチャー",1577,1,"ArenaStage1::OnKilled1";
+//	monster "force_2-1.gat",21,26,"ゴブリン",1534,1,"ArenaStage1::OnKilled1";
+	monster "force_2-1.gat",25,36,"ゴブリン",1536,1,"ArenaStage1::OnKilled1";
+//	monster "force_2-1.gat",20,15,"ゴブリンアーチャー",1577,1,"ArenaStage1::OnKilled1";
+//	monster "force_2-1.gat",23,33,"ゴブリン",1537,1,"ArenaStage1::OnKilled1";
+	monster "force_2-1.gat",25,15,"ゴブリン",1534,1,"ArenaStage1::OnKilled1";
+	monster "force_2-1.gat",40,30,"ゴブリン",1536,1,"ArenaStage1::OnKilled1";
+//	monster "force_2-1.gat",20,23,"ゴブリン",1535,1,"ArenaStage1::OnKilled1";
+//	monster "force_2-1.gat",23,22,"ゴブリンアーチャー",1577,1,"ArenaStage1::OnKilled1";
+	monster "force_2-1.gat",25,24,"ゴブリン",1534,1,"ArenaStage1::OnKilled1";
+	monster "force_2-1.gat",25,9,"ゴブリン",1536,1,"ArenaStage1::OnKilled1";
+	monster "force_2-1.gat",28,15,"ゴブリンアーチャー",1577,1,"ArenaStage1::OnKilled1";
+//	monster "force_2-1.gat",25,16,"ゴブリン",1537,1,"ArenaStage1::OnKilled1";
+	monster "force_2-1.gat",12,33,"ゴブリン",1536,1,"ArenaStage1::OnKilled1";
+	monster "force_2-1.gat",24,20,"ゴブリン",1535,1,"ArenaStage1::OnKilled1";
+	monster "force_2-1.gat",25,25,"ロータージャイロ",1557,1;
 	sleep 500;
 	announce "ミロ: クリア条件 : ロータージャイロを避けながら、ゴブリンを5体以上退治してください",9;
 	end;
@@ -1167,31 +1227,59 @@ OnKilled1:
 	callfunc "ArenaKilled",1,2,"ミロ",'mob;
 	end;
 OnSummon2:
-	monster "force_2-1.gat",24,76,"ドレインリアー",1434,3;
-	monster "force_2-1.gat",28,76,"ドレインリアー",1434,3;
-	areamonster "force_2-1.gat",19,85,32,105,"ドレインリアー",1434,2;
-	areamonster "force_2-1.gat",19,120,32,134,"マーター",1460,3;
+	monster "force_2-1.gat",24,76,"ドレインリアー",1434,1;
+	monster "force_2-1.gat",28,76,"ドレインリアー",1434,1;
+	monster "force_2-1.gat",24,86,"ドレインリアー",1434,1;
+	monster "force_2-1.gat",24,76,"ドレインリアー",1434,1;
+	monster "force_2-1.gat",28,76,"ドレインリアー",1434,1;
+	monster "force_2-1.gat",24,86,"ドレインリアー",1434,1;
+	monster "force_2-1.gat",24,76,"ドレインリアー",1434,1;
+	monster "force_2-1.gat",28,76,"ドレインリアー",1434,1;
 	monster "force_2-1.gat",23,76,"レクイエム",1468,1;
 	monster "force_2-1.gat",27,76,"レクイエム",1468,1;
-	areamonster "force_2-1.gat",19,85,32,105,"レクイエム",1468,1;
+	monster "force_2-1.gat",25,86,"レクイエム",1468,1;
+	monster "force_2-1.gat",26,86,"グール",1423,1;
+	monster "force_2-1.gat",25,100,"グール",1423,1;
+	monster "force_2-1.gat",26,118,"グール",1423,1;
+	monster "force_2-1.gat",25,100,"グール",1423,1;
+	monster "force_2-1.gat",26,118,"グール",1423,1;
 	monster "force_2-1.gat",28,79,"ゼロム",1470,1;
-	areamonster "force_2-1.gat",19,85,32,105,"ゼロム",1470,1;
-	areamonster "force_2-1.gat",19,100,32,134,"ゼロム",1470,2;
-	areamonster "force_2-1.gat",19,85,32,134,"グール",1423,5;
+	monster "force_2-1.gat",23,87,"ゼロム",1470,1;
+	monster "force_2-1.gat",28,99,"ゼロム",1470,1;
+	monster "force_2-1.gat",23,112,"ゼロム",1470,1;
+	monster "force_2-1.gat",28,128,"マーター",1460,1;
+	monster "force_2-1.gat",28,128,"マーター",1460,1;
+	monster "force_2-1.gat",28,128,"マーター",1460,1;
+//	monster "force_2-1.gat",28,128,"マーター",1460,1;
+	monster "force_2-1.gat",28,128,"オークゾンビ",1463,1;
+	monster "force_2-1.gat",28,128,"オークゾンビ",1463,1;
+	monster "force_2-1.gat",28,128,"オークゾンビ",1463,1;
+	monster "force_2-1.gat",28,128,"オークゾンビ",1463,1;
+	monster "force_2-1.gat",28,128,"オークゾンビ",1463,1;
+	monster "force_2-1.gat",28,128,"マーター",1460,1;
+	monster "force_2-1.gat",28,128,"マーター",1460,1;
 	sleep 500;
 	announce "ミロ: クリア条件 : モンスターを避けて北出口から脱出してください",9;
 	end;
 OnSummon3:
 	set 'mob,4;
 	disablenpc "Arena1warp#4";
-	areamonster "force_2-1.gat",14,162,37,185,"マンティス",1457,4,"ArenaStage1::OnKilled3";
-	areamonster "force_2-1.gat",14,162,37,185,"オボンヌ",1425,4;
-	monster "force_2-1.gat",21,173,"ヒドラ",1579,1;
-	monster "force_2-1.gat",21,178,"ヒドラ",1579,1;
+	monster "force_2-1.gat",23,174,"マンティス",1457,1,"ArenaStage1::OnKilled3";
+	monster "force_2-1.gat",18,173,"マンティス",1457,1,"ArenaStage1::OnKilled3";
+	monster "force_2-1.gat",33,173,"マンティス",1457,1,"ArenaStage1::OnKilled3";
+	monster "force_2-1.gat",26,181,"マンティス",1457,1,"ArenaStage1::OnKilled3";
+//	monster "force_2-1.gat",26,166,"マンティス",1457,1,"ArenaStage1::OnKilled3";
 	monster "force_2-1.gat",26,173,"ヒドラ",1579,1;
-	monster "force_2-1.gat",26,178,"ヒドラ",1579,1;
+	monster "force_2-1.gat",21,173,"ヒドラ",1579,1;
 	monster "force_2-1.gat",31,173,"ヒドラ",1579,1;
+	monster "force_2-1.gat",26,178,"ヒドラ",1579,1;
+	monster "force_2-1.gat",21,178,"ヒドラ",1579,1;
 	monster "force_2-1.gat",31,178,"ヒドラ",1579,1;
+	monster "force_2-1.gat",19,174,"オボンヌ",1425,1;
+	monster "force_2-1.gat",26,161,"オボンヌ",1425,1;
+	monster "force_2-1.gat",13,173,"オボンヌ",1425,1;
+	monster "force_2-1.gat",38,173,"オボンヌ",1425,1;
+//	monster "force_2-1.gat",19,174,"オボンヌ",1425,1;
 	sleep 500;
 	announce "ミロ: クリア条件 : マンティスを全て退治してください",9;
 	end;
@@ -1202,13 +1290,15 @@ OnSummon4:
 	set 'mob,2;
 	disablenpc "Arena1warp#5";
 	monster "force_2-1.gat",79,174,"ゴーレム",1540,1,"ArenaStage1::OnKilled4";
-	monster "force_2-1.gat",120,174,"マルス",1551,1,"ArenaStage1::OnKilled4";
-	areamonster "force_2-1.gat",85,167,105,180,"サスカッチ",1442,1;
-	areamonster "force_2-1.gat",105,167,170,180,"サスカッチ",1442,1;
+	monster "force_2-1.gat",131,178,"マルス",1551,1,"ArenaStage1::OnKilled4";
+	monster "force_2-1.gat",84,177,"サスカッチ",1442,1;
+	monster "force_2-1.gat",125,170,"サスカッチ",1442,1;
+	monster "force_2-1.gat",109,172,"コウ",1524,1;
+	monster "force_2-1.gat",121,172,"コウ",1524,1;
+	monster "force_2-1.gat",104,173,"チェペット",1444,1;
 	monster "force_2-1.gat",75,174,"ドケビ",1491,1;
-	monster "force_2-1.gat",100,174,"ドケビ",1491,1;
-	areamonster "force_2-1.gat",110,167,134,180,"コウ",1524,2;
-	monster "force_2-1.gat",99,174,"チェペット",1444,1;
+//	monster "force_2-1.gat",95,175,"ドケビ",1491,1;
+	monster "force_2-1.gat",102,176,"ドケビ",1491,1;
 	sleep 500;
 	announce "ミロ: クリア条件 : アクティブモンスターを避けて非アクティブモンスターを全て退治してください",9;
 	end;
@@ -1218,22 +1308,23 @@ OnKilled4:
 OnSummon5:
 	set 'mob,5;
 	disablenpc "Arena1warp#6";
-	areamonster "force_2-1.gat",162,162,185,185,"ドレインリアー",1434,1,"ArenaStage1::OnKilled5";
-	areamonster "force_2-1.gat",162,162,185,185,"レグルロ",1445,1,"ArenaStage1::OnKilled5";
-	areamonster "force_2-1.gat",162,162,185,185,"オークスケルトン",1462,2,"ArenaStage1::OnKilled5";
-	areamonster "force_2-1.gat",162,162,185,185,"ミスト",1553,1,"ArenaStage1::OnKilled5";
-	areamonster "force_2-1.gat",174,162,185,185,"河童",1543,1;
+	monster "force_2-1.gat",163,173,"ドレインリアー",1434,1,"ArenaStage1::OnKilled5";
+	monster "force_2-1.gat",173,173,"ミスト",1553,1,"ArenaStage1::OnKilled5";
+	monster "force_2-1.gat",181,173,"オークスケルトン",1462,1,"ArenaStage1::OnKilled5";
+	monster "force_2-1.gat",171,177,"オークスケルトン",1462,1,"ArenaStage1::OnKilled5";
+	monster "force_2-1.gat",173,181,"レグルロ",1445,1,"ArenaStage1::OnKilled5";
 	monster "force_2-1.gat",168,177,"ヒドラ",1579,1;
-	monster "force_2-1.gat",170,168,"ヒドラ",1579,1;
 	monster "force_2-1.gat",170,179,"ヒドラ",1579,1;
-	monster "force_2-1.gat",173,173,"ヒドラ",1579,1;
-	monster "force_2-1.gat",173,174,"ヒドラ",1579,1;
-	monster "force_2-1.gat",174,173,"ヒドラ",1579,1;
-	monster "force_2-1.gat",174,174,"ヒドラ",1579,1;
-	monster "force_2-1.gat",177,168,"ヒドラ",1579,1;
 	monster "force_2-1.gat",177,179,"ヒドラ",1579,1;
+	monster "force_2-1.gat",179,178,"ヒドラ",1579,1;
 	monster "force_2-1.gat",179,170,"ヒドラ",1579,1;
-	monster "force_2-1.gat",179,177,"ヒドラ",1579,1;
+	monster "force_2-1.gat",177,168,"ヒドラ",1579,1;
+	monster "force_2-1.gat",170,168,"ヒドラ",1579,1;
+	monster "force_2-1.gat",173,174,"ヒドラ",1579,1;
+	monster "force_2-1.gat",174,174,"ヒドラ",1579,1;
+	monster "force_2-1.gat",173,173,"ヒドラ",1579,1;
+	monster "force_2-1.gat",174,173,"ヒドラ",1579,1;
+	monster "force_2-1.gat",173,181,"河童",1543,1;
 	sleep 500;
 	announce "ミロ: クリア条件 : ヒドラと河童を除いた全てのモンスターを退治してください",9;
 	end;
@@ -1243,51 +1334,50 @@ OnKilled5:
 OnSummon6:
 	set 'mob,2;
 	disablenpc "Arena1warp#7";
-	monster "force_2-1.gat",173,80,"雅人形",1552,1,"ArenaStage1::OnKilled6";
-	monster "force_2-1.gat",173,110,"雅人形",1552,1,"ArenaStage1::OnKilled6";;
-	monster "force_2-1.gat",169,70,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,75,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,80,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,85,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,90,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,95,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,100,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,105,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,110,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,115,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,120,"天下大将軍",1541,1;
-	monster "force_2-1.gat",169,125,"天下大将軍",1541,1;
+	monster "force_2-1.gat",174,100,"雅人形",1552,1,"ArenaStage1::OnKilled6";
+	monster "force_2-1.gat",174,80,"雅人形",1552,1,"ArenaStage1::OnKilled6";
 	monster "force_2-1.gat",169,130,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,70,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,75,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,80,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,85,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,90,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,95,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,100,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,105,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,110,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,115,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,120,"天下大将軍",1541,1;
-	monster "force_2-1.gat",178,125,"天下大将軍",1541,1;
 	monster "force_2-1.gat",178,130,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,125,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,125,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,120,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,120,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,115,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,115,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,110,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,110,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,105,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,105,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,100,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,100,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,95,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,95,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,90,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,90,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,85,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,85,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,80,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,80,"天下大将軍",1541,1;
+	monster "force_2-1.gat",169,75,"天下大将軍",1541,1;
+	monster "force_2-1.gat",178,75,"天下大将軍",1541,1;
 	sleep 500;
 	announce "ミロ: クリア条件 : 雅人形を全て退治してください",9;
 	end;
 OnKilled6:
 	switch(rand(3)) {
-		case 0: areamonster "force_2-1.gat",169,75,178,125,"サイドワインダー",1424,1; 	break;
-		case 1: areamonster "force_2-1.gat",169,75,178,125,"クルーザー",1443,1; 	break;
-		case 2: areamonster "force_2-1.gat",169,75,178,125,"老人参",1565,1; 		break;
+		case 0: areamonster "force_2-1.gat",170,70,177,120,"サイドワインダー",1424,1; 	break;
+		case 1: areamonster "force_2-1.gat",170,70,177,120,"老人参",1565,1; 		break;
+		case 2: areamonster "force_2-1.gat",170,70,177,120,"クルーザー",1443,1; 	break;
 	}
 	callfunc "ArenaKilled",1,7,"ミロ",'mob;
 	end;
 OnSummon7:
 	set 'mob,4;
 	disablenpc "Arena1warp#8";
-	areamonster "force_2-1.gat",162,14,185,37,"イシス",1421,1,"ArenaStage1::OnKilled7";
-	areamonster "force_2-1.gat",162,14,185,37,"ジャック",1436,2,"ArenaStage1::OnKilled7";
-	areamonster "force_2-1.gat",162,14,185,37,"ミスト",1553,1,"ArenaStage1::OnKilled7";
+	monster "force_2-1.gat",170,25,"ジャック",1436,1,"ArenaStage1::OnKilled7";
+	monster "force_2-1.gat",170,25,"ジャック",1436,1,"ArenaStage1::OnKilled7";
+	monster "force_2-1.gat",175,25,"イシス",1421,1,"ArenaStage1::OnKilled7";
+	monster "force_2-1.gat",179,25,"ミスト",1553,1,"ArenaStage1::OnKilled7";
 	sleep 500;
 	announce "ミロ: クリア条件 : モンスターを全て退治してください",9;
 	end;
@@ -1303,33 +1393,34 @@ OnSummon8:
 OnSummon9:
 	set 'mob,1;
 	disablenpc "Arena1warp#10";
-	monster "force_2-1.gat",100,99,"ゴブリンリーダー",1539,1,"ArenaStage1::OnKilled9";
-	monster "force_2-1.gat",93,100,"ホロン",1578,1;
-	monster "force_2-1.gat",97,100,"ホロン",1578,1;
-	monster "force_2-1.gat",100,100,"ホロン",1578,1;
+	monster "force_2-1.gat",99,99,"ゴブリンリーダー",1539,1,"ArenaStage1::OnKilled9";
+	monster "force_2-1.gat",90,100,"ホロン",1578,1;
+	monster "force_2-1.gat",92,100,"ホロン",1578,1;
+	monster "force_2-1.gat",99,100,"ホロン",1578,1;
 	monster "force_2-1.gat",105,100,"ホロン",1578,1;
-	monster "force_2-1.gat",86,103,"天下大将軍",1541,1;
-	monster "force_2-1.gat",86,105,"天下大将軍",1541,1;
-	monster "force_2-1.gat",86,107,"天下大将軍",1541,1;
-	monster "force_2-1.gat",86,109,"天下大将軍",1541,1;
-	monster "force_2-1.gat",86,111,"天下大将軍",1541,1;
-	monster "force_2-1.gat",86,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",88,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",90,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",92,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",94,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",96,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",103,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",105,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",107,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",109,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",111,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",113,113,"天下大将軍",1541,1;
-	monster "force_2-1.gat",113,103,"天下大将軍",1541,1;
-	monster "force_2-1.gat",113,105,"天下大将軍",1541,1;
-	monster "force_2-1.gat",113,107,"天下大将軍",1541,1;
-	monster "force_2-1.gat",113,109,"天下大将軍",1541,1;
-	monster "force_2-1.gat",113,111,"天下大将軍",1541,1;
+	monster "force_2-1.gat",85,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",87,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",89,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",91,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",93,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",95,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",85,112,"天下大将軍",1541,1;
+	monster "force_2-1.gat",85,110,"天下大将軍",1541,1;
+	monster "force_2-1.gat",85,108,"天下大将軍",1541,1;
+	monster "force_2-1.gat",85,106,"天下大将軍",1541,1;
+	monster "force_2-1.gat",85,104,"天下大将軍",1541,1;
+	monster "force_2-1.gat",103,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",105,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",107,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",109,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",111,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",113,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",115,114,"天下大将軍",1541,1;
+	monster "force_2-1.gat",115,112,"天下大将軍",1541,1;
+	monster "force_2-1.gat",115,110,"天下大将軍",1541,1;
+	monster "force_2-1.gat",115,108,"天下大将軍",1541,1;
+	monster "force_2-1.gat",115,106,"天下大将軍",1541,1;
+	monster "force_2-1.gat",115,104,"天下大将軍",1541,1;
 	sleep 500;
 	announce "ミロ: クリア条件 : ボスモンスター、ゴブリンリーダー出現！ゴブリンリーダーを倒してください",9;
 	end;
@@ -1516,9 +1607,11 @@ force_3-1.gat,0,0,0	script	ArenaStage2	-1,{
 OnSummon1:
 	set 'mob,5;
 	disablenpc "Arena2warp#2";
-	areamonster "force_3-1.gat",14,14,37,37,"コボルド",1545,2,"ArenaStage2::OnKilled1";
-	areamonster "force_3-1.gat",14,14,37,37,"コボルド",1546,1,"ArenaStage2::OnKilled1";
-	areamonster "force_3-1.gat",14,14,37,37,"コボルド",1547,2,"ArenaStage2::OnKilled1";
+	monster "force_3-1.gat",25,36,"コボルド",1545,1,"ArenaStage2::OnKilled1";
+	monster "force_3-1.gat",20,36,"コボルド",1545,1,"ArenaStage2::OnKilled1";
+	monster "force_3-1.gat",25,20,"コボルド",1546,1,"ArenaStage2::OnKilled1";
+	monster "force_3-1.gat",30,36,"コボルド",1547,2,"ArenaStage2::OnKilled1";
+	monster "force_3-1.gat",28,15,"コボルド",1547,2,"ArenaStage2::OnKilled1";
 	sleep 500;
 	announce "キャラック: クリア条件 : コボルドを全て退治してください",9;
 	end;
@@ -1528,10 +1621,20 @@ OnKilled1:
 OnSummon2:
 	set 'mob,2;
 	disablenpc "Arena2warp#3";
-	areamonster "force_3-1.gat",19,77,32,132,"ホロン",1578,2,"ArenaStage2::OnKilled2";
-	areamonster "force_3-1.gat",19,77,32,132,"マミー",1393,4;
-	areamonster "force_3-1.gat",19,77,32,132,"アーチャースケルトン",1420,3;
-	areamonster "force_3-1.gat",19,77,32,132,"グール",1423,4;
+	monster "force_3-1.gat",25,79,"ホロン",1578,1,"ArenaStage2::OnKilled2";
+	monster "force_3-1.gat",29,114,"ホロン",1578,1,"ArenaStage2::OnKilled2";
+	monster "force_3-1.gat",21,78,"アーチャースケルトン",1420,1;
+	monster "force_3-1.gat",22,93,"アーチャースケルトン",1420,1;
+	monster "force_3-1.gat",29,93,"アーチャースケルトン",1420,1;
+	monster "force_3-1.gat",25,101,"マミー",1393,1;
+	monster "force_3-1.gat",26,101,"マミー",1393,1;
+	monster "force_3-1.gat",27,101,"マミー",1393,1;
+	monster "force_3-1.gat",28,101,"マミー",1393,1;
+	monster "force_3-1.gat",24,104,"グール",1423,1;
+	monster "force_3-1.gat",24,113,"グール",1423,1;
+	monster "force_3-1.gat",29,120,"グール",1423,1;
+	monster "force_3-1.gat",29,126,"グール",1423,1;
+	monster "force_3-1.gat",30,110,"グール",1423,1;
 	sleep 500;
 	announce "キャラック: クリア条件 : ホロンを全て退治してください",9;
 	end;
@@ -1545,9 +1648,11 @@ OnKilled2:	//killmonsterしないのでfunction使わない
 OnSummon3:
 	set 'mob,3;
 	disablenpc "Arena2warp#4";
-	areamonster "force_3-1.gat",14,162,37,185,"パピヨン",1526,1,"ArenaStage2::OnKilled3";
-	areamonster "force_3-1.gat",14,162,37,185,"フェアリーフ",1555,2,"ArenaStage2::OnKilled3";
-	areamonster "force_3-1.gat",14,162,37,185,"人面桃樹",1550,2;
+	monster "force_3-1.gat",23,174,"フェアリーフ",1555,1,"ArenaStage2::OnKilled3";
+	monster "force_3-1.gat",33,173,"フェアリーフ",1555,1,"ArenaStage2::OnKilled3";
+	monster "force_3-1.gat",26,166,"パピヨン",1526,1,"ArenaStage2::OnKilled3";
+	monster "force_3-1.gat",10,170,"人面桃樹",1550,1;
+	monster "force_3-1.gat",26,180,"人面桃樹",1550,1;
 	sleep 500;
 	announce "キャラック: クリア条件 : 人面桃樹を除いたモンスターを全て退治してください",9;
 	end;
@@ -1557,8 +1662,15 @@ OnKilled3:
 OnSummon4:
 	set 'mob,3;
 	disablenpc "Arena2warp#5";
-	areamonster "force_3-1.gat",75,169,124,178,"ステムワーム",1440,3,"ArenaStage2::OnKilled4";
-	areamonster "force_3-1.gat",75,169,124,178,"バースリー",1525,3;
+	monster "force_3-1.gat",87,174,"ステムワーム",1440,1,"ArenaStage2::OnKilled4";
+	monster "force_3-1.gat",103,174,"ステムワーム",1440,1,"ArenaStage2::OnKilled4";
+	monster "force_3-1.gat",96,170,"ステムワーム",1440,1,"ArenaStage2::OnKilled4";
+	monster "force_3-1.gat",72,126,"バースリー",1525,1;
+	monster "force_3-1.gat",110,179,"バースリー",1525,1;
+	monster "force_3-1.gat",80,140,"バースリー",1525,1;
+	monster "force_3-1.gat",100,170,"バースリー",1525,1;
+	monster "force_3-1.gat",92,135,"バースリー",1525,1;
+	monster "force_3-1.gat",125,169,"バースリー",1525,1;
 	sleep 500;
 	announce "キャラック: クリア条件 : バースリーを避けながらステムワームを退治してください",9;
 	end;
@@ -1568,27 +1680,43 @@ OnKilled4:
 OnSummon5:
 	set 'mob,5;
 	disablenpc "Arena2warp#6";
-	areamonster "force_3-1.gat",162,162,185,185,"アルギオペ",1429,5,"ArenaStage2::OnKilled5";
+	monster "force_3-1.gat",164,183,"アルギオペ",1429,1,"ArenaStage2::OnKilled5";
+	monster "force_3-1.gat",168,158,"アルギオペ",1429,1,"ArenaStage2::OnKilled5";
+	monster "force_3-1.gat",175,174,"アルギオペ",1429,1,"ArenaStage2::OnKilled5";
+	monster "force_3-1.gat",176,179,"アルギオペ",1429,1,"ArenaStage2::OnKilled5";
+	monster "force_3-1.gat",183,160,"アルギオペ",1429,1,"ArenaStage2::OnKilled5";
 	sleep 500;
 	announce "キャラック: クリア条件 : アルギオペを全て退治してください",9;
 	end;
 OnKilled5:
-	if(rand(2))
-		areamonster "force_3-1.gat",169,169,178,178,"マンティス",1457,1;
-	else
-		areamonster "force_3-1.gat",169,169,178,178,"ライドワード",1478,1;
+	switch(rand(3)) {
+		case 0: monster "force_3-1.gat",174,174,"ライドワード",1478,1; break;
+		case 1: monster "force_3-1.gat",173,173,"マンティス",1457,1; break;
+		case 2: break;
+	}
 	callfunc "ArenaKilled",2,6,"キャラック",'mob;
 	end;
 OnSummon6:
-	set 'mob,3;
+	set 'mob,5;
 	disablenpc "Arena2warp#7";
-	areamonster "force_3-1.gat",169,75,178,124,"ゴブリン",1536,3,"ArenaStage2::OnKilled6";
-	areamonster "force_3-1.gat",169,75,178,124,"ゴブリン",1534,3;
-	areamonster "force_3-1.gat",169,75,178,124,"ゴブリン",1535,3;
-	areamonster "force_3-1.gat",169,75,178,124,"ゴブリン",1537,3;
-	areamonster "force_3-1.gat",169,75,178,124,"ゴブリン",1538,3;
+	monster "force_3-1.gat",179,90,"ゴブリン",1537,1,"ArenaStage2::OnKilled6";
+	monster "force_3-1.gat",173,120,"ゴブリン",1537,1,"ArenaStage2::OnKilled6";
+	monster "force_3-1.gat",172,113,"ゴブリン",1537,1,"ArenaStage2::OnKilled6";
+	monster "force_3-1.gat",175,98,"ゴブリン",1537,1,"ArenaStage2::OnKilled6";
+	monster "force_3-1.gat",170,118,"ゴブリン",1537,1,"ArenaStage2::OnKilled6";
+//	monster "force_3-1.gat",171,126,"ゴブリン",1534,1;
+	monster "force_3-1.gat",176,99,"ゴブリン",1534,1;
+	monster "force_3-1.gat",170,86,"ゴブリン",1535,1;
+	monster "force_3-1.gat",176,97,"ゴブリン",1535,1;
+	monster "force_3-1.gat",170,108,"ゴブリン",1535,1;
+	monster "force_3-1.gat",176,112,"ゴブリン",1536,1;
+	monster "force_3-1.gat",173,120,"ゴブリン",1536,1;
+	monster "force_3-1.gat",177,74,"ゴブリン",1536,1;
+	monster "force_3-1.gat",173,118,"ゴブリン",1538,1;
+	monster "force_3-1.gat",171,101,"ゴブリン",1538,1;
+	monster "force_3-1.gat",174,118,"ゴブリン",1538,1;
 	sleep 500;
-	announce "キャラック: クリア条件 : ゴブリンの中からゴブリン(斧)だけを倒してください",9;
+	announce "キャラック: クリア条件 : ゴブリンの中からゴブリン(槌)だけを倒してください",9;
 	end;
 OnKilled6:
 	callfunc "ArenaKilled",2,7,"キャラック",'mob;
@@ -1596,10 +1724,20 @@ OnKilled6:
 OnSummon7:
 	set 'mob,1;
 	disablenpc "Arena2warp#8";
-	areamonster "force_3-1.gat",162,14,185,37,"アリス",1521,1,"ArenaStage2::OnKilled7";
-	areamonster "force_3-1.gat",162,14,185,37,"ファミリアー",1419,8;
-	areamonster "force_3-1.gat",162,14,185,37,"ナイトメア",1427,4;
-	areamonster "force_3-1.gat",162,14,185,37,"レイドリック",1467,1;
+	monster "force_3-1.gat",174,25,"アリス",1521,1,"ArenaStage2::OnKilled7";
+	monster "force_3-1.gat",168,26,"ナイトメア",1427,1;
+	monster "force_3-1.gat",186,23,"ナイトメア",1427,1;
+	monster "force_3-1.gat",160,23,"ナイトメア",1427,1;
+	monster "force_3-1.gat",188,33,"ナイトメア",1427,1;
+	monster "force_3-1.gat",174,13,"レイドリック",1467,1;
+	monster "force_3-1.gat",163,15,"ファミリアー",1419,1;
+	monster "force_3-1.gat",164,15,"ファミリアー",1419,1;
+	monster "force_3-1.gat",163,16,"ファミリアー",1419,1;
+	monster "force_3-1.gat",164,16,"ファミリアー",1419,1;
+	monster "force_3-1.gat",187,13,"ファミリアー",1419,1;
+	monster "force_3-1.gat",187,14,"ファミリアー",1419,1;
+	monster "force_3-1.gat",186,13,"ファミリアー",1419,1;
+	monster "force_3-1.gat",186,14,"ファミリアー",1419,1;
 	sleep 500;
 	announce "キャラック: クリア条件 : アリスを倒してください",9;
 	end;
@@ -1613,20 +1751,26 @@ OnSummon8:
 	announce "キャラック: 北出口から脱出してください！",9;
 	end;
 OnSummon9:
-	set 'mob,5;
+	set 'mob,4;
 	disablenpc "Arena2warp#10";
-	monster "force_3-1.gat",99,98,"コボルドリーダー",1296,1,"ArenaStage2::OnKilled9";
-	monster "force_3-1.gat",96,95,"コボルド",1545,1,"ArenaStage2::OnKilled9";
-	monster "force_3-1.gat",102,101,"コボルド",1545,1,"ArenaStage2::OnKilled9";
-	monster "force_3-1.gat",96,101,"コボルド",1546,1,"ArenaStage2::OnKilled9";
-	monster "force_3-1.gat",102,95,"コボルド",1546,1,"ArenaStage2::OnKilled9";
-	monster "force_3-1.gat",94,94,"ファミリアー",1419,2;
-	monster "force_3-1.gat",94,105,"ファミリアー",1419,2;
-	monster "force_3-1.gat",89,100,"ファミリアー",1419,2;
-	monster "force_3-1.gat",99,110,"ファミリアー",1419,2;
-	monster "force_3-1.gat",105,94,"ファミリアー",1419,2;
-	monster "force_3-1.gat",105,100,"ファミリアー",1419,2;
-	monster "force_3-1.gat",105,105,"ファミリアー",1419,2;
+	monster "force_3-1.gat",99,99,"コボルドリーダー",1548,1,"ArenaStage2::OnKilled9";
+	monster "force_3-1.gat",98,99,"コボルド",1545,1,"ArenaStage2::OnKilled9";
+	monster "force_3-1.gat",100,99,"コボルド",1546,1,"ArenaStage2::OnKilled9";
+	monster "force_3-1.gat",99,98,"コボルド",1547,1,"ArenaStage2::OnKilled9";
+	monster "force_3-1.gat",93,100,"ファミリアー",1419,1;
+	monster "force_3-1.gat",94,100,"ファミリアー",1419,1;
+	monster "force_3-1.gat",93,99,"ファミリアー",1419,1;
+	monster "force_3-1.gat",85,114,"ファミリアー",1419,1;
+	monster "force_3-1.gat",87,114,"ファミリアー",1419,1;
+	monster "force_3-1.gat",89,114,"ファミリアー",1419,1;
+	monster "force_3-1.gat",91,114,"ファミリアー",1419,1;
+	monster "force_3-1.gat",93,114,"ファミリアー",1419,1;
+	monster "force_3-1.gat",95,114,"ファミリアー",1419,1;
+	monster "force_3-1.gat",85,112,"ファミリアー",1419,1;
+	monster "force_3-1.gat",85,110,"ファミリアー",1419,1;
+	monster "force_3-1.gat",85,108,"ファミリアー",1419,1;
+	monster "force_3-1.gat",85,106,"ファミリアー",1419,1;
+	monster "force_3-1.gat",85,104,"ファミリアー",1419,1;
 	sleep 500;
 	announce "キャラック: クリア条件 : ボスモンスター、コボルドリーダー出現！コボルドリーダーとコボルドを倒してください",9;
 	end;
@@ -1811,8 +1955,16 @@ force_4-1.gat,0,0,0	script	ArenaStage3	-1,{
 OnSummon1:
 	set 'mob,4;
 	disablenpc "Arena3warp#2";
-	areamonster "force_4-1.gat",14,14,37,37,"ナイトメア",1427,4,"ArenaStage3::OnKilled1";
-	areamonster "force_4-1.gat",14,14,37,37,"ハンターフライ",1422,4;
+	monster "force_4-1.gat",35,13,"ナイトメア",1427,1,"ArenaStage3::OnKilled1";
+	monster "force_4-1.gat",25,36,"ナイトメア",1427,1,"ArenaStage3::OnKilled1";
+	monster "force_4-1.gat",22,23,"ナイトメア",1427,1,"ArenaStage3::OnKilled1";
+	monster "force_4-1.gat",25,17,"ナイトメア",1427,1,"ArenaStage3::OnKilled1";
+//	monster "force_4-1.gat",25,15,"ナイトメア",1427,1,"ArenaStage3::OnKilled1";
+	monster "force_4-1.gat",11,25,"ハンターフライ",1422,1;
+	monster "force_4-1.gat",22,22,"ハンターフライ",1422,1;
+//	monster "force_4-1.gat",25,25,"ハンターフライ",1422,1;
+	monster "force_4-1.gat",35,13,"ハンターフライ",1422,1;
+	monster "force_4-1.gat",18,33,"ハンターフライ",1422,1;
 	sleep 500;
 	announce "アトス: クリア条件 : ナイトメアを全て退治してください",9;
 	end;
@@ -1822,11 +1974,21 @@ OnKilled1:
 OnSummon2:
 	set 'mob,15;
 	disablenpc "Arena3warp#3";
-	areamonster "force_4-1.gat",19,77,32,132,"ゾンビ",1394,6,"ArenaStage3::OnKilled2";
-	areamonster "force_4-1.gat",19,77,32,132,"マリオネット",1459,3,"ArenaStage3::OnKilled2";
-	areamonster "force_4-1.gat",19,77,32,132,"スケルプリズナー",1479,4,"ArenaStage3::OnKilled2";
-	monster "force_4-1.gat",25,80,"デビルチ",1433,1,"ArenaStage3::OnKilled2";
-	monster "force_4-1.gat",25,125,"レイドリックアーチャー",1453,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",24,80,"マリオネット",1459,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",23,110,"マリオネット",1459,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",26,90,"マリオネット",1459,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",28,75,"ゾンビ",1394,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",24,90,"ゾンビ",1394,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",28,85,"ゾンビ",1394,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",24,82,"デビルチ",1433,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",28,86,"スケルプリズナー",1479,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",27,73,"スケルプリズナー",1479,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",26,118,"スケルプリズナー",1479,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",25,127,"スケルプリズナー",1479,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",28,128,"ゾンビ",1394,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",27,100,"ゾンビ",1394,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",29,90,"ゾンビ",1394,1,"ArenaStage3::OnKilled2";
+	monster "force_4-1.gat",28,128,"レイドリックアーチャー",1453,1,"ArenaStage3::OnKilled2";
 	sleep 500;
 	announce "アトス: クリア条件 : モンスターを全て退治してください",9;
 	end;
@@ -1836,9 +1998,16 @@ OnKilled2:
 OnSummon3:
 	set 'mob,2;
 	disablenpc "Arena3warp#4";
-	areamonster "force_4-1.gat",14,162,37,185,"アサルトタートル",1364,2,"ArenaStage3::OnKilled3";
-	areamonster "force_4-1.gat",14,162,37,185,"マリオネット",1459,4;
-	areamonster "force_4-1.gat",21,169,30,178,"時計塔管理者",1527,2;
+	monster "force_4-1.gat",23,174,"アサルトタートル",1364,1,"ArenaStage3::OnKilled3";
+	monster "force_4-1.gat",18,173,"アサルトタートル",1364,1,"ArenaStage3::OnKilled3";
+	monster "force_4-1.gat",26,173,"時計塔管理者",1527,1;
+	monster "force_4-1.gat",21,173,"マリオネット",1459,1;
+	monster "force_4-1.gat",31,173,"時計塔管理者",1527,1;
+	monster "force_4-1.gat",26,178,"マリオネット",1459,1;
+	monster "force_4-1.gat",21,178,"マリオネット",1459,1;
+	monster "force_4-1.gat",31,178,"マリオネット",1459,1;
+//	monster "force_4-1.gat",26,186,"サイドワインダー",1424,1;
+	monster "force_4-1.gat",26,161,"サイドワインダー",1424,1;
 	sleep 500;
 	announce "アトス: クリア条件 : アサルトタートルを全て退治してください",9;
 	end;
@@ -1848,17 +2017,19 @@ OnKilled3:
 OnSummon4:
 	set 'mob,4;
 	disablenpc "Arena3warp#5";
-	monster "force_4-1.gat",78,174,"九尾狐",1471,1,"ArenaStage3::OnKilled4";
-	monster "force_4-1.gat",88,174,"九尾狐",1471,1,"ArenaStage3::OnKilled4";
-	monster "force_4-1.gat",108,171,"九尾狐",1471,1,"ArenaStage3::OnKilled4";
-	monster "force_4-1.gat",118,174,"九尾狐",1471,1,"ArenaStage3::OnKilled4";
-	monster "force_4-1.gat",93,173,"アーチャースケルトン",1420,1;
-	monster "force_4-1.gat",98,178,"アーチャースケルトン",1420,1;
-	monster "force_4-1.gat",108,177,"アーチャースケルトン",1420,1;
-	monster "force_4-1.gat",113,169,"アーチャースケルトン",1420,1;
-	monster "force_4-1.gat",93,169,"ミノタウロス",1461,1;
-	monster "force_4-1.gat",103,176,"パサナ",1464,1;
-	monster "force_4-1.gat",103,171,"ラーヴァゴーレム",1549,1;
+	monster "force_4-1.gat",80,172,"九尾狐",1471,1,"ArenaStage3::OnKilled4";
+	monster "force_4-1.gat",105,172,"九尾狐",1471,1,"ArenaStage3::OnKilled4";
+	monster "force_4-1.gat",90,172,"九尾狐",1471,1,"ArenaStage3::OnKilled4";
+	monster "force_4-1.gat",117,172,"九尾狐",1471,1,"ArenaStage3::OnKilled4";
+	monster "force_4-1.gat",99,174,"アーチャースケルトン",1420,1;
+	monster "force_4-1.gat",101,174,"アーチャースケルトン",1420,1;
+	monster "force_4-1.gat",103,174,"アーチャースケルトン",1420,1;
+//	monster "force_4-1.gat",105,174,"アーチャースケルトン",1420,1;
+	monster "force_4-1.gat",107,174,"アーチャースケルトン",1420,1;
+	monster "force_4-1.gat",109,177,"パサナ",1464,1;
+	monster "force_4-1.gat",99,170,"ミノタウロス",1461,1;
+//	monster "force_4-1.gat",111,170,"ミノタウロス",1461,1;
+	monster "force_4-1.gat",110,170,"ラーヴァゴーレム",1549,1;
 	sleep 500;
 	announce "アトス: クリア条件 : 九尾狐を全て退治してください",9;
 	end;
@@ -1868,24 +2039,35 @@ OnKilled4:
 OnSummon5:
 	set 'mob,4;
 	disablenpc "Arena3warp#6";
-	areamonster "force_4-1.gat",162,162,185,185,"プティット",1465,4,"ArenaStage3::OnKilled5";
-	areamonster "force_4-1.gat",162,162,185,185,"プティット",1466,4;
+	monster "force_4-1.gat",164,174,"プティット",1465,1,"ArenaStage3::OnKilled5";
+	monster "force_4-1.gat",169,159,"プティット",1465,1,"ArenaStage3::OnKilled5";
+	monster "force_4-1.gat",174,183,"プティット",1465,1,"ArenaStage3::OnKilled5";
+	monster "force_4-1.gat",177,170,"プティット",1465,1,"ArenaStage3::OnKilled5";
+	monster "force_4-1.gat",168,190,"プティット",1466,1;
+//	monster "force_4-1.gat",173,166,"プティット",1466,1;
+//	monster "force_4-1.gat",171,170,"プティット",1466,1;
+	monster "force_4-1.gat",188,167,"プティット",1466,1;
 	sleep 500;
 	announce "アトス: クリア条件 : プティット地を全て退治してください",9;
 	end;
 OnKilled5:
-	areamonster "force_4-1.gat",169,169,178,178,"プティット",1466,2;
+	monster "force_4-1.gat",168,190,"プティット",1466,1;
+//	monster "force_4-1.gat",173,166,"プティット",1466,1;
+//	monster "force_4-1.gat",171,170,"プティット",1466,1;
+	monster "force_4-1.gat",188,167,"プティット",1466,1;
 	callfunc "ArenaKilled",3,6,"アトス",'mob;
 	end;
 OnSummon6:
 	set 'mob,6;
 	disablenpc "Arena3warp#7";
-	monster "force_4-1.gat",172,119,"バフォメットJr.",1431,1,"ArenaStage3::OnKilled6";
-	monster "force_4-1.gat",172,89,"バフォメットJr.",1431,1,"ArenaStage3::OnKilled6";
-	monster "force_4-1.gat",172,109,"デビルチ",1433,1,"ArenaStage3::OnKilled6";
-	monster "force_4-1.gat",175,89,"デビルチ",1433,1,"ArenaStage3::OnKilled6";
-	monster "force_4-1.gat",175,119,"アリス",1521,1,"ArenaStage3::OnKilled6";
-	monster "force_4-1.gat",172,79,"アリス",1521,1,"ArenaStage3::OnKilled6";
+	monster "force_4-1.gat",173,118,"バフォメットJr.",1431,1,"ArenaStage3::OnKilled6";
+	monster "force_4-1.gat",173,90,"バフォメットJr.",1431,1,"ArenaStage3::OnKilled6";
+//	monster "force_4-1.gat",177,72,"バフォメットJr.",1431,1,"ArenaStage3::OnKilled6";
+	monster "force_4-1.gat",171,108,"デビルチ",1433,1,"ArenaStage3::OnKilled6";
+	monster "force_4-1.gat",171,85,"デビルチ",1433,1,"ArenaStage3::OnKilled6";
+	monster "force_4-1.gat",171,79,"アリス",1521,1,"ArenaStage3::OnKilled6";
+	monster "force_4-1.gat",172,118,"アリス",1521,1,"ArenaStage3::OnKilled6";
+//	monster "force_4-1.gat",175,99,"アリス",1521,1,"ArenaStage3::OnKilled6";
 	sleep 500;
 	announce "アトス: クリア条件 : モンスターを全て退治してください",9;
 	end;
@@ -1895,8 +2077,12 @@ OnKilled6:
 OnSummon7:
 	set 'mob,3;
 	disablenpc "Arena3warp#8";
-	areamonster "force_4-1.gat",162,14,185,37,"オットー",1533,3,"ArenaStage3::OnKilled7";
-	areamonster "force_4-1.gat",162,14,185,37,"半漁人",1451,2;
+	monster "force_4-1.gat",165,27,"オットー",1533,1,"ArenaStage3::OnKilled7";
+	monster "force_4-1.gat",184,23,"オットー",1533,1,"ArenaStage3::OnKilled7";
+	monster "force_4-1.gat",174,19,"オットー",1533,1,"ArenaStage3::OnKilled7";
+//	monster "force_4-1.gat",160,34,"半漁人",1451,1;
+	monster "force_4-1.gat",163,27,"半漁人",1451,1;
+	monster "force_4-1.gat",163,23,"半漁人",1451,1;
 	sleep 500;
 	announce "アトス: クリア条件 : オットーを全て退治してください",9;
 	end;
@@ -1912,11 +2098,12 @@ OnSummon8:
 OnSummon9:
 	set 'mob,1;
 	disablenpc "Arena3warp#10";
-	monster "force_4-1.gat",100,97,"エンシェントマミー",1522,1,"ArenaStage3::OnKilled9";
-	monster "force_4-1.gat",99,97,"アルゴス",1430,1;
-	monster "force_4-1.gat",96,103,"アルゴス",1430,1;
-	monster "force_4-1.gat",90,100,"アルゴス",1430,1;
-	monster "force_4-1.gat",92,100,"アルゴス",1430,1;
+	monster "force_4-1.gat",99,99,"エンシェントマミー",1522,1,"ArenaStage3::OnKilled9";
+	monster "force_4-1.gat",91,99,"アルゴス",1430,1;
+	monster "force_4-1.gat",95,105,"アルゴス",1430,1;
+	monster "force_4-1.gat",122,99,"アルゴス",1430,1;
+	monster "force_4-1.gat",88,107,"アルゴス",1430,1;
+	monster "force_4-1.gat",85,104,"アルゴス",1430,1;
 	sleep 500;
 	announce "アトス: クリア条件 : ボスモンスター、エンシェントマミー出現！エンシェントマミーを倒してください",9;
 	end;
@@ -2105,7 +2292,7 @@ arena_room.gat,158,82,0	script	コンパニオン ロニ	828,{
 	mes "[ロニ]";
 	mes "どーれどれ……";
 	next;
-	if(getareausers("prt_are_in.gat",66,74,81,91)>0 || getmapusers("force_1-2.gat")>0) {
+	if(getareausers("prt_are_in.gat",66,74,81,91) || getmapusers("force_1-2.gat")) {
 		emotion 24;
 		mes "[ロニ]";
 		mes " Y E S - !!";
@@ -2126,7 +2313,659 @@ arena_room.gat,158,82,0	script	コンパニオン ロニ	828,{
 
 arena_room.gat,162,88,2	script	ポノ#arena	124,{
 	end;
+OnInit:
+	waitingroom "パーティー戦[5人制限]",10,"ポノ#arena::OnStart",5,1000,10,99;
+	end;
+OnStart:
+	disablewaitingroomevent;
+	getwaitingpcid getvariableofnpc('id,"コンパニオン#arena");
+	initnpctimer "コンパニオン#arena";
+	warpwaitingpc "prt_are_in.gat",73,78;
+	end;
 }
+
+prt_are_in.gat,76,87,3	script	コンパニオン#arena	67,{
+	if('flag) {
+		mes "[リリー]";
+		mes "他の方が話しかけられましたので";
+		mes "只今、そちらの対応をしております。";
+		mes "そのままお待ち下さい。";
+		mes "但し、1分以上経過してしまった際は、";
+		mes "再度チャットルームからのご入場を";
+		mes "お願いします。";
+		close;
+	}
+	set 'flag,1;
+	mes "[リリー]";
+	mes "こんにちは。";
+	mes "こちらでアリーナ用パーティーを";
+	mes "準備していってください。";
+	next;
+	mes "[リリー]";
+	mes "こちらには1分以上滞在できません。";
+	mes "すぐアリーナに移動しますか？";
+	next;
+	if(select("もうちょっと考える","移動する")==1) {
+		mes "[リリー]";
+		mes "わかりました。";
+		mes "但し、1分以上経過してしまった際は、";
+		mes "再度チャットルームからのご入場を";
+		mes "お願いします。";
+		set 'flag,0;
+		close;
+	}
+	mes "[リリー]";
+	mes "アリーナへ移動します〜。";
+	mes "アリーナ行きワープを開きます。";
+	mes "モンスターとの死闘を生き残り、";
+	mes "その栄光と共にご自分の名前を";
+	mes "歴史に刻み込めるよう";
+	mes "お祈りしております。";
+	close2;
+	stopnpctimer;
+	killmonsterall "force_1-2.gat";
+	for(set '@i,0; '@i<5; set '@i,'@i+1) {
+		if(attachrid('id['@i])) {
+			set '@dummy,getmapxy('@map$,'@x,'@y,0);
+			if(Zeny >= 1000 && '@map$ == "prt_are_in.gat" && '@x >= 66 && '@x <= 81 && '@y >= 74 && '@y <= 91) {
+				set Zeny,Zeny-1000;
+				warp "force_1-2.gat",99,26;
+			}
+		}
+	}
+	areawarp "prt_are_in.gat",66,74,81,91,"arena_room",100,75;
+	set 'flag,0;
+	donpcevent "スルラン#arena::OnStart";
+	end;
+OnTimer60000:
+	stopnpctimer;
+	areawarp "prt_are_in.gat",66,74,81,91,"arena_room",100,75;
+	set 'flag,0;
+	enablewaitingroomevent "ポノ#arena";
+	end;
+}
+prt_are_in.gat,73,74,0	warp	Arena4warp	1,1,arena_room.gat,100,75
+
+force_1-2.gat,99,31,4	script	スルラン#arena	124,{
+	end;
+OnStart:
+	set 'count,10;
+	initnpctimer;
+	sleep 2000;
+	announce "スルラン: こんにちは。タイムアタックバトル、パーティー戦セクション司会者、スルランです！",9;
+	sleep 1000;
+	announce "スルラン: こちらのアリーナでは、モンスターの全滅が目標です。",9;
+	sleep 1000;
+	announce "スルラン: まずは、ここから上・左右どれかの部屋に進んでください。",9;
+	sleep 1000;
+	announce "スルラン: 制限時間は10分です。みなさんの勇姿を期待しております！",9;
+	end;
+OnTimer60000:
+OnTimer120000:
+OnTimer180000:
+OnTimer240000:
+OnTimer300000:
+OnTimer360000:
+OnTimer420000:
+OnTimer480000:
+OnTimer540000:
+OnTimer600000:
+	set 'count,'count-1;
+	if('count)
+		announce "スルラン: 残り時間 : " +'count+ " 分",9;
+	else
+		announce "スルラン: 時間切れです。残念！",9;
+	end;
+OnTimer605000:
+	stopnpctimer;
+	areawarp "force_1-2.gat",0,0,200,200,"prt_are_in.gat",177,140;
+	set getvariableofnpc('flag,"ArenaStage4"),0;
+	enablewaitingroomevent "ポノ#arena";
+	end;
+}
+
+force_1-2.gat,0,0,0	script	ArenaStage4	-1,{
+OnSummon1:
+	if('flag&0x001)
+		end;
+	set 'flag,'flag|0x001;
+	set 'mob1,26;
+	disablenpc "Arena4warp#4";
+	monster "force_1-2.gat",15,35,"ペノメナ",1441,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",35,35,"ペノメナ",1441,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",15,15,"ペノメナ",1441,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",35,15,"ペノメナ",1441,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",15,25,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",17,25,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",19,25,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",21,25,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",15,25,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",17,25,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",19,25,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",21,25,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",15,30,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",17,22,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",19,32,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",21,22,"クロック",1528,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",26,33,"時計塔管理者",1527,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",26,33,"時計塔管理者",1527,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",26,14,"エンシェントワーム",1567,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",30,27,"エンシェントワーム",1567,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",29,25,"エンシェントワーム",1567,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",26,14,"エンシェントワーム",1567,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",33,26,"インキュバス",1580,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",29,28,"インキュバス",1580,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",33,20,"インキュバス",1580,1,"ArenaStage4::OnKilled1";
+	monster "force_1-2.gat",33,30,"インキュバス",1580,1,"ArenaStage4::OnKilled1";
+	end;
+OnKilled1:
+	set 'mob1,'mob1-1;
+	if('mob1)
+		end;
+	set 'flag,'flag|0x002;
+	enablenpc "Arena4warp#4";
+	if('flag == 0x03F) {
+		enablenpc "Arena4warp#7";
+		announce "スルラン: 東の4番目の部屋のドアが開きました！",9;
+	}
+	else
+		announce "スルラン: クリア！東部屋のドアが開きました！",9;
+	end;
+OnSummon2:
+	if('flag&0x004)
+		end;
+	set 'flag,'flag|0x004;
+	set 'mob2,30;
+	disablenpc "Arena4warp#5";
+	monster "force_1-2.gat",163,36,"ペノメナ",1441,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",184,36,"ペノメナ",1441,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",184,16,"ペノメナ",1441,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",163,16,"ペノメナ",1441,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",171,37,"ジョーカー",1437,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",177,37,"ジョーカー",1437,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",184,29,"ジョーカー",1437,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",184,22,"ジョーカー",1437,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",177,16,"ジョーカー",1437,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",170,16,"ジョーカー",1437,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",169,28,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",171,28,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",173,28,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",175,28,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",177,28,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",177,23,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",175,23,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",173,23,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",171,23,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",169,23,"バースリー",1525,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",187,30,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",187,30,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",187,30,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",187,22,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",187,22,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",187,22,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",173,40,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",173,40,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",181,25,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	monster "force_1-2.gat",181,25,"アクラウス",1477,1,"ArenaStage4::OnKilled2";
+	end;
+OnKilled2:
+	set 'mob2,'mob2-1;
+	if('mob2)
+		end;
+	set 'flag,'flag|0x008;
+	enablenpc "Arena4warp#5";
+	if('flag == 0x03F) {
+		enablenpc "Arena4warp#7";
+		announce "スルラン: 東の4番目の部屋のドアが開きました！",9;
+	}
+	else
+		announce "スルラン: クリア！西部屋のドアが開きました！",9;
+	end;
+OnSummon3:
+	if('flag&0x010)
+		end;
+	set 'flag,'flag|0x010;
+	set 'mob3,26;
+	disablenpc "Arena4warp#6";
+	disablenpc "Arena4warp#7";
+	disablenpc "Arena4warp#9";
+	monster "force_1-2.gat",89,81,"半漁人",1451,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",90,81,"半漁人",1451,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",91,81,"半漁人",1451,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",92,81,"半漁人",1451,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",93,81,"半漁人",1451,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",96,85,"ウィンドゴースト",1450,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",98,85,"ウィンドゴースト",1450,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",100,85,"ウィンドゴースト",1450,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",102,85,"ウィンドゴースト",1450,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",104,85,"ウィンドゴースト",1450,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",88,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",90,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",92,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",94,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",96,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",98,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",100,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",102,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",104,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",106,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",108,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",110,79,"デビルチ",1433,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",91,86,"彷徨う者",1490,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",108,86,"彷徨う者",1490,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",91,69,"彷徨う者",1490,1,"ArenaStage4::OnKilled3";
+	monster "force_1-2.gat",108,69,"彷徨う者",1490,1,"ArenaStage4::OnKilled3";
+	end;
+OnKilled3:
+	set 'mob3,'mob3-1;
+	if('mob3)
+		end;
+	set 'flag,'flag|0x020;
+	enablenpc "Arena4warp#6";
+	if('flag == 0x03F) {
+		enablenpc "Arena4warp#7";
+		announce "スルラン: 東の4番目の部屋のドアが開きました！",9;
+	}
+	else
+		announce "スルラン: クリア！南部屋のドアが開きました！",9;
+	end;
+OnSummon4:
+	if('flag&0x040)
+		end;
+	set 'flag,'flag|0x040;
+	set 'mob,22;
+	disablenpc "Arena4warp#8";
+	monster "force_1-2.gat",174,78,"ペノメナ",1441,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",184,78,"ペノメナ",1441,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",184,68,"ペノメナ",1441,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",174,68,"ペノメナ",1441,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",169,87,"ライドワード",1478,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",170,87,"ライドワード",1478,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",171,87,"ライドワード",1478,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",172,87,"ライドワード",1478,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",169,77,"ライドワード",1478,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",170,77,"ライドワード",1478,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",171,77,"ライドワード",1478,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",172,77,"ライドワード",1478,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",183,83,"デッドリーレイス",1566,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",183,80,"デッドリーレイス",1566,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",183,73,"デッドリーレイス",1566,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",183,70,"デッドリーレイス",1566,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",179,77,"デッドリーレイス",1566,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",169,72,"アサルトタートル",1364,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",171,72,"アサルトタートル",1364,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",173,72,"アサルトタートル",1364,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",175,72,"アサルトタートル",1364,1,"ArenaStage4::OnKilled4";
+	monster "force_1-2.gat",177,72,"アサルトタートル",1364,1,"ArenaStage4::OnKilled4";
+	end;
+OnKilled4:
+	set 'mob,'mob-1;
+	if('mob)
+		end;
+	enablenpc "Arena4warp#8";
+	enablenpc "Arena4warp#9";
+	announce "スルラン: 西の部屋をクリアしてください！",9;
+	end;
+OnSummon5:
+	if('flag&0x080)
+		end;
+	set 'flag,'flag|0x080;
+	set 'mob,24;
+	disablenpc "Arena4warp#10";
+	monster "force_1-2.gat",25,68,"ペノメナ",1441,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",36,68,"ペノメナ",1441,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",16,88,"ペノメナ",1441,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",15,78,"ペノメナ",1441,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",33,89,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",29,87,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",25,81,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",25,78,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",25,72,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",29,70,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",21,70,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",19,76,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",19,83,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",23,89,"スティング",1489,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",22,85,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",23,85,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",24,85,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",23,86,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",22,86,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",22,71,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",22,72,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",23,71,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",23,72,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	monster "force_1-2.gat",24,71,"クランプ",1570,1,"ArenaStage4::OnKilled5";
+	end;
+OnKilled5:
+	set 'mob,'mob-1;
+	if('mob)
+		end;
+	enablenpc "Arena4warp#10";
+	announce "スルラン: 北部屋のドアが開きました！",9;
+	end;
+OnSummon6:
+	if('flag&0x100)
+		end;
+	set 'flag,'flag|0x100;
+	set 'mob,22;
+	disablenpc "Arena4warp#11";
+	monster "force_1-2.gat",24,127,"カブキ忍者",1560,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",27,127,"カブキ忍者",1560,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",24,128,"カブキ忍者",1560,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",27,128,"カブキ忍者",1560,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",24,129,"カブキ忍者",1560,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",27,129,"カブキ忍者",1560,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",19,135,"天邪仙人",1531,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",24,135,"天邪仙人",1531,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",28,135,"天邪仙人",1531,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",32,135,"天邪仙人",1531,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,140,"酒天狗",1563,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,136,"酒天狗",1563,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,132,"酒天狗",1563,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,128,"酒天狗",1563,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,124,"酒天狗",1563,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,120,"酒天狗",1563,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,140,"天仙娘々",1564,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,136,"天仙娘々",1564,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,132,"天仙娘々",1564,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,128,"天仙娘々",1564,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,124,"天仙娘々",1564,1,"ArenaStage4::OnKilled6";
+	monster "force_1-2.gat",16,120,"天仙娘々",1564,1,"ArenaStage4::OnKilled6";
+	end;
+OnKilled6:
+	set 'mob,'mob-1;
+	if('mob)
+		end;
+	enablenpc "Arena4warp#11";
+	announce "スルラン: 東部屋のドアが開きました！",9;
+	end;
+OnSummon7:
+	if('flag&0x200)
+		end;
+	set 'flag,'flag|0x200;
+	set 'mob,12;
+	disablenpc "Arena4warp#12";
+	monster "force_1-2.gat",108,140,"キメラ",1456,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",98,122,"エクスキューショナー",1487,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",98,122,"カーリッツバーグ",1438,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",90,119,"カーリッツバーグ",1438,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",104,134,"天下大将軍",1541,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",104,136,"天下大将軍",1541,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",104,137,"天下大将軍",1541,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",104,139,"天下大将軍",1541,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",111,134,"天下大将軍",1541,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",111,136,"天下大将軍",1541,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",111,137,"天下大将軍",1541,1,"ArenaStage4::OnKilled7";
+	monster "force_1-2.gat",111,139,"天下大将軍",1541,1,"ArenaStage4::OnKilled7";
+	end;
+OnKilled7:
+	set 'mob,'mob-1;
+	if('mob)
+		end;
+	enablenpc "Arena4warp#12";
+	announce "スルラン: 北部屋のドアが開きました！",9;
+	end;
+OnSummon8:
+	if('flag&0x400)
+		end;
+	set 'flag,'flag|0x400;
+	set 'mob,35;
+	disablenpc "Arena4warp#13";
+	monster "force_1-2.gat",174,145,"キメラ",1456,1,"ArenaStage4::OnKilled8";
+	monster "force_1-2.gat",174,145,"ゴーストリング",1576,1,"ArenaStage4::OnKilled8";
+	monster "force_1-2.gat",172,154,"ブラッディナイト",1569,1,"ArenaStage4::OnKilled8";
+	areamonster "force_1-2.gat",162,122,184,185,"インジャスティス",1446,5,"ArenaStage4::OnKilled8";
+	areamonster "force_1-2.gat",162,122,184,185,"レイドリックアーチャー",1453,1,"ArenaStage4::OnKilled8";
+	areamonster "force_1-2.gat",162,122,184,185,"ナイトメアテラー",1554,5,"ArenaStage4::OnKilled8";
+	areamonster "force_1-2.gat",162,122,184,185,"エンシェントマミー",1522,6,"ArenaStage4::OnKilled8";
+	areamonster "force_1-2.gat",162,122,184,185,"スケルプリズナー",1479,10,"ArenaStage4::OnKilled8";
+	areamonster "force_1-2.gat",162,122,184,185,"ハンターフライ",1422,5,"ArenaStage4::OnKilled8";
+	end;
+OnKilled8:
+	set 'mob,'mob-1;
+	if('mob)
+		end;
+	enablenpc "Arena4warp#13";
+	announce "スルラン: 西部屋のドアが開きました！",9;
+	end;
+OnSummon9:
+	if('flag&0x800)
+		end;
+	set 'flag,'flag|0x800;
+	set 'mob,15;
+	disablenpc "Arena4warp#14";
+	disablenpc "Arena4warp#16";
+	monster "force_1-2.gat",122,177,"ラーヴァゴーレム",1549,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",112,179,"ラーヴァゴーレム",1549,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",122,178,"アノリアン",1488,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",121,177,"アノリアン",1488,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",122,177,"アノリアン",1488,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",86,180,"エルダー",1573,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",86,176,"エルダー",1573,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",95,183,"エルダー",1573,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",94,175,"エルダー",1573,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",76,178,"エルダー",1573,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",84,179,"エクスプロージョン",1532,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",74,181,"エクスプロージョン",1532,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",73,176,"エクスプロージョン",1532,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",62,178,"エクスプロージョン",1532,1,"ArenaStage4::OnKilled9";
+	monster "force_1-2.gat",68,177,"エクスプロージョン",1532,1,"ArenaStage4::OnKilled9";
+	end;
+OnKilled9:
+	set 'mob,'mob-1;
+	if('mob)
+		end;
+	enablenpc "Arena4warp#14";
+	announce "スルラン: 西部屋のドアが開きました！",9;
+	end;
+OnSummon10:
+	if('flag&0x1000)
+		end;
+	set 'flag,'flag|0x1000;
+	disablenpc "Arena4warp#15";
+	if(rand(2))
+		monster "force_1-2.gat",16,179,"黒蛇王",1529,1,"ArenaStage4::OnKilled10_1";
+	else
+		monster "force_1-2.gat",24,179,"ドラキュラ",1530,1,"ArenaStage4::OnKilled10_1";
+	end;
+OnKilled10_1:
+	set 'mob,6;
+	monster "force_1-2.gat",16,179,"怨霊武士",1542,1,"ArenaStage4::OnKilled10_2";
+	monster "force_1-2.gat",16,179,"カブキ忍者",1560,1,"ArenaStage4::OnKilled10_2";
+	monster "force_1-2.gat",16,179,"カブキ忍者",1560,1,"ArenaStage4::OnKilled10_2";
+	monster "force_1-2.gat",16,179,"カブキ忍者",1560,1,"ArenaStage4::OnKilled10_2";
+	monster "force_1-2.gat",16,179,"カブキ忍者",1560,1,"ArenaStage4::OnKilled10_2";
+	monster "force_1-2.gat",16,179,"カブキ忍者",1560,1,"ArenaStage4::OnKilled10_2";
+	end;
+OnKilled10_2:
+	set 'mob,'mob-1;
+	if('mob)
+		end;
+	set 'time,getnpctimer(0,"スルラン#arena");
+	enablenpc "Arena4warp#15";
+	announce "スルラン: ボスステージをクリア！東出口から脱出してください！",9;
+	end;
+OnSummon11:
+	if('flag&0x2000)
+		end;
+	set 'flag,'flag|0x2000;
+	enablenpc "Arena4warp#16";
+	monster "force_1-2.gat",95,177,"さようなら",1393,1;
+	monster "force_1-2.gat",95,177,"あなたが嫌い",1543,1;
+	monster "force_1-2.gat",95,177,"チョコレートが好き",1472,1;
+	monster "force_1-2.gat",95,177,"あなたは好きですか？",1472,1;
+	monster "force_1-2.gat",95,177,"ごめんなさい",1420,1;
+	monster "force_1-2.gat",95,177,"トリスタン2世",1562,1;
+	monster "force_1-2.gat",95,177,"お腹空いた",1468,1;
+	monster "force_1-2.gat",95,177,"バイバイ",1419,1;
+	monster "force_1-2.gat",95,177,"注意",1394,1;
+	monster "force_1-2.gat",95,177,"セクシーボディ",1578,1;
+	monster "force_1-2.gat",95,177,"プレッシャー",1471,1;
+	monster "force_1-2.gat",95,177,"気楽に",1491,1;
+	monster "force_1-2.gat",95,177,"叩くつもりですか？",1555,1;
+	monster "force_1-2.gat",95,177,"商人",1428,1;
+	monster "force_1-2.gat",95,177,"キムさん",1472,1;
+	monster "force_1-2.gat",95,177,"格闘技",1472,1;
+	monster "force_1-2.gat",95,177,"パートタイマー",1420,1;
+	monster "force_1-2.gat",95,177,"ボス",1562,1;
+	monster "force_1-2.gat",95,177,"古く黄色の箱",1474,1;
+	monster "force_1-2.gat",95,177,"コウモリ",1419,1;
+	monster "force_1-2.gat",95,177,"エキストラ",1394,1;
+	monster "force_1-2.gat",95,177,"ミルク商人",1578,1;
+	monster "force_1-2.gat",95,177,"ダーリン",1471,1;
+	monster "force_1-2.gat",95,177,"鬼",1491,1;
+	monster "force_1-2.gat",95,177,"レイスじゃないよ",1566,1;
+	monster "force_1-2.gat",95,177,"レイスママ",1566,1;
+	monster "force_1-2.gat",95,177,"レイスパパ",1566,1;
+	monster "force_1-2.gat",95,177,"ブック[3]",1478,1;
+	monster "force_1-2.gat",95,177,"交換日記",1478,1;
+	sleep 500;
+	announce "スルラン: モンスターを避けて北出口から脱出してください！",9;
+	end;
+//クリア時の1分タイマー
+OnTimer2000:
+	mapannounce "prt_are_in.gat","タイムアタックパーティ戦に関する案内放送です。",0,0xFFCE00;
+	end;
+OnTimer3000:
+	mapannounce "prt_are_in.gat","円滑な進行のため、クリア後控室の滞在は1分とさせていただいています。",0,0xFFCE00;
+	end;
+OnTimer4000:
+	mapannounce "prt_are_in.gat","アリーナポイントの受け取りは速やかにお済ませください。",0,0xFFCE00;
+	end;
+OnTimer60000:
+	stopnpctimer;
+	areawarp "force_1-2.gat",0,0,200,200,"arena_room",100,75;
+	areawarp "prt_are_in.gat",66,126,81,143,"arena_room",100,75;
+	enablewaitingroomevent "ポノ#arena";
+	set 'flag,0;
+	end;
+}
+
+force_1-2.gat,85,26,0	script	Arena4warp#1	45,1,1,{
+	set '@num,strnpcinfo(2);
+	switch('@num) {
+		case 1: warp "force_1-2.gat",37,26;	donpcevent "ArenaStage4::OnSummon1";	break;
+		case 2: warp "force_1-2.gat",162,26;	donpcevent "ArenaStage4::OnSummon2";	break;
+		case 3: warp "force_1-2.gat",99,66;	donpcevent "ArenaStage4::OnSummon3";	break;
+		case 4: warp "force_1-2.gat",89,26; 	break;
+		case 5: warp "force_1-2.gat",110,26;	break;
+		case 6: warp "force_1-2.gat",99,36; 	break;
+		case 7: warp "force_1-2.gat",162,78;	donpcevent "ArenaStage4::OnSummon4";	break;
+		case 8: warp "force_1-2.gat",110,78; 	break;
+		case 9: warp "force_1-2.gat",37,78;	donpcevent "ArenaStage4::OnSummon5";	break;
+		case 10: warp "force_1-2.gat",26,118;	donpcevent "ArenaStage4::OnSummon6";	break;
+		case 11: warp "force_1-2.gat",91,125;	donpcevent "ArenaStage4::OnSummon7";	break;
+		case 12: warp "force_1-2.gat",173,118;	donpcevent "ArenaStage4::OnSummon8";	break;
+		case 13: warp "force_1-2.gat",133,178;	donpcevent "ArenaStage4::OnSummon9";	break;
+		case 14: warp "force_1-2.gat",29,178;	donpcevent "ArenaStage4::OnSummon10";	break;
+		case 15: warp "force_1-2.gat",59,178;	donpcevent "ArenaStage4::OnSummon11";	break;
+	}
+	//donpcevent "ArenaStage4::OnSummon"+'@num;
+	end;
+}
+
+force_1-2.gat,114,26,0		duplicate(Arena4warp#1)		Arena4warp#2	45,1,1
+force_1-2.gat,99,40,0		duplicate(Arena4warp#1)		Arena4warp#3	45,1,1
+force_1-2.gat,41,26,0		duplicate(Arena4warp#1)		Arena4warp#4	45,1,1
+force_1-2.gat,158,26,0		duplicate(Arena4warp#1)		Arena4warp#5	45,1,1
+force_1-2.gat,99,63,0		duplicate(Arena4warp#1)		Arena4warp#6	45,1,1
+force_1-2.gat,115,78,0		duplicate(Arena4warp#1)		Arena4warp#7	45,1,1
+force_1-2.gat,158,77,0		duplicate(Arena4warp#1)		Arena4warp#8	45,1,1
+force_1-2.gat,84,77,0		duplicate(Arena4warp#1)		Arena4warp#9	45,1,1
+force_1-2.gat,25,93,0		duplicate(Arena4warp#1)		Arena4warp#10	45,1,1
+force_1-2.gat,49,130,0		duplicate(Arena4warp#1)		Arena4warp#11	45,1,1
+force_1-2.gat,107,145,0		duplicate(Arena4warp#1)		Arena4warp#12	45,1,1
+force_1-2.gat,158,178,0		duplicate(Arena4warp#1)		Arena4warp#13	45,1,1
+force_1-2.gat,55,178,0		duplicate(Arena4warp#1)		Arena4warp#14	45,1,1
+force_1-2.gat,33,178,0		duplicate(Arena4warp#1)		Arena4warp#15	45,1,1
+force_1-2.gat,95,187,0	script	Arena4warp#16	45,1,1,{
+	stopnpctimer "スルラン#arena";
+	initnpctimer "ArenaStage4";
+	warp "prt_are_in.gat",74,140;
+	end;
+}
+
+prt_are_in.gat,77,135,3	script	進行要員	67,{
+	mes "[進行要員]";
+	mes "お疲れ様でした。";
+	mes "お名前は……";
+	mes "^3131FF" +strcharinfo(0)+ "^000000様ですね？";
+	mes "^3131FF" +strcharinfo(0)+ "^000000様が";
+	mes "アリーナをクリアするのにかかった";
+	mes "時間は……";
+	next;
+	mes "[進行要員]";
+	set '@time,getvariableofnpc('time,"ArenaStage4");
+	mes '@time/60000+ "分" +'@time%60000/1000+ "秒です！";
+	if('@time <= $ArenaTime[4] || $ArenaTime[4] == 0) {	//パーティ分記録更新
+		next;
+		mes "[進行要員]";
+		mes "ウオオッ!!　新記録ーーー!!";
+		mes "おめでとうございます!!!!";
+		next;
+		mes "[進行要員]";
+		mes "^FF0000タイムアタック";
+		mes "パーティー戦セクション^000000にあなたの";
+		mes "パーティー^3131FF" +strcharinfo(1)+ "^000000を";
+		mes "記録いたします。";
+		next;
+		mes "[進行要員]";
+		mes "アリーナの記録の確認は";
+		mes "アリーナ控室の^3131FFアウェンキープ^000000に";
+		mes "お問い合わせください。";
+		next;
+		mes "[進行要員]";
+		mes "それではアリーナポイントを";
+		mes "支給いたします。新記録達成";
+		mes "ですので、ボーナスポイントも";
+		mes "支給いたします。";
+		next;
+		mes "[進行要員]";
+		mes "それでは、入口にお送りしましょう。";
+		mes "お疲れさまでした〜。またの";
+		mes "お越しをお待ちしております。";
+		close2;
+		set $ArenaName$[4],strcharinfo(1);
+		set $ArenaTime[4],'@time;
+		set ARENA_PIT,ARENA_PIT+100;
+	}
+	else {
+		mes "おめでとうございます!!";
+		next;
+		mes "[進行要員]";
+		mes "現在、タイムアタック";
+		mes "パーティー戦セクションを一番早く";
+		mes "クリアしたパーティーは……";
+		mes "^3131FF" +$ArenaName$[4]+ "^000000様です。";
+		next;
+		mes "[進行要員]";
+		mes "^3131FF" +$ArenaName$[4]+ "^000000様の";
+		mes "タイムは^3131FF" +$ArenaTime[4]/60000+ "^000000分^3131FF" +$ArenaTime[4]%60000/1000+ "^000000秒です。";
+		next;
+		mes "[進行要員]";
+		mes "記録更新は成せませんでしたが、";
+		mes "次の機会には是非成功させてください。";
+		next;
+		mes "[進行要員]";
+		mes "それでは、アリーナポイントを";
+		mes "支給いたします。";
+		mes "アリーナポイントの確認は";
+		mes "アリーナ控室の^3131FFベンデゴス^000000に";
+		mes "お問い合わせください。";
+		next;
+		mes "[進行要員]";
+		mes "それでは、入口にお送りしましょう。";
+		mes "お疲れさまでした〜。またの";
+		mes "お越しをお待ちしております。";
+		close2;
+		set ARENA_PIT,ARENA_PIT+40;
+	}
+	warp "arena_room",100,75;
+	end;
+}
+
+prt_are_in.gat,181,135,3	duplicate(進行要員#arenafailed)	進行要員	67
 
 
 //==============================================================================

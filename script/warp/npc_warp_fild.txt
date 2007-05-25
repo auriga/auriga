@@ -1187,87 +1187,91 @@ ein_fild05.gat,376,183,0	warp	hugelwarp5029	1,1,ein_fild06.gat,47,166
 ein_fild06.gat,42,171,0		warp	hugelwarp5030	1,1,ein_fild05.gat,371,183
 
 //==============================================================
-//オーディン神殿
-odin_tem01.gat,383,333,0	warp	odinwarp5001	1,1,odin_tem02.gat,25,333
-odin_tem02.gat,21,333,0		warp	odinwarp5002	1,1,odin_tem01.gat,379,333
-odin_tem01.gat,377,180,0	warp	odinwarp5003	1,1,odin_tem02.gat,25,180
-odin_tem02.gat,21,180,0		warp	odinwarp5004	1,1,odin_tem01.gat,373,180
-odin_tem02.gat,264,373,0	warp	odinwarp5005	1,1,odin_tem03.gat,248,38
-odin_tem03.gat,248,34,0		warp	odinwarp5006	1,1,odin_tem02.gat,264,367
-odin_tem02.gat,153,349,0	warp	odinwarp5007	1,1,odin_tem03.gat,120,53
-odin_tem03.gat,122,49,0		warp	odinwarp5008	1,1,odin_tem02.gat,154,345
+//オーディン神殿01⇔オーディン神殿02
+odin_tem01.gat,377,182,0	warp	odinwarp5001	1,1,odin_tem02.gat,28,180
+odin_tem02.gat,21,180,0		warp	odinwarp5002	1,1,odin_tem01.gat,373,182
+odin_tem01.gat,383,334,0	warp	odinwarp5003	1,1,odin_tem02.gat,27,334
+odin_tem02.gat,21,334,0		warp	odinwarp5004	1,1,odin_tem01.gat,379,334
+//オーディン神殿02⇔オーディン神殿03
+odin_tem02.gat,153,349,0	warp	odinwarp5005	1,1,odin_tem03.gat,120,54
+odin_tem03.gat,121,49,0		warp	odinwarp5006	1,1,odin_tem02.gat,154,345
+odin_tem02.gat,261,377,0	warp	odinwarp5007	1,1,odin_tem03.gat,247,40
+odin_tem03.gat,247,34,0		warp	odinwarp5008	1,1,odin_tem02.gat,263,372
 
 
 
-//---アルナペルツ追加マップ
+//---ラヘル追加マップ
 
 
 //==============================================================
-// -----  アルナペルツ -----
-// rachel.gat	アルナペルツ教国の首都ラッセル
-// ra_fild01.gat	ラッセルフィールド
-// ra_fild02.gat	ラッセルフィールド
-// ra_fild03.gat	ラッセルフィールド
-// ra_fild04.gat	ラッセルフィールド
-// ra_fild05.gat	ラッセルフィールド
-// ra_fild06.gat	ラッセルフィールド
-// ra_fild07.gat	ラッセルフィールド
-// ra_fild08.gat	ラッセルフィールド
-// ra_fild09.gat	ラッセルフィールド
-// ra_fild10.gat	ラッセルフィールド
-// ra_fild11.gat	ラッセルフィールド
-// ra_fild12.gat	ラッセルフィールド
-// ra_fild13.gat	ラッセルフィールド
+// -----  ラヘル -----
+// rachel.gat		アルナベルツ教国首都 ラヘル
+// ra_fild01.gat	アウドムラ草原
+// ra_fild02.gat	オズ狭谷
+// ra_fild03.gat	イダ平原
+// ra_fild04.gat	アウドムラ草原
+// ra_fild05.gat	アウドムラ草原
+// ra_fild06.gat	ポルトルナ
+// ra_fild07.gat	オズ狭谷
+// ra_fild08.gat	イダ平原
+// ra_fild09.gat	アウドムラ草原
+// ra_fild10.gat	オズ狭谷
+// ra_fild11.gat	イダ平原
+// ra_fild12.gat	イダ平原
+// ra_fild13.gat	涙の海岸
+// lhz_fild01.gat	リヒタルゼンフィールド
 // -----
-// ice_dun01.gat	アイスキューブダンジョン
+// ice_dun01.gat	氷の洞窟
 //==============================================================
-//ラッセルフィールド12⇒アルナペルツ教国の首都ラッセル
-ra_fild12.gat,35,225,0	warp	rachelwarp0101	1,2,rachel.gat,272,125
-//ラッセルフィールド11⇒アルナペルツ教国の首都ラッセル
-ra_fild11.gat,361,225,0	warp	rachelwarp0102	1,2,rachel.gat,27,125
+//ラヘルフィールド 11⇒アルナベルツ教国首都 ラヘル
+ra_fild11.gat,360,226,0		warp	rachelwarp0101	1,1,rachel.gat,30,125
+//ラヘルフィールド 12⇒アルナベルツ教国首都 ラヘル
+ra_fild12.gat,36,225,0		warp	rachelwarp0102	1,1,rachel.gat,270,125
 
-//ラッセルフィールド01⇒アイスキューブダンジョン
-ra_fild01.gat,233,334,0	warp	rachelwarp0401	3,1,ice_dun01.gat,158,11
+//ラヘルフィールド 01⇒氷の洞窟 01
+ra_fild01.gat,233,333,0		warp	rachelwarp0401	1,1,ice_dun01.gat,157,15
 
-//リヒタルゼンフィールド01⇔ラッセルフィールド06
-lhz_fild01.gat,295,383,0	warp	rachelwarp5001	4,1,ra_fild06.gat,296,23
-ra_fild06.gat,296,21,0	warp	rachelwarp5002	6,1,lhz_fild01.gat,295,381
-//ラッセルフィールド01⇔ラッセルフィールド04
-ra_fild01.gat,306,38,0	warp	rachelwarp5003	4,1,ra_fild04.gat,324,378
-ra_fild04.gat,324,379,0	warp	rachelwarp5004	15,1,ra_fild01.gat,306,40
-//ラッセルフィールド03⇔ラッセルフィールド04
-ra_fild04.gat,22,176,0	warp	rachelwarp5005	1,15,ra_fild03.gat,373,172
-ra_fild03.gat,375,172,0	warp	rachelwarp5006	1,10,ra_fild04.gat,24,176
-//ラッセルフィールド04⇔ラッセルフィールド05
-ra_fild04.gat,363,350,0	warp	rachelwarp5007	1,15,ra_fild05.gat,34,357
-ra_fild05.gat,32,357,0	warp	rachelwarp5008	1,15,ra_fild04.gat,361,350
-//ラッセルフィールド04⇔ラッセルフィールド08
-ra_fild04.gat,264,53,0	warp	rachelwarp5009	1,1,ra_fild08.gat,291,369
-ra_fild08.gat,291,371,0	warp	rachelwarp5010	1,1,ra_fild04.gat,264,55
-//ラッセルフィールド05⇔ラッセルフィールド06
-ra_fild05.gat,349,275,0	warp	rachelwarp5011	1,10,ra_fild06.gat,20,278
-ra_fild06.gat,18,278,0	warp	rachelwarp5012	1,10,ra_fild05.gat,347,275
-//ラッセルフィールド05⇔ラッセルフィールド09
-ra_fild05.gat,25,13,0	warp	rachelwarp5013	1,1,ra_fild09.gat,30,342
-ra_fild09.gat,30,344,0	warp	rachelwarp5014	2,1,ra_fild05.gat,27,13
-//ラッセルフィールド08⇔ラッセルフィールド09
-ra_fild08.gat,369,234,0	warp	rachelwarp5015	1,6,ra_fild09.gat,28,234
-ra_fild09.gat,26,234,0	warp	rachelwarp5016	1,7,ra_fild08.gat,367,234
-//ラッセルフィールド08⇔ラッセルフィールド12
-ra_fild08.gat,162,28,0	warp	rachelwarp5017	10,1,ra_fild12.gat,153,373
-ra_fild12.gat,153,375,0	warp	rachelwarp5018	10,1,ra_fild08.gat,162,30
-//ラッセルフィールド02⇔ラッセルフィールド03
-ra_fild02.gat,373,276,0	warp	rachelwarp5019	1,1,ra_fild03.gat,24,293
-ra_fild03.gat,22,293,0	warp	rachelwarp5020	1,10,ra_fild02.gat,371,274
-//ラッセルフィールド02⇔ラッセルフィールド07
-ra_fild02.gat,168,35,0	warp	rachelwarp5021	5,1,ra_fild07.gat,165,354
-ra_fild07.gat,165,356,0	warp	rachelwarp5022	10,1,ra_fild02.gat,168,37
-//ラッセルフィールド07⇔ラッセルフィールド11
-ra_fild07.gat,215,26,0	warp	rachelwarp5023	15,1,ra_fild11.gat,202,334
-ra_fild11.gat,202,336,0	warp	rachelwarp5024	10,1,ra_fild07.gat,215,28
-//ラッセルフィールド10⇔ラッセルフィールド11
-ra_fild10.gat,385,294,0	warp	rachelwarp5025	1,15,ra_fild11.gat,22,291
-ra_fild11.gat,20,291,0	warp	rachelwarp5026	1,15,ra_fild10.gat,383,294
-//ラッセルフィールド12⇔ラッセルフィールド13
-ra_fild12.gat,305,26,0	warp	rachelwarp5027	10,1,ra_fild13.gat,295,345
-ra_fild13.gat,295,347,0	warp	rachelwarp5028	4,1,ra_fild12.gat,305,28
+//ラヘルフィールド 01⇔ラヘルフィールド 04
+ra_fild01.gat,306,38,0		warp	rachelwarp5001	1,1,ra_fild04.gat,322,371
+ra_fild04.gat,322,378,0		warp	rachelwarp5002	1,1,ra_fild01.gat,306,43
+//ラヘルフィールド 02⇔ラヘルフィールド 03
+ra_fild02.gat,373,275,0		warp	rachelwarp5003	1,1,ra_fild03.gat,28,294
+ra_fild03.gat,23,294,0		warp	rachelwarp5004	1,1,ra_fild02.gat,367,270
+//ラヘルフィールド 02⇔ラヘルフィールド 07
+ra_fild02.gat,168,36,0		warp	rachelwarp5005	1,1,ra_fild07.gat,168,349
+ra_fild07.gat,168,353,0		warp	rachelwarp5006	1,1,ra_fild02.gat,171,45
+//ラヘルフィールド 03⇔ラヘルフィールド 04
+ra_fild03.gat,374,168,0		warp	rachelwarp5007	1,1,ra_fild04.gat,29,176
+ra_fild04.gat,23,176,0		warp	rachelwarp5008	1,1,ra_fild03.gat,370,172
+//ラヘルフィールド 04⇔ラヘルフィールド 05
+ra_fild04.gat,362,351,0		warp	rachelwarp5009	1,1,ra_fild05.gat,39,353
+ra_fild05.gat,33,353,0		warp	rachelwarp5010	1,1,ra_fild04.gat,356,351
+//ラヘルフィールド 04⇔ラヘルフィールド 08
+ra_fild04.gat,263,54,0		warp	rachelwarp5011	1,1,ra_fild08.gat,287,365
+ra_fild08.gat,287,370,0		warp	rachelwarp5012	1,1,ra_fild04.gat,263,60
+//ラヘルフィールド 05⇔ラヘルフィールド 06
+ra_fild05.gat,348,274,0		warp	rachelwarp5013	1,1,ra_fild06.gat,24,277
+ra_fild06.gat,19,277,0		warp	rachelwarp5014	1,1,ra_fild05.gat,341,273
+//ラヘルフィールド 05⇔ラヘルフィールド 09
+ra_fild05.gat,27,13,0		warp	rachelwarp5015	1,1,ra_fild09.gat,30,337
+ra_fild09.gat,29,343,0		warp	rachelwarp5016	1,1,ra_fild05.gat,31,17
+//ラヘルフィールド 06⇔リヒタルゼンフィールド 01
+ra_fild06.gat,294,21,0		warp	rachelwarp5017	1,1,lhz_fild01.gat,296,376
+lhz_fild01.gat,296,382,0	warp	rachelwarp5018	1,1,ra_fild06.gat,298,25
+//ラヘルフィールド 07⇔ラヘルフィールド 11
+ra_fild07.gat,215,27,0		warp	rachelwarp5019	1,1,ra_fild11.gat,201,329
+ra_fild11.gat,202,335,0		warp	rachelwarp5020	1,1,ra_fild07.gat,215,32
+//ラヘルフィールド 08⇔ラヘルフィールド 09
+ra_fild08.gat,368,234,0		warp	rachelwarp5021	1,1,ra_fild09,35,238
+ra_fild09.gat,27,238,0		warp	rachelwarp5022	1,1,ra_fild08,360,234
+//ラヘルフィールド 08⇔ラヘルフィールド 12
+ra_fild08.gat,165,29,0		warp	rachelwarp5023	1,1,ra_fild12.gat,149,369
+ra_fild12.gat,149,374,0		warp	rachelwarp5024	1,1,ra_fild08.gat,165,36
+//ラヘルフィールド 10⇔ラヘルフィールド 11
+ra_fild10.gat,384,287,0		warp	rachelwarp5025	1,1,ra_fild11.gat,28,290
+ra_fild11.gat,21,290,0		warp	rachelwarp5026	1,1,ra_fild10.gat,379,283
+//ラヘルフィールド 12⇔ラヘルフィールド 13
+ra_fild12.gat,303,27,0		warp	rachelwarp5027	1,1,ra_fild13.gat,295,341
+ra_fild13.gat,295,346,0		warp	rachelwarp5028	1,1,ra_fild12.gat,303,33
+
+

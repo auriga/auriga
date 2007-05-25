@@ -398,48 +398,77 @@ airplane.gat,72,34,6	script	アノース	702,{
 }
 
 airplane.gat,71,91,6	script	ウンバラの男性	789,{
+	if(UM_1QUE < 3) {
+		mes "[お父さん]";
+		mes "ウムババ、フムババ。";
+		next;
+		emotion 32;
+		mes "[お父さん]";
+		mes "ウムバ、ウバフムバ、ウムババ。";
+		mes "ウババ、ウムババ、フムババ、";
+		mes "ウムバ、フムバウムバ、ウムバ。";
+		close;
+	}
 	mes "[お父さん]";
-	mes "ウムババ、フムババ。";
+	mes "これが飛行船か。";
 	next;
 	emotion 32;
 	mes "[お父さん]";
-	mes "ウムバ、ウバフムバ、ウムババ。";
-	mes "ウババ、ウムババ、フムババ、";
-	mes "ウムバ、フムバウムバ、ウムバ。";
+	mes "実は、飛行船の乗務員たちは、";
+	mes "高所恐怖症を克服するのに、";
+	mes "ウンバラで訓練するのです。";
+	mes "中には、高所恐怖症を克服できず、";
+	mes "死者の街へ行ってしまった人も";
+	mes "いるとか、いないとか。";
 	close;
 }
 
 airplane.gat,66,93,2	script	ウンバラの女性	783,{
+	if(UM_1QUE < 3) {
+		emotion 9;
+		mes "[お母さん]";
+		mes "ウムバウムバ……";
+		mes "ウムウムバ、ウムバフムバ、ウムババ？";
+		mes "ウムバ、ウムバババ。ウムバウムバ。";
+		close;
+	}
 	emotion 9;
 	mes "[お母さん]";
-	mes "ウムバウムバ……";
-	mes "ウムウムバ、ウムバフムバ、ウムババ？";
-	mes "ウムバ、ウムバババ。ウムバウムバ。";
+	mes "この子ったら……";
+	mes "少しは静かにできないの？";
+	mes "人がいる所で騒いだらダメでしょう。";
 	close;
 }
 
 airplane.gat,64,94,0	script	ウンバラの子供	787,{
+	if(UM_1QUE < 3) {
+		emotion 19;
+		mes "[子供]";
+		mes "ウムバウムバ!!";
+		mes "ウムババ、ウムバウムバ、";
+		mes "フムバ!!!";
+		close;
+	}
 	emotion 19;
 	mes "[子供]";
-	mes "ウムバウムバ!!";
-	mes "ウムババ、ウムバウムバ、";
-	mes "フムバ!!!";
+	mes "ウワー、ママ、見て見て！";
+	mes "空を飛んでるよー!!!!";
 	close;
 }
 
 airplane.gat,0,0,0	script	airplane	-1,{
 OnInit:
-	hideonnpc "airplanewarp#ein1";
-	hideonnpc "airplanewarp#ein2";
-	hideonnpc "airplanewarp#lhz1";
-	hideonnpc "airplanewarp#lhz2";
-	hideonnpc "airplanewarp#hu1";
-	hideonnpc "airplanewarp#hu2";
+	disablenpc "airplanewarp#ein1";
+	disablenpc "airplanewarp#ein2";
+	disablenpc "airplanewarp#lhz1";
+	disablenpc "airplanewarp#lhz2";
+	disablenpc "airplanewarp#hu1";
+	disablenpc "airplanewarp#hu2";
 	initnpctimer;
 	end;
 OnTimer1000:
-	hideonnpc "airplanewarp#yuno1";
-	hideonnpc "airplanewarp#yuno2";
+	disablenpc "airplanewarp#yuno1";
+	disablenpc "airplanewarp#yuno2";
 	announce "当船は離陸します。次の目的地はアインブロックです。",9,0x00FF00;
 	end;
 OnTimer16000:
@@ -449,16 +478,16 @@ OnTimer31000:
 	announce "まもなく、アインブロックに着陸いたします。",9,0x00FF00;
 	end;
 OnTimer41000:
-	hideoffnpc "airplanewarp#ein1";
-	hideoffnpc "airplanewarp#ein2";
+	enablenpc "airplanewarp#ein1";
+	enablenpc "airplanewarp#ein2";
 	announce "アインブロックに到着しました。またのご利用をお待ちしております。",9,0x00FF00;
 	end;
 OnTimer51000:
 	announce "現在、アインブロックに停船中です。出発まで、しばらくお待ちください。",9,0x00FF00;
 	end;
 OnTimer61000:
-	hideonnpc "airplanewarp#ein1";
-	hideonnpc "airplanewarp#ein2";
+	disablenpc "airplanewarp#ein1";
+	disablenpc "airplanewarp#ein2";
 	announce "飛行船、離陸します。次の目的地はリヒタルゼンです。",9,0x73DEDE;
 	end;
 OnTimer76000:
@@ -468,16 +497,16 @@ OnTimer91000:
 	announce "まもなく、リヒタルゼンに着陸いたします。",9,0x73DEDE;
 	end;
 OnTimer101000:
-	hideoffnpc "airplanewarp#lhz1";
-	hideoffnpc "airplanewarp#lhz2";
+	enablenpc "airplanewarp#lhz1";
+	enablenpc "airplanewarp#lhz2";
 	announce "リヒタルゼンに到着しました。またのご利用をお待ちしております。",9,0x73DEDE;
 	end;
 OnTimer111000:
 	announce "現在、リヒタルゼンに停船中です。出発まで、しばらくお待ちください。",9,0x73DEDE;
 	end;
 OnTimer121000:
-	hideonnpc "airplanewarp#lhz1";
-	hideonnpc "airplanewarp#lhz2";
+	disablenpc "airplanewarp#lhz1";
+	disablenpc "airplanewarp#lhz2";
 	announce "当船は離陸します。次の目的地はアインブロックです。",9,0x00FF00;
 	end;
 OnTimer136000:
@@ -487,16 +516,16 @@ OnTimer151000:
 	announce "まもなく、アインブロックに着陸いたします。",9,0x00FF00;
 	end;
 OnTimer161000:
-	hideoffnpc "airplanewarp#ein1";
-	hideoffnpc "airplanewarp#ein2";
+	enablenpc "airplanewarp#ein1";
+	enablenpc "airplanewarp#ein2";
 	announce "アインブロックに到着しました。またのご利用をお待ちしております。",9,0x00FF00;
 	end;
 OnTimer171000:
 	announce "現在、アインブロックに停船中です。出発まで、しばらくお待ちください。",9,0x00FF00;
 	end;
 OnTimer181000:
-	hideonnpc "airplanewarp#ein1";
-	hideonnpc "airplanewarp#ein2";
+	disablenpc "airplanewarp#ein1";
+	disablenpc "airplanewarp#ein2";
 	announce "当船は離陸します。次の目的地はジュノーです。",9,0xFF8400;
 	end;
 OnTimer196000:
@@ -506,16 +535,16 @@ OnTimer211000:
 	announce "まもなく、ジュノーに着陸いたします。",9,0xFF8400;
 	end;
 OnTimer221000:
-	hideoffnpc "airplanewarp#yuno1";
-	hideoffnpc "airplanewarp#yuno2";
+	enablenpc "airplanewarp#yuno1";
+	enablenpc "airplanewarp#yuno2";
 	announce "ジュノーに到着しました。またのご利用をお待ちしております。",9,0xFF8400;
 	end;
 OnTimer231000:
 	announce "現在、ジュノーに停船中です。出発まで、しばらくお待ちください。",9,0xFF8400;
 	end;
 OnTimer241000:
-	hideonnpc "airplanewarp#yuno1";
-	hideonnpc "airplanewarp#yuno2";
+	disablenpc "airplanewarp#yuno1";
+	disablenpc "airplanewarp#yuno2";
 	announce "飛行船、離陸します。次の目的地はフィゲルです。",9,0xCE4AF7;
 	end;
 OnTimer256000:
@@ -525,16 +554,16 @@ OnTimer271000:
 	announce "まもなく、フィゲルに着陸いたします。",9,0xCE4AF7;
 	end;
 OnTimer281000:
-	hideoffnpc "airplanewarp#hu1";
-	hideoffnpc "airplanewarp#hu2";
+	enablenpc "airplanewarp#hu1";
+	enablenpc "airplanewarp#hu2";
 	announce "フィゲルに到着しました。またのご利用をお待ちしております。",9,0xCE4AF7;
 	end;
 OnTimer291000:
 	announce "現在、フィゲルに停船中です。出発まで、しばらくお待ちください。",9,0xCE4AF7;
 	end;
 OnTimer301000:
-	hideonnpc "airplanewarp#hu1";
-	hideonnpc "airplanewarp#hu2";
+	disablenpc "airplanewarp#hu1";
+	disablenpc "airplanewarp#hu2";
 	announce "当船は離陸します。次の目的地はジュノーです。",9,0xFF8400;
 	end;
 OnTimer316000:
@@ -544,8 +573,8 @@ OnTimer331000:
 	announce "まもなく、ジュノーに着陸いたします。",9,0xFF8400;
 	end;
 OnTimer341000:
-	hideoffnpc "airplanewarp#yuno1";
-	hideoffnpc "airplanewarp#yuno2";
+	enablenpc "airplanewarp#yuno1";
+	enablenpc "airplanewarp#yuno2";
 	announce "ジュノーに到着しました。またのご利用をお待ちしております。",9,0xFF8400;
 	end;
 OnTimer351000:
@@ -702,199 +731,38 @@ airplane_01.gat,71,31,2	script	剣士	106,{
 
 airplane_01.gat,0,0,0	script	airplane_01	-1,{
 OnInit:
-	hideonnpc "airplanewarp#iz1";
-	hideonnpc "airplanewarp#iz2";
+	disablenpc "airplanewarp#iz1";
+	disablenpc "airplanewarp#iz2";
+	set 'count,12;
 	initnpctimer;
 	end;
 OnTimer1000:
-	hideonnpc "airplanewarp#yuno1_";
-	hideonnpc "airplanewarp#yuno2_";
+	disablenpc "airplanewarp#yuno1_";
+	disablenpc "airplanewarp#yuno2_";
 	announce "当船は離陸します。次の目的地はイズルードです。",9,0x00FF00;
 	end;
 OnTimer26000:
 	announce "当船は現在、イズルードに向かっております。",9,0x00FF00;
 	end;
-OnTimer41000:
-	if(rand(10) == 0) {
-		stopnpctimer;
-		announce "観測兵：うん……うわ〜っ!! 変なものが近づいてきてる?!",9,0x00FF00;
-		sleep 5000;
-		announce "案内放送：乗客の皆様、現在、正体不明のモンスター達が当船に向っております!!",9,0x00FF00;
-		sleep 5000;
-		announce "案内放送：甲板にいらっしゃる方々は、至急、中へ非難してください。",9,0x00FF00;
-		hideonnpc "飛行船案内員#AirEvent";
-		sleep 10000;
-		areamonster "airplane_01.gat",222,36,252,67,"ファミリアー",1005,1,"Airplane#AirEvent1";
-		areamonster "airplane_01.gat",222,36,252,67,"ファミリアー",1005,1,"Airplane#AirEvent2";
-		areamonster "airplane_01.gat",222,36,252,67,"スチールチョンチョン",1042,1,"Airplane#AirEvent1";
-		areamonster "airplane_01.gat",222,36,252,67,"スチールチョンチョン",1042,1,"Airplane#AirEvent2";
-		areamonster "airplane_01.gat",222,36,252,67,"ピッキ",1049,1,"Airplane#AirEvent1";
-		areamonster "airplane_01.gat",222,36,252,67,"ピッキ",1049,1,"Airplane#AirEvent2";
-		areamonster "airplane_01.gat",222,36,252,67,"ロータージャイロ",1392,2,"Airplane#AirEvent1";
-		areamonster "airplane_01.gat",222,36,252,67,"ロータージャイロ",1392,2,"Airplane#AirEvent2";
-		areamonster "airplane_01.gat",222,36,252,67,"グレムリン",1632,5,"Airplane#AirEvent1";
-		areamonster "airplane_01.gat",222,36,252,67,"グレムリン",1632,5,"Airplane#AirEvent3";
-		areamonster "airplane_01.gat",222,36,252,67,"ビホルダー",1633,5,"Airplane#AirEvent1";
-		areamonster "airplane_01.gat",222,36,252,67,"ビホルダー",1633,5,"Airplane#AirEvent3";
-		sleep 5000;
-		announce "ペルロック船長：何だと?!　奴らめ〜、ただじゃおかねぇ〜!!　この俺様が直接……！",9,0x73DEDE;
-		sleep 5000;
-		hideoffnpc "飛行船船長#AirEvent";
-		sleep 5000;
-		announce "ペルロック船長：こいつらめ〜!!　引きずり下ろすことができねぇーっ!!",9,0x73DEDE;
-		emotion 7,"飛行船船長#AirEvent";
-		sleep 5000;
-		announce "-ギイギイーッ……グルルゥーッ、ギイギイギィーッ、グアァーッ!!-",9,0x00FF00;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		announce "機関士：うわ〜っ!!　1番の後方エンジンがっ……！",9,0x00FF00;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		announce "操縦士：老人と女性、子供を先に安全な場所へ！　急げ!!",9,0x00FF00;
-		sleep 5000;
-		announce "ペルロック船長：ぬぅ〜っ！　実力行使しかなさそうだな……。",9,0x73DEDE;
-		emotion 6,"飛行船船長#AirEvent";
-		sleep 5000;
-		announce "ペルロック船長：俺様の船で暴れるとどうなるか、思い知らせてやるっ!!",9,0x73DEDE;
-		sleep 5000;
-		announce "ペルロック船長：特製のエクソダスジョーカーⅩⅢ、このとっておきのライフルでケリをつけてやるっ!!",9,0x73DEDE;
-		emotion 32,"飛行船船長#AirEvent";
-		sleep 5000;
-		announce "シュッ!!　パンパン！　パンパン！　ズドンズドンズドンッ!!",9,0x00FF00;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		killmonster "airplane_01.gat","Airplane#AirEvent2";
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		announce "ペルロック船長：グハハハッ！　これでどうだ?!",9,0x73DEDE;
-		sleep 5000;
-		announce "シュッ!!　パンパン！　パンパン！　ズドンズドンズドンッ!!",9,0x00FF00;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		killmonster "airplane_01.gat","Airplane#AirEvent3";
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		sleep 500;
-		misceffect 5,"飛行船船長#AirEvent";
-		misceffect 183,"Effect#AirEvent"+rand(1,11);
-		announce "機関士：うわ〜っ!!　1番の後方エンジンがっ……！",9,0x00FF00;
-		sleep 5000;
-		announce "ペルロック船長：なぬ?!　あいつら、またエンジンを壊しやがった?!",9,0x73DEDE;
-		sleep 5000;
-		announce "ペルロック船長：操縦士：あ、あの……エンジンが壊れたのは、船長のライフルのせいかと……。",9,0x00FF00;
-		sleep 5000;
-		announce "ペルロック船長：んあ？　それは……まあ〜、誰しも間違いはあるだろ！　フハハハハッ！",9,0x73DEDE;
-		emotion 4,"飛行船船長#AirEvent";
-		sleep 5000;
-		announce "ペルロック船長：とにかく、後のことはお前達に任せた……。ハハハハーッ！",9,0x73DEDE;
-		emotion 17,"飛行船船長#AirEvent";
-		sleep 5000;
-		hideonnpc "飛行船船長#AirEvent";
-		sleep 240000;
-		killmonster "airplane_01.gat","Airplane#AirEvent1";
-		sleep 5000;
-		announce "案内放送：モンスター達は、全ていなくなったようです。では、再び通常運行に戻ります。",9,0x00FF00;
-		hideoffnpc "飛行船案内員#AirEvent";
-		startnpctimer;
-	}
+OnTimer31000:
+	if('count == 0 && rand(3) == 0)
+		callsub L_Attack;
+	set 'count,12;
 	end;
 OnTimer51000:
 	announce "まもなく、イズルードに着陸いたします。",9,0x00FF00;
 	end;
 OnTimer61000:
-	hideoffnpc "airplanewarp#iz1";
-	hideoffnpc "airplanewarp#iz2";
+	enablenpc "airplanewarp#iz1";
+	enablenpc "airplanewarp#iz2";
 	announce "イズルードに到着しました。またのご利用をお待ちしております。",9,0x00FF00;
 	end;
 OnTimer71000:
 	announce "現在、イズルードに停船中です。出発まで、しばらくお待ちください。",9,0x00FF00;
 	end;
 OnTimer81000:
-	hideonnpc "airplanewarp#iz1";
-	hideonnpc "airplanewarp#iz2";
+	disablenpc "airplanewarp#iz1";
+	disablenpc "airplanewarp#iz2";
 	announce "当船は離陸します。次の目的地はジュノーです。",9,0x73DEDE;
 	end;
 OnTimer106000:
@@ -904,16 +772,218 @@ OnTimer131000:
 	announce "まもなく、ジュノーに着陸いたします。",9,0x73DEDE;
 	end;
 OnTimer141000:
-	hideoffnpc "airplanewarp#yuno1_";
-	hideoffnpc "airplanewarp#yuno2_";
+	enablenpc "airplanewarp#yuno1_";
+	enablenpc "airplanewarp#yuno2_";
 	announce "ジュノーに到着しました。またのご利用をお待ちしております。",9,0x73DEDE;
 	end;
 OnTimer151000:
 	announce "現在、ジュノーに停船中です。出発まで、しばらくお待ちください。",9,0x73DEDE;
 	end;
 OnTimer160000:
+	set 'count,'count-1;
 	initnpctimer;
 	end;
+L_Attack:
+	stopnpctimer;
+	announce "観測兵：うん……うわ〜っ!! 変なものが近づいてきてる?!",9,0x00FF00;
+	sleep 4000;
+	announce "案内放送：乗客の皆様、現在、正体不明のモンスター達が当船に向っております!!",9,0x00FF00;
+	sleep 4000;
+	announce "案内放送：甲板にいらっしゃる方々は、至急、中へ非難してください。",9,0x00FF00;
+	hideonnpc "飛行船案内員#AirEvent";
+	sleep 10000;
+	monster "airplane_01.gat",245,57,"グレムリン",1632,1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",247,59,"グレムリン",1632,1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",249,52,"グレムリン",1632,1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",243,62,"グレムリン",1632,1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",239,52,"ビホルダー",1633,1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",234,56,"ビホルダー",1633,1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",227,49,"ビホルダー",1633,1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",233,41,"ビホルダー",1633,1,"Airplane#AirEvent1";
+	setarray '@mobid,1111,1392,1005,1049,1042;
+	monster "airplane_01.gat",251,47,"--ja--",'@mobid[rand(5)],1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",245,53,"--ja--",'@mobid[rand(5)],1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",234,46,"--ja--",'@mobid[rand(5)],1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",233,58,"--ja--",'@mobid[rand(5)],1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",243,60,"--ja--",'@mobid[rand(5)],1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",228,54,"--ja--",'@mobid[rand(5)],1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",232,41,"--ja--",'@mobid[rand(5)],1,"Airplane#AirEvent1";
+	monster "airplane_01.gat",238,56,"グレムリン",1632,1,"Airplane#AirEvent2";
+	monster "airplane_01.gat",239,56,"グレムリン",1632,1,"Airplane#AirEvent2";
+	monster "airplane_01.gat",240,50,"グレムリン",1632,1,"Airplane#AirEvent2";
+	monster "airplane_01.gat",241,56,"グレムリン",1632,1,"Airplane#AirEvent2";
+	monster "airplane_01.gat",247,51,"グレムリン",1632,1,"Airplane#AirEvent2";
+	monster "airplane_01.gat",237,44,"ビホルダー",1633,1,"Airplane#AirEvent2";
+	monster "airplane_01.gat",233,54,"ビホルダー",1633,1,"Airplane#AirEvent2";
+	monster "airplane_01.gat",237,62,"ビホルダー",1633,1,"Airplane#AirEvent2";
+	sleep 5000;
+	announce "乗務員：ペルロック船長、大変です！　グレムリンどもがプロペラに……!!",9,0x00FF00;
+	sleep 5000;
+	announce "ペルロック船長：何だと?!　奴らめ〜、ただじゃおかねぇ〜!!　この俺様が直接……！",9,0x73DEDE;
+	sleep 5000;
+	hideonnpc "飛行船船長#Air";
+	hideoffnpc "飛行船船長#AirEvent";
+	sleep 5000;
+	emotion 7,"飛行船船長#AirEvent";
+	announce "ペルロック船長：こいつらめ〜!!　引きずり下ろすことができねぇーっ!!",9,0x73DEDE;
+	sleep 5000;
+	announce "-ギイギイーッ……グルルゥーッ、ギイギイギィーッ、グアァーッ!!-",9,0x00FF00;
+	misceffect 183,"Effect#AirEvent6";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent7";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent8";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent9";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent10";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent6";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent7";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent8";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent9";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent10";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent6";
+	announce "機関士：うわ〜っ!!　1番の後方エンジンがっ……！",9,0x00FF00;
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent7";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent8";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent9";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent10";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent6";
+	sleep 1000;
+	announce "操縦士：老人と女性、子供を先に安全な場所へ！　急げ!!",9,0x00FF00;
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent6";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent7";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent8";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent7";
+	sleep 1000;
+	emotion 7,"飛行船船長#AirEvent";
+	announce "ペルロック船長：ぬぅ〜っ！　実力行使しかなさそうだな……。",9,0x73DEDE;
+	sleep 5000;
+	emotion 6,"飛行船船長#AirEvent";
+	announce "ペルロック船長：俺様の船で暴れるとどうなるか、思い知らせてやるっ!!",9,0x73DEDE;
+	sleep 5000;
+	emotion 32,"飛行船船長#AirEvent";
+	announce "ペルロック船長：特製のエクソダスジョーカーⅩⅢ、このとっておきのライフルでケリをつけてやるっ!!",9,0x73DEDE;
+	sleep 5000;
+	announce "シュッ!!　パンパン！　パンパン！　ズドンズドンズドンッ!!",9,0x00FF00;
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent1";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent2";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent3";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent4";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent5";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent0";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent1";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent2";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent3";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent4";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent5";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent0";
+	killmonster "airplane_01.gat","Airplane#AirEvent2";
+	sleep 5000;
+	emotion 32,"飛行船船長#AirEvent";
+	announce "ペルロック船長：グハハハッ！　これでどうだ?!",9,0x73DEDE;
+	sleep 5000;
+	announce "シュッ!!　パンパン！　パンパン！　ズドンズドンズドンッ!!",9,0x00FF00;
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent6";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent7";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent8";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent9";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent10";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent6";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent7";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent8";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent9";
+	misceffect 5,"飛行船船長#AirEvent";
+	sleep 500;
+	misceffect 183,"Effect#AirEvent8";
+	announce "ボン！　プスプス……ドカンドカン！",9,0x00FF00;
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent9";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent10";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent6";
+	sleep 1000;
+	misceffect 183,"Effect#AirEvent7";
+	sleep 1000;
+	emotion 6,"飛行船船長#AirEvent";
+	announce "ペルロック船長：なぬ?!　あいつら、またエンジンを壊しやがった?!",9,0x73DEDE;
+	sleep 5000;
+	announce "操縦士：あ、あの……エンジンが壊れたのは、船長のライフルのせいかと……。",9,0x00FF00;
+	sleep 5000;
+	emotion 4,"飛行船船長#AirEvent";
+	announce "ペルロック船長：んあ？　それは……まあ〜、誰しも間違いはあるだろ！　フハハハハッ！",9,0x73DEDE;
+	sleep 5000;
+	emotion 17,"飛行船船長#AirEvent";
+	announce "ペルロック船長：とにかく、後のことはお前達に任せた……。ハハハハーッ！",9,0x73DEDE;
+	sleep 5000;
+	hideonnpc "飛行船船長#AirEvent";
+	hideoffnpc "飛行船船長#Air";
+	sleep 150000;
+	killmonster "airplane_01.gat","Airplane#AirEvent1";
+	sleep 5000;
+	announce "案内放送：モンスター達は、全ていなくなったようです。では、再び通常運行に戻ります。",9,0x00FF00;
+	hideoffnpc "飛行船案内員#AirEvent";
+	setnpctimer 46000;
+	startnpctimer;
+	return;
 }
 
 airplane_01.gat,243,29	warp	airplanewarp#yuno1_	1,1,yuno.gat,12,261
@@ -937,21 +1007,20 @@ OnInit:
 	end;
 }
 
-airplane_01.gat,227,67,0	script	Effect#AirEvent1	139,{}
-airplane_01.gat,234,65,0	script	Effect#AirEvent2	139,{}
-airplane_01.gat,235,39,0	script	Effect#AirEvent3	139,{}
-airplane_01.gat,239,50,0	script	Effect#AirEvent4	139,{}
-airplane_01.gat,239,62,0	script	Effect#AirEvent5	139,{}
-airplane_01.gat,244,55,0	script	Effect#AirEvent6	139,{}
-airplane_01.gat,245,48,0	script	Effect#AirEvent7	139,{}
-airplane_01.gat,245,59,0	script	Effect#AirEvent8	139,{}
-airplane_01.gat,249,50,0	script	Effect#AirEvent9	139,{}
-airplane_01.gat,252,41,0	script	Effect#AirEvent10	139,{}
-airplane_01.gat,252,63,0	script	Effect#AirEvent11	139,{}
+airplane_01.gat,249,50,0	script	Effect#AirEvent0	139,{}
+airplane_01.gat,239,62,0	script	Effect#AirEvent1	139,{}
+airplane_01.gat,244,55,0	script	Effect#AirEvent2	139,{}
+airplane_01.gat,239,50,0	script	Effect#AirEvent3	139,{}
+airplane_01.gat,245,59,0	script	Effect#AirEvent4	139,{}
+airplane_01.gat,245,48,0	script	Effect#AirEvent5	139,{}
+airplane_01.gat,235,39,0	script	Effect#AirEvent6	139,{}
+airplane_01.gat,252,41,0	script	Effect#AirEvent7	139,{}
+airplane_01.gat,252,63,0	script	Effect#AirEvent8	139,{}
+airplane_01.gat,234,65,0	script	Effect#AirEvent9	139,{}
+airplane_01.gat,227,67,0	script	Effect#AirEvent10	139,{}
 
 airplane_01.gat,0,0,0	script	Airplane#AirEvent1	-1,{}	//ダミーイベント
 airplane_01.gat,0,0,0	script	Airplane#AirEvent2	-1,{}	//ダミーイベント
-airplane_01.gat,0,0,0	script	Airplane#AirEvent3	-1,{}	//ダミーイベント
 
 //============================================================
 // 船内施設
@@ -1110,7 +1179,7 @@ airplane.gat,50,66,5	script	リンゴ商人#フルツ	86,{
 airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メルツ	86
 
 -	script	AirDice	-1,{
-	if(strnpcinfo(0) == "ケージ") {
+	if(strnpcinfo(1) == "ケージ") {
 		switch(AIR_2QUE) {
 		case 2:
 			mes "[ケージ]";
@@ -1324,16 +1393,16 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			close;
 		}
 	}
-	mes "[" +strnpcinfo(0)+ "]";
+	mes "[" +strnpcinfo(1)+ "]";
 	mes "こんにちは。";
-	mes "私の名前は" +strnpcinfo(0)+ "。";
+	mes "私の名前は" +strnpcinfo(1)+ "。";
 	mes "ちょっと退屈してるの。";
 	mes "暇つぶしに、私とサクっと軽く";
 	mes "サイコロゲームでもしない？";
 	next;
 	switch (select("する","ルールを教えて","しない")) {
 	case 1:
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "サイコロゲームをするには、";
 		mes "リンゴが必要よ。";
 		mes "リンゴ、何個賭ける？";
@@ -1343,28 +1412,28 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			next;
 			input '@apple;
 			if('@apple<=0) {
-				mes "[" +strnpcinfo(0)+ "]";
+				mes "[" +strnpcinfo(1)+ "]";
 				mes "退屈だったら、後でまた来てね。";
 				mes "じゃあね！";
 				close;
 			}
 			if('@apple>50) {
-				mes "[" +strnpcinfo(0)+ "]";
+				mes "[" +strnpcinfo(1)+ "]";
 				mes "最大は50までよ。";
 				mes "次は間違えないよう教えてね。";
 				continue;
 			}
-			mes "[" +strnpcinfo(0)+ "]";
+			mes "[" +strnpcinfo(1)+ "]";
 			mes "リンゴ^FF0000" +'@apple+ "個^000000で";
 			mes "間違いない？";
 			next;
 			if(select("はい","いいえ")==2) {
-				mes "[" +strnpcinfo(0)+ "]";
+				mes "[" +strnpcinfo(1)+ "]";
 				mes "今度は間違いなく入力してね。";
 				continue;
 			}
 			if(countitem(512) < '@apple) {
-				mes "[" +strnpcinfo(0)+ "]";
+				mes "[" +strnpcinfo(1)+ "]";
 				mes "リンゴが足りないみたいよ。";
 				mes "何個賭ける？";
 				continue;
@@ -1372,7 +1441,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			break;	//while文を抜ける
 		}
 		delitem 512,'@apple;
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "はーい。";
 		mes "では、ゲームの始まり始まり。";
 		mes "私が先に転がすわね。";
@@ -1384,7 +1453,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		setarray '@mine[1],rand(1,6),rand(1,6);
 		set '@enemy[0],'@enemy[1]+'@enemy[2];
 		set '@mine[0],'@mine[1]+'@mine[2];
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "私の手は^0000FF" +'@enemy[1]+ "^000000と^0000FF" +'@enemy[2]+ "^000000。";
 		mes "合計は^0000FF" +'@enemy+ "^000000ね。";
 		mes "今度は^FF0000" +strcharinfo(0)+ "^000000さんの";
@@ -1393,12 +1462,12 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		menu "サイコロを転がす",-;
 		mes "-コロ〜ン、コロコロ-";
 		next;
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "^FF0000" +strcharinfo(0)+ "^000000さんの手は";
 		mes "^FF0000" +'@mine[1]+ "^000000と^FF0000" +'@mine[2]+ "^000000ね。";
 		mes "合計は^FF0000" +'@mine+ "^000000！";
 		next;
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "私が^0000FF" +'@enemy+ "^000000で、";
 		mes "^FF0000" +strcharinfo(0)+ "^000000さんが^FF0000" +'@mine+ "^000000ね。";
 		if('@mine < '@enemy)  {	//負けてる場合
@@ -1420,7 +1489,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			next;
 			set '@mine[3],rand(1,6);
 			set '@mine[0],'@mine[0]+'@mine[3];
-			mes "[" +strnpcinfo(0)+ "]";
+			mes "[" +strnpcinfo(1)+ "]";
 			mes "^FF0000" +strcharinfo(0)+ "^000000さんの手は";
 			mes "^FF0000" +'@mine[3]+ "^000000だから";
 			mes "合計は^FF0000" +'@mine+ "^000000ね。";
@@ -1441,7 +1510,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 				mes "はい、最初に賭けたリンゴを返すわね。";
 				getitem 512,'@apple;
 				next;
-				mes "[" +strnpcinfo(0)+ "]";
+				mes "[" +strnpcinfo(1)+ "]";
 				mes "次は負けないわよ〜。";
 				close;
 			}
@@ -1450,7 +1519,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 			}
 		}
 		else {
-			mes "[" +strnpcinfo(0)+ "]";
+			mes "[" +strnpcinfo(1)+ "]";
 			if('@mine < '@enemy) {	//負けてる場合
 				mes "えー、諦めるの？";
 				mes "転がすだけ転がしてみればいいのに。";
@@ -1473,7 +1542,7 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		next;
 		set '@enemy[3],rand(1,6);
 		set '@enemy[0],'@enemy[0]+'@enemy[3];
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "私の手は^0000FF" +'@enemy[3]+ "^000000だから、合計は^0000FF" +'@enemy+ "^000000ね。";
 		if('@enemy > 12) {	//12を超えた場合
 			mes "合計が12を超えちゃったから";
@@ -1503,14 +1572,14 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		}
 		close;
 	case 2:
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "じゃあ、サイコロゲームのルールを";
 		mes "説明するわね。とても簡単よ。";
 		mes "まず、賭ける分だけの";
 		mes "リンゴを私に預けてね。";
 		mes "リンゴは50個まで賭けられるわ。";
 		next;
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "次に、サイコロを2個転がすの。";
 		mes "それで、サイコロの目の";
 		mes "合計が多い方が勝ち！";
@@ -1518,24 +1587,24 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 		mes "だから、サイコロをもう1個";
 		mes "転がすチャンスがあるのよ。";
 		next;
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "サイコロをもう1個、転がすかどうかは";
 		mes "本人の自由。但し！";
 		mes "この段階でサイコロの目の合計が";
 		mes "12を超えちゃったら、負けよ。";
 		next;
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "3個目のサイコロを転がした場合、";
 		mes "合計が12を超えちゃったら、";
 		mes "その時点で負け決定よ。いい？";
 		next;
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "ゲームで勝った方は、自分と相手の";
 		mes "賭けたリンゴを全部もらえるの。";
 		mes "ね、簡単でしょ。";
 		close;
 	case 3:
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "やってみたくなったら";
 		mes "いつでも声かけてね。";
 		mes "じゃあね〜。";
@@ -1543,12 +1612,11 @@ airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メ
 	}
 }
 
-airplane.gat,33,69,4	duplicate(AirDice)	ケージ		73
-airplane_01.gat,33,69,4	duplicate(AirDice)	クラリス	74
+airplane.gat,33,69,4	duplicate(AirDice)	ケージ#Air	73
+airplane_01.gat,33,69,4	duplicate(AirDice)	クラリス#Air	74
 
 //callfunc "Typing#Einbroch","Name";
 //  呼び出し元のNPC名前が引数
-
 function	script	Typing#Air	{
 	set '@t,gettimetick(0);
 	switch(rand(7)) {	//出題文を配列に格納する
@@ -1606,14 +1674,14 @@ function	script	Typing#Air	{
 }
 
 -	script	AirTyping	-1,{
-	mes "[" +strnpcinfo(0)+ "]";
+	mes "[" +strnpcinfo(1)+ "]";
 	mes "こんにちは！";
 	mes "^FF0000タイピングラグナロク^000000の";
-	mes "進行、" +strnpcinfo(0)+ "です！";
+	mes "進行、" +strnpcinfo(1)+ "です！";
 	next;
 	switch (select("^FF0000タイピングラグナロク^000000に挑戦する","^FF0000タイピングラグナロク^000000の説明を聞く","最高記録を見る","取り消す")) {
 	case 1:
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "^FF0000タイピングラグナロク^000000に";
 		mes "挑戦するのですね！";
 		mes "では、これから提示する文章を";
@@ -1621,24 +1689,35 @@ function	script	Typing#Air	{
 		mes "入力してください。";
 		mes "それでは始めます！";
 		next;
-		set '@time,callfunc("Typing#Air",strnpcinfo(0));	//タイピングタイムを取得
-		set '@score,(200-'@time)*10;
+		set '@time,callfunc("Typing#Air",strnpcinfo(1));	//タイピングタイムを取得
+		set '@score,(1450/'@time)*6;
 		if('@time < 0 || '@score < 0)
 			set '@score,0;
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "^FF0000" +'@time+ "秒^000000で正確に入力完了！";
 		mes "スコアは" +'@score+ "と出ました！";
 		next;
+		if('@score >= 1300) {
+			mes "[" +strnpcinfo(1)+ "]";
+			mes "しかし、人間が出せる速度では";
+			mes "ありませんね。";
+			mes "何かズルでもしましたか？";
+			mes "次は正々堂々と挑んでください。";
+			close;
+		}
 		if('@score >= $TypingScore) {	//メッセージ未取得
+			mes "[" +strnpcinfo(1)+ "]";
+			mes "前回の最高スコアは、";
+			mes "^0000FF" +$TypingName$+ "様^000000の";
+			mes "^0000FF" +$TypingScore+ "^000000でしたが、";
+			mes "^0000FF" +strcharinfo(0)+ "様^000000の記録が";
+			mes "最高記録を更新されました！";
+			mes "おめでとうございます！";
 			set $TypingScore,'@score;
 			set $TypingName$,strcharinfo(0);
-			mes "[" +strnpcinfo(0)+ "]";
-			mes "おめでとうございます！";
-			mes "最高記録更新です！";
-			mes "次もこの調子で頑張ってください。";
 		}
 		else {
-			mes "[" +strnpcinfo(0)+ "]";
+			mes "[" +strnpcinfo(1)+ "]";
 			mes "現在の最高スコアは、";
 			mes "^0000FF" +$TypingName$+ "様^000000の";
 			mes "^0000FF" +$TypingScore+ "^000000です。";
@@ -1647,25 +1726,25 @@ function	script	Typing#Air	{
 		}
 		close;
 	case 2:
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "^FF0000タイピングラグナロク^000000は";
 		mes "私が提示する文章を素早く、";
 		mes "正確に入力するゲームです。";
 		next;
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "スコアが一番高い方の記録は、";
 		mes "殿堂入りとなります。";
 		mes "タイピングに自信のある方は";
 		mes "是非挑戦してください！";
 		close;
 	case 3:
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "現在の最高スコアは、";
 		mes "^0000FF" +$TypingName$+ "様^000000の";
 		mes "^0000FF" +$TypingScore+ "^000000です。";
 		close;
 	case 4:
-		mes "[" +strnpcinfo(0)+ "]";
+		mes "[" +strnpcinfo(1)+ "]";
 		mes "^FF0000タイピングラグナロク^000000に";
 		mes "挑戦したくなったら、";
 		mes "いつでも来てください！";
@@ -1673,15 +1752,15 @@ function	script	Typing#Air	{
 	}
 }
 
-airplane.gat,32,61,4	duplicate(AirTyping)	ジョン	51
-airplane_01.gat,32,61,4	duplicate(AirTyping)	ニルス	49
+airplane.gat,32,61,4	duplicate(AirTyping)	ジョン#Air	51
+airplane_01.gat,32,61,4	duplicate(AirTyping)	ニルス#Air	49
 
 //============================================================
 // ルーン機関クエストNPC
 //- Registry -------------------------------------------------
 // AIR_1QUE -> 0〜7
 //------------------------------------------------------------
-airplane_01.gat,238,154,2	script	飛行船船長	873,{
+airplane_01.gat,238,154,2	script	飛行船船長#Air	873,{
 	cutin "fly_felrock",2;
 	mes "[ペルロック]";
 	mes "私が、この飛行船の船長ペルロックだ。";

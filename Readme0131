@@ -1,4 +1,43 @@
 ----------------------------------------
+//0188 [2007/05/26] by Rayce
+
+・AthenaProject2297よりmerge、thanks to Blazeさん
+　　・monsterフォルダを細分化
+　　　フィゲルまでの最新データ+ラヘル追加マップのデータ更新（script/monster）
+　　・ニブルヘイム、生体工学研究所のMVPボススクリプトを本鯖仕様化
+　　　（npc_monster_niflheim.txt、npc_monster_lhzdun.txt）
+　　・warpにキル・ハイルクエスト関係などを追加（script/warp）
+　　・mapflag細分化（script/mapflag）
+　　　mapflag更新
+　　・map_auriga.conf更新（conf/map_auriga.conf）
+　　・キル・ハイルクエスト実装（npc_quest_kiel.txt）
+　　・ターボトラック実装（npc_quest_turbo.txt）
+　　・ジュピロス保安区域実装（npc_quest_juperos.txt）
+　　・商圏投票実装（npc_misc_zonda.txt）
+　　・アリーナPTモード実装（npc_quest_arena.txt）
+　　　個人戦のモンスター位置や挙動を本鯖仕様化
+　　・飛行船スクリプトが巻き戻っていたのを修正（npc_town_airport.txt）
+　　　襲撃イベントの挙動・確率などを本鯖仕様化
+　　　ミニゲームのタイピングを本鯖仕様化
+　　・アインブロック工場クエスト修正
+　　　汚染イベントの発生条件、モンスター発生箇所を本鯖仕様化（npc_town_einbroch.txt）
+　　・リヒタルゼン、治安維持イベントのバグを修正、本鯖仕様化（npc_town_lighthalzen.txt）
+　　・ウンバラ夫婦喧嘩クエスト実装（npc_town_umbala.txt）
+　　　シャーマンがクエスト未進行でも進行される問題を修正
+　　　バンジージャンプの各種確率、骸骨門に入れる確率、属性石の個数確率などを本鯖仕様化
+　　・アマツ刺身包丁クエスト実装（npc_town_amatsu.txt）
+　　　通行手形クエストを本鯖仕様化
+　　・コンロンクエストを修正（npc_town_gonryun.txt）
+　　　闘技場を本鯖仕様化
+　　・龍之城クエスト修正（npc_town_louyang.txt）
+　　　展望台修正
+　　・コモドの一部NPCの挙動を修正（npc_town_comodo.txt）
+　　・初心者修練場、レベルに関係なく経験値を得られてしまうのを修正（npc_job_00novice.txt）
+　　　職業適性審査の判断箇所を本鯖仕様化
+　　・忍者の手甲作成クエスト実装（npc_job_29ninja.txt）
+　　・ほとんどのクエストで得られる報酬経験値を本鯖仕様化
+
+----------------------------------------
 //0187 [2007/05/26] by Rayce
 
 ・set_reg(), script_read_vars(), script_write_vars() の引数にconstを付けるように修正（script.*）
@@ -657,7 +696,7 @@
 		clif_closevendingboard()
 	-> ホムの情報を参照すべきところがPCの情報を参照しているバグを修正
 		clif_homskillinfoblock()
-		clif_homskillup()
+		clif_homskillup() 
 	-> clif_set009e() を clif_dropflooritem() に吸収
 	-> clif_set01e1() の処理を変更
 	-> パケット送信用のバッファをunsigned char型に修正

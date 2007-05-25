@@ -992,8 +992,12 @@ tha_t05.gat,208,97,0		warp	thanatoswarp4009	1,1,tha_t05.gat,62,162
 tha_t05.gat,185,235,0		warp	thanatoswarp4010	1,1,tha_t06.gat,206,11
 //タナトスタワー6F⇒タナトスタワー7F
 tha_t06.gat,119,120,0		script	thanatoswarp4011	45,1,1,{
-	if(Upper)
+	if(Upper == 1 && Class >= 7 && Class <= 20 )
 		warp "thana_step.gat",69,369;
+	else {
+		mes "-何か巨大な力に阻まれている……-";
+		close;
+	}
 	end;
 }
 thana_step.gat,173,372,0	warp	thanatoswarp4012	1,1,tha_t07.gat,30,166
@@ -1002,7 +1006,7 @@ tha_t07.gat,114,166,0		warp	thanatoswarp4013	1,1,thana_step.gat,69,287
 thana_step.gat,174,288,0	warp	thanatoswarp4014	1,1,tha_t08.gat,28,43
 //タナトスタワー8F⇒タナトスタワー9F
 tha_t08.gat,114,43,0		warp	thanatoswarp4015	1,1,thana_step.gat,30,223
-thana_step.gat,32,166,0		warp	thanatoswarp4016	1,1,tha_t09.gat,20,100 //取得忘れ
+thana_step.gat,32,166,0		warp	thanatoswarp4016	1,1,tha_t09.gat,20,96
 //タナトスタワー9F⇒タナトスタワー10F
 tha_t09.gat,92,146,0		warp	thanatoswarp4017	1,1,thana_step.gat,180,223
 thana_step.gat,182,166,0	warp	thanatoswarp4018	1,1,tha_t10.gat,155,100
@@ -1030,6 +1034,13 @@ abyss_03.gat,115,25,0		warp	abysswarp4004	1,1,abyss_02.gat,145,275
 // kh_dun01.gat	機械人形工場 1F
 // kh_dun02.gat	機械人形工場 2F
 //==============================================================
+//機械人形工場 1F
+kh_dun01.gat,3,234,0		warp	khwarp0501	1,1,yuno_fild08.gat,74,174
+kh_dun01.gat,63,7,0		warp	khwarp5001	1,1,kh_dun01.gat,227,176
+kh_dun01.gat,232,176,0		warp	khwarp5002	1,1,kh_dun01.gat,63,12
+kh_dun01.gat,232,226,0		warp	khwarp5003	1,1,kh_dun01.gat,13,12
+//機械人形工場 2F⇒1F
+kh_dun02.gat,43,195,0		warp	khwarp5004	1,1,kh_dun01.gat,32,199
 
 
 //---アルナペルツ追加マップ

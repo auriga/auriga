@@ -1,5 +1,7 @@
 //= Athena Script ==============================================================
 // Ragnarok Online Einbroch Town Script	by Blaze
+//= Registry ===================================================================
+// $EinFactory -> 環境汚染レベル
 //==============================================================================
 
 //============================================================
@@ -769,83 +771,6 @@ einbroch.gat,175,196,5	script	シン#einbroch	854,{
 	case 2:	warp "einbroch.gat",170,229; break;
 	}
 	end;
-}
-
-//============================================================
-// 大気汚染イベントNPC
-//------------------------------------------------------------
-einbroch.gat,0,0,0	script	環境管理員#einbroch	-1,{
-OnInit:
-	initnpctimer;
-	end;
-OnTimer3600000:
-	if(rand(2)) {
-		initnpctimer;
-		end;
-	}
-	areamonster "einbroch.gat",0,0,0,0,"酸の煙",1620,10,"環境管理員#einbroch::OnKilled";
-	areamonster "einbroch.gat",0,0,0,0,"毒の煙",1621,40,"環境管理員#einbroch::OnKilled";
-	announce "環境管理員: 非常事態発生!!　工場の煤煙が街に広がっています。アインブロック住民の皆さん、速やかに避難してください！",9;
-	hideonnpc "カプラ職員#einbroch1";
-	hideonnpc "カプラ職員#einbroch2";
-	hideonnpc "案内要員#einbroch";
-	hideonnpc "案内要員#einbrochdummy1";
-	hideonnpc "案内要員#einbrochdummy2";
-	hideonnpc "雑貨商人#einbroch";
-	hideonnpc "マスク商人#einbroch";
-	hideonnpc "駅員#einbroch1";
-	hideonnpc "駅員#einbroch2";
-	hideonnpc "カム#einbroch";
-	hideonnpc "オベ#einbroch";
-	hideonnpc "マーク#einbroch";
-	hideonnpc "ケティン#einbroch";
-	hideonnpc "ケネッシオ#einbroch";
-	hideonnpc "スリーキ#einbroch";
-	hideonnpc "街の青年#einbroch1";
-	hideonnpc "街の青年#einbroch2";
-	hideonnpc "センツ#einbroch";
-	hideonnpc "カロパー#einbroch";
-	hideonnpc "センボ#einbroch";
-	hideonnpc "乗客#einbroch";
-	hideonnpc "飛行船の技師#einbroch";
-	hideonnpc "リュッツ#einbroch";
-	hideonnpc "アーク・クライン#einbroch";
-	hideonnpc "研究所の警備員#einbroch1";
-	hideonnpc "研究所の警備員#einbroch2";
-	end;
-OnTimer4200000:
-	killmonster "einbroch.gat","環境管理員#einbroch::OnKilled";
-	announce "環境管理員: 避難警報解除!!　大気汚染度が安全値に戻りました。アインブロック住民の皆さん、ご安心ください。",9;
-	hideoffnpc "カプラ職員#einbroch1";
-	hideoffnpc "カプラ職員#einbroch2";
-	hideoffnpc "案内要員#einbroch";
-	hideoffnpc "案内要員#einbrochdummy1";
-	hideoffnpc "案内要員#einbrochdummy2";
-	hideoffnpc "雑貨商人#einbroch";
-	hideoffnpc "マスク商人#einbroch";
-	hideoffnpc "駅員#einbroch1";
-	hideoffnpc "駅員#einbroch2";
-	hideoffnpc "カム#einbroch";
-	hideoffnpc "オベ#einbroch";
-	hideoffnpc "マーク#einbroch";
-	hideoffnpc "ケティン#einbroch";
-	hideoffnpc "ケネッシオ#einbroch";
-	hideoffnpc "スリーキ#einbroch";
-	hideoffnpc "街の青年#einbroch1";
-	hideoffnpc "街の青年#einbroch2";
-	hideoffnpc "センツ#einbroch";
-	hideoffnpc "カロパー#einbroch";
-	hideoffnpc "センボ#einbroch";
-	hideoffnpc "乗客#einbroch";
-	hideoffnpc "飛行船の技師#einbroch";
-	hideoffnpc "リュッツ#einbroch";
-	hideoffnpc "アーク・クライン#einbroch";
-	hideoffnpc "研究所の警備員#einbroch1";
-	hideoffnpc "研究所の警備員#einbroch2";
-	initnpctimer;
-	end;
-OnKilled:
-	end;	//ダミーイベント
 }
 
 //============================================================
@@ -4577,7 +4502,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		set EIN_3QUE,6;
 		close;
 	case 6:
-		if(EIN_4QUE < 7) {	//工場修理クエストにて発行
+		if(EIN_4QUE < 13) {	//工場修理クエストにて発行
 			mes "[シドクス]";
 			mes "悪いが、工場をもう一度";
 			mes "調査してきてくれないか。";
@@ -5132,10 +5057,36 @@ ein_in01.gat,231,170,0	script	#シドクスの部屋	139,2,2,{
 //============================================================
 // 工場修理クエストNPC
 //- Registry -------------------------------------------------
-// EIN_4QUE -> 0〜9
-// @ein_check -> チェックフラグ
+// EIN_4QUE -> 0〜16
+// $EinFactory -> 環境汚染レベル
 //------------------------------------------------------------
 ein_in01.gat,67,241,3	script	ゼルメト	851,{
+	if($EinFactory >= 10) {
+		mes "[ゼルメト]";
+		mes "大変な事になりました!!";
+		mes "皆さんが材料を集めてくださったのは";
+		mes "よかったのですが……どうやら";
+		mes "修理に入るのが遅かったようです。";
+		mes "修理しようとした途端、";
+		mes "機械がおかしくなりました!!";
+		next;
+		mes "[ゼルメト]";
+		mes "今、汚染された空気が蔓延しています！";
+		mes "街も危ないでしょう！";
+		next;
+		mes "[ゼルメト]";
+		mes "こちらも修理を急ぎますが、";
+		mes "何しろ予算が足りません！";
+		mes "ああ、こんな時に、あの工場長は!!";
+		next;
+		mes "[ゼルメト]";
+		mes "あなたも、安全になるまで";
+		mes "出歩いてはいけません！";
+		mes "いいですか!?";
+		close2;
+		warp "einbroch.gat",131,83;
+		end;
+	}
 	switch(EIN_4QUE) {
 	case 0:
 		mes "[ゼルメト]";
@@ -5240,15 +5191,14 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		set EIN_4QUE,1;
 		close;
 	case 1:
-		if(@ein_check == 0) {
-			mes "[ゼルメト]";
-			mes "まずは、^FF0000第2コントロールパネル^000000の";
-			mes "基盤の調査をお願いします。";
-			mes "現在故障中なので、";
-			mes "誰も使っていないものです。";
-			mes "よろしくお願いします。";
-			close;
-		}
+		mes "[ゼルメト]";
+		mes "まずは、^FF0000第2コントロールパネル^000000の";
+		mes "基盤の調査をお願いします。";
+		mes "現在故障中なので、";
+		mes "誰も使っていないものです。";
+		mes "よろしくお願いします。";
+		close;
+	case 2:
 		mes "[ゼルメト]";
 		mes "そうですか。";
 		mes "第2コントロールパネルは、";
@@ -5275,21 +5225,19 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		mes "問題は大きくなる前に";
 		mes "発見することが大事ですので。";
 		mes "それではお願いします。";
-		set @ein_check,0;
-		set EIN_4QUE,2;
+		set EIN_4QUE,3;
 		close;
-	case 2:
-		if(@ein_check == 0) {
-			mes "[ゼルメト]";
-			mes "この工場にある三つの圧力器の一つに";
-			mes "問題が出ているようです。";
-			mes "どんな些細なことでもよいので、";
-			mes "調べてご報告ください。";
-			next;
-			mes "[ゼルメト]";
-			mes "それでは、お願いします。";
-			close;
-		}
+	case 3:
+		mes "[ゼルメト]";
+		mes "この工場にある三つの圧力器の一つに";
+		mes "問題が出ているようです。";
+		mes "どんな些細なことでもよいので、";
+		mes "調べてご報告ください。";
+		next;
+		mes "[ゼルメト]";
+		mes "それでは、お願いします。";
+		close;
+	case 4:
 		mes "[ゼルメト]";
 		mes "そうですか。";
 		mes "思っていたより深刻な状態ですね。";
@@ -5315,19 +5263,17 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		next;
 		mes "[ゼルメト]";
 		mes "どうか、よろしくお願いします。";
-		set @ein_check,0;
-		set EIN_4QUE,3;
+		set EIN_4QUE,5;
 		close;
-	case 3:
-		if(@ein_check == 0) {
-			mes "[ゼルメト]";
-			mes "中央コントロールパネルの";
-			mes "調査をお願いします。";
-			mes "工場の中央にある大きめな機械なので、";
-			mes "見つからないということはない";
-			mes "と思います。";
-			close;
-		}
+	case 5:
+		mes "[ゼルメト]";
+		mes "中央コントロールパネルの";
+		mes "調査をお願いします。";
+		mes "工場の中央にある大きめな機械なので、";
+		mes "見つからないということはない";
+		mes "と思います。";
+		close;
+	case 6:
 		mes "[ゼルメト]";
 		mes "そうですか。";
 		mes "外見は問題なさそうでも、";
@@ -5360,17 +5306,15 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		next;
 		mes "[ゼルメト]";
 		mes "それでは、お願いします。";
-		set @ein_check,0;
-		set EIN_4QUE,4;
+		set EIN_4QUE,7;
 		close;
-	case 4:
-		if(@ein_check == 0) {
-			mes "[ゼルメト]";
-			mes "そうです、確か物資移動装置とか";
-			mes "呼んでいたはずです。";
-			mes "他の機械と比べると、かなり小型です。";
-			close;
-		}
+	case 7:
+		mes "[ゼルメト]";
+		mes "そうです、確か物資移動装置とか";
+		mes "呼んでいたはずです。";
+		mes "他の機械と比べると、かなり小型です。";
+		close;
+	case 8:
 		mes "[ゼルメト]";
 		mes "そうですか。";
 		mes "思っていたより深刻です……";
@@ -5402,19 +5346,17 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		next;
 		mes "[ゼルメト]";
 		mes "それでは、お願いします。";
-		set @ein_check,0;
-		set EIN_4QUE,5;
+		set EIN_4QUE,9;
 		close;
-	case 5:
-		if(@ein_check == 0) {
-			mes "[ゼルメト]";
-			mes "工場の一番外側にある";
-			mes "パイプを調べてください。";
-			mes "周辺に機械はありませんし";
-			mes "人もいないはずですので、";
-			mes "探しやすいと思います。";
-			close;
-		}
+	case 9:
+		mes "[ゼルメト]";
+		mes "工場の一番外側にある";
+		mes "パイプを調べてください。";
+		mes "周辺に機械はありませんし";
+		mes "人もいないはずですので、";
+		mes "探しやすいと思います。";
+		close;
+	case 10:
 		mes "[ゼルメト]";
 		mes "そうですか……";
 		next;
@@ -5441,18 +5383,16 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		mes "[ゼルメト]";
 		mes "工場の中にあることだけは確かなので";
 		mes "どうか探して調べてください。";
-		set @ein_check,0;
-		set EIN_4QUE,6;
+		set EIN_4QUE,11;
 		close;
-	case 6:
-		if(@ein_check == 0) {
-			mes "[ゼルメト]";
-			mes "最後に調べていただきたいのは、";
-			mes "大型物資移動装置です。";
-			mes "前に調べていただいた機械を";
-			mes "もう少し大きくした感じのものです。";
-			close;
-		}
+	case 11:
+		mes "[ゼルメト]";
+		mes "最後に調べていただきたいのは、";
+		mes "大型物資移動装置です。";
+		mes "前に調べていただいた機械を";
+		mes "もう少し大きくした感じのものです。";
+		close;
+	case 12:
 		mes "[ゼルメト]";
 		mes "そうですか。";
 		mes "もう1個の機械と同じ症状ならば、";
@@ -5475,16 +5415,14 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		mes "[ゼルメト]";
 		mes "私はこれから、工場長に";
 		mes "修理費の相談に行こうと思います。";
-		set @ein_check,0;
-		set EIN_4QUE,7;
+		set EIN_4QUE,13;
 		close;
-	case 7:
-		if(@ein_check == 0) {
-			mes "[ゼルメト]";
-			mes "工場長に早く、修理費を出すよう";
-			mes "説得せねば！";
-			close;
-		}
+	case 13:
+		mes "[ゼルメト]";
+		mes "工場長に早く、修理費を出すよう";
+		mes "説得せねば！";
+		close;
+	case 14:
 		mes "[ゼルメト]";
 		mes "……………………";
 		next;
@@ -5514,10 +5452,9 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		mes "[ゼルメト]";
 		mes "ああ、どうしよう……";
 		mes "どうすればいいのか……";
-		set @ein_check,0;
-		set EIN_4QUE,8;
+		set EIN_4QUE,15;
 		close;
-	case 8:
+	case 15:
 		if(countitem(7325) < 20 || countitem(7317) < 10 || countitem(7319) < 10) {
 			mes "[ゼルメト]";
 			mes "少なくとも^FF0000チューブ^00000020個と";
@@ -5569,13 +5506,14 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		delitem 7325,20;
 		delitem 7317,10;
 		delitem 7319,10;
-		set EIN_4QUE,9;
-		if(BaseLevel >= 90) 				getexp 290675,0;
-		else if(BaseLevel >= 80 && BaseLevel < 90) 	getexp 76026,0;
-		else if(BaseLevel >= 70 && BaseLevel < 80) 	getexp 32062,0;
-		else if(BaseLevel >= 60 && BaseLevel < 70) 	getexp 18508,0;
-		else if(BaseLevel >= 50 && BaseLevel < 60) 	getexp 6604,0;
-		else if(BaseLevel >= 40 && BaseLevel < 50) 	getexp 3075,0;
+		set EIN_4QUE,16;
+		set $EinFactory,$EinFactory+1;
+		if(BaseLevel > 90) 				getexp 290675,0;
+		else if(BaseLevel > 80 && BaseLevel <= 90) 	getexp 76026,0;
+		else if(BaseLevel > 70 && BaseLevel <= 80) 	getexp 32062,0;
+		else if(BaseLevel > 60 && BaseLevel <= 70) 	getexp 18508,0;
+		else if(BaseLevel > 50 && BaseLevel <= 60) 	getexp 6604,0;
+		else if(BaseLevel > 40 && BaseLevel <= 50) 	getexp 3075,0;
 		else						getexp 615,0;
 		next;
 		mes "[ゼルメト]";
@@ -5584,7 +5522,7 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		mes "入ろうと思います。本当に";
 		mes "ありがとうございました！";
 		close;
-	case 9:
+	case 16:
 		mes "[ゼルメト]";
 		mes "頂いた材料はありがたく";
 		mes "使わせていただきました。";
@@ -5595,80 +5533,80 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 }
 
 ein_in01.gat,49,232,0	script	第2コントロールパネル	111,{
-	if(EIN_4QUE == 1) {
+	if(EIN_4QUE == 1 || EIN_4QUE == 2) {
 		mes "-第2コントロールパネルを見つけた-";
 		mes "-明らかにネジが足りない上、";
 		mes "鉄板の損傷も激しい。";
 		mes "そして配線もボロボロだ-";
-		set @ein_check,1;
+		set EIN_4QUE,2;
 		close;
 	}
 	end;
 }
 
 ein_in01.gat,108,217,0	script	第3圧力器	111,{
-	if(EIN_4QUE == 2) {
+	if(EIN_4QUE == 3 || EIN_4QUE == 4) {
 		mes "-見た目では、特に";
 		mes "問題はなさそうだが……";
 		mes "よく調べてみると、音がおかしい上";
 		mes "ネジがいくつか取れているようだ-";
-		set @ein_check,1;
+		set EIN_4QUE,4;
 		close;
 	}
 	end;
 }
 
 ein_in01.gat,62,258,0	script	中央コントロールパネル	111,{
-	if(EIN_4QUE == 3) {
+	if(EIN_4QUE == 5 || EIN_4QUE == 6) {
 		mes "-見た目では、何ら";
 		mes "問題はなさそうだが……";
 		mes "ちょっと試しに叩いてみると、";
 		mes "中からヴーンと変な音がする-";
 		mes "-どうやら内部に問題があるようだ-";
-		set @ein_check,1;
+		set EIN_4QUE,6;
 		close;
 	}
 	end;
 }
 
 ein_in01.gat,46,197,0	script	物資移動装置	111,{
-	if(EIN_4QUE == 4) {
+	if(EIN_4QUE == 7 || EIN_4QUE == 8) {
 		mes "-機械の手の動きが、";
 		mes "ものすごくぎこちない-";
 		mes "-パーツを握る力も、かなり弱そうだ-";
 		mes "-錆びたネジもいくつか見える-";
-		set @ein_check,1;
+		set EIN_4QUE,8;
 		close;
 	}
 	end;
 }
 
 ein_in01.gat,100,266,0	script	パイプ	111,{
-	if(EIN_4QUE == 5) {
+	if(EIN_4QUE == 9 || EIN_4QUE == 10) {
 		mes "-パイプから危険そうな";
 		mes "煙が吹き出している-";
 		mes "-詳しく調べる必要もないほど";
 		mes "危険な状態だ-";
-		set @ein_check,1;
+		set EIN_4QUE,10;
 		close;
 	}
 	end;
 }
 
 ein_in01.gat,95,239,0	script	物資移動装置	111,{
-	if(EIN_4QUE == 6) {
+	if(EIN_4QUE == 11 || EIN_4QUE == 12) {
 		mes "-小型の装置と似たような症状らしい-";
 		mes "-機械の手の動きはぎこちなく、";
 		mes "握力も弱そうだ-";
 		mes "-錆びたネジもあちらこちらに見える-";
-		set @ein_check,1;
+		set EIN_4QUE,12;
 		close;
 	}
 	end;
 }
 
-einbroch.gat,132,84,4	script	リュッツ#einbroch	853,{
-	if(EIN_4QUE == 7) {
+einbroch.gat,132,84,4	script	リュッツ#einbroch	853,2,2,{
+	if(EIN_4QUE == 13 || EIN_4QUE == 14) {
 		mes "[リュッツ]";
 		mes "修理費？　そんなもん出せるか！";
 		mes "金が惜しいわい！";
@@ -5681,7 +5619,7 @@ einbroch.gat,132,84,4	script	リュッツ#einbroch	853,{
 		mes "言ってきたが、そんなことに";
 		mes "いちいち金を使っていたら、";
 		mes "儲けにならんだろうが！";
-		set @ein_check,1;
+		set EIN_4QUE,14;
 		close;
 	}
 	mes "[リュッツ]";
@@ -5701,6 +5639,168 @@ einbroch.gat,132,84,4	script	リュッツ#einbroch	853,{
 	mes "我が工場を見ているがいい！";
 	mes "ガーハッハッハ!!";
 	close;
+OnTouch:
+	if($EinFactory < 10)
+		end;
+	mes "[リュッツ]";
+	mes "何事だ!?";
+	mes "わしの工場で何かあったのか？";
+	mes "一体、誰の仕業だ?!";
+	next;
+	mes "[リュッツ]";
+	mes "わしは避難するから、そこのお前!!";
+	mes "ボケっとつっ立ってないで、";
+	mes "さっさと事態を収めてみろ！";
+	close2;
+	donpcevent "環境管理員#einbroch::OnStart";
+	end;
+}
+
+einbroch.gat,0,0,0	script	環境管理員#einbroch	-1,{
+OnStart:
+	announce "環境管理員: 非常事態発生!!　工場の煤煙が街に広がっています。アインブロック住民の皆さん、速やかに避難してください！",9;
+	hideonnpc "カプラ職員#einbroch1";
+	hideonnpc "カプラ職員#einbroch2";
+	hideonnpc "案内要員#einbroch";
+	hideonnpc "案内要員#einbrochdummy1";
+	hideonnpc "案内要員#einbrochdummy2";
+	hideonnpc "雑貨商人#einbroch";
+	hideonnpc "マスク商人#einbroch";
+	hideonnpc "駅員#einbroch1";
+	hideonnpc "駅員#einbroch2";
+	hideonnpc "カム#einbroch";
+	hideonnpc "オベ#einbroch";
+	hideonnpc "マーク#einbroch";
+	hideonnpc "ケティン#einbroch";
+	hideonnpc "ケネッシオ#einbroch";
+	hideonnpc "スリーキ#einbroch";
+	hideonnpc "街の青年#einbroch1";
+	hideonnpc "街の青年#einbroch2";
+	hideonnpc "センツ#einbroch";
+	hideonnpc "カロパー#einbroch";
+	hideonnpc "センボ#einbroch";
+	hideonnpc "乗客#einbroch";
+	hideonnpc "飛行船の技師#einbroch";
+	hideonnpc "リュッツ#einbroch";
+	hideonnpc "アーク・クライン#einbroch";
+	hideonnpc "研究所の警備員#einbroch1";
+	hideonnpc "研究所の警備員#einbroch2";
+	monster "einbroch.gat",82,332,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",99,328,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",122,317,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",138,319,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",147,312,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",159,316,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",173,315,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",161,311,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",147,296,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",168,282,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",175,271,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",146,274,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",160,272,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",155,256,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",179,262,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",192,248,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",212,255,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",230,250,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",246,251,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",262,254,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",253,240,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",202,245,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",181,251,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",172,238,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",146,242,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",186,226,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",173,239,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",124,248,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",120,234,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",98,234,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",101,219,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",89,208,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",96,191,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",76,194,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",60,196,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",45,194,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",34,201,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",40,184,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",64,173,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",96,173,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",41,155,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",46,131,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",46,108,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",38,93,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",55,86,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",81,81,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",107,82,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",107,104,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",123,73,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",132,87,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",125,63,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",142,64,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",150,52,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",157,37,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",179,39,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",197,46,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",217,67,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",246,54,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",228,110,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",250,118,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",273,127,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",288,138,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",281,160,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",281,192,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",291,201,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",283,218,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",268,216,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",273,196,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",262,164,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",241,180,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",216,205,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",209,198,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",224,177,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",227,163,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",208,166,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",132,87,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",149,119,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",119,136,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",84,155,"毒の煙",1621,1,"環境管理員#einbroch::OnKilled";
+	monster "einbroch.gat",82,107,"酸の煙",1620,1,"環境管理員#einbroch::OnKilled";
+	initnpctimer;
+	end;
+OnTimer600000:
+	set $EinFactory,0;
+	killmonster "einbroch.gat","環境管理員#einbroch::OnKilled";
+	announce "環境管理員: 避難警報解除!!　大気汚染度が安全値に戻りました。アインブロック住民の皆さん、ご安心ください。",9;
+	hideoffnpc "カプラ職員#einbroch1";
+	hideoffnpc "カプラ職員#einbroch2";
+	hideoffnpc "案内要員#einbroch";
+	hideoffnpc "案内要員#einbrochdummy1";
+	hideoffnpc "案内要員#einbrochdummy2";
+	hideoffnpc "雑貨商人#einbroch";
+	hideoffnpc "マスク商人#einbroch";
+	hideoffnpc "駅員#einbroch1";
+	hideoffnpc "駅員#einbroch2";
+	hideoffnpc "カム#einbroch";
+	hideoffnpc "オベ#einbroch";
+	hideoffnpc "マーク#einbroch";
+	hideoffnpc "ケティン#einbroch";
+	hideoffnpc "ケネッシオ#einbroch";
+	hideoffnpc "スリーキ#einbroch";
+	hideoffnpc "街の青年#einbroch1";
+	hideoffnpc "街の青年#einbroch2";
+	hideoffnpc "センツ#einbroch";
+	hideoffnpc "カロパー#einbroch";
+	hideoffnpc "センボ#einbroch";
+	hideoffnpc "乗客#einbroch";
+	hideoffnpc "飛行船の技師#einbroch";
+	hideoffnpc "リュッツ#einbroch";
+	hideoffnpc "アーク・クライン#einbroch";
+	hideoffnpc "研究所の警備員#einbroch1";
+	hideoffnpc "研究所の警備員#einbroch2";
+	stopnpctimer;
+	end;
+OnKilled:
+	end;	//ダミーイベント
 }
 
 //============================================================
