@@ -49,9 +49,8 @@ int status_get_amotion(struct block_list *bl);
 int status_get_dmotion(struct block_list *bl);
 int status_get_element(struct block_list *bl);
 int status_get_attack_element(struct block_list *bl);
-int status_get_attack_element2(struct block_list *bl);  //左手武器属性取得
-//int status_get_sevenwind_element(struct block_list *bl);
-//int status_get_sevenwind_element2(struct block_list *bl);  //左手武器属性取得
+int status_get_attack_element2(struct block_list *bl);
+int status_get_attack_element_nw(struct block_list *bl);
 #define status_get_elem_type(bl)	(status_get_element(bl)%20)
 #define status_get_elem_level(bl)	(status_get_element(bl)/20)
 int status_get_party_id(struct block_list *bl);

@@ -1166,11 +1166,12 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	if(attack_type&BF_WEAPON)
 	{
-		//物理通常攻撃なら混乱終了
+		// 物理通常攻撃なら混乱終了
 		if(tsc_data && tsc_data[SC_CONFUSION].timer!=-1 && skillid == 0)
 			status_change_end(bl,SC_CONFUSION,-1);
 
-		if(sd){	/* カードによる追加効果 */
+		// カードによる追加効果
+		if(sd && skillid != WS_CARTTERMINATION && skillid != CR_ACIDDEMONSTRATION) {
 			int i;
 			int sc_def_card=100;
 
@@ -1206,7 +1207,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 					}
 				}
 
-				//自分に状態異常
+				// 自分に状態異常
 				if(i==SC_STONE || i==SC_FREEZE)
 					sc_def_card=sc_def_mdef2;
 				else if(i==SC_STAN || i==SC_POISON || i==SC_SILENCE || i==SC_BLEED)
@@ -1233,7 +1234,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			}
 		}
 
-		//村正による呪い
+		// 村正による呪い
 		if(sd && sd->curse_by_muramasa > 0)
 		{
 			if(status_get_luk(src) < sd->status.base_level)
@@ -1243,7 +1244,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			}
 		}
 
-		//殴ってアイテム消滅
+		// 殴ってアイテム消滅
 		if(sd && sd->loss_equip_flag&0x0010)
 		{
 			int i;
@@ -1256,7 +1257,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			}
 		}
 
-		//殴ってアイテムブレイク
+		// 殴ってアイテムブレイク
 		if(sd && sd->loss_equip_flag&0x0100)
 		{
 			int i;
@@ -1269,7 +1270,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			}
 		}
 
-		//殴ってmob変化
+		// 殴ってmob変化
 		if(sd && dstmd && mob_db[dstmd->class_].race != RCT_HUMAN && !map[dstmd->bl.m].flag.nobranch
 			&& !(mob_db[dstmd->class_].mode&0x20) && dstmd->class_ != 1288 && dstmd->state.special_mob_ai != 1)
 		{
@@ -3883,7 +3884,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			ar=skilllv/3;
 			skill_brandishspear_first(&tc,dir,x,y);
 			skill_brandishspear_dir(&tc,dir,4);
-			/* 範囲④ */
+			/* 範囲4 */
 			if(skilllv == 10){
 				for(c=1;c<4;c++){
 					map_foreachinarea(skill_area_sub,
@@ -3892,7 +3893,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						skill_castend_damage_id);
 				}
 			}
-			/* 範囲③② */
+			/* 範囲3,2 */
 			if(skilllv > 6){
 				skill_brandishspear_dir(&tc,dir,-1);
 				n--;
@@ -3913,7 +3914,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					}
 				}
 			}
-			/* 範囲① */
+			/* 範囲1 */
 			for(c=0;c<10;c++){
 				if(c==0||c==5) skill_brandishspear_dir(&tc,dir,-1);
 				map_foreachinarea(skill_area_sub,
@@ -4885,9 +4886,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_TRANSFORMATION:
 	case NPC_METAMORPHOSIS:
 		if(md && md->skillidx != -1) {
+			struct mob_skill *ms = &mob_db[md->class_].skill[md->skillidx];
+			int size = sizeof(ms->val)/sizeof(ms->val[0]);
 			if(skilllv > 1)
-				mob_summonslave(md,mob_db[md->class_].skill[md->skillidx].val,skilllv-1,0);
-			mob_class_change(md,mob_db[md->class_].skill[md->skillidx].val,sizeof(mob_db[md->class_].skill[md->skillidx].val)/sizeof(mob_db[md->class_].skill[md->skillidx].val[0]));
+				mob_summonslave(md,ms->val,size,skilllv-1,0);
+			mob_class_change(md,ms->val,size);
 		}
 		break;
 

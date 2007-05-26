@@ -396,7 +396,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 				status_change_end(bl, SC_ENDURE, -1);
 		}
 		/* オートガード */
-		if(sc_data[SC_AUTOGUARD].timer != -1 && damage > 0 && flag&BF_WEAPON) {
+		if(sc_data[SC_AUTOGUARD].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != WS_CARTTERMINATION) {
 			if(atn_rand()%100 < sc_data[SC_AUTOGUARD].val2) {
 				int delay;
 				damage = 0;
@@ -417,7 +417,7 @@ int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,i
 			}
 		}
 		/* パリイング */
-		if(sc_data[SC_PARRYING].timer != -1 && damage > 0 && flag&BF_WEAPON) {
+		if(sc_data[SC_PARRYING].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != WS_CARTTERMINATION) {
 			if(atn_rand()%100 < sc_data[SC_PARRYING].val2)
 			{
 				int dir = map_calc_dir(bl,src->x,src->y);
@@ -2142,7 +2142,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 		/* 15．対象の防御力によるダメージの減少 */
 		switch (skill_num) {
 		case KN_AUTOCOUNTER:
-		case CR_GRANDCROSS:
+		//case CR_GRANDCROSS:
 		case MO_INVESTIGATE:
 		case MO_EXTREMITYFIST:
 		case CR_ACIDDEMONSTRATION:
@@ -2928,7 +2928,7 @@ struct Damage battle_calc_magic_attack(struct block_list *bl,struct block_list *
 			{
 				MATK_FIX( 40+sd->status.base_level, 100 );
 			}
-			ele = status_get_attack_element(bl);
+			ele = status_get_attack_element_nw(bl);
 			if(sc_data && sc_data[SC_SMA].timer != -1)
 				status_change_end(bl,SC_SMA,-1);
 			break;
@@ -3946,7 +3946,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					if(rdamage < 1) rdamage = 1;
 				}
 			}
-			if(sc_data && sc_data[SC_REFLECTSHIELD].timer != -1) { //リフレクトシールド時
+			if(sc_data && sc_data[SC_REFLECTSHIELD].timer != -1 && skillid != WS_CARTTERMINATION) { //リフレクトシールド時
 				rdamage += damage * sc_data[SC_REFLECTSHIELD].val2 / 100; //跳ね返し計算
 				if(rdamage < 1) rdamage = 1;
 			}

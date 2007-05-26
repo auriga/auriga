@@ -994,6 +994,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			casttime = 0;
 		break;
 	case PF_MEMORIZE:
+	case GD_REGENERATION:	/* 激励 */
+	case GD_RESTORE:	/* 治療 */
 		nomemorize = 1;
 		break;
 	case KN_CHARGEATK:	/* チャージアタック */

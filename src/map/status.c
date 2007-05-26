@@ -2134,7 +2134,7 @@ L_RECALC:
 }
 
 /*==========================================
- * 対象のgroupを返す(汎用)
+ * 対象のgroupを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2150,7 +2150,7 @@ int status_get_group(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のClassを返す(汎用)
+ * 対象のClassを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2171,7 +2171,7 @@ int status_get_class(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の方向を返す(汎用)
+ * 対象の方向を返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2192,7 +2192,7 @@ int status_get_dir(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のレベルを返す(汎用)
+ * 対象のレベルを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2213,7 +2213,7 @@ int status_get_lv(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の射程を返す(汎用)
+ * 対象の射程を返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2234,7 +2234,7 @@ int status_get_range(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のHPを返す(汎用)
+ * 対象のHPを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2253,7 +2253,7 @@ int status_get_hp(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のSPを返す(汎用)
+ * 対象のSPを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2270,7 +2270,7 @@ int status_get_sp(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のMHPを返す(汎用)
+ * 対象のMHPを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2324,7 +2324,7 @@ int status_get_max_hp(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のStrを返す(汎用)
+ * 対象のStrを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2365,7 +2365,7 @@ int status_get_str(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のAgiを返す(汎用)
+ * 対象のAgiを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2413,7 +2413,7 @@ int status_get_agi(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のVitを返す(汎用)
+ * 対象のVitを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2445,7 +2445,7 @@ int status_get_vit(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のIntを返す(汎用)
+ * 対象のIntを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2484,7 +2484,7 @@ int status_get_int(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のDexを返す(汎用)
+ * 対象のDexを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2530,7 +2530,7 @@ int status_get_dex(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のLukを返す(汎用)
+ * 対象のLukを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2564,7 +2564,7 @@ int status_get_luk(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のFleeを返す(汎用)
+ * 対象のFleeを返す
  * 戻りは整数で1以上
  *------------------------------------------
  */
@@ -2631,7 +2631,7 @@ int status_get_flee(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のHitを返す(汎用)
+ * 対象のHitを返す
  * 戻りは整数で1以上
  *------------------------------------------
  */
@@ -2671,7 +2671,7 @@ int status_get_hit(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の完全回避を返す(汎用)
+ * 対象の完全回避を返す
  * 戻りは整数で1以上
  *------------------------------------------
  */
@@ -2700,7 +2700,7 @@ int status_get_flee2(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のクリティカルを返す(汎用)
+ * 対象のクリティカルを返す
  * 戻りは整数で1以上
  *------------------------------------------
  */
@@ -2789,7 +2789,7 @@ int status_get_baseatk(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のAtkを返す(汎用)
+ * 対象のAtkを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2849,7 +2849,7 @@ int status_get_atk(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の左手Atkを返す(汎用)
+ * 対象の左手Atkを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2870,7 +2870,7 @@ int status_get_atk_(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のAtk2を返す(汎用)
+ * 対象のAtk2を返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2937,7 +2937,7 @@ int status_get_atk2(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の左手Atk2を返す(汎用)
+ * 対象の左手Atk2を返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2952,7 +2952,7 @@ int status_get_atk_2(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のMAtk1を返す(汎用)
+ * 対象のMAtk1を返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -2999,7 +2999,7 @@ int status_get_matk1(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のMAtk2を返す(汎用)
+ * 対象のMAtk2を返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -3046,7 +3046,7 @@ int status_get_matk2(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のDefを返す(汎用)
+ * 対象のDefを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -3127,7 +3127,7 @@ int status_get_def(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のMDefを返す(汎用)
+ * 対象のMDefを返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -3165,7 +3165,7 @@ int status_get_mdef(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のDef2を返す(汎用)
+ * 対象のDef2を返す
  * 戻りは整数で1以上
  *------------------------------------------
  */
@@ -3218,7 +3218,7 @@ int status_get_def2(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のMDef2を返す(汎用)
+ * 対象のMDef2を返す
  * 戻りは整数で0以上
  *------------------------------------------
  */
@@ -3249,7 +3249,7 @@ int status_get_mdef2(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のSpeed(移動速度)を返す(汎用)
+ * 対象のSpeed(移動速度)を返す
  * 戻りは整数で1以上
  * Speedは小さいほうが移動速度が速い
  *------------------------------------------
@@ -3339,7 +3339,7 @@ int status_get_speed(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のaDelay(攻撃時ディレイ)を返す(汎用)
+ * 対象のaDelay(攻撃時ディレイ)を返す
  * aDelayは小さいほうが攻撃速度が速い
  *------------------------------------------
  */
@@ -3441,7 +3441,7 @@ int status_get_adelay(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のamotionを返す(汎用)
+ * 対象のamotionを返す
  *------------------------------------------
  */
 int status_get_amotion(struct block_list *bl)
@@ -3523,7 +3523,7 @@ int status_get_amotion(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のdmotionを返す(汎用)
+ * 対象のdmotionを返す
  *------------------------------------------
  */
 int status_get_dmotion(struct block_list *bl)
@@ -3561,7 +3561,7 @@ int status_get_dmotion(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の属性を返す(汎用)
+ * 対象の属性を返す
  *------------------------------------------
  */
 int status_get_element(struct block_list *bl)
@@ -3615,15 +3615,15 @@ int status_get_element(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の攻撃属性を返す(汎用)
+ * 対象の攻撃属性を返す
  *------------------------------------------
  */
 int status_get_attack_element(struct block_list *bl)
 {
-	int ret = 0;
+	int ret = ELE_NEUTRAL;
 	struct status_change *sc_data = NULL;
 
-	nullpo_retr(0, bl);
+	nullpo_retr(ELE_NEUTRAL, bl);
 
 	sc_data = status_get_sc_data(bl);
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
@@ -3659,19 +3659,18 @@ int status_get_attack_element(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の攻撃属性（左手）を返す(汎用)
+ * 対象の攻撃属性（左手）を返す
  *------------------------------------------
  */
 int status_get_attack_element2(struct block_list *bl)
 {
-	nullpo_retr(0, bl);
+	nullpo_retr(ELE_NEUTRAL, bl);
 
 	if(bl->type==BL_PC && (struct map_session_data *)bl) {
 		int ret = ((struct map_session_data *)bl)->atk_ele_;
 		struct status_change *sc_data = status_get_sc_data(bl);
 
 		if(sc_data) {
-
 			if( sc_data[SC_FROSTWEAPON].timer!=-1)		// フロストウェポン
 				ret = ELE_WATER;
 			if( sc_data[SC_SEISMICWEAPON].timer!=-1)	// サイズミックウェポン
@@ -3690,15 +3689,53 @@ int status_get_attack_element2(struct block_list *bl)
 				ret = ELE_GHOST;
 			if( sc_data[SC_UNDEADELEMENT].timer!=-1)	// 不死属性
 				ret = ELE_UNDEAD;
-
 		}
 		return ret;
 	}
-	return 0;
+	return ELE_NEUTRAL;
 }
 
 /*==========================================
- * 対象のパーティIDを返す(汎用)
+ * 対象の武器属性を除いた攻撃属性を返す
+ *------------------------------------------
+ */
+int status_get_attack_element_nw(struct block_list *bl)
+{
+	int ret = ELE_NEUTRAL;
+	struct status_change *sc_data = NULL;
+
+	nullpo_retr(ELE_NEUTRAL, bl);
+
+	sc_data = status_get_sc_data(bl);
+
+	if(bl->type==BL_HOM && (struct homun_data *)bl)
+		ret = ELE_NONE;// 無属性
+
+	if(sc_data) {
+		if( sc_data[SC_FROSTWEAPON].timer!=-1)		// フロストウェポン
+			ret = ELE_WATER;
+		if( sc_data[SC_SEISMICWEAPON].timer!=-1)	// サイズミックウェポン
+			ret = ELE_EARTH;
+		if( sc_data[SC_FLAMELAUNCHER].timer!=-1)	// フレームランチャー
+			ret = ELE_FIRE;
+		if( sc_data[SC_LIGHTNINGLOADER].timer!=-1)	// ライトニングローダー
+			ret = ELE_WIND;
+		if( sc_data[SC_ENCPOISON].timer!=-1)		// エンチャントポイズン
+			ret = ELE_POISON;
+		if( sc_data[SC_ASPERSIO].timer!=-1)		// アスペルシオ
+			ret = ELE_HOLY;
+		if( sc_data[SC_DARKELEMENT].timer!=-1)		// 闇属性
+			ret = ELE_DARK;
+		if( sc_data[SC_ATTENELEMENT].timer!=-1)		// 念属性
+			ret = ELE_GHOST;
+		if( sc_data[SC_UNDEADELEMENT].timer!=-1)	// 不死属性
+			ret = ELE_UNDEAD;
+	}
+	return ret;
+}
+
+/*==========================================
+ * 対象のパーティIDを返す
  *------------------------------------------
  */
 int status_get_party_id(struct block_list *bl)
@@ -3725,7 +3762,7 @@ int status_get_party_id(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のギルドIDを返す(汎用)
+ * 対象のギルドIDを返す
  *------------------------------------------
  */
 int status_get_guild_id(struct block_list *bl)
@@ -3748,7 +3785,7 @@ int status_get_guild_id(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の種族を返す(汎用)
+ * 対象の種族を返す
  *------------------------------------------
  */
 int status_get_race(struct block_list *bl)
@@ -3798,7 +3835,7 @@ int status_get_race(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のサイズを返す(汎用)
+ * 対象のサイズを返す
  *------------------------------------------
  */
 int status_get_size(struct block_list *bl)
@@ -3822,7 +3859,7 @@ int status_get_size(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のモードを返す(汎用)
+ * 対象のモードを返す
  *------------------------------------------
  */
 int status_get_mode(struct block_list *bl)
@@ -3840,7 +3877,7 @@ int status_get_mode(struct block_list *bl)
 }
 
 /*==========================================
- * 対象のMVPExpを返す(汎用)
+ * 対象のMVPExpを返す
  *------------------------------------------
  */
 int status_get_mexp(struct block_list *bl)
@@ -3856,7 +3893,7 @@ int status_get_mexp(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の敵タイプを返す(汎用)
+ * 対象の敵タイプを返す
  *------------------------------------------
  */
 int status_get_enemy_type(struct block_list *bl)
@@ -3874,7 +3911,7 @@ int status_get_enemy_type(struct block_list *bl)
 }
 
 /*==========================================
- * 対象の服色を返す(汎用)
+ * 対象の服色を返す
  *------------------------------------------
  */
 short status_get_clothes_color(struct block_list *bl)

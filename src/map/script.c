@@ -5203,16 +5203,16 @@ int buildin_delinventory(struct script_state *st)
 	if(idx < 0 || idx >= MAX_INVENTORY || amount <= 0)
 		return 0;
 
-	if(sd->inventory_data[idx]->type == 7) {
-		if(sd->status.inventory[idx].nameid > 0) {
-			if(!skip_egg &&
-			   sd->status.inventory[idx].card[0] == (short)0xff00 &&
-			   search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
-			{
-				intif_delete_petdata(*((long *)(&sd->status.inventory[idx].card[1])));
-			}
-		}
+	if(!skip_egg &&
+	   sd->status.inventory[idx].nameid > 0 &&
+	   sd->inventory_data[idx]->type == 7 &&
+	   sd->status.inventory[idx].amount > 0 &&
+	   sd->status.inventory[idx].card[0] == (short)0xff00 &&
+	   search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
+	{
+		intif_delete_petdata(*((long *)(&sd->status.inventory[idx].card[1])));
 	}
+
 	if(sd->status.inventory[idx].amount >= amount)
 		pc_delitem(sd,idx,amount,0);
 	else
