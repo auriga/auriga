@@ -455,23 +455,59 @@ int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 }
 
 /*==========================================
+ * ターゲットのロックが可能かどうか
+ *------------------------------------------
+ */
+static int mob_can_lock(struct mob_data *md, struct block_list *bl)
+{
+	struct status_change *sc_data;
+	unsigned int *option;
+	int mode, race;
+
+	nullpo_retr(0, md);
+
+	if(bl == NULL || unit_isdead(bl))
+		return 0;
+
+	mode = status_get_mode(&md->bl);
+	race = status_get_race(&md->bl);
+
+	sc_data = status_get_sc_data(bl);
+	option  = status_get_option(bl);
+
+	if( sc_data && (sc_data[SC_TRICKDEAD].timer != -1 || sc_data[SC_FORCEWALKING].timer != -1) )
+		return 0;
+	if( md->sc_data[SC_WINKCHARM].timer != -1 )
+		return 0;
+	if( !(mode&0x20) && option && ((*option)&0x4006) && race != RCT_INSECT && race != RCT_DEMON )
+		return 0;
+
+	if(bl->type == BL_PC) {
+		struct map_session_data *tsd = (struct map_session_data *)bl;
+		if(tsd) {
+			if( tsd->invincible_timer != -1 )
+				return 0;
+			if( pc_isinvisible(tsd) )
+				return 0;
+			if( !(mode&0x20) && tsd->state.gangsterparadise )
+				return 0;
+		}
+	}
+	return 1;
+}
+
+/*==========================================
  * モンスターの攻撃対象決定
  *------------------------------------------
  */
 int mob_target(struct mob_data *md,struct block_list *bl,int dist)
 {
-	struct map_session_data *sd;
-	struct status_change *sc_data = NULL;
-	unsigned int *option;
-	int mode,race;
+	int mode;
 
 	nullpo_retr(0, md);
 	nullpo_retr(0, bl);
 
-	sc_data = status_get_sc_data(bl);
-	option  = status_get_option(bl);
-	race    = status_get_race(&md->bl);
-	mode    = status_get_mode(&md->bl);
+	mode = status_get_mode(&md->bl);
 
 	if(!(mode&0x80)) {
 		md->target_id = 0;
@@ -484,17 +520,7 @@ int mob_target(struct mob_data *md,struct block_list *bl,int dist)
 			return 0;
 	}
 
-	if(mode&0x20 ||	// MVPMOBなら強制
-	  ((!sc_data || (sc_data[SC_TRICKDEAD].timer == -1 && sc_data[SC_FORCEWALKING].timer == -1 && md->sc_data[SC_WINKCHARM].timer == -1)) &&
-	  ( (option && !(*option&0x06) ) || race == RCT_INSECT || race == RCT_DEMON) ) ){
-		if(bl->type == BL_PC) {
-			nullpo_retr(0, sd = (struct map_session_data *)bl);
-			if(sd->invincible_timer != -1 || pc_isinvisible(sd))
-				return 0;
-			if(!(mode&0x20) && sd->state.gangsterparadise)
-				return 0;
-		}
-
+	if(mob_can_lock(md,bl)) {
 		if(bl->type == BL_PC || bl->type == BL_MOB || bl->type == BL_HOM)
 			md->target_id=bl->id;	// 妨害がなかったのでロック
 		md->min_chase=dist+13;
@@ -529,10 +555,8 @@ int mob_attacktarget(struct mob_data *md,struct block_list *target,int flag)
  */
 static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 {
-	struct map_session_data *tsd=NULL;
-	struct mob_data *smd, *tmd=NULL;
-	struct homun_data *thd=NULL;
-	int mode,race,dist,range,flag;
+	struct mob_data *smd = NULL;
+	int dist,range,flag;
 	int *cnt;
 
 	nullpo_retr(0, bl);
@@ -541,17 +565,11 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 	nullpo_retr(0, cnt=va_arg(ap,int *));
 	nullpo_retr(0, flag=va_arg(ap,int));
 
-	tsd = BL_DOWNCAST( BL_PC , bl );
-	tmd = BL_DOWNCAST( BL_MOB, bl );
-	thd = BL_DOWNCAST( BL_HOM, bl );
-
 	cnt[3]++; // 範囲内のオブジェクト数
 
 	if( smd->bl.id == bl->id )
 		return 0; // self
 
-	mode  = status_get_mode( &smd->bl );
-	race  = status_get_race( &smd->bl );
 	dist  = unit_distance(smd->bl.x,smd->bl.y,bl->x,bl->y);
 	range = (smd->sc_data[SC_BLIND].timer != -1 || smd->sc_data[SC_FOGWALLPENALTY].timer != -1)?1:10;
 
@@ -559,19 +577,9 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 	if( (flag & 1) && dist<=range && battle_check_target(&smd->bl,bl,BCT_ENEMY)>=1) {
 		int active_flag = 0;
 		// ターゲット射程内にいるなら、ロックする
-		if(tsd && !unit_isdead(&tsd->bl) && tsd->invincible_timer == -1 && !pc_isinvisible(tsd) ) {
-			// 妨害がないか判定
-			if(mode&0x20 || (
-			   tsd->sc_data[SC_TRICKDEAD].timer == -1 &&
-			   tsd->sc_data[SC_FORCEWALKING].timer == -1 &&
-			   smd->sc_data[SC_WINKCHARM].timer == -1 &&
-			   !tsd->state.gangsterparadise &&
-			   (!(pc_ishiding(tsd) && race != RCT_INSECT && race != RCT_DEMON))) )
+		if(bl->type == BL_PC || bl->type == BL_MOB || bl->type == BL_HOM) {
+			if(mob_can_lock(smd,bl))	// 妨害がないか判定
 				active_flag = 1;
-		} else if(tmd && dist<=range) {
-			active_flag = 1;
-		} else if(thd && !unit_isdead(&thd->bl) && dist<=range) {
-			active_flag = 1;
 		}
 		if(active_flag) {
 			// 射線チェック
@@ -594,9 +602,12 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 		}
 	}
 	// リンク
-	if( (flag & 4) && tmd && tmd->class_ == smd->class_ && !tmd->target_id && dist<13) {
-		tmd->target_id = smd->target_id;
-		tmd->min_chase = 13;
+	if( (flag & 4) && bl->type == BL_MOB) {
+		struct mob_data *tmd = (struct mob_data *)bl;
+		if(tmd && tmd->class_ == smd->class_ && !tmd->target_id && dist<13) {
+			tmd->target_id = smd->target_id;
+			tmd->min_chase = 13;
+		}
 	}
 
 	return 0;
@@ -610,7 +621,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 {
 	struct mob_data *mmd=NULL;
 	struct block_list *bl;
-	int race,old_dist;
+	int old_dist;
 
 	nullpo_retr(0, md);
 
@@ -703,42 +714,14 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 	}
 
 	// 主がいて、主がロックしていて自分はロックしていない
-	if( mmd->target_id>0 && !md->target_id){
-		struct map_session_data *sd=map_id2sd(mmd->target_id);
-		if(sd!=NULL && !unit_isdead(&sd->bl) && sd->invincible_timer == -1 && !pc_isinvisible(sd)){
-
-			race=mob_db[md->class_].race;
-			// 妨害がないか判定
-			if(status_get_mode(&md->bl)&0x20 || (
-			   sd->sc_data[SC_TRICKDEAD].timer == -1 &&
-			   sd->sc_data[SC_FORCEWALKING].timer == -1 &&
-			   mmd->sc_data[SC_WINKCHARM].timer == -1 &&
-			   !sd->state.gangsterparadise &&
-			   (!(pc_ishiding(sd) && race != RCT_INSECT && race != RCT_DEMON))) )
-			{
-				md->target_id=sd->bl.id;
-				md->min_chase=5+unit_distance(md->bl.x,md->bl.y,sd->bl.x,sd->bl.y);
-				md->state.master_check = 1;
-			}
+	if(mmd->target_id > 0 && !md->target_id) {
+		struct block_list *tbl = map_id2bl(mmd->target_id);
+		if(tbl && mob_can_lock(md,tbl)) {
+			md->target_id = tbl->id;
+			md->min_chase = 5 + unit_distance(md->bl.x,md->bl.y,tbl->x,tbl->y);
+			md->state.master_check = 1;
 		}
 	}
-
-	// 主がいて、主がロックしてなくて自分はロックしている
-/*	if( md->target_id>0 && !mmd->target_id ){
-		struct map_session_data *sd=map_id2sd(md->target_id);
-		if(sd!=NULL && !unit_isdead(&sd->bl) && sd->invincible_timer == -1 && !pc_isinvisible(sd)){
-
-			race=mob_db[mmd->class_].race;
-			if(mode&0x20 ||
-				(sd->sc_data[SC_TRICKDEAD].timer == -1 &&
-				(!(sd->status.option&0x06) || race == RCT_INSECT || race == RCT_DEMON)
-				) ){	// 妨害がないか判定
-
-				mmd->target_id=sd->bl.id;
-				mmd->min_chase=5+unit_distance(mmd->bl.x,mmd->bl.y,sd->bl.x,sd->bl.y);
-			}
-		}
-	}*/
 
 	return 0;
 }
@@ -816,7 +799,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	struct block_list *tbl=NULL;
 	int dist=0;
 	int attack_type=0;
-	int mode, race, search_flag = 0;
+	int mode, search_flag = 0;
 
 	nullpo_retr(0, md);
 
@@ -841,7 +824,6 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	}
 
 	mode = status_get_mode( &md->bl );
-	race = status_get_race( &md->bl );
 
 	// 異常
 	if((md->opt1 > 0 && md->opt1 != 6) || md->sc_data[SC_BLADESTOP].timer != -1)
@@ -939,17 +921,9 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		}
 	} else if(tbl->type==BL_PC || tbl->type==BL_MOB || tbl->type==BL_HOM) {
 		// 対象がPC、MOB、もしくはHOM
-		struct map_session_data *tsd = BL_DOWNCAST( BL_PC,  tbl );
-
-		// スキルなどによる策敵妨害判定
-		if( tsd && !(mode&0x20) && (
-			tsd->sc_data[SC_TRICKDEAD].timer != -1 ||
-			tsd->sc_data[SC_FORCEWALKING].timer!=-1 ||
-			md->sc_data[SC_TRICKDEAD].timer != -1 ||
-			md->sc_data[SC_WINKCHARM].timer != -1 ||
-			tsd->state.gangsterparadise ||
-			(pc_ishiding(tsd) && race != RCT_INSECT && race != RCT_DEMON)) ) {
-				mob_unlocktarget(md,tick);
+		if(!mob_can_lock(md,tbl)) {
+			// スキルなどによる策敵妨害判定
+			mob_unlocktarget(md,tick);
 		} else if(!battle_check_range(&md->bl,tbl,mob_db[md->class_].range)){
 			// 攻撃範囲外なので移動
 			if(!(mode&1)){	// 移動しないモード
@@ -2831,22 +2805,8 @@ static int mobskill_anothertarget(struct block_list *bl, va_list ap)
 			if(battle_check_target(&md->bl,bl,BCT_ENEMY)<=0) {
 				return 0;
 			}
-			if(bl->type == BL_PC) {
-				struct map_session_data *tsd = (struct map_session_data *)bl;
-				if(tsd) {
-					int race = status_get_race(&md->bl);
-					int mode = status_get_mode(&md->bl);
-					if( tsd->invincible_timer != -1 ||
-					    pc_isinvisible(tsd) ||
-					    tsd->sc_data[SC_TRICKDEAD].timer != -1 ||
-					    tsd->sc_data[SC_FORCEWALKING].timer != -1 ||
-					    md->sc_data[SC_WINKCHARM].timer != -1 )
-						return 0;
-					if( !(mode&0x20) ) {
-						if( tsd->state.gangsterparadise || (pc_ishiding(tsd) && race != RCT_INSECT && race != RCT_DEMON) )
-							return 0;
-					}
-				}
+			if(!mob_can_lock(md,bl)) {
+				return 0;
 			}
 			break;
 	}

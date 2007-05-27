@@ -3966,7 +3966,7 @@ short *status_get_sc_count(struct block_list *bl)
 
 unsigned short *status_get_opt1(struct block_list *bl)
 {
-	nullpo_retr(0, bl);
+	nullpo_retr(NULL, bl);
 
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return &((struct mob_data*)bl)->opt1;
@@ -3976,12 +3976,12 @@ unsigned short *status_get_opt1(struct block_list *bl)
 		return &((struct npc_data*)bl)->opt1;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
 		return &((struct homun_data*)bl)->opt1;
-	return 0;
+	return NULL;
 }
 
 unsigned short *status_get_opt2(struct block_list *bl)
 {
-	nullpo_retr(0, bl);
+	nullpo_retr(NULL, bl);
 
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return &((struct mob_data*)bl)->opt2;
@@ -3991,12 +3991,12 @@ unsigned short *status_get_opt2(struct block_list *bl)
 		return &((struct npc_data*)bl)->opt2;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
 		return &((struct homun_data*)bl)->opt2;
-	return 0;
+	return NULL;
 }
 
 unsigned int *status_get_opt3(struct block_list *bl)
 {
-	nullpo_retr(0, bl);
+	nullpo_retr(NULL, bl);
 
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return &((struct mob_data*)bl)->opt3;
@@ -4006,12 +4006,12 @@ unsigned int *status_get_opt3(struct block_list *bl)
 		return &((struct npc_data*)bl)->opt3;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
 		return &((struct homun_data*)bl)->opt3;
-	return 0;
+	return NULL;
 }
 
 unsigned int *status_get_option(struct block_list *bl)
 {
-	nullpo_retr(0, bl);
+	nullpo_retr(NULL, bl);
 
 	if(bl->type==BL_MOB && (struct mob_data *)bl)
 		return &((struct mob_data*)bl)->option;
@@ -4021,7 +4021,7 @@ unsigned int *status_get_option(struct block_list *bl)
 		return &((struct npc_data*)bl)->option;
 	else if(bl->type==BL_HOM && (struct homun_data *)bl)
 		return &((struct homun_data*)bl)->status.option;
-	return 0;
+	return NULL;
 }
 
 int status_check_no_magic_damage(struct block_list *bl)
@@ -4757,21 +4757,22 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		/* option2 */
 		case SC_DPOISON:			/* 猛毒 */
-		{
-			int mhp = status_get_max_hp(bl);
-			int hp = status_get_hp(bl);
-			// MHPの1/4以下にはならない
-			if (hp > mhp>>2) {
-				int diff = 0;
-				if(sd)
-					diff = mhp*10/100;
-				else if(md)
-					diff = mhp*15/100;
-				if (hp - diff < mhp>>2)
-					diff = hp - (mhp>>2);
-				unit_heal(bl, -diff, 0);
+			{
+				int mhp = status_get_max_hp(bl);
+				int hp = status_get_hp(bl);
+				// MHPの1/4以下にはならない
+				if (hp > mhp>>2) {
+					int diff = 0;
+					if(sd)
+						diff = mhp*10/100;
+					else if(md)
+						diff = mhp*15/100;
+					if (hp - diff < mhp>>2)
+						diff = hp - (mhp>>2);
+					unit_heal(bl, -diff, 0);
+				}
 			}
-		}	// fall through
+			// fall through
 		case SC_POISON:				/* 毒 */
 			calc_flag = 1;
 			if(!(flag&2)) {
@@ -4782,7 +4783,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(val3 < 1) val3 = 1;
 			tick = 1000;
 			break;
-		case SC_SILENCE:			/* 沈黙（レックスデビーナ） */
+		case SC_SILENCE:			/* 沈黙 */
+			skill_stop_dancing(bl,0);
 			if (sc_data[SC_GOSPEL].timer!=-1) {
 				status_change_end(bl,SC_GOSPEL,-1);
 				break;

@@ -3989,39 +3989,39 @@ int pc_checkskill2(struct map_session_data *sd,int skill_id)
  */
 static int pc_checkallowskill(struct map_session_data *sd)
 {
+	int i, mask;
+	const int skill_list[] = {
+		KN_TWOHANDQUICKEN,
+		KN_ONEHAND,
+		LK_AURABLADE,
+		LK_PARRYING,
+		LK_CONCENTRATION,
+		CR_SPEARQUICKEN,
+		BS_ADRENALINE,
+		BS_ADRENALINE2,
+		GS_GATLINGFEVER,
+	};
+
 	nullpo_retr(0, sd);
 
-	if( sd->sc_data == NULL )
+	if( sd->sc_count <= 0 )
 		return 0;
 
-	if(!(skill_get_weapontype(KN_TWOHANDQUICKEN)&(1<<sd->status.weapon)) && sd->sc_data[SC_TWOHANDQUICKEN].timer!=-1) {	// 2HQ
-		status_change_end(&sd->bl,SC_TWOHANDQUICKEN,-1);	// 2HQを解除
-	}
-	if(!(skill_get_weapontype(KN_ONEHAND)&(1<<sd->status.weapon)) && sd->sc_data[SC_ONEHAND].timer!=-1) {	// 1HQ
-		status_change_end(&sd->bl,SC_ONEHAND,-1);	// 1HQを解除
-	}
-	if(!(skill_get_weapontype(LK_AURABLADE)&(1<<sd->status.weapon)) && sd->sc_data[SC_AURABLADE].timer!=-1) {	/* オーラブレード */
-		status_change_end(&sd->bl,SC_AURABLADE,-1);	/* オーラブレードを解除 */
-	}
-	if(!(skill_get_weapontype(LK_PARRYING)&(1<<sd->status.weapon)) && sd->sc_data[SC_PARRYING].timer!=-1) {	/* パリイング */
-		status_change_end(&sd->bl,SC_PARRYING,-1);	/* パリイングを解除 */
-	}
-	if(!(skill_get_weapontype(LK_CONCENTRATION)&(1<<sd->status.weapon)) && sd->sc_data[SC_CONCENTRATION].timer!=-1) {	/* コンセントレーション */
-		status_change_end(&sd->bl,SC_CONCENTRATION,-1);	/* コンセントレーションを解除 */
-	}
-	if(!(skill_get_weapontype(CR_SPEARQUICKEN)&(1<<sd->status.weapon)) && sd->sc_data[SC_SPEARSQUICKEN].timer!=-1){	// スピアクィッケン
-		status_change_end(&sd->bl,SC_SPEARSQUICKEN,-1);	// スピアクイッケンを解除
-	}
-	if(!(skill_get_weapontype(BS_ADRENALINE)&(1<<sd->status.weapon)) && sd->sc_data[SC_ADRENALINE].timer!=-1){	// アドレナリンラッシュ
-		status_change_end(&sd->bl,SC_ADRENALINE,-1);	// アドレナリンラッシュを解除
-	}
-	if(!(skill_get_weapontype(BS_ADRENALINE2)&(1<<sd->status.weapon)) && sd->sc_data[SC_ADRENALINE2].timer!=-1){	// フルアドレナリンラッシュ
-		status_change_end(&sd->bl,SC_ADRENALINE2,-1);	// フルアドレナリンラッシュを解除
-	}
-	if(!(skill_get_weapontype(GS_GATLINGFEVER)&(1<<sd->status.weapon)) && sd->sc_data[SC_GATLINGFEVER].timer!=-1){	// ガトリングフィーバー
-		status_change_end(&sd->bl,SC_GATLINGFEVER,-1);	// ガトリングフィーバーを解除
+	mask = 1 << sd->status.weapon;
+
+	// 武器が合わないならステータス異常を解除
+	for(i=0; i < sizeof(skill_list)/sizeof(skill_list[0]); i++) {
+		int type = SkillStatusChangeTable[skill_list[i]];
+		if( type >= 0 && sd->sc_data[type].timer != -1 ) {
+			if( !(skill_get_weapontype(skill_list[i]) & mask) )
+				status_change_end(&sd->bl, type, -1);
+		}
 	}
 
+	if( sd->sc_data[SC_DANCING].timer != -1 ) {
+		if( !(skill_get_weapontype(sd->sc_data[SC_DANCING].val1) & mask) )
+			skill_stop_dancing(&sd->bl,0);	// 演奏解除
+	}
 	if( sd->sc_data[SC_SPURT].timer != -1 && (sd->weapontype1 != WT_FIST || sd->weapontype2 != WT_FIST) ){
 		status_change_end(&sd->bl,SC_SPURT,-1);	// 駆け足STR
 	}
@@ -4040,7 +4040,6 @@ static int pc_checkallowskill(struct map_session_data *sd)
 	return 0;
 
 }
-
 
 /*==========================================
  * 装備品のチェック
@@ -6592,8 +6591,6 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 
 	if(sd->sc_data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(7,sd->def_ele))
 		status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
-	if(sd->sc_data[SC_DANCING].timer!=-1 && (sd->status.weapon != WT_MUSICAL && sd->status.weapon !=WT_WHIP))
-		skill_stop_dancing(&sd->bl,0);
 
 	return;
 }

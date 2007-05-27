@@ -6277,8 +6277,13 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		break;
 	case GS_GROUNDDRIFT:	/* グラウンドドリフト */
 		{
-			const unsigned char drift_id[] = { UNT_GROUNDDRIFT_FIRE, UNT_GROUNDDRIFT_WIND,
-								UNT_GROUNDDRIFT_POISON, UNT_GROUNDDRIFT_DARK, UNT_GROUNDDRIFT_WATER };
+			const unsigned char drift_id[] = {
+				UNT_GROUNDDRIFT_FIRE,
+				UNT_GROUNDDRIFT_WIND,
+				UNT_GROUNDDRIFT_POISON,
+				UNT_GROUNDDRIFT_DARK,
+				UNT_GROUNDDRIFT_WATER
+			};
 			if(sd) {
 				short idx = sd->equip_index[10];
 				if(idx >= 0) {
@@ -7484,7 +7489,13 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 		    !pc_issit(sd) &&
 		    sd->sc_data[SC_DANCING].timer == -1 &&
 		    (skill_get_weapontype(sc->id) & (1<<sd->status.weapon)) &&
-		    sd->status.sp >= sp )
+		    sd->status.sp >= sp &&
+		    sd->sc_data[SC_STONE].timer == -1 &&
+		    sd->sc_data[SC_FREEZE].timer == -1 &&
+		    sd->sc_data[SC_SILENCE].timer == -1 &&
+		    sd->sc_data[SC_SLEEP].timer == -1 &&
+		    sd->sc_data[SC_STAN].timer == -1 &&
+		    sd->sc_data[SC_CONFUSION].timer == -1 )
 			(*c) = pc_checkskill(sd,sc->id);
 		break;
 	}
@@ -7554,7 +7565,13 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 		    !pc_issit(sd) &&
 		    sd->sc_data[SC_DANCING].timer == -1 &&
 		    (skill_get_weapontype(skillid) & (1<<sd->status.weapon)) &&
-		    sd->status.sp >= sp )
+		    sd->status.sp >= sp &&
+		    sd->sc_data[SC_STONE].timer == -1 &&
+		    sd->sc_data[SC_FREEZE].timer == -1 &&
+		    sd->sc_data[SC_SILENCE].timer == -1 &&
+		    sd->sc_data[SC_SLEEP].timer == -1 &&
+		    sd->sc_data[SC_STAN].timer == -1 &&
+		    sd->sc_data[SC_CONFUSION].timer == -1 )
 		{
 			sd->status.sp -= sp;
 			clif_updatestatus(sd,SP_SP);
