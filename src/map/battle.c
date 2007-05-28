@@ -2483,7 +2483,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 	/* 24．対象にステータス異常がある場合のダメージ減算処理 */
 	if( t_sc_data && (wd.damage > 0 || wd.damage2 > 0) ) {
 		cardfix=100;
-		if(t_sc_data[SC_DEFENDER].timer != -1 && wd.flag&BF_LONG)	// ディフェンダー状態で遠距離攻撃
+		if(t_sc_data[SC_DEFENDER].timer != -1 && wd.flag&BF_LONG && skill_num != CR_ACIDDEMONSTRATION)	// ディフェンダー状態で遠距離攻撃
 			cardfix=cardfix*(100-t_sc_data[SC_DEFENDER].val2)/100;
 		if(t_sc_data[SC_ADJUSTMENT].timer != -1 && wd.flag&BF_LONG)	// アジャストメント状態で遠距離攻撃
 			cardfix-=20;
@@ -2624,7 +2624,7 @@ struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list
 
 	/* 32．固定ダメージ2 */
 	// MobのModeに頑強フラグが立っているときの処理
-	if(t_mode&0x40 && skill_num != PA_PRESSURE){
+	if(t_mode&0x40) {
 		if(wd.damage > 0)
 			wd.damage = (wd.div_<255)? 1: 3;	// 三段掌のみ3ダメージ
 		if(wd.damage2 > 0)

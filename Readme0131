@@ -1,4 +1,16 @@
 ----------------------------------------
+//0192 [2007/05/29] by Rayce
+
+・AthenaProject2301, 2302よりmerge、thanks to ルキさん、orz~さん
+	-> mapflagにnocommandを追加（atcommand.c, map.h, npc.c, script.c）
+	-> アシッドデモンストレーションがディフェンダーを貫通するように修正（battle.c）
+	-> プレッシャーがダメージ1固定属性にも貫通していたのを修正（battle.c）
+	-> アルケミストの魂状態でポーションピッチャーの効果が上がるよう修正（skill.c）
+	-> 合奏開始判定から混乱状態不可削除（skill.c）
+
+・gmcommand命令で使うダミーsdのfdを0に戻す（script.c）
+
+----------------------------------------
 //0191 [2007/05/28] by Rayce
 
 ・AthenaProject2300を参考に以下を修正、thanks to orz~さん

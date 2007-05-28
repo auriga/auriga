@@ -7652,6 +7652,7 @@ static int* script_conv_mapflag(int m,int type)
 		case MF_NOICEWALL:          return &map[m].flag.noicewall;
 		case MF_TURBO:              return &map[m].flag.turbo;
 		case MF_NOREVIVE:           return &map[m].flag.norevive;
+		case MF_NOCOMMAND:          return &map[m].flag.nocommand;
 	}
 	return NULL;
 }
@@ -7687,6 +7688,7 @@ int buildin_setmapflag(struct script_state *st)
 			break;
 		case MF_BASEEXP_RATE:
 		case MF_JOBEXP_RATE:
+		case MF_NOCOMMAND:
 			if(st->end > st->start+4) {
 				*flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
 			}
@@ -8715,7 +8717,7 @@ int buildin_gmcommand(struct script_state *st)
 		if(bl) {
 			memset(&dummy_sd, 0, sizeof(struct map_session_data));
 			memcpy(&dummy_sd.bl, bl, sizeof(struct block_list));
-			dummy_sd.fd = -1;
+			dummy_sd.fd = 0;
 			dummy_sd.bl.prev = NULL;
 			dummy_sd.bl.next = NULL;
 			if(bl->type == BL_NPC) {

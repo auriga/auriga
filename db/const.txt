@@ -124,6 +124,7 @@ mf_pk_nocalcrank	36
 mf_noicewall		37
 mf_turbo		38
 mf_norevive		39
+mf_nocommand		40
 
 StatusPoint	9	1
 BaseLevel	11	1

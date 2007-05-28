@@ -4446,14 +4446,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case AM_POTIONPITCHER:		/* ポーションピッチャー */
 		{
 			struct block_list tbl;
-			int lv_per = 0;
-			int i,x,hp = 0,sp = 0;
+			int hp = 0,sp = 0;
 			if(sd) {
-				x = skilllv%11 - 1;
-				i = pc_search_inventory(sd,skill_db[skillid].itemid[x]);
-
-				if(sd->sc_data[SC_ALCHEMIST].timer!=-1)
-					lv_per = sd->status.base_level/10 * 10;
+				int x = skilllv%11 - 1;
+				int i = pc_search_inventory(sd,skill_db[skillid].itemid[x]);
 
 				if(i < 0 || skill_db[skillid].itemid[x] <= 0) {
 					clif_skill_fail(sd,skillid,0,0);
@@ -4473,25 +4469,29 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				sd->state.potionpitcher_flag = 0;
 				if(sd->potion_per_hp > 0 || sd->potion_per_sp > 0) {
 					hp = status_get_max_hp(bl) * sd->potion_per_hp / 100;
-					hp = hp * (100 + pc_checkskill(sd,AM_POTIONPITCHER)*10 + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100 + lv_per;
+					hp = hp * (100 + pc_checkskill(sd,AM_POTIONPITCHER)*10 + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100;
 					if(dstsd) {
 						sp = dstsd->status.max_sp * sd->potion_per_sp / 100;
-						sp = sp * (100 + pc_checkskill(sd,AM_POTIONPITCHER) + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100 + lv_per;
+						sp = sp * (100 + pc_checkskill(sd,AM_POTIONPITCHER) + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100;
 					}
 				}
 				else {
 					if(sd->potion_hp > 0) {
-						hp = sd->potion_hp * (100 + pc_checkskill(sd,AM_POTIONPITCHER)*10 + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100 + lv_per;
+						hp = sd->potion_hp * (100 + pc_checkskill(sd,AM_POTIONPITCHER)*10 + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100;
 						hp = hp * (100 + (status_get_vit(bl)<<1)) / 100;
 						if(dstsd)
 							hp = hp * (100 + pc_checkskill(dstsd,SM_RECOVERY)*10) / 100;
 					}
 					if(sd->potion_sp > 0) {
-						sp = sd->potion_sp * (100 + pc_checkskill(sd,AM_POTIONPITCHER) + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100 + lv_per;
+						sp = sd->potion_sp * (100 + pc_checkskill(sd,AM_POTIONPITCHER) + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100;
 						sp = sp * (100 + (status_get_int(bl)<<1)) / 100;
 						if(dstsd)
 							sp = sp * (100 + pc_checkskill(dstsd,MG_SRECOVERY)*10) / 100;
 					}
+				}
+				if(sd->sc_data[SC_ALCHEMIST].timer != -1) {
+					hp = hp * (100 + sd->status.base_level) / 100;
+					sp = sp * (100 + sd->status.base_level) / 100;
 				}
 			}
 			else {
@@ -7494,8 +7494,7 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 		    sd->sc_data[SC_FREEZE].timer == -1 &&
 		    sd->sc_data[SC_SILENCE].timer == -1 &&
 		    sd->sc_data[SC_SLEEP].timer == -1 &&
-		    sd->sc_data[SC_STAN].timer == -1 &&
-		    sd->sc_data[SC_CONFUSION].timer == -1 )
+		    sd->sc_data[SC_STAN].timer == -1 )
 			(*c) = pc_checkskill(sd,sc->id);
 		break;
 	}
@@ -7570,8 +7569,7 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 		    sd->sc_data[SC_FREEZE].timer == -1 &&
 		    sd->sc_data[SC_SILENCE].timer == -1 &&
 		    sd->sc_data[SC_SLEEP].timer == -1 &&
-		    sd->sc_data[SC_STAN].timer == -1 &&
-		    sd->sc_data[SC_CONFUSION].timer == -1 )
+		    sd->sc_data[SC_STAN].timer == -1 )
 		{
 			sd->status.sp -= sp;
 			clif_updatestatus(sd,SP_SP);

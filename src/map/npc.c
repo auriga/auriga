@@ -1913,6 +1913,8 @@ int npc_set_mapflag(int m,char *w3,char *w4)
 		map[m].flag.turbo ^= 1;
 	} else if (strcmpi(w3,"norevive")==0) {
 		map[m].flag.norevive ^= 1;
+	} else if (strcmpi(w3,"nocommand")==0) {
+		map[m].flag.nocommand = atoi(w4);
 	} else {
 		return -1;	// 存在しないマップフラグなのでエラー
 	}
