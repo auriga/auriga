@@ -201,6 +201,7 @@ ATCOMMAND_FUNC(homrecalc);
 ATCOMMAND_FUNC(makehomun);
 ATCOMMAND_FUNC(homfriendly);
 ATCOMMAND_FUNC(autoloot);
+ATCOMMAND_FUNC(changemaptype);
 
 /*==========================================
  * AtCommandInfo atcommand_info[]構造体の定義
@@ -365,6 +366,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_MakeHomun,          "@makehomun",        0, atcommand_makehomun           },
 	{ AtCommand_HomFriendly,        "@homfriendly",      0, atcommand_homfriendly         },
 	{ AtCommand_AutoLoot,           "@autoloot",         0, atcommand_autoloot            },
+	{ AtCommand_ChangeMapType,      "@changemaptype",    0, atcommand_changemaptype       },
 		// add here
 	{ AtCommand_MapMove,            "@mapmove",          0, NULL                          },
 	{ AtCommand_Broadcast,          "@broadcast",        0, NULL                          },
@@ -389,10 +391,10 @@ int get_atcommand_level(const AtCommandType type)
 {
 	int i;
 
-	for (i = 0; atcommand_info[i].type != AtCommand_None; i++)
+	for (i = 0; atcommand_info[i].type != AtCommand_None; i++) {
 		if (atcommand_info[i].type == type)
 			return atcommand_info[i].level;
-
+	}
 	return 100;
 }
 
@@ -400,9 +402,7 @@ int get_atcommand_level(const AtCommandType type)
  *
  *------------------------------------------
  */
-AtCommandType
-atcommand(
-	const int level, const char* message, struct AtCommandInfo* info)
+static AtCommandType atcommand(const int level, const char* message, struct AtCommandInfo* info)
 {
 	const char* p = message;
 	char command[100];
@@ -450,8 +450,7 @@ atcommand(
  * @コマンドに存在するかどうか確認する
  *------------------------------------------
  */
-AtCommandType
-is_atcommand(const int fd, struct map_session_data* sd, const char* message, int gmlvl)
+AtCommandType is_atcommand(const int fd, struct map_session_data* sd, const char* message, int gmlvl)
 {
 	const char* str;
 	int s_flag;
@@ -584,8 +583,7 @@ int msg_config_read(const char *cfgName)
  *
  *------------------------------------------
  */
-static AtCommandInfo*
-get_atcommandinfo_byname(const char* name)
+static AtCommandInfo* get_atcommandinfo_byname(const char* name)
 {
 	int i;
 
@@ -699,7 +697,6 @@ int atcommand_config_read(const char *cfgName)
 				} else
 					printf("file [%s]: Unknown GM command: %c%s.\n", cfgName, command_symbol, w1);
 			}
-
 		} else if (sscanf(line, "%[^=]=%s", w1, w2) == 2) { // synonym
 			/* searching if synonym is not a gm command */
 			for (i = 0; atcommand_info[i].type != AtCommand_Unknown; i++)
@@ -1224,14 +1221,14 @@ atcommand_kami(
 	} else {
 		if (sscanf(message, "%lx %199[^\n]", &color, output) < 2)
 			return -1;
-		intif_announce(output, strlen(output) + 1, color&0x00FFFFFF);
+		intif_announce(output, strlen(output) + 1, color&0x00ffffff);
 	}
 
 	return 0;
 }
 
 /*==========================================
- *叫ぶ
+ * 叫ぶ
  *------------------------------------------
  */
 int atcommand_onlymes(
@@ -1519,6 +1516,7 @@ atcommand_itemreset(
 
 	return 0;
 }
+
 /*==========================================
  *
  *------------------------------------------
@@ -2459,6 +2457,8 @@ atcommand_param(
 		case 4: status = &sd->status.dex;  break;
 		case 5: status = &sd->status.luk;  break;
 	}
+	if (status == NULL)
+		return -1;
 
 	new_value = *status + value;
 	if (new_value < 1)
@@ -2545,6 +2545,7 @@ atcommand_makepet(
 
 	return 0;
 }
+
 /*==========================================
  *
  *------------------------------------------
@@ -2560,6 +2561,7 @@ int atcommand_hatch(
 
 	return 0;
 }
+
 /*==========================================
  *
  *------------------------------------------
@@ -2728,17 +2730,22 @@ int atcommand_recallall(
 
 	memset(output, '\0', sizeof(output));
 
-	for (i = 0; i < fd_max; i++)
-		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth &&
+	for (i = 0; i < fd_max; i++) {
+		if (session[i] &&
+		    (pl_sd = (struct map_session_data *)session[i]->session_data) &&
+		    pl_sd->state.auth &&
 		    sd->status.account_id != pl_sd->status.account_id &&
 		    pc_isGM(sd) >= pc_isGM(pl_sd))
-				pc_setpos(pl_sd, sd->mapname, sd->bl.x, sd->bl.y, 2);
-//				intif_charmovereq(sd,pl_sd->status.name,1);
-
+		{
+			pc_setpos(pl_sd, sd->mapname, sd->bl.x, sd->bl.y, 2);
+			//intif_charmovereq(sd,pl_sd->status.name,1);
+		}
+	}
 	clif_displaymessage(fd, msg_txt(105));
 
 	return 0;
 }
+
 /*==========================================
  * Recall online characters of a guild to your location
  *------------------------------------------
@@ -2810,6 +2817,7 @@ int atcommand_recallparty(
 
 	return 0;
 }
+
 /*==========================================
  * 対象キャラクターを転職させる upper指定で転生や養子も可能
  *------------------------------------------
@@ -3116,15 +3124,15 @@ atcommand_doommap(
  */
 static void atcommand_raise_sub(struct map_session_data* sd)
 {
-	if (sd && sd->state.auth && unit_isdead(&sd->bl)) {
-		sd->status.hp = sd->status.max_hp;
-		sd->status.sp = sd->status.max_sp;
-		pc_setstand(sd);
-		clif_updatestatus(sd, SP_HP);
-		clif_updatestatus(sd, SP_SP);
-		clif_resurrection(&sd->bl, 1);
-		clif_displaymessage(sd->fd, msg_txt(63));
-	}
+	nullpo_retv(sd);
+
+	sd->status.hp = sd->status.max_hp;
+	sd->status.sp = sd->status.max_sp;
+	pc_setstand(sd);
+	clif_updatestatus(sd, SP_HP);
+	clif_updatestatus(sd, SP_SP);
+	clif_resurrection(&sd->bl, 1);
+	clif_displaymessage(sd->fd, msg_txt(63));
 }
 
 /*==========================================
@@ -3136,11 +3144,13 @@ atcommand_raise(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
+	struct map_session_data *pl_sd = NULL;
 	int i;
 
 	for (i = 0; i < fd_max; i++) {
-		if (session[i])
-			atcommand_raise_sub((struct map_session_data *)session[i]->session_data);
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) &&
+		    pl_sd->state.auth && unit_isdead(&pl_sd->bl))
+			atcommand_raise_sub(pl_sd);
 	}
 	clif_displaymessage(fd, msg_txt(64));
 
@@ -3184,47 +3194,47 @@ atcommand_character_baselevel(
 	char character[100];
 	int level = 0, i = 0;
 
-	if (!message || !*message) //messageが空ならエラーを返して終了
-		return -1; //エラーを返して終了
+	if (!message || !*message)
+		return -1;
 
 	memset(character, '\0', sizeof character);
-	if (sscanf(message, "%d %99[^\n]", &level, character) < 2) //messageにLevelとキャラ名が無ければ
-		return -1; //エラーを返して終了
+	if (sscanf(message, "%d %99[^\n]", &level, character) < 2)
+		return -1;
 
-	if ((pl_sd = map_nick2sd(character)) != NULL) { //該当名のキャラが存在する
-		if (pc_isGM(sd) >= pc_isGM(pl_sd)) { //対象キャラのGMレベルが自分より小さい
-			if (level > 0) { //上げるレベルが１より大きい
+	if ((pl_sd = map_nick2sd(character)) != NULL) {
+		if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
+			if (level > 0) {
 				if ((int)pl_sd->status.base_level + level > (int)MAX_LEVEL)
 					level = (int)MAX_LEVEL - (int)pl_sd->status.base_level;
 				if (level <= 0)
 					return -1;
-				for (i = 1; i <= level; i++) //入力されたレベル回ステータスポイントを追加する
-					pl_sd->status.status_point += (pl_sd->status.base_level + i + 14) / 5 ;
-				pl_sd->status.base_level += level; //対象キャラのベースレベルを上げる
-				clif_updatestatus(pl_sd, SP_BASELEVEL); //クライアントに上げたベースレベルを送る
-				clif_updatestatus(pl_sd, SP_NEXTBASEEXP); //クライアントに次のベースレベルアップまでの必要経験値を送る
-				clif_updatestatus(pl_sd, SP_STATUSPOINT); //クライアントにステータスポイントを送る
-				status_calc_pc(pl_sd, 0); //ステータスを計算しなおす
-				pc_heal(pl_sd, pl_sd->status.max_hp, pl_sd->status.max_sp); //HPとSPを完全回復させる
-				clif_misceffect(&pl_sd->bl, 0); //ベースレベルアップエフェクトの送信
-				clif_displaymessage(fd, msg_txt(65)); //レベルを上げたメッセージを表示する
+				for (i = 1; i <= level; i++)
+					pl_sd->status.status_point += (pl_sd->status.base_level + i + 14) / 5;
+				pl_sd->status.base_level += level;
+				clif_updatestatus(pl_sd, SP_BASELEVEL);
+				clif_updatestatus(pl_sd, SP_NEXTBASEEXP);
+				clif_updatestatus(pl_sd, SP_STATUSPOINT);
+				status_calc_pc(pl_sd, 0);
+				pc_heal(pl_sd, pl_sd->status.max_hp, pl_sd->status.max_sp);
+				clif_misceffect(&pl_sd->bl, 0);
+				clif_displaymessage(fd, msg_txt(65));
 			} else if (level < 0) {
 				if ((int)pl_sd->status.base_level + level <= 0)
 					level = 1 - (int)pl_sd->status.base_level;
 				if (level >= 0)
 					return -1;
-				pl_sd->status.base_level += level; //対象キャラのレベルを下げる
-				clif_updatestatus(pl_sd, SP_BASELEVEL); //クライアントに下げたベースレベルを送る
-				clif_updatestatus(pl_sd, SP_NEXTBASEEXP); //クライアントに次のベースレベルアップまでの必要経験値を送る
-				status_calc_pc(pl_sd, 0); //ステータスを計算しなおす
-				clif_displaymessage(fd, msg_txt(66)); //レベルを下げたメッセージを表示する
+				pl_sd->status.base_level += level;
+				clif_updatestatus(pl_sd, SP_BASELEVEL);
+				clif_updatestatus(pl_sd, SP_NEXTBASEEXP);
+				status_calc_pc(pl_sd, 0);
+				clif_displaymessage(fd, msg_txt(66));
 			}
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
 
-	return 0; //正常終了
+	return 0;
 }
 
 /*==========================================
@@ -3410,6 +3420,7 @@ int atcommand_charquestskill(
 
 	return 0;
 }
+
 /*==========================================
  *
  *------------------------------------------
@@ -3436,6 +3447,7 @@ atcommand_lostskill(
 
 	return 0;
 }
+
 /*==========================================
  *
  *------------------------------------------
@@ -3471,6 +3483,7 @@ int atcommand_charlostskill(
 
 	return 0;
 }
+
 /*==========================================
  *
  *------------------------------------------
@@ -3713,7 +3726,7 @@ atcommand_shuffle(
 				pc_setpos(pl_sd, map[pl_sd->bl.m].name, 0, 0, 3);
 		}
 	}
-	if(mode&2) {	//MOBのシャッフル
+	if(mode&2) {	// MOBのシャッフル
 		map_foreachinarea(atshuffle_sub, sd->bl.m, 0, 0, map[sd->bl.m].xs, map[sd->bl.m].ys, BL_MOB);
 	}
 	clif_displaymessage(fd, msg_txt(81));
@@ -3735,7 +3748,7 @@ atcommand_maintenance(
 	if (!message || !*message)
 		return -1;
 
-	chrif_maintenance(atoi(message)); // maintenance
+	chrif_maintenance(atoi(message));
 
 	return 0;
 }
@@ -3778,9 +3791,7 @@ atcommand_summon(
 {
 	char mob_name[100];
 	int mob_id = 0;
-	int x = 0;
-	int y = 0;
-	int id = 0;
+	int x, y, id;
 	struct mob_data *md;
 	unsigned int tick=gettick();
 
@@ -3825,7 +3836,6 @@ int atcommand_charskreset(
 	struct map_session_data *pl_sd;
 
 	memset(character, '\0', sizeof(character));
-	memset(output, '\0', sizeof(output));
 
 	if (!message || !*message || sscanf(message, "%99[^\n]", character) < 1)
 		return -1;
@@ -3857,7 +3867,6 @@ int atcommand_charstreset(
 	struct map_session_data *pl_sd;
 
 	memset(character, '\0', sizeof(character));
-	memset(output, '\0', sizeof(output));
 
 	if (!message || !*message || sscanf(message, "%99[^\n]", character) < 1)
 		return -1;
@@ -3889,7 +3898,6 @@ int atcommand_charreset(
 	struct map_session_data *pl_sd;
 
 	memset(character, '\0', sizeof(character));
-	memset(output, '\0', sizeof(output));
 
 	if (!message || !*message || sscanf(message, "%99[^\n]", character) < 1)
 		return -1;
@@ -3908,6 +3916,7 @@ int atcommand_charreset(
 
 	return 0;
 }
+
 /*==========================================
  * Character Status Point (rewritten by [Yor])
  *------------------------------------------
@@ -3987,6 +3996,7 @@ int atcommand_charskpoint(
 
 	return 0;
 }
+
 /*==========================================
  * Character Zeny Point (Rewritten by [Yor])
  *------------------------------------------
@@ -4360,8 +4370,7 @@ atcommand_clock(
  * @giveitem (item_id or item_name) amount charname
  *------------------------------------------
  */
-static void atcommand_giveitem_sub(
-	struct map_session_data *sd,struct item_data *item_data,int number)
+static void atcommand_giveitem_sub(struct map_session_data *sd,struct item_data *item_data,int number)
 {
 	int flag = 0;
 	int loop = 1, get_count = number,i;
@@ -4426,13 +4435,13 @@ atcommand_giveitem(
 	if(item_id == 0)
 		return -1;
 
-	if ((pl_sd = map_nick2sd(character)) != NULL) { //該当名のキャラが存在する
+	if ((pl_sd = map_nick2sd(character)) != NULL) { // 該当名のキャラが存在する
 		atcommand_giveitem_sub(pl_sd,item_data,number);
 		snprintf(output, sizeof output, msg_txt(97), item_name,number);
 		clif_displaymessage(pl_sd->fd, output);
 		snprintf(output, sizeof output, msg_txt(98), pl_sd->status.name,item_name,number);
 		clif_displaymessage(fd, output);
-	} else if(strcmp(character,"ALL")==0){			// 名前がALLなら、接続者全員へ
+	} else if(strcmp(character,"ALL")==0){		// 名前がALLなら、接続者全員へ
 		for (i = 0; i < fd_max; i++) {
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data)){
 				atcommand_giveitem_sub(pl_sd,item_data,number);
@@ -4447,6 +4456,7 @@ atcommand_giveitem(
 
 	return 0;
 }
+
 /*==========================================
  * Weather control
  * 発動後に効果を戻す(消す)方法が分からない・・・
@@ -5093,7 +5103,7 @@ atcommand_icon(
 	if (sscanf(message, "%d %d", &a1, &a2) < 2)
 		return -1;
 
-	clif_status_change(&sd->bl,a1,a2);	/* アイコン表示 */
+	clif_status_change(&sd->bl,a1,a2);
 
 	return 0;
 }
@@ -5171,7 +5181,6 @@ atcommand_ranking(
 
 /*==========================================
  * ランキングポイント付与
- * type:0 blacksmith 1:alchemist 2:taekwon
  *------------------------------------------
  */
 int
@@ -5253,8 +5262,9 @@ atcommand_resethate(
 
 	return 0;
 }
+
 /*==========================================
- * resetstate/resetskill
+ * resetstate
  *------------------------------------------
  */
 int
@@ -5269,6 +5279,10 @@ atcommand_resetstate(
 	return 0;
 }
 
+/*==========================================
+ * resetskill
+ *------------------------------------------
+ */
 int
 atcommand_resetskill(
 	const int fd, struct map_session_data* sd,
@@ -5365,7 +5379,7 @@ atcommand_statall(
 }
 
 /*==========================================
- * 
+ *
  *------------------------------------------
  */
 int
@@ -5580,7 +5594,7 @@ int atcommand_writevars(
 }
 
 /*==========================================
- * 
+ *
  *------------------------------------------
  */
 int atcommand_cloneskill(
@@ -5610,7 +5624,7 @@ int atcommand_cloneskill(
 }
 
 /*==========================================
- * 
+ *
  *------------------------------------------
  */
 int atcommand_cloneskill2(
@@ -5803,7 +5817,7 @@ atcommand_homlevel(
 }
 
 /*==========================================
- * 
+ *
  *------------------------------------------
  */
 int
@@ -5823,8 +5837,9 @@ atcommand_homviewclass(
 
 	return 0;
 }
+
 /*==========================================
- * 
+ *
  *------------------------------------------
  */
 int
@@ -5845,7 +5860,7 @@ atcommand_homevolution(
 }
 
 /*==========================================
- * 
+ *
  *------------------------------------------
  */
 int
@@ -5869,7 +5884,7 @@ atcommand_homrecalc(
 }
 
 /*==========================================
- * 
+ *
  *------------------------------------------
  */
 int
@@ -5927,7 +5942,6 @@ atcommand_homfriendly(
 
 /*==========================================
  * アイテムの自動取得機能を切り替える
- *   from eAthena by Upa-Kun
  *------------------------------------------
  */
 int
@@ -5944,6 +5958,32 @@ atcommand_autoloot(
 		sd->state.autoloot = 1;
 		clif_displaymessage(fd, msg_txt(147));
 	}
+
+	return 0;
+}
+
+/*==========================================
+ * セルタイプを変更する
+ *------------------------------------------
+ */
+int
+atcommand_changemaptype(
+	const int fd, struct map_session_data* sd,
+	const char* command, const char* message)
+{
+	int x, y, type;
+
+	nullpo_retr(-1, sd);
+
+	if(!message || !*message)
+		return -1;
+
+	if(sscanf(message, "%d %d %d", &x, &y, &type) < 3)
+		return -1;
+
+	map_setcell(sd->bl.m, x, y, type);
+	clif_changemapcell(sd->bl.m, x, y, type, 1);
+	clif_displaymessage(fd, msg_txt(183));
 
 	return 0;
 }

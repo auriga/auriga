@@ -9308,6 +9308,8 @@ static void clif_parse_MapMove(int fd,struct map_session_data *sd, int cmd)
 	char mapname[17];
 	int x,y;
 
+	nullpo_retv(sd);
+
 	if (battle_config.atc_gmonly == 0 ||
 	    pc_isGM(sd) >= get_atcommand_level(AtCommand_MapMove)) {
 		mapname[16] = 0;
@@ -11768,7 +11770,18 @@ static void clif_parse_GMremove(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int cmd)
 {
-	// 詳細不明なので未実装
+	int x,y,type;
+	char message[64];
+
+	nullpo_retv(sd);
+
+	x    = RFIFOW(fd, GETPACKETPOS(cmd,0));
+	y    = RFIFOW(fd, GETPACKETPOS(cmd,1));
+	type = RFIFOW(fd, GETPACKETPOS(cmd,2));	// 0か1のみ
+
+	sprintf(message, "%s : %cchangemaptype %d %d %d", sd->status.name, GM_Symbol(), x, y, type);
+	is_atcommand(fd, sd, message, 0);
+
 	return;
 }
 

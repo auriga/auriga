@@ -212,6 +212,11 @@ resetstate
     /resetskill  ---- スキルリセット
     @resetskill  ---- 同上
 
+changemaptype
+    /changemaptype x座標 y座標 数字(0か1)  ---- セルタイプを変更する
+    /cmt x座標 y座標 数字(0か1)            ---- 同上
+    @changemaptype x座標 y座標 数字        ---- 同上
+
 @econ   ---- 緊急招集受諾！ギルドメンバー以外使っても効果なし
 @ecoff  ---- 緊急召集拒否！ギルドメンバー以外使っても効果なし
 
