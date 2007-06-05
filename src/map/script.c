@@ -517,7 +517,7 @@ unsigned char* parse_simpleexpr(unsigned char *p)
 			p = p2;
 		}
 		add_scriptb(0);
-		p++;	//'"'
+		p++;	// '"'
 	} else {
 		int c,l;
 		unsigned char *p2;
@@ -1866,26 +1866,26 @@ struct map_session_data *script_rid2sd(struct script_state *st)
  */
 int get_val(struct script_state *st,struct script_data *data)
 {
-	struct map_session_data *sd=NULL;
+	struct map_session_data *sd = NULL;
 
-	if(data->type==C_NAME){
-		char *name=str_buf+str_data[data->u.num&0x00ffffff].str;
-		char prefix=*name;
-		char postfix=name[strlen(name)-1];
+	if(data->type == C_NAME) {
+		char *name   = str_buf+str_data[data->u.num&0x00ffffff].str;
+		char prefix  = *name;
+		char postfix = name[strlen(name)-1];
 
-		if(prefix!='$' && prefix != '\''){
-			if((sd=script_rid2sd(st))==NULL)
+		if(prefix != '$' && prefix != '\'') {
+			if((sd=script_rid2sd(st)) == NULL)
 				printf("get_val error name?:%s\n",name);
 		}
-		if(postfix=='$'){
-
-			data->type=C_CONSTSTR;
-			if( prefix=='@' ){
+		if(postfix == '$') {
+			// 文字列型
+			data->type = C_CONSTSTR;
+			if(prefix == '@') {
 				if(sd)
 					data->u.str = pc_readregstr(sd,data->u.num);
-			}else if(prefix=='$'){
+			} else if(prefix == '$') {
 				data->u.str = (char *)numdb_search(mapregstr_db,data->u.num);
-			} else if(prefix=='\'') {
+			} else if(prefix == '\'') {
 				struct linkdb_node **n;
 				if( data->ref ) {
 					n = data->ref;
@@ -1895,35 +1895,34 @@ int get_val(struct script_state *st,struct script_data *data)
 					n = &st->script->script_vars;
 				}
 				data->u.str = (char *)linkdb_search(n, (void*)data->u.num );
-			}else{
+			} else {
 				printf("script: get_val: illegal scope string variable.\n");
 				data->u.str = "!!ERROR!!";
 			}
 			if( data->u.str == NULL )
 				data->u.str ="";
-
-		}else{
-
-			data->type=C_INT;
-			if(str_data[data->u.num&0x00ffffff].type==C_INT){
+		} else {
+			// 数値型
+			data->type = C_INT;
+			if(str_data[data->u.num&0x00ffffff].type == C_INT) {
 				data->u.num = str_data[data->u.num&0x00ffffff].val;
-			}else if(str_data[data->u.num&0x00ffffff].type==C_PARAM){
+			} else if(str_data[data->u.num&0x00ffffff].type == C_PARAM) {
 				if(sd)
 					data->u.num = pc_readparam(sd,str_data[data->u.num&0x00ffffff].val);
-			}else if(prefix=='@'){
+			} else if(prefix == '@') {
 				if(sd)
 					data->u.num = pc_readreg(sd,data->u.num);
-			}else if(prefix=='$'){
+			} else if(prefix == '$') {
 				data->u.num = (int)numdb_search(mapreg_db,data->u.num);
-			}else if(prefix=='#'){
-				if( name[1]=='#'){
+			} else if(prefix == '#') {
+				if( name[1] == '#') {
 					if(sd)
 						data->u.num = pc_readaccountreg2(sd,name);
-				}else{
+				} else {
 					if(sd)
 						data->u.num = pc_readaccountreg(sd,name);
 				}
-			} else if(prefix=='\''){
+			} else if(prefix == '\'') {
 				struct linkdb_node **n;
 				if( data->ref ) {
 					n = data->ref;
@@ -1933,7 +1932,7 @@ int get_val(struct script_state *st,struct script_data *data)
 					n = &st->script->script_vars;
 				}
 				data->u.num = (int)linkdb_search(n, (void*)data->u.num);
-			}else{
+			} else {
 				if(sd)
 					data->u.num = pc_readglobalreg(sd,name);
 			}
@@ -1964,16 +1963,17 @@ void* get_val2(struct script_state*st,int num,struct linkdb_node **ref)
  */
 static int set_reg(struct script_state *st,struct map_session_data *sd,int num,const char *name,void *v,struct linkdb_node** ref)
 {
-	char prefix=*name;
-	char postfix=name[strlen(name)-1];
+	char prefix  = *name;
+	char postfix = name[strlen(name)-1];
 
-	if( postfix=='$' ){
-		char *str=(char*)v;
-		if( prefix=='@'){
+	if(postfix == '$') {
+		// 文字列型
+		char *str = (char*)v;
+		if(prefix == '@') {
 			pc_setregstr(sd,num,str);
-		}else if(prefix=='$') {
+		} else if(prefix == '$') {
 			mapreg_setregstr(num,str,(name[1] == '@')? 0: 1);
-		}else if(prefix=='\'') {
+		} else if(prefix == '\'') {
 			char *p;
 			struct linkdb_node **n;
 			if( ref ) {
@@ -1988,26 +1988,26 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 				linkdb_erase(n, (void*)num);
 				aFree(p);
 			}
-			if( ((char*)v)[0] )
-				linkdb_insert(n, (void*)num, aStrdup(v));
-		}else{
+			if( str[0] )
+				linkdb_insert(n, (void*)num, aStrdup(str));
+		} else {
 			printf("script: set_reg: illegal scope string variable !");
 		}
-	}else{
-		// 数値
+	} else {
+		// 数値型
 		int val = (int)v;
-		if(str_data[num&0x00ffffff].type==C_PARAM){
+		if(str_data[num&0x00ffffff].type == C_PARAM) {
 			pc_setparam(sd,str_data[num&0x00ffffff].val,val);
-		}else if(prefix=='@') {
+		} else if(prefix == '@') {
 			pc_setreg(sd,num,val);
-		}else if(prefix=='$') {
+		} else if(prefix == '$') {
 			mapreg_setreg(num,val,(name[1] == '@')? 0: 1);
-		}else if(prefix=='#') {
-			if( name[1]=='#' )
+		} else if(prefix == '#') {
+			if( name[1] == '#' )
 				pc_setaccountreg2(sd,name,val);
 			else
 				pc_setaccountreg(sd,name,val);
-		}else if(prefix == '\'') {
+		} else if(prefix == '\'') {
 			struct linkdb_node **n;
 			if( ref ) {
 				n = ref;
@@ -2021,7 +2021,7 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 			} else {
 				linkdb_replace(n, (void*)num, (void*)val);
 			}
-		}else{
+		} else {
 			pc_setglobalreg(sd,name,val);
 		}
 	}
@@ -2400,8 +2400,10 @@ void op_2str(struct script_state *st,int op,int sp1,int sp2)
 		printf("Illegal string operator\n");
 		break;
 	}
-	if(st->stack->stack_data[sp1].type==C_STR)	aFree(s1);
-	if(st->stack->stack_data[sp2].type==C_STR)	aFree(s2);
+	if(st->stack->stack_data[sp1].type==C_STR)
+		aFree(s1);
+	if(st->stack->stack_data[sp2].type==C_STR)
+		aFree(s2);
 
 	push_val(st->stack,C_INT,a);
 }
@@ -2416,20 +2418,20 @@ void op_2num(struct script_state *st,int op,int i1,int i2)
 	atn_bignumber ret_bignum = 0;
 
 	switch(op) {
-	case C_MOD:     ret = i1 % i2;		break;
-	case C_AND:     ret = i1 & i2;		break;
-	case C_OR:      ret = i1 | i2;		break;
-	case C_XOR:     ret = i1 ^ i2;		break;
-	case C_LAND:    ret = (i1 && i2);	break;
-	case C_LOR:     ret = (i1 || i2);	break;
-	case C_EQ:      ret = (i1 == i2);	break;
-	case C_NE:      ret = (i1 != i2);	break;
-	case C_GT:      ret = (i1 >  i2);	break;
-	case C_GE:      ret = (i1 >= i2);	break;
-	case C_LT:      ret = (i1 <  i2);	break;
-	case C_LE:      ret = (i1 <= i2);	break;
-	case C_R_SHIFT: ret = i1>>i2;		break;
-	case C_L_SHIFT: ret = i1<<i2;		break;
+	case C_MOD:     ret = i1 % i2;    break;
+	case C_AND:     ret = i1 & i2;    break;
+	case C_OR:      ret = i1 | i2;    break;
+	case C_XOR:     ret = i1 ^ i2;    break;
+	case C_LAND:    ret = (i1 && i2); break;
+	case C_LOR:     ret = (i1 || i2); break;
+	case C_EQ:      ret = (i1 == i2); break;
+	case C_NE:      ret = (i1 != i2); break;
+	case C_GT:      ret = (i1 >  i2); break;
+	case C_GE:      ret = (i1 >= i2); break;
+	case C_LT:      ret = (i1 <  i2); break;
+	case C_LE:      ret = (i1 <= i2); break;
+	case C_R_SHIFT: ret = i1>>i2;     break;
+	case C_L_SHIFT: ret = i1<<i2;     break;
 	default:
 		switch(op) {
 		case C_SUB:
@@ -2516,7 +2518,6 @@ void op_1num(struct script_state *st,int op)
 	push_val(st->stack,C_INT,i1);
 }
 
-
 /*==========================================
  * 関数の実行
  *------------------------------------------
@@ -2526,6 +2527,7 @@ int run_func(struct script_state *st)
 	int i,start_sp,end_sp,func;
 
 	end_sp=st->stack->sp;
+
 #ifdef DEBUG_RUN
 	if(battle_config.etc_log) {
 		printf("stack dump :");
@@ -2551,13 +2553,14 @@ int run_func(struct script_state *st)
 				break;
 			default:
 				printf(" etc(%d,%d)",st->stack->stack_data[i].type,st->stack->stack_data[i].u.num);
+				break;
 			}
 		}
 		printf("\n");
 	}
 #endif
 	for(i=end_sp-1;i>=0 && st->stack->stack_data[i].type!=C_ARG;i--);
-	if(i<=0){
+	if(i<=0) {
 		if(battle_config.error_log)
 			printf("function not found\n");
 		st->state=END;
@@ -2578,7 +2581,7 @@ int run_func(struct script_state *st)
 		str_buf+str_data[func].str,func,str_data[func].type,st->pos-1
 	);
 #endif
-	if(str_data[func].func){
+	if(str_data[func].func) {
 		str_data[func].func(st);
 	} else {
 		if(battle_config.error_log)
@@ -2590,7 +2593,7 @@ int run_func(struct script_state *st)
 		pop_stack(st->stack,start_sp,end_sp);
 	}
 
-	if(st->state==RETFUNC){
+	if(st->state==RETFUNC) {
 		// ユーザー定義関数からの復帰
 		int olddefsp=st->stack->defsp;
 		int i;
@@ -2647,10 +2650,10 @@ void run_script(struct script_code *rootscript,int pos,int rid,int oid)
 	} else {
 		// スタック初期化
 		st->stack = (struct script_stack *)aCalloc(1,sizeof(struct script_stack));
-		st->stack->sp=0;
-		st->stack->sp_max=64;
+		st->stack->sp     = 0;
+		st->stack->defsp  = 0;
+		st->stack->sp_max = 64;
 		st->stack->stack_data   = (struct script_data *)aCalloc(st->stack->sp_max,sizeof(st->stack->stack_data[0]));
-		st->stack->defsp        = st->stack->sp;
 		st->stack->var_function = (struct linkdb_node **)aCalloc(1, sizeof(struct linkdb_node*));
 		st->state  = RUN;
 		st->script = rootscript;
@@ -2660,7 +2663,7 @@ void run_script(struct script_code *rootscript,int pos,int rid,int oid)
 	st->oid = oid;
 	st->scriptroot = rootscript;
 	st->sleep.timer = -1;
-	run_script_main(st); // st のfreeも含めてこの内部で処理する
+	run_script_main(st);	// stのfreeも含めてこの内部で処理する
 }
 
 /*==========================================
@@ -2716,8 +2719,8 @@ int run_script_timer(int tid, unsigned int tick, int id, int data)
 void run_script_main(struct script_state *st)
 {
 	int c;
-	int cmdcount=script_config.check_cmdcount;
-	int gotocount=script_config.check_gotocount;
+	int cmdcount  = script_config.check_cmdcount;
+	int gotocount = script_config.check_gotocount;
 	struct map_session_data *sd;
 
 	if(st->state == RERUNLINE) {
@@ -2729,13 +2732,13 @@ void run_script_main(struct script_state *st)
 	} else {
 		st->state = RUN;
 	}
-	while(st->state == RUN){
-		switch(c=get_com(st->script->script_buf,&st->pos)){
+	while(st->state == RUN) {
+		switch(c = get_com(st->script->script_buf,&st->pos)) {
 		case C_EOL:
-			if(st->stack->sp!=st->stack->defsp){
+			if(st->stack->sp != st->stack->defsp) {
 				if(battle_config.error_log)
 					printf("stack.sp(%d) != default(%d)\n",st->stack->sp,st->stack->defsp);
-				st->stack->sp=st->stack->defsp;
+				pop_stack(st->stack, st->stack->defsp, st->stack->sp);
 			}
 			break;
 		case C_INT:
@@ -2744,7 +2747,7 @@ void run_script_main(struct script_state *st)
 		case C_POS:
 		case C_NAME:
 			push_val(st->stack,c,(*(int*)(st->script->script_buf+st->pos))&0xffffff);
-			st->pos+=3;
+			st->pos += 3;
 			break;
 		case C_ARG:
 			push_val(st->stack,c,0);
@@ -2755,19 +2758,17 @@ void run_script_main(struct script_state *st)
 			break;
 		case C_FUNC:
 			run_func(st);
-			if(st->state==GOTO){
+			if(st->state == GOTO) {
 				st->state = RUN;
-				if( gotocount>0 && (--gotocount)<=0 ){
+				if(gotocount > 0 && (--gotocount) <= 0) {
 					printf("run_script: infinity loop ! gotocount %d\n", script_config.check_gotocount);
-					st->state=END;
+					st->state = END;
 				}
 			}
 			break;
-
 		case C_ADD:
 			op_add(st);
 			break;
-
 		case C_SUB:
 		case C_MUL:
 		case C_DIV:
@@ -2787,30 +2788,26 @@ void run_script_main(struct script_state *st)
 		case C_L_SHIFT:
 			op_2(st,c);
 			break;
-
 		case C_NEG:
 		case C_NOT:
 		case C_LNOT:
 			op_1num(st,c);
 			break;
-
 		case C_OP3:
 			op_3(st);
 			break;
-
 		case C_NOP:
-			st->state=END;
+			st->state = END;
 			break;
-
 		default:
 			if(battle_config.error_log)
 				printf("unknown command : %d @ %d\n",c,st->pos);
-			st->state=END;
+			st->state = END;
 			break;
 		}
-		if( cmdcount>0 && (--cmdcount)<=0 ){
+		if(cmdcount > 0 && (--cmdcount) <= 0) {
 			printf("run_script: infinity loop ! cmdcount %d\n", script_config.check_cmdcount);
-			st->state=END;
+			st->state = END;
 		}
 	}
 
@@ -3590,10 +3587,10 @@ int buildin_gvgon(struct script_state *st);
 int buildin_gvgoff(struct script_state *st);
 int buildin_emotion(struct script_state *st);
 int buildin_maprespawnguildid(struct script_state *st);
-int buildin_agitstart(struct script_state *st);		// <Agit>
+int buildin_agitstart(struct script_state *st);
 int buildin_agitend(struct script_state *st);
-int buildin_agitcheck(struct script_state *st);		// <Agitcheck>
-int buildin_flagemblem(struct script_state *st);	// Flag Emblem
+int buildin_agitcheck(struct script_state *st);
+int buildin_flagemblem(struct script_state *st);
 int buildin_getcastlename(struct script_state *st);
 int buildin_getcastledata(struct script_state *st);
 int buildin_setcastledata(struct script_state *st);
@@ -3633,15 +3630,15 @@ int buildin_unequip(struct script_state *st);
 int buildin_allowuseitem(struct script_state *st);
 int buildin_equippeditem(struct script_state *st);
 int buildin_getmapname(struct script_state *st);
-int buildin_summon(struct script_state *st);	// [celest] from EA
-int buildin_getmapxy(struct script_state *st);	//get map position for player/npc/pet/mob by Lorky [Lupus] from EA
-int buildin_checkcart(struct script_state *st);	// check cart [Valaris] from EA
-int buildin_checkfalcon(struct script_state *st);	// check falcon [Valaris] from EA
-int buildin_checkriding(struct script_state *st);	// check for pecopeco [Valaris] from EA
+int buildin_summon(struct script_state *st);
+int buildin_getmapxy(struct script_state *st);
+int buildin_checkcart(struct script_state *st);
+int buildin_checkfalcon(struct script_state *st);
+int buildin_checkriding(struct script_state *st);
 int buildin_adoption(struct script_state *st);
 int buildin_breakadoption(struct script_state *st);
-int buildin_petskillattack(struct script_state *st);	// pet skill attacks [Skotlex]
-int buildin_petskillsupport(struct script_state *st);	// pet support skill [Valaris]
+int buildin_petskillattack(struct script_state *st);
+int buildin_petskillsupport(struct script_state *st);
 int buildin_changepettype(struct script_state *st);
 int buildin_making(struct script_state *st);
 int buildin_getpkflag(struct script_state *st);
@@ -3832,10 +3829,10 @@ struct script_function buildin_func[] = {
 	{buildin_gvgoff,"gvgoff","s"},
 	{buildin_emotion,"emotion","i*"},
 	{buildin_maprespawnguildid,"maprespawnguildid","sii"},
-	{buildin_agitstart,"agitstart",""},	// <Agit>
+	{buildin_agitstart,"agitstart",""},
 	{buildin_agitend,"agitend",""},
-	{buildin_agitcheck,"agitcheck",""},	// <Agitcheck>
-	{buildin_flagemblem,"flagemblem","i"},	// Flag Emblem
+	{buildin_agitcheck,"agitcheck",""},
+	{buildin_flagemblem,"flagemblem","i"},
 	{buildin_getcastlename,"getcastlename","s"},
 	{buildin_getcastledata,"getcastledata","si*"},
 	{buildin_setcastledata,"setcastledata","sii"},
@@ -3875,15 +3872,15 @@ struct script_function buildin_func[] = {
 	{buildin_allowuseitem,"allowuseitem","*"},
 	{buildin_equippeditem,"equippeditem","i*"},
 	{buildin_getmapname,"getmapname","s"},
-	{buildin_summon,"summon","si*"},	// summons a slave monster [Celest]
-	{buildin_getmapxy,"getmapxy","siii*"},	//by Lorky [Lupus]
-	{buildin_checkcart,"checkcart",""},		//fixed by Lupus
-	{buildin_checkfalcon,"checkfalcon",""},	//fixed by Lupus
-	{buildin_checkriding,"checkriding",""},	//fixed by Lupus
+	{buildin_summon,"summon","si*"},
+	{buildin_getmapxy,"getmapxy","siii*"},
+	{buildin_checkcart,"checkcart",""},
+	{buildin_checkfalcon,"checkfalcon",""},
+	{buildin_checkriding,"checkriding",""},
 	{buildin_adoption,"adoption","s*"},
 	{buildin_breakadoption,"breakadoption","*"},
-	{buildin_petskillattack,"petskillattack","iiii"},	// [Skotlex]
-	{buildin_petskillsupport,"petskillsupport","iiiii"},	// [Skotlex]
+	{buildin_petskillattack,"petskillattack","iiii"},
+	{buildin_petskillsupport,"petskillsupport","iiiii"},
 	{buildin_changepettype,"changepettype","i"},
 	{buildin_making,"making","ii"},
 	{buildin_getpkflag,"getpkflag","s"},
@@ -9206,9 +9203,10 @@ int buildin_getmapxy(struct script_state *st)
 	struct homun_data       *hd = NULL;
 	int num;
 	char *name;
-	char prefix;
+	char prefix, postfix;
 	int x,y,type;
 	char mapname[24];
+	void *v;
 
 	if( st->stack->stack_data[st->start+2].type != C_NAME ||
 	    st->stack->stack_data[st->start+3].type != C_NAME ||
@@ -9298,39 +9296,50 @@ int buildin_getmapxy(struct script_state *st)
 	}
 
 	// Set MapName$
-	num    = st->stack->stack_data[st->start+2].u.num;
-	name   = str_buf+str_data[num&0x00ffffff].str;
-	prefix = *name;
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '\'' )
-		sd = script_rid2sd(st);
-	else
-		sd = NULL;
-
-	set_reg(st,sd,num,name,(void*)mapname,st->stack->stack_data[st->start+2].ref);
+	sd = (prefix != '$' && prefix != '\'')? script_rid2sd(st): NULL;
+	if(postfix == '$') {
+		v = (void*)mapname;
+	} else {
+		v = (void*)atoi(mapname);
+	}
+	set_reg(st,sd,num,name,v,st->stack->stack_data[st->start+2].ref);
 
 	// Set MapX
-	num    = st->stack->stack_data[st->start+3].u.num;
-	name   = str_buf+str_data[num&0x00ffffff].str;
-	prefix = *name;
+	num     = st->stack->stack_data[st->start+3].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '\'' )
-		sd = script_rid2sd(st);
-	else
-		sd = NULL;
-	set_reg(st,sd,num,name,(void*)x,st->stack->stack_data[st->start+3].ref);
+	sd = (prefix != '$' && prefix != '\'')? script_rid2sd(st): NULL;
+	if(postfix == '$') {
+		char str[16];
+		sprintf(str, "%d", x);
+		v = (void*)str;
+	} else {
+		v = (void*)x;
+	}
+	set_reg(st,sd,num,name,v,st->stack->stack_data[st->start+3].ref);
 
 	// Set MapY
-	num    = st->stack->stack_data[st->start+4].u.num;
-	name   = str_buf+str_data[num&0x00ffffff].str;
-	prefix = *name;
+	num     = st->stack->stack_data[st->start+4].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '\'' )
-		sd = script_rid2sd(st);
-	else
-		sd = NULL;
-
-	set_reg(st,sd,num,name,(void*)y,st->stack->stack_data[st->start+4].ref);
+	sd = (prefix != '$' && prefix != '\'')? script_rid2sd(st): NULL;
+	if(postfix == '$') {
+		char str[16];
+		sprintf(str, "%d", y);
+		v = (void*)str;
+	} else {
+		v = (void*)y;
+	}
+	set_reg(st,sd,num,name,v,st->stack->stack_data[st->start+4].ref);
 
 	// Return Success value
 	push_val(st->stack,C_INT,0);
