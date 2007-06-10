@@ -1302,6 +1302,8 @@ R 020e <name>.24B <id>.l <val>.B <type>.B
 	type=21: テイミングミッションターゲット
 	type=30: 太陽と月と星の天使の初期化
 	type=40: Target HP <id>
+S 020f <account_id>.l <char_id>.l
+	/pvpinfoにて発行
 R 0210 <?>.8B <win>.l <lose>.l <point>.l
 	現在<win>勝、<lose>敗、PVPポイントは<point>です。
 S 0212 <charname>.24B
@@ -1606,9 +1608,10 @@ S 028d <account_id>.l <char_id>.l <name>.24B
 	キャラクターセレクト画面で名前を変えるボタンを押した
 R 0291 <type>.w
 	msgstringtableのメッセージが白文字で出力される
-R 0293 <type>.B <?>.l <?>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
+R 0293 <type>.B <x>.l <y>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
 	凸面鏡使用
 	type=0 : この地域ではボスモンスターの出現確認ができません。
+	type=1 : ミニMAPに位置を表示する
 	type=2 : ボスモンスター<boss_name>の位置がミニマップに表示されます。
 	type=3 : ボスモンスター<boss_name>が<hour>時間<minute>後に出現します。
 

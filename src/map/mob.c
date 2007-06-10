@@ -998,17 +998,22 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			if(md->ud.walktimer != -1)
 				unit_stop_walking(&md->bl,1);	// 歩行中なら停止
 			fitem = (struct flooritem_data *)tbl;
-			if(md->lootitem_count < LOOTITEM_SIZE)
+			if(md->lootitem_count < LOOTITEM_SIZE) {
 				memcpy(&md->lootitem[md->lootitem_count++],&fitem->item_data,sizeof(md->lootitem[0]));
-			else if(battle_config.monster_loot_type == 1 && md->lootitem_count >= LOOTITEM_SIZE) {
+			} else if(battle_config.monster_loot_type == 1 && md->lootitem_count >= LOOTITEM_SIZE) {
 				mob_unlocktarget(md,tick);
 				return search_flag;
-			}
-			else {
+			} else {
 				if(md->lootitem[0].card[0] == (short)0xff00)
 					intif_delete_petdata(*((long *)(&md->lootitem[0].card[1])));
 				memmove(&md->lootitem[0],&md->lootitem[1],sizeof(md->lootitem[0])*(LOOTITEM_SIZE-1));
 				memcpy(&md->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(md->lootitem[0]));
+			}
+			if(mob_is_pcview(md->class_)) {
+				int delay = tick + status_get_amotion(&md->bl);
+				clif_takeitem(&md->bl,&fitem->bl);
+				md->ud.canact_tick  = delay;
+				md->ud.canmove_tick = delay;
 			}
 			map_clearflooritem(tbl->id);
 			mob_unlocktarget(md,tick);

@@ -11836,6 +11836,28 @@ static void clif_parse_FriendDeleteRequest(int fd,struct map_session_data *sd, i
 }
 
 /*==========================================
+ * /pvpinfo
+ *------------------------------------------
+ */
+static void clif_parse_PvPInfo(int fd,struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+
+	if(!map[sd->bl.m].flag.pk)
+		return;
+
+	WFIFOW(fd,0)  = 0x210;
+	WFIFOL(fd,2)  = 0;	// unknown
+	WFIFOL(fd,6)  = 0;	// unknown
+	WFIFOL(fd,10) = 0;	// times won
+	WFIFOL(fd,14) = 0;	// times lost
+	WFIFOL(fd,18) = ranking_get_point(sd, RK_PK);
+	WFIFOSET(fd, packet_db[0x210].len);
+
+	return;
+}
+
+/*==========================================
  * BSランキング	/blacksmith
  *------------------------------------------
  */
@@ -12326,6 +12348,7 @@ struct {
 	{clif_parse_clientsetting,"clientsetting"},
 	{clif_parse_BabyRequest,"babyrequest"},
 	{clif_parse_BabyReply,"babyreply"},
+	{clif_parse_PvPInfo,"pvpinfo"},
 	{clif_parse_RankingBlacksmith,"rankingblacksmith"},
 	{clif_parse_RankingAlchemist,"rankingalchemist"},
 	{clif_parse_RankingTaekwon,"rankingtaekwon"},

@@ -131,7 +131,6 @@ struct vars_info {
 	char *file;
 	int   line;
 };
-static int varsdb_final(void *key,void *data,va_list ap);
 #endif
 
 extern struct script_function {
@@ -184,8 +183,9 @@ static void disp_error_message(const char *mes,unsigned char *pos)
  */
 static unsigned int calc_hash(const unsigned char *p)
 {
-	// SDBM Algorithm
 	unsigned int h=0;
+
+	// SDBM Algorithm
 	while(*p){
 		h=(h<<6)+(h<<16)-h;
 		h+=(unsigned char)tolower(*p++);
@@ -209,8 +209,8 @@ static unsigned int calc_hash(const unsigned char *p)
  */
 static int search_str(const unsigned char *p)
 {
-	int i;
-	i=str_hash[calc_hash(p)%SCRIPT_HASH_SIZE];
+	int i = str_hash[calc_hash(p)%SCRIPT_HASH_SIZE];
+
 	while(i){
 		if(strcmpi(str_buf+str_data[i].str,p)==0){
 			return i;
@@ -410,10 +410,10 @@ static unsigned char *skip_word(unsigned char *p)
 	if(*p=='#')  p++;	// account変数用
 	if(*p=='#')  p++;	// ワールドaccount変数用
 
-	while(isalnum(*p)||*p=='_'|| *p>=0x81) {
-		if(*p>=0x81 && p[1]){
+	while(isalnum(*p) || *p=='_' || *p>=0x81) {
+		if(*p>=0x81 && p[1])
 			p+=2;
-		} else
+		else
 			p++;
 	}
 	// postfix
@@ -429,24 +429,24 @@ static unsigned char *skip_word(unsigned char *p)
 static int set_control_code(unsigned char p)
 {
 	switch(p) {
-	case 'n':
-		add_scriptb('\r');
-		add_scriptb('\n');
-		break;
-	case 'r':
-		add_scriptb('\r');
-		break;
-	case 't':
-		add_scriptb('\t');
-		break;
-	case 'a':
-		add_scriptb('\a');
-		break;
-	case 'b':
-		add_scriptb('\b');
-		break;
-	default:
-		return 0;
+		case 'n':
+			add_scriptb('\r');
+			add_scriptb('\n');
+			break;
+		case 'r':
+			add_scriptb('\r');
+			break;
+		case 't':
+			add_scriptb('\t');
+			break;
+		case 'a':
+			add_scriptb('\a');
+			break;
+		case 'b':
+			add_scriptb('\b');
+			break;
+		default:
+			return 0;
 	}
 	return 1;
 }
@@ -613,7 +613,8 @@ unsigned char* parse_subexpr(unsigned char *p,int limit)
 		   (op=C_GT,opl=3,len=1,*p=='>') ||
 		   (op=C_L_SHIFT,opl=7,len=2,*p=='<' && p[1]=='<') ||
 		   (op=C_LE,opl=3,len=2,*p=='<' && p[1]=='=') ||
-		   (op=C_LT,opl=3,len=1,*p=='<')) && opl>limit){
+		   (op=C_LT,opl=3,len=1,*p=='<')) && opl>limit)
+	{
 		p+=len;
 		if(op==C_FUNC){
 			int i=0,j=0,func;
@@ -1859,7 +1860,6 @@ struct map_session_data *script_rid2sd(struct script_state *st)
 	return sd;
 }
 
-
 /*==========================================
  * 変数の読み取り
  *------------------------------------------
@@ -2297,7 +2297,7 @@ int isstr(struct script_data *c)
 {
 	if( c->type == C_STR || c->type == C_CONSTSTR )
 		return 1;
-	else if( c->type == C_NAME ) {
+	if( c->type == C_NAME ) {
 		char *p = str_buf + str_data[c->u.num & 0xffffff].str;
 		char postfix = p[strlen(p)-1];
 		return (postfix == '$');
@@ -2551,6 +2551,9 @@ int run_func(struct script_state *st)
 			case C_CONSTSTR:
 				printf(" cstr(%s)",st->stack->stack_data[i].u.str);
 				break;
+			case C_RETINFO:
+				printf(" retinfo(0x%x)",st->stack->stack_data[i].u.num);
+				break;
 			default:
 				printf(" etc(%d,%d)",st->stack->stack_data[i].type,st->stack->stack_data[i].u.num);
 				break;
@@ -2638,7 +2641,7 @@ void run_script(struct script_code *rootscript,int pos,int rid,int oid)
 	sd = map_id2sd(rid);
 	st = (struct script_state *)aCalloc(1, sizeof(struct script_state));
 
-	if(sd && sd->stack && sd->npc_scriptroot == rootscript){
+	if(sd && sd->stack && sd->npc_scriptroot == rootscript) {
 		// 前回のスタックを復帰
 		st->script = sd->npc_script;
 		st->stack  = sd->stack;
@@ -2694,7 +2697,7 @@ struct linkdb_node* script_erase_sleepdb(struct linkdb_node *n)
 int run_script_timer(int tid, unsigned int tick, int id, int data)
 {
 	struct script_state *st     = (struct script_state *)data;
-	struct linkdb_node *node    = (struct linkdb_node *)sleep_db;
+	struct linkdb_node *node    = sleep_db;
 	struct map_session_data *sd = map_id2sd(st->rid);
 
 	if( sd && sd->status.char_id != id ) {
@@ -3378,7 +3381,7 @@ int do_final_script()
 	if(userfunc_db)
 		strdb_final(userfunc_db,userfunc_db_final);
 	if(sleep_db) {
-		struct linkdb_node *n = (struct linkdb_node *)sleep_db;
+		struct linkdb_node *n = sleep_db;
 		while(n) {
 			struct script_state *st = (struct script_state *)n->data;
 			script_free_stack(st->stack);

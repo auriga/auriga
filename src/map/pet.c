@@ -953,7 +953,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 					return 0; // 攻撃中
 				if(pd->ud.walktimer != -1)	// 歩行中なら停止
 					unit_stop_walking(&pd->bl,1);
-				if(pd->loottype==1){					// ペット自身が所有する場合
+				if(pd->loottype==1) {					// ペット自身が所有する場合
 					if(pd->lootitem_count < LOOTITEM_SIZE){
 						memcpy(&pd->lootitem[pd->lootitem_count++],&fitem->item_data,sizeof(pd->lootitem[0]));
 						pd->lootitem_weight += itemdb_search(fitem->item_data.nameid)->weight*fitem->item_data.amount;
@@ -968,13 +968,20 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 						memmove(&pd->lootitem[0],&pd->lootitem[1],sizeof(pd->lootitem[0])*(LOOTITEM_SIZE-1));
 						memcpy(&pd->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(pd->lootitem[0]));
 					}
-				}else if(pd->loottype==2){					// ペットが拾った瞬間に飼い主へ
+				} else if(pd->loottype==2) {					// ペットが拾った瞬間に飼い主へ
 					if(pc_additem(pd->msd,&fitem->item_data,fitem->item_data.amount)){
 						pet_unlocktarget(pd);
 						return 0;
 					}
-				}else
+				} else {
 					return 0;
+				}
+				if(mob_is_pcview(pd->class_)) {
+					int delay = tick + status_get_amotion(&pd->bl);
+					clif_takeitem(&pd->bl,&fitem->bl);
+					pd->ud.canact_tick  = delay;
+					pd->ud.canmove_tick = delay;
+				}
 				map_clearflooritem(bl_item->id);
 				pet_unlocktarget(pd);
 			}
