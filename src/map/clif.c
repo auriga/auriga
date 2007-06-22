@@ -437,7 +437,7 @@ void clif_dropflooritem(struct flooritem_data *fitem)
 	if(fitem->item_data.nameid <= 0)
 		return;
 
-	//009e <ID>.l <name ID>.w <identify flag>.B <X>.w <Y>.w <subX>.B <subY>.B <amount>.w
+	// 009e <ID>.l <name ID>.w <identify flag>.B <X>.w <Y>.w <subX>.B <subY>.B <amount>.w
 	WBUFW(buf,0)=0x9e;
 	WBUFL(buf,2)=fitem->bl.id;
 	if((view = itemdb_viewid(fitem->item_data.nameid)) > 0)
@@ -1677,9 +1677,9 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFPOS(buf,36,hd->bl.x,hd->bl.y);
 
 	clif_send(buf,packet_db[0x7c].len,&hd->bl,AREA);
-//	ホムでは、0x78パケットや、それに代わるパケットの確認できず
-//	len = clif_hom0078(hd,buf);
-//	clif_send(buf,len,&hd->bl,AREA);
+	// ホムでは、0x78パケットや、それに代わるパケットの確認できず
+	//len = clif_hom0078(hd,buf);
+	//clif_send(buf,len,&hd->bl,AREA);
 
 	if(hd->view_size!=0)
 		clif_misceffect2(&hd->bl,422+hd->view_size);
@@ -1718,7 +1718,7 @@ void clif_send_homstatus(struct map_session_data *sd, int flag)
 	WFIFOL(fd,59)=hd->status.base_exp;		// Exp
 	WFIFOL(fd,63)=homun_nextbaseexp(hd);	// NextExp
 	WFIFOW(fd,67)=hd->status.skill_point;	// skill point
-	WFIFOW(fd,69)=hd->attackable;			// 攻撃可否フラグ	0:不可/1:許可
+	WFIFOW(fd,69)=hd->attackable;			// 攻撃可否フラグ 0:不可/1:許可
 	WFIFOSET(fd,packet_db[0x22e].len);
 
 	return;
@@ -3303,7 +3303,7 @@ static void clif_initialstatus(struct map_session_data *sd)
 	WFIFOB(fd,15)=pc_need_status_point(sd,SP_LUK);
 
 	WFIFOW(fd,16) = sd->base_atk + sd->watk;
-	WFIFOW(fd,18) = sd->watk2;	//atk bonus
+	WFIFOW(fd,18) = sd->watk2;	// atk bonus
 	WFIFOW(fd,20) = sd->matk1;
 	WFIFOW(fd,22) = sd->matk2;
 	WFIFOW(fd,24) = sd->def;	// def
@@ -4450,7 +4450,7 @@ static void clif_getareachar_item(struct map_session_data* sd, struct flooritem_
 	nullpo_retv(sd);
 	nullpo_retv(fitem);
 
-	//009d <ID>.l <item ID>.w <identify flag>.B <X>.w <Y>.w <amount>.w <subX>.B <subY>.B
+	// 009d <ID>.l <item ID>.w <identify flag>.B <X>.w <Y>.w <amount>.w <subX>.B <subY>.B
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x9d;
 	WFIFOL(fd,2)=fitem->bl.id;
@@ -5404,7 +5404,8 @@ void clif_GMmessage(struct block_list *bl, const char* mes, int len, int flag)
 
 	WBUFW(buf,0) = 0x9a;
 	WBUFW(buf,2) = len+lp;
-	WBUFL(buf,4) = 0x65756c62;
+	if(lp == 8)
+		memcpy(WBUFP(buf,4), "blue", 4);
 	memcpy(WBUFP(buf,lp), mes, len);
 	flag&=0x07;
 	clif_send(buf, WBUFW(buf,2), bl,
@@ -5455,8 +5456,8 @@ void clif_announce(struct block_list *bl, const char* mes, int len, unsigned lon
 	WBUFW(buf,0) = 0x1c3;
 	WBUFW(buf,2) = len+16;
 	WBUFL(buf,4) = color;
-	WBUFW(buf,8) = 0x190;	// Font style? Type?
-	WBUFW(buf,10) = 0x0c;	// 12? Font size?
+	WBUFW(buf,8) = 400;	// Font style? Type?
+	WBUFW(buf,10) = 12;	// Font size
 	WBUFL(buf,12) = 0;	// Unknown!
 	memcpy(WBUFP(buf,16), mes, len);
 
@@ -9181,10 +9182,6 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 			}
 		}
 		break;
-	case BL_PET:
-		memcpy(WFIFOP(fd,6),((struct pet_data*)bl)->name,24);
-		WFIFOSET(fd,packet_db[0x95].len);
-		break;
 	case BL_NPC:
 		{
 			struct npc_data *snd=(struct npc_data*)bl;
@@ -9201,34 +9198,13 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 			WFIFOSET(fd,packet_db[0x95].len);
 		}
 		break;
+	case BL_PET:
+		memcpy(WFIFOP(fd,6),((struct pet_data*)bl)->name,24);
+		WFIFOSET(fd,packet_db[0x95].len);
+		break;
 	case BL_MOB:
-		{
-			// struct mob_data *smd=(struct mob_data *)bl;
-			// struct guild *g=NULL;
-			// struct guild_castle *gc=NULL;
-			memcpy(WFIFOP(fd,6),((struct mob_data*)bl)->name,24);
-			/*=============================================================
-			if( smd->guild_id>0 &&(g=guild_search(smd->guild_id))!=NULL ){
-				int i;
-				for(i=0;i<MAX_GUILDCASTLE;i++){
-					gc=guild_castle_search(i);
-					if(gc->guild_id == g->guild_id){
-						break;
-					}
-				}
-				// ギルド所属ならパケット0195を返す
-				WFIFOW(fd, 0)=0x195;
-				strncpy(WFIFOP(fd,30),"NPC",24);	// PT名
-				memcpy(WFIFOP(fd,54),g->name,24);	// Guild名
-			//	strncpy(WFIFOP(fd,78),"",24);		// 役職名
-				memcpy(WFIFOP(fd,78),gc->castle_name,24);
-				WFIFOSET(fd,packet_db[0x195].len);
-				break;
-			}
-			*-------------------------------------------------------------
-			*/
-			WFIFOSET(fd,packet_db[0x95].len);
-		}
+		memcpy(WFIFOP(fd,6),((struct mob_data*)bl)->name,24);
+		WFIFOSET(fd,packet_db[0x95].len);
 		break;
 	case BL_HOM:
 		memcpy(WFIFOP(fd,6),((struct homun_data*)bl)->status.name,24);
@@ -9450,7 +9426,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 3) {
 			pc_setsit(sd);
 			clif_sitting(sd);
-			skill_gangsterparadise(sd,1);/* ギャングスターパラダイス設定 */
+			skill_gangsterparadise(sd,1);	// ギャングスターパラダイス設定
 		}
 		else
 			clif_skill_fail(sd,1,0,2);
@@ -9461,7 +9437,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		WFIFOL(fd,2)=sd->bl.id;
 		WFIFOB(fd,26)=3;
 		clif_send(WFIFOP(fd,0),packet_db[0x8a].len,&sd->bl,AREA);
-		skill_gangsterparadise(sd,0);/* ギャングスターパラダイス解除 */
+		skill_gangsterparadise(sd,0);	// ギャングスターパラダイス解除
 		break;
 	}
 
@@ -9654,9 +9630,9 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 
 	if( pc_dropitem(sd, item_index, item_amount) ) {
 		if (battle_config.save_player_when_drop_item) {
-			/* [Anti-hack] Protection against duplication of items
-			   how -> A player drops an item on floor. An other takes the item and disconnects (and the item is saved).
-			          If players know a solution to crash server, they crash it. Then, first player can be not saved and they have duplicated.*/
+			// [Anti-hack] Protection against duplication of items
+			// how -> A player drops an item on floor. An other takes the item and disconnects (and the item is saved).
+			//        If players know a solution to crash server, they crash it. Then, first player can be not saved and they have duplicated.
 			chrif_save(sd);
 			storage_storage_save(sd);
 		}
@@ -10184,11 +10160,11 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 	// end decode
 
 	if (skillnum >= GUILD_SKILLID) {
-		//ギルドスキルはギルマスのみ
+		// ギルドスキルはギルマスのみ
 		if (sd != guild_get_guildmaster_sd(guild_search(sd->status.guild_id)))
 			return;
-		//ギルドスキルのデコードがおかしい！
-		//わかる人頼みます
+		// ギルドスキルのデコードがおかしい！
+		// わかる人頼みます
 		skilllv = pc_checkskill(sd, skillnum);
 	}
 
@@ -10196,7 +10172,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 	if(bl == NULL)
 		return;
 
-	//ホムスキル
+	// ホムスキル
 	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID)
 	{
 		struct homun_data *hd = sd->hd;
@@ -10212,7 +10188,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 			if(DIFF_TICK(tick, hd->homskillstatictimer[skillnum-HOM_SKILLID]) < 0)
 				return;
 
-			if(skill_get_inf(skillnum)==4)	//自分が対象
+			if(skill_get_inf(skillnum)==4)	// 自分が対象
 				unit_skilluse_id(&hd->bl,hd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&hd->bl,target_id,skillnum,skilllv);
@@ -10250,7 +10226,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 
 	if((option = status_get_option(bl)) != NULL && *option&0x4006 && ((&sd->bl)!=bl))
 	{
-		//昆虫と悪魔は攻撃可能？
+		// 昆虫と悪魔は攻撃可能？
 		if(sd->race != RCT_INSECT && sd->race != RCT_DEMON)
 			return;
 	}
@@ -10273,8 +10249,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 			sd->skillitemlv = -1;
 			sd->skillitem_flag = 0;
 		}
-	}
-	else {
+	} else {
 		sd->skillitem = -1;
 		sd->skillitemlv = -1;
 		sd->skillitem_flag = 0;
@@ -10386,8 +10361,7 @@ static void clif_parse_UseSkillToPos(int fd,struct map_session_data *sd, int cmd
 			sd->skillitemlv = -1;
 			sd->skillitem_flag = 0;
 		}
-	}
-	else {
+	} else {
 		sd->skillitem = -1;
 		sd->skillitemlv = -1;
 		sd->skillitem_flag = 0;
@@ -11472,10 +11446,10 @@ static void clif_parse_GMReqNoChat(int fd,struct map_session_data *sd, int cmd)
 	if(battle_config.nomanner_mode)
 		return;
 
-	//駆け足中は赤エモにならない
+	// 駆け足中は赤エモにならない
 	if(sd->sc_data[SC_RUN].timer!=-1)
 		return;
-	//念のため強制移動中も
+	// 念のため強制移動中も
 	if(sd->sc_data[SC_FORCEWALKING].timer!=-1)
 		return;
 
@@ -12438,7 +12412,7 @@ int clif_parse(int fd)
 			return 0;	// まだ1パケット分データが揃ってない
 
 		if(sd && sd->state.auth==1 &&
-			sd->state.waitingdisconnect==1 ){// 切断待ちの場合パケットを処理しない
+			sd->state.waitingdisconnect==1 ){	// 切断待ちの場合パケットを処理しない
 
 		}else if(packet_db[cmd].func){
 			g_packet_len = packet_len;	// GETPACKETPOS 用に保存

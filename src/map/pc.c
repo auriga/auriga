@@ -2668,13 +2668,15 @@ void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip)
 {
 	nullpo_retv(sd);
 
-	if(idx_card >= 0 && idx_card < MAX_INVENTORY && idx_equip >= 0 && idx_equip < MAX_INVENTORY && sd->inventory_data[idx_card]) {
+	// idx_cardは既にチェック済み
+	if(idx_equip >= 0 && idx_equip < MAX_INVENTORY && sd->inventory_data[idx_card]) {
 		int i;
 		int nameid=sd->status.inventory[idx_equip].nameid;
 		int cardid=sd->status.inventory[idx_card].nameid;
 		int ep=sd->inventory_data[idx_card]->equip;
 
 		if( nameid <= 0 ||
+		    cardid <= 0 ||
 		    sd->inventory_data[idx_equip] == NULL ||
 		    (sd->inventory_data[idx_equip]->type != 4 && sd->inventory_data[idx_equip]->type != 5) ||	// 装備じゃない
 		    sd->status.inventory[idx_equip].identify == 0 ||						// 未鑑定

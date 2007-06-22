@@ -395,7 +395,6 @@ int mob_spawn(int id)
  */
 int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 {
-	int dx,dy;
 	struct walkpath_data wpd;
 
 	nullpo_retr(0, md);
@@ -430,10 +429,7 @@ int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 		}
 	}
 
-	dx = abs(bl->x - md->bl.x);
-	dy = abs(bl->y - md->bl.y);
-
-	if( range > 0 && range < ((dx > dy)? dx: dy) )	// 遠すぎる
+	if( range > 0 && range < unit_distance(md->bl.x,md->bl.y,bl->x,bl->y) )	// 遠すぎる
 		return 0;
 
 	if( md->bl.x == bl->x && md->bl.y == bl->y )	// 同じマス
@@ -441,14 +437,14 @@ int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 
 	if( mob_db[md->class_].range > 6 ) {
 		// 攻撃可能な場合は遠距離攻撃、それ以外は移動を試みる
-		if(path_search_long(NULL,md->bl.m,md->bl.x,md->bl.y,bl->x,bl->y))
+		if( path_search_long(NULL,md->bl.m,md->bl.x,md->bl.y,bl->x,bl->y) )
 			return 1;
 	}
 
 	// 障害物判定
 	wpd.path_len = 0;
 	wpd.path_pos = 0;
-	if(path_search(&wpd,md->bl.m,md->bl.x,md->bl.y,bl->x,bl->y,0)!=-1 && wpd.path_len<=AREA_SIZE)
+	if( !path_search(&wpd,md->bl.m,md->bl.x,md->bl.y,bl->x,bl->y,0) && wpd.path_len <= AREA_SIZE )
 		return 1;
 
 	return 0;
@@ -1975,7 +1971,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			   (battle_config.mvp_announce==2 && !(md->spawndelay1==-1 && md->spawndelay2==-1))) {
 				char output[256];
 				snprintf(output, sizeof output,
-					//"【MVP情報】%sさんが%sを倒しました！",mvpsd->status.name,mob_db[md->class_].jname);
+					// "【MVP情報】%sさんが%sを倒しました！"
 					msg_txt(134),mvpsd->status.name,mob_db[md->class_].jname);
 				clif_GMmessage(&mvpsd->bl,output,strlen(output)+1,0x10);
 			}
@@ -2027,7 +2023,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	// <Agit> NPC Event [OnAgitBreak]
 	if(md->npc_event[0] && strcmp(((md->npc_event)+strlen(md->npc_event)-13),"::OnAgitBreak") == 0) {
 		printf("MOB.C: Run NPC_Event[OnAgitBreak].\n");
-		if (agit_flag == 1) //Call to Run NPC_Event[OnAgitBreak]
+		if (agit_flag == 1)	// Call to Run NPC_Event[OnAgitBreak]
 			guild_agit_break(md);
 	}
 
@@ -3716,7 +3712,7 @@ static int mob_read_randommonster(void)
 	char *str[10],*p;
 	int i,j;
 
-	const char* mobfile[] = {
+	const char* mobfile[MAX_RANDOMMONSTER] = {
 		"db/mob_branch.txt",
 		"db/mob_poring.txt",
 		"db/mob_boss.txt",

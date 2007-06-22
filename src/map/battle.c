@@ -4489,15 +4489,12 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
  */
 int battle_check_range(struct block_list *src,struct block_list *bl,int range)
 {
-	int dx,dy;
 	int arange;
 
 	nullpo_retr(0, src);
 	nullpo_retr(0, bl);
 
-	dx=abs(bl->x-src->x);
-	dy=abs(bl->y-src->y);
-	arange=((dx>dy)?dx:dy);
+	arange = unit_distance(src->x,src->y,bl->x,bl->y);
 
 	if(src->m != bl->m)	// 違うマップ
 		return 0;

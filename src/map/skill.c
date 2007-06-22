@@ -7912,10 +7912,6 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 		if(bl->type != BL_MOB || ((struct mob_data*)bl)->master_id != 0)
 			return 0;
 		break;
-	case NPC_HALLUCINATION:
-		if(battle_config.hallucianation_off)
-			 return 0;
-		break;
 	case NPC_REBIRTH:
 		break;
 	case WE_BABY:

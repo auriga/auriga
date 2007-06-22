@@ -1,4 +1,15 @@
 ----------------------------------------
+//0196 [2007/06/23] by Rayce
+
+・battle_auriga.confの hallucianation_off がyesの時はエフェクトのみを無効化するように修正（skill.c, status.c）
+	ダメージ表示の数値がばらつく効果だけは有効化されるようになります。
+	/effect でエフェクトをオフにしているのと同じ状態になります。
+
+・一部の距離計算で unit_distance() を使うように（battle.c, mob.c）
+・clif_GMmessage() を少し改善（clif.c）
+・pc_insert_card() を少し修正（pc.c）
+
+----------------------------------------
 //0195 [2007/06/11] by Rayce
 
 ・/pvpinfoに対するパケット処理追加 from eApp（clif.c）
