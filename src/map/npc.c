@@ -400,7 +400,7 @@ int npc_timerevent_stop(struct npc_data *nd)
 }
 
 /*==========================================
- * タイマー値の所得
+ * タイマー値の取得
  *------------------------------------------
  */
 int npc_gettimerevent_tick(struct npc_data *nd)

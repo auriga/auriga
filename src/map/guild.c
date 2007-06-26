@@ -573,7 +573,7 @@ static void guild_check_member(struct guild *g)
 }
 
 /*==========================================
- * 情報所得失敗（そのIDのキャラを全部未所属にする）
+ * 情報取得失敗（そのIDのキャラを全部未所属にする）
  *------------------------------------------
  */
 void guild_recv_noinfo(int guild_id)
@@ -592,7 +592,7 @@ void guild_recv_noinfo(int guild_id)
 }
 
 /*==========================================
- * 情報所得
+ * 情報取得
  *------------------------------------------
  */
 void guild_recv_info(struct guild *sg)
@@ -1519,7 +1519,7 @@ void guild_skillupack(int guild_id, int skill_num, int account_id)
 }
 
 /*==========================================
- * ギルド同盟数所得
+ * ギルド同盟数取得
  *------------------------------------------
  */
 int guild_get_alliance_count(struct guild *g,int flag)
@@ -1914,7 +1914,7 @@ void guild_castledataload(int castle_id, int idx)
 }
 
 /*==========================================
- * ギルド城情報所得時イベント追加
+ * ギルド城情報取得時イベント追加
  *------------------------------------------
  */
 void guild_addcastleinfoevent(int castle_id, int idx, const char *name)

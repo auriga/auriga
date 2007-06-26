@@ -1,4 +1,15 @@
 ----------------------------------------
+//0198 [2007/06/27] by Rayce
+
+・gccで0197がコンパイルエラーになっていたので修正（battle.h）
+・スクリプトにgetargcount関数追加（script.c）
+	callfuncまたはcallsub内で呼び出し時の引数の個数を取得することができます
+
+・アイテムボーナスオートスペルのEAS_LONGが正常に機能していなかったバグを修正（skill.c）
+・autospell構造体のメンバflagをunsinged long型に変更した際の修正漏れを補完（pc.*, script.c, skill.c）
+・コメント修正、所得 → 取得
+
+----------------------------------------
 //0197 [2007/06/27] by Rayce
 
 ・autospell構造体のメンバflagをlong型からunsigned long型に変更（battle.c, map.h, skill.*）

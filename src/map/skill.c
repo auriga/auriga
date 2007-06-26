@@ -11504,7 +11504,7 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
  *  mode : 攻撃時1 反撃2
  *------------------------------------------
  */
-static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_list *bl,int skillid,int skilllv,int rate,long asflag,int tick,int flag)
+static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_list *bl,int skillid,int skilllv,int rate,unsigned long asflag,int tick,int flag)
 {
 	struct block_list *target;
 	int f=0,sp=0;
@@ -11521,7 +11521,7 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 		return 0;
 
 	// 遠距離物理半減
-	if(flag&EAS_LONG)
+	if(asflag&EAS_LONG)
 	{
 		if(atn_rand()%10000 > (rate/2))
 			return 0;

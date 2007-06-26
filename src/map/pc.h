@@ -80,7 +80,7 @@ int pc_checkweighticon(struct map_session_data *sd);
 int pc_bonus(struct map_session_data*,int,int);
 int pc_bonus2(struct map_session_data *sd,int,int,int);
 int pc_bonus3(struct map_session_data *sd,int,int,int,int);
-int pc_bonus4(struct map_session_data *sd,int,int,int,int,long);
+int pc_bonus4(struct map_session_data *sd,int,int,int,int,unsigned long);
 int pc_skill(struct map_session_data*,int,int,int);
 
 void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip);

@@ -162,7 +162,7 @@ static void party_check_member(struct party *p)
 	return;
 }
 
-// 情報所得失敗（そのIDのキャラを全部未所属にする）
+// 情報取得失敗（そのIDのキャラを全部未所属にする）
 void party_recv_noinfo(int party_id)
 {
 	int i;
@@ -178,7 +178,7 @@ void party_recv_noinfo(int party_id)
 	return;
 }
 
-// 情報所得
+// 情報取得
 void party_recv_info(struct party *sp)
 {
 	struct map_session_data *sd;

@@ -1537,7 +1537,7 @@ int pc_checkweighticon(struct map_session_data *sd)
  * オートスペル
  *------------------------------------------
  */
-static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilllv,int rate, long flag)
+static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilllv,int rate, unsigned long flag)
 {
 	nullpo_retr(0, sd);
 
@@ -2610,19 +2610,18 @@ int pc_bonus3(struct map_session_data *sd,int type,int type2,int type3,int val)
  * 装備品による能力等のボーナス設定
  *------------------------------------------
  */
-int pc_bonus4(struct map_session_data *sd,int type,int type2,int type3,int type4,long val)
+int pc_bonus4(struct map_session_data *sd,int type,int type2,int type3,int type4,unsigned long val)
 {
 	nullpo_retr(0, sd);
 
-	switch(type){
+	switch(type) {
 	case SP_AUTOSPELL:
-		if(sd->state.lr_flag == 2)
-			break;
-		pc_bonus_autospell(sd,type2,type3,type4,val);
+		if(sd->state.lr_flag != 2)
+			pc_bonus_autospell(sd,type2,type3,type4,val);
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("pc_bonus4: unknown type %d %d %d %d %ld!\n",type,type2,type3,type4,val);
+			printf("pc_bonus4: unknown type %d %d %d %d %lu!\n",type,type2,type3,type4,val);
 		break;
 	}
 
@@ -2630,7 +2629,7 @@ int pc_bonus4(struct map_session_data *sd,int type,int type2,int type3,int type4
 }
 
 /*==========================================
- * スクリプトによるスキル所得
+ * スクリプトによるスキル取得
  *------------------------------------------
  */
 int pc_skill(struct map_session_data *sd,int id,int level,int flag)
@@ -2642,7 +2641,7 @@ int pc_skill(struct map_session_data *sd,int id,int level,int flag)
 			printf("support card skill only!\n");
 		return 0;
 	}
-	if(!flag && (sd->status.skill[id].id == id || level == 0)){	// クエスト所得ならここで条件を確認して送信する
+	if(!flag && (sd->status.skill[id].id == id || level == 0)){	// クエスト取得ならここで条件を確認して送信する
 		sd->status.skill[id].lv=level;
 		status_calc_pc(sd,0);
 		clif_skillinfoblock(sd);

@@ -7169,7 +7169,7 @@ void clif_mvp_effect(struct block_list *bl)
 }
 
 /*==========================================
- * MVPアイテム所得
+ * MVPアイテム取得
  *------------------------------------------
  */
 void clif_mvp_item(struct map_session_data *sd, int nameid)
@@ -7207,7 +7207,7 @@ void clif_mvp_fail_item(struct map_session_data *sd)
 }
 
 /*==========================================
- * MVP経験値所得
+ * MVP経験値取得
  *------------------------------------------
  */
 void clif_mvp_exp(struct map_session_data *sd, int exp)
@@ -12363,7 +12363,7 @@ int clif_parse(int fd)
 		// 管理用パケット処理
 		if(cmd>=30000){
 			switch(cmd){
-			case 0x7530:	// Auriga情報所得
+			case 0x7530:	// Auriga情報取得
 				WFIFOW(fd,0)=0x7531;
 				WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 				WFIFOB(fd,3)=AURIGA_MINOR_VERSION;

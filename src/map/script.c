@@ -2611,7 +2611,7 @@ int run_func(struct script_state *st)
 		script_free_vars( st->stack->var_function );
 		aFree(st->stack->var_function);
 
-		i = conv_num(st,& (st->stack->stack_data[st->stack->defsp-5]));									// 引数の数所得
+		i = conv_num(st,& (st->stack->stack_data[st->stack->defsp-5]));									// 引数の数取得
 		st->pos=conv_num(st,& (st->stack->stack_data[st->stack->defsp-1]));								// スクリプト位置の復元
 		st->script=(struct script_code*)conv_num(st,& (st->stack->stack_data[st->stack->defsp-3]));		// スクリプトを復元
 		st->stack->var_function = (struct linkdb_node**)st->stack->stack_data[st->stack->defsp-2].u.num; // 関数依存変数
@@ -3452,6 +3452,7 @@ int buildin_callsub(struct script_state *st);
 int buildin_callfunc(struct script_state *st);
 int buildin_return(struct script_state *st);
 int buildin_getarg(struct script_state *st);
+int buildin_getargcount(struct script_state *st);
 int buildin_next(struct script_state *st);
 int buildin_close(struct script_state *st);
 int buildin_close2(struct script_state *st);
@@ -3698,6 +3699,7 @@ struct script_function buildin_func[] = {
 	{buildin_callfunc,"callfunc","s*"},
 	{buildin_return,"return","*"},
 	{buildin_getarg,"getarg","i"},
+	{buildin_getargcount,"getargcount",""},
 	{buildin_jobchange,"jobchange","i*"},
 	{buildin_input,"input","s"},
 	{buildin_warp,"warp","sii"},
@@ -4073,13 +4075,32 @@ int buildin_getarg(struct script_state *st)
 		return 0;
 	}
 	max=conv_num(st,& (st->stack->stack_data[st->stack->defsp-5]));
-	stsp=st->stack->defsp - max -5;
+	stsp=st->stack->defsp - max - 5;
 	if( num >= max ){
 		printf("buildin_getarg: arg1(%d) out of range(%d) !\n",num,max);
 		st->state=END;
 		return 0;
 	}
 	push_copy(st->stack,stsp+num);
+	return 0;
+}
+
+/*==========================================
+ * 引数の総個数を取得
+ *------------------------------------------
+ */
+int buildin_getargcount(struct script_state *st)
+{
+	int max;
+
+	if( st->stack->defsp<5 || st->stack->stack_data[st->stack->defsp-1].type!=C_RETINFO ){
+		printf("buildin_getargcount: without callfunc or callsub!\n");
+		st->state=END;
+		return 0;
+	}
+	max=conv_num(st,& (st->stack->stack_data[st->stack->defsp-5]));
+
+	push_val(st->stack,C_INT,max);
 	return 0;
 }
 
@@ -4629,7 +4650,7 @@ int buildin_copyarray(struct script_state *st)
 }
 
 /*==========================================
- * 配列変数のサイズ所得
+ * 配列変数のサイズ取得
  *------------------------------------------
  */
 static int getarraysize(struct script_state *st,int num,char postfix,struct linkdb_node** ref)
@@ -4720,7 +4741,7 @@ int buildin_deletearray(struct script_state *st)
 }
 
 /*==========================================
- * 指定要素を表す値(キー)を所得する
+ * 指定要素を表す値(キー)を取得する
  *------------------------------------------
  */
 int buildin_getelementofarray(struct script_state *st)
@@ -5795,20 +5816,20 @@ int buildin_bonus3(struct script_state *st)
 int buildin_bonus4(struct script_state *st)
 {
 	int type,type2,type3,type4;
-	long val;
+	unsigned long val;
 
 	type  = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	type3 = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	type4 = conv_num(st,& (st->stack->stack_data[st->start+5]));
-	val   = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	val   = (unsigned long)conv_num(st,& (st->stack->stack_data[st->start+6]));
 
 	pc_bonus4(script_rid2sd(st),type,type2,type3,type4,val);
 	return 0;
 }
 
 /*==========================================
- * スキル所得
+ * スキル取得
  *------------------------------------------
  */
 int buildin_skill(struct script_state *st)
@@ -5845,7 +5866,7 @@ int buildin_guildskill(struct script_state *st)
 }
 
 /*==========================================
- * スキルレベル所得
+ * スキルレベル取得
  *------------------------------------------
  */
 int buildin_getskilllv(struct script_state *st)
@@ -6520,7 +6541,7 @@ int buildin_stopnpctimer(struct script_state *st)
 }
 
 /*==========================================
- * NPCタイマー情報所得
+ * NPCタイマー情報取得
  *------------------------------------------
  */
 int buildin_getnpctimer(struct script_state *st)
@@ -6737,7 +6758,7 @@ int buildin_getmapusers(struct script_state *st)
 }
 
 /*==========================================
- * エリア指定ユーザー数所得
+ * エリア指定ユーザー数取得
  *------------------------------------------
  */
 static int buildin_getareausers_sub(struct block_list *bl,va_list ap)
@@ -6770,7 +6791,7 @@ int buildin_getareausers(struct script_state *st)
 }
 
 /*==========================================
- * エリア指定ドロップアイテム数所得
+ * エリア指定ドロップアイテム数取得
  *------------------------------------------
  */
 static int buildin_getareadropitem_sub(struct block_list *bl,va_list ap)
@@ -7410,7 +7431,7 @@ int buildin_disablewaitingroomevent(struct script_state *st)
 }
 
 /*==========================================
- * npcチャット状態所得
+ * npcチャット状態取得
  *------------------------------------------
  */
 int buildin_getwaitingroomstate(struct script_state *st)

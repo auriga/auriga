@@ -18,7 +18,7 @@ struct scdata_db {
 	int disable;
 };
 
-// パラメータ所得系
+// パラメータ取得系
 int status_get_class(struct block_list *bl);
 int status_get_dir(struct block_list *bl);
 int status_get_lv(struct block_list *bl);
