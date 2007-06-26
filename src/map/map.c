@@ -2751,6 +2751,7 @@ void do_final(void)
 	guild_flush_expcache();				// ギルドExpをフラッシュ
 	clif_foreachclient(chrif_disconnect_sub);	// ここで先にキャラを全て切断しておく
 
+	do_final_battle();
 	do_final_npc();
 	do_final_script();
 	do_final_itemdb();
@@ -2863,6 +2864,7 @@ int do_init(int argc,char *argv[])
 	add_timer_func_list(map_clearflooritem_timer,"map_clearflooritem_timer");
 	add_timer_interval(gettick()+1000,map_freeblock_timer,0,0,600*1000);
 
+	do_init_battle();
 	do_init_chrif();
 	do_init_clif();
 	do_init_script();	// parse_script を呼び出す前にこれを呼ぶ

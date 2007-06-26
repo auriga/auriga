@@ -224,29 +224,28 @@ struct pc_base_job {
 };
 
 //拡張オートスペル
-//EQUIP_AUTOSPELL_FLAG
-enum 	{
-		EAS_SHORT       = 0x00000001,	// 近距離物理
-		EAS_LONG        = 0x00000002,	// 遠距離物理
-		EAS_WEAPON      = 0x00000003,	// 物理
-		EAS_MAGIC       = 0x00000004,	// 魔法
-		EAS_MISC        = 0x00000008,	// misc（罠・鷹・火炎瓶等）
-		EAS_TARGET      = 0x00000010,	// 自分に使う
-		EAS_SELF        = 0x00000020,	// 自分に使う
-		EAS_TARGET_RAND = 0x00000040,	// 自分か攻撃対象に使う
-		//EAS_TARGET    = 0x00000080,	// 自分か攻撃対象に使う
-		EAS_FLUCT       = 0x00000100,	// 旧AS用 1〜3のあれ
-		EAS_RANDOM      = 0x00000200,	// 1〜指定までランダム
-		EAS_USEMAX      = 0x00000400,	// MAXレベルがあればそれを
-		EAS_USEBETTER   = 0x00000800,	// 指定以上のものがあればそれを(MAXじゃなくても可能)
-		EAS_NOSP        = 0x00001000,	// SP0
-		EAS_SPCOST1     = 0x00002000,	// SP2/3
-		EAS_SPCOST2     = 0x00004000,	// SP1/2
-		EAS_SPCOST3     = 0x00008000,	// SP1.5倍
-		EAS_ATTACK      = 0x00010000,	// 攻撃
-		EAS_REVENGE     = 0x00020000,	// 反撃
-		EAS_NORMAL      = 0x00040000,	// 通常攻撃
-		EAS_SKILL       = 0x00080000,	// スキル
+enum {
+	EAS_SHORT       = 0x00000001,	// 近距離物理
+	EAS_LONG        = 0x00000002,	// 遠距離物理
+	EAS_WEAPON      = 0x00000003,	// 物理
+	EAS_MAGIC       = 0x00000004,	// 魔法
+	EAS_MISC        = 0x00000008,	// misc（罠・鷹・火炎瓶等）
+	EAS_TARGET      = 0x00000010,	// 自分に使う
+	EAS_SELF        = 0x00000020,	// 自分に使う
+	EAS_TARGET_RAND = 0x00000040,	// 自分か攻撃対象に使う
+	//EAS_TARGET    = 0x00000080,	// 自分か攻撃対象に使う
+	EAS_FLUCT       = 0x00000100,	// 旧AS用 1〜3のあれ
+	EAS_RANDOM      = 0x00000200,	// 1〜指定までランダム
+	EAS_USEMAX      = 0x00000400,	// MAXレベルがあればそれを
+	EAS_USEBETTER   = 0x00000800,	// 指定以上のものがあればそれを(MAXじゃなくても可能)
+	EAS_NOSP        = 0x00001000,	// SP0
+	EAS_SPCOST1     = 0x00002000,	// SP2/3
+	EAS_SPCOST2     = 0x00004000,	// SP1/2
+	EAS_SPCOST3     = 0x00008000,	// SP1.5倍
+	EAS_ATTACK      = 0x00010000,	// 攻撃
+	EAS_REVENGE     = 0x00020000,	// 反撃
+	EAS_NORMAL      = 0x00040000,	// 通常攻撃
+	EAS_SKILL       = 0x00080000,	// スキル
 };
 
 struct npc_data;
@@ -321,12 +320,12 @@ struct map_session_data {
 	int npc_scriptstate;
 	char npc_str[256];
 	unsigned int chatID;
-	short joinchat;	//参加or主催
+	short joinchat;	// 参加or主催
 	short race;
 	short view_size;
 
-	char wis_refusal[MAX_WIS_REFUSAL][24];	//Wis拒否リスト
-	int wis_all;	//Wis全拒否許可フラグ
+	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wis拒否リスト
+	int wis_all;	// Wis全拒否許可フラグ
 
 	short attackrange,attackrange_;
 	unsigned int skillstatictimer[MAX_SKILL_ID];
@@ -355,9 +354,9 @@ struct map_session_data {
 	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[4],subsize[MAX_SIZE_FIX];
 	int addeff[10],addeff2[10],reseff[10],addeff_range_flag[10];
 	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[4],addsize_[MAX_SIZE_FIX];	//二刀流のために追加
-	int atk_ele_,star_,overrefine_;				//二刀流のために追加
+	int atk_ele_,star_,overrefine_;				// 二刀流のために追加
 	int base_atk,atk_rate;
-	int weapon_atk[WT_MAX],weapon_atk_rate[WT_MAX];	//指貫
+	int weapon_atk[WT_MAX],weapon_atk_rate[WT_MAX];	// 指貫
 	int arrow_atk,arrow_ele,arrow_cri,arrow_hit,arrow_range;
 	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[4],arrow_addsize[MAX_SIZE_FIX],arrow_addeff[10],arrow_addeff2[10];
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
@@ -383,8 +382,6 @@ struct map_session_data {
 	int monster_drop_race[10],monster_drop_itemrate[10];
 	int double_add_rate,speed_add_rate,aspd_add_rate,perfect_hit_add, get_zeny_add_num,get_zeny_add_num2;
 	short splash_range,splash_add_range;
-	short autospell_id,autospell_lv,autospell_rate;
-	long autospell_flag;
 	short hp_drain_rate,hp_drain_per,sp_drain_rate,sp_drain_per;
 	short hp_drain_rate_,hp_drain_per_,sp_drain_rate_,sp_drain_per_;
 	short hp_drain_value,sp_drain_value,hp_drain_value_,sp_drain_value_;
@@ -393,17 +390,15 @@ struct map_session_data {
 	int weapon_coma_ele2[ELE_MAX],weapon_coma_race2[RCT_MAX];
 	short break_weapon_rate,break_armor_rate;
 	short add_steal_rate;
-	//新カード用
-	//short revautospell_id,revautospell_lv,revautospell_rate,revautospell_flag;	//反撃用AS
-	int	critical_damage;
+	int critical_damage;
 	short hp_recov_stop;
 	short sp_recov_stop;
 	int addreveff[10];
 	int addreveff_flag;
-	int	critical_race[10];
+	int critical_race[10];
 	short sp_gain_value, hp_gain_value;
-	int	critical_race_rate[10];
-	int	exp_rate[10],job_rate[10];
+	int critical_race_rate[10];
+	int exp_rate[10],job_rate[10];
 	short hp_drain_rate_race[10],sp_drain_rate_race[10];
 	short hp_drain_value_race[10],sp_drain_value_race[10];
 	short addgroup[MAX_MOBGROUP];
@@ -416,12 +411,12 @@ struct map_session_data {
 	int sp_penalty_tick;
 	short hp_penalty_value;
 	short sp_penalty_value;
-	//装備解除時のHP/SPペナルティ
+	// 装備解除時のHP/SPペナルティ
 	short hp_penalty_unrig_value[11];
 	short sp_penalty_unrig_value[11];
 	short hp_rate_penalty_unrig[11];
 	short sp_rate_penalty_unrig[11];
-	short mob_class_change_rate;	//mobを変化させる確率
+	short mob_class_change_rate;	// mobを変化させる確率
 	short curse_by_muramasa;
 	//
 	short loss_equip_rate_when_die[11];
@@ -437,28 +432,28 @@ struct map_session_data {
 		short sp_per;
 		short rate;
 		short flag;
-	}autoraise;
+	} autoraise;
 
 	struct {
 		short id[MAX_SKILL_DAMAGE_UP];
 		short rate[MAX_SKILL_DAMAGE_UP];
 		short count;
-	}skill_dmgup;
+	} skill_dmgup;
 
 	struct {
 		short id[MAX_SKILL_BLOW];
 		short grid[MAX_SKILL_BLOW];
 		short count;
-	}skill_blow;
+	} skill_blow;
 
 	struct {
 		short lv[MAX_BONUS_AUTOSPELL];
 		short id[MAX_BONUS_AUTOSPELL];
 		short rate[MAX_BONUS_AUTOSPELL];
-		long flag[MAX_BONUS_AUTOSPELL];
+		unsigned long flag[MAX_BONUS_AUTOSPELL];
 		short card_id[MAX_BONUS_AUTOSPELL];
 		short count;
-	}autospell;
+	} autospell;
 
 	short hp_vanish_rate;
 	short hp_vanish_per;
@@ -470,7 +465,7 @@ struct map_session_data {
 	short itemheal_rate[MAX_ITEMGROUP];
 	short use_itemid;
 	int   use_nameditem;
-	int   bonus_damage;	//必中ダメージ
+	int   bonus_damage;	// 必中ダメージ
 	short spiritball, spiritball_old;
 	int spirit_timer[MAX_SKILL_LEVEL];
 	short coin, coin_old;
@@ -521,15 +516,15 @@ struct map_session_data {
 	int homun_hungry_timer;
 	struct mmo_homunstatus hom;
 
-	//ギルドスキル計算用 0:影響外 0>影響下
-	//移動時の判定に使用
+	// ギルドスキル計算用 0:影響外 0>影響下
+	// 移動時の判定に使用
 	short under_the_influence_of_the_guild_skill;
 
-	//拳聖用
+	// 拳聖用
 	int feel_index[3];
 	short hate_mob[3];
 
-	int tk_nhealhp,tk_nhealsp;	//安らかな休息,楽しい休息
+	int tk_nhealhp,tk_nhealsp;	// 安らかな休息,楽しい休息
 	int inchealresthptick,inchealrestsptick;
 	short tk_doridori_counter_hp;
 	short tk_doridori_counter_sp;
@@ -537,13 +532,13 @@ struct map_session_data {
 	int ranking_point[MAX_RANKING];
 	short am_pharmacy_success;
 	short making_base_success_per;
-	int tk_mission_target;		//テコン
+	int tk_mission_target;		// テコン
 	short ranker_weapon_bonus;
 	short ranker_weapon_bonus_;
 
 	struct cell_xy dance;
 
-	short infinite_tigereye;	//マヤパープル効果
+	short infinite_tigereye;	// マヤパープル効果
 	short stop_status_calc_pc;
 	short call_status_calc_pc_while_stopping;
 	short status_calc_pc_process;

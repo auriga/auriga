@@ -11587,7 +11587,7 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 	// 実行
 	if(skillid == AL_TELEPORT && skilllv == 1)	// Lv1テレポはダイアログ表示なしで即座に飛ばす
 		f = pc_randomwarp(sd,3);
-	else if(skill_get_inf(skillid) == 2 || skill_get_inf(skillid) == 32)	// 場所と罠(設置系スキル)
+	else if(skill_get_inf(skillid) & 0x22)	// 場所と罠(設置系スキル)
 		f = skill_castend_pos2(&sd->bl,target->x,target->y,skillid,skilllv,tick,flag);
 	else {
 		int t_race = status_get_race(target);
@@ -11611,7 +11611,7 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 	return 1;	// 成功
 }
 
-int skill_bonus_autospell(struct block_list *src,struct block_list *bl,long mode,int tick,int flag)
+int skill_bonus_autospell(struct block_list *src,struct block_list *bl,unsigned long mode,int tick,int flag)
 {
 	int i;
 	static int lock = 0;
@@ -11659,10 +11659,13 @@ int skill_bonus_autospell(struct block_list *src,struct block_list *bl,long mode
 		if(mode&EAS_SKILL && !(sd->autospell.flag[i]&EAS_SKILL))
 			continue;
 
-		if(skill_use_bonus_autospell(sd,bl,sd->autospell.id[i],sd->autospell.lv[i],
-									sd->autospell.rate[i],sd->autospell.flag[i],tick,flag) ) {
+		if(skill_use_bonus_autospell(
+			sd,bl,sd->autospell.id[i],sd->autospell.lv[i],
+			sd->autospell.rate[i],sd->autospell.flag[i],tick,flag) )
+		{
 			// オートスペルはどれか一度しか発動しない
-			if(battle_config.once_autospell) break;
+			if(battle_config.once_autospell)
+				break;
 		}
 	}
 	lock = 0;

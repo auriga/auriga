@@ -461,8 +461,6 @@ L_RECALC:
 	sd->speed_add_rate = sd->aspd_add_rate = 100;
 	sd->double_add_rate = sd->perfect_hit_add = sd->get_zeny_add_num = sd->get_zeny_add_num2 = 0;
 	sd->splash_range = sd->splash_add_range = 0;
-	sd->autospell_id = sd->autospell_lv = sd->autospell_rate = 0;
-	sd->autospell_flag = 0;
 	sd->hp_drain_rate = sd->hp_drain_per = sd->sp_drain_rate = sd->sp_drain_per = 0;
 	sd->hp_drain_rate_ = sd->hp_drain_per_ = sd->sp_drain_rate_ = sd->sp_drain_per_ = 0;
 	sd->hp_drain_value = sd->hp_drain_value_ = sd->sp_drain_value = sd->sp_drain_value_ = 0;
@@ -470,8 +468,6 @@ L_RECALC:
 	sd->break_weapon_rate = sd->break_armor_rate = 0;
 	sd->add_steal_rate = 0;
 	sd->unbreakable_equip = 0;
-	//新カード用初期化
-	//sd->revautospell_id = sd->revautospell_lv=sd->revautospell_rate = sd->revautospell_flag = 0;
 	sd->critical_damage=0;
 	sd->hp_recov_stop = sd->sp_recov_stop = 0;
 	memset(sd->critical_race,0,sizeof(sd->critical_race));
@@ -2061,7 +2057,7 @@ L_RECALC:
 		int type;
 		for(i=0; i<MAX_SKILL; i++) {
 			// カードスキルをロストしたとき即時発動型なら状態異常を解除
-			if(b_skill[i].flag == 1 && b_skill[i].lv > 0 && sd->status.skill[i].lv <= 0 && skill_get_inf(i) == 4) {
+			if(b_skill[i].flag == 1 && b_skill[i].lv > 0 && sd->status.skill[i].lv <= 0 && skill_get_inf(i) & 0x04) {
 				type = GetSkillStatusChangeTable(i);
 				if(type >= 0 && sd->sc_data && sd->sc_data[type].timer != -1)
 					status_change_end(&sd->bl, type, -1);

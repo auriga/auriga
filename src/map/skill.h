@@ -175,7 +175,7 @@ enum {	//吹き飛ばしフラグ
 int skill_add_blown( struct block_list *src, struct block_list *target,int skillid,int flag);
 
 //カード効果のオートスペル
-int skill_bonus_autospell(struct block_list * src,struct block_list * bl,long mode,int tick,int flag);
+int skill_bonus_autospell(struct block_list * src,struct block_list * bl,unsigned long mode,int tick,int flag);
 
 // ユニットスキル
 int skill_delunit(struct skill_unit *unit);

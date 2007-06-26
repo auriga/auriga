@@ -10188,7 +10188,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 			if(DIFF_TICK(tick, hd->homskillstatictimer[skillnum-HOM_SKILLID]) < 0)
 				return;
 
-			if(skill_get_inf(skillnum)==4)	// 自分が対象
+			if(skill_get_inf(skillnum) & 0x04)	// 自分が対象
 				unit_skilluse_id(&hd->bl,hd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&hd->bl,target_id,skillnum,skilllv);

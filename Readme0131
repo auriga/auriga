@@ -1,4 +1,16 @@
 ----------------------------------------
+//0197 [2007/06/27] by Rayce
+
+・autospell構造体のメンバflagをlong型からunsigned long型に変更（battle.c, map.h, skill.*）
+・map_session_data構造体の中で使用されていない以下のメンバを削除（map.h, status.c）
+	autospell_id, autospell_lv, autospell_rate, autospell_flag
+
+・battle_delay_damage_sub() が多重に add_timer_func_list() されないように
+　do_init_battle(), do_final_battle() を追加（battle.*, map.c）
+・battle.cの全体的な整形（battle.c）
+・skill_get_inf() の返り値はビット演算で利用するように統一（battle.c, clif.c, skill.c, status.c, unit.c）
+
+----------------------------------------
 //0196 [2007/06/23] by Rayce
 
 ・battle_auriga.confの hallucianation_off がyesの時はエフェクトのみを無効化するように修正（skill.c, status.c）

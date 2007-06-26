@@ -1669,7 +1669,7 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 
 	skillid = (type&1 && sd)? sd->skillid_old: ud->skillid;
 
-	if(skill_get_inf(skillid)&34)
+	if(skill_get_inf(skillid) & 0x22)
 		ret = delete_timer( ud->skilltimer, skill_castend_pos );
 	else
 		ret = delete_timer( ud->skilltimer, skill_castend_id );

@@ -1,8 +1,6 @@
 #ifndef _BATTLE_H_
 #define _BATTLE_H_
 
-#include <stdarg.h>
-
 // ダメージ
 struct Damage {
 	int damage,damage2;
@@ -13,27 +11,11 @@ struct Damage {
 	int dmg_lv;	//囲まれ減算計算用　0:スキル攻撃 ATK_LUCKY,ATK_FLEE,ATK_DEF
 };
 
-struct map_session_data;
-struct mob_data;
-struct block_list;
-
-// ダメージ計算
-
-struct Damage battle_calc_attack(	int attack_type,
-	struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag);
-struct Damage battle_calc_weapon_attack(
-	struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag);
-struct Damage battle_calc_magic_attack(
-	struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag);
-struct Damage  battle_calc_misc_attack(
-	struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag);
-
 // 属性修正計算
 int battle_attr_fix(int damage,int atk_elem,int def_elem);
 
-// ダメージ最終計算
-int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,int div_,int skill_num,int skill_lv,int flag);
-enum {	// 最終計算のフラグ
+// 最終計算のフラグ
+enum {
 	BF_WEAPON     = 0x0001,
 	BF_MAGIC      = 0x0002,
 	BF_MISC       = 0x0004,
@@ -46,30 +28,32 @@ enum {	// 最終計算のフラグ
 	BF_SKILLMASK  = 0x0f00,
 };
 
-enum { ATK_LUCKY=1,ATK_FLEE,ATK_DEF};	// 囲まれペナルティ計算用
+// 囲まれペナルティ計算用
+enum {
+	ATK_LUCKY = 1,
+	ATK_FLEE,
+	ATK_DEF
+};
 
 // 実際にHPを増減
 int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,int damage,int flag);
 int battle_damage(struct block_list *bl,struct block_list *target,int damage,int flag);
-int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,int flag);
-
-//吸収処理(PC専用)
-int battle_attack_drain(struct block_list *bl,struct block_list *target,int damage,int damage2,int calc_per_drain_flag);
+int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,int flag);;
 
 // 攻撃処理まとめ
 int battle_weapon_attack( struct block_list *bl,struct block_list *target,
-	 unsigned int tick,int flag);
+	unsigned int tick,int flag);
 int battle_skill_attack(int attack_type,struct block_list* src,struct block_list *dsrc,
-	 struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag);
+	struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag);
 int battle_skill_attack_area(struct block_list *bl,va_list ap);
 
 enum {
-	BCT_NOENEMY =0x00000,
-	BCT_PARTY   =0x10000,
-	BCT_ALL     =0x20000,
-	BCT_ENEMY   =0x40000,
-	BCT_NOPARTY =0x50000,
-	BCT_NOONE   =0x60000,
+	BCT_NOENEMY = 0x00000,
+	BCT_PARTY   = 0x10000,
+	BCT_ALL     = 0x20000,
+	BCT_ENEMY   = 0x40000,
+	BCT_NOPARTY = 0x50000,
+	BCT_NOONE   = 0x60000,
 };
 
 int battle_check_undead(int race,int element);
@@ -534,5 +518,8 @@ extern struct Battle_Config {
 
 #define BATTLE_CONF_FILENAME "conf/battle_auriga.conf"
 int battle_config_read(const char *cfgName);
+
+int do_init_battle(void);
+int do_final_battle(void);
 
 #endif
