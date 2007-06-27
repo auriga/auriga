@@ -749,7 +749,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(sd && sd->status.weapon != WT_BOW && (skill=pc_checkskill(sd,RG_SNATCHER)) > 0) {
 			int skill2;
 			if((skill*15 + 55) + (skill2 = pc_checkskill(sd,TF_STEAL))*10 > atn_rand()%1000) {
-				if(pc_steal_item(sd,bl))
+				if(dstmd && pc_steal_item(sd,dstmd))
 					clif_skill_nodamage(src,bl,TF_STEAL,skill2,1);
 				else if (battle_config.display_snatcher_skill_fail)
 					clif_skill_fail(sd,skillid,0,0);
@@ -3952,7 +3952,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		else{
 			/* パーティ全体への処理 */
 			party_foreachsamemap(skill_area_sub,
-				sd,1,
+				sd,PT_AREA_SIZE,
 				src,skillid,skilllv,tick, flag|BCT_PARTY|1,
 				skill_castend_nodamage_id);
 		}
@@ -3969,7 +3969,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		else{
 			/* パーティ全体への処理 */
 			party_foreachsamemap(skill_area_sub,
-				sd,1,
+				sd,PT_AREA_SIZE,
 				src,skillid,skilllv,tick, flag|BCT_PARTY|1,
 				skill_castend_nodamage_id);
 		}
@@ -4128,7 +4128,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case TF_STEAL:			/* スティール */
 		if(sd) {
-			if(pc_steal_item(sd,bl))
+			if(dstmd && pc_steal_item(sd,dstmd))
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			else
 				clif_skill_fail(sd,skillid,0x0a,0);
@@ -4137,7 +4137,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case RG_STEALCOIN:		/* スティールコイン */
 		if(sd) {
-			if(dstmd && pc_steal_coin(sd,bl)) {
+			if(dstmd && pc_steal_coin(sd,dstmd)) {
 				int range = skill_get_fixed_range(src,skillid,skilllv);
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 				mob_target(dstmd,src,range);

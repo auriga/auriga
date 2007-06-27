@@ -795,50 +795,46 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 }
 
 // 同じマップのパーティメンバー全体に処理をかける
-// type==0 同じマップ
-//     !=0 画面内
-void party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_session_data *sd,int type,...)
+void party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_session_data *sd,int range,...)
 {
 	struct party *p;
 	va_list ap;
-	int i;
-	int x0,y0,x1,y1;
+	int i, x0, y0, x1, y1;
 	struct block_list *list[MAX_PARTY];
-	int blockcount=0;
+	int blockcount = 0;
 
 	nullpo_retv(sd);
 
-	if((p=party_search(sd->status.party_id))==NULL)
+	if((p = party_search(sd->status.party_id)) == NULL)
 		return;
 
-	x0=sd->bl.x-PT_AREA_SIZE;
-	y0=sd->bl.y-PT_AREA_SIZE;
-	x1=sd->bl.x+PT_AREA_SIZE;
-	y1=sd->bl.y+PT_AREA_SIZE;
+	x0 = sd->bl.x - range;
+	y0 = sd->bl.y - range;
+	x1 = sd->bl.x + range;
+	y1 = sd->bl.y + range;
 
-	va_start(ap,type);
+	va_start(ap,range);
 
-	for(i=0;i<MAX_PARTY;i++){
-		struct party_member *m=&p->member[i];
-		if(m!=NULL && m->sd!=NULL){
-			if(sd->bl.m!=m->sd->bl.m)
+	for(i=0; i<MAX_PARTY; i++) {
+		struct party_member *m = &p->member[i];
+		if(m != NULL && m->sd != NULL) {
+			if( sd->bl.m != m->sd->bl.m )
 				continue;
-			if(type!=0 &&
-				(m->sd->bl.x<x0 || m->sd->bl.y<y0 ||
-				 m->sd->bl.x>x1 || m->sd->bl.y>y1 ) )
+			if( m->sd->bl.x < x0 || m->sd->bl.y < y0 ||
+			    m->sd->bl.x > x1 || m->sd->bl.y > y1 )
 				continue;
-			list[blockcount++]=&m->sd->bl;
+			list[blockcount++] = &m->sd->bl;
 		}
 	}
 
 	map_freeblock_lock();	// メモリからの解放を禁止する
 
-	for(i=0;i<blockcount;i++)
+	for(i=0; i<blockcount; i++) {
 		if(list[i]->prev)	// 有効かどうかチェック
 			func(list[i],ap);
+	}
 
 	map_freeblock_unlock();	// 解放を許可する
-
 	va_end(ap);
 
 	return;

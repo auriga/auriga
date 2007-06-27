@@ -1,4 +1,12 @@
 ----------------------------------------
+//0199 [2007/06/28] by Rayce
+
+・party_foreachsamemap() の引数のtypeをrangeに変更して範囲を指定するように変更（skill.c, pc.c, party.c）
+・ギルドスキルの有効チェックの一部を pc_check_guild_skill_effective_range_sub() としてまとめる（pc.c）
+・pc_steal_item() と pc_steal_coin() の引数を変更（pc.*, skill.c）
+・pc.cの全体的な整形（pc.c）
+
+----------------------------------------
 //0198 [2007/06/27] by Rayce
 
 ・gccで0197がコンパイルエラーになっていたので修正（battle.h）
