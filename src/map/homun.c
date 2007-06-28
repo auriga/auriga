@@ -1008,7 +1008,7 @@ int homun_change_name(struct map_session_data *sd,char *name)
 		return 1;
 
 	unit_stop_walking(&sd->hd->bl,1);
-	memcpy(sd->hd->status.name,name,24);
+	strncpy(sd->hd->status.name,name,24);
 	homun_save_data(sd);
 	clif_clearchar_area(&sd->hd->bl,0);
 	clif_spawnhom(sd->hd);
@@ -1547,8 +1547,8 @@ int read_homundb(void)
 
 			homun_db[j].class_ = nameid;
 			homun_db[j].view_class = atoi(str[1]);
-			memcpy(homun_db[j].name,str[2],24);
-			memcpy(homun_db[j].jname,str[3],24);
+			strncpy(homun_db[j].name,str[2],24);
+			strncpy(homun_db[j].jname,str[3],24);
 			homun_db[j].base_level=atoi(str[4]);
 			homun_db[j].AcceID=atoi(str[5]);
 			homun_db[j].FoodID=atoi(str[6]);

@@ -2913,7 +2913,7 @@ static int script_txt_load_mapreg(void)
 		char buf1[256],buf2[1024];
 		int n,v,s,i;
 		if( sscanf(line,"%255[^,],%d\t%n",buf1,&i,&n)!=2 &&
-			(i=0,sscanf(line,"%[^\t]\t%n",buf1,&n)!=1) )
+		    (i=0,sscanf(line,"%255[^\t]\t%n",buf1,&n)!=1) )
 			continue;
 		if(i < 0 || i >= 128) {
 			printf("%s: %s broken data !\n",mapreg_txt,buf1);
@@ -7702,7 +7702,7 @@ int buildin_setmapflag(struct script_state *st)
 				char *str = conv_str(st,& (st->stack->stack_data[st->start+4]));
 				int x     = conv_num(st,& (st->stack->stack_data[st->start+5]));
 				int y     = conv_num(st,& (st->stack->stack_data[st->start+6]));
-				memcpy(map[m].save.map, str, 16);
+				strncpy(map[m].save.map, str, 16);
 				map[m].save.x = x;
 				map[m].save.y = y;
 			}

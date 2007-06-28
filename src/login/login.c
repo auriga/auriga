@@ -668,7 +668,7 @@ const struct mmo_account* login_sql_account_load_num(int account_id) {
 	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res) {
 		while( (sql_row = mysql_fetch_row(sql_res)) ) {
-			memcpy(ac->account_reg2[ac->account_reg2_num].str,sql_row[0],32);
+			strnpy(ac->account_reg2[ac->account_reg2_num].str,sql_row[0],32);
 			ac->account_reg2[ac->account_reg2_num].value = atoi(sql_row[1]);
 			if(++ac->account_reg2_num >= ACCOUNT_REG2_NUM)
 				break;

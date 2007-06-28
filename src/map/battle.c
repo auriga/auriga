@@ -548,7 +548,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 	}
 
-	if(tmd != NULL && tmd->hp > 0 && damage > 0)	// 反撃などのMOBスキル判定
+	if(tmd && tmd->hp > 0 && damage > 0)	// 反撃などのMOBスキル判定
 	{
 		int mtg = tmd->target_id;
 		if (battle_config.mob_changetarget_byskill != 0 || mtg == 0)
@@ -561,7 +561,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 	}
 
 	// PCの反撃オートスペル
-	if(tsd && tsd->bl.type == BL_PC && src && src!=bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0)
+	if(tsd && src != &tsd->bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0)
 	{
 		unsigned long asflag = EAS_REVENGE;
 
@@ -598,7 +598,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 	}
 
 	// PCの反撃
-	if(tsd && tsd->bl.type == BL_PC && src && src != bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0 && flag&BF_WEAPON)
+	if(tsd && src != &tsd->bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0 && flag&BF_WEAPON)
 	{
 		// 反撃状態異常
 		if(tsd->addreveff_flag) {
@@ -701,7 +701,7 @@ static int battle_attack_drain(struct block_list *bl,struct block_list *target,i
 	nullpo_retr(0, bl);
 	nullpo_retr(0, target);
 
-	if( bl->type != BL_PC || (sd=(struct map_session_data *)bl) == NULL )
+	if( bl->type != BL_PC || (sd = (struct map_session_data *)bl) == NULL )
 		return 0;
 
 	if(bl == target)
@@ -938,7 +938,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			atkmin = atkmax;
 
 		/* 太陽と月と星の怒り */
-		if(target->type == BL_PC || target->type == BL_MOB || target->type== BL_HOM)
+		if(target->type == BL_PC || target->type == BL_MOB || target->type == BL_HOM)
 		{
 			int atk_rate = 0;
 			int str = status_get_str(src);
@@ -1673,7 +1673,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AS_SONICBLOW:	// ソニックブロウ
 			{
 				int rate = 300+50*skill_lv;
-				if(src_sd && pc_checkskill(src_sd,AS_SONICACCEL)>0)
+				if(src_sd && pc_checkskill(src_sd,AS_SONICACCEL) > 0)
 					rate = rate*110/100;
 				if(sc_data && sc_data[SC_ASSASIN].timer != -1)
 				{
@@ -2204,7 +2204,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				int t_def, vitbonusmax;
 				int target_count = 1;
 
-				if(target->type!=BL_HOM) {
+				if(target->type != BL_HOM) {
 					target_count = unit_counttargeted(target,battle_config.vit_penalty_count_lv);
 				}
 				if(battle_config.vit_penalty_type > 0 && (!t_sc_data || t_sc_data[SC_STEELBODY].timer == -1)) {
@@ -2437,7 +2437,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 		// カード効果による特定スキルのダメージ増幅（武器スキル）
 		if(src_sd->skill_dmgup.count > 0 && skill_num > 0 && wd.damage > 0) {
-			for( i=0 ; i<src_sd->skill_dmgup.count ; i++ ) {
+			for( i=0; i<src_sd->skill_dmgup.count; i++ ) {
 				if( skill_num == src_sd->skill_dmgup.id[i] ) {
 					cardfix = cardfix*(100+src_sd->skill_dmgup.rate[i])/100;
 					break;
@@ -2653,7 +2653,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 31．完全回避の判定 */
-	if(skill_num == 0 && skill_lv >= 0 && target_sd!=NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) ) {
+	if(skill_num == 0 && skill_lv >= 0 && target_sd != NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) ) {
 		wd.damage  = 0;
 		wd.damage2 = 0;
 		wd.type    = 0x0b;
@@ -2662,7 +2662,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 	// 対象が完全回避をする設定がONなら
 	if(battle_config.enemy_perfect_flee) {
-		if(skill_num == 0 && skill_lv >= 0 && target_md!=NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) ) {
+		if(skill_num == 0 && skill_lv >= 0 && target_md != NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) ) {
 			wd.damage  = 0;
 			wd.damage2 = 0;
 			wd.type    = 0x0b;
@@ -2673,7 +2673,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	/* 32．固定ダメージ2 */
 	if(t_mode&0x40) {	// MobのModeに頑強フラグが立っているときの処理
 		if(wd.damage > 0)
-			wd.damage = (wd.div_<255)? 1: 3;	// 三段掌のみ3ダメージ
+			wd.damage = (wd.div_ < 255)? 1: 3;	// 三段掌のみ3ダメージ
 		if(wd.damage2 > 0)
 			wd.damage2 = 1;
 	}
@@ -2882,7 +2882,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				MATK_FIX( 1, flag );
 			} else {
 				if(battle_config.error_log)
-					printf("battle_calc_magic_attack(): napam enemy count=0 !\n");
+					printf("battle_calc_magic_attack: NAPALM enemy count=0 !\n");
 			}
 			break;
 		case MG_SOULSTRIKE:			// ソウルストライク（対アンデッドダメージ補正）
@@ -2937,7 +2937,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case WZ_STORMGUST:	// ストームガスト
 			MATK_FIX( 100+40*skill_lv, 100 );
-			//mgd.blewcount|=0x10000;
+			//mgd.blewcount |= 0x10000;
 			break;
 		case AL_HOLYLIGHT:	// ホーリーライト
 			MATK_FIX( 125, 100 );
@@ -3432,7 +3432,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		return 0;	// 攻撃対象外
 
 	// ターゲットがMOB GMハイド中で、コンフィグでハイド中攻撃不可 GMレベルが指定より大きい場合
-	if(target->type == BL_MOB && sd && sd->status.option&0x40 && battle_config.hide_attack == 0 && pc_isGM(sd)<battle_config.gm_hide_attack_lv)
+	if(target->type == BL_MOB && sd && sd->status.option&0x40 && battle_config.hide_attack == 0 && pc_isGM(sd) < battle_config.gm_hide_attack_lv)
 		return 0;	// 隠れて攻撃するなんて卑怯なGMデスネ
 
 	if(sd) {
@@ -3494,7 +3494,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if(wd.damage> 0 && tsd && pc_checkskill(tsd,RG_PLAGIARISM) && sc_data && sc_data[SC_PRESERVE].timer == -1) {
 			skill_clone(tsd,MO_TRIPLEATTACK,pc_checkskill(sd, MO_TRIPLEATTACK));
 		}
-	} else if(wd.div_ >= 251 && wd.div_<=254 && sd) {	// テコン蹴り系統
+	} else if(wd.div_ >= 251 && wd.div_ <= 254 && sd) {	// テコン蹴り系統
 		int delay = 0;
 		int skillid = TK_STORMKICK + 2*(wd.div_-251);
 		int skilllv;
@@ -3638,26 +3638,24 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			battle_weapon_attack(target,src,tick,0x8000|t_sc_data[SC_AUTOCOUNTER].val1);
 		status_change_end(target,SC_AUTOCOUNTER,-1);
 	}
-	if(t_sc_data && t_sc_data[SC_BLADESTOP_WAIT].timer != -1 &&
-			!(status_get_mode(src)&0x20)) {	// ボスには無効
+	if(t_sc_data && t_sc_data[SC_BLADESTOP_WAIT].timer != -1 && !(status_get_mode(src)&0x20)) {	// ボスには無効
 		int lv = t_sc_data[SC_BLADESTOP_WAIT].val1;
 		status_change_end(target,SC_BLADESTOP_WAIT,-1);
 		status_change_start(src,SC_BLADESTOP,lv,1,src->id,target->id,skill_get_time2(MO_BLADESTOP,lv),0);
 		status_change_start(target,SC_BLADESTOP,lv,2,target->id,src->id,skill_get_time2(MO_BLADESTOP,lv),0);
 	}
 	if(t_sc_data && t_sc_data[SC_POISONREACT].timer != -1) {
-		// 毒属性mobまたは毒属性による攻撃ならば反撃
 		if( (src->type == BL_MOB && status_get_elem_type(src) == ELE_POISON) || status_get_attack_element(src) == ELE_POISON ) {
+			// 毒属性mobまたは毒属性による攻撃ならば反撃
 			if( battle_check_range(target,src,status_get_range(target)+1) ) {
 				t_sc_data[SC_POISONREACT].val2 = 0;
 				battle_skill_attack(BF_WEAPON,target,target,src,AS_POISONREACT,t_sc_data[SC_POISONREACT].val1,tick,0);
 			}
-		}
-		// それ以外の通常攻撃に対するインベ反撃（射線チェックなし）
-		else {
+		} else {
+			// それ以外の通常攻撃に対するインベ反撃（射線チェックなし）
 			--t_sc_data[SC_POISONREACT].val2;
 			if(atn_rand()&1) {
-				if( tsd == NULL || pc_checkskill(tsd,TF_POISON)>=5 )
+				if( tsd == NULL || pc_checkskill(tsd,TF_POISON) >= 5 )
 					battle_skill_attack(BF_WEAPON,target,target,src,TF_POISON,5,tick,flag);
 			}
 		}
@@ -3918,8 +3916,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				rdamage += damage * sc_data[SC_REFLECTSHIELD].val2 / 100;	// 跳ね返し計算
 				if(rdamage < 1) rdamage = 1;
 			}
-		}
-		else if(dmg.flag&BF_LONG) {	// 遠距離攻撃時
+		} else if(dmg.flag&BF_LONG) {	// 遠距離攻撃時
 			if(tsd) {		// 対象がPCの時
 				if(tsd->long_weapon_damage_return > 0) { // 遠距離攻撃跳ね返し
 					rdamage += damage * tsd->long_weapon_damage_return / 100;
@@ -4026,10 +4023,10 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* インティミデイト */
-	if(skillid == RG_INTIMIDATE && damage > 0 && !(status_get_mode(bl)&0x20) && !map[src->m].flag.gvg ) {
+	if(skillid == RG_INTIMIDATE && damage > 0 && !(status_get_mode(bl)&0x20) && !map[src->m].flag.gvg) {
 		int s_lv = status_get_lv(src),t_lv = status_get_lv(bl);
 		int rate = 50 + skilllv * 5;
-		rate = rate + (s_lv - t_lv);
+		rate = rate + s_lv - t_lv;
 		if(atn_rand()%100 < rate)
 			skill_addtimerskill(src,tick + 800,bl->id,0,0,skillid,skilllv,0,flag);
 	}
@@ -4044,9 +4041,9 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				skill_additional_effect(src,bl,skillid,skilllv,attack_type,tick);
 		}
 
-		if(bl->type == BL_MOB && src!=bl)	// スキル使用条件のMOBスキル
+		if(bl->type == BL_MOB && src != bl)	// スキル使用条件のMOBスキル
 		{
-			struct mob_data *md=(struct mob_data *)bl;
+			struct mob_data *md = (struct mob_data *)bl;
 			if(md) {
 				int target = md->target_id;
 				if(battle_config.mob_changetarget_byskill == 1 || target == 0)
@@ -4090,8 +4087,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	/* 反射ダメージの実際の処理 */
 	if (sd && (skillid || flag) && rdamage > 0) {
 		unsigned long asflag = EAS_WEAPON | EAS_ATTACK | EAS_NORMAL;
-		if (attack_type&BF_WEAPON)
-		{
+
+		if (attack_type&BF_WEAPON) {
 			battle_delay_damage(tick+dmg.amotion,bl,src,rdamage,0);
 			// 反射ダメージのオートスペル
 			if(battle_config.weapon_reflect_autospell)
@@ -4100,9 +4097,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			}
 			if(battle_config.weapon_reflect_drain)
 				battle_attack_drain(bl,src,rdamage,0,battle_config.weapon_reflect_drain_per_enable);
-		}
-		else
-		{
+		} else {
 			battle_damage(bl,src,rdamage,0);
 			// 反射ダメージのオートスペル
 			if(battle_config.magic_reflect_autospell)
@@ -4162,6 +4157,7 @@ int battle_skill_attack_area(struct block_list *bl,va_list ap)
 		return 0;
 	if((dsrc = va_arg(ap,struct block_list*)) == NULL)
 		return 0;
+
 	skillid = va_arg(ap,int);
 	skilllv = va_arg(ap,int);
 	tick    = va_arg(ap,unsigned int);
@@ -4356,9 +4352,9 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 
 			// battle_config.no_pk_level以下　1次は味方　転生は駄目
 			if((ssd->sc_data && ssd->sc_data[SC_PK_PENALTY].timer != -1) ||
-			   (ssd->status.base_level <= battle_config.no_pk_level && (ssd->s_class.job <=6 || ssd->s_class.job == 24) && ssd->s_class.upper!=1))
+			   (ssd->status.base_level <= battle_config.no_pk_level && (ssd->s_class.job <= 6 || ssd->s_class.job == 24) && ssd->s_class.upper != 1))
 				return 1;
-			if(tsd->status.base_level <= battle_config.no_pk_level && (tsd->s_class.job <=6 || tsd->s_class.job == 24) && tsd->s_class.upper!=1)
+			if(tsd->status.base_level <= battle_config.no_pk_level && (tsd->s_class.job <= 6 || tsd->s_class.job == 24) && tsd->s_class.upper != 1)
 				return 1;
 			if(su && su->group->target_flag == BCT_NOENEMY)
 				return 1;
@@ -4366,7 +4362,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 				return 1;
 			else if(s_g > 0 && t_g > 0 && s_g == t_g)
 				return 1;
-			if((g = guild_search(s_g)) !=NULL) {
+			if((g = guild_search(s_g)) != NULL) {
 				int i;
 				for(i=0; i<MAX_GUILDALLIANCE; i++) {
 					if(g->alliance[i].guild_id > 0 && g->alliance[i].guild_id == t_g) {
@@ -4398,7 +4394,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 				return 1;
 			if(map[src->m].flag.gvg_noparty && s_p > 0 && t_p > 0 && s_p == t_p)
 				return 1;
-			if((g = guild_search(s_g)) !=NULL) {
+			if((g = guild_search(s_g)) != NULL) {
 				int i;
 				for(i=0; i<MAX_GUILDALLIANCE; i++) {
 					if(g->alliance[i].guild_id > 0 && g->alliance[i].guild_id == t_g) {
@@ -5481,7 +5477,7 @@ int battle_config_read(const char *cfgName)
 		if(line[0] == '/' && line[1] == '/')
 			continue;
 		i = sscanf(line,"%[^:]:%s",w1,w2);
-		if(i!=2)
+		if(i != 2)
 			continue;
 
 		if( strcmpi(w1,"import") == 0 ) {

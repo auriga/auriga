@@ -97,7 +97,7 @@ int mob_spawn_dataset(struct mob_data *md,const char *mobname,int class_)
 	else if(strcmp(mobname,"--ja--")==0)
 		memcpy(md->name,mob_db[class_].jname,24);
 	else
-		memcpy(md->name,mobname,24);
+		strncpy(md->name,mobname,24);
 
 	md->n = 0;
 	md->base_class = md->class_ = class_;
@@ -3530,9 +3530,9 @@ static int mob_readdb(void)
 			mob_db[class_].view_class = class_;
 			// ここから先は、mob_db_addでは記述のある部分のみ反映
 			if(!cov || strlen(str[num+1])>0)
-				memcpy(mob_db[class_].name,str[num+1],24);
+				strncpy(mob_db[class_].name,str[num+1],24);
 			if(!cov || strlen(str[num+2])>0)
-				memcpy(mob_db[class_].jname,str[num+2],24);
+				strncpy(mob_db[class_].jname,str[num+2],24);
 			#define DB_ADD(a,b) a=((!cov)?atoi(str[b]):(strlen(str[b])>0)?atoi(str[b]):a)
 			DB_ADD(mob_db[class_].lv      , num+3);
 			DB_ADD(mob_db[class_].max_hp  , num+4);

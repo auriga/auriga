@@ -313,8 +313,8 @@ static int itemdb_read_itemdb(void)
 
 			//ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine
 			id=itemdb_search(nameid);
-			memcpy(id->name,str[1],32);
-			memcpy(id->jname,str[2],32);
+			strncpy(id->name,str[1],32);
+			strncpy(id->jname,str[2],32);
 			id->type=atoi(str[3]);
 			// buy≠sell*2 は item_value_db.txt で指定してください。
 			if (atoi(str[5])) {		// sell値を優先とする
@@ -669,7 +669,7 @@ static int itemdb_read_itemnametable(void)
 		int nameid;
 		char buf2[64];
 
-		if( sscanf(p,"%d#%[^#]#",&nameid,buf2)==2 ){
+		if( sscanf(p,"%d#%63[^#]#",&nameid,buf2)==2 ){
 
 #ifdef ITEMDB_OVERRIDE_NAME_VERBOSE
 			if( itemdb_exists(nameid) &&
@@ -678,7 +678,6 @@ static int itemdb_read_itemnametable(void)
 					,itemdb_search(nameid)->jname,buf2);
 			}
 #endif
-
 			memcpy(itemdb_search(nameid)->jname,buf2,32);
 		}
 
@@ -711,7 +710,7 @@ static int itemdb_read_cardillustnametable(void)
 		int nameid;
 		char buf2[64];
 
-		if( sscanf(p,"%d#%[^#]#",&nameid,buf2)==2 ){
+		if( sscanf(p,"%d#%59[^#]#",&nameid,buf2)==2 ){
 			strcat(buf2,".bmp");
 			memcpy(itemdb_search(nameid)->cardillustname,buf2,64);
 		}

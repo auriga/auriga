@@ -950,7 +950,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->bl.prev = sd->bl.next = NULL;
 	sd->weapontype1 = sd->weapontype2 = 0;
 
-	if(sd->status.class_ == PC_CLASS_GS || sd->status.class_ ==PC_CLASS_NJ)
+	if(sd->status.class_ == PC_CLASS_GS || sd->status.class_ == PC_CLASS_NJ)
 		sd->view_class = sd->status.class_-4;
 	else
 		sd->view_class = sd->status.class_;
@@ -1213,7 +1213,7 @@ static int pc_calc_skillpoint(struct map_session_data* sd)
 	nullpo_retr(0, sd);
 
 	for(i=1; i<MAX_SKILL; i++) {
-		if( (skill = pc_checkskill2(sd,i)) > 0) {
+		if((skill = pc_checkskill2(sd,i)) > 0) {
 			if(!(skill_get_inf2(i)&0x01) || battle_config.quest_skill_learn) {
 				if(!sd->status.skill[i].flag)
 					skill_point += skill;
@@ -1238,7 +1238,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 
 	nullpo_retr(0, sd);
 
-	if(sd->status.class_== PC_CLASS_TK &&
+	if(sd->status.class_ == PC_CLASS_TK &&
 	   pc_checkskill2(sd,TK_MISSION) > 0 &&
 	   sd->status.base_level >= 90 &&
 	   sd->status.skill_point == 0 &&
@@ -4101,7 +4101,7 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		// base側レベルアップ処理
 		sd->status.base_exp -= next;
 		sd->status.base_level++;
-		sd->status.status_point += (sd->status.base_level+14) / 5 ;
+		sd->status.status_point += (sd->status.base_level+14) / 5;
 		clif_updatestatus(sd,SP_STATUSPOINT);
 		clif_updatestatus(sd,SP_BASELEVEL);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
@@ -7992,7 +7992,7 @@ int pc_readdb(void)
 	}
 	while(fgets(line,1020,fp)) {
 		char *split[17];
-		int upper=0,skillid;
+		int upper = 0,skillid;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<17 && p;j++) {
@@ -8388,7 +8388,10 @@ int do_init_pc(void)
 	add_timer_func_list(pc_spiritball_timer,"pc_spiritball_timer");
 	add_timer_func_list(pc_coin_timer,"pc_coin_timer");
 	add_timer_func_list(pc_extra,"pc_extra");
-	add_timer_interval((natural_heal_prev_tick=gettick()+NATURAL_HEAL_INTERVAL),pc_natural_heal,0,0,NATURAL_HEAL_INTERVAL);
+
+	natural_heal_prev_tick = gettick() + NATURAL_HEAL_INTERVAL;
+	add_timer_interval(natural_heal_prev_tick,pc_natural_heal,0,0,NATURAL_HEAL_INTERVAL);
+
 	add_timer(gettick()+autosave_interval,pc_autosave,0,0);
 	add_timer_interval(gettick()+10000,pc_extra,0,0,60000);
 

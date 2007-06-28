@@ -1240,8 +1240,8 @@ int read_petdb()
 
 			//MobID,Name,JName,ItemID,EggID,AcceID,FoodID,"Fullness (1回の餌での満腹度増加率%)","HungryDeray (/min)","R_Hungry (空腹時餌やり親密度増加率%)","R_Full (とても満腹時餌やり親密度減少率%)","Intimate (捕獲時親密度%)","Die (死亡時親密度減少率%)","Capture (捕獲率%)",(Name)
 			pet_db[j].class_ = nameid;
-			memcpy(pet_db[j].name,str[1],24);
-			memcpy(pet_db[j].jname,str[2],24);
+			strncpy(pet_db[j].name,str[1],24);
+			strncpy(pet_db[j].jname,str[2],24);
 			pet_db[j].itemID=atoi(str[3]);
 			pet_db[j].EggID=atoi(str[4]);
 			pet_db[j].AcceID=atoi(str[5]);

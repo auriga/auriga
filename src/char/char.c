@@ -1928,7 +1928,7 @@ static int char_sql_build_ranking(void)
 			sql_res = mysql_store_result(&mysql_handle);
 
 			if(sql_res && (sql_row = mysql_fetch_row(sql_res))) {
-				memcpy(ranking_data[i][j].name, sql_row[0], 24);
+				strncpy(ranking_data[i][j].name, sql_row[0], 24);
 				mysql_free_result(sql_res);
 			} else {
 				printf("char_build_ranking: char_name not found in %s (ID = %d, Rank = %d)\n", ranking_reg[i], ranking_data[i][j].char_id, j+1);

@@ -5206,10 +5206,10 @@ void clif_skill_warppoint(struct map_session_data *sd,int skill_num,
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x11c;
 	WFIFOW(fd,2)=skill_num;
-	memcpy(WFIFOP(fd, 4),map1,16);
-	memcpy(WFIFOP(fd,20),map2,16);
-	memcpy(WFIFOP(fd,36),map3,16);
-	memcpy(WFIFOP(fd,52),map4,16);
+	strncpy(WFIFOP(fd, 4),map1,16);
+	strncpy(WFIFOP(fd,20),map2,16);
+	strncpy(WFIFOP(fd,36),map3,16);
+	strncpy(WFIFOP(fd,52),map4,16);
 	WFIFOSET(fd,packet_db[0x11c].len);
 
 	return;
@@ -5948,7 +5948,7 @@ void clif_item_skill(struct map_session_data *sd, int skillid, int skilllv, cons
 	WFIFOW(fd, 8)=skilllv;
 	WFIFOW(fd,10)=skill_get_sp(skillid,skilllv);
 	WFIFOW(fd,12)=skill_get_fixed_range(&sd->bl,skillid,skilllv);
-	memcpy(WFIFOP(fd,14),name,24);
+	strncpy(WFIFOP(fd,14),name,24);
 	WFIFOB(fd,38)=0;
 	WFIFOSET(fd,packet_db[0x147].len);
 
@@ -7977,7 +7977,7 @@ void clif_divorced(struct map_session_data *sd, const char *name)
 
 	fd=sd->fd;
 	WFIFOW(fd,0) = 0x205;
-	memcpy(WFIFOP(fd,2),name,24);
+	strncpy(WFIFOP(fd,2),name,24);
 	WFIFOSET(fd,packet_db[0x205].len);
 
 	return;
@@ -8126,16 +8126,18 @@ static void clif_wisall(struct map_session_data *sd, int type, unsigned char fla
  * サウンドエフェクト
  *------------------------------------------
  */
-void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,char *name,int type)
+void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type)
 {
 	int fd;
 
 	nullpo_retv(sd);
-	nullpo_retv(bl);
+
+	if(bl == NULL)
+		return;
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x1d3;
-	memcpy(WFIFOP(fd,2),name,24);
+	strncpy(WFIFOP(fd,2),name,24);
 	WFIFOB(fd,26)=type;
 	WFIFOL(fd,27)=0;
 	WFIFOL(fd,31)=bl->id;
@@ -8210,7 +8212,7 @@ void clif_friend_add_ack(const int fd, int account_id, int char_id, const char* 
 	WFIFOW(fd,2) = flag;
 	WFIFOL(fd,4) = account_id;
 	WFIFOL(fd,8) = char_id;
-	memcpy(WFIFOP(fd,12), name, 24);
+	strncpy(WFIFOP(fd,12), name, 24);
 	WFIFOSET(fd,packet_db[0x209].len);
 
 	return;
@@ -8254,7 +8256,7 @@ void clif_blacksmith_ranking(const int fd,const char *charname[10],const int poi
 
 	WFIFOW(fd,0) = 0x219;
 	for(i=0;i<10;i++){
-		memcpy(WFIFOP(fd,i*24+2), charname[i], 24);
+		strncpy(WFIFOP(fd,i*24+2), charname[i], 24);
 		WFIFOL(fd,i*4+242) = point[i];
 	}
 	WFIFOSET(fd,packet_db[0x219].len);
@@ -8286,7 +8288,7 @@ void clif_alchemist_ranking(const int fd,const char *charname[10],const int poin
 
 	WFIFOW(fd,0) = 0x21a;
 	for(i=0;i<10;i++){
-		memcpy(WFIFOP(fd,i*24+2), charname[i], 24);
+		strncpy(WFIFOP(fd,i*24+2), charname[i], 24);
 		WFIFOL(fd,i*4+242) = point[i];
 	}
 	WFIFOSET(fd,packet_db[0x21a].len);
@@ -8318,7 +8320,7 @@ void clif_taekwon_ranking(const int fd,const char *charname[10],const int point[
 
 	WFIFOW(fd,0) = 0x226;
 	for(i=0;i<10;i++){
-		memcpy(WFIFOP(fd,i*24+2), charname[i], 24);
+		strncpy(WFIFOP(fd,i*24+2), charname[i], 24);
 		WFIFOL(fd,i*4+242) = point[i];
 	}
 	WFIFOSET(fd,packet_db[0x226].len);
@@ -8350,7 +8352,7 @@ void clif_pk_ranking(const int fd,const char *charname[10],const int point[10])
 
 	WFIFOW(fd,0) = 0x238;
 	for(i=0;i<10;i++){
-		memcpy(WFIFOP(fd,i*24+2), charname[i], 24);
+		strncpy(WFIFOP(fd,i*24+2), charname[i], 24);
 		WFIFOL(fd,i*4+242) = point[i];
 	}
 	WFIFOSET(fd,packet_db[0x238].len);

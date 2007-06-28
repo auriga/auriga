@@ -387,7 +387,7 @@ const struct s_pet* pet_sql_load(int pet_id) {
 
 		p->pet_id = pet_id;
 		p->class_  = atoi(sql_row[1]);
-		memcpy(p->name, sql_row[2],24);
+		strncpy(p->name, sql_row[2],24);
 		p->account_id = atoi(sql_row[3]);
 		p->char_id = atoi(sql_row[4]);
 		p->level = atoi(sql_row[5]);

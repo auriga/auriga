@@ -485,7 +485,7 @@ int npc_event(struct map_session_data *sd,const char *eventname)
 		}else{
 //			if (battle_config.etc_log)
 //				printf("npc_event: enqueue\n");
-			memcpy(sd->eventqueue[i],eventname,50);
+			strncpy(sd->eventqueue[i],eventname,50);
 		}
 		return 1;
 	}
@@ -1044,12 +1044,14 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4)
 	p = strstr(w3,"::");
 	if (p) {
 		*p=0;
-		memcpy(nd->name,w3,24);
-		memcpy(nd->exname,p+2,24);
+		strncpy(nd->name,w3,24);
+		strncpy(nd->exname,p+2,24);
 	}else{
-		memcpy(nd->name,w3,24);
-		memcpy(nd->exname,w3,24);
+		strncpy(nd->name,w3,24);
+		strncpy(nd->exname,w3,24);
 	}
+	nd->name[23]   = '\0';
+	nd->exname[23] = '\0';
 
 	nd->chat_id=0;
 	if (!battle_config.warp_point_debug)
@@ -1177,12 +1179,14 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4)
 	p = strstr(w3,"::");
 	if (p) {
 		*p=0;
-		memcpy(nd->name,w3,24);
-		memcpy(nd->exname,p+2,24);
+		strncpy(nd->name,w3,24);
+		strncpy(nd->exname,p+2,24);
 	}else{
-		memcpy(nd->name,w3,24);
-		memcpy(nd->exname,w3,24);
+		strncpy(nd->name,w3,24);
+		strncpy(nd->exname,w3,24);
 	}
+	nd->name[23]   = '\0';
+	nd->exname[23] = '\0';
 
 	nd->class_ = atoi(w4);
 	nd->speed = 200;
@@ -1450,12 +1454,14 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 	p = strstr(w3,"::");
 	if (p) {
 		*p=0;
-		memcpy(nd->name,w3,24);
-		memcpy(nd->exname,p+2,24);
+		strncpy(nd->name,w3,24);
+		strncpy(nd->exname,p+2,24);
 	}else{
-		memcpy(nd->name,w3,24);
-		memcpy(nd->exname,w3,24);
+		strncpy(nd->name,w3,24);
+		strncpy(nd->exname,w3,24);
 	}
+	nd->name[23]   = '\0';
+	nd->exname[23] = '\0';
 
 	nd->bl.prev = nd->bl.next = NULL;
 	nd->bl.m    = m;
@@ -1817,7 +1823,7 @@ int npc_set_mapflag(int m,char *w3,char *w4)
 		return 0;
 
 	if (strcmpi(w3,"nosave")==0) {
-		char savemap[16];
+		char savemap[24];
 		int savex,savey;
 		if (strcmp(w4,"SavePoint")==0) {
 			strncpy(map[m].save.map,"SavePoint",16);

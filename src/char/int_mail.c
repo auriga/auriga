@@ -465,9 +465,9 @@ int mail_sql_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 			md[i]=(struct mail_data *)aCalloc(1,sizeof(struct mail_data));
 			md[i]->mail_num = (unsigned int)atoi(sql_row[1]);
 			md[i]->read     = atoi(sql_row[2]);
-			memcpy(md[i]->char_name, sql_row[3] ,24);
-			memcpy(md[i]->receive_name, sql_row[4], 24);
-			memcpy(md[i]->title, sql_row[5], 40);
+			strncpy(md[i]->char_name, sql_row[3] ,24);
+			strncpy(md[i]->receive_name, sql_row[4], 24);
+			strncpy(md[i]->title, sql_row[5], 40);
 			md[i]->times     = (unsigned int)atoi(sql_row[6]);
 			md[i]->body_size = (unsigned int)atoi(sql_row[7]);
 

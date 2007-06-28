@@ -97,7 +97,7 @@ void clif_callpartner(struct map_session_data *sd);
 void clif_divorced(struct map_session_data *sd, const char *name);
 void clif_baby_req_fail(struct map_session_data *sd, int type);
 void clif_sitting(struct map_session_data *sd);
-void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,char *name,int type);
+void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type);
 
 // trade
 void clif_traderequest(struct map_session_data *sd, char *name);

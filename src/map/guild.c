@@ -1843,7 +1843,7 @@ void guild_broken(int guild_id, unsigned char flag)
 		if( (gc=guild_castle_search(i)) != NULL ){
 			if(gc->guild_id == guild_id){
 				char *name=(char *)aCalloc(50,sizeof(char));
-				memcpy(name,gc->castle_event,50);
+				memcpy(name,gc->castle_event,24);
 				npc_event_do(strcat(name,"::OnGuildBreak"));
 				aFree(name);
 			}

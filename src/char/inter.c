@@ -134,7 +134,7 @@ int accreg_fromstr(const char *str,struct accreg *reg)
 		return 1;
 
 	for(j=0,p+=n;j<ACCOUNT_REG_NUM;j++,p+=n){
-		if( sscanf(p,"%[^,],%d%n",buf,&v,&n)!=2 )
+		if( sscanf(p,"%127[^,],%d%n",buf,&v,&n)!=2 )
 			break;
 		memcpy(reg->reg[j].str,buf,32);
 		reg->reg[j].value=v;
@@ -409,7 +409,7 @@ const struct accreg* accreg_sql_load(int account_id) {
 
 	if (sql_res) {
 		for(j=0;(sql_row = mysql_fetch_row(sql_res));j++){
-			memcpy(reg->reg[j].str, sql_row[0],32);
+			strncpy(reg->reg[j].str, sql_row[0],32);
 			reg->reg[j].value = atoi(sql_row[1]);
 		}
 		mysql_free_result(sql_res);

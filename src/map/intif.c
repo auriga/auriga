@@ -581,7 +581,7 @@ int intif_guild_leave(int guild_id,int account_id,int char_id,int flag,const cha
 	WFIFOL(inter_fd, 6) = account_id;
 	WFIFOL(inter_fd,10) = char_id;
 	WFIFOB(inter_fd,14) = flag;
-	memcpy(WFIFOP(inter_fd,15),mes,40);
+	strncpy(WFIFOP(inter_fd,15),mes,40);
 	WFIFOSET(inter_fd,55);
 
 	return 0;
@@ -876,7 +876,7 @@ int intif_charmovereq2(struct map_session_data *sd,char *name,char *mapname,shor
 {
 	nullpo_retr(0,sd);
 
-	if(name==NULL)
+	if (name == NULL)
 		return -1;
 
 	if (inter_fd < 0)

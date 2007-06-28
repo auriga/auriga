@@ -1996,8 +1996,8 @@ atcommand_monster(
 	if (!message || !*message)
 		return -1;
 
-	if (sscanf(message, "\"%[^\"]\" %s %d %d %d", name, monster, &number, &x, &y) < 2 &&
-	    sscanf(message, "%s \"%[^\"]\" %d %d %d", monster, name, &number, &x, &y) < 2 &&
+	if (sscanf(message, "\"%99[^\"]\" %99s %d %d %d", name, monster, &number, &x, &y) < 2 &&
+	    sscanf(message, "%99s \"%99[^\"]\" %d %d %d", monster, name, &number, &x, &y) < 2 &&
 	    sscanf(message, "%99s %99s %d %d %d", name, monster, &number, &x, &y) < 2)
 		return -1;
 
@@ -4276,7 +4276,7 @@ atcommand_mobsearch(
 
 	nullpo_retr(-1, sd);
 
-	if (sscanf(message, "%s %99s", mob_name, map_name) < 1)
+	if (sscanf(message, "%99s %99s", mob_name, map_name) < 1)
 		return -1;
 
 	if ((mob_id = atoi(mob_name)) == 0)
