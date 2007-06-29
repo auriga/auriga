@@ -21,7 +21,7 @@ void  aFree_( void *p, const char *file, int line, const char *func );
 #define aFree(p)      do { aFree_(p,ALC_MARK); p = NULL; } while(0)
 
 // ついでに置き換え
-#ifndef _MALLOC_C_
+#if !defined(_MALLOC_C_) && !defined(MEMWATCH)
 #undef  strdup
 #define malloc(n)    aMalloc_(n,ALC_MARK)
 #define calloc(m,n)  aCalloc_(m,n,ALC_MARK)

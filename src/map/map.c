@@ -55,7 +55,6 @@ static struct dbt * id_db;
 static struct dbt * map_db;
 static struct dbt * nick_db;
 static struct dbt * charid_db;
-//static struct dbt * address_db; // BL関連のアドレスを格納
 
 static int users;
 static struct block_list *object[MAX_FLOORITEM];
@@ -443,21 +442,6 @@ int map_delblock(struct block_list *bl)
 	bl->prev = NULL;
 
 	return 0;
-}
-
-/*==========================================
- * BLのアドレスが正しいものか確認する
- *------------------------------------------
- */
-int map_is_valid_address(struct block_list *bl, const char *file, int line)
-{
-/*
-	if( ! numdb_search(address_db, bl) ) {
-		printf("map_is_valid_address: invalid address %p %s line %d\n", bl, file, line);
-		return 0;
-	}
-*/
-	return 1;
 }
 
 /*==========================================
@@ -1015,7 +999,7 @@ int map_addobject(struct block_list *bl)
 		last_object_id = i;
 	object[i] = bl;
 	//numdb_insert(id_db,i,bl);
-	//numdb_insert(address_db,bl,1);
+
 	return i;
 }
 
@@ -1031,7 +1015,6 @@ int map_delobjectnofree(int id)
 
 	map_delblock(object[id]);
 	//numdb_erase(id_db,id);
-	//numdb_erase(address_db,object[id]);
 	object[id] = NULL;
 
 	if(first_free_object_id > id)
@@ -1418,7 +1401,6 @@ void map_addiddb(struct block_list *bl)
 	nullpo_retv(bl);
 
 	numdb_insert(id_db,bl->id,bl);
-	//numdb_insert(address_db,bl,1);
 }
 
 /*==========================================
@@ -1430,7 +1412,6 @@ void map_deliddb(struct block_list *bl)
 	nullpo_retv(bl);
 
 	numdb_erase(id_db,bl->id);
-	//numdb_erase(address_db,bl);
 }
 
 /*==========================================
@@ -2809,10 +2790,8 @@ void do_final(void)
 		numdb_final(charid_db,charid_db_final);
 	if(id_db)
 		numdb_final(id_db,NULL);
-	//if(address_db)
-	//	numdb_final(address_db,NULL);
-	exit_dbn();
 
+	exit_dbn();
 	do_final_timer();
 }
 
@@ -2853,7 +2832,6 @@ int do_init(int argc,char *argv[])
 	map_db = strdb_init(16);
 	nick_db = strdb_init(24);
 	charid_db = numdb_init();
-	//address_db = numdb_init();
 
 	do_init_map();
 

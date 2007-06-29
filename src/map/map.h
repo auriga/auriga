@@ -7,7 +7,6 @@
 
 #define MAX_NPC_PER_MAP 512
 #define BLOCK_SIZE 8
-//#define AREA_SIZE 20
 #define AREA_SIZE 14
 #define PT_AREA_SIZE 20
 #define LOOTITEM_SIZE 10
@@ -918,9 +917,10 @@ enum {
 };
 
 // CELL
-#define CELL_MASK		0x0f
-#define CELL_NPC		0x80	// NPCセル
-#define CELL_BASILICA	0x40	// BASILICAセル
+#define CELL_MASK     0x0f
+#define CELL_NPC      0x80	// NPCセル
+#define CELL_BASILICA 0x40	// BASILICAセル
+
 /*
  * map_getcell()で使用されるフラグ
  */
@@ -935,6 +935,7 @@ typedef enum {
 	CELL_CHKNPC=0x10,	// タッチタイプのNPC(セルタイプ0x80フラグ)
 	CELL_CHKBASILICA,	// バジリカ(セルタイプ0x40フラグ)
 } cell_t;
+
 // map_setcell()で使用されるフラグ
 enum {
 	CELL_SETNPC=0x10,	// タッチタイプのNPCをセット
@@ -1003,7 +1004,6 @@ int map_freeblock_unlock(void);
 
 int map_addblock(struct block_list *);
 int map_delblock(struct block_list *);
-int map_is_valid_address(struct block_list *bl, const char *file, int line );
 void map_foreachinarea(int (*)(struct block_list*,va_list),int,int,int,int,int,int,...);
 void map_foreachinshootpath(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int dx,int dy,int range,int width,int type,...);
 void map_foreachinmovearea(int (*)(struct block_list*,va_list),int,int,int,int,int,int,int,int,...);
@@ -1108,9 +1108,5 @@ typedef struct homun_data       TBL_HOM;
 
 #define BL_DOWNCAST(type_, bl) \
 	((bl) == (struct block_list*)NULL || (bl)->type != (type_) ? (T ## type_ *)(NULL) : (T ## type_ *)(bl))
-
-// block_list が正しいものか確認する
-
-#define BL_VALIDATE(bl) map_is_valid_address(bl, __FILE__, __LINE__ )
 
 #endif

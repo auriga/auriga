@@ -17,12 +17,12 @@
 // デバッグモード（エラーチェックの強化用、通常運営ではお勧めできない）
 //#define DEBUG_MEMMGR
 
-#ifndef USE_MEMMGR
+#if defined(MEMWATCH) || !defined(USE_MEMMGR)
 
 void* aMalloc_( size_t size, const char *file, int line, const char *func )
 {
 	void *ret;
-	
+
 	// printf("%s:%d: in func %s: malloc %d\n",file,line,func,size);
 #ifdef MEMWATCH
 	ret=mwMalloc(size,file,line);
@@ -48,7 +48,7 @@ void* aMalloc_( size_t size, const char *file, int line, const char *func )
 void* aCalloc_( size_t num, size_t size, const char *file, int line, const char *func )
 {
 	void *ret;
-	
+
 	// printf("%s:%d: in func %s: calloc %d %d\n",file,line,func,num,size);
 #ifdef MEMWATCH
 	ret=mwCalloc(num,size,file,line);
@@ -74,7 +74,7 @@ void* aCalloc_( size_t num, size_t size, const char *file, int line, const char 
 void* aRealloc_( void *p, size_t size, const char *file, int line, const char *func )
 {
 	void *ret;
-	
+
 	// printf("%s:%d: in func %s: realloc %p %d\n",file,line,func,p,size);
 #ifdef MEMWATCH
 	ret=mwRealloc(p,size,file,line);
@@ -100,7 +100,7 @@ void* aRealloc_( void *p, size_t size, const char *file, int line, const char *f
 void* aStrdup_( const void *p, const char *file, int line, const char *func )
 {
 	void *ret;
-	
+
 	// printf("%s:%d: in func %s: strdup %p\n",file,line,func,p);
 #ifdef MEMWATCH
 	ret=mwStrdup(p,file,line);
@@ -133,11 +133,17 @@ void aFree_( void *p, const char *file, int line, const char *func )
 #endif
 }
 
-int do_init_memmgr(const char* file) {
+int do_init_memmgr(const char* file)
+{
+#ifdef MEMWATCH
+	mwInit();
+	atexit(mwAbort);
+#endif
 	return 0;
 }
 
-double memmgr_usage(void) {
+double memmgr_usage(void)
+{
 	return 0;
 }
 
@@ -227,7 +233,8 @@ static size_t        memmgr_usage_bytes;
 #define memmgr_assert(v)
 #endif
 
-static unsigned short size2hash( size_t size ) {
+static unsigned short size2hash( size_t size )
+{
 	if( size <= BLOCK_DATA_SIZE1 ) {
 		return (unsigned short)(size + BLOCK_ALIGNMENT1 - 1) / BLOCK_ALIGNMENT1;
 	} else if( size <= BLOCK_DATA_SIZE ){
@@ -238,7 +245,8 @@ static unsigned short size2hash( size_t size ) {
 	}
 }
 
-static size_t hash2size( unsigned short hash ) {
+static size_t hash2size( unsigned short hash )
+{
 	if( hash <= BLOCK_DATA_COUNT1) {
 		return hash * BLOCK_ALIGNMENT1;
 	} else {
@@ -246,11 +254,12 @@ static size_t hash2size( unsigned short hash ) {
 	}
 }
 
-void* aMalloc_(size_t size, const char *file, int line, const char *func) {
+void* aMalloc_(size_t size, const char *file, int line, const char *func)
+{
 	struct block *block;
 	short size_hash = size2hash( size );
 	struct unit_head *head;
-	
+
 	if(size == 0) {
 		return NULL;
 	}
@@ -259,11 +268,8 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func) {
 	/* ブロック長を超える領域の確保には、malloc() を用いる */
 	/* その際、unit_head.block に NULL を代入して区別する */
 	if(hash2size(size_hash) > BLOCK_DATA_SIZE - sizeof(struct unit_head)) {
-#ifdef MEMWATCH
-		struct unit_head_large* p = (struct unit_head_large*)mwMalloc(sizeof(struct unit_head_large) + size,file,line);
-#else
 		struct unit_head_large* p = (struct unit_head_large*)malloc(sizeof(struct unit_head_large) + size);
-#endif
+
 		if(p != NULL) {
 #ifdef DEBUG_MEMMGR
 			// タイムスタンプの記録
@@ -354,17 +360,22 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func) {
 	head->line  = line;
 	head->size  = (unsigned short)size;
 	*(long*)((char*)head + sizeof(struct unit_head) - sizeof(long) + size) = 0xdeadbeaf;
+
 	return (char *)head + sizeof(struct unit_head) - sizeof(long);
 };
 
-void* aCalloc_(size_t num, size_t size, const char *file, int line, const char *func ) {
+void* aCalloc_(size_t num, size_t size, const char *file, int line, const char *func )
+{
 	void *p = aMalloc_(num * size,file,line,func);
+
 	memset(p,0,num * size);
 	return p;
 }
 
-void* aRealloc_(void *memblock, size_t size, const char *file, int line, const char *func ) {
+void* aRealloc_(void *memblock, size_t size, const char *file, int line, const char *func )
+{
 	size_t old_size;
+
 	if(memblock == NULL) {
 		return aMalloc_(size,file,line,func);
 	}
@@ -387,7 +398,8 @@ void* aRealloc_(void *memblock, size_t size, const char *file, int line, const c
 	}
 }
 
-void* aStrdup_(const void* string, const char *file, int line, const char *func ) {
+void* aStrdup_(const void* string, const char *file, int line, const char *func )
+{
 	if(string == NULL) {
 		return NULL;
 	} else {
@@ -398,7 +410,8 @@ void* aStrdup_(const void* string, const char *file, int line, const char *func 
 	}
 }
 
-void aFree_(void *ptr, const char *file, int line, const char *func ) {
+void aFree_(void *ptr, const char *file, int line, const char *func )
+{
 	struct unit_head *head;
 
 	if(ptr == NULL) return;
@@ -406,9 +419,8 @@ void aFree_(void *ptr, const char *file, int line, const char *func ) {
 	if(head->size == 0) {
 		/* malloc() で直に確保された領域 */
 		struct unit_head_large *head_large = (struct unit_head_large *)((char *)ptr - sizeof(struct unit_head_large) + sizeof(long));
-		if(
-			*(long*)((char*)head_large + sizeof(struct unit_head_large) - sizeof(long) + head_large->size)
-			!= 0xdeadbeaf)
+
+		if(*(long*)((char*)head_large + sizeof(struct unit_head_large) - sizeof(long) + head_large->size) != 0xdeadbeaf)
 		{
 			memmgr_warning("memmgr: args of aFree is overflowed pointer %s line %d\n",file,line);
 		} else {
@@ -427,6 +439,7 @@ void aFree_(void *ptr, const char *file, int line, const char *func ) {
 	} else {
 		/* ユニット解放 */
 		struct block *block = head->block;
+
 		if( (char*)head - (char*)block > sizeof(struct block) ) {
 			memmgr_warning("memmgr: args of aFree is invalid pointer %s line %d\n",file,line);
 		} else if(head->block == NULL) {
@@ -463,9 +476,11 @@ void aFree_(void *ptr, const char *file, int line, const char *func ) {
 }
 
 /* ブロックを確保する */
-static struct block* block_malloc(unsigned short hash) {
-	int    i;
+static struct block* block_malloc(unsigned short hash)
+{
+	int i;
 	struct block *p;
+
 	if(hash_unfill[0] != NULL) {
 		/* ブロック用の領域は確保済み */
 		p = hash_unfill[0];
@@ -522,7 +537,8 @@ static struct block* block_malloc(unsigned short hash) {
 	return p;
 }
 
-static void block_free(struct block* p) {
+static void block_free(struct block* p)
+{
 	if( p->unfill_prev ) {
 		if( p->unfill_prev == &block_head) {
 			hash_unfill[ p->unit_hash ] = p->unfill_next;
@@ -541,7 +557,8 @@ static void block_free(struct block* p) {
 
 static char memmer_logfile[128];
 
-static void memmgr_warning(const char* format,...) {
+static void memmgr_warning(const char* format,...)
+{
 	FILE *fp = fopen(memmer_logfile,"a");
 	va_list ap;
 	va_start(ap,format);
@@ -554,23 +571,30 @@ static void memmgr_warning(const char* format,...) {
 	va_end(ap);
 }
 
-static FILE* memmgr_log(void) {
+static FILE* memmgr_log(void)
+{
 	FILE *fp = fopen(memmer_logfile,"a");
-	if(!fp) { fp = stdout; }
+
+	if(!fp) {
+		fp = stdout;
+	}
 	fprintf(fp,"memmgr: memory leaks found\n");
 	return fp;
 }
 
-static void memmer_exit(void) {
+static void memmer_exit(void)
+{
 	FILE *fp = NULL;
-//	int i;
 	int count = 0;
 	struct block *block = block_first;
 	struct unit_head_large *large = unit_head_large_first;
+
 	while(block) {
 		if(block->unfill_prev) {
 			int i;
-			if(!fp) { fp = memmgr_log(); }
+			if(!fp) {
+				fp = memmgr_log();
+			}
 			for(i=0;i< block->unit_maxused;i++) {
 				struct unit_head *head = block2unit(block, i);
 				if(head->block != NULL) {
@@ -595,7 +619,10 @@ static void memmer_exit(void) {
 		block = block->block_next;
 	}
 	while(large) {
-		if(!fp) { fp = memmgr_log(); }
+		if(!fp) {
+			fp = memmgr_log();
+		}
+
 #ifdef DEBUG_MEMMGR
 		{
 			char buf[24];
@@ -622,14 +649,16 @@ static void memmer_exit(void) {
 	}
 }
 
-int do_init_memmgr(const char* file) {
+int do_init_memmgr(const char* file)
+{
 	sprintf(memmer_logfile,"%s.log",file);
 	atexit(memmer_exit);
 	printf("memmgr: initialised: %s\n",memmer_logfile);
 	return 0;
 }
 
-double memmgr_usage(void) {
+double memmgr_usage(void)
+{
 	return memmgr_usage_bytes / 1024.0;
 }
 

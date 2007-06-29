@@ -62,6 +62,7 @@ static struct {
 	int account_id,login_id1,login_id2;
 	int ip,sex,delflag,tick;
 } auth_fifo[AUTH_FIFO_SIZE];
+
 static int auth_fifo_pos=0;
 
 static char admin_pass[64]=""; // for account creation
@@ -69,7 +70,6 @@ static char ladmin_pass[64]=""; // for remote administration
 static char login_log_filename[1024] = "log/login.log";
 static int login_version = 0, login_type = 0;
 static int detect_multiple_login = 1;
-int login_log(char *fmt,...);
 
 #ifdef TXT_JOURNAL
 static int login_journal_enable = 1;
@@ -80,7 +80,8 @@ static int login_journal_cache = 1000;
 
 static char GM_account_filename[1024] = "conf/GM_account.txt";
 static struct dbt *gm_account_db = NULL;
-static void read_gm_account(void);
+
+int login_log(char *fmt,...);
 static int isGM(int account_id);
 static int gm_account_db_final(void *key, void *data, va_list ap);
 
@@ -393,8 +394,10 @@ int login_txt_account_delete(int account_id)
 }
 
 // アカウント作成
-int login_txt_account_new(struct mmo_account* account,const char *tmpstr) {
+int login_txt_account_new(struct mmo_account* account,const char *tmpstr)
+{
 	int j,i=auth_num,c;
+
 	login_log("auth new %s %s %s",tmpstr,account->userid,account->pass);
 
 	for(j=0;j<24 && (c=account->userid[j]);j++){
@@ -433,7 +436,8 @@ int login_txt_account_new(struct mmo_account* account,const char *tmpstr) {
 	return 1;
 }
 
-void login_txt_final(void) {
+void login_txt_final(void)
+{
 	if(auth_dat)
 		aFree(auth_dat);
 	if(gm_account_db)
@@ -447,7 +451,8 @@ void login_txt_final(void) {
 #endif
 }
 
-int login_txt_config_read_sub(const char* w1,const char* w2) {
+int login_txt_config_read_sub(const char* w1,const char* w2)
+{
 	if(strcmpi(w1,"account_filename")==0){
 		strncpy(account_filename,w2,1024);
 	}
@@ -497,8 +502,8 @@ char login_db_level[256]      = "level";
 
 static struct dbt *account_db;
 
-int login_sql_init(void) {
-
+int login_sql_init(void)
+{
 	// DB connection start
 	mysql_init(&mysql_handle);
 	printf("Connecting Database Server");
@@ -527,7 +532,7 @@ int login_sql_init(void) {
 		"VALUES (NOW(), 'lserver 100 login server started')", loginlog_db
 	);
 
-	//query
+	// query
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
 	}
@@ -546,14 +551,15 @@ static int account_db_final(void *key,void *data,va_list ap)
 	return 0;
 }
 
-void login_sql_final(void) {
-	//set log.
+void login_sql_final(void)
+{
+	// set log.
 	sprintf(
 		tmp_sql,"INSERT DELAYED INTO `%s`(`time`,`log`) VALUES "
 		"(NOW(), 'lserver 100 login server shutdown')",loginlog_db
 	);
 
-	//query
+	// query
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
 	}
@@ -566,11 +572,13 @@ void login_sql_final(void) {
 		numdb_final(gm_account_db,gm_account_db_final);
 }
 
-void login_sql_sync(void) {
+void login_sql_sync(void)
+{
 	// nothing to do
 }
 
-int login_sql_config_read_sub(const char* w1,const char* w2) {
+int login_sql_config_read_sub(const char* w1,const char* w2)
+{
 	if(strcmpi(w1,"login_server_ip")==0){
 		strncpy(login_server_ip, w2, 32);
 	}
@@ -593,7 +601,8 @@ int login_sql_config_read_sub(const char* w1,const char* w2) {
 	return 0;
 }
 
-int login_sql_account_delete(int account_id) {
+int login_sql_account_delete(int account_id)
+{
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `%s` = '%d'",login_db,login_db_account_id,account_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (delete `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
@@ -605,7 +614,8 @@ int login_sql_account_delete(int account_id) {
 	return 0;
 }
 
-const struct mmo_account* login_sql_account_load_num(int account_id) {
+const struct mmo_account* login_sql_account_load_num(int account_id)
+{
 	struct mmo_account *ac = NULL;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
@@ -643,13 +653,13 @@ const struct mmo_account* login_sql_account_load_num(int account_id) {
 	}
 	memset(ac,0,sizeof(struct mmo_account));
 	ac->account_id = account_id;
-	strncpy(ac->userid    ,sql_row[0],24);
-	strncpy(ac->pass      ,sql_row[1],24);
-	strncpy(ac->lastlogin ,sql_row[2],24);
+	strncpy(ac->userid, sql_row[0], 24);
+	strncpy(ac->pass, sql_row[1], 24);
+	strncpy(ac->lastlogin ,sql_row[2], 24);
 	ac->logincount = atoi(sql_row[3]);
 	ac->sex        = sql_row[4][0];
 	ac->state      = atoi(sql_row[5]);
-	strncpy(ac->mail      ,sql_row[6],40);
+	strncpy(ac->mail, sql_row[6], 40);
 	mysql_free_result(sql_res);
 	if(ac->sex == 'M') {
 		ac->sex = 1;
@@ -668,7 +678,7 @@ const struct mmo_account* login_sql_account_load_num(int account_id) {
 	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res) {
 		while( (sql_row = mysql_fetch_row(sql_res)) ) {
-			strnpy(ac->account_reg2[ac->account_reg2_num].str,sql_row[0],32);
+			strncpy(ac->account_reg2[ac->account_reg2_num].str,sql_row[0],32);
 			ac->account_reg2[ac->account_reg2_num].value = atoi(sql_row[1]);
 			if(++ac->account_reg2_num >= ACCOUNT_REG2_NUM)
 				break;
@@ -678,7 +688,8 @@ const struct mmo_account* login_sql_account_load_num(int account_id) {
 	return ac;
 }
 
-const struct mmo_account* login_sql_account_load_str(const char *account_id) {
+const struct mmo_account* login_sql_account_load_str(const char *account_id)
+{
 	int  id_num = -1;
 	char buf[256];
 	MYSQL_RES* sql_res;
@@ -709,10 +720,12 @@ const struct mmo_account* login_sql_account_load_str(const char *account_id) {
 	}
 }
 
-const struct mmo_account* login_sql_account_load_idx(int idx) {
+const struct mmo_account* login_sql_account_load_idx(int idx)
+{
 	int  id_num = -1;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
+
 	if(idx < 0) return NULL;
 	sprintf(
 		tmp_sql,"SELECT `%s` FROM `%s` ORDER BY `%s` ASC LIMIT %d,1",
@@ -735,7 +748,8 @@ const struct mmo_account* login_sql_account_load_idx(int idx) {
 	return NULL;
 }
 
-int login_sql_account_save(struct mmo_account *ac2) {
+int login_sql_account_save(struct mmo_account *ac2)
+{
 	char *p;
 	char buf[256];
 	const struct mmo_account *ac1;
@@ -832,10 +846,12 @@ int login_sql_account_save(struct mmo_account *ac2) {
 	return 0;
 }
 
-int login_sql_account_new(struct mmo_account* account,const char *tmpstr) {
+int login_sql_account_new(struct mmo_account* account,const char *tmpstr)
+{
 	int j,c;
 	char buf1[256],buf2[256],buf3[256];
 	char sex_str[] = "FMS";
+
 	login_log("auth new %s %s %s",tmpstr,account->userid,account->pass);
 
 	for(j=0;j<24 && (c=account->userid[j]);j++){
@@ -873,13 +889,13 @@ int login_sql_account_new(struct mmo_account* account,const char *tmpstr) {
 
 #endif /* TXT_ONLY */
 
-static void read_gm_account(void) {
+static void read_gm_account(void)
+{
 	char line[8192];
 	struct gm_account *p;
 	FILE *fp;
-	int c, l;
+	int i, c, l;
 	int account_id, level;
-	int i;
 	int range, start_range, end_range;
 
 	gm_account_db = numdb_init();
@@ -934,7 +950,8 @@ static void read_gm_account(void) {
 	return;
 }
 
-static int isGM(int account_id) {
+static int isGM(int account_id)
+{
 	struct gm_account *p;
 
 	if (gm_account_db == NULL)
@@ -946,7 +963,8 @@ static int isGM(int account_id) {
 	return p->level;
 }
 
-static int gm_account_db_final(void *key, void *data, va_list ap) {
+static int gm_account_db_final(void *key, void *data, va_list ap)
+{
 	struct gm_account *p = (struct gm_account *)data;
 
 	aFree(p);
@@ -954,11 +972,12 @@ static int gm_account_db_final(void *key, void *data, va_list ap) {
 	return 0;
 }
 
-#ifdef TXT_ONLY
 int login_log(char *fmt,...)
 {
+#ifdef TXT_ONLY
 	FILE *logfp;
 	va_list ap;
+
 	va_start(ap,fmt);
 
 	logfp=fopen(login_log_filename,"a");
@@ -969,12 +988,7 @@ int login_log(char *fmt,...)
 	}
 
 	va_end(ap);
-	return 0;
-}
 #else
-// add by robert
-int login_log(char *fmt,...)
-{
 	char log[256], buf[512];
 	va_list ap;
 
@@ -990,10 +1004,9 @@ int login_log(char *fmt,...)
 	if(mysql_query(&mysql_handle, tmp_sql) ){
 		printf("DB server Error (insert `%s`)- %s\n", loginlog_db, mysql_error(&mysql_handle) );
 	}
-
+#endif
 	return 0;
 }
-#endif
 
 // 認証
 int mmo_auth(struct login_session_data* sd)
@@ -1184,7 +1197,8 @@ int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,int ip)
 	return 0;
 }
 
-int parse_char_disconnect(int fd) {
+int parse_char_disconnect(int fd)
+{
 	int i;
 
 	for(i=0;i<MAX_SERVERS;i++)
@@ -1328,7 +1342,7 @@ int parse_fromchar(int fd)
 					charif_sendallwos(fd,buf,WBUFW(buf,2));
 				}
 				RFIFOSKIP(fd,RFIFOW(fd,2));
-	//			printf("login: save account_reg (from char)\n");
+				//printf("login: save account_reg (from char)\n");
 			}
 			break;
 
@@ -1354,8 +1368,10 @@ int parse_fromchar(int fd)
 	return 0;
 }
 
-int parse_admin_disconnect(int fd) {
+int parse_admin_disconnect(int fd)
+{
 	int i;
+
 	for(i=0;i<MAX_SERVERS;i++)
 		if(server_fd[i]==fd)
 			server_fd[i]=-1;
@@ -1531,7 +1547,6 @@ int parse_admin(int fd)
 
 		case 0x7938:
 			// information about servers
-		  {
 			server_num = 0;
 			for(i = 0; i < MAX_SERVERS; i++) { // max number of char-servers (and account_id values: 0 to max-1)
 				if (server_fd[i] >= 0) {
@@ -1547,7 +1562,7 @@ int parse_admin(int fd)
 			WFIFOW(fd,0) = 0x7939;
 			WFIFOW(fd,2) = 4 + 32 * server_num;
 			WFIFOSET(fd, 4 + 32 * server_num);
-		  }
+
 			RFIFOSKIP(fd,2);
 			break;
 
@@ -1638,8 +1653,10 @@ int parse_admin(int fd)
 	return 0;
 }
 
-int parse_login_disconnect(int fd) {
+int parse_login_disconnect(int fd)
+{
 	int i;
+
 	for(i=0;i<MAX_SERVERS;i++)
 		if(server_fd[i]==fd)
 	server_fd[i]=-1;
@@ -2061,7 +2078,8 @@ static void login_config_read(const char *cfgName)
 
 // === DISPLAY CONFIGURATION WARNINGS ===
 // ======================================
-static void display_conf_warnings(void) {
+static void display_conf_warnings(void)
+{
 	if (login_port < 1024 || login_port > 65535) {
 		printf("Warning: Invalid login_port value: %d. Set to 6900 (default).\n", login_port);
 		login_port = 6900; // default
@@ -2120,7 +2138,8 @@ static void display_conf_warnings(void) {
 	return;
 }
 
-int login_sync_timer(int tid, unsigned int tick, int id,int data) {
+int login_sync_timer(int tid, unsigned int tick, int id,int data)
+{
 	login_sync();
 
 	return 0;
@@ -2128,7 +2147,8 @@ int login_sync_timer(int tid, unsigned int tick, int id,int data) {
 
 // for httpd support
 
-static double login_users(void) {
+static double login_users(void)
+{
 	int i;
 	int users = 0;
 
@@ -2141,7 +2161,8 @@ static double login_users(void) {
 	return (double)users;
 }
 
-static void login_httpd_account(struct httpd_session_data *sd,const char* url) {
+static void login_httpd_account(struct httpd_session_data *sd,const char* url)
+{
 	char* userid     = httpd_get_value(sd,"userid");
 	int   userid_len = strlen(userid);
 	char* passwd     = httpd_get_value(sd,"passwd");
@@ -2225,6 +2246,7 @@ void login_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 {
 	struct socket_data *sd = session[fd];
 	struct login_session_data *ld = (struct login_session_data *)sd->session_data;
+
 	strcpy( usage,
 		( sd->func_parse == parse_login )? "login user" :
 		( sd->func_parse == parse_admin )? "administration" :
