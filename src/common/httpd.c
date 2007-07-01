@@ -7,6 +7,7 @@
 #	include <windows.h>
 #endif
 
+#include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
 

@@ -1709,7 +1709,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 			if((p[0] == 'O' || p[0] == 'o') && (p[1] == 'N' || p[1] == 'n')) {
 				int i;
 				for(i=2; p[i]; i++) {
-					if(i >= 24 || (!isalnum(p[i]) && p[i] != '_')) {
+					if(i >= 23 || (!isalnum(p[i]) && p[i] != '_')) {
 						*p2 = c;
 						disp_error_message("invalid label name",p);
 					}
@@ -7464,12 +7464,20 @@ int buildin_getwaitingroomstate(struct script_state *st)
 		case 10: val = cd->upper;                        break;
 		case 32: val = (cd->users >= cd->limit)? 1: 0;   break;
 		case 33: val = (cd->users >= cd->trigger)? 1: 0; break;
-		case 4:  str = cd->title;                        break;
-		case 5:  str = cd->pass;                         break;
-		case 16: str = cd->npc_event;                    break;
+		case 4:
+			str = (char *)aStrdup(cd->title);
+			break;
+		case 5:
+			// passは\0が付いてない場合がある
+			str = (char *)aCalloc(sizeof(cd->pass)+1, sizeof(char));
+			memcpy(str, cd->pass, sizeof(cd->pass));
+			break;
+		case 16:
+			str = (char *)aStrdup(cd->npc_event);
+			break;
 	}
 	if(str)
-		push_str(st->stack,C_STR,(unsigned char *)aStrdup(str));
+		push_str(st->stack,C_STR,str);
 	else
 		push_val(st->stack,C_INT,val);
 	return 0;
@@ -8820,10 +8828,14 @@ int buildin_getpetinfo(struct script_state *st)
 					push_val(st->stack,C_INT,0);
 				break;
 			case 2:
-				if(sd->pet.name)
-					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->pet.name));
-				else
+				if(sd->pet.name) {
+					// \0が付いてない場合がある
+					char *name = (char *)aCalloc(sizeof(sd->pet.name)+1, sizeof(char));
+					memcpy(name, sd->pet.name, sizeof(sd->pet.name));
+					push_str(st->stack,C_STR,name);
+				} else {
 					push_str(st->stack,C_CONSTSTR,"");
+				}
 				break;
 			case 3:
 				push_val(st->stack,C_INT,sd->pet.intimate);
@@ -8864,10 +8876,14 @@ int buildin_gethomuninfo(struct script_state *st)
 					push_val(st->stack,C_INT,0);
 				break;
 			case 2:
-				if(sd->hd && sd->hd->status.name)
-					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->hd->status.name));
-				else
+				if(sd->hd && sd->hd->status.name) {
+					// \0が付いてない場合がある
+					char *name = (char *)aCalloc(sizeof(sd->hd->status.name)+1, sizeof(sd->hd->status.name));
+					memcpy(name, sd->hd->status.name, sizeof(sd->hd->status.name));
+					push_str(st->stack,C_STR,name);
+				} else {
 					push_str(st->stack,C_CONSTSTR,"");
+				}
 				break;
 			case 3:
 				if( sd->hd ) 

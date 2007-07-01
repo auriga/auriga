@@ -1732,8 +1732,8 @@ AurigaNPCScript
 
 			指定したギルドの情報をInterサーバに要求し取得します。
 
-		successremovecard命令
-			successremovecard <num>[,<position>];
+		successremovecards命令
+			successremovecards <num>[,<position>];
 
 			<num>		1-11までの整数を指定します。詳しくはgetequipidを参照のこと。
 			<position>	カードの位置番号。省略時は0になります。
@@ -3129,6 +3129,7 @@ AurigaNPCScript
 			const.txtに記載されている定数をラベルとして使っています。
 			またはOnで始まるラベル名の場合において、半角英数字と _（アンダーバー）以外
 			が含まれています。
+			24文字以上の長い文字列は使えません。
 
 		dup label
 			ラベルの重複

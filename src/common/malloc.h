@@ -1,9 +1,6 @@
 #ifndef _MALLOC_H_
 #define _MALLOC_H_
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "utils.h"
 
 #define ALC_MARK __FILE__, __LINE__, __func__

@@ -17,128 +17,120 @@
 // デバッグモード（エラーチェックの強化用、通常運営ではお勧めできない）
 //#define DEBUG_MEMMGR
 
-#if defined(MEMWATCH) || !defined(USE_MEMMGR)
+
+#ifdef MEMWATCH
 
 void* aMalloc_( size_t size, const char *file, int line, const char *func )
 {
-	void *ret;
+	void *ret = mwMalloc(size,file,line);
 
-	// printf("%s:%d: in func %s: malloc %d\n",file,line,func,size);
-#ifdef MEMWATCH
-	ret=mwMalloc(size,file,line);
-#else
-	ret=malloc(size);
-#endif
-
-#ifdef _WIN64
-	if( ((__int64)ret + size) >> 32 ) {
-		printf("memmgr: current version does not compatible with this machine\n");
+	if(ret == NULL) {
 		exit(1);
-	}
-#endif
-
-	if(ret==NULL){
-		printf("%s:%d: in func %s: malloc error out of memory!\n",file,line,func);
-		exit(1);
-
 	}
 	return ret;
 }
 
 void* aCalloc_( size_t num, size_t size, const char *file, int line, const char *func )
 {
-	void *ret;
+	void *ret = mwCalloc(num,size,file,line);
 
-	// printf("%s:%d: in func %s: calloc %d %d\n",file,line,func,num,size);
-#ifdef MEMWATCH
-	ret=mwCalloc(num,size,file,line);
-#else
-	ret=calloc(num,size);
-#endif
-
-#ifdef _WIN64
-	if( ((__int64)ret + size) >> 32 ) {
-		printf("memmgr: 64bit version does not compatible with this machine\n");
+	if(ret == NULL) {
 		exit(1);
-	}
-#endif
-
-	if(ret==NULL){
-		printf("%s:%d: in func %s: calloc error out of memory!\n",file,line,func);
-		exit(1);
-
 	}
 	return ret;
 }
 
 void* aRealloc_( void *p, size_t size, const char *file, int line, const char *func )
 {
-	void *ret;
+	void *ret = mwRealloc(p,size,file,line);
 
-	// printf("%s:%d: in func %s: realloc %p %d\n",file,line,func,p,size);
-#ifdef MEMWATCH
-	ret=mwRealloc(p,size,file,line);
-#else
-	ret=realloc(p,size);
-#endif
-
-#ifdef _WIN64
-	if( ((__int64)ret + size) >> 32 ) {
-		printf("memmgr: 64bit version does not compatible with this machine\n");
+	if(ret == NULL) {
 		exit(1);
-	}
-#endif
-
-	if(ret==NULL){
-		printf("%s:%d: in func %s: realloc error out of memory!\n",file,line,func);
-		exit(1);
-
 	}
 	return ret;
 }
 
 void* aStrdup_( const void *p, const char *file, int line, const char *func )
 {
-	void *ret;
+	void *ret = mwStrdup(p,file,line);
 
-	// printf("%s:%d: in func %s: strdup %p\n",file,line,func,p);
-#ifdef MEMWATCH
-	ret=mwStrdup(p,file,line);
-#else
-	ret=strdup(p);
-#endif
-
-#ifdef _WIN64
-	if( ((__int64)ret + strlen(ret) + 1) >> 32 ) {
-		printf("memmgr: 64bit version does not compatible with this machine\n");
+	if(ret == NULL) {
 		exit(1);
-	}
-#endif
-
-	if(ret==NULL){
-		printf("%s:%d: in func %s: strdup error out of memory!\n",file,line,func);
-		exit(1);
-
 	}
 	return ret;
 }
 
 void aFree_( void *p, const char *file, int line, const char *func )
 {
-	// printf("%s:%d: in func %s: free %p\n",file,line,func,p);
-#ifdef MEMWATCH
 	mwFree(p,file,line);
-#else
-	free(p);
-#endif
 }
 
 int do_init_memmgr(const char* file)
 {
-#ifdef MEMWATCH
 	mwInit();
 	atexit(mwAbort);
-#endif
+
+	return 0;
+}
+
+double memmgr_usage(void)
+{
+	return 0;
+}
+
+#elif !defined(USE_MEMMGR)
+
+void* aMalloc_( size_t size, const char *file, int line, const char *func )
+{
+	void *ret = malloc(size);
+
+	if(ret == NULL) {
+		printf("%s:%d: in func %s: malloc error out of memory!\n",file,line,func);
+		exit(1);
+	}
+	return ret;
+}
+
+void* aCalloc_( size_t num, size_t size, const char *file, int line, const char *func )
+{
+	void *ret = calloc(num,size);
+
+	if(ret == NULL) {
+		printf("%s:%d: in func %s: calloc error out of memory!\n",file,line,func);
+		exit(1);
+	}
+	return ret;
+}
+
+void* aRealloc_( void *p, size_t size, const char *file, int line, const char *func )
+{
+	void *ret = realloc(p,size);
+
+	if(ret == NULL) {
+		printf("%s:%d: in func %s: realloc error out of memory!\n",file,line,func);
+		exit(1);
+	}
+	return ret;
+}
+
+void* aStrdup_( const void *p, const char *file, int line, const char *func )
+{
+	void *ret = strdup(p);
+
+	if(ret == NULL) {
+		printf("%s:%d: in func %s: strdup error out of memory!\n",file,line,func);
+		exit(1);
+	}
+	return ret;
+}
+
+void aFree_( void *p, const char *file, int line, const char *func )
+{
+	free(p);
+}
+
+int do_init_memmgr(const char* file)
+{
 	return 0;
 }
 

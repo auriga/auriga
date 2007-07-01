@@ -1043,9 +1043,14 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4)
 
 	p = strstr(w3,"::");
 	if (p) {
+		char *p2;
 		*p=0;
+		p += 2;
+		if((p2 = strstr(p,"::")) != NULL) {
+			*p2 = 0;
+		}
 		strncpy(nd->name,w3,24);
-		strncpy(nd->exname,p+2,24);
+		strncpy(nd->exname,p,24);
 	}else{
 		strncpy(nd->name,w3,24);
 		strncpy(nd->exname,w3,24);
@@ -1178,9 +1183,14 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4)
 
 	p = strstr(w3,"::");
 	if (p) {
+		char *p2;
 		*p=0;
+		p += 2;
+		if((p2 = strstr(p,"::")) != NULL) {
+			*p2 = 0;
+		}
 		strncpy(nd->name,w3,24);
-		strncpy(nd->exname,p+2,24);
+		strncpy(nd->exname,p,24);
 	}else{
 		strncpy(nd->name,w3,24);
 		strncpy(nd->exname,w3,24);
@@ -1242,6 +1252,7 @@ static int npc_convertlabel_db(void *key,void *data,va_list ap)
 	c = *p;
 	*p='\0';
 	strncpy(lst[num].name,lname,24);
+	lst[num].name[23] = '\0';	// force \0 terminal
 	*p=c;
 	lst[num].pos=pos;
 	nd->u.scr.label_list=lst;
@@ -1453,9 +1464,14 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 
 	p = strstr(w3,"::");
 	if (p) {
+		char *p2;
 		*p=0;
+		p += 2;
+		if((p2 = strstr(p,"::")) != NULL) {
+			*p2 = 0;
+		}
 		strncpy(nd->name,w3,24);
-		strncpy(nd->exname,p+2,24);
+		strncpy(nd->exname,p,24);
 	}else{
 		strncpy(nd->name,w3,24);
 		strncpy(nd->exname,w3,24);
@@ -1542,7 +1558,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		ev->key = (char *)aCalloc(50,sizeof(char));
 		ev->nd  = nd;
 		ev->pos = pos;
-		sprintf(ev->key, "%s::%s", nd->exname, lname);
+		snprintf(ev->key, 50, "%s::%s", nd->exname, lname);
 		ev2 = (struct event_data *)strdb_search(ev_db,ev->key);
 		if(ev2 != NULL) {
 			printf("npc_parse_script : dup event %s\n",ev->key);
