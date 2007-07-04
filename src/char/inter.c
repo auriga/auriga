@@ -775,7 +775,7 @@ int mapif_parse_CharMoveReq(int fd)
 int mapif_parse_DisplayMessage(int fd)
 {
 	int len=RFIFOW(fd,2);
-	unsigned char *buf = (unsigned char*)(len);
+	unsigned char *buf = (unsigned char *)aMalloc(len);
 
 	WBUFW(buf,0)=0x3893;
 	memcpy(WBUFP(buf,2),RFIFOP(fd,2),len-2);

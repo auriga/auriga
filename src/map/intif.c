@@ -905,12 +905,12 @@ int intif_displaymessage(int account_id, char* mes)
 	if (inter_fd < 0)
 		return -1;
 
-	len = 6+strlen(mes)+1;
+	len = strlen(mes)+1;
 	WFIFOW(inter_fd,0) = 0x3093;
-	WFIFOW(inter_fd,2) = len;
+	WFIFOW(inter_fd,2) = len + 8;
 	WFIFOL(inter_fd,4) = account_id;
-	strncpy(WFIFOP(inter_fd,8), mes, len-6);
-	WFIFOSET(inter_fd, len );
+	strncpy(WFIFOP(inter_fd,8), mes, len);
+	WFIFOSET(inter_fd, WFIFOW(inter_fd,2));
 
 	return 0;
 }
@@ -1659,15 +1659,16 @@ int intif_parse_MailSendRes(int fd)
 int intif_parse_MailBoxLoad(int fd)
 {
 	int i,size=sizeof(struct mail_data);
+	int store = RFIFOL(fd,4);
 	struct map_session_data *sd = map_nick2sd(RFIFOP(fd,8));
 	struct mail_data *md[MAIL_STORE_MAX];
 
-	for(i=0;i<(int)RFIFOL(fd,4);i++){
+	for(i=0;i<store;i++) {
 		md[i]=(struct mail_data *)aCalloc(1,size);
 		memcpy(md[i],RFIFOP(fd,32+i*size),size);
 	}
-	clif_send_mailbox(sd,RFIFOL(fd,4),md);
-	for(i=0;i<(int)RFIFOL(fd,4);i++)
+	clif_send_mailbox(sd,store,md);
+	for(i=0;i<store;i++)
 		aFree(md[i]);
 	return 0;
 }
@@ -1840,7 +1841,7 @@ int intif_parse_CharMoveReq(int fd)
 		}
 		else if(flag==1){
 			char output[200];
-			if(pc_numisGM(account_id) > pc_isGM(sd)){	//@recallかつ呼び出し元GMレベルが大きい
+			if(pc_numisGM(account_id) > pc_isGM(sd)){	// @recallかつ呼び出し元GMレベルが大きい
 				pc_setpos(sd,RFIFOP(fd,31),RFIFOW(fd,47),RFIFOW(fd,49),2);
 				snprintf(output, sizeof output, msg_txt(46), RFIFOP(fd,6));
 				intif_displaymessage(account_id,output);

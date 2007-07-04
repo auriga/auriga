@@ -73,6 +73,7 @@ void pc_getitemfromcart(struct map_session_data *sd, int idx, int amount);
 int pc_cartitem_amount(struct map_session_data *sd,int idx,int amount);
 
 void pc_takeitem(struct map_session_data*, struct flooritem_data*);
+void pc_takeitem_sub(struct party *p, struct map_session_data *sd, struct flooritem_data *fitem);
 int pc_dropitem(struct map_session_data*, int, int);
 
 int pc_checkweighticon(struct map_session_data *sd);

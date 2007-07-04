@@ -20,7 +20,7 @@
 
 static int guild_exp[MAX_GUILDLEVEL];
 
-static int guild_join_limit = 1;
+static int guild_join_limit = 0;
 static int guild_extension_increment = 4;
 
 static struct dbt *guild_db = NULL;
@@ -1961,7 +1961,7 @@ int mapif_parse_GuildAddMember(int fd,int guild_id,struct guild_member *m)
 
 	memcpy(&g2,g1,sizeof(struct guild));
 	for(i=0;i<g2.max_member;i++){
-		if(g2.member[i].account_id==m->account_id && guild_join_limit==1)
+		if(guild_join_limit && g2.member[i].account_id==m->account_id)
 			break;
 		if(g2.member[i].account_id==0){
 			memcpy(&g2.member[i],m,sizeof(struct guild_member));
@@ -2429,7 +2429,6 @@ void guild_config_read(const char *w1,const char* w2)
 	else if(strcmpi(w1,"guild_join_limit")==0)
 	{
 		guild_join_limit=atoi(w2);
-		if(guild_join_limit != 0) guild_join_limit = 1;
 	}
 	else
 	{

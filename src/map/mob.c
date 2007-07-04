@@ -1368,9 +1368,9 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,int data)
 	struct delay_item_drop *ditem;
 	struct item temp_item;
 
-	nullpo_retr(0, ditem=(struct delay_item_drop *)id);
+	nullpo_retr(0, ditem = (struct delay_item_drop *)id);
 
-	memset(&temp_item,0,sizeof(temp_item));
+	memset(&temp_item, 0, sizeof(temp_item));
 	temp_item.nameid = ditem->nameid;
 	temp_item.amount = ditem->amount;
 	temp_item.identify = !itemdb_isequip3(temp_item.nameid);
@@ -1379,13 +1379,20 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,int data)
 
 	if(ditem->first_bl && ditem->first_bl->prev != NULL && ditem->first_bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)ditem->first_bl;
-		if(sd && sd->state.autoloot && !unit_isdead(&sd->bl)) {
-			int flag = pc_additem(sd,&temp_item,ditem->amount);
-			if( !flag ) {
+		if(sd && sd->state.autoloot && !unit_isdead(&sd->bl) && sd->bl.m == ditem->m) {
+			int flag;
+			struct party *p = NULL;
+
+			if(sd->status.party_id > 0) {
+				p = party_search(sd->status.party_id);
+			}
+			if((flag = party_loot_share(p, sd, &temp_item, sd->bl.id)) != 0) {
+				clif_additem(sd,0,0,flag);
+			} else {
+				// 取得成功
 				aFree(ditem);
 				return 0;
 			}
-			clif_additem(sd,0,0,flag);
 		}
 	}
 
@@ -1405,7 +1412,7 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 {
 	struct delay_item_drop2 *ditem;
 
-	nullpo_retr(0, ditem=(struct delay_item_drop2 *)id);
+	nullpo_retr(0, ditem = (struct delay_item_drop2 *)id);
 
 	// ペットの卵ならドロップディレイキューからpopする
 	if(ditem->item_data.card[0] == (short)0xff00) {
@@ -1416,13 +1423,20 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 
 	if(ditem->first_bl && ditem->first_bl->prev != NULL && ditem->first_bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)ditem->first_bl;
-		if(sd && sd->state.autoloot && !unit_isdead(&sd->bl)) {
-			int flag = pc_additem(sd,&ditem->item_data,ditem->item_data.amount);
-			if( !flag ) {
+		if(sd && sd->state.autoloot && !unit_isdead(&sd->bl) && sd->bl.m == ditem->m) {
+			int flag;
+			struct party *p = NULL;
+
+			if(sd->status.party_id > 0) {
+				p = party_search(sd->status.party_id);
+			}
+			if((flag = party_loot_share(p, sd, &ditem->item_data, sd->bl.id)) != 0) {
+				clif_additem(sd,0,0,flag);
+			} else {
+				// 取得成功
 				aFree(ditem);
 				return 0;
 			}
-			clif_additem(sd,0,0,flag);
 		}
 	}
 
@@ -1866,17 +1880,19 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				add_timer2(tick+500+i,mob_delay_item_drop,(int)ditem,0,TIMER_FREE_ID);
 			}
 		}
-		if(sd){// && (sd->state.attack_type == BF_WEAPON)) {
+		if(sd) {
 			for(i=0;i<sd->monster_drop_item_count;i++) {
 				struct delay_item_drop *ditem;
-				int itemid;
 				int race = status_get_race(&md->bl);
 				int mode = status_get_mode(&md->bl);
+
 				if(sd->monster_drop_itemrate[i] <= 0)
 					continue;
 				if(sd->monster_drop_race[i] & (1<<race) ||
-					(mode & 0x20 && sd->monster_drop_race[i] & 1<<RCT_BOSS) ||
-					(!(mode & 0x20) && sd->monster_drop_race[i] & 1<<RCT_NONBOSS) ) {
+				   (mode & 0x20 && sd->monster_drop_race[i] & 1<<RCT_BOSS) ||
+				   (!(mode & 0x20) && sd->monster_drop_race[i] & 1<<RCT_NONBOSS) )
+				{
+					int itemid;
 					if(sd->monster_drop_itemrate[i] <= atn_rand()%10000)
 						continue;
 
@@ -1906,16 +1922,15 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		}
 		// 鉱石発見処理
 		if (sd && mvp[0].bl && (&sd->bl == mvp[0].bl) && pc_checkskill(sd, BS_FINDINGORE) > 0) {
-			int rate = battle_config.finding_ore_drop_rate;
-			rate *= battle_config.item_rate;
-			rate /= 100;
+			int rate = battle_config.finding_ore_drop_rate * battle_config.item_rate / 100;
+
 			if (rate < 0)
 				rate = 0;
 			else if (rate > 10000)
 				rate = 10000;
 			if (rate > atn_rand() % 10000) {
 				struct delay_item_drop *ditem;
-				ditem = (struct delay_item_drop*)aCalloc(1, sizeof (struct delay_item_drop));
+				ditem = (struct delay_item_drop*)aCalloc(1, sizeof(struct delay_item_drop));
 				ditem->nameid = itemdb_searchrandomid(6);
 				ditem->amount = 1;
 				ditem->m = md->bl.m;

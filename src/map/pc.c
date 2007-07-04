@@ -2994,24 +2994,17 @@ int pc_dropitem(struct map_session_data *sd, int n, int amount)
 }
 
 /*==========================================
- * アイテムを拾う
+ * アイテムを拾う処理本体
  *------------------------------------------
  */
-void pc_takeitem(struct map_session_data *sd, struct flooritem_data *fitem)
+void pc_takeitem_sub(struct party *p, struct map_session_data *sd, struct flooritem_data *fitem)
 {
 	int flag;
 	unsigned int tick = gettick();
 	struct map_session_data *first_sd = NULL, *second_sd = NULL, *third_sd = NULL;
-	struct party *p = NULL;
 
 	nullpo_retv(sd);
 	nullpo_retv(fitem);
-
-	if(unit_distance(fitem->bl.x,fitem->bl.y,sd->bl.x,sd->bl.y) > 2)
-		return;	// 距離が遠い
-
-	if(sd->status.party_id > 0)
-		p = party_search(sd->status.party_id);
 
 	if(fitem->first_get_id > 0 && fitem->first_get_id != sd->bl.id) {
 		first_sd = map_id2sd(fitem->first_get_id);
@@ -3061,7 +3054,27 @@ void pc_takeitem(struct map_session_data *sd, struct flooritem_data *fitem)
 		clif_takeitem(&sd->bl,&fitem->bl);
 		map_clearflooritem(fitem->bl.id);
 	}
+	return;
+}
 
+/*==========================================
+ * アイテムを拾う
+ *------------------------------------------
+ */
+void pc_takeitem(struct map_session_data *sd, struct flooritem_data *fitem)
+{
+	struct party *p = NULL;
+
+	nullpo_retv(sd);
+	nullpo_retv(fitem);
+
+	if(unit_distance(fitem->bl.x,fitem->bl.y,sd->bl.x,sd->bl.y) > 2)
+		return;	// 距離が遠い
+
+	if(sd->status.party_id > 0)
+		p = party_search(sd->status.party_id);
+
+	pc_takeitem_sub(p, sd, fitem);
 	return;
 }
 

@@ -1,4 +1,15 @@
 ----------------------------------------
+//0203 [2007/07/05] by Rayce
+
+・@autoloot時にアイテムと同じMAPに居ない場合は取得できないように修正（mob.c）
+・@autolootで取得したアイテムもPT分配の対象になるように修正（mob.c）
+・グリードで取得したアイテムもPT分配の対象になるように修正（pc.*, skill.c）
+　pc_takeitem() から処理本体を pc_takeitem_sub() として切り離してグリードと共通化
+
+・conf/inter_auriga.confの guild_join_limit をデフォルトで「加入可能」の0に変更（int_guild.c）
+・040以降、@recallでサーバクラッシュしていたバグを修正（inter.c, intif.c）
+
+----------------------------------------
 //0202 [2007/07/02] by Rayce
 
 ・getwaitingroomstate関数、getpetinfo関数、gethomuninfo関数から正しく文字列を取得できるように

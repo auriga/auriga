@@ -5163,9 +5163,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case BS_GREED:			/* 貪欲 */
-		if( sd && !map[src->m].flag.nopenalty && !map[src->m].flag.pvp && !map[src->m].flag.gvg ){	//街・PvP・GvGでは使用不可
+		if( sd && !map[src->m].flag.nopenalty && !map[src->m].flag.pvp && !map[src->m].flag.gvg ) {	// 街・PvP・GvGでは使用不可
+			struct party *p = NULL;
+			if(sd->status.party_id > 0)
+				p = party_search(sd->status.party_id);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			map_foreachinarea(skill_greed,sd->bl.m,sd->bl.x-2,sd->bl.y-2,sd->bl.x+2,sd->bl.y+2,BL_ITEM,sd);
+			map_foreachinarea(skill_greed,sd->bl.m,sd->bl.x-2,sd->bl.y-2,sd->bl.x+2,sd->bl.y+2,BL_ITEM,sd,p);
 		}
 		break;
 	//ギルドスキルはここから下に追加
@@ -11801,59 +11804,21 @@ int skill_fail_weaponrefine(struct map_session_data *sd,int idx)
  */
 static int skill_greed( struct block_list *bl,va_list ap )
 {
-	int flag;
-	unsigned int tick = gettick();
-	struct map_session_data *sd=NULL;
-	struct flooritem_data *fitem=NULL;
-	struct map_session_data *first_sd = NULL,*second_sd = NULL,*third_sd = NULL;
+	struct map_session_data *sd = NULL;
+	struct flooritem_data *fitem = NULL;
+	struct party *p = NULL;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, sd = va_arg(ap,struct map_session_data *));
+
+	p = va_arg(ap,struct party *);
 
 	if(bl->type == BL_ITEM)
 		fitem = (struct flooritem_data *)bl;
 	if(fitem == NULL)
 		return 0;
 
-	if(fitem->first_get_id > 0) {
-		first_sd = map_id2sd(fitem->first_get_id);
-		if(tick < fitem->first_get_tick) {
-			if(fitem->first_get_id != sd->bl.id && !(first_sd && first_sd->status.party_id == sd->status.party_id)) {
-				clif_additem(sd,0,0,6);
-				return 0;
-			}
-		}
-		else if(fitem->second_get_id > 0) {
-			second_sd = map_id2sd(fitem->second_get_id);
-			if(tick < fitem->second_get_tick) {
-				if(fitem->first_get_id != sd->bl.id && fitem->second_get_id != sd->bl.id &&
-					!(first_sd && first_sd->status.party_id == sd->status.party_id) && !(second_sd && second_sd->status.party_id == sd->status.party_id)) {
-					clif_additem(sd,0,0,6);
-					return 0;
-				}
-			}
-			else if(fitem->third_get_id > 0) {
-				third_sd = map_id2sd(fitem->third_get_id);
-				if(tick < fitem->third_get_tick) {
-					if(fitem->first_get_id != sd->bl.id && fitem->second_get_id != sd->bl.id && fitem->third_get_id != sd->bl.id &&
-						!(first_sd && first_sd->status.party_id == sd->status.party_id) && !(second_sd && second_sd->status.party_id == sd->status.party_id) &&
-						!(third_sd && third_sd->status.party_id == sd->status.party_id)) {
-						clif_additem(sd,0,0,6);
-						return 0;
-					}
-				}
-			}
-		}
-	}
-	if((flag = pc_additem(sd,&fitem->item_data,fitem->item_data.amount)))
-		// 重量overで取得失敗
-		clif_additem(sd,0,0,flag);
-	else {
-		/* 取得成功 */
-		unit_stopattack(&sd->bl);
-		clif_takeitem(&sd->bl,&fitem->bl);
-		map_clearflooritem(fitem->bl.id);
-	}
+	pc_takeitem_sub(p, sd, fitem);
 	return 0;
 }
 
