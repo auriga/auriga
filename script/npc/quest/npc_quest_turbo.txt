@@ -178,7 +178,7 @@ turbo_room.gat,75,95,5	script	1人モード記録板#turbo	857,{
 
 turbo_room.gat,77,115,5	duplicate(1人モード記録板#turbo)	1人モード記録板	857
 
-turbo_room.gat,67,95,5	script	一般モード優勝者リスト#turbo	857,{
+turbo_room.gat,67,95,5	script	一般モード優勝者リスト#	857,{
 	mes "[一般モードの優勝者リスト最新版]";
 	for(set '@i,1; '@i<=3; set '@i,'@i+1) {
 		mes "一般・" +(2<<'@i)+ "人モードの優勝者";
@@ -187,9 +187,9 @@ turbo_room.gat,67,95,5	script	一般モード優勝者リスト#turbo	857,{
 	close;
 }
 
-turbo_room.gat,87,114,5	duplicate(一般モード優勝者リスト#turbo)	一般モード優勝者リスト	857
+turbo_room.gat,87,114,5	duplicate(一般モード優勝者リスト#)	一般モード優勝者リスト	857
 
-turbo_room.gat,71,95,5	script	熟練モード優勝者リスト#turbo	857,{
+turbo_room.gat,71,95,5	script	熟練モード優勝者リスト#	857,{
 	mes "[熟練モードの優勝者リスト最新版]";
 	for(set '@i,1; '@i<=3; set '@i,'@i+1) {
 		mes "熟練・" +(2<<'@i)+ "人モードの優勝者";
@@ -198,7 +198,7 @@ turbo_room.gat,71,95,5	script	熟練モード優勝者リスト#turbo	857,{
 	close;
 }
 
-turbo_room.gat,112,114,3	duplicate(熟練モード優勝者リスト#turbo)	熟練モード優勝者リスト	857
+turbo_room.gat,112,114,3	duplicate(熟練モード優勝者リスト#)	熟練モード優勝者リスト	857
 
 turbo_room.gat,102,117,3	script	名誉の殿堂	857,{
 	mes "[アルデバランターボトラック";

@@ -1431,27 +1431,6 @@ ama_in01.gat,162,17,1	script	寿司職人	765,{
 		mes "何か違うネタがあったら今度";
 		mes "教えてくれよな。";
 		close;
-	case 1:
-		if(countitem(529) < 10)
-			break;
-		mes "[マグマグ]";
-		mes "おお、ありがとう。時間通りに";
-		mes "持ってきてくれたな。";
-		mes "ちょうど今切れたところだった。";
-		next;
-		mes "[マグマグ]";
-		mes "ありがとう。";
-		mes "あまり大したお返しはできんが……";
-		mes "特別にうちの刺身を包んでやろう。";
-		next;
-		delitem 529,10;
-		getitem 544,15;
-		set AMA_2QUE,AMA_2QUE-1;
-		mes "[マグマグ]";
-		mes "ほら、よく味わって食べてくれ。";
-		mes "何か違うネタがあったら今度";
-		mes "教えてくれよな。";
-		close;
 	case 2:
 		if(countitem(964) < 10)
 			break;

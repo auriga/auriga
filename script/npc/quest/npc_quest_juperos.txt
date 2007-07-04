@@ -341,14 +341,14 @@ OnTimer600000:
 }
 
 jupe_area1.gat,88,224,0	script	#jupe_area1-1	844,{
-	set '@id,strcut(strnpcinfo(2),11);
-	cutin strcut(strnpcinfo(2),11),2;
+	set '@id,substr(strnpcinfo(2),11,1);
+	cutin '@id,2;
 	if(getvariableofnpc('flag,"jupe_area1") != ('@id-1)*3) {
 		mes "-ある模様が描かれた穴がある。";
 		mes "何かを入れることができそうだ-";
 		mes "-向こう側へ渡るための装置のようだ-";
 		close2;
-		cutin strcut(strnpcinfo(2),11),255;
+		cutin '@id,255;
 		end;
 	}
 	mes "-どこかで見たような穴がある。";
@@ -357,9 +357,8 @@ jupe_area1.gat,88,224,0	script	#jupe_area1-1	844,{
 	mes "装置かもしれない……-";
 	next;
 	if(select("紋章の欠片をはめてみる","何もしない")==1) {
-		set '@id,7355+'@id;
-		if(countitem('@id)) {
-			cutin strcut(strnpcinfo(2),11)+"-1",2;
+		if(countitem(7355+'@id)) {
+			cutin '@id+"-1",2;
 			misceffect 159;
 			mes "-持っていた紋章の欠片が";
 			mes "ぴったりはまった-";
@@ -370,8 +369,8 @@ jupe_area1.gat,88,224,0	script	#jupe_area1-1	844,{
 			mes "ワープが作動したようだ-";
 			mes "-紋章の欠片を回収した-";
 			hideonnpc;
-			hideoffnpc "juperoswarp" +strcut(strnpcinfo(2),11)+ "#jupe_area1";
-			misceffect 561,"juperoswarp" +strcut(strnpcinfo(2),11)+ "#jupe_area1";
+			hideoffnpc "juperoswarp" + '@id + "#jupe_area1";
+			misceffect 561,"juperoswarp" + '@id + "#jupe_area1";
 			soundeffect "jupe_warp.wav",0;
 			initnpctimer;
 		}
@@ -385,11 +384,11 @@ jupe_area1.gat,88,224,0	script	#jupe_area1-1	844,{
 		mes "こんなものに構っている暇はない……。";
 	}
 	close2;
-	cutin strcut(strnpcinfo(2),11),255;
+	cutin '@id,255;
 	end;
 OnTimer22000:
 	stopnpctimer;
-	hideonnpc "juperoswarp" +strcut(strnpcinfo(2),11)+ "#jupe_area1";
+	hideonnpc "juperoswarp" +substr(strnpcinfo(2),11,1)+ "#jupe_area1";
 	hideoffnpc;
 	end;
 }
@@ -423,7 +422,7 @@ OnTimer22000:
 }
 
 jupe_area1.gat,83,221,0	script	juperoswarp1#jupe_area1	139,2,2{
-	set '@n,strcut(strnpcinfo(1),11);
+	set '@n,substr(strnpcinfo(1),11,1);
 	switch('@n) {
 	case 1: warp "jupe_area1.gat",47,259; break;
 	case 2: warp "jupe_area1.gat",21,191; break;

@@ -1,21 +1,4 @@
-//npc_monster.txt＠Athena 2007/03/24 02:45:30 (JST-9)
-
-//タナトスタワー最上階(thana_boss.gat)
-thana_boss.gat,135,119,0,0	monster	魔剣士タナトスの記憶	1708,1,7200000,3600000,0
-
-//機械人形工場 1F(kh_dun01.gat)
-kh_dun01.gat,0,0,0,0	monster	アリセル	1735,5,0,0,0
-kh_dun01.gat,0,0,0,0	monster	アリス	1275,30,0,0,0
-kh_dun01.gat,0,0,0,0	monster	アリオット	1736,5,0,0,0
-kh_dun01.gat,0,0,0,0	monster	エリザ	1737,60,0,0,0
-kh_dun01.gat,0,0,0,0	monster	コンスタント	1738,30,0,0,0
-
-//機械人形工場 2F(kh_dun02.gat)
-kh_dun02.gat,0,0,0,0	monster	アリセル	1735,40,0,0,0
-kh_dun02.gat,0,0,0,0	monster	アリオット	1736,35,0,0,0
-kh_dun02.gat,0,0,0,0	monster	エリザ	1737,25,0,0,0
-kh_dun02.gat,0,0,0,0	monster	コンスタント	1738,30,0,0,0
-kh_dun02.gat,0,0,0,0	monster	キエルD-01	1734,1,7200000,3600000,0
+//npc_monster.txt＠Athena 2007/07/05 12:08:43 (JST-9)
 
 //氷洞窟(ice_dun01.gat)
 ice_dun01.gat,0,0,0,0	monster	ガゼティ	1778,1,0,0,0
@@ -24,19 +7,19 @@ ice_dun01.gat,0,0,0,0	monster	ムスキプラー	1780,20,0,0,0
 ice_dun01.gat,0,0,0,0	monster	シロマ	1776,60,0,0,0
 
 //氷洞窟(ice_dun02.gat)
-ice_dun02.gat,0,0,0,0	monster	ガゼティ	1778,20,0,0,0
+ice_dun02.gat,0,0,0,0	monster	ゲイズティ	1778,20,0,0,0
 ice_dun02.gat,0,0,0,0	monster	アイシクル	1789,10,0,0,0
-ice_dun02.gat,0,0,0,0	monster	スノウアー	1775,60,0,0,0
+ice_dun02.gat,0,0,0,0	monster	スノウィアー	1775,60,0,0,0
 ice_dun02.gat,0,0,0,0	monster	シロマ	1776,40,0,0,0
 ice_dun02.gat,0,0,0,0	monster	アイスタイタン	1777,10,0,0,0
 
 //氷洞窟(ice_dun03.gat)
-ice_dun03.gat,0,0,0,0	monster	ガゼティ	1778,30,0,0,0
+ice_dun03.gat,0,0,0,0	monster	ゲイズティ	1778,30,0,0,0
 ice_dun03.gat,0,0,0,0	monster	アイシクル	1789,10,0,0,0
-ice_dun03.gat,0,0,0,0	monster	スノウアー	1775,20,0,0,0
+ice_dun03.gat,0,0,0,0	monster	スノウィアー	1775,20,0,0,0
 ice_dun03.gat,0,0,0,0	monster	アイスタイタン	1777,50,0,0,0
 ice_dun03.gat,0,0,0,0	monster	シロマ	1776,20,0,0,0
-ice_dun03.gat,0,0,0,0	monster	クチュラヌクス	1779,1,7200000,3600000,0
+ice_dun03.gat,0,0,0,0	monster	クトルラナックス	1779,1,7200000,3600000,0
 
 //アウドムラ草原(ra_fild01.gat)
 ra_fild01.gat,0,0,0,0	monster	ムスキプラー	1780,50,0,0,0
@@ -50,10 +33,10 @@ ra_fild01.gat,0,0,0,0	monster	ドロセラ	1781,20,0,0,0
 ra_fild02.gat,0,0,0,0	monster	ムスキプラー	1780,40,0,0,0
 ra_fild02.gat,0,0,0,0	monster	ドロセラ	1781,20,0,0,0
 ra_fild02.gat,0,0,0,0	monster	ガリオン	1783,20,0,0,0
-ra_fild02.gat,0,0,0,0	monster	アトラス	1785,1,14400000,7200000,0
+ra_fild02.gat,0,0,0,0	monster	アトロス	1785,1,14400000,7200000,0
 
 //ラッセル平原(ra_fild03.gat)
-ra_fild03.gat,0,0,0,0	monster	アトラス	1785,1,10800000,5400000,0
+ra_fild03.gat,0,0,0,0	monster	アトロス	1785,1,10800000,5400000,0
 ra_fild03.gat,0,0,0,0	monster	ガリオン	1783,30,0,0,0
 ra_fild03.gat,0,0,0,0	monster	ロウィーン	1782,10,0,0,0
 ra_fild03.gat,0,0,0,0	monster	スタポ	1784,10,0,0,0
@@ -62,7 +45,7 @@ ra_fild03.gat,0,0,0,0	monster	ドロセラ	1781,10,0,0,0
 //アウドムラ草原(ra_fild04.gat)
 ra_fild04.gat,0,0,0,0	monster	スタポ	1784,20,0,0,0
 ra_fild04.gat,0,0,0,0	monster	ロウィーン	1782,60,0,0,0
-ra_fild04.gat,0,0,0,0	monster	アトラス	1785,1,18000000,9000000,0
+ra_fild04.gat,0,0,0,0	monster	アトロス	1785,1,18000000,9000000,0
 ra_fild04.gat,0,0,0,0	monster	ワイルドローズ	1261,10,0,0,0
 ra_fild04.gat,0,0,0,0	monster	ガリオン	1783,3,0,0,0
 

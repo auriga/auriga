@@ -99,11 +99,11 @@ yuno_in01.gat,35,179,4	script	主人	46,3,3,{
 		next;
 		mes "[バンド]";
 		mes "あ……";
-		break
+		break;
 	case 1:
 		set '@str$,"何か困っているのですか？";
 		mes "[バンド]";
-		break
+		break;
 	case 2:
 	case 3:
  		mes "[バンド]";
@@ -478,10 +478,7 @@ yuno_fild08.gat,158,194,6	script	ガードマン#kh	852,{
 	mes "おっしゃってください。";
 	next;
 	input '@str$;
-	for(set '@i,0; '@i<6; set '@i,'@i+1) {
-		set '@buf$,'@buf$+strcut('@str$,'@i);
-	}
-	if('@buf$ != "リコル") {
+	if(substr('@str$,0,6) != "リコル") {
 		mes "[ガードマン]";
 		mes '@str$;
 		mes "という方は、当学院において";
@@ -4712,7 +4709,7 @@ kh_kiehl01.gat,17,39,0	script	受信機#kiel	111,{
 OnKilled:
 	set 'mob,'mob-1;
 	if('mob == 0)
-		dropitem 7506,1,"kh_kiehl01.gat",19,36;
+		dropitem 7506,1,"kh_kiehl01.gat",19,36,0;
 	end;
 }
 
@@ -4875,7 +4872,7 @@ kh_kiehl01.gat,15,178,0	script	機械人形#kiel	111,{
 OnKilled:
 	set 'mob,'mob-1;
 	if('mob == 0)
-		dropitem 7506,1,"kh_kiehl01.gat",18,179;
+		dropitem 7506,1,"kh_kiehl01.gat",18,179,0;
 	end;
 }
 

@@ -182,7 +182,7 @@ OnTimer60000:
 	end;
 }
 
--	script	カプラ投票広報職員#vote	116,{
+-	script	カプラ投票広報職員#vt	116,{
 	if(strnpcinfo(4) == "ジュノー" || strnpcinfo(4) == "リヒタルゼン")
 		cutin "kafra_09",2;
 	else
@@ -385,7 +385,7 @@ OnTimer60000:
 	end;
 }
 
--	script	ジョンダ投票広報職員#vote	874,{
+-	script	ジョンダ投票広報職員#vt	874,{
 	cutin "zonda_01",2;
 	mes "[ジョンダ投票広報職員]";
 	mes "いらっしゃいませ、お客様。";
@@ -583,19 +583,19 @@ OnTimer60000:
 	end;
 }
 
-yuno.gat,162,191,4	duplicate(カプラ投票広報職員#vote)	カプラ投票広報職員::ジュノー		861
-yuno.gat,153,191,6	duplicate(ジョンダ投票広報職員#vote)	ジョンダ投票広報職員::ジュノー		874
-prontera.gat,164,125,4	duplicate(カプラ投票広報職員#vote)	カプラ投票広報職員::プロンテラ		116
-prontera.gat,147,125,6	duplicate(ジョンダ投票広報職員#vote)	ジョンダ投票広報職員::プロンテラ	874
-morocc.gat,164,114,4	duplicate(カプラ投票広報職員#vote)	カプラ投票広報職員::モロク		116
-morocc.gat,155,114,6	duplicate(ジョンダ投票広報職員#vote)	ジョンダ投票広報職員::モロク		874
-geffen.gat,122,37,4	duplicate(カプラ投票広報職員#vote)	カプラ投票広報職員::ゲフェン		116
-geffen.gat,117,37,6	duplicate(ジョンダ投票広報職員#vote)	ジョンダ投票広報職員::ゲフェン		874
-payon.gat,158,182,4	duplicate(カプラ投票広報職員#vote)	カプラ投票広報職員::フェイヨン		116
-payon.gat,153,182,6	duplicate(ジョンダ投票広報職員#vote)	ジョンダ投票広報職員::フェイヨン	874
-alberta.gat,119,70,4	duplicate(カプラ投票広報職員#vote)	カプラ投票広報職員::アルベルタ		116
-alberta.gat,114,70,6	duplicate(ジョンダ投票広報職員#vote)	ジョンダ投票広報職員::アルベルタ	874
-aldebaran.gat,145,102,4	duplicate(カプラ投票広報職員#vote)	カプラ投票広報職員::アルデバラン	116
-aldebaran.gat,138,102,6	duplicate(ジョンダ投票広報職員#vote)	ジョンダ投票広報職員::アルデラバン	874
-lighthalzen.gat,163,60,4	duplicate(カプラ投票広報職員#vote)	カプラ投票広報職員::リヒタルゼン	861
-lighthalzen.gat,154,60,6	duplicate(ジョンダ投票広報職員#vote)	ジョンダ投票広報職員::リヒタルゼン	874
+yuno.gat,162,191,4	duplicate(カプラ投票広報職員#vt)	カプラ投票広報職員::ジュノー		861
+yuno.gat,153,191,6	duplicate(ジョンダ投票広報職員#vt)	ジョンダ投票広報職員::ジュノー		874
+prontera.gat,164,125,4	duplicate(カプラ投票広報職員#vt)	カプラ投票広報職員::プロンテラ		116
+prontera.gat,147,125,6	duplicate(ジョンダ投票広報職員#vt)	ジョンダ投票広報職員::プロンテラ	874
+morocc.gat,164,114,4	duplicate(カプラ投票広報職員#vt)	カプラ投票広報職員::モロク		116
+morocc.gat,155,114,6	duplicate(ジョンダ投票広報職員#vt)	ジョンダ投票広報職員::モロク		874
+geffen.gat,122,37,4	duplicate(カプラ投票広報職員#vt)	カプラ投票広報職員::ゲフェン		116
+geffen.gat,117,37,6	duplicate(ジョンダ投票広報職員#vt)	ジョンダ投票広報職員::ゲフェン		874
+payon.gat,158,182,4	duplicate(カプラ投票広報職員#vt)	カプラ投票広報職員::フェイヨン		116
+payon.gat,153,182,6	duplicate(ジョンダ投票広報職員#vt)	ジョンダ投票広報職員::フェイヨン	874
+alberta.gat,119,70,4	duplicate(カプラ投票広報職員#vt)	カプラ投票広報職員::アルベルタ		116
+alberta.gat,114,70,6	duplicate(ジョンダ投票広報職員#vt)	ジョンダ投票広報職員::アルベルタ	874
+aldebaran.gat,145,102,4	duplicate(カプラ投票広報職員#vt)	カプラ投票広報職員::アルデバラン	116
+aldebaran.gat,138,102,6	duplicate(ジョンダ投票広報職員#vt)	ジョンダ投票広報職員::アルデラバン	874
+lighthalzen.gat,163,60,4	duplicate(カプラ投票広報職員#vt)	カプラ投票広報職員::リヒタルゼン	861
+lighthalzen.gat,154,60,6	duplicate(ジョンダ投票広報職員#vt)	ジョンダ投票広報職員::リヒタルゼン	874

@@ -1,4 +1,17 @@
 ----------------------------------------
+//0204 [2007/07/05] by Rayce
+
+・dbファイル群の更新 from huge cgi, thanks
+・存在しないmapflag pvp_nopenaltyが混入していたので再度削除
+・以下のスクリプトでエラーが発生していたので修正
+	npc/misc/npc_misc_zonda.txt
+	npc/quest/npc_quest_juperos.txt
+	npc/quest/npc_quest_kiel.txt
+	npc/quest/npc_quest_turbo.txt
+	npc/town/amatsu.txt
+	sample/npc_test_ev.txt
+
+----------------------------------------
 //0203 [2007/07/05] by Rayce
 
 ・@autoloot時にアイテムと同じMAPに居ない場合は取得できないように修正（mob.c）
