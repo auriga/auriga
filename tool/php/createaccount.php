@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // With this code, you have a HTML page to create an account
 // *********************************************************
 
