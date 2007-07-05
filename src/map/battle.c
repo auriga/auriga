@@ -142,27 +142,27 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 			else if(msd && bl) {
 				int i;
 				for(i=0; i<5; i++) {
-					if(msd->dev.val1[i] == target->id) {
-						clif_damage(&msd->bl, &msd->bl, gettick(), 0, 0, damage, 0, 9, 0);
-						pc_damage(&msd->bl,msd,damage);
+					if(msd->dev.val1[i] != target->id)
+						continue;
+					clif_damage(&msd->bl, &msd->bl, gettick(), 0, 0, damage, 0, 9, 0);
+					pc_damage(&msd->bl,msd,damage);
 
-						if(sd && msd->bl.prev != NULL && !unit_isdead(&msd->bl) && flag&(BF_WEAPON|BF_NORMAL))
-						{
-							// カード効果のコーマ・即死
-							if(atn_rand()%10000 < sd->weapon_coma_ele[ele] ||
-							   atn_rand()%10000 < sd->weapon_coma_race[race] ||
-							   atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS]) {
-									pc_damage(&msd->bl,msd,status_get_hp(target));
-							}
-							else if(atn_rand()%10000 < sd->weapon_coma_ele2[ele] ||
-							        atn_rand()%10000 < sd->weapon_coma_race2[race] ||
-							        atn_rand()%10000 < sd->weapon_coma_race2[RCT_NONBOSS]) {
-									pc_damage(&msd->bl,msd,status_get_hp(target)-1);
-							}
+					if(sd && msd->bl.prev != NULL && !unit_isdead(&msd->bl) && flag&(BF_WEAPON|BF_NORMAL))
+					{
+						// カード効果のコーマ・即死
+						if(atn_rand()%10000 < sd->weapon_coma_ele[ele] ||
+						   atn_rand()%10000 < sd->weapon_coma_race[race] ||
+						   atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS]) {
+								pc_damage(&msd->bl,msd,status_get_hp(target));
 						}
-						map_freeblock_unlock();
-						return 0;
+						else if(atn_rand()%10000 < sd->weapon_coma_ele2[ele] ||
+						        atn_rand()%10000 < sd->weapon_coma_race2[race] ||
+						        atn_rand()%10000 < sd->weapon_coma_race2[RCT_NONBOSS]) {
+								pc_damage(&msd->bl,msd,status_get_hp(target)-1);
+						}
 					}
+					map_freeblock_unlock();
+					return 0;
 				}
 			}
 		}
@@ -176,12 +176,12 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 			if(atn_rand()%10000 < sd->weapon_coma_ele[ele] ||
 			   atn_rand()%10000 < sd->weapon_coma_race[race] ||
 			   atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS]) {
-				pc_damage(bl,tsd,status_get_hp(target));
+					pc_damage(bl,tsd,status_get_hp(target));
 			}
 			else if(atn_rand()%10000 < sd->weapon_coma_ele2[ele] ||
-			   atn_rand()%10000 < sd->weapon_coma_race2[race] ||
-			   atn_rand()%10000 < sd->weapon_coma_race2[RCT_NONBOSS]) {
-				pc_damage(bl,tsd,status_get_hp(target)-1);
+			        atn_rand()%10000 < sd->weapon_coma_race2[race] ||
+			        atn_rand()%10000 < sd->weapon_coma_race2[RCT_NONBOSS]) {
+					pc_damage(bl,tsd,status_get_hp(target)-1);
 			}
 		}
 	} else if(target->type == BL_HOM) {	// HOM
@@ -263,7 +263,8 @@ int battle_attr_fix(int damage,int atk_elem,int def_elem)
 	if( atk_elem < 0 || atk_elem >= ELE_MAX ||
 	    def_type < 0 || def_type >= ELE_MAX ||
 	    def_lv <= 0 || def_lv > MAX_ELE_LEVEL )
-	{	// 属性値がおかしいのでとりあえずそのまま返す
+	{
+		// 属性値がおかしいのでとりあえずそのまま返す
 		if(battle_config.error_log)
 			printf("battle_attr_fix: unknown attr type: atk=%d def_type=%d def_lv=%d\n",atk_elem,def_type,def_lv);
 		return damage;
@@ -335,11 +336,11 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			}
 		}
 
-		if (sc_data[SC_SAFETYWALL].timer != -1 && flag&BF_SHORT && skill_num != NPC_GUIDEDATTACK) {
+		if(sc_data[SC_SAFETYWALL].timer != -1 && flag&BF_SHORT && skill_num != NPC_GUIDEDATTACK) {
 			// セーフティウォール
 			struct skill_unit *unit = map_id2su(sc_data[SC_SAFETYWALL].val2);
-			if (unit && unit->group) {
-				if ((--unit->group->val2) <= 0)
+			if(unit && unit->group) {
+				if((--unit->group->val2) <= 0)
 					skill_delunit(unit);
 				damage = 0;
 			} else {
@@ -406,7 +407,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				else
 					damage = -sc->val2;
 			}
-			if((--sc->val3) <= 0 || (sc->val2 <= 0) || skill_num == AL_HOLYLIGHT)
+			if(--sc->val3 <= 0 || sc->val2 <= 0 || skill_num == AL_HOLYLIGHT)
 				status_change_end(bl, SC_KYRIE, -1);
 		}
 		// インデュア
@@ -420,7 +421,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				int delay;
 				damage = 0;
 				clif_skill_nodamage(bl,bl,CR_AUTOGUARD,sc_data[SC_AUTOGUARD].val1,1);
-				if (sc_data[SC_AUTOGUARD].val1 <= 5)
+				if(sc_data[SC_AUTOGUARD].val1 <= 5)
 					delay = 300;
 				else if (sc_data[SC_AUTOGUARD].val1 > 5 && sc_data[SC_AUTOGUARD].val1 <= 9)
 					delay = 200;
@@ -762,7 +763,7 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 
 	// デーモンベイン vs 不死 or 悪魔 (死人は含めない？)
 	if((skill = pc_checkskill(sd,AL_DEMONBANE)) > 0 && (battle_check_undead(race,status_get_elem_type(target)) || race == RCT_DEMON) ) {
-		damage += (int)(floor( ( 3 + 0.05 * sd->status.base_level ) * skill ));
+		damage += (300 + 5 * sd->status.base_level) * skill / 100;
 	}
 
 	// ビーストベイン(+4 〜 +40) vs 動物 or 昆虫

@@ -116,7 +116,7 @@ enum AtCommandType {
 	AtCommand_CharStReset,
 	AtCommand_CharReset,
 	AtCommand_CharSKPoint,
-	AtCommand_CharSTPoint, 
+	AtCommand_CharSTPoint,
 	AtCommand_CharZeny,
 	AtCommand_CharItemreset,
 	AtCommand_MapInfo,
@@ -180,8 +180,7 @@ typedef struct AtCommandInfo {
 	AtCommandType type;
 	const char* command;
 	int level;
-	int (*proc)(const int, struct map_session_data*, 
-		const char* command, const char* message);
+	int (*proc)(const int, struct map_session_data*, const char* command, const char* message);
 } AtCommandInfo;
 
 AtCommandType
@@ -199,4 +198,3 @@ const char * msg_txt(int msg_number);
 void do_final_atcommand(void);
 
 #endif
-
