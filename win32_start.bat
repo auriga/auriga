@@ -95,11 +95,9 @@ IF NOT EXIST .\conf\grf-files.txt set _aurigatmp_=1
 if "%_aurigatmp_%" == "1" pause
 if "%_aurigatmp_%" == "1" goto end
 
-set __bin__=
-if exist "bin\login-server.exe" set __bin__=bin\
-start win32_start boot %__bin__%login-server.exe
-start win32_start boot %__bin__%char-server.exe
-start win32_start boot %__bin__%map-server.exe
+start win32_start boot login-server.exe
+start win32_start boot char-server.exe
+start win32_start boot map-server.exe
 goto end
 
 :boot

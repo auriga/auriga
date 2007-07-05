@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+
+# 不適切なBL関連のキャストを検出するツール by Eoe
+#
+# 　余り賢く有りませんが、気が向いたときにでもチェックに引っかかる
+# 　箇所を減らせると良いですねぇ…。
+
+# 検査対象となる型一覧
+%highlight = (
+	'map_session_data' => 'BL_PC',
+	'npc_data'         => 'BL_NPC',
+	'mob_data'         => 'BL_MOB',
+	'flooritem_data'   => 'BL_ITEM',
+	'chat_data'        => 'BL_CHAT',
+	'skill_unit'       => 'BL_SKILL',
+	'pet_data'         => 'BL_PET',
+	'homun_data'       => 'BL_HOM'
+);
+
+# 検索するフォルダは src/map
+$DIR = "./src/map";
+opendir(A, $DIR); @files = readdir(A); closedir(A);
+
+foreach $file ( sort @files ) {
+	open A, "$DIR/$file";
+	$prev = "";
+	$line = 1;
+	while( <A> ) {
+		# (struct ???*) が含まれていて かつ ???? は検査対象になる型と一致
+		if( /\(\s*struct\s*(\w+)\s*\*\s*\)(\s|\()*(\w+)(\s|\))*/ && $highlight{$1} ) {
+			$type = $1;
+			$var  = $3;
+			if( $var eq 'map_id2bl' ) {
+				# (struct xxx*)map_id2bl() は無条件で警告
+				print "$file $line\n";
+				print $prev;
+				print $_;
+			} elsif( $var =~ /alloc/ ) {
+				# メモリ確保系はOK
+			} elsif( /if\s*\(.*${var}->(type|bl\.type)\s*==\s*$highlight{$1}/ ) {
+				# if( xxx->type == BL_xxx && が含まれているのでOK
+			} elsif( $prev !~ /if\s*\(.*${var}->(type|bl\.type)\s*==\s*$highlight{$1}/ ) {
+				# 前の行に適切なキャストが無いので警告
+				print "$file $line\n";
+				print $prev;
+				print $_;
+			}
+		}
+		$line++;
+		if( /^\s*{\s*$/ ) {
+			# '{' だけの行は前の行に '{' を加える
+			chomp $prev;
+			$prev .= " {\n";
+		} elsif( !/^\s*$/ ) {
+			# 空行以外は前の行のデータを更新
+			$prev = $_;
+		}
+	}
+	close A;
+}

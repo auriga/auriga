@@ -11,9 +11,9 @@
 #  もしくは ./start & としてバックグラウンドで起動すると
 #  シェルに戻ってきますが、サーバーの停止が少し面倒です。
 
-L_SRV=./bin/login-server
-C_SRV=./bin/char-server
-M_SRV=./bin/map-server
+L_SRV=./login-server
+C_SRV=./char-server
+M_SRV=./map-server
 
 process_check() {
 	# check login server

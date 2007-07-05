@@ -11,14 +11,14 @@ ifdef SQLFLAG
 endif
 
 login-server: login.o $(COMMON_OBJ)
-	$(CC) -o ../../bin/$@ $> $(LIBS) $(LIBS_S)
+	$(CC) -o ../../$@ $> $(LIBS) $(LIBS_S)
 
 clean:
 	rm -f *.o
 	rm -f GNUmakefile
 
 ifeq ($(findstring CYGWIN,$(shell uname)), CYGWIN)
-		rm -f ../../bin/login-server.exe
+		rm -f ../../login-server.exe
 else
-		rm -f ../../bin/login-server
+		rm -f ../../login-server
 endif

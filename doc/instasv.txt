@@ -9,8 +9,7 @@ Aurigaサービス化キット Ver2000/XP/2003 Ver.4
 　Auriga本体(login-server.exe/char-server.exe/map-server.exe)
 
 　※Gcc for Cygwinでコンパイルしたバイナリを使用する場合はstartのある
-　フォルダに./bin/からサーババイナリとCygz.dll/Cygwin1.dllを移動して
-　おく必要があります。
+　フォルダにCygz.dll/Cygwin1.dllを移動しておく必要があります。
 
 　リソースキット (Windows XP/2003は標準搭載)
 

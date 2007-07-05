@@ -11,14 +11,14 @@ ifdef SQLFLAG
 endif
 
 map-server: map.o chrif.o clif.o pc.o npc.o chat.o path.o itemdb.o mob.o script.o storage.o skill.o atcommand.o battle.o intif.o trade.o party.o vending.o guild.o pet.o status.o friend.o date.o ranking.o unit.o mail.o homun.o $(COMMON_OBJ)
-	$(CC) -o ../../bin/$@ $> $(LIBS) $(LIBS_S)
+	$(CC) -o ../../$@ $> $(LIBS) $(LIBS_S)
 
 clean:
 	rm -f *.o
 	rm -f GNUmakefile
 
 ifeq ($(findstring CYGWIN,$(shell uname)), CYGWIN)
-		rm -f ../../bin/map-server.exe
+		rm -f ../../map-server.exe
 else
-		rm -f ../../bin/map-server
+		rm -f ../../map-server
 endif

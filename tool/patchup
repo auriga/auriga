@@ -1,0 +1,356 @@
+#!/usr/bin/perl
+
+# パッチ当て支援プログラム by ID:7QLFJSM
+
+# 更新履歴
+#
+# version up  2005/12/11
+#	fix パッチをリネームしなくてもいいように修正
+#	fix パッチで一部処理がまずい部分を修正
+#	xcopy に対応
+#
+# first release  2005/10/22
+#
+
+# --- 使用方法 ---
+
+# 環境チェック
+#
+# 1. プラットフォーム
+#   * Cygwin + Perl
+#   * たぶん UNIX 系 + Perl ( Linux, BSD, Solaris など？）
+#   * たぶん Windows + ActivePerl
+#
+# 2. 必須プログラム
+#   * Perl (Perl 5 系列)
+#   * cp / xcopy のどちらか(ファイルコピーコマンド)
+#
+# 3. 作者の環境
+#   * Windows XP professional SP2 + cygwin
+#     なんというか、UNIX 系の OS ではテストすらしてません。
+#     ActivePerl でも動くと思いますが、テストしてません。
+
+# 準備
+#
+# 1. auriga ディレクトリに置く (Readme があるディレクトリ）。
+#
+# 2. パッチファイルを解凍し、auriga ディレクトリに放り込んでおく。
+#    + 解凍は複数ファイル同時に解凍できるソフトを使うと楽
+#      WinRAR のコンテキストメニューとか。Lhaca とかもできるのかな？
+#      UNIX 系統はわからないけど unzip とかでできる？
+#    + ディレクトリは Readme のあるディレクトリに 1500 などの
+#      パッチディレクトリがくるように。tool とか src と同じ階層。
+#    + fix パッチがあるときは、最新の fix のみを入れる。
+#
+#     こんな感じになれば OK
+#       /auriga-XXXX/ReadmeXXXX
+#                                /src/*
+#                                /tool/*
+#                                /1500/*
+#                                /1501_fix/*
+#                                /1502/*
+#                                /1503fix2/*
+#				あとのファイルとかディレクトリは省略。
+#
+# 3. ReadmeXXXX （XXXX は数字）に該当するファイルが複数あると
+#    正しく動作しないので、最新のもののみにしておく。
+#    + 数字の付いてない Readme はそのままでいい。
+#
+# 4. patchup を実行
+#    Auriga のディレクトリで、 perl tool/patchup として実行。
+#
+#    + Windows で pl に関連付けしていてダブルクリックで実行する場合や、
+#      コマンドプロンプトでも tool ディレクトリで実行する場合は
+#      $fromdir と $todir を "./" から "../" に変更する。
+#      もちろん他のパスでもここを弄れば大丈夫。
+
+# 実行
+#
+# 1. 最初に現在の Auriga の version が表示されます。
+#    正しいか確認しましょう。
+#    + ReadmeXXXX が無いよって怒られたらディレクトリ配置などが
+#      間違ってないかチェック。
+#
+# 2. 新しいパッチ（ディレクトリ内の 1500 とか）を探します。
+#    現在と同じか古いパッチが存在していると警告が出ます。
+#    + もう一度当てたいときはそのまま Enter キー、
+#      そうではない場合は Ctrl+C でとめて、古いパッチディレクトリを削除。
+#
+# 3. パッチが全て連番で続いているかチェックします
+#    また、パッチ対象となるパッチの範囲範囲が表示されます。
+#    + もし存在しないパッチが表示されたら、欠番で無い限り Ctrl+C で
+#      終了しましょう。
+#    + パッチの範囲が意図したものと違う場合は Ctrl+C でとめましょう。
+#
+# 4. パッチの中に現在の Auriga に存在しないディレクトリやファイルが
+#    含まれていた場合、警告を出します。
+#    + ディレクトリ構造が間違っているときも警告が出ます。
+#      新しいファイルやディレクトリが追加されたときにも警告が出ます。
+#      なので、警告が出たらそのパッチの Readme を参照して
+#      そのファイルが新規に追加されたものなのか、配置ミスなのかを
+#      特定してください。
+#    + 配置ミスなら Ctrl+C で終了し、修正してください。
+#
+# 5. 準備ができたと表示されたら、パッチあての準備はできています。
+#    ここで Enter を押すと、もうキャンセルできなくなります。
+#    バックアップを取り、これまでに警告が出た場合はそれで正しいのか
+#    もう一度確認しましょう。
+#
+# 6. パッチを当てて終了します。
+#    もしエラーが出たら次のことを確認してください。
+#    + ディスク容量に問題ないか、書込み禁止になってないか
+#    + cp コマンドがあるか（DOS では Cygwin などがないと動作しません）
+#
+# 7. "完了" とでてプログラムが終了したならパッチが当たりました。
+#    make するなり、conf や db を設定するなりして、調整したら
+#    新バージョンの Auriga ができあがるでしょう。
+
+# その他
+# $fromdir と $todir を変えたら、別のパスからでも実行できます。
+# パッチを Auriga と同じディレクトリに置かなくても構いません。
+
+
+
+# --- 設定
+
+$fromdir = "./";	# パッチディレクトリのあるディレクトリのパス
+$todir = "./";		# Auriga のディレクトリのパス
+
+
+
+
+
+
+
+# -----------------------------------
+
+
+die "Error: 無効な \$todir [$todir].\n" if !(-d "$todir/src" ) || !(-d "$todir/conf");
+
+print "\n現在の Auriga の mod バージョンを取得しています ...\n";
+
+my ( $filename, $x ) = ();
+
+foreach $x (<$todir/Readme*>)
+{
+	if( $x =~m/[\A\/\\]Readme\d\d\d\d$/i )
+	{
+		$filename = $x;
+		last;
+	}
+}
+die "Error: ファイル ReadmeXXXX が見つかりません.\n" unless $filename;
+
+open FH,"<$filename" or die "Error: ファイル $filename が開けません.\n";
+foreach $x ( <FH> )
+{
+	if( $x =~m/^\/\/\s*(\d\d\d\d)[\w_\-\s]+by\s+/i )
+	{
+		$currentpatch = $1;
+		last;
+	}
+}
+
+print "現在の Auriga のバージョンは $currentpatch です\n";
+
+
+print "\nパッチのバージョンをチェックしています ...\n";
+
+my ( $maxpatch, $minpatch, $warn )=( 0, $currentpatch, 0);
+foreach $x( <$fromdir/*> )
+{
+	if( $x =~m/[\A\/\\]((\d\d\d\d)[\w_\-]*)$/ && -d $x )
+	{
+		$maxpatch = $2 if( $2 > $maxpatch );
+		$minpatch = $2 if( $2 < $minpatch );
+		if( exists $patch_dir{$2} )
+		{
+			print "Warning: パッチ $2 が複数存在します.\n";
+			$err++;
+		}
+
+		$patch_dir{$2}=$1;
+		if( $1 <= $currentpatch )
+		{
+			print "Warning: パッチ $2 ($1) は現在と同じか古いバージョンです.\n";
+			$warn++;
+		}
+	}
+}
+
+if($warn || $err )
+{
+	if( $warn )
+	{
+		print	"古いパッチディレクトリは削除してください. \n".
+				"無視して続行（パッチの当て直し）することもできます.\n";
+	}
+	if( $err )
+	{
+		die		"Error: 複数の fix があるパッチは、最新の fix のみにしてください.\n";
+	}
+	print	"続行しますか？ ( yes=Enter, no=Ctrl+C ) ?";
+	$x=<STDIN>;
+
+	$currentpatch = $minpatch-1;
+	$warn = $warn2 = 0;
+}
+
+die "Error: 当てることのできるパッチがありません.\n" if $currentpatch>=$maxpatch;
+print "当てるパッチは ".($currentpatch+1)." から $maxpatch です.\n";
+
+
+print "\nパッチの連続性をチェックしています...\n";
+
+for( $i = $currentpatch+1; $i < $maxpatch; $i++ )
+{
+	unless( exists $patch_dir{$i} )
+	{
+		print "Warning: パッチ $i が見つかりません. 以降のパッチを当てるために必要です.\n";
+		$warn++;
+	}
+}
+
+if($warn)
+{
+	print	"通常、パッチを飛ばして当てると、Auriga は正常に動作しません.\n".
+			"続行しますか？ ( yes=Enter, no=Ctrl+C ) ?";
+	$x=<STDIN>;
+	$warn=0;
+}
+
+print "\n現在の Auriga のディレクトリ情報を取得しています ...\n";
+%dirs = (""=>1);
+@cdirs = ("");
+%files = ();
+$len = length( $todir );
+
+while(scalar(@cdirs))
+{
+	my(@ncdirs) = ();
+	foreach $y (@cdirs)
+	{
+#		print "[$y]\n";
+		foreach $x (<$todir/$y/*>)
+		{
+			my $name = substr($x,$len+1);
+
+			next if( $name=~m/^\/?\d\d\d\d/ );
+
+			if( -d $x )
+			{
+				push @ncdirs, $name;
+				$dirs{$name}=1;
+			}
+			else
+			{
+				$files{$name}=1;
+			}
+		}
+	}
+	@cdirs=@ncdirs;
+}
+
+print "パッチのディレクトリ情報をチェックしています ...\n";
+$warn=0;
+for( $i = $currentpatch+1; $i <= $maxpatch; $i++ )
+{
+	my $dir = "$fromdir/$patch_dir{$i}";
+	$len = length( $dir );
+	@cdirs=("");
+
+	while(scalar(@cdirs))
+	{
+		my(@ncdirs)=();
+		foreach $y (@cdirs)
+		{
+#			print "[$y]\n";
+			foreach $x (<$dir/$y/*>)
+			{
+#				print "($x)\n";
+				my $name = substr($x,$len+1);
+				if( -d $x )
+				{
+					if( !exists $dirs{$name} )
+					{
+						print "Warning: パッチ $i ($patch_dir{$i}) のディレクトリ [$name] : 新規？\n";
+						$warn++;
+					}
+					push @ncdirs, $name;
+				}
+				else
+				{
+					if( !exists $files{$name} )
+					{
+						print "Warning: パッチ $i ($patch_dir{$i}) のファイル [$name] : 新規？\n";
+						$warn++;
+					}
+				}
+			}
+		}
+		@cdirs=@ncdirs;
+	}
+}
+
+if($warn)
+{
+	print	"Readme などを参照し、新規のものであるか確認してください.\n".
+			'新規でないならパッチのディレクトリ構造に間違いがあると思われます.'.
+			"\n続行しますか ( yes=Enter, no=Ctrl+C ) ?";
+	$x=<STDIN>;
+	$warn=0;
+}
+
+
+print "\nコピーに使用するプログラムを探しています...\n";
+$cp_flag = 0;
+if( grep { -x "$_/cp" } split (/\s*[;\:]\s*/, $ENV{PATH} ) )
+{
+	$cp_flag=1;
+	print "cp を使います.\n";
+}
+elsif( grep { -e "$_/xcopy.exe" } split (/\s*[;\:]\s*/, $ENV{PATH}) )
+{
+	$cp_flag=2;
+	print "xcopy を使います.\n";
+}
+else
+{
+	die "コピーに使用できるプログラム cp または xcopy がありません.\n";
+}
+
+
+print	"\n\nパッチ当ての準備ができました. これ以降は中止することができません.\n".
+		"バックアップはとりましたか？ ディレクトリやファイルは完全に正しいですか？\n".
+		"続行しますか ( yes=Enter, no=Ctrl+C ) ?";
+$x=<STDIN>;
+
+print "\n";
+
+$err=0;
+for( $i = $currentpatch+1; $i <= $maxpatch; $i++ )
+{
+	print "パッチを当てています ... $i ($patch_dir{$i})\n";
+	my( $src, $dest ) = ( "$fromdir/$patch_dir{$i}/*", "$todir/" );
+
+	if( $cp_flag == 1 )
+	{
+		$err += system( "cp $src $dest -rfp " );
+	}
+	else
+	{
+		$src =~s{/+}{\\}g;
+		$dest=~s{/+}{\\}g;
+		$err += system( "xcopy.exe", $src, $dest, "/Y", "/Q", "/E" );	# シェルの介入を避ける
+	}
+}
+
+if($err)
+{
+	print	"\nコピーでエラーが発生しました. \n".
+			"バックアップから復旧して再びチャレンジしてください.\n";
+}
+else
+{
+	print	"\n完了.\nmake してから Auriga を起動しましょう.\n";
+}

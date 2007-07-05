@@ -7,9 +7,9 @@
 
 PATH=./:$PATH
 
-L_SRV=./bin/login-server
-C_SRV=./bin/char-server
-M_SRV=./bin/map-server
+L_SRV=./login-server
+C_SRV=./char-server
+M_SRV=./map-server
 L_SRV_C=./conf/login_auriga.conf
 C_SRV_C=./conf/char_auriga.conf
 C_SRV_C2=./conf/inter_auriga.conf

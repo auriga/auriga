@@ -39,7 +39,7 @@
 	CygwinならInterpreter->Perlを入れればOK
 
  起動方法
-   $ perl bin/tool/ladmin
+   $ perl tool/ladmin
 　　　　最後に「ladmin>」というプロンプトがでればOK
 	失敗するなら次の項目をチェック。
 	・login_auriga.confのadmin_passを変更した場合、

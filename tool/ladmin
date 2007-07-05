@@ -1,0 +1,886 @@
+#!/usr/bin/perl
+
+##########################################################################
+# Aurigaのログインサーバー保守ツール Ver.1.06  by 胡蝶蘭
+#
+# 　起動中のAurigaのlogin.exeに接続してアカウントの保守を行うツール.
+# 　アカウントの追加、削除、パスワードの変更、リスト表示ができます.
+#
+##########################################################################
+#----------------------------------説明書---------------------------------
+# 設定
+#   以下の変数を正しく設定します。
+#   （ログイン鯖のIP、ポート、管理者パスワード）
+#-------------------------------------------------------------------------
+
+my($loginserverip)="127.0.0.1";			#ログイン鯖のIP
+my($loginserverport)=6900;			#ログイン鯖のポート
+my($loginserveradminpassword)="admin";		#ログイン鯖の管理者パスワード
+
+my($connecttimeout)=10;				# 接続タイムアウト(秒)
+
+my($passenc)=2;					# パスワード暗号化タイプ
+
+#-------------------------------------------------------------------------
+# プロンプトによる作業
+# 　引数なしで起動するとプロンプトがでます。コマンドは後述。
+# 　コマンドは最初の数文字でもかまいません
+#	<例>  q  <= quit , li <= list , pass <= passwd …など
+#
+# 　コマンドリスト
+#	add <account_name> <gender> <password>	アカウント追加
+#		ID,性別,passです。性別は MかFです(最初の１文字で判断)
+#		<例> add testname Male testpass
+#		passwdを省略するとキーボードからエコー無しでタイプできます
+#
+#	check <account_name> <password>		アカウントパスワードの有効性をチェック
+#
+#	del <account_name>			アカウント削除
+#		警告がでるのでそこでyを入力すると削除します
+#
+#	getcount				オンラインプレイヤーの人数を取得
+#
+#	help					簡単なヘルプテキスト表示
+#
+#	info <account_id>			アカウントの全情報を表示
+#
+#	list	[start_id [end_id]]	アカウントリスト表示
+#		start_id,end_idは共に省略可能です。
+#		<例> list 10 9999999
+#		アカウント名での検索などはできません
+#
+#	passwd <account_name> <newpassword>	アカウントパスワード変更
+#		newpasswordを省略するとキーボードからタイプできます
+#
+#	quit					終了
+#
+#	search <keyword>			アカウント検索
+#	search --regex <expression>		アカウント正規表現検索
+#		キーワードがマッチするアカウントのリストを表示します
+#
+#	state <account_name> <newstate>		アカウントのバン状態変更
+#		newstateがbならバン、uまたはnならバン解除です
+#
+#	version					ログインサーバのヴァージョンを表示
+#
+#	who <account_name>			アカウントの全情報を表示
+#
+#-------------------------------------------------------------------------
+# シェルの単一コマンドとしての作業
+#	./ladmin --mode param1 ...
+#
+#	--add <account_name> <gender> <password> [<email>] アカウントの追加(-aでも可)
+#	--check <account_name> <password>                  アカウントパスワードの有効性をチェック(-check)
+#	--del <account_name>                               アカウントの削除(-d)
+#	--getcount                                         オンラインプレイヤーの人数を取得(-g)
+#	--info <account_id>                                アカウントの全情報を表示(-info)
+#	--list [start_id [end_id]]                         アカウントリスト表示(-l)
+#	--passwd <account_name> <newpassword>              パスワードの変更(-p)
+#	--search <keyword>                                 アカウント検索(-s)
+#	--search --regex <expression>                      正規表現検索(-s -e)
+#	--state <account_name> <newstate>                  バン状態変更(-t)
+#	--version                                          ログインサーバのヴァージョンを表示(-v)
+#	--who <account_name>                               アカウントの全情報を表示(-w)
+#	<例> ./ladmin --addaccount testname Male testpass
+#
+#-------------------------------------------------------------------------
+# シェルの複数のコマンドとしての作業
+#	あらかじめ --makesymlink を指定して起動し、シンボリックリンクを
+#	作成しておき、そのファイルで起動します。
+#	古いVerのaddaccountは削除して置いてください。
+#
+#	addaccount <account_name> <gender> <password> アカウントの追加
+#	checkaccount <account_name> <password>        アカウントパスワードの有効性をチェック
+#	delaccount <account_name>                     アカウントの削除
+#	getcount                                      オンラインプレイヤーの人数を取得
+#	infoaccount <account_id>                      アカウントの全情報を表示
+#	listaccount [start_id [end_id]]               アカウントリスト表示
+#	loginserverversion                            ログインサーバのヴァージョンを表示
+#	passwdaccount <account_name> <newpassword>    パスワードの変更
+#	searchaccount <keyword>                       アカウント検索
+#	searchaccount --regex <expression>            アカウント正規表現検索
+#	stateaccount <account_name> <newstate>        バン状態変更
+#	whoaccount <account_name>                     アカウントの全情報を表示
+#	<例> ./addaccount testname Male testpass
+#
+#-------------------------------------------------------------------------
+# 暗号化について
+# 　Digest::MD5モジュールが必要です。Digest::MD5が読み込めない場合、
+#   自動的に暗号化しないモード($passenc=0)になるので、モジュールがなくても
+#   ladmin自体は動作します。（暗号化は行われませんが）
+# 　ちなみにCygwinだとDigest::MD5は最初から入っているようです。
+#
+#-------------------------------------------------------------------------
+# UNIX系OSでの使用について
+# 　コマンドとして実行するにはファイルに実行権が必要です。また改行コードを
+#   変更する必要があります。perlを直接起動するなら必要ありません。
+# 　実行には関係ありませんが、説明やコメントはシフトJISで書いているので
+#   日本語エンコードをEUC-JPにしてください。
+#   <コマンドの準備の例>
+#       $ mv ladmin ladmin_org
+#       $ nkf -eLu ladmin_org > ladmin
+#       $ chmod 700 ladmin
+#   <Perlを直接起動する例>
+#       $ perl ladmin
+#
+##########################################################################
+
+
+
+
+
+use strict;
+use IO::Socket;
+use Term::ReadLine;
+use POSIX qw(:termios_h);
+
+eval " use Digest::MD5 qw(md5); " if $passenc;
+$passenc=0 if($@);
+
+my($ver)="1.08";
+
+
+
+# termiosの初期処理
+my($termios,$orgterml,$termlecho,$termlnoecho)=();
+eval{
+	$termios=POSIX::Termios->new();
+	$termios->getattr(fileno(STDIN));
+	$orgterml=$termios->getlflag();
+	$termlecho=ECHO | ECHOK | ICANON;
+	$termlnoecho=$orgterml & ~$termlecho;
+};
+
+# パスワード入力用
+sub cbreak(){
+	if($termios){
+		$termios->setlflag($termlnoecho);
+		$termios->setcc(VTIME,1);
+		$termios->setattr(fileno(STDIN),TCSANOW);
+	}
+}
+# 復帰
+sub cooked(){
+	if($termios){
+		$termios->setlflag($orgterml);
+		$termios->setcc(VTIME,0);
+		$termios->setattr(fileno(STDIN),TCSANOW);
+	}
+}
+END{ cooked() }
+
+print "Auriga login-server administration tool Ver.$ver\n";
+
+# シンボリックリンク作成
+if( $ARGV[0] eq "--makesymlink" ){
+	symlink $0,"addaccount";
+	symlink $0,"checkaccount";
+	symlink $0,"delaccount";
+	symlink $0,"getcount";
+	symlink $0,"infoaccount";
+	symlink $0,"listaccount";
+	symlink $0,"loginserverversion";
+	symlink $0,"passwdaccount";
+	symlink $0,"searchaccount";
+	symlink $0,"stateaccount";
+	symlink $0,"whoaccount";
+	print "Symbolic link created.\n";
+	exit(0);
+}
+# サーバーに接続する
+my($so,$er)=();
+eval{
+	$so=IO::Socket::INET->new(
+		PeerAddr=> $loginserverip,
+		PeerPort=> $loginserverport,
+		Proto	=> "tcp",
+		Timeout	=> $connecttimeout) or $er=1;
+};
+if($er || $@){
+	print "\nCant connect to login server [${loginserverip}:$loginserverport] !\n";
+	exit(2);
+}
+
+# ログイン要求
+if($passenc==0){
+	print $so pack("v3a24",0x7918,30,0,$loginserveradminpassword);
+	$so->flush();
+}else{
+	print $so pack("v",0x791a);
+	$so->flush();
+	my($buf)=readso(4);
+	if(unpack("v",$buf)!=0x01dc){
+		print "login error. (md5key creation failed)\n";
+	}
+	$buf=readso(unpack("x2v",$buf)-4);
+	my($md5bin)=md5( ($passenc==1)?$buf.$loginserveradminpassword:
+			$loginserveradminpassword.$buf );
+	print $so pack("v3a16",0x7918,22,$passenc,$md5bin);
+	$so->flush();
+}
+
+# 返答待ち
+my($buf)=readso(3);
+if(unpack("v",$buf)!=0x7919 || unpack("x2c",$buf)!=0 ){
+	print "login error. (invalid password ?)\n";
+	exit(4);
+}
+
+print "Logged on.\n";
+
+# プロンプト無しの処理
+
+if ($0 =~ /addaccount$/ ||
+    (($ARGV[0] eq "-a" || $ARGV[0] eq "--add") && ((shift @ARGV),1))){
+	my($r)=addaccount($ARGV[0],$ARGV[1],$ARGV[2],$ARGV[3]);
+	quit();
+	exit($r);
+}elsif($0 =~ /checkaccount$/ ||
+       (($ARGV[0] eq "-check" || $ARGV[0] eq "--check") && ((shift @ARGV),1))){
+	my($r)=checkaccount($ARGV[0],$ARGV[1]);
+	quit();
+	exit($r);
+}elsif($0 =~ /delaccount$/ ||
+       (($ARGV[0] eq "-d" || $ARGV[0] eq "--del") && ((shift @ARGV),1))){
+	my($r)=delaccount($ARGV[0]);
+	quit();
+	exit($r);
+}elsif($0 =~ /getcount$/ ||
+       (($ARGV[0] eq "-g" || $ARGV[0] eq "--getcount") && ((shift @ARGV),1))){
+	my($r)=getlogincount();
+	quit();
+	exit($r);
+}elsif($0 =~ /infoaccount$/ ||
+       (($ARGV[0] eq "-info" || $ARGV[0] eq "--info") && ((shift @ARGV),1))){
+	my($r) = infoaccount($ARGV[0]);
+	quit();
+	exit($r);
+}elsif($0 =~ /listaccount$/ ||
+       (($ARGV[0] eq "-l" || $ARGV[0] eq "--list") && ((shift @ARGV),1))){
+	my($r)=listaccount(int($ARGV[0]),int($ARGV[1]));
+	quit();
+	exit($r);
+}elsif($0 =~ /loginserverversion$/ ||
+       (($ARGV[0] eq "-v" || $ARGV[0] eq "--version") && ((shift @ARGV),1))){
+	my($r)=checkloginversion();
+	quit();
+	exit($r);
+}elsif($0 =~ /passwdaccount$/ ||
+       (($ARGV[0] eq "-p" || $ARGV[0] eq "--passwd") && ((shift @ARGV),1))){
+	my($r)=changepasswd($ARGV[0],$ARGV[1]);
+	quit();
+	exit($r);
+}elsif($0 =~ /searchaccount$/ ||
+       (($ARGV[0] eq "-s" || $ARGV[0] eq "--search") && ((shift @ARGV),1))){
+	my($r)=searchaccount($ARGV[0],$ARGV[1]);
+	quit();
+	exit($r);
+}elsif($0 =~ /stateaccount$/ ||
+       (($ARGV[0] eq "-t" || $ARGV[0] eq "--state") && ((shift @ARGV),1))){
+	my($r)=changestate($ARGV[0],$ARGV[1]);
+	quit();
+	exit($r);
+}elsif($0 =~ /whoaccount$/ ||
+       (($ARGV[0] eq "-w" || $ARGV[0] eq "--who") && ((shift @ARGV),1))){
+	my($r) = whoaccount($ARGV[0]);
+	quit();
+	exit($r);
+}
+
+#---------------------------------------------
+print "Fetching the login-server version...\n";
+checkloginversion();
+
+my($term)= new Term::ReadLine "ladmin";
+
+# ログインできたのでプロンプトのループ
+while(1){
+	# プロンプト表示と入力
+	my($cmd)=$term->readline("ladmin> ");
+	chomp $cmd;
+	$cmd=~s/\x1b\[\d*\w//g;
+	$cmd=~s/[\x00-\x1f]//g;
+	my(@cmdlist)=split /\s+/,$cmd;
+
+	$cmdlist[0]="help" if( $cmdlist[0] eq "?" );
+
+
+	# コマンド解析
+	eval{
+		if("help" =~ /^\Q$cmdlist[0]/){
+			print << "EOD";
+  add <account_name> <gender> <password> -- Add account
+  check <account_name> <password>     -- Check the validity of a password
+  del <account_name>                  -- Delete account
+  getcount                            -- Give the number of players online
+  help                                -- This help
+  info <account_id>                   -- Display all information of an account
+  list [start_id [end_id]]            -- List account
+  passwd <account_name> <newpassword> -- Change password of account
+  quit                                -- Quit
+  search <keyword>                    -- Search account
+  search -r <expression>              -- Search account by regular-expression
+  state <account_name> <newstate>     -- Change status of account (ban)
+  version                             -- Give the version of the login-server
+  who <account_name>                  -- Display all information of an account
+EOD
+		}elsif("add" =~ /^\Q$cmdlist[0]/){
+			addaccount($cmdlist[1],$cmdlist[2],$cmdlist[3],$cmdlist[4]);
+		}elsif("check" =~ /^\Q$cmdlist[0]/){
+			checkaccount($cmdlist[1],$cmdlist[2]);
+		}elsif("del" =~ /^\Q$cmdlist[0]/){
+			delaccount($cmdlist[1]);
+		}elsif("getcount" =~ /^\Q$cmdlist[0]/){
+			getlogincount();
+		}elsif("info" =~ /^\Q$cmdlist[0]/){
+			infoaccount(int($cmdlist[1])); # <account_id>
+		}elsif("list" =~ /^\Q$cmdlist[0]/ || $cmdlist[0] eq "ls"){
+			listaccount(int($cmdlist[1]),int($cmdlist[2]));
+		}elsif("passwd" =~ /^\Q$cmdlist[0]/){
+			changepasswd($cmdlist[1],$cmdlist[2]);
+		}elsif("quit" =~ /^\Q$cmdlist[0]/){
+			last;
+		}elsif("search" =~ /^\Q$cmdlist[0]/){
+			searchaccount($cmdlist[1],$cmdlist[2]);
+		}elsif("state" =~ /^\Q$cmdlist[0]/){
+			changestate($cmdlist[1],$cmdlist[2]);
+		}elsif("version" =~ /^\Q$cmdlist[0]/){
+			checkloginversion();
+		}elsif("who" =~ /^\Q$cmdlist[0]/){
+			whoaccount($cmdlist[1]); # <account_name>
+		}elsif($cmdlist[0]){
+			print "Unknown command [".$cmdlist[0]."]\n";
+		}
+#		$term->addhistory($cmd) if $cmdlist[0];
+	};
+	if($@){
+		print "Error [".$cmdlist[0]."]\n$@";
+	}
+};
+
+# 終了処理
+quit();
+
+print "Bye.\n";
+exit(0);
+
+
+
+#--------------------------------------------------------------------------
+
+# Sub-function: Displaying of the version of the login-server
+sub checkloginversion() {
+	print $so pack("v",30000); # 0x7530
+	$so->flush();
+	$buf=readso(10);
+	# Packet analyse
+	my($ret,$maver,$miver,$rev,$dev,$mod,$type,$mdver)=unpack("vc2vc4",$buf);
+	if ($ret != 30001) { #0x7531
+		print "Connection error to the server (incorrect answer).\n";
+		exit(6);
+	}
+
+	print "  Login-Server [$loginserverip:$loginserverport]\n";
+	printf "  Auriga version %s-%d.%d", ("stable", "dev")[$dev], $maver, $miver;
+	printf " revision %d", $rev if $rev;
+	if ($mod != 0) {
+		printf "%s%d", ("", "-mod","-Auriga mod")[$mod], $mdver;
+	}
+	print ".\n";
+
+	return 0;
+}
+
+# アカウントリスト表示
+sub listaccount(){
+	my($st,$ed)= @_;
+	print $so pack("vV2c",0x7920,$st,$ed,0);
+	$so->flush();
+	my($len)=65001;
+	print "account_id user_id                  gender count state\n";
+	print "-------------------------------------------------------\n";
+	while( $len>65000 )
+	{
+		$buf=readso(4);
+		if(unpack("v",$buf)!=0x7921){
+			print "List failed.\n";
+			exit(10);
+		}
+		#      0123456789 012345678901234567890123 012345
+		my($i);
+		$len=unpack("x2v",$buf);
+		for($i=4;$i<$len;$i+=61){
+			my(@dat)=unpack("Va24ca24VV",readso(61));
+			printf "%10d %-24s %-6s%6d %-6s\n",$dat[0],$dat[1],
+				("Female","Male","Server")[$dat[2]],$dat[4],
+				("Normal","Banned")[$dat[5]?1:0];
+		}
+	}
+	return 0;
+}
+# アカウント追加
+sub addaccount(){
+	my($userid,$sex,$passwd,$mail)= @_;
+	if($userid=~/[^A-Za-z0-9\@-_-]/){
+		print "Illegal charactor found in user_id ".$`."[${&}]${'}\n";
+		return 101;
+	}
+	if(length($userid)<4 || length($userid)>24){
+		print "Account id too short or long. please input 4-24 bytes.\n";
+		return 102;
+	}
+	$sex=uc(substr($sex,0,1));
+	if( $sex!~/^[MF]$/ ){
+		print "Illegal gender [$sex] please input M or F.\n";
+		return 103;
+	}
+	if($passwd eq ""){
+		return 108 if( ($passwd=typepasswd()) eq "" );
+	}
+	if($passwd=~/[\x00-\x1f]/){
+		my($c)=length($`)+1;
+		print "Illegal charactor found in password (".makeordinal($c)." charactor).\n";
+		return 104;
+	}
+	if(length($passwd)<4 or length($passwd)>24){
+		print "Password too short or long. please input 4-24 bytes.!\n";
+		return 105;
+	}
+	if(length($mail)>0 and $mail !~ /@/){
+		print "Not found in Mail Address '@'.!\n";
+		return 109;
+	}
+	if(length($mail)>40){
+		print "Mail Address too long. please input under 40 bytes.!\n";
+		return 110;
+	}
+	print $so pack("v2a24a24a1a40", 0x7930,93, $userid,$passwd,$sex,$mail );
+	$so->flush();
+	$buf=readso(2);
+	if(unpack("v",$buf)!=0x7931){
+		print "Packet error.\n";
+		return 106;
+	}
+	$buf=readso(26);
+	print "Account [$userid] ";
+	if(unpack("v",$buf)!=0){
+		print "creation failed. same account exists.\n";
+		return 107;
+	}else{
+		print "is successfully created.\n";
+	}
+	return 0;
+}
+
+# アカウント削除
+sub delaccount(){
+	my($userid)= @_;
+	print "** Are you really sure to DELETE account [$userid]? (y/n) ";
+	if(lc(substr(<STDIN>,0,1)) ne "y"){
+		return 121;
+	}
+	print $so pack("v2a24", 0x7932,28, $userid);
+	$so->flush();
+	$buf=readso(2);
+	if(unpack("v",$buf)!=0x7933){
+		print "Packet error.\n";
+		return 122;
+	}
+	$buf=readso(26);
+	print "Account [$userid] ";
+	if(unpack("v",$buf)!=0){
+		print "deletion failed. account doesnt exist.\n";
+		return 123;
+	}else{
+		print "is successfully DELETED.\n";
+	}
+	return 0;
+}
+
+# アカウントパスワード変更
+sub changepasswd(){
+	my($userid,$passwd)= @_;
+	if($userid eq ""){
+		print "Please input account name.\n";
+		return 136;
+	}
+	if($passwd eq ""){
+		return 134 if( ($passwd=typepasswd()) eq "" );
+	}
+	if(length($passwd)<4){
+		print "New password too short or long. please input 4-24 bytes.!\n";
+		return 131;
+	}
+	if($passwd=~/[\x00-\x1f]/){
+		my($c)=length($`)+1;
+		print "Illegal charactor found in password (".makeordinal($c)." charactor).\n";
+		return 135;
+	}
+	print $so pack("v2a24a24", 0x7934,52, $userid,$passwd);
+	$so->flush();
+	$buf=readso(2);
+	if(unpack("v",$buf)!=0x7935){
+		print "Packet error.\n";
+		return 132;
+	}
+	$buf=readso(26);
+	print "Account [$userid] ";
+	if(unpack("v",$buf)!=0){
+		print "password changing failed. account doesnt exist.\n";
+		return 133;
+	}else{
+		print "password successfully changed.\n";
+	}
+	return 130;
+}
+
+# Sub-function: Request to displaying information about an account (by its name)
+sub whoaccount() {
+	my($userid) = @_;
+	if ($userid eq "") {
+		print "Please input an account name.\n";
+		print "<example> who testname\n";
+		return 136;
+	}
+
+	print $so pack("va24", 0x793c, $userid);
+	$so->flush();
+
+	$buf = readso(2);
+	if (unpack("v", $buf) != 0x793e) {
+		print "Connection error to the server (incorrect answer).\n";
+		return 122;
+	}
+
+	my($flag, $id2, $GM_level, $name, $sex, $count, $status, $last_ip, $last_login, $email) = unpack("vVCa24cVva16a24a40", readso(118));
+	while (length($name) > 0 && substr($name, length($name)-1, 1) eq chr(0)) {
+		chop($name);
+	};
+	while (length($last_login) > 0 && substr($last_login, length($last_login)-1, 1) eq chr(0)) {
+		chop($last_login);
+	};
+	while (length($last_ip) > 0 && substr($last_ip, length($last_ip)-1, 1) eq chr(0)) {
+		chop($last_ip);
+	};
+	while (length($email) > 0 && substr($email, length($email)-1, 1) eq chr(0)) {
+		chop($email);
+	};
+
+	if ($flag != 0) {
+		print "Unabled to find the account [$userid]. Account doesn't exist.\n";
+		return 123;
+	} else {
+		print "The account [$userid] is set with:\n";
+		if ($GM_level == 0) {
+			print " Id:     $id2 (non-GM)\n";
+		} else {
+			print " Id:     $id2 (GM level $GM_level)\n";
+		}
+		print " Name:   '$name'\n";
+		print " Sex:    ".("Female", "Male", "Server")[$sex]."\n";
+		print " E-mail: $email\n";
+		if ($status == 7) {
+			print " Statut: 7 [You are Prohibited to log in until...]\n";
+		} else {
+			print " Statut: $status [".(
+			      "Account OK",
+			      "Unregistered ID",
+			      "Incorrect Password",
+			      "This ID is expired",
+			      "Rejected from Server",
+			      "You have been blocked by the GM Team",
+			      "Your Game's EXE file is not the latest version",
+			      "You are Prohibited to log in until %s",
+			      "Server is jammed due to over populated",
+			      "No MSG",
+			      "This ID is totally erased")[$status == 100 ? 10 : $status]."]\n";
+		}
+		print " Count:  $count connection".("s", "")[$count > 1 ? 0 : 1]."\n";
+		if (length($last_ip) > 0) { # last_ip is not saved in TXT version
+			print " Last connection at: $last_login (ip: $last_ip)\n";
+		}else{
+			print " Last connection at: $last_login\n";
+		}
+		print "\n"
+	}
+	return 0;
+}
+
+#--------------------------------------------------------------------------
+
+# Sub-function: Request to displaying information about an account (by its id)
+sub infoaccount() {
+	my($id) = @_;
+	if ($id < 0) {
+		print "Please input a positive value for the id.\n";
+		return 136;
+	}
+
+	print $so pack("vV", 0x793d, $id);
+	$so->flush();
+
+	$buf = readso(2);
+	if (unpack("v", $buf) != 0x793e) {
+		print "Connection error to the server (incorrect answer).\n";
+		return 122;
+	}
+
+	my($flag, $id2, $GM_level, $name, $sex, $count, $status, $last_ip, $last_login, $email) = unpack("vVCa24cVva16a24a40", readso(118));
+	while (length($name) > 0 && substr($name, length($name)-1, 1) eq chr(0)) {
+		chop($name);
+	};
+	while (length($last_login) > 0 && substr($last_login, length($last_login)-1, 1) eq chr(0)) {
+		chop($last_login);
+	};
+	while (length($last_ip) > 0 && substr($last_ip, length($last_ip)-1, 1) eq chr(0)) {
+		chop($last_ip);
+	};
+	while (length($email) > 0 && substr($email, length($email)-1, 1) eq chr(0)) {
+		chop($email);
+	};
+
+	if ($flag != 0) {
+		print "Unabled to find the account [id: $id2] name. Account doesn't exist.\n";
+		return 123;
+	} else {
+		print "The account [id: $id2] is set with:\n";
+		if ($GM_level == 0) {
+			print " Id:     $id2 (non-GM)\n";
+		} else {
+			print " Id:     $id2 (GM level $GM_level)\n";
+		}
+		print " Name:   '$name'\n";
+		print " Sex:    ".("Female", "Male", "Server")[$sex]."\n";
+		print " E-mail: $email\n";
+		if ($status == 7) {
+			print " Statut: 7 [You are Prohibited to log in until...]\n";
+		} else {
+			print " Statut: $status [".(
+			      "Account OK",
+			      "Unregistered ID",
+			      "Incorrect Password",
+			      "This ID is expired",
+			      "Rejected from Server",
+			      "You have been blocked by the GM Team",
+			      "Your Game's EXE file is not the latest version",
+			      "You are Prohibited to log in until %s",
+			      "Server is jammed due to over populated",
+			      "No MSG",
+			      "This ID is totally erased")[$status == 100 ? 10 : $status]."]\n";
+		}
+		print " Count:  $count connection".("s", "")[$count > 1 ? 0 : 1]."\n";
+		if (length($last_ip) > 0) { # last_ip is not saved in TXT version
+			print " Last connection at: $last_login (ip: $last_ip)\n";
+		}else{
+			print " Last connection at: $last_login\n";
+		}
+		print "\n"
+	}
+	return 0;
+}
+
+# Sub-function: Check the validity of a password
+sub checkaccount() {
+	my($userid, $passwd) = @_;
+	if($userid eq ""){
+		print "Please input account id.\n";
+		return 136;
+	}
+	if($passwd eq ""){
+		return 134 if( ($passwd=typepasswd()) eq "" );
+	}
+	if(length($passwd)<4){
+		print "New password too short or long. please input 4-24 bytes.!\n";
+		return 131;
+	}
+	if($passwd=~/[\x00-\x1f]/){
+		my($c)=length($`)+1;
+		print "Illegal charactor found in password (".makeordinal($c)." charactor).\n";
+		return 135;
+	}
+	print $so pack("va24a24", 0x793a, $userid,$passwd);
+	$so->flush();
+	$buf = readso(2);
+	if (unpack("v", $buf) != 0x793b) {
+		print "Packet error.\n";
+		return 132;
+	}
+	$buf = readso(26);
+	my($flag, $name) = unpack("va24", $buf);
+	print "Account [$userid] ";
+	if($flag!=0){
+		print "password check failed.\n";
+		return 133;
+	}else{
+		print "password successfully checked.\n";
+	}
+	return 130;
+}
+
+# アカウント検索
+sub searchaccount(){
+	my($p1,$p2)= @_;
+	my($exp,$n)=("",0);
+	if($p1 eq"-e" || $p1 eq"-r" || $p1 eq"--regex" || $p1 eq"--expr"){
+		$exp=$p2;
+	}else{
+		my($c)=0;
+		$exp=$p1;
+		$exp=~s/([\@])/\\$1/g;
+		$c+= $exp=~s/([\-\[\]])/\\$1/g;
+		$c+= $exp=~s/([\*\?])/.$1/g;
+		$c+= $exp=~s/\\\[(.)\\\-(.)\\\]/[$1-$2]/g;
+		$exp="^$exp\$" if $c;
+	}
+	if( eval{ ""=~/$exp/; }, $@ ){
+		print "Regular-Expression compiling failed.\n";
+		return 141;
+	}
+	#      0123456789 012345678901234567890123 012345
+	print "account_id user_id                  gender count state\n";
+	print "-------------------------------------------------------\n";
+
+	print $so pack("vV2c",0x7920,0,0,0);
+	$so->flush();
+	my($len)=65001;
+	while( $len>65000 ){
+		$buf=readso(4);
+		if(unpack("v",$buf)!=0x7921){
+			print "Search failed.\n";
+			exit(10);
+		}
+		my($i);
+		$len=unpack("x2v",$buf);
+		last if($len<=4);
+		for($i=4;$i<$len;$i+=61){
+			my(@dat)=unpack("Va24ca24VV",readso(61));
+			next if( $dat[1]!~/$exp/ );
+			printf "%10d %-24s %-6s%6d %-6s\n",$dat[0],$dat[1],
+				("Female","Male","Server")[$dat[2]],$dat[4],
+				("Normal","Banned")[$dat[5]?1:0];
+			$n++;
+		}
+	}
+	print "$n account(s) found.\n";
+	return 0;
+}
+
+# バン状態変更要求
+sub changestate {
+	my($userid,$s)= @_;
+	my(%p)=("n"=>0,"u"=>0,"b"=>3);
+	if($s eq ""){
+		print "Please input new state [b] or [n].\n";
+		return 151;
+	}
+	$s=lc(substr($s,0,1));
+	if(exists $p{$s}){ $s=$p{$s}; }
+	else{ $s=int($s); }
+	print $so pack("vva24V",0x7936,32,$userid,$s);
+	$so->flush();
+	$buf=readso(2);
+	if(unpack("v",$buf)!=0x7937){
+		print "Packet error.\n";
+		return 152;
+	}
+	$buf=readso(30);
+	my(@dat)=unpack("va24V",$buf);
+	if($dat[0]==0){
+		print "account [$userid] is successfully ".
+		( ("Unbanned","Banned")[$dat[2]?1:0]).".\n";
+	}else{
+		print "account [$userid] state changing failed. (".
+			(( "Normal","Banned" )[$dat[2]?1:0]) .")\n";
+	}
+}
+
+# Sub-function: Displaying of the number of online players
+sub getlogincount {
+	# Request to the login-server
+	print $so pack("v", 0x7938);
+	$so->flush();
+
+	$buf = readso(4);
+	# Connection failed
+	if (unpack("v", $buf) != 0x7939) {
+		print "Packet error.\n";
+		return 152;
+	}
+
+	# Get length of the received packet
+	my($len) = unpack("x2v", $buf) - 4;
+
+	# Read information of the servers
+	if ($len < 1) {
+		printf "  No server is connected to the login-server.\n";
+	} else {
+		my(@slist) = ();
+		for(; $len > 0; $len -= 32) {
+			my($name, $count) = unpack("x6 a20 V", readso(32));
+			$name = substr($name, 0, index($name, "\0"));
+			push @slist, [ $name, $count ];
+		}
+		# Displaying of result
+		my($i);
+		printf "  Number of online players (server: number):\n";
+		foreach $i(@slist) {
+			printf "    %-20s : %5d\n", $i->[0], $i->[1];
+		}
+	}
+}
+
+# 切断要求
+sub quit(){
+	print $so pack("v",0x7532);
+	$so->flush();
+}
+
+# READY信号待ち（未使用）
+sub waitready(){
+	$buf=readso(2);
+	if(unpack("v",$buf)!=0x791f){
+		print "Command stream error.\n";
+		exit(9);
+	}
+	return 0;
+}
+
+# 標準出力のフラッシュ(未使用)
+sub flush_stdout {
+	$|=1;
+	$|=0;
+}
+
+# ソケットからデータを読み出す
+sub readso(){
+	my($len)=shift;
+	my($buf);
+	if( read($so,$buf,$len)<$len ){
+		print "Socket read error.\n";
+		exit(3);
+	}
+	return $buf;
+}
+
+
+# パスワード入力
+sub typepasswd {
+	my($passwd1,$passwd2);
+	cbreak();
+	print "type password > "; $passwd1=<STDIN>; chomp($passwd1); print "\n";
+	print "verify password > "; $passwd2=<STDIN>; chomp($passwd2); print "\n";
+	cooked();
+	if($passwd1 ne $passwd2){
+		print "Password verification failed. Please input same password.\n";
+		return "";
+	}
+	return $passwd1;
+}
+# 序数作成
+sub makeordinal {
+	my($c)= shift;
+	if($c%10<4 && $c%10!=0 && ($c<10 || $c>20) ){
+		return $c.("st","nd","rd")[$c%10-1];
+	}
+	return $c."th";
+}
