@@ -39,10 +39,10 @@ int unit_distance(int x0,int y0,int x1,int y1)
 {
 	int dx,dy;
 
-	dx=abs(x0-x1);
-	dy=abs(y0-y1);
+	dx = abs(x0 - x1);
+	dy = abs(y0 - y1);
 
-	return dx>dy ? dx : dy;
+	return (dx > dy) ? dx : dy;
 }
 
 int unit_distance2( struct block_list *bl, struct block_list *bl2)
@@ -457,21 +457,18 @@ int unit_walktodir(struct block_list *bl,int step)
 	dir_x = dirx[d];
 	dir_y = diry[d];
 
-	for(i=0;i<step;i++)
-	{
+	for(i=0;i<step;i++) {
+		if(!map_getcell(bl->m,to_x+dir_x,to_y+dir_y,CELL_CHKPASS))
+			break;
+
 		// 次のセルへ１歩で移動可能でないなら
 		if(map_getcell(bl->m,to_x+dir_x,to_y+dir_y,CELL_CHKNOPASS) ||
 		   map_getcell(bl->m,to_x      ,to_y+dir_y,CELL_CHKNOPASS) ||
 		   map_getcell(bl->m,to_x+dir_x,to_y      ,CELL_CHKNOPASS))
 			break;
 
-		if(map_getcell(bl->m,to_x+dir_x,to_y+dir_y,CELL_CHKPASS))
-		{
-			to_x += dir_x;
-			to_y += dir_y;
-			continue;
-		}
-		break;
+		to_x += dir_x;
+		to_y += dir_y;
 	}
 	unit_walktoxy(bl, to_x, to_y);
 

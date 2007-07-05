@@ -165,7 +165,7 @@ int skill_addtimerskill(struct block_list *src,unsigned int tick,int target,int 
 // 追加効果
 int skill_additional_effect( struct block_list* src, struct block_list *bl,int skillid,int skilllv,int attack_type,unsigned int tick);
 
-enum {	//吹き飛ばしフラグ
+enum {	// 吹き飛ばしフラグ
 	SAB_NOMALBLOW   = 0x00000,
 	SAB_REVERSEBLOW = 0x10000,
 	SAB_NODAMAGE    = 0x20000,
@@ -174,7 +174,7 @@ enum {	//吹き飛ばしフラグ
 
 int skill_add_blown( struct block_list *src, struct block_list *target,int skillid,int flag);
 
-//カード効果のオートスペル
+// カード効果のオートスペル
 int skill_bonus_autospell(struct block_list * src,struct block_list * bl,unsigned long mode,int tick,int flag);
 
 // ユニットスキル
@@ -963,6 +963,8 @@ enum {
 	HVAN_CHAOTIC,
 	HVAN_INSTRUCT,
 	HVAN_EXPLOSION = 8016,
+
+	// ギルドスキルはmmo.hで定義
 };
 
 enum {

@@ -84,7 +84,7 @@ enum {
 #define WBUFPOS(p,pos,x,y) { unsigned char *__p = (p); __p+=(pos); __p[0] = (unsigned char)((x)>>2); __p[1] = (unsigned char)(((x)<<6) | (((y)>>4)&0x3f)); __p[2] = (unsigned char)((y)<<4); }
 #define WBUFPOS2(p,pos,x0,y0,x1,y1) { unsigned char *__p = (p); __p+=(pos); __p[0] = (unsigned char)((x0)>>2); __p[1] = (unsigned char)(((x0)<<6) | (((y0)>>4)&0x3f)); __p[2] = (unsigned char)(((y0)<<4) | (((x1)>>6)&0x0f)); __p[3] = (unsigned char)(((x1)<<2) | (((y1)>>8)&0x03)); __p[4] = (unsigned char)(y1); }
 
-#define WFIFOPOS(fd,pos,x,y) { WBUFPOS (WFIFOP(fd,pos),0,x,y); }
+#define WFIFOPOS(fd,pos,x,y) { WBUFPOS(WFIFOP(fd,pos),0,x,y); }
 #define WFIFOPOS2(fd,pos,x0,y0,x1,y1) { WBUFPOS2(WFIFOP(fd,pos),0,x0,y0,x1,y1); }
 
 static char map_ip_str[16];
@@ -2702,7 +2702,7 @@ void clif_storageequiplist(struct map_session_data *sd, struct storage *stor)
 			WBUFW(buf,n*20+6)=id->view_id;
 		else
 			WBUFW(buf,n*20+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*20+8)=id->type;
+		WBUFB(buf,n*20+8)=(id->type == 7)? 4: id->type;
 		WBUFB(buf,n*20+9)=stor->store_item[i].identify;
 		WBUFW(buf,n*20+10)=id->equip;
 		WBUFW(buf,n*20+12)=stor->store_item[i].equip;
@@ -2852,7 +2852,7 @@ void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storag
 			WBUFW(buf,n*20+6)=id->view_id;
 		else
 			WBUFW(buf,n*20+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*20+8)=id->type;
+		WBUFB(buf,n*20+8)=(id->type == 7)? 4: id->type;
 		WBUFB(buf,n*20+9)=stor->store_item[i].identify;
 		WBUFW(buf,n*20+10)=id->equip;
 		WBUFW(buf,n*20+12)=stor->store_item[i].equip;
@@ -4021,76 +4021,76 @@ void clif_storageitemadded(struct map_session_data *sd, struct storage *stor, in
 	id = itemdb_search(stor->store_item[idx].nameid);
 
 #if PACKETVER < 7
-	WFIFOW(fd,0) =0xf4;
-	WFIFOW(fd,2) =idx+1;
-	WFIFOL(fd,4) =amount;
+	WFIFOW(fd,0) = 0xf4;
+	WFIFOW(fd,2) = idx+1;
+	WFIFOL(fd,4) = amount;
 	if(id->view_id > 0)
-		WFIFOW(fd,8) =id->view_id;
+		WFIFOW(fd,8) = id->view_id;
 	else
-		WFIFOW(fd,8) =stor->store_item[idx].nameid;
-	WFIFOB(fd,10)=stor->store_item[idx].identify;
-	WFIFOB(fd,11)=stor->store_item[idx].attribute;
-	WFIFOB(fd,12)=stor->store_item[idx].refine;
+		WFIFOW(fd,8) = stor->store_item[idx].nameid;
+	WFIFOB(fd,10) = stor->store_item[idx].identify;
+	WFIFOB(fd,11) = stor->store_item[idx].attribute;
+	WFIFOB(fd,12) = stor->store_item[idx].refine;
 	if(itemdb_isspecial(stor->store_item[idx].card[0])) {
-		WFIFOW(fd,13)=stor->store_item[idx].card[0];
-		WFIFOW(fd,15)=stor->store_item[idx].card[1];
-		WFIFOW(fd,17)=stor->store_item[idx].card[2];
-		WFIFOW(fd,19)=stor->store_item[idx].card[3];
+		WFIFOW(fd,13) = stor->store_item[idx].card[0];
+		WFIFOW(fd,15) = stor->store_item[idx].card[1];
+		WFIFOW(fd,17) = stor->store_item[idx].card[2];
+		WFIFOW(fd,19) = stor->store_item[idx].card[3];
 	}
 	else {
-		if(stor->store_item[idx].card[0] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[0])) > 0)
-			WFIFOW(fd,13)= j;
+		if(stor->store_item[idx].card[0] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[0])) > 0)
+			WFIFOW(fd,13) = j;
 		else
-			WFIFOW(fd,13)= stor->store_item[idx].card[0];
-		if(stor->store_item[idx].card[1] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[1])) > 0)
-			WFIFOW(fd,15)= j;
+			WFIFOW(fd,13) = stor->store_item[idx].card[0];
+		if(stor->store_item[idx].card[1] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[1])) > 0)
+			WFIFOW(fd,15) = j;
 		else
 			WFIFOW(fd,15)= stor->store_item[idx].card[1];
-		if(stor->store_item[idx].card[2] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[2])) > 0)
-			WFIFOW(fd,17)= j;
+		if(stor->store_item[idx].card[2] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[2])) > 0)
+			WFIFOW(fd,17) = j;
 		else
 			WFIFOW(fd,17)= stor->store_item[idx].card[2];
-		if(stor->store_item[idx].card[3] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[3])) > 0)
-			WFIFOW(fd,19)= j;
+		if(stor->store_item[idx].card[3] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[3])) > 0)
+			WFIFOW(fd,19) = j;
 		else
-			WFIFOW(fd,19)= stor->store_item[idx].card[3];
+			WFIFOW(fd,19) = stor->store_item[idx].card[3];
 	}
 	WFIFOSET(fd,packet_db[0xf4].len);
 #else
-	WFIFOW(fd,0) =0x1c4;
-	WFIFOW(fd,2) =idx+1;
-	WFIFOL(fd,4) =amount;
+	WFIFOW(fd,0) = 0x1c4;
+	WFIFOW(fd,2) = idx+1;
+	WFIFOL(fd,4) = amount;
 	if(id->view_id > 0)
-		WFIFOW(fd,8) =id->view_id;
+		WFIFOW(fd,8) = id->view_id;
 	else
-		WFIFOW(fd,8) =stor->store_item[idx].nameid;
-	WFIFOB(fd,10)=id->type;
-	WFIFOB(fd,11)=stor->store_item[idx].identify;
-	WFIFOB(fd,12)=stor->store_item[idx].attribute;
-	WFIFOB(fd,13)=stor->store_item[idx].refine;
+		WFIFOW(fd,8) = stor->store_item[idx].nameid;
+	WFIFOB(fd,10) = (id->type == 7)? 4: id->type;
+	WFIFOB(fd,11) = stor->store_item[idx].identify;
+	WFIFOB(fd,12) = stor->store_item[idx].attribute;
+	WFIFOB(fd,13) = stor->store_item[idx].refine;
 	if(itemdb_isspecial(stor->store_item[idx].card[0])) {
-		WFIFOW(fd,14)=stor->store_item[idx].card[0];
-		WFIFOW(fd,16)=stor->store_item[idx].card[1];
-		WFIFOW(fd,18)=stor->store_item[idx].card[2];
-		WFIFOW(fd,20)=stor->store_item[idx].card[3];
+		WFIFOW(fd,14) = stor->store_item[idx].card[0];
+		WFIFOW(fd,16) = stor->store_item[idx].card[1];
+		WFIFOW(fd,18) = stor->store_item[idx].card[2];
+		WFIFOW(fd,20) = stor->store_item[idx].card[3];
 	}
 	else {
-		if(stor->store_item[idx].card[0] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[0])) > 0)
-			WFIFOW(fd,14)= j;
+		if(stor->store_item[idx].card[0] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[0])) > 0)
+			WFIFOW(fd,14) = j;
 		else
-			WFIFOW(fd,14)= stor->store_item[idx].card[0];
-		if(stor->store_item[idx].card[1] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[1])) > 0)
-			WFIFOW(fd,16)= j;
+			WFIFOW(fd,14) = stor->store_item[idx].card[0];
+		if(stor->store_item[idx].card[1] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[1])) > 0)
+			WFIFOW(fd,16) = j;
 		else
-			WFIFOW(fd,16)= stor->store_item[idx].card[1];
-		if(stor->store_item[idx].card[2] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[2])) > 0)
-			WFIFOW(fd,18)= j;
+			WFIFOW(fd,16) = stor->store_item[idx].card[1];
+		if(stor->store_item[idx].card[2] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[2])) > 0)
+			WFIFOW(fd,18) = j;
 		else
 			WFIFOW(fd,18)= stor->store_item[idx].card[2];
-		if(stor->store_item[idx].card[3] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[3])) > 0)
-			WFIFOW(fd,20)= j;
+		if(stor->store_item[idx].card[3] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[3])) > 0)
+			WFIFOW(fd,20) = j;
 		else
-			WFIFOW(fd,20)= stor->store_item[idx].card[3];
+			WFIFOW(fd,20) = stor->store_item[idx].card[3];
 	}
 	WFIFOSET(fd,packet_db[0x1c4].len);
 #endif
@@ -4134,76 +4134,76 @@ void clif_guildstorageitemadded(struct map_session_data *sd, struct guild_storag
 	id = itemdb_search(stor->store_item[idx].nameid);
 
 #if PACKETVER < 7
-	WFIFOW(fd,0) =0xf4;
-	WFIFOW(fd,2) =idx+1;
-	WFIFOL(fd,4) =amount;
+	WFIFOW(fd,0) = 0xf4;
+	WFIFOW(fd,2) = idx+1;
+	WFIFOL(fd,4) = amount;
 	if(id->view_id > 0)
-		WFIFOW(fd,8) =id->view_id;
+		WFIFOW(fd,8) = id->view_id;
 	else
-		WFIFOW(fd,8) =stor->store_item[idx].nameid;
-	WFIFOB(fd,10)=stor->store_item[idx].identify;
-	WFIFOB(fd,11)=stor->store_item[idx].attribute;
-	WFIFOB(fd,12)=stor->store_item[idx].refine;
+		WFIFOW(fd,8) = stor->store_item[idx].nameid;
+	WFIFOB(fd,10) = stor->store_item[idx].identify;
+	WFIFOB(fd,11) = stor->store_item[idx].attribute;
+	WFIFOB(fd,12) = stor->store_item[idx].refine;
 	if(itemdb_isspecial(stor->store_item[idx].card[0])) {
-		WFIFOW(fd,13)=stor->store_item[idx].card[0];
-		WFIFOW(fd,15)=stor->store_item[idx].card[1];
-		WFIFOW(fd,17)=stor->store_item[idx].card[2];
-		WFIFOW(fd,19)=stor->store_item[idx].card[3];
+		WFIFOW(fd,13) = stor->store_item[idx].card[0];
+		WFIFOW(fd,15) = stor->store_item[idx].card[1];
+		WFIFOW(fd,17) = stor->store_item[idx].card[2];
+		WFIFOW(fd,19) = stor->store_item[idx].card[3];
 	}
 	else {
-		if(stor->store_item[idx].card[0] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[0])) > 0)
-			WFIFOW(fd,13)= j;
+		if(stor->store_item[idx].card[0] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[0])) > 0)
+			WFIFOW(fd,13) = j;
 		else
-			WFIFOW(fd,13)= stor->store_item[idx].card[0];
-		if(stor->store_item[idx].card[1] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[1])) > 0)
-			WFIFOW(fd,15)= j;
+			WFIFOW(fd,13) = stor->store_item[idx].card[0];
+		if(stor->store_item[idx].card[1] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[1])) > 0)
+			WFIFOW(fd,15) = j;
 		else
-			WFIFOW(fd,15)= stor->store_item[idx].card[1];
-		if(stor->store_item[idx].card[2] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[2])) > 0)
-			WFIFOW(fd,17)= j;
+			WFIFOW(fd,15) = stor->store_item[idx].card[1];
+		if(stor->store_item[idx].card[2] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[2])) > 0)
+			WFIFOW(fd,17) = j;
 		else
-			WFIFOW(fd,17)= stor->store_item[idx].card[2];
-		if(stor->store_item[idx].card[3] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[3])) > 0)
-			WFIFOW(fd,19)= j;
+			WFIFOW(fd,17) = stor->store_item[idx].card[2];
+		if(stor->store_item[idx].card[3] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[3])) > 0)
+			WFIFOW(fd,19) = j;
 		else
-			WFIFOW(fd,19)= stor->store_item[idx].card[3];
+			WFIFOW(fd,19) = stor->store_item[idx].card[3];
 	}
 	WFIFOSET(fd,packet_db[0xf4].len);
 #else
-	WFIFOW(fd,0) =0x1c4;
-	WFIFOW(fd,2) =idx+1;
-	WFIFOL(fd,4) =amount;
+	WFIFOW(fd,0) = 0x1c4;
+	WFIFOW(fd,2) = idx+1;
+	WFIFOL(fd,4) = amount;
 	if(id->view_id > 0)
-		WFIFOW(fd,8) =id->view_id;
+		WFIFOW(fd,8) = id->view_id;
 	else
-		WFIFOW(fd,8) =stor->store_item[idx].nameid;
-	WFIFOB(fd,10)=id->type;
-	WFIFOB(fd,11)=stor->store_item[idx].identify;
-	WFIFOB(fd,12)=stor->store_item[idx].attribute;
-	WFIFOB(fd,13)=stor->store_item[idx].refine;
+		WFIFOW(fd,8) = stor->store_item[idx].nameid;
+	WFIFOB(fd,10) = (id->type == 7)? 4: id->type;
+	WFIFOB(fd,11) = stor->store_item[idx].identify;
+	WFIFOB(fd,12) = stor->store_item[idx].attribute;
+	WFIFOB(fd,13) = stor->store_item[idx].refine;
 	if(itemdb_isspecial(stor->store_item[idx].card[0])) {
-		WFIFOW(fd,14)=stor->store_item[idx].card[0];
-		WFIFOW(fd,16)=stor->store_item[idx].card[1];
-		WFIFOW(fd,18)=stor->store_item[idx].card[2];
-		WFIFOW(fd,20)=stor->store_item[idx].card[3];
+		WFIFOW(fd,14) = stor->store_item[idx].card[0];
+		WFIFOW(fd,16) = stor->store_item[idx].card[1];
+		WFIFOW(fd,18) = stor->store_item[idx].card[2];
+		WFIFOW(fd,20) = stor->store_item[idx].card[3];
 	}
 	else {
-		if(stor->store_item[idx].card[0] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[0])) > 0)
-			WFIFOW(fd,14)= j;
+		if(stor->store_item[idx].card[0] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[0])) > 0)
+			WFIFOW(fd,14) = j;
 		else
-			WFIFOW(fd,14)= stor->store_item[idx].card[0];
-		if(stor->store_item[idx].card[1] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[1])) > 0)
-			WFIFOW(fd,16)= j;
+			WFIFOW(fd,14) = stor->store_item[idx].card[0];
+		if(stor->store_item[idx].card[1] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[1])) > 0)
+			WFIFOW(fd,16) = j;
 		else
-			WFIFOW(fd,16)= stor->store_item[idx].card[1];
-		if(stor->store_item[idx].card[2] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[2])) > 0)
-			WFIFOW(fd,18)= j;
+			WFIFOW(fd,16) = stor->store_item[idx].card[1];
+		if(stor->store_item[idx].card[2] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[2])) > 0)
+			WFIFOW(fd,18) = j;
 		else
-			WFIFOW(fd,18)= stor->store_item[idx].card[2];
-		if(stor->store_item[idx].card[3] > 0 && (j=itemdb_viewid(stor->store_item[idx].card[3])) > 0)
-			WFIFOW(fd,20)= j;
+			WFIFOW(fd,18) = stor->store_item[idx].card[2];
+		if(stor->store_item[idx].card[3] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[3])) > 0)
+			WFIFOW(fd,20) = j;
 		else
-			WFIFOW(fd,20)= stor->store_item[idx].card[3];
+			WFIFOW(fd,20) = stor->store_item[idx].card[3];
 	}
 	WFIFOSET(fd,packet_db[0x1c4].len);
 #endif
@@ -4567,25 +4567,25 @@ static int clif_getareachar(struct block_list* bl, va_list ap)
 	switch(bl->type){
 	case BL_PC:
 		if(&sd->bl != bl)
-			clif_getareachar_pc(sd,(struct map_session_data*) bl);
+			clif_getareachar_pc(sd,(struct map_session_data*)bl);
 		break;
 	case BL_NPC:
-		clif_getareachar_npc(sd,(struct npc_data*) bl);
+		clif_getareachar_npc(sd,(struct npc_data*)bl);
 		break;
 	case BL_MOB:
-		clif_getareachar_mob(sd,(struct mob_data*) bl);
+		clif_getareachar_mob(sd,(struct mob_data*)bl);
 		break;
 	case BL_PET:
-		clif_getareachar_pet(sd,(struct pet_data*) bl);
+		clif_getareachar_pet(sd,(struct pet_data*)bl);
 		break;
 	case BL_ITEM:
-		clif_getareachar_item(sd,(struct flooritem_data*) bl);
+		clif_getareachar_item(sd,(struct flooritem_data*)bl);
 		break;
 	case BL_SKILL:
 		clif_getareachar_skillunit(sd,(struct skill_unit *)bl);
 		break;
 	case BL_HOM:
-		clif_getareachar_hom(sd,(struct homun_data*) bl);
+		clif_getareachar_hom(sd,(struct homun_data*)bl);
 		break;
 	default:
 		if(battle_config.error_log)
@@ -9188,7 +9188,7 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 		{
 			struct npc_data *snd=(struct npc_data*)bl;
 			memcpy(WFIFOP(fd,6),snd->name,24);
-			if(strlen(snd->position)>0){
+			if(snd->position[0]) {
 				// ギルド所属ならパケット0195を返す
 				WFIFOW(fd, 0)=0x195;
 				strncpy(WFIFOP(fd,30),"NPC",24);	// PT名

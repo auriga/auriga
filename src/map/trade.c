@@ -11,6 +11,7 @@
 #include "npc.h"
 #include "battle.h"
 #include "chrif.h"
+#include "unit.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -30,38 +31,34 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 	if(sd->npc_id)
 		npc_event_dequeue(sd);
 
-	if ((target_sd = map_id2sd(target_id)) != NULL && sd != target_sd) { // check same player to avoid hack
+	if((target_sd = map_id2sd(target_id)) != NULL && sd != target_sd) { // check same player to avoid hack
 		if(target_sd->vender_id != 0) {
-				clif_tradestart(sd, 4);
-				return;
+			clif_tradestart(sd, 4);
+			return;
 		}
 		if(!battle_config.invite_request_check) {
-			if(target_sd->guild_invite>0 || target_sd->party_invite>0 || target_sd->adopt_invite){
+			if(target_sd->guild_invite > 0 || target_sd->party_invite > 0 || target_sd->adopt_invite) {
 				clif_tradestart(sd,2);	// 相手はPT要請中かGuild要請中か養子要請中
 				return;
 			}
 		}
-		if(target_sd->trade_partner !=0) {
+		if(target_sd->trade_partner != 0) {
 			clif_tradestart(sd, 2);
-		}
-		else if(sd->bl.m != target_sd->bl.m
-		 || (sd->bl.x - target_sd->bl.x < -2 || sd->bl.x - target_sd->bl.x > 2)
-		 || (sd->bl.y - target_sd->bl.y < -2 || sd->bl.y - target_sd->bl.y > 2)) {
+		} else if(sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
 			clif_tradestart(sd, 0);
-		// if on a gvg map and not in same guild (that can block other player when WoE)
-		} else if (battle_config.gvg_trade_request_refused && map[sd->bl.m].flag.gvg &&
-		           target_sd->status.guild_id > 0 && sd->status.guild_id != target_sd->status.guild_id) {
+		} else if(battle_config.gvg_trade_request_refused && map[sd->bl.m].flag.gvg &&
+		          target_sd->status.guild_id > 0 && sd->status.guild_id != target_sd->status.guild_id) {
+				// if on a gvg map and not in same guild (that can block other player when WoE)
+				clif_tradestart(sd, 4);
+		} else if(battle_config.pvp_trade_request_refused && map[sd->bl.m].flag.pvp) {
+			// Same on PVP map
 			clif_tradestart(sd, 4);
-		// Same on PVP map
-		} else if (battle_config.pvp_trade_request_refused && map[sd->bl.m].flag.pvp) {
-			clif_tradestart(sd, 4);
-		}else{
+		} else {
 			target_sd->trade_partner = sd->status.account_id;
 			sd->trade_partner = target_sd->status.account_id;
 			clif_traderequest(target_sd,sd->status.name);
 		}
-	}
-	else{
+	} else {
 		clif_tradestart(sd, 1);
 	}
 
@@ -74,12 +71,11 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
  */
 void trade_tradeack(struct map_session_data *sd, unsigned char type)
 {
-// possible types: 3: trade ok., 4: trade canceled.
 	struct map_session_data *target_sd;
 
 	nullpo_retv(sd);
 
-	// check type
+	// possible types: 3: trade ok., 4: trade canceled.
 	if (type != 3 && type != 4)
 		return;
 
@@ -87,9 +83,7 @@ void trade_tradeack(struct map_session_data *sd, unsigned char type)
 		npc_event_dequeue(sd);
 
 	if((target_sd = map_id2sd(sd->trade_partner)) != NULL){
-		if(sd->bl.m != target_sd->bl.m
-		 || (sd->bl.x - target_sd->bl.x < -2 || sd->bl.x - target_sd->bl.x > 2)
-		 || (sd->bl.y - target_sd->bl.y < -2 || sd->bl.y - target_sd->bl.y > 2)) {
+		if(sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
 			trade_tradecancel(sd);
 			return;
 		}
@@ -174,9 +168,7 @@ void trade_tradeok(struct map_session_data *sd)
 	nullpo_retv(sd);
 
 	if((target_sd = map_id2sd(sd->trade_partner)) != NULL){
-		if (sd->bl.m != target_sd->bl.m ||
-		    (sd->bl.x - target_sd->bl.x < -2 || sd->bl.x - target_sd->bl.x > 2) ||
-		    (sd->bl.y - target_sd->bl.y < -2 || sd->bl.y - target_sd->bl.y > 2)) {
+		if (sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
 			trade_tradecancel(sd);
 			return;
 		}

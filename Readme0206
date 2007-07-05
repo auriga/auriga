@@ -1,4 +1,16 @@
 ----------------------------------------
+//0207 [2007/07/06] by Rayce
+
+・ペットの卵を倉庫に入れたとき装備品目に置かれなかった問題を修正（clif.c）
+・unit_walktodir() を pc_runtodir() と同様に修正（unit.c）
+・取引時の距離チェックは unit_distance2() を利用するように変更（trade.c）
+
+・skill.cの全体的な細かい整形
+・skill_check_condition2_pc() の「ソウルリンカーで使えないスキル」の部分をまとめ直し（skill.c）
+	battle_config.soul_linker_battle_modeの使い方がおかしかったので修正
+	battle_config.soul_linker_battle_mode_kaが何故か使われてなかったので修正
+
+----------------------------------------
 //0206 [2007/07/06] by Rayce
 
 ・サーバースナップショット（version.h）
