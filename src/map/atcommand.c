@@ -3907,6 +3907,7 @@ int atcommand_charstpoint(
 	if (!message || !*message)
 		return -1;
 	if (sscanf(message, "%d %99[^\n]", &point, character) < 2 || point == 0)
+		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		new_status_point = (int)pl_sd->status.status_point + point;

@@ -51,7 +51,7 @@ int pc_checkequip(struct map_session_data *sd,int pos);
 int pc_checkoverhp(struct map_session_data*);
 int pc_checkoversp(struct map_session_data*);
 
-int pc_setpos(struct map_session_data*,char*,int,int,int);
+int pc_setpos(struct map_session_data*,const char*,int,int,int);
 int pc_setsavepoint(struct map_session_data*,char*,int,int);
 int pc_randomwarp(struct map_session_data *sd,int type);
 void pc_memo(struct map_session_data *sd, int i);
@@ -164,7 +164,7 @@ int pc_calc_skilltree(struct map_session_data *sd);
 int pc_check_guild_skill_effective_range(struct map_session_data *sd);
 
 #define pc_isupper(sd) (((sd)->status.class_ >= PC_CLASS_NV2) && ((sd)->status.class_ < PC_CLASS_NV3))
-#define pc_isbaby(sd) (((sd)->status.class_ >= PC_CLASS_NV3) && ((sd)->status.class_ <= PC_CLASS_SNV3))
+#define pc_isbaby(sd)  (((sd)->status.class_ >= PC_CLASS_NV3) && ((sd)->status.class_ <= PC_CLASS_SNV3))
 
 struct pc_base_job pc_calc_base_job(int b_class);
 int pc_calc_class_job(int job,int upper);
@@ -185,6 +185,10 @@ int pc_readdb(void);
 int do_final_pc(void);
 int do_init_pc(void);
 
-enum {ADDITEM_EXIST,ADDITEM_NEW,ADDITEM_OVERAMOUNT};
+enum {
+	ADDITEM_EXIST,
+	ADDITEM_NEW,
+	ADDITEM_OVERAMOUNT,
+};
 
 #endif

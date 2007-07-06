@@ -2993,6 +2993,8 @@ int pc_dropitem(struct map_session_data *sd, int n, int amount)
 	return 0;
 }
 
+
+
 /*==========================================
  * アイテムを拾う処理本体
  *------------------------------------------
@@ -3467,7 +3469,7 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
  * PCの位置設定
  *------------------------------------------
  */
-int pc_setpos(struct map_session_data *sd,char *mapname_org,int x,int y,int clrtype)
+int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,int clrtype)
 {
 	char mapname[24];
 	int m, move_flag = 0;
