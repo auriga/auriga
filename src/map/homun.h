@@ -68,7 +68,6 @@ int homun_save_data(struct map_session_data *sd);
 int do_init_homun(void);
 int do_final_homun(void);
 
-int read_homundb(void);
 void homun_reload(void);
 
 #endif

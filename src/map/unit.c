@@ -2150,19 +2150,17 @@ int unit_free(struct block_list *bl, int clrtype)
 				sd->pd = NULL;
 			}
 		}
-		if (pd->a_skill)
-		{
+		if(pd->a_skill) {
 			aFree(pd->a_skill);
 			pd->a_skill = NULL;
 		}
-		if (pd->s_skill)
-		{
-			if (pd->s_skill->timer != -1)
+		if(pd->s_skill) {
+			if(pd->s_skill->timer != -1)
 				delete_timer(pd->s_skill->timer, pet_skill_support_timer);
 			aFree(pd->s_skill);
 			pd->s_skill = NULL;
 		}
-		if(sd && sd->pet_hungry_timer != -1)
+		if(sd)
 			pet_hungry_timer_delete(sd);
 		map_deliddb(&pd->bl);
 		pet_lootitem_free(pd);
@@ -2173,15 +2171,16 @@ int unit_free(struct block_list *bl, int clrtype)
 		struct map_session_data *sd = hd->msd;
 
 		status_change_clear(&hd->bl,1);			// ステータス異常を解除する
-		if(sd && sd->hd) {
-			//sd->hd->status.incubate = 0;
-			homun_save_data(sd);
-			if(sd->hd->natural_heal_hp != -1 || sd->hd->natural_heal_sp != -1)
-				homun_natural_heal_timer_delete(sd->hd);
-			sd->hd = NULL;
-		}
-		if(sd && sd->homun_hungry_timer != -1)
+		if(sd) {
 			homun_hungry_timer_delete(sd);
+			if(sd->hd) {
+				//sd->hd->status.incubate = 0;
+				homun_save_data(sd);
+				if(sd->hd->natural_heal_hp != -1 || sd->hd->natural_heal_sp != -1)
+					homun_natural_heal_timer_delete(sd->hd);
+				sd->hd = NULL;
+			}
+		}
 		map_deliddb(&hd->bl);
 		map_freeblock(hd);
 	}
