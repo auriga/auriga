@@ -3614,6 +3614,29 @@ atcommand_mapexit(
  *
  *------------------------------------------
  */
+static int atcommand_idsearch_sub(void *key, void *data, va_list ap)
+{
+	struct item_data *item = (struct item_data *)data;
+	char *str;
+	int *match;
+	int fd;
+
+	str   = va_arg(ap,char *);
+	match = va_arg(ap,int *);
+	fd    = va_arg(ap,int);
+
+	if(strstr(item->jname, str)) {
+		char output[128], slot[16] = "";
+		if(item->slot > 0) {
+			sprintf(slot, " [%d]", item->slot);
+		}
+		snprintf(output, sizeof(output), msg_txt(78), item->jname, slot, item->nameid);	// "%s%s : %d"
+		clif_displaymessage(fd, output);
+		(*match)++;
+	}
+	return 0;
+}
+
 int
 atcommand_idsearch(
 	const int fd, struct map_session_data* sd,
@@ -3621,23 +3644,16 @@ atcommand_idsearch(
 {
 	char item_name[100];
 	char output[100];
-	int i, max, match = 0;
-	struct item_data *item;
+	int match;
 
-	if (sscanf(message, "%99s", item_name) < 0)
+	if (sscanf(message, "%99[^\n]", item_name) < 1)
 		return -1;
 
 	snprintf(output, sizeof output, msg_txt(77), item_name);
 	clif_displaymessage(fd,output);
 
-	max = itemdb_getmaxid();
-	for(i = 0; i <= max; i++) {
-		if ((item = itemdb_exists(i)) != NULL && strstr(item->jname, item_name) != NULL) {
-			match++;
-			snprintf(output, sizeof output, msg_txt(78), item->jname, item->nameid);
-			clif_displaymessage(fd, output);
-		}
-	}
+	match = itemdb_idsearch(fd, item_name, atcommand_idsearch_sub);
+
 	snprintf(output, sizeof output, msg_txt(79), match);
 	clif_displaymessage(fd,output);
 
@@ -4367,8 +4383,7 @@ atcommand_giveitem(
 		} else {
 			item_data = itemdb_search(item_id);
 		}
-		strncpy(item_name,item_data->jname,32);
-		item_name[32] = '\0';	// force \0 terminal
+		strncpy(item_name,item_data->jname,48);
 	} else {
 		item_data = itemdb_searchname(item_name);
 		if (item_data && (!battle_config.item_check || itemdb_available(item_data->nameid)))

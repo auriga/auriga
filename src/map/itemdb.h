@@ -7,8 +7,8 @@
 
 struct item_data {
 	int nameid;
-	char name[32];
-	char jname[32];
+	char name[48];
+	char jname[48];
 	char cardillustname[64];
 	int value_buy;
 	int value_sell;
@@ -52,11 +52,10 @@ struct random_item_data {
 	} data[MAX_RANDITEM];
 };
 
-int itemdb_getmaxid(void);
-
 struct item_data* itemdb_searchname(const char *name);
 struct item_data* itemdb_search(int nameid);
 struct item_data* itemdb_exists(int nameid);
+
 #define itemdb_type(n) itemdb_search(n)->type
 #define itemdb_atk(n) itemdb_search(n)->atk
 #define itemdb_def(n) itemdb_search(n)->def
@@ -80,6 +79,7 @@ int itemdb_searchrandomid(int type);
 #define itemdb_value_sell(n) itemdb_search(n)->value_sell
 #define itemdb_value_notdc(n) itemdb_search(n)->flag.value_notdc
 #define itemdb_value_notoc(n) itemdb_search(n)->flag.value_notoc
+
 int itemdb_isequip(int);
 int itemdb_isequip2(struct item_data *);
 int itemdb_isequip3(int);
@@ -87,10 +87,7 @@ int itemdb_iscartable(int nameid);
 int itemdb_isstorageable(int nameid);
 int itemdb_isdropable(int nameid);
 
-// itemdb_equipマクロとitemdb_equippointとの違いは
-// 前者が鯖側dbで定義された値そのものを返すのに対し
-// 後者はsessiondataを考慮した鞍側での装備可能場所
-// すべての組み合わせを返す
+int itemdb_idsearch(const int fd, const char *str, int (*func)(void*, void*, va_list));
 
 void itemdb_reload(void);
 void do_final_itemdb(void);

@@ -26,18 +26,8 @@
 //   定義すると、itemdb.txtとgrfで名前が異なる場合、表示します.
 //#define ITEMDB_OVERRIDE_NAME_VERBOSE	1
 
-static struct dbt* item_db;
+static struct dbt* item_db = NULL;
 static struct random_item_data random_item[MAX_RANDTYPE];
-static int max_itemid;
-
-/*==========================================
- * アイテムIDの最大値を返す
- *------------------------------------------
- */
-int itemdb_getmaxid(void)
-{
-	return max_itemid;
-}
 
 /*==========================================
  * 名前で検索
@@ -64,8 +54,22 @@ static int itemdb_searchname_sub(void *key,void *data,va_list ap)
 struct item_data* itemdb_searchname(const char *str)
 {
 	struct item_data *item = NULL;
+
 	numdb_foreach(item_db,itemdb_searchname_sub,str,&item);
 	return item;
+}
+
+/*==========================================
+ * @idsearch
+ *------------------------------------------
+ */
+int itemdb_idsearch(const int fd, const char *str, int (*func)(void*, void*, va_list))
+{
+	int match = 0;
+
+	numdb_foreach(item_db, func, str, &match, fd);
+
+	return match;
 }
 
 /*==========================================
@@ -158,11 +162,13 @@ struct item_data* itemdb_search(int nameid)
  */
 int itemdb_isequip(int nameid)
 {
-	int type=itemdb_type(nameid);
-	if(type==0 || type==2 || type==3 || type==6 || type==10)
+	int type = itemdb_type(nameid);
+
+	if(type == 0 || type == 2 || type == 3 || type == 6 || type == 10)
 		return 0;
 	return 1;
 }
+
 /*==========================================
  *
  *------------------------------------------
@@ -170,22 +176,23 @@ int itemdb_isequip(int nameid)
 int itemdb_isequip2(struct item_data *data)
 {
 	if(data) {
-		int type=data->type;
-		if(type==0 || type==2 || type==3 || type==6 || type==10)
+		int type = data->type;
+		if(type == 0 || type == 2 || type == 3 || type == 6 || type == 10)
 			return 0;
-		else
-			return 1;
+		return 1;
 	}
 	return 0;
 }
+
 /*==========================================
  *
  *------------------------------------------
  */
 int itemdb_isequip3(int nameid)
 {
-	int type=itemdb_type(nameid);
-	if(type==4 || type==5 || type == 8)
+	int type = itemdb_type(nameid);
+
+	if(type == 4 || type == 5 || type == 8)
 		return 1;
 	return 0;
 }
@@ -247,12 +254,13 @@ static int itemdb_read_itemslottable(void)
 	buf = (char *)grfio_read("data\\itemslottable.txt");
 	if(buf == NULL)
 		return -1;
-	s=grfio_size("data\\itemslottable.txt");
-	buf[s]=0;
-	for(p=buf;p-buf<s;){
+	s = grfio_size("data\\itemslottable.txt");
+
+	buf[s] = 0;
+	for(p=buf; p-buf<s; ) {
 		int nameid,equip;
 		sscanf(p,"%d#%d#",&nameid,&equip);
-		itemdb_search(nameid)->equip=equip;
+		itemdb_search(nameid)->equip = equip;
 		p=strchr(p,'\n');
 		if(!p) break;
 		p++;
@@ -279,9 +287,8 @@ static int itemdb_read_itemdb(void)
 	struct item_data *id;
 	struct script_code *script = NULL;
 	int i=0;
-	char *filename[]={ "db/item_db.txt","db/addon/item_db_add.txt" };
+	char *filename[] = { "db/item_db.txt","db/addon/item_db_add.txt" };
 
-	max_itemid = 0;
 	for(i=0;i<2;i++){
 		fp=fopen(filename[i],"r");
 		if(fp==NULL){
@@ -301,56 +308,58 @@ static int itemdb_read_itemdb(void)
 				p=strchr(p,',');
 				if(p){ *p++=0; np=p; }
 			}
-			if(str[0]==NULL)
+			if(str[0] == NULL)
 				continue;
 
-			nameid=atoi(str[0]);
-			if(nameid<=0)
+			nameid = atoi(str[0]);
+			if(nameid <= 0)
 				continue;
-			if(nameid > max_itemid)
-				max_itemid = nameid;
 			ln++;
 
 			//ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine
-			id=itemdb_search(nameid);
-			strncpy(id->name,str[1],32);
-			strncpy(id->jname,str[2],32);
-			id->type=atoi(str[3]);
+			id = itemdb_search(nameid);
+			strncpy(id->name,str[1],48);
+			strncpy(id->jname,str[2],48);
+			id->type = atoi(str[3]);
 			// buy≠sell*2 は item_value_db.txt で指定してください。
-			if (atoi(str[5])) {		// sell値を優先とする
-				id->value_buy=atoi(str[5])*2;
-				id->value_sell=atoi(str[5]);
+			if(atoi(str[5])) {		// sell値を優先とする
+				id->value_buy  = atoi(str[5])*2;
+				id->value_sell = atoi(str[5]);
 			} else {
-				id->value_buy=atoi(str[4]);
-				id->value_sell=atoi(str[4])/2;
+				id->value_buy  = atoi(str[4]);
+				id->value_sell = atoi(str[4])/2;
 			}
-			id->weight=atoi(str[6]);
-			id->atk=atoi(str[7]);
-			id->def=atoi(str[8]);
-			id->range=atoi(str[9]);
-			id->slot=atoi(str[10]);
-			id->class_=(unsigned int)strtoul(str[11],NULL,0);
-			id->sex=atoi(str[12]);
-			if(id->equip != atoi(str[13])){
-				id->equip=atoi(str[13]);
+			id->weight = atoi(str[6]);
+			id->atk    = atoi(str[7]);
+			id->def    = atoi(str[8]);
+			id->range  = atoi(str[9]);
+			id->slot   = atoi(str[10]);
+			id->class_ = (unsigned int)strtoul(str[11],NULL,0);
+			id->sex    = atoi(str[12]);
+			if(id->equip != atoi(str[13])) {
+				id->equip = atoi(str[13]);
 			}
-			id->wlv=atoi(str[14]);
+			id->wlv = atoi(str[14]);
 			if(id->wlv < 0 || id->wlv > MAX_WEAPON_LEVEL) {
 				id->wlv = 0;
 			}
-			id->elv=atoi(str[15]);
-			id->look=atoi(str[16]);
-			id->refine=atoi(str[17]);
-			id->flag.available=1;
-			id->flag.value_notdc=0;
-			id->flag.value_notoc=0;
-			id->view_id=0;
-			id->group=0;
-			id->delay=0;
-			id->upper=0;
-			id->zone=0;
+			id->elv              = atoi(str[15]);
+			id->look             = atoi(str[16]);
+			id->refine           = atoi(str[17]);
+			id->flag.available   = 1;
+			id->flag.value_notdc = 0;
+			id->flag.value_notoc = 0;
+			id->view_id          = 0;
+			id->group            = 0;
+			id->delay            = 0;
+			id->upper            = 0;
+			id->zone             = 0;
 
-			if((p=strchr(np,'{'))==NULL)
+			// force \0 terminal
+			id->name[47]  = '\0';
+			id->jname[47] = '\0';
+
+			if((p = strchr(np,'{')) == NULL)
 				continue;
 
 			if(id->use_script)
@@ -360,12 +369,14 @@ static int itemdb_read_itemdb(void)
 			id->use_script = (script != &error_code)? script: NULL;
 
 			p++;
-			while((p=strchr(p,'}'))) {
+			while((p = strchr(p,'}')) != NULL) {
 				p++;
-				while( isspace( (unsigned char)*p ) ) p++;
-				if( *p == ',' ) break;
+				while(isspace((unsigned char)*p))
+					p++;
+				if(*p == ',')
+					break;
 			}
-			if( p ==NULL )
+			if(p == NULL)
 				continue;
 
 			if(id->equip_script)
@@ -393,19 +404,19 @@ static int itemdb_read_itemdb(void)
 			p=strchr(p,',');
 			if(p){ *p++=0; np=p; }
 		}
-		if(str[0]==NULL)
+		if(str[0] == NULL)
 			continue;
 
-		nameid=atoi(str[0]);
-		if(nameid<=0 || !(id=itemdb_exists(nameid)))
+		nameid = atoi(str[0]);
+		if(nameid <= 0 || !(id = itemdb_exists(nameid)))
 			continue;
 
 		ln++;
 		id->upper            = atoi(str[1]);
 		id->zone             = atoi(str[2]);
-		id->flag.dropable    = (atoi(str[3])==0)? 0: 1;
-		id->flag.storageable = (atoi(str[4])==0)? 0: 1;
-		id->flag.cartable    = (atoi(str[5])==0)? 0: 1;
+		id->flag.dropable    = (atoi(str[3]) == 0)? 0: 1;
+		id->flag.storageable = (atoi(str[4]) == 0)? 0: 1;
+		id->flag.cartable    = (atoi(str[5]) == 0)? 0: 1;
 		id->delay            = atoi(str[6]);
 	}
 	fclose(fp);
@@ -425,14 +436,14 @@ static int itemdb_read_itemdb(void)
 			p=strchr(p,',');
 			if(p){ *p++=0; np=p; }
 		}
-		if(str[0]==NULL || str[3]==NULL)
+		if(str[0] == NULL || str[3] == NULL)
 			continue;
 
-		nameid=atoi(str[0]);
-		if(nameid<=0 || !(id=itemdb_exists(nameid)))
+		nameid = atoi(str[0]);
+		if(nameid <= 0 || !(id = itemdb_exists(nameid)))
 			continue;
 		//ID,Name,Jname,type
-		id->arrow_type=atoi(str[3]);
+		id->arrow_type = atoi(str[3]);
 	}
 	fclose(fp);
 	printf("read db/item_arrowtype.txt done\n");
@@ -451,14 +462,14 @@ static int itemdb_read_itemdb(void)
 			p=strchr(p,',');
 			if(p){ *p++=0; np=p; }
 		}
-		if(str[0]==NULL || str[3]==NULL)
+		if(str[0] == NULL || str[3] == NULL)
 			continue;
 
-		nameid=atoi(str[0]);
-		if(nameid<=0 || !(id=itemdb_exists(nameid)))
+		nameid = atoi(str[0]);
+		if(nameid <= 0 || !(id = itemdb_exists(nameid)))
 			continue;
 		//ID,Name,Jname,Group
-		id->group=atoi(str[3]);
+		id->group = atoi(str[3]);
 	}
 	fclose(fp);
 	printf("read db/item_group_db.txt done\n");
@@ -492,29 +503,26 @@ static int itemdb_read_itemvaluedb(void)
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		if(str[0]==NULL)
+		if(str[0] == NULL)
 			continue;
 
-		nameid=atoi(str[0]);
-		if(nameid<=0)
-			continue;
-
-		if( !(id=itemdb_exists(nameid)) )
+		nameid = atoi(str[0]);
+		if(nameid <= 0 || !(id = itemdb_exists(nameid)))
 			continue;
 
 		ln++;
 		// それぞれ記述した個所のみオーバーライト
-		if(str[3]!=NULL && *str[3]){
-			id->value_buy=atoi(str[3]);
+		if(str[3] != NULL && *str[3]) {
+			id->value_buy = atoi(str[3]);
 		}
-		if(str[4]!=NULL && *str[4]){
-			id->value_sell=atoi(str[4]);
+		if(str[4] != NULL && *str[4]) {
+			id->value_sell = atoi(str[4]);
 		}
-		if(str[5]!=NULL && *str[5]){
-			id->flag.value_notdc=(atoi(str[5])==0)? 0:1;
+		if(str[5] != NULL && *str[5]) {
+			id->flag.value_notdc = (atoi(str[5]) == 0)? 0: 1;
 		}
-		if(str[6]!=NULL && *str[6]){
-			id->flag.value_notoc=(atoi(str[6])==0)? 0:1;
+		if(str[6] != NULL && *str[6]) {
+			id->flag.value_notoc = (atoi(str[6]) == 0)? 0: 1;
 		}
 	}
 	fclose(fp);
@@ -573,8 +581,7 @@ static int itemdb_read_randomitem(void)
 				p=strchr(p,',');
 				if(p) *p++=0;
 			}
-
-			if(str[0]==NULL)
+			if(str[0] == NULL)
 				continue;
 
 			nameid = atoi(str[0]);
@@ -585,8 +592,7 @@ static int itemdb_read_randomitem(void)
 					random_item[i].default_id = atoi(str[2]);
 				continue;
 			}
-
-			if(str[2]){
+			if(str[2] && itemdb_exists(nameid)) {
 				int c = random_item[i].count;
 				random_item[i].data[c].nameid = nameid;
 				random_item[i].data[c].per    = atoi(str[2]);
@@ -629,20 +635,19 @@ static int itemdb_read_itemavail(void)
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-
-		if(str[0]==NULL || str[1]==NULL)
+		if(str[0] == NULL || str[1] == NULL)
 			continue;
 
-		nameid=atoi(str[0]);
-		if(nameid<0 || !(id=itemdb_exists(nameid)) )
+		nameid = atoi(str[0]);
+		if(nameid < 0 || !(id = itemdb_exists(nameid)))
 			continue;
-		k=atoi(str[1]);
+		k = atoi(str[1]);
 		if(k > 0) {
 			id->flag.available = 1;
 			id->view_id = k;
-		}
-		else
+		} else {
 			id->flag.available = 0;
+		}
 		ln++;
 	}
 	fclose(fp);
@@ -664,21 +669,20 @@ static int itemdb_read_itemnametable(void)
 	if(buf == NULL)
 		return -1;
 
-	buf[s]=0;
-	for(p=buf;p-buf<s;){
+	buf[s] = 0;
+	for(p=buf; p-buf<s; ) {
 		int nameid;
 		char buf2[64];
 
-		if( sscanf(p,"%d#%63[^#]#",&nameid,buf2)==2 ){
+		if(sscanf(p,"%d#%63[^#]#",&nameid,buf2) == 2) {
+			buf2[47] = '\0';	// force \0 terminal
 
 #ifdef ITEMDB_OVERRIDE_NAME_VERBOSE
-			if( itemdb_exists(nameid) &&
-				strncmp(itemdb_search(nameid)->jname,buf2,32)!=0 ){
-				printf("[override] %d %s => %s\n",nameid
-					,itemdb_search(nameid)->jname,buf2);
+			if(itemdb_exists(nameid) && strcmp(itemdb_search(nameid)->jname, buf2) != 0) {
+				printf("[override] %d %s => %s\n", nameid, itemdb_search(nameid)->jname, buf2);
 			}
 #endif
-			memcpy(itemdb_search(nameid)->jname,buf2,32);
+			memcpy(itemdb_search(nameid)->jname,buf2,48);
 		}
 
 		p=strchr(p,'\n');
@@ -705,12 +709,13 @@ static int itemdb_read_cardillustnametable(void)
 	if(buf == NULL)
 		return -1;
 
-	buf[s]=0;
-	for(p=buf;p-buf<s;){
+	buf[s] = 0;
+	for(p=buf; p-buf<s; ) {
 		int nameid;
-		char buf2[64];
+		char buf2[128];
 
-		if( sscanf(p,"%d#%59[^#]#",&nameid,buf2)==2 ){
+		if(sscanf(p,"%d#%127[^#]#",&nameid,buf2) == 2) {
+			buf2[59] = '\0';	// force \0
 			strcat(buf2,".bmp");
 			memcpy(itemdb_search(nameid)->cardillustname,buf2,64);
 		}
@@ -735,7 +740,7 @@ static int itemdb_debug_sub(void *key,void *data,va_list ap)
 	struct item_data *id = (struct item_data *)data;
 	FILE *fp = va_arg(ap,FILE *);
 
-	fprintf(fp,"%6d : %s\n",(int)key,id->jname);
+	fprintf(fp,"%6d : %s" RETCODE,(int)key,id->jname);
 	return 0;
 }
 
@@ -775,9 +780,9 @@ static int itemdb_final(void *key,void *data,va_list ap)
  */
 void do_final_itemdb(void)
 {
-	if(item_db){
+	if(item_db) {
 		numdb_final(item_db,itemdb_final);
-		item_db=NULL;
+		item_db = NULL;
 	}
 }
 
@@ -792,6 +797,7 @@ static void itemdb_read(void)
 	itemdb_read_itemvaluedb();
 	itemdb_read_randomitem();
 	itemdb_read_itemavail();
+
 	if(battle_config.item_name_override_grffile)
 		itemdb_read_itemnametable();
 	itemdb_read_cardillustnametable();
