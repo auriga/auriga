@@ -51,45 +51,45 @@
 #endif
 
 // 極力 staticでローカルに収める
-static struct dbt * id_db;
-static struct dbt * map_db;
-static struct dbt * nick_db;
-static struct dbt * charid_db;
+static struct dbt *id_db = NULL;
+static struct dbt *map_db = NULL;
+static struct dbt *nick_db = NULL;
+static struct dbt *charid_db = NULL;
 
 static int users;
 static struct block_list *object[MAX_FLOORITEM];
-static int first_free_object_id,last_object_id;
+static int first_free_object_id, last_object_id;
 
-#define block_free_max (128*1024)
-static void *block_free[block_free_max];
-static int block_free_count=0,block_free_lock=0;
+#define BLOCK_FREE_MAX (128*1024)
+static void *block_free[BLOCK_FREE_MAX];
+static int block_free_count = 0, block_free_lock = 0;
 
-#define BL_LIST_MAX (256*1024)
-static struct block_list *bl_list[BL_LIST_MAX];
+#define BLOCK_LIST_MAX (256*1024)
+static struct block_list *bl_list[BLOCK_LIST_MAX];
 static int bl_list_count = 0;
 
 static struct delay_item_drop2 *delayitem_head = NULL, *delayitem_tail = NULL;
 
 struct map_data *map = NULL;
-int map_num=0;
+int map_num = 0;
 
-int autosave_interval=DEFAULT_AUTOSAVE_INTERVAL;
-int autosave_gvg_rate=100;
-int agit_flag=0;
-int map_pk_server_flag = 0;
-int map_pk_nightmaredrop_flag = 0;
+int autosave_interval = DEFAULT_AUTOSAVE_INTERVAL;
+int autosave_gvg_rate = 100;
+int agit_flag = 0;
+static int map_pk_server_flag = 0;
+static int map_pk_nightmaredrop_flag = 0;
 int sql_script_enable = 0;
 
 extern int packet_parse_time;
 
 // マップキャッシュ利用フラグ(map_athana.conf内のread_map_from_cacheで指定)
 // 0:利用しない 1:非圧縮保存 2:圧縮保存
-int map_read_flag=0;
+static int map_read_flag = 0;
 
-char map_server_tag[16]="map01";	// マップサーバタグ名
-char map_cache_file[256]="db/map.info"; // マップキャッシュファイル名
-char motd_txt[256]="conf/motd.txt";
-char help_txt[256]="conf/help.txt";
+char map_server_tag[16] = "map01";	// マップサーバタグ名
+static char map_cache_file[256] = "db/map.info";	// マップキャッシュファイル名
+char motd_txt[256] = "conf/motd.txt";
+char help_txt[256] = "conf/help.txt";
 char extra_add_file_txt[1024] = "map_extra_add.txt"; // to add items from external software (use append to add a line)
 
 // 向き計算用
@@ -143,7 +143,7 @@ static char script_server_charset[32] = "";
 
 int do_sql_init_map(void)
 {
-	//DB connection initialized
+	// DB connection initialized
 	mysql_init(&mysql_handle);
 	printf("Connect DB server");
 	if(map_server_charset[0]) {
@@ -157,7 +157,7 @@ int do_sql_init_map(void)
 		printf("%s\n",mysql_error(&mysql_handle));
 		exit(1);
 	} else {
-		printf ("Connect Success!\n");
+		printf("Connect Success!\n");
 	}
 	if(map_server_charset[0]) {
 		sprintf(tmp_sql,"SET NAMES %s",map_server_charset);
@@ -180,7 +180,7 @@ int do_sql_init_map(void)
 			printf("%s\n",mysql_error(&mysql_handle_script));
 			exit(1);
 		} else {
-			printf ("Connect Success!\n");
+			printf("Connect Success!\n");
 		}
 		if(script_server_charset[0]) {
 			sprintf(tmp_sql,"SET NAMES %s",script_server_charset);
@@ -204,41 +204,41 @@ int do_sql_final_map(void)
 
 int map_sql_config_read_sub(const char* w1,const char* w2)
 {
-	if(strcmpi(w1,"map_server_ip")==0){
-		strcpy(map_server_ip, w2);
+	if(strcmpi(w1,"map_server_ip") == 0) {
+		strncpy(map_server_ip, w2, sizeof(map_server_ip) - 1);
 	}
-	else if(strcmpi(w1,"map_server_port")==0){
-		map_server_port=atoi(w2);
+	else if(strcmpi(w1,"map_server_port") == 0) {
+		map_server_port = atoi(w2);
 	}
-	else if(strcmpi(w1,"map_server_id")==0){
-		strcpy(map_server_id, w2);
+	else if(strcmpi(w1,"map_server_id") == 0) {
+		strncpy(map_server_id, w2, sizeof(map_server_id) - 1);
 	}
-	else if(strcmpi(w1,"map_server_pw")==0){
-		strcpy(map_server_pw, w2);
+	else if(strcmpi(w1,"map_server_pw") == 0) {
+		strncpy(map_server_pw, w2, sizeof(map_server_pw) - 1);
 	}
-	else if(strcmpi(w1,"map_server_db")==0){
-		strcpy(map_server_db, w2);
+	else if(strcmpi(w1,"map_server_db") == 0) {
+		strncpy(map_server_db, w2, sizeof(map_server_db) - 1);
 	}
-	else if(strcmpi(w1,"map_server_charset")==0){
-		strcpy(map_server_charset, w2);
+	else if(strcmpi(w1,"map_server_charset") == 0) {
+		strncpy(map_server_charset, w2, sizeof(map_server_charset) - 1);
 	}
-	else if(strcmpi(w1,"script_server_ip")==0){
-		strcpy(script_server_ip, w2);
+	else if(strcmpi(w1,"script_server_ip") == 0) {
+		strncpy(script_server_ip, w2, sizeof(script_server_ip) - 1);
 	}
-	else if(strcmpi(w1,"script_server_port")==0){
-		script_server_port=atoi(w2);
+	else if(strcmpi(w1,"script_server_port") == 0) {
+		script_server_port = atoi(w2);
 	}
-	else if(strcmpi(w1,"script_server_id")==0){
-		strcpy(script_server_id, w2);
+	else if(strcmpi(w1,"script_server_id") == 0) {
+		strncpy(script_server_id, w2, sizeof(script_server_id) - 1);
 	}
-	else if(strcmpi(w1,"script_server_pw")==0){
-		strcpy(script_server_pw, w2);
+	else if(strcmpi(w1,"script_server_pw") == 0) {
+		strncpy(script_server_pw, w2, sizeof(script_server_pw) - 1);
 	}
-	else if(strcmpi(w1,"script_server_db")==0){
-		strcpy(script_server_db, w2);
+	else if(strcmpi(w1,"script_server_db") == 0) {
+		strncpy(script_server_db, w2, sizeof(script_server_db) - 1);
 	}
-	else if(strcmpi(w1,"script_server_charset")==0){
-		strcpy(script_server_charset, w2);
+	else if(strcmpi(w1,"script_server_charset") == 0) {
+		strncpy(script_server_charset, w2, sizeof(script_server_charset) - 1);
 	}
 
 	return 0;
@@ -258,7 +258,7 @@ int map_sql_config_read_sub(const char* w1,const char* w2)
  */
 void map_setusers(int n)
 {
-	users=n;
+	users = n;
 }
 
 /*==========================================
@@ -279,20 +279,18 @@ int map_getusers(void)
  * ロックされているときはバッファにためる
  *------------------------------------------
  */
-int map_freeblock( void *bl )
+int map_freeblock(void *bl)
 {
-	if(block_free_lock==0){
+	if(block_free_lock == 0) {
 		aFree(bl);
 		bl = NULL;
-	}
-	else{
-		if( block_free_count>=block_free_max ) {
+	} else {
+		if(block_free_count >= BLOCK_FREE_MAX) {
 			if(battle_config.error_log)
-				printf("map_freeblock: *WARNING* too many free block! %d %d\n",
-			block_free_count,block_free_lock);
+				printf("map_freeblock: *WARNING* too many free block! %d %d\n", block_free_count, block_free_lock);
+		} else {
+			block_free[block_free_count++] = bl;
 		}
-		else
-			block_free[block_free_count++]=bl;
 	}
 	return block_free_lock;
 }
@@ -314,18 +312,17 @@ int map_freeblock_lock(void)
  */
 int map_freeblock_unlock(void)
 {
-	if( (--block_free_lock)==0 ){
+	if((--block_free_lock) == 0) {
 		int i;
-
-		for(i=0;i<block_free_count;i++){
+		for(i = 0; i < block_free_count; i++) {
 			aFree(block_free[i]);
 			block_free[i] = NULL;
 		}
-		block_free_count=0;
-	}else if(block_free_lock<0){
+		block_free_count = 0;
+	} else if(block_free_lock < 0) {
 		if(battle_config.error_log)
 			printf("map_freeblock_unlock: lock count < 0 !\n");
-		block_free_lock = 0; // 次回以降のロックに支障が出てくるのでリセット
+		block_free_lock = 0;	// 次回以降のロックに支障が出てくるのでリセット
 	}
 	return block_free_lock;
 }
@@ -364,38 +361,40 @@ static struct block_list bl_head;
  */
 int map_addblock(struct block_list *bl)
 {
-	int m,x,y;
+	int m, x, y;
 	int b;
 
 	nullpo_retr(0, bl);
 
-	if(bl->prev != NULL){
+	if(bl->prev != NULL) {
 		if(battle_config.error_log)
 			printf("map_addblock error : bl->prev!=NULL\n");
 		return 0;
 	}
 
-	m=bl->m;
-	x=bl->x;
-	y=bl->y;
-	if(m<0 || m>=map_num ||
-	   x<0 || x>=map[m].xs ||
-	   y<0 || y>=map[m].ys)
+	m = bl->m;
+	x = bl->x;
+	y = bl->y;
+	if(m < 0 || m >= map_num ||
+	   x < 0 || x >= map[m].xs ||
+	   y < 0 || y >= map[m].ys)
 		return 1;
 
 	b = x / BLOCK_SIZE + (y / BLOCK_SIZE) * map[m].bxs;
 
-	if(bl->type==BL_MOB){
+	if(bl->type == BL_MOB) {
 		bl->next = map[m].block_mob[b];
 		bl->prev = &bl_head;
-		if(bl->next) bl->next->prev = bl;
+		if(bl->next)
+			bl->next->prev = bl;
 		map[m].block_mob[b] = bl;
 	} else {
 		bl->next = map[m].block[b];
 		bl->prev = &bl_head;
-		if(bl->next) bl->next->prev = bl;
+		if(bl->next)
+			bl->next->prev = bl;
 		map[m].block[b] = bl;
-		if(bl->type==BL_PC)
+		if(bl->type == BL_PC)
 			map[m].users++;
 	}
 
@@ -414,8 +413,8 @@ int map_delblock(struct block_list *bl)
 	nullpo_retr(0, bl);
 
 	// 既にblocklistから抜けている
-	if(bl->prev==NULL){
-		if(bl->next!=NULL){
+	if(bl->prev == NULL) {
+		if(bl->next != NULL) {
 			// prevがNULLでnextがNULLでないのは有ってはならない
 			if(battle_config.error_log)
 				printf("map_delblock error : bl->next!=NULL\n");
@@ -423,14 +422,16 @@ int map_delblock(struct block_list *bl)
 		return 0;
 	}
 
-	b = bl->x/BLOCK_SIZE+(bl->y/BLOCK_SIZE)*map[bl->m].bxs;
+	b = bl->x / BLOCK_SIZE + (bl->y / BLOCK_SIZE) * map[bl->m].bxs;
 
-	if(bl->type==BL_PC)
+	if(bl->type == BL_PC)
 		map[bl->m].users--;
-	if(bl->next) bl->next->prev = bl->prev;
-	if(bl->prev==&bl_head){
+	if(bl->next)
+		bl->next->prev = bl->prev;
+
+	if(bl->prev == &bl_head) {
 		// リストの頭なので、map[]のblock_listを更新する
-		if(bl->type==BL_MOB){
+		if(bl->type == BL_MOB) {
 			map[bl->m].block_mob[b] = bl->next;
 		} else {
 			map[bl->m].block[b] = bl->next;
@@ -451,20 +452,23 @@ int map_delblock(struct block_list *bl)
 /*
 int map_countnearpc(int m,int x,int y)
 {
-	int bx,by,c=0;
+	int bx, by, c = 0;
 	struct block_list *bl;
 
-	if(map[m].users==0)
+	if(map[m].users == 0)
 		return 0;
-	for(by=y/BLOCK_SIZE-AREA_SIZE/BLOCK_SIZE-1;by<=y/BLOCK_SIZE+AREA_SIZE/BLOCK_SIZE+1;by++){
-		if(by<0 || by>=map[m].bys)
+
+	by = y / BLOCK_SIZE - AREA_SIZE / BLOCK_SIZE - 1;
+	for( ; by <= y / BLOCK_SIZE + AREA_SIZE / BLOCK_SIZE + 1; by++) {
+		if(by < 0 || by >= map[m].bys)
 			continue;
-		for(bx=x/BLOCK_SIZE-AREA_SIZE/BLOCK_SIZE-1;bx<=x/BLOCK_SIZE+AREA_SIZE/BLOCK_SIZE+1;bx++){
-			if(bx<0 || bx>=map[m].bxs)
+		bx = x / BLOCK_SIZE - AREA_SIZE / BLOCK_SIZE - 1;
+		for( ; bx <= x / BLOCK_SIZE + AREA_SIZE / BLOCK_SIZE + 1; bx++) {
+			if(bx < 0 || bx >= map[m].bxs)
 				continue;
 			bl = map[m].block[bx+by*map[m].bxs];
-			for(;bl;bl=bl->next){
-				if(bl->type==BL_PC)
+			for( ; bl; bl = bl->next) {
+				if(bl->type == BL_PC)
 					c++;
 			}
 		}
@@ -478,28 +482,30 @@ int map_countnearpc(int m,int x,int y)
  */
 int map_count_oncell(int m,int x,int y,int type)
 {
-	int bx,by;
+	int bx, by;
 	struct block_list *bl;
 	int count = 0;
 
-	if (x < 0 || y < 0 || (x >= map[m].xs) || (y >= map[m].ys))
+	if(x < 0 || y < 0 || x >= map[m].xs || y >= map[m].ys)
 		return 1;
 
-	bx = x/BLOCK_SIZE;
-	by = y/BLOCK_SIZE;
+	bx = x / BLOCK_SIZE;
+	by = y / BLOCK_SIZE;
 
-	if (type == 0 || type&~BL_MOB) {
+	if(type == 0 || type & ~BL_MOB) {
 		bl = map[m].block[bx+by*map[m].bxs];
-		for(;bl;bl=bl->next) {
+		for( ; bl; bl = bl->next) {
 			if(type && !(bl->type & type))
 				continue;
-			if(bl->x == x && bl->y == y) count++;
+			if(bl->x == x && bl->y == y)
+				count++;
 		}
 	}
-	if (type == 0 || type&BL_MOB) {
+	if(type == 0 || type & BL_MOB) {
 		bl = map[m].block_mob[bx+by*map[m].bxs];
-		for(;bl;bl=bl->next){
-			if(bl->x == x && bl->y == y) count++;
+		for( ; bl; bl = bl->next) {
+			if(bl->x == x && bl->y == y)
+				count++;
 		}
 	}
 	return count;
@@ -512,7 +518,7 @@ int map_count_oncell(int m,int x,int y,int type)
  */
 struct skill_unit *map_find_skill_unit_oncell(struct block_list *target,int x,int y,int skill_id,struct skill_unit *out_unit)
 {
-	int m,bx,by;
+	int m, bx, by;
 	struct block_list *bl;
 	struct skill_unit *unit;
 
@@ -520,21 +526,20 @@ struct skill_unit *map_find_skill_unit_oncell(struct block_list *target,int x,in
 
 	m = target->m;
 
-	if (x < 0 || y < 0 || (x >= map[m].xs) || (y >= map[m].ys))
+	if(x < 0 || y < 0 || x >= map[m].xs || y >= map[m].ys)
 		return NULL;
 
-	bx = x/BLOCK_SIZE;
-	by = y/BLOCK_SIZE;
+	bx = x / BLOCK_SIZE;
+	by = y / BLOCK_SIZE;
 
 	bl = map[m].block[bx+by*map[m].bxs];
-	for(;bl;bl=bl->next){
-		if (bl->x != x || bl->y != y || bl->type != BL_SKILL)
+	for( ; bl; bl = bl->next) {
+		if(bl->x != x || bl->y != y || bl->type != BL_SKILL)
 			continue;
-		unit = (struct skill_unit *) bl;
-		if (unit==out_unit || !unit->alive ||
-				!unit->group || unit->group->skill_id!=skill_id)
+		unit = (struct skill_unit *)bl;
+		if(unit == out_unit || !unit->alive || !unit->group || unit->group->skill_id != skill_id)
 			continue;
-		if (battle_check_target(&unit->bl,target,unit->group->target_flag)>0)
+		if(battle_check_target(&unit->bl,target,unit->group->target_flag) > 0)
 			return unit;
 	}
 	return NULL;
@@ -548,54 +553,55 @@ struct skill_unit *map_find_skill_unit_oncell(struct block_list *target,int x,in
  */
 static void map_foreachinarea_sub(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,va_list ap)
 {
-	int bx,by;
+	int bx, by;
 	struct block_list *bl;
-	int blockcount=bl_list_count,i;
+	int i, blockcount = bl_list_count;
 
-	if (x0 < 0) x0 = 0;
-	if (y0 < 0) y0 = 0;
-	if (x1 >= map[m].xs) x1 = map[m].xs-1;
-	if (y1 >= map[m].ys) y1 = map[m].ys-1;
+	if(x0 < 0) x0 = 0;
+	if(y0 < 0) y0 = 0;
+	if(x1 >= map[m].xs) x1 = map[m].xs-1;
+	if(y1 >= map[m].ys) y1 = map[m].ys-1;
 
-	if (type == 0 || type&~BL_MOB) {
-		for (by = y0 / BLOCK_SIZE; by <= y1 / BLOCK_SIZE; by++) {
-			for(bx=x0/BLOCK_SIZE;bx<=x1/BLOCK_SIZE;bx++){
+	if(type == 0 || type & ~BL_MOB) {
+		for(by = y0 / BLOCK_SIZE; by <= y1 / BLOCK_SIZE; by++) {
+			for(bx = x0 / BLOCK_SIZE; bx <= x1 / BLOCK_SIZE; bx++) {
 				bl = map[m].block[bx+by*map[m].bxs];
-				for(;bl;bl=bl->next){
-					if(bl_list_count >= BL_LIST_MAX)
+				for( ; bl; bl = bl->next) {
+					if(bl_list_count >= BLOCK_LIST_MAX)
 						break;
 					if(type && !(bl->type & type))
 						continue;
-					if(bl->x>=x0 && bl->x<=x1 && bl->y>=y0 && bl->y<=y1)
-						bl_list[bl_list_count++]=bl;
+					if(bl->x >= x0 && bl->x <= x1 && bl->y >= y0 && bl->y <= y1)
+						bl_list[bl_list_count++] = bl;
 				}
 			}
 		}
 	}
-	if (type == 0 || type&BL_MOB) {
-		for (by = y0 / BLOCK_SIZE; by <= y1 / BLOCK_SIZE; by++) {
-			for(bx=x0/BLOCK_SIZE;bx<=x1/BLOCK_SIZE;bx++){
+	if(type == 0 || type & BL_MOB) {
+		for(by = y0 / BLOCK_SIZE; by <= y1 / BLOCK_SIZE; by++) {
+			for(bx = x0 / BLOCK_SIZE; bx <= x1 / BLOCK_SIZE; bx++) {
 				bl = map[m].block_mob[bx+by*map[m].bxs];
-				for(;bl;bl=bl->next){
-					if(bl_list_count >= BL_LIST_MAX)
+				for( ; bl; bl = bl->next) {
+					if(bl_list_count >= BLOCK_LIST_MAX)
 						break;
-					if(bl->x>=x0 && bl->x<=x1 && bl->y>=y0 && bl->y<=y1)
-						bl_list[bl_list_count++]=bl;
+					if(bl->x >= x0 && bl->x <= x1 && bl->y >= y0 && bl->y <= y1)
+						bl_list[bl_list_count++] = bl;
 				}
 			}
 		}
 	}
 
-	if(bl_list_count >= BL_LIST_MAX) {
+	if(bl_list_count >= BLOCK_LIST_MAX) {
 		if(battle_config.error_log)
 			printf("map_foreachinarea: *WARNING* block count too many!\n");
 	}
 
 	map_freeblock_lock();	// メモリからの解放を禁止する
 
-	for(i=blockcount;i<bl_list_count;i++)
+	for(i = blockcount; i < bl_list_count; i++) {
 		if(bl_list[i]->prev)	// 有効かどうかチェック
 			func(bl_list[i],ap);
+	}
 
 	map_freeblock_unlock();	// 解放を許可する
 
@@ -606,12 +612,13 @@ void map_foreachinarea(int (*func)(struct block_list*,va_list),int m,int x0,int 
 {
 	va_list ap;
 
-	va_start(ap,type);
-	if (m < 0)
+	if(m < 0) {
 		printf("map_foreachinarea: invalid map index!! func = 0x%08x\n",(int)func);
-	else
+	} else {
+		va_start(ap,type);
 		map_foreachinarea_sub(func, m, x0, y0, x1, y1, type, ap);
-	va_end(ap);
+		va_end(ap);
+	}
 }
 
 /*==========================================
@@ -626,7 +633,7 @@ void map_foreachinarea(int (*func)(struct block_list*,va_list),int m,int x0,int 
 void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 	int m,int x0,int y0,int dx,int dy,int range,int width,int type,...)
 {
-	int x1,y1,x2,y2,x3,y3,bx,by;
+	int x1, y1, x2, y2, x3, y3, bx, by;
 	int i, blockcount = bl_list_count;
 	struct block_list *bl;
 	va_list ap;
@@ -639,7 +646,7 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 		// map_foreachinarea + path_search_long
 
 		// 射線上に壁があるかチェック、壁のセルは射程に含まない
-		for(i=0; i<range; i++) {
+		for(i = 0; i < range; i++) {
 			if(map_getcell(m,x1+dx,y1+dy,CELL_CHKWALL))
 				break;
 			x1 += dx;
@@ -669,32 +676,32 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 		if(x3 >= map[m].xs) x3 = map[m].xs-1;
 		if(y3 >= map[m].ys) y3 = map[m].ys-1;
 
-		if(type == 0 || type&~BL_MOB) {
+		if(type == 0 || type & ~BL_MOB) {
 			for(by = y2 / BLOCK_SIZE; by <= y3 / BLOCK_SIZE; by++) {
 				for(bx = x2 / BLOCK_SIZE; bx <= x3 / BLOCK_SIZE; bx++) {
 					bl = map[m].block[bx+by*map[m].bxs];
-					for(;bl;bl=bl->next) {
-						if(bl_list_count >= BL_LIST_MAX)
+					for( ; bl; bl = bl->next) {
+						if(bl_list_count >= BLOCK_LIST_MAX)
 							break;
 						if(type && !(bl->type & type))
 							continue;
-						if(bl->x>=x2 && bl->x<=x3 && bl->y>=y2 && bl->y<=y3 &&
+						if(bl->x >= x2 && bl->x <= x3 && bl->y >= y2 && bl->y <= y3 &&
 						   path_search_long(NULL,m,x0,y0,bl->x,bl->y))
-							bl_list[bl_list_count++]=bl;
+							bl_list[bl_list_count++] = bl;
 					}
 				}
 			}
 		}
-		if(type == 0 || type&BL_MOB) {
+		if(type == 0 || type & BL_MOB) {
 			for(by = y2 / BLOCK_SIZE; by <= y3 / BLOCK_SIZE; by++) {
 				for(bx = x2 / BLOCK_SIZE; bx <= x3 / BLOCK_SIZE; bx++) {
 					bl = map[m].block_mob[bx+by*map[m].bxs];
-					for(;bl;bl=bl->next) {
-						if(bl_list_count >= BL_LIST_MAX)
+					for( ; bl; bl = bl->next) {
+						if(bl_list_count >= BLOCK_LIST_MAX)
 							break;
-						if(bl->x>=x2 && bl->x<=x3 && bl->y>=y2 && bl->y<=y3 &&
+						if(bl->x >= x2 && bl->x <= x3 && bl->y >= y2 && bl->y <= y3 &&
 						   path_search_long(NULL,m,x0,y0,bl->x,bl->y))
-							bl_list[bl_list_count++]=bl;
+							bl_list[bl_list_count++] = bl;
 					}
 				}
 			}
@@ -710,12 +717,12 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 		// このときxuは距離（range）、yuは幅（width）に相当する
 		// ただし浮動小数点演算を避けるため 1/sqrt(2) を座標単位としている
 
-		int xu,yu;
+		int xu, yu;
 
 		range /= 2;	// 距離は半分にする
 
 		// 射線上に壁があるかチェック、壁のセルは射程に含む
-		for(i=0; i<range; i++) {
+		for(i = 0; i < range; i++) {
 			if(map_getcell(m,x1,y1,CELL_CHKWALL))
 				break;
 			x1 += dx;
@@ -738,12 +745,12 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 		if(x3 >= map[m].xs) x3 = map[m].xs-1;
 		if(y3 >= map[m].ys) y3 = map[m].ys-1;
 
-		if(type == 0 || type&~BL_MOB) {
+		if(type == 0 || type & ~BL_MOB) {
 			for(by = y2 / BLOCK_SIZE; by <= y3 / BLOCK_SIZE; by++) {
 				for(bx = x2 / BLOCK_SIZE; bx <= x3 / BLOCK_SIZE; bx++) {
 					bl = map[m].block[bx+by*map[m].bxs];
-					for(;bl;bl=bl->next) {
-						if(bl_list_count >= BL_LIST_MAX)
+					for( ; bl; bl = bl->next) {
+						if(bl_list_count >= BLOCK_LIST_MAX)
 							break;
 						if(type && !(bl->type & type))
 							continue;
@@ -753,17 +760,17 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 						yu = -(bl->x - x0) * dy + (bl->y - y0) * dx;
 						if(xu >= 0 && xu <= range*2 && abs(yu) <= width*2 &&
 						   path_search_long(NULL,m,x0,y0,bl->x,bl->y))
-							bl_list[bl_list_count++]=bl;
+							bl_list[bl_list_count++] = bl;
 					}
 				}
 			}
 		}
-		if(type == 0 || type&BL_MOB) {
+		if(type == 0 || type & BL_MOB) {
 			for(by = y2 / BLOCK_SIZE; by <= y3 / BLOCK_SIZE; by++) {
 				for(bx = x2 / BLOCK_SIZE; bx <= x3 / BLOCK_SIZE; bx++) {
 					bl = map[m].block_mob[bx+by*map[m].bxs];
-					for(;bl;bl=bl->next) {
-						if(bl_list_count >= BL_LIST_MAX)
+					for( ; bl; bl = bl->next) {
+						if(bl_list_count >= BLOCK_LIST_MAX)
 							break;
 						if((bl->x - x1) * dx > 0 || (bl->y - y1) * dy > 0)
 							continue;
@@ -771,14 +778,14 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 						yu = -(bl->x - x0) * dy + (bl->y - y0) * dx;
 						if(xu >= 0 && xu <= range*2 && abs(yu) <= width*2 &&
 						   path_search_long(NULL,m,x0,y0,bl->x,bl->y))
-							bl_list[bl_list_count++]=bl;
+							bl_list[bl_list_count++] = bl;
 					}
 				}
 			}
 		}
 	}
 
-	if(bl_list_count >= BL_LIST_MAX) {
+	if(bl_list_count >= BLOCK_LIST_MAX) {
 		if(battle_config.error_log)
 			printf("map_foreachinpath: *WARNING* block count too many!\n");
 	}
@@ -786,7 +793,7 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 	va_start(ap,type);
 	map_freeblock_lock();	// メモリからの解放を禁止する
 
-	for(i=blockcount;i<bl_list_count;i++) {
+	for(i = blockcount; i < bl_list_count; i++) {
 		if(bl_list[i]->prev)	// 有効かどうかチェック
 			func(bl_list[i],ap);
 	}
@@ -805,31 +812,30 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
  */
 void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int dx,int dy,int type,...)
 {
-	int bx,by,x2,y2,x3,y3;
+	int bx, by, x2, y2, x3, y3;
 	struct block_list *bl;
 	va_list ap;
-	int blockcount=bl_list_count,i;
+	int i, blockcount = bl_list_count;
 
-	va_start(ap,type);
-	if(dx==0 || dy==0){
+	if(dx == 0 || dy == 0) {
 		// 矩形領域の場合
-		if(dx==0){
-			if(dy<0){
-				y0=y1+dy+1;
+		if(dx == 0) {
+			if(dy < 0) {
+				y0 = y1 + dy + 1;
 			} else {
-				y1=y0+dy-1;
+				y1 = y0 + dy - 1;
 			}
-		} else if(dy==0){
-			if(dx<0){
-				x0=x1+dx+1;
+		} else if(dy == 0) {
+			if(dx < 0) {
+				x0 = x1 + dx + 1;
 			} else {
-				x1=x0+dx-1;
+				x1 = x0 + dx - 1;
 			}
 		}
-		// if(x0<0) x0=0;
-		// if(y0<0) y0=0;
-		// if(x1>=map[m].xs) x1=map[m].xs-1;
-		// if(y1>=map[m].ys) y1=map[m].ys-1;
+		// if(x0 < 0) x0 = 0;
+		// if(y0 < 0) y0 = 0;
+		// if(x1 >= map[m].xs) x1 = map[m].xs-1;
+		// if(y1 >= map[m].ys) y1 = map[m].ys-1;
 
 		// ここで座標補正すると、map 隅のオブジェクトに対して関数が正しく機能しない。
 		// (-10, 0) - (10, 10) が (10, 0) 移動した時範囲外になる領域と、補正後の
@@ -837,42 +843,42 @@ void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,
 		// 補正後は (0, 0) - (10, 10) にいるオブジェクトに対しても、この関数が
 		// 呼び出されることになる。
 
-		x2 = (x0<0 ? 0 : x0/BLOCK_SIZE);
-		y2 = (y0<0 ? 0 : y0/BLOCK_SIZE);
-		x3 = (x1>=map[m].xs ? map[m].bxs-1 : x1/BLOCK_SIZE);
-		y3 = (y1>=map[m].ys ? map[m].bys-1 : y1/BLOCK_SIZE);
+		x2 = (x0 < 0) ? 0 : x0 / BLOCK_SIZE;
+		y2 = (y0 < 0) ? 0 : y0 / BLOCK_SIZE;
+		x3 = (x1 >= map[m].xs) ? map[m].bxs-1 : x1 / BLOCK_SIZE;
+		y3 = (y1 >= map[m].ys) ? map[m].bys-1 : y1 / BLOCK_SIZE;
 
-		for(by=y2;by<=y3;by++){
-			for(bx=x2;bx<=x3;bx++){
-				if(type == 0 || type&~BL_MOB) {
+		for(by = y2; by <= y3; by++) {
+			for(bx = x2; bx <= x3; bx++) {
+				if(type == 0 || type & ~BL_MOB) {
 					bl = map[m].block[bx+by*map[m].bxs];
-					for(;bl;bl=bl->next){
-						if(bl_list_count >= BL_LIST_MAX)
+					for( ; bl; bl = bl->next) {
+						if(bl_list_count >= BLOCK_LIST_MAX)
 							break;
 						if(type && !(bl->type & type))
 							continue;
-						if(bl->x>=x0 && bl->x<=x1 && bl->y>=y0 && bl->y<=y1)
-							bl_list[bl_list_count++]=bl;
+						if(bl->x >= x0 && bl->x <= x1 && bl->y >= y0 && bl->y <= y1)
+							bl_list[bl_list_count++] = bl;
 					}
 				}
-				if(type == 0 || type&BL_MOB) {
+				if(type == 0 || type & BL_MOB) {
 					bl = map[m].block_mob[bx+by*map[m].bxs];
-					for(;bl;bl=bl->next){
-						if(bl_list_count >= BL_LIST_MAX)
+					for( ; bl; bl = bl->next) {
+						if(bl_list_count >= BLOCK_LIST_MAX)
 							break;
-						if(bl->x>=x0 && bl->x<=x1 && bl->y>=y0 && bl->y<=y1)
-							bl_list[bl_list_count++]=bl;
+						if(bl->x >= x0 && bl->x <= x1 && bl->y >= y0 && bl->y <= y1)
+							bl_list[bl_list_count++] = bl;
 					}
 				}
 			}
 		}
-	}else{
+	} else {
 		// L字領域の場合
 
-		// if(x0<0) x0=0;
-		// if(y0<0) y0=0;
-		// if(x1>=map[m].xs) x1=map[m].xs-1;
-		// if(y1>=map[m].ys) y1=map[m].ys-1;
+		// if(x0 < 0) x0 = 0;
+		// if(y0 < 0) y0 = 0;
+		// if(x1 >= map[m].xs) x1 = map[m].xs-1;
+		// if(y1 >= map[m].ys) y1 = map[m].ys-1;
 
 		// ここで座標補正すると、map 隅のオブジェクトに対して関数が正しく機能しない。
 		// (-10, -10) - (10, 10) が (10, 10) 移動した時範囲外になる領域と、補正後の
@@ -880,37 +886,37 @@ void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,
 		// 補正後は (0, 0) - (10, 10) にいるオブジェクトに対しても、この関数が
 		// 呼び出されることになる。
 
-		x2 = (x0<0 ? 0 : x0/BLOCK_SIZE);
-		y2 = (y0<0 ? 0 : y0/BLOCK_SIZE);
-		x3 = (x1>=map[m].xs ? map[m].bxs-1 : x1/BLOCK_SIZE);
-		y3 = (y1>=map[m].ys ? map[m].bys-1 : y1/BLOCK_SIZE);
+		x2 = (x0 < 0) ? 0 : x0 / BLOCK_SIZE;
+		y2 = (y0 < 0) ? 0 : y0 / BLOCK_SIZE;
+		x3 = (x1 >= map[m].xs) ? map[m].bxs-1 : x1 / BLOCK_SIZE;
+		y3 = (y1 >= map[m].ys) ? map[m].bys-1 : y1 / BLOCK_SIZE;
 
-		for(by=y2;by<=y3;by++){
-			for(bx=x2;bx<=x3;bx++){
-				if(type == 0 || type&~BL_MOB) {
+		for(by = y2; by <= y3; by++) {
+			for(bx = x2; bx <= x3; bx++) {
+				if(type == 0 || type & ~BL_MOB) {
 					bl = map[m].block[bx+by*map[m].bxs];
-					for(;bl;bl=bl->next){
-						if(bl_list_count >= BL_LIST_MAX)
+					for( ; bl; bl = bl->next) {
+						if(bl_list_count >= BLOCK_LIST_MAX)
 							break;
 						if(type && !(bl->type & type))
 							continue;
-						if(!(bl->x>=x0 && bl->x<=x1 && bl->y>=y0 && bl->y<=y1))
+						if(!(bl->x >= x0 && bl->x <= x1 && bl->y >= y0 && bl->y <= y1))
 							continue;
-						if((dx>0 && bl->x<x0+dx) || (dx<0 && bl->x>x1+dx) ||
-						   (dy>0 && bl->y<y0+dy) || (dy<0 && bl->y>y1+dy))
-							bl_list[bl_list_count++]=bl;
+						if((dx > 0 && bl->x < x0 + dx) || (dx < 0 && bl->x > x1 + dx) ||
+						   (dy > 0 && bl->y < y0 + dy) || (dy < 0 && bl->y > y1 + dy))
+							bl_list[bl_list_count++] = bl;
 					}
 				}
-				if(type == 0 || type&BL_MOB) {
+				if(type == 0 || type & BL_MOB) {
 					bl = map[m].block_mob[bx+by*map[m].bxs];
-					for(;bl;bl=bl->next){
-						if(bl_list_count >= BL_LIST_MAX)
+					for( ; bl; bl = bl->next) {
+						if(bl_list_count >= BLOCK_LIST_MAX)
 							break;
-						if(!(bl->x>=x0 && bl->x<=x1 && bl->y>=y0 && bl->y<=y1))
+						if(!(bl->x >= x0 && bl->x <= x1 && bl->y >= y0 && bl->y <= y1))
 							continue;
-						if((dx>0 && bl->x<x0+dx) || (dx<0 && bl->x>x1+dx) ||
-						   (dy>0 && bl->y<y0+dy) || (dy<0 && bl->y>y1+dy))
-							bl_list[bl_list_count++]=bl;
+						if((dx > 0 && bl->x < x0 + dx) || (dx < 0 && bl->x > x1 + dx) ||
+						   (dy > 0 && bl->y < y0 + dy) || (dy < 0 && bl->y > y1 + dy))
+							bl_list[bl_list_count++] = bl;
 					}
 				}
 			}
@@ -918,16 +924,18 @@ void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,
 
 	}
 
-	if(bl_list_count >= BL_LIST_MAX) {
+	if(bl_list_count >= BLOCK_LIST_MAX) {
 		if(battle_config.error_log)
 			printf("map_foreachinmovearea: *WARNING* block count too many!\n");
 	}
 
+	va_start(ap,type);
 	map_freeblock_lock();	// メモリからの解放を禁止する
 
-	for(i=blockcount;i<bl_list_count;i++)
+	for(i = blockcount; i < bl_list_count; i++) {
 		if(bl_list[i]->prev)	// 有効かどうかチェック
 			func(bl_list[i],ap);
+	}
 
 	map_freeblock_unlock();	// 解放を許可する
 
@@ -949,11 +957,9 @@ void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,
 void map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4],int y[4],int type,...)
 {
 	int flag = 0, i, j;
-	int x0 = 9999, x1 = -9999;
-	int y0 = 9999, y1 = -9999;
+	int x0 = 0x7fffffff, x1 = -0x7fffffff;
+	int y0 = 0x7fffffff, y1 = -0x7fffffff;
 	va_list ap;
-
-	va_start(ap,type);
 
 	for(i = 0; i < 4; i++) {
 		for(j = 0; j < 4; j++) {
@@ -966,9 +972,10 @@ void map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4
 		}
 	}
 	if( flag ) {
+		va_start(ap,type);
 		map_foreachinarea_sub(func, m, x0, y0, x1, y1, type, ap);
+		va_end(ap);
 	}
-	va_end(ap);
 }
 
 /*==========================================
@@ -986,9 +993,11 @@ int map_addobject(struct block_list *bl)
 
 	if(first_free_object_id < MIN_FLOORITEM || first_free_object_id >= MAX_FLOORITEM)
 		first_free_object_id = MIN_FLOORITEM;
-	for(i = first_free_object_id; i < MAX_FLOORITEM; i++)
+
+	for(i = first_free_object_id; i < MAX_FLOORITEM; i++) {
 		if(object[i] == NULL)
 			break;
+	}
 	if(i >= MAX_FLOORITEM) {
 		if(battle_config.error_log)
 			printf("no free object id\n");
@@ -1020,8 +1029,9 @@ int map_delobjectnofree(int id)
 	if(first_free_object_id > id)
 		first_free_object_id = id;
 
-	while(last_object_id > MIN_FLOORITEM && object[last_object_id] == NULL)
+	while(last_object_id > MIN_FLOORITEM && object[last_object_id] == NULL) {
 		last_object_id--;
+	}
 
 	return 0;
 }
@@ -1053,17 +1063,14 @@ int map_delobject(int id)
  */
 void map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
 {
-	int i;
-	int blockcount = bl_list_count;
+	int i, blockcount = bl_list_count;
 	va_list ap;
 
-	va_start(ap,type);
-
-	for(i = MIN_FLOORITEM; i <= last_object_id; i++){
+	for(i = MIN_FLOORITEM; i <= last_object_id; i++) {
 		if(object[i]) {
 			if(type && !(object[i]->type & type))
 				continue;
-			if(bl_list_count >= BL_LIST_MAX) {
+			if(bl_list_count >= BLOCK_LIST_MAX) {
 				if(battle_config.error_log)
 					printf("map_foreachobject: too many block !\n");
 				break;
@@ -1072,11 +1079,13 @@ void map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
 		}
 	}
 
+	va_start(ap,type);
 	map_freeblock_lock();
 
-	for(i = blockcount; i < bl_list_count; i++)
+	for(i = blockcount; i < bl_list_count; i++) {
 		if( bl_list[i]->prev || bl_list[i]->next )
 			func(bl_list[i],ap);
+	}
 
 	map_freeblock_unlock();
 
@@ -1103,7 +1112,7 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,int data)
 	if(bl && bl->type == BL_ITEM)
 		fitem = (struct flooritem_data *)bl;
 
-	if(fitem == NULL || (!data && fitem->cleartimer != tid)){
+	if(fitem == NULL || (!data && fitem->cleartimer != tid)) {
 		if(battle_config.error_log)
 			printf("map_clearflooritem_timer : error\n");
 		return 1;
@@ -1125,13 +1134,13 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,int data)
  */
 int map_searchrandfreecell(int m,int x,int y,struct cell_xy *list,int range)
 {
-	int i,j,dx,dy;
-	int count=0;
+	int i, j, dx, dy;
+	int count = 0;
 
-	for(i=-range; i<=range; i++) {
-		dy = y+i;
-		for(j=-range; j<=range; j++) {
-			dx = x+j;
+	for(i = -range; i <= range; i++) {
+		dy = y + i;
+		for(j = -range; j <= range; j++) {
+			dx = x + j;
 			if(map_getcell(m,dx,dy,CELL_CHKNOPASS))
 				continue;
 			list[count].x = dx;
@@ -1151,7 +1160,7 @@ int map_searchrandfreecell(int m,int x,int y,struct cell_xy *list,int range)
 int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,struct block_list *first_bl,
 	struct block_list *second_bl,struct block_list *third_bl,int type)
 {
-	struct cell_xy free_cell[9];
+	struct cell_xy free_cell[9];	// 3x3
 	int count;
 
 	nullpo_retr(0, item_data);
@@ -1294,9 +1303,8 @@ struct charid2nick *char_search(int char_id)
 	struct charid2nick *p;
 
 	p = (struct charid2nick *)numdb_search(charid_db,char_id);
-	if(p==NULL){	// データベースにない
+	if(p == NULL) {	// データベースにない
 		chrif_searchcharid(char_id);
-		return NULL;
 	}
 
 	return p;
@@ -1436,18 +1444,18 @@ int map_quit(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(!sd->state.waitingdisconnect && sd->new_fd != -1) {
-		if( sd->pd ) {
+		if(sd->pd) {
 			pet_lootitem_drop(sd->pd,sd);
 			unit_free( &sd->pd->bl, 0);
 		}
-		if( sd->hd ) {
+		if(sd->hd) {
 			unit_free( &sd->hd->bl, 0);
 		}
 		unit_free(&sd->bl, 2);
 		chrif_save(sd);
 	}
 
-	if( sd->stack ) {
+	if(sd->stack) {
 		script_free_stack( sd->stack );
 	}
 
@@ -1637,6 +1645,7 @@ int map_foreachiddb(int (*func)(void*,void*,va_list),...)
 	va_start(ap,func);
 	db_foreach_sub(id_db,func,ap);
 	va_end(ap);
+
 	return 0;
 }
 
@@ -1648,23 +1657,25 @@ int map_addnpc(int m,struct npc_data *nd)
 {
 	int i;
 
-	if(m<0 || m>=map_num)
-		return -1;
-	for(i=0;i<map[m].npc_num && i<MAX_NPC_PER_MAP;i++)
-		if(map[m].npc[i]==NULL)
+	nullpo_retr(0, nd);
+
+	if(m < 0 || m >= map_num)
+		return -1
+;
+	for(i = 0; i < map[m].npc_num && i < MAX_NPC_PER_MAP; i++) {
+		if(map[m].npc[i] == NULL)
 			break;
-	if(i==MAX_NPC_PER_MAP){
+	}
+	if(i == MAX_NPC_PER_MAP) {
 		if(battle_config.error_log)
 			printf("too many NPCs in one map %s\n",map[m].name);
 		return -1;
 	}
-	if(i==map[m].npc_num){
+	if(i == map[m].npc_num) {
 		map[m].npc_num++;
 	}
 
-	nullpo_retr(0, nd);
-
-	map[m].npc[i]=nd;
+	map[m].npc[i] = nd;
 	numdb_insert(id_db,nd->bl.id,nd);
 
 	return i;
@@ -1679,7 +1690,7 @@ int map_mapname2mapid(const char *name)
 	struct map_data *md;
 
 	md = (struct map_data *)strdb_search(map_db,name);
-	if(md==NULL || md->gat==NULL)
+	if(md == NULL || md->gat == NULL)
 		return -1;
 	return md->m;
 }
@@ -1693,10 +1704,11 @@ int map_mapname2ipport(char *name,int *ip,int *port)
 	struct map_data_other_server *mdos;
 
 	mdos = (struct map_data_other_server *)strdb_search(map_db,name);
-	if(mdos==NULL || mdos->gat)
+	if(mdos == NULL || mdos->gat)
 		return -1;
-	*ip=mdos->ip;
-	*port=mdos->port;
+
+	*ip   = mdos->ip;
+	*port = mdos->port;
 	return 0;
 }
 
@@ -1716,33 +1728,43 @@ int map_check_dir(int s_dir,int t_dir)
  * 彼我の方向を計算
  *------------------------------------------
  */
-int map_calc_dir( struct block_list *src,int x,int y)
+int map_calc_dir(struct block_list *src,int x,int y)
 {
-	int dir=0;
-	int dx,dy;
+	int dir = 0;
+	int dx, dy;
 
 	nullpo_retr(0, src);
 
-	dx=x-src->x;
-	dy=y-src->y;
-	if( dx==0 && dy==0 ){	// 彼我の場所一致
-		dir=0;	// 上
-	}else if( dx>=0 && dy>=0 ){	// 方向的に右上
-		dir=7;						// 右上
-		if( dx*3-1<dy ) dir=0;		// 上
-		if( dx>dy*3 ) dir=6;		// 右
-	}else if( dx>=0 && dy<=0 ){	// 方向的に右下
-		dir=5;						// 右下
-		if( dx*3-1<-dy ) dir=4;		// 下
-		if( dx>-dy*3 ) dir=6;		// 右
-	}else if( dx<=0 && dy<=0 ){ // 方向的に左下
-		dir=3;						// 左下
-		if( dx*3+1>dy ) dir=4;		// 下
-		if( dx<dy*3 ) dir=2;		// 左
-	}else{						// 方向的に左上
-		dir=1;						// 左上
-		if( -dx*3-1<dy ) dir=0;		// 上
-		if( -dx>dy*3 ) dir=2;		// 左
+	dx = x - src->x;
+	dy = y - src->y;
+
+	if(dx == 0 && dy == 0) {
+		// 彼我の場所一致
+		dir = 0;	// 上
+	}
+	else if(dx >= 0 && dy >= 0) {
+		// 方向的に右上
+		if(dx * 3 - 1 < dy)   dir = 0;	// 上
+		else if(dx > dy * 3)  dir = 6;	// 右
+		else                  dir = 7;	// 右上
+	}
+	else if(dx >= 0 && dy <= 0) {
+		// 方向的に右下
+		if(dx * 3 - 1 < -dy)  dir = 4;	// 下
+		else if(dx > -dy * 3) dir = 6;	// 右
+		else                  dir = 5;	// 右下
+	}
+	else if(dx <= 0 && dy <= 0) {
+		// 方向的に左下
+		if(dx * 3 + 1 > dy)   dir = 4;	// 下
+		else if(dx < dy * 3)  dir = 2;	// 左
+		else                  dir = 3;	// 左下
+	}
+	else {
+		// 方向的に左上
+		if(-dx * 3 - 1 < dy)  dir = 0;	// 上
+		else if(-dx > dy * 3) dir = 2;	// 左
+		else                  dir = 1;	// 左上
 	}
 	return dir;
 }
@@ -1763,36 +1785,34 @@ int map_getcellp(struct map_data* m,int x,int y,cell_t cellchk)
 
 	nullpo_ret(m);
 
-	if(x<0 || x>=m->xs-1 || y<0 || y>=m->ys-1)
-	{
-		if(cellchk==CELL_CHKNOPASS) return 1;
-		return 0;
+	if(x < 0 || x >= m->xs - 1 || y < 0 || y >= m->ys - 1) {
+		return (cellchk == CELL_CHKNOPASS);
 	}
+
 	type = m->gat[x+y*m->xs];
-	if (cellchk<0x10)
+	if(cellchk < 0x10)
 		type &= CELL_MASK;
 
 	switch(cellchk)
 	{
 		case CELL_CHKPASS:
-			return (type!=1 && type!=5);
+			return (type != 1 && type != 5);
 		case CELL_CHKNOPASS:
-			return (type==1 || type==5);
+			return (type == 1 || type == 5);
 		case CELL_CHKWALL:
-			return (type==1);
+			return (type == 1);
 		case CELL_CHKWATER:
-			return (type==3);
+			return (type == 3);
 		case CELL_CHKGROUND:
-			return (type==5);
+			return (type == 5);
 		case CELL_GETTYPE:
 			return type;
 		case CELL_CHKNPC:
-			return (type&CELL_NPC);
+			return (type & CELL_NPC);
 		case CELL_CHKBASILICA:
-			return (type&CELL_BASILICA);
-		default:
-			return 0;
+			return (type & CELL_BASILICA);
 	}
+	return 0;
 }
 
 /*==========================================
@@ -1803,9 +1823,10 @@ void map_setcell(int m,int x,int y,int cell)
 {
 	int j;
 
-	if(x<0 || x>=map[m].xs || y<0 || y>=map[m].ys)
+	if(x < 0 || x >= map[m].xs || y < 0 || y >= map[m].ys)
 		return;
-	j=x+y*map[m].xs;
+
+	j = x + y * map[m].xs;
 
 	switch (cell) {
 		case CELL_SETNPC:
@@ -1833,32 +1854,33 @@ int map_setipport(char *name,unsigned long ip,int port)
 	struct map_data_other_server *mdos;
 
 	md = (struct map_data *)strdb_search(map_db,name);
-	if(md==NULL){
+	if(md == NULL) {
 		// 存在しないデータ
-		mdos=(struct map_data_other_server *)aCalloc(1,sizeof(struct map_data_other_server));
+		mdos = (struct map_data_other_server *)aCalloc(1,sizeof(struct map_data_other_server));
 		memcpy(mdos->name,name,24);
+		mdos->name[23] = '\0';	// force \0 terminal
 		mdos->gat  = NULL;
 		mdos->ip   = ip;
 		mdos->port = port;
 		mdos->map  = NULL;
 		strdb_insert(map_db,mdos->name,mdos);
-	} else if(md->gat){
-		if(ip!=clif_getip() || port!=clif_getport()){
+	} else if(md->gat) {
+		if(ip != clif_getip() || port != clif_getport()) {
 			// 読み込んでいたけど、担当外になったマップ
-			mdos=(struct map_data_other_server *)aCalloc(1,sizeof(struct map_data_other_server));
+			mdos = (struct map_data_other_server *)aCalloc(1,sizeof(struct map_data_other_server));
 			memcpy(mdos->name,name,24);
+			mdos->name[23] = '\0';	// force \0 terminal
 			mdos->gat  = NULL;
 			mdos->ip   = ip;
 			mdos->port = port;
 			mdos->map  = md;
 			strdb_insert(map_db,mdos->name,mdos);
-			// printf("from char server : %s -> %08lx:%d\n",name,ip,port);
 		} else {
 			// 読み込んでいて、担当になったマップ（何もしない）
 			;
 		}
 	} else {
-		mdos=(struct map_data_other_server *)md;
+		mdos = (struct map_data_other_server *)md;
 		if(ip == clif_getip() && port == clif_getport()) {
 			// 自分の担当になったマップ
 			if(mdos->map == NULL) {
@@ -1910,20 +1932,20 @@ int map_eraseipport(char *name,unsigned long ip,int port)
 	struct map_data_other_server *mdos;
 
 	md = (struct map_data *)strdb_search(map_db,name);
-	if(md){
+	if(md) {
 		if(md->gat) // local -> check data
 			return 0;
-		mdos=(struct map_data_other_server *)md;
-		if(mdos->ip==ip && mdos->port == port) {
+		mdos = (struct map_data_other_server *)md;
+		if(mdos->ip == ip && mdos->port == port) {
 			if(mdos->map) {
 				// このマップ鯖でも読み込んでいるので移動できる
 				return 1; // 呼び出し元で chrif_sendmap() をする
-			} else {
-				strdb_erase(map_db,name);
-				aFree(mdos);
 			}
-//			if(battle_config.etc_log)
-//				printf("erase map %s %d.%d.%d.%d:%d\n",name,p[0],p[1],p[2],p[3],port);
+			strdb_erase(map_db,name);
+			aFree(mdos);
+
+			//if(battle_config.etc_log)
+			//	printf("erase map %s %d.%d.%d.%d:%d\n",name,p[0],p[1],p[2],p[3],port);
 		}
 	}
 	return 0;
@@ -1938,6 +1960,7 @@ static struct waterlist {
 	char mapname[16];
 	int waterheight;
 } *waterlist = NULL;
+
 static int waterlist_num = 0;
 
 #define NO_WATER 1000000
@@ -1946,9 +1969,10 @@ static int map_waterheight(const char *mapname)
 {
 	int i;
 
-	for(i = 0; i < waterlist_num; i++)
-		if (strncmp(waterlist[i].mapname, mapname, 16) == 0)
+	for(i = 0; i < waterlist_num; i++) {
+		if(strncmp(waterlist[i].mapname, mapname, 16) == 0)
 			return waterlist[i].waterheight;
+	}
 
 	return NO_WATER;
 }
@@ -1959,7 +1983,7 @@ static void map_readwater(const char *watertxt)
 	FILE *fp;
 
 	fp = fopen(watertxt, "r");
-	if (fp == NULL) {
+	if(fp == NULL) {
 		printf("file not found: %s\n", watertxt);
 		return;
 	}
@@ -1968,25 +1992,22 @@ static void map_readwater(const char *watertxt)
 		int wh, count;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		if ((count = sscanf(line, "%s%d", w1, &wh)) < 1) {
+		if((count = sscanf(line, "%s%d", w1, &wh)) < 1) {
 			continue;
 		}
 
-		if (map_waterheight(w1) != NO_WATER) {
+		if(map_waterheight(w1) != NO_WATER) {
 			printf("Error: Duplicated map [%s] in waterlist (file '%s').\n", w1, watertxt);
 		} else {
-			if (waterlist_num == 0) {
+			if(waterlist_num == 0) {
 				waterlist = (struct waterlist *)aCalloc(1, sizeof(struct waterlist));
 			} else {
 				waterlist = (struct waterlist *)aRealloc(waterlist, sizeof(struct waterlist) * (waterlist_num + 1));
 				//memset(waterlist + waterlist_num, 0, sizeof(struct waterlist));
 			}
 			memset(waterlist[waterlist_num].mapname, 0, sizeof(waterlist[waterlist_num].mapname));
-			strncpy(waterlist[waterlist_num].mapname, w1, 16);
-			if (count >= 2)
-				waterlist[waterlist_num].waterheight = wh;
-			else
-				waterlist[waterlist_num].waterheight = 3;
+			strncpy(waterlist[waterlist_num].mapname, w1, 15);
+			waterlist[waterlist_num].waterheight = (count >= 2)? wh: 3;
 			waterlist_num++;
 		}
 	}
@@ -2014,14 +2035,16 @@ struct map_cache_info {
 	int compressed_len;	// zilb通せるようにする為の予約
 }; // 56 byte
 
-struct {
-	struct map_cache_head {
-		int sizeof_header;
-		int sizeof_map;
-		// 上の２つ改変不可
-		int nmaps; // マップの個数
-		int filesize;
-	} head;
+struct map_cache_head {
+	int sizeof_header;
+	int sizeof_map;
+	// 上の２つ改変不可
+	int nmaps; // マップの個数
+	int filesize;
+};
+
+static struct {
+	struct map_cache_head head;
 	struct map_cache_info *map;
 	FILE *fp;
 	int dirty;
@@ -2031,6 +2054,7 @@ static void map_cache_close(void)
 {
 	if(!map_cache.fp)
 		return;
+
 	if(map_cache.dirty) {
 		fseek(map_cache.fp,0,SEEK_SET);
 		fwrite(&map_cache.head,1,sizeof(struct map_cache_head),map_cache.fp);
@@ -2089,12 +2113,14 @@ static int map_cache_read(struct map_data *m)
 
 	if(!map_cache.fp)
 		return 0;
-	for(i = 0;i < map_cache.head.nmaps ; i++) {
+
+	for(i = 0; i < map_cache.head.nmaps ; i++) {
 		if(!strcmp(m->name,map_cache.map[i].fn)) {
 			if(map_cache.map[i].water_height != map_waterheight(m->name)) {
 				// 水場の高さが違うので読み直し
 				return 0;
-			} else if(map_cache.map[i].compressed == 0) {
+			}
+			if(map_cache.map[i].compressed == 0) {
 				// 非圧縮ファイル
 				int size = map_cache.map[i].xs * map_cache.map[i].ys;
 				m->xs = map_cache.map[i].xs;
@@ -2104,15 +2130,15 @@ static int map_cache_read(struct map_data *m)
 				if(fread(m->gat,1,size,map_cache.fp) == size) {
 					// 成功
 					return 1;
-				} else {
-					// なぜかファイル後半が欠けてるので読み直し
-					m->xs = 0;
-					m->ys = 0;
-					aFree(m->gat);
-					m->gat = NULL;
-					return 0;
 				}
-			} else if(map_cache.map[i].compressed == 1) {
+				// なぜかファイル後半が欠けてるので読み直し
+				m->xs = 0;
+				m->ys = 0;
+				aFree(m->gat);
+				m->gat = NULL;
+				return 0;
+			}
+			if(map_cache.map[i].compressed == 1) {
 				// 圧縮フラグ=1 : zlib
 				unsigned char *buf;
 				unsigned long dest_len;
@@ -2157,8 +2183,10 @@ static int map_cache_write(struct map_data *m)
 	unsigned long len_new , len_old;
 	char *write_buf;
 
-	if(!map_cache.fp) { return 0; }
-	for(i = 0;i < map_cache.head.nmaps ; i++) {
+	if(!map_cache.fp)
+		return 0;
+
+	for(i = 0; i < map_cache.head.nmaps ; i++) {
 		if(!strcmp(m->name,map_cache.map[i].fn)) {
 			// 同じエントリーがあれば上書き
 			if(map_cache.map[i].compressed == 0) {
@@ -2205,7 +2233,7 @@ static int map_cache_write(struct map_data *m)
 		}
 	}
 	// 同じエントリが無ければ書き込める場所を探す
-	for(i = 0;i < map_cache.head.nmaps ; i++) {
+	for(i = 0; i < map_cache.head.nmaps ; i++) {
 		if(map_cache.map[i].fn[0] == 0) {
 			// 新しい場所に登録
 			if(map_read_flag == 2) {
@@ -2256,8 +2284,8 @@ static void map_addmap(char *mapname)
 		return;
 	}
 
-	for(i=0;i<map_num;i++) {
-		if(strcmp(map[i].name,mapname)==0)
+	for(i = 0; i < map_num; i++) {
+		if(strcmp(map[i].name,mapname) == 0)
 			return;		// 既に追加済みのMAP
 	}
 
@@ -2268,6 +2296,7 @@ static void map_addmap(char *mapname)
 		memset(map + map_num, 0, sizeof(struct map_data));
 	}
 	memcpy(map[map_num].name, mapname, 24);
+	map[map_num].name[23] = '\0';	// force \0 terminal
 	map_num++;
 
 	return;
@@ -2281,8 +2310,8 @@ static void map_delmap(char *mapname)
 {
 	int i;
 
-	if( strcmpi(mapname,"all")==0 ){
-		map_num=0;
+	if(strcmpi(mapname,"all") == 0) {
+		map_num = 0;
 		if(map != NULL) {
 			aFree(map);
 			map = NULL;
@@ -2290,8 +2319,8 @@ static void map_delmap(char *mapname)
 		return;
 	}
 
-	for(i=0;i<map_num;i++){
-		if(strcmp(map[i].name,mapname)==0){
+	for(i = 0; i < map_num; i++) {
+		if(strcmp(map[i].name,mapname) == 0) {
 			memmove(map+i,map+i+1,sizeof(map[0])*(map_num-i-1));
 			map_num--;
 			map = (struct map_data *)aRealloc(map, sizeof(struct map_data) * map_num);
@@ -2326,7 +2355,7 @@ static int map_readmap(int m,char *fn,int *map_cache)
 
 		// read & convert fn
 		gat = (unsigned char *)grfio_read(fn);
-		if(gat==NULL) {
+		if(gat == NULL) {
 			// さすがにマップが読めないのはまずいので終了する
 			printf("Map '%s' not found: removed from maplist.\n", fn);
 			return -1;
@@ -2341,15 +2370,16 @@ static int map_readmap(int m,char *fn,int *map_cache)
 		map[m].xs = xs;
 		map[m].ys = ys;
 		map[m].gat = (unsigned char *)aCalloc(map[m].xs * map[m].ys,sizeof(unsigned char));
-		wh=map_waterheight(map[m].name);
-		for(y=0;y<ys;y++){
-			p=(struct gat_1cell*)(gat+y*xs*20+14);
-			for(x=0;x<xs;x++){
-				if(wh!=NO_WATER && p->type==0){
+		wh = map_waterheight(map[m].name);
+
+		for(y = 0; y < ys; y++) {
+			p = (struct gat_1cell*)(gat + y * xs * 20 + 14);
+			for(x = 0; x < xs; x++) {
+				if(wh != NO_WATER && p->type == 0) {
 					// 水場判定
-					map[m].gat[x+y*xs]=(p->high[0]>wh || p->high[1]>wh || p->high[2]>wh || p->high[3]>wh) ? 3 : 0;
+					map[m].gat[x+y*xs] = (p->high[0] > wh || p->high[1] > wh || p->high[2] > wh || p->high[3] > wh) ? 3 : 0;
 				} else {
-					map[m].gat[x+y*xs]=p->type;
+					map[m].gat[x+y*xs] = p->type;
 				}
 				p++;
 			}
@@ -2357,16 +2387,15 @@ static int map_readmap(int m,char *fn,int *map_cache)
 		map_cache_write(&map[m]);
 		aFree(gat);
 	}
-	map[m].m=m;
-	map[m].npc_num=0;
-	map[m].users=0;
+	map[m].m       = m;
+	map[m].npc_num = 0;
+	map[m].users   = 0;
 	memset(&map[m].flag,0,sizeof(map[m].flag));
-	map[m].bxs=(map[m].xs+BLOCK_SIZE-1)/BLOCK_SIZE;
-	map[m].bys=(map[m].ys+BLOCK_SIZE-1)/BLOCK_SIZE;
+	map[m].bxs = (map[m].xs + BLOCK_SIZE - 1) / BLOCK_SIZE;
+	map[m].bys = (map[m].ys + BLOCK_SIZE - 1) / BLOCK_SIZE;
 	size = map[m].bxs * map[m].bys * sizeof(struct block_list*);
-	map[m].block = (struct block_list **)aCalloc(1,size);
+	map[m].block     = (struct block_list **)aCalloc(1,size);
 	map[m].block_mob = (struct block_list **)aCalloc(1,size);
-	size = map[m].bxs*map[m].bys*sizeof(int);
 	strdb_insert(map_db,map[m].name,&map[m]);
 
 	return 0;
@@ -2388,22 +2417,22 @@ static void map_readallmap(void)
 		map_cache_open(map_cache_file);
 	}
 
-	for(i=0;i<map_num;i++){
-		if(strstr(map[i].name,".gat")==NULL)
+	for(i = 0; i < map_num; i++) {
+		if(strstr(map[i].name,".gat") == NULL)
 			continue;
 		sprintf(fn,"data\\%s",map[i].name);
-		if (map_readmap(i, fn, &map_cache) == -1) {
+		if(map_readmap(i, fn, &map_cache) == -1) {
 			map_delmap(map[i].name);
 			maps_removed++;
 			i--;
 		}
 	}
 
-	if (waterlist_num > 0) {
+	if(waterlist_num > 0) {
 		aFree(waterlist);
 		waterlist_num = 0;
 	}
-	if (maps_removed) {
+	if(maps_removed) {
 		printf("%d maps in configuration file. %d map%s removed.\n", map_num + maps_removed, maps_removed, (maps_removed > 1) ? "s" : "");
 	}
 	printf("Map read done (%d map%s, %d map%s in cache). %24s\n", map_num, (map_num > 1) ? "s" : "", map_cache, (map_cache > 1) ? "s" : "", "");
@@ -2411,7 +2440,7 @@ static void map_readallmap(void)
 	// マップキャッシュを閉じる
 	map_cache_close();
 
-	if (map_num <= 0) {
+	if(map_num <= 0) {
 		printf("ERROR: no map found.\n");
 		exit(1);
 	}
@@ -2430,9 +2459,9 @@ static int map_who_sub(void *key,void *data,va_list ap)
 
 	nullpo_retr(-1, ap);
 	nullpo_retr(-1, data);
-	nullpo_retr(-1, p=(struct charid2nick *)data);
+	nullpo_retr(-1, p = (struct charid2nick *)data);
 
-	fd=va_arg(ap,int);
+	fd = va_arg(ap,int);
 
 	if( p->ip != 0 && p->port != 0 && !(battle_config.hide_GM_session && pc_numisGM(p->account_id)) )
 		clif_displaymessage(fd, p->nick);
@@ -2442,7 +2471,7 @@ static int map_who_sub(void *key,void *data,va_list ap)
 
 int map_who(int fd)
 {
-	numdb_foreach( charid_db, map_who_sub, fd );
+	numdb_foreach(charid_db, map_who_sub, fd);
 	return 0;
 }
 
@@ -2452,13 +2481,13 @@ int map_who(int fd)
  */
 static int map_pk_server(int flag)
 {
-	int i,count=0;
+	int i, count = 0;
 
 	if(!flag)
 		return 0;
+
 	printf("server setting: pk map");
-	for(i=0;i<map_num;i++)
-	{
+	for(i = 0; i < map_num; i++) {
 		if(map[i].flag.gvg || map[i].flag.pvp)
 			continue;
 		if(map[i].flag.nopenalty)
@@ -2480,17 +2509,16 @@ static int map_pk_server(int flag)
  */
 static int map_pk_nightmaredrop(int flag)
 {
-	int m,i,count=0;
+	int m, i, count = 0;
 
 	if(!flag)
 		return 0;
 
 	printf("server setting: pk nightmaredrop");
-	for(m=0; m<map_num; m++)
-	{
+	for(m = 0; m < map_num; m++) {
 		if(!map[m].flag.pk)
 			continue;
-		for(i=0; i<MAX_DROP_PER_MAP; i++) {
+		for(i = 0; i < MAX_DROP_PER_MAP; i++) {
 			if(map[m].drop_list[i].drop_id == 0) {
 				map[m].drop_list[i].drop_id   = -1;			// random
 				map[m].drop_list[i].drop_type = 2;			// equip
@@ -2530,7 +2558,7 @@ static int map_config_read(char *cfgName)
 		if (line[0] == '/' && line[1] == '/')
 			continue;
 
-		if(sscanf(line, "%[^:]: %[^\r\n]", w1, w2) != 2)
+		if (sscanf(line, "%[^:]: %[^\r\n]", w1, w2) != 2)
 			continue;
 
 		if (strcmpi(w1, "userid") == 0) {
@@ -2652,7 +2680,7 @@ int map_field_setting(void)
 {
 	int m;
 
-	for(m=0;m<map_num;m++){
+	for(m = 0; m < map_num; m++) {
 		if(map[m].flag.pk || map[m].flag.pvp || map[m].flag.gvg)
 			map[m].flag.normal = 0;
 		else
@@ -2749,9 +2777,10 @@ void do_final(void)
 	do_final_atcommand();
 	do_final_map();
 
-	for(i=0;i<MAX_FLOORITEM;i++) {
-		if( object[i] == NULL ) continue;
-		if( object[i]->type == BL_ITEM ) {
+	for(i = 0; i < MAX_FLOORITEM; i++) {
+		if(object[i] == NULL)
+			continue;
+		if(object[i]->type == BL_ITEM) {
 			map_clearflooritem_timer(-1, tick, i, 2);
 		}
 	}
@@ -2760,10 +2789,10 @@ void do_final(void)
 	// 最後にこの内部でchar_fdを閉じる
 	do_final_chrif();
 
-	for(i=0;i<map_num;i++){
+	for(i = 0; i < map_num; i++) {
 		if(map[i].gat) {
 			aFree(map[i].gat);
-			map[i].gat=NULL;
+			map[i].gat = NULL;
 		}
 		if(map[i].block)
 			aFree(map[i].block);
@@ -2812,30 +2841,30 @@ int do_init(int argc,char *argv[])
 	);
 
 #ifdef _WIN32
-	srand(gettick() ^ (GetCurrentProcessId() << 8) );
-	atn_srand(gettick() ^ (GetCurrentProcessId() << 8) );
+	srand(gettick() ^ (GetCurrentProcessId() << 8));
+	atn_srand(gettick() ^ (GetCurrentProcessId() << 8));
 #else
 	srand(gettick() ^ (getpid() << 8));
 	atn_srand(gettick() ^ (getpid() << 8));
 #endif
 
-	if(map_config_read((argc<2)? MAP_CONF_NAME:argv[1]))
+	if(map_config_read((argc < 2) ? MAP_CONF_NAME : argv[1]))
 		exit(1);
-	battle_config_read((argc>2)? argv[2]:BATTLE_CONF_FILENAME);
-	atcommand_config_read((argc>3)? argv[3]:ATCOMMAND_CONF_FILENAME);
-	script_config_read((argc>4)? argv[4]:SCRIPT_CONF_NAME);
-	msg_config_read((argc>5)? argv[5]:MSG_CONF_NAME);
+	battle_config_read((argc > 2) ? argv[2] : BATTLE_CONF_FILENAME);
+	atcommand_config_read((argc > 3) ? argv[3] : ATCOMMAND_CONF_FILENAME);
+	script_config_read((argc > 4) ? argv[4] : SCRIPT_CONF_NAME);
+	msg_config_read((argc > 5) ? argv[5] : MSG_CONF_NAME);
 
 	socket_set_httpd_page_connection_func( map_socket_ctrl_panel_func );
 
-	id_db = numdb_init();
-	map_db = strdb_init(16);
-	nick_db = strdb_init(24);
+	id_db     = numdb_init();
+	map_db    = strdb_init(16);
+	nick_db   = strdb_init(24);
 	charid_db = numdb_init();
 
 	do_init_map();
 
-	grfio_init((argc>6)? argv[6] : GRF_PATH_FILENAME);
+	grfio_init((argc > 6) ? argv[6] : GRF_PATH_FILENAME);
 	map_readallmap();
 
 	add_timer_func_list(map_freeblock_timer,"map_freeblock_timer");
@@ -2865,6 +2894,7 @@ int do_init(int argc,char *argv[])
 	map_pk_nightmaredrop(map_pk_nightmaredrop_flag);
 	map_field_setting();
 	npc_event_do_oninit();	// npcのOnInitイベント実行
+
 	// for httpd support
 	do_init_httpd();
 	do_init_graph();

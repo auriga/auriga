@@ -18,17 +18,19 @@ struct script_code {
 	struct linkdb_node* script_vars;
 };
 
+struct script_stack {
+	int sp,sp_max,defsp;
+	struct script_data *stack_data;
+	struct linkdb_node **var_function;	// 関数依存変数
+};
+
 struct script_state {
-	struct script_stack {
-		int sp,sp_max,defsp;
-		struct script_data *stack_data;
-		struct linkdb_node **var_function;	// 関数依存変数
-	} *stack;
+	struct script_stack *stack;
 	int start,end;
 	int pos,state;
 	int rid,oid;
 	struct script_code *script, *scriptroot;
-	struct sleep_data {
+	struct {
 		int tick,timer,charid;
 	} sleep;
 };
@@ -63,4 +65,3 @@ extern MYSQL mysql_handle_script;
 #endif /* TXT_ONLY */
 
 #endif
-

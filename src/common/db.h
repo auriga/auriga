@@ -15,6 +15,12 @@ struct dbn {
 	void *data;
 	int  deleted;	// 削除済みフラグ(db_foreach)
 };
+
+struct db_free {
+	struct dbn *z;
+	struct dbn **root;
+};
+
 struct dbt {
 	int (*cmp)(struct dbt*,void*,void*);
 	unsigned int (*hash)(struct dbt*,void*);
@@ -26,10 +32,7 @@ struct dbt {
 
 	// db_foreach 内部でdb_erase される対策として、
 	// db_foreach が終わるまでロックすることにする
-	struct db_free {
-		struct dbn *z;
-		struct dbn **root;
-	} *free_list;
+	struct db_free *free_list;
 	int free_count;
 	int free_max;
 	int free_lock;
@@ -74,11 +77,11 @@ struct linkdb_node {
 	void               *data;
 };
 
-void  linkdb_insert ( struct linkdb_node** head, void *key, void* data); // 重複を考慮しない
-void  linkdb_replace( struct linkdb_node** head, void *key, void* data); // 重複を考慮する
-void* linkdb_search ( struct linkdb_node** head, void *key);
-void* linkdb_erase  ( struct linkdb_node** head, void *key);
-void  linkdb_final  ( struct linkdb_node** head );
+void  linkdb_insert (struct linkdb_node** head, void *key, void* data); // 重複を考慮しない
+void  linkdb_replace(struct linkdb_node** head, void *key, void* data); // 重複を考慮する
+void* linkdb_search (struct linkdb_node** head, void *key);
+void* linkdb_erase  (struct linkdb_node** head, void *key);
+void  linkdb_final  (struct linkdb_node** head);
 
 // csvdb -- csv ファイルの読み込み関数
 

@@ -9,4 +9,3 @@ int mail_sendmail(struct map_session_data *sd,struct mail_data *md);
 int mail_getappend(int account_id,int zeny,struct item *item);
 
 #endif
-

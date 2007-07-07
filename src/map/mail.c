@@ -17,23 +17,22 @@
  * アイテムやZenyを添付
  *------------------------------------------
  */
-int mail_setitem(struct map_session_data *sd,int index,int amount)
+int mail_setitem(struct map_session_data *sd,int idx,int amount)
 {
 	nullpo_retr(-1, sd);
 
-	if(index == 0){
+	if(idx == 0) {
 		if(sd->status.zeny < amount)
 			amount = sd->status.zeny;
 		sd->mail_zeny = amount;
-	}
-	else if(index > 1){
-		index-=2;
-		if( sd->mail_item.nameid > 0 && sd->mail_item.amount > amount){
+	} else if(idx > 1) {
+		idx -= 2;
+		if(sd->mail_item.nameid > 0 && sd->mail_item.amount > amount) {
 			sd->mail_item.amount -= amount;
-		}else if(sd->status.inventory[index].amount >= amount){
-			if(itemdb_isdropable(sd->status.inventory[index].nameid)==0)
+		} else if(sd->status.inventory[idx].amount >= amount) {
+			if(itemdb_isdropable(sd->status.inventory[idx].nameid) == 0)
 				return 2;
-			memcpy(&sd->mail_item,&sd->status.inventory[index],sizeof(struct item));
+			memcpy(&sd->mail_item,&sd->status.inventory[idx],sizeof(struct item));
 			sd->mail_amount = amount;
 			return 0;
 		}
@@ -49,9 +48,10 @@ int mail_setitem(struct map_session_data *sd,int index,int amount)
 int mail_removeitem(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
+
 	memset(&sd->mail_item,0,sizeof(struct item));
-	sd->mail_amount=0;
-	sd->mail_zeny=0;
+	sd->mail_amount = 0;
+	sd->mail_zeny   = 0;
 	return 0;
 }
 
@@ -66,22 +66,23 @@ int mail_checkappend(struct map_session_data *sd,struct mail_data *md)
 
 	if(sd->mail_zeny < 0 || sd->mail_zeny > sd->status.zeny)
 		return 0;
+
 	md->zeny = sd->mail_zeny;
 
-	if(sd->mail_item.nameid > 0 && sd->mail_amount > 0){
-		int i,index=-1;
-		for(i=0;i<MAX_INVENTORY;i++){
-			if(memcmp(&sd->mail_item,&sd->status.inventory[i],sizeof(struct item)) == 0){
-				index = i;
+	if(sd->mail_item.nameid > 0 && sd->mail_amount > 0) {
+		int i,idx = -1;
+		for(i=0; i<MAX_INVENTORY; i++) {
+			if(memcmp(&sd->mail_item,&sd->status.inventory[i],sizeof(struct item)) == 0) {
+				idx = i;
 				break;
 			}
 		}
-		if(index < 0 || sd->status.inventory[index].amount < sd->mail_amount)
+		if(idx < 0 || sd->status.inventory[idx].amount < sd->mail_amount)
 			return 1;
 
 		memcpy(&md->item,&sd->mail_item,sizeof(struct item));
 		md->item.amount = sd->mail_amount;
-		pc_delitem(sd,index,md->item.amount,0);
+		pc_delitem(sd,idx,md->item.amount,0);
 	}
 	sd->status.zeny -= md->zeny;
 	clif_updatestatus(sd,SP_ZENY);
@@ -108,8 +109,7 @@ int mail_checkmail(struct map_session_data *sd,char *name,char *title,char *body
 	}
 
 	rd = map_nick2sd(name);
-
-	if(rd && rd == sd) {		// 自分はダメ
+	if(rd == sd) {		// 自分はダメ
 		clif_res_sendmail(sd->fd,1);
 		mail_removeitem(sd);
 		return 0;
@@ -117,11 +117,13 @@ int mail_checkmail(struct map_session_data *sd,char *name,char *title,char *body
 
 	memset(&md, 0, sizeof(md));
 
-	strcpy(md.char_name,sd->status.name);
+	strncpy(md.char_name, sd->status.name, 24);
 	md.char_id = sd->status.char_id;
 
 	memcpy(md.receive_name, name, 24);
+	md.receive_name[23] = '\0';	// force \0 terminal
 	strncpy(md.title, title, sizeof(md.title));
+	md.title[sizeof(md.title)-1] = '\0';
 
 	memcpy(md.body, body, len);
 	md.body_size = len;
@@ -141,11 +143,12 @@ int mail_checkmail(struct map_session_data *sd,char *name,char *title,char *body
 int mail_sendmail(struct map_session_data *sd,struct mail_data *md)
 {
 	nullpo_retr(0, sd);
+	nullpo_retr(0, md);
 
 	// 日付の保存
 	md->times = (unsigned int)time(NULL);
 	// アイテム・Zenyチェック
-	if(mail_checkappend(sd,md)==0)
+	if(mail_checkappend(sd,md) == 0)
 		intif_sendmail(md);
 
 	mail_removeitem(sd);
@@ -158,8 +161,11 @@ int mail_sendmail(struct map_session_data *sd,struct mail_data *md)
  */
 int mail_getappend(int account_id,int zeny,struct item *item)
 {
-	struct map_session_data *sd = map_id2sd(account_id);
+	struct map_session_data *sd;
 
+	nullpo_retr(0, item);
+
+	sd = map_id2sd(account_id);
 	if(sd) {
 		if(zeny > 0) {
 			sd->status.zeny += zeny;

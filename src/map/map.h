@@ -2,6 +2,7 @@
 #define _MAP_H_
 
 #include <stdarg.h>
+
 #include "mmo.h"
 #include "script.h"
 
@@ -156,9 +157,9 @@ struct unit_data {
 	unsigned int canact_tick;
 	unsigned int canmove_tick;
 	struct {
-		unsigned change_walk_target : 1 ;
-		unsigned skillcastcancel : 1 ;
-		unsigned attack_continue : 1 ;
+		unsigned change_walk_target : 1;
+		unsigned skillcastcancel : 1;
+		unsigned attack_continue : 1;
 	} state;
 	struct linkdb_node *statuspretimer;
 };
@@ -167,14 +168,17 @@ struct script_reg {
 	int index;
 	int data;
 };
+
 struct script_regstr {
 	int index;
 	char data[256];
 };
+
 struct status_change {
 	int timer;
 	int val1,val2,val3,val4;
 };
+
 struct vending {
 	short index;
 	short amount;
@@ -182,6 +186,7 @@ struct vending {
 };
 
 struct skill_unit_group;
+
 struct skill_unit {
 	struct block_list bl;
 
@@ -222,7 +227,7 @@ struct pc_base_job {
 	short upper;	// 通常 0, 転生 1, 養子 2
 };
 
-//拡張オートスペル
+// 拡張オートスペル
 enum {
 	EAS_SHORT       = 0x00000001,	// 近距離物理
 	EAS_LONG        = 0x00000002,	// 遠距離物理
@@ -256,7 +261,7 @@ struct map_session_data {
 	struct block_list bl;
 	struct unit_data  ud;
 	struct {
-		unsigned auth : 1 ;
+		unsigned auth : 1;
 		unsigned menu_or_input : 1;
 		unsigned dead_sit : 2;
 		unsigned waitingdisconnect : 1;
@@ -352,7 +357,7 @@ struct map_session_data {
 	int addele[ELE_MAX],addrace[RCT_MAX],addenemy[4],addsize[MAX_SIZE_FIX];
 	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[4],subsize[MAX_SIZE_FIX];
 	int addeff[10],addeff2[10],reseff[10],addeff_range_flag[10];
-	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[4],addsize_[MAX_SIZE_FIX];	//二刀流のために追加
+	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[4],addsize_[MAX_SIZE_FIX];	// 二刀流のために追加
 	int atk_ele_,star_,overrefine_;				// 二刀流のために追加
 	int base_atk,atk_rate;
 	int weapon_atk[WT_MAX],weapon_atk_rate[WT_MAX];	// 指貫
@@ -417,7 +422,7 @@ struct map_session_data {
 	short sp_rate_penalty_unrig[11];
 	short mob_class_change_rate;	// mobを変化させる確率
 	short curse_by_muramasa;
-	//
+
 	short loss_equip_rate_when_die[11];
 	short loss_equip_rate_when_attack[11];
 	short loss_equip_rate_when_hit[11];
@@ -567,13 +572,16 @@ struct map_session_data {
 struct npc_timerevent_list {
 	int timer,pos;
 };
+
 struct npc_label_list {
 	char name[24];
 	int pos;
 };
+
 struct npc_item_list {
 	int nameid,value;
 };
+
 struct npc_data {
 	struct block_list bl;
 	short n;
@@ -608,6 +616,7 @@ struct npc_data {
 	} u;
 	// ここにメンバを追加してはならない(shop_itemが可変長の為)
 };
+
 struct mob_data {
 	struct block_list bl;
 	struct unit_data  ud;
@@ -617,11 +626,11 @@ struct mob_data {
 	char name[24];
 	int spawndelay1,spawndelay2;
 	struct {
-		unsigned skillstate : 8 ;
-		unsigned steal_flag : 1 ;
-		unsigned steal_coin_flag : 1 ;
-		unsigned master_check : 1 ;
-		unsigned special_mob_ai : 3 ;
+		unsigned skillstate : 8;
+		unsigned steal_flag : 1;
+		unsigned steal_coin_flag : 1;
+		unsigned master_check : 1;
+		unsigned special_mob_ai : 3;
 		unsigned nodrop : 1;
 		unsigned noexp : 1;
 		unsigned nomvp : 1;
@@ -664,6 +673,23 @@ struct mob_data {
 	struct mob_data *ai_next, *ai_prev; // まじめAI用のリンクリスト
 };
 
+struct pet_skill_attack {
+	short id;
+	short lv;
+	short div_;		// 0 = Normal skill. >0 = Fixed damage (lv), fixed div_.
+	short rate;		// Base chance of skill ocurrance (10 = 10% of attacks)
+	short bonusrate;	// How being 100% loyal affects cast rate (10 = At 1000 intimacy->rate+10%
+};
+
+struct pet_skill_support {
+	short id;
+	short lv;
+	short hp;	// Max HP% for skill to trigger (50 -> 50% for Magnificat)
+	short sp;	// Max SP% for skill to trigger (100 = no check)
+	short delay;	// Time (secs) between being able to recast.
+	int timer;
+};
+
 struct pet_data {
 	struct block_list bl;
 	struct unit_data  ud;
@@ -672,7 +698,7 @@ struct pet_data {
 	char name[24];
 	short view_size;
 	struct {
-		unsigned skillstate : 8 ;
+		unsigned skillstate : 8;
 	} state;
 	short equip;
 	int target_id;
@@ -684,23 +710,8 @@ struct pet_data {
 	short lootitem_weight;
 	int lootitem_timer;
 	struct map_session_data *msd;
-
-	struct pet_skill_attack {	//Attack Skill
-		short id;
-		short lv;
-		short div_;	//0 = Normal skill. >0 = Fixed damage (lv), fixed div_.
-		short rate;	//Base chance of skill ocurrance (10 = 10% of attacks)
-		short bonusrate; //How being 100% loyal affects cast rate (10 = At 1000 intimacy->rate+10%
-	} *a_skill;	//[Skotlex]
-
-	struct pet_skill_support {	//Support Skill
-		short id;
-		short lv;
-		short hp;	//Max HP% for skill to trigger (50 -> 50% for Magnificat)
-		short sp;	//Max SP% for skill to trigger (100 = no check)
-		short delay;	//Time (secs) between being able to recast.
-		int timer;
-	} *s_skill;	//[Skotlex]
+	struct pet_skill_attack *a_skill;
+	struct pet_skill_support *s_skill;
 };
 
 struct homun_data {
@@ -711,7 +722,7 @@ struct homun_data {
 	short speed;
 	short view_size;
 	struct {
-		unsigned skillstate : 8 ;
+		unsigned skillstate : 8;
 	} state;
 
 	int invincible_timer;
@@ -811,6 +822,7 @@ struct map_data {
 		short drop_flag;
 	} drop_list[MAX_DROP_PER_MAP];
 };
+
 struct map_data_other_server {
 	char name[24];
 	unsigned char *gat;	// NULL固定にして判断
@@ -851,14 +863,14 @@ enum {
 	SP_USTR,SP_UAGI,SP_UVIT,SP_UINT,SP_UDEX,SP_ULUK,SP_26,SP_27,	// 32-39
 	SP_28,SP_ATK1,SP_ATK2,SP_MATK1,SP_MATK2,SP_DEF1,SP_DEF2,SP_MDEF1,	// 40-47
 	SP_MDEF2,SP_HIT,SP_FLEE1,SP_FLEE2,SP_CRITICAL,SP_ASPD,SP_36,SP_JOBLEVEL,	// 48-55
-	SP_UPPER,SP_PARTNER,SP_CART,SP_DIE_COUNTER,	//56-59
+	SP_UPPER,SP_PARTNER,SP_CART,SP_DIE_COUNTER,	// 56-59
 	SP_CARTINFO=99,	// 99
 
 	// globalreg save 500-
-	SP_CLONESKILL_ID=500,SP_CLONESKILL_LV,					//500-501
-	SP_BS_POINT,SP_AM_POINT,SP_TK_POINT,SP_PK_POINT,SP_MISSON_TARGET,	//502-506
-	SP_HATE_SUN,SP_HATE_MOON,SP_HATE_STAR,SP_HOM_INTIMATE,SP_PHARMACY_SUCCESS,	//507-511
-	SP_KILL_CHAR,SP_KILLED_CHAR,						//512-513
+	SP_CLONESKILL_ID=500,SP_CLONESKILL_LV,					// 500-501
+	SP_BS_POINT,SP_AM_POINT,SP_TK_POINT,SP_PK_POINT,SP_MISSON_TARGET,	// 502-506
+	SP_HATE_SUN,SP_HATE_MOON,SP_HATE_STAR,SP_HOM_INTIMATE,SP_PHARMACY_SUCCESS,	// 507-511
+	SP_KILL_CHAR,SP_KILLED_CHAR,						// 512-513
 
 	// original 1000-
 	SP_ATTACKRANGE=1000,	SP_ATKELE,SP_DEFELE,	// 1000-1002
@@ -913,7 +925,17 @@ enum {
 };
 
 enum {
-	LOOK_BASE,LOOK_HAIR,LOOK_WEAPON,LOOK_HEAD_BOTTOM,LOOK_HEAD_TOP,LOOK_HEAD_MID,LOOK_HAIR_COLOR,LOOK_CLOTHES_COLOR,LOOK_SHIELD,LOOK_SHOES,LOOK_MOB,
+	LOOK_BASE,
+	LOOK_HAIR,
+	LOOK_WEAPON,
+	LOOK_HEAD_BOTTOM,
+	LOOK_HEAD_TOP,
+	LOOK_HEAD_MID,
+	LOOK_HAIR_COLOR,
+	LOOK_CLOTHES_COLOR,
+	LOOK_SHIELD,
+	LOOK_SHOES,
+	LOOK_MOB,
 };
 
 // CELL
@@ -925,33 +947,32 @@ enum {
  * map_getcell()で使用されるフラグ
  */
 typedef enum {
-	CELL_CHKNONE=-1,	// 無し
-	CELL_CHKWALL=0,		// 壁(セルタイプ1)
-	CELL_CHKWATER,		// 水場(セルタイプ3)
-	CELL_CHKGROUND,		// 地面障害物(セルタイプ5)
-	CELL_CHKPASS,		// 通過可能(セルタイプ1,5以外)
-	CELL_CHKNOPASS,		// 通過不可(セルタイプ1,5)
-	CELL_GETTYPE,		// セルタイプを返す
-	CELL_CHKNPC=0x10,	// タッチタイプのNPC(セルタイプ0x80フラグ)
-	CELL_CHKBASILICA,	// バジリカ(セルタイプ0x40フラグ)
+	CELL_CHKNONE     = -1,		// 無し
+	CELL_CHKWALL     = 0,		// 壁(セルタイプ1)
+	CELL_CHKWATER,			// 水場(セルタイプ3)
+	CELL_CHKGROUND,			// 地面障害物(セルタイプ5)
+	CELL_CHKPASS,			// 通過可能(セルタイプ1,5以外)
+	CELL_CHKNOPASS,			// 通過不可(セルタイプ1,5)
+	CELL_GETTYPE,			// セルタイプを返す
+	CELL_CHKNPC      = 0x10,	// タッチタイプのNPC(セルタイプ0x80フラグ)
+	CELL_CHKBASILICA,		// バジリカ(セルタイプ0x40フラグ)
 } cell_t;
 
 // map_setcell()で使用されるフラグ
 enum {
-	CELL_SETNPC=0x10,	// タッチタイプのNPCをセット
-	CELL_SETBASILICA,	// バジリカをセット
-	CELL_CLRBASILICA,	// バジリカをクリア
+	CELL_SETNPC      = 0x10,	// タッチタイプのNPCをセット
+	CELL_SETBASILICA,		// バジリカをセット
+	CELL_CLRBASILICA,		// バジリカをクリア
 };
 
 struct chat_data {
 	struct block_list bl;
-
-	unsigned char pass[8];   /* password */
-	unsigned char title[61]; /* room title MAX 60 */
-	unsigned char limit;     /* join limit */
+	unsigned char pass[8];
+	unsigned char title[61];
+	unsigned char limit;
 	unsigned char trigger;
-	unsigned char users;     /* current users */
-	unsigned char pub;       /* room attribute */
+	unsigned char users;
+	unsigned char pub;
 	unsigned zeny;
 	unsigned lowlv;
 	unsigned highlv;
@@ -983,7 +1004,6 @@ extern int sql_script_enable;
 int map_getcell(int,int,int,cell_t);
 int map_getcellp(struct map_data*,int,int,cell_t);
 void map_setcell(int,int,int,int);
-extern int map_read_flag;	// 0: grfファイル 1: キャッシュ 2: キャッシュ(圧縮)
 
 extern char motd_txt[];
 extern char help_txt[];
@@ -1010,16 +1030,19 @@ void map_foreachinmovearea(int (*)(struct block_list*,va_list),int,int,int,int,i
 void map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4],int y[4],int type,...);
 
 //int map_countnearpc(int, int, int); // not use
-//block関連に追加
+
+// block関連に追加
 int map_count_oncell(int m,int x,int y,int type);
 struct skill_unit *map_find_skill_unit_oncell(struct block_list *,int x,int y,int skill_id,struct skill_unit *);
+
 // 一時的object関連
 int map_addobject(struct block_list *);
 int map_delobject(int);
 int map_delobjectnofree(int id);
 void map_foreachobject(int (*)(struct block_list*,va_list),int,...);
-//
+
 int map_quit(struct map_session_data *);
+
 // npc
 int map_addnpc(int,struct npc_data *);
 
@@ -1065,7 +1088,7 @@ int map_field_setting(void);
 
 // その他
 int map_check_dir(int s_dir,int t_dir);
-int map_calc_dir( struct block_list *src,int x,int y);
+int map_calc_dir(struct block_list *src,int x,int y);
 
 extern char map_server_tag[16];
 extern const int dirx[], diry[];

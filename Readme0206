@@ -1,4 +1,25 @@
 ----------------------------------------
+//0212 [2007/07/08] by Rayce
+
+・mail.cの細かい整形（mail.c）
+	-> nullpoチェックを入れる
+	-> ROメールの受信者およびタイトルの末尾に \0 を付加する
+
+・map.cの細かい整形（map.c）
+	-> block_free_max を BLOCK_FREE_MAX に改名
+	-> BL_LIST_MAX はblock_list構造体用のtypeと混同するので BLOCK_LIST_MAX に改名
+	-> map_calc_dir() の最適化
+	-> MAP名の末尾に \0 を付加する
+
+・sleep_data構造体を無名構造体に変更（script.h）
+・以下の入れ子になった構造体を外に分離する（db.h, map.c, map.h, script.h）
+	db_free
+	map_cache_head
+	pet_skill_attack
+	pet_skill_support
+	script_stack
+
+----------------------------------------
 //0211 [2007/07/08] by Rayce
 
 ・ランダム系アイテムデータベースを読み込む際、存在しないアイテムのIDが指定されていた場合は
