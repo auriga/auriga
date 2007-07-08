@@ -135,8 +135,7 @@ int mobdb_checkid(const int mob_id);
 int mob_once_spawn(struct map_session_data *sd,const char *mapname,
 	int x,int y,const char *mobname,int class_,int amount,const char *event);
 int mob_once_spawn_area(struct map_session_data *sd,const char *mapname,
-	int x0,int y0,int x1,int y1,
-	const char *mobname,int class_,int amount,const char *event);
+	int x0,int y0,int x1,int y1,const char *mobname,int class_,int amount,const char *event);
 
 int mob_target(struct mob_data *md,struct block_list *bl,int dist);
 int mob_spawn(int);
