@@ -729,14 +729,13 @@ int homun_callhom(struct map_session_data *sd)
 		}
 	} else {
 		// 初誕生なら、データ作成
+		int idx = pc_search_inventory(sd,7142);	// エンブリオ所持を確認
 		sd->status.homun_id = 0;
-		for(i=0; i<MAX_INVENTORY; i++) {
-			if(sd->status.inventory[i].nameid == 7142) {	// エンブリオ所持を確認
-				pc_delitem(sd,i,1,0);	// エンブリオ消去
-			//if(atn_rand()%100<80)		// 成功率不明〜
-				homun_create_hom(sd,homun_get_create_homunid());
-				return 0;
-			}
+		if(idx >= 0) {
+			pc_delitem(sd,idx,1,0);	// エンブリオ消去
+		//if(atn_rand()%100<80)		// 成功率不明〜
+			homun_create_hom(sd,homun_get_create_homunid());
+			return 0;
 		}
 		clif_skill_fail(sd,AM_CALLHOMUN,0,0);
 	}

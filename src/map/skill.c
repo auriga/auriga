@@ -4445,7 +4445,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			struct block_list tbl;
 			int hp = 0,sp = 0;
 			if(sd) {
-				int x = skilllv%11 - 1;
+				int x = (skilllv > 10)? 9: skilllv - 1;
 				int i = pc_search_inventory(sd,skill_db[skillid].itemid[x]);
 
 				if(i < 0 || skill_db[skillid].itemid[x] <= 0) {
@@ -5987,7 +5987,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case CR_SLIMPITCHER:
 		if(sd) {
-			int i = skilllv%11 - 1;
+			int i = (skilllv > 10)? 9: skilllv - 1;
 			int j, itemid;
 
 			if(battle_config.slimpitcher_nocost && !map[sd->bl.m].flag.pvp && !map[sd->bl.m].flag.gvg) {
@@ -8876,7 +8876,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	}
 
 	if(skill_get_inf2(sc->id)&8192){
-		int idx = sc->lv-1;
+		int idx = (sc->lv > 10)? 9: sc->lv - 1;
 		index[idx] = -1;
 		if(itemid[idx] <= 0)
 			goto ITEM_NOCOST;	// 消費なさそうなので
@@ -8900,7 +8900,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 	}else{
 		for(i=0;i<10;i++) {
-			int x = sc->lv%11 - 1;
+			int x = (sc->lv > 10)? 9: sc->lv - 1;
 			index[i] = -1;
 			if(itemid[i] <= 0)
 				continue;
@@ -8936,7 +8936,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 
 	if(sc->id != AL_WARP || type&2) {
 		if(skill_get_inf2(sc->id)&8192){
-			int idx = sc->lv -1;
+			int idx = (sc->lv > 10)? 9: sc->lv - 1;
 			if(index[idx] >= 0)
 				pc_delitem(sd,index[idx],amount[idx],0);	// アイテム消費
 		}else{
@@ -9075,7 +9075,7 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 	}
 
 	if(skill_get_inf2(sc->id)&8192){
-		int idx = sc->lv-1;
+		int idx = (sc->lv > 10)? 9: sc->lv - 1;
 		index[idx] = -1;
 		if(itemid[idx] <= 0)
 			goto ITEM_NOCOST;	// 消費なさそうなので
@@ -9097,7 +9097,7 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 		}
 	}else{
 		for(i=0;i<10;i++) {
-			int x = sc->lv%11 - 1;
+			int x = (sc->lv > 10)? 9: sc->lv - 1;
 			index[i] = -1;
 			if(itemid[i] <= 0)
 				continue;
@@ -9131,7 +9131,7 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 
 	if(sc->id != AL_WARP || type&2) {
 		if(skill_get_inf2(sc->id)&8192){
-			int idx = sc->lv -1;
+			int idx = (sc->lv > 10)? 9: sc->lv - 1;
 			if(index[idx] >= 0)
 				pc_delitem(msd,index[idx],amount[idx],0);	// アイテム消費
 		}else{
@@ -11655,7 +11655,7 @@ int skill_bonus_autospell(struct block_list *src,struct block_list *bl,unsigned 
 void skill_weapon_refine(struct map_session_data *sd, int idx)
 {
 	int refine_item[5] = { 0, 1010, 1011, 984, 984 };
-	int skilllv,wlv;
+	int skilllv,wlv,n;
 
 	nullpo_retv(sd);
 
@@ -11681,7 +11681,8 @@ void skill_weapon_refine(struct map_session_data *sd, int idx)
 		wlv = 4;
 
 	// アイテムチェック
-	if(pc_search_inventory(sd,refine_item[wlv]) == -1) {
+	n = pc_search_inventory(sd,refine_item[wlv]);
+	if(n < 0) {
 		clif_weapon_refine_res(sd,3,refine_item[wlv]);
 		return;
 	}
@@ -11697,7 +11698,7 @@ void skill_weapon_refine(struct map_session_data *sd, int idx)
 	}
 
 	// アイテム消費
-	pc_delitem(sd,pc_search_inventory(sd,refine_item[wlv]),1,0);
+	pc_delitem(sd,n,1,0);
 
 	return;
 }

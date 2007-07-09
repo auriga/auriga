@@ -1536,7 +1536,7 @@ static void read_constdb(void)
 	fp=fopen("db/const.txt","r");
 	if(fp==NULL){
 		printf("can't read db/const.txt\n");
-		return ;
+		return;
 	}
 	while(fgets(line,1020,fp)){
 		if(line[0]=='/' && line[1]=='/')
@@ -1559,7 +1559,7 @@ static void read_constdb(void)
  * エラー表示
  *------------------------------------------
  */
-const char* script_print_line( const char *p, const char *mark, int line )
+static const char* script_print_line( const char *p, const char *mark, int line )
 {
 	int i;
 
@@ -2951,9 +2951,9 @@ static int script_txt_save_mapreg_intsub(void *key,void *data,va_list ap)
 
 	if( name[1]!='@' ){
 		if(i==0)
-			fprintf(fp,"%s\t%d\n", name, (int)data);
+			fprintf(fp,"%s\t%d" RETCODE, name, (int)data);
 		else
-			fprintf(fp,"%s,%d\t%d\n", name, i, (int)data);
+			fprintf(fp,"%s,%d\t%d" RETCODE, name, i, (int)data);
 	}
 	return 0;
 }
@@ -2966,9 +2966,9 @@ static int script_txt_save_mapreg_strsub(void *key,void *data,va_list ap)
 
 	if( name[1]!='@' ){
 		if(i==0)
-			fprintf(fp,"%s\t%s\n", name, (char *)data);
+			fprintf(fp,"%s\t%s" RETCODE, name, (char *)data);
 		else
-			fprintf(fp,"%s,%d\t%s\n", name, i, (char *)data);
+			fprintf(fp,"%s,%d\t%s" RETCODE, name, i, (char *)data);
 	}
 	return 0;
 }
@@ -3292,7 +3292,7 @@ static int varsdb_output(void)
 				struct vars_info *v = (struct vars_info *)numdb_search( vars_db, (void*)vlist[i] );
 				if( strncmp(name, "$@__", 4) != 0 ) {
 					// switch の内部変数は除外
-					fprintf(fp, "%-20s % 4d %s line %d\n", name, v->use_count, v->file, v->line);
+					fprintf(fp, "%-20s % 4d %s line %d" RETCODE, name, v->use_count, v->file, v->line);
 				}
 			}
 			aFree( vlist );
@@ -3318,29 +3318,29 @@ static int debug_hash_output(void)
 
 		printf("do_final_script: dumping script str hash information\n");
 		memset(count, 0, sizeof(count));
-		fprintf(fp,"--------------------------------------\n");
-		fprintf(fp," num :  calced_val -> hash : data_name\n");
-		fprintf(fp,"--------------------------------------\n");
+		fprintf(fp, "--------------------------------------" RETCODE);
+		fprintf(fp, " num :  calced_val -> hash : data_name" RETCODE);
+		fprintf(fp, "--------------------------------------" RETCODE);
 
 		for(i=LABEL_START; i<str_num; i++) {
 			unsigned int h1 = calc_hash(str_buf+str_data[i].str);
 			unsigned int h2 = h1%SCRIPT_HASH_SIZE;
-			fprintf(fp,"%04d :  %10u -> %4u : %s\n",i,h1,h2,str_buf+str_data[i].str);
+			fprintf(fp, "%04d :  %10u -> %4u : %s" RETCODE, i, h1, h2, str_buf+str_data[i].str);
 			if(++count[h2] > max)
 				max = count[h2];
 		}
 		buckets = (int *)aCalloc((max+1),sizeof(int));
 
-		fprintf(fp,"\n--------------------------------------\n");
-		fprintf(fp,"hash : count\n--------------------------------------\n");
+		fprintf(fp, RETCODE "--------------------------------------" RETCODE);
+		fprintf(fp, "hash : count" RETCODE "--------------------------------------" RETCODE);
 		for(i=0; i<SCRIPT_HASH_SIZE; i++) {
-			fprintf(fp,"%4d : %5d\n",i,count[i]);
+			fprintf(fp, "%4d : %5d" RETCODE, i, count[i]);
 			buckets[count[i]]++;
 		}
-		fprintf(fp,"\n--------------------------------------\n");
-		fprintf(fp,"items : buckets : percent\n--------------------------------------\n");
+		fprintf(fp, RETCODE "--------------------------------------" RETCODE);
+		fprintf(fp, "items : buckets : percent" RETCODE "--------------------------------------" RETCODE);
 		for(i=0; i<=max; i++) {
-			fprintf(fp,"%5d : %7d : %6.2lf%\n",i,buckets[i],(double)buckets[i]/SCRIPT_HASH_SIZE*100.);
+			fprintf(fp, "%5d : %7d : %6.2lf%%" RETCODE, i, buckets[i], (double)buckets[i]/SCRIPT_HASH_SIZE*100.);
 		}
 		aFree(buckets);
 		fclose(fp);
@@ -8232,7 +8232,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 	int j,n,flag,slot,removed_flag=0;
 	short card_set[4] = { 0,0,0,0 };
 
-	if(i < 0 || i > MAX_INVENTORY)
+	if(i < 0 || i >= MAX_INVENTORY)
 		return 0;
 	if(itemdb_isspecial(sd->status.inventory[i].card[0]))	// 製造・名前入りは処理しない
 		return 0;
@@ -8886,7 +8886,7 @@ int buildin_gethomuninfo(struct script_state *st)
 				}
 				break;
 			case 3:
-				if( sd->hd ) 
+				if( sd->hd )
 					push_val(st->stack,C_INT,sd->hd->intimate);
 				else
 					push_val(st->stack,C_INT,0);
@@ -9636,8 +9636,10 @@ int script_csvinit(void)
 
 static int script_csvfinal_sub(void *key, void *data, va_list ap)
 {
+	struct csvdb_data *csv = (struct csvdb_data *)data;
+
 	aFree(key);
-	csvdb_close( data );
+	csvdb_close( csv );
 	return 0;
 }
 
@@ -9664,7 +9666,7 @@ static int script_csvfilename_check(const char *file, const char *func)
 
 static struct csvdb_data* script_csvload(const char *file)
 {
-	struct csvdb_data *csv = strdb_search( script_csvdb, file);
+	struct csvdb_data *csv = (struct csvdb_data *)strdb_search(script_csvdb, file);
 
 	if( csv == NULL ) {
 		// ファイル名に変なものが入っていないか確認
@@ -9893,7 +9895,7 @@ static int script_csvreload_sub(void *key, void *data, va_list ap)
 int buildin_csvreload(struct script_state *st)
 {
 	char *file = conv_str(st,& (st->stack->stack_data[st->start+2]));
-	struct csvdb_data *csv = strdb_search( script_csvdb, file );
+	struct csvdb_data *csv = (struct csvdb_data *)strdb_search( script_csvdb, file );
 
 	if( csv ) {
 		int find = 0;
@@ -9964,7 +9966,7 @@ int buildin_csvflush(struct script_state *st)
 	if( !script_csvfilename_check(file, "buildin_csvflush") )
 		return 0;
 
-	csv = strdb_search( script_csvdb, file );
+	csv = (struct csvdb_data *)strdb_search( script_csvdb, file );
 	if( csv ) {
 		csvdb_flush( csv );
 	}

@@ -3947,7 +3947,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					status_change_end(bl,SC_KAITE,-1);
 
 				if( sd && ssc_data && ssc_data[SC_WIZARD].timer != -1 &&
-				    (idx = pc_search_inventory(sd,7321)) >= 0 && sd->status.inventory[idx].amount > 0 ) {
+				    (idx = pc_search_inventory(sd,7321)) >= 0 ) {
 					pc_delitem(sd,idx,1,0);
 				} else {
 					rdamage += damage;
