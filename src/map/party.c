@@ -28,12 +28,19 @@
 
 static struct dbt* party_db = NULL;
 
-// 検索
+/*==========================================
+ * パーティ検索
+ *------------------------------------------
+ */
 struct party *party_search(int party_id)
 {
 	return (struct party *)numdb_search(party_db,party_id);
 }
 
+/*==========================================
+ * パーティ名検索
+ *------------------------------------------
+ */
 static int party_searchname_sub(void *key, void *data, va_list ap)
 {
 	struct party *p, **dst;
@@ -51,7 +58,6 @@ static int party_searchname_sub(void *key, void *data, va_list ap)
 	return 0;
 }
 
-// パーティ名検索
 struct party* party_searchname(char *str)
 {
 	struct party *p=NULL;
@@ -61,7 +67,10 @@ struct party* party_searchname(char *str)
 	return p;
 }
 
-// 作成要求
+/*==========================================
+ * 作成要求
+ *------------------------------------------
+ */
 void party_create(struct map_session_data *sd, char *name, int item, int item2)
 {
 	int i;
@@ -71,7 +80,7 @@ void party_create(struct map_session_data *sd, char *name, int item, int item2)
 
 	if (sd->status.party_id == 0) {
 		strncpy(party_name, name, 23);
-		// force '/0' at end (against hacker: normal player can not create a party with a name longer than 23 characters)
+		// force '\0' at end (against hacker: normal player can not create a party with a name longer than 23 characters)
 		party_name[23] = '\0';
 
 		// if too short name (hacker)
@@ -96,7 +105,10 @@ void party_create(struct map_session_data *sd, char *name, int item, int item2)
 	return;
 }
 
-// 作成可否
+/*==========================================
+ * 作成可否
+ *------------------------------------------
+ */
 void party_created(int account_id, unsigned char fail, int party_id, char *name)
 {
 	struct map_session_data *sd;
@@ -122,7 +134,10 @@ void party_created(int account_id, unsigned char fail, int party_id, char *name)
 	return;
 }
 
-// 情報要求
+/*==========================================
+ * 情報要求
+ *------------------------------------------
+ */
 void party_request_info(int party_id)
 {
 	intif_request_partyinfo(party_id);
@@ -130,7 +145,10 @@ void party_request_info(int party_id)
 	return;
 }
 
-// 所属キャラの確認
+/*==========================================
+ * 所属キャラの確認
+ *------------------------------------------
+ */
 static void party_check_member(struct party *p)
 {
 	int i;
@@ -143,8 +161,8 @@ static void party_check_member(struct party *p)
 			if(sd->status.party_id==p->party_id){
 				int j,f=1;
 				for(j=0;j<MAX_PARTY;j++){	// パーティにデータがあるか確認
-					if(	p->member[j].account_id==sd->status.account_id){
-						if(	strcmp(p->member[j].name,sd->status.name)==0 )
+					if(p->member[j].account_id==sd->status.account_id){
+						if(strcmp(p->member[j].name,sd->status.name)==0)
 							f=0;	// データがある
 						else
 							p->member[j].sd=NULL;	// 同垢別キャラだった
@@ -162,7 +180,10 @@ static void party_check_member(struct party *p)
 	return;
 }
 
-// 情報取得失敗（そのIDのキャラを全部未所属にする）
+/*==========================================
+ * 情報取得失敗（そのIDのキャラを全部未所属にする）
+ *------------------------------------------
+ */
 void party_recv_noinfo(int party_id)
 {
 	int i;
@@ -178,7 +199,10 @@ void party_recv_noinfo(int party_id)
 	return;
 }
 
-// 情報取得
+/*==========================================
+ * 情報取得
+ *------------------------------------------
+ */
 void party_recv_info(struct party *sp)
 {
 	struct map_session_data *sd;
@@ -221,7 +245,10 @@ void party_recv_info(struct party *sp)
 	return;
 }
 
-// パーティへの勧誘
+/*==========================================
+ * パーティへの勧誘
+ *------------------------------------------
+ */
 void party_invite(struct map_session_data *sd, int account_id)
 {
 	struct map_session_data *tsd;
@@ -265,7 +292,10 @@ void party_invite(struct map_session_data *sd, int account_id)
 	return;
 }
 
-// パーティ勧誘への返答
+/*==========================================
+ * パーティ勧誘への返答
+ *------------------------------------------
+ */
 void party_reply_invite(struct map_session_data *sd, int account_id, int flag)
 {
 	struct map_session_data *tsd;
@@ -275,20 +305,21 @@ void party_reply_invite(struct map_session_data *sd, int account_id, int flag)
 	if(flag==1){	// 承諾
 		//inter鯖へ追加要求
 		intif_party_addmember(sd);
-	}
-	else {		// 拒否
+	} else {	// 拒否
 		sd->party_invite=0;
 		sd->party_invite_account=0;
 		tsd = map_id2sd(account_id);
-		if(tsd==NULL)
-			return;
-		clif_party_inviteack(tsd,sd->status.name,1);
+		if(tsd)
+			clif_party_inviteack(tsd,sd->status.name,1);
 	}
 
 	return;
 }
 
-// パーティ競合確認
+/*==========================================
+ * パーティ競合確認
+ *------------------------------------------
+ */
 static void party_check_conflict(struct map_session_data *sd)
 {
 	nullpo_retv(sd);
@@ -298,7 +329,10 @@ static void party_check_conflict(struct map_session_data *sd)
 	return;
 }
 
-// パーティが追加された
+/*==========================================
+ * パーティが追加された
+ *------------------------------------------
+ */
 void party_member_added(int party_id, int account_id, unsigned char flag, const char* name)
 {
 	struct map_session_data *sd = map_id2sd(account_id),*sd2;
@@ -321,7 +355,7 @@ void party_member_added(int party_id, int account_id, unsigned char flag, const 
 		return;
 	}
 
-		// 成功
+	// 成功
 	sd->party_sended=0;
 	sd->status.party_id=party_id;
 
@@ -334,7 +368,10 @@ void party_member_added(int party_id, int account_id, unsigned char flag, const 
 	return;
 }
 
-// パーティ除名要求
+/*==========================================
+ * パーティ除名要求
+ *------------------------------------------
+ */
 void party_removemember(struct map_session_data *sd, int account_id, char *name)
 {
 	struct party *p;
@@ -347,9 +384,10 @@ void party_removemember(struct map_session_data *sd, int account_id, char *name)
 
 	for(i=0;i<MAX_PARTY;i++){	// リーダーかどうかチェック
 		if (p->member[i].account_id == sd->status.account_id &&
-		    strncmp(p->member[i].name, sd->status.name, 24) == 0)
+		    strncmp(p->member[i].name, sd->status.name, 24) == 0) {
 			if(p->member[i].leader==0)
 				return;
+		}
 	}
 
 	for(i=0;i<MAX_PARTY;i++){	// 所属しているか調べる
@@ -363,7 +401,10 @@ void party_removemember(struct map_session_data *sd, int account_id, char *name)
 	return;
 }
 
-// パーティ脱退要求
+/*==========================================
+ * パーティ脱退要求
+ *------------------------------------------
+ */
 void party_leave(struct map_session_data *sd)
 {
 	struct party *p;
@@ -385,7 +426,10 @@ void party_leave(struct map_session_data *sd)
 	return;
 }
 
-// パーティメンバが脱退した
+/*==========================================
+ * パーティメンバが脱退した
+ *------------------------------------------
+ */
 void party_member_leaved(int party_id, int account_id, char *name)
 {
 	struct map_session_data *sd=map_id2sd(account_id);
@@ -409,7 +453,10 @@ void party_member_leaved(int party_id, int account_id, char *name)
 	return;
 }
 
-// パーティ解散通知
+/*==========================================
+ * パーティ解散通知
+ *------------------------------------------
+ */
 void party_broken(int party_id)
 {
 	struct party *p;
@@ -431,7 +478,11 @@ void party_broken(int party_id)
 	return;
 }
 
-// 家族公平に必要な最低条件をチェックして養子キャラのIDを返す
+/*==========================================
+ * 家族公平に必要な最低条件をチェックして
+ * 養子キャラのIDを返す
+ *------------------------------------------
+ */
 static int party_check_family_share(struct party *p)
 {
 	int i, count = 0;
@@ -470,7 +521,10 @@ static int party_check_family_share(struct party *p)
 	return 0;
 }
 
-// パーティの設定変更要求
+/*==========================================
+ * パーティの設定変更要求
+ *------------------------------------------
+ */
 void party_changeoption(struct map_session_data *sd, int exp, int item)
 {
 	struct party *p;
@@ -501,7 +555,10 @@ void party_changeoption(struct map_session_data *sd, int exp, int item)
 	return;
 }
 
-// パーティの設定変更通知
+/*==========================================
+ * パーティの設定変更通知
+ *------------------------------------------
+ */
 void party_optionchanged(int party_id, int account_id, unsigned char exp, unsigned char item, int flag)
 {
 	struct party *p;
@@ -523,7 +580,10 @@ void party_optionchanged(int party_id, int account_id, unsigned char exp, unsign
 	return;
 }
 
-// 位置通知クリア
+/*==========================================
+ * 位置通知クリア
+ *------------------------------------------
+ */
 static void party_send_xy_clear(struct party *p)
 {
 	int i;
@@ -542,7 +602,10 @@ static void party_send_xy_clear(struct party *p)
 	return;
 }
 
-// パーティメンバの移動通知
+/*==========================================
+ * パーティメンバの移動通知
+ *------------------------------------------
+ */
 void party_recv_movemap(int party_id, int account_id, char *map, unsigned char online, unsigned short lv, const char* name)
 {
 	struct map_session_data *sd;
@@ -590,7 +653,10 @@ void party_recv_movemap(int party_id, int account_id, char *map, unsigned char o
 	return;
 }
 
-// パーティメンバの移動
+/*==========================================
+ * パーティメンバの移動
+ *------------------------------------------
+ */
 void party_send_movemap(struct map_session_data *sd)
 {
 	struct party *p;
@@ -622,7 +688,10 @@ void party_send_movemap(struct map_session_data *sd)
 	return;
 }
 
-// パーティメンバのログアウト
+/*==========================================
+ * パーティメンバのログアウト
+ *------------------------------------------
+ */
 void party_send_logout(struct map_session_data *sd)
 {
 	struct party *p;
@@ -635,15 +704,19 @@ void party_send_logout(struct map_session_data *sd)
 	// sdが無効になるのでパーティ情報から削除
 	if( (p=party_search(sd->status.party_id))!=NULL ){
 		int i;
-		for(i=0;i<MAX_PARTY;i++)
+		for(i=0;i<MAX_PARTY;i++) {
 			if(p->member[i].sd==sd)
 				p->member[i].sd=NULL;
+		}
 	}
 
 	return;
 }
 
-// パーティメッセージ送信
+/*==========================================
+ * パーティメッセージ送信
+ *------------------------------------------
+ */
 void party_send_message(struct map_session_data *sd, char *mes, int len)
 {
 	if(sd->status.party_id==0)
@@ -654,7 +727,10 @@ void party_send_message(struct map_session_data *sd, char *mes, int len)
 	return;
 }
 
-// パーティメッセージ受信
+/*==========================================
+ * パーティメッセージ受信
+ *------------------------------------------
+ */
 void party_recv_message(int party_id, int account_id, char *mes, int len)
 {
 	struct party *p;
@@ -666,7 +742,10 @@ void party_recv_message(int party_id, int account_id, char *mes, int len)
 	return;
 }
 
-// 位置やＨＰ通知用
+/*==========================================
+ * 位置やHP通知用
+ *------------------------------------------
+ */
 static int party_send_xyhp_timer_sub(void *key, void *data, va_list ap)
 {
 	struct party *p=(struct party *)data;
@@ -694,7 +773,10 @@ static int party_send_xyhp_timer_sub(void *key, void *data, va_list ap)
 	return 0;
 }
 
-// 位置やＨＰ通知
+/*==========================================
+ * 位置やHP通知
+ *------------------------------------------
+ */
 static int party_send_xyhp_timer(int tid, unsigned int tick, int id, int data)
 {
 	numdb_foreach(party_db,party_send_xyhp_timer_sub,tick);
@@ -702,7 +784,10 @@ static int party_send_xyhp_timer(int tid, unsigned int tick, int id, int data)
 	return 0;
 }
 
-// HP通知の必要性検査用（map_foreachinmoveareaから呼ばれる）
+/*==========================================
+ * HP通知の必要性検査用（map_foreachinmoveareaから呼ばれる）
+ *------------------------------------------
+ */
 int party_send_hp_check(struct block_list *bl,va_list ap)
 {
 	int party_id;
@@ -724,7 +809,10 @@ int party_send_hp_check(struct block_list *bl,va_list ap)
 	return 0;
 }
 
-// 経験値公平分配
+/*==========================================
+ * 経験値公平分配
+ *------------------------------------------
+ */
 void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_exp, atn_bignumber job_exp)
 {
 	struct map_session_data *sd;
@@ -759,7 +847,10 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 	return;
 }
 
-// アイテム分配
+/*==========================================
+ * アイテム分配
+ *------------------------------------------
+ */
 int party_loot_share(struct party *p, struct map_session_data *sd, struct item *item_data, int first)
 {
 	nullpo_retr(1, sd);
@@ -794,7 +885,10 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 	return pc_additem(sd,item_data,item_data->amount);
 }
 
-// 同じマップのパーティメンバー全体に処理をかける
+/*==========================================
+ * 同じマップのパーティメンバー全体に処理をかける
+ *------------------------------------------
+ */
 void party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_session_data *sd,int range,...)
 {
 	struct party *p;
@@ -840,15 +934,18 @@ void party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_ses
 	return;
 }
 
-// 同じマップでオンライン中のパーティメンバーの数を返す
-// 0:居ないか,PTがない
+/*==========================================
+ * 同じマップでオンライン中のパーティメンバーの数を返す
+ * 0:居ないか,PTがない
+ *------------------------------------------
+ */
 int party_check_same_map_member_count(struct map_session_data *sd)
 {
 	int count = 0;
 	int i;
 	struct party* pt = NULL;
 
-	nullpo_retr(0,sd);
+	nullpo_retr(0, sd);
 
 	pt = party_search(sd->status.party_id);
 
@@ -886,10 +983,14 @@ void do_final_party(void)
 	return;
 }
 
-// 初期化
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
 void do_init_party(void)
 {
 	party_db=numdb_init();
+
 	add_timer_func_list(party_send_xyhp_timer,"party_send_xyhp_timer");
 	add_timer_interval(gettick()+PARTY_SEND_XYHP_INVERVAL,party_send_xyhp_timer,0,0,PARTY_SEND_XYHP_INVERVAL);
 

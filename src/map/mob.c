@@ -362,7 +362,7 @@ int mob_spawn(int id)
 		memset(md->lootitem,0,sizeof(md->lootitem));
 	md->lootitem_count = 0;
 #ifdef DYNAMIC_SC_DATA
-	//ダミー挿入
+	// ダミー挿入
 	if(md->sc_data == NULL)
 		md->sc_data = dummy_sc_data;
 #else
@@ -944,12 +944,14 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				// 追跡
 				int dx, dy, ret, i = 0;
 				do {
-					if(i == 0) {	// 最初はAEGISと同じ方法で検索
+					if(i == 0) {
+						// 最初はAEGISと同じ方法で検索
 						dx = tbl->x - md->bl.x;
 						dy = tbl->y - md->bl.y;
 						if(dx < 0) dx++; else if(dx > 0) dx--;
 						if(dy < 0) dy++; else if(dy > 0) dy--;
-					} else {	// だめならAthena式(ランダム)
+					} else {
+						// だめならAthena式(ランダム)
 						dx = tbl->x - md->bl.x + atn_rand()%3 - 1;
 						dy = tbl->y - md->bl.y + atn_rand()%3 - 1;
 					}
@@ -969,7 +971,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				unit_stop_walking(&md->bl,1);	// 歩行中なら停止
 			if(md->ud.attacktimer != -1 || md->ud.canact_tick > gettick())
 				return search_flag; // 既に攻撃中
-			if(battle_config.mob_attack_fixwalkpos)	//強制位置補正
+			if(battle_config.mob_attack_fixwalkpos)	// 強制位置補正
 				clif_fixwalkpos(&md->bl);
 			unit_attack(&md->bl, md->target_id, attack_type);
 			md->state.skillstate = MSS_ATTACK;
@@ -2118,7 +2120,7 @@ int mob_droprate_fix(int item,int drop)
 				drop_fix = battle_config.item_rate_100_min;
 			else if(drop_fix > battle_config.item_rate_100_max)
 				drop_fix = battle_config.item_rate_100_max;
-		} else{
+		} else {
 			drop_fix = drop * battle_config.item_rate_1000 / 100;
 			if(drop_fix < battle_config.item_rate_1000_min)
 				drop_fix = battle_config.item_rate_1000_min;
@@ -2989,7 +2991,7 @@ static int mob_can_counterattack(struct mob_data *md,struct block_list *target)
 	}
 
 	// ターゲットに反撃できない状態なので近くに攻撃できる相手がいるか探す
-	map_foreachinarea( mobskill_anothertarget,
+	map_foreachinarea(mobskill_anothertarget,
 		md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,0,md,MST_ANOTHERTARGET,&c,&tbl);
 
 	return (tbl != NULL);
@@ -3105,7 +3107,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		if(DIFF_TICK(tick,md->skilldelay[i]) < ms[i].delay)
 			continue;
 
-		//コマンド専用
+		// コマンド専用
 		if(ms[i].state == MSS_COMMANDONLY || ms[i].state == MSS_DISABLE)
 			continue;
 

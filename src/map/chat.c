@@ -28,9 +28,10 @@ void chat_createchat(struct map_session_data *sd, unsigned short limit, unsigned
 
 	nullpo_retv(sd);
 
-	if(sd->joinchat)
+	if(sd->joinchat) {
 		if(chat_leavechat(sd,0))
 			return;
+	}
 
 	cd = (struct chat_data *)aCalloc(1,sizeof(struct chat_data));
 
@@ -51,7 +52,7 @@ void chat_createchat(struct map_session_data *sd, unsigned short limit, unsigned
 	cd->zeny = 0;
 	cd->lowlv = 0;
 	cd->highlv = MAX_LEVEL;
-	cd->job = 0xFFFFFFFF;//~(1<<MAX_PC_CLASS);
+	cd->job = 0xFFFFFFFF;
 	cd->upper = 0;
 
 	cd->bl.id = map_addobject(&cd->bl);
@@ -310,8 +311,7 @@ int chat_createnpcchat(
 	if( nd->chat_id && (cd = map_id2cd(nd->chat_id)) ) {
 		change_flag = 1;
 		memset(cd->npc_event, 0, sizeof(cd->npc_event));
-	}
-	else {
+	} else {
 		cd = (struct chat_data *)aCalloc(1,sizeof(struct chat_data));
 		cd->pass[0] = 0;
 		cd->users   = 0;
@@ -345,6 +345,7 @@ int chat_createnpcchat(
 	cd->job = job;
 	cd->upper = upper;
 	memcpy(cd->npc_event,ev,sizeof(cd->npc_event));
+	cd->npc_event[sizeof(cd->npc_event)-1] = '\0';
 
 	if(change_flag)
 		clif_changechatstatus(cd);
