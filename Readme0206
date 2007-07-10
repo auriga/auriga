@@ -1,4 +1,19 @@
 ----------------------------------------
+//0216 [2007/07/11] by Rayce
+
+・battle_auriga.confのpet_loot_typeが0のとき、ペットが過剰にアイテムをルートする際に
+　重量が変化しなかったバグを修正（pet.c）
+・倉庫を開いているときだけ以下のタイミングで storage_storage_save() を呼び出すように修正（clif.c, homun.c, pet.c）
+	ホムの削除時
+	ペットの卵の孵化時
+	ペットを卵に戻す時
+	battle_auriga.confのpet_leaveがyesのときでペットが親密度0で消える時
+	battle_auriga.confのsave_player_when_drop_itemがyesのときでアイテムを床に落とした時
+
+・mapif_create_pet() でペットの新規作成に失敗した場合にはfreeするように修正（int_pet.c）
+・GCCにおいて map_getcellp() で警告が出ていたので修正（map.c）
+
+----------------------------------------
 //0215 [2007/07/10] by Rayce
 
 ・アクセス違反が発生する可能性を修正

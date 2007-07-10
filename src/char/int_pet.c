@@ -597,6 +597,8 @@ int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,unsigned 
 
 	if(pet_new(p) == 0) {
 		mapif_pet_created(fd,account_id,p);
+	} else {
+		aFree(p);
 	}
 	return 0;
 }

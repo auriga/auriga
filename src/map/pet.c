@@ -312,7 +312,8 @@ int pet_return_egg(struct map_session_data *sd)
 
 		intif_save_petdata(sd->status.account_id,&sd->pet);
 		chrif_save(sd);
-		storage_storage_save(sd);
+		if(sd->state.storage_flag == 1)
+			storage_storage_save(sd);
 
 		sd->petDB = NULL;
 	}
@@ -410,7 +411,8 @@ int pet_birth_process(struct map_session_data *sd)
 
 	intif_save_petdata(sd->status.account_id,&sd->pet);
 	chrif_save(sd);
-	storage_storage_save(sd);
+	if(sd->state.storage_flag == 1)
+		storage_storage_save(sd);
 	map_addblock(&sd->pd->bl);
 
 	sd->pd->view_size = mob_db[sd->pd->class_].view_size;
@@ -968,6 +970,8 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 					else {
 						if(pd->lootitem[0].card[0] == (short)0xff00)
 							intif_delete_petdata(*((long *)(&pd->lootitem[0].card[1])));
+						pd->lootitem_weight -= itemdb_weight(pd->lootitem[LOOTITEM_SIZE-1].nameid) * pd->lootitem[LOOTITEM_SIZE-1].amount;
+						pd->lootitem_weight += itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount;
 						memmove(&pd->lootitem[0],&pd->lootitem[1],sizeof(pd->lootitem[0])*(LOOTITEM_SIZE-1));
 						memcpy(&pd->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(pd->lootitem[0]));
 					}
@@ -1019,7 +1023,8 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			sd->status.pet_id = 0;
 			sd->pd = NULL;
 			chrif_save(sd);
-			storage_storage_save(sd);
+			if(sd->state.storage_flag == 1)
+				storage_storage_save(sd);
 		}else{
 			if(battle_config.pet_speed_is_same_as_pc == 1)
 				pd->speed = status_get_speed(&sd->bl);

@@ -9636,7 +9636,8 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 			// how -> A player drops an item on floor. An other takes the item and disconnects (and the item is saved).
 			//        If players know a solution to crash server, they crash it. Then, first player can be not saved and they have duplicated.
 			chrif_save(sd);
-			storage_storage_save(sd);
+			if(sd->state.storage_flag == 1)
+				storage_storage_save(sd);
 		}
 	} else {
 		clif_delitem(sd, item_index, 0);

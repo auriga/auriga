@@ -1790,11 +1790,13 @@ int map_getcellp(struct map_data* m,int x,int y,cell_t cellchk)
 	}
 
 	type = m->gat[x+y*m->xs];
-	if(cellchk < 0x10)
+	if(cellchk >= CELL_CHKWALL && cellchk < CELL_CHKNPC)
 		type &= CELL_MASK;
 
 	switch(cellchk)
 	{
+		case CELL_CHKNONE:
+			return 0;
 		case CELL_CHKPASS:
 			return (type != 1 && type != 5);
 		case CELL_CHKNOPASS:

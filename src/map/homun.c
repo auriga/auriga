@@ -701,8 +701,6 @@ static int homun_data_init(struct map_session_data *sd)
  */
 int homun_callhom(struct map_session_data *sd)
 {
-	int i;
-
 	nullpo_retr(0, sd);
 
 	if(sd->status.homun_id > 0 && sd->status.homun_id == sd->hom.homun_id) {
@@ -924,7 +922,8 @@ int homun_delete_data(struct map_session_data *sd)
 		sd->status.homun_id = 0;
 		memset(&sd->hom,0,sizeof(struct mmo_homunstatus));
 		chrif_save(sd);
-		storage_storage_save(sd);
+		if(sd->state.storage_flag == 1)
+			storage_storage_save(sd);
 	}
 	return 0;
 }
