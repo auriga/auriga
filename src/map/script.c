@@ -1875,7 +1875,7 @@ int get_val(struct script_state *st,struct script_data *data)
 
 		if(prefix != '$' && prefix != '\'') {
 			if((sd=script_rid2sd(st)) == NULL)
-				printf("get_val error name?:%s\n",name);
+				printf("get_val error name?: %s\n",name);
 		}
 		if(postfix == '$') {
 			// 文字列型
@@ -3122,8 +3122,10 @@ static int set_posword(char *p)
 			str[i]=p;
 			p+=strlen(p);
 		}
-		if(str[i])
-			strcpy(refine_posword[i],str[i]);
+		if(str[i]) {
+			strncpy(refine_posword[i],str[i],32);
+			refine_posword[i][31] = '\0';	// force \0 terminal
+		}
 	}
 	return 0;
 }
@@ -7711,6 +7713,7 @@ int buildin_setmapflag(struct script_state *st)
 				int x     = conv_num(st,& (st->stack->stack_data[st->start+5]));
 				int y     = conv_num(st,& (st->stack->stack_data[st->start+6]));
 				strncpy(map[m].save.map, str, 16);
+				map[m].save.map[15] = '\0';	// force \0 terminal
 				map[m].save.x = x;
 				map[m].save.y = y;
 			}
@@ -8828,14 +8831,10 @@ int buildin_getpetinfo(struct script_state *st)
 					push_val(st->stack,C_INT,0);
 				break;
 			case 2:
-				if(sd->pet.name) {
-					// \0が付いてない場合がある
-					char *name = (char *)aCalloc(sizeof(sd->pet.name)+1, sizeof(char));
-					memcpy(name, sd->pet.name, sizeof(sd->pet.name));
-					push_str(st->stack,C_STR,name);
-				} else {
+				if(sd->pet.name)
+					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->pet.name));
+				else
 					push_str(st->stack,C_CONSTSTR,"");
-				}
 				break;
 			case 3:
 				push_val(st->stack,C_INT,sd->pet.intimate);
@@ -8876,14 +8875,10 @@ int buildin_gethomuninfo(struct script_state *st)
 					push_val(st->stack,C_INT,0);
 				break;
 			case 2:
-				if(sd->hd && sd->hd->status.name) {
-					// \0が付いてない場合がある
-					char *name = (char *)aCalloc(sizeof(sd->hd->status.name)+1, sizeof(sd->hd->status.name));
-					memcpy(name, sd->hd->status.name, sizeof(sd->hd->status.name));
-					push_str(st->stack,C_STR,name);
-				} else {
+				if(sd->hd && sd->hd->status.name)
+					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->hd->status.name));
+				else
 					push_str(st->stack,C_CONSTSTR,"");
-				}
 				break;
 			case 3:
 				if( sd->hd )
@@ -9259,7 +9254,7 @@ int buildin_getmapxy(struct script_state *st)
 
 	type=conv_num(st,& (st->stack->stack_data[st->start+5]));
 
-	memset(&mapname,'\0',sizeof(mapname));
+	memset(mapname, 0, sizeof(mapname));
 	switch (type){
 		case 0:		// Get Character Position
 			if( st->end>st->start+6 )

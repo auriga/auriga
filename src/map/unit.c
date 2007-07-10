@@ -92,7 +92,7 @@ static int unit_walktoxy_sub(struct block_list *bl)
 		status_calc_pc(sd,0);
 
 	sc_data = status_get_sc_data(bl);
-	if(sc_data && sc_data[SC_FORCEWALKING].timer!=-1) {
+	if(sc_data && sc_data[SC_FORCEWALKING].timer != -1) {
 		if(path_search2(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
 			return 0;
 	} else {
@@ -119,7 +119,7 @@ static int unit_walktoxy_sub(struct block_list *bl)
 	}
 	clif_move(bl);
 
-	ud->state.change_walk_target=0;
+	ud->state.change_walk_target = 0;
 
 	if(ud->walkpath.path_pos>=ud->walkpath.path_len)
 		i = -1;
@@ -165,22 +165,22 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 	}
 	if(ud == NULL) return 0;
 
-	if(ud->walktimer != tid){
+	if(ud->walktimer != tid) {
 		if(battle_config.error_log)
 			printf("unit_walk_timer %d != %d\n",ud->walktimer,tid);
 		return 0;
 	}
-	ud->walktimer=-1;
+	ud->walktimer = -1;
 	if( bl->prev == NULL ) return 0; // block_list から抜けているので移動停止する
 
-	if(ud->walkpath.path_pos>=ud->walkpath.path_len || ud->walkpath.path_pos!=data)
+	if(ud->walkpath.path_pos >= ud->walkpath.path_len || ud->walkpath.path_pos != data)
 		return 0;
 
 	// 歩いたので息吹のタイマーを初期化
 	if(sd) {
 		sd->inchealspirithptick = 0;
 		sd->inchealspiritsptick = 0;
-		sd->warp_waiting        = 0;
+		sd->state.warp_waiting  = 0;
 	}
 
 	sc_data = status_get_sc_data(bl);
@@ -258,47 +258,44 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 
 	if(sd) {
 		if(sd->status.party_id > 0 && party_search(sd->status.party_id) != NULL) {	// パーティのＨＰ情報通知検査
-			int p_flag=0;
+			int p_flag = 0;
 			map_foreachinmovearea(party_send_hp_check,sd->bl.m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id,&p_flag);
 			if(p_flag)
-				sd->party_hp=-1;
+				sd->party_hp = -1;
 		}
 		/* ディボーション検査 */
-		for(i=0;i<5;i++) {
-			if(sd->dev.val1[i]){
+		for(i=0; i<5; i++) {
+			if(sd->dev.val1[i]) {
 				skill_devotion3(sd,sd->dev.val1[i]);
 				break;
 			}
 		}
 		/* 被ディボーション検査 */
-		if(sd->sc_data[SC_DEVOTION].val1){
+		if(sd->sc_data[SC_DEVOTION].val1) {
 			skill_devotion2(&sd->bl,sd->sc_data[SC_DEVOTION].val1);
 		}
 
 		if(sd->sc_count > 0)
 		{
 			/* マリオネット検査 */
-			if(sd->sc_data[SC_MARIONETTE].timer!=-1){
+			if(sd->sc_data[SC_MARIONETTE].timer != -1) {
 				skill_marionette(sd,sd->sc_data[SC_MARIONETTE].val2);
 			}
 			/* 被マリオネット検査 */
-			if(sd->sc_data[SC_MARIONETTE2].timer!=-1){
+			if(sd->sc_data[SC_MARIONETTE2].timer != -1) {
 				skill_marionette2(sd,sd->sc_data[SC_MARIONETTE2].val2);
 			}
 			/* ダンスチェック */
-			if(sd->sc_data[SC_LONGINGFREEDOM].timer!=-1)
-			{
+			if(sd->sc_data[SC_LONGINGFREEDOM].timer != -1) {
 				// 範囲外に出たら止める
-				if(unit_distance(sd->bl.x,sd->bl.y,sd->dance.x,sd->dance.y)>4)
-				{
+				if(unit_distance(sd->bl.x,sd->bl.y,sd->dance.x,sd->dance.y) > 4)
 					skill_stop_dancing(&sd->bl,0);
-				}
 			}
 			/* ヘルモードチェック */
 			if(battle_config.hermode_wp_check &&
-				sd->sc_data[SC_DANCING].timer !=-1 && sd->sc_data[SC_DANCING].val1 == CG_HERMODE)
-			{
-				if(skill_hermode_wp_check(&sd->bl,battle_config.hermode_wp_check_range)==0)
+			   sd->sc_data[SC_DANCING].timer != -1 &&
+			   sd->sc_data[SC_DANCING].val1 == CG_HERMODE) {
+				if(skill_hermode_wp_check(&sd->bl,battle_config.hermode_wp_check_range) == 0)
 					skill_stop_dancing(&sd->bl,0);
 			}
 			/* クローキングの消滅検査 */
@@ -326,9 +323,9 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 		return 0;
 	}
 
-	if(ud->walkpath.path_pos>=ud->walkpath.path_len)
+	if(ud->walkpath.path_pos >= ud->walkpath.path_len)
 		i = -1;
-	else if(ud->walkpath.path[ud->walkpath.path_pos]&1)
+	else if(ud->walkpath.path[ud->walkpath.path_pos] & 1)
 		i = status_get_speed(bl)*14/10;
 	else
 		i = status_get_speed(bl);
@@ -360,17 +357,17 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,ud->walkpath.path_pos);
 	} else {
 		// 目的地に着いた
-		if(sd && sd->sc_data[SC_RUN].timer!=-1){
+		if(sd && sd->sc_data[SC_RUN].timer != -1){
 			// 継続判定
 			pc_runtodir(sd);
 		}
 		if(sc_data) {
 			if(sc_data[SC_FORCEWALKING].timer != -1) {
-				if(sc_data[SC_FORCEWALKING].val4==0) {
+				if(sc_data[SC_FORCEWALKING].val4 == 0) {
 					sc_data[SC_FORCEWALKING].val4++;
 					unit_walktodir(bl,1);
 				}
-				else if(sc_data[SC_FORCEWALKING].val4==1) {
+				else if(sc_data[SC_FORCEWALKING].val4 == 1) {
 					sc_data[SC_FORCEWALKING].val4++;
 				}
 			}
@@ -391,7 +388,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
  *
  *------------------------------------------
  */
-int unit_walktoxy( struct block_list *bl, int x, int y)
+int unit_walktoxy(struct block_list *bl, int x, int y)
 {
 	struct unit_data        *ud = NULL;
 	struct map_session_data *sd = NULL;
@@ -457,7 +454,7 @@ int unit_walktodir(struct block_list *bl,int step)
 	dir_x = dirx[d];
 	dir_y = diry[d];
 
-	for(i=0;i<step;i++) {
+	for(i=0; i<step; i++) {
 		if(!map_getcell(bl->m,to_x+dir_x,to_y+dir_y,CELL_CHKPASS))
 			break;
 
@@ -494,10 +491,8 @@ int unit_forcewalktodir(struct block_list *bl,int distance)
 	dir_x = dirx[d];
 	dir_y = diry[d];
 
-	for(i=distance;i>1;i--)
-	{
-		if(map_getcell(bl->m,bl->x+dir_x*i,bl->y+dir_y*i,CELL_CHKPASS))
-		{
+	for(i=distance; i>1; i--) {
+		if(map_getcell(bl->m,bl->x+dir_x*i,bl->y+dir_y*i,CELL_CHKPASS)) {
 			to_x = bl->x+dir_x*(i-1);
 			to_y = bl->y+dir_y*(i-1);
 			break;
@@ -505,7 +500,7 @@ int unit_forcewalktodir(struct block_list *bl,int distance)
 	}
 
 	if(sc_data)
-		sc_data[SC_FORCEWALKING].val4=0;
+		sc_data[SC_FORCEWALKING].val4 = 0;
 	unit_walktoxy(bl, to_x, to_y);
 
 	return 1;
@@ -532,6 +527,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	nullpo_retr(1, bl);
 
 	if( bl->prev == NULL ) return 1;
+
 	if( (sd = BL_DOWNCAST( BL_PC,  bl ) ) ) {
 		ud = &sd->ud;
 	} else if( (md = BL_DOWNCAST( BL_MOB, bl ) ) ) {
@@ -627,7 +623,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 			int p_flag = 0;
 			map_foreachinmovearea(party_send_hp_check,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id,&p_flag);
 			if(p_flag)
-				sd->party_hp=-1;
+				sd->party_hp = -1;
 		}
 
 		// クローキングの消滅検査
@@ -724,7 +720,7 @@ int unit_stop_walking(struct block_list *bl,int type)
 
 	delete_timer(ud->walktimer, unit_walktoxy_timer);
 	ud->walktimer         = -1;
-//	if(md) { md->state.skillstate = MSS_IDLE; }
+
 	if(type&0x01) { // 位置補正送信が必要
 		clif_fixwalkpos(bl);
 	}
@@ -739,10 +735,12 @@ int unit_stop_walking(struct block_list *bl,int type)
 		}
 	}
 	if(type&0x04 && md) {
-		int dx=ud->to_x-md->bl.x;
-		int dy=ud->to_y-md->bl.y;
-		if(dx<0) dx=-1; else if(dx>0) dx=1;
-		if(dy<0) dy=-1; else if(dy>0) dy=1;
+		int dx = ud->to_x - md->bl.x;
+		int dy = ud->to_y - md->bl.y;
+
+		if(dx < 0) dx = -1; else if(dx > 0) dx = 1;
+		if(dy < 0) dy = -1; else if(dy > 0) dy = 1;
+
 		if(dx || dy) {
 			unit_walktoxy( bl, md->bl.x+dx, md->bl.y+dy );
 		}
@@ -778,13 +776,13 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	struct mob_data         *src_md = NULL;
 	struct homun_data       *src_hd = NULL;
 	struct unit_data        *src_ud = NULL;
-	unsigned int tick = gettick();
-	int delay=0,range;
+	unsigned int tick;
+	int delay = 0, range;
 	struct block_list       *target;
 	struct map_session_data *target_sd = NULL;
 	struct mob_data         *target_md = NULL;
 	struct homun_data       *target_hd = NULL;
-	int forcecast = 0,zone = 0,nomemorize = 0;
+	int forcecast = 0, zone = 0, nomemorize = 0;
 	struct status_change *sc_data;
 
 	nullpo_retr(0, src);
@@ -805,9 +803,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 
 	// スキル制限
 	zone = skill_get_zone(skill_num);
-	if(zone){
+	if(zone) {
 		int m = src->m;
 		int ban = 0;
+
 		if(map[m].flag.turbo && zone&16)
 			ban = 1;
 		else if(map[m].flag.normal && zone&1)
@@ -818,10 +817,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			ban = 1;
 		else if(map[m].flag.pk && zone&8)
 			ban = 1;
-		if(ban)
-		{
-			if(src_sd)
-			{
+		if(ban) {
+			if(src_sd) {
 				if(skill_num == AL_TELEPORT || skill_num == AL_WARP)
 					clif_skill_teleportmessage(src_sd,0);
 				else
@@ -887,19 +884,19 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 
 	// 直前のスキル状況の記録
 	if(src_sd) {
-		switch(skill_num){
+		switch(skill_num) {
 		case SA_CASTCANCEL:
-			if(src_ud->skillid != skill_num){ // キャストキャンセル自体は覚えない
+			if(src_ud->skillid != skill_num) { // キャストキャンセル自体は覚えない
 				src_sd->skillid_old = src_ud->skillid;
 				src_sd->skilllv_old = src_ud->skilllv;
 				break;
 			}
 		case BD_ENCORE:					/* アンコール */
 			 // 前回使用した踊りがないとだめ
-			if(!src_sd->skillid_dance || (src_sd->skillid_dance && pc_checkskill(src_sd,src_sd->skillid_dance)<=0)){
+			if(!src_sd->skillid_dance || (src_sd->skillid_dance && pc_checkskill(src_sd,src_sd->skillid_dance) <= 0)) {
 				clif_skill_fail(src_sd,skill_num,0,0);
 				return 0;
-			}else{
+			} else {
 				src_sd->skillid_old = skill_num;
 			}
 			break;
@@ -909,10 +906,11 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	// コンディション確認
 	{
 		struct skill_condition sc;
-		memset( &sc, 0, sizeof( struct skill_condition ) );
 
 		sc.id     = skill_num;
 		sc.lv     = skill_lv;
+		sc.x      = 0;
+		sc.y      = 0;
 		sc.target = target_id;
 
 		if(!skill_check_condition2(src, &sc, 0)) return 0;
@@ -924,10 +922,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 
 	/* 射程と障害物チェック */
 	range = skill_get_fixed_range(src,skill_num,skill_lv);
-	if (!battle_check_range(src,target,range + 1))
+	if(!battle_check_range(src,target,range + 1))
 		return 0;
 
-	switch (skill_num) {
+	switch(skill_num) {
 		case MO_CHAINCOMBO:
 		case MO_COMBOFINISH:
 		case CH_TIGERFIST:
@@ -948,7 +946,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	}
 
 	if(skill_num != SA_MAGICROD)
-		delay=skill_delayfix(src, skill_get_delay( skill_num,skill_lv), skill_get_cast( skill_num,skill_lv) );
+		delay = skill_delayfix(src, skill_get_delay( skill_num,skill_lv), skill_get_cast( skill_num,skill_lv));
 	src_ud->state.skillcastcancel = castcancel;
 
 	/* 何か特殊な処理が必要 */
@@ -956,35 +954,35 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	switch(skill_num)
 	{
 	case ALL_RESURRECTION:	/* リザレクション */
-		if( !target_sd && battle_check_undead(status_get_race(target),status_get_elem_type(target))){	/* 敵がアンデッドなら */
-			forcecast=1;	/* ターンアンデットと同じ詠唱時間 */
-			casttime=skill_castfix(src, skill_get_cast(PR_TURNUNDEAD,skill_lv) ) + skill_get_fixedcast(PR_TURNUNDEAD,skill_lv);
+		if( !target_sd && battle_check_undead(status_get_race(target),status_get_elem_type(target)) ) {	/* 敵がアンデッドなら */
+			forcecast = 1;	/* ターンアンデットと同じ詠唱時間 */
+			casttime  = skill_castfix(src, skill_get_cast(PR_TURNUNDEAD,skill_lv)) + skill_get_fixedcast(PR_TURNUNDEAD,skill_lv);
 		}
 		break;
 	case MO_FINGEROFFENSIVE:	/* 指弾 */
 		if(src_sd)
-			casttime += casttime * ((skill_lv > src_sd->spiritball)? src_sd->spiritball:skill_lv);
+			casttime += casttime * ((skill_lv > src_sd->spiritball)? src_sd->spiritball: skill_lv);
 		break;
 	case CR_SHIELDBOOMERANG:
-		if(sc_data && sc_data[SC_CRUSADER].timer!=-1)
+		if(sc_data && sc_data[SC_CRUSADER].timer != -1)
 			delay = delay/2;
 		break;
 	case AS_SONICBLOW:
-		if(sc_data && sc_data[SC_ASSASIN].timer!=-1 && map[src->m].flag.gvg==0)
+		if(sc_data && sc_data[SC_ASSASIN].timer != -1 && !map[src->m].flag.gvg)
 			delay = delay/2;
 		break;
 	case MO_EXTREMITYFIST:	/* 阿修羅覇鳳拳 */
 		if(sc_data && sc_data[SC_COMBO].timer != -1 && (sc_data[SC_COMBO].val1 == MO_COMBOFINISH || sc_data[SC_COMBO].val1 == CH_CHAINCRUSH)) {
 			casttime = 0;
 		}
-		forcecast=1;
+		forcecast = 1;
 		break;
 	case SA_MAGICROD:
 	case SA_SPELLBREAKER:
-		forcecast=1;
+		forcecast = 1;
 		break;
 	case SA_ABRACADABRA:
-		delay=skill_get_delay(SA_ABRACADABRA,skill_lv);
+		delay = skill_get_delay(SA_ABRACADABRA,skill_lv);
 		break;
 	case HP_BASILICA:
 		if(sc_data && sc_data[SC_BASILICA].timer != -1)
@@ -1019,20 +1017,21 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	// メモライズ状態ならキャストタイムが1/2
 	if(sc_data && sc_data[SC_MEMORIZE].timer != -1 && casttime > 0 && !nomemorize) {
 		casttime = casttime/2;
-		if((--sc_data[SC_MEMORIZE].val2)<=0)
+		if((--sc_data[SC_MEMORIZE].val2) <= 0)
 			status_change_end(src, SC_MEMORIZE, -1);
 	}
 
 	if(battle_config.pc_skill_log)
 		printf("PC %d skill use target_id=%d skill=%d lv=%d cast=%d\n",src->id,target_id,skill_num,skill_lv,casttime);
 
-	if( casttime>0 || forcecast ){ /* 詠唱が必要 */
-		clif_skillcasting( src, src->id, target_id, 0,0, skill_num,casttime);
+	tick = gettick();
+	if( casttime > 0 || forcecast ) { /* 詠唱が必要 */
+		clif_skillcasting(src, src->id, target_id, 0, 0, skill_num,casttime);
 
 		/* 詠唱反応モンスター */
 		if(src_sd && target_md && status_get_mode(&target_md->bl)&0x10 && target_md->ud.attacktimer == -1 && src_sd->invincible_timer == -1) {
-			target_md->target_id=src->id;
-			target_md->min_chase=13;
+			target_md->target_id = src->id;
+			target_md->min_chase = 13;
 		}
 		/* 反撃などのMOBスキル判定 */
 		if(target_md) {
@@ -1047,8 +1046,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		}
 	}
 
-	if( casttime<=0 )	/* 詠唱の無いものはキャンセルされない */
-		src_ud->state.skillcastcancel=0;
+	if( casttime <= 0 )	/* 詠唱の無いものはキャンセルされない */
+		src_ud->state.skillcastcancel = 0;
 
 	src_ud->canact_tick  = tick + casttime + delay;
 	src_ud->canmove_tick = tick;
@@ -1062,22 +1061,21 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		(src_sd && !(battle_config.pc_cloak_check_type&2) ) ||
 		(src_md && !(battle_config.monster_cloak_check_type&2) )
 	) {
-	 	if( sc_data && sc_data[SC_CLOAKING].timer != -1 && skill_num != AS_CLOAKING)
+		if( sc_data && sc_data[SC_CLOAKING].timer != -1 && skill_num != AS_CLOAKING )
 			status_change_end(src,SC_CLOAKING,-1);
 	}
 
 	if(casttime > 0) {
 		int skill;
-		src_ud->skilltimer = add_timer( tick+casttime, skill_castend_id, src->id, 0 );
+		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_id, src->id, 0);
 		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
 			src_sd->prev_speed = src_sd->speed;
 			src_sd->speed = src_sd->speed*(175 - skill*5)/100;
 			clif_updatestatus(src_sd,SP_SPEED);
-		}
-		else
+		} else {
 			unit_stop_walking(src,1);
-	}
-	else {
+		}
+	} else {
 		if(skill_num != SA_CASTCANCEL)
 			src_ud->skilltimer = -1;
 		skill_castend_id(src_ud->skilltimer,tick,src->id,0);
@@ -1114,9 +1112,8 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	struct unit_data        *src_ud = NULL;
 	int zone;
 	unsigned int tick = gettick();
-	int delay=0,range;
+	int delay = 0, range;
 	struct status_change *sc_data;
-	struct block_list    bl;
 
 	nullpo_retr(0, src);
 
@@ -1139,7 +1136,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 
 	// スキル制限
 	zone = skill_get_zone(skill_num);
-	if(zone){
+	if(zone) {
 		int m = src->m;
 		int ban = 0;
 		if(map[m].flag.turbo && zone&16)
@@ -1152,10 +1149,8 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 			ban = 1;
 		else if(map[m].flag.pk && zone&8)
 			ban = 1;
-		if(ban)
-		{
-			if(src_sd)
-			{
+		if(ban) {
+			if(src_sd) {
 				if(skill_num == AL_TELEPORT)
 					clif_skill_teleportmessage(src_sd,0);
 				else
@@ -1172,11 +1167,12 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	// コンディション確認
 	{
 		struct skill_condition sc;
-		memset( &sc, 0, sizeof( struct skill_condition ) );
+
 		sc.id     = skill_num;
 		sc.lv     = skill_lv;
 		sc.x      = skill_x;
 		sc.y      = skill_y;
+		sc.target = 0;
 
 		if(!skill_check_condition2(src, &sc ,0)) return 0;
 
@@ -1187,43 +1183,48 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	}
 
 	/* 射程と障害物チェック */
-	bl.type = BL_NUL;
-	bl.m = src->m;
-	bl.x = skill_x;
-	bl.y = skill_y;
+	{
+		struct block_list bl;
 
-	range = skill_get_fixed_range(src,skill_num,skill_lv);
-	if(!battle_check_range(src,&bl,range+1))
-		return 0;
+		memset(&bl, 0, sizeof(bl));
+		bl.type = BL_NUL;
+		bl.m = src->m;
+		bl.x = skill_x;
+		bl.y = skill_y;
+
+		range = skill_get_fixed_range(src,skill_num,skill_lv);
+		if(!battle_check_range(src,&bl,range+1))
+			return 0;
+	}
 
 	if(!map_getcell(src->m,skill_x,skill_y,CELL_CHKPASS))
 		return 0;
 
 	unit_stopattack(src);
 
-	delay=skill_delayfix(src, skill_get_delay( skill_num,skill_lv), skill_get_cast( skill_num,skill_lv) );
+	delay = skill_delayfix(src, skill_get_delay(skill_num,skill_lv), skill_get_cast(skill_num,skill_lv));
 	src_ud->state.skillcastcancel = castcancel;
 
 	if(battle_config.pc_skill_log)
 		printf("PC %d skill use target_pos=(%d,%d) skill=%d lv=%d cast=%d\n",src->id,skill_x,skill_y,skill_num,skill_lv,casttime);
 
 	// メモライズ状態ならキャストタイムが1/2
-	if(sc_data && sc_data[SC_MEMORIZE].timer != -1 && casttime > 0){
+	if(sc_data && sc_data[SC_MEMORIZE].timer != -1 && casttime > 0) {
 		casttime = casttime/2;
-		if((--sc_data[SC_MEMORIZE].val2)<=0)
+		if((--sc_data[SC_MEMORIZE].val2) <= 0)
 			status_change_end(src, SC_MEMORIZE, -1);
 	}
 
-	if( casttime>0 ) {
+	if( casttime > 0 ) {
 		/* 詠唱が必要 */
 		unit_stop_walking( src, 1 );		// 歩行停止
 		clif_skillcasting( src, src->id, 0, skill_x,skill_y, skill_num,casttime );
 	}
 
-	if( casttime<=0 )	/* 詠唱の無いものはキャンセルされない */
-		src_ud->state.skillcastcancel=0;
+	if( casttime <= 0 )	/* 詠唱の無いものはキャンセルされない */
+		src_ud->state.skillcastcancel = 0;
 
-	tick=gettick();
+	tick = gettick();
 	src_ud->canact_tick  = tick + casttime + delay;
 	src_ud->canmove_tick = tick;
 	src_ud->skillid      = skill_num;
@@ -1242,16 +1243,15 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 
 	if(casttime > 0) {
 		int skill;
-		src_ud->skilltimer = add_timer( tick+casttime, skill_castend_pos, src->id, 0 );
+		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_pos, src->id, 0);
 		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
 			src_sd->prev_speed = src_sd->speed;
 			src_sd->speed = src_sd->speed*(175 - skill*5)/100;
 			clif_updatestatus(src_sd,SP_SPEED);
-		}
-		else
+		} else {
 			unit_stop_walking(src,1);
-	}
-	else {
+		}
+	} else {
 		src_ud->skilltimer = -1;
 		skill_castend_pos(src_ud->skilltimer,tick,src->id,0);
 	}
@@ -1272,9 +1272,9 @@ void unit_stopattack(struct block_list *bl)
 	if(!ud || ud->attacktimer == -1) {
 		return;
 	}
-	delete_timer( ud->attacktimer, unit_attack_timer );
+	delete_timer(ud->attacktimer, unit_attack_timer);
 	ud->attacktimer = -1;
-	if(bl->type==BL_MOB) {
+	if(bl->type == BL_MOB) {
 		mob_unlocktarget( (struct mob_data*)bl, gettick());
 	}
 
@@ -1288,7 +1288,7 @@ void unit_stopattack(struct block_list *bl)
 static int unit_unattackable(struct block_list *bl)
 {
 	if(bl && bl->type == BL_MOB) {
-		mob_unlocktarget( (struct mob_data*)bl, gettick());
+		mob_unlocktarget((struct mob_data*)bl, gettick());
 	}
 	return 0;
 }
@@ -1307,8 +1307,8 @@ int unit_attack(struct block_list *src,int target_id,int type)
 	nullpo_retr(0, src);
 	nullpo_retr(0, src_ud = unit_bl2ud(src));
 
-	target=map_id2bl(target_id);
-	if(target==NULL || battle_check_target(src,target,BCT_ENEMY)<=0) {
+	target = map_id2bl(target_id);
+	if(target == NULL || battle_check_target(src,target,BCT_ENEMY) <= 0) {
 		unit_unattackable(src);
 		return 1;
 	}
@@ -1316,8 +1316,9 @@ int unit_attack(struct block_list *src,int target_id,int type)
 	src_ud->attacktarget          = target_id;
 	src_ud->state.attack_continue = type;
 
-	d=DIFF_TICK(src_ud->attackabletime,gettick());
-	if(d > 0){	// 攻撃delay中
+	d = DIFF_TICK(src_ud->attackabletime,gettick());
+	if(d > 0) {
+		// 攻撃delay中
 		src_ud->attacktimer = add_timer(src_ud->attackabletime,unit_attack_timer,src->id,0);
 	} else {
 		// 本来timer関数なので引数を合わせる
@@ -1335,7 +1336,7 @@ int unit_can_reach(struct block_list *bl,int x,int y)
 {
 	nullpo_retr(0, bl);
 
-	if( bl->x==x && bl->y==y )	// 同じマス
+	if( bl->x == x && bl->y == y )	// 同じマス
 		return 1;
 
 	// 障害物判定
@@ -1426,8 +1427,7 @@ int unit_isrunning(struct block_list *bl)
 	if(sc_data) {
 		if( sc_data[SC_RUN].timer != -1 ||		// 駆け足
 		    sc_data[SC_FORCEWALKING].timer != -1 ||	// 強制移動
-		    sc_data[SC_SELFDESTRUCTION].timer != -1	// 自爆2
-		)
+		    sc_data[SC_SELFDESTRUCTION].timer != -1 )	// 自爆2
 			return 1;
 	}
 	return 0;
@@ -1448,22 +1448,22 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 	struct mob_data         *src_md = NULL, *target_md = NULL;
 	struct homun_data       *src_hd = NULL, *target_hd = NULL;
 
-	if((src=map_id2bl(id))==NULL)
+	if((src = map_id2bl(id)) == NULL)
 		return 0;
-	if((src_ud=unit_bl2ud(src)) == NULL)
+	if((src_ud = unit_bl2ud(src)) == NULL)
 		return 0;
 
-	if(src_ud->attacktimer != tid){
+	if(src_ud->attacktimer != tid) {
 		if(battle_config.error_log)
 			printf("unit_attack_timer %d != %d\n",src_ud->attacktimer,tid);
 		return 0;
 	}
-	src_ud->attacktimer=-1;
-	target=map_id2bl(src_ud->attacktarget);
+	src_ud->attacktimer = -1;
+	target = map_id2bl(src_ud->attacktarget);
 
 	if(src->prev == NULL)
 		return 0;
-	if(target==NULL || target->prev == NULL)
+	if(target == NULL || target->prev == NULL)
 		return 0;
 	if(src->m != target->m || unit_isdead(src) || unit_isdead(target))	// ターゲットと同じMAPでないか死んでるなら攻撃しない
 		return 0;
@@ -1545,25 +1545,26 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 	}
 
 	dist  = unit_distance(src->x,src->y,target->x,target->y);
-	range = status_get_range( src );
-	if( src_md && status_get_mode( src ) & 1 ) range++;
+	range = status_get_range(src);
+	if( src_md && status_get_mode(src) & 1 )
+		range++;
+	if(src_sd && (src_sd->status.weapon != WT_BOW && !(src_sd->status.weapon >= WT_HANDGUN && src_sd->status.weapon <= WT_GRENADE)))
+		range++;
 
-	if(src_sd && (src_sd->status.weapon != WT_BOW && !(src_sd->status.weapon >= WT_HANDGUN && src_sd->status.weapon <= WT_GRENADE))) range++;
-	if( dist > range ){	// 届かないので移動
+	if( dist > range ) {	// 届かないので移動
 		if(!unit_can_reach(src,target->x,target->y))
 			return 0;
 		if(src_sd)
 			clif_movetoattack(src_sd,target);
 		return 1;
 	}
-	if(dist <= range && !battle_check_range(src,target,range) ) {
+	if(dist <= range && !battle_check_range(src,target,range)) {
 		if(unit_can_reach(src,target->x,target->y))
 			unit_walktoxy(src,target->x,target->y);
 		src_ud->attackabletime = tick + status_get_adelay(src);
-	}
-	else {
+	} else {
 		// 向き設定
-		int dir = map_calc_dir(src, target->x,target->y );
+		int dir = map_calc_dir(src, target->x,target->y);
 		if(src_sd && battle_config.pc_attack_direction_change)
 			pc_setdir(src_sd, dir, dir);
 		else if(src_pd && battle_config.monster_attack_direction_change)
@@ -1591,13 +1592,13 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 			if(src_sd && src_sd->status.pet_id > 0 && src_sd->pd && src_sd->petDB)
 				pet_target_check(src_sd,target,0);
 			map_freeblock_unlock();
-			if(src_ud->skilltimer != -1 && src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0 )	// フリーキャスト
+			if(src_ud->skilltimer != -1 && src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0)	// フリーキャスト
 				src_ud->attackabletime = tick + (status_get_adelay(src)*(150 - skill*5)/100);
 			else
 				src_ud->attackabletime = tick + status_get_adelay(src);
 		}
 		else if(src_ud->attackabletime <= tick) {
-			if(src_ud->skilltimer != -1 && src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0 )	// フリーキャスト
+			if(src_ud->skilltimer != -1 && src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0)	// フリーキャスト
 				src_ud->attackabletime = tick + (status_get_adelay(src)*(150 - skill*5)/100);
 			else
 				src_ud->attackabletime = tick + status_get_adelay(src);
@@ -1615,7 +1616,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 static int unit_attack_timer(int tid,unsigned int tick,int id,int data)
 {
 	if(unit_attack_timer_sub(tid, tick, id, data) == 0) {
-		unit_unattackable( map_id2bl( id ) );
+		unit_unattackable( map_id2bl(id) );
 	}
 	return 0;
 }
@@ -1667,13 +1668,13 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 	skillid = (type&1 && sd)? sd->skillid_old: ud->skillid;
 
 	if(skill_get_inf(skillid) & 0x22)
-		ret = delete_timer( ud->skilltimer, skill_castend_pos );
+		ret = delete_timer(ud->skilltimer, skill_castend_pos);
 	else
-		ret = delete_timer( ud->skilltimer, skill_castend_id );
+		ret = delete_timer(ud->skilltimer, skill_castend_id);
 	if(ret < 0)
 		printf("delete timer error : skillid : %d\n", skillid);
 
-	if( md ) {
+	if(md) {
 		md->skillidx = -1;
 	}
 
@@ -1698,7 +1699,7 @@ int unit_dataset(struct block_list *bl)
 
 	nullpo_retr(0, ud = unit_bl2ud(bl));
 
-	memset( ud, 0, sizeof( struct unit_data) );
+	memset(ud, 0, sizeof(struct unit_data));
 	ud->bl             = bl;
 	ud->walktimer      = -1;
 	ud->skilltimer     = -1;
@@ -1719,16 +1720,12 @@ int unit_heal(struct block_list *bl,int hp,int sp)
 	nullpo_retr(0, bl);
 
 	if(bl->type == BL_PC)
-	{
 		pc_heal((struct map_session_data*)bl,hp,sp);
-	}else if(bl->type == BL_MOB)
-	{
+	else if(bl->type == BL_MOB)
 		mob_heal((struct mob_data*)bl,hp);
-	}
 	else if(bl->type == BL_HOM)
-	{
 		homun_heal((struct homun_data*)bl,hp,sp);
-	}
+
 	return 0;
 }
 
@@ -1740,14 +1737,14 @@ int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int
 {
 	nullpo_retr(0, target);
 
-	if(damage+damage2 <= 0)
+	if(damage + damage2 <= 0)
 		return 0;
 	// タゲ
-	if(target->type==BL_MOB){
+	if(target->type == BL_MOB) {
 		mob_attacktarget((struct mob_data*)target,src,0);
 	}
 	clif_damage(target,target,tick,sdelay,ddelay,damage,div,type,damage2);
-	battle_damage(src,target,damage+damage2,0);
+	battle_damage(src,target,damage + damage2,0);
 	return 0;
 }
 
@@ -1768,7 +1765,7 @@ static int unit_counttargeted_sub(struct block_list *bl, va_list ap)
 	if(bl->id == id) {
 		// 自分
 	} else if(bl->type == BL_PC) {
-		struct map_session_data *sd=(struct map_session_data *)bl;
+		struct map_session_data *sd = (struct map_session_data *)bl;
 		if( sd && sd->ud.attacktarget == id && sd->ud.attacktimer != -1 && sd->ud.attacktarget_lv >= target_lv )
 			(*c)++;
 	} else if(bl->type == BL_MOB) {
@@ -1818,15 +1815,14 @@ int unit_isdead(struct block_list *bl)
 		return (sd->state.dead_sit == 1);
 	} else if(bl->type == BL_MOB) {
 		struct mob_data *md = (struct mob_data *)bl;
-		return md->hp<=0;
+		return md->hp <= 0;
 	} else if(bl->type == BL_PET) {
 		return 0;
 	} else if(bl->type == BL_HOM) {
 		struct homun_data *hd = (struct homun_data *)bl;
-		return hd->status.hp<=0;
-	} else {
-		return 0;
+		return hd->status.hp <= 0;
 	}
+	return 0;
 }
 
 /*==========================================
@@ -1841,8 +1837,9 @@ int unit_mobstopattacked(struct map_session_data *sd,va_list ap)
 	nullpo_retr(0, sd);
 	nullpo_retr(0, ap);
 
-	id=va_arg(ap,int);
-	if(sd->ud.attacktarget==id)
+	id = va_arg(ap,int);
+
+	if(sd->ud.attacktarget == id)
 		unit_stopattack(&sd->bl);
 	return 0;
 }
@@ -1855,27 +1852,27 @@ int unit_changeviewsize(struct block_list *bl,int size)
 {
 	nullpo_retr(0, bl);
 
-	size=(size<0)?-1:(size>0)?1:0;
+	size = (size < 0)? -1: (size > 0)? 1: 0;
 
 	if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data*)bl;
-		sd->view_size=size;
+		sd->view_size = size;
 	} else if(bl->type == BL_MOB) {
 		struct mob_data *md = (struct mob_data *)bl;
-		md->view_size=size;
+		md->view_size = size;
 	} else if(bl->type == BL_PET) {
 		struct pet_data *pd = (struct pet_data *)bl;
-		pd->view_size=size;
+		pd->view_size = size;
 	} else if(bl->type == BL_HOM) {
 		struct homun_data *hd = (struct homun_data *)bl;
-		hd->view_size=size;
+		hd->view_size = size;
 	} else if(bl->type == BL_NPC) {
 		struct npc_data *nd = (struct npc_data *)bl;
-		nd->view_size=size;
+		nd->view_size = size;
 	} else {
 		return 0;
 	}
-	if(size!=0)
+	if(size != 0)
 		clif_misceffect2(bl,421+size);
 	return 0;
 }
@@ -1920,9 +1917,9 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ud = unit_bl2ud(bl));
 
-	if(bl->prev == NULL) {
+	if(bl->prev == NULL)
 		return 1;
-	}
+
 	map_freeblock_lock();
 
 	unit_stop_walking(bl,1);			// 歩行中断
@@ -1942,11 +1939,11 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 	sc_data = status_get_sc_data(bl);
 	if( sc_data ) {
 		// ブレードストップを終わらせる
-		if(sc_data[SC_BLADESTOP].timer!=-1) {
+		if(sc_data[SC_BLADESTOP].timer != -1) {
 			status_change_end(bl,SC_BLADESTOP,-1);
 		}
 		// バシリカ削除
-		if(sc_data[SC_BASILICA].timer!=-1) {
+		if(sc_data[SC_BASILICA].timer != -1) {
 			skill_basilica_cancel( bl );
 			status_change_end(bl,SC_BASILICA,-1);
 		}
@@ -1986,29 +1983,29 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			storage_storage_quit(sd);
 
 		// 友達リスト勧誘を拒否する
-		if(sd->friend_invite>0)
+		if(sd->friend_invite > 0)
 			friend_add_reply(sd,sd->friend_invite,sd->friend_invite_char,0);
 
 		// パーティ勧誘を拒否する
-		if(sd->party_invite>0)
+		if(sd->party_invite > 0)
 			party_reply_invite(sd,sd->party_invite_account,0);
 
 		// ギルド勧誘を拒否する
-		if(sd->guild_invite>0)
+		if(sd->guild_invite > 0)
 			guild_reply_invite(sd,sd->guild_invite,0);
 
 		// ギルド同盟勧誘を拒否する
-		if(sd->guild_alliance>0)
+		if(sd->guild_alliance > 0)
 			guild_reply_reqalliance(sd,sd->guild_alliance_account,0);
 
 		// 養子要請を拒否する
-		if(sd->adopt_invite>0)
+		if(sd->adopt_invite > 0)
 			pc_adopt_reply(sd,0,0,0);
 
 		pc_delinvincibletimer(sd);		// 無敵タイマー削除
 
 		// PVP タイマー削除
-		if(sd->pvp_timer!=-1) {
+		if(sd->pvp_timer != -1) {
 			delete_timer(sd->pvp_timer,pc_calc_pvprank_timer);
 			sd->pvp_timer = -1;
 		}
@@ -2024,16 +2021,19 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 
 		linkdb_final( &md->dmglog );
 		//mobskill_deltimer(md);
-		md->state.skillstate=MSS_DEAD;
-		md->last_deadtime=gettick();
+		md->state.skillstate = MSS_DEAD;
+		md->last_deadtime = gettick();
 		// 死んだのでこのmobへの攻撃者全員の攻撃を止める
 		clif_foreachclient(unit_mobstopattacked,md->bl.id);
 		status_change_clear(&md->bl,2);	// ステータス異常を解除する
 		skill_cleartimerskill(&md->bl);
-		if(md->deletetimer!=-1)
+		if(md->deletetimer != -1) {
 			delete_timer(md->deletetimer,mob_timer_delete);
-		md->deletetimer=-1;
-		md->hp=md->target_id=md->attacked_id=0;
+			md->deletetimer = -1;
+		}
+		md->hp               = 0;
+		md->target_id        = 0;
+		md->attacked_id      = 0;
 		md->attacked_players = 0;
 
 		clif_clearchar_area(&md->bl,clrtype);
@@ -2054,32 +2054,30 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		}
 		map_delblock(&md->bl);
 #ifdef DYNAMIC_SC_DATA
-		if(md->sc_data!=NULL)
+		if(md->sc_data != NULL)
 			status_free_sc_data(&md->bl);
 #endif
 		// 復活しないMOBの処理
-		if(md->spawndelay1==-1 && md->spawndelay2==-1 && md->n==0){
+		if(md->spawndelay1 == -1 && md->spawndelay2 == -1 && md->n == 0) {
 			map_deliddb(&md->bl);
 			if(md->lootitem) {
 				map_freeblock(md->lootitem);
-				md->lootitem=NULL;
+				md->lootitem = NULL;
 			}
 			map_freeblock(md);	// freeのかわり
 		} else {
 			unsigned int spawntime,spawntime1,spawntime2,spawntime3;
-			spawntime1=md->last_spawntime+md->spawndelay1;
-			spawntime2=md->last_deadtime+md->spawndelay2;
-			spawntime3=gettick()+1000;
-			// spawntime = max(spawntime1,spawntime2,spawntime3);
-			if(DIFF_TICK(spawntime1,spawntime2)>0){
-				spawntime=spawntime1;
+			spawntime1 = md->last_spawntime + md->spawndelay1;
+			spawntime2 = md->last_deadtime + md->spawndelay2;
+			spawntime3 = gettick()+1000;
+			if(DIFF_TICK(spawntime1,spawntime2) > 0) {
+				spawntime = spawntime1;
 			} else {
-				spawntime=spawntime2;
+				spawntime = spawntime2;
 			}
-			if(DIFF_TICK(spawntime3,spawntime)>0){
-				spawntime=spawntime3;
+			if(DIFF_TICK(spawntime3,spawntime) > 0) {
+				spawntime = spawntime3;
 			}
-
 			add_timer(spawntime,mob_delayspawn,bl->id,0);
 		}
 	} else if(bl->type == BL_PET) {
@@ -2116,10 +2114,10 @@ int unit_free(struct block_list *bl, int clrtype)
 		if(unit_isdead(&sd->bl))
 			pc_setrestartvalue(sd,2);
 
-		if(sd->sc_data && sd->sc_data[SC_BERSERK].timer!=-1) //バーサーク中の終了はHPを100に
+		if(sd->sc_data && sd->sc_data[SC_BERSERK].timer != -1) // バーサーク中の終了はHPを100に
 			sd->status.hp = 100;
 
-		//OnPCLogoutイベント
+		// OnPCLogoutイベント
 		if(battle_config.pc_logout_script)
 			npc_event_doall_id("OnPCLogout",sd->bl.id,sd->bl.m);
 
@@ -2194,7 +2192,7 @@ int unit_free(struct block_list *bl, int clrtype)
  */
 int do_init_unit(void)
 {
-	add_timer_func_list(unit_attack_timer,  "unit_attack_timer");
+	add_timer_func_list(unit_attack_timer,"unit_attack_timer");
 	add_timer_func_list(unit_walktoxy_timer,"unit_walktoxy_timer");
 	return 0;
 }

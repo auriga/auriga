@@ -1,4 +1,14 @@
 ----------------------------------------
+//0218 [2007/07/11] by Rayce
+
+・0202におけるgetpetinfo関数およびgethomuninfo関数の変更点を巻き戻し
+　これまでの修正によりペットとホムの名前には \0 が入ることが保証されたのでaStrdupを使う（script.c）
+・setmapflag命令でnosaveを指定する際、MAP名を15文字までに制限（script.c）
+
+・map_session_data構造体のメンバwarp_waitingをビットフィールドに変更（map.h, skill.c, unit.c）
+・ranking.c, unit.cの細かい整形
+
+----------------------------------------
 //0217 [2007/07/11] by Rayce
 
 ・ペットの名前を23文字までに制限（pet.c）

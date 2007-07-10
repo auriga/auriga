@@ -6078,8 +6078,7 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 				if(strcmp(map,"Random")==0)
 					pc_randomwarp(sd,3);
 				else
-					pc_setpos(sd,sd->status.save_point.map,
-						sd->status.save_point.x,sd->status.save_point.y,3);
+					pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,3);
 			}
 		}
 		break;
@@ -6681,24 +6680,31 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 
 	switch (sg->unit_id) {
 	case UNT_WARP_ACTIVE:	/* ワープポータル(発動後) */
-		if (bl->type==BL_PC) {
+		if (bl->type == BL_PC) {
 			struct map_session_data *sd = (struct map_session_data *)bl;
-			if(sd && (sd->warp_waiting>0 || strcmp(map[bl->m].name,sg->valstr)==0) && src->bl.m==bl->m && src->bl.x==bl->x && src->bl.y==bl->y && src->bl.x==sd->ud.to_x && src->bl.y==sd->ud.to_y) {
-				sd->warp_waiting=0;
-				if (battle_config.chat_warpportal || !sd->chatID){
-					char mapname[24];
-					int  x = sg->val2>>16;
-					int  y = sg->val2&0xffff;
-					strncpy(mapname,sg->valstr,24);
-					if (sg->src_id==bl->id || (strcmp(map[src->bl.m].name,sg->valstr)==0 && src->bl.x==(sg->val2>>16) && src->bl.y==(sg->val2&0xffff)))
-						skill_delunitgroup(sg);
-					if (--sg->val1<=0)
-						skill_delunitgroup(sg);
-					pc_setpos(sd,mapname,x,y,3);
+			if(sd) {
+				if ((sd->state.warp_waiting || strcmp(map[bl->m].name,sg->valstr) == 0) &&
+				    src->bl.m == bl->m &&
+				    src->bl.x == bl->x &&
+				    src->bl.y == bl->y &&
+				    src->bl.x == sd->ud.to_x &&
+				    src->bl.y == sd->ud.to_y)
+				{
+					sd->state.warp_waiting=0;
+					if (battle_config.chat_warpportal || !sd->chatID){
+						char mapname[24];
+						int  x = sg->val2>>16;
+						int  y = sg->val2&0xffff;
+						strncpy(mapname,sg->valstr,24);
+						if (sg->src_id==bl->id || (strcmp(map[src->bl.m].name,sg->valstr)==0 && src->bl.x==(sg->val2>>16) && src->bl.y==(sg->val2&0xffff)))
+							skill_delunitgroup(sg);
+						if (--sg->val1<=0)
+							skill_delunitgroup(sg);
+						pc_setpos(sd,mapname,x,y,3);
+					}
+				} else {
+					sd->state.warp_waiting = 1;
 				}
-			}else{
-				if(sd)
-				 	sd->warp_waiting++;
 			}
 		} else if(bl->type==BL_MOB && battle_config.mob_warpportal) {
 			int m = map_mapname2mapid(sg->valstr);

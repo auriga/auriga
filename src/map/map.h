@@ -283,6 +283,7 @@ struct map_session_data {
 		unsigned cart_dirty : 1;
 		unsigned icon_weight : 2;
 		unsigned guild_req_info : 5;
+		unsigned warp_waiting : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -429,7 +430,6 @@ struct map_session_data {
 	short break_myequip_rate_when_attack[11];
 	short break_myequip_rate_when_hit[11];
 	short loss_equip_flag;
-	int warp_waiting;
 
 	struct {
 		short hp_per;
