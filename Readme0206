@@ -1,4 +1,14 @@
 ----------------------------------------
+//0220 [2007/07/12] by Rayce
+
+・バッファオーバーラン対策として文字列の末尾に \0 を強制するように修正（core.c, httpd.c, socket.c）
+・windows環境で吐き出されるcrashdump.logの改行コードをCR/LFに修正（core.c）
+・httpd.cの細かい整形
+	-> httpd_strcasencmp() の代わりにstrcasecmpを使う
+	-> httpd_pages() 用の関数ポインタを HttpdFunc型 としてtypedefする
+	-> rand() を atn_rand() に変更
+
+----------------------------------------
 //0219 [2007/07/12] by Rayce
 
 ・ROメールにアイテムやZenyを添付するとき、idxが不正な値の場合は弾くようにチェック強化（mail.c）

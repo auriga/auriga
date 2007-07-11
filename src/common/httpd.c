@@ -26,39 +26,40 @@
 #include "utils.h"
 
 
-
 #define NONCE_LOG_SIZE				256		// Digest 認証の nonce を保存できる個数
 #define HTTPD_CGI_KILL_SIZE			128		// cgi の中断用のデータを保存できる個数
 #define HTTPD_CGI_KILL_INVERVAL		250		// cgi の中断処理のチェックを行う間隔(ms)
 
 
+typedef void (*HttpdFunc)(struct httpd_session_data*,const char*);
+
 static const char configfile[]="./conf/httpd.conf";	// 共通コンフィグ
 
 static char logfile[1024]="./log/httpd.log";	// ログファイル名
-void httpd_set_logfile( const char *str ){ strcpy( logfile, str ); }
+void httpd_set_logfile( const char *str ) { strncpy( logfile, str, sizeof(logfile) - 1 ); }
 
 static int log_no_flush = 0;	// ログをフラッシュしないかどうか
 
 static int tz = -1;	// タイムゾーン
 
 static int auth_digest_period = 600*1000;	// Digest 認証での nonce 有効期限
-void httpd_set_auth_digest_period( int i ){ auth_digest_period = i; }
+void httpd_set_auth_digest_period( int i ) { auth_digest_period = i; }
 
 static int max_persist_requests = 32;	// 持続通信での最大リクエスト数
-void httpd_set_max_persist_requests( int i ){ max_persist_requests = i; }
+void httpd_set_max_persist_requests( int i ) { max_persist_requests = i; }
 
 static int request_timeout[] = { 2500, 60*1000 };	// タイムアウト(最初、持続)
-void httpd_set_request_timeout( int idx, int time ){ request_timeout[idx]=time; }
+void httpd_set_request_timeout( int idx, int time ) { request_timeout[idx]=time; }
 
 static char document_root[256]="./httpd/";	// ドキュメントルート
-void httpd_set_document_root( const char *str ){ strcpy( document_root,str ); }
+void httpd_set_document_root( const char *str ) { strncpy( document_root, str, sizeof(document_root) - 1 ); }
 
 static int bigfile_threshold = 256*1024;	// 巨大ファイル転送モードに入る閾値
 static int bigfile_splitsize = 256*1024;	// 巨大ファイル転送モードの FIFO サイズ(128KB以上)
 
 static int max_uri_length = 255;	// URI の長さを制限
 
-static char servername[] = "Auriga httpd";
+static const char servername[] = "Auriga httpd";
 
 static int server_max_requests_per_second = 10;		// 全体の秒間のリクエスト数制限
 static int server_max_requests_period = 5000;		// 全体のリクエスト数制限のチェック間隔
@@ -77,13 +78,13 @@ static char httpd_cgi_server_name[256]="localhost";	// CGI に SERVER_NAME と�
 //static FILE* cgi_logfp = NULL;
 
 static HTTPD_AUTH_FUNC auth_func[8];	// 認証関数の関数ポインタ
-void httpd_set_auth_func( int func_id, HTTPD_AUTH_FUNC func ){ auth_func[func_id]=func; }
+void httpd_set_auth_func( int func_id, HTTPD_AUTH_FUNC func ) { auth_func[func_id]=func; }
 
 static int httpd_log_format = 1;	// ログフォーマット
 static FILE *logfp=NULL;
 
-static const char *weekdaymsg[]={ "Sun","Mon","Tue","Wed","Thu","Fri","Sat" };
-static const char *monthmsg[]={ "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec" };
+static const char *weekdaymsg[] = { "Sun","Mon","Tue","Wed","Thu","Fri","Sat" };
+static const char *monthmsg[] = { "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec" };
 
 
 enum HTTPD_STATUS {
@@ -98,35 +99,35 @@ enum HTTPD_STATUS {
 
 
 enum httpd_enum {
-	HTTPD_ACCESS_ALWAYS		= 0,
+	HTTPD_ACCESS_ALWAYS      = 0,
 
-	HTTPD_ACCESS_AUTH_NONE	= 0,
-	HTTPD_ACCESS_AUTH_BASIC	= 1,
-	HTTPD_ACCESS_AUTH_DIGEST= 2,
-	HTTPD_ACCESS_AUTH_MASK	= 3,
+	HTTPD_ACCESS_AUTH_NONE	 = 0,
+	HTTPD_ACCESS_AUTH_BASIC	 = 1,
+	HTTPD_ACCESS_AUTH_DIGEST = 2,
+	HTTPD_ACCESS_AUTH_MASK	 = 3,
 
-	HTTPD_ACCESS_IP_NONE	= 0,
-	HTTPD_ACCESS_IP_ALLOW	= 4,
-	HTTPD_ACCESS_IP_DENY	= 8,
-	HTTPD_ACCESS_IP_MUTUAL	=12,
-	HTTPD_ACCESS_IP_MASK	=12,
+	HTTPD_ACCESS_IP_NONE	 = 0,
+	HTTPD_ACCESS_IP_ALLOW	 = 4,
+	HTTPD_ACCESS_IP_DENY	 = 8,
+	HTTPD_ACCESS_IP_MUTUAL	 = 12,
+	HTTPD_ACCESS_IP_MASK	 = 12,
 
-	HTTPD_ACCESS_SAT_ANY	=16,
-	HTTPD_ACCESS_SAT_ALL	= 0,
-	HTTPD_ACCESS_SAT_MASK	=16,
-	
-	HTTPD_USER_PASSWD_PLAIN = 0,
-	HTTPD_USER_PASSWD_MD5	= 1,
-	HTTPD_USER_PASSWD_DIGEST= 2,
-	HTTPD_USER_PASSWD_MASK	= 3,
-	
-	HTTPD_RESHEAD_LASTMOD	= 1,
-	HTTPD_RESHEAD_ACCRANGE	= 2,
-	
-	HTTPD_PRECOND_NONE		= 0,
-	HTTPD_PRECOND_IFMOD		= 1,
-	HTTPD_PRECOND_IFUNMOD	= 2,
-	HTTPD_PRECOND_IFRANGE	= 4,
+	HTTPD_ACCESS_SAT_ANY	 = 16,
+	HTTPD_ACCESS_SAT_ALL	 = 0,
+	HTTPD_ACCESS_SAT_MASK	 = 16,
+
+	HTTPD_USER_PASSWD_PLAIN  = 0,
+	HTTPD_USER_PASSWD_MD5	 = 1,
+	HTTPD_USER_PASSWD_DIGEST = 2,
+	HTTPD_USER_PASSWD_MASK	 = 3,
+
+	HTTPD_RESHEAD_LASTMOD	 = 1,
+	HTTPD_RESHEAD_ACCRANGE	 = 2,
+
+	HTTPD_PRECOND_NONE       = 0,
+	HTTPD_PRECOND_IFMOD      = 1,
+	HTTPD_PRECOND_IFUNMOD    = 2,
+	HTTPD_PRECOND_IFRANGE    = 4,
 };
 
 // ユーザー認証用の構造体
@@ -148,7 +149,7 @@ struct httpd_access {
 	unsigned char realm[256], privkey[32];
 	int user_count, user_max;
 	struct httpd_access_user *user;
-	
+
 	char cgi_ext_list[sizeof(httpd_cgi_ext_list)];
 };
 static int htaccess_count=0, htaccess_max=0;
@@ -195,8 +196,9 @@ void httpd_set_timezone( int tz3 )
 	time_t time_temp = time(&time_temp);
 	time_t time_local = mktime(localtime(&time_temp));
 	time_t time_global = mktime(gmtime(&time_temp));
+
 	tz2 = (int)(time_local - time_global) / (-60);
-	
+
 	tz = tz3;
 	if( tz==-1 )
 		tz=tz2;
@@ -227,9 +229,9 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 		strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
 	}
 	sprintf(timestr+20, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
-	
+
 	ip = (unsigned char*) &session[sd->fd]->client_addr.sin_addr;
-	
+
 	// サイズ
 	if( len<0 )
 	{
@@ -240,13 +242,12 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 	{
 		sprintf(lenstr,"%d",len );
 	}
-	
-	
+
 	// ログを出力
 	if( httpd_log_format )
 	{
 		// combined log
-		fprintf( logfp,"%d.%d.%d.%d - %s [%s] \"%s\" %d %s \"%s\" \"%s\"\n",
+		fprintf( logfp,"%d.%d.%d.%d - %s [%s] \"%s\" %d %s \"%s\" \"%s\"" RETCODE,
 			ip[0],ip[1],ip[2],ip[3], ((*sd->user)? (char*)sd->user: "-") ,
 			timestr, sd->request_line, status, lenstr,
 			(( sd->referer && *sd->referer )? (char*)sd->referer: "-"),
@@ -255,12 +256,11 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 	else
 	{
 		// common log
-		fprintf( logfp,"%d.%d.%d.%d - %s [%s] \"%s\" %d %s\n",
+		fprintf( logfp,"%d.%d.%d.%d - %s [%s] \"%s\" %d %s" RETCODE,
 			ip[0],ip[1],ip[2],ip[3], ((*sd->user)? (char*)sd->user: "-") ,
 			timestr, sd->request_line, status, lenstr );
 	}
-	
-	
+
 	// ログのフラッシュ
 	if( !log_no_flush )
 	{
@@ -271,21 +271,8 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 	}
 }
 
-// ==========================================
-// strncasecmp の実装
-// ------------------------------------------
-int httpd_strcasencmp(const char *s1, const char *s2,int len) {
-	while(len-- && (*s1 || *s2) ) {
-		if((*s1 | 0x20) != (*s2 | 0x20)) {
-			return ((*s1 | 0x20) > (*s2 | 0x20) ? 1 : -1);
-		}
-		s1++; s2++;
-	}
-	return 0;
-}
-
 // httpd に入っているページと、呼び出すコールバック関数の一覧
-struct dbt* httpd_files = NULL;
+static struct dbt* httpd_files = NULL;
 
 // ==========================================
 // httpd_files の開放処理
@@ -302,12 +289,14 @@ static int httpd_db_final(void *key,void *data,va_list ap)
 // ==========================================
 // httpd 終了処理
 // ------------------------------------------
-static void do_final_httpd(void) {
+static void do_final_httpd(void)
+{
 	int i;
+
 	db_final(httpd_files,httpd_db_final);
-	
+
 	httpd_page_external_cgi_final();
-	
+
 	for( i=0; i<htaccess_count; i++ )
 	{
 		if(htaccess[i]->user) aFree( htaccess[i]->user );
@@ -323,27 +312,26 @@ static void do_final_httpd(void) {
 // ==========================================
 // httpd 初期化処理
 // ------------------------------------------
-void do_init_httpd(void) {
-
+void do_init_httpd(void)
+{
 //	httpd_config_read(configfile);	// 初期化順序の関係で、socket_config_read2() から呼ばれる
 
 	httpd_files = strdb_init(0);
 	httpd_pages( get_socket_ctrl_panel_url(), socket_httpd_page );
 	atexit(do_final_httpd);
-	
+
 	server_max_requests_tick = gettick();
-	
+
 	add_timer_func_list( httpd_page_external_cgi_abort_timer, "httpd_page_external_cgi_abort_timer" );
 	add_timer_interval( gettick()+HTTPD_CGI_KILL_INVERVAL, httpd_page_external_cgi_abort_timer, 0, 0, HTTPD_CGI_KILL_INVERVAL );
-	
 }
-
 
 // ==========================================
 // httpd にページを追加
 //  for などでページ名を合成できるように、key はstrdup()したものを使う
 // ------------------------------------------
-void httpd_pages(const char* url,void (*httpd_func)(struct httpd_session_data*,const char*)) {
+void httpd_pages(const char* url,HttpdFunc httpd_func)
+{
 	if( !httpd_files )
 		return;
 
@@ -356,7 +344,8 @@ void httpd_pages(const char* url,void (*httpd_func)(struct httpd_session_data*,c
 // ==========================================
 // httpd のページを削除
 // ------------------------------------------
-static int httpd_erase_pages_sub(void *key,void *data,va_list ap) {
+static int httpd_erase_pages_sub(void *key,void *data,va_list ap)
+{
 	char *url = va_arg(ap, char*);
 
 	if( strcmp((char *)key, url) == 0 ) {
@@ -366,7 +355,8 @@ static int httpd_erase_pages_sub(void *key,void *data,va_list ap) {
 	return 0;
 }
 
-void httpd_erase_pages(const char* url) {
+void httpd_erase_pages(const char* url)
+{
 	if( httpd_files )
 		strdb_foreach( httpd_files, httpd_erase_pages_sub, url+1);
 }
@@ -376,7 +366,8 @@ static void(*httpd_default)(struct httpd_session_data* sd,const char* url);
 // ==========================================
 // デフォルトのページ処理関数を設定
 // ------------------------------------------
-void httpd_default_page(void(*httpd_func)(struct httpd_session_data* sd,const char* url)) {
+void httpd_default_page(void(*httpd_func)(struct httpd_session_data* sd,const char* url))
+{
 	httpd_default = httpd_func;
 }
 
@@ -386,6 +377,7 @@ void httpd_default_page(void(*httpd_func)(struct httpd_session_data* sd,const ch
 const char *httpd_get_error( struct httpd_session_data* sd, int* status )
 {
 	const char* msg;
+
 	// httpd のステータスを決める
 	switch(*status) {
 	case 200: msg = "OK";              break;
@@ -408,7 +400,6 @@ const char *httpd_get_error( struct httpd_session_data* sd, int* status )
 	return msg;
 }
 
-
 // ==========================================
 // 日付の解析用（ Date ヘッダなど）
 // ------------------------------------------
@@ -418,47 +409,49 @@ int httpd_get_date( const char *str, time_t *date )
 	int mday, year, hour, minute, second;
 	int i;
 	struct tm t;
-	
+
 	if( sscanf( str, "%3s, %02d %3s %04d %02d:%02d:%02d GMT", wday, &mday, month, &year, &hour, &minute, &second )!=7 &&
-		sscanf( str, "%6s, %02d-%3s-%02d %02d:%02d:%02d GMT", wday, &mday, month, &year, &hour, &minute, &second )!=7 &&
-		sscanf( str, "%3s %3s %2d %02d:%02d:%02d %04d",  wday, month, &mday, &hour, &minute, &second, &year )!=7 )
+	    sscanf( str, "%6s, %02d-%3s-%02d %02d:%02d:%02d GMT", wday, &mday, month, &year, &hour, &minute, &second )!=7 &&
+	    sscanf( str, "%3s %3s %2d %02d:%02d:%02d %04d",       wday, month, &mday, &hour, &minute, &second, &year )!=7 )
 		return 0;
-	
+
 	for( i=0; i<12; i++ )
 	{
-		if( httpd_strcasencmp( monthmsg[i], month, 3 )==0 )
+		if( strncasecmp( monthmsg[i], month, 3 )==0 )
 			break;
 	}
 	if( i==12 )
 		return 0;
 	t.tm_mon = i;
-	
+
 	for( i=0; i<7; i++ )
 	{
-		if( httpd_strcasencmp( weekdaymsg[i], wday, 3 )==0 )
+		if( strncasecmp( weekdaymsg[i], wday, 3 )==0 )
 			break;
 	}
 	if( i==7 )
 		return 0;
 	t.tm_wday  = i;
-	
+
 	t.tm_sec  = second;
 	t.tm_min  = minute;
 	t.tm_hour = hour;
 	t.tm_mday = mday;
 	t.tm_year = (year>=1900)? year-1900 : year;
 	t.tm_isdst= 0;
-	
+
 	*date = mktime( &t ) - tz*60;
-	
+
 	return 1;
 }
 
 // ==========================================
 // エラーの送信
 // ------------------------------------------
-void httpd_send_error(struct httpd_session_data* sd,int status) {
+void httpd_send_error(struct httpd_session_data* sd,int status)
+{
 	const char* msg = httpd_get_error( sd, &status );
+
 	httpd_send(sd,status,"text/plain",strlen(msg),msg);
 }
 
@@ -468,27 +461,29 @@ void httpd_send_error(struct httpd_session_data* sd,int status) {
 int httpd_make_date( char* dst, time_t date )
 {
 	const struct tm *t = gmtime( &date );
+
 	return sprintf( dst,
 		"%s, %02d %s %04d %02d:%02d:%02d GMT\r\n",
-		weekdaymsg[t->tm_wday], t->tm_mday, monthmsg[t->tm_mon], (t->tm_year<1900)? t->tm_year+1900: t->tm_year, 
+		weekdaymsg[t->tm_wday], t->tm_mday, monthmsg[t->tm_mon], (t->tm_year<1900)? t->tm_year+1900: t->tm_year,
 		t->tm_hour, t->tm_min, t->tm_sec );
 }
 
 // ==========================================
 // レスポンスヘッダ送信
 // ------------------------------------------
-void httpd_send_head(struct httpd_session_data* sd,int status,const char *content_type,int content_len) {
+void httpd_send_head(struct httpd_session_data* sd,int status,const char *content_type,int content_len)
+{
 	char head[1024];
 	int  len;
 	const char* msg;
 
 	if(sd->status != HTTPD_REQUEST_OK) return;
 	msg = httpd_get_error( sd, &status );
-	
+
 	// 認証関連のデータがなんかおかしい
 	if( status==401 && ( !sd->access || !(sd->access->type & HTTPD_ACCESS_AUTH_MASK) ) )
 		status = 500;
-	
+
 	if( (status != 200 && status != 304  && status != 401 && status != 412 ) || ++sd->request_count >= max_persist_requests ) {
 		// 強制切断処理(status が200、304、401、412 以外 or リクエスト限界超過)
 		sd->persist = 0;
@@ -497,12 +492,12 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 	len = sprintf( head,
 		"HTTP/1.%d %d %s\r\n"
 		"Server: %s/revision%d\r\n", sd->http_ver,status,msg, servername, AURIGA_REVISION );
-	
+
 	if( content_type )	// コンテントタイプ
 	{
 		len += sprintf( head + len, "Content-Type: %s\r\n",content_type );
 	}
-	
+
 	if( content_len == -1 )		// 長さが分からない
 	{
 		if( status!=304 )
@@ -510,12 +505,12 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 	} else {
 		len += sprintf(head + len,"Content-Length: %d\r\n",content_len);
 	}
-	
+
 	if( status==206 )	// Content-Range 通知
 	{
 		len += sprintf(head + len,"Content-Range: bytes %d-%d/%d\r\n", sd->range_start, sd->range_end, sd->inst_len );
 	}
-	
+
 	if( sd->persist==0 )	// 持続性かどうか
 	{
 		len += sprintf(head + len,"Connection: close\r\n");
@@ -538,7 +533,7 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 				int i;
 				sprintf( buf, "%08x:%s", gettick(), sd->access->privkey );
 				sprintf( nonce, "%08x", gettick() );
-				MD5_String( buf, nonce+8 ); 
+				MD5_String( buf, nonce+8 );
 
 				for( i=0; nonce_log[ nonce_log_pos ].access_flag && i<NONCE_LOG_SIZE; i++ )
 				{
@@ -551,7 +546,6 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 				strcpy( nonce_log[ nonce_log_pos ].nonce, nonce );
 				nonce_log_pos = ( nonce_log_pos + 1 ) % NONCE_LOG_SIZE;
 			}
-			
 			len += sprintf( head+len,
 				"WWW-Authenticate: Digest realm=\"%s\", nonce=\"%s\", algorithm=MD5, qop=\"auth\", stale=%s\r\n",
 				sd->access->realm, nonce, stale[sd->auth_digest_stale] );
@@ -567,19 +561,19 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 	{
 		len += sprintf( head + len, "Retry-After: %d\r\n", (server_max_requests_period+999)/1000 );
 	}
-	
+
 	if( sd->reshead_flag & HTTPD_RESHEAD_ACCRANGE )	// Accept-Ranges 通知
 	{
 		len += sprintf( head + len, "Accept-Ranges: bytes\r\n" );
 	}
-	
+
 	if( sd->date && (sd->reshead_flag & HTTPD_RESHEAD_LASTMOD))	// Last-modified の通知
 	{
 		strcpy( head+len, "Last-Modified: " );
 		len += 15;
 		len += httpd_make_date( head+len, sd->date );
 	}
-	
+
 	if( status!=500 )	// Date の通知
 	{
 		time_t tmp = time( &tmp );
@@ -587,9 +581,9 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 		len += 6;
 		len += httpd_make_date( head+len, tmp );
 	}
-	
+
 	httpd_log( sd, status, content_len );	// ログに記録
-	
+
 	len += sprintf( head+len, "\r\n" );
 	memcpy(WFIFOP(sd->fd,0),head,len);
 	WFIFOSET(sd->fd,len);
@@ -600,8 +594,10 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 // ==========================================
 // データ送信
 // ------------------------------------------
-void httpd_send_data(struct httpd_session_data* sd,int content_len,const void *data) {
+void httpd_send_data(struct httpd_session_data* sd,int content_len,const void *data)
+{
 	const char* msg = (const char*)data;
+
 	if(sd->status == HTTPD_REQUEST_OK) {
 		// ヘッダの送信忘れているので、適当に補う
 		httpd_send_head(sd,200,"application/octet-stream",-1);
@@ -624,7 +620,8 @@ void httpd_send_data(struct httpd_session_data* sd,int content_len,const void *d
 // ==========================================
 // ヘッダとデータの一括送信
 // ------------------------------------------
-void httpd_send(struct httpd_session_data* sd,int status,const char *content_type,int content_len,const void *data) {
+void httpd_send(struct httpd_session_data* sd,int status,const char *content_type,int content_len,const void *data)
+{
 	httpd_send_head(sd,status,content_type,content_len);
 	httpd_send_data(sd,content_len,data);
 }
@@ -632,16 +629,17 @@ void httpd_send(struct httpd_session_data* sd,int status,const char *content_typ
 // ==========================================
 // 切断待ち
 // ------------------------------------------
-int httpd_disconnect(int fd) {
+int httpd_disconnect(int fd)
+{
 	struct httpd_session_data* sd = (struct httpd_session_data*)session[fd]->session_data2;
-	
+
 	// CGI の中断
 	if( sd->cgi_state )
 	{
 		sd->cgi_state = 0;
 		httpd_page_external_cgi_disconnect( sd );
 	}
-	
+
 	return 0;
 }
 
@@ -659,15 +657,15 @@ void httpd_session_reset( struct httpd_session_data* sd )
 	int fd       = sd->fd;
 	int http_ver = sd->http_ver;
 	int persist  = sd->persist;
-	
+
 	// ゼロクリア
 	memset( sd, 0, sizeof(struct httpd_session_data) );
-	
+
 	// バックアップからの復帰
 	sd->fd          = fd;
 	sd->http_ver    = http_ver;
 	sd->persist     = persist;
-	
+
 	// 0 以外の初期値設定
 	sd->status      = HTTPD_REQUEST_WAIT;
 	sd->tick        = gettick();
@@ -678,8 +676,10 @@ void httpd_session_reset( struct httpd_session_data* sd )
 // httpd のパケット解析
 // ------------------------------------------
 
-int  httpd_parse(int fd) {
+int httpd_parse(int fd)
+{
 	struct httpd_session_data *sd = (struct httpd_session_data*)session[fd]->session_data2;
+
 	if(sd == NULL) {
 		sd = (struct httpd_session_data*)aCalloc(sizeof(struct httpd_session_data),1);
 		httpd_session_reset(sd);
@@ -687,19 +687,17 @@ int  httpd_parse(int fd) {
 		session[fd]->func_destruct = httpd_disconnect;
 		session[fd]->session_data2  = sd;
 	}
-	
+
 	// 一度のリクエストで 32KB 以上送信されると切断する
 	if( RFIFOREST(fd) > 32768 )
 	{
 		session[fd]->eof = 1;
 		return 0;
 	}
-	
+
 	switch(sd->status) {
-		
 	case HTTPD_REQUEST_WAIT:
 		// リクエスト待ち
-	
 		if(RFIFOREST(fd) > 1024) {
 			// リクエストが長すぎるので、エラー扱いする
 			sd->status = HTTPD_REQUEST_OK;
@@ -753,7 +751,7 @@ int  httpd_parse(int fd) {
 						status = httpd_parse_header(sd);
 						if(sd->status == HTTPD_REQUEST_WAIT) {
 							sd->status = HTTPD_REQUEST_OK;
-							httpd_send_error(sd,status); 
+							httpd_send_error(sd,status);
 						}
 						server_max_requests_count++;
 						break;
@@ -762,10 +760,9 @@ int  httpd_parse(int fd) {
 			} while(req++,--limit > 0);
 		}
 		break;
-		
+
 	case HTTPD_REQUEST_WAIT_POST:
 		// POST メソッドでのエンティティ受信待ち
-		
 		if( (int)( gettick() - sd->tick ) > request_timeout[sd->persist] ) {
 			// リクエストに時間がかかりすぎているので、エラー扱いする
 		} else
@@ -783,12 +780,12 @@ int  httpd_parse(int fd) {
 		// 強制切断
 		session[fd]->eof = 1;
 		break;
-		
+
 	case HTTPD_SENDING_BIGFILE:
 		// 巨大ファイル送信中
 		httpd_send_bigfile(sd);
 		break;
-	
+
 	case HTTPD_WAITING_CGI:
 		// cgi 処理終了待ち
 		httpd_page_external_cgi(sd);
@@ -818,6 +815,7 @@ int  httpd_parse(int fd) {
 int httpd_decode_url( char *url )
 {
 	int s=0, d=0;
+
 	// url デコード
 	while( url[s]!='\0' && url[s]!='?' )
 	{
@@ -852,15 +850,18 @@ int httpd_decode_url( char *url )
 	while( url[s]!='\0' && url[s]!='?' )
 	{
 		int c0 = url[s], c1 = url[s+1], c2 = url[s+2], c3 = url[s+3];
-/*		if( url[s]=='\\' )	// バッククォートが含まれていると直ちにエラー
+
+		/*
+		if( url[s]=='\\' )	// バッククォートが含まれていると直ちにエラー
 		{
 			return 0;
-		}*/
+		}
+		*/
 
 		// 禁止文字チェック
 		if( url[s]=='|' || url[s]=='<' || url[s]=='>' || url[s]=='?'  || url[s]=='*' )
 			return 0;
-		
+
 		if( c0=='/' && (c1=='/' || c1=='\\') )	// 連続したスラッシュ：意味が無いので削除
 		{
 			s++;
@@ -886,7 +887,6 @@ int httpd_decode_url( char *url )
 			url[s]='/';
 			continue;
 		}
-		
 		url[ d++ ] = url[ s++ ];
 	}
 	url[d] = '\0';
@@ -903,7 +903,7 @@ int httpd_check_access_ip( struct httpd_access *a, struct httpd_session_data *sd
 	int fa=0, fd=0;
 	int order = a->type & HTTPD_ACCESS_IP_MASK;
 	unsigned int ip = *(unsigned int *)(&session[sd->fd]->client_addr.sin_addr);
-	
+
 	for( i=0; i<a->aip_count; i+=2 )
 	{
 		if( (ip & a->aip[i+1]) == a->aip[i] )
@@ -914,12 +914,11 @@ int httpd_check_access_ip( struct httpd_access *a, struct httpd_session_data *sd
 		if( (ip & a->dip[i+1]) == a->dip[i] )
 			fd=1;
 	}
-	
-	return	( order == HTTPD_ACCESS_IP_DENY  )?  (fd ? fa : 1)  :
-			( order == HTTPD_ACCESS_IP_ALLOW )?  (fa ? !fd : 0) :
-			( order == HTTPD_ACCESS_IP_MUTUAL)?  (fa & !fd )    : 0;
-}
 
+	return	( order == HTTPD_ACCESS_IP_DENY  )? (fd ? fa : 1)  :
+			( order == HTTPD_ACCESS_IP_ALLOW )? (fa ? !fd : 0) :
+			( order == HTTPD_ACCESS_IP_MUTUAL)? (fa & !fd )    : 0;
+}
 
 // ==========================================
 // ユーザー認証(ダイジェスト認証)
@@ -934,13 +933,13 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 
 	sd->auth_digest_stale = 0;
 
-	if( !sd->auth || httpd_strcasencmp( sd->auth, "Digest ", 7 )!=0 )
+	if( !sd->auth || strncasecmp( sd->auth, "Digest ", 7 )!=0 )
 		return 0;
-	
+
 	// ヘッダの解析
 	while( sd->auth[i] )
 	{
-		if( httpd_strcasencmp( sd->auth+i, "username=\"", 10 )==0 )		// ユーザー名
+		if( strncasecmp( sd->auth+i, "username=\"", 10 )==0 )		// ユーザー名
 		{
 			if( sscanf(sd->auth+i+10,"%[^\"]%n", buf, &n )==1 )
 			{
@@ -952,7 +951,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			else
 				return 0;
 		}
-		if( httpd_strcasencmp( sd->auth+i, "realm=\"", 7 )==0 )		// 領域名
+		if( strncasecmp( sd->auth+i, "realm=\"", 7 )==0 )		// 領域名
 		{
 			if( sscanf(sd->auth+i+7,"%[^\"]%n", buf, &n )==1 )
 			{
@@ -964,7 +963,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			else
 				return 0;
 		}
-		if( httpd_strcasencmp( sd->auth+i, "nonce=\"", 7 )==0 )		// nonce
+		if( strncasecmp( sd->auth+i, "nonce=\"", 7 )==0 )		// nonce
 		{
 			if( sscanf(sd->auth+i+7,"%[^\"]%n", buf, &n )==1 )
 			{
@@ -976,7 +975,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			else
 				return 0;
 		}
-		if( httpd_strcasencmp( sd->auth+i, "uri=\"", 5)==0 )		// URI
+		if( strncasecmp( sd->auth+i, "uri=\"", 5)==0 )		// URI
 		{
 			if( sscanf(sd->auth+i+5,"%[^\"]%n", uri, &n )==1 )
 			{
@@ -985,25 +984,25 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			else
 				return 0;
 		}
-		if( httpd_strcasencmp( sd->auth+i, "algorithm=", 10) ==0 )	// アルゴリズム（MD5固定）
+		if( strncasecmp( sd->auth+i, "algorithm=", 10) ==0 )	// アルゴリズム（MD5固定）
 		{
-			if( httpd_strcasencmp(sd->auth+i+10, "MD5", 3)==0 )
+			if( strncasecmp(sd->auth+i+10, "MD5", 3)==0 )
 				i+= 14;
-			else if( httpd_strcasencmp(sd->auth+i+10, "\"MD5\"", 5)==0 )	// ie のバグを吸収
+			else if( strncasecmp(sd->auth+i+10, "\"MD5\"", 5)==0 )	// ie のバグを吸収
 				i+= 16;
 			else
 				return 0;
 		}
-		if( httpd_strcasencmp( sd->auth+i, "qop=", 4) ==0 )			// qop（auth固定）
+		if( strncasecmp( sd->auth+i, "qop=", 4) ==0 )			// qop（auth固定）
 		{
-			if( httpd_strcasencmp(sd->auth+i+4, "auth", 4)==0 )
+			if( strncasecmp(sd->auth+i+4, "auth", 4)==0 )
 				i+= 8;
-			else if( httpd_strcasencmp(sd->auth+i+4, "\"auth\"", 6)==0 )	// ie のバグを吸収
+			else if( strncasecmp(sd->auth+i+4, "\"auth\"", 6)==0 )	// ie のバグを吸収
 				i+=10;
 			else
 				return 0;
 		}
-		if( httpd_strcasencmp( sd->auth+i, "cnonce=\"", 8 )==0 )	// cnonce
+		if( strncasecmp( sd->auth+i, "cnonce=\"", 8 )==0 )	// cnonce
 		{
 			if( sscanf(sd->auth+i+8,"%[^\"]%n", buf, &n )==1 )
 			{
@@ -1015,7 +1014,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			else
 				return 0;
 		}
-		if( httpd_strcasencmp( sd->auth+i, "nc=", 3 )==0 )			// nonce count
+		if( strncasecmp( sd->auth+i, "nc=", 3 )==0 )			// nonce count
 		{
 			if( sscanf(sd->auth+i+3,"%[^, ]%n", buf, &n)==1 )
 			{
@@ -1027,7 +1026,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			else
 				return 0;
 		}
-		if( httpd_strcasencmp( sd->auth+i, "response=\"", 10 )==0 )	// response
+		if( strncasecmp( sd->auth+i, "response=\"", 10 )==0 )	// response
 		{
 			if( sscanf(sd->auth+i+10,"%[^\"]%n", buf, &n)==1 )
 			{
@@ -1039,7 +1038,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			else
 				return 0;
 		}
-		if( httpd_strcasencmp( sd->auth+i, "auth_param=", 11 )==0 )	// auth_param
+		if( strncasecmp( sd->auth+i, "auth_param=", 11 )==0 )	// auth_param
 		{
 			int c=',';
 			i+=11;
@@ -1048,7 +1047,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 				i++;
 			i++;
 		}
-		
+
 		if( sd->auth[i]!=' ' && sd->auth[i]!=',' && sd->auth[i] )
 			return 0;
 
@@ -1060,7 +1059,6 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 
 //	printf("response=[%s]\nnonce=[%s]\nusername=[%s]\nrealm=[%s]\ncnonce=[%s]\nnc=[%s]\nuri=[%s]\n",
 //		response,nonce,username,realm,cnonce,nc,uri);
-
 
 	// ユーザー名の確認とパスワードの取得（登録された認証関数を使う）
 	if( !auth_func[a->auth_func_id] || !auth_func[a->auth_func_id]( a, sd, username, passwd ) )
@@ -1091,7 +1089,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		while( *line && *line!=' ' )
 			req_uri[i++] = *(line++);
 		req_uri[i]='\0';
-		
+
 		if( strcmpi( req_uri, uri )!=0 )
 		{
 			// ie のバグ吸収
@@ -1110,27 +1108,27 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		unsigned int tick;
 		if( sscanf(nonce,"%08x",&tick)!=1 )	// tick がない
 			return 0;
-		
+
 		sprintf( buf, "%08x:%s", tick, a->privkey );
 		MD5_String( buf, buf2 );
 		if( strcmpi( nonce+8, buf2 )!=0 )	// 計算方法が違う
 			return 0;
-		
+
 		if( (int)( gettick() - tick ) > auth_digest_period )	// 有効期限が切れたので stale フラグ設定
 		{
 			sd->auth_digest_stale = 1;
 			return 0;
 		}
 	}
-	
+
 	// nc の妥当性検査
 	{
 		int i;
 		unsigned int nci;
-		
+
 		if( sscanf(nc,"%08x",&nci )!=1 )	// nc がない
 			return 0;
-		
+
 		if( nci<=0 )
 			return 0;
 
@@ -1155,12 +1153,12 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 	{
 		static const char *method[]={"","GET","POST"};
 		char a1[33],a2[33],res[33];
-		
+
 		// A1 計算
 		if( passwd[0] )								// 認証関数による
 		{
 			sprintf( buf, "%s:%s:%s", username, realm, passwd );
-			MD5_String( buf, a1 );			
+			MD5_String( buf, a1 );
 		}
 		else if( au->type == HTTPD_USER_PASSWD_PLAIN )	// プレーンパスワード
 		{
@@ -1177,7 +1175,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		// A2 計算
 		sprintf( buf,"%s:%s", method[sd->method], uri );
 		MD5_String( buf, a2 );
-		
+
 		// response 計算
 		sprintf( buf,"%s:%s:%s:%s:%s:%s", a1, nonce, nc, cnonce, "auth", a2 );
 		MD5_String( buf, res );
@@ -1199,10 +1197,10 @@ int httpd_check_access_user_basic( struct httpd_access *a, struct httpd_session_
 	// ユーザーチェック
 	char buf[1024], name[1024], passwd[1024], passwd2[33];
 	int i;
-	
-	if( !sd->auth || httpd_strcasencmp( sd->auth, "Basic ", 6 )!=0 )
+
+	if( !sd->auth || strncasecmp( sd->auth, "Basic ", 6 )!=0 )
 		return 0;
-	
+
 	if( httpd_decode_base64( buf, sd->auth+6 ) && sscanf(buf,"%[^:]:%[^\r]",name,passwd) == 2 )
 	{
 		char *apass[4]={NULL,NULL,NULL,""};
@@ -1213,11 +1211,11 @@ int httpd_check_access_user_basic( struct httpd_access *a, struct httpd_session_
 			strcpy( sd->user, name );
 			return 1;
 		}
-		
+
 		apass[0]=passwd;
 		apass[1]=buf;
 		apass[2]=buf+64;
-		
+
 		sprintf( buf+128, "%s:%s", name, passwd );
 		MD5_String( buf+128, buf );
 		sprintf( buf+128, "%s:%s:%s", name, a->realm, passwd );
@@ -1226,7 +1224,6 @@ int httpd_check_access_user_basic( struct httpd_access *a, struct httpd_session_
 		// authuser で設定されたアカウントを調べる
 		for( i=0; i<a->user_count; i++ )
 		{
-					
 			if( strcmp( a->user[i].name, name ) == 0 &&
 				strcmp( a->user[i].passwd, apass[a->user[i].type & HTTPD_USER_PASSWD_MASK] )==0 )
 			{
@@ -1251,20 +1248,20 @@ int httpd_check_access( struct httpd_session_data *sd, int *st )
 	for( i=0; i<htaccess_count; i++ )
 	{
 		struct httpd_access *a = htaccess[i];
-		if( a->urllen > len && httpd_strcasencmp( a->url, sd->url-1, a->urllen )==0 ) {
+		if( a->urllen > len && strncasecmp( a->url, sd->url-1, a->urllen )==0 ) {
 			n=i; len = a->urllen;
 		}
 	}
 	if( n<0 )
 		return 1;
-	
+
 	sd->access = a = htaccess[n];
-	
+
 	// IP チェック
 	if( a->type & HTTPD_ACCESS_IP_MASK )
 	{
 		int f = httpd_check_access_ip( a, sd );
-		
+
 		if( f && (a->type & HTTPD_ACCESS_SAT_ANY || !(a->type & HTTPD_ACCESS_AUTH_MASK) ) )
 			return 1;
 		else if( !f && ( !(a->type & HTTPD_ACCESS_SAT_ANY) || !(a->type & HTTPD_ACCESS_AUTH_MASK) ) )
@@ -1273,13 +1270,13 @@ int httpd_check_access( struct httpd_session_data *sd, int *st )
 			return 0;
 		}
 	}
-	
+
 	// ユーザー認証
 	if( a->type & HTTPD_ACCESS_AUTH_MASK )
 	{
 		int f = ( (a->type & HTTPD_ACCESS_AUTH_MASK) == HTTPD_ACCESS_AUTH_BASIC )?
 				httpd_check_access_user_basic( a, sd ) : httpd_check_access_user_digest( a, sd );
-		
+
 		if( !f )
 		{
 			*st=401;
@@ -1295,17 +1292,18 @@ int httpd_check_access( struct httpd_session_data *sd, int *st )
 // ==========================================
 // リクエストヘッダの解析
 // ------------------------------------------
-int httpd_parse_header(struct httpd_session_data* sd) {
+int httpd_parse_header(struct httpd_session_data* sd)
+{
 	int i;
 	int content_len    = -1;
 	int persist        = -1;
 	unsigned char* req = RFIFOP(sd->fd,0);
-	int  c;
+	int c;
 	int status;
 	int ri = 0;
-	
+
 	memset( sd->req_head, 0, sizeof(sd->req_head) );
-	
+
 	// まずヘッダの改行文字をnull文字に置き換え、先頭行以外の解析をする
 	while(*req) {
 		if(*req == '\r' || *req == '\n') {
@@ -1317,32 +1315,32 @@ int httpd_parse_header(struct httpd_session_data* sd) {
 			// 行先頭の保存
 			if( ri<sizeof(sd->req_head)/sizeof(sd->req_head[0]) )
 				sd->req_head[ri++] = req+1;
-			
+
 			// Content-Length: の調査
-			if(!httpd_strcasencmp(req+1,"Content-Length: ",16)) {
+			if(!strncasecmp(req+1,"Content-Length: ",16)) {
 				content_len = atoi(req + 17);
 			}
 			// Connection: の調査
-			if(!httpd_strcasencmp(req+1,"Connection: ",12)) {
-				if( httpd_strcasencmp(req+13,"close",5)==0)
+			if(!strncasecmp(req+1,"Connection: ",12)) {
+				if( strncasecmp(req+13,"close",5)==0)
 					persist = 0;
-				if( httpd_strcasencmp(req+13,"Keep-Alive",10)==0)
+				if( strncasecmp(req+13,"Keep-Alive",10)==0)
 					persist = 1;
 			}
 			// Authorization: の調査
-			if(!httpd_strcasencmp(req+1,"Authorization: ",15)) {
+			if(!strncasecmp(req+1,"Authorization: ",15)) {
 				sd->auth = req+16;
 			}
 			// Range: の調査
-			if(!httpd_strcasencmp(req+1,"Range: ", 7)){
-				if( httpd_strcasencmp(req+8,"bytes=",6 ))	// バイトレンジじゃない
+			if(!strncasecmp(req+1,"Range: ", 7)){
+				if( strncasecmp(req+8,"bytes=",6 ))	// バイトレンジじゃない
 					return 416;
 				sd->range_start = atoi( req+14 );
 				req += 15;
 				while( *req>='0' && *req<='9' ) req++;
 				if( *req!='-' && sd->range_start>=0 )	// 開始位置が負じゃないのにハイフンが無い
 					return 400;
-				
+
 				if( *req=='-' )
 				{
 					req++;
@@ -1359,37 +1357,37 @@ int httpd_parse_header(struct httpd_session_data* sd) {
 				req--;
 			}
 			// If-Modified-Since の調査
-			if( !httpd_strcasencmp(req+1,"If-Modified-Since: ",19) && httpd_get_date( req+20, &sd->date ) ) {
+			if( !strncasecmp(req+1,"If-Modified-Since: ",19) && httpd_get_date( req+20, &sd->date ) ) {
 				if( sd->precond )
 					return 400;
 				sd->precond |= HTTPD_PRECOND_IFMOD;
 			}
 			// If-Unmodified-Since の調査
-			if( !httpd_strcasencmp(req+1,"If-Unmodified-Since: ",21) && httpd_get_date( req+22, &sd->date ) ) {
+			if( !strncasecmp(req+1,"If-Unmodified-Since: ",21) && httpd_get_date( req+22, &sd->date ) ) {
 				if( sd->precond )
 					return 400;
 				sd->precond |= HTTPD_PRECOND_IFUNMOD;
 			}
 			// If-Range の調査
-			if(!httpd_strcasencmp(req+1,"If-Range: ",10) ) {
+			if(!strncasecmp(req+1,"If-Range: ",10) ) {
 				if( sd->precond || !httpd_get_date( req+11, &sd->date ) )
 					return 400;
 				sd->precond |= HTTPD_PRECOND_IFRANGE;
 			}
 			// Content-type の調査
-			if(!httpd_strcasencmp(req+1,"Content-Type: ",14)) {
+			if(!strncasecmp(req+1,"Content-Type: ",14)) {
 				sd->content_type = req + 15;
 			}
 			// Referer の調査
-			if(!httpd_strcasencmp(req+1,"Referer: ",9)) {
+			if(!strncasecmp(req+1,"Referer: ",9)) {
 				sd->referer = req + 10;
 			}
 			// User-Agent の調査
-			if(!httpd_strcasencmp(req+1,"User-Agent: ",12)) {
+			if(!strncasecmp(req+1,"User-Agent: ",12)) {
 				sd->user_agent = req + 13;
 			}
 			// Cookie の調査
-			if(!httpd_strcasencmp(req+1,"Cookie: ",8)) {
+			if(!strncasecmp(req+1,"Cookie: ",8)) {
 				sd->cookie = req + 9;
 			}
 		}
@@ -1425,14 +1423,14 @@ int httpd_parse_header(struct httpd_session_data* sd) {
 		} else {
 			return 400; // Bad Request
 		}
-		
+
 		// URI が長すぎる
 		if( i > max_uri_length )
 		{
 			sd->request_line[ max_uri_length+5 ]='\0';
 			return 414;		// Request-URI Too Long
 		}
-		
+
 		// ヘッダ解析
 		if(!strncmp(&req[i+1] ,"HTTP/1.1",8)) {
 			sd->http_ver = 1;
@@ -1442,7 +1440,7 @@ int httpd_parse_header(struct httpd_session_data* sd) {
 			sd->persist  = (persist == -1 ? 0 : persist);
 		}
 		sd->method = HTTPD_METHOD_GET;
-		
+
 		// URL デコード
 		if( !httpd_decode_url( req - 1 ) ) return 400; // Bad Request
 
@@ -1452,10 +1450,7 @@ int httpd_parse_header(struct httpd_session_data* sd) {
 
 		// printf("httpd: request %s %s\n",sd->url,sd->query);
 		httpd_parse_request_ok(sd);
-		
-
 	} else if(!strncmp(req,"POST /",6)) {	// POST リクエスト
-	
 		req += 6;
 		for(i = 0;req[i]; i++) {
 			c = req[i];
@@ -1465,7 +1460,7 @@ int httpd_parse_header(struct httpd_session_data* sd) {
 		if(req[i] != ' ') return 400; // Bad Request
 		req[i]     = 0;
 		sd->url    = req;
-		
+
 		// URI が長すぎる
 		if( i > max_uri_length )
 		{
@@ -1515,13 +1510,15 @@ int httpd_parse_header(struct httpd_session_data* sd) {
 // ==========================================
 // リクエストの解析完了＆ページを処理する
 // ------------------------------------------
-void httpd_parse_request_ok(struct httpd_session_data *sd) {
-	void (*httpd_parse_func)(struct httpd_session_data*,const char*);
+void httpd_parse_request_ok(struct httpd_session_data *sd)
+{
+	HttpdFunc httpd_parse_func;
+
 	sd->status = HTTPD_REQUEST_OK;
 
 	// ファイル名が求まったので、ページが無いか検索する
 	// printf("httpd_parse: [% 3d] request /%s\n",fd,req);
-	httpd_parse_func = strdb_search(httpd_files,sd->url);
+	httpd_parse_func = (HttpdFunc)strdb_search(httpd_files,sd->url);
 	if(httpd_parse_func == NULL) {
 		httpd_parse_func = httpd_default;
 	}
@@ -1539,16 +1536,18 @@ void httpd_parse_request_ok(struct httpd_session_data *sd) {
 		session[sd->fd]->eof = 1;
 	}
 	if(sd->status == HTTPD_REQUEST_OK) {
-		httpd_send_error(sd,404); 
+		httpd_send_error(sd,404);
 	}
 }
 
 // ==========================================
 // CGI クエリの値取得
 // ------------------------------------------
-char* httpd_get_value(struct httpd_session_data* sd,const char* val) {
+char* httpd_get_value(struct httpd_session_data* sd,const char* val)
+{
 	int src_len = strlen(val);
 	const unsigned char* src_p = sd->query;
+
 	if(src_p == NULL) return (char *)aStrdup("");
 
 	do {
@@ -1600,14 +1599,16 @@ char* httpd_get_value(struct httpd_session_data* sd,const char* val) {
 // ==========================================
 // メソッドを返す
 // ------------------------------------------
-int httpd_get_method(struct httpd_session_data* sd) {
+int httpd_get_method(struct httpd_session_data* sd)
+{
 	return sd->method;
 }
 
 // ==========================================
 // IP アドレスを返す
 // ------------------------------------------
-unsigned int httpd_get_ip(struct httpd_session_data *sd) {
+unsigned int httpd_get_ip(struct httpd_session_data *sd)
+{
 	return *(unsigned int*)(&session[sd->fd]->client_addr.sin_addr);
 }
 
@@ -1615,8 +1616,10 @@ unsigned int httpd_get_ip(struct httpd_session_data *sd) {
 // MIMEタイプ判定
 //  主要なものだけ判定して、残りはapplication/octet-stream
 // ------------------------------------------
-static const char* httpd_mimetype(const char* url) {
+static const char* httpd_mimetype(const char* url)
+{
 	char *ext = strrchr(url,'.');
+
 	if(ext) {
 		if(!strcmp(ext,".html")) return "text/html";
 		if(!strcmp(ext,".htm"))  return "text/html";
@@ -1641,7 +1644,7 @@ const char* httpd_complement_file( const char* url, char* buf )
 	char file_buf[2048];
 	int last;
 	const char* cfile = "index.html";	// デフォルト
-	
+
 	// URL なしならデフォルト
 	if( url[0] == '\0' )
 		return cfile;
@@ -1653,10 +1656,10 @@ const char* httpd_complement_file( const char* url, char* buf )
 		sprintf( buf, "%s%s", url, cfile );
 		return buf;
 	}
-	
+
 	// url の最大長は約 1010 バイト以内なのでオーバーフローしない
 	sprintf(file_buf,"%s%s",document_root,url);
-	
+
 	// ディレクトリだったらデフォルトを追加
 	{
 #if defined(_WIN32) && defined(_MSC_VER)
@@ -1674,7 +1677,7 @@ const char* httpd_complement_file( const char* url, char* buf )
 			}
 		}
 	}
-	
+
 	// いずれにも該当しないのでそのまま
 	return url;
 }
@@ -1682,13 +1685,13 @@ const char* httpd_complement_file( const char* url, char* buf )
 // ==========================================
 // ページ処理 - 通常のファイル送信
 // ------------------------------------------
-void httpd_send_file(struct httpd_session_data* sd,const char* url) {
+void httpd_send_file(struct httpd_session_data* sd,const char* url)
+{
 	FILE *fp;
 	int  file_size;
 	char file_buf[8192];
 	char url_buf[1536];
-	
-	
+
 	if(sd->status != HTTPD_REQUEST_OK) return;
 
 	// URL の補完
@@ -1732,7 +1735,7 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url) {
 		if( stat( file_buf, &st ) == 0 )
 #endif
 			date = st.st_mtime;
-		
+
 		if( date!=0 && sd->precond == HTTPD_PRECOND_IFMOD   && date == sd->date )	// If-Modified-Since の処理
 		{
 			httpd_send_head( sd, 304, NULL, -1);	// 304 はエンティティを持たない
@@ -1740,24 +1743,23 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url) {
 			sd->status = HTTPD_WAITING_SEND;
 			return;
 		}
-		
+
 		if( sd->precond == HTTPD_PRECOND_IFUNMOD && (date != sd->date || date==0) )	// If-Unmodified-Since の処理
 		{
 			httpd_send_error( sd, 412 );
 			return;
 		}
-		
+
 		if( sd->precond == HTTPD_PRECOND_IFRANGE && (date != sd->date || date==0) )	// If-Range の処理
 		{
 			sd->range_start = 0;
 			sd->range_end   = -1;
 		}
-		
+
 		sd->reshead_flag |= HTTPD_RESHEAD_LASTMOD;
 		sd->date = date;
 
 	} // end 日付確認
-
 
 	// ファイルの送信
 	fp = fopen(file_buf,"rb");
@@ -1825,7 +1827,6 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url) {
 			fclose(fp);
 		}
 	}
-
 }
 
 // ==========================================
@@ -1837,10 +1838,10 @@ void httpd_send_bigfile( struct httpd_session_data* sd )
 	char url_buf[1536];
 	const char* url = sd->url;
 	FILE *fp;
-	
+
 	if( WFIFOSPACE( sd->fd ) < 64*1024 )	// バッファの空きが少ないので帰る
 		return;
-	
+
 	// URL の補完
 	url = httpd_complement_file( url, url_buf );
 
@@ -1876,7 +1877,7 @@ void httpd_send_bigfile( struct httpd_session_data* sd )
 		int send_size = WFIFOSPACE( sd->fd ) - 32768;
 		if( send_size > sd->data_len )
 			send_size = sd->data_len;
-		
+
 		fseek( fp, sd->file_pos, SEEK_SET );
 		if( fread( WFIFOP(sd->fd,0), 1, send_size, fp)!= send_size )
 		{
@@ -1913,7 +1914,7 @@ void httpd_cgi_log( struct httpd_session_data *sd, const char* str );
 #ifdef _WIN32
 
 // ヘルパマクロ定義
-#	define SAFE_CLOSEHANDLE(h)	if( h != INVALID_HANDLE_VALUE ){ CloseHandle(h); h = INVALID_HANDLE_VALUE; }
+#	define SAFE_CLOSEHANDLE(h)	if( h != INVALID_HANDLE_VALUE ) { CloseHandle(h); h = INVALID_HANDLE_VALUE; }
 #	define CLOSEHANDLES()	{ \
 			SAFE_CLOSEHANDLE( sd->cgi_hProcess );	\
 			SAFE_CLOSEHANDLE( sd->cgi_hCIn );	\
@@ -1951,7 +1952,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	sa.nLength = sizeof(sa);
 	sa.lpSecurityDescriptor = NULL;
 	sa.bInheritHandle = TRUE;
-	
+
 	// ------------
 	// POST ならクエリを送る
 	// ------------
@@ -1985,7 +1986,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	// 出力用のテンポラリファイルを開く
 	// ------------
 	{
-		int i = rand() ^ gettick();
+		int i = atn_rand() ^ gettick();
 		char tmp_out[256], tmp_err[256];
 		sprintf( tmp_out, "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
 		sprintf( tmp_err, "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
@@ -1993,7 +1994,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 									FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL );
 		sd->cgi_hErr = CreateFile( tmp_err, GENERIC_READ | GENERIC_WRITE, 0, &sa, CREATE_ALWAYS,
 									FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL );
-		
+
 		if( sd->cgi_hOut == INVALID_HANDLE_VALUE || sd->cgi_hErr == INVALID_HANDLE_VALUE )
 		{
 			// テンポラリファイルが作成できなかった
@@ -2003,7 +2004,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 			return;
 		}
 	}
-	
+
 	// ------------
 	// 子プロセス呼び出しのための設定
 	// ------------
@@ -2013,17 +2014,17 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	si.hStdOutput = sd->cgi_hOut;
 	si.hStdError  = sd->cgi_hErr;
 	si.dwFlags = STARTF_USESTDHANDLES;
-	
+
 	// ------------
 	// ドキュメントルートの計算
 	// ------------
 	httpd_page_cgi_calc_document_root( sd, szPath, sizeof(szPath), '\\', '/' );
-	
+
 	// ------------
 	// 環境変数の設定
 	// ------------
 	httpd_page_cgi_setenv( sd, szEnv, sizeof(szEnv), NULL, 0, szPath );
-	
+
 	// ------------
 	// カレントディレクトリとコマンド抽出
 	// ------------
@@ -2033,13 +2034,16 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		for( j=y=0, x=i=strlen(szCwd); sd->url[j]; j++,i++ )
 		{
 			szCwd[i] = ( sd->url[j] == '/' )? '\\' : sd->url[j];
-			if( szCwd[i] == '\\' ){ x=i; y=j; }
+			if( szCwd[i] == '\\' ) {
+				x=i;
+				y=j;
+			}
 		}
 		szCwd[x]='\0';
 		szCmd[0]='.'; szCmd[1]='\\';
 		strcpy( szCmd+2, sd->url+y );
 	}
-	
+
 	// ------------
 	// コマンドラインの生成
 	// ------------
@@ -2057,7 +2061,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		}
 		buf[ fread( buf, 1, sizeof(buf)-1, fp ) ] = '\0';
 		fclose( fp );
-		
+
 		if( buf[0]=='#' && buf[1]=='!' )
 		{
 			// 先頭行が #! で始まってるのでスクリプトっぽい
@@ -2070,12 +2074,12 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 				if( buf[i]=='/' ) k=i+1;
 			}
 			buf[i]='\0';
-			
+
 			strcpy( cmd2, szCmd );
 			sprintf( szCmd, "%s %s", buf+k, cmd2 );
 		}
 	}
-	
+
 	// ------------
 	// 子プロセス呼び出し
 	// ------------
@@ -2089,7 +2093,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		httpd_send_error(sd,500);
 		return;
 	}
-	
+
 	// ------------
 	// いらないハンドルを閉じる
 	// ------------
@@ -2125,7 +2129,7 @@ void httpd_page_external_cgi_send( struct httpd_session_data* sd )
 		ReadFile( sd->cgi_hErr, szBuf, sizeof(szBuf)-16, &dwRead, NULL );
 		szBuf[dwRead] = '\0';
 		printf("error --\n%s\n---\n", szBuf );
-		
+
 		// todo: エラーログに出力
 		printf("httpd_page_external_cgi: cgi error ?\n");
 	}
@@ -2164,7 +2168,7 @@ void httpd_page_external_cgi_send( struct httpd_session_data* sd )
 	// ログの出力
 	// ------------
 	httpd_log( sd, status, GetFileSize( sd->cgi_hOut, NULL ) - i );
-	
+
 	// ------------
 	// データの出力(残り)
 	// ------------
@@ -2174,14 +2178,13 @@ void httpd_page_external_cgi_send( struct httpd_session_data* sd )
 		memcpy( WFIFOP( sd->fd, 0 ), szBuf, dwRead );
 		WFIFOSET( sd->fd, dwRead );
 	}
-	
+
 	sd->status   = HTTPD_WAITING_SEND;
 	sd->data_len = 0;
 	sd->cgi_state= 0;
-	
+
 	// ハンドルのクローズ
 	CLOSEHANDLES();
-
 }
 
 // ==========================================
@@ -2190,7 +2193,7 @@ void httpd_page_external_cgi_send( struct httpd_session_data* sd )
 void httpd_page_external_cgi( struct httpd_session_data* sd )
 {
 	BOOL bRunning;
-		
+
 	// ------------
 	// 初回なら CGI 起動
 	// ------------
@@ -2198,13 +2201,13 @@ void httpd_page_external_cgi( struct httpd_session_data* sd )
 	{
 		httpd_page_external_cgi_fork(sd);
 		return;
- 	}
-	
+	}
+
 	// ------------
 	// cgi プロセスのチェック
 	// ------------
 	bRunning = ( WaitForSingleObject( sd->cgi_hProcess, 0 ) != WAIT_OBJECT_0 );
-	
+
 	if( bRunning )
 	{
 		// cgi の処理が終わってない
@@ -2218,13 +2221,12 @@ void httpd_page_external_cgi( struct httpd_session_data* sd )
 		}
 		return;
 	}
-	
+
 	// ------------
 	// cgi は終了しているので出力処理をする
 	// ------------
 	httpd_page_external_cgi_send(sd);
 	return;
-
 }
 
 // ==========================================
@@ -2266,7 +2268,7 @@ int httpd_page_external_cgi_abort( struct httpd_cgi_kill* p )
 		CloseHandle( p->hProcess );
 		return 1;
 	}
-	
+
 	printf("httpd_page_external_cgi_abort: not reachable !\a\n");
 	return 1;
 }
@@ -2292,7 +2294,7 @@ void httpd_page_external_cgi_disconnect( struct httpd_session_data* sd )
 			TerminateProcess( sd->cgi_hProcess, 255 );
 		}
 	}
-	
+
 	// ハンドルを全て閉じる
 	CLOSEHANDLES();
 }
@@ -2311,11 +2313,11 @@ void httpd_page_external_cgi_final_sub( struct httpd_cgi_kill *p )
 
 #else
 // ==========================================
-// gcc : 外部 cgi 処理 
+// gcc : 外部 cgi 処理
 // ------------------------------------------
 
 #	define	DEF_CLOSEFD(fd)		(close)(fd);
-#	define	SAFE_CLOSEFD(fd)	if( fd>=0 ){ DEF_CLOSEFD(fd); fd=-1; }
+#	define	SAFE_CLOSEFD(fd)	if( fd>=0 ) { DEF_CLOSEFD(fd); fd=-1; }
 #	define	CLOSEFDS()	{	\
 					SAFE_CLOSEFD( sd->cgi_in );		\
 					SAFE_CLOSEFD( sd->cgi_out );	\
@@ -2323,7 +2325,7 @@ void httpd_page_external_cgi_final_sub( struct httpd_cgi_kill *p )
 				}
 
 // ==========================================
-// VC/BCC : 外部 cgi 処理 / 子プロセス起動
+// gcc : 外部 cgi 処理 / 子プロセス起動
 // ------------------------------------------
 void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 {
@@ -2345,13 +2347,13 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	// テンポラリファイルを開く
 	// ------------
 	{
-		int i = rand() ^ gettick();
+		int i = atn_rand() ^ gettick();
 		char tmp_in[256], tmp_out[256], tmp_err[256];
 		// 名前を作る
 		sprintf( tmp_in,  "%sauriga_httpd_in%04x%08x.tmp",  httpd_cgi_temp_dir, sd->fd, i );
 		sprintf( tmp_out, "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
 		sprintf( tmp_err, "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
-		
+
 		// 開く
 		sd->cgi_in  = open( tmp_in , O_RDWR | O_CREAT | O_TRUNC, 0644 );
 		sd->cgi_out = open( tmp_out, O_RDWR | O_CREAT | O_TRUNC, 0644 );
@@ -2360,8 +2362,8 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		// ファイルを閉じたら削除するように指示しておく
 		unlink( tmp_in );
 		unlink( tmp_out );
-		unlink( tmp_err );		
-		
+		unlink( tmp_err );
+
 		if( sd->cgi_in == -1 || sd->cgi_out == -1 || sd->cgi_err == -1 )
 		{
 			// テンポラリファイルが作成できなかった
@@ -2372,7 +2374,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		}
 
 	}
-	
+
 	// ------------
 	// POST ならクエリを出力する
 	// ------------
@@ -2392,7 +2394,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	// ドキュメントルートの計算
 	// ------------
 	httpd_page_cgi_calc_document_root( sd, path, sizeof(path), '/', '\\' );
-	
+
 	// ------------
 	// 環境変数の設定
 	// ------------
@@ -2407,13 +2409,15 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		for( j=y=0, x=i=strlen(cwd); sd->url[j]; j++,i++ )
 		{
 			cwd[i] = ( sd->url[j] == '\\' )? '/' : sd->url[j];
-			if( cwd[i] == '/' ){ x=i; y=j; }
+			if( cwd[i] == '/' ) {
+				x=i;
+				y=j;
+			}
 		}
 		cwd[x]='\0';
 		cmd[0]='.'; cmd[1]='/';
 		strcpy( cmd+2, sd->url+y );
 	}
-
 
 	// ------------
 	// 子プロセスを fork する
@@ -2426,7 +2430,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		httpd_send_error(sd,500);
 		return;
 	}
-	
+
 	// ------------
 	// 子プロセスならプログラム起動
 	// ------------
@@ -2439,17 +2443,17 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		dup2( sd->cgi_in , 0 ); DEF_CLOSEFD( sd->cgi_in  );
 		dup2( sd->cgi_out, 1 ); DEF_CLOSEFD( sd->cgi_out );
 		dup2( sd->cgi_err, 2 ); DEF_CLOSEFD( sd->cgi_err  );
-		
+
 		// CGI プログラムの起動
 		execle( cmd, cmd, NULL, envp );
-		
+
 		// なんらかのエラー発生
 		printf("http_page_external_cgi: execle failed.\n");
-		
+
 		// do_final 系を処理させずに終了
 		abort();
 	}
-	
+
 	// ------------
 	// 親プロセスなら変数を設定する
 	// ------------
@@ -2457,7 +2461,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	sd->status = HTTPD_WAITING_CGI;
 	sd->cgi_cpid = cpid;
 	SAFE_CLOSEFD( sd->cgi_in );
-	
+
 	return;
 }
 
@@ -2520,11 +2524,10 @@ void httpd_page_external_cgi_send( struct httpd_session_data* sd )
 		memcpy( WFIFOP( sd->fd, 0 ), buf, bytes );
 		WFIFOSET( sd->fd, bytes );
 	}
-	
+
 	sd->status   = HTTPD_WAITING_SEND;
 	sd->data_len = 0;
 	sd->cgi_state= 0;
-
 
 	// ハンドルのクローズ
 	CLOSEFDS();
@@ -2545,8 +2548,8 @@ void httpd_page_external_cgi( struct httpd_session_data* sd )
 	{
 		httpd_page_external_cgi_fork(sd);
 		return;
- 	}
-	
+	}
+
 	// ------------
 	// cgi プロセスのチェック
 	// ------------
@@ -2565,15 +2568,13 @@ void httpd_page_external_cgi( struct httpd_session_data* sd )
 		}
 		return;
 	}
-	
+
 	// ------------
 	// cgi は終了しているので出力処理をする
 	// ------------
 	httpd_page_external_cgi_send(sd);
 	return;
-	
 }
-
 
 // ==========================================
 // gcc : 外部 cgi 処理 / 中断処理
@@ -2581,11 +2582,10 @@ void httpd_page_external_cgi( struct httpd_session_data* sd )
 int httpd_page_external_cgi_abort( struct httpd_cgi_kill* p )
 {
 	unsigned int tick = gettick();
-	
 	int running, status;
-	
+
 	running = (waitpid( p->pid, &status, WNOHANG ) ==0 || (!WIFEXITED(status) && !WIFSIGNALED(status)) );
-	
+
 	switch( p->state )
 	{
 	// ------------
@@ -2614,7 +2614,7 @@ int httpd_page_external_cgi_abort( struct httpd_cgi_kill* p )
 			return 0;
 		}
 		return 1;	// 中断成功
-	
+
 	// ------------
 	// CGI の強制終了待ち
 	// ------------
@@ -2636,7 +2636,7 @@ int httpd_page_external_cgi_abort( struct httpd_cgi_kill* p )
 void httpd_page_external_cgi_disconnect( struct httpd_session_data* sd )
 {
 	CLOSEFDS();
-	
+
 	// CGI 実行中なら中断処理が必要
 	if( sd->cgi_cpid > 0 )
 	{
@@ -2653,7 +2653,6 @@ void httpd_page_external_cgi_disconnect( struct httpd_session_data* sd )
 		}
 	}
 }
-
 
 // ==========================================
 // gcc : 外部 cgi 処理 / 終了処理
@@ -2676,18 +2675,19 @@ struct httpd_cgi_kill* httpd_page_external_cgi_abort_insert( struct httpd_sessio
 {
 	struct httpd_cgi_kill* p = NULL;
 	int i;
+
 	for( i=0; i<HTTPD_CGI_KILL_SIZE; i++ )
 	{
 		if( ( p = &httpd_cgi_kill_list[i])->state == 0 )
 			break;
 	}
-	
+
 	if( p==NULL )
 	{
 		printf("httpd_page_external_cgi_abort_insert: not enouch entry !\n");
 		return NULL;
 	}
-	
+
 	p->state = 1;
 	p->tick = gettick();
 	httpd_cgi_kill_size++;
@@ -2700,13 +2700,13 @@ struct httpd_cgi_kill* httpd_page_external_cgi_abort_insert( struct httpd_sessio
 int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, int data)
 {
 	int i, num = httpd_cgi_kill_size;
-	
+
 	for( i=0; i<HTTPD_CGI_KILL_SIZE && num>0 ; i++ )
 	{
 		struct httpd_cgi_kill* p = &httpd_cgi_kill_list[i];
 		if( p->state == 0 )
 			continue;
-			
+
 		if( httpd_page_external_cgi_abort( p ) )
 		{
 			p->state = 0;
@@ -2714,16 +2714,17 @@ int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, int
 		}
 		num --;
 	}
-	
+
 	return 0;
 }
 
 // ==========================================
 // 共通 : 外部 cgi 処理 / 終了処理
 // ------------------------------------------
-void httpd_page_external_cgi_final()
+void httpd_page_external_cgi_final(void)
 {
 	int i;
+
 	for( i=0; i<HTTPD_CGI_KILL_SIZE; i++ )
 	{
 		if( httpd_cgi_kill_list[i].state != 0 )
@@ -2738,10 +2739,11 @@ void httpd_page_external_cgi_final()
 // ==========================================
 // 共通： cgi のプロセス数を返す
 // ------------------------------------------
-int httpd_get_external_cgi_process_count()
+int httpd_get_external_cgi_process_count(void)
 {
 	int i,c = 0;
 	struct httpd_session_data *sd;
+
 	for( i=0; i<fd_max; i++ )
 	{
 		if(	session[i] && session[i]->func_parse == httpd_parse &&
@@ -2760,6 +2762,7 @@ int httpd_get_external_cgi_process_count()
 void httpd_page_cgi_calc_document_root( struct httpd_session_data *sd, char* path, size_t pathsize, int c1, int c2 )
 {
 	int i,j;
+
 	i=j=0;
 	if( document_root[0]!='/' && document_root[1]!=':' )	// 必要ならカレントディレクトリと結合
 	{
@@ -2769,8 +2772,10 @@ void httpd_page_cgi_calc_document_root( struct httpd_session_data *sd, char* pat
 		getcwd( path, pathsize );
 		i = strlen( path );
 #endif
-		if( path[ i-1 ] != c1 ){ path[i++] = c1; }
-		
+		if( path[ i-1 ] != c1 ) {
+			path[i++] = c1;
+		}
+
 		while( document_root[j]=='.' )
 		{
 			if( document_root[j+1]==c1 || document_root[j+1]==c2 )	// カレント
@@ -2787,14 +2792,16 @@ void httpd_page_cgi_calc_document_root( struct httpd_session_data *sd, char* pat
 				}
 				i++;
 			}
-		}	
+		}
 	}
 	while( document_root[j] )
 	{
 		path[i++]=(document_root[j] == c2 )? c1 : document_root[j];
 		j++;
 	}
-	if( path[ i-1 ]==c1 ){ path[--i]='\0'; }
+	if( path[ i-1 ]==c1 ) {
+		path[--i]='\0';
+	}
 }
 
 // ==========================================
@@ -2809,14 +2816,14 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 	unsigned int j=0;
 	char* envp3[256];
 	char** envp = envp2;
-	
+
 	if( !envp )
 	{
 		envp = envp3;
 		envpsize = sizeof(envp3);
 	}
 	envsize /= sizeof(char*);
-	
+
 	// 必ず設定するもの
 	i  = sprintf( envp[ j++ ] = env    , "REMOTE_ADDR=%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3] ) + 1;
 	i += sprintf( envp[ j++ ] = env + i, "REMOTE_PORT=%d", port ) + 1;
@@ -2828,7 +2835,7 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 	i += sprintf( envp[ j++ ] = env + i, "SERVER_PORT=%d", session[sd->fd]->server_port ) + 1;
 	i += sprintf( envp[ j++ ] = env + i, "REQUEST_METHOD=%s", method[ httpd_get_method(sd) ] ) + 1;
 	i += sprintf( envp[ j++ ] = env + i, "GATEWAY_INTERFACE=CGI/1.1" ) + 1;
-	
+
 	if( httpd_get_method(sd) == HTTPD_METHOD_POST )		// POST ならクエリの長さと Content-type
 	{
 		i += sprintf( envp[ j++ ] = env + i, "CONTENT_LENGTH=%d", sd->query_len ) + 1;
@@ -2839,7 +2846,7 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 	{
 		i += sprintf( envp[ j++ ] = env + i, "QUERY_STRING=%s", sd->query ? (char*)sd->query : "" ) + 1;
 	}
-	
+
 	if( sd->user[0] )	// 認証してるならユーザー名と認証方法
 	{
 		static const char *type[] = { "None", "Basic", "Digest", "Unknown" };
@@ -2865,15 +2872,15 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 					if( w1[z]=='-' )	w1[z] = '_';
 					else				w1[z] = toupper( w1[z] );
 				}
-				
+
 				if( i + z + strlen(w2) + 16 > envsize )	// バッファオーバーフロー対策
 					break;
-				
+
 				i += sprintf( envp[ j++ ] = env + i, "HTTP_%s=%s", w1, w2 ) + 1;
 			}
 		}
 	}
-	
+
 	env[i] = '\0';
 	envp[j] = NULL;
 }
@@ -2887,10 +2894,10 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 	char status[256]="200 OK\r\n";
 	unsigned int x = 0 ,y = 0;
 	int i;
-	int ctype_flag = 0; 
+	int ctype_flag = 0;
 	int status_flag = 0;
-	
-	if( httpd_strcasencmp( buf, "HTTP/1.", 7 )==0 && (buf[7]=='0' || buf[7]=='1') && buf[8]==' ')
+
+	if( strncasecmp( buf, "HTTP/1.", 7 )==0 && (buf[7]=='0' || buf[7]=='1') && buf[8]==' ')
 	{
 		// nph 処理
 		memcpy( WFIFOP( sd->fd, 0 ), buf, i = bytes );
@@ -2901,7 +2908,7 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 		// nph ではない
 		while( buf[x] && buf[x]!='\r' && buf[x]!='\n' && bytes > x + 2 )	// ヘッダが終わるまで繰り返す
 		{
-			if( httpd_strcasencmp( buf+x, "Status: ", 8 )==0 )	// Status
+			if( strncasecmp( buf+x, "Status: ", 8 )==0 )	// Status
 			{
 				unsigned int z = 0;
 				x+=8;
@@ -2921,12 +2928,12 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 				status[z] = '\0';
 				status_flag = 1;
 			}
-			
-			if( httpd_strcasencmp( buf+x, "Content-type: ", 14 )==0 )	// Content-type
+
+			if( strncasecmp( buf+x, "Content-type: ", 14 )==0 )	// Content-type
 			{
 				ctype_flag = 1;
 			}
-			if( httpd_strcasencmp( buf+x, "Location: ", 10 )==0 )	// Location
+			if( strncasecmp( buf+x, "Location: ", 10 )==0 )	// Location
 			{
 				ctype_flag = 1;
 				if( !status_flag )
@@ -2934,7 +2941,7 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 					strcpy( status,"302 Found\r\n" );
 				}
 			}
-			
+
 			while( buf[x] && buf[x]!='\r' && buf[x]!='\n' && bytes > x + 2 )	// ヘッダコピー
 			{
 				out[y++] = buf[x++];
@@ -2949,7 +2956,7 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 				out[y++] = buf[x++];	// '\n'
 			}
 		}// end of ヘッダ解析ループ
-	
+
 		if( buf[x] && bytes > x + 2 )
 		{
 			// 最後の空行読み飛ばし
@@ -2963,13 +2970,13 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 				out[y++] = buf[x++];	// '\n'
 			}
 		}
-	
+
 		if( !ctype_flag )
 		{
 			// ヘッダ内に Content-type か Location がない
 			return 0;
 		}
-		
+
 		sd->http_ver= 0;
 		sd->persist = 0;
 		i = sprintf( WFIFOP( sd->fd, 0 ),
@@ -2980,7 +2987,7 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 		i += bytes - x;
 		WFIFOSET( sd->fd, i );
 	}
-	
+
 	*pstatus = atoi( status );
 
 	return x;
@@ -2999,19 +3006,19 @@ void httpd_cgi_log( struct httpd_session_data *sd, const char* str )
 	char timestr[256];
 	unsigned char *ip;
 	static const char sign[]={'-','+'};
-	
+
 	// 初回呼び出し時はいろいろとやることがある
 	if( first )
 	{
 		first = 0;
-		
+
 		// ログファイルを開く
 		if( (cgi_logfp = fopen(cgi_logfile, "a") ) == 0 )
 		{
 			printf("*WARNING* : can't open cgi log file [%s]\n", logfile);
 		}
 	}
-	
+
 	// ログファイルが開けてない
 	if( !cgi_logfp )
 		return;
@@ -3023,11 +3030,11 @@ void httpd_cgi_log( struct httpd_session_data *sd, const char* str )
 		strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
 	}
 	sprintf(timestr+20, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
-	
+
 	ip = sd ? (unsigned char*) &session[sd->fd]->client_addr.sin_addr : 0;
-	
-	fprintf( cgi_logfp, "%%%% [%s] %s\n%%%% %d %s\n", timestr, sd->request_line, status, sd->url );
-	
+
+	fprintf( cgi_logfp, "%%%% [%s] %s\n%%%% %d %s" RETCODE, timestr, sd->request_line, status, sd->url );
+
 	fflush( cgi_logfp );
 }
 */
@@ -3036,11 +3043,11 @@ void httpd_cgi_log( struct httpd_session_data *sd, const char* str )
 // ==========================================
 // cgi を利用しない
 // ------------------------------------------
-void httpd_page_external_cgi( struct httpd_session_data* sd ){ return; }
-void httpd_page_external_cgi_disconnect( struct httpd_session_data* sd ){ return; }
-int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, int data){ return 0; }
-void httpd_page_external_cgi_final(){ return; }
-int httpd_get_external_cgi_process_count(){ return 0; }
+void httpd_page_external_cgi( struct httpd_session_data* sd ) { return; }
+void httpd_page_external_cgi_disconnect( struct httpd_session_data* sd ) { return; }
+int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, int data) { return 0; }
+void httpd_page_external_cgi_final(void) { return; }
+int httpd_get_external_cgi_process_count(void) { return 0; }
 
 #endif
 
@@ -3049,14 +3056,14 @@ int httpd_get_external_cgi_process_count(){ return 0; }
 // ******************************************
 
 
-
-
 // ==========================================
 // URL エンコード
 // ------------------------------------------
-char* httpd_binary_encode(const char* val) {
+char* httpd_binary_encode(const char* val)
+{
 	char *buf = (char *)aMalloc(strlen(val) * 3 + 1);
 	char *p   = buf;
+
 	while(*val) {
 		if(isalnum((unsigned char)*val)) {
 			*(p++) = *(val++);
@@ -3076,9 +3083,11 @@ char* httpd_binary_encode(const char* val) {
 // ==========================================
 // http のメタ文字のクォート
 // ------------------------------------------
-char* httpd_quote_meta(const char* p1) {
+char* httpd_quote_meta(const char* p1)
+{
 	char *buf = (char *)aMalloc(strlen(p1) * 6 + 1);
 	char *p2  = buf;
+
 	while(*p1) {
 		switch(*p1) {
 		case '<': memcpy(p2,"&lt;",4);   p2 += 4; p1++; break;
@@ -3123,7 +3132,7 @@ void httpd_config_read_add_authuser( struct httpd_access *a, const char *name, c
 			printf("httpd_config_read: authuser: too long passwd (user[%s])\n", name);
 			return;
 		}
-		
+
 		type = HTTPD_USER_PASSWD_PLAIN;
 	}
 
@@ -3139,7 +3148,7 @@ void httpd_config_read_add_authuser( struct httpd_access *a, const char *name, c
 		a->user = au;
 		a->user_max += 16;
 	}
-	
+
 	// ユーザー追加
 	au = a->user + (a->user_count++);
 	strcpy( au->name, name );
@@ -3220,11 +3229,13 @@ void httpd_config_read_add_ip( unsigned int **list, int *count, int *max, const 
 		*list = iplist;
 		*max += 16;
 	}
-	
+
 	// IP とマスク追加
 	(*list)[ (*count)++ ] = ip&mask;
 	(*list)[ (*count)++ ] = mask;
 }
+
+#define CHECK_ACCES_TARGET(msg)	if( !a ) { printf( msg ": no target url.\n" ); continue; }
 
 // ==========================================
 // 設定ファイルを読み込む
@@ -3235,8 +3246,6 @@ int httpd_config_read(char *cfgName)
 	char line[1024],w1[1024],w2[1024];
 	FILE *fp;
 	struct httpd_access *a = NULL;
-
-#define CHECK_ACCES_TARGET(msg)	if( !a ){ printf( msg ": no target url.\n" ); continue; }
 
 	fp=fopen(cfgName,"r");
 	if(fp==NULL){
@@ -3256,7 +3265,7 @@ int httpd_config_read(char *cfgName)
 		}
 		else if(strcmpi(w1,"log_filename")==0)
 		{
-			strcpy( logfile, w2 );
+			strncpy( logfile, w2, sizeof(logfile) - 1 );
 		}
 		else if(strcmpi(w1,"request_timeout_first")==0)
 		{
@@ -3315,11 +3324,11 @@ int httpd_config_read(char *cfgName)
 		}
 		else if(strcmpi(w1,"cgi_temp_dir")==0)
 		{
-			strcpy( httpd_cgi_temp_dir, w2 );
+			strncpy( httpd_cgi_temp_dir, w2, sizeof(httpd_cgi_temp_dir) - 1 );
 		}
 		else if(strcmpi(w1,"cgi_server_name")==0)
 		{
-			strcpy( httpd_cgi_server_name, w2 );
+			strncpy( httpd_cgi_server_name, w2, sizeof(httpd_cgi_server_name) - 1 );
 		}
 		else if(strcmpi(w1,"log_format")==0)
 		{
@@ -3366,7 +3375,7 @@ int httpd_config_read(char *cfgName)
 						break;
 					}
 				}
-				
+
 				if( i==htaccess_count )				// 新規作成
 				{
 					// 必要ならメモリを拡張
@@ -3383,7 +3392,7 @@ int httpd_config_read(char *cfgName)
 						htaccess_max += 16;
 					}
 					// データの追加＆初期化
-					a = htaccess[ htaccess_count++ ] = (struct httpd_access *)aMalloc( sizeof( struct httpd_access ) ) ;
+					a = htaccess[ htaccess_count++ ] = (struct httpd_access *)aMalloc( sizeof( struct httpd_access ) );
 					a->type = HTTPD_ACCESS_ALWAYS;
 					a->aip_count = a->aip_max = 0;
 					a->dip_count = a->dip_max = 0;
@@ -3401,7 +3410,7 @@ int httpd_config_read(char *cfgName)
 						strcpy( a->url, w2 );
 						a->urllen = strlen(a->url);
 					}
-					
+
 					// digest 認証用のプライベートキー作成
 					for( j=0; j<atn_rand()%10+20; j++ )
 					{
@@ -3561,7 +3570,7 @@ int httpd_decode_base64( char *dest, const char *src)
 		for( j=0; j<4; j++, src++ )
 		{
 			c=httpd_decode_base64_code2value( *src );
-			b = ( b<<6 ) | ((c<0)?0:c);  
+			b = ( b<<6 ) | ((c<0)?0:c);
 		}
 		*(dest++) = b>>16;
 		*(dest++) = b>>8;

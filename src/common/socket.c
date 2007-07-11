@@ -84,13 +84,15 @@ static int connect_check(unsigned int ip);
  *	CORE : Set function
  *--------------------------------------
  */
-void set_defaultparse(int (*defaultparse)(int)) {
+void set_defaultparse(int (*defaultparse)(int))
+{
 	default_func_parse = defaultparse;
 
 	return;
 }
 
-void set_sock_destruct(int (*func_destruct)(int)) {
+void set_sock_destruct(int (*func_destruct)(int))
+{
 	default_func_destruct = func_destruct;
 
 	return;
@@ -100,8 +102,8 @@ void set_sock_destruct(int (*func_destruct)(int)) {
  *	CORE : Socket Sub Function
  *--------------------------------------
  */
-
-static int recv_to_fifo(int fd) {
+static int recv_to_fifo(int fd)
+{
 	int len;
 	unsigned int tick = gettick();
 	struct socket_data* sd = session[fd];
@@ -167,7 +169,8 @@ static int recv_to_fifo(int fd) {
 	return 0;
 }
 
-static int send_from_fifo(int fd) {
+static int send_from_fifo(int fd)
+{
 	int len;
 	struct socket_data *sd = session[fd];
 
@@ -200,7 +203,8 @@ static int send_from_fifo(int fd) {
 	return 0;
 }
 
-static int null_parse(int fd) {
+static int null_parse(int fd)
+{
 	printf("null_parse : %d\n", fd);
 	RFIFOSKIP(fd,RFIFOREST(fd));
 
@@ -211,8 +215,8 @@ static int null_parse(int fd) {
  *	CORE : Socket Function
  *--------------------------------------
  */
-
-static int connect_client(int listen_fd) {
+static int connect_client(int listen_fd)
+{
 	int fd, len, yes;
 	struct sockaddr_in client_address;
 #ifdef _WIN32
@@ -338,7 +342,8 @@ static int connect_client(int listen_fd) {
 	return fd;
 }
 
-int make_listen_port(int port, unsigned long sip) {
+int make_listen_port(int port, unsigned long sip)
+{
 	struct sockaddr_in server_address;
 	int fd, yes;
 	unsigned long result;
@@ -478,7 +483,8 @@ int make_listen_port(int port, unsigned long sip) {
 }
 
 
-int make_connection(long ip, int port) {
+int make_connection(long ip, int port)
+{
 	struct sockaddr_in server_address;
 	int fd, yes;
 	unsigned long result;
@@ -619,7 +625,8 @@ int make_connection(long ip, int port) {
 	return fd;
 }
 
-void delete_session(int fd) {
+void delete_session(int fd)
+{
 	if (fd <= 0 || fd >= FD_SETSIZE)
 		return;
 
@@ -653,7 +660,8 @@ void delete_session(int fd) {
 	return;
 }
 
-void realloc_fifo(int fd, int new_rfifo_size, int new_wfifo_size) {
+void realloc_fifo(int fd, int new_rfifo_size, int new_wfifo_size)
+{
 	struct socket_data *s;
 
 	if (fd < 0)
@@ -682,7 +690,8 @@ void realloc_fifo(int fd, int new_rfifo_size, int new_wfifo_size) {
 	return;
 }
 
-void WFIFORESERVE(int fd, int len) {
+void WFIFORESERVE(int fd, int len)
+{
 	struct socket_data *s = session[fd];
 	static const int empty_size = 16*1024;	// 最小限必要な空きサイズ
 
@@ -707,7 +716,8 @@ void WFIFORESERVE(int fd, int len) {
 	return;
 }
 
-void WFIFOSET(int fd, int len) {
+void WFIFOSET(int fd, int len)
+{
 	struct socket_data *s = session[fd];
 
 	if (fd <= 0 || s->eof)
@@ -720,8 +730,7 @@ void WFIFOSET(int fd, int len) {
 		s->wdata_pos  = s->wdata;
 		s->wdata_size = s->wdata;
 		s->eof = 1;
-		//return;	// アクセス違反してるはずなのでサーバー落としたほうがいいかも？
-		exit(1);	// 落とした方が良いので落とす
+		exit(1);	// アクセス違反しているはずなのでサーバを落とす
 	}
 	WFIFORESERVE(fd, s->wdata_size - s->wdata);
 
@@ -759,7 +768,8 @@ int sessioncount = 0;
 // at the expence of some extra code
 // runtime behaviour much faster if often called for outside data
 /////////////////////////////////////////////////////////////////
-static int SessionFindSocket(const SOCKET elem, size_t *retpos) {
+static int SessionFindSocket(const SOCKET elem, size_t *retpos)
+{
 	// do a binary search with smallest first
 	// make some initial stuff
 	int ret = 0;
@@ -812,7 +822,8 @@ static int SessionFindSocket(const SOCKET elem, size_t *retpos) {
 	return ret;
 }
 
-static void SessionInsertSocket(const SOCKET elem, int pos2) {
+static void SessionInsertSocket(const SOCKET elem, int pos2)
+{
 	size_t pos;
 
 	if (sessioncount < FD_SETSIZE) // max number of allowed sockets
@@ -829,7 +840,8 @@ static void SessionInsertSocket(const SOCKET elem, int pos2) {
 	return;
 }
 
-static void SessionRemoveSocket(const SOCKET elem) {
+static void SessionRemoveSocket(const SOCKET elem)
+{
 	size_t pos;
 
 	if (SessionFindSocket(elem, &pos)) {
@@ -845,7 +857,8 @@ static void SessionRemoveSocket(const SOCKET elem) {
 	return;
 }
 
-static void process_fdset(fd_set* rfd, fd_set* wfd) {
+static void process_fdset(fd_set* rfd, fd_set* wfd)
+{
 	unsigned int i;
 	size_t fd;
 
@@ -887,7 +900,8 @@ static void process_fdset(fd_set* rfd, fd_set* wfd) {
 // Find the log base 2 of an N-bit integer in O(lg(N)) operations
 // in this case for 32bit input it would be 11 operations
 
-inline unsigned long socket_log2(unsigned long v) {
+inline unsigned long socket_log2(unsigned long v)
+{
 	register unsigned long c = 0;
 
 	if (v & 0xFFFF0000) { v >>= 0x10; c |= 0x10; }
@@ -899,7 +913,8 @@ inline unsigned long socket_log2(unsigned long v) {
 	return c;
 }
 
-static void process_fdset(fd_set* rfd, fd_set* wfd) {
+static void process_fdset(fd_set* rfd, fd_set* wfd)
+{
 	unsigned int  sock;
 	unsigned long val;
 	unsigned long bits;
@@ -957,7 +972,8 @@ static void process_fdset(fd_set* rfd, fd_set* wfd) {
 }
 #endif /* _WIN32 */
 
-void do_sendrecv(int next) {
+void do_sendrecv(int next)
+{
 	fd_set rfd,wfd;
 	struct timeval timeout;
 	int ret, i;
@@ -996,7 +1012,8 @@ void do_sendrecv(int next) {
 	return;
 }
 
-void do_parsepacket(void) {
+void do_parsepacket(void)
+{
 	int i;
 	unsigned int tick = gettick();
 
@@ -1056,7 +1073,6 @@ void do_parsepacket(void) {
 				sd->rdata_size = sd->rdata + RFIFOREST(i);
 				sd->rdata_pos  = sd->rdata;
 			}
-
 		}
 	}
 
@@ -1071,7 +1087,8 @@ void flush_fifo(int fd)
 	return;
 }
 
-int parsepacket_timer(int tid, unsigned int tick, int id, int data) {
+int parsepacket_timer(int tid, unsigned int tick, int id, int data)
+{
 	do_parsepacket();
 
 	return 0;
@@ -1114,7 +1131,8 @@ static int connect_check_(unsigned int ip);
 // 接続できるかどうかの確認
 //   false : 接続OK
 //   true  : 接続NG
-static int connect_check(unsigned int ip) {
+static int connect_check(unsigned int ip)
+{
 	int result = connect_check_(ip);
 
 	if (access_debug)
@@ -1123,8 +1141,9 @@ static int connect_check(unsigned int ip) {
 	return result;
 }
 
-static int connect_check_(unsigned int ip) {
-	struct _connect_history *hist     = connect_history[ip & 0xFFFF];
+static int connect_check_(unsigned int ip)
+{
+	struct _connect_history *hist = connect_history[ip & 0xFFFF];
 	struct _connect_history *hist_new;
 	int i, is_allowip = 0, is_denyip = 0, connect_ok = 0;
 
@@ -1169,7 +1188,7 @@ static int connect_check_(unsigned int ip) {
 		break;
 	case ACO_DENY_ALLOW:
 	default:
-		if (is_allowip) 
+		if (is_allowip)
 			connect_ok = 2;
 		else if (is_denyip)
 			connect_ok = 0;
@@ -1219,13 +1238,14 @@ static int connect_check_(unsigned int ip) {
 	return connect_ok;
 }
 
-static int connect_check_clear(int tid, unsigned int tick, int id, int data) {
+static int connect_check_clear(int tid, unsigned int tick, int id, int data)
+{
 	int i;
 	int clear = 0;
 	int list  = 0;
 	struct _connect_history *hist, *hist2;
 
-	for(i = 0;i < 0x10000; i++) {
+	for(i = 0; i < 0x10000; i++) {
 		hist = connect_history[i];
 		while(hist) {
 			if ((DIFF_TICK(tick,hist->tick) > ddos_interval * 3 && !hist->status) ||
@@ -1254,7 +1274,8 @@ static int connect_check_clear(int tid, unsigned int tick, int id, int data) {
 }
 
 // IPマスクチェック
-int access_ipmask(const char *str,struct _access_control* acc) {
+int access_ipmask(const char *str,struct _access_control* acc)
+{
 	unsigned int mask = 0, i = 0, m, ip, a0, a1, a2, a3;
 
 	if (!strcmp(str, "all")) {
@@ -1288,7 +1309,8 @@ int access_ipmask(const char *str,struct _access_control* acc) {
 }
 
 
-static void socket_config_read2(const char *filename) {
+static void socket_config_read2(const char *filename)
+{
 	int i;
 	char line[1024], w1[1024], w2[1024];
 	FILE *fp;
@@ -1342,7 +1364,7 @@ static void socket_config_read2(const char *filename) {
 			httpd_config_read(w2);
 
 		} else if (strcmpi(w1, "socket_ctrl_panel_url") == 0) {
-			strcpy(socket_ctrl_panel_url, w2);
+			strncpy(socket_ctrl_panel_url, w2, sizeof(socket_ctrl_panel_url) - 1);
 
 		} else if (strcmpi(w1, "import") == 0) {
 			socket_config_read2(w2);
@@ -1352,17 +1374,17 @@ static void socket_config_read2(const char *filename) {
 				char name[64];
 				int* ptr;
 			} list[] = {
-				{	"debug",                      &access_debug               },
-				{	"socket_ctrl_panel",          &socket_ctrl_panel_httpd    },
-				{	"ddos_interval",              &ddos_interval              },
-				{	"ddos_count",                 &ddos_count                 },
-				{	"ddos_autoreset",             &ddos_autoreset             },
-				{	"recv_limit_rate_enable",     &recv_limit_rate_enable     },
-				{	"recv_limit_rate_period",     &recv_limit_rate_period     },
-				{	"recv_limit_rate_bytes",      &recv_limit_rate_bytes      },
-				{	"recv_limit_rate_wait_max",   &recv_limit_rate_wait_max   },
-				{	"recv_limit_rate_disconnect", &recv_limit_rate_disconnect },
-				{	"send_limit_buffer_size",     &send_limit_buffer_size     },
+				{ "debug",                      &access_debug               },
+				{ "socket_ctrl_panel",          &socket_ctrl_panel_httpd    },
+				{ "ddos_interval",              &ddos_interval              },
+				{ "ddos_count",                 &ddos_count                 },
+				{ "ddos_autoreset",             &ddos_autoreset             },
+				{ "recv_limit_rate_enable",     &recv_limit_rate_enable     },
+				{ "recv_limit_rate_period",     &recv_limit_rate_period     },
+				{ "recv_limit_rate_bytes",      &recv_limit_rate_bytes      },
+				{ "recv_limit_rate_wait_max",   &recv_limit_rate_wait_max   },
+				{ "recv_limit_rate_disconnect", &recv_limit_rate_disconnect },
+				{ "send_limit_buffer_size",     &send_limit_buffer_size     },
 			};
 
 			for(i = 0; i < sizeof(list) / sizeof(list[0]); i++) {
@@ -1381,17 +1403,19 @@ static void socket_config_read2(const char *filename) {
 	return;
 }
 
-static void socket_config_read(void) {
+static void socket_config_read(void)
+{
 	socket_config_read2("conf/socket.conf");
 
 	return;
 }
 
-void do_final_socket(void) {
+void do_final_socket(void)
+{
 	int i;
 	struct _connect_history *hist, *hist2;
 
-	for(i = 0;i < fd_max; i++) {
+	for(i = 0; i < fd_max; i++) {
 		if (session[i])
 			delete_session(i);
 	}
@@ -1414,7 +1438,8 @@ void do_final_socket(void) {
 	return;
 }
 
-void do_socket(void) {
+void do_socket(void)
+{
 	FD_ZERO(&readfds);
 
 #ifdef _WIN32
@@ -1425,10 +1450,11 @@ void do_socket(void) {
 				printf("error: winsock not available.\n");
 				MessageBox(NULL, "Winsock Dll Load Error", "socket.c", MB_OK);
 				exit(1);
-			} else
-				printf("status: winsock 1.1 succesfully loaded.\n");
-		} else
+			}
+			printf("status: winsock 1.1 succesfully loaded.\n");
+		} else {
 			printf("status: winsock 2.0 succesfully loaded.\n");
+		}
 	}
 #endif
 
@@ -1451,7 +1477,8 @@ void do_socket(void) {
 // ==========================================
 // 出力
 // ------------------------------------------
-static void socket_httpd_page_send(int fd, const char *str) {
+static void socket_httpd_page_send(int fd, const char *str)
+{
 	int len = strlen(str);
 
 	memcpy(WFIFOP(fd,0), str, len);
@@ -1463,7 +1490,8 @@ static void socket_httpd_page_send(int fd, const char *str) {
 // ==========================================
 // ヘッダ部分
 // ------------------------------------------
-static void socket_httpd_page_header(struct httpd_session_data *sd) {
+static void socket_httpd_page_header(struct httpd_session_data *sd)
+{
 	httpd_send_head(sd, 200, "text/html", -1);
 
 	socket_httpd_page_send(sd->fd,
@@ -1476,7 +1504,8 @@ static void socket_httpd_page_header(struct httpd_session_data *sd) {
 // ==========================================
 // フッタ部分
 // ------------------------------------------
-static void socket_httpd_page_footer(int fd) {
+static void socket_httpd_page_footer(int fd)
+{
 	int len;
 
 	len = sprintf(WFIFOP(fd,0),
@@ -1491,8 +1520,10 @@ static void socket_httpd_page_footer(int fd) {
 // ==========================================
 // アクセス制御の設定確認
 // ------------------------------------------
-static void socket_httpd_page_access_settings(struct httpd_session_data *sd, const char *url) {
+static void socket_httpd_page_access_settings(struct httpd_session_data *sd, const char *url)
+{
 	int i, len, fd = sd->fd;
+
 	socket_httpd_page_header(sd);
 
 	len = sprintf(WFIFOP(fd,0),
@@ -1530,7 +1561,8 @@ static void socket_httpd_page_access_settings(struct httpd_session_data *sd, con
 // ==========================================
 // DoS アタックの状況確認
 // ------------------------------------------
-static void socket_httpd_page_dos_attack(struct httpd_session_data *sd, const char *url) {
+static void socket_httpd_page_dos_attack(struct httpd_session_data *sd, const char *url)
+{
 	int i, n, len, fd = sd->fd;
 	unsigned int tick = gettick();
 	char *p;
@@ -1602,7 +1634,8 @@ void socket_set_httpd_page_connection_func(void (*func)(int fd,char*,char*,char*
 // ==========================================
 // 接続状況確認
 // ------------------------------------------
-static void socket_httpd_page_connection(struct httpd_session_data *sd, const char *url) {
+static void socket_httpd_page_connection(struct httpd_session_data *sd, const char *url)
+{
 	int i, n, len;
 	int fd = sd->fd;
 	char *p;
@@ -1685,7 +1718,8 @@ static void socket_httpd_page_connection(struct httpd_session_data *sd, const ch
 }
 
 // socket コントロールパネル（do_init_httpd で httpd に登録される）
-void socket_httpd_page(struct httpd_session_data* sd, const char* url) {
+void socket_httpd_page(struct httpd_session_data* sd, const char* url)
+{
 	int i, len;
 	char *p;
 

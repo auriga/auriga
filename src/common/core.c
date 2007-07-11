@@ -59,16 +59,22 @@ static void sig_proc(int sn)
  *--------------------------------------
  */
 
-char pid_file[256];
+static char pid_file[256];
 
-void pid_delete(void) {
+static void pid_delete(void)
+{
 	remove(pid_file);
 }
 
-void pid_create(const char* file) {
+static void pid_create(const char* file)
+{
 	FILE *fp;
-	int len = (int)strlen(file);
-	strcpy(pid_file,file);
+	int len;
+
+	strncpy(pid_file, file, sizeof(pid_file) - 1);
+	pid_file[sizeof(pid_file)-1] = '\0';
+
+	len = (int)strlen(pid_file);
 	if(len > 4 && pid_file[len - 4] == '.') {
 		pid_file[len - 4] = 0;
 	}
@@ -85,13 +91,16 @@ void pid_create(const char* file) {
 	}
 }
 
-double uptime(void) {
+double uptime(void)
+{
 	static time_t boot = 0;
 	time_t now;
+
 	if(boot == 0) {
 		time(&boot);
 	}
 	time(&now);
+
 	return (now - boot) / 86400.0;
 }
 
@@ -101,7 +110,8 @@ double uptime(void) {
 #include <imagehlp.h>
 #pragma comment(lib, "imagehlp.lib")
 
-LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e) {
+LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
+{
 	HANDLE hProcess, hThread, hFile;
 	SYSTEMTIME time;
 	DWORD len, temp;
@@ -167,17 +177,17 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e) {
 	SetFilePointer( hFile, 0, NULL, FILE_END);
 	GetLocalTime( &time );
 	len = wsprintf(
-		buf, "%04u/%02u/%02u %02u:%02u:%02u crashed by %s.\n",
+		buf, "%04u/%02u/%02u %02u:%02u:%02u crashed by %s.\r\n",
 		time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, ErrType
 	);
 	WriteFile( hFile, buf, len, &temp, NULL);
 
-	len = wsprintf(buf, "\t%s\n", GetCommandLine());
+	len = wsprintf(buf, "\t%s\r\n", GetCommandLine());
 	WriteFile( hFile, buf, len, &temp, NULL);
 
 #ifdef _WIN64
 	len = wsprintf(
-		buf, "\tRIP: %08x%08x RSP: %08x%08x RBP: %08x%08x\n\n",
+		buf, "\tRIP: %08x%08x RSP: %08x%08x RBP: %08x%08x\r\n\r\n",
 		(int)(e->ContextRecord->Rip >> 32), (int)(e->ContextRecord->Rip & 0xFFFFFFFF),
 		(int)(e->ContextRecord->Rsp >> 32), (int)(e->ContextRecord->Rsp & 0xFFFFFFFF),
 		(int)(e->ContextRecord->Rbp >> 32), (int)(e->ContextRecord->Rbp & 0xFFFFFFFF)
@@ -185,7 +195,7 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e) {
 	WriteFile( hFile, buf, len, &temp, NULL);
 #else
 	len = wsprintf(
-		buf, "\tEIP: %08x ESP: %08x EBP: %08x\n\n",
+		buf, "\tEIP: %08x ESP: %08x EBP: %08x\r\n\r\n",
 		e->ContextRecord->Eip, e->ContextRecord->Esp,
 		e->ContextRecord->Ebp
 	);
@@ -199,7 +209,7 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e) {
 
 	ZeroMemory( &stack,    sizeof(stack)    );
 	ZeroMemory( &lineinfo, sizeof(lineinfo) );
-	
+
 	lineinfo.SizeOfStruct = sizeof(lineinfo);
 
 #ifdef _WIN64
@@ -228,38 +238,38 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e) {
 #ifdef __BORLANDC__
 		// BCC の場合はシンボル名が分からないのでアドレスは引かない。
 		// シンボル名の出力はcrashdump.plで行う。
-		len = wsprintf(buf, "\t0x%08x : unknown\n", stack.AddrPC.Offset);
+		len = wsprintf(buf, "\t0x%08x : unknown\r\n", stack.AddrPC.Offset);
 #elif defined(_WIN64)
 		// SymGetSymFromAddr64 は使用するべきじゃないらしい…。
 		if(SymGetSymFromAddr(hProcess, stack.AddrPC.Offset, &offset, symbol)) {
 			if( SymGetLineFromAddr64( hProcess, stack.AddrPC.Offset, &temp, &lineinfo ) ) {
-				len = wsprintf(buf, "\t0x%08x%08x : %s + 0x%x (%s line %d)\n",
+				len = wsprintf(buf, "\t0x%08x%08x : %s + 0x%x (%s line %d)\r\n",
 							   (int)(stack.AddrPC.Offset >> 32),
 							   (int)(stack.AddrPC.Offset & 0xFFFFFFFF), symbol->Name,
 							   (int)offset, lineinfo.FileName, lineinfo.LineNumber);
 			} else {
-				len = wsprintf(buf, "\t0x%08x%08x : %s + 0x%x\n",
+				len = wsprintf(buf, "\t0x%08x%08x : %s + 0x%x\r\n",
 							   (int)(stack.AddrPC.Offset >> 32),
 							   (int)(stack.AddrPC.Offset & 0xFFFFFFFF), symbol->Name,
 							   (int)offset);
 			}
 		} else {
-			len = wsprintf(buf, "\t0x%08x%08x : unknown\n",
+			len = wsprintf(buf, "\t0x%08x%08x : unknown\r\n",
 						   (int)(stack.AddrPC.Offset >> 32),
 						   (int)(stack.AddrPC.Offset & 0xFFFFFFFF));
 		}
 #else
 		if(SymGetSymFromAddr(hProcess, stack.AddrPC.Offset, &offset, symbol)) {
 			if( SymGetLineFromAddr( hProcess, stack.AddrPC.Offset, &temp, &lineinfo ) ) {
-				len = wsprintf(buf, "\t0x%08x : %s + 0x%x (%s line %d)\n",
+				len = wsprintf(buf, "\t0x%08x : %s + 0x%x (%s line %d)\r\n",
 							   stack.AddrPC.Offset, symbol->Name, offset,
 							   lineinfo.FileName, lineinfo.LineNumber);
 			} else {
-				len = wsprintf(buf, "\t0x%08x : %s + 0x%x\n",
+				len = wsprintf(buf, "\t0x%08x : %s + 0x%x\r\n",
 							   stack.AddrPC.Offset, symbol->Name, offset);
 			}
 		} else {
-			len = wsprintf(buf, "\t0x%08x : unknown\n", stack.AddrPC.Offset);
+			len = wsprintf(buf, "\t0x%08x : unknown\r\n", stack.AddrPC.Offset);
 		}
 #endif
 		WriteFile( hFile, buf, len, &temp, NULL);
@@ -268,7 +278,7 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e) {
 	SymCleanup( hProcess );
 	GlobalFree( symbol );
 
-	len = wsprintf(buf, "\n\n----------------------------------------\n");
+	len = wsprintf(buf, "\r\n\r\n----------------------------------------\r\n");
 	WriteFile( hFile, buf, len, &temp, NULL);
 	CloseHandle( hFile );
 #ifdef _MSC_VER
@@ -284,6 +294,7 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e) {
 int main(int argc,char **argv)
 {
 	int next;
+
 	pid_create(argv[0]);
 	do_init_memmgr(argv[0]); // 一番最初に実行する必要がある
 	do_socket();
@@ -317,6 +328,7 @@ int main(int argc,char **argv)
 		}
 	}
 	do_pre_final();
+
 	exit(0);
 	return 0;
 }
