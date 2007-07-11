@@ -25,18 +25,20 @@ int mail_setitem(struct map_session_data *sd,int idx,int amount)
 		if(sd->status.zeny < amount)
 			amount = sd->status.zeny;
 		sd->mail_zeny = amount;
-	} else if(idx > 1) {
+	} else {
 		idx -= 2;
-		if(sd->mail_item.nameid > 0 && sd->mail_item.amount > amount) {
-			sd->mail_item.amount -= amount;
-		} else if(sd->status.inventory[idx].amount >= amount) {
-			if(itemdb_isdropable(sd->status.inventory[idx].nameid) == 0)
-				return 2;
-			memcpy(&sd->mail_item,&sd->status.inventory[idx],sizeof(struct item));
-			sd->mail_amount = amount;
-			return 0;
+		if(idx >= 0 && idx < MAX_INVENTORY) {
+			if(sd->mail_item.nameid > 0 && sd->mail_item.amount > amount) {
+				sd->mail_item.amount -= amount;
+			} else if(sd->status.inventory[idx].amount >= amount) {
+				if(itemdb_isdropable(sd->status.inventory[idx].nameid) == 0)
+					return 2;
+				memcpy(&sd->mail_item,&sd->status.inventory[idx],sizeof(struct item));
+				sd->mail_amount = amount;
+				return 0;
+			}
+			return 1;
 		}
-		return 1;
 	}
 	return -1;
 }
@@ -59,7 +61,7 @@ int mail_removeitem(struct map_session_data *sd)
  * 添付アイテムやZenyをチェックして減らす
  *------------------------------------------
  */
-int mail_checkappend(struct map_session_data *sd,struct mail_data *md)
+static int mail_checkappend(struct map_session_data *sd,struct mail_data *md)
 {
 	nullpo_retr(1, sd);
 	nullpo_retr(1, md);

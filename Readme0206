@@ -1,4 +1,14 @@
 ----------------------------------------
+//0219 [2007/07/12] by Rayce
+
+・ROメールにアイテムやZenyを添付するとき、idxが不正な値の場合は弾くようにチェック強化（mail.c）
+・mail_checkappend() をstaticに変更（mail.*）
+・clif_parse_GuildRequestInfo() で先にtypeの不正チェックを行うように修正（clif.c）
+
+・SC_INCMSP2によるMAXSP増加の計算タイミングを少し変更（status.c）
+・status.cの動作に影響しないレベルの細かい整形
+
+----------------------------------------
 //0218 [2007/07/11] by Rayce
 
 ・0202におけるgetpetinfo関数およびgethomuninfo関数の変更点を巻き戻し

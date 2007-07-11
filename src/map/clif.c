@@ -11027,6 +11027,12 @@ static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int 
 
 	nullpo_retv(sd);
 
+	if(type < 0 || type > 4) {
+		if(battle_config.error_log)
+			printf("clif: guild request info: unknown type %d\n", type);
+		return;
+	}
+
 	// 初回データ送信済み
 	if(sd->state.guild_req_info & (1<<type))
 		return;
@@ -11056,10 +11062,6 @@ static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int 
 		break;
 	case 4:	// 追放リスト
 		clif_guild_explusionlist(sd, g);
-		break;
-	default:
-		if(battle_config.error_log)
-			printf("clif: guild request info: unknown type %d\n", type);
 		break;
 	}
 
