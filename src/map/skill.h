@@ -191,6 +191,7 @@ int skill_unit_move_unit_group( struct skill_unit_group *group, int m,int dx,int
 
 int skill_hermode_wp_check(struct block_list *bl,int range);
 
+struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,int skilllv,int x,int y,int flag);
 struct skill_unit_group *skill_check_dancing( struct block_list *src );
 void skill_stop_dancing(struct block_list *src, int flag);
 void skill_stop_gravitation(struct block_list *src);
@@ -264,6 +265,9 @@ void skill_basilica_cancel( struct block_list *bl );
 #define skill_unit_istrap(id) (((id) >= UNT_BLASTMINE) && ((id) <= UNT_TALKIEBOX) && ((id) != UNT_VENOMDUST))
 
 void skill_reload(void);
+
+extern int SkillStatusChangeTable[];
+extern int GuildSkillStatusChangeTable[];
 
 enum {
 	SST_NONE,
@@ -1038,10 +1042,5 @@ enum {
 	UNT_GROUNDDRIFT_WATER,
 	UNT_GROUNDDRIFT_FIRE,
 };
-
-extern int SkillStatusChangeTable[];
-extern int GuildSkillStatusChangeTable[];
-
-struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,int skilllv,int x,int y,int flag);
 
 #endif

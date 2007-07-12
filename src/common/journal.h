@@ -39,7 +39,6 @@ struct journal
 	int* unusedchunk_queue;
 	int unusedchunk_size;
 	char filename[1024];
-		
 	struct dbt *db;
 };
 

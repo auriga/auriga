@@ -44,7 +44,7 @@ struct timer_func_list {
 
 static struct timer_func_list* tfl_root=NULL;
 
-//
+
 int add_timer_func_list(int (*func)(int,unsigned int,int,int),const char* name)
 {
 	struct timer_func_list* tfl;
@@ -97,7 +97,7 @@ unsigned int gettick(void)
 	return gettick_cache;
 }
 
-/*====================================== 
+/*======================================
  * 	CORE : Timer Heap
  *--------------------------------------
  */
@@ -105,8 +105,10 @@ unsigned int gettick(void)
 #if 0
 
 // デバッグ用関数群
-static void dump_timer_heap(void) {
+static void dump_timer_heap(void)
+{
 	int j;
+
 	for(j = 1 ; j <= timer_heap[0] ; j++) {
 		if(j != timer_heap[0] && DIFF_TICK(
 			timer_data[timer_heap[j]].tick,
@@ -120,8 +122,10 @@ static void dump_timer_heap(void) {
 	}
 }
 
-static void check_timer_heap(void) {
+static void check_timer_heap(void)
+{
 	int i;
+
 	for(i = 1 ; i < timer_heap[0] ; i++) {
 		if(DIFF_TICK(timer_data[timer_heap[i]].tick,timer_data[timer_heap[i + 1]].tick) < 0) {
 			printf("Timer Heap Sort Error\n");
@@ -247,7 +251,7 @@ static int top_timer_heap(void)
 static void pop_timer_heap(int i)
 {
 	if (timer_heap == NULL || timer_heap[0] <= 0)
-		return ;
+		return;
 
 	if( i != timer_heap[0]) {
 		memmove( &timer_heap[i], &timer_heap[i + 1], (timer_heap[0] - i) * sizeof(int) );
@@ -431,10 +435,10 @@ int do_timer(unsigned int tick)
 		}
 	}
 
-	if (nextmin < TIMER_MIN_INTERVAL) {
+	if(nextmin < TIMER_MIN_INTERVAL) {
 		return TIMER_MIN_INTERVAL;
 	}
-	if(nextmin > TIMER_MAX_INTERVAL) { 
+	if(nextmin > TIMER_MAX_INTERVAL) {
 		return TIMER_MAX_INTERVAL;
 	}
 	return nextmin;

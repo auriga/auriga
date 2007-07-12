@@ -2,6 +2,7 @@
 #define _PARTY_H_
 
 #include <stdarg.h>
+
 #include "mmo.h"
 
 struct party;

@@ -201,6 +201,7 @@ static void BitConvert(BYTE *Src,char *BitSwapTable)
 {
 	int lop,prm;
 	BYTE tmp[8];
+
 	*(DWORD*)tmp=*(DWORD*)(tmp+4)=0;
 	for(lop=0;lop!=64;lop++) {
 		prm = BitSwapTable[lop]-1;
@@ -218,6 +219,7 @@ static void BitConvert4(BYTE *Src)
 {
 	int lop,prm;
 	BYTE tmp[8];
+
 	tmp[0] = ((Src[7]<<5) | (Src[4]>>3)) & 0x3f;	// ..0 vutsr
 	tmp[1] = ((Src[4]<<1) | (Src[5]>>7)) & 0x3f;	// ..srqpo n
 	tmp[2] = ((Src[4]<<5) | (Src[5]>>3)) & 0x3f;	// ..o nmlkj
@@ -247,6 +249,7 @@ static void BitConvert4(BYTE *Src)
 static void decode_des_etc(BYTE *buf,int len,int type,int cycle)
 {
 	int lop,cnt=0;
+
 	if(cycle<3) cycle=3;
 	else if(cycle<5) cycle++;
 	else if(cycle<7) cycle+=9;
@@ -331,7 +334,8 @@ int decode_zip(char *dest, unsigned long* destLen, const char* source, unsigned 
 	return err;
 }
 
-int encode_zip(char *dest, unsigned long* destLen, const char* source, unsigned long sourceLen) {
+int encode_zip(char *dest, unsigned long* destLen, const char* source, unsigned long sourceLen)
+{
 	z_stream stream;
 	int err;
 
@@ -422,7 +426,8 @@ static FILELIST* filelist_add(FILELIST *entry)
 {
 	int hash;
 
-/*	if (filelist_entrys>=FILELIST_LIMIT) { // is that necessary?
+	/*
+	if (filelist_entrys>=FILELIST_LIMIT) { // is that necessary?
 		printf("filelist limit : filelist_add\n");
 		exit(1);
 	}*/
@@ -466,7 +471,6 @@ static FILELIST* filelist_modify(FILELIST *entry)
  */
 static void filelist_adjust(void)
 {
-
 	if (filelist!=NULL) {
 		if (filelist_maxentry>filelist_entrys) {
 			FILELIST *new_filelist = (FILELIST*)aRealloc(
@@ -968,7 +972,8 @@ void grfio_final(void)
  * Grfio : Initialize
  *------------------------------------------
  */
-void grfio_load_zlib(void) {
+void grfio_load_zlib(void)
+{
 #if defined(_WIN32) && !defined(LOCALZLIB)
 	if(!zlib_dll) {
 		zlib_dll = LoadLibrary("zlib.dll");
@@ -989,7 +994,8 @@ void grfio_load_zlib(void) {
 	return;
 }
 
-unsigned long grfio_crc32(const char *buf, unsigned int len) {
+unsigned long grfio_crc32(const char *buf, unsigned int len)
+{
 	return zlib_crc32(zlib_crc32(0L, Z_NULL, 0), buf, len);
 }
 

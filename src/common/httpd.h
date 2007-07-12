@@ -87,7 +87,7 @@ char* httpd_get_value(struct httpd_session_data* sd,const char* val);
 int httpd_get_method(struct httpd_session_data* sd);
 
 // リクエスト形式を返す。
-// 
+//
 //     GET  : HTTPD_METHOD_GET
 //     POST : HTTPD_METHOD_POST
 
@@ -108,7 +108,7 @@ void httpd_send(struct httpd_session_data* sd,int status,const char *content_typ
 
 //	HTTPヘッダ、データを組にして送信する。この関数を呼び出した後に、httpd_send_data を
 //  呼び出してはならない。
-// 
+//
 //		sd           : httpd_set_parse_func() に渡されたものをそのまま渡すこと。
 //		status       : HTTPヘッダに加えるstatus。通常は200。
 //		content_type : 送信するデータのタイプ。text/html , image/jpeg など。

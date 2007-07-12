@@ -147,8 +147,8 @@ int clif_countusers(void)
 	struct map_session_data *sd;
 
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth
-			&& !(battle_config.hide_GM_session && pc_isGM(sd)) )
+		if( session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth &&
+		    !(battle_config.hide_GM_session && pc_isGM(sd)) )
 			users++;
 	}
 
@@ -184,7 +184,7 @@ int clif_foreachclient(int (*func)(struct map_session_data*,va_list),...)
  * clif_sendでAREA*指定時用
  *------------------------------------------
  */
-int clif_send_sub(struct block_list *bl,va_list ap)
+static int clif_send_sub(struct block_list *bl,va_list ap)
 {
 	unsigned char *buf;
 	int len;
@@ -236,7 +236,6 @@ static void clif_send(unsigned char *buf, int len, struct block_list *bl, int ty
 	if( type != ALL_CLIENT ){
 		nullpo_retv(bl);
 	}
-	//nullpo_retv(buf);
 
 	switch(type){
 	case ALL_CLIENT:	// 全クライアントに送信
@@ -1951,8 +1950,8 @@ void clif_changemapserver(struct map_session_data *sd, char *mapname, int x, int
  * 位置補正
  *------------------------------------------
  */
-int clif_fixpos(struct block_list *bl) {
-
+int clif_fixpos(struct block_list *bl)
+{
 	nullpo_retr(0, bl);
 
 	if(battle_config.clif_fixpos_type)
@@ -6582,9 +6581,9 @@ void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
 
 	WBUFW(buf,0)=0x101;
 	WBUFL(buf,2)=((flag&0x01)?2:p->exp);
-	if(flag==0)
+	if(flag == 0) {
 		clif_send(buf,packet_db[0x101].len,&sd->bl,PARTY);
-	else{
+	} else {
 		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x101].len);
 		WFIFOSET(sd->fd,packet_db[0x101].len);
 	}
@@ -9308,12 +9307,12 @@ static void clif_parse_MapMove(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_ChangeDir(int fd,struct map_session_data *sd, int cmd)
 {
-	short headdir,dir;
+	int headdir,dir;
 
 	nullpo_retv(sd);
 
-	headdir=RFIFOW(fd,GETPACKETPOS(cmd,0));
-	dir=RFIFOB(fd,GETPACKETPOS(cmd,1));
+	headdir = RFIFOW(fd,GETPACKETPOS(cmd,0)) & 0x07;
+	dir     = RFIFOB(fd,GETPACKETPOS(cmd,1)) & 0x07;
 	pc_setdir(sd,dir,headdir);
 
 	clif_changedir(&sd->bl, headdir, dir);
@@ -9376,7 +9375,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id !=0 || sd->opt1 > 0 || sd->status.option&2)
+	if(sd->npc_id != 0 || sd->opt1 > 0 || sd->status.option&2)
 		return;
 	if(sd->sc_data[SC_AUTOCOUNTER].timer != -1 ||	// オートカウンター
 	   sd->sc_data[SC_BLADESTOP].timer != -1 ||	// 白刃取り
@@ -9548,7 +9547,7 @@ static void clif_parse_GMmessage(int fd,struct map_session_data *sd, int cmd)
 	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
 
 	if (battle_config.atc_gmonly == 0 ||
-		pc_isGM(sd) >= get_atcommand_level(AtCommand_Broadcast))
+	    pc_isGM(sd) >= get_atcommand_level(AtCommand_Broadcast))
 		intif_GMmessage(message, message_size, 0);
 
 	return;
@@ -9586,7 +9585,7 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 	if(bl && bl->type == BL_ITEM)
 		fitem = (struct flooritem_data *)bl;
 
-	if(fitem==NULL || fitem->bl.m != sd->bl.m)
+	if(fitem == NULL || fitem->bl.m != sd->bl.m)
 		return;
 
 	pc_takeitem(sd,fitem);
@@ -9666,14 +9665,14 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 	if( (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
-		sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || (sd->opt1 > 0 && sd->opt1 != 6) || sd->state.storage_flag ||
-		sd->sc_data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
-		sd->sc_data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
-		sd->sc_data[SC_BERSERK].timer != -1 ||		// バーサーク
-		sd->sc_data[SC_FULLBUSTER].timer != -1 ||	// フルバスター
-		sd->sc_data[SC_WEDDING].timer != -1 ||		// 結婚衣装
-		sd->sc_data[SC_NOCHAT].timer != -1 ||		// 会話禁止
-		sd->sc_data[SC_ITEM_DELAY].timer != -1 )	// アイテムディレイ
+	    sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || (sd->opt1 > 0 && sd->opt1 != 6) || sd->state.storage_flag ||
+	    sd->sc_data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
+	    sd->sc_data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
+	    sd->sc_data[SC_BERSERK].timer != -1 ||	// バーサーク
+	    sd->sc_data[SC_FULLBUSTER].timer != -1 ||	// フルバスター
+	    sd->sc_data[SC_WEDDING].timer != -1 ||	// 結婚衣装
+	    sd->sc_data[SC_NOCHAT].timer != -1 ||	// 会話禁止
+	    sd->sc_data[SC_ITEM_DELAY].timer != -1 )	// アイテムディレイ
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;
@@ -9720,13 +9719,13 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 
 	// ペット用装備であるかないか
 	if (sd->inventory_data[idx]) {
-		if (sd->inventory_data[idx]->type != 8){
+		if (sd->inventory_data[idx]->type != 8) {
 			if (sd->inventory_data[idx]->type == 10)
 				RFIFOW(fd,GETPACKETPOS(cmd,1))=0x8000;	// 矢を無理やり装備できるように（−−；
 			pc_equipitem(sd, idx, RFIFOW(fd,GETPACKETPOS(cmd,1)));
-		}
-		else
+		} else {
 			pet_equipitem(sd, idx);
+		}
 	}
 
 	return;
@@ -10529,8 +10528,9 @@ static void clif_parse_NpcStringInput(int fd,struct map_session_data *sd, int cm
 	if (len - (int)GETPACKETPOS(cmd,2) >= sizeof(sd->npc_str)) { // message includes NULL
 		//printf("clif: input string too long !\n"); // no display, it's not an error, just a check against overflow (and hacker)
 		memcpy(sd->npc_str, RFIFOP(fd,GETPACKETPOS(cmd,2)), sizeof(sd->npc_str));
-	}else
+	} else {
 		strncpy(sd->npc_str, RFIFOP(fd,GETPACKETPOS(cmd,2)), sizeof(sd->npc_str));
+	}
 	sd->npc_str[sizeof(sd->npc_str) - 1] = 0;
 	npc_scriptcont(sd,RFIFOL(fd,GETPACKETPOS(cmd,1)));
 
@@ -10855,10 +10855,9 @@ static void clif_parse_PartyInvite(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_ReplyPartyInvite(int fd,struct map_session_data *sd, int cmd)
 {
-	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 5){
+	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 5) {
 		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)));
-	}
-	else {
+	} else {
 		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),-1);
 		clif_skill_fail(sd,1,0,4);
 	}
@@ -11400,17 +11399,16 @@ static void clif_parse_GMKick(int fd,struct map_session_data *sd, int cmd)
 					clif_GM_kick(sd,tsd,1);
 				else
 					clif_GM_kickack(sd,0);
-			}
-			else if(target->type == BL_MOB) {
+			} else if(target->type == BL_MOB) {
 				struct mob_data *md = (struct mob_data *)target;
 				sd->state.attack_type = 0;
 				mob_damage(&sd->bl,md,md->hp,2);
-			}
-			else
+			} else {
 				clif_GM_kickack(sd,0);
-		}
-		else
+			}
+		} else {
 			clif_GM_kickack(sd,0);
+		}
 	}
 }
 
@@ -11423,11 +11421,11 @@ static void clif_parse_GMHide(int fd,struct map_session_data *sd, int cmd)
 	nullpo_retv(sd);
 
 	if(pc_isGM(sd) >= get_atcommand_level(AtCommand_Hide)) {
-		if(sd->status.option&0x40){
-			sd->status.option&=~0x40;
+		if(sd->status.option&0x40) {
+			sd->status.option &= ~0x40;
 			clif_displaymessage(fd, msg_txt(10)); // invisible off!
-		}else{
-			sd->status.option|=0x40;
+		} else {
+			sd->status.option |= 0x40;
 			clif_displaymessage(fd, msg_txt(11)); // invisible!
 		}
 		clif_changeoption(&sd->bl);
@@ -11451,11 +11449,11 @@ static void clif_parse_GMReqNoChat(int fd,struct map_session_data *sd, int cmd)
 	if(battle_config.nomanner_mode)
 		return;
 
-	// 駆け足中は赤エモにならない
-	if(sd->sc_data[SC_RUN].timer!=-1)
+	// タイリギ中は赤エモにならない
+	if(sd->sc_data[SC_RUN].timer != -1)
 		return;
 	// 念のため強制移動中も
-	if(sd->sc_data[SC_FORCEWALKING].timer!=-1)
+	if(sd->sc_data[SC_FORCEWALKING].timer != -1)
 		return;
 
 	dstsd = map_id2sd(tid);
@@ -11530,9 +11528,9 @@ static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, i
 	if(nextbaseexp <= 0)
 		return;
 
-	rate    = (int)((atn_bignumber)sd->status.base_exp*1000/nextbaseexp);
+	rate = (int)((atn_bignumber)sd->status.base_exp*1000/nextbaseexp);
 
-	if(battle_config.etc_log){
+	if(battle_config.etc_log) {
 		printf("SuperNovice explosionspirits!! %d %d %d %d\n",sd->bl.id,sd->s_class.job,sd->status.base_exp,rate);
 	}
 
@@ -11558,37 +11556,38 @@ static int pstrcmp(const void *a, const void *b)
  */
 static void clif_parse_wisexin(int fd,struct map_session_data *sd, int cmd)
 {
-	int type = RFIFOB(fd,GETPACKETPOS(cmd,1));
+	char *name = RFIFOP(fd,GETPACKETPOS(cmd,0));
+	int type   = RFIFOB(fd,GETPACKETPOS(cmd,1));
 	int i;
 	unsigned char flag = 1;
 
 	nullpo_retv(sd);
 
 	qsort(sd->wis_refusal[0], MAX_WIS_REFUSAL, sizeof(sd->wis_refusal[0]), pstrcmp);
-	if(type==0){	// ex
-		for(i=0;i<MAX_WIS_REFUSAL;i++){	// すでに追加されていれば何もしない
-			if(strcmp(sd->wis_refusal[i],RFIFOP(fd,GETPACKETPOS(cmd,0)))==0){
-				flag=0;
+	if(type == 0) {	// ex
+		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// すでに追加されていれば何もしない
+			if(strcmp(sd->wis_refusal[i], name) == 0) {
+				flag = 0;
 				clif_wisexin(sd, type, flag);
 				return;
 			}
 		}
-		for(i=0;i<MAX_WIS_REFUSAL;i++){	// 空の拒否リストに追加(とりあえず)
-			if(sd->wis_refusal[i][0]==0){
-				memcpy(sd->wis_refusal[i],RFIFOP(fd,GETPACKETPOS(cmd,0)),24);
-				flag=0;
+		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// 空の拒否リストに追加(とりあえず)
+			if(sd->wis_refusal[i][0] == 0) {
+				memcpy(sd->wis_refusal[i], name, 24);
+				flag = 0;
 				break;
 			}
 		}
-		if(flag==1){
-				memcpy(sd->wis_refusal[MAX_WIS_REFUSAL-1],RFIFOP(fd,GETPACKETPOS(cmd,0)),24);
-				flag=0;
+		if(flag == 1) {
+			memcpy(sd->wis_refusal[MAX_WIS_REFUSAL-1], name, 24);
+			flag = 0;
 		}
-	}else{		// in
-		for(i=0;i<MAX_WIS_REFUSAL;i++){	// 一致する拒否リストを空に
-			if(strcmp(sd->wis_refusal[i],RFIFOP(fd,GETPACKETPOS(cmd,0)))==0){
-				sd->wis_refusal[i][0]=0;
-				flag=0;
+	} else {		// in
+		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// 一致する拒否リストを空に
+			if(strcmp(sd->wis_refusal[i], name) == 0) {
+				sd->wis_refusal[i][0] = 0;
+				flag = 0;
 			}
 		}
 		sd->wis_all = 0;
@@ -11940,9 +11939,9 @@ static void clif_parse_MailWinOpen(int fd,struct map_session_data *sd, int cmd)
 
 	flag = RFIFOW(fd,GETPACKETPOS(cmd,0));
 
-	if(!flag || flag==1)
+	if(flag == 0 || flag == 1)
 		mail_removeitem(sd);
-	if(!flag || flag==2)
+	if(flag == 0 || flag == 2)
 		sd->mail_zeny = 0;
 
 	return;
@@ -11976,7 +11975,7 @@ static void clif_parse_SendMailSetAppend(int fd,struct map_session_data *sd, int
 		return;
 	flag = mail_setitem(sd, idx, amount);
 
-	if(flag>=0)
+	if(flag >= 0)
 		clif_res_sendmail_setappend(sd->fd,flag);
 	return;
 }
@@ -12083,15 +12082,6 @@ static void clif_parse_HomActionRequest(int fd,struct map_session_data *sd, int 
 	target_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
 	action_type = RFIFOB(fd,GETPACKETPOS(cmd,1));
 
-	// decode for jRO 2005-05-09dRagexe
-	if( packet_db[cmd].pos[0]==0 )
-	{
-		int t1[]={ 88, 37 }, t2[]={ 80, 4 };
-		int pos = ( ( g_packet_len - t1[g_packet_len&1] ) >> 1 ) + t2[g_packet_len&1];
-		target_id = RFIFOL(fd,pos);
-	}
-	// end decode
-
 	switch(action_type){
 	case 0x00:	// once attack
 	case 0x07:	// continuous attack ...あるのかな？
@@ -12195,158 +12185,158 @@ int clif_disconnect(int fd)
  *
  *------------------------------------------
  */
-struct {
+static struct {
 	void (*func)(int fd,struct map_session_data *sd, int cmd);
 	const char *name;
 } clif_parse_func[]={
-	{clif_parse_WantToConnection,"wanttoconnection"},
-	{clif_parse_LoadEndAck,"loadendack"},
-	{clif_parse_TickSend,"ticksend"},
-	{clif_parse_WalkToXY,"walktoxy"},
-	{clif_parse_QuitGame,"quitgame"},
-	{clif_parse_GetCharNameRequest,"getcharnamerequest"},
-	{clif_parse_GlobalMessage,"globalmessage"},
-	{clif_parse_MapMove,"mapmove"},
-	{clif_parse_ChangeDir,"changedir"},
-	{clif_parse_Emotion,"emotion"},
-	{clif_parse_HowManyConnections,"howmanyconnections"},
-	{clif_parse_ActionRequest,"actionrequest"},
-	{clif_parse_Restart,"restart"},
-	{clif_parse_Wis,"wis"},
-	{clif_parse_GMmessage,"gmmessage"},
-	{clif_parse_TakeItem,"takeitem"},
-	{clif_parse_DropItem,"dropitem"},
-	{clif_parse_UseItem,"useitem"},
-	{clif_parse_EquipItem,"equipitem"},
-	{clif_parse_UnequipItem,"unequipitem"},
-	{clif_parse_NpcClicked,"npcclicked"},
-	{clif_parse_NpcBuySellSelected,"npcbuysellselected"},
-	{clif_parse_NpcBuyListSend,"npcbuylistsend"},
-	{clif_parse_NpcSellListSend,"npcselllistsend"},
-	{clif_parse_CreateChatRoom,"createchatroom"},
-	{clif_parse_ChatAddMember,"chataddmember"},
-	{clif_parse_ChatRoomStatusChange,"chatroomstatuschange"},
-	{clif_parse_ChangeChatOwner,"changechatowner"},
-	{clif_parse_KickFromChat,"kickfromchat"},
-	{clif_parse_ChatLeave,"chatleave"},
-	{clif_parse_TradeRequest,"traderequest"},
-	{clif_parse_TradeAck,"tradeack"},
-	{clif_parse_TradeAddItem,"tradeadditem"},
-	{clif_parse_TradeOk,"tradeok"},
-	{clif_parse_TradeCancel,"tradecancel"},
-	{clif_parse_TradeCommit,"tradecommit"},
-	{clif_parse_StopAttack,"stopattack"},
-	{clif_parse_PutItemToCart,"putitemtocart"},
-	{clif_parse_GetItemFromCart,"getitemfromcart"},
-	{clif_parse_RemoveOption,"removeoption"},
-	{clif_parse_ChangeCart,"changecart"},
-	{clif_parse_StatusUp,"statusup"},
-	{clif_parse_SkillUp,"skillup"},
-	{clif_parse_UseSkillToId,"useskilltoid"},
-	{clif_parse_UseSkillToPos,"useskilltopos"},
-	{clif_parse_UseSkillMap,"useskillmap"},
-	{clif_parse_RequestMemo,"requestmemo"},
-	{clif_parse_ProduceMix,"producemix"},
-	{clif_parse_RepairItem,"repairitem"},
-	{clif_parse_WeaponRefine,"weaponrefine"},
-	{clif_parse_NpcSelectMenu,"npcselectmenu"},
-	{clif_parse_NpcNextClicked,"npcnextclicked"},
-	{clif_parse_NpcAmountInput,"npcamountinput"},
-	{clif_parse_NpcStringInput,"npcstringinput"},
-	{clif_parse_NpcCloseClicked,"npccloseclicked"},
-	{clif_parse_ItemIdentify,"itemidentify"},
-	{clif_parse_SelectArrow,"selectarrow"},
-	{clif_parse_AutoSpell,"autospell"},
-	{clif_parse_UseCard,"usecard"},
-	{clif_parse_InsertCard,"insertcard"},
-	{clif_parse_SolveCharName,"solvecharname"},
-	{clif_parse_ResetChar,"resetchar"},
-	{clif_parse_LGMmessage,"lgmmessage"},
-	{clif_parse_MoveToKafra,"movetokafra"},
-	{clif_parse_MoveFromKafra,"movefromkafra"},
-	{clif_parse_MoveToKafraFromCart,"movetokafrafromcart"},
-	{clif_parse_MoveFromKafraToCart,"movefromkafratocart"},
-	{clif_parse_CloseKafra,"closekafra"},
-	{clif_parse_CreateParty,"createparty"},
-	{clif_parse_CreateParty2,"createparty2"},
-	{clif_parse_PartyInvite,"partyinvite"},
-	{clif_parse_ReplyPartyInvite,"replypartyinvite"},
-	{clif_parse_LeaveParty,"leaveparty"},
-	{clif_parse_RemovePartyMember,"removepartymember"},
-	{clif_parse_PartyChangeOption,"partychangeoption"},
-	{clif_parse_PartyMessage,"partymessage"},
-	{clif_parse_CloseVending,"closevending"},
-	{clif_parse_VendingListReq,"vendinglistreq"},
-	{clif_parse_PurchaseReq,"purchasereq"},
-	{clif_parse_OpenVending,"openvending"},
-	{clif_parse_CreateGuild,"createguild"},
-	{clif_parse_GuildCheckMaster,"guildcheckmaster"},
-	{clif_parse_GuildRequestInfo,"guildrequestinfo"},
-	{clif_parse_GuildChangePositionInfo,"guildchangepositioninfo"},
-	{clif_parse_GuildChangeMemberPosition,"guildchangememberposition"},
-	{clif_parse_GuildRequestEmblem,"guildrequestemblem"},
-	{clif_parse_GuildChangeEmblem,"guildchangeemblem"},
-	{clif_parse_GuildChangeNotice,"guildchangenotice"},
-	{clif_parse_GuildInvite,"guildinvite"},
-	{clif_parse_GuildReplyInvite,"guildreplyinvite"},
-	{clif_parse_GuildLeave,"guildleave"},
-	{clif_parse_GuildExplusion,"guildexplusion"},
-	{clif_parse_GuildMessage,"guildmessage"},
-	{clif_parse_GuildRequestAlliance,"guildrequestalliance"},
-	{clif_parse_GuildReplyAlliance,"guildreplyalliance"},
-	{clif_parse_GuildDelAlliance,"guilddelalliance"},
-	{clif_parse_GuildOpposition,"guildopposition"},
-	{clif_parse_GuildBreak,"guildbreak"},
-	{clif_parse_GuildMemberInfo,"guildmemberinfo"},
-	{clif_parse_PetMenu,"petmenu"},
-	{clif_parse_CatchPet,"catchpet"},
-	{clif_parse_SelectEgg,"selectegg"},
-	{clif_parse_SendEmotion,"sendemotion"},
-	{clif_parse_ChangePetName,"changepetname"},
-	{clif_parse_GMKick,"gmkick"},
-	{clif_parse_GMHide,"gmhide"},
-	{clif_parse_GMReqNoChat,"gmreqnochat"},
-	{clif_parse_GMReqNoChatCount,"gmreqnochatcount"},
-	{clif_parse_sn_doridori,"sndoridori"},
-	{clif_parse_sn_explosionspirits,"snexplosionspirits"},
-	{clif_parse_wisexin,"wisexin"},
-	{clif_parse_wisexlist,"wisexlist"},
-	{clif_parse_wisall,"wisall"},
-	{clif_parse_GMkillall,"killall"},
-	{clif_parse_GMsummon,"summon"},
-	{clif_parse_GMitemmonster,"itemmonster"},
-	{clif_parse_GMshift,"shift"},
-	{clif_parse_GMrecall,"recall"},
-	{clif_parse_GMremove,"gmremove"},
-	{clif_parse_GMchangemaptype,"changemaptype"},
-	{clif_parse_GMrc,"gmrc"},
-	{clif_parse_GMcheck,"gmcheck"},
-	{clif_parse_FriendAddRequest,"friendaddrequest"},
-	{clif_parse_FriendAddReply,"friendaddreply"},
-	{clif_parse_FriendDeleteRequest,"frienddeleterequest"},
-	{clif_parse_clientsetting,"clientsetting"},
-	{clif_parse_BabyRequest,"babyrequest"},
-	{clif_parse_BabyReply,"babyreply"},
-	{clif_parse_PvPInfo,"pvpinfo"},
-	{clif_parse_RankingBlacksmith,"rankingblacksmith"},
-	{clif_parse_RankingAlchemist,"rankingalchemist"},
-	{clif_parse_RankingTaekwon,"rankingtaekwon"},
-	{clif_parse_RankingPk,"rankingpk"},
-	{clif_parse_HomMenu,"hommenu"},
-	{clif_parse_HomWalkMaster,"homwalkmaster"},
-	{clif_parse_HomWalkToXY,"homwalktoxy"},
-	{clif_parse_HomActionRequest,"homactionrequest"},
-	{clif_parse_ChangeHomName,"changehomname"},
-	{clif_parse_MailWinOpen,"mailwinopen"},
-	{clif_parse_ReadMail,"readmail"},
-	{clif_parse_MailGetAppend,"mailgetappend"},
-	{clif_parse_SendMail,"sendmail"},
-	{clif_parse_RefleshMailBox,"refleshmailbox"},
-	{clif_parse_SendMailSetAppend,"sendmailsetappend"},
-	{clif_parse_DeleteMail,"deletemail"},
-	{clif_parse_ReturnMail,"returnmail"},
-	{clif_parse_FeelSaveAck,"feelsaveack"},
-	{NULL,NULL}
+	{ clif_parse_WantToConnection,          "wanttoconnection"          },
+	{ clif_parse_LoadEndAck,                "loadendack"                },
+	{ clif_parse_TickSend,                  "ticksend"                  },
+	{ clif_parse_WalkToXY,                  "walktoxy"                  },
+	{ clif_parse_QuitGame,                  "quitgame"                  },
+	{ clif_parse_GetCharNameRequest,        "getcharnamerequest"        },
+	{ clif_parse_GlobalMessage,             "globalmessage"             },
+	{ clif_parse_MapMove,                   "mapmove"                   },
+	{ clif_parse_ChangeDir,                 "changedir"                 },
+	{ clif_parse_Emotion,                   "emotion"                   },
+	{ clif_parse_HowManyConnections,        "howmanyconnections"        },
+	{ clif_parse_ActionRequest,             "actionrequest"             },
+	{ clif_parse_Restart,                   "restart"                   },
+	{ clif_parse_Wis,                       "wis"                       },
+	{ clif_parse_GMmessage,                 "gmmessage"                 },
+	{ clif_parse_TakeItem,                  "takeitem"                  },
+	{ clif_parse_DropItem,                  "dropitem"                  },
+	{ clif_parse_UseItem,                   "useitem"                   },
+	{ clif_parse_EquipItem,                 "equipitem"                 },
+	{ clif_parse_UnequipItem,               "unequipitem"               },
+	{ clif_parse_NpcClicked,                "npcclicked"                },
+	{ clif_parse_NpcBuySellSelected,        "npcbuysellselected"        },
+	{ clif_parse_NpcBuyListSend,            "npcbuylistsend"            },
+	{ clif_parse_NpcSellListSend,           "npcselllistsend"           },
+	{ clif_parse_CreateChatRoom,            "createchatroom"            },
+	{ clif_parse_ChatAddMember,             "chataddmember"             },
+	{ clif_parse_ChatRoomStatusChange,      "chatroomstatuschange"      },
+	{ clif_parse_ChangeChatOwner,           "changechatowner"           },
+	{ clif_parse_KickFromChat,              "kickfromchat"              },
+	{ clif_parse_ChatLeave,                 "chatleave"                 },
+	{ clif_parse_TradeRequest,              "traderequest"              },
+	{ clif_parse_TradeAck,                  "tradeack"                  },
+	{ clif_parse_TradeAddItem,              "tradeadditem"              },
+	{ clif_parse_TradeOk,                   "tradeok"                   },
+	{ clif_parse_TradeCancel,               "tradecancel"               },
+	{ clif_parse_TradeCommit,               "tradecommit"               },
+	{ clif_parse_StopAttack,                "stopattack"                },
+	{ clif_parse_PutItemToCart,             "putitemtocart"             },
+	{ clif_parse_GetItemFromCart,           "getitemfromcart"           },
+	{ clif_parse_RemoveOption,              "removeoption"              },
+	{ clif_parse_ChangeCart,                "changecart"                },
+	{ clif_parse_StatusUp,                  "statusup"                  },
+	{ clif_parse_SkillUp,                   "skillup"                   },
+	{ clif_parse_UseSkillToId,              "useskilltoid"              },
+	{ clif_parse_UseSkillToPos,             "useskilltopos"             },
+	{ clif_parse_UseSkillMap,               "useskillmap"               },
+	{ clif_parse_RequestMemo,               "requestmemo"               },
+	{ clif_parse_ProduceMix,                "producemix"                },
+	{ clif_parse_RepairItem,                "repairitem"                },
+	{ clif_parse_WeaponRefine,              "weaponrefine"              },
+	{ clif_parse_NpcSelectMenu,             "npcselectmenu"             },
+	{ clif_parse_NpcNextClicked,            "npcnextclicked"            },
+	{ clif_parse_NpcAmountInput,            "npcamountinput"            },
+	{ clif_parse_NpcStringInput,            "npcstringinput"            },
+	{ clif_parse_NpcCloseClicked,           "npccloseclicked"           },
+	{ clif_parse_ItemIdentify,              "itemidentify"              },
+	{ clif_parse_SelectArrow,               "selectarrow"               },
+	{ clif_parse_AutoSpell,                 "autospell"                 },
+	{ clif_parse_UseCard,                   "usecard"                   },
+	{ clif_parse_InsertCard,                "insertcard"                },
+	{ clif_parse_SolveCharName,             "solvecharname"             },
+	{ clif_parse_ResetChar,                 "resetchar"                 },
+	{ clif_parse_LGMmessage,                "lgmmessage"                },
+	{ clif_parse_MoveToKafra,               "movetokafra"               },
+	{ clif_parse_MoveFromKafra,             "movefromkafra"             },
+	{ clif_parse_MoveToKafraFromCart,       "movetokafrafromcart"       },
+	{ clif_parse_MoveFromKafraToCart,       "movefromkafratocart"       },
+	{ clif_parse_CloseKafra,                "closekafra"                },
+	{ clif_parse_CreateParty,               "createparty"               },
+	{ clif_parse_CreateParty2,              "createparty2"              },
+	{ clif_parse_PartyInvite,               "partyinvite"               },
+	{ clif_parse_ReplyPartyInvite,          "replypartyinvite"          },
+	{ clif_parse_LeaveParty,                "leaveparty"                },
+	{ clif_parse_RemovePartyMember,         "removepartymember"         },
+	{ clif_parse_PartyChangeOption,         "partychangeoption"         },
+	{ clif_parse_PartyMessage,              "partymessage"              },
+	{ clif_parse_CloseVending,              "closevending"              },
+	{ clif_parse_VendingListReq,            "vendinglistreq"            },
+	{ clif_parse_PurchaseReq,               "purchasereq"               },
+	{ clif_parse_OpenVending,               "openvending"               },
+	{ clif_parse_CreateGuild,               "createguild"               },
+	{ clif_parse_GuildCheckMaster,          "guildcheckmaster"          },
+	{ clif_parse_GuildRequestInfo,          "guildrequestinfo"          },
+	{ clif_parse_GuildChangePositionInfo,   "guildchangepositioninfo"   },
+	{ clif_parse_GuildChangeMemberPosition, "guildchangememberposition" },
+	{ clif_parse_GuildRequestEmblem,        "guildrequestemblem"        },
+	{ clif_parse_GuildChangeEmblem,         "guildchangeemblem"         },
+	{ clif_parse_GuildChangeNotice,         "guildchangenotice"         },
+	{ clif_parse_GuildInvite,               "guildinvite"               },
+	{ clif_parse_GuildReplyInvite,          "guildreplyinvite"          },
+	{ clif_parse_GuildLeave,                "guildleave"                },
+	{ clif_parse_GuildExplusion,            "guildexplusion"            },
+	{ clif_parse_GuildMessage,              "guildmessage"              },
+	{ clif_parse_GuildRequestAlliance,      "guildrequestalliance"      },
+	{ clif_parse_GuildReplyAlliance,        "guildreplyalliance"        },
+	{ clif_parse_GuildDelAlliance,          "guilddelalliance"          },
+	{ clif_parse_GuildOpposition,           "guildopposition"           },
+	{ clif_parse_GuildBreak,                "guildbreak"                },
+	{ clif_parse_GuildMemberInfo,           "guildmemberinfo"           },
+	{ clif_parse_PetMenu,                   "petmenu"                   },
+	{ clif_parse_CatchPet,                  "catchpet"                  },
+	{ clif_parse_SelectEgg,                 "selectegg"                 },
+	{ clif_parse_SendEmotion,               "sendemotion"               },
+	{ clif_parse_ChangePetName,             "changepetname"             },
+	{ clif_parse_GMKick,                    "gmkick"                    },
+	{ clif_parse_GMHide,                    "gmhide"                    },
+	{ clif_parse_GMReqNoChat,               "gmreqnochat"               },
+	{ clif_parse_GMReqNoChatCount,          "gmreqnochatcount"          },
+	{ clif_parse_sn_doridori,               "sndoridori"                },
+	{ clif_parse_sn_explosionspirits,       "snexplosionspirits"        },
+	{ clif_parse_wisexin,                   "wisexin"                   },
+	{ clif_parse_wisexlist,                 "wisexlist"                 },
+	{ clif_parse_wisall,                    "wisall"                    },
+	{ clif_parse_GMkillall,                 "killall"                   },
+	{ clif_parse_GMsummon,                  "summon"                    },
+	{ clif_parse_GMitemmonster,             "itemmonster"               },
+	{ clif_parse_GMshift,                   "shift"                     },
+	{ clif_parse_GMrecall,                  "recall"                    },
+	{ clif_parse_GMremove,                  "gmremove"                  },
+	{ clif_parse_GMchangemaptype,           "changemaptype"             },
+	{ clif_parse_GMrc,                      "gmrc"                      },
+	{ clif_parse_GMcheck,                   "gmcheck"                   },
+	{ clif_parse_FriendAddRequest,          "friendaddrequest"          },
+	{ clif_parse_FriendAddReply,            "friendaddreply"            },
+	{ clif_parse_FriendDeleteRequest,       "frienddeleterequest"       },
+	{ clif_parse_clientsetting,             "clientsetting"             },
+	{ clif_parse_BabyRequest,               "babyrequest"               },
+	{ clif_parse_BabyReply,                 "babyreply"                 },
+	{ clif_parse_PvPInfo,                   "pvpinfo"                   },
+	{ clif_parse_RankingBlacksmith,         "rankingblacksmith"         },
+	{ clif_parse_RankingAlchemist,          "rankingalchemist"          },
+	{ clif_parse_RankingTaekwon,            "rankingtaekwon"            },
+	{ clif_parse_RankingPk,                 "rankingpk"                 },
+	{ clif_parse_HomMenu,                   "hommenu"                   },
+	{ clif_parse_HomWalkMaster,             "homwalkmaster"             },
+	{ clif_parse_HomWalkToXY,               "homwalktoxy"               },
+	{ clif_parse_HomActionRequest,          "homactionrequest"          },
+	{ clif_parse_ChangeHomName,             "changehomname"             },
+	{ clif_parse_MailWinOpen,               "mailwinopen"               },
+	{ clif_parse_ReadMail,                  "readmail"                  },
+	{ clif_parse_MailGetAppend,             "mailgetappend"             },
+	{ clif_parse_SendMail,                  "sendmail"                  },
+	{ clif_parse_RefleshMailBox,            "refleshmailbox"            },
+	{ clif_parse_SendMailSetAppend,         "sendmailsetappend"         },
+	{ clif_parse_DeleteMail,                "deletemail"                },
+	{ clif_parse_ReturnMail,                "returnmail"                },
+	{ clif_parse_FeelSaveAck,               "feelsaveack"               },
+	{ NULL,                                 NULL                        },
 };
 
 int clif_parse(int fd)
@@ -12530,12 +12520,13 @@ static void packetdb_readdb(void)
 
 char webchat_message[MAX_CHAT_MESSAGE][256*4+1];
 
-void clif_webchat_message(const char* head,const char *mes1,const char *mes2) {
+void clif_webchat_message(const char* head,const char *mes1,const char *mes2)
+{
 	int  i;
 	char *p;
 	char temp[512];
 
-	sprintf(temp,"%s %s : %s",head,mes1,mes2);
+	snprintf(temp, sizeof(temp), "%s %s : %s", head, mes1, mes2);
 	p = httpd_quote_meta(temp);
 	// 重複メッセージがある場合発言取り消し
 	for(i = 0; i < MAX_CHAT_MESSAGE; i++) {
@@ -12553,7 +12544,8 @@ void clif_webchat_message(const char* head,const char *mes1,const char *mes2) {
 	return;
 }
 
-void clif_webchat(struct httpd_session_data* sd,const char* url) {
+void clif_webchat(struct httpd_session_data* sd,const char* url)
+{
 	char *name1 = httpd_get_value(sd,"name");
 	char *name2 = httpd_binary_encode(name1);
 	char *name3 = httpd_quote_meta(name1);
@@ -12561,6 +12553,7 @@ void clif_webchat(struct httpd_session_data* sd,const char* url) {
 	const char *err = NULL;
 	char buf[8192];
 	char *p = buf;
+
 	do {
 		int i;
 		if(get_atcommand_level(AtCommand_MesWeb) > 0) {
@@ -12595,6 +12588,7 @@ void clif_webchat(struct httpd_session_data* sd,const char* url) {
 		p += sprintf(p,"</body></html>\n");
 		httpd_send(sd,200,"text/html",p - buf,buf);
 	} while(0);
+
 	if(err != NULL) {
 		httpd_send(sd,200,"text/html",strlen(err),err);
 	}

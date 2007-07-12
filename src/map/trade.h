@@ -2,6 +2,7 @@
 #define	_TRADE_H_
 
 #include "map.h"
+
 void trade_traderequest(struct map_session_data *sd,int target_id);
 void trade_tradeack(struct map_session_data *sd, unsigned char type);
 void trade_tradeadditem(struct map_session_data *sd, int idx, int amount);

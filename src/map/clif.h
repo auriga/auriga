@@ -8,7 +8,7 @@
 	#include <arpa/inet.h>
 #else
 	#include <winsock.h>
- 	#define in_addr_t unsigned long
+	#define in_addr_t unsigned long
 #endif
 #include "map.h"
 
@@ -333,5 +333,3 @@ void clif_webchat_message(const char* head,const char *mes1,const char *mes2);
 void clif_webchat(struct httpd_session_data* sd,const char* url);
 
 #endif
-
-

@@ -53,8 +53,8 @@
 
 #define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
 
-#define MAX_RANKING 4	//ランキング数
-#define MAX_RANKER  10	//ランキング人数
+#define MAX_RANKING 4	// ランキング数
+#define MAX_RANKER  10	// ランキング人数
 
 #define GRF_PATH_FILENAME "conf/grf-files.txt"
 
@@ -73,19 +73,19 @@
 	#define MAX_VALID_PC_CLASS 30
 #endif
 
-#define PC_CLASS_NV      0  	//ノビ
-#define PC_CLASS_NV2  4001  	//転生ノビ
-#define PC_CLASS_NV3  4023  	//養子ノビ
-#define PC_CLASS_SNV    23  	//スパノビ
-#define PC_CLASS_SNV3 4045  	//養子スパノビ
-#define PC_CLASS_TK   4046	//テコン
-#define PC_CLASS_SG   4047	//拳聖
-#define PC_CLASS_SG2  4048	//拳聖2
-#define PC_CLASS_SL   4049	//ソウルリンカー
-#define PC_CLASS_GS     28	//ガンスリンガー
-#define PC_CLASS_NJ     29	//忍者
-#define PC_CLASS_DK   4051	//デスナイト
-#define PC_CLASS_DC   4052	//ダークコレクター
+#define PC_CLASS_NV      0  	// ノビ
+#define PC_CLASS_NV2  4001  	// 転生ノビ
+#define PC_CLASS_NV3  4023  	// 養子ノビ
+#define PC_CLASS_SNV    23  	// スパノビ
+#define PC_CLASS_SNV3 4045  	// 養子スパノビ
+#define PC_CLASS_TK   4046	// テコン
+#define PC_CLASS_SG   4047	// 拳聖
+#define PC_CLASS_SG2  4048	// 拳聖2
+#define PC_CLASS_SL   4049	// ソウルリンカー
+#define PC_CLASS_GS     28	// ガンスリンガー
+#define PC_CLASS_NJ     29	// 忍者
+#define PC_CLASS_DK   4051	// デスナイト
+#define PC_CLASS_DC   4052	// ダークコレクター
 
 #define MAX_PC_CLASS (1+6+6+1+6+1+1+1+1+4+2+2)
 #define PC_CLASS_BASE 0
@@ -119,10 +119,10 @@ struct s_pet {
 	int pet_id;
 	short class_;
 	unsigned short level;
-	short egg_id;//pet egg id
-	short equip;//pet equip name_id
-	short intimate;//pet friendly
-	short hungry;//pet hungry
+	short egg_id;
+	short equip;
+	short intimate;
+	short hungry;
 	char name[24];
 	char rename_flag;
 	char incubate;
@@ -196,7 +196,7 @@ struct mmo_homunstatus {
 
 	struct skill skill[MAX_HOMSKILL];
 
-	int intimate;	// ペットと違い、最大100,000で計算
+	int intimate;	// ペットと違い最大100,000で計算
 	short hungry;
 	char rename_flag;
 	short incubate;
@@ -312,14 +312,13 @@ struct square {
 };
 
 enum {
-	GBI_EXP			=1,		// ギルドのEXP
-	GBI_GUILDLV		=2,		// ギルドのLv
-	GBI_SKILLPOINT	=3,		// ギルドのスキルポイント
-	GBI_SKILLLV		=4,		// ギルドスキルLv
+	GBI_EXP        = 1,	// ギルドのEXP
+	GBI_GUILDLV    = 2,	// ギルドのLv
+	GBI_SKILLPOINT = 3,	// ギルドのスキルポイント
+	GBI_SKILLLV    = 4,	// ギルドスキルLv
 
-	GMI_POSITION	=0,		// メンバーの役職変更
-	GMI_EXP			=1,		// メンバーのEXP
-
+	GMI_POSITION   = 0,	// メンバーの役職変更
+	GMI_EXP        = 1,	// メンバーのEXP
 };
 
 enum {
@@ -350,10 +349,8 @@ struct mail {
 };
 struct mail_data {
 	unsigned int mail_num;
-	//送信元
 	int char_id;
 	char char_name[24];
-	//受取人
 	char receive_name[24];
 	int read;
 	unsigned int times;

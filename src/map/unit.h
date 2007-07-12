@@ -12,7 +12,7 @@ int unit_forcewalktodir(struct block_list *bl,int distance);
 
 int unit_distance2( struct block_list *bl, struct block_list *bl2);
 // 歩行停止
-// typeは以下の組み合わせ : 
+// typeは以下の組み合わせ :
 //     1: 位置情報の送信( この関数の後に位置情報を送信する場合は不要 )
 //     2: ダメージディレイ有り
 //     4: 不明(MOBのみ？)

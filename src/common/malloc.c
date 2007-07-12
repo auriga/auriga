@@ -166,7 +166,7 @@ double memmgr_usage(void)
 #define BLOCK_DATA_COUNT1	128
 #define BLOCK_DATA_COUNT2	608
 
-/* ブロックの大きさ: 16*128 + 64*576 = 40KB */
+/* ブロックの大きさ: 16*128 + 64*608 = 40KB */
 #define BLOCK_DATA_SIZE1	( BLOCK_ALIGNMENT1 * BLOCK_DATA_COUNT1 )
 #define BLOCK_DATA_SIZE2	( BLOCK_ALIGNMENT2 * BLOCK_DATA_COUNT2 )
 #define BLOCK_DATA_SIZE		( BLOCK_DATA_SIZE1 + BLOCK_DATA_SIZE2 )
@@ -283,6 +283,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 				unit_head_large_first = p;
 			}
 			*(long*)((char*)p + sizeof(struct unit_head_large) - sizeof(long) + size) = 0xdeadbeaf;
+
 			return (char *)p + sizeof(struct unit_head_large) - sizeof(long);
 		} else {
 			printf("MEMMGR::memmgr_alloc failed.\n");
@@ -379,7 +380,7 @@ void* aRealloc_(void *memblock, size_t size, const char *file, int line, const c
 	if(old_size > size) {
 		// サイズ縮小 -> そのまま返す（手抜き）
 		return memblock;
-	}  else {
+	} else {
 		// サイズ拡大
 		void *p = aMalloc_(size,file,line,func);
 		if(p != NULL) {
@@ -492,7 +493,7 @@ static struct block* block_malloc(unsigned short hash)
 #endif
 		if(block_first == NULL) {
 			/* 初回確保 */
-			block_first   = p;
+			block_first = p;
 		} else {
 			block_last->block_next = p;
 		}
@@ -570,7 +571,7 @@ static FILE* memmgr_log(void)
 	if(!fp) {
 		fp = stdout;
 	}
-	fprintf(fp,"memmgr: memory leaks found\n");
+	fprintf(fp,"memmgr: memory leaks found" RETCODE);
 	return fp;
 }
 
@@ -595,13 +596,13 @@ static void memmer_exit(void)
 						char buf[24];
 						strftime(buf, sizeof(buf), "%Y/%m/%d %H:%M:%S", localtime(&head->time_stamp));
 						fprintf(
-							fp,"%04d [%s] : %s line %d size %d\n",++count,buf,
+							fp,"%04d [%s] : %s line %d size %d" RETCODE,++count,buf,
 							head->file,head->line,head->size
 						);
 					}
 #else
 					fprintf(
-						fp,"%04d : %s line %d size %d\n",++count,
+						fp,"%04d : %s line %d size %d" RETCODE,++count,
 						head->file,head->line,head->size
 					);
 #endif
@@ -620,14 +621,14 @@ static void memmer_exit(void)
 			char buf[24];
 			strftime(buf, sizeof(buf), "%Y/%m/%d %H:%M:%S", localtime(&large->unit_head.time_stamp));
 			fprintf(
-				fp,"%04d [%s] : %s line %d size %d\n",++count,buf,
+				fp,"%04d [%s] : %s line %d size %d" RETCODE,++count,buf,
 				large->unit_head.file,
 				large->unit_head.line,large->unit_head.size
 			);
 		}
 #else
 		fprintf(
-			fp,"%04d : %s line %d size %d\n",++count,
+			fp,"%04d : %s line %d size %d" RETCODE,++count,
 			large->unit_head.file,
 			large->unit_head.line,large->unit_head.size
 		);

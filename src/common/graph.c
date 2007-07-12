@@ -50,14 +50,16 @@ struct graph {
 	int *line_pos;
 };
 
-static void graph_write_dword(unsigned char* p,unsigned int v) {
+static void graph_write_dword(unsigned char* p,unsigned int v)
+{
 	p[0] = (unsigned char)((v >> 24) & 0xFF);
 	p[1] = (unsigned char)((v >> 16) & 0xFF);
 	p[2] = (unsigned char)((v >>  8) & 0xFF);
 	p[3] = (unsigned char)(v         & 0xFF);
 }
 
-static struct graph* graph_create(unsigned int x, unsigned int y) {
+static struct graph* graph_create(unsigned int x, unsigned int y)
+{
 	struct graph *g = (struct graph*)aCalloc(sizeof(struct graph),1);
 
 	if(g == NULL) return NULL;
@@ -89,7 +91,8 @@ static struct graph* graph_create(unsigned int x, unsigned int y) {
 }
 
 // パレットの設定
-static void graph_pallet(struct graph* g, int index, unsigned long c) {
+static void graph_pallet(struct graph* g, int index, unsigned long c)
+{
 	if (g == NULL || c >= 256)
 		return;
 
@@ -111,7 +114,8 @@ static void graph_pallet(struct graph* g, int index, unsigned long c) {
 }
 
 // ピクセル色の設定
-static void graph_setpixel(struct graph* g, int x, int y, int color) {
+static void graph_setpixel(struct graph* g, int x, int y, int color)
+{
 	if(g == NULL || color >= 256)
 		return;
 	if(x < 0) x = 0;
@@ -128,7 +132,8 @@ static void graph_setpixel(struct graph* g, int x, int y, int color) {
 
 // ピクセル色の取得
 /* -- actually not used
-static int graph_getpixel(struct graph* g, int x, int y) {
+static int graph_getpixel(struct graph* g, int x, int y)
+{
 	if(x < 0) x = 0;
 	if(y < 0) y = 0;
 	if(x >= g->width)  { x = g->width  - 1; }
@@ -137,7 +142,8 @@ static int graph_getpixel(struct graph* g, int x, int y) {
 	return g->raw_data[y * (g->width + 1) + x + 1];
 }*/
 
-const unsigned char* graph_output(struct graph* g,int *len) {
+const unsigned char* graph_output(struct graph* g,int *len)
+{
 	unsigned long inflate_len;
 	unsigned char *p;
 
@@ -165,7 +171,8 @@ const unsigned char* graph_output(struct graph* g,int *len) {
 	return g->png_data;
 }
 
-static void graph_free(struct graph* g) {
+static void graph_free(struct graph* g)
+{
 	if(g != NULL) {
 		aFree(g->png_data);
 		aFree(g->raw_data);
@@ -180,8 +187,10 @@ static void graph_free(struct graph* g) {
 #define graph_raw_data(g,x,y) (&(g)->raw_data[(y) * ((g)->width+1)+(x)+1])
 
 // 四角形の描画
-static void graph_square(struct graph* g,int x,int y,int xe,int ye,int color) {
+static void graph_square(struct graph* g,int x,int y,int xe,int ye,int color)
+{
 	int i;
+
 	if(g == NULL) return;
 
 	if(x < 0) { x = 0; }
@@ -197,8 +206,10 @@ static void graph_square(struct graph* g,int x,int y,int xe,int ye,int color) {
 }
 
 // 画像のスクロール（ただし、対象はグラフの部分のみ）
-static void graph_scroll(struct graph* g,int n,int color) {
+static void graph_scroll(struct graph* g,int n,int color)
+{
 	int y;
+
 	if(g == NULL) return;
 
 	for(y = 0; y <= g->height - 20; y++) {
@@ -206,7 +217,7 @@ static void graph_scroll(struct graph* g,int n,int color) {
 		memmove(
 			graph_raw_data(g,48  ,y),
 			graph_raw_data(g,48+n,y),
-			g->width - n - 48 - 1 
+			g->width - n - 48 - 1
 		);
 		memset(graph_raw_data(g,g->width - n - 1, y), color, n);
 	}
@@ -216,7 +227,8 @@ static void graph_scroll(struct graph* g,int n,int color) {
 }
 
 // 直線の描画
-static void graph_line(struct graph* g, int x0, int y0, int x1, int y1,int color) {
+static void graph_line(struct graph* g, int x0, int y0, int x1, int y1,int color)
+{
 	int i;
 
 	if( x0 == x1 ) {
@@ -233,7 +245,8 @@ static void graph_line(struct graph* g, int x0, int y0, int x1, int y1,int color
 }
 
 // 文字表示
-static void graph_drawtext(struct graph *g, const char *str, int x, int y, int color) {
+static void graph_drawtext(struct graph *g, const char *str, int x, int y, int color)
+{
 	int i, j;
 	char *fonts = "0123456789.";
 
@@ -255,8 +268,10 @@ static void graph_drawtext(struct graph *g, const char *str, int x, int y, int c
 	return;
 }
 
-static void graph_data(struct graph* g,double value) {
+static void graph_data(struct graph* g,double value)
+{
 	int i, j, start;
+
 	if(g == NULL) return;
 	if(value <= 0) value = 0;
 	memmove(&g->graph_value[0],&g->graph_value[1],sizeof(double) * (GRP_WIDTH - 1));
@@ -279,7 +294,7 @@ static void graph_data(struct graph* g,double value) {
 			base = 0.01;
 			div  = 4;
 		} else {
-			base = pow(10.0, floor(log10(value) ) ); 
+			base = pow(10.0, floor(log10(value) ) );
 			div  = (int)ceil(value / base);
 		}
 		// 分割数の調整( 3 - 5 )
@@ -355,15 +370,18 @@ struct graph_sensor {
 static struct graph_sensor *sensor = NULL;
 static int                  sensor_max = 0;
 
-static int graph_timer(int tid,unsigned int tick,int id,int data) {
+static int graph_timer(int tid,unsigned int tick,int id,int data)
+{
 	if(id >= 0 && id < sensor_max)
 		graph_data(sensor[id].graph,sensor[id].func());
 
 	return 0;
 }
 
-void graph_add_sensor(const char* string, int interval, double (*callback_func)(void)) {
+void graph_add_sensor(const char* string, int interval, double (*callback_func)(void))
+{
 	struct graph *g = graph_create(GRP_WIDTH+48,GRP_HEIGHT+20);
+
 	if (g == NULL) {
 		printf("graph_add_sensor: Unable to add sensor for graph '%s'.\n", string);
 		return;
@@ -383,7 +401,8 @@ void graph_add_sensor(const char* string, int interval, double (*callback_func)(
 	return;
 }
 
-static void graph_parse_httpd(struct httpd_session_data *sd,const char* url) {
+static void graph_parse_httpd(struct httpd_session_data *sd,const char* url)
+{
 	char *graph_no = httpd_get_value(sd,"id");
 	int  id        = atoi(graph_no);
 
@@ -419,7 +438,8 @@ static void graph_parse_httpd(struct httpd_session_data *sd,const char* url) {
 	return;
 }
 
-static void do_final_graph(void) {
+static void do_final_graph(void)
+{
 	int i;
 
 	for(i = 0; i < sensor_max; i++) {
@@ -433,7 +453,8 @@ static void do_final_graph(void) {
 	return;
 }
 
-void do_init_graph(void) {
+void do_init_graph(void)
+{
 	grfio_load_zlib();
 	httpd_pages("/graph",graph_parse_httpd);
 	add_timer_func_list(graph_timer,"graph_timer");
@@ -441,4 +462,3 @@ void do_init_graph(void) {
 
 	return;
 }
-

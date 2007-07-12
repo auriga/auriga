@@ -1,4 +1,13 @@
 ----------------------------------------
+//0222 [2007/07/13] by Rayce
+
+・clif.cの細かい整形
+	-> clif_parse_ChangeDir() のセキュリティ対策
+	-> clif_parse_HomActionRequest() から2005-05-09dRagexeに対するデコード処理部分を抹消
+	-> webchat_message() のsprintfをsnprintfに修正
+・動作に影響しないレベルの細かい整形（src/common, src/map）
+
+----------------------------------------
 //0221 [2007/07/13] by Rayce
 
 ・path.cから経路探索ルーチン単体テスト関数を抹消（path.c）

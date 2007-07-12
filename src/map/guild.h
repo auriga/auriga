@@ -35,8 +35,6 @@ int guild_getindex(struct guild *g,int account_id,int char_id);
 int guild_getposition(struct map_session_data *sd,struct guild *g);
 atn_bignumber guild_payexp(struct map_session_data *sd,atn_bignumber exp);
 
-struct guild_castle *guild_mapname2gc(char *mapname);
-
 
 void guild_create(struct map_session_data *sd,char *name);
 void guild_created(int account_id, int guild_id);

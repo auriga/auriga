@@ -13,5 +13,3 @@ int is_day_of_moon(void);
 int is_day_of_star(void);
 
 #endif
-
-

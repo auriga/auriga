@@ -24,14 +24,13 @@ int ranking_set_data(int ranking_id,struct Ranking_Data *rd);
 
 //ランキング
 enum {
-	RK_BLACKSMITH 	= 0,//ブラックスミス
-	RK_ALCHEMIST 	= 1,//アルケミスト
-	RK_TAEKWON		= 2,//テコンランカー
-	RK_PK			= 3,//虐殺
-	//RK_PVP		= 4,//PVPランキング
+	RK_BLACKSMITH = 0,	// ブラックスミス
+	RK_ALCHEMIST  = 1,	// アルケミスト
+	RK_TAEKWON    = 2,	// テコンランカー
+	RK_PK         = 3,	// 虐殺
+	//RK_PVP      = 4,	// PVPランキング
 };
 
 int do_init_ranking(void);
 
 #endif
-

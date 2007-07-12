@@ -149,6 +149,7 @@ struct dbt* numdb_init_(const char *file,int line)
 void* db_search(struct dbt *table,void* key)
 {
 	struct dbn *p;
+
 	if( table == NULL ) return NULL;
 
 	for(p=table->ht[table->hash(table,key) % HASH_SIZE];p;){
@@ -166,6 +167,7 @@ void* db_search(struct dbt *table,void* key)
 static void db_rotate_left(struct dbn *p,struct dbn **root)
 {
 	struct dbn * y = p->right;
+
 	p->right = y->left;
 	if (y->left !=0)
 		y->left->parent = p;
@@ -184,6 +186,7 @@ static void db_rotate_left(struct dbn *p,struct dbn **root)
 static void db_rotate_right(struct dbn *p,struct dbn **root)
 {
 	struct dbn * y = p->left;
+
 	p->left = y->right;
 	if (y->right != 0)
 		y->right->parent = p;
@@ -350,11 +353,13 @@ static void db_rebalance_erase(struct dbn *z,struct dbn **root)
 	}
 }
 
-void db_free_lock(struct dbt *table) {
+void db_free_lock(struct dbt *table)
+{
 	table->free_lock++;
 }
 
-void db_free_unlock(struct dbt *table) {
+void db_free_unlock(struct dbt *table)
+{
 	if(--table->free_lock == 0) {
 		int i;
 		for(i = 0; i < table->free_count ; i++) {
@@ -498,9 +503,10 @@ void db_foreach_sub(struct dbt* table,int(*func)(void*,void*,va_list), va_list a
 {
 	int i,sp;
 	int count;
-	// red-black treeなので64個stackがあれば2^32個ノードまで大丈夫
-	struct dbn *p,*pn,*stack[64];
-	if( table == NULL ) return ;
+	struct dbn *p,*pn;
+	struct dbn *stack[64];	// red-black treeなので64個stackがあれば2^32個ノードまで大丈夫
+
+	if( table == NULL ) return;
 	count = table->item_count;
 
 	db_free_lock(table);
@@ -542,17 +548,13 @@ void db_clear(struct dbt *table,int (*func)(void*,void*,va_list),...)
 {
 	int i,sp;
 	int count;
-	// red-black treeなので64個stackがあれば2^32個ノードまで大丈夫
-	struct dbn *p, *pn, *stack[64];
+	struct dbn *p, *pn;
+	struct dbn *stack[64];	// red-black treeなので64個stackがあれば2^32個ノードまで大丈夫
 	va_list ap;
 
 	if(table == NULL)
 		return;
 	count = table->item_count;
-	if(count == 0) {
-		// nothing to do
-		return;
-	}
 
 	va_start(ap, func);
 	for(i=0; i<HASH_SIZE; i++) {
@@ -602,7 +604,7 @@ void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
 	struct dbn *p;
 	va_list ap;
 
-	if( table == NULL ) return ;
+	if( table == NULL ) return;
 	va_start(ap,func);
 	for(i=0;i<HASH_SIZE;i++){
 		while( ( p = table->ht[i] ) ) {
@@ -616,7 +618,7 @@ void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
 			} else {
 				p->parent->right = NULL;
 			}
-			if( func ) 
+			if( func )
 				func( p->key, p->data, ap );
 			free_dbn(p);
 		}
@@ -630,9 +632,11 @@ void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
  * 線形リストデータベース
  *------------------------------------------
  */
-void linkdb_insert( struct linkdb_node** head, void *key, void* data) {
+void linkdb_insert( struct linkdb_node** head, void *key, void* data)
+{
 	struct linkdb_node *node;
-	if( head == NULL ) return ;
+
+	if( head == NULL ) return;
 	node = (struct linkdb_node *)aMalloc( sizeof(struct linkdb_node) );
 	if( *head == NULL ) {
 		// first node
@@ -650,9 +654,11 @@ void linkdb_insert( struct linkdb_node** head, void *key, void* data) {
 	node->data = data;
 }
 
-void* linkdb_search( struct linkdb_node** head, void *key) {
+void* linkdb_search( struct linkdb_node** head, void *key)
+{
 	int n = 0;
 	struct linkdb_node *node;
+
 	if( head == NULL ) return NULL;
 	node = *head;
 	while( node ) {
@@ -674,8 +680,10 @@ void* linkdb_search( struct linkdb_node** head, void *key) {
 	return NULL;
 }
 
-void* linkdb_erase( struct linkdb_node** head, void *key) {
+void* linkdb_erase( struct linkdb_node** head, void *key)
+{
 	struct linkdb_node *node;
+
 	if( head == NULL ) return NULL;
 	node = *head;
 	while( node ) {
@@ -695,10 +703,12 @@ void* linkdb_erase( struct linkdb_node** head, void *key) {
 	return NULL;
 }
 
-void linkdb_replace( struct linkdb_node** head, void *key, void *data ) {
+void linkdb_replace( struct linkdb_node** head, void *key, void *data )
+{
 	int n = 0;
 	struct linkdb_node *node;
-	if( head == NULL ) return ;
+
+	if( head == NULL ) return;
 	node = *head;
 	while( node ) {
 		if( node->key == key ) {
@@ -712,7 +722,7 @@ void linkdb_replace( struct linkdb_node** head, void *key, void *data ) {
 				(*head)       = node;
 			}
 			node->data = data;
-			return ;
+			return;
 		}
 		node = node->next;
 		n++;
@@ -721,9 +731,11 @@ void linkdb_replace( struct linkdb_node** head, void *key, void *data ) {
 	linkdb_insert( head, key, data );
 }
 
-void linkdb_final( struct linkdb_node** head ) {
+void linkdb_final( struct linkdb_node** head )
+{
 	struct linkdb_node *node, *node2;
-	if( head == NULL ) return ;
+
+	if( head == NULL ) return;
 	node = *head;
 	while( node ) {
 		node2 = node->next;
@@ -737,14 +749,14 @@ void linkdb_final( struct linkdb_node** head ) {
  * CSVデータベース
  *------------------------------------------
  */
-// csvdb -- csv のデータ読み込み関数
-
 // csv の読み込み。skip_comment が真のときは、行頭に//がある行を読み飛ばす。
-struct csvdb_data* csvdb_open(const char* file, int skip_comment) {
+struct csvdb_data* csvdb_open(const char* file, int skip_comment)
+{
 	int  i;
 	char buf[8192];
 	FILE *fp = fopen(file, "r");
 	struct csvdb_data *csv = (struct csvdb_data*)aCalloc( sizeof(struct csvdb_data), 1);
+
 	csv->file = (char *)aStrdup( file );
 	if(fp == NULL) {
 		return csv;
@@ -754,6 +766,7 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment) {
 		int max = 0;
 		char *s;
 		struct csvdb_line *line;
+
 		if( buf[0] == '\n' || !buf[0] )                      continue; // 空行
 		if( skip_comment && buf[0] == '/' && buf[1] == '/' ) continue; // コメント
 		if( csv->row_count == csv->row_max ) {
@@ -814,17 +827,20 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment) {
 }
 
 // 行数を返す
-int csvdb_get_rows(struct csvdb_data *csv) {
+int csvdb_get_rows(struct csvdb_data *csv)
+{
 	return ( csv == NULL ? -1 : csv->row_notempty );
 }
 
 // 指定した行の列数を返す
-int csvdb_get_columns(struct csvdb_data *csv, int row) {
+int csvdb_get_columns(struct csvdb_data *csv, int row)
+{
 	return ( csv == NULL || row < 0 || csv->row_notempty <= row ? -1 : csv->data[csv->index[row]].num);
 }
 
 // 指定した行、列のデータを整数にして返す
-int csvdb_get_num(struct csvdb_data *csv, int row, int col) {
+int csvdb_get_num(struct csvdb_data *csv, int row, int col)
+{
 	if( csv == NULL || row < 0 || csv->row_notempty <= row || col < 0 || csv->data[csv->index[row]].num <= col )
 		return -1;
 	else
@@ -832,7 +848,8 @@ int csvdb_get_num(struct csvdb_data *csv, int row, int col) {
 }
 
 // 指定した行、列のデータへのポインタを返す
-const char* csvdb_get_str(struct csvdb_data *csv, int row, int col) {
+const char* csvdb_get_str(struct csvdb_data *csv, int row, int col)
+{
 	if( csv == NULL || row < 0 || csv->row_notempty <= row || col < 0 || csv->data[csv->index[row]].num <= col )
 		return NULL;
 	else
@@ -840,8 +857,10 @@ const char* csvdb_get_str(struct csvdb_data *csv, int row, int col) {
 }
 
 // 先頭の行にある数字がvalue と一致する行を返す
-int csvdb_find_num(struct csvdb_data *csv, int col, int value) {
+int csvdb_find_num(struct csvdb_data *csv, int col, int value)
+{
 	int i;
+
 	if( csv == NULL || col < 0 || col >= MAX_CSVCOL) return -1;
 	for(i = 0; i < csv->row_notempty; i++) {
 		struct csvdb_line *line = &csv->data[csv->index[i]];
@@ -853,8 +872,10 @@ int csvdb_find_num(struct csvdb_data *csv, int col, int value) {
 }
 
 // 先頭の行にある文字がvalue と一致する行を返す
-int csvdb_find_str(struct csvdb_data *csv, int col, const char* value) {
+int csvdb_find_str(struct csvdb_data *csv, int col, const char* value)
+{
 	int i;
+
 	if( csv == NULL || col < 0 || col >= MAX_CSVCOL) return -1;
 	for(i = 0; i < csv->row_notempty; i++) {
 		struct csvdb_line *line = &csv->data[csv->index[i]];
@@ -866,8 +887,10 @@ int csvdb_find_str(struct csvdb_data *csv, int col, const char* value) {
 }
 
 // csv のリサイズ(ただし、列数は無視される)
-int csvdb_resize(struct csvdb_data *csv, int row, int col) {
+int csvdb_resize(struct csvdb_data *csv, int row, int col)
+{
 	int i;
+
 	if( csv == NULL || col < 0 || row < 0 || col >= MAX_CSVCOL) return 0;
 	// 行の拡張
 	if( csv->row_count < row ) {
@@ -891,16 +914,20 @@ int csvdb_resize(struct csvdb_data *csv, int row, int col) {
 }
 
 // 指定した行、列のデータを設定する
-int csvdb_set_num(struct csvdb_data *csv, int row, int col, int num) {
-	char buf[256];
+int csvdb_set_num(struct csvdb_data *csv, int row, int col, int num)
+{
+	char buf[32];
+
 	sprintf(buf, "%d", num);
 	return csvdb_set_str(csv, row, col, buf);
 }
 
 // 指定した行、列のデータを設定する
-int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str) {
+int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str)
+{
 	int i;
 	struct csvdb_line *line;
+
 	if( csv == NULL || col < 0 || col >= MAX_CSVCOL || row < 0) return 0;
 	if( csv->row_notempty <= row ) {
 		if(!csvdb_resize(csv, row + 1, col + 1)) return 0;
@@ -928,9 +955,11 @@ int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str) {
 }
 
 // 指定した行、列のデータをクリアする
-int csvdb_clear_row(struct csvdb_data *csv, int row) {
+int csvdb_clear_row(struct csvdb_data *csv, int row)
+{
 	int i;
 	struct csvdb_line *line;
+
 	if( csv == NULL || row < 0 || csv->row_notempty <= row ) return 0;
 	line = &csv->data[ csv->index[ row ] ];
 	if( line->buf == NULL ) {
@@ -950,23 +979,28 @@ int csvdb_clear_row(struct csvdb_data *csv, int row) {
 static int    csvdb_sort_key = 0;
 static struct csvdb_line * csvdb_sort_data = NULL;
 
-static int csvdb_sort_asc(const void *a, const void *b) {
+static int csvdb_sort_asc(const void *a, const void *b)
+{
 	const struct csvdb_line *p1 = &csvdb_sort_data[*(int*)a];
 	const struct csvdb_line *p2 = &csvdb_sort_data[*(int*)b];
+
 	int v1 = (p1->num < csvdb_sort_key ? 0 : p1->data_v[csvdb_sort_key]);
 	int v2 = (p2->num < csvdb_sort_key ? 0 : p2->data_v[csvdb_sort_key]);
 	return  v1 - v2;
 }
 
-static int csvdb_sort_desc(const void *a, const void *b) {
+static int csvdb_sort_desc(const void *a, const void *b)
+{
 	const struct csvdb_line *p1 = &csvdb_sort_data[*(int*)a];
 	const struct csvdb_line *p2 = &csvdb_sort_data[*(int*)b];
+
 	int v1 = (p1->num < csvdb_sort_key ? 0 : p1->data_v[csvdb_sort_key]);
 	int v2 = (p2->num < csvdb_sort_key ? 0 : p2->data_v[csvdb_sort_key]);
 	return  v2 - v1;
 }
 
-int csvdb_sort(struct csvdb_data *csv, int key, int order) {
+int csvdb_sort(struct csvdb_data *csv, int key, int order)
+{
 	if(csv == NULL || key < 0) return 0;
 	csvdb_sort_key  = key;
 	csvdb_sort_data = csv->data;
@@ -982,8 +1016,10 @@ int csvdb_sort(struct csvdb_data *csv, int key, int order) {
 }
 
 // 指定した行を削除する
-int csvdb_delete_row(struct csvdb_data *csv, int row) {
-	int i; 
+int csvdb_delete_row(struct csvdb_data *csv, int row)
+{
+	int i;
+
 	if(csv == NULL || row < 0 || csv->row_notempty <= row) return 0;
 	csvdb_clear_row(csv,row);
 	i = csv->index[row];
@@ -995,8 +1031,10 @@ int csvdb_delete_row(struct csvdb_data *csv, int row) {
 }
 
 // 行を挿入する
-int csvdb_insert_row(struct csvdb_data *csv, int row) {
+int csvdb_insert_row(struct csvdb_data *csv, int row)
+{
 	int i;
+
 	if( csv == NULL || row < 0 || csv->row_notempty <= row) return 0;
 	csvdb_resize(csv, csv->row_notempty + 1, 0);
 	i = csv->index[csv->row_count-1];
@@ -1008,11 +1046,14 @@ int csvdb_insert_row(struct csvdb_data *csv, int row) {
 }
 
 // ファイルに書き出す
-int csvdb_flush(struct csvdb_data *csv) {
+int csvdb_flush(struct csvdb_data *csv)
+{
 	int  i, j;
 	FILE *fp;
+
 	if( csv == NULL ) return 0;
 	if( !csv->dirty ) return 1; // 更新されてなければ何もしない
+
 	fp = fopen( csv->file, "w" );
 	if( !fp ) return 0;
 
@@ -1034,7 +1075,7 @@ int csvdb_flush(struct csvdb_data *csv) {
 				fprintf(fp, "%s,", line->data_p[j]);
 			}
 		}
-		fprintf(fp, "\n");
+		fprintf(fp, RETCODE);
 	}
 	fclose(fp);
 	csv->dirty = 0;
@@ -1043,8 +1084,10 @@ int csvdb_flush(struct csvdb_data *csv) {
 }
 
 // メモリを解放する
-void csvdb_close(struct csvdb_data *csv) {
+void csvdb_close(struct csvdb_data *csv)
+{
 	int i, j;
+
 	if( csv == NULL ) return;
 
 	if( csv->dirty ) {
@@ -1068,10 +1111,13 @@ void csvdb_close(struct csvdb_data *csv) {
 }
 
 // デバッグ用
-void csvdb_dump(struct csvdb_data* csv) {
+void csvdb_dump(struct csvdb_data* csv)
+{
 	int i, j;
 	struct csvdb_line *line;
+
 	if( csv == NULL ) return;
+
 	printf("csvdb_dump: index\n");
 	for(i = 0; i < csv->row_notempty; i++) {
 		printf("% 3d", csv->index[i]);
