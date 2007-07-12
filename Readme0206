@@ -1,4 +1,15 @@
 ----------------------------------------
+//0221 [2007/07/13] by Rayce
+
+・path.cから経路探索ルーチン単体テスト関数を抹消（path.c）
+・intif.cの細かい整形
+	-> intif_GMmessage() を少し変更
+	-> intif_parse_GuildMemberInfoChanged() から不要な代入を削除
+・guild.cの細かい整形
+	-> db/castle_db.txtで指定できるMap_Name, Castle_Name, Event_Nameを23文字までに制限
+	-> guild_broken() でメモリをアロケートしなくて済むように改善
+
+----------------------------------------
 //0220 [2007/07/12] by Rayce
 
 ・バッファオーバーラン対策として文字列の末尾に \0 を強制するように修正（core.c, httpd.c, socket.c）

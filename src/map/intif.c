@@ -59,7 +59,6 @@ extern int char_fd;		// inter serverのfdはchar_fdを使う
 //-----------------------------------------------------------------
 // inter serverへの送信
 
-
 // pet
 void intif_create_pet(int account_id,int char_id,short pet_class,short pet_lv,short pet_egg_id,
 	short pet_equip,short intimate,short hungry,char rename_flag,char incubate,char *pet_name)
@@ -147,7 +146,7 @@ void intif_request_homdata(int account_id, int char_id, int homun_id)
 	WFIFOW(inter_fd, 0) = 0x3089;
 	WFIFOL(inter_fd, 2) = account_id;
 	WFIFOL(inter_fd, 6) = char_id;
-	WFIFOW(inter_fd,10)= homun_id;
+	WFIFOW(inter_fd,10) = homun_id;
 	WFIFOSET(inter_fd,12);
 
 	return;
@@ -189,12 +188,14 @@ void intif_GMmessage(char* mes, int len, int flag)
 	if (inter_fd < 0)
 		return;
 
-	lp=(flag&0x10)?8:4;
+	lp = (flag&0x10)? 4: 0;
 	WFIFOW(inter_fd,0) = 0x3000;
-	WFIFOW(inter_fd,2) = lp + len + 4;
+	WFIFOW(inter_fd,2) = lp + len + 8;
 	WFIFOL(inter_fd,4) = 0xFF000000;	// non color用ダミーコード
-	WFIFOL(inter_fd,8) = 0x65756c62;
-	memcpy(WFIFOP(inter_fd,4+lp), mes, len);
+	if(lp) {
+		strncpy(WFIFOP(inter_fd,8), "blue", 4);
+	}
+	memcpy(WFIFOP(inter_fd,8+lp), mes, len);
 	WFIFOSET(inter_fd, WFIFOW(inter_fd,2));
 
 	return;
@@ -766,7 +767,7 @@ void intif_guild_emblem(int guild_id, unsigned short len, const char *data)
 	return;
 }
 
-//現在のギルド城占領ギルドを調べる
+// 現在のギルド城占領ギルドを調べる
 int intif_guild_castle_dataload(int castle_id, int idx)
 {
 	if (inter_fd < 0)
@@ -780,7 +781,7 @@ int intif_guild_castle_dataload(int castle_id, int idx)
 	return 0;
 }
 
-//ギルド城占領ギルド変更要求
+// ギルド城占領ギルド変更要求
 int intif_guild_castle_datasave(int castle_id, int idx, int value)
 {
 	if (inter_fd < 0)
@@ -799,7 +800,7 @@ int intif_guild_castle_datasave(int castle_id, int idx, int value)
  * 指定した名前のキャラの場所要求
  *------------------------------------------
  */
-int intif_charposreq(int account_id,char *name,int flag)
+static int intif_charposreq(int account_id,char *name,int flag)
 {
 	if (inter_fd < 0)
 		return -1;
@@ -1105,38 +1106,37 @@ int intif_char_connect_limit(int limit)
 // wis受信
 int intif_parse_WisMessage(int fd)
 {
-	struct map_session_data* sd;
-	int id=RFIFOL(fd,4);
-	int i,j=0;
+	struct map_session_data* sd = map_nick2sd(RFIFOP(fd,32));
+	int id = RFIFOL(fd,4);
+	int i, j = 0;
 
-	sd=map_nick2sd(RFIFOP(fd,32));	// 送信先を探す
-	if(sd!=NULL){
-		for(i=0;i<MAX_WIS_REFUSAL;i++){	//拒否リストに名前があるかどうか判定してあれば拒否
-			if(strcmp(sd->wis_refusal[i],RFIFOP(fd,8))==0){
+	if(sd) {
+		for(i=0; i<MAX_WIS_REFUSAL; i++) {	//拒否リストに名前があるかどうか判定してあれば拒否
+			if(strcmp(sd->wis_refusal[i],RFIFOP(fd,8)) == 0) {
 				j++;
 				break;
 			}
 		}
-		if(sd->wis_all)
+		if(sd->wis_all) {
 			intif_wis_replay(id,3);	// 受信拒否
-		else if(j>0)
+		} else if(j > 0) {
 			intif_wis_replay(id,2);	// 受信拒否
-		else{
+		} else {
 			clif_wis_message(sd->fd,RFIFOP(fd,8),RFIFOP(fd,56),RFIFOW(fd,2)-56);
 			intif_wis_replay(id,0);	// 送信成功
 		}
-	}else
+	} else {
 		intif_wis_replay(id,1);	// そんな人いません
+	}
 	return 0;
 }
 
 // wis送信結果受信
 int intif_parse_WisEnd(int fd)
 {
-	struct map_session_data* sd;
+	struct map_session_data* sd = map_nick2sd(RFIFOP(fd,2));
 
-	sd=map_nick2sd(RFIFOP(fd,2));
-	if(sd!=NULL)
+	if(sd)
 		clif_wis_end(sd->fd,RFIFOB(fd,26));
 	return 0;
 }
@@ -1145,16 +1145,16 @@ int intif_parse_WisEnd(int fd)
 int intif_parse_AccountReg(int fd)
 {
 	int j,p;
-	struct map_session_data *sd;
+	struct map_session_data *sd = map_id2sd(RFIFOL(fd,4));
 
-	if( (sd=map_id2sd(RFIFOL(fd,4)))==NULL )
+	if(sd == NULL)
 		return 1;
 
-	for(p=8,j=0;p<RFIFOW(fd,2) && j<ACCOUNT_REG_NUM;p+=36,j++){
+	for(p=8,j=0; p<RFIFOW(fd,2) && j<ACCOUNT_REG_NUM; p+=36,j++) {
 		memcpy(sd->save_reg.account[j].str,RFIFOP(fd,p),32);
-		sd->save_reg.account[j].value=RFIFOL(fd,p+32);
+		sd->save_reg.account[j].value = RFIFOL(fd,p+32);
 	}
-	sd->save_reg.account_num=j;
+	sd->save_reg.account_num = j;
 
 	return 0;
 }
@@ -1441,18 +1441,19 @@ int intif_parse_GuildBroken(int fd)
 // ギルド基本情報変更通知
 int intif_parse_GuildBasicInfoChanged(int fd)
 {
-	int type=RFIFOW(fd,8),guild_id=RFIFOL(fd,4);
-	void *data=RFIFOP(fd,10);
-	struct guild *g=guild_search(guild_id);
-	short dw=*((short *)data);
-	int dd=*((int *)data);
+	int type     = RFIFOW(fd,8);
+	void *data   = RFIFOP(fd,10);
+	struct guild *g = guild_search(RFIFOL(fd,4));
+	short dw = *((short *)data);
+	int dd = *((int *)data);
 
-	if( g==NULL )
+	if(g == NULL)
 		return 0;
-	switch(type){
-		case GBI_EXP:        g->exp=dd;         break;
-		case GBI_GUILDLV:    g->guild_lv=dw;    break;
-		case GBI_SKILLPOINT: g->skill_point=dd; break;
+
+	switch(type) {
+		case GBI_EXP:        g->exp = dd;         break;
+		case GBI_GUILDLV:    g->guild_lv = dw;    break;
+		case GBI_SKILLPOINT: g->skill_point = dd; break;
 	}
 	return 0;
 }
@@ -1460,26 +1461,25 @@ int intif_parse_GuildBasicInfoChanged(int fd)
 // ギルドメンバ情報変更通知
 int intif_parse_GuildMemberInfoChanged(int fd)
 {
-	int type=RFIFOW(fd,16),guild_id=RFIFOL(fd,4);
-	int account_id=RFIFOL(fd,8),char_id=RFIFOL(fd,12);
-	void *data=RFIFOP(fd,18);
-	struct guild *g=guild_search(guild_id);
-	int idx,dd=*((int *)data);
+	int type       = RFIFOW(fd,16);
+	void *data     = RFIFOP(fd,18);
+	struct guild *g = guild_search(RFIFOL(fd,4));
+	int idx, dd = *((int *)data);
 
-	if( g==NULL )
+	if(g == NULL)
 		return 0;
-	idx=guild_getindex(g,account_id,char_id);
+
+	idx = guild_getindex(g,RFIFOL(fd,8),RFIFOL(fd,12));
 	if(idx < 0)
 		return 0;
 
-	switch(type){
-	case GMI_POSITION:
-		g->member[idx].position=dd;
-		guild_memberposition_changed(g,idx,dd);
-		break;
-	case GMI_EXP:
-		g->member[idx].exp=dd;
-		break;
+	switch(type) {
+		case GMI_POSITION:
+			guild_memberposition_changed(g,idx,dd);
+			break;
+		case GMI_EXP:
+			g->member[idx].exp = dd;
+			break;
 	}
 	return 0;
 }
@@ -1505,8 +1505,7 @@ int intif_parse_GuildSkillUp(int fd)
 // ギルド同盟/敵対通知
 int intif_parse_GuildAlliance(int fd)
 {
-	guild_allianceack(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14),
-		RFIFOB(fd,18),RFIFOP(fd,19),RFIFOP(fd,43));
+	guild_allianceack(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOB(fd,18),RFIFOP(fd,19),RFIFOP(fd,43));
 	return 0;
 }
 
@@ -1877,26 +1876,26 @@ int intif_parse(int fd)
 	int cmd = RFIFOW(fd,0);
 
 	// パケットのID確認
-	if(cmd<0x3800 || cmd>=0x3800+(sizeof(packet_len_table)/sizeof(packet_len_table[0])) ||
-	   packet_len_table[cmd-0x3800]==0){
+	if(cmd < 0x3800 || cmd >= 0x3800 + sizeof(packet_len_table) / sizeof(packet_len_table[0]))
 		return 0;
-	}
+
 	// パケットの長さ確認
 	packet_len = packet_len_table[cmd-0x3800];
-	if(packet_len==-1){
-		if(RFIFOREST(fd)<4)
+	if(packet_len == 0)
+		return 0;
+
+	if(packet_len == -1) {
+		if(RFIFOREST(fd) < 4)
 			return 2;
 		packet_len = RFIFOW(fd,2);
 	}
-
-	if(RFIFOREST(fd)<packet_len){
+	if(RFIFOREST(fd) < packet_len)
 		return 2;
-	}
 
 	// 処理分岐
-	switch(cmd){
+	switch(cmd) {
 	case 0x3800:
-		if (RFIFOL(fd,4) == 0xFF000000)
+		if(RFIFOL(fd,4) == 0xFF000000)
 			clif_GMmessage(NULL,(char*)RFIFOP(fd,8),packet_len-8,0);	// non color
 		else
 			clif_announce(NULL,(char*)RFIFOP(fd,8),packet_len-8,RFIFOL(fd,4),0);	// multi-color
