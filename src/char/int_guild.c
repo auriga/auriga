@@ -36,7 +36,7 @@ static int guild_readdb(void)
 {
 	int i;
 	FILE *fp;
-	char line[1024];
+	char line[256];
 
 	fp=fopen("db/exp_guild.txt","r");
 	if(fp==NULL){
@@ -44,7 +44,7 @@ static int guild_readdb(void)
 		return 1;
 	}
 	i=0;
-	while(fgets(line,256,fp) && i<MAX_GUILDLEVEL){
+	while(fgets(line,255,fp) && i<MAX_GUILDLEVEL){
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		guild_exp[i]=atoi(line);
@@ -61,9 +61,8 @@ static int guildcastle_txt_init(void);
 static int guildcastle_txt_sync(void);
 
 static int guild_newid=10000;
-static char guild_txt[1024]="save/guild.txt";
-
-static char castle_txt[1024]="save/castle.txt";
+static char guild_txt[1024]  = "save/guild.txt";
+static char castle_txt[1024] = "save/castle.txt";
 
 
 #ifdef TXT_JOURNAL
@@ -82,14 +81,16 @@ static int guildcastle_journal_cache = 1000;
 void guild_txt_delete(int guild_id);
 
 // ギルドデータの文字列への変換
-int guild_tostr(char *str,struct guild *g)
+static int guild_tostr(char *str,struct guild *g)
 {
 	int i,c,len;
+
 	// 基本データ
 	len=sprintf(str,"%d\t%s\t%s\t%d,%d,%d,%d\t%s#\t%s#\t",
 		g->guild_id,g->name,g->master,
 		g->guild_lv,g->max_member,g->exp,g->skill_point,
 		g->mes1,g->mes2);
+
 	// メンバー
 	for(i=0;i<g->max_member;i++){
 		struct guild_member *m = &g->member[i];
@@ -97,24 +98,28 @@ int guild_tostr(char *str,struct guild *g)
 			m->account_id,m->char_id,
 			m->hair,m->hair_color,m->gender,
 			m->class_,m->lv,m->exp,m->exp_payper,m->position,
-			((m->account_id>0)?m->name:"-"));
+			((m->account_id>0)? m->name: "-"));
 	}
+
 	// 役職
 	for(i=0;i<MAX_GUILDPOSITION;i++){
 		struct guild_position *p = &g->position[i];
 		len+=sprintf(str+len,"%d,%d\t%s#\t",
 			p->mode,p->exp_mode,p->name);
 	}
+
 	// エンブレム
 	len+=sprintf(str+len,"%d,%d,",g->emblem_len,g->emblem_id);
 	for(i=0;i<g->emblem_len;i++){
 		len+=sprintf(str+len,"%02x",(unsigned char)(g->emblem_data[i]));
 	}
 	len+=sprintf(str+len,"$\t");
+
 	// 同盟リスト
-	for(i=0,c=0;i<MAX_GUILDALLIANCE;i++)
+	for(i=0,c=0;i<MAX_GUILDALLIANCE;i++) {
 		if(g->alliance[i].guild_id>0)
 			c++;
+	}
 	len+=sprintf(str+len,"%d\t",c);
 	for(i=0;i<MAX_GUILDALLIANCE;i++){
 		struct guild_alliance *a=&g->alliance[i];
@@ -122,10 +127,12 @@ int guild_tostr(char *str,struct guild *g)
 			len+=sprintf(str+len,"%d,%d\t%s\t",
 				a->guild_id,a->opposition,a->name);
 	}
+
 	// 追放リスト
-	for(i=0,c=0;i<MAX_GUILDEXPLUSION;i++)
+	for(i=0,c=0;i<MAX_GUILDEXPLUSION;i++) {
 		if(g->explusion[i].account_id>0)
 			c++;
+	}
 	len+=sprintf(str+len,"%d\t",c);
 	for(i=0;i<MAX_GUILDEXPLUSION;i++){
 		struct guild_explusion *e=&g->explusion[i];
@@ -133,6 +140,7 @@ int guild_tostr(char *str,struct guild *g)
 			len+=sprintf(str+len,"%d\t%s\t%s#\t",
 				e->account_id,e->name,e->mes );
 	}
+
 	// ギルドスキル
 	for(i=0;i<MAX_GUILDSKILL;i++){
 		len+=sprintf(str+len,"%d,%d ",g->skill[i].id,g->skill[i].lv);
@@ -142,50 +150,54 @@ int guild_tostr(char *str,struct guild *g)
 }
 
 // ギルドデータの文字列からの変換
-int guild_fromstr(char *str,struct guild *g)
+static int guild_fromstr(char *str,struct guild *g)
 {
 	int i,j,c;
-	int tmp_int[16];
+	int tmp_int[10];
 	char tmp_str[4][256];
-	char tmp_str2[4096];
+	char tmp_str2[4097];	// binary data + 1
 	char *pstr;
 
 	// 基本データ
 	memset(g,0,sizeof(struct guild));
 
-	if( sscanf(str,"%d\t%[^\t]\t%[^\t]\t%d,%d,%d,%d,%d\t%[^\t]\t%[^\t]\t",
+	if( sscanf(str,"%d\t%255[^\t]\t%255[^\t]\t%d,%d,%d,%d,%d\t%255[^\t]\t%255[^\t]\t",
 		&tmp_int[0],tmp_str[0],tmp_str[1],
 		&tmp_int[1],&tmp_int[2],&tmp_int[3],&tmp_int[4],&tmp_int[5],
 		tmp_str[2],tmp_str[3]) != 10)
 	{
 		// Auriga-0177以降の形式
-		if( sscanf(str,"%d\t%[^\t]\t%[^\t]\t%d,%d,%d,%d\t%[^\t]\t%[^\t]\t",
+		if( sscanf(str,"%d\t%255[^\t]\t%255[^\t]\t%d,%d,%d,%d\t%255[^\t]\t%255[^\t]\t",
 			&tmp_int[0],tmp_str[0],tmp_str[1],
 			&tmp_int[1],&tmp_int[2],&tmp_int[3],&tmp_int[4],
 			tmp_str[2],tmp_str[3]) != 9)
 			return 1;
 	}
 
-	g->guild_id=tmp_int[0];
-	g->guild_lv=tmp_int[1];
-	g->max_member=tmp_int[2];
-	g->exp=tmp_int[3];
-	g->skill_point=tmp_int[4];
-	memcpy(g->name,tmp_str[0],24);
-	memcpy(g->master,tmp_str[1],24);
-	memcpy(g->mes1,tmp_str[2],60);
-	memcpy(g->mes2,tmp_str[3],120);
-	g->mes1[strlen(g->mes1)-1]=0;
-	g->mes2[strlen(g->mes2)-1]=0;
+	g->guild_id    = tmp_int[0];
+	g->guild_lv    = tmp_int[1];
+	g->max_member  = tmp_int[2];
+	g->exp         = tmp_int[3];
+	g->skill_point = tmp_int[4];
+	strncpy(g->name,tmp_str[0],24);
+	strncpy(g->master,tmp_str[1],24);
+	strncpy(g->mes1,tmp_str[2],60);
+	strncpy(g->mes2,tmp_str[3],120);
+
+	// force \0 terminal
+	g->name[23]   = '\0';
+	g->master[23] = '\0';
+	g->mes1[59]   = '\0';
+	g->mes2[119]  = '\0';
 
 	for(j=0;j<6 && str!=NULL;j++)	// 位置スキップ
 		str=strchr(str+1,'\t');
-//	printf("GuildBaseInfo OK\n");
+	//printf("GuildBaseInfo OK\n");
 
 	// メンバー
 	for(i=0;i<g->max_member && i<MAX_GUILD;i++){
 		struct guild_member *m = &g->member[i];
-		if( sscanf(str+1,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%[^\t]\t",
+		if( sscanf(str+1,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%255[^\t]\t",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],&tmp_int[4],
 			&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],
 			tmp_str[0]) <11)
@@ -200,34 +212,44 @@ int guild_fromstr(char *str,struct guild *g)
 		m->exp=tmp_int[7];
 		m->exp_payper=tmp_int[8];
 		m->position=tmp_int[9];
-		memcpy(m->name,tmp_str[0],24);
+		strncpy(m->name,tmp_str[0],24);
+		m->name[23] = '\0';	// force \0 terminal
 
 		for(j=0;j<2 && str!=NULL;j++)	// 位置スキップ
 			str=strchr(str+1,'\t');
 	}
-//	printf("GuildMemberInfo OK\n");
+	if(g->max_member != i) {
+		printf("int_guild: max guild member changed %d -> %d\n", g->max_member, i);
+		g->max_member = i;
+	}
+	//printf("GuildMemberInfo OK\n");
+
 	// 役職
 	for(i=0;i<MAX_GUILDPOSITION;i++){
 		struct guild_position *p = &g->position[i];
-		if( sscanf(str+1,"%d,%d\t%[^\t]\t",
+		if( sscanf(str+1,"%d,%d\t%255[^\t]\t",
 			&tmp_int[0],&tmp_int[1],tmp_str[0]) < 3)
 			return 1;
-		p->mode=tmp_int[0];
-		p->exp_mode=tmp_int[1];
-		tmp_str[0][strlen(tmp_str[0])-1]=0;
-		memcpy(p->name,tmp_str[0],24);
+		p->mode     = tmp_int[0];
+		p->exp_mode = tmp_int[1];
+		strncpy(p->name,tmp_str[0],24);
+		p->name[23] = '\0';	// force \0 terminal
 
 		for(j=0;j<2 && str!=NULL;j++)	// 位置スキップ
 			str=strchr(str+1,'\t');
 	}
-//	printf("GuildPositionInfo OK\n");
+	//printf("GuildPositionInfo OK\n");
+
 	// エンブレム
 	tmp_int[1]=0;
-	if( sscanf(str+1,"%d,%d,%[^\t]\t",&tmp_int[0],&tmp_int[1],tmp_str2)< 3 &&
-		sscanf(str+1,"%d,%[^\t]\t",&tmp_int[0],tmp_str2) < 2 )
+	if( sscanf(str+1,"%d,%d,%4096[^\t]\t",&tmp_int[0],&tmp_int[1],tmp_str2) < 3 )
 		return 1;
-	g->emblem_len=tmp_int[0];
-	g->emblem_id=tmp_int[1];
+	g->emblem_len = tmp_int[0];
+	g->emblem_id  = tmp_int[1];
+	if(g->emblem_len > sizeof(tmp_str2) / 2) {
+		// エンブレムのデータ長が大きすぎる
+		return 1;
+	}
 	for(i=0,pstr=tmp_str2;i<g->emblem_len;i++,pstr+=2){
 		int c1=pstr[0],c2=pstr[1],x1=0,x2=0;
 		if(c1>='0' && c1<='9')x1=c1-'0';
@@ -238,7 +260,7 @@ int guild_fromstr(char *str,struct guild *g)
 		if(c2>='A' && c2<='F')x2=c2-'A'+10;
 		g->emblem_data[i]=(x1<<4)|x2;
 	}
-//	printf("GuildEmblemInfo OK\n");
+	//printf("GuildEmblemInfo OK\n");
 	str=strchr(str+1,'\t');	// 位置スキップ
 
 	// 同盟リスト
@@ -247,17 +269,19 @@ int guild_fromstr(char *str,struct guild *g)
 	str=strchr(str+1,'\t');	// 位置スキップ
 	for(i=0;i<c && i<MAX_GUILDALLIANCE;i++){
 		struct guild_alliance *a = &g->alliance[i];
-		if( sscanf(str+1,"%d,%d\t%[^\t]\t",
+		if( sscanf(str+1,"%d,%d\t%255[^\t]\t",
 			&tmp_int[0],&tmp_int[1],tmp_str[0]) < 3)
 			return 1;
-		a->guild_id=tmp_int[0];
-		a->opposition=tmp_int[1];
-		memcpy(a->name,tmp_str[0],24);
+		a->guild_id   = tmp_int[0];
+		a->opposition = tmp_int[1];
+		strncpy(a->name,tmp_str[0],24);
+		a->name[23] = '\0';	// force \0 terminal
 
 		for(j=0;j<2 && str!=NULL;j++)	// 位置スキップ
-			str=strchr(str+1,'\t');	
+			str=strchr(str+1,'\t');
 	}
-//	printf("GuildAllianceInfo OK\n");
+	//printf("GuildAllianceInfo OK\n");
+
 	// 追放リスト
 	if( sscanf(str+1,"%d\t",&c)< 1)
 		return 1;
@@ -266,12 +290,12 @@ int guild_fromstr(char *str,struct guild *g)
 		struct guild_explusion *e = &g->explusion[i];
 		int ret,step;
 
-		ret = sscanf(str+1,"%d,%d,%d,%d\t%[^\t]\t%[^\t]\t%[^\t]\t",
+		ret = sscanf(str+1,"%d,%d,%d,%d\t%255[^\t]\t%255[^\t]\t%255[^\t]\t",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			tmp_str[0],tmp_str[2],tmp_str[1]);
 		if(ret != 7) {
 			// Auriga-0142以降の形式
-			ret = sscanf(str+1,"%d\t%[^\t]\t%[^\t]\t",
+			ret = sscanf(str+1,"%d\t%255[^\t]\t%255[^\t]\t",
 				&tmp_int[0],tmp_str[0],tmp_str[1]);
 			if(ret != 3)
 				return 1;
@@ -279,22 +303,30 @@ int guild_fromstr(char *str,struct guild *g)
 		} else {
 			step = 4;
 		}
-		e->account_id=tmp_int[0];
-		memcpy(e->name,tmp_str[0],24);
-		tmp_str[1][strlen(tmp_str[1])-1]=0;
-		memcpy(e->mes,tmp_str[1],40);
+		e->account_id = tmp_int[0];
+		strncpy(e->name,tmp_str[0],24);
+		strncpy(e->mes,tmp_str[1],40);
+
+		// force \0 terminal
+		e->name[23] = '\0';
+		e->mes[39]  = '\0';
 
 		for(j=0;j<step && str!=NULL;j++)	// 位置スキップ
-			str=strchr(str+1,'\t');	
+			str=strchr(str+1,'\t');
 	}
-//	printf("GuildExplusionInfo OK\n");
+	//printf("GuildExplusionInfo OK\n");
+
 	// ギルドスキル
 	for(i=0;i<MAX_GUILDSKILL;i++){
+		int n;
 		if( sscanf(str+1,"%d,%d ",&tmp_int[0],&tmp_int[1]) <2)
 			break;
-		g->skill[i].id=tmp_int[0];
-		g->skill[i].lv=tmp_int[1];
-		str=strchr(str+1,' ');	
+		n = tmp_int[0] - GUILD_SKILLID;
+		if(n >= 0 && n < MAX_GUILDSKILL) {
+			g->skill[n].id = tmp_int[0];
+			g->skill[n].lv = tmp_int[1];
+		}
+		str=strchr(str+1,' ');
 	}
 
 	// 新ギルドスキルへ移行
@@ -302,7 +334,8 @@ int guild_fromstr(char *str,struct guild *g)
 		g->skill[i].id=GUILD_SKILLID+i;
 
 	str=strchr(str+1,'\t');
-//	printf("GuildSkillInfo OK\n");
+	//printf("GuildSkillInfo OK\n");
+
 	return 0;
 }
 
@@ -313,14 +346,14 @@ int guild_fromstr(char *str,struct guild *g)
 int guild_journal_rollforward( int key, void* buf, int flag )
 {
 	struct guild* g = (struct guild *)numdb_search( guild_db, key );
-	
+
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct guild*)buf)->guild_id )
 	{
 		printf("int_guild: journal: key != guild_id !\n");
 		return 0;
 	}
-	
+
 	// データの置き換え
 	if( g )
 	{
@@ -332,7 +365,7 @@ int guild_journal_rollforward( int key, void* buf, int flag )
 		}
 		return 1;
 	}
-	
+
 	// 追加
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
@@ -343,7 +376,7 @@ int guild_journal_rollforward( int key, void* buf, int flag )
 			guild_newid=g->guild_id+1;
 		return 1;
 	}
-	
+
 	return 0;
 }
 int guild_txt_sync(void);
@@ -392,9 +425,9 @@ int guild_txt_init(void)
 		if( journal_load( &guild_journal, sizeof(struct guild), guild_journal_file ) )
 		{
 			int c = journal_rollforward( &guild_journal, guild_journal_rollforward );
-			
+
 			printf("int_guild: guild_journal: roll-forward (%d)\n", c );
-			
+
 			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
 			guild_txt_sync();
 		}
@@ -422,7 +455,7 @@ const struct guild *guild_txt_load_num(int guild_id)
 }
 
 // ギルドデータのセーブ用
-int guild_txt_sync_sub(void *key,void *data,va_list ap)
+static int guild_txt_sync_sub(void *key,void *data,va_list ap)
 {
 	char line[16384];
 	FILE *fp;
@@ -517,11 +550,12 @@ void guild_txt_delete(int guild_id)
 		numdb_erase(guild_db,g->guild_id);
 		gstorage_delete(g->guild_id);
 		mapif_guild_broken(g->guild_id,0);
+		aFree(g);
+
 #ifdef TXT_JOURNAL
 		if( guild_journal_enable )
-			journal_write( &guild_journal, g->guild_id, NULL );
+			journal_write( &guild_journal, guild_id, NULL );
 #endif
-		aFree(g);
 	}
 }
 
@@ -541,17 +575,17 @@ void guild_txt_new(struct guild *g2)
 void guild_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"guild_txt")==0){
-		strncpy(guild_txt,w2,sizeof(guild_txt));
+		strncpy(guild_txt,w2,sizeof(guild_txt) - 1);
 	}
 	else if(strcmpi(w1,"castle_txt")==0){
-		strncpy(castle_txt,w2,sizeof(castle_txt));
+		strncpy(castle_txt,w2,sizeof(castle_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"guild_journal_enable")==0){
 		guild_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"guild_journal_file")==0){
-		strncpy( guild_journal_file, w2, sizeof(guild_journal_file) );
+		strncpy( guild_journal_file, w2, sizeof(guild_journal_file) - 1 );
 	}
 	else if(strcmpi(w1,"guild_journal_cache_interval")==0){
 		guild_journal_cache = atoi( w2 );
@@ -560,7 +594,7 @@ void guild_txt_config_read_sub(const char* w1,const char *w2)
 		guildcastle_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"castle_journal_file")==0){
-		strncpy( guildcastle_journal_file, w2, sizeof(guildcastle_journal_file) );
+		strncpy( guildcastle_journal_file, w2, sizeof(guildcastle_journal_file) - 1 );
 	}
 	else if(strcmpi(w1,"castle_journal_cache_interval")==0){
 		guildcastle_journal_cache = atoi( w2 );
@@ -611,7 +645,7 @@ int guild_txt_save(struct guild* g2)
 }
 
 // ギルド城データの文字列への変換
-int guildcastle_tostr(char *str,struct guild_castle *gc)
+static int guildcastle_tostr(char *str,struct guild_castle *gc)
 {
 	sprintf(str,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
 		gc->castle_id,gc->guild_id,gc->economy,gc->defense,gc->triggerE,
@@ -623,7 +657,7 @@ int guildcastle_tostr(char *str,struct guild_castle *gc)
 }
 
 // ギルド城データの文字列からの変換
-int guildcastle_fromstr(char *str,struct guild_castle *gc)
+static int guildcastle_fromstr(char *str,struct guild_castle *gc)
 {
 	int tmp_int[18];
 
@@ -633,24 +667,24 @@ int guildcastle_fromstr(char *str,struct guild_castle *gc)
 		&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
 		&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17]) <18 )
 		return 1;
-	gc->castle_id=tmp_int[0];
-	gc->guild_id=tmp_int[1];
-	gc->economy=tmp_int[2];
-	gc->defense=tmp_int[3];
-	gc->triggerE=tmp_int[4];
-	gc->triggerD=tmp_int[5];
-	gc->nextTime=tmp_int[6];
-	gc->payTime=tmp_int[7];
-	gc->createTime=tmp_int[8];
-	gc->visibleC=tmp_int[9];
-	gc->visibleG0=tmp_int[10];
-	gc->visibleG1=tmp_int[11];
-	gc->visibleG2=tmp_int[12];
-	gc->visibleG3=tmp_int[13];
-	gc->visibleG4=tmp_int[14];
-	gc->visibleG5=tmp_int[15];
-	gc->visibleG6=tmp_int[16];
-	gc->visibleG7=tmp_int[17];
+	gc->castle_id  = tmp_int[0];
+	gc->guild_id   = tmp_int[1];
+	gc->economy    = tmp_int[2];
+	gc->defense    = tmp_int[3];
+	gc->triggerE   = tmp_int[4];
+	gc->triggerD   = tmp_int[5];
+	gc->nextTime   = tmp_int[6];
+	gc->payTime    = tmp_int[7];
+	gc->createTime = tmp_int[8];
+	gc->visibleC   = tmp_int[9];
+	gc->visibleG0  = tmp_int[10];
+	gc->visibleG1  = tmp_int[11];
+	gc->visibleG2  = tmp_int[12];
+	gc->visibleG3  = tmp_int[13];
+	gc->visibleG4  = tmp_int[14];
+	gc->visibleG5  = tmp_int[15];
+	gc->visibleG6  = tmp_int[16];
+	gc->visibleG7  = tmp_int[17];
 
 	return 0;
 }
@@ -667,7 +701,7 @@ int guildcastle_journal_rollforward( int key, void* buf, int flag )
 		printf("int_guild: castle_journal: key != castle_id !\n");
 		return 0;
 	}
-	
+
 	// データの置き換え
 	if( key >= 0 && key < MAX_GUILDCASTLE )
 	{
@@ -679,21 +713,21 @@ int guildcastle_journal_rollforward( int key, void* buf, int flag )
 		}
 		return 1;
 	}
-	
+
 	// 追加
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
 		memcpy( &castle_db[key], buf, sizeof(castle_db[0]) );
 		return 1;
 	}
-	
+
 	return 0;
 }
 #endif
 
 static int guildcastle_txt_init(void)
 {
-	char line[16384];
+	char line[1024];
 	struct guild_castle gc;
 	FILE *fp;
 	int i,c=0;
@@ -724,9 +758,9 @@ static int guildcastle_txt_init(void)
 		if( journal_load( &guildcastle_journal, sizeof(struct guild_castle), guildcastle_journal_file ) )
 		{
 			int c = journal_rollforward( &guildcastle_journal, guildcastle_journal_rollforward );
-			
+
 			printf("int_guild: castle_journal: roll-forward (%d)\n", c );
-			
+
 			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
 			guildcastle_txt_sync();
 		}
@@ -746,7 +780,7 @@ static int guildcastle_txt_sync(void)
 {
 	FILE *fp;
 	int i,lock;
-	char line[16384];
+	char line[1024];
 
 	if( (fp=lock_fopen(castle_txt,&lock))==NULL ){
 		printf("int_guild: cant write [%s] !!! data is lost !!!\n",castle_txt);
@@ -851,7 +885,7 @@ int guildcastle_sql_init(void)
 	return 0;
 }
 
-int guildcastle_tosql(int castle_id)
+static int guildcastle_tosql(int castle_id)
 {
 	struct guild_castle *gc = &castle_db[castle_id];
 
@@ -924,7 +958,7 @@ const struct guild *guild_sql_load_num(int guild_id)
 	// printf("Request load guild(% 6d)[",guild_id);
 	sprintf(
 		tmp_sql,
-		"SELECT `guild_id`, `name`,`master`,`guild_lv`,`connect_member`,`max_member`,"
+		"SELECT `name`,`master`,`guild_lv`,`connect_member`,`max_member`,"
 		"`average_lv`,`exp`,`next_exp`,`skill_point`,`mes1`,`mes2`,`emblem_len`,"
 		"`emblem_id`,`emblem_data` FROM `%s` WHERE `guild_id`='%d'",guild_db_, guild_id
 	);
@@ -934,7 +968,7 @@ const struct guild *guild_sql_load_num(int guild_id)
 		return NULL;
 	}
 
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
 		sql_row = mysql_fetch_row(sql_res);
 		if (sql_row==NULL) {
@@ -943,24 +977,24 @@ const struct guild *guild_sql_load_num(int guild_id)
 			return NULL;
 		}
 
-		g->guild_id=atoi(sql_row[0]);
-		strncpy(g->name,sql_row[1],24);
-		strncpy(g->master,sql_row[2],24);
-		g->guild_lv=atoi(sql_row[3]);
-		g->connect_member=atoi(sql_row[4]);
-		if (atoi(sql_row[5]) > MAX_GUILD)
+		g->guild_id  = guild_id;
+		strncpy(g->name,sql_row[0],24);
+		strncpy(g->master,sql_row[1],24);
+		g->guild_lv       = atoi(sql_row[2]);
+		g->connect_member = atoi(sql_row[3]);
+		if (atoi(sql_row[4]) > MAX_GUILD)
 			g->max_member = MAX_GUILD;
 		else
-			g->max_member = atoi(sql_row[5]);
-		g->average_lv=atoi(sql_row[6]);
-		g->exp=atoi(sql_row[7]);
-		g->next_exp=atoi(sql_row[8]);
-		g->skill_point=atoi(sql_row[9]);
-		strncpy(g->mes1,sql_row[10],60);
-		strncpy(g->mes2,sql_row[11],120);
-		g->emblem_len=atoi(sql_row[12]);
-		g->emblem_id=atoi(sql_row[13]);
-		strncpy(emblem_data,sql_row[14],4096);
+			g->max_member = atoi(sql_row[4]);
+		g->average_lv  = atoi(sql_row[5]);
+		g->exp         = atoi(sql_row[6]);
+		g->next_exp    = atoi(sql_row[7]);
+		g->skill_point = atoi(sql_row[8]);
+		strncpy(g->mes1,sql_row[9],60);
+		strncpy(g->mes2,sql_row[10],120);
+		g->emblem_len = atoi(sql_row[11]);
+		g->emblem_id  = atoi(sql_row[12]);
+		strncpy(emblem_data,sql_row[13],4096);
 		for(i=0,pstr=emblem_data;i<g->emblem_len;i++,pstr+=2){
 			int c1=pstr[0],c2=pstr[1],x1=0,x2=0;
 			if(c1>='0' && c1<='9')x1=c1-'0';
@@ -971,6 +1005,11 @@ const struct guild *guild_sql_load_num(int guild_id)
 			if(c2>='A' && c2<='F')x2=c2-'A'+10;
 			g->emblem_data[i]=(x1<<4)|x2;
 		}
+		// force \0 terminal
+		g->name[23]   = '\0';
+		g->master[23] = '\0';
+		g->mes1[59]   = '\0';
+		g->mes2[119]  = '\0';
 	} else {
 		if( sql_res ) mysql_free_result(sql_res);
 		g->guild_id = -1;
@@ -982,7 +1021,7 @@ const struct guild *guild_sql_load_num(int guild_id)
 	//printf("- Read guild_member %d from sql \n",guild_id);
 	sprintf(
 		tmp_sql,
-		"SELECT `guild_id`,`account_id`,`char_id`,`hair`,`hair_color`,`gender`,`class`,`lv`,"
+		"SELECT `account_id`,`char_id`,`hair`,`hair_color`,`gender`,`class`,`lv`,"
 		"`exp`,`exp_payper`,`online`,`position`,`name` FROM `%s` "
 		"WHERE `guild_id`='%d' ORDER BY `position`", guild_member_db, guild_id
 	);
@@ -992,48 +1031,50 @@ const struct guild *guild_sql_load_num(int guild_id)
 		g->guild_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
 		int i;
 		for(i=0; (sql_row = mysql_fetch_row(sql_res)) && i<MAX_GUILD ;i++){
 			struct guild_member *m = &g->member[i];
-			m->account_id=atoi(sql_row[1]);
-			m->char_id=atoi(sql_row[2]);
-			m->hair=atoi(sql_row[3]);
-			m->hair_color=atoi(sql_row[4]);
-			m->gender=atoi(sql_row[5]);
-			m->class_=atoi(sql_row[6]);
-			m->lv=atoi(sql_row[7]);
-			m->exp=atoi(sql_row[8]);
-			m->exp_payper=atoi(sql_row[9]);
-			m->online=(unsigned char)atoi(sql_row[10]);
-			if (atoi(sql_row[11]) >= MAX_GUILDPOSITION) // Fix reduction of MAX_GUILDPOSITION [PoW]
+			m->account_id = atoi(sql_row[0]);
+			m->char_id    = atoi(sql_row[1]);
+			m->hair       = atoi(sql_row[2]);
+			m->hair_color = atoi(sql_row[3]);
+			m->gender     = atoi(sql_row[4]);
+			m->class_     = atoi(sql_row[5]);
+			m->lv         = atoi(sql_row[6]);
+			m->exp        = atoi(sql_row[7]);
+			m->exp_payper = atoi(sql_row[8]);
+			m->online     = (unsigned char)atoi(sql_row[9]);
+			if (atoi(sql_row[10]) >= MAX_GUILDPOSITION)
 				m->position = MAX_GUILDPOSITION - 1;
 			else
-				m->position = atoi(sql_row[11]);
-			strncpy(m->name,sql_row[12],24);
+				m->position = atoi(sql_row[10]);
+			strncpy(m->name,sql_row[11],24);
+			m->name[23] = '\0';	//  force \0 terminal
 		}
 	}
 	mysql_free_result(sql_res);
 	// printf("member ");
 
 	//printf("- Read guild_position %d from sql \n",guild_id);
-	sprintf(tmp_sql,"SELECT `guild_id`,`position`,`name`,`mode`,`exp_mode` FROM `%s` WHERE `guild_id`='%d'",guild_position_db, guild_id);
+	sprintf(tmp_sql,"SELECT `position`,`name`,`mode`,`exp_mode` FROM `%s` WHERE `guild_id`='%d'",guild_position_db, guild_id);
 	//printf("  %s\n",tmp_sql);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (select `%s`)- %s\n", guild_position_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
 		int i;
 		for(i=0;((sql_row = mysql_fetch_row(sql_res))&&i<MAX_GUILDPOSITION);i++){
-			int position = atoi(sql_row[1]);
+			int position = atoi(sql_row[0]);
 			struct guild_position *p = &g->position[position];
-			strncpy(p->name,sql_row[2],24);
-			p->mode=atoi(sql_row[3]);
-			p->exp_mode=atoi(sql_row[4]);
+			strncpy(p->name,sql_row[1],24);
+			p->name[23] = '\0';	// force \0 terminal
+			p->mode     = atoi(sql_row[2]);
+			p->exp_mode = atoi(sql_row[3]);
 		}
 	}
 	mysql_free_result(sql_res);
@@ -1042,7 +1083,7 @@ const struct guild *guild_sql_load_num(int guild_id)
 	//printf("- Read guild_alliance %d from sql \n",guild_id);
 	sprintf(
 		tmp_sql,
-		"SELECT `guild_id`,`opposition`,`alliance_id`,`name` FROM `%s` WHERE `guild_id`='%d'",
+		"SELECT `opposition`,`alliance_id`,`name` FROM `%s` WHERE `guild_id`='%d'",
 		guild_alliance_db, guild_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
@@ -1050,52 +1091,60 @@ const struct guild *guild_sql_load_num(int guild_id)
 		g->guild_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
 		int i;
 		for(i=0;((sql_row = mysql_fetch_row(sql_res))&&i<MAX_GUILDALLIANCE);i++){
 			struct guild_alliance *a = &g->alliance[i];
-			a->opposition=atoi(sql_row[1]);
-			a->guild_id=atoi(sql_row[2]);
-			strncpy(a->name,sql_row[3],24);
+			a->opposition = atoi(sql_row[0]);
+			a->guild_id   = atoi(sql_row[1]);
+			strncpy(a->name,sql_row[2],24);
+			a->name[23] = '\0';	// force \0 terminal
 		}
 	}
 	mysql_free_result(sql_res);
 	// printf("alliance ");
 
 	//printf("- Read guild_expulsion %d from sql \n",guild_id);
-	sprintf(tmp_sql,"SELECT `guild_id`,`name`,`mes`,`account_id` FROM `%s` WHERE `guild_id`='%d'",guild_expulsion_db, guild_id);
+	sprintf(tmp_sql,"SELECT `name`,`mes`,`account_id` FROM `%s` WHERE `guild_id`='%d'",guild_expulsion_db, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (select `%s`)- %s\n", guild_expulsion_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
 		int i;
 		for(i=0;((sql_row = mysql_fetch_row(sql_res))&&i<MAX_GUILDEXPLUSION);i++){
 			struct guild_explusion *e = &g->explusion[i];
-			strncpy(e->name,sql_row[1],24);
-			strncpy(e->mes,sql_row[2],40);
-			e->account_id=atoi(sql_row[3]);
+			strncpy(e->name,sql_row[0],24);
+			strncpy(e->mes,sql_row[1],40);
+			e->account_id = atoi(sql_row[2]);
+
+			// force \0 terminal
+			e->name[23] = '\0';
+			e->mes[39]  = '\0';
 		}
 	}
 	mysql_free_result(sql_res);
 	// printf("expulsion ");
 
 	//printf("- Read guild_skill %d from sql \n",guild_id);
-	sprintf(tmp_sql,"SELECT `guild_id`,`id`,`lv` FROM `%s` WHERE `guild_id`='%d' ORDER BY `id`",guild_skill_db, guild_id);
+	sprintf(tmp_sql,"SELECT `id`,`lv` FROM `%s` WHERE `guild_id`='%d' ORDER BY `id`",guild_skill_db, guild_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (select `%s`)- %s\n", guild_skill_db, mysql_error(&mysql_handle) );
 		g->guild_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
-		int i;
+		int i,n;
 		for(i=0;((sql_row = mysql_fetch_row(sql_res))&&i<MAX_GUILDSKILL);i++){
-			g->skill[i].id=atoi(sql_row[1]);
-			g->skill[i].lv=atoi(sql_row[2]);
+			n = atoi(sql_row[0]) - GUILD_SKILLID;
+			if(n >= 0 && n < MAX_GUILDSKILL) {
+				g->skill[n].id = atoi(sql_row[0]);
+				g->skill[n].lv = atoi(sql_row[1]);
+			}
 		}
 
 		// 移行用
@@ -1128,7 +1177,7 @@ const struct guild* guild_sql_load_str(char *str)
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", guild_db_, mysql_error(&mysql_handle));
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res) {
 		while( (sql_row = mysql_fetch_row(sql_res)) ) {
 			if(strcmp(str, sql_row[1]) == 0) {
@@ -1238,7 +1287,7 @@ int guild_sql_save(struct guild* g2)
 
 	//printf("- Insert guild %d to guild_position\n",g2->guild_id);
 	if(memcmp(g1->position,g2->position,sizeof(g1->position))) {
-		//	printf("- Delete guild %d from guild_position\n",g2->guild_id);
+		//printf("- Delete guild %d from guild_position\n",g2->guild_id);
 		sprintf(tmp_sql, "DELETE FROM `%s` WHERE `guild_id`='%d'",guild_position_db, g2->guild_id);
 		if(mysql_query(&mysql_handle, tmp_sql) ) {
 			printf("DB server Error (delete `%s`)- %s\n", guild_position_db, mysql_error(&mysql_handle) );
@@ -1461,21 +1510,22 @@ int guild_sql_new(struct guild *g)
 	if(mysql_query(&mysql_handle, tmp_sql)){
 		printf("failed (get party_id), SQL error: %s\n", mysql_error(&mysql_handle));
 		return 0;
-	} else {
-		//query ok -> get the data!
-		sql_res = mysql_store_result(&mysql_handle);
-		if(!sql_res){
-			printf("failed (get party_id), SQL error: %s\n", mysql_error(&mysql_handle));
-			return 0;
-		}
-		sql_row = mysql_fetch_row(sql_res);
-		if(sql_row[0]) {
-			g->guild_id = atoi(sql_row[0]) + 1;
-		} else {
-			g->guild_id = 100;
-		}
-		mysql_free_result(sql_res);
 	}
+
+	// query ok -> get the data!
+	sql_res = mysql_store_result(&mysql_handle);
+	if(!sql_res){
+		printf("failed (get party_id), SQL error: %s\n", mysql_error(&mysql_handle));
+		return 0;
+	}
+	sql_row = mysql_fetch_row(sql_res);
+	if(sql_row[0]) {
+		g->guild_id = atoi(sql_row[0]) + 1;
+	} else {
+		g->guild_id = 10000;
+	}
+	mysql_free_result(sql_res);
+
 	// DBに挿入
 	sprintf(
 		tmp_sql,
@@ -1690,8 +1740,8 @@ int mapif_guild_leaved(int guild_id,int account_id,int char_id,int flag,const ch
 	WBUFL(buf, 6)=account_id;
 	WBUFL(buf,10)=char_id;
 	WBUFB(buf,14)=flag;
-	memcpy(WBUFP(buf,15),mes,40);
-	memcpy(WBUFP(buf,55),name,24);
+	strncpy(WBUFP(buf,15),mes,40);
+	strncpy(WBUFP(buf,55),name,24);
 	mapif_sendall(buf,79);
 	printf("int_guild: guild leaved %d %d %s %s\n",guild_id,account_id,name,mes);
 	return 0;
@@ -1904,10 +1954,12 @@ int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member
 	memcpy(&g.member[0],master,sizeof(struct guild_member));
 
 	g.position[0].mode=0x11;
-	strncpy(g.position[                  0].name,"GuildMaster",24);
-	strncpy(g.position[MAX_GUILDPOSITION-1].name,"Newbie",24);
-	for(i=1;i<MAX_GUILDPOSITION-1;i++)
+
+	strncpy(g.position[0].name,"GuildMaster",24);
+	for(i=1;i<MAX_GUILDPOSITION-1;i++) {
 		sprintf(g.position[i].name,"Position %d",i+1);
+	}
+	strncpy(g.position[MAX_GUILDPOSITION-1].name,"Newbie",24);
 
 	// ここでギルド情報計算が必要と思われる
 	g.max_member = (MAX_GUILD > 16)? 16: MAX_GUILD;
@@ -1922,7 +1974,7 @@ int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member
 	mapif_guild_info(-1,&g);
 
 	inter_log("guild %s (id=%d) created by master %s (id=%d)",
-		name, g.guild_id, master->name, master->account_id );
+		name, g.guild_id, master->name, master->account_id);
 
 	return 0;
 }
@@ -1981,47 +2033,48 @@ int mapif_parse_GuildLeave(int fd,int guild_id,int account_id,int char_id,int fl
 {
 	const struct guild *g1 = guild_load_num(guild_id);
 	struct guild g2;
+	int i;
 
-	if(g1 != NULL){
-		int i;
-		memcpy(&g2,g1,sizeof(struct guild));
-		for(i=0;i<MAX_GUILD;i++){
-			if(g2.member[i].account_id==account_id && g2.member[i].char_id==char_id){
-				if(flag){	// 追放の場合追放リストに入れる
-					int j;
-					for(j=0;j<MAX_GUILDEXPLUSION;j++){
-						if(g2.explusion[j].account_id==0)
-							break;
-					}
-					if(j==MAX_GUILDEXPLUSION) {	// 一杯なので古いのを消す
-						j=MAX_GUILDEXPLUSION-1;
-						memmove(&g2.explusion[0],&g2.explusion[1],j*sizeof(g2.explusion[0]));
-					}
-					g2.explusion[j].account_id=account_id;
-					memcpy(g2.explusion[j].name,g2.member[i].name,24);
-					memcpy(g2.explusion[j].mes,mes,40);
+	if(g1 == NULL)
+		return 0;
+
+	memcpy(&g2,g1,sizeof(struct guild));
+	for(i=0;i<MAX_GUILD;i++){
+		if(g2.member[i].account_id==account_id && g2.member[i].char_id==char_id){
+			if(flag){	// 追放の場合追放リストに入れる
+				int j;
+				for(j=0;j<MAX_GUILDEXPLUSION;j++){
+					if(g2.explusion[j].account_id==0)
+						break;
 				}
-
-				mapif_guild_leaved(guild_id,account_id,char_id,flag,g2.member[i].name,mes);
-				memset(&g2.member[i],0,sizeof(struct guild_member));
-
-				if( guild_check_empty(&g2) ) {
-					// 空データ
-					guild_delete(g2.guild_id);
-				} else {
-					guild_save(&g2);
-					mapif_guild_info(-1,&g2);// まだ人がいるのでデータ送信
+				if(j>=MAX_GUILDEXPLUSION) {	// 一杯なので古いのを消す
+					j=MAX_GUILDEXPLUSION-1;
+					memmove(&g2.explusion[0],&g2.explusion[1],j*sizeof(g2.explusion[0]));
 				}
-				return 0;
+				g2.explusion[j].account_id=account_id;
+				strncpy(g2.explusion[j].name,g2.member[i].name,24);
+				strncpy(g2.explusion[j].mes,mes,40);
 			}
+
+			mapif_guild_leaved(guild_id,account_id,char_id,flag,g2.member[i].name,mes);
+			memset(&g2.member[i],0,sizeof(struct guild_member));
+
+			if( guild_check_empty(&g2) ) {
+				// 空データ
+				guild_delete(g2.guild_id);
+			} else {
+				guild_save(&g2);
+				mapif_guild_info(-1,&g2);	// まだ人がいるのでデータ送信
+			}
+			return 0;
 		}
 	}
+
 	return 0;
 }
 
 // オンライン/Lv更新
-static int mapif_parse_GuildChangeMemberInfoShort(int fd,int guild_id,
-	int account_id,int char_id,unsigned char online,int lv,int class_)
+static int mapif_parse_GuildChangeMemberInfoShort(int fd,int guild_id,int account_id,int char_id,unsigned char online,int lv,int class_)
 {
 	const struct guild *g1 = guild_load_num(guild_id);
 	int i,alv,c;
@@ -2035,9 +2088,7 @@ static int mapif_parse_GuildChangeMemberInfoShort(int fd,int guild_id,
 	g2.connect_member=0;
 
 	for(i=0,alv=0,c=0;i<MAX_GUILD;i++){
-		if(	g2.member[i].account_id==account_id &&
-			g2.member[i].char_id==char_id){
-
+		if( g2.member[i].account_id==account_id && g2.member[i].char_id==char_id ) {
 			g2.member[i].online=online;
 			g2.member[i].lv=lv;
 			g2.member[i].class_=class_;
@@ -2084,7 +2135,7 @@ int mapif_parse_GuildBasicInfoChange(int fd,int guild_id,int type,const char *da
 	if(type == GBI_GUILDLV) {
 		struct guild g2;
 		memcpy(&g2,g1,sizeof(struct guild));
-		if(dw > 0 && g2.guild_lv + dw <= 50) {
+		if(dw > 0 && g2.guild_lv + dw <= MAX_GUILDLEVEL) {
 			g2.guild_lv    += dw;
 			g2.skill_point += dw;
 		} else if(dw < 0 && g2.guild_lv + dw >= 1) {
@@ -2092,10 +2143,10 @@ int mapif_parse_GuildBasicInfoChange(int fd,int guild_id,int type,const char *da
 		}
 		mapif_guild_info(-1,&g2);
 		guild_save(&g2);
-		return 0;
+	} else {
+		printf("int_guild: GuildBasicInfoChange: Unknown type %d\n",type);
+		mapif_guild_basicinfochanged(guild_id,type,data,len);
 	}
-	printf("int_guild: GuildBasicInfoChange: Unknown type %d\n",type);
-	mapif_guild_basicinfochanged(guild_id,type,data,len);
 
 	return 0;
 }
@@ -2185,7 +2236,7 @@ int mapif_parse_GuildSkillUp(int fd,int guild_id,int skill_num,int account_id,in
 	if (g1 == NULL || idx < 0 || idx >= MAX_GUILDSKILL)
 		return 0;
 	memcpy(&g2,g1,sizeof(struct guild));
-	if( (g2.skill_point>0 || flag&1) && g2.skill[idx].id>0 && g2.skill[idx].lv<10) {
+	if( g2.skill_point>0 || flag&1 ) {
 		g2.skill[idx].lv++;
 		if(!(flag&1)) g2.skill_point--;
 		if(guild_calcinfo(&g2)==0)
@@ -2225,8 +2276,9 @@ int mapif_parse_GuildAlliance(int fd,int guild_id1,int guild_id2,int account_id1
 	} else {	// 関係解消
 		for(i=0;i<2-(flag&1);i++){
 			for(j=0;j<MAX_GUILDALLIANCE;j++) {
-				if(	g2[i].alliance[j].guild_id == g2[1-i].guild_id &&
-					g2[i].alliance[j].opposition == (flag&1)){
+				if( g2[i].alliance[j].guild_id == g2[1-i].guild_id &&
+				    g2[i].alliance[j].opposition == (flag&1))
+				{
 					g2[i].alliance[j].guild_id=0;
 					break;
 				}
@@ -2418,7 +2470,7 @@ int inter_guild_leave(int guild_id,int account_id,int char_id)
 }
 
 // ギルド設定読み込み
-void guild_config_read(const char *w1,const char* w2) 
+void guild_config_read(const char *w1,const char* w2)
 {
 	if(strcmpi(w1,"guild_extension_increment")==0)
 	{
@@ -2428,7 +2480,7 @@ void guild_config_read(const char *w1,const char* w2)
 	}
 	else if(strcmpi(w1,"guild_join_limit")==0)
 	{
-		guild_join_limit=atoi(w2);
+		guild_join_limit = atoi(w2);
 	}
 	else
 	{

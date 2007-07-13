@@ -528,7 +528,8 @@ void guild_npc_request_info(int guild_id,const char *event)
 	}
 
 	ev=(struct eventlist *)aCalloc(1,sizeof(struct eventlist));
-	memcpy(ev->name,event,sizeof(ev->name));
+	strncpy(ev->name,event,sizeof(ev->name));
+	ev->name[sizeof(ev->name)-1] = '\0';	// force \0 terminal
 	ev->next=(struct eventlist *)numdb_search(guild_infoevent_db,guild_id);
 	numdb_insert(guild_infoevent_db,guild_id,ev);
 	guild_request_info(guild_id);
@@ -812,9 +813,14 @@ void guild_member_added(int guild_id, int account_id, int char_id, unsigned char
 
 	if((sd==NULL || sd->guild_invite==0) && flag==0){
 		// キャラ側に登録できなかったため脱退要求を出す
+		char mes[40];
 		if(battle_config.error_log)
 			printf("guild: member added error %d is not online\n",account_id);
-		intif_guild_leave(guild_id, account_id,char_id, 0, msg_txt(176)); // **登録失敗**
+
+		strncpy(mes, msg_txt(176), 40); // **登録失敗**
+		mes[39] = '\0';			// force \0 terminal
+
+		intif_guild_leave(guild_id, account_id,char_id, 0, mes);
 		return;
 	}
 	sd->guild_invite=0;
@@ -1218,6 +1224,7 @@ void guild_change_position(int guild_id, int idx, int mode, int exp_mode, const 
 	memset(&p, 0, sizeof(struct guild_position));
 
 	strncpy(p.name, name, 24);
+	p.name[23] = '\0';	// force \0 terminal
 	p.mode = mode;
 	if (exp_mode < 0)
 		p.exp_mode = 0;
@@ -1273,6 +1280,8 @@ void guild_notice_changed(int guild_id, const char *mes1, const char *mes2)
 
 	memcpy(g->mes1,mes1,60);
 	memcpy(g->mes2,mes2,120);
+	g->mes1[59]  = '\0';
+	g->mes2[119] = '\0';
 
 	for(i=0;i<g->max_member;i++){
 		if((sd=g->member[i].sd)!=NULL)
@@ -1942,6 +1951,7 @@ void guild_addcastleinfoevent(int castle_id, int idx, const char *name)
 	code = castle_id | (idx << 16);
 	ev = (struct eventlist *)aCalloc(1,sizeof(struct eventlist));
 	memcpy(ev->name,name,sizeof(ev->name));
+	ev->name[sizeof(ev->name)-1] = '\0';	// force \0 terminal
 	ev->next = (struct eventlist *)numdb_search(guild_castleinfoevent_db,code);
 	numdb_insert(guild_castleinfoevent_db,code,ev);
 
