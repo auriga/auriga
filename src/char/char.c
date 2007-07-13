@@ -1,3 +1,6 @@
+
+#define _CHAR_C_
+
 #define DUMP_UNKNOWN_PACKET	1
 
 #include <sys/types.h>
@@ -17,8 +20,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define _CHAR_C_
 
 #include "core.h"
 #include "socket.h"
@@ -55,13 +56,13 @@ static int server_fd[MAX_MAP_SERVERS];
 static int login_fd = -1;
 static int char_fd = -1;
 static int char_sfd = -1;
-char userid[24];
-char passwd[24];
-char server_name[20];
-char login_ip_str[16];
+char userid[24] = "";
+char passwd[24] = "";
+char server_name[20] = "Auriga";
+char login_ip_str[16] = "";
 int  login_ip;
 int  login_port = 6900;
-char char_ip_str[16];
+char char_ip_str[16] = "";
 int  char_ip;
 int  char_port = 6121;
 char char_sip_str[16];
@@ -70,7 +71,7 @@ int  char_sport = 0;
 int  char_loginaccess_autorestart;
 int  char_maintenance;
 int  char_new;
-char unknown_char_name[25] = "Unknown";
+char unknown_char_name[24] = "Unknown";
 char char_log_filename[1024] = "log/char.log";
 char GM_account_filename[1024] = "conf/GM_account.txt";
 char default_map_name[16] = "prontera.gat";
@@ -115,13 +116,13 @@ const char ranking_reg[MAX_RANKING][32] =
 };
 
 // 初期位置（confファイルから再設定可能）
-static struct point start_point = {"new_1-1.gat", 53, 111};
+static struct point start_point = { "new_1-1.gat", 53, 111 };
 
 #ifdef TXT_ONLY
 
 static struct mmo_chardata *char_dat = NULL;
 static int  char_num,char_max;
-static char char_txt[1024];
+static char char_txt[1024] = "save/auriga.txt";
 static int  char_id_count=150000;
 
 // キャラIDからchar_datのインデックスを返す
@@ -150,69 +151,74 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 	char *str_p = str;
 	unsigned short sk_lv;
 
-	nullpo_retr(-1,p);
+	nullpo_retr(-1, p);
 
 	str_p += sprintf(str_p,"%d\t%d,%d\t%s\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 		"\t%u,%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%s,%d,%d\t%s,%d,%d,%d,%d,%d,%d\t",
-		p->st.char_id,p->st.account_id,p->st.char_num,p->st.name, //
+		p->st.char_id,p->st.account_id,p->st.char_num,p->st.name,
 		p->st.class_,p->st.base_level,p->st.job_level,
 		p->st.base_exp,p->st.job_exp,p->st.zeny,
 		p->st.hp,p->st.max_hp,p->st.sp,p->st.max_sp,
 		p->st.str,p->st.agi,p->st.vit,p->st.int_,p->st.dex,p->st.luk,
 		p->st.status_point,p->st.skill_point,
-		p->st.option,p->st.karma,p->st.manner,p->st.die_counter,	//
+		p->st.option,p->st.karma,p->st.manner,p->st.die_counter,
 		p->st.party_id,p->st.guild_id,p->st.pet_id,p->st.homun_id,
 		p->st.hair,p->st.hair_color,p->st.clothes_color,
 		p->st.weapon,p->st.shield,p->st.head_top,p->st.head_mid,p->st.head_bottom,
-		p->st.last_point.map,p->st.last_point.x,p->st.last_point.y, //
+		p->st.last_point.map,p->st.last_point.x,p->st.last_point.y,
 		p->st.save_point.map,p->st.save_point.x,p->st.save_point.y,
 		p->st.partner_id,p->st.parent_id[0],p->st.parent_id[1],p->st.baby_id
 	);
-	for(i = 0; i < MAX_PORTAL_MEMO; i++)
+	for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 		if(p->st.memo_point[i].map[0])
 			str_p += sprintf(str_p,"%s,%d,%d ",p->st.memo_point[i].map,p->st.memo_point[i].x,p->st.memo_point[i].y);
-
+	}
 	*(str_p++)='\t';
 
-	for(i=0;i<MAX_INVENTORY;i++)
-		if(p->st.inventory[i].nameid){
+	for(i=0;i<MAX_INVENTORY;i++) {
+		if(p->st.inventory[i].nameid) {
 			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
 			p->st.inventory[i].id,p->st.inventory[i].nameid,p->st.inventory[i].amount,p->st.inventory[i].equip,
 			p->st.inventory[i].identify,p->st.inventory[i].refine,p->st.inventory[i].attribute,
 			p->st.inventory[i].card[0],p->st.inventory[i].card[1],p->st.inventory[i].card[2],p->st.inventory[i].card[3]);
 		}
+	}
 	*(str_p++)='\t';
 
-	for(i=0;i<MAX_CART;i++)
-		if(p->st.cart[i].nameid){
+	for(i=0;i<MAX_CART;i++) {
+		if(p->st.cart[i].nameid) {
 			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
 			p->st.cart[i].id,p->st.cart[i].nameid,p->st.cart[i].amount,p->st.cart[i].equip,
 			p->st.cart[i].identify,p->st.cart[i].refine,p->st.cart[i].attribute,
 			p->st.cart[i].card[0],p->st.cart[i].card[1],p->st.cart[i].card[2],p->st.cart[i].card[3]);
 		}
+	}
 	*(str_p++)='\t';
 
-	for(i=0;i<MAX_SKILL;i++)
+	for(i=0;i<MAX_SKILL;i++) {
 		if(p->st.skill[i].id && p->st.skill[i].flag!=1){
-			sk_lv = (p->st.skill[i].flag==0)?p->st.skill[i].lv:p->st.skill[i].flag-2;
+			sk_lv = (p->st.skill[i].flag==0)? p->st.skill[i].lv: p->st.skill[i].flag-2;
 			str_p += sprintf(str_p,"%d,%d ",p->st.skill[i].id,sk_lv);
 		}
+	}
 	*(str_p++)='\t';
 
-	for(i=0;i<p->reg.global_num;i++)
+	for(i=0;i<p->reg.global_num;i++) {
 		if(p->reg.global[i].str[0] && p->reg.global[i].value != 0)
 			str_p += sprintf(str_p,"%s,%d ",p->reg.global[i].str,p->reg.global[i].value);
+	}
 	*(str_p++)='\t';
 
-	for(i=0;i<p->st.friend_num;i++)
+	for(i=0;i<p->st.friend_num;i++) {
 		str_p += sprintf(str_p,"%d,%d ",p->st.friend_data[i].account_id, p->st.friend_data[i].char_id );
+	}
 	*(str_p++)='\t';
 
-	for(i = 0; i < 3; i++)
+	for(i = 0; i < 3; i++) {
 		if(p->st.feel_map[i][0])
 			str_p += sprintf(str_p,"%s,%d ",p->st.feel_map[i],i);
-
+	}
 	*(str_p++)='\t';
 
 	*str_p='\0';
@@ -222,52 +228,61 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 
 static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 {
-	char tmp_str[256];
+	char tmp_str[3][256];
 	int tmp_int[45];
-	int set,next,len,i;
+	int set,next,len,i,n;
 
-	nullpo_retr(0,p);
+	nullpo_retr(0, p);
 
 	// Auriga-089以降の形式
-	set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
+	set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 		"\t%u,%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-		"\t%[^,],%d,%d\t%[^,],%d,%d,%d,%d,%d,%d%n",
-		&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
+		"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
+		&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],
 		&tmp_int[6],&tmp_int[7],&tmp_int[8],
 		&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
 		&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
 		&tmp_int[19],&tmp_int[20],
-		&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24], //
+		&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24],
 		&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],
 		&tmp_int[29],&tmp_int[30],&tmp_int[31],
 		&tmp_int[32],&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],
-		p->st.last_point.map,&tmp_int[37],&tmp_int[38], //
-		p->st.save_point.map,&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&next
-		);
+		tmp_str[1],&tmp_int[37],&tmp_int[38],
+		tmp_str[2],&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&next
+	);
 
 	if(set != 48) {
 		tmp_int[24] = 0;	// die_counter
-		set=sscanf(str,"%d\t%d,%d\t%[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
+		set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 			"\t%u,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-			"\t%[^,],%d,%d\t%[^,],%d,%d,%d,%d,%d,%d%n",
-			&tmp_int[0],&tmp_int[1],&tmp_int[2],p->st.name, //
+			"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
+			&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 			&tmp_int[3],&tmp_int[4],&tmp_int[5],
 			&tmp_int[6],&tmp_int[7],&tmp_int[8],
 			&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
 			&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
 			&tmp_int[19],&tmp_int[20],
-			&tmp_int[21],&tmp_int[22],&tmp_int[23],	//
+			&tmp_int[21],&tmp_int[22],&tmp_int[23],
 			&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],
 			&tmp_int[29],&tmp_int[30],&tmp_int[31],
 			&tmp_int[32],&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],
-			p->st.last_point.map,&tmp_int[37],&tmp_int[38], //
-			p->st.save_point.map,&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&next
-			);
+			tmp_str[1],&tmp_int[37],&tmp_int[38],
+			tmp_str[2],&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&next
+		);
 
 		if(set != 47)
 			return 0;	// Athena1881以前の古い形式はサポートしない
 	}
+
+	strncpy(p->st.name, tmp_str[0], 24);
+	strncpy(p->st.last_point.map, tmp_str[1], 24);
+	strncpy(p->st.save_point.map, tmp_str[2], 24);
+
+	// force \0 terminal
+	p->st.name[23]           = '\0';
+	p->st.last_point.map[23] = '\0';
+	p->st.save_point.map[23] = '\0';
 
 	p->st.char_id       = tmp_int[0];
 	p->st.account_id    = tmp_int[1];
@@ -319,13 +334,14 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 		return 1;	// 新規データ
 	next++;
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
-		set=sscanf(str+next,"%[^,],%d,%d%n",tmp_str,&tmp_int[0],&tmp_int[1],&len);
+		set=sscanf(str+next,"%255[^,],%d,%d%n",tmp_str[0],&tmp_int[0],&tmp_int[1],&len);
 		if(set!=3)
 			return 0;
 		if(i < MAX_PORTAL_MEMO) {
-			strncpy(p->st.memo_point[i].map, tmp_str, 24);
-			p->st.memo_point[i].x=tmp_int[0];
-			p->st.memo_point[i].y=tmp_int[1];
+			strncpy(p->st.memo_point[i].map, tmp_str[0], 24);
+			p->st.memo_point[i].map[23] = '\0';	// force \0 terminal
+			p->st.memo_point[i].x       = tmp_int[0];
+			p->st.memo_point[i].y       = tmp_int[1];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -334,23 +350,23 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
 		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
-		&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
-		&tmp_int[4],&tmp_int[5],&tmp_int[6],
-		&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+			&tmp_int[4],&tmp_int[5],&tmp_int[6],
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
 		if(set!=11)
 			return 0;
 		if(i < MAX_INVENTORY) {
-			p->st.inventory[i].id=(unsigned int)tmp_int[0];
-			p->st.inventory[i].nameid=tmp_int[1];
-			p->st.inventory[i].amount=tmp_int[2];
-			p->st.inventory[i].equip=tmp_int[3];
-			p->st.inventory[i].identify=tmp_int[4];
-			p->st.inventory[i].refine=tmp_int[5];
-			p->st.inventory[i].attribute=tmp_int[6];
-			p->st.inventory[i].card[0]=tmp_int[7];
-			p->st.inventory[i].card[1]=tmp_int[8];
-			p->st.inventory[i].card[2]=tmp_int[9];
-			p->st.inventory[i].card[3]=tmp_int[10];
+			p->st.inventory[i].id        = (unsigned int)tmp_int[0];
+			p->st.inventory[i].nameid    = tmp_int[1];
+			p->st.inventory[i].amount    = tmp_int[2];
+			p->st.inventory[i].equip     = tmp_int[3];
+			p->st.inventory[i].identify  = tmp_int[4];
+			p->st.inventory[i].refine    = tmp_int[5];
+			p->st.inventory[i].attribute = tmp_int[6];
+			p->st.inventory[i].card[0]   = tmp_int[7];
+			p->st.inventory[i].card[1]   = tmp_int[8];
+			p->st.inventory[i].card[2]   = tmp_int[9];
+			p->st.inventory[i].card[3]   = tmp_int[10];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -359,23 +375,23 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
 		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
-		&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
-		&tmp_int[4],&tmp_int[5],&tmp_int[6],
-		&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+			&tmp_int[4],&tmp_int[5],&tmp_int[6],
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
 		if(set!=11)
 			return 0;
 		if(i < MAX_CART) {
-			p->st.cart[i].id=(unsigned int)tmp_int[0];
-			p->st.cart[i].nameid=tmp_int[1];
-			p->st.cart[i].amount=tmp_int[2];
-			p->st.cart[i].equip=tmp_int[3];
-			p->st.cart[i].identify=tmp_int[4];
-			p->st.cart[i].refine=tmp_int[5];
-			p->st.cart[i].attribute=tmp_int[6];
-			p->st.cart[i].card[0]=tmp_int[7];
-			p->st.cart[i].card[1]=tmp_int[8];
-			p->st.cart[i].card[2]=tmp_int[9];
-			p->st.cart[i].card[3]=tmp_int[10];
+			p->st.cart[i].id        = (unsigned int)tmp_int[0];
+			p->st.cart[i].nameid    = tmp_int[1];
+			p->st.cart[i].amount    = tmp_int[2];
+			p->st.cart[i].equip     = tmp_int[3];
+			p->st.cart[i].identify  = tmp_int[4];
+			p->st.cart[i].refine    = tmp_int[5];
+			p->st.cart[i].attribute = tmp_int[6];
+			p->st.cart[i].card[0]   = tmp_int[7];
+			p->st.cart[i].card[1]   = tmp_int[8];
+			p->st.cart[i].card[2]   = tmp_int[9];
+			p->st.cart[i].card[3]   = tmp_int[10];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -386,9 +402,10 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 		set=sscanf(str+next,"%d,%d%n",&tmp_int[0],&tmp_int[1],&len);
 		if(set!=2)
 			return 0;
-		if(tmp_int[0] >= 0 && tmp_int[0] < MAX_SKILL) {
-			p->st.skill[tmp_int[0]].id = tmp_int[0];
-			p->st.skill[tmp_int[0]].lv = tmp_int[1];
+		n = tmp_int[0];
+		if(n >= 0 && n < MAX_SKILL) {
+			p->st.skill[n].id = tmp_int[0];
+			p->st.skill[n].lv = tmp_int[1];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -397,14 +414,15 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	next++;
 
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%[^,],%d%n",tmp_str,&tmp_int[0],&len);
+		set=sscanf(str+next,"%255[^,],%d%n",tmp_str[0],&tmp_int[0],&len);
 		if(set!=2)
 			return 0;
 		if(i < GLOBAL_REG_NUM) {
-			strncpy(p->reg.global[i].str, tmp_str, 32);
-			p->reg.global[i].value = tmp_int[0];
+			strncpy(p->reg.global[i].str, tmp_str[0], 32);
+			p->reg.global[i].str[31] = '\0';	// force \0 terminal
+			p->reg.global[i].value   = tmp_int[0];
 		} else {
-			printf("char_load %d: couldn't load %s (GLOBAL_REG_NUM = %d)\a\n", p->st.char_id, tmp_str, GLOBAL_REG_NUM);
+			printf("char_load %d: couldn't load %s (GLOBAL_REG_NUM = %d)\a\n", p->st.char_id, tmp_str[0], GLOBAL_REG_NUM);
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -419,7 +437,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 			return 0;
 		if(i < MAX_FRIEND) {
 			p->st.friend_data[i].account_id = tmp_int[0];
-			p->st.friend_data[i].char_id = tmp_int[1];
+			p->st.friend_data[i].char_id    = tmp_int[1];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -429,11 +447,14 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	next++;
 
 	for(i = 0; str[next] && str[next] != '\t' && str[next] != '\n' && str[next] != '\r'; i++) {
-		set=sscanf(str+next,"%[^,],%d%n",tmp_str,&tmp_int[0],&len);
+		set=sscanf(str+next,"%255[^,],%d%n",tmp_str[0],&tmp_int[0],&len);
 		if(set!=2)
 			return 0;
-		if(tmp_int[0] >= 0 && tmp_int[0] < 3)
-			strncpy(p->st.feel_map[tmp_int[0]], tmp_str, 24);
+		n = tmp_int[0];
+		if(n >= 0 && n < 3) {
+			strncpy(p->st.feel_map[n], tmp_str[0], 24);
+			p->st.feel_map[n][23] = '\0';	// force \0 terminal
+		}
 		next+=len;
 		if(str[next]==' ')
 			next++;
@@ -569,7 +590,7 @@ static int char_txt_init(void)
 		for( j=0; j<char_dat[i].st.friend_num; j++ )
 		{
 			struct friend_data* frd = char_dat[i].st.friend_data;
-			const struct mmo_chardata* p = char_txt_load( frd[j].char_id);
+			const struct mmo_chardata* p = char_txt_load(frd[j].char_id);
 			if( p ) {
 				memcpy( frd[j].name, p->st.name, 24 );
 			} else {
@@ -616,7 +637,7 @@ static void char_txt_sync(void)
 
 void char_txt_final(void)
 {
-//	char_txt_sync(); // do_final で呼んでるはず
+	//char_txt_sync(); // do_final で呼んでるはず
 	aFree(char_dat);
 
 #ifdef TXT_JOURNAL
@@ -630,11 +651,15 @@ void char_txt_final(void)
 const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned char *dat,int *flag)
 {
 	int i,j;
+	char name[24];
 
 	for(i=0;i<24 && dat[i];i++){
 		if(dat[i]<0x20 || dat[i]==0x7f)
 			return NULL;
+		name[i] = dat[i];
 	}
+	name[23] = '\0';	// force \0 terminal
+
 	for(i = 24;i<=29;i++) {
 		if(dat[i] > 9) return NULL;
 	}
@@ -643,19 +668,18 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 		printf("make new char over slot!! (%d / %d)\n",dat[30]+1,max_char_slot+1);
 		return NULL;
 	}
-	if(dat[24]+dat[25]+dat[26]+dat[27]+dat[28]+dat[29]>5*6 ||
-		 dat[30]>=9 || dat[33]==0 || dat[33]>=24 || dat[31]>=9
-	){
+	if(dat[24]+dat[25]+dat[26]+dat[27]+dat[28]+dat[29]>5*6 || dat[30]>=9 || dat[33]==0 || dat[33]>=24 || dat[31]>=9)
+	{
 		char_log(
 			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",
-			dat[30],dat,dat[24],dat[25],dat[26],dat[27],dat[28],dat[29],dat[33],dat[31]
+			dat[30],name,dat[24],dat[25],dat[26],dat[27],dat[28],dat[29],dat[33],dat[31]
 		);
 		return NULL;
 	}
-	char_log("make new char %d %s",dat[30],dat);
+	char_log("make new char %d %s",dat[30],name);
 
 	for(i=0;i<char_num;i++){
-		if(strcmp(char_dat[i].st.name,dat)==0 || (char_dat[i].st.account_id==sd->account_id && char_dat[i].st.char_num==dat[30]))
+		if(strcmp(char_dat[i].st.name,name)==0 || (char_dat[i].st.account_id==sd->account_id && char_dat[i].st.char_num==dat[30]))
 			return NULL;
 	}
 
@@ -683,59 +707,59 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 	}
 	memset(&char_dat[i],0,sizeof(char_dat[0]));
 
-	char_dat[i].st.char_id=char_id_count++;
-	char_dat[i].st.account_id=sd->account_id;
-	char_dat[i].st.char_num=dat[30];
-	strncpy(char_dat[i].st.name,dat,24);
-	char_dat[i].st.class_=0;
-	char_dat[i].st.base_level=1;
-	char_dat[i].st.job_level=1;
-	char_dat[i].st.base_exp=0;
-	char_dat[i].st.job_exp=0;
-	char_dat[i].st.zeny=start_zeny;
-	char_dat[i].st.str=dat[24];
-	char_dat[i].st.agi=dat[25];
-	char_dat[i].st.vit=dat[26];
-	char_dat[i].st.int_=dat[27];
-	char_dat[i].st.dex=dat[28];
-	char_dat[i].st.luk=dat[29];
-	char_dat[i].st.max_hp=40 * (100 + char_dat[i].st.vit)/100;
-	char_dat[i].st.max_sp=11 * (100 + char_dat[i].st.int_)/100;
-	char_dat[i].st.hp=char_dat[i].st.max_hp;
-	char_dat[i].st.sp=char_dat[i].st.max_sp;
-	char_dat[i].st.status_point=0;
-	char_dat[i].st.skill_point=0;
-	char_dat[i].st.option=0;
-	char_dat[i].st.karma=0;
-	char_dat[i].st.manner=0;
-	char_dat[i].st.die_counter=0;
-	char_dat[i].st.party_id=0;
-	char_dat[i].st.guild_id=0;
-	char_dat[i].st.hair=dat[33];
-	char_dat[i].st.hair_color=dat[31];
-	char_dat[i].st.clothes_color=0;
+	char_dat[i].st.char_id       = char_id_count++;
+	char_dat[i].st.account_id    = sd->account_id;
+	char_dat[i].st.char_num      = dat[30];
+	strncpy(char_dat[i].st.name,name,24);
+	char_dat[i].st.class_        = 0;
+	char_dat[i].st.base_level    = 1;
+	char_dat[i].st.job_level     = 1;
+	char_dat[i].st.base_exp      = 0;
+	char_dat[i].st.job_exp       = 0;
+	char_dat[i].st.zeny          = start_zeny;
+	char_dat[i].st.str           = dat[24];
+	char_dat[i].st.agi           = dat[25];
+	char_dat[i].st.vit           = dat[26];
+	char_dat[i].st.int_          = dat[27];
+	char_dat[i].st.dex           = dat[28];
+	char_dat[i].st.luk           = dat[29];
+	char_dat[i].st.max_hp        = 40 * (100 + char_dat[i].st.vit) / 100;
+	char_dat[i].st.max_sp        = 11 * (100 + char_dat[i].st.int_) / 100;
+	char_dat[i].st.hp            = char_dat[i].st.max_hp;
+	char_dat[i].st.sp            = char_dat[i].st.max_sp;
+	char_dat[i].st.status_point  = 0;
+	char_dat[i].st.skill_point   = 0;
+	char_dat[i].st.option        = 0;
+	char_dat[i].st.karma         = 0;
+	char_dat[i].st.manner        = 0;
+	char_dat[i].st.die_counter   = 0;
+	char_dat[i].st.party_id      = 0;
+	char_dat[i].st.guild_id      = 0;
+	char_dat[i].st.hair          = dat[33];
+	char_dat[i].st.hair_color    = dat[31];
+	char_dat[i].st.clothes_color = 0;
 
 	j = 0;
 	if(start_weapon > 0) {
-		char_dat[i].st.inventory[j].id     = 1;
-		char_dat[i].st.inventory[j].nameid = start_weapon;
-		char_dat[i].st.inventory[j].amount = 1;
-		char_dat[i].st.inventory[j].equip = 0x02;
+		char_dat[i].st.inventory[j].id       = 1;
+		char_dat[i].st.inventory[j].nameid   = start_weapon;
+		char_dat[i].st.inventory[j].amount   = 1;
+		char_dat[i].st.inventory[j].equip    = 0x02;
 		char_dat[i].st.inventory[j].identify = 1;
 		char_dat[i].st.weapon = 1;
 		j++;
 	}
 	if(start_armor > 0) {
-		char_dat[i].st.inventory[j].id     = 2;
-		char_dat[i].st.inventory[j].nameid = start_armor;
-		char_dat[i].st.inventory[j].amount = 1;
-		char_dat[i].st.inventory[j].equip = 0x10;
+		char_dat[i].st.inventory[j].id       = 2;
+		char_dat[i].st.inventory[j].nameid   = start_armor;
+		char_dat[i].st.inventory[j].amount   = 1;
+		char_dat[i].st.inventory[j].equip    = 0x10;
 		char_dat[i].st.inventory[j].identify = 1;
 	}
-	char_dat[i].st.shield=0;
-	char_dat[i].st.head_top=0;
-	char_dat[i].st.head_mid=0;
-	char_dat[i].st.head_bottom=0;
+	char_dat[i].st.shield      = 0;
+	char_dat[i].st.head_top    = 0;
+	char_dat[i].st.head_mid    = 0;
+	char_dat[i].st.head_bottom = 0;
 	memcpy(&char_dat[i].st.last_point,&start_point,sizeof(start_point));
 	memcpy(&char_dat[i].st.save_point,&start_point,sizeof(start_point));
 	char_num++;
@@ -828,17 +852,17 @@ int char_txt_delete_sub(int char_id)
 int char_txt_config_read_sub(const char* w1,const char* w2)
 {
 	if(strcmpi(w1,"char_txt")==0){
-		strncpy(char_txt,w2,1024);
+		strncpy(char_txt,w2,sizeof(char_txt) - 1);
 	}
 	else if(strcmpi(w1,"gm_account_filename")==0){
-		strncpy(GM_account_filename,w2,1023);
+		strncpy(GM_account_filename,w2,sizeof(GM_account_filename) - 1);
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"char_journal_enable")==0){
 		char_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"char_journal_file")==0){
-		strncpy( char_journal_file, w2, sizeof(char_journal_file) );
+		strncpy( char_journal_file, w2, sizeof(char_journal_file) - 1 );
 	}
 	else if(strcmpi(w1,"char_journal_cache_interval")==0){
 		char_journal_cache = atoi( w2 );
@@ -875,12 +899,12 @@ static int char_txt_build_ranking(void)
 	int count[MAX_RANKING];
 	struct Ranking_Data *rd[MAX_RANKING];
 
-	memset(&ranking_data, 0, sizeof(ranking_data));
-
 	if(char_num <= 0)
 		return 0;
 
+	memset(&ranking_data, 0, sizeof(ranking_data));
 	memset(&count, 0, sizeof(count));
+
 	for(i=0; i<MAX_RANKING; i++)
 		rd[i] = (struct Ranking_Data *)aCalloc(char_num, sizeof(struct Ranking_Data));
 
@@ -1085,7 +1109,7 @@ static int char_sql_init(void)
 		printf("%s\n",mysql_error(&mysql_handle));
 		exit(1);
 	} else {
-		printf ("Connect Success! (Character Server)\n");
+		printf("Connect Success! (Character Server)\n");
 	}
 	if(char_server_charset[0]) {
 		sprintf(tmp_sql,"SET NAMES %s",char_server_charset);
@@ -1193,26 +1217,32 @@ const struct mmo_chardata* char_sql_load(int char_id)
 		p->st.head_top      = atoi(sql_row[34]);
 		p->st.head_mid      = atoi(sql_row[35]);
 		p->st.head_bottom   = atoi(sql_row[36]);
-		strcpy(p->st.last_point.map,sql_row[37]);
+		strncpy(p->st.last_point.map,sql_row[37],24);
 		p->st.last_point.x  = atoi(sql_row[38]);
 		p->st.last_point.y  = atoi(sql_row[39]);
-		strcpy(p->st.save_point.map,sql_row[40]);
+		strncpy(p->st.save_point.map,sql_row[40],24);
 		p->st.save_point.x  = atoi(sql_row[41]);
 		p->st.save_point.y  = atoi(sql_row[42]);
 		p->st.partner_id    = atoi(sql_row[43]);
 		p->st.parent_id[0]  = atoi(sql_row[44]);
 		p->st.parent_id[1]  = atoi(sql_row[45]);
 		p->st.baby_id       = atoi(sql_row[46]);
-		//free mysql result.
+
+		// force \0 terminal
+		p->st.name[23]           = '\0';
+		p->st.last_point.map[23] = '\0';
+		p->st.save_point.map[23] = '\0';
+
+		// free mysql result.
 		mysql_free_result(sql_res);
 	} else {
-		printf("char - failed\n");	//Error?! ERRRRRR WHAT THAT SAY!?
+		printf("char - failed\n");	// Error?! ERRRRRR WHAT THAT SAY!?
 		return NULL;
 	}
 	// printf("char ");
 
-	//read memo data
-	//`memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
+	// read memo data
+	// `memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
 	sprintf(tmp_sql, "SELECT `map`,`x`,`y` FROM `%s` WHERE `char_id`='%d'",memo_db, char_id); // TBR
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
@@ -1221,25 +1251,25 @@ const struct mmo_chardata* char_sql_load(int char_id)
 
 	if (sql_res) {
 		for(i = 0; i < MAX_PORTAL_MEMO && (sql_row = mysql_fetch_row(sql_res)); i++) {
-			strncpy (p->st.memo_point[i].map,sql_row[0], 24);
-			p->st.memo_point[i].x=atoi(sql_row[1]);
-			p->st.memo_point[i].y=atoi(sql_row[2]);
-			//i ++;
+			strncpy(p->st.memo_point[i].map, sql_row[0], 24);
+			p->st.memo_point[i].map[23] = '\0';	// force \0 terminal
+			p->st.memo_point[i].x       = atoi(sql_row[1]);
+			p->st.memo_point[i].y       = atoi(sql_row[2]);
 		}
 		mysql_free_result(sql_res);
 	}
 	// printf("memo ");
 
-	//read inventory
+	// read inventory
 	char_sql_loaditem(p->st.inventory,MAX_INVENTORY,p->st.char_id,TABLE_INVENTORY);
 	// printf("inventory ");
 
-	//read cart.
+	// read cart.
 	char_sql_loaditem(p->st.cart,MAX_CART,p->st.char_id,TABLE_CART);
 	// printf("cart ");
 
-	//read skill
-	//`skill` (`char_id`, `id`, `lv`)
+	// read skill
+	// `skill` (`char_id`, `id`, `lv`)
 	sprintf(tmp_sql, "SELECT `id`, `lv` FROM `%s` WHERE `char_id`='%d'",skill_db, char_id); // TBR
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
@@ -1258,7 +1288,7 @@ const struct mmo_chardata* char_sql_load(int char_id)
 	// printf("skill ");
 
 	// global_reg
-	//`global_reg_value` (`char_id`, `str`, `value`)
+	// `global_reg_value` (`char_id`, `str`, `value`)
 	sprintf(tmp_sql, "SELECT `str`, `value` FROM `%s` WHERE `type`=3 AND `char_id`='%d'",reg_db, char_id); // TBR
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
@@ -1268,8 +1298,9 @@ const struct mmo_chardata* char_sql_load(int char_id)
 	if (sql_res) {
 		for(i=0; (sql_row = mysql_fetch_row(sql_res));i++){
 			if(i < GLOBAL_REG_NUM) {
-				strncpy (p->reg.global[i].str, sql_row[0], 32);
-				p->reg.global[i].value = atoi (sql_row[1]);
+				strncpy(p->reg.global[i].str, sql_row[0], 32);
+				p->reg.global[i].str[31] = '\0';	// force \0 terminal
+				p->reg.global[i].value   = atoi(sql_row[1]);
 			} else {
 				printf("char_load %d: couldn't load %s (GLOBAL_REG_NUM = %d)\a\n", p->st.char_id, sql_row[0], GLOBAL_REG_NUM);
 			}
@@ -1293,6 +1324,7 @@ const struct mmo_chardata* char_sql_load(int char_id)
 			p->st.friend_data[i].account_id = atoi( sql_row[0] );
 			p->st.friend_data[i].char_id = atoi( sql_row[1] );
 			strncpy( p->st.friend_data[i].name, sql_row[2], 24 );
+			p->st.friend_data[i].name[23] = '\0';	// force \0 terminal
 		}
 		mysql_free_result( sql_res );
 		p->st.friend_num = (i < MAX_FRIEND)? i: MAX_FRIEND;
@@ -1305,8 +1337,7 @@ const struct mmo_chardata* char_sql_load(int char_id)
 			printf("DB server Error (select `%s` / check )- %s\n", friend_db, mysql_error(&mysql_handle));
 		}
 		sql_res = mysql_store_result( &mysql_handle );
-		if( !sql_res )
-		{
+		if( !sql_res ) {
 			// 相手に存在しないので、友達リストから削除する
 			sprintf( tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d' AND `id2`='%d'", friend_db, p->st.char_id, p->st.friend_data[i].char_id );
 			if (mysql_query(&mysql_handle, tmp_sql)) {
@@ -1315,17 +1346,15 @@ const struct mmo_chardata* char_sql_load(int char_id)
 			p->st.friend_num--;
 			memmove( &p->st.friend_data[i], &p->st.friend_data[i+1], sizeof(p->st.friend_data[0])* (p->st.friend_num - i ) );
 			i--;
-			printf("*friend_data_correct* ");
-		}
-		else
-		{
+			printf("*friend_data_correct*\n");
+		} else {
 			mysql_free_result( sql_res );
 		}
 	}
 	// printf("friend ");
 
 	// feel_info
-	//`feel_info` (`feel_id`,`char_id`,`map`,`lv`)
+	// `feel_info` (`feel_id`,`char_id`,`map`,`lv`)
 	sprintf(tmp_sql, "SELECT `map`,`lv` FROM `%s` WHERE `char_id`='%d'",feel_db, char_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
@@ -1335,13 +1364,15 @@ const struct mmo_chardata* char_sql_load(int char_id)
 	if (sql_res) {
 		for(i = 0; (sql_row = mysql_fetch_row(sql_res)); i++) {
 			n = atoi(sql_row[1]);
-			if(n >= 0 && n < 3)
-				strncpy (p->st.feel_map[n], sql_row[0], 24);
+			if(n >= 0 && n < 3) {
+				strncpy(p->st.feel_map[n], sql_row[0], 24);
+				p->st.feel_map[n][23] = '\0';	// force \0 terminal
+			}
 		}
 		mysql_free_result(sql_res);
 	}
 
-	// printf("]\n");	//ok. all data load successfuly!
+	// printf("]\n");	// ok. all data load successfuly!
 
 	return p;
 }
@@ -1356,15 +1387,15 @@ int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
 		return 0;
 
 	//printf("- Save global_reg_value data to MySQL!\n");
-	//`global_reg_value` (`char_id`, `str`, `value`)
+	// `global_reg_value` (`char_id`, `str`, `value`)
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`=3 AND `char_id`='%d'",reg_db, char_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 	}
 
-	//insert here.
+	// insert here.
 	for(i=0;i<num;i++){
-		if (reg[i].str[0] && reg[i].value !=0) {
+		if (reg[i].str[0] && reg[i].value != 0) {
 			sprintf(
 				tmp_sql,"INSERT INTO `%s` (`char_id`, `str`, `value`) VALUES ('%d', '%s', '%d')",
 				reg_db, char_id, strecpy(buf,reg[i].str), reg[i].value
@@ -1407,7 +1438,6 @@ int char_sql_save(struct mmo_charstatus *st2)
 	char buf[256];
 	char *p = tmp_sql;
 	int  i;
-	unsigned short sk_lv;
 
 	if(cd == NULL)
 		return 0;
@@ -1475,13 +1505,13 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 	// memo
 	if (memcmp(st1->memo_point,st2->memo_point,sizeof(st1->memo_point))) {
-		//`memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
+		// `memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",memo_db, st2->char_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
 			printf("DB server Error (delete `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 		}
 
-		//insert here.
+		// insert here.
 		for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 			if(st2->memo_point[i].map[0]) {
 				sprintf(
@@ -1509,19 +1539,20 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 	// skill
 	if(memcmp(st1->skill,st2->skill,sizeof(st1->skill))) {
+		unsigned short sk_lv;
 		//printf("- Save skill data to MySQL!\n");
-		//`skill` (`char_id`, `id`, `lv`)
+		// `skill` (`char_id`, `id`, `lv`)
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",skill_db, st2->char_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
 			printf("DB server Error (delete `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
 		}
 		//printf("- Insert skill \n");
-		//insert here.
+		// insert here.
 		p  = tmp_sql;
 		p += sprintf(p,"INSERT INTO `%s`(`char_id`, `id`, `lv`) VALUES",skill_db);
 		sep = ' ';
 		for(i=0;i<MAX_SKILL;i++){
-			sk_lv = (st2->skill[i].flag==0)?st2->skill[i].lv:st2->skill[i].flag-2;
+			sk_lv = (st2->skill[i].flag==0)? st2->skill[i].lv: st2->skill[i].flag-2;
 			if(st2->skill[i].id && st2->skill[i].flag!=1){
 				p += sprintf(p,"%c('%d','%d','%d')",sep,st2->char_id, st2->skill[i].id, sk_lv);
 				sep = ',';
@@ -1537,7 +1568,7 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 	// friend
 	if( st1->friend_num != st2->friend_num ||
-		memcmp(st1->friend_data, st2->friend_data, sizeof(st1->friend_data)) != 0 )
+	    memcmp(st1->friend_data, st2->friend_data, sizeof(st1->friend_data)) != 0 )
 	{
 		sprintf( tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d'", friend_db, st2->char_id );
 		if (mysql_query(&mysql_handle, tmp_sql)) {
@@ -1558,13 +1589,13 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 	// feel_info
 	if (memcmp(st1->feel_map,st2->feel_map,sizeof(st1->feel_map))) {
-		//`feel_info` (`feel_id`,`char_id`,`map`,`lv`)
+		// `feel_info` (`feel_id`,`char_id`,`map`,`lv`)
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",feel_db, st2->char_id);
 		if(mysql_query(&mysql_handle, tmp_sql)) {
 			printf("DB server Error (delete `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
 		}
 
-		//insert here.
+		// insert here.
 		for(i = 0; i < 3; i++) {
 			if(st2->feel_map[i][0]) {
 				sprintf(
@@ -1591,16 +1622,19 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 {
 	int  i;
 	int  char_id;
-	char buf[256];
+	char name[24], buf[256];
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
 	for(i=0;i<24 && dat[i];i++){
 		if(dat[i]<0x20 || dat[i]==0x7f)
-//		MySQLのバグをAuriga側で抑制
-//		if(dat[i]<0x20 || dat[i]==0x7f || dat[i]>=0xfd)
+		// MySQLのバグをAuriga側で抑制
+		//if(dat[i]<0x20 || dat[i]==0x7f || dat[i]>=0xfd)
 			return NULL;
+		name[i] = dat[i];
 	}
+	name[23] = '\0';	// force \0 terminal
+
 	for(i=24;i<=29;i++) {
 		if(dat[i] > 9) return NULL;
 	}
@@ -1609,16 +1643,15 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 		printf("make new char over slot!! (%d / %d)\n",dat[30]+1,max_char_slot+1);
 		return NULL;
 	}
-	if(dat[24]+dat[25]+dat[26]+dat[27]+dat[28]+dat[29]>5*6 ||
-		 dat[30]>=9 || dat[33]==0 || dat[33]>=24 || dat[31]>=9
-	){
+	if(dat[24]+dat[25]+dat[26]+dat[27]+dat[28]+dat[29]>5*6 || dat[30]>=9 || dat[33]==0 || dat[33]>=24 || dat[31]>=9)
+	{
 		char_log(
 			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",
-			dat[30],dat,dat[24],dat[25],dat[26],dat[27],dat[28],dat[29],dat[33],dat[31]
+			dat[30],name,dat[24],dat[25],dat[26],dat[27],dat[28],dat[29],dat[33],dat[31]
 		);
 		return NULL;
 	}
-	char_log("make new char %d %s",dat[30],dat);
+	char_log("make new char %d %s",dat[30],name);
 
 	// 同一アカウントID、同一キャラスロットチェック
 	sprintf(
@@ -1638,7 +1671,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 	if(i) return NULL;
 
 	// 同名チェック
-	sprintf(tmp_sql, "SELECT `name` FROM `%s` WHERE `name` = '%s'", char_db, strecpy(buf,dat));
+	sprintf(tmp_sql, "SELECT `name` FROM `%s` WHERE `name` = '%s'", char_db, strecpy(buf,name));
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
 		return NULL;
@@ -1646,7 +1679,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 	sql_res = mysql_store_result(&mysql_handle);
 	if(sql_res) {
 		while( (sql_row = mysql_fetch_row(sql_res)) ) {
-			if(strncmp(dat, sql_row[0], 24) == 0) {
+			if(strncmp(name, sql_row[0], 24) == 0) {
 				mysql_free_result(sql_res);
 				return NULL;
 			}
@@ -1654,24 +1687,24 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 		mysql_free_result(sql_res);
 	}
 
-	//Insert the char to the 'chardb' ^^
+	// Insert the char to the 'chardb' ^^
 	sprintf(
 		tmp_sql,
 		"INSERT INTO `%s` (`account_id`,`char_num`,`name`,`zeny`,`str`,`agi`,`vit`,`int`,"
 		"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`hair`,`hair_color`,`last_map`,`last_x`,"
 		"`last_y`,`save_map`,`save_x`,`save_y`) VALUES ('%d','%d','%s','%d','%d','%d','%d',"
 		"'%d','%d','%d','%d','%d','%d','%d','%d','%d','%s','%d','%d','%s','%d','%d')",
-		char_db,sd->account_id,dat[30],strecpy(buf,dat),start_zeny,dat[24],dat[25],dat[26],
+		char_db,sd->account_id,dat[30],strecpy(buf,name),start_zeny,dat[24],dat[25],dat[26],
 		dat[27],dat[28],dat[29],40 * (100 + dat[26])/100,40 * (100 + dat[26])/100,
 		11 * (100 + dat[27])/100,11 * (100 + dat[27])/100,dat[33],dat[31],start_point.map,
 		start_point.x, start_point.y, start_point.map, start_point.x,start_point.y
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)){
 		printf("failed (insert in `%s`), SQL error: %s\n", char_db, mysql_error(&mysql_handle));
-		return NULL; //No, stop the procedure!
+		return NULL; // No, stop the procedure!
 	}
 
-	//Now we need the charid from sql!
+	// Now we need the charid from sql!
 	char_id = (int)mysql_insert_id(&mysql_handle);
 
 	// Give the char the default items
@@ -1686,19 +1719,18 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 			return NULL;
 		}
 	}
-	//cotton shirt
+	// cotton shirt
 	if(start_armor > 0) {
 		sprintf(tmp_sql,"INSERT INTO `%s` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
 			"VALUES (2, '%d', '%d', '%d', '%d', '%d')", inventory_db, char_id, start_armor,1,0x10,1
 		);
 		if (mysql_query(&mysql_handle, tmp_sql)){
 			printf("fail (insert in inventory ID %d), SQL error: %s\n", start_armor, mysql_error(&mysql_handle));
-			return NULL; //end....
+			return NULL; // end....
 		}
 	}
 
-	//printf("making new char success - id:(\033[1;32m%d\033[0m\tname:\033[1;32%s\033[0m\n", char_id, t_name);
-	printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", sd->account_id, char_id, dat[30], dat);
+	printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", sd->account_id, char_id, dat[30], name);
 
 	return char_sql_load(char_id);
 }
@@ -1714,7 +1746,7 @@ int char_sql_load_all(struct char_session_data* sd,int account_id)
 
 	memset(&found_id,0,sizeof(found_id));
 
-	//search char.
+	// search char.
 	sprintf(tmp_sql, "SELECT `char_id` FROM `%s` WHERE `account_id` = '%d'",char_db, account_id);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
@@ -1827,22 +1859,22 @@ void char_sql_final(void)
 int char_sql_config_read_sub(const char* w1,const char* w2)
 {
 	if(strcmpi(w1,"char_server_ip")==0){
-		strcpy(char_server_ip, w2);
+		strncpy(char_server_ip, w2, sizeof(char_server_ip) - 1);
 	}
 	else if(strcmpi(w1,"char_server_port")==0){
 		char_server_port=atoi(w2);
 	}
 	else if(strcmpi(w1,"char_server_id")==0){
-		strcpy(char_server_id, w2);
+		strncpy(char_server_id, w2, sizeof(char_server_id) - 1);
 	}
 	else if(strcmpi(w1,"char_server_pw")==0){
-		strcpy(char_server_pw, w2);
+		strncpy(char_server_pw, w2, sizeof(char_server_pw) - 1);
 	}
 	else if(strcmpi(w1,"char_server_db")==0){
-		strcpy(char_server_db, w2);
+		strncpy(char_server_db, w2, sizeof(char_server_db) - 1);
 	}
 	else if(strcmpi(w1,"char_server_charset")==0){
-		strcpy(char_server_charset, w2);
+		strncpy(char_server_charset, w2, sizeof(char_server_charset) - 1);
 	}
 
 	return 0;
@@ -1929,6 +1961,7 @@ static int char_sql_build_ranking(void)
 
 			if(sql_res && (sql_row = mysql_fetch_row(sql_res))) {
 				strncpy(ranking_data[i][j].name, sql_row[0], 24);
+				ranking_data[i][j].name[23] = '\0';	// force \0 terminal
 				mysql_free_result(sql_res);
 			} else {
 				printf("char_build_ranking: char_name not found in %s (ID = %d, Rank = %d)\n", ranking_reg[i], ranking_data[i][j].char_id, j+1);
@@ -2005,9 +2038,9 @@ static void read_gm_account(void)
 			} else {
 				if (level > 99)
 					level = 99;
-				if (range == 2)
+				if (range == 2) {
 					end_range = start_range;
-				else if (end_range < start_range) {
+				} else if (end_range < start_range) {
 					i = end_range;
 					end_range = start_range;
 					start_range = i;
@@ -2027,7 +2060,7 @@ static void read_gm_account(void)
 		}
 	}
 	fclose(fp);
-//	printf("gm_account: %s read done (%d gm account ID)\n", GM_account_filename, c);
+	//printf("gm_account: %s read done (%d gm account ID)\n", GM_account_filename, c);
 
 	return;
 }
@@ -2040,9 +2073,9 @@ static int mmo_char_sync_timer(int tid,unsigned int tick,int id,int data)
 	return 0;
 }
 
-#ifdef TXT_ONLY
 static int char_log(char *fmt,...)
 {
+#ifdef TXT_ONLY
 	FILE *logfp;
 	va_list ap;
 	va_start(ap,fmt);
@@ -2055,14 +2088,7 @@ static int char_log(char *fmt,...)
 	}
 
 	va_end(ap);
-
-	return 0;
-}
-
 #else
-
-static int char_log(char *fmt,...)
-{
 	char log[256], buf[512];
 	va_list ap;
 
@@ -2078,27 +2104,25 @@ static int char_log(char *fmt,...)
 	if(mysql_query(&mysql_handle, tmp_sql) ){
 		printf("DB server Error (insert `%s`)- %s\n", charlog_db, mysql_error(&mysql_handle) );
 	}
-
+#endif
 	return 0;
 }
-#endif
 
 static int count_users(void)
 {
-	if (login_fd >= 0 && session[login_fd]) {
-		int i, users;
+	int i, users = 0;
 
-		users = 0;
-		for(i = 0; i < MAX_MAP_SERVERS; i++)
+	if (login_fd >= 0 && session[login_fd]) {
+		for(i = 0; i < MAX_MAP_SERVERS; i++) {
 			if (server_fd[i] >= 0)
 				users += server[i].users;
-		return users;
+		}
 	}
 
-	return 0;
+	return users;
 }
 
-int mmo_char_send006b(int fd,struct char_session_data *sd)
+static int mmo_char_send006b(int fd,struct char_session_data *sd)
 {
 	int i,found_num;
 	const struct mmo_charstatus *st;
@@ -2158,12 +2182,12 @@ int mmo_char_send006b(int fd,struct char_session_data *sd)
 		WFIFOW(fd,offset+(i*len)+ 70) = st->hair_color;
 		WFIFOW(fd,offset+(i*len)+ 72) = st->clothes_color;
 		memcpy( WFIFOP(fd,offset+(i*len)+74), st->name, 24 );
-		WFIFOB(fd,offset+(i*len)+ 98) = (st->str > 255)?  255:st->str;
-		WFIFOB(fd,offset+(i*len)+ 99) = (st->agi > 255)?  255:st->agi;
-		WFIFOB(fd,offset+(i*len)+100) = (st->vit > 255)?  255:st->vit;
-		WFIFOB(fd,offset+(i*len)+101) = (st->int_ > 255)? 255:st->int_;
-		WFIFOB(fd,offset+(i*len)+102) = (st->dex > 255)?  255:st->dex;
-		WFIFOB(fd,offset+(i*len)+103) = (st->luk > 255)?  255:st->luk;
+		WFIFOB(fd,offset+(i*len)+ 98) = (st->str > 255)  ? 255: st->str;
+		WFIFOB(fd,offset+(i*len)+ 99) = (st->agi > 255)  ? 255: st->agi;
+		WFIFOB(fd,offset+(i*len)+100) = (st->vit > 255)  ? 255: st->vit;
+		WFIFOB(fd,offset+(i*len)+101) = (st->int_ > 255) ? 255: st->int_;
+		WFIFOB(fd,offset+(i*len)+102) = (st->dex > 255)  ? 255: st->dex;
+		WFIFOB(fd,offset+(i*len)+103) = (st->luk > 255)  ? 255: st->luk;
 		WFIFOW(fd,offset+(i*len)+104) = st->char_num;
 		if(len >= 108)
 			WFIFOW(fd,offset+(i*len)+106) = 1;	// キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
@@ -2174,14 +2198,13 @@ int mmo_char_send006b(int fd,struct char_session_data *sd)
 		else
 			WFIFOL(fd,offset+(i*len)+28) = st->option;
 	}
-
 	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return 0;
 }
 
 // ##変数の保存
-int set_account_reg2(int acc,int num,struct global_reg *reg)
+static int set_account_reg2(int acc,int num,struct global_reg *reg)
 {
 	int i;
 	struct char_session_data sd;
@@ -2201,7 +2224,7 @@ int set_account_reg2(int acc,int num,struct global_reg *reg)
 }
 
 // ##変数の取得
-int get_account_reg2(struct char_session_data *sd,struct global_reg *reg)
+static int get_account_reg2(struct char_session_data *sd,struct global_reg *reg)
 {
 	int i;
 
@@ -2221,7 +2244,7 @@ int get_account_reg2(struct char_session_data *sd,struct global_reg *reg)
 }
 
 // 離婚
-int char_divorce(const struct mmo_charstatus *st)
+static int char_divorce(const struct mmo_charstatus *st)
 {
 	if(st == NULL)
 		return 0;
@@ -2248,7 +2271,7 @@ int char_divorce(const struct mmo_charstatus *st)
 }
 
 // 養子解体
-int char_break_adoption(const struct mmo_charstatus *st)
+static int char_break_adoption(const struct mmo_charstatus *st)
 {
 	if(st == NULL)
 		return 0;
@@ -2273,7 +2296,7 @@ int char_break_adoption(const struct mmo_charstatus *st)
 }
 
 // ランキングデータ送信セット
-int char_set_ranking_send(int ranking_id,char *buf)
+static int char_set_ranking_send(int ranking_id,char *buf)
 {
 	WBUFW(buf,0) = 0x2b30;
 	WBUFW(buf,2) = 6+sizeof(ranking_data[0]);
@@ -2297,7 +2320,7 @@ static int compare_ranking_data(const void *a,const void *b)
 	return 0;
 }
 
-int char_ranking_update(int ranking_id,int rank,struct Ranking_Data *rd)
+static int char_ranking_update(int ranking_id,int rank,struct Ranking_Data *rd)
 {
 	if(rd == NULL)
 		return 0;
@@ -2404,12 +2427,14 @@ static int char_delete(const struct mmo_chardata *cd)
 	// ペット削除
 	if(cd->st.pet_id)
 		pet_delete(cd->st.pet_id);
-	for(j=0;j<MAX_INVENTORY;j++)
+	for(j=0;j<MAX_INVENTORY;j++) {
 		if(cd->st.inventory[j].card[0] == (short)0xff00)
 			pet_delete(*((long *)(&cd->st.inventory[j].card[1])));
-	for(j=0;j<MAX_CART;j++)
+	}
+	for(j=0;j<MAX_CART;j++) {
 		if(cd->st.cart[j].card[0] == (short)0xff00)
 			pet_delete(*((long *)(&cd->st.cart[j].card[1])));
+	}
 	// ホムンクルス削除
 	if(cd->st.homun_id)
 		homun_delete(cd->st.homun_id);
@@ -2448,14 +2473,14 @@ int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,int ip)
 		auth_fifo[i].login_id1==login_id1 )
 		return 1;
 #ifdef CMP_AUTHFIFO_LOGIN2
-//	printf("cmp_authfifo: id2 check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].login_id2,login_id2,
-//		auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
+	//printf("cmp_authfifo: id2 check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].login_id2,login_id2,
+	//	auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
 	if( auth_fifo[i].login_id2==login_id2 && login_id2 != 0)
 		return 1;
 #endif
 #ifdef CMP_AUTHFIFO_IP
-//	printf("cmp_authfifo: ip check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].ip,ip,
-//		auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
+	//printf("cmp_authfifo: ip check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].ip,ip,
+	//	auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
 	if(auth_fifo[i].ip==ip && ip!=0 && ip!=-1)
 		return 1;
 #endif
@@ -2477,7 +2502,7 @@ int parse_tologin(int fd)
 	int i,fdc;
 	struct char_session_data *sd;
 
-//	printf("parse_tologin : %d %d %d\n",fd,RFIFOREST(fd),RFIFOW(fd,0));
+	//printf("parse_tologin : %d %d %d\n",fd,RFIFOREST(fd),RFIFOW(fd,0));
 	sd = (struct char_session_data *)session[fd]->session_data;
 
 	while(RFIFOREST(fd)>=2){
@@ -2507,7 +2532,7 @@ int parse_tologin(int fd)
 				RFIFOSKIP(fd,15);
 				break;
 			}
-//			printf("parse_tologin 2713 : %d\n",RFIFOB(fd,6));
+			//printf("parse_tologin 2713 : %d\n",RFIFOB(fd,6));
 			if(RFIFOB(fd,6)!=0){
 				WFIFOW(fdc,0)=0x6c;
 				WFIFOB(fdc,2)=0x42;
@@ -2524,17 +2549,16 @@ int parse_tologin(int fd)
 				return 0;
 			}
 			if(max_connect_user > 0) {
-				if(count_users() < max_connect_user  || isGM(sd->account_id)>0)
+				if(count_users() < max_connect_user  || isGM(sd->account_id) > 0) {
 					mmo_char_send006b(fdc,sd);
-				else {
+				} else {
 					WFIFOW(fdc,0)=0x6c;
 					WFIFOW(fdc,2)=0;
 					WFIFOSET(fdc,3);
 				}
-			}
-			else
+			} else {
 				mmo_char_send006b(fdc,sd);
-
+			}
 			RFIFOSKIP(fd,15);
 			break;
 
@@ -2545,7 +2569,7 @@ int parse_tologin(int fd)
 			{
 				int ch;
 				for(i=0;i<fd_max;i++){
-					if(session[i] && (sd=session[i]->session_data)){
+					if(session[i] && (sd = (struct char_session_data *)session[i]->session_data)){
 						if(sd->account_id==RFIFOL(fd,2))
 							break;
 					}
@@ -2611,7 +2635,7 @@ int parse_tologin(int fd)
 				for(i=0;i<found_char;i++){
 					int flag = 0;
 					memcpy(&st,&sd.found_char[i]->st,sizeof(struct mmo_charstatus));
-					//雷鳥は職も変更
+					// 雷鳥は職も変更
 					if(st.class_ == 19 || st.class_ == 20){
 						flag = 1; st.class_ = (sex ? 19 : 20);
 					} else if(st.class_ == 19 + PC_CLASS_BASE2 || st.class_ == 20 + PC_CLASS_BASE2) {
@@ -2631,7 +2655,7 @@ int parse_tologin(int fd)
 								st.skill[j].lv = 0;
 							}
 						}
-						char_save(&st);	//キャラデータ変更のセーブ
+						char_save(&st);	// キャラデータ変更のセーブ
 					}
 				}
 				WBUFW(buf,0)=0x2b0d;
@@ -2655,8 +2679,9 @@ int parse_tologin(int fd)
 				acc=RFIFOL(fd,4);
 				memset(&reg, 0, sizeof(reg));
 				for(p=8,j=0;p<RFIFOW(fd,2) && j<ACCOUNT_REG2_NUM;p+=36,j++){
-					memcpy(reg[j].str,RFIFOP(fd,p),32);
-					reg[j].value=RFIFOL(fd,p+32);
+					strncpy(reg[j].str,RFIFOP(fd,p),32);
+					reg[j].str[31] = '\0';	// force \0 terminal
+					reg[j].value   = RFIFOL(fd,p+32);
 				}
 				set_account_reg2(acc,j,reg);
 				// 同垢ログインを禁止していれば送る必要は無い
@@ -2712,9 +2737,7 @@ int parse_tologin(int fd)
 				// 暗号化ログイン
 				WFIFOW(login_fd,0)=0x272f;
 				memcpy(WFIFOP(login_fd,2),userid,24);
-				HMAC_MD5_Binary( passwd, strlen(passwd),
-								 RFIFOP(login_fd,4), RFIFOW(login_fd,2)-4,
-								 WFIFOP(login_fd,26) );
+				HMAC_MD5_Binary( passwd, strlen(passwd), RFIFOP(login_fd,4), RFIFOW(login_fd,2)-4, WFIFOP(login_fd,26) );
 				WFIFOL(login_fd,42)=0;
 				WFIFOL(login_fd,46)=4;	// 暗号化に HMAC-MD5 を使う
 				WFIFOL(login_fd,50)=0;
@@ -2736,7 +2759,7 @@ int parse_tologin(int fd)
 			{
 				int account_id = RFIFOL(fd,2);
 				for(i=0; i<fd_max; i++) {
-					if(session[i] && (sd = session[i]->session_data) && sd->account_id == account_id) {
+					if(session[i] && (sd = (struct char_session_data *)session[i]->session_data) && sd->account_id == account_id) {
 						WFIFOW(i,0) = 0x81;
 						WFIFOB(i,2) = 2;
 						WFIFOSET(i,3);
@@ -2803,7 +2826,7 @@ static int search_mapserver_char(char *map, struct mmo_charstatus *cd)
 
 	i = search_mapserver(map);
 	if(i != -1) {
-//		printf("search_mapserver %s : success -> %d\n", map, i);
+		//printf("search_mapserver %s : success -> %d\n", map, i);
 		return i;
 	}
 
@@ -2875,7 +2898,7 @@ int parse_map_disconnect(int fd)
 {
 	int id;
 
-	for(id = 0; id < MAX_MAP_SERVERS; id++)
+	for(id = 0; id < MAX_MAP_SERVERS; id++) {
 		if (server_fd[id] == fd) {
 			server_fd[id] = -1;
 			char_erasemap(fd, id);
@@ -2883,6 +2906,7 @@ int parse_map_disconnect(int fd)
 			numdb_foreach(char_online_db, parse_map_disconnect_sub, fd, server[id].ip, server[id].port);
 			close(fd);
 		}
+	}
 
 	return 0;
 }
@@ -2892,9 +2916,10 @@ int parse_frommap(int fd)
 	int i, j;
 	int id;
 
-	for(id = 0; id < MAX_MAP_SERVERS; id++)
+	for(id = 0; id < MAX_MAP_SERVERS; id++) {
 		if (server_fd[id] == fd)
 			break;
+	}
 	if (id == MAX_MAP_SERVERS)
 		session[fd]->eof = 1;
 
@@ -2941,13 +2966,13 @@ int parse_frommap(int fd)
 				}
 			}
 			server[id].map_num = j;
-			//
+
 			i = server[id].ip;
 			{
 				unsigned char *p=(unsigned char *)&i;
 				printf("set map %d from %d.%d.%d.%d:%d (%d maps)\n", id, p[0], p[1], p[2], p[3], server[id].port, j);
 			}
-			//
+
 			RFIFOSKIP(fd,RFIFOW(fd,2));
 			WFIFOW(fd,0) = 0x2afb;
 			WFIFOW(fd,2) = 0; // 0: ok, not 0: failed
@@ -2990,8 +3015,8 @@ int parse_frommap(int fd)
 		case 0x2afc:
 			if(RFIFOREST(fd)<23)
 				return 0;
-//			printf("auth_fifo search %08x %08x %08x %08x %08x\n",
-//				RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOL(fd,18));
+			//printf("auth_fifo search %08x %08x %08x %08x %08x\n",
+			//	RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOL(fd,18));
 			for(i=0;i<AUTH_FIFO_SIZE;i++){
 				if( cmp_authfifo(i,RFIFOL(fd,2),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOL(fd,18)) &&
 					auth_fifo[i].char_id==RFIFOL(fd,6) &&
@@ -3023,7 +3048,7 @@ int parse_frommap(int fd)
 					WFIFOW(fd,0) = 0x2afd;
 					WFIFOW(fd,2) = 12 + s1 + s2;
 					WFIFOL(fd,4) = RFIFOL(fd,2); // account id
-				//	WFIFOL(fd,8) = RFIFOL(fd,6); //
+					//WFIFOL(fd,8) = RFIFOL(fd,6);
 					WFIFOL(fd,8) = auth_fifo[i].login_id2;
 					memcpy(WFIFOP(fd,12   ), &cd->st , s1);
 					memcpy(WFIFOP(fd,12+s1), &cd->reg, s2);
@@ -3033,13 +3058,13 @@ int parse_frommap(int fd)
 					c = (struct char_online *)numdb_search(char_online_db,RFIFOL(fd,2));
 					if(c == NULL) {
 						c = (struct char_online *)aCalloc(1,sizeof(struct char_online));
+						numdb_insert(char_online_db,RFIFOL(fd,2),c);
 					}
 					c->ip         = server[id].ip;
 					c->port       = server[id].port;
 					c->account_id = cd->st.account_id;
 					c->char_id    = cd->st.char_id;
 					memcpy(c->name,cd->st.name,24);
-					numdb_insert(char_online_db,RFIFOL(fd,2),c);
 					char_set_online( c->char_id );
 
 					// このmap-server以外にログインしたことを通知する
@@ -3087,8 +3112,8 @@ int parse_frommap(int fd)
 			if(auth_fifo_pos>=AUTH_FIFO_SIZE){
 				auth_fifo_pos=0;
 			}
-//			printf("auth_fifo set 0x2b02 %d - %08x %08x %08x %08x\n",
-//				auth_fifo_pos,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14));
+			//printf("auth_fifo set 0x2b02 %d - %08x %08x %08x %08x\n",
+			//	auth_fifo_pos,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14));
 			auth_fifo[auth_fifo_pos].account_id = RFIFOL(fd,2);
 			auth_fifo[auth_fifo_pos].char_id    = 0;
 			auth_fifo[auth_fifo_pos].login_id1  = RFIFOL(fd,6);
@@ -3117,7 +3142,7 @@ int parse_frommap(int fd)
 			memcpy(WFIFOP(fd,2),RFIFOP(fd,2),38);
 			WFIFOW(fd,0)=0x2b06;
 
-//			printf("auth_fifo set 0x2b05 %d - %08x %08x\n",auth_fifo_pos,RFIFOL(fd,2),RFIFOL(fd,6));
+			//printf("auth_fifo set 0x2b05 %d - %08x %08x\n",auth_fifo_pos,RFIFOL(fd,2),RFIFOL(fd,6));
 			auth_fifo[auth_fifo_pos].account_id = RFIFOL(fd,2);
 			auth_fifo[auth_fifo_pos].char_id    = RFIFOL(fd,10);
 			auth_fifo[auth_fifo_pos].login_id1  = RFIFOL(fd,6);
@@ -3169,7 +3194,7 @@ int parse_frommap(int fd)
 				WFIFOW(login_fd,0)=0x2720;
 				WFIFOSET(login_fd,RFIFOW(fd,2));
 			}
-//			printf("char : change gm -> login %d %s %d\n",RFIFOL(fd,4),RFIFOP(fd,8),RFIFOW(fd,2));
+			//printf("char : change gm -> login %d %s %d\n",RFIFOL(fd,4),RFIFOP(fd,8),RFIFOW(fd,2));
 			RFIFOSKIP(fd,RFIFOW(fd,2));
 			break;
 
@@ -3187,7 +3212,7 @@ int parse_frommap(int fd)
 				WFIFOB(login_fd,8) = RFIFOB(fd,8);
 				WFIFOSET(login_fd,RFIFOW(fd,2));
 			}
-//			printf("char : change sex -> login %d %d %d \n",RFIFOL(fd,4),RFIFOB(fd,8),RFIFOW(fd,2));
+			//printf("char : change sex -> login %d %d %d \n",RFIFOL(fd,4),RFIFOB(fd,8),RFIFOW(fd,2));
 			RFIFOSKIP(fd,RFIFOW(fd,2));
 			break;
 
@@ -3203,8 +3228,9 @@ int parse_frommap(int fd)
 				acc=RFIFOL(fd,4);
 				memset(&reg, 0, sizeof(reg));
 				for(p=8,j=0;p<RFIFOW(fd,2) && j<ACCOUNT_REG2_NUM;p+=36,j++){
-					memcpy(reg[j].str,RFIFOP(fd,p),32);
-					reg[j].value=RFIFOL(fd,p+32);
+					strncpy(reg[j].str,RFIFOP(fd,p),32);
+					reg[i].str[31] = '\0';	// force \0 terminal
+					reg[j].value   = RFIFOL(fd,p+32);
 				}
 				set_account_reg2(acc,j,reg);
 				// loginサーバーへ送る
@@ -3223,7 +3249,7 @@ int parse_frommap(int fd)
 			}
 			break;
 
-		// mapサーバ 有効化
+		// mapサーバ有効化
 		case 0x2b13:
 			if(RFIFOREST(fd)<3)
 				return 0;
@@ -3232,7 +3258,7 @@ int parse_frommap(int fd)
 			RFIFOSKIP(fd,3);
 			break;
 
-		// charサーバ メンテナンス状態に
+		// charサーバメンテナンス状態に
 		case 0x2b14:
 			if(RFIFOREST(fd)<3)
 				return 0;
@@ -3366,8 +3392,9 @@ int parse_frommap(int fd)
 				char_id    = RFIFOL(fd,8);
 				memset(&reg, 0, sizeof(reg));
 				for(i=0,p=12; p<RFIFOW(fd,2) && i<GLOBAL_REG_NUM ;i++,p+=36) {
-					memcpy(reg[i].str,RFIFOP(fd,p),32);
-					reg[i].value=RFIFOL(fd,p+32);
+					strncpy(reg[i].str,RFIFOP(fd,p),32);
+					reg[i].str[31] = '\0';	// force \0 terminal
+					reg[i].value   = RFIFOL(fd,p+32);
 				}
 				char_save_reg(account_id,char_id,i,reg);
 				RFIFOSKIP(fd,RFIFOW(fd,2));
@@ -3443,7 +3470,7 @@ int parse_char_disconnect(int fd)
 // 他マップにログインしているキャラクター情報を送信する
 static int parse_char_sendonline(void *key,void *data,va_list ap)
 {
-	int fd   = va_arg(ap,int);
+	int fd = va_arg(ap,int);
 	struct char_online *c = (struct char_online*)data;
 
 	WFIFOW(fd, 0) = 0x2b09;
@@ -3483,13 +3510,13 @@ int parse_char(int fd)
 		{
 			RFIFOSKIP(fd,4);
 			cmd = RFIFOW(fd,0);
-//			printf("parse_char : %d crc32 skipped\n",fd);
+			//printf("parse_char : %d crc32 skipped\n",fd);
 			if(RFIFOREST(fd)==0)
 				return 0;
 		}
 
-//		if(cmd<30000 && cmd!=0x187)
-//			printf("parse_char : %d %d %d\n",fd,RFIFOREST(fd),cmd);
+		//if(cmd<30000 && cmd!=0x187)
+		//	printf("parse_char : %d %d %d\n",fd,RFIFOREST(fd),cmd);
 
 		// 不正パケットの処理
 		if (sd == NULL && cmd != 0x65 && cmd != 0x20b && cmd != 0x187 && cmd!=0x258 && cmd!=0x228 &&
@@ -3564,20 +3591,17 @@ int parse_char(int fd)
 					return 0;
 				}
 				if(max_connect_user > 0) {
-					if(count_users() < max_connect_user  || isGM(sd->account_id)>0)
+					if(count_users() < max_connect_user  || isGM(sd->account_id) > 0) {
 						mmo_char_send006b(fd,sd);
-					else {
+					} else {
 						WFIFOW(fd,0)=0x6c;
 						WFIFOW(fd,2)=0;
 						WFIFOSET(fd,3);
 					}
-				}
-				else
-				{
+				} else {
 					mmo_char_send006b(fd,sd);
 				}
 			}
-
 			RFIFOSKIP(fd,17);
 			break;
 
@@ -3655,8 +3679,8 @@ int parse_char(int fd)
 				if(auth_fifo_pos>=AUTH_FIFO_SIZE){
 					auth_fifo_pos=0;
 				}
-//				printf("auth_fifo set 0x66 %d - %08x %08x %08x %08x\n",
-//					auth_fifo_pos,sd->account_id,st.char_id,sd->login_id1,sd->login_id2);
+				//printf("auth_fifo set 0x66 %d - %08x %08x %08x %08x\n",
+				//	auth_fifo_pos,sd->account_id,st.char_id,sd->login_id1,sd->login_id2);
 				auth_fifo[auth_fifo_pos].account_id = sd->account_id;
 				auth_fifo[auth_fifo_pos].char_id    = st.char_id;
 				auth_fifo[auth_fifo_pos].login_id1  = sd->login_id1;
@@ -3849,7 +3873,7 @@ int parse_char(int fd)
 			RFIFOSKIP(fd, 6);
 			break;
 
-		case 0x7530:	// Auriga情報所得
+		case 0x7530:	// Auriga情報取得
 			WFIFOW(fd,0)=0x7531;
 			WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 			WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
@@ -3956,9 +3980,10 @@ int send_users_tologin(int tid,unsigned int tick,int id,int data)
 	if (login_fd >= 0 && session[login_fd] && session[login_fd]->auth) {
 		int i, users = 0;
 
-		for(i = 0; i < MAX_MAP_SERVERS; i++)
+		for(i = 0; i < MAX_MAP_SERVERS; i++) {
 			if (server_fd[i] >= 0)
 				users += server[i].users;
+		}
 
 		WFIFOW(login_fd,0) = 0x2714;
 		WFIFOL(login_fd,2) = users;
@@ -3989,21 +4014,22 @@ static int check_connect_login_server(int tid,unsigned int tick,int id,int data)
 		session[login_fd]->func_parse=parse_tologin;
 		session[login_fd]->func_destruct = parse_login_disconnect;
 		realloc_fifo(login_fd, RFIFOSIZE_SERVERLINK, WFIFOSIZE_SERVERLINK);
-//// 従来のプレーンなログイン
-//		WFIFOW(login_fd,0)=0x2710;
-//		memcpy(WFIFOP(login_fd,2),userid,24);
-//		memcpy(WFIFOP(login_fd,26),passwd,24);
-//		WFIFOL(login_fd,50)=0;
-//		WFIFOL(login_fd,54)=char_ip;
-//		WFIFOW(login_fd,58)=char_port;
-//		memcpy(WFIFOP(login_fd,60),server_name,20);
-//		WFIFOW(login_fd,80)=char_maintenance;
-//		WFIFOW(login_fd,82)=char_new;
-//		WFIFOSET(login_fd,84);
 
 		// 暗号化ログインのチャレンジ要求
 		WFIFOW(login_fd,0)=0x272d;
 		WFIFOSET(login_fd,2);
+
+		/* プレーンなログインは現在廃止 */
+		//WFIFOW(login_fd,0)=0x2710;
+		//memcpy(WFIFOP(login_fd,2),userid,24);
+		//memcpy(WFIFOP(login_fd,26),passwd,24);
+		//WFIFOL(login_fd,50)=0;
+		//WFIFOL(login_fd,54)=char_ip;
+		//WFIFOW(login_fd,58)=char_port;
+		//memcpy(WFIFOP(login_fd,60),server_name,20);
+		//WFIFOW(login_fd,80)=char_maintenance;
+		//WFIFOW(login_fd,82)=char_new;
+		//WFIFOSET(login_fd,84);
 	}
 
 	return 0;
@@ -4030,17 +4056,22 @@ static void char_config_read(const char *cfgName)
 
 		if (strcmpi(w1, "userid") == 0) {
 			memcpy(userid, w2, 24);
+			userid[23] = '\0';
 		} else if (strcmpi(w1, "passwd") == 0) {
 			memcpy(passwd ,w2, 24);
+			passwd[23] = '\0';
 		} else if (strcmpi(w1, "server_name") == 0) {
-			memcpy(server_name, w2, 16);
+			memcpy(server_name, w2, 20);
+			server_name[19] = '\0';
 		} else if (strcmpi(w1, "login_ip") == 0) {
 			h = gethostbyname(w2);
 			if (h != NULL) {
 				sprintf(login_ip_str, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
 				printf("Login server IP address : %s -> %s\n", w2, login_ip_str);
-			} else
+			} else {
 				memcpy(login_ip_str, w2, 16);
+				login_ip_str[15] = '\0';
+			}
 		} else if (strcmpi(w1, "login_port") == 0) {
 			login_port = atoi(w2);
 			if (login_port < 0 || login_port > 65535) {
@@ -4052,8 +4083,10 @@ static void char_config_read(const char *cfgName)
 			if (h != NULL) {
 				sprintf(char_ip_str, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
 				printf("Character server IP address : %s -> %s\n", w2, char_ip_str);
-			} else
+			} else {
 				memcpy(char_ip_str, w2, 16);
+				char_ip_str[15] = '\0';
+			}
 		} else if (strcmpi(w1, "char_port") == 0) {
 			char_port = atoi(w2);
 			if (char_port < 0 || char_port > 65535) {
@@ -4074,8 +4107,10 @@ static void char_config_read(const char *cfgName)
 			if (h != NULL) {
 				sprintf(char_sip_str, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
 				printf("Character server sIP address : %s -> %s\n", w2, char_sip_str);
-			} else
+			} else {
 				memcpy(char_sip_str, w2, 16);
+				char_sip_str[15] = '\0';
+			}
 			char_sip = inet_addr(char_sip_str);
 		} else if (strcmpi(w1, "char_sport") == 0) {
 			char_sport = atoi(w2);
@@ -4105,8 +4140,9 @@ static void char_config_read(const char *cfgName)
 			if (sscanf(w2, "%[^,],%d,%d", map, &x, &y) < 3)
 				continue;
 			memcpy(start_point.map, map, 16);
-			start_point.x = x;
-			start_point.y = y;
+			start_point.map[15] = '\0';
+			start_point.x       = x;
+			start_point.y       = y;
 		} else if (strcmpi(w1, "start_zeny") == 0) {
 			start_zeny = atoi(w2);
 			if (start_zeny < 0) {
@@ -4118,8 +4154,8 @@ static void char_config_read(const char *cfgName)
 		} else if (strcmpi(w1, "start_armor") == 0) {
 			start_armor = atoi(w2);
 		} else if (strcmpi(w1, "unknown_char_name") == 0) {
-			strncpy(unknown_char_name, w2, sizeof(unknown_char_name) - 1);
-			unknown_char_name[24] = 0;
+			strncpy(unknown_char_name, w2, 24);
+			unknown_char_name[23] = '\0';
 		} else if (strcmpi(w1, "char_log_filename") == 0) {
 			strncpy(char_log_filename, w2, sizeof(char_log_filename) -1);
 			char_log_filename[sizeof(char_log_filename) -1] = '\0';
@@ -4127,6 +4163,7 @@ static void char_config_read(const char *cfgName)
 			default_map_type = atoi(w2);
 		} else if (strcmpi(w1, "default_map_name") == 0) {
 			strncpy(default_map_name, w2, 16);
+			default_map_name[15] = '\0';
 		} else if (strcmpi(w1, "max_char_slot") == 0) {
 			max_char_slot = atoi(w2);
 			if (max_char_slot <= 0 || max_char_slot > 9) {
@@ -4143,8 +4180,9 @@ static void char_config_read(const char *cfgName)
 			httpd_config_read(w2);
 		} else if (strcmpi(w1, "import") == 0) {
 			char_config_read(w2);
-		} else
+		} else {
 			char_config_read_sub(w1, w2);
+		}
 	}
 	fclose(fp);
 
@@ -4259,7 +4297,7 @@ int do_init(int argc,char **argv)
 	char_init();
 	char_build_ranking();
 	read_gm_account();
-	inter_init((argc>2)?argv[2]:inter_cfgName);	// inter server 初期化
+	inter_init((argc>2)? argv[2]: inter_cfgName);	// inter server 初期化
 
 	set_defaultparse(parse_char);
 	set_sock_destruct(parse_char_disconnect);
@@ -4273,9 +4311,9 @@ int do_init(int argc,char **argv)
 	add_timer_func_list(send_users_tologin,"send_users_tologin");
 	add_timer_func_list(mmo_char_sync_timer,"mmo_char_sync_timer");
 
-	i=add_timer_interval(gettick()+1000,check_connect_login_server,0,0,10*1000);
-	i=add_timer_interval(gettick()+1000,send_users_tologin,0,0,5*1000);
-	i=add_timer_interval(gettick()+autosave_interval,mmo_char_sync_timer,0,0,autosave_interval);
+	add_timer_interval(gettick()+1000,check_connect_login_server,0,0,10*1000);
+	add_timer_interval(gettick()+1000,send_users_tologin,0,0,5*1000);
+	add_timer_interval(gettick()+autosave_interval,mmo_char_sync_timer,0,0,autosave_interval);
 
 	// for httpd support
 	do_init_httpd();
