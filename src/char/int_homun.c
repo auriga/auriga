@@ -17,10 +17,11 @@
 #include "inter.h"
 #include "int_homun.h"
 
+static struct dbt *homun_db = NULL;
+
 #ifdef TXT_ONLY
 
 static char homun_txt[1024]="save/homun.txt";
-static struct dbt *homun_db;
 static int homun_newid = 100;
 
 #ifdef TXT_JOURNAL
@@ -30,16 +31,17 @@ static char homun_journal_file[1024]="./save/homun.journal";
 static int homun_journal_cache = 1000;
 #endif
 
-void homun_txt_config_read_sub(const char* w1,const char *w2) {
+void homun_txt_config_read_sub(const char* w1,const char *w2)
+{
 	if(strcmpi(w1,"homun_txt")==0){
-		strncpy(homun_txt,w2,sizeof(homun_txt));
+		strncpy(homun_txt, w2, sizeof(homun_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"homun_journal_enable")==0){
 		homun_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"homun_journal_file")==0){
-		strncpy( homun_journal_file, w2, sizeof(homun_journal_file) );
+		strncpy( homun_journal_file, w2, sizeof(homun_journal_file) - 1 );
 	}
 	else if(strcmpi(w1,"homun_journal_cache_interval")==0){
 		homun_journal_cache = atoi( w2 );
@@ -47,7 +49,7 @@ void homun_txt_config_read_sub(const char* w1,const char *w2) {
 #endif
 }
 
-int homun_tostr(char *str,struct mmo_homunstatus *h)
+static int homun_tostr(char *str,struct mmo_homunstatus *h)
 {
 	int i;
 	char *str_p = str;
@@ -74,28 +76,30 @@ int homun_tostr(char *str,struct mmo_homunstatus *h)
 
 	*(str_p++)='\t';
 
-	for(i=0;i<MAX_HOMSKILL;i++)
+	for(i=0;i<MAX_HOMSKILL;i++) {
 		if(h->skill[i].id && h->skill[i].flag!=1){
-			sk_lv = (h->skill[i].flag==0)?h->skill[i].lv:h->skill[i].flag-2;
+			sk_lv = (h->skill[i].flag==0)? h->skill[i].lv: h->skill[i].flag-2;
 			str_p += sprintf(str_p,"%d,%d ",h->skill[i].id,sk_lv);
 		}
+	}
 	*(str_p++)='\t';
 
 	*str_p='\0';
 	return 0;
 }
 
-int homun_fromstr(char *str,struct mmo_homunstatus *h)
+static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 {
 	int i,s,next,set,len;
 	int tmp_int[23];
 	char tmp_str[256];
 
 	if(!h) return 0;
+
 	memset(h,0,sizeof(struct mmo_homunstatus));
 
-//	printf("sscanf homun main info\n");
-	s=sscanf(str,"%d,%d,%[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
+	//printf("sscanf homun main info\n");
+	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],tmp_str,
 		&tmp_int[2],&tmp_int[3],
 		&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],
@@ -106,31 +110,32 @@ int homun_fromstr(char *str,struct mmo_homunstatus *h)
 	if(s!=24)
 		return 1;
 
-	h->homun_id = tmp_int[0];
-	h->class_ = tmp_int[1];
-	memcpy(h->name,tmp_str,24);
-	h->account_id = tmp_int[2];
-	h->char_id = tmp_int[3];
-	h->base_level = tmp_int[4];
-	h->base_exp = tmp_int[5];
-	h->max_hp = tmp_int[6];
-	h->hp = tmp_int[7];
-	h->max_sp = tmp_int[8];
-	h->sp = tmp_int[9];
-	h->str = tmp_int[10];
-	h->agi = tmp_int[11];
-	h->vit = tmp_int[12];
-	h->int_= tmp_int[13];
-	h->dex = tmp_int[14];
-	h->luk = tmp_int[15];
+	h->homun_id     = tmp_int[0];
+	h->class_       = tmp_int[1];
+	strncpy(h->name,tmp_str,24);
+	h->name[23] = '\0';	// force \0 terminal
+	h->account_id   = tmp_int[2];
+	h->char_id      = tmp_int[3];
+	h->base_level   = tmp_int[4];
+	h->base_exp     = tmp_int[5];
+	h->max_hp       = tmp_int[6];
+	h->hp           = tmp_int[7];
+	h->max_sp       = tmp_int[8];
+	h->sp           = tmp_int[9];
+	h->str          = tmp_int[10];
+	h->agi          = tmp_int[11];
+	h->vit          = tmp_int[12];
+	h->int_         = tmp_int[13];
+	h->dex          = tmp_int[14];
+	h->luk          = tmp_int[15];
 	h->status_point = tmp_int[16];
-	h->skill_point = tmp_int[17];
-	h->equip = tmp_int[18];
-	h->intimate = tmp_int[19];
-	h->hungry = tmp_int[20];
-	h->rename_flag = tmp_int[21];
-	h->incubate = tmp_int[22];
-	h->option = 0;
+	h->skill_point  = tmp_int[17];
+	h->equip        = tmp_int[18];
+	h->intimate     = tmp_int[19];
+	h->hungry       = tmp_int[20];
+	h->rename_flag  = tmp_int[21];
+	h->incubate     = tmp_int[22];
+	h->option       = 0;
 
 	if(h->hungry < 0)
 		h->hungry = 0;
@@ -146,14 +151,15 @@ int homun_fromstr(char *str,struct mmo_homunstatus *h)
 
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
+		int n;
 		set=sscanf(str+next,"%d,%d%n",
-		&tmp_int[0],&tmp_int[1],&len);
+			&tmp_int[0],&tmp_int[1],&len);
 		if(set!=2)
 			return 0;
-		tmp_int[2] = tmp_int[0]-HOM_SKILLID;
-		if(tmp_int[2] >= 0 && tmp_int[2] < MAX_HOMSKILL) {
-			h->skill[tmp_int[2]].id = tmp_int[0];
-			h->skill[tmp_int[2]].lv = tmp_int[1];
+		n = tmp_int[0]-HOM_SKILLID;
+		if(n >= 0 && n < MAX_HOMSKILL) {
+			h->skill[n].id = tmp_int[0];
+			h->skill[n].lv = tmp_int[1];
 		} else {
 			printf("homun_fromstr: invaild skill id: %d\n", tmp_int[0]);
 		}
@@ -231,7 +237,7 @@ int homun_txt_init(void)
 		c++;
 	}
 	fclose(fp);
-//	printf("int_homun: %s read done (%d homs)\n",homun_txt,c);
+	//printf("int_homun: %s read done (%d homs)\n",homun_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
@@ -258,10 +264,11 @@ int homun_txt_init(void)
 	return 0;
 }
 
-int homun_txt_sync_sub(void *key,void *data,va_list ap)
+static int homun_txt_sync_sub(void *key,void *data,va_list ap)
 {
 	char line[8192];
 	FILE *fp;
+
 	homun_tostr(line,(struct mmo_homunstatus *)data);
 	fp=va_arg(ap,FILE *);
 	fprintf(fp,"%s" RETCODE,line);
@@ -282,7 +289,7 @@ int homun_txt_sync(void)
 	}
 	numdb_foreach(homun_db,homun_txt_sync_sub,fp);
 	lock_fclose(fp,homun_txt,&lock);
-//	printf("int_homun: %s saved.\n",homun_txt);
+	//printf("int_homun: %s saved.\n",homun_txt);
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
@@ -298,21 +305,20 @@ int homun_txt_sync(void)
 
 int homun_txt_delete(int homun_id)
 {
-	struct mmo_homunstatus *p;
+	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
 
-	p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
-	if( p == NULL)
+	if(p == NULL)
 		return 1;
-	else {
-		numdb_erase(homun_db,homun_id);
-		aFree(p);
-		printf("homun_id: %d deleted\n",homun_id);
+
+	numdb_erase(homun_db,homun_id);
+	aFree(p);
+	printf("homun_id: %d deleted\n",homun_id);
 
 #ifdef TXT_JOURNAL
-		if( homun_journal_enable )
-			journal_write( &homun_journal, homun_id, NULL );
+	if( homun_journal_enable )
+		journal_write( &homun_journal, homun_id, NULL );
 #endif
-	}
+
 	return 0;
 }
 
@@ -381,20 +387,23 @@ void homun_txt_final(void)
 #else /* TXT_ONLY */
 static char homun_db_[256]      = "homunculus";
 static char homun_skill_db[256] = "homunculus_skill";
-static struct dbt *homun_db;
 
-int  homun_sql_init(void) {
+int homun_sql_init(void)
+{
 	homun_db = numdb_init();
 	return 0;
 }
 
-int  homun_sql_sync(void) {
+int homun_sql_sync(void)
+{
 	// nothing to do
 	return 0;
 }
 
-int  homun_sql_delete(int homun_id) {
+int homun_sql_delete(int homun_id)
+{
 	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
+
 	if(p) {
 		numdb_erase(homun_db,p->homun_id);
 		aFree(p);
@@ -412,7 +421,8 @@ int  homun_sql_delete(int homun_id) {
 	return 0;
 }
 
-const struct mmo_homunstatus* homun_sql_load(int homun_id) {
+const struct mmo_homunstatus* homun_sql_load(int homun_id)
+{
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
@@ -428,12 +438,12 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id) {
 	// printf("Request load hom  (%6d)[",homun_id);
 	memset(p, 0, sizeof(struct mmo_homunstatus));
 
-	//`hom` (`homun_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,
+	// `hom` (`homun_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,
 	//	`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,
 	//	`status_point`,`skill_point`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	sprintf(
 		tmp_sql,
-		"SELECT `homun_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,"
+		"SELECT `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,"
 		"`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,"
 		"`status_point`,`skill_point`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate` "
 		"FROM `%s` WHERE `homun_id`='%d'",
@@ -444,34 +454,35 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id) {
 		p->homun_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
 		sql_row = mysql_fetch_row(sql_res);
 
-		p->homun_id = homun_id;
-		p->class_ = atoi(sql_row[1]);
-		strncpy(p->name,sql_row[2],24);
-		p->account_id = atoi(sql_row[3]);
-		p->char_id = atoi(sql_row[4]);
-		p->base_level = atoi(sql_row[5]);
-		p->base_exp = atoi(sql_row[6]);
-		p->max_hp = atoi(sql_row[7]);
-		p->hp = atoi(sql_row[8]);
-		p->max_sp = atoi(sql_row[9]);
-		p->sp = atoi(sql_row[10]);
-		p->str = atoi(sql_row[11]);
-		p->agi = atoi(sql_row[12]);
-		p->vit = atoi(sql_row[13]);
-		p->int_= atoi(sql_row[14]);
-		p->dex = atoi(sql_row[15]);
-		p->luk = atoi(sql_row[16]);
-		p->status_point = atoi(sql_row[17]);
-		p->skill_point = atoi(sql_row[18]);
-		p->equip = atoi(sql_row[19]);
-		p->intimate = atoi(sql_row[20]);
-		p->hungry = atoi(sql_row[21]);
-		p->rename_flag = atoi(sql_row[22]);
-		p->incubate = atoi(sql_row[23]);
+		p->homun_id     = homun_id;
+		p->class_       = atoi(sql_row[0]);
+		strncpy(p->name,sql_row[1],24);
+		p->name[23] = '\0';	// force \0 terminal
+		p->account_id   = atoi(sql_row[2]);
+		p->char_id      = atoi(sql_row[3]);
+		p->base_level   = atoi(sql_row[4]);
+		p->base_exp     = atoi(sql_row[5]);
+		p->max_hp       = atoi(sql_row[6]);
+		p->hp           = atoi(sql_row[7]);
+		p->max_sp       = atoi(sql_row[8]);
+		p->sp           = atoi(sql_row[9]);
+		p->str          = atoi(sql_row[10]);
+		p->agi          = atoi(sql_row[11]);
+		p->vit          = atoi(sql_row[12]);
+		p->int_         = atoi(sql_row[13]);
+		p->dex          = atoi(sql_row[14]);
+		p->luk          = atoi(sql_row[15]);
+		p->status_point = atoi(sql_row[16]);
+		p->skill_point  = atoi(sql_row[17]);
+		p->equip        = atoi(sql_row[18]);
+		p->intimate     = atoi(sql_row[19]);
+		p->hungry       = atoi(sql_row[20]);
+		p->rename_flag  = atoi(sql_row[21]);
+		p->incubate     = atoi(sql_row[22]);
 	} else {
 		p->homun_id = -1;
 		if( sql_res ) mysql_free_result(sql_res);
@@ -480,7 +491,7 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id) {
 	mysql_free_result(sql_res);
 
 	sprintf(
-		tmp_sql,"SELECT `homun_id`,`id`,`lv` FROM `%s` WHERE `homun_id`='%d'",
+		tmp_sql,"SELECT `id`,`lv` FROM `%s` WHERE `homun_id`='%d'",
 		homun_skill_db, homun_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
@@ -488,20 +499,17 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id) {
 		p->homun_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
 		int i;
 		for(i=0;((sql_row = mysql_fetch_row(sql_res))&&i<MAX_HOMSKILL);i++){
-			int id = atoi(sql_row[1]);
+			int id = atoi(sql_row[0]);
 			if( id < HOM_SKILLID || id >= HOM_SKILLID + MAX_HOMSKILL ) {
 				// DB操作して変なスキルを覚えさせられる可能性があるのでチェック
-
-				// unit.cのお陰でほとんどのスキルを使用しても安全なはずだけど、
-				// データ構造の変更は本体が来るまで延期しておきます。
 				printf("homun_sql_load: invaild skill id: %d\n", id);
 			} else {
 				p->skill[id-HOM_SKILLID].id = id;
-				p->skill[id-HOM_SKILLID].lv = atoi(sql_row[2]);
+				p->skill[id-HOM_SKILLID].lv = atoi(sql_row[1]);
 			}
 		}
 	}
@@ -530,13 +538,15 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id) {
 		p += sprintf(p,"%c`"sql"` = '%s'",sep,strecpy(buf,p2->val)); sep = ',';\
 	}
 
-int  homun_sql_save(struct mmo_homunstatus* p2) {
-	//`hom` (`homun_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,
+int homun_sql_save(struct mmo_homunstatus* p2)
+{
+	// `hom` (`homun_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,
 	//	`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,
 	//	`status_point`,`skill_point`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	int  i;
-	char sep, *p, buf[100];
+	char sep, *p, buf[64];
 	const struct mmo_homunstatus *p1 = homun_sql_load(p2->homun_id);
+
 	if(p1 == NULL) return 0;
 
 	// printf("Request save hom  (%6d)[",p2->homun_id);
@@ -586,7 +596,7 @@ int  homun_sql_save(struct mmo_homunstatus* p2) {
 		sep = ' ';
 		for(i=0;i<MAX_HOMSKILL;i++) {
 			if(p2->skill[i].id && p2->skill[i].flag!=1){
-				int lv = (p2->skill[i].flag==0)?p2->skill[i].lv:p2->skill[i].flag-2;
+				int lv = (p2->skill[i].flag==0)? p2->skill[i].lv: p2->skill[i].flag-2;
 				p += sprintf(p,"%c('%d','%d','%d')", sep,p2->homun_id,p2->skill[i].id,lv);
 				sep = ',';
 			}
@@ -607,11 +617,13 @@ int  homun_sql_save(struct mmo_homunstatus* p2) {
 	return 1;
 }
 
-int  homun_sql_new(struct mmo_homunstatus *p) {
+int homun_sql_new(struct mmo_homunstatus *p)
+{
 	// ホムIDを読み出す
 	int i;
-	char t_name[100], sep, *buf;
+	char t_name[64], sep, *buf;
 	struct mmo_homunstatus *p2;
+
 	// printf("Request make hom  (------)[");
 	sprintf(
 		tmp_sql,
@@ -640,7 +652,7 @@ int  homun_sql_new(struct mmo_homunstatus *p) {
 	sep = ' ';
 	for(i=0;i<MAX_HOMSKILL;i++) {
 		if(p->skill[i].id && p->skill[i].flag!=1){
-			int lv = (p->skill[i].flag==0)?p->skill[i].lv:p->skill[i].flag-2;
+			int lv = (p->skill[i].flag==0)? p->skill[i].lv: p->skill[i].flag-2;
 			buf += sprintf(buf,"%c('%d','%d','%d')", sep,p->homun_id,p->skill[i].id,lv);
 			sep = ',';
 		}
@@ -673,7 +685,8 @@ void homun_sql_final(void)
 		numdb_final(homun_db,homun_sql_final_sub);
 }
 
-void homun_sql_config_read_sub(const char* w1,const char *w2) {
+void homun_sql_config_read_sub(const char* w1,const char *w2)
+{
 	// nothing to do
 	return;
 }
@@ -690,7 +703,9 @@ void homun_sql_config_read_sub(const char* w1,const char *w2) {
 
 int mapif_hom_info(int fd,int account_id,int char_id,const struct mmo_homunstatus *h,unsigned char flag)
 {
-	if(!h) return 0;
+	if(!h)
+		return 0;
+
 	WFIFOW(fd,0)=0x3888;
 	WFIFOW(fd,2)=sizeof(struct mmo_homunstatus) + 13;
 	WFIFOL(fd,4)=account_id;
@@ -734,10 +749,12 @@ int mapif_create_hom(int fd,int account_id,int char_id,struct mmo_homunstatus *h
 int mapif_load_hom(int fd,int account_id,int char_id,int homun_id)
 {
 	const struct mmo_homunstatus *h = homun_load(homun_id);
+
 	if(h!=NULL) {
 		mapif_hom_info(fd,account_id,char_id,h,0);
-	}else
+	} else {
 		printf("inter hom: data load error %d %d %d\n",account_id,char_id,homun_id);
+	}
 	return 0;
 }
 
@@ -745,7 +762,10 @@ int mapif_save_hom(int fd,int account_id,struct mmo_homunstatus *data)
 {
 	if(!data || sizeof(struct mmo_homunstatus) != RFIFOW(fd,2) - 8) {
 		printf("inter hom: data size error %d %d\n",sizeof(struct mmo_homunstatus),RFIFOW(fd,2)-8);
-	} else if(homun_load(data->homun_id)) {
+		return 0;
+	}
+
+	if(homun_load(data->homun_id)) {
 		if(data->hungry < 0)
 			data->hungry = 0;
 		else if(data->hungry > 100)
@@ -767,12 +787,13 @@ int mapif_delete_hom(int fd,int homun_id)
 
 	return 0;
 }
+
 //---------------------------------------------------------------------------------------
 // ホムを新規作成
 int mapif_parse_CreateHom(int fd)
 {
-	int account_id   = RFIFOL(fd,4);
-	int char_id      = RFIFOL(fd,8);
+	int account_id = RFIFOL(fd,4);
+	int char_id    = RFIFOL(fd,8);
 	struct mmo_homunstatus h;
 
 	memcpy(&h,RFIFOP(fd,12),sizeof(struct mmo_homunstatus));
@@ -780,18 +801,21 @@ int mapif_parse_CreateHom(int fd)
 	mapif_create_hom(fd,account_id,char_id,&h);
 	return 0;
 }
+
 // ホムのデータ送信
 int mapif_parse_LoadHom(int fd)
 {
 	mapif_load_hom(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOW(fd,10));
 	return 0;
 }
+
 // ホムのデータ受信＆保存
 int mapif_parse_SaveHom(int fd)
 {
 	mapif_save_hom(fd,RFIFOL(fd,4),(struct mmo_homunstatus *)RFIFOP(fd,8));
 	return 0;
 }
+
 // ホム削除
 int mapif_parse_DeleteHom(int fd)
 {
@@ -816,4 +840,3 @@ int inter_hom_parse_frommap(int fd)
 	}
 	return 1;
 }
-

@@ -18,6 +18,7 @@
 #include "int_status.h"
 
 #ifdef NO_SCDATA_SAVING
+
 // ダミー関数群
 int status_dummy_init(void) { return 0; }
 int status_dummy_sync(void) { return 0; }
@@ -26,9 +27,10 @@ struct status_change_data *status_dummy_load(int char_id) { return NULL; }
 int status_dummy_save(struct status_change_data *sc2) { return 0; }
 void status_dummy_final(void) { return; }
 void status_dummy_config_read_sub(const char *w1,const char *w2) { return; }
+
 #else /* NO_SCDATA_SAVING */
 
-static struct dbt *scdata_db;
+static struct dbt *scdata_db = NULL;
 
 #ifdef TXT_ONLY
 
@@ -158,7 +160,7 @@ int status_txt_init(void)
 		c++;
 	}
 	fclose(fp);
-//	printf("int_status: %s read done (%d status)\n",scdata_txt,c);
+	//printf("int_status: %s read done (%d status)\n",scdata_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( status_journal_enable )
@@ -214,7 +216,7 @@ int status_txt_sync(void)
 	}
 	numdb_foreach(scdata_db,status_txt_sync_sub,fp);
 	lock_fclose(fp,scdata_txt,&lock);
-//	printf("int_status: %s saved.\n",scdata_txt);
+	//printf("int_status: %s saved.\n",scdata_txt);
 
 #ifdef TXT_JOURNAL
 	if( status_journal_enable )
@@ -299,14 +301,14 @@ void status_txt_final(void)
 void status_txt_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"status_txt")==0) {
-		strncpy(scdata_txt, w2, sizeof(scdata_txt));
+		strncpy(scdata_txt, w2, sizeof(scdata_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"status_journal_enable")==0) {
 		status_journal_enable = atoi(w2);
 	}
 	else if(strcmpi(w1,"status_journal_file")==0) {
-		strncpy(status_journal_file, w2, sizeof(status_journal_file));
+		strncpy(status_journal_file, w2, sizeof(status_journal_file) - 1);
 	}
 	else if(strcmpi(w1,"status_journal_cache_interval")==0) {
 		status_journal_cache = atoi(w2);
@@ -372,10 +374,10 @@ struct status_change_data *status_sql_load(int char_id)
 
 	sc->char_id = char_id;
 
-	//`status_change` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`)
+	// `status_change` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`)
 	sprintf(
 		tmp_sql,
-		"SELECT `char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick` "
+		"SELECT `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick` "
 		"FROM `%s` WHERE `char_id`='%d'",
 		scdata_db_, char_id
 	);
@@ -389,14 +391,14 @@ struct status_change_data *status_sql_load(int char_id)
 	if(sql_res && mysql_num_rows(sql_res) > 0) {
 		for(i=0; (sql_row = mysql_fetch_row(sql_res)) && i<MAX_STATUSCHANGE; i++) {
 			if(sc->account_id == 0) {
-				sc->account_id = atoi(sql_row[1]);
+				sc->account_id = atoi(sql_row[0]);
 			}
-			sc->data[i].type = (short)atoi(sql_row[2]);
-			sc->data[i].val1 = atoi(sql_row[3]);
-			sc->data[i].val2 = atoi(sql_row[4]);
-			sc->data[i].val3 = atoi(sql_row[5]);
-			sc->data[i].val4 = atoi(sql_row[6]);
-			sc->data[i].tick = atoi(sql_row[7]);
+			sc->data[i].type = (short)atoi(sql_row[1]);
+			sc->data[i].val1 = atoi(sql_row[2]);
+			sc->data[i].val2 = atoi(sql_row[3]);
+			sc->data[i].val3 = atoi(sql_row[4]);
+			sc->data[i].val4 = atoi(sql_row[5]);
+			sc->data[i].tick = atoi(sql_row[6]);
 		}
 		sc->count = (i < MAX_STATUSCHANGE)? i: MAX_STATUSCHANGE;
 
@@ -517,13 +519,13 @@ int mapif_load_scdata(int fd,int account_id,int char_id)
 
 static int mapif_save_scdata_ack(int fd,int account_id,int flag)
 {
-/*
+	/*
 	// 今のところ使い道がないのでコメントアウト
 	WFIFOW(fd,0)=0x3879;
 	WFIFOL(fd,2)=account_id;
 	WFIFOB(fd,6)=flag;
 	WFIFOSET(fd,7);
-*/
+	*/
 	return 0;
 }
 

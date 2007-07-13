@@ -25,7 +25,7 @@ void party_txt_final(void);
 	#define party_load_str party_txt_load_str
 	#define party_load_num party_txt_load_num
 	#define party_config_read_sub party_txt_config_read_sub
-#endif 
+#endif
 
 #else /* TXT_ONLY */
 
@@ -47,10 +47,8 @@ void party_sql_final(void);
 	#define party_load_str party_sql_load_str
 	#define party_load_num party_sql_load_num
 	#define party_config_read_sub party_sql_config_read_sub
-#endif 
-
+#endif
 
 #endif /* TXT_ONLY */
-
 
 #endif

@@ -9520,7 +9520,7 @@ static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
 	name[23] = '\0';	// force \0 terminal
 
 	// a normal client can not send a wisp message to yourself (anti-hack)
-	if (name, sd->status.name, 24) == 0)
+	if (strncmp(name, sd->status.name, 24) == 0)
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可

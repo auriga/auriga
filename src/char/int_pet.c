@@ -17,10 +17,11 @@
 #include "inter.h"
 #include "int_pet.h"
 
+static struct dbt *pet_db = NULL;
+
 #ifdef TXT_ONLY
 
 static char pet_txt[1024]="save/pet.txt";
-static struct dbt *pet_db;
 static int pet_newid = 100;
 
 #ifdef TXT_JOURNAL
@@ -30,16 +31,17 @@ static char pet_journal_file[1024]="./save/pet.journal";
 static int pet_journal_cache = 1000;
 #endif
 
-void pet_txt_config_read_sub(const char* w1,const char *w2) {
+void pet_txt_config_read_sub(const char* w1,const char *w2)
+{
 	if(strcmpi(w1,"pet_txt")==0){
-		strncpy(pet_txt,w2,sizeof(pet_txt));
+		strncpy(pet_txt, w2, sizeof(pet_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"pet_journal_enable")==0){
 		pet_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"pet_journal_file")==0){
-		strncpy( pet_journal_file, w2, sizeof(pet_journal_file) );
+		strncpy( pet_journal_file, w2, sizeof(pet_journal_file) - 1 );
 	}
 	else if(strcmpi(w1,"pet_journal_cache_interval")==0){
 		pet_journal_cache = atoi( w2 );
@@ -47,10 +49,8 @@ void pet_txt_config_read_sub(const char* w1,const char *w2) {
 #endif
 }
 
-int pet_tostr(char *str,struct s_pet *p)
+static int pet_tostr(char *str,struct s_pet *p)
 {
-	int len;
-
 	if(p->hungry < 0)
 		p->hungry = 0;
 	else if(p->hungry > 100)
@@ -60,40 +60,41 @@ int pet_tostr(char *str,struct s_pet *p)
 	else if(p->intimate > 1000)
 		p->intimate = 1000;
 
-	len=sprintf(str,"%d,%d,%s\t%d,%d,%d,%d,%d,%d,%d,%d,%d",
+	sprintf(str,"%d,%d,%s\t%d,%d,%d,%d,%d,%d,%d,%d,%d",
 		p->pet_id,p->class_,p->name,p->account_id,p->char_id,p->level,p->egg_id,
 		p->equip,p->intimate,p->hungry,p->rename_flag,p->incubate);
 
 	return 0;
 }
 
-int pet_fromstr(char *str,struct s_pet *p)
+static int pet_fromstr(char *str,struct s_pet *p)
 {
 	int s;
-	int tmp_int[16];
+	int tmp_int[11];
 	char tmp_str[256];
 
 	memset(p,0,sizeof(struct s_pet));
 
-//	printf("sscanf pet main info\n");
-	s=sscanf(str,"%d,%d,%[^\t]\t%d,%d,%d,%d,%d,%d,%d,%d,%d",&tmp_int[0],&tmp_int[1],tmp_str,&tmp_int[2],
+	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d,%d,%d,%d,%d,%d,%d,%d",
+		&tmp_int[0],&tmp_int[1],tmp_str,&tmp_int[2],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10]);
 
 	if(s!=12)
 		return 1;
 
-	p->pet_id = tmp_int[0];
-	p->class_ = tmp_int[1];
+	p->pet_id      = tmp_int[0];
+	p->class_      = tmp_int[1];
 	memcpy(p->name,tmp_str,24);
-	p->account_id = tmp_int[2];
-	p->char_id = tmp_int[3];
-	p->level = tmp_int[4];
-	p->egg_id = tmp_int[5];
-	p->equip = tmp_int[6];
-	p->intimate = tmp_int[7];
-	p->hungry = tmp_int[8];
+	p->name[23] = '\0';	// force \0 terminal
+	p->account_id  = tmp_int[2];
+	p->char_id     = tmp_int[3];
+	p->level       = tmp_int[4];
+	p->egg_id      = tmp_int[5];
+	p->equip       = tmp_int[6];
+	p->intimate    = tmp_int[7];
+	p->hungry      = tmp_int[8];
 	p->rename_flag = tmp_int[9];
-	p->incubate = tmp_int[10];
+	p->incubate    = tmp_int[10];
 
 	if(p->hungry < 0)
 		p->hungry = 0;
@@ -114,14 +115,14 @@ int pet_fromstr(char *str,struct s_pet *p)
 int pet_journal_rollforward( int key, void* buf, int flag )
 {
 	struct s_pet* p = (struct s_pet *)numdb_search( pet_db, key );
-	
+
 	// 念のためチェック
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct s_pet*)buf)->pet_id )
 	{
 		printf("int_pet: journal: key != pet_id !\n");
 		return 0;
 	}
-	
+
 	// データの置き換え
 	if( p )
 	{
@@ -133,18 +134,18 @@ int pet_journal_rollforward( int key, void* buf, int flag )
 		}
 		return 1;
 	}
-	
+
 	// 追加
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
-		p = (struct s_pet*) aCalloc( 1, sizeof( struct s_pet ) );
+		p = (struct s_pet*)aCalloc( 1, sizeof( struct s_pet ) );
 		memcpy( p, buf, sizeof(struct s_pet) );
 		numdb_insert( pet_db, key, p );
 		if( p->pet_id >= pet_newid)
 			pet_newid=p->pet_id+1;
 		return 1;
 	}
-	
+
 	return 0;
 }
 int pet_txt_sync(void);
@@ -174,7 +175,7 @@ int pet_txt_init(void)
 		c++;
 	}
 	fclose(fp);
-//	printf("int_pet: %s read done (%d pets)\n",pet_txt,c);
+	//printf("int_pet: %s read done (%d pets)\n",pet_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( pet_journal_enable )
@@ -183,9 +184,9 @@ int pet_txt_init(void)
 		if( journal_load( &pet_journal, sizeof(struct s_pet), pet_journal_file ) )
 		{
 			int c = journal_rollforward( &pet_journal, pet_journal_rollforward );
-			
+
 			printf("int_pet: journal: roll-forward (%d)\n", c );
-			
+
 			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
 			pet_txt_sync();
 		}
@@ -201,17 +202,19 @@ int pet_txt_init(void)
 	return 0;
 }
 
-int pet_txt_sync_sub(void *key,void *data,va_list ap)
+static int pet_txt_sync_sub(void *key,void *data,va_list ap)
 {
 	char line[8192];
 	FILE *fp;
+
 	pet_tostr(line,(struct s_pet *)data);
 	fp=va_arg(ap,FILE *);
 	fprintf(fp,"%s" RETCODE,line);
 	return 0;
 }
 
-int pet_txt_sync(void) {
+int pet_txt_sync(void)
+{
 	FILE *fp;
 	int lock;
 
@@ -224,7 +227,7 @@ int pet_txt_sync(void) {
 	}
 	numdb_foreach(pet_db,pet_txt_sync_sub,fp);
 	lock_fclose(fp,pet_txt,&lock);
-//	printf("int_pet: %s saved.\n",pet_txt);
+	//printf("int_pet: %s saved.\n",pet_txt);
 
 #ifdef TXT_JOURNAL
 	if( pet_journal_enable )
@@ -240,20 +243,20 @@ int pet_txt_sync(void) {
 
 int pet_txt_delete(int pet_id)
 {
-	struct s_pet *p;
-	p = (struct s_pet *)numdb_search(pet_db,pet_id);
-	if( p == NULL)
+	struct s_pet *p = (struct s_pet *)numdb_search(pet_db,pet_id);
+
+	if(p == NULL)
 		return 1;
-	else {
-		numdb_erase(pet_db,pet_id);
-		aFree(p);
-		printf("pet_id: %d deleted\n",pet_id);
+
+	numdb_erase(pet_db,pet_id);
+	aFree(p);
+	printf("pet_id: %d deleted\n",pet_id);
 
 #ifdef TXT_JOURNAL
-		if( pet_journal_enable )
-			journal_write( &pet_journal, pet_id, NULL );
+	if( pet_journal_enable )
+		journal_write( &pet_journal, pet_id, NULL );
 #endif
-	}
+
 	return 0;
 }
 
@@ -265,6 +268,7 @@ const struct s_pet* pet_txt_load(int pet_id)
 int pet_txt_save(struct s_pet* p2)
 {
 	struct s_pet* p1 = (struct s_pet *)numdb_search(pet_db,p2->pet_id);
+
 	if(p1 == NULL) {
 		p1 = (struct s_pet *)aMalloc(sizeof(struct s_pet));
 		numdb_insert(pet_db,p1,p2->pet_id);
@@ -318,19 +322,21 @@ void pet_txt_final(void)
 #else /* TXT_ONLY */
 
 static char pet_db_[256] = "pet";
-static struct dbt *pet_db;
 
-int pet_sql_init(void) {
+int pet_sql_init(void)
+{
 	pet_db = numdb_init();
 	return 0;
 }
 
-int pet_sql_sync(void) {
+int pet_sql_sync(void)
+{
 	// nothing to do
 	return 0;
 }
 
-int pet_sql_delete(int pet_id) {
+int pet_sql_delete(int pet_id)
+{
 	struct s_pet *p;
 
 	// printf("Request del  pet  (%6d)[",pet_id);
@@ -354,10 +360,12 @@ int pet_sql_delete(int pet_id) {
 	return 0;
 }
 
-const struct s_pet* pet_sql_load(int pet_id) {
+const struct s_pet* pet_sql_load(int pet_id)
+{
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 	struct s_pet *p = (struct s_pet *)numdb_search(pet_db,pet_id);
+
 	if(p && p->pet_id == pet_id) {
 		return p;
 	}
@@ -369,10 +377,10 @@ const struct s_pet* pet_sql_load(int pet_id) {
 	// printf("Request load pet  (%6d)[",pet_id);
 	memset(p, 0, sizeof(struct s_pet));
 
-	//`pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
+	// `pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	sprintf(
 		tmp_sql,
-		"SELECT `pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,"
+		"SELECT `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,"
 		"`intimate`,`hungry`,`rename_flag`,`incubate` FROM `%s` WHERE `pet_id`='%d'",
 		pet_db_, pet_id
 	);
@@ -381,22 +389,23 @@ const struct s_pet* pet_sql_load(int pet_id) {
 		p->pet_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
 		sql_row = mysql_fetch_row(sql_res);
 
-		p->pet_id = pet_id;
-		p->class_  = atoi(sql_row[1]);
-		strncpy(p->name, sql_row[2],24);
-		p->account_id = atoi(sql_row[3]);
-		p->char_id = atoi(sql_row[4]);
-		p->level = atoi(sql_row[5]);
-		p->egg_id = atoi(sql_row[6]);
-		p->equip = atoi(sql_row[7]);
-		p->intimate = atoi(sql_row[8]);
-		p->hungry = atoi(sql_row[9]);
-		p->rename_flag = atoi(sql_row[10]);
-		p->incubate = atoi(sql_row[11]);
+		p->pet_id      = pet_id;
+		p->class_      = atoi(sql_row[0]);
+		strncpy(p->name, sql_row[1], 24);
+		p->name[23] = '\0';	// force \0 terminal
+		p->account_id  = atoi(sql_row[2]);
+		p->char_id     = atoi(sql_row[3]);
+		p->level       = atoi(sql_row[4]);
+		p->egg_id      = atoi(sql_row[5]);
+		p->equip       = atoi(sql_row[6]);
+		p->intimate    = atoi(sql_row[7]);
+		p->hungry      = atoi(sql_row[8]);
+		p->rename_flag = atoi(sql_row[9]);
+		p->incubate    = atoi(sql_row[10]);
 	} else {
 		p->pet_id = -1;
 		if( sql_res ) mysql_free_result(sql_res);
@@ -417,16 +426,18 @@ const struct s_pet* pet_sql_load(int pet_id) {
 	return p;
 }
 
-int pet_sql_save(struct s_pet* p2) {
-	//`pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
-	char t_name[100];
+int pet_sql_save(struct s_pet* p2)
+{
+	char t_name[64];
 	const struct s_pet *p1 = pet_sql_load(p2->pet_id);
+
 	if(p1 == NULL) return 0;
 
 	// printf("Request save pet  (%6d)[",p2->pet_id);
 
+	// `pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	if(memcmp(p1,p2,sizeof(struct s_pet))) {
-		//row reside -> updating
+		// row reside -> updating
 		sprintf(
 			tmp_sql,
 			"UPDATE `%s` SET `class`='%d',`name`='%s',`account_id`='%d',`char_id`='%d',`level`='%d',`egg_id`='%d',"
@@ -448,12 +459,13 @@ int pet_sql_save(struct s_pet* p2) {
 	return 1;
 }
 
-int pet_sql_new(struct s_pet *p) {
+int pet_sql_new(struct s_pet *p)
+{
 	// ペットIDを読み出す
-	char t_name[100];
+	char t_name[64];
 
 	// printf("Request make pet  (------)[");
-	// rename_flag = -1, incubate = char_id のダミーデータを入れて、  
+	// rename_flag = -1, incubate = char_id のダミーデータを入れて
 	sprintf(
 		tmp_sql,
 		"INSERT INTO `%s` (`class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,"
@@ -489,7 +501,8 @@ void pet_sql_final(void)
 		numdb_final(pet_db,pet_sql_final_sub);
 }
 
-void pet_sql_config_read_sub(const char* w1,const char *w2) {
+void pet_sql_config_read_sub(const char* w1,const char *w2)
+{
 	// nothing to do
 	return;
 }
@@ -571,11 +584,12 @@ int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,unsigned 
 
 	p=(struct s_pet *)aCalloc(1,sizeof(struct s_pet));
 	memcpy(p->name,pet_name,24);
-	if(incubate == 1)
-		p->account_id = p->char_id = 0;
-	else {
+	if(incubate == 1) {
+		p->account_id = 0;
+		p->char_id    = 0;
+	} else {
 		p->account_id = account_id;
-		p->char_id = char_id;
+		p->char_id    = char_id;
 	}
 	p->class_      = pet_class;
 	p->level       = pet_lv;
@@ -606,17 +620,17 @@ int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,unsigned 
 int mapif_load_pet(int fd,int account_id,int char_id,int pet_id)
 {
 	const struct s_pet *p = pet_load(pet_id);
+
 	if(p!=NULL) {
-		if(p->incubate == 1) {
+		if(p->incubate == 1)
 			mapif_pet_info(fd,account_id,p);
-		}
 		else if(account_id == p->account_id && char_id == p->char_id)
 			mapif_pet_info(fd,account_id,p);
 		else
 			mapif_pet_noinfo(fd,account_id);
-	}
-	else
+	} else {
 		mapif_pet_noinfo(fd,account_id);
+	}
 
 	return 0;
 }
@@ -625,7 +639,10 @@ int mapif_save_pet(int fd,int account_id,struct s_pet *data)
 {
 	if(sizeof(struct s_pet) != RFIFOW(fd,2) - 8) {
 		printf("inter pet: data size error %d %d\n",sizeof(struct s_pet),RFIFOW(fd,2)-8);
-	} else if(pet_load(data->pet_id)) {
+		return 0;
+	}
+
+	if(pet_load(data->pet_id)) {
 		if(data->hungry < 0)
 			data->hungry = 0;
 		else if(data->hungry > 100)
@@ -694,4 +711,3 @@ int inter_pet_parse_frommap(int fd)
 	}
 	return 1;
 }
-
