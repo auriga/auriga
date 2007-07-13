@@ -210,7 +210,7 @@ int storage_txt_delete(int account_id)
 		int i;
 		for(i=0;i<s->storage_amount;i++){
 			if(s->store_item[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&s->store_item[i].card[2])));
+				pet_delete(*((long *)(&s->store_item[i].card[1])));
 		}
 		numdb_erase(storage_db,account_id);
 		aFree(s);
@@ -392,7 +392,7 @@ int gstorage_txt_delete(int guild_id)
 		int i;
 		for(i=0;i<gs->storage_amount;i++){
 			if(gs->store_item[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&gs->store_item[i].card[2])));
+				pet_delete(*((long *)(&gs->store_item[i].card[1])));
 		}
 		numdb_erase(gstorage_db,guild_id);
 		aFree(gs);
@@ -668,7 +668,7 @@ int  storage_sql_delete(int account_id) {
 		int i;
 		for(i=0;i<s->storage_amount;i++){
 			if(s->store_item[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&s->store_item[i].card[2])));
+				pet_delete(*((long *)(&s->store_item[i].card[1])));
 		}
 	}
 
@@ -736,7 +736,7 @@ int  gstorage_sql_delete(int guild_id) {
 		int i;
 		for(i=0;i<s->storage_amount;i++){
 			if(s->store_item[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&s->store_item[i].card[2])));
+				pet_delete(*((long *)(&s->store_item[i].card[1])));
 		}
 	}
 

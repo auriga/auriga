@@ -17,6 +17,7 @@
 #include "char.h"
 #include "inter.h"
 #include "int_mail.h"
+#include "int_pet.h"
 
 static struct dbt *mail_db;
 
@@ -174,18 +175,25 @@ int mail_txt_deletemail(int char_id,unsigned int mail_num,const struct mail *m)
 	if(!m)
 		return 1;
 
-	mail_read_mail(char_id,m->store,md);
-	for(i=j=0; md[i] != NULL && i < m->store; i++){
-		if(md[i]->mail_num != mail_num)
-			memcpy(md[j++],md[i],sizeof(struct mail_data));
-		else
-			hit=1;
+	mail_txt_read_mail(char_id,m->store,md);
+	for(i=j=0; md[i] != NULL && i < m->store; i++) {
+		if(md[i]->mail_num == mail_num) {
+			if((md[i]->item.nameid > 0 && md[i]->item.amount > 0) || md[i]->zeny > 0) {
+				// 添付アイテム・Zenyがあるとメール削除できない（anti hacker）
+				hit = 0;
+				break;
+			}
+			hit = 1;
+		} else {
+			if(i != j)
+				memcpy(md[j++],md[i],sizeof(struct mail_data));
+		}
 	}
 	if(!hit) {
 		mail_free(md,m->store);
 		return 1;
 	}
-	mail_save_mail(char_id,-1,m->store-1,md);
+	mail_txt_save_mail(char_id,-1,m->store-1,md);
 
 	mail_free(md,m->store);
 
@@ -284,11 +292,23 @@ int mail_txt_delete(int char_id)
 	char filename[1024];
 	struct mail *m = (struct mail *)numdb_search(mail_db,char_id);
 
-	if(m && m->char_id == char_id) {
-		numdb_erase(mail_db,char_id);
-		aFree(m);
-	}
+	if(m) {
+		struct mail_data *md[MAIL_STORE_MAX];
+		int i;
 
+		mail_txt_read_mail(char_id,m->store,md);
+
+		for(i=0; md[i] != NULL && i < m->store; i++) {
+			if(md[i]->item.card[0] == (short)0xff00)
+				pet_delete(*((long *)(&md[i]->item.card[1])));
+		}
+		mail_free(md,m->store);
+
+		if(m->char_id == char_id) {
+			numdb_erase(mail_db,char_id);
+			aFree(m);
+		}
+	}
 	sprintf(filename,"%s%d.txt",mail_dir,char_id);
 	remove(filename);
 
@@ -518,10 +538,25 @@ int mail_sql_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 
 int mail_sql_deletemail(int char_id,unsigned int mail_num,const struct mail *m)
 {
+	struct mail_data *md[MAIL_STORE_MAX];
 	struct mail m2;
+	int i;
 
 	if(!m)
 		return 1;
+
+	mail_sql_read_mail(char_id, m->store, md);
+
+	for(i=0; md[i] != NULL && i < m->store; i++) {
+		if(md[i]->mail_num == mail_num) {
+			if((md[i]->item.nameid > 0 && md[i]->item.amount > 0) || md[i]->zeny > 0) {
+				// 添付アイテム・Zenyがあるとメール削除できない（anti hacker）
+				mail_free(md, m->store);
+				return 1;
+			}
+		}
+	}
+	mail_free(md, m->store);
 
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id` = '%d' AND `number` = '%u'", mail_data, char_id, mail_num);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
@@ -555,19 +590,33 @@ int mail_sql_delete(int char_id)
 {
 	struct mail *m = (struct mail *)numdb_search(mail_db,char_id);
 
-	if(m && m->char_id == char_id) {
-		numdb_erase(mail_db,char_id);
-		aFree(m);
+	if(m) {
+		struct mail_data *md[MAIL_STORE_MAX];
+		int i;
+
+		mail_sql_read_mail(char_id, m->store, md);
+
+		for(i=0; md[i] != NULL && i < m->store; i++) {
+			if(md[i]->item.card[0] == (short)0xff00)
+				pet_delete(*((long *)(&md[i]->item.card[1])));
+		}
+		mail_free(md, m->store);
+
+		if(m->char_id == char_id) {
+			numdb_erase(mail_db,char_id);
+			aFree(m);
+		}
 	}
+
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id` = '%d'", mail_db_, char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (delete `%s`)- %s\n", mail_db_, mysql_error(&mysql_handle));
 	}
-
 	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id` = '%d'", mail_data, char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (delete `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
 	}
+
 	return 0;
 }
 
