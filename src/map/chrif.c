@@ -45,7 +45,7 @@ int char_fd = -1;
 static char char_ip_str[16];
 static int char_ip;
 static int char_port = 6121;
-static char userid[24],passwd[24];
+static char userid[24] = "", passwd[24] = "";
 static int chrif_state;
 
 /*==========================================
@@ -55,6 +55,7 @@ static int chrif_state;
 void chrif_setuserid(char *id)
 {
 	memcpy(userid,id,24);
+	userid[23] = '\0';	// force \0 terminal
 }
 
 /*==========================================
@@ -64,6 +65,7 @@ void chrif_setuserid(char *id)
 void chrif_setpasswd(char *pwd)
 {
 	memcpy(passwd,pwd,24);
+	passwd[23] = '\0';	// force \0 terminal
 }
 
 /*==========================================
@@ -561,7 +563,8 @@ int chrif_accountreg2(int fd)
 
 	for(p=8,j=0;p<RFIFOW(fd,2) && j<ACCOUNT_REG2_NUM;p+=36,j++){
 		memcpy(sd->save_reg.account2[j].str,RFIFOP(fd,p),32);
-		sd->save_reg.account2[j].value = RFIFOL(fd,p+32);
+		sd->save_reg.account2[j].str[31] = '\0';	// force \0 terminal
+		sd->save_reg.account2[j].value   = RFIFOL(fd,p+32);
 	}
 	sd->save_reg.account2_num=j;
 	return 0;

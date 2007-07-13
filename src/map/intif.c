@@ -1152,7 +1152,8 @@ int intif_parse_AccountReg(int fd)
 
 	for(p=8,j=0; p<RFIFOW(fd,2) && j<ACCOUNT_REG_NUM; p+=36,j++) {
 		memcpy(sd->save_reg.account[j].str,RFIFOP(fd,p),32);
-		sd->save_reg.account[j].value = RFIFOL(fd,p+32);
+		sd->save_reg.account[j].str[31] = '\0';	// force \0 terminal
+		sd->save_reg.account[j].value   = RFIFOL(fd,p+32);
 	}
 	sd->save_reg.account_num = j;
 

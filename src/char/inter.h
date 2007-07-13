@@ -6,8 +6,6 @@ int inter_sync(void);
 int inter_parse_frommap(int fd);
 int inter_mapif_init(int fd);
 
-int inter_check_length(int fd,int length);
-
 int inter_log(char *fmt,...);
 
 #define inter_cfgName "conf/inter_auriga.conf"

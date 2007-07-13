@@ -9492,7 +9492,7 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
 {
-	char *message, *gm_message;
+	char *message, *gm_message, *name;
 	int message_size;
 
 	nullpo_retv(sd);
@@ -9516,15 +9516,18 @@ static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
 	}
 	aFree(gm_message);
 
+	name = (char *)RFIFOP(fd,GETPACKETPOS(cmd,1));
+	name[23] = '\0';	// force \0 terminal
+
 	// a normal client can not send a wisp message to yourself (anti-hack)
-	if (strncmp(RFIFOP(fd,GETPACKETPOS(cmd,1)), sd->status.name, 24) == 0)
+	if (name, sd->status.name, 24) == 0)
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可
 	if (sd->sc_data[SC_BERSERK].timer != -1 || sd->sc_data[SC_NOCHAT].timer != -1)
 		return;
 
-	intif_wis_message(sd, RFIFOP(fd,GETPACKETPOS(cmd,1)), message, message_size);
+	intif_wis_message(sd, name, message, message_size);
 
 	return;
 }
@@ -11575,12 +11578,14 @@ static void clif_parse_wisexin(int fd,struct map_session_data *sd, int cmd)
 		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// 空の拒否リストに追加(とりあえず)
 			if(sd->wis_refusal[i][0] == 0) {
 				memcpy(sd->wis_refusal[i], name, 24);
+				sd->wis_refusal[i][23] = '\0';
 				flag = 0;
 				break;
 			}
 		}
 		if(flag == 1) {
 			memcpy(sd->wis_refusal[MAX_WIS_REFUSAL-1], name, 24);
+			sd->wis_refusal[MAX_WIS_REFUSAL-1][23] = '\0';
 			flag = 0;
 		}
 	} else {		// in

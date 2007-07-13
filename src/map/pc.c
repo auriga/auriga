@@ -632,11 +632,13 @@ int pc_setsavepoint(struct map_session_data *sd,char *mapname,int x,int y)
 	nullpo_retr(0, sd);
 
 	strncpy(sd->status.save_point.map,mapname,24);
+	sd->status.save_point.map[23] = '\0';	// force \0 terminal
 	sd->status.save_point.x = x;
 	sd->status.save_point.y = y;
 
 	if(strcmp(sd->status.save_point.map,"SavePoint") != 0 && strstr(sd->status.save_point.map,".gat") == NULL) {
-		strcat(sd->status.save_point.map,".gat");
+		if(strlen(sd->status.save_point.map) < 20)
+			strcat(sd->status.save_point.map,".gat");
 	}
 	return 0;
 }
@@ -3811,9 +3813,10 @@ void pc_memo(struct map_session_data *sd,int i)
 		i = 0;
 	}
 
-	memcpy(sd->status.memo_point[i].map,map[sd->bl.m].name,24);
-	sd->status.memo_point[i].x = sd->bl.x;
-	sd->status.memo_point[i].y = sd->bl.y;
+	strncpy(sd->status.memo_point[i].map,map[sd->bl.m].name,24);
+	sd->status.memo_point[i].map[23] = '\0';	// force \0 terminal
+	sd->status.memo_point[i].x       = sd->bl.x;
+	sd->status.memo_point[i].y       = sd->bl.y;
 
 	clif_skill_memo(sd,0);
 
@@ -6085,6 +6088,7 @@ int pc_setglobalreg(struct map_session_data *sd,const char *reg,int val)
 	}
 	if(sd->save_reg.global_num < GLOBAL_REG_NUM) {
 		strncpy(sd->save_reg.global[i].str,reg,32);
+		sd->save_reg.global[i].str[31] = '\0';	// force \0 terminal
 		sd->save_reg.global[i].value = val;
 		sd->save_reg.global_num++;
 		sd->state.reg_dirty = 1;
@@ -6143,6 +6147,7 @@ int pc_setaccountreg(struct map_session_data *sd,const char *reg,int val)
 	}
 	if(sd->save_reg.account_num < ACCOUNT_REG_NUM) {
 		strncpy(sd->save_reg.account[i].str,reg,32);
+		sd->save_reg.account[i].str[31] = '\0';	// force \0 terminal
 		sd->save_reg.account[i].value = val;
 		sd->save_reg.account_num++;
 		intif_saveaccountreg(sd);
@@ -6201,6 +6206,7 @@ int pc_setaccountreg2(struct map_session_data *sd,const char *reg,int val)
 	}
 	if(sd->save_reg.account2_num < ACCOUNT_REG2_NUM) {
 		strncpy(sd->save_reg.account2[i].str,reg,32);
+		sd->save_reg.account2[i].str[31] = '\0';	// force \0 terminal
 		sd->save_reg.account2[i].value = val;
 		sd->save_reg.account2_num++;
 		chrif_saveaccountreg2(sd);
