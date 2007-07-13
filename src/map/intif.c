@@ -1701,7 +1701,7 @@ int intif_parse_MailDeleteRes(int fd)
 	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
 
 	if(sd)
-		clif_deletemail_res(sd->fd,RFIFOL(fd,6),RFIFOB(fd,7));
+		clif_deletemail_res(sd->fd,RFIFOL(fd,6),RFIFOB(fd,10));
 	return 0;
 }
 

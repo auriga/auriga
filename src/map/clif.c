@@ -8492,7 +8492,7 @@ void clif_deletemail_res(const int fd,int mail_num,int flag)
 {
 	WFIFOW(fd,0) = 0x257;
 	WFIFOL(fd,2) = mail_num;
-	WFIFOL(fd,6) = flag;
+	WFIFOW(fd,6) = flag;
 	WFIFOSET(fd,packet_db[0x257].len);
 
 	return;

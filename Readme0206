@@ -1,4 +1,19 @@
 ----------------------------------------
+//0224 [2007/07/14] by Rayce
+
+・ROメールの削除を失敗したとき「削除できませんでした」のメッセージが出力されないバグを修正（clif.c, intif.c）
+
+・int_mail.cの全体的な修正と整形
+　　-> 送信者名、受信者名、タイトルの末尾に \0 を強制する
+　　-> mail_dataのアイテムソート用idがunsigned intになってなかったのを修正、%d → %u
+　　-> mapif_parse_OpenMailBox() でメールがロードできなかったときは念のためmail_dataを
+　　　 NULLで埋め尽くすようにしておく
+　　-> TXT: mail_data用のfilenameがバッファオーバランしないようにサイズを変更、1024 → 1056
+　　-> TXT: mail_dataを保存する際は lock_fopen(), lock_fclose() を利用する
+　　-> SQL: mail_sql_store_mail() でbody_dataにわざわざデータを変換する無駄を省略
+　　-> SQL: mail_sql_load() で必要のない `char_id` をSELECTしないように改善
+
+----------------------------------------
 //0223 [2007/07/14] by Rayce
 
 ・pet_delete() を呼び出すとき、card[1]ではなくcard[2]を参照していたためにペットデータが削除されなかった

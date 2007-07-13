@@ -1,8 +1,5 @@
-/*
-	int_mail.c
-	struct mail		store : 現在保存されているメールの件数
-					rates : 今まで送られてきたメールの総数
- */
+
+#define _INT_MAIL_C_
 
 #include <stdio.h>
 #include <time.h>
@@ -19,7 +16,7 @@
 #include "int_mail.h"
 #include "int_pet.h"
 
-static struct dbt *mail_db;
+static struct dbt *mail_db = NULL;
 
 static void mail_free(struct mail_data *md[MAIL_STORE_MAX],int store);
 
@@ -30,97 +27,109 @@ static char mail_txt[1024]="save/mail.txt";
 
 int mail_txt_store_mail(int char_id,struct mail_data *md)
 {
-	char filename[1024];
+	char filename[1056];
 	FILE *fp;
 	unsigned int i;
 
-	if(!md) return 0;
+	if(!md) return 1;
 
 	sprintf(filename,"%s%d.txt",mail_dir,char_id);
 	fp=fopen(filename,"a");
 
-	fprintf(fp,"%u,%d\t%s\t%s\t%s\t%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t",
+	if(fp == NULL) {
+		printf("int_mail: can't write [%s] !!! data is lost !!!\n", filename);
+		return 1;
+	}
+
+	fprintf(fp,"%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t",
 		md->mail_num, md->read, md->char_name, md->receive_name, md->title, md->zeny,
 		md->item.id, md->item.nameid, md->item.amount, md->item.equip,
 		md->item.identify, md->item.refine, md->item.attribute,
 		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3],
 		md->times,md->body_size);
 	for(i=0;i<md->body_size;i++){
-		fprintf(fp,"%02X",RBUFB(md->body,i));
+		fprintf(fp,"%02X",(unsigned char)(md->body[i]));
 	}
-	fprintf(fp,"\n");
+	fprintf(fp,RETCODE);
 	fclose(fp);
 	return 0;
 }
+
 int mail_txt_save_mail(int char_id,int i,int store,struct mail_data *md[MAIL_STORE_MAX])
 {
-	char filename[1024];
+	char filename[1056];
 	FILE *fp;
 	unsigned int j;
-	int n=-1;
+	int n=-1, lock;
 
-	if(!md) return 0;
+	if(!md) return 1;
 
 	sprintf(filename,"%s%d.txt",mail_dir,char_id);
-	fp=fopen(filename,"w");
+	fp = lock_fopen(filename, &lock);
+
+	if(fp == NULL) {
+		printf("int_mail: can't write [%s] !!! data is lost !!!\n", filename);
+		return 1;
+	}
 
 	while(n+1<store && md[n+1]){
 		n++;
-		fprintf(fp,"%u,%d\t%s\t%s\t%s\t%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t",
+		fprintf(fp,"%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t",
 			md[n]->mail_num, md[n]->read, md[n]->char_name, md[n]->receive_name, md[n]->title, md[n]->zeny,
 			md[n]->item.id, md[n]->item.nameid, md[n]->item.amount, md[n]->item.equip,
 			md[n]->item.identify, md[n]->item.refine, md[n]->item.attribute,
 			md[n]->item.card[0], md[n]->item.card[1], md[n]->item.card[2], md[n]->item.card[3],
 			md[n]->times, md[n]->body_size);
 		for(j=0;j<md[n]->body_size;j++){
-			fprintf(fp,"%02X",RBUFB(md[n]->body,j));
+			fprintf(fp,"%02X",(unsigned char)(md[n]->body[j]));
 		}
-		fprintf(fp,"\n");
+		fprintf(fp,RETCODE);
 	}
 	if(n!=store-1 && md[n]){	// 数に相違あり？
-		const struct mail *m;
-		struct mail m2;
-		m = mail_load(char_id);
+		const struct mail *m = mail_txt_load(char_id);
 		if(m){
+			struct mail m2;
 			memcpy(&m2,m,sizeof(struct mail));
 			if( m2.rates < md[n]->mail_num )
 				m2.rates = md[n]->mail_num;
 			if( m2.store != n+1 )
 				m2.store = n+1;
-			mail_save(&m2);
+			mail_txt_save(&m2);
 		}
 	}
-	fclose(fp);
+	lock_fclose(fp, filename, &lock);
 	return 0;
 }
+
 int mail_txt_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX])
 {
 	int i=-1,j;
-	int tmp_int[17];
+	int tmp_int[16];
 	char tmp_char[4][1024];
 	char line[65536];
-	char filename[1024];
+	char filename[1056];
 	FILE *fp;
 
 	sprintf(filename,"%s%d.txt",mail_dir,char_id);
 	if((fp=fopen(filename,"r"))!=NULL){
 		unsigned int n;
 		char *p;
-		while(i+1<store && fgets(line,65535,fp) && i+1<MAIL_STORE_MAX){
-			n=sscanf(line,"%u,%d\t%[^\t]\t%[^\t]\t%[^\t]\t%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%[^\r\n]",
+		while(i+1<store && fgets(line,sizeof(line),fp) && i+1<MAIL_STORE_MAX){
+			n=sscanf(line,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%1023[^\r\n]",
 				&tmp_int[0],&tmp_int[1],tmp_char[0],tmp_char[1],tmp_char[2],&tmp_int[2],
 				&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
 				&tmp_int[14],&tmp_int[15],tmp_char[3]);
 			if(n==20){
+				int c;
 				i++;
-				md[i]=(struct mail_data *)aCalloc(1,sizeof(struct mail_data));
+				md[i] = (struct mail_data *)aCalloc(1,sizeof(struct mail_data));
 				md[i]->mail_num = (unsigned int)tmp_int[0];
 				md[i]->read     = tmp_int[1];
 				memcpy(md[i]->char_name,tmp_char[0],24);
 				memcpy(md[i]->receive_name,tmp_char[1],24);
 				memcpy(md[i]->title,tmp_char[2],40);
 				md[i]->zeny           = tmp_int[2];
-				md[i]->item.id        = tmp_int[3];
+				md[i]->item.id        = (unsigned int)tmp_int[3];
 				md[i]->item.nameid    = tmp_int[4];
 				md[i]->item.amount    = tmp_int[5];
 				md[i]->item.equip     = tmp_int[6];
@@ -133,9 +142,19 @@ int mail_txt_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 				md[i]->item.card[3]   = tmp_int[13];
 				md[i]->times          = (unsigned int)tmp_int[14];
 				md[i]->body_size      = (unsigned int)tmp_int[15];
+
+				// force \0 terminal
+				md[i]->char_name[23]    = '\0';
+				md[i]->receive_name[23] = '\0';
+				md[i]->title[39]        = '\0';
+
+				if(md[i]->body_size > sizeof(md[i]->body)) {
+					printf("mail_read_mail: %d invalid body size %d!!\n", char_id, md[i]->body_size);
+					md[i]->body_size = sizeof(md[i]->body);
+				}
 				for(n = 0,p = tmp_char[3]; n < md[i]->body_size; n++){
-					sscanf(p,"%2x",&tmp_int[16]);
-					WBUFB(md[i]->body,n) = tmp_int[16];
+					sscanf(p,"%2x",&c);
+					WBUFB(md[i]->body,n) = c;
 					p += 2;
 				}
 			}else{
@@ -151,16 +170,15 @@ int mail_txt_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 		md[++j] = NULL;
 
 	if(i!=store-1 && md[i]){	// 数に相違あり？
-		const struct mail *m;
-		struct mail m2;
-		m = mail_load(char_id);
+		const struct mail *m = mail_txt_load(char_id);
 		if(m){
+			struct mail m2;
 			memcpy(&m2,m,sizeof(struct mail));
 			if( i > 0 && m2.rates < md[i]->mail_num )
 				m2.rates = md[i]->mail_num;
 			if( m2.store != i+1 )
 				m2.store = i+1;
-			mail_save(&m2);
+			mail_txt_save(&m2);
 		}
 	}
 	return 0;
@@ -200,18 +218,17 @@ int mail_txt_deletemail(int char_id,unsigned int mail_num,const struct mail *m)
 	memcpy(&m2,m,sizeof(struct mail));
 	if(m2.store > 0)
 		m2.store--;
-	mail_save(&m2);
+	mail_txt_save(&m2);
 
 	return 0;
 }
+
 static int mail_tostr(char *str,struct mail *m)
 {
-	int len;
-
 	if(!m)
 		return 1;
 
-	len=sprintf(str,"%d,%d,%u,%d",
+	sprintf(str,"%d,%d,%u,%d",
 		m->char_id,m->account_id,m->rates,m->store);
 
 	return 0;
@@ -229,13 +246,14 @@ static int mail_fromstr(char *str,struct mail *m)
 		return 1;
 	}
 
-	m->char_id= tmp_int[0];
+	m->char_id    = tmp_int[0];
 	m->account_id = tmp_int[1];
-	m->rates = (unsigned int)tmp_int[2];
-	m->store = tmp_int[3];
+	m->rates      = (unsigned int)tmp_int[2];
+	m->store      = tmp_int[3];
 
 	return 0;
 }
+
 int mail_txt_init(void)
 {
 	char line[8192];
@@ -264,19 +282,23 @@ int mail_txt_init(void)
 	printf("%s init %d\n",mail_txt,c);
 	return 0;
 }
+
 static int mail_txt_sync_sub(void *key,void *data,va_list ap)
 {
 	char line[8192];
 	FILE *fp;
+
 	mail_tostr(line,(struct mail *)data);
 	fp=va_arg(ap,FILE *);
 	fprintf(fp,"%s" RETCODE,line);
 	return 0;
 }
 
-int mail_txt_sync(void) {
+int mail_txt_sync(void)
+{
 	FILE *fp;
 	int lock;
+
 	if( (fp=lock_fopen(mail_txt,&lock))==NULL ){
 		printf("int_mail: cant write [%s] !!! data is lost !!!\n",mail_txt);
 		return 1;
@@ -289,7 +311,7 @@ int mail_txt_sync(void) {
 // キャラ削除時
 int mail_txt_delete(int char_id)
 {
-	char filename[1024];
+	char filename[1056];
 	struct mail *m = (struct mail *)numdb_search(mail_db,char_id);
 
 	if(m) {
@@ -315,12 +337,15 @@ int mail_txt_delete(int char_id)
 	return 0;
 }
 
-const struct mail* mail_txt_load(int char_id) {
+const struct mail* mail_txt_load(int char_id)
+{
 	return (const struct mail *)numdb_search(mail_db,char_id);
 }
 
-int mail_txt_save(struct mail* m2) {
+int mail_txt_save(struct mail* m2)
+{
 	struct mail *m1 = (struct mail *)numdb_search(mail_db,m2->char_id);
+
 	if(m1 == NULL) {
 		m1 = (struct mail *)aCalloc(1,sizeof(struct mail));
 		numdb_insert(mail_db,m1,m2->char_id);
@@ -329,8 +354,10 @@ int mail_txt_save(struct mail* m2) {
 	return 1;
 }
 
-int mail_txt_new(int account_id,int char_id) {
+int mail_txt_new(int account_id,int char_id)
+{
 	struct mail *m = (struct mail *)aMalloc(sizeof(struct mail));
+
 	m->account_id = account_id;
 	m->char_id = char_id;
 	m->rates = 1;
@@ -342,7 +369,9 @@ int mail_txt_new(int account_id,int char_id) {
 static int mail_txt_final_sub(void *key,void *data,va_list ap)
 {
 	struct mail *md = (struct mail *)data;
+
 	aFree(md);
+
 	return 0;
 }
 
@@ -355,10 +384,10 @@ void mail_txt_final(void)
 void mail_txt_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"mail_txt")==0) {
-		strncpy(mail_txt, w2, sizeof(mail_txt));
+		strncpy(mail_txt, w2, sizeof(mail_txt) - 1);
 	}
 	if(strcmpi(w1,"mail_dir")==0) {
-		strncpy(mail_dir, w2, sizeof(mail_dir));
+		strncpy(mail_dir, w2, sizeof(mail_dir) - 1);
 	}
 	return;
 }
@@ -383,27 +412,33 @@ static char mail_data[256] = "mail_data";
 int mail_sql_store_mail(int char_id,struct mail_data *md)
 {
 	unsigned int i;
-	char buf[3][256], body_data[1024];
+	char buf[3][256];
 	char *p;
 
 	if(!md)
 		return 0;
 
-	// SELECT HEX()
-	for(i=0, p=body_data; i<md->body_size; i++) {
-		p += sprintf(p,"%02X",RBUFB(md->body,i));
-	}
-
-	sprintf(
-		tmp_sql,
+	p  = tmp_sql;
+	p += sprintf(
+		p,
 		"INSERT INTO `%s` (`char_id`, `number`, `read`, `send_name`, `receive_name`, `title`, "
 		"`times`, `size`, `body`, `zeny`, "
 		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
 		"`card0`, `card1`, `card2`, `card3`) "
-		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
+		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','",
 		mail_data, char_id, md->mail_num, md->read, strecpy(buf[0],md->char_name), strecpy(buf[1],md->receive_name), strecpy(buf[2],md->title),
-		md->times, md->body_size, body_data, md->zeny,
-		md->item.id, md->item.nameid, md->item.amount, md->item.equip, md->item.identify, md->item.refine, md->item.attribute,
+		md->times, md->body_size
+	);
+
+	// SELECT HEX()
+	for(i=0; i<md->body_size; i++) {
+		p += sprintf(p, "%02X", (unsigned char)(md->body[i]));
+	}
+
+	p += sprintf(
+		p,
+		"','%d','%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
+		md->zeny, md->item.id, md->item.nameid, md->item.amount, md->item.equip, md->item.identify, md->item.refine, md->item.attribute,
 		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3]
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
@@ -422,16 +457,15 @@ int mail_sql_save_mail(int char_id,int i,int store,struct mail_data *md[MAIL_STO
 
 	for(n=-1; n+1<store && md[n+1]; n++);
 	if(n!=store-1 && md[n]){	// 数に相違あり？
-		const struct mail *m;
-		struct mail m2;
-		m = mail_load(char_id);
+		const struct mail *m = mail_sql_load(char_id);
 		if(m){
+			struct mail m2;
 			memcpy(&m2,m,sizeof(struct mail));
 			if( m2.rates < md[n]->mail_num )
 				m2.rates = md[n]->mail_num;
 			if( m2.store != n+1 )
 				m2.store = n+1;
-			mail_save(&m2);
+			mail_sql_save(&m2);
 		}
 	}
 	if(!md[i])
@@ -441,7 +475,7 @@ int mail_sql_save_mail(int char_id,int i,int store,struct mail_data *md[MAIL_STO
 	sprintf(
 		tmp_sql,
 		"UPDATE `%s` SET `read` = '%d', `zeny` = '%d', "
-		"`id` = '%d', `nameid` = '%d', `amount` = '%d', `equip` = '%d', `identify` = '%d', `refine` = '%d', `attribute` = '%d', "
+		"`id` = '%u', `nameid` = '%d', `amount` = '%d', `equip` = '%d', `identify` = '%d', `refine` = '%d', `attribute` = '%d', "
 		"`card0` = '%d', `card1` = '%d', `card2` = '%d', `card3` = '%d' "
 		"WHERE `char_id` = '%d' AND `number` = '%u'",
 		mail_data, md[i]->read, md[i]->zeny,
@@ -455,6 +489,7 @@ int mail_sql_save_mail(int char_id,int i,int store,struct mail_data *md[MAIL_STO
 
 	return 0;
 }
+
 int mail_sql_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX])
 {
 	int i=-1,j;
@@ -482,7 +517,7 @@ int mail_sql_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 			int tmp_int;
 			char *p;
 			i++;
-			md[i]=(struct mail_data *)aCalloc(1,sizeof(struct mail_data));
+			md[i] = (struct mail_data *)aCalloc(1,sizeof(struct mail_data));
 			md[i]->mail_num = (unsigned int)atoi(sql_row[1]);
 			md[i]->read     = atoi(sql_row[2]);
 			strncpy(md[i]->char_name, sql_row[3] ,24);
@@ -490,6 +525,16 @@ int mail_sql_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 			strncpy(md[i]->title, sql_row[5], 40);
 			md[i]->times     = (unsigned int)atoi(sql_row[6]);
 			md[i]->body_size = (unsigned int)atoi(sql_row[7]);
+
+			// force \0 terminal
+			md[i]->char_name[23]    = '\0';
+			md[i]->receive_name[23] = '\0';
+			md[i]->title[39]        = '\0';
+
+			if(md[i]->body_size > sizeof(md[i]->body)) {
+				printf("mail_read_mail: %d invalid body size %d!!\n", char_id, md[i]->body_size);
+				md[i]->body_size = sizeof(md[i]->body);
+			}
 
 			// SELECT UNHEX()
 			for(n = 0,p = sql_row[8]; n < md[i]->body_size; n++) {
@@ -499,7 +544,7 @@ int mail_sql_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 			}
 
 			md[i]->zeny           = atoi(sql_row[9]);
-			md[i]->item.id        = atoi(sql_row[10]);
+			md[i]->item.id        = (unsigned int)atoi(sql_row[10]);
 			md[i]->item.nameid    = atoi(sql_row[11]);
 			md[i]->item.amount    = atoi(sql_row[12]);
 			md[i]->item.equip     = atoi(sql_row[13]);
@@ -521,16 +566,15 @@ int mail_sql_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX
 		md[++j] = NULL;
 
 	if(i!=store-1 && md[i]){	// 数に相違あり？
-		const struct mail *m;
-		struct mail m2;
-		m = mail_load(char_id);
+		const struct mail *m = mail_sql_load(char_id);
 		if(m){
+			struct mail m2;
 			memcpy(&m2,m,sizeof(struct mail));
 			if( i > 0 && m2.rates < md[i]->mail_num )
 				m2.rates = md[i]->mail_num;
 			if( m2.store != i+1 )
 				m2.store = i+1;
-			mail_save(&m2);
+			mail_sql_save(&m2);
 		}
 	}
 	return 0;
@@ -569,7 +613,7 @@ int mail_sql_deletemail(int char_id,unsigned int mail_num,const struct mail *m)
 	memcpy(&m2,m,sizeof(struct mail));
 	if(m2.store > 0)
 		m2.store--;
-	mail_save(&m2);
+	mail_sql_save(&m2);
 
 	return 0;
 }
@@ -580,7 +624,8 @@ int mail_sql_init(void)
 	return 0;
 }
 
-int mail_sql_sync(void) {
+int mail_sql_sync(void)
+{
 	// nothing to do
 	return 0;
 }
@@ -638,10 +683,10 @@ const struct mail* mail_sql_load(int char_id)
 
 	m->char_id = char_id;
 
-	//`mail` (`char_id`, `account_id`, `rates`, `store`)
+	// `mail` (`char_id`, `account_id`, `rates`, `store`)
 	sprintf(
 		tmp_sql,
-		"SELECT `char_id`, `account_id`, `rates`, `store`"
+		"SELECT `account_id`, `rates`, `store`"
 		"FROM `%s` WHERE `char_id` = '%d'",
 		mail_db_, char_id
 	);
@@ -660,9 +705,9 @@ const struct mail* mail_sql_load(int char_id)
 			mysql_free_result(sql_res);
 			return NULL;
 		}
-		m->account_id = atoi(sql_row[1]);
-		m->rates      = (unsigned int)atoi(sql_row[2]);
-		m->store      = atoi(sql_row[3]);
+		m->account_id = atoi(sql_row[0]);
+		m->rates      = (unsigned int)atoi(sql_row[1]);
+		m->store      = atoi(sql_row[2]);
 
 		mysql_free_result(sql_res);
 	} else {
@@ -733,7 +778,9 @@ int mail_sql_new(int account_id,int char_id)
 static int mail_sql_final_sub(void *key,void *data,va_list ap)
 {
 	struct mail *md = (struct mail *)data;
+
 	aFree(md);
+
 	return 0;
 }
 
@@ -767,6 +814,7 @@ void mail_sql_config_read_sub(const char *w1, const char *w2)
 static void mail_free(struct mail_data *md[MAIL_STORE_MAX],int store)
 {
 	int i;
+
 	for(i=0;i<store;i++) {
 		if(md[i]!=NULL)
 			aFree(md[i]);
@@ -788,6 +836,7 @@ int mapif_mail_res(const int fd,int account,int flag)
 int mapif_send_mailbox(int fd,const char *char_name,int store,struct mail_data *md[MAIL_STORE_MAX])
 {
 	int i,size = sizeof(struct mail_data);
+
 	WFIFOW(fd,0)=0x3849;
 	WFIFOL(fd,4)=store;
 	memcpy(WFIFOP(fd,8),char_name,24);
@@ -800,7 +849,7 @@ int mapif_send_mailbox(int fd,const char *char_name,int store,struct mail_data *
 
 int mapif_mail_newmail(int fd,struct mail_data *md)
 {
-	int size=sizeof(struct mail_data);
+	int size = sizeof(struct mail_data);
 
 	WFIFOW(fd,0)=0x384a;
 	WFIFOW(fd,2)=4+size;
@@ -833,6 +882,7 @@ int mapif_mail_delmail(int fd,int account,unsigned int mail_num,int flag)
 int mapif_mail_getappend(int fd,int account,struct mail_data *md)
 {
 	int size = sizeof(struct item);
+
 	if(!md)
 		return 1;
 	if((md->item.nameid <= 0 || md->item.amount <= 0) && md->zeny <= 0)
@@ -841,9 +891,10 @@ int mapif_mail_getappend(int fd,int account,struct mail_data *md)
 	WFIFOW(fd,0)=0x384d;
 	WFIFOW(fd,2)=12+size;
 	WFIFOL(fd,4)=account;
-	WFIFOL(fd,8)=(md->zeny <= 0)?0:md->zeny;
+	WFIFOL(fd,8)=(md->zeny <= 0)? 0: md->zeny;
 	memcpy(WFIFOP(fd,12),&md->item,size);
 	WFIFOSET(fd,WFIFOW(fd,2));
+
 	memset(&md->item,0,size);
 	md->zeny=0;
 	return 0;
@@ -852,6 +903,7 @@ int mapif_mail_getappend(int fd,int account,struct mail_data *md)
 int mapif_mail_checkok(int fd,int account,struct mail_data *md)
 {
 	int size = sizeof(struct mail_data);
+
 	if(!md)
 		return 1;
 
@@ -877,19 +929,22 @@ int mapif_parse_OpenMailBox(int fd)
 		return 0;
 
 	m = mail_load(char_id);
-	if(m){
+	if(m) {
 		mail_read_mail(char_id,m->store,md);
 		mapif_send_mailbox(fd,rd->st.name,m->store,md);
 		mail_free(md,m->store);
+	} else {
+		int i;
+		for(i=0; i<MAIL_STORE_MAX; i++)
+			md[i] = NULL;
+		mapif_send_mailbox(fd,rd->st.name,0,md);
 	}
-	else
-		mapif_send_mailbox(fd,rd->st.name,0,NULL);
 	return 0;
 }
 
 int mapif_parse_SendMail(int fd)
 {
-	const struct mmo_chardata *sd,*rd;
+	const struct mmo_chardata *sd;
 	struct mail_data md;
 	int char_id,receive_id;
 
@@ -910,8 +965,8 @@ int mapif_parse_SendMail(int fd)
 	}else{
 		const struct mail *m;
 		struct mail m2;
+		const struct mmo_chardata *rd = char_load(receive_id);
 
-		rd = char_load(receive_id);
 		if(rd==NULL) return 0;
 		if(sd->st.account_id == rd->st.account_id){	// 同じアカウントには送れない
 			mapif_mail_res(fd,sd->st.account_id,1);
@@ -940,6 +995,7 @@ int mapif_parse_DeleteMail(int fd)
 {
 	const struct mail *m = mail_load(RFIFOL(fd,2));
 	int flag;
+
 	if(!m) return 0;
 	flag = mail_deletemail(m->char_id,RFIFOL(fd,6),m);
 	mapif_mail_delmail(fd,m->account_id,RFIFOL(fd,6),flag);	// 結果送信
@@ -1007,11 +1063,10 @@ int mapif_parse_CheckMail(int fd)
 	int send_id;
 	struct mail_data *md;
 
-	if(!RFIFOP(fd,8))
-		return 0;
-
 	send_id = RFIFOL(fd,4);
 	md = (struct mail_data *)RFIFOP(fd,8);
+	if(md == NULL)
+		return 0;
 
 	if(char_nick2id(md->receive_name) <= 0)		// 受け取る人が存在しません
 		mapif_mail_res(fd,send_id,1);
@@ -1040,4 +1095,3 @@ int inter_mail_parse_frommap(int fd)
 	}
 	return 1;
 }
-
