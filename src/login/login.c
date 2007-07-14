@@ -44,12 +44,14 @@
 #include "memwatch.h"
 #endif
 
+static const char sex2str[] = "FMS";
+
 static int server_num = 0;
 static int new_account_flag = 0;
 static int httpd_new_account_flag = 0;
 static int login_port = 6900;
-char login_sip_str[16];
-unsigned long  login_sip = 0;
+static char login_sip_str[16];
+static unsigned long  login_sip = 0;
 static int login_sport = 0;
 static int login_autosave_time = 600;
 
@@ -167,7 +169,7 @@ int login_txt_init(void)
 	// アカウントデータベースの読み込み
 	FILE *fp;
 	int i,n,account_id,logincount,state;
-	char line[1024],*p,userid[24],pass[24],lastlogin[24],sex,str[64];
+	char line[1024],*p,userid[256],pass[256],lastlogin[256],sex;
 
 	if((fp=fopen(account_filename,"r"))==NULL)
 		return 0;
@@ -178,7 +180,7 @@ int login_txt_init(void)
 		p=line;
 		n=-1;
 
-		i=sscanf(line,"%d\t%[^\t]\t%[^\t]\t%[^\t]\t%c\t%d\t%d\t%n",
+		i=sscanf(line,"%d\t%255[^\t]\t%255[^\t]\t%255[^\t]\t%c\t%d\t%d\t%n",
 			&account_id,userid,pass,lastlogin,&sex,&logincount,&state,&n);
 
 		if(i < 5) {
@@ -206,29 +208,30 @@ int login_txt_init(void)
 		strncpy(auth_dat[auth_num].userid,userid,24);
 		strncpy(auth_dat[auth_num].pass,pass,24);
 		strncpy(auth_dat[auth_num].lastlogin,lastlogin,24);
-		auth_dat[auth_num].sex = sex == 'S' ? 2 : sex=='M';
+		auth_dat[auth_num].sex = (sex == 'S' ? 2 : sex == 'M' ? 1 : 0);
+
+		// force \0 terminal
+		auth_dat[auth_num].userid[23]    = '\0';
+		auth_dat[auth_num].pass[23]      = '\0';
+		auth_dat[auth_num].lastlogin[23] = '\0';
 
 		// データが足りないときの補完
-		if(i>=6)
-			auth_dat[auth_num].logincount=logincount;
-		else
-			auth_dat[auth_num].logincount=1;
-		if(i>=7)
-			auth_dat[auth_num].state=state;
-		else
-			auth_dat[auth_num].state=0;
+		auth_dat[auth_num].logincount = (i >= 6)? logincount: 1;
+		auth_dat[auth_num].state      = (i >= 7)? state: 0;
 
 		// メールアドレスがあれば読み込む
 		if(n > 0)
 		{
 			int n2=0;
-			char mail[40]="";
-			if( sscanf( line + n, "%[^\t]\t%n", mail, &n2 )==1 && strchr( mail, '@' ) )
+			char mail[256] = "";
+			if( sscanf( line + n, "%255[^\t]\t%n", mail, &n2 )==1 && strchr( mail, '@' ) )
 			{
-				if( strcmp( mail, "@" )==0 )
-					strcpy( auth_dat[auth_num].mail, "" );
-				else
-					strcpy( auth_dat[auth_num].mail, mail );
+				if( strcmp( mail, "@" )==0 ) {
+					auth_dat[auth_num].mail[0] = '\0';
+				} else {
+					strncpy( auth_dat[auth_num].mail, mail, 40 );
+					auth_dat[auth_num].mail[39] = '\0';	// force \0 terminal
+				}
 				n = (n2>0)? n+n2 : 0;
 			}
 		}
@@ -236,12 +239,14 @@ int login_txt_init(void)
 		// 全ワールド共有アカウント変数 ( ## 変数 ) 読み込み
 		if(n > 0) {
 			int j,v;
+			char str[256];
 			for(j=0;j<ACCOUNT_REG2_NUM;j++){
 				p+=n;
-				if(sscanf(p,"%[^\t,],%d %n",str,&v,&n)!=2)
+				if(sscanf(p,"%255[^\t,],%d %n",str,&v,&n)!=2)
 					break;
 				strncpy(auth_dat[auth_num].account_reg2[j].str,str,32);
-				auth_dat[auth_num].account_reg2[j].value=v;
+				auth_dat[auth_num].account_reg2[j].str[31] = '\0';	// force \0 terminal
+				auth_dat[auth_num].account_reg2[j].value   = v;
 			}
 			auth_dat[auth_num].account_reg2_num=j;
 		} else {
@@ -310,8 +315,8 @@ void login_txt_sync(void)
 
 		fprintf(fp,"%d\t%s\t%s\t%s\t%c\t%d\t%d\t%s\t",auth_dat[i].account_id,
 			auth_dat[i].userid,auth_dat[i].pass,auth_dat[i].lastlogin,
-			auth_dat[i].sex==2 ? 'S' : (auth_dat[i].sex ? 'M' : 'F'),
-			auth_dat[i].logincount,auth_dat[i].state, (strlen(auth_dat[i].mail)>0)?auth_dat[i].mail:"@" );
+			sex2str[auth_dat[i].sex],
+			auth_dat[i].logincount,auth_dat[i].state, (auth_dat[i].mail[0])? auth_dat[i].mail: "@" );
 
 		for(j=0;j<auth_dat[i].account_reg2_num;j++){
 			fprintf(fp,"%s,%d ",
@@ -404,6 +409,12 @@ int login_txt_account_new(struct mmo_account* account,const char *tmpstr)
 		if(c<0x20 || c==0x7f)
 			return 0;
 	}
+
+	// force \0 terminal
+	account->userid[23] = '\0';
+	account->pass[23]   = '\0';
+	account->mail[39]   = '\0';
+
 	if(login_txt_account_load_str(account->userid)) {
 		// 同じアカウントが既に存在
 		return 0;
@@ -454,14 +465,14 @@ void login_txt_final(void)
 int login_txt_config_read_sub(const char* w1,const char* w2)
 {
 	if(strcmpi(w1,"account_filename")==0){
-		strncpy(account_filename,w2,1024);
+		strncpy(account_filename,w2,sizeof(account_filename) - 1);
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"account_journal_enable")==0){
 		login_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"account_journal_file")==0){
-		strncpy( login_journal_file, w2, sizeof(login_journal_file) );
+		strncpy( login_journal_file, w2, sizeof(login_journal_file) - 1 );
 	}
 	else if(strcmpi(w1,"account_journal_cache_interval")==0){
 		login_journal_cache = atoi( w2 );
@@ -580,22 +591,22 @@ void login_sql_sync(void)
 int login_sql_config_read_sub(const char* w1,const char* w2)
 {
 	if(strcmpi(w1,"login_server_ip")==0){
-		strncpy(login_server_ip, w2, 32);
+		strncpy(login_server_ip, w2, sizeof(login_server_ip) - 1);
 	}
 	else if(strcmpi(w1,"login_server_port")==0){
-		login_server_port=atoi(w2);
+		login_server_port = atoi(w2);
 	}
 	else if(strcmpi(w1,"login_server_id")==0){
-		strncpy(login_server_id, w2, 32);
+		strncpy(login_server_id, w2, sizeof(login_server_id) - 1);
 	}
 	else if(strcmpi(w1,"login_server_pw")==0){
-		strncpy(login_server_pw, w2, 32);
+		strncpy(login_server_pw, w2, sizeof(login_server_pw) - 1);
 	}
 	else if(strcmpi(w1,"login_server_db")==0){
-		strncpy(login_server_db, w2, 32);
+		strncpy(login_server_db, w2, sizeof(login_server_db) - 1);
 	}
 	else if(strcmpi(w1,"login_server_charset")==0){
-		strncpy(login_server_charset, w2, 32);
+		strncpy(login_server_charset, w2, sizeof(login_server_charset) - 1);
 	}
 
 	return 0;
@@ -661,13 +672,13 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 	ac->state      = atoi(sql_row[5]);
 	strncpy(ac->mail, sql_row[6], 40);
 	mysql_free_result(sql_res);
-	if(ac->sex == 'M') {
-		ac->sex = 1;
-	} else if(ac->sex == 'S') {
-		ac->sex = 2;
-	} else {
-		ac->sex = 0;
-	}
+	ac->sex = (ac->sex == 'S' ? 2 : ac->sex == 'M' ? 1 : 0);
+
+	// force \0 terminal
+	ac->userid[23]    = '\0';
+	ac->pass[23]      = '\0';
+	ac->lastlogin[23] = '\0';
+	ac->mail[39]      = '\0';
 
 	// global reg
 	ac->account_reg2_num = 0;
@@ -679,7 +690,8 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 	if (sql_res) {
 		while( (sql_row = mysql_fetch_row(sql_res)) ) {
 			strncpy(ac->account_reg2[ac->account_reg2_num].str,sql_row[0],32);
-			ac->account_reg2[ac->account_reg2_num].value = atoi(sql_row[1]);
+			ac->account_reg2[ac->account_reg2_num].str[31] = '\0';	// force \0 terminal
+			ac->account_reg2[ac->account_reg2_num].value   = atoi(sql_row[1]);
 			if(++ac->account_reg2_num >= ACCOUNT_REG2_NUM)
 				break;
 		}
@@ -703,10 +715,10 @@ const struct mmo_account* login_sql_account_load_str(const char *account_id)
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res) {
 		while( (sql_row = mysql_fetch_row(sql_res)) ) {
-			if(strcmp(account_id, sql_row[1]) == 0) {
+			if(strncmp(account_id, sql_row[1], 24) == 0) {
 				id_num = atoi(sql_row[0]);
 				break;
 			}
@@ -715,9 +727,8 @@ const struct mmo_account* login_sql_account_load_str(const char *account_id)
 	}
 	if(id_num >= 0) {
 		return login_sql_account_load_num(id_num);
-	} else {
-		return NULL;
 	}
+	return NULL;
 }
 
 const struct mmo_account* login_sql_account_load_idx(int idx)
@@ -734,7 +745,7 @@ const struct mmo_account* login_sql_account_load_idx(int idx)
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
 	}
-	sql_res = mysql_store_result(&mysql_handle) ;
+	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res) {
 		sql_row = mysql_fetch_row(sql_res);
 		if(sql_row) {
@@ -764,38 +775,37 @@ int login_sql_account_save(struct mmo_account *ac2)
 	p += sprintf(p,"UPDATE `%s` SET",login_db);
 
 	// userid
-	if(strncmp(ac1->userid,ac2->userid,24)) {
+	if(strcmp(ac1->userid,ac2->userid)) {
 		p += sprintf(p,"%c`%s` = '%s'",sep,login_db_userid,strecpy(buf,ac2->userid));
 		sep = ',';
 	}
 
 	// user_pass
-	if(strncmp(ac1->pass,ac2->pass,24)) {
+	if(strcmp(ac1->pass,ac2->pass)) {
 		p += sprintf(p,"%c`%s` = '%s'",sep,login_db_user_pass,strecpy(buf,ac2->pass));
 		sep = ',';
 	}
 
 	// lastlogin
-	if(strncmp(ac1->lastlogin,ac2->lastlogin,24)) {
+	if(strcmp(ac1->lastlogin,ac2->lastlogin)) {
 		p += sprintf(p,"%c`lastlogin` = '%s'",sep,strecpy(buf,ac2->lastlogin));
 		sep = ',';
 	}
 
 	// last_ip
-	if(strncmp(ac1->lastip,ac2->lastip,16)) {
+	if(strcmp(ac1->lastip,ac2->lastip)) {
 		p += sprintf(p,"%c`last_ip` = '%s'",sep,strecpy(buf,ac2->lastip));
 		sep = ',';
 	}
 
 	// sex
-	if(ac1->sex  != ac2->sex) {
-		const char sex_str[] = "FMS";
-		p += sprintf(p,"%c`sex` = '%c'",sep,sex_str[ac2->sex]);
+	if(ac1->sex != ac2->sex) {
+		p += sprintf(p,"%c`sex` = '%c'",sep,sex2str[ac2->sex]);
 		sep = ',';
 	}
 
 	// logincount
-	if(ac1->logincount  != ac2->logincount) {
+	if(ac1->logincount != ac2->logincount) {
 		p += sprintf(p,"%c`logincount` = '%d'",sep,ac2->logincount);
 		sep = ',';
 	}
@@ -807,7 +817,7 @@ int login_sql_account_save(struct mmo_account *ac2)
 	}
 
 	// mail
-	if( strcmp(ac1->mail, ac2->mail) ) {
+	if(strcmp(ac1->mail, ac2->mail)) {
 		p += sprintf(p,"%c`email` = '%s'",sep,strecpy(buf,ac2->mail));
 		sep = ',';
 	}
@@ -821,8 +831,8 @@ int login_sql_account_save(struct mmo_account *ac2)
 
 	// account reg
 	if(
-		memcmp(ac1->account_reg2,ac2->account_reg2,sizeof(ac1->account_reg2)) ||
-		ac1->account_reg2_num != ac2->account_reg2_num
+		ac1->account_reg2_num != ac2->account_reg2_num ||
+		memcmp(ac1->account_reg2,ac2->account_reg2,sizeof(ac1->account_reg2[0])*ac1->account_reg2_num)
 	) {
 		int i;
 		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`='1' AND `account_id`='%d'", reg_db, ac2->account_id);
@@ -850,7 +860,6 @@ int login_sql_account_new(struct mmo_account* account,const char *tmpstr)
 {
 	int j,c;
 	char buf1[256],buf2[256],buf3[256];
-	char sex_str[] = "FMS";
 
 	login_log("auth new %s %s %s",tmpstr,account->userid,account->pass);
 
@@ -858,6 +867,12 @@ int login_sql_account_new(struct mmo_account* account,const char *tmpstr)
 		if(c<0x20 || c==0x7f)
 			return 0;
 	}
+
+	// force \0 terminal
+	account->userid[23] = '\0';
+	account->pass[23]   = '\0';
+	account->mail[39]   = '\0';
+
 	if(login_sql_account_load_str(account->userid)) {
 		// 同じアカウントが既に存在
 		return 0;
@@ -868,7 +883,7 @@ int login_sql_account_new(struct mmo_account* account,const char *tmpstr)
 		"VALUES('%s','%s',NOW(),'%c','0','0','0','%s')",
 		login_db,login_db_userid,login_db_user_pass,login_db_level,
 		strecpy(buf1,account->userid),strecpy(buf2,account->pass),
-		sex_str[account->sex],strecpy(buf3,account->mail)
+		sex2str[account->sex],strecpy(buf3,account->mail)
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (insert `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
@@ -923,9 +938,9 @@ static void read_gm_account(void)
 			} else {
 				if (level > 99)
 					level = 99;
-				if (range == 2)
+				if (range == 2) {
 					end_range = start_range;
-				else if (end_range < start_range) {
+				} else if (end_range < start_range) {
 					i = end_range;
 					end_range = start_range;
 					start_range = i;
@@ -1011,7 +1026,7 @@ int login_log(char *fmt,...)
 // 認証
 int mmo_auth(struct login_session_data* sd)
 {
-	char tmpstr[256];
+	char tmpstr[24];
 	int len,newaccount=0;
 	const struct mmo_account *ac;
 	int encpasswdok=0;
@@ -1029,7 +1044,6 @@ int mmo_auth(struct login_session_data* sd)
 #else
 	{
 		struct timeval tv;
-
 		gettimeofday(&tv,NULL);
 		strftime(tmpstr,24,"%Y-%m-%d %H:%M:%S",localtime(&(tv.tv_sec)));
 		sprintf(tmpstr+19,".%03d",(int)tv.tv_usec/1000);
@@ -1037,9 +1051,9 @@ int mmo_auth(struct login_session_data* sd)
 #endif
 
 	len = strlen(sd->userid) - 2;
-	if (len >= 4 && len <= 22 && // to avoid invalid length (min 4 char for account name, max 24 including _F/_M)
+	if (len >= 4 && len <= 21 && // to avoid invalid length (min 4 char for account name, max 23 including _F/_M)
 	    sd->passwdenc == 0 && sd->userid[len] == '_' &&
-	    (sd->userid[len+1]=='F' || sd->userid[len+1]=='M') &&
+	    (sd->userid[len+1] == 'F' || sd->userid[len+1] == 'M') &&
 	    new_account_flag != 0) {
 		// 新規アカウント作成
 		char *adm_pass=strchr(sd->pass,'@');
@@ -1064,17 +1078,17 @@ int mmo_auth(struct login_session_data* sd)
 		// アカウントが見つからない
 		if(newaccount == 0){
 			// 新規作成以外
-			login_log("auth failed no account %s %s %s %d",tmpstr,sd->userid,sd->pass,newaccount);
+			login_log("auth failed no account %s %s %d %s",tmpstr,sd->userid,newaccount,(sd->passwdenc == 0)? sd->pass: "");
 		} else {
 			// 新規作成
 			struct mmo_account ac2;
 			memset( &ac2, 0, sizeof(ac2) );
 			memcpy(ac2.userid,sd->userid,24);
 			memcpy(ac2.pass  ,sd->pass  ,24);
-			ac2.sex = (sd->userid[len+1] == 'M');
+			ac2.sex = (sd->userid[len+1] == 'M')? 1: 0;
 			if( !account_new(&ac2,tmpstr) ){
 				// 作成失敗
-				login_log("auth new failed %s %s %s %d",tmpstr,sd->userid,sd->pass,newaccount);
+				login_log("auth new failed %s %s %d %s",tmpstr,sd->userid,newaccount,sd->pass);
 			}
 		}
 		return 0;
@@ -1096,15 +1110,13 @@ int mmo_auth(struct login_session_data* sd)
 		{
 			if(j>2) j=1;
 			do {
-				if(j==1){
-					strncpy(md5str,sd->md5key,sizeof(sd->md5key)+1);
-					strcat(md5str,ac->pass);
-				}else if(j==2){
-					strncpy(md5str,ac->pass,24);
-					md5str[24]='\0';
-					strcat(md5str,sd->md5key);
-				} else
-					md5str[0]=0;
+				if(j==1) {
+					snprintf(md5str, sizeof(md5str), "%s%s", sd->md5key, ac->pass);
+				} else if(j==2) {
+					snprintf(md5str, sizeof(md5str), "%s%s", ac->pass, sd->md5key);
+				} else {
+					md5str[0] = 0;
+				}
 				MD5_String2binary(md5str,md5bin);
 				encpasswdok = ( memcmp( sd->pass, md5bin, 16) == 0);
 			} while(j<2 && !encpasswdok && (j++) != sd->passwdenc);
@@ -1146,9 +1158,7 @@ int mmo_auth(struct login_session_data* sd)
 		memcpy(&ac2,ac,sizeof(struct mmo_account));
 		memcpy(ac2.lastlogin,tmpstr,24);
 		ac2.logincount++;
-#ifndef TXT_ONLY
 		memcpy(ac2.lastip,sd->lastip,16);
-#endif
 		account_save(&ac2);
 
 		// session data 初期化
@@ -1330,8 +1340,9 @@ int parse_fromchar(int fd)
 					struct mmo_account ac2;
 					memcpy(&ac2,ac,sizeof(struct mmo_account));
 					for(p=8,j=0;p<RFIFOW(fd,2) && j<ACCOUNT_REG2_NUM;p+=36,j++){
-						memcpy(ac2.account_reg2[j].str,RFIFOP(fd,p),32);
-						ac2.account_reg2[j].value = RFIFOL(fd,p+32);
+						strncpy(ac2.account_reg2[j].str,RFIFOP(fd,p),32);
+						ac2.account_reg2[j].str[31] = '\0';	// force \0 terminal
+						ac2.account_reg2[j].value   = RFIFOL(fd,p+32);
 					}
 					ac2.account_reg2_num = j;
 					account_save(&ac2);
@@ -1346,11 +1357,11 @@ int parse_fromchar(int fd)
 			}
 			break;
 
-		case 0x272b:	//charサーバメンテナンス状態
+		case 0x272b:	// charサーバメンテナンス状態
 			if(RFIFOREST(fd)<3)
 				return 0;
 			server[id].maintenance=RFIFOB(fd,2);
-			//charサーバに応答
+			// charサーバに応答
 			WFIFOW(fd,0)=0x272c;
 			WFIFOB(fd,2)=server[id].maintenance;
 			WFIFOSET(fd,3);
@@ -1386,7 +1397,7 @@ int parse_admin(int fd)
 
 	while(RFIFOREST(fd)>=2){
 		switch(RFIFOW(fd,0)){
-		case 0x7530:	// Auriga情報所得
+		case 0x7530:	// Auriga情報取得
 			WFIFOW(fd,0)=0x7531;
 			WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 			WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
@@ -1451,10 +1462,10 @@ int parse_admin(int fd)
 				struct mmo_account ma;
 				memset( &ma, 0, sizeof(ma) );
 				memcpy(ma.userid,RFIFOP(fd, 4),24);
-				memcpy(ma.pass  ,RFIFOP(fd,28),24);
-				ma.sex = (RFIFOB(fd,52) == 'M');
+				memcpy(ma.pass,RFIFOP(fd,28),24);
+				ma.sex = (RFIFOB(fd,52) == 'M')? 1: 0;
 				if( RFIFOW(fd,2) > 53 )
-					memcpy(ma.mail  ,RFIFOP(fd,53),40);
+					memcpy(ma.mail,RFIFOP(fd,53),40);
 				WFIFOW(fd,0) = 0x7931;
 				WFIFOW(fd,2) = 0;
 				memcpy(WFIFOP(fd,4),RFIFOP(fd,4),24);
@@ -1475,7 +1486,11 @@ int parse_admin(int fd)
 				return 0;
 			}
 			{
-				const struct mmo_account *ac = account_load_str(RFIFOP(fd,4));
+				char userid[24];
+				const struct mmo_account *ac;
+				memcpy(userid, RFIFOP(fd,4), 24);
+				userid[23] = '\0';	// force \0 terminal
+				ac = account_load_str(userid);
 				WFIFOW(fd,0) = 0x7933;
 				WFIFOW(fd,2) = 1;
 				memcpy(WFIFOP(fd,4),RFIFOP(fd,4),24);
@@ -1502,14 +1517,19 @@ int parse_admin(int fd)
 				return 0;
 			}
 			{
-				const struct mmo_account *ac = account_load_str(RFIFOP(fd,4));
+				char userid[24];
+				const struct mmo_account *ac;
+				memcpy(userid, RFIFOP(fd,4), 24);
+				userid[23] = '\0';	// force \0 terminal
+				ac = account_load_str(userid);
 				WFIFOW(fd,0)=0x7935;
 				WFIFOW(fd,2)=1;
 				memcpy(WFIFOP(fd,4),RFIFOP(fd,4),24);
 				if(ac) {
 					struct mmo_account ac2;
 					memcpy(&ac2,ac,sizeof(struct mmo_account));
-					memcpy(ac2.pass,RFIFOP(fd,28),24);
+					strncpy(ac2.pass,RFIFOP(fd,28),24);
+					ac2.pass[23] = '\0';	// force \0 terminal
 					account_save(&ac2);
 					WFIFOW(fd,2)=0;
 				}
@@ -1527,7 +1547,11 @@ int parse_admin(int fd)
 				return 0;
 			}
 			{
-				const struct mmo_account *ac = account_load_str(RFIFOP(fd,4));
+				char userid[24];
+				const struct mmo_account *ac;
+				memcpy(userid, RFIFOP(fd,4), 24);
+				userid[23] = '\0';	// force \0 terminal
+				ac = account_load_str(userid);
 				WFIFOW(fd, 0) = 0x7937;
 				WFIFOW(fd, 2) = 1;
 				WFIFOL(fd,28) = 0;
@@ -1571,7 +1595,11 @@ int parse_admin(int fd)
 			if(RFIFOREST(fd) < 50)
 				return 0;
 			{
-				const struct mmo_account *ac = account_load_str(RFIFOP(fd,2));
+				char userid[24];
+				const struct mmo_account *ac;
+				memcpy(userid, RFIFOP(fd,2), 24);
+				userid[23] = '\0';	// force \0 terminal
+				ac = account_load_str(userid);
 				WFIFOW(fd, 0) = 0x793b;
 				WFIFOW(fd, 2) = 1;
 				memcpy(WFIFOP(fd,4), RFIFOP(fd,2), 24);
@@ -1590,7 +1618,11 @@ int parse_admin(int fd)
 			if(RFIFOREST(fd) < 26)
 				return 0;
 			{
-				const struct mmo_account *ac = account_load_str(RFIFOP(fd,2));
+				char userid[24];
+				const struct mmo_account *ac;
+				memcpy(userid, RFIFOP(fd,2), 24);
+				userid[23] = '\0';	// force \0 terminal
+				ac = account_load_str(userid);
 				memset(WFIFOP(fd,0), 0, 120);
 				WFIFOW(fd, 0) = 0x793e;
 				WFIFOW(fd, 2) = 1;
@@ -1603,9 +1635,7 @@ int parse_admin(int fd)
 					WFIFOB(fd,33) = ac->sex;
 					WFIFOL(fd,34) = ac->logincount;
 					WFIFOW(fd,38) = ac->state;
-#ifndef TXT_ONLY
 					memcpy(WFIFOP(fd,40), ac->lastip, 16);
-#endif
 					memcpy(WFIFOP(fd,56), ac->lastlogin, 24);
 					memcpy(WFIFOP(fd,80), ac->mail, 40);
 				}
@@ -1632,9 +1662,7 @@ int parse_admin(int fd)
 					WFIFOB(fd,33) = ac->sex;
 					WFIFOL(fd,34) = ac->logincount;
 					WFIFOW(fd,38) = ac->state;
-#ifndef TXT_ONLY
 					memcpy(WFIFOP(fd,40), ac->lastip, 16);
-#endif
 					memcpy(WFIFOP(fd,56), ac->lastlogin, 24);
 					memcpy(WFIFOP(fd,80), ac->mail, 40);
 				}
@@ -1675,31 +1703,32 @@ int parse_login(int fd)
 	sd = (struct login_session_data *)session[fd]->session_data;
 
 	while(RFIFOREST(fd)>=2){
-		if(RFIFOW(fd,0)<30000) {
-			if(RFIFOW(fd,0) == 0x64 || RFIFOW(fd,0) == 0x01dd || RFIFOW(fd,0) == 0x027c || RFIFOW(fd,0) == 0x0277)
-				printf("parse_login : %d %3d 0x%04x %-24s\n",fd,RFIFOREST(fd),RFIFOW(fd,0),(char*)RFIFOP(fd,6));
+		int cmd = RFIFOW(fd,0);
+		if(cmd < 0x7530) {
+			if(cmd == 0x64 || cmd == 0x01dd || cmd == 0x027c || cmd == 0x0277)
+				printf("parse_login : %d %3d 0x%04x %-24s\n",fd,RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
 			else
-				printf("parse_login : %d %3d 0x%04x\n",fd,RFIFOREST(fd),RFIFOW(fd,0));
+				printf("parse_login : %d %3d 0x%04x\n",fd,RFIFOREST(fd),cmd);
 		}
 
-		switch(RFIFOW(fd,0)){
-		case 0x204:		//20040622暗号化ragexe対応
+		switch(cmd) {
+		case 0x204:		// 2004-06-22暗号化ragexe対応
 			if(RFIFOREST(fd)<18)
 				return 0;
 			RFIFOSKIP(fd,18);
 			break;
-		case 0x200:		//クライアントでaccountオプション使用時の謎パケットへの対応
+		case 0x200:		// クライアントでaccountオプション使用時の謎パケットへの対応
 			if(RFIFOREST(fd)<26)
 				return 0;
 			RFIFOSKIP(fd,26);
 			break;
-		case 0x258:		//20051214 nProtect関係 Part 1
+		case 0x258:		// 2005-12-14 nProtect関係 Part 1
 			memset(WFIFOP(fd,0),0,18);
 			WFIFOW(fd,0)=0x0227;
 			WFIFOSET(fd,18);
 			RFIFOSKIP(fd,2);
 			break;
-		case 0x228:		//20051214 nProtect関係 Part 2
+		case 0x228:		// 2005-12-14 nProtect関係 Part 2
 			if(RFIFOREST(fd)<18)
 				return 0;
 			WFIFOW(fd,0)=0x0259;
@@ -1708,46 +1737,51 @@ int parse_login(int fd)
 			RFIFOSKIP(fd,18);
 			break;
 
-		case 0x64:	// クライアントログイン要求
+		case 0x0064:	// クライアントログイン要求
 		case 0x01dd:	// 暗号化ログイン要求
+		case 0x0277:	// クライアントログイン要求？
 		case 0x027c:	// 暗号化ログイン要求
-		case 0x0277:	// New Login Packet?
 		{
-			int result = -1;
-			int length = 55; // default: 0x64
+			int length = 0, result = -1;
+			int enc_flag;
 
-			switch(RFIFOW(fd,0)) {
-				//case 0x64: length = 55; break;
+			switch(cmd) {
+				case 0x0064: length = 55; break;
 				case 0x01dd: length = 47; break;
-				case 0x027c: length = 60; break;
 				case 0x0277: length = 84; break;
+				case 0x027c: length = 60; break;
 			}
-			if(RFIFOREST(fd) < length)
+			if(length == 0 || RFIFOREST(fd) < length)
 				return 0;
-			{
-				unsigned char *p=(unsigned char *)&session[fd]->client_addr.sin_addr;
-				login_log("client connection request %s from %d.%d.%d.%d", RFIFOP(fd,6), p[0], p[1], p[2], p[3]);
-#ifndef TXT_ONLY
-				sprintf(sd->lastip,"%d.%d.%d.%d",p[0],p[1],p[2],p[3]);
-#endif
+
+			enc_flag = (cmd == 0x1dd || cmd == 0x27c);
+
+			memcpy(sd->userid,RFIFOP(fd,6),24);
+			sd->userid[23] = '\0';
+			if(enc_flag) {
+				memcpy(sd->pass, RFIFOP(fd,30), 16);
+				sd->pass[16] = '\0';	// binary data
+			} else {
+				memcpy(sd->pass, RFIFOP(fd,30), 24);
+				sd->pass[23] = '\0';
 			}
 
-			if( login_version > 0 && login_version != RFIFOL(fd,2) )	//規定外のバージョンからの接続を拒否
-				result = 5;
-			if( login_type > 0 && login_type != ((RFIFOW(fd,0) == 0x64)? RFIFOB(fd,54): RFIFOB(fd,46)) )	//規定外のタイプからの接続を拒否
-				result = 5;
-			if( strlen(RFIFOP(fd,6)) < 4 )	//IDが4字未満を拒否
-				result = 3;
-			if( RFIFOW(fd,0) == 0x64 && strlen(RFIFOP(fd,30)) < 4 ) // 0x64以外のPASSはmd5符号なので、\0 が含まれる可能性有り
-				result = 3;
+			{
+				unsigned char *p = (unsigned char *)&session[fd]->client_addr.sin_addr;
+				sprintf(sd->lastip,"%d.%d.%d.%d",p[0],p[1],p[2],p[3]);
+				login_log("client connection request %s from %s", sd->userid, sd->lastip);
+			}
 
-			memcpy(sd->userid,RFIFOP(fd, 6),24);
-			if( length-31 >= sizeof(sd->pass) ) // 60 - 31 = 29
-				memcpy(sd->pass  ,RFIFOP(fd,30),sizeof(sd->pass));
-			else
-				memcpy(sd->pass  ,RFIFOP(fd,30),length-31);
+			if( login_version > 0 && login_version != RFIFOL(fd,2) )	// 規定外のバージョンからの接続を拒否
+				result = 5;
+			if( login_type > 0 && login_type != ((enc_flag)? RFIFOB(fd,46): RFIFOB(fd,54)) )	// 規定外のタイプからの接続を拒否
+				result = 5;
+			if( strlen(sd->userid) < 4 )	// IDが4字未満を拒否
+				result = 3;
+			if( !enc_flag && strlen(sd->pass) < 4 ) // 暗号化PASSはmd5符号なので \0 が含まれる可能性有り
+				result = 3;
 #ifdef PASSWORDENC
-			sd->passwdenc = (RFIFOW(fd,0)==0x64) ? 0 : PASSWORDENC;
+			sd->passwdenc = (enc_flag)? PASSWORDENC: 0;
 #else
 			sd->passwdenc = 0;
 #endif
@@ -1756,10 +1790,9 @@ int parse_login(int fd)
 			}
 			if(result == -1) {
 				int i;
-				char buf[8];
-
 				if(detect_multiple_login) {
 					int c = 0;
+					char buf[8];
 
 					// 全charサーバへ同一アカウントの切断要求
 					WBUFW(buf,0) = 0x2730;
@@ -1781,7 +1814,6 @@ int parse_login(int fd)
 						break;
 					}
 				}
-
 				server_num=0;
 				for(i=0;i<MAX_SERVERS;i++){
 					if(server_fd[i]>=0){
@@ -1838,7 +1870,6 @@ int parse_login(int fd)
 		case 0x272d:	// Charの暗号化ログイン要求
 		case 0x791a:	// 管理パケットで暗号化key要求
 		{
-			int charlogin = (RFIFOW(fd,0)==0x272d);
 			int i;
 
 			RFIFOSKIP(fd, 2);
@@ -1850,10 +1881,12 @@ int parse_login(int fd)
 			}
 			// 暗号化用のチャレンジ生成
 			sd->md5keylen = atn_rand()%(sizeof(sd->md5key)/4)+(sizeof(sd->md5key)-sizeof(sd->md5key)/4);
-			for(i=0;i<sd->md5keylen;i++)
-				sd->md5key[i]=atn_rand()%255+1;
+			for(i=0;i<sd->md5keylen;i++) {
+				sd->md5key[i] = atn_rand()%255+1;
+			}
+			sd->md5key[i] = 0;
 
-			WFIFOW(fd,0)= charlogin ? 0x272e : 0x01dc;
+			WFIFOW(fd,0)= (cmd == 0x272d) ? 0x272e : 0x01dc;
 			WFIFOW(fd,2)=4+sd->md5keylen;
 			memcpy(WFIFOP(fd,4),sd->md5key,sd->md5keylen);
 			WFIFOSET(fd,WFIFOW(fd,2));
@@ -1872,14 +1905,12 @@ int parse_login(int fd)
 			}
 			{
 				unsigned char *p=(unsigned char *)&session[fd]->client_addr.sin_addr;
-				login_log(
-					"server connection request %s @ %d.%d.%d.%d:%d (%d.%d.%d.%d)",
-					RFIFOP(fd,60),RFIFOB(fd,54),RFIFOB(fd,55),RFIFOB(fd,56),RFIFOB(fd,57),
-					RFIFOW(fd,58),p[0],p[1],p[2],p[3]
-				);
-#ifndef TXT_ONLY
 				sprintf(sd->lastip,"%d.%d.%d.%d",p[0],p[1],p[2],p[3]);
-#endif
+				login_log(
+					"server connection request %s @ %d.%d.%d.%d:%d (%s)",
+					RFIFOP(fd,60),RFIFOB(fd,54),RFIFOB(fd,55),RFIFOB(fd,56),RFIFOB(fd,57),
+					RFIFOW(fd,58),sd->lastip
+				);
 			}
 			memcpy( sd->userid, RFIFOP(fd, 2), 24 );
 			memcpy( sd->pass, RFIFOP(fd, 26), sd->md5keylen ? 16 : 24 );
@@ -1908,7 +1939,7 @@ int parse_login(int fd)
 			RFIFOSKIP(fd,84);
 			return 0;
 
-		case 0x7530:	// Auriga情報所得
+		case 0x7530:	// Auriga情報取得
 			WFIFOW(fd,0)=0x7531;
 			WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 			WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
@@ -2068,8 +2099,9 @@ static void login_config_read(const char *cfgName)
 			httpd_config_read(w2);
 		} else if (strcmpi(w1, "import") == 0) {
 			login_config_read(w2);
-		} else
+		} else {
 			login_config_read_sub(w1, w2);
+		}
 	}
 	fclose(fp);
 
@@ -2180,8 +2212,8 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 		if(!httpd_new_account_flag) {
 			msg = "Now stopping to create accounts on httpd."; break;
 		}
-		if(userid_len < 4 || userid_len > 24) {
-			msg = "Please input UserID 4-24 bytes."; break;
+		if(userid_len < 4 || userid_len > 23) {
+			msg = "Please input UserID 4-23 bytes."; break;
 		}
 		for(i = 0; i < userid_len; i++) {
 			if(!isalnum((unsigned char)userid[i])) break;
@@ -2199,8 +2231,8 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 			break;
 		}
 
-		if(passwd_len < 4 || passwd_len > 24) {
-			msg = "Please input Password 4-24 bytes."; break;
+		if(passwd_len < 4 || passwd_len > 23) {
+			msg = "Please input Password 4-23 bytes."; break;
 		}
 		for(i = 0; i < passwd_len; i++) {
 			if(!isalnum((unsigned char)passwd[i])) break;
@@ -2218,7 +2250,7 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 			memset(&ma,0,sizeof(ma));
 			strncpy(ma.userid,userid,24);
 			strncpy(ma.pass  ,passwd,24);
-			ma.sex = (gender[0] == 'm');
+			ma.sex = (gender[0] == 'm')? 1: 0;
 			strncpy(ma.mail  ,"@"   ,40); // 暫定
 			sprintf(buf,"( httpd %08x )",httpd_get_ip(sd));
 			if( !account_new(&ma,buf) ) {
@@ -2269,8 +2301,12 @@ void login_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 
 int login_httpd_auth_func( struct httpd_access* a, struct httpd_session_data* sd, const char *userid, char *passwd )
 {
-	const struct mmo_account *acc = account_load_str( userid );
+	const struct mmo_account *acc;
 
+	if(strnlen(userid, 24) > 23)	// 24文字以上はありえない
+		return 0;
+
+	acc = account_load_str( userid );
 	if( !acc )
 		return 0;
 

@@ -22,9 +22,7 @@ struct login_session_data {
 	int  md5keylen;
 	char md5key[64];
 	char userid[24],pass[24],lastlogin[24];
-#ifndef TXT_ONLY
 	char lastip[16];
-#endif
 };
 
 struct mmo_char_server {
@@ -43,9 +41,7 @@ struct mmo_account {
 	int state;
 	int account_reg2_num;
 	struct global_reg account_reg2[ACCOUNT_REG2_NUM];
-#ifndef TXT_ONLY
 	char lastip[16];
-#endif
 };
 
 #endif /* _LOGIN_H_ */
