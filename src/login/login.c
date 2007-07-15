@@ -169,14 +169,14 @@ int login_txt_init(void)
 	// アカウントデータベースの読み込み
 	FILE *fp;
 	int i,n,account_id,logincount,state;
-	char line[1024],*p,userid[256],pass[256],lastlogin[256],sex;
+	char line[65536],*p,userid[256],pass[256],lastlogin[256],sex;
 
 	if((fp=fopen(account_filename,"r"))==NULL)
 		return 0;
 	auth_max = 256;
 	auth_dat = (struct mmo_account *)aCalloc(auth_max,sizeof(auth_dat[0]));
 
-	while(fgets(line,1023,fp)!=NULL){
+	while(fgets(line,65535,fp)!=NULL){
 		p=line;
 		n=-1;
 
@@ -242,11 +242,14 @@ int login_txt_init(void)
 			char str[256];
 			for(j=0;j<ACCOUNT_REG2_NUM;j++){
 				p+=n;
-				if(sscanf(p,"%255[^\t,],%d %n",str,&v,&n)!=2)
+				if(sscanf(p,"%255[^\t,],%d%n",str,&v,&n)!=2)
 					break;
 				strncpy(auth_dat[auth_num].account_reg2[j].str,str,32);
 				auth_dat[auth_num].account_reg2[j].str[31] = '\0';	// force \0 terminal
 				auth_dat[auth_num].account_reg2[j].value   = v;
+				if(p[n] != ' ')
+					break;
+				n++;
 			}
 			auth_dat[auth_num].account_reg2_num=j;
 		} else {

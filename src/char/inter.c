@@ -145,6 +145,8 @@ static int accreg_fromstr(const char *str,struct accreg *reg)
 		strncpy(reg->reg[j].str,buf,32);
 		reg->reg[j].str[31] = '\0';	// force \0 terminal
 		reg->reg[j].value   = v;
+		if(p[n] != ' ')
+			break;
 		n++;
 	}
 	reg->reg_num = j;

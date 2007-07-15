@@ -3229,7 +3229,7 @@ int parse_frommap(int fd)
 				memset(&reg, 0, sizeof(reg));
 				for(p=8,j=0;p<RFIFOW(fd,2) && j<ACCOUNT_REG2_NUM;p+=36,j++){
 					strncpy(reg[j].str,RFIFOP(fd,p),32);
-					reg[i].str[31] = '\0';	// force \0 terminal
+					reg[j].str[31] = '\0';	// force \0 terminal
 					reg[j].value   = RFIFOL(fd,p+32);
 				}
 				set_account_reg2(acc,j,reg);
