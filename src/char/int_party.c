@@ -149,12 +149,6 @@ int party_txt_init(void)
 	if( (fp=fopen(party_txt,"r"))==NULL )
 		return 1;
 	while(fgets(line,sizeof(line),fp)){
-		int i,j=0;
-		if( sscanf(line,"%d\t%%newid%%\n%n",&i,&j)==1 && j>0 && party_newid<=i){
-			party_newid=i;
-			continue;
-		}
-
 		p=(struct party *)aCalloc(1,sizeof(struct party));
 		if(party_fromstr(line,p)==0 && p->party_id>0){
 			if( p->party_id >= party_newid)

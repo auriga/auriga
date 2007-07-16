@@ -399,16 +399,10 @@ int guild_txt_init(void)
 	while(fgets(line,sizeof(line),fp)){
 		g=(struct guild *)aCalloc(1,sizeof(struct guild));
 		if(guild_fromstr(line,g)==0 && g->guild_id>0){
-			if( g->guild_id >= guild_newid)
+			if(g->guild_id >= guild_newid)
 				guild_newid=g->guild_id+1;
-			if(guild_check_empty(g)) {
-				// 空ギルド
-				guild_txt_delete(g->guild_id);
-				aFree(g);
-			} else {
-				numdb_insert(guild_db,g->guild_id,g);
-				guild_calcinfo(g);
-			}
+			numdb_insert(guild_db,g->guild_id,g);
+			guild_calcinfo(g);
 		}else{
 			printf("int_guild: broken data [%s] line %d\n",guild_txt,c);
 			aFree(g);

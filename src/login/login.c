@@ -184,8 +184,8 @@ int login_txt_init(void)
 			&account_id,userid,pass,lastlogin,&sex,&logincount,&state,&n);
 
 		if(i < 5) {
-			i=0;
-			if( sscanf(line,"%d\t%%newid%%\n%n",&account_id,&i)==1 && i>0) {
+			i = -1;
+			if( sscanf(line,"%d\t%%newid%%%n",&account_id,&i) == 1 && i > 0 && (line[i] == '\n' || line[i] == '\r') ) {
 				if(account_id > END_ACCOUNT_NUM+1) {	// newidは+1まで許可
 					printf("reading %s error : invalid ID %d\n",account_filename,account_id);
 					continue;

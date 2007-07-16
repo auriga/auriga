@@ -2859,13 +2859,14 @@ void run_script_main(struct script_state *st)
  */
 int mapreg_setreg(int num,int val,int eternal)
 {
-	if(val!=0)
+	if(val != 0)
 		numdb_insert(mapreg_db,num,val);
 	else
 		numdb_erase(mapreg_db,num);
 
 	if(eternal)
-		mapreg_dirty=1;
+		mapreg_dirty = 1;
+
 	return 0;
 }
 
@@ -2875,21 +2876,19 @@ int mapreg_setreg(int num,int val,int eternal)
  */
 int mapreg_setregstr(int num,const char *str,int eternal)
 {
-	char *p;
+	char *p = (char *)numdb_search(mapregstr_db,num);
 
-	if( (p = (char *)numdb_search(mapregstr_db,num)) != NULL )
+	if(p)
 		aFree(p);
 
-	if( str==NULL || *str==0 ){
+	if(str && *str)
+		numdb_insert(mapregstr_db,num,aStrdup(str));
+	else
 		numdb_erase(mapregstr_db,num);
-		if(eternal)
-			mapreg_dirty=1;
-		return 0;
-	}
-	numdb_insert(mapregstr_db,num,aStrdup(str));
 
 	if(eternal)
-		mapreg_dirty=1;
+		mapreg_dirty = 1;
+
 	return 0;
 }
 
@@ -2904,34 +2903,35 @@ char mapreg_txt[256] = "save/mapreg.txt";
 static int script_txt_load_mapreg(void)
 {
 	FILE *fp;
-	char line[1024];
+	char line[2048];
 
 	if( (fp=fopen(mapreg_txt,"rt"))==NULL )
 		return -1;
 
 	while(fgets(line,sizeof(line),fp)){
-		char buf1[256],buf2[1024];
+		char buf[256];
 		int n,v,s,i;
-		if( sscanf(line,"%255[^,],%d\t%n",buf1,&i,&n)!=2 &&
-		    (i=0,sscanf(line,"%255[^\t]\t%n",buf1,&n)!=1) )
+		if( sscanf(line,"%255[^,],%d\t%n",buf,&i,&n)!=2 &&
+		    (i=0,sscanf(line,"%255[^\t]\t%n",buf,&n)!=1) )
 			continue;
 		if(i < 0 || i >= 128) {
-			printf("%s: %s broken data !\n",mapreg_txt,buf1);
+			printf("%s: %s broken data !\n",mapreg_txt,buf);
 			continue;
 		}
-		if( buf1[strlen(buf1)-1]=='$' ){
+		if( buf[strlen(buf)-1]=='$' ){
+			char buf2[2048];
 			if( sscanf(line+n,"%[^\n\r]",buf2)!=1 ){
-				printf("%s: %s broken data !\n",mapreg_txt,buf1);
+				printf("%s: %s broken data !\n",mapreg_txt,buf);
 				continue;
 			}
-			s=add_str(buf1);
+			s=add_str(buf);
 			numdb_insert(mapregstr_db,(i<<24)|s,aStrdup(buf2));
 		}else{
 			if( sscanf(line+n,"%d",&v)!=1 ){
-				printf("%s: %s broken data !\n",mapreg_txt,buf1);
+				printf("%s: %s broken data !\n",mapreg_txt,buf);
 				continue;
 			}
-			s=add_str(buf1);
+			s=add_str(buf);
 			numdb_insert(mapreg_db,(i<<24)|s,v);
 		}
 	}
@@ -3013,12 +3013,13 @@ static int script_sql_load_mapreg(void)
 
 	if(sql_res) {
 		int i,s;
-		char *name;
+		char name[256];
 		while((sql_row = mysql_fetch_row(sql_res)) != NULL) {
 			i = atoi(sql_row[1]);
 			if(i < 0 || i >= 128)
 				continue;
-			name = sql_row[0];
+			strncpy(name, sql_row[0], 256);
+			name[255] = '\0';	// force \0 terminal
 			s = add_str(name);
 
 			if(name[strlen(name)-1] == '$') {
@@ -7729,7 +7730,7 @@ int buildin_setmapflag(struct script_state *st)
 		case MF_GVG_NIGHTMAREDROP:
 		case MF_PK_NIGHTMAREDROP:
 			if(st->end > st->start+6) {
-				char buf[64];
+				char buf[128];
 				char *arg1 = conv_str(st,& (st->stack->stack_data[st->start+4]));
 				char *arg2 = conv_str(st,& (st->stack->stack_data[st->start+5]));
 				int  per   = conv_num(st,& (st->stack->stack_data[st->start+6]));
