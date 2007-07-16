@@ -1,4 +1,38 @@
 ----------------------------------------
+//0232 [2007/07/17] by Rayce
+
+・NPC定義のチェックを強化（npc.c）
+　以下のように余計な文字が含まれる場合、"bad ??? declaration : ???" が表示されエラーとなります。
+　警報が鳴るように強化されているので注意してください。
+　またエラー箇所を特定しやすくするため、エラー行が出力されるように改善されています。
+
+　　１）script定義に ,0 が余計に付いている
+　　　　	prontera.gat,164,190,4,0	script	Test(1)	112,{}
+　　２）duplicate定義の () の後ろにさらに ) が存在している
+　　　　	prontera.gat,164,190,4	duplicate(Test(1))	Test2	113
+　　３）warp定義の末尾に ,4 が余計に付いている
+　　　　	prontera.gat,150,188	warp	000	1,1,izlude.gat,130,115,4
+　　４）mob定義に ,0 が一つ多い
+		prontera.gat,0,0,0,0,0	monster	--ja--	1002,1,1000,1000
+　　５）mapflag定義に座標はない
+　　　　	prontera.gat,0,0	mapflag	nomemo	dummy
+
+　※BCC特有のsscanfバグにより、npc_parse_mapflag() だけは%n変換を使えません。
+　　strlenで文字列長をチェックして余計な文字が残ってないかの判定を行っています。
+
+・warp定義において、向き指定は省略可能であることを正式な仕様とする（npc.c）
+　以下は今まで同様どちらも正常です。
+	prontera.gat,148,188,0	warp 001	1,1,izlude.gat,132,115
+	prontera.gat,148,186	warp 002	1,1,izlude.gat,132,115
+　battle_auriga.confのwarp_point_debugがyesのときに向きを指定できるだけであり、基本的には不要です。
+　詳細はdoc/script_ref.txtを参照。
+
+・上記変更によりエラーとなるスクリプトの修正
+	script/npc/town/geffen.txt
+	script/npc/town/morocc.txt
+	script/npc/town/niflheim.txt
+
+----------------------------------------
 //0231 [2007/07/17] by Rayce
 
 ・mapreg_setregstr() のコードを簡素化（script.c）

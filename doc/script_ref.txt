@@ -26,7 +26,7 @@ AurigaNPCScript
 	まずそのNPCが何を示すのか記述します（場合によってはNPCという言い方は不適切）。
 
 	＊ワープポイント：MAP間の移動を行います。
-		<gatname>,<x>,<y><tab>warp<tab><displayname><tab><dx>,<dy>,<destination_gatname>,<destination_x>,<destination_y>
+		<gatname>,<x>,<y>[,<direction>]<tab>warp<tab><displayname><tab><dx>,<dy>,<destination_gatname>,<destination_x>,<destination_y>
 
 		gatname			ワープポイントの置かれるMAPファイル名を指定します。.gatは忘れないでください。
 		x			ワープポイントの置かれる横座標を指定します。
@@ -34,6 +34,7 @@ AurigaNPCScript
 		displayname		ワープポイント識別子です。重複しても構いません。デバッグで使います。
 		dx			ワープポイントの横効果範囲です。
 		dy			ワープポイントの縦効果範囲です。たぶん円を書かずリージョンになっていると思います。
+		direction		向きを指定します。省略可。
 			dx,dyの例（●がx,y）：
 				0,0	1,0		2,2
 				　＊	＊＊＊＊＊	＊＊＊＊＊＊＊

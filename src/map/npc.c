@@ -1021,19 +1021,21 @@ static char *npc_skip_line(unsigned char *p, int *comment_flag)
  * warp行解析
  *------------------------------------------
  */
-static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4)
+static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4,int lines)
 {
-	int m, x, y, xs, ys, to_x, to_y;
-	int i, j;
-	char mapname[24], to_mapname[24];
+	int m, x, y, dir = 0, xs, ys, to_x, to_y;
+	int i, j, n;
+	char mapname[1024], to_mapname[1024];
 	char *p;
 	struct npc_data *nd;
 
 	// 引数の個数チェック
-	if(sscanf(w1,"%23[^,],%d,%d",mapname,&x,&y) != 3 ||
-	   sscanf(w4,"%d,%d,%23[^,],%d,%d",&xs,&ys,to_mapname,&to_x,&to_y) != 5)
+	// dirはあってもなくても良い
+	if(sscanf(w1,"%[^,],%d,%d%n",mapname,&x,&y,&n) != 3 ||
+	   (w1[n] != 0 && (sscanf(w1+n,",%d%n",&dir,&i) != 1 || w1[n+i] != 0)) ||
+	   sscanf(w4,"%d,%d,%[^,],%d,%d%n",&xs,&ys,to_mapname,&to_x,&to_y,&n) != 5 || w4[n] != 0)
 	{
-		printf("bad warp line : %s\n",w3);
+		printf("bad warp declaration : %s line %d\a\n",w3,lines);
 		return 0;
 	}
 
@@ -1049,7 +1051,7 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4)
 	nd->bl.m = m;
 	nd->bl.x = x;
 	nd->bl.y = y;
-	nd->dir  = 0;
+	nd->dir  = dir;
 	nd->flag = 0;
 
 	p = strstr(w3,"::");
@@ -1112,12 +1114,12 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4)
  * shop行解析
  *------------------------------------------
  */
-static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4)
+static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 {
 	char *p;
 	int m, x, y, dir = 0;
-	int pos = 0;
-	char mapname[24];
+	int n, pos = 0;
+	char mapname[1024];
 	struct npc_data *nd;
 
 	if(strcmp(w1,"-") == 0) {
@@ -1126,10 +1128,10 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4)
 		m = -1;
 	} else {
 		// 引数の個数チェック
-		if(sscanf(w1, "%23[^,],%d,%d,%d", mapname, &x, &y, &dir) != 4 ||
+		if(sscanf(w1, "%[^,],%d,%d,%d%n", mapname, &x, &y, &dir, &n) != 4 || w1[n] != 0 ||
 		   (strcmp(w2,"shop") == 0 && strchr(w4,',') == NULL))
 		{
-			printf("bad shop line : %s\n", w3);
+			printf("bad shop declaration : %s line %d\a\n", w3, lines);
 			return 0;
 		}
 		m = map_mapname2mapid(mapname);
@@ -1165,20 +1167,20 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4)
 		nd = (struct npc_data *)aRealloc(nd, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * pos);
 	} else {
 		// substoreはコピーするだけ
-		char srcname[128];
+		char srcname[1024];
 		struct npc_data *nd2;
 
-		if(sscanf(w2,"substore(%127[^)])",srcname) != 1) {
-			printf("bad substore name! : %s\a\n",w2);
+		if(sscanf(w2,"substore(%[^)])%n",srcname,&n) != 1 || w2[n] != 0) {
+			printf("bad substore name! : %s line %d\a\n",w2,lines);
 			return 0;
 		}
 		nd2 = npc_name2id(srcname);
 		if(nd2 == NULL) {
-			printf("bad substore name! (not exist) : %s\a\n",srcname);
+			printf("bad substore name! (not exist) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
 		if(nd2->bl.subtype != SHOP) {
-			printf("bad substore name! (not shop) : %s\a\n",srcname);
+			printf("bad substore name! (not shop) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
 		while(nd2->u.shop_item[pos++].nameid);
@@ -1340,7 +1342,7 @@ static int npc_parse_script_line(const unsigned char *p,int *curly_count,int lin
 
 static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line,FILE *fp,int *lines,const char* file)
 {
-	int i, j;
+	int i, j, n;
 	int x, y, m, xs, ys;
 	int dir = 0, class_ = 0, label_dupnum = 0, src_id = 0, ret = 0;
 	char *p, *srcbuf = NULL;
@@ -1354,11 +1356,11 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		m = -1;
 	} else {
 		// 引数の個数チェック
-		char mapname[24];
-		if(sscanf(w1,"%23[^,],%d,%d,%d",mapname,&x,&y,&dir) != 4 ||
+		char mapname[1024];
+		if(sscanf(w1,"%[^,],%d,%d,%d%n",mapname,&x,&y,&dir,&n) != 4 || w1[n] != 0 ||
 		   (strcmp(w2,"script") == 0 && strchr(w4,',') == NULL))
 		{
-			printf("bad script line : %s\n",w3);
+			printf("bad script declaration : %s line %d\a\n",w3,*lines);
 			return 0;
 		}
 		m = map_mapname2mapid(mapname);
@@ -1429,11 +1431,11 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		}
 	} else {
 		// duplicateする
-		char srcname[128];
+		char srcname[1024];
 		struct npc_data *nd2;
 
-		if(sscanf(w2,"duplicate(%127[^)])",srcname) != 1) {
-			printf("bad duplicate name! : %s\a\n",w2);
+		if(sscanf(w2,"duplicate(%[^)])%n",srcname,&n) != 1 || w2[n] != 0) {
+			printf("bad duplicate name! : %s line %d\a\n",w2,*lines);
 			return 0;
 		}
 		if(strcmp(w1,"-") != 0 && m < 0) {	// assignされてないMAPなので終了
@@ -1441,11 +1443,11 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		}
 		nd2 = npc_name2id(srcname);
 		if(nd2 == NULL) {
-			printf("bad duplicate name! (not exist) : %s\a\n",srcname);
+			printf("bad duplicate name! (not exist) : %s line %d\a\n",srcname,*lines);
 			return 0;
 		}
 		if(nd2->bl.subtype != SCRIPT) {
-			printf("bad duplicate name! (not script) : %s\a\n",srcname);
+			printf("bad duplicate name! (not script) : %s line %d\a\n",srcname,*lines);
 			return 0;
 		}
 		script       = nd2->u.scr.script;
@@ -1711,20 +1713,20 @@ static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_li
  * mob行解析
  *------------------------------------------
  */
-static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
+static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
 {
 	int m, x, y, xs, ys, class_, num, delay1, delay2;
-	int i, guild_id = 0;
+	int i, n, guild_id = 0;
 	char mapname[24];
-	char eventname[50] = "";
-	char eventtemp[64] = "";
+	char eventname[1024] = "";
+	char eventtemp[1024] = "";
 	struct mob_data *md;
 
 	// 引数の個数チェック
-	if(sscanf(w1,"%23[^,],%d,%d,%d,%d",mapname,&x,&y,&xs,&ys) != 5 ||
-	   sscanf(w4,"%d,%d,%d,%d,%63[^\n]",&class_,&num,&delay1,&delay2,eventtemp) < 4)
+	if(sscanf(w1,"%[^,],%d,%d,%d,%d%n",mapname,&x,&y,&xs,&ys,&n) != 5 || w1[n] != 0 ||
+	   sscanf(w4,"%d,%d,%d,%d,%[^\n]",&class_,&num,&delay1,&delay2,eventtemp) < 4)
 	{
-		printf("bad monster line : %s\n",w3);
+		printf("bad monster declaration : %s line %d\a\n",w3,lines);
 		return 0;
 	}
 	m = map_mapname2mapid(mapname);
@@ -1733,7 +1735,7 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
 
 	if(!mobdb_checkid(class_)) {
 		// 定期沸きでID異常は注意を促す
-		printf("npc_monster bad class: %d\a\n",class_);
+		printf("npc_monster bad class: %d line %d\a\n",class_,lines);
 		return 0;
 	}
 
@@ -1838,21 +1840,23 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4)
  * マップフラグ行の解析
  *------------------------------------------
  */
-static int npc_parse_mapflag(char *w1,char *w2,char *w3,char *w4)
+static int npc_parse_mapflag(char *w1,char *w2,char *w3,char *w4,int lines)
 {
 	int m;
-	char mapname[24];
+	char mapname[1024];
 
 	// 引数の個数チェック
-	if(sscanf(w1,"%23[^,]",mapname) != 1)
+	if(sscanf(w1,"%[^,]",mapname) != 1 || strlen(w1) != strlen(mapname)) {
+		printf("bad mapflag declaration : %s line %d\a\n",w3,lines);
 		return 0;
+	}
 
 	m = map_mapname2mapid(mapname);
 	if(m < 0)
 		return 0;	// assignされてないMAPなので終了
 
 	if(npc_set_mapflag(m, w3, w4) < 0) {
-		printf("npc_parse_mapflag: mapflag \"%s\" not exist!!\a\n",w3);
+		printf("npc_parse_mapflag: mapflag \"%s\" not exist!! line %d\a\n",w3,lines);
 	}
 	return 0;
 }
@@ -1867,14 +1871,14 @@ int npc_set_mapflag(int m,char *w3,char *w4)
 		return 0;
 
 	if (strcmpi(w3,"nosave") == 0) {
-		char savemap[24];
+		char savemap[1024];
 		int savex, savey;
 		if (strcmp(w4,"SavePoint") == 0) {
 			strncpy(map[m].save.map,"SavePoint",16);
 			map[m].save.x = -1;
 			map[m].save.y = -1;
 			map[m].flag.nosave = 1;
-		} else if (sscanf(w4,"%23[^,],%d,%d",savemap,&savex,&savey) == 3) {
+		} else if (sscanf(w4,"%[^,],%d,%d",savemap,&savex,&savey) == 3) {
 			memcpy(map[m].save.map,savemap,16);
 			map[m].save.map[15] = '\0';	// force \0 terminal
 			map[m].save.x = savex;
@@ -1978,10 +1982,10 @@ int npc_set_mapflag(int m,char *w3,char *w4)
  */
 int npc_set_mapflag_sub(int m,char *str,short flag)
 {
-	char drop_arg1[16], drop_arg2[16];
+	char drop_arg1[1024], drop_arg2[1024];
 	int drop_id = 0, drop_type = 0, drop_per = 0;
 
-	if(sscanf(str, "%15[^,],%15[^,],%d", drop_arg1, drop_arg2, &drop_per) != 3)
+	if(sscanf(str, "%[^,],%[^,],%d", drop_arg1, drop_arg2, &drop_per) != 3)
 		return 0;
 
 	if(strcmp(drop_arg1,"random") == 0) {
@@ -2184,11 +2188,11 @@ int do_init_npc(void)
 			}
 
 			if (strcmpi(w2,"warp") == 0 && count > 3) {
-				ret = npc_parse_warp(w1,w2,w3,w4);
+				ret = npc_parse_warp(w1,w2,w3,w4,lines);
 			} else if (strcmpi(w2,"shop") == 0 && count > 3) {
-				ret = npc_parse_shop(w1,w2,w3,w4);
+				ret = npc_parse_shop(w1,w2,w3,w4,lines);
 			} else if ((i = 0, sscanf(w2,"substore%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
-				ret = npc_parse_shop(w1,w2,w3,w4);
+				ret = npc_parse_shop(w1,w2,w3,w4,lines);
 			} else if (strcmpi(w2,"script") == 0 && count > 3) {
 				if(strcmpi(w1,"function") == 0) {
 					ret = npc_parse_function(w1,w2,w3,w4,line+w4pos,fp,&lines,nsl->name);
@@ -2198,9 +2202,9 @@ int do_init_npc(void)
 			} else if ((i = 0, sscanf(w2,"duplicate%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
 				ret = npc_parse_script(w1,w2,w3,w4,line+w4pos,fp,&lines,nsl->name);
 			} else if (strcmpi(w2,"monster") == 0 && count > 3) {
-				ret = npc_parse_mob(w1,w2,w3,w4);
+				ret = npc_parse_mob(w1,w2,w3,w4,lines);
 			} else if (strcmpi(w2,"mapflag") == 0 && count >= 3) {
-				ret = npc_parse_mapflag(w1,w2,w3,w4);
+				ret = npc_parse_mapflag(w1,w2,w3,w4,lines);
 			} else {
 				script_error(lp, nsl->name, lines, "npc file syntax error", lp+strlen(w1)+1);
 				break;
