@@ -5,7 +5,7 @@
 #	ladminをラップした、アカウントを作成するCGI。
 #	ladmin ver.1.04での動作を確認。
 #	2006.09.07 インジェクション攻撃を受けるセキュリティホールを修正 byよらん
-#
+# 
 #
 # ** 設定方法 **
 #
@@ -67,7 +67,7 @@ if($ENV{'HTTP_ACCEPT_LANGUAGE'}=~/^ja/){
 			=> 'ID "$1" は既に使用されています.',
 		'You can use UserID \"(.+)\".*'
 			=> 'ID "$1" は使用可能です.',
-
+		
 		'account making'	=>'アカウント作成',
 		'\>UserID'			=>'>ＩＤ',
 		'\>Password'		=>'>パスワード',
@@ -99,11 +99,11 @@ if( $cgi->param("addaccount") ){
 	my($passwd)= $cgi->param("passwd");
 	my($gender)= lc(substr($cgi->param("gender"),0,1));
 
-	if(length($userid)<4 || length($userid)>24){
-		HttpError("input UserID 4-24 bytes.");
+	if(length($userid)<4 || length($userid)>23){
+		HttpError("input UserID 4-23 bytes.");
 	}
-	if(length($passwd)<4 || length($passwd)>24){
-		HttpError("input Password 4-24 bytes.");
+	if(length($passwd)<4 || length($passwd)>23){
+		HttpError("input Password 4-23 bytes.");
 	}
 
 #前回のチェック方法
@@ -131,8 +131,8 @@ if( $cgi->param("addaccount") ){
 # ----- 存在チェック -----
 elsif( $cgi->param("check") ){
 	my($userid)= $cgi->param("userid");
-	if(length($userid)<4 || length($userid)>24){
-		HttpError("input UserID 4-24 bytes.");
+	if(length($userid)<4 || length($userid)>23){
+		HttpError("input UserID 4-23 bytes.");
 	}
 	if($userid=~/[^0-9A-Za-z\@\_\-\']/){
 		HttpError("Illegal charactor found in UserID.");
@@ -217,3 +217,4 @@ sub HttpError {
 	print LangConv("Content-type: text/html\n\n"),$msg;
 	exit;
 }
+

@@ -32,7 +32,7 @@ my($passenc)=2;					# パスワード暗号化タイプ
 #		ID,性別,passです。性別は MかFです(最初の１文字で判断)
 #		<例> add testname Male testpass
 #		passwdを省略するとキーボードからエコー無しでタイプできます
-#
+#	
 #	check <account_name> <password>		アカウントパスワードの有効性をチェック
 #
 #	del <account_name>			アカウント削除
@@ -88,7 +88,7 @@ my($passenc)=2;					# パスワード暗号化タイプ
 #	あらかじめ --makesymlink を指定して起動し、シンボリックリンクを
 #	作成しておき、そのファイルで起動します。
 #	古いVerのaddaccountは削除して置いてください。
-#
+#	
 #	addaccount <account_name> <gender> <password> アカウントの追加
 #	checkaccount <account_name> <password>        アカウントパスワードの有効性をチェック
 #	delaccount <account_name>                     アカウントの削除
@@ -301,9 +301,9 @@ while(1){
 	$cmd=~s/\x1b\[\d*\w//g;
 	$cmd=~s/[\x00-\x1f]//g;
 	my(@cmdlist)=split /\s+/,$cmd;
-
+	
 	$cmdlist[0]="help" if( $cmdlist[0] eq "?" );
-
+	
 
 	# コマンド解析
 	eval{
@@ -406,7 +406,7 @@ sub listaccount(){
 			print "List failed.\n";
 			exit(10);
 		}
-		#      0123456789 012345678901234567890123 012345
+		#      0123456789 012345678901234567890123 012345 
 		my($i);
 		$len=unpack("x2v",$buf);
 		for($i=4;$i<$len;$i+=61){
@@ -425,8 +425,8 @@ sub addaccount(){
 		print "Illegal charactor found in user_id ".$`."[${&}]${'}\n";
 		return 101;
 	}
-	if(length($userid)<4 || length($userid)>24){
-		print "Account id too short or long. please input 4-24 bytes.\n";
+	if(length($userid)<4 || length($userid)>23){
+		print "Account id too short or long. please input 4-23 bytes.\n";
 		return 102;
 	}
 	$sex=uc(substr($sex,0,1));
@@ -442,16 +442,16 @@ sub addaccount(){
 		print "Illegal charactor found in password (".makeordinal($c)." charactor).\n";
 		return 104;
 	}
-	if(length($passwd)<4 or length($passwd)>24){
-		print "Password too short or long. please input 4-24 bytes.!\n";
+	if(length($passwd)<4 or length($passwd)>23){
+		print "Password too short or long. please input 4-23 bytes.!\n";
 		return 105;
 	}
 	if(length($mail)>0 and $mail !~ /@/){
 		print "Not found in Mail Address '@'.!\n";
 		return 109;
 	}
-	if(length($mail)>40){
-		print "Mail Address too long. please input under 40 bytes.!\n";
+	if(length($mail)>39){
+		print "Mail Address too long. please input under 39 bytes.!\n";
 		return 110;
 	}
 	print $so pack("v2a24a24a1a40", 0x7930,93, $userid,$passwd,$sex,$mail );
@@ -507,8 +507,8 @@ sub changepasswd(){
 	if($passwd eq ""){
 		return 134 if( ($passwd=typepasswd()) eq "" );
 	}
-	if(length($passwd)<4){
-		print "New password too short or long. please input 4-24 bytes.!\n";
+	if(length($passwd)<4 or length($passwd)>23){
+		print "New password too short or long. please input 4-23 bytes.!\n";
 		return 131;
 	}
 	if($passwd=~/[\x00-\x1f]/){
@@ -689,8 +689,8 @@ sub checkaccount() {
 	if($passwd eq ""){
 		return 134 if( ($passwd=typepasswd()) eq "" );
 	}
-	if(length($passwd)<4){
-		print "New password too short or long. please input 4-24 bytes.!\n";
+	if(length($passwd)<4 or length($passwd)>23){
+		print "New password too short or long. please input 4-23 bytes.!\n";
 		return 131;
 	}
 	if($passwd=~/[\x00-\x1f]/){
@@ -736,7 +736,7 @@ sub searchaccount(){
 		print "Regular-Expression compiling failed.\n";
 		return 141;
 	}
-	#      0123456789 012345678901234567890123 012345
+	#      0123456789 012345678901234567890123 012345 
 	print "account_id user_id                  gender count state\n";
 	print "-------------------------------------------------------\n";
 

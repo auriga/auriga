@@ -92,8 +92,8 @@ $lang = array (
 		'Submit' => 'Submit',
 		'Reset' => 'Reset',
 		// Errors
-		'bad_account' => 'Invalid account name (It must have between 4 to 24 characters).',
-		'bad_email' => 'Invalid email (It must have between 3 to 24 characters).',
+		'bad_account' => 'Invalid account name (It must have between 4 to 23 characters).',
+		'bad_email' => 'Invalid email (It must have between 3 to 39 characters).',
 		'bad_email2' => 'Invalid email (It must have a @).',
 		'bad_email3' => 'Invalid email (\'@\' can not be latest character).',
 		'bad_email4' => 'Invalid email (\'.\' can not be latest character).',
@@ -101,10 +101,10 @@ $lang = array (
 		'bad_email6' => 'Invalid email (After the last \'@\' you can not have \'..\').',
 		'bad_email7' => 'Invalid email (After the last \'@\' you can not have a \' (space)\').',
 		'bad_email8' => 'Invalid email (After the last \'@\' you can not have a \';\').',
-		'bad_old_pass' => 'Invalid old password (It must have between 4 to 24 characters).',
-		'bad_new_pass' => 'Invalid new password (It must have between 4 to 24 characters).',
+		'bad_old_pass' => 'Invalid old password (It must have between 4 to 23 characters).',
+		'bad_new_pass' => 'Invalid new password (It must have between 4 to 23 characters).',
 		'bad_new_pass2' => 'Invalid new password (new password must be different of old password).',
-		'bad_new_conf_pass' => 'Invalid confirmed new password (It must have between 4 to 24 characters).',
+		'bad_new_conf_pass' => 'Invalid confirmed new password (It must have between 4 to 23 characters).',
 		'bad_new_conf_pass2' => 'Invalid confirmed new password (new password and confirmed new password must be same).',
 		'bad_values' => 'Server can not recognize you. Check your account name and old password please.',
 		'bad_values_email' => 'Server can not recognize you. Check your account name, email and old password please.',
@@ -132,8 +132,8 @@ $lang = array (
 		'Submit' => 'Envoyer',
 		'Reset' => 'Réinitialiser',
 		// Errors
-		'bad_account' => 'Nom de compte incorrect (Il doit avoir entre 4 et 24 caractères).',
-		'bad_email' => 'Email incorrect (Il doit avoir entre 3 et 24 caractères).',
+		'bad_account' => 'Nom de compte incorrect (Il doit avoir entre 4 et 23 caractères).',
+		'bad_email' => 'Email incorrect (Il doit avoir entre 3 et 39 caractères).',
 		'bad_email2' => 'Email incorrect (Il doit avoir un @).',
 		'bad_email3' => 'Email incorrect (Le \'@\' ne peut pas être le dernier caractère).',
 		'bad_email4' => 'Email incorrect (L\'email ne peut pas se terminer par un \'.\').',
@@ -141,10 +141,10 @@ $lang = array (
 		'bad_email6' => 'Email incorrect (Après le dernier \'@\' vous ne pouvez pas avoir \'..\').',
 		'bad_email7' => 'Email incorrect (Après le dernier \'@\' vous ne pouvez pas avoir un \' (espace)\').',
 		'bad_email8' => 'Email incorrect (Après le dernier \'@\' vous ne pouvez pas avoir un \';\').',
-		'bad_old_pass' => 'Ancien mot de passe incorrect (Il doit avoir entre 4 et 24 caractères).',
-		'bad_new_pass' => 'Nouveau mot de passe incorrect (Il doit avoir entre 4 et 24 caractères).',
+		'bad_old_pass' => 'Ancien mot de passe incorrect (Il doit avoir entre 4 et 23 caractères).',
+		'bad_new_pass' => 'Nouveau mot de passe incorrect (Il doit avoir entre 4 et 23 caractères).',
 		'bad_new_pass2' => 'Nouveau mot de passe incorrect (Le nouveau mot de passe doit être différent de l\'ancien mot de passe).',
-		'bad_new_conf_pass' => 'Confirmation du nouveau mot de passe incorrect (Il doit avoir entre 4 et 24 caractères).',
+		'bad_new_conf_pass' => 'Confirmation du nouveau mot de passe incorrect (Il doit avoir entre 4 et 23 caractères).',
 		'bad_new_conf_pass2' => 'Confirmation du nouveau mot de passe incorrect (Il doit identique au nouveau mot de passe).',
 		'bad_values' => 'Le serveur ne vous reconnait pas. Vérifiez votre nom de compte et votre ancien mot de passe SVP.',
 		'bad_values_email' => 'Le serveur ne vous reconnait pas. Vérifiez votre nom de compte, votre email et votre ancien mot de passe SVP.',
@@ -172,8 +172,8 @@ $lang = array (
 		'Submit' => 'Отправить',
 		'Reset' => 'Сброс',
 		// Errors
-		'bad_account' => 'Неправильное имя учетной записи (должно быть не менее 4 и не более 24 символов).',
-		'bad_email' => 'Неправильный адрес электронной почты (должно быть не менее 3 и не более 24 символов).',
+		'bad_account' => 'Неправильное имя учетной записи (должно быть не менее 4 и не более 23 символов).',
+		'bad_email' => 'Неправильный адрес электронной почты (должно быть не менее 3 и не более 39 символов).',
 		'bad_email2' => 'Неправильный адрес электронной почты (должно содержать символ @).',
 		'bad_email3' => 'Неправильный адрес электронной почты (\'@\' не может быть последним символом).',
 		'bad_email4' => 'Неправильный адрес электронной почты (\'.\' не может быть последним символом).',
@@ -181,10 +181,10 @@ $lang = array (
 		'bad_email6' => 'Неправильный адрес электронной почты (после символа \'@\' не может быть символа \'..\').',
 		'bad_email7' => 'Неправильный адрес электронной почты (после символа \'@\' не может быть символа \'(пробел)\').',
 		'bad_email8' => 'Неправильный адрес электронной почты (после символа \'@\' не может быть символа \';\').',
-		'bad_old_pass' => 'Неправильный старый пароль (должен быть не менее 4 и не более 24 символов).',
-		'bad_new_pass' => 'Неправильный новый пароль (должен быть не менее 4 и не более 24 символов).',
+		'bad_old_pass' => 'Неправильный старый пароль (должен быть не менее 4 и не более 23 символов).',
+		'bad_new_pass' => 'Неправильный новый пароль (должен быть не менее 4 и не более 23 символов).',
 		'bad_new_pass2' => 'Неправильный новый пароль (новый пароль должен отличаться от старого).',
-		'bad_new_conf_pass' => 'Неправильное подтверждение пароля (должен быть не менее 4 и не более 24 символов).',
+		'bad_new_conf_pass' => 'Неправильное подтверждение пароля (должен быть не менее 4 и не более 23 символов).',
 		'bad_new_conf_pass2' => 'Неправильное подтверждение пароля (пароль и подтверждение должны быть одинаковыми).',
 		'bad_values' => 'Сервер не распознает вашу учетную запись. Проверьте название учетной записи и старый пароль.',
 		'bad_values_email' => 'Сервер не распознает вашу учетную запись. Проверьте название учетной записи, адрес электронной почты и старый пароль.',
@@ -194,7 +194,7 @@ $lang = array (
 		'Copyright' => 'Автор: Yor для Athena Project и модифицированные для Auriga.',
 	),
 );
-
+	
 	// ---- End of languages texts
 	// ---------------------------
 
@@ -290,11 +290,11 @@ $lang = array (
 		while (document.passwd.email.value.indexOf("@", last_arobas + 1) != -1) {
 			last_arobas = document.passwd.email.value.indexOf("@", last_arobas + 1);
 		}
-		if (document.passwd.account.value.length < 4 || document.passwd.account.value.length > 24) {
+		if (document.passwd.account.value.length < 4 || document.passwd.account.value.length > 23) {
 			document.getElementById('Error').innerHTML = <?php echo "\"".htmlspecialchars($lang[$Language]['bad_account'], ENT_QUOTES)."\""; ?>;
 			return false;
 <?php if ($CheckEmail) { ?>
-		} else if (document.passwd.email.value.length < 3 || document.passwd.email.value.length > 40) {
+		} else if (document.passwd.email.value.length < 3 || document.passwd.email.value.length > 39) {
 			document.getElementById('Error').innerHTML = <?php echo "\"".htmlspecialchars($lang[$Language]['bad_email'], ENT_QUOTES)."\""; ?>;
 			return false;
 		} else if (last_arobas == -1) {
@@ -319,13 +319,13 @@ $lang = array (
 				document.getElementById('Error').innerHTML = <?php echo "\"".htmlspecialchars($lang[$Language]['bad_email8'], ENT_QUOTES)."\""; ?>;
 				return false;
 <?php } ?>
-		} else if (document.passwd.old_pass.value.length < 4 || document.passwd.old_pass.value.length > 24) {
+		} else if (document.passwd.old_pass.value.length < 4 || document.passwd.old_pass.value.length > 23) {
 			document.getElementById('Error').innerHTML = <?php echo "\"".htmlspecialchars($lang[$Language]['bad_old_pass'], ENT_QUOTES)."\""; ?>;
 			return false;
-		} else if (document.passwd.new_pass.value.length < 4 || document.passwd.new_pass.value.length > 24) {
+		} else if (document.passwd.new_pass.value.length < 4 || document.passwd.new_pass.value.length > 23) {
 			document.getElementById('Error').innerHTML = <?php echo "\"".htmlspecialchars($lang[$Language]['bad_new_pass'], ENT_QUOTES)."\""; ?>;
 			return false;
-		} else if (document.passwd.new_conf_pass.value.length < 4 || document.passwd.new_conf_pass.value.length > 24) {
+		} else if (document.passwd.new_conf_pass.value.length < 4 || document.passwd.new_conf_pass.value.length > 23) {
 			document.getElementById('Error').innerHTML = <?php echo "\"".htmlspecialchars($lang[$Language]['bad_new_conf_pass'], ENT_QUOTES)."\""; ?>;
 			return false;
 		} else if (document.passwd.new_pass.value != document.passwd.new_conf_pass.value) {
@@ -381,9 +381,9 @@ printf('
 			$email_len = strlen($email);
 			$last_arobas = strrchr($email, '@');
 		}
-		if (strlen($account) < 4 || strlen($account) > 24) {
+		if (strlen($account) < 4 || strlen($account) > 23) {
 			$error_message = $lang[$Language]['bad_account'];
-		} else if ($CheckEmail && ($email_len < 3 || $email_len > 40)) {
+		} else if ($CheckEmail && ($email_len < 3 || $email_len > 39)) {
 			$error_message = $lang[$Language]['bad_email'];
 		} else if ($CheckEmail && $last_arobas == false) {
 			$error_message = $lang[$Language]['bad_email2'];
@@ -399,11 +399,11 @@ printf('
 			$error_message = $lang[$Language]['bad_email7'];
 		} else if ($CheckEmail && strchr($last_arobas, ";") != false) {
 			$error_message = $lang[$Language]['bad_email8'];
-		} else if (strlen($old_pass) < 4 || strlen($old_pass) > 24) {
+		} else if (strlen($old_pass) < 4 || strlen($old_pass) > 23) {
 			$error_message = $lang[$Language]['bad_old_pass'];
-		} else if (strlen($new_pass) < 4 || strlen($new_pass) > 24) {
+		} else if (strlen($new_pass) < 4 || strlen($new_pass) > 23) {
 			$error_message = $lang[$Language]['bad_new_pass'];
-		} else if (strlen($new_conf_pass) < 4 || strlen($new_conf_pass) > 24) {
+		} else if (strlen($new_conf_pass) < 4 || strlen($new_conf_pass) > 23) {
 			$error_message = $lang[$Language]['bad_new_conf_pass'];
 		} else if (strcmp($new_pass, $new_conf_pass) != 0) {
 			$error_message = $lang[$Language]['bad_new_conf_pass2'];

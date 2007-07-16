@@ -108,7 +108,7 @@ R 0070 <error No>.B
 		err No=01 削除が拒否された
 R 0071 <charactor ID>.l <map name>.16B <ip>.l <port>.w
 	キャラクタ選択成功&マップ名&ゲーム鯖IP/port
-S 0072 <account ID>.l <charactor ID>.l <login ID1>.l <login ID2>.l <sex>.b
+S 0072 <account ID>.l <charactor ID>.l <login ID1>.l <login ID2>.l <sex>.B
 	ゲーム鯖接続要求
 R 0073 <server tick>.l <coordidate>.3B ?.2B(05 05固定)
 	ゲーム鯖接続成功&サーバ側1ms時計&出現位置
@@ -773,7 +773,7 @@ S 0165 <myaccID>.l <guild name>.24B
 	ギルド作成
 R 0166 <len>.w {<index>.l <name>.24B }.28B*
 	職位名リスト
-R 0167 <type>.b
+R 0167 <type>.B
 	ギルド作成合否
 	type = 0 ギルド作成成功
 	type = 1 すでにギルドに所属している
@@ -834,7 +834,7 @@ R 017b <len>.w {<index>.w}*
 	カード挿入できるアイテムIndex番号
 S 017c <SrcIndex>.w <DescIndex>.w
 	Src をDescに突っ込む
-R 017d <DescIndex>.w <SrcIndex>.w <fail>.b
+R 017d <DescIndex>.w <SrcIndex>.w <fail>.B
 	Src をDescに突っ込み<fail> 0=成功 1=失敗？
 S 017e <len>.w <message>.?B
 	ギルド内メッセージ発言
@@ -842,7 +842,7 @@ R 017f <len>.w <message>.?B
 	ギルド内メッセージ受信
 S 0180 <charactorID>.l
 	ギルド敵対
-R 0181 <flag>.b
+R 0181 <flag>.B
 	ギルド敵対可否
 	flag=0 敵対成功
 	flag=1 敵対ギルド数が多すぎる
@@ -1037,7 +1037,7 @@ S 01ae <itemID>.w
 S 01af <type>.w
 	チェンジカート（カート選択）
 	type=1	ノーマルカート
-R 01b0 <monster id>.l <?>.b <new monster code>.l
+R 01b0 <monster id>.l <?>.B <new monster code>.l
 	油のクラスチェンジ
 	<new monster code>はチェンジ後のコード(1001〜)をdwordで
 
@@ -1158,7 +1158,7 @@ S 01d5 <len>.w <ID>.l <input>.?B 00
 R 01d6 <?>.w
 	表示関連か？
 	5,6,11,12なら何もしない
-R 01d7 <ID>.l <equip point>.b <item id1>.w <item id2>.w
+R 01d7 <ID>.l <equip point>.B <item id1>.w <item id2>.w
 	装備グラフィック <equip point> は 02手と09足のみ確認。id2は左手
 R 01d8 <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w ?.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B ?.B ?.B <sit>.B <Lv>.B ?.B
 	マップロード時&移動時用、向き付き用キャラ情報?(0078の上位バージョン)
@@ -1233,15 +1233,14 @@ R 01ef <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w ?.2B
 R 01f0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w ?.2B <card>.4w}.18B*
 	カプラさんに預けてある消耗品&収集品リスト
 	00a5から変更
-R 01f2 <ID>.l <charactor ID>.l <online>.l <?>.l <?>.w
+R 01f2 <ID>.l <charactor ID>.l <online>.l <01固定?>.w <01固定?>.w <01固定?>.w
 	ギルドメンバがloginした抜けた等、0x16dの上位版？
-	未調査
 R 01f3 <ID>.l <type>.l
 	blから発生するエフェクト
-R 01f4 <name>.24B <trade id?>.L <LV>.w
+R 01f4 <name>.24B <trade id?>.l <LV>.w
 	先方から取引要請
 	00e5から変更
-R 01f5 <result>.B <trade id?>.L <LV>.w
+R 01f5 <result>.B <trade id?>.l <LV>.w
 	こちらからの取引要請に対する反応
 	00e7から変更
 R 01f6 <papa_id>.l <mama_id>.l <requester_name>.24B
@@ -1259,7 +1258,7 @@ R 01fc <length>.w { <?1>.w <RepairItemID>.w <?2>.9B }.13B*
 	修理可能アイテムリスト表示
 S 01fd <?1>.w
 	修理アイテムの選択
-R 01fe <RepairItemID>.w <flag>.b
+R 01fe <RepairItemID>.w <flag>.B
 	修理結果(flag = 00なら成功 01なら失敗)
 R 01ff <ID>.l <x>.w <y>.w
 	吹き飛ばし、侵入不可セルも貫通する
@@ -1339,13 +1338,13 @@ S 0217
 	/blacksmith
 S 0218
 	/alchemist
-R 0219 { <charname>.24B }*10 { <point>.L }*10
+R 0219 { <charname>.24B }*10 { <point>.l }*10
 	BSランキング
-R 021a { <charname>.24B }*10 { <point>.L }*10
+R 021a { <charname>.24B }*10 { <point>.l }*10
 	アルケミランキング
-R 021b <point>.L <total>.L
+R 021b <point>.l <total>.l
 	BSランキングポイントが<point>上昇して、<total>になりました。
-R 021c <point>.L <total>.L
+R 021c <point>.l <total>.l
 	アルケミランキングポイントが<point>上昇して、<total>になりました。
 S 021d <?>.l
 	/effectしてるかどうか？
@@ -1365,11 +1364,11 @@ R 0223 <flag>.l <itemid>.w
 	flag=2 : 武器精錬スキルのレベルが不足しています。
 	flag=3 : 精錬に必要なアイテムが不足しているので、精錬できません。
 	他は無視
-R 0224 <point>.L <total>.L
+R 0224 <point>.l <total>.l
 	テコンミッションランキングポイントが<point>上昇して、<total>になりました。
 S 0225
 	/taekwon
-R 0226 { <charname>.24B }*10 { <point>.L }*10
+R 0226 { <charname>.24B }*10 { <point>.l }*10
 	テコンランキング
 R 0227
 	nPro関係。0258送信後返答。
@@ -1412,26 +1411,28 @@ S 0234 <ID>.l
 	ホムをマスターの元へ戻す
 R 0235 <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	ホム用スキル情報の塊、0x10fと同じ
-R 0236 <point>.L <total>.L
+R 0236 <point>.l <total>.l
 	虐殺者ランキングポイントが<point>上昇して、<total>になりました。
 S 0237
 	/pk
-R 0238 { <charname>.24B }*10 { <point>.L }*10
+R 0238 { <charname>.24B }*10 { <point>.l }*10
 	虐殺者ランキング
 R 0239 <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
 	ホム用スキル情報更新、0x10eと同じ
 R 023a <flag>.w
-	倉庫？
+	倉庫？サクライでは無効
 	0 - passwd set plz
 	1 - passwd req
 S 023b <type>.w <pass>.32B
 	type=2 : キャラクターロックパスワードの変更内容の送信
 	type=3 : キャラクターロックパスワードの送信
 R 023c <type>.w <val>.w
+	サクライでは無効
 	4 passwd set ok
 	5 passwd miss
 	6 ok
 R 023e <type>.w <?>.4B
+	サクライでは無効
 	type=0 : キャラクターロックパスワードの変更応答
 	type=1 : キャラクターロックパスワードの送信要求
 	type=2 : キャラクターロックパスワードの変更成功通知
@@ -1504,7 +1505,7 @@ R 0255 <?>.w <fail>.B
 	fail=1 : 該当のアイテムはメールに添付できないアイテムです。
 R 0256 <?>.w <?>.B
 	未調査
-R 0257 <num>.l <fail>.l
+R 0257 <num>.l <fail>.w
 	fail=0 : メール削除成功
 	fail=1 : メール削除失敗
 S 0258
@@ -1535,6 +1536,8 @@ S 0273 <mail_num>.l <nick>.24B
 R 0274 <mail_num>.l <fail>.w
 	fail=0 : メールが返送されました
 	fail=1 : メールが存在しません
+S 0277 <version>.l <account name>.24B <password>.24B <version2>.B <?>.37B
+	アカウントID&パスワード送信
 R 027a <len>.w <message>.*B
 	ハンティングリスト
 	<message>は5000文字まで
@@ -1546,8 +1549,6 @@ S 027c <version>.l <account name>.24B <md5 binary>.16B <version2>.B <?>.13B
 	id&暗号化済みpass送信
 R 027d <?>.24B <?>.w*15 <?>.4B?
 	未調査
-S 0277 <version>.l <account name>.24B <md5 binary>.16B <version2>.B <?>.37B
-	id&暗号化済みpass送信
 R 0280 <point>.l <total>.l <type>.w
 	テイミングミッションランキングポイントが<point>上昇して<total>になりました。
 	type=0xfd2 or 0xfd3固定
@@ -1617,6 +1618,19 @@ R 0293 <type>.B <x>.l <y>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
 
 R 0294 <book_id>.l <page_num>.l
 	読書システム
+R 0295 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <?>.l}.24B*
+	所有装備リスト、0xa4の上位版
+R 0296 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <?>.l}.24B*
+	カプラさんに預けてある装備リスト、0xa6の上位版
+R 0297
+	未調査
+R 0298 <itemid>.w <time>.l
+	強化装備アイテム「<itemid>」の使用可能時間は、残り<time>分です。
+	<time>の単位は秒なので表示される値は1/60
+R 0299 <index?>.w <itemid>.w
+	強化装備アイテム「<itemid>」が削除されました。
+R 029a <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <?>.l
+	アイテム獲得、0xa0の上位版
 R 029b <ID?>.l <?>.w * 8 <name?>.24B <?>.w * 5 <?>.l <?>.w <?>.l <?>.l <?>.w
 	未調査
 	傭兵のステータス情報まとめて送り付けか？
@@ -1640,4 +1654,6 @@ R 02a3 <?>.l <?>.12B
 	jROのログイン時に観測？、未調査
 S 02a5 <?>.w <?>.l
 	マウスのスクロールを高速で動かすと飛んでくる
+	未調査
+R 02b9 { <?>.l }*47
 	未調査

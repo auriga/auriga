@@ -102,8 +102,8 @@ class ladmin {
 		// check values
 		$sex=strtoupper($sex);
 		if ( ($sex!='F') and ($sex!='M') ) return false;
-		if ((strlen($accname)<4) or (strlen($accname)>24)) return false;
-		if ((strlen($pass)<4) or (strlen($pass)>24)) return false;
+		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
+		if ((strlen($pass)<4) or (strlen($pass)>23)) return false;
 		// send creation packet
 		$packet=pack('v2a24a24a1',0x7930,53,$accname,$pass,$sex);
 		if (fwrite($this->sock,$packet)==false) {
@@ -130,10 +130,11 @@ class ladmin {
 		// check values
 		$sex=strtoupper($sex);
 		if ( ($sex!='F') and ($sex!='M') ) return false;
-		if ((strlen($accname)<4) or (strlen($accname)>24)) return false;
-		if ((strlen($pass)<4) or (strlen($pass)>24)) return false;
+		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
+		if ((strlen($pass)<4) or (strlen($pass)>23)) return false;
 		// send creation packet
 		if(strlen($email)>0){
+			if (strlen($pass)>39) return false;
 			$packet=pack('v2a24a24a1a40',0x7930,93,$accname,$pass,$sex,$email);
 		}else{
 			$packet=pack('v2a24a24a1',0x7930,53,$accname,$pass,$sex);
@@ -160,7 +161,7 @@ class ladmin {
 		// do we have connection?
 		if (!$this->sock) return false;
 		// check values
-		if ((strlen($accname)<4) or (strlen($accname)>24)) return false;
+		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
 		// send deletion packet
 		$packet = pack('vva24', 0x7932, 28, $accname);
 		if (fwrite($this->sock, $packet)==false) {
@@ -280,7 +281,7 @@ class ladmin {
 		// do we have connection?
 		if (!$this->sock) return false;
 		// check account name
-		if ((strlen($accname)<4) or (strlen($accname)>24)) return false;
+		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
 		// send account list packet
 		$packet = pack('va24', 0x793c, $accname);
 		if (fwrite($this->sock, $packet)==false) {
@@ -306,8 +307,8 @@ class ladmin {
 		// do we have connection?
 		if (!$this->sock) return false;
 		// check values
-		if ((strlen($accname)<4) or (strlen($accname)>24)) return false;
-		if ((strlen($newpass)<4) or (strlen($newpass)>24)) return false;
+		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
+		if ((strlen($newpass)<4) or (strlen($newpass)>23)) return false;
 		// send password change packet
 		$packet = pack('vva24a24', 0x7934, 52, $accname, $newpass);
 		if (fwrite($this->sock, $packet)==false) {
@@ -331,7 +332,7 @@ class ladmin {
 		// do we have connection?
 		if (!$this->sock) return false;
 		// check values
-		if ((strlen($accname)<4) or (strlen($accname)>24)) return false;
+		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
 		// send password change packet
 		$packet = pack('vva24V', 0x7936, 32, $accname, $newstate);
 		if (fwrite($this->sock, $packet)==false) {
@@ -355,8 +356,8 @@ class ladmin {
 		// do we have connection?
 		if (!$this->sock) return false;
 		// check values
-		if ((strlen($accname)<4) or (strlen($accname)>24)) return false;
-		if ((strlen($pass)<4) or (strlen($pass)>24)) return false;
+		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
+		if ((strlen($pass)<4) or (strlen($pass)>23)) return false;
 		// send password test packet
 		$packet = pack('va24a24', 0x793a, $accname, $pass);
 		if (fwrite($this->sock, $packet)==false) {
@@ -377,3 +378,4 @@ class ladmin {
 	}
 
 }
+
