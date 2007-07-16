@@ -1097,7 +1097,7 @@
 2366,Unknown_Item,ディバインクロース,5,20,,1500,,6,,1,2088958,2,16,,55,0,1,{},{ bonus2 bResEff,Eff_Curse,500; bonus2 bResEff,Eff_Silence,500; bonus2 bResEff,Eff_Stan,500; bonus2 bResEff,Eff_Sleep,500; bonus2 bResEff,Eff_Stone,500; }
 2367,Unknown_Item,スナイピングスーツ,5,20,,750,,5,,1,2048,2,16,,50,0,1,{},{ bonus bCritical,6; bonus bMdef,5; bonus bCastrate,-23; }
 2368,Unknown_Item,ゴールデンアーマー,5,,,2000,,4,,0,1000333311,2,16,,,,1,{},{ bonus bMdef,4; }
-2369,Unknown_Item,フレイヤのコート,5,,,500,,12,,0,991944702,2,16,,,,,{},{ bonus bUnbreakableArmor,n; bonus2 bSubRace,7,10; if(getequipid(2)==2369 && getequipid(6)==2428 && getequipid(5)==2533 && getequipid(1)==5306) bonus2 bResEff,Eff_Freeze,10000; bonus bMaxHPrate,20; bonus2 bSubRace,7,10; skill 88,10; }
+2369,Unknown_Item,フレイヤのコート,5,,,500,,12,,0,991944702,2,16,,,,,{},{ bonus bUnbreakableArmor,0; bonus2 bSubRace,7,10; if(getequipid(2)==2369 && getequipid(6)==2428 && getequipid(5)==2533 && getequipid(1)==5306) bonus2 bResEff,Eff_Freeze,10000; bonus bMaxHPrate,20; bonus2 bSubRace,7,10; skill 88,10; }
 
 2401,Sandals,サンダル,5,400,,200,,1,,0,1000333311,2,64,,0,0,1,{},{}
 2402,Sandals_,サンダル,5,400,,200,,1,,1,1000333311,2,64,,0,0,1,{},{}

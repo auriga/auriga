@@ -1,4 +1,14 @@
 ----------------------------------------
+//0235 [2007/07/17] by Rayce
+
+・DEBUG_VARSの出力結果を元に修正（db/item_db.txt）
+	bonus bUnbreakableArmor,n; → bonus bUnbreakableArmor,0;
+・スクリプトの命令/関数/ラベル/変数のデータ量が増えてきたので、SCRIPT_HASH_SIZEを1021に引き上げ（script.c）
+	外部ハッシュに繋がれるのがだいたい4〜5個くらいに集約
+
+・SQL: GCCのときにコンパイルエラーになっていたので修正（int_guild.c）
+
+----------------------------------------
 //0234 [2007/07/17] by Rayce
 
 ・アカウント名、キャラクター名、Emailの文字数制限を tool/ladmin, tool/cgi/, tool/php の各ファイルに

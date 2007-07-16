@@ -811,9 +811,6 @@ static int guildcastle_txt_sync(void)
 
 #else /* TXT_ONLY */
 
-int guildcastle_sql_init(void);
-int guildcastle_tosql(int castle_id);
-
 static char guild_db_[256]          = "guild";
 static char guild_alliance_db[256]  = "guild_alliance";
 static char guild_castle_db[256]    = "guild_castle";
@@ -821,6 +818,8 @@ static char guild_expulsion_db[256] = "guild_expulsion";
 static char guild_member_db[256]    = "guild_member";
 static char guild_position_db[256]  = "guild_position";
 static char guild_skill_db[256]     = "guild_skill";
+
+static int guildcastle_sql_init(void);
 
 int guild_sql_init(void)
 {
@@ -830,7 +829,7 @@ int guild_sql_init(void)
 	return 0;
 }
 
-int guildcastle_sql_init(void)
+static int guildcastle_sql_init(void)
 {
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;

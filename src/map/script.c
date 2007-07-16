@@ -73,7 +73,7 @@ static struct script_str_data {
 } *str_data;
 int str_num=LABEL_START,str_data_size;
 
-#define SCRIPT_HASH_SIZE 521
+#define SCRIPT_HASH_SIZE 1021
 int str_hash[SCRIPT_HASH_SIZE];
 
 static struct dbt *mapreg_db=NULL;
@@ -191,15 +191,6 @@ static unsigned int calc_hash(const unsigned char *p)
 		h+=(unsigned char)tolower(*p++);
 	}
 	return h;
-
-#if 0
-	int h=0;
-	while(*p){
-		h=(h<<1)+(h>>3)+(h>>5)+(h>>8);
-		h+=(unsigned char)tolower(*p++);
-	}
-	return h;
-#endif
 }
 
 /*==========================================
