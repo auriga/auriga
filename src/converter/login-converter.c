@@ -11,7 +11,7 @@
 #include "../common/utils.h"
 #include "converter.h"
 
-static struct dbt *gm_account_db;
+static struct dbt *gm_account_db = NULL;
 
 struct accreg {
 	int account_id;
@@ -22,9 +22,13 @@ struct accreg {
 static int isGM(int account_id)
 {
 	struct gm_account *p;
-	p = (struct gm_account*)numdb_search(gm_account_db,account_id);
-	if( p == NULL)
+
+	if (gm_account_db == NULL)
 		return 0;
+	p = (struct gm_account *)numdb_search(gm_account_db, account_id);
+	if (p == NULL)
+		return 0;
+
 	return p->level;
 }
 
@@ -37,7 +41,8 @@ static int gm_account_db_final(void *key, void *data, va_list ap)
 	return 0;
 }
 
-void read_gm_account(void) {
+void read_gm_account(void)
+{
 	char line[8192];
 	struct gm_account *p;
 	FILE *fp;
@@ -73,16 +78,16 @@ void read_gm_account(void) {
 			} else {
 				if (level > 99)
 					level = 99;
-				if (range == 2)
+				if (range == 2) {
 					end_range = start_range;
-				else if (end_range < start_range) {
+				} else if (end_range < start_range) {
 					i = end_range;
 					end_range = start_range;
 					start_range = i;
 				}
 				for (account_id = start_range; account_id <= end_range; account_id++) {
 					if ((p = (struct gm_account *)numdb_search(gm_account_db, account_id)) == NULL) {
-						p = (struct gm_account*)aMalloc(sizeof(struct gm_account));
+						p = (struct gm_account*)aCalloc(1, sizeof(struct gm_account));
 						numdb_insert(gm_account_db, account_id, p);
 					}
 					p->account_id = account_id;
@@ -102,23 +107,23 @@ void read_gm_account(void) {
 
 int login_convert(void)
 {
-	char tmpsql[1024];
-	MYSQL_RES* sql_res;
 	FILE *fp;
 	int account_id, logincount, user_level, state, n, n2, i, j, val;
-	char line[2048], userid[2048], pass[2048], lastlogin[2048], sex, str[64];
+	char line[65536], userid[256], pass[256], lastlogin[256], buf[4][256], sex;
 	char input, *p;
 	struct accreg dat;
 
 	printf("\nDo you wish to convert your Login Database to SQL? (y/n) : ");
-	input=getchar();
+	input = getchar();
 	if(input == 'y' || input == 'Y') {
 		read_gm_account();
-		fp=fopen(account_filename,"r");
-		if(fp==NULL)
-			return 0;
-		while(fgets(line,1023,fp)!=NULL){
-			char email[40] = "";
+		fp = fopen(account_filename,"r");
+		if(fp == NULL) {
+			printf("cant't read : %s\n",account_filename);
+			return 1;
+		}
+		while(fgets(line, sizeof(line)-1, fp)) {
+			char email[256] = "";
 
 			if(line[0]=='/' && line[1]=='/')
 				continue;
@@ -126,7 +131,7 @@ int login_convert(void)
 			n = -1;
 			logincount = 0;
 			state = 0;
-			i = sscanf(p, "%d\t%[^\t]\t%[^\t]\t%[^\t]\t%c\t%d\t%d\t%n",
+			i = sscanf(p, "%d\t%255[^\t]\t%255[^\t]\t%255[^\t]\t%c\t%d\t%d\t%n",
 				&account_id, userid, pass, lastlogin, &sex, &logincount, &state, &n);
 
 			if(i < 5)		// %newid% の行はconvertしない
@@ -135,8 +140,13 @@ int login_convert(void)
 				continue;
 			user_level = isGM(account_id);
 
+			// force \0 terminal
+			userid[23]    = '\0';
+			pass[23]      = '\0';
+			lastlogin[23] = '\0';
+
 			// メールアドレスがない場合は "@" に置換
-			if( n <= 0 || sscanf(p+n, "%[^\t]\t%n", email, &n2) != 1 || !strchr(email,'@') ) {
+			if( n <= 0 || sscanf(p+n, "%255[^\t]\t%n", email, &n2) != 1 || !strchr(email,'@') ) {
 				memset(&email,0,sizeof(email));
 				email[0] = '@';
 			}
@@ -144,13 +154,18 @@ int login_convert(void)
 
 			// 全ワールド共有アカウント変数 ( ## 変数 ) 読み込み
 			if(n > 0) {
+				char str[256];
 				memset(&dat, 0, sizeof(dat));
 				for(j=0; j<ACCOUNT_REG2_NUM; j++) {
 					p += n;
-					if(sscanf(p, "%[^\t,],%d %n", str, &val, &n)!=2)
+					if(sscanf(p, "%255[^\t,],%d%n", str, &val, &n)!=2)
 						break;
 					strncpy(dat.reg[j].str, str, 32);
-					dat.reg[j].value = val;
+					dat.reg[j].str[31] = '\0';	// force \0 terminal
+					dat.reg[j].value   = val;
+					if(p[n] != ' ')
+						break;
+					n++;
 				}
 				dat.reg_num = j;
 			} else {
@@ -165,41 +180,32 @@ int login_convert(void)
 			if(strcmp(lastlogin,"-") == 0)
 				strcpy(lastlogin,"0000-00-00 00:00:00");
 
-			sprintf(tmpsql, "SELECT `%s`,`%s`,`%s`,`lastlogin`,`logincount`,`sex`,`last_ip`,`state`"
-				        " FROM `%s` WHERE `%s`='%d'",
-				login_db_account_id, login_db_userid, login_db_user_pass,
-				login_db, login_db_account_id, account_id);
-			if(mysql_query(&mysql_handle, tmpsql) ) {
-				printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+			sprintf(tmp_sql, "DELETE FROM `%s` WHERE `%s` = '%d'", login_db, login_db_account_id, account_id);
+			if(mysql_query(&mysql_handle, tmp_sql) ) {
+				printf("DB server Error (delete `%s`)- %s\n", login_db, mysql_error(&mysql_handle) );
 			}
-
-			sql_res = mysql_store_result(&mysql_handle);
-
-			if (sql_res && mysql_num_rows(sql_res) > 0)	//row reside -> updating
-				sprintf(tmpsql, "UPDATE `%s` SET `%s`='%d', `%s`='%s', `%s`='%s', `lastlogin`='%s',"
-				                " `sex`='%c', `logincount`='%d', `email`='%s', `%s`='%d'\nWHERE `account_id`='%d';",
-				login_db, login_db_account_id, account_id , login_db_userid, userid, login_db_user_pass, pass, lastlogin,
-				sex, logincount, email, login_db_level, user_level, account_id);
-			else	//no row -> insert
-				sprintf(tmpsql, "INSERT INTO `%s` (`%s`, `%s`, `%s`, `lastlogin`, `sex`, `logincount`, `email`, `%s`)"
-				                " VALUES ('%d', '%s', '%s', '%s', '%c', '%d', '%s', '%d');",
+			sprintf(tmp_sql,
+				"INSERT INTO `%s` (`%s`, `%s`, `%s`, `lastlogin`, `sex`, `logincount`, `email`, `%s`)"
+				" VALUES ('%d', '%s', '%s', '%s', '%c', '%d', '%s', '%d');",
 				login_db, login_db_account_id, login_db_userid, login_db_user_pass, login_db_level,
-				account_id , userid, pass, lastlogin, sex, logincount, email, user_level);
-			mysql_free_result(sql_res); //resource free
-			if(mysql_query(&mysql_handle, tmpsql) ) {
-				printf("DB server Error - %s\n", mysql_error(&mysql_handle) );
+				account_id , strecpy(buf[0],userid), strecpy(buf[1],pass), strecpy(buf[2],lastlogin), sex, logincount, strecpy(buf[3],email), user_level
+			);
+			if(mysql_query(&mysql_handle, tmp_sql) ) {
+				printf("DB server Error (insert `%s`)- %s\n", login_db, mysql_error(&mysql_handle) );
 			}
 
 			sprintf(tmp_sql,"DELETE FROM `global_reg_value` WHERE `type`='1' AND `account_id`='%d'",account_id);
 			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+				printf("DB server Error (delete `global_reg_value`)- %s\n", mysql_error(&mysql_handle));
 			}
 			for(i = 0; i < dat.reg_num; i++) {
-				sprintf(tmp_sql,"INSERT INTO `global_reg_value` (`type`, `account_id`, `str`, `value`) "
+				sprintf(tmp_sql,
+					"INSERT INTO `global_reg_value` (`type`, `account_id`, `str`, `value`) "
 					"VALUES ( 1 , '%d' , '%s' , '%d')",
-					account_id, strecpy(str,dat.reg[i].str), dat.reg[i].value);
+					account_id, strecpy(buf[0],dat.reg[i].str), dat.reg[i].value
+				);
 				if(mysql_query(&mysql_handle, tmp_sql)) {
-					printf("DB server Error - %s\n", mysql_error(&mysql_handle));
+					printf("DB server Error (insert `globa_reg_value`)- %s\n", mysql_error(&mysql_handle));
 				}
 			}
 		}
@@ -210,4 +216,3 @@ int login_convert(void)
 
 	return 0;
 }
-

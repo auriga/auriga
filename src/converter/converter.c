@@ -47,7 +47,8 @@ char mail_dir[1024]            = "save/mail_data/";
 char mapreg_txt[1024]          = "save/mapreg.txt";
 
 
-int config_read(const char *cfgName) {
+int config_read(const char *cfgName)
+{
 	int i;
 	char line[1024], w1[1024], w2[1024];
 	FILE *fp;
@@ -182,7 +183,8 @@ int config_read(const char *cfgName) {
 	return 0;
 }
 
-int do_init(int argc,char **argv) {
+int do_init(int argc,char **argv)
+{
 	// read config
 	config_read("conf/converter_auriga.conf");
 
@@ -195,13 +197,12 @@ int do_init(int argc,char **argv) {
 	printf("...\n");
 	if(!mysql_real_connect(&mysql_handle, db_server_ip, db_server_id, db_server_pw,
 		db_server_logindb ,db_server_port, (char *)NULL, 0)) {
-		//pointer check
+		// pointer check
 		printf("%s\n",mysql_error(&mysql_handle));
 		exit(1);
 	}
-	else {
-		printf ("connect success!\n");
-	}
+	printf("connect success!\n");
+
 	if(db_server_charset[0]) {
 		sprintf(tmp_sql,"SET NAMES %s",db_server_charset);
 		if (mysql_query(&mysql_handle, tmp_sql)) {
@@ -217,8 +218,8 @@ int do_init(int argc,char **argv) {
 	inter_convert();
 	map_convert();
 
-	printf ("\nEverything's been converted!\n");
-	printf ("Please Push Any Key...");
+	printf("\nEverything's been converted!\n");
+	printf("Please Push Any Key...");
 	getchar();
 
 	exit(0);

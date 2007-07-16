@@ -24,20 +24,23 @@ struct status_change_data {
 };
 
 // アカウント変数を文字列から変換
-static int int_accreg_fromstr(const char *str,struct accreg *reg)
+static int accreg_fromstr(const char *str,struct accreg *reg)
 {
-	int j,n,val;
-	char buf[128];
+	int j,v,n;
+	char buf[256];
 	const char *p = str;
 
-	if(sscanf(p,"%d\t%n", &reg->account_id, &n) != 1 || reg->account_id <= 0)
+	if( sscanf(p,"%d\t%n",&reg->account_id,&n) != 1 || reg->account_id <= 0 )
 		return 1;
 
-	for(j=0, p+=n; j<ACCOUNT_REG_NUM; j++, p+=n) {
-		if(sscanf(p, "%[^,],%d%n", buf, &val, &n) != 2)
+	for(j=0,p+=n; j<ACCOUNT_REG_NUM; j++,p+=n) {
+		if( sscanf(p,"%255[^,],%d%n",buf,&v,&n) != 2 )
 			break;
-		strncpy(reg->reg[j].str, buf, 32);
-		reg->reg[j].value = val;
+		strncpy(reg->reg[j].str,buf,32);
+		reg->reg[j].str[31] = '\0';	// force \0 terminal
+		reg->reg[j].value   = v;
+		if(p[n] != ' ')
+			break;
 		n++;
 	}
 	reg->reg_num = j;
@@ -46,31 +49,34 @@ static int int_accreg_fromstr(const char *str,struct accreg *reg)
 }
 
 // アカウント変数を書き込み
-static void int_accreg_tosql(struct accreg *reg) {
+static int accreg_tosql(struct accreg *reg)
+{
 	int j;
-	char buf[128];
+	char temp_str[128];
 
-	//`global_reg_value` (`type`, `account_id`, `char_id`, `str`, `value`)
-	sprintf(tmp_sql, "DELETE FROM `global_reg_value` WHERE `type`=2 AND `account_id`='%d'", reg->account_id);
+	sprintf(tmp_sql,"DELETE FROM `global_reg_value` WHERE `type`=2 AND `account_id`='%d'",reg->account_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (delete `global_reg_value`)- %s\n", mysql_error(&mysql_handle) );
 	}
 
 	for(j=0; j<reg->reg_num; j++) {
-		if(reg->reg[j].str[0]) {
-			sprintf(tmp_sql, "INSERT INTO `global_reg_value` (`type`, `account_id`, `str`, `value`) VALUES (2,'%d', '%s','%d')",
-				reg->account_id, strecpy(buf,reg->reg[j].str), reg->reg[j].value);
+		if(reg->reg[j].str[0] && reg->reg[j].value != 0) {
+			sprintf(
+				tmp_sql,
+				"INSERT INTO `global_reg_value` (`type`, `account_id`, `str`, `value`) VALUES (2,'%d','%s','%d')",
+				reg->account_id, strecpy(temp_str,reg->reg[j].str), reg->reg[j].value
+			);
 			if(mysql_query(&mysql_handle, tmp_sql) ) {
 				printf("DB server Error (insert `global_reg_value`)- %s\n", mysql_error(&mysql_handle) );
 			}
 		}
 	}
 
-	return;
+	return 0;
 }
 
 // ステータス異常データを文字列から変換
-static int int_status_fromstr(char *str, struct status_change_data *sc)
+static int status_fromstr(char *str, struct status_change_data *sc)
 {
 	int i,next,set,len;
 	int tmp_int[6];
@@ -108,7 +114,7 @@ static int int_status_fromstr(char *str, struct status_change_data *sc)
 }
 
 // ステータス異常データを書き込み
-static void int_status_tosql(struct status_change_data *sc)
+static int status_tosql(struct status_change_data *sc)
 {
 	int i;
 
@@ -130,27 +136,30 @@ static void int_status_tosql(struct status_change_data *sc)
 		}
 	}
 
-	return;
+	return 0;
 }
 
 // メールデータを文字列から変換
-static int int_mail_fromstr(char *str,struct mail *m)
+static int mail_fromstr(char *str,struct mail *m)
 {
+	int s;
 	int tmp_int[4];
 
-	if( sscanf(str,"%d,%d,%u,%d",&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3]) != 4 )
+	s=sscanf(str,"%d,%d,%u,%d",&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3]);
+
+	if(s!=4)
 		return 1;
 
-	m->char_id= tmp_int[0];
+	m->char_id    = tmp_int[0];
 	m->account_id = tmp_int[1];
-	m->rates = (unsigned int)tmp_int[2];
-	m->store = tmp_int[3];
+	m->rates      = (unsigned int)tmp_int[2];
+	m->store      = tmp_int[3];
 
 	return 0;
 }
 
 // メールデータの削除
-static int int_mail_delete_fromsql(int char_id)
+static int mail_delete_fromsql(int char_id)
 {
 	sprintf(tmp_sql, "DELETE FROM `mail` WHERE `char_id` = '%d'", char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
@@ -160,9 +169,9 @@ static int int_mail_delete_fromsql(int char_id)
 }
 
 // メールデータを書き込み
-static int int_mail_tosql(struct mail* m)
+static int mail_tosql(struct mail* m)
 {
-	int_mail_delete_fromsql(m->char_id);
+	mail_delete_fromsql(m->char_id);
 
 	// `mail` (`char_id`, `account_id`, `rates`, `store`)
 	sprintf(
@@ -177,13 +186,13 @@ static int int_mail_tosql(struct mail* m)
 }
 
 // 個人メールBOXを文字列から変換
-static int int_mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
+static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 {
 	int n;
 	int tmp_int[16];
 	char tmp_char[3][1024];
 
-	n=sscanf(str,"%u,%d\t%[^\t]\t%[^\t]\t%[^\t]\t%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%[^\r\n]",
+	n=sscanf(str,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%1023[^\r\n]",
 		&tmp_int[0],&tmp_int[1],tmp_char[0],tmp_char[1],tmp_char[2],&tmp_int[2],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
 		&tmp_int[14],&tmp_int[15],body_data);
@@ -196,7 +205,7 @@ static int int_mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 	memcpy(md->receive_name,tmp_char[1],24);
 	memcpy(md->title,tmp_char[2],40);
 	md->zeny           = tmp_int[2];
-	md->item.id        = tmp_int[3];
+	md->item.id        = (unsigned int)tmp_int[3];
 	md->item.nameid    = tmp_int[4];
 	md->item.amount    = tmp_int[5];
 	md->item.equip     = tmp_int[6];
@@ -209,13 +218,19 @@ static int int_mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 	md->item.card[3]   = tmp_int[13];
 	md->times          = (unsigned int)tmp_int[14];
 	md->body_size      = (unsigned int)tmp_int[15];
+
+	// force \0 terminal
+	md->char_name[23]    = '\0';
+	md->receive_name[23] = '\0';
+	md->title[39]        = '\0';
+
 	// md->bodyは使わない
 
 	return 0;
 }
 
 // 個人メールBOXを書き込み
-static int int_mailbox_tosql(struct mail_data *md,char *body_data)
+static int mailbox_tosql(struct mail_data *md,char *body_data)
 {
 	char buf[3][256];
 
@@ -254,15 +269,18 @@ int inter_convert(void)
 	if(input == 'y' || input == 'Y') {
 		struct accreg reg;
 		printf("\nConverting Account Registered Variables...\n");
-		if( (fp = fopen(account_reg_txt,"r")) == NULL )
-			return 0;
-		while(fgets(line, sizeof(line), fp)) {
+		fp = fopen(account_reg_txt,"r");
+		if(fp == NULL) {
+			printf("cant't read : %s\n",account_reg_txt);
+			return 1;
+		}
+		while(fgets(line, sizeof(line)-1, fp)) {
 			c++;
 			memset(&reg, 0, sizeof(reg));
-			if(int_accreg_fromstr(line, &reg) == 0 && reg.account_id > 0) {
-				int_accreg_tosql(&reg);
+			if(accreg_fromstr(line, &reg) == 0 && reg.account_id > 0) {
+				accreg_tosql(&reg);
 			} else {
-				printf("int_accreg: broken data [%s] line %d\n", account_reg_txt, c);
+				printf("accreg: broken data [%s] line %d\n", account_reg_txt, c);
 			}
 		}
 		fclose(fp);
@@ -275,15 +293,18 @@ int inter_convert(void)
 	if(input == 'y' || input == 'Y') {
 		struct status_change_data sc;
 		printf("\nConverting Status Change Data...\n");
-		if( (fp = fopen(scdata_txt,"r")) == NULL )
-			return 0;
-		while(fgets(line, sizeof(line), fp)) {
+		fp = fopen(scdata_txt,"r");
+		if(fp == NULL) {
+			printf("cant't read : %s\n",scdata_txt);
+			return 1;
+		}
+		while(fgets(line, sizeof(line)-1, fp)) {
 			c++;
 			memset(&sc, 0, sizeof(sc));
-			if(int_status_fromstr(line, &sc) == 0) {
-				int_status_tosql(&sc);
+			if(status_fromstr(line, &sc) == 0) {
+				status_tosql(&sc);
 			} else {
-				printf("int_status: broken data [%s] line %d\n", scdata_txt, c);
+				printf("status: broken data [%s] line %d\n", scdata_txt, c);
 			}
 		}
 		fclose(fp);
@@ -302,15 +323,18 @@ int inter_convert(void)
 		printf("\nConverting Mail Data...\n");
 
 		// mail.txt
-		if( (fp = fopen(mail_txt,"r")) == NULL )
-			return 0;
+		fp = fopen(mail_txt,"r");
+		if(fp == NULL) {
+			printf("cant't read : %s\n",mail_txt);
+			return 1;
+		}
 		list_size = 256;
 		charid_list = (int *)aCalloc(list_size, sizeof(int));
-		while(fgets(line, sizeof(line), fp)) {
+		while(fgets(line, sizeof(line)-1, fp)) {
 			c++;
 			memset(&m, 0, sizeof(m));
-			if(int_mail_fromstr(line, &m) == 0) {
-				int_mail_tosql(&m);
+			if(mail_fromstr(line, &m) == 0) {
+				mail_tosql(&m);
 				if(list_num >= list_size) {
 					list_size += 256;
 					charid_list = (int *)aRealloc(charid_list, list_size*sizeof(int));
@@ -318,18 +342,19 @@ int inter_convert(void)
 				}
 				charid_list[list_num++] = m.char_id;	// キャラIDをリストに保存
 			} else {
-				printf("int_mail: broken data [%s] line %d\n", mail_txt, c);
+				printf("mail: broken data [%s] line %d\n", mail_txt, c);
 			}
 		}
 		fclose(fp);
 
 		// mail_data
 		for(i=0; i<list_num; i++) {
-			char filename[1024];
+			char filename[1056];
 			sprintf(filename,"%s%d.txt",mail_dir,charid_list[i]);
-			if( (fp = fopen(filename,"r")) == NULL ) {
-				printf("int_mail: [%s] not found!!\n", filename);
-				int_mail_delete_fromsql(charid_list[i]);	// 整合性が取れないので `mail` から削除
+			fp = fopen(filename,"r");
+			if(fp == NULL) {
+				printf("cant't read : %s\n",filename);
+				mail_delete_fromsql(charid_list[i]);	// 整合性が取れないので `mail` から削除
 				continue;
 			}
 			c = 0;
@@ -337,11 +362,11 @@ int inter_convert(void)
 				char body_data[1024];	// bodyはバイナリデータのままSQLに流し込むのでUNHEXしない
 				c++;
 				memset(&md, 0, sizeof(md));
-				if(int_mailbox_fromstr(line, &md, body_data) == 0) {
+				if(mailbox_fromstr(line, &md, body_data) == 0) {
 					md.char_id = charid_list[i];
-					int_mailbox_tosql(&md, body_data);
+					mailbox_tosql(&md, body_data);
 				} else {
-					printf("int_mail: broken data [%s] line %d\n", filename, c);
+					printf("mailbox: broken data [%s] line %d\n", filename, c);
 				}
 			}
 			fclose(fp);
