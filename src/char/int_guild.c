@@ -181,7 +181,9 @@ static int guild_fromstr(char *str,struct guild *g)
 	g->skill_point = tmp_int[4];
 	strncpy(g->name,tmp_str[0],24);
 	strncpy(g->master,tmp_str[1],24);
+	tmp_str[2][strlen(tmp_str[2])-1] = 0;
 	strncpy(g->mes1,tmp_str[2],60);
+	tmp_str[3][strlen(tmp_str[3])-1] = 0;
 	strncpy(g->mes2,tmp_str[3],120);
 
 	// force \0 terminal
@@ -232,6 +234,7 @@ static int guild_fromstr(char *str,struct guild *g)
 			return 1;
 		p->mode     = tmp_int[0];
 		p->exp_mode = tmp_int[1];
+		tmp_str[0][strlen(tmp_str[0])-1] = 0;
 		strncpy(p->name,tmp_str[0],24);
 		p->name[23] = '\0';	// force \0 terminal
 
@@ -305,6 +308,7 @@ static int guild_fromstr(char *str,struct guild *g)
 		}
 		e->account_id = tmp_int[0];
 		strncpy(e->name,tmp_str[0],24);
+		tmp_str[1][strlen(tmp_str[1])-1] = 0;
 		strncpy(e->mes,tmp_str[1],40);
 
 		// force \0 terminal

@@ -530,8 +530,7 @@ void guild_npc_request_info(int guild_id,const char *event)
 	ev=(struct eventlist *)aCalloc(1,sizeof(struct eventlist));
 	strncpy(ev->name,event,sizeof(ev->name));
 	ev->name[sizeof(ev->name)-1] = '\0';	// force \0 terminal
-	ev->next=(struct eventlist *)numdb_search(guild_infoevent_db,guild_id);
-	numdb_insert(guild_infoevent_db,guild_id,ev);
+	ev->next=(struct eventlist *)numdb_insert(guild_infoevent_db,guild_id,ev);
 	guild_request_info(guild_id);
 
 	return;
@@ -1952,8 +1951,7 @@ void guild_addcastleinfoevent(int castle_id, int idx, const char *name)
 	ev = (struct eventlist *)aCalloc(1,sizeof(struct eventlist));
 	memcpy(ev->name,name,sizeof(ev->name));
 	ev->name[sizeof(ev->name)-1] = '\0';	// force \0 terminal
-	ev->next = (struct eventlist *)numdb_search(guild_castleinfoevent_db,code);
-	numdb_insert(guild_castleinfoevent_db,code,ev);
+	ev->next = (struct eventlist *)numdb_insert(guild_castleinfoevent_db,code,ev);
 
 	return;
 }

@@ -353,12 +353,12 @@ static void db_rebalance_erase(struct dbn *z,struct dbn **root)
 	}
 }
 
-void db_free_lock(struct dbt *table)
+static void db_free_lock(struct dbt *table)
 {
 	table->free_lock++;
 }
 
-void db_free_unlock(struct dbt *table)
+static void db_free_unlock(struct dbt *table)
 {
 	if(--table->free_lock == 0) {
 		int i;
@@ -374,7 +374,7 @@ void db_free_unlock(struct dbt *table)
 	}
 }
 
-struct dbn* db_insert(struct dbt *table,void* key,void* data)
+void* db_insert(struct dbt *table,void* key,void* data)
 {
 	struct dbn *p,*priv;
 	int c,hash;
@@ -383,6 +383,7 @@ struct dbn* db_insert(struct dbt *table,void* key,void* data)
 	for(c=0,priv=NULL ,p = table->ht[hash];p;){
 		c=table->cmp(table,key,p->key);
 		if(c==0){ // replace
+			void *old_data = p->data;
 			if(p->deleted) {
 				// 削除されたデータなので、free_list 上の削除予定を消す
 				int i;
@@ -408,7 +409,7 @@ struct dbn* db_insert(struct dbt *table,void* key,void* data)
 			p->key     = key;
 			p->data    = data;
 			p->deleted = 0;
-			return p;
+			return old_data;
 		}
 		priv=p;
 		if(c<0){
@@ -441,12 +442,12 @@ struct dbn* db_insert(struct dbt *table,void* key,void* data)
 		}
 	}
 	table->item_count++;
-	return p;
+	return NULL;
 }
 
 void* db_erase(struct dbt *table,void* key)
 {
-	void *data;
+	void *old_data;
 	struct dbn *p;
 	int c,hash;
 
@@ -462,7 +463,7 @@ void* db_erase(struct dbt *table,void* key)
 	}
 	if(!p || p->deleted)
 		return NULL;
-	data=p->data;
+	old_data=p->data;
 	if(table->free_lock) {
 		if(table->free_count == table->free_max) {
 			table->free_max += 32;
@@ -487,7 +488,7 @@ void* db_erase(struct dbt *table,void* key)
 		free_dbn(p);
 		table->item_count--;
 	}
-	return data;
+	return old_data;
 }
 
 void db_foreach(struct dbt *table,int (*func)(void*,void*,va_list),...)
@@ -688,7 +689,7 @@ void* linkdb_erase( struct linkdb_node** head, void *key)
 	node = *head;
 	while( node ) {
 		if( node->key == key ) {
-			void *data = node->data;
+			void *old_data = node->data;
 			if( node->prev == NULL )
 				*head = node->next;
 			else
@@ -696,22 +697,23 @@ void* linkdb_erase( struct linkdb_node** head, void *key)
 			if( node->next )
 				node->next->prev = node->prev;
 			aFree( node );
-			return data;
+			return old_data;
 		}
 		node = node->next;
 	}
 	return NULL;
 }
 
-void linkdb_replace( struct linkdb_node** head, void *key, void *data )
+void* linkdb_replace( struct linkdb_node** head, void *key, void *data )
 {
 	int n = 0;
 	struct linkdb_node *node;
 
-	if( head == NULL ) return;
+	if( head == NULL ) return NULL;
 	node = *head;
 	while( node ) {
 		if( node->key == key ) {
+			void *old_data = node->data;
 			if( node->prev && n > 5 ) {
 				// 処理効率改善の為にheadに移動させる
 				if(node->prev) node->prev->next = node->next;
@@ -722,13 +724,15 @@ void linkdb_replace( struct linkdb_node** head, void *key, void *data )
 				(*head)       = node;
 			}
 			node->data = data;
-			return;
+			return old_data;
 		}
 		node = node->next;
 		n++;
 	}
 	// 見つからないので挿入
 	linkdb_insert( head, key, data );
+
+	return NULL;
 }
 
 void linkdb_final( struct linkdb_node** head )

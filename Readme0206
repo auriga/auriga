@@ -1,4 +1,16 @@
 ----------------------------------------
+//0236 [2007/07/18] by Rayce
+
+・db_insert() および linkdb_replace() の返り値を変更（db.*）
+	データを置換する前のdataをvoid*型で返すようにします
+	データの新規追加の場合はNULLが返ってきます
+・treedbおよびlinkdbに関して、searchが不要な部分を短縮して検索処理効率を上げるように改善
+　（friend.c, guild.c, npc.c, script.c）
+
+・TXT: 0227以降、ギルド告知や役職に#が連続で付加するバグが発生していたので修正
+　（int_guild.c, char-converter.c）
+
+----------------------------------------
 //0235 [2007/07/17] by Rayce
 
 ・DEBUG_VARSの出力結果を元に修正（db/item_db.txt）

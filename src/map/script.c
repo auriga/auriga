@@ -1965,7 +1965,7 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 		} else if(prefix == '$') {
 			mapreg_setregstr(num,str,(name[1] == '@')? 0: 1);
 		} else if(prefix == '\'') {
-			char *p;
+			char *old_str;
 			struct linkdb_node **n;
 			if( ref ) {
 				n = ref;
@@ -1974,13 +1974,13 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 			} else {
 				n = &st->script->script_vars;
 			}
-			p = (char *)linkdb_search(n, (void*)num);
-			if(p) {
-				linkdb_erase(n, (void*)num);
-				aFree(p);
+			if( str[0] ) {
+				old_str = (char *)linkdb_replace(n, (void*)num, aStrdup(str));
+			} else {
+				old_str = (char *)linkdb_erase(n, (void*)num);
 			}
-			if( str[0] )
-				linkdb_insert(n, (void*)num, aStrdup(str));
+			if(old_str)
+				aFree(old_str);
 		} else {
 			printf("script: set_reg: illegal scope string variable !");
 		}
@@ -2007,10 +2007,10 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 			} else {
 				n = &st->script->script_vars;
 			}
-			if( val == 0 ) {
-				linkdb_erase(n, (void*)num);
-			} else {
+			if( val != 0 ) {
 				linkdb_replace(n, (void*)num, (void*)val);
+			} else {
+				linkdb_erase(n, (void*)num);
 			}
 		} else {
 			pc_setglobalreg(sd,name,val);
@@ -2867,15 +2867,15 @@ int mapreg_setreg(int num,int val,int eternal)
  */
 int mapreg_setregstr(int num,const char *str,int eternal)
 {
-	char *p = (char *)numdb_search(mapregstr_db,num);
-
-	if(p)
-		aFree(p);
+	char *old_str;
 
 	if(str && *str)
-		numdb_insert(mapregstr_db,num,aStrdup(str));
+		old_str = (char *)numdb_insert(mapregstr_db,num,aStrdup(str));
 	else
-		numdb_erase(mapregstr_db,num);
+		old_str = (char *)numdb_erase(mapregstr_db,num);
+
+	if(old_str)
+		aFree(old_str);
 
 	if(eternal)
 		mapreg_dirty = 1;

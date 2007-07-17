@@ -1535,17 +1535,17 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 			map_addiddb(&nd->bl);
 
 		if(class_ < 0) {	// イベント型
-			struct event_data *ev;
-			if(strdb_search(ev_db,nd->exname) != NULL) {
+			struct event_data *ev, *old_ev;
+			ev      = (struct event_data *)aCalloc(1,sizeof(struct event_data));
+			ev->nd  = nd;
+			ev->pos = 0;
+			old_ev  = (struct event_data *)strdb_insert(ev_db,nd->exname,ev);
+			if(old_ev) {
 				// イベントが重複している場合。ここでreturnすると以前の処理が
 				// 中途半端になる為、処理を続行する。
 				printf("npc_parse_script : dup event name %s\n",nd->exname);
+				aFree(old_ev);
 				ret = 1; // 戻り値
-			} else {
-				ev = (struct event_data *)aCalloc(1,sizeof(struct event_data));
-				ev->nd  = nd;
-				ev->pos = 0;
-				strdb_insert(ev_db,nd->exname,ev);
 			}
 		} else {
 			clif_spawnnpc(nd);
@@ -1571,7 +1571,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 
 	// イベント用ラベルデータのエクスポート
 	for(i = 0; i < nd->u.scr.label_list_num; i++) {
-		struct event_data *ev, *ev2;
+		struct event_data *ev, *old_ev;
 		char *lname = nd->u.scr.label_list[i].name;
 		int pos = nd->u.scr.label_list[i].pos;
 
@@ -1581,14 +1581,12 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		ev->nd  = nd;
 		ev->pos = pos;
 		snprintf(ev->key, 50, "%s::%s", nd->exname, lname);
-		ev2 = (struct event_data *)strdb_search(ev_db,ev->key);
-		if(ev2 != NULL) {
+		old_ev = (struct event_data *)strdb_insert(ev_db,ev->key,ev);
+		if(old_ev) {
 			printf("npc_parse_script : dup event %s\n",ev->key);
-			strdb_erase(ev_db,ev->key);
-			aFree(ev2->key);
-			aFree(ev2);
+			aFree(old_ev->key);
+			aFree(old_ev);
 		}
-		strdb_insert(ev_db,ev->key,ev);
 	}
 
 	// ラベルデータからタイマーイベント取り込み

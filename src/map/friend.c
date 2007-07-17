@@ -235,8 +235,7 @@ int friend_send_online( struct map_session_data *sd, int flag )
 
 	// オンライン情報を保存
 	if( flag==0 ) {
-		if( numdb_search( online_db, sd->status.char_id )==0 )
-			numdb_insert( online_db, sd->status.char_id, 1 );
+		numdb_insert( online_db, sd->status.char_id, 1 );
 	} else {
 		numdb_erase( online_db, sd->status.char_id );
 	}

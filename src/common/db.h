@@ -57,7 +57,7 @@ struct dbt {
 struct dbt* strdb_init_(int maxlen,const char *file,int line);
 struct dbt* numdb_init_(const char *file,int line);
 void* db_search(struct dbt *table,void* key);
-struct dbn* db_insert(struct dbt *table,void* key,void* data);
+void* db_insert(struct dbt *table,void* key,void* data);
 void* db_erase(struct dbt *table,void* key);
 void db_foreach(struct dbt*,int(*)(void*,void*,va_list),...);
 void db_foreach_sub(struct dbt*,int(*)(void*,void*,va_list), va_list ap);
@@ -78,7 +78,7 @@ struct linkdb_node {
 };
 
 void  linkdb_insert (struct linkdb_node** head, void *key, void* data); // 重複を考慮しない
-void  linkdb_replace(struct linkdb_node** head, void *key, void* data); // 重複を考慮する
+void* linkdb_replace(struct linkdb_node** head, void *key, void* data); // 重複を考慮する
 void* linkdb_search (struct linkdb_node** head, void *key);
 void* linkdb_erase  (struct linkdb_node** head, void *key);
 void  linkdb_final  (struct linkdb_node** head);
