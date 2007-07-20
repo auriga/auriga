@@ -311,11 +311,11 @@ int mob_spawn(int id)
 
 	if(i >= 50) {
 		if(md->spawndelay1 == -1 && md->spawndelay2 == -1) {
-			// 一度しか沸かないのは、スタック位置でも出す
-			if(map_getcell(md->bl.m,x,y,CELL_GETTYPE) != 5)
+			// 一度しか沸かないのは壁でない限りスタック位置でも出す
+			if(!map_getcell(md->bl.m,x,y,CELL_CHKGROUND))
 				return 1;
 		} else {
-			// 1秒後にもう一度トライする
+			// 1秒後にリトライする
 			add_timer(tick+1000,mob_delayspawn,id,0);
 			return 1;
 		}
@@ -1960,6 +1960,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					add_timer2(tick+540+i,mob_delay_item_drop2,(int)ditem,0,TIMER_FREE_ID);
 				}
 			}
+			md->lootitem_count = 0;
 		}
 	}
 

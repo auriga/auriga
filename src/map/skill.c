@@ -5262,7 +5262,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,src,skillid,skilllv,1);
 
 			if(battle_config.emergencycall_point_type != 0)
-				count = map_searchrandfreecell(sd->bl.m,sd->bl.x,sd->bl.y,free_cell,3);
+				count = map_searchrandfreecell(free_cell,sd->bl.m,sd->bl.x-3,sd->bl.y-3,sd->bl.x+3,sd->bl.y+3);
 
 			for(mi = 0; mi < g->max_member; mi++)
 			{

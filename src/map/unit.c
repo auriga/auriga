@@ -2056,11 +2056,20 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		if(md->sc_data != NULL)
 			status_free_sc_data(&md->bl);
 #endif
+		if(md->lootitem) {
+			int i;
+			for(i=0; i<md->lootitem_count; i++) {
+				if(md->lootitem[i].card[0] == (short)0xff00)
+					intif_delete_petdata(*((long *)(&md->lootitem[i].card[1])));
+			}
+			md->lootitem_count = 0;
+		}
+
 		// 復活しないMOBの処理
 		if(md->spawndelay1 == -1 && md->spawndelay2 == -1 && md->n == 0) {
 			map_deliddb(&md->bl);
 			if(md->lootitem) {
-				map_freeblock(md->lootitem);
+				aFree(md->lootitem);
 				md->lootitem = NULL;
 			}
 			map_freeblock(md);	// freeのかわり

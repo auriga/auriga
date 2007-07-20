@@ -1128,23 +1128,22 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,int data)
 }
 
 /*==========================================
- * (m,x,y)の周囲rangeマス内の空き(=侵入可能)
+ * (x0,y0)から(x1,y1)の空き(=侵入可能)
  * cellをリストに格納してその数を返す
  *------------------------------------------
  */
-int map_searchrandfreecell(int m,int x,int y,struct cell_xy *list,int range)
+int map_searchrandfreecell(struct cell_xy *list,int m,int x0,int y0,int x1,int y1)
 {
-	int i, j, dx, dy;
-	int count = 0;
+	int i, j, count = 0;
 
-	for(i = -range; i <= range; i++) {
-		dy = y + i;
-		for(j = -range; j <= range; j++) {
-			dx = x + j;
-			if(map_getcell(m,dx,dy,CELL_CHKNOPASS))
+	for(i = x0; i <= x1; i++) {
+		for(j = y0; j <= y1; j++) {
+			if(map_getcell(m,i,j,CELL_CHKNOPASS))
 				continue;
-			list[count].x = dx;
-			list[count].y = dy;
+			if(list) {
+				list[count].x = i;
+				list[count].y = j;
+			}
 			count++;
 		}
 	}
@@ -1160,12 +1159,12 @@ int map_searchrandfreecell(int m,int x,int y,struct cell_xy *list,int range)
 int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,struct block_list *first_bl,
 	struct block_list *second_bl,struct block_list *third_bl,int type)
 {
-	struct cell_xy free_cell[9];	// 3x3
+	struct cell_xy free_cell[3*3];
 	int count;
 
 	nullpo_retr(0, item_data);
 
-	if((count = map_searchrandfreecell(m,x,y,free_cell,1)) > 0) {
+	if((count = map_searchrandfreecell(free_cell,m,x-1,y-1,x+1,y+1)) > 0) {
 		struct flooritem_data *fitem = (struct flooritem_data *)aCalloc(1,sizeof(*fitem));
 		int idx = atn_rand()%count;
 
