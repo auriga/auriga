@@ -1013,14 +1013,26 @@ int check_connect_char_server(int tid,unsigned int tick,int id,int data)
 }
 
 /*==========================================
+ * char,interサーバへデータ送信
+ *------------------------------------------
+ */
+int chrif_flush_fifo(void)
+{
+	if(char_fd < 0)
+		return -1;
+
+	flush_fifo(char_fd);
+
+	return 0;
+}
+
+/*==========================================
  * 終了
  *------------------------------------------
  */
 int do_final_chrif(void)
 {
-	// char,interサーバへデータ送信
-	flush_fifo(char_fd);
-
+	chrif_flush_fifo();
 	delete_session(char_fd);
 
 	return 0;

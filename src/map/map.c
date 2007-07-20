@@ -2760,6 +2760,7 @@ void do_final(void)
 
 	guild_flush_expcache();				// ギルドExpをフラッシュ
 	clif_foreachclient(chrif_disconnect_sub);	// ここで先にキャラを全て切断しておく
+	chrif_flush_fifo();				// パケット送信
 
 	do_final_battle();
 	do_final_npc();

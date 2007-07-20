@@ -10,10 +10,10 @@
 
 struct dbn {
 	struct dbn *parent,*left,*right;
-	int color;
 	void *key;
 	void *data;
-	int  deleted;	// 削除済みフラグ(db_foreach)
+	char color;
+	char deleted;	// 削除済みフラグ(db_foreach)
 };
 
 struct db_free {
