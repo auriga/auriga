@@ -483,7 +483,6 @@ void guild_created(int account_id, int guild_id)
 	if(guild_id>0) {
 		sd->status.guild_id = guild_id;
 		sd->guild_sended = 0;
-		sd->state.guild_req_info = 0;
 		clif_guild_created(sd,0);
 		if(battle_config.guild_emperium_check) {
 			int idx = pc_search_inventory(sd,714);
@@ -834,7 +833,6 @@ void guild_member_added(int guild_id, int account_id, int char_id, unsigned char
 	}
 
 	// 成功
-	sd->state.guild_req_info = 0;
 	sd->guild_sended = 0;
 	sd->status.guild_id = guild_id;
 

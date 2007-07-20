@@ -2022,7 +2022,6 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		linkdb_final( &md->dmglog );
 		//mobskill_deltimer(md);
 		md->state.skillstate = MSS_DEAD;
-		md->last_deadtime = gettick();
 		// 死んだのでこのmobへの攻撃者全員の攻撃を止める
 		clif_foreachclient(unit_mobstopattacked,md->bl.id);
 		status_change_clear(&md->bl,2);	// ステータス異常を解除する
@@ -2067,9 +2066,10 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			map_freeblock(md);	// freeのかわり
 		} else {
 			unsigned int spawntime,spawntime1,spawntime2,spawntime3;
+			unsigned int tick = gettick();
 			spawntime1 = md->last_spawntime + md->spawndelay1;
-			spawntime2 = md->last_deadtime + md->spawndelay2;
-			spawntime3 = gettick()+1000;
+			spawntime2 = tick + md->spawndelay2;
+			spawntime3 = tick + 1000;
 			if(DIFF_TICK(spawntime1,spawntime2) > 0) {
 				spawntime = spawntime1;
 			} else {

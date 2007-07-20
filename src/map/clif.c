@@ -11025,27 +11025,14 @@ static void clif_parse_GuildCheckMaster(int fd,struct map_session_data *sd, int 
 static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int cmd)
 {
 	struct guild *g;
-	int type = RFIFOL(fd,GETPACKETPOS(cmd,0));
 
 	nullpo_retv(sd);
-
-	if(type < 0 || type > 4) {
-		if(battle_config.error_log)
-			printf("clif: guild request info: unknown type %d\n", type);
-		return;
-	}
-
-	// 初回データ送信済み
-	if(sd->state.guild_req_info & (1<<type))
-		return;
 
 	// only a guild member can ask for guild info
 	if(sd->status.guild_id == 0 || (g = guild_search(sd->status.guild_id)) == NULL)
 		return;
 
-	sd->state.guild_req_info |= (1<<type);
-
-	switch(type) {
+	switch(RFIFOL(fd,GETPACKETPOS(cmd,0))) {
 	case 0:	// ギルド基本情報、同盟敵対情報
 		clif_guild_basicinfo(sd, g);
 		clif_guild_allianceinfo(sd, g);
@@ -11065,6 +11052,9 @@ static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int 
 	case 4:	// 追放リスト
 		clif_guild_explusionlist(sd, g);
 		break;
+	default:
+		if(battle_config.error_log)
+			printf("clif: guild request info: unknown type %d\n", RFIFOL(fd,GETPACKETPOS(cmd,0)));
 	}
 
 	return;

@@ -282,7 +282,6 @@ struct map_session_data {
 		unsigned inventory_dirty : 1;
 		unsigned cart_dirty : 1;
 		unsigned icon_weight : 2;
-		unsigned guild_req_info : 5;
 		unsigned warp_waiting : 1;
 	} state;
 	struct {
@@ -640,7 +639,7 @@ struct mob_data {
 	int hp;
 	int target_id,attacked_id,attacked_players;
 	unsigned int next_walktime;
-	unsigned int last_deadtime,last_spawntime,last_thinktime;
+	unsigned int last_spawntime,last_thinktime;
 	short move_fail_count;
 	struct linkdb_node *dmglog;
 	struct item *lootitem;
