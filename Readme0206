@@ -1,4 +1,37 @@
 ----------------------------------------
+//0240 [2007/07/21] by Rayce
+
+・MAPサーバ停止時の終了処理の高速化（npc.c）
+	do_final_npc() でMAPに出現中のMOBを削除する際は、一旦復活しないMOBに設定してから
+	unit_remove_map() を呼び出します。
+	これより不要な再出現タイマーの設定処理が省略されます。
+	また map_id2bl() を2回呼ぶ必要がなくなります。
+	PETとHOMがまだMAPに残っているはずはないのですが、念のため unit_free() で後始末します。
+
+　※大変荒い実験な上に状況によってマチマチですが、処理速度が約2倍になっていることを確認しました
+
+・monster定義で設定したMOBの座標が完全にスタック位置だった場合、警告を出力してMOBの出現を取り消す
+　ように修正（npc.c, mob.c）
+	範囲内の空きセルをランダムで50回検索しても空きセルが見つからなかった場合は1秒後に検索を
+	やり直す仕様になっています。
+	しかし指定座標の周囲に全く空きセルがない場合は検索失敗になるのは確実であり、そのために常に
+	1秒毎に検索を行い続けるのは負荷にしかなりません。
+	従って最初の mob_spawn() に失敗した場合は map_searchrandfreecell() で空きセルのチェックを
+	行うようにします。
+	チェックに引っ掛かったらデータは破棄します。
+	このとき再検索用の1秒タイマーは動いたままになっているので、mob_spawn() のnullpoチェックは
+	外すように変更しています。
+
+・以下のスクリプトにおいて上記の変更により警告が出るのでコメントアウト
+	monster/dungeon/npc_monster_ctower.txt
+	monster/dungeon/npc_monster_gefdun.txt
+	monster/dungeon/npc_monster_izdun.txt
+	monster/dungeon/npc_monster_treasure.txt
+	monster/field/npc_monster_cmdfild.txt
+	monster/field/npc_monster_mjolnir.txt
+	monster/field/npc_monster_prtfild.txt
+
+----------------------------------------
 //0239 [2007/07/21] by Rayce
 
 ・メモリ消費を若干節約するため、dbn構造体のメンバcolorとdeletedをint型からchar型に変更してみる（db.h）

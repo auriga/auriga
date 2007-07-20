@@ -1823,7 +1823,27 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
 		}
 		md->bl.type = BL_MOB;
 		map_addiddb(&md->bl);
-		mob_spawn(md->bl.id);
+
+		if(mob_spawn(md->bl.id)) {
+			// 出現失敗、座標が指定されているなら周囲のセルをチェック
+			if(md->x0 != 0 && md->y0 != 0) {
+				int x0 = md->x0 - md->xs/2;
+				int y0 = md->y0 - md->ys/2;
+				int x1 = md->x0 + md->xs - md->xs/2;
+				int y1 = md->y0 + md->ys - md->ys/2;
+				if(map_searchrandfreecell(NULL, md->m, x0, y0, x1, y1) <= 0) {
+					// 侵入可能セルが全くないので削除する
+					printf("npc_monster spawn stacked (%d,%d) - (%d,%d) line %d\a\n", x0, y0, x1, y1, lines);
+					map_deliddb(&md->bl);
+					if(md->lootitem) {
+						aFree(md->lootitem);
+						md->lootitem = NULL;
+					}
+					map_freeblock(md);
+					break;
+				}
+			}
+		}
 
 		if(guild_id > 0)
 			md->guild_id = guild_id;
@@ -2037,7 +2057,6 @@ int do_final_npc(void)
 	struct npc_data   *nd;
 	struct mob_data   *md;
 	struct chat_data  *cd;
-	struct pet_data   *pd;
 
 	if(npc_src_first)
 		npc_clearsrcfile();
@@ -2048,11 +2067,6 @@ int do_final_npc(void)
 		strdb_final(npcname_db,NULL);
 
 	for(i=START_NPC_NUM; i<npc_id; i++) {
-		if((bl = map_id2bl(i))) {
-			if(bl->type == BL_PET || bl->type == BL_MOB) {
-				unit_remove_map(bl,0,0);
-			}
-		}
 		if((bl = map_id2bl(i))) {
 			if(bl->type == BL_NPC && (nd = (struct npc_data *)bl)) {
 				if(bl->prev) {
@@ -2080,20 +2094,24 @@ int do_final_npc(void)
 				aFree(nd);
 				nd = NULL;
 			} else if(bl->type == BL_MOB && (md = (struct mob_data *)bl)) {
-				if(md->lootitem) {
-					int j;
-					for(j=0; j<md->lootitem_count; j++) {
-						if(md->lootitem[j].card[0] == (short)0xff00)
-							intif_delete_petdata(*((long *)(&md->lootitem[j].card[1])));
+				if(bl->prev) {
+					// 復活しないMOBとして扱う
+					md->spawndelay1 = -1;
+					md->spawndelay2 = -1;
+					md->n = 0;
+					unit_remove_map(&md->bl,0,0);
+				} else {
+					map_deliddb(&md->bl);
+					if(md->lootitem) {
+						aFree(md->lootitem);
+						md->lootitem = NULL;
 					}
-					aFree(md->lootitem);
-					md->lootitem = NULL;
+					aFree(md);
 				}
-				aFree(md);
 				md = NULL;
-			} else if(bl->type == BL_PET && (pd = (struct pet_data *)bl)) {
-				aFree(pd);
-				pd = NULL;
+			} else if(bl->type == BL_PET || bl->type == BL_HOM) {
+				printf("do_final_npc: remain PET or HOM ?\n");
+				unit_free(bl,0);
 			}
 		}
 	}
