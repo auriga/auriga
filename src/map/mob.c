@@ -651,14 +651,14 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 	if(!mmd || mmd->bl.id != md->master_id)
 		return 0;
 	// 呼び戻し
-	if(mmd->recall_flag == 1) {
+	if(mmd->state.recall_flag == 1) {
 		if(mmd->recallcount < mmd->recallmob_count + 2) {
 			int dx = atn_rand()%5-2+mmd->bl.x;
 			int dy = atn_rand()%5-2+mmd->bl.y;
 			mob_warp(md,-1,dx,dy,3);
 			mmd->recallcount += 1;
 		} else {
-			mmd->recall_flag = 0;
+			mmd->state.recall_flag = 0;
 			mmd->recallcount = 0;
 		}
 		md->state.master_check = 1;
@@ -1318,7 +1318,7 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
 	if( md->master_id > 0 && md->state.special_mob_ai == 0 ) {
 		struct mob_data *mmd = map_id2md(md->master_id);
 
-		if(mmd && mmd->recall_flag == 1) {
+		if(mmd && mmd->state.recall_flag == 1) {
 			mob_ai_sub_hard_slavemob(md,tick);
 			return 0;
 		}

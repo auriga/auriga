@@ -4855,10 +4855,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(md){
 			int mobcount;
 			md->recallcount=0;	// 初期化
-			md->recall_flag=0;
+			md->state.recall_flag=0;
 			mobcount=mob_countslave(md);
 			if(mobcount>0){
-				md->recall_flag=1;	// mob.cの[取り巻きモンスターの処理]で利用
+				md->state.recall_flag=1;	// mob.cの[取り巻きモンスターの処理]で利用
 				md->recallmob_count=mobcount;
 			}
 		}

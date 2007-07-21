@@ -633,6 +633,7 @@ struct mob_data {
 		unsigned nodrop : 1;
 		unsigned noexp : 1;
 		unsigned nomvp : 1;
+		unsigned recall_flag : 1;
 	} state;
 	short view_size;
 	short speed;
@@ -664,11 +665,10 @@ struct mob_data {
 	int def_ele;
 	int master_id,master_dist;
 	char npc_event[50];
-	short recall_flag;
 	int recallmob_count;
 	short recallcount;
 	short guardup_lv;
-	int   ai_pc_count; // 近くにいるPCの数
+	int ai_pc_count; // 近くにいるPCの数
 	struct mob_data *ai_next, *ai_prev; // まじめAI用のリンクリスト
 };
 

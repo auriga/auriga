@@ -56,12 +56,12 @@
 #endif
 
 #define SCRIPT_BLOCK_SIZE 512
+
 enum { LABEL_NEXTLINE=1,LABEL_START };
 
 static unsigned char * script_buf;
 static int script_pos,script_size;
 
-static char *str_buf;
 static struct script_str_data {
 	int type;
 	int str;
@@ -71,6 +71,8 @@ static struct script_str_data {
 	int val;
 	int next;
 } *str_data;
+
+static char *str_buf;
 int str_num=LABEL_START,str_data_size;
 
 #define SCRIPT_HASH_SIZE 1021
@@ -83,8 +85,6 @@ static int mapreg_dirty = 0;
 
 static struct dbt *scriptlabel_db=NULL;
 static struct dbt *userfunc_db=NULL;
-struct dbt* script_get_label_db() { return scriptlabel_db; }
-struct dbt* script_get_userfunc_db(){ if(!userfunc_db) userfunc_db=strdb_init(50); return userfunc_db; }
 
 static char refine_posword[11][32] = {"頭","体","左手","右手","ローブ","靴","アクセサリー1","アクセサリー2","頭2","頭3","装着していない"};
 
@@ -96,6 +96,7 @@ static struct Script_Config {
 	int check_cmdcount;
 	int check_gotocount;
 } script_config;
+
 static int parse_cmd;
 
 // エラー処理
@@ -106,6 +107,7 @@ struct script_code error_code;	// エラー時のダミーデータ
 
 // if , switch の実装
 enum { TYPE_NULL = 0 , TYPE_IF , TYPE_SWITCH , TYPE_WHILE , TYPE_FOR , TYPE_DO , TYPE_USERFUNC};
+
 static struct {
 	struct {
 		int type;
@@ -117,6 +119,7 @@ static struct {
 	int curly_count;	// 右カッコの数
 	int index;			// スクリプト内で使用した構文の数
 } syntax;
+
 unsigned char* parse_curly_close(unsigned char *p);
 unsigned char* parse_syntax_close(unsigned char *p);
 unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag);
@@ -125,7 +128,8 @@ static int parse_syntax_for_flag = 0;
 
 #ifdef DEBUG_VARS
 static int vars_count;
-static struct dbt* vars_db;
+static struct dbt* vars_db = NULL;
+
 struct vars_info {
 	int use_count;
 	char *file;
@@ -141,22 +145,6 @@ extern struct script_function {
 
 static struct linkdb_node *sleep_db = NULL;
 
-/*==========================================
- * ローカルプロトタイプ宣言 (必要な物のみ)
- *------------------------------------------
- */
-unsigned char* parse_subexpr(unsigned char *,int);
-int get_com(unsigned char *script,int *pos);
-int get_num(unsigned char *script,int *pos);
-
-#ifndef NO_CSVDB_SCRIPT
-int script_csvinit( void );
-int script_csvfinal( void );
-#endif
-
-int mapreg_setreg(int num,int val,int eternal);
-int mapreg_setregstr(int num,const char *str,int eternal);
-
 enum {
 	C_NOP,C_POS,C_INT,C_PARAM,C_FUNC,C_STR,C_CONSTSTR,C_ARG,
 	C_NAME,C_EOL, C_RETINFO,
@@ -165,6 +153,40 @@ enum {
 	C_OP3,C_LOR,C_LAND,C_LE,C_LT,C_GE,C_GT,C_EQ,C_NE,   //operator
 	C_XOR,C_OR,C_AND,C_ADD,C_SUB,C_MUL,C_DIV,C_MOD,C_NEG,C_LNOT,C_NOT,C_R_SHIFT,C_L_SHIFT
 };
+
+
+/*==========================================
+ * ローカルプロトタイプ宣言 (必要な物のみ)
+ *------------------------------------------
+ */
+unsigned char* parse_subexpr(unsigned char *,int);
+int get_com(unsigned char *script,int *pos);
+int get_num(unsigned char *script,int *pos);
+
+int mapreg_setreg(int num,int val,int eternal);
+int mapreg_setregstr(int num,const char *str,int eternal);
+
+#ifndef NO_CSVDB_SCRIPT
+int script_csvinit( void );
+int script_csvfinal( void );
+#endif
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+struct dbt* script_get_label_db(void)
+{
+	return scriptlabel_db;
+}
+
+struct dbt* script_get_userfunc_db(void)
+{
+	if(!userfunc_db)
+		userfunc_db = strdb_init(50);
+
+	return userfunc_db;
+}
 
 /*==========================================
  * エラーメッセージ出力
@@ -190,7 +212,7 @@ static unsigned int calc_hash(const unsigned char *p)
 		h=(h<<6)+(h<<16)-h;
 		h+=(unsigned char)tolower(*p++);
 	}
-	return h;
+	return h % SCRIPT_HASH_SIZE;
 }
 
 /*==========================================
@@ -200,7 +222,7 @@ static unsigned int calc_hash(const unsigned char *p)
  */
 static int search_str(const unsigned char *p)
 {
-	int i = str_hash[calc_hash(p)%SCRIPT_HASH_SIZE];
+	int i = str_hash[calc_hash(p)];
 
 	while(i){
 		if(strcmpi(str_buf+str_data[i].str,p)==0){
@@ -221,7 +243,7 @@ static int add_str(const unsigned char *p)
 	static int str_pos=0,str_size=0;
 	int i,len;
 
-	i=calc_hash(p)%SCRIPT_HASH_SIZE;
+	i=calc_hash(p);
 	if(str_hash[i]==0){
 		str_hash[i]=str_num;
 	} else {
@@ -3292,7 +3314,7 @@ static int varsdb_output(void)
 			aFree( vlist );
 			fclose(fp);
 		}
-		numdb_final(vars_db, varsdb_final );
+		numdb_final(vars_db, varsdb_final);
 	}
 	return 0;
 }
@@ -3312,29 +3334,37 @@ static int debug_hash_output(void)
 
 		printf("do_final_script: dumping script str hash information\n");
 		memset(count, 0, sizeof(count));
-		fprintf(fp, "--------------------------------------" RETCODE);
-		fprintf(fp, " num :  calced_val -> hash : data_name" RETCODE);
-		fprintf(fp, "--------------------------------------" RETCODE);
 
+		fprintf(fp, "#1 dump all data" RETCODE);
+		fprintf(fp, "-------+--------+----------------------" RETCODE);
+		fprintf(fp, "  num  |  hash  | data_name"             RETCODE);
+		fprintf(fp, "-------+--------+----------------------" RETCODE);
 		for(i=LABEL_START; i<str_num; i++) {
-			unsigned int h1 = calc_hash(str_buf+str_data[i].str);
-			unsigned int h2 = h1%SCRIPT_HASH_SIZE;
-			fprintf(fp, "%04d :  %10u -> %4u : %s" RETCODE, i, h1, h2, str_buf+str_data[i].str);
-			if(++count[h2] > max)
-				max = count[h2];
+			unsigned int h = calc_hash(str_buf+str_data[i].str);
+			fprintf(fp, " %05d | %6u | %s" RETCODE, i, h, str_buf+str_data[i].str);
+			if(++count[h] > max)
+				max = count[h];
 		}
+		fprintf(fp, "-------+--------+----------------------" RETCODE RETCODE);
+
 		buckets = (int *)aCalloc((max+1),sizeof(int));
 
-		fprintf(fp, RETCODE "--------------------------------------" RETCODE);
-		fprintf(fp, "hash : count" RETCODE "--------------------------------------" RETCODE);
+		fprintf(fp, "#2 how many data is there in one hash" RETCODE);
+		fprintf(fp, "--------+-------" RETCODE);
+		fprintf(fp, "  hash  | count"  RETCODE);
+		fprintf(fp, "--------+-------" RETCODE);
 		for(i=0; i<SCRIPT_HASH_SIZE; i++) {
-			fprintf(fp, "%4d : %5d" RETCODE, i, count[i]);
+			fprintf(fp, " %6d | %5d" RETCODE, i, count[i]);
 			buckets[count[i]]++;
 		}
-		fprintf(fp, RETCODE "--------------------------------------" RETCODE);
-		fprintf(fp, "items : buckets : percent" RETCODE "--------------------------------------" RETCODE);
+		fprintf(fp, "--------+-------" RETCODE RETCODE);
+
+		fprintf(fp, "#3 distribution of hashed data" RETCODE);
+		fprintf(fp, "-------+---------+---------" RETCODE);
+		fprintf(fp, " items | buckets | percent"  RETCODE);
+		fprintf(fp, "-------+---------+---------" RETCODE);
 		for(i=0; i<=max; i++) {
-			fprintf(fp, "%5d : %7d : %6.2lf%%" RETCODE, i, buckets[i], (double)buckets[i]/SCRIPT_HASH_SIZE*100.);
+			fprintf(fp, " %5d | %7d | %6.2lf%%" RETCODE, i, buckets[i], (double)buckets[i]/SCRIPT_HASH_SIZE*100.);
 		}
 		aFree(buckets);
 		fclose(fp);

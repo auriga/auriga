@@ -575,6 +575,9 @@ void db_clear(struct dbt *table,int (*func)(void*,void*,va_list),...)
 {
 	va_list ap;
 
+	if(table == NULL)
+		return;
+
 	va_start(ap,func);
 	db_clear_sub(table,func,ap);
 	table->item_count = 0;
@@ -584,6 +587,9 @@ void db_clear(struct dbt *table,int (*func)(void*,void*,va_list),...)
 void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
 {
 	va_list ap;
+
+	if(table == NULL)
+		return;
 
 	va_start(ap,func);
 	db_clear_sub(table,func,ap);

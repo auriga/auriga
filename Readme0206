@@ -1,4 +1,12 @@
 ----------------------------------------
+//0241 [2007/07/22] by Rayce
+
+・0239以降、db_clear() と db_final() のtableがNULLだったときサーバクラッシュする問題を修正（db.c）
+・mob_data構造体のメンバrecall_flagをビットフィールドに変更（map.h, mob.c, skill.c）
+・calc_hash() の中に SCRIPT_HASH_SIZE の剰余計算を丸め込む（script.c）
+・DEBUG_HASHの出力書式を整理（script.c）
+
+----------------------------------------
 //0240 [2007/07/21] by Rayce
 
 ・MAPサーバ停止時の終了処理の高速化（npc.c）
