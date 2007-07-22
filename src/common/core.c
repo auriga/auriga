@@ -15,12 +15,12 @@
 #include "core.h"
 #include "socket.h"
 #include "timer.h"
+#include "malloc.h"
+#include "utils.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
 #endif
-
-#include "malloc.h"
 
 // for VC.NET 2005
 #if _MSC_VER >= 1400
@@ -302,9 +302,15 @@ int main(int argc,char **argv)
 #ifdef _WIN32
 	SetConsoleCtrlHandler( core_CtrlHandlerRoutine, TRUE );
 	SetUnhandledExceptionFilter( core_ExceptionRoutine );
+
+	srand(gettick() ^ (GetCurrentProcessId() << 8));
+	atn_srand(gettick() ^ (GetCurrentProcessId() << 8));
 #else
 	signal(SIGTERM,sig_proc);
 	signal(SIGINT,sig_proc);
+
+	srand(gettick() ^ (getpid() << 8));
+	atn_srand(gettick() ^ (getpid() << 8));
 #ifdef SIGPIPE
 	signal(SIGPIPE,SIG_IGN);
 #endif

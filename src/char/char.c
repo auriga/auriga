@@ -71,6 +71,10 @@ int  char_sport = 0;
 int  char_loginaccess_autorestart;
 int  char_maintenance;
 int  char_new;
+
+char char_conf_filename[256]  = "conf/char_auriga.conf";
+char inter_conf_filename[256] = "conf/inter_auriga.conf";
+
 char unknown_char_name[24] = "Unknown";
 char char_log_filename[1024] = "log/char.log";
 char GM_account_filename[1024] = "conf/GM_account.txt";
@@ -4287,7 +4291,22 @@ int do_init(int argc,char **argv)
 		AURIGA_MOD_VERSION
 	);
 
-	char_config_read((argc < 2) ? CHAR_CONF_NAME : argv[1]);
+	for(i = 1; i < argc - 1; i += 2) {
+		if(strcmp(argv[i], "--char_config") == 0 || strcmp(argv[i], "--char-config") == 0) {
+			strncpy(char_conf_filename, argv[i+1], sizeof(char_conf_filename));
+			char_conf_filename[sizeof(char_conf_filename)-1] = '\0';
+		}
+		else if(strcmp(argv[i], "--inter_config") == 0 || strcmp(argv[i], "--inter-config") == 0) {
+			strncpy(inter_conf_filename, argv[i+1], sizeof(inter_conf_filename));
+			inter_conf_filename[sizeof(inter_conf_filename)-1] = '\0';
+		}
+		else {
+			printf("illegal command line argument %s !!\n", argv[i]);
+			exit(1);
+		}
+	}
+
+	char_config_read(char_conf_filename);
 
 	login_ip = inet_addr(login_ip_str);
 	char_ip  = inet_addr(char_ip_str);
@@ -4300,7 +4319,7 @@ int do_init(int argc,char **argv)
 	char_init();
 	char_build_ranking();
 	read_gm_account();
-	inter_init((argc>2)? argv[2]: inter_cfgName);	// inter server 初期化
+	inter_init(inter_conf_filename);	// inter server 初期化
 
 	set_defaultparse(parse_char);
 	set_sock_destruct(parse_char_disconnect);

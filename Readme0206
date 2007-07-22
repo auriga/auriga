@@ -1,4 +1,52 @@
 ----------------------------------------
+//0243 [2007/07/23] by Rayce
+
+・コマンドライン引数の仕様を変更 merged from eA
+　　今までは例えばMAPサーバであれば、コマンドライン引数の第一引数がmap_auriga.confへのパス、
+　　第二引数がbattle_auriga.confへのパス、というように一意的に決まっていましたが、非常に使い
+　　勝手が悪いので仕様を変更します。
+　　以下に示すコマンドを使って各confファイルへのパスを変更することができます。
+
+　　login-server
+　　　　--login-config <filename>
+
+　　char-server
+　　　　--char-config <filename>
+　　　　--inter-config <filename>
+
+　　map-server
+　　　　--map-config <filename>
+　　　　--battle-config <filename>
+　　　　--atcommand-config <filename>
+　　　　--script-config <filename>
+　　　　--msg-config <filename>
+
+　　これらは同一マシンで複数のキャラサーバやマップサーバを動かすときに有用です。
+　　詳細は doc/distribute_servers.txt に記載してあるので参考に。
+
+　　※eAにあるコマンド --help と --version は特に必要性を感じなかったためmergeしてません。
+
+・auriga-startの修正
+	-> 上記のコマンドライン引数仕様変更に対応
+	-> 新規作成された ./save/account.txt に\tが一つ不足していたので修正
+	-> saveファイルを新規作成する際、win32_start.batと同様に以下の3つのファイルも作成する
+	   　./save/accreg.txt
+	   　./save/g_storage.txt
+	   　./save/scdata.txt
+
+・grf-files.txtへのファイルパスはコマンドライン引数からではなくmap_auriga.confで設定するように変更
+　conf/map_auriga.confに grf_path_txt キーを追加（map.c）
+・マップキャッシュmap.infoはカレントディレクトリに作成するようにデフォルト設定を変更（map.c）
+・pc_memo() を少し修正（pc.c）
+
+・srand() および atn_srand() による種まきはmainでまとめて行うように変更（core.c, login.c, map.c）
+・VCのときに使うランダム定義がRANDOMSTD2XになっていたのでRANDOM64に修正
+　ついでに書き換えて簡素化（utils.h）
+
+・doc/server_build.txtに少し加筆
+・doc/distribute_servers.txtに情報加筆
+
+----------------------------------------
 //0242 [2007/07/23] by Rayce
 
 ・ROメールシステムの設計見直し（int_mail.*, clif.*, intif.c）

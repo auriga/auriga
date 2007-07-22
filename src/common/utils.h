@@ -60,40 +60,41 @@
 #include <string.h>
 
 #ifndef _WIN32
-	#ifndef strcmpi
-		#define strcmpi  strcasecmp
-	#endif
-	#ifndef stricmp
-		#define stricmp  strcasecmp
-	#endif
-	#ifndef strncmpi
-		#define strncmpi strncasecmp
-	#endif
-	#ifndef strnicmp
-		#define strnicmp strncasecmp
-	#endif
+#	ifndef strcmpi
+#		define strcmpi  strcasecmp
+#	endif
+#	ifndef stricmp
+#		define stricmp  strcasecmp
+#	endif
+#	ifndef strncmpi
+#		define strncmpi strncasecmp
+#	endif
+#	ifndef strnicmp
+#		define strnicmp strncasecmp
+#	endif
+
+#elif defined(_MSC_VER)
+#	define strcmpi     _stricmp
+#	define stricmp     _stricmp
+#	define strcasecmp  _stricmp
+#	define strncmpi    _strnicmp
+#	define strnicmp    _strnicmp
+#	define strncasecmp _strnicmp
+
 #else
-	#if defined(_MSC_VER)
-		#define strcmpi     _stricmp
-		#define stricmp     _stricmp
-		#define strcasecmp  _stricmp
-		#define strncmpi    _strnicmp
-		#define strnicmp    _strnicmp
-		#define strncasecmp _strnicmp
-	#else
-		#ifndef strcmpi
-			#define strcmpi     stricmp
-		#endif
-		#ifndef strcasecmp
-			#define strcasecmp  stricmp
-		#endif
-		#ifndef strncmpi
-			#define strncmpi    strnicmp
-		#endif
-		#ifndef strncasecmp
-			#define strncasecmp strnicmp
-		#endif
-	#endif
+#	ifndef strcmpi
+#		define strcmpi     stricmp
+#	endif
+#	ifndef strcasecmp
+#		define strcasecmp  stricmp
+#	endif
+#	ifndef strncmpi
+#		define strncmpi    strnicmp
+#	endif
+#	ifndef strncasecmp
+#		define strncasecmp strnicmp
+#	endif
+
 #endif
 
 
@@ -101,23 +102,11 @@
 // strnlen
 // ---------------------
 #if defined(_WIN32) && (!defined(_MSC_VER) || _MSC_VER < 1400)
-size_t strnlen(const char *string, size_t maxlen);
+
+	size_t strnlen(const char *string, size_t maxlen);
+
 #endif
 
-
-// =====================
-// BCC での追加処理
-// ---------------------
-#if defined(_WIN32) && defined(__BORLANDC__)
-
-	// random のビット数を上げる
-#	if !defined(RANDOM32) && !defined(RANDOM64) && !defined(RANDOM32X) && !defined(RANDOM64X) && !defined(RANDOMMT) && !defined(RANDOMSTD) && !defined(RANDOMSTD2) && !defined(RANDOMSTD2X) && !defined(RANDOMSTD3X)
-#		define RANDOM32
-#	endif
-
-#endif	// if BCC
-
-#define RANDOMSTD2X
 
 // =====================
 // VC での追加処理
@@ -127,12 +116,27 @@ size_t strnlen(const char *string, size_t maxlen);
 #	define snprintf  _snprintf
 #	define vsnprintf _vsnprintf
 
-	// random の精度とビット数を上げる
-#	if !defined(RANDOM32) && !defined(RANDOM64) && !defined(RANDOM32X) && !defined(RANDOM64X) && !defined(RANDOMMT) && !defined(RANDOMSTD) && !defined(RANDOMSTD2) && !defined(RANDOMSTD2X) && !defined(RANDOMSTD3X)
-#		define RANDOM64
-#	endif
-
 #endif	// if VC
+
+
+// =====================
+// atn_rand() 定義
+// ---------------------
+#ifndef _WIN32
+#	define RANDOMSTD2X
+
+#elif defined(_MSC_VER)
+	// random の精度とビット数を上げる
+#	define RANDOM64
+
+#elif defined(__BORLANDC__)
+	// random のビット数を上げる
+#	define RANDOM32
+
+#else
+#	define RANDOMSTD
+
+#endif
 
 
 // =====================
@@ -177,7 +181,7 @@ size_t strnlen(const char *string, size_t maxlen);
 #elif defined(RANDOMSTD2)	// rand() 2回(BCC/VC で有効ビット数を上げる)
 #	define atn_rand()	( ( (rand()<<15) + rand() ) & 0x3fffffff )
 #	define atn_srand(x)	srand(x)
-#	define ATN_RAND_MAX 0x3fffffff
+#	define ATN_RAND_MAX	0x3fffffff
 
 #elif defined(RANDOMSTD2X)	// rand() 2回(gcc で下位ビットの質を上げる)
 #	define atn_rand()	(  rand() ^ (rand()>>8) )
@@ -187,7 +191,7 @@ size_t strnlen(const char *string, size_t maxlen);
 #elif defined(RANDOMSTD3X)	// rand() 3回(BCC/VC で有効ビット数を上げる＆下位ビットの質を上げる)
 #	define atn_rand()	( ( (rand()<<15) + rand() ^ (rand()>>8) ) & 0x3fffffff )
 #	define atn_srand(x)	srand(x)
-#	define ATN_RAND_MAX 0x3fffffff
+#	define ATN_RAND_MAX	0x3fffffff
 
 #else						// 通常のランダム
 #	define atn_rand()	rand()

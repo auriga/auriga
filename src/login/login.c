@@ -67,6 +67,8 @@ static struct {
 
 static int auth_fifo_pos=0;
 
+char login_conf_filename[256] = "conf/login_auriga.conf";
+
 static char admin_pass[64]=""; // for account creation
 static char ladmin_pass[64]=""; // for remote administration
 static char login_log_filename[1024] = "log/login.log";
@@ -2356,13 +2358,20 @@ int do_init(int argc,char **argv)
 		AURIGA_MAJOR_VERSION,AURIGA_MINOR_VERSION,AURIGA_REVISION,
 		AURIGA_MOD_VERSION
 	);
-	login_config_read((argc > 1) ? argv[1] : LOGIN_CONF_NAME);
+
+	for(i = 1; i < argc - 1; i += 2) {
+		if(strcmp(argv[i], "--login_config") == 0 || strcmp(argv[i], "--login-config") == 0) {
+			strncpy(login_conf_filename, argv[i+1], sizeof(login_conf_filename));
+			login_conf_filename[sizeof(login_conf_filename)-1] = '\0';
+		}
+		else {
+			printf("illegal command line argument %s !!\n", argv[i]);
+			exit(1);
+		}
+	}
+
+	login_config_read(login_conf_filename);
 	display_conf_warnings();
-#ifdef _WIN32
-	srand((int)time(NULL) ^ (GetCurrentProcessId() << 8) );
-#else
-	srand((int)time(NULL) ^ (getpid() << 8));
-#endif
 
 	for(i=0;i<AUTH_FIFO_SIZE;i++){
 		auth_fifo[i].delflag=1;

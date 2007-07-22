@@ -86,11 +86,19 @@ extern int packet_parse_time;
 // 0:利用しない 1:非圧縮保存 2:圧縮保存
 static int map_read_flag = 0;
 
-char map_server_tag[16] = "map01";	// マップサーバタグ名
-static char map_cache_file[256] = "db/map.info";	// マップキャッシュファイル名
-char motd_txt[256] = "conf/motd.txt";
-char help_txt[256] = "conf/help.txt";
-char extra_add_file_txt[1024] = "map_extra_add.txt"; // to add items from external software (use append to add a line)
+char map_conf_filename[256]       = "conf/map_auriga.conf";
+char battle_conf_filename[256]    = "conf/battle_auriga.conf";
+char atcommand_conf_filename[256] = "conf/atcommand_auriga.conf";
+char script_conf_filename[256]    = "conf/script_auriga.conf";
+char msg_conf_filename[256]       = "conf/msg_auriga.conf";
+
+char map_server_tag[16]      = "map01";	// マップサーバタグ名
+char motd_txt[256]           = "conf/motd.txt";
+char help_txt[256]           = "conf/help.txt";
+char extra_add_file_txt[256] = "map_extra_add.txt"; // to add items from external software (use append to add a line)
+
+static char map_cache_file[256] = "map.info";	// マップキャッシュファイル名
+static char grf_path_txt[256]   = "conf/grf-files.txt";
 
 // 向き計算用
 const int dirx[8] = { 0,-1,-1,-1, 0, 1, 1, 1 };
@@ -2602,12 +2610,15 @@ static int map_config_read(char *cfgName)
 			else
 				listen_ip = ip_result;
 		} else if (strcmpi(w1, "map_server_tag") == 0) {
-			strncpy(map_server_tag, w2, sizeof(map_server_tag));
+			strncpy(map_server_tag, w2, sizeof(map_server_tag) - 1);
 			map_server_tag[sizeof(map_server_tag) - 1] = '\0';
 		} else if (strcmpi(w1, "water_height") == 0) {
 			map_readwater(w2);
 		} else if (strcmpi(w1, "gm_account_filename") == 0) {
 			pc_set_gm_account_fname(w2);
+		} else if (strcmpi(w1, "grf_path_txt") == 0) {
+			strncpy(grf_path_txt, w2, sizeof(grf_path_txt) - 1);
+			grf_path_txt[sizeof(grf_path_txt) - 1] = '\0';
 		} else if (strcmpi(w1, "map") == 0) {
 			map_addmap(w2);
 		} else if (strcmpi(w1, "delmap") == 0) {
@@ -2656,14 +2667,14 @@ static int map_config_read(char *cfgName)
 			httpd_set_logfile(w2);
 		} else if (strcmpi(w1, "httpd_config") == 0) {
 			httpd_config_read(w2);
-		} else if (strcmpi(w1, "import") == 0) {
-			map_config_read(w2);
 		} else if (strcmpi(w1, "map_pk_server") == 0) {
 			map_pk_server_flag = atoi(w2);
 		} else if (strcmpi(w1, "map_pk_nightmaredrop") == 0) {
 			map_pk_nightmaredrop_flag = atoi(w2);
 		} else if (strcmpi(w1, "sql_script_enable") == 0) {
 			sql_script_enable = atoi(w2);
+		} else if (strcmpi(w1, "import") == 0) {
+			map_config_read(w2);
 		} else {
 			map_config_read_sub(w1, w2);
 		}
@@ -2832,6 +2843,8 @@ void do_final(void)
  */
 int do_init(int argc,char *argv[])
 {
+	int i;
+
 	printf("Auriga Map Server [%s] v%d.%d.%d mod%d\n",
 #ifdef TXT_ONLY
 		"TXT",
@@ -2842,22 +2855,42 @@ int do_init(int argc,char *argv[])
 		AURIGA_MOD_VERSION
 	);
 
-#ifdef _WIN32
-	srand(gettick() ^ (GetCurrentProcessId() << 8));
-	atn_srand(gettick() ^ (GetCurrentProcessId() << 8));
-#else
-	srand(gettick() ^ (getpid() << 8));
-	atn_srand(gettick() ^ (getpid() << 8));
-#endif
+	for(i = 1; i < argc - 1; i += 2) {
+		if(strcmp(argv[i], "--map_config") == 0 || strcmp(argv[i], "--map-config") == 0) {
+			strncpy(map_conf_filename, argv[i+1], sizeof(map_conf_filename));
+			map_conf_filename[sizeof(map_conf_filename)-1] = '\0';
+		}
+		else if(strcmp(argv[i], "--battle_config") == 0 || strcmp(argv[i], "--battle-config") == 0) {
+			strncpy(battle_conf_filename, argv[i+1], sizeof(battle_conf_filename));
+			battle_conf_filename[sizeof(battle_conf_filename)-1] = '\0';
+		}
+		else if(strcmp(argv[i], "--atcommand_config") == 0 || strcmp(argv[i], "--atcommand-config") == 0) {
+			strncpy(atcommand_conf_filename, argv[i+1], sizeof(atcommand_conf_filename));
+			atcommand_conf_filename[sizeof(atcommand_conf_filename)-1] = '\0';
+		}
+		else if(strcmp(argv[i], "--script_config") == 0 || strcmp(argv[i], "--script-config") == 0) {
+			strncpy(script_conf_filename, argv[i+1], sizeof(script_conf_filename));
+			script_conf_filename[sizeof(script_conf_filename)-1] = '\0';
+		}
+		else if(strcmp(argv[i], "--msg_config") == 0 || strcmp(argv[i], "--msg-config") == 0) {
+			strncpy(msg_conf_filename, argv[i+1], sizeof(msg_conf_filename));
+			msg_conf_filename[sizeof(msg_conf_filename)-1] = '\0';
+		}
+		else {
+			printf("illegal command line argument %s !!\n", argv[i]);
+			exit(1);
+		}
+	}
 
-	if(map_config_read((argc < 2) ? MAP_CONF_NAME : argv[1]))
+	if(map_config_read(map_conf_filename)) {
 		exit(1);
-	battle_config_read((argc > 2) ? argv[2] : BATTLE_CONF_FILENAME);
-	atcommand_config_read((argc > 3) ? argv[3] : ATCOMMAND_CONF_FILENAME);
-	script_config_read((argc > 4) ? argv[4] : SCRIPT_CONF_NAME);
-	msg_config_read((argc > 5) ? argv[5] : MSG_CONF_NAME);
+	}
+	battle_config_read(battle_conf_filename);
+	atcommand_config_read(atcommand_conf_filename);
+	script_config_read(script_conf_filename);
+	msg_config_read(msg_conf_filename);
 
-	socket_set_httpd_page_connection_func( map_socket_ctrl_panel_func );
+	socket_set_httpd_page_connection_func(map_socket_ctrl_panel_func);
 
 	id_db     = numdb_init();
 	map_db    = strdb_init(16);
@@ -2866,7 +2899,7 @@ int do_init(int argc,char *argv[])
 
 	do_init_map();
 
-	grfio_init((argc > 6) ? argv[6] : GRF_PATH_FILENAME);
+	grfio_init(grf_path_txt);
 	map_readallmap();
 
 	add_timer_func_list(map_freeblock_timer,"map_freeblock_timer");

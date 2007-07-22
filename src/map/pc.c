@@ -105,7 +105,7 @@ int pc_get_skilltree_max(struct pc_base_job *bj,int id)
  */
 void pc_set_gm_account_fname(char *str)
 {
-	strncpy(GM_account_filename,str,1023);
+	strncpy(GM_account_filename,str,sizeof(GM_account_filename)-1);
 }
 
 int pc_isGM(struct map_session_data *sd)
@@ -3807,7 +3807,10 @@ void pc_memo(struct map_session_data *sd,int i)
 	}
 
 	if(i == -1) {
-		for(i = skill - 3; i >= 0; i--) {
+		i = skill - 3;
+		if(i > MAX_PORTAL_MEMO - 2)
+			i = MAX_PORTAL_MEMO;
+		for( ; i >= 0; i--) {
 			memcpy(&sd->status.memo_point[i+1],&sd->status.memo_point[i],sizeof(struct point));
 		}
 		i = 0;

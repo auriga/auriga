@@ -4695,7 +4695,7 @@ atcommand_reloadatcommand(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	atcommand_config_read(ATCOMMAND_CONF_FILENAME);
+	atcommand_config_read(atcommand_conf_filename);
 	clif_displaymessage(fd, msg_txt(113));
 
 	return 0;
@@ -4711,7 +4711,7 @@ atcommand_reloadbattleconf(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	battle_config_read(BATTLE_CONF_FILENAME);
+	battle_config_read(battle_conf_filename);
 	clif_displaymessage(fd, msg_txt(114));
 
 	return 0;

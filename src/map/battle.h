@@ -520,7 +520,6 @@ extern struct Battle_Config {
 	int baby_copy_skilltree;
 } battle_config;
 
-#define BATTLE_CONF_FILENAME "conf/battle_auriga.conf"
 int battle_config_read(const char *cfgName);
 
 int do_init_battle(void);

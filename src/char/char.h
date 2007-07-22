@@ -5,8 +5,6 @@
 
 #define MAX_MAP_SERVERS 30
 
-#define CHAR_CONF_NAME "conf/char_auriga.conf"
-
 #define DEFAULT_AUTOSAVE_INTERVAL_CS 300*1000
 
 struct mmo_map_server {
@@ -48,6 +46,9 @@ struct char_online {
 	int port;
 	char name[24];
 };
+
+extern char char_conf_filename[];
+extern char inter_conf_filename[];
 
 
 #ifdef TXT_ONLY

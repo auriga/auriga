@@ -38,8 +38,6 @@
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
 #endif
 
-#define MAP_CONF_NAME "conf/map_auriga.conf"
-
 enum {
 	BL_NUL   = 0x000,
 	BL_PC    = 0x001,
@@ -992,6 +990,12 @@ struct charid2nick {
 	struct linkdb_node *req;
 };
 
+extern char map_conf_filename[];
+extern char battle_conf_filename[];
+extern char atcommand_conf_filename[];
+extern char script_conf_filename[];
+extern char msg_conf_filename[];
+
 extern struct map_data *map;
 extern int map_num;
 extern int autosave_interval;
@@ -999,14 +1003,15 @@ extern int autosave_gvg_rate;
 extern int agit_flag;
 extern int sql_script_enable;
 
+extern char map_server_tag[];
+extern char motd_txt[];
+extern char help_txt[];
+extern char extra_add_file_txt[]; // to add items from external software (use append to add a line)
+
 // gat関連
 int map_getcell(int,int,int,cell_t);
 int map_getcellp(struct map_data*,int,int,cell_t);
 void map_setcell(int,int,int,int);
-
-extern char motd_txt[];
-extern char help_txt[];
-extern char extra_add_file_txt[]; // to add items from external software (use append to add a line)
 
 // 鯖全体情報
 void map_setusers(int);
@@ -1089,7 +1094,6 @@ int map_field_setting(void);
 int map_check_dir(int s_dir,int t_dir);
 int map_calc_dir(struct block_list *src,int x,int y);
 
-extern char map_server_tag[16];
 extern const int dirx[], diry[];
 
 // path.cより

@@ -5,8 +5,6 @@
 
 #define MAX_SERVERS 30
 
-#define LOGIN_CONF_NAME	"conf/login_auriga.conf"
-
 #define PASSWORDENC		3	// 暗号化パスワードに対応させるとき定義する
 							// passwordencryptのときは1、
 							// passwordencrypt2のときは2にする。
@@ -43,5 +41,7 @@ struct mmo_account {
 	struct global_reg account_reg2[ACCOUNT_REG2_NUM];
 	char lastip[16];
 };
+
+extern char login_conf_filename[];
 
 #endif /* _LOGIN_H_ */

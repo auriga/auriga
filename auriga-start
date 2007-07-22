@@ -18,7 +18,6 @@ M_SRV_C2=./conf/battle_auriga.conf
 M_SRV_C3=./conf/atcommand_auriga.conf
 M_SRV_C4=./conf/script_auriga.conf
 M_SRV_C5=./conf/msg_auriga.conf
-M_SRV_C6=./conf/grf-files.txt
 
 print_start() {
 #	more << EOF
@@ -45,37 +44,25 @@ check_account() {
 		mkdir ./conf/import
 	fi
 
+	if [ ! -d ./save/mail_data ]; then
+		mkdir ./save/mail_data
+	fi
+
 	if [ ! -f ./save/account.txt ]; then
 		i=0
 		while [ $i -le 4 ];
 		do
-			echo -e "$i\ts`expr $i + 1`\tp`expr $i + 1`\t-\tS\t0\t0\t@\r" >> save/account.txt
+			echo -e "$i\ts`expr $i + 1`\tp`expr $i + 1`\t-\tS\t0\t0\t@\t\r" >> save/account.txt
 			i=`expr $i + 1`
 		done
 	fi
 
+	if [ ! -f ./save/accreg.txt ]; then
+		echo -n > save/accreg.txt
+	fi
+
 	if [ ! -f ./save/auriga.txt ]; then
 		echo -n > save/auriga.txt
-	fi
-
-	if [ ! -f ./save/homun.txt ]; then
-		echo -n > save/homun.txt
-	fi
-
-	if [ ! -f ./save/guild.txt ]; then
-		echo -n > save/guild.txt
-	fi
-
-	if [ ! -f ./save/party.txt ]; then
-		echo -n > save/party.txt
-	fi
-
-	if [ ! -f ./save/pet.txt ]; then
-		echo -n > save/pet.txt
-	fi
-
-	if [ ! -f ./save/storage.txt ]; then
-		echo -n > save/storage.txt
 	fi
 
 	if [ ! -f ./save/castle.txt ]; then
@@ -87,13 +74,36 @@ check_account() {
 		done
 	fi
 
+	if [ ! -f ./save/g_storage.txt ]; then
+		echo -n > save/g_storage.txt
+	fi
+
+	if [ ! -f ./save/guild.txt ]; then
+		echo -n > save/guild.txt
+	fi
+
+	if [ ! -f ./save/homun.txt ]; then
+		echo -n > save/homun.txt
+	fi
 
 	if [ ! -f ./save/mail.txt ]; then
 		echo -n > save/mail.txt
 	fi
 
-	if [ ! -d ./save/mail_data ]; then
-		mkdir ./save/mail_data
+	if [ ! -f ./save/party.txt ]; then
+		echo -n > save/party.txt
+	fi
+
+	if [ ! -f ./save/pet.txt ]; then
+		echo -n > save/pet.txt
+	fi
+
+	if [ ! -f ./save/scdata.txt ]; then
+		echo -n > save/scdata.txt
+	fi
+
+	if [ ! -f ./save/storage.txt ]; then
+		echo -n > save/storage.txt
 	fi
 
 	if [ ! -f ./conf/import/atcommand_conf.txt ]; then
@@ -123,7 +133,7 @@ check_account() {
 
 check_files() {
 
-	for i in ${L_SRV} ${C_SRV} ${M_SRV} ${L_SRV_C} ${C_SRV_C} ${C_SRV_C2} ${M_SRV_C} ${M_SRV_C2} ${M_SRV_C3} ${M_SRV_C4} ${M_SRV_C5} ${M_SRV_C6}
+	for i in ${L_SRV} ${C_SRV} ${M_SRV} ${L_SRV_C} ${C_SRV_C} ${C_SRV_C2} ${M_SRV_C} ${M_SRV_C2} ${M_SRV_C3} ${M_SRV_C4} ${M_SRV_C5}
 	do
 		if [ ! -f ./$i ]; then
 		echo "$i does not exist, or can't run."
@@ -174,12 +184,12 @@ case $1 in
 			check_account
 			check_files
 
-			exec ${L_SRV} ${L_SRV_C}&
-#			exec ${C_SRV} ${C_SRV_C} ${C_SRV_C2} > /dev/null&
-#			exec ${M_SRV} ${M_SRV_C} ${M_SRV_C2} > /dev/null&
-			exec ${C_SRV} ${C_SRV_C} ${C_SRV_C2}&
-#			exec nice -n -20 ${M_SRV} ${M_SRV_C} ${M_SRV_C2} ${M_SRV_C3} ${M_SRV_C4} ${M_SRV_C5} ${M_SRV_C6}&
-			exec ${M_SRV} ${M_SRV_C} ${M_SRV_C2} ${M_SRV_C3} ${M_SRV_C4} ${M_SRV_C5} ${M_SRV_C6}&
+			exec ${L_SRV} "--login-config" ${L_SRV_C}&
+#			exec ${C_SRV} "--char-config" ${C_SRV_C} "--inter-config" ${C_SRV_C2} > /dev/null&
+#			exec ${M_SRV} "--map-config" ${M_SRV_C} "--battle-config" ${M_SRV_C2} > /dev/null&
+			exec ${C_SRV} "--char-config" ${C_SRV_C} "--inter-config" ${C_SRV_C2}&
+#			exec nice -n -20 ${M_SRV} "--map-config" ${M_SRV_C} "--battle-config" ${M_SRV_C2} "--atcommand-config" ${M_SRV_C3} "--script-config" ${M_SRV_C4} "--msg-config" ${M_SRV_C5}&
+			exec ${M_SRV} "--map-config" ${M_SRV_C} "--battle-config" ${M_SRV_C2} "--atcommand-config" ${M_SRV_C3} "--script-config" ${M_SRV_C4} "--msg-config" ${M_SRV_C5}&
 
 			echo "Now Started Auriga."
 		else
@@ -254,7 +264,7 @@ case $1 in
 				login=$(ps ax | grep "${L_SRV}" | grep "${login}" | wc -l)
 			fi
 			if [ ${login} -eq 0 ]; then
-				exec ${L_SRV} ${L_SRV_C}&
+				exec ${L_SRV} "--login-config" ${L_SRV_C}&
 			fi
 
 			# check char server
@@ -265,7 +275,7 @@ case $1 in
 				char=$(ps ax | grep "${C_SRV}" | grep "${char}" | wc -l)
 			fi
 			if [ ${char} -eq 0 ]; then
-				exec ${C_SRV} ${C_SRV_C} ${C_SRV_C2}&
+				exec ${C_SRV} "--char-config" ${C_SRV_C} "--inter-config" ${C_SRV_C2}&
 			fi
 
 			# check map server
@@ -276,7 +286,7 @@ case $1 in
 				map=$(ps ax | grep "${M_SRV}" | grep "${map}" | wc -l)
 			fi
 			if [ ${map} -eq 0 ]; then
-				exec ${M_SRV} ${M_SRV_C} ${M_SRV_C2} ${M_SRV_C3} ${M_SRV_C4} ${M_SRV_C5} ${M_SRV_C6}&
+				exec ${M_SRV} "--map-config" ${M_SRV_C} "--battle-config" ${M_SRV_C2} "--atcommand-config" ${M_SRV_C3} "--script-config" ${M_SRV_C4} "--msg-config" ${M_SRV_C5}&
 			fi
 		fi
 	;;

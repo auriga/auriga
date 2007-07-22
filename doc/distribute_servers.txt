@@ -33,15 +33,15 @@ Auriga は分散サーバー配置をサポートしています。
 
 	・キャラクターサーバー分散
 		複数のワールドを形成します。
-		
+
 	・マップサーバー分散
 		一つのワールドを複数のマップサーバーで分散して形成します。
-	
+
 （参考）
 	・ログインサーバー分散
 		こちらは Auriga の機能では実現できませんが、クライアント側の設定により
 		実現可能です。clientinfo.xml で実現できます。
-	
+
 		全てのデータはログインサーバー間で共有できません。
 
 
@@ -244,20 +244,36 @@ map_conf.txt の接続先 (char_ip, char_port) を変更するだけになりま
 conf ファイルを切り替えるだけでできます。
 実行ファイルを複数用意する必要はありません。
 
-char-server のコマンドラインパラメータの内、第１引数が char_auriga.conf、
-第２引数が inter_auriga.conf へのパスです。
-これを変更することで別の conf ファイルを指定します。
-（たとえば、char_auriga2.conf などを用意してそれを指定する)
+コマンドラインパラメータを使って、読み込む conf ファイルを変更することができます。
+複数のコマンドを繋げることもできます。
+各サーバーで使えるコマンドは以下の通りです。
 
-map-server のコマンドラインパラメータの内、第１引数が map_auriga.conf、
-第２引数が battle_auriga.conf、第３引数が atcommand_auriga.conf、
-第４引数が script_auriga.conf、第５引数が msg_auriga.conf、
-第６引数が grf-files.txt へのパスです。
-基本的には map_auriga.conf だけ切り替えればいいでしょう。
+login-server
+　　--login-config <filename>
 
-（参考）
-login-server のコマンドラインパラメータの第１引数は login_auriga.conf
-へのパスです。同じマシンで複数のログインサーバーを動かす場合に変更します。
+char-server
+　　--char-config <filename>
+　　--inter-config <filename>
+
+map-server
+　　--map-config <filename>
+　　--battle-config <filename>
+　　--atcommand-config <filename>
+　　--script-config <filename>
+　　--msg-config <filename>
+
+例）char_auriga2.conf から char config を読み込む
+　　　　[WIN]  > char-server.exe --char-config conf/char_auriga2.conf
+　　　　[UNIX] $ ./char-server --char-config conf/char_auriga2.cof
+
+例）map_auriga2.conf から map config を読み込み、msg_auriga2.confから msg config を読み込む
+　　　　[WIN]  > map-server.exe --map-config conf/map_auriga2.conf --msg-config conf/msg_auriga2.conf
+　　　　[UNIX] $ ./map-server --map-config conf/map_auriga2.conf --msg-config conf/msg_auriga2.conf
+
+同じマシンで複数のログインサーバーを動かす場合、login_auriga.conf を切り替えると良いでしょう。
+同じマシンで複数のキャラサーバーを動かす場合、基本的には char_auriga.conf だけ切り替えれば良いでしょう。
+ただしTXTモードのときは inter_auriga.conf も切り替えた方が良いかもしれません。
+同じマシンで複数のマップサーバーを動かす場合、基本的には map_aruiga.conf だけ切り替えれば良いでしょう。
 
 
 ==========================================================================

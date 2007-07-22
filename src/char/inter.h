@@ -8,8 +8,6 @@ int inter_mapif_init(int fd);
 
 int inter_log(char *fmt,...);
 
-#define inter_cfgName "conf/inter_auriga.conf"
-
 void do_final_inter(void);
 
 #endif

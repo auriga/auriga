@@ -56,8 +56,6 @@
 #define MAX_RANKING 4	// ランキング数
 #define MAX_RANKER  10	// ランキング人数
 
-#define GRF_PATH_FILENAME "conf/grf-files.txt"
-
 // ブロックID定義
 #define MIN_FLOORITEM            2
 #define MAX_FLOORITEM       500000
