@@ -872,17 +872,17 @@ int char_txt_config_read_sub(const char* w1,const char* w2)
 	return 0;
 }
 
-int char_txt_nick2id(const char *char_name)
+const struct mmo_chardata* char_txt_nick2chardata(const char *char_name)
 {
 	int i;
 
 	for(i=0;i<char_num;i++){
 		if(strcmp(char_dat[i].st.name,char_name)==0) {
-			return char_dat[i].st.char_id;
+			return &char_dat[i];
 		}
 	}
 
-	return -1;
+	return NULL;
 }
 
 int char_txt_set_online(int char_id,int online)
@@ -1880,9 +1880,9 @@ int char_sql_config_read_sub(const char* w1,const char* w2)
 	return 0;
 }
 
-int char_sql_nick2id(const char *char_name)
+const struct mmo_chardata* char_sql_nick2chardata(const char *char_name)
 {
-	int char_id=-1;
+	const struct mmo_chardata *cd = NULL;
 	char buf[64];
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
@@ -1895,14 +1895,17 @@ int char_sql_nick2id(const char *char_name)
 	if(sql_res){
 		while( (sql_row = mysql_fetch_row(sql_res)) ) {
 			if(strcmp(char_name, sql_row[1]) == 0) {
-				char_id = atoi(sql_row[0]);
+				int char_id = atoi(sql_row[0]);
+				if(char_id > 0) {
+					cd = char_sql_load(char_id);
+				}
 				break;
 			}
 		}
 		mysql_free_result(sql_res);
 	}
 
-	return char_id;
+	return cd;
 }
 
 int char_sql_set_online(int char_id,int online)

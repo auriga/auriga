@@ -305,7 +305,7 @@ void clif_pk_ranking(const int fd,const char *charname[10],const int point[10]);
 
 // mail
 void clif_openmailbox(const int fd);
-void clif_send_mailbox(struct map_session_data *sd,int num,struct mail_data *md[MAIL_STORE_MAX]);
+void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX]);
 void clif_receive_mail(struct map_session_data *sd,struct mail_data *md);
 void clif_res_sendmail(const int fd,int flag);
 void clif_arrive_newmail(const int fd,struct mail_data *md);

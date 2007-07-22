@@ -1658,18 +1658,11 @@ int intif_parse_MailSendRes(int fd)
 
 int intif_parse_MailBoxLoad(int fd)
 {
-	int i,size=sizeof(struct mail_data);
-	int store = RFIFOL(fd,4);
 	struct map_session_data *sd = map_nick2sd(RFIFOP(fd,8));
-	struct mail_data *md[MAIL_STORE_MAX];
 
-	for(i=0;i<store;i++) {
-		md[i]=(struct mail_data *)aCalloc(1,size);
-		memcpy(md[i],RFIFOP(fd,32+i*size),size);
-	}
-	clif_send_mailbox(sd,store,md);
-	for(i=0;i<store;i++)
-		aFree(md[i]);
+	if(sd)
+		clif_send_mailbox(sd,RFIFOL(fd,4),(struct mail_data *)RFIFOP(fd,32));
+
 	return 0;
 }
 

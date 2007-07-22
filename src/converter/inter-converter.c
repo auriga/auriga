@@ -190,10 +190,10 @@ static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 {
 	int n;
 	int tmp_int[16];
-	char tmp_char[3][1024];
+	char tmp_str[3][1024];
 
 	n=sscanf(str,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%1023[^\r\n]",
-		&tmp_int[0],&tmp_int[1],tmp_char[0],tmp_char[1],tmp_char[2],&tmp_int[2],
+		&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
 		&tmp_int[14],&tmp_int[15],body_data);
 	if(n!=20)
@@ -201,9 +201,9 @@ static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 
 	md->mail_num = (unsigned int)tmp_int[0];
 	md->read     = tmp_int[1];
-	memcpy(md->char_name,tmp_char[0],24);
-	memcpy(md->receive_name,tmp_char[1],24);
-	memcpy(md->title,tmp_char[2],40);
+	memcpy(md->char_name,tmp_str[0],24);
+	memcpy(md->receive_name,tmp_str[1],24);
+	memcpy(md->title,tmp_str[2],40);
 	md->zeny           = tmp_int[2];
 	md->item.id        = (unsigned int)tmp_int[3];
 	md->item.nameid    = tmp_int[4];

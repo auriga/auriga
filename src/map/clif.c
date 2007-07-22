@@ -8377,22 +8377,21 @@ void clif_openmailbox(const int fd)
  *  0x23fの応答
  *------------------------------------------
  */
-void clif_send_mailbox(struct map_session_data *sd,int mail_num,struct mail_data *md[MAIL_STORE_MAX])
+void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX])
 {
 	int i,fd;
 
-	if(!sd)
-		return;
+	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd,0) = 0x240;
-	WFIFOL(fd,4) = mail_num;	// 0のときは画面のクリア
-	for(i=0;i<mail_num && md[i];i++){
-		WFIFOL(fd,8+73*i)  = md[i]->mail_num;
-		memcpy(WFIFOP(fd,12+73*i),md[i]->title,40);
-		WFIFOB(fd,52+73*i) = md[i]->read;
-		memcpy(WFIFOP(fd,53+73*i),md[i]->char_name, 24);
-		WFIFOL(fd,77+73*i) = md[i]->times;
+	WFIFOL(fd,4) = store;	// 0のときは画面のクリア
+	for(i=0;i<store;i++){
+		WFIFOL(fd,8+73*i)  = md[i].mail_num;
+		memcpy(WFIFOP(fd,12+73*i),md[i].title,40);
+		WFIFOB(fd,52+73*i) = md[i].read;
+		memcpy(WFIFOP(fd,53+73*i),md[i].char_name,24);
+		WFIFOL(fd,77+73*i) = md[i].times;
 	}
 	WFIFOW(fd,2) = 8+73*i;
 	WFIFOSET(fd,WFIFOW(fd,2));

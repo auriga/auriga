@@ -53,21 +53,21 @@ struct char_online {
 #ifdef TXT_ONLY
 
 const struct mmo_chardata* char_txt_load(int char_id);
-int char_txt_nick2id(const char *char_name);
+const struct mmo_chardata* char_txt_nick2chardata(const char *char_name);
 
 #ifndef _CHAR_C_
 #define char_load char_txt_load
-#define char_nick2id char_txt_nick2id
+#define char_nick2chardata char_txt_nick2chardata
 #endif /* _CHAR_C_ */
 
 #else
 
 const struct mmo_chardata* char_sql_load(int char_id);
-int char_sql_nick2id(const char *char_name);
+const struct mmo_chardata* char_sql_nick2chardata(const char *char_name);
 
 #ifndef _CHAR_C_
 #define char_load char_sql_load
-#define char_nick2id char_sql_nick2id
+#define char_nick2chardata char_sql_nick2chardata
 #endif /* _CHAR_C_ */
 
 // for sql

@@ -6,8 +6,8 @@ int inter_mail_parse_frommap(int fd);
 
 #ifdef TXT_ONLY
 
-int mail_txt_save_mail(int char_id,int i,int store,struct mail_data *md[MAIL_STORE_MAX]);
-int mail_txt_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX]);
+int mail_txt_save_mail(int char_id,int i,int store,struct mail_data md[MAIL_STORE_MAX]);
+int mail_txt_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL_STORE_MAX]);
 int mail_txt_init(void);
 int mail_txt_sync(void);
 int mail_txt_delete(int char_id);
@@ -30,8 +30,8 @@ void mail_txt_config_read_sub(const char *w1,const char *w2);
 
 #else /* TXT_ONLY */
 
-int mail_sql_save_mail(int char_id,int i,int store,struct mail_data *md[MAIL_STORE_MAX]);
-int mail_sql_read_mail(int char_id,int store,struct mail_data *md[MAIL_STORE_MAX]);
+int mail_sql_save_mail(int char_id,int i,int store,struct mail_data md[MAIL_STORE_MAX]);
+int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL_STORE_MAX]);
 int mail_sql_init(void);
 int mail_sql_sync(void);
 int mail_sql_delete(int char_id);
