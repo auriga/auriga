@@ -102,6 +102,14 @@ Windows 64bit-CPU+OS なら
 　　　有効になっていればよい。
 　　　[Excute]をクリックし、正常終了すれば完了。
 
+１７　MinGWでコンパイルする場合のみ
+　　　<MySQLがインストールされているフォルダー>\lib\optsに移動し、ライブラリを作る
+
+　　　　reimp libmysql.lib
+　　　　mv LIBMYSQL.def libmysql.def
+　　　　dlltool --input-def libmysql.def --dllname libmysql.dll --output-lib mysql.a
+　　　　mv liblibmysql.a libmysql.a
+
 ※[-v4.0]
 	文字コードをsjisに統一しないと、正しく検索できない、日本語が使えないなど
 　　　　の問題が生じる恐れがあります。他の用途に使用することが無い時は、sjisにす

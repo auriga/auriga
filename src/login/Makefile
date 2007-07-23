@@ -6,19 +6,15 @@ ifeq ($(findstring LOCALZLIB,$(CFLAGS)), LOCALZLIB)
 COMMON_OBJ += ../common/zlib/inflate.o ../common/zlib/deflate.o ../common/zlib/crc32.o ../common/zlib/trees.o ../common/zlib/zutil.o ../common/zlib/inftrees.o ../common/zlib/adler32.o ../common/zlib/inffast.o ../common/zlib/compress.o
 endif
 
-ifdef SQLFLAG
-	LIBS_S = -L$(MYSQL_LIBS) -lmysqlclient
-endif
-
 login-server: login.o $(COMMON_OBJ)
-	$(CC) -o ../../$@ $> $(LIBS) $(LIBS_S)
+	$(CC) -o ../../$@ $> $(LIBS)
 
 clean:
 	rm -f *.o
 	rm -f GNUmakefile
 
 ifeq ($(findstring CYGWIN,$(shell uname)), CYGWIN)
-		rm -f ../../login-server.exe
+	rm -f ../../login-server.exe
 else
-		rm -f ../../login-server
+	rm -f ../../login-server
 endif

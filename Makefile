@@ -52,6 +52,12 @@ endif
 
 ifdef SQLFLAG
     CFLAGS += -I$(MYSQL_INCLUDE)
+    LIBS += -L$(MYSQL_LIBS)
+        ifeq ($(findstring MINGW32,$(PLATFORM)), MINGW32)
+            LIBS += -lmysql
+        else
+            LIBS += -lmysqlclient
+        endif
 else
     CFLAGS += -DTXT_ONLY
 endif
@@ -225,7 +231,7 @@ CFLAGS += -DNO_HTTPD_CGI
 
 #---------------------------------------------------
 
-MKDEF = CC="$(CC)" CFLAGS="$(CFLAGS)" LIBS="$(LIBS)" MYSQL_LIBS="$(MYSQL_LIBS)"
+MKDEF = CC="$(CC)" CFLAGS="$(CFLAGS)" LIBS="$(LIBS)"
 
 all clean: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakefile src/char/GNUmakefile src/map/GNUmakefile src/converter/GNUmakefile
 	cd src ; cd common ; $(MAKE) $(MKDEF) $@ ; cd ..

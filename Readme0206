@@ -1,4 +1,12 @@
 ----------------------------------------
+//0247 [2007/07/24] by Rayce
+
+・AthenaProject2305よりmerge、thanks to number24さん
+	-> MinGWのときは -lmysql を入れるように修正
+	-> MySQLに関するリンカオプションの設定をトップのMakefileに集める
+	-> doc/sqllogin.txtにMinGW環境下でコンパイルするときの注意点を追加
+
+----------------------------------------
 //0246 [2007/07/24] by Rayce
 
 ・AthenaProject2304よりmerge、thanks to Blazeさん
