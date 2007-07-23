@@ -2106,6 +2106,20 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 	case SP_NO_KNOCKBACK:
 		sd->special_state.no_knockback = 1;
 		break;
+	case SP_FIX_MAXHP:
+	case SP_FIX_MAXSP:
+	case SP_FIX_BASEATK:
+	case SP_FIX_MATK:
+	case SP_FIX_DEF:
+	case SP_FIX_MDEF:
+	case SP_FIX_HIT:
+	case SP_FIX_CRITICAL:
+	case SP_FIX_FLEE:
+	case SP_FIX_ASPD:
+	case SP_FIX_SPEED:
+		if(val > 0)
+			sd->fix_status[type-SP_FIX_MAXHP] = val;
+		break;
 	default:
 		if(battle_config.error_log)
 			printf("pc_bonus: unknown type %d %d !\n",type,val);
@@ -2500,6 +2514,42 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 				sd->eternal_status_change[type2] = val;
 			else sd->eternal_status_change[type2] = 1000;
 		}
+		break;
+	case SP_ADD_FIX_CAST_RATE:
+		// update
+		for(i=0; i<sd->skill_fixcastrate.count; i++)
+		{
+			if(sd->skill_fixcastrate.id[i] == type2)
+			{
+				sd->skill_fixcastrate.rate[i] += val;
+				return 0;
+			}
+		}
+		// full
+		if(sd->skill_fixcastrate.count == MAX_SKILL_FIXCASTRATE)
+			break;
+		// add
+		sd->skill_fixcastrate.id[sd->skill_fixcastrate.count] = type2;
+		sd->skill_fixcastrate.rate[sd->skill_fixcastrate.count] = val;
+		sd->skill_fixcastrate.count++;
+		break;
+	case SP_ADD_SKILL_HEAL_RATE:
+		// update
+		for(i=0; i<sd->skill_healup.count; i++)
+		{
+			if(sd->skill_healup.id[i] == type2)
+			{
+				sd->skill_healup.rate[i] += val;
+				return 0;
+			}
+		}
+		// full
+		if(sd->skill_healup.count == MAX_SKILL_HEAL_UP)
+			break;
+		// add
+		sd->skill_healup.id[sd->skill_healup.count] = type2;
+		sd->skill_healup.rate[sd->skill_healup.count] = val;
+		sd->skill_healup.count++;
 		break;
 	default:
 		if(battle_config.error_log)

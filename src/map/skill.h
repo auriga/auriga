@@ -184,7 +184,7 @@ int skill_clear_unitgroup(struct block_list *src);
 
 int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage,unsigned int tick);
 
-int skill_castfix( struct block_list *bl, int time );
+int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtime);
 int skill_delayfix( struct block_list *bl, int time, int cast );
 int skill_unit_move(struct block_list *bl,unsigned int tick,int flag);
 int skill_unit_move_unit_group( struct skill_unit_group *group, int m,int dx,int dy);

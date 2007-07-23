@@ -328,6 +328,19 @@ bAddEnemy		1141
 bMagicAddEnemy		1142
 bSubEnemy		1143
 bSkillDelayRate		1144
+bFixMaxHP		1145
+bFixMaxSP		1146
+bFixBaseAtk		1147
+bFixMatk		1148
+bFixDef			1149
+bFixMdef		1150
+bFixHit			1151
+bFixCritical		1152
+bFixFlee		1153
+bFixAspd		1154
+bFixSpeed		1155
+bAddFixCastRate		1156
+bAddSkillHealRate	1157
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

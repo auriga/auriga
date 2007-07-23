@@ -55,6 +55,21 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bRace,n;						n種族になる
 
 
+・ステータス固定
+	bonus bFixDamage,n;				物理攻撃がnダメージで固定になる
+	bonus bFixMaxHP,n;					最大HPをnに固定
+	bonus bFixMaxSP,n;					最大SPをnに固定
+	bonus bFixBaseAtk,n;				攻撃力をnに固定
+	bonus bFixMatk,n;					魔法攻撃力をnに固定
+	bonus bFixDef,n;					防御力をnに固定(装備)
+	bonus bFixMdef,n;					魔法防御力をnに固定(装備)
+	bonus bFixHit,n;					命中力をnに固定
+	bonus bFixCritical,n;				クリティカルをnに固定
+	bonus bFixFlee,n;					回避力をnに固定
+	bonus bFixAspd,n;					攻撃速度をnに固定
+	bonus bFixSpeed,n;					移動速度をnに固定
+
+
 ・属性付与
 	bonus bAtkEle,n;					武器にnの属性付与
 	bonus bDefEle,n;					防具にnの属性付与
@@ -185,6 +200,8 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bSkillDelayRate,n;			スキル使用後ディレイ+n%
 	bonus2 bAddSkillDamageRate,n,x; 	スキルnのダメージをx%増加
 	bonus2 bAddSkillBlow,n,x;			スキルnにxマスの吹き飛ばし効果追加
+	bonus2 bAddFixCastRate,n,x;			スキルnの固定詠唱時間をx%減少
+	bonus2 bAddSkillHealRate,n,x;			スキルnの回復量をx%増加
 
 
 ・オートスペル

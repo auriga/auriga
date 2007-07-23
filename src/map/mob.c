@@ -2564,7 +2564,7 @@ static int mobskill_command_use_id_sub(struct block_list *bl, va_list ap )
 		return 0;
 
 	ms = &mob_db[md->class_].skill[skill_idx];
-	casttime = skill_castfix(bl, ms->casttime);
+	casttime = skill_castfix(bl, ms->skill_id, ms->casttime, 0);
 	md->skillidx = skill_idx;
 	md->skilldelay[skill_idx] = gettick() + casttime;
 
@@ -2725,7 +2725,7 @@ static int mobskill_command(struct block_list *bl, va_list ap)
 			return 0;
 	}
 	*flag = 1;
-	casttime = skill_castfix(bl, ms->casttime);
+	casttime = skill_castfix(bl, ms->skill_id, ms->casttime, 0);
 	md->skillidx = skill_idx;
 	md->skilldelay[skill_idx] = gettick() + casttime;
 
@@ -3017,7 +3017,7 @@ static int mobskill_use_id(struct mob_data *md,struct block_list *target,int ski
 	mds = mob_db[md->class_].skill;
 	ms  = &mds[skill_idx];
 
-	casttime     = skill_castfix(&md->bl, ms->casttime);
+	casttime     = skill_castfix(&md->bl, ms->skill_id, ms->casttime, 0);
 	md->skillidx = skill_idx;
 
 	for(i=0; i<mob_db[md->class_].maxskill; i++) {
@@ -3046,7 +3046,7 @@ static int mobskill_use_pos( struct mob_data *md, int skill_x, int skill_y, int 
 	mds = mob_db[md->class_].skill;
 	ms  = &mds[skill_idx];
 
-	casttime     = skill_castfix(&md->bl, ms->casttime);
+	casttime     = skill_castfix(&md->bl, ms->skill_id, ms->casttime, 0);
 	md->skillidx = skill_idx;
 
 	for(i=0; i<mob_db[md->class_].maxskill; i++) {
@@ -3295,7 +3295,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 				{
 					case MCT_GROUP:
 						{
-							int casttime = skill_castfix(&md->bl, ms[i].casttime);
+							int casttime = skill_castfix(&md->bl, ms[i].skill_id, ms[i].casttime, 0);
 							md->skilldelay[i] = gettick() + casttime;
 							md->skillidx = i;
 							unit_skilluse_id2(&md->bl,md->bl.id, ms[i].skill_id,

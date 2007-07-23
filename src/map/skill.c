@@ -9174,55 +9174,79 @@ ITEM_NOCOST:
  * 詠唱時間計算
  *------------------------------------------
  */
-int skill_castfix( struct block_list *bl, int time )
+int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtime)
 {
 	struct status_change *sc_data;
+	struct map_session_data *sd = NULL;
 
 	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC)
+		sd = (struct map_session_data *)bl;
 
 	sc_data = status_get_sc_data(bl);
 
 	// 魔法力増幅の効果終了
 	if(sc_data && sc_data[SC_MAGICPOWER].timer != -1) {
-		if (sc_data[SC_MAGICPOWER].val2 > 0) {
+		if(sc_data[SC_MAGICPOWER].val2 > 0) {
 			/* 最初に通った時にはアイコン消去だけ */
 			sc_data[SC_MAGICPOWER].val2--;
 			clif_status_change(bl, SI_MAGICPOWER, 0);
 		} else {
-			status_change_end( bl, SC_MAGICPOWER, -1);
+			status_change_end(bl, SC_MAGICPOWER, -1);
 		}
 	}
 
-	/* サフラギウム */
-	if (sc_data && sc_data[SC_SUFFRAGIUM].timer != -1){
-		time = time * (100 - sc_data[SC_SUFFRAGIUM].val1 * 15) / 100;
-		status_change_end(bl, SC_SUFFRAGIUM, -1);
-	}
+	if(casttime > 0) {
+		/* サフラギウム */
+		if(sc_data && sc_data[SC_SUFFRAGIUM].timer != -1) {
+			casttime = casttime * (100 - sc_data[SC_SUFFRAGIUM].val1 * 15) / 100;
+			status_change_end(bl, SC_SUFFRAGIUM, -1);
+		}
 
-	if(time <= 0)
-		return 0;
-
-	if(bl->type==BL_PC) {
 		// dexの影響を計算する
-		if(battle_config.no_cast_dex > status_get_dex(bl)){
-			time = time * (battle_config.no_cast_dex - status_get_dex(bl)) / battle_config.no_cast_dex;
-		}else{
-			time = 0;
+		if(bl->type != BL_MOB) {
+			int dex = status_get_dex(bl);
+			if(battle_config.no_cast_dex > dex) {
+				casttime = casttime * (battle_config.no_cast_dex - dex) / battle_config.no_cast_dex;
+				if(sd)
+					casttime = casttime * sd->castrate * battle_config.cast_rate / 10000;
+			} else {
+				casttime = 0;
+			}
 		}
-		time = time * ((struct map_session_data *)bl)->castrate * battle_config.cast_rate / 10000;
-	}
 
-	/* ブラギの詩 */
-	if(sc_data && sc_data[SC_POEMBRAGI].timer!=-1 )
-	{
-		time=time*(100-(sc_data[SC_POEMBRAGI].val1*3+sc_data[SC_POEMBRAGI].val2
-				+(sc_data[SC_POEMBRAGI].val3>>16)))/100;
-	}else if(sc_data && sc_data[SC_POEMBRAGI_].timer!=-1 )
-	{
-		time=time*(100-(sc_data[SC_POEMBRAGI_].val1*3+sc_data[SC_POEMBRAGI_].val2
-				+(sc_data[SC_POEMBRAGI_].val3>>16)))/100;
+		if(sc_data) {
+			int type = -1;
+
+			/* ブラギの詩 */
+			if(sc_data[SC_POEMBRAGI].timer != -1)
+				type = SC_POEMBRAGI;
+			else if(sc_data[SC_POEMBRAGI_].timer != -1)
+				type = SC_POEMBRAGI_;
+
+			if(type >= 0) {
+				casttime = casttime * (100-(sc_data[type].val1*3+sc_data[type].val2+(sc_data[type].val3>>16))) / 100;
+			}
+		}
 	}
-	return (time>0)?time:0;
+	if(casttime < 0)
+		casttime = 0;
+
+	if(fixedtime > 0) {
+		// カードによる固定詠唱時間減少効果
+		if(sd && sd->skill_fixcastrate.count > 0) {
+			int i;
+			for(i=0; i<sd->skill_fixcastrate.count; i++) {
+				if(skillid == sd->skill_fixcastrate.id[i])
+					fixedtime -= fixedtime * sd->skill_fixcastrate.rate[i] / 100;
+			}
+		}
+	}
+	if(fixedtime < 0)
+		fixedtime = 0;
+
+	return casttime + fixedtime;
 }
 
 /*==========================================

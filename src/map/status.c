@@ -517,6 +517,9 @@ L_RECALC:
 	sd->add_attackrange_rate = 100;
 	sd->special_state.item_no_use = 0;
 	sd->skill_delay_rate = 0;
+	memset(sd->fix_status,0,sizeof(sd->fix_status));
+	memset(&sd->skill_fixcastrate,0,sizeof(sd->skill_fixcastrate));
+	memset(&sd->skill_healup,0,sizeof(sd->skill_healup));
 
 	for(i=0; i<10; i++) {
 		index = sd->equip_index[i];
@@ -1964,6 +1967,42 @@ L_RECALC:
 		sd->aspd = sd->aspd*(100 + 10*(5 - pc_checkskill(sd,KN_CAVALIERMASTERY)))/ 100;
 	if(sd->aspd < battle_config.max_aspd)
 		sd->aspd = battle_config.max_aspd;
+
+	// ステータス固定
+	if(sd->fix_status[0]) {
+		sd->status.max_hp = sd->fix_status[0];
+	}
+	if(sd->fix_status[1]) {
+		sd->status.max_sp = sd->fix_status[1];
+	}
+	if(sd->fix_status[2]) {
+		sd->base_atk = sd->fix_status[2];
+		sd->watk = sd->watk2 = 0;
+	}
+	if(sd->fix_status[3]) {
+		sd->matk1 = sd->matk2 = sd->fix_status[3];
+	}
+	if(sd->fix_status[4] > 0 && sd->fix_status[4] <= 100) {
+		sd->def = sd->fix_status[4];
+	}
+	if(sd->fix_status[5] > 0 && sd->fix_status[5] <= 100) {
+		sd->mdef = sd->fix_status[5];
+	}
+	if(sd->fix_status[6]) {
+		sd->hit = sd->fix_status[6];
+	}
+	if(sd->fix_status[7] > 0 && sd->fix_status[7] <= 100) {
+		sd->critical = 10 * sd->fix_status[7];
+	}
+	if(sd->fix_status[8]) {
+		sd->flee = sd->fix_status[8];
+	}
+	if(sd->fix_status[9] >= 10 && sd->fix_status[9] <= 199) {
+		sd->aspd = 2000 - sd->fix_status[9] * 10;
+	}
+	if(sd->fix_status[10] > 0 && sd->fix_status[10] <= 1000) {
+		sd->speed = sd->fix_status[10];
+	}
 
 	if(map[sd->bl.m].flag.pk) {
 		if(sd->aspd < battle_config.pk_max_aspd)

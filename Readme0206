@@ -1,4 +1,25 @@
 ----------------------------------------
+//0244 [2007/07/24] by Rayce
+
+・AthenaProject2303より、以下のアイテムボーナス13種を追加、thanks to ICOさん
+　スキルの固定詠唱時間の補正は skill_castfix() 内にまとめる
+	bFixMaxHP
+	bFixMaxSP
+	bFixBaseAtk
+	bFixMatk
+	bFixDef
+	bFixMdef
+	bFixHit
+	bFixCritical
+	bFixFlee
+	bFixAspd
+	bFixSpeed
+	bAddFixCastRate
+	bAddSkillHealRate
+
+　※bAddSkillHealRateについては準備をしただけで実際の効果は未実装にしています
+
+----------------------------------------
 //0243 [2007/07/23] by Rayce
 
 ・コマンドライン引数の仕様を変更 merged from eA
