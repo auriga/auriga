@@ -1473,6 +1473,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 
 	if( sc_data ) {
 		if(sc_data[SC_AUTOCOUNTER].timer != -1 ||
+		   sc_data[SC_TRICKDEAD].timer != -1 ||
 		   sc_data[SC_BLADESTOP].timer != -1 ||
 		   sc_data[SC_FULLBUSTER].timer != -1 ||
 		   sc_data[SC_KEEPING].timer != -1)
