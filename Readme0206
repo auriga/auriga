@@ -1,4 +1,14 @@
 ----------------------------------------
+//0246 [2007/07/24] by Rayce
+
+・AthenaProject2304よりmerge、thanks to Blazeさん
+　以下Readmeより転載
+　　・percenthealで-100以下のみ死亡判定を出すように修正
+　　・テコン系列がレベルアップ時の支援効果を10分継続に修正（pc.c）
+　　・NPCスキルの射程を修正（skill_db.txt）
+　　・各スキルの消費SPを修正（skill_require_db.txt）
+
+----------------------------------------
 //0245 [2007/07/24] by Rayce
 
 ・AthenaProject2303より以下の項目についてmerge、thanks to ICOさん

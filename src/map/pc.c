@@ -4189,8 +4189,8 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 			clif_misceffect(&sd->bl,7);	// スパノビ天使
 		}
 		else if(sd->s_class.job >= 24 && sd->s_class.job <= 27) {
-			status_change_start(&sd->bl,SkillStatusChangeTable[AL_BLESSING],10,0,0,0,skill_get_time(AL_BLESSING,10),0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[AL_INCAGI],10,0,0,0,skill_get_time(AL_INCAGI,10),0);
+			status_change_start(&sd->bl,SkillStatusChangeTable[AL_BLESSING],10,0,0,0,600000,0);
+			status_change_start(&sd->bl,SkillStatusChangeTable[AL_INCAGI],10,0,0,0,600000,0);
 			clif_misceffect(&sd->bl,9);	// テコン系天使
 		}
 		else {
@@ -5692,11 +5692,8 @@ int pc_percentheal(struct map_session_data *sd,int hp,int sp)
 			sd->status.hp += sd->status.max_hp*hp/100;
 			if(sd->status.hp > sd->status.max_hp)
 				sd->status.hp = sd->status.max_hp;
-			if(sd->status.hp <= 0) {
-				sd->status.hp = 0;
-				pc_damage(NULL,sd,1);
-				hp = 0;
-			}
+			if(sd->status.hp <= 0)
+				sd->status.hp = 1;
 		}
 	}
 	if(sp) {
