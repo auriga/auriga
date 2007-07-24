@@ -1759,23 +1759,27 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
 			num = 1;
 	}
 
-	if(battle_config.mob_delay_rate != 100) {
-		if(battle_config.mob_delay_rate <= 0) {
-			delay1 = 0;
-			delay2 = 0;
-		} else {
-			if(delay1 < 0) {
-				delay1 = 0;
-			} else {
-				delay1 = delay1 * battle_config.mob_delay_rate / 100;
+	if(mob_db[class_].mode & 0x20) {
+		if(mob_db[class_].mexp > 0) {
+			if(battle_config.mob_mvp_boss_delay_rate != 100) {
+				delay1 = delay1 * battle_config.mob_mvp_boss_delay_rate / 100;
+				delay2 = delay2 * battle_config.mob_mvp_boss_delay_rate / 100;
 			}
-			if(delay2 < 0) {
-				delay2 = 0;
-			} else {
-				delay2 = delay2 * battle_config.mob_delay_rate / 100;
+		} else {
+			if(battle_config.mob_middle_boss_delay_rate != 100) {
+				delay1 = delay1 * battle_config.mob_middle_boss_delay_rate / 100;
+				delay2 = delay2 * battle_config.mob_middle_boss_delay_rate / 100;
 			}
 		}
+	} else {
+		if(battle_config.mob_delay_rate != 100) {
+			delay1 = delay1 * battle_config.mob_delay_rate / 100;
+			delay2 = delay2 * battle_config.mob_delay_rate / 100;
+		}
 	}
+
+	if(delay1 < 0) delay1 = 0;
+	if(delay2 < 0) delay2 = 0;
 
 	for(i=0; i<num; i++) {
 		md = (struct mob_data *)aCalloc(1,sizeof(struct mob_data));

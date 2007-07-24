@@ -2304,42 +2304,42 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		break;
 	case SP_HP_DRAIN_RATE:
 		if(!sd->state.lr_flag) {
-			sd->hp_drain_rate += type2;
-			sd->hp_drain_per += val;
+			sd->hp_drain.p_rate += type2;
+			sd->hp_drain.per += val;
 		}
 		else if(sd->state.lr_flag == 1) {
-			sd->hp_drain_rate_ += type2;
-			sd->hp_drain_per_ += val;
+			sd->hp_drain_.p_rate += type2;
+			sd->hp_drain_.per += val;
 		}
 		break;
 	case SP_HP_DRAIN_VALUE:
 		if(!sd->state.lr_flag) {
-			sd->hp_drain_rate += type2;
-			sd->hp_drain_value += val;
+			sd->hp_drain.v_rate += type2;
+			sd->hp_drain.value += val;
 		}
 		else if(sd->state.lr_flag == 1) {
-			sd->hp_drain_rate_ += type2;
-			sd->hp_drain_value_ += val;
+			sd->hp_drain_.v_rate += type2;
+			sd->hp_drain_.value += val;
 		}
 		break;
 	case SP_SP_DRAIN_RATE:
 		if(!sd->state.lr_flag) {
-			sd->sp_drain_rate += type2;
-			sd->sp_drain_per += val;
+			sd->sp_drain.p_rate += type2;
+			sd->sp_drain.per += val;
 		}
 		else if(sd->state.lr_flag == 1) {
-			sd->sp_drain_rate_ += type2;
-			sd->sp_drain_per_ += val;
+			sd->sp_drain_.p_rate += type2;
+			sd->sp_drain_.per += val;
 		}
 		break;
 	case SP_SP_DRAIN_VALUE:
 		if(!sd->state.lr_flag) {
-			sd->sp_drain_rate += type2;
-			sd->sp_drain_value += val;
+			sd->sp_drain.v_rate += type2;
+			sd->sp_drain.value += val;
 		}
 		else if(sd->state.lr_flag == 1) {
-			sd->sp_drain_rate_ += type2;
-			sd->sp_drain_value_ += val;
+			sd->sp_drain_.v_rate += type2;
+			sd->sp_drain_.value += val;
 		}
 		break;
 	case SP_WEAPON_COMA_ELE:

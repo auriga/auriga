@@ -668,10 +668,10 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 }
 
 /*==========================================
- * HP/SP吸収の計算
+ * HP/SPの％吸収計算
  *------------------------------------------
  */
-static int battle_calc_drain(int damage, int rate, int per, int val)
+static int battle_calc_drain_per(int damage, int rate, int per)
 {
 	int diff = 0;
 
@@ -679,14 +679,29 @@ static int battle_calc_drain(int damage, int rate, int per, int val)
 		return 0;
 
 	if (per && atn_rand()%100 < rate) {
-		diff = (damage * per) / 100;
+		diff = damage * per / 100;
 		if (diff == 0)
 			diff = (per > 0)? 1: -1;
 	}
 
-	if (val && atn_rand()%100 < rate) {
-		diff += val;
+	return diff;
+}
+
+/*==========================================
+ * HP/SPの一定吸収計算
+ *------------------------------------------
+ */
+static int battle_calc_drain_value(int damage, int rate, int value)
+{
+	int diff = 0;
+
+	if (damage <= 0 || rate <= 0)
+		return 0;
+
+	if (value && atn_rand()%100 < rate) {
+		diff = value;
 	}
+
 	return diff;
 }
 
@@ -694,52 +709,51 @@ static int battle_calc_drain(int damage, int rate, int per, int val)
  * 攻撃によるHP/SP吸収
  *------------------------------------------
  */
-static int battle_attack_drain(struct block_list *bl,struct block_list *target,int damage,int damage2,int calc_per_drain_flag)
+static int battle_attack_drain(struct block_list *bl,int damage,int damage2,int flag)
 {
 	int hp = 0,sp = 0;
 	struct map_session_data* sd = NULL;
 
 	nullpo_retr(0, bl);
-	nullpo_retr(0, target);
-
-	if( bl->type != BL_PC || (sd = (struct map_session_data *)bl) == NULL )
-		return 0;
-
-	if(bl == target)
-		return 0;
 
 	if(damage <= 0 && damage2 <= 0)
 		return 0;
 
-	if(calc_per_drain_flag) {	// ％吸収ものせる
-		if (!battle_config.left_cardfix_to_right) {	// 二刀流左手カードの吸収系効果を右手に追加しない場合
-			hp += battle_calc_drain(damage, sd->hp_drain_rate, sd->hp_drain_per, sd->hp_drain_value);
-			hp += battle_calc_drain(damage2, sd->hp_drain_rate_, sd->hp_drain_per_, sd->hp_drain_value_);
-			sp += battle_calc_drain(damage, sd->sp_drain_rate, sd->sp_drain_per, sd->sp_drain_value);
-			sp += battle_calc_drain(damage2, sd->sp_drain_rate_, sd->sp_drain_per_, sd->sp_drain_value_);
-		} else {					// 二刀流左手カードの吸収系効果を右手に追加する場合
-			int hp_drain_rate = sd->hp_drain_rate + sd->hp_drain_rate_;
-			int hp_drain_per = sd->hp_drain_per + sd->hp_drain_per_;
-			int hp_drain_value = sd->hp_drain_value + sd->hp_drain_value_;
-			int sp_drain_rate = sd->sp_drain_rate + sd->sp_drain_rate_;
-			int sp_drain_per = sd->sp_drain_per + sd->sp_drain_per_;
-			int sp_drain_value = sd->sp_drain_value + sd->sp_drain_value_;
-			hp += battle_calc_drain(damage, hp_drain_rate, hp_drain_per, hp_drain_value);
-			sp += battle_calc_drain(damage, sp_drain_rate, sp_drain_per, sp_drain_value);
+	if(bl->type != BL_PC || (sd = (struct map_session_data *)bl) == NULL)
+		return 0;
+
+	if(flag & 1) {	// ％吸収
+		if(!battle_config.left_cardfix_to_right) {
+			// 二刀流左手カードの吸収系効果を右手に追加しない場合
+			hp += battle_calc_drain_per(damage,  sd->hp_drain.p_rate,  sd->hp_drain.per );
+			hp += battle_calc_drain_per(damage2, sd->hp_drain_.p_rate, sd->hp_drain_.per);
+			sp += battle_calc_drain_per(damage,  sd->sp_drain.p_rate,  sd->sp_drain.per );
+			sp += battle_calc_drain_per(damage2, sd->sp_drain_.p_rate, sd->sp_drain_.per);
+		} else {
+			// 二刀流左手カードの吸収系効果を右手に追加する場合
+			int hp_rate = sd->hp_drain.p_rate + sd->hp_drain_.p_rate;
+			int hp_per  = sd->hp_drain.per + sd->hp_drain_.per;
+			int sp_rate = sd->sp_drain.p_rate + sd->sp_drain_.p_rate;
+			int sp_per  = sd->sp_drain.per + sd->sp_drain_.per;
+			hp += battle_calc_drain_per(damage, hp_rate, hp_per);
+			sp += battle_calc_drain_per(damage, sp_rate, sp_per);
 		}
-	} else {			// ％吸収は乗せない
-		if (!battle_config.left_cardfix_to_right) {	// 二刀流左手カードの吸収系効果を右手に追加しない場合
-			hp += battle_calc_drain(damage, sd->hp_drain_rate, 0, sd->hp_drain_value);
-			hp += battle_calc_drain(damage2, sd->hp_drain_rate_, 0, sd->hp_drain_value_);
-			sp += battle_calc_drain(damage, sd->sp_drain_rate, 0, sd->sp_drain_value);
-			sp += battle_calc_drain(damage2, sd->sp_drain_rate_, 0, sd->sp_drain_value_);
-		} else {					// 二刀流左手カードの吸収系効果を右手に追加する場合
-			int hp_drain_rate = sd->hp_drain_rate + sd->hp_drain_rate_;
-			int hp_drain_value = sd->hp_drain_value + sd->hp_drain_value_;
-			int sp_drain_rate = sd->sp_drain_rate + sd->sp_drain_rate_;
-			int sp_drain_value = sd->sp_drain_value + sd->sp_drain_value_;
-			hp += battle_calc_drain(damage,hp_drain_rate, 0, hp_drain_value);
-			sp += battle_calc_drain(damage,sp_drain_rate, 0, sp_drain_value);
+	}
+	if(flag & 2) {	// 一定吸収
+		if(!battle_config.left_cardfix_to_right) {
+			// 二刀流左手カードの吸収系効果を右手に追加しない場合
+			hp += battle_calc_drain_value(damage,  sd->hp_drain.v_rate,  sd->hp_drain.value );
+			hp += battle_calc_drain_value(damage2, sd->hp_drain_.v_rate, sd->hp_drain_.value);
+			sp += battle_calc_drain_value(damage,  sd->sp_drain.v_rate,  sd->sp_drain.value );
+			sp += battle_calc_drain_value(damage2, sd->sp_drain_.v_rate, sd->sp_drain_.value);
+		} else {
+			// 二刀流左手カードの吸収系効果を右手に追加する場合
+			int hp_rate  = sd->hp_drain.v_rate + sd->hp_drain_.v_rate;
+			int hp_value = sd->hp_drain.value + sd->hp_drain_.value;
+			int sp_rate  = sd->sp_drain.v_rate + sd->sp_drain_.v_rate;
+			int sp_value = sd->sp_drain.value + sd->sp_drain_.value;
+			hp += battle_calc_drain_value(damage, hp_rate, hp_value);
+			sp += battle_calc_drain_value(damage, sp_rate, sp_value);
 		}
 	}
 	if(hp || sp)
@@ -1033,7 +1047,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	int s_ele, s_ele_, s_str;
 	int t_vit, t_race, t_ele, t_enemy, t_size, t_mode, t_group, t_class;
 	int t_flee, t_def1, t_def2;
-	int cardfix, skill;
+	int cardfix, skill, damage_sbr = 0;
 	int i;
 	struct {
 		int rh;			// 右手
@@ -2343,8 +2357,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 
 		// 0未満だった場合1に補正
-		if(wd.damage  < 1)  wd.damage  = 1;
-		if(wd.damage2 < 1)  wd.damage2 = 1;
+		if(wd.damage  < 1) wd.damage  = 1;
+		if(wd.damage2 < 1) wd.damage2 = 1;
 
 		/* 18．スキル修正２（修練系）*/
 		// 修練ダメージ(右手のみ) ソニックブロー時は別処理（1撃に付き1/8適応)
@@ -2479,7 +2493,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage2 = wd.damage2*cardfix/100;	// カード補正による左手ダメージ増加
 	}
 
-	/* 22．カードによるダメージ減衰処理 */
+	/* 22．ソウルブレイカーの魔法ダメージ計算 */
+	if(skill_num == ASC_BREAKER)
+		damage_sbr = status_get_int(src) * skill_lv * 5;
+
+	/* 23．カードによるダメージ減衰処理 */
 	if( target_sd && (wd.damage > 0 || wd.damage2 > 0) ) {	// 対象がPCの場合
 		int s_race  = status_get_race(src);
 		int s_enemy = status_get_enemy_type(src);
@@ -2512,9 +2530,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(wd.flag&BF_SHORT)
 			cardfix = cardfix*(100-target_sd->near_attack_def_rate)/100;	// 近距離攻撃はダメージ減少(該当無し？)
 		DMG_FIX( cardfix, 100 );	// カード補正によるダメージ減少
+
+		damage_sbr = damage_sbr * cardfix / 100;	// カード補正によるソウルブレイカーの魔法ダメージ減少
 	}
 
-	/* 23．アイテムボーナスのフラグ処理 */
+	/* 24．アイテムボーナスのフラグ処理 */
 	// 状態異常のレンジフラグ
 	//   addeff_range_flag  0:指定無し 1:近距離 2:遠距離 3,4:それぞれのレンジで状態異常を発動させない
 	//   flagがあり、攻撃タイプとflagが一致しないときは、flag+2する
@@ -2527,7 +2547,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	/* 24．対象にステータス異常がある場合のダメージ減算処理 */
+	/* 25．対象にステータス異常がある場合のダメージ減算処理 */
 	if( t_sc_data && (wd.damage > 0 || wd.damage2 > 0) ) {
 		cardfix = 100;
 		if(t_sc_data[SC_DEFENDER].timer != -1 && wd.flag&BF_LONG && skill_num != CR_ACIDDEMONSTRATION)	// ディフェンダー状態で遠距離攻撃
@@ -2542,12 +2562,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	if(wd.damage  < 0) wd.damage  = 0;
 	if(wd.damage2 < 0) wd.damage2 = 0;
 
-	/* 25．属性の適用 */
+	/* 26．属性の適用 */
 	wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
 	if(calc_flag.lh)
 		wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
 
-	/* 26．スキル修正４（追加ダメージ） */
+	/* 27．スキル修正４（追加ダメージ） */
 	// マグナムブレイク状態
 	if(sc_data && sc_data[SC_MAGNUM].timer != -1) {
 		int bonus_damage = battle_attr_fix(wd.damage, ELE_FIRE, status_get_element(target)) * 20/100;	// 火属性攻撃ダメージの20%を追加
@@ -2557,23 +2577,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 	// ソウルブレイカー
 	if(skill_num == ASC_BREAKER) {
-		// intによる追加ダメージ
-		wd.damage += status_get_int(src) * skill_lv * 5;
-		if (target_sd) {
-			if (s_ele == ELE_NONE)
-				wd.damage = wd.damage * (100-target_sd->subele[ELE_NEUTRAL])/100;
-			else
-				wd.damage = wd.damage * (100-target_sd->subele[s_ele])/100;
-		}
-		// ランダムダメージ
-		wd.damage += 500 + (atn_rand() % 500);
+		wd.damage += damage_sbr;		// 魔法ダメージ
+		wd.damage += 500 + (atn_rand() % 500);	// ランダムダメージ
 		if(t_def1 < 1000000) {
 			int vitbonusmax = (t_vit/20)*(t_vit/20)-1;
 			wd.damage -= (t_def1 + t_def2 + ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1)) + status_get_mdef(target) + status_get_mdef2(target))/2;
 		}
 	}
 
-	/* 27．星のかけら、気球の適用 */
+	/* 28．星のかけら、気球の適用 */
 	if(src_sd) {
 		DMG_ADD( src_sd->spiritball*3 );
 		DMG_ADD( src_sd->coin*3 );
@@ -2586,14 +2598,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage2 += src_sd->ranker_weapon_bonus_;
 		}
 	}
-	/* 28．必中固定ダメージ */
+	/* 29．必中固定ダメージ */
 	if(src_sd && src_sd->special_state.fix_damage)
 		DMG_SET( src_sd->fix_damage );
 
 	if(skill_num == PA_PRESSURE)	// プレッシャー必中
 		DMG_SET( 500+300*skill_lv );
 
-	/* 29．左手ダメージの補正 */
+	/* 30．左手ダメージの補正 */
 	if(calc_flag.rh == 0 && calc_flag.lh == 1) {	// 左手のみ武器装備
 		wd.damage = wd.damage2;
 		wd.damage2 = 0;
@@ -2634,7 +2646,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	/* 30．スキル修正５（追加ダメージ２） */
+	/* 31．スキル修正５（追加ダメージ２） */
 	if(src_sd && src_sd->status.weapon == WT_KATAR) {
 		// アドバンスドカタール研究
 		if((skill = pc_checkskill(src_sd,ASC_KATAR)) > 0) {
@@ -2653,7 +2665,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage = battle_attr_fix(wd.damage, ELE_NEUTRAL, status_get_element(target) );
 	}
 
-	/* 31．完全回避の判定 */
+	/* 32．完全回避の判定 */
 	if(skill_num == 0 && skill_lv >= 0 && target_sd != NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) ) {
 		wd.damage  = 0;
 		wd.damage2 = 0;
@@ -2671,7 +2683,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	/* 32．固定ダメージ2 */
+	/* 33．固定ダメージ2 */
 	if(t_mode&0x40) {	// MobのModeに頑強フラグが立っているときの処理
 		if(wd.damage > 0)
 			wd.damage = (wd.div_ < 255)? 1: 3;	// 三段掌のみ3ダメージ
@@ -2683,7 +2695,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != NPC_DARKGRANDCROSS)
 		wd.damage = wd.damage2 = 0;
 
-	/* 33．ダメージ最終計算 */
+	/* 34．ダメージ最終計算 */
 	if(skill_num != CR_GRANDCROSS && skill_num != NPC_DARKGRANDCROSS) {
 		if(wd.damage2 < 1)		// ダメージ最終修正
 			wd.damage  = battle_calc_damage(src,target,wd.damage,wd.div_,skill_num,skill_lv,wd.flag);
@@ -2698,7 +2710,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	/* 34．物理攻撃スキルによるオートスペル発動(item_bonus) */
+	/* 35．物理攻撃スキルによるオートスペル発動(item_bonus) */
 	if(wd.flag&BF_SKILL && src && src->type == BL_PC && src != target && (wd.damage+wd.damage2) > 0)
 	{
 		unsigned long asflag = EAS_ATTACK;
@@ -2718,7 +2730,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		skill_bonus_autospell(src,target,asflag,gettick(),0);
 	}
 
-	/* 35．太陽と月と星の融合 HP2%消費 */
+	/* 36．太陽と月と星の融合 HP2%消費 */
 	if(src_sd && sc_data && sc_data[SC_FUSION].timer != -1)
 	{
 		int hp;
@@ -2732,7 +2744,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		pc_heal(src_sd,-hp,0);
 	}
 
-	/* 36．カアヒ */
+	/* 37．カアヒ */
 	if(skill_num == 0 && wd.flag&BF_WEAPON && t_sc_data && t_sc_data[SC_KAAHI].timer != -1)
 	{
 		int kaahi_lv = t_sc_data[SC_KAAHI].val1;
@@ -2747,11 +2759,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	/* 37．太陽と月と星の奇跡 */
+	/* 38．太陽と月と星の奇跡 */
 	if(src_sd && wd.flag&BF_WEAPON && pc_checkskill(src_sd,SG_FEEL) > 2 && atn_rand()%10000 < battle_config.sg_miracle_rate)
 		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
 
-	/* 38．計算結果の最終補正 */
+	/* 39．計算結果の最終補正 */
 	if(!calc_flag.lh)
 		wd.damage2 = 0;
 	wd.amotion = status_get_amotion(src);
@@ -3144,8 +3156,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	}
 
 	/* 14．魔法でもHP/SP回復(月光剣など) */
-	if(battle_config.magic_attack_drain && sd)
-		battle_attack_drain(bl,target,mgd.damage,0,battle_config.magic_attack_drain_per_enable);
+	if(battle_config.magic_attack_drain && bl != target)
+		battle_attack_drain(bl,mgd.damage,0,battle_config.magic_attack_drain_enable_type);
 
 	/* 15．計算結果の最終補正 */
 	mgd.amotion = status_get_amotion(bl);
@@ -3351,8 +3363,8 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	}
 
 	/* 11．miscでもHP/SP回復(月光剣など) */
-	if(battle_config.misc_attack_drain)
-		battle_attack_drain(bl,target,mcd.damage,0,battle_config.misc_attack_drain_per_enable);
+	if(battle_config.misc_attack_drain && bl != target)
+		battle_attack_drain(bl,mcd.damage,0,battle_config.misc_attack_drain_enable_type);
 
 	/* 12．計算結果の最終補正 */
 	mcd.amotion = status_get_amotion(bl);
@@ -3600,27 +3612,9 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		}
 	}
 
-	if(sd) {
-		if(wd.flag&BF_WEAPON && src != target && (wd.damage > 0 || wd.damage2 > 0)) {
-			int hp = 0,sp = 0;
-			if(!battle_config.left_cardfix_to_right) {	// 二刀流左手カードの吸収系効果を右手に追加しない場合
-				hp += battle_calc_drain(wd.damage, sd->hp_drain_rate, sd->hp_drain_per, sd->hp_drain_value);
-				hp += battle_calc_drain(wd.damage2, sd->hp_drain_rate_, sd->hp_drain_per_, sd->hp_drain_value_);
-				sp += battle_calc_drain(wd.damage, sd->sp_drain_rate, sd->sp_drain_per, sd->sp_drain_value);
-				sp += battle_calc_drain(wd.damage2, sd->sp_drain_rate_, sd->sp_drain_per_, sd->sp_drain_value_);
-			} else { 					// 二刀流左手カードの吸収系効果を右手に追加する場合
-				int hp_drain_rate = sd->hp_drain_rate + sd->hp_drain_rate_;
-				int hp_drain_per = sd->hp_drain_per + sd->hp_drain_per_;
-				int hp_drain_value = sd->hp_drain_value + sd->hp_drain_value_;
-				int sp_drain_rate = sd->sp_drain_rate + sd->sp_drain_rate_;
-				int sp_drain_per = sd->sp_drain_per + sd->sp_drain_per_;
-				int sp_drain_value = sd->sp_drain_value + sd->sp_drain_value_;
-				hp += battle_calc_drain(wd.damage, hp_drain_rate, hp_drain_per, hp_drain_value);
-				sp += battle_calc_drain(wd.damage, sp_drain_rate, sp_drain_per, sp_drain_value);
-			}
-			if(hp || sp)
-				pc_heal(sd, hp, sp);
-		}
+	if(sd && src != target && wd.flag&BF_WEAPON && (wd.damage > 0 || wd.damage2 > 0)) {
+		// ％吸収、一定吸収ともに
+		battle_attack_drain(src, wd.damage, wd.damage2, 3);
 	}
 
 	if(rdamage > 0) {
@@ -3630,8 +3624,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if(battle_config.weapon_reflect_autospell && target->type == BL_PC)
 			skill_bonus_autospell(target,src,EAS_ATTACK,gettick(),0);
 
-		if(battle_config.weapon_reflect_drain)
-			battle_attack_drain(target,src,rdamage,0,battle_config.weapon_reflect_drain_per_enable);
+		if(battle_config.weapon_reflect_drain && src != target)
+			battle_attack_drain(target,rdamage,0,battle_config.weapon_reflect_drain_enable_type);
 	}
 
 	if(t_sc_data && t_sc_data[SC_AUTOCOUNTER].timer != -1 && t_sc_data[SC_AUTOCOUNTER].val4 > 0) {
@@ -4060,29 +4054,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* HP,SP吸収 */
 	if(sd && dmg.flag&BF_WEAPON && src != bl && src == dsrc && damage > 0) {
-		int hp = 0,sp = 0;
-		if(sd->hp_drain_rate && sd->hp_drain_per > 0 && dmg.damage > 0 && atn_rand()%100 < sd->hp_drain_rate) {
-			hp += (dmg.damage * sd->hp_drain_per)/100;
-			if(sd->hp_drain_rate > 0 && hp < 1) hp = 1;
-			else if(sd->hp_drain_rate < 0 && hp > -1) hp = -1;
-		}
-		if(sd->hp_drain_rate_ && sd->hp_drain_per_ > 0 && dmg.damage2 > 0 && atn_rand()%100 < sd->hp_drain_rate_) {
-			hp += (dmg.damage2 * sd->hp_drain_per_)/100;
-			if(sd->hp_drain_rate_ > 0 && hp < 1) hp = 1;
-			else if(sd->hp_drain_rate_ < 0 && hp > -1) hp = -1;
-		}
-		if(sd->sp_drain_rate > 0 && sd->sp_drain_per > 0 && dmg.damage > 0 && atn_rand()%100 < sd->sp_drain_rate) {
-			sp += (dmg.damage * sd->sp_drain_per)/100;
-			if(sd->sp_drain_rate > 0 && sp < 1) sp = 1;
-			else if(sd->sp_drain_rate < 0 && sp > -1) sp = -1;
-		}
-		if(sd->sp_drain_rate_ > 0 && sd->sp_drain_per_ > 0 && dmg.damage2 > 0 && atn_rand()%100 < sd->sp_drain_rate_) {
-			sp += (dmg.damage2 * sd->sp_drain_per_)/100;
-			if(sd->sp_drain_rate_ > 0 && sp < 1) sp = 1;
-			else if(sd->sp_drain_rate_ < 0 && sp > -1) sp = -1;
-		}
-		if(hp || sp)
-			pc_heal(sd,hp,sp);
+		// ％吸収のみ
+		battle_attack_drain(src, dmg.damage, dmg.damage2, 1);
 	}
 
 	/* 反射ダメージの実際の処理 */
@@ -4096,8 +4069,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			{
 				skill_bonus_autospell(bl,src,asflag,gettick(),0);
 			}
-			if(battle_config.weapon_reflect_drain)
-				battle_attack_drain(bl,src,rdamage,0,battle_config.weapon_reflect_drain_per_enable);
+			if(battle_config.weapon_reflect_drain && src != bl)
+				battle_attack_drain(bl,rdamage,0,battle_config.weapon_reflect_drain_enable_type);
 		} else {
 			battle_damage(bl,src,rdamage,0);
 			// 反射ダメージのオートスペル
@@ -4105,8 +4078,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			{
 				skill_bonus_autospell(bl,src,asflag,gettick(),0);
 			}
-			if(battle_config.magic_reflect_drain)
-				battle_attack_drain(bl,src,rdamage,0,battle_config.magic_reflect_drain_per_enable);
+			if(battle_config.magic_reflect_drain && src != bl)
+				battle_attack_drain(bl,rdamage,0,battle_config.magic_reflect_drain_enable_type);
 		}
 	}
 
@@ -4631,6 +4604,8 @@ int battle_config_read(const char *cfgName)
 		battle_config.mob_skill_use = 1;
 		battle_config.mob_count_rate = 100;
 		battle_config.mob_delay_rate = 100;
+		battle_config.mob_middle_boss_delay_rate = 100;
+		battle_config.mob_mvp_boss_delay_rate = 100;
 		battle_config.quest_skill_learn = 0;
 		battle_config.quest_skill_reset = 1;
 		battle_config.basic_skill_check = 1;
@@ -4833,15 +4808,15 @@ int battle_config_read(const char *cfgName)
 		battle_config.misc_attack_autospell = 0;
 		battle_config.magic_attack_drain = 0;
 		battle_config.misc_attack_drain = 0;
-		battle_config.magic_attack_drain_per_enable = 0;
-		battle_config.misc_attack_drain_per_enable = 0;
+		battle_config.magic_attack_drain_enable_type = 2;
+		battle_config.misc_attack_drain_enable_type = 2;
 		battle_config.hallucianation_off = 0;
 		battle_config.weapon_reflect_autospell = 0;
 		battle_config.magic_reflect_autospell = 0;
 		battle_config.weapon_reflect_drain = 0;
-		battle_config.weapon_reflect_drain_per_enable = 0;
+		battle_config.weapon_reflect_drain_enable_type = 2;
 		battle_config.magic_reflect_drain = 0;
-		battle_config.magic_reflect_drain_per_enable = 0;
+		battle_config.magic_reflect_drain_enable_type = 2;
 		battle_config.max_parameter_str	= 999;
 		battle_config.max_parameter_agi	= 999;
 		battle_config.max_parameter_vit	= 999;
@@ -5088,6 +5063,8 @@ int battle_config_read(const char *cfgName)
 			{ "mob_skill_use",                      &battle_config.mob_skill_use                      },
 			{ "mob_count_rate",                     &battle_config.mob_count_rate                     },
 			{ "mob_delay_rate",                     &battle_config.mob_delay_rate                     },
+			{ "mob_middle_boss_delay_rate",         &battle_config.mob_middle_boss_delay_rate         },
+			{ "mob_mvp_boss_delay_rate",            &battle_config.mob_mvp_boss_delay_rate            },
 			{ "quest_skill_learn",                  &battle_config.quest_skill_learn                  },
 			{ "quest_skill_reset",                  &battle_config.quest_skill_reset                  },
 			{ "basic_skill_check",                  &battle_config.basic_skill_check                  },
@@ -5290,15 +5267,15 @@ int battle_config_read(const char *cfgName)
 			{ "misc_attack_autospell",              &battle_config.misc_attack_autospell              },
 			{ "magic_attack_drain",                 &battle_config.magic_attack_drain                 },
 			{ "misc_attack_drain",                  &battle_config.misc_attack_drain                  },
-			{ "magic_attack_drain_per_enable",      &battle_config.magic_attack_drain_per_enable      },
-			{ "misc_attack_drain_per_enable",       &battle_config.misc_attack_drain_per_enable       },
+			{ "magic_attack_drain_enable_type",     &battle_config.magic_attack_drain_enable_type     },
+			{ "misc_attack_drain_enable_type",      &battle_config.misc_attack_drain_enable_type      },
 			{ "hallucianation_off",                 &battle_config.hallucianation_off                 },
 			{ "weapon_reflect_autospell",           &battle_config.weapon_reflect_autospell           },
 			{ "magic_reflect_autospell",            &battle_config.magic_reflect_autospell            },
 			{ "weapon_reflect_drain",               &battle_config.weapon_reflect_drain               },
-			{ "weapon_reflect_drain_per_enable",    &battle_config.weapon_reflect_drain_per_enable    },
+			{ "weapon_reflect_drain_enable_type",   &battle_config.weapon_reflect_drain_enable_type   },
 			{ "magic_reflect_drain",                &battle_config.magic_reflect_drain                },
-			{ "magic_reflect_drain_per_enable",     &battle_config.magic_reflect_drain_per_enable     },
+			{ "magic_reflect_drain_enable_type",    &battle_config.magic_reflect_drain_enable_type    },
 			{ "max_parameter_str",                  &battle_config.max_parameter_str                  },
 			{ "max_parameter_agi",                  &battle_config.max_parameter_agi                  },
 			{ "max_parameter_vit",                  &battle_config.max_parameter_vit                  },

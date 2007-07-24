@@ -1,4 +1,32 @@
 ----------------------------------------
+//0248 [2007/07/25] by Rayce
+
+・AthenaProject2306よりmerge、thanks to ICOさん
+　　・運命のタロットカードの固定詠唱時間を通常詠唱時間に修正（db/skill_cast_db.txt）
+　　・ソウルブレイカーの魔法ダメージ部分が対象のカード効果によって軽減されるように修正
+　　　また属性軽減効果が二重に計算されていた問題を修正（battle.c）
+
+　　・アイテムボーナスのHP/SPドレインの発動確率が合算で計算されていた不具合を修正
+　　　（battle.c, map.h, pc.c, status.c）
+　　　DrainRate系とDrainValue系はそれぞれ独立して発動確率を計算するようになります
+
+　　・battle_auriga.confの「％吸収を有効にする」項目を「有効とする吸収タイプ」に変更（battle.*）
+　　　デフォルトでは2で、DrainValue系による一定吸収のみが行われる
+		magic_attack_drain_per_enable   → magic_attack_drain_enable_type
+		misc_attack_drain_per_enable    → misc_attack_drain_enable_type
+		weapon_reflect_drain_per_enable → weapon_reflect_drain_enable_type
+		magic_reflect_drain_per_enable  → magic_reflect_drain_enable_type
+
+　　・battle_weapon_attack() と battle_skill_attack() におけるHP/SP吸収処理を
+　　　battle_attack_drain() にまとめる（battle.c）
+
+　　・battle_auriga.confに mob_middle_boss_delay_rate, mob_mvp_boss_delay_rate を追加（battle.*, npc.c）
+　　　通常MOB、中ボス、MVPボスそれぞれ別々に再出現までの時間の割合を設定できます
+
+　　　※db/mob_db.txtのModeにBoss属性が設定されているかどうかだけで中ボスの判定を行います
+　　　　Athenaのように出現時間には依存しないので注意してください
+
+----------------------------------------
 //0247 [2007/07/24] by Rayce
 
 ・AthenaProject2305よりmerge、thanks to number24さん

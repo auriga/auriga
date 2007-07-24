@@ -461,9 +461,10 @@ L_RECALC:
 	sd->speed_add_rate = sd->aspd_add_rate = 100;
 	sd->double_add_rate = sd->perfect_hit_add = sd->get_zeny_add_num = sd->get_zeny_add_num2 = 0;
 	sd->splash_range = sd->splash_add_range = 0;
-	sd->hp_drain_rate = sd->hp_drain_per = sd->sp_drain_rate = sd->sp_drain_per = 0;
-	sd->hp_drain_rate_ = sd->hp_drain_per_ = sd->sp_drain_rate_ = sd->sp_drain_per_ = 0;
-	sd->hp_drain_value = sd->hp_drain_value_ = sd->sp_drain_value = sd->sp_drain_value_ = 0;
+	memset(&sd->hp_drain,0,sizeof(sd->hp_drain));
+	memset(&sd->sp_drain,0,sizeof(sd->sp_drain));
+	memset(&sd->hp_drain_,0,sizeof(sd->hp_drain_));
+	memset(&sd->sp_drain_,0,sizeof(sd->sp_drain_));
 	sd->short_weapon_damage_return = sd->long_weapon_damage_return = sd->magic_damage_return = 0;
 	sd->break_weapon_rate = sd->break_armor_rate = 0;
 	sd->add_steal_rate    = 0;
