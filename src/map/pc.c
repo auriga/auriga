@@ -2103,18 +2103,37 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		sd->special_state.no_knockback = 1;
 		break;
 	case SP_FIX_MAXHP:
+		sd->fix_status.max_hp = val;
+		break;
 	case SP_FIX_MAXSP:
+		sd->fix_status.max_sp = val;
+		break;
 	case SP_FIX_BASEATK:
+		sd->fix_status.atk = val;
+		break;
 	case SP_FIX_MATK:
+		sd->fix_status.matk = val;
+		break;
 	case SP_FIX_DEF:
+		sd->fix_status.def = val;
+		break;
 	case SP_FIX_MDEF:
+		sd->fix_status.mdef = val;
+		break;
 	case SP_FIX_HIT:
+		sd->fix_status.hit = val;
+		break;
 	case SP_FIX_CRITICAL:
+		sd->fix_status.critical = val;
+		break;
 	case SP_FIX_FLEE:
+		sd->fix_status.flee = val;
+		break;
 	case SP_FIX_ASPD:
+		sd->fix_status.aspd = val;
+		break;
 	case SP_FIX_SPEED:
-		if(val > 0)
-			sd->fix_status[type-SP_FIX_MAXHP] = val;
+		sd->fix_status.speed = val;
 		break;
 	default:
 		if(battle_config.error_log)

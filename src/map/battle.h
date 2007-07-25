@@ -282,6 +282,7 @@ extern struct Battle_Config {
 	int once_autospell;
 	int allow_same_autospell;
 	int combo_delay_lower_limits;
+	int tkcombo_delay_lower_limits;
 	int new_marrige_skill;
 	int reveff_plus_addeff;
 	int summonslave_no_drop;

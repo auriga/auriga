@@ -882,12 +882,14 @@ atcommand_jump(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	int x, y;
+	int x = 0, y = 0;
 
 	nullpo_retr(-1, sd);
 
-	if (sscanf(message, "%d %d", &x, &y) < 2)
-		return -1;
+	if (message && *message) {
+		if (sscanf(message, "%d %d", &x, &y) < 2)
+			return -1;
+	}
 
 	if (x >= 0 && x < map[sd->bl.m].xs && y >= 0 && y < map[sd->bl.m].ys) {
 		char output[200];

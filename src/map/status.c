@@ -518,7 +518,7 @@ L_RECALC:
 	sd->add_attackrange_rate = 100;
 	sd->special_state.item_no_use = 0;
 	sd->skill_delay_rate = 0;
-	memset(sd->fix_status,0,sizeof(sd->fix_status));
+	memset(&sd->fix_status,0,sizeof(sd->fix_status));
 	memset(&sd->skill_fixcastrate,0,sizeof(sd->skill_fixcastrate));
 	memset(&sd->skill_healup,0,sizeof(sd->skill_healup));
 
@@ -1960,50 +1960,52 @@ L_RECALC:
 
 	if(sd->speed_rate != 100)
 		sd->speed = sd->speed*sd->speed_rate/100;
-	if(sd->speed < 1)
-		sd->speed = 1;
+
 	if(aspd_rate != 100)
 		sd->aspd = sd->aspd*aspd_rate/100;
 	if(pc_isriding(sd))							// 騎兵修練
 		sd->aspd = sd->aspd*(100 + 10*(5 - pc_checkskill(sd,KN_CAVALIERMASTERY)))/ 100;
-	if(sd->aspd < battle_config.max_aspd)
-		sd->aspd = battle_config.max_aspd;
 
 	// ステータス固定
-	if(sd->fix_status[0]) {
-		sd->status.max_hp = sd->fix_status[0];
+	if(sd->fix_status.max_hp) {
+		sd->status.max_hp = sd->fix_status.max_hp;
 	}
-	if(sd->fix_status[1]) {
-		sd->status.max_sp = sd->fix_status[1];
+	if(sd->fix_status.max_sp) {
+		sd->status.max_sp = sd->fix_status.max_sp;
 	}
-	if(sd->fix_status[2]) {
-		sd->base_atk = sd->fix_status[2];
+	if(sd->fix_status.atk) {
+		sd->base_atk = sd->fix_status.atk;
 		sd->watk = sd->watk2 = 0;
 	}
-	if(sd->fix_status[3]) {
-		sd->matk1 = sd->matk2 = sd->fix_status[3];
+	if(sd->fix_status.matk) {
+		sd->matk1 = sd->matk2 = sd->fix_status.matk;
 	}
-	if(sd->fix_status[4] > 0 && sd->fix_status[4] <= 100) {
-		sd->def = sd->fix_status[4];
+	if(sd->fix_status.def > 0 && sd->fix_status.def <= 100) {
+		sd->def = sd->fix_status.def;
 	}
-	if(sd->fix_status[5] > 0 && sd->fix_status[5] <= 100) {
-		sd->mdef = sd->fix_status[5];
+	if(sd->fix_status.mdef > 0 && sd->fix_status.mdef <= 100) {
+		sd->mdef = sd->fix_status.mdef;
 	}
-	if(sd->fix_status[6]) {
-		sd->hit = sd->fix_status[6];
+	if(sd->fix_status.hit) {
+		sd->hit = sd->fix_status.hit;
 	}
-	if(sd->fix_status[7] > 0 && sd->fix_status[7] <= 100) {
-		sd->critical = 10 * sd->fix_status[7];
+	if(sd->fix_status.critical > 0 && sd->fix_status.critical <= 100) {
+		sd->critical = 10 * sd->fix_status.critical;
 	}
-	if(sd->fix_status[8]) {
-		sd->flee = sd->fix_status[8];
+	if(sd->fix_status.flee) {
+		sd->flee = sd->fix_status.flee;
 	}
-	if(sd->fix_status[9] >= 10 && sd->fix_status[9] <= 199) {
-		sd->aspd = 2000 - sd->fix_status[9] * 10;
+	if(sd->fix_status.aspd >= 10 && sd->fix_status.aspd <= 199) {
+		sd->aspd = 2000 - sd->fix_status.aspd * 10;
 	}
-	if(sd->fix_status[10] > 0 && sd->fix_status[10] <= 1000) {
-		sd->speed = sd->fix_status[10];
+	if(sd->fix_status.speed > MIN_WALK_SPEED && sd->fix_status.speed <= MAX_WALK_SPEED) {
+		sd->speed = sd->fix_status.speed;
 	}
+
+	if(sd->speed < 1)
+		sd->speed = 1;
+	if(sd->aspd < battle_config.max_aspd)
+		sd->aspd = battle_config.max_aspd;
 
 	if(map[sd->bl.m].flag.pk) {
 		if(sd->aspd < battle_config.pk_max_aspd)

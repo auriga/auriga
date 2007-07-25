@@ -3836,8 +3836,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				// 阿修羅覇凰拳取得＆気球4個保持＆爆裂波動状態時は+300ms
 				// 伏虎拳取得時も+300ms
 				if((pc_checkskill(sd, MO_EXTREMITYFIST) > 0 && sd->spiritball >= 4 && sd->sc_data[SC_EXPLOSIONSPIRITS].timer != -1) ||
-				(pc_checkskill(sd, CH_TIGERFIST) > 0 && sd->spiritball > 0) ||
-				(pc_checkskill(sd, CH_CHAINCRUSH) > 0 && sd->spiritball > 1))
+				   (pc_checkskill(sd, CH_TIGERFIST) > 0 && sd->spiritball > 0) ||
+				   (pc_checkskill(sd, CH_CHAINCRUSH) > 0 && sd->spiritball > 1))
 				{
 					delay += 300 * battle_config.combo_delay_rate /100; // 追加ディレイをconfにより調整
 					// コンボ入力時間最低保障追加
@@ -3859,7 +3859,6 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					if(delay < battle_config.combo_delay_lower_limits)
 						delay = battle_config.combo_delay_lower_limits;
 				}
-
 				status_change_start(src,SC_COMBO,CH_TIGERFIST,skilllv,0,0,delay,0); // コンボ状態に
 			}
 			sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
@@ -3883,12 +3882,15 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			clif_combo_delay(src,delay); // コンボディレイパケットの送信
 		}
 		// TKコンボ
-		if(skillid == TK_STORMKICK || skillid == TK_DOWNKICK || skillid == TK_TURNKICK || skillid == TK_COUNTER) {
+		else if(skillid == TK_STORMKICK || skillid == TK_DOWNKICK || skillid == TK_TURNKICK || skillid == TK_COUNTER) {
 			if(ranking_get_pc_rank(sd,RK_TAEKWON) > 0) {	// テコンランカーはコンボ続行
 				int delay = status_get_adelay(src);
 				if(damage < status_get_hp(bl)) {
 					//delay += 500 * battle_config.combo_delay_rate /100;
 					delay += 2000 - 4*status_get_agi(src) - 2*status_get_dex(src);	// eA方式
+					// TKコンボ入力時間最低保障追加
+					if(delay < battle_config.tkcombo_delay_lower_limits)
+						delay = battle_config.tkcombo_delay_lower_limits;
 					status_change_start(src,SC_TKCOMBO,skillid,0,0,TK_MISSION,delay,0);
 				}
 				sd->ud.attackabletime = tick + delay;
@@ -4770,6 +4772,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.once_autospell = 1;
 		battle_config.allow_same_autospell = 0;
 		battle_config.combo_delay_lower_limits = 0;
+		battle_config.tkcombo_delay_lower_limits = 0;
 		battle_config.new_marrige_skill = 0;
 		battle_config.reveff_plus_addeff = 0;
 		battle_config.summonslave_no_drop = 0;
@@ -5230,6 +5233,7 @@ int battle_config_read(const char *cfgName)
 			{ "once_autospell",                     &battle_config.once_autospell                     },
 			{ "allow_same_autospell",               &battle_config.allow_same_autospell               },
 			{ "combo_delay_lower_limits",           &battle_config.combo_delay_lower_limits           },
+			{ "tkcombo_delay_lower_limits",         &battle_config.tkcombo_delay_lower_limits         },
 			{ "new_marrige_skill",                  &battle_config.new_marrige_skill                  },
 			{ "reveff_plus_addeff",                 &battle_config.reveff_plus_addeff                 },
 			{ "summonslave_no_drop",                &battle_config.summonslave_no_drop                },

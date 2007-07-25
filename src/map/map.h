@@ -572,7 +572,12 @@ struct map_session_data {
 	char eventqueue[MAX_EVENTQUEUE][50];
 	int eventtimer[MAX_EVENTTIMER];
 
-	int fix_status[11];
+	struct {
+		int max_hp, max_sp;
+		int atk, matk, def, mdef;
+		int hit, critical, flee, aspd, speed;
+	} fix_status;
+
 	struct {
 		short id[MAX_SKILL_FIXCASTRATE];
 		short rate[MAX_SKILL_FIXCASTRATE];
