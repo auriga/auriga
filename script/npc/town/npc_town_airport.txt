@@ -1072,7 +1072,7 @@ airplane_01.gat,0,0,0	script	Airplane#AirEvent2	-1,{}	//ダミーイベント
 //============================================================
 // 船内施設
 //------------------------------------------------------------
-airplane.gat,50,66,5	script	リンゴ商人#フルツ	86,{
+-	script	AirApple	-1,{
 	mes "[" +strnpcinfo(2)+ "]";
 	mes "いらっしゃいませ〜。";
 	mes "美味しい〜、甘〜いリンゴは";
@@ -1223,7 +1223,8 @@ airplane.gat,50,66,5	script	リンゴ商人#フルツ	86,{
 	mes "では、お元気で〜。";
 	close;
 }
-airplane_01.gat,50,66,5	duplicate(リンゴ商人#フルツ)	リンゴ商人#メルツ	86
+airplane.gat,50,66,5	duplicate(AirApple)	リンゴ商人#フルツ	86
+airplane_01.gat,50,66,5	duplicate(AirApple)	リンゴ商人#メルツ	86
 
 -	script	AirDice	-1,{
 	if(strnpcinfo(1) == "ケージ") {

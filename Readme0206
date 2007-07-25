@@ -1,4 +1,34 @@
 ----------------------------------------
+//0255 [2007/07/26] by Rayce
+
+・0244で保留にしていた bAddSkillHealRate の中身を実装（battle.c, skill.*）
+　回復量補正は skill_fix_heal() で行う
+　ついでにMAX_SKILL_HEAL_UPを10から5に縮小しておく
+	merged from AthenaProject2311 thanks to ICOさん
+
+　※指定可能なスキルは以下の通り
+	ヒール
+	治療の手助け
+	応急手当
+	ポーションピッチャー
+	スリムポーションピッチャー
+	君だけは護るよ
+	あなたに尽くします
+	カオティックベネディクション
+	サンクチュアリ
+	イドゥンの林檎
+	カアヒ
+
+・ランダムにセルを選択する機能はないので、map_searchrandfreecell() を
+　map_searchfreecell() に改名（map.*, npc.c, skill.c）
+
+・duplicate元のスクリプトと自身のMAPが異なる場合、duplicate元のスクリプトのMAPが読み込み対象外
+　だとduplicateに失敗するので、duplicate元をMAP非配置型に修正しておく
+	script/npc/quest/npc_quest_artifacts.txt
+	script/npc/town/npc_town_airport.txt
+	script/npc/town/npc_town_lighthalzen.txt
+
+----------------------------------------
 //0254 [2007/07/26] by Rayce
 
 ・AthenaProject2311よりmerge、thanks to ICOさん

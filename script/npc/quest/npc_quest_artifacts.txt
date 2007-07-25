@@ -830,7 +830,7 @@ mjolnir_11.gat,149,247,3	script	ドワーフの鍛冶屋	826,{
 //====================================================================
 //create artifacts QUEST　　神器作成クエスト
 //====================================================================
-gld_dun01.gat,28,87,7	script	グルンブルティ#created	826,{
+-	script	グルンブルティ#created	-1,{
 	mes "[ドワーフ・グルンブルティ]";
 	mes "フン！　人間、何の用だ？";
 	mes "故郷の地を離れ、はるか遠いこの";
@@ -1151,6 +1151,7 @@ que_god01.gat,154,112,4	script	グルンブルティ	826,{
 	warp "prontera.gat",156,325;
 	end;
 }
-gld_dun02.gat,85,84,7	duplicate(グルンブルティ#created)	 グルンブルティ	826
-gld_dun03.gat,92,105,7	duplicate(グルンブルティ#created)	 グルンブルティ	826
-gld_dun04.gat,268,230,7	duplicate(グルンブルティ#created)	 グルンブルティ	826
+gld_dun01.gat,28,87,7	duplicate(グルンブルティ#created)	グルンブルティ	826
+gld_dun02.gat,85,84,7	duplicate(グルンブルティ#created)	グルンブルティ	826
+gld_dun03.gat,92,105,7	duplicate(グルンブルティ#created)	グルンブルティ	826
+gld_dun04.gat,268,230,7	duplicate(グルンブルティ#created)	グルンブルティ	826

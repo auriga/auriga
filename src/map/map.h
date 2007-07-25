@@ -25,7 +25,7 @@
 #define MAX_ITEMGROUP	10
 #define MAX_SKILL_DAMAGE_UP	10	// スキルを強化できる数
 #define MAX_SKILL_BLOW  5		// スキルを吹き飛ばし化
-#define MAX_SKILL_HEAL_UP	10	// スキルの回復量を強化できる数
+#define MAX_SKILL_HEAL_UP	5	// スキルの回復量を強化できる数
 #define MAX_SKILL_FIXCASTRATE	10	// スキルの固定詠唱時間を減らせる数
 #define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
 #define MAX_DEAL_ITEMS 10
@@ -1081,7 +1081,7 @@ int map_addnpc(int,struct npc_data *);
 int map_clearflooritem_timer(int,unsigned int,int,int);
 #define map_clearflooritem(id) map_clearflooritem_timer(0,0,id,1)
 int map_addflooritem(struct item *,int,int,int,int,struct block_list *,struct block_list *,struct block_list *,int);
-int map_searchrandfreecell(struct cell_xy *list,int m,int x0,int y0,int x1,int y1);
+int map_searchfreecell(struct cell_xy *list,int m,int x0,int y0,int x1,int y1);
 
 // ドロップディレイキュー
 void map_push_delayitem_que(struct delay_item_drop2 *ditem);

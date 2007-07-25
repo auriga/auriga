@@ -2754,7 +2754,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		{
 			if(target->type == BL_MOB || status_get_sp(target) > 5*kaahi_lv)	// 対象がmob以外でSPが減少量以下のときは発生しない
 			{
-				unit_heal(target,200*kaahi_lv,-5*kaahi_lv);
+				int heal = skill_fix_heal(target, SL_KAAHI, 200 * kaahi_lv);
+				unit_heal(target,heal,-5*kaahi_lv);
 				if(target->type == BL_PC)
 					clif_misceffect3(target,7);				// 回復した本人にのみ回復エフェクト
 			}

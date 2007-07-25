@@ -3723,9 +3723,9 @@ lhz_cube.gat,130,18,0	duplicate(cubewarprand)	cubewarp	45,1,1
 // LHZ_2QUE -> 0〜21
 // LHZ_2QUE_CURSE -> サブフラグ
 //------------------------------------------------------------
-lhz_dun01.gat,147,106,0	script	呪い#Lhz1	139,3,3,{
+-	script	呪い#Lhz	-1,{
 	if(countitem(7345) && LHZ_2QUE < 17) {
-		if(strnpcinfo(2) == "Lhz1" || strnpcinfo(2) == "Lhz2")
+		if(strnpcinfo(2) == "Lhz1")
 			soundeffect "loli_ruri_stand.wav",0;
 		else
 			soundeffect "tao_gunka_stand.wav",0;
@@ -3734,7 +3734,7 @@ lhz_dun01.gat,147,106,0	script	呪い#Lhz1	139,3,3,{
 			mes "[？？？]";
 			mes "……";
 			next;
-			if(strnpcinfo(2) == "Lhz1" || strnpcinfo(2) == "Lhz2")
+			if(strnpcinfo(2) == "Lhz1")
 				soundeffect "loli_ruri_stand.wav",0;
 			else
 				soundeffect "tao_gunka_stand.wav",0;
@@ -3751,15 +3751,16 @@ lhz_dun01.gat,147,106,0	script	呪い#Lhz1	139,3,3,{
 	end;
 }
 
-lhz_dun01.gat,239,135,0	duplicate(呪い#Lhz1)	呪い#Lhz2	139,3,3
-lhz_dun01.gat,66,213,0	duplicate(呪い#Lhz1)	呪い#Lhz2	139,3,3
-lhz_dun01.gat,225,198,0	duplicate(呪い#Lhz1)	呪い#Lhz2	139,3,3
-lhz_dun02.gat,244,229,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
-lhz_dun02.gat,94,199,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
-lhz_dun02.gat,267,278,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
-lhz_dun03.gat,244,51,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
-lhz_dun03.gat,123,191,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
-lhz_dun03.gat,74,140,0	duplicate(呪い#Lhz1)	呪い#Lhz3	139,3,3
+lhz_dun01.gat,147,106,0	duplicate(呪い#Lhz)	呪い#Lhz1	139,3,3
+lhz_dun01.gat,239,135,0	duplicate(呪い#Lhz)	呪い#Lhz1	139,3,3
+lhz_dun01.gat,66,213,0	duplicate(呪い#Lhz)	呪い#Lhz1	139,3,3
+lhz_dun01.gat,225,198,0	duplicate(呪い#Lhz)	呪い#Lhz1	139,3,3
+lhz_dun02.gat,244,229,0	duplicate(呪い#Lhz)	呪い#Lhz2	139,3,3
+lhz_dun02.gat,94,199,0	duplicate(呪い#Lhz)	呪い#Lhz2	139,3,3
+lhz_dun02.gat,267,278,0	duplicate(呪い#Lhz)	呪い#Lhz2	139,3,3
+lhz_dun03.gat,244,51,0	duplicate(呪い#Lhz)	呪い#Lhz2	139,3,3
+lhz_dun03.gat,123,191,0	duplicate(呪い#Lhz)	呪い#Lhz2	139,3,3
+lhz_dun03.gat,74,140,0	duplicate(呪い#Lhz)	呪い#Lhz2	139,3,3
 
 lighthalzen.gat,344,277,0	script	呪い	139,3,3,{
 	if(countitem(7345) && LHZ_2QUE < 17) {

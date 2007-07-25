@@ -1140,7 +1140,7 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,int data)
  * cellをリストに格納してその数を返す
  *------------------------------------------
  */
-int map_searchrandfreecell(struct cell_xy *list,int m,int x0,int y0,int x1,int y1)
+int map_searchfreecell(struct cell_xy *list,int m,int x0,int y0,int x1,int y1)
 {
 	int i, j, count = 0;
 
@@ -1172,7 +1172,7 @@ int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,struct 
 
 	nullpo_retr(0, item_data);
 
-	if((count = map_searchrandfreecell(free_cell,m,x-1,y-1,x+1,y+1)) > 0) {
+	if((count = map_searchfreecell(free_cell,m,x-1,y-1,x+1,y+1)) > 0) {
 		struct flooritem_data *fitem = (struct flooritem_data *)aCalloc(1,sizeof(*fitem));
 		int idx = atn_rand()%count;
 

@@ -1835,7 +1835,7 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
 				int y0 = md->y0 - md->ys/2;
 				int x1 = md->x0 + md->xs - md->xs/2;
 				int y1 = md->y0 + md->ys - md->ys/2;
-				if(map_searchrandfreecell(NULL, md->m, x0, y0, x1, y1) <= 0) {
+				if(map_searchfreecell(NULL, md->m, x0, y0, x1, y1) <= 0) {
 					// 侵入可能セルが全くないので削除する
 					printf("npc_monster spawn stacked (%d,%d) - (%d,%d) line %d\a\n", x0, y0, x1, y1, lines);
 					map_deliddb(&md->bl);
