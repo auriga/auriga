@@ -2347,7 +2347,7 @@ static int map_readmap(int m,char *fn,int *map_cache)
 {
 	size_t size;
 
-	printf("map reading %s[%d/%d] %-20s  \r", (map_read_flag ? "with cache " : ""), m, map_num, fn);
+	printf("map reading %s[%d/%d] %-20s  \r", (map_read_flag ? "with cache " : ""), m+1, map_num, fn);
 	fflush(stdout);
 
 	if(map_cache_read(&map[m])) {

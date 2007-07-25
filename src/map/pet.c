@@ -872,34 +872,33 @@ static int pet_unlocktarget(struct pet_data *pd)
 static int pet_ai_sub_hard_lootsearch(struct block_list *bl,va_list ap)
 {
 	struct pet_data *pd;
-	int dist, *itc;
-	const int range = 3;	// 拾いに行く射程範囲
+	struct flooritem_data *fitem;
+	int *itc;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
 	nullpo_retr(0, pd  = va_arg(ap,struct pet_data *));
 	nullpo_retr(0, itc = va_arg(ap,int *));
 
-	if(!pd->target_id && bl->type == BL_ITEM) {
-		struct flooritem_data *fitem = (struct flooritem_data *)bl;
-		struct map_session_data *sd = NULL;
+	if(bl->type != BL_ITEM || (fitem = (struct flooritem_data *)bl) == NULL)
+		return 0;
 
-		// ルート権無し
-		if(fitem && fitem->first_get_id > 0)
-			sd = map_id2sd(fitem->first_get_id);
-		// 重量オーバー
-		if((pd->lootitem_weight + itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount) > battle_config.pet_weight)
+	if(fitem->first_get_id > 0) {
+		struct map_session_data *sd = map_id2sd(fitem->first_get_id);
+		if(sd && sd->pd != pd) {
+			// ルート権無し
 			return 0;
-		if(sd && sd->pd != pd)
-			return 0;
-
-		if(bl->m == pd->bl.m && (dist = unit_distance(pd->bl.x,pd->bl.y,bl->x,bl->y)) < range) {
-			if( unit_can_reach(&pd->bl,bl->x,bl->y) &&	// 到達可能性判定
-			    atn_rand()%1000 < 1000/(++(*itc)) ) {	// 範囲内で等確率にする
-				pd->target_id = bl->id;
-			}
 		}
 	}
+	if(pd->lootitem_weight + itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount > battle_config.pet_weight) {
+		// 重量オーバー
+		return 0;
+	}
+
+	if( unit_can_reach(&pd->bl,bl->x,bl->y) && atn_rand()%1000 < 1000/(++(*itc)) ) {	// 範囲内で等確率にする
+		pd->target_id = bl->id;
+	}
+
 	return 0;
 }
 
@@ -910,6 +909,7 @@ static int pet_ai_sub_hard_lootsearch(struct block_list *bl,va_list ap)
 static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 {
 	struct map_session_data *sd = NULL;
+	const int loot_range = 3;	// ルートに行く射程範囲
 	int dist;
 
 	nullpo_retr(0, pd);
@@ -984,7 +984,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			int count = 0;
 			map_foreachinarea(
 				pet_ai_sub_hard_lootsearch,
-				pd->bl.m,pd->bl.x-AREA_SIZE*2,pd->bl.y-AREA_SIZE*2,pd->bl.x+AREA_SIZE*2,pd->bl.y+AREA_SIZE*2,
+				pd->bl.m,pd->bl.x-loot_range,pd->bl.y-loot_range,pd->bl.x+loot_range,pd->bl.y+loot_range,
 				BL_ITEM,pd,&count
 			);
 		}
@@ -1053,14 +1053,13 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		}
 	}
 	else if(pd->target_id > 0) {	// ルート処理
-		const int range = 3;	// ルートに行く射程範囲
 		struct block_list *bl_item = map_id2bl(pd->target_id);
 
-		if(bl_item == NULL || bl_item->type != BL_ITEM ||bl_item->m != pd->bl.m ||
-		   (dist = unit_distance(pd->bl.x,pd->bl.y,bl_item->x,bl_item->y)) >= range) {
+		if(bl_item == NULL || bl_item->type != BL_ITEM || bl_item->m != pd->bl.m ||
+		   (dist = unit_distance(pd->bl.x,pd->bl.y,bl_item->x,bl_item->y)) > loot_range) {
 			 // 遠すぎるかアイテムがなくなった
 			pet_unlocktarget(pd);
-		} else if(dist) {
+		} else if(dist > 0) {
 			int dx, dy;
 			if(pd->ud.walktimer != -1 && (DIFF_TICK(pd->next_walktime,tick) < 0 || unit_distance(pd->ud.to_x,pd->ud.to_y,bl_item->x,bl_item->y) <= 0))
 				return 0; // 既に移動中
