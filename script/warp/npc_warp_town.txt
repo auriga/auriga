@@ -1931,30 +1931,125 @@ kh_rossi.gat,260,190,0		warp	khwarp1066	1,1,kh_rossi.gat,220,234
 
 
 
-//---アルナペルツ追加マップ
+//---ラヘル追加マップ
 
 
 //==============================================================
-// rachel.gat	アルナペルツ教国の首都ラッセル
-// ra_temple.gat	フレイア神殿
-// ra_temin.gat	フレイア神殿内部
+// -----  ラヘル -----
+// rachel.gat		アルナベルツ教国首都 ラヘル
+// ra_in01.gat		ラヘル 室内
+// ra_temple.gat	フレイヤ大神殿（セスルムニル）
+// ra_temin.gat		フレイヤ大神殿 室内
+// ra_temsky.gat	教皇執務室（空中庭園）
 // -----
-// ra_fild11.gat	ラッセルフィールド
-// ra_fild12.gat	ラッセルフィールド
+// ra_fild11.gat	ラヘルフィールド11（イダ平原）
+// ra_fild12.gat	ラヘルフィールド12（イダ平原）
 //==============================================================
-//アルナペルツ教国の首都ラッセル⇒ラッセルフィールド11
-rachel.gat,25,125,0	warp	rachelwarp0501	1,2,ra_fild11.gat,359,225
-//アルナペルツ教国の首都ラッセル⇒ラッセルフィールド12
-rachel.gat,274,125,0	warp	rachelwarp0502	1,2,ra_fild12.gat,37,225
-//アルナペルツ教国の首都ラッセル⇔フレイア神殿
-rachel.gat,150,250,0	warp	rachelwarp1001	2,1,ra_temple.gat,120,23
-ra_temple.gat,120,21,0	warp	rachelwarp1002	2,1,rachel.gat,150,248
+//アルナベルツ教国首都ラヘル⇔フレイヤ大神殿
+rachel.gat,150,249,0	warp	rachelwarp0101	1,1,ra_temple.gat,120,30
+ra_temple.gat,120,22,0	warp	rachelwarp0102	1,1,rachel.gat,150,243
+//アルナベルツ教国首都ラヘル⇒ラヘルフィールド11
+rachel.gat,25,125,0	warp	rachelwarp0501	1,1,ra_fild11.gat,353,226
+//アルナベルツ教国首都ラヘル⇒ラッセルフィールド12
+rachel.gat,275,125,0	warp	rachelwarp0502	1,1,ra_fild12.gat,40,226
 
-//フレイア神殿⇔フレイア神殿内部1F
-ra_temple.gat,120,181,0	warp	rachelwarp1003	2,1,ra_temin.gat,169,18
-ra_temin.gat,169,16,0	warp	rachelwarp1004	1,1,ra_temple.gat,120,179
-//フレイア神殿内部1F⇔フレイア神殿内部2F
-ra_temin.gat,206,93,0	warp	rachelwarp1005	2,1,ra_temin.gat,312,254
-ra_temin.gat,312,252,0	warp	rachelwarp1006	2,1,ra_temin.gat,206,91
-ra_temin.gat,131,93,0	warp	rachelwarp1007	2,1,ra_temin.gat,239,254
-ra_temin.gat,239,252,0	warp	rachelwarp1008	2,1,ra_temin.gat,131,91
+//ホテル
+rachel.gat,115,149,0	warp	rachelwarp1001	1,1,ra_in01.gat,386,43
+ra_in01.gat,386,39,0	warp	rachelwarp1002	1,1,rachel.gat,115,144
+rachel.gat,105,171,0	warp	rachelwarp1003	1,1,ra_in01.gat,309,65
+ra_in01.gat,309,70,0	warp	rachelwarp1004	1,1,rachel.gat,108,175
+rachel.gat,116,158,0	warp	rachelwarp1005	1,1,ra_in01.gat,375,114
+ra_in01.gat,375,109,0	warp	rachelwarp1006	1,1,rachel.gat,116,154
+ra_in01.gat,357,61,0	warp	rachelwarp1007	1,1,ra_in01.gat,310,62
+ra_in01.gat,314,62,0	warp	rachelwarp1008	1,1,ra_in01.gat,361,61
+ra_in01.gat,297,59,0	warp	rachelwarp1009	1,1,ra_in01.gat,339,116
+ra_in01.gat,339,120,0	warp	rachelwarp1010	1,1,ra_in01.gat,297,63
+//武器防具屋
+rachel.gat,42,109,0	warp	rachelwarp1011	1,1,ra_in01.gat,171,388
+ra_in01.gat,172,392,0	warp	rachelwarp1012	1,1,rachel.gat,42,114
+rachel.gat,42,87,0	warp	rachelwarp1013	1,1,ra_in01.gat,171,359
+ra_in01.gat,171,355,0	warp	rachelwarp1014	1,1,rachel.gat,42,82
+ra_in01.gat,165,369,0	warp	rachelwarp1015	1,1,ra_in01.gat,122,334
+ra_in01.gat,126,334,0	warp	rachelwarp1016	1,1,ra_in01.gat,169,369
+ra_in01.gat,178,370,0	warp	rachelwarp1017	1,1,ra_in01.gat,113,385
+ra_in01.gat,109,385,0	warp	rachelwarp1018	1,1,ra_in01.gat,111,385
+//道具屋
+rachel.gat,83,78,0	warp	rachelwarp1019	1,1,ra_in01.gat,249,266
+ra_in01.gat,249,262,0	warp	rachelwarp1020	1,1,rachel.gat,83,73
+ra_in01.gat,241,299,0	warp	rachelwarp1021	1,1,ra_in01.gat,193,312
+ra_in01.gat,197,312,0	warp	rachelwarp1022	1,1,ra_in01.gat,245,299
+ra_in01.gat,185,303,0	warp	rachelwarp1023	1,1,ra_in01.gat,194,249
+ra_in01.gat,194,245,0	warp	rachelwarp1024	1,1,ra_in01.gat,190,302
+//ジェドの屋敷
+rachel.gat,103,240,0	warp	rachelwarp1025	1,1,ra_in01.gat,343,193
+ra_in01.gat,339,193,0	warp	rachelwarp1026	1,1,rachel.gat,98,238
+ra_in01.gat,381,200,0	warp	rachelwarp1027	1,1,ra_in01.gat,377,268
+ra_in01.gat,381,268,0	warp	rachelwarp1028	1,1,ra_in01.gat,387,200
+ra_in01.gat,367,255,0	warp	rachelwarp1029	1,1,ra_in01.gat,326,296
+ra_in01.gat,330,296,0	warp	rachelwarp1030	1,1,ra_in01.gat,371,255
+ra_in01.gat,319,303,0	warp	rachelwarp1031	1,1,ra_in01.gat,381,320
+ra_in01.gat,381,324,0	warp	rachelwarp1032	1,1,ra_in01.gat,319,299
+//屋敷
+rachel.gat,179,220,0	warp	rachelwarp1033	1,1,ra_in01.gat,295,352
+ra_in01.gat,295,348,0	warp	rachelwarp1034	1,1,rachel.gat,179,215
+ra_in01.gat,312,374,0	warp	rachelwarp1035	1,1,ra_in01.gat,359,374
+ra_in01.gat,355,374,0	warp	rachelwarp1036	1,1,ra_in01.gat,308,374
+ra_in01.gat,291,371,0	warp	rachelwarp1037	1,1,ra_in01.gat,225,380
+ra_in01.gat,221,380,0	warp	rachelwarp1038	1,1,ra_in01.gat,287,371
+//カッティングシュエルの家
+rachel.gat,61,33,0	warp	rachelwarp1039	1,1,ra_in01.gat,181,198
+ra_in01.gat,181,202,0	warp	rachelwarp1040	1,1,rachel.gat,61,38
+rachel.gat,81,33,0	warp	rachelwarp1041	1,1,ra_in01.gat,237,198
+ra_in01.gat,237,202,0	warp	rachelwarp1042	1,1,rachel.gat,81,38
+ra_in01.gat,175,189,0	warp	rachelwarp1043	1,1,ra_in01.gat,132,189
+ra_in01.gat,136,189,0	warp	rachelwarp1044	1,1,ra_in01.gat,179,189
+ra_in01.gat,188,189,0	warp	rachelwarp1045	1,1,ra_in01.gat,263,144
+ra_in01.gat,259,144,0	warp	rachelwarp1046	1,1,ra_in01.gat,184,189
+ra_in01.gat,296,144,0	warp	rachelwarp1047	1,1,ra_in01.gat,235,189
+ra_in01.gat,231,189,0	warp	rachelwarp1048	1,1,ra_in01.gat,292,144
+ra_in01.gat,244,189,0	warp	rachelwarp1049	1,1,ra_in01.gat,291,189
+ra_in01.gat,287,189,0	warp	rachelwarp1050	1,1,ra_in01.gat,240,189
+//ブルーの家
+rachel.gat,217,55,0	warp	rachelwarp1051	1,1,ra_in01.gat,250,34
+ra_in01.gat,250,38,0	warp	rachelwarp1052	1,1,rachel.gat,217,60
+ra_in01.gat,235,21,0	warp	rachelwarp1053	1,1,ra_in01.gat,187,31
+ra_in01.gat,183,31,0	warp	rachelwarp1054	1,1,ra_in01.gat,239,21
+//民家
+rachel.gat,216,160,0	warp	rachelwarp1055	1,1,ra_in01.gat,135,282
+ra_in01.gat,135,286,0	warp	rachelwarp1056	1,1,rachel.gat,216,164
+//民家
+rachel.gat,108,200,0	warp	rachelwarp1057	1,1,ra_in01.gat,213,83
+ra_in01.gat,213,79,0	warp	rachelwarp1058	1,1,rachel.gat,108,195
+//民家
+rachel.gat,90,189,0	warp	rachelwarp1059	1,1,ra_in01.gat,192,148
+ra_in01.gat,192,152,0	warp	rachelwarp1060	1,1,rachel.gat,90,193
+
+//フレイヤ大神殿 室内⇒フレイヤ大神殿
+ra_temin.gat,169,18,0	warp	rachelwarp1061	1,1,ra_temple.gat,119,175
+//フレイヤ神殿 室内1F⇔フレイヤ神殿 室内2F
+ra_temin.gat,130,93,0	warp	rachelwarp1062	1,1,ra_temin.gat,239,258
+ra_temin.gat,239,253,0	warp	rachelwarp1063	1,1,ra_temin.gat,130,88
+ra_temin.gat,206,93,0	warp	rachelwarp1064	1,1,ra_temin.gat,312,258
+ra_temin.gat,312,253,0	warp	rachelwarp1065	1,1,ra_temin.gat,206,88
+//フレイヤ神殿 室内2F⇔フレイヤ神殿 聖域前
+ra_temin.gat,275,332,0	warp	rachelwarp1066	1,1,ra_temin.gat,27,305
+ra_temin.gat,27,299,0	warp	rachelwarp1067	1,1,ra_temin.gat,275,328
+//フレイヤ神殿 執務室前⇒フレイヤ神殿 執務室入口
+ra_temin.gat,275,243,0	warp	rachelwarp1068	1,1,ra_temin.gat,131,131
+//フレイヤ神殿 室内⇔教皇執務室
+ra_temin.gat,275,226,0	warp	rachelwarp1069	1,1,ra_temsky.gat,99,11
+ra_temsky.gat,99,8,0	warp	rachelwarp1070	1,1,ra_temin.gat,275,231
+//教皇執務室
+ra_temsky.gat,99,118,0	warp	rachelwarp1071	1,1,ra_temsky.gat,99,140
+ra_temsky.gat,99,135,0	warp	rachelwarp1072	1,1,ra_temsky.gat,99,113
+ra_temsky.gat,87,143,0	warp	rachelwarp1073	1,1,ra_temsky.gat,58,139
+ra_temsky.gat,62,139,0	warp	rachelwarp1074	1,1,ra_temsky.gat,91,143
+ra_temsky.gat,112,143,0	warp	rachelwarp1075	1,1,ra_temsky.gat,141,139
+ra_temsky.gat,137,139,0	warp	rachelwarp1076	1,1,ra_temsky.gat,109,143
+//フレイヤ神殿 室内（クエスト）
+que_rachel.gat,130,93,0		warp	rachelwarp1077	1,1,que_rachel.gat,239,258
+que_rachel.gat,239,253,0	warp	rachelwarp1078	1,1,que_rachel.gat,130,88
+que_rachel.gat,206,93,0		warp	rachelwarp1079	1,1,que_rachel.gat,312,258
+que_rachel.gat,312,253,0	warp	rachelwarp1080	1,1,que_rachel.gat,206,88
+que_rachel.gat,275,332,0	warp	rachelwarp1081	1,1,que_rachel.gat,27,305
+que_rachel.gat,27,299,0		warp	rachelwarp1082	1,1,que_rachel.gat,275,328

@@ -1,4 +1,19 @@
 ----------------------------------------
+//0251 [2007/07/26] by Rayce
+
+・AthenaProject2310よりmerge、thanks to Blazeさん
+　　・ラヘル実装
+　　・ラヘルクエスト5種追加（npc_town_rachel.txt）
+　　・飛行船に新経路追加（npc_town_airport.txt）
+　　・ジョンダ職員追加（npc_misc_zonda.txt）
+　　・宿屋NPC追加（npc_misc_inn.txt）
+　　・各warp修正（npc_warp_town.txt、npc_warp_dun.txt）
+　　・新規追加monsterの名称を修正
+　　　（npc_monster_rafild.txt、npc_monster_rasan.txt、npc_monster_icedun.txt）
+　　・mapflag修正（mapflag.txt）
+　　・map_auriga.confをラヘル対応に更新、新マップ情報だけ追加
+
+----------------------------------------
 //0250 [2007/07/26] by Rayce
 
 ・AthenaProject2308よりmerge、thanks to Blazeさん

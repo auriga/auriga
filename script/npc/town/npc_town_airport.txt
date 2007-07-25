@@ -42,7 +42,7 @@ yuno.gat,14,262,5	duplicate(飛行船職員#guide)	飛行船職員	91
 	next;
 	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//map以外はダミー
 	if('@map$ == "izlude.gat")
-		set '@word$,"ジュノー行き飛行船に乗る";
+		set '@word$,"ジュノー/ラヘル行きの飛行船に乗る";
 	else
 		set '@word$,"空港に入る";
 
@@ -120,6 +120,31 @@ hugel.gat,178,142,0	script	hugelwarp	45,1,1,{
 	else
 		set Zeny,Zeny-1200;
 	warp "airplane.gat",244,58;
+	end;
+}
+
+//ラヘル
+ra_fild12.gat,295,208,0	script	rachelwarp	45,1,1,{
+	mes "飛行船に乗るには、";
+	mes "飛行船無料利用券か";
+	mes "1200Zenyが必要となります。";
+	mes "飛行船に乗りますか？";
+	next;
+	if(select("乗る","乗らない")==2) {
+		mes "次回のご利用をお待ちしています。";
+		close;
+	}
+	if(countitem(7311))
+		delitem 7311,1;
+	else if(Zeny<1200) {
+		mes "所持金が足りません";
+		mes "飛行船に乗るには";
+		mes "1200Zeny必要です。";
+		close;
+	}
+	else
+		set Zeny,Zeny-1200;
+	warp "airplane_01.gat",245,60;
 	end;
 }
 
@@ -234,8 +259,9 @@ y_airport.gat,145,63,4	script	空港職員	91,{
 
 y_airport.gat,140,63,4	script	空港職員	91,{
 	mes "[空港職員]";
-	mes "ジュノー・イズルード間を往復する";
-	mes "飛行船をご利用なさいますか？";
+	mes "ジュノー・イズルード・ラヘル";
+	mes "を運行する飛行船を";
+	mes "ご利用なさいますか？";
 	next;
 	if(select("はい","いいえ")==1) {
 		warp "yuno.gat",47,244;
@@ -600,7 +626,7 @@ airplane.gat,240,40,0	script	出口	857,{}
 airplane.gat,247,40,0	script	出口	857,{}
 
 //============================================================
-// ルーンミッドガッツ間線 飛行船NPC
+// 国外線 飛行船NPC
 //------------------------------------------------------------
 airplane_01.gat,250,58,3	script	飛行船案内員#AirEvent	67,{
 	mes "[飛行船案内員]";
@@ -779,7 +805,26 @@ OnTimer141000:
 OnTimer151000:
 	announce "現在、ジュノーに停船中です。出発まで、しばらくお待ちください。",9,0x73DEDE;
 	end;
-OnTimer160000:
+OnTimer161000:
+	disablenpc "airplanewarp#yuno1_";
+	disablenpc "airplanewarp#yuno2_";
+	announce "当船は離陸します。次の目的地はラヘルです。",9,0xFF8400;
+	end;
+OnTimer176000:
+	announce "当船は現在、ラヘルに向かっております。",9,0xFF8400;
+	end;
+OnTimer191000:
+	announce "まもなく、ラヘルに着陸いたします。",9,0xFF8400;
+	end;
+OnTimer201000:
+	enablenpc "airplanewarp#ra1";
+	enablenpc "airplanewarp#ra2";
+	announce "ラヘルに到着しました。またのご利用をお待ちしております。",9,0xFF8400;
+	end;
+OnTimer211000:
+	announce "現在、ラヘルに停船中です。出発まで、しばらくお待ちください。",9,0xFF8400;
+	end;
+OnTimer220000:
 	set 'count,'count-1;
 	initnpctimer;
 	end;
@@ -990,6 +1035,8 @@ airplane_01.gat,243,29	warp	airplanewarp#yuno1_	1,1,yuno.gat,12,261
 airplane_01.gat,243,73	warp	airplanewarp#yuno2_	1,1,yuno.gat,12,261
 airplane_01.gat,243,29	warp	airplanewarp#iz1	1,1,izlude.gat,200,56
 airplane_01.gat,243,73	warp	airplanewarp#iz2	1,1,izlude.gat,200,56
+airplane_01.gat,243,29	warp	airplanewarp#ra1	1,1,ra_fild12.gat,292,204
+airplane_01.gat,243,73	warp	airplanewarp#ra2	1,1,ra_fild12.gat,292,204
 
 airplane_01.gat,240,64,5	script	出口	857,{}
 airplane_01.gat,247,64,5	script	出口	857,{}

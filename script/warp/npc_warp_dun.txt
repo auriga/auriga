@@ -1043,53 +1043,56 @@ kh_dun01.gat,232,226,0		warp	khwarp5003	1,1,kh_dun01.gat,13,12
 kh_dun02.gat,43,195,0		warp	khwarp5004	1,1,kh_dun01.gat,32,199
 
 
-//---アルナペルツ追加マップ
+//---ラヘル追加マップ
 
 
 //==============================================================
-// ice_dun01.gat	アイスキューブダンジョン
-// ice_dun02.gat	アイスキューブダンジョン
-// ice_dun03.gat	アイスキューブダンジョン
+// ra_san01.gat		フレイヤ大神殿聖域 01
+// ra_san02.gat		フレイヤ大神殿聖域 02
+// ra_san03.gat		フレイヤ大神殿聖域 03
+// ra_san04.gat		フレイヤ大神殿聖域 04
+// ra_san05.gat		フレイヤ大神殿聖域 05
 // -----
-// ra_fild01.gat	ラッセルフィールド
-//==============================================================
-//アイスキューブダンジョン1F⇒ラッセルフィールド01
-ice_dun01.gat,158,9,0	warp	rachelwarp0501	1,1,ra_fild01.gat,233,332
-
-//アイスキューブダンジョン1F⇔アイスキューブダンジョン2F
-ice_dun01.gat,147,160,0	warp	rachelwarp4001	1,1,ice_dun02.gat,151,159
-ice_dun02.gat,151,161,0	warp	rachelwarp4002	1,1,ice_dun01.gat,147,162
-//アイスキューブダンジョン2F⇔アイスキューブダンジョン3F
-ice_dun02.gat,150,285,0	warp	rachelwarp4003	1,1,ice_dun03.gat,149,20
-ice_dun03.gat,149,18,0	warp	rachelwarp4004	1,1,ice_dun02.gat,150,283
-
-
-//==============================================================
-// ra_san01.gat	神殿聖域ダンジョン
-// ra_san02.gat	神殿聖域ダンジョン
-// ra_san03.gat	神殿聖域ダンジョン
-// ra_san04.gat	神殿聖域ダンジョン
-// ra_san05.gat	神殿聖域ダンジョン
+// ice_dun01.gat	氷の洞窟 01
+// ice_dun02.gat	氷の洞窟 02
+// ice_dun03.gat	氷の洞窟 03
+// ice_dun04.gat	氷の洞窟 04
 // -----
+// ra_temple.gat	フレイヤ大神殿（セスルムニル）
+// ra_temin.gat		フレイヤ大神殿 室内
+// ra_fild01.gat	ラヘルフィールド 01（アウドムラ草原）
 //==============================================================
-//神殿聖域ダンジョン1F⇔神殿聖域ダンジョン2F左
-ra_san01.gat,140,140,0	warp	rachelwarp4001	1,1,ra_san02.gat,32,21
-ra_san02.gat,30,21,0	warp	rachelwarp4002	1,1,ra_san01.gat,140,138
-//神殿聖域ダンジョン2F左⇔神殿聖域ダンジョン2F右
-ra_san02.gat,291,149,0	warp	rachelwarp4003	1,1,ra_san03.gat,4,149
-ra_san03.gat,2,149,0	warp	rachelwarp4004	1,1,ra_san02.gat,289,149
-//神殿聖域ダンジョン2F左⇔神殿聖域ダンジョン2F下
-ra_san02.gat,214,2,0	warp	rachelwarp4005	1,1,ra_san04.gat,36,221
-ra_san04.gat,36,223,0	warp	rachelwarp4006	1,1,ra_san02.gat,214,4
-//神殿聖域ダンジョン2F右⇔神殿聖域ダンジョン2F下
-ra_san03.gat,86,14,0	warp	rachelwarp4007	1,1,ra_san04.gat,204,220
-ra_san04.gat,204,222,0	warp	rachelwarp4008	1,1,ra_san03.gat,86,16
-//神殿聖域ダンジョン2F下⇔神殿聖域ダンジョン3F
-ra_san04.gat,120,50,0	warp	rachelwarp4009	1,1,ra_san05.gat,150,9
-ra_san05.gat,150,7,0	warp	rachelwarp4010	1,1,ra_san04.gat,120,48
-//神殿聖域ダンジョン2F左⇒神殿聖域ダンジョン1F
-ra_san02.gat,214,278,0	warp	rachelwarp4011	1,1,ra_san01.gat,140,138
-//神殿聖域ダンジョン2F右⇒神殿聖域ダンジョン1F
-ra_san03.gat,124,283,0	warp	rachelwarp4012	1,1,ra_san01.gat,140,138
-//神殿聖域ダンジョン2F下⇒神殿聖域ダンジョン1F
-ra_san04.gat,120,104,0	warp	rachelwarp4013	1,1,ra_san01.gat,140,138
+//フレイヤ大神殿聖域01⇒フレイヤ大神殿室内
+ra_san01.gat,139,139,0	warp	rachelwarp0101	1,1,ra_temin.gat,27,314
+//フレイヤ大神殿聖域05⇒フレイヤ大神殿
+ra_san05.gat,150,7,0	warp	rachelwarp0102	1,1,ra_temple.gat,119,153
+
+//氷の洞窟01⇒ラヘルフィールド01
+ice_dun01.gat,157,10,0	warp	rachelwarp0501	1,1,ra_fild01.gat,233,327
+
+//フレイヤ大神殿聖域02〜04⇒フレイヤ大神殿聖域01
+ra_san02.gat,213,280,0	warp	rachelwarp4002	1,1,ra_san01.gat,140,19
+ra_san03.gat,123,283,0	warp	rachelwarp4003	1,1,ra_san01.gat,140,19
+ra_san04.gat,119,104,0	warp	rachelwarp4004	1,1,ra_san01.gat,140,19
+//フレイヤ大神殿聖域02⇔フレイヤ大神殿聖域03
+ra_san02.gat,289,149,0	warp	rachelwarp4005	1,1,ra_san03.gat,10,149
+ra_san03.gat,5,149,0	warp	rachelwarp4006	1,1,ra_san02.gat,284,149
+//フレイヤ大神殿聖域02⇔フレイヤ大神殿聖域04
+ra_san02.gat,213,4,0	warp	rachelwarp4007	1,1,ra_san04.gat,35,216
+ra_san04.gat,35,221,0	warp	rachelwarp4008	1,1,ra_san02.gat,213,9
+//フレイヤ大神殿聖域03⇔フレイヤ大神殿聖域04
+ra_san03.gat,85,15,0	warp	rachelwarp4009	1,1,ra_san04.gat,203,216
+ra_san04.gat,203,221,0	warp	rachelwarp4010	1,1,ra_san03.gat,85,20
+//フレイヤ大神殿聖域02〜04⇒フレイヤ大神殿聖域05
+ra_san02.gat,30,21,0	warp	rachelwarp4011	1,1,ra_san05.gat,14,149
+ra_san03.gat,279,21,0	warp	rachelwarp4012	1,1,ra_san05.gat,282,149
+ra_san04.gat,120,48,0	warp	rachelwarp4013	1,1,ra_san05.gat,150,282
+
+//氷の洞窟01⇔氷の洞窟02
+ice_dun01.gat,146,161,0	warp	rachelwarp4014	1,1,ice_dun02.gat,151,139
+ice_dun02.gat,151,145,0	warp	rachelwarp4015	1,1,ice_dun01.gat,146,157
+//氷の洞窟02⇔氷の洞窟03
+ice_dun02.gat,150,285,0	warp	rachelwarp4016	1,1,ice_dun03.gat,149,24
+ice_dun03.gat,149,19,0	warp	rachelwarp4017	1,1,ice_dun02.gat,150,280
+//氷の洞窟04⇒氷の洞窟03
+ice_dun04.gat,33,140,0	warp	rachelwarp4018	1,1,ice_dun03.gat,149,130

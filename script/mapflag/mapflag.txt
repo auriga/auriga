@@ -576,6 +576,14 @@ que_ng.gat	mapflag	nomemo	dummy
 que_ng.gat	mapflag	noteleport	dummy
 que_ng.gat	mapflag	nobranch	dummy
 que_ng.gat	mapflag	nopenalty	dummy
+que_rachel.gat	mapflag	nomemo	dummy
+que_rachel.gat	mapflag	noteleport	dummy
+que_rachel.gat	mapflag	nobranch	dummy
+que_rachel.gat	mapflag	nopenalty	dummy
+que_san04.gat	mapflag	nomemo	dummy
+que_san04.gat	mapflag	noteleport	dummy
+que_san04.gat	mapflag	nobranch	dummy
+que_san04.gat	mapflag	nopenalty	dummy
 que_sign01.gat	mapflag	nomemo	dummy
 que_sign01.gat	mapflag	noteleport	dummy
 que_sign01.gat	mapflag	nosave	SavePoint
@@ -586,10 +594,6 @@ que_sign02.gat	mapflag	noteleport	dummy
 que_sign02.gat	mapflag	nosave	SavePoint
 que_sign02.gat	mapflag	nobranch	dummy
 que_sign02.gat	mapflag	nopenalty	dummy
-ra_fild01.gat	mapflag	nomemo	dummy
-ra_fild05.gat	mapflag	nomemo	dummy
-ra_fild06.gat	mapflag	nomemo	dummy
-ra_fild10.gat	mapflag	nomemo	dummy
 ra_in01.gat	mapflag	nomemo	dummy
 ra_in01.gat	mapflag	noteleport	dummy
 ra_in01.gat	mapflag	nobranch	dummy
