@@ -1,7 +1,7 @@
 //==============================================================================
 // Ragnarok Online Slot Enchant Script     by Blaze
 //==============================================================================
-prt_in.gat,33,69,4	script	セヤブルレム#slot	84,{
+-	script	セヤブルレム#slot	84,{
 	mes "[セヤブルレム]";
 	mes "私は一般的な武器や防具に";
 	mes "スロットエンチャントが";
@@ -654,7 +654,7 @@ prt_in.gat,33,69,4	script	セヤブルレム#slot	84,{
 	close;
 }
 
-prt_in.gat,31,57,0	script	青年#slot	97,{
+-	script	青年#slot	97,{
 	mes "[青年]";
 	mes "気をつけてください。";
 	mes "スロットエンチャントを行うと、";
@@ -683,6 +683,8 @@ prt_in.gat,31,57,0	script	青年#slot	97,{
 }
 
 //==============================================================================
+prt_in.gat,33,69,4	duplicate(セヤブルレム#slot)	セヤブルレム	84
+prt_in.gat,31,57,0	duplicate(青年#slot)	青年	97
 morocc.gat,51,41,5	duplicate(セヤブルレム#slot)	セヤブルレム	84
 morocc.gat,60,42,3	duplicate(青年#slot)	青年	97
 payon.gat,140,151,5	duplicate(セヤブルレム#slot)	セヤブルレム	84

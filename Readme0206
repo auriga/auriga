@@ -1,4 +1,15 @@
 ----------------------------------------
+//0250 [2007/07/26] by Rayce
+
+・AthenaProject2308よりmerge、thanks to Blazeさん
+　　・アマツ通行手形クエスト修正（npc_town_amatsu.txt）
+　　・バンジージャンプのHP計算を修正（npc_town_umbala.txt）
+　　・ローグ転職クエストの一部箇所で進行不可になってしまうのを修正（npc_job_17rogue.txt）
+　　・スロットエンチャントNPCを整形（npc_quest_slotenchant.txt）
+　　・ノーグハルト追加ランダムアイテムをノーグハルト時点のデータで実装
+　　　（item_petbox.txt、item_food.txt、item_mask.txt、item_jewel_box.txt）
+
+----------------------------------------
 //0249 [2007/07/26] by Rayce
 
 ・AthenaProject2306よりmergeの続き、thanks to ICOさん

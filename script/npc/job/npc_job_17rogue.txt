@@ -681,7 +681,7 @@ in_rogue.gat,376,23,2	script	スミスラト	57,{
 		mes "[スミスラト]";
 		mes "ああ……ヤツがいたな。";
 		next;
-		switch(rand(4)) {
+		switch(rand(1)) {
 			case 0:		//アントニオJr
 				set CHANGE_RG,8;
 				mes "[スミスラト]";
