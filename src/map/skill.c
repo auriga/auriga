@@ -2056,16 +2056,16 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		{
 			struct status_change *sc_data = status_get_sc_data(src);
 
-			if(!battle_config.finger_offensive_type)
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
-			else {
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
-				if(sd) {
-					int i;
-					for(i=1;i<sd->spiritball_old;i++)
-						skill_addtimerskill(src,tick+i*200,bl->id,0,0,skillid,skilllv,BF_WEAPON,flag);
-					sd->ud.canmove_tick = tick + (sd->spiritball_old-1)*200;
-				}
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			if(md && !mob_is_pcview(md->class_)) {
+				// 見た目がPCでない場合は何故か姿が消えてしまうので抑制する
+				clif_skill_nodamage(src,src,skillid,skilllv,1);
+			}
+			if(battle_config.finger_offensive_type && sd) {
+				int i;
+				for(i=1;i<sd->spiritball_old;i++)
+					skill_addtimerskill(src,tick+i*200,bl->id,0,0,skillid,skilllv,BF_WEAPON,flag);
+				sd->ud.canmove_tick = tick + (sd->spiritball_old-1)*200;
 			}
 			if(sc_data && sc_data[SC_BLADESTOP].timer != -1)
 				status_change_end(src,SC_BLADESTOP,-1);
@@ -3375,7 +3375,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case BA_PANGVOICE:	/* パンボイス */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if( !(status_get_mode(bl)&0x20) && atn_rand()%10000 < 5000 )
+		sc_data = status_get_sc_data(bl);
+		if(sc_data && sc_data[SC_CONFUSION].timer != -1)
+			status_change_end(bl,SC_CONFUSION,-1);
+		else if( !(status_get_mode(bl)&0x20) && atn_rand()%10000 < 5000 )
 			status_change_start(bl,SC_CONFUSION,7,0,0,0,10000+7000,0);
 		else if(sd)
 			clif_skill_fail(sd,skillid,0,0);
@@ -8244,6 +8247,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	}
 	if(sd->dsprate!=100)
 		sp=sp*sd->dsprate/100;	/* 消費SP修正 */
+
 	switch(sc->id) {
 	case SA_CASTCANCEL:
 		if(ud->skilltimer == -1) {
@@ -8306,8 +8310,9 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		if (sd->spiritball > 0 && sd->spiritball < spiritball) {
 			spiritball = sd->spiritball;
 			sd->spiritball_old = sd->spiritball;
+		} else {
+			sd->spiritball_old = sc->lv;
 		}
-		else sd->spiritball_old = sc->lv;
 		break;
 	case MO_CHAINCOMBO:		/* 連打掌 */
 		if(sd->sc_data[SC_BLADESTOP].timer==-1){
@@ -8477,6 +8482,15 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case PF_HPCONVERSION:		/* 生命力変換 */
 		if(sd->status.sp >= sd->status.max_sp)
 			return 0;
+		break;
+	case PA_PRESSURE:		/* プレッシャー */
+		{
+			struct mob_data *md = map_id2md(sc->target);
+			if(md && md->class_ == 1288) {	// エンペは使用不可
+				clif_skill_fail(sd,sc->id,0,0);
+				return 0;
+			}
+		}
 		break;
 	case WS_CARTTERMINATION:	/* カートターミネーション */
 		{

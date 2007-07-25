@@ -910,6 +910,7 @@ static int pet_ai_sub_hard_lootsearch(struct block_list *bl,va_list ap)
 static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 {
 	struct map_session_data *sd = NULL;
+	int dist;
 
 	nullpo_retr(0, pd);
 
@@ -927,188 +928,15 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		return 0;
 	pd->last_thinktime = tick;
 
-	// ペットによるルート
-	if( !pd->target_id &&
-	    battle_config.pet_lootitem &&
-	    (!battle_config.pet_loot_type || pd->lootitem_count < LOOTITEM_SIZE) &&
-	    pd->loottype > 0 &&
-	    DIFF_TICK(tick,pd->lootitem_timer) > 0 &&
-	    pd->lootitem )
-	{
-		int count = 0;
-		map_foreachinarea(pet_ai_sub_hard_lootsearch,pd->bl.m,
-						  pd->bl.x-AREA_SIZE*2,pd->bl.y-AREA_SIZE*2,
-						  pd->bl.x+AREA_SIZE*2,pd->bl.y+AREA_SIZE*2,
-						  BL_ITEM,pd,&count);
+	if(unit_isdead(&sd->bl)) {
+		// 主人が死亡しているなら攻撃止め
+		if(pd->target_id > 0) {
+			unit_stopattack(&pd->bl);
+			pet_unlocktarget(pd);
+		}
 	}
 
-	if(sd->pet.intimate > 0) {
-		int dist, dx, dy;
-
-		dist = unit_distance(sd->bl.x,sd->bl.y,pd->bl.x,pd->bl.y);
-		if(dist > 12) {
-			if(pd->target_id > 0)
-				pet_unlocktarget(pd);
-			if(pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 3)
-				return 0;
-			pd->speed = (sd->speed >> 1);
-			if(pd->speed <= 0)
-				pd->speed = 1;
-			pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
-			if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
-				pet_randomwalk(pd,tick);
-		}
-		else if(pd->target_id > MAX_FLOORITEM) {
-			int mode = mob_db[pd->class_].mode;
-			int race = mob_db[pd->class_].race;
-			struct mob_data *md = map_id2md(pd->target_id);
-
-			if(md == NULL || pd->bl.m != md->bl.m || md->bl.prev == NULL ||
-			   unit_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13) {
-				pet_unlocktarget(pd);
-			} else if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race != RCT_INSECT && race != RCT_DEMON)) {
-				pet_unlocktarget(pd);
-			} else if(!battle_check_range(&pd->bl,&md->bl,mob_db[pd->class_].range)) {
-				if(pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,md->bl.x,md->bl.y) < 2)
-					return 0;
-				if(!unit_can_reach(&pd->bl,md->bl.x,md->bl.y)) {
-					pet_unlocktarget(pd);
-				} else {
-					int ret, i = 0;
-
-					if(battle_config.pet_speed_is_same_as_pc == 1)
-						pd->speed = status_get_speed(&sd->bl);
-					else
-						pd->speed = sd->petDB->speed;
-					do {
-						if(i == 0) {
-							// 最初はAEGISと同じ方法で検索
-							dx = md->bl.x - pd->bl.x;
-							dy = md->bl.y - pd->bl.y;
-							if(dx < 0) dx++; else if(dx > 0) dx--;
-							if(dy < 0) dy++; else if(dy > 0) dy--;
-						} else {
-							// だめならAthena式(ランダム)
-							dx = md->bl.x - pd->bl.x + atn_rand()%3 - 1;
-							dy = md->bl.y - pd->bl.y + atn_rand()%3 - 1;
-						}
-						ret = unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
-						i++;
-					} while(ret == 0 && i < 5);
-
-					if(ret == 0) { // 移動不可能な所からの攻撃なら2歩下る
-						if(dx < 0) dx = 2; else if(dx > 0) dx = -2;
-						if(dy < 0) dy = 2; else if(dy > 0) dy = -2;
-						unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
-					}
-				}
-			} else {
-				if(pd->ud.walktimer != -1)
-					unit_stop_walking(&pd->bl,1);
-				if(pd->ud.attacktimer != -1)
-					return 0;
-				if(pd->a_skill && atn_rand()%100 < pd->a_skill->rate + pd->msd->pet.intimate * pd->a_skill->bonusrate / 1000) {
-					if(skill_get_inf(pd->a_skill->id) & 2) {
-						// 場所指定
-						unit_skilluse_pos( &pd->bl, md->bl.x, md->bl.y, pd->a_skill->id, pd->a_skill->lv);
-					} else {
-						// ID指定
-						unit_skilluse_id(&pd->bl, pd->target_id, pd->a_skill->id, pd->a_skill->lv);
-					}
-				} else if(battle_config.pet_attack_support) {
-					unit_attack(&pd->bl, pd->target_id, 0);
-				}
-			}
-		}
-		else if(pd->target_id > 0) {	// ルート処理
-			const int range = 3;	// ルートに行く射程範囲
-			struct block_list *bl_item = map_id2bl(pd->target_id);
-
-			if(bl_item == NULL || bl_item->type != BL_ITEM ||bl_item->m != pd->bl.m ||
-			   (dist = unit_distance(pd->bl.x,pd->bl.y,bl_item->x,bl_item->y)) >= range) {
-				 // 遠すぎるかアイテムがなくなった
-				pet_unlocktarget(pd);
-			} else if(dist) {
-				if(pd->ud.walktimer != -1 && (DIFF_TICK(pd->next_walktime,tick) < 0 || unit_distance(pd->ud.to_x,pd->ud.to_y,bl_item->x,bl_item->y) <= 0))
-					return 0; // 既に移動中
-
-				pd->next_walktime = tick + 500;
-				dx = bl_item->x - pd->bl.x;
-				dy = bl_item->y - pd->bl.y;
-				if(battle_config.pet_speed_is_same_as_pc == 1)
-					pd->speed = status_get_speed(&sd->bl);
-				else
-					pd->speed = sd->petDB->speed;
-
-				unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
-			} else {
-				// アイテムまでたどり着いた
-				struct flooritem_data *fitem = (struct flooritem_data *)bl_item;
-
-				if(pd->ud.attacktimer != -1)
-					return 0; // 攻撃中
-				if(pd->ud.walktimer != -1)	// 歩行中なら停止
-					unit_stop_walking(&pd->bl,1);
-				if(pd->loottype == 1) {		// ペット自身が所有する場合
-					if(pd->lootitem_count < LOOTITEM_SIZE) {
-						memcpy(&pd->lootitem[pd->lootitem_count++],&fitem->item_data,sizeof(pd->lootitem[0]));
-						pd->lootitem_weight += itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount;
-					}
-					else if(battle_config.pet_loot_type) {
-						pet_unlocktarget(pd);
-						return 0;
-					}
-					else {
-						if(pd->lootitem[0].card[0] == (short)0xff00)
-							intif_delete_petdata(*((long *)(&pd->lootitem[0].card[1])));
-						pd->lootitem_weight -= itemdb_weight(pd->lootitem[LOOTITEM_SIZE-1].nameid) * pd->lootitem[LOOTITEM_SIZE-1].amount;
-						pd->lootitem_weight += itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount;
-						memmove(&pd->lootitem[0],&pd->lootitem[1],sizeof(pd->lootitem[0])*(LOOTITEM_SIZE-1));
-						memcpy(&pd->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(pd->lootitem[0]));
-					}
-				} else if(pd->loottype == 2) {	// ペットが拾った瞬間に飼い主へ
-					if(pc_additem(pd->msd,&fitem->item_data,fitem->item_data.amount)) {
-						pet_unlocktarget(pd);
-						return 0;
-					}
-				} else {
-					return 0;
-				}
-				if(mob_is_pcview(pd->class_)) {
-					int delay = tick + status_get_amotion(&pd->bl);
-					clif_takeitem(&pd->bl,&fitem->bl);
-					pd->ud.canact_tick  = delay;
-					pd->ud.canmove_tick = delay;
-				}
-				map_clearflooritem(bl_item->id);
-				pet_unlocktarget(pd);
-			}
-		}
-		else {
-			// 待機時、適当に歩き回る
-			/*
-			if(pc_issit(sd)) {
-				if(dist < 5 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 5) {
-					if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
-						pet_randomwalk(pd,tick);
-					return 0;
-				}
-				if(!(atn_rand()%100))
-					pet_randomwalk(pd,tick);
-				return 0;
-			}
-			*/
-			if(dist <= 3 || (pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 3))
-				return 0;
-			if(battle_config.pet_speed_is_same_as_pc == 1)
-				pd->speed = status_get_speed(&sd->bl);
-			else
-				pd->speed = sd->petDB->speed;
-			pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
-			if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
-				pet_randomwalk(pd,tick);
-		}
-	} else {
+	if(sd->pet.intimate <= 0) {
 		if(battle_config.pet_leave) {	// 新密度0で即刻消えるか
 			unit_free(&sd->pd->bl,0);
 			sd->status.pet_id = 0;
@@ -1125,6 +953,193 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 				unit_stopattack(&pd->bl);
 			pet_randomwalk(pd,tick);
 		}
+		return 0;
+	}
+
+	dist = unit_distance(sd->bl.x,sd->bl.y,pd->bl.x,pd->bl.y);
+	if(dist > 12 || (pd->target_id > 0 && dist > 9)) {
+		if(pd->target_id > 0) {
+			unit_stopattack(&pd->bl);
+			pet_unlocktarget(pd);
+		}
+		if(pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 3)
+			return 0;
+		pd->speed = (sd->speed >> 1);
+		if(pd->speed <= 0)
+			pd->speed = 1;
+		pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
+		if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
+			pet_randomwalk(pd,tick);
+		return 0;
+	}
+
+	// ペットによるルート
+	if(battle_config.pet_lootitem) {
+		if( pd->target_id <= 0 &&
+		    (!battle_config.pet_loot_type || pd->lootitem_count < LOOTITEM_SIZE) &&
+		    pd->loottype > 0 &&
+		    DIFF_TICK(tick,pd->lootitem_timer) > 0 &&
+		    pd->lootitem )
+		{
+			int count = 0;
+			map_foreachinarea(
+				pet_ai_sub_hard_lootsearch,
+				pd->bl.m,pd->bl.x-AREA_SIZE*2,pd->bl.y-AREA_SIZE*2,pd->bl.x+AREA_SIZE*2,pd->bl.y+AREA_SIZE*2,
+				BL_ITEM,pd,&count
+			);
+		}
+	}
+
+	if(pd->target_id > MAX_FLOORITEM) {
+		int mode = mob_db[pd->class_].mode;
+		int race = mob_db[pd->class_].race;
+		struct mob_data *md = map_id2md(pd->target_id);
+
+		if(md == NULL || pd->bl.m != md->bl.m || md->bl.prev == NULL ||
+		   unit_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13) {
+			pet_unlocktarget(pd);
+		} else if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->option & 0x06 && race != RCT_INSECT && race != RCT_DEMON)) {
+			pet_unlocktarget(pd);
+		} else if(!battle_check_range(&pd->bl,&md->bl,mob_db[pd->class_].range)) {
+			if(pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,md->bl.x,md->bl.y) < 2)
+				return 0;
+			if(!unit_can_reach(&pd->bl,md->bl.x,md->bl.y)) {
+				pet_unlocktarget(pd);
+			} else {
+				int dx, dy, ret, i = 0;
+
+				if(battle_config.pet_speed_is_same_as_pc == 1)
+					pd->speed = status_get_speed(&sd->bl);
+				else
+					pd->speed = sd->petDB->speed;
+				do {
+					if(i == 0) {
+						// 最初はAEGISと同じ方法で検索
+						dx = md->bl.x - pd->bl.x;
+						dy = md->bl.y - pd->bl.y;
+						if(dx < 0) dx++; else if(dx > 0) dx--;
+						if(dy < 0) dy++; else if(dy > 0) dy--;
+					} else {
+						// だめならAthena式(ランダム)
+						dx = md->bl.x - pd->bl.x + atn_rand()%3 - 1;
+						dy = md->bl.y - pd->bl.y + atn_rand()%3 - 1;
+					}
+					ret = unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
+					i++;
+				} while(ret == 0 && i < 5);
+
+				if(ret == 0) { // 移動不可能な所からの攻撃なら2歩下る
+					if(dx < 0) dx = 2; else if(dx > 0) dx = -2;
+					if(dy < 0) dy = 2; else if(dy > 0) dy = -2;
+					unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
+				}
+			}
+		} else {
+			if(pd->ud.walktimer != -1)
+				unit_stop_walking(&pd->bl,1);
+			if(pd->ud.attacktimer != -1)
+				return 0;
+			if(pd->a_skill && atn_rand()%100 < pd->a_skill->rate + pd->msd->pet.intimate * pd->a_skill->bonusrate / 1000) {
+				if(skill_get_inf(pd->a_skill->id) & 2) {
+					// 場所指定
+					unit_skilluse_pos( &pd->bl, md->bl.x, md->bl.y, pd->a_skill->id, pd->a_skill->lv);
+				} else {
+					// ID指定
+					unit_skilluse_id(&pd->bl, pd->target_id, pd->a_skill->id, pd->a_skill->lv);
+				}
+			} else if(battle_config.pet_attack_support) {
+				unit_attack(&pd->bl, pd->target_id, 0);
+			}
+		}
+	}
+	else if(pd->target_id > 0) {	// ルート処理
+		const int range = 3;	// ルートに行く射程範囲
+		struct block_list *bl_item = map_id2bl(pd->target_id);
+
+		if(bl_item == NULL || bl_item->type != BL_ITEM ||bl_item->m != pd->bl.m ||
+		   (dist = unit_distance(pd->bl.x,pd->bl.y,bl_item->x,bl_item->y)) >= range) {
+			 // 遠すぎるかアイテムがなくなった
+			pet_unlocktarget(pd);
+		} else if(dist) {
+			int dx, dy;
+			if(pd->ud.walktimer != -1 && (DIFF_TICK(pd->next_walktime,tick) < 0 || unit_distance(pd->ud.to_x,pd->ud.to_y,bl_item->x,bl_item->y) <= 0))
+				return 0; // 既に移動中
+
+			pd->next_walktime = tick + 500;
+			dx = bl_item->x - pd->bl.x;
+			dy = bl_item->y - pd->bl.y;
+			if(battle_config.pet_speed_is_same_as_pc == 1)
+				pd->speed = status_get_speed(&sd->bl);
+			else
+				pd->speed = sd->petDB->speed;
+
+			unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
+		} else {
+			// アイテムまでたどり着いた
+			struct flooritem_data *fitem = (struct flooritem_data *)bl_item;
+
+			if(pd->ud.attacktimer != -1)
+				return 0; // 攻撃中
+			if(pd->ud.walktimer != -1)	// 歩行中なら停止
+				unit_stop_walking(&pd->bl,1);
+			if(pd->loottype == 1) {		// ペット自身が所有する場合
+				if(pd->lootitem_count < LOOTITEM_SIZE) {
+					memcpy(&pd->lootitem[pd->lootitem_count++],&fitem->item_data,sizeof(pd->lootitem[0]));
+					pd->lootitem_weight += itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount;
+				}
+				else if(battle_config.pet_loot_type) {
+					pet_unlocktarget(pd);
+					return 0;
+				}
+				else {
+					if(pd->lootitem[0].card[0] == (short)0xff00)
+						intif_delete_petdata(*((long *)(&pd->lootitem[0].card[1])));
+					pd->lootitem_weight -= itemdb_weight(pd->lootitem[LOOTITEM_SIZE-1].nameid) * pd->lootitem[LOOTITEM_SIZE-1].amount;
+					pd->lootitem_weight += itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount;
+					memmove(&pd->lootitem[0],&pd->lootitem[1],sizeof(pd->lootitem[0])*(LOOTITEM_SIZE-1));
+					memcpy(&pd->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(pd->lootitem[0]));
+				}
+			} else if(pd->loottype == 2) {	// ペットが拾った瞬間に飼い主へ
+				if(pc_additem(pd->msd,&fitem->item_data,fitem->item_data.amount)) {
+					pet_unlocktarget(pd);
+					return 0;
+				}
+			} else {
+				return 0;
+			}
+			if(mob_is_pcview(pd->class_)) {
+				int delay = tick + status_get_amotion(&pd->bl);
+				clif_takeitem(&pd->bl,&fitem->bl);
+				pd->ud.canact_tick  = delay;
+				pd->ud.canmove_tick = delay;
+			}
+			map_clearflooritem(bl_item->id);
+			pet_unlocktarget(pd);
+		}
+	}
+	else {
+		// 待機時、適当に歩き回る
+		/*
+		if(pc_issit(sd)) {
+			if(dist < 5 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 5) {
+				if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
+					pet_randomwalk(pd,tick);
+				return 0;
+			}
+			if(!(atn_rand()%100))
+				pet_randomwalk(pd,tick);
+			return 0;
+		}
+		*/
+		if(dist <= 3 || (pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 3))
+			return 0;
+		if(battle_config.pet_speed_is_same_as_pc == 1)
+			pd->speed = status_get_speed(&sd->bl);
+		else
+			pd->speed = sd->petDB->speed;
+		pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
+		if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
+			pet_randomwalk(pd,tick);
 	}
 
 	return 0;

@@ -477,7 +477,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		int noflag = 0;
 
 		if(status_get_class(bl) == 1288) {	// 1288:エンペリウム
-			if(flag&BF_SKILL && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION)	// プレッシャー
+			if(flag&BF_SKILL && skill_num != HW_GRAVITATION)
 				return 0;
 			if(src->type == BL_PC) {
 				struct guild *g = guild_search(((struct map_session_data *)src)->status.guild_id);

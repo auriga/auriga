@@ -539,10 +539,6 @@ int pc_setrestartvalue(struct map_session_data *sd,int type)
 					clif_updatestatus(sd, SP_ZENY);
 			}
 		}
-
-		// ペットの攻撃止め（主人の敵討ちは有りならコメントアウト）
-		if(sd->pd && sd->pd->target_id > 0)
-			unit_stopattack(&sd->pd->bl);
 	}
 
 	return 0;
