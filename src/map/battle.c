@@ -336,8 +336,8 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			}
 		}
 
+		// セイフティウォール
 		if(sc_data[SC_SAFETYWALL].timer != -1 && flag&BF_SHORT && skill_num != NPC_GUIDEDATTACK) {
-			// セーフティウォール
 			struct skill_unit *unit = map_id2su(sc_data[SC_SAFETYWALL].val2);
 			if(unit && unit->group) {
 				if((--unit->group->val2) <= 0)
@@ -346,6 +346,12 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			} else {
 				status_change_end(bl,SC_SAFETYWALL,-1);
 			}
+		}
+
+		// カウプ
+		if(sc_data[SC_KAUPE].timer != -1 && skill_num != PA_PRESSURE && atn_rand()%100 < sc_data[SC_KAUPE].val2) {
+			status_change_end(bl,SC_KAUPE,-1);
+			damage = 0;
 		}
 
 		// ニューマ
@@ -1481,10 +1487,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	/* ８．回避判定 */
 	if(wd.type == 0 && atn_rand()%100 >= calc_flag.hitrate) {
 		wd.dmg_lv = ATK_FLEE;
-	}
-	else if(wd.type == 0 && t_sc_data && t_sc_data[SC_KAUPE].timer != -1 && atn_rand()%100 < t_sc_data[SC_KAUPE].val2) {	// カウプ
-		wd.dmg_lv = ATK_FLEE;
-		status_change_end(target,SC_KAUPE,-1);	// カウプ終了処理
 	}
 	else if(wd.type == 0 && t_sc_data && t_sc_data[SC_UTSUSEMI].timer != -1) {	// 空蝉
 		wd.dmg_lv = ATK_FLEE;
@@ -2647,8 +2649,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 31．スキル修正５（追加ダメージ２） */
-	if(src_sd && src_sd->status.weapon == WT_KATAR) {
-		// アドバンスドカタール研究
+	if(src_sd && src_sd->status.weapon == WT_KATAR && skill_num != ASC_BREAKER) {
+		// カタール研究
 		if((skill = pc_checkskill(src_sd,ASC_KATAR)) > 0) {
 			wd.damage += wd.damage*(10+(skill * 2))/100;
 		}
@@ -3251,11 +3253,6 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	case NPC_SELFDESTRUCTION:	// 自爆
 	case NPC_SELFDESTRUCTION2:	// 自爆2
 		mcd.damage = status_get_hp(bl)-((bl == target)? 1: 0);
-		damagefix = 0;
-		break;
-
-	case NPC_SMOKING:	// タバコを吸う
-		mcd.damage = 3;
 		damagefix = 0;
 		break;
 
@@ -3924,15 +3921,15 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		if(rdamage > 0)
 			clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0);
 	}
-	if(attack_type&BF_MAGIC && damage > 0 && src != bl && src == dsrc) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う
-		if(tsd) {	// 対象がPCの時
+	if(attack_type&BF_MAGIC && damage > 0 && src != bl) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う
+		if(tsd && src == dsrc) {	// 対象がPCの時
 			if(tsd->magic_damage_return > 0 && atn_rand()%100 < tsd->magic_damage_return) {	// 魔法攻撃跳ね返し？※
 				rdamage = damage;
 				damage  = -1;	// ダメージ0だがmissを出さない
 			}
 		}
 		// カイト
-		if(damage > 0 && sc_data && sc_data[SC_KAITE].timer != -1)
+		if(damage > 0 && sc_data && sc_data[SC_KAITE].timer != -1 && skillid != HW_GRAVITATION)
 		{
 			if(src->type == BL_PC || (status_get_lv(src) < 80 && !(status_get_mode(src)&0x20)))
 			{
@@ -3952,8 +3949,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			}
 		}
 		if(rdamage > 0) {
-			//clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0);
-			clif_skill_damage(src, src, tick, dmg.amotion, dmg.dmotion, rdamage, dmg.div_, skillid, lv, type);
+			clif_skill_damage(src, src, tick, dmg.amotion, dmg.dmotion, rdamage, dmg.div_, skillid, ((src == dsrc)? lv: -1), type);
 			if(dmg.blewcount > 0 && !map[src->m].flag.gvg) {
 				int dir = map_calc_dir(src,bl->x,bl->y);
 				if(dir == 0)
@@ -4061,27 +4057,29 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* 反射ダメージの実際の処理 */
-	if (sd && (skillid || flag) && rdamage > 0) {
+	if((skillid || flag) && rdamage > 0) {
 		unsigned long asflag = EAS_WEAPON | EAS_ATTACK | EAS_NORMAL;
 
-		if (attack_type&BF_WEAPON) {
+		if(attack_type&BF_WEAPON) {
 			battle_delay_damage(tick+dmg.amotion,bl,src,rdamage,0);
-			// 反射ダメージのオートスペル
-			if(battle_config.weapon_reflect_autospell)
-			{
-				skill_bonus_autospell(bl,src,asflag,gettick(),0);
+			if(sd) {
+				// 反射ダメージのオートスペル
+				if(battle_config.weapon_reflect_autospell) {
+					skill_bonus_autospell(bl,src,asflag,gettick(),0);
+				}
+				if(battle_config.weapon_reflect_drain && src != bl)
+					battle_attack_drain(bl,rdamage,0,battle_config.weapon_reflect_drain_enable_type);
 			}
-			if(battle_config.weapon_reflect_drain && src != bl)
-				battle_attack_drain(bl,rdamage,0,battle_config.weapon_reflect_drain_enable_type);
 		} else {
 			battle_damage(bl,src,rdamage,0);
-			// 反射ダメージのオートスペル
-			if(battle_config.magic_reflect_autospell)
-			{
-				skill_bonus_autospell(bl,src,asflag,gettick(),0);
+			if(sd) {
+				// 反射ダメージのオートスペル
+				if(battle_config.magic_reflect_autospell) {
+					skill_bonus_autospell(bl,src,asflag,gettick(),0);
+				}
+				if(battle_config.magic_reflect_drain && src != bl)
+					battle_attack_drain(bl,rdamage,0,battle_config.magic_reflect_drain_enable_type);
 			}
-			if(battle_config.magic_reflect_drain && src != bl)
-				battle_attack_drain(bl,rdamage,0,battle_config.magic_reflect_drain_enable_type);
 		}
 	}
 

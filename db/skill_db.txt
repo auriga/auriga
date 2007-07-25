@@ -194,7 +194,7 @@
 192,-9,6,1,0,0,10,1,no,0,2,0,weapon,0	//NPC_MAGICALATTACK#魔法打撃攻撃#
 193,0,6,4,0,1,10,1,no,0,2,0,none,0	//NPC_METAMORPHOSIS#メタモルフォース#
 194,0,6,4,0,1,10,1,no,0,2,0,none,0	//NPC_PROVOCATION#挑発#
-195,0,6,4,0,0,10,1,no,0,2,0,misc,0	//NPC_SMOKING#喫煙#
+195,0,6,4,0,1,10,1,no,0,2,0,misc,0	//NPC_SMOKING#喫煙#
 196,0,6,4,0,1,10,1,no,0,2,0,magic,0	//NPC_SUMMONSLAVE#取り巻き召喚#
 197,0,6,4,0,1,10,1,no,0,2,0,none,0	//NPC_EMOTION#エモーション#
 198,0,6,4,0,1,10,1,no,0,2,0,magic,0	//NPC_TRANSFORMATION#トランスフォーメーション#

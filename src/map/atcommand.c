@@ -2022,19 +2022,26 @@ atcommand_monster(
 	}
 
 	for (i = 0; i < number; i++) {
-		int mx = 0, my = 0;
-		if (on_map) {
-			mx = atn_rand() % (map[sd->bl.m].xs - 2) + 1;
-			my = atn_rand() % (map[sd->bl.m].ys - 2) + 1;
-		} else {
-			if (x <= 0)
-				mx = sd->bl.x + (atn_rand() % 10 - 5);
-			else
-				mx = x;
-			if (y <= 0)
-				my = sd->bl.y + (atn_rand() % 10 - 5);
-			else
-				my = y;
+		int mx, my, j = 0;
+		do {
+			if (on_map) {
+				mx = atn_rand() % (map[sd->bl.m].xs - 2) + 1;
+				my = atn_rand() % (map[sd->bl.m].ys - 2) + 1;
+			} else {
+				if (x <= 0)
+					mx = sd->bl.x + (atn_rand() % 10 - 5);
+				else
+					mx = x;
+				if (y <= 0)
+					my = sd->bl.y + (atn_rand() % 10 - 5);
+				else
+					my = y;
+			}
+		} while (map_getcell(sd->bl.m, mx, my, CELL_CHKNOPASS) && (++j) < 50);
+
+		if(j >= 50) {
+			mx = sd->bl.x;
+			my = sd->bl.y;
 		}
 		if (mob_once_spawn(sd, "this", mx, my, name, mob_id, 1, ""))
 			count++;

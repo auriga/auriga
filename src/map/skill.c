@@ -2828,7 +2828,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case TF_THROWSTONE:			/* 石投げ */
-	case NPC_SMOKING:			/* スモーキング */
 		battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,0 );
 		break;
 
@@ -4788,6 +4787,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(md && md->skillidx != -1)
 			clif_pet_performance(src,mob_db[md->class_].skill[md->skillidx].val[0]);
+		break;
+
+	case NPC_SMOKING:			/* 喫煙 */
+		clif_damage(src,src,tick,status_get_amotion(src),status_get_dmotion(src),3,1,0,0);
 		break;
 
 	case NPC_HALLUCINATION:
