@@ -125,13 +125,9 @@ gef_tower.gat	mapflag	noteleport	dummy
 gef_tower.gat	mapflag	nobranch	dummy
 gef_tower.gat	mapflag	nopenalty	dummy
 gefenia01.gat	mapflag	nomemo	dummy
-gefenia01.gat	mapflag	noteleport	dummy
 gefenia02.gat	mapflag	nomemo	dummy
-gefenia02.gat	mapflag	noteleport	dummy
 gefenia03.gat	mapflag	nomemo	dummy
-gefenia03.gat	mapflag	noteleport	dummy
 gefenia04.gat	mapflag	nomemo	dummy
-gefenia04.gat	mapflag	noteleport	dummy
 geffen.gat	mapflag	nopenalty	dummy
 geffen_in.gat	mapflag	nomemo	dummy
 geffen_in.gat	mapflag	noteleport	dummy

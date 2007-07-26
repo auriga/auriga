@@ -29,7 +29,7 @@
 		else if('@map$ == "hugel.gat")
 			savepoint "hugel.gat",97,153;
 		else if('@map$ == "rachel.gat")
-			savepoint "rachel.gat",113,137;
+			savepoint "rachel.gat",115,125;
 		mes "[ジョンダ職員]";
 		mes "セーブいたしました。";
 		mes "ご利用頂きまして、";

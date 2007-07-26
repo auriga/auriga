@@ -1964,7 +1964,7 @@ ra_in01.gat,357,61,0	warp	rachelwarp1007	1,1,ra_in01.gat,310,62
 ra_in01.gat,314,62,0	warp	rachelwarp1008	1,1,ra_in01.gat,361,61
 ra_in01.gat,297,59,0	warp	rachelwarp1009	1,1,ra_in01.gat,339,116
 ra_in01.gat,339,120,0	warp	rachelwarp1010	1,1,ra_in01.gat,297,63
-//武器防具屋
+//武器屋
 rachel.gat,42,109,0	warp	rachelwarp1011	1,1,ra_in01.gat,171,388
 ra_in01.gat,172,392,0	warp	rachelwarp1012	1,1,rachel.gat,42,114
 rachel.gat,42,87,0	warp	rachelwarp1013	1,1,ra_in01.gat,171,359
@@ -1972,7 +1972,7 @@ ra_in01.gat,171,355,0	warp	rachelwarp1014	1,1,rachel.gat,42,82
 ra_in01.gat,165,369,0	warp	rachelwarp1015	1,1,ra_in01.gat,122,334
 ra_in01.gat,126,334,0	warp	rachelwarp1016	1,1,ra_in01.gat,169,369
 ra_in01.gat,178,370,0	warp	rachelwarp1017	1,1,ra_in01.gat,113,385
-ra_in01.gat,109,385,0	warp	rachelwarp1018	1,1,ra_in01.gat,111,385
+ra_in01.gat,109,385,0	warp	rachelwarp1018	1,1,ra_in01.gat,174,370
 //道具屋
 rachel.gat,83,78,0	warp	rachelwarp1019	1,1,ra_in01.gat,249,266
 ra_in01.gat,249,262,0	warp	rachelwarp1020	1,1,rachel.gat,83,73

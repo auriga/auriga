@@ -3046,23 +3046,23 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 				mes "街の北西に魔法学校がありますので";
 				break;
 			case 3:
+				mes "送り先は港の都市アルベルタです。";
+				mes "街の南西に商人組合がありますので";
+				break;
+			case 4:
+				mes "送り先は砂漠の都市モロクです。";
+				mes "街の北西にあるピラミッドの地下1階に";
+				mes "シーフギルドがありますので";
+				break;
+			case 5:
 				mes "送り先は山岳の都市フェイヨンです。";
 				mes "街の北東にある弓手村に";
 				mes "アーチャーギルドがありますので";
 				break;
-			case 4:
+			case 6:
 				mes "送り先は首都プロンテラです。";
 				mes "街の北東にプロンテラ大聖堂が";
 				mes "ありますので";
-				break;
-			case 5:
-				mes "送り先は港の都市アルベルタです。";
-				mes "街の南西に商人組合がありますので";
-				break;
-			case 6:
-				mes "送り先は砂漠の都市モロクです。";
-				mes "街の北西にあるピラミッドの地下1階に";
-				mes "シーフギルドがありますので";
 				break;
 		}
 		return;
@@ -3566,20 +3566,20 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			getitem 1204,1;
 			break;
 		case 3:
-			mes "コンポジットボウ 1個";
-			getitem 1704,1;
-			break;
-		case 4:
-			mes "メイス 1個";
-			getitem 1504,1;
-			break;
-		case 5:
 			mes "バトルアックス 1個";
 			getitem 1351,1;
 			break;
-		case 6:
+		case 4:
 			mes "マインゴーシュ 1個";
 			getitem 1207,1;
+			break;
+		case 5:
+			mes "コンポジットボウ 1個";
+			getitem 1704,1;
+			break;
+		case 6:
+			mes "メイス 1個";
+			getitem 1504,1;
 			break;
 		}
 		mes "プラコン 7個";
@@ -3603,19 +3603,19 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			mes "マジシャンに転職した際、";
 			break;
 		case 3:
-			mes "「コンポジットボウ」は";
-			mes "アーチャーに転職した際、";
-			break;
-		case 4:
-			mes "「メイス」はアコライトに転職した際、";
-			break;
-		case 5:
 			mes "「バトルアックス」は";
 			mes "商人に転職した際、";
 			break;
-		case 6:
+		case 4:
 			mes "「マインゴーシュ」は";
 			mes "シーフに転職した際、";
+			break;
+		case 5:
+			mes "「コンポジットボウ」は";
+			mes "アーチャーに転職した際、";
+			break;
+		case 6:
+			mes "「メイス」はアコライトに転職した際、";
 			break;
 		}
 		mes "初心者用マインゴーシュの代わりに";
@@ -3685,20 +3685,20 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			warp "geffen_in.gat",163,98;
 			break;
 		case 3:
-			savepoint "payon.gat",256,242;
-			warp "payon_in02.gat",64,65;
-			break;
-		case 4:
-			savepoint "prontera.gat",116,72;
-			warp "prt_church.gat",172,19;
-			break;
-		case 5:
 			savepoint "alberta.gat",31,231;
 			warp "alberta_in.gat",62,44;
 			break;
-		case 6:
+		case 4:
 			savepoint "morocc.gat",149,100;
 			warp "moc_ruins.gat",155,44;
+			break;
+		case 5:
+			savepoint "payon.gat",256,242;
+			warp "payon_in02.gat",64,65;
+			break;
+		case 6:
+			savepoint "prontera.gat",116,72;
+			warp "prt_church.gat",172,19;
 			break;
 	}
 	end;

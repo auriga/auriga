@@ -1,4 +1,23 @@
 ----------------------------------------
+//0257 [2007/07/27] by Rayce
+
+・AthenaProject2312よりmerge、thanks to Blazeさん
+　　・TheSignクエスト実装（npc_quest_thesign.txt）
+　　・フィゲルクエスト2種実装、1種修正
+	（npc_town_hugel.txt）
+	（npc_town_airport.txt）
+	（npc_town_lighthalzen.txt）
+　　・ラヘルクエスト修正（npc_town_rachel.txt）
+　　・ラヘル案内要員追加（npc_misc_guide.txt）
+　　・ラヘルジョンダ職員のセーブ位置修正（npc_misc_zonda.txt）
+　　・ラヘル新規追加頭装備作成NPC実装（一部未実装）（npc_quest_hat5.txt）
+　　・ガンスリンガー武器作成クエスト5種実装（npc_job_28gunslinger.txt）
+　　・初心者修練場で職業適性検査の結果と判定に相違が出ていたのを修正（npc_job_00novice.txt）
+　　・キル・ハイルクエスト専用マップのwarpが2重化していたのを修正（npc_quest_kiel.txt）
+　　・飛行船で新経路のラヘルの不具合修正（npc_town_airport.txt）
+　　・ゲフェニアのテレポート不可を可に変更（mapflag.txt）
+
+----------------------------------------
 //0256 [2007/07/27] by Rayce
 
 ・db/job_db1.txtで読み込む武器のタイプがWT_MAXに対応してなかったのを修正（status.c）

@@ -1496,7 +1496,37 @@ rachel.gat,242,37,4	script	少年	921,{
 		mes "わかった。";
 		close;
 	case 2:
+		if(rand(2)) {
+			mes "[少年]";
+			mes "そうなんだ。";
+			next;
+			mes "[少年]";
+			mes "大人なのに……";
+			next;
+			mes "[少年]";
+			mes "大人がキャンディが好きなんだって！";
+			next;
+			mes "[少年]";
+			mes "超・ウ・ケ・るー!!";
+			close;
+		}
+		break;
 	case 3:
+		if(rand(2)) {
+			mes "[少年]";
+			mes "そうなんだ。";
+			next;
+			mes "[少年]";
+			mes "いい年した大人が！";
+			next;
+			emotion 2;
+			mes "[少年]";
+			mes "大人がキャンディが好きなんだって！";
+			next;
+			mes "[少年]";
+			mes "超・ウ・ケ・るー!!!!";
+			close;
+		}
 		break;
 	case 4:
 		mes "[少年]";
@@ -1510,20 +1540,7 @@ rachel.gat,242,37,4	script	少年	921,{
 		mes "そうなんだ〜";
 		close;
 	}
-	if(rand(2)) {
-		mes "[少年]";
-		mes "そうなんだ。";
-		next;
-		mes "[少年]";
-		mes "大人なのに……";
-		next;
-		mes "[少年]";
-		mes "大人がキャンディが好きなんだって！";
-		next;
-		mes "[少年]";
-		mes "超・ウ・ケ・るー!!";
-		close;
-	}
+
 	mes "[少年]";
 	mes "ホント？";
 	mes "じゃ、持ってるよね？";
@@ -4516,7 +4533,7 @@ ra_in01.gat,255,25,0	script	本	111,{
 		mes "クエストを進行することが";
 		mes "できなくなる可能性があります。";
 		mes "アイテムの取扱いにご注意ください。^000000";
-		set RA_5QUE,15;
+		set RA_3QUE,15;
 		getitem 7571,1;
 		next;
 		mes "[" +strcharinfo(0)+ "]";
