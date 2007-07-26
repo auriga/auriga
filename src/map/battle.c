@@ -1372,6 +1372,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_DEMONSTRATION:		// デモンストレーション
 		case TK_COUNTER:		// アプチャオルリギ
 		case AS_SPLASHER:		// ベナムスプラッシャー
+		case NPC_EARTHQUAKE:	// アースクエイク
 			calc_flag.hitrate = 1000000;
 			break;
 		case GS_TRACKING:		// トラッキング
@@ -2123,6 +2124,24 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(sc_data && sc_data[SC_NEN].timer != -1)
 					status_change_end(src,SC_NEN,-1);
 			}
+			break;
+		case NPC_EARTHQUAKE:		/* アースクエイク */
+			DMG_FIX( 500+500*skill_lv, 100 );
+			if(wflag > 1) {
+				DMG_FIX( 1, wflag );
+			}
+			break;
+		case NPC_FIREBREATH:		/* ファイアブレス */
+		case NPC_ICEBREATH:		/* アイスブレス */
+		case NPC_THUNDERBREATH:		/* サンダーブレス */
+		case NPC_ACIDBREATH:		/* アシッドブレス */
+		case NPC_DARKNESSBREATH:	/* ダークネスブレス */
+		case NPC_HELLJUDGEMENT:		/* ヘルジャッジメント */
+			DMG_FIX( 100*skill_lv, 100 );
+			break;
+		case NPC_PULSESTRIKE:		/* パルスストライク */
+			DMG_FIX( 100*skill_lv, 100 );
+			wd.blewcount = 0;
 			break;
 		case HFLI_MOON:		// ムーンライト
 			DMG_FIX( 110+110*skill_lv, 100 );
@@ -3017,6 +3036,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case NJ_KAMAITACHI:	// 朔風
 			MATK_FIX( 100+100*skill_lv,100 );
+			break;
+		case NPC_EVILLAND:	// イビルランド
+			mgd.damage = (skill_lv > 6)? 666: skill_lv*100;
+			normalmagic_flag = 0;
 			break;
 	}
 

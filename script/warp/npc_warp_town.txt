@@ -1829,19 +1829,25 @@ hu_in01.gat,381,363,0	warp	hugelwarp1042	1,1,hugel.gat,208,226
 hu_in01.gat,388,388,0	warp	hugelwarp1043	1,1,hu_in01.gat,385,319
 hu_in01.gat,380,319,0	warp	hugelwarp1044	1,1,hu_in01.gat,382,388
 //神殿発掘団
-hugel.gat,52,90,0	warp	hugelwarp1045	1,1,hu_in01.gat,33,90
+//hugel.gat,52,90,0	warp	hugelwarp1045	1,1,hu_in01.gat,33,90
 hu_in01.gat,37,90,0	warp	hugelwarp1046	1,1,hugel.gat,52,95
-hu_in01.gat,15,108,0	warp	hugelwarp1047	1,1,hu_in01.gat,15,155
+//hu_in01.gat,15,108,0	warp	hugelwarp1047	1,1,hu_in01.gat,15,155
 hu_in01.gat,15,151,0	warp	hugelwarp1048	1,1,hu_in01.gat,15,104
 hu_in01.gat,15,70,0	warp	hugelwarp1049	1,1,hu_in01.gat,15,25
 hu_in01.gat,15,29,0	warp	hugelwarp1050	1,1,hu_in01.gat,15,74
+hu_in01.gat,177,90,0	warp	hugelwarp1051	1,1,hugel.gat,52,95
+hu_in01.gat,107,90,0	warp	hugelwarp1052	1,1,hugel.gat,52,95
+hu_in01.gat,85,108,0	warp	hugelwarp1053	1,1,hu_in01.gat,85,155
+hu_in01.gat,85,151,0	warp	hugelwarp1054	1,1,hu_in01.gat,85,104
+hu_in01.gat,85,70,0	warp	hugelwarp1055	1,1,hu_in01.gat,85,25
+hu_in01.gat,85,29,0	warp	hugelwarp1056	1,1,hu_in01.gat,85,74
 //ビンゴゲーム会場
-hugel.gat,55,208,0	warp	hugelwarp1051	1,1,que_bingo.gat,49,9
-que_bingo.gat,49,7,0	warp	hugelwarp1052	1,1,hugel.gat,57,207
-que_bingo.gat,39,34,0	warp	hugelwarp1053	1,1,que_bingo.gat,34,109
-que_bingo.gat,34,105,0	warp	hugelwarp1054	1,1,que_bingo.gat,38,28
-que_bingo.gat,53,34,0	warp	hugelwarp1055	1,1,que_bingo.gat,49,71
-que_bingo.gat,48,66,0	warp	hugelwarp1056	1,1,que_bingo.gat,53,29
+hugel.gat,55,208,0	warp	hugelwarp1057	1,1,que_bingo.gat,49,9
+que_bingo.gat,49,7,0	warp	hugelwarp1058	1,1,hugel.gat,57,207
+que_bingo.gat,39,34,0	warp	hugelwarp1059	1,1,que_bingo.gat,34,109
+que_bingo.gat,34,105,0	warp	hugelwarp1060	1,1,que_bingo.gat,38,28
+que_bingo.gat,53,34,0	warp	hugelwarp1061	1,1,que_bingo.gat,49,71
+que_bingo.gat,48,66,0	warp	hugelwarp1062	1,1,que_bingo.gat,53,29
 //==============================================================
 //ガンスリンガー転職所
 que_ng.gat,130,166,0	warp	ngwarp0101	1,1,einbroch.gat,130,197

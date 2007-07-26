@@ -1056,6 +1056,10 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case TK_DOWNKICK:		/* ネリョチャギ */
 		status_change_start(bl,SC_STAN,7,0,0,0,3000,0);
 		break;
+	case TK_TURNKICK:		/* トルリョチャギ */
+		// 確率不明なのでとりあえず100%
+		status_change_start(bl,SC_STAN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
 	case CH_TIGERFIST:		/* 伏虎拳 */
 		if( atn_rand()%100 < 10 + skilllv*10 ) {
 			int sec = skill_get_time2(skillid,skilllv) - status_get_agi(bl)*50;
@@ -1157,6 +1161,17 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			rate = 5;
 		if((!tsc_data || tsc_data[SC_FREEZE].timer == -1) && atn_rand()%100 < rate)
 			status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv)*(1-sc_def_mdef/100),0);
+		break;
+	case NPC_BLEEDING:		/* 出血攻撃 */
+		if(atn_rand()%100 < skilllv*20)
+			status_change_start(bl,SC_BLEED,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
+	case NPC_HELLJUDGEMENT:		/* ヘルジャッジメント */
+		status_change_start(bl,SC_CURSE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
+	case NPC_EVILLAND:		/* イビルランド */
+		if(atn_rand()%100 < skilllv*5)
+			status_change_start(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	}
 
@@ -1997,6 +2012,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NJ_KASUMIKIRI:		/* 霞斬り */
 	case HFLI_MOON:
 	case HFLI_SBR44:
+	case NPC_BLEEDING:		/* 出血攻撃 */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case GS_DISARM:			/* ディスアーム */
@@ -2107,8 +2123,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				pos.x = skill_area_temp[2];
 				pos.y = skill_area_temp[3];
 				skill_blown(&pos,bl,skill_area_temp[4] | SAB_NODAMAGE);
-				// 確率不明なのでとりあえず100%
-				status_change_start(bl,SC_STAN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+				skill_additional_effect(src,bl,skillid,skilllv,BF_WEAPON,tick);
 			}
 		} else {
 			skill_area_temp[1] = bl->id;
@@ -2568,6 +2583,69 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
 					src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 					skill_castend_damage_id);
+		}
+		break;
+	case NPC_EARTHQUAKE:		/* アースクエイク */
+		if(flag&1) {
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
+		} else {
+			int ar = 5+(skilllv-1)%5*2;
+			skill_area_temp[0] = 0;
+			skill_area_temp[1] = bl->id;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,0,
+				src,skillid,skilllv,tick,flag|BCT_ENEMY,
+				skill_area_sub_count);
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,0,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case NPC_FIREBREATH:		/* ファイアブレス */
+	case NPC_ICEBREATH:		/* アイスブレス */
+	case NPC_THUNDERBREATH:		/* サンダーブレス */
+	case NPC_ACIDBREATH:		/* アシッドブレス */
+	case NPC_DARKNESSBREATH:	/* ダークネスブレス */
+		if(flag&1) {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+		} else {
+			int dir = map_calc_dir(src,bl->x,bl->y);
+			map_foreachinshootpath(
+				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],14,4,0,
+				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
+			);
+		}
+		break;
+	case NPC_PULSESTRIKE:		/* パルスストライク */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1]) {
+				if(battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0))
+					skill_blown(src,bl,skill_area_temp[2]);
+			}
+		} else {
+			skill_area_temp[1] = bl->id;
+			skill_area_temp[2] = skill_get_blewcount(skillid,skilllv);
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-7,src->y-7,src->x+7,src->y+7,0,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case NPC_HELLJUDGEMENT:		/* ヘルジャッジメント */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1]) {
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+			}
+		} else {
+			skill_area_temp[1] = bl->id;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-14,src->y-14,src->x+14,src->y+14,0,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
 		}
 		break;
 	case ALL_RESURRECTION:		/* リザレクション */
@@ -5845,6 +5923,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case HT_TALKIEBOX:			/* トーキーボックス */
 	case NJ_TATAMIGAESHI:		/* 畳返し */
 	case NJ_BAKUENRYU:			/* 龍炎陣 */
+	case NPC_EVILLAND:			/* イビルランド */
 		skill_unitsetting(src,skillid,skilllv,x,y,0);
 		break;
 	case HW_GRAVITATION:		/* グラビテーションフィールド */
@@ -6305,6 +6384,10 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			}
 		}
 		break;
+	case NPC_EVILLAND:		/* イビルランド */
+		val1 = (skilllv > 6)? 666: skilllv*100;
+		interval = interval + 500;
+		break;
 	}
 
 	nullpo_retr(NULL, group=skill_initunitgroup(src,layout->count,skillid,skilllv,unit_id));
@@ -6718,54 +6801,49 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		}
 		break;
 	case UNT_SANCTUARY:	/* サンクチュアリ */
-	{
-		int race = status_get_race(bl);
-		sc_data = status_get_sc_data(bl);
+		{
+			int race = status_get_race(bl);
+			sc_data = status_get_sc_data(bl);
 
-		if (battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON) {
-			if (bl->type == BL_PC)
-				if(!(map[bl->m].flag.pvp || map[bl->m].flag.gvg))
-				break;
-			if (battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0))
-				sg->val1 = sg->val1-2;	// チャットキャンセルに対応
-		} else {
-			int heal = sg->val2;
-			if (status_get_hp(bl) >= status_get_max_hp(bl))
-				break;
-			if(bl->type == BL_PC && ((struct map_session_data *)bl)->special_state.no_magic_damage)
-				heal = 0;	/* 黄金蟲カード（ヒール量０） */
-			if(sc_data && sc_data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
-				heal = 0;
-			clif_skill_nodamage(&src->bl,bl,AL_HEAL,heal,1);
-			battle_heal(NULL,bl,heal,0,0);
-			if (diff >= 500)
-				sg->val1--;	// 新規に入ったユニットだけカウント
+			if (battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON) {
+				if (bl->type == BL_PC) {
+					if(!map[bl->m].flag.pvp && !map[bl->m].flag.gvg)
+						break;
+				}
+				if (battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0))
+					sg->val1 = sg->val1-2;	// チャットキャンセルに対応
+			} else {
+				int heal = sg->val2;
+				if (status_get_hp(bl) >= status_get_max_hp(bl))
+					break;
+				if(bl->type == BL_PC && ((struct map_session_data *)bl)->special_state.no_magic_damage)
+					heal = 0;	/* 黄金蟲カード（ヒール量０） */
+				if(sc_data && sc_data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
+					heal = 0;
+				clif_skill_nodamage(&src->bl,bl,AL_HEAL,heal,1);
+				battle_heal(NULL,bl,heal,0,0);
+				if (diff >= 500)
+					sg->val1--;	// 新規に入ったユニットだけカウント
+			}
+			if (sg->val1 <= 0)
+				skill_delunitgroup(sg);
 		}
-		if (sg->val1 <= 0)
-			skill_delunitgroup(sg);
 		break;
-	}
 	case UNT_MAGNUS:	/* マグヌスエクソシズム */
-	{
-		int race = status_get_race(bl);
-		if (!battle_check_undead(race,status_get_elem_type(bl)) && race != RCT_DEMON)
-			return 0;
-		battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
-		src->val2++;
-		break;
-	}
-	case UNT_FIREWALL:	/* ファイヤーウォール */
-	{
-		//int ele,race;
-		//ele = status_get_elem_type(bl);
-		//race = status_get_race(bl);
-		do{
+		{
+			int race = status_get_race(bl);
+			if (!battle_check_undead(race,status_get_elem_type(bl)) && race != RCT_DEMON)
+				return 0;
 			battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
-		}while((--src->val2)>0 && !unit_isdead(bl) && bl->x==src->bl.x && bl->y == src->bl.y);
-		//}while(-src->val2 && !unit_isdead(bl) && (ele==ELE_FIRE || battle_check_undead(race,ele)) && bl->x==src->bl.x && bl->y == src->bl.y);
+			src->val2++;
+		}
+		break;
+	case UNT_FIREWALL:	/* ファイヤーウォール */
+		do {
+			battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
+		} while((--src->val2)>0 && !unit_isdead(bl) && bl->x==src->bl.x && bl->y == src->bl.y);
 		if (src->val2<=0)
 			skill_delunit(src);
-	}
 		break;
 	case UNT_ATTACK_SKILLS:
 		battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
@@ -7063,6 +7141,22 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		sg->unit_id = UNT_USED_TRAPS;
 		clif_changelook(&src->bl,LOOK_BASE,UNT_FIREPILLAR_ACTIVE);
 		sg->limit=DIFF_TICK(tick,sg->tick)+1500;
+		break;
+	case UNT_EVILLAND:	/* イビルランド */
+		{
+			int race = status_get_race(bl);
+			sc_data = status_get_sc_data(bl);
+
+			if(battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON) {
+				int heal = sg->val1;
+				if(status_get_hp(bl) >= status_get_max_hp(bl))
+					break;
+				clif_skill_nodamage(&src->bl,bl,AL_HEAL,heal,1);
+				battle_heal(NULL,bl,heal,0,0);
+			} else if(bl->type == BL_PC) {
+				battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
+			}
+		}
 		break;
 	}
 

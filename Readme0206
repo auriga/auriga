@@ -1,4 +1,19 @@
 ----------------------------------------
+//0258 [2007/07/27] by Rayce
+
+・AthenaProject2313よりmerge、thanks to Blazeさん
+　　・以下のベインス追加NPCスキルを実装
+	「アースクエイク」「ファイアブレス」「アイスブレス」「サンダーブレス」「アシッドブレス」
+	「ダークネスブレス」「出血攻撃」「パルスストライク」「ヘルジャッジメント」「イビルランド」
+　　・古く青い箱、古い紫色の箱、古いカード帖から得られるアイテムをラヘル時点に更新
+	（item_bluebox.txt、item_violetbox.txt、item_cardalbum.txt）
+　　・フィゲルのWarpを修正
+	（npc_warp_town.txt）
+
+・トルリョチャギの周囲へのスタン効果は skill_additional_effect() に記述するように修正（skill.c）
+・skill_unit_onplace_timer() の一部を少し整形（skill.c）
+
+----------------------------------------
 //0257 [2007/07/27] by Rayce
 
 ・AthenaProject2312よりmerge、thanks to Blazeさん
