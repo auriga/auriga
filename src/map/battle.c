@@ -4792,7 +4792,7 @@ int battle_config_read(const char *cfgName)
 		battle_config.branch_boss_no_drop = 0;
 		battle_config.branch_boss_no_exp = 0;
 		battle_config.branch_boss_no_mvp = 0;
-		battle_config.pc_hit_stop_type = 3;
+		battle_config.pc_hit_stop_type = 0;
 		battle_config.nomanner_mode = 0;
 		battle_config.death_by_unrig_penalty = 0;
 		battle_config.dance_and_play_duration = 20000;

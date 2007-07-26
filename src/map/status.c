@@ -6937,21 +6937,22 @@ int status_readdb(void) {
 	}
 	i=0;
 	while(fgets(line,1020,fp)){
-		char *split[27];
+		char *split[WT_MAX+4];
 		if(line[0]=='/' && line[1]=='/')
 			continue;
-		for(j=0,p=line;j<27 && p;j++){
+		memset(split,0,sizeof(split));
+		for(j=0,p=line;j<WT_MAX+4 && p;j++){
 			split[j]=p;
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		if(j < 27)
+		if(j < 4)
 			continue;
 		job_db[i].max_weight_base = atoi(split[0]);
 		job_db[i].hp_coefficient  = atoi(split[1]);
 		job_db[i].hp_coefficient2 = atoi(split[2]);
 		job_db[i].sp_coefficient  = atoi(split[3]);
-		for(j=0; j<23 && j<WT_MAX; j++)
+		for(j=0; j<WT_MAX && split[j+4]; j++)
 			job_db[i].aspd_base[j] = atoi(split[j+4]);
 		i++;
 		if(i >= MAX_VALID_PC_CLASS)
@@ -7011,7 +7012,7 @@ int status_readdb(void) {
 	printf("read db/job_db2-2.txt done\n");
 
 	// 精錬データテーブル
-	for(i=0; i<5; i++) {
+	for(i=0; i<MAX_WEAPON_LEVEL+1; i++) {
 		refine_db[i].safety_bonus = 0;
 		refine_db[i].over_bonus   = 0;
 		refine_db[i].limit        = MAX_REFINE;

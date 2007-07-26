@@ -1,4 +1,13 @@
 ----------------------------------------
+//0256 [2007/07/27] by Rayce
+
+・db/job_db1.txtで読み込む武器のタイプがWT_MAXに対応してなかったのを修正（status.c）
+・db/refine_db.txtの初期化時、MAX_WEAPON_LEVELに対応してなかったのを修正（status.c）
+
+・conf/battle_auriga.confの pc_hit_stop_type をデフォルトで0に修正（battle.c）
+　位置補正情報を送らないので所謂ヨーヨー現象が発生するようになります
+
+----------------------------------------
 //0255 [2007/07/26] by Rayce
 
 ・0244で保留にしていた bAddSkillHealRate の中身を実装（battle.c, skill.*）
