@@ -29,7 +29,7 @@ int chrif_reqdivorce(int char_id);
 int chrif_friend_delete( struct map_session_data* sd, int account_id, int char_id );
 int chrif_friend_online( struct map_session_data *sd, int flag );
 
-int chrif_req_break_adoption(int char_id, char *name);
+int chrif_req_break_adoption(int char_id, const char *name);
 
 int chrif_ranking_request(int fd);
 int chrif_ranking_update(struct Ranking_Data *rd,int ranking_id,int rank);

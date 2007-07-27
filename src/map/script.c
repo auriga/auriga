@@ -8403,21 +8403,23 @@ int buildin_wedding_effect(struct script_state *st)
  */
 int buildin_divorce(struct script_state *st)
 {
-	int num = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	struct map_session_data *sd=script_rid2sd(st);
+	int num, partner_id;
+	struct map_session_data *sd = script_rid2sd(st);
 
-	if(sd==NULL){
+	if(sd == NULL) {
 		push_val(st->stack,C_INT,0);
 		return 0;
 	}
+	partner_id = sd->status.partner_id;
 
-	if(num==0){
-		if(pc_divorce(sd) < 0){
+	num = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(num == 0) {
+		if(pc_divorce(sd) < 0) {
 			push_val(st->stack,C_INT,0);
 			return 0;
 		}
 	}
-	push_val(st->stack,C_INT,sd->status.partner_id);
+	push_val(st->stack,C_INT,partner_id);
 
 	return 0;
 }

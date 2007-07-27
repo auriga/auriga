@@ -4539,7 +4539,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_MAXIMIZEPOWER:		/* マキシマイズパワー */
 			if(bl->type == BL_PC)
-				val2 = tick;	// SPが1減る時間,val2にも
+				tick = val2;	// SPが1減る時間
 			else
 				tick = 5000*val1;
 			break;
@@ -4921,7 +4921,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_INVISIBLE:		/* インビジブル */
 			if(bl->type == BL_PC) {
 				calc_flag = 1;
-				val2 = tick;
+				tick = val2;
 			} else {
 				tick = 5000*val1;
 			}
@@ -5039,7 +5039,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			break;
 		case SC_ELEMENTFIELD:		/* 属性場 */
-			val2 = tick;
+			tick = val2;
 			break;
 		case SC_RUN:			/* タイリギ */
 			val4 = 0;

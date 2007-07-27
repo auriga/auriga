@@ -3378,7 +3378,7 @@ int parse_frommap(int fd)
 					// 養子解体情報をmapに通知
 					WBUFW(buf,0)=0x2b29;
 					WBUFL(buf,2)=cd1->st.char_id;
-					memcpy(buf, RFIFOP(fd,6), 24);
+					memcpy(WBUFP(buf,6), RFIFOP(fd,6), 24);
 					mapif_sendall(buf,30);
 					char_break_adoption(&cd1->st);
 				}

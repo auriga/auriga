@@ -14,6 +14,8 @@
 #include "timer.h"
 #include "malloc.h"
 #include "nullpo.h"
+#include "md5calc.h"
+
 #include "map.h"
 #include "battle.h"
 #include "chrif.h"
@@ -23,8 +25,8 @@
 #include "pc.h"
 #include "atcommand.h"
 #include "friend.h"
-#include "md5calc.h"
 #include "ranking.h"
+#include "status.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -781,14 +783,14 @@ int chrif_parse_friend_online( int fd )
  * 養子解体情報同期要求
  *------------------------------------------
  */
-int chrif_req_break_adoption(int char_id, char *name)
+int chrif_req_break_adoption(int char_id, const char *name)
 {
 	if (char_fd < 0)
 		return -1;
 
 	WFIFOW(char_fd,0)=0x2b28;
 	WFIFOL(char_fd,2)=char_id;
-	memcpy(WFIFOP(char_fd,6), name, 24);
+	strncpy(WFIFOP(char_fd,6), name, 24);
 	WFIFOSET(char_fd,30);
 
 	return 0;
@@ -808,19 +810,19 @@ int chrif_breakadoption(int char_id, unsigned char *name)
 	if( (sd = map_charid2sd(char_id)) == NULL )
 		return 0;
 
-	sd->status.baby_id = 0;
+	sd->status.baby_id      = 0;
 	sd->status.parent_id[0] = 0;
 	sd->status.parent_id[1] = 0;
 
-	if(pc_isbaby(sd)) {	// 子供なら元の職に戻す
+	if(pc_isbaby(sd)) {
+		// 子供なら元の職に戻す
 		pc_jobchange(sd,sd->s_class.job,0);
-	} else {		// 親ならWE_BABY破棄（離婚しててもいいのでpc_ismarriedは使わない）
-		pc_calc_skilltree(sd);
-		clif_skillinfoblock(sd);
+	} else {
+		// 親ならWE_BABY破棄（離婚しててもいいのでpc_ismarriedは使わない）
+		status_calc_pc(sd,0);
 	}
 
-	memset(output, 0, sizeof(output));
-	sprintf(output, msg_txt(174), name); // %sさんの要望により、養子関係が破棄されました
+	snprintf(output, sizeof(output), msg_txt(174), name); // %sさんの要望により、養子関係が破棄されました
 	clif_disp_onlyself(sd->fd, output);
 
 	return 0;

@@ -2723,9 +2723,9 @@ int pc_skill(struct map_session_data *sd,int id,int level,int flag)
 		clif_skillinfoblock(sd);
 	}
 	else if(sd->status.skill[id].lv < level) {	// 覚えられるがlvが小さいなら
-		if(sd->status.skill[id].id == id)
+		if(sd->status.skill[id].id == id) {
 			sd->status.skill[id].flag = sd->status.skill[id].lv+2;	// lvを記憶
-		else {
+		} else {
 			sd->status.skill[id].id   = id;
 			sd->status.skill[id].flag = 1;	// cardスキルとする
 		}
@@ -7027,10 +7027,8 @@ int pc_adoption_sub(struct map_session_data* sd,struct map_session_data *papa,st
 		pc_jobchange(sd,sd->s_class.job,2);
 
 		// 親はWE_BABYを取得するためにスキルツリー再計算
-		pc_calc_skilltree(papa);
-		clif_skillinfoblock(papa);
-		pc_calc_skilltree(mama);
-		clif_skillinfoblock(mama);
+		status_calc_pc(papa,0);
+		status_calc_pc(mama,0);
 		return 1;
 	}
 	return 0;
@@ -7121,6 +7119,9 @@ int pc_break_adoption(struct map_session_data *sd)
 	if(sd->status.baby_id <= 0 && sd->status.parent_id[0] <= 0 && sd->status.parent_id[1] <= 0)
 		return 0;
 
+	// %sさんの要望により、養子関係が破棄されました
+	snprintf(output, sizeof(output), msg_txt(174), sd->status.name);
+
 	// sdの家族情報を抽出
 	if(pc_isbaby(sd)) {
 		b_id  = sd->status.char_id;
@@ -7140,15 +7141,13 @@ int pc_break_adoption(struct map_session_data *sd)
 		p2   = sd;
 	}
 
-	memset(output, 0, sizeof(output));
-	sprintf(output, msg_txt(174), sd->status.name);	// %sさんの要望により、養子関係が破棄されました
-
 	// 解体処理の実行、見つからなければchar鯖に依頼
 	if(baby) {		// 子供の離縁
 		baby->status.parent_id[0] = 0;
 		baby->status.parent_id[1] = 0;
 		pc_jobchange(baby,baby->s_class.job,0);
 		clif_disp_onlyself(baby->fd, output);
+		chrif_save(baby);
 	} else if(b_id > 0) {
 		chrif_req_break_adoption(b_id, sd->status.name);
 		chrif_searchcharid(b_id);
@@ -7156,9 +7155,9 @@ int pc_break_adoption(struct map_session_data *sd)
 
 	if(p1) {		// 親の離縁
 		p1->status.baby_id = 0;
-		pc_calc_skilltree(p1);		// WE_BABYを破棄するためにスキルツリー再計算
-		clif_skillinfoblock(p1);
+		status_calc_pc(p1,0);	// WE_BABYを破棄するためにスキルツリー再計算
 		clif_disp_onlyself(p1->fd, output);
+		chrif_save(p1);
 	} else if(p1_id > 0) {
 		chrif_req_break_adoption(p1_id, sd->status.name);
 		chrif_searchcharid(p1_id);
@@ -7166,9 +7165,9 @@ int pc_break_adoption(struct map_session_data *sd)
 
 	if(p2) {		// もう一人の親の離縁
 		p2->status.baby_id = 0;
-		pc_calc_skilltree(p2);
-		clif_skillinfoblock(p2);
+		status_calc_pc(p2,0);
 		clif_disp_onlyself(p2->fd, output);
+		chrif_save(p2);
 	} else if(p2_id > 0) {
 		chrif_req_break_adoption(p2_id, sd->status.name);
 		chrif_searchcharid(p2_id);
@@ -7223,6 +7222,8 @@ int pc_divorce(struct map_session_data *sd)
 		clif_divorced(sd, p_sd->status.name);
 	else
 		clif_divorced(sd, "");
+
+	chrif_save(sd);
 
 	return 0;
 }

@@ -4068,7 +4068,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				status_change_end(bl, sc, -1);
 			} else {
 				/* 付加する */
-				status_change_start(bl,sc,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+				if(skillid == BS_MAXIMIZE)
+					status_change_start(bl,sc,skilllv,skill_get_time(skillid,skilllv),0,0,0,0);
+				else
+					status_change_start(bl,sc,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			}
 		}
 		break;
@@ -4090,6 +4093,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 
+	case ST_CHASEWALK:		/* チェイスウォーク */
 	case AS_CLOAKING:		/* クローキング */
 	case NPC_INVISIBLE:		/* インビジブル */
 		{
@@ -4101,25 +4105,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				status_change_end(bl, sc, -1);
 			} else {
 				/* 付加する */
-				status_change_start(bl,sc,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+				status_change_start(bl,sc,skilllv,skill_get_time(skillid,skilllv),0,0,0,0);
 			}
-			if(skilllv < 3)
+			if(skillid != ST_CHASEWALK && skilllv < 3)
 				skill_check_cloaking(bl);
-		}
-		break;
-
-	case ST_CHASEWALK:		/* チェイスウォーク */
-		{
-			int sc=SkillStatusChangeTable[skillid];
-			clif_skill_nodamage(src,bl,skillid,-1,1);
-			sc_data = status_get_sc_data(bl);
-			if( sc_data && sc_data[sc].timer!=-1 ) {
-				/* 解除する */
-				status_change_end(bl, sc, -1);
-			} else {
-				/* 付加する */
-				status_change_start(bl,sc,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
-			}
 		}
 		break;
 
@@ -6354,9 +6343,9 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			{
 				// レベルの低いものを使った場合持続時間減少？
 				// 属性場の残り時間算出
-				limit = sd->sc_data[SC_ELEMENTFIELD].val2 - (gettick() - sd->sc_data[SC_ELEMENTFIELD].val3);
+				limit = sd->sc_data[SC_ELEMENTFIELD].val2 - DIFF_TICK(gettick(), (unsigned int)sd->sc_data[SC_ELEMENTFIELD].val3);
 			}else{
-				status_change_start(src,SC_ELEMENTFIELD,1,0,gettick(),0,skill_get_time(skillid,skilllv),0 );
+				status_change_start(src,SC_ELEMENTFIELD,1,skill_get_time(skillid,skilllv),gettick(),0,0,0);
 			}
 		}
 		break;
