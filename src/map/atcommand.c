@@ -449,14 +449,65 @@ static AtCommandType atcommand(const int level, const char* message, struct AtCo
  * @コマンドに存在するかどうか確認する
  *------------------------------------------
  */
-AtCommandType is_atcommand(const int fd, struct map_session_data* sd, const char* message, int gmlvl)
+AtCommandType is_atcommand_sub(const int fd, struct map_session_data *sd, const char *str, int gmlvl)
+{
+	AtCommandInfo info;
+	AtCommandType type;
+
+	nullpo_retr(AtCommand_None, sd);
+
+	if(gmlvl <= 0)
+		gmlvl = pc_isGM(sd);
+
+	type = atcommand(gmlvl, str, &info);
+	if (type != AtCommand_None) {
+		char output[200];
+		char command[100];
+		const char* p;
+
+		p = str;
+		while (*p && !isspace((unsigned char)*p))
+			p++;
+		if (p - str >= sizeof command) // too long
+			return AtCommand_None;
+		memset(command, '\0', sizeof command);
+		strncpy(command, str, p - str);
+		if (isspace((unsigned char)*p))
+			p++;
+
+		if (type == AtCommand_Unknown) {
+			if (pc_isGM(sd)) {
+				snprintf(output, sizeof output, msg_txt(132), command);
+				clif_displaymessage(fd, output);
+			} else {
+				return AtCommand_None;
+			}
+		} else if (map[sd->bl.m].flag.nocommand && map[sd->bl.m].flag.nocommand > gmlvl) {
+			snprintf(output, sizeof output, msg_txt(180), command);
+			clif_displaymessage(fd, output);
+		} else if (info.proc(fd, sd, info.command, p) != 0) {
+			if (pc_isGM(sd)) {
+				// 異常終了
+				snprintf(output, sizeof output, msg_txt(133), command);
+				clif_displaymessage(fd, output);
+			} else {
+				return AtCommand_None;
+			}
+		}
+		return info.type;
+	}
+
+	return AtCommand_None;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+AtCommandType is_atcommand(const int fd, struct map_session_data* sd, const char* message)
 {
 	const char* str;
 	int s_flag;
-	char command[100];
-	const char* p;
-	AtCommandInfo info;
-	AtCommandType type;
 
 	nullpo_retr(AtCommand_None, sd);
 
@@ -473,45 +524,7 @@ AtCommandType is_atcommand(const int fd, struct map_session_data* sd, const char
 	if (!*str)
 		return AtCommand_None;
 
-	p = str;
-	while (*p && !isspace((unsigned char)*p))
-		p++;
-	if (p - str >= sizeof command) // too long
-		return AtCommand_None;
-	memset(command, '\0', sizeof command);
-	strncpy(command, str, p - str);
-	if (isspace((unsigned char)*p))
-		p++;
-
-	if(gmlvl <= 0)
-		gmlvl = pc_isGM(sd);
-
-	type = atcommand(gmlvl, command, &info);
-	if (type != AtCommand_None) {
-		char output[200];
-		if (type == AtCommand_Unknown) {
-			if (pc_isGM(sd)) {
-				snprintf(output, sizeof output, msg_txt(132), command);
-				clif_displaymessage(fd, output);
-			} else {
-				return AtCommand_None;
-			}
-		} else if (map[sd->bl.m].flag.nocommand && map[sd->bl.m].flag.nocommand > gmlvl) {
-			snprintf(output, sizeof output, msg_txt(180), command);
-			clif_displaymessage(fd, output);
-		} else if (info.proc(fd, sd, command, p) != 0) {
-			if (pc_isGM(sd)) {
-				// 異常終了
-				snprintf(output, sizeof output, msg_txt(133), command);
-				clif_displaymessage(fd, output);
-			} else {
-				return AtCommand_None;
-			}
-		}
-		return info.type;
-	}
-
-	return AtCommand_None;
+	return is_atcommand_sub(fd, sd, str, 0);
 }
 
 /*==========================================

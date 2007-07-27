@@ -1,4 +1,20 @@
 ----------------------------------------
+//0260 [2007/07/28] by Rayce
+
+・装備中のアイテムは矢作成スキルで矢に変換できないように修正（clif.c, skill.c）
+	AthenaProject BTS報告 Mopyaさん and Cocoaさん thank's
+
+・is_atcommand() を名前解析部分とコマンド実行部分に分離する merged from eA（atcommand.*, clif.c, script.c）
+	コマンド実行部分は is_atcommand_sub() とする。
+	スクリプトのgmcommand命令のように名前解析が不要な場面においてはこちらを使うことで無駄な処理を省略する。
+	ついでに is_atcommand() の引数gmlvlを削っておく。
+
+・以下の@コマンドに対してsynonymous commandを作った場合、正常に機能しなかった問題を修正（atcommand.c）
+	@kamib, @kamic
+	@monstermap
+	@str, @agi, @vit, @int, @dex, @luk
+
+----------------------------------------
 //0259 [2007/07/28] by Rayce
 
 ・マキシマイズパワー使用中にログアウトして再度ログインすると、SPの減少速度が速くなるバグを修正

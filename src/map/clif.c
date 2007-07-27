@@ -3366,7 +3366,7 @@ void clif_arrow_fail(struct map_session_data *sd, unsigned short type)
  */
 void clif_arrow_create_list(struct map_session_data *sd)
 {
-	int i,c,view;
+	int i,c,view,idx;
 	int fd;
 
 	nullpo_retv(sd);
@@ -3375,7 +3375,10 @@ void clif_arrow_create_list(struct map_session_data *sd)
 	WFIFOW(fd,0)=0x1ad;
 
 	for(i=0,c=0;i<MAX_SKILL_ARROW_DB;i++){
-		if(skill_arrow_db[i].nameid > 0 && pc_search_inventory(sd,skill_arrow_db[i].nameid)>=0){
+		if(skill_arrow_db[i].nameid > 0 &&
+		   (idx = pc_search_inventory(sd,skill_arrow_db[i].nameid)) >= 0 &&
+		   !sd->status.inventory[idx].equip)
+		{
 			if((view = itemdb_viewid(skill_arrow_db[i].nameid)) > 0)
 				WFIFOW(fd,c*2+4) = view;
 			else
@@ -9255,7 +9258,7 @@ static void clif_parse_GlobalMessage(int fd,struct map_session_data *sd, int cmd
 		}
 	}
 
-	if (is_atcommand(fd, sd, message, 0) != AtCommand_None)
+	if (is_atcommand(fd, sd, message) != AtCommand_None)
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可
@@ -9491,7 +9494,7 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
 {
-	char *message, *gm_message, *name;
+	char *message, *name;
 	int message_size;
 
 	nullpo_retv(sd);
@@ -9504,16 +9507,8 @@ static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
 
 	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
 
-	gm_message = (char *)aCalloc(message_size + 28, sizeof(char)); // (name) 24 + " : " (3) + message + NULL (1)
-	strncpy(gm_message, sd->status.name, 24);
-	strcat(gm_message, " : ");
-	memcpy(gm_message + strlen(gm_message), message, message_size);
-
-	if (is_atcommand(fd, sd, gm_message, 0) != AtCommand_None) {
-		aFree(gm_message);
+	if(is_atcommand_sub(fd, sd, message, 0) != AtCommand_None)
 		return;
-	}
-	aFree(gm_message);
 
 	name = (char *)RFIFOP(fd,GETPACKETPOS(cmd,1));
 	name[23] = '\0';	// force \0 terminal
@@ -10567,9 +10562,6 @@ static void clif_parse_ItemIdentify(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_SelectArrow(int fd,struct map_session_data *sd, int cmd)
 {
-	nullpo_retv(sd);
-
-	sd->state.make_arrow_flag = 0;
 	skill_arrow_create(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
 
 	return;
@@ -10935,7 +10927,7 @@ static void clif_parse_PartyMessage(int fd,struct map_session_data *sd, int cmd)
 		}
 	}
 
-	if (is_atcommand(fd, sd, message, 0) != AtCommand_None)
+	if (is_atcommand(fd, sd, message) != AtCommand_None)
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可
@@ -11256,7 +11248,7 @@ static void clif_parse_GuildMessage(int fd,struct map_session_data *sd, int cmd)
 		}
 	}
 
-	if (is_atcommand(fd, sd, message, 0) != AtCommand_None)
+	if (is_atcommand(fd, sd, message) != AtCommand_None)
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可
@@ -11648,12 +11640,13 @@ static void clif_parse_wisall(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMkillall(int fd,struct map_session_data *sd, int cmd)
 {
-	char message[40];
+	char str[40];
 
 	nullpo_retv(sd);
 
-	sprintf(message, "%s : %ckickall", sd->status.name, GM_Symbol());
-	is_atcommand(fd, sd, message, 0);
+	sprintf(str, "%ckickall", GM_Symbol());
+	is_atcommand_sub(fd, sd, str, 0);
+
 
 	return;
 }
@@ -11664,13 +11657,13 @@ static void clif_parse_GMkillall(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMsummon(int fd,struct map_session_data *sd, int cmd)
 {
-	char message[64];
+	char str[64];
 
 	nullpo_retv(sd);
 
-	sprintf(message, "%s : %csummon ", sd->status.name, GM_Symbol());
-	strncat(message, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
-	is_atcommand(fd, sd, message, 0);
+	sprintf(str, "%csummon ", GM_Symbol());
+	strncat(str, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
+	is_atcommand_sub(fd, sd, str, 0);
 
 	return;
 }
@@ -11681,13 +11674,13 @@ static void clif_parse_GMsummon(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMitemmonster( int fd, struct map_session_data *sd, int cmd )
 {
-	char message[64];
+	char str[64];
 
 	nullpo_retv(sd);
 
-	sprintf(message, "%s : %cim ", sd->status.name, GM_Symbol());
-	strncat(message, RFIFOP(fd, GETPACKETPOS(cmd, 0)), 24);
-	is_atcommand(fd, sd, message, 0);
+	sprintf(str, "%cim ", GM_Symbol());
+	strncat(str, RFIFOP(fd, GETPACKETPOS(cmd, 0)), 24);
+	is_atcommand_sub(fd, sd, str, 0);
 
 	return;
 }
@@ -11698,13 +11691,13 @@ static void clif_parse_GMitemmonster( int fd, struct map_session_data *sd, int c
  */
 static void clif_parse_GMshift(int fd,struct map_session_data *sd, int cmd)
 {
-	char message[64];
+	char str[64];
 
 	nullpo_retv(sd);
 
-	sprintf(message, "%s : %cjumpto ", sd->status.name, GM_Symbol());
-	strncat(message, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
-	is_atcommand(fd, sd, message, 0);
+	sprintf(str, "%cjumpto ", GM_Symbol());
+	strncat(str, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
+	is_atcommand_sub(fd, sd, str, 0);
 
 	return;
 }
@@ -11715,13 +11708,13 @@ static void clif_parse_GMshift(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMrecall(int fd,struct map_session_data *sd, int cmd)
 {
-	char message[64];
+	char str[64];
 
 	nullpo_retv(sd);
 
-	sprintf(message, "%s : %crecall ", sd->status.name, GM_Symbol());
-	strncat(message, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
-	is_atcommand(fd, sd, message, 0);
+	sprintf(str, "%crecall ", GM_Symbol());
+	strncat(str, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
+	is_atcommand_sub(fd, sd, str, 0);
 
 	return;
 }
@@ -11743,7 +11736,7 @@ static void clif_parse_GMremove(int fd,struct map_session_data *sd, int cmd)
 static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int cmd)
 {
 	int x,y,type;
-	char message[64];
+	char str[64];
 
 	nullpo_retv(sd);
 
@@ -11751,8 +11744,8 @@ static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int c
 	y    = RFIFOW(fd, GETPACKETPOS(cmd,1));
 	type = RFIFOW(fd, GETPACKETPOS(cmd,2));	// 0か1のみ
 
-	sprintf(message, "%s : %cchangemaptype %d %d %d", sd->status.name, GM_Symbol(), x, y, type);
-	is_atcommand(fd, sd, message, 0);
+	sprintf(str, "%cchangemaptype %d %d %d", GM_Symbol(), x, y, type&1);
+	is_atcommand_sub(fd, sd, str, 0);
 
 	return;
 }

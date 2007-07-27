@@ -11518,6 +11518,8 @@ void skill_arrow_create(struct map_session_data *sd, int nameid)
 
 	nullpo_retv(sd);
 
+	sd->state.make_arrow_flag = 0;
+
 	if(nameid <= 0)
 		return;
 
@@ -11525,8 +11527,10 @@ void skill_arrow_create(struct map_session_data *sd, int nameid)
 		if (nameid == skill_arrow_db[idx].nameid)
 			break;
 	}
+	if (idx == MAX_SKILL_ARROW_DB)
+		return;
 
-	if (idx == MAX_SKILL_ARROW_DB || (j = pc_search_inventory(sd, nameid)) < 0)
+	if ((j = pc_search_inventory(sd, nameid)) < 0 || sd->status.inventory[j].equip)
 		return;
 
 	pc_delitem(sd,j,1,0);

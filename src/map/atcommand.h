@@ -183,8 +183,8 @@ typedef struct AtCommandInfo {
 	int (*proc)(const int, struct map_session_data*, const char* command, const char* message);
 } AtCommandInfo;
 
-AtCommandType
-is_atcommand(const int fd, struct map_session_data* sd, const char* message, int gmlvl);
+AtCommandType is_atcommand_sub(const int fd, struct map_session_data *sd, const char *str, int gmlvl);
+AtCommandType is_atcommand(const int fd, struct map_session_data* sd, const char* message);
 
 char GM_Symbol(void);
 int get_atcommand_level(const AtCommandType type);

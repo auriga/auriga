@@ -8753,15 +8753,14 @@ int buildin_areasoundeffect(struct script_state *st)
  */
 int buildin_gmcommand(struct script_state *st)
 {
-	char *str, cmd[100];
+	char *str;
 
 	str = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
 	if(st->rid) {
 		struct map_session_data *sd = map_id2sd(st->rid);
 		if(sd) {
-			snprintf(cmd, sizeof(cmd), "%s : %s", sd->status.name, str);
-			is_atcommand(sd->fd, sd, cmd, 99);
+			is_atcommand_sub(sd->fd, sd, str, 99);
 			return 0;
 		}
 	}
@@ -8784,8 +8783,7 @@ int buildin_gmcommand(struct script_state *st)
 			} else {
 				strncpy(dummy_sd.status.name, "dummy", 24);
 			}
-			snprintf(cmd, sizeof(cmd), "%s : %s", dummy_sd.status.name, str);
-			is_atcommand(dummy_sd.fd, &dummy_sd, cmd, 99);
+			is_atcommand_sub(dummy_sd.fd, &dummy_sd, str, 99);
 			return 0;
 		}
 	}
