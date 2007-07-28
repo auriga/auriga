@@ -181,6 +181,7 @@ typedef struct AtCommandInfo {
 	const char* command;
 	int level;
 	int (*proc)(const int, struct map_session_data*, const char* command, const char* message);
+	int next;
 } AtCommandInfo;
 
 AtCommandType is_atcommand_sub(const int fd, struct map_session_data *sd, const char *str, int gmlvl);

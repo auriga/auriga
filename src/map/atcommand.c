@@ -40,12 +40,15 @@
 
 static char command_symbol = '@'; /* first char of the commands */
 
+#define COMMAND_HASH_SIZE 127
+static int command_hash_table[COMMAND_HASH_SIZE];
+
 #define MSG_NUMBER 200
 static char *msg_table[MSG_NUMBER]; /* Server messages */
 
 static struct synonym_table_ { /* table for GM command synonyms */
 	char* synonym;
-	char* command;
+	const char* command;
 } *synonym_table = NULL;
 static int synonym_count = 0; /* number of synonyms */
 
@@ -207,170 +210,170 @@ ATCOMMAND_FUNC(changemaptype);
  *------------------------------------------
  */
 static AtCommandInfo atcommand_info[] = {
-	{ AtCommand_RuraP,              "@rura+",            0, atcommand_rurap               },
-	{ AtCommand_Rura,               "@rura",             0, atcommand_rura                },
-	{ AtCommand_Where,              "@where",            0, atcommand_where               },
-	{ AtCommand_JumpTo,             "@jumpto",           0, atcommand_jumpto              },
-	{ AtCommand_Jump,               "@jump",             0, atcommand_jump                },
-	{ AtCommand_Who,                "@who",              0, atcommand_who                 },
-	{ AtCommand_Save,               "@save",             0, atcommand_save                },
-	{ AtCommand_Load,               "@load",             0, atcommand_load                },
-	{ AtCommand_Speed,              "@speed",            0, atcommand_speed               },
-	{ AtCommand_Storage,            "@storage",          0, atcommand_storage             },
-	{ AtCommand_GuildStorage,       "@gstorage",         0, atcommand_guildstorage        },
-	{ AtCommand_Option,             "@option",           0, atcommand_option              },
-	{ AtCommand_Hide,               "@hide",             0, atcommand_hide                },
-	{ AtCommand_JobChange,          "@jobchange",        0, atcommand_jobchange           },
-	{ AtCommand_Die,                "@die",              0, atcommand_die                 },
-	{ AtCommand_Kill,               "@kill",             0, atcommand_kill                },
-	{ AtCommand_Alive,              "@alive",            0, atcommand_alive               },
-	{ AtCommand_Kami,               "@kami",             0, atcommand_kami                },
-	{ AtCommand_KamiB,              "@kamib",            0, atcommand_kami                },
-	{ AtCommand_KamiC,              "@kamic",            0, atcommand_kami                },
-	{ AtCommand_Heal,               "@heal",             0, atcommand_heal                },
-	{ AtCommand_Item,               "@item",             0, atcommand_item                },
-	{ AtCommand_Item2,              "@item2",            0, atcommand_item2               },
-	{ AtCommand_Item3,              "@item3",            0, atcommand_item3               },
-	{ AtCommand_ItemReset,          "@itemreset",        0, atcommand_itemreset           },
-	{ AtCommand_BaseLevelUp,        "@lvup",             0, atcommand_baselevelup         },
-	{ AtCommand_JobLevelUp,         "@joblvup",          0, atcommand_joblevelup          },
-	{ AtCommand_Help,               "@help",             0, atcommand_help                },
-	{ AtCommand_GM,                 "@gm",               0, atcommand_gm                  },
-	{ AtCommand_PvPOff,             "@pvpoff",           0, atcommand_pvpoff              },
-	{ AtCommand_PvPOn,              "@pvpon",            0, atcommand_pvpon               },
-	{ AtCommand_GvGOff,             "@gvgoff",           0, atcommand_gvgoff              },
-	{ AtCommand_GvGOn,              "@gvgon",            0, atcommand_gvgon               },
-	{ AtCommand_Model,              "@model",            0, atcommand_model               },
-	{ AtCommand_Go,                 "@go",               0, atcommand_go                  },
-	{ AtCommand_Monster,            "@monster",          0, atcommand_monster             },
-	{ AtCommand_MonsterMap,         "@monstermap",       0, atcommand_monster             },
-	{ AtCommand_KillMonster,        "@killmonster",      0, atcommand_killmonster         },
-	{ AtCommand_KillMonster2,       "@killmonster2",     0, atcommand_killmonster2        },
-	{ AtCommand_Refine,             "@refine",           0, atcommand_refine              },
-	{ AtCommand_Produce,            "@produce",          0, atcommand_produce             },
-	{ AtCommand_Repair,             "@repair",           0, atcommand_repair              },
-	{ AtCommand_Memo,               "@memo",             0, atcommand_memo                },
-	{ AtCommand_GAT,                "@gat",              0, atcommand_gat                 },
-	{ AtCommand_Packet,             "@packet",           0, atcommand_packet              },
-	{ AtCommand_StatusPoint,        "@stpoint",          0, atcommand_statuspoint         },
-	{ AtCommand_SkillPoint,         "@skpoint",          0, atcommand_skillpoint          },
-	{ AtCommand_Zeny,               "@zeny",             0, atcommand_zeny                },
-	{ AtCommand_Strength,           "@str",              0, atcommand_param               },
-	{ AtCommand_Agility,            "@agi",              0, atcommand_param               },
-	{ AtCommand_Vitality,           "@vit",              0, atcommand_param               },
-	{ AtCommand_Intelligence,       "@int",              0, atcommand_param               },
-	{ AtCommand_Dexterity,          "@dex",              0, atcommand_param               },
-	{ AtCommand_Luck,               "@luk",              0, atcommand_param               },
-	{ AtCommand_GuildLevelUp,       "@guildlvup",        0, atcommand_guildlevelup        },
-	{ AtCommand_MakePet,            "@makepet",          0, atcommand_makepet             },
-	{ AtCommand_Hatch,              "@hatch",            0, atcommand_hatch               },
-	{ AtCommand_PetFriendly,        "@petfriendly",      0, atcommand_petfriendly         },
-	{ AtCommand_PetHungry,          "@pethungry",        0, atcommand_pethungry           },
-	{ AtCommand_PetRename,          "@petrename",        0, atcommand_petrename           },
-	{ AtCommand_CharPetRename,      "@charpetrename",    0, atcommand_charpetrename       },
-	{ AtCommand_Recall,             "@recall",           0, atcommand_recall              },
-	{ AtCommand_Recallall,          "@recallall",        0, atcommand_recallall           },
-	{ AtCommand_RecallGuild,        "@recallguild",      0, atcommand_recallguild         },
-	{ AtCommand_RecallParty,        "@recallparty",      0, atcommand_recallparty         },
-	{ AtCommand_CharacterJob,       "@charjob",          0, atcommand_character_job       },
-	{ AtCommand_Revive,             "@revive",           0, atcommand_revive              },
-	{ AtCommand_CharacterStats,     "@charstats",        0, atcommand_character_stats     },
-	{ AtCommand_CharacterOption,    "@charoption",       0, atcommand_character_option    },
-	{ AtCommand_CharacterSave,      "@charsave",         0, atcommand_character_save      },
-	{ AtCommand_Night,              "@night",            0, atcommand_night               },
-	{ AtCommand_Day,                "@day",              0, atcommand_day                 },
-	{ AtCommand_Doom,               "@doom",             0, atcommand_doom                },
-	{ AtCommand_DoomMap,            "@doommap",          0, atcommand_doommap             },
-	{ AtCommand_Raise,              "@raise",            0, atcommand_raise               },
-	{ AtCommand_RaiseMap,           "@raisemap",         0, atcommand_raisemap            },
-	{ AtCommand_CharacterBaseLevel, "@charbaselvl",      0, atcommand_character_baselevel },
-	{ AtCommand_CharacterJobLevel,  "@charjlvl",         0, atcommand_character_joblevel  },
-	{ AtCommand_Kick,               "@kick",             0, atcommand_kick                },
-	{ AtCommand_KickAll,            "@kickall",          0, atcommand_kickall             },
-	{ AtCommand_AllSkill,           "@allskill",         0, atcommand_allskill            },
-	{ AtCommand_QuestSkill,         "@questskill",       0, atcommand_questskill          },
-	{ AtCommand_CharQuestSkill,     "@charquestskill",   0, atcommand_charquestskill      },
-	{ AtCommand_LostSkill,          "@lostskill",        0, atcommand_lostskill           },
-	{ AtCommand_CharLostSkill,      "@charlostskill",    0, atcommand_charlostskill       },
-	{ AtCommand_SpiritBall,         "@spiritball",       0, atcommand_spiritball          },
-	{ AtCommand_Party,              "@party",            0, atcommand_party               },
-	{ AtCommand_PartyOption,        "@partyoption",      0, atcommand_partyoption         },
-	{ AtCommand_Guild,              "@guild",            0, atcommand_guild               },
-	{ AtCommand_AgitStart,          "@agitstart",        0, atcommand_agitstart           },
-	{ AtCommand_AgitEnd,            "@agitend",          0, atcommand_agitend             },
-	{ AtCommand_OnlyMes,            "@mes",              0, atcommand_onlymes             },
-	{ AtCommand_MesWeb,             "@mesweb",           0, atcommand_onlymes             },
-	{ AtCommand_MapExit,            "@mapexit",          0, atcommand_mapexit             },
-	{ AtCommand_IDSearch,           "@idsearch",         0, atcommand_idsearch            },
-	{ AtCommand_ItemIdentify,       "@itemidentify",     0, atcommand_itemidentify        },
-	{ AtCommand_Shuffle,            "@shuffle",          0, atcommand_shuffle             },
-	{ AtCommand_Maintenance,        "@maintenance",      0, atcommand_maintenance         },
-	{ AtCommand_Misceffect,         "@misceffect",       0, atcommand_misceffect          },
-	{ AtCommand_Summon,             "@summon",           0, atcommand_summon              },
-	{ AtCommand_WhoP,               "@who+",             0, atcommand_whop                },
-	{ AtCommand_CharReset,          "@charreset",        0, atcommand_charreset           },
-	{ AtCommand_CharSkReset,        "@charskreset",      0, atcommand_charskreset         },
-	{ AtCommand_CharStReset,        "@charstreset",      0, atcommand_charstreset         },
-	{ AtCommand_CharSKPoint,        "@charskpoint",      0, atcommand_charskpoint         },
-	{ AtCommand_CharSTPoint,        "@charstpoint",      0, atcommand_charstpoint         },
-	{ AtCommand_CharZeny,           "@charzeny",         0, atcommand_charzeny            },
-	{ AtCommand_CharItemreset,      "@charitemreset",    0, atcommand_charitemreset       },
-	{ AtCommand_MapInfo,            "@mapinfo",          0, atcommand_mapinfo             },
-	{ AtCommand_MobSearch,          "@mobsearch",        0, atcommand_mobsearch           },
-	{ AtCommand_CleanMap,           "@cleanmap",         0, atcommand_cleanmap            },
-	{ AtCommand_Clock,              "@clock",            0, atcommand_clock               },
-	{ AtCommand_GiveItem,           "@giveitem",         0, atcommand_giveitem            },
-	{ AtCommand_Weather,            "@weather",          0, atcommand_weather             },
-	{ AtCommand_NpcTalk,            "@npctalk",          0, atcommand_npctalk             },
-	{ AtCommand_PetTalk,            "@pettalk",          0, atcommand_pettalk             },
-	{ AtCommand_Users,              "@users",            0, atcommand_users               },
-	{ AtCommand_ReloadAtcommand,    "@reloadatcommand",  0, atcommand_reloadatcommand     },
-	{ AtCommand_ReloadBattleConf,   "@reloadbattleconf", 0, atcommand_reloadbattleconf    },
-	{ AtCommand_ReloadGMAccount,    "@reloadgmaccount",  0, atcommand_reloadgmaccount     },
-	{ AtCommand_ReloadHomunDB,      "@reloadhomundb",    0, atcommand_reloadhomundb       },
-	{ AtCommand_ReloadItemDB,       "@reloaditemdb",     0, atcommand_reloaditemdb        },
-	{ AtCommand_ReloadMobDB,        "@reloadmobdb",      0, atcommand_reloadmobdb         },
-	{ AtCommand_ReloadPcDB,         "@reloadpcdb",       0, atcommand_reloadpcdb          },
-	{ AtCommand_ReloadSkillDB,      "@reloadskilldb",    0, atcommand_reloadskilldb       },
-	{ AtCommand_ReloadStatusDB,     "@reloadstatusdb",   0, atcommand_reloadstatusdb      },
-	{ AtCommand_ItemMonster,        "@im",               0, atcommand_itemmonster         },
-	{ AtCommand_Mapflag,            "@mapflag",          0, atcommand_mapflag             },
-	{ AtCommand_MannerPoint,        "@mannerpoint",      0, atcommand_mannerpoint         },
-	{ AtCommand_ConnectLimit,       "@connectlimit",     0, atcommand_connectlimit        },
-	{ AtCommand_Econ,               "@econ",             0, atcommand_econ                },
-	{ AtCommand_Ecoff,              "@ecoff",            0, atcommand_ecoff               },
-	{ AtCommand_Icon,               "@icon",             0, atcommand_icon                },
-	{ AtCommand_Ranking,            "@ranking",          0, atcommand_ranking             },
-	{ AtCommand_Blacksmith,         "@blacksmith",       0, atcommand_blacksmith          },
-	{ AtCommand_Alchemist,          "@alchemist",        0, atcommand_alchemist           },
-	{ AtCommand_TaeKwon,            "@taekwon",          0, atcommand_taekwon             },
-	{ AtCommand_ResetFeel,          "@resetfeel",        0, atcommand_resetfeel           },
-	{ AtCommand_ResetHate,          "@resethate",        0, atcommand_resethate           },
-	{ AtCommand_ResetState,         "@resetstate",       0, atcommand_resetstate          },
-	{ AtCommand_ResetSkill,         "@resetskill",       0, atcommand_resetskill          },
-	{ AtCommand_emotion,            "@emotion",          0, atcommand_emotion             },
-	{ AtCommand_statall,            "@statall",          0, atcommand_statall             },
-	{ AtCommand_RankingPoint,       "@rankingpoint",     0, atcommand_rankingpoint        },
-	{ AtCommand_ViewClass,          "@viewclass",        0, atcommand_viewclass           },
-	{ AtCommand_MailBox,            "@mailbox",          0, atcommand_mailbox             },
-	{ AtCommand_ReadVars,           "@readvars",         0, atcommand_readvars            },
-	{ AtCommand_WriteVars,          "@writevars",        0, atcommand_writevars           },
-	{ AtCommand_CloneSkill,         "@cloneskill",       0, atcommand_cloneskill          },
-	{ AtCommand_CloneSkill2,        "@cloneskill2",      0, atcommand_cloneskill2         },
-	{ AtCommand_MobInfo,            "@mobinfo",          0, atcommand_mobinfo             },
-	{ AtCommand_HomLevel,           "@homlv",            0, atcommand_homlevel            },
-	{ AtCommand_HomViewClass,       "@homviewclass",     0, atcommand_homviewclass        },
-	{ AtCommand_HomEvolution,       "@evolution",        0, atcommand_homevolution        },
-	{ AtCommand_HomRecalc,          "@homrecalc",        0, atcommand_homrecalc           },
-	{ AtCommand_MakeHomun,          "@makehomun",        0, atcommand_makehomun           },
-	{ AtCommand_HomFriendly,        "@homfriendly",      0, atcommand_homfriendly         },
-	{ AtCommand_AutoLoot,           "@autoloot",         0, atcommand_autoloot            },
-	{ AtCommand_ChangeMapType,      "@changemaptype",    0, atcommand_changemaptype       },
+	{ AtCommand_RuraP,              "@rura+",            0, atcommand_rurap,               -1 },
+	{ AtCommand_Rura,               "@rura",             0, atcommand_rura,                -1 },
+	{ AtCommand_Where,              "@where",            0, atcommand_where,               -1 },
+	{ AtCommand_JumpTo,             "@jumpto",           0, atcommand_jumpto,              -1 },
+	{ AtCommand_Jump,               "@jump",             0, atcommand_jump,                -1 },
+	{ AtCommand_Who,                "@who",              0, atcommand_who,                 -1 },
+	{ AtCommand_Save,               "@save",             0, atcommand_save,                -1 },
+	{ AtCommand_Load,               "@load",             0, atcommand_load,                -1 },
+	{ AtCommand_Speed,              "@speed",            0, atcommand_speed,               -1 },
+	{ AtCommand_Storage,            "@storage",          0, atcommand_storage,             -1 },
+	{ AtCommand_GuildStorage,       "@gstorage",         0, atcommand_guildstorage,        -1 },
+	{ AtCommand_Option,             "@option",           0, atcommand_option,              -1 },
+	{ AtCommand_Hide,               "@hide",             0, atcommand_hide,                -1 },
+	{ AtCommand_JobChange,          "@jobchange",        0, atcommand_jobchange,           -1 },
+	{ AtCommand_Die,                "@die",              0, atcommand_die,                 -1 },
+	{ AtCommand_Kill,               "@kill",             0, atcommand_kill,                -1 },
+	{ AtCommand_Alive,              "@alive",            0, atcommand_alive,               -1 },
+	{ AtCommand_Kami,               "@kami",             0, atcommand_kami,                -1 },
+	{ AtCommand_KamiB,              "@kamib",            0, atcommand_kami,                -1 },
+	{ AtCommand_KamiC,              "@kamic",            0, atcommand_kami,                -1 },
+	{ AtCommand_Heal,               "@heal",             0, atcommand_heal,                -1 },
+	{ AtCommand_Item,               "@item",             0, atcommand_item,                -1 },
+	{ AtCommand_Item2,              "@item2",            0, atcommand_item2,               -1 },
+	{ AtCommand_Item3,              "@item3",            0, atcommand_item3,               -1 },
+	{ AtCommand_ItemReset,          "@itemreset",        0, atcommand_itemreset,           -1 },
+	{ AtCommand_BaseLevelUp,        "@lvup",             0, atcommand_baselevelup,         -1 },
+	{ AtCommand_JobLevelUp,         "@joblvup",          0, atcommand_joblevelup,          -1 },
+	{ AtCommand_Help,               "@help",             0, atcommand_help,                -1 },
+	{ AtCommand_GM,                 "@gm",               0, atcommand_gm,                  -1 },
+	{ AtCommand_PvPOff,             "@pvpoff",           0, atcommand_pvpoff,              -1 },
+	{ AtCommand_PvPOn,              "@pvpon",            0, atcommand_pvpon,               -1 },
+	{ AtCommand_GvGOff,             "@gvgoff",           0, atcommand_gvgoff,              -1 },
+	{ AtCommand_GvGOn,              "@gvgon",            0, atcommand_gvgon,               -1 },
+	{ AtCommand_Model,              "@model",            0, atcommand_model,               -1 },
+	{ AtCommand_Go,                 "@go",               0, atcommand_go,                  -1 },
+	{ AtCommand_Monster,            "@monster",          0, atcommand_monster,             -1 },
+	{ AtCommand_MonsterMap,         "@monstermap",       0, atcommand_monster,             -1 },
+	{ AtCommand_KillMonster,        "@killmonster",      0, atcommand_killmonster,         -1 },
+	{ AtCommand_KillMonster2,       "@killmonster2",     0, atcommand_killmonster2,        -1 },
+	{ AtCommand_Refine,             "@refine",           0, atcommand_refine,              -1 },
+	{ AtCommand_Produce,            "@produce",          0, atcommand_produce,             -1 },
+	{ AtCommand_Repair,             "@repair",           0, atcommand_repair,              -1 },
+	{ AtCommand_Memo,               "@memo",             0, atcommand_memo,                -1 },
+	{ AtCommand_GAT,                "@gat",              0, atcommand_gat,                 -1 },
+	{ AtCommand_Packet,             "@packet",           0, atcommand_packet,              -1 },
+	{ AtCommand_StatusPoint,        "@stpoint",          0, atcommand_statuspoint,         -1 },
+	{ AtCommand_SkillPoint,         "@skpoint",          0, atcommand_skillpoint,          -1 },
+	{ AtCommand_Zeny,               "@zeny",             0, atcommand_zeny,                -1 },
+	{ AtCommand_Strength,           "@str",              0, atcommand_param,               -1 },
+	{ AtCommand_Agility,            "@agi",              0, atcommand_param,               -1 },
+	{ AtCommand_Vitality,           "@vit",              0, atcommand_param,               -1 },
+	{ AtCommand_Intelligence,       "@int",              0, atcommand_param,               -1 },
+	{ AtCommand_Dexterity,          "@dex",              0, atcommand_param,               -1 },
+	{ AtCommand_Luck,               "@luk",              0, atcommand_param,               -1 },
+	{ AtCommand_GuildLevelUp,       "@guildlvup",        0, atcommand_guildlevelup,        -1 },
+	{ AtCommand_MakePet,            "@makepet",          0, atcommand_makepet,             -1 },
+	{ AtCommand_Hatch,              "@hatch",            0, atcommand_hatch,               -1 },
+	{ AtCommand_PetFriendly,        "@petfriendly",      0, atcommand_petfriendly,         -1 },
+	{ AtCommand_PetHungry,          "@pethungry",        0, atcommand_pethungry,           -1 },
+	{ AtCommand_PetRename,          "@petrename",        0, atcommand_petrename,           -1 },
+	{ AtCommand_CharPetRename,      "@charpetrename",    0, atcommand_charpetrename,       -1 },
+	{ AtCommand_Recall,             "@recall",           0, atcommand_recall,              -1 },
+	{ AtCommand_Recallall,          "@recallall",        0, atcommand_recallall,           -1 },
+	{ AtCommand_RecallGuild,        "@recallguild",      0, atcommand_recallguild,         -1 },
+	{ AtCommand_RecallParty,        "@recallparty",      0, atcommand_recallparty,         -1 },
+	{ AtCommand_CharacterJob,       "@charjob",          0, atcommand_character_job,       -1 },
+	{ AtCommand_Revive,             "@revive",           0, atcommand_revive,              -1 },
+	{ AtCommand_CharacterStats,     "@charstats",        0, atcommand_character_stats,     -1 },
+	{ AtCommand_CharacterOption,    "@charoption",       0, atcommand_character_option,    -1 },
+	{ AtCommand_CharacterSave,      "@charsave",         0, atcommand_character_save,      -1 },
+	{ AtCommand_Night,              "@night",            0, atcommand_night,               -1 },
+	{ AtCommand_Day,                "@day",              0, atcommand_day,                 -1 },
+	{ AtCommand_Doom,               "@doom",             0, atcommand_doom,                -1 },
+	{ AtCommand_DoomMap,            "@doommap",          0, atcommand_doommap,             -1 },
+	{ AtCommand_Raise,              "@raise",            0, atcommand_raise,               -1 },
+	{ AtCommand_RaiseMap,           "@raisemap",         0, atcommand_raisemap,            -1 },
+	{ AtCommand_CharacterBaseLevel, "@charbaselvl",      0, atcommand_character_baselevel, -1 },
+	{ AtCommand_CharacterJobLevel,  "@charjlvl",         0, atcommand_character_joblevel,  -1 },
+	{ AtCommand_Kick,               "@kick",             0, atcommand_kick,                -1 },
+	{ AtCommand_KickAll,            "@kickall",          0, atcommand_kickall,             -1 },
+	{ AtCommand_AllSkill,           "@allskill",         0, atcommand_allskill,            -1 },
+	{ AtCommand_QuestSkill,         "@questskill",       0, atcommand_questskill,          -1 },
+	{ AtCommand_CharQuestSkill,     "@charquestskill",   0, atcommand_charquestskill,      -1 },
+	{ AtCommand_LostSkill,          "@lostskill",        0, atcommand_lostskill,           -1 },
+	{ AtCommand_CharLostSkill,      "@charlostskill",    0, atcommand_charlostskill,       -1 },
+	{ AtCommand_SpiritBall,         "@spiritball",       0, atcommand_spiritball,          -1 },
+	{ AtCommand_Party,              "@party",            0, atcommand_party,               -1 },
+	{ AtCommand_PartyOption,        "@partyoption",      0, atcommand_partyoption,         -1 },
+	{ AtCommand_Guild,              "@guild",            0, atcommand_guild,               -1 },
+	{ AtCommand_AgitStart,          "@agitstart",        0, atcommand_agitstart,           -1 },
+	{ AtCommand_AgitEnd,            "@agitend",          0, atcommand_agitend,             -1 },
+	{ AtCommand_OnlyMes,            "@mes",              0, atcommand_onlymes,             -1 },
+	{ AtCommand_MesWeb,             "@mesweb",           0, atcommand_onlymes,             -1 },
+	{ AtCommand_MapExit,            "@mapexit",          0, atcommand_mapexit,             -1 },
+	{ AtCommand_IDSearch,           "@idsearch",         0, atcommand_idsearch,            -1 },
+	{ AtCommand_ItemIdentify,       "@itemidentify",     0, atcommand_itemidentify,        -1 },
+	{ AtCommand_Shuffle,            "@shuffle",          0, atcommand_shuffle,             -1 },
+	{ AtCommand_Maintenance,        "@maintenance",      0, atcommand_maintenance,         -1 },
+	{ AtCommand_Misceffect,         "@misceffect",       0, atcommand_misceffect,          -1 },
+	{ AtCommand_Summon,             "@summon",           0, atcommand_summon,              -1 },
+	{ AtCommand_WhoP,               "@who+",             0, atcommand_whop,                -1 },
+	{ AtCommand_CharReset,          "@charreset",        0, atcommand_charreset,           -1 },
+	{ AtCommand_CharSkReset,        "@charskreset",      0, atcommand_charskreset,         -1 },
+	{ AtCommand_CharStReset,        "@charstreset",      0, atcommand_charstreset,         -1 },
+	{ AtCommand_CharSKPoint,        "@charskpoint",      0, atcommand_charskpoint,         -1 },
+	{ AtCommand_CharSTPoint,        "@charstpoint",      0, atcommand_charstpoint,         -1 },
+	{ AtCommand_CharZeny,           "@charzeny",         0, atcommand_charzeny,            -1 },
+	{ AtCommand_CharItemreset,      "@charitemreset",    0, atcommand_charitemreset,       -1 },
+	{ AtCommand_MapInfo,            "@mapinfo",          0, atcommand_mapinfo,             -1 },
+	{ AtCommand_MobSearch,          "@mobsearch",        0, atcommand_mobsearch,           -1 },
+	{ AtCommand_CleanMap,           "@cleanmap",         0, atcommand_cleanmap,            -1 },
+	{ AtCommand_Clock,              "@clock",            0, atcommand_clock,               -1 },
+	{ AtCommand_GiveItem,           "@giveitem",         0, atcommand_giveitem,            -1 },
+	{ AtCommand_Weather,            "@weather",          0, atcommand_weather,             -1 },
+	{ AtCommand_NpcTalk,            "@npctalk",          0, atcommand_npctalk,             -1 },
+	{ AtCommand_PetTalk,            "@pettalk",          0, atcommand_pettalk,             -1 },
+	{ AtCommand_Users,              "@users",            0, atcommand_users,               -1 },
+	{ AtCommand_ReloadAtcommand,    "@reloadatcommand",  0, atcommand_reloadatcommand,     -1 },
+	{ AtCommand_ReloadBattleConf,   "@reloadbattleconf", 0, atcommand_reloadbattleconf,    -1 },
+	{ AtCommand_ReloadGMAccount,    "@reloadgmaccount",  0, atcommand_reloadgmaccount,     -1 },
+	{ AtCommand_ReloadHomunDB,      "@reloadhomundb",    0, atcommand_reloadhomundb,       -1 },
+	{ AtCommand_ReloadItemDB,       "@reloaditemdb",     0, atcommand_reloaditemdb,        -1 },
+	{ AtCommand_ReloadMobDB,        "@reloadmobdb",      0, atcommand_reloadmobdb,         -1 },
+	{ AtCommand_ReloadPcDB,         "@reloadpcdb",       0, atcommand_reloadpcdb,          -1 },
+	{ AtCommand_ReloadSkillDB,      "@reloadskilldb",    0, atcommand_reloadskilldb,       -1 },
+	{ AtCommand_ReloadStatusDB,     "@reloadstatusdb",   0, atcommand_reloadstatusdb,      -1 },
+	{ AtCommand_ItemMonster,        "@im",               0, atcommand_itemmonster,         -1 },
+	{ AtCommand_Mapflag,            "@mapflag",          0, atcommand_mapflag,             -1 },
+	{ AtCommand_MannerPoint,        "@mannerpoint",      0, atcommand_mannerpoint,         -1 },
+	{ AtCommand_ConnectLimit,       "@connectlimit",     0, atcommand_connectlimit,        -1 },
+	{ AtCommand_Econ,               "@econ",             0, atcommand_econ,                -1 },
+	{ AtCommand_Ecoff,              "@ecoff",            0, atcommand_ecoff,               -1 },
+	{ AtCommand_Icon,               "@icon",             0, atcommand_icon,                -1 },
+	{ AtCommand_Ranking,            "@ranking",          0, atcommand_ranking,             -1 },
+	{ AtCommand_Blacksmith,         "@blacksmith",       0, atcommand_blacksmith,          -1 },
+	{ AtCommand_Alchemist,          "@alchemist",        0, atcommand_alchemist,           -1 },
+	{ AtCommand_TaeKwon,            "@taekwon",          0, atcommand_taekwon,             -1 },
+	{ AtCommand_ResetFeel,          "@resetfeel",        0, atcommand_resetfeel,           -1 },
+	{ AtCommand_ResetHate,          "@resethate",        0, atcommand_resethate,           -1 },
+	{ AtCommand_ResetState,         "@resetstate",       0, atcommand_resetstate,          -1 },
+	{ AtCommand_ResetSkill,         "@resetskill",       0, atcommand_resetskill,          -1 },
+	{ AtCommand_emotion,            "@emotion",          0, atcommand_emotion,             -1 },
+	{ AtCommand_statall,            "@statall",          0, atcommand_statall,             -1 },
+	{ AtCommand_RankingPoint,       "@rankingpoint",     0, atcommand_rankingpoint,        -1 },
+	{ AtCommand_ViewClass,          "@viewclass",        0, atcommand_viewclass,           -1 },
+	{ AtCommand_MailBox,            "@mailbox",          0, atcommand_mailbox,             -1 },
+	{ AtCommand_ReadVars,           "@readvars",         0, atcommand_readvars,            -1 },
+	{ AtCommand_WriteVars,          "@writevars",        0, atcommand_writevars,           -1 },
+	{ AtCommand_CloneSkill,         "@cloneskill",       0, atcommand_cloneskill,          -1 },
+	{ AtCommand_CloneSkill2,        "@cloneskill2",      0, atcommand_cloneskill2,         -1 },
+	{ AtCommand_MobInfo,            "@mobinfo",          0, atcommand_mobinfo,             -1 },
+	{ AtCommand_HomLevel,           "@homlv",            0, atcommand_homlevel,            -1 },
+	{ AtCommand_HomViewClass,       "@homviewclass",     0, atcommand_homviewclass,        -1 },
+	{ AtCommand_HomEvolution,       "@evolution",        0, atcommand_homevolution,        -1 },
+	{ AtCommand_HomRecalc,          "@homrecalc",        0, atcommand_homrecalc,           -1 },
+	{ AtCommand_MakeHomun,          "@makehomun",        0, atcommand_makehomun,           -1 },
+	{ AtCommand_HomFriendly,        "@homfriendly",      0, atcommand_homfriendly,         -1 },
+	{ AtCommand_AutoLoot,           "@autoloot",         0, atcommand_autoloot,            -1 },
+	{ AtCommand_ChangeMapType,      "@changemaptype",    0, atcommand_changemaptype,       -1 },
 		// add here
-	{ AtCommand_MapMove,            "@mapmove",          0, NULL                          },
-	{ AtCommand_Broadcast,          "@broadcast",        0, NULL                          },
-	{ AtCommand_LocalBroadcast,     "@local_broadcast",  0, NULL                          },
-	{ AtCommand_Unknown,            NULL,              100, NULL                          }
+	{ AtCommand_MapMove,            "@mapmove",          0, NULL,                          -1 },
+	{ AtCommand_Broadcast,          "@broadcast",        0, NULL,                          -1 },
+	{ AtCommand_LocalBroadcast,     "@local_broadcast",  0, NULL,                          -1 },
+	{ AtCommand_Unknown,            NULL,              100, NULL,                          -1 },
 };
 
 /*===============================================
@@ -380,6 +383,40 @@ static AtCommandInfo atcommand_info[] = {
 char GM_Symbol(void)
 {
 	return command_symbol;
+}
+
+/*==========================================
+ * ハッシュ計算
+ *------------------------------------------
+ */
+static unsigned int command2hash(const unsigned char *p)
+{
+	unsigned int h = 0;
+
+	// SDBM Algorithm
+	while(*p) {
+		h = (h<<6)+(h<<16)-h;
+		h += (unsigned char)tolower(*p++);
+	}
+	return h % COMMAND_HASH_SIZE;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static AtCommandInfo* get_atcommandinfo_byname(const char* name)
+{
+	int n = command_hash_table[command2hash(name)];
+
+	while(n >= 0) {
+		if(strcmpi(atcommand_info[n].command + 1, name) == 0) {
+			return &atcommand_info[n];
+		}
+		n = atcommand_info[n].next;
+	}
+
+	return NULL;
 }
 
 /*==========================================
@@ -403,44 +440,35 @@ int get_atcommand_level(const AtCommandType type)
  */
 static AtCommandType atcommand(const int level, const char* message, struct AtCommandInfo* info)
 {
-	const char* p = message;
+	const AtCommandInfo *p;
 	char command[100];
 	int i;
 
 	if (!info)
 		return AtCommand_None;
-	if (!p || !*p) {
+	if (!message || !*message) {
 		fprintf(stderr, "at command message is empty\n");
 		return AtCommand_None;
 	}
-	if (p[0] != command_symbol || p[1] == command_symbol)
+	if (message[0] != command_symbol || message[1] == command_symbol)
 		return AtCommand_None;
 
-	memset(info, 0, sizeof(AtCommandInfo));
-	sscanf(p, "%99s", command);
-	command[sizeof(command) - 1] = '\0';
+	sscanf(message, "%99s", command);
 
 	// check for synonym here
 	for (i = 0; i < synonym_count; i++) {
 		if (strcmpi(command + 1, synonym_table[i].synonym) == 0) {
 			memset(command + 1, 0, sizeof(command) - 1); // don't change command_symbol (+1)
-			strcpy(command + 1, synonym_table[i].command);
+			strcpy(command + 1, synonym_table[i].command + 1);
 			break;
 		}
 	}
+	p = get_atcommandinfo_byname(command + 1);
 
-	i = 0;
-	while (atcommand_info[i].type != AtCommand_Unknown) {
-		if (strcmpi(command + 1, atcommand_info[i].command + 1) == 0)
-			break;
-		i++;
-	}
-	if (atcommand_info[i].type == AtCommand_Unknown ||
-	    atcommand_info[i].proc == NULL ||
-	    level < atcommand_info[i].level)
+	if (p == NULL || p->proc == NULL || level < p->level)
 		return AtCommand_Unknown;
 
-	memcpy(info, &atcommand_info[i], sizeof atcommand_info[i]);
+	memcpy(info, p, sizeof(atcommand_info[0]));
 
 	return info->type;
 }
@@ -593,22 +621,6 @@ int msg_config_read(const char *cfgName)
 }
 
 /*==========================================
- *
- *------------------------------------------
- */
-static AtCommandInfo* get_atcommandinfo_byname(const char* name)
-{
-	int i;
-
-	for (i = 0; atcommand_info[i].type != AtCommand_Unknown; i++) {
-		if (strcmpi(atcommand_info[i].command + 1, name) == 0)
-			return &atcommand_info[i];
-	}
-
-	return NULL;
-}
-
-/*==========================================
  * Free Message Data
  *------------------------------------------
  */
@@ -635,7 +647,6 @@ static void atcommand_synonym_free(void)
 
 	for (i = 0; i < synonym_count; i++) {
 		aFree(synonym_table[i].synonym);
-		aFree(synonym_table[i].command);
 	}
 	if (synonym_table != NULL) {
 		aFree(synonym_table);
@@ -646,7 +657,7 @@ static void atcommand_synonym_free(void)
 }
 
 /*==========================================
- *
+ * 終了
  *------------------------------------------
  */
 void do_final_atcommand(void)
@@ -658,16 +669,50 @@ void do_final_atcommand(void)
 }
 
 /*==========================================
+ * ハッシュテーブル作成
+ *------------------------------------------
+ */
+static int atcommand_create_hashtable(void)
+{
+	int i, h, n;
+
+	for(i = 0; i < COMMAND_HASH_SIZE; i++) {
+		command_hash_table[i] = -1;
+	}
+	for(i = 0; atcommand_info[i].command; i++) {
+		h = command2hash(atcommand_info[i].command + 1);
+		if(command_hash_table[h] < 0) {
+			command_hash_table[h] = i;
+		} else {
+			n = command_hash_table[h];
+			while(n != i && atcommand_info[n].next >= 0) {
+				n = atcommand_info[n].next;
+			}
+			if(atcommand_info[n].next < 0)
+				atcommand_info[n].next = i;
+		}
+	}
+
+	return 0;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
 int atcommand_config_read(const char *cfgName)
 {
-	static int counter = 0;
+	static int counter = -1;
 	int i;
 	AtCommandInfo* p;
 	FILE* fp;
 	char line[1024], w1[1024], w2[1024];
+
+	if (counter == -1) {
+		// 初回のみ
+		atcommand_create_hashtable();
+		counter = 0;
+	}
 
 	if (counter == 0) {
 		i = 0;
@@ -714,32 +759,23 @@ int atcommand_config_read(const char *cfgName)
 			}
 		} else if (sscanf(line, "%[^=]=%s", w1, w2) == 2) { // synonym
 			/* searching if synonym is not a gm command */
-			for (i = 0; atcommand_info[i].type != AtCommand_Unknown; i++) {
-				if (strcmpi(atcommand_info[i].command + 1, w1) == 0) {
-					printf("Error in %s file: GM synonym '%s' is not a synonym, but a GM command.\n", cfgName, w1);
-					break;
-				}
+			if ((p = get_atcommandinfo_byname(w1)) != NULL) {
+				printf("Error in %s file: GM synonym '%s' is not a synonym, but a GM command.\n", cfgName, w1);
+				continue;
 			}
-			// if synonym is ok
-			if (atcommand_info[i].type == AtCommand_Unknown) {
-				/* searching if gm command exists */
-				for (i = 0; atcommand_info[i].type != AtCommand_Unknown; i++) {
-					if (strcmpi(atcommand_info[i].command + 1, w2) == 0) {
-						// GM command found, create synonym
-						//printf("new synonym: %s->%s\n", w1, w2);
-						if (synonym_count == 0) {
-							synonym_table = (struct synonym_table_ *)aMalloc(sizeof(struct synonym_table_));
-						} else {
-							synonym_table = (struct synonym_table_ *)aRealloc(synonym_table, (synonym_count + 1) * sizeof(struct synonym_table_));
-						}
-						synonym_table[synonym_count].synonym = (char *)aStrdup(w1);
-						synonym_table[synonym_count].command = (char *)aStrdup(w2);
-						synonym_count++;
-						break;
-					}
+			/* searching if gm command exists */
+			if ((p = get_atcommandinfo_byname(w2)) != NULL) {
+				// GM command found, create synonym
+				if (synonym_count == 0) {
+					synonym_table = (struct synonym_table_ *)aMalloc(sizeof(struct synonym_table_));
+				} else {
+					synonym_table = (struct synonym_table_ *)aRealloc(synonym_table, (synonym_count + 1) * sizeof(struct synonym_table_));
 				}
-				if (atcommand_info[i].type == AtCommand_Unknown)
-					printf("Error in %s file: GM command '%s' of synonym '%s' doesn't exist.\n", cfgName, w2, w1);
+				synonym_table[synonym_count].synonym = (char *)aStrdup(w1);
+				synonym_table[synonym_count].command = p->command;
+				synonym_count++;
+			} else {
+				printf("Error in %s file: GM command '%s' of synonym '%s' doesn't exist.\n", cfgName, w2, w1);
 			}
 		}
 	}

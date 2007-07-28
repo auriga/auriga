@@ -1,4 +1,24 @@
 ----------------------------------------
+//0261 [2007/07/29] by Rayce
+
+・@コマンド処理を高速化（atcommand.*, map.c）
+　　　オープンハッシュを用いてコマンド文字列からatcommand_infoを検索します。
+　　　特に@autolootや@changemaptypeなど比較的新しく追加されたコマンドに対する検索速度が劇的に
+　　　向上します。
+
+	-> COMMAND_HASH_SIZEを定義、デフォルトは127
+	-> AtCommandInfoにnextメンバを追加、外部ハッシュのリスト用
+	-> atcommand_create_hashtable() 追加、ハッシュテーブルを作成する
+	   サーバ起動時のみ呼ばれる、@reloadatcommandでは呼ばれない
+	-> command2hash() 追加、アルゴリズムはscript.cの calc_hash() と同じ
+	-> get_atcommandinfo_byname() をハッシュ検索に変更
+	-> コマンド名からatcommand_infoを参照する場合には get_atcommandinfo_byname() を利用する
+	-> synonym_table_構造体のcommandメンバをconst char型に変更し、aStrdupしないように改善
+
+・0253のbattle_auriga.confの tkcombo_delay_lower_limits を入れ忘れていた箇所を修正（battle.c）
+・path_blownpos() を少し最適化、MAX_BLOWNPOSを定義（path.c）
+
+----------------------------------------
 //0260 [2007/07/28] by Rayce
 
 ・装備中のアイテムは矢作成スキルで矢に変換できないように修正（clif.c, skill.c）

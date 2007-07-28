@@ -11,10 +11,13 @@
 #include "memwatch.h"
 #endif
 
-//#define PATH_STANDALONETEST
-
+#define MAX_BLOWNPOS 20
 #define MAX_HEAP 150
-struct tmp_path { short x,y,dist,before,cost,flag;};
+
+struct tmp_path {
+	short x,y,dist,before,cost,flag;
+};
+
 #define calc_index(x,y) (((x)+(y)*MAX_WALKPATH) & (MAX_WALKPATH*MAX_WALKPATH-1))
 
 static const unsigned char walk_choice[3][3] =
@@ -194,41 +197,42 @@ int path_blownpos(int m,int x0,int y0,int dx,int dy,int count,int flag)
 
 	if(!map[m].gat)
 		return -1;
-	md=&map[m];
+	md = &map[m];
 
-	if(count>20){	// 最大20マスに制限
+	if(count > MAX_BLOWNPOS) {
 		if(battle_config.error_log)
 			printf("path_blownpos: count too many %d !\n",count);
-		count=20;
+		count = MAX_BLOWNPOS;
 	}
-	if(dx>1 || dx<-1 || dy>1 || dy<-1){
+	if(dx > 1 || dx < -1 || dy > 1 || dy < -1) {
 		if(battle_config.error_log)
 			printf("path_blownpos: illegal dx=%d or dy=%d !\n",dx,dy);
-		dx=(dx>=0)?1:((dx<0)?-1:0);
-		dy=(dy>=0)?1:((dy<0)?-1:0);
+		dx = (dx >= 0)? 1: ((dx < 0)? -1: 0);
+		dy = (dy >= 0)? 1: ((dy < 0)? -1: 0);
 	}
 
-	while( (count--)>0 && (dx!=0 || dy!=0) ){
-		if( !can_move(md,x0,y0,x0+dx,y0+dy,0) ){
-			int fx=(dx!=0 && can_move(md,x0,y0,x0+dx,y0,0));
-			int fy=(dy!=0 && can_move(md,x0,y0,x0,y0+dy,0));
+	while( (count--) > 0 && (dx != 0 || dy != 0) ) {
+		if( !can_move(md,x0,y0,x0+dx,y0+dy,0) ) {
+			int fx, fy;
 			if( flag )
 				break;
-			if( fx && fy ){
-				if(atn_rand()&1) dx=0;
-				else             dy=0;
+			fx = (dx != 0 && can_move(md,x0,y0,x0+dx,y0,0));
+			fy = (dy != 0 && can_move(md,x0,y0,x0,y0+dy,0));
+			if( fx && fy ) {
+				if(atn_rand()&1) dx = 0;
+				else             dy = 0;
 			}
-			if( !fx ) dx=0;
-			if( !fy ) dy=0;
+			if( !fx ) dx = 0;
+			if( !fy ) dy = 0;
 		}
-		x0+=dx;
-		y0+=dy;
+		x0 += dx;
+		y0 += dy;
 	}
 	return (x0<<16)|y0;
 }
 
 /*==========================================
- *  遠距離攻撃が可能かどうかを返す
+ * 遠距離攻撃が可能かどうかを返す
  *------------------------------------------
  */
 #define swap(x,y) { int t; t = x; x = y; y = t; }
@@ -434,8 +438,8 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 		wpd->path_len=len;
 		wpd->path_pos=0;
 		for(i=rp,j=len-1;j>=0;i=tp[i].before,j--) {
-			int dx  = tp[i].x - tp[tp[i].before].x;
-			int dy  = tp[i].y - tp[tp[i].before].y;
+			int dx = tp[i].x - tp[tp[i].before].x;
+			int dy = tp[i].y - tp[tp[i].before].y;
 			wpd->path[j] = walk_choice[-dy+1][dx+1];
 		}
 #if 0

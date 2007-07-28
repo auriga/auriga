@@ -3535,8 +3535,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		delay = status_get_adelay(src);
 		if(wd.damage+wd.damage2 < status_get_hp(target)) {
 			if((skilllv = pc_checkskill(sd, skillid)) > 0) {
-				//delay += 500 * battle_config.combo_delay_rate /100;
 				delay += 2000 - 4*status_get_agi(src) - 2*status_get_dex(src);
+				// TKコンボ入力時間の最低保障追加
+				if( delay < battle_config.tkcombo_delay_lower_limits )
+					delay = battle_config.tkcombo_delay_lower_limits;
 			}
 			status_change_start(src,SC_TKCOMBO,skillid,skilllv,0,0,delay,0);
 		}
@@ -3907,7 +3909,6 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			if(ranking_get_pc_rank(sd,RK_TAEKWON) > 0) {	// テコンランカーはコンボ続行
 				int delay = status_get_adelay(src);
 				if(damage < status_get_hp(bl)) {
-					//delay += 500 * battle_config.combo_delay_rate /100;
 					delay += 2000 - 4*status_get_agi(src) - 2*status_get_dex(src);	// eA方式
 					// TKコンボ入力時間最低保障追加
 					if(delay < battle_config.tkcombo_delay_lower_limits)
