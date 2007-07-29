@@ -38,7 +38,7 @@ int embryo_default = 6001;
 
 static int homun_exp_table[6][MAX_LEVEL];
 
-static struct {
+static struct homun_skill_tree_entry {
 	int id;
 	int max;
 	struct {
@@ -49,20 +49,45 @@ static struct {
 } homun_skill_tree[MAX_HOMUN_DB][MAX_HOMSKILL_TREE];
 
 /*==========================================
+ * スキルツリー情報の検索
+ *------------------------------------------
+ */
+static struct homun_skill_tree_entry* homun_search_skilltree(int class_, int skillid)
+{
+	int min = -1;
+	int max = MAX_HOMSKILL_TREE;
+	struct homun_skill_tree_entry *st;
+
+	st = homun_skill_tree[class_ - HOM_ID];
+
+	// binary search
+	while(max - min > 1) {
+		int mid = (min + max) / 2;
+		if(st[mid].id == skillid)
+			return &st[mid];
+
+		// 0のときは大とみなす
+		if(st[mid].id == 0 || st[mid].id > skillid)
+			max = mid;
+		else
+			min = mid;
+	}
+	return NULL;
+}
+
+/*==========================================
  * スキルのMaxLvを返す
  *------------------------------------------
  */
-int homun_get_skilltree_max(int class_,int id)
+int homun_get_skilltree_max(int class_,int skillid)
 {
-	int i,skillid;
+	struct homun_skill_tree_entry *st;
 
-	class_ -= HOM_ID;
+	st = homun_search_skilltree(class_, skillid);
+	if(st == NULL)
+		return 0;
 
-	for(i=0; (skillid = homun_skill_tree[class_][i].id) > 0; i++) {
-		if(id == skillid)
-			return homun_skill_tree[class_][i].max;
-	}
-	return 0;
+	return st->max;
 }
 
 /*==========================================
@@ -1630,6 +1655,8 @@ static int homun_readdb(void)
 	while(fgets(line,1020,fp)){
 		int skillid;
 		char *split[15];
+		struct homun_skill_tree_entry *st;
+
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<15 && p;j++){
@@ -1645,25 +1672,35 @@ static int homun_readdb(void)
 			continue;
 
 		skillid = atoi(split[1]);
-		for(j=0; homun_skill_tree[i][j].id && homun_skill_tree[i][j].id != skillid; j++);
+		st = homun_skill_tree[i];
+		for(j=0; st[j].id && st[j].id != skillid; j++);
 
 		if(j >= MAX_HOMSKILL_TREE - 1) {
 			// 末尾はアンカーとして0にしておく必要がある
 			printf("homun_readdb: skill (%d) is over max tree %d!!\n", skillid, MAX_HOMSKILL_TREE);
 			continue;
 		}
-		homun_skill_tree[i][j].id  = skillid;
-		homun_skill_tree[i][j].max = atoi(split[2]);
+		if(j > 0 && skillid < st[j-1].id) {
+			// スキルIDの昇順に並んでない場合
+			int max = j;
+			while(j > 0 && skillid < st[j-1].id) {
+				j--;
+			}
+			memmove(&st[j+1], &st[j], (max-j)*sizeof(st[0]));
+		}
 
-		if(homun_skill_tree[i][j].max > skill_get_max(skillid))
-			homun_skill_tree[i][j].max = skill_get_max(skillid);
+		st[j].id  = skillid;
+		st[j].max = atoi(split[2]);
+
+		if(st[j].max > skill_get_max(skillid))
+			st[j].max = skill_get_max(skillid);
 
 		for(k=0; k<5; k++) {
-			homun_skill_tree[i][j].need[k].id = atoi(split[k*2+3]);
-			homun_skill_tree[i][j].need[k].lv = atoi(split[k*2+4]);
+			st[j].need[k].id = atoi(split[k*2+3]);
+			st[j].need[k].lv = atoi(split[k*2+4]);
 		}
-		homun_skill_tree[i][j].base_level = atoi(split[13]);
-		homun_skill_tree[i][j].intimate   = atoi(split[14]);
+		st[j].base_level = atoi(split[13]);
+		st[j].intimate   = atoi(split[14]);
 	}
 	fclose(fp);
 	printf("read db/homun_skill_tree.txt done\n");

@@ -28,7 +28,7 @@
 extern int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
 extern int max_job_table[3][32];
 
-int pc_get_skilltree_max(struct pc_base_job *bj,int id);
+int pc_get_skilltree_max(struct pc_base_job *bj,int skillid);
 
 void pc_set_gm_account_fname(char *str);
 int pc_isGM(struct map_session_data *sd);

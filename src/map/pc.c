@@ -61,7 +61,7 @@ static unsigned int equip_pos[11] = { 0x0080,0x0008,0x0040,0x0004,0x0001,0x0200,
 static char GM_account_filename[1024] = "conf/GM_account.txt";
 static struct dbt *gm_account_db = NULL;
 
-static struct {
+static struct skill_tree_entry {
 	int id;
 	int max;
 	struct {
@@ -83,20 +83,47 @@ static int pc_nightmare_drop(struct map_session_data *sd,short flag);
 static int pc_equiplookall(struct map_session_data *sd);
 
 /*==========================================
+ * スキルツリー情報の検索
+ *------------------------------------------
+ */
+static struct skill_tree_entry* pc_search_skilltree(struct pc_base_job *bj, int skillid)
+{
+	int min = -1;
+	int max = MAX_SKILL_TREE;
+	struct skill_tree_entry *st;
+
+	nullpo_retr(NULL, bj);
+
+	st = skill_tree[bj->upper][bj->job];
+
+	// binary search
+	while(max - min > 1) {
+		int mid = (min + max) / 2;
+		if(st[mid].id == skillid)
+			return &st[mid];
+
+		// 0のときは大とみなす
+		if(st[mid].id == 0 || st[mid].id > skillid)
+			max = mid;
+		else
+			min = mid;
+	}
+	return NULL;
+}
+
+/*==========================================
  * スキルのMaxLvを返す
  *------------------------------------------
  */
-int pc_get_skilltree_max(struct pc_base_job *bj,int id)
+int pc_get_skilltree_max(struct pc_base_job *bj,int skillid)
 {
-	int i,skillid;
+	struct skill_tree_entry *st;
 
-	nullpo_retr(0, bj);
+	st = pc_search_skilltree(bj, skillid);
+	if(st == NULL)
+		return 0;
 
-	for(i=0; (skillid = skill_tree[bj->upper][bj->job][i].id) > 0; i++) {
-		if(id == skillid)
-			return skill_tree[bj->upper][bj->job][i].max;
-	}
-	return 0;
+	return st->max;
 }
 
 /*==========================================
@@ -4631,10 +4658,14 @@ int pc_statusup2(struct map_session_data *sd,int type,int val)
  */
 static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 {
-	int i,id;
 	int skill_point,up_level;
+	struct skill_tree_entry *st;
 
 	nullpo_retr(0, sd);
+
+	st = pc_search_skilltree(&sd->s_class, skill_num);
+	if(st == NULL)
+		return 0;
 
 	skill_point = pc_calc_skillpoint(sd);
 
@@ -4645,13 +4676,7 @@ static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 	else
 		up_level = 2;
 
-	for(i=0; (id = skill_tree[sd->s_class.upper][sd->s_class.job][i].id) > 0; i++) {
-		if(id == skill_num) {
-			return (skill_tree[sd->s_class.upper][sd->s_class.job][i].class_level <= up_level);
-		}
-	}
-
-	return 0;
+	return (st->class_level <= up_level);
 }
 
 /*==========================================
@@ -8080,6 +8105,8 @@ int pc_readdb(void)
 	while(fgets(line,1020,fp)) {
 		char *split[17];
 		int upper = 0,skillid;
+		struct skill_tree_entry *st;
+
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<17 && p;j++) {
@@ -8100,26 +8127,36 @@ int pc_readdb(void)
 			continue;
 
 		skillid = atoi(split[2]);
-		for(j=0; skill_tree[upper][i][j].id && skill_tree[upper][i][j].id != skillid; j++);
+		st = skill_tree[upper][i];
+		for(j=0; st[j].id && st[j].id != skillid; j++);
 
 		if(j >= MAX_SKILL_TREE-1) {
 			// 末尾はアンカーとして0にしておく必要がある
 			printf("pc_readdb: skill ID %d is over max tree %d!!\n", skillid, MAX_SKILL_TREE);
 			continue;
 		}
-		skill_tree[upper][i][j].id  = skillid;
-		skill_tree[upper][i][j].max = atoi(split[3]);
+		if(j > 0 && skillid < st[j-1].id) {
+			// スキルIDの昇順に並んでない場合
+			int max = j;
+			while(j > 0 && skillid < st[j-1].id) {
+				j--;
+			}
+			memmove(&st[j+1], &st[j], (max-j)*sizeof(st[0]));
+		}
 
-		if(skill_tree[upper][i][j].max > skill_get_max(skillid))
-			skill_tree[upper][i][j].max = skill_get_max(skillid);
+		st[j].id  = skillid;
+		st[j].max = atoi(split[3]);
+
+		if(st[j].max > skill_get_max(skillid))
+			st[j].max = skill_get_max(skillid);
 
 		for(k=0; k<5; k++) {
-			skill_tree[upper][i][j].need[k].id = atoi(split[k*2+4]);
-			skill_tree[upper][i][j].need[k].lv = atoi(split[k*2+5]);
+			st[j].need[k].id = atoi(split[k*2+4]);
+			st[j].need[k].lv = atoi(split[k*2+5]);
 		}
-		skill_tree[upper][i][j].base_level  = atoi(split[14]);
-		skill_tree[upper][i][j].job_level   = atoi(split[15]);
-		skill_tree[upper][i][j].class_level = atoi(split[16]);
+		st[j].base_level  = atoi(split[14]);
+		st[j].job_level   = atoi(split[15]);
+		st[j].class_level = atoi(split[16]);
 	}
 	fclose(fp);
 

@@ -1651,9 +1651,13 @@ R 02a2 <type>.w <?>.l
 	type=bd : EM_GETHANDLE
 	type=be : EM_GETTHUMB
 R 02a3 <?>.l <?>.12B
-	jROのログイン時に観測？、未調査
+	jROのログイン時に観測？未調査
 S 02a5 <?>.w <?>.l
 	マウスのスクロールを高速で動かすと飛んでくる
 	未調査
-R 02b9 { <?>.l }*47
-	未調査
+S 02ba <index>.w <type>.B <ID>.l <lv>.w
+	ショートカットキー保存要求
+	type=0 : アイテム
+	type=1 : スキル
+R 02b9 { <type>.B <ID>.l <lv>.w }*27
+	ショーカットキー情報受信
