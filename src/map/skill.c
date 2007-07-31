@@ -111,7 +111,7 @@ int SkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること
 	/* 120- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 130- */
-	SC_DETECTING,
+	-1,
 	-1,-1,-1,-1,
 	SC_CLOAKING,		/* クローキング */
 	SC_STAN,			/* ソニックブロー */
@@ -286,7 +286,7 @@ int SkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること
 	/* 470- */
 	SC_SWOO,SC_SKE,SC_SKA,-1,-1,SC_PRESERVE,-1,-1,-1,-1,
 	/* 480- */
-	-1,-1,SC_DOUBLECASTING,-1,SC_GRAVITATION,-1,SC_OVERTHRUSTMAX,SC_LONGINGFREEDOM,SC_HERMODE,SC_TAROTCARD,
+	-1,-1,SC_DOUBLECASTING,-1,SC_GRAVITATION,-1,SC_OVERTHRUSTMAX,SC_LONGINGFREEDOM,SC_HERMODE,-1,
 	/* 490- */
 	-1,-1,-1,-1,SC_HIGH,SC_ONEHAND,-1,-1,-1,-1,
 	/* 500- */
@@ -5866,11 +5866,11 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 
 	case HT_DETECTING:				/* ディテクティング */
-		if(sd && !pc_isfalcon(sd))
+		if(sd && !pc_isfalcon(sd)) {
 			clif_skill_fail(sd,skillid,0,0);
-		else{
+		} else {
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
-			map_foreachinarea(status_change_timer_sub,src->m,x-3,y-3,x+3,y+3,0,src,SC_DETECTING,tick);
+			map_foreachinarea(status_change_timer_sub,src->m,x-3,y-3,x+3,y+3,0,src,SC_SIGHT,tick);
 		}
 		break;
 
@@ -5878,7 +5878,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		if(map[src->m].flag.noicewall) {
 			if(sd)
 				clif_skill_fail(sd,skillid,0,0);
-		} else{
+		} else {
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 			skill_unitsetting(src,skillid,skilllv,x,y,0);
 		}
@@ -10056,7 +10056,7 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 		case 1:
 			/* 魔法師(The Magician) - 30秒間Matkが半分に落ちる */
 			if(!(status_get_mode(target)&0x20))	// ボス属性以外
-				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_THE_MAGICIAN,skill_get_time2(skillid,skilllv),0);
+				status_change_start(target,SC_THE_MAGICIAN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			break;
 		case 2:
 			/* 女教皇(The High Priestess) - すべての補助魔法が消える */
@@ -10077,7 +10077,7 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 		case 4:
 			/* 力(Strength) - 30秒間ATKが半分に落ちる */
 			if(!(status_get_mode(target)&0x20))	// ボス属性以外
-				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_STRENGTH,skill_get_time2(skillid,skilllv),0);
+				status_change_start(target,SC_STRENGTH,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			break;
 		case 5:
 			/* 恋人(The Lovers) - どこかにテレポートさせる- HPが2000回復される */
@@ -10136,7 +10136,7 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 			/* 悪魔(The Devil) - 防御力無視6666ダメージ + 30秒間ATK半分、MATK半分、呪い */
 			status_change_start(target,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0);
 			if(!(status_get_mode(target)&0x20))	// ボス属性以外
-				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_THE_DEVIL,skill_get_time2(skillid,skilllv),0);
+				status_change_start(target,SC_THE_DEVIL,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			unit_fixdamage(src,target,0, 0, 0,6666,1, 4, 0);
 			break;
 		case 11:
@@ -10150,7 +10150,7 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 		case 13:
 			/* 太陽(The Sun) - 30秒間ATK、MATK、回避、命中、防御力が全て20%ずつ下落する */
 			if(!(status_get_mode(target)&0x20))	// ボス属性以外
-				status_change_start(target,SC_TAROTCARD,skilllv,0,0,SC_THE_SUN,skill_get_time2(skillid,skilllv),0);
+				status_change_start(target,SC_THE_SUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			break;
 	}
 	return 1;
@@ -11702,7 +11702,7 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 	// 実行
 	if(skillid == AL_TELEPORT && skilllv == 1) {	// Lv1テレポはダイアログ表示なしで即座に飛ばす
 		f = pc_randomwarp(sd,3);
-	} else if(skill_get_inf(skillid) & 0x22) {	// 場所と罠(設置系スキル)
+	} else if(skill_get_inf(skillid) & 0x02) {	// 場所
 		f = skill_castend_pos2(&sd->bl,target->x,target->y,skillid,skilllv,tick,flag);
 	} else {
 		switch( skill_get_nk(skillid)&3 ) {

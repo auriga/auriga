@@ -464,10 +464,9 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_FOGWALL				= 340,
 	SC_FOGWALLPENALTY		= 341,
 	SC_REDEMPTIO			= 342,
-	SC_TAROTCARD			= 343,
+	//
 	SC_HOLDWEB				= 344,
 	SC_INVISIBLE			= 345,
-	SC_DETECTING			= 346,
 	//
 	SC_FLING				= 347,
 	SC_MADNESSCANCEL		= 348,

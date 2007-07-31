@@ -946,7 +946,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	}
 
 	if(skill_num != SA_MAGICROD)
-		delay = skill_delayfix(src, skill_get_delay( skill_num,skill_lv), skill_get_cast( skill_num,skill_lv));
+		delay = skill_delayfix(src, skill_get_delay(skill_num,skill_lv), skill_get_cast(skill_num,skill_lv));
 	src_ud->state.skillcastcancel = castcancel;
 
 	/* 何か特殊な処理が必要 */
@@ -1668,7 +1668,7 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 
 	skillid = (type&1 && sd)? sd->skillid_old: ud->skillid;
 
-	if(skill_get_inf(skillid) & 0x22)
+	if(skill_get_inf(skillid) & 0x02)
 		ret = delete_timer(ud->skilltimer, skill_castend_pos);
 	else
 		ret = delete_timer(ud->skilltimer, skill_castend_id);

@@ -3596,7 +3596,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 					ud->canact_tick = tick + delay;
 				}
 			}
-			if(skill_get_inf(spellid) & 0x22) {
+			if(skill_get_inf(spellid) & 0x02) {
 				fail = skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
 			} else {
 				switch(skill_get_nk(spellid) & 3) {

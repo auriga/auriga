@@ -182,10 +182,10 @@
 214,SC_REGENERATION,0,1,0		// 激励
 //
 219,SC_POISONPOTION,0,1,0		// 毒薬の瓶
-220,SC_THE_MAGICIAN,0,1,0		// 魔法師（タロットカード識別用）
-221,SC_STRENGTH,0,1,0			// 力（タロットカード識別用）
-222,SC_THE_DEVIL,0,1,0			// 悪魔（タロットカード識別用）
-223,SC_THE_SUN,0,1,0			// 太陽（タロットカード識別用）
+220,SC_THE_MAGICIAN,0,1,0		// 魔法師（タロットカード用）
+221,SC_STRENGTH,0,1,0			// 力（タロットカード用）
+222,SC_THE_DEVIL,0,1,0			// 悪魔（タロットカード用）
+223,SC_THE_SUN,0,1,0			// 太陽（タロットカード用）
 224,SC_MEAL_INCSTR,1,1,0		// STR上昇（食事用）
 225,SC_MEAL_INCAGI,1,1,0		// AGI上昇（食事用）
 226,SC_MEAL_INCVIT,1,1,0		// VIT上昇（食事用）
@@ -304,10 +304,10 @@
 340,SC_FOGWALL,0,1,0			// ウォールオブフォグ
 341,SC_FOGWALLPENALTY,0,1,1		// ウォールオブフォグによるペナルティ
 342,SC_REDEMPTIO,-1,0,0			// レディムプティオ
-343,SC_TAROTCARD,0,1,0			// タロットカード
+//
 344,SC_HOLDWEB,-1,1,0			// ホールドウェブ
 345,SC_INVISIBLE,0,1,0			// インビジブル
-346,SC_DETECTING,0,1,0			// ディテクティング識別用
+//
 347,SC_FLING,0,1,0			// フライング
 348,SC_MADNESSCANCEL,0,1,0		// マッドネスキャンセラー
 349,SC_ADJUSTMENT,0,1,0			// アジャストメント

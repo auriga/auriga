@@ -99,7 +99,7 @@ static int StatusIconChangeTable[] = {
 	/* 210- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 	/* 220- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_MEAL_INCSTR,SI_MEAL_INCAGI,SI_MEAL_INCVIT,SI_MEAL_INCINT,SI_MEAL_INCDEX,SI_MEAL_INCLUK,
+	SI_TAROTCARD,SI_TAROTCARD,SI_TAROTCARD,SI_TAROTCARD,SI_MEAL_INCSTR,SI_MEAL_INCAGI,SI_MEAL_INCVIT,SI_MEAL_INCINT,SI_MEAL_INCDEX,SI_MEAL_INCLUK,
 	/* 230- */
 	SI_RUN,SI_SPURT,SI_BLANK,SI_DODGE,SI_BLANK,SI_BLANK,SI_BLANK,SI_WARM,SI_BLANK,SI_BLANK,
 	/* 240- */
@@ -123,7 +123,7 @@ static int StatusIconChangeTable[] = {
 	/* 330- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_TIGEREYE,SI_BLANK,SI_BLANK,
 	/* 340- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_TAROTCARD,SI_HOLDWEB,SI_BLANK,SI_BLANK,SI_BLANK,SI_MADNESSCANCEL,SI_ADJUSTMENT,
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_HOLDWEB,SI_BLANK,SI_BLANK,SI_BLANK,SI_MADNESSCANCEL,SI_ADJUSTMENT,
 	/* 350- */
 	SI_INCREASING,SI_BLANK,SI_GATLINGFEVER,SI_BLANK,SI_BLANK,SI_UTSUSEMI,SI_BUNSINJYUTSU,SI_BLANK,SI_NEN,SI_BLANK,
 	/* 360- */
@@ -1577,49 +1577,44 @@ L_RECALC:
 		if(sd->sc_data[SC_POISON].timer != -1)	// 毒状態
 			sd->def2 = sd->def2*75/100;
 
-		// タロットカード
-		if(sd->sc_data[SC_TAROTCARD].timer != -1 && sd->sc_data[SC_TAROTCARD].val4 == SC_THE_MAGICIAN) {
-			// THE MAGICIAN ATK半減
-			// ATK
+		// 運命のタロットカード
+		if(sd->sc_data[SC_THE_MAGICIAN].timer != -1) {
+			// ATK半減
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
 			index = sd->equip_index[8];
 			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4)
 				sd->watk_ = sd->watk_ * 50/100;
 		}
-		else if(sd->sc_data[SC_TAROTCARD].timer != -1 && sd->sc_data[SC_TAROTCARD].val4 == SC_STRENGTH) {
-			// STRENGTH MATK半減
-			// MATK
+		if(sd->sc_data[SC_STRENGTH].timer != -1) {
+			// MATK半減
 			sd->matk1 = sd->matk1*50/100;
 			sd->matk2 = sd->matk2*50/100;
 		}
-		else if(sd->sc_data[SC_TAROTCARD].timer != -1 && sd->sc_data[SC_TAROTCARD].val4 == SC_THE_DEVIL) {
-			// THE DEVIL ATK半分、MATK半分
-			// ATK
+		if(sd->sc_data[SC_THE_DEVIL].timer != -1) {
+			// ATK半減、MATK半減
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
 			index = sd->equip_index[8];
-			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4)
+			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4) {
 				sd->watk_ = sd->watk_ * 50/100;
-
-			// MATK
+			}
 			sd->matk1 = sd->matk1*50/100;
 			sd->matk2 = sd->matk2*50/100;
 		}
-		else if(sd->sc_data[SC_TAROTCARD].timer != -1 && sd->sc_data[SC_TAROTCARD].val4 == SC_THE_SUN) {
-			// THE SUN ATK、MATK、回避、命中、防御力が全て20%ずつ下落する 536
-			// ATK
+		if(sd->sc_data[SC_THE_SUN].timer != -1) {
+			// ATK、MATK、回避、命中、防御力が全て20%ずつ下落する
 			sd->base_atk = sd->base_atk * 80/100;
 			sd->watk = sd->watk * 80/100;
 			index = sd->equip_index[8];
-			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4)
+			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4) {
 				sd->watk_ = sd->watk_ * 80/100;
-			// MATK
+			}
 			sd->matk1 = sd->matk1*80/100;
 			sd->matk2 = sd->matk2*80/100;
 			sd->flee  = sd->flee * 80/100;
 			sd->hit   = sd->hit * 80/100;
-			// 防御力
+
 			sd->def  = sd->def * 80/100;
 			sd->def2 = sd->def2 * 80/100;
 		}
@@ -2623,7 +2618,7 @@ int status_get_flee(struct block_list *bl)
 			flee += flee*(sc_data[SC_WINDWALK].val2)/100;
 		if(sc_data[SC_SPIDERWEB].timer != -1 && bl->type != BL_PC)	// スパイダーウェブ
 			flee -= flee*50/100;
-		if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN && bl->type != BL_PC)	// THE SUN
+		if(sc_data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)	// THE SUN
 			flee = flee*80/100;
 		if(sc_data[SC_GATLINGFEVER].timer != -1 && bl->type != BL_PC)	// ガトリングフィーバー
 			flee -= sc_data[SC_GATLINGFEVER].val1*5;
@@ -2685,7 +2680,7 @@ int status_get_hit(struct block_list *bl)
 			hit += 3*(sc_data[SC_TRUESIGHT].val1);
 		if(sc_data[SC_CONCENTRATION].timer != -1)	// コンセントレーション
 			hit += 10*(sc_data[SC_CONCENTRATION].val1);
-		if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN && bl->type != BL_PC)
+		if(sc_data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 			hit = hit*80/100;
 		if(sc_data[SC_ADJUSTMENT].timer != -1 && bl->type != BL_PC) // アジャストメント
 			hit -= 30;
@@ -2797,15 +2792,13 @@ int status_get_baseatk(struct block_list *bl)
 			batk -= batk*25/100;
 		if(sc_data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// マッドネスキャンセラー
 			batk += 100;
-		// タロット効果は１つだけ？
-		if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_MAGICIAN)
+		if(sc_data[SC_THE_MAGICIAN].timer != -1)
 			batk = batk*50/100;
-		else if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_DEVIL)
+		if(sc_data[SC_THE_DEVIL].timer != -1)
 			batk = batk*50/100;
-		else if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN)
+		if(sc_data[SC_THE_SUN].timer != -1)
 			batk = batk*80/100;
-		// エスク
-		if(sc_data[SC_SKE].timer != -1 && bl->type == BL_MOB)
+		if(sc_data[SC_SKE].timer != -1 && bl->type == BL_MOB)	// エスク
 			batk *= 4;
 	}
 	if(batk < 1) batk = 1;	// base_atkは最低でも1
@@ -2848,24 +2841,21 @@ int status_get_atk(struct block_list *bl)
 			atk -= atk*25/100;
 		if(sc_data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)	// コンセントレーション
 			atk += atk*(5*sc_data[SC_CONCENTRATION].val1)/100;
-		if(sc_data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)
-			atk *= 3;	// NPC爆裂波動
+		if(sc_data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC爆裂波動
+			atk *= 3;
 		if(sc_data[SC_STRIPWEAPON].timer != -1 && bl->type != BL_PC)
 			atk -= atk*25/100;
 		if(sc_data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ディスアーム
 			atk -= atk*25/100;
 		if(sc_data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// マッドネスキャンセラー
 			atk += 100;
-
-		if(bl->type != BL_PC && sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_MAGICIAN)
+		if(sc_data[SC_THE_MAGICIAN].timer != -1 && bl->type != BL_PC)
 			atk = atk*50/100;
-		else if(bl->type != BL_PC && sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_DEVIL)
+		if(sc_data[SC_THE_DEVIL].timer != -1 && bl->type != BL_PC)
 			atk = atk*50/100;
-		else if(bl->type != BL_PC && sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN)
+		if(sc_data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 			atk = atk*80/100;
-
-		// エスク
-		if(sc_data[SC_SKE].timer != -1 && bl->type == BL_MOB)
+		if(sc_data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// エスク
 			atk *= 4;
 	}
 	if(atk < 0) atk = 0;
@@ -2935,22 +2925,19 @@ int status_get_atk2(struct block_list *bl)
 				atk2 -= atk2*10/100;
 			if(sc_data[SC_CONCENTRATION].timer != -1)	// コンセントレーション
 				atk2 += atk2*(5*sc_data[SC_CONCENTRATION].val1)/100;
-			if(sc_data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)
-				atk2 *= 3;	// NPC爆裂波動
+			if(sc_data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC爆裂波動
+				atk2 *= 3;
 			if(sc_data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ディスアーム
 				atk2 -= atk2*25/100;
 			if(sc_data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// マッドネスキャンセラー
 				atk2 += 100;
-
-			// タロット効果
-			if(bl->type != BL_PC && sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_MAGICIAN)
+			if(sc_data[SC_THE_MAGICIAN].timer != -1 && bl->type != BL_PC)
 				atk2 = atk2*50/100;
-			else if(bl->type != BL_PC && sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_DEVIL)
+			if(sc_data[SC_THE_DEVIL].timer != -1 && bl->type != BL_PC)
 				atk2 = atk2*50/100;
-			else if(bl->type != BL_PC && sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN)
+			if(sc_data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 				atk2 = atk2*80/100;
-			// エスク
-			if(sc_data[SC_SKE].timer != -1 && bl->type == BL_MOB)
+			if(sc_data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// エスク
 				atk2 *= 4;
 		}
 		if(atk2 < 0) atk2 = 0;
@@ -3010,12 +2997,11 @@ int status_get_matk1(struct block_list *bl)
 	if(sc_data) {
 		if(sc_data[SC_MINDBREAKER].timer != -1)
 			matk1 += (matk1*20*sc_data[SC_MINDBREAKER].val1)/100;
-
-		if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_STRENGTH)
+		if(sc_data[SC_STRENGTH].timer != -1)
 			matk1 = matk1*50/100;
-		else if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_DEVIL)
+		if(sc_data[SC_THE_DEVIL].timer != -1)
 			matk1 = matk1*50/100;
-		else if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN)
+		if(sc_data[SC_THE_SUN].timer != -1)
 			matk1 = matk1*80/100;
 	}
 	return matk1;
@@ -3057,12 +3043,11 @@ int status_get_matk2(struct block_list *bl)
 	if(sc_data) {
 		if(sc_data[SC_MINDBREAKER].timer != -1)
 			matk2 += (matk2*20*sc_data[SC_MINDBREAKER].val1)/100;
-
-		if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_STRENGTH)
+		if(sc_data[SC_STRENGTH].timer != -1)
 			matk2 = matk2*50/100;
-		else if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_DEVIL)
+		if(sc_data[SC_THE_DEVIL].timer != -1)
 			matk2 = matk2*50/100;
-		else if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN)
+		if(sc_data[SC_THE_SUN].timer != -1)
 			matk2 = matk2*80/100;
 	}
 	return matk2;
@@ -3127,7 +3112,7 @@ int status_get_def(struct block_list *bl)
 			if(sc_data[SC_NPC_DEFENDER].timer != -1 && bl->type != BL_PC)
 				def += 100;
 			// THE SUN
-			if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN && bl->type != BL_PC)
+			if(sc_data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 				def = def*80/100;
 			if(sc_data[SC_FLING].timer != -1 && bl->type != BL_PC)			// フライング
 				def = def * (100 - 5*sc_data[SC_FLING].val1)/100;
@@ -3227,7 +3212,7 @@ int status_get_def2(struct block_list *bl)
 		if(sc_data[SC_ETERNALCHAOS].timer != -1)
 			def2 = 0;
 		// THE SUN
-		if(sc_data[SC_TAROTCARD].timer != -1 && sc_data[SC_TAROTCARD].val4 == SC_THE_SUN && bl->type != BL_PC)
+		if(sc_data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 			def2 = def2*80/100;
 		// エスカ
 		if(sc_data[SC_SKA].timer != -1 && bl->type == BL_MOB)
@@ -4384,7 +4369,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_RESISTTELEKINESIS:
 		case SC_RESISTUNDEAD:
 		case SC_RESISTALL:
-		case SC_TAROTCARD:
 		case SC_IMPOSITIO:			/* インポシティオマヌス */
 		case SC_DEVOTION:			/* ディボーション */
 		case SC_GLORIA:				/* グロリア */
@@ -4925,7 +4909,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SIGHTBLASTER:		/* サイトブラスター */
 		case SC_SIGHT:			/* サイト */
 		case SC_RUWACH:			/* ルアフ */
-		case SC_DETECTING:
 			val2 = tick/250;
 			tick = 10;
 			break;
@@ -5479,7 +5462,10 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_RESISTALL:
 		case SC_INVISIBLE:
 		case SC_TIGEREYE:
-		case SC_TAROTCARD:
+		case SC_THE_MAGICIAN:
+		case SC_STRENGTH:
+		case SC_THE_DEVIL:
+		case SC_THE_SUN:
 		case SC_DISARM:				/* ディスアーム */
 		case SC_GATLINGFEVER:			/* ガトリングフィーバー */
 		case SC_FLING:				/* フライング */
@@ -6104,7 +6090,6 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 	case SC_SIGHTBLASTER:
 	case SC_SIGHT:		/* サイト */
 	case SC_RUWACH:		/* ルアフ */
-	case SC_DETECTING:
 		{
 			int range = (type == SC_SIGHT || type == SC_SIGHTBLASTER)? 3: 2;
 
@@ -6474,13 +6459,6 @@ int status_change_timer_sub(struct block_list *bl, va_list ap )
 				sc_data[type].val2 = 0;
 			}
 			status_change_end(src,SC_SIGHTBLASTER,-1);
-		}
-		break;
-	case SC_DETECTING:
-		if( *opt&0x46 ) {
-			status_change_end( bl, SC_HIDING, -1);
-			status_change_end( bl, SC_CLOAKING, -1);
-			status_change_end( bl, SC_INVISIBLE, -1);
 		}
 		break;
 	}
