@@ -521,6 +521,8 @@ extern struct Battle_Config {
 	int pk_murderer_point;
 	int sg_miracle_rate;
 	int baby_copy_skilltree;
+	int skill_autospell_delay_enable;
+	int bonus_autospell_delay_enable;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

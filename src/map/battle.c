@@ -3589,6 +3589,13 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				fail = 1;
 		}
 		if(!fail) {
+			if(battle_config.skill_autospell_delay_enable) {
+				struct unit_data *ud = unit_bl2ud(src);
+				if(ud) {
+					int delay = skill_delayfix(src, skill_get_delay(spellid,spelllv), skill_get_cast(spellid,spelllv));
+					ud->canact_tick = tick + delay;
+				}
+			}
 			if(skill_get_inf(spellid) & 0x22) {
 				fail = skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
 			} else {
@@ -3599,11 +3606,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 					break;
 				case 1:	/* 支援系 */
 					if( (spellid == AL_HEAL || (spellid == ALL_RESURRECTION && target->type != BL_PC)) &&
-					    battle_check_undead(status_get_race(target),status_get_elem_type(target)) ) {
+					    battle_check_undead(status_get_race(target),status_get_elem_type(target)) )
 						fail = skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
-					} else {
+					else
 						fail = skill_castend_nodamage_id(src,target,spellid,spelllv,tick,flag);
-					}
 					break;
 				}
 			}
@@ -5016,6 +5022,8 @@ int battle_config_read(const char *cfgName)
 		battle_config.pk_murderer_point = 100;
 		battle_config.sg_miracle_rate = 1;
 		battle_config.baby_copy_skilltree = 1;
+		battle_config.skill_autospell_delay_enable = 1;
+		battle_config.bonus_autospell_delay_enable = 1;
 	}
 
 	fp = fopen(cfgName,"r");
@@ -5476,6 +5484,8 @@ int battle_config_read(const char *cfgName)
 			{ "pk_murderer_point",                  &battle_config.pk_murderer_point                  },
 			{ "sg_miracle_rate",                    &battle_config.sg_miracle_rate                    },
 			{ "baby_copy_skilltree",                &battle_config.baby_copy_skilltree                },
+			{ "skill_autospell_delay_enable",       &battle_config.skill_autospell_delay_enable       },
+			{ "bonus_autospell_delay_enable",       &battle_config.bonus_autospell_delay_enable       },
 		};
 		int max = sizeof(data)/sizeof(data[0]);
 

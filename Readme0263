@@ -1,4 +1,14 @@
 ----------------------------------------
+//0264 [2007/08/01] by Rayce
+
+・オートスペル使用後にディレイが無かったのを修正（battle.*, skill.*）
+	battle_auriga.confに skill_autospell_delay_enable と bonus_autospell_delay_enable を追加
+	スキル由来かアイテムボーナス由来かで個別に設定できます
+	デフォルトでは共にyesですが、noにすれば今まで通りディレイ無しになります
+
+・skill_bonus_autospell() の引数tickがunsigned int型になっていなかったので修正（skill.*）
+
+----------------------------------------
 //0263 [2007/07/30] by Rayce
 
 ・サーバースナップショット（version.h）

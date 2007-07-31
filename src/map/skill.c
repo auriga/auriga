@@ -4714,16 +4714,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					if(sp < 1) sp = 1;
 					pc_heal(sd,0,-sp);
 				}
-			}
-			else {
+			} else {
 				int bl_skillid=0,bl_skilllv=0;
 				if(dstsd) {
 					if(dstsd->ud.skilltimer != -1) {
 						bl_skillid = dstsd->ud.skillid;
 						bl_skilllv = dstsd->ud.skilllv;
 					}
-				}
-				else if(dstmd) {
+				} else if(dstmd) {
 					if(dstmd->ud.skilltimer != -1) {
 						bl_skillid = dstmd->ud.skillid;
 						bl_skilllv = dstmd->ud.skilllv;
@@ -4743,14 +4741,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						if(sd->status.sp + sp > sd->status.max_sp) {
 							sp = sd->status.max_sp - sd->status.sp;
 							sd->status.sp = sd->status.max_sp;
-						}
-						else
+						} else {
 							sd->status.sp += sp;
+						}
 						clif_heal(sd->fd,SP_SP,sp);
 					}
-				}
-				else if(sd)
+				} else if(sd) {
 					clif_skill_fail(sd,skillid,0,0);
+				}
 			}
 		}
 		break;
@@ -4761,25 +4759,30 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SA_AUTOSPELL:			/* オートスペル */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if(sd)
+		if(sd) {
 			clif_autospell(sd,skilllv);
-		else {
-			int maxlv=1,spellid=0;
-			static const int spellarray[3] = { MG_COLDBOLT,MG_FIREBOLT,MG_LIGHTNINGBOLT };
+		} else {
+			int maxlv = 1, spellid = 0;
 			if(skilllv >= 10) {
 				spellid = MG_FROSTDIVER;
 				maxlv = skilllv - 9;
 			}
-			else if(skilllv >=8) {
+			else if(skilllv >= 8) {
 				spellid = MG_FIREBALL;
 				maxlv = skilllv - 7;
 			}
-			else if(skilllv >=5) {
+			else if(skilllv >= 5) {
 				spellid = MG_SOULSTRIKE;
 				maxlv = skilllv - 4;
 			}
-			else if(skilllv >=2) {
-				spellid = spellarray[atn_rand()%3];
+			else if(skilllv >= 2) {
+				int r = atn_rand()%3;
+				if(r == 0)
+					spellid = MG_COLDBOLT;
+				else if(r == 1)
+					spellid = MG_FIREBOLT;
+				else
+					spellid = MG_LIGHTNINGBOLT;
 				maxlv = skilllv - 1;
 			}
 			else if(skilllv > 0) {
@@ -4787,15 +4790,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				maxlv = 3;
 			}
 			if(spellid > 0)
-				status_change_start(src,SC_AUTOSPELL,skilllv,spellid,maxlv,0,
-					skill_get_time(SA_AUTOSPELL,skilllv),0);
+				status_change_start(src,SC_AUTOSPELL,skilllv,spellid,maxlv,0,skill_get_time(SA_AUTOSPELL,skilllv),0);
 		}
 		break;
 	case PF_MINDBREAKER:
 		if (atn_rand()%100<(55+skilllv*5)) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,
-				0,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 
 			// 凍結・石化・睡眠を解除
 			status_change_attacked_end(bl);
@@ -11618,7 +11619,7 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
  *  mode : 攻撃時1 反撃2
  *------------------------------------------
  */
-static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_list *bl,int skillid,int skilllv,int rate,unsigned long asflag,int tick,int flag)
+static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_list *bl,int skillid,int skilllv,int rate,unsigned long asflag,unsigned int tick,int flag)
 {
 	struct block_list *target;
 	int f=0,sp=0;
@@ -11697,22 +11698,25 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 	if(sd->status.sp < sp)
 		return 0;
 
+	if(battle_config.bonus_autospell_delay_enable) {
+		int delay = skill_delayfix(&sd->bl, skill_get_delay(skillid,skilllv), skill_get_cast(skillid,skilllv));
+		sd->ud.canact_tick = tick + delay;
+	}
+
 	// 実行
 	if(skillid == AL_TELEPORT && skilllv == 1) {	// Lv1テレポはダイアログ表示なしで即座に飛ばす
 		f = pc_randomwarp(sd,3);
 	} else if(skill_get_inf(skillid) & 0x22) {	// 場所と罠(設置系スキル)
 		f = skill_castend_pos2(&sd->bl,target->x,target->y,skillid,skilllv,tick,flag);
 	} else {
-		int t_race = status_get_race(target);
-		int t_ele  = status_get_element(target);
-
 		switch( skill_get_nk(skillid)&3 ) {
 			case 0:	// 通常
 			case 2:	// 吹き飛ばし
 				f = skill_castend_damage_id(&sd->bl,target,skillid,skilllv,tick,flag);
 				break;
 			case 1:	// 支援系
-				if((skillid==AL_HEAL || (skillid==ALL_RESURRECTION && target->type != BL_PC)) && battle_check_undead(t_race,t_ele))
+				if( (skillid == AL_HEAL || (skillid == ALL_RESURRECTION && target->type != BL_PC)) &&
+				    battle_check_undead(status_get_race(target),status_get_element(target)) )
 					f = skill_castend_damage_id(&sd->bl,target,skillid,skilllv,tick,flag);
 				else
 					f = skill_castend_nodamage_id(&sd->bl,target,skillid,skilllv,tick,flag);
@@ -11725,7 +11729,7 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 	return 1;	// 成功
 }
 
-int skill_bonus_autospell(struct block_list *src,struct block_list *bl,unsigned long mode,int tick,int flag)
+int skill_bonus_autospell(struct block_list *src,struct block_list *bl,unsigned long mode,unsigned int tick,int flag)
 {
 	int i;
 	static int lock = 0;
