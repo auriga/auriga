@@ -1,4 +1,17 @@
 ----------------------------------------
+//0265 [2007/08/01] by Rayce
+
+・スキルのstatictimerをギルドスキルも一括して扱えるように変更（map.h）
+・臨戦態勢、激励、治療、緊急召集のスキルディレイはstatictimerを使うように変更（clif.c, skill,c status.*）
+　以下のステータス異常は不要になったので削除
+	SC_BATTLEORDER_DELAY
+	SC_REGENERATION_DELAY,
+	SC_RESTORE_DELAY
+	SC_EMERGENCYCALL_DELAY,
+・スキルのstatictimerの初期化が二重に行われていた無駄を修正（pc.c）
+	pc_setnewpc() ではなく pc_authok() だけで行えば良い
+
+----------------------------------------
 //0264 [2007/08/01] by Rayce
 
 ・オートスペル使用後にディレイが無かったのを修正（battle.*, skill.*）

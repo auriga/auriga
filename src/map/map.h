@@ -11,7 +11,6 @@
 #define AREA_SIZE 14
 #define PT_AREA_SIZE 20
 #define LOOTITEM_SIZE 10
-#define MAX_SKILL_ID MAX_SKILL
 #define MAX_SKILL_LEVEL 12
 #define MAX_MOBSKILL	32
 #define MAX_EVENTQUEUE	2
@@ -332,7 +331,7 @@ struct map_session_data {
 	int wis_all;	// Wis全拒否許可フラグ
 
 	short attackrange,attackrange_;
-	unsigned int skillstatictimer[MAX_SKILL_ID];
+	unsigned int skillstatictimer[MAX_SKILL+MAX_HOMSKILL+MAX_GUILDSKILL];
 	short skillitem,skillitemlv,skillitem_flag;
 	short skillid_old,skilllv_old;
 	short skillid_dance,skilllv_dance;

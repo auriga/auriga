@@ -180,10 +180,7 @@
 212,SC_SERVICE4U_,0,1,0			// サービスフォーユー（範囲外）
 213,SC_BATTLEORDER,0,1,0		// 臨戦態制
 214,SC_REGENERATION,0,1,0		// 激励
-215,SC_BATTLEORDER_DELAY,0,1,0		// 臨戦態制ディレイ
-216,SC_REGENERATION_DELAY,0,1,0		// 激励ディレイ
-217,SC_RESTORE_DELAY,0,1,0		// 治療ディレイ
-218,SC_EMERGENCYCALL_DELAY,0,1,0	// 緊急召集ディレイ
+//
 219,SC_POISONPOTION,0,1,0		// 毒薬の瓶
 220,SC_THE_MAGICIAN,0,1,0		// 魔法師（タロットカード識別用）
 221,SC_STRENGTH,0,1,0			// 力（タロットカード識別用）

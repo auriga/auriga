@@ -10126,41 +10126,41 @@ static void clif_parse_SkillUp(int fd,struct map_session_data *sd, int cmd)
  * スキル使用（ID指定）
  *------------------------------------------
  */
-static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
+static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd)
 {
-	int skillnum,skilllv,lv,target_id;
-	unsigned int tick=gettick();
+	int skillnum, skilllv, lv, target_id, skilldb_id;
+	unsigned int tick = gettick();
 	struct block_list *bl;
 	unsigned int *option;
 
 	nullpo_retv(sd);
 
 	if(map[sd->bl.m].flag.noskill) return;
-	if(sd->npc_id!=0 || sd->vender_id != 0) return;
+	if(sd->npc_id != 0 || sd->vender_id != 0) return;
 	if(sd->chatID) return;
 
-	if (pc_issit(sd))
+	if(pc_issit(sd))
 		return;
 
-	skilllv = RFIFOW(fd,GETPACKETPOS(cmd,0));
-	skillnum = RFIFOW(fd,GETPACKETPOS(cmd,1));
+	skilllv   = RFIFOW(fd,GETPACKETPOS(cmd,0));
+	skillnum  = RFIFOW(fd,GETPACKETPOS(cmd,1));
 	target_id = RFIFOL(fd,GETPACKETPOS(cmd,2));
 
 	// decode for jRO 2005-05-09dRagexe
-	if( packet_db[cmd].pos[0]==0 && packet_db[cmd].pos[1]==0 && packet_db[cmd].pos[2]==0)
+	if(packet_db[cmd].pos[0] == 0 && packet_db[cmd].pos[1] == 0 && packet_db[cmd].pos[2] == 0)
 	{
 		int tmp = g_packet_len % 3;
-		const int t1[]={ 138,43,170 }, t2[]={ 103,4,80 }, t3[]={ 130,33,84 }, t4[]={ 134, 39, 166 };
+		const int t1[] = { 138,43,170 }, t2[] = { 103,4,80 }, t3[] = { 130,33,84 }, t4[] = { 134, 39, 166 };
 		int tmp2 = (g_packet_len - t1[tmp]) / 3;
-		skilllv  = RFIFOW(fd, tmp2   + t2[tmp] );
-		skillnum = RFIFOW(fd, tmp2*2 + t3[tmp] );
-		target_id= RFIFOL(fd, tmp2*3 + t4[tmp] );
+		skilllv   = RFIFOW(fd, tmp2   + t2[tmp] );
+		skillnum  = RFIFOW(fd, tmp2*2 + t3[tmp] );
+		target_id = RFIFOL(fd, tmp2*3 + t4[tmp] );
 	}
 	// end decode
 
-	if (skillnum >= GUILD_SKILLID) {
+	if(skillnum >= GUILD_SKILLID) {
 		// ギルドスキルはギルマスのみ
-		if (sd != guild_get_guildmaster_sd(guild_search(sd->status.guild_id)))
+		if(sd != guild_get_guildmaster_sd(guild_search(sd->status.guild_id)))
 			return;
 		// ギルドスキルのデコードがおかしい！
 		// わかる人頼みます
@@ -10195,7 +10195,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 		}
 	}
 
-	if(bl && mob_gvmobcheck(sd,bl)==0)
+	if(bl && mob_gvmobcheck(sd,bl) == 0)
 		return;
 
 	if(sd->ud.skilltimer != -1) {
@@ -10207,34 +10207,33 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	// 通常スキルの場合はstatic timerの判定
-	if(skillnum >= 0 && skillnum < MAX_SKILL_ID) {
-		if(DIFF_TICK(tick, sd->skillstatictimer[skillnum]) < 0) {
-			clif_skill_fail(sd,skillnum,4,0);
-			return;
-		}
+	// static timerの判定
+	skilldb_id = skill_get_skilldb_id(skillnum);
+	if(skilldb_id <= 0)
+		return;
+	if(DIFF_TICK(tick, sd->skillstatictimer[skilldb_id]) < 0) {
+		clif_skill_fail(sd,skillnum,4,0);
+		return;
 	}
 
-	if((sd->sc_data[SC_TRICKDEAD].timer != -1 && skillnum != NV_TRICKDEAD) ||
-		sd->sc_data[SC_BERSERK].timer!=-1 ||
-		sd->sc_data[SC_NOCHAT].timer!=-1 ||
-		sd->sc_data[SC_WEDDING].timer!=-1||
-		sd->sc_data[SC_FORCEWALKING].timer!=-1
-		) return;
+	if( (sd->sc_data[SC_TRICKDEAD].timer != -1 && skillnum != NV_TRICKDEAD) ||
+	    sd->sc_data[SC_BERSERK].timer != -1 ||
+	    sd->sc_data[SC_NOCHAT].timer != -1 ||
+	    sd->sc_data[SC_WEDDING].timer != -1 ||
+	    sd->sc_data[SC_FORCEWALKING].timer != -1 )
+		return;
 
 
-	if((option = status_get_option(bl)) != NULL && *option&0x4006 && ((&sd->bl)!=bl))
+	if((option = status_get_option(bl)) != NULL && *option&0x4006 && ((&sd->bl) != bl))
 	{
 		// 昆虫と悪魔は攻撃可能？
 		if(sd->race != RCT_INSECT && sd->race != RCT_DEMON)
 			return;
 	}
 
-	if (sd->sc_data[SC_BASILICA].timer!=-1 && (skillnum!=HP_BASILICA ||
-			sd->sc_data[SC_BASILICA].val2!=sd->bl.id))
+	if(sd->sc_data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc_data[SC_BASILICA].val2 != sd->bl.id))
 		return;
-	if (sd->sc_data[SC_GOSPEL].timer!=-1 && (skillnum!=PA_GOSPEL ||
-			sd->sc_data[SC_GOSPEL].val2!=sd->bl.id))
+	if(sd->sc_data[SC_GOSPEL].timer != -1 && (skillnum != PA_GOSPEL || sd->sc_data[SC_GOSPEL].val2 != sd->bl.id))
 		return;
 
 	if(sd->invincible_timer != -1)
@@ -10244,17 +10243,17 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 		if(skilllv != sd->skillitemlv)
 			skilllv = sd->skillitemlv;
 		if( !unit_skilluse_id(&sd->bl,target_id,skillnum,skilllv) ) {
-			sd->skillitem = -1;
-			sd->skillitemlv = -1;
+			sd->skillitem      = -1;
+			sd->skillitemlv    = -1;
 			sd->skillitem_flag = 0;
 		}
 	} else {
-		sd->skillitem = -1;
-		sd->skillitemlv = -1;
+		sd->skillitem      = -1;
+		sd->skillitemlv    = -1;
 		sd->skillitem_flag = 0;
 		if(skillnum == MO_EXTREMITYFIST) {
 			if(sd->sc_data[SC_COMBO].timer == -1 || (sd->sc_data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc_data[SC_COMBO].val1 != CH_CHAINCRUSH)) {
-				if(!sd->state.skill_flag ) {
+				if(!sd->state.skill_flag) {
 					sd->state.skill_flag = 1;
 					clif_skillinfo(sd,MO_EXTREMITYFIST,1,-1);
 					return;
@@ -10267,7 +10266,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 		}
 		if(skillnum == TK_JUMPKICK) {
 			if(sd->sc_data[SC_DODGE_DELAY].timer == -1) {
-				if(!sd->state.skill_flag ) {
+				if(!sd->state.skill_flag) {
 					sd->state.skill_flag = 1;
 					clif_skillinfo(sd,TK_JUMPKICK,1,-1);
 					return;
@@ -10278,7 +10277,7 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
 				}
 			}
 		}
-		if( (lv = pc_checkskill(sd,skillnum)) > 0) {
+		if((lv = pc_checkskill(sd,skillnum)) > 0) {
 			if(skilllv > lv)
 				skilllv = lv;
 			unit_skilluse_id(&sd->bl,target_id,skillnum,skilllv);
@@ -10294,21 +10293,21 @@ static void clif_parse_UseSkillToId(int fd,struct map_session_data *sd, int cmd)
  * スキル使用（場所指定）
  *------------------------------------------
  */
-static void clif_parse_UseSkillToPos(int fd,struct map_session_data *sd, int cmd)
+static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cmd)
 {
-	int skillnum,skilllv,lv,x,y;
-	unsigned int tick=gettick();
+	int skillnum, skilllv, lv, x, y, skilldb_id;
+	unsigned int tick = gettick();
 
 	nullpo_retv(sd);
 
 	if(map[sd->bl.m].flag.noskill) return;
-	if(sd->npc_id!=0 || sd->vender_id != 0) return;
+	if(sd->npc_id != 0 || sd->vender_id != 0) return;
 	if(sd->chatID) return;
 
-	skilllv = RFIFOW(fd,GETPACKETPOS(cmd,0));
+	skilllv  = RFIFOW(fd,GETPACKETPOS(cmd,0));
 	skillnum = RFIFOW(fd,GETPACKETPOS(cmd,1));
-	x = RFIFOW(fd,GETPACKETPOS(cmd,2));
-	y = RFIFOW(fd,GETPACKETPOS(cmd,3));
+	x        = RFIFOW(fd,GETPACKETPOS(cmd,2));
+	y        = RFIFOW(fd,GETPACKETPOS(cmd,3));
 
 	if(sd->ud.skilltimer != -1)
 		return;
@@ -10317,36 +10316,36 @@ static void clif_parse_UseSkillToPos(int fd,struct map_session_data *sd, int cmd
 		clif_skill_fail(sd,skillnum,4,0);
 		return;
 	}
-	// 通常スキルの場合はstatic timerの判定
-	if(skillnum >= 0 && skillnum < MAX_SKILL_ID) {
-		if(DIFF_TICK(tick, sd->skillstatictimer[skillnum]) < 0) {
-			clif_skill_fail(sd,skillnum,4,0);
-			return;
-		}
+
+	// static timerの判定
+	skilldb_id = skill_get_skilldb_id(skillnum);
+	if(skilldb_id <= 0)
+		return;
+	if(DIFF_TICK(tick, sd->skillstatictimer[skilldb_id]) < 0) {
+		clif_skill_fail(sd,skillnum,4,0);
+		return;
 	}
 
-	if(GETPACKETPOS(cmd,4)){
-		if(pc_issit(sd)){
+	if(GETPACKETPOS(cmd,4)) {
+		if(pc_issit(sd)) {
 			clif_skill_fail(sd,skillnum,0,0);
 			return;
 		}
 		memcpy(sd->message,RFIFOP(fd,GETPACKETPOS(cmd,4)),80);
 		sd->message[79] = '\0'; // message includes NULL, but add it against hacker
 	}
-	else if (pc_issit(sd)){
+	else if(pc_issit(sd)) {
 		return;
 	}
 
-	if((sd->sc_data[SC_TRICKDEAD].timer != -1 && skillnum != NV_TRICKDEAD) ||
-		sd->sc_data[SC_BERSERK].timer!=-1 ||
-		sd->sc_data[SC_NOCHAT].timer!=-1 ||
-		sd->sc_data[SC_WEDDING].timer!=-1 ||
-		sd->sc_data[SC_GOSPEL].timer!=-1||
-		sd->sc_data[SC_FORCEWALKING].timer!=-1
-		)
+	if( (sd->sc_data[SC_TRICKDEAD].timer != -1 && skillnum != NV_TRICKDEAD) ||
+	    sd->sc_data[SC_BERSERK].timer != -1 ||
+	    sd->sc_data[SC_NOCHAT].timer != -1 ||
+	    sd->sc_data[SC_WEDDING].timer != -1 ||
+	    sd->sc_data[SC_GOSPEL].timer != -1 ||
+	    sd->sc_data[SC_FORCEWALKING].timer != -1 )
 		return;
-	if (sd->sc_data[SC_BASILICA].timer!=-1 && (skillnum!=HP_BASILICA ||
-			sd->sc_data[SC_BASILICA].val2!=sd->bl.id))
+	if(sd->sc_data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc_data[SC_BASILICA].val2 != sd->bl.id))
 		return;
 
 	if(sd->invincible_timer != -1)
@@ -10356,15 +10355,15 @@ static void clif_parse_UseSkillToPos(int fd,struct map_session_data *sd, int cmd
 		if(skilllv != sd->skillitemlv)
 			skilllv = sd->skillitemlv;
 		if( !unit_skilluse_pos(&sd->bl,x,y,skillnum,skilllv) ) {
-			sd->skillitem = -1;
-			sd->skillitemlv = -1;
+			sd->skillitem      = -1;
+			sd->skillitemlv    = -1;
 			sd->skillitem_flag = 0;
 		}
 	} else {
-		sd->skillitem = -1;
-		sd->skillitemlv = -1;
+		sd->skillitem      = -1;
+		sd->skillitemlv    = -1;
 		sd->skillitem_flag = 0;
-		if( (lv = pc_checkskill(sd,skillnum)) > 0) {
+		if((lv = pc_checkskill(sd,skillnum)) > 0) {
 			if(skilllv > lv)
 				skilllv = lv;
 			unit_skilluse_pos(&sd->bl,x,y,skillnum,skilllv);
@@ -10378,7 +10377,7 @@ static void clif_parse_UseSkillToPos(int fd,struct map_session_data *sd, int cmd
  * スキル使用（map指定）
  *------------------------------------------
  */
-static void clif_parse_UseSkillMap(int fd,struct map_session_data *sd, int cmd)
+static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 

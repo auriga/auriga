@@ -687,9 +687,6 @@ void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int logi
 	sd->status_calc_pc_process  = 0;
 	sd->state.waitingdisconnect = 0;
 
-	for(i=0; i<MAX_SKILL_DB; i++)
-		sd->skillstatictimer[i] = tick;
-
 	return;
 }
 
@@ -1018,7 +1015,8 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 
 	for(i=0; i<MAX_SKILL_LEVEL; i++)
 		sd->spirit_timer[i] = -1;
-	for(i=0; i<MAX_SKILL_DB; i++)
+
+	for(i=0; i<sizeof(sd->skillstatictimer)/sizeof(sd->skillstatictimer[0]); i++)
 		sd->skillstatictimer[i] = tick;
 
 	sd->state.autoloot = (battle_config.item_auto_get)? 1: 0;

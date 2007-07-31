@@ -5041,8 +5041,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				}
 				if(c >= maxcount) {
 					clif_skill_fail(sd,sd->ud.skillid,0,0);
-					sd->ud.canact_tick  = gettick();
-					sd->ud.canmove_tick = gettick();
+					sd->ud.canact_tick  = tick;
+					sd->ud.canmove_tick = tick;
 					map_freeblock_unlock();
 					return 0;
 				}
@@ -5267,7 +5267,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					status_change_start(&member->bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0 );
 				}
 			}
-			status_change_start(src,SC_BATTLEORDER_DELAY,0,0,0,0,300000,0 );
+			sd->skillstatictimer[skill_get_skilldb_id(skillid)] = tick + 300000;
 		}
 		break;
 	case GD_REGENERATION:		/* 激励 */
@@ -5294,7 +5294,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					status_change_start(&member->bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0 );
 				}
 			}
-			status_change_start(src,SC_REGENERATION_DELAY,0,0,0,0,300000,0 );
+			sd->skillstatictimer[skill_get_skilldb_id(skillid)] = tick + 300000;
 		}
 		break;
 	case GD_RESTORE:		/* 治療 */
@@ -5321,7 +5321,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					pc_heal(member,member->status.max_hp*90/100,member->status.max_sp*90/100);
 				}
 			}
-			status_change_start(src,SC_RESTORE_DELAY,0,0,0,0,300000,0 );
+			sd->skillstatictimer[skill_get_skilldb_id(skillid)] = tick + 300000;
 		}
 		break;
 	case GD_EMERGENCYCALL:		/* 緊急招集 */
@@ -5370,7 +5370,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				}
 				pc_setpos(member,map[sd->bl.m].name,px,py,3);
 			}
-			status_change_start(src,SC_EMERGENCYCALL_DELAY,0,0,0,0,300000,0 );
+			sd->skillstatictimer[skill_get_skilldb_id(skillid)] = tick + 300000;
 		}
 		break;
 
@@ -8785,10 +8785,6 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 				return 0;
 			}
 			if(battle_config.guild_skill_in_pvp_limit && map[bl->m].flag.pvp){
-				clif_skill_fail(sd,sc->id,0,0);
-				return 0;
-			}
-			if(sd->sc_data[SC_BATTLEORDER_DELAY + sc->id - GD_BATTLEORDER].timer != -1){
 				clif_skill_fail(sd,sc->id,0,0);
 				return 0;
 			}
