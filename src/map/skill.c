@@ -7393,7 +7393,6 @@ int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage
 		src->val1-=damage;
 		break;
 	case UNT_BLASTMINE:		/* ブラストマイン */
-	case UNT_CLAYMORETRAP:		/* クレイモアートラップ */
 		skill_blown(bl,&src->bl,2);	// 吹き飛ばしてみる
 		break;
 	default:

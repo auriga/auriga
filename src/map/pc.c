@@ -672,9 +672,6 @@ int pc_setsavepoint(struct map_session_data *sd,char *mapname,int x,int y)
  */
 void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int login_id1,int client_tick,int sex)
 {
-	int i;
-	unsigned int tick = gettick();
-
 	nullpo_retv(sd);
 
 	sd->bl.id       = account_id;
@@ -1341,7 +1338,6 @@ int pc_calc_skilltree(struct map_session_data *sd)
 			sd->status.skill[i].id = i;
 		for(i=411; i<545; i++)
 			sd->status.skill[i].id = i;
-
 #ifdef CLASS_DKDC
 		for(i=546; i<615; i++)
 			sd->status.skill[i].id = i;
@@ -2790,7 +2786,7 @@ void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip)
 			return;
 		}
 		for(i=0; i<sd->inventory_data[idx_equip]->slot; i++) {
-			if( sd->status.inventory[idx_equip].card[i] == 0) {
+			if(sd->status.inventory[idx_equip].card[i] == 0) {
 				// 空きスロットがあったので差し込む
 				sd->status.inventory[idx_equip].card[i] = cardid;
 
@@ -2818,7 +2814,7 @@ int pc_modifybuyvalue(struct map_session_data *sd,int orig_value)
 
 	if((skill = pc_checkskill(sd,MC_DISCOUNT)) > 0)		// ディスカウント
 		rate1 = 5+skill*2-((skill == 10)? 1: 0);
-	if((skill = pc_checkskill(sd,RG_COMPULSION)) > 0)	// コムパルションディスカウント
+	if((skill = pc_checkskill(sd,RG_COMPULSION)) > 0)	// コンパルションディスカウント
 		rate2 = 5+skill*4;
 	if(rate1 < rate2)
 		rate1 = rate2;
@@ -3084,8 +3080,6 @@ int pc_dropitem(struct map_session_data *sd, int n, int amount)
 	}
 	return 0;
 }
-
-
 
 /*==========================================
  * アイテムを拾う処理本体

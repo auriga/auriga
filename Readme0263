@@ -1,4 +1,18 @@
 ----------------------------------------
+//0267 [2007/08/09] by Rayce
+
+・クレイモアトラップが攻撃されても移動しないように修正（battle.c, skill.c）
+・PTメンバーのHPが0x7fffを越えている場合、HPメーターが更新されない問題を修正（clif.c）
+　MAXHPが0x7fffのときは0x7fffで規格化する
+・party_send_xyhp_timer() を少し修正（party.c）
+・gccでの警告修正（pc.c）
+
+・以下のファイルの改行コードをCR/LFに変更
+	script/npc/town/npc_town_hugel.txt
+	src/common/zlib/
+	src/map/status.c
+
+----------------------------------------
 //0266 [2007/08/01] by Rayce
 
 ・オートスペルでリムーブトラップが使えないバグを修正（battle.c, skill.c, unit.c）

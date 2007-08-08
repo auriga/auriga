@@ -779,7 +779,7 @@ static int party_send_xyhp_timer_sub(void *key, void *data, va_list ap)
  */
 static int party_send_xyhp_timer(int tid, unsigned int tick, int id, int data)
 {
-	numdb_foreach(party_db,party_send_xyhp_timer_sub,tick);
+	numdb_foreach(party_db,party_send_xyhp_timer_sub);
 
 	return 0;
 }

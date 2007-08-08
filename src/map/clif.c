@@ -2921,8 +2921,8 @@ static void clif_hpmeter(struct map_session_data *sd)
 
 	WBUFW(buf2,0)=0x106;
 	WBUFL(buf2,2)=sd->status.account_id;
-	WBUFW(buf2,6)=(sd->status.hp > 0x7fff)? 0x7fff:sd->status.hp;
-	WBUFW(buf2,8)=(sd->status.max_hp > 0x7fff)? 0x7fff:sd->status.max_hp;
+	WBUFW(buf2,6)=(sd->status.max_hp > 0x7fff)? (short)((atn_bignumber)sd->status.hp * 0x7fff / sd->status.max_hp): sd->status.hp;
+	WBUFW(buf2,8)=(sd->status.max_hp > 0x7fff)? 0x7fff: sd->status.max_hp;
 	for(i=0;i<fd_max;i++){
 		if(session[i] && (md = (struct map_session_data *)session[i]->session_data) && md->state.auth &&
 		   sd->bl.m == md->bl.m && pc_isGM(md) && sd != md){
@@ -6687,8 +6687,8 @@ void clif_party_hp(struct map_session_data *sd)
 
 	WBUFW(buf,0)=0x106;
 	WBUFL(buf,2)=sd->status.account_id;
-	WBUFW(buf,6)=(sd->status.hp > 0x7fff)? 0x7fff:sd->status.hp;
-	WBUFW(buf,8)=(sd->status.max_hp > 0x7fff)? 0x7fff:sd->status.max_hp;
+	WBUFW(buf,6)=(sd->status.max_hp > 0x7fff)? (short)((atn_bignumber)sd->status.hp * 0x7fff / sd->status.max_hp): sd->status.hp;
+	WBUFW(buf,8)=(sd->status.max_hp > 0x7fff)? 0x7fff: sd->status.max_hp;
 	clif_send(buf,packet_db[0x106].len,&sd->bl,PARTY_AREA_WOS);
 
 	return;
