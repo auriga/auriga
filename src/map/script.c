@@ -2836,14 +2836,12 @@ void run_script_main(struct script_state *st)
 		return;
 	}
 
-	if(sd && sd->stack) {
-		// 元のスタック情報を破棄
-		script_free_stack(sd->stack);
-		sd->stack = NULL;
-		sd->state.menu_or_input = 0;
-	}
-
 	if(st->state != END && sd) {
+		if(sd->stack) {
+			// 元のスタック情報を破棄
+			script_free_stack(sd->stack);
+			sd->state.menu_or_input = 0;
+		}
 		// 再開するためにスタック情報を保存
 		sd->npc_script      = st->script;
 		sd->npc_scriptroot  = st->scriptroot;

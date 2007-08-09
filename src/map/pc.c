@@ -3560,7 +3560,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 	char mapname[24];
 	int m, move_flag = 0;
 
-	nullpo_retr(0, sd);
+	nullpo_retr(1, sd);
 
 	strncpy(mapname,mapname_org,16);
 	mapname[16] = 0;
@@ -3653,7 +3653,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		if(m != sd->bl.m) {
 			move_flag = 1;	// 新規ログインでなくて違うMAPへ移動ならflagオン
 		}
-		unit_remove_map(&sd->bl,clrtype,1);
+		unit_remove_map(&sd->bl, clrtype&0xffff, !move_flag);
 		if(sd->status.pet_id > 0 && sd->pd) {
 			if(sd->pd->bl.m != m && sd->pet.intimate <= 0) {
 				unit_free(&sd->pd->bl, 0);
@@ -3664,11 +3664,11 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 					status_calc_pc(sd,2);
 			}
 			else if(sd->pet.intimate > 0) {
-				unit_remove_map(&sd->pd->bl, clrtype&0xffff, 1);
+				unit_remove_map(&sd->pd->bl, clrtype&0xffff, !move_flag);
 			}
 		}
 		if(sd->status.homun_id > 0 && sd->hd) {
-			unit_remove_map(&sd->hd->bl, clrtype&0xffff, 1);
+			unit_remove_map(&sd->hd->bl, clrtype&0xffff, !move_flag);
 		}
 		clif_changemap(sd,map[m].name,x,y);
 	}
