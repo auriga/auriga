@@ -363,6 +363,8 @@ struct skill_abra_db skill_abra_db[MAX_SKILL_ABRA_DB];
 static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,int x,int y);
 static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id);
 
+static int skill_item_consume(struct block_list *bl, struct skill_condition *sc, int type, int *itemid, int *amount);
+
 static void skill_brandishspear_dir(struct square *tc,int dir,int are);
 static void skill_brandishspear_first(struct square *tc,int dir,int x,int y);
 static int skill_frostjoke_scream(struct block_list *bl,va_list ap);
@@ -8073,7 +8075,8 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *sc, in
 static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_condition *sc, int type)
 {
 	int i,hp,sp,hp_rate,sp_rate,zeny,weapon,state,spiritball,coin,skilldb_id,mana;
-	int index[10],itemid[10],amount[10];
+	int itemid[10],amount[10];
+	int item_nocost = 0;
 	struct block_list *bl = NULL;
 	struct unit_data  *ud = NULL;
 	struct map_session_data *target_sd = NULL;
@@ -8553,7 +8556,8 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		break;
 	case WZ_FIREPILLAR:
 		if (sc->lv <= 5)	// no gems required at level 1-5
-			itemid[0] = 0;
+			item_nocost = 1;
+		// fall through
 	case PF_SPIDERWEB:		/* スパイダーウェッブ */
 	case MG_FIREWALL:		/* ファイアーウォール */
 		/* 数制限 */
@@ -8918,7 +8922,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		case SA_DELUGE:			/* デリュージ */
 		case SA_VIOLENTGALE:	/* バイオレントゲイル */
 			if(sd->sc_data && sd->sc_data[SC_ELEMENTFIELD].timer != -1)
-				goto ITEM_NOCOST;
+				item_nocost = 1;
 			break;
 	}
 
@@ -8929,19 +8933,19 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		{
 			case AM_DEMONSTRATION:
 				if(battle_config.demonstration_nocost)
-					goto ITEM_NOCOST;
+					item_nocost = 1;
 				break;
 			case AM_ACIDTERROR:
 				if(battle_config.acidterror_nocost)
-					goto ITEM_NOCOST;
+					item_nocost = 1;
 				break;
 			case AM_CANNIBALIZE:
 				if(battle_config.cannibalize_nocost)
-					goto ITEM_NOCOST;
+					item_nocost = 1;
 				break;
 			case AM_SPHEREMINE:
 				if(battle_config.spheremine_nocost)
-					goto ITEM_NOCOST;
+					item_nocost = 1;
 				break;
 			case AM_CP_WEAPON:
 			case AM_CP_SHIELD:
@@ -8949,11 +8953,11 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			case AM_CP_HELM:
 			case CR_FULLPROTECTION:
 				if(battle_config.chemical_nocost)
-					goto ITEM_NOCOST;
+					item_nocost = 1;
 				break;
 			case CR_ACIDDEMONSTRATION:
 				if(battle_config.aciddemonstration_nocost)
-					goto ITEM_NOCOST;
+					item_nocost = 1;
 				break;
 			case CR_SLIMPITCHER:
 				if(battle_config.slimpitcher_nocost)
@@ -8977,105 +8981,29 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 	}
 
-	if(skill_get_inf2(sc->id)&8192){
-		int idx = (sc->lv > 10)? 9: sc->lv - 1;
-		index[idx] = -1;
-		if(itemid[idx] <= 0)
-			goto ITEM_NOCOST;	// 消費なさそうなので
-
-		if(sc->id != HW_GANBANTEIN) {
-			// ウィザードの魂
-			if(itemid[idx] >= 715 && itemid[idx] <= 717 && (sd->special_state.no_gemstone || sd->sc_data[SC_WIZARD].timer!=-1) )
-				goto ITEM_NOCOST;
-
-			if(((itemid[idx] >= 715 && itemid[idx] <= 717) || itemid[idx] == 1065) && sd->sc_data[SC_INTOABYSS].timer != -1)
-				goto ITEM_NOCOST;
-		}
-
-		index[idx] = pc_search_inventory(sd,itemid[idx]);
-		if(index[idx] < 0 || sd->status.inventory[index[idx]].amount < amount[idx]) {
-			if(itemid[idx] == 716 || itemid[idx] == 717)
-				clif_skill_fail(sd,sc->id,(7+(itemid[idx]-716)),0);
-			else
-				clif_skill_fail(sd,sc->id,0,0);
+	if(!item_nocost) {
+		if(skill_item_consume(&sd->bl, sc, type, itemid, amount) == 0)
 			return 0;
-		}
-	}else{
-		for(i=0;i<10;i++) {
-			int x = (sc->lv > 10)? 9: sc->lv - 1;
-			index[i] = -1;
-			if(itemid[i] <= 0)
-				continue;
-
-			if(sc->id != HW_GANBANTEIN) {
-				if(itemid[i] >= 715 && itemid[i] <= 717) {
-					if(sd->special_state.no_gemstone || sd->sc_data[SC_WIZARD].timer != -1)		// ウィザードの魂
-						continue;
-				}
-
-				if(((itemid[i] >= 715 && itemid[i] <= 717) || itemid[i] == 1065) && sd->sc_data[SC_INTOABYSS].timer != -1)
-					continue;
-			}
-			if((sc->id == AM_POTIONPITCHER || sc->id == CR_SLIMPITCHER) && i != x)
-				continue;
-
-			index[i] = pc_search_inventory(sd,itemid[i]);
-			if(index[i] < 0 || sd->status.inventory[index[i]].amount < amount[i]) {
-				if(itemid[i] == 716 || itemid[i] == 717)
-					clif_skill_fail(sd,sc->id,(7+(itemid[i]-716)),0);
-				else
-					clif_skill_fail(sd,sc->id,0,0);
-				return 0;
-			}
-			if(sc->id == MG_STONECURSE && sc->lv >= 6 && itemid[i] >= 715 && itemid[i] <= 717) {
-				// ストーンカースLv6以上はジェム消費なしにしておく
-				index[i] = -1;
-			}
-		}
-	}
-	if(!(type&1))
-		return 1;
-
-	if(sc->id != AL_WARP || type&2) {
-		if(skill_get_inf2(sc->id)&8192){
-			int idx = (sc->lv > 10)? 9: sc->lv - 1;
-			if(index[idx] >= 0)
-				pc_delitem(sd,index[idx],amount[idx],0);	// アイテム消費
-		}else{
-			if(sc->id != AM_POTIONPITCHER && sc->id != CR_SLIMPITCHER) {
-				for(i=0;i<10;i++) {
-					if(index[i] >= 0)
-						pc_delitem(sd,index[i],amount[i],0);	// アイテム消費
-				}
-			}
-		}
 	}
 
-ITEM_NOCOST:
-
-	if(!(type&1))
-		return 1;
-
-	if(type&2)
-		return 1;
-
-	if( !sd->skillitem_flag ) {	// アイテムスキル由来ならSP消費しない
-		if(sp > 0) {					// SP消費
-			sd->status.sp-=sp;
-			clif_updatestatus(sd,SP_SP);
+	if(type == 1) {
+		if( !sd->skillitem_flag ) {	// アイテムスキル由来ならSP消費しない
+			if(sp > 0) {					// SP消費
+				sd->status.sp-=sp;
+				clif_updatestatus(sd,SP_SP);
+			}
 		}
+		if(hp > 0) {					// HP消費
+			sd->status.hp-=hp;
+			clif_updatestatus(sd,SP_HP);
+		}
+		if(zeny > 0)					// Zeny消費
+			pc_payzeny(sd,zeny);
+		if(spiritball > 0)				// 氣球消費
+			pc_delspiritball(sd,spiritball,0);
+		if(coin > 0)					// コイン消費
+			pc_delcoin(sd,coin,0);
 	}
-	if(hp > 0) {					// HP消費
-		sd->status.hp-=hp;
-		clif_updatestatus(sd,SP_HP);
-	}
-	if(zeny > 0)					// Zeny消費
-		pc_payzeny(sd,zeny);
-	if(spiritball > 0)				// 氣球消費
-		pc_delspiritball(sd,spiritball,0);
-	if(coin > 0)					// コイン消費
-		pc_delcoin(sd,coin,0);
-
 	return 1;
 }
 
@@ -9117,7 +9045,7 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 	int i,hp,sp,hp_rate,sp_rate,zeny,weapon,state,spiritball,coin,skilldb_id;
 	struct map_session_data* msd=NULL;
 	struct block_list *bl=NULL;
-	int index[10],itemid[10],amount[10];
+	int itemid[10],amount[10];
 
 	nullpo_retr( 0, hd );
 	nullpo_retr( 0, sc );
@@ -9176,93 +9104,90 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 		break;
 	}
 
-	if(skill_get_inf2(sc->id)&8192){
-		int idx = (sc->lv > 10)? 9: sc->lv - 1;
-		index[idx] = -1;
-		if(itemid[idx] <= 0)
-			goto ITEM_NOCOST;	// 消費なさそうなので
+	if(skill_item_consume(&hd->bl, sc, type, itemid, amount) == 0)
+		return 0;
 
-		// ウィザードの魂
-		if(itemid[idx] >= 715 && itemid[idx] <= 717 && hd->sc_data[SC_WIZARD].timer!=-1 )
-			goto ITEM_NOCOST;
-
-		if(((itemid[idx] >= 715 && itemid[idx] <= 717) || itemid[idx] == 1065) && hd->sc_data[SC_INTOABYSS].timer != -1)
-			goto ITEM_NOCOST;
-
-		index[idx] = pc_search_inventory(msd,itemid[idx]);
-		if(index[idx] < 0 || msd->status.inventory[index[idx]].amount < amount[idx]) {
-			if(itemid[idx] == 716 || itemid[idx] == 717)
-				clif_skill_fail(msd,sc->id,(7+(itemid[idx]-716)),0);
-			else
-				clif_skill_fail(msd,sc->id,0,0);
-			return 0;
+	if(type == 1) {
+		if(sp > 0) {					// SP消費
+			hd->status.sp-=sp;
+			clif_send_homstatus(msd,0);
 		}
-	}else{
-		for(i=0;i<10;i++) {
-			int x = (sc->lv > 10)? 9: sc->lv - 1;
-			index[i] = -1;
-			if(itemid[i] <= 0)
-				continue;
+		if(hp > 0) {					// HP消費
+			hd->status.hp-=hp;
+			clif_send_homstatus(msd,0);
+		}
+		if(zeny > 0)					// Zeny消費
+			pc_payzeny(msd,zeny);
+	}
+	return 1;
+}
 
+/*==========================================
+ * スキルによるアイテム消費
+ *------------------------------------------
+ */
+static int skill_item_consume(struct block_list *bl, struct skill_condition *sc, int type, int *itemid, int *amount)
+{
+	struct map_session_data *sd = NULL;
+	struct status_change *sc_data;
+	int i, index[10];
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, sc);
+
+	if(bl->type == BL_PC)
+		sd = (struct map_session_data *)bl;
+	else if(bl->type == BL_HOM)
+		sd = ((struct homun_data *)bl)->msd;
+
+	if(sd == NULL)
+		return 0;
+
+	sc_data = status_get_sc_data(bl);
+
+	for(i=0; i<10; i++) {
+		int x = (sc->lv > 10)? 9: sc->lv - 1;
+
+		index[i] = -1;
+		if(itemid[i] <= 0)
+			continue;
+
+		if(sc->id != HW_GANBANTEIN) {
 			if(itemid[i] >= 715 && itemid[i] <= 717) {
-				if(hd->sc_data[SC_WIZARD].timer != -1)		// ウィザードの魂
+				if(sd->special_state.no_gemstone || (sc_data && sc_data[SC_WIZARD].timer != -1))
 					continue;
 			}
-
-			if(((itemid[i] >= 715 && itemid[i] <= 717) || itemid[i] == 1065) && hd->sc_data[SC_INTOABYSS].timer != -1)
-				continue;
-			if((sc->id == AM_POTIONPITCHER || sc->id == CR_SLIMPITCHER) && i != x)
-				continue;
-
-			index[i] = pc_search_inventory(msd,itemid[i]);
-			if(index[i] < 0 || msd->status.inventory[index[i]].amount < amount[i]) {
-				if(itemid[i] == 716 || itemid[i] == 717)
-					clif_skill_fail(msd,sc->id,(7+(itemid[i]-716)),0);
-				else
-					clif_skill_fail(msd,sc->id,0,0);
-				return 0;
-			}
-			if(sc->id == MG_STONECURSE && sc->lv >= 6 && itemid[i] >= 715 && itemid[i] <= 717) {
-				// ストーンカースLv6以上はジェム消費なしにしておく
-				index[i] = -1;
+			if((itemid[i] >= 715 && itemid[i] <= 717) || itemid[i] == 1065) {
+				if(sc_data && sc_data[SC_INTOABYSS].timer != -1)
+					continue;
 			}
 		}
-	}
-	if(!(type&1))
-		return 1;
+		if((sc->id == AM_POTIONPITCHER || sc->id == CR_SLIMPITCHER || sc->id == CR_CULTIVATION) && i != x)
+			continue;
 
-	if(sc->id != AL_WARP || type&2) {
-		if(skill_get_inf2(sc->id)&8192){
-			int idx = (sc->lv > 10)? 9: sc->lv - 1;
-			if(index[idx] >= 0)
-				pc_delitem(msd,index[idx],amount[idx],0);	// アイテム消費
-		}else{
-			if(sc->id != AM_POTIONPITCHER && sc->id != CR_SLIMPITCHER) {
-				for(i=0;i<10;i++) {
-					if(index[i] >= 0)
-						pc_delitem(msd,index[i],amount[i],0);	// アイテム消費
-				}
+		index[i] = pc_search_inventory(sd,itemid[i]);
+		if(index[i] < 0 || sd->status.inventory[index[i]].amount < amount[i]) {
+			if(itemid[i] == 716 || itemid[i] == 717)
+				clif_skill_fail(sd,sc->id,(7+(itemid[i]-716)),0);
+			else
+				clif_skill_fail(sd,sc->id,0,0);
+			return 0;
+		}
+		if(sc->id == MG_STONECURSE && sc->lv >= 6 && itemid[i] >= 715 && itemid[i] <= 717) {
+			// ストーンカースLv6以上はジェム消費なしにしておく
+			index[i] = -1;
+		}
+	}
+
+	if(type&1 && (sc->id != AL_WARP || type&2)) {
+		if(sc->id != AM_POTIONPITCHER && sc->id != CR_SLIMPITCHER) {
+			for(i=0; i<10; i++) {
+				if(index[i] >= 0)
+					pc_delitem(sd,index[i],amount[i],0);	// アイテム消費
 			}
 		}
 	}
 
-ITEM_NOCOST:
-	if(!(type&1))
-		return 1;
-
-	if(type&2)
-		return 1;
-
-	if(sp > 0) {					// SP消費
-		hd->status.sp-=sp;
-		clif_send_homstatus(msd,0);
-	}
-	if(hp > 0) {					// HP消費
-		hd->status.hp-=hp;
-		clif_send_homstatus(msd,0);
-	}
-	if(zeny > 0)					// Zeny消費
-		pc_payzeny(msd,zeny);
 	return 1;
 }
 
