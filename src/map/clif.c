@@ -7988,19 +7988,19 @@ void clif_divorced(struct map_session_data *sd, const char *name)
 }
 
 /*==========================================
- * 座る
+ * 座る/立つ
  *------------------------------------------
  */
-void clif_sitting(struct map_session_data *sd)
+void clif_sitting(struct block_list *bl, int sit)
 {
 	unsigned char buf[32];
 
-	nullpo_retv(sd);
+	nullpo_retv(bl);
 
-	WBUFW(buf,0)=0x8a;
-	WBUFL(buf,2)=sd->bl.id;
-	WBUFB(buf,26)=2;
-	clif_send(buf,packet_db[0x8a].len,&sd->bl,AREA);
+	WBUFW(buf,0)  = 0x8a;
+	WBUFL(buf,2)  = bl->id;
+	WBUFB(buf,26) = (sit)? 2: 3;
+	clif_send(buf,packet_db[0x8a].len,bl,AREA);
 
 	return;
 }
@@ -9430,7 +9430,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	case 0x02:	// sitdown
 		if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 3) {
 			pc_setsit(sd);
-			clif_sitting(sd);
+			clif_sitting(&sd->bl, 1);
 			skill_gangsterparadise(sd,1);	// ギャングスターパラダイス設定
 		}
 		else
@@ -9438,10 +9438,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		break;
 	case 0x03:	// standup
 		pc_setstand(sd);
-		WFIFOW(fd,0)=0x8a;
-		WFIFOL(fd,2)=sd->bl.id;
-		WFIFOB(fd,26)=3;
-		clif_send(WFIFOP(fd,0),packet_db[0x8a].len,&sd->bl,AREA);
+		clif_sitting(&sd->bl, 0);
 		skill_gangsterparadise(sd,0);	// ギャングスターパラダイス解除
 		break;
 	}

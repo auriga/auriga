@@ -3499,7 +3499,9 @@ int buildin_getelementofarray(struct script_state *st);
 int buildin_getitem(struct script_state *st);
 int buildin_getitem2(struct script_state *st);
 int buildin_delitem(struct script_state *st);
-int buildin_delinventory(struct script_state *st);
+int buildin_delcartitem(struct script_state *st);
+int buildin_delitem2(struct script_state *st);
+int buildin_delcartitem2(struct script_state *st);
 int buildin_viewpoint(struct script_state *st);
 int buildin_countitem(struct script_state *st);
 int buildin_countcartitem(struct script_state *st);
@@ -3630,8 +3632,10 @@ int buildin_divorce(struct script_state *st);
 int buildin_getitemname(struct script_state *st);
 int buildin_makepet(struct script_state *st);
 int buildin_getinventorylist(struct script_state *st);
+int buildin_getcartlist(struct script_state *st);
 int buildin_getskilllist(struct script_state *st);
 int buildin_clearitem(struct script_state *st);
+int buildin_clearcartitem(struct script_state *st);
 int buildin_getrepairableitemcount(struct script_state *st);
 int buildin_repairitem(struct script_state *st);
 int buildin_classchange(struct script_state *st);
@@ -3738,7 +3742,9 @@ struct script_function buildin_func[] = {
 	{buildin_getitem,"getitem","ii**"},
 	{buildin_getitem2,"getitem2","iiiiiiiii*"},
 	{buildin_delitem,"delitem","ii*"},
-	{buildin_delinventory,"delinventory","ii*"},
+	{buildin_delcartitem,"delcartitem","ii*"},
+	{buildin_delitem2,"delitem2","ii*"},
+	{buildin_delcartitem2,"delcartitem2","ii*"},
 	{buildin_cutin,"cutin","si"},
 	{buildin_cutincard,"cutincard","i"},
 	{buildin_viewpoint,"viewpoint","iiiii"},
@@ -3873,8 +3879,10 @@ struct script_function buildin_func[] = {
 	{buildin_getitemname,"getitemname","i"},
 	{buildin_makepet,"makepet","i"},
 	{buildin_getinventorylist,"getinventorylist",""},
+	{buildin_getcartlist,"getcartlist",""},
 	{buildin_getskilllist,"getskilllist",""},
 	{buildin_clearitem,"clearitem",""},
+	{buildin_clearcartitem,"clearcartitem",""},
 	{buildin_getrepairableitemcount,"getrepairableitemcount",""},
 	{buildin_repairitem,"repairitem",""},
 	{buildin_classchange,"classchange","ii"},
@@ -5196,6 +5204,8 @@ int buildin_delitem(struct script_state *st)
 	} else {
 		nameid = conv_num(st,data);
 	}
+	if(nameid <= 0)
+		return 0;
 
 	amount = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	if(st->end > st->start+4)
@@ -5204,7 +5214,6 @@ int buildin_delitem(struct script_state *st)
 	for(i=0; i<MAX_INVENTORY; i++) {
 		if(sd->status.inventory[i].nameid == nameid) {
 			if(!skip_egg &&
-			   sd->status.inventory[i].nameid > 0 &&
 			   sd->inventory_data[i]->type == 7 &&
 			   sd->status.inventory[i].amount > 0 &&
 			   sd->status.inventory[i].card[0] == (short)0xff00 &&
@@ -5213,7 +5222,7 @@ int buildin_delitem(struct script_state *st)
 				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
 			}
 
-			if(sd->status.inventory[i].amount >= amount){
+			if(sd->status.inventory[i].amount >= amount) {
 				pc_delitem(sd,i,amount,0);
 				break;
 			} else {
@@ -5227,10 +5236,64 @@ int buildin_delitem(struct script_state *st)
 }
 
 /*==========================================
+ * 指定IDのアイテムをカートから削除する
+ *------------------------------------------
+ */
+int buildin_delcartitem(struct script_state *st)
+{
+	int nameid=0,amount,i;
+	int skip_egg = 0;
+	struct map_session_data *sd = script_rid2sd(st);
+	struct script_data *data;
+
+	nullpo_retr(0, sd);
+
+	data = &(st->stack->stack_data[st->start+2]);
+	get_val(st,data);
+	if( isstr(data) ) {
+		const char *name = conv_str(st,data);
+		struct item_data *item_data = itemdb_searchname(name);
+		if(item_data)
+			nameid = item_data->nameid;
+	} else {
+		nameid = conv_num(st,data);
+	}
+	if(nameid <= 0)
+		return 0;
+
+	amount = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(st->end > st->start+4)
+		skip_egg = conv_num(st,& (st->stack->stack_data[st->start+4]));
+
+	for(i=0; i<MAX_CART; i++) {
+		if(sd->status.cart[i].nameid == nameid) {
+			if(!skip_egg &&
+			   itemdb_type(nameid) == 7 &&
+			   sd->status.cart[i].amount > 0 &&
+			   sd->status.cart[i].card[0] == (short)0xff00 &&
+			   search_petDB_index(nameid, PET_EGG) >= 0)
+			{
+				intif_delete_petdata(*((long *)(&sd->status.cart[i].card[1])));
+			}
+
+			if(sd->status.cart[i].amount >= amount) {
+				pc_cart_delitem(sd,i,amount,!pc_iscarton(sd));
+				break;
+			} else {
+				amount -= sd->status.cart[i].amount;
+				pc_cart_delitem(sd,i,sd->status.cart[i].amount,!pc_iscarton(sd));
+			}
+		}
+	}
+
+	return 0;
+}
+
+/*==========================================
  * index番目のアイテムを削除する
  *------------------------------------------
  */
-int buildin_delinventory(struct script_state *st)
+int buildin_delitem2(struct script_state *st)
 {
 	int idx,amount;
 	int skip_egg = 0;
@@ -5260,6 +5323,44 @@ int buildin_delinventory(struct script_state *st)
 		pc_delitem(sd,idx,amount,0);
 	else
 		pc_delitem(sd,idx,sd->status.inventory[idx].amount,0);
+
+	return 0;
+}
+
+/*==========================================
+ * index番目のアイテムをカートから削除する
+ *------------------------------------------
+ */
+int buildin_delcartitem2(struct script_state *st)
+{
+	int idx,amount;
+	int skip_egg = 0;
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+
+	idx = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	amount = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(st->end > st->start+4)
+		skip_egg = conv_num(st,& (st->stack->stack_data[st->start+4]));
+
+	if(idx < 0 || idx >= MAX_CART || amount <= 0)
+		return 0;
+
+	if(!skip_egg &&
+	   sd->status.cart[idx].nameid > 0 &&
+	   itemdb_type(sd->status.cart[idx].nameid) == 7 &&
+	   sd->status.cart[idx].amount > 0 &&
+	   sd->status.cart[idx].card[0] == (short)0xff00 &&
+	   search_petDB_index(sd->status.cart[idx].nameid, PET_EGG) >= 0)
+	{
+		intif_delete_petdata(*((long *)(&sd->status.cart[idx].card[1])));
+	}
+
+	if(sd->status.cart[idx].amount >= amount)
+		pc_cart_delitem(sd,idx,amount,!pc_iscarton(sd));
+	else
+		pc_cart_delitem(sd,idx,sd->status.cart[idx].amount,!pc_iscarton(sd));
 
 	return 0;
 }
@@ -8490,13 +8591,14 @@ int buildin_getitemname(struct script_state *st)
  */
 int buildin_getinventorylist(struct script_state *st)
 {
-	struct map_session_data *sd=script_rid2sd(st);
+	struct map_session_data *sd = script_rid2sd(st);
 	int i,j=0;
 
-	if(!sd)
+	if(sd == NULL)
 		return 0;
-	for(i=0;i<MAX_INVENTORY && j<128;i++){
-		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].amount > 0){
+
+	for(i=0; i<MAX_INVENTORY && j<128; i++) {
+		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].amount > 0) {
 			pc_setreg(sd,add_str("@inventorylist_index")+(j<<24),i);
 			pc_setreg(sd,add_str("@inventorylist_id")+(j<<24),sd->status.inventory[i].nameid);
 			pc_setreg(sd,add_str("@inventorylist_amount")+(j<<24),sd->status.inventory[i].amount);
@@ -8512,6 +8614,37 @@ int buildin_getinventorylist(struct script_state *st)
 		}
 	}
 	pc_setreg(sd,add_str("@inventorylist_count"),j);
+	return 0;
+}
+
+/*==========================================
+ * PCのカート内所持品情報読み取り
+ *------------------------------------------
+ */
+int buildin_getcartlist(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int i,j=0;
+
+	if(sd == NULL)
+		return 0;
+
+	for(i=0; i<MAX_CART && j<128; i++) {
+		if(sd->status.cart[i].nameid > 0 && sd->status.cart[i].amount > 0) {
+			pc_setreg(sd,add_str("@cartlist_index")+(j<<24),i);
+			pc_setreg(sd,add_str("@cartlist_id")+(j<<24),sd->status.cart[i].nameid);
+			pc_setreg(sd,add_str("@cartlist_amount")+(j<<24),sd->status.cart[i].amount);
+			pc_setreg(sd,add_str("@cartlist_refine")+(j<<24),sd->status.cart[i].refine);
+			pc_setreg(sd,add_str("@cartlist_identify")+(j<<24),sd->status.cart[i].identify);
+			pc_setreg(sd,add_str("@cartlist_attribute")+(j<<24),sd->status.cart[i].attribute);
+			pc_setreg(sd,add_str("@cartlist_card1")+(j<<24),sd->status.cart[i].card[0]);
+			pc_setreg(sd,add_str("@cartlist_card2")+(j<<24),sd->status.cart[i].card[1]);
+			pc_setreg(sd,add_str("@cartlist_card3")+(j<<24),sd->status.cart[i].card[2]);
+			pc_setreg(sd,add_str("@cartlist_card4")+(j<<24),sd->status.cart[i].card[3]);
+			j++;
+		}
+	}
+	pc_setreg(sd,add_str("@cartlist_count"),j);
 	return 0;
 }
 
@@ -8558,16 +8691,37 @@ int buildin_getskilllist(struct script_state *st)
  */
 int buildin_clearitem(struct script_state *st)
 {
-	struct map_session_data *sd=script_rid2sd(st);
+	struct map_session_data *sd = script_rid2sd(st);
 	int i;
 
-	if(sd==NULL)
+	if(sd == NULL)
 		return 0;
 	for (i=0; i<MAX_INVENTORY; i++) {
 		if (sd->status.inventory[i].amount) {
 			if (sd->status.inventory[i].card[0] == (short)0xff00)
 				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0);
+		}
+	}
+	return 0;
+}
+
+/*==========================================
+ * カート内アイテムの全削除
+ *------------------------------------------
+ */
+int buildin_clearcartitem(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int i;
+
+	if(sd == NULL)
+		return 0;
+	for (i=0; i<MAX_CART; i++) {
+		if (sd->status.cart[i].amount) {
+			if (sd->status.cart[i].card[0] == (short)0xff00)
+				intif_delete_petdata(*((long *)(&sd->status.cart[i].card[1])));
+			pc_cart_delitem(sd, i, sd->status.cart[i].amount, !pc_iscarton(sd));
 		}
 	}
 	return 0;

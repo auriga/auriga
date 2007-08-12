@@ -1,4 +1,22 @@
 ----------------------------------------
+//0271 [2007/08/13] by Rayce
+
+・AthenaProject2314よりmerge、thanks to Paraさん
+	-> clif_sitting() を少し変更して「立つ」処理もまとめる（clif.*, skill.c）
+	-> スクリプトにgetcartlist命令を追加（script.c）
+
+・カート内アイテム削除命令を一式追加（script.c）
+　これらはプレイヤーがカートを持っていなくてもアイテムの削除を行います
+　カートがあるときだけ削除したい場合はcheckcart関数でカートの有無をチェックする必要があります
+	delcartitem命令
+	delcartitem2命令
+	clearcartitem命令
+
+・delinventory命令をdelitem2命令に改名（script.c）
+	カート用の命令と一律の名前にするため
+	delinventory命令をスクリプトで利用している場合は各自delitem2命令に変更してください
+
+----------------------------------------
 //0270 [2007/08/13] by Rayce
 
 ・db/item_avail.txtを使ったアイテムをshop販売するとアイテム数超過扱いにされて

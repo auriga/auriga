@@ -711,7 +711,7 @@ AurigaNPCScript
 			見た目を変更します。<job>はdb/const.txtを参照してください。
 			<upper>は0=通常,1=転生,2=養子,-1 or 無し=現在の<upper>になります。
 			jobを22,26にしたときは自動的に装備が外れます。
-			
+
 		input命令
 			input <variable>;
 
@@ -832,13 +832,31 @@ AurigaNPCScript
 			<itemid>に指定されたアイテムIDを持つアイテムを<num>個分失います。
 			<flag>を1にした場合はペットの卵情報の削除を行いません。
 
-		delinventory命令
-			delinventory <index>,<num>[,<flag>];
+		delcartitem命令
+			delcartitem <itemid>,<num>[,<flag>];
+
+			itemid,num	数値
+			flag		数値(省略可)
+
+			<itemid>に指定されたアイテムIDを持つアイテムをカート内から<num>個分失います。
+			<flag>を1にした場合はペットの卵情報の削除を行いません。
+
+		delitem2命令
+			delitem2 <index>,<num>[,<flag>];
 
 			index,num	数値
 			flag		数値(省略可)
 
 			PCの所持している<index>番目のアイテムを<num>個分失います。
+			<flag>を1にした場合はペットの卵情報の削除を行いません。
+
+		delcartitem2命令
+			delcartitem2 <index>,<num>[,<flag>];
+
+			index,num	数値
+			flag		数値(省略可)
+
+			PCのカート内にある<index>番目のアイテムを<num>個分失います。
 			<flag>を1にした場合はペットの卵情報の削除を行いません。
 
 		makepet命令
@@ -935,9 +953,9 @@ AurigaNPCScript
 
 		repairitem命令
 			repairitem;
-			
+
 			所有している修理可能(＝破壊された)アイテムをすべて修理します。
-			
+
 		setfalcon命令
 			setfalcon;
 
@@ -1093,18 +1111,18 @@ AurigaNPCScript
 
 		hideonnpc命令
 			hideonnpc [<npcname>];
-			
+
 			npcname		文字列
-			
+
 			<npcname>をハイディング状態にします。
 			同時に<npcname>を無効にします。
 			<npcname>を省略すると、命令を実行したNPCが対象になります。
 
 		hideoffnpc命令
 			hideoffnpc [<npcname>];
-			
+
 			npcname		文字列
-			
+
 			ハイディング状態の<npcname>を表示します。
 			<npcname>を有効にし、さらに範囲が指定されている場合は、同時に範囲内PCに対してOnTouchイベントを実行します。
 			<npcname>を省略すると、命令を実行したNPCが対象になります。
@@ -1510,9 +1528,9 @@ AurigaNPCScript
 
 		unequip命令
 			unequip [<pos>];
-			
+
 			pos		数値、省略可
-			
+
 			指定した位置の装備をはずします。
 			1-11までの整数を指定します。詳しくはgetequipidを参照のこと。
 			数値を省略するか、-1 を指定すると全ての装備をはずします。
@@ -1560,7 +1578,7 @@ AurigaNPCScript
 
 		getpartymember命令
 			getpartymember <n>;
-			
+
 			n		数値
 
 			<n>で指定したIDを持つパーティーの人数を $@partymembercount に返します。
@@ -1786,6 +1804,24 @@ AurigaNPCScript
 			@inventorylist_card4 : アイテムに挿しているカードデータ(4枚目)
 			@inventorylist_count : プレイヤーの所持している総アイテム種類数
 
+		getcartlist命令
+			getcartlist;
+
+			現在アタッチされているプレイヤーのカート内のアイテムデータを
+			配列変数@cartlist_***にロードします。
+			以下変数の説明
+			@cartlist_index : カート内のアイテムの配列位置
+			@cartlist_id : カート内のアイテムのID
+			@cartlist_amount : カート内のアイテムの量
+			@cartlist_refine : カート内のアイテムの精錬値
+			@cartlist_identify : カート内のアイテムの鑑定状態
+			@cartlist_attribute : カート内のアイテムの破損の有無
+			@cartlist_card1 : カート内のアイテムに挿しているカードデータ(1枚目)
+			@cartlist_card2 : カート内のアイテムに挿しているカードデータ(2枚目)
+			@cartlist_card3 : カート内のアイテムに挿しているカードデータ(3枚目)
+			@cartlist_card4 : カート内のアイテムに挿しているカードデータ(4枚目)
+			@cartlist_count : プレイヤーの所持しているカート内の総アイテム種類数
+
 		getskilllist命令
 			getskilllist;
 
@@ -1804,6 +1840,11 @@ AurigaNPCScript
 			clearitem;
 
 			インベントリーから全てのアイテムを削除します
+
+		clearcartitem命令
+			clearcartitem;
+
+			カートから全てのアイテムを削除します
 
 		summon命令
 			summon <mob_name>,<class>[,<event_name>];
@@ -1835,7 +1876,7 @@ AurigaNPCScript
 
 		sleep命令
 			sleep <ms>;
-			
+
 			ms		待機時間(ms)
 
 			プレイヤーをデタッチした後、スクリプトの実行を指定時間停止します。
@@ -1912,10 +1953,10 @@ AurigaNPCScript
 
 			出しているホムンクルスの名前を<name>へ変更します。
 			pet_rename: noでのみflagは有効です。
-			
+
 		homunevolution命令
 			homunevolution;
-			
+
 			出しているホムンクルスを進化させる。
 
 		recalcstatus命令
@@ -2100,17 +2141,17 @@ AurigaNPCScript
 
 		getgdskilllv命令
 			getgdskilllv(<guild_id>,<skillid>)
-			
+
 			guild_id,skillid	数値
-			
+
 			<skillid>で指定したIDを持つスキルのLVを返します。習得していない場合は0を返します。
 
 		readparam関数
 			readparam(<param>[,<charname>])
-			
+
 			param		パラメータ(const.txt参照、でも記述は数字で)
 			charname	キャラクタ名(省略可)
-			
+
 			<param>で指定されたキャラクタのパラメータを返します
 			<charname>が指定されている場合は対象キャラクタのパラメータが返ります
 
@@ -2175,7 +2216,8 @@ AurigaNPCScript
 			basicskillcheck();
 
 			battle_auriga.confのbasic_skill_checkの設定値を返します。
-			basic_skill_checkとカプラの倉庫利用を合わせる為に作った物でそれ以外の機能はありません。戻った数値が0ならbasic_skill_checkがno、1ならyesです。
+			basic_skill_checkとカプラの倉庫利用を合わせる為に作った物でそれ以外の機能はありません。
+			戻った数値が0ならbasic_skill_checkがno、1ならyesです。
 
 		getgmlevel関数
 			getgmlevel();
@@ -2636,7 +2678,7 @@ AurigaNPCScript
 		checkfalcon関数
 			checkfalcon()
 
-			鷲といっしょにいたら１を、そうでなければ０を返します
+			鷹といっしょにいたら１を、そうでなければ０を返します
 
 		checkriding関数
 			checkriding()
