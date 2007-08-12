@@ -5278,8 +5278,10 @@ void clif_skill_estimation(struct map_session_data *sd, struct block_list *bl)
 	WBUFW(buf,14)=mob_db[md->class_].race;
 	WBUFW(buf,16)=status_get_mdef2(&md->bl) - (mob_db[md->class_].vit>>1);
 	WBUFW(buf,18)=status_get_elem_type(&md->bl);
-	for(i=0;i<9;i++)
-		WBUFB(buf,20+i)= battle_attr_fix(100,i+1,md->def_ele);
+	for(i=0; i<9 && i<ELE_MAX-1; i++)
+		WBUFB(buf,20+i) = battle_attr_fix(100,i+1,md->def_ele);
+	for( ; i<9; i++)
+		WBUFB(buf,20+i) = 100;	// ELE_MAXが10より小さい場合
 
 	if(sd->status.party_id>0) {
 		clif_send(buf,packet_db[0x18c].len,&sd->bl,PARTY_AREA);

@@ -754,8 +754,16 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned short *item_list)
 			return 3;
 
 		for(j=0; nd->u.shop_item[j].nameid; j++) {
-			if (nd->u.shop_item[j].nameid == nameid)
+			int view_id = itemdb_viewid(nd->u.shop_item[j].nameid);
+			if (view_id > 0) {
+				if (view_id == nameid) {
+					// 元のアイテムIDに置き換え
+					item_list[i*2+1] = (unsigned short)nd->u.shop_item[j].nameid;
+					break;
+				}
+			} else if (nd->u.shop_item[j].nameid == nameid) {
 				break;
+			}
 		}
 		if (nd->u.shop_item[j].nameid == 0)
 			return 3;
