@@ -1,4 +1,18 @@
 ----------------------------------------
+//0272 [2007/08/14] by Rayce
+
+・死んだ状態から@loadや@goなどで pc_setpos() を実行すると、デスペナが無くなったり
+　移動先ですぐに死んでしまう等の問題を修正（clif.c, pc.c）
+・VC++で警告レベルを /W4 にした際に得られた結果の中で気になった箇所を修正
+　（db.c, malloc.c, socket.c, char.c, int_guild.c, clif.c, map.h, pc.c, status.c, login-converter.c）
+
+・converterの起動時にもコマンドライン引数をサポートする（converter.*）
+　　以下のコマンドを使ってconfファイルへのパスを変更することができます。
+
+　　converter
+	--converter-config <filename>
+
+----------------------------------------
 //0271 [2007/08/13] by Rayce
 
 ・AthenaProject2314よりmerge、thanks to Paraさん

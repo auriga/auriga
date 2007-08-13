@@ -1614,7 +1614,8 @@ int guild_checkskill(const struct guild *g,int id)
 int guild_calcinfo(struct guild *g)
 {
 	int i,c,nextexp;
-	struct guild before=*g;
+	int sum = 0;
+	struct guild before = *g;
 
 	// スキルIDの設定
 	for(i=0;i<MAX_GUILDSKILL;i++)
@@ -1647,7 +1648,7 @@ int guild_calcinfo(struct guild *g)
 	g->connect_member=0;
 	for(i=c=0;i<g->max_member;i++){
 		if(g->member[i].account_id>0){
-			g->average_lv+=g->member[i].lv;
+			sum += g->member[i].lv;
 			c++;
 
 			if(g->member[i].online>0)
@@ -1655,7 +1656,7 @@ int guild_calcinfo(struct guild *g)
 		}
 	}
 	if(c != 0) {
-		g->average_lv /= c;
+		g->average_lv = (unsigned short)(sum / c);
 	}
 
 	// 全データを送る必要がありそう

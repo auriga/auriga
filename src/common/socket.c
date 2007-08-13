@@ -1572,7 +1572,7 @@ static void socket_httpd_page_dos_attack(struct httpd_session_data *sd, const ch
 	if (*p) {
 		for(i = 0; i < 100; i++) {
 			char buf[32];
-			int ip;
+			unsigned int ip;
 			char* p2;
 			sprintf(buf, "dosdelete%02x", i);
 			p2 = httpd_get_value(sd, buf);

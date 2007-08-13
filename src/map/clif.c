@@ -5562,7 +5562,7 @@ void clif_pvpset(struct map_session_data *sd, int pvprank, int pvpnum, char type
 		WBUFW(buf,0) = 0x19a;
 		WBUFL(buf,2) = sd->bl.id;
 		if(sd->status.option&0x46)
-			WBUFL(buf,6) = -1;
+			WBUFL(buf,6) = 0xffffffff;
 		else
 			WBUFL(buf,6) = pvprank;
 		WBUFL(buf,10) = pvpnum;
@@ -9456,11 +9456,7 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 
 	switch(RFIFOB(fd,GETPACKETPOS(cmd,0))){ // restarttype
 	case 0x00: // 0: restart game when character died
-		if(unit_isdead(&sd->bl)){
-			pc_setstand(sd);
-			pc_setrestartvalue(sd,3);
-			pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,2);
-		}
+		pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,2);
 		break;
 	case 0x01: // 1: request character select
 		if(unit_isdead(&sd->bl))

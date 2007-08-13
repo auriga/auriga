@@ -848,7 +848,7 @@ struct map_data_other_server {
 	char name[24];
 	unsigned char *gat;	// NULL固定にして判断
 	unsigned long ip;
-	unsigned int port;
+	int port;
 	// 一度他map サーバーの担当になって、
 	// もう一度自分の担当になる場合があるので待避させておく
 	struct map_data* map;
@@ -1012,7 +1012,7 @@ struct charid2nick {
 	char nick[24];
 	int account_id;
 	unsigned long ip;
-	unsigned int port;
+	int port;
 	struct linkdb_node *req;
 };
 

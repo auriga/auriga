@@ -2829,7 +2829,7 @@ static int search_mapserver(char *map)
 
 static int search_mapserver_char(char *map, struct mmo_charstatus *cd)
 {
-	int i, j;
+	int i;
 
 	i = search_mapserver(map);
 	if(i != -1) {
@@ -2841,9 +2841,9 @@ static int search_mapserver_char(char *map, struct mmo_charstatus *cd)
 		for(i = 0; i < MAX_MAP_SERVERS; i++) {
 			if (server_fd[i] < 0)
 				continue;
-			for(j = 0; j < server[i].map_num; j++) {
-				memcpy(cd->last_point.map, server[i].map + (j * 16), 16);
-				printf("search_mapserver %s : another map %s -> %d\n", map, server[i].map + (j * 16), i);
+			if (server[i].map_num > 0) {
+				memcpy(cd->last_point.map, server[i].map, 16);
+				printf("search_mapserver %s : another map %s -> %d\n", map, server[i].map, i);
 				return i;
 			}
 		}

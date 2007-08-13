@@ -417,7 +417,7 @@ void aFree_(void *ptr, const char *file, int line, const char *func )
 		{
 			memmgr_warning("memmgr: args of aFree is overflowed pointer %s line %d\n",file,line);
 		} else {
-			head->size = -1;
+			head->size = 0xffff;
 			if(head_large->prev) {
 				head_large->prev->next = head_large->next;
 			} else {

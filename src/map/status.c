@@ -2312,15 +2312,17 @@ int status_get_sp(struct block_list *bl)
  */
 int status_get_max_hp(struct block_list *bl)
 {
+	int max_hp = 1;
+
 	nullpo_retr(1, bl);
 
 	if(bl->type == BL_PC && ((struct map_session_data *)bl)) {
-		return ((struct map_session_data *)bl)->status.max_hp;
+		max_hp = ((struct map_session_data *)bl)->status.max_hp;
 	} else if(bl->type == BL_HOM && ((struct homun_data *)bl)) {
-		return ((struct homun_data *)bl)->max_hp;
+		max_hp = ((struct homun_data *)bl)->max_hp;
 	} else {
 		struct status_change *sc_data = status_get_sc_data(bl);
-		int max_hp = 1;
+
 		if(bl->type == BL_MOB && ((struct mob_data*)bl)) {
 			max_hp = mob_db[((struct mob_data*)bl)->class_].max_hp;
 			if(mob_db[((struct mob_data*)bl)->class_].mexp > 0) {
@@ -2350,10 +2352,9 @@ int status_get_max_hp(struct block_list *bl)
 						+sc_data[SC_APPLEIDUN].val3/10) * max_hp)/100;
 		}
 		if(max_hp < 1) max_hp = 1;
-		return max_hp;
 	}
 
-	return 1;
+	return max_hp;
 }
 
 /*==========================================
@@ -2661,33 +2662,33 @@ int status_get_flee(struct block_list *bl)
 int status_get_hit(struct block_list *bl)
 {
 	int hit = 1;
-	struct status_change *sc_data;
 
 	nullpo_retr(1, bl);
 
-	if(bl->type == BL_PC)
-		return ((struct map_session_data *)bl)->hit;
-	else if(bl->type == BL_HOM && ((struct homun_data *)bl))
-		return ((struct homun_data *)bl)->hit;
-	else
-		hit = status_get_dex(bl) + status_get_lv(bl);
+	if(bl->type == BL_PC) {
+		hit = ((struct map_session_data *)bl)->hit;
+	} else if(bl->type == BL_HOM && ((struct homun_data *)bl)) {
+		hit = ((struct homun_data *)bl)->hit;
+	} else {
+		struct status_change *sc_data = status_get_sc_data(bl);
 
-	sc_data = status_get_sc_data(bl);
-	if(sc_data) {
-		if(sc_data[SC_HUMMING].timer != -1)
-			hit += hit*(sc_data[SC_HUMMING].val1*2+sc_data[SC_HUMMING].val2 + sc_data[SC_HUMMING].val3)/100;
-		if(sc_data[SC_TRUESIGHT].timer != -1)		// トゥルーサイト
-			hit += 3*(sc_data[SC_TRUESIGHT].val1);
-		if(sc_data[SC_CONCENTRATION].timer != -1)	// コンセントレーション
-			hit += 10*(sc_data[SC_CONCENTRATION].val1);
-		if(sc_data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
-			hit = hit*80/100;
-		if(sc_data[SC_ADJUSTMENT].timer != -1 && bl->type != BL_PC) // アジャストメント
-			hit -= 30;
-		if(sc_data[SC_INCREASING].timer != -1 && bl->type != BL_PC) // インクリーシングアキュアラシー
-			hit += 20;
+		hit = status_get_dex(bl) + status_get_lv(bl);
+		if(sc_data) {
+			if(sc_data[SC_HUMMING].timer != -1)
+				hit += hit*(sc_data[SC_HUMMING].val1*2+sc_data[SC_HUMMING].val2 + sc_data[SC_HUMMING].val3)/100;
+			if(sc_data[SC_TRUESIGHT].timer != -1)		// トゥルーサイト
+				hit += 3*(sc_data[SC_TRUESIGHT].val1);
+			if(sc_data[SC_CONCENTRATION].timer != -1)	// コンセントレーション
+				hit += 10*(sc_data[SC_CONCENTRATION].val1);
+			if(sc_data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
+				hit = hit*80/100;
+			if(sc_data[SC_ADJUSTMENT].timer != -1 && bl->type != BL_PC) // アジャストメント
+				hit -= 30;
+			if(sc_data[SC_INCREASING].timer != -1 && bl->type != BL_PC) // インクリーシングアキュアラシー
+				hit += 20;
+		}
+		if(hit < 1) hit = 1;
 	}
-	if(hit < 1) hit = 1;
 	return hit;
 }
 
@@ -2890,15 +2891,17 @@ int status_get_atk_(struct block_list *bl)
  */
 int status_get_atk2(struct block_list *bl)
 {
+	int atk2 = 0;
+
 	nullpo_retr(0, bl);
 
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		return ((struct map_session_data*)bl)->watk2;
+		atk2 = ((struct map_session_data*)bl)->watk2;
 	} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
-		return ((struct homun_data *)bl)->atk;
+		atk2 = ((struct homun_data *)bl)->atk;
 	} else {
 		struct status_change *sc_data = status_get_sc_data(bl);
-		int atk2 = 0;
+
 		if(bl->type == BL_MOB) {
 			struct mob_data *md = (struct mob_data *)bl;
 			if(md) {
@@ -2941,9 +2944,8 @@ int status_get_atk2(struct block_list *bl)
 				atk2 *= 4;
 		}
 		if(atk2 < 0) atk2 = 0;
-		return atk2;
 	}
-	return 0;
+	return atk2;
 }
 
 /*==========================================
@@ -2968,41 +2970,42 @@ int status_get_atk_2(struct block_list *bl)
  */
 int status_get_matk1(struct block_list *bl)
 {
-	struct status_change *sc_data;
-	int matk1,int_;
+	int matk1 = 0;
 
 	nullpo_retr(0, bl);
 
-	if (bl->type == BL_PC)
-		return ((struct map_session_data *)bl)->matk1;
-	else if (bl->type == BL_HOM)
-		return ((struct homun_data *)bl)->matk-((struct homun_data *)bl)->matk/10;
-	else if (bl->type != BL_PET && bl->type != BL_MOB)
-		return 0;
+	if (bl->type == BL_PC) {
+		matk1 = ((struct map_session_data *)bl)->matk1;
+	} else if (bl->type == BL_HOM) {
+		matk1 = ((struct homun_data *)bl)->matk-((struct homun_data *)bl)->matk/10;
+	} else if (bl->type != BL_PET && bl->type != BL_MOB) {
+		matk1 = 0;
+	} else {
+		struct status_change *sc_data = status_get_sc_data(bl);
+		int int_ = status_get_int(bl);
 
-	int_  = status_get_int(bl);
-	matk1 = int_+(int_/5)*(int_/5);
+		matk1 = int_+(int_/5)*(int_/5);
 
-	// MOBのmax_sp値をMATK補正値で乗っ取る時
-	if(battle_config.mob_take_over_sp == 1) {
-		if(bl->type == BL_MOB) {
-			int b_class = status_get_class(bl);		// 直接maxsp取得無理の為ムリヤリ
-			if(mob_db[b_class].max_sp > 0) {		// 1以上の時のみ
-				matk1 = matk1 * (mob_db[b_class].max_sp/100);
+		// MOBのmax_sp値をMATK補正値で乗っ取る時
+		if(battle_config.mob_take_over_sp == 1) {
+			if(bl->type == BL_MOB) {
+				int b_class = status_get_class(bl);		// 直接maxsp取得無理の為ムリヤリ
+				if(mob_db[b_class].max_sp > 0) {		// 1以上の時のみ
+					matk1 = matk1 * (mob_db[b_class].max_sp/100);
+				}
 			}
 		}
-	}
 
-	sc_data = status_get_sc_data(bl);
-	if(sc_data) {
-		if(sc_data[SC_MINDBREAKER].timer != -1)
-			matk1 += (matk1*20*sc_data[SC_MINDBREAKER].val1)/100;
-		if(sc_data[SC_STRENGTH].timer != -1)
-			matk1 = matk1*50/100;
-		if(sc_data[SC_THE_DEVIL].timer != -1)
-			matk1 = matk1*50/100;
-		if(sc_data[SC_THE_SUN].timer != -1)
-			matk1 = matk1*80/100;
+		if(sc_data) {
+			if(sc_data[SC_MINDBREAKER].timer != -1)
+				matk1 += (matk1*20*sc_data[SC_MINDBREAKER].val1)/100;
+			if(sc_data[SC_STRENGTH].timer != -1)
+				matk1 = matk1*50/100;
+			if(sc_data[SC_THE_DEVIL].timer != -1)
+				matk1 = matk1*50/100;
+			if(sc_data[SC_THE_SUN].timer != -1)
+				matk1 = matk1*80/100;
+		}
 	}
 	return matk1;
 }
@@ -3014,41 +3017,42 @@ int status_get_matk1(struct block_list *bl)
  */
 int status_get_matk2(struct block_list *bl)
 {
-	struct status_change *sc_data;
-	int matk2,int_;
+	int matk2 = 0;
 
 	nullpo_retr(0, bl);
 
-	if (bl->type == BL_PC)
-		return ((struct map_session_data *)bl)->matk2;
-	else if (bl->type == BL_HOM)
-		return ((struct homun_data *)bl)->matk;
-	else if (bl->type != BL_PET && bl->type != BL_MOB)
-		return 0;
+	if (bl->type == BL_PC) {
+		matk2 = ((struct map_session_data *)bl)->matk2;
+	} else if (bl->type == BL_HOM) {
+		matk2 = ((struct homun_data *)bl)->matk;
+	} else if (bl->type != BL_PET && bl->type != BL_MOB) {
+		matk2 = 0;
+	} else {
+		struct status_change *sc_data = status_get_sc_data(bl);
+		int int_ = status_get_int(bl);
 
-	int_  = status_get_int(bl);
-	matk2 = int_+(int_/7)*(int_/7);
+		matk2 = int_+(int_/7)*(int_/7);
 
-	// MOBのmax_sp値をMATK補正値で乗っ取る時
-	if(battle_config.mob_take_over_sp == 1) {
-		if(bl->type == BL_MOB) {
-			int b_class = status_get_class(bl);		// 直接maxsp取得無理の為ムリヤリ
-			if(mob_db[b_class].max_sp > 0) {		// 1以上の時のみ
-				matk2 = matk2 * (mob_db[b_class].max_sp/100);
+		// MOBのmax_sp値をMATK補正値で乗っ取る時
+		if(battle_config.mob_take_over_sp == 1) {
+			if(bl->type == BL_MOB) {
+				int b_class = status_get_class(bl);		// 直接maxsp取得無理の為ムリヤリ
+				if(mob_db[b_class].max_sp > 0) {		// 1以上の時のみ
+					matk2 = matk2 * (mob_db[b_class].max_sp/100);
+				}
 			}
 		}
-	}
 
-	sc_data = status_get_sc_data(bl);
-	if(sc_data) {
-		if(sc_data[SC_MINDBREAKER].timer != -1)
-			matk2 += (matk2*20*sc_data[SC_MINDBREAKER].val1)/100;
-		if(sc_data[SC_STRENGTH].timer != -1)
-			matk2 = matk2*50/100;
-		if(sc_data[SC_THE_DEVIL].timer != -1)
-			matk2 = matk2*50/100;
-		if(sc_data[SC_THE_SUN].timer != -1)
-			matk2 = matk2*80/100;
+		if(sc_data) {
+			if(sc_data[SC_MINDBREAKER].timer != -1)
+				matk2 += (matk2*20*sc_data[SC_MINDBREAKER].val1)/100;
+			if(sc_data[SC_STRENGTH].timer != -1)
+				matk2 = matk2*50/100;
+			if(sc_data[SC_THE_DEVIL].timer != -1)
+				matk2 = matk2*50/100;
+			if(sc_data[SC_THE_SUN].timer != -1)
+				matk2 = matk2*80/100;
+		}
 	}
 	return matk2;
 }
@@ -3261,18 +3265,20 @@ int status_get_mdef2(struct block_list *bl)
  */
 int status_get_speed(struct block_list *bl)
 {
+	int speed = 1000;
+
 	nullpo_retr(1000, bl);
 
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		return ((struct map_session_data *)bl)->speed;
+		speed = ((struct map_session_data *)bl)->speed;
 	} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		if(battle_config.homun_speed_is_same_as_pc)
-			return ((struct homun_data *)bl)->msd->speed;
+			speed = ((struct homun_data *)bl)->msd->speed;
 		else
-			return ((struct homun_data *)bl)->speed;
+			speed = ((struct homun_data *)bl)->speed;
 	} else {
 		struct status_change *sc_data = status_get_sc_data(bl);
-		int speed = 1000;
+
 		if(bl->type == BL_MOB && (struct mob_data *)bl)
 			speed = ((struct mob_data *)bl)->speed;
 		else if(bl->type == BL_PET && (struct pet_data *)bl)
@@ -3333,10 +3339,9 @@ int status_get_speed(struct block_list *bl)
 			//	speed = speed + 450;
 		}
 		if(speed < 1) speed = 1;
-		return speed;
 	}
 
-	return 1000;
+	return speed;
 }
 
 /*==========================================
@@ -3346,13 +3351,15 @@ int status_get_speed(struct block_list *bl)
  */
 int status_get_adelay(struct block_list *bl)
 {
+	int adelay = 4000;
+
 	nullpo_retr(4000, bl);
 
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		return (((struct map_session_data *)bl)->aspd<<1);
+		adelay = (((struct map_session_data *)bl)->aspd<<1);
 	} else {
 		struct status_change *sc_data = status_get_sc_data(bl);
-		int adelay = 4000, aspd_rate = 100, i;
+		int aspd_rate = 100, i;
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl) {
 			int guardup_lv = ((struct mob_data*)bl)->guardup_lv;
@@ -3436,9 +3443,8 @@ int status_get_adelay(struct block_list *bl)
 			adelay = adelay*aspd_rate/100;
 		if(adelay < battle_config.monster_max_aspd<<1)
 			adelay = battle_config.monster_max_aspd<<1;
-		return adelay;
 	}
-	return 4000;
+	return adelay;
 }
 
 /*==========================================
@@ -3447,13 +3453,15 @@ int status_get_adelay(struct block_list *bl)
  */
 int status_get_amotion(struct block_list *bl)
 {
+	int amotion = 2000;
+
 	nullpo_retr(2000, bl);
 
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		return ((struct map_session_data *)bl)->amotion;
+		amotion = ((struct map_session_data *)bl)->amotion;
 	} else {
 		struct status_change *sc_data = status_get_sc_data(bl);
-		int amotion = 2000, aspd_rate = 100, i;
+		int aspd_rate = 100, i;
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl) {
 			int guardup_lv = ((struct mob_data*)bl)->guardup_lv;
@@ -3519,9 +3527,8 @@ int status_get_amotion(struct block_list *bl)
 			amotion = amotion*aspd_rate/100;
 		if(amotion < battle_config.monster_max_aspd)
 			amotion = battle_config.monster_max_aspd;
-		return amotion;
 	}
-	return 2000;
+	return amotion;
 }
 
 /*==========================================
@@ -3530,37 +3537,37 @@ int status_get_amotion(struct block_list *bl)
  */
 int status_get_dmotion(struct block_list *bl)
 {
-	int ret = 2000;
+	int dmotion = 2000;
 
-	nullpo_retr(0, bl);
+	nullpo_retr(2000, bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl) {
-		ret = mob_db[((struct mob_data *)bl)->class_].dmotion;
+		dmotion = mob_db[((struct mob_data *)bl)->class_].dmotion;
 		if(battle_config.monster_damage_delay_rate != 100)
-			ret = ret*battle_config.monster_damage_delay_rate/100;
+			dmotion = dmotion*battle_config.monster_damage_delay_rate/100;
 	}
 	else if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)bl;
 		if(sd) {
 			if(sd->sc_data[SC_ENDURE].timer != -1 && (!map[sd->bl.m].flag.gvg || sd->special_state.infinite_endure)) {
-				ret = 0;
+				dmotion = 0;
 			} else {
-				ret = sd->dmotion;
+				dmotion = sd->dmotion;
 				if(battle_config.pc_damage_delay_rate != 100)
-					ret = ret*battle_config.pc_damage_delay_rate/100;
+					dmotion = dmotion*battle_config.pc_damage_delay_rate/100;
 			}
 		}
 	}
 	else if(bl->type == BL_HOM && (struct homun_data *)bl && ((struct homun_data *)bl)->msd) {
-		ret = 800 - ((struct homun_data *)bl)->status.agi*4;
-		if( ret < 400 )
-			ret = 400;
+		dmotion = 800 - ((struct homun_data *)bl)->status.agi*4;
+		if(dmotion < 400)
+			dmotion = 400;
 	}
 	else if(bl->type == BL_PET && (struct pet_data *)bl) {
-		ret = mob_db[((struct pet_data *)bl)->class_].dmotion;
+		dmotion = mob_db[((struct pet_data *)bl)->class_].dmotion;
 	}
 
-	return ret;
+	return dmotion;
 }
 
 /*==========================================

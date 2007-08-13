@@ -108,7 +108,7 @@ void read_gm_account(void)
 int login_convert(void)
 {
 	FILE *fp;
-	int account_id, logincount, user_level, state, n, n2, i, j, val;
+	int account_id, logincount, user_level, state, n, i, j, val;
 	char line[65536], userid[256], pass[256], lastlogin[256], buf[4][256], sex;
 	char input, *p;
 	struct accreg dat;
@@ -124,6 +124,7 @@ int login_convert(void)
 		}
 		while(fgets(line, sizeof(line)-1, fp)) {
 			char email[256] = "";
+			int n2 = 0;
 
 			if(line[0]=='/' && line[1]=='/')
 				continue;

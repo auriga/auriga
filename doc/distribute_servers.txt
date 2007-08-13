@@ -262,6 +262,9 @@ map-server
 　　--script-config <filename>
 　　--msg-config <filename>
 
+converter
+　　--converter-config <filename>
+
 例）char_auriga2.conf から char config を読み込む
 　　　　[WIN]  > char-server.exe --char-config conf/char_auriga2.conf
 　　　　[UNIX] $ ./char-server --char-config conf/char_auriga2.cof

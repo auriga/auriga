@@ -1083,7 +1083,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->eventtimer[i] = -1;
 
 	// 位置の設定
-	pc_setpos(sd,sd->status.last_point.map, sd->status.last_point.x, sd->status.last_point.y, 0);
+	pc_setpos(sd, sd->status.last_point.map, sd->status.last_point.x, sd->status.last_point.y, 0);
 
 	// pet
 	if(sd->status.pet_id > 0)
@@ -3582,6 +3582,13 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		pc_setstand(sd);
 		skill_gangsterparadise(sd,0);
 	}
+
+	// 死んでいたら立ち上がる
+	if(unit_isdead(&sd->bl)) {
+		pc_setstand(sd);
+		pc_setrestartvalue(sd,3);
+	}
+
 	m = map_mapname2mapid(mapname);
 	if(m < 0) {
 		int ip,port;
@@ -5122,8 +5129,6 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 	// 強制送還
 	if((map[sd->bl.m].flag.pvp && sd->pvp_point < 0) || map[sd->bl.m].flag.gvg || map[sd->bl.m].flag.norevive) {
 		sd->pvp_point = 0;
-		pc_setstand(sd);
-		pc_setrestartvalue(sd,3);
 		pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,0);
 	}
 	// 全ての処理が完了してからカイゼルによる復活
@@ -7600,7 +7605,7 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
  * 息吹によるHP自然回復
  *------------------------------------------
  */
-static int pc_spirit_heal_hp(struct map_session_data *sd,int level)
+static int pc_spirit_heal_hp(struct map_session_data *sd)
 {
 	int interval = battle_config.natural_heal_skill_interval;
 
@@ -7645,7 +7650,7 @@ static int pc_spirit_heal_hp(struct map_session_data *sd,int level)
  * 息吹によるSP自然回復
  *------------------------------------------
  */
-static int pc_spirit_heal_sp(struct map_session_data *sd,int level)
+static int pc_spirit_heal_sp(struct map_session_data *sd)
 {
 	int interval = battle_config.natural_heal_skill_interval;
 
@@ -7832,8 +7837,6 @@ static int pc_bleeding(struct map_session_data *sd)
  */
 static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 {
-	int skill;
-
 	nullpo_retr(0, sd);
 
 	if( (battle_config.natural_heal_weight_rate > 100 || sd->weight*100/sd->max_weight < battle_config.natural_heal_weight_rate) &&
@@ -7855,22 +7858,22 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		sd->hp_sub = sd->inchealhptick = 0;
 		sd->sp_sub = sd->inchealsptick = 0;
 	}
-	if((skill = pc_checkskill(sd,MO_SPIRITSRECOVERY)) > 0 && !pc_ishiding(sd) && sd->sc_data[SC_POISON].timer == -1) {
-		pc_spirit_heal_hp(sd,skill);
-		pc_spirit_heal_sp(sd,skill);
+	if(pc_checkskill(sd,MO_SPIRITSRECOVERY) > 0 && !pc_ishiding(sd) && sd->sc_data[SC_POISON].timer == -1) {
+		pc_spirit_heal_hp(sd);
+		pc_spirit_heal_sp(sd);
 	} else {
 		sd->inchealspirithptick = 0;
 		sd->inchealspiritsptick = 0;
 	}
 
 	// 安らかな休息
-	if((skill = pc_checkskill(sd,TK_HPTIME)) > 0 && !pc_ishiding(sd) && sd->sc_data[SC_POISON].timer == -1)
+	if(pc_checkskill(sd,TK_HPTIME) > 0 && !pc_ishiding(sd) && sd->sc_data[SC_POISON].timer == -1)
 		pc_rest_heal_hp(sd);
 	else
 		sd->inchealresthptick = 0;
 
 	// 楽しい休息
-	if((skill = pc_checkskill(sd,TK_SPTIME)) > 0 && !pc_ishiding(sd) && sd->sc_data[SC_POISON].timer == -1)
+	if(pc_checkskill(sd,TK_SPTIME) > 0 && !pc_ishiding(sd) && sd->sc_data[SC_POISON].timer == -1)
 		pc_rest_heal_sp(sd);
 	else
 		sd->inchealrestsptick = 0;

@@ -15,6 +15,8 @@
 #include "inter-converter.h"
 #include "map-converter.h"
 
+char converter_conf_filename[256] = "conf/converter_auriga.conf";
+
 char db_server_ip[16] = "127.0.0.1";
 int  db_server_port   = 3306;
 char db_server_id[32] = "ragnarok";
@@ -185,8 +187,21 @@ int config_read(const char *cfgName)
 
 int do_init(int argc,char **argv)
 {
+	int i;
+
+	for(i = 1; i < argc - 1; i += 2) {
+		if(strcmp(argv[i], "--converter_config") == 0 || strcmp(argv[i], "--converter-config") == 0) {
+			strncpy(converter_conf_filename, argv[i+1], sizeof(converter_conf_filename));
+			converter_conf_filename[sizeof(converter_conf_filename)-1] = '\0';
+		}
+		else {
+			printf("illegal command line argument %s !!\n", argv[i]);
+			exit(1);
+		}
+	}
+
 	// read config
-	config_read("conf/converter_auriga.conf");
+	config_read(converter_conf_filename);
 
 	// DB connection initialized
 	mysql_init(&mysql_handle);
