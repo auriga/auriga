@@ -560,7 +560,7 @@ int login_sql_init(void)
 
 static int account_db_final(void *key,void *data,va_list ap)
 {
-	struct account *p = (struct account *)data;
+	struct mmo_account *p = (struct mmo_account *)data;
 
 	aFree(p);
 

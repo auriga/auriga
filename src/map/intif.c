@@ -1163,41 +1163,13 @@ int intif_parse_AccountReg(int fd)
 // 倉庫データ受信
 int intif_parse_LoadStorage(int fd)
 {
-	struct storage *stor;
-	struct map_session_data *sd;
-
-	if( RFIFOW(fd,2)-8 != sizeof(struct storage) ){
+	if(RFIFOW(fd,2)-8 != sizeof(struct storage)) {
 		if(battle_config.error_log)
-			printf("intif_parse_LoadStorage: data size error %d %d\n",RFIFOW(fd,2)-8 , sizeof(struct storage));
-		return 1;
-	}
-	sd = map_id2sd( RFIFOL(fd,4) );
-	if(sd == NULL || sd->state.waitingdisconnect) {
-		//if(battle_config.error_log)
-		//	printf("intif_parse_LoadStorage: user not found %d\n",RFIFOL(fd,4));
-		storage_delete( RFIFOL(fd,4) );
+			printf("intif_parse_LoadStorage: data size error %d %d\n", RFIFOW(fd,2)-8, sizeof(struct storage));
 		return 1;
 	}
 
-	// 既に倉庫を開いてないかチェック
-	if(sd->state.storage_flag == 1)
-		return 0;
-	if(sd->state.storage_flag == 2)
-		storage_guild_storageclose(sd);
-
-	stor=account2storage( RFIFOL(fd,4) );
-
-	if(battle_config.save_log)
-		printf("intif_openstorage: %d\n",RFIFOL(fd,4) );
-
-	memcpy(stor,RFIFOP(fd,8),sizeof(struct storage));
-	sortage_sortitem(stor->store_item, MAX_STORAGE, &stor->sortkey, battle_config.personal_storage_sort);
-	stor->storage_status=1;
-	sd->state.storage_flag = 1;
-	clif_storageitemlist(sd,stor);
-	clif_storageequiplist(sd,stor);
-	clif_updatestorageamount(sd,stor);
-	return 0;
+	return storage_storageload(RFIFOL(fd,4), (struct storage *)RFIFOP(fd,8));
 }
 
 // 倉庫データ送信成功
@@ -1211,52 +1183,13 @@ int intif_parse_SaveStorage(int fd)
 // ギルド倉庫データ受信
 int intif_parse_LoadGuildStorage(int fd)
 {
-	struct guild_storage *gstor;
-	struct map_session_data *sd;
-	int guild_id = RFIFOL(fd,8);
-
-	if(guild_id <= 0)
-		return 0;
-
-	if( RFIFOW(fd,2)-12 != sizeof(struct guild_storage) ){
+	if(RFIFOW(fd,2)-12 != sizeof(struct guild_storage)) {
 		if(battle_config.error_log)
-			printf("intif_parse_LoadGuildStorage: data size error %d %d\n",RFIFOW(fd,2)-12 , sizeof(struct guild_storage));
-		return 1;
-	}
-	sd = map_id2sd( RFIFOL(fd,4) );
-	if(sd == NULL || sd->state.waitingdisconnect) {
-		//if(battle_config.error_log)
-		//	printf("intif_parse_LoadGuildStorage: user not found %d\n",RFIFOL(fd,4));
-		//storage_guild_delete( guild_id );
-		intif_unlock_guild_storage(guild_id);
+			printf("intif_parse_LoadGuildStorage: data size error %d %d\n", RFIFOW(fd,2)-12, sizeof(struct guild_storage));
 		return 1;
 	}
 
-	// 既に倉庫を開いてないかチェック
-	if(sd->state.storage_flag == 2)
-		return 0;
-	if(sd->state.storage_flag == 1)
-		storage_storageclose(sd);
-
-	gstor=guild2storage(guild_id);
-	if(!gstor) {
-		if(battle_config.error_log)
-			printf("intif_parse_LoadGuildStorage: error guild_id %d not exist\n",guild_id);
-		return 1;
-	}
-
-	if(battle_config.save_log)
-		printf("intif_open_guild_storage: %d\n",RFIFOL(fd,4) );
-
-	memcpy(gstor,RFIFOP(fd,12),sizeof(struct guild_storage));
-	sortage_sortitem(gstor->store_item, MAX_GUILD_STORAGE, &gstor->sortkey, battle_config.guild_storage_sort);
-	gstor->storage_status = 1;
-	sd->state.storage_flag = 2;
-	clif_guildstorageitemlist(sd,gstor);
-	clif_guildstorageequiplist(sd,gstor);
-	clif_updateguildstorageamount(sd,gstor);
-
-	return 0;
+	return storage_guild_storageload(RFIFOL(fd,4), RFIFOL(fd,8), (struct guild_storage *)RFIFOP(fd,12));
 }
 
 // ギルド倉庫データ送信成功

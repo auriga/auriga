@@ -1977,11 +1977,11 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		if(sd->vender_id)
 			vending_closevending(sd);
 
-		// 倉庫を開いてるなら保存する
+		// 倉庫を開いてるなら閉じて保存する
 		if(sd->state.storage_flag == 2)
-			storage_guild_storage_quit(sd,0);
+			storage_guild_storageclose(sd);
 		else if(sd->state.storage_flag == 1)
-			storage_storage_quit(sd);
+			storage_storageclose(sd);
 
 		// 友達リスト勧誘を拒否する
 		if(sd->friend_invite > 0)

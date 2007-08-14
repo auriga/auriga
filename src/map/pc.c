@@ -3098,7 +3098,7 @@ void pc_takeitem_sub(struct party *p, struct map_session_data *sd, struct floori
 		first_sd = map_id2sd(fitem->first_get_id);
 		if(tick < fitem->first_get_tick) {
 			if( p && p->item&1 &&
-			    first_sd && first_sd->status.party_id == sd->status.party_id ) {
+			    first_sd && first_sd->status.party_id > 0 && first_sd->status.party_id == sd->status.party_id ) {
 				;	// PT共有設定で同一PTならOK
 			} else {
 				clif_additem(sd,0,0,6);
@@ -3109,8 +3109,8 @@ void pc_takeitem_sub(struct party *p, struct map_session_data *sd, struct floori
 			second_sd = map_id2sd(fitem->second_get_id);
 			if(tick < fitem->second_get_tick) {
 				if( p && p->item&1 &&
-				    ((first_sd && first_sd->status.party_id == sd->status.party_id) ||
-				    (second_sd && second_sd->status.party_id == sd->status.party_id)) ) {
+				    ((first_sd && first_sd->status.party_id > 0 && first_sd->status.party_id == sd->status.party_id) ||
+				    (second_sd && second_sd->status.party_id > 0 && second_sd->status.party_id == sd->status.party_id)) ) {
 					;	// PT共有設定で同一PTならOK
 				} else {
 					clif_additem(sd,0,0,6);
@@ -3121,9 +3121,9 @@ void pc_takeitem_sub(struct party *p, struct map_session_data *sd, struct floori
 				third_sd = map_id2sd(fitem->third_get_id);
 				if(tick < fitem->third_get_tick) {
 					if( p && p->item&1 &&
-					    ((first_sd && first_sd->status.party_id == sd->status.party_id) ||
-					    (second_sd && second_sd->status.party_id == sd->status.party_id) ||
-					    (third_sd && third_sd->status.party_id == sd->status.party_id)) ) {
+					    ((first_sd && first_sd->status.party_id > 0 && first_sd->status.party_id == sd->status.party_id) ||
+					    (second_sd && second_sd->status.party_id > 0 && second_sd->status.party_id == sd->status.party_id) ||
+					    (third_sd && third_sd->status.party_id > 0 && third_sd->status.party_id == sd->status.party_id)) ) {
 						;	// PT共有設定で同一PTならOK
 					} else {
 						clif_additem(sd,0,0,6);

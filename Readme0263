@@ -1,4 +1,21 @@
 ----------------------------------------
+//0273 [2007/08/15] by Rayce
+
+・倉庫関連の関数を見直し（mmo.h, guild.c, intif.c, storage.*, unit.c）
+	-> intif_parse_LoadStorage() の内容を storage_storageload() として分離
+	-> intif_parse_LoadGuildStorage() の内容を storage_guild_storageload() として分離
+	-> storage_storage_quit() および storage_guild_storage_quit() はそれぞれ
+	   storage_storageclose() および storage_guild_storageclose() にまとめる
+	-> ギルド解散時にギルドメンバーが倉庫を開いていた場合の処理を少し書き換え
+	-> storage構造体およびguild_storage構造体にdirtyメンバを追加
+	   倉庫内アイテムのデータが変更されたときのみセーブを行うように改善
+	-> 細かい整形
+
+・pc_takeitem_sub() でPT未所属でもPT共有設定とみなされていた問題を修正（pc.c）
+・account_db_final() におけるキャストミスを修正（login.c）
+	thanks to FPE in AthenaProject Forum
+
+----------------------------------------
 //0272 [2007/08/14] by Rayce
 
 ・死んだ状態から@loadや@goなどで pc_setpos() を実行すると、デスペナが無くなったり

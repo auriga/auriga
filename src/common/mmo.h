@@ -202,7 +202,8 @@ struct mmo_homunstatus {
 
 struct storage {
 	int account_id;
-	short storage_status;
+	char dirty;
+	char storage_status;
 	short storage_amount;
 	unsigned int sortkey;
 	struct item store_item[MAX_STORAGE];
@@ -210,7 +211,8 @@ struct storage {
 
 struct guild_storage {
 	int guild_id;
-	short storage_status;
+	char dirty;
+	char storage_status;
 	short storage_amount;
 	unsigned int sortkey;
 	struct item store_item[MAX_GUILD_STORAGE];
