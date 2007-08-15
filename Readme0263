@@ -1,4 +1,19 @@
 ----------------------------------------
+//0274 [2007/08/16] by Rayce
+
+・ステータス異常 SC_ITEM_DELAY と SC_ACTION_DELAY の撤廃（clif.c, map.h, pc.c, status.*）
+	プレイヤーにしか必要がない上に、不正検出のための重要なシステムでありながらスクリプトの
+	sc_start命令等で操作される可能性があるという極めて良くない実装でした。
+	代わりにmap_session_data構造体にメンバ item_delay_tick, drop_delay_tick, drop_delay_count
+	を用意してこれまでと同様の不正検出を行うことにします。
+
+・map_session_data構造体のメンバemotion_lasttickをemotion_delay_tickに改名（clif.c, map.h, pc.c）
+・map_session_data構造体のメンバinfinit_tigereyeをspecial_stateに変更（map.h, pc.c, status.c）
+
+・dropitem命令を使ったスクリプトの引数指定方法が間違っていたので修正（npc_quest_kiel.txt）
+	reported by Cocoaさん
+
+----------------------------------------
 //0273 [2007/08/15] by Rayce
 
 ・倉庫関連の関数を見直し（mmo.h, guild.c, intif.c, storage.*, unit.c）

@@ -9336,8 +9336,8 @@ static void clif_parse_Emotion(int fd,struct map_session_data *sd, int cmd)
 		unsigned int tick = gettick();
 
 		// anti hacker
-		if(DIFF_TICK(tick, sd->emotion_lasttick) >= 1000) {
-			sd->emotion_lasttick = tick;
+		if(DIFF_TICK(tick, sd->emotion_delay_tick) > 0) {
+			sd->emotion_delay_tick = tick + 1000;
 
 			WFIFOW(fd,0)=0xc0;
 			WFIFOL(fd,2)=sd->bl.id;
@@ -9592,6 +9592,7 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 {
 	int item_index = 0, item_amount = 0;
+	unsigned int tick = gettick();
 
 	nullpo_retv(sd);
 
@@ -9604,22 +9605,25 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if( ++sd->sc_data[SC_ACTION_DELAY].val2 == 6 ) {
-		// %s様(ID:%d)のアイテムドロップ間隔が異常です\n
-		printf(msg_txt(47), sd->status.name, sd->status.char_id);
+	if(++sd->drop_delay_count == 6) {
+		char output[128];
+		// %s (ID:%d) のアイテムドロップ間隔が異常です！
+		snprintf(output, sizeof(output), msg_txt(47), sd->status.name, sd->status.char_id);
+		printf("%s\n", output);
 	}
 
 	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->opt1 > 0 ||
+	    DIFF_TICK(tick, sd->drop_delay_tick) < 0 ||
 	    sd->sc_data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc_data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
 	    sd->sc_data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中
-	    sd->sc_data[SC_BERSERK].timer != -1 ||		// バーサーク
-	    sd->sc_data[SC_ACTION_DELAY].timer != -1 )
+	    sd->sc_data[SC_BERSERK].timer != -1 )		// バーサーク
 	{
 		clif_delitem(sd, item_index, 0);
 		return;
 	}
-	status_change_start(&sd->bl,SC_ACTION_DELAY,0,0,0,0,300,0);
+	sd->drop_delay_tick  = tick + 300;
+	sd->drop_delay_count = 0;
 
 	if( pc_dropitem(sd, item_index, item_amount) ) {
 		if (battle_config.save_player_when_drop_item) {
@@ -9658,13 +9662,13 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	}
 	if( (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
 	    sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || (sd->opt1 > 0 && sd->opt1 != 6) || sd->state.storage_flag ||
+	    DIFF_TICK(gettick(), sd->item_delay_tick) < 0 || 	// アイテムディレイ
 	    sd->sc_data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
 	    sd->sc_data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
 	    sd->sc_data[SC_BERSERK].timer != -1 ||	// バーサーク
 	    sd->sc_data[SC_FULLBUSTER].timer != -1 ||	// フルバスター
 	    sd->sc_data[SC_WEDDING].timer != -1 ||	// 結婚衣装
-	    sd->sc_data[SC_NOCHAT].timer != -1 ||	// 会話禁止
-	    sd->sc_data[SC_ITEM_DELAY].timer != -1 )	// アイテムディレイ
+	    sd->sc_data[SC_NOCHAT].timer != -1 )	// 会話禁止
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;

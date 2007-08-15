@@ -1023,6 +1023,11 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->dev.val2[i] = 0;
 	}
 
+	sd->emotion_delay_tick = tick;
+	sd->item_delay_tick    = tick;
+	sd->drop_delay_tick    = tick;
+	sd->drop_delay_count   = 0;
+
 	// アカウント変数の送信要求
 	intif_request_accountreg(sd);
 
@@ -2101,7 +2106,7 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		sd->race = val;
 		break;
 	case SP_TIGEREYE:
-		sd->infinite_tigereye = 1;
+		sd->special_state.infinite_tigereye = 1;
 		clif_status_load(sd, SI_TIGEREYE, 1);
 		break;
 	case SP_AUTO_STATUS_CALC_PC:
@@ -3244,7 +3249,7 @@ void pc_useitem(struct map_session_data *sd, int n)
 	if(script)
 		run_script(script,0,sd->bl.id,0);
 	if(item && item->delay)
-		status_change_start(&sd->bl,SC_ITEM_DELAY,0,0,0,0,item->delay,0);
+		sd->item_delay_tick = gettick() + item->delay;
 
 	return;
 }

@@ -292,6 +292,7 @@ struct map_session_data {
 		unsigned no_weapon_damage : 1;
 		unsigned no_gemstone : 1;
 		unsigned infinite_endure : 1;
+		unsigned infinite_tigereye : 1;
 		unsigned item_no_use : 1;
 		unsigned fix_damage : 1;
 		unsigned no_knockback : 1;
@@ -545,7 +546,6 @@ struct map_session_data {
 
 	struct cell_xy dance;
 
-	short infinite_tigereye;	// マヤパープル効果
 	short stop_status_calc_pc;
 	short call_status_calc_pc_while_stopping;
 	short status_calc_pc_process;
@@ -559,7 +559,10 @@ struct map_session_data {
 	int add_attackrange, add_attackrange_rate;	// bAtkRange2,bAtkRangeRate2 用
 	int skill_delay_rate;
 
-	unsigned int emotion_lasttick;
+	unsigned int emotion_delay_tick;
+	unsigned int item_delay_tick;
+	unsigned int drop_delay_tick;
+	short drop_delay_count;
 
 	int kill_charid, killed_charid;
 

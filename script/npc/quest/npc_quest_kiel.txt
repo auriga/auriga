@@ -4625,7 +4625,7 @@ kh_kiehl01.gat,17,39,0	script	受信機#kiel	111,{
 OnKilled:
 	set 'mob,'mob-1;
 	if('mob == 0)
-		dropitem 7506,1,"kh_kiehl01.gat",19,36,0;
+		dropitem "kh_kiehl01.gat",19,36,7506,1,0;
 	end;
 }
 
@@ -4788,7 +4788,7 @@ kh_kiehl01.gat,15,178,0	script	機械人形#kiel	111,{
 OnKilled:
 	set 'mob,'mob-1;
 	if('mob == 0)
-		dropitem 7506,1,"kh_kiehl01.gat",18,179,0;
+		dropitem "kh_kiehl01.gat",18,179,7506,1,0;
 	end;
 }
 

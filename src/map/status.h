@@ -163,7 +163,7 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_SPEEDPOTION1			=38,	/* スピードアップポーション？ */
 	SC_SPEEDPOTION2			=39,	/* ハイスピードポーション？ */
 	SC_SPEEDPOTION3			=40,	/* バーサークポーション */
-	SC_ITEM_DELAY			=41,
+	//
 	//
 	//
 	//
@@ -407,7 +407,7 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_ANGEL				= 285,//太陽と月と星の天使
 	SC_FORCEWALKING			= 286,//SC_HIGHJUMPを強制移動状態として再利用
 	SC_DOUBLE				= 287,//ダブルストレイフィング状態
-	SC_ACTION_DELAY			= 288,//
+	//
 	SC_BABY					= 289,//パパ、ママ、大好き
 	SC_LONGINGFREEDOM		= 290,
 	SC_SHRINK				= 291,//#シュリンク#

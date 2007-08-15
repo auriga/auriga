@@ -242,7 +242,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_speed,b_max_hp,b_max_sp,b_hp,b_sp,b_weight,b_max_weight,b_paramb[6],b_parame[6],b_hit,b_flee;
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
-	short b_tigereye;
+	int b_tigereye;
 	struct skill b_skill[MAX_SKILL];
 	int i,blv,calc_val,index;
 	int skill,aspd_rate,wele,wele_,def_ele,refinedef;
@@ -293,7 +293,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_mdef2       = sd->mdef2;
 	b_class       = sd->view_class;
 	b_base_atk    = sd->base_atk;
-	b_tigereye    = sd->infinite_tigereye;
+	b_tigereye    = sd->special_state.infinite_tigereye;
 
 L_RECALC:
 	// 本来の計算開始(元のパラメータを更新しないのは、計算中に計算処理が呼ばれたときの
@@ -309,7 +309,7 @@ L_RECALC:
 	sd->race = RCT_HUMAN;
 	sd->ranker_weapon_bonus  = 0;
 	sd->ranker_weapon_bonus_ = 0;
-	sd->infinite_tigereye    = 0;
+	sd->special_state.infinite_tigereye = 0;
 
 	pc_calc_skilltree(sd);	// スキルツリーの計算
 
@@ -2048,7 +2048,7 @@ L_RECALC:
 		sd->status.sp = sd->status.max_sp;
 
 	// bTigereyeがなくなっていたらパケット送って元に戻す
-	if(b_tigereye == 1 && sd->infinite_tigereye == 0 && sd->sc_data[SC_TIGEREYE].timer == -1)
+	if(b_tigereye == 1 && sd->special_state.infinite_tigereye == 0 && sd->sc_data[SC_TIGEREYE].timer == -1)
 		clif_status_load(sd, SI_TIGEREYE, 0);
 
 	// 計算処理ここまで
@@ -4290,8 +4290,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		return 0;
 
 	switch(type) {	/* 異常の種類ごとの処理 */
-		case SC_ACTION_DELAY:
-		case SC_ITEM_DELAY:
 		case SC_DOUBLE:				/* ダブルストレイフィング */
 		case SC_SUFFRAGIUM:			/* サフラギム */
 		case SC_MAGNIFICAT:			/* マグニフィカート */

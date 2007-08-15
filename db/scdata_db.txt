@@ -42,7 +42,6 @@
 38,SC_SPEEDPOTION1,1,7,0		// ハイスピードアップポーション
 39,SC_SPEEDPOTION2,1,7,0		// バーサークポーション
 40,SC_SPEEDPOTION3,0,23,0		// バーサークピッチャー
-41,SC_ITEM_DELAY,0,1,0			// アイテムディレイ
 //
 50,SC_STRIPWEAPON,0,13,0		// ストリップウェポン
 51,SC_STRIPSHIELD,1,13,0		// ストリップシールド
@@ -249,7 +248,7 @@
 285,SC_ANGEL,0,1,0			// 太陽と月と星の天使
 286,SC_FORCEWALKING,0,1,0		// 強制移動状態
 287,SC_DOUBLE,0,1,0			// ダブルストレイフィング状態
-288,SC_ACTION_DELAY,0,1,0		// アイテムドロップ不可状態（異常検出用）
+//
 289,SC_BABY,0,0,0			// パパ、ママ、大好き
 290,SC_LONGINGFREEDOM,0,1,0		// 私を縛らないで
 291,SC_SHRINK,0,1,0			// シュリンク
