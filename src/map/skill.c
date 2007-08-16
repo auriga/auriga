@@ -3763,9 +3763,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case CR_DEVOTION:		/* ディボーション */
-		if(sd && dstsd){
-			int i, n, max;
-			int lv = abs(sd->status.base_level - dstsd->status.base_level);
+		if(sd && dstsd) {
+			int i, n;
+			int lv   = abs(sd->status.base_level - dstsd->status.base_level);
+			int type = SkillStatusChangeTable[skillid];
 
 			if( sd->bl.id == dstsd->bl.id ||			// 相手は自分はダメ
 			    lv > battle_config.devotion_level_difference ||	// レベル差
@@ -3773,14 +3774,15 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			    dstsd->status.party_id <= 0 ||			// 相手がPT未所属だとダメ
 			    sd->status.party_id != dstsd->status.party_id ||	// 同じパーティじゃないとダメ
 			    dstsd->s_class.job == 14 ||				// 相手がクルセだとダメ
-			    dstsd->s_class.job == 21 )				// 相手がクルセだとダメ
+			    dstsd->s_class.job == 21 ||				// 相手がクルセだとダメ
+			    (type >= 0 && dstsd->sc_data[type].timer != -1 && dstsd->sc_data[type].val1 != sd->bl.id) )	// 違うクルセからディボーション済みならダメ
 			{
 				clif_skill_fail(sd,skillid,0,0);
 				map_freeblock_unlock();
 				return 1;
 			}
-			max = sizeof(sd->dev.val1)/sizeof(sd->dev.val1[0]);
-			for(i = 0, n = -1; i < skilllv && i < max; i++) {
+
+			for(i = 0, n = -1; i < skilllv && i < 5; i++) {
 				if(sd->dev.val1[i] == dstsd->bl.id) {	// 既にディボーション済みの相手
 					n = i;
 					break;
@@ -3788,8 +3790,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(!sd->dev.val1[i])	// 空きがあったら確保する
 					n = i;
 			}
-			if(n < 0) {			// 空きがなかった
-				clif_skill_fail(sd,skillid,0,0);
+			if(n < 0) {	// 何故か空きがなかった
 				map_freeblock_unlock();
 				return 1;
 			}
@@ -3797,10 +3798,18 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			sd->dev.val2[n] = dstsd->bl.id;
 			clif_skill_nodamage(&sd->bl,&dstsd->bl,skillid,skilllv,1);
 			clif_devotion(sd);
-			status_change_start(&dstsd->bl,SkillStatusChangeTable[skillid],sd->bl.id,1,0,0,skill_get_time(skillid,skilllv),0 );
+			status_change_start(&dstsd->bl,type,sd->bl.id,1,0,0,skill_get_time(skillid,skilllv),0 );
 		}
-		else if(sd)
-			clif_skill_fail(sd,skillid,0,0);
+		else if(sd) {
+			if(dstmd) {
+				int range = skill_get_fixed_range(&sd->bl,skillid,skilllv);
+				clif_skill_nodamage(&sd->bl,&dstmd->bl,skillid,skilllv,1);
+				mob_target(dstmd, &sd->bl, range);
+				battle_join_struggle(dstmd, &sd->bl);
+			} else {
+				clif_skill_fail(sd,skillid,0,0);
+			}
+		}
 		break;
 	case MO_CALLSPIRITS:	/* 気功 */
 		if(sd) {
@@ -8582,12 +8591,23 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			}
 		}
 		break;
-	case WS_CARTTERMINATION:	/* カートターミネーション */
-		{
-			if(sd->sc_data[SC_CARTBOOST].timer==-1){ // カートブースト中のみ
+	case CR_DEVOTION:		/* ディボーション */
+		if(target_sd) {
+			for(i = 0; i < sc->lv && i < 5; i++) {
+				if(sd->dev.val1[i] <= 0)
+					break;
+			}
+			if(i >= sc->lv || i >= 5) {
+				// 定員オーバー
 				clif_skill_fail(sd,sc->id,0,0);
 				return 0;
 			}
+		}
+		break;
+	case WS_CARTTERMINATION:	/* カートターミネーション */
+		if(sd->sc_data[SC_CARTBOOST].timer == -1) { // カートブースト中のみ
+			clif_skill_fail(sd,sc->id,0,0);
+			return 0;
 		}
 		break;
 
@@ -9452,108 +9472,108 @@ static void skill_brandishspear_dir(struct square *tc,int dir,int are)
  */
 
 /*==========================================
- * ディボーション 有効確認
+ * ディボーション有効の総確認
  *------------------------------------------
  */
-void skill_devotion(struct map_session_data *md)
+void skill_devotion(struct map_session_data *msd)
 {
-	// 総確認
 	int n;
 
-	nullpo_retv(md);
+	nullpo_retv(msd);
 
-	for(n=0;n<5;n++){
-		if(md->dev.val1[n]){
-			struct map_session_data *sd = map_id2sd(md->dev.val1[n]);
-			// 相手が見つからない // 相手をディボしてるのが自分じゃない // 距離が離れてる
-			if( sd == NULL || (sd->sc_data && (md->bl.id != sd->sc_data[SC_DEVOTION].val1)) || skill_devotion3(md,md->dev.val1[n])){
-				skill_devotion_end(md,sd,n);
+	for(n=0; n<5; n++) {
+		if(msd->dev.val1[n]) {
+			struct map_session_data *sd = map_id2sd(msd->dev.val1[n]);
+			// 相手が見つからない or 相手をディボしてるのが自分じゃない or 距離が離れてる
+			if( sd == NULL || msd->bl.id != sd->sc_data[SC_DEVOTION].val1 || skill_devotion3(msd,msd->dev.val1[n]) ) {
+				msd->dev.val1[n] = 0;
+				msd->dev.val2[n] = 0;
+				if(sd && sd->sc_data[SC_DEVOTION].timer != -1 && sd->sc_data[SC_DEVOTION].val1)
+					status_change_end(&sd->bl, SC_DEVOTION, -1);
+				clif_devotion(msd);
 			}
 		}
 	}
 }
 
+/*==========================================
+ * 被ディボーションが歩いた時の距離チェック
+ *------------------------------------------
+ */
 void skill_devotion2(struct block_list *bl,int crusader)
 {
-	// 被ディボーションが歩いた時の距離チェック
-	struct map_session_data *sd = map_id2sd(crusader);
+	struct map_session_data *sd;
 
 	nullpo_retv(bl);
 
-	if(sd) skill_devotion3(sd,bl->id);
+	if((sd = map_id2sd(crusader)) != NULL)
+		skill_devotion3(sd,bl->id);
 }
 
-int skill_devotion3(struct map_session_data *md,int target)
+/*==========================================
+ * クルセが歩いた時の距離チェック
+ *------------------------------------------
+ */
+int skill_devotion3(struct map_session_data *msd,int target_id)
 {
-	// クルセが歩いた時の距離チェック
 	struct map_session_data *sd;
-	int n,r=0;
 
-	nullpo_retr(1, md);
+	nullpo_retr(1, msd);
 
-	if ((sd = map_id2sd(target))==NULL)
+	if((sd = map_id2sd(target_id)) == NULL)
 		return 1;
-	else
-		r = unit_distance(md->bl.x,md->bl.y,sd->bl.x,sd->bl.y);
 
-	if(pc_checkskill(md,CR_DEVOTION)+6 < r){	// 許容範囲を超えてた
-		for(n=0;n<5;n++)
-			if(md->dev.val1[n]==target)
-				md->dev.val2[n]=0;	// 離れた時は、糸を切るだけ
-		clif_devotion(md);
+	if(unit_distance2(&msd->bl, &sd->bl) > pc_checkskill(msd,CR_DEVOTION) + 6) {	// 許容範囲を超えてた
+		int n;
+		for(n=0; n<5; n++) {
+			if(msd->dev.val1[n] == sd->bl.id) {
+				if(msd->dev.val2[n]) {
+					msd->dev.val2[n] = 0;	// 離れた時は、糸を切るだけ
+					clif_devotion(msd);
+				}
+				break;
+			}
+		}
 		return 1;
 	}
 	return 0;
 }
 
-void skill_devotion_end(struct map_session_data *md,struct map_session_data *sd,int target)
+/*==========================================
+ * マリオネット主が歩いた時の距離チェック
+ *------------------------------------------
+ */
+int skill_marionette(struct map_session_data *sd,int target_id)
 {
-	// クルセと被ディボキャラのリセット
-	nullpo_retv(md);
-	nullpo_retv(sd);
-
-	md->dev.val1[target]=md->dev.val2[target]=0;
-	if(sd && sd->sc_data){
-	//	status_change_end(&sd->bl,SC_DEVOTION,-1);
-		sd->sc_data[SC_DEVOTION].val1=0;
-		sd->sc_data[SC_DEVOTION].val2=0;
-		clif_status_change(&sd->bl,SC_DEVOTION,0);
-		clif_devotion(md);
-	}
-}
-
-int skill_marionette(struct map_session_data *sd,int target)
-{
-	// マリオネット主が歩いた時の距離チェック
 	struct map_session_data *tsd;
-	int r=0;
 
 	nullpo_retr(1, sd);
 
-	if ((tsd = map_id2sd(target))==NULL)
-	{
-		if(sd->sc_data[SC_MARIONETTE].timer!=-1)
+	if((tsd = map_id2sd(target_id)) == NULL) {
+		if(sd->sc_data[SC_MARIONETTE].timer != -1)
 			status_change_end(&sd->bl,SC_MARIONETTE,-1);
 		return 1;
 	}
-	else
-		r = unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y);
 
-	if(7 < r){	// 許容範囲を超えてた
+	if(unit_distance2(&sd->bl, &tsd->bl) > 7) {	// 許容範囲を超えてた
 		status_change_end(&sd->bl,SC_MARIONETTE,-1);
 		return 1;
 	}
+
 	return 0;
 }
 
-void skill_marionette2(struct map_session_data *dstsd,int src)
+/*==========================================
+ * 被マリオネットが歩いた時の距離チェック
+ *------------------------------------------
+ */
+void skill_marionette2(struct map_session_data *dstsd,int src_id)
 {
-	// 被マリオネットが歩いた時の距離チェック
-	struct map_session_data *sd = NULL;
+	struct map_session_data *sd;
 
 	nullpo_retv(dstsd);
 
-	if( (sd = map_id2sd(src)) != NULL )
+	if( (sd = map_id2sd(src_id)) != NULL )
 		skill_marionette(sd,dstsd->bl.id);
 	else
 		status_change_end(&dstsd->bl,SC_MARIONETTE2,-1);

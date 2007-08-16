@@ -4304,6 +4304,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_CP_SHIELD:
 		case SC_CP_ARMOR:
 		case SC_CP_HELM:
+		case SC_DEVOTION:			/* ディボーション */
 		case SC_COMBO:
 		case SC_EXTREMITYFIST:			/* 阿修羅覇凰拳 */
 		case SC_RICHMANKIM:
@@ -4375,7 +4376,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_RESISTUNDEAD:
 		case SC_RESISTALL:
 		case SC_IMPOSITIO:			/* インポシティオマヌス */
-		case SC_DEVOTION:			/* ディボーション */
 		case SC_GLORIA:				/* グロリア */
 		case SC_LOUD:				/* ラウドボイス */
 		case SC_MINDBREAKER:			/* マインドブレーカー */
@@ -4462,6 +4462,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(tick <= 0) tick = 1000 * 60;
 			calc_flag = 1;
 			val2 = 7;	// 7回攻撃されたら解除
+			if(sd && !map[bl->m].flag.gvg) {
+				// 被ディボーション者もインデュアにする
+				struct map_session_data *tsd;
+				int i;
+				for(i = 0; i < 5; i++) {
+					if(sd->dev.val1[i] && (tsd = map_id2sd(sd->dev.val1[i])) != NULL)
+						status_change_start(&tsd->bl,type,val1,0,0,0,skill_get_time(SM_ENDURE,val1),0);
+				}
+			}
 			break;
 		case SC_INCREASEAGI:		/* 速度増加 */
 			calc_flag = 1;
@@ -4671,6 +4680,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_REFLECTSHIELD:
 			val2 = 10+val1*3;
+			if(sd) {
+				// 被ディボーション者もリフレクトシールドにする
+				struct map_session_data *tsd;
+				int i;
+				for(i = 0; i < 5; i++) {
+					if(sd->dev.val1[i] && (tsd = map_id2sd(sd->dev.val1[i])) != NULL)
+						status_change_start(&tsd->bl,type,val1,0,0,0,skill_get_time(CR_REFLECTSHIELD,val1),0);
+				}
+			}
 			break;
 		case SC_AUTOSPELL:			/* オートスペル */
 			val4 = 5 + val1*2;
@@ -4918,17 +4936,29 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 10;
 			break;
 		case SC_AUTOGUARD:
-			{
-				int i,t;
-				for(i=val2=0; i<val1; i++) {
-					t = 5-(i>>1);
-					val2 += (t < 0)? 1: t;
+			val2 = (val1 > 10)? 30: (22 - val1) * val1 / 4;
+			if(sd) {
+				// 被ディボーション者もオートガードにする
+				struct map_session_data *tsd;
+				int i;
+				for(i = 0; i < 5; i++) {
+					if(sd->dev.val1[i] && (tsd = map_id2sd(sd->dev.val1[i])) != NULL)
+						status_change_start(&tsd->bl,type,val1,0,0,0,skill_get_time(CR_AUTOGUARD,val1),0);
 				}
 			}
 			break;
 		case SC_DEFENDER:
 			calc_flag = 1;
 			val2 = 5 + val1*15;
+			if(sd) {
+				// 被ディボーション者をディフェンダーLv1にする
+				struct map_session_data *tsd;
+				int i;
+				for(i = 0; i < 5; i++) {
+					if(sd->dev.val1[i] && (tsd = map_id2sd(sd->dev.val1[i])) != NULL)
+						status_change_start(&tsd->bl,type,1,0,0,0,skill_get_time(CR_DEFENDER,1),0);
+				}
+			}
 			break;
 		case SC_HALLUCINATION:
 			if(sd && !battle_config.hallucianation_off) {
@@ -5372,7 +5402,6 @@ int status_change_end( struct block_list* bl , int type,int tid)
 
 	switch(type) {	/* 異常の種類ごとの処理 */
 		case SC_PROVOKE:			/* プロボック */
-		case SC_ENDURE:				/* インデュア */
 		case SC_CONCENTRATE:			/* 集中力向上 */
 		case SC_BLESSING:			/* ブレッシング */
 		case SC_ANGELUS:			/* アンゼルス */
@@ -5401,7 +5430,6 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_SIEGFRIED:			/* 不死身のジークフリード */
 		case SC_EXPLOSIONSPIRITS:		/* 爆裂波動 */
 		case SC_STEELBODY:			/* 金剛 */
-		case SC_DEFENDER:
 		case SC_POISONPOTION:			/* 毒薬の瓶 */
 		case SC_SPEEDPOTION0:			/* 増速ポーション */
 		case SC_SPEEDPOTION1:
@@ -5591,14 +5619,41 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			if(sd)
 				clif_status_change(bl,SI_HALLUCINATION,0);	// アイコン消去
 			break;
+
+		case SC_ENDURE:				/* インデュア */
+		case SC_DEFENDER:			/* ディフェンダー */
+			calc_flag = 1;
+			// fall through
+		case SC_AUTOGUARD:			/* オートガード */
+		case SC_REFLECTSHIELD:			/* リフレクトシールド */
+			if(sd) {
+				struct map_session_data *tsd;
+				int i;
+				// 被ディボーション者も解除する
+				for(i = 0; i < 5; i++) {
+					if(sd->dev.val1[i] && (tsd = map_id2sd(sd->dev.val1[i])) != NULL && tsd->sc_data[type].timer != -1)
+						status_change_end(&tsd->bl, type, -1);
+				}
+			}
+			break;
+
 		case SC_DEVOTION:		/* ディボーション */
 			{
 				struct map_session_data *dsd = map_id2sd(sc_data[type].val1);
+
 				sc_data[type].val1 = 0;
 				sc_data[type].val2 = 0;
+
+				if(sc_data[SC_AUTOGUARD].timer != -1)
+					status_change_end(bl, SC_AUTOGUARD, -1);
+				if(sc_data[SC_DEFENDER].timer != -1)
+					status_change_end(bl, SC_DEFENDER, -1);
+				if(sc_data[SC_REFLECTSHIELD].timer != -1)
+					status_change_end(bl, SC_REFLECTSHIELD, -1);
+				if(sc_data[SC_ENDURE].timer != -1)
+					status_change_end(bl, SC_ENDURE, -1);
 				if(dsd)
 					skill_devotion(dsd);
-				calc_flag = 1;
 			}
 			break;
 		case SC_BLADESTOP:

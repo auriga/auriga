@@ -263,20 +263,20 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 			if(p_flag)
 				sd->party_hp = -1;
 		}
+
 		/* ディボーション検査 */
 		for(i=0; i<5; i++) {
 			if(sd->dev.val1[i]) {
 				skill_devotion3(sd,sd->dev.val1[i]);
-				break;
 			}
-		}
-		/* 被ディボーション検査 */
-		if(sd->sc_data[SC_DEVOTION].val1) {
-			skill_devotion2(&sd->bl,sd->sc_data[SC_DEVOTION].val1);
 		}
 
 		if(sd->sc_count > 0)
 		{
+			/* 被ディボーション検査 */
+			if(sd->sc_data[SC_DEVOTION].timer != -1) {
+				skill_devotion2(&sd->bl,sd->sc_data[SC_DEVOTION].val1);
+			}
 			/* マリオネット検査 */
 			if(sd->sc_data[SC_MARIONETTE].timer != -1) {
 				skill_marionette(sd,sd->sc_data[SC_MARIONETTE].val2);

@@ -99,9 +99,6 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	if(damage < 0)
 		return battle_heal(bl,target,-damage,0,flag);
 
-	// 凍結・石化・睡眠を消去
-	status_change_attacked_end(target);
-
 	// 種族・属性取得
 	race = status_get_race(target);
 	ele  = status_get_elem_type(target);
@@ -111,7 +108,8 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	if(target->type == BL_MOB) {	// MOB
 		struct mob_data *md = (struct mob_data *)target;
 
-		unit_skillcastcancel(target,2);	// 詠唱妨害
+		status_change_attacked_end(target);	// 凍結・石化・睡眠を消去
+		unit_skillcastcancel(target,2);		// 詠唱妨害
 		mob_damage(bl,md,damage,0);
 
 		if(sd && md && md->bl.prev != NULL && !unit_isdead(&md->bl) && flag&(BF_WEAPON|BF_NORMAL) && status_get_class(target) != 1288)
@@ -136,7 +134,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 
 		if(tsd && tsd->sc_data && tsd->sc_data[SC_DEVOTION].val1) {	// ディボーションをかけられている
 			struct map_session_data *msd = map_id2sd(tsd->sc_data[SC_DEVOTION].val1);
-			if(msd && skill_devotion3(msd,target->id)) {
+			if(msd && skill_devotion3(msd,tsd->bl.id)) {
 				skill_devotion(msd);
 			}
 			else if(msd && bl) {
@@ -144,30 +142,17 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 				for(i=0; i<5; i++) {
 					if(msd->dev.val1[i] != target->id)
 						continue;
-					clif_damage(&msd->bl, &msd->bl, gettick(), 0, 0, damage, 0, 9, 0);
-					pc_damage(&msd->bl,msd,damage);
-
-					if(sd && msd->bl.prev != NULL && !unit_isdead(&msd->bl) && flag&(BF_WEAPON|BF_NORMAL))
-					{
-						// カード効果のコーマ・即死
-						if(atn_rand()%10000 < sd->weapon_coma_ele[ele] ||
-						   atn_rand()%10000 < sd->weapon_coma_race[race] ||
-						   atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS]) {
-								pc_damage(&msd->bl,msd,status_get_hp(target));
-						}
-						else if(atn_rand()%10000 < sd->weapon_coma_ele2[ele] ||
-						        atn_rand()%10000 < sd->weapon_coma_race2[race] ||
-						        atn_rand()%10000 < sd->weapon_coma_race2[RCT_NONBOSS]) {
-								pc_damage(&msd->bl,msd,status_get_hp(target)-1);
-						}
-					}
+					// ダメージモーション付きでダメージ表示
+					clif_damage(&msd->bl,&msd->bl,gettick(),0,status_get_dmotion(&msd->bl),damage,0,0,0);
+					battle_damage(bl,&msd->bl,damage,flag);
 					map_freeblock_unlock();
 					return 0;
 				}
 			}
 		}
-		unit_skillcastcancel(target,2);		// 詠唱妨害
 
+		status_change_attacked_end(target);	// 凍結・石化・睡眠を消去
+		unit_skillcastcancel(target,2);		// 詠唱妨害
 		pc_damage(bl,tsd,damage);
 
 		if(sd && tsd && tsd->bl.prev != NULL && !unit_isdead(&tsd->bl) && flag&(BF_WEAPON|BF_NORMAL))
@@ -187,6 +172,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	} else if(target->type == BL_HOM) {	// HOM
 		struct homun_data *hd = (struct homun_data *)target;
 
+		status_change_attacked_end(target);	// 凍結・石化・睡眠を消去
 		unit_skillcastcancel(target,2);		// 詠唱妨害
 		homun_damage(bl,hd,damage);
 
@@ -3492,7 +3478,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				rdamage += damage * tsd->short_weapon_damage_return / 100;
 				if(rdamage < 1) rdamage = 1;
 			}
-			if(t_sc_data && t_sc_data[SC_REFLECTSHIELD].timer != -1) {
+			if(t_sc_data &&
+			   t_sc_data[SC_REFLECTSHIELD].timer != -1 &&
+			   (sd || t_sc_data[SC_DEVOTION].timer == -1))	// 被ディボーション者ならPCから以外は反応しない
+			{
 				rdamage += damage * t_sc_data[SC_REFLECTSHIELD].val2 / 100;
 				if(rdamage < 1) rdamage = 1;
 			}
@@ -3937,7 +3926,13 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					if(rdamage < 1) rdamage = 1;
 				}
 			}
-			if(sc_data && sc_data[SC_REFLECTSHIELD].timer != -1 && skillid != WS_CARTTERMINATION) {	// リフレクトシールド時
+
+			// リフレクトシールド時
+			if(sc_data &&
+			   sc_data[SC_REFLECTSHIELD].timer != -1 &&
+			   (sd || sc_data[SC_DEVOTION].timer == -1) &&	// 被ディボーション者ならPCから以外は反応しない
+			   skillid != WS_CARTTERMINATION)
+			{
 				rdamage += damage * sc_data[SC_REFLECTSHIELD].val2 / 100;	// 跳ね返し計算
 				if(rdamage < 1) rdamage = 1;
 			}

@@ -2900,7 +2900,7 @@ void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storag
  */
 static void clif_hpmeter(struct map_session_data *sd)
 {
-	struct map_session_data *md;
+	struct map_session_data *dstsd;
 	unsigned char buf[16], buf2[16];
 	int i;
 
@@ -2912,8 +2912,8 @@ static void clif_hpmeter(struct map_session_data *sd)
 	WBUFW(buf,8)=sd->bl.y;
 
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (md = (struct map_session_data *)session[i]->session_data) && md->state.auth &&
-		   md->bl.m == sd->bl.m && pc_isGM(md) && sd != md){
+		if(session[i] && (dstsd = (struct map_session_data *)session[i]->session_data) && dstsd->state.auth &&
+		   dstsd->bl.m == sd->bl.m && pc_isGM(dstsd) && sd != dstsd){
 			memcpy(WFIFOP(i,0),buf,packet_db[0x107].len);
 			WFIFOSET(i,packet_db[0x107].len);
 		}
@@ -2924,8 +2924,8 @@ static void clif_hpmeter(struct map_session_data *sd)
 	WBUFW(buf2,6)=(sd->status.max_hp > 0x7fff)? (short)((atn_bignumber)sd->status.hp * 0x7fff / sd->status.max_hp): sd->status.hp;
 	WBUFW(buf2,8)=(sd->status.max_hp > 0x7fff)? 0x7fff: sd->status.max_hp;
 	for(i=0;i<fd_max;i++){
-		if(session[i] && (md = (struct map_session_data *)session[i]->session_data) && md->state.auth &&
-		   sd->bl.m == md->bl.m && pc_isGM(md) && sd != md){
+		if(session[i] && (dstsd = (struct map_session_data *)session[i]->session_data) && dstsd->state.auth &&
+		   sd->bl.m == dstsd->bl.m && pc_isGM(dstsd) && sd != dstsd){
 			memcpy(WFIFOP(i,0),buf2,packet_db[0x106].len);
 			WFIFOSET(i,packet_db[0x106].len);
 		}

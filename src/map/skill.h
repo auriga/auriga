@@ -201,12 +201,11 @@ int skill_castcancel(struct block_list *bl,int type);
 
 int skill_gangsterparadise(struct map_session_data *sd ,int type);
 void skill_autospell(struct map_session_data *sd, int skillid);
-void skill_devotion(struct map_session_data *md);
+void skill_devotion(struct map_session_data *msd);
 void skill_devotion2(struct block_list *bl,int crusader);
-int skill_devotion3(struct map_session_data *sd,int target);
-void skill_devotion_end(struct map_session_data *md,struct map_session_data *sd,int target);
-int skill_marionette(struct map_session_data *sd,int target);
-void skill_marionette2(struct map_session_data *sd,int src);
+int skill_devotion3(struct map_session_data *sd,int target_id);
+int skill_marionette(struct map_session_data *sd,int target_id);
+void skill_marionette2(struct map_session_data *dstsd,int src_id);
 
 #define skill_calc_heal(bl,skill_lv) ( (status_get_lv(bl) + status_get_int(bl)) / 8 * (4 + (skill_lv) * 8) )
 int skill_fix_heal(struct block_list *bl, int skill_id, int heal);
