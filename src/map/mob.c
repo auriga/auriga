@@ -1553,7 +1553,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		if(src_sd)
 		{
 			damage2 = (int)linkdb_search( &md->dmglog, (void*)src_sd->status.char_id );
-			damage2 += (damage2 == -1)? 0: damage; // 先制を受けていた場合-1で戦闘参加者に登録されている
+			damage2 += (damage2 == -1)? damage + 1: damage; // 先制を受けていた場合-1で戦闘参加者に登録されている
 			if(damage2 <= 0)
 				damage2 = -1;
 			linkdb_replace( &md->dmglog, (void*)src_sd->status.char_id, (void*)damage2 );

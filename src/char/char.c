@@ -657,6 +657,7 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 	int i,j;
 	char name[24];
 
+	memset(name, 0, sizeof(name));
 	for(i=0;i<24 && dat[i];i++){
 		if(dat[i]<0x20 || dat[i]==0x7f)
 			return NULL;
@@ -1630,6 +1631,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
+	memset(name, 0, sizeof(name));
 	for(i=0;i<24 && dat[i];i++){
 		if(dat[i]<0x20 || dat[i]==0x7f)
 		// MySQLのバグをAuriga側で抑制
