@@ -274,7 +274,7 @@ int SkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること
 	/* 410- */
 	-1,SC_RUN,SC_READYSTORM,-1,SC_READYDOWN,-1,SC_READYTURN,-1,SC_READYCOUNTER,-1,
 	/* 420- */
-	SC_DODGE,-1,-1,-1,-1,-1,-1,-1,SC_WARM,SC_WARM,
+	SC_DODGE,-1,-1,-1,-1,SC_SEVENWIND,-1,-1,SC_WARM,SC_WARM,
 	/* 430- */
 	SC_WARM,SC_SUN_COMFORT,SC_MOON_COMFORT,SC_STAR_COMFORT,-1,-1,-1,-1,-1,-1,
 	/* 440- */
@@ -3567,32 +3567,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case TK_SEVENWIND:		/* 暖かい風 */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		{
-			int type;
-			switch(skilllv){
-				case 1:
-					type = SC_SEISMICWEAPON;
-					break;
-				case 2:
-					type = SC_LIGHTNINGLOADER;
-					break;
-				case 3:
-					type = SC_FROSTWEAPON;
-					break;
-				case 4:
-					type = SC_FLAMELAUNCHER;
-					break;
-				case 5:
-					type = SC_ATTENELEMENT;
-					break;
-				case 6:
-					type = SC_DARKELEMENT;
-					break;
-				case 7:
-				default:
-					type = SC_ASPERSIO;
-					break;
-			}
-			status_change_start(bl,type,0,0,0,0,skill_get_time(skillid,skilllv),0);
+			int type = (skilllv < 7)? SkillStatusChangeTable[skillid]: SC_ASPERSIO;
+			status_change_start(bl,type,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 	case SL_KAIZEL:			/* カイゼル */

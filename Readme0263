@@ -1,4 +1,28 @@
 ----------------------------------------
+//0279 [2007/08/18] by Rayce
+
+・暖かい風に関する修正（pc.c, skill.c, status.c）
+	-> SC_SEVENWIND追加
+	-> 聖はアスペルシオと同じだが、他はSC_SEVENWIND状態となる
+	-> SC_SEVENWINDは属性付与（フレイムランチャー等）とは重複しない
+	   ただし既にエンチャントポイズンが掛かっている場合は、そのエンチャントポイズンは解除しない
+	   毒属性は無くなるが毒付与の機能だけ残る
+	-> 聖以外は武器を持ち替えても効果が消えない
+
+　※実質的にAthena1380まで巻き戻した形となります。
+　　従ってAthena1399で追加された SC_DARKELEMENT, SC_ATTENELEMENT は使われなくなりました。
+　　今後はスクリプトのsc_start命令などからのみ発現可能です。
+
+・db/scdata_db.txtの変更
+	-> SC_DARKELEMENT がゴスペル使用時に解除されるようにしてみる
+	-> SC_ATTENELEMENT, SC_UNDEADELEMENT がゴスペル使用時とディスペルで解除されるようにしてみる
+	-> SC_SEVENWIND は死亡時に解除されない以外は他の属性付与と同じ性質にしてみる
+
+・関数名のtypo修正（pc.c, status.*）
+	status_encchant_eremental_end      → status_enchant_elemental_end
+	status_enchant_armor_eremental_end → status_enchant_armor_elemental_end
+
+----------------------------------------
 //0278 [2007/08/18] by Rayce
 
 ・battle_configに関して（battle.*, pc.c）

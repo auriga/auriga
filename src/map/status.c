@@ -3643,7 +3643,7 @@ int status_get_attack_element(struct block_list *bl)
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
 		ret = ELE_NEUTRAL;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
-		ret = ELE_NONE;// 無属性
+		ret = ELE_NONE;	// 無属性
 
 	if(sc_data) {
 		if(sc_data[SC_FROSTWEAPON].timer != -1)		// フロストウェポン
@@ -3664,6 +3664,8 @@ int status_get_attack_element(struct block_list *bl)
 			ret = ELE_GHOST;
 		if(sc_data[SC_UNDEADELEMENT].timer != -1)	// 不死属性
 			ret = ELE_UNDEAD;
+		if(sc_data[SC_SEVENWIND].timer != -1)		// 暖かい風
+			ret = sc_data[SC_SEVENWIND].val3;
 	}
 	return ret;
 }
@@ -3699,6 +3701,8 @@ int status_get_attack_element2(struct block_list *bl)
 				ret = ELE_GHOST;
 			if(sc_data[SC_UNDEADELEMENT].timer != -1)	// 不死属性
 				ret = ELE_UNDEAD;
+			if(sc_data[SC_SEVENWIND].timer != -1)		// 暖かい風
+				ret = sc_data[SC_SEVENWIND].val3;
 		}
 		return ret;
 	}
@@ -3719,7 +3723,7 @@ int status_get_attack_element_nw(struct block_list *bl)
 	sc_data = status_get_sc_data(bl);
 
 	if(bl->type == BL_HOM && (struct homun_data *)bl)
-		ret = ELE_NONE;// 無属性
+		ret = ELE_NONE;	// 無属性
 
 	if(sc_data) {
 		if(sc_data[SC_FROSTWEAPON].timer != -1)		// フロストウェポン
@@ -3740,6 +3744,8 @@ int status_get_attack_element_nw(struct block_list *bl)
 			ret = ELE_GHOST;
 		if(sc_data[SC_UNDEADELEMENT].timer != -1)	// 不死属性
 			ret = ELE_UNDEAD;
+		if(sc_data[SC_SEVENWIND].timer != -1)		// 暖かい風
+			ret = sc_data[SC_SEVENWIND].val3;
 	}
 	return ret;
 }
@@ -4267,11 +4273,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(sc_data[type].timer != -1) {	/* すでに同じ異常になっている場合タイマ解除 */
 		if(sc_data[type].val1 > val1 && type != SC_COMBO && type != SC_DANCING && type != SC_DEVOTION &&
 			type != SC_SPEEDPOTION0 && type != SC_SPEEDPOTION1 && type != SC_SPEEDPOTION2 && type != SC_SPEEDPOTION3 &&
-			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT)
+			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND)
 			return 0;
 		if((type >= SC_STAN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING)
 			return 0;	/* 継ぎ足しができない状態異常である時は状態異常を行わない */
-		if(type == SC_GRAFFITI) {	// 異常中にもう一度状態異常になった時に解除してから再度かかる
+		if(type == SC_GRAFFITI || type == SC_SEVENWIND) {
+			// 異常中にもう一度状態異常になった時に解除してから再度かかる
 			status_change_end(bl,type,-1);
 		} else {
 			(*sc_count)--;
@@ -4540,7 +4547,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_ENCPOISON:			/* エンチャントポイズン */
 			calc_flag = 1;
 			val2 = (((val1 - 1) / 2) + 3)*100;	// 毒付与確率
-			status_encchant_eremental_end(bl,SC_ENCPOISON);
+			status_enchant_elemental_end(bl,SC_ENCPOISON);
 			break;
 		case SC_EDP:			/* エンチャントデッドリーポイズン */
 			val2 = val1 + 2;	// 猛毒付与確率(%)
@@ -4549,61 +4556,61 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = (val1 + 1) / 2;
 			break;
 		case SC_ASPERSIO:			/* アスペルシオ */
-			status_encchant_eremental_end(bl,SC_ASPERSIO);
+			status_enchant_elemental_end(bl,SC_ASPERSIO);
 			break;
 		case SC_BENEDICTIO:			/* 聖体 */
-			status_enchant_armor_eremental_end(bl,SC_BENEDICTIO);
+			status_enchant_armor_elemental_end(bl,SC_BENEDICTIO);
 			break;
 		case SC_ELEMENTWATER:		// 水
-			status_enchant_armor_eremental_end(bl,SC_ELEMENTWATER);
+			status_enchant_armor_elemental_end(bl,SC_ELEMENTWATER);
 			if(sd) {
 				clif_displaymessage(sd->fd,"防具に水属性が付与されました。");
 			}
 			break;
 		case SC_ELEMENTGROUND:		// 土
-			status_enchant_armor_eremental_end(bl,SC_ELEMENTGROUND);
+			status_enchant_armor_elemental_end(bl,SC_ELEMENTGROUND);
 			if(sd) {
 				clif_displaymessage(sd->fd,"防具に土属性が付与されました。");
 			}
 			break;
 		case SC_ELEMENTFIRE:		// 火
-			status_enchant_armor_eremental_end(bl,SC_ELEMENTFIRE);
+			status_enchant_armor_elemental_end(bl,SC_ELEMENTFIRE);
 			if(sd) {
 				clif_displaymessage(sd->fd,"防具に火属性が付与されました。");
 			}
 			break;
 		case SC_ELEMENTWIND:		// 風
-			status_enchant_armor_eremental_end(bl,SC_ELEMENTWIND);
+			status_enchant_armor_elemental_end(bl,SC_ELEMENTWIND);
 			if(sd) {
 				clif_displaymessage(sd->fd,"防具に風属性が付与されました。");
 			}
 			break;
 		case SC_ELEMENTHOLY:		// 光
-			status_enchant_armor_eremental_end(bl,SC_ELEMENTHOLY);
+			status_enchant_armor_elemental_end(bl,SC_ELEMENTHOLY);
 			if(sd) {
 				clif_displaymessage(sd->fd,"防具に聖属性が付与されました。");
 			}
 			break;
 		case SC_ELEMENTDARK:		// 闇
-			status_enchant_armor_eremental_end(bl,SC_ELEMENTDARK);
+			status_enchant_armor_elemental_end(bl,SC_ELEMENTDARK);
 			if(sd) {
 				clif_displaymessage(sd->fd,"防具に闇属性が付与されました。");
 			}
 			break;
 		case SC_ELEMENTELEKINESIS:	// 念
-			status_enchant_armor_eremental_end(bl,SC_ELEMENTELEKINESIS);
+			status_enchant_armor_elemental_end(bl,SC_ELEMENTELEKINESIS);
 			if(sd) {
 				clif_displaymessage(sd->fd,"防具に念属性が付与されました。");
 			}
 			break;
 		case SC_ELEMENTPOISON:		// 毒
-			status_enchant_armor_eremental_end(bl,SC_ELEMENTPOISON);
+			status_enchant_armor_elemental_end(bl,SC_ELEMENTPOISON);
 			if(sd) {
 				clif_displaymessage(sd->fd,"防具に毒属性が付与されました。");
 			}
 			break;
 		case SC_ELEMENTUNDEAD:		// 不死
-			status_enchant_armor_eremental_end(bl,SC_ELEMENTUNDEAD);
+			status_enchant_armor_elemental_end(bl,SC_ELEMENTUNDEAD);
 			//if(sd) {
 			//	clif_displaymessage(sd->fd,"防具に不死属性が付与されました。");
 			//}
@@ -4672,7 +4679,21 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_DARKELEMENT:		/* 闇属性 */
 		case SC_ATTENELEMENT:		/* 念属性 */
 		case SC_UNDEADELEMENT:		/* 不死属性 */
-			status_encchant_eremental_end(bl,type);
+			status_enchant_elemental_end(bl,type);
+			break;
+		case SC_SEVENWIND:			/* 暖かい風 */
+			status_enchant_elemental_end(bl,SC_ENCPOISON);	// エンチャントポイズンは重複してもよい？
+			switch(val1) {
+				case 1:  val2 = SI_SEISMICWEAPON;   val3 = ELE_EARTH; break;
+				case 2:  val2 = SI_LIGHTNINGLOADER; val3 = ELE_WIND;  break;
+				case 3:  val2 = SI_FROSTWEAPON;     val3 = ELE_WATER; break;
+				case 4:  val2 = SI_FLAMELAUNCHER;   val3 = ELE_FIRE;  break;
+				case 5:  val2 = SI_ATTENELEMENT;    val3 = ELE_GHOST; break;
+				default: val2 = SI_DARKELEMENT;     val3 = ELE_DARK;  break;
+			}
+			if(bl->type == BL_PC) {
+				clif_status_change(bl,val2,1);
+			}
 			break;
 		case SC_PROVIDENCE:			/* プロヴィデンス */
 			calc_flag = 1;
@@ -5753,6 +5774,11 @@ int status_change_end( struct block_list* bl , int type,int tid)
 					pc_changelook(sd, LOOK_CLOTHES_COLOR, color);
 			}
 			break;
+		case SC_SEVENWIND:	/* 暖かい風 */
+			if(bl->type == BL_PC)
+				clif_status_change(bl,sc_data[type].val2,0);
+			break;
+
 		/* option1 */
 		case SC_FREEZE:
 			sc_data[type].val3 = 0;
@@ -6622,7 +6648,7 @@ int status_change_release(struct block_list *bl,int mask)
  * ステータス異常(武器の属性)終了
  *------------------------------------------
  */
-int status_encchant_eremental_end(struct block_list *bl,int type)
+int status_enchant_elemental_end(struct block_list *bl,int type)
 {
 	struct status_change *sc_data;
 
@@ -6647,6 +6673,8 @@ int status_encchant_eremental_end(struct block_list *bl,int type)
 		status_change_end(bl,SC_ATTENELEMENT,-1);
 	if( type != SC_UNDEADELEMENT && sc_data[SC_UNDEADELEMENT].timer != -1 )	// 不死
 		status_change_end(bl,SC_UNDEADELEMENT,-1);
+	if( type != SC_SEVENWIND && sc_data[SC_SEVENWIND].timer != -1 )		/* 暖かい風解除 */
+		status_change_end(bl,SC_SEVENWIND,-1);
 
 	return 0;
 }
@@ -6655,7 +6683,7 @@ int status_encchant_eremental_end(struct block_list *bl,int type)
  * ステータス異常(体の属性)終了
  *------------------------------------------
  */
-int status_enchant_armor_eremental_end(struct block_list *bl,int type)
+int status_enchant_armor_elemental_end(struct block_list *bl,int type)
 {
 	struct status_change *sc_data;
 

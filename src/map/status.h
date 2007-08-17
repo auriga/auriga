@@ -89,8 +89,8 @@ int status_change_race_end(struct block_list *bl,int type);
 int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int val4,int tick,int flag);
 int status_change_soulclear(struct block_list *bl);
 int status_change_resistclear(struct block_list *bl);
-int status_enchant_armor_eremental_end(struct block_list *bl,int type);
-int status_encchant_eremental_end(struct block_list *bl,int type);
+int status_enchant_armor_elemental_end(struct block_list *bl,int type);
+int status_enchant_elemental_end(struct block_list *bl,int type);
 int status_change_clear(struct block_list *bl,int type);
 int status_change_release(struct block_list *bl,int mask);
 int status_clearpretimer(struct block_list *bl);
@@ -358,6 +358,7 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_TRIPLEATTACK_RATE_UP	= 235,	//三段発動率アップ
 	SC_COUNTER_RATE_UP		= 236,	//カウンターキック発動率アップ
 	SC_WARM					= 237,
+	SC_SEVENWIND			= 238,
 	//
 	SC_SUN_COMFORT			= 240,
 	SC_MOON_COMFORT			= 241,

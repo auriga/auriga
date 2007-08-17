@@ -6661,7 +6661,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 		if(!type)
 			pc_checkallowskill(sd);
 		if(sd->weapontype1 == WT_FIST && sd->weapontype2 == WT_FIST)
-			status_encchant_eremental_end(&sd->bl,-1);  // 武器持ち誓えは無条件で属性付与解除
+			status_enchant_elemental_end(&sd->bl,SC_SEVENWIND);  // 暖かい風以外は武器持ち誓えで属性付与解除
 	} else {
 		clif_unequipitemack(sd,n,0,0);
 	}
