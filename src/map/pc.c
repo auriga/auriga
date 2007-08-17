@@ -3239,7 +3239,7 @@ void pc_useitem(struct map_session_data *sd, int n)
 		sd->use_nameditem = 0;
 	script = sd->inventory_data[n]->use_script;
 
-	if (battle_config.Item_res) {
+	if (battle_config.item_res) {
 		amount = sd->status.inventory[n].amount;
 		clif_useitemack(sd,n,amount-1,1);
 		pc_delitem(sd,n,1,1);

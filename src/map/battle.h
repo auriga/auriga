@@ -266,7 +266,7 @@ extern struct Battle_Config {
 	int weapon_drop_rate;
 	int other_drop_rate;
 
-	int Item_res;
+	int item_res;
 	int next_exp_limit;
 	int heal_counterstop;
 	int finding_ore_drop_rate;

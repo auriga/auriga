@@ -993,17 +993,17 @@ enum {
 
 struct chat_data {
 	struct block_list bl;
-	unsigned char pass[8];
-	unsigned char title[61];
+	char pass[8];
+	char title[61];
 	unsigned char limit;
 	unsigned char trigger;
 	unsigned char users;
 	unsigned char pub;
-	unsigned zeny;
-	unsigned lowlv;
-	unsigned highlv;
-	unsigned job;
-	unsigned upper;
+	int zeny;
+	unsigned short lowlv;
+	unsigned short highlv;
+	unsigned int job;
+	short upper;
 	struct map_session_data *usersd[20];
 	struct block_list *owner_;
 	struct block_list **owner;

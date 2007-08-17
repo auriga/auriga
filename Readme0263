@@ -1,4 +1,15 @@
 ----------------------------------------
+//0278 [2007/08/18] by Rayce
+
+・battle_configに関して（battle.*, pc.c）
+	-> battle_configの初期化にデフォルト値の設定をまとめる based on eA
+	-> デフォルト値がconf/battle_auriga.confの値と合っていない箇所を修正
+	-> battle_auriga.confのItem_resをitem_resに改名
+
+・chat_data構造体のメンバの型を最適化（map.h）
+・chat.cの細かい整形（chat.c）
+
+----------------------------------------
 //0277 [2007/08/18] by Rayce
 
 ・charサーバがmapサーバから担当マップ名を受信する際（0x2afa）、1024MAP以上でバッファオーバーフローが
