@@ -34,6 +34,8 @@ struct battle_delay_damage_ {
 	struct block_list *src;
 	int target;
 	int damage;
+	int skillid;
+	int skilllv;
 	int flag;
 };
 
@@ -49,14 +51,14 @@ static int battle_delay_damage_sub(int tid,unsigned int tick,int id,int data)
 		struct block_list *target = map_id2bl(dat->target);
 
 		if(map_id2bl(id) == dat->src && target && target->prev != NULL) {
-			battle_damage(dat->src,target,dat->damage,dat->flag);
+			battle_damage(dat->src,target,dat->damage,dat->skillid,dat->skilllv,dat->flag);
 		}
 		aFree(dat);
 	}
 	return 0;
 }
 
-int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,int damage,int flag)
+int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,int damage,int skillid,int skilllv,int flag)
 {
 	struct battle_delay_damage_ *dat;
 
@@ -64,11 +66,14 @@ int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_li
 	nullpo_retr(0, target);
 
 	dat = (struct battle_delay_damage_*)aCalloc(1,sizeof(struct battle_delay_damage_));
-	dat->src    = src;
-	dat->target = target->id;
-	dat->damage = damage;
-	dat->flag   = flag;
+	dat->src     = src;
+	dat->target  = target->id;
+	dat->damage  = damage;
+	dat->skillid = skillid;
+	dat->skilllv = skilllv;
+	dat->flag    = flag;
 	add_timer2(tick,battle_delay_damage_sub,src->id,(int)dat,TIMER_FREE_DATA);
+
 	return 0;
 }
 
@@ -76,7 +81,7 @@ int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_li
  * 実際にHPを操作
  *------------------------------------------
  */
-int battle_damage(struct block_list *bl,struct block_list *target,int damage,int flag)
+int battle_damage(struct block_list *bl,struct block_list *target,int damage,int skillid,int skilllv,int flag)
 {
 	struct map_session_data *sd = NULL;
 	int race, ele;
@@ -132,19 +137,27 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	} else if(target->type == BL_PC) {	// PC
 		struct map_session_data *tsd = (struct map_session_data *)target;
 
-		if(tsd && tsd->sc_data && tsd->sc_data[SC_DEVOTION].val1) {	// ディボーションをかけられている
+		// ディボーションをかけられている
+		if( tsd &&
+		    tsd->sc_data[SC_DEVOTION].timer != -1 &&
+		    tsd->sc_data[SC_DEVOTION].val1 &&
+		    skillid != PA_PRESSURE &&
+		    skillid != SA_COMA &&
+		    skillid != NPC_DARKBLESSING &&
+		    (skillid != CR_GRANDCROSS || bl == NULL || bl != target) )
+		{
 			struct map_session_data *msd = map_id2sd(tsd->sc_data[SC_DEVOTION].val1);
+
 			if(msd && skill_devotion3(msd,tsd->bl.id)) {
 				skill_devotion(msd);
-			}
-			else if(msd && bl) {
+			} else if(msd && bl) {
 				int i;
 				for(i=0; i<5; i++) {
 					if(msd->dev.val1[i] != target->id)
 						continue;
 					// ダメージモーション付きでダメージ表示
 					clif_damage(&msd->bl,&msd->bl,gettick(),0,status_get_dmotion(&msd->bl),damage,0,0,0);
-					battle_damage(bl,&msd->bl,damage,flag);
+					battle_damage(bl,&msd->bl,damage,skillid,skilllv,flag);
 					map_freeblock_unlock();
 					return 0;
 				}
@@ -217,7 +230,7 @@ int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,in
 		return 0;
 
 	if(hp < 0)
-		return battle_damage(bl,target,-hp,flag);
+		return battle_damage(bl,target,-hp,0,0,flag);
 
 	if(target->type == BL_MOB)
 		return mob_heal((struct mob_data *)target,hp);
@@ -448,7 +461,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				weapon = ((struct map_session_data *)src)->status.weapon;
 			if(src->type == BL_MOB || weapon == WT_DAGGER || weapon == WT_1HSWORD || weapon == WT_2HSWORD) {
 				damage = damage*50/100;
-				battle_damage(bl,src,damage,0);
+				battle_damage(bl,src,damage,ST_REJECTSWORD,sc_data[SC_REJECTSWORD].val1,0);
 				clif_skill_nodamage(bl,bl,ST_REJECTSWORD,sc_data[SC_REJECTSWORD].val1,1);
 				if((--sc_data[SC_REJECTSWORD].val2) <= 0)
 					status_change_end(bl, SC_REJECTSWORD, -1);
@@ -3544,7 +3557,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		skill_castend_damage_id(src,target,0,-1,tick,0);
 
 	map_freeblock_lock();
-	battle_delay_damage(tick+wd.amotion,src,target,(wd.damage+wd.damage2),wd.flag);
+	battle_delay_damage(tick+wd.amotion,src,target,(wd.damage+wd.damage2),0,0,wd.flag);
 
 	if(target->prev != NULL && !unit_isdead(target)) {
 		if(wd.damage > 0 || wd.damage2 > 0) {
@@ -3636,7 +3649,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	}
 
 	if(rdamage > 0) {
-		battle_delay_damage(tick+wd.amotion,target,src,rdamage,0);
+		battle_delay_damage(tick+wd.amotion,target,src,rdamage,0,0,0);
 
 		// 反射ダメージのオートスペル
 		if(battle_config.weapon_reflect_autospell && target->type == BL_PC)
@@ -4020,9 +4033,9 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	/* 実際にダメージ処理を行う */
 	if(skillid || flag) {
 		if(attack_type&BF_WEAPON) {
-			battle_delay_damage(tick+dmg.amotion,src,bl,damage,dmg.flag);
+			battle_delay_damage(tick+dmg.amotion,src,bl,damage,skillid,skilllv,dmg.flag);
 		} else {
-			battle_damage(src,bl,damage,dmg.flag);
+			battle_damage(src,bl,damage,skillid,skilllv,dmg.flag);
 
 			/* ソウルドレイン */
 			if(sd && bl->type == BL_MOB && unit_isdead(bl) && attack_type&BF_MAGIC)
@@ -4087,7 +4100,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		unsigned long asflag = EAS_WEAPON | EAS_ATTACK | EAS_NORMAL;
 
 		if(attack_type&BF_WEAPON) {
-			battle_delay_damage(tick+dmg.amotion,bl,src,rdamage,0);
+			battle_delay_damage(tick+dmg.amotion,bl,src,rdamage,skillid,skilllv,0);
 			if(sd) {
 				// 反射ダメージのオートスペル
 				if(battle_config.weapon_reflect_autospell) {
@@ -4097,7 +4110,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					battle_attack_drain(bl,rdamage,0,battle_config.weapon_reflect_drain_enable_type);
 			}
 		} else {
-			battle_damage(bl,src,rdamage,0);
+			battle_damage(bl,src,rdamage,skillid,skilllv,0);
 			if(sd) {
 				// 反射ダメージのオートスペル
 				if(battle_config.magic_reflect_autospell) {

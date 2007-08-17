@@ -1,4 +1,22 @@
 ----------------------------------------
+//0277 [2007/08/18] by Rayce
+
+・charサーバがmapサーバから担当マップ名を受信する際（0x2afa）、1024MAP以上でバッファオーバーフローが
+　発生するときはcharサーバではなくmapサーバを落とすように変更（char.c）
+・0x2afcでの認証に失敗したときの警告文を少し変更（char.c）
+・auth_fifoのメンバ tick をunsigned int型に修正（login.c, char.c）
+・login.cおよびchar.cの細かい整形（login.c, char.c）
+
+・skill_additional_effect() の整形（skill.c）
+・battle_damage() および battle_delay_damage() に引数を2つ追加（battle.*, skill.c, unit.c）
+　スキルIDとスキルLvを参照できるようになります
+・以下のスキルはディボーションでダメージを肩代わりできないように修正（battle.c）
+	プレッシャー
+	コーマ
+	NPCダークブレッシング
+	グランドクロスの反動
+
+----------------------------------------
 //0276 [2007/08/17] by Rayce
 
 ・0019以降、Mobに先制攻撃されると経験値が全く入らなくなってしまうバグを修正（mob.c）

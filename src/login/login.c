@@ -61,11 +61,14 @@ static int login_fd;
 static int login_sfd;
 
 static struct {
-	int account_id,login_id1,login_id2;
-	int ip,sex,delflag,tick;
+	int account_id;
+	int login_id1,login_id2;
+	int ip;
+	unsigned int tick;
+	int delflag, sex;
 } auth_fifo[AUTH_FIFO_SIZE];
 
-static int auth_fifo_pos=0;
+static int auth_fifo_pos = 0;
 
 char login_conf_filename[256] = "conf/login_auriga.conf";
 
@@ -1194,19 +1197,20 @@ int charif_sendallwos(int sfd,unsigned char *buf,unsigned int len)
 // authfifoの比較
 int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,int ip)
 {
-	if(	auth_fifo[i].account_id==account_id &&
-		auth_fifo[i].login_id1==login_id1 )
+	if( auth_fifo[i].account_id == account_id && auth_fifo[i].login_id1 == login_id1 )
 		return 1;
+
 #ifdef CMP_AUTHFIFO_LOGIN2
-//	printf("cmp_authfifo: id2 check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].login_id2,login_id2,
-//		auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
-	if( auth_fifo[i].login_id2==login_id2 && login_id2 != 0)
+	//printf("cmp_authfifo: id2 check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].login_id2,login_id2,
+	//	auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
+	if( auth_fifo[i].login_id2 == login_id2 && login_id2 != 0 )
 		return 1;
 #endif
+
 #ifdef CMP_AUTHFIFO_IP
-//	printf("cmp_authfifo: ip check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].ip,ip,
-//		auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
-	if(auth_fifo[i].ip==ip && ip!=0 && ip!=-1)
+	//printf("cmp_authfifo: ip check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].ip,ip,
+	//	auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
+	if( auth_fifo[i].ip == ip && ip != 0 && ip != -1)
 		return 1;
 #endif
 	return 0;
@@ -1229,22 +1233,25 @@ int parse_fromchar(int fd)
 {
 	int i,id;
 
-	for(id=0;id<MAX_SERVERS;id++)
-		if(server_fd[id]==fd)
+	for(id=0; id<MAX_SERVERS; id++) {
+		if(server_fd[id] == fd)
 			break;
-	if(id==MAX_SERVERS)
-		session[fd]->eof=1;
-	while(RFIFOREST(fd)>=2){
-		switch(RFIFOW(fd,0)){
+	}
+	if(id >= MAX_SERVERS)
+		session[fd]->eof = 1;
+
+	while(RFIFOREST(fd) >= 2) {
+		switch(RFIFOW(fd,0)) {
 
 		case 0x2712:	// キャラクター鯖へのログイン認証
 			if(RFIFOREST(fd)<23)
 				return 0;
-			for(i=0;i<AUTH_FIFO_SIZE;i++){
+			for(i=0; i<AUTH_FIFO_SIZE; i++) {
 				if( cmp_authfifo(i,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,15)) &&
-					auth_fifo[i].sex==RFIFOB(fd,14) &&
-					!auth_fifo[i].delflag){
-					auth_fifo[i].delflag=1;
+				    auth_fifo[i].sex == RFIFOB(fd,14) &&
+				    !auth_fifo[i].delflag )
+				{
+					auth_fifo[i].delflag = 1;
 					break;
 				}
 			}
@@ -1259,14 +1266,14 @@ int parse_fromchar(int fd)
 				int p,j;
 				const struct mmo_account *ac = account_load_num(auth_fifo[i].account_id);
 				// account_reg送信
-				if(ac){
+				if(ac) {
 					WFIFOW(fd,0) = 0x2729;
 					WFIFOL(fd,4) = ac->account_id;
-					for(p=8,j=0 ; j < ac->account_reg2_num ; p+=36,j++){
+					for(p=8,j=0; j < ac->account_reg2_num; p+=36,j++) {
 						memcpy(WFIFOP(fd,p),ac->account_reg2[j].str,32);
 						WFIFOL(fd,p+32) = ac->account_reg2[j].value;
 					}
-					WFIFOW(fd,2)=p;
+					WFIFOW(fd,2) = p;
 					WFIFOSET(fd,p);
 //					printf("account_reg2 send : login->char (auth fifo)\n");
 				}
@@ -1797,7 +1804,7 @@ int parse_login(int fd)
 				int i;
 				if(detect_multiple_login) {
 					int c = 0;
-					char buf[8];
+					unsigned char buf[8];
 
 					// 全charサーバへ同一アカウントの切断要求
 					WBUFW(buf,0) = 0x2730;
@@ -1819,10 +1826,10 @@ int parse_login(int fd)
 						break;
 					}
 				}
-				server_num=0;
-				for(i=0;i<MAX_SERVERS;i++){
-					if(server_fd[i]>=0){
-						WFIFOL(fd,47+server_num*32) = server[i].ip;
+				server_num = 0;
+				for(i=0; i<MAX_SERVERS; i++) {
+					if(server_fd[i] >= 0) {
+						WFIFOL(fd,47+server_num*32)   = server[i].ip;
 						WFIFOW(fd,47+server_num*32+4) = server[i].port;
 						memcpy(WFIFOP(fd,47+server_num*32+6), server[i].name, 20);
 						WFIFOW(fd,47+server_num*32+26) = server[i].users;
@@ -1840,16 +1847,18 @@ int parse_login(int fd)
 				memcpy(WFIFOP(fd,20),sd->lastlogin,24);
 				WFIFOB(fd,46) = sd->sex;
 				WFIFOSET(fd,47+32*server_num);
-				for(i=0;i<AUTH_FIFO_SIZE;i++){
+
+				for(i=0; i<AUTH_FIFO_SIZE; i++) {
 					if( cmp_authfifo(i,sd->account_id,sd->login_id1,sd->login_id2,session[fd]->client_addr.sin_addr.s_addr) &&
-						auth_fifo[i].sex==sd->sex &&
-						!auth_fifo[i].delflag){
-						auth_fifo[i].delflag=1;
+					    auth_fifo[i].sex == sd->sex &&
+					    !auth_fifo[i].delflag )
+					{
+						auth_fifo[i].delflag = 1;
 						break;
 					}
 				}
-				if(auth_fifo_pos>=AUTH_FIFO_SIZE){
-					auth_fifo_pos=0;
+				if(auth_fifo_pos >= AUTH_FIFO_SIZE) {
+					auth_fifo_pos = 0;
 				}
 				auth_fifo[auth_fifo_pos].account_id = sd->account_id;
 				auth_fifo[auth_fifo_pos].login_id1  = sd->login_id1;

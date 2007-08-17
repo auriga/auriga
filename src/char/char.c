@@ -54,7 +54,7 @@ static struct mmo_map_server server[MAX_MAP_SERVERS];
 static int server_fd[MAX_MAP_SERVERS];
 
 static int login_fd = -1;
-static int char_fd = -1;
+static int char_fd  = -1;
 static int char_sfd = -1;
 char userid[24] = "";
 char passwd[24] = "";
@@ -88,7 +88,7 @@ int parse_char(int fd);
 #ifdef TXT_JOURNAL
 static int char_journal_enable = 1;
 static struct journal char_journal;
-static char char_journal_file[1024]="./save/auriga.journal";
+static char char_journal_file[1024] = "./save/auriga.journal";
 static int char_journal_cache = 1000;
 #endif
 
@@ -98,20 +98,25 @@ static struct dbt *char_online_db;
 #define CHAR_STATE_WAITAUTH 0
 #define CHAR_STATE_AUTHOK 1
 
-struct {
-	int account_id,char_id,login_id1,login_id2,ip,tick,delflag,sex;
+static struct {
+	int account_id, char_id;
+	int login_id1, login_id2;
+	int ip;
+	unsigned int tick;
+	int delflag, sex;
 } auth_fifo[AUTH_FIFO_SIZE];
-int auth_fifo_pos=0;
 
-int max_connect_user=0;
-int autosave_interval=DEFAULT_AUTOSAVE_INTERVAL_CS;
-static int start_zeny = 500;
+static int auth_fifo_pos = 0;
+
+static int max_connect_user = 0;
+int autosave_interval = DEFAULT_AUTOSAVE_INTERVAL_CS;
+
+static int start_zeny   = 500;
 static int start_weapon = 1201;		/* Knife */
-static int start_armor = 2301;		/* Cotton Shirt */
+static int start_armor  = 2301;		/* Cotton Shirt */
 
 static struct Ranking_Data ranking_data[MAX_RANKING][MAX_RANKER];
-const char ranking_reg[MAX_RANKING][32] =
-{
+const char ranking_reg[MAX_RANKING][32] = {
 	"PC_BLACKSMITH_POINT",
 	"PC_ALCHEMIST_POINT",
 	"PC_TAEKWON_POINT",
@@ -127,7 +132,7 @@ static struct point start_point = { "new_1-1.gat", 53, 111 };
 static struct mmo_chardata *char_dat = NULL;
 static int  char_num,char_max;
 static char char_txt[1024] = "save/auriga.txt";
-static int  char_id_count=150000;
+static int  char_id_count = 150000;
 
 // キャラIDからchar_datのインデックスを返す
 static int char_id2idx(int char_id)
@@ -670,7 +675,7 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 	}
 	if(dat[30] >= max_char_slot){
 		*flag = 0x02;
-		printf("make new char over slot!! (%d / %d)\n",dat[30]+1,max_char_slot+1);
+		printf("make new char over slot!! (%d / %d)\n",dat[30]+1,max_char_slot);
 		return NULL;
 	}
 	if(dat[24]+dat[25]+dat[26]+dat[27]+dat[28]+dat[29]>5*6 || dat[30]>=9 || dat[33]==0 || dat[33]>=24 || dat[31]>=9)
@@ -1646,7 +1651,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 	}
 	if(dat[30] >= max_char_slot){
 		*flag = 0x02;
-		printf("make new char over slot!! (%d / %d)\n",dat[30]+1,max_char_slot+1);
+		printf("make new char over slot!! (%d / %d)\n",dat[30]+1,max_char_slot);
 		return NULL;
 	}
 	if(dat[24]+dat[25]+dat[26]+dat[27]+dat[28]+dat[29]>5*6 || dat[30]>=9 || dat[33]==0 || dat[33]>=24 || dat[31]>=9)
@@ -2305,7 +2310,7 @@ static int char_break_adoption(const struct mmo_charstatus *st)
 }
 
 // ランキングデータ送信セット
-static int char_set_ranking_send(int ranking_id,char *buf)
+static int char_set_ranking_send(int ranking_id,unsigned char *buf)
 {
 	WBUFW(buf,0) = 0x2b30;
 	WBUFW(buf,2) = 6+sizeof(ranking_data[0]);
@@ -2323,7 +2328,7 @@ static int compare_ranking_data(const void *a,const void *b)
 
 	if(p1->point < p2->point)
 		return 1;
-	else if(p1->point > p2->point)
+	if(p1->point > p2->point)
 		return -1;
 
 	return 0;
@@ -2414,7 +2419,7 @@ static int char_ranking_delete(int char_id)
 static int char_delete(const struct mmo_chardata *cd)
 {
 	int j;
-	char buf[8];
+	unsigned char buf[8];
 
 	nullpo_retr(-1,cd);
 
@@ -2478,22 +2483,22 @@ static int char_delete(const struct mmo_chardata *cd)
 // authfifoの比較
 int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,int ip)
 {
-	if(auth_fifo[i].account_id==account_id &&
-		auth_fifo[i].login_id1==login_id1 )
+	if( auth_fifo[i].account_id == account_id && auth_fifo[i].login_id1 == login_id1 )
 		return 1;
+
 #ifdef CMP_AUTHFIFO_LOGIN2
 	//printf("cmp_authfifo: id2 check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].login_id2,login_id2,
 	//	auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
-	if( auth_fifo[i].login_id2==login_id2 && login_id2 != 0)
-		return 1;
-#endif
-#ifdef CMP_AUTHFIFO_IP
-	//printf("cmp_authfifo: ip check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].ip,ip,
-	//	auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
-	if(auth_fifo[i].ip==ip && ip!=0 && ip!=-1)
+	if( auth_fifo[i].login_id2 == login_id2 && login_id2 != 0 )
 		return 1;
 #endif
 
+#ifdef CMP_AUTHFIFO_IP
+	//printf("cmp_authfifo: ip check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].ip,ip,
+	//	auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
+	if( auth_fifo[i].ip == ip && ip != 0 && ip != -1 )
+		return 1;
+#endif
 	return 0;
 }
 
@@ -2784,7 +2789,7 @@ int parse_tologin(int fd)
 				}
 				if(numdb_search(char_online_db,account_id)) {
 					// 全mapサーバに切断要求
-					char buf[8];
+					unsigned char buf[8];
 					WBUFW(buf,0) = 0x2b1a;
 					WBUFL(buf,2) = account_id;
 					mapif_sendall(buf,6);
@@ -2858,10 +2863,10 @@ static int search_mapserver_char(char *map, struct mmo_charstatus *cd)
 
 int char_erasemap(int fd, int id)
 {
-	unsigned char buf[16384];
+	unsigned char buf[16 * 1024];
 
 	if(server[id].map_num*16+12 > sizeof(buf)) {	// 1024MAP以上なら警告して終了
-		printf("char_erasemap: buffer overflow!!\n");
+		printf("char_erasemap: buffer overflow!! %d (%d maps)\n", fd, server[id].map_num);
 		exit(1);
 	}
 
@@ -2983,19 +2988,23 @@ int parse_frommap(int fd)
 			}
 
 			RFIFOSKIP(fd,RFIFOW(fd,2));
-			WFIFOW(fd,0) = 0x2afb;
-			WFIFOW(fd,2) = 0; // 0: ok, not 0: failed
-			WFIFOSET(fd,3);
 			{
+				unsigned char buf[16 * 1024];
+
+				if(j*16+12 > sizeof(buf)) {	// 1024MAP以上なら警告して終了
+					printf("parse_frommap 0x2afa: %d buffer overflow!! (%d maps)\n", fd, j);
+					WFIFOW(fd,0) = 0x2afb;	// failed
+					WFIFOW(fd,2) = 1;
+					WFIFOSET(fd,3);
+					break;
+				}
+				WFIFOW(fd,0) = 0x2afb;
+				WFIFOW(fd,2) = 0; // ok
+				WFIFOSET(fd,3);
+
 				// 他のマップサーバーに担当マップ情報を送信
 				// map 鯖はchar鯖からのこのパケットを受信して初めて、
 				// 自分が担当するマップが分かる
-				unsigned char buf[16384];
-
-				if(j*16+12 > sizeof(buf)) {	// 1024MAP以上なら警告して終了
-					printf("parse_frommap (0x2afa): buffer overflow!!\n");
-					exit(1);
-				}
 				WBUFW(buf, 0) = 0x2b04;
 				WBUFW(buf, 2) = j * 16 + 12;
 				WBUFL(buf, 4) = server[id].ip;
@@ -3003,9 +3012,10 @@ int parse_frommap(int fd)
 				WBUFW(buf,10) = j;
 				memcpy(WBUFP(buf,12), server[id].map, 16 * j);
 				mapif_sendall(buf, WBUFW(buf,2));
+
 				// 他のマップサーバーの担当マップを送信
 				for(i = 0; i < MAX_MAP_SERVERS; i++) {
-					if (server_fd[i] >= 0 && i != id){
+					if (server_fd[i] >= 0 && i != id) {
 						if (server[i].map_num > 0) {
 							WFIFOW(fd, 0) = 0x2b04;
 							WFIFOW(fd, 2) = server[i].map_num * 16 + 12;
@@ -3026,20 +3036,21 @@ int parse_frommap(int fd)
 				return 0;
 			//printf("auth_fifo search %08x %08x %08x %08x %08x\n",
 			//	RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOL(fd,18));
-			for(i=0;i<AUTH_FIFO_SIZE;i++){
+			for(i=0; i<AUTH_FIFO_SIZE; i++) {
 				if( cmp_authfifo(i,RFIFOL(fd,2),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOL(fd,18)) &&
-					auth_fifo[i].char_id==RFIFOL(fd,6) &&
-					!auth_fifo[i].delflag){
-					auth_fifo[i].delflag=1;
+				    auth_fifo[i].char_id == RFIFOL(fd,6) &&
+				    !auth_fifo[i].delflag )
+				{
+					auth_fifo[i].delflag = 1;
 					break;
 				}
 			}
-			if(i == AUTH_FIFO_SIZE) {
+			if(i >= AUTH_FIFO_SIZE) {
 				WFIFOW(fd,0)=0x2afe;
 				WFIFOW(fd,2)=RFIFOL(fd,2);
 				WFIFOB(fd,6)=0;
 				WFIFOSET(fd,7);
-				printf("auth_fifo search error!\n");
+				printf("auth_fifo search error! %d\n", RFIFOL(fd,6));
 			} else {
 				const struct mmo_chardata *cd = char_load(RFIFOL(fd,6));
 				if(cd == NULL || auth_fifo[i].sex != RFIFOB(fd,22)) {
@@ -3047,9 +3058,9 @@ int parse_frommap(int fd)
 					WFIFOW(fd,2)=RFIFOL(fd,2);
 					WFIFOB(fd,6)=0;
 					WFIFOSET(fd,7);
-					printf("auth_fifo search error!\n");
+					printf("authorization failed! %d\n", RFIFOL(fd,6));
 				} else {
-					unsigned char buf[60];
+					unsigned char buf[48];
 					struct char_online *c;
 					size_t s1 = sizeof(struct mmo_charstatus);
 					size_t s2 = sizeof(struct registry);
@@ -3103,7 +3114,7 @@ int parse_frommap(int fd)
 				return 0;
 			if( ((struct mmo_charstatus*)RFIFOP(fd,12))->char_id != RFIFOL(fd,8) ) {
 				// キャラID違いのデータを送ってきたので強制切断
-				char buf[8];
+				unsigned char buf[8];
 				WBUFW(buf,0) = 0x2b19;
 				WBUFL(buf,2) = RFIFOL(fd,4);
 				mapif_sendall(buf,6);
@@ -3118,8 +3129,8 @@ int parse_frommap(int fd)
 			if(RFIFOREST(fd)<19)
 				return 0;
 
-			if(auth_fifo_pos>=AUTH_FIFO_SIZE){
-				auth_fifo_pos=0;
+			if(auth_fifo_pos >= AUTH_FIFO_SIZE) {
+				auth_fifo_pos = 0;
 			}
 			//printf("auth_fifo set 0x2b02 %d - %08x %08x %08x %08x\n",
 			//	auth_fifo_pos,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14));
@@ -3145,8 +3156,8 @@ int parse_frommap(int fd)
 			if(RFIFOREST(fd)<41)
 				return 0;
 
-			if(auth_fifo_pos>=AUTH_FIFO_SIZE){
-				auth_fifo_pos=0;
+			if(auth_fifo_pos >= AUTH_FIFO_SIZE) {
+				auth_fifo_pos = 0;
 			}
 			memcpy(WFIFOP(fd,2),RFIFOP(fd,2),38);
 			WFIFOW(fd,0)=0x2b06;
@@ -3288,10 +3299,9 @@ int parse_frommap(int fd)
 			if(RFIFOREST(fd)<10)
 				return 0;
 			{
-				unsigned char buf[8];
-				struct char_online *c = (struct char_online *)numdb_search(char_online_db,RFIFOL(fd,2));
-				if(c){
-					numdb_erase(char_online_db,RFIFOL(fd,2));
+				struct char_online *c = (struct char_online *)numdb_erase(char_online_db,RFIFOL(fd,2));
+				if(c) {
+					unsigned char buf[8];
 					char_set_offline( c->char_id );
 					aFree(c);
 					WBUFW(buf,0) = 0x2b17;
@@ -3307,9 +3317,9 @@ int parse_frommap(int fd)
 			if(RFIFOREST(fd)<6)
 				return 0;
 			{
-				char buf[8];
 				const struct mmo_chardata *cd1 = char_load(RFIFOL(fd,2));
 				if( cd1 && cd1->st.partner_id ) {
+					unsigned char buf[8];
 					// 離婚情報をmapに通知
 					WBUFW(buf,0)=0x2b12;
 					WBUFL(buf,2)=cd1->st.char_id;
@@ -3325,11 +3335,10 @@ int parse_frommap(int fd)
 			if( RFIFOREST(fd)<18 )
 				return 0;
 			{
-				const struct mmo_chardata *cpcd;
+				const struct mmo_chardata *cpcd = char_load(RFIFOL(fd,6));
 
-				if( (cpcd = char_load(RFIFOL(fd,6)))!=NULL )
-				{
-					char buf[32];
+				if(cpcd) {
+					unsigned char buf[32];
 					struct mmo_charstatus st = cpcd->st;
 					int i;
 
@@ -3357,16 +3366,14 @@ int parse_frommap(int fd)
 		case 0x2b26:
 			if( RFIFOREST(fd)<4 || RFIFOREST(fd)<RFIFOW(fd,2) )
 				return 0;
+			if( RFIFOW(fd,2) <= MAX_FRIEND*8+16 )
 			{
-				char buf[MAX_FRIEND*8+32];
-				if( RFIFOW(fd,2) <= MAX_FRIEND*8+16 )
-				{
-					memcpy( buf, RFIFOP(fd,0), RFIFOW(fd,2) );
-					WBUFW(buf,0) = 0x2b27;
-					mapif_sendallwos(fd,buf,RFIFOW(fd,2));
-				}
-				RFIFOSKIP(fd,RFIFOW(fd,2));
+				unsigned char buf[MAX_FRIEND*8+32];
+				memcpy( buf, RFIFOP(fd,0), RFIFOW(fd,2) );
+				WBUFW(buf,0) = 0x2b27;
+				mapif_sendallwos(fd,buf,RFIFOW(fd,2));
 			}
+			RFIFOSKIP(fd,RFIFOW(fd,2));
 			break;
 
 		// 養子解体
@@ -3374,9 +3381,9 @@ int parse_frommap(int fd)
 			if(RFIFOREST(fd)<30)
 				return 0;
 			{
-				unsigned char buf[32];
 				const struct mmo_chardata *cd1 = char_load(RFIFOL(fd,2));
 				if( cd1 && (cd1->st.baby_id || cd1->st.parent_id[0] || cd1->st.parent_id[1]) ) {
+					unsigned char buf[32];
 					// 養子解体情報をmapに通知
 					WBUFW(buf,0)=0x2b29;
 					WBUFL(buf,2)=cd1->st.char_id;
@@ -3509,13 +3516,13 @@ int parse_char(int fd)
 	while(RFIFOREST(fd)>=2){
 		cmd = RFIFOW(fd,0);
 		// crc32のスキップ用
-		if(sd==NULL			&&	// 未ログインor管理パケット
-			RFIFOREST(fd)>=4	&&	// 最低バイト数制限 ＆ 0x7530,0x7532管理パケ除去
-			RFIFOREST(fd)<=21	&&	// 最大バイト数制限 ＆ サーバーログイン除去
-			cmd!=0x20b			&&	// md5通知パケット除去
-			cmd!=0x228			&&
-			cmd!=0x2b2a			&&  // map鯖暗号化ログイン除去
-			(RFIFOREST(fd)<6 || RFIFOW(fd,4)==0x65))	// 次に何かパケットが来てるなら、接続でないとだめ
+		if( sd == NULL &&					// 未ログインor管理パケット
+		    RFIFOREST(fd) >= 4 &&				// 最低バイト数制限 ＆ 0x7530,0x7532管理パケ除去
+		    RFIFOREST(fd) <= 21 &&				// 最大バイト数制限 ＆ サーバーログイン除去
+		    cmd != 0x20b &&					// md5通知パケット除去
+		    cmd != 0x228 &&
+		    cmd != 0x2b2a &&					// map鯖暗号化ログイン除去
+		    (RFIFOREST(fd) < 6 || RFIFOW(fd,4) == 0x65) )	// 次に何かパケットが来てるなら、接続でないとだめ
 		{
 			RFIFOSKIP(fd,4);
 			cmd = RFIFOW(fd,0);
@@ -3528,11 +3535,11 @@ int parse_char(int fd)
 		//	printf("parse_char : %d %d %d\n",fd,RFIFOREST(fd),cmd);
 
 		// 不正パケットの処理
-		if (sd == NULL && cmd != 0x65 && cmd != 0x20b && cmd != 0x187 && cmd!=0x258 && cmd!=0x228 &&
-		    cmd != 0x2af8 && cmd != 0x7530 && cmd != 0x7532 && cmd!=0x2b2a && cmd!=0x2b2c )
+		if( sd == NULL && cmd != 0x65 && cmd != 0x20b && cmd != 0x187 && cmd != 0x258 && cmd != 0x228 &&
+		    cmd != 0x2af8 && cmd != 0x7530 && cmd != 0x7532 && cmd != 0x2b2a && cmd != 0x2b2c )
 			cmd = 0xffff;	// パケットダンプを表示させる
 
-		switch(cmd){
+		switch(cmd) {
 		case 0x20b:		// 20040622暗号化ragexe対応
 			if(RFIFOREST(fd)<19)
 				return 0;
@@ -3558,31 +3565,32 @@ int parse_char(int fd)
 		case 0x65:	// 接続要求
 			if(RFIFOREST(fd)<17)
 				return 0;
-			if(sd==NULL) {
+			if(sd == NULL) {
 				session[fd]->session_data = aCalloc(1,sizeof(*sd));
 				sd = (struct char_session_data *)session[fd]->session_data;
 			}
-			sd->account_id=RFIFOL(fd,2);
-			sd->login_id1=RFIFOL(fd,6);
-			sd->login_id2=RFIFOL(fd,10);
-			sd->sex=RFIFOB(fd,16);
-			sd->state=CHAR_STATE_WAITAUTH;
+			sd->account_id = RFIFOL(fd,2);
+			sd->login_id1  = RFIFOL(fd,6);
+			sd->login_id2  = RFIFOL(fd,10);
+			sd->sex        = RFIFOB(fd,16);
+			sd->state      = CHAR_STATE_WAITAUTH;
 
-			WFIFOL(fd,0)=RFIFOL(fd,2);
+			WFIFOL(fd,0) = RFIFOL(fd,2);
 			WFIFOSET(fd,4);
 
-			for(i=0;i<AUTH_FIFO_SIZE;i++){
-				if(cmp_authfifo(i,sd->account_id,sd->login_id1,sd->login_id2,session[fd]->client_addr.sin_addr.s_addr) &&
-				   auth_fifo[i].delflag==2){
-					auth_fifo[i].delflag=1;
-					sd->account_id=auth_fifo[i].account_id;
-					sd->login_id1=auth_fifo[i].login_id1;
-					sd->login_id2=auth_fifo[i].login_id2;
+			for(i=0; i<AUTH_FIFO_SIZE; i++) {
+				if( cmp_authfifo(i,sd->account_id,sd->login_id1,sd->login_id2,session[fd]->client_addr.sin_addr.s_addr) &&
+				    auth_fifo[i].delflag == 2 )
+				{
+					auth_fifo[i].delflag = 1;
+					sd->account_id       = auth_fifo[i].account_id;
+					sd->login_id1        = auth_fifo[i].login_id1;
+					sd->login_id2        = auth_fifo[i].login_id2;
 					break;
 				}
 			}
-			if(i==AUTH_FIFO_SIZE){
-				if (login_fd >= 0 && session[login_fd])
+			if(i >= AUTH_FIFO_SIZE) {
+				if(login_fd >= 0 && session[login_fd])
 				{
 					WFIFOW(login_fd, 0)=0x2712;
 					WFIFOL(login_fd, 2)=sd->account_id;
@@ -3594,9 +3602,9 @@ int parse_char(int fd)
 					WFIFOSET(login_fd,23);
 				}
 			} else {
-				if(char_maintenance && isGM(sd->account_id)==0){
+				if(char_maintenance && isGM(sd->account_id) == 0) {
 					close(fd);
-					session[fd]->eof=1;
+					session[fd]->eof = 1;
 					return 0;
 				}
 				if(max_connect_user > 0) {
@@ -3620,24 +3628,26 @@ int parse_char(int fd)
 			{
 				struct char_online *c;
 				struct mmo_charstatus st;
-				for(ch=0;ch<max_char_slot;ch++) {
+
+				for(ch=0; ch<max_char_slot; ch++) {
 					if(sd->found_char[ch] && sd->found_char[ch]->st.char_num == RFIFOB(fd,2))
 						break;
 				}
 				RFIFOSKIP(fd,3);
-				if(ch == max_char_slot) break;
+				if(ch == max_char_slot)
+					break;
 
 				char_log("char select %d-%d %s",sd->account_id,RFIFOB(fd,2),sd->found_char[ch]->st.name);
 				memcpy(&st,&sd->found_char[ch]->st,sizeof(struct mmo_charstatus));
 
 				i = search_mapserver_char(st.last_point.map, NULL);
 				if(i < 0) {
-					if(default_map_type & 1){
+					if(default_map_type & 1) {
 						memcpy(st.last_point.map,default_map_name,16);
-						i=search_mapserver_char(st.last_point.map,NULL);
+						i = search_mapserver_char(st.last_point.map,NULL);
 					}
-					if(default_map_type & 2 && i < 0){
-						i=search_mapserver_char(st.last_point.map,&st);
+					if(default_map_type & 2 && i < 0) {
+						i = search_mapserver_char(st.last_point.map,&st);
 					}
 					if(i >= 0) {
 						// 現在地が書き換わったので上書き
@@ -3648,7 +3658,7 @@ int parse_char(int fd)
 					strcat(st.last_point.map,".gat");
 					char_save(&st);
 				}
-				if(i < 0 || server[i].active==0) {
+				if(i < 0 || server[i].active == 0) {
 					WFIFOW(fd,0)=0x6c;
 					WFIFOW(fd,2)=0;
 					WFIFOSET(fd,3);
@@ -3657,17 +3667,17 @@ int parse_char(int fd)
 				// ２重ログイン撃退（違うマップサーバの場合）
 				// 同じマップサーバの場合は、マップサーバー内で処理される
 				c = (struct char_online *)numdb_search(char_online_db,sd->found_char[ch]->st.account_id);
-				if(c && (c->ip != server[i].ip || c->port != server[i].port) ) {
+				if( c && (c->ip != server[i].ip || c->port != server[i].port) ) {
 					// ２重ログイン検出
 					// mapに切断要求
-					char buf[8];
+					unsigned char buf[8];
 					WBUFW(buf,0) = 0x2b1a;
 					WBUFL(buf,2) = sd->account_id;
 					mapif_sendall(buf,6);
 
 					// 接続失敗送信
-					WFIFOW(fd,0)=0x6c;
-					WFIFOW(fd,2)=0;
+					WFIFOW(fd,0) = 0x6c;
+					WFIFOW(fd,2) = 0;
 					WFIFOSET(fd,3);
 					break;
 				}
@@ -3685,8 +3695,8 @@ int parse_char(int fd)
 						auth_fifo[i].delflag = 1;
 					}
 				}
-				if(auth_fifo_pos>=AUTH_FIFO_SIZE){
-					auth_fifo_pos=0;
+				if(auth_fifo_pos >= AUTH_FIFO_SIZE) {
+					auth_fifo_pos = 0;
 				}
 				//printf("auth_fifo set 0x66 %d - %08x %08x %08x %08x\n",
 				//	auth_fifo_pos,sd->account_id,st.char_id,sd->login_id1,sd->login_id2);

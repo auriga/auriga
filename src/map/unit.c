@@ -1745,7 +1745,7 @@ int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int
 		mob_attacktarget((struct mob_data*)target,src,0);
 	}
 	clif_damage(target,target,tick,sdelay,ddelay,damage,div,type,damage2);
-	battle_damage(src,target,damage + damage2,0);
+	battle_damage(src,target,damage + damage2,0,0,0);
 	return 0;
 }
 
