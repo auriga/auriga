@@ -17,6 +17,7 @@
 #include "timer.h"
 #include "malloc.h"
 #include "utils.h"
+#include "lock.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -69,7 +70,7 @@ static void pid_delete(void)
 static void pid_create(const char* file)
 {
 	FILE *fp;
-	int len;
+	int len, lock;
 
 	strncpy(pid_file, file, sizeof(pid_file) - 1);
 	pid_file[sizeof(pid_file)-1] = '\0';
@@ -79,14 +80,14 @@ static void pid_create(const char* file)
 		pid_file[len - 4] = 0;
 	}
 	strcat(pid_file,".pid");
-	fp = fopen(pid_file,"w");
+	fp = lock_fopen(pid_file, &lock);
 	if(fp) {
 #ifdef _WIN32
 		fprintf(fp,"%lu",(unsigned long)GetCurrentProcessId());
 #else
 		fprintf(fp,"%d",getpid());
 #endif
-		fclose(fp);
+		lock_fclose(fp, pid_file, &lock);
 		atexit(pid_delete);
 	}
 }

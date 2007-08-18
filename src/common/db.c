@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "db.h"
 #include "malloc.h"
+#include "lock.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -1027,13 +1029,13 @@ int csvdb_insert_row(struct csvdb_data *csv, int row)
 // ファイルに書き出す
 int csvdb_flush(struct csvdb_data *csv)
 {
-	int  i, j;
+	int  i, j, lock;
 	FILE *fp;
 
 	if( csv == NULL ) return 0;
 	if( !csv->dirty ) return 1; // 更新されてなければ何もしない
 
-	fp = fopen( csv->file, "w" );
+	fp = lock_fopen( csv->file, &lock );
 	if( !fp ) return 0;
 
 	for(i = 0; i < csv->row_notempty; i++) {
@@ -1056,7 +1058,7 @@ int csvdb_flush(struct csvdb_data *csv)
 		}
 		fprintf(fp, RETCODE);
 	}
-	fclose(fp);
+	lock_fclose(fp, csv->file, &lock);
 	csv->dirty = 0;
 
 	return 1;

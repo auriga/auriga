@@ -143,7 +143,7 @@ struct httpd_access {
 	int type, urllen;
 
 	int dip_count, aip_count, dip_max, aip_max;
-	unsigned int *dip, *aip;
+	unsigned long *dip, *aip;
 
 	int auth_func_id;
 	unsigned char realm[256], privkey[32];
@@ -897,12 +897,12 @@ int httpd_decode_url( char *url )
 // ==========================================
 // IP チェック
 // ------------------------------------------
-int httpd_check_access_ip( struct httpd_access *a, struct httpd_session_data *sd )
+static int httpd_check_access_ip( struct httpd_access *a, struct httpd_session_data *sd )
 {
 	int i;
 	int fa=0, fd=0;
 	int order = a->type & HTTPD_ACCESS_IP_MASK;
-	unsigned int ip = *(unsigned int *)(&session[sd->fd]->client_addr.sin_addr);
+	unsigned long ip = *(unsigned long *)(&session[sd->fd]->client_addr.sin_addr);
 
 	for( i=0; i<a->aip_count; i+=2 )
 	{
@@ -1607,9 +1607,9 @@ int httpd_get_method(struct httpd_session_data* sd)
 // ==========================================
 // IP アドレスを返す
 // ------------------------------------------
-unsigned int httpd_get_ip(struct httpd_session_data *sd)
+unsigned long httpd_get_ip(struct httpd_session_data *sd)
 {
-	return *(unsigned int*)(&session[sd->fd]->client_addr.sin_addr);
+	return *(unsigned long *)(&session[sd->fd]->client_addr.sin_addr);
 }
 
 // ==========================================
@@ -3168,10 +3168,10 @@ void httpd_config_read_add_authuser( struct httpd_access *a, const char *name, c
 // ==========================================
 // コンフィグ - 許可/禁止 IP の追加
 // ------------------------------------------
-void httpd_config_read_add_ip( unsigned int **list, int *count, int *max, const char *w2 )
+static void httpd_config_read_add_ip( unsigned long **list, int *count, int *max, const char *w2 )
 {
 	int i1,i2,i3,i4, m1,m2,m3,m4;
-	unsigned int ip, mask;
+	unsigned long ip, mask;
 	unsigned char *pip = (unsigned char *)&ip, *pmask = (unsigned char *)&mask;
 
 	if( strcmpi( w2,"clear" ) == 0 )	// clear
@@ -3220,10 +3220,10 @@ void httpd_config_read_add_ip( unsigned int **list, int *count, int *max, const 
 	// 必要ならメモリを拡張
 	if( *count == *max )
 	{
-		unsigned int *iplist = (unsigned int *)aMalloc( sizeof(unsigned int) * (*max + 16) );
+		unsigned long *iplist = (unsigned long *)aMalloc( sizeof(unsigned long) * (*max + 16) );
 		if( *list )
 		{
-			memcpy( iplist, *list, sizeof(unsigned int) * (*count) );
+			memcpy( iplist, *list, sizeof(unsigned long) * (*count) );
 			aFree( *list );
 		}
 		*list = iplist;

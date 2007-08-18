@@ -49,10 +49,10 @@ static const char sex2str[] = "FMS";
 static int server_num = 0;
 static int new_account_flag = 0;
 static int httpd_new_account_flag = 0;
-static int login_port = 6900;
+static unsigned short login_port = 6900;
 static char login_sip_str[16];
-static unsigned long  login_sip = 0;
-static int login_sport = 0;
+static unsigned long login_sip = 0;
+static unsigned short login_sport = 0;
 static int login_autosave_time = 600;
 
 struct mmo_char_server server[MAX_SERVERS];
@@ -63,7 +63,7 @@ static int login_sfd;
 static struct {
 	int account_id;
 	int login_id1,login_id2;
-	int ip;
+	unsigned long ip;
 	unsigned int tick;
 	int delflag, sex;
 } auth_fifo[AUTH_FIFO_SIZE];
@@ -502,7 +502,7 @@ int login_txt_config_read_sub(const char* w1,const char* w2)
 
 #else /* TXT_ONLY */
 
-int  login_server_port        = 3306;
+unsigned short login_server_port = 3306;
 char login_server_ip[32]      = "127.0.0.1";
 char login_server_id[32]      = "ragnarok";
 char login_server_pw[32]      = "ragnarok";
@@ -602,7 +602,13 @@ int login_sql_config_read_sub(const char* w1,const char* w2)
 		strncpy(login_server_ip, w2, sizeof(login_server_ip) - 1);
 	}
 	else if(strcmpi(w1,"login_server_port")==0){
-		login_server_port = atoi(w2);
+		int n = atoi(w2);
+		if (n < 1024 || n > 65535) {
+			printf("Warning: Invalid login_server_port value: %d. Set to 3306 (default).\n", n);
+			login_server_port = 3306; // default
+		} else {
+			login_server_port = (unsigned short)n;
+		}
 	}
 	else if(strcmpi(w1,"login_server_id")==0){
 		strncpy(login_server_id, w2, sizeof(login_server_id) - 1);
@@ -1195,7 +1201,7 @@ int charif_sendallwos(int sfd,unsigned char *buf,unsigned int len)
 }
 
 // authfifoの比較
-int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,int ip)
+static int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,unsigned long ip)
 {
 	if( auth_fifo[i].account_id == account_id && auth_fifo[i].login_id1 == login_id1 )
 		return 1;
@@ -1210,7 +1216,7 @@ int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,int ip)
 #ifdef CMP_AUTHFIFO_IP
 	//printf("cmp_authfifo: ip check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].ip,ip,
 	//	auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
-	if( auth_fifo[i].ip == ip && ip != 0 && ip != -1)
+	if( auth_fifo[i].ip == ip && ip != 0 && ip != 0xffffffff)
 		return 1;
 #endif
 	return 0;
@@ -1918,7 +1924,7 @@ int parse_login(int fd)
 				return 0;
 			}
 			{
-				unsigned char *p=(unsigned char *)&session[fd]->client_addr.sin_addr;
+				unsigned char *p = (unsigned char *)&session[fd]->client_addr.sin_addr;
 				sprintf(sd->lastip,"%d.%d.%d.%d",p[0],p[1],p[2],p[3]);
 				login_log(
 					"server connection request %s @ %d.%d.%d.%d:%d (%s)",
@@ -2072,7 +2078,13 @@ static void login_config_read(const char *cfgName)
 			strncpy(GM_account_filename, w2, sizeof(GM_account_filename) - 1);
 			GM_account_filename[sizeof(GM_account_filename) - 1] = '\0';
 		} else if (strcmpi(w1, "login_port") == 0) {
-			login_port = atoi(w2);
+			int n = atoi(w2);
+			if (n < 1024 || n > 65535) {
+				printf("Warning: Invalid login_port value: %d. Set to 6900 (default).\n", n);
+				login_port = 6900; // default
+			} else {
+				login_port = (unsigned short)n;
+			}
 		} else if (strcmpi(w1, "listen_ip") == 0) {
 			unsigned long ip_result;
 			h = gethostbyname(w2);
@@ -2086,7 +2098,13 @@ static void login_config_read(const char *cfgName)
 			memcpy(login_sip_str, w2, 16);
 			login_sip = inet_addr(login_sip_str);
 		} else if (strcmpi(w1, "login_sport") == 0) {
-			login_sport = atoi(w2);
+			int n = atoi(w2);
+			if (n < 1024 || n > 65535) {
+				printf("Warning: Invalid login_sport value: %d. Set to 0 (default=disable).\n", n);
+				login_sport = 0; // default
+			} else {
+				login_sport = (unsigned short)n;
+			}
 		} else if (strcmpi(w1, "login_version") == 0) {
 			login_version = atoi(w2);
 		} else if (strcmpi(w1, "login_type") == 0) {
@@ -2126,16 +2144,6 @@ static void login_config_read(const char *cfgName)
 // ======================================
 static void display_conf_warnings(void)
 {
-	if (login_port < 1024 || login_port > 65535) {
-		printf("Warning: Invalid login_port value: %d. Set to 6900 (default).\n", login_port);
-		login_port = 6900; // default
-	}
-
-	if (login_sport != 0 && (login_sport < 1024 || login_sport > 65535)) {
-		printf("Warning: Invalid login_sport value: %d. Set to 0 (default=disable).\n", login_sport);
-		login_sport = 0; // default
-	}
-
 	if (login_autosave_time < 10) {
 		printf("Warning: Invalid login_autosave_time value: %d. Set to 600 (default).\n", login_autosave_time);
 		login_autosave_time = 600;
@@ -2169,11 +2177,6 @@ static void display_conf_warnings(void)
 #ifdef TXT_ONLY
 	// nothing to check in TXT?
 #else /* TXT_ONLY */
-	if (login_server_port < 1024 || login_server_port > 65535) {
-		printf("Warning: Invalid login_server_port value: %d. Set to 3306 (default).\n", login_server_port);
-		login_server_port = 3306; // default
-	}
-
 	if (login_server_pw[0] == '\0') {
 		printf("SQL SECURITY warning: login_server_pw is not defined (void).\n");
 	} else if (strcmp(login_server_pw, "ragnarok") == 0) {
@@ -2266,7 +2269,7 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 			strncpy(ma.pass  ,passwd,24);
 			ma.sex = (gender[0] == 'm')? 1: 0;
 			strncpy(ma.mail  ,"@"   ,40); // 暫定
-			sprintf(buf,"( httpd %08x )",httpd_get_ip(sd));
+			sprintf(buf,"( httpd %08lx )",httpd_get_ip(sd));
 			if( !account_new(&ma,buf) ) {
 				msg = "Account creation failed.";
 			} else {

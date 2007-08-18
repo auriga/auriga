@@ -3,7 +3,7 @@
 
 extern char converter_conf_filename[];
 
-extern int  db_server_port;
+extern unsigned short db_server_port;
 extern char db_server_ip[16];
 extern char db_server_id[32];
 extern char db_server_pw[32];

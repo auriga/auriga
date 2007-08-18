@@ -8,8 +8,8 @@
 #define DEFAULT_AUTOSAVE_INTERVAL_CS 300*1000
 
 struct mmo_map_server {
-	long ip;
-	short port;
+	unsigned long ip;
+	unsigned short port;
 	int users;
 	char *map;
 	short map_num;
@@ -42,8 +42,8 @@ extern int autosave_interval;
 struct char_online {
 	int account_id;
 	int char_id;
-	int ip;
-	int port;
+	unsigned long ip;
+	unsigned short port;
 	char name[24];
 };
 

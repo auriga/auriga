@@ -11,10 +11,10 @@
 							// 3にすると両方に対応
 
 struct login_session_data {
-	long account_id;
-	long login_id1;
-	long login_id2;
-	long char_id;
+	int account_id;
+	int login_id1;
+	int login_id2;
+	int char_id;
 	int  sex;
 	int  passwdenc;
 	int  md5keylen;
@@ -25,8 +25,8 @@ struct login_session_data {
 
 struct mmo_char_server {
 	char name[20];
-	long ip;
-	short port;
+	unsigned long ip;
+	unsigned short port;
 	int users;
 	int maintenance;
 	int new_;

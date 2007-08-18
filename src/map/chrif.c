@@ -45,8 +45,8 @@ static const int packet_len_table[]={
 
 int char_fd = -1;
 static char char_ip_str[16];
-static int char_ip;
-static int char_port = 6121;
+static unsigned long char_ip;
+static unsigned short char_port = 6121;
 static char userid[24] = "", passwd[24] = "";
 static int chrif_state;
 
@@ -77,16 +77,16 @@ void chrif_setpasswd(char *pwd)
 void chrif_setip(char *ip)
 {
 	memcpy(char_ip_str,ip,16);
-	char_ip=inet_addr(char_ip_str);
+	char_ip = inet_addr(char_ip_str);
 }
 
 /*==========================================
  * ポート番号セット
  *------------------------------------------
  */
-void chrif_setport(int port)
+void chrif_setport(unsigned short port)
 {
-	char_port=port;
+	char_port = port;
 }
 
 /*==========================================
@@ -95,7 +95,7 @@ void chrif_setport(int port)
  */
 int chrif_isconnect(void)
 {
-	return chrif_state==2;
+	return (chrif_state == 2);
 }
 
 /*==========================================
@@ -219,19 +219,22 @@ int chrif_sendmap(int fd)
  */
 int chrif_recvmap(int fd)
 {
-	int i,j,ip,port;
-	unsigned char *p=(unsigned char *)&ip;
+	int i,j;
+	unsigned long ip;
+	unsigned short port;
 
-	if(chrif_state<2)	// まだ準備中
+	if(chrif_state < 2)	// まだ準備中
 		return -1;
 
-	ip=RFIFOL(fd,4);
-	port=RFIFOW(fd,8);
-	for(i=12,j=0;i<RFIFOW(fd,2);i+=16,j++){
+	ip   = RFIFOL(fd,4);
+	port = RFIFOW(fd,8);
+	for(i=12,j=0; i<RFIFOW(fd,2); i+=16,j++) {
 		map_setipport(RFIFOP(fd,i),ip,port);
 	}
-	if(battle_config.etc_log)
+	if(battle_config.etc_log) {
+		unsigned char *p = (unsigned char *)&ip;
 		printf("recv map on %d.%d.%d.%d:%d (%d maps)\n",p[0],p[1],p[2],p[3],port,j);
+	}
 
 	return 0;
 }
@@ -242,19 +245,22 @@ int chrif_recvmap(int fd)
  */
 int chrif_recverasemap(int fd)
 {
-	int i,j,ip,port,ret = 0;
-	unsigned char *p=(unsigned char *)&ip;
+	int i,j,ret = 0;
+	unsigned long ip;
+	unsigned short port;
 
-	if(chrif_state<2)	// まだ準備中
+	if(chrif_state < 2)	// まだ準備中
 		return -1;
 
-	ip=RFIFOL(fd,4);
-	port=RFIFOW(fd,8);
-	for(i=12,j=0;i<RFIFOW(fd,2);i+=16,j++){
+	ip   = RFIFOL(fd,4);
+	port = RFIFOW(fd,8);
+	for(i=12,j=0; i<RFIFOW(fd,2); i+=16,j++) {
 		ret |= map_eraseipport(RFIFOP(fd,i),ip,port);
 	}
-	if(battle_config.etc_log)
+	if(battle_config.etc_log) {
+		unsigned char *p = (unsigned char *)&ip;
 		printf("recv erase map on %d.%d.%d.%d:%d (%d maps)\n",p[0],p[1],p[2],p[3],port,j);
+	}
 	if(ret) {
 		chrif_sendmap(fd);
 	}
@@ -265,7 +271,7 @@ int chrif_recverasemap(int fd)
  * マップ鯖間移動のためのデータ準備要求
  *------------------------------------------
  */
-int chrif_changemapserver(struct map_session_data *sd,char *name,int x,int y,int ip,short port)
+int chrif_changemapserver(struct map_session_data *sd,char *name,int x,int y,unsigned long ip,unsigned short port)
 {
 	nullpo_retr(-1, sd);
 

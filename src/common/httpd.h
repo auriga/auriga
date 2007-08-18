@@ -91,7 +91,7 @@ int httpd_get_method(struct httpd_session_data* sd);
 //     GET  : HTTPD_METHOD_GET
 //     POST : HTTPD_METHOD_POST
 
-unsigned int httpd_get_ip(struct httpd_session_data *sd);
+unsigned long httpd_get_ip(struct httpd_session_data *sd);
 
 // クライアントのIPを返す。
 

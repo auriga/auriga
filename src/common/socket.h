@@ -16,7 +16,7 @@
 #define WFIFOSIZE_SERVERLINK 128 * 1024
 
 // ここで閉じるのではなく、socket.c で閉じる
-#define close(id) do{ if (session[id]) session[id]->eof = 1; } while(0);
+#define close(id) do { if (session[id]) session[id]->eof = 1; } while(0);
 
 // define declaration
 
@@ -53,7 +53,7 @@
 
 // Struct declaration
 
-struct socket_data{
+struct socket_data {
 	int eof;
 	int auth;
 	unsigned int tick;
@@ -71,7 +71,7 @@ struct socket_data{
 	unsigned int rlr_tick, rlr_bytes, rlr_disc;	// 帯域制限用
 	void* session_data;
 	void* session_data2;
-	int server_port;
+	unsigned short server_port;
 #ifdef _WIN32
 	SOCKET socket;
 #endif
@@ -87,8 +87,8 @@ extern unsigned long listen_ip;
 
 // Function prototype declaration
 
-int make_listen_port(int, unsigned long);
-int make_connection(long, int);
+int make_listen_port(unsigned short, unsigned long);
+int make_connection(unsigned long, unsigned short);
 void delete_session(int);
 void realloc_fifo(int fd, int rfifo_size, int wfifo_size);
 void WFIFOSET(int fd, int len);

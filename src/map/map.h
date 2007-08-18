@@ -851,7 +851,7 @@ struct map_data_other_server {
 	char name[24];
 	unsigned char *gat;	// NULL固定にして判断
 	unsigned long ip;
-	int port;
+	unsigned short port;
 	// 一度他map サーバーの担当になって、
 	// もう一度自分の担当になる場合があるので待避させておく
 	struct map_data* map;
@@ -1015,7 +1015,7 @@ struct charid2nick {
 	char nick[24];
 	int account_id;
 	unsigned long ip;
-	int port;
+	unsigned short port;
 	struct linkdb_node *req;
 };
 
@@ -1092,7 +1092,7 @@ void map_clear_delayitem_que(void);
 
 // キャラid＝＞キャラ名 変換関連
 struct charid2nick *char_search(int char_id);
-void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, int port);
+void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, unsigned short port);
 void map_delchariddb(int charid);
 int map_reqchariddb(struct map_session_data *sd, int charid, int type);
 char * map_charid2nick(int);
@@ -1107,9 +1107,9 @@ struct skill_unit * map_id2su(int);
 struct block_list * map_id2bl(int);
 
 int map_mapname2mapid(const char*);
-int map_mapname2ipport(char*,int*,int*);
-int map_setipport(char *name,unsigned long ip,int port);
-int map_eraseipport(char *name,unsigned long ip,int port);
+int map_mapname2ipport(char*,unsigned long*,unsigned short*);
+int map_setipport(char *name,unsigned long ip,unsigned short port);
+int map_eraseipport(char *name,unsigned long ip,unsigned short port);
 void map_eraseallipport(void);
 void map_addiddb(struct block_list *);
 void map_deliddb(struct block_list *bl);

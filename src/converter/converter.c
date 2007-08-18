@@ -18,7 +18,7 @@
 char converter_conf_filename[256] = "conf/converter_auriga.conf";
 
 char db_server_ip[16] = "127.0.0.1";
-int  db_server_port   = 3306;
+unsigned short db_server_port = 3306;
 char db_server_id[32] = "ragnarok";
 char db_server_pw[32] = "ragnarok";
 char db_server_logindb[32] = "ragnarok";
@@ -123,7 +123,7 @@ int config_read(const char *cfgName)
 			printf("set db_server_ip : %s\n",w2);
 		}
 		else if(strcmpi(w1,"db_server_port")==0){
-			db_server_port = atoi(w2);
+			db_server_port = (unsigned short)atoi(w2);
 			printf("set db_server_port : %d\n",db_server_port);
 		}
 		else if(strcmpi(w1,"db_server_id")==0){
@@ -211,7 +211,7 @@ int do_init(int argc,char **argv)
 	}
 	printf("...\n");
 	if(!mysql_real_connect(&mysql_handle, db_server_ip, db_server_id, db_server_pw,
-		db_server_logindb ,db_server_port, (char *)NULL, 0)) {
+		db_server_logindb, db_server_port, (char *)NULL, 0)) {
 		// pointer check
 		printf("%s\n",mysql_error(&mysql_handle));
 		exit(1);

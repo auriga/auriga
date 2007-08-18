@@ -135,14 +135,14 @@ int map_txt_config_read_sub(const char *w1,const char *w2)
 
 #else /* TXT_ONLY */
 
-static int  map_server_port        = 3306;
+static unsigned short map_server_port = 3306;
 static char map_server_ip[32]      = "127.0.0.1";
 static char map_server_id[32]      = "ragnarok";
 static char map_server_pw[32]      = "ragnarok";
 static char map_server_db[32]      = "ragnarok";
 static char map_server_charset[32] = "";
 
-static int  script_server_port        = 3306;
+static unsigned short script_server_port = 3306;
 static char script_server_ip[32]      = "127.0.0.1";
 static char script_server_id[32]      = "ragnarok";
 static char script_server_pw[32]      = "ragnarok";
@@ -160,7 +160,7 @@ int do_sql_init_map(void)
 	printf("...\n");
 
 	if(!mysql_real_connect(&mysql_handle, map_server_ip, map_server_id, map_server_pw,
-		map_server_db ,map_server_port, (char *)NULL, 0)
+		map_server_db, map_server_port, (char *)NULL, 0)
 	) {
 		printf("%s\n",mysql_error(&mysql_handle));
 		exit(1);
@@ -183,7 +183,7 @@ int do_sql_init_map(void)
 		printf("...\n");
 
 		if(!mysql_real_connect(&mysql_handle_script, script_server_ip, script_server_id, script_server_pw,
-			script_server_db ,script_server_port, (char *)NULL, 0)
+			script_server_db, script_server_port, (char *)NULL, 0)
 		) {
 			printf("%s\n",mysql_error(&mysql_handle_script));
 			exit(1);
@@ -216,7 +216,7 @@ int map_sql_config_read_sub(const char* w1,const char* w2)
 		strncpy(map_server_ip, w2, sizeof(map_server_ip) - 1);
 	}
 	else if(strcmpi(w1,"map_server_port") == 0) {
-		map_server_port = atoi(w2);
+		map_server_port = (unsigned short)atoi(w2);
 	}
 	else if(strcmpi(w1,"map_server_id") == 0) {
 		strncpy(map_server_id, w2, sizeof(map_server_id) - 1);
@@ -234,7 +234,7 @@ int map_sql_config_read_sub(const char* w1,const char* w2)
 		strncpy(script_server_ip, w2, sizeof(script_server_ip) - 1);
 	}
 	else if(strcmpi(w1,"script_server_port") == 0) {
-		script_server_port = atoi(w2);
+		script_server_port = (unsigned short)atoi(w2);
 	}
 	else if(strcmpi(w1,"script_server_id") == 0) {
 		strncpy(script_server_id, w2, sizeof(script_server_id) - 1);
@@ -1321,7 +1321,7 @@ struct charid2nick *char_search(int char_id)
  * charid_dbへ追加(返信待ちがあれば返信)
  *------------------------------------------
  */
-void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, int port)
+void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, unsigned short port)
 {
 	struct charid2nick *p;
 	struct linkdb_node *head;
@@ -1706,7 +1706,7 @@ int map_mapname2mapid(const char *name)
  * 他鯖map名からip,port変換
  *------------------------------------------
  */
-int map_mapname2ipport(char *name,int *ip,int *port)
+int map_mapname2ipport(char *name,unsigned long *ip,unsigned short *port)
 {
 	struct map_data_other_server *mdos;
 
@@ -1857,7 +1857,7 @@ void map_setcell(int m,int x,int y,int cell)
  * 他鯖管理のマップをdbに追加
  *------------------------------------------
  */
-int map_setipport(char *name,unsigned long ip,int port)
+int map_setipport(char *name,unsigned long ip,unsigned short port)
 {
 	struct map_data *md;
 	struct map_data_other_server *mdos;
@@ -1935,7 +1935,7 @@ void map_eraseallipport(void)
  * 他鯖管理のマップをdbから削除
  *------------------------------------------
  */
-int map_eraseipport(char *name,unsigned long ip,int port)
+int map_eraseipport(char *name,unsigned long ip,unsigned short port)
 {
 	struct map_data *md;
 	struct map_data_other_server *mdos;
@@ -1953,8 +1953,10 @@ int map_eraseipport(char *name,unsigned long ip,int port)
 			strdb_erase(map_db,name);
 			aFree(mdos);
 
-			//if(battle_config.etc_log)
+			//if(battle_config.etc_log) {
+			//	unsigned char *p = (unsigned char *)&ip;
 			//	printf("erase map %s %d.%d.%d.%d:%d\n",name,p[0],p[1],p[2],p[3],port);
+			//}
 		}
 	}
 	return 0;
@@ -2582,11 +2584,12 @@ static int map_config_read(char *cfgName)
 			}
 			chrif_setip(w2);
 		} else if (strcmpi(w1, "char_port") == 0) {
-			if (atoi(w2) < 0 || atoi(w2) > 65535) {
-				printf("map_config_read: Invalid char_port value: %d.\n", atoi(w2));
-				continue;
+			int n = atoi(w2);
+			if (n < 0 || n > 65535) {
+				printf("map_config_read: Invalid char_port value: %d. Set to 6121 (default).\n", n);
+				n = 6121; // default
 			}
-			chrif_setport(atoi(w2));
+			chrif_setport((unsigned short)n);
 		} else if (strcmpi(w1, "map_ip") == 0) {
 			h = gethostbyname(w2);
 			if(h != NULL) {
@@ -2595,11 +2598,12 @@ static int map_config_read(char *cfgName)
 			}
 			clif_setip(w2);
 		} else if (strcmpi(w1, "map_port") == 0) {
-			if (atoi(w2) < 0 || atoi(w2) > 65535) {
-				printf("map_config_read: Invalid map_port value: %d.\n", atoi(w2));
-				continue;
+			int n = atoi(w2);
+			if (n < 0 || n > 65535) {
+				printf("map_config_read: Invalid map_port value: %d. Set to 5121 (default).\n", n);
+				n = 5121; // default
 			}
-			clif_setport(atoi(w2));
+			clif_setport((unsigned short)n);
 		} else if (strcmpi(w1, "listen_ip") == 0) {
 			unsigned long ip_result;
 			h = gethostbyname(w2);

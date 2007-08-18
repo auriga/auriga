@@ -60,17 +60,17 @@ char userid[24] = "";
 char passwd[24] = "";
 char server_name[20] = "Auriga";
 char login_ip_str[16] = "";
-int  login_ip;
-int  login_port = 6900;
+unsigned long login_ip;
+unsigned short login_port = 6900;
 char char_ip_str[16] = "";
-int  char_ip;
-int  char_port = 6121;
+unsigned long char_ip;
+unsigned short char_port = 6121;
 char char_sip_str[16];
 unsigned long char_sip = 0;
-int  char_sport = 0;
-int  char_loginaccess_autorestart;
-int  char_maintenance;
-int  char_new;
+unsigned short char_sport = 0;
+static int char_loginaccess_autorestart;
+static int char_maintenance;
+static int char_new;
 
 char char_conf_filename[256]  = "conf/char_auriga.conf";
 char inter_conf_filename[256] = "conf/inter_auriga.conf";
@@ -101,7 +101,7 @@ static struct dbt *char_online_db;
 static struct {
 	int account_id, char_id;
 	int login_id1, login_id2;
-	int ip;
+	unsigned long ip;
 	unsigned int tick;
 	int delflag, sex;
 } auth_fifo[AUTH_FIFO_SIZE];
@@ -960,7 +960,7 @@ static int char_txt_build_ranking(void)
 #else /* TXT_ONLY */
 
 static struct dbt *char_db_;
-static int  char_server_port        = 3306;
+static unsigned short char_server_port = 3306;
 static char char_server_ip[32]      = "127.0.0.1";
 static char char_server_id[32]      = "ragnarok";
 static char char_server_pw[32]      = "ragnarok";
@@ -1114,7 +1114,7 @@ static int char_sql_init(void)
 	printf("...\n");
 
 	if(!mysql_real_connect(&mysql_handle, char_server_ip, char_server_id, char_server_pw,
-		char_server_db ,char_server_port, (char *)NULL, 0)
+		char_server_db, char_server_port, (char *)NULL, 0)
 	) {
 		printf("%s\n",mysql_error(&mysql_handle));
 		exit(1);
@@ -1873,7 +1873,7 @@ int char_sql_config_read_sub(const char* w1,const char* w2)
 		strncpy(char_server_ip, w2, sizeof(char_server_ip) - 1);
 	}
 	else if(strcmpi(w1,"char_server_port")==0){
-		char_server_port=atoi(w2);
+		char_server_port = (unsigned short)atoi(w2);
 	}
 	else if(strcmpi(w1,"char_server_id")==0){
 		strncpy(char_server_id, w2, sizeof(char_server_id) - 1);
@@ -2481,7 +2481,7 @@ static int char_delete(const struct mmo_chardata *cd)
 }
 
 // authfifoの比較
-int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,int ip)
+static int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,unsigned long ip)
 {
 	if( auth_fifo[i].account_id == account_id && auth_fifo[i].login_id1 == login_id1 )
 		return 1;
@@ -2496,7 +2496,7 @@ int cmp_authfifo(int i,int account_id,int login_id1,int login_id2,int ip)
 #ifdef CMP_AUTHFIFO_IP
 	//printf("cmp_authfifo: ip check %d %x %x = %08x %08x %08x\n",i,auth_fifo[i].ip,ip,
 	//	auth_fifo[i].account_id,auth_fifo[i].login_id1,auth_fifo[i].login_id2);
-	if( auth_fifo[i].ip == ip && ip != 0 && ip != -1 )
+	if( auth_fifo[i].ip == ip && ip != 0 && ip != 0xffffffff )
 		return 1;
 #endif
 	return 0;
@@ -2889,13 +2889,13 @@ int char_erasemap(int fd, int id)
 
 static int parse_map_disconnect_sub(void *key,void *data,va_list ap)
 {
-	int fd   = va_arg(ap,int);
-	int ip   = va_arg(ap,int);
-	int port = va_arg(ap,int);
+	int fd = va_arg(ap,int);
+	unsigned long ip    = (unsigned long)va_arg(ap,int);
+	unsigned short port = (unsigned short)va_arg(ap,int);
 	struct char_online *c = (struct char_online*)data;
 	unsigned char buf[8];
 
-	if(c->ip == ip && c->port == port){
+	if(c->ip == ip && c->port == port) {
 		// printf("char: mapdisconnect %s %08x:%d\n",c->name,ip,port);
 		WBUFW(buf,0) = 0x2b17;
 		WBUFL(buf,2) = c->char_id;
@@ -2917,7 +2917,7 @@ int parse_map_disconnect(int fd)
 			server_fd[id] = -1;
 			char_erasemap(fd, id);
 			// 残っていたキャラの切断を他map-serverに通知
-			numdb_foreach(char_online_db, parse_map_disconnect_sub, fd, server[id].ip, server[id].port);
+			numdb_foreach(char_online_db, parse_map_disconnect_sub, fd, (int)server[id].ip, (int)server[id].port);
 			close(fd);
 		}
 	}
@@ -2981,9 +2981,8 @@ int parse_frommap(int fd)
 			}
 			server[id].map_num = j;
 
-			i = server[id].ip;
 			{
-				unsigned char *p=(unsigned char *)&i;
+				unsigned char *p = (unsigned char *)&server[id].ip;
 				printf("set map %d from %d.%d.%d.%d:%d (%d maps)\n", id, p[0], p[1], p[2], p[3], server[id].port, j);
 			}
 
@@ -4092,10 +4091,12 @@ static void char_config_read(const char *cfgName)
 				login_ip_str[15] = '\0';
 			}
 		} else if (strcmpi(w1, "login_port") == 0) {
-			login_port = atoi(w2);
-			if (login_port < 0 || login_port > 65535) {
-				printf("char_config_read: Invalid login_port value: %d. Set to 6900 (default).\n", login_port);
+			int n = atoi(w2);
+			if (n < 0 || n > 65535) {
+				printf("char_config_read: Invalid login_port value: %d. Set to 6900 (default).\n", n);
 				login_port = 6900; // default
+			} else {
+				login_port = (unsigned short)n;
 			}
 		} else if (strcmpi(w1, "char_ip") == 0) {
 			h = gethostbyname(w2);
@@ -4107,10 +4108,12 @@ static void char_config_read(const char *cfgName)
 				char_ip_str[15] = '\0';
 			}
 		} else if (strcmpi(w1, "char_port") == 0) {
-			char_port = atoi(w2);
-			if (char_port < 0 || char_port > 65535) {
-				printf("char_config_read: Invalid char_port value: %d. Set to 6121 (default).\n", char_port);
+			int n = atoi(w2);
+			if (n < 0 || n > 65535) {
+				printf("char_config_read: Invalid char_port value: %d. Set to 6121 (default).\n", n);
 				char_port = 6121; // default
+			} else {
+				char_port = (unsigned short)n;
 			}
 		} else if (strcmpi(w1, "listen_ip") == 0) {
 			unsigned long ip_result;
@@ -4132,10 +4135,12 @@ static void char_config_read(const char *cfgName)
 			}
 			char_sip = inet_addr(char_sip_str);
 		} else if (strcmpi(w1, "char_sport") == 0) {
-			char_sport = atoi(w2);
-			if (char_sport < 0 || char_sport > 65535) {
-				printf("char_config_read: Invalid char_sport value: %d. Set to 0 (default).\n", char_sport);
+			int n = atoi(w2);
+			if (n< 0 || n > 65535) {
+				printf("char_config_read: Invalid char_sport value: %d. Set to 0 (default).\n", n);
 				char_sport = 0;
+			} else {
+				char_sport = (unsigned short)n;
 			}
 		} else if (strcmpi(w1, "char_maintenance") == 0) {
 			char_maintenance = atoi(w2);

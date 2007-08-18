@@ -940,7 +940,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	int i,lv;
-	unsigned long tick = gettick();
+	unsigned int tick = gettick();
 
 	if(sd == NULL)
 		return 1;
@@ -3596,7 +3596,8 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 
 	m = map_mapname2mapid(mapname);
 	if(m < 0) {
-		int ip,port;
+		unsigned long ip;
+		unsigned short port;
 		if(map_mapname2ipport(mapname,&ip,&port) == 0) {
 			// 違うマップサーバーに割り当てられているマップに移動
 			if( sd->pd ) {
@@ -3613,7 +3614,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 			sd->status.last_point.x = x;
 			sd->status.last_point.y = y;
 			chrif_save(sd);
-			chrif_changemapserver(sd,mapname,x,y,ip,(short)port);
+			chrif_changemapserver(sd,mapname,x,y,ip,port);
 			return 0;
 		}
 		return 1;

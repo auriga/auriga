@@ -19,6 +19,9 @@ FILE* lock_fopen(const char* filename,int *info)
 		snprintf(newfile, sizeof(newfile), "%s_%04d.tmp", filename, ++no);
 	} while( (fp = fopen(newfile,"r")) && (fclose(fp), no < 9999) );
 
+	if(no >= 9999)
+		return NULL;
+
 	*info = no;
 	return fopen(newfile,"w");
 }

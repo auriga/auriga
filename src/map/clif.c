@@ -88,8 +88,8 @@ enum {
 #define WFIFOPOS2(fd,pos,x0,y0,x1,y1) { WBUFPOS2(WFIFOP(fd,pos),0,x0,y0,x1,y1); }
 
 static char map_ip_str[16];
-static in_addr_t map_ip;
-static int map_port = 5121;
+static unsigned long map_ip;
+static unsigned short map_port = 5121;
 static int map_fd;
 
 static int g_packet_len = 0;
@@ -103,7 +103,7 @@ static int g_packet_len = 0;
 void clif_setip(char *ip)
 {
 	memcpy(map_ip_str,ip,16);
-	map_ip=inet_addr(map_ip_str);
+	map_ip = inet_addr(map_ip_str);
 
 	return;
 }
@@ -112,9 +112,9 @@ void clif_setip(char *ip)
  * map鯖のport設定
  *------------------------------------------
  */
-void clif_setport(int port)
+void clif_setport(unsigned short port)
 {
-	map_port=port;
+	map_port = port;
 
 	return;
 }
@@ -123,7 +123,7 @@ void clif_setport(int port)
  * map鯖のip読み出し
  *------------------------------------------
  */
-in_addr_t clif_getip(void)
+unsigned long clif_getip(void)
 {
 	return map_ip;
 }
@@ -132,7 +132,7 @@ in_addr_t clif_getip(void)
  * map鯖のport読み出し
  *------------------------------------------
  */
-int clif_getport(void)
+unsigned short clif_getport(void)
 {
 	return map_port;
 }
@@ -1928,7 +1928,7 @@ void clif_changemap(struct map_session_data *sd,char *mapname,int x,int y)
  *
  *------------------------------------------
  */
-void clif_changemapserver(struct map_session_data *sd, char *mapname, int x, int y, int ip, int port)
+void clif_changemapserver(struct map_session_data *sd, char *mapname, int x, int y, unsigned long ip, unsigned short port)
 {
 	int fd;
 

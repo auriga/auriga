@@ -1079,13 +1079,12 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_start(bl,SC_STAN,7,0,0,0,2000,0);
 		break;
 	case GS_FLING:			/* フライング */
-		{
-			int x,y;
-			if( !sd ) break;
-			for(x=0; x<MAX_INVENTORY; x++) {
-				if(sd->status.inventory[x].nameid == 7517) {
-					y = (sd->status.inventory[x].amount > 4)? 4: sd->status.inventory[x].amount;
-					pc_delitem(sd,x,y,0);
+		if(sd) {
+			int i, y = 0;
+			for(i=0; i<MAX_INVENTORY; i++) {
+				if(sd->status.inventory[i].nameid == 7517) {
+					y = (sd->status.inventory[i].amount > 4)? 4: sd->status.inventory[i].amount;
+					pc_delitem(sd,i,y,0);
 				}
 			}
 			status_change_start(bl,SC_FLING,skilllv+y,0,0,0,skill_get_time2(skillid,skilllv),0);

@@ -78,7 +78,7 @@ static int recv_limit_rate_bytes      = 1024;
 static int recv_limit_rate_wait_max   = 2000;
 static int recv_limit_rate_disconnect = 5000;
 
-static int connect_check(unsigned int ip);
+static int connect_check(unsigned long ip);
 
 /*======================================
  *	CORE : Set function
@@ -292,7 +292,7 @@ static int connect_client(int listen_fd)
 	// setsockopt(fd, SOL_SOCKET, SO_LINGER, (char*)&opt, sizeof(opt));
 #endif
 
-	if (!connect_check(*(unsigned int*)(&client_address.sin_addr))) {
+	if (!connect_check(*(unsigned long *)(&client_address.sin_addr))) {
 #ifdef _WIN32
 		closesocket(fd);
 #else
@@ -342,7 +342,7 @@ static int connect_client(int listen_fd)
 	return fd;
 }
 
-int make_listen_port(int port, unsigned long sip)
+int make_listen_port(unsigned short port, unsigned long sip)
 {
 	struct sockaddr_in server_address;
 	int fd, yes;
@@ -425,7 +425,7 @@ int make_listen_port(int port, unsigned long sip)
 
 	server_address.sin_family      = AF_INET;
 	server_address.sin_addr.s_addr = sip;		// 1710:INADDR_ANYから変更
-	server_address.sin_port        = htons((unsigned short)port);
+	server_address.sin_port        = htons(port);
 
 	result = bind(fd, (struct sockaddr*)&server_address, sizeof(server_address));
 	if (result != 0) { // error when not 0 (can be -1 or any other value)
@@ -483,7 +483,7 @@ int make_listen_port(int port, unsigned long sip)
 }
 
 
-int make_connection(long ip, int port)
+int make_connection(unsigned long ip, unsigned short port)
 {
 	struct sockaddr_in server_address;
 	int fd, yes;
@@ -566,9 +566,9 @@ int make_connection(long ip, int port)
 
 	server_address.sin_family      = AF_INET;
 	server_address.sin_addr.s_addr = ip;
-	server_address.sin_port        = htons((unsigned short)port);
+	server_address.sin_port        = htons(port);
 
-	result = connect(fd, (struct sockaddr *)(&server_address),sizeof(struct sockaddr_in));
+	result = connect(fd, (struct sockaddr *)(&server_address), sizeof(struct sockaddr_in));
 	if (result != 0) {
 		// 接続失敗
 #ifdef _WIN32
@@ -1103,8 +1103,8 @@ enum {
 };
 
 struct _access_control {
-	unsigned int ip;
-	unsigned int mask;
+	unsigned long ip;
+	unsigned long mask;
 };
 
 static struct _access_control *access_allow = NULL;
@@ -1122,26 +1122,26 @@ struct _connect_history {
 	struct _connect_history *prev;
 	int    status;
 	int    count;
-	unsigned int ip;
+	unsigned long ip;
 	unsigned int tick;
 };
 static struct _connect_history *connect_history[0x10000];
-static int connect_check_(unsigned int ip);
+static int connect_check_(unsigned long ip);
 
 // 接続できるかどうかの確認
 //   false : 接続OK
 //   true  : 接続NG
-static int connect_check(unsigned int ip)
+static int connect_check(unsigned long ip)
 {
 	int result = connect_check_(ip);
 
 	if (access_debug)
-		printf("connect_check: connection from %08x %s\n", ip, result ? "allowed" : "denied");
+		printf("connect_check: connection from %08lx %s\n", ip, result ? "allowed" : "denied");
 
 	return result;
 }
 
-static int connect_check_(unsigned int ip)
+static int connect_check_(unsigned long ip)
 {
 	struct _connect_history *hist = connect_history[ip & 0xFFFF];
 	struct _connect_history *hist_new;
@@ -1151,7 +1151,7 @@ static int connect_check_(unsigned int ip)
 	for(i = 0; i < access_allownum; i++) {
 		if ((ip & access_allow[i].mask) == (access_allow[i].ip & access_allow[i].mask)) {
 			if (access_debug)
-				printf("connect_check: match allow list from:%08x ip:%08x mask:%08x\n",
+				printf("connect_check: match allow list from:%08lx ip:%08lx mask:%08lx\n",
 				       ip, access_allow[i].ip, access_allow[i].mask);
 			is_allowip = 1;
 			break;
@@ -1160,7 +1160,7 @@ static int connect_check_(unsigned int ip)
 	for(i = 0; i < access_denynum; i++) {
 		if ((ip & access_deny[i].mask) == (access_deny[i].ip & access_deny[i].mask)) {
 			if (access_debug)
-				printf("connect_check: match deny list  from:%08x ip:%08x mask:%08x\n",
+				printf("connect_check: match deny list  from:%08lx ip:%08lx mask:%08lx\n",
 				       ip, access_deny[i].ip, access_deny[i].mask);
 			is_denyip = 1;
 			break;
@@ -1209,9 +1209,9 @@ static int connect_check_(unsigned int ip)
 				hist->tick = gettick();
 				if (hist->count++ >= ddos_count) {
 					// ddos 攻撃を検出
+					unsigned char *p = (unsigned char *)&ip;
 					hist->status = 1;
-					printf("connect_check: ddos attack detected (%d.%d.%d.%d)\n",
-					       ip & 0xFF,(ip >> 8) & 0xFF,(ip >> 16) & 0xFF,ip >> 24);
+					printf("connect_check: ddos attack detected (%d.%d.%d.%d)\n", p[0], p[1], p[2], p[3]);
 					return ((connect_ok == 2) ? 1 : 0);
 				} else
 					return connect_ok;
@@ -1611,7 +1611,7 @@ static void socket_httpd_page_dos_attack(struct httpd_session_data *sd, const ch
 				if (n < 100) {
 					len = sprintf(WFIFOP(fd,0),
 					      "<tr><th>%d.%d.%d.%d</th><td>%d</td>"
-					      "<td><input type=\"checkbox\" name=\"dosdelete%02x\" value=\"%08x\"></td></tr>\n",
+					      "<td><input type=\"checkbox\" name=\"dosdelete%02x\" value=\"%08lx\"></td></tr>\n",
 					      ip[0], ip[1], ip[2], ip[3], remain / 1000, n, hist->ip);
 					WFIFOSET(fd, len);
 				}
