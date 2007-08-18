@@ -6270,6 +6270,10 @@ int buildin_guildopenstorage(struct script_state *st)
 		sd->state.menu_or_input = 0;
 
 		if(sd->npc_menu) {	// ロック取得成功
+			if(sd->npc_menu == 2) {
+				// キャッシュを削除してリロード
+				storage_guild_delete(sd->status.guild_id);
+			}
 			sd->npc_menu = 0;
 			push_val(st->stack,C_INT,storage_guild_storageopen(sd));
 		} else {		// ロック取得失敗

@@ -10,7 +10,7 @@ int  storage_txt_delete(int account_id);
 void storage_txt_final(void);
 
 const struct guild_storage *gstorage_txt_load(int guild_id);
-int  gstorage_txt_save(struct guild_storage *gs2);
+int  gstorage_txt_save(struct guild_storage *gs2, int easy);
 int  gstorage_txt_sync(void);
 int  gstorage_txt_delete(int guild_id);
 void gstorage_txt_final(void);
@@ -44,7 +44,7 @@ void storage_txt_config_read_sub(const char* w1,const char* w2);
 	void storage_sql_final(void);
 
 	const struct guild_storage *gstorage_sql_load(int guild_id);
-	int  gstorage_sql_save(struct guild_storage *gs2);
+	int  gstorage_sql_save(struct guild_storage *gs2, int easy);
 	int  gstorage_sql_sync(void);
 	int  gstorage_sql_delete(int guild_id);
 	void gstorage_sql_final(void);

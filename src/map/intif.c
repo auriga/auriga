@@ -1206,7 +1206,7 @@ int intif_parse_TrylockGuildStorageAck(int fd)
 {
 	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
 	int guild_id = RFIFOL(fd,6);
-	int succeed  = RFIFOB(fd,14);
+	int flag     = RFIFOB(fd,14);
 
 	// 既に存在してないかギルドが違うなら
 	if(sd == NULL || sd->status.guild_id != guild_id) {
@@ -1215,14 +1215,19 @@ int intif_parse_TrylockGuildStorageAck(int fd)
 	}
 
 	if(sd->state.gstorage_lockreq == 1) {	// script
-		sd->npc_menu = succeed;
+		sd->npc_menu = flag;
 		npc_scriptcont(sd,RFIFOL(fd,10));
 	}
 	else if(sd->state.gstorage_lockreq == 2) {	// atcommand
-		if(succeed)
+		if(flag) {
+			if(flag == 2) {
+				// キャッシュを削除してリロード
+				storage_guild_delete(guild_id);
+			}
 			storage_guild_storageopen(sd);
-		else
+		} else {
 			clif_displaymessage(sd->fd, msg_txt(130));
+		}
 	}
 	else {
 		// リログイン等をしたため倉庫を開く必要がない

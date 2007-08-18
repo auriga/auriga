@@ -215,6 +215,7 @@ struct guild_storage {
 	char storage_status;
 	short storage_amount;
 	unsigned int sortkey;
+	int last_fd;
 	struct item store_item[MAX_GUILD_STORAGE];
 };
 

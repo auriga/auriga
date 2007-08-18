@@ -73,9 +73,9 @@ R 3819 <account_id>.l<guild_id>.l <flag>.b
 	flag=0 成功、flag=1 失敗（失敗の場合ギルドが存在しないことなので、返信を待たなくてもいい）
 S 301a <account_id>.l <guild_id>.l <npc_id>.l
 	ギルド倉庫ロック要求
-R 381a <account_id>.l <guild_id>.l <npc_id>.l <succeed>.B
+R 381a <account_id>.l <guild_id>.l <npc_id>.l <flag>.B
 	ギルド倉庫ロック要求返答
-	succeed=0 失敗、succeed=1 成功
+	flag=0 失敗、flag=1 成功、flag=2 リロード
 S 301b <guild_id>.l
 	ギルド倉庫ロック解除
 R 381b <guild_id>.l <succeed>.B

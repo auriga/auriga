@@ -297,20 +297,22 @@ const struct guild_storage *gstorage_txt_load(int guild_id)
 		gs = (struct guild_storage *)numdb_search(gstorage_db,guild_id);
 		if(gs == NULL) {
 			gs = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
-			gs->guild_id=guild_id;
+			gs->guild_id = guild_id;
+			gs->last_fd  = -1;
 			numdb_insert(gstorage_db,gs->guild_id,gs);
 		}
 	}
 	return gs;
 }
 
-int gstorage_txt_save(struct guild_storage *gs2)
+int gstorage_txt_save(struct guild_storage *gs2, int easy)
 {
 	struct guild_storage *gs1 = (struct guild_storage *)numdb_search(gstorage_db,gs2->guild_id);
 
 	if(gs1 == NULL) {
 		gs1 = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
 		gs1->guild_id = gs2->guild_id;
+		gs1->last_fd  = -1;
 		numdb_insert(gstorage_db,gs1->guild_id,gs1);
 	}
 	memcpy(gs1,gs2,sizeof(struct guild_storage));
@@ -506,12 +508,11 @@ int storage_txt_init()
 	while(fgets(line,65535,fp)){
 		if(sscanf(line,"%d",&tmp_int) < 1)
 			continue;
-		s=(struct storage *)aCalloc(1,sizeof(struct storage));
-		s->account_id=tmp_int;
+		s = (struct storage *)aCalloc(1,sizeof(struct storage));
+		s->account_id = tmp_int;
 		if(s->account_id > 0 && storage_fromstr(line,s) == 0) {
 			numdb_insert(storage_db,s->account_id,s);
-		}
-		else{
+		} else {
 			printf("int_storage: broken data [%s] line %d\n",storage_txt,c);
 			aFree(s);
 		}
@@ -552,12 +553,12 @@ int storage_txt_init()
 	while(fgets(line,65535,fp)){
 		if(sscanf(line,"%d",&tmp_int) < 1)
 			continue;
-		gs=(struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
-		gs->guild_id=tmp_int;
+		gs = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
+		gs->guild_id = tmp_int;
+		gs->last_fd  = -1;
 		if(gs->guild_id > 0 && gstorage_fromstr(line,gs) == 0) {
 			numdb_insert(gstorage_db,gs->guild_id,gs);
-		}
-		else{
+		} else {
 			printf("int_storage: broken data [%s] line %d\n",guild_storage_txt,c);
 			aFree(gs);
 		}
@@ -728,21 +729,24 @@ const struct guild_storage *gstorage_sql_load(int guild_id)
 	if(s == NULL) {
 		s = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
 		s->guild_id = guild_id;
+		s->last_fd  = -1;
 		numdb_insert(gstorage_db,s->guild_id,s);
 		s->storage_amount = char_sql_loaditem(s->store_item,MAX_GUILD_STORAGE,guild_id,TABLE_GUILD_STORAGE);
 	}
 	return s;
 }
 
-int gstorage_sql_save(struct guild_storage *gs2)
+int gstorage_sql_save(struct guild_storage *gs2, int easy)
 {
 	const struct guild_storage *gs1 = gstorage_sql_load(gs2->guild_id);
 
 	if(memcmp(gs1,gs2,sizeof(struct guild_storage))) {
 		struct guild_storage *gs3 = (struct guild_storage*)numdb_search( gstorage_db, gs2->guild_id );
-		char_sql_saveitem(gs2->store_item,MAX_GUILD_STORAGE,gs2->guild_id,TABLE_GUILD_STORAGE);
+		if(!easy) {
+			char_sql_saveitem(gs2->store_item,MAX_GUILD_STORAGE,gs2->guild_id,TABLE_GUILD_STORAGE);
+		}
 		if(gs3)
-			memcpy( gs3, gs2, sizeof(struct guild_storage));
+			memcpy(gs3, gs2, sizeof(struct guild_storage));
 	}
 	return 1;
 }
@@ -872,13 +876,13 @@ int mapif_save_guild_storage_ack(int fd,int account_id,int guild_id,int fail)
 }
 
 // ギルド倉庫ロック要求返答
-int mapif_trylock_guild_storage_ack(int fd,int account_id,int guild_id,int npc_id,char succeed)
+int mapif_trylock_guild_storage_ack(int fd,int account_id,int guild_id,int npc_id,char flag)
 {
 	WFIFOW(fd,0)  = 0x381a;
 	WFIFOL(fd,2)  = account_id;
 	WFIFOL(fd,6)  = guild_id;
 	WFIFOL(fd,10) = npc_id;
-	WFIFOB(fd,14) = succeed;
+	WFIFOB(fd,14) = flag;
 	WFIFOSET(fd,15);
 	return 0;
 }
@@ -930,17 +934,17 @@ int mapif_parse_SaveGuildStorage(int fd)
 	int len=RFIFOW(fd,2);
 
 	if(sizeof(struct guild_storage)!=len-12) {
-		printf("inter storage: data size error %d %d\n",sizeof(struct guild_storage),len-12);
+		printf("inter guild_storage: data size error %d %d\n",sizeof(struct guild_storage),len-12);
 	} else {
-		int ret = !gstorage_save((struct guild_storage*)RFIFOP(fd,12));
-		mapif_save_guild_storage_ack(fd,RFIFOL(fd,4),guild_id,ret);
+		int ret = gstorage_save((struct guild_storage *)RFIFOP(fd,12), 0);
+		mapif_save_guild_storage_ack(fd,RFIFOL(fd,4),guild_id,!ret);
 	}
 	return 0;
 }
 
 int mapif_parse_TrylockGuildStorage(int fd)
 {
-	char succeed = 0;
+	char flag = 0;
 	int guild_id = RFIFOL(fd,6);
 	const struct guild_storage *gs = gstorage_load(guild_id);
 
@@ -948,10 +952,11 @@ int mapif_parse_TrylockGuildStorage(int fd)
 		struct guild_storage gs2;
 		memcpy(&gs2, gs, sizeof(gs2));
 		gs2.storage_status = 1;
-		gstorage_save(&gs2);
-		succeed = 1;
+		flag = (gs2.last_fd == fd)? 1: 2;	// 前回とは違うMAPサーバからのアクセスならリロード(flag=2)
+		gs2.last_fd = fd;
+		gstorage_save(&gs2, 1);
 	}
-	mapif_trylock_guild_storage_ack(fd,RFIFOL(fd,2),guild_id,RFIFOL(fd,10),succeed);
+	mapif_trylock_guild_storage_ack(fd,RFIFOL(fd,2),guild_id,RFIFOL(fd,10),flag);
 
 	return 0;
 }
@@ -966,7 +971,7 @@ int mapif_parse_UnlockGuildStorage(int fd)
 		struct guild_storage gs2;
 		memcpy(&gs2, gs, sizeof(gs2));
 		gs2.storage_status = 0;
-		gstorage_save(&gs2);
+		gstorage_save(&gs2, 1);
 		succeed = 1;
 	}
 	mapif_unlock_guild_storage_ack(fd,guild_id,succeed);
