@@ -204,6 +204,7 @@ ATCOMMAND_FUNC(makehomun);
 ATCOMMAND_FUNC(homfriendly);
 ATCOMMAND_FUNC(autoloot);
 ATCOMMAND_FUNC(changemaptype);
+ATCOMMAND_FUNC(hotkeyset);
 
 /*==========================================
  * AtCommandInfo atcommand_info[]構造体の定義
@@ -369,6 +370,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_HomFriendly,        "@homfriendly",      0, atcommand_homfriendly,         -1 },
 	{ AtCommand_AutoLoot,           "@autoloot",         0, atcommand_autoloot,            -1 },
 	{ AtCommand_ChangeMapType,      "@changemaptype",    0, atcommand_changemaptype,       -1 },
+	{ AtCommand_HotkeySet,          "@hotkeyset",        0, atcommand_hotkeyset,           -1 },
 		// add here
 	{ AtCommand_MapMove,            "@mapmove",          0, NULL,                          -1 },
 	{ AtCommand_Broadcast,          "@broadcast",        0, NULL,                          -1 },
@@ -5995,6 +5997,37 @@ atcommand_changemaptype(
 	map_setcell(sd->bl.m, x, y, type);
 	clif_changemapcell(sd->bl.m, x, y, type, 1);
 	clif_displaymessage(fd, msg_txt(183));
+
+	return 0;
+}
+
+/*==========================================
+ * ホットキーセットの切り替え
+ *------------------------------------------
+ */
+int
+atcommand_hotkeyset(
+	const int fd, struct map_session_data* sd,
+	const char* command, const char* message)
+{
+	int num;
+	char output[128];
+
+	nullpo_retr(-1, sd);
+
+	if(!message || !*message)
+		return -1;
+
+	num = atoi(message);
+
+	if(num >= 0 && num <= (MAX_HOTKEYS - 1) / 27) {
+		sd->hotkey_set = num;
+		clif_send_hotkey(sd);
+		sprintf(output, msg_txt(184), sd->hotkey_set);
+	} else {
+		sprintf(output, msg_txt(185), (MAX_HOTKEYS - 1) / 27);
+	}
+	clif_displaymessage(fd, output);
 
 	return 0;
 }

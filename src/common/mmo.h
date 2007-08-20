@@ -40,6 +40,7 @@
 #define MAX_CLOTH_COLOR 5
 
 #define MAX_PORTAL_MEMO 3
+#define MAX_HOTKEYS 27
 
 #define WEDDING_RING_M 2634
 #define WEDDING_RING_F 2635
@@ -132,6 +133,12 @@ struct friend_data {
 	char name[24];
 };
 
+struct hotkey {
+	int id;
+	unsigned short lv;
+	char type;
+};
+
 struct mmo_charstatus {
 	int char_id;
 	int account_id;
@@ -164,6 +171,7 @@ struct mmo_charstatus {
 	struct skill skill[MAX_SKILL];
 	int friend_num;
 	struct friend_data friend_data[MAX_FRIEND];
+	struct hotkey hotkey[MAX_HOTKEYS];
 };
 
 struct registry {

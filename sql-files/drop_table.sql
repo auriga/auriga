@@ -32,3 +32,4 @@ DROP TABLE `mail`;
 DROP TABLE `mail_data`;
 DROP TABLE `mapreg`;
 DROP TABLE `feel_info`;
+DROP TABLE `hotkey`;

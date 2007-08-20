@@ -8745,6 +8745,30 @@ void clif_update_temper(struct map_session_data *sd)
 }
 
 /*==========================================
+ * ホットキーの送信
+ *------------------------------------------
+ */
+void clif_send_hotkey(struct map_session_data *sd)
+{
+	int i, j, fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	memset(WFIFOP(fd,0), 0, packet_db[0x2b9].len);
+
+	WFIFOW(fd,0) = 0x2b9;
+	for(i = 0, j = sd->hotkey_set * 27; i < 27 && j < MAX_HOTKEYS; i++, j++) {
+		WFIFOB(fd,7*i+2) = sd->status.hotkey[j].type;
+		WFIFOL(fd,7*i+3) = sd->status.hotkey[j].id;
+		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
+	}
+	WFIFOSET(fd,packet_db[0x2b9].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -12144,6 +12168,27 @@ static void clif_parse_FeelSaveAck(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * ホットキーのセーブ
+ *------------------------------------------
+ */
+static void clif_parse_HotkeySave(int fd,struct map_session_data *sd, int cmd)
+{
+	int idx;
+
+	nullpo_retv(sd);
+
+	idx = sd->hotkey_set * 27 + RFIFOW(fd,GETPACKETPOS(cmd,0));
+	if(idx < 0 || idx >= MAX_HOTKEYS)
+		return;
+
+	sd->status.hotkey[idx].type = RFIFOB(fd,GETPACKETPOS(cmd,1));
+	sd->status.hotkey[idx].id   = RFIFOL(fd,GETPACKETPOS(cmd,2));
+	sd->status.hotkey[idx].lv   = RFIFOW(fd,GETPACKETPOS(cmd,3));
+
+	return;
+}
+
+/*==========================================
  * クライアントからのパケット解析
  * socket.cのdo_parsepacketから呼び出される
  *------------------------------------------
@@ -12321,6 +12366,7 @@ static struct {
 	{ clif_parse_DeleteMail,                "deletemail"                },
 	{ clif_parse_ReturnMail,                "returnmail"                },
 	{ clif_parse_FeelSaveAck,               "feelsaveack"               },
+	{ clif_parse_HotkeySave,                "hotkeysave"                },
 	{ NULL,                                 NULL                        },
 };
 

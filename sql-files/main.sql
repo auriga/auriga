@@ -561,3 +561,15 @@ CREATE TABLE `feel_info` (
   `lv` mediumint(9) NOT NULL default '-1',
   PRIMARY KEY  (`feel_id`)
 ) TYPE=MyISAM;
+
+# Database: Ragnarok
+# Table: 'hotkey'
+#
+CREATE TABLE `hotkey` (
+  `char_id` int(11) NOT NULL default '0',
+  `key` int(11) NOT NULL default '0',
+  `type` tinyint(4) NOT NULL default '0',
+  `id` int(11) NOT NULL default '0',
+  `lv` smallint(6) unsigned NOT NULL default '0',
+  PRIMARY KEY (`char_id`, `key`)
+) TYPE=MyISAM;

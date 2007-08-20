@@ -591,6 +591,8 @@ struct map_session_data {
 		short rate[MAX_SKILL_HEAL_UP];
 		short count;
 	} skill_healup;
+
+	short hotkey_set;
 };
 
 struct npc_timerevent_list {

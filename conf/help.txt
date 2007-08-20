@@ -262,4 +262,5 @@ changemaptype
 @makehomun 値   ---- ホムンクルスを作成する
 @homfriendly 値 ---- ホムの親密度を設定する
 
-@autoloot  ---- アイテムの自動取得機能をOn/Offする
+@autoloot      ---- アイテムの自動取得機能をOn/Offする
+@hotkeyset 値  ---- ホットキーセットを切り替える

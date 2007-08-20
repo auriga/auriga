@@ -1,4 +1,32 @@
 ----------------------------------------
+//0282 [2007/08/21] by Rayce
+
+・サーバ側でのホットキー保存に対応（mmo.h, char.c, clif.*, pc.c）
+	merged from AthenaProject, thanks a lot!!
+
+　※TXTに関してですが、eAのようにsave/hotkeys.txtとして別ファイルに保存することも考えましたが
+　　journalとかの兼ね合いで面倒になったのでAthenaProjectに沿ってsave/auriga.txtに保存しています。
+　　ただし保存形式は異なるので注意。
+　　本パッチ以降、Athenaからのセーブデータの流用が完全に不可能になります！
+　　SQLに関してもAthenaと比較してフィールドが一つ増えてるので注意。
+
+・db/packet_db.txtを2007-05-07と2007-07-11までサポート
+・TXT: JOURNAL_IDENTIFIERをバージョン05に変更しておく（journal.c）
+・SQL: main.sql修正、Auriga-0282_changetable.sql添付
+・SQL: txt-converterをホットキーに対応（char-converter.c）
+
+・@hotkeyset追加（atcommand.*, clif.c, map.h）
+	ホットキーを27個以上登録/利用できるようにするための拡張システム。
+	mmo.hのMAX_HOTKEYSをデフォルトの27よりも大きく設定している場合に意味があります。
+	9x3ページ = 27個を1セットとして扱い、ホットキーセットを切り替えることで擬似的に
+	ページを増やします。
+	@hotkeysetを使ったあとF12でページをめくったりすると画面に更新されます。
+
+　　例）MAX_HOTKEYSを54にしている場合
+　　　　　　@hotkeyset 0 →  0 〜 26まで
+　　　　　　@hotkeyset 1 → 27 〜 53まで
+
+----------------------------------------
 //0281 [2007/08/19] by Rayce
 
 ・ipに関する型をunsigned long型に統一

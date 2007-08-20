@@ -1183,6 +1183,10 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	memset(&sd->mail_item,0,sizeof(struct item));
 	sd->mail_amount = 0;
 
+	// ホットキー送信
+	sd->hotkey_set = 0;
+	clif_send_hotkey(sd);
+
 	// Message of the Dayの送信
 	{
 		char buf[256];

@@ -321,6 +321,8 @@ void clif_homskillup(struct map_session_data *sd, int skill_num);
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);
 
+void clif_send_hotkey(struct map_session_data *sd);
+
 int clif_foreachclient(int (*)(struct map_session_data*,va_list),...);
 
 void do_final_clif(void);

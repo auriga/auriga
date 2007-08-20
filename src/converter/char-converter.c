@@ -294,6 +294,21 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	}
 	next++;
 
+	for(i = 0; str[next] && str[next] != '\t' && str[next] != '\n' && str[next] != '\r'; i++) {
+		set=sscanf(str+next,"%d,%d,%d,%d%n",&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],&len);
+		if(set!=4)
+			return 0;
+		n = tmp_int[0];
+		if(n >= 0 && n < MAX_HOTKEYS) {
+			p->st.hotkey[n].type = (char)tmp_int[1];
+			p->st.hotkey[n].id   = tmp_int[2];
+			p->st.hotkey[n].lv   = (unsigned short)tmp_int[3];
+		}
+		next+=len;
+		if(str[next]==' ')
+			next++;
+	}
+
 	return 0;
 }
 
@@ -385,7 +400,6 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 		printf("DB server Error (delete `feel_info`)- %s\n", mysql_error(&mysql_handle));
 	}
 
-	// insert here.
 	for(i = 0; i < 3; i++) {
 		if(st->feel_map[i][0]) {
 			sprintf(
@@ -394,6 +408,23 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 			);
 			if(mysql_query(&mysql_handle, tmp_sql))
 				printf("DB server Error (insert `feel_info`)- %s\n", mysql_error(&mysql_handle));
+		}
+	}
+
+	// hotkey
+	sprintf(tmp_sql,"DELETE FROM `hotkey` WHERE `char_id`='%d'",char_id);
+	if(mysql_query(&mysql_handle, tmp_sql)) {
+		printf("DB server Error (delete `hotkey`)- %s\n", mysql_error(&mysql_handle));
+	}
+
+	for(i = 0; i < MAX_HOTKEYS; i++) {
+		if(st->hotkey[i].id > 0) {
+			sprintf(
+				tmp_sql,"INSERT INTO `hotkey`(`char_id`,`key`,`type`,`id`,`lv`) VALUES ('%d', '%d', '%d', '%d', '%d')",
+				char_id, i, st->hotkey[i].type, st->hotkey[i].id, st->hotkey[i].lv
+			);
+			if(mysql_query(&mysql_handle, tmp_sql))
+				printf("DB server Error (insert `hotkey`)- %s\n", mysql_error(&mysql_handle));
 		}
 	}
 

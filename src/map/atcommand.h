@@ -168,6 +168,7 @@ enum AtCommandType {
 	AtCommand_HomFriendly,
 	AtCommand_AutoLoot,
 	AtCommand_ChangeMapType,
+	AtCommand_HotkeySet,
 	AtCommand_Unknown,
 	AtCommand_MAX,
 };
