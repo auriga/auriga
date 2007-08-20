@@ -657,6 +657,9 @@ AurigaNPCScript
 
 			メニューを表示します。<stringN>に記述された文字列を選択すると<labelN>からスクリプトを開始します。
 			また、選ばれたラベルの番号は変数@menuに代入されます。
+			<stringN>に含まれる ":" (半角コロン) はメニューのデリミタとして扱われます。
+
+			<例> menu "AA:BB",L_LABEL; は menu "AA",L_LABEL,"BB",L_LABEL; と同じ
 
 		goto命令
 			goto <label>;
@@ -2410,6 +2413,9 @@ AurigaNPCScript
 
 			メニューを表示し、1から始まるユーザーが選択した番号を返します(menu 命令の関数版)。
 			また、選ばれたラベルの番号は変数@menuに代入されます。
+			<string>に含まれる ":" (半角コロン) はメニューのデリミタとして扱われます。
+
+			<例> select("AA:BB") は select("AA","BB") と同じ
 
 		marriage関数
 			marriage(<partner_name>)

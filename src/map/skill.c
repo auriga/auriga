@@ -2448,9 +2448,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				}
 			}
 		} else {
+			int x = bl->x, y = bl->y;
 			skill_area_temp[1] = bl->id;
-			skill_area_temp[2] = bl->x;
-			skill_area_temp[3] = bl->y;
+			skill_area_temp[2] = x;
+			skill_area_temp[3] = y;
 			skill_area_temp[4] = skill_get_blewcount(skillid,skilllv);
 			/* まずターゲットに攻撃を加える */
 			if(battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0))
@@ -2458,7 +2459,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
+				bl->m,x-1,y-1,x+1,y+1,0,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -8338,8 +8339,8 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case GS_GATLINGFEVER:		/* ガトリングフィーバー */
 		{
 			int sc_type = SkillStatusChangeTable[sc->id];
-			if(sc_type > 0 && sd->sc_data[sc_type].timer!=-1)
-				return 1;	// 解除する場合はSP消費しない
+			if(sc_type > 0 && sd->sc_data[sc_type].timer != -1)
+				sp = 0;	// 解除する場合はSP消費しない
 		}
 		break;
 	case AL_TELEPORT:
@@ -8691,9 +8692,10 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case SG_FUSION:
-		if(sd->sc_data[SC_FUSION].timer != -1)	// 解除するときはsp消費なし
-			return 1;
-		if(sd->sc_data[SC_STAR].timer==-1){	// ケンセイの魂状態
+		if(sd->sc_data[SC_FUSION].timer != -1) {	// 解除するときはsp消費なし
+			sp = 0;
+		}
+		if(sd->sc_data[SC_STAR].timer == -1) {	// ケンセイの魂状態
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}

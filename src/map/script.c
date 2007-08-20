@@ -4205,7 +4205,7 @@ int buildin_close2(struct script_state *st)
  */
 int buildin_menu(struct script_state *st)
 {
-	int len,i;
+	int i;
 	struct map_session_data *sd = script_rid2sd(st);
 
 	if(sd == NULL) {	// キャンセル扱いにする
@@ -4213,58 +4213,66 @@ int buildin_menu(struct script_state *st)
 		return 0;
 	}
 
-	if(sd->state.menu_or_input==0){
+	if(sd->state.menu_or_input == 0) {
+		int len;
 		char *buf;
-		st->state=RERUNLINE;
-		sd->state.menu_or_input=1;
-		if( (st->end - st->start - 2) % 2 == 1 ) {
+		st->state = RERUNLINE;
+		sd->state.menu_or_input = 1;
+		if((st->end - st->start - 2) % 2 == 1) {
 			// 引数の数が奇数なのでエラー扱い
 			printf("buildin_menu: illigal argument count(%d).\n", st->end - st->start - 2);
-			sd->state.menu_or_input=0;
-			st->state=END;
+			sd->state.menu_or_input = 0;
+			st->state = END;
 			return 0;
 		}
-		for(i=st->start+2,len=0;i<st->end;i+=2){
+		for(i=st->start+2, len=0; i<st->end; i+=2) {
 			conv_str(st,& (st->stack->stack_data[i]));
-			len+=strlen(st->stack->stack_data[i].u.str)+1;
+			len += strlen(st->stack->stack_data[i].u.str) + 1;
 		}
-		buf=(char *)aCalloc(len+1,sizeof(char));
-		for(i=st->start+2,len=0;i<st->end;i+=2){
-			if( st->stack->stack_data[i].u.str[0] ) {
+		buf = (char *)aCalloc(len + 1, sizeof(char));
+		for(i=st->start+2, len=0; i<st->end; i+=2) {
+			if(st->stack->stack_data[i].u.str[0]) {
+				if(i > st->start+2) {
+					strcat(buf,":");
+				}
 				strcat(buf,st->stack->stack_data[i].u.str);
-				strcat(buf,":");
 			}
 		}
-		clif_scriptmenu(script_rid2sd(st),st->oid,buf);
+		clif_scriptmenu(sd,st->oid,buf);
 		aFree(buf);
-	} else if(sd->npc_menu==0xff){	// cancel
-		sd->state.menu_or_input=0;
-		st->state=END;
+	} else if(sd->npc_menu <= 0 || sd->npc_menu == 0xff) {	// invalid or cancel
+		sd->state.menu_or_input = 0;
+		st->state = END;
 	} else {	// goto動作
-		sd->state.menu_or_input=0;
-		if(sd->npc_menu>0){
-			// 空文字メニューの補正
-			for(i=st->start+2;i<=(st->start+sd->npc_menu*2) && sd->npc_menu<(st->end-st->start)/2;i+=2) {
-				conv_str(st,& (st->stack->stack_data[i]));
-				if(st->stack->stack_data[i].u.str[0] == '\0')
+		int count = 0;
+		sd->state.menu_or_input = 0;
+		// 空文字と : のメニュー補正
+		for(i=st->start+2; count < sd->npc_menu && i<st->end; i+=2) {
+			char *p = conv_str(st,& (st->stack->stack_data[i]));
+			count++;
+			if(*p == '\0') {
+				sd->npc_menu++;
+				continue;
+			}
+			while(count < sd->npc_menu && (p = strchr(p,':')) != NULL) {
+				count++;
+				p++;
+				if(*p == '\0' || *p == ':')
 					sd->npc_menu++;
 			}
-			if(sd->npc_menu >= (st->end-st->start)/2) {
-				st->state=END;
-				return 0;
-			}
+		}
+		if(count >= sd->npc_menu) {
 			pc_setreg(sd,add_str("@menu"),sd->npc_menu);
-			if( st->stack->stack_data[st->start+sd->npc_menu*2+1].type!=C_POS ){
+			if(st->stack->stack_data[i-1].type != C_POS) {
 				printf("buildin_menu: not label !\n");
-				st->state=END;
+				st->state = END;
 				return 0;
 			}
-			st->pos=conv_num(st,& (st->stack->stack_data[st->start+sd->npc_menu*2+1]));
-			st->state=GOTO;
+			st->pos   = conv_num(st,& (st->stack->stack_data[i-1]));
+			st->state = GOTO;
 		} else {
 			// 不正な値なのでキャンセル扱い
-			sd->state.menu_or_input=0;
-			st->state=END;
+			st->state = END;
 		}
 	}
 	return 0;
@@ -9141,7 +9149,7 @@ int buildin_jump_zero(struct script_state *st)
  */
 int buildin_select(struct script_state *st)
 {
-	int len,i;
+	int i;
 	struct map_session_data *sd = script_rid2sd(st);
 
 	if(sd == NULL) {	// キャンセル扱いにする
@@ -9149,45 +9157,53 @@ int buildin_select(struct script_state *st)
 		return 0;
 	}
 
-	if(sd->state.menu_or_input==0){
+	if(sd->state.menu_or_input == 0) {
+		int len;
 		char *buf;
-		st->state=RERUNLINE;
-		sd->state.menu_or_input=1;
-		for(i=st->start+2,len=0;i<st->end;i++){
+		st->state = RERUNLINE;
+		sd->state.menu_or_input = 1;
+		for(i=st->start+2, len=0; i<st->end; i++) {
 			conv_str(st,& (st->stack->stack_data[i]));
-			len+=strlen(st->stack->stack_data[i].u.str)+1;
+			len += strlen(st->stack->stack_data[i].u.str) + 1;
 		}
-		buf=(char *)aCalloc(len+1,sizeof(char));
-		for(i=st->start+2,len=0;i<st->end;i++){
-			if( st->stack->stack_data[i].u.str[0] ) {
+		buf = (char *)aCalloc(len + 1, sizeof(char));
+		for(i=st->start+2, len=0; i<st->end; i++) {
+			if(st->stack->stack_data[i].u.str[0]) {
+				if(i > st->start+2) {
+					strcat(buf,":");
+				}
 				strcat(buf,st->stack->stack_data[i].u.str);
-				strcat(buf,":");
 			}
 		}
-		clif_scriptmenu(script_rid2sd(st),st->oid,buf);
+		clif_scriptmenu(sd,st->oid,buf);
 		aFree(buf);
-	} else if(sd->npc_menu==0xff){	// cancel
-		sd->state.menu_or_input=0;
-		st->state=END;
+	} else if(sd->npc_menu <= 0 || sd->npc_menu == 0xff) {	// invalid or cancel
+		sd->state.menu_or_input = 0;
+		st->state = END;
 	} else {
-		sd->state.menu_or_input=0;
-		if(sd->npc_menu>0){
-			// 空文字メニューの補正
-			for(i=st->start+2;i<=(st->start+sd->npc_menu+1) && sd->npc_menu < st->end-st->start-1;i++) {
-				conv_str(st,& (st->stack->stack_data[i]));
-				if(st->stack->stack_data[i].u.str[0] == '\0')
+		int count = 0;
+		sd->state.menu_or_input = 0;
+		// 空文字と : のメニュー補正
+		for(i=st->start+2; count < sd->npc_menu && i<st->end; i++) {
+			char *p = conv_str(st,& (st->stack->stack_data[i]));
+			count++;
+			if(*p == '\0') {
+				sd->npc_menu++;
+				continue;
+			}
+			while(count < sd->npc_menu && (p = strchr(p,':')) != NULL) {
+				count++;
+				p++;
+				if(*p == '\0' || *p == ':')
 					sd->npc_menu++;
 			}
-			if(sd->npc_menu >= st->end-st->start-1) {
-				st->state=END;
-				return 0;
-			}
+		}
+		if(count >= sd->npc_menu) {
 			pc_setreg(sd,add_str("@menu"),sd->npc_menu);
 			push_val(st->stack,C_INT,sd->npc_menu);
 		} else {
 			// 不正な値なのでキャンセル扱い
-			sd->state.menu_or_input=0;
-			st->state=END;
+			st->state = END;
 		}
 	}
 	return 0;
