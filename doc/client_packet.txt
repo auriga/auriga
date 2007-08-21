@@ -92,6 +92,8 @@ R 006b <len>.w <charactor select data>.106B*
 	<charactor select data> = <charactor ID>.l <base exp>.l <zeny>.l <job exp>.l <job level>.l ?.8B <option>.l <karma>.l <manner>.l <status point>.w <HP>.w <MaxHP>.w <SP>.w <MaxSP>.w <speed>.w <class>.w <hair>.w <weapon>.2w <base level>.w <skill point>.w <head_bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w ?.w <name>.24B <STR>.B <AGI>.B <VIT>.B <INT>.B <DEX>.B <LUK>.B <charactor number>.B ?.B
 R 006c <error No>.B
 	キャラクタ選択失敗
+		err No=00 サーバへの接続が失敗しました。
+		err No=01 このIDではこのサーバーに接続できません。
 R 006d <charactor select data>.106B <flag>.w
 	キャラクタ作成成功
 	flagはキャラ名の変更が可能な状態かどうか(0でON 1でOFF)
@@ -1586,10 +1588,13 @@ R 0285 <type>.w <flag>.w
 	type=0c : type=05, flag=0x0bと同じ
 	type=0f : type=05, flag=0x0cと同じ
 R 0287 <len>.w <point>.l { <value>.l <value>.l <0x12固定>.B <item ID>.w }.11B*
+       <len>.w <point>.l <?>.l { <value>.l <value>.l <0x12固定>.B <item ID>.w }.11B* (2007-07-11aSakexe以降)
 	スペシャルアイテム販売リスト
 S 0288 <itemid>.w <amount>.w
+       <itemid>.w <amount>.w <0固定?>.l (2007-07-11aSakexe以降)
 	スペシャルアイテム購入要求
-R 0289 <id>.l <type>.w
+R 0289 <point>.l <type>.w
+       <point>.l <?>.l <type>.w (2007-07-11aSakexe以降)
 	スペシャルアイテム取引結果
 	type=0 : 取引できました。
 	type=1 : NPCが存在しないため、購入に失敗しました。
@@ -1655,9 +1660,11 @@ R 02a3 <?>.l <?>.12B
 S 02a5 <?>.w <?>.l
 	マウスのスクロールを高速で動かすと飛んでくる
 	未調査
+R 02ae
+	未調査
+R 02b9 { <type>.B <ID>.l <lv>.w }*27
+	ショーカットキー情報受信
 S 02ba <index>.w <type>.B <ID>.l <lv>.w
 	ショートカットキー保存要求
 	type=0 : アイテム
 	type=1 : スキル
-R 02b9 { <type>.B <ID>.l <lv>.w }*27
-	ショーカットキー情報受信

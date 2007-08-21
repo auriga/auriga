@@ -1102,5 +1102,5 @@
 0x0190,19,actionrequest,5:18
 0x0193,2,closekafra,0
 0x01fd,15,repairitem,2
-0x0288,10
+0x0288,10,npcpointshopbuy,2:4:6
 0x0289,12

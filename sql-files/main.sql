@@ -571,5 +571,6 @@ CREATE TABLE `hotkey` (
   `type` tinyint(4) NOT NULL default '0',
   `id` int(11) NOT NULL default '0',
   `lv` smallint(6) unsigned NOT NULL default '0',
-  PRIMARY KEY (`char_id`, `key`)
+  PRIMARY KEY (`char_id`, `key`),
+  KEY `char_id` (`char_id`)
 ) TYPE=MyISAM;

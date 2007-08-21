@@ -2197,26 +2197,30 @@ void clif_selllist(struct map_session_data *sd)
 void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
 {
 	struct item_data *id;
-	int fd,i,val;
+	int fd,i,val,len;
 
 	nullpo_retv(sd);
 	nullpo_retv(nd);
 
-	fd=sd->fd;
+	fd  = sd->fd;
+	len = packet_db[0x289].len;	// 0x289で計算する
+
 	WFIFOW(fd,0) = 0x287;
 	WFIFOL(fd,4) = sd->shop_point;
+	WFIFOL(fd,8) = 0;	// ??
 	for(i=0; nd->u.shop_item[i].nameid > 0; i++) {
 		id  = itemdb_search(nd->u.shop_item[i].nameid);
 		val = nd->u.shop_item[i].value;
-		WFIFOL(fd,8+i*11)  = val;
-		WFIFOL(fd,12+i*11) = val;	// DCはないので価格は同じ
-		WFIFOB(fd,16+i*11) = 0x12;	// id->type? 0x12で固定
+		WFIFOL(fd,len  ) = val;
+		WFIFOL(fd,len+4) = val;		// DCはないので価格は同じ
+		WFIFOB(fd,len+8) = 0x12;	// id->type? 0x12で固定
 		if(id->view_id > 0)
-			WFIFOW(fd,17+i*11) = id->view_id;
+			WFIFOW(fd,len+9) = id->view_id;
 		else
-			WFIFOW(fd,17+i*11) = nd->u.shop_item[i].nameid;
+			WFIFOW(fd,len+9) = nd->u.shop_item[i].nameid;
+		len += 11;
 	}
-	WFIFOW(fd,2) = 8+i*11;
+	WFIFOW(fd,2) = len;
 	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return;
@@ -9898,7 +9902,12 @@ static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int c
 
 	WFIFOW(fd,0) = 0x289;
 	WFIFOL(fd,2) = sd->shop_point;
-	WFIFOW(fd,6) = fail;
+	if(packet_db[0x289].len == 8) {
+		WFIFOW(fd, 6) = fail;
+	} else {
+		WFIFOL(fd, 6) = 0;	// ??
+		WFIFOW(fd,10) = fail;
+	}
 	WFIFOSET(fd,packet_db[0x289].len);
 
 	return;
