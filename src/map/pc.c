@@ -623,6 +623,9 @@ int pc_makesavestatus(struct map_session_data *sd)
 			pc_setglobalreg(sd,"PC_KILL_CHAR",sd->kill_charid);
 			pc_setglobalreg(sd,"PC_KILLED_CHAR",sd->killed_charid);
 		}
+
+		// ショップポイント保存
+		pc_setglobalreg(sd,"PC_SHOP_POINT",sd->shop_point);
 	}
 
 	// マナーポイントがプラスだった場合0に
@@ -1163,6 +1166,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->kill_charid   = 0;
 		sd->killed_charid = 0;
 	}
+
+	// ショップポイント
+	sd->shop_point = pc_readglobalreg(sd,"PC_SHOP_POINT");
 
 	// ステータス初期計算など
 	status_calc_pc(sd,1);
@@ -5392,6 +5398,9 @@ int pc_readparam(struct map_session_data *sd,int type)
 	case SP_KILLED_CHAR:
 		val = sd->killed_charid;
 		break;
+	case SP_SHOP_POINT:
+		val = sd->shop_point;
+		break;
 	}
 
 	return val;
@@ -5572,6 +5581,10 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 		sd->killed_charid = val;
 		pc_setglobalreg(sd,"PC_KILLED_CHAR",val);
 		clif_update_temper(sd);
+		return 0;
+	case SP_SHOP_POINT:
+		sd->shop_point = val;
+		pc_setglobalreg(sd,"PC_SHOP_POINT",val);
 		return 0;
 	}
 

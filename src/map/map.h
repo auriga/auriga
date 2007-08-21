@@ -51,7 +51,13 @@ enum {
 	BL_CHAT  = 0x080,
 };
 
-enum { WARP, SHOP, SCRIPT, MONS };
+enum {
+	WARP = 1,
+	SHOP,
+	POINTSHOP,
+	SCRIPT,
+	MONS
+};
 
 enum {
 	RCT_FORMLESS = 0,
@@ -593,6 +599,7 @@ struct map_session_data {
 	} skill_healup;
 
 	short hotkey_set;
+	int shop_point;
 };
 
 struct npc_timerevent_list {
@@ -896,7 +903,7 @@ enum {
 	SP_CLONESKILL_ID=500,SP_CLONESKILL_LV,					// 500-501
 	SP_BS_POINT,SP_AM_POINT,SP_TK_POINT,SP_PK_POINT,SP_MISSON_TARGET,	// 502-506
 	SP_HATE_SUN,SP_HATE_MOON,SP_HATE_STAR,SP_HOM_INTIMATE,SP_PHARMACY_SUCCESS,	// 507-511
-	SP_KILL_CHAR,SP_KILLED_CHAR,						// 512-513
+	SP_KILL_CHAR,SP_KILLED_CHAR,SP_SHOP_POINT,					// 512-514
 
 	// original 1000-
 	SP_ATTACKRANGE=1000,	SP_ATKELE,SP_DEFELE,	// 1000-1002

@@ -652,6 +652,12 @@ void npc_click(struct map_session_data *sd, int id)
 		clif_npcbuysell(sd,id);
 		npc_event_dequeue(sd);
 		break;
+	case POINTSHOP:
+		sd->npc_id     = id;
+		sd->npc_shopid = id;
+		clif_pointshop_list(sd,nd);
+		npc_event_dequeue(sd);
+		break;
 	case SCRIPT:
 		if(nd->u.scr.script) {
 			sd->npc_id = id;
@@ -908,6 +914,72 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 	return 0;
 }
 
+/*==========================================
+ * スペシャルアイテム購入
+ *------------------------------------------
+ */
+int npc_pointshop_buy(struct map_session_data *sd,int nameid,int amount)
+{
+	struct npc_data *nd;
+	struct item_data *item_data;
+	struct item item_tmp;
+	int i, point;
+
+	nullpo_retr(1, sd);
+
+	nd = map_id2nd(sd->npc_shopid);
+	if(npc_checknear(sd, nd)) // check NULL of nd and if nd->bl.type is BL_NPC
+		return 1;
+
+	if(nd->bl.subtype != POINTSHOP)
+		return 1;
+
+	if(sd->deal_mode != 0)
+		return 4;
+
+	if(nameid <= 0 || amount <= 0)
+		return 5;
+
+	for(i = 0; nd->u.shop_item[i].nameid; i++) {
+		int view_id = itemdb_viewid(nd->u.shop_item[i].nameid);
+		if(view_id > 0) {
+			if(view_id == nameid) {
+				break;
+			}
+		} else if(nd->u.shop_item[i].nameid == nameid) {
+			break;
+		}
+	}
+	if(nd->u.shop_item[i].nameid == 0 || (item_data = itemdb_exists(nd->u.shop_item[i].nameid)) == NULL)
+		return 5;
+
+	point = nd->u.shop_item[i].value * amount;
+	if(point > sd->shop_point)
+		return 6;
+
+	switch(pc_checkadditem(sd, nameid, amount)) {
+		case ADDITEM_EXIST:
+			break;
+		case ADDITEM_NEW:
+			if(pc_inventoryblank(sd) < 1)
+				return 3;
+			break;
+		case ADDITEM_OVERAMOUNT:
+			return 3;
+	}
+	if(item_data->weight * amount + sd->weight > sd->max_weight)
+		return 3;
+
+	memset(&item_tmp, 0, sizeof(item_tmp));
+	item_tmp.nameid   = nd->u.shop_item[i].nameid;
+	item_tmp.identify = 1;	// npc販売アイテムは鑑定済み
+
+	pc_additem(sd, &item_tmp, amount);
+	sd->shop_point -= point;
+
+	return 0;
+}
+
 //
 // 初期化関係
 //
@@ -1127,8 +1199,16 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 	char *p;
 	int m, x, y, dir = 0;
 	int n, pos = 0;
+	unsigned char subtype;
 	char mapname[1024];
 	struct npc_data *nd;
+
+	if(strcmp(w2,"shop") == 0)
+		subtype = SHOP;
+	else if(strcmp(w2,"pointshop") == 0)
+		subtype = POINTSHOP;
+	else
+		subtype = 0;
 
 	if(strcmp(w1,"-") == 0) {
 		x = 0;
@@ -1137,7 +1217,7 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 	} else {
 		// 引数の個数チェック
 		if(sscanf(w1, "%[^,],%d,%d,%d%n", mapname, &x, &y, &dir, &n) != 4 || w1[n] != 0 ||
-		   (strcmp(w2,"shop") == 0 && strchr(w4,',') == NULL))
+		   (subtype != 0 && strchr(w4,',') == NULL))
 		{
 			printf("bad shop declaration : %s line %d\a\n", w3, lines);
 			return 0;
@@ -1147,11 +1227,11 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 			return 0;	// assignされてないMAPなので終了
 	}
 
-	if(strcmp(w2,"shop") == 0) {
+	if(subtype == SHOP || subtype == POINTSHOP) {
 		const int max = 100;
 		char *c;
-		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * (max + 1));
 
+		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * (max + 1));
 		c = strchr(w4, ',');
 		while(c && pos < max) {
 			int nameid, value;
@@ -1159,7 +1239,7 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 			if(sscanf(c, "%d:%d", &nameid, &value) != 2)
 				break;
 			nd->u.shop_item[pos].nameid = nameid;
-			if(value < 0) {
+			if(value < 0 && subtype == SHOP) {
 				value = itemdb_value_buy(nameid);
 			}
 			nd->u.shop_item[pos].value = value;
@@ -1187,10 +1267,11 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 			printf("bad substore name! (not exist) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
-		if(nd2->bl.subtype != SHOP) {
+		if(nd2->bl.subtype != SHOP && nd2->bl.subtype != POINTSHOP) {
 			printf("bad substore name! (not shop) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
+		subtype = nd2->bl.subtype;
 		while(nd2->u.shop_item[pos++].nameid);
 
 		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd2->u.shop_item[0]) * pos);
@@ -1231,7 +1312,7 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 	nd->opt3    = 0;
 	npc_shop++;
 	nd->bl.type    = BL_NPC;
-	nd->bl.subtype = SHOP;
+	nd->bl.subtype = subtype;
 	map_addiddb(&nd->bl);
 
 	if(m >= 0) {
@@ -2217,7 +2298,7 @@ int do_init_npc(void)
 
 			if (strcmpi(w2,"warp") == 0 && count > 3) {
 				ret = npc_parse_warp(w1,w2,w3,w4,lines);
-			} else if (strcmpi(w2,"shop") == 0 && count > 3) {
+			} else if ((strcmpi(w2,"shop") == 0 || strcmpi(w2,"pointshop") == 0) && count > 3) {
 				ret = npc_parse_shop(w1,w2,w3,w4,lines);
 			} else if ((i = 0, sscanf(w2,"substore%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
 				ret = npc_parse_shop(w1,w2,w3,w4,lines);

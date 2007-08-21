@@ -111,6 +111,28 @@ AurigaNPCScript
 		マップサーバー内には存在していても、実際のマップには配置されないNPCを作成できます。
 		これは後述のコピー店でコピー元として使用します。
 
+	＊ポイント店：ポイントによるアイテムの販売を行います。
+		<gatname>,<x>,<y>,<direction><tab>pointshop<tab><displayname><tab><npcid>,<item_id>:<point>
+
+		gatname			配置するMAPファイル名を指定します。
+		x			配置する横座標を指定します。
+		y			配置する縦座標を指定します。
+		direction		向きを指定します。
+			directionの詳細：
+				１０７
+				２　６
+				３４５
+
+		displayname		配置する店の表示名を指定します。
+		npcid			配置する店の表示スプライトIDを指定します。
+		item_id			配置する店に置くアイテムIDを指定します。item_dbを参照してください。
+		point			アイテムを購入するのに必要なポイントを設定します。
+			<item_id>:<point>は,（カンマ）区切りで複数指定できます。
+
+		「<gatname>,<x>,<y>,<direction><tab>」の部分を、「-<tab>」とすることで、
+		マップサーバー内には存在していても、実際のマップには配置されないNPCを作成できます。
+		これは後述のコピー店でコピー元として使用します。
+
 	＊コピー店：既存のNPC（の店）をコピーします。
 		<gatname>,<x>,<y>,<direction><tab>substore(<source>)<tab><displayname><tab><npcid>
 

@@ -2204,7 +2204,7 @@ void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
 
 	fd=sd->fd;
 	WFIFOW(fd,0) = 0x287;
-	WFIFOL(fd,4) = 0;	// point
+	WFIFOL(fd,4) = sd->shop_point;
 	for(i=0; nd->u.shop_item[i].nameid > 0; i++) {
 		id  = itemdb_search(nd->u.shop_item[i].nameid);
 		val = nd->u.shop_item[i].value;
@@ -9880,6 +9880,34 @@ static void clif_parse_NpcSellListSend(int fd,struct map_session_data *sd, int c
  *
  *------------------------------------------
  */
+static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int cmd)
+{
+	int fail;
+
+	nullpo_retv(sd);
+
+	// 死んでいたり、赤エモの時はNPCをクリックできない
+	if(unit_isdead(&sd->bl)) {
+		clif_clearchar_area(&sd->bl,1);
+		return;
+	}
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->status.manner < 0)
+		return;
+
+	fail = npc_pointshop_buy(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)), RFIFOW(fd,GETPACKETPOS(cmd,1)));
+
+	WFIFOW(fd,0) = 0x289;
+	WFIFOL(fd,2) = sd->shop_point;
+	WFIFOW(fd,6) = fail;
+	WFIFOSET(fd,packet_db[0x289].len);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 static void clif_parse_CreateChatRoom(int fd,struct map_session_data *sd, int cmd)
 {
 	char *chat_title;
@@ -12243,6 +12271,7 @@ static struct {
 	{ clif_parse_NpcBuySellSelected,        "npcbuysellselected"        },
 	{ clif_parse_NpcBuyListSend,            "npcbuylistsend"            },
 	{ clif_parse_NpcSellListSend,           "npcselllistsend"           },
+	{ clif_parse_NpcPointShopBuy,           "npcpointshopbuy"           },
 	{ clif_parse_CreateChatRoom,            "createchatroom"            },
 	{ clif_parse_ChatAddMember,             "chataddmember"             },
 	{ clif_parse_ChatRoomStatusChange,      "chatroomstatuschange"      },
