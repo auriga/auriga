@@ -1,4 +1,28 @@
 ----------------------------------------
+//0286 [2007/08/23] by Rayce
+
+・AthenaProject2317より、エスマのLv10以外の倍率を修正（battle.c）
+・Athena1468で抜け落ちたディバインプロテクションの効果を再実装（battle.c）
+	from AthenaProject BTS, thanks
+・聖体降福が対人エリアだと自身とPTメンバーにしか掛からなかったのを修正（skill.c）
+　味方であっても不死や悪魔であればダメージが入るように修正
+	from AthenaProject Forum, thanks
+
+・セージスキルのテイミングモンスターの処理を少し最適化（skill.c）
+・skill_am_twilight1(), skill_am_twilight2(), skill_am_twilight3() をまとめて
+　skill_am_twilight() とする（skill.c）
+
+----------------------------------------
+//0285 [2007/08/22] by Rayce
+
+・pointshopを2007-07-11aSakexe以降のクライアントに対応（clif.c）
+	0x289のパケット長を見て処理分岐しています。
+	0x288に付属してる末端の4byte分は謎なので無視。
+
+・doc/client_packet.txt更新
+・SQL: `hotkey` テーブルにKEYを張り忘れてたので追加（Auriga285_changetable.sql）
+
+----------------------------------------
 //0284 [2007/08/22] by Rayce
 
 ・スペシャルアイテム販売NPCの実装（clif.*, map.h, npc.*, pc.c）

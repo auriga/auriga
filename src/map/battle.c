@@ -2260,6 +2260,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					}
 				}
 				t_def = t_def2*8/10;
+
+				// ディバインプロテクション
+				if(target_sd && (skill = pc_checkskill(target_sd,AL_DP)) > 0) {
+					int s_race = status_get_race(src);
+					if(battle_check_undead(s_race,status_get_elem_type(src)) || s_race == RCT_DEMON)
+						t_def += ((300 + 4 * target_sd->status.base_level) * skill + 50) / 100;
+				}
 				vitbonusmax = (t_vit/20)*(t_vit/20)-1;
 
 				if(calc_flag.rh && !calc_flag.idef) {
@@ -2717,11 +2724,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 	/* 34．ダメージ最終計算 */
 	if(skill_num != CR_GRANDCROSS && skill_num != NPC_DARKGRANDCROSS) {
-		if(wd.damage2 < 1)		// ダメージ最終修正
+		if(wd.damage2 < 1) {		// ダメージ最終修正
 			wd.damage  = battle_calc_damage(src,target,wd.damage,wd.div_,skill_num,skill_lv,wd.flag);
-		else if(wd.damage < 1)	// 右手がミス？
+		} else if(wd.damage < 1) {	// 右手がミス？
 			wd.damage2 = battle_calc_damage(src,target,wd.damage2,wd.div_,skill_num,skill_lv,wd.flag);
-		else {	// 両手/カタールの場合はちょっと計算ややこしい
+		} else {			// 両手、カタールの場合はちょっと計算ややこしい
 			int dmg = wd.damage+wd.damage2;
 			wd.damage  = battle_calc_damage(src,target,dmg,wd.div_,skill_num,skill_lv,wd.flag);
 			wd.damage2 = (wd.damage2*100/dmg)*wd.damage/100;
@@ -3001,10 +3008,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				status_change_start(bl,SC_SMA,skill_lv,0,0,0,3000,0);
 			break;
 		case SL_SMA:	// エスマ
-			if(sd && skill_lv >= 10)
-			{
-				MATK_FIX( 40+sd->status.base_level, 100 );
-			}
+			MATK_FIX( 40+sd->status.base_level, 100 );
 			ele = status_get_attack_element_nw(bl);
 			if(sc_data && sc_data[SC_SMA].timer != -1)
 				status_change_end(bl,SC_SMA,-1);
