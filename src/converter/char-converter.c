@@ -1282,9 +1282,8 @@ int char_convert(void)
 					int k = char_num;
 
 					// 何故かキャラIDの昇順に並んでない場合は挿入ソートする
-					while(k > 0 && cd[char_num].st.char_id < cd[k-1].st.char_id) {
-						k--;
-					}
+					while(--k > 0 && cd[char_num].st.char_id < cd[k-1].st.char_id);
+
 					memcpy(&tmp, &cd[char_num], sizeof(cd[0]));
 					memmove(&cd[k+1], &cd[k], (char_num-k)*sizeof(cd[0]));
 					memcpy(&cd[k], &tmp, sizeof(cd[0]));

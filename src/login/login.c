@@ -55,8 +55,8 @@ static unsigned long login_sip = 0;
 static unsigned short login_sport = 0;
 static int login_autosave_time = 600;
 
-struct mmo_char_server server[MAX_SERVERS];
-static int server_fd[MAX_SERVERS];
+struct mmo_char_server server[MAX_CHAR_SERVERS];
+static int server_fd[MAX_CHAR_SERVERS];
 static int login_fd;
 static int login_sfd;
 
@@ -109,7 +109,7 @@ static int login_id2idx(int account_id)
 	while(max - min > 1) {
 		int mid = (min + max) / 2;
 		if(auth_dat[mid].account_id == account_id)
-			return mid;
+			return (auth_dat[mid].userid[0])? mid: -1;
 
 		if(auth_dat[mid].account_id > account_id)
 			max = mid;
@@ -269,9 +269,8 @@ int login_txt_init(void)
 			int k = auth_num;
 
 			// 何故かアカウントIDの昇順に並んでない場合は挿入ソートする
-			while(k > 0 && account_id < auth_dat[k-1].account_id) {
-				k--;
-			}
+			while(--k > 0 && account_id < auth_dat[k-1].account_id);
+
 			memcpy(&tmp, &auth_dat[auth_num], sizeof(auth_dat[0]));
 			memmove(&auth_dat[k+1], &auth_dat[k], (auth_num-k)*sizeof(auth_dat[0]));
 			memcpy(&auth_dat[k], &tmp, sizeof(auth_dat[0]));
@@ -320,6 +319,10 @@ void login_txt_sync(void)
 	for(i=0;i<auth_num;i++){
 		if(auth_dat[i].account_id<0)
 			continue;
+		if(!auth_dat[i].userid[0]) {
+			// 削除されている
+			continue;
+		}
 
 		fprintf(fp,"%d\t%s\t%s\t%s\t%c\t%d\t%d\t%s\t",auth_dat[i].account_id,
 			auth_dat[i].userid,auth_dat[i].pass,auth_dat[i].lastlogin,
@@ -362,7 +365,7 @@ const struct mmo_account* login_txt_account_load_str(const char *account_id)
 	if( !account_id[0] )
 		return NULL;
 	for(x=0;x<auth_num;x++){
-		if(!strncmp(auth_dat[x].userid,account_id,24)) {
+		if(auth_dat[x].userid[0] && !strncmp(auth_dat[x].userid,account_id,24)) {
 			return &auth_dat[x];
 		}
 	}
@@ -396,7 +399,7 @@ int login_txt_account_delete(int account_id)
 
 	if(idx >= 0) {
 		memset(&auth_dat[idx],0,sizeof(struct mmo_account));
-		auth_dat[idx].account_id = -1;
+		auth_dat[idx].account_id = account_id;	// アカウントIDは維持
 #ifdef TXT_JOURNAL
 		if( login_journal_enable )
 			journal_write( &login_journal, account_id, NULL );
@@ -413,6 +416,10 @@ int login_txt_account_new(struct mmo_account* account,const char *tmpstr)
 
 	login_log("auth new %s %s %s",tmpstr,account->userid,account->pass);
 
+	if(!account->userid[0]) {
+		// 空文字は弾く
+		return 0;
+	}
 	for(j=0;j<24 && (c=account->userid[j]);j++){
 		if(c<0x20 || c==0x7f)
 			return 0;
@@ -628,6 +635,11 @@ int login_sql_config_read_sub(const char* w1,const char* w2)
 
 int login_sql_account_delete(int account_id)
 {
+	struct mmo_account *ac = (struct mmo_account *)numdb_erase(account_db, account_id);
+
+	if(ac)
+		aFree(ac);
+
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `%s` = '%d'",login_db,login_db_account_id,account_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (delete `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
@@ -651,9 +663,9 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 	}
 
 	ac = (struct mmo_account *)numdb_search(account_db, account_id);
-	if(ac == NULL) {
-		ac = (struct mmo_account *)aMalloc(sizeof(struct mmo_account));
-		numdb_insert(account_db,account_id,ac);
+	if(ac && ac->account_id == account_id) {
+		// 既にキャッシュが存在する
+		return ac;
 	}
 
 	// basic information
@@ -676,7 +688,13 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 		mysql_free_result(sql_res);
 		return NULL;
 	}
+
+	if(ac == NULL) {
+		ac = (struct mmo_account *)aMalloc(sizeof(struct mmo_account));
+		numdb_insert(account_db,account_id,ac);
+	}
 	memset(ac,0,sizeof(struct mmo_account));
+
 	ac->account_id = account_id;
 	strncpy(ac->userid, sql_row[0], 24);
 	strncpy(ac->pass, sql_row[1], 24);
@@ -716,7 +734,7 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 
 const struct mmo_account* login_sql_account_load_str(const char *account_id)
 {
-	int  id_num = -1;
+	int id_num = -1;
 	char buf[256];
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
@@ -747,7 +765,7 @@ const struct mmo_account* login_sql_account_load_str(const char *account_id)
 
 const struct mmo_account* login_sql_account_load_idx(int idx)
 {
-	int  id_num = -1;
+	int id_num = -1;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
@@ -865,6 +883,12 @@ int login_sql_account_save(struct mmo_account *ac2)
 				printf("DB server Error (insert `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
 			}
 		}
+	}
+
+	{
+		struct mmo_account *ac3 = (struct mmo_account *)numdb_search(account_db, ac2->account_id);
+		if(ac3)
+			memcpy(ac3, ac2, sizeof(struct mmo_account));
 	}
 
 	return 0;
@@ -1189,7 +1213,7 @@ int mmo_auth(struct login_session_data* sd)
 int charif_sendallwos(int sfd,unsigned char *buf,unsigned int len)
 {
 	int i,c;
-	for(i=0,c=0;i<MAX_SERVERS;i++){
+	for(i=0,c=0;i<MAX_CHAR_SERVERS;i++){
 		int fd;
 		if((fd=server_fd[i])>0 && fd!=sfd){
 			memcpy(WFIFOP(fd,0),buf,len);
@@ -1226,7 +1250,7 @@ int parse_char_disconnect(int fd)
 {
 	int i;
 
-	for(i=0;i<MAX_SERVERS;i++)
+	for(i=0;i<MAX_CHAR_SERVERS;i++)
 		if(server_fd[i]==fd)
 			server_fd[i]=-1;
 	close(fd);
@@ -1239,11 +1263,11 @@ int parse_fromchar(int fd)
 {
 	int i,id;
 
-	for(id=0; id<MAX_SERVERS; id++) {
+	for(id=0; id<MAX_CHAR_SERVERS; id++) {
 		if(server_fd[id] == fd)
 			break;
 	}
-	if(id >= MAX_SERVERS)
+	if(id >= MAX_CHAR_SERVERS)
 		session[fd]->eof = 1;
 
 	while(RFIFOREST(fd) >= 2) {
@@ -1401,7 +1425,7 @@ int parse_admin_disconnect(int fd)
 {
 	int i;
 
-	for(i=0;i<MAX_SERVERS;i++)
+	for(i=0;i<MAX_CHAR_SERVERS;i++)
 		if(server_fd[i]==fd)
 			server_fd[i]=-1;
 	close(fd);
@@ -1590,7 +1614,7 @@ int parse_admin(int fd)
 		case 0x7938:
 			// information about servers
 			server_num = 0;
-			for(i = 0; i < MAX_SERVERS; i++) { // max number of char-servers (and account_id values: 0 to max-1)
+			for(i = 0; i < MAX_CHAR_SERVERS; i++) { // max number of char-servers (and account_id values: 0 to max-1)
 				if (server_fd[i] >= 0) {
 					WFIFOL(fd,4 + server_num * 32     ) = server[i].ip;
 					WFIFOW(fd,4 + server_num * 32 +  4) = server[i].port;
@@ -1703,7 +1727,7 @@ int parse_login_disconnect(int fd)
 {
 	int i;
 
-	for(i=0;i<MAX_SERVERS;i++)
+	for(i=0;i<MAX_CHAR_SERVERS;i++)
 		if(server_fd[i]==fd)
 	server_fd[i]=-1;
 	close(fd);
@@ -1833,7 +1857,7 @@ int parse_login(int fd)
 					}
 				}
 				server_num = 0;
-				for(i=0; i<MAX_SERVERS; i++) {
+				for(i=0; i<MAX_CHAR_SERVERS; i++) {
 					if(server_fd[i] >= 0) {
 						WFIFOL(fd,47+server_num*32)   = server[i].ip;
 						WFIFOW(fd,47+server_num*32+4) = server[i].port;
@@ -1936,7 +1960,7 @@ int parse_login(int fd)
 			memcpy( sd->pass, RFIFOP(fd, 26), sd->md5keylen ? 16 : 24 );
 			sd->passwdenc = sd->md5keylen ? RFIFOL(fd,46) : 0;
 
-			if(mmo_auth(sd) == -1 && sd->sex == 2 && sd->account_id<MAX_SERVERS && server_fd[sd->account_id]<0){
+			if(mmo_auth(sd) == -1 && sd->sex == 2 && sd->account_id<MAX_CHAR_SERVERS && server_fd[sd->account_id]<0){
 				server[sd->account_id].ip=RFIFOL(fd,54);
 				server[sd->account_id].port=RFIFOW(fd,58);
 				memcpy(server[sd->account_id].name,RFIFOP(fd,60),20);
@@ -2201,7 +2225,7 @@ static double login_users(void)
 	int i;
 	int users = 0;
 
-	for(i=0;i<MAX_SERVERS;i++) {
+	for(i=0;i<MAX_CHAR_SERVERS;i++) {
 		if(server_fd[i] > 0) {
 			users += server[i].users;
 		}
@@ -2304,10 +2328,10 @@ void login_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 	if( sd->func_parse == parse_fromchar && sd->auth )
 	{
 		int id;
-		for(id=0;id<MAX_SERVERS;id++)
+		for(id=0;id<MAX_CHAR_SERVERS;id++)
 			if(server_fd[id]==fd)
 				break;
-		if( id<MAX_SERVERS )
+		if( id<MAX_CHAR_SERVERS )
 			sprintf( user, "%s (%s)", ld->userid, server[id].name );
 	}
 	else if( sd->func_parse == parse_login && sd->auth )
@@ -2345,7 +2369,7 @@ void do_final(void)
 	login_final();
 	exit_dbn();
 
-	for(i=0;i<MAX_SERVERS;i++){
+	for(i=0;i<MAX_CHAR_SERVERS;i++){
 		int fd;
 		if((fd=server_fd[i])>0){
 			delete_session(fd);
@@ -2388,7 +2412,7 @@ int do_init(int argc,char **argv)
 	for(i=0;i<AUTH_FIFO_SIZE;i++){
 		auth_fifo[i].delflag=1;
 	}
-	for(i=0;i<MAX_SERVERS;i++){
+	for(i=0;i<MAX_CHAR_SERVERS;i++){
 		server_fd[i]=-1;
 	}
 	login_fd = make_listen_port(login_port, listen_ip);

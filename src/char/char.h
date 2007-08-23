@@ -3,7 +3,7 @@
 
 #include "mmo.h"
 
-#define MAX_MAP_SERVERS 30
+#define MAX_MAP_SERVERS 8
 
 #define DEFAULT_AUTOSAVE_INTERVAL_CS 300*1000
 

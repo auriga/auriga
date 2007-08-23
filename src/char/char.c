@@ -144,7 +144,7 @@ static int char_id2idx(int char_id)
 	while(max - min > 1) {
 		int mid = (min + max) / 2;
 		if(char_dat[mid].st.char_id == char_id)
-			return mid;
+			return (char_dat[mid].st.account_id > 0)? mid: -1;
 
 		if(char_dat[mid].st.char_id > char_id)
 			max = mid;
@@ -580,9 +580,8 @@ static int char_txt_init(void)
 				int k = char_num;
 
 				// 何故かキャラIDの昇順に並んでない場合は挿入ソートする
-				while(k > 0 && char_id < char_dat[k-1].st.char_id) {
-					k--;
-				}
+				while(--k > 0 && char_id < char_dat[k-1].st.char_id);
+
 				memcpy(&tmp, &char_dat[char_num], sizeof(char_dat[0]));
 				memmove(&char_dat[k+1], &char_dat[k], (char_num-k)*sizeof(char_dat[0]));
 				memcpy(&char_dat[k], &tmp, sizeof(char_dat[0]));
@@ -647,7 +646,7 @@ static void char_txt_sync(void)
 	if(fp==NULL)
 		return;
 	for(i=0;i<char_num;i++){
-		if(char_dat[i].st.char_id > 0) {
+		if(char_dat[i].st.char_id > 0 && char_dat[i].st.account_id > 0) {
 			mmo_char_tostr(line,&char_dat[i]);
 			fprintf(fp,"%s" RETCODE,line);
 		}
@@ -710,7 +709,9 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 	char_log("make new char %d %s",dat[30],name);
 
 	for(i=0;i<char_num;i++){
-		if(strcmp(char_dat[i].st.name,name)==0 || (char_dat[i].st.account_id==sd->account_id && char_dat[i].st.char_num==dat[30]))
+		if(strcmp(char_dat[i].st.name,name) == 0)
+			return NULL;
+		if(char_dat[i].st.account_id > 0 && char_dat[i].st.account_id == sd->account_id && char_dat[i].st.char_num == dat[30])
 			return NULL;
 	}
 
@@ -808,14 +809,14 @@ int char_txt_load_all(struct char_session_data* sd,int account_id)
 	int i;
 	int found_num = 0;
 
-	for(i=0 ; i < char_num ; i++){
-		if(char_dat[i].st.account_id == account_id && char_dat[i].st.char_num < max_char_slot){
+	for(i = 0; i < char_num; i++) {
+		if(char_dat[i].st.account_id > 0 && char_dat[i].st.account_id == account_id && char_dat[i].st.char_num < max_char_slot) {
 			sd->found_char[found_num++] = &char_dat[i];
 			if(found_num == max_char_slot)
 				break;
 		}
 	}
-	for(i = found_num; i < max_char_slot ; i++) {
+	for(i = found_num; i < max_char_slot; i++) {
 		sd->found_char[i] = NULL;
 	}
 
@@ -871,6 +872,7 @@ int char_txt_delete_sub(int char_id)
 
 	if(idx >= 0) {
 		memset(&char_dat[idx],0,sizeof(char_dat[0]));
+		char_dat[idx].st.char_id = char_id;	// キャラIDは維持
 #ifdef TXT_JOURNAL
 		if( char_journal_enable )
 			journal_write( &char_journal, char_id, NULL );
@@ -908,7 +910,7 @@ const struct mmo_chardata* char_txt_nick2chardata(const char *char_name)
 	int i;
 
 	for(i=0;i<char_num;i++){
-		if(strcmp(char_dat[i].st.name,char_name)==0) {
+		if(char_dat[i].st.account_id > 0 && strcmp(char_dat[i].st.name,char_name)==0) {
 			return &char_dat[i];
 		}
 	}
@@ -1853,12 +1855,10 @@ int char_sql_load_all(struct char_session_data* sd,int account_id)
 
 int char_sql_delete_sub(int char_id)
 {
-	struct mmo_chardata *p = (struct mmo_chardata *)numdb_search(char_db_,char_id);
+	struct mmo_chardata *p = (struct mmo_chardata *)numdb_erase(char_db_,char_id);
 
-	if(p) {
-		numdb_erase(char_db_,char_id);
+	if(p)
 		aFree(p);
-	}
 
 	// char
 	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",char_db, char_id);

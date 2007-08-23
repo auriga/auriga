@@ -3,7 +3,7 @@
 
 #include "mmo.h"
 
-#define MAX_SERVERS 30
+#define MAX_CHAR_SERVERS 5
 
 #define PASSWORDENC		3	// 暗号化パスワードに対応させるとき定義する
 							// passwordencryptのときは1、
@@ -15,9 +15,9 @@ struct login_session_data {
 	int login_id1;
 	int login_id2;
 	int char_id;
-	int  sex;
-	int  passwdenc;
-	int  md5keylen;
+	int sex;
+	int passwdenc;
+	int md5keylen;
 	char md5key[64];
 	char userid[24],pass[24],lastlogin[24];
 	char lastip[16];
