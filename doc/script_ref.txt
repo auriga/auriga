@@ -1699,12 +1699,19 @@ AurigaNPCScript
 
 			map-severのコンソール上にメッセージを表示します
 
-		dispbottom関数
+		dispbottom命令
 			dispbottom <message>;
 
-			message		文字列
+			<message>	文字列
 
 			NPCに話しかけた本人にのみコメント欄に文字列を表示します。
+
+		pet命令
+			pet <pet_id>;
+
+			<pet_id>	数値
+
+			<pet_id>のモンスターを捕獲します。
 
 		bpet命令
 			bpet;
@@ -2164,7 +2171,7 @@ AurigaNPCScript
 
 			<skillid>で指定したIDを持つスキルのLVを返します。習得していない場合は0を返します。
 
-		getgdskilllv命令
+		getgdskilllv関数
 			getgdskilllv(<guild_id>,<skillid>)
 
 			guild_id,skillid	数値

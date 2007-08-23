@@ -3154,7 +3154,7 @@ void pc_takeitem_sub(struct party *p, struct map_session_data *sd, struct floori
 	} else {
 		// 取得成功
 		unit_stopattack(&sd->bl);
-		clif_takeitem(&sd->bl,&fitem->bl);
+		clif_takeitem(&sd->bl,fitem->bl.id);
 		map_clearflooritem(fitem->bl.id);
 	}
 	return;

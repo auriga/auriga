@@ -86,7 +86,10 @@ static int mapreg_dirty = 0;
 static struct dbt *scriptlabel_db=NULL;
 static struct dbt *userfunc_db=NULL;
 
-static char refine_posword[11][32] = {"頭","体","左手","右手","ローブ","靴","アクセサリー1","アクセサリー2","頭2","頭3","装着していない"};
+static char refine_posword[11][32] = { "頭","体","左手","右手","ローブ","靴","アクセサリー1","アクセサリー2","頭2","頭3","装着していない" };
+
+static char error_marker_start[16] = "";
+static char error_marker_end[16]   = "";
 
 static struct Script_Config {
 	int warn_func_no_comma;
@@ -1583,9 +1586,9 @@ static const char* script_print_line( const char *p, const char *mark, int line 
 		printf(" % 5d : ", line);
 	for(i=0;p[i] && p[i] != '\n';i++){
 		if(p + i != mark)
-			printf("%c",p[i]);
+			printf("%c", p[i]);
 		else
-			printf("\'%c\'",p[i]);
+			printf("%s%c%s", error_marker_start, p[i], error_marker_end);
 	}
 	printf("\n");
 	return p+i+(p[i] == '\n' ? 1 : 0);
@@ -3181,6 +3184,14 @@ int script_config_read(char *cfgName)
 		}
 		else if(strcmpi(w1,"check_gotocount")==0) {
 			script_config.check_gotocount = atoi(w2);
+		}
+		else if(strcmpi(w1,"error_marker_start")==0) {
+			strncpy(error_marker_start, w2, 16);
+			error_marker_start[15] = '\0';
+		}
+		else if(strcmpi(w1,"error_marker_end")==0) {
+			strncpy(error_marker_end, w2, 16);
+			error_marker_end[15] = '\0';
 		}
 		else if(strcmpi(w1,"import")==0) {
 			script_config_read(w2);

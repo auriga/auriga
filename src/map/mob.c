@@ -1018,7 +1018,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			}
 			if(mob_is_pcview(md->class_)) {
 				int delay = tick + status_get_amotion(&md->bl);
-				clif_takeitem(&md->bl,&fitem->bl);
+				clif_takeitem(&md->bl,fitem->bl.id);
 				md->ud.canact_tick  = delay;
 				md->ud.canmove_tick = delay;
 			}

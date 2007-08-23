@@ -4296,6 +4296,25 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 }
 
 /*==========================================
+ * アイテムを拾う
+ *------------------------------------------
+ */
+void clif_takeitem(struct block_list* src, int dst_id)
+{
+	unsigned char buf[32];
+
+	nullpo_retv(src);
+
+	WBUFW(buf, 0) = 0x8a;
+	WBUFL(buf, 2) = src->id;
+	WBUFL(buf, 6) = dst_id;
+	WBUFB(buf,26) = 1;
+	clif_send(buf,packet_db[0x8a].len,src,AREA);
+
+	return;
+}
+
+/*==========================================
  * PC表示
  *------------------------------------------
  */

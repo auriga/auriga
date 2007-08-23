@@ -1,4 +1,30 @@
 ----------------------------------------
+//0288 [2007/08/24] by Rayce
+
+・skill_check_condition2_pc() を少しだけ整理（skill.c）
+・処理効率を上げるために clif_takeitem() をマクロから関数に変更
+　（clif.*, mob.c, pc.c, pet.c, skill.c）
+
+・conf/script_auriga.confに error_marker_start, error_marker_end を追加（script.c）
+	スクリプトの解析エラーが発生したとき、エラー箇所を特定しやすくするために好きな文字列を
+	指定することができます（15文字まで）。
+	script.c内部でのデフォルトは空文字になっているので、該当項目をコメントアウトすれば
+	文字を表示しない設定にすることもできます。
+
+・以下のスキルについて、skill_require_db.txtのstateの項目にfalconを設定しなかったときでもスキルが
+　発動できるように拡張（skill.c）
+	ブリッツビート
+	ディテクティング
+	スプリングトラップ
+	ファルコンアサルト
+・skill_require_db.txtのstateの項目に新しく以下の2つを追加（skill.*）
+	cartboost: カートブースト状態
+	nen: 念状態
+
+・db/skill_require_db.txtを上記変更に従って修正
+・doc/script_ref.txtにpet命令が記載されてなかったので修正
+
+----------------------------------------
 //0287 [2007/08/24] by Rayce
 
 ・TXT: 0140以降、サーバ起動中にアカウントやキャラを削除すると、他の特定のアカウントやキャラがログイン

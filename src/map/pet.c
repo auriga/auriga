@@ -1108,7 +1108,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			}
 			if(mob_is_pcview(pd->class_)) {
 				int delay = tick + status_get_amotion(&pd->bl);
-				clif_takeitem(&pd->bl,&fitem->bl);
+				clif_takeitem(&pd->bl,fitem->bl.id);
 				pd->ud.canact_tick  = delay;
 				pd->ud.canmove_tick = delay;
 			}

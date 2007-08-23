@@ -111,6 +111,8 @@ state:スキルを使用する為の条件を設定します。複数の設定�
 	shield: シールドを持っている
 	sight: サイト状態
 	explosionspirits: 爆裂波動状態
+	cartboost: カートブースト状態
+	nen: 念状態
 	recover_weight_rate: 自然回復できる重量
 	move_enable: スキル使用位置が移動可能な場所
 	water: 足元が水
