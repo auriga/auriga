@@ -129,7 +129,7 @@ static int StatusIconChangeTable[] = {
 	/* 360- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_ADRENALINE2,SI_BLANK,SI_BLANK,SI_COMBATHAN,SI_LIFEINSURANCE,
 	/* 370- */
-	SI_BLANK,SI_BLANK,SI_MEAL_INCSTR2,SI_MEAL_INCAGI2,SI_MEAL_INCVIT2,SI_MEAL_INCDEX2,SI_MEAL_INCINT2,SI_MEAL_INCLUK2,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_BLANK,SI_MEAL_INCSTR2,SI_MEAL_INCAGI2,SI_MEAL_INCVIT2,SI_MEAL_INCDEX2,SI_MEAL_INCINT2,SI_MEAL_INCLUK2,SI_SLOWCAST,SI_CRITICALWOUND,
 };
 
 /*==========================================
@@ -5149,6 +5149,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				val4 = sd->status.clothes_color;
 				pc_changelook(sd, LOOK_CLOTHES_COLOR, 0);
 			}
+			break;
+		case SC_SLOWCAST:		/* スロウキャスト */
+		case SC_CRITICALWOUND:		/* 致命傷 */
 			break;
 		default:
 			if(battle_config.error_log)

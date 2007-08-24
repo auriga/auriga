@@ -303,8 +303,14 @@ int SkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること
 	/* 600- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 660- */
+	-1,-1,-1,SC_SILENCE,SC_FREEZE,SC_BLEED,SC_STONE,SC_CONFUSION,SC_SLEEP,-1,
+	/* 670- */
+	-1,-1,SC_SLOWCAST,SC_CRITICALWOUND,-1,-1,-1,SC_CURSE,SC_STAN,-1,
+	/* 680- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 700- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
@@ -661,9 +667,9 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	};
 
 	struct map_session_data *sd = NULL, *dstsd = NULL;
-	struct mob_data *md = NULL, *dstmd = NULL;
-	struct skill_unit *unit = NULL;
-	struct status_change* tsc_data = NULL;
+	struct mob_data         *md = NULL, *dstmd = NULL;
+	struct skill_unit       *unit = NULL;
+	struct status_change    *tsc_data = NULL;
 	int skill;
 	int rate,luk;
 
@@ -682,8 +688,11 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	// グラウンドドリフトのときはsrcを設置者に置換
 	if(src->type == BL_SKILL) {
 		unit = (struct skill_unit *)src;
-		if(unit && unit->group)
+		if(unit && unit->group) {
 			src = map_id2bl(unit->group->src_id);
+			if(src == NULL)
+				return 0;
+		}
 	}
 
 	sd    = BL_DOWNCAST( BL_PC,  src );
@@ -1875,8 +1884,195 @@ int skill_cleartimerskill(struct block_list *src)
  */
 
 /*==========================================
+ * スキル使用（詠唱完了、ID指定）
+ *------------------------------------------
+ */
+int skill_castend_id( int tid, unsigned int tick, int id,int data )
+{
+	struct block_list *target , *src = map_id2bl(id);
+	struct status_change* tsc_data = NULL;
+	struct map_session_data* src_sd = NULL;
+	struct mob_data        * src_md = NULL;
+	struct homun_data      * src_hd = NULL;
+	struct unit_data       * src_ud = NULL;
+	int inf2;
+
+	nullpo_retr(0, src);
+	nullpo_retr(0, src_ud = unit_bl2ud(src));
+
+	if( src->prev == NULL ) // prevが無いのはありなの？
+		return 0;
+
+	src_sd = BL_DOWNCAST( BL_PC,  src );
+	src_md = BL_DOWNCAST( BL_MOB, src );
+	src_hd = BL_DOWNCAST( BL_HOM, src );
+
+	if(src_ud->skillid != SA_CASTCANCEL) {
+		if( src_ud->skilltimer != tid ) return 0; /* タイマIDの確認 */
+		if( src_sd && src_ud->skilltimer != -1 && pc_checkskill(src_sd,SA_FREECAST) > 0) {
+			src_sd->speed = src_sd->prev_speed;
+			clif_updatestatus(src_sd,SP_SPEED);
+		}
+		src_ud->skilltimer=-1;
+	}
+
+	target = map_id2bl(src_ud->skilltarget);
+	if(target)
+		tsc_data = status_get_sc_data(target);
+
+	// スキル条件確認
+	do {
+		// 霧の中 不発判定
+		if(tsc_data && tsc_data[SC_FOGWALL].timer!=-1 && skill_get_misfire(src_ud->skillid) && atn_rand()%100 < 75)
+			break;
+
+		if(!target || target->prev==NULL) break;
+
+		// マップが違うか自分が死んでいる
+		if(src->m != target->m || unit_isdead(src)) break;
+
+		if(src_ud->skillid == PR_LEXAETERNA) {
+			if(tsc_data && (tsc_data[SC_FREEZE].timer != -1 || (tsc_data[SC_STONE].timer != -1 && tsc_data[SC_STONE].val2 == 0))) {
+				break;
+			}
+		}
+		else if(src_ud->skillid == RG_BACKSTAP) {
+			int dir = map_calc_dir(src,target->x,target->y),t_dir = status_get_dir(target);
+			int dist = unit_distance(src->x,src->y,target->x,target->y);
+			if(target->type != BL_SKILL && (dist == 0 || map_check_dir(dir,t_dir))) {
+				break;
+			}
+		}
+
+		// 沈黙や状態異常など
+		if(src_md) {
+			if(src_md->sc_data){
+				if(src_md->sc_data[SC_ROKISWEIL].timer != -1)
+					return 0;
+
+				if(!(mob_db[src_md->class_].mode & 0x20) && src_md->sc_data[SC_HERMODE].timer != -1)
+					return 0;
+
+				if(src_md->opt1>0 || src_md->sc_data[SC_SILENCE].timer != -1 || src_md->sc_data[SC_STEELBODY].timer != -1)
+					return 0;
+				if(src_md->sc_data[SC_AUTOCOUNTER].timer != -1 && src_md->ud.skillid != KN_AUTOCOUNTER) // オートカウンター
+					return 0;
+				if(src_md->sc_data[SC_BLADESTOP].timer != -1) // 白刃取り
+					return 0;
+				if(src_md->sc_data[SC_BERSERK].timer != -1) // バーサーク
+					return 0;
+			}
+			if(src_md->ud.skillid != NPC_EMOTION)
+				src_md->last_thinktime=tick + status_get_adelay(src);
+			if( src_md->skillidx >= 0)
+				src_md->skilldelay[src_md->skillidx]=tick;
+		}
+
+		inf2 = skill_get_inf2(src_ud->skillid);
+		if(inf2 & 0x04 || skill_get_inf(src_ud->skillid) & 0x01) {
+			int fail_flag = 1;
+			switch(src_ud->skillid) {	// 敵以外をターゲットにしても良いスキル
+				case AS_GRIMTOOTH:
+				case KN_BRANDISHSPEAR:
+				case SN_SHARPSHOOTING:
+				case GS_SPREADATTACK:
+				case NJ_HUUMA:
+				case NJ_BAKUENRYU:
+				case NJ_KAMAITACHI:
+					fail_flag = 0;
+					break;
+				case SA_SPELLBREAKER:
+					if(map[src->m].flag.nopenalty)	// 街中のみPCに有効
+						fail_flag = 0;
+					break;
+			}
+			if(fail_flag) {
+				if(battle_check_target(src,target,BCT_ENEMY) <= 0)	// 彼我敵対関係チェック
+					break;
+			}
+		}
+		if(inf2 & 0xC00 && src->id != target->id) {
+			int fail_flag = 1;
+			if(inf2 & 0x400 && battle_check_target(src,target, BCT_PARTY) > 0)
+				fail_flag = 0;
+			else if(src_sd && inf2 & 0x800 && src_sd->status.guild_id > 0 && src_sd->status.guild_id == status_get_guild_id(target))
+				fail_flag = 0;
+			if(fail_flag) {
+				break;
+			}
+		}
+
+		if(skill_get_nk(src_ud->skillid)&4 &&
+			!path_search_long(NULL,src->m,src->x,src->y,target->x,target->y)
+		) {
+			// 射線チェック
+			if(src_sd && battle_config.skill_out_range_consume)
+				skill_check_condition(&src_sd->bl,1);	// アイテム消費
+			break;
+		}
+		if(src_sd && !skill_check_condition(&src_sd->bl,1)) {		/* 使用条件チェック */
+			break;
+		}
+		if(src_sd) {
+			src_sd->skillitem = src_sd->skillitemlv = -1;
+			src_sd->skillitem_flag = 0;
+		}
+		if(src_hd && !skill_check_condition(&src_hd->bl,1))		/* 使用条件チェック */
+			break;
+
+		if(battle_config.pc_skill_log)
+			printf("PC %d skill castend skill=%d\n",src->id,src_ud->skillid);
+		unit_stop_walking(src,0);
+
+		switch( skill_get_nk(src_ud->skillid)&3 )
+		{
+		case 0:	/* 攻撃系 */
+		case 2:	/* 吹き飛ばし系 */
+			skill_castend_damage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
+			break;
+		case 1:	/* 支援系 */
+			if(	(src_ud->skillid==AL_HEAL ||
+				 src_ud->skillid==PR_SANCTUARY ||
+				 src_ud->skillid==ALL_RESURRECTION ||
+				 src_ud->skillid==PR_ASPERSIO) &&
+				battle_check_undead(status_get_race(target),status_get_elem_type(target)) &&
+				!(src_md && target->type == BL_MOB)	// MOB→MOBならアンデッドでも回復
+			) {
+				if(target->type != BL_PC ||
+					(src_md && src_md->skillidx >= 0 && !mob_db[src_md->class_].skill[src_md->skillidx].val[0])
+				) {
+					skill_castend_damage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
+				} else if (map[src->m].flag.pvp || map[src->m].flag.gvg) {
+					if(src_ud->skillid == AL_HEAL && battle_check_target(src,target,BCT_PARTY))
+						break;
+					skill_castend_damage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
+				} else {
+					break;
+				}
+			} else {
+				skill_castend_nodamage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
+			}
+			break;
+		}
+		if( src_md )
+			src_md->skillidx = -1;
+		return 0;
+	} while(0);
+
+	// スキル使用失敗
+	src_ud->canact_tick  = tick;
+	src_ud->canmove_tick = tick;
+	if(src_sd) {
+		src_sd->skillitem = src_sd->skillitemlv = -1;
+		src_sd->skillitem_flag = 0;
+	}
+	if(src_md)
+		src_md->skillidx = -1;
+	return 0;
+}
+
+/*==========================================
  * スキル使用（詠唱完了、ID指定攻撃系）
- * （スパゲッティに向けて１歩前進！(ダメポ)）
  *------------------------------------------
  */
 int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag )
@@ -2018,6 +2214,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case HFLI_MOON:
 	case HFLI_SBR44:
 	case NPC_BLEEDING:		/* 出血攻撃 */
+	case NPC_CRITICALWOUND:		/* 致命傷攻撃 */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case GS_DISARM:			/* ディスアーム */
@@ -5536,6 +5733,34 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
+	case NPC_DRAGONFEAR:		/* ドラゴンフィアー */
+	case NPC_WIDESILENCE:		/* 範囲沈黙攻撃 */
+	case NPC_WIDEFREEZE:		/* 範囲凍結攻撃 */
+	case NPC_WIDEBLEEDING:		/* 範囲出血攻撃 */
+	case NPC_WIDESTONE:		/* 範囲石化攻撃 */
+	case NPC_WIDECONFUSE:		/* 範囲混乱攻撃 */
+	case NPC_WIDESLEEP:		/* 範囲睡眠攻撃 */
+	case NPC_WIDECURSE:		/* 範囲呪い攻撃 */
+	case NPC_WIDESTUN:		/* 範囲スタン攻撃 */
+	case NPC_SLOWCAST:		/* スロウキャスト */
+		if(flag&1) {
+			if(skillid == NPC_DRAGONFEAR) {
+				const int sc_type[4] = { SC_STAN, SC_CURSE, SC_SILENCE, SC_BLEED };
+				int n = atn_rand() % 4;
+				// upkeep_time2は配列の添え字に従う
+				status_change_start(bl,sc_type[n],skilllv,0,0,0,skill_get_time2(skillid,n+1),0);
+			} else {
+				status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+			}
+		} else {
+			int ar = skilllv * 3 - 1;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
 	default:
 		printf("skill_castend_nodamage_id: Unknown skill used:%d\n",skillid);
 		map_freeblock_unlock();
@@ -5546,131 +5771,95 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 }
 
 /*==========================================
- * スキル使用（詠唱完了、ID指定）
+ * スキル使用（詠唱完了、場所指定）
  *------------------------------------------
  */
-int skill_castend_id( int tid, unsigned int tick, int id,int data )
+int skill_castend_pos( int tid, unsigned int tick, int id,int data )
 {
-	struct block_list *target , *src = map_id2bl(id);
-	struct status_change* tsc_data = NULL;
-	struct map_session_data* src_sd = NULL;
-	struct mob_data        * src_md = NULL;
-	struct homun_data      * src_hd = NULL;
-	struct unit_data       * src_ud = NULL;
-	int inf2;
+	struct block_list* src = map_id2bl(id);
+	int range,maxcount;
+	struct map_session_data *src_sd = NULL;
+	struct unit_data        *src_ud = NULL;
+	struct mob_data         *src_md = NULL;
 
 	nullpo_retr(0, src);
 	nullpo_retr(0, src_ud = unit_bl2ud(src));
 
-	if( src->prev == NULL ) // prevが無いのはありなの？
+	if( src->prev == NULL )
 		return 0;
 
-	src_sd = BL_DOWNCAST( BL_PC,  src );
-	src_md = BL_DOWNCAST( BL_MOB, src );
-	src_hd = BL_DOWNCAST( BL_HOM, src );
+	src_sd = BL_DOWNCAST( BL_PC , src);
+	src_md = BL_DOWNCAST( BL_MOB, src);
 
-	if(src_ud->skillid != SA_CASTCANCEL) {
-		if( src_ud->skilltimer != tid ) return 0; /* タイマIDの確認 */
-		if( src_sd && src_ud->skilltimer != -1 && pc_checkskill(src_sd,SA_FREECAST) > 0) {
-			src_sd->speed = src_sd->prev_speed;
-			clif_updatestatus(src_sd,SP_SPEED);
-		}
-		src_ud->skilltimer=-1;
+	if( src_ud->skilltimer != tid )	/* タイマIDの確認 */
+		return 0;
+	if(src_sd && src_ud->skilltimer != -1 && pc_checkskill(src_sd,SA_FREECAST) > 0) {
+		src_sd->speed = src_sd->prev_speed;
+		clif_updatestatus(src_sd,SP_SPEED);
 	}
-
-	target = map_id2bl(src_ud->skilltarget);
-	if(target)
-		tsc_data = status_get_sc_data(target);
-
-	// スキル条件確認
+	src_ud->skilltimer=-1;
 	do {
-		// 霧の中 不発判定
-		if(tsc_data && tsc_data[SC_FOGWALL].timer!=-1 && skill_get_misfire(src_ud->skillid) && atn_rand()%100 < 75)
-			break;
-
-		if(!target || target->prev==NULL) break;
-
-		// マップが違うか自分が死んでいる
-		if(src->m != target->m || unit_isdead(src)) break;
-
-		if(src_ud->skillid == PR_LEXAETERNA) {
-			if(tsc_data && (tsc_data[SC_FREEZE].timer != -1 || (tsc_data[SC_STONE].timer != -1 && tsc_data[SC_STONE].val2 == 0))) {
+		if(unit_isdead(src)) break;
+		if(src_md && src_md->sc_data){
+			if(src_md->sc_data[SC_ROKISWEIL].timer != -1)
 				break;
-			}
-		}
-		else if(src_ud->skillid == RG_BACKSTAP) {
-			int dir = map_calc_dir(src,target->x,target->y),t_dir = status_get_dir(target);
-			int dist = unit_distance(src->x,src->y,target->x,target->y);
-			if(target->type != BL_SKILL && (dist == 0 || map_check_dir(dir,t_dir))) {
+			if(!(mob_db[src_md->class_].mode & 0x20) && src_md->sc_data[SC_HERMODE].timer != -1)
 				break;
-			}
-		}
-
-		// 沈黙や状態異常など
-		if(src_md) {
-			if(src_md->sc_data){
-				if(src_md->sc_data[SC_ROKISWEIL].timer != -1)
-					return 0;
-
-				if(!(mob_db[src_md->class_].mode & 0x20) && src_md->sc_data[SC_HERMODE].timer != -1)
-					return 0;
-
-				if(src_md->opt1>0 || src_md->sc_data[SC_SILENCE].timer != -1 || src_md->sc_data[SC_STEELBODY].timer != -1)
-					return 0;
-				if(src_md->sc_data[SC_AUTOCOUNTER].timer != -1 && src_md->ud.skillid != KN_AUTOCOUNTER) // オートカウンター
-					return 0;
-				if(src_md->sc_data[SC_BLADESTOP].timer != -1) // 白刃取り
-					return 0;
-				if(src_md->sc_data[SC_BERSERK].timer != -1) // バーサーク
-					return 0;
-			}
-			if(src_md->ud.skillid != NPC_EMOTION)
-				src_md->last_thinktime=tick + status_get_adelay(src);
-			if( src_md->skillidx >= 0)
-				src_md->skilldelay[src_md->skillidx]=tick;
-		}
-
-		inf2 = skill_get_inf2(src_ud->skillid);
-		if(inf2 & 0x04 || skill_get_inf(src_ud->skillid) & 0x01) {
-			int fail_flag = 1;
-			switch(src_ud->skillid) {	// 敵以外をターゲットにしても良いスキル
-				case AS_GRIMTOOTH:
-				case KN_BRANDISHSPEAR:
-				case SN_SHARPSHOOTING:
-				case GS_SPREADATTACK:
-				case NJ_HUUMA:
-				case NJ_BAKUENRYU:
-				case NJ_KAMAITACHI:
-					fail_flag = 0;
-					break;
-				case SA_SPELLBREAKER:
-					if(map[src->m].flag.nopenalty)	// 街中のみPCに有効
-						fail_flag = 0;
-					break;
-			}
-			if(fail_flag) {
-				if(battle_check_target(src,target,BCT_ENEMY) <= 0)	// 彼我敵対関係チェック
-					break;
-			}
-		}
-		if(inf2 & 0xC00 && src->id != target->id) {
-			int fail_flag = 1;
-			if(inf2 & 0x400 && battle_check_target(src,target, BCT_PARTY) > 0)
-				fail_flag = 0;
-			else if(src_sd && inf2 & 0x800 && src_sd->status.guild_id > 0 && src_sd->status.guild_id == status_get_guild_id(target))
-				fail_flag = 0;
-			if(fail_flag) {
+			if(src_md->opt1>0 || src_md->sc_data[SC_SILENCE].timer != -1 || src_md->sc_data[SC_STEELBODY].timer != -1)
 				break;
-			}
+			if(src_md->sc_data[SC_AUTOCOUNTER].timer != -1 && src_md->ud.skillid != KN_AUTOCOUNTER) // オートカウンター
+				break;
+			if(src_md->sc_data[SC_BLADESTOP].timer != -1) // 白刃取り
+				break;
+			if(src_md->sc_data[SC_BERSERK].timer != -1) // バーサーク
+				break;
 		}
 
-		if(skill_get_nk(src_ud->skillid)&4 &&
-			!path_search_long(NULL,src->m,src->x,src->y,target->x,target->y)
+		if (
+			(src_sd && !battle_config.pc_skill_reiteration) ||
+			(src_md && !battle_config.monster_skill_reiteration)
 		) {
-			// 射線チェック
-			if(src_sd && battle_config.skill_out_range_consume)
-				skill_check_condition(&src_sd->bl,1);	// アイテム消費
-			break;
+			if(
+				skill_get_unit_flag(src_ud->skillid)&UF_NOREITERATION &&
+				skill_check_unit_range(src->m,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv)
+			) {
+				break;
+			}
+		}
+
+		if(
+			(src_sd && battle_config.pc_skill_nofootset) ||
+			(src_md && battle_config.monster_skill_nofootset)
+		) {
+			if(
+				skill_get_unit_flag(src_ud->skillid)&UF_NOFOOTSET &&
+				skill_check_unit_range2(src->m,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv)
+			) {
+				break;
+			}
+		}
+
+		if(
+			(src_sd && battle_config.pc_land_skill_limit) ||
+			(src_md && battle_config.monster_land_skill_limit)
+		) {
+			maxcount = skill_get_maxcount(src_ud->skillid,src_ud->skilllv);
+			if(maxcount > 0 && skill_count_unitgroup(src_ud,src_ud->skillid) >= maxcount)
+				break;
+		}
+
+		range = skill_get_fixed_range(src,src_ud->skillid,src_ud->skilllv);
+		if(src_sd)
+			range += battle_config.pc_skill_add_range;
+		if(src_md)
+			range += battle_config.mob_skill_add_range;
+
+		if(!src_sd || battle_config.check_skillpos_range) {	// 発動元がPCで射程チェック無しならこの処理は無視してクライアントの情報を信頼する
+			if(range < unit_distance(src->x,src->y,src_ud->skillx,src_ud->skilly)) {
+				if(src_sd && battle_config.skill_out_range_consume)
+					skill_check_condition(&src_sd->bl,1);	// アイテム消費
+				break;
+			}
 		}
 		if(src_sd && !skill_check_condition(&src_sd->bl,1)) {		/* 使用条件チェック */
 			break;
@@ -5679,56 +5868,27 @@ int skill_castend_id( int tid, unsigned int tick, int id,int data )
 			src_sd->skillitem = src_sd->skillitemlv = -1;
 			src_sd->skillitem_flag = 0;
 		}
-		if(src_hd && !skill_check_condition(&src_hd->bl,1))		/* 使用条件チェック */
-			break;
 
-		if(battle_config.pc_skill_log)
+		if(src_sd && battle_config.pc_skill_log)
 			printf("PC %d skill castend skill=%d\n",src->id,src_ud->skillid);
-		unit_stop_walking(src,0);
+		if(src_md && battle_config.mob_skill_log)
+			printf("MOB skill castend skill=%d, class = %d\n",src_ud->skillid,src_md->class_);
 
-		switch( skill_get_nk(src_ud->skillid)&3 )
-		{
-		case 0:	/* 攻撃系 */
-		case 2:	/* 吹き飛ばし系 */
-			skill_castend_damage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
-			break;
-		case 1:	/* 支援系 */
-			if(	(src_ud->skillid==AL_HEAL ||
-				 src_ud->skillid==PR_SANCTUARY ||
-				 src_ud->skillid==ALL_RESURRECTION ||
-				 src_ud->skillid==PR_ASPERSIO) &&
-				battle_check_undead(status_get_race(target),status_get_elem_type(target)) &&
-				!(src_md && target->type == BL_MOB)	// MOB→MOBならアンデッドでも回復
-			) {
-				if(target->type != BL_PC ||
-					(src_md && src_md->skillidx >= 0 && !mob_db[src_md->class_].skill[src_md->skillidx].val[0])
-				) {
-					skill_castend_damage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
-				} else if (map[src->m].flag.pvp || map[src->m].flag.gvg) {
-					if(src_ud->skillid == AL_HEAL && battle_check_target(src,target,BCT_PARTY))
-						break;
-					skill_castend_damage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
-				} else {
-					break;
-				}
-			} else
-				skill_castend_nodamage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
-			break;
-		}
+		unit_stop_walking(src,0);
+		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
 		if( src_md )
-			src_md->skillidx  = -1;
+			src_md->skillidx = -1;
 		return 0;
 	} while(0);
 
-	// スキル使用失敗
-	src_ud->canact_tick  = tick;
+	if(src_sd)
+		clif_skill_fail(src_sd,src_ud->skillid,0,0);
+	src_ud->canact_tick = tick;
 	src_ud->canmove_tick = tick;
 	if(src_sd) {
 		src_sd->skillitem = src_sd->skillitemlv = -1;
 		src_sd->skillitem_flag = 0;
 	}
-	if(src_md)
-		src_md->skillidx = -1;
 	return 0;
 }
 
@@ -7331,128 +7491,6 @@ int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage
 }
 
 /*---------------------------------------------------------------------------- */
-
-/*==========================================
- * スキル使用（詠唱完了、場所指定）
- *------------------------------------------
- */
-int skill_castend_pos( int tid, unsigned int tick, int id,int data )
-{
-	struct block_list* src = map_id2bl(id);
-	int range,maxcount;
-	struct map_session_data *src_sd = NULL;
-	struct unit_data        *src_ud = NULL;
-	struct mob_data         *src_md = NULL;
-
-	nullpo_retr(0, src);
-	nullpo_retr(0, src_ud = unit_bl2ud(src));
-
-	if( src->prev == NULL )
-		return 0;
-
-	src_sd = BL_DOWNCAST( BL_PC , src);
-	src_md = BL_DOWNCAST( BL_MOB, src);
-
-	if( src_ud->skilltimer != tid )	/* タイマIDの確認 */
-		return 0;
-	if(src_sd && src_ud->skilltimer != -1 && pc_checkskill(src_sd,SA_FREECAST) > 0) {
-		src_sd->speed = src_sd->prev_speed;
-		clif_updatestatus(src_sd,SP_SPEED);
-	}
-	src_ud->skilltimer=-1;
-	do {
-		if(unit_isdead(src)) break;
-		if(src_md && src_md->sc_data){
-			if(src_md->sc_data[SC_ROKISWEIL].timer != -1)
-				break;
-			if(!(mob_db[src_md->class_].mode & 0x20) && src_md->sc_data[SC_HERMODE].timer != -1)
-				break;
-			if(src_md->opt1>0 || src_md->sc_data[SC_SILENCE].timer != -1 || src_md->sc_data[SC_STEELBODY].timer != -1)
-				break;
-			if(src_md->sc_data[SC_AUTOCOUNTER].timer != -1 && src_md->ud.skillid != KN_AUTOCOUNTER) // オートカウンター
-				break;
-			if(src_md->sc_data[SC_BLADESTOP].timer != -1) // 白刃取り
-				break;
-			if(src_md->sc_data[SC_BERSERK].timer != -1) // バーサーク
-				break;
-		}
-
-		if (
-			(src_sd && !battle_config.pc_skill_reiteration) ||
-			(src_md && !battle_config.monster_skill_reiteration)
-		) {
-			if(
-				skill_get_unit_flag(src_ud->skillid)&UF_NOREITERATION &&
-				skill_check_unit_range(src->m,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv)
-			) {
-				break;
-			}
-		}
-
-		if(
-			(src_sd && battle_config.pc_skill_nofootset) ||
-			(src_md && battle_config.monster_skill_nofootset)
-		) {
-			if(
-				skill_get_unit_flag(src_ud->skillid)&UF_NOFOOTSET &&
-				skill_check_unit_range2(src->m,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv)
-			) {
-				break;
-			}
-		}
-
-		if(
-			(src_sd && battle_config.pc_land_skill_limit) ||
-			(src_md && battle_config.monster_land_skill_limit)
-		) {
-			maxcount = skill_get_maxcount(src_ud->skillid,src_ud->skilllv);
-			if(maxcount > 0 && skill_count_unitgroup(src_ud,src_ud->skillid) >= maxcount)
-				break;
-		}
-
-		range = skill_get_fixed_range(src,src_ud->skillid,src_ud->skilllv);
-		if(src_sd)
-			range += battle_config.pc_skill_add_range;
-		if(src_md)
-			range += battle_config.mob_skill_add_range;
-
-		if(!src_sd || battle_config.check_skillpos_range) {	// 発動元がPCで射程チェック無しならこの処理は無視してクライアントの情報を信頼する
-			if(range < unit_distance(src->x,src->y,src_ud->skillx,src_ud->skilly)) {
-				if(src_sd && battle_config.skill_out_range_consume)
-					skill_check_condition(&src_sd->bl,1);	// アイテム消費
-				break;
-			}
-		}
-		if(src_sd && !skill_check_condition(&src_sd->bl,1)) {		/* 使用条件チェック */
-			break;
-		}
-		if(src_sd) {
-			src_sd->skillitem = src_sd->skillitemlv = -1;
-			src_sd->skillitem_flag = 0;
-		}
-
-		if(src_sd && battle_config.pc_skill_log)
-			printf("PC %d skill castend skill=%d\n",src->id,src_ud->skillid);
-		if(src_md && battle_config.mob_skill_log)
-			printf("MOB skill castend skill=%d, class = %d\n",src_ud->skillid,src_md->class_);
-
-		unit_stop_walking(src,0);
-		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
-		if( src_md )
-			src_md->skillidx = -1;
-		return 0;
-	} while(0);
-
-	if(src_sd)
-		clif_skill_fail(src_sd,src_ud->skillid,0,0);
-	src_ud->canact_tick = tick;
-	src_ud->canmove_tick = tick;
-	if(src_sd) {
-		src_sd->skillitem = src_sd->skillitemlv = -1;
-		src_sd->skillitem_flag = 0;
-	}
-	return 0;
-}
 
 /*==========================================
  * 範囲内キャラ存在確認判定処理(foreachinarea)

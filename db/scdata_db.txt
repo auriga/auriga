@@ -339,6 +339,8 @@
 375,SC_MEAL_INCDEX2,1,0,0		// DEX上昇（食事用、死亡しても効果維持）
 376,SC_MEAL_INCINT2,1,0,0		// INT上昇（食事用、死亡しても効果維持）
 377,SC_MEAL_INCLUK2,1,0,0		// LUK上昇（食事用、死亡しても効果維持）
+378,SC_SLOWCAST,0,0,0			// スロウキャスト
+379,SC_CRITICALWOUND,0,0,0		// 致命傷
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除
