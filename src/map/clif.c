@@ -2203,7 +2203,11 @@ void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
 	nullpo_retv(nd);
 
 	fd  = sd->fd;
-	len = packet_db[0x289].len;	// 0x289で計算する
+#if PACKETVER < 9
+	len = 8;
+#else
+	len = 12;
+#endif
 
 	WFIFOW(fd,0) = 0x287;
 	WFIFOL(fd,4) = sd->shop_point;
@@ -8773,6 +8777,7 @@ void clif_update_temper(struct map_session_data *sd)
  */
 void clif_send_hotkey(struct map_session_data *sd)
 {
+#if PACKETVER >= 9
 	int i, j, fd;
 
 	nullpo_retv(sd);
@@ -8787,6 +8792,7 @@ void clif_send_hotkey(struct map_session_data *sd)
 		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
 	}
 	WFIFOSET(fd,packet_db[0x2b9].len);
+#endif
 
 	return;
 }
@@ -9919,14 +9925,14 @@ static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int c
 
 	fail = npc_pointshop_buy(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)), RFIFOW(fd,GETPACKETPOS(cmd,1)));
 
-	WFIFOW(fd,0) = 0x289;
-	WFIFOL(fd,2) = sd->shop_point;
-	if(packet_db[0x289].len == 8) {
-		WFIFOW(fd, 6) = fail;
-	} else {
-		WFIFOL(fd, 6) = 0;	// ??
-		WFIFOW(fd,10) = fail;
-	}
+	WFIFOW(fd,0)  = 0x289;
+	WFIFOL(fd,2)  = sd->shop_point;
+#if PACKETVER < 9
+	WFIFOW(fd,6)  = fail;
+#else
+	WFIFOL(fd,6)  = 0;	// ??
+	WFIFOW(fd,10) = fail;
+#endif
 	WFIFOSET(fd,packet_db[0x289].len);
 
 	return;
