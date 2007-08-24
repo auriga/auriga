@@ -74,6 +74,9 @@ static struct skill_tree_entry {
 
 static int dummy_gm_account = 0;
 
+#define MOTD_LINE_SIZE 32
+static char motd_text[MOTD_LINE_SIZE][256];
+
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
  *------------------------------------------
@@ -81,6 +84,7 @@ static int dummy_gm_account = 0;
 static int pc_dead(struct block_list *src,struct map_session_data *sd);
 static int pc_nightmare_drop(struct map_session_data *sd,short flag);
 static int pc_equiplookall(struct map_session_data *sd);
+
 
 /*==========================================
  * スキルツリー情報の検索
@@ -1189,28 +1193,12 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	memset(&sd->mail_item,0,sizeof(struct item));
 	sd->mail_amount = 0;
 
-	// ホットキー送信
+	// ホットキーセット
 	sd->hotkey_set = 0;
-	clif_send_hotkey(sd);
 
 	// Message of the Dayの送信
-	{
-		char buf[256];
-		FILE *fp = fopen(motd_txt, "r");
-
-		if(fp) {
-			while(fgets(buf, 250, fp) != NULL) {
-				for(i=0; buf[i]; i++) {
-					if(buf[i] == '\r' || buf[i] == '\n') {
-						buf[i] = '\0';
-						break;
-					}
-				}
-				if(buf[0])
-					clif_displaymessage(sd->fd,buf);
-			}
-			fclose(fp);
-		}
+	for(i = 0; i < MOTD_LINE_SIZE && motd_text[i]; i++) {
+		clif_displaymessage(sd->fd, motd_text[i]);
 	}
 
 	return 0;
@@ -8237,6 +8225,39 @@ int pc_readdb(void)
 }
 
 /*==========================================
+ * Message of the Dayの読み込み
+ *------------------------------------------
+ */
+int pc_read_motd(void)
+{
+	int i, ln = 0;
+	char buf[256];
+	FILE *fp;
+
+	memset(motd_text, 0, sizeof(motd_text));
+
+	if((fp = fopen(motd_txt, "r")) != NULL) {
+		while(fgets(buf, sizeof(buf)-1, fp) != NULL) {
+			for(i=0; buf[i]; i++) {
+				if(buf[i] == '\r' || buf[i] == '\n') {
+					if(i == 0) {
+						buf[i++] = ' ';
+					}
+					buf[i] = '\0';
+					break;
+				}
+			}
+			strncpy(motd_text[ln], buf, 256);
+			if(++ln >= MOTD_LINE_SIZE)
+				break;
+		}
+		fclose(fp);
+	}
+
+	return 0;
+}
+
+/*==========================================
  * extra system
  *------------------------------------------
  */
@@ -8519,7 +8540,9 @@ int do_final_pc(void)
 int do_init_pc(void)
 {
 	printf("MAX_VALID_PC_CLASS:%d\n",MAX_VALID_PC_CLASS);
+
 	pc_readdb();
+	pc_read_motd();
 	pc_read_gm_account();
 
 	add_timer_func_list(pc_natural_heal,"pc_natural_heal");

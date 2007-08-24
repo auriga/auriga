@@ -9031,6 +9031,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		intif_request_scdata(sd->status.account_id,sd->status.char_id);
 
 		clif_skillinfoblock(sd);
+		clif_send_hotkey(sd);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
 		clif_updatestatus(sd,SP_NEXTJOBEXP);
 		clif_updatestatus(sd,SP_SKILLPOINT);

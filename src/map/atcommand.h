@@ -137,6 +137,7 @@ enum AtCommandType {
 	AtCommand_ReloadPcDB,
 	AtCommand_ReloadSkillDB,
 	AtCommand_ReloadStatusDB,
+	AtCommand_ReloadMotd,
 	AtCommand_ItemMonster,
 	AtCommand_Mapflag,
 	AtCommand_MannerPoint,

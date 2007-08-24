@@ -145,6 +145,7 @@
 @reloadpcdb        ---- プレイヤー関連DBを再読込する
 @reloadskilldb     ---- skilldbを再読込する
 @reloadstatusdb    ---- ステータス関連DBを再読込する
+@reloadmotd        ---- motdを再読込する
 
 @gm パスワード     ---- GMになる（現在廃止）
 

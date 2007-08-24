@@ -181,6 +181,7 @@ int pc_runtodir(struct map_session_data *sd);
 
 // DB再読込用
 int pc_readdb(void);
+int pc_read_motd(void);
 
 int do_final_pc(void);
 int do_init_pc(void);

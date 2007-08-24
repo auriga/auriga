@@ -171,6 +171,7 @@ ATCOMMAND_FUNC(reloadmobdb);
 ATCOMMAND_FUNC(reloadpcdb);
 ATCOMMAND_FUNC(reloadskilldb);
 ATCOMMAND_FUNC(reloadstatusdb);
+ATCOMMAND_FUNC(reloadmotd);
 ATCOMMAND_FUNC(itemmonster);
 ATCOMMAND_FUNC(mapflag);
 ATCOMMAND_FUNC(mannerpoint);
@@ -337,6 +338,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_ReloadPcDB,         "@reloadpcdb",       0, atcommand_reloadpcdb,          -1 },
 	{ AtCommand_ReloadSkillDB,      "@reloadskilldb",    0, atcommand_reloadskilldb,       -1 },
 	{ AtCommand_ReloadStatusDB,     "@reloadstatusdb",   0, atcommand_reloadstatusdb,      -1 },
+	{ AtCommand_ReloadMotd,         "@reloadmotd",       0, atcommand_reloadmotd,          -1 },
 	{ AtCommand_ItemMonster,        "@im",               0, atcommand_itemmonster,         -1 },
 	{ AtCommand_Mapflag,            "@mapflag",          0, atcommand_mapflag,             -1 },
 	{ AtCommand_MannerPoint,        "@mannerpoint",      0, atcommand_mannerpoint,         -1 },
@@ -4882,6 +4884,20 @@ atcommand_reloadstatusdb(
 {
 	status_readdb();
 	clif_displaymessage(fd, msg_txt(116));
+
+	return 0;
+}
+
+/*==========================================
+ * Message of the Dayのリロード
+ *------------------------------------------
+ */
+int atcommand_reloadmotd(
+	const int fd, struct map_session_data* sd,
+	const char* command, const char* message)
+{
+	pc_read_motd();
+	clif_displaymessage(fd, msg_txt(186));
 
 	return 0;
 }
