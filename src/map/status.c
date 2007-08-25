@@ -1801,6 +1801,17 @@ L_RECALC:
 			sd->speed    = (sd->speed * 135) / 100;
 		}
 
+		// ストーンスキン
+		if(sd->sc_data[SC_STONESKIN].timer != -1) {
+			sd->def  = sd->def  * (100 + 20 * sd->sc_data[SC_STONESKIN].val1) / 100;
+			sd->mdef = sd->mdef * (100 - 20 * sd->sc_data[SC_STONESKIN].val1) / 100;
+		}
+		// アンチマジック
+		if(sd->sc_data[SC_ANTIMAGIC].timer != -1) {
+			sd->def  = sd->def  * (100 - 20 * sd->sc_data[SC_ANTIMAGIC].val1) / 100;
+			sd->mdef = sd->mdef * (100 + 20 * sd->sc_data[SC_ANTIMAGIC].val1) / 100;
+		}
+
 		// 耐性
 		if(sd->sc_data[SC_RESISTWATER].timer != -1)
 			sd->subele[ELE_WATER] += sd->sc_data[SC_RESISTWATER].val1;
@@ -3113,18 +3124,25 @@ int status_get_def(struct block_list *bl)
 				def >>= 1;
 			// コンセントレーション時は減算
 			if( sc_data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)
-				def = (def*(100 - 5*sc_data[SC_CONCENTRATION].val1))/100;
+				def = def * (100 - 5*sc_data[SC_CONCENTRATION].val1) / 100;
 			// NPCディフェンダー
 			if(sc_data[SC_NPC_DEFENDER].timer != -1 && bl->type != BL_PC)
 				def += 100;
 			// THE SUN
 			if(sc_data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 				def = def*80/100;
-			if(sc_data[SC_FLING].timer != -1 && bl->type != BL_PC)			// フライング
+			// フライング
+			if(sc_data[SC_FLING].timer != -1 && bl->type != BL_PC)
 				def = def * (100 - 5*sc_data[SC_FLING].val1)/100;
 			// エスク
 			if(sc_data[SC_SKE].timer != -1 && bl->type == BL_MOB)
 				def = def/2;
+			// ストーンスキン
+			if(sc_data[SC_STONESKIN].timer != -1 && bl->type != BL_PC)
+				def = def * (100 + 20 * sc_data[SC_STONESKIN].val1) / 100;
+			// アンチマジック
+			if(sc_data[SC_ANTIMAGIC].timer != -1 && bl->type != BL_PC)
+				def = def * (100 - 20 * sc_data[SC_ANTIMAGIC].val1) / 100;
 		}
 		// 詠唱中は詠唱時減算率に基づいて減算
 		if(ud && ud->skilltimer != -1) {
@@ -3167,8 +3185,15 @@ int status_get_mdef(struct block_list *bl)
 			// 凍結、石化時は1.25倍
 			if(sc_data[SC_FREEZE].timer != -1 || (sc_data[SC_STONE].timer != -1 && sc_data[SC_STONE].val2 == 0))
 				mdef = mdef*125/100;
-			if(bl->type != BL_PC && sc_data[SC_MINDBREAKER].timer != -1)
+			// マインドブレイカー
+			if(sc_data[SC_MINDBREAKER].timer != -1 && bl->type != BL_PC)
 				mdef -= (mdef*12*sc_data[SC_MINDBREAKER].val1)/100;
+			// ストーンスキン
+			if(sc_data[SC_STONESKIN].timer != -1 && bl->type != BL_PC)
+				mdef = mdef * (100 - 20 * sc_data[SC_STONESKIN].val1) / 100;
+			// アンチマジック
+			if(sc_data[SC_ANTIMAGIC].timer != -1 && bl->type != BL_PC)
+				mdef = mdef * (100 + 20 * sc_data[SC_ANTIMAGIC].val1) / 100;
 		}
 	}
 	if(mdef < 0) mdef = 0;
@@ -4262,6 +4287,16 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		}
 	}
 
+	// クァグマイア中は無効
+	if(sc_data[SC_QUAGMIRE].timer != -1 && status_is_disable(type,0x02))
+		return 0;
+	// 私を忘れないで中は無効
+	if(sc_data[SC_DONTFORGETME].timer != -1 && status_is_disable(type,0x04))
+		return 0;
+	// 速度減少中は無効
+	if(sc_data[SC_DECREASEAGI].timer != -1 && status_is_disable(type,0x08))
+		return 0;
+
 	if(type == SC_STAN || type == SC_SLEEP)
 		unit_stop_walking(bl,1);
 
@@ -4288,15 +4323,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			sc_data[type].timer = -1;
 		}
 	}
-	// クァグマイア中は無効
-	if(sc_data[SC_QUAGMIRE].timer != -1 && status_is_disable(type,0x02))
-		return 0;
-	// 私を忘れないで中は無効
-	if(sc_data[SC_DONTFORGETME].timer != -1 && status_is_disable(type,0x04))
-		return 0;
-	// 速度減少中は無効
-	if(sc_data[SC_DECREASEAGI].timer != -1 && status_is_disable(type,0x08))
-		return 0;
 
 	switch(type) {	/* 異常の種類ごとの処理 */
 		case SC_DOUBLE:				/* ダブルストレイフィング */
@@ -4463,6 +4489,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_BLOODLUST:			/* ブラッドラスト */
 		case SC_FLEET:				/* フリートムーブ */
 		case SC_SPEED:				/* オーバードスピード */
+		case SC_STONESKIN:			/* ストーンスキン */
+		case SC_ANTIMAGIC:			/* アンチマジック */
 			calc_flag = 1;
 			break;
 
@@ -5540,6 +5568,8 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_BLOODLUST:			/* ブラッドラスト */
 		case SC_FLEET:				/* フリートムーブ */
 		case SC_SPEED:				/* オーバードスピード */
+		case SC_STONESKIN:			/* ストーンスキン */
+		case SC_ANTIMAGIC:			/* アンチマジック */
 			calc_flag = 1;
 			break;
 		case SC_ELEMENTWATER:		// 水

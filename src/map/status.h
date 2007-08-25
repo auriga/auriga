@@ -499,6 +499,8 @@ enum {
 	SC_SLOWCAST             = 378,
 	SC_CRITICALWOUND        = 379,
 	SC_MAGICMIRROR          = 380,
+	SC_STONESKIN            = 381,
+	SC_ANTIMAGIC            = 382,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,

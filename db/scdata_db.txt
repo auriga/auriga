@@ -342,6 +342,8 @@
 378,SC_SLOWCAST,0,0,0			// スロウキャスト
 379,SC_CRITICALWOUND,0,0,0		// 致命傷
 380,SC_MAGICMIRROR,0,1,0		// マジックミラー
+381,SC_STONESKIN,0,1,0			// ストーンスキン
+382,SC_ANTIMAGIC,0,1,0			// アンチマジック
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

@@ -307,7 +307,7 @@ int SkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること
 	/* 660- */
 	-1,-1,-1,SC_SILENCE,SC_FREEZE,SC_BLEED,SC_STONE,SC_CONFUSION,SC_SLEEP,SC_SIGHT,
 	/* 670- */
-	-1,SC_MAGICMIRROR,SC_SLOWCAST,SC_CRITICALWOUND,-1,-1,-1,SC_CURSE,SC_STAN,-1,
+	-1,SC_MAGICMIRROR,SC_SLOWCAST,SC_CRITICALWOUND,-1,SC_STONESKIN,SC_ANTIMAGIC,SC_CURSE,SC_STAN,-1,
 	/* 680- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
@@ -3841,6 +3841,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case WS_OVERTHRUSTMAX:	/* オーバートラストマックス */
 	case KN_ONEHAND:		/* ワンハンドクイッケン */
 	case NPC_MAGICMIRROR:		/* マジックミラー */
+	case NPC_STONESKIN:		/* ストーンスキン */
+	case NPC_ANTIMAGIC:		/* アンチマジック */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
