@@ -121,7 +121,8 @@ int status_readdb(void);
 
 int do_init_status(void);
 
-enum {	// struct map_session_data の status_changeの番号テーブル
+// ステータス異常番号テーブル
+enum {
 	SC_PROVOKE              = 0,
 	SC_ENDURE               = 1,
 	SC_TWOHANDQUICKEN       = 2,
@@ -497,16 +498,17 @@ enum {	// struct map_session_data の status_changeの番号テーブル
 	SC_MEAL_INCLUK2         = 377,
 	SC_SLOWCAST             = 378,
 	SC_CRITICALWOUND        = 379,
+	SC_MAGICMIRROR          = 380,
 
-	//startでは使えないresistをアイテム側で全てクリアするための物
+	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
 	SC_RACECLEAR            = 1002,
 	SC_SOUL                 = 1003,
 	SC_SOULCLEAR            = 1004,
 };
 
-//状態アイコン
-//厳密にはキャラクターの色の変化なども含まれている(爆裂波動など)
+// 状態アイコン
+// 厳密にはキャラクターの色の変化なども含まれている(爆裂波動など)
 enum {
 	SI_BLANK            = 43,
 

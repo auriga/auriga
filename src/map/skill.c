@@ -305,9 +305,9 @@ int SkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 660- */
-	-1,-1,-1,SC_SILENCE,SC_FREEZE,SC_BLEED,SC_STONE,SC_CONFUSION,SC_SLEEP,-1,
+	-1,-1,-1,SC_SILENCE,SC_FREEZE,SC_BLEED,SC_STONE,SC_CONFUSION,SC_SLEEP,SC_SIGHT,
 	/* 670- */
-	-1,-1,SC_SLOWCAST,SC_CRITICALWOUND,-1,-1,-1,SC_CURSE,SC_STAN,-1,
+	-1,SC_MAGICMIRROR,SC_SLOWCAST,SC_CRITICALWOUND,-1,-1,-1,SC_CURSE,SC_STAN,-1,
 	/* 680- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
@@ -346,7 +346,7 @@ int HomSkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせるこ
 };
 
 /* (スキル番号 - GUILD_SKILLID)＝＞ステータス異常番号変換テーブル */
-int GuildSkillStatusChangeTable[]={	/* skill.hのenumのSC_***とあわせること */
+int GuildSkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること */
 	/* 0- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 10- */
@@ -1188,6 +1188,10 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case NPC_EVILLAND:		/* イビルランド */
 		if(atn_rand()%100 < skilllv*5)
 			status_change_start(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
+	case NPC_CRITICALWOUND:		/* 致命傷攻撃 */
+		// 確率不明なのでとりあえず100%
+		status_change_start(bl,SC_CRITICALWOUND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	}
 
@@ -3264,29 +3268,28 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		{
 			int heal = skill_fix_heal(src, skillid, skill_calc_heal(src, skilllv));
 			int heal_get_jobexp;
-			int skill;
-			sc_data=status_get_sc_data(bl);
-			if(battle_config.heal_counterstop){
-				if(skilllv>=battle_config.heal_counterstop)
-					heal=9999; // 9999ヒール
+			sc_data = status_get_sc_data(bl);
+			if(battle_config.heal_counterstop) {
+				if(skilllv >= battle_config.heal_counterstop)
+					heal = 9999;	// 9999ヒール
 			}
-			if( dstsd && dstsd->special_state.no_magic_damage )
-				heal=0;	// 黄金蟲カード（ヒール量０）
-			if(sc_data && sc_data[SC_BERSERK].timer!=-1) // バーサーク中はヒール０
-				heal=0;
-			if (sd){
-				if((skill=pc_checkskill(sd,HP_MEDITATIO))>0) // メディタティオ
-					heal += heal*(skill*2)/100;
-				if(dstsd && sd->status.partner_id == dstsd->status.char_id && sd->s_class.job == 23 && sd->sex == 0) // 自分も対象もPC、対象が自分のパートナー、自分がスパノビ、自分が♀なら
-					heal = heal*2;	// スパノビの嫁が旦那にヒールすると2倍になる
+			if(dstsd && dstsd->special_state.no_magic_damage)
+				heal = 0;	// 黄金蟲カード（ヒール量０）
+			if(sc_data && sc_data[SC_BERSERK].timer != -1)
+				heal = 0; 	// バーサーク中はヒール０
+			if(sd) {
+				int skill = pc_checkskill(sd,HP_MEDITATIO);
+				if(skill > 0)	// メディタティオ
+					heal += heal * (skill * 2) / 100;
+				if(dstsd && sd->status.partner_id == dstsd->status.char_id && sd->s_class.job == 23 && sd->sex == 0)	// 自分も対象もPC、対象が自分のパートナー、自分がスパノビ、自分が♀なら
+					heal *= 2;	// スパノビの嫁が旦那にヒールすると2倍になる
 			}
-
 			if(sc_data && sc_data[SC_KAITE].timer != -1) {	// カイト
 				clif_misceffect2(bl,438);
 				if(--sc_data[SC_KAITE].val2 <= 0)
 					status_change_end(bl, SC_KAITE, -1);
 				if(src == bl) {		// 自分自身に対しては回復量0
-					heal=0;
+					heal = 0;
 				} else {		// ヒール反射
 					bl = src;
 					dstsd = sd;
@@ -3296,7 +3299,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			heal_get_jobexp = battle_heal(NULL,bl,heal,0,0);
 
 			// JOB経験値獲得
-			if(sd && dstsd && heal > 0 && src != bl && battle_config.heal_exp > 0){
+			if(sd && dstsd && heal > 0 && src != bl && battle_config.heal_exp > 0) {
 				heal_get_jobexp = heal_get_jobexp * battle_config.heal_exp / 100;
 				if(heal_get_jobexp <= 0)
 					heal_get_jobexp = 1;
@@ -3307,25 +3310,27 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case HLIF_HEAL:		/* 治癒の手助け */
 		{
-			int lv=0;
 			int heal = skill_fix_heal(src, skillid, skill_calc_heal(src, skilllv));
-			sc_data=status_get_sc_data(bl);
-			if(hd && (lv=homun_checkskill(hd,HLIF_BRAIN)))
-				heal += heal*lv/50;
-			if(battle_config.heal_counterstop){
-				if(skilllv>=battle_config.heal_counterstop)
-					heal=9999; // 9999ヒール
+			sc_data = status_get_sc_data(bl);
+			if(hd) {
+				int skill = homun_checkskill(hd,HLIF_BRAIN);
+				if(skill > 0)
+					heal += heal * skill / 50;
 			}
-			if( dstsd && dstsd->special_state.no_magic_damage )
-				heal=0;	// 黄金蟲カード（ヒール量０）
-			if(sc_data && sc_data[SC_BERSERK].timer!=-1) // バーサーク中はヒール０
-				heal=0;
+			if(battle_config.heal_counterstop) {
+				if(skilllv >= battle_config.heal_counterstop)
+					heal = 9999;	// 9999ヒール
+			}
+			if(dstsd && dstsd->special_state.no_magic_damage)
+				heal = 0;	// 黄金蟲カード（ヒール量０）
+			if(sc_data && sc_data[SC_BERSERK].timer != -1)
+				heal = 0;	// バーサーク中はヒール０
 			if(sc_data && sc_data[SC_KAITE].timer != -1) {	// カイト
 				clif_misceffect2(bl,438);
 				if(--sc_data[SC_KAITE].val2 <= 0)
 					status_change_end(bl, SC_KAITE, -1);
 				if(src == bl) {		// 自分自身に対しては回復量0
-					heal=0;
+					heal = 0;
 				} else {		// ヒール反射
 					bl = src;
 				}
@@ -3819,10 +3824,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case AS_POISONREACT:	/* ポイズンリアクト */
 	case MC_LOUD:			/* ラウドボイス */
 	case MG_ENERGYCOAT:		/* エナジーコート */
-	case MG_SIGHT:			/* サイト */
 	case AL_RUWACH:			/* ルアフ */
-	case MO_EXPLOSIONSPIRITS:	// 爆裂波動
-	case MO_STEELBODY:		// 金剛
+	case MO_EXPLOSIONSPIRITS:	/* 爆裂波動 */
+	case MO_STEELBODY:		/* 金剛 */
 	case LK_AURABLADE:		/* オーラブレード */
 	case LK_PARRYING:		/* パリイング */
 	case WS_CARTBOOST:		/* カートブースト */
@@ -3836,8 +3840,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case ST_PRESERVE:		/* プリザーブ */
 	case WS_OVERTHRUSTMAX:	/* オーバートラストマックス */
 	case KN_ONEHAND:		/* ワンハンドクイッケン */
+	case NPC_MAGICMIRROR:		/* マジックミラー */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+		break;
+	case MG_SIGHT:			/* サイト */
+	case NPC_WIDESIGHT:		/* ワイドサイト */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,skillid,skill_get_time(skillid,skilllv),0 );
 		break;
 	case HP_ASSUMPTIO:		/* アスムプティオ */
 		status_change_start(bl,SC_ASSUMPTIO,skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
@@ -3846,7 +3856,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case LK_CONCENTRATION:	/* コンセントレーション */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-		if(sd) sd->skillstatictimer[SM_ENDURE] = tick;
+		if(sd)
+			sd->skillstatictimer[SM_ENDURE] = tick;
 		status_change_start(bl,SkillStatusChangeTable[SM_ENDURE],1,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
 	case LK_BERSERK:		/* バーサーク */
@@ -3858,7 +3869,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SM_ENDURE:			/* インデュア */
-		if(sd) sd->skillstatictimer[SM_ENDURE] = tick + 10000;
+		if(sd)
+			sd->skillstatictimer[SM_ENDURE] = tick + 10000;
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
@@ -4511,6 +4523,17 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 
+	case NPC_EXPULSION:			/* エクスパルシオン */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if(dstsd) {
+			if(!map[dstsd->bl.m].flag.noteleport)
+				pc_randomwarp(dstsd,3);
+		} else if(dstmd) {
+			if(!map[dstmd->bl.m].flag.monster_noteleport)
+				mob_warp(dstmd,dstmd->bl.m,-1,-1,3);
+		}
+		break;
+
 	case AL_HOLYWATER:			/* アクアベネディクタ */
 		if(sd) {
 			int eflag;
@@ -4715,7 +4738,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					sp = sp * (100 + sd->status.base_level) / 100;
 				}
 				hp = skill_fix_heal(&sd->bl, skillid, hp);
-				sp = skill_fix_heal(&sd->bl, skillid, sp);
 			} else {
 				hp = (1 + atn_rand()%400) * (100 + skilllv*10) / 100;
 				hp = hp * (100 + (status_get_vit(bl)<<1)) / 100;
@@ -5130,7 +5152,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				gain_hp = dstsd->status.max_hp;
 			else
 				gain_hp = sd->status.max_hp;
-			gain_hp = skill_fix_heal(&sd->bl, skillid, gain_hp * abs(hp_rate) / 100);
+			gain_hp = gain_hp * abs(hp_rate) / 100;
+			gain_hp = skill_fix_heal(&sd->bl, skillid, gain_hp);
 			clif_skill_nodamage(src,bl,skillid,gain_hp,1);
 			battle_heal(NULL,bl,gain_hp,0,0);
 		}
@@ -5143,7 +5166,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				gain_sp = dstsd->status.max_sp;
 			else
 				gain_sp = sd->status.max_sp;
-			gain_sp = skill_fix_heal(&sd->bl, skillid, gain_sp * abs(sp_rate) / 100);
+			gain_sp = gain_sp * abs(sp_rate) / 100;
 			clif_skill_nodamage(src,bl,skillid,gain_sp,1);
 			battle_heal(NULL,bl,0,gain_sp,0);
 		}
@@ -9207,6 +9230,10 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 			if(type >= 0) {
 				casttime = casttime * (100-(sc_data[type].val1*3+sc_data[type].val2+(sc_data[type].val3>>16))) / 100;
 			}
+
+			/* スロウキャスト */
+			if(sc_data[SC_SLOWCAST].timer != -1)
+				casttime = casttime * (100 + sc_data[SC_SLOWCAST].val1 * 20) / 100;
 		}
 	}
 	if(casttime < 0)
@@ -9965,10 +9992,13 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 			/* 恋人(The Lovers) - どこかにテレポートさせる- HPが2000回復される */
 			unit_heal(target, 2000, 0);
 			// テレポート不可の場合は回復のみ
-			if(tsd && !map[tsd->bl.m].flag.noteleport)
-				pc_randomwarp(tsd,0);
-			if(tmd && !map[tmd->bl.m].flag.monster_noteleport)
-				mob_warp(tmd,tmd->bl.m,-1,-1,0);
+			if(tsd) {
+				if(!map[tsd->bl.m].flag.noteleport)
+					pc_randomwarp(tsd,0);
+			} else if(tmd) {
+				if(!map[tmd->bl.m].flag.monster_noteleport)
+					mob_warp(tmd,tmd->bl.m,-1,-1,0);
+			}
 			break;
 		case 6:
 			/* 運命の輪(Wheel of Fortune) - ランダムに他のタロットカード二枚の効果を同時に与える */
@@ -11950,14 +11980,19 @@ int skill_clone(struct map_session_data* sd,int skillid,int skilllv)
  */
 int skill_fix_heal(struct block_list *bl, int skill_id, int heal)
 {
-	struct map_session_data *sd;
+	struct map_session_data *sd = NULL;
+	struct status_change *sc_data;
 
 	nullpo_retr(0, bl);
 
-	if(bl->type != BL_PC || (sd = (struct map_session_data *)bl) == NULL)
-		return heal;
+	if(bl->type == BL_PC)
+		sd = (struct map_session_data *)bl;
 
-	if(sd->skill_healup.count > 0 && heal > 0 && skill_id > 0) {
+	sc_data = status_get_sc_data(bl);
+	if(sc_data && sc_data[SC_CRITICALWOUND].timer != -1)
+		heal = heal * (100 - sc_data[SC_CRITICALWOUND].val1 * 10) / 100;
+
+	if(sd && sd->skill_healup.count > 0 && heal > 0 && skill_id > 0) {
 		int i;
 		for(i = 0; i < sd->skill_healup.count; i++) {
 			if(skill_id == sd->skill_healup.id[i]) {

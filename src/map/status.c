@@ -130,6 +130,8 @@ static int StatusIconChangeTable[] = {
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_ADRENALINE2,SI_BLANK,SI_BLANK,SI_COMBATHAN,SI_LIFEINSURANCE,
 	/* 370- */
 	SI_BLANK,SI_BLANK,SI_MEAL_INCSTR2,SI_MEAL_INCAGI2,SI_MEAL_INCVIT2,SI_MEAL_INCDEX2,SI_MEAL_INCINT2,SI_MEAL_INCLUK2,SI_SLOWCAST,SI_CRITICALWOUND,
+	/* 380- */
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 };
 
 /*==========================================
@@ -4367,6 +4369,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_HERMODE:
 		case SC_TATAMIGAESHI:			/* 畳返し */
 		case SC_NPC_DEFENDER:
+		case SC_SLOWCAST:			/* スロウキャスト */
+		case SC_CRITICALWOUND:			/* 致命傷 */
+		case SC_MAGICMIRROR:			/* マジックミラー */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -5149,9 +5154,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				val4 = sd->status.clothes_color;
 				pc_changelook(sd, LOOK_CLOTHES_COLOR, 0);
 			}
-			break;
-		case SC_SLOWCAST:		/* スロウキャスト */
-		case SC_CRITICALWOUND:		/* 致命傷 */
 			break;
 		default:
 			if(battle_config.error_log)
@@ -6180,7 +6182,13 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 	case SC_SIGHT:		/* サイト */
 	case SC_RUWACH:		/* ルアフ */
 		{
-			int range = (type == SC_SIGHT || type == SC_SIGHTBLASTER)? 3: 2;
+			int range;
+			if(type == SC_RUWACH)
+				range = 2;
+			else if(type == SC_SIGHTBLASTER)
+				range = 3;
+			else
+				range = (sc_data[type].val4 == NPC_WIDESIGHT)? 5: 3;
 
 			map_foreachinarea(status_change_timer_sub,
 				bl->m, bl->x-range, bl->y-range, bl->x+range,bl->y+range,0,

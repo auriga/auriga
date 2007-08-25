@@ -5667,6 +5667,8 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			else
 				hp = hp * 150 / 100;
 		}
+		if(sd->sc_data[SC_CRITICALWOUND].timer != -1)
+			hp = hp * (100 - sd->sc_data[SC_CRITICALWOUND].val1 * 10) / 100;
 	}
 	if(sp > 0) {
 		bonus = (sd->paramc[3]<<1) + 100 + pc_checkskill(sd,MG_SRECOVERY)*10;

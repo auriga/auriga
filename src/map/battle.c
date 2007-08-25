@@ -3991,6 +3991,15 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				damage = -1;	// ダメージ0だがmissを出さない
 			}
 		}
+		// マジックミラー
+		if(damage > 0 && sc_data && sc_data[SC_MAGICMIRROR].timer != -1) {
+			if(atn_rand()%100 < sc_data[SC_MAGICMIRROR].val1 * 20) {
+				clif_misceffect2(bl,675);
+				clif_skill_nodamage(bl,src,skillid,skilllv,1);
+				rdamage += damage;
+				damage = -1;	// ダメージ0だがmissを出さない
+			}
+		}
 		if(rdamage > 0) {
 			clif_skill_damage(src, src, tick, dmg.amotion, dmg.dmotion, rdamage, dmg.div_, skillid, ((src == dsrc)? lv: -1), type);
 			if(dmg.blewcount > 0 && !map[src->m].flag.gvg) {
