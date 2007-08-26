@@ -640,7 +640,7 @@
 671,0,6,4,0,1,5,1,no,0,2,0,magic,0	//NPC_MAGICMIRROR#マジックミラー#
 672,0,6,4,0,1,5,1,no,0,2,0,none,0	//NPC_SLOWCAST#スロウキャスト#
 673,7,6,1,0,0,5,1,no,0,2,0,weapon,0	//NPC_CRITICALWOUND#致命傷攻撃#
-674,7,6,1,0,1,1,1,no,0,2,0,none,0	//NPC_EXPULSION#エクスパルシオン#
+674,7,6,1,0,0,1,1,no,0,2,0,none,0	//NPC_EXPULSION#エクスパルシオン#
 675,0,6,4,0,1,5,0,no,0,2,0,magic,0	//NPC_STONESKIN#ストーンスキン#
 676,0,6,4,0,1,5,0,no,0,2,0,magic,0	//NPC_ANTIMAGIC#アンチマジック#
 677,0,6,4,0,1,5,1,no,0,2,0,none,0	//NPC_WIDECURSE#範囲呪い攻撃#

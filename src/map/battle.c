@@ -1371,8 +1371,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_DEMONSTRATION:		// デモンストレーション
 		case TK_COUNTER:		// アプチャオルリギ
 		case AS_SPLASHER:		// ベナムスプラッシャー
-		case NPC_EARTHQUAKE:	// アースクエイク
+		case NPC_EARTHQUAKE:		// アースクエイク
 			calc_flag.hitrate = 1000000;
+			break;
+		case NPC_EXPULSION:		// エクスパルシオン
+			calc_flag.hitrate = 1000000;
+			calc_flag.dist = 1;
 			break;
 		case GS_TRACKING:		// トラッキング
 			calc_flag.hitrate = calc_flag.hitrate*4+5;
@@ -1419,6 +1423,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NPC_RANGEATTACK:		// 遠距離攻撃
 		case NJ_ZENYNAGE:		// 銭投げ
+		case NPC_CRITICALWOUND:		// 致命傷攻撃
 			calc_flag.dist = 1;
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
@@ -1452,9 +1457,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(battle_config.calc_dist_flag&1 && src->type != BL_PC && target->type != BL_PC) {	// PC vs PCは強制無視
 				int target_dist = unit_distance2(src,target)-1;	// 距離を取得
 				if(target_dist >= battle_config.allow_sw_dist) {				// SWで防げる距離より多い＝遠距離からの攻撃
-					if(battle_config.sw_def_type & 1 && src->type == BL_PC)		// 人間からのを判定するか　&1でする
+					if(src->type == BL_PC && battle_config.sw_def_type & 1)		// 人間からのを判定するか　&1でする
 						wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;		// 遠距離に設定
-					if(battle_config.sw_def_type & 2 && src->type == BL_MOB)	// モンスターからのを判定するか　&2でする
+					else if(src->type == BL_MOB && battle_config.sw_def_type & 2)	// モンスターからのを判定するか　&2でする
 						wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;		// 遠距離に設定
 				}
 			} else {	// 本来遠距離のスキルで使用者と許可フラグが全て一致しないから遠距離攻撃だ
@@ -2862,9 +2867,9 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	if(battle_config.calc_dist_flag & 2) {	// 魔法の時計算するか？ &2で計算する
 		int target_dist = unit_distance2(bl,target);	// 距離を取得
 		if(target_dist < battle_config.allow_sw_dist) {				// SWで防げる距離より小さい＝近距離からの攻撃
-			if(battle_config.sw_def_type & 1 && bl->type == BL_PC)		// 人間からのを判定するか　&1でする
+			if(bl->type == BL_PC && battle_config.sw_def_type & 1)		// 人間からのを判定するか　&1でする
 				mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
-			if(battle_config.sw_def_type & 2 && bl->type == BL_MOB)		// モンスターからの魔法を判定するか　&2でする
+			else if(bl->type == BL_MOB && battle_config.sw_def_type & 2)	// モンスターからの魔法を判定するか　&2でする
 				mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
 		}
 	}
@@ -4067,12 +4072,16 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		}
 	}
 
-	/* インティミデイト */
-	if(skillid == RG_INTIMIDATE && damage > 0 && !(status_get_mode(bl)&0x20) && !map[src->m].flag.gvg) {
-		int s_lv = status_get_lv(src),t_lv = status_get_lv(bl);
-		int rate = 50 + skilllv * 5;
-		rate = rate + s_lv - t_lv;
-		if(atn_rand()%100 < rate)
+	if(skillid == RG_INTIMIDATE) {
+		/* インティミデイト */
+		if(damage > 0 && !(status_get_mode(bl)&0x20) && !map[src->m].flag.gvg) {
+			int rate = 50 + skilllv * 5 + status_get_lv(src) - status_get_lv(bl);
+			if(atn_rand()%100 < rate)
+				skill_addtimerskill(src,tick + 800,bl->id,0,0,skillid,skilllv,0,flag);
+		}
+	} else if(skillid == NPC_EXPULSION) {
+		/* エクスパルシオン */
+		if(damage > 0 && !map[src->m].flag.gvg)
 			skill_addtimerskill(src,tick + 800,bl->id,0,0,skillid,skilllv,0,flag);
 	}
 

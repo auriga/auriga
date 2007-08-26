@@ -1730,96 +1730,101 @@ static int skill_timerskill(int tid, unsigned int tick, int id,int data )
 				break;
 			target = map_id2bl(skl->target_id);
 
-			// インティミデイトはtargetが存在しなくても良いのでここの判定は除外
-			if(skl->skill_id != RG_INTIMIDATE) {
+			// インティミデイトとエクスパルシオンはtargetが存在しなくても良いのでここの判定は除外
+			if(skl->skill_id != RG_INTIMIDATE && skl->skill_id != NPC_EXPULSION) {
 				if(target == NULL || src->m != target->m)
 					break;
 				if(target->prev == NULL || unit_isdead(target))
 					break;
 			}
-			switch(skl->skill_id) {
-				case TF_BACKSLIDING:
-					clif_skill_nodamage(src,src,skl->skill_id,skl->skill_lv,1);
-					break;
-				case RG_INTIMIDATE:
-					{
-						int x,y,i,j;
-						if(src->type == BL_PC && !map[src->m].flag.noteleport)
-							pc_randomwarp((struct map_session_data *)src,3);
-						else if(src->type == BL_MOB && !map[src->m].flag.monster_noteleport)
-							mob_warp((struct mob_data *)src,-1,-1,-1,3);
-						else
-							break;
-						for(i=0;i<16;i++) {
-							j = atn_rand()%8;
-							x = src->x + dirx[j];
-							y = src->y + diry[j];
-							if(map_getcell(src->m,x,y,CELL_CHKPASS))
-								break;
-						}
-						if(i >= 16) {
-							x = src->x;
-							y = src->y;
-						}
-						if(target && target->prev != NULL && src->m == target->m) {
-							if(target->type == BL_PC && !unit_isdead(target))
-								pc_setpos((struct map_session_data *)target,map[src->m].name,x,y,3);
-							else if(target->type == BL_MOB)
-								mob_warp((struct mob_data *)target,-1,x,y,3);
-						}
-					}
-					break;
 
-				case BA_FROSTJOKE:			/* 寒いジョーク */
-				case DC_SCREAM:				/* スクリーム */
-					range=AREA_SIZE;		// 視界全体
-					map_foreachinarea(skill_frostjoke_scream,src->m,src->x-range,src->y-range,
-						src->x+range,src->y+range,0,src,skl->skill_id,skl->skill_lv,tick);
+			switch(skl->skill_id) {
+			case TF_BACKSLIDING:
+				clif_skill_nodamage(src,src,skl->skill_id,skl->skill_lv,1);
+				break;
+			case RG_INTIMIDATE:
+				if(src->type == BL_PC && !map[src->m].flag.noteleport)
+					pc_randomwarp((struct map_session_data *)src,3);
+				else if(src->type == BL_MOB && !map[src->m].flag.monster_noteleport)
+					mob_warp((struct mob_data *)src,-1,-1,-1,3);
+				else
 					break;
-				case WZ_WATERBALL:
-					if (skl->type>1) {
-						skl->timer = 0;	// skill_addtimerskillで使用されないように
-						skill_addtimerskill(src,tick+150,target->id,0,0,skl->skill_id,skl->skill_lv,skl->type-1,skl->flag);
-						skl->timer = -1;
+				if(target && target->prev != NULL && src->m == target->m) {
+					struct cell_xy free_cell[3*3];
+					int count, x, y;
+					count = map_searchfreecell(free_cell, src->m, src->x-1, src->y-1, src->x+1, src->y+1);
+					if(count > 0) {
+						int n = atn_rand() % count;
+						x = free_cell[n].x;
+						y = free_cell[n].y;
+					} else {
+						x = src->x;
+						y = src->y;
 					}
-					battle_skill_attack(BF_MAGIC,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
-					break;
-				default:
-					battle_skill_attack(skl->type,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
-					break;
+					if(target->type == BL_PC && !unit_isdead(target))
+						pc_setpos((struct map_session_data *)target,map[src->m].name,x,y,3);
+					else if(target->type == BL_MOB)
+						mob_warp((struct mob_data *)target,-1,x,y,3);
+				}
+				break;
+			case NPC_EXPULSION:
+				if(target && target->prev != NULL && src->m == target->m) {
+					if(target->type == BL_PC && !map[target->m].flag.noteleport && !unit_isdead(target))
+						pc_randomwarp((struct map_session_data *)target,3);
+					else if(target->type == BL_MOB && !map[target->m].flag.monster_noteleport)
+						mob_warp((struct mob_data *)target,-1,-1,-1,3);
+				}
+				break;
+			case BA_FROSTJOKE:			/* 寒いジョーク */
+			case DC_SCREAM:				/* スクリーム */
+				range=AREA_SIZE;		// 視界全体
+				map_foreachinarea(skill_frostjoke_scream,src->m,src->x-range,src->y-range,
+					src->x+range,src->y+range,0,src,skl->skill_id,skl->skill_lv,tick);
+				break;
+			case WZ_WATERBALL:
+				if (skl->type>1) {
+					skl->timer = 0;	// skill_addtimerskillで使用されないように
+					skill_addtimerskill(src,tick+150,target->id,0,0,skl->skill_id,skl->skill_lv,skl->type-1,skl->flag);
+					skl->timer = -1;
+				}
+				battle_skill_attack(BF_MAGIC,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
+				break;
+			default:
+				battle_skill_attack(skl->type,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
+				break;
 			}
-		}
-		else {
+		} else {
 			if(src->m != skl->map)
 				break;
+
 			switch(skl->skill_id) {
-				case BS_HAMMERFALL:
-					range=(skl->skill_lv>5)?AREA_SIZE:2;
-					skill_area_temp[1] = skl->src_id;
-					skill_area_temp[2] = skl->x;
-					skill_area_temp[3] = skl->y;
-					map_foreachinarea(skill_area_sub,skl->map,
-						skl->x-range,skl->y-range,skl->x+range,skl->y+range,0,
-						src,skl->skill_id,skl->skill_lv,tick,skl->flag|BCT_ENEMY|2,
-						skill_castend_nodamage_id);
-					break;
-				case WZ_METEOR:
-					if(skl->type >= 0) {
-						int x = skl->type>>16, y = skl->type&0xffff;
-						if(map_getcell(src->m,x,y,CELL_CHKPASS))
-							skill_unitsetting(src,skl->skill_id,skl->skill_lv,x,y,0);
-						if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
-							clif_skill_poseffect(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,tick);
-					}
-					else {
-						if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
-							skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
-					}
-					break;
-				case GS_DESPERADO:
+			case BS_HAMMERFALL:
+				range=(skl->skill_lv>5)?AREA_SIZE:2;
+				skill_area_temp[1] = skl->src_id;
+				skill_area_temp[2] = skl->x;
+				skill_area_temp[3] = skl->y;
+				map_foreachinarea(skill_area_sub,skl->map,
+					skl->x-range,skl->y-range,skl->x+range,skl->y+range,0,
+					src,skl->skill_id,skl->skill_lv,tick,skl->flag|BCT_ENEMY|2,
+					skill_castend_nodamage_id);
+				break;
+			case WZ_METEOR:
+				if(skl->type >= 0) {
+					int x = skl->type>>16, y = skl->type&0xffff;
+					if(map_getcell(src->m,x,y,CELL_CHKPASS))
+						skill_unitsetting(src,skl->skill_id,skl->skill_lv,x,y,0);
+					if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
+						clif_skill_poseffect(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,tick);
+				}
+				else {
 					if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
 						skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
-					break;
+				}
+				break;
+			case GS_DESPERADO:
+				if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
+					skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
+				break;
 			}
 		}
 	} while(0);
@@ -2219,6 +2224,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case HFLI_SBR44:
 	case NPC_BLEEDING:		/* 出血攻撃 */
 	case NPC_CRITICALWOUND:		/* 致命傷攻撃 */
+	case NPC_EXPULSION:		/* エクスパルシオン */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case GS_DISARM:			/* ディスアーム */
@@ -3841,9 +3847,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case WS_OVERTHRUSTMAX:	/* オーバートラストマックス */
 	case KN_ONEHAND:		/* ワンハンドクイッケン */
 	case NPC_MAGICMIRROR:		/* マジックミラー */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
+		break;
 	case NPC_STONESKIN:		/* ストーンスキン */
 	case NPC_ANTIMAGIC:		/* アンチマジック */
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		//clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
 	case MG_SIGHT:			/* サイト */
@@ -4522,17 +4532,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			} else if(dstmd && alive) {
 				mob_warp(dstmd,-1,-1,-1,3);
 			}
-		}
-		break;
-
-	case NPC_EXPULSION:			/* エクスパルシオン */
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if(dstsd) {
-			if(!map[dstsd->bl.m].flag.noteleport)
-				pc_randomwarp(dstsd,3);
-		} else if(dstmd) {
-			if(!map[dstmd->bl.m].flag.monster_noteleport)
-				mob_warp(dstmd,dstmd->bl.m,-1,-1,3);
 		}
 		break;
 
@@ -5767,7 +5766,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_WIDESLEEP:		/* 範囲睡眠攻撃 */
 	case NPC_WIDECURSE:		/* 範囲呪い攻撃 */
 	case NPC_WIDESTUN:		/* 範囲スタン攻撃 */
-	case NPC_SLOWCAST:		/* スロウキャスト */
 		if(flag&1) {
 			if(skillid == NPC_DRAGONFEAR) {
 				const int sc_type[4] = { SC_STAN, SC_CURSE, SC_SILENCE, SC_BLEED };
@@ -5779,7 +5777,20 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 		} else {
 			int ar = skilllv * 3 - 1;
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			//clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
+	case NPC_SLOWCAST:		/* スロウキャスト */
+		if(flag&1) {
+			clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		} else {
+			int ar = skilllv * 3 - 1;
 			map_foreachinarea(skill_area_sub,
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
