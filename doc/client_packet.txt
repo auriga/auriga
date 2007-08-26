@@ -1099,8 +1099,8 @@ R 01c3 <len>.w <color>.l <font?>.w <size>.w <?>.l <message>.?B
 	GMからの天の声（0x9aのマルチカラー版）
 R 01c4 <index>.w <amount>.l <itemID>.w <type>.B <identify flag>.B <attribute>.B <refine>.B <card>.4w
 	カプラ倉庫アイテム、0xf4の上位版
-R 01c5 <index>.w <amount>.l <itemID>.w <item data>.12B
-	カプラ倉庫アイテム？
+R 01c5 <index>.w <amount>.l <item ID>.w <type>.B <identify flag>.B <attribute>.B <refine>.B <card>.4w
+	カートにアイテム追加、0x124の上位版
 R 01c8 <index>.w <item ID>.w <ID>.l <amount left>.w <type>.B
 	アイテム使用応答。(00a8の上位バーション？)
 	type=00の場合使用失敗? amountもゴミの模様
@@ -1623,18 +1623,18 @@ R 0293 <type>.B <x>.l <y>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
 
 R 0294 <book_id>.l <page_num>.l
 	読書システム
-R 0295 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <?>.l}.24B*
+R 0295 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l}.24B*
 	所有装備リスト、0xa4の上位版
-R 0296 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <?>.l}.24B*
+R 0296 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l}.24B*
 	カプラさんに預けてある装備リスト、0xa6の上位版
-R 0297
-	未調査
+R 0297 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l}.24B*
+	カート内装備リスト、0x122の上位版
 R 0298 <itemid>.w <time>.l
 	強化装備アイテム「<itemid>」の使用可能時間は、残り<time>分です。
 	<time>の単位は秒なので表示される値は1/60
 R 0299 <index?>.w <itemid>.w
 	強化装備アイテム「<itemid>」が削除されました。
-R 029a <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <?>.l
+R 029a <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <time>.l
 	アイテム獲得、0xa0の上位版
 R 029b <ID?>.l <?>.w * 8 <name?>.24B <?>.w * 5 <?>.l <?>.w <?>.l <?>.l <?>.w
 	未調査
