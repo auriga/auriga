@@ -1937,6 +1937,12 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
 				}
 			}
 		}
+		if(mob_db[md->class_].mexp > 0) {
+			if(!(md->spawndelay1 == -1 && md->spawndelay2 == -1 && md->n == 0)) {
+				// 再出現するMVPボスなら凸面鏡用に登録
+				map[md->bl.m].mvpboss = md;
+			}
+		}
 
 		if(guild_id > 0)
 			md->guild_id = guild_id;

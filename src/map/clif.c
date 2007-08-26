@@ -8798,6 +8798,33 @@ void clif_send_hotkey(struct map_session_data *sd)
 }
 
 /*==========================================
+ * MVPボス情報
+ *------------------------------------------
+ */
+void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int y, int tick, int type)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd   = sd->fd;
+	tick = tick / 1000 / 60;	// minute
+
+	WFIFOW(fd,0)  = 0x293;
+	WFIFOB(fd,2)  = type;
+	WFIFOL(fd,3)  = x;
+	WFIFOL(fd,7)  = y;
+	WFIFOW(fd,11) = tick / 60;
+	WFIFOW(fd,13) = tick % 60;
+	WFIFOL(fd,15) = 0;
+	strncpy(WFIFOP(fd,19), name, 50);
+	WFIFOB(fd,69) = 0;	// \0 terminal
+	WFIFOSET(fd,packet_db[0x293].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */

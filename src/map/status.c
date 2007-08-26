@@ -129,7 +129,7 @@ static int StatusIconChangeTable[] = {
 	/* 360- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_ADRENALINE2,SI_BLANK,SI_BLANK,SI_COMBATHAN,SI_LIFEINSURANCE,
 	/* 370- */
-	SI_BLANK,SI_BLANK,SI_MEAL_INCSTR2,SI_MEAL_INCAGI2,SI_MEAL_INCVIT2,SI_MEAL_INCDEX2,SI_MEAL_INCINT2,SI_MEAL_INCLUK2,SI_SLOWCAST,SI_CRITICALWOUND,
+	SI_ITEMDROPRATE,SI_BOSSMAPINFO,SI_MEAL_INCSTR2,SI_MEAL_INCAGI2,SI_MEAL_INCVIT2,SI_MEAL_INCDEX2,SI_MEAL_INCINT2,SI_MEAL_INCLUK2,SI_SLOWCAST,SI_CRITICALWOUND,
 	/* 380- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 };
@@ -4398,6 +4398,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SLOWCAST:			/* スロウキャスト */
 		case SC_CRITICALWOUND:			/* 致命傷 */
 		case SC_MAGICMIRROR:			/* マジックミラー */
+		case SC_ITEMDROPRATE:			/* バブルガム */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -4868,7 +4869,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 					clif_updatestatus(sd,SP_MANNER);	// ステータスをクライアントに送る
 			}
 			break;
-		case SC_SELFDESTRUCTION: /* 自爆 */
+		case SC_SELFDESTRUCTION:	/* 自爆 */
 			tick = 100;
 			break;
 
@@ -5183,6 +5184,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				pc_changelook(sd, LOOK_CLOTHES_COLOR, 0);
 			}
 			break;
+		case SC_BOSSMAPINFO:		/* 凸面鏡 */
+			if(map[bl->m].mvpboss == NULL) {
+				if(sd) {
+					// 居ないのでメッセージを出して終了
+					clif_bossmapinfo(sd, "", 0, 0, 0, 0);
+				}
+				tick = 0;
+			}
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -5194,6 +5204,30 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 
 	if(bl->type == BL_PC && StatusIconChangeTable[type] != SI_BLANK)
 		clif_status_change(bl,StatusIconChangeTable[type],1);	// アイコン表示
+
+	/* 凸面鏡はアイコン送信後に処理する */
+	if(type == SC_BOSSMAPINFO) {
+		struct mob_data *mmd = map[bl->m].mvpboss;
+		if(sd && mmd) {
+			if(mmd->bl.prev == NULL) {	// 再沸き待ち中
+				int diff = DIFF_TICK(mmd->last_spawntime, gettick());
+				if(diff < 0)
+					diff = 0;
+				clif_bossmapinfo(sd, mmd->name, 0, 0, diff, 3);
+				val3 = -1;
+				val4 = -1;
+			} else {			// 出現中
+				clif_bossmapinfo(sd, mmd->name, 0, 0, 0, 2);
+				if(mmd->bl.m == bl->m) {
+					clif_bossmapinfo(sd, "", mmd->bl.x, mmd->bl.y, 0, 1);
+				}
+				val3 = mmd->bl.m;
+				val4 = mmd->bl.x + (mmd->bl.y << 16);
+			}
+		}
+		val2 = tick / 1000;
+		tick = 1000;
+	}
 
 	/* optionの変更 */
 	opt_flag = 1;
@@ -6515,6 +6549,41 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				sc_data[type].timer = add_timer(100+tick, status_change_timer, bl->id, data);
 				return 0;
 			}
+		}
+		break;
+	case SC_BOSSMAPINFO:			/* 凸面鏡 */
+		if(sd && --sc_data[type].val2 > 0) {
+			struct mob_data *mmd = map[sd->bl.m].mvpboss;
+			if(mmd == NULL)
+				break;
+			if(mmd->bl.prev == NULL) {
+				if(sc_data[type].val3 >= 0) {
+					// 倒されたので次回の出現時間をアナウンスして終了
+					int diff = DIFF_TICK(mmd->last_spawntime, gettick());
+					if(diff < 0)
+						diff = 0;
+					clif_bossmapinfo(sd, mmd->name, 0, 0, diff, 3);
+					break;
+				}
+			} else {
+				if(sc_data[type].val3 < 0) {
+					// 出現したのでアナウンス
+					clif_bossmapinfo(sd, mmd->name, 0, 0, 0, 2);
+				}
+				if(sc_data[type].val3 != mmd->bl.m || sc_data[type].val4 != mmd->bl.x + (mmd->bl.y << 16)) {
+					// 出現中で座標が変化しているのでミニMAPのドットを更新
+					if(mmd->bl.m == sd->bl.m) {
+						clif_bossmapinfo(sd, "", mmd->bl.x, mmd->bl.y, 0, 1);
+					} else {
+						clif_bossmapinfo(sd, "", -1, -1, 0, 1);
+					}
+					sc_data[type].val3 = mmd->bl.m;
+					sc_data[type].val4 = mmd->bl.x + (mmd->bl.y << 16);
+				}
+			}
+			/* タイマー再設定 */
+			sc_data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			return 0;
 		}
 		break;
 	}

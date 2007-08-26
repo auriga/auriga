@@ -5746,7 +5746,7 @@ int atcommand_mobinfo(
 		int rate;
 		if (m->dropitem[i].nameid <= 0 || (item_data = itemdb_exists(m->dropitem[i].nameid)) == NULL)
 			continue;
-		rate = mob_droprate_fix( m->dropitem[i].nameid, m->dropitem[i].p );
+		rate = mob_droprate_fix( &sd->bl, m->dropitem[i].nameid, m->dropitem[i].p );
 		if (rate > 0) {
 			sprintf(output2, " - %s  %02.02lf%%", item_data->jname, (double)rate / 100.);
 			strcat(output, output2);

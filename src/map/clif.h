@@ -214,6 +214,9 @@ void clif_mvp_exp(struct map_session_data *sd, int exp);
 void clif_send_murderer(struct map_session_data *sd,int target,int flag);
 void clif_update_temper(struct map_session_data *sd);
 
+void clif_send_hotkey(struct map_session_data *sd);
+void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int y, int tick, int type);
+
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);
 void clif_showvendingboard(struct block_list* bl, const char *shop_title, int fd);
@@ -321,8 +324,6 @@ void clif_homskillup(struct map_session_data *sd, int skill_num);
 
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);
-
-void clif_send_hotkey(struct map_session_data *sd);
 
 int clif_foreachclient(int (*)(struct map_session_data*,va_list),...);
 

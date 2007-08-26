@@ -2613,7 +2613,7 @@ int pc_bonus3(struct map_session_data *sd,int type,int type2,int type3,int val)
 	case SP_ADD_MONSTER_DROP_ITEM:
 		if(sd->state.lr_flag != 2) {
 			if(battle_config.dropitem_itemrate_fix == 1)
-				val = mob_droprate_fix(type2,val);
+				val = mob_droprate_fix(&sd->bl,type2,val);
 			else if(battle_config.dropitem_itemrate_fix > 1)
 				val = val * battle_config.dropitem_itemrate_fix / 100;
 			for(i=0; i<sd->monster_drop_item_count; i++) {
@@ -3659,6 +3659,10 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 			status_change_end(&sd->bl, SC_MOON_COMFORT, -1);
 		if(sd->sc_data[SC_STAR_COMFORT].timer != -1)
 			status_change_end(&sd->bl, SC_STAR_COMFORT, -1);
+
+		// 凸面鏡の効果削除
+		if(sd->sc_data[SC_BOSSMAPINFO].timer != -1)
+			status_change_end(&sd->bl, SC_BOSSMAPINFO, -1);
 	}
 	if(sd->bl.prev != NULL) {
 		if(m != sd->bl.m) {

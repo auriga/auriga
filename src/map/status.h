@@ -488,8 +488,8 @@ enum {
 	SC_INCDAMAGE            = 367,
 	SC_COMBATHAN            = 368,
 	SC_LIFEINSURANCE        = 369,
-	//370：バブルガム
-	//371：凸面鏡
+	SC_ITEMDROPRATE         = 370,
+	SC_BOSSMAPINFO          = 371,
 	SC_MEAL_INCSTR2         = 372,
 	SC_MEAL_INCAGI2         = 373,
 	SC_MEAL_INCVIT2         = 374,
@@ -658,8 +658,8 @@ enum {
 	SI_MEAL_INCCRITICAL = 249,
 	SI_COMBATHAN        = 250,
 	SI_LIFEINSURANCE    = 251,
-	//252：バブルガム
-	//253：凸面鏡
+	SI_ITEMDROPRATE     = 252,
+	SI_BOSSMAPINFO      = 253,
 	//260：全てのMobがドラキュラに見える
 	//263：死んだふりと同じアイコンだが倒れない
 	//264：一瞬画面が霞んでグロリアアイコンが付く

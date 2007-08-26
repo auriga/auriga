@@ -2075,20 +2075,20 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			}
 			map_freeblock(md);	// freeのかわり
 		} else {
-			unsigned int spawntime,spawntime1,spawntime2,spawntime3;
+			unsigned int spawntime1,spawntime2,spawntime3;
 			unsigned int tick = gettick();
 			spawntime1 = md->last_spawntime + md->spawndelay1;
 			spawntime2 = tick + md->spawndelay2;
 			spawntime3 = tick + 1000;
 			if(DIFF_TICK(spawntime1,spawntime2) > 0) {
-				spawntime = spawntime1;
+				md->last_spawntime = spawntime1;
 			} else {
-				spawntime = spawntime2;
+				md->last_spawntime = spawntime2;
 			}
-			if(DIFF_TICK(spawntime3,spawntime) > 0) {
-				spawntime = spawntime3;
+			if(DIFF_TICK(spawntime3,md->last_spawntime) > 0) {
+				md->last_spawntime = spawntime3;
 			}
-			add_timer(spawntime,mob_delayspawn,bl->id,0);
+			add_timer(md->last_spawntime,mob_delayspawn,bl->id,0);
 		}
 	} else if(bl->type == BL_PET) {
 		struct pet_data *pd = (struct pet_data*)bl;

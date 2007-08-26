@@ -854,6 +854,7 @@ struct map_data {
 		int drop_per;
 		short drop_flag;
 	} drop_list[MAX_DROP_PER_MAP];
+	struct mob_data *mvpboss;
 };
 
 struct map_data_other_server {

@@ -331,8 +331,8 @@
 367,SC_INCDAMAGE,0,1,0			// 被ダメージが%上昇（ゴスペル用）
 368,SC_COMBATHAN,1,0,0			// 戦闘教範
 369,SC_LIFEINSURANCE,1,0,0		// 生命保険証
-//370：バブルガム
-//371：凸面鏡
+370,SC_ITEMDROPRATE,1,0,0		// バブルガム
+371,SC_BOSSMAPINFO,0,1,0		// 凸面鏡
 372,SC_MEAL_INCSTR2,1,0,0		// STR上昇（食事用、死亡しても効果維持）
 373,SC_MEAL_INCAGI2,1,0,0		// AGI上昇（食事用、死亡しても効果維持）
 374,SC_MEAL_INCVIT2,1,0,0		// VIT上昇（食事用、死亡しても効果維持）

@@ -1862,7 +1862,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 				if(mob_db[md->class_].dropitem[i].nameid <= 0)
 					continue;
-				drop_rate = mob_droprate_fix( mob_db[md->class_].dropitem[i].nameid, mob_db[md->class_].dropitem[i].p );
+				drop_rate = mob_droprate_fix( src, mob_db[md->class_].dropitem[i].nameid, mob_db[md->class_].dropitem[i].p );
 				if(drop_rate <= 0 && battle_config.drop_rate0item)
 					drop_rate = 1;
 				if(drop_rate <= atn_rand()%10000)
@@ -2086,9 +2086,13 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
  * ドロップ率に倍率を適用
  *------------------------------------------
  */
-int mob_droprate_fix(int item,int drop)
+int mob_droprate_fix(struct block_list *bl,int item,int drop)
 {
 	int drop_fix = drop;
+	struct status_change *sc_data = NULL;
+
+	if(bl)
+		sc_data = status_get_sc_data(bl);
 
 	if(drop < 1) return 0;
 	if(drop > 10000) return 10000;
@@ -2167,6 +2171,11 @@ int mob_droprate_fix(int item,int drop)
 				break;
 		}
 	}
+
+	// バブルガム
+	if(sc_data && sc_data[SC_ITEMDROPRATE].timer != -1)
+		drop_fix = drop_fix * sc_data[SC_ITEMDROPRATE].val1 / 100;
+
 	if(drop_fix > 10000)
 		drop_fix = 10000;
 
