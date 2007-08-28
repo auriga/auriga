@@ -286,31 +286,33 @@ int npc_event_do(const char *name)
  */
 static int npc_event_do_clock(int tid,unsigned int tick,int id,int data)
 {
-	time_t timer;
-	struct tm *t;
+	time_t now;
+	struct tm t;
 	char buf[64];
 	int c = 0;
 
-	time(&timer);
-	t = localtime(&timer);
+	time(&now);
+	memcpy(&t, localtime(&now), sizeof(t));
 
-	if (t->tm_min != ev_tm_b.tm_min) {
-		sprintf(buf,"OnMinute%02d",t->tm_min);
+	if (t.tm_min != ev_tm_b.tm_min) {
+		sprintf(buf,"OnMinute%02d",t.tm_min);
 		c += npc_event_doall(buf);
-		sprintf(buf,"OnClock%02d%02d",t->tm_hour,t->tm_min);
+		sprintf(buf,"OnClock%02d%02d",t.tm_hour,t.tm_min);
 		c += npc_event_doall(buf);
-		sprintf(buf,"OnWeekTime0%d%02d%02d",t->tm_wday,t->tm_hour,t->tm_min);
-		c += npc_event_doall(buf);
-	}
-	if (t->tm_hour != ev_tm_b.tm_hour) {
-		sprintf(buf,"OnHour%02d",t->tm_hour);
+		sprintf(buf,"OnWeekTime%02d%02d%02d",t.tm_wday,t.tm_hour,t.tm_min);
 		c += npc_event_doall(buf);
 	}
-	if (t->tm_mday != ev_tm_b.tm_mday) {
-		sprintf(buf,"OnDay%02d%02d",t->tm_mon+1,t->tm_mday);
+	if (t.tm_hour != ev_tm_b.tm_hour) {
+		sprintf(buf,"OnHour%02d",t.tm_hour);
 		c += npc_event_doall(buf);
 	}
-	memcpy(&ev_tm_b,t,sizeof(ev_tm_b));
+	if (t.tm_mday != ev_tm_b.tm_mday) {
+		sprintf(buf,"OnDay%02d",t.tm_mday);
+		c += npc_event_doall(buf);
+		sprintf(buf,"OnMonthDay%02d%02d",t.tm_mon+1,t.tm_mday);
+		c += npc_event_doall(buf);
+	}
+	memcpy(&ev_tm_b, &t, sizeof(ev_tm_b));
 	return c;
 }
 
@@ -2231,11 +2233,13 @@ int do_init_npc(void)
 	FILE *fp;
 	char line[1024];
 	int lines, count = 0, ret = 0;
+	time_t now;
 
 	ev_db = strdb_init(48);
 	npcname_db = strdb_init(24);
 
-	memset(&ev_tm_b,-1,sizeof(ev_tm_b));
+	time(&now);
+	memcpy(&ev_tm_b, localtime(&now), sizeof(ev_tm_b));
 
 	for(nsl=npc_src_first; nsl; nsl=nsl->next) {
 		int comment_flag = 0;

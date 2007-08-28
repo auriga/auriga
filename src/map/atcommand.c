@@ -5963,7 +5963,7 @@ atcommand_homfriendly(
 			return -1;
 		sd->hd->status.intimate = friendly;
 		sd->hd->intimate = sd->hd->status.intimate;
-		clif_send_homdata(sd,0x100,sd->hd->intimate/100);
+		clif_send_homdata(sd,1,sd->hd->intimate/100);
 	}
 
 	return 0;

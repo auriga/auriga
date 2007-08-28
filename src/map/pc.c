@@ -5557,7 +5557,7 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",val);
 			if(sd->hd->status.intimate < sd->hd->intimate)
 				sd->hd->intimate = sd->hd->status.intimate;
-			clif_send_homdata(sd->hd->msd,0x100,sd->hd->intimate/100);
+			clif_send_homdata(sd->hd->msd,1,sd->hd->intimate/100);
 		}
 		return 0;
 	case SP_PHARMACY_SUCCESS:

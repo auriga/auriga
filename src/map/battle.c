@@ -2156,7 +2156,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				src_hd->intimate = 200;
 				if(battle_config.homun_skill_intimate_type)
 					src_hd->status.intimate = 200;
-				clif_send_homdata(src_hd->msd,0x100,src_hd->intimate/100);
+				clif_send_homdata(src_hd->msd,1,src_hd->intimate/100);
 			}
 			break;
 		}

@@ -1,7 +1,25 @@
 ----------------------------------------
+//0297 [2007/08/29] by Rayce
+
+・AthenaProject2277を参考にNPCタイマーを修正、thanks to Yasさん（npc.c）
+	-> npc_event_do_clock() から続く npc_event_doall() 以下の関数内部でlocaltimeを使うと
+	   時間が狂って時計イベントが発動しない場合が発生する問題を修正
+	   localtimeで取得したデータを一旦バッファにコピーしてから参照する
+	-> ev_tm_b を現在時刻で初期化するように変更
+
+・OnDayラベルの仕様変更、OnMonthDayラベルの追加（npc.c）
+	OnDayラベルは毎月指定日に発動するイベントに変更されます。
+	これまでのOnDayラベルと同等の機能がOnMonthDayラベルとなります。
+	OnDayラベルをスクリプトで利用していた方は各自修正してください。
+	詳細はdoc/script_ref.txt参照。
+
+・clif_send_homdata() と clif_spawnhom() のパケット区切りをクライアントの解析方法に合わせる
+　（atcommand.c, battle.c, clif.*, homun.c, pc.c, skill.c）
+
+----------------------------------------
 //0296 [2007/08/27] by Rayce
 
-・0291〜0293で追加したNPCのエフェクトが出ないので暫定的に修正（skill.c）
+・0291〜0293で追加したNPCスキルのエフェクトが出ないので暫定的に修正（skill.c）
 	何故か clif_skill_nodamage() ではなく clif_skill_damage() にエフェクトが含まれている模様。
 	流石にエフェクトがないと寂しいので無理矢理修正しています。
 

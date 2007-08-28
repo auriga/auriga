@@ -2623,7 +2623,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				hd->intimate = 1;
 				if(battle_config.homun_skill_intimate_type)
 					hd->status.intimate = 1;
-				clif_send_homdata(hd->msd,0x100,hd->intimate/100);
+				clif_send_homdata(hd->msd,1,hd->intimate/100);
 				homun_damage(src,hd,hd->status.hp);
 			}
 		}
@@ -7293,7 +7293,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
  * スキルユニットから離脱
  *------------------------------------------
  */
-int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigned int tick)
+static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigned int tick)
 {
 	struct skill_unit_group *sg;
 	struct status_change *sc_data;

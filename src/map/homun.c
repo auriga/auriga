@@ -200,7 +200,7 @@ static int homun_hungry(int tid,unsigned int tick,int id,int data)
 			f = 1;
 		sd->hd->status.intimate -= 20*battle_config.homun_intimate_rate/100;
 		clif_emotion(&sd->hd->bl,28);
-		clif_send_homdata(sd,0x100,sd->hd->intimate/100);
+		clif_send_homdata(sd,1,sd->hd->intimate/100);
 		if(sd->hd->status.intimate <= 0)
 			sd->hd->status.intimate = 0;
 		if(f)
@@ -212,7 +212,7 @@ static int homun_hungry(int tid,unsigned int tick,int id,int data)
 		sd->hd->hungry_cry_timer = -1;
 	}
 
-	clif_send_homdata(sd,0x200,sd->hd->status.hungry);
+	clif_send_homdata(sd,2,sd->hd->status.hungry);
 	// 本鯖ではここでステータスを送らないが、送らないと"ホムが腹ぺこです！"が出ない
 	clif_send_homstatus(sd,0);
 
@@ -922,8 +922,8 @@ static int homun_food(struct map_session_data *sd)
 	}
 
 	clif_emotion(&sd->hd->bl,emotion);
-	clif_send_homdata(sd,0x200,sd->hd->status.hungry);
-	clif_send_homdata(sd,0x100,sd->hd->intimate/100);
+	clif_send_homdata(sd,2,sd->hd->status.hungry);
+	clif_send_homdata(sd,1,sd->hd->intimate/100);
 	clif_send_homstatus(sd,0);
 	clif_hom_food(sd,food,1);
 
@@ -1443,7 +1443,7 @@ static int homun_natural_heal_sp(int tid,unsigned int tick,int id,int data)
 		hd->intimate += battle_config.homun_temporal_intimate_resilience;
 		if(hd->status.intimate < hd->intimate)
 			hd->intimate = hd->status.intimate;
-		clif_send_homdata(hd->msd,0x100,hd->intimate/100);
+		clif_send_homdata(hd->msd,1,hd->intimate/100);
 	}
 
 	if(hd->ud.walktimer == -1) {

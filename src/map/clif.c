@@ -1647,7 +1647,8 @@ void clif_send_homdata(struct map_session_data *sd, int type, int param)
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x230;
-	WFIFOW(fd,2)=type;
+	WFIFOB(fd,2)=0;
+	WFIFOB(fd,3)=type;
 	WFIFOL(fd,4)=sd->hd->bl.id;
 	WFIFOL(fd,8)=param;
 	WFIFOSET(fd,packet_db[0x230].len);
@@ -1672,7 +1673,7 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFL(buf,2) =hd->bl.id;
 	WBUFW(buf,6) =hd->speed;
 	WBUFW(buf,20)=hd->view_class;
-	WBUFB(buf,28)=8;		// 調べた限り固定
+	WBUFW(buf,28)=8;		// 調べた限り固定
 	WBUFPOS(buf,36,hd->bl.x,hd->bl.y);
 
 	clif_send(buf,packet_db[0x7c].len,&hd->bl,AREA);
