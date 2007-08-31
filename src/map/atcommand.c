@@ -1421,9 +1421,10 @@ atcommand_item2(
 	int identify = 0, refine = 0, attr = 0;
 	int c1 = 0, c2 = 0, c3 = 0, c4 = 0;
 	int flag = 0;
+	unsigned int limit = 0;
 
-	if (sscanf(message, "%99s %d %d %d %d %d %d %d %d",
-		item_name, &number, &identify, &refine, &attr, &c1, &c2, &c3, &c4) >= 9)
+	if (sscanf(message, "%99s %d %d %d %d %d %d %d %d %u",
+		item_name, &number, &identify, &refine, &attr, &c1, &c2, &c3, &c4, &limit) >= 10)
 	{
 		if (number <= 0)
 			number = 1;
@@ -1465,14 +1466,15 @@ atcommand_item2(
 			}
 			for (i = 0; i < loop; i++) {
 				memset(&item_tmp, 0, sizeof(item_tmp));
-				item_tmp.nameid = item_id;
-				item_tmp.identify = identify;
-				item_tmp.refine = refine;
+				item_tmp.nameid    = item_id;
+				item_tmp.identify  = identify;
+				item_tmp.refine    = refine;
 				item_tmp.attribute = attr;
-				item_tmp.card[0] = c1;
-				item_tmp.card[1] = c2;
-				item_tmp.card[2] = c3;
-				item_tmp.card[3] = c4;
+				item_tmp.card[0]   = c1;
+				item_tmp.card[1]   = c2;
+				item_tmp.card[2]   = c3;
+				item_tmp.card[3]   = c4;
+				item_tmp.limit     = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
 				if ((flag = pc_additem(sd, &item_tmp, get_count)))
 					clif_additem(sd, 0, 0, flag);
 			}
@@ -1538,12 +1540,12 @@ atcommand_item3(
 			}
 			for (i = 0; i < loop; i++) {
 				memset(&item_tmp, 0, sizeof(item_tmp));
-				item_tmp.nameid = item_id;
-				item_tmp.identify = 1;
-				item_tmp.refine = 0;
+				item_tmp.nameid    = item_id;
+				item_tmp.identify  = 1;
+				item_tmp.refine    = 0;
 				item_tmp.attribute = 0;
-				item_tmp.card[0] = (equip_item) ? 0x00ff : 0x00fe;
-				item_tmp.card[1] = 0;
+				item_tmp.card[0]   = (equip_item) ? 0x00ff : 0x00fe;
+				item_tmp.card[1]   = 0;
 				*((unsigned long *)(&item_tmp.card[2])) = pl_sd->status.char_id;
 				if ((flag = pc_additem(sd, &item_tmp, get_count)))
 					clif_additem(sd, 0, 0, flag);

@@ -814,7 +814,7 @@ AurigaNPCScript
 			<variable>は配列名を指定すると最初から、要素番号も指定すれば途中から削除できます。
 
 		getitem命令
-			getitem <itemid>,<num>[,<identify>,<account_id>];
+			getitem <itemid>,<num>[,<identify>[,<account_id>]];
 
 			itemid		数値または文字列
 			num		数値
@@ -829,11 +829,11 @@ AurigaNPCScript
 
 		getitem2命令
 			getitem2 <itemid>,<num>,<identify>,<refine>,<attribute>,<card1>,
-			<card2>,<card3>,<card4>[,<account_id>]
+			<card2>,<card3>,<card4>[,<limit>[,<account_id>]]
 
 			itemid		数値または文字列
 			num,identify,refine,attribute,card1,card2,card3,card4	数値
-			account_id	数値(省略可)
+			limit,account_id	数値(省略可)
 
 			<itemid>に指定されたアイテムIDを持つアイテムを<num>個分入手します。
 			<identify> 鑑定状態(0で未鑑定、1で鑑定)
@@ -843,6 +843,7 @@ AurigaNPCScript
 			<card2> 差さているカード、製造武器なら属性と星のかけらの数を設定。星のかけらの数(範囲:0~3)*5*256 + 属性(無:0、火:3、水:1、風:4、土:2)
 			<card3> 差さているカード、製造武器やキャラの名前が入るアイテムはキャラIDの下の2バイト
 			<card4> 差さているカード、製造武器やキャラの名前が入るアイテムはキャラIDの上の2バイト
+			<limit> 使用可能時間、単位は秒(省略すると0で無期限)
 			<account_id>アイテムを渡す相手を指定(省略すると自分)
 
 			<itemid>が文字列の場合、その名前(name,jname)を持つアイテムのIDを使用します。
@@ -1835,6 +1836,7 @@ AurigaNPCScript
 			@inventorylist_card2 : アイテムに挿しているカードデータ(2枚目)
 			@inventorylist_card3 : アイテムに挿しているカードデータ(3枚目)
 			@inventorylist_card4 : アイテムに挿しているカードデータ(4枚目)
+			@inventorylist_limit : アイテムの使用期限
 			@inventorylist_count : プレイヤーの所持している総アイテム種類数
 
 		getcartlist命令
@@ -1853,6 +1855,7 @@ AurigaNPCScript
 			@cartlist_card2 : カート内のアイテムに挿しているカードデータ(2枚目)
 			@cartlist_card3 : カート内のアイテムに挿しているカードデータ(3枚目)
 			@cartlist_card4 : カート内のアイテムに挿しているカードデータ(4枚目)
+			@cartlist_limit : カート内のアイテムの使用期限
 			@cartlist_count : プレイヤーの所持しているカート内の総アイテム種類数
 
 		getskilllist命令
@@ -2000,17 +2003,20 @@ AurigaNPCScript
 			プレイヤーのステータスを再計算します。
 
 		dropitem命令
-			dropitem <gatname>,<x>,<y>,<itemid>,<num>,<tick>;
+			dropitem <gatname>,<x>,<y>,<itemid>,<num>,<tick>[,<limit>];
 
 			gatname		文字列
 			x,y		数値
 			itemid		数値または文字列
 			num,tick	数値
+			limit		数値、省略可
 
 			<itemid>で指定したアイテムを<num>個分、<gatname>で指定したMAPの座標<x>,<y>にドロップさせます。
 			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			アイテムが消滅するまでの時間は、battle_auriga.confで設定されたflooritem_lifetimeの値に
 			<tick>ミリ秒を加算した時間になります。
+			<limit>は使用可能時間で単位は秒です。
+			省略すると0で無期限となります。
 
 		getexp命令
 			getexp <base>,<job>;

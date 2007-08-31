@@ -3969,7 +3969,7 @@ struct script_function buildin_func[] = {
 	{buildin_recalcstatus,"recalcstatus","*"},
 	{buildin_sqlquery,"sqlquery","s*"},
 	{buildin_strescape,"strescape","s"},
-	{buildin_dropitem,"dropitem","siiiii"},
+	{buildin_dropitem,"dropitem","siiiii*"},
 	{buildin_getexp,"getexp","ii"},
 	{NULL,NULL,NULL}
 };
@@ -5125,6 +5125,7 @@ int buildin_getitem2(struct script_state *st)
 {
 	int nameid=0, flag=0, amount;
 	int iden,ref,attr,c1,c2,c3,c4;
+	unsigned int limit=0;
 	struct map_session_data *sd;
 	struct script_data *data;
 
@@ -5149,8 +5150,10 @@ int buildin_getitem2(struct script_state *st)
 	c2     = conv_num(st,& (st->stack->stack_data[st->start+8]));
 	c3     = conv_num(st,& (st->stack->stack_data[st->start+9]));
 	c4     = conv_num(st,& (st->stack->stack_data[st->start+10]));
-	if(st->end > st->start+11)	// アイテムを指定したIDに渡す
-		sd = map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+11])));
+	if(st->end > st->start+11)
+		limit = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+11]));
+	if(st->end > st->start+12)	// アイテムを指定したIDに渡す
+		sd = map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+12])));
 	if(sd == NULL)			// アイテムを渡す相手がいなかったらお帰り
 		return 0;
 
@@ -5190,6 +5193,7 @@ int buildin_getitem2(struct script_state *st)
 		item_tmp.card[1]   = c2;
 		item_tmp.card[2]   = c3;
 		item_tmp.card[3]   = c4;
+		item_tmp.limit     = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
 
 		if((flag = pc_additem(sd,&item_tmp,amount))) {
 			clif_additem(sd,0,0,flag);
@@ -8633,6 +8637,7 @@ int buildin_getinventorylist(struct script_state *st)
 			pc_setreg(sd,add_str("@inventorylist_card2")+(j<<24),sd->status.inventory[i].card[1]);
 			pc_setreg(sd,add_str("@inventorylist_card3")+(j<<24),sd->status.inventory[i].card[2]);
 			pc_setreg(sd,add_str("@inventorylist_card4")+(j<<24),sd->status.inventory[i].card[3]);
+			pc_setreg(sd,add_str("@inventorylist_limit")+(j<<24),sd->status.inventory[i].limit);
 			j++;
 		}
 	}
@@ -8664,6 +8669,7 @@ int buildin_getcartlist(struct script_state *st)
 			pc_setreg(sd,add_str("@cartlist_card2")+(j<<24),sd->status.cart[i].card[1]);
 			pc_setreg(sd,add_str("@cartlist_card3")+(j<<24),sd->status.cart[i].card[2]);
 			pc_setreg(sd,add_str("@cartlist_card4")+(j<<24),sd->status.cart[i].card[3]);
+			pc_setreg(sd,add_str("@cartlist_limit")+(j<<24),sd->status.cart[i].limit);
 			j++;
 		}
 	}
@@ -10810,6 +10816,7 @@ int buildin_dropitem(struct script_state *st)
 {
 	int nameid=0, flag=0, amount;
 	int x,y,m,tick;
+	unsigned int limit = 0;
 	char *str;
 	struct script_data *data;
 
@@ -10830,6 +10837,8 @@ int buildin_dropitem(struct script_state *st)
 
 	amount = conv_num(st,& (st->stack->stack_data[st->start+6]));
 	tick   = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	if(st->end > st->start+8)
+		limit = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+8]));
 
 	m = script_mapname2mapid(st,str);
 	if(m < 0)
@@ -10849,6 +10858,7 @@ int buildin_dropitem(struct script_state *st)
 		else
 			item_tmp.identify = !itemdb_isequip3(nameid);
 
+		item_tmp.limit = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
 		battle_config.flooritem_lifetime += tick;
 		map_addflooritem(&item_tmp,amount,m,x,y,NULL,NULL,NULL,0);
 		battle_config.flooritem_lifetime -= tick;
