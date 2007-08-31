@@ -2140,6 +2140,7 @@ int unit_free(struct block_list *bl, int clrtype)
 		pc_delspiritball(sd,sd->spiritball,1);	// 気功削除
 		//storage_storage_save(sd);
 		storage_delete(sd->status.account_id);
+		pc_clearitemlimit(sd);
 		pc_makesavestatus(sd);
 		sd->state.waitingdisconnect = 1;
 	} else if( bl->type == BL_PET ) {

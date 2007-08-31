@@ -56,29 +56,30 @@ struct item_data* itemdb_searchname(const char *name);
 struct item_data* itemdb_search(int nameid);
 struct item_data* itemdb_exists(int nameid);
 
-#define itemdb_type(n) itemdb_search(n)->type
-#define itemdb_atk(n) itemdb_search(n)->atk
-#define itemdb_def(n) itemdb_search(n)->def
-#define itemdb_look(n) itemdb_search(n)->look
-#define itemdb_weight(n) itemdb_search(n)->weight
-#define itemdb_equip(n) itemdb_search(n)->equip
-#define itemdb_usescript(n) itemdb_search(n)->use_script
+#define itemdb_jname(n)       itemdb_search(n)->jname
+#define itemdb_type(n)        itemdb_search(n)->type
+#define itemdb_atk(n)         itemdb_search(n)->atk
+#define itemdb_def(n)         itemdb_search(n)->def
+#define itemdb_look(n)        itemdb_search(n)->look
+#define itemdb_weight(n)      itemdb_search(n)->weight
+#define itemdb_equip(n)       itemdb_search(n)->equip
+#define itemdb_usescript(n)   itemdb_search(n)->use_script
 #define itemdb_equipscript(n) itemdb_search(n)->equip_script
-#define itemdb_wlv(n) itemdb_search(n)->wlv
-#define itemdb_range(n) itemdb_search(n)->range
-#define itemdb_slot(n) itemdb_search(n)->slot
+#define itemdb_wlv(n)         itemdb_search(n)->wlv
+#define itemdb_range(n)       itemdb_search(n)->range
+#define itemdb_slot(n)        itemdb_search(n)->slot
+#define itemdb_value_buy(n)   itemdb_search(n)->value_buy
+#define itemdb_value_sell(n)  itemdb_search(n)->value_sell
+#define itemdb_value_notdc(n) itemdb_search(n)->flag.value_notdc
+#define itemdb_value_notoc(n) itemdb_search(n)->flag.value_notoc
+
 #define	itemdb_available(n) (itemdb_exists(n) && itemdb_search(n)->flag.available)
-#define	itemdb_viewid(n) (itemdb_search(n)->view_id)
-#define	itemdb_group(n) (itemdb_search(n)->group)
+#define	itemdb_viewid(n)    (itemdb_search(n)->view_id)
+#define	itemdb_group(n)     (itemdb_search(n)->group)
 
 #define itemdb_isspecial(n) ((n) == 0x00ff || (n) == 0x00fe || (n) == (short)0xff00)
 
 int itemdb_searchrandomid(int type);
-
-#define itemdb_value_buy(n) itemdb_search(n)->value_buy
-#define itemdb_value_sell(n) itemdb_search(n)->value_sell
-#define itemdb_value_notdc(n) itemdb_search(n)->flag.value_notdc
-#define itemdb_value_notoc(n) itemdb_search(n)->flag.value_notoc
 
 int itemdb_isequip(int);
 int itemdb_isequip2(struct item_data *);

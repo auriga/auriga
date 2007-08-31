@@ -307,6 +307,7 @@ struct map_session_data {
 	struct mmo_charstatus status;
 	struct registry save_reg;
 	struct item_data *inventory_data[MAX_INVENTORY];
+	struct linkdb_node *inventory_timer;
 	unsigned int inventory_sortkey;
 	unsigned int cart_sortkey;
 	short equip_index[11];

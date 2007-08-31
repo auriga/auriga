@@ -56,6 +56,7 @@ int pc_setsavepoint(struct map_session_data*,char*,int,int);
 int pc_randomwarp(struct map_session_data *sd,int type);
 void pc_memo(struct map_session_data *sd, int i);
 
+int pc_clearitemlimit(struct map_session_data *sd);
 int pc_checkadditem(struct map_session_data*,int,int);
 int pc_inventoryblank(struct map_session_data*);
 int pc_search_inventory(struct map_session_data *sd,int item_id);

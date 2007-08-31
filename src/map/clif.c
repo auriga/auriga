@@ -2494,8 +2494,7 @@ void clif_additem(struct map_session_data *sd, int n, int amount, unsigned char 
 		WFIFOW(fd,19)=pc_equippoint(sd,n);
 		WFIFOB(fd,21)=(sd->inventory_data[n]->type == 7)? 4: sd->inventory_data[n]->type;
 		WFIFOB(fd,22)=fail;
-		//WFIFOL(fd,23)=(unsigned int)time(NULL);
-		WFIFOL(fd,23)=0;
+		WFIFOL(fd,23)=sd->status.inventory[n].limit;
 	}
 	WFIFOSET(fd,packet_db[0x29a].len);
 #endif
@@ -2518,6 +2517,25 @@ void clif_delitem(struct map_session_data *sd, int n, int amount)
 	WFIFOW(fd,2)=n+2;
 	WFIFOW(fd,4)=amount;
 	WFIFOSET(fd,packet_db[0xaf].len);
+
+	return;
+}
+
+/*==========================================
+ * アイテムの時間切れ削除
+ *------------------------------------------
+ */
+void clif_delitem_timeout(struct map_session_data *sd, int n, int itemid)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0x299;
+	WFIFOW(fd,2)=n+2;
+	WFIFOW(fd,4)=itemid;
+	WFIFOSET(fd,packet_db[0x299].len);
 
 	return;
 }
@@ -2691,8 +2709,7 @@ void clif_equiplist(struct map_session_data *sd)
 			else
 				WFIFOW(fd,n*24+22)=sd->status.inventory[i].card[3];
 		}
-		//WFIFOL(fd,n*24+24)=(unsigned int)time(NULL);
-		WFIFOL(fd,n*24+24)=0;
+		WFIFOL(fd,n*24+24)=sd->status.inventory[i].limit;
 		n++;
 	}
 	if(n){
@@ -2883,8 +2900,7 @@ void clif_storageequiplist(struct map_session_data *sd, struct storage *stor)
 			else
 				WBUFW(buf,n*24+22)=stor->store_item[i].card[3];
 		}
-		//WBUFL(buf,n*24+24)=(unsigned int)time(NULL);
-		WBUFL(buf,n*24+24)=0;
+		WBUFL(buf,n*24+24)=stor->store_item[i].limit;
 		n++;
 	}
 	if(n){
@@ -3091,8 +3107,7 @@ void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storag
 			else
 				WBUFW(buf,n*24+22)=stor->store_item[i].card[3];
 		}
-		//WBUFL(buf,n*24+24)=(unsigned int)time(NULL);
-		WBUFL(buf,n*24+24)=0;
+		WBUFL(buf,n*24+24)=stor->store_item[i].limit;
 		n++;
 	}
 	if(n){
@@ -6469,8 +6484,7 @@ void clif_cart_equiplist(struct map_session_data *sd)
 			else
 				WFIFOW(fd,n*24+22)= sd->status.cart[i].card[3];
 		}
-		//WFIFOL(fd,n*24+24)=(unsigned int)time(NULL);
-		WFIFOL(fd,n*24+24)=0;
+		WFIFOL(fd,n*24+24)=sd->status.cart[i].limit;
 		n++;
 	}
 	if(n){

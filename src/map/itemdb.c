@@ -675,14 +675,15 @@ static int itemdb_read_itemnametable(void)
 		char buf2[64];
 
 		if(sscanf(p,"%d#%63[^#]#",&nameid,buf2) == 2) {
+			char *jname = itemdb_jname(nameid);
 			buf2[47] = '\0';	// force \0 terminal
 
 #ifdef ITEMDB_OVERRIDE_NAME_VERBOSE
-			if(itemdb_exists(nameid) && strcmp(itemdb_search(nameid)->jname, buf2) != 0) {
-				printf("[override] %d %s => %s\n", nameid, itemdb_search(nameid)->jname, buf2);
+			if(itemdb_exists(nameid) && strcmp(jname, buf2) != 0) {
+				printf("[override] %d %s => %s\n", nameid, jname, buf2);
 			}
 #endif
-			memcpy(itemdb_search(nameid)->jname,buf2,48);
+			memcpy(jname,buf2,48);
 		}
 
 		p=strchr(p,'\n');

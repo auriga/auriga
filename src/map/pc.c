@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 
 #include "timer.h"
 #include "db.h"
@@ -84,6 +85,8 @@ static char motd_text[MOTD_LINE_SIZE][256];
 static int pc_dead(struct block_list *src,struct map_session_data *sd);
 static int pc_nightmare_drop(struct map_session_data *sd,short flag);
 static int pc_equiplookall(struct map_session_data *sd);
+static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int tick, unsigned int now, int first);
+static int pc_setitemlimit(struct map_session_data *sd);
 
 
 /*==========================================
@@ -1063,7 +1066,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// アイテムチェックは必ずステータス異常の初期化後に行う
 	sd->state.inventory_dirty = 1;
 	sd->state.cart_dirty = 1;
+	sd->inventory_timer = NULL;
 	pc_checkitem(sd);
+	pc_setitemlimit(sd);
 
 	// マナーポイントがプラスだった場合0に
 	if(battle_config.nomanner_mode && sd->status.manner > 0)
@@ -2951,6 +2956,126 @@ int pc_search_inventory(struct map_session_data *sd,int item_id)
 }
 
 /*==========================================
+ * アイテム使用期限タイマー
+ *------------------------------------------
+ */
+static int pc_itemlimit_timer(int tid, unsigned int tick, int id, int data)
+{
+	struct map_session_data *sd = map_id2sd(id);
+	struct linkdb_node *node;
+	unsigned int now;
+
+	if(sd == NULL)
+		return 0;
+
+	now  = (unsigned int)time(NULL);
+	node = sd->inventory_timer;
+
+	while(node) {
+		if(tid == (int)node->data - 1) {
+			tid = pc_checkitemlimit(sd, (int)node->key, tick, now, 0);
+			if(tid > 0) {
+				node->data = (void*)tid;
+			}
+			return 0;
+		}
+		node = node->next;
+	}
+
+	printf("pc_itemlimit_timer: %d not found!!\n", tid);
+	return 0;
+}
+
+/*==========================================
+ * アイテム使用期限のチェック
+ *------------------------------------------
+ */
+static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int tick, unsigned int now, int first)
+{
+	nullpo_retr(0, sd);
+
+	if(idx < 0 || idx >= MAX_INVENTORY)
+		return 0;
+
+	if(sd->status.inventory[idx].limit > now) {
+		// まだ時間になってないのでタイマーを継続する
+		unsigned int diff = sd->status.inventory[idx].limit - now;
+		if(diff > 3600)
+			diff = 3600;
+		return add_timer(tick + diff * 1000, pc_itemlimit_timer, sd->bl.id, 0) + 1;	// 0とNULLが被るので+1しておく
+	}
+
+	// 時間切れにより削除
+	if(sd->status.inventory[idx].card[0] == (short)0xff00) {
+		intif_delete_petdata(*((long *)(&sd->status.inventory[idx].card[1])));
+	}
+	if(first) {
+		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 3);
+	} else {
+		char output[256];
+		struct item_data *data = sd->inventory_data[idx];
+
+#if PACKETVER >= 9
+		if(itemdb_isequip2(data)) {
+			// 強化装備アイテムの削除
+			pc_delitem(sd, idx, sd->status.inventory[idx].amount, 1);
+			clif_delitem_timeout(sd, idx, ((data->view_id > 0)? data->view_id: data->nameid));
+			return 0;
+		}
+#endif
+		// 通常アイテムの使用期限切れ削除
+		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 0);
+		sprintf(output, msg_txt(187), ((data->view_id > 0)? itemdb_jname(data->view_id): data->jname));
+		clif_disp_onlyself(sd->fd, output);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * アイテム使用期限のセット
+ *------------------------------------------
+ */
+static int pc_setitemlimit(struct map_session_data *sd)
+{
+	int i;
+	unsigned int now  = (unsigned int)time(NULL);
+	unsigned int tick = gettick();
+
+	nullpo_retr(0, sd);
+
+	for(i = 0; i < MAX_INVENTORY; i++) {
+		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].limit > 0) {
+			int tid = pc_checkitemlimit(sd, i, tick, now, 1);
+			if(tid > 0)
+				linkdb_insert(&sd->inventory_timer, (void*)i, (void*)tid);
+		}
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * アイテム使用期限の全消去
+ *------------------------------------------
+ */
+int pc_clearitemlimit(struct map_session_data *sd)
+{
+	struct linkdb_node *node;
+
+	nullpo_retr(0, sd);
+
+	node = sd->inventory_timer;
+	while(node) {
+		delete_timer((int)node->data - 1, pc_itemlimit_timer);
+		node = node->next;
+	}
+	linkdb_final(&sd->inventory_timer);
+
+	return 0;
+}
+
+/*==========================================
  * アイテム追加。個数のみitem構造体の数字を無視
  *------------------------------------------
  */
@@ -2964,12 +3089,10 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 
 	if(item_data->nameid <= 0 || amount <= 0)
 		return 1;
-	if((data = itemdb_search(item_data->nameid)) == NULL)
-		return 1;
-	if((w = data->weight*amount) + sd->weight > sd->max_weight)
-		return 2;
 
-	i = MAX_INVENTORY;
+	data = itemdb_search(item_data->nameid);
+	if((w = data->weight * amount) + sd->weight > sd->max_weight)
+		return 2;
 
 	if(!itemdb_isequip2(data)) {
 		// 装備品ではないので、既所有品なら個数のみ変化させる
@@ -2978,36 +3101,44 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 			   sd->status.inventory[i].card[0] == item_data->card[0] &&
 			   sd->status.inventory[i].card[1] == item_data->card[1] &&
 			   sd->status.inventory[i].card[2] == item_data->card[2] &&
-			   sd->status.inventory[i].card[3] == item_data->card[3])
+			   sd->status.inventory[i].card[3] == item_data->card[3] &&
+			   sd->status.inventory[i].limit   == item_data->limit)
 			{
-				if(sd->status.inventory[i].amount+amount > MAX_AMOUNT)
+				if(sd->status.inventory[i].amount + amount > MAX_AMOUNT)
 					return 5;
 				sd->status.inventory[i].amount += amount;
+				sd->weight += w;
 				clif_additem(sd,i,amount,0);
-				break;
+				clif_updatestatus(sd,SP_WEIGHT);
+				return 0;
 			}
 		}
 	}
-	if(i >= MAX_INVENTORY) {
-		// 装備品か未所有品だったので空き欄へ追加
-		i = pc_search_inventory(sd,0);
-		if(i < 0)
-			return 4;
 
-		memcpy(&sd->status.inventory[i],item_data,sizeof(sd->status.inventory[0]));
-		if(itemdb_isequip2(data)) {
-			sd->status.inventory[i].amount = 1;
-			amount = 1;
-		} else {
-			sd->status.inventory[i].amount = amount;
-		}
-		sd->state.inventory_dirty = 1;
-		sd->status.inventory[i].id = ++sd->inventory_sortkey;
-		sd->inventory_data[i] = data;
-		clif_additem(sd,i,amount,0);
+	// 装備品か未所有品だったので空き欄へ追加
+	i = pc_search_inventory(sd,0);
+	if(i < 0)
+		return 4;
+
+	memcpy(&sd->status.inventory[i],item_data,sizeof(sd->status.inventory[0]));
+	if(itemdb_isequip2(data)) {
+		sd->status.inventory[i].amount = 1;
+		amount = 1;
+	} else {
+		sd->status.inventory[i].amount = amount;
 	}
+	sd->state.inventory_dirty  = 1;
+	sd->status.inventory[i].id = ++sd->inventory_sortkey;
+	sd->inventory_data[i]      = data;
 	sd->weight += w;
+	clif_additem(sd,i,amount,0);
 	clif_updatestatus(sd,SP_WEIGHT);
+
+	if(sd->status.inventory[i].limit > 0) {
+		int tid = pc_checkitemlimit(sd, i, gettick(), (unsigned int)time(NULL), 0);
+		if(tid > 0)
+			linkdb_insert(&sd->inventory_timer, (void*)i, (void*)tid);
+	}
 
 	return 0;
 }
@@ -3042,10 +3173,15 @@ void pc_delitem(struct map_session_data *sd, int n, int amount, int type)
 	sd->status.inventory[n].amount -= amount;
 	sd->weight -= sd->inventory_data[n]->weight*amount;
 	if(sd->status.inventory[n].amount <= 0) {
-		if(sd->status.inventory[n].equip)
+		if(sd->status.inventory[n].equip) {
 			pc_unequipitem(sd,n,0);
+		}
+		if(sd->status.inventory[n].limit > 0) {
+			int tid = (int)linkdb_erase(&sd->inventory_timer, (void*)n);
+			if(tid > 0)
+				delete_timer(tid - 1, pc_itemlimit_timer);
+		}
 		memset(&sd->status.inventory[n],0,sizeof(sd->status.inventory[0]));
-		sd->status.inventory[n].id = 0;
 		sd->inventory_data[n] = NULL;
 	}
 	if(!(type&1))
@@ -6828,10 +6964,39 @@ int pc_checkitem(struct map_session_data *sd)
 
 	// 変更があったらid順にソートする
 	if(sd->state.inventory_dirty) {
+		if(sd->inventory_timer) {
+			// 使用期限のあるアイテムなら一時的にkeyをidに変えておく
+			struct linkdb_node *node = sd->inventory_timer;
+			while(node) {
+				node->key = (void*)sd->status.inventory[(int)node->key].id;
+				node = node->next;
+			}
+		}
 		qsort(sd->status.inventory, MAX_INVENTORY, sizeof(struct item), pc_comp_item);
 		sd->state.inventory_dirty = 0;
 		sd->inventory_sortkey = 0;
-		for(i=0; i<MAX_INVENTORY; i++) {
+
+		if(sd->inventory_timer) {
+			// 使用期限のあるアイテムならidをサーチしてインデックスを再設定
+			struct linkdb_node *node = sd->inventory_timer;
+			while(node) {
+				for(i = 0; i < MAX_INVENTORY; i++) {
+					if(sd->status.inventory[i].id == (unsigned int)node->key) {
+						node->key = (void*)i;
+						break;
+					}
+				}
+				if(i >= MAX_INVENTORY) {
+					// 何故かインデックスを復元できなかったのでソケット切断する
+					if(battle_config.error_log)
+						printf("pc_checkitem: broken limit data %u\n", (unsigned int)node->data);
+					close(sd->fd);
+					return 0;
+				}
+				node = node->next;
+			}
+		}
+		for(i = 0; i < MAX_INVENTORY; i++) {
 			itemid = sd->status.inventory[i].nameid;
 			if(itemid > 0) {
 				sd->status.inventory[i].id = ++sd->inventory_sortkey;
@@ -6849,7 +7014,8 @@ int pc_checkitem(struct map_session_data *sd)
 		qsort(sd->status.cart, MAX_CART, sizeof(struct item), pc_comp_item);
 		sd->state.cart_dirty = 0;
 		sd->cart_sortkey = 0;
-		for(i=0; i<MAX_CART; i++) {
+
+		for(i = 0; i < MAX_CART; i++) {
 			itemid = sd->status.cart[i].nameid;
 			if(itemid > 0)
 				sd->status.cart[i].id = ++sd->cart_sortkey;
@@ -6859,7 +7025,7 @@ int pc_checkitem(struct map_session_data *sd)
 	}
 
 	// 装備位置チェック
-	for(i=0; i<MAX_INVENTORY; i++)
+	for(i = 0; i < MAX_INVENTORY; i++)
 	{
 		if(sd->status.inventory[i].nameid == 0)
 			continue;

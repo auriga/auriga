@@ -100,6 +100,7 @@ struct item {
 	char refine;
 	char attribute;
 	short card[4];
+	unsigned int limit;
 };
 struct point{
 	char map[24];
