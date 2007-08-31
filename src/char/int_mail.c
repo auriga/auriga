@@ -39,11 +39,11 @@ int mail_txt_store_mail(int char_id,struct mail_data *md)
 		return 1;
 	}
 
-	fprintf(fp,"%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t",
+	fprintf(fp,"%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t",
 		md->mail_num, md->read, md->char_name, md->receive_name, md->title, md->zeny,
 		md->item.id, md->item.nameid, md->item.amount, md->item.equip,
 		md->item.identify, md->item.refine, md->item.attribute,
-		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3],
+		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3], md->item.limit,
 		md->times,md->body_size);
 	for(i=0; i<md->body_size; i++) {
 		fprintf(fp,"%02X",(unsigned char)(md->body[i]));
@@ -72,11 +72,11 @@ int mail_txt_save_mail(int char_id,int i,int store,struct mail_data md[MAIL_STOR
 	}
 
 	while(n < store) {
-		fprintf(fp,"%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t",
+		fprintf(fp,"%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t",
 			md[n].mail_num, md[n].read, md[n].char_name, md[n].receive_name, md[n].title, md[n].zeny,
 			md[n].item.id, md[n].item.nameid, md[n].item.amount, md[n].item.equip,
 			md[n].item.identify, md[n].item.refine, md[n].item.attribute,
-			md[n].item.card[0], md[n].item.card[1], md[n].item.card[2], md[n].item.card[3],
+			md[n].item.card[0], md[n].item.card[1], md[n].item.card[2], md[n].item.card[3], md[n].item.limit,
 			md[n].times, md[n].body_size);
 		for(j=0; j<md[n].body_size; j++) {
 			fprintf(fp,"%02X",(unsigned char)(md[n].body[j]));
@@ -92,7 +92,7 @@ int mail_txt_save_mail(int char_id,int i,int store,struct mail_data md[MAIL_STOR
 int mail_txt_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL_STORE_MAX])
 {
 	int s, i = 0, lines = 0;
-	int tmp_int[16];
+	int tmp_int[17];
 	char tmp_str[4][1024];
 	char line[65536], filename[1056];
 	FILE *fp;
@@ -105,52 +105,61 @@ int mail_txt_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 		while(fgets(line,sizeof(line),fp) && i < MAIL_STORE_MAX) {
 			unsigned int n;
 			char *p;
-
 			lines++;
-			s = sscanf(line,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%1023[^\r\n]",
+
+			// Auriga-0300以降の形式
+			s = sscanf(line,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t%1023[^\r\n]",
 				&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
 				&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
-				&tmp_int[14],&tmp_int[15],tmp_str[3]);
-			if(s == 20) {
-				md[i].mail_num = (unsigned int)tmp_int[0];
-				md[i].read     = tmp_int[1];
-				memcpy(md[i].char_name,tmp_str[0],24);
-				memcpy(md[i].receive_name,tmp_str[1],24);
-				memcpy(md[i].title,tmp_str[2],40);
-				md[i].zeny           = tmp_int[2];
-				md[i].item.id        = (unsigned int)tmp_int[3];
-				md[i].item.nameid    = tmp_int[4];
-				md[i].item.amount    = tmp_int[5];
-				md[i].item.equip     = tmp_int[6];
-				md[i].item.identify  = tmp_int[7];
-				md[i].item.refine    = tmp_int[8];
-				md[i].item.attribute = tmp_int[9];
-				md[i].item.card[0]   = tmp_int[10];
-				md[i].item.card[1]   = tmp_int[11];
-				md[i].item.card[2]   = tmp_int[12];
-				md[i].item.card[3]   = tmp_int[13];
-				md[i].times          = (unsigned int)tmp_int[14];
-				md[i].body_size      = (unsigned int)tmp_int[15];
-
-				// force \0 terminal
-				md[i].char_name[23]    = '\0';
-				md[i].receive_name[23] = '\0';
-				md[i].title[39]        = '\0';
-
-				if(md[i].body_size > sizeof(md[i].body)) {
-					printf("mail_read_mail: %d invalid body size %d line %d\n", char_id, md[i].body_size, lines);
-					md[i].body_size = sizeof(md[i].body);
+				&tmp_int[14],&tmp_int[15],&tmp_int[16],tmp_str[3]);
+			if(s != 21) {
+				tmp_int[14] = 0;	// limit
+				s = sscanf(line,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t%1023[^\r\n]",
+					&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
+					&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
+					&tmp_int[15],&tmp_int[16],tmp_str[3]);
+				if(s != 20) {
+					printf("mail_data broken %d line %d\n",char_id,lines);
+					continue;
 				}
-				for(n = 0, p = tmp_str[3]; n < md[i].body_size && p[0] && p[1]; n++, p += 2) {
-					int c = 0;
-					sscanf(p,"%2x",&c);
-					WBUFB(md[i].body,n) = c;
-				}
-				md[i].body_size = n;
-				i++;
-			} else {
-				printf("mail_data broken %d line %d\n",char_id,lines);
 			}
+			md[i].mail_num = (unsigned int)tmp_int[0];
+			md[i].read     = tmp_int[1];
+			memcpy(md[i].char_name,tmp_str[0],24);
+			memcpy(md[i].receive_name,tmp_str[1],24);
+			memcpy(md[i].title,tmp_str[2],40);
+			md[i].zeny           = tmp_int[2];
+			md[i].item.id        = (unsigned int)tmp_int[3];
+			md[i].item.nameid    = tmp_int[4];
+			md[i].item.amount    = tmp_int[5];
+			md[i].item.equip     = tmp_int[6];
+			md[i].item.identify  = tmp_int[7];
+			md[i].item.refine    = tmp_int[8];
+			md[i].item.attribute = tmp_int[9];
+			md[i].item.card[0]   = tmp_int[10];
+			md[i].item.card[1]   = tmp_int[11];
+			md[i].item.card[2]   = tmp_int[12];
+			md[i].item.card[3]   = tmp_int[13];
+			md[i].item.limit     = (unsigned int)tmp_int[14];
+			md[i].times          = (unsigned int)tmp_int[15];
+			md[i].body_size      = (unsigned int)tmp_int[16];
+
+			// force \0 terminal
+			md[i].char_name[23]    = '\0';
+			md[i].receive_name[23] = '\0';
+			md[i].title[39]        = '\0';
+
+			if(md[i].body_size > sizeof(md[i].body)) {
+				printf("mail_read_mail: %d invalid body size %d line %d\n", char_id, md[i].body_size, lines);
+				md[i].body_size = sizeof(md[i].body);
+			}
+			for(n = 0, p = tmp_str[3]; n < md[i].body_size && p[0] && p[1]; n++, p += 2) {
+				int c = 0;
+				sscanf(p,"%2x",&c);
+				WBUFB(md[i].body,n) = c;
+			}
+			md[i].body_size = n;
+			i++;
 		}
 		fclose(fp);
 	}
@@ -415,7 +424,7 @@ int mail_sql_store_mail(int char_id,struct mail_data *md)
 		"INSERT INTO `%s` (`char_id`, `number`, `read`, `send_name`, `receive_name`, `title`, "
 		"`times`, `size`, `body`, `zeny`, "
 		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`) "
+		"`card0`, `card1`, `card2`, `card3`, `limit`) "
 		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','",
 		mail_data, char_id, md->mail_num, md->read, strecpy(buf[0],md->char_name), strecpy(buf[1],md->receive_name), strecpy(buf[2],md->title),
 		md->times, md->body_size
@@ -428,9 +437,9 @@ int mail_sql_store_mail(int char_id,struct mail_data *md)
 
 	p += sprintf(
 		p,
-		"','%d','%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
+		"','%d','%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
 		md->zeny, md->item.id, md->item.nameid, md->item.amount, md->item.equip, md->item.identify, md->item.refine, md->item.attribute,
-		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3]
+		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3], md->item.limit
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (insert `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
@@ -449,11 +458,11 @@ int mail_sql_save_mail(int char_id,int i,int store,struct mail_data md[MAIL_STOR
 		tmp_sql,
 		"UPDATE `%s` SET `read` = '%d', `zeny` = '%d', "
 		"`id` = '%u', `nameid` = '%d', `amount` = '%d', `equip` = '%d', `identify` = '%d', `refine` = '%d', `attribute` = '%d', "
-		"`card0` = '%d', `card1` = '%d', `card2` = '%d', `card3` = '%d' "
+		"`card0` = '%d', `card1` = '%d', `card2` = '%d', `card3` = '%d', `limit` = '%u' "
 		"WHERE `char_id` = '%d' AND `number` = '%u'",
 		mail_data, md[i].read, md[i].zeny,
 		md[i].item.id, md[i].item.nameid, md[i].item.amount, md[i].item.equip, md[i].item.identify, md[i].item.refine, md[i].item.attribute,
-		md[i].item.card[0], md[i].item.card[1], md[i].item.card[2], md[i].item.card[3],
+		md[i].item.card[0], md[i].item.card[1], md[i].item.card[2], md[i].item.card[3], md[i].item.limit,
 		char_id, md[i].mail_num
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
@@ -486,8 +495,8 @@ int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 		// times size body zeny
 		// 10 11     12     13    14       15     16
 		// id nameid amount equip identify refine attribute
-		// 17    18    19    20
-		// card0 card1 card2 card3
+		// 17    18    19    20    21
+		// card0 card1 card2 card3 limit
 		while((sql_row = mysql_fetch_row(sql_res)) && i < MAIL_STORE_MAX) {
 			unsigned int n;
 			char *p;
@@ -530,6 +539,7 @@ int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 			md[i].item.card[1]   = atoi(sql_row[18]);
 			md[i].item.card[2]   = atoi(sql_row[19]);
 			md[i].item.card[3]   = atoi(sql_row[20]);
+			md[i].item.limit     = (unsigned int)atoi(sql_row[21]);
 			i++;
 		}
 	}

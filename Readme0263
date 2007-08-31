@@ -1,4 +1,16 @@
 ----------------------------------------
+//0300 [2007/09/01] by Rayce
+
+・アイテムの使用期限のセーブに対応（char.c, int_mail.c, int_storage.c）
+・TXT: JOURNAL_IDENTIFIERをバージョン06に変更しておく（journal.c）
+・SQL: main.sql修正、Auriga-300_changetable.sql添付
+・SQL: txt-converter対応（char-converter.c, inter-converter.c）
+
+・パケット0x296が非対応になってたので修正（clif.c）
+・battle_auriga.confのitem_checkをyesにした状態で、@giveitemを使って存在しないアイテムIDを指定すると
+　サーバクラッシュするバグを修正（atcommand.c）
+
+----------------------------------------
 //0299 [2007/09/01] by Rayce
 
 ・アイテムに使用期限が設定できるように追加（mmo.h, clif.*, map.h, pc.*, unit.c）

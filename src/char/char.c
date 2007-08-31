@@ -187,20 +187,22 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 
 	for(i=0;i<MAX_INVENTORY;i++) {
 		if(p->st.inventory[i].nameid) {
-			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u ",
 			p->st.inventory[i].id,p->st.inventory[i].nameid,p->st.inventory[i].amount,p->st.inventory[i].equip,
 			p->st.inventory[i].identify,p->st.inventory[i].refine,p->st.inventory[i].attribute,
-			p->st.inventory[i].card[0],p->st.inventory[i].card[1],p->st.inventory[i].card[2],p->st.inventory[i].card[3]);
+			p->st.inventory[i].card[0],p->st.inventory[i].card[1],p->st.inventory[i].card[2],p->st.inventory[i].card[3],
+			p->st.inventory[i].limit);
 		}
 	}
 	*(str_p++)='\t';
 
 	for(i=0;i<MAX_CART;i++) {
 		if(p->st.cart[i].nameid) {
-			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u ",
 			p->st.cart[i].id,p->st.cart[i].nameid,p->st.cart[i].amount,p->st.cart[i].equip,
 			p->st.cart[i].identify,p->st.cart[i].refine,p->st.cart[i].attribute,
-			p->st.cart[i].card[0],p->st.cart[i].card[1],p->st.cart[i].card[2],p->st.cart[i].card[3]);
+			p->st.cart[i].card[0],p->st.cart[i].card[1],p->st.cart[i].card[2],p->st.cart[i].card[3],
+			p->st.cart[i].limit);
 		}
 	}
 	*(str_p++)='\t';
@@ -364,12 +366,20 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	}
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		// Auriga-0300以降の形式
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-		if(set!=11)
-			return 0;
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12) {
+			tmp_int[11] = 0;	// limit
+			set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+				&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+				&tmp_int[4],&tmp_int[5],&tmp_int[6],
+				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+			if(set!=11)
+				return 0;
+		}
 		if(i < MAX_INVENTORY) {
 			p->st.inventory[i].id        = (unsigned int)tmp_int[0];
 			p->st.inventory[i].nameid    = tmp_int[1];
@@ -382,6 +392,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 			p->st.inventory[i].card[1]   = tmp_int[8];
 			p->st.inventory[i].card[2]   = tmp_int[9];
 			p->st.inventory[i].card[3]   = tmp_int[10];
+			p->st.inventory[i].limit     = (unsigned int)tmp_int[11];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -389,12 +400,20 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	}
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		// Auriga-0300以降の形式
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-		if(set!=11)
-			return 0;
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12) {
+			tmp_int[11] = 0;	// limit
+			set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+				&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+				&tmp_int[4],&tmp_int[5],&tmp_int[6],
+				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+			if(set!=11)
+				return 0;
+		}
 		if(i < MAX_CART) {
 			p->st.cart[i].id        = (unsigned int)tmp_int[0];
 			p->st.cart[i].nameid    = tmp_int[1];
@@ -407,6 +426,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 			p->st.cart[i].card[1]   = tmp_int[8];
 			p->st.cart[i].card[2]   = tmp_int[9];
 			p->st.cart[i].card[3]   = tmp_int[10];
+			p->st.cart[i].limit     = (unsigned int)tmp_int[11];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -1035,7 +1055,7 @@ int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 
 	sprintf(
 		tmp_sql,"SELECT `id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3` FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id
+		"`card0`, `card1`, `card2`, `card3`, `limit` FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id
 	);
 
 	if (mysql_query(&mysql_handle, tmp_sql)) {
@@ -1056,6 +1076,7 @@ int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 			item[i].card[1]   = atoi(sql_row[8]);
 			item[i].card[2]   = atoi(sql_row[9]);
 			item[i].card[3]   = atoi(sql_row[10]);
+			item[i].limit     = (unsigned int)atoi(sql_row[11]);
 		}
 		mysql_free_result(sql_res);
 	}
@@ -1102,16 +1123,16 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 	p  = tmp_sql;
 	p += sprintf(
 		p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
-		"`attribute`, `card0`, `card1`, `card2`, `card3` ) VALUES",tablename,selectoption
+		"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit` ) VALUES",tablename,selectoption
 	);
 
 	for(i = 0 ; i < max ; i++) {
 		if(item[i].nameid) {
 			p += sprintf(
-				p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
+				p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
 				sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
 				item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
-				item[i].card[2],item[i].card[3]
+				item[i].card[2],item[i].card[3],item[i].limit
 			);
 			sep = ',';
 		}

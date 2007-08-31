@@ -52,10 +52,11 @@ static int storage_tostr(char *str,struct storage *p)
 
 	for(i=0;i<MAX_STORAGE;i++) {
 		if(p->store_item[i].nameid && p->store_item[i].amount) {
-			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u ",
 				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
 				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
-				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3]);
+				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3],
+				p->store_item[i].limit);
 			f++;
 		}
 	}
@@ -70,7 +71,7 @@ static int storage_tostr(char *str,struct storage *p)
 // 文字列を倉庫データに変換
 static int storage_fromstr(char *str,struct storage *p)
 {
-	int tmp_int[11];
+	int tmp_int[12];
 	int set,next,len,i;
 
 	set=sscanf(str,"%d,%d%n",&tmp_int[0],&tmp_int[1],&next);
@@ -82,12 +83,20 @@ static int storage_fromstr(char *str,struct storage *p)
 		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		// Auriga-0300以降の形式
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-		if(set!=11)
-			return 1;
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12) {
+			tmp_int[11] = 0;	// limit
+			set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+				&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+				&tmp_int[4],&tmp_int[5],&tmp_int[6],
+				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+			if(set!=11)
+				return 1;
+		}
 		if(i < MAX_STORAGE) {
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
 			p->store_item[i].nameid    = tmp_int[1];
@@ -100,6 +109,7 @@ static int storage_fromstr(char *str,struct storage *p)
 			p->store_item[i].card[1]   = tmp_int[8];
 			p->store_item[i].card[2]   = tmp_int[9];
 			p->store_item[i].card[3]   = tmp_int[10];
+			p->store_item[i].limit     = (unsigned int)tmp_int[11];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -234,10 +244,11 @@ static int gstorage_tostr(char *str,struct guild_storage *p)
 
 	for(i=0;i<MAX_GUILD_STORAGE;i++) {
 		if(p->store_item[i].nameid && p->store_item[i].amount) {
-			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u ",
 				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
 				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
-				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3]);
+				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3],
+				p->store_item[i].limit);
 			f++;
 		}
 	}
@@ -251,7 +262,7 @@ static int gstorage_tostr(char *str,struct guild_storage *p)
 
 static int gstorage_fromstr(char *str,struct guild_storage *p)
 {
-	int tmp_int[11];
+	int tmp_int[12];
 	int set,next,len,i;
 
 	set=sscanf(str,"%d,%d%n",&tmp_int[0],&tmp_int[1],&next);
@@ -263,12 +274,20 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		// Auriga-0300以降の形式
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-		if(set!=11)
-			return 1;
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12) {
+			tmp_int[11] = 0;	// limit
+			set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+				&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+				&tmp_int[4],&tmp_int[5],&tmp_int[6],
+				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+			if(set!=11)
+				return 1;
+		}
 		if(i < MAX_GUILD_STORAGE) {
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
 			p->store_item[i].nameid    = tmp_int[1];
@@ -281,6 +300,7 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 			p->store_item[i].card[1]   = tmp_int[8];
 			p->store_item[i].card[2]   = tmp_int[9];
 			p->store_item[i].card[3]   = tmp_int[10];
+			p->store_item[i].limit     = (unsigned int)tmp_int[11];
 		}
 		next+=len;
 		if(str[next]==' ')

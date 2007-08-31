@@ -4395,18 +4395,19 @@ static void atcommand_giveitem_sub(struct map_session_data *sd,struct item_data 
 	int loop = 1, get_count = number,i;
 	struct item item_tmp;
 
-	if(sd && item_data){
-		if (itemdb_isequip2(item_data)) {
-			loop = number;
-			get_count = 1;
-		}
-		for (i = 0; i < loop; i++) {
-			memset(&item_tmp, 0, sizeof(item_tmp));
-			item_tmp.nameid = item_data->nameid;
-			item_tmp.identify = 1;
-			if ((flag = pc_additem(sd, &item_tmp, get_count)))
-				clif_additem(sd, 0, 0, flag);
-		}
+	nullpo_retv(sd);
+	nullpo_retv(item_data);
+
+	if (itemdb_isequip2(item_data)) {
+		loop = number;
+		get_count = 1;
+	}
+	for (i = 0; i < loop; i++) {
+		memset(&item_tmp, 0, sizeof(item_tmp));
+		item_tmp.nameid = item_data->nameid;
+		item_tmp.identify = 1;
+		if ((flag = pc_additem(sd, &item_tmp, get_count)))
+			clif_additem(sd, 0, 0, flag);
 	}
 
 	return;
@@ -4418,10 +4419,8 @@ atcommand_giveitem(
 	const char* command, const char* message)
 {
 	struct map_session_data *pl_sd = NULL;
-	struct item_data *item_data;
-	char item_name[100];
-	char character[100];
-	char output[100];
+	struct item_data *item_data = NULL;
+	char item_name[100], character[100], output[100];
 	int number,i,item_id;
 
 	if (!message || !*message)
@@ -4445,30 +4444,29 @@ atcommand_giveitem(
 		} else {
 			item_data = itemdb_search(item_id);
 		}
-		strncpy(item_name,item_data->jname,48);
 	} else {
 		item_data = itemdb_searchname(item_name);
 		if (item_data && (!battle_config.item_check || itemdb_available(item_data->nameid)))
 			item_id = item_data->nameid;
 	}
-	if(item_id == 0)
+	if(item_id <= 0)
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) { // 該当名のキャラが存在する
 		atcommand_giveitem_sub(pl_sd,item_data,number);
-		snprintf(output, sizeof output, msg_txt(97), item_name,number);
+		snprintf(output, sizeof output, msg_txt(97), item_data->jname, number);
 		clif_displaymessage(pl_sd->fd, output);
-		snprintf(output, sizeof output, msg_txt(98), pl_sd->status.name,item_name,number);
+		snprintf(output, sizeof output, msg_txt(98), pl_sd->status.name, item_data->jname, number);
 		clif_displaymessage(fd, output);
 	} else if(strcmp(character,"ALL") == 0) {	// 名前がALLなら、接続者全員へ
 		for (i = 0; i < fd_max; i++) {
-			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data)){
+			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data)) {
 				atcommand_giveitem_sub(pl_sd,item_data,number);
-				snprintf(output, sizeof output, msg_txt(97),item_name,number);
+				snprintf(output, sizeof output, msg_txt(97), item_data->jname, number);
 				clif_displaymessage(pl_sd->fd, output);
 			}
 		}
-		snprintf(output, sizeof output, msg_txt(98), msg_txt(135), item_name, number);
+		snprintf(output, sizeof output, msg_txt(98), msg_txt(135), item_data->jname, number);
 		clif_displaymessage(fd, output);
 	} else {
 		return -1;

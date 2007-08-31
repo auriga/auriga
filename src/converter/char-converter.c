@@ -58,16 +58,16 @@ static int char_sql_saveitem(struct item *item, int max, int id, int tableswitch
 	p  = tmp_sql;
 	p += sprintf(
 		p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
-		"`attribute`, `card0`, `card1`, `card2`, `card3` ) VALUES",tablename,selectoption
+		"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit` ) VALUES",tablename,selectoption
 	);
 
 	for(i = 0 ; i < max ; i++) {
 		if(item[i].nameid) {
 			p += sprintf(
-				p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
+				p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
 				sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
 				item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
-				item[i].card[2],item[i].card[3]
+				item[i].card[2],item[i].card[3],item[i].limit
 			);
 			sep = ',';
 		}
@@ -182,11 +182,11 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	}
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-		if(set!=11)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12)
 			return 1;
 		if(i < MAX_INVENTORY) {
 			p->st.inventory[i].id        = (unsigned int)tmp_int[0];
@@ -200,6 +200,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.inventory[i].card[1]   = tmp_int[8];
 			p->st.inventory[i].card[2]   = tmp_int[9];
 			p->st.inventory[i].card[3]   = tmp_int[10];
+			p->st.inventory[i].limit     = (unsigned int)tmp_int[11];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -207,11 +208,11 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	}
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-		if(set!=11)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12)
 			return 1;
 		if(i < MAX_CART) {
 			p->st.cart[i].id        = (unsigned int)tmp_int[0];
@@ -225,6 +226,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.cart[i].card[1]   = tmp_int[8];
 			p->st.cart[i].card[2]   = tmp_int[9];
 			p->st.cart[i].card[3]   = tmp_int[10];
+			p->st.cart[i].limit     = (unsigned int)tmp_int[11];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -546,7 +548,7 @@ static int pet_tosql(int pet_id, struct s_pet *p)
 // 倉庫データを文字列から変換
 static int storage_fromstr(char *str, struct storage *p)
 {
-	int tmp_int[11];
+	int tmp_int[12];
 	int set,next,len,i;
 
 	set=sscanf(str,"%d,%d%n",&tmp_int[0],&tmp_int[1],&next);
@@ -558,11 +560,11 @@ static int storage_fromstr(char *str, struct storage *p)
 		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-		if(set!=11)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12)
 			return 1;
 		if(i < MAX_STORAGE) {
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
@@ -576,6 +578,7 @@ static int storage_fromstr(char *str, struct storage *p)
 			p->store_item[i].card[1]   = tmp_int[8];
 			p->store_item[i].card[2]   = tmp_int[9];
 			p->store_item[i].card[3]   = tmp_int[10];
+			p->store_item[i].limit     = (unsigned int)tmp_int[11];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -1057,7 +1060,7 @@ static int guildcastle_tosql(struct guild_castle *gc)
 // ギルド倉庫データを文字列から変換
 static int gstorage_fromstr(char *str,struct guild_storage *p)
 {
-	int tmp_int[11];
+	int tmp_int[12];
 	int set,next,len,i;
 
 	set=sscanf(str,"%d,%d%n",&tmp_int[0],&tmp_int[1],&next);
@@ -1069,11 +1072,11 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-		if(set!=11)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12)
 			return 1;
 		if(i < MAX_GUILD_STORAGE) {
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
@@ -1087,6 +1090,7 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 			p->store_item[i].card[1]   = tmp_int[8];
 			p->store_item[i].card[2]   = tmp_int[9];
 			p->store_item[i].card[3]   = tmp_int[10];
+			p->store_item[i].limit     = (unsigned int)tmp_int[11];
 		}
 		next+=len;
 		if(str[next]==' ')

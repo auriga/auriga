@@ -2810,7 +2810,7 @@ void clif_storageequiplist(struct map_session_data *sd, struct storage *stor)
 	fd=sd->fd;
 	buf = WFIFOP(fd,0);
 
-#if PACKETVAR < 9
+#if PACKETVER < 9
 	WBUFW(buf,0)=0xa6;
 	for(i=0,n=0;i<MAX_STORAGE;i++){
 		if(stor->store_item[i].nameid<=0)

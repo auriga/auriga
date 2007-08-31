@@ -14,6 +14,7 @@ CREATE TABLE `cart_inventory` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
+  `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`, `char_id`),
   KEY `char_id` (`char_id`)
 ) TYPE=MyISAM; 
@@ -279,6 +280,7 @@ CREATE TABLE `guild_storage` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
+  `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`, `guild_id`),
   KEY `guild_id` (`guild_id`)
 ) TYPE=MyISAM; 
@@ -307,6 +309,7 @@ CREATE TABLE `inventory` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
+  `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`, `char_id`),
   KEY `char_id` (`char_id`)
 ) TYPE=MyISAM; 
@@ -426,6 +429,7 @@ CREATE TABLE `storage` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
+  `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`, `account_id`),
   KEY `account_id` (`account_id`)
 ) TYPE=MyISAM; 
@@ -533,6 +537,7 @@ CREATE TABLE `mail_data` (
   `card1` int(11) NOT NULL default '0',
   `card2` int(11) NOT NULL default '0',
   `card3` int(11) NOT NULL default '0',
+  `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`,`number`),
   KEY `char_id` (`char_id`),
   KEY `number` (`number`)

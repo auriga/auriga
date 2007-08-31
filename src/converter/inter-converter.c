@@ -189,16 +189,23 @@ static int mail_tosql(struct mail* m)
 static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 {
 	int n;
-	int tmp_int[16];
+	int tmp_int[17];
 	char tmp_str[3][1024];
 
-	n=sscanf(str,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d\t%d\t%1023[^\r\n]",
+	n=sscanf(str,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t%1023[^\r\n]",
 		&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
-		&tmp_int[14],&tmp_int[15],body_data);
-	if(n!=20)
-		return 1;
-
+		&tmp_int[14],&tmp_int[15],&tmp_int[16],body_data);
+	if(n!=21) {
+		// 一度も開かれてないメールBOXはAuriga-0300より古い形式のままの可能性がある
+		tmp_int[14] = 0;
+		n=sscanf(str,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t%1023[^\r\n]",
+			&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
+			&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
+			&tmp_int[15],&tmp_int[16],body_data);
+		if(n!=20)
+			return 1;
+	}
 	md->mail_num = (unsigned int)tmp_int[0];
 	md->read     = tmp_int[1];
 	memcpy(md->char_name,tmp_str[0],24);
@@ -216,8 +223,9 @@ static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 	md->item.card[1]   = tmp_int[11];
 	md->item.card[2]   = tmp_int[12];
 	md->item.card[3]   = tmp_int[13];
-	md->times          = (unsigned int)tmp_int[14];
-	md->body_size      = (unsigned int)tmp_int[15];
+	md->item.limit     = (unsigned int)tmp_int[14];
+	md->times          = (unsigned int)tmp_int[15];
+	md->body_size      = (unsigned int)tmp_int[16];
 
 	// force \0 terminal
 	md->char_name[23]    = '\0';
@@ -244,12 +252,12 @@ static int mailbox_tosql(struct mail_data *md,char *body_data)
 		"INSERT INTO `mail_data` (`char_id`, `number`, `read`, `send_name`, `receive_name`, `title`, "
 		"`times`, `size`, `body`, `zeny`, "
 		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`) "
-		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d')",
+		"`card0`, `card1`, `card2`, `card3`, `limit`) "
+		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
 		md->char_id, md->mail_num, md->read, strecpy(buf[0],md->char_name), strecpy(buf[1],md->receive_name), strecpy(buf[2],md->title),
 		md->times, md->body_size, body_data, md->zeny,
 		md->item.id, md->item.nameid, md->item.amount, md->item.equip, md->item.identify, md->item.refine, md->item.attribute,
-		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3]
+		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3], md->item.limit
 	);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (insert `mail_data`)- %s\n", mysql_error(&mysql_handle));
