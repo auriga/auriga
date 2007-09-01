@@ -659,25 +659,24 @@ static int homun_data_init(struct map_session_data *sd)
 
 	class_ = sd->hd->status.class_ - HOM_ID;
 
-	hd->bl.m = sd->bl.m;
+	hd->bl.m    = sd->bl.m;
 	hd->bl.prev = hd->bl.next = NULL;
-	hd->bl.x = hd->ud.to_x = sd->bl.x;
-	hd->bl.y = hd->ud.to_y = sd->bl.y;
+	hd->bl.x    = hd->ud.to_x = sd->bl.x;
+	hd->bl.y    = hd->ud.to_y = sd->bl.y;
 	homun_calc_pos(hd,sd->bl.x,sd->bl.y,sd->dir);
-	hd->bl.x = hd->ud.to_x;
-	hd->bl.y = hd->ud.to_y;
-	hd->bl.id = npc_get_new_npc_id();
-	hd->equip = 0;
-	hd->dir = sd->dir;
-	hd->speed = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
-	hd->bl.subtype = MONS;
-	hd->bl.type = BL_HOM;
-	memset(&hd->state,0,sizeof(hd->state));
-	hd->target_id = 0;
-	hd->attackable = 1;	// これを0にすると、クライアントから攻撃パケットを出さなくなる
+	hd->bl.x             = hd->ud.to_x;
+	hd->bl.y             = hd->ud.to_y;
+	hd->bl.id            = npc_get_new_npc_id();
+	hd->equip            = 0;
+	hd->dir              = sd->dir;
+	hd->speed            = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
+	hd->bl.subtype       = MONS;
+	hd->bl.type          = BL_HOM;
+	hd->target_id        = 0;
+	hd->attackable       = 1;	// これを0にすると、クライアントから攻撃パケットを出さなくなる
 	hd->limits_to_growth = 0;
-	hd->msd = sd;
-	hd->view_class = homun_db[class_].view_class;
+	hd->msd              = sd;
+	hd->view_class       = homun_db[class_].view_class;
 
 	for(i=0; i<MAX_HOMSKILL; i++)
 		hd->homskillstatictimer[i] = tick;

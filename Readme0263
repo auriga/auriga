@@ -1,4 +1,12 @@
 ----------------------------------------
+//0302 [2007/09/02] by Rayce
+
+・pet_data構造体およびhomun_data構造体から使われてないstateを削除（map.h, homun.c, pet.c）
+・mob_data構造体の skillstate のビットフィールドを 8 → 4 に縮小（map.h）
+・mob_readskilldb() を少しだけ修正（mob.c）
+・MSS_***系定数の値を変更（mob.h）
+
+----------------------------------------
 //0301 [2007/09/01] by Rayce
 
 ・使用期限付きアイテムの生成を実装（atcommand.c, script.c）

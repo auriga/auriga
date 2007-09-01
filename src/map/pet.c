@@ -307,10 +307,10 @@ static int pet_data_init(struct map_session_data *sd)
 	sd->petDB = &pet_db[i];
 	sd->pd = pd = (struct pet_data *)aCalloc(1,sizeof(struct pet_data));
 
-	pd->bl.m = sd->bl.m;
+	pd->bl.m    = sd->bl.m;
 	pd->bl.prev = pd->bl.next = NULL;
-	pd->bl.x = pd->ud.to_x = sd->bl.x;
-	pd->bl.y = pd->ud.to_y = sd->bl.y;
+	pd->bl.x    = pd->ud.to_x = sd->bl.x;
+	pd->bl.y    = pd->ud.to_y = sd->bl.y;
 	pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
 	pd->bl.x  = pd->ud.to_x;
 	pd->bl.y  = pd->ud.to_y;
@@ -323,9 +323,8 @@ static int pet_data_init(struct map_session_data *sd)
 		pd->speed = status_get_speed(&sd->bl);
 	else
 		pd->speed = sd->petDB->speed;
-	pd->bl.subtype = MONS;
-	pd->bl.type    = BL_PET;
-	memset(&pd->state,0,sizeof(pd->state));
+	pd->bl.subtype      = MONS;
+	pd->bl.type         = BL_PET;
 	pd->target_id       = 0;
 	pd->move_fail_count = 0;
 	pd->next_walktime   = tick;

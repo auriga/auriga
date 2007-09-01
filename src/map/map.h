@@ -660,7 +660,7 @@ struct mob_data {
 	char name[24];
 	int spawndelay1,spawndelay2;
 	struct {
-		unsigned skillstate : 8;
+		unsigned skillstate : 4;
 		unsigned steal_flag : 1;
 		unsigned steal_coin_flag : 1;
 		unsigned master_check : 1;
@@ -731,9 +731,6 @@ struct pet_data {
 	short speed;
 	char name[24];
 	short view_size;
-	struct {
-		unsigned skillstate : 8;
-	} state;
 	short equip;
 	int target_id;
 	int move_fail_count;
@@ -755,13 +752,8 @@ struct homun_data {
 	short dir;
 	short speed;
 	short view_size;
-	struct {
-		unsigned skillstate : 8;
-	} state;
-
 	int invincible_timer;
 	int hp_sub,sp_sub;
-
 	int max_hp,max_sp;
 	int str,agi,vit,int_,dex,luk;
 	short atk,matk,def,mdef;
@@ -781,7 +773,6 @@ struct homun_data {
 	int hprecov_rate,sprecov_rate;
 	int natural_heal_hp,natural_heal_sp;
 	int hungry_cry_timer;
-
 	struct map_session_data *msd;
 };
 
