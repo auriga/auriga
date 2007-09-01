@@ -511,7 +511,8 @@ static int clif_clearchar_delay_sub(int tid,unsigned int tick,int id,int data)
 
 int clif_clearchar_delay(unsigned int tick,struct block_list *bl)
 {
-	struct block_list *tmpbl=(struct block_list *)aMalloc(sizeof(struct block_list));
+	struct block_list *tmpbl = (struct block_list *)aMalloc(sizeof(struct block_list));
+
 	memcpy(tmpbl,bl,sizeof(struct block_list));
 	add_timer2(tick,clif_clearchar_delay_sub,(int)tmpbl,battle_config.pcview_mob_clear_type,TIMER_FREE_ID);
 
@@ -1638,28 +1639,6 @@ void clif_spawnpet(struct pet_data *pd)
  *
  *------------------------------------------
  */
-void clif_send_homdata(struct map_session_data *sd, int type, int param)
-{
-	int fd;
-
-	nullpo_retv(sd);
-	nullpo_retv(sd->hd);
-
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x230;
-	WFIFOB(fd,2)=0;
-	WFIFOB(fd,3)=type;
-	WFIFOL(fd,4)=sd->hd->bl.id;
-	WFIFOL(fd,8)=param;
-	WFIFOSET(fd,packet_db[0x230].len);
-
-	return;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
 void clif_spawnhom(struct homun_data *hd)
 {
 	unsigned char buf[64];
@@ -1683,122 +1662,6 @@ void clif_spawnhom(struct homun_data *hd)
 
 	if(hd->view_size!=0)
 		clif_misceffect2(&hd->bl,422+hd->view_size);
-
-	return;
-}
-
-void clif_send_homstatus(struct map_session_data *sd, int flag)
-{
-	int fd;
-	struct homun_data *hd;
-
-	nullpo_retv(sd);
-	nullpo_retv((hd=sd->hd));
-
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x22e;
-	memcpy(WFIFOP(fd,2),hd->status.name,24);
-	WFIFOB(fd,26)=hd->status.rename_flag*2;	// 名前付けたフラグ 2で変更不可
-	WFIFOW(fd,27)=hd->status.base_level;	// Lv
-	WFIFOW(fd,29)=hd->status.hungry;		// 満腹度
-	WFIFOW(fd,31)=hd->intimate/100;	// 新密度
-	WFIFOW(fd,33)=hd->status.equip;			// equip id
-	WFIFOW(fd,35)=hd->atk;					// Atk
-	WFIFOW(fd,37)=hd->matk;					// MAtk
-	WFIFOW(fd,39)=hd->hit;					// Hit
-	WFIFOW(fd,41)=hd->critical;				// Cri
-	WFIFOW(fd,43)=hd->def;					// Def
-	WFIFOW(fd,45)=hd->mdef;					// Mdef
-	WFIFOW(fd,47)=hd->flee;					// Flee
-	WFIFOW(fd,49)=(flag)?0:status_get_amotion(&hd->bl)+200;	// Aspd
-	WFIFOW(fd,51)=hd->status.hp;			// HP
-	WFIFOW(fd,53)=hd->max_hp;		// MHp
-	WFIFOW(fd,55)=hd->status.sp;			// SP
-	WFIFOW(fd,57)=hd->max_sp;		// MSP
-	WFIFOL(fd,59)=hd->status.base_exp;		// Exp
-	WFIFOL(fd,63)=homun_nextbaseexp(hd);	// NextExp
-	WFIFOW(fd,67)=hd->status.skill_point;	// skill point
-	WFIFOW(fd,69)=hd->attackable;			// 攻撃可否フラグ 0:不可/1:許可
-	WFIFOSET(fd,packet_db[0x22e].len);
-
-	return;
-}
-
-void clif_hom_food(struct map_session_data *sd, int foodid, unsigned char fail)
-{
-	int fd;
-
-	nullpo_retv(sd);
-
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x22f;
-	WFIFOB(fd,2)=fail;
-	WFIFOW(fd,3)=foodid;
-	WFIFOSET(fd,packet_db[0x22f].len);
-
-	return;
-}
-
-/*==========================================
- * ホムのスキルリストを送信する
- *------------------------------------------
- */
-void clif_homskillinfoblock(struct map_session_data *sd)
-{
-	int fd;
-	int i,c,len=4,id,skill_lv;
-	struct homun_data *hd;
-
-	nullpo_retv(sd);
-	nullpo_retv((hd=sd->hd));
-
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x235;
-	for ( i = c = 0; i < MAX_HOMSKILL; i++){
-		if( (id=hd->status.skill[i].id)!=0 ){
-			WFIFOW(fd,len  ) = id;
-			WFIFOL(fd,len+2) = skill_get_inf(id);
-			skill_lv = hd->status.skill[i].lv;
-			WFIFOW(fd,len+6) = skill_lv;
-			WFIFOW(fd,len+8) = skill_get_sp(id,skill_lv);
-			WFIFOW(fd,len+10)= skill_get_fixed_range(&hd->bl,id,skill_lv);
-			memset(WFIFOP(fd,len+12),0,24);
-			if(!(skill_get_inf2(id)&0x01))
-				WFIFOB(fd,len+36) = (skill_lv < homun_get_skilltree_max(hd->status.class_,id) && hd->status.skill[i].flag == 0)? 1: 0;
-			else
-				WFIFOB(fd,len+36) = 0;
-			len+=37;
-			c++;
-		}
-	}
-	WFIFOW(fd,2)=len;
-	WFIFOSET(fd,len);
-
-	return;
-}
-
-/*==========================================
- * スキル割り振り通知
- *------------------------------------------
- */
-void clif_homskillup(struct map_session_data *sd, int skill_num)
-{
-	int fd,skillid;
-	struct homun_data *hd;
-
-	nullpo_retv(sd);
-	nullpo_retv((hd=sd->hd));
-
-	skillid = skill_num-HOM_SKILLID;
-
-	fd=sd->fd;
-	WFIFOW(fd,0) = 0x239;
-	WFIFOW(fd,2) = skill_num;
-	WFIFOW(fd,4) = hd->status.skill[skillid].lv;
-	WFIFOW(fd,6) = skill_get_sp(skill_num,hd->status.skill[skillid].lv);
-	WFIFOW(fd,8) = skill_get_fixed_range(&hd->bl,skill_num,hd->status.skill[skillid].lv);
-	WFIFOB(fd,10) = (hd->status.skill[skillid].lv < homun_get_skilltree_max(hd->status.class_,hd->status.skill[skillid].id)) ? 1 : 0;
-	WFIFOSET(fd,packet_db[0x239].len);
 
 	return;
 }
@@ -8848,6 +8711,152 @@ void clif_changedir(struct block_list *bl, int headdir, int dir)
 	WBUFW(buf,6)=headdir;
 	WBUFB(buf,8)=(unsigned char)dir;
 	clif_send(buf,packet_db[0x9c].len,bl,AREA_WOS);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_send_homdata(struct map_session_data *sd, int type, int param)
+{
+	int fd;
+
+	nullpo_retv(sd);
+	nullpo_retv(sd->hd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0x230;
+	WFIFOB(fd,2)=0;
+	WFIFOB(fd,3)=type;
+	WFIFOL(fd,4)=sd->hd->bl.id;
+	WFIFOL(fd,8)=param;
+	WFIFOSET(fd,packet_db[0x230].len);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_send_homstatus(struct map_session_data *sd, int flag)
+{
+	int fd;
+	struct homun_data *hd;
+
+	nullpo_retv(sd);
+	nullpo_retv((hd=sd->hd));
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0x22e;
+	memcpy(WFIFOP(fd,2),hd->status.name,24);
+	WFIFOB(fd,26)=hd->status.rename_flag*2;	// 名前付けたフラグ 2で変更不可
+	WFIFOW(fd,27)=hd->status.base_level;	// Lv
+	WFIFOW(fd,29)=hd->status.hungry;		// 満腹度
+	WFIFOW(fd,31)=hd->intimate/100;	// 新密度
+	WFIFOW(fd,33)=hd->status.equip;			// equip id
+	WFIFOW(fd,35)=hd->atk;					// Atk
+	WFIFOW(fd,37)=hd->matk;					// MAtk
+	WFIFOW(fd,39)=hd->hit;					// Hit
+	WFIFOW(fd,41)=hd->critical;				// Cri
+	WFIFOW(fd,43)=hd->def;					// Def
+	WFIFOW(fd,45)=hd->mdef;					// Mdef
+	WFIFOW(fd,47)=hd->flee;					// Flee
+	WFIFOW(fd,49)=(flag)?0:status_get_amotion(&hd->bl)+200;	// Aspd
+	WFIFOW(fd,51)=hd->status.hp;			// HP
+	WFIFOW(fd,53)=hd->max_hp;		// MHp
+	WFIFOW(fd,55)=hd->status.sp;			// SP
+	WFIFOW(fd,57)=hd->max_sp;		// MSP
+	WFIFOL(fd,59)=hd->status.base_exp;		// Exp
+	WFIFOL(fd,63)=homun_nextbaseexp(hd);	// NextExp
+	WFIFOW(fd,67)=hd->status.skill_point;	// skill point
+	WFIFOW(fd,69)=hd->attackable;			// 攻撃可否フラグ 0:不可/1:許可
+	WFIFOSET(fd,packet_db[0x22e].len);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_hom_food(struct map_session_data *sd, int foodid, unsigned char fail)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0x22f;
+	WFIFOB(fd,2)=fail;
+	WFIFOW(fd,3)=foodid;
+	WFIFOSET(fd,packet_db[0x22f].len);
+
+	return;
+}
+
+/*==========================================
+ * ホムのスキルリストを送信する
+ *------------------------------------------
+ */
+void clif_homskillinfoblock(struct map_session_data *sd)
+{
+	int fd;
+	int i,c,len=4,id,skill_lv;
+	struct homun_data *hd;
+
+	nullpo_retv(sd);
+	nullpo_retv((hd=sd->hd));
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0x235;
+	for ( i = c = 0; i < MAX_HOMSKILL; i++){
+		if( (id=hd->status.skill[i].id)!=0 ){
+			WFIFOW(fd,len  ) = id;
+			WFIFOL(fd,len+2) = skill_get_inf(id);
+			skill_lv = hd->status.skill[i].lv;
+			WFIFOW(fd,len+6) = skill_lv;
+			WFIFOW(fd,len+8) = skill_get_sp(id,skill_lv);
+			WFIFOW(fd,len+10)= skill_get_fixed_range(&hd->bl,id,skill_lv);
+			memset(WFIFOP(fd,len+12),0,24);
+			if(!(skill_get_inf2(id)&0x01))
+				WFIFOB(fd,len+36) = (skill_lv < homun_get_skilltree_max(hd->status.class_,id) && hd->status.skill[i].flag == 0)? 1: 0;
+			else
+				WFIFOB(fd,len+36) = 0;
+			len+=37;
+			c++;
+		}
+	}
+	WFIFOW(fd,2)=len;
+	WFIFOSET(fd,len);
+
+	return;
+}
+
+/*==========================================
+ * ホムのスキル割り振り通知
+ *------------------------------------------
+ */
+void clif_homskillup(struct map_session_data *sd, int skill_num)
+{
+	int fd,skillid;
+	struct homun_data *hd;
+
+	nullpo_retv(sd);
+	nullpo_retv((hd=sd->hd));
+
+	skillid = skill_num-HOM_SKILLID;
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0x239;
+	WFIFOW(fd,2) = skill_num;
+	WFIFOW(fd,4) = hd->status.skill[skillid].lv;
+	WFIFOW(fd,6) = skill_get_sp(skill_num,hd->status.skill[skillid].lv);
+	WFIFOW(fd,8) = skill_get_fixed_range(&hd->bl,skill_num,hd->status.skill[skillid].lv);
+	WFIFOB(fd,10) = (hd->status.skill[skillid].lv < homun_get_skilltree_max(hd->status.class_,hd->status.skill[skillid].id)) ? 1 : 0;
+	WFIFOSET(fd,packet_db[0x239].len);
 
 	return;
 }

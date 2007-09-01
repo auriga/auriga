@@ -3208,7 +3208,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
  */
 static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag)
 {
-	struct Damage mcd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	struct Damage mid = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct skill_unit       *unit = NULL;
 	int int_, dex, race, ele;
@@ -3218,7 +3218,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	// return前の処理があるので情報出力部のみ変更
 	if( bl == NULL || target == NULL || target->type == BL_PET ) {
 		nullpo_info(NLP_MARK);
-		return mcd;
+		return mid;
 	}
 
 	// グラウンドドリフトのときはblを設置者に置換する
@@ -3242,49 +3242,49 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		sd->state.arrow_atk = 0;
 	}
 
-	/* １．mcd構造体の初期設定 */
-	mcd.div_      = skill_get_num(skill_num,skill_lv);
-	mcd.blewcount = skill_get_blewcount(skill_num,skill_lv);
-	mcd.flag      = BF_MISC|BF_SHORT|BF_SKILL;
+	/* １．mid構造体の初期設定 */
+	mid.div_      = skill_get_num(skill_num,skill_lv);
+	mid.blewcount = skill_get_blewcount(skill_num,skill_lv);
+	mid.flag      = BF_MISC|BF_SHORT|BF_SKILL;
 
 	/* ２．基本ダメージ計算(スキルごとに処理) */
 	switch(skill_num)
 	{
 	case HT_LANDMINE:	// ランドマイン
-		mcd.damage = skill_lv*(dex+75)*(100+int_)/100;
+		mid.damage = skill_lv*(dex+75)*(100+int_)/100;
 		break;
 
 	case HT_BLASTMINE:	// ブラストマイン
-		mcd.damage = skill_lv*(dex/2+50)*(100+int_)/100;
+		mid.damage = skill_lv*(dex/2+50)*(100+int_)/100;
 		break;
 
 	case HT_CLAYMORETRAP:	// クレイモアートラップ
-		mcd.damage = skill_lv*(dex/2+75)*(100+int_)/100;
+		mid.damage = skill_lv*(dex/2+75)*(100+int_)/100;
 		break;
 
 	case HT_BLITZBEAT:	// ブリッツビート
 		if(sd == NULL || (skill = pc_checkskill(sd,HT_STEELCROW)) <= 0)
 			skill = 0;
-		mcd.damage = (dex/10 + int_/2 + skill*3 + 40)*2;
+		mid.damage = (dex/10 + int_/2 + skill*3 + 40)*2;
 		if(flag > 1)
-			mcd.damage /= flag;
+			mid.damage /= flag;
 		flag &= ~(BF_SKILLMASK|BF_RANGEMASK|BF_WEAPONMASK);
-		mcd.flag = flag|(mcd.flag&~BF_RANGEMASK)|BF_LONG;
+		mid.flag = flag|(mid.flag&~BF_RANGEMASK)|BF_LONG;
 		break;
 
 	case TF_THROWSTONE:	// 石投げ
-		mcd.damage = 50;
+		mid.damage = 50;
 		damagefix = 0;
 		flag &= ~(BF_SKILLMASK|BF_RANGEMASK|BF_WEAPONMASK);
-		mcd.flag = flag|(mcd.flag&~BF_RANGEMASK)|BF_LONG;
+		mid.flag = flag|(mid.flag&~BF_RANGEMASK)|BF_LONG;
 		break;
 
 	case BA_DISSONANCE:	// 不協和音
-		mcd.damage = (skill_lv)*20+pc_checkskill(sd,BA_MUSICALLESSON)*3;
+		mid.damage = (skill_lv)*20+pc_checkskill(sd,BA_MUSICALLESSON)*3;
 		break;
 	case NPC_SELFDESTRUCTION:	// 自爆
 	case NPC_SELFDESTRUCTION2:	// 自爆2
-		mcd.damage = status_get_hp(bl)-((bl == target)? 1: 0);
+		mid.damage = status_get_hp(bl)-((bl == target)? 1: 0);
 		damagefix = 0;
 		break;
 
@@ -3298,89 +3298,89 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 				sc_data[SC_FREEZE].timer != -1 || (sc_data[SC_STONE].timer != -1 && sc_data[SC_STONE].val2 == 0) ) )
 				hitrate = 1000000;
 			if(atn_rand()%100 < hitrate)
-				mcd.damage = t_hp*(skill_lv*6)/100;
+				mid.damage = t_hp*(skill_lv*6)/100;
 		}
 		break;
 	case SN_FALCONASSAULT:		// ファルコンアサルト
 		if(sd == NULL || (skill = pc_checkskill(sd,HT_STEELCROW)) <= 0)
 			skill = 0;
-		mcd.damage = ((dex/10+int_/2+skill*3+40)*2*(150+skill_lv*70)/100)*5;
+		mid.damage = ((dex/10+int_/2+skill*3+40)*2*(150+skill_lv*70)/100)*5;
 		if(sd && battle_config.allow_falconassault_elemet)
 			ele = sd->atk_ele;
 		flag &= ~(BF_WEAPONMASK|BF_RANGEMASK|BF_WEAPONMASK);
-		mcd.flag = flag|(mcd.flag&~BF_RANGEMASK)|BF_LONG;
+		mid.flag = flag|(mid.flag&~BF_RANGEMASK)|BF_LONG;
 		break;
 	case GS_GROUNDDRIFT:		// グラウンドドリフト
 		if(unit && unit->group)
 		{
 			const int ele_type[5] = { ELE_WIND, ELE_DARK, ELE_POISON, ELE_WATER, ELE_FIRE };
 			ele = ele_type[unit->group->unit_id - UNT_GROUNDDRIFT_WIND];
-			mcd.damage = status_get_baseatk(bl);
+			mid.damage = status_get_baseatk(bl);
 		}
 		break;
 	case HVAN_EXPLOSION:		// バイオエクスプロージョン
-		mcd.damage = status_get_hp(bl)*(50+50*skill_lv)/100;
+		mid.damage = status_get_hp(bl)*(50+50*skill_lv)/100;
 		break;
 	default:
-		mcd.damage = status_get_baseatk(bl);
+		mid.damage = status_get_baseatk(bl);
 		break;
 	}
 
 	if(damagefix) {
-		if(mcd.damage < 1 && skill_num != NPC_DARKBREATH)
-			mcd.damage = 1;
+		if(mid.damage < 1 && skill_num != NPC_DARKBREATH)
+			mid.damage = 1;
 
 		/* ３．カードによるダメージ減衰処理 */
-		if(tsd && mcd.damage > 0) {
+		if(tsd && mid.damage > 0) {
 			int cardfix = 100;
 			cardfix = cardfix*(100-tsd->subele[ele])/100;	// 属性によるダメージ耐性
 			cardfix = cardfix*(100-tsd->subrace[race])/100;	// 種族によるダメージ耐性
 			cardfix = cardfix*(100-tsd->subenemy[status_get_enemy_type(bl)])/100;	// 敵タイプによるダメージ耐性
 			cardfix = cardfix*(100-tsd->subsize[status_get_size(bl)])/100;	// サイズによるダメージ耐性
 			cardfix = cardfix*(100-tsd->misc_def_rate)/100;
-			mcd.damage = mcd.damage*cardfix/100;
+			mid.damage = mid.damage*cardfix/100;
 		}
-		if(mcd.damage < 0)
-			mcd.damage = 0;
+		if(mid.damage < 0)
+			mid.damage = 0;
 
 		/* ４．属性の適用 */
-		mcd.damage = battle_attr_fix(mcd.damage, ele, status_get_element(target));
+		mid.damage = battle_attr_fix(mid.damage, ele, status_get_element(target));
 
 		/* ５．スキル修正 */
 		if(skill_num == GS_GROUNDDRIFT) {	// 固定ダメージを加算してさらに無属性として属性計算する
-			mcd.damage += skill_lv*50;
-			mcd.damage = battle_attr_fix(mcd.damage, ELE_NEUTRAL, status_get_element(target));
+			mid.damage += skill_lv*50;
+			mid.damage = battle_attr_fix(mid.damage, ELE_NEUTRAL, status_get_element(target));
 		}
 
 	}
 
 	/* ６．ヒット回数によるダメージ倍加 */
-	if(mcd.div_ > 1)
-		mcd.damage *= mcd.div_;
-	if( mcd.damage > 0 && (mcd.damage < mcd.div_ || (status_get_def(target) >= 1000000 && status_get_mdef(target) >= 1000000)) ) {
-		mcd.damage = mcd.div_;
+	if(mid.div_ > 1)
+		mid.damage *= mid.div_;
+	if( mid.damage > 0 && (mid.damage < mid.div_ || (status_get_def(target) >= 1000000 && status_get_mdef(target) >= 1000000)) ) {
+		mid.damage = mid.div_;
 	}
 
 	/* ７．固定ダメージ */
-	if(status_get_mode(target)&0x40 && mcd.damage > 0)	// 草・きのこ等
-		mcd.damage = 1;
+	if(status_get_mode(target)&0x40 && mid.damage > 0)	// 草・きのこ等
+		mid.damage = 1;
 
 	/* ８．カードによるダメージ追加処理 */
-	if(sd && sd->skill_dmgup.count > 0 && skill_num > 0 && mcd.damage > 0) {	// カード効果による特定スキルのダメージ増幅
+	if(sd && sd->skill_dmgup.count > 0 && skill_num > 0 && mid.damage > 0) {	// カード効果による特定スキルのダメージ増幅
 		int i;
 		for(i=0; i<sd->skill_dmgup.count; i++) {
 			if(skill_num == sd->skill_dmgup.id[i]) {
-				mcd.damage += mcd.damage * sd->skill_dmgup.rate[i] / 100;
+				mid.damage += mid.damage * sd->skill_dmgup.rate[i] / 100;
 				break;
 			}
 		}
 	}
 
 	/* ９．ダメージ最終計算 */
-	mcd.damage = battle_calc_damage(bl,target,mcd.damage,mcd.div_,skill_num,skill_lv,mcd.flag);
+	mid.damage = battle_calc_damage(bl,target,mid.damage,mid.div_,skill_num,skill_lv,mid.flag);
 
 	/* 10．miscでもオートスペル発動(bonus) */
-	if(bl->type == BL_PC && bl != target && mcd.damage > 0)
+	if(bl->type == BL_PC && bl != target && mid.damage > 0)
 	{
 		unsigned long asflag = EAS_ATTACK;
 		if(battle_config.misc_attack_autospell)
@@ -3393,15 +3393,15 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 
 	/* 11．miscでもHP/SP回復(月光剣など) */
 	if(battle_config.misc_attack_drain && bl != target)
-		battle_attack_drain(bl,mcd.damage,0,battle_config.misc_attack_drain_enable_type);
+		battle_attack_drain(bl,mid.damage,0,battle_config.misc_attack_drain_enable_type);
 
 	/* 12．計算結果の最終補正 */
-	mcd.amotion = status_get_amotion(bl);
-	mcd.dmotion = status_get_dmotion(target);
-	mcd.damage2 = 0;
-	mcd.type    = 0;
+	mid.amotion = status_get_amotion(bl);
+	mid.dmotion = status_get_dmotion(target);
+	mid.damage2 = 0;
+	mid.type    = 0;
 
-	return mcd;
+	return mid;
 }
 
 /*==========================================

@@ -1,4 +1,20 @@
 ----------------------------------------
+//0303 [2007/09/02] by Rayce
+
+・スキル系dbについて
+	-> ID577以降の定義が間違っていたので修正
+	-> DA系統および傭兵スキルを追加
+	-> skill_cast_db.txtおよびskill_require_db.txtの整形
+
+・battle_calc_misc_attack() の変数名を変更（battle.c）
+・以下の関数の位置を移動（clif.c）
+	clif_send_homdata()
+	clif_send_homstatus()
+	clif_hom_food()
+	clif_homskillinfoblock()
+	clif_homskillup()
+
+----------------------------------------
 //0302 [2007/09/02] by Rayce
 
 ・pet_data構造体およびhomun_data構造体から使われてないstateを削除（map.h, homun.c, pet.c）
