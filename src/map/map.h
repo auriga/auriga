@@ -49,6 +49,7 @@ enum {
 	BL_SKILL = 0x020,
 	BL_NPC   = 0x040,
 	BL_CHAT  = 0x080,
+	BL_MERC  = 0x100,
 };
 
 enum {
@@ -128,7 +129,7 @@ struct block_list {
 	struct block_list *next,*prev;
 	int id;
 	short m,x,y;
-	unsigned char type;
+	unsigned short type;
 	unsigned char subtype;
 };
 
@@ -1164,6 +1165,7 @@ typedef struct chat_data        TBL_CHAT;
 typedef struct skill_unit       TBL_SKILL;
 typedef struct pet_data         TBL_PET;
 typedef struct homun_data       TBL_HOM;
+typedef struct merc_data        TBL_MERC;
 
 #define BL_DOWNCAST(type_, bl) \
 	((bl) == (struct block_list*)NULL || (bl)->type != (type_) ? (T ## type_ *)(NULL) : (T ## type_ *)(bl))

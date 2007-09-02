@@ -324,7 +324,7 @@ R 00c3 <ID>.l <type>.B <val>.B
 	見た目変更。typeは00で本体(転職時等)、02が武器、03が頭(下)、04が頭(上)、05が頭(中)、08が盾
 R 00c4 <ID>.l
 	話かけたNPCが商人だったのでbuy/sell選択窓出
-R 00c5 <ID>.l <type>.B
+S 00c5 <ID>.l <type>.B
 	buy/sell選択。type=00ならbuy。type=01ならsell
 R 00c6 <len>.w {<value>.l <DCvalue>.l <type>.B <item ID>.w}.11B*
 	NPCのお店buy選択時。DCvalueは商人DC後の値段
@@ -978,7 +978,7 @@ R 019b <ID>.l <type>.l
 	type=3 武器精錬成功
 S 019c <len>.w <message>.?B
 	GMコマンド/nlb,/lbにて発行。MAP内ブロードキャスト
-R 019d <0x40固定>.l
+S 019d <0x40固定>.l
 	GMコマンド/hideにて発行。
 R 019e
 	捕獲モンスター決め
@@ -1101,6 +1101,9 @@ R 01c4 <index>.w <amount>.l <itemID>.w <type>.B <identify flag>.B <attribute>.B 
 	カプラ倉庫アイテム、0xf4の上位版
 R 01c5 <index>.w <amount>.l <item ID>.w <type>.B <identify flag>.B <attribute>.B <refine>.B <card>.4w
 	カートにアイテム追加、0x124の上位版
+R 01c7
+	エラーダイアログ表示
+	"No Packet Encryption !!!"
 R 01c8 <index>.w <item ID>.w <ID>.l <amount left>.w <type>.B
 	アイテム使用応答。(00a8の上位バーション？)
 	type=00の場合使用失敗? amountもゴミの模様
@@ -1388,7 +1391,7 @@ R 022c <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id
 S 022d <0固定>.w <menu>.B
 	ホムのメニュー要求
 	menu=0 : ホム情報の通知
-	menu=1 : ホムや餌やり
+	menu=1 : ホムの餌やり
 	menu=2 : ホム削除
 R 022e <name>.24B <rename_flag>.B <base_level>.w <hungry>.w <intimate>.w <equip>.w <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <flee>.w <aspd>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <base_exp>.l <nextbase_exp>.l <skill_point>.w <attackable>.w
 	ホムのステータス情報をまとめて送り付け
@@ -1397,12 +1400,13 @@ R 022f <fail>.B <itemID>.w
 	<fail>
 	0x00：餌やり失敗
 	0x01：餌やり成功
-R 0230 <type>.w <ID>.l <param>.l
+R 0230 <?>.B <type>.B <ID>.l <param>.l
 	ホム関連通知、0x1a4のホム版
-	type=0, param=0 : ホム生成時に送られる
-	type=0x100 : 親密度
-	type=0x200 : 腹減り
-	type=0x300 : アイテム？リソースエラーになる
+	<?>を0x0a以上にすると何も起こらない
+	type=00, param=00 : ホム生成時に送られる
+	type=01 : 親密度
+	type=02 : 腹減り
+	type=03 : アイテム？リソースエラーになる
 S 0231 <name>.24B
 	ホムの名前変更要求
 S 0232 <X_Y>.3B
@@ -1550,7 +1554,7 @@ R 027b <val1>.l <val2>.l <val3>.l
 S 027c <version>.l <account name>.24B <md5 binary>.16B <version2>.B <?>.13B
 	id&暗号化済みpass送信
 R 027d <?>.24B <?>.w*15 <?>.4B?
-	未調査
+	ログイン系？未調査
 R 0280 <point>.l <total>.l <type>.w
 	テイミングミッションランキングポイントが<point>上昇して<total>になりました。
 	type=0xfd2 or 0xfd3固定
@@ -1604,8 +1608,7 @@ R 0289 <point>.l <type>.w
 	type=5 : アイテム情報が正しくないため、購入に失敗しました。
 	type=6 : Shop Pointが足りません。
 R 028a <ID>.l <option>.l <level>.l <opt3>.l
-	表示パケット系？
-	未調査
+	傭兵関連通知、0x230の傭兵版に相当
 S 028b
 	サーバ統合の際のキャラクターセレクト、残すキャラを選択する
 R 028c
@@ -1632,17 +1635,20 @@ R 0297 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w 
 R 0298 <itemid>.w <time>.l
 	強化装備アイテム「<itemid>」の使用可能時間は、残り<time>分です。
 	<time>の単位は秒なので表示される値は1/60
-R 0299 <index?>.w <itemid>.w
+R 0299 <index>.w <itemid>.w
 	強化装備アイテム「<itemid>」が削除されました。
 R 029a <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <time>.l
 	アイテム獲得、0xa0の上位版
-R 029b <ID?>.l <?>.w * 8 <name?>.24B <?>.w * 5 <?>.l <?>.w <?>.l <?>.l <?>.w
-	未調査
-	傭兵のステータス情報まとめて送り付けか？
+R 029b <ID?>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <limit>.l <name_value>.w <call_count>.l <kill_count>.l <?>.w
+	傭兵のステータス情報まとめて送り付け、0x22eの傭兵版
 R 029d <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	傭兵用スキル情報の塊、0x10fと同じ
 R 029e <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
 	傭兵用スキル情報更新、0x10eと同じ
+S 029f <menu>.B
+	傭兵のメニュー要求
+	menu=1 : 傭兵情報の通知
+	menu=2 : 傭兵解雇
 R 02a2 <type>.w <?>.l
 	未調査
 	type=05 : WM_SIZE

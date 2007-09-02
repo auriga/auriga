@@ -16,6 +16,7 @@
 #define MAX_CART 100
 #define MAX_SKILL 1020
 #define MAX_HOMSKILL 16
+#define MAX_MERCSKILL 37
 #define GLOBAL_REG_NUM 96
 #define ACCOUNT_REG_NUM 16
 #define ACCOUNT_REG2_NUM 16
@@ -51,6 +52,11 @@
 #define HOM_ID 6001			// ホムID開始値
 #define HOM_SKILLID 8001		// ホムスキルIDの開始値
 #define MAX_HOM_SKILLID (HOM_SKILLID+MAX_HOMSKILL)	// ホムスキルIDの最大値
+
+#define MAX_MERC_DB 30			// 傭兵の数
+#define MERC_ID 6017			// 傭兵IDの開始値
+#define MERC_SKILLID 8201		// 傭兵スキルIDの開始値
+#define MAX_MERC_SKILLID (MERC_SKILLID+MAX_MERCSKILL)	// 傭兵スキルIDの最大値
 
 #define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
 

@@ -732,8 +732,8 @@ int homun_callhom(struct map_session_data *sd)
 	if(sd->status.homun_id > 0 && sd->status.homun_id == sd->hom.homun_id) {
 		// 作成済みなら、出す
 		sd->hd = (struct homun_data *)aCalloc(1,sizeof(struct homun_data));
-		homun_data_init(sd);
-		if(sd->bl.prev != NULL)
+
+		if(!homun_data_init(sd) && sd->bl.prev != NULL)
 		{
 			if(sd->hd->status.hp <= 0) {	// 死亡
 				clif_skill_fail(sd,AM_CALLHOMUN,0,0);
@@ -779,9 +779,7 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 
 	sd = map_id2sd(account_id);
 
-	if( sd == NULL ||
-	    sd->status.char_id != char_id ||
-	    (!pc_checkskill(sd, AM_CALLHOMUN) && sd->status.homun_id == 0) )
+	if(sd == NULL || sd->status.char_id != char_id || (!pc_checkskill(sd, AM_CALLHOMUN) && sd->status.homun_id == 0))
 	{
 		// コールホムンクルス未習得かつ未所持で無視(転生やリセットなど)
 		if(flag) {
