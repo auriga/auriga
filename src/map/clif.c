@@ -50,6 +50,7 @@
 #include "mail.h"
 #include "homun.h"
 #include "ranking.h"
+#include "merc.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -1447,6 +1448,67 @@ static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
  *
  *------------------------------------------
  */
+static int clif_merc0078(struct merc_data *mcd,unsigned char *buf)
+{
+	int level;
+
+	nullpo_retr(0, mcd);
+
+	memset(buf,0,packet_db[0x78].len);
+
+	WBUFW(buf,0) =0x78;
+	WBUFL(buf,2) =mcd->bl.id;
+	WBUFW(buf,6) =mcd->speed;
+	WBUFW(buf,8) =mcd->opt1;
+	WBUFW(buf,10)=mcd->opt2;
+	WBUFW(buf,12)=mcd->status.option;
+	WBUFW(buf,14)=mcd->view_class;
+	WBUFW(buf,16)=battle_config.pet0078_hair_id;
+	WBUFW(buf,20)=0;
+	WBUFW(buf,42)=mcd->opt3;
+	WBUFPOS(buf,46,mcd->bl.x,mcd->bl.y);
+	WBUFB(buf,48)=mcd->dir&0x0f;
+	WBUFB(buf,49)=0;
+	WBUFB(buf,50)=0;
+	WBUFW(buf,52)=((level = status_get_lv(&mcd->bl))>99)? 99:level;
+
+	return packet_db[0x78].len;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
+{
+	int level;
+
+	nullpo_retr(0, mcd);
+
+	memset(buf,0,packet_db[0x7b].len);
+
+	WBUFW(buf,0) =0x7b;
+	WBUFL(buf,2) =mcd->bl.id;
+	WBUFW(buf,6) =mcd->speed;
+	WBUFW(buf,8) =mcd->opt1;
+	WBUFW(buf,10)=mcd->opt2;
+	WBUFW(buf,12)=mcd->status.option;
+	WBUFW(buf,14)=mcd->view_class;
+	WBUFW(buf,16)=battle_config.pet0078_hair_id;
+	WBUFL(buf,22)=gettick();
+	WBUFW(buf,46)=mcd->opt3;
+	WBUFPOS2(buf,50,mcd->bl.x,mcd->bl.y,mcd->ud.to_x,mcd->ud.to_y);
+	WBUFB(buf,56)=0;
+	WBUFB(buf,57)=0;
+	WBUFW(buf,58)=((level = status_get_lv(&mcd->bl))>99)? 99:level;
+
+	return packet_db[0x7b].len;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 static void clif_set01e1(const int fd, struct map_session_data *dstsd)
 {
 	nullpo_retv(dstsd);
@@ -1662,6 +1724,33 @@ void clif_spawnhom(struct homun_data *hd)
 
 	if(hd->view_size!=0)
 		clif_misceffect2(&hd->bl,422+hd->view_size);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_spawnmerc(struct merc_data *mcd)
+{
+	unsigned char buf[64];
+
+	nullpo_retv(mcd);
+
+	memset(buf,0,packet_db[0x7c].len);
+
+	WBUFW(buf,0) =0x7c;
+	WBUFL(buf,2) =mcd->bl.id;
+	WBUFW(buf,6) =mcd->speed;
+	WBUFW(buf,20)=mcd->view_class;
+	WBUFW(buf,28)=8;
+	WBUFPOS(buf,36,mcd->bl.x,mcd->bl.y);
+
+	clif_send(buf,packet_db[0x7c].len,&mcd->bl,AREA);
+
+	if(mcd->view_size!=0)
+		clif_misceffect2(&mcd->bl,422+mcd->view_size);
 
 	return;
 }
@@ -1914,6 +2003,13 @@ int clif_fixpos2(struct block_list *bl, int x[4], int y[4])
 				len = clif_hom007b(hd,buf);
 			} else {
 				len = clif_hom0078(hd,buf);
+			}
+		} else if( bl->type == BL_MERC ) {
+			struct merc_data *mcd = (struct merc_data *)bl;
+			if(mcd->ud.walktimer != -1) {
+				len = clif_merc007b(mcd,buf);
+			} else {
+				len = clif_merc0078(mcd,buf);
 			}
 		} else {
 			WBUFW(buf,0)=0x88;
@@ -4547,6 +4643,33 @@ static void clif_getareachar_hom(struct map_session_data* sd, struct homun_data*
 }
 
 /*==========================================
+ * MERC表示
+ *------------------------------------------
+ */
+static void clif_getareachar_merc(struct map_session_data* sd, struct merc_data* mcd)
+{
+	int len;
+
+	nullpo_retv(sd);
+	nullpo_retv(mcd);
+
+	if(mcd->ud.walktimer != -1){
+		len = clif_merc007b(mcd,WFIFOP(sd->fd,0));
+		WFIFOSET(sd->fd,len);
+	} else {
+		// 0x78だと座標ズレを起こす
+		//len = clif_merc0078(mcd,WFIFOP(sd->fd,0));
+		//WFIFOSET(sd->fd,len);
+		len = clif_merc007b(mcd,WFIFOP(sd->fd,0));
+		WFIFOSET(sd->fd,len);
+	}
+	if(mcd->view_size!=0)
+		clif_misceffect2(&mcd->bl,422+mcd->view_size);
+
+	return;
+}
+
+/*==========================================
  * ITEM表示
  *------------------------------------------
  */
@@ -4694,6 +4817,9 @@ static int clif_getareachar(struct block_list* bl, va_list ap)
 	case BL_HOM:
 		clif_getareachar_hom(sd,(struct homun_data*)bl);
 		break;
+	case BL_MERC:
+		clif_getareachar_merc(sd,(struct merc_data*)bl);
+		break;
 	default:
 		if(battle_config.error_log)
 			printf("get area char ??? %d\n",bl->type);
@@ -4738,6 +4864,7 @@ int clif_pcoutsight(struct block_list *bl,va_list ap)
 	case BL_MOB:
 	case BL_PET:
 	case BL_HOM:
+	case BL_MERC:
 		clif_clearchar_id(bl->id,0,sd->fd);
 		break;
 	case BL_ITEM:
@@ -4788,6 +4915,9 @@ int clif_pcinsight(struct block_list *bl,va_list ap)
 		break;
 	case BL_HOM:
 		clif_getareachar_hom(sd,(struct homun_data*)bl);
+		break;
+	case BL_MERC:
+		clif_getareachar_merc(sd,(struct merc_data*)bl);
 		break;
 	}
 
@@ -4909,6 +5039,46 @@ int clif_homoutsight(struct block_list *bl,va_list ap)
 
 	if(bl->type==BL_PC && (sd = (struct map_session_data*) bl)){
 		clif_clearchar_id(hd->bl.id,0,sd->fd);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int clif_mercinsight(struct block_list *bl,va_list ap)
+{
+	struct map_session_data *sd;
+	struct merc_data *mcd;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+
+	mcd=va_arg(ap,struct merc_data*);
+	if(bl->type==BL_PC && (sd = (struct map_session_data *)bl)){
+		clif_getareachar_merc(sd,mcd);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int clif_mercoutsight(struct block_list *bl,va_list ap)
+{
+	struct map_session_data *sd;
+	struct merc_data *mcd;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, mcd=va_arg(ap,struct merc_data*));
+
+	if(bl->type==BL_PC && (sd = (struct map_session_data*) bl)){
+		clif_clearchar_id(mcd->bl.id,0,sd->fd);
 	}
 
 	return 0;
@@ -9138,6 +9308,135 @@ void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int 
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_send_mercdata(struct map_session_data *sd)
+{
+	int fd;
+	struct merc_data *mcd;
+
+	nullpo_retv(sd);
+	nullpo_retv(mcd = sd->mcd);
+
+	fd  = sd->fd;
+	WFIFOW(fd,0)  = 0x28a;
+	WFIFOL(fd,2)  = mcd->bl.id;
+	WFIFOL(fd,6)  = mcd->status.option;
+	WFIFOL(fd,10) = mcd->status.base_level;
+	WFIFOL(fd,14) = mcd->opt3;
+	WFIFOSET(fd,packet_db[0x28a].len);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_send_mercstatus(struct map_session_data *sd, int flag)
+{
+	int fd;
+	struct merc_data *mcd;
+
+	nullpo_retv(sd);
+	nullpo_retv(mcd = sd->mcd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0)  = 0x29b;
+	WFIFOL(fd,2)  = mcd->bl.id;
+	WFIFOW(fd,6)  = mcd->atk;
+	WFIFOW(fd,8)  = mcd->matk;
+	WFIFOW(fd,10) = mcd->hit;
+	WFIFOW(fd,12) = mcd->critical;
+	WFIFOW(fd,14) = mcd->def;
+	WFIFOW(fd,16) = mcd->mdef;
+	WFIFOW(fd,18) = mcd->flee;
+	WFIFOW(fd,20) = (flag)? 0: /*status_get_amotion(&mcd->bl)*/0 + 200;
+	memcpy(WFIFOP(fd,22), mcd->status.name, 24);
+	WFIFOW(fd,46) = mcd->status.base_level;
+	WFIFOW(fd,48) = mcd->status.hp;
+	WFIFOW(fd,50) = mcd->max_hp;
+	WFIFOW(fd,52) = mcd->status.sp;
+	WFIFOW(fd,54) = mcd->max_sp;
+	WFIFOL(fd,56) = mcd->status.limit;	// 雇用期限
+	WFIFOW(fd,60) = 62;	// ネームバリュー
+	WFIFOL(fd,62) = 22;	// 召喚回数
+	WFIFOL(fd,66) = mcd->status.kill_count;	// キルカウント
+	WFIFOW(fd,70) = 0;	// ??
+	WFIFOSET(fd,packet_db[0x29b].len);
+
+	return;
+}
+
+/*==========================================
+ * 傭兵のスキルリストを送信する
+ *------------------------------------------
+ */
+void clif_mercskillinfoblock(struct map_session_data *sd)
+{
+/*
+	int fd;
+	int i,c,len=4,id,skill_lv;
+	struct homun_data *hd;
+
+	nullpo_retv(sd);
+	nullpo_retv((hd=sd->hd));
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0x29d;
+	for ( i = c = 0; i < MAX_HOMSKILL; i++){
+		if( (id=hd->status.skill[i].id)!=0 ){
+			WFIFOW(fd,len  ) = id;
+			WFIFOL(fd,len+2) = skill_get_inf(id);
+			skill_lv = hd->status.skill[i].lv;
+			WFIFOW(fd,len+6) = skill_lv;
+			WFIFOW(fd,len+8) = skill_get_sp(id,skill_lv);
+			WFIFOW(fd,len+10)= skill_get_fixed_range(&hd->bl,id,skill_lv);
+			memset(WFIFOP(fd,len+12),0,24);
+			if(!(skill_get_inf2(id)&0x01))
+				WFIFOB(fd,len+36) = (skill_lv < homun_get_skilltree_max(hd->status.class_,id) && hd->status.skill[i].flag == 0)? 1: 0;
+			else
+				WFIFOB(fd,len+36) = 0;
+			len+=37;
+			c++;
+		}
+	}
+	WFIFOW(fd,2)=len;
+	WFIFOSET(fd,len);
+*/
+	return;
+}
+
+/*==========================================
+ * 傭兵スキル割り振り通知
+ *------------------------------------------
+ */
+void clif_mercskillup(struct map_session_data *sd, int skill_num)
+{
+/*
+	int fd,skillid;
+	struct homun_data *hd;
+
+	nullpo_retv(sd);
+	nullpo_retv((hd=sd->hd));
+
+	skillid = skill_num-HOM_SKILLID;
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0x29e;
+	WFIFOW(fd,2) = skill_num;
+	WFIFOW(fd,4) = hd->status.skill[skillid].lv;
+	WFIFOW(fd,6) = skill_get_sp(skill_num,hd->status.skill[skillid].lv);
+	WFIFOW(fd,8) = skill_get_fixed_range(&hd->bl,skill_num,hd->status.skill[skillid].lv);
+	WFIFOB(fd,10) = (hd->status.skill[skillid].lv < homun_get_skilltree_max(hd->status.class_,hd->status.skill[skillid].id)) ? 1 : 0;
+	WFIFOSET(fd,packet_db[0x29e].len);
+*/
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -9609,6 +9908,10 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 		memcpy(WFIFOP(fd,6),((struct homun_data*)bl)->status.name,24);
 		WFIFOSET(fd,packet_db[0x95].len);
 		break;
+	case BL_MERC:
+		memcpy(WFIFOP(fd,6),((struct merc_data*)bl)->status.name,24);
+		WFIFOSET(fd,packet_db[0x95].len);
+		break;
 	default:
 		if(battle_config.error_log)
 			printf("clif_parse_GetCharNameRequest : bad type %d(%d)\n",bl->type,account_id);
@@ -9867,6 +10170,9 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 		}
 		if( sd->hd ) {
 			unit_free( &sd->hd->bl, 0);
+		}
+		if( sd->mcd ) {
+			unit_free( &sd->mcd->bl, 0);
 		}
 		unit_free(&sd->bl, 2);
 		chrif_save(sd);
@@ -12592,6 +12898,17 @@ static void clif_parse_HotkeySave(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * 傭兵メニュー
+ *------------------------------------------
+ */
+static void clif_parse_MercMenu(int fd,struct map_session_data *sd, int cmd)
+{
+	merc_menu(sd,RFIFOB(fd,GETPACKETPOS(cmd,0)));
+
+	return;
+}
+
+/*==========================================
  * クライアントからのパケット解析
  * socket.cのdo_parsepacketから呼び出される
  *------------------------------------------
@@ -12771,6 +13088,7 @@ static struct {
 	{ clif_parse_ReturnMail,                "returnmail"                },
 	{ clif_parse_FeelSaveAck,               "feelsaveack"               },
 	{ clif_parse_HotkeySave,                "hotkeysave"                },
+	{ clif_parse_MercMenu,                  "mercmenu"                  },
 	{ NULL,                                 NULL                        },
 };
 

@@ -45,6 +45,7 @@
 #include "unit.h"
 #include "homun.h"
 #include "ranking.h"
+#include "merc.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -1458,6 +1459,9 @@ int map_quit(struct map_session_data *sd)
 		if(sd->hd) {
 			unit_free( &sd->hd->bl, 0);
 		}
+		if(sd->mcd) {
+			unit_free( &sd->mcd->bl, 0);
+		}
 		unit_free(&sd->bl, 2);
 		chrif_save(sd);
 	}
@@ -2788,6 +2792,7 @@ void do_final(void)
 	do_final_party();
 	do_final_pet();
 	do_final_homun();
+	do_final_merc();
 	do_final_friend();
 	do_final_unit();
 	do_final_mob();
@@ -2924,6 +2929,7 @@ int do_init(int argc,char *argv[])
 	do_init_storage();
 	do_init_pet();
 	do_init_homun();
+	do_init_merc();
 	do_init_status();
 	do_init_friend();
 	do_init_ranking();

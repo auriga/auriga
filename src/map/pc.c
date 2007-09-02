@@ -3743,6 +3743,9 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 					pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",sd->hd->intimate);
 				unit_free(&sd->hd->bl, 0);
 			}
+			if( sd->mcd ) {
+				unit_free(&sd->mcd->bl, 0);
+			}
 			unit_free(&sd->bl,clrtype);
 			memcpy(sd->status.last_point.map,mapname,24);
 			sd->status.last_point.x = x;

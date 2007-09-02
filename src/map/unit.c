@@ -26,6 +26,7 @@
 #include "mob.h"
 #include "vending.h"
 #include "intif.h"
+#include "merc.h"
 
 static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data);
 static int unit_attack_timer(int tid,unsigned int tick,int id,int data);
@@ -60,10 +61,11 @@ int unit_distance2( struct block_list *bl, struct block_list *bl2)
 struct unit_data* unit_bl2ud(struct block_list *bl)
 {
 	if( bl == NULL ) return NULL;
-	if( bl->type == BL_PC  ) return &((struct map_session_data*)bl)->ud;
-	if( bl->type == BL_MOB ) return &((struct mob_data*)bl)->ud;
-	if( bl->type == BL_PET ) return &((struct pet_data*)bl)->ud;
-	if( bl->type == BL_HOM ) return &((struct homun_data*)bl)->ud;
+	if( bl->type == BL_PC   ) return &((struct map_session_data*)bl)->ud;
+	if( bl->type == BL_MOB  ) return &((struct mob_data*)bl)->ud;
+	if( bl->type == BL_PET  ) return &((struct pet_data*)bl)->ud;
+	if( bl->type == BL_HOM  ) return &((struct homun_data*)bl)->ud;
+	if( bl->type == BL_MERC ) return &((struct merc_data*)bl)->ud;
 	return NULL;
 }
 
@@ -2099,6 +2101,11 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		clif_clearchar_area(&hd->bl,clrtype);
 		mob_ai_hard_spawn( &hd->bl, 0 );
 		map_delblock(&hd->bl);
+	} else if(bl->type == BL_MERC) {
+		struct merc_data *mcd = (struct merc_data*)bl;
+		clif_clearchar_area(&mcd->bl,clrtype);
+		//mob_ai_hard_spawn( &mcd->bl, 0 );
+		map_delblock(&mcd->bl);
 	}
 	map_freeblock_unlock();
 	return 0;
@@ -2192,6 +2199,19 @@ int unit_free(struct block_list *bl, int clrtype)
 		}
 		map_deliddb(&hd->bl);
 		map_freeblock(hd);
+	} else if( bl->type == BL_MERC ) {
+		struct merc_data *mcd = (struct merc_data*)bl;
+		struct map_session_data *sd = mcd->msd;
+
+		//status_change_clear(&mcd->bl,1);			// ステータス異常を解除する
+		if(sd && sd->mcd) {
+			merc_save_data(sd);
+			//if(sd->mcd->natural_heal_hp != -1 || sd->mcd->natural_heal_sp != -1)
+			//	merc_natural_heal_timer_delete(sd->mcd);
+			sd->mcd = NULL;
+		}
+		map_deliddb(&mcd->bl);
+		map_freeblock(mcd);
 	}
 	map_freeblock_unlock();
 	return 0;

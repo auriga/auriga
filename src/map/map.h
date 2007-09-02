@@ -292,6 +292,7 @@ struct map_session_data {
 		unsigned party_creating : 1;
 		unsigned guild_creating : 1;
 		unsigned homun_creating : 1;
+		unsigned merc_creating : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -535,6 +536,8 @@ struct map_session_data {
 	int homun_hungry_timer;
 	struct mmo_homunstatus hom;
 
+	struct merc_data *mcd;
+
 	// ギルドスキル計算用 0:影響外 0>影響下
 	// 移動時の判定に使用
 	short under_the_influence_of_the_guild_skill;
@@ -776,6 +779,33 @@ struct homun_data {
 	int hprecov_rate,sprecov_rate;
 	int natural_heal_hp,natural_heal_sp;
 	int hungry_cry_timer;
+	struct map_session_data *msd;
+};
+
+struct merc_data {
+	struct block_list bl;
+	struct unit_data  ud;
+	struct mmo_mercstatus status;
+	short dir;
+	short speed;
+	short view_size;
+	int invincible_timer;
+	int hp_sub,sp_sub;
+	int max_hp,max_sp;
+	int str,agi,vit,int_,dex,luk;
+	short atk,matk,def,mdef;
+	short hit,critical,flee,aspd;
+	int target_id;
+	unsigned int skillstatictimer[MAX_HOMSKILL];
+	struct status_change sc_data[MAX_STATUSCHANGE];
+	short sc_count;
+	unsigned short opt1,opt2;
+	unsigned int opt3;
+	short attackable;
+	short view_class;
+	int nhealhp,nhealsp;
+	int hprecov_rate,sprecov_rate;
+	int natural_heal_hp,natural_heal_sp;
 	struct map_session_data *msd;
 };
 

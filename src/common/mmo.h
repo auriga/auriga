@@ -162,7 +162,7 @@ struct mmo_charstatus {
 	short karma,manner;
 	int die_counter;
 	short hair,hair_color,clothes_color;
-	int party_id,guild_id,pet_id,homun_id;
+	int party_id,guild_id,pet_id,homun_id,merc_id;
 
 	short weapon,shield;
 	short head_top,head_mid,head_bottom;
@@ -213,6 +213,21 @@ struct mmo_homunstatus {
 	short hungry;
 	char rename_flag;
 	char incubate;
+};
+
+struct mmo_mercstatus {
+	int account_id;
+	int char_id;
+	int merc_id;
+	short class_;
+	int hp,max_hp,sp,max_sp;
+	char name[24];
+	unsigned short base_level;
+	short str,agi,vit,int_,dex,luk;
+	unsigned int option;
+	struct skill skill[MAX_MERCSKILL];
+	unsigned int kill_count;
+	unsigned int limit;
 };
 
 struct storage {

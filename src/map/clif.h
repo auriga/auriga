@@ -130,6 +130,8 @@ int clif_petinsight(struct block_list *bl, va_list ap);
 int clif_petoutsight(struct block_list *bl, va_list ap);
 int clif_hominsight(struct block_list *bl, va_list ap);
 int clif_homoutsight(struct block_list *bl, va_list ap);
+int clif_mercinsight(struct block_list *bl, va_list ap);
+int clif_mercoutsight(struct block_list *bl, va_list ap);
 
 void clif_class_change(struct block_list *bl, int class_, int type);
 
@@ -316,12 +318,19 @@ void clif_arrive_newmail(const int fd,struct mail_data *md);
 void clif_deletemail_res(const int fd,int mail_num,int flag);
 
 // homun
-void clif_send_homdata(struct map_session_data *sd, int type, int param);
 void clif_spawnhom(struct homun_data *hd);
+void clif_send_homdata(struct map_session_data *sd, int type, int param);
 void clif_send_homstatus(struct map_session_data *sd,int flag);
 void clif_hom_food(struct map_session_data *sd, int foodid, unsigned char fail);
 void clif_homskillinfoblock(struct map_session_data *sd);
 void clif_homskillup(struct map_session_data *sd, int skill_num);
+
+// merc
+void clif_spawnmerc(struct merc_data *mcd);
+void clif_send_mercdata(struct map_session_data *sd);
+void clif_send_mercstatus(struct map_session_data *sd, int flag);
+void clif_mercskillinfoblock(struct map_session_data *sd);
+void clif_mercskillup(struct map_session_data *sd, int skill_num);
 
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);
