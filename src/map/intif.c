@@ -35,6 +35,7 @@
 #include "status.h"
 #include "mail.h"
 #include "npc.h"
+#include "merc.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -48,7 +49,7 @@ static const int packet_len_table[]={
 	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3860-
-	 0, 0, 0, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3870-
+	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3870-
 	11,-1, 7, 3,  0, 0, 0, 0, -1, 7, 3, 0,  0, 0,  0, 0,	// 3880-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3890-
 };
@@ -59,7 +60,7 @@ extern int char_fd;		// inter serverのfdはchar_fdを使う
 //-----------------------------------------------------------------
 // inter serverへの送信
 
-// pet
+// ペット
 void intif_create_pet(int account_id,int char_id,short pet_class,short pet_lv,short pet_egg_id,
 	short pet_equip,short intimate,short hungry,char rename_flag,char incubate,char *pet_name)
 {
@@ -123,6 +124,7 @@ void intif_delete_petdata(int pet_id)
 	return;
 }
 
+// ホム
 void intif_create_hom(int account_id, int char_id, struct mmo_homunstatus *h)
 {
 	if (inter_fd < 0)
@@ -175,6 +177,64 @@ void intif_delete_homdata(int account_id, int char_id, int homun_id)
 	WFIFOL(inter_fd, 2) = account_id;
 	WFIFOL(inter_fd, 6) = char_id;
 	WFIFOL(inter_fd,10) = homun_id;
+	WFIFOSET(inter_fd,14);
+
+	return;
+}
+
+// 傭兵
+void intif_create_merc(int account_id, int char_id, struct mmo_mercstatus *m)
+{
+	if (inter_fd < 0)
+		return;
+
+	WFIFOW(inter_fd,0) = 0x3070;
+	WFIFOW(inter_fd,2) = sizeof(struct mmo_mercstatus) + 12;
+	WFIFOL(inter_fd,4) = account_id;
+	WFIFOL(inter_fd,8) = char_id;
+	memcpy(WFIFOP(inter_fd,12),m,sizeof(struct mmo_mercstatus));
+	WFIFOSET(inter_fd,WFIFOW(inter_fd,2));
+
+	return;
+}
+
+void intif_request_mercdata(int account_id, int char_id, int merc_id)
+{
+	if (inter_fd < 0)
+		return;
+
+	WFIFOW(inter_fd, 0) = 0x3071;
+	WFIFOL(inter_fd, 2) = account_id;
+	WFIFOL(inter_fd, 6) = char_id;
+	WFIFOL(inter_fd,10) = merc_id;
+	WFIFOSET(inter_fd,14);
+
+	return;
+}
+
+void intif_save_mercdata(int account_id, struct mmo_mercstatus *m)
+{
+	if (inter_fd < 0)
+		return;
+
+	WFIFOW(inter_fd,0) = 0x3072;
+	WFIFOW(inter_fd,2) = sizeof(struct mmo_mercstatus) + 8;
+	WFIFOL(inter_fd,4) = account_id;
+	memcpy(WFIFOP(inter_fd,8),m,sizeof(struct mmo_mercstatus));
+	WFIFOSET(inter_fd,WFIFOW(inter_fd,2));
+
+	return;
+}
+
+void intif_delete_mercdata(int account_id, int char_id, int merc_id)
+{
+	if (inter_fd < 0)
+		return;
+
+	WFIFOW(inter_fd, 0) = 0x3073;
+	WFIFOL(inter_fd, 2) = account_id;
+	WFIFOL(inter_fd, 6) = char_id;
+	WFIFOL(inter_fd,10) = merc_id;
 	WFIFOSET(inter_fd,14);
 
 	return;
@@ -1578,6 +1638,46 @@ int intif_parse_DeleteHomOk(int fd)
 }
 
 /*==========================================
+ * 傭兵
+ *------------------------------------------
+ */
+int intif_parse_RecvMercData(int fd)
+{
+	struct mmo_mercstatus p;
+	int len=RFIFOW(fd,2);
+
+	if(sizeof(struct mmo_mercstatus)!=len-13) {
+		if(battle_config.etc_log)
+			printf("intif: merc data: data size error %d %d\n",sizeof(struct mmo_mercstatus),len-13);
+	} else {
+		memcpy(&p,RFIFOP(fd,13),sizeof(struct mmo_mercstatus));
+		merc_recv_mercdata(RFIFOL(fd,4),RFIFOL(fd,8),&p,RFIFOB(fd,12));
+	}
+
+	return 0;
+}
+
+int intif_parse_SaveMercOk(int fd)
+{
+	if(RFIFOB(fd,6) == 1) {
+		if(battle_config.error_log)
+			printf("merc data save failure\n");
+	}
+
+	return 0;
+}
+
+int intif_parse_DeleteMercOk(int fd)
+{
+	if(RFIFOB(fd,2) == 1) {
+		if(battle_config.error_log)
+			printf("merc data delete failure\n");
+	}
+
+	return 0;
+}
+
+/*==========================================
  * メール関連
  *------------------------------------------
  */
@@ -1873,6 +1973,9 @@ int intif_parse(int fd)
 	case 0x384c: intif_parse_MailDeleteRes(fd); break;
 	case 0x384d: intif_parse_MailGetAppend(fd); break;
 	case 0x384e: intif_parse_MailCheckOK(fd); break;
+	case 0x3870: intif_parse_RecvMercData(fd); break;
+	case 0x3871: intif_parse_SaveMercOk(fd); break;
+	case 0x3872: intif_parse_DeleteMercOk(fd); break;
 	case 0x3878: intif_parse_LoadStatusChange(fd); break;
 	case 0x3879: intif_parse_SaveStatusChange(fd); break;
 	case 0x3880: intif_parse_CreatePet(fd); break;

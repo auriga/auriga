@@ -19,6 +19,7 @@
 #include "int_homun.h"
 #include "int_mail.h"
 #include "int_status.h"
+#include "int_merc.h"
 
 #define WISDATA_TTL    (60*1000)	// Wisデータの生存時間(60秒)
 #define WISDELLIST_MAX 128		// Wisデータ削除リストの要素数
@@ -41,7 +42,7 @@ int inter_send_packet_length[] = {
 	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3860-
-	 0, 0, 0, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3870-
+	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3870-
 	11,-1, 7, 3,  0, 0, 0, 0, -1, 7, 3, 0,  0, 0,  0, 0,	// 3880-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3890-
 };
@@ -55,7 +56,7 @@ int inter_recv_packet_length[] = {
 	 5, 9, 0, 0,  0, 0, 0, 0,  0, 6,-1,10, 10,10, -1, 0,	// 3040-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3050-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-
-	 0, 0, 0, 0,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3070-
+	-1,14,-1,14,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3070-
 	48,14,-1, 6,  0, 0, 0, 0, -1,14,-1,14,  0, 0,  0, 0,	// 3080-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3090-
 };
@@ -497,6 +498,7 @@ int inter_config_read(const char *cfgName)
 			mail_config_read_sub(w1,w2);
 			homun_config_read_sub(w1,w2);
 			status_config_read_sub(w1,w2);
+			merc_config_read_sub(w1,w2);
 		}
 	}
 	fclose(fp);
@@ -548,6 +550,7 @@ int inter_sync()
 	status_sync();
 	pet_sync();
 	homun_sync();
+	merc_sync();
 	party_sync();
 	guild_sync();
 	accreg_sync();
@@ -568,6 +571,7 @@ int inter_init(const char *file)
 	status_init();
 	pet_init();
 	homun_init();
+	merc_init();
 	party_init();
 	guild_init();
 	accreg_init();
@@ -862,6 +866,8 @@ int inter_parse_frommap(int fd)
 		if( inter_pet_parse_frommap(fd) )
 			break;
 		if( inter_hom_parse_frommap(fd) )
+			break;
+		if( inter_merc_parse_frommap(fd) )
 			break;
 		if( inter_mail_parse_frommap(fd) )
 			break;

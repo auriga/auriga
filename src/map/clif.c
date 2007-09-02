@@ -9646,7 +9646,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if(map[sd->bl.m].flag.gvg)
 		clif_set0199(sd->fd,3);
 
-	// pet
+	// ペット
 	if(sd->status.pet_id > 0 && sd->pd && sd->pet.intimate > 0) {
 		map_addblock(&sd->pd->bl);
 		clif_spawnpet(sd->pd);
@@ -9654,7 +9654,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_send_petdata(sd,5,0x14);
 		clif_send_petstatus(sd);
 	}
-	// hom
+	// ホム
 	if(sd->hd) {
 		map_addblock(&sd->hd->bl);
 		mob_ai_hard_spawn(&sd->hd->bl, 1);
@@ -9662,6 +9662,15 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_send_homdata(sd,0,0);
 		clif_send_homstatus(sd,1);
 		clif_send_homstatus(sd,0);
+	}
+	// 傭兵
+	if(sd->mcd) {
+		map_addblock(&sd->mcd->bl);
+		//mob_ai_hard_spawn( &sd->mcd->bl, 1 );
+		clif_spawnmerc(sd->mcd);
+		clif_send_mercdata(sd);
+		clif_send_mercstatus(sd,1);
+		clif_send_mercstatus(sd,0);
 	}
 
 	if(sd->state.connect_new) {

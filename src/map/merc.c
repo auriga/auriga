@@ -14,6 +14,7 @@
 
 #include "clif.h"
 #include "chrif.h"
+#include "intif.h"
 #include "map.h"
 #include "merc.h"
 #include "mob.h"
@@ -130,11 +131,8 @@ int merc_callmerc(struct map_session_data *sd,int class_)
 	st.hp = st.max_hp;
 	st.sp = st.max_sp;
 
-	st.merc_id = 100;	// 本来IDはinter鯖から取得する
-
 	sd->state.merc_creating = 1;
-	//intif_create_merc(sd->status.account_id,sd->status.char_id,&st);
-	merc_recv_mercdata(sd->status.account_id,sd->status.char_id, &st, 1);
+	intif_create_merc(sd->status.account_id,sd->status.char_id,&st);
 
 	return 0;
 }
@@ -226,7 +224,7 @@ int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int f
 	{
 		if(flag) {
 			// 新規作成時なら傭兵データを削除する
-			//intif_delete_mercdata(account_id,char_id,p->merc_id);
+			intif_delete_mercdata(account_id,char_id,p->merc_id);
 		}
 		if(sd)
 			sd->state.merc_creating = 0;
@@ -253,10 +251,10 @@ int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int f
 			clif_send_mercdata(sd);
 			clif_send_mercstatus(sd,1);
 			clif_send_mercstatus(sd,0);
-			clif_mercskillinfoblock(sd);
-			//merc_save_data(sd);
+			merc_save_data(sd);
 			//skill_unit_move(&sd->mcd->bl,gettick(),1);
 		}
+		clif_mercskillinfoblock(sd);
 	}
 	sd->state.merc_creating = 0;
 
@@ -276,7 +274,7 @@ int merc_delete_data(struct map_session_data *sd)
 		//if(battle_config.save_homun_temporal_intimate)
 		//	pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",2000);	// 初期値に
 		unit_free(&sd->mcd->bl,0);
-		//intif_delete_mercdata(sd->status.account_id,sd->status.char_id,sd->status.merc_id);
+		intif_delete_mercdata(sd->status.account_id,sd->status.char_id,sd->status.merc_id);
 		sd->status.merc_id = 0;
 		chrif_save(sd);
 		if(sd->state.storage_flag == 1)
@@ -314,17 +312,16 @@ int merc_menu(struct map_session_data *sd, int menunum)
  */
 int merc_save_data(struct map_session_data *sd)
 {
-/*
-	struct homun_data *hd;
+	struct merc_data *mcd;
 
 	nullpo_retr(0, sd);
-	nullpo_retr(0, hd = sd->hd);
+	nullpo_retr(0, mcd = sd->mcd);
 
-	if(battle_config.save_homun_temporal_intimate)
-		pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
-	memcpy(&sd->hom,&hd->status,sizeof(struct mmo_homunstatus));
-	intif_save_homdata(sd->status.account_id,&sd->hd->status);
-*/
+	//if(battle_config.save_homun_temporal_intimate)
+	//	pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
+
+	intif_save_mercdata(sd->status.account_id,&sd->mcd->status);
+
 	return 0;
 }
 

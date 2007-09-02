@@ -58,6 +58,11 @@ void intif_request_homdata(int account_id, int char_id, int homun_id);
 void intif_save_homdata(int account_id, struct mmo_homunstatus *h);
 void intif_delete_homdata(int account_id, int char_id, int homun_id);
 
+void intif_create_merc(int account_id, int char_id, struct mmo_mercstatus *m);
+void intif_request_mercdata(int account_id, int char_id, int merc_id);
+void intif_save_mercdata(int account_id, struct mmo_mercstatus *m);
+void intif_delete_mercdata(int account_id, int char_id, int merc_id);
+
 int intif_jumpto(int account_id,char *name);
 int intif_where(int account_id,char *name);
 int intif_charmovereq(struct map_session_data *sd,char *name,int flag);

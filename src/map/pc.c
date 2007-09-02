@@ -1041,16 +1041,20 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// アカウント変数の送信要求
 	intif_request_accountreg(sd);
 
-	// pet
+	// ペット初期化
 	sd->petDB = NULL;
 	sd->pd = NULL;
 	sd->pet_hungry_timer = -1;
 	memset(&sd->pet,0,sizeof(struct s_pet));
 
-	// ホムンクルス
+	// ホム初期化
 	sd->hd = NULL;
 	sd->homun_hungry_timer = -1;
 	memset(&sd->hom,0,sizeof(struct mmo_homunstatus));
+
+	// 傭兵初期化
+	sd->mcd = NULL;
+	//sd->status.merc_id = 100;
 
 	// ステータス異常の初期化
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
@@ -1102,13 +1106,13 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// 位置の設定
 	pc_setpos(sd, sd->status.last_point.map, sd->status.last_point.x, sd->status.last_point.y, 0);
 
-	// pet
+	// ペット、ホム、傭兵データ要求
 	if(sd->status.pet_id > 0)
 		intif_request_petdata(sd->status.account_id,sd->status.char_id,sd->status.pet_id);
-
-	// hom
 	if(sd->status.homun_id > 0)
 		intif_request_homdata(sd->status.account_id,sd->status.char_id,sd->status.homun_id);
+	if(sd->status.merc_id > 0)
+		intif_request_mercdata(sd->status.account_id,sd->status.char_id,sd->status.merc_id);
 
 	// パーティ、ギルドデータの要求
 	if( sd->status.party_id > 0 && party_search(sd->status.party_id) == NULL )

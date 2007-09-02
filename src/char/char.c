@@ -45,6 +45,7 @@
 #include "int_storage.h"
 #include "int_mail.h"
 #include "int_status.h"
+#include "int_merc.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -2536,6 +2537,9 @@ static int char_delete(const struct mmo_chardata *cd)
 	// ホムンクルス削除
 	if(cd->st.homun_id)
 		homun_delete(cd->st.homun_id);
+	// 傭兵削除
+	if(cd->st.merc_id)
+		merc_delete(cd->st.merc_id);
 	// ギルド脱退
 	if(cd->st.guild_id)
 		inter_guild_leave(cd->st.guild_id,cd->st.account_id,cd->st.char_id);
@@ -4354,6 +4358,7 @@ void do_final(void)
 	do_final_inter();
 	pet_final();
 	homun_final();
+	merc_final();
 	guild_final();
 	party_final();
 	storage_final();
