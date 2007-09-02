@@ -146,8 +146,8 @@ void intif_request_homdata(int account_id, int char_id, int homun_id)
 	WFIFOW(inter_fd, 0) = 0x3089;
 	WFIFOL(inter_fd, 2) = account_id;
 	WFIFOL(inter_fd, 6) = char_id;
-	WFIFOW(inter_fd,10) = homun_id;
-	WFIFOSET(inter_fd,12);
+	WFIFOL(inter_fd,10) = homun_id;
+	WFIFOSET(inter_fd,14);
 
 	return;
 }
@@ -174,8 +174,8 @@ void intif_delete_homdata(int account_id, int char_id, int homun_id)
 	WFIFOW(inter_fd, 0) = 0x308b;
 	WFIFOL(inter_fd, 2) = account_id;
 	WFIFOL(inter_fd, 6) = char_id;
-	WFIFOW(inter_fd,10) = homun_id;
-	WFIFOSET(inter_fd,12);
+	WFIFOL(inter_fd,10) = homun_id;
+	WFIFOSET(inter_fd,14);
 
 	return;
 }
@@ -1093,7 +1093,7 @@ int intif_char_connect_limit(int limit)
 	if (inter_fd < 0)
 		return -1;
 
-	WFIFOW(inter_fd,0) = 0x3070;
+	WFIFOW(inter_fd,0) = 0x3008;
 	WFIFOL(inter_fd,2) = limit;
 	WFIFOSET(inter_fd, 6);
 

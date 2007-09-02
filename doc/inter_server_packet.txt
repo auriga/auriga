@@ -14,15 +14,15 @@ R 3800-389f
 	11,-1, 7, 3,  0, 0, 0, 0, -1, 7, 3, 0,  0, 0,  0, 0,	// 3880-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3890-
 S 3000-309f
-	-1,-1, 7, 0, -1, 6, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3000-
+	-1,-1, 7, 0, -1, 6, 0, 0,  6, 0, 0, 0,  0, 0,  0, 0,	// 3000-
 	 6,-1, 0, 0,  0, 0, 0, 0, 10,-1,14, 6,  0, 0,  0, 0,	// 3010-
 	72, 6,52,16, 34,53, 6,-1, 34, 0, 0, 0,  0, 0,  0, 0,	// 3020-
 	-1, 6,-1, 0, 55,19, 6,-1, 14,-1,-1,-1, 18,19,186,-1,	// 3030-
 	 5, 9, 0, 0,  0, 0, 0, 0,  0. 6,-1,10, 10,10, -1, 0,	// 3040-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3050-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-
-	 6, 0, 0, 0,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3070-
-	48,14,-1, 6,  0, 0, 0, 0, -1,12,-1,12,  0, 0,  0, 0,	// 3080-
+	 0, 0, 0, 0,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3070-
+	48,14,-1, 6,  0, 0, 0, 0, -1,14,-1,14,  0, 0,  0, 0,	// 3080-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3090-
 
 
@@ -52,6 +52,9 @@ R 3804 <len>.w <account_id>.l { <name>.32B <value>.l }.36B*
 	アカウント変数データ通知
 S 3005 <account_id>.l
 	アカウント変数データ要求
+S 3008 <limit>.l
+	キャラ鯖の制限人数の変更送信
+
 S 3010 <account_id>.l
 	倉庫データ要求
 R 3810 <len>.w <account_id>.l <storage>.?B
@@ -81,7 +84,6 @@ S 301b <guild_id>.l
 R 381b <guild_id>.l <succeed>.B
 	ギルド倉庫ロック解除返答
 	succeed=0 失敗、succeed=1 成功（失敗でも構わないので返信を待たなくてもいい）
-
 
 S 3020 <account_id>.l <party_name>.24B <nick_name>.24B <map_name>.16B <level>.w
 	パーティ作成要求
@@ -129,7 +131,6 @@ R 3827 <len>.w <party_id>.l <account_id>.l <message>.?B
 	パーティ内発言通知（全マップ鯖へ）
 S 3028 <party_id>.l <account_id>.l <nick>.24B
 	別パーティに所属していないかチェック<party_id>は本来の所属
-
 
 S 3030 <len>.w <account_id>.l <guild_name>.24B <struct guild_member>.?B
 	ギルド作成要求
@@ -233,8 +234,7 @@ S 304e <len>.w <account>.l <struct mail_data>.?B
 	メールを受け取る人がいるか確認要求
 R 384e <len>.w <account>.l <struct mail_data>.?B
 	メールチェックOK
-S 3070 <limit>.l
-	キャラ鯖の制限人数の変更送信
+
 S 3078 <account_id>.l <char_id>.l
 	ステータス異常データ要求
 R 3878 <len>.w <account_id>.l { <type>.w <val1>.l <val2>.l <val3>.l <val4>.l <tick>.l }.22B*
@@ -279,7 +279,7 @@ S 3088 <len>.w <account_id>.l <char_id>.l <struct mmo_homunstatus>.?B
 	ホム生成要求
 R 3888 <len>.w <account_id>.l <incubate>.B <struct mmo_homunstatus>.?B
 	ホムデータ受信
-S 3089 <account_id>.l <char_id>.l <homun_id>.w
+S 3089 <account_id>.l <char_id>.l <homun_id>.l
 	ホムデータ要求
 R 3889 <account_id>.l <flag>.B
 	ホムデータ保存終了
@@ -287,7 +287,7 @@ S 308a <len>.w <account_id>.l <struct mmo_homunstatus>.?B
 	ホムデータ保存要求
 R 388a <flag>.B
 	ホムデータ削除終了
-S 308b <account_id>.l <char_id>.l <homun_id>.w
+S 308b <account_id>.l <char_id>.l <homun_id>.l
 	ホムデータ削除要求
 S 3090 <account_id>.l <target_name>.24B <flag>.B
 	target_nameの位置要求

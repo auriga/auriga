@@ -805,7 +805,7 @@ int mapif_parse_CreateHom(int fd)
 // ホムのデータ送信
 int mapif_parse_LoadHom(int fd)
 {
-	mapif_load_hom(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOW(fd,10));
+	mapif_load_hom(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10));
 	return 0;
 }
 
@@ -819,7 +819,7 @@ int mapif_parse_SaveHom(int fd)
 // ホム削除
 int mapif_parse_DeleteHom(int fd)
 {
-	mapif_delete_hom(fd,RFIFOW(fd,10));
+	mapif_delete_hom(fd,RFIFOL(fd,10));
 	return 0;
 }
 

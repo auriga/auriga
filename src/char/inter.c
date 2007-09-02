@@ -48,15 +48,15 @@ int inter_send_packet_length[] = {
 
 // 受信パケット長リスト
 int inter_recv_packet_length[] = {
-	-1,-1, 7, 0, -1, 6, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3000-
+	-1,-1, 7, 0, -1, 6, 0, 0,  6, 0, 0, 0,  0, 0,  0, 0,	// 3000-
 	 6,-1, 0, 0,  0, 0, 0, 0, 10,-1,14, 6,  0, 0,  0, 0,	// 3010-
 	74, 6,52,16, 34,53, 6,-1, 34, 0, 0, 0,  0, 0,  0, 0,	// 3020-
 	-1, 6,-1, 0, 55,19, 6,-1, 14,-1,-1,-1, 18,19,186,-1,	// 3030-
 	 5, 9, 0, 0,  0, 0, 0, 0,  0, 6,-1,10, 10,10, -1, 0,	// 3040-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3050-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-
-	 6, 0, 0, 0,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3070-
-	48,14,-1, 6,  0, 0, 0, 0, -1,12,-1,12,  0, 0,  0, 0,	// 3080-
+	 0, 0, 0, 0,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3070-
+	48,14,-1, 6,  0, 0, 0, 0, -1,14,-1,14,  0, 0,  0, 0,	// 3080-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3090-
 };
 
@@ -847,11 +847,11 @@ int inter_parse_frommap(int fd)
 	case 0x3002: mapif_parse_WisReply(fd);         break;
 	case 0x3004: mapif_parse_AccReg(fd);           break;
 	case 0x3005: mapif_parse_AccRegRequest(fd);    break;
+	case 0x3008: mapif_parse_CharConnectLimit(fd); break;
 	case 0x3090: mapif_parse_CharPosReq(fd);       break;
 	case 0x3091: mapif_parse_CharPos(fd);          break;
 	case 0x3092: mapif_parse_CharMoveReq(fd);      break;
 	case 0x3093: mapif_parse_DisplayMessage(fd);   break;
-	case 0x3070: mapif_parse_CharConnectLimit(fd); break;
 	default:
 		if( inter_party_parse_frommap(fd) )
 			break;

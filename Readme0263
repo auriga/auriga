@@ -1,4 +1,12 @@
 ----------------------------------------
+//0307 [2007/09/03] by Rayce
+
+・ホムデータの要求および削除をinterサーバに行う際、ホムIDがWORDで計算されていたのでDWORDに修正
+　（inter.c, int_homun.c）
+・intif_char_connect_limit() のパケット番号を 0x3070 → 0x3008 に変更（intif.c, inter.c）
+・doc/inter_server_pacekt.txt修正
+
+----------------------------------------
 //0306 [2007/09/03] by Rayce
 
 ・傭兵実装準備
