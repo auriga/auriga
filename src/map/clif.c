@@ -1429,10 +1429,10 @@ static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
 	WBUFW(buf,12)=hd->status.option;
 	WBUFW(buf,14)=hd->view_class;
 	WBUFW(buf,16)=battle_config.pet0078_hair_id;
-	if((view = itemdb_viewid(hd->equip)) > 0)
+	if((view = itemdb_viewid(hd->status.equip)) > 0)
 		WBUFW(buf,20)=view;
 	else
-		WBUFW(buf,20)=hd->equip;
+		WBUFW(buf,20)=hd->status.equip;
 	WBUFL(buf,22)=gettick();
 	WBUFW(buf,46)=hd->opt3;
 	WBUFPOS2(buf,50,hd->bl.x,hd->bl.y,hd->ud.to_x,hd->ud.to_y);
@@ -10610,7 +10610,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			}
 			else if(DIFF_TICK(tick, hd->ud.canact_tick) < 0)
 				return;
-			if(DIFF_TICK(tick, hd->homskillstatictimer[skillnum-HOM_SKILLID]) < 0)
+			if(DIFF_TICK(tick, hd->skillstatictimer[skillnum-HOM_SKILLID]) < 0)
 				return;
 
 			if(skill_get_inf(skillnum) & 0x04)	// 自分が対象

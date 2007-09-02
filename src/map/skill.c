@@ -5727,7 +5727,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,heal_tearget,AL_HEAL,heal,1);
 			clif_skill_nodamage(src,heal_tearget,skillid,heal,1);
 			battle_heal(NULL,heal_tearget,heal,0,0);
-			hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
 	case HLIF_AVOID:		/* 緊急回避 */
@@ -5745,7 +5745,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		{
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
-			hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
 	case HLIF_CHANGE:		/* メンタルチェンジ */
@@ -5754,7 +5754,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(bl,HomSkillStatusChangeTable[skillid - HOM_SKILLID],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 			homun_heal(hd,hd->max_hp,0);
-			hd->homskillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
 	case NPC_DRAGONFEAR:		/* ドラゴンフィアー */

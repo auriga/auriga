@@ -27,7 +27,8 @@ struct mob_db {
 	int def,mdef;
 	int str,agi,vit,int_,dex,luk;
 	int range,range2,range3;
-	int size,race,element,mode;
+	short size,race;
+	int element,mode;
 	int speed,adelay,amotion,dmotion;
 	int mexp,mexpper;
 	struct {
@@ -38,7 +39,7 @@ struct mob_db {
 		int nameid;
 		int p;
 	} mvpitem[3];
-	int view_class,view_size;
+	short view_class,view_size;
 	short hair,hair_color,clothes_color;
 	short weapon,shield,head_top,head_mid,head_bottom;
 	short group_id;

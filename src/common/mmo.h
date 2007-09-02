@@ -48,7 +48,7 @@
 #define MAIL_STORE_MAX 30
 
 #define MAX_HOMUN_DB 16			// ホムの数
-#define HOM_ID 6001				// ID開始値
+#define HOM_ID 6001			// ホムID開始値
 #define HOM_SKILLID 8001		// ホムスキルIDの開始値
 #define MAX_HOM_SKILLID (HOM_SKILLID+MAX_HOMSKILL)	// ホムスキルIDの最大値
 
@@ -198,15 +198,15 @@ struct mmo_homunstatus {
 	unsigned short base_level;
 	short str,agi,vit,int_,dex,luk;
 
-	unsigned int option;
 	short equip;
+	unsigned int option;
 
 	struct skill skill[MAX_HOMSKILL];
 
 	int intimate;	// ペットと違い最大100,000で計算
 	short hungry;
 	char rename_flag;
-	short incubate;
+	char incubate;
 };
 
 struct storage {

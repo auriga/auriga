@@ -78,7 +78,7 @@ void party_create(struct map_session_data *sd, char *name, int item, int item2)
 
 	nullpo_retv(sd);
 
-	if (sd->status.party_id == 0) {
+	if (sd->status.party_id == 0 && sd->state.party_creating == 0) {
 		strncpy(party_name, name, 23);
 		// force '\0' at end (against hacker: normal player can not create a party with a name longer than 23 characters)
 		party_name[23] = '\0';
@@ -98,6 +98,7 @@ void party_create(struct map_session_data *sd, char *name, int item, int item2)
 		}
 
 		// ask char-server for creation
+		sd->state.party_creating = 1;
 		intif_create_party(sd, party_name, item, item2);
 	} else
 		clif_party_created(sd,2); // 0xfa <flag>.B: 0: Party has successfully been organized, 1: That Party Name already exists., 2: The Character is already in a party.
@@ -111,9 +112,10 @@ void party_create(struct map_session_data *sd, char *name, int item, int item2)
  */
 void party_created(int account_id, unsigned char fail, int party_id, char *name)
 {
-	struct map_session_data *sd;
+	struct map_session_data *sd = map_id2sd(account_id);
 
-	nullpo_retv(sd = map_id2sd(account_id));
+	if(sd == NULL)
+		return;
 
 	if(fail==0){
 		struct party *p;
@@ -130,6 +132,7 @@ void party_created(int account_id, unsigned char fail, int party_id, char *name)
 	}else{
 		clif_party_created(sd,1);
 	}
+	sd->state.party_creating = 0;
 
 	return;
 }

@@ -441,7 +441,7 @@ void guild_create(struct map_session_data *sd, char *name)
 {
 	nullpo_retv(sd);
 
-	if(sd->status.guild_id==0) {
+	if(sd->status.guild_id == 0 && sd->state.guild_creating == 0) {
 		if(!battle_config.guild_emperium_check || pc_search_inventory(sd,714) >= 0) {
 			struct guild_member m;
 			// check no guild name! (hacker)
@@ -459,6 +459,7 @@ void guild_create(struct map_session_data *sd, char *name)
 			}
 			guild_makemember(&m, sd);
 			m.position=0;
+			sd->state.guild_creating = 1;
 			intif_guild_create(name, &m);
 		} else {
 			clif_guild_created(sd,3);	// エンペリウムがない
@@ -492,6 +493,7 @@ void guild_created(int account_id, int guild_id)
 	} else {
 		clif_guild_created(sd,2);	// 作成失敗（同名ギルド存在）
 	}
+	sd->state.guild_creating = 0;
 
 	return;
 }

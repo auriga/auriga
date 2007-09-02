@@ -1,4 +1,15 @@
 ----------------------------------------
+//0304 [2007/09/03] by Rayce
+
+・hacker対策として、超短時間に連続してパーティ作成、ギルド作成、コールホムンクルスしても作成要求が
+　二重に行われないように修正（atcommand.c, guild.c, homun.c, map.h, party.c）
+
+・homun_data構造体から意味のないメンバ equip を削除、および整理（mmo.h, map.h, clif.c, homun.c）
+・homun_db, mob_db, pet_db構造体の整理（homun.h, mob.h, pet.h）
+・homun_data構造体の homskillstatictimer を skillstatictimer に改名（clif.c, homun.c, map.h, skill.c）
+・db/homun_db.txtのNameをクライアント定義の名前に修正
+
+----------------------------------------
 //0303 [2007/09/02] by Rayce
 
 ・スキル系dbについて

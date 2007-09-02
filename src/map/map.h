@@ -288,6 +288,9 @@ struct map_session_data {
 		unsigned cart_dirty : 1;
 		unsigned icon_weight : 2;
 		unsigned warp_waiting : 1;
+		unsigned party_creating : 1;
+		unsigned guild_creating : 1;
+		unsigned homun_creating : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -758,17 +761,16 @@ struct homun_data {
 	int str,agi,vit,int_,dex,luk;
 	short atk,matk,def,mdef;
 	short hit,critical,flee,aspd;
-	short equip;
 	int intimate;
 	int target_id;
-	unsigned int homskillstatictimer[MAX_HOMSKILL];
+	unsigned int skillstatictimer[MAX_HOMSKILL];
 	struct status_change sc_data[MAX_STATUSCHANGE];
 	short sc_count;
 	unsigned short opt1,opt2;
 	unsigned int opt3;
-	short attackable;
-	short limits_to_growth;
-	int view_class;
+	char attackable;
+	char limits_to_growth;
+	short view_class;
 	int nhealhp,nhealsp;
 	int hprecov_rate,sprecov_rate;
 	int natural_heal_hp,natural_heal_sp;

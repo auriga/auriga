@@ -11,8 +11,8 @@
 
 struct homun_db {
 	short class_;
+	unsigned short base_level;
 	char name[24],jname[24];
-	int base_level;
 	int hp,sp,hp_kmax,hp_kmin,sp_kmax,sp_kmin;
 	int str,agi,vit,int_,dex,luk;
 	int base;
@@ -20,10 +20,10 @@ struct homun_db {
 	short AcceID;
 	short FoodID;
 	short aspd_k;
-	int maxskill;
-	int view_class,size,race,element,evo_class;
-	int exp_table;
-	int skillpoint;
+	short view_class,size,race;
+	int element,evo_class;
+	short exp_table;
+	short skillpoint;
 	struct script_code *script;
 };
 extern struct homun_db homun_db[MAX_HOMUN_DB];

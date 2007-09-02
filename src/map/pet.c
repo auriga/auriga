@@ -294,6 +294,9 @@ static int pet_data_init(struct map_session_data *sd)
 
 	nullpo_retr(1, sd);
 
+	if(sd->pd)
+		return 1;
+
 	if(sd->status.account_id != sd->pet.account_id || sd->status.char_id != sd->pet.char_id || sd->status.pet_id != sd->pet.pet_id) {
 		sd->status.pet_id = 0;
 		return 1;
@@ -357,7 +360,7 @@ static int pet_data_init(struct map_session_data *sd)
  * 孵化
  *------------------------------------------
  */
-int pet_birth_process(struct map_session_data *sd)
+static int pet_birth_process(struct map_session_data *sd)
 {
 	nullpo_retr(1, sd);
 
@@ -383,8 +386,8 @@ int pet_birth_process(struct map_session_data *sd)
 	chrif_save(sd);
 	if(sd->state.storage_flag == 1)
 		storage_storage_save(sd);
-	map_addblock(&sd->pd->bl);
 
+	map_addblock(&sd->pd->bl);
 	clif_spawnpet(sd->pd);
 	clif_send_petdata(sd,0,0);
 	clif_send_petdata(sd,5,0x14);
@@ -616,9 +619,7 @@ static int pet_performance(struct map_session_data *sd)
 	struct pet_data *pd;
 
 	nullpo_retr(0, sd);
-
-	if((pd = sd->pd) == NULL)
-		return 0;
+	nullpo_retr(0, pd = sd->pd);
 
 	unit_stop_walking(&pd->bl,1);
 	pd->ud.canmove_tick = gettick() + 2000;
@@ -640,43 +641,45 @@ static int pet_return_egg(struct map_session_data *sd)
 	int flag;
 
 	nullpo_retr(0, sd);
+	nullpo_retr(0, sd->pd);
 
-	if(sd->status.pet_id && sd->pd) {
-		// ルートしたItemを落とさせる
-		pet_lootitem_drop(sd->pd,sd);
-		unit_free(&sd->pd->bl,0);
-		sd->status.pet_id = 0;
-		sd->pd = NULL;
+	if(sd->status.pet_id <= 0)
+		return 0;
 
-		if(sd->petDB == NULL)
-			return 1;
-		sd->pet.incubate = 1;
+	// ルートしたItemを落とさせる
+	pet_lootitem_drop(sd->pd,sd);
+	unit_free(&sd->pd->bl,0);
+	sd->status.pet_id = 0;
+	sd->pd = NULL;
 
-		memset(&tmp_item,0,sizeof(tmp_item));
-		tmp_item.nameid   = sd->petDB->EggID;
-		tmp_item.identify = 1;
-		tmp_item.card[0]  = (short)0xff00;
-		*((long *)(&tmp_item.card[1])) = sd->pet.pet_id;
-		tmp_item.card[3]  = sd->pet.rename_flag;
+	if(sd->petDB == NULL)
+		return 1;
+	sd->pet.incubate = 1;
 
-		if((flag = pc_additem(sd,&tmp_item,1))) {
-			clif_additem(sd,0,0,flag);
-			map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
-		}
-		if(battle_config.pet_status_support && sd->pet.intimate > 0) {
-			if(sd->bl.prev != NULL)
-				status_calc_pc(sd,0);
-			else
-				status_calc_pc(sd,2);
-		}
+	memset(&tmp_item,0,sizeof(tmp_item));
+	tmp_item.nameid   = sd->petDB->EggID;
+	tmp_item.identify = 1;
+	tmp_item.card[0]  = (short)0xff00;
+	*((long *)(&tmp_item.card[1])) = sd->pet.pet_id;
+	tmp_item.card[3]  = sd->pet.rename_flag;
 
-		intif_save_petdata(sd->status.account_id,&sd->pet);
-		chrif_save(sd);
-		if(sd->state.storage_flag == 1)
-			storage_storage_save(sd);
-
-		sd->petDB = NULL;
+	if((flag = pc_additem(sd,&tmp_item,1))) {
+		clif_additem(sd,0,0,flag);
+		map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
 	}
+	if(battle_config.pet_status_support && sd->pet.intimate > 0) {
+		if(sd->bl.prev != NULL)
+			status_calc_pc(sd,0);
+		else
+			status_calc_pc(sd,2);
+	}
+
+	intif_save_petdata(sd->status.account_id,&sd->pet);
+	chrif_save(sd);
+	if(sd->state.storage_flag == 1)
+		storage_storage_save(sd);
+
+	sd->petDB = NULL;
 
 	return 0;
 }
@@ -691,6 +694,7 @@ static int pet_unequipitem(struct map_session_data *sd)
 	int nameid, flag;
 
 	nullpo_retr(1, sd);
+	nullpo_retr(1, sd->pd);
 
 	if(sd->petDB == NULL)
 		return 1;
@@ -721,6 +725,9 @@ static int pet_unequipitem(struct map_session_data *sd)
 int pet_menu(struct map_session_data *sd,int menunum)
 {
 	nullpo_retr(0, sd);
+
+	if(sd->pd == NULL)
+		return 0;
 
 	switch(menunum) {
 		case 0:

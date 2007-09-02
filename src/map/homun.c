@@ -625,7 +625,6 @@ int homun_create_hom(struct map_session_data *sd,int homunid)
 	hd.hp = hd.max_hp;
 	hd.sp = hd.max_sp;
 
-	hd.equip       = 0;
 	hd.intimate    = 2000;	// 親密度 2000/100000
 	hd.hungry      = 50;	// 満腹度 50/100
 	hd.incubate    = 0;
@@ -634,6 +633,7 @@ int homun_create_hom(struct map_session_data *sd,int homunid)
 	if(battle_config.save_homun_temporal_intimate)
 		pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd.intimate);
 
+	sd->state.homun_creating = 1;
 	intif_create_hom(sd->status.account_id,sd->status.char_id,&hd);
 
 	return 0;
@@ -667,7 +667,6 @@ static int homun_data_init(struct map_session_data *sd)
 	hd->bl.x             = hd->ud.to_x;
 	hd->bl.y             = hd->ud.to_y;
 	hd->bl.id            = npc_get_new_npc_id();
-	hd->equip            = 0;
 	hd->dir              = sd->dir;
 	hd->speed            = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
 	hd->bl.subtype       = MONS;
@@ -679,7 +678,7 @@ static int homun_data_init(struct map_session_data *sd)
 	hd->view_class       = homun_db[class_].view_class;
 
 	for(i=0; i<MAX_HOMSKILL; i++)
-		hd->homskillstatictimer[i] = tick;
+		hd->skillstatictimer[i] = tick;
 
 	// 親密度
 	if(battle_config.save_homun_temporal_intimate) {
@@ -727,6 +726,9 @@ int homun_callhom(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
 
+	if(sd->hd)
+		return 0;
+
 	if(sd->status.homun_id > 0 && sd->status.homun_id == sd->hom.homun_id) {
 		// 作成済みなら、出す
 		sd->hd = (struct homun_data *)aCalloc(1,sizeof(struct homun_data));
@@ -749,7 +751,7 @@ int homun_callhom(struct map_session_data *sd)
 			homun_save_data(sd);
 			skill_unit_move(&sd->hd->bl,gettick(),1);
 		}
-	} else {
+	} else if(sd->status.homun_id <= 0 && sd->state.homun_creating == 0) {
 		// 初誕生なら、データ作成
 		int idx = pc_search_inventory(sd,7142);	// エンブリオ所持を確認
 		sd->status.homun_id = 0;
@@ -786,6 +788,8 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 			// 新規作成時ならホムデータを削除する
 			intif_delete_homdata(account_id,char_id,p->homun_id);
 		}
+		if(sd)
+			sd->state.homun_creating = 0;
 		return 0;
 	}
 
@@ -799,11 +803,13 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 			homun_callhom(sd);
 			clif_homskillinfoblock(sd);
 		}
-	} else if(sd->status.homun_id == 0 && !sd->hd) {	// ホム新規作成
+	} else if(sd->status.homun_id <= 0 && !sd->hd) {	// ホム新規作成
 		memcpy(&sd->hom,p,sizeof(struct mmo_homunstatus));
 		sd->status.homun_id = sd->hom.homun_id;
 		homun_callhom(sd);
 	}
+	sd->state.homun_creating = 0;
+
 	return 0;
 }
 
@@ -864,9 +870,7 @@ static int homun_food(struct map_session_data *sd)
 	int i,t,food,class_,emotion;
 
 	nullpo_retr(1, sd);
-
-	if(!sd->hd)
-		return 1;
+	nullpo_retr(1, sd->hd);
 
 	if(sd->status.homun_id == 0)
 		return 1;
@@ -1021,7 +1025,6 @@ int homun_change_name(struct map_session_data *sd,char *name)
 	clif_send_homstatus(sd,1);
 	clif_send_homstatus(sd,0);
 	sd->hd->status.rename_flag = 1;
-//	clif_hom_equip(sd->hd,sd->hom.equip);
 	clif_send_homstatus(sd,0);
 
 	return 0;

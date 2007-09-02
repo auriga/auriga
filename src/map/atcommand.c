@@ -5932,7 +5932,7 @@ atcommand_makehomun(
 	if(homunid < HOM_ID || homunid >= HOM_ID + MAX_HOMUN_DB)
 		return -1;
 
-	if(sd->status.homun_id == 0) {
+	if(sd->status.homun_id == 0 && sd->state.homun_creating == 0) {
 		homun_create_hom(sd,homunid);
 	} else {
 		clif_displaymessage(fd,msg_txt(144));
