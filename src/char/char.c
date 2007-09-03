@@ -164,7 +164,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 	nullpo_retr(-1, p);
 
 	str_p += sprintf(str_p,"%d\t%d,%d\t%s\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%u,%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%s,%d,%d\t%s,%d,%d,%d,%d,%d,%d\t",
 		p->st.char_id,p->st.account_id,p->st.char_num,p->st.name,
 		p->st.class_,p->st.base_level,p->st.job_level,
@@ -173,7 +173,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 		p->st.str,p->st.agi,p->st.vit,p->st.int_,p->st.dex,p->st.luk,
 		p->st.status_point,p->st.skill_point,
 		p->st.option,p->st.karma,p->st.manner,p->st.die_counter,
-		p->st.party_id,p->st.guild_id,p->st.pet_id,p->st.homun_id,
+		p->st.party_id,p->st.guild_id,p->st.pet_id,p->st.homun_id,p->st.merc_id,
 		p->st.hair,p->st.hair_color,p->st.clothes_color,
 		p->st.weapon,p->st.shield,p->st.head_top,p->st.head_mid,p->st.head_bottom,
 		p->st.last_point.map,p->st.last_point.x,p->st.last_point.y,
@@ -247,14 +247,14 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 {
 	char tmp_str[3][256];
-	int tmp_int[45];
+	int tmp_int[46];
 	int set,next,len,i,n;
 
 	nullpo_retr(0, p);
 
-	// Auriga-089以降の形式
+	// Auriga-0309以降の形式
 	set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%u,%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 		"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],
@@ -263,17 +263,18 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 		&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
 		&tmp_int[19],&tmp_int[20],
 		&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24],
-		&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],
-		&tmp_int[29],&tmp_int[30],&tmp_int[31],
-		&tmp_int[32],&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],
-		tmp_str[1],&tmp_int[37],&tmp_int[38],
-		tmp_str[2],&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&next
+		&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&tmp_int[29],
+		&tmp_int[30],&tmp_int[31],&tmp_int[32],
+		&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
+		tmp_str[1],&tmp_int[38],&tmp_int[39],
+		tmp_str[2],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&tmp_int[45],&next
 	);
 
-	if(set != 48) {
-		tmp_int[24] = 0;	// die_counter
+	if(set != 49) {
+		// Auriga-089以降の形式
+		tmp_int[29] = 0;	// merc_id
 		set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-			"\t%u,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+			"\t%u,%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 			"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 			&tmp_int[3],&tmp_int[4],&tmp_int[5],
@@ -281,16 +282,36 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 			&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
 			&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
 			&tmp_int[19],&tmp_int[20],
-			&tmp_int[21],&tmp_int[22],&tmp_int[23],
+			&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24],
 			&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],
-			&tmp_int[29],&tmp_int[30],&tmp_int[31],
-			&tmp_int[32],&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],
-			tmp_str[1],&tmp_int[37],&tmp_int[38],
-			tmp_str[2],&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&next
+			&tmp_int[30],&tmp_int[31],&tmp_int[32],
+			&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
+			tmp_str[1],&tmp_int[38],&tmp_int[39],
+			tmp_str[2],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&tmp_int[45],&next
 		);
 
-		if(set != 47)
-			return 0;	// Athena1881以前の古い形式はサポートしない
+		if(set != 48) {
+			tmp_int[24] = 0;	// die_counter
+			set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
+				"\t%u,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+				"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
+				&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
+				&tmp_int[3],&tmp_int[4],&tmp_int[5],
+				&tmp_int[6],&tmp_int[7],&tmp_int[8],
+				&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
+				&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
+				&tmp_int[19],&tmp_int[20],
+				&tmp_int[21],&tmp_int[22],&tmp_int[23],
+				&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],
+				&tmp_int[30],&tmp_int[31],&tmp_int[32],
+				&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
+				tmp_str[1],&tmp_int[38],&tmp_int[39],
+				tmp_str[2],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&tmp_int[45],&next
+			);
+
+			if(set != 47)
+				return 0;	// Athena1881以前の古い形式はサポートしない
+		}
 	}
 
 	strncpy(p->st.name, tmp_str[0], 24);
@@ -331,22 +352,23 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	p->st.guild_id      = tmp_int[26];
 	p->st.pet_id        = tmp_int[27];
 	p->st.homun_id      = tmp_int[28];
-	p->st.hair          = tmp_int[29];
-	p->st.hair_color    = tmp_int[30];
-	p->st.clothes_color = tmp_int[31];
-	p->st.weapon        = tmp_int[32];
-	p->st.shield        = tmp_int[33];
-	p->st.head_top      = tmp_int[34];
-	p->st.head_mid      = tmp_int[35];
-	p->st.head_bottom   = tmp_int[36];
-	p->st.last_point.x  = tmp_int[37];
-	p->st.last_point.y  = tmp_int[38];
-	p->st.save_point.x  = tmp_int[39];
-	p->st.save_point.y  = tmp_int[40];
-	p->st.partner_id    = tmp_int[41];
-	p->st.parent_id[0]  = tmp_int[42];
-	p->st.parent_id[1]  = tmp_int[43];
-	p->st.baby_id       = tmp_int[44];
+	p->st.merc_id       = tmp_int[29];
+	p->st.hair          = tmp_int[30];
+	p->st.hair_color    = tmp_int[31];
+	p->st.clothes_color = tmp_int[32];
+	p->st.weapon        = tmp_int[33];
+	p->st.shield        = tmp_int[34];
+	p->st.head_top      = tmp_int[35];
+	p->st.head_mid      = tmp_int[36];
+	p->st.head_bottom   = tmp_int[37];
+	p->st.last_point.x  = tmp_int[38];
+	p->st.last_point.y  = tmp_int[39];
+	p->st.save_point.x  = tmp_int[40];
+	p->st.save_point.y  = tmp_int[41];
+	p->st.partner_id    = tmp_int[42];
+	p->st.parent_id[0]  = tmp_int[43];
+	p->st.parent_id[1]  = tmp_int[44];
+	p->st.baby_id       = tmp_int[45];
 
 	if(str[next]=='\n' || str[next]=='\r')
 		return 1;	// 新規データ
@@ -1197,7 +1219,14 @@ const struct mmo_chardata* char_sql_load(int char_id)
 
 	// printf("Request load char (%6d)[",char_id);
 
-	sprintf(tmp_sql, "SELECT * FROM `%s` WHERE `char_id` = '%d'",char_db, char_id);
+	sprintf(tmp_sql, "SELECT "
+		"`account_id`, `char_num`, `name`, `class`, `base_level`, `job_level`, `base_exp`, `job_exp`, `zeny`,"
+		"`str`, `agi`, `vit`, `int`, `dex`, `luk`, `max_hp`, `hp`, `max_sp`, `sp`, `status_point`, `skill_point`,"
+		"`option`, `karma`, `manner`, `die_counter`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `merc_id`,"
+		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `head_top`, `head_mid`, `head_bottom`,"
+		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
+		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`"
+		" FROM `%s` WHERE `char_id` = '%d'",char_db, char_id);
 
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
@@ -1206,28 +1235,11 @@ const struct mmo_chardata* char_sql_load(int char_id)
 	sql_res = mysql_store_result(&mysql_handle);
 
 	if (sql_res) {
-		// 0       1          2        3    4      5          6         7        8       9
-		// char_id account_id char_num name class_ base_level job_level base_exp job_exp zeny
-		// 10  11  12  13  14  15  16     17 18     19 20           21
-		// str agi vit int dex luk max_hp hp max_sp sp status_point skill_point
-		// 22     23    24     25          26       27       28     29   30         31
-		// option karma manner die_counter party_id guild_id pet_id hair hair_color clothes_color
-		// 32     33     34       35       36          37       38     39     40       41     42
-		// weapon shield head_top head_mid head_bottom last_map last_x last_y save_map save_x save_y
-		// 43         44           45           46      47     48
-		// partner_id parent_id[0] parent_id[1] baby_id online homun_id
-
 		sql_row = mysql_fetch_row(sql_res);
 		if(sql_row == NULL) {
 			// 見つからなくても正常
 			mysql_free_result(sql_res);
 			return NULL;
-		}
-		if(mysql_num_fields(sql_res) < 49) {
-			// フィールド数が少ない場合はエラー
-			printf("char_load: invalid number of fields!!\n");
-			mysql_free_result(sql_res);
-			exit(1);
 		}
 		if(p == NULL) {
 			p = (struct mmo_chardata *)aMalloc(sizeof(struct mmo_chardata));
@@ -1236,53 +1248,54 @@ const struct mmo_chardata* char_sql_load(int char_id)
 		memset(p,0,sizeof(struct mmo_chardata));
 
 		p->st.char_id       = char_id;
-		p->st.account_id    = atoi(sql_row[ 1]);
-		p->st.char_num      = atoi(sql_row[ 2]);
-		strncpy(p->st.name, sql_row[3], 24);
-		p->st.class_        = atoi(sql_row[ 4]);
-		p->st.base_level    = atoi(sql_row[ 5]);
-		p->st.job_level     = atoi(sql_row[ 6]);
-		p->st.base_exp      = atoi(sql_row[ 7]);
-		p->st.job_exp       = atoi(sql_row[ 8]);
-		p->st.zeny          = atoi(sql_row[ 9]);
-		p->st.str           = atoi(sql_row[10]);
-		p->st.agi           = atoi(sql_row[11]);
-		p->st.vit           = atoi(sql_row[12]);
-		p->st.int_          = atoi(sql_row[13]);
-		p->st.dex           = atoi(sql_row[14]);
-		p->st.luk           = atoi(sql_row[15]);
-		p->st.max_hp        = atoi(sql_row[16]);
-		p->st.hp            = atoi(sql_row[17]);
-		p->st.max_sp        = atoi(sql_row[18]);
-		p->st.sp            = atoi(sql_row[19]);
-		p->st.status_point  = atoi(sql_row[20]);
-		p->st.skill_point   = atoi(sql_row[21]);
-		p->st.option        = (unsigned int)atoi(sql_row[22]);
-		p->st.karma         = atoi(sql_row[23]);
-		p->st.manner        = atoi(sql_row[24]);
-		p->st.die_counter   = atoi(sql_row[25]);
-		p->st.party_id      = atoi(sql_row[26]);
-		p->st.guild_id      = atoi(sql_row[27]);
-		p->st.pet_id        = atoi(sql_row[28]);
-		p->st.homun_id      = atoi(sql_row[48]);
-		p->st.hair          = atoi(sql_row[29]);
-		p->st.hair_color    = atoi(sql_row[30]);
-		p->st.clothes_color = atoi(sql_row[31]);
-		p->st.weapon        = atoi(sql_row[32]);
-		p->st.shield        = atoi(sql_row[33]);
-		p->st.head_top      = atoi(sql_row[34]);
-		p->st.head_mid      = atoi(sql_row[35]);
-		p->st.head_bottom   = atoi(sql_row[36]);
-		strncpy(p->st.last_point.map,sql_row[37],24);
-		p->st.last_point.x  = atoi(sql_row[38]);
-		p->st.last_point.y  = atoi(sql_row[39]);
-		strncpy(p->st.save_point.map,sql_row[40],24);
-		p->st.save_point.x  = atoi(sql_row[41]);
-		p->st.save_point.y  = atoi(sql_row[42]);
-		p->st.partner_id    = atoi(sql_row[43]);
-		p->st.parent_id[0]  = atoi(sql_row[44]);
-		p->st.parent_id[1]  = atoi(sql_row[45]);
-		p->st.baby_id       = atoi(sql_row[46]);
+		p->st.account_id    = atoi(sql_row[0]);
+		p->st.char_num      = atoi(sql_row[1]);
+		strncpy(p->st.name, sql_row[2], 24);
+		p->st.class_        = atoi(sql_row[3]);
+		p->st.base_level    = atoi(sql_row[4]);
+		p->st.job_level     = atoi(sql_row[5]);
+		p->st.base_exp      = atoi(sql_row[6]);
+		p->st.job_exp       = atoi(sql_row[7]);
+		p->st.zeny          = atoi(sql_row[8]);
+		p->st.str           = atoi(sql_row[9]);
+		p->st.agi           = atoi(sql_row[10]);
+		p->st.vit           = atoi(sql_row[11]);
+		p->st.int_          = atoi(sql_row[12]);
+		p->st.dex           = atoi(sql_row[13]);
+		p->st.luk           = atoi(sql_row[14]);
+		p->st.max_hp        = atoi(sql_row[15]);
+		p->st.hp            = atoi(sql_row[16]);
+		p->st.max_sp        = atoi(sql_row[17]);
+		p->st.sp            = atoi(sql_row[18]);
+		p->st.status_point  = atoi(sql_row[19]);
+		p->st.skill_point   = atoi(sql_row[20]);
+		p->st.option        = (unsigned int)atoi(sql_row[21]);
+		p->st.karma         = atoi(sql_row[22]);
+		p->st.manner        = atoi(sql_row[23]);
+		p->st.die_counter   = atoi(sql_row[24]);
+		p->st.party_id      = atoi(sql_row[25]);
+		p->st.guild_id      = atoi(sql_row[26]);
+		p->st.pet_id        = atoi(sql_row[27]);
+		p->st.homun_id      = atoi(sql_row[28]);
+		p->st.merc_id       = atoi(sql_row[29]);
+		p->st.hair          = atoi(sql_row[30]);
+		p->st.hair_color    = atoi(sql_row[31]);
+		p->st.clothes_color = atoi(sql_row[32]);
+		p->st.weapon        = atoi(sql_row[33]);
+		p->st.shield        = atoi(sql_row[34]);
+		p->st.head_top      = atoi(sql_row[35]);
+		p->st.head_mid      = atoi(sql_row[36]);
+		p->st.head_bottom   = atoi(sql_row[37]);
+		strncpy(p->st.last_point.map,sql_row[38],24);
+		p->st.last_point.x  = atoi(sql_row[39]);
+		p->st.last_point.y  = atoi(sql_row[40]);
+		strncpy(p->st.save_point.map,sql_row[41],24);
+		p->st.save_point.x  = atoi(sql_row[42]);
+		p->st.save_point.y  = atoi(sql_row[43]);
+		p->st.partner_id    = atoi(sql_row[44]);
+		p->st.parent_id[0]  = atoi(sql_row[45]);
+		p->st.parent_id[1]  = atoi(sql_row[46]);
+		p->st.baby_id       = atoi(sql_row[47]);
 
 		// force \0 terminal
 		p->st.name[23]           = '\0';
@@ -1551,6 +1564,8 @@ int char_sql_save(struct mmo_charstatus *st2)
 	UPDATE_NUM(party_id      ,"party_id");
 	UPDATE_NUM(guild_id      ,"guild_id");
 	UPDATE_NUM(pet_id        ,"pet_id");
+	UPDATE_NUM(homun_id      ,"homun_id");
+	UPDATE_NUM(merc_id       ,"merc_id");
 	UPDATE_NUM(hair          ,"hair");
 	UPDATE_NUM(hair_color    ,"hair_color");
 	UPDATE_NUM(clothes_color ,"clothes_color");
@@ -1569,7 +1584,6 @@ int char_sql_save(struct mmo_charstatus *st2)
 	UPDATE_NUM(parent_id[0]  ,"parent_id");
 	UPDATE_NUM(parent_id[1]  ,"parent_id2");
 	UPDATE_NUM(baby_id       ,"baby_id");
-	UPDATE_NUM(homun_id      ,"homun_id");
 
 	if(sep == ',') {
 		sprintf(p," WHERE `char_id` = '%d'",st2->char_id);

@@ -481,7 +481,11 @@ int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 	if(m == NULL)
 		return 1;
 
-	sprintf(tmp_sql, "SELECT * FROM `%s` WHERE `char_id` = '%d' ORDER BY `number`", mail_data, char_id);
+	sprintf(tmp_sql, "SELECT "
+		"`number`, `read`, `send_name`, `receive_name`, `title`, `times`, `size`, `body`, `zeny`,"
+		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`"
+		"`card0`, `card1`, `card2`, `card3`, `limit`"
+		" FROM `%s` WHERE `char_id` = '%d' ORDER BY `number`", mail_data, char_id);
 
 	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error - (select `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
@@ -489,25 +493,17 @@ int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 	sql_res = mysql_store_result(&mysql_handle);
 
 	if(sql_res && mysql_num_rows(sql_res) > 0) {
-		// 0       1      2    3         4            5
-		// char_id number read send_name receive_name title
-		// 6     7    8    9
-		// times size body zeny
-		// 10 11     12     13    14       15     16
-		// id nameid amount equip identify refine attribute
-		// 17    18    19    20    21
-		// card0 card1 card2 card3 limit
 		while((sql_row = mysql_fetch_row(sql_res)) && i < MAIL_STORE_MAX) {
 			unsigned int n;
 			char *p;
 
-			md[i].mail_num = (unsigned int)atoi(sql_row[1]);
-			md[i].read     = atoi(sql_row[2]);
-			strncpy(md[i].char_name, sql_row[3] ,24);
-			strncpy(md[i].receive_name, sql_row[4], 24);
-			strncpy(md[i].title, sql_row[5], 40);
-			md[i].times     = (unsigned int)atoi(sql_row[6]);
-			md[i].body_size = (unsigned int)atoi(sql_row[7]);
+			md[i].mail_num = (unsigned int)atoi(sql_row[0]);
+			md[i].read     = atoi(sql_row[1]);
+			strncpy(md[i].char_name, sql_row[2] ,24);
+			strncpy(md[i].receive_name, sql_row[3], 24);
+			strncpy(md[i].title, sql_row[4], 40);
+			md[i].times     = (unsigned int)atoi(sql_row[5]);
+			md[i].body_size = (unsigned int)atoi(sql_row[6]);
 
 			// force \0 terminal
 			md[i].char_name[23]    = '\0';
@@ -520,26 +516,26 @@ int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 			}
 
 			// SELECT UNHEX()
-			for(n = 0, p = sql_row[8]; n < md[i].body_size && p[0] && p[1]; n++, p += 2) {
+			for(n = 0, p = sql_row[7]; n < md[i].body_size && p[0] && p[1]; n++, p += 2) {
 				int c = 0;
 				sscanf(p,"%2x",&c);
 				WBUFB(md[i].body,n) = c;
 			}
 			md[i].body_size = n;
 
-			md[i].zeny           = atoi(sql_row[9]);
-			md[i].item.id        = (unsigned int)atoi(sql_row[10]);
-			md[i].item.nameid    = atoi(sql_row[11]);
-			md[i].item.amount    = atoi(sql_row[12]);
-			md[i].item.equip     = atoi(sql_row[13]);
-			md[i].item.identify  = atoi(sql_row[14]);
-			md[i].item.refine    = atoi(sql_row[15]);
-			md[i].item.attribute = atoi(sql_row[16]);
-			md[i].item.card[0]   = atoi(sql_row[17]);
-			md[i].item.card[1]   = atoi(sql_row[18]);
-			md[i].item.card[2]   = atoi(sql_row[19]);
-			md[i].item.card[3]   = atoi(sql_row[20]);
-			md[i].item.limit     = (unsigned int)atoi(sql_row[21]);
+			md[i].zeny           = atoi(sql_row[8]);
+			md[i].item.id        = (unsigned int)atoi(sql_row[9]);
+			md[i].item.nameid    = atoi(sql_row[10]);
+			md[i].item.amount    = atoi(sql_row[11]);
+			md[i].item.equip     = atoi(sql_row[12]);
+			md[i].item.identify  = atoi(sql_row[13]);
+			md[i].item.refine    = atoi(sql_row[14]);
+			md[i].item.attribute = atoi(sql_row[15]);
+			md[i].item.card[0]   = atoi(sql_row[16]);
+			md[i].item.card[1]   = atoi(sql_row[17]);
+			md[i].item.card[2]   = atoi(sql_row[18]);
+			md[i].item.card[3]   = atoi(sql_row[19]);
+			md[i].item.limit     = (unsigned int)atoi(sql_row[20]);
 			i++;
 		}
 	}

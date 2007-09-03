@@ -1,4 +1,19 @@
 ----------------------------------------
+//0309 [2007/09/04] by Rayce
+
+・キャラクターが召喚中の傭兵IDをセーブできるように（char.c）
+	TXTならsave/auriga.txtのホムIDの次に保存されます。
+	SQLなら `merc_id` フィールドに保存されます。
+
+・TXT: JOURNAL_IDENTIFIERをバージョン07に変更しておく（journal.c）
+
+・SQL: 「SELECT *」のようにワイルドカードを使うとカラムの並びに強く依存してしまうので、
+       必要なフィールドを直接指定するように修正（char.c, int_guild.c, int_mail.c）
+・SQL: `char` テーブルの `homun_id` フィールドのカラム位置を移動
+・SQL: main.sql修正、Auriga-309_changetable.sql添付
+・SQL: txt-converter対応（char-converter.c）
+
+----------------------------------------
 //0308 [2007/09/03] by Rayce
 
 ・傭兵実装準備その２
