@@ -22,6 +22,7 @@ int merc_callmerc(struct map_session_data *sd, int class_);
 int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int flag);
 int merc_delete_data(struct map_session_data *sd);
 int merc_menu(struct map_session_data *sd, int menunum);
+int merc_return_master(struct map_session_data *sd);
 int merc_save_data(struct map_session_data *sd);
 
 int do_init_merc(void);

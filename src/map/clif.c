@@ -9319,7 +9319,7 @@ void clif_send_mercdata(struct map_session_data *sd)
 	nullpo_retv(sd);
 	nullpo_retv(mcd = sd->mcd);
 
-	fd  = sd->fd;
+	fd = sd->fd;
 	WFIFOW(fd,0)  = 0x28a;
 	WFIFOL(fd,2)  = mcd->bl.id;
 	WFIFOL(fd,6)  = mcd->status.option;
@@ -9666,7 +9666,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	// 傭兵
 	if(sd->mcd) {
 		map_addblock(&sd->mcd->bl);
-		//mob_ai_hard_spawn( &sd->mcd->bl, 1 );
+		mob_ai_hard_spawn( &sd->mcd->bl, 1 );
 		clif_spawnmerc(sd->mcd);
 		clif_send_mercdata(sd);
 		clif_send_mercstatus(sd,1);
@@ -12749,37 +12749,47 @@ static void clif_parse_HomMenu(int fd,struct map_session_data *sd, int cmd)
  *
  *------------------------------------------
  */
-static void clif_parse_HomWalkMaster(int fd,struct map_session_data *sd, int cmd)
+static void clif_parse_HomMercWalkMaster(int fd,struct map_session_data *sd, int cmd)
 {
-	//int id = RFIFOL(fd,2);	hd->bl.idが入ってる
-	struct homun_data *hd;
+	struct block_list *bl = map_id2bl(RFIFOL(fd,GETPACKETPOS(cmd,0)));
 
 	nullpo_retv(sd);
 
-	if((hd=sd->hd)==NULL)
+	if(bl == NULL)
 		return;
 
-	homun_return_master(sd);
+	if(bl->type == BL_HOM) {
+		if(sd->hd && bl == &sd->hd->bl) {
+			homun_return_master(sd);
+		}
+	} else if(bl->type == BL_MERC) {
+		if(sd->mcd && bl == &sd->mcd->bl) {
+			merc_return_master(sd);
+		}
+	}
 }
 
 /*==========================================
  *
  *------------------------------------------
  */
-static void clif_parse_HomWalkToXY(int fd,struct map_session_data *sd, int cmd)
+static void clif_parse_HomMercWalkToXY(int fd,struct map_session_data *sd, int cmd)
 {
-	//int id = RFIFOL(fd,2);	hd->bl.idが入ってる
-	int x,y;
+	struct block_list *bl = map_id2bl(RFIFOL(fd,GETPACKETPOS(cmd,0)));
 
 	nullpo_retv(sd);
 
-	if(!sd->hd)
+	if(bl == NULL)
 		return;
 
-	x = RFIFOB(fd,GETPACKETPOS(cmd,0))*4+(RFIFOB(fd,GETPACKETPOS(cmd,0)+1)>>6);
-	y = ((RFIFOB(fd,GETPACKETPOS(cmd,0)+1)&0x3f)<<4)+(RFIFOB(fd,GETPACKETPOS(cmd,0)+2)>>4);
+	if( (bl->type == BL_HOM && sd->hd && bl == &sd->hd->bl) ||
+	    (bl->type == BL_MERC && sd->mcd && bl == &sd->mcd->bl) )
+	{
+		int x = RFIFOB(fd,GETPACKETPOS(cmd,1))*4+(RFIFOB(fd,GETPACKETPOS(cmd,1)+1)>>6);
+		int y = ((RFIFOB(fd,GETPACKETPOS(cmd,1)+1)&0x3f)<<4)+(RFIFOB(fd,GETPACKETPOS(cmd,1)+2)>>4);
 
-	unit_walktoxy(&sd->hd->bl,x,y);
+		unit_walktoxy(bl,x,y);
+	}
 }
 
 /*==========================================
@@ -13083,8 +13093,8 @@ static struct {
 	{ clif_parse_RankingTaekwon,            "rankingtaekwon"            },
 	{ clif_parse_RankingPk,                 "rankingpk"                 },
 	{ clif_parse_HomMenu,                   "hommenu"                   },
-	{ clif_parse_HomWalkMaster,             "homwalkmaster"             },
-	{ clif_parse_HomWalkToXY,               "homwalktoxy"               },
+	{ clif_parse_HomMercWalkMaster,         "hommercwalkmaster"         },
+	{ clif_parse_HomMercWalkToXY,           "hommercwalktoxy"           },
 	{ clif_parse_HomActionRequest,          "homactionrequest"          },
 	{ clif_parse_ChangeHomName,             "changehomname"             },
 	{ clif_parse_MailWinOpen,               "mailwinopen"               },

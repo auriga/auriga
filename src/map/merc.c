@@ -20,6 +20,7 @@
 #include "mob.h"
 #include "npc.h"
 #include "pc.h"
+#include "skill.h"
 #include "status.h"
 #include "unit.h"
 
@@ -196,6 +197,9 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->mdef     = 5;
 	mcd->flee     = 42;
 	mcd->aspd     = 170;
+	mcd->attackrange = merc_db[class_].range;
+	mcd->max_hp   = mcd->status.max_hp;
+	mcd->max_sp   = mcd->status.max_sp;
 
 	unit_dataset(&mcd->bl);
 	map_addiddb(&mcd->bl);
@@ -246,13 +250,13 @@ int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int f
 				return 0;
 			}
 			map_addblock(&sd->mcd->bl);
-			//mob_ai_hard_spawn( &sd->mcd->bl, 1 );
+			mob_ai_hard_spawn( &sd->mcd->bl, 1 );
 			clif_spawnmerc(sd->mcd);
 			clif_send_mercdata(sd);
 			clif_send_mercstatus(sd,1);
 			clif_send_mercstatus(sd,0);
 			merc_save_data(sd);
-			//skill_unit_move(&sd->mcd->bl,gettick(),1);
+			skill_unit_move(&sd->mcd->bl,gettick(),1);
 		}
 		clif_mercskillinfoblock(sd);
 	}
@@ -269,7 +273,7 @@ int merc_delete_data(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
 
-	if(sd->status.homun_id > 0 && sd->mcd) {
+	if(sd->status.merc_id > 0 && sd->mcd) {
 		// 親密度保存
 		//if(battle_config.save_homun_temporal_intimate)
 		//	pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",2000);	// 初期値に
@@ -303,6 +307,22 @@ int merc_menu(struct map_session_data *sd, int menunum)
 			merc_delete_data(sd);
 			break;
 	}
+	return 0;
+}
+
+/*==========================================
+ * 待機命令などで、主人の下へ移動
+ *------------------------------------------
+ */
+int merc_return_master(struct map_session_data *sd)
+{
+	struct merc_data *mcd;
+
+	nullpo_retr(0, sd);
+	nullpo_retr(0, mcd = sd->mcd);
+
+	merc_calc_pos(mcd,sd->bl.x,sd->bl.y,sd->dir);
+	unit_walktoxy(&mcd->bl,mcd->ud.to_x,mcd->ud.to_y);
 	return 0;
 }
 

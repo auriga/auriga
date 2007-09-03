@@ -5057,6 +5057,7 @@ int battle_config_read(const char *cfgName)
 		{ "baby_copy_skilltree",                &battle_config.baby_copy_skilltree,                1        },
 		{ "skill_autospell_delay_enable",       &battle_config.skill_autospell_delay_enable,       1        },
 		{ "bonus_autospell_delay_enable",       &battle_config.bonus_autospell_delay_enable,       1        },
+		{ "merc_speed_is_same_as_pc",           &battle_config.merc_speed_is_same_as_pc,           1        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

@@ -795,6 +795,7 @@ struct merc_data {
 	int str,agi,vit,int_,dex,luk;
 	short atk,matk,def,mdef;
 	short hit,critical,flee,aspd;
+	short attackrange;
 	int target_id;
 	unsigned int skillstatictimer[MAX_HOMSKILL];
 	struct status_change sc_data[MAX_STATUSCHANGE];

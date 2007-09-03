@@ -523,6 +523,8 @@ extern struct Battle_Config {
 	int baby_copy_skilltree;
 	int skill_autospell_delay_enable;
 	int bonus_autospell_delay_enable;
+
+	int merc_speed_is_same_as_pc;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

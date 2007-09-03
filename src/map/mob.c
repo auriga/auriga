@@ -1145,7 +1145,7 @@ int mob_ai_hard_spawn_sub(struct block_list *tbl, va_list ap)
 	sbl  = va_arg(ap, struct block_list*);
 	flag = va_arg(ap, int);
 
-	if( (sbl->type == BL_PC || sbl->type == BL_HOM) && tbl->type == BL_MOB && (md = (struct mob_data *)tbl) ) {
+	if( (sbl->type & (BL_PC| BL_HOM | BL_MERC)) && tbl->type == BL_MOB && (md = (struct mob_data *)tbl) ) {
 		if( flag ) {
 			if( md->ai_pc_count++ == 0 )
 				mob_ai_hard_add( md );
@@ -1154,7 +1154,7 @@ int mob_ai_hard_spawn_sub(struct block_list *tbl, va_list ap)
 				mob_ai_hard_del( md );
 		}
 	}
-	if( sbl->type == BL_MOB && (tbl->type == BL_PC || tbl->type == BL_HOM) && (md = (struct mob_data *)sbl) ) {
+	if( sbl->type == BL_MOB && (tbl->type & (BL_PC | BL_HOM | BL_MERC)) && (md = (struct mob_data *)sbl) ) {
 		if( flag ) {
 			if( md->ai_pc_count++ == 0 )
 				mob_ai_hard_add( md );
@@ -1175,11 +1175,11 @@ int mob_ai_hard_spawn( struct block_list *bl, int flag )
 {
 	nullpo_retr(0, bl);
 
-	if( bl->type == BL_PC || bl->type == BL_MOB || bl->type == BL_HOM ) {
+	if( bl->type == BL_PC || bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC ) {
 		map_foreachinarea( mob_ai_hard_spawn_sub , bl->m,
 			bl->x - AREA_SIZE * 2, bl->y - AREA_SIZE * 2,
 			bl->x + AREA_SIZE * 2, bl->y + AREA_SIZE * 2,
-			(bl->type == BL_MOB ? BL_PC|BL_HOM : BL_MOB), bl, flag
+			(bl->type == BL_MOB ? BL_PC|BL_HOM|BL_MERC : BL_MOB), bl, flag
 		);
 	}
 	return 0;

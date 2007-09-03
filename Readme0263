@@ -1,4 +1,18 @@
 ----------------------------------------
+//0310 [2007/09/04] by Rayce
+
+・傭兵実装準備その３
+	-> 歩行できるように（pc.c, unit.c）
+	-> clif_parse_HomWalkMaster() および clif_parse_HomWalkToXY() をそれぞれ
+	   clif_parse_HomMercWalkMaster() および clif_parse_HomMercWalkToXY() に変更（clif.c, merc.c）
+	   移動系はホムと傭兵で共通のパケットを使うようです
+	-> status_get_***系を一式用意（status.c）
+	-> merc_data構造体に暫定でメンバ attackrange を追加（map.h）
+	-> 傭兵もMOBのAIリンクリストに登録する（merc.c, mob.c, unit.c）
+
+・battle_auriga.confに merc_speed_is_same_as_pc を追加（battle.*, status.c）
+
+----------------------------------------
 //0309 [2007/09/04] by Rayce
 
 ・キャラクターが召喚中の傭兵IDをセーブできるように（char.c）

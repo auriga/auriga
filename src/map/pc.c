@@ -37,6 +37,7 @@
 #include "date.h"
 #include "unit.h"
 #include "ranking.h"
+#include "merc.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -1054,7 +1055,6 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 
 	// 傭兵初期化
 	sd->mcd = NULL;
-	//sd->status.merc_id = 100;
 
 	// ステータス異常の初期化
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
@@ -3828,6 +3828,9 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		if(sd->status.homun_id > 0 && sd->hd) {
 			unit_remove_map(&sd->hd->bl, clrtype&0xffff, !move_flag);
 		}
+		if(sd->status.merc_id > 0 && sd->mcd) {
+			unit_remove_map(&sd->mcd->bl, clrtype&0xffff, !move_flag);
+		}
 		clif_changemap(sd,map[m].name,x,y);
 	}
 	memcpy(sd->mapname,mapname,24);
@@ -3850,6 +3853,13 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		sd->hd->bl.x = sd->hd->ud.to_x = x;
 		sd->hd->bl.y = sd->hd->ud.to_y = y;
 		sd->hd->dir  = sd->dir;
+	}
+	// 傭兵の移動
+	if(sd->status.merc_id > 0 && sd->mcd) {
+		sd->mcd->bl.m = m;
+		sd->mcd->bl.x = sd->mcd->ud.to_x = x;
+		sd->mcd->bl.y = sd->mcd->ud.to_y = y;
+		sd->mcd->dir  = sd->dir;
 	}
 
 	// OnPCMoveMapイベント
@@ -8111,6 +8121,8 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 			intif_save_petdata(sd->status.account_id,&sd->pet);
 		if(sd->status.homun_id > 0 && sd->hd)
 			homun_save_data(sd);
+		if(sd->status.merc_id > 0 && sd->mcd)
+			merc_save_data(sd);
 		chrif_save(sd);
 		if(sd->state.storage_flag == 2)
 			storage_guild_storagesave(sd);
