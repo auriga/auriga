@@ -885,9 +885,7 @@ static int pet_ai_sub_hard_lootsearch(struct block_list *bl,va_list ap)
 	nullpo_retr(0, ap);
 	nullpo_retr(0, pd  = va_arg(ap,struct pet_data *));
 	nullpo_retr(0, itc = va_arg(ap,int *));
-
-	if(bl->type != BL_ITEM || (fitem = (struct flooritem_data *)bl) == NULL)
-		return 0;
+	nullpo_retr(0, fitem = (struct flooritem_data *)bl);
 
 	if(fitem->first_get_id > 0) {
 		struct map_session_data *sd = map_id2sd(fitem->first_get_id);

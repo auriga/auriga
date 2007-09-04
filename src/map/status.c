@@ -6351,7 +6351,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				range = (sc_data[type].val4 == NPC_WIDESIGHT)? 5: 3;
 
 			map_foreachinarea(status_change_timer_sub,
-				bl->m, bl->x-range, bl->y-range, bl->x+range,bl->y+range,0,
+				bl->m, bl->x-range, bl->y-range, bl->x+range,bl->y+range,BL_CHAR,
 				bl,type,tick);
 
 			if((--sc_data[type].val2) > 0) {
@@ -6713,9 +6713,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap )
 	type = va_arg(ap,int);
 	tick = va_arg(ap,unsigned int);
 
-	if(type < 0)
-		return 0;
-	if(bl->type != BL_PC && bl->type != BL_MOB)
+	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC)))
 		return 0;
 
 	opt = status_get_option(bl);

@@ -78,23 +78,22 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 {
 	struct map_session_data *sd;
 	struct npc_data *nd;
+	char name[50];
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
 	nullpo_retr(0, nd = va_arg(ap,struct npc_data *));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	if(bl->type == BL_PC && (sd = (struct map_session_data *)bl)) {
-		char name[50];
+	if(nd->flag&1)	// 無効化されている
+		return 1;
+	//if(sd->areanpc_id == nd->bl.id)
+	//	return 1;
 
-		if(nd->flag&1)	// 無効化されている
-			return 1;
-		//if(sd->areanpc_id == nd->bl.id)
-		//	return 1;
+	sd->areanpc_id = nd->bl.id;
+	sprintf(name, "%s::OnTouch", nd->exname);
+	npc_event(sd,name);
 
-		sd->areanpc_id = nd->bl.id;
-		sprintf(name, "%s::OnTouch", nd->exname);
-		npc_event(sd,name);
-	}
 	return 0;
 }
 

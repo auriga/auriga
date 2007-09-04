@@ -1,4 +1,13 @@
 ----------------------------------------
+//0311 [2007/09/05] by Rayce
+
+・map_foreach系の改善 merged from eA
+　（atcommand.c, clif.c, map.*, mob.c, npc.c, pet.c, script.c, skill.c, status.c, unit.c）
+	BL_CHARおよびBL_ALL追加。
+	map_foreach*** を呼び出す際にBLの型を明示する。
+	呼び出されたサブルーチンにおけるblock_listのprevチェックを省略。
+
+----------------------------------------
 //0310 [2007/09/04] by Rayce
 
 ・傭兵実装準備その３

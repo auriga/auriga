@@ -52,6 +52,9 @@ enum {
 	BL_MERC  = 0x100,
 };
 
+#define BL_CHAR (BL_PC | BL_MOB | BL_HOM | BL_MERC)
+#define BL_ALL 0xfff
+
 enum {
 	WARP = 1,
 	SHOP,

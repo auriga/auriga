@@ -2115,17 +2115,17 @@ atcommand_monster(
  */
 static int atkillmonster_sub(struct block_list *bl,va_list ap)
 {
-	struct mob_data *md = NULL;
+	struct mob_data *md;
 	int flag = va_arg(ap, int);
 
 	nullpo_retr(0, bl);
+	nullpo_retr(0, md = (struct mob_data *)bl);
 
-	if(bl->type == BL_MOB && (md = (struct mob_data *)bl)) {
-		if (flag)
-			mob_damage(NULL, md, md->hp, 2);
-		else
-			unit_remove_map(&md->bl, 1, 0);
-	}
+	if (flag)
+		mob_damage(NULL, md, md->hp, 2);
+	else
+		unit_remove_map(&md->bl, 1, 0);
+
 	return 0;
 }
 
@@ -4243,7 +4243,7 @@ static int atmobsearch_sub(struct block_list *bl,va_list ap)
 {
 	int mob_id,fd;
 	static int number=0;
-	struct mob_data *md=NULL;
+	struct mob_data *md;
 	char output[128];
 
 	nullpo_retr(0, bl);
@@ -4253,10 +4253,8 @@ static int atmobsearch_sub(struct block_list *bl,va_list ap)
 		return 0;
 	}
 	mob_id = va_arg(ap,int);
-	fd = va_arg(ap,const int);
-
-	if(bl->type == BL_MOB)
-		md = (struct mob_data *)bl;
+	fd     = va_arg(ap,const int);
+	md     = (struct mob_data *)bl;
 
 	if (!md || !fd)
 		return 0;
@@ -4336,11 +4334,7 @@ static int atcommand_cleanmap_sub(struct block_list *bl,va_list ap)
 	struct flooritem_data *fitem = NULL;
 
 	nullpo_retr(0, bl);
-
-	if(bl->type == BL_ITEM)
-		fitem = (struct flooritem_data *)bl;
-	if(fitem == NULL)
-		return 1;
+	nullpo_retr(0, fitem = (struct flooritem_data *)bl);
 
 	delete_timer(fitem->cleartimer,map_clearflooritem_timer);
 	if(fitem->item_data.card[0] == (short)0xff00)

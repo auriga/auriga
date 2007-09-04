@@ -1444,7 +1444,7 @@ static int skill_area_sub( struct block_list *bl,va_list ap )
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
 
-	if(unit_bl2ud(bl) == NULL && bl->type!=BL_SKILL)
+	if(!(bl->type & (BL_CHAR | BL_SKILL)))
 		return 0;
 
 	src=va_arg(ap,struct block_list *); // ここではsrcの値を参照していないのでNULLチェックはしない
@@ -1468,12 +1468,8 @@ static int skill_area_trap_sub( struct block_list *bl,va_list ap )
 	SkillFunc func;
 
 	nullpo_retr(0, bl);
-
-	if(bl->prev == NULL || bl->type != BL_SKILL)
-		return 0;
-
-	nullpo_retr(0, unit = (struct skill_unit *)bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, unit = (struct skill_unit *)bl);
 
 	if(!unit->alive || !unit->group)
 		return 0;
@@ -1516,13 +1512,9 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 	int skillid,ug_id;
 
 	nullpo_retr(0, bl);
-
-	if (bl->prev==NULL || bl->type!=BL_SKILL)
-		return 0;
-
-	nullpo_retr(0, unit = (struct skill_unit *)bl);
 	nullpo_retr(0, ap);
 	nullpo_retr(0, c = va_arg(ap,int *));
+	nullpo_retr(0, unit = (struct skill_unit *)bl);
 
 	if (!unit->alive || !unit->group)
 		return 0;
@@ -1593,10 +1585,10 @@ static int skill_check_unit_range2_sub( struct block_list *bl,va_list ap )
 	nullpo_retr(0, ap);
 	nullpo_retr(0, c = va_arg(ap,int *));
 
-	if(bl->prev == NULL || (bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_HOM))
+	if(!(bl->type & BL_CHAR))
 		return 0;
 
-	if(bl->type == BL_PC && unit_isdead(bl))
+	if(unit_isdead(bl))
 		return 0;
 
 	skillid = va_arg(ap,int);
@@ -1622,7 +1614,7 @@ static int skill_check_unit_range2(int m,int x,int y,int skillid, int skilllv)
 	// とりあえず正方形のユニットレイアウトのみ対応
 	range += layout_type;
 	map_foreachinarea(skill_check_unit_range2_sub,m,
-			x-range,y-range,x+range,y+range,0,&c,skillid);
+			x-range,y-range,x+range,y+range,BL_CHAR,&c,skillid);
 
 	return c;
 }
@@ -1779,7 +1771,7 @@ static int skill_timerskill(int tid, unsigned int tick, int id,int data )
 			case DC_SCREAM:				/* スクリーム */
 				range=AREA_SIZE;		// 視界全体
 				map_foreachinarea(skill_frostjoke_scream,src->m,src->x-range,src->y-range,
-					src->x+range,src->y+range,0,src,skl->skill_id,skl->skill_lv,tick);
+					src->x+range,src->y+range,BL_CHAR,src,skl->skill_id,skl->skill_lv,tick);
 				break;
 			case WZ_WATERBALL:
 				if (skl->type>1) {
@@ -1804,7 +1796,7 @@ static int skill_timerskill(int tid, unsigned int tick, int id,int data )
 				skill_area_temp[2] = skl->x;
 				skill_area_temp[3] = skl->y;
 				map_foreachinarea(skill_area_sub,skl->map,
-					skl->x-range,skl->y-range,skl->x+range,skl->y+range,0,
+					skl->x-range,skl->y-range,skl->x+range,skl->y+range,BL_CHAR,
 					src,skl->skill_id,skl->skill_lv,tick,skl->flag|BCT_ENEMY|2,
 					skill_castend_nodamage_id);
 				break;
@@ -2309,7 +2301,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		} else {
 			skill_area_temp[1]=src->id;
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-2,src->y-2,src->x+2,src->y+2,0,
+				src->m,src->x-2,src->y-2,src->x+2,src->y+2,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 			clif_skill_nodamage(src,src,skillid,skilllv,1);
@@ -2337,7 +2329,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				break;
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,skill_area_temp[2]-1,skill_area_temp[3]-1,skill_area_temp[2]+1,skill_area_temp[3]+1,0,
+				bl->m,skill_area_temp[2]-1,skill_area_temp[3]-1,skill_area_temp[2]+1,skill_area_temp[3]+1,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2403,7 +2395,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					skill_area_temp[3] = bl->y;
 					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 					map_foreachinarea(skill_area_sub,
-						src->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,0,
+						src->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),
 						src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 						skill_castend_damage_id);
 				}
@@ -2541,7 +2533,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[2] = src->x;
 			skill_area_temp[3] = src->y;
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-2,src->y-2,src->x+2,src->y+2,0,
+				src->m,src->x-2,src->y-2,src->x+2,src->y+2,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2558,7 +2550,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2569,7 +2561,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}else{
 			int ar=2;
 			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2586,7 +2578,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 			map_foreachinarea(skill_area_trap_sub,
@@ -2615,7 +2607,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					skill_castend_damage_id);
 			}else{
 				map_foreachinarea(skill_area_sub,
-					bl->m,x-ar,y-ar,x+ar,y+ar,0,
+					bl->m,x-ar,y-ar,x+ar,y+ar,(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 					skill_castend_damage_id);
 			}
@@ -2657,7 +2649,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,x-1,y-1,x+1,y+1,0,
+				bl->m,x-1,y-1,x+1,y+1,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2684,7 +2676,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_blown(src,bl,(dir<<20)|SAB_NODAMAGE|1);
 				skill_area_temp[0]=0;
 				map_foreachinarea(skill_area_sub,
-					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
+					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick, flag|BCT_ENEMY ,
 					skill_area_sub_count);
 				if(skill_area_temp[0]>1) break;
@@ -2693,15 +2685,14 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[1]=bl->id;
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
+				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
 		break;
 	case MO_BALKYOUNG:
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
-		map_foreachinarea(skill_balkyoung,
-				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,src,bl);
+		map_foreachinarea(skill_balkyoung,bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),src,bl);
 		break;
 	case KN_SPEARSTAB:		/* スピアスタブ */
 		if(flag&1){
@@ -2723,7 +2714,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			if (battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0))
 				skill_blown(src,bl,skill_area_temp[2]);
 			for (i=0;i<4;i++) {
-				map_foreachinarea(skill_area_sub,bl->m,x,y,x,y,0,
+				map_foreachinarea(skill_area_sub,bl->m,x,y,x,y,(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 					skill_castend_damage_id);
 				x += dirx[dir];
@@ -2740,7 +2731,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			int dir = map_calc_dir(src,bl->x,bl->y);
 			skill_area_temp[1] = 0;
 			map_foreachinshootpath(
-				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],12,1,0,
+				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],12,1,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
 			);
 			if(skill_area_temp[1] == 0) {
@@ -2758,7 +2749,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[1] = bl->id;
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
 			map_foreachinarea(skill_area_sub,
-				src->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				src->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2771,13 +2762,13 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[0] = 0;
 			skill_area_temp[1] = bl->id;
 			map_foreachinarea(skill_area_sub,
-					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
+					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick,flag|BCT_ENEMY,
 					skill_area_sub_count);
 			if( !battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]|(is_enemy ? 0 : 0x01000000)) )
 				break;
 			map_foreachinarea(skill_area_sub,
-					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
+					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 					skill_castend_damage_id);
 		}
@@ -2791,11 +2782,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[0] = 0;
 			skill_area_temp[1] = bl->id;
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,0,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick,flag|BCT_ENEMY,
 				skill_area_sub_count);
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,0,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2810,7 +2801,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		} else {
 			int dir = map_calc_dir(src,bl->x,bl->y);
 			map_foreachinshootpath(
-				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],14,4,0,
+				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],14,4,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
 			);
 		}
@@ -2826,7 +2817,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[1] = bl->id;
 			skill_area_temp[2] = skill_get_blewcount(skillid,skilllv);
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-7,src->y-7,src->x+7,src->y+7,0,
+				src->m,src->x-7,src->y-7,src->x+7,src->y+7,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2840,7 +2831,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		} else {
 			skill_area_temp[1] = bl->id;
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-14,src->y-14,src->x+14,src->y+14,0,
+				src->m,src->x-14,src->y-14,src->x+14,src->y+14,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2969,7 +2960,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					ar = 1;
 					/* ナパームビート・ナパームバルカンは分散ダメージなので敵の数を数える */
 					map_foreachinarea(skill_area_sub,
-							bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+							bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 							src,skillid,skilllv,tick,flag|BCT_ENEMY,
 							skill_area_sub_count);
 					break;
@@ -3011,7 +3002,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			}
 			/* ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-					bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+					bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 					skill_castend_damage_id);
 		}
@@ -3024,8 +3015,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			int dir = map_calc_dir(src,bl->x,bl->y);
 			skill_area_temp[1] = 0;
 			map_foreachinshootpath(
-				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],skill_get_fixed_range(src,skillid,skilllv),1,0,
-				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
+				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],skill_get_fixed_range(src,skillid,skilllv),1,
+				(BL_CHAR|BL_SKILL),src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
 			);
 			if(skill_area_temp[1] == 0) {
 				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
@@ -3042,14 +3033,14 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[0]=0;
 			skill_area_temp[1]=bl->id;
 			if(flag&0xf00000) {
-				map_foreachinarea(skill_area_sub,bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
-					src,skillid,skilllv,tick, flag|BCT_ENEMY ,skill_area_sub_count);
+				map_foreachinarea(skill_area_sub,bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
+					src,skillid,skilllv,tick, flag|BCT_ENEMY,skill_area_sub_count);
 			}
 			/* まずターゲットに攻撃を加える */
 			battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]|(flag&0xf00000));
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
+				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 			map_foreachinarea(skill_area_trap_sub,
@@ -3134,7 +3125,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_area_temp[2] = md->hp;
 				clif_skill_nodamage(src,src,NPC_SELFDESTRUCTION,-1,1);
 				map_foreachinarea(skill_area_sub,
-					bl->m,bl->x-5,bl->y-5,bl->x+5,bl->y+5,0,
+					bl->m,bl->x-5,bl->y-5,bl->x+5,bl->y+5,(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick, flag|BCT_ALL|1,
 					skill_castend_damage_id);
 				mob_damage(NULL,md,md->hp,0);
@@ -3197,7 +3188,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				int ar=sd->splash_range;
 				skill_area_temp[1]=bl->id;
 				map_foreachinarea(skill_area_sub,
-					bl->m, bl->x - ar, bl->y - ar, bl->x + ar, bl->y + ar, 0,
+					bl->m, bl->x - ar, bl->y - ar, bl->x + ar, bl->y + ar, (BL_CHAR|BL_SKILL),
 					src, skillid, skilllv, tick, flag | BCT_ENEMY | 1,
 					skill_castend_damage_id);
 			}
@@ -3447,7 +3438,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			const int range = AREA_SIZE;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-range,src->y-range,src->x+range,src->y+range,0,
+				src->m,src->x-range,src->y-range,src->x+range,src->y+range,BL_CHAR,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_nodamage_id);
 		}
@@ -3911,7 +3902,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 			map_foreachinarea( status_change_timer_sub,
-				src->m, src->x-range, src->y-range, src->x+range,src->y+range,0,
+				src->m, src->x-range, src->y-range, src->x+range,src->y+range,BL_CHAR,
 				src,SkillStatusChangeTable[skillid],tick);
 		}
 		break;
@@ -4123,7 +4114,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case RG_RAID:			/* サプライズアタック */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		map_foreachinarea(skill_area_sub,
-			bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,0,
+			bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
 			src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 			skill_castend_damage_id);
 		status_change_end(src, SC_HIDING, -1);	// ハイディング解除
@@ -4131,7 +4122,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case ASC_METEORASSAULT:	/* メテオアサルト */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		map_foreachinarea(skill_area_sub,
-			bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,0,
+			bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),
 			src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 			skill_castend_damage_id);
 		break;
@@ -4148,7 +4139,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(skilllv == 10){
 				for(c=1;c<4;c++){
 					map_foreachinarea(skill_area_sub,
-						bl->m,tc.val1[c],tc.val2[c],tc.val1[c],tc.val2[c],0,
+						bl->m,tc.val1[c],tc.val2[c],tc.val1[c],tc.val2[c],(BL_CHAR|BL_SKILL),
 						src,skillid,skilllv,tick, flag|BCT_ENEMY|n,
 						skill_castend_damage_id);
 				}
@@ -4165,7 +4156,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(skilllv > 3){
 				for(c=0;c<5;c++){
 					map_foreachinarea(skill_area_sub,
-						bl->m,tc.val1[c],tc.val2[c],tc.val1[c],tc.val2[c],0,
+						bl->m,tc.val1[c],tc.val2[c],tc.val1[c],tc.val2[c],(BL_CHAR|BL_SKILL),
 						src,skillid,skilllv,tick, flag|BCT_ENEMY|n,
 						skill_castend_damage_id);
 					if(skilllv > 6 && n==3 && c==4){
@@ -4178,7 +4169,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			for(c=0;c<10;c++){
 				if(c==0||c==5) skill_brandishspear_dir(&tc,dir,-1);
 				map_foreachinarea(skill_area_sub,
-					bl->m,tc.val1[c%5],tc.val2[c%5],tc.val1[c%5],tc.val2[c%5],0,
+					bl->m,tc.val1[c%5],tc.val2[c%5],tc.val1[c%5],tc.val2[c%5],(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 					skill_castend_damage_id);
 			}
@@ -5780,7 +5771,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			//clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_nodamage_id);
 		}
@@ -5792,7 +5783,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		} else {
 			int ar = skilllv * 3 - 1;
 			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,0,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_nodamage_id);
 		}
@@ -5969,7 +5960,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		skill_area_temp[2] = x;
 		skill_area_temp[3] = y;
 		map_foreachinarea(skill_area_sub,
-			src->m,x-1,y-1,x+1,y+1,0,
+			src->m,x-1,y-1,x+1,y+1,(BL_CHAR|BL_SKILL),
 			src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 			skill_castend_damage_id);
 		map_foreachinarea(skill_area_trap_sub,
@@ -5985,7 +5976,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			src,skillid,skilllv,tick, flag|BCT_ALL|1,
 			skill_castend_nodamage_id);
 		map_foreachinarea(skill_area_sub,
-			src->m,x-1,y-1,x+1,y+1,0,
+			src->m,x-1,y-1,x+1,y+1,BL_CHAR,
 			src,skillid,skilllv,tick, flag|BCT_ALL|1,
 			skill_castend_damage_id);
 		break;
@@ -5995,7 +5986,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 
 	case HT_DETECTING:				/* ディテクティング */
-		map_foreachinarea(status_change_timer_sub,src->m,x-3,y-3,x+3,y+3,0,src,SC_SIGHT,tick);
+		map_foreachinarea(status_change_timer_sub,src->m,x-3,y-3,x+3,y+3,BL_CHAR,src,SC_SIGHT,tick);
 		break;
 
 	case WZ_ICEWALL:			/* アイスウォール */
@@ -6209,7 +6200,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 			if(sd->potion_hp > 0) {
 				map_foreachinarea(skill_area_sub,
-					src->m,x-3,y-3,x+3,y+3,0,
+					src->m,x-3,y-3,x+3,y+3,BL_CHAR,
 					src,skillid,skilllv,tick,flag|BCT_PARTY|1,
 					skill_castend_nodamage_id);
 			}
@@ -6599,9 +6590,9 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			unit->limit=limit;
 			unit->range=range;
 			if (range==0)
-				map_foreachinarea(skill_unit_effect,unit->bl.m
-					,unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y
-					,0,&unit->bl,gettick(),1);
+				map_foreachinarea(skill_unit_effect,unit->bl.m,
+					unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,
+					(BL_PC|BL_MOB|BL_MERC),&unit->bl,gettick(),1);
 		}
 	}
 
@@ -6839,10 +6830,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	nullpo_retr(0, src);
 	nullpo_retr(0, bl);
 
-	if (bl->type!=BL_PC && bl->type!=BL_MOB)
-		return 0;
-
-	if (bl->prev==NULL || !src->alive || unit_isdead(bl))
+	if (!src->alive || unit_isdead(bl))
 		return 0;
 
 	nullpo_retr(0, sg=src->group);
@@ -6972,7 +6960,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			if(sg->skill_lv>5)
 				i += 2;
 			map_foreachinarea(battle_skill_attack_area,src->bl.m,src->bl.x-i,src->bl.y-i,src->bl.x+i,src->bl.y+i,0,
-				BF_MAGIC,ss,&src->bl,sg->skill_id,sg->skill_lv,tick,0,BCT_ENEMY);
+				BF_MAGIC,ss,&src->bl,sg->skill_id,sg->skill_lv,tick,(BL_CHAR|BL_SKILL),BCT_ENEMY);
 		}
 		break;
 	case UNT_SKIDTRAP:	/* スキッドトラップ */
@@ -7013,14 +7001,14 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			// サンドマンとクレイモアは効果範囲を1セル広げる
 			if(sg->unit_id == UNT_SANDMAN || sg->unit_id == UNT_CLAYMORETRAP)
 				i++;
-			map_foreachinarea(skill_count_target,src->bl.m
-						,src->bl.x-i,src->bl.y-i
-						,src->bl.x+i,src->bl.y+i
-						,0,src,&splash_count);
-			map_foreachinarea(skill_trap_splash,src->bl.m
-						,src->bl.x-i,src->bl.y-i
-						,src->bl.x+i,src->bl.y+i
-						,0,src,tick,splash_count);
+			map_foreachinarea(skill_count_target,src->bl.m,
+						src->bl.x-i,src->bl.y-i,
+						src->bl.x+i,src->bl.y+i,
+						(BL_CHAR|BL_SKILL),src,&splash_count);
+			map_foreachinarea(skill_trap_splash,src->bl.m,
+						src->bl.x-i,src->bl.y-i,
+						src->bl.x+i,src->bl.y+i,
+						(BL_CHAR|BL_SKILL),src,tick,splash_count);
 			sg->unit_id = UNT_USED_TRAPS;
 			clif_changelook(&src->bl,LOOK_BASE,sg->unit_id);
 			sg->limit=DIFF_TICK(tick,sg->tick)+1500;
@@ -7409,7 +7397,6 @@ static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigne
 
 /*==========================================
  * スキルユニット効果発動/離脱処理(foreachinarea)
- *	bl: ユニット(BL_PC/BL_MOB)
  *------------------------------------------
  */
 static int skill_unit_effect(struct block_list *bl,va_list ap)
@@ -7422,18 +7409,17 @@ static int skill_unit_effect(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, unit=va_arg(ap,struct skill_unit*));
+	nullpo_retr(0, unit = va_arg(ap,struct skill_unit*));
+	nullpo_retr(0, group = unit->group);
 
 	tick = va_arg(ap,unsigned int);
 	flag = va_arg(ap,unsigned int);
 
-	if (bl->type!=BL_PC && bl->type!=BL_MOB)
+	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC)))
 		return 0;
 
-	if (!unit->alive || bl->prev==NULL)
+	if(!unit->alive)
 		return 0;
-
-	nullpo_retr(0, group=unit->group);
 
 	if (flag) {
 		skill_unit_onplace(unit,bl,tick);
@@ -9612,11 +9598,11 @@ static int skill_gangster_count(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	sd=(struct map_session_data*)bl;
-	c=va_arg(ap,int *);
+	c = va_arg(ap,int *);
 
-	if(sd && c && pc_issit(sd) && pc_checkskill(sd,RG_GANGSTER) > 0)
+	if(pc_issit(sd) && pc_checkskill(sd,RG_GANGSTER) > 0)
 		(*c)++;
 	return 0;
 }
@@ -9627,10 +9613,10 @@ static int skill_gangster_in(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	sd=(struct map_session_data*)bl;
-	if(sd && pc_issit(sd) && pc_checkskill(sd,RG_GANGSTER) > 0)
-		sd->state.gangsterparadise=1;
+	if(pc_issit(sd) && pc_checkskill(sd,RG_GANGSTER) > 0)
+		sd->state.gangsterparadise = 1;
 	return 0;
 }
 
@@ -9641,14 +9627,14 @@ static int skill_gangster_out(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	sd=(struct map_session_data*)bl;
-	if(sd && sd->state.gangsterparadise){
+	if(sd->state.gangsterparadise) {
 		map_foreachinarea(skill_gangster_count,bl->m,
 			bl->x-1,bl->y-1,
 			bl->x+1,bl->y+1,BL_PC,&c);
 		if(c < 2)
-			sd->state.gangsterparadise=0;
+			sd->state.gangsterparadise = 0;
 	}
 	return 0;
 }
@@ -9683,6 +9669,7 @@ int skill_gangsterparadise(struct map_session_data *sd ,int type)
 	}
 	return 0;
 }
+
 /*==========================================
  * 寒いジョーク・スクリーム判定処理(foreachinarea)
  *------------------------------------------
@@ -9806,6 +9793,7 @@ static int skill_clear_element_field(struct block_list *bl)
 	}
 	return 0;
 }
+
 /*==========================================
  * ランドプロテクターチェック(foreachinarea)
  *------------------------------------------
@@ -9818,11 +9806,10 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, unit = (struct skill_unit *)bl);
 
-	skillid=va_arg(ap,int);
-	alive=va_arg(ap,int *);
-	if((unit=(struct skill_unit *)bl) == NULL)
-		return 0;
+	skillid = va_arg(ap,int);
+	alive   = va_arg(ap,int *);
 
 	if(skillid==SA_LANDPROTECTOR){
 		if(alive && unit->group->skill_id==SA_LANDPROTECTOR)
@@ -9848,6 +9835,7 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 	}
 	return 0;
 }
+
 /*==========================================
  * レディムプティオ
  *------------------------------------------
@@ -9859,8 +9847,8 @@ static int skill_redemptio(struct block_list *bl, va_list ap )
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-
 	nullpo_retr(0, src=va_arg(ap,struct block_list*));
+
 	count=va_arg(ap,int *);
 
 	if(unit_isdead(bl) && status_get_party_id(src) == status_get_party_id(bl))
@@ -9872,6 +9860,7 @@ static int skill_redemptio(struct block_list *bl, va_list ap )
 
 	return 0;
 }
+
 /*==========================================
  * イドゥンの林檎の回復処理(foreachinarea)
  *------------------------------------------
@@ -10187,7 +10176,6 @@ int skill_check_cloaking(struct block_list *bl)
 /*==========================================
  * 演奏/ダンスをやめる
  * flag 1で合奏中なら相方にユニットを任せる
- *
  *------------------------------------------
  */
 void skill_stop_dancing(struct block_list *src, int flag)
@@ -10266,6 +10254,7 @@ void skill_stop_gravitation(struct block_list *src)
 	skill_delunitgroup(group);
 
 }
+
 /*==========================================
  * スキルユニット初期化
  *------------------------------------------
@@ -10307,11 +10296,10 @@ int skill_delunit(struct skill_unit *unit)
 	struct skill_unit_group *group;
 
 	nullpo_retr(0, unit);
+	nullpo_retr(0, group = unit->group);
 
 	if(!unit->alive)
 		return 0;
-
-	nullpo_retr(0, group=unit->group);
 
 	/* onlimitイベント呼び出し */
 	skill_unit_onlimit(unit,gettick());
@@ -10319,7 +10307,7 @@ int skill_delunit(struct skill_unit *unit)
 	/* onoutイベント呼び出し */
 	if (!unit->range) {
 		map_foreachinarea(skill_unit_effect,unit->bl.m,
-			unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,0,
+			unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,(BL_PC|BL_MOB|BL_MERC),
 			&unit->bl,gettick(),0);
 	}
 
@@ -10395,7 +10383,7 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 int skill_delunitgroup(struct skill_unit_group *group)
 {
 	struct block_list *src;
-	struct unit_data  *ud;
+	struct unit_data  *ud = NULL;
 	int i;
 
 	nullpo_retr(0, group);
@@ -10404,7 +10392,8 @@ int skill_delunitgroup(struct skill_unit_group *group)
 		return 0;
 
 	src = map_id2bl(group->src_id);
-	ud  = unit_bl2ud( src );
+	if(src)
+		ud = unit_bl2ud(src);
 
 	// ダンススキルはダンス状態を解除する
 	if (skill_get_unit_flag(group->skill_id)&UF_DANCE) {
@@ -10464,11 +10453,12 @@ int skill_delunitgroup(struct skill_unit_group *group)
  */
 int skill_clear_unitgroup(struct block_list *src)
 {
-	struct skill_unit_group *group = NULL;
-	struct unit_data        *ud    = unit_bl2ud( src );
-	struct linkdb_node      *node, *node2;
+	struct skill_unit_group *group;
+	struct unit_data *ud;
+	struct linkdb_node *node, *node2;
 
-	nullpo_retr(0, ud);
+	nullpo_retr(0, src);
+	nullpo_retr(0, ud = unit_bl2ud(src));
 
 	node = ud->skillunit;
 	while( node ) {
@@ -10479,6 +10469,7 @@ int skill_clear_unitgroup(struct block_list *src)
 		node = node2;
 	}
 	linkdb_final( &ud->skillunit );
+
 	return 0;
 }
 
@@ -10494,16 +10485,16 @@ static int skill_unit_timer_sub_onplace(struct block_list *bl, va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, unit = va_arg(ap,struct skill_unit *));
+	nullpo_retr(0, group = unit->group);
 
-	unit = va_arg(ap,struct skill_unit *);
 	tick = va_arg(ap,unsigned int);
 
-	if (bl->type!=BL_PC && bl->type!=BL_MOB)
-		return 0;
-	if (!unit || !unit->alive || bl->prev==NULL)
+	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC)))
 		return 0;
 
-	nullpo_retr(0, group=unit->group);
+	if(!unit->alive)
+		return 0;
 
 	if (battle_check_target(&unit->bl,bl,group->target_flag)<=0)
 		return 0;
@@ -10530,20 +10521,20 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, unit=(struct skill_unit *)bl);
+	nullpo_retr(0, unit = (struct skill_unit *)bl);
+	nullpo_retr(0, group = unit->group);
 
-	tick=va_arg(ap,unsigned int);
+	tick = va_arg(ap,unsigned int);
 
 	if(!unit->alive)
 		return 0;
 
-	nullpo_retr(0, group=unit->group);
 	range = unit->range;
 
 	/* onplace_timerイベント呼び出し */
 	if (range>=0 && group->interval!=-1) {
 		map_foreachinarea(skill_unit_timer_sub_onplace, bl->m,
-			bl->x-range,bl->y-range,bl->x+range,bl->y+range,0,bl,tick);
+			bl->x-range,bl->y-range,bl->x+range,bl->y+range,(BL_PC|BL_MOB|BL_MERC),unit,tick);
 		if (!unit->alive)
 			return 0;
 		// マグヌスは発動したユニットは削除する
@@ -10653,15 +10644,15 @@ static int skill_hermode_wp_check_sub(struct block_list *bl, va_list ap )
 	struct npc_data *nd = NULL;
 
 	nullpo_retr(0, bl);
+	nullpo_retr(0, nd = (struct npc_data *)bl);
 
 	flag = va_arg(ap,int*);
-	if(*flag == 1)
+	if(*flag)
 		return 1;
 
-	if(bl->type == BL_NPC && (nd = (struct npc_data *)bl) != NULL) {
-		if(nd->bl.subtype == WARP || (nd->bl.subtype == SCRIPT && nd->class_ == WARP_CLASS))
-			*flag = 1;
-	}
+	if(nd->bl.subtype == WARP || (nd->bl.subtype == SCRIPT && nd->class_ == WARP_CLASS))
+		*flag = 1;
+
 	return *flag;
 }
 
@@ -10738,21 +10729,15 @@ static int skill_unit_move_sub(struct block_list *bl, va_list ap)
 	int flag;
 
 	nullpo_retr(0, bl);
-	nullpo_retr(0, unit = (struct skill_unit *)bl);
 	nullpo_retr(0, ap);
 	nullpo_retr(0, target = va_arg(ap,struct block_list*));
+	nullpo_retr(0, unit = (struct skill_unit *)bl);
+	nullpo_retr(0, group = unit->group);
 
 	tick = va_arg(ap,unsigned int);
 	flag = va_arg(ap,int);
 
-	if (target->type!=BL_PC && target->type!=BL_MOB)
-		return 0;
-
-	nullpo_retr(0, group=unit->group);
-	if (group->interval!=-1)
-		return 0;
-
-	if (!unit || !unit->alive || target->prev==NULL)
+	if(!unit->alive || group->interval != -1)
 		return 0;
 
 	if (flag)
@@ -10771,13 +10756,15 @@ static int skill_unit_move_sub(struct block_list *bl, va_list ap)
  */
 int skill_unit_move(struct block_list *bl,unsigned int tick,int flag)
 {
-	nullpo_retr(0,bl);
+	nullpo_retr(0, bl);
 
-	if (bl->prev==NULL)
+	if(bl->prev == NULL)
 		return 0;
 
-	map_foreachinarea(skill_unit_move_sub,
-			bl->m,bl->x,bl->y,bl->x,bl->y,BL_SKILL,bl,tick,flag);
+	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_MERC)
+		return 0;
+
+	map_foreachinarea(skill_unit_move_sub,bl->m,bl->x,bl->y,bl->x,bl->y,BL_SKILL,bl,tick,flag);
 
 	return 0;
 }
@@ -10886,7 +10873,7 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 		if (!(m_flag[i]&0x2)) {
 			// 移動後の場所でスキルユニットを発動
 			map_foreachinarea(skill_unit_effect,unit1->bl.m,
-				unit1->bl.x,unit1->bl.y,unit1->bl.x,unit1->bl.y,0,
+				unit1->bl.x,unit1->bl.y,unit1->bl.x,unit1->bl.y,(BL_PC|BL_MOB|BL_MERC),
 				&unit1->bl,tick,1);
 		}
 	}
@@ -11835,26 +11822,22 @@ int skill_fail_weaponrefine(struct map_session_data *sd,int idx)
  */
 static int skill_greed( struct block_list *bl,va_list ap )
 {
-	struct map_session_data *sd = NULL;
-	struct flooritem_data *fitem = NULL;
-	struct party *p = NULL;
+	struct map_session_data *sd;
+	struct flooritem_data *fitem;
+	struct party *p;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, sd = va_arg(ap,struct map_session_data *));
+	nullpo_retr(0, fitem = (struct flooritem_data *)bl);
 
 	p = va_arg(ap,struct party *);
-
-	if(bl->type == BL_ITEM)
-		fitem = (struct flooritem_data *)bl;
-	if(fitem == NULL)
-		return 0;
 
 	pc_takeitem_sub(p, sd, fitem);
 	return 0;
 }
 
 /*==========================================
- * 気爆発
+ * 寸勁
  *------------------------------------------
  */
 static int skill_balkyoung( struct block_list *bl,va_list ap )
@@ -11867,8 +11850,9 @@ static int skill_balkyoung( struct block_list *bl,va_list ap )
 	nullpo_retr(0, src = va_arg(ap,struct block_list *));
 	nullpo_retr(0, tbl = va_arg(ap,struct block_list *));
 
-	if(bl->type!=BL_PC && bl->type!=BL_MOB)
+	if(!(bl->type & (BL_CHAR | BL_SKILL)))
 		return 0;
+
 	// 本人には適用しない?
 	if(bl->id == tbl->id)
 		return 0;

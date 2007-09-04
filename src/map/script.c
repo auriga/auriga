@@ -4357,12 +4357,12 @@ static int buildin_areawarp_sub(struct block_list *bl,va_list ap)
 	char *mapname;
 	struct map_session_data *sd;
 
-	mapname=va_arg(ap, char *);
-	x=va_arg(ap,int);
-	y=va_arg(ap,int);
+	nullpo_retr(0, bl);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	if((sd=(struct map_session_data *)bl) == NULL)
-		return 0;
+	mapname = va_arg(ap, char *);
+	x = va_arg(ap,int);
+	y = va_arg(ap,int);
 
 	if(strcmp(mapname,"Random")==0)
 		pc_randomwarp(sd,3);
@@ -6483,10 +6483,8 @@ static int buildin_killmonster_sub(struct block_list *bl,va_list ap)
 	char *event=va_arg(ap,char *);
 	int allflag=va_arg(ap,int);
 
-	if(bl->type == BL_MOB)
-		md = (struct mob_data *)bl;
-	if(md == NULL)
-		return 0;
+	nullpo_retr(0, bl);
+	nullpo_retr(0, md = (struct mob_data *)bl);
 
 	if(!allflag) {
 		if(strcmp(event,md->npc_event) == 0)
@@ -6784,10 +6782,12 @@ static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 	char *str,*color;
 	int len,flag;
 
-	str=va_arg(ap,char *);
-	len=va_arg(ap,int);
-	flag=va_arg(ap,int);
-	color=va_arg(ap,char *);
+	nullpo_retr(0, bl);
+
+	str   = va_arg(ap,char *);
+	len   = va_arg(ap,int);
+	flag  = va_arg(ap,int);
+	color = va_arg(ap,char *);
 
 	if(color)
 		clif_announce(bl,str,len,strtoul(color,NULL,0),flag|3);
@@ -6835,7 +6835,7 @@ int buildin_areaannounce(struct script_state *st)
 
 	m = script_mapname2mapid(st,map);
 	if(m >= 0)
-		map_foreachinarea(buildin_mapannounce_sub,m,x0,y0,x1,y1,BL_PC, str,strlen(str)+1,flag&0x10,color);
+		map_foreachinarea(buildin_mapannounce_sub,m,x0,y0,x1,y1,BL_PC,str,strlen(str)+1,flag&0x10,color);
 	return 0;
 }
 
@@ -6948,10 +6948,13 @@ static int buildin_getareadropitem_sub(struct block_list *bl,va_list ap)
 {
 	int item=va_arg(ap,int);
 	int *amount=va_arg(ap,int *);
-	struct flooritem_data *drop=(struct flooritem_data *)bl;
+	struct flooritem_data *fitem;
 
-	if(drop->item_data.nameid==item)
-		(*amount)+=drop->item_data.amount;
+	nullpo_retr(0, bl);
+	nullpo_retr(0, fitem = (struct flooritem_data *)bl);
+
+	if(fitem->item_data.nameid == item)
+		(*amount) += fitem->item_data.amount;
 
 	return 0;
 }
@@ -8095,6 +8098,8 @@ static int buildin_maprespawnguildid_sub(struct block_list *bl,va_list ap)
 	int g_id = va_arg(ap,int);
 	int flag = va_arg(ap,int);
 
+	nullpo_retr(0, bl);
+
 	if(bl->type == BL_PC && flag&3) {
 		struct map_session_data *sd = (struct map_session_data *)bl;
 		if(sd) {
@@ -8849,6 +8854,8 @@ static int buildin_misceffect_sub(struct block_list *bl,va_list ap)
 {
 	int type = va_arg(ap,int);
 
+	nullpo_retr(0, bl);
+
 	clif_misceffect3(bl,type);
 	return 0;
 }
@@ -8899,12 +8906,15 @@ int buildin_soundeffect(struct script_state *st)
  */
 static int buildin_soundeffect_sub(struct block_list *bl,va_list ap)
 {
+	struct map_session_data *sd;
 	char *name = va_arg(ap,char *);
 	int type   = va_arg(ap,int);
-	struct map_session_data *sd = (struct map_session_data *)bl;
 
-	if(sd)
-		clif_soundeffect(sd,bl,name,type);
+	nullpo_retr(0, bl);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
+
+	clif_soundeffect(sd,bl,name,type);
+
 	return 0;
 }
 

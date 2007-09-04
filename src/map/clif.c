@@ -1938,12 +1938,15 @@ int clif_fixpos(struct block_list *bl)
  */
 static int clif_fixpos2_sub(struct block_list *bl, va_list ap)
 {
+	struct map_session_data *sd;
 	struct block_list *src_bl = va_arg(ap, struct block_list*);
-	int  len  = va_arg(ap, int);
-	char *buf = va_arg(ap, char*);
+	int len  = va_arg(ap, int);
+	unsigned char *buf = va_arg(ap, unsigned char*);
 
-	if( bl && bl->type == BL_PC && src_bl->id != bl->id ) { // 自分は除外
-		struct map_session_data *sd = (struct map_session_data*)bl;
+	nullpo_retr(0, bl);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
+
+	if( src_bl->id != sd->bl.id ) { // 自分は除外
 		memcpy( WFIFOP(sd->fd, 0), buf, len);
 		WFIFOSET( sd->fd, len );
 	}
@@ -4791,34 +4794,33 @@ static int clif_getareachar(struct block_list* bl, va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, sd = va_arg(ap,struct map_session_data*));
 
-	sd=va_arg(ap,struct map_session_data*);
-
-	switch(bl->type){
+	switch(bl->type) {
 	case BL_PC:
 		if(&sd->bl != bl)
-			clif_getareachar_pc(sd,(struct map_session_data*)bl);
+			clif_getareachar_pc(sd,(struct map_session_data *)bl);
 		break;
 	case BL_NPC:
-		clif_getareachar_npc(sd,(struct npc_data*)bl);
+		clif_getareachar_npc(sd,(struct npc_data *)bl);
 		break;
 	case BL_MOB:
-		clif_getareachar_mob(sd,(struct mob_data*)bl);
+		clif_getareachar_mob(sd,(struct mob_data *)bl);
 		break;
 	case BL_PET:
-		clif_getareachar_pet(sd,(struct pet_data*)bl);
+		clif_getareachar_pet(sd,(struct pet_data *)bl);
 		break;
 	case BL_ITEM:
-		clif_getareachar_item(sd,(struct flooritem_data*)bl);
+		clif_getareachar_item(sd,(struct flooritem_data *)bl);
 		break;
 	case BL_SKILL:
 		clif_getareachar_skillunit(sd,(struct skill_unit *)bl);
 		break;
 	case BL_HOM:
-		clif_getareachar_hom(sd,(struct homun_data*)bl);
+		clif_getareachar_hom(sd,(struct homun_data *)bl);
 		break;
 	case BL_MERC:
-		clif_getareachar_merc(sd,(struct merc_data*)bl);
+		clif_getareachar_merc(sd,(struct merc_data *)bl);
 		break;
 	default:
 		if(battle_config.error_log)
@@ -4835,24 +4837,24 @@ static int clif_getareachar(struct block_list* bl, va_list ap)
  */
 int clif_pcoutsight(struct block_list *bl,va_list ap)
 {
-	struct map_session_data *sd,*dstsd;
+	struct map_session_data *sd, *dstsd;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, sd=va_arg(ap,struct map_session_data*));
+	nullpo_retr(0, sd = va_arg(ap,struct map_session_data*));
 
-	switch(bl->type){
+	switch(bl->type) {
 	case BL_PC:
-		dstsd = (struct map_session_data*) bl;
+		dstsd = (struct map_session_data *)bl;
 		if(dstsd && sd != dstsd) {
 			clif_clearchar_id(dstsd->bl.id,0,sd->fd);
 			clif_clearchar_id(sd->bl.id,0,dstsd->fd);
-			if(dstsd->chatID){
+			if(dstsd->chatID) {
 				struct chat_data *cd = map_id2cd(dstsd->chatID);
-				if(cd && cd->usersd[0]==dstsd)
+				if(cd && cd->usersd[0] == dstsd)
 					clif_dispchat(cd,sd->fd);
 			}
-			if(dstsd->vender_id){
+			if(dstsd->vender_id) {
 				clif_closevendingboard(&dstsd->bl,sd->fd);
 			}
 		}
@@ -4868,7 +4870,7 @@ int clif_pcoutsight(struct block_list *bl,va_list ap)
 		clif_clearchar_id(bl->id,0,sd->fd);
 		break;
 	case BL_ITEM:
-		clif_clearflooritem((struct flooritem_data*)bl,sd->fd);
+		clif_clearflooritem((struct flooritem_data *)bl,sd->fd);
 		break;
 	case BL_SKILL:
 		clif_clearchar_skillunit((struct skill_unit *)bl,sd->fd);
@@ -4884,13 +4886,13 @@ int clif_pcoutsight(struct block_list *bl,va_list ap)
  */
 int clif_pcinsight(struct block_list *bl,va_list ap)
 {
-	struct map_session_data *sd,*dstsd;
+	struct map_session_data *sd, *dstsd;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, sd=va_arg(ap,struct map_session_data*));
+	nullpo_retr(0, sd = va_arg(ap,struct map_session_data*));
 
-	switch(bl->type){
+	switch(bl->type) {
 	case BL_PC:
 		dstsd = (struct map_session_data *)bl;
 		if(sd != dstsd) {
@@ -4899,25 +4901,25 @@ int clif_pcinsight(struct block_list *bl,va_list ap)
 		}
 		break;
 	case BL_NPC:
-		clif_getareachar_npc(sd,(struct npc_data*)bl);
+		clif_getareachar_npc(sd,(struct npc_data *)bl);
 		break;
 	case BL_MOB:
-		clif_getareachar_mob(sd,(struct mob_data*)bl);
+		clif_getareachar_mob(sd,(struct mob_data *)bl);
 		break;
 	case BL_PET:
-		clif_getareachar_pet(sd,(struct pet_data*)bl);
+		clif_getareachar_pet(sd,(struct pet_data *)bl);
 		break;
 	case BL_ITEM:
-		clif_getareachar_item(sd,(struct flooritem_data*)bl);
+		clif_getareachar_item(sd,(struct flooritem_data *)bl);
 		break;
 	case BL_SKILL:
 		clif_getareachar_skillunit(sd,(struct skill_unit *)bl);
 		break;
 	case BL_HOM:
-		clif_getareachar_hom(sd,(struct homun_data*)bl);
+		clif_getareachar_hom(sd,(struct homun_data *)bl);
 		break;
 	case BL_MERC:
-		clif_getareachar_merc(sd,(struct merc_data*)bl);
+		clif_getareachar_merc(sd,(struct merc_data *)bl);
 		break;
 	}
 
@@ -4935,11 +4937,10 @@ int clif_mobinsight(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, md = va_arg(ap,struct mob_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	md=va_arg(ap,struct mob_data*);
-	if(bl->type==BL_PC && (sd = (struct map_session_data *)bl)){
-		clif_getareachar_mob(sd,md);
-	}
+	clif_getareachar_mob(sd,md);
 
 	return 0;
 }
@@ -4955,11 +4956,10 @@ int clif_moboutsight(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, md=va_arg(ap,struct mob_data*));
+	nullpo_retr(0, md = va_arg(ap,struct mob_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	if(bl->type==BL_PC && (sd = (struct map_session_data*) bl)){
-		clif_clearchar_id(md->bl.id,0,sd->fd);
-	}
+	clif_clearchar_id(md->bl.id,0,sd->fd);
 
 	return 0;
 }
@@ -4975,11 +4975,10 @@ int clif_petinsight(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, pd = va_arg(ap,struct pet_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	pd=va_arg(ap,struct pet_data*);
-	if(bl->type==BL_PC && (sd = (struct map_session_data *)bl)){
-		clif_getareachar_pet(sd,pd);
-	}
+	clif_getareachar_pet(sd,pd);
 
 	return 0;
 }
@@ -4995,11 +4994,10 @@ int clif_petoutsight(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, pd=va_arg(ap,struct pet_data*));
+	nullpo_retr(0, pd = va_arg(ap,struct pet_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	if(bl->type==BL_PC && (sd = (struct map_session_data*) bl)){
-		clif_clearchar_id(pd->bl.id,0,sd->fd);
-	}
+	clif_clearchar_id(pd->bl.id,0,sd->fd);
 
 	return 0;
 }
@@ -5015,11 +5013,10 @@ int clif_hominsight(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, hd = va_arg(ap,struct homun_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	hd=va_arg(ap,struct homun_data*);
-	if(bl->type==BL_PC && (sd = (struct map_session_data *)bl)){
-		clif_getareachar_hom(sd,hd);
-	}
+	clif_getareachar_hom(sd,hd);
 
 	return 0;
 }
@@ -5035,11 +5032,10 @@ int clif_homoutsight(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, hd=va_arg(ap,struct homun_data*));
+	nullpo_retr(0, hd = va_arg(ap,struct homun_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	if(bl->type==BL_PC && (sd = (struct map_session_data*) bl)){
-		clif_clearchar_id(hd->bl.id,0,sd->fd);
-	}
+	clif_clearchar_id(hd->bl.id,0,sd->fd);
 
 	return 0;
 }
@@ -5055,11 +5051,10 @@ int clif_mercinsight(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, mcd = va_arg(ap,struct merc_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	mcd=va_arg(ap,struct merc_data*);
-	if(bl->type==BL_PC && (sd = (struct map_session_data *)bl)){
-		clif_getareachar_merc(sd,mcd);
-	}
+	clif_getareachar_merc(sd,mcd);
 
 	return 0;
 }
@@ -5075,11 +5070,10 @@ int clif_mercoutsight(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, mcd=va_arg(ap,struct merc_data*));
+	nullpo_retr(0, mcd = va_arg(ap,struct merc_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	if(bl->type==BL_PC && (sd = (struct map_session_data*) bl)){
-		clif_clearchar_id(mcd->bl.id,0,sd->fd);
-	}
+	clif_clearchar_id(mcd->bl.id,0,sd->fd);
 
 	return 0;
 }
@@ -9736,7 +9730,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 			status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
 	}
 
-	map_foreachinarea(clif_getareachar,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,0,sd);
+	map_foreachinarea(clif_getareachar,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,BL_ALL,sd);
 
 	if(sd->state.connect_new) {
 		sd->state.connect_new = 0;
