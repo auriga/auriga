@@ -565,7 +565,7 @@ int mob_attacktarget(struct mob_data *md,struct block_list *target,int flag)
 static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 {
 	struct mob_data *smd = NULL;
-	int dist,range,flag;
+	int dist,flag;
 	int *cnt;
 
 	nullpo_retr(0, bl);
@@ -579,25 +579,20 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 	if( smd->bl.id == bl->id )
 		return 0; // self
 
-	dist  = unit_distance(smd->bl.x,smd->bl.y,bl->x,bl->y);
-	range = (smd->sc_data[SC_BLIND].timer != -1 || smd->sc_data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
+	dist = unit_distance(smd->bl.x,smd->bl.y,bl->x,bl->y);
 
 	// アクティブ
-	if( (flag & 1) && dist <= range && battle_check_target(&smd->bl,bl,BCT_ENEMY) >= 1 ) {
-		int active_flag = 0;
+	if( (flag & 1) && (bl->type & BL_CHAR) ) {
+		int range = (smd->sc_data[SC_BLIND].timer != -1 || smd->sc_data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
+
 		// ターゲット射程内にいるなら、ロックする
-		if(bl->type == BL_PC || bl->type == BL_MOB || bl->type == BL_HOM) {
-			if(mob_can_lock(smd,bl))	// 妨害がないか判定
-				active_flag = 1;
-		}
-		if(active_flag) {
+		if(dist <= range && battle_check_target(&smd->bl,bl,BCT_ENEMY) >= 1 && mob_can_lock(smd,bl) ) {
 			// 射線チェック
 			cell_t cell_flag = (mob_db[smd->class_].range > 6 ? CELL_CHKWALL : CELL_CHKNOPASS);
-			if( !path_search_long_real(NULL,smd->bl.m,smd->bl.x,smd->bl.y,bl->x,bl->y,cell_flag) )
-				active_flag = 0;
-		}
-		if(active_flag) {
-			if( mob_can_reach(smd,bl,range) && atn_rand()%1000 < 1000/(++cnt[0]) ) { // 範囲内PCで等確率にする
+			if( path_search_long_real(NULL,smd->bl.m,smd->bl.x,smd->bl.y,bl->x,bl->y,cell_flag) &&
+			    mob_can_reach(smd,bl,range) &&
+			    atn_rand()%1000 < 1000/(++cnt[0]) )	// 範囲内PCで等確率にする
+			{
 				smd->target_id = bl->id;
 				smd->min_chase = 13;
 			}
@@ -906,7 +901,7 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		map_foreachinarea(mob_ai_sub_hard_search,md->bl.m,
 						  md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,
 						  md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,
-						  0,md,count,search_flag);
+						  (BL_CHAR|BL_ITEM),md,count,search_flag);
 		search_flag = count[3] + 20; // 範囲内のオブジェクト数
 	}
 
@@ -1145,7 +1140,7 @@ int mob_ai_hard_spawn_sub(struct block_list *tbl, va_list ap)
 	sbl  = va_arg(ap, struct block_list*);
 	flag = va_arg(ap, int);
 
-	if( (sbl->type & (BL_PC| BL_HOM | BL_MERC)) && tbl->type == BL_MOB && (md = (struct mob_data *)tbl) ) {
+	if( (sbl->type & (BL_PC | BL_HOM | BL_MERC)) && tbl->type == BL_MOB && (md = (struct mob_data *)tbl) ) {
 		if( flag ) {
 			if( md->ai_pc_count++ == 0 )
 				mob_ai_hard_add( md );
@@ -2572,15 +2567,10 @@ static int mobskill_command_use_id_sub(struct block_list *bl, va_list ap )
 	if(md == NULL)
 		return 0;
 
-	ms = &mob_db[md->class_].skill[skill_idx];
-	casttime = skill_castfix(bl, ms->skill_id, ms->casttime, 0);
-	md->skillidx = skill_idx;
-	md->skilldelay[skill_idx] = gettick() + casttime;
-
 	switch(target_type)
 	{
 		case MCT_TARGET:
-			if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_HOM)
+			if(!(bl->type & BL_CHAR))
 				return 0;
 			if(md->bl.id == bl->id)
 				return 0;
@@ -2627,6 +2617,12 @@ static int mobskill_command_use_id_sub(struct block_list *bl, va_list ap )
 			printf("mobskill_command_use_id_sub: target_type error\n");
 			return 0;
 	}
+
+	ms = &mob_db[md->class_].skill[skill_idx];
+	casttime = skill_castfix(bl, ms->skill_id, ms->casttime, 0);
+	md->skillidx = skill_idx;
+	md->skilldelay[skill_idx] = gettick() + casttime;
+
 	return unit_skilluse_id2(&md->bl,target_id, ms->skill_id,ms->skill_lv, casttime, ms->cancel);
 }
 
@@ -2645,6 +2641,7 @@ static int mobskill_command(struct block_list *bl, va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, md = (struct mob_data *)bl);
 
 	commander_id        = va_arg(ap,int);
 	skill_id            = va_arg(ap,int);
@@ -2653,14 +2650,9 @@ static int mobskill_command(struct block_list *bl, va_list ap)
 	range               = va_arg(ap,int);
 	flag                = va_arg(ap,int*);
 
-	if(bl->type != BL_MOB || (md = (struct mob_data *)bl) == NULL)
-		return 0;
-
 	skill_idx = mob_skillid2skillidx(md->class_,skill_id);
 	if(skill_idx == -1)
 		return 0;
-
-	ms = &mob_db[md->class_].skill[skill_idx];
 
 	switch(command_target_type)
 	{
@@ -2717,7 +2709,7 @@ static int mobskill_command(struct block_list *bl, va_list ap)
 					target_id = cmd->target_id;
 				else
 					map_foreachinarea(mobskill_command_use_id_sub,bl->m,bl->x-range,bl->y-range,bl->x+range,bl->y+range,
-						0,commander_id,md,target_type,skill_idx,&once_flag);
+						BL_CHAR,commander_id,md,target_type,skill_idx,&once_flag);
 			}
 			*flag = 1;
 			return 1;
@@ -2734,6 +2726,8 @@ static int mobskill_command(struct block_list *bl, va_list ap)
 			return 0;
 	}
 	*flag = 1;
+
+	ms = &mob_db[md->class_].skill[skill_idx];
 	casttime = skill_castfix(bl, ms->skill_id, ms->casttime, 0);
 	md->skillidx = skill_idx;
 	md->skilldelay[skill_idx] = gettick() + casttime;
@@ -2755,14 +2749,12 @@ static int mobskill_modechange(struct block_list *bl, va_list ap )
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
+	nullpo_retr(0, md = (struct mob_data *)bl);
 
 	commander_id = va_arg(ap,int);
 	target_type  = va_arg(ap,int);
 	mode         = va_arg(ap,int);
 	flag         = va_arg(ap,int*);
-
-	if(bl->type != BL_MOB || (md = (struct mob_data *)bl) == NULL)
-		return 0;
 
 	switch(target_type)
 	{
@@ -2818,7 +2810,7 @@ static int mobskill_anothertarget(struct block_list *bl, va_list ap)
 	c      = va_arg(ap,int *);
 	target = va_arg(ap,struct block_list **);
 
-	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_HOM)
+	if(!(bl->type & BL_CHAR))
 		return 0;
 
 	if(bl->id == md->bl.id || bl->id == md->target_id || unit_isdead(bl))
@@ -3006,7 +2998,8 @@ static int mob_can_counterattack(struct mob_data *md,struct block_list *target)
 
 	// ターゲットに反撃できない状態なので近くに攻撃できる相手がいるか探す
 	map_foreachinarea(mobskill_anothertarget,
-		md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,0,md,MST_ANOTHERTARGET,&c,&tbl);
+		md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
+		BL_CHAR,md,MST_ANOTHERTARGET,&c,&tbl);
 
 	return (tbl != NULL);
 }
@@ -3280,7 +3273,8 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 
 					tbl = NULL;
 					map_foreachinarea( mobskill_anothertarget,
-						md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,BL_MOB,md,ms[i].target,&c,&tbl);
+						md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
+						BL_MOB,md,ms[i].target,&c,&tbl);
 				}
 				break;
 			case MST_ANOTHERTARGET:
@@ -3289,7 +3283,8 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 
 					tbl = target;
 					map_foreachinarea( mobskill_anothertarget,
-						md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,0,md,MST_ANOTHERTARGET,&c,&tbl);
+						md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
+						BL_CHAR,md,MST_ANOTHERTARGET,&c,&tbl);
 				}
 				break;
 			default:
@@ -3311,7 +3306,8 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 								ms[i].skill_lv,casttime, ms[i].cancel);
 
 							map_foreachinarea( mobskill_command,
-								md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,BL_MOB,md->bl.id,ms[i].skill_id,MCT_SLAVES,ms[i].val[2],ms[i].val[3],&once_flag);
+								md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
+								BL_MOB,md->bl.id,ms[i].skill_id,MCT_SLAVES,ms[i].val[2],ms[i].val[3],&once_flag);
 						}
 						break;
 					case MCT_SELF:
@@ -3320,7 +3316,8 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 					case MCT_FRIEND:
 					case MCT_FRIENDS:
 						map_foreachinarea( mobskill_command,
-							md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,BL_MOB,md->bl.id,ms[i].skill_id,ms[i].val[0],ms[i].val[2],ms[i].val[3],&once_flag);
+							md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
+							BL_MOB,md->bl.id,ms[i].skill_id,ms[i].val[0],ms[i].val[2],ms[i].val[3],&once_flag);
 						break;
 				}
 				md->skilldelay[i] = gettick() + ms[i].delay;
@@ -3338,14 +3335,16 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 					case MCT_GROUP:
 						md->mode = ms[i].val[2];
 						map_foreachinarea( mobskill_modechange,
-							md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,BL_MOB,md->bl.id,MCT_SLAVES,ms[i].val[2],&once_flag);
+							md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
+							BL_MOB,md->bl.id,MCT_SLAVES,ms[i].val[2],&once_flag);
 						break;
 					case MCT_SLAVE:
 					case MCT_SLAVES:
 					case MCT_FRIEND:
 					case MCT_FRIENDS:
 						map_foreachinarea( mobskill_modechange,
-							md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,BL_MOB,md->bl.id,ms[i].val[0],ms[i].val[2],&once_flag);
+							md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
+							BL_MOB,md->bl.id,ms[i].val[0],ms[i].val[2],&once_flag);
 						break;
 				}
 				md->skilldelay[i] = gettick() + ms[i].delay;

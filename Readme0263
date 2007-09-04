@@ -1,4 +1,20 @@
 ----------------------------------------
+//0312 [2007/09/05] by Rayce
+
+・0311で修正し忘れていたmob.cを添付（mob.c）
+・ホムは出現時および消滅時に skill_unit_move() を呼ばないように修正（homun.c）
+	ホムはスキルユニットの影響を受けないため、この関数を呼び出す必要がない
+
+・ワープポータル発動時に skill_unit_effect() を呼ばないように修正（skill.c）
+	ワープポータルは既にAthena1891で位置発動ユニットからタイマー発動ユニットに
+	変更されているため不要
+
+・skill_chastle_mob_changetarget() のtypo修正（skill.c）
+・skill_hermode_wp_check() の引数変更（skill.*, unit.c）
+・skill_hermode_wp_check() および skill_delunit_by_ganbantein() の位置を移動（skill.c）
+・skill.cの全体的な整形
+
+----------------------------------------
 //0311 [2007/09/05] by Rayce
 
 ・map_foreach系の改善 merged from eA

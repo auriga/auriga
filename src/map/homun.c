@@ -749,7 +749,7 @@ int homun_callhom(struct map_session_data *sd)
 			clif_homskillinfoblock(sd);
 			sd->hd->status.incubate = 1;
 			homun_save_data(sd);
-			skill_unit_move(&sd->hd->bl,gettick(),1);
+			//skill_unit_move(&sd->hd->bl,gettick(),1);
 		}
 	} else if(sd->status.homun_id <= 0 && sd->state.homun_creating == 0) {
 		// 初誕生なら、データ作成
@@ -1346,7 +1346,7 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
 			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
 		// スキルユニットからの離脱
 		hd->status.hp = 1;
-		skill_unit_move(&hd->bl,gettick(),0);
+		//skill_unit_move(&hd->bl,gettick(),0);
 		hd->status.hp = 0;
 
 		hd->status.incubate = 0;

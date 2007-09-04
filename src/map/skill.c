@@ -385,7 +385,7 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 static int skill_unit_effect(struct block_list *bl,va_list ap);
 static int skill_greed( struct block_list *bl,va_list ap );
 static int skill_balkyoung( struct block_list *bl,va_list ap );
-static int skill_chastle_mob_changetarget(struct block_list *bl,va_list ap);
+static int skill_castle_mob_changetarget(struct block_list *bl,va_list ap);
 static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap );
 static int skill_count_unitgroup(struct unit_data *ud,int skillid);
 static int skill_am_twilight(struct map_session_data* sd, int skillid);
@@ -1447,12 +1447,12 @@ static int skill_area_sub( struct block_list *bl,va_list ap )
 	if(!(bl->type & (BL_CHAR | BL_SKILL)))
 		return 0;
 
-	src=va_arg(ap,struct block_list *); // ここではsrcの値を参照していないのでNULLチェックはしない
-	skill_id=va_arg(ap,int);
-	skill_lv=va_arg(ap,int);
-	tick=va_arg(ap,unsigned int);
-	flag=va_arg(ap,int);
-	func=va_arg(ap,SkillFunc);
+	src      = va_arg(ap,struct block_list *); // ここではsrcの値を参照していないのでNULLチェックはしない
+	skill_id = va_arg(ap,int);
+	skill_lv = va_arg(ap,int);
+	tick     = va_arg(ap,unsigned int);
+	flag     = va_arg(ap,int);
+	func     = va_arg(ap,SkillFunc);
 
 	if(battle_check_target(src,bl,flag) > 0)
 		func(src,bl,skill_id,skill_lv,tick,flag);
@@ -1563,7 +1563,7 @@ static int skill_check_unit_range(int m,int x,int y,int skillid,int skilllv)
 	int range = skill_get_unit_range(skillid);
 	int layout_type = skill_get_unit_layout_type(skillid,skilllv);
 
-	if (layout_type==-1 || layout_type>MAX_SQUARE_LAYOUT) {
+	if(layout_type == -1 || layout_type > MAX_SQUARE_LAYOUT) {
 		printf("skill_check_unit_range: unsupported layout type %d for skill %d\n",layout_type,skillid);
 		return 0;
 	}
@@ -1592,7 +1592,7 @@ static int skill_check_unit_range2_sub( struct block_list *bl,va_list ap )
 		return 0;
 
 	skillid = va_arg(ap,int);
-	if (skillid==HP_BASILICA && bl->type==BL_PC)
+	if(skillid == HP_BASILICA && bl->type == BL_PC)
 		return 0;
 
 	(*c)++;
@@ -1606,7 +1606,7 @@ static int skill_check_unit_range2(int m,int x,int y,int skillid, int skilllv)
 	int range = skill_get_unit_range(skillid);
 	int layout_type = skill_get_unit_layout_type(skillid,skilllv);
 
-	if (layout_type==-1 || layout_type>MAX_SQUARE_LAYOUT) {
+	if(layout_type == -1 || layout_type > MAX_SQUARE_LAYOUT) {
 		printf("skill_check_unit_range2: unsupported layout type %d for skill %d\n",layout_type,skillid);
 		return 0;
 	}
@@ -1646,11 +1646,11 @@ int skill_castend_delay(struct block_list* src, struct block_list *bl,int skilli
 	nullpo_retr(0, bl);
 
 	dat = (struct castend_delay *)aCalloc(1, sizeof(struct castend_delay));
-	dat->src = src;
+	dat->src    = src;
 	dat->target = bl->id;
-	dat->id = skillid;
-	dat->lv = skilllv;
-	dat->flag = flag;
+	dat->id     = skillid;
+	dat->lv     = skilllv;
+	dat->flag   = flag;
 	add_timer2(tick, skill_castend_delay_sub, src->id, (int)dat, TIMER_FREE_DATA);
 
 	return 0;
@@ -5686,7 +5686,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			unit_movepos(&hd->bl,sd->bl.x,sd->bl.y,0);
 			unit_movepos(&sd->bl,x,y,0);
 
-			map_foreachinarea(skill_chastle_mob_changetarget,hd->bl.m,
+			map_foreachinarea(skill_castle_mob_changetarget,hd->bl.m,
 					  hd->bl.x-AREA_SIZE,hd->bl.y-AREA_SIZE,
 					  hd->bl.x+AREA_SIZE,hd->bl.y+AREA_SIZE,
 					  BL_MOB,&hd->msd->bl,&hd->bl);
@@ -6100,11 +6100,12 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		}
 		break;
 	case HW_GANBANTEIN:			/* ガバンテイン */
-		if(atn_rand()%100 < 80)
-		{
+		if(atn_rand()%100 < 80) {
 			map_foreachinarea(skill_delunit_by_ganbantein,src->m,x-1,y-1,x+1,y+1,BL_SKILL);
-		}else
-			if(sd) clif_skill_fail(sd,skillid,0,0);
+		} else {
+			if(sd)
+				clif_skill_fail(sd,skillid,0,0);
+		}
 		break;
 	case MO_BODYRELOCATION:			/* 残影 */
 		{
@@ -6353,7 +6354,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	layout    = skill_get_unit_layout(skillid,skilllv,src,x,y);
 	unit_id   = skill_get_unit_id(skillid,flag&1);
 
-	if (unit_flag&UF_DEFNOTENEMY && battle_config.defnotenemy)
+	if(unit_flag&UF_DEFNOTENEMY && battle_config.defnotenemy)
 		target = BCT_NOENEMY;
 
 	switch (skillid) {
@@ -6454,13 +6455,13 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	case SA_VOLCANO:		/* ボルケーノ */
 	case SA_DELUGE:			/* デリュージ */
 	case SA_VIOLENTGALE:	/* バイオレントゲイル */
-		if(sd){
-			if(sd->sc_data && sd->sc_data[SC_ELEMENTFIELD].timer!=-1)
+		if(sd) {
+			if(sd->sc_data[SC_ELEMENTFIELD].timer != -1)
 			{
 				// レベルの低いものを使った場合持続時間減少？
 				// 属性場の残り時間算出
 				limit = sd->sc_data[SC_ELEMENTFIELD].val2 - DIFF_TICK(gettick(), (unsigned int)sd->sc_data[SC_ELEMENTFIELD].val3);
-			}else{
+			} else {
 				status_change_start(src,SC_ELEMENTFIELD,1,skill_get_time(skillid,skilllv),gettick(),0,0,0);
 			}
 		}
@@ -6495,20 +6496,21 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		break;
 	}
 
-	nullpo_retr(NULL, group=skill_initunitgroup(src,layout->count,skillid,skilllv,unit_id));
-	group->limit=limit;
-	group->val1=val1;
-	group->val2=val2;
-	group->val3=val3;
-	group->target_flag=target;
-	group->interval=interval;
-	if(skillid==HT_TALKIEBOX || skillid==RG_GRAFFITI){
-		group->valstr=(char *)aCalloc(80,sizeof(char));
+	nullpo_retr(NULL, group = skill_initunitgroup(src,layout->count,skillid,skilllv,unit_id));
+	group->limit       = limit;
+	group->val1        = val1;
+	group->val2        = val2;
+	group->val3        = val3;
+	group->target_flag = target;
+	group->interval    = interval;
+
+	if(skillid == HT_TALKIEBOX || skillid == RG_GRAFFITI) {
+		group->valstr = (char *)aCalloc(80,sizeof(char));
 		if(sd)
 			memcpy(group->valstr,sd->message,80);
 	}
 
-	for (i=0;i<layout->count;i++){
+	for(i=0; i<layout->count; i++) {
 		struct skill_unit *unit;
 		int ux,uy,val1=skilllv,val2=0,limit=group->limit,alive=1;
 		ux = x + layout->dx[i];
@@ -6520,18 +6522,18 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				if(map_find_skill_unit_oncell(src,ux,uy,SA_VIOLENTGALE,NULL)!=NULL)
 				{
 					limit = limit*150/100;
-					on_flag=1;
+					on_flag = 1;
 				}
 				break;
 			case WZ_ICEWALL:		/* アイスウォール */
-				val1 = (skilllv<=1)?500:200+200*skilllv;
+				val1 = (skilllv<=1)? 500: 200+200*skilllv;
 				break;
 			case PF_FOGWALL:
 				// デリュージ上なら時間倍
 				if(map_find_skill_unit_oncell(src,ux,uy,SA_DELUGE,NULL)!=NULL)
 				{
 					limit = limit*2;
-					on_flag=1;
+					on_flag = 1;
 				}
 				break;
 			case HT_LANDMINE:		/* ランドマイン */
@@ -6549,8 +6551,8 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				break;
 		}
 		// 直上スキルの場合設置座標上にランドプロテクターがないかチェック
-		if(range<=0){
-			switch(skillid){
+		if(range <= 0) {
+			switch(skillid) {
 				case BD_LULLABY:	/* 子守歌 */
 				case BA_DISSONANCE:	/* 不協和音 */
 				case BA_WHISTLE:	/* 口笛 */
@@ -6570,26 +6572,26 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 
 		if(unit_flag&UF_PATHCHECK) { // 射線チェック
 			if(!path_search_long(NULL,src->m,src->x,src->y,ux,uy))
-				alive=0;
+				alive = 0;
 		}
 
-		if(skillid==WZ_ICEWALL && alive){
-			val2=map_getcell(src->m,ux,uy,CELL_GETTYPE);
-			if(val2==5 || val2==1)
-				alive=0;
-			else {
+		if(skillid == WZ_ICEWALL && alive) {
+			val2 = map_getcell(src->m,ux,uy,CELL_GETTYPE);
+			if(val2 == 5 || val2 == 1) {
+				alive = 0;
+			} else {
 				map_setcell(src->m,ux,uy,5);
 				clif_changemapcell(src->m,ux,uy,5,0);
 			}
 		}
 
-		if(alive){
-			nullpo_retr(NULL, unit=skill_initunit(group,i,ux,uy));
-			unit->val1=val1;
-			unit->val2=val2;
-			unit->limit=limit;
-			unit->range=range;
-			if (range==0)
+		if(alive) {
+			nullpo_retr(NULL, unit = skill_initunit(group,i,ux,uy));
+			unit->val1  = val1;
+			unit->val2  = val2;
+			unit->limit = limit;
+			unit->range = range;
+			if(range == 0)
 				map_foreachinarea(skill_unit_effect,unit->bl.m,
 					unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,
 					(BL_PC|BL_MOB|BL_MERC),&unit->bl,gettick(),1);
@@ -6598,12 +6600,12 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 
 	if(on_flag && group)
 	{
-		switch(skillid){
+		switch(skillid) {
 		case MG_FIREWALL:
 			group->limit = group->limit*150/100;
 			break;
 		case PF_FOGWALL:
-			group->limit *=2;
+			group->limit *= 2;
 			break;
 		}
 	}
@@ -6625,15 +6627,15 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 	nullpo_retr(0, src);
 	nullpo_retr(0, bl);
 
-	if (bl->prev==NULL || !src->alive || unit_isdead(bl))
+	if( bl->prev == NULL || !src->alive || unit_isdead(bl) )
 		return 0;
 
 	if( bl->type == BL_PC && ((struct map_session_data*)bl)->invincible_timer != -1 )
 		return 0; // 無敵タイマー中
 
-	nullpo_retr(0, sg=src->group);
+	nullpo_retr(0, sg = src->group);
 
-	if (battle_check_target(&src->bl,bl,sg->target_flag)<=0)
+	if(battle_check_target(&src->bl,bl,sg->target_flag) <= 0)
 		return 0;
 
 	// 対象がLP上に居る場合は無効
@@ -7421,14 +7423,12 @@ static int skill_unit_effect(struct block_list *bl,va_list ap)
 	if(!unit->alive)
 		return 0;
 
-	if (flag) {
+	if(flag) {
 		skill_unit_onplace(unit,bl,tick);
 	} else {
 		skill_unit_onout(unit,bl,tick);
-		if (group->unit_id == UNT_WARP_WAITING || group->unit_id == UNT_WARP_ACTIVE)
-			return 0;
 		unit = map_find_skill_unit_oncell(bl,bl->x,bl->y,group->skill_id,unit);
-		if (unit && called == 0) {
+		if(unit && called == 0) {
 			called = 1;
 			skill_unit_onplace(unit,bl,tick);
 			called = 0;
@@ -8609,7 +8609,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		// WPチェック？
-		if(battle_config.hermode_wp_check && !skill_hermode_wp_check(bl,battle_config.hermode_wp_check_range))
+		if(battle_config.hermode_wp_check && !skill_hermode_wp_check(bl))
 		{
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
@@ -10236,23 +10236,94 @@ void skill_stop_dancing(struct block_list *src, int flag)
 		status_calc_pc(sd,0);
 }
 
+/*==========================================
+ * ヘルモードの杖チェック
+ *------------------------------------------
+ */
+static int skill_hermode_wp_check_sub(struct block_list *bl, va_list ap )
+{
+	int *flag;
+	struct npc_data *nd;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, nd = (struct npc_data *)bl);
+
+	flag = va_arg(ap,int*);
+	if(*flag)
+		return 1;
+
+	if(nd->bl.subtype == WARP || (nd->bl.subtype == SCRIPT && nd->class_ == WARP_CLASS))
+		*flag = 1;
+
+	return *flag;
+}
+
+int skill_hermode_wp_check(struct block_list *bl)
+{
+	int wp_flag = 0;
+	int range   = battle_config.hermode_wp_check_range;
+
+	nullpo_retr(0, bl);
+
+	map_foreachinarea(skill_hermode_wp_check_sub,bl->m,bl->x-range,bl->y-range,bl->x+range,bl->y+range,BL_NPC,&wp_flag);
+	return wp_flag;
+}
+
+/*==========================================
+ * ガンバンテイン停止
+ *------------------------------------------
+ */
 void skill_stop_gravitation(struct block_list *src)
 {
-	struct status_change* sc_data;
-	struct skill_unit_group* group;
+	struct status_change *sc_data;
+	struct skill_unit_group *group;
 
 	nullpo_retv(src);
 
-	sc_data=status_get_sc_data(src);
-	if(!sc_data || sc_data[SC_GRAVITATION_USER].timer==-1)
+	sc_data = status_get_sc_data(src);
+	if(!sc_data || sc_data[SC_GRAVITATION_USER].timer == -1)
 		return;
 
-	group=(struct skill_unit_group *)sc_data[SC_GRAVITATION_USER].val2;
+	group = (struct skill_unit_group *)sc_data[SC_GRAVITATION_USER].val2;
 
 	status_change_end(src,SC_GRAVITATION_USER,-1);
 
 	skill_delunitgroup(group);
+}
 
+/*==========================================
+ * ガンバンテインによるユニット削除
+ *------------------------------------------
+ */
+static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
+{
+	struct skill_unit *unit;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, unit = (struct skill_unit *)bl);
+	nullpo_retr(0, unit->group);
+
+	switch(unit->group->skill_id)
+	{
+		case SA_LANDPROTECTOR:
+		case MG_SAFETYWALL:
+		case AL_PNEUMA:
+		case AL_WARP:
+		case PR_SANCTUARY:
+		case PR_MAGNUS:
+		case WZ_FIREPILLAR:
+		case WZ_ICEWALL:
+		case WZ_QUAGMIRE:
+		case AS_VENOMDUST:
+		case SA_VOLCANO:
+		case SA_DELUGE:
+		case SA_VIOLENTGALE:
+		case PF_FOGWALL:
+		case NJ_SUITON:
+			skill_delunit(unit);
+			break;
+	}
+	return 0;
 }
 
 /*==========================================
@@ -10264,24 +10335,25 @@ static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,
 	struct skill_unit *unit;
 
 	nullpo_retr(NULL, group);
-	nullpo_retr(NULL, unit=&group->unit[idx]);
+	nullpo_retr(NULL, unit = &group->unit[idx]);
 
 	if(!unit->alive)
 		group->alive_count++;
 
-	unit->bl.id=map_addobject(&unit->bl);
-	unit->bl.type=BL_SKILL;
-	unit->bl.m=group->map;
-	unit->bl.x=x;
-	unit->bl.y=y;
-	unit->group=group;
-	unit->val1=unit->val2=0;
-	unit->alive=1;
+	unit->bl.id   = map_addobject(&unit->bl);
+	unit->bl.type = BL_SKILL;
+	unit->bl.m    = group->map;
+	unit->bl.x    = x;
+	unit->bl.y    = y;
+	unit->group   = group;
+	unit->val1    = 0;
+	unit->val2    = 0;
+	unit->alive   = 1;
 
 	map_addblock(&unit->bl);
 	clif_skill_setunit(unit);
 
-	if (group->skill_id==HP_BASILICA)
+	if(group->skill_id == HP_BASILICA)
 		skill_basilica_cell(unit,CELL_SETBASILICA);
 
 	return unit;
@@ -10305,21 +10377,21 @@ int skill_delunit(struct skill_unit *unit)
 	skill_unit_onlimit(unit,gettick());
 
 	/* onoutイベント呼び出し */
-	if (!unit->range) {
+	if(!unit->range) {
 		map_foreachinarea(skill_unit_effect,unit->bl.m,
 			unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,(BL_PC|BL_MOB|BL_MERC),
 			&unit->bl,gettick(),0);
 	}
 
-	if (group->skill_id==HP_BASILICA)
+	if(group->skill_id == HP_BASILICA)
 		skill_basilica_cell(unit,CELL_CLRBASILICA);
 
 	clif_skill_delunit(unit);
 
-	unit->group=NULL;
-	unit->alive=0;
+	unit->group = NULL;
+	unit->alive = 0;
 	map_delobjectnofree(unit->bl.id);
-	if(group->alive_count>0 && (--group->alive_count)<=0)
+	if(group->alive_count > 0 && (--group->alive_count) <= 0)
 		skill_delunitgroup(group);
 
 	return 0;
@@ -10333,7 +10405,7 @@ static int skill_unit_group_newid = MAX_SKILL_DB;
 
 static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id)
 {
-	struct unit_data *ud = unit_bl2ud( src );
+	struct unit_data *ud = unit_bl2ud(src);
 	struct skill_unit_group *group;
 
 	nullpo_retr(NULL, ud);
@@ -10356,19 +10428,20 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 	group->tick       = gettick();
 	group->valstr     = NULL;
 	linkdb_insert( &ud->skillunit, group, group );
-	if(skill_unit_group_newid<=0)
+
+	if(skill_unit_group_newid <= 0)
 		skill_unit_group_newid = MAX_SKILL_DB;
 
-	if (skill_get_unit_flag(skillid)&UF_DANCE) {
+	if(skill_get_unit_flag(skillid)&UF_DANCE) {
 		struct map_session_data *sd = NULL;
-		if( src->type==BL_PC && (sd = (struct map_session_data *)src) ){
-			sd->skillid_dance=skillid;
-			sd->skilllv_dance=skilllv;
+		if(src->type == BL_PC && (sd = (struct map_session_data *)src)) {
+			sd->skillid_dance = skillid;
+			sd->skilllv_dance = skilllv;
 		}
 		status_change_start(src,SC_DANCING,skillid,(int)group,0,0,skill_get_time(skillid,skilllv)+1000,0);
 		// 合奏スキルは相方をダンス状態にする
-		if (sd && skill_get_unit_flag(skillid)&UF_ENSEMBLE) {
-			int c=0;
+		if(sd && skill_get_unit_flag(skillid)&UF_ENSEMBLE) {
+			int c = 0;
 			map_foreachinarea(skill_check_condition_use_sub,sd->bl.m,
 				sd->bl.x-1,sd->bl.y-1,sd->bl.x+1,sd->bl.y+1,BL_PC,sd,&c);
 		}
@@ -10388,7 +10461,7 @@ int skill_delunitgroup(struct skill_unit_group *group)
 
 	nullpo_retr(0, group);
 
-	if(group->unit_count<=0)
+	if(group->unit_count <= 0)
 		return 0;
 
 	src = map_id2bl(group->src_id);
@@ -10396,7 +10469,7 @@ int skill_delunitgroup(struct skill_unit_group *group)
 		ud = unit_bl2ud(src);
 
 	// ダンススキルはダンス状態を解除する
-	if (skill_get_unit_flag(group->skill_id)&UF_DANCE) {
+	if(skill_get_unit_flag(group->skill_id)&UF_DANCE) {
 		if(src)
 			status_change_end(src,SC_DANCING,-1);
 	}
@@ -10430,20 +10503,22 @@ int skill_delunitgroup(struct skill_unit_group *group)
 		}
 	}
 
-	group->alive_count=0;
-	if(group->unit!=NULL){
-		for(i=0;i<group->unit_count;i++)
+	group->alive_count = 0;
+	if(group->unit != NULL) {
+		for(i=0; i<group->unit_count; i++) {
 			if(group->unit[i].alive)
 				skill_delunit(&group->unit[i]);
+		}
 	}
-	if(group->valstr!=NULL){
+	if(group->valstr != NULL) {
 		aFree(group->valstr);
-		group->valstr=NULL;
+		group->valstr = NULL;
 	}
 
 	linkdb_final( &group->tickset );
 	map_freeblock(group->unit);	/* free()の替わり */
 	map_freeblock(group);
+
 	return 0;
 }
 
@@ -10496,7 +10571,7 @@ static int skill_unit_timer_sub_onplace(struct block_list *bl, va_list ap)
 	if(!unit->alive)
 		return 0;
 
-	if (battle_check_target(&unit->bl,bl,group->target_flag)<=0)
+	if(battle_check_target(&unit->bl,bl,group->target_flag) <= 0)
 		return 0;
 
 	// 壁抜け防止の射線チェック
@@ -10532,46 +10607,45 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 	range = unit->range;
 
 	/* onplace_timerイベント呼び出し */
-	if (range>=0 && group->interval!=-1) {
+	if(range >= 0 && group->interval != -1)
+	{
 		map_foreachinarea(skill_unit_timer_sub_onplace, bl->m,
 			bl->x-range,bl->y-range,bl->x+range,bl->y+range,(BL_PC|BL_MOB|BL_MERC),unit,tick);
-		if (!unit->alive)
+		if(!unit->alive)
 			return 0;
 		// マグヌスは発動したユニットは削除する
-		if (group->skill_id==PR_MAGNUS && unit->val2) {
+		if(group->skill_id == PR_MAGNUS && unit->val2) {
 			skill_delunit(unit);
 			return 0;
 		}
 	}
+
 	// イドゥンの林檎による回復
-	if (group->unit_id==UNT_APPLEIDUN && DIFF_TICK(tick,group->tick)>=6000*group->val3) {
+	if(group->unit_id == UNT_APPLEIDUN && DIFF_TICK(tick,group->tick) >= 6000 * group->val3)
+	{
 		struct block_list *src = map_id2bl(group->src_id);
-		int range = skill_get_unit_layout_type(group->skill_id,group->skill_lv);
-		nullpo_retr(0, src);
-		if(src->type == BL_PC || src->type == BL_MOB)
-		{
+		if(src == NULL)
+			return 0;
+		if(src->type == BL_PC || src->type == BL_MOB) {
+			range = skill_get_unit_layout_type(group->skill_id,group->skill_lv);
 			map_foreachinarea(skill_idun_heal,src->m,
 				src->x-range,src->y-range,src->x+range,src->y+range,src->type,unit,src);
 		}
 		group->val3++;
 	}
-	/* 時間切れ削除 */
-	if((DIFF_TICK(tick,group->tick)>=group->limit || DIFF_TICK(tick,group->tick)>=unit->limit)){
-		switch(group->unit_id){
+
+	if(DIFF_TICK(tick,group->tick) >= group->limit || DIFF_TICK(tick,group->tick) >= unit->limit) {
+		/* 時間切れ削除 */
+		switch(group->unit_id) {
 			case UNT_WARP_WAITING:	/* ワープポータル(発動前) */
 				group->unit_id = UNT_WARP_ACTIVE;
 				clif_changelook(bl,LOOK_BASE,group->unit_id);
-				group->limit=skill_get_time(group->skill_id,group->skill_lv);
-				unit->limit=skill_get_time(group->skill_id,group->skill_lv);
-				map_foreachinarea(skill_unit_effect, unit->bl.m,
-					unit->bl.x, unit->bl.y, unit->bl.x, unit->bl.y, 0,
-					&unit->bl, gettick(), 1);
+				group->limit = unit->limit = skill_get_time(group->skill_id,group->skill_lv);
 				return 0;
 			case UNT_BLASTMINE:		/* ブラストマイン */
 				group->unit_id = UNT_USED_TRAPS;
 				clif_changelook(bl,LOOK_BASE,group->unit_id);
-				group->limit=DIFF_TICK(tick+1500,group->tick);
-				unit->limit=DIFF_TICK(tick+1500,group->tick);
+				group->limit = unit->limit = DIFF_TICK(tick+1500,group->tick);
 				return 0;
 
 			case UNT_ANKLESNARE:	/* アンクルスネア */
@@ -10592,12 +10666,12 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 				// fall through
 			case UNT_CLAYMORETRAP:	/* クレイモアートラップ */
 				{
-					struct block_list *src=map_id2bl(group->src_id);
-					if(src && src->type==BL_PC){
+					struct block_list *src = map_id2bl(group->src_id);
+					if(src && src->type == BL_PC) {
 						struct item item_tmp;
 						memset(&item_tmp,0,sizeof(item_tmp));
-						item_tmp.nameid=1065;
-						item_tmp.identify=1;
+						item_tmp.nameid   = 1065;
+						item_tmp.identify = 1;
 						map_addflooritem(&item_tmp,1,bl->m,bl->x,bl->y,NULL,NULL,NULL,0);	// 罠返還
 					}
 				}
@@ -10606,9 +10680,8 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 				break;
 		}
 		skill_delunit(unit);
-	}
-	/* 耐久切れチェック */
-	else {
+	} else {
+		/* 耐久切れチェック */
 		switch(group->unit_id) {
 			case UNT_ICEWALL:	/* アイスウォール */
 				unit->val1 -= 5;
@@ -10628,76 +10701,13 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 						skill_delunit(unit);
 					} else {
 						group->unit_id = UNT_USED_TRAPS;
-						group->limit=DIFF_TICK(tick,group->tick)+1500;
+						group->limit = DIFF_TICK(tick,group->tick)+1500;
 					}
 				}
 				break;
 		}
 	}
 
-	return 0;
-}
-
-static int skill_hermode_wp_check_sub(struct block_list *bl, va_list ap )
-{
-	int* flag;
-	struct npc_data *nd = NULL;
-
-	nullpo_retr(0, bl);
-	nullpo_retr(0, nd = (struct npc_data *)bl);
-
-	flag = va_arg(ap,int*);
-	if(*flag)
-		return 1;
-
-	if(nd->bl.subtype == WARP || (nd->bl.subtype == SCRIPT && nd->class_ == WARP_CLASS))
-		*flag = 1;
-
-	return *flag;
-}
-
-int skill_hermode_wp_check(struct block_list *bl,int range)
-{
-	int wp_flag=0;
-
-	nullpo_retr(0, bl);
-
-	map_foreachinarea(skill_hermode_wp_check_sub,bl->m,bl->x-range,bl->y-range,bl->x+range,bl->y+range,BL_NPC,&wp_flag);
-	return wp_flag;
-}
-
-/*==========================================
- * GANVATIENによるユニット削除
- *------------------------------------------
- */
-static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
-{
-	struct skill_unit *unit;
-
-	nullpo_retr(0, bl);
-	nullpo_retr(0, unit = (struct skill_unit *)bl);
-	nullpo_retr(0, unit->group);
-
-	switch(unit->group->skill_id)
-	{
-		case SA_LANDPROTECTOR:
-		case MG_SAFETYWALL:
-		case AL_PNEUMA:
-		case AL_WARP:
-		case PR_SANCTUARY:
-		case PR_MAGNUS:
-		case WZ_FIREPILLAR:
-		case WZ_ICEWALL:
-		case WZ_QUAGMIRE:
-		case AS_VENOMDUST:
-		case SA_VOLCANO:
-		case SA_DELUGE:
-		case SA_VIOLENTGALE:
-		case PF_FOGWALL:
-		case NJ_SUITON:
-			skill_delunit(unit);
-			break;
-	}
 	return 0;
 }
 
@@ -10740,7 +10750,7 @@ static int skill_unit_move_sub(struct block_list *bl, va_list ap)
 	if(!unit->alive || group->interval != -1)
 		return 0;
 
-	if (flag)
+	if(flag)
 		skill_unit_onplace(unit,target,tick);
 	else
 		skill_unit_onout(unit,target,tick);
@@ -10779,22 +10789,21 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 	int i,j,moveblock;
 	unsigned int tick = gettick();
 	unsigned char m_flag[MAX_SKILL_UNIT_COUNT];	// group->unit_countはMAX_SKILL_UNIT_COUNTを越えることはない
-	struct skill_unit *unit1;
-	struct skill_unit *unit2;
+	struct skill_unit *unit1, *unit2;
 
 	nullpo_retr(0, group);
 
-	if (group->unit_count<=0)
+	if(group->unit_count <= 0)
 		return 0;
-	if (group->unit==NULL)
+	if(group->unit == NULL)
 		return 0;
 
 	// 移動可能なスキルはダンス系と罠と温もりのみ
-	if ( !(skill_get_unit_flag(group->skill_id)&UF_DANCE) &&
+	if( !(skill_get_unit_flag(group->skill_id)&UF_DANCE) &&
 	     !skill_unit_istrap(group->unit_id) &&
 	     group->unit_id != UNT_WARM )
 		return 0;
-	if ( group->unit_id == UNT_ANKLESNARE && group->val2 > 0 )	// 補足中のアンクルは移動不可
+	if( group->unit_id == UNT_ANKLESNARE && group->val2 > 0 )	// 補足中のアンクルは移動不可
 		return 0;
 
 	// 移動フラグ
@@ -10806,19 +10815,19 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 	//	  1: ユニットを移動する(現位置からユニットがなくなる)
 	//	  2: 残留＆新位置が移動先となる(移動先にユニットが存在しない)
 	//	  3: 残留
-	for(i=0;i<group->unit_count;i++){
-		unit1=&group->unit[i];
-		if (!unit1->alive || unit1->bl.m!=m)
+	for(i=0; i<group->unit_count; i++) {
+		unit1= &group->unit[i];
+		if(!unit1->alive || unit1->bl.m != m)
 			continue;
-		for(j=0;j<group->unit_count;j++){
-			unit2=&group->unit[j];
-			if (!unit2->alive)
+		for(j=0; j<group->unit_count; j++) {
+			unit2 = &group->unit[j];
+			if(!unit2->alive)
 				continue;
-			if (unit1->bl.x+dx==unit2->bl.x && unit1->bl.y+dy==unit2->bl.y){
+			if(unit1->bl.x + dx == unit2->bl.x && unit1->bl.y + dy == unit2->bl.y) {
 				// 移動先にユニットがかぶっている
 				m_flag[i] |= 0x1;
 			}
-			if (unit1->bl.x-dx==unit2->bl.x && unit1->bl.y-dy==unit2->bl.y){
+			if(unit1->bl.x - dx == unit2->bl.x && unit1->bl.y - dy == unit2->bl.y) {
 				// ユニットがこの場所にやってくる
 				m_flag[i] |= 0x2;
 			}
@@ -10827,17 +10836,17 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 	// フラグに基づいてユニット移動
 	// フラグが1のunitを探し、フラグが2のunitの移動先に移す
 	j = 0;
-	for (i=0;i<group->unit_count;i++) {
-		unit1=&group->unit[i];
-		if (!unit1->alive)
+	for(i=0; i<group->unit_count; i++) {
+		unit1 = &group->unit[i];
+		if(!unit1->alive)
 			continue;
-		if (!(m_flag[i]&0x2)) {
+		if(!(m_flag[i]&0x2)) {
 			// ユニットがなくなる場所でスキルユニット影響を消す
 			map_foreachinarea(skill_unit_effect,unit1->bl.m,
-				unit1->bl.x,unit1->bl.y,unit1->bl.x,unit1->bl.y,0,
+				unit1->bl.x,unit1->bl.y,unit1->bl.x,unit1->bl.y,(BL_PC|BL_MOB|BL_MERC),
 				&unit1->bl,tick,0);
 		}
-		if (m_flag[i]==0) {
+		if(m_flag[i] == 0) {
 			// 単純移動
 			moveblock = map_block_is_differ(&unit1->bl, m, unit1->bl.x+dx, unit1->bl.y+dy);
 			if(moveblock)
@@ -10848,13 +10857,13 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 			if(moveblock)
 				map_addblock(&unit1->bl);
 			clif_skill_setunit(unit1);
-		} else if (m_flag[i]==1) {
+		} else if(m_flag[i] == 1) {
 			// フラグが2のものを探してそのユニットの移動先に移動
-			for(;j<group->unit_count;j++) {
-				if (m_flag[j]==2) {
+			for( ; j<group->unit_count; j++) {
+				if(m_flag[j] == 2) {
 					// 継承移動
 					unit2 = &group->unit[j];
-					if (!unit2->alive)
+					if(!unit2->alive)
 						continue;
 					moveblock = map_block_is_differ(&unit1->bl, m, unit2->bl.x+dx, unit2->bl.y+dy);
 					if(moveblock)
@@ -10870,7 +10879,7 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 				}
 			}
 		}
-		if (!(m_flag[i]&0x2)) {
+		if(!(m_flag[i]&0x2)) {
 			// 移動後の場所でスキルユニットを発動
 			map_foreachinarea(skill_unit_effect,unit1->bl.m,
 				unit1->bl.x,unit1->bl.y,unit1->bl.x,unit1->bl.y,(BL_PC|BL_MOB|BL_MERC),
@@ -11856,10 +11865,10 @@ static int skill_balkyoung( struct block_list *bl,va_list ap )
 	// 本人には適用しない?
 	if(bl->id == tbl->id)
 		return 0;
-	if(battle_check_target(src,bl,BCT_ENEMY)<=0)
+	if(battle_check_target(src,bl,BCT_ENEMY) <= 0)
 		return 0;
 
-	sc_def_vit=100 - (3 + status_get_vit(bl) + status_get_luk(bl)/3);
+	sc_def_vit = 100 - (3 + status_get_vit(bl) + status_get_luk(bl)/3);
 	skill_blown(src,bl,2);	// 吹き飛ばしてみる
 	if(atn_rand()%100 < 70*sc_def_vit/100)
 		status_change_start(bl,SC_STAN,1,0,0,0,2000,0);
@@ -11871,12 +11880,13 @@ static int skill_balkyoung( struct block_list *bl,va_list ap )
  * キャスリングのターゲット変更
  *------------------------------------------
  */
-static int skill_chastle_mob_changetarget(struct block_list *bl,va_list ap)
+static int skill_castle_mob_changetarget(struct block_list *bl,va_list ap)
 {
 	struct mob_data* md;
 	struct block_list *from_bl;
 	struct block_list *to_bl;
 
+	nullpo_retr(0, bl);
 	nullpo_retr(0, md = (struct mob_data*)bl);
 	nullpo_retr(0, from_bl = va_arg(ap,struct block_list *));
 	nullpo_retr(0, to_bl = va_arg(ap,struct block_list *));

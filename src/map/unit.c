@@ -307,7 +307,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 			if(battle_config.hermode_wp_check &&
 			   sd->sc_data[SC_DANCING].timer != -1 &&
 			   sd->sc_data[SC_DANCING].val1 == CG_HERMODE) {
-				if(skill_hermode_wp_check(&sd->bl,battle_config.hermode_wp_check_range) == 0)
+				if(skill_hermode_wp_check(&sd->bl) == 0)
 					skill_stop_dancing(&sd->bl,0);
 			}
 			/* クローキングの消滅検査 */

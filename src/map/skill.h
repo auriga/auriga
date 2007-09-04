@@ -190,7 +190,7 @@ int skill_delayfix( struct block_list *bl, int time, int cast );
 int skill_unit_move(struct block_list *bl,unsigned int tick,int flag);
 int skill_unit_move_unit_group( struct skill_unit_group *group, int m,int dx,int dy);
 
-int skill_hermode_wp_check(struct block_list *bl,int range);
+int skill_hermode_wp_check(struct block_list *bl);
 
 struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,int skilllv,int x,int y,int flag);
 struct skill_unit_group *skill_check_dancing( struct block_list *src );
