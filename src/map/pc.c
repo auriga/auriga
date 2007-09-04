@@ -981,7 +981,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->weapontype1 = sd->weapontype2 = 0;
 
 	if(sd->status.class_ == PC_CLASS_GS || sd->status.class_ == PC_CLASS_NJ)
-		sd->view_class = sd->status.class_-4;
+		sd->view_class = sd->status.class_ - 4;
 	else
 		sd->view_class = sd->status.class_;
 
@@ -5980,12 +5980,13 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	}
 
 	if((sd->sex == 0 && job == 19) || (sd->sex == 1 && job == 20) ||
-	   job == 13 || job == 21 || job == 22 || job == 26 || sd->status.class_ == b_class)	// ♀はバードになれない、♂はダンサーになれない、結婚衣裳もお断り
+	   job == 13 || job == 21 || job == 22 || job == 26 || job == 27 ||
+	   sd->status.class_ == b_class)	// ♀はバードになれない、♂はダンサーになれない、結婚衣裳もお断り
 		return 1;
 
 	sd->status.class_ = sd->view_class = b_class;
 	if(sd->status.class_ == PC_CLASS_GS || sd->status.class_ == PC_CLASS_NJ)
-		sd->view_class = sd->status.class_-4;
+		sd->view_class = sd->status.class_ - 4;
 
 	// 元職業を再設定
 	sd->s_class = pc_calc_base_job(sd->status.class_);

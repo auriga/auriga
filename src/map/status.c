@@ -307,7 +307,7 @@ L_RECALC:
 	refinedef = 0;
 	sd->view_class = sd->status.class_;
 	if(sd->view_class == PC_CLASS_GS || sd->view_class == PC_CLASS_NJ)
-		sd->view_class = sd->view_class - 4;
+		sd->view_class -= 4;
 
 	sd->race = RCT_HUMAN;
 	sd->ranker_weapon_bonus  = 0;
@@ -1286,9 +1286,12 @@ L_RECALC:
 		aspd_rate -= 20;
 		sd->perfect_hit += 100;
 	}
-	if(sd && sd->sc_data[SC_SANTA].timer != -1)
-	{
-		sd->view_class = 26;
+
+	if(sd) {
+		if(sd->sc_data[SC_SANTA].timer != -1)
+			sd->view_class = 26;
+		else if(sd->sc_data[SC_SUMMER].timer != -1)
+			sd->view_class = 27;
 	}
 
 	if((skill = pc_checkskill(sd,AC_VULTURE)) > 0) {	// ワシの目
@@ -4519,6 +4522,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_ASSNCROS:			/* 夕陽のアサシンクロス */
 		case SC_APPLEIDUN:			/* イドゥンの林檎 */
 		case SC_SANTA:
+		case SC_SUMMER:
 		case SC_TRUESIGHT:			/* トゥルーサイト */
 		case SC_SPIDERWEB:			/* スパイダーウェッブ */
 		case SC_TWOHANDQUICKEN:			/* 2HQ */
@@ -5629,6 +5633,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_INCMATK:			/* MATK上昇 (神秘の草用) */
 		case SC_WEDDING:			/* ウェディング */
 		case SC_SANTA:
+		case SC_SUMMER:
 		case SC_INCALLSTATUS:
 		case SC_INCHIT:
 		case SC_INCFLEE:

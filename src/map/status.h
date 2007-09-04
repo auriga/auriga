@@ -185,7 +185,7 @@ enum {
 	SC_PROVIDENCE           = 61,
 	SC_DEFENDER             = 62,
 	SC_SANTA                = 63,
-	//
+	SC_SUMMER               = 64,
 	SC_AUTOSPELL            = 65,
 	//
 	//

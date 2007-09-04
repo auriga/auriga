@@ -57,7 +57,7 @@
 61,SC_PROVIDENCE,0,7,0			// プロヴィデンス
 62,SC_DEFENDER,0,7,0			// ディフェンダー
 63,SC_SANTA,0,1,0			// サンタ
-//
+64,SC_SUMMER,0,1,0			// 涼しい夏衣装
 65,SC_AUTOSPELL,0,7,0			// オートスペル
 //
 68,SC_SPEARSQUICKEN,1,7,14		// スピアクイッケン
