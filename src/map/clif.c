@@ -8976,32 +8976,31 @@ void clif_hom_food(struct map_session_data *sd, int foodid, unsigned char fail)
 void clif_homskillinfoblock(struct map_session_data *sd)
 {
 	int fd;
-	int i,c,len=4,id,skill_lv;
+	int i,len=4,id,skill_lv;
 	struct homun_data *hd;
 
 	nullpo_retv(sd);
-	nullpo_retv((hd=sd->hd));
+	nullpo_retv(hd = sd->hd);
 
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x235;
-	for ( i = c = 0; i < MAX_HOMSKILL; i++){
-		if( (id=hd->status.skill[i].id)!=0 ){
-			WFIFOW(fd,len  ) = id;
-			WFIFOL(fd,len+2) = skill_get_inf(id);
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x235;
+	for(i = 0; i < MAX_HOMSKILL; i++) {
+		if((id = hd->status.skill[i].id) != 0) {
 			skill_lv = hd->status.skill[i].lv;
-			WFIFOW(fd,len+6) = skill_lv;
-			WFIFOW(fd,len+8) = skill_get_sp(id,skill_lv);
-			WFIFOW(fd,len+10)= skill_get_fixed_range(&hd->bl,id,skill_lv);
+			WFIFOW(fd,len  )  = id;
+			WFIFOL(fd,len+2)  = skill_get_inf(id);
+			WFIFOW(fd,len+6)  = skill_lv;
+			WFIFOW(fd,len+8)  = skill_get_sp(id,skill_lv);
+			WFIFOW(fd,len+10) = skill_get_fixed_range(&hd->bl,id,skill_lv);
 			memset(WFIFOP(fd,len+12),0,24);
 			if(!(skill_get_inf2(id)&0x01))
 				WFIFOB(fd,len+36) = (skill_lv < homun_get_skilltree_max(hd->status.class_,id) && hd->status.skill[i].flag == 0)? 1: 0;
 			else
 				WFIFOB(fd,len+36) = 0;
-			len+=37;
-			c++;
+			len += 37;
 		}
 	}
-	WFIFOW(fd,2)=len;
+	WFIFOW(fd,2) = len;
 	WFIFOSET(fd,len);
 
 	return;
@@ -9354,7 +9353,7 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
 	WFIFOW(fd,14) = mcd->def;
 	WFIFOW(fd,16) = mcd->mdef;
 	WFIFOW(fd,18) = mcd->flee;
-	WFIFOW(fd,20) = (flag)? 0: /*status_get_amotion(&mcd->bl)*/0 + 200;
+	WFIFOW(fd,20) = (flag)? 0: status_get_amotion(&mcd->bl) + 200;
 	memcpy(WFIFOP(fd,22), mcd->status.name, 24);
 	WFIFOW(fd,46) = mcd->status.base_level;
 	WFIFOW(fd,48) = mcd->status.hp;
@@ -9362,8 +9361,8 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
 	WFIFOW(fd,52) = mcd->status.sp;
 	WFIFOW(fd,54) = mcd->max_sp;
 	WFIFOL(fd,56) = mcd->status.limit;	// 雇用期限
-	WFIFOW(fd,60) = 62;	// ネームバリュー
-	WFIFOL(fd,62) = 22;	// 召喚回数
+	WFIFOW(fd,60) = 0;	// ネームバリュー
+	WFIFOL(fd,62) = 0;	// 召喚回数
 	WFIFOL(fd,66) = mcd->status.kill_count;	// キルカウント
 	WFIFOW(fd,70) = 0;	// ??
 	WFIFOSET(fd,packet_db[0x29b].len);
@@ -9377,63 +9376,30 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
  */
 void clif_mercskillinfoblock(struct map_session_data *sd)
 {
-/*
 	int fd;
-	int i,c,len=4,id,skill_lv;
-	struct homun_data *hd;
+	int i,len=4,id,skill_lv;
+	struct merc_data *mcd;
 
 	nullpo_retv(sd);
-	nullpo_retv((hd=sd->hd));
+	nullpo_retv(mcd = sd->mcd);
 
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x29d;
-	for ( i = c = 0; i < MAX_HOMSKILL; i++){
-		if( (id=hd->status.skill[i].id)!=0 ){
-			WFIFOW(fd,len  ) = id;
-			WFIFOL(fd,len+2) = skill_get_inf(id);
-			skill_lv = hd->status.skill[i].lv;
-			WFIFOW(fd,len+6) = skill_lv;
-			WFIFOW(fd,len+8) = skill_get_sp(id,skill_lv);
-			WFIFOW(fd,len+10)= skill_get_fixed_range(&hd->bl,id,skill_lv);
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x29d;
+	for(i = 0; i < MAX_MERCSKILL; i++){
+		if((id = mcd->status.skill[i].id) != 0) {
+			skill_lv = mcd->status.skill[i].lv;
+			WFIFOW(fd,len  )  = id;
+			WFIFOL(fd,len+2)  = skill_get_inf(id);
+			WFIFOW(fd,len+6)  = skill_lv;
+			WFIFOW(fd,len+8)  = skill_get_sp(id,skill_lv);
+			WFIFOW(fd,len+10) = skill_get_fixed_range(&mcd->bl,id,skill_lv);
 			memset(WFIFOP(fd,len+12),0,24);
-			if(!(skill_get_inf2(id)&0x01))
-				WFIFOB(fd,len+36) = (skill_lv < homun_get_skilltree_max(hd->status.class_,id) && hd->status.skill[i].flag == 0)? 1: 0;
-			else
-				WFIFOB(fd,len+36) = 0;
-			len+=37;
-			c++;
+			WFIFOB(fd,len+36) = 0;
+			len += 37;
 		}
 	}
-	WFIFOW(fd,2)=len;
+	WFIFOW(fd,2) = len;
 	WFIFOSET(fd,len);
-*/
-	return;
-}
-
-/*==========================================
- * 傭兵スキル割り振り通知
- *------------------------------------------
- */
-void clif_mercskillup(struct map_session_data *sd, int skill_num)
-{
-/*
-	int fd,skillid;
-	struct homun_data *hd;
-
-	nullpo_retv(sd);
-	nullpo_retv((hd=sd->hd));
-
-	skillid = skill_num-HOM_SKILLID;
-
-	fd=sd->fd;
-	WFIFOW(fd,0) = 0x29e;
-	WFIFOW(fd,2) = skill_num;
-	WFIFOW(fd,4) = hd->status.skill[skillid].lv;
-	WFIFOW(fd,6) = skill_get_sp(skill_num,hd->status.skill[skillid].lv);
-	WFIFOW(fd,8) = skill_get_fixed_range(&hd->bl,skill_num,hd->status.skill[skillid].lv);
-	WFIFOB(fd,10) = (hd->status.skill[skillid].lv < homun_get_skilltree_max(hd->status.class_,hd->status.skill[skillid].id)) ? 1 : 0;
-	WFIFOSET(fd,packet_db[0x29e].len);
-*/
 
 	return;
 }

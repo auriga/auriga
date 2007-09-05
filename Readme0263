@@ -1,4 +1,20 @@
 ----------------------------------------
+//0315 [2007/09/06] by Rayce
+
+・傭兵実装準備その４
+	-> ステータス再計算を暫定的に用意（merc.*, status.c）
+	-> スキルツリーの準備（clif.*, merc.*）
+
+・clif_homskillinfoblock() を少し整形（clif.c）
+・MAX_HOMSKILL_TREEを5に縮小（homun.*）
+	ホムの各クラスにおいて取得可能なスキルは最大で4個になります。
+	さらに増やしたい方はdb/homun_skill_tree.txtにスキルを書き加えた上で
+	MAX_HOMSKILL_TREE を適宜変更してください。
+
+・AthenaProject2318よりmerge、thanks to ICOさん
+	-> おいしい血の炭酸ソーダの材料を修正（db/produce_db.txt）
+
+----------------------------------------
 //0314 [2007/09/06] by Rayce
 
 ・ジークフリードの証の効果実装（clif.c）

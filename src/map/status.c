@@ -2288,7 +2288,7 @@ int status_get_range(struct block_list *bl)
 		return mob_db[((struct pet_data *)bl)->class_].range;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
 		return 2;//((struct homun_data *)bl)->attackrange;
-	else if(bl->type == BL_HOM && (struct homun_data *)bl)
+	else if(bl->type == BL_MERC && (struct merc_data *)bl)
 		return ((struct merc_data *)bl)->attackrange;
 
 	return 0;
@@ -4238,10 +4238,11 @@ int status_check_dummy_sc_data(struct block_list *bl)
  */
 int status_change_start(struct block_list *bl,int type,int val1,int val2,int val3,int val4,int tick,int flag)
 {
-	struct map_session_data *sd = NULL;
-	struct mob_data *md = NULL;
-	struct homun_data *hd = NULL;
-	struct status_change* sc_data;
+	struct map_session_data *sd  = NULL;
+	struct mob_data         *md  = NULL;
+	struct homun_data       *hd  = NULL;
+	struct merc_data        *mcd = NULL;
+	struct status_change    *sc_data = NULL;
 	short *sc_count;
 	unsigned short *opt1, *opt2;
 	unsigned int *opt3, *option;
@@ -4342,15 +4343,16 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(!(flag&8) && scdef >= 100)	// flagが+8なら完全耐性計算しない
 		return 0;
 
-	if( bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_HOM ) {
+	if( bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_HOM && bl->type != BL_MERC ) {
 		if(battle_config.error_log)
-			printf("status_change_start: neither MOB nor PC !\n");
+			printf("status_change_start: neither PC, MOB, HOM, MERC !\n");
 		return 0;
 	}
 
-	sd = BL_DOWNCAST( BL_PC,  bl );
-	md = BL_DOWNCAST( BL_MOB, bl );
-	hd = BL_DOWNCAST( BL_HOM, bl );
+	sd  = BL_DOWNCAST( BL_PC,   bl );
+	md  = BL_DOWNCAST( BL_MOB,  bl );
+	hd  = BL_DOWNCAST( BL_HOM,  bl );
+	mcd = BL_DOWNCAST( BL_MERC, bl );
 
 	if( sd ) {
 		// アドレナリンラッシュの武器判定
@@ -5497,12 +5499,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 
 	if(calc_flag) {
 		// ステータス再計算
-		if(sd && !(flag&4)) {
-			status_calc_pc(sd,0);
-		}
-		if(hd) {
+		if(sd) {
+			if(!(flag&4))
+				status_calc_pc(sd,0);
+		} else if(hd) {
 			homun_calc_status(hd);
 			clif_send_homstatus(hd->msd,0);
+		} else if(mcd) {
+			merc_calc_status(mcd);
+			clif_send_mercstatus(mcd->msd,0);
 		}
 	}
 	// 計算後に走らせる
@@ -5539,9 +5544,9 @@ int status_change_end( struct block_list* bl , int type,int tid)
 
 	if(type < 0)
 		return 0;
-	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_HOM) {
+	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_HOM && bl->type != BL_MERC) {
 		if(battle_config.error_log)
-			printf("status_change_end: neither MOB nor PC !\n");
+			printf("status_change_end: neither PC, MOB, HOM, MERC !\n");
 		return 0;
 	}
 
@@ -6105,15 +6110,22 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		clif_send_clothcolor(bl);
 	}
 
-	if(sd // && !(flag&4) // これを追加すると利点が増えると思うけど
-		&& (calc_flag || sd->auto_status_calc_pc[type] == 1))
-	{
-		status_calc_pc(sd,0);	/* ステータス再計算 */
-	}
-	if(bl->type == BL_HOM && calc_flag)
-	{
-		homun_calc_status((struct homun_data*)bl);
-		clif_send_homstatus(((struct homun_data*)bl)->msd,0);
+	if(sd) {
+		if(calc_flag || sd->auto_status_calc_pc[type] == 1) {
+			status_calc_pc(sd,0);	/* ステータス再計算 */
+		}
+	} else if(bl->type == BL_HOM) {
+		struct homun_data *hd = (struct homun_data *)bl;
+		if(hd && calc_flag) {
+			homun_calc_status(hd);
+			clif_send_homstatus(hd->msd,0);
+		}
+	} else if(bl->type == BL_MERC) {
+		struct merc_data *mcd = (struct merc_data *)bl;
+		if(mcd && calc_flag) {
+			merc_calc_status(mcd);
+			clif_send_mercstatus(mcd->msd,0);
+		}
 	}
 
 	return 0;

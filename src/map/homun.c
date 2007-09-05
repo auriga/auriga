@@ -1609,7 +1609,7 @@ static int read_homundb(void)
 /*==========================================
  * 設定ファイル読み込む
  * exp.txt 必要経験値
- * skill_tree.txt スキルツリー
+ * homun_skill_tree.txt スキルツリー
  *------------------------------------------
  */
 static int homun_readdb(void)

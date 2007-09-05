@@ -2,12 +2,11 @@
 #define _HOMUN_H_
 
 #include "map.h"
-#include "mob.h"
 
 #define NATURAL_HEAL_HP_INTERVAL 2*1000
 #define NATURAL_HEAL_SP_INTERVAL 4*1000
 
-#define MAX_HOMSKILL_TREE 16
+#define MAX_HOMSKILL_TREE 5
 
 struct homun_db {
 	short class_;
