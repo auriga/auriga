@@ -12929,6 +12929,37 @@ static void clif_parse_HotkeySave(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * ジークフリードの証による復活
+ *------------------------------------------
+ */
+static void clif_parse_Revive(int fd,struct map_session_data *sd, int cmd)
+{
+	int idx;
+
+	nullpo_retv(sd);
+
+	if(map[sd->bl.m].flag.pvp && sd->pvp_point < 0)	// PVPで復活不可能状態
+		return;
+	if(!unit_isdead(&sd->bl))
+		return;
+	if((idx = pc_search_inventory(sd,7621)) < 0)	// ジークフリードの証を所持していない
+		return;
+
+	pc_delitem(sd,idx,1,0);
+	sd->status.hp = sd->status.max_hp;
+	sd->status.sp = sd->status.max_sp;
+	clif_updatestatus(sd,SP_HP);
+	clif_updatestatus(sd,SP_SP);
+	pc_setstand(sd);
+	if(battle_config.pc_invincible_time > 0)
+		pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
+	clif_resurrection(&sd->bl,1);
+	clif_misceffect2(&sd->bl,77);	// リザのエフェクトを付けてみる
+
+	return;
+}
+
+/*==========================================
  * 傭兵メニュー
  *------------------------------------------
  */
@@ -13119,6 +13150,7 @@ static struct {
 	{ clif_parse_ReturnMail,                "returnmail"                },
 	{ clif_parse_FeelSaveAck,               "feelsaveack"               },
 	{ clif_parse_HotkeySave,                "hotkeysave"                },
+	{ clif_parse_Revive,                    "revive"                    },
 	{ clif_parse_MercMenu,                  "mercmenu"                  },
 	{ NULL,                                 NULL                        },
 };

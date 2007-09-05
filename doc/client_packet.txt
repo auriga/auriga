@@ -1617,6 +1617,9 @@ S 028d <account_id>.l <char_id>.l <name>.24B
 	キャラクターセレクト画面で名前を変えるボタンを押した
 R 0291 <type>.w
 	msgstringtableのメッセージが白文字で出力される
+S 0292
+	ジークフリードの証を所持した状態で死亡した後、
+	復活ダイアログを選択した
 R 0293 <type>.B <x>.l <y>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
 	凸面鏡使用
 	type=0 : この地域ではボスモンスターの出現確認ができません。
@@ -1639,7 +1642,7 @@ R 0299 <index>.w <itemid>.w
 	強化装備アイテム「<itemid>」が削除されました。
 R 029a <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <time>.l
 	アイテム獲得、0xa0の上位版
-R 029b <ID?>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <limit>.l <name_value>.w <call_count>.l <kill_count>.l <?>.w
+R 029b <ID>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <limit>.l <name_value>.w <call_count>.l <kill_count>.l <?>.w
 	傭兵のステータス情報まとめて送り付け、0x22eの傭兵版
 R 029d <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	傭兵用スキル情報の塊、0x10fと同じ
@@ -1666,7 +1669,19 @@ R 02a3 <?>.l <?>.12B
 S 02a5 <?>.w <?>.l
 	マウスのスクロールを高速で動かすと飛んでくる
 	未調査
-R 02ae
+R 02b1
+	未調査
+R 02b2
+	未調査
+R 02b3
+	未調査
+R 02b4
+	未調査
+R 02b5
+	未調査
+R 02b7
+	未調査
+R 02b8
 	未調査
 R 02b9 { <type>.B <ID>.l <lv>.w }*27
 	ショーカットキー情報受信
@@ -1674,3 +1689,23 @@ S 02ba <index>.w <type>.B <ID>.l <lv>.w
 	ショートカットキー保存要求
 	type=0 : アイテム
 	type=1 : スキル
+R 02bb
+	未調査
+R 02bf
+	未調査
+R 02bb
+	未調査
+R 02bf
+	未調査
+R 02bb
+	未調査
+R 02bf
+	未調査
+R 02c1
+	未調査
+R 02c2
+	未調査
+R 02c5
+	未調査
+R 02c6
+	未調査
