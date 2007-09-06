@@ -10098,7 +10098,8 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 			   sd->sc_data[SC_BASILICA].timer != -1 ||
 			   sd->sc_data[SC_GOSPEL].timer != -1 ||
 			   sd->sc_data[SC_SANTA].timer != -1 ||
-			   sd->sc_data[SC_SUMMER].timer != -1)
+			   sd->sc_data[SC_SUMMER].timer != -1 ||
+			   sd->sc_data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2)
 				return;
 			if(sd->invincible_timer != -1)
 				pc_delinvincibletimer(sd);
@@ -10349,7 +10350,8 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc_data[SC_BERSERK].timer != -1 ||	// バーサーク
 	    sd->sc_data[SC_FULLBUSTER].timer != -1 ||	// フルバスター
 	    sd->sc_data[SC_WEDDING].timer != -1 ||	// 結婚衣装
-	    sd->sc_data[SC_NOCHAT].timer != -1 )	// 会話禁止
+	    sd->sc_data[SC_NOCHAT].timer != -1 ||	// 会話禁止
+	    sd->sc_data[SC_GRAVITATION_USER].timer != -1 )	// グラビテーションフィールド使用者
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;

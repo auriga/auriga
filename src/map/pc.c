@@ -5027,8 +5027,8 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	if(damage > sd->status.max_hp>>2)
 		skill_stop_dancing(&sd->bl,0);
 
-	if(damage > 0)
-		skill_stop_gravitation(&sd->bl);
+	if(damage > 0 && sd->sc_data[SC_GRAVITATION_USER].timer != -1)
+		status_change_end(&sd->bl, SC_GRAVITATION_USER, -1);
 
 	// 先制された場合は共闘参加
 	if(src && src->type == BL_MOB)

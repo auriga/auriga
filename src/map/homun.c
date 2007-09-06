@@ -749,7 +749,7 @@ int homun_callhom(struct map_session_data *sd)
 			clif_homskillinfoblock(sd);
 			sd->hd->status.incubate = 1;
 			homun_save_data(sd);
-			//skill_unit_move(&sd->hd->bl,gettick(),1);
+			skill_unit_move(&sd->hd->bl,gettick(),1);
 		}
 	} else if(sd->status.homun_id <= 0 && sd->state.homun_creating == 0) {
 		// 初誕生なら、データ作成
@@ -1317,8 +1317,8 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
 	// 歩いていたら足を止める
 	unit_stop_walking(&hd->bl,battle_config.pc_hit_stop_type);
 
-	if(damage > 0)
-		skill_stop_gravitation(&hd->bl);
+	if(damage > 0 && hd->sc_data[SC_GRAVITATION_USER].timer != -1)
+		status_change_end(&hd->bl, SC_GRAVITATION_USER, -1);
 
 	if(hd->bl.prev == NULL) {
 		if(battle_config.error_log)
@@ -1346,7 +1346,7 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
 			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
 		// スキルユニットからの離脱
 		hd->status.hp = 1;
-		//skill_unit_move(&hd->bl,gettick(),0);
+		skill_unit_move(&hd->bl,gettick(),0);
 		hd->status.hp = 0;
 
 		hd->status.incubate = 0;
@@ -1364,7 +1364,7 @@ int homun_heal(struct homun_data *hd,int hp,int sp)
 	nullpo_retr(0, hd);
 
 	// バーサーク中は回復させない
-	if(hd->sc_data && hd->sc_data[SC_BERSERK].timer != -1) {
+	if(hd->sc_data[SC_BERSERK].timer != -1) {
 		if(sp > 0)
 			sp = 0;
 		if(hp > 0)

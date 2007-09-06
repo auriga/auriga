@@ -286,7 +286,7 @@ int SkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること
 	/* 470- */
 	SC_SWOO,SC_SKE,SC_SKA,-1,-1,SC_PRESERVE,-1,-1,-1,-1,
 	/* 480- */
-	-1,-1,SC_DOUBLECASTING,-1,SC_GRAVITATION,-1,SC_OVERTHRUSTMAX,SC_LONGINGFREEDOM,SC_HERMODE,-1,
+	-1,-1,SC_DOUBLECASTING,-1,SC_GRAVITATION_USER,-1,SC_OVERTHRUSTMAX,SC_LONGINGFREEDOM,SC_HERMODE,-1,
 	/* 490- */
 	-1,-1,-1,-1,SC_HIGH,SC_ONEHAND,-1,-1,-1,-1,
 	/* 500- */
@@ -5925,8 +5925,8 @@ int skill_castend_pos( int tid, unsigned int tick, int id,int data )
  */
 int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skilllv,unsigned int tick,int flag)
 {
-	struct map_session_data *sd=NULL;
-	struct mob_data *md=NULL;
+	struct map_session_data *sd = NULL;
+	struct mob_data *md = NULL;
 
 	nullpo_retr(0, src);
 
@@ -6034,8 +6034,14 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case HW_GRAVITATION:		/* グラビテーションフィールド */
 		{
 			struct skill_unit_group *sg = skill_unitsetting(src,skillid,skilllv,x,y,0);
-			if(sg)
-				status_change_start(src,SC_GRAVITATION_USER,skilllv,(int)sg,0,0,skill_get_time(skillid,skilllv),0 );
+			if(sg) {
+				struct unit_data *ud = unit_bl2ud(src);
+				if(ud && DIFF_TICK(ud->canact_tick, tick) < 5000) {
+					// 発動後5秒間はリログ禁止
+					ud->canact_tick = tick + 5000;
+				}
+				status_change_start(src,SC_GRAVITATION_USER,skilllv,0,0,(int)sg,skill_get_time(skillid,skilllv),0 );
+			}
 		}
 		break;
 	case RG_GRAFFITI:			/* グラフィティ */
@@ -7488,9 +7494,9 @@ int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage
 	struct skill_unit_group *sg;
 
 	nullpo_retr(0, src);
-	nullpo_retr(0, sg=src->group);
+	nullpo_retr(0, sg = src->group);
 
-	switch(sg->unit_id){
+	switch(sg->unit_id) {
 	case UNT_ICEWALL:		/* アイスウォール */
 	case UNT_SKIDTRAP:		/* スキッドトラップ */
 	case UNT_LANDMINE:		/* ランドマイン */
@@ -7500,9 +7506,13 @@ int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage
 	case UNT_FREEZINGTRAP:		/* フリージングトラップ */
 	case UNT_TALKIEBOX:		/* トーキーボックス */
 	case UNT_ANKLESNARE:		/* アンクルスネア */
-		src->val1-=damage;
+		src->val1 -= damage;
 		break;
 	case UNT_BLASTMINE:		/* ブラストマイン */
+		if(bl == NULL) {
+			damage = 0;
+			break;
+		}
 		skill_blown(bl,&src->bl,2);	// 吹き飛ばしてみる
 		break;
 	default:
@@ -10270,28 +10280,6 @@ int skill_hermode_wp_check(struct block_list *bl)
 }
 
 /*==========================================
- * ガンバンテイン停止
- *------------------------------------------
- */
-void skill_stop_gravitation(struct block_list *src)
-{
-	struct status_change *sc_data;
-	struct skill_unit_group *group;
-
-	nullpo_retv(src);
-
-	sc_data = status_get_sc_data(src);
-	if(!sc_data || sc_data[SC_GRAVITATION_USER].timer == -1)
-		return;
-
-	group = (struct skill_unit_group *)sc_data[SC_GRAVITATION_USER].val2;
-
-	status_change_end(src,SC_GRAVITATION_USER,-1);
-
-	skill_delunitgroup(group);
-}
-
-/*==========================================
  * ガンバンテインによるユニット削除
  *------------------------------------------
  */
@@ -10479,16 +10467,11 @@ int skill_delunitgroup(struct skill_unit_group *group)
 	case UNT_GOSPEL:
 	case UNT_GRAFFITI:
 	case UNT_WARM:
-		{
-			struct status_change *sc_data;
-			int type;
-
-			if(src == NULL)
-				break;
-			if((sc_data = status_get_sc_data(src)) == NULL)
-				break;
-			type = SkillStatusChangeTable[group->skill_id];
-			if(type >= 0 && sc_data[type].timer != -1) {
+	case UNT_GRAVITATION:
+		if(src) {
+			struct status_change *sc_data = status_get_sc_data(src);
+			int type = SkillStatusChangeTable[group->skill_id];
+			if(type >= 0 && sc_data && sc_data[type].timer != -1) {
 				sc_data[type].val4 = 0;
 				status_change_end(src,type,-1);
 			}

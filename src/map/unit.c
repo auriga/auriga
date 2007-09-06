@@ -1980,6 +1980,10 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		if(sc_data[SC_GOSPEL].timer != -1) {
 			status_change_end(bl, SC_GOSPEL, -1);
 		}
+		// グラビテーションフィールド使用者削除
+		if(sc_data[SC_GRAVITATION_USER].timer != -1) {
+			status_change_end(bl, SC_GRAVITATION_USER, -1);
+		}
 		sc_data = NULL;
 	}
 

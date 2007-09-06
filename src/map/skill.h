@@ -195,7 +195,6 @@ int skill_hermode_wp_check(struct block_list *bl);
 struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,int skilllv,int x,int y,int flag);
 struct skill_unit_group *skill_check_dancing( struct block_list *src );
 void skill_stop_dancing(struct block_list *src, int flag);
-void skill_stop_gravitation(struct block_list *src);
 
 // 詠唱キャンセル
 int skill_castcancel(struct block_list *bl,int type);
