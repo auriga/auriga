@@ -38,6 +38,7 @@ int merc_calc_status(struct merc_data *mcd);
 int merc_checkskill(struct merc_data *mcd,int skill_id);
 int merc_calc_skilltree(struct merc_data *mcd);
 
+int merc_gainexp(struct merc_data *mcd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp);
 int merc_damage(struct block_list *src,struct merc_data *mcd,int damage);
 int merc_heal(struct merc_data *mcd,int hp,int sp);
 

@@ -28,6 +28,7 @@
 #include "date.h"
 #include "unit.h"
 #include "ranking.h"
+#include "merc.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -1532,52 +1533,48 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 
 	if(!(type&2) && src)
 	{
-		struct map_session_data *src_sd = NULL;
-		struct mob_data         *src_md = NULL;
-		struct pet_data         *src_pd = NULL;
-		struct homun_data       *src_hd = NULL;
 		int damage2 = 0;
 		int id = 0;
 
-		src_sd = BL_DOWNCAST( BL_PC , src );
-		src_md = BL_DOWNCAST( BL_MOB, src );
-		src_pd = BL_DOWNCAST( BL_PET, src );
-		src_hd = BL_DOWNCAST( BL_HOM, src );
-
 		// ダメージを与えた人と個人累計ダメージを保存(Exp計算用)
-		if(src_sd)
-		{
-			damage2 = (int)linkdb_search( &md->dmglog, (void*)src_sd->status.char_id );
-			damage2 += (damage2 == -1)? damage + 1: damage; // 先制を受けていた場合-1で戦闘参加者に登録されている
-			if(damage2 <= 0)
-				damage2 = -1;
-			linkdb_replace( &md->dmglog, (void*)src_sd->status.char_id, (void*)damage2 );
-			id = src_sd->bl.id;
-		}
-		if(src_pd && src_pd->msd && battle_config.pet_attack_exp_to_master)
-		{
-			damage2 = damage * battle_config.pet_attack_exp_rate/100;
-			damage2 += (int)linkdb_search( &md->dmglog, (void*)src_pd->msd->status.char_id );
-			linkdb_replace( &md->dmglog, (void*)src_pd->msd->status.char_id, (void*)damage2 );
-			id = 0;
-		}
-		if(src_md && src_md->state.special_mob_ai)
-		{
-			struct map_session_data *msd = map_id2sd(src_md->master_id);
-			// msdがNULLのときはダメージログに記録しない
-			if(msd) {
-				damage2 = damage + (int)linkdb_search( &md->dmglog, (void*)msd->status.char_id );
-				linkdb_replace( &md->dmglog, (void*)msd->status.char_id, (void*)damage2 );
-				id = src_md->master_id;
+		if(src->type == BL_PC) {
+			struct map_session_data *src_sd = (struct map_session_data *)src;
+			if(src_sd)
+			{
+				damage2 = (int)linkdb_search( &md->dmglog, (void*)src_sd->status.char_id );
+				damage2 += (damage2 == -1)? damage + 1: damage; // 先制を受けていた場合-1で戦闘参加者に登録されている
+				if(damage2 <= 0)
+					damage2 = -1;
+				linkdb_replace( &md->dmglog, (void*)src_sd->status.char_id, (void*)damage2 );
+				id = src_sd->bl.id;
 			}
-		}
-		if(src_hd)
-		{
-			// ホムの場合はIDを負に反転する
+		} else if(src->type == BL_PET) {
+			struct pet_data *src_pd = (struct pet_data *)src;
+			if(src_pd && src_pd->msd && battle_config.pet_attack_exp_to_master)
+			{
+				damage2 = damage * battle_config.pet_attack_exp_rate/100;
+				damage2 += (int)linkdb_search( &md->dmglog, (void*)src_pd->msd->status.char_id );
+				linkdb_replace( &md->dmglog, (void*)src_pd->msd->status.char_id, (void*)damage2 );
+				id = 0;
+			}
+		} else if(src->type == BL_MOB) {
+			struct mob_data *src_md = (struct mob_data *)src;
+			if(src_md && src_md->state.special_mob_ai)
+			{
+				struct map_session_data *msd = map_id2sd(src_md->master_id);
+				// msdがNULLのときはダメージログに記録しない
+				if(msd) {
+					damage2 = damage + (int)linkdb_search( &md->dmglog, (void*)msd->status.char_id );
+					linkdb_replace( &md->dmglog, (void*)msd->status.char_id, (void*)damage2 );
+					id = src_md->master_id;
+				}
+			}
+		} else if(src->type == BL_HOM || src->type == BL_MERC) {
+			// ホム・傭兵の場合はIDを負に反転する
 			damage2 = damage;
-			damage2 += (int)linkdb_search( &md->dmglog, (void*)-src_hd->bl.id );
-			linkdb_replace( &md->dmglog, (void*)-src_hd->bl.id, (void*)damage2 );
-			id = src_hd->bl.id;
+			damage2 += (int)linkdb_search( &md->dmglog, (void*)-src->id );
+			linkdb_replace( &md->dmglog, (void*)-src->id, (void*)damage2 );
+			id = src->id;
 		}
 
 		// ターゲットの変更
@@ -1714,9 +1711,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			if(sd)
 				tmpbl[i] = &sd->bl;
 		} else {
-			tmpbl[i] = map_id2bl(-id);	// ホムの場合はIDが負に反転されている
+			tmpbl[i] = map_id2bl(-id);	// ホム・傭兵の場合はIDが負に反転されている
 		}
-		if( !tmpbl[i] || (tmpbl[i]->type != BL_PC && tmpbl[i]->type != BL_HOM) ) {
+		if( !tmpbl[i] || (tmpbl[i]->type != BL_PC && tmpbl[i]->type != BL_HOM && tmpbl[i]->type != BL_MERC) ) {
 			tmpbl[i] = NULL;
 			continue;
 		}
@@ -1806,10 +1803,15 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				struct homun_data *thd = (struct homun_data *)tmpbl[i];
 				if(thd)
 					homun_gainexp(thd, md, base_exp, job_exp);
-				continue;
 			}
-			if( tmpbl[i]->type == BL_PC )
+			else if( tmpbl[i]->type == BL_MERC ) {
+				struct merc_data *tmcd = (struct merc_data *)tmpbl[i];
+				if(tmcd)
+					merc_gainexp(tmcd, md, base_exp, job_exp);
+			}
+			else if( tmpbl[i]->type == BL_PC ) {
 				tmpsd = (struct map_session_data *)tmpbl[i];
+			}
 			if( !tmpsd )
 				continue;
 
@@ -1964,15 +1966,15 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	}
 
 	// mvp処理
-	if(mvp[0].bl && mob_db[md->class_].mexp > 0 && !md->state.nomvp && (mvp[0].bl->type == BL_PC || mvp[0].bl->type == BL_HOM)) {
-		struct map_session_data *mvpsd;
-		struct homun_data *mvphd = NULL;
+	if(mvp[0].bl && mob_db[md->class_].mexp > 0 && !md->state.nomvp) {
+		struct map_session_data *mvpsd = NULL;
 
-		if(mvp[0].bl->type == BL_HOM) {
-			mvphd = (struct homun_data*)mvp[0].bl;
-			mvpsd = mvphd->msd;	// ホムが取ったMVPは、主人へ
-		} else {
-			mvpsd = (struct map_session_data*)mvp[0].bl;
+		if(mvp[0].bl->type == BL_PC) {
+			mvpsd = (struct map_session_data *)mvp[0].bl;
+		} else if(mvp[0].bl->type == BL_HOM) {
+			mvpsd = ((struct homun_data *)mvp[0].bl)->msd;	// ホムが取ったMVPは、主人へ
+		} else if(mvp[0].bl->type == BL_MERC) {
+			mvpsd = ((struct merc_data *)mvp[0].bl)->msd;	// 傭兵が取ったMVPは、主人へ
 		}
 		if( mvpsd ) {
 			int j,ret;
@@ -1986,17 +1988,16 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				snprintf(output, sizeof output, msg_txt(134), mvpsd->status.name, mob_db[md->class_].jname);
 				clif_GMmessage(&mvpsd->bl,output,strlen(output)+1,0x10);
 			}
-			if(mvphd)	// エフェクト
-				clif_mvp_effect(&mvphd->bl);
-			else
-				clif_mvp_effect(&mvpsd->bl);
+			clif_mvp_effect(mvp[0].bl);	// エフェクト
+
 			if(mob_db[md->class_].mexpper > atn_rand()%10000) {
-				atn_bignumber mexp;
-				mexp = (atn_bignumber)mob_db[md->class_].mexp * battle_config.mvp_exp_rate * (9+count)/1000;
-				if(mvphd) {
-					// ホムからもらうNPV経験値にも倍率を適用する
+				atn_bignumber mexp = (atn_bignumber)mob_db[md->class_].mexp * battle_config.mvp_exp_rate * (9+count)/1000;
+
+				// ホムや傭兵からもらうMVP経験値にも倍率を適用する
+				if(mvp[0].bl->type == BL_HOM)
 					mexp = mexp * battle_config.master_get_homun_base_exp / 100;
-				}
+				else if(mvp[0].bl->type == BL_MERC)
+					mexp = mexp * battle_config.master_get_merc_base_exp / 100;
 				if(mexp < 1)
 					mexp = 1;
 				clif_mvp_exp(mvpsd, ((mexp > 0x7fffffff)? 0x7fffffff: (int)mexp));
@@ -2050,6 +2051,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			ssd = ((struct pet_data *)src)->msd;
 		else if(src && src->type == BL_HOM)
 			ssd = ((struct homun_data *)src)->msd;
+		else if(src && src->type == BL_MERC)
+			ssd = ((struct merc_data *)src)->msd;
 
 		if(ssd == NULL) {
 			if(mvp[0].bl != NULL && mvp[0].bl->type == BL_PC) {

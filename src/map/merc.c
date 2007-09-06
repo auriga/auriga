@@ -23,6 +23,7 @@
 #include "pc.h"
 #include "skill.h"
 #include "status.h"
+#include "storage.h"
 #include "unit.h"
 
 #ifdef MEMWATCH
@@ -579,6 +580,39 @@ int merc_calc_skilltree(struct merc_data *mcd)
 			}
 		}
 	} while(flag);
+
+	return 0;
+}
+
+/*==========================================
+ * 経験値取得
+ *------------------------------------------
+ */
+int merc_gainexp(struct merc_data *mcd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp)
+{
+	int per;
+	atn_bignumber next;
+
+	nullpo_retr(0, mcd);
+
+	if(mcd->bl.prev == NULL || unit_isdead(&mcd->bl))
+		return 0;
+
+	if(md && md->sc_data && md->sc_data[SC_RICHMANKIM].timer != -1) {
+		base_exp = base_exp * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
+		job_exp  = job_exp  * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
+	}
+
+	if(mcd->msd) {	// 主人へ指定倍の経験値
+		atn_bignumber mbexp = 0, mjexp = 0;
+		if(battle_config.master_get_merc_base_exp)
+			mbexp = base_exp * battle_config.master_get_merc_base_exp / 100;
+		if(battle_config.master_get_merc_job_exp)
+			mjexp = job_exp  * battle_config.master_get_merc_job_exp / 100;
+
+		if(mbexp || mjexp)
+			pc_gainexp(mcd->msd,md,mbexp,mjexp);
+	}
 
 	return 0;
 }

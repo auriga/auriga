@@ -25,6 +25,7 @@
 #include "npc.h"
 #include "script.h"
 #include "status.h"
+#include "storage.h"
 #include "unit.h"
 #include "skill.h"
 

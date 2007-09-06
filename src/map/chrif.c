@@ -27,6 +27,7 @@
 #include "friend.h"
 #include "ranking.h"
 #include "status.h"
+#include "storage.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

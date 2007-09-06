@@ -110,7 +110,6 @@ void clif_tradecancelled(struct map_session_data *sd);
 void clif_tradecompleted(struct map_session_data *sd, unsigned char fail);
 
 // storage
-#include "storage.h"
 void clif_storageitemlist(struct map_session_data *sd, struct storage *stor);
 void clif_storageequiplist(struct map_session_data *sd, struct storage *stor);
 void clif_updatestorageamount(struct map_session_data *sd, struct storage *stor);

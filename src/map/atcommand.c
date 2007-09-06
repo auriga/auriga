@@ -30,6 +30,7 @@
 #include "script.h"
 #include "npc.h"
 #include "status.h"
+#include "storage.h"
 #include "ranking.h"
 #include "homun.h"
 #include "unit.h"

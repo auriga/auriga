@@ -939,7 +939,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			atkmin = atkmax;
 
 		/* 太陽と月と星の怒り */
-		if(target->type == BL_PC || target->type == BL_MOB || target->type == BL_HOM)
+		if(target->type == BL_PC || target->type == BL_MOB || target->type == BL_HOM || target->type == BL_MERC)
 		{
 			int atk_rate = 0;
 			int str = status_get_str(src);
@@ -3125,8 +3125,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		if(battle_config.gx_dupele)
 			mgd.damage = battle_attr_fix(mgd.damage, ele, status_get_element(target));	// 属性2回かかる
 		if(bl == target) {
-			if(bl->type == BL_MOB || bl->type == BL_HOM)
-				mgd.damage = 0;		// MOB,HOMが使う場合は反動無し
+			if(bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC)
+				mgd.damage = 0;		// MOB,HOM,MERCが使う場合は反動無し
 		} else {
 			 mgd.damage /= 2;	// 反動は半分
 		}
@@ -5062,7 +5062,10 @@ int battle_config_read(const char *cfgName)
 		{ "skill_autospell_delay_enable",       &battle_config.skill_autospell_delay_enable,       1        },
 		{ "bonus_autospell_delay_enable",       &battle_config.bonus_autospell_delay_enable,       1        },
 		{ "merc_speed_is_same_as_pc",           &battle_config.merc_speed_is_same_as_pc,           1        },
+		{ "master_get_merc_base_exp",           &battle_config.master_get_merc_base_exp,           100      },
+		{ "master_get_merc_job_exp",            &battle_config.master_get_merc_job_exp,            0        },
 		{ NULL,                                 NULL,                                              0        },
+
 	};
 
 	if(count++ == 0) {

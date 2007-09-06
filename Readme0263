@@ -1,4 +1,18 @@
 ----------------------------------------
+//0320 [2007/09/07] by Rayce
+
+・傭兵実装準備その７
+	-> 経験値が取得できるように（mob.c, merc.c）
+	   傭兵自体にレベルアップの概念が無いようなので、雇用主に経験値が渡されるだけで
+	   傭兵自体が経験値を獲得するわけではありません
+	-> battle_auriga.confに master_get_homun_base_exp, master_get_homun_job_exp を追加（battle.*）
+	   ホムのと同じ使い方です
+
+・傭兵に関する細かい修正（battle.c, map.c, npc.c）
+・clif.hからstorage.hのincludeを外す
+　（atcommand.c, clif.h, chrif.c, homun.c, merc.c, pet.c, unit.c）
+
+----------------------------------------
 //0319 [2007/09/07] by Rayce
 
 ・傭兵実装準備その６

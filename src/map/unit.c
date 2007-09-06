@@ -16,6 +16,7 @@
 #include "unit.h"
 #include "battle.h"
 #include "status.h"
+#include "storage.h"
 #include "clif.h"
 #include "party.h"
 #include "npc.h"

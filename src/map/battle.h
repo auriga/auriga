@@ -525,6 +525,8 @@ extern struct Battle_Config {
 	int bonus_autospell_delay_enable;
 
 	int merc_speed_is_same_as_pc;
+	int master_get_merc_base_exp;
+	int master_get_merc_job_exp;
 } battle_config;
 
 int battle_config_read(const char *cfgName);
