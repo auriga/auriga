@@ -2982,7 +2982,7 @@ static int mob_can_counterattack(struct mob_data *md,struct block_list *target)
 		unsigned int tick = md->ud.canmove_tick;
 		int flag;
 
-		md->ud.canmove_tick = 0;
+		md->ud.canmove_tick = gettick();
 
 		if( unit_can_move(&md->bl) && !unit_isrunning(&md->bl) ) {
 			// 動けるとき

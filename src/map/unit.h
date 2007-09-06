@@ -21,7 +21,6 @@ int unit_stop_walking(struct block_list *bl,int type);
 // 位置移動(吹き飛ばしなど)
 int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag);
 int unit_setdir(struct block_list *bl,int dir);
-int unit_getdir(struct block_list *bl);
 
 // そこまで歩行でたどり着けるかの判定
 int unit_can_reach(struct block_list *bl,int x,int y);

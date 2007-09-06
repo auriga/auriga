@@ -1,4 +1,14 @@
 ----------------------------------------
+//0316 [2007/09/07] by Rayce
+
+・battle_damage() をまとめ直し（battle.c）
+・PC以外がシュリンクを使っている場合でも攻撃主を吹き飛ばせるように拡張（battle.c）
+・ティオアプチャギによる対象のステータス異常解除がPCとMOB以外にも発動するように拡張（battle.c）
+・unit_getdir() は status_get_dir() と同じなので削除（unit.*）
+・MOBのrudeattackedが誤作動する可能性を修正（mob.c）
+・PETとHOMも unit_remove_map() で skill_cleartimerskill() を実行するように修正（unit.c）
+
+----------------------------------------
 //0315 [2007/09/06] by Rayce
 
 ・傭兵実装準備その４

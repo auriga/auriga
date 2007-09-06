@@ -83,8 +83,9 @@ int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_li
  */
 int battle_damage(struct block_list *bl,struct block_list *target,int damage,int skillid,int skilllv,int flag)
 {
-	struct map_session_data *sd = NULL;
-	int race, ele;
+	struct map_session_data *sd = NULL, *tsd = NULL;
+	struct mob_data   *tmd  = NULL;
+	struct homun_data *thd  = NULL;
 
 	nullpo_retr(0, target);	// blはNULLで呼ばれることがあるので他でチェック
 
@@ -104,39 +105,19 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	if(damage < 0)
 		return battle_heal(bl,target,-damage,0,flag);
 
-	// 種族・属性取得
-	race = status_get_race(target);
-	ele  = status_get_elem_type(target);
-
 	map_freeblock_lock();
 
-	if(target->type == BL_MOB) {	// MOB
-		struct mob_data *md = (struct mob_data *)target;
+	if(target->type == BL_SKILL) {
+		skill_unit_ondamaged((struct skill_unit *)target,bl,damage,gettick());
+		map_freeblock_unlock();
+		return 0;
+	}
 
-		status_change_attacked_end(target);	// 凍結・石化・睡眠を消去
-		unit_skillcastcancel(target,2);		// 詠唱妨害
-		mob_damage(bl,md,damage,0);
+	tsd  = BL_DOWNCAST( BL_PC,   target );
+	tmd  = BL_DOWNCAST( BL_MOB,  target );
+	thd  = BL_DOWNCAST( BL_HOM,  target );
 
-		if(sd && md && md->bl.prev != NULL && !unit_isdead(&md->bl) && flag&(BF_WEAPON|BF_NORMAL) && status_get_class(target) != 1288)
-		{
-			int mode = status_get_mode(target);
-			// カード効果のコーマ・即死
-			if(atn_rand()%10000 < sd->weapon_coma_ele[ele] ||
-			   atn_rand()%10000 < sd->weapon_coma_race[race] ||
-			   (mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race[RCT_BOSS]) ||
-			   (!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS])) {
-					mob_damage(bl,md,status_get_hp(target),0);
-			}
-			else if(atn_rand()%10000 < sd->weapon_coma_ele2[ele] ||
-				atn_rand()%10000 < sd->weapon_coma_race2[race] ||
-				(mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]) ||
-				(!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS])) {
-					mob_damage(bl,md,status_get_hp(target)-1,0);
-			}
-		}
-	} else if(target->type == BL_PC) {	// PC
-		struct map_session_data *tsd = (struct map_session_data *)target;
-
+	if(tsd) {
 		// ディボーションをかけられている
 		if( tsd &&
 		    tsd->sc_data[SC_DEVOTION].timer != -1 &&
@@ -163,54 +144,45 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 				}
 			}
 		}
-
-		status_change_attacked_end(target);	// 凍結・石化・睡眠を消去
-		unit_skillcastcancel(target,2);		// 詠唱妨害
-		pc_damage(bl,tsd,damage);
-
-		if(sd && tsd && tsd->bl.prev != NULL && !unit_isdead(&tsd->bl) && flag&(BF_WEAPON|BF_NORMAL))
-		{
-			// カード効果のコーマ・即死
-			if(atn_rand()%10000 < sd->weapon_coma_ele[ele] ||
-			   atn_rand()%10000 < sd->weapon_coma_race[race] ||
-			   atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS]) {
-					pc_damage(bl,tsd,status_get_hp(target));
-			}
-			else if(atn_rand()%10000 < sd->weapon_coma_ele2[ele] ||
-			        atn_rand()%10000 < sd->weapon_coma_race2[race] ||
-			        atn_rand()%10000 < sd->weapon_coma_race2[RCT_NONBOSS]) {
-					pc_damage(bl,tsd,status_get_hp(target)-1);
-			}
-		}
-	} else if(target->type == BL_HOM) {	// HOM
-		struct homun_data *hd = (struct homun_data *)target;
-
-		status_change_attacked_end(target);	// 凍結・石化・睡眠を消去
-		unit_skillcastcancel(target,2);		// 詠唱妨害
-		homun_damage(bl,hd,damage);
-
-		if(sd && hd && hd->bl.prev != NULL && !unit_isdead(&hd->bl) && flag&(BF_WEAPON|BF_NORMAL) && status_get_class(target) != 1288)
-		{
-			int mode = status_get_mode(target);
-			// カード効果のコーマ・即死
-			if(atn_rand()%10000 < sd->weapon_coma_ele[ele] ||
-			   atn_rand()%10000 < sd->weapon_coma_race[race] ||
-			   (mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race[RCT_BOSS]) ||
-			   (!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS])) {
-					homun_damage(bl,hd,status_get_hp(target));
-			}
-			else if(atn_rand()%10000 < sd->weapon_coma_ele2[ele] ||
-			        atn_rand()%10000 < sd->weapon_coma_race2[race] ||
-			        (mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]) ||
-			        (!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race2[RCT_NONBOSS])) {
-					homun_damage(bl,hd,status_get_hp(target)-1);
-			}
-		}
-	} else if(target->type == BL_SKILL) {
-		skill_unit_ondamaged((struct skill_unit *)target,bl,damage,gettick());
 	}
 
+	status_change_attacked_end(target);	// 凍結・石化・睡眠を消去
+	unit_skillcastcancel(target,2);		// 詠唱妨害
+
+	if(tsd)       pc_damage(bl,tsd,damage);
+	else if(tmd)  mob_damage(bl,tmd,damage,0);
+	else if(thd)  homun_damage(bl,thd,damage);
+
+	// カード効果のコーマ・即死
+	if(sd && target && target->prev && !unit_isdead(target) && flag&(BF_WEAPON|BF_NORMAL) && status_get_class(target) != 1288)
+	{
+		int race = status_get_race(target);
+		int ele  = status_get_elem_type(target);
+		int mode = status_get_mode(target);
+
+		if(atn_rand()%10000 < sd->weapon_coma_ele[ele] ||
+		   atn_rand()%10000 < sd->weapon_coma_race[race] ||
+		   (mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race[RCT_BOSS]) ||
+		   (!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS]))
+		{
+			int hp = status_get_hp(target);
+			if(tsd)       pc_damage(bl,tsd,hp);
+			else if(tmd)  mob_damage(bl,tmd,hp,0);
+			else if(thd)  homun_damage(bl,thd,hp);
+		}
+		else if(atn_rand()%10000 < sd->weapon_coma_ele2[ele] ||
+			atn_rand()%10000 < sd->weapon_coma_race2[race] ||
+			(mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]) ||
+			(!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]))
+		{
+			int hp = status_get_hp(target) - 1;
+			if(tsd)       pc_damage(bl,tsd,hp);
+			else if(tmd)  mob_damage(bl,tmd,hp,0);
+			else if(thd)  homun_damage(bl,thd,hp);
+		}
+	}
 	map_freeblock_unlock();
+
 	return 0;
 }
 
@@ -284,6 +256,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 {
 	struct map_session_data *tsd = NULL;
 	struct mob_data         *tmd = NULL;
+	struct unit_data *ud;
 	struct status_change *sc_data;
 	short *sc_count;
 	unsigned int tick = gettick();
@@ -293,6 +266,8 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 
 	tsd = BL_DOWNCAST( BL_PC,  bl );
 	tmd = BL_DOWNCAST( BL_MOB, bl );
+
+	ud = unit_bl2ud(bl);
 
 	sc_data  = status_get_sc_data(bl);
 	sc_count = status_get_sc_count(bl);
@@ -361,7 +336,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 		if(sc_data[SC_AETERNA].timer != -1 && damage > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {	// レックスエーテルナ
 			damage <<= 1;
-			status_change_end( bl,SC_AETERNA,-1);
+			status_change_end(bl,SC_AETERNA,-1);
 		}
 
 		// 属性場のダメージ増加
@@ -397,7 +372,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 					clif_updatestatus(tsd,SP_SP);
 				}
 				if(tsd->status.sp <= 0)
-					status_change_end( bl,SC_ENERGYCOAT,-1);
+					status_change_end(bl,SC_ENERGYCOAT,-1);
 			} else {
 				damage -= damage * (sc_data[SC_ENERGYCOAT].val1 * 6) / 100;
 			}
@@ -432,12 +407,10 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 					delay = 200;
 				else
 					delay = 100;
-				if(tsd) {
-					tsd->ud.canmove_tick = tick + delay;
+				if(ud) {
+					ud->canmove_tick = tick + delay;
 					if(sc_data[SC_SHRINK].timer != -1 && atn_rand()%100 < 5*sc_data[SC_AUTOGUARD].val1)
 						skill_blown(bl,src,2);
-				} else if(tmd) {
-					tmd->ud.canmove_tick = tick + delay;
 				}
 			}
 		}
@@ -446,7 +419,6 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			if(atn_rand()%100 < sc_data[SC_PARRYING].val2)
 			{
 				int dir = map_calc_dir(bl,src->x,src->y);
-				struct unit_data *ud = unit_bl2ud(bl);
 				damage = 0;
 				clif_skill_nodamage(bl,bl,LK_PARRYING,sc_data[SC_PARRYING].val1,1);
 				clif_changedir(bl,dir,dir);
@@ -1137,7 +1109,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 				return wd; // ダメージ構造体を返して終了
 			}
-			else calc_flag.autocounter = 1;
+			calc_flag.autocounter = 1;
 		}
 	}
 
@@ -1931,15 +1903,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_ADD( 10*pc_checkskill(src_sd,TK_RUN) );
 			}
 			// ティオアプチャギによる対象のステータス異常解除
-			if(target_sd || target_md) {
-				// ソウルリンカーは無視
-				if(target_sd && target_sd->status.class_ == PC_CLASS_SL)
-					break;
-				// プリザーブ中は切れない
-				if(t_sc_data && t_sc_data[SC_PRESERVE].timer != -1)
-					break;
-				status_change_release(target,0x10);
-			}
+			if(target_sd && target_sd->status.class_ == PC_CLASS_SL)	// ソウルリンカーは無視
+				break;
+			if(t_sc_data && t_sc_data[SC_PRESERVE].timer != -1)		// プリザーブ中は切れない
+				break;
+			status_change_release(target,0x10);
 			break;
 		case PA_SHIELDCHAIN:	// シールドチェイン
 			if(src_sd) {
@@ -3092,7 +3060,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			}
 		}
 		// カード効果による特定スキルのダメージ増幅（魔法スキル）
-		if(bl->type == BL_PC && sd->skill_dmgup.count > 0 && skill_num > 0) {
+		if(sd->skill_dmgup.count > 0 && skill_num > 0) {
 			for(i=0; i<sd->skill_dmgup.count; i++) {
 				if(skill_num == sd->skill_dmgup.id[i]) {
 					cardfix = cardfix*(100+sd->skill_dmgup.rate[i])/100;
@@ -3147,11 +3115,11 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		}
 	}
 
-	if (skill_num == WZ_WATERBALL)
+	if(skill_num == WZ_WATERBALL)
 		mgd.div_ = 1;
 
 	/* ９．対象にステータス異常がある場合 */
-	if( tsd && tsd->special_state.no_magic_damage )
+	if(tsd && tsd->special_state.no_magic_damage)
 		mgd.damage = 0;	// 黄金蟲カード（魔法ダメージ０)
 
 	if(t_sc_data && t_sc_data[SC_HERMODE].timer != -1 && t_sc_data[SC_HERMODE].val1 == 1)	// ヘルモードなら魔法ダメージなし
@@ -3170,8 +3138,9 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			else
 				mgd.damage = (mgd.div_ == 255)? 3: mgd.div_;
 		}
-		else if(mgd.div_ > 1 && skill_num != WZ_VERMILION)
+		else if(mgd.div_ > 1 && skill_num != WZ_VERMILION) {
 			mgd.damage *= mgd.div_;
+		}
 	}
 
 	/* 12．ダメージ最終計算 */
@@ -3447,8 +3416,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	if(unit_isdead(src) || unit_isdead(target))
 		return 0;
 
-	sd  = BL_DOWNCAST(BL_PC, src);
-	tsd = BL_DOWNCAST(BL_PC, target);
+	sd  = BL_DOWNCAST( BL_PC, src );
+	tsd = BL_DOWNCAST( BL_PC, target );
 
 	opt1 = status_get_opt1(src);
 	if(opt1 && *opt1 > 0) {
@@ -3474,8 +3443,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		return 0;	// 攻撃対象外
 
 	// ターゲットがMOB GMハイド中で、コンフィグでハイド中攻撃不可 GMレベルが指定より大きい場合
-	if(target->type == BL_MOB && sd && sd->status.option&0x40 && battle_config.hide_attack == 0 && pc_isGM(sd) < battle_config.gm_hide_attack_lv)
-		return 0;	// 隠れて攻撃するなんて卑怯なGMデスネ
+	if(battle_config.hide_attack == 0 && target->type == BL_MOB && sd && sd->status.option&0x40 && pc_isGM(sd) < battle_config.gm_hide_attack_lv)
+		return 0;
 
 	if(sd) {
 		if(!battle_delarrow(sd,1,0))
@@ -3484,11 +3453,11 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 
 	if(flag&0x8000) {
 		if(sd && battle_config.pc_attack_direction_change)
-			sd->dir = sd->head_dir = map_calc_dir(src, target->x,target->y );
+			sd->dir = sd->head_dir = map_calc_dir(src, target->x,target->y);
 		else if(src->type == BL_MOB && battle_config.monster_attack_direction_change)
-			((struct mob_data *)src)->dir = map_calc_dir(src, target->x,target->y );
+			((struct mob_data *)src)->dir = map_calc_dir(src, target->x,target->y);
 		else if(src->type == BL_HOM && battle_config.monster_attack_direction_change)	// homun_attack_direction_change
-			((struct homun_data *)src)->dir = map_calc_dir(src, target->x,target->y );
+			((struct homun_data *)src)->dir = map_calc_dir(src, target->x,target->y);
 		wd = battle_calc_weapon_attack(src,target,KN_AUTOCOUNTER,flag&0xff,0);
 	} else {
 		wd = battle_calc_weapon_attack(src,target,0,0,0);
@@ -3556,11 +3525,11 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		sd->ud.attackabletime = tick + delay;
 		clif_skill_nodamage(&sd->bl,&sd->bl,skillid-1,pc_checkskill(sd,skillid-1),1);
 	} else {
-		clif_damage(src,target,tick, wd.amotion, wd.dmotion,
-			wd.damage, wd.div_ , wd.type, wd.damage2);
+		clif_damage(src, target, tick, wd.amotion, wd.dmotion, wd.damage, wd.div_, wd.type, wd.damage2);
+
 		// 二刀流左手とカタール追撃のミス表示(無理やり〜)
 		if(sd && (sd->status.weapon > WT_HUUMA || sd->status.weapon == WT_KATAR) && wd.damage2 == 0)
-			clif_damage(src,target,tick+10, wd.amotion, wd.dmotion,0, 1, 0, 0);
+			clif_damage(src, target, tick+10, wd.amotion, wd.dmotion, 0, 1, 0, 0);
 	}
 	if(sd && sd->splash_range > 0 && (wd.damage > 0 || wd.damage2 > 0))
 		skill_castend_damage_id(src,target,0,-1,tick,0);
@@ -3725,7 +3694,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	nullpo_retr(0, dsrc);
 	nullpo_retr(0, bl);
 
-	sc_data = status_get_sc_data(bl);
+	sc_data  = status_get_sc_data(bl);
 	ssc_data = status_get_sc_data(src);
 
 	sd  = BL_DOWNCAST( BL_PC, src );
@@ -4344,7 +4313,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		return -1;
 
 	if( (ss->type == BL_PC && target->type == BL_MOB) ||
-		(ss->type == BL_MOB && target->type == BL_PC) )
+	    (ss->type == BL_MOB && target->type == BL_PC) )
 		return 0;	// PCvsMOBなら敵
 
 	if(ss->type == BL_PET && target->type == BL_MOB) {
@@ -4375,7 +4344,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 	if(ss->type == BL_MOB && s_g > 0 && t_g > 0 && s_g == t_g )	// 同じギルド/mobクラスなら肯定（味方）
 		return 1;
 
-	if( ss->type == BL_PC && target->type == BL_PC) {	// 両方PVPモードなら否定（敵）
+	if(ss->type == BL_PC && target->type == BL_PC) {	// 両方PVPモードなら否定（敵）
 		struct skill_unit *su = NULL;
 		if(src->type == BL_SKILL)
 			su = (struct skill_unit *)src;
@@ -4425,7 +4394,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 			struct guild *g = NULL;
 			if(su && su->group->target_flag == BCT_NOENEMY)
 				return 1;
-			if( s_g > 0 && s_g == t_g)
+			if(s_g > 0 && s_g == t_g)
 				return 1;
 			if(map[src->m].flag.gvg_noparty && s_p > 0 && t_p > 0 && s_p == t_p)
 				return 1;
@@ -4570,8 +4539,8 @@ void battle_join_struggle(struct mob_data *md,struct block_list *src)
 	if(src->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)src;
 		if(sd) {
-			// ダメージ-1で戦闘参加者入り(0にするとリスト未登録のNULLとかぶって困る)
 			if(linkdb_search( &md->dmglog, (void*)sd->status.char_id ) == NULL) {
+				// ダメージ-1で戦闘参加者入り(0にするとリスト未登録のNULLとかぶって困る)
 				linkdb_insert( &md->dmglog, (void*)sd->status.char_id, (void*)-1 );
 			}
 		}

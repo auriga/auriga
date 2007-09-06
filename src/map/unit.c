@@ -693,28 +693,6 @@ int unit_setdir(struct block_list *bl,int dir)
 }
 
 /*==========================================
- *
- *------------------------------------------
- */
-int unit_getdir(struct block_list *bl)
-{
-	nullpo_retr( 0, bl );
-
-	if(bl->type == BL_PC)
-		return ((struct map_session_data *)bl)->dir;
-	else if(bl->type == BL_MOB)
-		return ((struct mob_data *)bl)->dir;
-	else if(bl->type == BL_PET)
-		return ((struct pet_data *)bl)->dir;
-	else if(bl->type == BL_HOM)
-		return ((struct homun_data *)bl)->dir;
-	else if(bl->type == BL_MERC)
-		return ((struct merc_data *)bl)->dir;
-
-	return 0;
-}
-
-/*==========================================
  * 歩行停止
  *------------------------------------------
  */
@@ -1976,6 +1954,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 	// tickset 削除
 	linkdb_final( &ud->skilltickset );
 	status_clearpretimer( bl );
+	skill_cleartimerskill( bl );			// タイマースキルクリア
 
 	// MAP を離れるときの状態異常関連
 	sc_data = status_get_sc_data(bl);
@@ -2053,7 +2032,6 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		}
 
 		skill_gangsterparadise(sd,0);			// ギャングスターパラダイス削除
-		skill_cleartimerskill(&sd->bl);			// タイマースキルクリア
 
 		clif_clearchar_area(&sd->bl,clrtype&0xffff);
 		mob_ai_hard_spawn( &sd->bl, 0 );
@@ -2067,7 +2045,6 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		// 死んだのでこのmobへの攻撃者全員の攻撃を止める
 		clif_foreachclient(unit_mobstopattacked,md->bl.id);
 		status_change_clear(&md->bl,2);	// ステータス異常を解除する
-		skill_cleartimerskill(&md->bl);
 		if(md->deletetimer != -1) {
 			delete_timer(md->deletetimer,mob_timer_delete);
 			md->deletetimer = -1;
@@ -2242,7 +2219,7 @@ int unit_free(struct block_list *bl, int clrtype)
 		struct merc_data *mcd = (struct merc_data*)bl;
 		struct map_session_data *sd = mcd->msd;
 
-		//status_change_clear(&mcd->bl,1);			// ステータス異常を解除する
+		status_change_clear(&mcd->bl,1);			// ステータス異常を解除する
 		if(sd && sd->mcd) {
 			merc_save_data(sd);
 			//if(sd->mcd->natural_heal_hp != -1 || sd->mcd->natural_heal_sp != -1)
