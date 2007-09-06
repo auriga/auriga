@@ -34,6 +34,7 @@
 #include "ranking.h"
 #include "homun.h"
 #include "unit.h"
+#include "merc.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -207,6 +208,7 @@ ATCOMMAND_FUNC(homfriendly);
 ATCOMMAND_FUNC(autoloot);
 ATCOMMAND_FUNC(changemaptype);
 ATCOMMAND_FUNC(hotkeyset);
+ATCOMMAND_FUNC(callmerc);
 
 /*==========================================
  * AtCommandInfo atcommand_info[]構造体の定義
@@ -374,6 +376,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_AutoLoot,           "@autoloot",         0, atcommand_autoloot,            -1 },
 	{ AtCommand_ChangeMapType,      "@changemaptype",    0, atcommand_changemaptype,       -1 },
 	{ AtCommand_HotkeySet,          "@hotkeyset",        0, atcommand_hotkeyset,           -1 },
+	{ AtCommand_CallMerc,           "@callmerc",         0, atcommand_callmerc,            -1 },
 		// add here
 	{ AtCommand_MapMove,            "@mapmove",          0, NULL,                          -1 },
 	{ AtCommand_Broadcast,          "@broadcast",        0, NULL,                          -1 },
@@ -6039,6 +6042,25 @@ atcommand_hotkeyset(
 		sprintf(output, msg_txt(185), (MAX_HOTKEYS - 1) / 27);
 	}
 	clif_displaymessage(fd, output);
+
+	return 0;
+}
+
+/*==========================================
+ * 傭兵召喚
+ *------------------------------------------
+ */
+int
+atcommand_callmerc(
+	const int fd, struct map_session_data* sd,
+	const char* command, const char* message)
+{
+	nullpo_retr(-1, sd);
+
+	if(!message && !*message)
+		return -1;
+
+	merc_callmerc(sd, atoi(message));
 
 	return 0;
 }

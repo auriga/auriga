@@ -10099,7 +10099,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 			   sd->sc_data[SC_GOSPEL].timer != -1 ||
 			   sd->sc_data[SC_SANTA].timer != -1 ||
 			   sd->sc_data[SC_SUMMER].timer != -1 ||
-			   sd->sc_data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2)
+			   (sd->sc_data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2))
 				return;
 			if(sd->invincible_timer != -1)
 				pc_delinvincibletimer(sd);

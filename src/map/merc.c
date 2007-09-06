@@ -12,6 +12,7 @@
 #include "utils.h"
 #include "mmo.h"
 
+#include "atcommand.h"
 #include "battle.h"
 #include "clif.h"
 #include "chrif.h"
@@ -149,7 +150,7 @@ static int merc_calc_pos(struct merc_data *mcd,int tx,int ty,int dir)
  */
 int merc_calc_status(struct merc_data *mcd)
 {
-	int dstr,blv,aspd_k,lv;
+	int dstr,blv,aspd_k;
 	int aspd_rate=100,speed_rate=100,atk_rate=100,matk_rate=100,hp_rate=100,sp_rate=100;
 	int flee_rate=100,def_rate=100,mdef_rate=100,critical_rate=100,hit_rate=100;
 
@@ -507,6 +508,7 @@ int merc_menu(struct map_session_data *sd, int menunum)
 			clif_send_mercstatus(sd,0);
 			break;
 		case 2:
+			clif_disp_onlyself(sd->fd, msg_txt(190));	// 傭兵を解雇しました。
 			merc_delete_data(sd);
 			break;
 	}
@@ -590,9 +592,6 @@ int merc_calc_skilltree(struct merc_data *mcd)
  */
 int merc_gainexp(struct merc_data *mcd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp)
 {
-	int per;
-	atn_bignumber next;
-
 	nullpo_retr(0, mcd);
 
 	if(mcd->bl.prev == NULL || unit_isdead(&mcd->bl))
@@ -668,7 +667,7 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 		skill_unit_move(&mcd->bl,gettick(),0);
 		mcd->status.hp = 0;
 
-		//unit_free(&mcd->bl,1);
+		clif_disp_onlyself(sd->fd, msg_txt(189));	// 傭兵が死亡しました。
 		merc_delete_data(sd);
 	}
 

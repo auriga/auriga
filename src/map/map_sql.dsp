@@ -237,6 +237,10 @@ SOURCE=..\..\src\map\mail.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\map\merc.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\common\utils.c
 # End Source File
 # End Group
@@ -394,6 +398,10 @@ SOURCE=..\..\src\map\homun.h
 # Begin Source File
 
 SOURCE=..\..\src\map\mail.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\merc.h
 # End Source File
 # Begin Source File
 

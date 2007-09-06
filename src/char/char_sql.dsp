@@ -129,6 +129,10 @@ SOURCE=..\..\src\char\int_mail.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\char\int_merc.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\char\int_homun.c
 # End Source File
 # Begin Source File
@@ -214,6 +218,10 @@ SOURCE=..\..\src\char\int_storage.h
 # Begin Source File
 
 SOURCE=..\..\src\char\int_mail.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\int_merc.h
 # End Source File
 # Begin Source File
 

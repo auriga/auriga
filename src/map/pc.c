@@ -5168,6 +5168,10 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 			sd->pet.intimate = 0;
 		clif_send_petdata(sd,1,sd->pet.intimate);
 	}
+	if(sd->status.merc_id > 0 && sd->mcd) {
+		clif_disp_onlyself(sd->fd, msg_txt(191));	// 傭兵が逃走しました。
+		merc_delete_data(sd);
+	}
 
 	unit_stop_walking(&sd->bl,0);
 	unit_skillcastcancel(&sd->bl,0);	// 詠唱の中止

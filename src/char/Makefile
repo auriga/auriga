@@ -6,7 +6,7 @@ ifeq ($(findstring LOCALZLIB,$(CFLAGS)), LOCALZLIB)
 COMMON_OBJ += ../common/zlib/inflate.o ../common/zlib/deflate.o ../common/zlib/crc32.o ../common/zlib/trees.o ../common/zlib/zutil.o ../common/zlib/inftrees.o ../common/zlib/adler32.o ../common/zlib/inffast.o ../common/zlib/compress.o
 endif
 
-char-server: char.o inter.o int_party.o int_guild.o int_storage.o int_pet.o int_mail.o int_homun.o int_status.o $(COMMON_OBJ)
+char-server: char.o inter.o int_party.o int_guild.o int_storage.o int_pet.o int_mail.o int_merc.o int_homun.o int_status.o $(COMMON_OBJ)
 	$(CC) -o ../../$@ $> $(LIBS)
 
 clean:

@@ -2343,8 +2343,10 @@ void login_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 int login_httpd_auth_func( struct httpd_access* a, struct httpd_session_data* sd, const char *userid, char *passwd )
 {
 	const struct mmo_account *acc;
+	const char *p;
 
-	if(strnlen(userid, 24) > 23)	// 24文字以上はありえない
+	p = memchr(userid, '\0', 24);
+	if( p == NULL )	// 24文字以上はありえない
 		return 0;
 
 	acc = account_load_str( userid );

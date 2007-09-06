@@ -170,6 +170,7 @@ enum AtCommandType {
 	AtCommand_AutoLoot,
 	AtCommand_ChangeMapType,
 	AtCommand_HotkeySet,
+	AtCommand_CallMerc,
 	AtCommand_Unknown,
 	AtCommand_MAX,
 };

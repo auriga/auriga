@@ -109,6 +109,10 @@ SOURCE=".\inter-converter.c"
 # End Source File
 # Begin Source File
 
+SOURCE="..\common\lock.c"
+# End Source File
+# Begin Source File
+
 SOURCE=".\login-converter.c"
 # End Source File
 # Begin Source File
@@ -158,6 +162,10 @@ SOURCE=..\common\db.h
 # Begin Source File
 
 SOURCE=".\inter-converter.h"
+# End Source File
+# Begin Source File
+
+SOURCE="..\common\lock.h"
 # End Source File
 # Begin Source File
 

@@ -6,21 +6,6 @@
 
 
 /*==========================================
- * strnlenの実装
- *------------------------------------------
- */
-#if defined(_WIN32) && (!defined(_MSC_VER) || _MSC_VER < 1400)
-
-size_t strnlen(const char *string, size_t maxlen)
-{
-	const char *end = memchr(string, '\0', maxlen);
-	return end ? (size_t)(end - string) : maxlen;
-}
-
-#endif
-
-
-/*==========================================
  * 32bit線形合同法(戻り値は24ビット有効)
  *------------------------------------------
  */
