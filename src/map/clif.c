@@ -9364,7 +9364,7 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
 	WFIFOW(fd,60) = 0;	// ネームバリュー
 	WFIFOL(fd,62) = 0;	// 召喚回数
 	WFIFOL(fd,66) = mcd->status.kill_count;	// キルカウント
-	WFIFOW(fd,70) = 0;	// ??
+	WFIFOW(fd,70) = mcd->attackable;	// 攻撃可否フラグ 0:不可/1:許可
 	WFIFOSET(fd,packet_db[0x29b].len);
 
 	return;
@@ -10067,7 +10067,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	unit_stop_walking(&sd->bl,0);
 	unit_stopattack(&sd->bl);
 
-	target_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
+	target_id   = RFIFOL(fd,GETPACKETPOS(cmd,0));
 	action_type = RFIFOB(fd,GETPACKETPOS(cmd,1));
 
 	// decode for jRO 2005-05-09dRagexe
@@ -12735,7 +12735,7 @@ static void clif_parse_HomMercWalkMaster(int fd,struct map_session_data *sd, int
 
 	nullpo_retv(sd);
 
-	if(bl == NULL)
+	if(bl == NULL || bl->prev == NULL)
 		return;
 
 	if(bl->type == BL_HOM) {
@@ -12759,7 +12759,7 @@ static void clif_parse_HomMercWalkToXY(int fd,struct map_session_data *sd, int c
 
 	nullpo_retv(sd);
 
-	if(bl == NULL)
+	if(bl == NULL || bl->prev == NULL)
 		return;
 
 	if( (bl->type == BL_HOM && sd->hd && bl == &sd->hd->bl) ||
@@ -12776,37 +12776,45 @@ static void clif_parse_HomMercWalkToXY(int fd,struct map_session_data *sd, int c
  *
  *------------------------------------------
  */
-static void clif_parse_HomActionRequest(int fd,struct map_session_data *sd, int cmd)
+static void clif_parse_HomMercActionRequest(int fd,struct map_session_data *sd, int cmd)
 {
-	struct homun_data *hd;
+	struct block_list *src = map_id2bl(RFIFOL(fd,GETPACKETPOS(cmd,0)));
 	int action_type,target_id;
+	unsigned int *option;
 
 	nullpo_retv(sd);
 
-	if((hd=sd->hd)==NULL)
+	if(src == NULL || src->prev == NULL)
 		return;
 
-	if(unit_isdead(&hd->bl)) {
-		clif_clearchar_area(&hd->bl,1);
+	if(src->type == BL_HOM && (!sd->hd || src != &sd->hd->bl))
+		return;
+	else if(src->type == BL_MERC && (!sd->mcd || src != &sd->mcd->bl))
+		return;
+
+	if(unit_isdead(src)) {
+		clif_clearchar_area(src,1);
 		return;
 	}
-	if(hd->status.option&2)
+
+	option = status_get_option(src);
+	if(option && (*option)&2)
 		return;
 
-	unit_stop_walking(&hd->bl,1);
-	unit_stopattack(&hd->bl);
+	unit_stop_walking(src,1);
+	unit_stopattack(src);
 
-	target_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
-	action_type = RFIFOB(fd,GETPACKETPOS(cmd,1));
+	target_id   = RFIFOL(fd,GETPACKETPOS(cmd,1));
+	action_type = RFIFOB(fd,GETPACKETPOS(cmd,2));
 
 	switch(action_type){
 	case 0x00:	// once attack
 	case 0x07:	// continuous attack ...あるのかな？
 		{
-			struct block_list *bl=map_id2bl(target_id);
-			if(bl && mob_gvmobcheck(sd,bl)==0)
+			struct block_list *bl = map_id2bl(target_id);
+			if(bl && mob_gvmobcheck(sd,bl) == 0)
 				return;
-			unit_attack(&hd->bl,target_id,action_type!=0);
+			unit_attack(src,target_id,action_type != 0);
 		}
 		break;
 	}
@@ -13106,7 +13114,7 @@ static struct {
 	{ clif_parse_HomMenu,                   "hommenu"                   },
 	{ clif_parse_HomMercWalkMaster,         "hommercwalkmaster"         },
 	{ clif_parse_HomMercWalkToXY,           "hommercwalktoxy"           },
-	{ clif_parse_HomActionRequest,          "homactionrequest"          },
+	{ clif_parse_HomMercActionRequest,      "hommercactionrequest"      },
 	{ clif_parse_ChangeHomName,             "changehomname"             },
 	{ clif_parse_MailWinOpen,               "mailwinopen"               },
 	{ clif_parse_ReadMail,                  "readmail"                  },

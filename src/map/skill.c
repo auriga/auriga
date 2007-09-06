@@ -7276,7 +7276,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		int target = md->target_id;
 		if(battle_config.mob_changetarget_byskill == 1 || target == 0)
 		{
-			if(ss->type == BL_PC || ss->type == BL_HOM)
+			if(ss->type == BL_PC || ss->type == BL_HOM || ss->type == BL_MERC)
 				md->target_id = ss->id;
 		}
 		mobskill_use(md,tick,MSC_SKILLUSED|(sg->skill_id<<16));

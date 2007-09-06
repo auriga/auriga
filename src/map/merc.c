@@ -12,6 +12,7 @@
 #include "utils.h"
 #include "mmo.h"
 
+#include "battle.h"
 #include "clif.h"
 #include "chrif.h"
 #include "intif.h"
@@ -374,17 +375,18 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->bl.x    = mcd->ud.to_x = sd->bl.x;
 	mcd->bl.y    = mcd->ud.to_y = sd->bl.y;
 	merc_calc_pos(mcd,sd->bl.x,sd->bl.y,sd->dir);
-	mcd->bl.x       = mcd->ud.to_x;
-	mcd->bl.y       = mcd->ud.to_y;
-	mcd->bl.id      = npc_get_new_npc_id();
-	mcd->dir        = sd->dir;
-	mcd->speed      = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
-	mcd->bl.subtype = MONS;
-	mcd->bl.type    = BL_MERC;
-	mcd->target_id  = 0;
-	mcd->attackable = 1;	// これを0にすると、クライアントから攻撃パケットを出さなくなる
-	mcd->msd        = sd;
-	mcd->view_class = merc_db[class_].view_class;
+	mcd->bl.x        = mcd->ud.to_x;
+	mcd->bl.y        = mcd->ud.to_y;
+	mcd->bl.id       = npc_get_new_npc_id();
+	mcd->dir         = sd->dir;
+	mcd->speed       = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
+	mcd->bl.subtype  = MONS;
+	mcd->bl.type     = BL_MERC;
+	mcd->target_id   = 0;
+	mcd->attackable  = 1;	// これを0にすると、クライアントから攻撃パケットを出さなくなる
+	mcd->msd         = sd;
+	mcd->view_class  = merc_db[class_].view_class;
+	mcd->attackrange = merc_db[class_].range;
 
 	for(i=0; i<MAX_MERCSKILL; i++)
 		mcd->skillstatictimer[i] = tick;
@@ -587,53 +589,175 @@ int merc_calc_skilltree(struct merc_data *mcd)
  */
 int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 {
-/*
 	struct map_session_data *sd = NULL;
 
 	nullpo_retr(0, mcd);
 	nullpo_retr(0, sd = mcd->msd);
 
 	// 既に死んでいたら無効
-	if(unit_isdead(&hd->bl))
+	if(unit_isdead(&mcd->bl))
 		return 0;
 
 	// 歩いていたら足を止める
-	unit_stop_walking(&hd->bl,battle_config.pc_hit_stop_type);
+	unit_stop_walking(&mcd->bl,battle_config.pc_hit_stop_type);
 
-	if(damage > 0)
-		skill_stop_gravitation(&hd->bl);
+	if(damage > 0 && mcd->sc_data[SC_GRAVITATION_USER].timer != -1)
+		status_change_end(&mcd->bl, SC_GRAVITATION_USER, -1);
 
-	if(hd->bl.prev == NULL) {
+	if(mcd->bl.prev == NULL) {
 		if(battle_config.error_log)
 			printf("homun_damage : BlockError!!\n");
 		return 0;
 	}
 
-	if(hd->status.hp > hd->max_hp)
-		hd->status.hp = hd->max_hp;
+	if(mcd->status.hp > mcd->max_hp)
+		mcd->status.hp = mcd->max_hp;
 
 	// over kill分は丸める
-	if(damage > hd->status.hp)
-		damage = hd->status.hp;
+	if(damage > mcd->status.hp)
+		damage = mcd->status.hp;
 
-	hd->status.hp -= damage;
+	mcd->status.hp -= damage;
 
 	// ハイド状態を解除
-	status_change_hidden_end(&hd->bl);
+	status_change_hidden_end(&mcd->bl);
 
-	clif_send_homstatus(sd,0);
+	clif_send_mercstatus(sd,0);
 
 	// 死亡していた
-	if(hd->status.hp <= 0) {
-		if(battle_config.save_homun_temporal_intimate)
-			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
-		// スキルユニットからの離脱
-		hd->status.hp = 1;
-		skill_unit_move(&hd->bl,gettick(),0);
-		hd->status.hp = 0;
+	if(mcd->status.hp <= 0) {
+		//if(battle_config.save_homun_temporal_intimate)
+		//	pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
 
-		hd->status.incubate = 0;
-		unit_free(&hd->bl,1);
+		// スキルユニットからの離脱
+		mcd->status.hp = 1;
+		skill_unit_move(&mcd->bl,gettick(),0);
+		mcd->status.hp = 0;
+
+		//unit_free(&mcd->bl,1);
+		merc_delete_data(sd);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * HP/SP回復
+ *------------------------------------------
+ */
+int merc_heal(struct merc_data *mcd,int hp,int sp)
+{
+	nullpo_retr(0, mcd);
+
+	// バーサーク中は回復させない
+	if(mcd->sc_data[SC_BERSERK].timer != -1) {
+		if(sp > 0)
+			sp = 0;
+		if(hp > 0)
+			hp = 0;
+	}
+
+	if(hp + mcd->status.hp > mcd->max_hp)
+		hp = mcd->max_hp - mcd->status.hp;
+	if(sp + mcd->status.sp > mcd->max_sp)
+		sp = mcd->max_sp - mcd->status.sp;
+	mcd->status.hp += hp;
+	if(mcd->status.hp <= 0) {
+		mcd->status.hp = 0;
+		merc_damage(NULL,mcd,1);
+		hp = 0;
+	}
+	mcd->status.sp += sp;
+	if(mcd->status.sp <= 0)
+		mcd->status.sp = 0;
+	if((hp || sp) && mcd->msd)
+		clif_send_mercstatus(mcd->msd,0);
+
+	return hp + sp;
+}
+
+/*==========================================
+ * 自然回復物
+ *------------------------------------------
+ */
+static int merc_natural_heal_hp(int tid,unsigned int tick,int id,int data)
+{
+/*
+	struct homun_data *hd = map_id2hd(id);
+	int bhp;
+
+	nullpo_retr(0, hd);
+
+	if(hd->natural_heal_hp != tid) {
+		if(battle_config.error_log)
+			printf("homun_natural_heal_hp %d != %d\n",hd->natural_heal_hp,tid);
+		return 0;
+	}
+	hd->natural_heal_hp = -1;
+
+	bhp = hd->status.hp;
+
+	if(hd->ud.walktimer == -1) {
+		hd->status.hp += hd->nhealhp;
+		if(hd->status.hp > hd->max_hp)
+			hd->status.hp = hd->max_hp;
+		if(bhp != hd->status.hp && hd->msd)
+			clif_send_homstatus(hd->msd,0);
+	}
+	hd->natural_heal_hp = add_timer(tick+NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
+*/
+	return 0;
+}
+
+static int merc_natural_heal_sp(int tid,unsigned int tick,int id,int data)
+{
+/*
+	struct homun_data *hd = map_id2hd(id);
+	int bsp;
+
+	nullpo_retr(0, hd);
+
+	if(hd->natural_heal_sp != tid) {
+		if(battle_config.error_log)
+			printf("homun_natural_heal_sp %d != %d\n",hd->natural_heal_sp,tid);
+		return 0;
+	}
+	hd->natural_heal_sp = -1;
+
+	bsp = hd->status.sp;
+
+	if(hd->intimate < hd->status.intimate)
+	{
+		hd->intimate += battle_config.homun_temporal_intimate_resilience;
+		if(hd->status.intimate < hd->intimate)
+			hd->intimate = hd->status.intimate;
+		clif_send_homdata(hd->msd,1,hd->intimate/100);
+	}
+
+	if(hd->ud.walktimer == -1) {
+		hd->status.sp += hd->nhealsp;
+		if(hd->status.sp > hd->max_sp)
+			hd->status.sp = hd->max_sp;
+		if(bsp != hd->status.sp && hd->msd)
+			clif_send_homstatus(hd->msd,0);
+	}
+	hd->natural_heal_sp = add_timer(tick+NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
+*/
+	return 0;
+}
+
+int merc_natural_heal_timer_delete(struct merc_data *mcd)
+{
+/*
+	nullpo_retr(0, hd);
+
+	if(hd->natural_heal_hp != -1) {
+		delete_timer(hd->natural_heal_hp,homun_natural_heal_hp);
+		hd->natural_heal_hp = -1;
+	}
+	if(hd->natural_heal_sp != -1) {
+		delete_timer(hd->natural_heal_sp,homun_natural_heal_sp);
+		hd->natural_heal_sp = -1;
 	}
 */
 	return 0;

@@ -1047,7 +1047,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			int id = target_md->target_id;
 			if(battle_config.mob_changetarget_byskill || id == 0)
 			{
-				if(src->type == BL_PC || src->type == BL_HOM)
+				if(src->type == BL_PC || src->type == BL_HOM || src->type == BL_MERC)
 					target_md->target_id = src->id;
 			}
 			mobskill_use(target_md,tick,MSC_CASTTARGETED);
@@ -1452,10 +1452,11 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 	struct status_change *sc_data, *tsc_data;
 	int dist,skill,range;
 	struct unit_data *src_ud;
-	struct map_session_data *src_sd = NULL, *target_sd = NULL;
-	struct pet_data         *src_pd = NULL;
-	struct mob_data         *src_md = NULL, *target_md = NULL;
-	struct homun_data       *src_hd = NULL, *target_hd = NULL;
+	struct map_session_data *src_sd  = NULL, *target_sd  = NULL;
+	struct pet_data         *src_pd  = NULL;
+	struct mob_data         *src_md  = NULL, *target_md  = NULL;
+	struct homun_data       *src_hd  = NULL, *target_hd  = NULL;
+	struct merc_data        *src_mcd = NULL, *target_mcd = NULL;
 
 	if((src = map_id2bl(id)) == NULL)
 		return 0;
@@ -1493,14 +1494,16 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 			return 0;
 	}
 
-	src_sd = BL_DOWNCAST( BL_PC , src );
-	src_pd = BL_DOWNCAST( BL_PET, src );
-	src_md = BL_DOWNCAST( BL_MOB, src );
-	src_hd = BL_DOWNCAST( BL_HOM, src );
+	src_sd  = BL_DOWNCAST( BL_PC ,  src );
+	src_pd  = BL_DOWNCAST( BL_PET,  src );
+	src_md  = BL_DOWNCAST( BL_MOB,  src );
+	src_hd  = BL_DOWNCAST( BL_HOM,  src );
+	src_mcd = BL_DOWNCAST( BL_MERC, src );
 
-	target_sd = BL_DOWNCAST( BL_PC , target );
-	target_md = BL_DOWNCAST( BL_MOB, target );
-	target_hd = BL_DOWNCAST( BL_HOM, target );
+	target_sd  = BL_DOWNCAST( BL_PC ,  target );
+	target_md  = BL_DOWNCAST( BL_MOB,  target );
+	target_hd  = BL_DOWNCAST( BL_HOM,  target );
+	target_mcd = BL_DOWNCAST( BL_MERC, target );
 
 	if( src_sd ) {
 		unsigned int *opt;
@@ -1583,6 +1586,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 			src_md->dir = dir;
 		else if(src_hd && battle_config.monster_attack_direction_change)
 			src_hd->dir = dir;
+		else if(src_mcd && battle_config.monster_attack_direction_change)
+			src_mcd->dir = dir;
 		else if(src_ud->walktimer != -1)
 			unit_stop_walking(src,1);
 
@@ -1735,6 +1740,8 @@ int unit_heal(struct block_list *bl,int hp,int sp)
 		mob_heal((struct mob_data*)bl,hp);
 	else if(bl->type == BL_HOM)
 		homun_heal((struct homun_data*)bl,hp,sp);
+	else if(bl->type == BL_MERC)
+		merc_heal((struct merc_data*)bl,hp,sp);
 
 	return 0;
 }

@@ -463,7 +463,7 @@
 0x0230,12
 0x0231,26,changehomname,2
 0x0232,9,hommercwalktoxy,2:6
-0x0233,11,homactionrequest,6:10
+0x0233,11,hommercactionrequest,2:6:10
 0x0234,6,hommercwalkmaster,2
 0x0235,-1
 0x0236,10
