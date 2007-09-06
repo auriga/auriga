@@ -1140,6 +1140,7 @@ struct map_session_data * map_charid2sd(int id);
 struct map_session_data * map_id2sd(int);
 struct mob_data * map_id2md(int);
 struct homun_data * map_id2hd(int);
+struct merc_data * map_id2mcd(int);
 struct npc_data * map_id2nd(int);
 struct chat_data * map_id2cd(int);
 struct skill_unit * map_id2su(int);

@@ -7170,24 +7170,6 @@ int pc_calc_pvprank_timer(int tid,unsigned int tick,int id,int data)
 }
 
 /*==========================================
- * sdが連れているホムンクルスは有効か
- *------------------------------------------
- */
-int pc_homisalive(struct map_session_data *sd)
-{
-	nullpo_retr(0, sd);
-
-	if(sd->status.homun_id == 0 || sd->hd == NULL)	// ホムを持ってない
-		return 0;
-	if(sd->hd->status.hp <= 0)	// ホムが死んでる
-		return 0;
-	if(sd->hd->status.incubate == 0)	// ホムを出してない
-		return 0;
-
-	return 1;
-}
-
-/*==========================================
  * sdは結婚しているか(既婚の場合は相方のchar_idを返す)
  *------------------------------------------
  */
@@ -8745,6 +8727,7 @@ int do_init_pc(void)
 	add_timer_func_list(pc_spiritball_timer,"pc_spiritball_timer");
 	add_timer_func_list(pc_coin_timer,"pc_coin_timer");
 	add_timer_func_list(pc_extra,"pc_extra");
+	add_timer_func_list(pc_itemlimit_timer,"pc_itemlimit_timer");
 
 	natural_heal_prev_tick = gettick() + NATURAL_HEAL_INTERVAL;
 	add_timer_interval(natural_heal_prev_tick,pc_natural_heal,0,0,NATURAL_HEAL_INTERVAL);

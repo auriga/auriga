@@ -1,4 +1,19 @@
 ----------------------------------------
+//0319 [2007/09/07] by Rayce
+
+・傭兵実装準備その６
+	-> HPとSPが自然回復できるように（merc.*, unit.c）
+	-> map_id2mcd() 追加（map.*）
+	-> homun.hの NATURAL_HEAL_HP_INTERVAL, NATURAL_HEAL_SP_INTERVAL をそれぞれ
+	   HOM_NATURAL_HEAL_HP_INTERVAL, HOM_NATURAL_HEAL_SP_INTERVAL に変更（homun.*）
+
+・MOBが傭兵に攻撃できなかったバグを修正（mob.c）
+・傭兵のaspd_kが間違っていたため攻撃モーションが出なかったバグを修正（merc.c）
+
+・pc_itemlimit_timer をtimer関数リストに登録し忘れてたので追記（pc.c）
+・pc_homisalive() を homun_isalive() に変更（pc.*, homun.*, skill.c）
+
+----------------------------------------
 //0318 [2007/09/07] by Rayce
 
 ・傭兵実装準備その５

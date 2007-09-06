@@ -706,8 +706,8 @@ static int homun_data_init(struct map_session_data *sd)
 	if(sd->homun_hungry_timer != -1)
 		homun_hungry_timer_delete(sd);
 
-	hd->natural_heal_hp    = add_timer(tick+NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
-	hd->natural_heal_sp    = add_timer(tick+NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
+	hd->natural_heal_hp    = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
+	hd->natural_heal_sp    = add_timer(tick+HOM_NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
 	sd->homun_hungry_timer = add_timer(tick+60*1000,homun_hungry,sd->bl.id,0);
 	if(hd->status.hungry < 10)
 		hd->hungry_cry_timer = add_timer(tick+20*1000,homun_hungry_cry,sd->bl.id,0);
@@ -1391,6 +1391,24 @@ int homun_heal(struct homun_data *hd,int hp,int sp)
 }
 
 /*==========================================
+ * sdが連れているホムンクルスは有効か
+ *------------------------------------------
+ */
+int homun_isalive(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	if(sd->status.homun_id == 0 || sd->hd == NULL)	// ホムを持ってない
+		return 0;
+	if(sd->hd->status.hp <= 0)	// ホムが死んでる
+		return 0;
+	if(sd->hd->status.incubate == 0)	// ホムを出してない
+		return 0;
+
+	return 1;
+}
+
+/*==========================================
  * 自然回復物
  *------------------------------------------
  */
@@ -1417,7 +1435,7 @@ static int homun_natural_heal_hp(int tid,unsigned int tick,int id,int data)
 		if(bhp != hd->status.hp && hd->msd)
 			clif_send_homstatus(hd->msd,0);
 	}
-	hd->natural_heal_hp = add_timer(tick+NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
+	hd->natural_heal_hp = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
 
 	return 0;
 }
@@ -1453,7 +1471,7 @@ static int homun_natural_heal_sp(int tid,unsigned int tick,int id,int data)
 		if(bsp != hd->status.sp && hd->msd)
 			clif_send_homstatus(hd->msd,0);
 	}
-	hd->natural_heal_sp = add_timer(tick+NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
+	hd->natural_heal_sp = add_timer(tick+HOM_NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
 
 	return 0;
 }

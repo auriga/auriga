@@ -2233,8 +2233,8 @@ int unit_free(struct block_list *bl, int clrtype)
 		status_change_clear(&mcd->bl,1);			// ステータス異常を解除する
 		if(sd && sd->mcd) {
 			merc_save_data(sd);
-			//if(sd->mcd->natural_heal_hp != -1 || sd->mcd->natural_heal_sp != -1)
-			//	merc_natural_heal_timer_delete(sd->mcd);
+			if(sd->mcd->natural_heal_hp != -1 || sd->mcd->natural_heal_sp != -1)
+				merc_natural_heal_timer_delete(sd->mcd);
 			sd->mcd = NULL;
 		}
 		map_deliddb(&mcd->bl);

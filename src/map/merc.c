@@ -247,7 +247,7 @@ int merc_calc_status(struct merc_data *mcd)
 
 	dstr   = mcd->str / 10;
 	blv    = mcd->status.base_level;
-	aspd_k = merc_db[mcd->status.class_-HOM_ID].aspd_k;
+	aspd_k = merc_db[mcd->status.class_-MERC_ID].aspd_k;
 
 	mcd->atk      += mcd->str * 2 + blv + dstr * dstr;
 	mcd->matk     += mcd->int_+(mcd->int_/ 5) * (mcd->int_/ 5);
@@ -352,8 +352,8 @@ int merc_callmerc(struct map_session_data *sd,int class_)
 	return 0;
 }
 
-//static int homun_natural_heal_hp(int tid,unsigned int tick,int id,int data);
-//static int homun_natural_heal_sp(int tid,unsigned int tick,int id,int data);
+static int merc_natural_heal_hp(int tid,unsigned int tick,int id,int data);
+static int merc_natural_heal_sp(int tid,unsigned int tick,int id,int data);
 
 /*==========================================
  *
@@ -406,8 +406,8 @@ static int merc_data_init(struct map_session_data *sd)
 	unit_dataset(&mcd->bl);
 	map_addiddb(&mcd->bl);
 
-	//mcd->natural_heal_hp    = add_timer(tick+NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,mcd->bl.id,0);
-	//mcd->natural_heal_sp    = add_timer(tick+NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,mcd->bl.id,0);
+	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,0);
+	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,0);
 
 	mcd->view_size = 0;
 
@@ -557,7 +557,7 @@ int merc_calc_skilltree(struct merc_data *mcd)
 
 	nullpo_retr(0, mcd);
 
-	c = mcd->status.class_ - HOM_ID;
+	c = mcd->status.class_ - MERC_ID;
 
 	for(i=0; i<MAX_MERCSKILL; i++)
 		mcd->status.skill[i].id = 0;
@@ -606,7 +606,7 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 
 	if(mcd->bl.prev == NULL) {
 		if(battle_config.error_log)
-			printf("homun_damage : BlockError!!\n");
+			printf("merc_damage : BlockError!!\n");
 		return 0;
 	}
 
@@ -682,84 +682,73 @@ int merc_heal(struct merc_data *mcd,int hp,int sp)
  */
 static int merc_natural_heal_hp(int tid,unsigned int tick,int id,int data)
 {
-/*
-	struct homun_data *hd = map_id2hd(id);
+	struct merc_data *mcd = map_id2mcd(id);
 	int bhp;
 
-	nullpo_retr(0, hd);
+	nullpo_retr(0, mcd);
 
-	if(hd->natural_heal_hp != tid) {
+	if(mcd->natural_heal_hp != tid) {
 		if(battle_config.error_log)
-			printf("homun_natural_heal_hp %d != %d\n",hd->natural_heal_hp,tid);
+			printf("merc_natural_heal_hp %d != %d\n",mcd->natural_heal_hp,tid);
 		return 0;
 	}
-	hd->natural_heal_hp = -1;
+	mcd->natural_heal_hp = -1;
 
-	bhp = hd->status.hp;
+	bhp = mcd->status.hp;
 
-	if(hd->ud.walktimer == -1) {
-		hd->status.hp += hd->nhealhp;
-		if(hd->status.hp > hd->max_hp)
-			hd->status.hp = hd->max_hp;
-		if(bhp != hd->status.hp && hd->msd)
-			clif_send_homstatus(hd->msd,0);
+	if(mcd->ud.walktimer == -1) {
+		mcd->status.hp += mcd->nhealhp;
+		if(mcd->status.hp > mcd->max_hp)
+			mcd->status.hp = mcd->max_hp;
+		if(bhp != mcd->status.hp && mcd->msd)
+			clif_send_mercstatus(mcd->msd,0);
 	}
-	hd->natural_heal_hp = add_timer(tick+NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
-*/
+	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,0);
+
 	return 0;
 }
 
 static int merc_natural_heal_sp(int tid,unsigned int tick,int id,int data)
 {
-/*
-	struct homun_data *hd = map_id2hd(id);
+	struct merc_data *mcd = map_id2mcd(id);
 	int bsp;
 
-	nullpo_retr(0, hd);
+	nullpo_retr(0, mcd);
 
-	if(hd->natural_heal_sp != tid) {
+	if(mcd->natural_heal_sp != tid) {
 		if(battle_config.error_log)
-			printf("homun_natural_heal_sp %d != %d\n",hd->natural_heal_sp,tid);
+			printf("merc_natural_heal_sp %d != %d\n",mcd->natural_heal_sp,tid);
 		return 0;
 	}
-	hd->natural_heal_sp = -1;
+	mcd->natural_heal_sp = -1;
 
-	bsp = hd->status.sp;
+	bsp = mcd->status.sp;
 
-	if(hd->intimate < hd->status.intimate)
-	{
-		hd->intimate += battle_config.homun_temporal_intimate_resilience;
-		if(hd->status.intimate < hd->intimate)
-			hd->intimate = hd->status.intimate;
-		clif_send_homdata(hd->msd,1,hd->intimate/100);
+	if(mcd->ud.walktimer == -1) {
+		mcd->status.sp += mcd->nhealsp;
+		if(mcd->status.sp > mcd->max_sp)
+			mcd->status.sp = mcd->max_sp;
+		if(bsp != mcd->status.sp && mcd->msd)
+			clif_send_mercstatus(mcd->msd,0);
 	}
+	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,0);
 
-	if(hd->ud.walktimer == -1) {
-		hd->status.sp += hd->nhealsp;
-		if(hd->status.sp > hd->max_sp)
-			hd->status.sp = hd->max_sp;
-		if(bsp != hd->status.sp && hd->msd)
-			clif_send_homstatus(hd->msd,0);
-	}
-	hd->natural_heal_sp = add_timer(tick+NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
-*/
 	return 0;
 }
 
 int merc_natural_heal_timer_delete(struct merc_data *mcd)
 {
-/*
-	nullpo_retr(0, hd);
+	nullpo_retr(0, mcd);
 
-	if(hd->natural_heal_hp != -1) {
-		delete_timer(hd->natural_heal_hp,homun_natural_heal_hp);
-		hd->natural_heal_hp = -1;
+	if(mcd->natural_heal_hp != -1) {
+		delete_timer(mcd->natural_heal_hp,merc_natural_heal_hp);
+		mcd->natural_heal_hp = -1;
 	}
-	if(hd->natural_heal_sp != -1) {
-		delete_timer(hd->natural_heal_sp,homun_natural_heal_sp);
-		hd->natural_heal_sp = -1;
+	if(mcd->natural_heal_sp != -1) {
+		delete_timer(mcd->natural_heal_sp,merc_natural_heal_sp);
+		mcd->natural_heal_sp = -1;
 	}
-*/
+
 	return 0;
 }
 
@@ -985,10 +974,9 @@ int do_init_merc(void)
 	read_mercdb();
 	merc_readdb();
 
-/*
-	add_timer_func_list(homun_natural_heal_hp,"homun_natural_heal_hp");
-	add_timer_func_list(homun_natural_heal_sp,"homun_natural_heal_sp");
-*/
+	add_timer_func_list(merc_natural_heal_hp,"merc_natural_heal_hp");
+	add_timer_func_list(merc_natural_heal_sp,"merc_natural_heal_sp");
+
 	return 0;
 }
 

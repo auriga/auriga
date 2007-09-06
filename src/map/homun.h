@@ -3,8 +3,8 @@
 
 #include "map.h"
 
-#define NATURAL_HEAL_HP_INTERVAL 2*1000
-#define NATURAL_HEAL_SP_INTERVAL 4*1000
+#define HOM_NATURAL_HEAL_HP_INTERVAL 2000
+#define HOM_NATURAL_HEAL_SP_INTERVAL 4000
 
 #define MAX_HOMSKILL_TREE 5
 
@@ -61,8 +61,9 @@ int homun_natural_heal_timer_delete(struct homun_data *hd);
 int homun_create_hom(struct map_session_data *sd,int homunid);
 int homun_recalc_status(struct homun_data *hd);
 int homun_delete_data(struct map_session_data *sd);
-
 int homun_save_data(struct map_session_data *sd);
+
+int homun_isalive(struct map_session_data *sd);
 
 int do_init_homun(void);
 int do_final_homun(void);

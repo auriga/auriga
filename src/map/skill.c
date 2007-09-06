@@ -4064,19 +4064,19 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case AM_CALLHOMUN:	/* コールホムンクルス */
-		if(sd && !sd->hd){
+		if(sd && !sd->hd) {
 			homun_callhom(sd);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case AM_REST:				/* 安息 */
-		if(sd && pc_homisalive(sd)){
+		if(sd && homun_isalive(sd)) {
 			homun_return_embryo(sd);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case AM_RESURRECTHOMUN:				/* リザレクションホムンクルス */
-		if(sd && !sd->hd && sd->hom.hp <= 0){
+		if(sd && !sd->hd && sd->hom.hp <= 0) {
 			homun_revive(sd,skilllv);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
@@ -8524,13 +8524,13 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		// 作成済みで安息時
 		if(sd->hom.homun_id > 0 && sd->status.homun_id == sd->hom.homun_id && !sd->hom.incubate)
 			break;
-		if(sd->hd){
+		if(sd->hd) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
-		if(sd->hom.homun_id > 0){	// 作成済みホムが居る時にエンブリオ持ってたら失敗
-			for(i=0;i<MAX_INVENTORY;i++){
-				if(sd->status.inventory[i].nameid==7142){
+		if(sd->hom.homun_id > 0) {	// 作成済みホムが居る時にエンブリオ持ってたら失敗
+			for(i=0; i<MAX_INVENTORY; i++) {
+				if(sd->status.inventory[i].nameid == 7142) {
 					clif_skill_fail(sd,sc->id,0,0);
 					return 0;
 				}
@@ -8538,20 +8538,20 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case AM_REST:			/* 安息 */
-		if(pc_homisalive(sd)==0 || status_get_hp(&sd->hd->bl) < sd->hd->status.max_hp*80/100){
+		if(!homun_isalive(sd) || status_get_hp(&sd->hd->bl) < sd->hd->status.max_hp * 80 / 100) {
 			// ホムのHPがMHPの80%以上であること
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
 	case AM_RESURRECTHOMUN:			/* リザレクションホムンクルス */
-		if(sd->hd || sd->hom.hp > 0){
+		if(sd->hd || sd->hom.hp > 0) {
 			clif_skill_fail(sd,sc->id,0,0);
 			return 0;
 		}
 		break;
 	case WZ_FIREPILLAR:
-		if (sc->lv <= 5)	// no gems required at level 1-5
+		if(sc->lv <= 5)	// no gems required at level 1-5
 			item_nocost = 1;
 		// fall through
 	case PF_SPIDERWEB:		/* スパイダーウェッブ */

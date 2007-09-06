@@ -3,6 +3,9 @@
 
 #include "map.h"
 
+#define MERC_NATURAL_HEAL_HP_INTERVAL 2000
+#define MERC_NATURAL_HEAL_SP_INTERVAL 4000
+
 #define MAX_MERCSKILL_TREE 5
 
 struct merc_db {
@@ -37,6 +40,8 @@ int merc_calc_skilltree(struct merc_data *mcd);
 
 int merc_damage(struct block_list *src,struct merc_data *mcd,int damage);
 int merc_heal(struct merc_data *mcd,int hp,int sp);
+
+int merc_natural_heal_timer_delete(struct merc_data *mcd);
 
 int do_init_merc(void);
 int do_final_merc(void);
