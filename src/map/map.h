@@ -533,10 +533,8 @@ struct map_session_data {
 	struct s_pet pet;
 	struct pet_db *petDB;
 	struct pet_data *pd;
-	int pet_hungry_timer;
 
 	struct homun_data *hd;
-	int homun_hungry_timer;
 	struct mmo_homunstatus hom;
 
 	struct merc_data *mcd;
@@ -745,6 +743,7 @@ struct pet_data {
 	int target_id;
 	int move_fail_count;
 	unsigned int next_walktime,last_thinktime;
+	int hungry_timer;
 	struct item *lootitem;
 	short loottype;
 	short lootitem_count;
@@ -781,6 +780,7 @@ struct homun_data {
 	int nhealhp,nhealsp;
 	int hprecov_rate,sprecov_rate;
 	int natural_heal_hp,natural_heal_sp;
+	int hungry_timer;
 	int hungry_cry_timer;
 	struct map_session_data *msd;
 };
@@ -810,6 +810,7 @@ struct merc_data {
 	int nhealhp,nhealsp;
 	int hprecov_rate,sprecov_rate;
 	int natural_heal_hp,natural_heal_sp;
+	int limit_timer;
 	struct map_session_data *msd;
 };
 

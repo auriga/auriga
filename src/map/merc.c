@@ -145,6 +145,45 @@ static int merc_calc_pos(struct merc_data *mcd,int tx,int ty,int dir)
 }
 
 /*==========================================
+ * 雇用期限タイマー
+ *------------------------------------------
+ */
+static int merc_employ_timer(int tid,unsigned int tick,int id,int data)
+{
+	struct map_session_data *sd = map_id2sd(id);
+
+	if(sd == NULL || sd->mcd == NULL)
+		return 1;
+
+	if(sd->mcd->limit_timer != tid) {
+		if(battle_config.error_log)
+			printf("merc_employ_timer %d != %d\n",sd->mcd->limit_timer,tid);
+		return 0;
+	}
+	sd->mcd->limit_timer = -1;
+	clif_disp_onlyself(sd->fd, msg_txt(188));	// 傭兵雇用時間が満了しました。
+	merc_delete_data(sd);
+
+	return 0;
+}
+
+/*==========================================
+ * 雇用期限タイマー削除
+ *------------------------------------------
+ */
+int merc_employ_timer_delete(struct merc_data *mcd)
+{
+	nullpo_retr(0, mcd);
+
+	if(mcd->limit_timer != -1) {
+		delete_timer(mcd->limit_timer,merc_employ_timer);
+		mcd->limit_timer = -1;
+	}
+
+	return 0;
+}
+
+/*==========================================
  * 各ステ計算
  *------------------------------------------
  */
@@ -366,6 +405,8 @@ static int merc_data_init(struct map_session_data *sd)
 	struct merc_data *mcd;
 	int i,class_;
 	unsigned int tick = gettick();
+	unsigned int now  = (unsigned int)time(NULL);
+	unsigned int diff;
 
 	nullpo_retr(1, sd);
 	nullpo_retr(1, mcd = sd->mcd);
@@ -410,6 +451,12 @@ static int merc_data_init(struct map_session_data *sd)
 
 	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,0);
 	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,0);
+
+	if(mcd->status.limit > now)
+		diff = (mcd->status.limit - now) * 1000;
+	else
+		diff = 1;
+	mcd->limit_timer = add_timer(tick+diff,merc_employ_timer,sd->bl.id,0);
 
 	mcd->view_size = 0;
 
@@ -1009,6 +1056,7 @@ int do_init_merc(void)
 
 	add_timer_func_list(merc_natural_heal_hp,"merc_natural_heal_hp");
 	add_timer_func_list(merc_natural_heal_sp,"merc_natural_heal_sp");
+	add_timer_func_list(merc_employ_timer,"merc_employ_timer");
 
 	return 0;
 }

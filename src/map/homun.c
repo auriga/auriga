@@ -183,12 +183,12 @@ static int homun_hungry(int tid,unsigned int tick,int id,int data)
 	if(!sd->status.homun_id || !sd->hd)
 		return 1;
 
-	if(sd->homun_hungry_timer != tid) {
+	if(sd->hd->hungry_timer != tid) {
 		if(battle_config.error_log)
-			printf("homun_hungry_timer %d != %d\n",sd->homun_hungry_timer,tid);
+			printf("homun_hungry_timer %d != %d\n",sd->hd->hungry_timer,tid);
 		return 0;
 	}
-	sd->homun_hungry_timer = -1;
+	sd->hd->hungry_timer = -1;
 
 	sd->hd->status.hungry--;
 
@@ -218,22 +218,22 @@ static int homun_hungry(int tid,unsigned int tick,int id,int data)
 	clif_send_homstatus(sd,0);
 
 	interval = 60*1000;
-	sd->homun_hungry_timer = add_timer(tick+interval,homun_hungry,sd->bl.id,0);
+	sd->hd->hungry_timer = add_timer(tick+interval,homun_hungry,sd->bl.id,0);
 
 	return 0;
 }
 
-int homun_hungry_timer_delete(struct map_session_data *sd)
+int homun_hungry_timer_delete(struct homun_data *hd)
 {
-	nullpo_retr(0, sd);
+	nullpo_retr(0, hd);
 
-	if(sd->homun_hungry_timer != -1) {
-		delete_timer(sd->homun_hungry_timer,homun_hungry);
-		sd->homun_hungry_timer = -1;
+	if(hd->hungry_timer != -1) {
+		delete_timer(hd->hungry_timer,homun_hungry);
+		hd->hungry_timer = -1;
 	}
-	if(sd->hd && sd->hd->hungry_cry_timer != -1) {
-		delete_timer(sd->hd->hungry_cry_timer,homun_hungry_cry);
-		sd->hd->hungry_cry_timer = -1;
+	if(hd->hungry_cry_timer != -1) {
+		delete_timer(hd->hungry_cry_timer,homun_hungry_cry);
+		hd->hungry_cry_timer = -1;
 	}
 
 	return 0;
@@ -704,12 +704,9 @@ static int homun_data_init(struct map_session_data *sd)
 	unit_dataset(&hd->bl);
 	map_addiddb(&hd->bl);
 
-	if(sd->homun_hungry_timer != -1)
-		homun_hungry_timer_delete(sd);
-
-	hd->natural_heal_hp    = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
-	hd->natural_heal_sp    = add_timer(tick+HOM_NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
-	sd->homun_hungry_timer = add_timer(tick+60*1000,homun_hungry,sd->bl.id,0);
+	hd->natural_heal_hp = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
+	hd->natural_heal_sp = add_timer(tick+HOM_NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
+	hd->hungry_timer    = add_timer(tick+60*1000,homun_hungry,sd->bl.id,0);
 	if(hd->status.hungry < 10)
 		hd->hungry_cry_timer = add_timer(tick+20*1000,homun_hungry_cry,sd->bl.id,0);
 	else

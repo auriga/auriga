@@ -43,6 +43,7 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage);
 int merc_heal(struct merc_data *mcd,int hp,int sp);
 
 int merc_natural_heal_timer_delete(struct merc_data *mcd);
+int merc_employ_timer_delete(struct merc_data *mcd);
 
 int do_init_merc(void);
 int do_final_merc(void);

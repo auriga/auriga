@@ -34,7 +34,7 @@ struct random_homun_data {
 
 int homun_get_skilltree_max(int class_,int skillid);
 
-int homun_hungry_timer_delete(struct map_session_data *sd);
+int homun_hungry_timer_delete(struct homun_data *hd);
 
 int homun_menu(struct map_session_data *sd,int menunum);
 int homun_change_name(struct map_session_data *sd,char *name);

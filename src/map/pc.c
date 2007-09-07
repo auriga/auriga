@@ -1045,12 +1045,10 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// ペット初期化
 	sd->petDB = NULL;
 	sd->pd = NULL;
-	sd->pet_hungry_timer = -1;
 	memset(&sd->pet,0,sizeof(struct s_pet));
 
 	// ホム初期化
 	sd->hd = NULL;
-	sd->homun_hungry_timer = -1;
 	memset(&sd->hom,0,sizeof(struct mmo_homunstatus));
 
 	// 傭兵初期化

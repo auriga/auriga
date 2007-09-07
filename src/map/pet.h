@@ -38,7 +38,7 @@ enum {
 int pet_hungry_val(struct map_session_data *sd);
 int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type);
 int search_petDB_index(int key,int type);
-int pet_hungry_timer_delete(struct map_session_data *sd);
+int pet_hungry_timer_delete(struct pet_data *pd);
 int pet_recv_petdata(int account_id,struct s_pet *p,int flag);
 int pet_select_egg(struct map_session_data *sd,short egg_index);
 int pet_catch_process1(struct map_session_data *sd,int target_class);

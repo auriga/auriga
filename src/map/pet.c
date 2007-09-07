@@ -188,17 +188,18 @@ static int pet_hungry(int tid,unsigned int tick,int id,int data)
 	if(sd == NULL)
 		return 1;
 
-	if(sd->pet_hungry_timer != tid) {
-		if(battle_config.error_log)
-			printf("pet_hungry_timer %d != %d\n",sd->pet_hungry_timer,tid);
-		return 0;
-	}
-	sd->pet_hungry_timer = -1;
 	if(!sd->status.pet_id || !sd->pd || !sd->petDB)
 		return 1;
 
+	if(sd->pd->hungry_timer != tid) {
+		if(battle_config.error_log)
+			printf("pet_hungry_timer %d != %d\n",sd->pd->hungry_timer,tid);
+		return 0;
+	}
+	sd->pd->hungry_timer = -1;
 	sd->pet.hungry--;
 	t = sd->pet.intimate;
+
 	if(sd->pet.hungry < 0) {
 		if(sd->pd->target_id > 0)
 			unit_stopattack(&sd->pd->bl);
@@ -223,7 +224,7 @@ static int pet_hungry(int tid,unsigned int tick,int id,int data)
 		interval = sd->petDB->hungry_delay;
 	if(interval <= 0)
 		interval = 1;
-	sd->pet_hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,0);
+	sd->pd->hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,0);
 
 	return 0;
 }
@@ -232,13 +233,13 @@ static int pet_hungry(int tid,unsigned int tick,int id,int data)
  * 腹減りタイマー削除
  *------------------------------------------
  */
-int pet_hungry_timer_delete(struct map_session_data *sd)
+int pet_hungry_timer_delete(struct pet_data *pd)
 {
-	nullpo_retr(0, sd);
+	nullpo_retr(0, pd);
 
-	if(sd->pet_hungry_timer != -1) {
-		delete_timer(sd->pet_hungry_timer,pet_hungry);
-		sd->pet_hungry_timer = -1;
+	if(pd->hungry_timer != -1) {
+		delete_timer(pd->hungry_timer,pet_hungry);
+		pd->hungry_timer = -1;
 	}
 
 	return 0;
@@ -338,15 +339,13 @@ static int pet_data_init(struct map_session_data *sd)
 	unit_dataset(&pd->bl);
 	map_addiddb(&pd->bl);
 
-	if(sd->pet_hungry_timer != -1)
-		pet_hungry_timer_delete(sd);
 	if(battle_config.pet_hungry_delay_rate != 100)
 		interval = sd->petDB->hungry_delay * battle_config.pet_hungry_delay_rate / 100;
 	else
 		interval = sd->petDB->hungry_delay;
 	if(interval <= 0)
 		interval = 1;
-	sd->pet_hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,0);
+	pd->hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,0);
 	pd->lootitem = (struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
 	pd->loottype = (!battle_config.pet_lootitem)? 0: battle_config.petowneditem;
 	pd->lootitem_count  = 0;
