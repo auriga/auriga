@@ -1254,6 +1254,12 @@ AurigaNPCScript
 			<flag>を省略した場合、<flag>の値は1になります。
 			<skilllv>を0にするとこでそのスキルを忘れさせることも可能です。
 
+		bonus命令
+		bonus2命令
+		bonus3命令
+		bonus4命令
+			詳しくはitem_bonus.txtを参照してください。
+
 		waitingroom命令
 			waitingroom <title>,<limit>[,<event>[,<trigger>[,<zeny>,<lowlv>,<highlv>,[<job>,<upper>]]]];
 
@@ -2543,12 +2549,6 @@ AurigaNPCScript
 			指定した部位に装備しているアイテムのＩＤを返します。
 			もし、何も装備していない場合は0を返します。
 
-		bonus関数
-		bonus2関数
-		bonus3関数
-		bonus4関数
-			詳しくはitem_bonus.txtを参照してください。
-
 		checkoption関数
 			checkoption(<num>)
 
@@ -2726,6 +2726,16 @@ AurigaNPCScript
 			checkriding()
 
 			ペコペコに乗っていたいら１を、そうでなければ０を返します
+
+		checksit関数
+			checksit()
+
+			座っていたら１を、そうでなければ０を返します
+
+		checkdead関数
+			checkdead()
+
+			死亡していたら１を、そうでなければ０を返します
 
 		adoption関数
 			adoption(<parent1>[,<parent2>])

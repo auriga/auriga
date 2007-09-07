@@ -64,7 +64,7 @@ static struct homun_skill_tree_entry* homun_search_skilltree(int class_, int ski
 	// binary search
 	while(max - min > 1) {
 		int mid = (min + max) / 2;
-		if(st[mid].id == skillid)
+		if(st[mid].id && st[mid].id == skillid)
 			return &st[mid];
 
 		// 0のときは大とみなす
@@ -756,16 +756,16 @@ int homun_callhom(struct map_session_data *sd)
 		// 初誕生なら、データ作成
 		int idx = pc_search_inventory(sd,7142);	// エンブリオ所持を確認
 		sd->status.homun_id = 0;
-		if(idx >= 0) {
-			pc_delitem(sd,idx,1,0);	// エンブリオ消去
-		//if(atn_rand()%100<80)		// 成功率不明〜
-			homun_create_hom(sd,homun_get_create_homunid());
+		if(idx < 0) {
+			clif_skill_fail(sd,AM_CALLHOMUN,0,0);
 			return 0;
 		}
-		clif_skill_fail(sd,AM_CALLHOMUN,0,0);
+		pc_delitem(sd,idx,1,0);	// エンブリオ消去
+		//if(atn_rand()%100<80)		// 成功率不明〜
+		homun_create_hom(sd,homun_get_create_homunid());
 	}
 
-	return 0;
+	return 1;
 }
 
 /*==========================================
@@ -799,8 +799,8 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 			sd->hom.incubate = 0;
 		if(sd->hom.incubate && sd->hom.hp > 0)
 		{
-			homun_callhom(sd);
-			clif_homskillinfoblock(sd);
+			if(homun_callhom(sd))
+				clif_homskillinfoblock(sd);
 		}
 	} else if(sd->status.homun_id <= 0 && !sd->hd) {	// ホム新規作成
 		memcpy(&sd->hom,p,sizeof(struct mmo_homunstatus));

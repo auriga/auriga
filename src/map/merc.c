@@ -58,7 +58,7 @@ static struct merc_skill_tree_entry* merc_search_skilltree(int class_, int skill
 	// binary search
 	while(max - min > 1) {
 		int mid = (min + max) / 2;
-		if(st[mid].id == skillid)
+		if(st[mid].id && st[mid].id == skillid)
 			return &st[mid];
 
 		// 0のときは大とみなす
@@ -313,16 +313,16 @@ int merc_callmerc(struct map_session_data *sd,int class_)
 {
 	struct mmo_mercstatus st;
 
-	nullpo_retr(1, sd);
+	nullpo_retr(0, sd);
 
 	if(sd->status.merc_id > 0 || sd->mcd)	// 既に召喚中
-		return 1;
+		return 0;
 	if(sd->state.merc_creating)
-		return 1;
+		return 0;
 
 	class_ -= MERC_ID;
 	if(class_ < 0 || class_ >= MAX_MERC_DB)
-		return 1;
+		return 0;
 
 	memset(&st, 0, sizeof(st));
 
@@ -351,7 +351,7 @@ int merc_callmerc(struct map_session_data *sd,int class_)
 	sd->state.merc_creating = 1;
 	intif_create_merc(sd->status.account_id,sd->status.char_id,&st);
 
-	return 0;
+	return 1;
 }
 
 static int merc_natural_heal_hp(int tid,unsigned int tick,int id,int data);

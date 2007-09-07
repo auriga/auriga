@@ -107,7 +107,7 @@ static struct skill_tree_entry* pc_search_skilltree(struct pc_base_job *bj, int 
 	// binary search
 	while(max - min > 1) {
 		int mid = (min + max) / 2;
-		if(st[mid].id == skillid)
+		if(st[mid].id && st[mid].id == skillid)
 			return &st[mid];
 
 		// 0のときは大とみなす

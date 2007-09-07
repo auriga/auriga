@@ -2608,8 +2608,6 @@ atcommand_makepet(
 		                 pet_db[pet_id].class_, mob_db[pet_db[pet_id].class_].lv,
 		                 pet_db[pet_id].EggID, 0, pet_db[pet_id].intimate,
 		                 100, 0, 1, pet_db[pet_id].jname);
-	} else {
-		return -1;
 	}
 
 	return 0;

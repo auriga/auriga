@@ -9099,11 +9099,9 @@ void clif_hate_mob(struct map_session_data *sd, int skilllv, int id)
 	if(mobdb_checkid(id) > 0) {
 		strncpy(WFIFOP(fd,2),mob_db[id].jname,24);
 	} else {
-		char output[24];
-		sprintf(output, "JOB (%d)",id);
-		strncpy(WFIFOP(fd,2),output,24);
+		memset(WFIFOP(fd,2), 0, 24);
 	}
-	WFIFOL(fd,26) = sd->bl.id;
+	WFIFOL(fd,26) = id;
 	WFIFOB(fd,30) = skilllv-1;
 	WFIFOB(fd,31) = 10;
 	WFIFOSET(fd,packet_db[0x20e].len);
@@ -9126,11 +9124,9 @@ void clif_hate_info(struct map_session_data *sd, int skilllv, int id)
 	if(mobdb_checkid(id) > 0) {
 		strncpy(WFIFOP(fd,2),mob_db[id].jname,24);
 	} else {
-		char output[24];
-		sprintf(output, "JOB (%d)",id);
-		strncpy(WFIFOP(fd,2),output,24);
+		memset(WFIFOP(fd,2), 0, 24);
 	}
-	WFIFOL(fd,26) = sd->bl.id;
+	WFIFOL(fd,26) = id;
 	WFIFOB(fd,30) = skilllv-1;
 	WFIFOB(fd,31) = 11;
 	WFIFOSET(fd,packet_db[0x20e].len);
