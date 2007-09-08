@@ -1330,14 +1330,6 @@ int read_petdb()
 	struct script_code *script = NULL;
 	char *filename[] = { "db/pet_db.txt","db/addon/pet_db_add.txt" };
 
-	// DB情報の初期化
-	for(i=0; i<pet_count; i++) {
-		if(pet_db[i].script)
-			script_free_code(pet_db[i].script);
-	}
-	memset(pet_db,0,sizeof(pet_db));
-	pet_count = 0;
-
 	for(i=0;i<2;i++){
 		fp=fopen(filename[i],"r");
 		if(fp==NULL){
@@ -1426,6 +1418,10 @@ int read_petdb()
  */
 int do_init_pet(void)
 {
+	// 初回のみでリロード時はデータベースをクリアしない
+	memset(pet_db,0,sizeof(pet_db));
+	pet_count = 0;
+
 	read_petdb();
 
 	add_timer_func_list(pet_hungry,"pet_hungry");

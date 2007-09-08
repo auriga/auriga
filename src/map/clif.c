@@ -11554,7 +11554,25 @@ static void clif_parse_CreateParty2(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_PartyInvite(int fd,struct map_session_data *sd, int cmd)
 {
-	party_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
+	struct map_session_data *tsd = map_id2sd(RFIFOL(fd,GETPACKETPOS(cmd,0)));
+
+	if(tsd)
+		party_invite(sd,tsd);
+
+	return;
+}
+
+/*==========================================
+ * パーティに勧誘2
+ *------------------------------------------
+ */
+static void clif_parse_PartyInvite2(int fd,struct map_session_data *sd, int cmd)
+{
+	char *name = (char *)RFIFOP(fd,GETPACKETPOS(cmd,0));
+	struct map_session_data *tsd = map_nick2sd(name);
+
+	if(tsd)
+		party_invite(sd,tsd);
 
 	return;
 }
@@ -11567,6 +11585,22 @@ static void clif_parse_ReplyPartyInvite(int fd,struct map_session_data *sd, int 
 {
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 5) {
 		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)));
+	} else {
+		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),-1);
+		clif_skill_fail(sd,1,0,4);
+	}
+
+	return;
+}
+
+/*==========================================
+ * パーティ勧誘返答2
+ *------------------------------------------
+ */
+static void clif_parse_ReplyPartyInvite2(int fd,struct map_session_data *sd, int cmd)
+{
+	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 5) {
+		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),RFIFOB(fd,GETPACKETPOS(cmd,1)));
 	} else {
 		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),-1);
 		clif_skill_fail(sd,1,0,4);
@@ -13045,7 +13079,9 @@ static struct {
 	{ clif_parse_CreateParty,               "createparty"               },
 	{ clif_parse_CreateParty2,              "createparty2"              },
 	{ clif_parse_PartyInvite,               "partyinvite"               },
+	{ clif_parse_PartyInvite2,              "partyinvite2"              },
 	{ clif_parse_ReplyPartyInvite,          "replypartyinvite"          },
+	{ clif_parse_ReplyPartyInvite2,         "replypartyinvite2"         },
 	{ clif_parse_LeaveParty,                "leaveparty"                },
 	{ clif_parse_RemovePartyMember,         "removepartymember"         },
 	{ clif_parse_PartyChangeOption,         "partychangeoption"         },

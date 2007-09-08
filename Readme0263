@@ -1,4 +1,25 @@
 ----------------------------------------
+//0324 [2007/09/09] by Rayce
+
+・パケット0x2c4, 0x2c7に対応（clif.c, party.*）
+	2007-09-04aSakexeからパーティ勧誘パケットが変更されているので、それぞれ
+	clif_parse_PartyInvite2(), clif_parse_ReplyPartyInvite2() を使います。
+
+・battle_auriga.confに party_invite_range_check 追加（battle.*, party.c）
+	主に2007-09-04aSakexe以降用です。
+	PTウィンドウや /invite でパーティ要請する際に、遠くに離れている場合は要請不可に
+	したい場合は yes にすると良いです。
+
+・party_reply_invite() でパーティ勧誘中フラグが無い場合はinterサーバに追加要求せずにすぐに
+　拒否するように修正（party.c）
+・db/pet_db.txtをリロードすると現在出現しているペットの情報が狂う場合があるので、データベースの
+　初期化はサーバ起動時にのみ行うように修正（pet.c）
+
+・db/pet_db.txtおよびdoc/db_ref.txtを少しだけ修正
+・db/packet_db.txt更新
+・doc/client_packet.txt更新
+
+----------------------------------------
 //0323 [2007/09/08] by Rayce
 
 ・傭兵の雇用期限実装（map.h, merc.*, unit.c）

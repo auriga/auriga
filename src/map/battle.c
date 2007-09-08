@@ -5064,6 +5064,7 @@ int battle_config_read(const char *cfgName)
 		{ "merc_speed_is_same_as_pc",           &battle_config.merc_speed_is_same_as_pc,           1        },
 		{ "master_get_merc_base_exp",           &battle_config.master_get_merc_base_exp,           100      },
 		{ "master_get_merc_job_exp",            &battle_config.master_get_merc_job_exp,            0        },
+		{ "party_invite_range_check",           &battle_config.party_invite_range_check,           0        },
 		{ NULL,                                 NULL,                                              0        },
 
 	};

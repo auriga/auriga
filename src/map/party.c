@@ -252,43 +252,45 @@ void party_recv_info(struct party *sp)
  * パーティへの勧誘
  *------------------------------------------
  */
-void party_invite(struct map_session_data *sd, int account_id)
+void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 {
-	struct map_session_data *tsd;
 	struct party *p;
 	int i;
 
 	nullpo_retv(sd);
+	nullpo_retv(tsd);
 
 	p = party_search(sd->status.party_id);
-	if (p == NULL)
-		return;
-
-	tsd = map_id2sd(account_id);
-	if (tsd == NULL)
+	if(p == NULL)
 		return;
 
 	if(!battle_config.invite_request_check) {
-		if (tsd->guild_invite>0 || tsd->trade_partner || tsd->adopt_invite) {	// 相手が取引中かどうか
+		if(tsd->guild_invite > 0 || tsd->trade_partner || tsd->adopt_invite) {	// 相手が取引中かどうか
 			clif_party_inviteack(sd,tsd->status.name,0);
 			return;
 		}
 	}
-	if( tsd->status.party_id>0 || tsd->party_invite>0 ){	// 相手の所属確認
+	if(tsd->status.party_id > 0 || tsd->party_invite > 0) {	// 相手の所属確認
 		clif_party_inviteack(sd,tsd->status.name,0);
 		return;
 	}
-	for(i=0;i<MAX_PARTY;i++){	// 同アカウント確認
-		if (p->member[i].account_id == account_id) {
-			if (battle_config.party_join_limit || strncmp(p->member[i].name, tsd->status.name, 24) == 0){
+	for(i=0; i<MAX_PARTY; i++) {	// 同アカウント確認
+		if(p->member[i].account_id == tsd->status.account_id) {
+			if(battle_config.party_join_limit || strncmp(p->member[i].name, tsd->status.name, 24) == 0) {
 				clif_party_inviteack(sd,tsd->status.name,0);
 				return;
 			}
 		}
 	}
+	if(battle_config.party_invite_range_check) {	// 相手のMAPと距離を確認
+		if(sd->bl.m != tsd->bl.m || unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE) {
+			clif_party_inviteack(sd,tsd->status.name,1);
+			return;
+		}
+	}
 
-	tsd->party_invite=sd->status.party_id;
-	tsd->party_invite_account=sd->status.account_id;
+	tsd->party_invite         = sd->status.party_id;
+	tsd->party_invite_account = sd->status.account_id;
 
 	clif_party_invite(sd,tsd);
 
@@ -305,16 +307,20 @@ void party_reply_invite(struct map_session_data *sd, int account_id, int flag)
 
 	nullpo_retv(sd);
 
-	if(flag==1){	// 承諾
-		//inter鯖へ追加要求
-		intif_party_addmember(sd);
-	} else {	// 拒否
-		sd->party_invite=0;
-		sd->party_invite_account=0;
-		tsd = map_id2sd(account_id);
-		if(tsd)
-			clif_party_inviteack(tsd,sd->status.name,1);
+	if(flag == 1) {	// 承諾
+		if(sd->party_invite > 0) {
+			// inter鯖へ追加要求
+			intif_party_addmember(sd);
+			return;
+		}
 	}
+
+	// 拒否
+	sd->party_invite         = 0;
+	sd->party_invite_account = 0;
+	tsd = map_id2sd(account_id);
+	if(tsd)
+		clif_party_inviteack(tsd,sd->status.name,1);
 
 	return;
 }

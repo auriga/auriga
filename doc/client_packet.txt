@@ -477,11 +477,12 @@ R 00fd <nick>.24B <fail>.B
 	fail=00 相手は既にパーティに入っていた
 	fail=01 相手に拒否された
 	fail=02 勧誘成功
+	fail=03 パーティ定員を超過した
 	fail=04 相手の別キャラが既にパーティに入っていた
 R 00fe <ID>.l <party name>.24B
 	パーティに誘われた
-S 00ff <ID>.l <fail>.l
-	パーティに誘われた時の返答。fail=1 ok返答?
+S 00ff <ID>.l <flag>.l
+	パーティに誘われた時の返答。flag=1 ok返答
 S 0100
 	パーティ脱退要求
 R 0101 <exp>.l
@@ -1086,12 +1087,10 @@ S 01bd <CharName>.24B
 	GMコマンド/summonにて発行。char_name呼び出しコマンド(@recall)
 S 01c0
 	GMコマンド/ソ莖ンにて発行。何かの要求パケ
-R 01c1 <type>.l <?>.8B
+R 01c1 <type>.l <?>.l <?>.l
 	白の文字化け、不明
 	バイナリに記述された文字列が吐き出されてるようなので現在未使用？
-	type=0x0064
-	type=0x03e8
-	type=0x2710
+	typeは1,2のいずれか？
 R 01c2
 	何もしないようにフラグが規定されている
 
@@ -1409,12 +1408,12 @@ R 0230 <?>.B <type>.B <ID>.l <param>.l
 	type=03 : アイテム？リソースエラーになる
 S 0231 <name>.24B
 	ホムの名前変更要求
-S 0232 <X_Y>.3B
-	ホム移動要求
-S 0233 <?>.4B <target_id>.l <type>.B
-	ホム攻撃要求
+S 0232 <ID>.l <X_Y>.3B
+	ホム&傭兵移動要求
+S 0233 <ID>.l <target_id>.l <type>.B
+	ホム&傭兵攻撃要求
 S 0234 <ID>.l
-	ホムをマスターの元へ戻す
+	ホム&傭兵をマスターの元へ戻す
 R 0235 <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	ホム用スキル情報の塊、0x10fと同じ
 R 0236 <point>.l <total>.l
@@ -1608,18 +1607,18 @@ R 0289 <point>.l <type>.w
 	type=5 : アイテム情報が正しくないため、購入に失敗しました。
 	type=6 : Shop Pointが足りません。
 R 028a <ID>.l <option>.l <level>.l <opt3>.l
-	傭兵関連通知、0x230の傭兵版に相当
+	傭兵出現、0x79の代わり
 S 028b
 	サーバ統合の際のキャラクターセレクト、残すキャラを選択する
 R 028c
 	0x28bの応答
 S 028d <account_id>.l <char_id>.l <name>.24B
 	キャラクターセレクト画面で名前を変えるボタンを押した
-R 0291 <type>.w
+R 0291 <line>.w
 	msgstringtableのメッセージが白文字で出力される
 S 0292
-	ジークフリードの証を所持した状態で死亡した後、
-	復活ダイアログを選択した
+	ジークフリードの証を所持した状態で死亡した後、復活ボタンを選択した
+
 R 0293 <type>.B <x>.l <y>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
 	凸面鏡使用
 	type=0 : この地域ではボスモンスターの出現確認ができません。
@@ -1642,7 +1641,7 @@ R 0299 <index>.w <itemid>.w
 	強化装備アイテム「<itemid>」が削除されました。
 R 029a <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <time>.l
 	アイテム獲得、0xa0の上位版
-R 029b <ID>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <limit>.l <name_value>.w <call_count>.l <kill_count>.l <?>.w
+R 029b <ID>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <limit>.l <name_value>.w <call_count>.l <kill_count>.l <attackable>.w
 	傭兵のステータス情報まとめて送り付け、0x22eの傭兵版
 R 029d <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	傭兵用スキル情報の塊、0x10fと同じ
@@ -1664,48 +1663,69 @@ R 02a2 <type>.w <?>.l
 	type=a5 : WM_NCRBUTTONUP
 	type=bd : EM_GETHANDLE
 	type=be : EM_GETTHUMB
-R 02a3 <?>.l <?>.12B
-	jROのログイン時に観測？未調査
 S 02a5 <?>.w <?>.l
 	マウスのスクロールを高速で動かすと飛んでくる
 	未調査
-R 02b1
+R 02b1 <len>.w <?>.l { <?>.l <?>.B }.5B*
 	未調査
-R 02b2
+R 02b2 <len>.w <?>.l {}.104B*
 	未調査
-R 02b3
+R 02b3 <?>.l <?>.B <?>.l <?>.l <?>.w { <?>.l <?>.w <?>.24B }.30B*3
 	未調査
-R 02b4
+R 02b4 <?>.l
 	未調査
-R 02b5
+R 02b5 <len>.w <?>.w { <?>.l <?>.l <?>.w }.10B*
 	未調査
-R 02b7
+R 02b7 <?>.l <?>.B
 	未調査
-R 02b8
+R 02b8 <ID>.l <?>.w <?>.B <?>.B <?>.B <?>.w <?>.w <?>.w <?>.w <?>.w <?>.B
 	未調査
-R 02b9 { <type>.B <ID>.l <lv>.w }*27
-	ショーカットキー情報受信
+R 02b9 { <type>.B <ID>.l <lv>.w }.7B*27
+	ホットキー情報受信
 S 02ba <index>.w <type>.B <ID>.l <lv>.w
-	ショートカットキー保存要求
+	ホットカットキー保存要求
 	type=0 : アイテム
 	type=1 : スキル
-R 02bb
+R 02bb <type?>.w <ID>.l
 	未調査
-R 02bf
+	type=00
+	type=02
+	type=10
+	type=20
+R 02bf <?>.l <?>.l
+	ログイン鯖用パケットか？未調査
+S 02c0
+	0x2bfに対する応答
+R 02c1 <len>.w <ID>.l <color>.l <str>.?B
+	IDさんの発言受信。0x8dのカラー版。
+R 02c2 <len>.w <line>.w <str>.?B
+	msgstringtableのメッセージが白文字で出力される
+	0x291のsprintf版。
+S 02c4 <name>.24B
+	パーティ勧誘する、0xfcの上位版
+R 02c5 <nick>.24B <fail>.l
+	0xfdの上位版？
+	fail=00 相手は既にパーティに入っていた
+	fail=01 相手に拒否された
+	fail=02 勧誘成功
+	fail=03 パーティ定員を超過した
+	fail=04 相手の別キャラが既にパーティに入っていた
+R 02c6 <ID>.l <party name>.24B
+	パーティに誘われた、0xfeの上位版？
+S 02c7 <ID>.l <flag>.B
+	パーティに誘われた時の返答。0xffの上位版。flag=1 ok返答
+R 02c9 <?>.B
 	未調査
-R 02bb
+R 02d0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
+	所有装備リスト、0x295の上位版
+	<flag>を2にするとポップアップ文字が黄色になる
+R 02d1 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
+	カプラさんに預けてある装備リスト、0x296の上位版
+	<flag>を2にするとポップアップ文字が黄色になる
+R 02d2 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
+	<flag>を2にするとポップアップ文字が黄色になる
+R 02d3 <?>.w
 	未調査
-R 02bf
-	未調査
-R 02bb
-	未調査
-R 02bf
-	未調査
-R 02c1
-	未調査
-R 02c2
-	未調査
-R 02c5
-	未調査
-R 02c6
-	未調査
+R 02d4 <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <time>.l <flag?>.w
+	アイテム獲得、0x29aの上位版
+	<flag>を2にするとポップアップが黄色になる

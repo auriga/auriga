@@ -527,6 +527,8 @@ extern struct Battle_Config {
 	int merc_speed_is_same_as_pc;
 	int master_get_merc_base_exp;
 	int master_get_merc_job_exp;
+
+	int party_invite_range_check;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

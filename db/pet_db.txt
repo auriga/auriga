@@ -1,4 +1,4 @@
-// MobID,Name,JName,ItemID,EggID,AcceID,FoodID,Fullness,HungryDeray ,R_Hungry,R_Full,Intimate,Die,Capture,Speed,S_Performance,talk_convert_class,attack_rate,defence_attack_rate,change_target_rate,pet_script
+// MobID,Name,JName,ItemID,EggID,AcceID,FoodID,Fullness,HungryDelay,R_Hungry,R_Full,Intimate,Die,Capture,Speed,S_Performance,talk_convert_class,attack_rate,defence_attack_rate,change_target_rate,{pet_script}
 1002,PORING,ポリン,619,9001,10013,531,80,20,50,100,250,20,2000,400,1,0,100,100,100,{}
 1011,CHONCHON,チョンチョン,624,9006,10002,537,80,10,30,100,250,20,1500,200,1,0,100,100,100,{}
 1014,SPORE,スポア,630,9012,10017,537,80,20,30,100,250,20,1500,200,0,0,100,100,100,{}
