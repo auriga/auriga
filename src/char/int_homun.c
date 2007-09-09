@@ -504,7 +504,7 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id)
 		int i;
 		for(i=0;((sql_row = mysql_fetch_row(sql_res))&&i<MAX_HOMSKILL);i++){
 			int id = atoi(sql_row[0]);
-			if( id < HOM_SKILLID || id >= HOM_SKILLID + MAX_HOMSKILL ) {
+			if( id < HOM_SKILLID || id >= MAX_HOM_SKILLID ) {
 				// DB操作して変なスキルを覚えさせられる可能性があるのでチェック
 				printf("homun_sql_load: invaild skill id: %d\n", id);
 			} else {

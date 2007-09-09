@@ -354,7 +354,7 @@ int GuildSkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせる�
 };
 
 /* スキルデータベース */
-struct skill_db skill_db[MAX_SKILL_DB+MAX_HOMSKILL_DB+MAX_GUILDSKILL_DB];
+struct skill_db skill_db[MAX_SKILL_DB];
 
 /* アイテム作成データベース */
 struct skill_produce_db skill_produce_db[MAX_SKILL_PRODUCE_DB];
@@ -10389,7 +10389,7 @@ int skill_delunit(struct skill_unit *unit)
  * スキルユニットグループ初期化
  *------------------------------------------
  */
-static int skill_unit_group_newid = MAX_SKILL_DB;
+static int skill_unit_group_newid = MAX_SKILL;
 
 static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id)
 {
@@ -10418,7 +10418,7 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 	linkdb_insert( &ud->skillunit, group, group );
 
 	if(skill_unit_group_newid <= 0)
-		skill_unit_group_newid = MAX_SKILL_DB;
+		skill_unit_group_newid = MAX_SKILL;
 
 	if(skill_get_unit_flag(skillid)&UF_DANCE) {
 		struct map_session_data *sd = NULL;
@@ -12062,7 +12062,7 @@ static void skill_init_unit_layout(void)
 	for (i=0;i<MAX_SKILL_DB;i++) {
 		if (!skill_db[i].unit_id[0] || skill_db[i].unit_layout_type[0] != -1)
 			continue;
-		switch (i) {
+		switch (skill_db[i].id) {
 			case MG_FIREWALL:
 			case WZ_ICEWALL:
 				// ファイアーウォール、アイスウォールは方向で変わるので別処理
@@ -12308,33 +12308,34 @@ static int skill_readdb(void)
 			if(i == 0)
 				continue;
 
+			skill_db[i].id = atoi(split[0]);
 			skill_split_atoi(split[1],skill_db[i].range,MAX_SKILL_LEVEL);
-			skill_db[i].hit=atoi(split[2]);
-			skill_db[i].inf=atoi(split[3]);
-			skill_db[i].pl=atoi(split[4]);
-			skill_db[i].nk=atoi(split[5]);
+			skill_db[i].hit = atoi(split[2]);
+			skill_db[i].inf = atoi(split[3]);
+			skill_db[i].pl  = atoi(split[4]);
+			skill_db[i].nk  = atoi(split[5]);
 
-			skill_db[i].max=atoi(split[6]);
+			skill_db[i].max = atoi(split[6]);
 			if(skill_db[i].max > MAX_SKILL_LEVEL)
 				skill_db[i].max = MAX_SKILL_LEVEL;
 
 			skill_split_atoi(split[7],skill_db[i].num,MAX_SKILL_LEVEL);
 
 			if(strcmpi(split[8],"yes") == 0)
-				skill_db[i].castcancel=1;
+				skill_db[i].castcancel = 1;
 			else
-				skill_db[i].castcancel=0;
-			skill_db[i].cast_def_rate=atoi(split[9]);
-			skill_db[i].inf2=atoi(split[10]);
+				skill_db[i].castcancel = 0;
+			skill_db[i].cast_def_rate = atoi(split[9]);
+			skill_db[i].inf2          = atoi(split[10]);
 			skill_split_atoi(split[11],skill_db[i].maxcount,MAX_SKILL_LEVEL);
 			if(strcmpi(split[12],"weapon") == 0)
-				skill_db[i].skill_type=BF_WEAPON;
+				skill_db[i].skill_type = BF_WEAPON;
 			else if(strcmpi(split[12],"magic") == 0)
-				skill_db[i].skill_type=BF_MAGIC;
+				skill_db[i].skill_type = BF_MAGIC;
 			else if(strcmpi(split[12],"misc") == 0)
-				skill_db[i].skill_type=BF_MISC;
+				skill_db[i].skill_type = BF_MISC;
 			else
-				skill_db[i].skill_type=0;
+				skill_db[i].skill_type = 0;
 			skill_split_atoi(split[13],skill_db[i].blewcount,MAX_SKILL_LEVEL);
 			k++;
 		}
@@ -12362,9 +12363,9 @@ static int skill_readdb(void)
 		if(i == 0)
 			continue;
 
-		skill_db[i].cloneable=atoi(split[1]);
-		skill_db[i].misfire=atoi(split[2]);
-		skill_db[i].zone=atoi(split[3]);
+		skill_db[i].cloneable = atoi(split[1]);
+		skill_db[i].misfire   = atoi(split[2]);
+		skill_db[i].zone      = atoi(split[3]);
 		skill_split_atoi(split[4],skill_db[i].damage_rate,sizeof(skill_db[i].damage_rate)/sizeof(int));
 		k++;
 	}
@@ -12404,12 +12405,12 @@ static int skill_readdb(void)
 			p = split[6];
 			for(j=0;j<32;j++){
 				n = atoi(p);
-				if (n==99) {
+				if(n == 99) {
 					skill_db[i].weapon = 0xffffffff;
 					break;
-				}
-				else
+				} else {
 					skill_db[i].weapon |= 1<<n;
+				}
 				p=strchr(p,':');
 				if(!p)
 					break;
@@ -12434,26 +12435,26 @@ static int skill_readdb(void)
 			else                                                    skill_db[i].state = SST_NONE;
 
 			skill_split_atoi(split[8],skill_db[i].spiritball,MAX_SKILL_LEVEL);
-			skill_db[i].itemid[0]=atoi(split[9]);
-			skill_db[i].amount[0]=atoi(split[10]);
-			skill_db[i].itemid[1]=atoi(split[11]);
-			skill_db[i].amount[1]=atoi(split[12]);
-			skill_db[i].itemid[2]=atoi(split[13]);
-			skill_db[i].amount[2]=atoi(split[14]);
-			skill_db[i].itemid[3]=atoi(split[15]);
-			skill_db[i].amount[3]=atoi(split[16]);
-			skill_db[i].itemid[4]=atoi(split[17]);
-			skill_db[i].amount[4]=atoi(split[18]);
-			skill_db[i].itemid[5]=atoi(split[19]);
-			skill_db[i].amount[5]=atoi(split[20]);
-			skill_db[i].itemid[6]=atoi(split[21]);
-			skill_db[i].amount[6]=atoi(split[22]);
-			skill_db[i].itemid[7]=atoi(split[23]);
-			skill_db[i].amount[7]=atoi(split[24]);
-			skill_db[i].itemid[8]=atoi(split[25]);
-			skill_db[i].amount[8]=atoi(split[26]);
-			skill_db[i].itemid[9]=atoi(split[27]);
-			skill_db[i].amount[9]=atoi(split[28]);
+			skill_db[i].itemid[0] = atoi(split[9]);
+			skill_db[i].amount[0] = atoi(split[10]);
+			skill_db[i].itemid[1] = atoi(split[11]);
+			skill_db[i].amount[1] = atoi(split[12]);
+			skill_db[i].itemid[2] = atoi(split[13]);
+			skill_db[i].amount[2] = atoi(split[14]);
+			skill_db[i].itemid[3] = atoi(split[15]);
+			skill_db[i].amount[3] = atoi(split[16]);
+			skill_db[i].itemid[4] = atoi(split[17]);
+			skill_db[i].amount[4] = atoi(split[18]);
+			skill_db[i].itemid[5] = atoi(split[19]);
+			skill_db[i].amount[5] = atoi(split[20]);
+			skill_db[i].itemid[6] = atoi(split[21]);
+			skill_db[i].amount[6] = atoi(split[22]);
+			skill_db[i].itemid[7] = atoi(split[23]);
+			skill_db[i].amount[7] = atoi(split[24]);
+			skill_db[i].itemid[8] = atoi(split[25]);
+			skill_db[i].amount[8] = atoi(split[26]);
+			skill_db[i].itemid[9] = atoi(split[27]);
+			skill_db[i].amount[9] = atoi(split[28]);
 			k++;
 		}
 		fclose(fp);
@@ -12481,7 +12482,7 @@ static int skill_readdb(void)
 			continue;
 
 		skill_split_atoi(split[1],skill_db[i].coin,MAX_SKILL_LEVEL);
-		skill_db[i].arrow_type=atoi(split[2]);
+		skill_db[i].arrow_type = atoi(split[2]);
 		skill_split_atoi(split[3],skill_db[i].arrow_cost,MAX_SKILL_LEVEL);
 		k++;
 	}
@@ -12545,10 +12546,10 @@ static int skill_readdb(void)
 		skill_db[i].unit_id[0] = strtol(split[1],NULL,16);
 		skill_db[i].unit_id[1] = strtol(split[2],NULL,16);
 		skill_split_atoi(split[3],skill_db[i].unit_layout_type,MAX_SKILL_LEVEL);
-		skill_db[i].unit_range = atoi(split[4]);
+		skill_db[i].unit_range    = atoi(split[4]);
 		skill_db[i].unit_interval = atoi(split[5]);
-		skill_db[i].unit_target = strtol(split[6],NULL,16);
-		skill_db[i].unit_flag = strtol(split[7],NULL,16);
+		skill_db[i].unit_target   = strtol(split[6],NULL,16);
+		skill_db[i].unit_flag     = strtol(split[7],NULL,16);
 		k++;
 	}
 	fclose(fp);
@@ -12591,15 +12592,15 @@ static int skill_readdb(void)
 			if(k >= MAX_SKILL_PRODUCE_DB)
 				break;
 
-			skill_produce_db[k].nameid=i;
-			skill_produce_db[k].itemlv=atoi(split[1]);
-			skill_produce_db[k].req_skill=atoi(split[2]);
-			skill_produce_db[k].req_skilllv=atoi(split[3]);
-			skill_produce_db[k].per=atoi(split[4]);
+			skill_produce_db[k].nameid      = i;
+			skill_produce_db[k].itemlv      = atoi(split[1]);
+			skill_produce_db[k].req_skill   = atoi(split[2]);
+			skill_produce_db[k].req_skilllv = atoi(split[3]);
+			skill_produce_db[k].per         = atoi(split[4]);
 
 			for(x=5,y=0; split[x] && split[x+1] && y<MAX_PRODUCE_RESOURCE; x+=2,y++){
-				skill_produce_db[k].mat_id[y]=atoi(split[x]);
-				skill_produce_db[k].mat_amount[y]=atoi(split[x+1]);
+				skill_produce_db[k].mat_id[y]     = atoi(split[x]);
+				skill_produce_db[k].mat_amount[y] = atoi(split[x+1]);
 			}
 			count++;
 		}
@@ -12635,8 +12636,8 @@ static int skill_readdb(void)
 		skill_arrow_db[k].nameid=i;
 
 		for(x=1,y=0;split[x] && split[x+1] && y<5;x+=2,y++){
-			skill_arrow_db[k].cre_id[y]=atoi(split[x]);
-			skill_arrow_db[k].cre_amount[y]=atoi(split[x+1]);
+			skill_arrow_db[k].cre_id[y]     = atoi(split[x]);
+			skill_arrow_db[k].cre_amount[y] = atoi(split[x+1]);
 		}
 		k++;
 		if(k >= MAX_SKILL_ARROW_DB)
@@ -12672,9 +12673,9 @@ static int skill_readdb(void)
 		if(i<=0)
 			continue;
 
-		skill_abra_db[k].nameid=atoi(split[0]);
-		skill_abra_db[k].req_lv=atoi(split[2]);
-		skill_abra_db[k].per=atoi(split[3]);
+		skill_abra_db[k].nameid = atoi(split[0]);
+		skill_abra_db[k].req_lv = atoi(split[2]);
+		skill_abra_db[k].per    = atoi(split[3]);
 
 		k++;
 		if(k >= MAX_SKILL_ABRA_DB)

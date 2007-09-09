@@ -3450,7 +3450,7 @@ int atcommand_charquestskill(
 	if (sscanf(message, "%d %99[^\n]", &skill_id, character) < 2 || skill_id < 0)
 		return -1;
 
-	if (skill_id < 0 && skill_id >= MAX_SKILL_DB)
+	if (skill_id < 0 && skill_id >= MAX_SKILL)
 		return -1;
 
 	if (skill_get_inf2(skill_id) & 0x01 &&

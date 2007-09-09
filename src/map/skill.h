@@ -4,13 +4,10 @@
 #include "map.h"
 #include "mmo.h"
 
-#define MAX_SKILL_DB			MAX_SKILL
-#define MAX_HOMSKILL_DB			MAX_HOMSKILL
-#define MAX_GUILDSKILL_DB		MAX_GUILDSKILL
 #define MAX_SKILL_PRODUCE_DB	300
 #define MAX_PRODUCE_RESOURCE	10
-#define MAX_SKILL_ARROW_DB	 150
-#define MAX_SKILL_ABRA_DB	 350
+#define MAX_SKILL_ARROW_DB	150
+#define MAX_SKILL_ABRA_DB	350
 
 struct skill_timerskill {
 	int timer;
@@ -25,6 +22,7 @@ struct skill_timerskill {
 
 // スキルデータベース
 struct skill_db {
+	int id;
 	int range[MAX_SKILL_LEVEL],hit,inf,pl,nk,max;
 	int num[MAX_SKILL_LEVEL];
 	int cast[MAX_SKILL_LEVEL],fixedcast[MAX_SKILL_LEVEL],delay[MAX_SKILL_LEVEL];
@@ -33,7 +31,8 @@ struct skill_db {
 	int inf2,maxcount[MAX_SKILL_LEVEL],skill_type;
 	int blewcount[MAX_SKILL_LEVEL];
 	int hp[MAX_SKILL_LEVEL],sp[MAX_SKILL_LEVEL],hp_rate[MAX_SKILL_LEVEL],sp_rate[MAX_SKILL_LEVEL],zeny[MAX_SKILL_LEVEL];
-	int weapon,state,spiritball[MAX_SKILL_LEVEL],coin[MAX_SKILL_LEVEL],arrow_cost[MAX_SKILL_LEVEL],arrow_type;
+	unsigned int weapon;
+	int state,spiritball[MAX_SKILL_LEVEL],coin[MAX_SKILL_LEVEL],arrow_cost[MAX_SKILL_LEVEL],arrow_type;
 	int itemid[10],amount[10];
 	int unit_id[4];
 	int unit_layout_type[MAX_SKILL_LEVEL];
@@ -83,7 +82,7 @@ enum {
 	PRD_ORIDEOCON  = 1003,
 };
 
-extern struct skill_db skill_db[MAX_SKILL_DB+MAX_HOMSKILL_DB+MAX_GUILDSKILL_DB];
+extern struct skill_db skill_db[MAX_SKILL_DB];
 
 // アイテム作成データベース
 struct skill_produce_db {
@@ -119,8 +118,6 @@ int GetSkillStatusChangeTable(int id);
 	  ((id) >= GUILD_SKILLID && (id) < GUILD_SKILLID + MAX_GUILDSKILL_DB) ? ((id) - GUILD_SKILLID + MAX_HOMSKILL_DB + MAX_SKILL_DB) : \
 	  0 )
 
-// マクロから関数化
-// ギルドIDも使用可能に
 int skill_get_hit(int id);
 int skill_get_inf(int id);
 int skill_get_pl(int id);

@@ -1024,7 +1024,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	for(i=0; i<MAX_SKILL_LEVEL; i++)
 		sd->spirit_timer[i] = -1;
 
-	for(i=0; i<sizeof(sd->skillstatictimer)/sizeof(sd->skillstatictimer[0]); i++)
+	for(i=0; i<MAX_SKILL_DB; i++)
 		sd->skillstatictimer[i] = tick;
 
 	sd->state.autoloot = (battle_config.item_auto_get)? 1: 0;
@@ -4909,7 +4909,7 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 			if(skill_get_inf2(id)&0x01 && !flag && !battle_config.quest_skill_learn)
 				continue;
 			sd->status.skill[id].id = id;
-			sd->status.skill[id].lv = pc_get_skilltree_max(&sd->s_class,id);
+			sd->status.skill[id].lv = skill_tree[sd->s_class.upper][sd->s_class.job][i].max;
 		}
 	}
 	status_calc_pc(sd,0);

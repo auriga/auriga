@@ -14,9 +14,6 @@
 #define MAX_AMOUNT 30000
 #define MAX_ZENY 1000000000	// 1G zeny
 #define MAX_CART 100
-#define MAX_SKILL 1020
-#define MAX_HOMSKILL 16
-#define MAX_MERCSKILL 37
 #define GLOBAL_REG_NUM 96
 #define ACCOUNT_REG_NUM 16
 #define ACCOUNT_REG2_NUM 16
@@ -30,38 +27,45 @@
 #define MAX_GUILDPOSITION 20
 #define MAX_GUILDEXPLUSION 32
 #define MAX_GUILDALLIANCE 16
-#define MAX_GUILDSKILL  15
 #define MAX_GUILDCASTLE 20
 #define MAX_GUILDLEVEL 50
 #define MAX_FRIEND 20
 #define MAX_STATUSCHANGE 390
+#define MAX_PORTAL_MEMO 3
+#define MAIL_STORE_MAX 30
+#define MAX_HOTKEYS 27
 
 #define MAX_HAIR_STYLE 24
 #define MAX_HAIR_COLOR 9
 #define MAX_CLOTH_COLOR 5
 
-#define MAX_PORTAL_MEMO 3
-#define MAX_HOTKEYS 27
-
 #define WEDDING_RING_M 2634
 #define WEDDING_RING_F 2635
 
-#define MAIL_STORE_MAX 30
+#define MAX_RANKING 4	// ランキング数
+#define MAX_RANKER  10	// ランキング人数
 
 #define MAX_HOMUN_DB 16			// ホムの数
 #define HOM_ID 6001			// ホムID開始値
-#define HOM_SKILLID 8001		// ホムスキルIDの開始値
-#define MAX_HOM_SKILLID (HOM_SKILLID+MAX_HOMSKILL)	// ホムスキルIDの最大値
 
 #define MAX_MERC_DB 30			// 傭兵の数
 #define MERC_ID 6017			// 傭兵IDの開始値
-#define MERC_SKILLID 8201		// 傭兵スキルIDの開始値
-#define MAX_MERC_SKILLID (MERC_SKILLID+MAX_MERCSKILL)	// 傭兵スキルIDの最大値
 
+// スキルID定義
+#define HOM_SKILLID    8001		// ホムスキルIDの開始値
+#define MERC_SKILLID   8201		// 傭兵スキルIDの開始値
 #define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
 
-#define MAX_RANKING 4	// ランキング数
-#define MAX_RANKER  10	// ランキング人数
+#define MAX_SKILL      1020
+#define MAX_HOMSKILL     16
+#define MAX_MERCSKILL    37
+#define MAX_GUILDSKILL   15
+
+#define MAX_HOM_SKILLID   (HOM_SKILLID+MAX_HOMSKILL)		// ホムスキルIDの最大値
+#define MAX_MERC_SKILLID  (MERC_SKILLID+MAX_MERCSKILL)		// 傭兵スキルIDの最大値
+#define MAX_GUILD_SKILLID (GUILD_SKILLID+MAX_GUILDSKILL)	// ギルドスキルIDの最大値
+
+#define MAX_SKILL_DB (MAX_SKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_GUILDSKILL)
 
 // ブロックID定義
 #define MIN_FLOORITEM            2

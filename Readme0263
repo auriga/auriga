@@ -1,4 +1,18 @@
 ----------------------------------------
+//0325 [2007/09/10] by Rayce
+
+・スキルIDの定義をmmo.hにまとめて整理する
+　（int_homun.c, atcommand.c, map.h, pc.c, skill.*）
+	-> skill.hにあった MAX_SKILL_DB, MAX_HOMSKILL_DB, MAX_GUILDSKILL_DB は混乱を招くので廃止
+	-> MAX_SKILL_DB を skill_get_skilldb_id() 用IDの最大値として再定義
+
+・skill_db構造体にidを追加、スキルIDを保存しておくようにする（skill.*）
+　weaponをunsigned int型に修正
+・ホムスキルやギルドスキルに対してもスキルユニット配置情報を作成できるように拡張（skill.c）
+
+・pc_allskillup() を少し最適化（pc.c）
+
+----------------------------------------
 //0324 [2007/09/09] by Rayce
 
 ・パケット0x2c4, 0x2c7に対応（clif.c, party.*）

@@ -347,7 +347,7 @@ struct map_session_data {
 	int wis_all;	// Wis全拒否許可フラグ
 
 	short attackrange,attackrange_;
-	unsigned int skillstatictimer[MAX_SKILL+MAX_HOMSKILL+MAX_GUILDSKILL];
+	unsigned int skillstatictimer[MAX_SKILL_DB];
 	short skillitem,skillitemlv,skillitem_flag;
 	short skillid_old,skilllv_old;
 	short skillid_dance,skilllv_dance;
