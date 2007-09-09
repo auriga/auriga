@@ -339,7 +339,7 @@ int merc_calc_status(struct merc_data *mcd)
 	if(mcd->sprecov_rate != 100)
 		mcd->nhealsp = mcd->nhealsp*mcd->sprecov_rate/100;
 
-	merc_calc_skilltree(mcd);
+	//merc_calc_skilltree(mcd);
 
 	return 0;
 }
@@ -351,6 +351,7 @@ int merc_calc_status(struct merc_data *mcd)
 int merc_callmerc(struct map_session_data *sd,int class_)
 {
 	struct mmo_mercstatus st;
+	int i, id;
 
 	nullpo_retr(0, sd);
 
@@ -386,6 +387,13 @@ int merc_callmerc(struct map_session_data *sd,int class_)
 
 	st.hp = st.max_hp;
 	st.sp = st.max_sp;
+
+	// スキル取得
+	for(i = 0; (id = merc_skill_tree[class_][i].id) > 0; i++) {
+		id -= MERC_SKILLID;
+		st.skill[id].id = id + MERC_SKILLID;
+		st.skill[id].lv = merc_skill_tree[class_][i].max;
+	}
 
 	sd->state.merc_creating = 1;
 	intif_create_merc(sd->status.account_id,sd->status.char_id,&st);
@@ -509,7 +517,6 @@ int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int f
 			merc_save_data(sd);
 			skill_unit_move(&sd->mcd->bl,gettick(),1);
 		}
-		clif_mercskillinfoblock(sd);
 	}
 	sd->state.merc_creating = 0;
 
@@ -553,6 +560,7 @@ int merc_menu(struct map_session_data *sd, int menunum)
 	switch(menunum) {
 		case 1:
 			clif_send_mercstatus(sd,0);
+			clif_mercskillinfoblock(sd);
 			break;
 		case 2:
 			clif_disp_onlyself(sd->fd, msg_txt(190));	// 傭兵を解雇しました。
@@ -976,7 +984,7 @@ static int merc_readdb(void)
 	memset(merc_skill_tree,0,sizeof(merc_skill_tree));
 	fp=fopen("db/merc_skill_tree.txt","r");
 	if(fp==NULL){
-		//printf("can't read db/merc_skill_tree.txt\n");
+		printf("can't read db/merc_skill_tree.txt\n");
 		return 1;
 	}
 	while(fgets(line,1020,fp)){

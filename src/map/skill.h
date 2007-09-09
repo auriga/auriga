@@ -113,9 +113,10 @@ int do_init_skill(void);
 int GetSkillStatusChangeTable(int id);
 
 #define skill_get_skilldb_id(id) \
-	( ((id) >= 0 && (id) < MAX_SKILL_DB) ? (id) : \
-	  ((id) >= HOM_SKILLID && (id) < HOM_SKILLID + MAX_HOMSKILL_DB) ? ((id) - HOM_SKILLID + MAX_SKILL_DB) : \
-	  ((id) >= GUILD_SKILLID && (id) < GUILD_SKILLID + MAX_GUILDSKILL_DB) ? ((id) - GUILD_SKILLID + MAX_HOMSKILL_DB + MAX_SKILL_DB) : \
+	( ((id) >= 0 && (id) < MAX_SKILL) ? (id) : \
+	  ((id) >= HOM_SKILLID && (id) < MAX_HOM_SKILLID) ? ((id) - HOM_SKILLID + MAX_SKILL) : \
+	  ((id) >= MERC_SKILLID && (id) < MAX_MERC_SKILLID) ? ((id) - MERC_SKILLID + MAX_SKILL + MAX_HOMSKILL) : \
+	  ((id) >= GUILD_SKILLID && (id) < MAX_GUILD_SKILLID) ? ((id) - GUILD_SKILLID + MAX_SKILL + MAX_HOMSKILL + MAX_MERCSKILL) : \
 	  0 )
 
 int skill_get_hit(int id);
@@ -265,6 +266,8 @@ void skill_basilica_cancel( struct block_list *bl );
 void skill_reload(void);
 
 extern int SkillStatusChangeTable[];
+extern int HomSkillStatusChangeTable[];
+extern int MercSkillStatusChangeTable[];
 extern int GuildSkillStatusChangeTable[];
 
 enum {
@@ -996,6 +999,44 @@ enum {
 	HVAN_CHAOTIC,
 	HVAN_INSTRUCT,
 	HVAN_EXPLOSION = 8016,
+
+	MS_BASH = 8201,
+	MS_MAGNUM,
+	MS_BOWLINGBASH,
+	MS_PARRYING,
+	MS_REFLECTSHIELD,
+	MS_BERSERK,
+	MA_DOUBLE,
+	MA_SHOWER,
+	MA_SKIDTRAP,
+	MA_LANDMINE,
+	MA_SANDMAN,
+	MA_FREEZINGTRAP,
+	MA_REMOVETRAP,
+	MA_CHARGEARROW,
+	MA_SHARPSHOOTING,
+	ML_PIERCE,
+	ML_BRANDISH,
+	ML_SPIRALPIERCE,
+	ML_DEFENDER,
+	ML_AUTOGUARD,
+	ML_DEVOTION,
+	MER_MAGNIFICAT,
+	MER_QUICKEN,
+	MER_SIGHT,
+	MER_CRASH,
+	MER_REGAIN,
+	MER_TENDER,
+	MER_BENEDICTION,
+	MER_RECUPERATE,
+	MER_MENTALCURE,
+	MER_COMPRESS,
+	MER_PROVOKE,
+	MER_AUTOBERSERK,
+	MER_DECAGI,
+	MER_SCAPEGOAT,
+	MER_LEXDEVINA,
+	MER_ESTIMATION = 8237,
 
 	// ギルドスキルはmmo.hで定義
 };

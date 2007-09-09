@@ -9381,7 +9381,7 @@ void clif_mercskillinfoblock(struct map_session_data *sd)
 
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x29d;
-	for(i = 0; i < MAX_MERCSKILL; i++){
+	for(i = 0; i < MAX_MERCSKILL; i++) {
 		if((id = mcd->status.skill[i].id) != 0) {
 			skill_lv = mcd->status.skill[i].lv;
 			WFIFOW(fd,len  )  = id;
@@ -9390,7 +9390,10 @@ void clif_mercskillinfoblock(struct map_session_data *sd)
 			WFIFOW(fd,len+8)  = skill_get_sp(id,skill_lv);
 			WFIFOW(fd,len+10) = skill_get_fixed_range(&mcd->bl,id,skill_lv);
 			memset(WFIFOP(fd,len+12),0,24);
-			WFIFOB(fd,len+36) = 0;
+			if(!(skill_get_inf2(id)&0x01))
+				WFIFOB(fd,len+36) = (skill_lv < merc_get_skilltree_max(mcd->status.class_,id) && mcd->status.skill[i].flag == 0)? 1: 0;
+			else
+				WFIFOB(fd,len+36) = 0;
 			len += 37;
 		}
 	}

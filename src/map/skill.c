@@ -39,7 +39,7 @@
 #define SKILLUNITTIMER_INVERVAL	100
 
 /* スキル番号＝＞ステータス異常番号変換テーブル */
-int SkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること */
+int SkillStatusChangeTable[] = {	/* status.hのenumのSC_***とあわせること */
 	/* 0- */
 	-1,-1,-1,-1,-1,-1,
 	SC_PROVOKE,			/* プロボック */
@@ -338,15 +338,27 @@ int SkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること
 };
 
 /* (スキル番号 - HOM_SKILLID)＝＞ステータス異常番号変換テーブル */
-int HomSkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること */
+int HomSkillStatusChangeTable[] = {	/* status.hのenumのSC_***とあわせること */
 	/* 0- */
 	-1,SC_AVOID,-1,SC_CHANGE,-1,SC_DEFENCE,-1,SC_BLOODLUST,-1,SC_FLEET,
 	/* 10- */
 	SC_SPEED,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 };
 
+/* (スキル番号 - MERC_SKILLID)＝＞ステータス異常番号変換テーブル */
+int MercSkillStatusChangeTable[] = {	/* status.hのenumのSC_***とあわせること */
+	/* 0- */
+	-1,SC_MAGNUM,-1,SC_PARRYING,SC_REFLECTSHIELD,SC_BERSERK,SC_DOUBLE,-1,-1,-1,
+	/* 10- */
+	-1,-1,-1,-1,-1,-1,-1,-1,SC_DEFENDER,SC_AUTOGUARD,
+	/* 20- */
+	SC_DEVOTION,SC_MAGNIFICAT,-1,SC_SIGHT,-1,-1,-1,-1,-1,-1,
+	/* 30- */
+	-1,SC_PROVOKE,SC_AUTOBERSERK,SC_DECREASEAGI,-1,SC_SILENCE,-1,
+};
+
 /* (スキル番号 - GUILD_SKILLID)＝＞ステータス異常番号変換テーブル */
-int GuildSkillStatusChangeTable[] = {	/* skill.hのenumのSC_***とあわせること */
+int GuildSkillStatusChangeTable[] = {	/* status.hのenumのSC_***とあわせること */
 	/* 0- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 10- */
@@ -422,8 +434,11 @@ int GetSkillStatusChangeTable(int id)
 	if(id < HOM_SKILLID)
 		return SkillStatusChangeTable[id];
 
-	if(id < GUILD_SKILLID)
+	if(id < MERC_SKILLID)
 		return HomSkillStatusChangeTable[id - HOM_SKILLID];
+
+	if(id < GUILD_SKILLID)
+		return MercSkillStatusChangeTable[id - MERC_SKILLID];
 
 	return GuildSkillStatusChangeTable[id - GUILD_SKILLID];
 }
