@@ -781,17 +781,19 @@ int unit_skilluse_id(struct block_list *src, int target_id, int skill_num, int s
 
 int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int skill_lv, int casttime, int castcancel)
 {
-	struct map_session_data *src_sd = NULL;
-	struct pet_data         *src_pd = NULL;
-	struct mob_data         *src_md = NULL;
-	struct homun_data       *src_hd = NULL;
-	struct unit_data        *src_ud = NULL;
+	struct map_session_data *src_sd  = NULL;
+	struct pet_data         *src_pd  = NULL;
+	struct mob_data         *src_md  = NULL;
+	struct homun_data       *src_hd  = NULL;
+	struct merc_data        *src_mcd = NULL;
+	struct unit_data        *src_ud  = NULL;
 	unsigned int tick;
 	int delay = 0, range;
 	struct block_list       *target;
-	struct map_session_data *target_sd = NULL;
-	struct mob_data         *target_md = NULL;
-	struct homun_data       *target_hd = NULL;
+	struct map_session_data *target_sd  = NULL;
+	struct mob_data         *target_md  = NULL;
+	struct homun_data       *target_hd  = NULL;
+	struct merc_data        *target_mcd = NULL;
 	int forcecast = 0, zone = 0, nomemorize = 0;
 	struct status_change *sc_data;
 
@@ -805,6 +807,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		src_ud = &src_pd->ud;
 	} else if( (src_hd = BL_DOWNCAST( BL_HOM, src ) ) ) {
 		src_ud = &src_hd->ud;
+	} else if( (src_mcd = BL_DOWNCAST( BL_MERC, src ) ) ) {
+		src_ud = &src_mcd->ud;
 	}
 	if( src_ud == NULL ) return 0;
 
@@ -888,9 +892,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	if(src->m != target->m)         return 0; // 同じマップかどうか
 	if(!src->prev || !target->prev) return 0; // map 上に存在するか
 
-	target_sd = BL_DOWNCAST( BL_PC,  target );
-	target_md = BL_DOWNCAST( BL_MOB, target );
-	target_hd = BL_DOWNCAST( BL_HOM, target );
+	target_sd  = BL_DOWNCAST( BL_PC,   target );
+	target_md  = BL_DOWNCAST( BL_MOB,  target );
+	target_hd  = BL_DOWNCAST( BL_HOM,  target );
+	target_mcd = BL_DOWNCAST( BL_MERC, target );
 
 	// 直前のスキル状況の記録
 	if(src_sd) {
@@ -1067,11 +1072,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	src_ud->skillid      = skill_num;
 	src_ud->skilllv      = skill_lv;
 
-	if(
-		(src_sd && !(battle_config.pc_cloak_check_type&2) ) ||
-		(src_md && !(battle_config.monster_cloak_check_type&2) )
-	) {
-		if( sc_data && sc_data[SC_CLOAKING].timer != -1 && skill_num != AS_CLOAKING )
+	if( (src_sd && !(battle_config.pc_cloak_check_type&2)) ||
+	    (src_md && !(battle_config.monster_cloak_check_type&2)) )
+	{
+		if(sc_data && sc_data[SC_CLOAKING].timer != -1 && skill_num != AS_CLOAKING)
 			status_change_end(src,SC_CLOAKING,-1);
 	}
 
@@ -1115,11 +1119,12 @@ int unit_skilluse_pos(struct block_list *src, int skill_x, int skill_y, int skil
 
 int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int skill_num, int skill_lv, int casttime, int castcancel)
 {
-	struct map_session_data *src_sd = NULL;
-	struct pet_data         *src_pd = NULL;
-	struct mob_data         *src_md = NULL;
-	struct homun_data       *src_hd = NULL;
-	struct unit_data        *src_ud = NULL;
+	struct map_session_data *src_sd  = NULL;
+	struct pet_data         *src_pd  = NULL;
+	struct mob_data         *src_md  = NULL;
+	struct homun_data       *src_hd  = NULL;
+	struct merc_data        *src_mcd = NULL;
+	struct unit_data        *src_ud  = NULL;
 	int zone;
 	unsigned int tick = gettick();
 	int delay = 0, range;
@@ -1137,8 +1142,10 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 		src_ud = &src_pd->ud;
 	} else if( (src_hd = BL_DOWNCAST( BL_HOM, src ) ) ) {
 		src_ud = &src_hd->ud;
+	} else if( (src_mcd = BL_DOWNCAST( BL_MERC, src ) ) ) {
+		src_ud = &src_mcd->ud;
 	}
-	if( src_ud == NULL) return 0;
+	if( src_ud == NULL ) return 0;
 
 	if(unit_isdead(src)) return 0;
 
@@ -1243,11 +1250,10 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	src_ud->skilly       = skill_y;
 	src_ud->skilltarget  = 0;
 
-	if(
-		(src_sd && !(battle_config.pc_cloak_check_type&2) ) ||
-		(src_md && !(battle_config.monster_cloak_check_type&2) )
-	) {
-		if( sc_data && sc_data[SC_CLOAKING].timer != -1 )
+	if( (src_sd && !(battle_config.pc_cloak_check_type&2)) ||
+	    (src_md && !(battle_config.monster_cloak_check_type&2)) )
+	{
+		if(sc_data && sc_data[SC_CLOAKING].timer != -1)
 			status_change_end(src,SC_CLOAKING,-1);
 	}
 

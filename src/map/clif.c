@@ -7919,18 +7919,17 @@ void clif_guild_emblem(struct map_session_data *sd, struct guild *g)
  */
 void clif_guild_skillinfo(struct map_session_data *sd, struct guild *g)
 {
-	int fd,i,id,c;
+	int fd,i,id,c = 0;
 
 	nullpo_retv(sd);
 	nullpo_retv(g);
 
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x162;
-	WFIFOW(fd,4)=g->skill_point;
-	c = 0;
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x162;
+	WFIFOW(fd,4) = g->skill_point;
 	for(i = 0; i < MAX_GUILDSKILL; i++) {
-		if(g->skill[i].id>0 && guild_check_skill_require(g,g->skill[i].id)){
-			WFIFOW(fd,c*37+ 6) = id = g->skill[i].id;
+		if((id = g->skill[i].id) > 0 && guild_check_skill_require(g,g->skill[i].id)) {
+			WFIFOW(fd,c*37+ 6) = id;
 			WFIFOW(fd,c*37+ 8) = guild_skill_get_inf(id);
 			WFIFOW(fd,c*37+10) = 0;
 			WFIFOW(fd,c*37+12) = g->skill[i].lv;
@@ -7944,7 +7943,7 @@ void clif_guild_skillinfo(struct map_session_data *sd, struct guild *g)
 			c++;
 		}
 	}
-	WFIFOW(fd,2)=c*37+6;
+	WFIFOW(fd,2) = c*37+6;
 	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return;
@@ -10872,31 +10871,19 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	}
 	// end decode
 
-	if(skillnum >= GUILD_SKILLID) {
-		// ギルドスキルはギルマスのみ
-		if(sd != guild_get_guildmaster_sd(guild_search(sd->status.guild_id)))
-			return;
-		// ギルドスキルのデコードがおかしい！
-		// わかる人頼みます
-		skilllv = pc_checkskill(sd, skillnum);
-	}
-
 	bl = map_id2bl(target_id);
 	if(bl == NULL)
 		return;
 
-	// ホムスキル
-	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID)
-	{
+	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
+		// ホムスキル
 		struct homun_data *hd = sd->hd;
 		if( hd && (lv = homun_checkskill(hd,skillnum)) ) {
 			if(skilllv > lv)
 				skilllv = lv;
-			if(hd->ud.skilltimer != -1) {
-				if(skillnum != SA_CASTCANCEL)
-					return;
-			}
-			else if(DIFF_TICK(tick, hd->ud.canact_tick) < 0)
+			if(hd->ud.skilltimer != -1)
+				return;
+			if(DIFF_TICK(tick, hd->ud.canact_tick) < 0)
 				return;
 			if(DIFF_TICK(tick, hd->skillstatictimer[skillnum-HOM_SKILLID]) < 0)
 				return;
@@ -10907,16 +10894,35 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 				unit_skilluse_id(&hd->bl,target_id,skillnum,skilllv);
 			return;
 		}
-	}
+	} else if(skillnum >= MERC_SKILLID && skillnum < MAX_MERC_SKILLID) {
+		// 傭兵スキル
+		struct merc_data *mcd = sd->mcd;
+		if( mcd && (lv = merc_checkskill(mcd,skillnum)) ) {
+			if(skilllv > lv)
+				skilllv = lv;
+			if(mcd->ud.skilltimer != -1)
+				return;
+			if(DIFF_TICK(tick, mcd->ud.canact_tick) < 0)
+				return;
+			if(DIFF_TICK(tick, mcd->skillstatictimer[skillnum-MERC_SKILLID]) < 0)
+				return;
 
-	if(bl && mob_gvmobcheck(sd,bl) == 0)
-		return;
+			if(skill_get_inf(skillnum) & 0x04)	// 自分が対象
+				unit_skilluse_id(&mcd->bl,mcd->bl.id,skillnum,skilllv);
+			else
+				unit_skilluse_id(&mcd->bl,target_id,skillnum,skilllv);
+			return;
+		}
+	} else if(skillnum >= GUILD_SKILLID) {
+		// ギルドスキルはギルマスのみ
+		if(sd != guild_get_guildmaster_sd(guild_search(sd->status.guild_id)))
+			return;
+	}
 
 	if(sd->ud.skilltimer != -1) {
 		if(skillnum != SA_CASTCANCEL)
 			return;
-	}
-	else if(DIFF_TICK(tick, sd->ud.canact_tick) < 0) {
+	} else if(DIFF_TICK(tick, sd->ud.canact_tick) < 0) {
 		clif_skill_fail(sd,skillnum,4,0);
 		return;
 	}
@@ -10930,6 +10936,9 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 	}
 
+	if(mob_gvmobcheck(sd,bl) == 0)
+		return;
+
 	if( (sd->sc_data[SC_TRICKDEAD].timer != -1 && skillnum != NV_TRICKDEAD) ||
 	    sd->sc_data[SC_BERSERK].timer != -1 ||
 	    sd->sc_data[SC_NOCHAT].timer != -1 ||
@@ -10938,7 +10947,10 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	    sd->sc_data[SC_SANTA].timer != -1 ||
 	    sd->sc_data[SC_SUMMER].timer != -1 )
 		return;
-
+	if(sd->sc_data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc_data[SC_BASILICA].val2 != sd->bl.id))
+		return;
+	if(sd->sc_data[SC_GOSPEL].timer != -1 && (skillnum != PA_GOSPEL || sd->sc_data[SC_GOSPEL].val2 != sd->bl.id))
+		return;
 
 	if((option = status_get_option(bl)) != NULL && *option&0x4006 && ((&sd->bl) != bl))
 	{
@@ -10946,11 +10958,6 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		if(sd->race != RCT_INSECT && sd->race != RCT_DEMON)
 			return;
 	}
-
-	if(sd->sc_data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc_data[SC_BASILICA].val2 != sd->bl.id))
-		return;
-	if(sd->sc_data[SC_GOSPEL].timer != -1 && (skillnum != PA_GOSPEL || sd->sc_data[SC_GOSPEL].val2 != sd->bl.id))
-		return;
 
 	if(sd->invincible_timer != -1)
 		pc_delinvincibletimer(sd);
@@ -11025,9 +11032,42 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	x        = RFIFOW(fd,GETPACKETPOS(cmd,2));
 	y        = RFIFOW(fd,GETPACKETPOS(cmd,3));
 
+	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
+		// ホムスキル
+		struct homun_data *hd = sd->hd;
+		if( hd && (lv = homun_checkskill(hd,skillnum)) ) {
+			if(skilllv > lv)
+				skilllv = lv;
+			if(hd->ud.skilltimer != -1)
+				return;
+			if(DIFF_TICK(tick, hd->ud.canact_tick) < 0)
+				return;
+			if(DIFF_TICK(tick, hd->skillstatictimer[skillnum-HOM_SKILLID]) < 0)
+				return;
+
+			unit_skilluse_pos(&hd->bl,x,y,skillnum,skilllv);
+			return;
+		}
+	} else if(skillnum >= MERC_SKILLID && skillnum < MAX_MERC_SKILLID) {
+		// 傭兵スキル
+		struct merc_data *mcd = sd->mcd;
+		if( mcd && (lv = merc_checkskill(mcd,skillnum)) ) {
+			if(skilllv > lv)
+				skilllv = lv;
+			if(mcd->ud.skilltimer != -1)
+				return;
+			if(DIFF_TICK(tick, mcd->ud.canact_tick) < 0)
+				return;
+			if(DIFF_TICK(tick, mcd->skillstatictimer[skillnum-MERC_SKILLID]) < 0)
+				return;
+
+			unit_skilluse_pos(&mcd->bl,x,y,skillnum,skilllv);
+			return;
+		}
+	}
+
 	if(sd->ud.skilltimer != -1)
 		return;
-
 	if(DIFF_TICK(tick, sd->ud.canact_tick) < 0) {
 		clif_skill_fail(sd,skillnum,4,0);
 		return;

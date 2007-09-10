@@ -136,16 +136,19 @@ static int pet_calc_pos(struct pet_data *pd,int tx,int ty,int dir)
 int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
 {
 	struct pet_data *pd;
-	int rate;
 
 	nullpo_retr(0, sd);
+	nullpo_retr(0, pd = sd->pd);
 
-	pd = sd->pd;
+	if(bl == NULL || bl->type != BL_MOB)
+		return 0;
 
-	if(bl && pd && bl->type == BL_MOB && sd->pet.intimate > 900 && sd->pet.hungry > 0 && pd->class_ != status_get_class(bl) &&
+	if(sd->pet.intimate > 900 && sd->pet.hungry > 0 && pd->class_ != status_get_class(bl) &&
 	   pd->ud.skilltimer == -1 && pd->ud.attacktimer == -1)
 	{
 		struct mob_data *md = (struct mob_data *)bl;
+		int rate;
+
 		if(md) {
 			int mode = mob_db[pd->class_].mode;
 			int race = mob_db[pd->class_].race;
