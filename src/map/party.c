@@ -255,7 +255,7 @@ void party_recv_info(struct party *sp)
 void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 {
 	struct party *p;
-	int i;
+	int i, flag = 0;
 
 	nullpo_retv(sd);
 	nullpo_retv(tsd);
@@ -264,9 +264,13 @@ void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 	if(p == NULL)
 		return;
 
+	if(tsd->state.waitingdisconnect) {	// 相手が切断待ち
+		clif_party_inviteack(sd,tsd->status.name,1);
+		return;
+	}
 	if(!battle_config.invite_request_check) {
 		if(tsd->guild_invite > 0 || tsd->trade_partner || tsd->adopt_invite) {	// 相手が取引中かどうか
-			clif_party_inviteack(sd,tsd->status.name,0);
+			clif_party_inviteack(sd,tsd->status.name,1);
 			return;
 		}
 	}
@@ -275,13 +279,24 @@ void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 		return;
 	}
 	for(i=0; i<MAX_PARTY; i++) {	// 同アカウント確認
-		if(p->member[i].account_id == tsd->status.account_id) {
-			if(battle_config.party_join_limit || strncmp(p->member[i].name, tsd->status.name, 24) == 0) {
+		if(p->member[i].account_id <= 0) {
+			flag = 1;
+		} else if(p->member[i].account_id == tsd->status.account_id) {
+			if(battle_config.party_join_limit) {
+				clif_party_inviteack(sd,tsd->status.name,4);
+				return;
+			}
+			if(strncmp(p->member[i].name, tsd->status.name, 24) == 0) {
 				clif_party_inviteack(sd,tsd->status.name,0);
 				return;
 			}
 		}
 	}
+	if(flag == 0) {	// 定員オーバー
+		clif_party_inviteack(sd,tsd->status.name,3);
+		return;
+	}
+
 	if(battle_config.party_invite_range_check) {	// 相手のMAPと距離を確認
 		if(sd->bl.m != tsd->bl.m || unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE) {
 			clif_party_inviteack(sd,tsd->status.name,1);

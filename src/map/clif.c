@@ -471,7 +471,7 @@ void clif_clearflooritem(struct flooritem_data *fitem, int fd)
 	if(fd < 0) {
 		clif_send(buf,packet_db[0xa1].len,&fitem->bl,AREA);
 	} else {
-		memcpy(WFIFOP(fd,0),buf,packet_db[0xa1].len);
+		memcpy(WFIFOP(fd,0),buf,6);
 		WFIFOSET(fd,packet_db[0xa1].len);
 	}
 

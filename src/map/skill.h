@@ -265,10 +265,10 @@ void skill_basilica_cancel( struct block_list *bl );
 
 void skill_reload(void);
 
-extern int SkillStatusChangeTable[];
-extern int HomSkillStatusChangeTable[];
-extern int MercSkillStatusChangeTable[];
-extern int GuildSkillStatusChangeTable[];
+extern int SkillStatusChangeTable[MAX_SKILL];
+extern int HomSkillStatusChangeTable[MAX_HOMSKILL];
+extern int MercSkillStatusChangeTable[MAX_MERCSKILL];
+extern int GuildSkillStatusChangeTable[MAX_GUILDSKILL];
 
 enum {
 	SST_NONE,
