@@ -1,4 +1,24 @@
 ----------------------------------------
+//0328 [2007/09/11] by Rayce
+
+・ホムンクルスが攻撃してタゲをとったモンスターに殺されたあと、そのモンスターに攻撃しても
+　反撃してこない時が発生するバグを修正（mob.c）
+		reported by Cocoaさん
+	Athena1046以降から発生して今まで残っていた隠れバグのようです。
+	MOBと交戦中に攻撃主が消滅（PCならALT+F4による強制終了、HOMなら死亡）したとき、mob_data
+	構造体のattacked_idが0に初期化されなかったのが原因です。
+	mob_damage() でターゲットを獲得するためにはattacked_idが0になってる必要があります。
+
+・新ギルドスキル？GD_ITEMEMEGENCYCALLが追加されていたので、MAX_GUILDSKILLを16にしておく（mmo.h）
+　現在はアイコンが実装されてないらしくリソースエラーになるのでコメントアウト
+
+・傭兵スキルをdbで有効化
+	db/skill_cast_db.txt
+	db/skill_db2.txt
+	db/skill_require_db.txt
+	db/skill_require_db2.txt
+
+----------------------------------------
 //0327 [2007/09/11] by Rayce
 
 ・傭兵がスキルを使えるように（clif.c, skill.c, unit.c）

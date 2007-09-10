@@ -836,32 +836,30 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		tbl = map_id2bl(md->target_id);
 
 	// まず攻撃されたか確認（アクティブなら25%の確率でターゲット変更）
-	if( mode > 0 && md->attacked_id > 0 && (tbl == NULL || tbl->type == BL_ITEM || (mode&0x04 && atn_rand()%100 < 25)) ) {
+	if( mode > 0 && md->attacked_id > 0 && (tbl == NULL || tbl->type == BL_ITEM || (mode&0x04 && atn_rand()%100 < 25)) )
+	{
 		struct block_list *abl = map_id2bl(md->attacked_id);
+		struct map_session_data *asd = NULL;
 
 		md->attacked_players = 0;
-		if(abl) {
-			struct map_session_data *asd = NULL;
-			if(abl->type == BL_PC)
-				asd = (struct map_session_data *)abl;
 
-			if( md->bl.m != abl->m ||
-			    abl->prev == NULL ||
-			    (asd && (asd->invincible_timer != -1 || pc_isinvisible(asd))) ||
-			    (dist = unit_distance(md->bl.x,md->bl.y,abl->x,abl->y)) >= 32 ||
-			    battle_check_target(&md->bl,abl,BCT_ENEMY) == 0) {
+		if( abl == NULL ||
+		    abl->prev == NULL ||
+		    md->bl.m != abl->m ||
+		    (abl->type == BL_PC && (asd = (struct map_session_data *)abl) && (asd->invincible_timer != -1 || pc_isinvisible(asd))) ||
+		    (dist = unit_distance(md->bl.x,md->bl.y,abl->x,abl->y)) >= 32 ||
+		    battle_check_target(&md->bl,abl,BCT_ENEMY) <= 0 ) {
+			md->attacked_id = 0;
+		}
+		else if(md->attacked_id > 0) {
+			// 距離が遠い場合はタゲを変更しない
+			if(!md->target_id || dist < 3) {
+				md->target_id   = md->attacked_id; // set target
+				attack_type     = 1;
 				md->attacked_id = 0;
-			}
-			else if(md->attacked_id > 0) {
-				// 距離が遠い場合はタゲを変更しない
-				if(!md->target_id || dist < 3) {
-					md->target_id   = md->attacked_id; // set target
-					attack_type     = 1;
-					md->attacked_id = 0;
-					md->min_chase   = dist + 13;
-					if(md->min_chase > 26)
-						md->min_chase = 26;
-				}
+				md->min_chase   = dist + 13;
+				if(md->min_chase > 26)
+					md->min_chase = 26;
 			}
 		}
 	}
