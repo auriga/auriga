@@ -9690,11 +9690,6 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	else if(sd->status.manner < 0)
 		status_change_start(&sd->bl,SC_NOCHAT,0,0,0,0,0,0);
 
-	// オートバーサーク発動
-	if(sd->status.hp < sd->status.max_hp>>2 && pc_checkskill(sd,SM_AUTOBERSERK) > 0) {
-		if(sd->sc_data[SC_PROVOKE].timer == -1 || sd->sc_data[SC_PROVOKE].val2 == 0)
-			status_change_start(&sd->bl,SC_PROVOKE,10,1,0,0,0,0);
-	}
 	if(sd->sc_count > 0) {
 		if(sd->sc_data[SC_TRICKDEAD].timer != -1)
 			status_change_end(&sd->bl,SC_TRICKDEAD,-1);

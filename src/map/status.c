@@ -2173,9 +2173,8 @@ L_RECALC:
 		clif_updatestatus(sd,SP_CARTINFO);
 	*/
 
-	if( sd->status.hp < sd->status.max_hp>>2 &&
-	    pc_checkskill(sd,SM_AUTOBERSERK) > 0 &&
-	    sd->sc_data[SC_AUTOBERSERK].timer != -1 &&
+	if( sd->sc_data[SC_AUTOBERSERK].timer != -1 &&
+	    sd->status.hp < sd->status.max_hp>>2 &&
 	    (sd->sc_data[SC_PROVOKE].timer == -1 || sd->sc_data[SC_PROVOKE].val2 == 0) &&
 	    !unit_isdead(&sd->bl) )
 	{
@@ -4401,7 +4400,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(type == SC_STAN || type == SC_SLEEP)
 		unit_stop_walking(bl,1);
 
-	if(type == SC_BLESSING && (bl->type == BL_PC || (!battle_check_undead(race,elem) && race != RCT_DEMON))) {
+	if(type == SC_BLESSING && (sd || (!battle_check_undead(race,elem) && race != RCT_DEMON))) {
 		if(sc_data[SC_CURSE].timer != -1)
 			status_change_end(bl,SC_CURSE,-1);
 		if(sc_data[SC_STONE].timer != -1 && sc_data[SC_STONE].val2 == 0)
@@ -4675,7 +4674,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick += tick / 10;
 			break;
 		case SC_MAXIMIZEPOWER:		/* マキシマイズパワー */
-			if(bl->type == BL_PC)
+			if(sd)
 				tick = val2;	// SPが1減る時間
 			else
 				tick = 5000*val1;
@@ -4827,7 +4826,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				case 5:  val2 = SI_ATTENELEMENT;    val3 = ELE_GHOST; break;
 				default: val2 = SI_DARKELEMENT;     val3 = ELE_DARK;  break;
 			}
-			if(bl->type == BL_PC) {
+			if(sd) {
 				clif_status_change(bl,val2,1);
 			}
 			break;
@@ -5071,7 +5070,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		/* option */
 		case SC_HIDING:		/* ハイディング */
 			calc_flag = 1;
-			if(bl->type == BL_PC) {
+			if(sd) {
 				val2 = tick / 1000;		/* 持続時間 */
 				tick = 1000;
 			}
@@ -5079,7 +5078,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_CHASEWALK:		/* チェイスウォーク */
 		case SC_CLOAKING:		/* クローキング */
 		case SC_INVISIBLE:		/* インビジブル */
-			if(bl->type == BL_PC) {
+			if(sd) {
 				calc_flag = 1;
 				tick = val2;
 			} else {
@@ -5124,7 +5123,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			break;
 		case SC_TENSIONRELAX:	/* テンションリラックス */
-			if(bl->type != BL_PC)
+			if(sd == NULL)
 				return 0;
 			tick = 10000;
 			break;
@@ -5144,13 +5143,16 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_WINDWALK:		/* ウインドウォーク */
 			calc_flag = 1;
-			val2 = (val1 / 2);	// Flee上昇率
+			val2 = val1 / 2;	// Flee上昇率
 			break;
 		case SC_BERSERK:		/* バーサーク */
 			if(sd) {
 				sd->status.sp = 0;
 				clif_updatestatus(sd,SP_SP);
 				clif_status_change(bl,SI_INCREASEAGI,1);	// アイコン表示
+			} else if(mcd) {
+				mcd->status.sp = 0;
+				clif_send_mercstatus(mcd->msd,0);
 			}
 			tick = 1000;
 			calc_flag = 1;
@@ -5270,6 +5272,14 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			break;
 		case SC_AUTOBERSERK:
+			if( status_get_hp(bl) < status_get_max_hp(bl) >> 2 &&
+			    (sc_data[SC_PROVOKE].timer == -1 || sc_data[SC_PROVOKE].val2 == 0) )
+			{
+				// オートバーサーク発動
+				status_change_start(&sd->bl,SC_PROVOKE,10,1,0,0,0,0);
+			}
+			tick = 600*1000;
+			break;
 		case SC_READYSTORM:
 		case SC_READYDOWN:
 		case SC_READYTURN:
@@ -5304,7 +5314,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(tick <= 0)
 		return 0;
 
-	if(bl->type == BL_PC && StatusIconChangeTable[type] != SI_BLANK)
+	if(sd && StatusIconChangeTable[type] != SI_BLANK)
 		clif_status_change(bl,StatusIconChangeTable[type],1);	// アイコン表示
 
 	/* 凸面鏡はアイコン送信後に処理する */
@@ -5450,7 +5460,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			*option |= 0x00001;
 			break;
 		case SC_HIDING:
-			if(bl->type == BL_PC && val3 == 0)	// 霞斬りでない通常のハイドならアイコン表示
+			if(sd && val3 == 0)	// 霞斬りでない通常のハイドならアイコン表示
 				clif_status_change(bl,SI_HIDING,1);
 			unit_stopattack(bl);
 			*option |= 0x00002;
@@ -5533,7 +5543,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
  */
 int status_change_end( struct block_list* bl , int type,int tid)
 {
-	struct map_session_data *sd = NULL;
+	struct map_session_data *sd  = NULL;
+	struct mob_data         *md  = NULL;
+	struct homun_data       *hd  = NULL;
+	struct merc_data        *mcd = NULL;
 	struct status_change* sc_data;
 	int opt_flag = 0, calc_flag = 0;
 	short *sc_count;
@@ -5590,8 +5603,10 @@ int status_change_end( struct block_list* bl , int type,int tid)
 	sc_data[type].timer = -1;
 	(*sc_count)--;
 
-	if(bl->type == BL_PC)
-		sd = (struct map_session_data *)bl;
+	sd  = BL_DOWNCAST( BL_PC,   bl );
+	md  = BL_DOWNCAST( BL_MOB,  bl );
+	hd  = BL_DOWNCAST( BL_HOM,  bl );
+	mcd = BL_DOWNCAST( BL_MERC, bl );
 
 	switch(type) {	/* 異常の種類ごとの処理 */
 		case SC_PROVOKE:			/* プロボック */
@@ -5932,16 +5947,10 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			break;
 		case SC_SELFDESTRUCTION:	/* 自爆 */
 			unit_stop_walking(bl,5);
-			if(bl->type == BL_MOB) {
-				struct mob_data *md = (struct mob_data *)bl;
-				if(md) {
-					md->mode &= ~0x1;
-					md->state.special_mob_ai = 2;
-				}
+			if(md) {
+				md->mode &= ~0x1;
+				md->state.special_mob_ai = 2;
 			}
-			break;
-		case SC_TATAMIGAESHI:	/* 畳返し */
-		case SC_UTSUSEMI:	/* 空蝉 */
 			break;
 		case SC_BUNSINJYUTSU:	/* 分身の術 */
 			if(sd) {
@@ -5951,8 +5960,13 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			}
 			break;
 		case SC_SEVENWIND:	/* 暖かい風 */
-			if(bl->type == BL_PC)
+			if(sd)
 				clif_status_change(bl,sc_data[type].val2,0);
+			break;
+		case SC_AUTOBERSERK:
+			if(sc_data[SC_PROVOKE].timer != -1 && sc_data[SC_PROVOKE].val2 == 1) {
+				status_change_end(bl,SC_PROVOKE,-1);
+			}
 			break;
 
 		/* option1 */
@@ -5968,7 +5982,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			break;
 	}
 
-	if(bl->type == BL_PC && StatusIconChangeTable[type] != SI_BLANK)
+	if(sd && StatusIconChangeTable[type] != SI_BLANK)
 		clif_status_change(bl,StatusIconChangeTable[type],0);	// アイコン消去
 
 	opt_flag = 1;
@@ -6076,7 +6090,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 			break;
 		case SC_HIDING:
 			// 霞斬りでない通常のハイドならアイコン消去
-			if(bl->type == BL_PC && sc_data[type].val3 == 0)
+			if(sd && sc_data[type].val3 == 0)
 				clif_status_change(bl,SI_HIDING,0);
 			*option &= ~0x00002;
 			break;
@@ -6111,19 +6125,18 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		clif_send_clothcolor(bl);
 	}
 
+	/* ステータス再計算 */
 	if(sd) {
 		if(calc_flag || sd->auto_status_calc_pc[type] == 1) {
-			status_calc_pc(sd,0);	/* ステータス再計算 */
+			status_calc_pc(sd,0);
 		}
-	} else if(bl->type == BL_HOM) {
-		struct homun_data *hd = (struct homun_data *)bl;
-		if(hd && calc_flag) {
+	} else if(hd) {
+		if(calc_flag) {
 			homun_calc_status(hd);
 			clif_send_homstatus(hd->msd,0);
 		}
-	} else if(bl->type == BL_MERC) {
-		struct merc_data *mcd = (struct merc_data *)bl;
-		if(mcd && calc_flag) {
+	} else if(mcd) {
+		if(calc_flag) {
 			merc_calc_status(mcd);
 			clif_send_mercstatus(mcd->msd,0);
 		}

@@ -6570,7 +6570,7 @@ int buildin_doevent(struct script_state *st)
 {
 	char *event = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	npc_event(map_id2sd(st->rid),event);	// sdがNULLでもいい
+	npc_event(script_rid2sd(st),event);
 	return 0;
 }
 

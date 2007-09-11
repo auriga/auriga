@@ -1263,8 +1263,8 @@ static int pc_calc_skillpoint(struct map_session_data* sd)
  */
 int pc_calc_skilltree(struct map_session_data *sd)
 {
-	int i,id = 0;
-	int c = 0, s = 0, tk_ranker_bonus = 0;
+	int i, c, s;
+	int tk_ranker_bonus = 0;
 
 	nullpo_retr(0, sd);
 
@@ -1280,7 +1280,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 	c = sd->s_class.job;
 	s = sd->s_class.upper;
 
-	if(battle_config.skillup_limit && c >= 0 && c < MAX_VALID_PC_CLASS) {
+	if(battle_config.skillup_limit) {
 		int skill_point = pc_calc_skillpoint(sd);
 		if(skill_point < 9) {
 			c = 0;
@@ -1349,37 +1349,35 @@ int pc_calc_skilltree(struct map_session_data *sd)
 		for(i=411; i<545; i++)
 			sd->status.skill[i].id = i;
 #ifdef CLASS_DKDC
-		for(i=546; i<615; i++)
+		for(i=545; i<619; i++)
 			sd->status.skill[i].id = i;
 #endif
 		for(i=1001; i<1020; i++)
 			sd->status.skill[i].id = i;
 	} else {
 		// 通常の計算
-		int flag, j, f;
+		int id, flag;
 		do {
 			flag = 0;
 			for(i=0; (id = skill_tree[s][c][i].id) > 0; i++) {
-				f = 1;
-				if(!battle_config.skillfree) {
-					for(j=0; j<5; j++) {
-						if( skill_tree[s][c][i].need[j].id &&
-						    pc_checkskill2(sd,skill_tree[s][c][i].need[j].id) < skill_tree[s][c][i].need[j].lv)
-							f = 0;
+				if(sd->status.skill[id].id > 0)
+					continue;
+				if(!battle_config.skillfree && !tk_ranker_bonus) {
+					int j, fail = 0;
+					for(j=0; j<5 && skill_tree[s][c][i].need[j].id > 0; j++) {
+						if(pc_checkskill2(sd,skill_tree[s][c][i].need[j].id) < skill_tree[s][c][i].need[j].lv) {
+							fail = 1;
+							break;
+						}
 					}
-					if(sd->status.base_level < skill_tree[s][c][i].base_level)
-						f = 0;
-					if(sd->status.job_level < skill_tree[s][c][i].job_level)
-						f = 0;
+					if(fail)
+						continue;
+					if(sd->status.base_level < skill_tree[s][c][i].base_level ||
+					   sd->status.job_level < skill_tree[s][c][i].job_level)
+						continue;
 				}
-				if(f && sd->status.skill[id].id == 0 ) {
-					sd->status.skill[id].id = id;
-					flag = 1;
-				}
-				if(tk_ranker_bonus && sd->status.skill[id].id == 0) {
-					sd->status.skill[id].id = id;
-					flag = 1;
-				}
+				sd->status.skill[id].id = id;
+				flag = 1;
 			}
 		} while(flag);
 	}
@@ -5059,9 +5057,8 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		// まだ生きているならHP更新
 		clif_updatestatus(sd,SP_HP);
 
-		if( sd->status.hp < sd->status.max_hp>>2 &&
-		    sd->sc_data[SC_AUTOBERSERK].timer != -1 &&
-		    pc_checkskill(sd,SM_AUTOBERSERK) > 0 &&
+		if( sd->sc_data[SC_AUTOBERSERK].timer != -1 &&
+		    sd->status.hp < sd->status.max_hp>>2 &&
 		    (sd->sc_data[SC_PROVOKE].timer == -1 || sd->sc_data[SC_PROVOKE].val2 == 0) )
 		{
 			// オートバーサーク発動
