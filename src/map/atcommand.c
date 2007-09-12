@@ -3901,7 +3901,7 @@ int atcommand_charskreset(
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		if (pc_isGM(sd) < pc_isGM(pl_sd))
 			return -1;
-		pc_resetskill(pl_sd);
+		pc_resetskill(pl_sd, -1);
 		sprintf(output, msg_txt(99), character);
 		clif_displaymessage(fd, output);
 	} else {
@@ -3962,7 +3962,7 @@ int atcommand_charreset(
 		if (pc_isGM(sd) < pc_isGM(pl_sd))
 			return -1;
 		pc_resetstate(pl_sd);
-		pc_resetskill(pl_sd);
+		pc_resetskill(pl_sd, -1);
 		sprintf(output, msg_txt(101), character);
 		clif_displaymessage(fd, output);
 	} else {
@@ -5316,7 +5316,7 @@ atcommand_resetskill(
 {
 	nullpo_retr(-1, sd);
 
-	pc_resetskill(sd);
+	pc_resetskill(sd, -1);
 
 	return 0;
 }

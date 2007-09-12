@@ -1213,9 +1213,15 @@ AurigaNPCScript
 			ステータスポイントをリセットします。
 
 		resetskill命令
-			resetskill;
+			resetskill [<flag>];
+
+			flag		数値、省略可
+				 0	クエストスキルはリセットしない
+				 1	クエストスキルもリセットする
+				-1	battle_auriga.confのquest_skill_resetに従う
 
 			スキルポイントをリセットします。
+			<flag>を省略した場合は-1になります。
 
 		statusup命令
 			statusup <st>;

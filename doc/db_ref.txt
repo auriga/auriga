@@ -372,14 +372,16 @@ Upper       = 転生による使用・装備制限
                   +4 : 養子
 Zone        = 場所による使用・装備制限
                    0 : 制限無し
-                  +1 : 通常フィールド   （normal）
-                  +2 : PVP              （pv）
-                  +4 : GVG              （gvg）
-                  +8 : PK               （pk）
-                 +16 : ターボトラック   （turbo）
-                 +32 : テレポ禁止区域   （noteleport）
-                 +64 : リターン禁止区域 （noreturn）
-                +128 : 枝禁止区域       （nobranch）
+                  +1 : 通常フィールド     (normal)
+                  +2 : PVP                (pv)
+                  +4 : GVG                (gvg)
+                  +8 : PK                 (pk)
+                 +16 : ターボトラック     (turbo)
+                 +32 : テレポ禁止区域     (noteleport)
+                 +64 : リターン禁止区域   (noreturn)
+                +128 : 枝禁止区域         (nobranch)
+                +256 : ペナルティ無し区域 (nopenalty)
+                +512 : ペナルティ有り区域
 Dropable    = 捨てるのが可能かどうか
                    0 : 可（デフォルト） 1 : 不可
 Storageable = 倉庫に入れるのが可能かどうか

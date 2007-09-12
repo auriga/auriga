@@ -786,6 +786,10 @@ static int pc_check_prohibition(struct map_session_data *sd, int zone)
 		ban = 1;
 	else if(map[m].flag.pk && zone&8)
 		ban = 1;
+	else if(map[m].flag.nopenalty && zone&256)
+		ban = 1;
+	else if(!map[m].flag.nopenalty && zone&512)
+		ban = 1;
 
 	if(ban) {
 		// テレポ禁止区域で使用不可のアイテムならメッセージ出す
@@ -3761,6 +3765,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 	if(x < 0 || x >= map[m].xs || y < 0 || y >= map[m].ys)
 		x = y = 0;
 	if((x == 0 && y == 0) || map_getcell(m,x,y,CELL_CHKNOPASS)) {
+		int i = 0;
 		if(x || y) {
 			if(battle_config.error_log)
 				printf("stacked (%d,%d)\n",x,y);
@@ -3768,7 +3773,12 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		do {
 			x = atn_rand()%(map[m].xs-2)+1;
 			y = atn_rand()%(map[m].ys-2)+1;
-		} while(map_getcell(m,x,y,CELL_CHKNOPASS));
+		} while(map_getcell(m,x,y,CELL_CHKNOPASS) && (i++) < 1000);
+		if(i >= 1000) {
+			if(battle_config.error_log)
+				printf("pc_setpos: not found free cell!!\n");
+			return 1;
+		}
 	}
 
 	if(m == sd->bl.m) {
@@ -3803,6 +3813,8 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		if(sd->sc_data[SC_BOSSMAPINFO].timer != -1)
 			status_change_end(&sd->bl, SC_BOSSMAPINFO, -1);
 	}
+	status_change_hidden_end(&sd->bl);
+
 	if(sd->bl.prev != NULL) {
 		if(m != sd->bl.m) {
 			move_flag = 1;	// 新規ログインでなくて違うMAPへ移動ならflagオン
@@ -3829,12 +3841,11 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		}
 		clif_changemap(sd,map[m].name,x,y);
 	}
+
 	memcpy(sd->mapname,mapname,24);
 	sd->bl.m = m;
 	sd->bl.x = x;
 	sd->bl.y = y;
-
-	status_change_hidden_end(&sd->bl);
 
 	// ペットの移動
 	if(sd->status.pet_id > 0 && sd->pd && sd->pet.intimate > 0) {
@@ -4963,11 +4974,14 @@ void pc_resetstate(struct map_session_data* sd)
  * /resetskill
  *------------------------------------------
  */
-void pc_resetskill(struct map_session_data* sd)
+void pc_resetskill(struct map_session_data* sd, int flag)
 {
 	int i,skill;
 
 	nullpo_retv(sd);
+
+	if(flag < 0)
+		flag = battle_config.quest_skill_reset;
 
 	for(i=1; i<MAX_SKILL; i++) {
 		if((skill = pc_checkskill2(sd,i)) > 0) {
@@ -4979,7 +4993,8 @@ void pc_resetskill(struct map_session_data* sd)
 				}
 				sd->status.skill[i].lv = 0;
 			}
-			else if(battle_config.quest_skill_reset) {
+			else if(flag) {
+				// クエストスキルもリセットする
 				sd->status.skill[i].lv = 0;
 			}
 			sd->status.skill[i].flag = 0;

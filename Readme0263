@@ -1,4 +1,22 @@
 ----------------------------------------
+//0333 [2007/09/13] by Rayce
+
+・スタック位置にワープしたとき、ワープ先の検索は1000回で打ち切るように修正（pc.c）
+・スクリプトのresetskill命令に可変引数を渡せるように拡張（atcommand.c, clif.c, pc.*, script.c）
+・db/item_db2.txtのZoneに +256, +512 を追加（pc.c）
+　mapflagにnopenaltyが設定されているかどうかでアイテムの使用可否を決定することができます
+
+・script/functionを新設
+	function_itemdb.txtにはdb/item_db.txtで利用するfunctionを集めます
+	function_global.txtには各NPCファイルで共通で使うfucntionを集めます
+
+・巨大なハエの羽、キラキラスティックの効果実装
+	originally created by Cocoaさん、thx a lot!!
+
+　　※キラキラスティックの相違点
+　　　重量が0でないと使用できないはずだが使えてしまう。
+
+----------------------------------------
 //0332 [2007/09/13] by Rayce
 
 ・以下の傭兵専用スキルを実装（battle.c, skill.c）

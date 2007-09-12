@@ -11402,7 +11402,7 @@ static void clif_parse_ResetChar(int fd,struct map_session_data *sd, int cmd)
 			pc_resetstate(sd);
 			break;
 		case 1:
-			pc_resetskill(sd);
+			pc_resetskill(sd, -1);
 			break;
 		}
 	}

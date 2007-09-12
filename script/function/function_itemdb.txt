@@ -1,0 +1,43 @@
+//==============================================================================
+// Ragnarok Online Itemdb Functions
+//==============================================================================
+
+//============================================================
+// 巨大なハエの羽
+//------------------------------------------------------------
+function	script	ItemdbPartyCall	{
+	warp "Random",0,0;
+	set '@name$,strcharinfo(0);
+	if('@name$ == getpartyleader(getcharid(1)) && !getmapxy('@map$,'@x,'@y,0)) {
+		getpartymember getcharid(1);
+		for(set '@i,0; '@i < $@partymembercount; set '@i,'@i+1) {
+			if($@partymembername$['@i] == '@name$)			// 自分は除外
+				continue;
+			if(getmapname($@partymembername$['@i]) != '@map$)	// MAPが違う
+				continue;
+			if(attachrid(getcharid(3,$@partymembername$['@i]))) {
+				if(!checkdead()) {
+					// 死亡してないならリーダーの元へワープ
+					warp '@map$,'@x,'@y;
+				}
+				detachrid;
+			}
+		}
+	}
+	return;
+}
+
+//============================================================
+// キラキラスティック
+//------------------------------------------------------------
+function	script	ItemdbResetSkill	{
+	if(Weight || checkcart() || checkfalcon() || checkriding())
+		return;
+	set '@lv,getskilllv(1);	// 基本スキル
+	resetskill 0;		// クエストスキルはリセットしない
+	if('@lv > 0) {
+		skill 1,'@lv,0;
+		set SkillPoint,SkillPoint - '@lv;
+	}
+	return;
+}
