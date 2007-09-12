@@ -226,7 +226,7 @@ int MercSkillStatusChangeTable[MAX_MERCSKILL] = {	/* status.hのenumのSC_***と
 	/* 10- */
 	-1,-1,-1,-1,-1,-1,-1,-1,SC_DEFENDER,SC_AUTOGUARD,
 	/* 20- */
-	SC_DEVOTION,SC_MAGNIFICAT,-1,SC_SIGHT,-1,-1,-1,-1,-1,-1,
+	SC_DEVOTION,SC_MAGNIFICAT,SC_WEAPONQUICKEN,SC_SIGHT,-1,-1,-1,-1,-1,-1,
 	/* 30- */
 	-1,SC_PROVOKE,SC_AUTOBERSERK,SC_DECREASEAGI,-1,SC_SILENCE,-1,
 };
@@ -1084,6 +1084,10 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case NPC_CRITICALWOUND:		/* 致命傷攻撃 */
 		// 確率不明なのでとりあえず100%
 		status_change_start(bl,SC_CRITICALWOUND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
+	case MER_CRASH:			/* クラッシュ */
+		if( atn_rand()%100 < 6 * skilllv * sc_def_vit / 100 )
+			status_change_start(bl,SC_STAN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	}
 
@@ -2145,6 +2149,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case ML_PIERCE:
 	case ML_BRANDISH:
 	case ML_SPIRALPIERCE:
+	case MER_CRASH:			/* クラッシュ */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case AC_DOUBLE:			/* ダブルストレイフィング */
@@ -3780,6 +3785,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_DEFENDER:
 	case NPC_MAGICMIRROR:		/* マジックミラー */
 	case MS_REFLECTSHIELD:
+	case MER_QUICKEN:		/* ウェポンクイッケン */
 	case MER_AUTOBERSERK:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
@@ -5678,6 +5684,55 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_nodamage_id);
+		}
+		break;
+	case MER_REGAIN:		/* リゲイン */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if( dstsd && dstsd->special_state.no_magic_damage )
+			break;
+		status_change_end(bl, SC_STAN, -1);
+		status_change_end(bl, SC_SLEEP, -1);
+		break;
+	case MER_TENDER:		/* テンダー */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if( dstsd && dstsd->special_state.no_magic_damage )
+			break;
+		status_change_end(bl, SC_FREEZE, -1);
+		status_change_end(bl, SC_STONE, -1);
+		break;
+	case MER_BENEDICTION:		/* ベネディクション */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if( dstsd && dstsd->special_state.no_magic_damage )
+			break;
+		status_change_end(bl, SC_CURSE, -1);
+		status_change_end(bl, SC_BLIND, -1);
+		break;
+	case MER_RECUPERATE:		/* リキュポレイト */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if( dstsd && dstsd->special_state.no_magic_damage )
+			break;
+		status_change_end(bl, SC_SILENCE, -1);
+		status_change_end(bl, SC_POISON, -1);
+		break;
+	case MER_MENTALCURE:		/* メンタルキュア */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if( dstsd && dstsd->special_state.no_magic_damage )
+			break;
+		status_change_end(bl, SC_CONFUSION, -1);
+		status_change_end(bl, SC_HALLUCINATION, -1);
+		break;
+	case MER_COMPRESS:		/* コンプレス */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if( dstsd && dstsd->special_state.no_magic_damage )
+			break;
+		status_change_end(bl, SC_BLEED, -1);
+		break;
+	case MER_SCAPEGOAT:		/* 身代わり */
+		if(mcd && mcd->msd) {
+			int hp = status_get_hp(&mcd->bl);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			pc_heal(mcd->msd,hp,0);
+			battle_damage(NULL,&mcd->bl,hp,skillid,skilllv,flag);
 		}
 		break;
 	default:

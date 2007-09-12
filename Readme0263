@@ -1,4 +1,20 @@
 ----------------------------------------
+//0332 [2007/09/13] by Rayce
+
+・以下の傭兵専用スキルを実装（battle.c, skill.c）
+	MER_QUICKEN, MER_CRASH, MER_REGAIN, MER_TENDER, MER_BENEDICTION, MER_RECUPERATE,
+	MER_MENTALCURE, MER_COMPRESS, MER_SCAPEGOAT
+
+　消費SPがわからなかったので他のスキルを適当に参照（db/skill_require_db.txt）
+	MER_QUICKEN   → 2HQ
+	MER_CRASH     → バッシュ
+	MER_SCAPEGOAT → SP1
+	その他        → キュア
+
+・SC_WEAPONQUICKEN追加、ただし実装はかなり適当（merc.c, skill.c, status.*）
+・MAX_HOMCSKILL_TREEを16に戻しておく、ついでにMAX_MERCSKILL_TREEを16に変更（homun.h, merc.h）
+
+----------------------------------------
 //0331 [2007/09/13] by Rayce
 
 ・以下の傭兵スキルを実装（battle.c, merc.c, skill.c, status.c, unit.c）

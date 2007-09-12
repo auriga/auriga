@@ -6,7 +6,7 @@
 #define MERC_NATURAL_HEAL_HP_INTERVAL 2000
 #define MERC_NATURAL_HEAL_SP_INTERVAL 4000
 
-#define MAX_MERCSKILL_TREE 5
+#define MAX_MERCSKILL_TREE 16
 
 struct merc_db {
 	short class_;

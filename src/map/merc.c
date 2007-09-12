@@ -291,6 +291,13 @@ int merc_calc_status(struct merc_data *mcd)
 			mcd->aspd += (25 - mcd->sc_data[SC_DEFENDER].val1*5);
 			mcd->speed = (mcd->speed * (155 - mcd->sc_data[SC_DEFENDER].val1*5)) / 100;
 		}
+
+		// ウェポンクイッケン
+		if(mcd->sc_data[SC_WEAPONQUICKEN].timer != -1 &&
+		   mcd->sc_data[SC_QUAGMIRE].timer == -1 &&
+		   mcd->sc_data[SC_DONTFORGETME].timer == -1 &&
+		   mcd->sc_data[SC_DECREASEAGI].timer == -1)
+			aspd_rate -= 30;
 	}
 
 	dstr   = mcd->str / 10;

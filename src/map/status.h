@@ -501,6 +501,7 @@ enum {
 	SC_MAGICMIRROR          = 380,
 	SC_STONESKIN            = 381,
 	SC_ANTIMAGIC            = 382,
+	SC_WEAPONQUICKEN        = 383,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,

@@ -1731,7 +1731,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NPC_RANDOMATTACK:	// ランダムATK攻撃
 			DMG_FIX( 50+atn_rand()%150, 100 );
 			break;
-		// 属性攻撃
 		case NPC_WATERATTACK:
 		case NPC_GROUNDATTACK:
 		case NPC_FIREATTACK:
@@ -2131,21 +2130,21 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					status_change_end(src,SC_NEN,-1);
 			}
 			break;
-		case NPC_EARTHQUAKE:		/* アースクエイク */
+		case NPC_EARTHQUAKE:		// アースクエイク
 			DMG_FIX( 500+500*skill_lv, 100 );
 			if(wflag > 1) {
 				DMG_FIX( 1, wflag );
 			}
 			break;
-		case NPC_FIREBREATH:		/* ファイアブレス */
-		case NPC_ICEBREATH:		/* アイスブレス */
-		case NPC_THUNDERBREATH:		/* サンダーブレス */
-		case NPC_ACIDBREATH:		/* アシッドブレス */
-		case NPC_DARKNESSBREATH:	/* ダークネスブレス */
-		case NPC_HELLJUDGEMENT:		/* ヘルジャッジメント */
+		case NPC_FIREBREATH:		// ファイアブレス
+		case NPC_ICEBREATH:		// アイスブレス
+		case NPC_THUNDERBREATH:		// サンダーブレス
+		case NPC_ACIDBREATH:		// アシッドブレス
+		case NPC_DARKNESSBREATH:	// ダークネスブレス
+		case NPC_HELLJUDGEMENT:		// ヘルジャッジメント
 			DMG_FIX( 100*skill_lv, 100 );
 			break;
-		case NPC_PULSESTRIKE:		/* パルスストライク */
+		case NPC_PULSESTRIKE:		// パルスストライク
 			DMG_FIX( 100*skill_lv, 100 );
 			wd.blewcount = 0;
 			break;
@@ -2160,6 +2159,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					src_hd->status.intimate = 200;
 				clif_send_homdata(src_hd->msd,1,src_hd->intimate/100);
 			}
+			break;
+		case MER_CRASH:		// クラッシュ
+			DMG_FIX( 100+10*skill_lv, 100 );
 			break;
 		}
 

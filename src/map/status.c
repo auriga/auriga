@@ -4593,6 +4593,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SPEED:				/* オーバードスピード */
 		case SC_STONESKIN:			/* ストーンスキン */
 		case SC_ANTIMAGIC:			/* アンチマジック */
+		case SC_WEAPONQUICKEN:			/* ウェポンクイッケン */
 			calc_flag = 1;
 			break;
 
@@ -5391,6 +5392,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_TWOHANDQUICKEN:		/* 2HQ */
 		case SC_SPEARSQUICKEN:		/* スピアクイッケン */
 		case SC_CONCENTRATION:		/* コンセントレーション */
+		case SC_WEAPONQUICKEN:		/* ウェポンクイッケン */
 			*opt3 |= 0x00001;
 			break;
 		case SC_OVERTHRUST:		/* オーバートラスト */
@@ -5722,6 +5724,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_SPEED:				/* オーバードスピード */
 		case SC_STONESKIN:			/* ストーンスキン */
 		case SC_ANTIMAGIC:			/* アンチマジック */
+		case SC_WEAPONQUICKEN:			/* ウェポンクイッケン */
 			calc_flag = 1;
 			break;
 		case SC_ELEMENTWATER:		// 水
@@ -6023,6 +6026,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_TWOHANDQUICKEN:		/* 2HQ */
 		case SC_SPEARSQUICKEN:		/* スピアクイッケン */
 		case SC_CONCENTRATION:		/* コンセントレーション */
+		case SC_WEAPONQUICKEN:		/* ウェポンクイッケン */
 			*opt3 &= ~0x00001;
 			break;
 		case SC_OVERTHRUST:		/* オーバートラスト */
