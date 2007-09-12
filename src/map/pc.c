@@ -5738,6 +5738,44 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+static int pc_checkoverhp(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	if(sd->status.hp == sd->status.max_hp)
+		return 1;
+	if(sd->status.hp > sd->status.max_hp) {
+		sd->status.hp = sd->status.max_hp;
+		clif_updatestatus(sd,SP_HP);
+		return 2;
+	}
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static int pc_checkoversp(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	if(sd->status.sp == sd->status.max_sp)
+		return 1;
+	if(sd->status.sp > sd->status.max_sp) {
+		sd->status.sp = sd->status.max_sp;
+		clif_updatestatus(sd,SP_SP);
+		return 2;
+	}
+
+	return 0;
+}
+
+/*==========================================
  * HP/SP回復
  *------------------------------------------
  */
@@ -5784,7 +5822,7 @@ int pc_heal(struct map_session_data *sd,int hp,int sp)
 }
 
 /*==========================================
- * HP/SP回復
+ * アイテムによるHP/SP回復
  *------------------------------------------
  */
 int pc_itemheal(struct map_session_data *sd,int hp,int sp)
@@ -5867,7 +5905,7 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 }
 
 /*==========================================
- * HP/SP回復
+ * 比率によるHP/SP回復
  *------------------------------------------
  */
 int pc_percentheal(struct map_session_data *sd,int hp,int sp)
@@ -7063,44 +7101,6 @@ int pc_checkitem(struct map_session_data *sd)
 	pc_setequipindex(sd);
 	if(calc_flag)
 		status_calc_pc(sd,2);
-
-	return 0;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
-int pc_checkoverhp(struct map_session_data *sd)
-{
-	nullpo_retr(0, sd);
-
-	if(sd->status.hp == sd->status.max_hp)
-		return 1;
-	if(sd->status.hp > sd->status.max_hp) {
-		sd->status.hp = sd->status.max_hp;
-		clif_updatestatus(sd,SP_HP);
-		return 2;
-	}
-
-	return 0;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
-int pc_checkoversp(struct map_session_data *sd)
-{
-	nullpo_retr(0, sd);
-
-	if(sd->status.sp == sd->status.max_sp)
-		return 1;
-	if(sd->status.sp > sd->status.max_sp) {
-		sd->status.sp = sd->status.max_sp;
-		clif_updatestatus(sd,SP_SP);
-		return 2;
-	}
 
 	return 0;
 }

@@ -216,75 +216,82 @@ int merc_calc_status(struct merc_data *mcd)
 	mcd->hprecov_rate = 100;
 	mcd->sprecov_rate = 100;
 
-/*
-	// ステータス変化による基本パラメータ補正ホムスキル
+	// ステータス変化による基本パラメータ補正
 	if(mcd->sc_count > 0)
 	{
-		// 緊急回避
-		if(mcd->sc_data[SC_AVOID].timer != -1)
-			speed_rate -= mcd->sc_data[SC_AVOID].val1*10;
-		// メンタルチェンジ
-		if(mcd->sc_data[SC_CHANGE].timer != -1)
-			mcd->int_ += 60;
-		// ブラッドラスト
-		if(mcd->sc_data[SC_BLOODLUST].timer != -1)
-			atk_rate += mcd->sc_data[SC_BLOODLUST].val1*10+20;
-		// フリットムーブ
-		if(mcd->sc_data[SC_FLEET].timer != -1) {
-			aspd_rate -= mcd->sc_data[SC_FLEET].val1*3;
-			atk_rate  += 5+mcd->sc_data[SC_FLEET].val1*5;
+		int sc_speed_rate = 100;
+
+		if(mcd->sc_data[SC_INCREASEAGI].timer != -1 && sc_speed_rate > 75)	// 速度増加による移動速度増加
+			sc_speed_rate = 75;
+		if(mcd->sc_data[SC_BERSERK].timer != -1 && sc_speed_rate > 75)	// バーサークによる移動速度増加
+			sc_speed_rate = 75;
+
+		mcd->speed = mcd->speed * sc_speed_rate / 100;
+
+		if(mcd->sc_data[SC_DECREASEAGI].timer != -1) {		// 速度減少(agiはbattle.cで)
+			if(mcd->sc_data[SC_DEFENDER].timer == -1) {	// ディフェンダー時は速度低下しない
+				mcd->speed = mcd->speed *((mcd->sc_data[SC_DECREASEAGI].val1 > 5)? 150: 133)/100;
+			}
 		}
 
-		// ステータス変化による基本パラメータ補正
-		if(battle_config.allow_homun_status_change)
-		{
-			// ゴスペルALL+20
-			if(mcd->sc_data[SC_INCALLSTATUS].timer != -1) {
-				mcd->str  += mcd->sc_data[SC_INCALLSTATUS].val1;
-				mcd->agi  += mcd->sc_data[SC_INCALLSTATUS].val1;
-				mcd->vit  += mcd->sc_data[SC_INCALLSTATUS].val1;
-				mcd->int_ += mcd->sc_data[SC_INCALLSTATUS].val1;
-				mcd->dex  += mcd->sc_data[SC_INCALLSTATUS].val1;
-				mcd->luk  += mcd->sc_data[SC_INCALLSTATUS].val1;
+		// ゴスペルALL+20
+		if(mcd->sc_data[SC_INCALLSTATUS].timer != -1) {
+			mcd->str  += mcd->sc_data[SC_INCALLSTATUS].val1;
+			mcd->agi  += mcd->sc_data[SC_INCALLSTATUS].val1;
+			mcd->vit  += mcd->sc_data[SC_INCALLSTATUS].val1;
+			mcd->int_ += mcd->sc_data[SC_INCALLSTATUS].val1;
+			mcd->dex  += mcd->sc_data[SC_INCALLSTATUS].val1;
+			mcd->luk  += mcd->sc_data[SC_INCALLSTATUS].val1;
+		}
+
+		if(mcd->sc_data[SC_INCREASEAGI].timer != -1)	// 速度増加
+			mcd->agi += 2+mcd->sc_data[SC_INCREASEAGI].val1;
+
+		if(mcd->sc_data[SC_DECREASEAGI].timer != -1)	// 速度減少(agiはbattle.cで)
+			mcd->agi -= 2+mcd->sc_data[SC_DECREASEAGI].val1;
+
+		if(mcd->sc_data[SC_BLESSING].timer != -1) {	// ブレッシング
+			mcd->str  += mcd->sc_data[SC_BLESSING].val1;
+			mcd->dex  += mcd->sc_data[SC_BLESSING].val1;
+			mcd->int_ += mcd->sc_data[SC_BLESSING].val1;
+		}
+		if(mcd->sc_data[SC_SUITON].timer != -1) {	// 水遁
+			if(mcd->sc_data[SC_SUITON].val3)
+				mcd->agi += mcd->sc_data[SC_SUITON].val3;
+			if(mcd->sc_data[SC_SUITON].val4)
+				mcd->speed = mcd->speed*2;
+		}
+
+		if(mcd->sc_data[SC_GLORIA].timer != -1)	// グロリア
+			mcd->luk += 30;
+
+		if(mcd->sc_data[SC_QUAGMIRE].timer != -1) {	// クァグマイア
+			short subagi = 0;
+			short subdex = 0;
+			subagi = (mcd->status.agi/2 < mcd->sc_data[SC_QUAGMIRE].val1*10) ? mcd->status.agi/2 : mcd->sc_data[SC_QUAGMIRE].val1*10;
+			subdex = (mcd->status.dex/2 < mcd->sc_data[SC_QUAGMIRE].val1*10) ? mcd->status.dex/2 : mcd->sc_data[SC_QUAGMIRE].val1*10;
+			if(map[mcd->bl.m].flag.pvp || map[mcd->bl.m].flag.gvg) {
+				subagi /= 2;
+				subdex /= 2;
 			}
+			mcd->speed = mcd->speed*4/3;
+			mcd->agi -= subagi;
+			mcd->dex -= subdex;
+		}
 
-			if(mcd->sc_data[SC_INCREASEAGI].timer != -1)	// 速度増加
-				mcd->agi += 2+mcd->sc_data[SC_INCREASEAGI].val1;
+		if(mcd->sc_data[SC_BERSERK].timer != -1) {	// バーサーク
+			def_rate  = 0;
+			mdef_rate = 0;
+			aspd_rate -= 30;
+			mcd->flee -= mcd->flee * 50 / 100;
+			mcd->max_hp = mcd->max_hp * 3;
+		}
 
-			if(mcd->sc_data[SC_DECREASEAGI].timer != -1)	// 速度減少(agiはbattle.cで)
-				mcd->agi -= 2+mcd->sc_data[SC_DECREASEAGI].val1;
-
-			if(mcd->sc_data[SC_BLESSING].timer != -1) {	// ブレッシング
-				mcd->str  += mcd->sc_data[SC_BLESSING].val1;
-				mcd->dex  += mcd->sc_data[SC_BLESSING].val1;
-				mcd->int_ += mcd->sc_data[SC_BLESSING].val1;
-			}
-			if(mcd->sc_data[SC_SUITON].timer != -1) {	// 水遁
-				if(mcd->sc_data[SC_SUITON].val3)
-					mcd->agi += mcd->sc_data[SC_SUITON].val3;
-				if(mcd->sc_data[SC_SUITON].val4)
-					mcd->speed = mcd->speed*2;
-			}
-
-			if(mcd->sc_data[SC_GLORIA].timer != -1)	// グロリア
-				mcd->luk += 30;
-
-			if(mcd->sc_data[SC_QUAGMIRE].timer != -1) {	// クァグマイア
-				short subagi = 0;
-				short subdex = 0;
-				subagi = (mcd->status.agi/2 < mcd->sc_data[SC_QUAGMIRE].val1*10) ? mcd->status.agi/2 : mcd->sc_data[SC_QUAGMIRE].val1*10;
-				subdex = (mcd->status.dex/2 < mcd->sc_data[SC_QUAGMIRE].val1*10) ? mcd->status.dex/2 : mcd->sc_data[SC_QUAGMIRE].val1*10;
-				if(map[mcd->bl.m].flag.pvp || map[mcd->bl.m].flag.gvg) {
-					subagi /= 2;
-					subdex /= 2;
-				}
-				mcd->speed = mcd->speed*4/3;
-				mcd->agi -= subagi;
-				mcd->dex -= subdex;
-			}
+		if(mcd->sc_data[SC_DEFENDER].timer != -1) {	// ディフェンダー
+			mcd->aspd += (25 - mcd->sc_data[SC_DEFENDER].val1*5);
+			mcd->speed = (mcd->speed * (155 - mcd->sc_data[SC_DEFENDER].val1*5)) / 100;
 		}
 	}
-*/
 
 	dstr   = mcd->str / 10;
 	blv    = mcd->status.base_level;
@@ -339,7 +346,17 @@ int merc_calc_status(struct merc_data *mcd)
 	if(mcd->sprecov_rate != 100)
 		mcd->nhealsp = mcd->nhealsp*mcd->sprecov_rate/100;
 
+	// スキルツリーの再計算不要
 	//merc_calc_skilltree(mcd);
+
+	if( mcd->sc_data[SC_AUTOBERSERK].timer != -1 &&
+	    mcd->status.hp < mcd->status.max_hp>>2 &&
+	    (mcd->sc_data[SC_PROVOKE].timer == -1 || mcd->sc_data[SC_PROVOKE].val2 == 0) &&
+	    !unit_isdead(&mcd->bl) )
+	{
+		// オートバーサーク発動
+		status_change_start(&mcd->bl,SC_PROVOKE,10,1,0,0,0,0);
+	}
 
 	return 0;
 }
@@ -514,6 +531,7 @@ int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int f
 			clif_send_mercdata(sd);
 			clif_send_mercstatus(sd,1);
 			clif_send_mercstatus(sd,0);
+			clif_mercskillinfoblock(sd);
 			merc_save_data(sd);
 			skill_unit_move(&sd->mcd->bl,gettick(),1);
 		}
@@ -687,7 +705,8 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 		return 0;
 
 	// 歩いていたら足を止める
-	unit_stop_walking(&mcd->bl,battle_config.pc_hit_stop_type);
+	if((mcd->sc_data[SC_ENDURE].timer == -1 || map[mcd->bl.m].flag.gvg) && mcd->sc_data[SC_BERSERK].timer == -1)
+		unit_stop_walking(&mcd->bl,battle_config.pc_hit_stop_type);
 
 	if(damage > 0 && mcd->sc_data[SC_GRAVITATION_USER].timer != -1)
 		status_change_end(&mcd->bl, SC_GRAVITATION_USER, -1);
@@ -711,6 +730,7 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 	status_change_hidden_end(&mcd->bl);
 
 	clif_send_mercstatus(sd,0);
+	clif_mercskillinfoblock(sd);
 
 	// 死亡していた
 	if(mcd->status.hp <= 0) {
@@ -724,6 +744,14 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 
 		clif_disp_onlyself(sd->fd, msg_txt(189));	// 傭兵が死亡しました。
 		merc_delete_data(sd);
+	} else {
+		if( mcd->sc_data[SC_AUTOBERSERK].timer != -1 &&
+		    mcd->status.hp < mcd->status.max_hp>>2 &&
+		    (mcd->sc_data[SC_PROVOKE].timer == -1 || mcd->sc_data[SC_PROVOKE].val2 == 0) )
+		{
+			// オートバーサーク発動
+			status_change_start(&mcd->bl,SC_PROVOKE,10,1,0,0,0,0);
+		}
 	}
 
 	return 0;
@@ -758,8 +786,10 @@ int merc_heal(struct merc_data *mcd,int hp,int sp)
 	mcd->status.sp += sp;
 	if(mcd->status.sp <= 0)
 		mcd->status.sp = 0;
-	if((hp || sp) && mcd->msd)
+	if((hp || sp) && mcd->msd) {
 		clif_send_mercstatus(mcd->msd,0);
+		clif_mercskillinfoblock(mcd->msd);
+	}
 
 	return hp + sp;
 }
@@ -788,8 +818,10 @@ static int merc_natural_heal_hp(int tid,unsigned int tick,int id,int data)
 		mcd->status.hp += mcd->nhealhp;
 		if(mcd->status.hp > mcd->max_hp)
 			mcd->status.hp = mcd->max_hp;
-		if(bhp != mcd->status.hp && mcd->msd)
+		if(bhp != mcd->status.hp && mcd->msd) {
 			clif_send_mercstatus(mcd->msd,0);
+			clif_mercskillinfoblock(mcd->msd);
+		}
 	}
 	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,0);
 
@@ -816,8 +848,10 @@ static int merc_natural_heal_sp(int tid,unsigned int tick,int id,int data)
 		mcd->status.sp += mcd->nhealsp;
 		if(mcd->status.sp > mcd->max_sp)
 			mcd->status.sp = mcd->max_sp;
-		if(bsp != mcd->status.sp && mcd->msd)
+		if(bsp != mcd->status.sp && mcd->msd) {
 			clif_send_mercstatus(mcd->msd,0);
+			clif_mercskillinfoblock(mcd->msd);
+		}
 	}
 	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,0);
 

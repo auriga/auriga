@@ -429,7 +429,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			{
 				int dir = map_calc_dir(bl,src->x,src->y);
 				damage = 0;
-				clif_skill_nodamage(bl,bl,LK_PARRYING,sc_data[SC_PARRYING].val1,1);
+				clif_skill_nodamage(bl,bl,sc_data[SC_PARRYING].val4,sc_data[SC_PARRYING].val1,1);	// val4はスキルID
 				clif_changedir(bl,dir,dir);
 				if(ud)
 					ud->attackabletime = tick + 500;	// 値適当
@@ -1249,8 +1249,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* ６．クリティカル計算 */
-	if( calc_flag.da == 0 && (skill_num == 0 || skill_num == KN_AUTOCOUNTER || skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE) &&
-	    (!src_md || battle_config.enemy_critical) && skill_lv >= 0 )
+	if( calc_flag.da == 0 &&
+	    (skill_num == 0 || skill_num == KN_AUTOCOUNTER || skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE || skill_num == MA_SHARPSHOOTING) &&
+	    (!src_md || battle_config.enemy_critical) &&
+	    skill_lv >= 0 )
 	{
 		// 連撃が発動してなくて、通常攻撃・オートカウンター・シャープシューティング・影斬りならば
 		int cri = status_get_critical(src);
@@ -1263,10 +1265,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 		cri -= status_get_luk(target) * 3;
 		if(src_md && battle_config.enemy_critical_rate != 100) {
-			cri = cri*battle_config.enemy_critical_rate/100;
+			cri = cri * battle_config.enemy_critical_rate / 100;
 			if(cri < 1) cri = 1;
 		}
-		if(t_sc_data != NULL && t_sc_data[SC_SLEEP].timer != -1 )
+		if(t_sc_data && t_sc_data[SC_SLEEP].timer != -1)
 			cri <<= 1;		// 睡眠中はクリティカルが倍に
 		if(calc_flag.autocounter)
 			cri = 1000;
@@ -1276,22 +1278,22 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				cri = 1000;
 			else
 				cri <<= 1;
-		}
-		if(skill_num == SN_SHARPSHOOTING)
+		} else if(skill_num == SN_SHARPSHOOTING || skill_num == MA_SHARPSHOOTING) {
 			cri += 200;
-		if(skill_num == NJ_KIRIKAGE)
+		} else if(skill_num == NJ_KIRIKAGE) {
 			cri += (250+skill_lv*50);
+		}
 
 		if(target_sd && target_sd->critical_def) {
 			if(target_sd->critical_def > 100)
 				cri = 0;
 			else
-				cri = cri * (100-target_sd->critical_def) / 100;
+				cri = cri * (100 - target_sd->critical_def) / 100;
 		}
 
 		// 確率判定
 		if(atn_rand() % 1000 < cri) {
-			if(skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE) {
+			if(skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE || skill_num == MA_SHARPSHOOTING) {
 				// DEF無視フラグ
 				calc_flag.idef = calc_flag.idef_ = 1;
 			} else {
@@ -1313,10 +1315,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 		switch( skill_num ) {
 		case SM_BASH:			// バッシュ
+		case MS_BASH:
 		case KN_PIERCE:			// ピアース
+		case ML_PIERCE:
 			calc_flag.hitrate = calc_flag.hitrate*(100+5*skill_lv)/100;
 			break;
 		case SM_MAGNUM:			// マグナムブレイク
+		case MS_MAGNUM:
 			calc_flag.hitrate = calc_flag.hitrate*(100+10*skill_lv)/100;
 			break;
 		case KN_AUTOCOUNTER:		// オートカウンター
@@ -1394,6 +1399,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case GS_SPREADATTACK:		// スプレッドアタック
 		case NJ_HUUMA:			// 風魔手裏剣投げ
 		case NJ_TATAMIGAESHI:		// 畳返し
+		case MA_DOUBLE:
+		case MA_SHOWER:
+		case MA_CHARGEARROW:
+		case MA_SHARPSHOOTING:
+		case ML_SPIRALPIERCE:
 			calc_flag.dist = 1;
 			break;
 		case AS_VENOMKNIFE:		// ベナムナイフ
@@ -1547,9 +1557,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		/* 12．スキル修正１（攻撃力倍加系）*/
 		switch( skill_num ) {
 		case SM_BASH:		// バッシュ
+		case MS_BASH:
 			DMG_FIX( 100+30*skill_lv, 100 );
 			break;
 		case SM_MAGNUM:		// マグナムブレイク
+		case MS_MAGNUM:
 			if(!wflag) {	// 内周
 				DMG_FIX( 100+20*skill_lv, 100 );
 			} else {	// 外周
@@ -1560,6 +1572,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100+50*skill_lv, 100 );
 			break;
 		case AC_DOUBLE:		// ダブルストレイフィング
+		case MA_DOUBLE:
 			if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
@@ -1578,6 +1591,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				src_sd->state.arrow_atk = 1;
 			break;
 		case AC_SHOWER:		// アローシャワー
+		case MA_SHOWER:
 			if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
@@ -1588,6 +1602,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.blewcount = 0;
 			break;
 		case AC_CHARGEARROW:	// チャージアロー
+		case MA_CHARGEARROW:
 			if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
@@ -1642,6 +1657,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.blewcount = 0;
 			break;
 		case KN_PIERCE:		// ピアース
+		case ML_PIERCE:
 			wd.div_ = t_size+1;
 			DMG_FIX( (100+10*skill_lv) * wd.div_, 100 );
 			break;
@@ -1653,6 +1669,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100+50*skill_lv, 100 );
 			break;
 		case KN_BRANDISHSPEAR:	// ブランディッシュスピア
+		case ML_BRANDISH:
 			{
 				int rate = 100+20*skill_lv;
 				if(wflag == 1) {
@@ -1675,6 +1692,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case KN_BOWLINGBASH:	// ボウリングバッシュ
+		case MS_BOWLINGBASH:
 			DMG_FIX( 100+40*skill_lv, 100 );
 			wd.blewcount = 0;
 			break;
@@ -1869,6 +1887,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 200+100*skill_lv, 100 );
 			break;
 		case LK_SPIRALPIERCE:	// スパイラルピアース
+		case ML_SPIRALPIERCE:
 			DMG_FIX( 80+40*skill_lv, 100 );
 			break;
 		case LK_HEADCRUSH:	// ヘッドクラッシュ
@@ -1886,6 +1905,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			calc_flag.nocardfix = 1;
 			break;
 		case SN_SHARPSHOOTING:	// シャープシューティング
+		case MA_SHARPSHOOTING:
 			DMG_FIX( 200+50*skill_lv, 100 );
 			break;
 		case CG_ARROWVULCAN:	// アローバルカン
@@ -3237,6 +3257,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	switch(skill_num)
 	{
 	case HT_LANDMINE:	// ランドマイン
+	case MA_LANDMINE:
 		mid.damage = skill_lv*(dex+75)*(100+int_)/100;
 		break;
 

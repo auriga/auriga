@@ -1,4 +1,23 @@
 ----------------------------------------
+//0331 [2007/09/13] by Rayce
+
+・以下の傭兵スキルを実装（battle.c, merc.c, skill.c, status.c, unit.c）
+　ただしステータス異常は適当だったり未実装だったりします
+	MS_BASH, MS_MAGNUM, MS_BOWLINGBASH, MS_PARRYING, MS_REFLECTSHIELD, MS_BERSERK,
+	MA_DOUBLE, MA_SHOWER, MA_CHARGEARROW, MA_SHARPSHOOTING,
+	MA_SKIDTRAP, MA_LANDMINE, MA_SANDMAN, MA_FREEZINGTRAP, MA_REMOVETRAP,
+	ML_PIERCE, ML_BRANDISH, ML_SPIRALPIERCE, ML_DEFENDER, ML_AUTOGUARD,
+	MER_MAGNIFICAT, MER_SIGHT, MER_PROVOKE, MER_AUTOBERSERK, MER_DECAGI,
+	MER_LEXDIVINA, MER_ESTIMATION
+
+・傭兵のスキル一覧が消えてしまう問題を暫定的に修正（clif.c, merc.c, skill.c, status.c）
+	clif_send_mercstatus() を送信するとスキル一覧が消えるみたいなので、clif_send_mercstatus()
+	の後には必ず clif_mercskillinfoblock() を送信するようにしています
+
+・merc_calc_status() に適当に状態異常判定を追加（merc.c）
+・pc_checkoverhp() および pc_checkoversp() をstaticに変更（pc.*）
+
+----------------------------------------
 //0330 [2007/09/12] by Rayce
 
 ・オートバーサークの処理方法がパッシブスキルだった頃のままだったので修正（clif.c, status.c）

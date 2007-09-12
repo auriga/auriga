@@ -9637,6 +9637,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_send_mercdata(sd);
 		clif_send_mercstatus(sd,1);
 		clif_send_mercstatus(sd,0);
+		clif_mercskillinfoblock(sd);
 	}
 
 	if(sd->state.connect_new) {

@@ -2234,6 +2234,9 @@ int unit_free(struct block_list *bl, int clrtype)
 		struct merc_data *mcd = (struct merc_data*)bl;
 		struct map_session_data *sd = mcd->msd;
 
+		if(mcd->sc_data && mcd->sc_data[SC_BERSERK].timer != -1) // バーサーク中の終了はHPを100に
+			mcd->status.hp = 100;
+
 		status_change_clear(&mcd->bl,1);			// ステータス異常を解除する
 		if(sd && sd->mcd) {
 			merc_employ_timer_delete(sd->mcd);

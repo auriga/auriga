@@ -5146,13 +5146,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = val1 / 2;	// Flee上昇率
 			break;
 		case SC_BERSERK:		/* バーサーク */
+			unit_heal(bl,0,-status_get_sp(bl));
 			if(sd) {
-				sd->status.sp = 0;
-				clif_updatestatus(sd,SP_SP);
 				clif_status_change(bl,SI_INCREASEAGI,1);	// アイコン表示
-			} else if(mcd) {
-				mcd->status.sp = 0;
-				clif_send_mercstatus(mcd->msd,0);
 			}
 			tick = 1000;
 			calc_flag = 1;
@@ -5518,6 +5514,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		} else if(mcd) {
 			merc_calc_status(mcd);
 			clif_send_mercstatus(mcd->msd,0);
+			clif_mercskillinfoblock(mcd->msd);
 		}
 	}
 	// 計算後に走らせる
@@ -6139,6 +6136,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		if(calc_flag) {
 			merc_calc_status(mcd);
 			clif_send_mercstatus(mcd->msd,0);
+			clif_mercskillinfoblock(mcd->msd);
 		}
 	}
 
@@ -6295,7 +6293,10 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 {
 	int type = data;
 	struct block_list *bl;
-	struct map_session_data *sd = NULL;
+	struct map_session_data *sd  = NULL;
+	struct mob_data         *md  = NULL;
+	struct homun_data       *hd  = NULL;
+	struct merc_data        *mcd = NULL;
 	struct status_change *sc_data;
 
 	if(type < 0)
@@ -6306,8 +6307,10 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 
 	nullpo_retr(0, sc_data = status_get_sc_data(bl));
 
-	if(bl->type == BL_PC)
-		sd = (struct map_session_data *)bl;
+	sd  = BL_DOWNCAST( BL_PC,   bl );
+	md  = BL_DOWNCAST( BL_MOB,  bl );
+	hd  = BL_DOWNCAST( BL_HOM,  bl );
+	mcd = BL_DOWNCAST( BL_MERC, bl );
 
 	if(sc_data[type].timer != tid) {
 		if(battle_config.error_log)
@@ -6406,7 +6409,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 
 	case SC_PROVOKE:	/* プロボック/オートバーサーク */
 		if(sc_data[type].val2 != 0) {	/* オートバーサーク（１秒ごとにHPチェック） */
-			if(sd && sd->status.hp > sd->status.max_hp>>2)	/* 停止 */
+			if(status_get_hp(bl) > status_get_max_hp(bl)>>2)	/* 停止 */
 				break;
 			sc_data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 			return 0;
@@ -6477,17 +6480,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			int hp = status_get_max_hp(bl);
 			if((++sc_data[type].val4)%5 == 0 && status_get_hp(bl) > hp>>2) {
 				hp = (hp < 100)? 1: hp/100;
-				if(sd) {
-					pc_heal(sd,-hp,0);
-				} else if(bl->type == BL_MOB) {
-					struct mob_data *md = (struct mob_data *)bl;
-					if(md)
-						md->hp -= hp;
-				} else if(bl->type == BL_HOM) {
-					struct homun_data *hd = (struct homun_data *)bl;
-					if(hd)
-						homun_heal(hd,-hp,0);
-				}
+				unit_heal(bl,-hp,0);
 			}
 			sc_data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 			return 0;
@@ -6525,10 +6518,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 	case SC_BLEED:
 		if(--sc_data[type].val3 > 0) {
 			int dmg = atn_rand()%600 + 200;
-			if(bl->type == BL_MOB) {
-				struct mob_data *md = (struct mob_data *)bl;
-				if(md)
-					md->hp = (md->hp - dmg < 50)? 50: md->hp - dmg;	// mobはHP50以下にならない
+			if(md) {
+				// mobはHP50以下にならない
+				md->hp = (md->hp - dmg < 50)? 50: md->hp - dmg;
 			} else {
 				unit_heal(bl, -dmg, 0);
 			}
@@ -6638,16 +6630,28 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 		}
 		break;
 	case SC_BERSERK:		/* バーサーク */
-		if(sd) {		/* HPが100以上なら継続 */
-			if((sd->status.hp - (sd->status.max_hp*5)/100) > 100) {
-				sd->status.hp -= (sd->status.max_hp*5)/100;
-				clif_updatestatus(sd,SP_HP);
+		{
+			int dmg = (int)((atn_bignumber)status_get_max_hp(bl) * 5 / 100);
+			if(status_get_hp(bl) - dmg > 100) {
+				if(sd) {
+					sd->status.hp -= dmg;
+					clif_updatestatus(sd,SP_HP);
+				} else if(hd) {
+					hd->status.hp -= dmg;
+					clif_send_homstatus(hd->msd,0);
+				} else if(mcd) {
+					mcd->status.hp -= dmg;
+					clif_send_mercstatus(mcd->msd,0);
+					clif_mercskillinfoblock(mcd->msd);
+				}
 				sc_data[type].timer = add_timer(	/* タイマー再設定 */
 					10000+tick, status_change_timer,
 					bl->id, data);
 				return 0;
 			}
-			sd->status.hp = 100;
+			if(sd)       sd->status.hp  = 100;
+			else if(hd)  hd->status.hp  = 100;
+			else if(mcd) mcd->status.hp = 100;
 		}
 		break;
 	case SC_NOCHAT:			/* チャット禁止状態 */
@@ -6663,19 +6667,16 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 		}
 		break;
 	case SC_SELFDESTRUCTION:		/* 自爆 */
-		if(bl->type == BL_MOB) {
-			struct mob_data *md = (struct mob_data *)bl;
-			if(md && unit_iscasting(&md->bl) && md->state.special_mob_ai > 2 && md->mode&0x1 && md->speed > 0) {
-				md->speed -= 5;
-				if(md->speed <= 0)
-					md->speed = 1;
-				md->dir = sc_data[type].val4;
-				unit_walktodir(&md->bl,1);	// 速度が変わるので毎回呼び出す
+		if(md && unit_iscasting(&md->bl) && md->state.special_mob_ai > 2 && md->mode&0x1 && md->speed > 0) {
+			md->speed -= 5;
+			if(md->speed <= 0)
+				md->speed = 1;
+			md->dir = sc_data[type].val4;
+			unit_walktodir(&md->bl,1);	// 速度が変わるので毎回呼び出す
 
-				/* タイマー再設定 */
-				sc_data[type].timer = add_timer(100+tick, status_change_timer, bl->id, data);
-				return 0;
-			}
+			/* タイマー再設定 */
+			sc_data[type].timer = add_timer(100+tick, status_change_timer, bl->id, data);
+			return 0;
 		}
 		break;
 	case SC_BOSSMAPINFO:			/* 凸面鏡 */
@@ -6715,7 +6716,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 		break;
 	}
 
-	if(sd && !unit_isdead(&sd->bl) && sd->eternal_status_change[type] > 0)
+	if(sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
 	{
 		sc_data[type].timer = add_timer(	/* タイマー再設定 */
 			sd->eternal_status_change[type]+tick, status_change_timer,
