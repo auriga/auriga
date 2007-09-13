@@ -255,15 +255,18 @@ void party_recv_info(struct party *sp)
 void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 {
 	struct party *p;
-	int i, flag = 0;
+	int i, empty = 0;
 
 	nullpo_retv(sd);
-	nullpo_retv(tsd);
 
 	p = party_search(sd->status.party_id);
 	if(p == NULL)
 		return;
 
+	if(tsd == NULL) {	// 相手が見つからない
+		clif_party_inviteack(sd,"",7);
+		return;
+	}
 	if(tsd->state.waitingdisconnect) {	// 相手が切断待ち
 		clif_party_inviteack(sd,tsd->status.name,1);
 		return;
@@ -278,9 +281,14 @@ void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 		clif_party_inviteack(sd,tsd->status.name,0);
 		return;
 	}
-	for(i=0; i<MAX_PARTY; i++) {	// 同アカウント確認
+	for(i=0; i<MAX_PARTY; i++) {
+		if(p->member[i].account_id == sd->status.account_id &&
+		   strncmp(p->member[i].name, sd->status.name, 24) == 0 &&
+		   p->member[i].leader == 0)
+			return;		// 要請者がリーダーではない（hacker?）
+
 		if(p->member[i].account_id <= 0) {
-			flag = 1;
+			empty = 1;
 		} else if(p->member[i].account_id == tsd->status.account_id) {
 			if(battle_config.party_join_limit) {
 				clif_party_inviteack(sd,tsd->status.name,4);
@@ -292,11 +300,14 @@ void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 			}
 		}
 	}
-	if(flag == 0) {	// 定員オーバー
+	if(!empty) {	// 定員オーバー
 		clif_party_inviteack(sd,tsd->status.name,3);
 		return;
 	}
-
+	if(tsd->state.refuse_partyinvite) {	// 相手が勧誘拒否中
+		clif_party_inviteack(sd,tsd->status.name,5);
+		return;
+	}
 	if(battle_config.party_invite_range_check) {	// 相手のMAPと距離を確認
 		if(sd->bl.m != tsd->bl.m || unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE) {
 			clif_party_inviteack(sd,tsd->status.name,1);
@@ -307,7 +318,7 @@ void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 	tsd->party_invite         = sd->status.party_id;
 	tsd->party_invite_account = sd->status.account_id;
 
-	clif_party_invite(sd,tsd);
+	clif_party_invite(sd,tsd,p->name);
 
 	return;
 }
@@ -361,7 +372,7 @@ void party_member_added(int party_id, int account_id, unsigned char flag, const 
 {
 	struct map_session_data *sd = map_id2sd(account_id),*sd2;
 
-	if(sd==NULL){
+	if(sd == NULL) {
 		if(flag == 0) {
 			if(battle_config.error_log)
 				printf("party: member added error %d is not online\n",account_id);
@@ -369,21 +380,21 @@ void party_member_added(int party_id, int account_id, unsigned char flag, const 
 		}
 		return;
 	}
-	sd2=map_id2sd(sd->party_invite_account);
-	sd->party_invite=0;
-	sd->party_invite_account=0;
+	sd2 = map_id2sd(sd->party_invite_account);
+	sd->party_invite         = 0;
+	sd->party_invite_account = 0;
 
-	if(flag==1){	// 失敗
-		if( sd2!=NULL )
+	if(flag == 1) {	// 失敗
+		if(sd2)
 			clif_party_inviteack(sd2,sd->status.name,0);
 		return;
 	}
 
 	// 成功
-	sd->party_sended=0;
-	sd->status.party_id=party_id;
+	sd->party_sended    = 0;
+	sd->status.party_id = party_id;
 
-	if( sd2!=NULL)
+	if(sd2)
 		clif_party_inviteack(sd2,sd->status.name,2);
 
 	// いちおう競合確認

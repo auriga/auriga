@@ -296,6 +296,7 @@ struct map_session_data {
 		unsigned guild_creating : 1;
 		unsigned homun_creating : 1;
 		unsigned merc_creating : 1;
+		unsigned refuse_partyinvite : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;

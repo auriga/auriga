@@ -14,6 +14,13 @@ echo vc_make.bat - Auriga makefile for Visual C++
 set __VCVER__=7
 
 rem ----------------------------------------------------------------
+rem パケット定義
+rem 2007-09-04aSakexe: 10
+rem 2007-07-11aSakexe:  9
+rem 2007-02-12aSakexe:  8
+set __PACKETDEF__=/D "PACKETVER=10" /D "NEW_006b"
+
+rem ----------------------------------------------------------------
 rem コンパイラごとの設定（自分の環境にあうもののコメントアウトをはずす）
 
 rem ---- VC++ Toolkit 2003 の設定 / 必要ならコメントアウトをはずす
@@ -160,7 +167,7 @@ if "%__ZLIB__%"=="" goto NOZLIB1
 set __LINKZLIB__=../common/zlib/*.obj
 :NOZLIB1
 
-set __opt1__=/I "../common/zlib/" /I "../common/" /D "PACKETVER=9" /D "NEW_006b" /D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS" /D "_CRT_SECURE_NO_DEPRECATE" %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__% %__DEBUG_VARS__%
+set __opt1__=/I "../common/zlib/" /I "../common/" /D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS" /D "_CRT_SECURE_NO_DEPRECATE" %__PACKETDEF__% %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__% %__DEBUG_VARS__%
 set __opt2__=/DEBUG %__FIXOPT2__% user32.lib %__LINKZLIB__% ../common/*.obj *.obj
 
 rem ----------------------------------------------------------------

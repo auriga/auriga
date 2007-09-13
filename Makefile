@@ -5,7 +5,8 @@ CC = gcc -pipe
 # Detecting gcc version
 GCC_VERSION = $(shell $(CC) -v 2>&1 | grep version | cut -d' ' -f3  | cut -d'.' -f1)
 
-PACKETDEF = -DPACKETVER=9 -DNEW_006b
+PACKETDEF = -DPACKETVER=10 -DNEW_006b
+#PACKETDEF = -DPACKETVER=9 -DNEW_006b
 #PACKETDEF = -DPACKETVER=8 -DNEW_006b
 #PACKETDEF = -DPACKETVER=7 -DNEW_006b
 #PACKETDEF = -DPACKETVER=6 -DNEW_006b
