@@ -9310,6 +9310,9 @@ static void clif_feel_saveack(struct map_session_data *sd, int lv)
 	if(lv < 0 || lv > 2)
 		return;
 
+	if(pc_checkskill(sd,SG_FEEL) < lv + 1)
+		return;
+
 	if(battle_config.save_feel_map)
 		strncpy(sd->status.feel_map[lv], map[sd->bl.m].name, 24);
 	sd->feel_index[lv] = sd->bl.m;
@@ -10396,7 +10399,9 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 
 	switch(RFIFOB(fd,GETPACKETPOS(cmd,0))){ // restarttype
 	case 0x00: // 0: restart game when character died
-		pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,2);
+		if(unit_isdead(&sd->bl)) {
+			pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,2);
+		}
 		break;
 	case 0x01: // 1: request character select
 		if(unit_isdead(&sd->bl))
@@ -10407,15 +10412,15 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 			WFIFOSET(fd,packet_db[0x18b].len);
 			return;
 		}
-		if( sd->pd ) {
+		if(sd->pd) {
 			pet_lootitem_drop(sd->pd,sd);
-			unit_free( &sd->pd->bl, 0);
+			unit_free(&sd->pd->bl, 0);
 		}
-		if( sd->hd ) {
-			unit_free( &sd->hd->bl, 0);
+		if(sd->hd) {
+			unit_free(&sd->hd->bl, 0);
 		}
-		if( sd->mcd ) {
-			unit_free( &sd->mcd->bl, 0);
+		if(sd->mcd) {
+			unit_free(&sd->mcd->bl, 0);
 		}
 		unit_free(&sd->bl, 2);
 		chrif_save(sd);
@@ -12129,7 +12134,7 @@ static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int 
 static void clif_parse_GuildChangePositionInfo(int fd,struct map_session_data *sd, int cmd)
 {
 	struct guild *g;
-	int i;
+	int i, n, len;
 
 	nullpo_retv(sd);
 
@@ -12139,8 +12144,14 @@ static void clif_parse_GuildChangePositionInfo(int fd,struct map_session_data *s
 	if (strcmp(sd->status.name, g->master))
 		return;
 
-	for(i=4;i<RFIFOW(fd,GETPACKETPOS(cmd,0));i+=40){ // {<index>.l <mode>.l <index>.l <exp_mode>.l <nickname>.24B}.40B*
-		guild_change_position(sd->status.guild_id, RFIFOL(fd,i), RFIFOL(fd,i+4), RFIFOL(fd,i+12), RFIFOP(fd,i+16));
+	len = GETPACKETPOS(cmd,1);
+	n   = (RFIFOW(fd,GETPACKETPOS(cmd,0)) - len) / 40;
+	if(n <= 0)
+		return;
+
+	for(i = 0; i < n; i++) {	// {<index>.l <mode>.l <index>.l <exp_mode>.l <nickname>.24B}.40B*
+		guild_change_position(sd->status.guild_id, RFIFOL(fd,len), RFIFOL(fd,len+4), RFIFOL(fd,len+12), RFIFOP(fd,len+16));
+		len += 40;
 	}
 
 	return;
@@ -12152,8 +12163,8 @@ static void clif_parse_GuildChangePositionInfo(int fd,struct map_session_data *s
  */
 static void clif_parse_GuildChangeMemberPosition(int fd,struct map_session_data *sd, int cmd)
 {
-	int i;
 	struct guild *g;
+	int i, n, len;
 
 	nullpo_retv(sd);
 
@@ -12163,8 +12174,14 @@ static void clif_parse_GuildChangeMemberPosition(int fd,struct map_session_data 
 	if (strcmp(sd->status.name, g->master))
 		return;
 
-	for(i=4;i<RFIFOW(fd,GETPACKETPOS(cmd,0));i+=12){ // {<accID>.l <charaID>.l <index>.l}.12B*
-		guild_change_memberposition(sd->status.guild_id, RFIFOL(fd,i), RFIFOL(fd,i+4), RFIFOL(fd,i+8));
+	len = GETPACKETPOS(cmd,1);
+	n   = (RFIFOW(fd,GETPACKETPOS(cmd,0)) - len) / 12;
+	if(n <= 0)
+		return;
+
+	for(i = 0; i < n; i++) {	// {<accID>.l <charaID>.l <index>.l}.12B*
+		guild_change_memberposition(sd->status.guild_id, RFIFOL(fd,len), RFIFOL(fd,len+4), RFIFOL(fd,len+8));
+		len += 12;
 	}
 
 	return;
@@ -12190,10 +12207,19 @@ static void clif_parse_GuildRequestEmblem(int fd,struct map_session_data *sd, in
  */
 static void clif_parse_GuildChangeEmblem(int fd,struct map_session_data *sd, int cmd)
 {
-	int offset = (int)GETPACKETPOS(cmd,1);
-	int len    = (int)RFIFOW(fd,GETPACKETPOS(cmd,0)) - offset;
+	int offset, len;
+	struct guild *g;
 
-	guild_change_emblem(sd,len,RFIFOP(fd,offset));
+	// only guild master can change emblem.
+	if (sd->status.guild_id == 0 || (g = guild_search(sd->status.guild_id)) == NULL)
+		return;
+	if (strcmp(sd->status.name, g->master))
+		return;
+
+	offset = GETPACKETPOS(cmd,1);
+	len    = RFIFOW(fd,GETPACKETPOS(cmd,0)) - offset;
+
+	guild_change_emblem(sd->status.guild_id,len,RFIFOP(fd,offset));
 }
 
 /*==========================================
@@ -12945,7 +12971,7 @@ static void clif_parse_SendMail(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	bodylen = RFIFOW(fd,GETPACKETPOS(cmd,0))-69;
+	bodylen = RFIFOW(fd,GETPACKETPOS(cmd,0)) - GETPACKETPOS(cmd,3) - 1;	// \0は削る
 	mail_checkmail(sd, RFIFOP(fd,GETPACKETPOS(cmd,1)), RFIFOP(fd,GETPACKETPOS(cmd,2)), RFIFOP(fd,GETPACKETPOS(cmd,3)), bodylen);
 
 	return;

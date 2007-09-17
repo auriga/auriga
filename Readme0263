@@ -1,4 +1,34 @@
 ----------------------------------------
+//0336 [2007/09/18] by Rayce
+
+・hacker対策のためのチェック強化（clif.c, chat.c, friend.c, guild.c, vending.c）
+	-> 太陽と月と星の感情によるMAPセーブ時に、スキルを取得しているかどうかをチェックする
+	-> 死亡時にリスタートボタンを押した際にプレイヤーが死亡しているかどうかをチェックする
+	-> チャット参加時に視界内に居るかどうかをチェックする
+	-> 友達要請時に同一MAPか、視界内か、自分に対する要請でないかチェックする
+	-> ギルドの役職変更時にidxの範囲チェックをする
+	-> ギルド同盟/敵対要請時に同一MAPか、視界内か、同じギルドに対する要請でないか、要請者が
+	   ギルドマスターかをチェックする
+	-> 露店アイテムリスト要求時に同一MAPか、視界内かチェックする
+	-> 露店アイテム購入時に同一MAPか、視界内かチェックする
+
+・ギルドに関する修正（clif.c, guild.*）
+	-> ギルドエンブレム変更時のマスターチェックはguild.cではなくclif.cで行うように変更
+	-> guild_invite() で視界内に居るかどうかのチェックは　map_countnearpc() ではなく
+	   unit_distance() を使うように変更
+	-> guild_member_added() でサーバクラッシュする可能性を修正
+	-> guild_send_xy_timer() で可変引数は不要なのでtickを削除
+	-> guild_change_position() で guild_search() を実行しないように修正
+	   ギルドの不正チェックは既にclif.cで行っているので不要
+
+・以下の関数で出来る限り GETPACKETPOS() を利用するように修正（clif.c, db/packet_db.txt）
+	clif_parse_GuildChangePositionInfo()
+	clif_parse_GuildChangeMemberPosition()
+	clif_parse_SendMail()
+
+・0335に添付し忘れていたconf/battle_auriga.confを同梱
+
+----------------------------------------
 //0335 [2007/09/18] by Rayce
 
 ・clif_parse_HomMercActionRequest() を少し修正（clif.c）

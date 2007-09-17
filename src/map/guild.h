@@ -68,7 +68,7 @@ void guild_change_position(int guild_id, int idx, int mode, int exp_mode, const 
 void guild_position_changed(int guild_id, int idx, struct guild_position *p);
 void guild_change_notice(int guild_id, const char *mes1, const char *mes2);
 void guild_notice_changed(int guild_id, const char *mes1, const char *mes2);
-void guild_change_emblem(struct map_session_data *sd, int len, const char *data);
+void guild_change_emblem(int guild_id, int len, const char *data);
 void guild_emblem_changed(int len, int guild_id, int emblem_id, const char *data);
 void guild_send_message(struct map_session_data *sd, char *mes, int len);
 void guild_recv_message(int guild_id, int account_id, char *mes, int len);

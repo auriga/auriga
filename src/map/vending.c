@@ -26,11 +26,10 @@
 */
 void vending_closevending(struct map_session_data *sd)
 {
-
 	nullpo_retv(sd);
 
 	sd->vender_id = 0;
-	sd->vend_num = 0; // on principle
+	sd->vend_num  = 0; // on principle
 	clif_closevendingboard(&sd->bl,-1);
 
 	return;
@@ -46,12 +45,17 @@ void vending_vendinglistreq(struct map_session_data *sd,int id)
 
 	nullpo_retv(sd);
 
-	if( (vsd=map_id2sd(id)) == NULL )
+	if((vsd = map_id2sd(id)) == NULL)
 		return;
 	if(vsd->vender_id == 0 || vsd->deal_mode != 0)
 		return;
 	if(sd->vender_id != 0 || sd->deal_mode != 0)
 		return;
+	if(sd->bl.m != vsd->bl.m)
+		return;
+	if(unit_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.x) > AREA_SIZE)
+		return;
+
 	clif_vendinglist(sd, vsd);
 
 	return;
@@ -78,10 +82,14 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 		return;
 	if (vsd->vender_id == sd->bl.id)
 		return;
+	if (sd->bl.m != vsd->bl.m)
+		return;
+	if (unit_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.x) > AREA_SIZE)
+		return;
 
 	// check number of buying items
 	if (len < 8 + 4 || len > 8 + 4 * MAX_VENDING) {
-		clif_buyvending(sd, 0, 32767, 4); // not enough quantity (index and amount are unknown)
+		clif_buyvending(sd, 0, 0x7fff, 4); // not enough quantity (index and amount are unknown)
 		return;
 	}
 
@@ -132,8 +140,8 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 		if (vending[j].amount < amount) { // send more quantity is not a hack (an other player can have buy items just before)
 			clif_buyvending(sd, idx, vsd->vending[j].amount, 4); // not enough quantity
 			return;
-		} else
-			vending[j].amount -= amount;
+		}
+		vending[j].amount -= amount;
 
 		switch(pc_checkadditem(sd, vsd->status.cart[idx].nameid, amount)) {
 		case ADDITEM_EXIST:
@@ -148,13 +156,12 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 		}
 	}
 
-	// exchange zeny
-	//ゼニー支払い
+	// ゼニー支払い
 	pc_payzeny(sd, (int)z);
-	//税金を差し引く
+	// 税金を差し引く
 	if(battle_config.tax_rate)
-		z=z*(100-battle_config.tax_rate)/100;
-	//ゼニー受け取り
+		z = z * (100 - battle_config.tax_rate) / 100;
+	// ゼニー受け取り
 	pc_getzeny(vsd, (int)z);
 	// vending items
 	for(i = 0; 8 + 4 * i < len; i++) {
@@ -249,9 +256,9 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 				return;
 			}
 
-			if (sd->vending[i].value > battle_config.vending_max_value)
+			if (sd->vending[i].value > battle_config.vending_max_value) {
 				sd->vending[i].value = battle_config.vending_max_value;
-			else if (sd->vending[i].value < 0) { // hack
+			} else if (sd->vending[i].value < 0) { // hack
 				memset(&sd->vending[0], 0, sizeof(struct vending) * MAX_VENDING);
 				clif_skill_fail(sd, MC_VENDING, 0, 0);
 				return;
@@ -259,17 +266,16 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 		}
 
 		// shop can be opened
-
 		unit_stop_walking(&sd->bl, 1);
 		unit_stopattack(&sd->bl);
 
 		sd->vender_id = sd->bl.id;
-		sd->vend_num = i;
+		sd->vend_num  = i;
 		memset(sd->message, 0, sizeof(sd->message));
 		strncpy(sd->message, shop_title, 80);
-		if (clif_openvending(sd) > 0)
+		if (clif_openvending(sd) > 0) {
 			clif_showvendingboard(&sd->bl, shop_title, -1);
-		else {
+		} else {
 			sd->vender_id = 0;
 			sd->vend_num = 0; // on principle
 		}
@@ -277,4 +283,3 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 
 	return;
 }
-

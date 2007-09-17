@@ -11,6 +11,7 @@
 #include "battle.h"
 #include "nullpo.h"
 #include "atcommand.h"
+#include "unit.h"
 
 static struct dbt * online_db = NULL;
 
@@ -38,11 +39,18 @@ int friend_add_request( struct map_session_data *sd, char* name )
 	if( sd->friend_invite > 0 || tsd->friend_invite > 0 )
 		return 0;
 
-	sd->friend_invite = tsd->bl.id;
+	if(sd->bl.m != tsd->bl.m)
+		return 0;
+	if(unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE)
+		return 0;
+	if(sd->status.char_id == tsd->status.char_id)
+		return 0;
+
+	sd->friend_invite      = tsd->bl.id;
 	sd->friend_invite_char = tsd->status.char_id;
 	memcpy( sd->friend_invite_name, tsd->status.name, 24 );
 
-	tsd->friend_invite = sd->bl.id;
+	tsd->friend_invite      = sd->bl.id;
 	tsd->friend_invite_char = sd->status.char_id;
 	memcpy( tsd->friend_invite_name, sd->status.name, 24 );
 

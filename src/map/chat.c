@@ -10,6 +10,7 @@
 #include "clif.h"
 #include "chat.h"
 #include "npc.h"
+#include "unit.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -96,7 +97,7 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 	if((cd = map_id2cd(chatid)) == NULL)
 		return;
 
-	if(cd->bl.m != sd->bl.m || sd->vender_id || sd->joinchat) {
+	if(cd->bl.m != sd->bl.m || sd->vender_id || sd->joinchat || unit_distance(cd->bl.x,cd->bl.x,sd->bl.x,sd->bl.y) > AREA_SIZE) {
 		clif_joinchatfail(sd,3);
 		return;
 	}
@@ -197,7 +198,7 @@ int chat_leavechat(struct map_session_data *sd, unsigned char flag)
 			cd->usersd[i] = cd->usersd[i+1];
 		}
 		if(leavechar == 0 && (*cd->owner)->type == BL_PC) {
-			// PCのチャットなので所有者が抜けたので位置変更
+			// PCのチャットで所有者が抜けたので位置変更
 			cd->bl.x = cd->usersd[0]->bl.x;
 			cd->bl.y = cd->usersd[0]->bl.y;
 		}
@@ -298,7 +299,7 @@ void chat_kickchat(struct map_session_data *sd, char *kickusername)
 	if(cd == NULL || &sd->bl != (*cd->owner))
 		return;
 
-	for(i = 0;i < cd->users; i++) {
+	for(i = 0; i < cd->users; i++) {
 		if(strncmp(cd->usersd[i]->status.name, kickusername, 24) == 0) {
 			linkdb_insert(&cd->ban_list, (void*)cd->usersd[i]->status.char_id, (void*)1);
 			chat_leavechat(cd->usersd[i], 1);
