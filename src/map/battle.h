@@ -342,6 +342,7 @@ extern struct Battle_Config {
 	int allow_falconassault_elemet;
 	int allow_guild_invite_in_gvg;
 	int allow_guild_leave_in_gvg;
+	int allow_guild_alliance_in_agit;
 	int guild_skill_available;
 	int guild_hunting_skill_available;
 	int guild_skill_check_range;

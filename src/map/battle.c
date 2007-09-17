@@ -4927,6 +4927,7 @@ int battle_config_read(const char *cfgName)
 		{ "allow_falconassault_elemet",         &battle_config.allow_falconassault_elemet,         0        },
 		{ "allow_guild_invite_in_gvg",          &battle_config.allow_guild_invite_in_gvg,          0        },
 		{ "allow_guild_leave_in_gvg",           &battle_config.allow_guild_leave_in_gvg,           0        },
+		{ "allow_guild_alliance_in_agit",       &battle_config.allow_guild_alliance_in_agit,       0        },
 		{ "guild_skill_available",              &battle_config.guild_skill_available,              1        },
 		{ "guild_hunting_skill_available",      &battle_config.guild_hunting_skill_available,      1        },
 		{ "guild_skill_check_range",            &battle_config.guild_skill_check_range,            0        },

@@ -1,4 +1,22 @@
 ----------------------------------------
+//0335 [2007/09/18] by Rayce
+
+・clif_parse_HomMercActionRequest() を少し修正（clif.c）
+	クライアントを調べた限り、プレイヤーとは違い once attack しかありませんでした。
+	hacker対策として continueous attack の部分は削除します。
+
+・PK MAPに入ったときに赤文字の注意勧告が表示されるように修正（clif.c）
+・/acceptの存在を忘れていたので clif_parse_RefusePartyInvite() を修正（clif.c）
+・clif_parse_func[] を packetdb_readdb() の中に収める（clif.c）
+・clif.cの細かい整形（clif.c）
+
+・battle_auriga.confに allow_guild_alliance_in_agit を追加（battle.*, guild.c）
+	攻城戦中にギルドの同盟/敵対ができるかどうかを決めます
+	デフォルトはnoなので、攻城戦中なら如何なるMAPにおいても同盟/敵対の要請は不可です。
+・battle_auriga.confの allow_guild_invite_in_gvg と allow_guild_leave_in_gvg はGvG設定MAPで
+　あっても攻城戦中でないならギルドメンバーの加入/脱退が出来るように変更（guild.c）
+
+----------------------------------------
 //0334 [2007/09/14] by Rayce
 
 ・PACKETVERを10に引き上げる

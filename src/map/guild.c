@@ -44,7 +44,10 @@ struct eventlist {
 
 // ギルドのEXPキャッシュ
 struct guild_expcache {
-	int guild_id, account_id, char_id, exp;
+	int guild_id;
+	int account_id;
+	int char_id;
+	int exp;
 };
 
 struct {
@@ -190,7 +193,8 @@ static int guild_searchname_sub(void *key,void *data,va_list ap)
 
 struct guild* guild_searchname(char *str)
 {
-	struct guild *g=NULL;
+	struct guild *g = NULL;
+
 	numdb_foreach(guild_db,guild_searchname_sub,str,&g);
 
 	return g;
@@ -716,7 +720,7 @@ void guild_invite(struct map_session_data *sd, int account_id)
 
 	// GVGでは勧誘できない
 	if (!battle_config.allow_guild_invite_in_gvg) {
-		if (map[sd->bl.m].flag.gvg)
+		if (agit_flag && map[sd->bl.m].flag.gvg)
 			return;
 	}
 
@@ -870,7 +874,7 @@ void guild_leave(struct map_session_data *sd, int guild_id, int account_id, int 
 		return;
 
 	if (!battle_config.allow_guild_leave_in_gvg) {
-		if (map[sd->bl.m].flag.gvg)
+		if (agit_flag && map[sd->bl.m].flag.gvg)
 			return;
 	}
 
@@ -911,7 +915,7 @@ void guild_explusion(struct map_session_data *sd, int guild_id, int account_id, 
 			if(!battle_config.allow_guild_leave_in_gvg)
 			{
 				if(g->member[i].sd){
-					if(map[g->member[i].sd->bl.m].flag.gvg)
+					if(agit_flag && map[g->member[i].sd->bl.m].flag.gvg)
 						return;
 				}
 			}
@@ -1177,11 +1181,10 @@ void guild_send_message(struct map_session_data *sd, char *mes, int len)
  */
 void guild_recv_message(int guild_id, int account_id, char *mes, int len)
 {
-	struct guild *g;
+	struct guild *g = guild_search(guild_id);
 
-	if((g=guild_search(guild_id))==NULL)
-		return;
-	clif_guild_message(g,mes,len);
+	if(g)
+		clif_guild_message(g,mes,len);
 
 	return;
 }
@@ -1597,6 +1600,12 @@ void guild_reqalliance(struct map_session_data *sd, int account_id)
 	g[0]=guild_search(sd->status.guild_id);
 	g[1]=guild_search(tsd->status.guild_id);
 
+	// 攻城戦中では同盟できない
+	if (!battle_config.allow_guild_alliance_in_agit) {
+		if (agit_flag)
+			return;
+	}
+
 	if(g[0]==NULL || g[1]==NULL)
 		return;
 
@@ -1628,7 +1637,7 @@ void guild_reqalliance(struct map_session_data *sd, int account_id)
 }
 
 /*==========================================
- * ギルド勧誘への返答
+ * ギルド同盟勧誘への返答
  *------------------------------------------
  */
 void guild_reply_reqalliance(struct map_session_data *sd, int account_id, int flag)
@@ -1700,7 +1709,13 @@ void guild_delalliance(struct map_session_data *sd, int guild_id, int flag)
 {
 	nullpo_retv(sd);
 
-	intif_guild_alliance( sd->status.guild_id,guild_id,sd->status.account_id,0,flag|8 );
+	// 攻城戦中では解消できない
+	if(!battle_config.allow_guild_alliance_in_agit) {
+		if(agit_flag)
+			return;
+	}
+
+	intif_guild_alliance(sd->status.guild_id,guild_id,sd->status.account_id,0,flag|8);
 
 	return;
 }
@@ -1720,6 +1735,12 @@ void guild_opposition(struct map_session_data *sd, int char_id)
 	g=guild_search(sd->status.guild_id);
 	if(g==NULL || tsd==NULL)
 		return;
+
+	// 攻城戦中では敵対できない
+	if(!battle_config.allow_guild_alliance_in_agit) {
+		if(agit_flag)
+			return;
+	}
 
 	if( guild_get_alliance_count(g,1)>3 )	// 敵対数確認
 		clif_guild_oppositionack(sd,1);
