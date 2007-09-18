@@ -1177,7 +1177,7 @@ int intif_parse_WisMessage(int fd)
 				break;
 			}
 		}
-		if(sd->wis_all) {
+		if(sd->state.wis_all) {
 			intif_wis_replay(id,3);	// 受信拒否
 		} else if(j > 0) {
 			intif_wis_replay(id,2);	// 受信拒否

@@ -239,9 +239,9 @@ void party_recv_info(struct party *sp)
 
 	for(i=0;i<MAX_PARTY;i++){	// 設定情報の送信
 		sd = p->member[i].sd;
-		if(sd!=NULL && sd->party_sended==0){
+		if(sd!=NULL && sd->state.party_sended == 0){
 			clif_party_option(p,sd,0x100);
-			sd->party_sended=1;
+			sd->state.party_sended = 1;
 		}
 	}
 
@@ -391,8 +391,8 @@ void party_member_added(int party_id, int account_id, unsigned char flag, const 
 	}
 
 	// 成功
-	sd->party_sended    = 0;
-	sd->status.party_id = party_id;
+	sd->state.party_sended = 0;
+	sd->status.party_id    = party_id;
 
 	if(sd2)
 		clif_party_inviteack(sd2,sd->status.name,2);
@@ -481,8 +481,8 @@ void party_member_leaved(int party_id, int account_id, char *name)
 			}
 	}
 	if(sd!=NULL && sd->status.party_id==party_id && !strcmp(sd->status.name, name) ){
-		sd->status.party_id=0;
-		sd->party_sended=0;
+		sd->status.party_id    = 0;
+		sd->state.party_sended = 0;
 	}
 
 	return;
@@ -503,8 +503,8 @@ void party_broken(int party_id)
 	for(i=0;i<MAX_PARTY;i++){
 		if(p->member[i].sd!=NULL){
 			clif_party_leaved(p, p->member[i].sd, p->member[i].account_id, p->member[i].name, 0x10);
-			p->member[i].sd->status.party_id=0;
-			p->member[i].sd->party_sended=0;
+			p->member[i].sd->status.party_id    = 0;
+			p->member[i].sd->state.party_sended = 0;
 		}
 	}
 	numdb_erase(party_db,party_id);
@@ -703,7 +703,7 @@ void party_send_movemap(struct map_session_data *sd)
 
 	intif_party_changemap(sd,1);
 
-	if( sd->party_sended!=0 )	// もうパーティデータは送信済み
+	if( sd->state.party_sended != 0 )	// もうパーティデータは送信済み
 		return;
 
 	// 競合確認
@@ -716,7 +716,7 @@ void party_send_movemap(struct map_session_data *sd)
 			clif_party_main_info(p,sd->fd);
 			clif_party_info(p,sd->fd);
 			clif_party_option(p,sd,0x100);
-			sd->party_sended=1;
+			sd->state.party_sended = 1;
 		}
 	}
 

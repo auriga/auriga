@@ -108,13 +108,13 @@ int friend_add_reply( struct map_session_data *sd, int account_id, int char_id, 
 	sd->status.friend_data[sd->status.friend_num].char_id = tsd->status.char_id;
 	memcpy( sd->status.friend_data[sd->status.friend_num].name, tsd->status.name, 24 );
 	sd->status.friend_num++;
-	sd->friend_sended = 0;
+	sd->state.friend_sended = 0;
 
 	tsd->status.friend_data[tsd->status.friend_num].account_id = sd->bl.id;
 	tsd->status.friend_data[tsd->status.friend_num].char_id = sd->status.char_id;
 	memcpy( tsd->status.friend_data[tsd->status.friend_num].name, sd->status.name, 24 );
 	tsd->status.friend_num++;
-	tsd->friend_sended = 0;
+	tsd->state.friend_sended = 0;
 
 	// 追加通知
 	clif_friend_add_ack( sd->fd, tsd->bl.id, tsd->status.char_id, tsd->status.name, 0 );
@@ -139,7 +139,7 @@ static int friend_delete( struct map_session_data *sd, int account_id, int char_
 		if(frd && frd->account_id == account_id && frd->char_id == char_id )
 		{
 			sd->status.friend_num--;
-			sd->friend_sended = 0;
+			sd->state.friend_sended = 0;
 			memmove( frd, frd+1, sizeof(struct friend_data)* ( sd->status.friend_num - i ) );
 			clif_friend_del_ack( sd->fd, account_id, char_id );	// 通知
 			return 1;
@@ -206,7 +206,7 @@ int friend_send_info( struct map_session_data *sd )
 	if( !battle_config.serverside_friendlist )
 		return 0;
 
-	if(sd->friend_sended != 0)	//ログインのときにすでに送信済み
+	if(sd->state.friend_sended != 0)	// ログインのときにすでに送信済み
 		return 0;
 
 	// リスト送信
@@ -238,7 +238,7 @@ int friend_send_online( struct map_session_data *sd, int flag )
 	if( !battle_config.serverside_friendlist )
 		return 0;
 
-	if(flag==0 && sd->friend_sended != 0)	//ログインのときにすでに送信済み
+	if(flag==0 && sd->state.friend_sended != 0)	// ログインのときにすでに送信済み
 		return 0;
 
 	// オンライン情報を保存
@@ -260,7 +260,7 @@ int friend_send_online( struct map_session_data *sd, int flag )
 
 	// char 鯖へ通知
 	chrif_friend_online( sd, flag );
-	sd->friend_sended = 1;
+	sd->state.friend_sended = 1;
 
 	return 0;
 }

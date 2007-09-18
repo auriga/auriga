@@ -1,4 +1,31 @@
 ----------------------------------------
+//0337 [2007/09/19] by Rayce
+
+・086以降、緊急回避とディフェンスのスキル使用後ディレイが無くなっていたのを修正（skill.c）
+・clif_receive_mail() でバッファオーバーフローが発生する可能性を修正（clif.c）
+・ROメールに添付されたアイテムに刺さっているカードが見えるように修正（clif.c）
+
+・clif_res_sendmail_setappend() を mail_setitem() に統合する（clif.c, mail.*）
+・clif_parse_RefleshMailBox() でも添付アイテム用のデータを削除するようにしてみる（clif.c）
+
+・ROメールにアイテムを添付したときにメッセージが出ないように変更（clif.*, mail.c）
+	解析した限りにおいて clif_res_sendmail_setappend() は0x245ではなく0x255のパケットを
+	使うのが正しい仕様のようです。
+	アイテムのインデックスが必要になるので引数を1つ追加。
+	また添付不可能なアイテムを添付すると「このアイテムはメールに添付することができません」
+	のメッセージが出るようになっています。
+
+・ROメールに添付されたアイテムを受け取ったときにメッセージが出るように変更（clif.*, mail.c）
+	clif_mail_getappend() 追加、0x245を使います。
+	重量オーバーなどでアイテム取得できなかった時は「アイテムはメールにて保管されています」
+	のメッセージが出るようになっています。
+
+・mob_data構造体の並びを変更、8byteのメモリ節約（map.h）
+・map_session_data構造体から不要なメンバ server_tick を削除（clif.c, map.h）
+・map_session_data構造体の以下のメンバをstateに移動（map.h）
+	deal_mode, deal_locked, party_sended, guild_sended, friend_sended, wis_all, joinchat
+
+----------------------------------------
 //0336 [2007/09/18] by Rayce
 
 ・hacker対策のためのチェック強化（clif.c, chat.c, friend.c, guild.c, vending.c）

@@ -47,9 +47,9 @@ void vending_vendinglistreq(struct map_session_data *sd,int id)
 
 	if((vsd = map_id2sd(id)) == NULL)
 		return;
-	if(vsd->vender_id == 0 || vsd->deal_mode != 0)
+	if(vsd->vender_id == 0 || vsd->state.deal_mode != 0)
 		return;
-	if(sd->vender_id != 0 || sd->deal_mode != 0)
+	if(sd->vender_id != 0 || sd->state.deal_mode != 0)
 		return;
 	if(sd->bl.m != vsd->bl.m)
 		return;
@@ -210,7 +210,7 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 	if (shop_title[0] == '\0')
 		return;
 
-	if (sd->deal_mode != 0)
+	if (sd->state.deal_mode != 0)
 		return;
 
 	if (sd->npc_id)

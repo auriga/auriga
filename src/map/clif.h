@@ -313,6 +313,8 @@ void clif_openmailbox(const int fd);
 void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX]);
 void clif_receive_mail(struct map_session_data *sd,struct mail_data *md);
 void clif_res_sendmail(const int fd,int flag);
+void clif_res_sendmail_setappend(const int fd,int idx,int flag);
+void clif_mail_getappend(const int fd,int flag);
 void clif_arrive_newmail(const int fd,struct mail_data *md);
 void clif_deletemail_res(const int fd,int mail_num,int flag);
 

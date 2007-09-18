@@ -1775,7 +1775,7 @@ static void clif_servertick(struct map_session_data *sd)
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x7f;
-	WFIFOL(fd,2)=sd->server_tick;
+	WFIFOL(fd,2)=gettick();
 	WFIFOSET(fd,packet_db[0x7f].len);
 
 	return;
@@ -9052,7 +9052,21 @@ void clif_res_sendmail(const int fd,int flag)
  * アイテムが添付できましたとかできませんとか
  *------------------------------------------
  */
-static void clif_res_sendmail_setappend(const int fd,int flag)
+void clif_res_sendmail_setappend(const int fd,int idx,int flag)
+{
+	WFIFOW(fd,0) = 0x255;
+	WFIFOW(fd,2) = idx + 2;
+	WFIFOB(fd,4) = flag;
+	WFIFOSET(fd,packet_db[0x256].len);
+
+	return;
+}
+
+/*==========================================
+ * 添付アイテム取得
+ *------------------------------------------
+ */
+void clif_mail_getappend(const int fd,int flag)
 {
 	WFIFOW(fd,0) = 0x245;
 	WFIFOB(fd,2) = flag;
@@ -9084,16 +9098,14 @@ void clif_arrive_newmail(const int fd,struct mail_data *md)
  */
 void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
 {
-	int len,fd,view;
+	int fd,view;
 
 	nullpo_retv(sd);
 	nullpo_retv(md);
 
-	len=strlen(md->body);
-
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x242;
-	WFIFOW(fd,2)=len+99;
+	WFIFOW(fd,2)=md->body_size+99;
 	WFIFOL(fd,4)=md->mail_num;
 	memcpy(WFIFOP(fd, 8),md->title,40);
 	memcpy(WFIFOP(fd,48),md->char_name,24);
@@ -9107,13 +9119,12 @@ void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
 	WFIFOW(fd,86)=0;
 	WFIFOB(fd,88)=md->item.identify;
 	WFIFOB(fd,89)=md->item.attribute;
-	// refineやcardを入れても認識してくれない？
-	WFIFOW(fd,90)=0;	// 謎
-	WFIFOW(fd,92)=0;	// 謎
-	WFIFOW(fd,94)=0;	// 謎
-	WFIFOW(fd,96)=0;	// 謎
-	WFIFOB(fd,98)=0x22;
-	memcpy(WFIFOP(fd,99),md->body,len);
+	WFIFOB(fd,90)=0;	// 謎
+	WFIFOW(fd,91)=md->item.card[0];
+	WFIFOW(fd,93)=md->item.card[1];
+	WFIFOW(fd,95)=md->item.card[2];
+	WFIFOW(fd,97)=md->item.card[3];
+	memcpy(WFIFOP(fd,99),md->body,md->body_size);
 	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return;
@@ -9999,8 +10010,7 @@ static void clif_parse_TickSend(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-	sd->client_tick=RFIFOL(fd,GETPACKETPOS(cmd,0));
-	sd->server_tick=gettick();
+	sd->client_tick = RFIFOL(fd,GETPACKETPOS(cmd,0));
 	clif_servertick(sd);
 
 	return;
@@ -10019,7 +10029,7 @@ static void clif_parse_WalkToXY(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->chatID != 0 )
+	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->chatID != 0 )
 		return;
 	if( sd->state.storage_flag )
 		return;
@@ -10509,7 +10519,7 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->opt1 > 0 || sd->chatID ||
+	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->opt1 > 0 || sd->chatID ||
 	    sd->sc_data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc_data[SC_RUN].timer != -1 ||			// タイリギ
 	    sd->sc_data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中拾えない
@@ -10560,7 +10570,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 		printf("%s\n", output);
 	}
 
-	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->opt1 > 0 ||
+	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->opt1 > 0 ||
 	    DIFF_TICK(tick, sd->drop_delay_tick) < 0 ||
 	    sd->sc_data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc_data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
@@ -10609,7 +10619,7 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 	if( (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
-	    sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || (sd->opt1 > 0 && sd->opt1 != 6) || sd->state.storage_flag ||
+	    sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->opt1 > 0 && sd->opt1 != 6) || sd->state.storage_flag ||
 	    DIFF_TICK(gettick(), sd->item_delay_tick) < 0 || 	// アイテムディレイ
 	    sd->sc_data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
 	    sd->sc_data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
@@ -10651,7 +10661,7 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 
 	if ((sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
-	     sd->vender_id != 0 || sd->deal_mode != 0)
+	     sd->vender_id != 0 || sd->state.deal_mode != 0)
 		return;
 	if (sd->sc_data[SC_BLADESTOP].timer != -1 || sd->sc_data[SC_BERSERK].timer != -1)
 		return;
@@ -10712,7 +10722,7 @@ static void clif_parse_NpcClicked(int fd,struct map_session_data *sd, int cmd)
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->status.manner < 0)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->status.manner < 0)
 		return;
 	npc_click(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
 
@@ -10732,7 +10742,7 @@ static void clif_parse_NpcBuySellSelected(int fd,struct map_session_data *sd, in
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->status.manner < 0)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->status.manner < 0)
 		return;
 	npc_buysellsel(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),RFIFOB(fd,GETPACKETPOS(cmd,1)));
 
@@ -10754,7 +10764,7 @@ static void clif_parse_NpcBuyListSend(int fd,struct map_session_data *sd, int cm
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->status.manner < 0)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->status.manner < 0)
 		return;
 
 	n = (RFIFOW(fd,GETPACKETPOS(cmd,0)) - 4) /4;
@@ -10785,7 +10795,7 @@ static void clif_parse_NpcSellListSend(int fd,struct map_session_data *sd, int c
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->status.manner < 0)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->status.manner < 0)
 		return;
 
 	n = (RFIFOW(fd,GETPACKETPOS(cmd,0))-4) /4;
@@ -10935,7 +10945,7 @@ static void clif_parse_TradeRequest(int fd,struct map_session_data *sd, int cmd)
 
 	if(map[sd->bl.m].flag.notrade)
 		return;
-	if(sd->vender_id != 0 || sd->deal_mode != 0)
+	if(sd->vender_id != 0 || sd->state.deal_mode != 0)
 		return;
 
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 1)
@@ -11027,7 +11037,7 @@ static void clif_parse_PutItemToCart(int fd,struct map_session_data *sd, int cmd
 {
 	nullpo_retv(sd);
 
-	if (sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || pc_iscarton(sd) == 0)
+	if (sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || pc_iscarton(sd) == 0)
 		return;
 	pc_putitemtocart(sd,RFIFOW(fd,GETPACKETPOS(cmd,0))-2,RFIFOL(fd,GETPACKETPOS(cmd,1)));
 
@@ -11042,7 +11052,7 @@ static void clif_parse_GetItemFromCart(int fd,struct map_session_data *sd, int c
 {
 	nullpo_retv(sd);
 
-	if (sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || pc_iscarton(sd) == 0)
+	if (sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || pc_iscarton(sd) == 0)
 		return;
 	pc_getitemfromcart(sd,RFIFOW(fd,GETPACKETPOS(cmd,0))-2,RFIFOL(fd,GETPACKETPOS(cmd,1)));
 
@@ -11055,7 +11065,7 @@ static void clif_parse_GetItemFromCart(int fd,struct map_session_data *sd, int c
  */
 static void clif_parse_RemoveOption(int fd,struct map_session_data *sd, int cmd)
 {
-	if (sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0)
+	if (sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0)
 		return;
 	pc_setoption(sd,0);
 
@@ -11632,7 +11642,7 @@ static void clif_parse_InsertCard(int fd,struct map_session_data *sd, int cmd)
 
 	if (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid)
 		return;
-	if (sd->vender_id != 0 || sd->deal_mode != 0 || (sd->opt1 > 0 && sd->opt1 != 6))
+	if (sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->opt1 > 0 && sd->opt1 != 6))
 		return;
 	if (unit_isdead(&sd->bl))
 		return;
@@ -11722,7 +11732,7 @@ static void clif_parse_MoveToKafra(int fd,struct map_session_data *sd, int cmd)
 
 	nullpo_retv(sd);
 
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->sc_data[SC_BERSERK].timer != -1)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc_data[SC_BERSERK].timer != -1)
 		return;
 
 	idx    = RFIFOW(fd,GETPACKETPOS(cmd,0))-2;
@@ -11746,7 +11756,7 @@ static void clif_parse_MoveFromKafra(int fd,struct map_session_data *sd, int cmd
 
 	nullpo_retv(sd);
 
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || sd->sc_data[SC_BERSERK].timer != -1)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc_data[SC_BERSERK].timer != -1)
 		return;
 
 	idx    = RFIFOW(fd,GETPACKETPOS(cmd,0))-1;
@@ -11770,7 +11780,7 @@ static void clif_parse_MoveToKafraFromCart(int fd,struct map_session_data *sd, i
 
 	nullpo_retv(sd);
 
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || pc_iscarton(sd) == 0 || sd->sc_data[SC_BERSERK].timer != -1)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || pc_iscarton(sd) == 0 || sd->sc_data[SC_BERSERK].timer != -1)
 		return;
 
 	idx    = RFIFOW(fd,GETPACKETPOS(cmd,0))-2;
@@ -11794,7 +11804,7 @@ static void clif_parse_MoveFromKafraToCart(int fd,struct map_session_data *sd, i
 
 	nullpo_retv(sd);
 
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->deal_mode != 0 || pc_iscarton(sd) == 0 || sd->sc_data[SC_BERSERK].timer != -1)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || pc_iscarton(sd) == 0 || sd->sc_data[SC_BERSERK].timer != -1)
 		return;
 
 	idx    = RFIFOW(fd,GETPACKETPOS(cmd,0))-1;
@@ -12673,7 +12683,7 @@ static void clif_parse_wisexin(int fd,struct map_session_data *sd, int cmd)
 				flag = 0;
 			}
 		}
-		sd->wis_all = 0;
+		sd->state.wis_all = 0;
 	}
 	clif_wisexin(sd, type, flag);
 
@@ -12720,11 +12730,11 @@ static void clif_parse_wisall(int fd,struct map_session_data *sd, int cmd)
 	nullpo_retv(sd);
 
 	if(type==0) {	// exall
-		sd->wis_all = 1;
+		sd->state.wis_all = 1;
 	} else {	// inall
 		for(i=0;i<MAX_WIS_REFUSAL;i++)	// 拒否リストを空に
 			sd->wis_refusal[i][0]=0;
-		sd->wis_all = 0;
+		sd->state.wis_all = 0;
 	}
 	clif_wisall(sd, type, 0);
 }
@@ -13034,7 +13044,9 @@ static void clif_parse_RefleshMailBox(int fd,struct map_session_data *sd, int cm
 {
 	nullpo_retv(sd);
 
+	mail_removeitem(sd);
 	intif_mailbox(sd->status.char_id);
+
 	return;
 }
 
@@ -13046,16 +13058,13 @@ static void clif_parse_SendMailSetAppend(int fd,struct map_session_data *sd, int
 {
 	int idx    = RFIFOW(fd,GETPACKETPOS(cmd,0));
 	int amount = RFIFOL(fd,GETPACKETPOS(cmd,1));
-	int flag;
 
 	nullpo_retv(sd);
 
 	if (idx < 0 || amount < 0)
 		return;
-	flag = mail_setitem(sd, idx, amount);
 
-	if(flag >= 0)
-		clif_res_sendmail_setappend(sd->fd,flag);
+	mail_setitem(sd, idx, amount);
 	return;
 }
 
@@ -13204,7 +13213,7 @@ static void clif_parse_ChangeHomName(int fd,struct map_session_data *sd, int cmd
  */
 static void clif_parse_clientsetting(int fd,struct map_session_data *sd, int cmd)
 {
-	// RFIFOB(fd,0)	effectを切ってるかどうか
+	// RFIFOL(fd,GETPACKETPOS(cmd,0))	effectを切ってるかどうか
 	return;
 }
 

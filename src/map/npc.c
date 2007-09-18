@@ -910,7 +910,7 @@ int npc_pointshop_buy(struct map_session_data *sd,int nameid,int amount)
 	if(nd->bl.subtype != POINTSHOP)
 		return 1;
 
-	if(sd->deal_mode != 0)
+	if(sd->state.deal_mode != 0)
 		return 4;
 
 	if(nameid <= 0 || amount <= 0)

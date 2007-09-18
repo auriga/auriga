@@ -487,8 +487,8 @@ void guild_created(int account_id, int guild_id)
 		return;
 
 	if(guild_id>0) {
-		sd->status.guild_id = guild_id;
-		sd->guild_sended = 0;
+		sd->status.guild_id    = guild_id;
+		sd->state.guild_sended = 0;
 		clif_guild_created(sd,0);
 		if(battle_config.guild_emperium_check) {
 			int idx = pc_search_inventory(sd,714);
@@ -569,9 +569,9 @@ static void guild_check_member(struct guild *g)
 					}
 				}
 				if(f){
-					sd->status.guild_id=0;
-					sd->guild_sended=0;
-					sd->guild_emblem_id=0;
+					sd->status.guild_id    = 0;
+					sd->state.guild_sended = 0;
+					sd->guild_emblem_id    = 0;
 					if(battle_config.error_log)
 						printf("guild: check_member %d[%s] is not member\n",sd->status.account_id,sd->status.name);
 				}
@@ -663,11 +663,11 @@ void guild_recv_info(struct guild *sg)
 		if(before.skill_point != g->skill_point)
 			clif_guild_skillinfo(sd, g);	// スキル情報送信
 
-		if(sd->guild_sended == 0) {	// 未送信なら所属情報も送る
+		if(sd->state.guild_sended == 0) {	// 未送信なら所属情報も送る
 			clif_guild_belonginfo(sd,g);
 			clif_guild_notice(sd,g);
-			sd->guild_emblem_id = g->emblem_id;
-			sd->guild_sended    = 1;
+			sd->guild_emblem_id    = g->emblem_id;
+			sd->state.guild_sended = 1;
 		}
 	}
 
@@ -844,8 +844,8 @@ void guild_member_added(int guild_id, int account_id, int char_id, unsigned char
 	}
 
 	// 成功
-	sd->guild_sended    = 0;
-	sd->status.guild_id = guild_id;
+	sd->state.guild_sended = 0;
+	sd->status.guild_id    = guild_id;
 
 	if(sd2)
 		clif_guild_inviteack(sd2,2);
@@ -963,9 +963,9 @@ void guild_member_leaved(int guild_id, int account_id, int char_id, unsigned cha
 	if(sd!=NULL && sd->status.char_id==char_id && sd->status.guild_id==guild_id){
 		if(sd->state.storage_flag == 2)
 			storage_guild_storageclose(sd);
-		sd->status.guild_id=0;
-		sd->guild_emblem_id=0;
-		sd->guild_sended=0;
+		sd->status.guild_id    = 0;
+		sd->guild_emblem_id    = 0;
+		sd->state.guild_sended = 0;
 	}
 
 	return;
@@ -1060,7 +1060,7 @@ void guild_send_memberinfoshort(struct map_session_data *sd, unsigned char onlin
 		return;
 	}
 
-	if( sd->guild_sended!=0 )	// ギルド初期送信データは送信済み
+	if( sd->state.guild_sended != 0 )	// ギルド初期送信データは送信済み
 		return;
 
 	// 競合確認
@@ -1071,8 +1071,8 @@ void guild_send_memberinfoshort(struct map_session_data *sd, unsigned char onlin
 	if(sd->status.guild_id==g->guild_id){
 		clif_guild_belonginfo(sd,g);
 		clif_guild_notice(sd,g);
-		sd->guild_sended=1;
-		sd->guild_emblem_id=g->emblem_id;
+		sd->state.guild_sended = 1;
+		sd->guild_emblem_id    = g->emblem_id;
 	}
 
 	/*
@@ -1129,9 +1129,9 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
 		// ギルドのメンバー外なので追放扱いする
 		struct map_session_data *sd = map_id2sd(account_id);
 		if(sd && sd->status.char_id == char_id) {
-			sd->status.guild_id=0;
-			sd->guild_emblem_id=0;
-			sd->guild_sended=0;
+			sd->status.guild_id    = 0;
+			sd->guild_emblem_id    = 0;
+			sd->state.guild_sended = 0;
 		}
 		if(battle_config.error_log)
 			printf("guild: not found member %d,%d on %d[%s]\n",account_id,char_id,guild_id,g->name);
@@ -1928,8 +1928,8 @@ void guild_broken(int guild_id, unsigned char flag)
 				sd->state.storage_flag = 0;
 				clif_storageclose(sd);
 			}
-			sd->status.guild_id = 0;
-			sd->guild_sended    = 0;
+			sd->status.guild_id    = 0;
+			sd->state.guild_sended = 0;
 			clif_guild_broken(g->member[i].sd,0);
 		}
 	}

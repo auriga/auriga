@@ -17,30 +17,35 @@
  * アイテムやZenyを添付
  *------------------------------------------
  */
-int mail_setitem(struct map_session_data *sd,int idx,int amount)
+void mail_setitem(struct map_session_data *sd,int idx,int amount)
 {
-	nullpo_retr(-1, sd);
+	nullpo_retv(sd);
 
-	if(idx == 0) {
+	idx -= 2;
+	if(idx == -2) {
 		if(sd->status.zeny < amount)
 			amount = sd->status.zeny;
 		sd->mail_zeny = amount;
 	} else {
-		idx -= 2;
-		if(idx >= 0 && idx < MAX_INVENTORY) {
-			if(sd->mail_item.nameid > 0 && sd->mail_item.amount > amount) {
-				sd->mail_item.amount -= amount;
-			} else if(sd->status.inventory[idx].amount >= amount) {
-				if(itemdb_isdropable(sd->status.inventory[idx].nameid) == 0)
-					return 2;
-				memcpy(&sd->mail_item,&sd->status.inventory[idx],sizeof(struct item));
-				sd->mail_amount = amount;
-				return 0;
-			}
-			return 1;
+		if(idx < 0 || idx >= MAX_INVENTORY)
+			return;
+
+		if(sd->mail_item.nameid > 0 && sd->mail_item.amount > amount) {
+			sd->mail_item.amount -= amount;
+		} else if(sd->status.inventory[idx].amount >= amount && itemdb_isdropable(sd->status.inventory[idx].nameid)) {
+			memcpy(&sd->mail_item,&sd->status.inventory[idx],sizeof(struct item));
+			sd->mail_amount = amount;
+		} else {
+			// 添付不可
+			clif_res_sendmail_setappend(sd->fd,idx,1);
+			return;
 		}
 	}
-	return -1;
+
+	// 添付成功
+	clif_res_sendmail_setappend(sd->fd,idx,0);
+
+	return;
 }
 
 /*==========================================
@@ -54,6 +59,7 @@ int mail_removeitem(struct map_session_data *sd)
 	memset(&sd->mail_item,0,sizeof(struct item));
 	sd->mail_amount = 0;
 	sd->mail_zeny   = 0;
+
 	return 0;
 }
 
@@ -173,8 +179,12 @@ int mail_getappend(int account_id,int zeny,struct item *item)
 			sd->status.zeny += zeny;
 			clif_updatestatus(sd,SP_ZENY);
 		}
-		if(item->nameid > 0 && item->amount > 0)
-			pc_additem(sd,item,item->amount);
+		if(item->nameid > 0 && item->amount > 0) {
+			if(pc_additem(sd,item,item->amount))
+				clif_mail_getappend(sd->fd,2);
+			else
+				clif_mail_getappend(sd->fd,0);
+		}
 	}
 	return 0;
 }

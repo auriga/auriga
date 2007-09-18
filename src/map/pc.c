@@ -992,7 +992,6 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->s_class = pc_calc_base_job(sd->status.class_);
 
 	sd->speed = DEFAULT_WALK_SPEED;
-	sd->state.dead_sit = 0;
 	sd->dir = 0;
 	sd->head_dir = 0;
 	sd->state.auth = 1;
@@ -1002,8 +1001,6 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->invincible_timer = -1;
 	sd->view_size = 0;
 
-	sd->deal_locked = 0;
-	sd->deal_mode = 0;
 	sd->trade_partner = 0;
 
 	sd->inchealhptick = 0;
@@ -1016,13 +1013,11 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->inchealresthptick = 0;
 	sd->inchealrestsptick = 0;
 
-	sd->doridori_counter = 0;
+	sd->doridori_counter       = 0;
 	sd->tk_doridori_counter_hp = 0;
 	sd->tk_doridori_counter_sp = 0;
 
 	sd->spiritball = 0;
-	sd->wis_all = 0;
-
 	sd->repair_target = 0;
 
 	for(i=0; i<MAX_SKILL_LEVEL; i++)
@@ -1081,21 +1076,18 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->status.manner = 0;
 
 	// パーティー関係の初期化
-	sd->party_sended = 0;
 	sd->party_invite = 0;
 	sd->party_x      = -1;
 	sd->party_y      = -1;
 	sd->party_hp     = -1;
 
 	// ギルド関係の初期化
-	sd->guild_sended   = 0;
 	sd->guild_invite   = 0;
 	sd->guild_alliance = 0;
 	sd->guild_x        = -1;
 	sd->guild_y        = -1;
 
 	// 友達関係の初期化
-	sd->friend_sended = 0;
 	sd->friend_invite = 0;
 
 	sd->adopt_invite = 0;
@@ -1131,7 +1123,6 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->pvp_point = 0;
 	sd->pvp_timer = -1;
 
-	sd->joinchat = 0;
 	unit_dataset(&sd->bl);
 
 	// 通知

@@ -5622,11 +5622,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case HAMI_DEFENCE:		/* ディフェンス */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
-
-		// 主人にも
-		if(hd && hd->msd && !unit_isdead(&hd->msd->bl)) {
-			clif_skill_nodamage(src,&hd->msd->bl,skillid,skilllv,1);
-			status_change_start(&hd->msd->bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		if(hd) {
+			// 主人にも
+			if(hd->msd && !unit_isdead(&hd->msd->bl)) {
+				clif_skill_nodamage(src,&hd->msd->bl,skillid,skilllv,1);
+				status_change_start(&hd->msd->bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			}
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
 	case HAMI_BLOODLUST:		/* ブラッドラスト */

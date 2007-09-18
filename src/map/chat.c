@@ -41,7 +41,7 @@ void chat_createchat(struct map_session_data *sd, unsigned short limit, unsigned
 
 	nullpo_retv(sd);
 
-	if(sd->joinchat && chat_leavechat(sd,0))
+	if(sd->state.joinchat && chat_leavechat(sd,0))
 		return;
 
 	cd = (struct chat_data *)aCalloc(1,sizeof(struct chat_data));
@@ -75,8 +75,8 @@ void chat_createchat(struct map_session_data *sd, unsigned short limit, unsigned
 		return;
 	}
 
-	sd->chatID   = cd->bl.id;
-	sd->joinchat = 1;
+	sd->chatID         = cd->bl.id;
+	sd->state.joinchat = 1;
 
 	clif_createchat(sd,0);
 	clif_dispchat(cd,-1);
@@ -97,7 +97,7 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 	if((cd = map_id2cd(chatid)) == NULL)
 		return;
 
-	if(cd->bl.m != sd->bl.m || sd->vender_id || sd->joinchat || unit_distance(cd->bl.x,cd->bl.x,sd->bl.x,sd->bl.y) > AREA_SIZE) {
+	if(cd->bl.m != sd->bl.m || sd->vender_id || sd->state.joinchat || unit_distance(cd->bl.x,cd->bl.x,sd->bl.x,sd->bl.y) > AREA_SIZE) {
 		clif_joinchatfail(sd,3);
 		return;
 	}
@@ -139,8 +139,8 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 	cd->usersd[cd->users] = sd;
 	cd->users++;
 
-	sd->chatID   = cd->bl.id;
-	sd->joinchat = 1;
+	sd->chatID         = cd->bl.id;
+	sd->state.joinchat = 1;
 
 	clif_joinchatok(sd,cd);	// 新たに参加した人には全員のリスト
 	clif_addchat(cd,sd);	// 既に中に居た人には追加した人の報告
@@ -185,8 +185,8 @@ int chat_leavechat(struct map_session_data *sd, unsigned char flag)
 	clif_leavechat(cd,sd,flag);
 
 	cd->users--;
-	sd->chatID   = 0;
-	sd->joinchat = 0;
+	sd->chatID         = 0;
+	sd->state.joinchat = 0;
 
 	if(cd->users == 0 && (*cd->owner)->type == BL_PC) {
 		// 全員居なくなった&PCのチャットなので消す

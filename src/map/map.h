@@ -297,6 +297,13 @@ struct map_session_data {
 		unsigned homun_creating : 1;
 		unsigned merc_creating : 1;
 		unsigned refuse_partyinvite : 1;
+		unsigned deal_mode : 1;
+		unsigned deal_locked : 2;
+		unsigned party_sended : 1;
+		unsigned guild_sended : 1;
+		unsigned friend_sended : 1;
+		unsigned wis_all : 1;	// Wis全拒否許可フラグ
+		unsigned joinchat : 1;	// 参加or主催
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -329,7 +336,7 @@ struct map_session_data {
 	unsigned short opt1,opt2;
 	unsigned int opt3;
 	char dir,head_dir;
-	unsigned int client_tick,server_tick;
+	unsigned int client_tick;
 	int npc_id,areanpc_id,npc_shopid;
 	int npc_allowuseitem;
 	int npc_pos;
@@ -339,13 +346,11 @@ struct map_session_data {
 	struct script_code *npc_script,*npc_scriptroot;
 	int npc_scriptstate;
 	char npc_str[256];
-	unsigned int chatID;
-	short joinchat;	// 参加or主催
+	int chatID;
 	short race;
 	short view_size;
 
 	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wis拒否リスト
-	int wis_all;	// Wis全拒否許可フラグ
 
 	short attackrange,attackrange_;
 	unsigned int skillstatictimer[MAX_SKILL_DB];
@@ -510,17 +515,15 @@ struct map_session_data {
 	int deal_item_index[MAX_DEAL_ITEMS];
 	int deal_item_amount[MAX_DEAL_ITEMS];
 	int deal_zeny;
-	short deal_locked;
-	short deal_mode;
 
-	int party_sended,party_invite,party_invite_account;
+	int party_invite,party_invite_account;
 	int party_hp,party_x,party_y;
 
-	int guild_sended,guild_invite,guild_invite_account;
+	int guild_invite,guild_invite_account;
 	int guild_emblem_id,guild_alliance,guild_alliance_account;
 	int guild_x,guild_y;
 
-	int friend_sended,friend_invite,friend_invite_char;
+	int friend_invite,friend_invite_char;
 	char friend_invite_name[24];
 
 	int adopt_invite;
@@ -685,10 +688,10 @@ struct mob_data {
 	int target_id,attacked_id,attacked_players;
 	unsigned int next_walktime;
 	unsigned int last_spawntime,last_thinktime;
-	short move_fail_count;
 	struct linkdb_node *dmglog;
 	struct item *lootitem;
 	short lootitem_count;
+	short move_fail_count;
 
 #ifdef	DYNAMIC_SC_DATA
 	struct status_change *sc_data;	//[MAX_STATUSCHANGE];
@@ -698,12 +701,9 @@ struct mob_data {
 	short sc_count;
 	unsigned short opt1,opt2;
 	unsigned int opt3,option;
-	short min_chase;
-
 	int guild_id;
-
 	int deletetimer;
-
+	short min_chase;
 	short skillidx;
 	unsigned int skilldelay[MAX_MOBSKILL];
 	int def_ele;
