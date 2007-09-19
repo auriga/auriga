@@ -6938,8 +6938,8 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			int i = src->range;
 			if(sg->skill_lv>5)
 				i += 2;
-			map_foreachinarea(battle_skill_attack_area,src->bl.m,src->bl.x-i,src->bl.y-i,src->bl.x+i,src->bl.y+i,0,
-				BF_MAGIC,ss,&src->bl,sg->skill_id,sg->skill_lv,tick,(BL_CHAR|BL_SKILL),BCT_ENEMY);
+			map_foreachinarea(battle_skill_attack_area,src->bl.m,src->bl.x-i,src->bl.y-i,src->bl.x+i,src->bl.y+i,
+				(BL_CHAR|BL_SKILL),BF_MAGIC,ss,&src->bl,sg->skill_id,sg->skill_lv,tick,0,BCT_ENEMY);
 		}
 		break;
 	case UNT_SKIDTRAP:	/* スキッドトラップ */
@@ -10678,16 +10678,16 @@ static int skill_unit_timer_sub_onplace(struct block_list *bl, va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, unit = va_arg(ap,struct skill_unit *));
-	nullpo_retr(0, group = unit->group);
 
+	unit = va_arg(ap,struct skill_unit *);
 	tick = va_arg(ap,unsigned int);
 
+	if(!unit || !unit->alive)
+		return 0;
 	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC)))
 		return 0;
 
-	if(!unit->alive)
-		return 0;
+	nullpo_retr(0, group = unit->group);
 
 	if(battle_check_target(&unit->bl,bl,group->target_flag) <= 0)
 		return 0;

@@ -2188,7 +2188,7 @@ void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
 		val = nd->u.shop_item[i].value;
 		WFIFOL(fd,len  ) = val;
 		WFIFOL(fd,len+4) = val;		// DCはないので価格は同じ
-		WFIFOB(fd,len+8) = 0x12;	// id->type? 0x12で固定
+		WFIFOB(fd,len+8) = id->type;
 		if(id->view_id > 0)
 			WFIFOW(fd,len+9) = id->view_id;
 		else
@@ -3729,7 +3729,7 @@ static void clif_initialstatus(struct map_session_data *sd)
  * 矢装備
  *------------------------------------------
  */
-void clif_arrowequip(struct map_session_data *sd, int val)
+void clif_arrowequip(struct map_session_data *sd, int idx)
 {
 	int fd;
 
@@ -3737,7 +3737,7 @@ void clif_arrowequip(struct map_session_data *sd, int val)
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x13c;
-	WFIFOW(fd,2)=val+2;	// 矢のアイテムID
+	WFIFOW(fd,2)=idx+2;
 	WFIFOSET(fd,packet_db[0x13c].len);
 
 	return;
@@ -10663,14 +10663,21 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	// ペット用装備であるかないか
 	if (sd->inventory_data[idx]) {
-		if (sd->inventory_data[idx]->type != 8) {
-			if (sd->inventory_data[idx]->type == 10)
-				RFIFOW(fd,GETPACKETPOS(cmd,1))=0x8000;	// 矢を無理やり装備できるように（−−；
-			pc_equipitem(sd, idx, RFIFOW(fd,GETPACKETPOS(cmd,1)));
-		} else {
-			pet_equipitem(sd, idx);
+		switch(sd->inventory_data[idx]->type) {
+			case 8:
+				// ペット用装備
+				pet_equipitem(sd, idx);
+				break;
+			case 10:
+			case 16:
+			case 17:
+				// 矢・弾丸・苦無
+				pc_equipitem(sd, idx, 0x8000);
+				break;
+			default:
+				pc_equipitem(sd, idx, RFIFOW(fd,GETPACKETPOS(cmd,1)));
+				break;
 		}
 	}
 

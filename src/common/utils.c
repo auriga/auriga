@@ -13,11 +13,11 @@ void hex_dump(FILE *fp, const unsigned char *buf, int len)
 {
 	int i, j;
 
-	fprintf(fp, "      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F   0123456789ABCDEF\n");
+	fprintf(fp, "      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F   0123456789ABCDEF" RETCODE);
 	fprintf(fp, "----  -----------------------------------------------   ----------------");
 
 	for(i = 0; i < len; i += 16) {
-		fprintf(fp, "\n%04X  ", i);
+		fprintf(fp, RETCODE "%04X  ", i);
 		for(j = i; j < i + 16; j++) {
 			if(j < len)
 				fprintf(fp, "%02x ", buf[j]);
@@ -33,7 +33,7 @@ void hex_dump(FILE *fp, const unsigned char *buf, int len)
 				fprintf(fp, " ");
 		}
 	}
-	fprintf(fp, "\n");
+	fprintf(fp, RETCODE);
 }
 
 

@@ -69,7 +69,7 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 void clif_takeitem(struct block_list *src, int dst_id);
 void clif_changelook(struct block_list *bl, int type, int val);
 void clif_send_clothcolor(struct block_list *bl);
-void clif_arrowequip(struct map_session_data *sd, int val);
+void clif_arrowequip(struct map_session_data *sd, int idx);
 void clif_arrow_fail(struct map_session_data *sd, unsigned short type);
 void clif_arrow_create_list(struct map_session_data *sd);
 void clif_statusupack(struct map_session_data *sd, int type, int ok, int val);

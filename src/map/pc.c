@@ -6716,7 +6716,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	// 弓矢装備
 	if(pos == 0x8000) {
 		clif_arrowequip(sd,n);
-		clif_arrow_fail(sd,3);	// 3=矢が装備できました
+		clif_arrow_fail(sd,3);	// 装備できました
 	} else {
 		clif_equipitemack(sd,n,pos,1);
 	}
