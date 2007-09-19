@@ -4013,16 +4013,8 @@ int parse_char(int fd)
 
 		default:
 #ifdef DUMP_UNKNOWN_PACKET
-			{
-				int i;
-				printf("---- 00-01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F");
-				for(i=0;i<RFIFOREST(fd);i++){
-					if((i&15)==0)
-						printf("\n%04X ",i);
-					printf("%02X ",RFIFOB(fd,i));
-				}
-				printf("\n");
-			}
+			hex_dump(stdout, (char *)RFIFOP(fd,0), RFIFOREST(fd));
+			printf("\n");
 #endif
 			close(fd);
 			session[fd]->eof=1;

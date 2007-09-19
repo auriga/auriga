@@ -2,6 +2,8 @@
 #define _UTILS_H_
 
 
+void hex_dump(FILE *fp, const unsigned char *buf, int len);
+
 // =====================
 // 関数名マクロ
 // ---------------------

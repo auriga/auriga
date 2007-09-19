@@ -9732,19 +9732,10 @@ void clif_send_packet(struct map_session_data *sd, const char *message)
 		else
 			WFIFOB(fd,i)= (p[i]=atn_rand()%256);
 	}
-	printf("clif_send_packet_test packet:%x len:%d\nSend:",packet,db_len);
-	for(i = 0; i < len; i++) {
-		if(i > 0 && !(i&0x0f))
-			printf("\n     ");
-		printf(" %02d",i);
-	}
-	printf("\nRead:");
-	for(i = 0; i < len; i++) {
-		if(i > 0 && !(i&0x0f))
-			printf("\n     ");
-		printf(" %02x",p[i]);
-	}
+	printf("clif_send_packet: test packet = 0x%x, len = %d\n", packet, db_len);
+	hex_dump(stdout, (char *)WFIFOP(fd,0), len);
 	printf("\n");
+
 	WFIFOSET(fd,len);
 
 	return;
@@ -13431,16 +13422,8 @@ int clif_parse(int fd)
 			if(battle_config.error_log) {
 				printf("clif_parse : %d %d %x\n",fd,packet_len,cmd);
 #ifdef DUMP_UNKNOWN_PACKET
-				{
-					int i;
-					printf("---- 00-01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F");
-					for(i=0; i<packet_len; i++) {
-						if((i&15) == 0)
-							printf("\n%04X ",i);
-						printf("%02X ",RFIFOB(fd,i));
-					}
-					printf("\n");
-				}
+				hex_dump(stdout, (char *)RFIFOP(fd,0), packet_len);
+				printf("\n");
 #endif
 			}
 		}
