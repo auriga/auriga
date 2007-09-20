@@ -1684,12 +1684,12 @@ int intif_parse_DeleteMercOk(int fd)
 int intif_parse_MailSendRes(int fd)
 {
 	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
-	int flag = RFIFOB(fd,6);
+	int fail = RFIFOB(fd,6);
 
 	if(sd) {
-		clif_res_sendmail(sd->fd,flag);
-		if(flag)
-			mail_removeitem(sd);
+		clif_res_sendmail(sd->fd,fail);
+		if(fail)
+			mail_removeitem(sd,0);
 	}
 	return 0;
 }

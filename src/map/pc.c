@@ -1191,9 +1191,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	}
 
 	// MailData
-	sd->mail_zeny = 0;
-	memset(&sd->mail_item,0,sizeof(struct item));
-	sd->mail_amount = 0;
+	sd->mail_append.index  = -1;
+	sd->mail_append.amount = 0;
+	sd->mail_append.zeny   = 0;
 
 	// ホットキーセット
 	sd->hotkey_set = 0;
@@ -3314,7 +3314,7 @@ static int pc_isUseitem(struct map_session_data *sd,int n)
 
 	if(item == NULL)
 		return 0;
-	if(item->type != 0 && item->type != 2)
+	if(item->type != 0 && item->type != 2 && item->type != 18)
 		return 0;
 
 	if(item->sex != 2 && sd->sex != item->sex)
@@ -3489,7 +3489,7 @@ void pc_putitemtocart(struct map_session_data *sd, int idx, int amount)
 		return;
 
 	item_data = &sd->status.inventory[idx];
-	if(item_data->nameid == 0 || item_data->amount < amount || sd->vender_id)
+	if(item_data->nameid == 0 || item_data->amount < amount)
 		return;
 
 	if(itemdb_isdropable(sd->status.inventory[idx].nameid) == 0)
@@ -3535,7 +3535,7 @@ void pc_getitemfromcart(struct map_session_data *sd, int idx, int amount)
 		return;
 
 	item_data = &sd->status.cart[idx];
-	if(item_data->nameid == 0 || item_data->amount < amount || sd->vender_id)
+	if(item_data->nameid == 0 || item_data->amount < amount)
 		return;
 
 	if((flag = pc_additem(sd, item_data, amount)) == 0) {

@@ -23,7 +23,7 @@
  */
 void trade_traderequest(struct map_session_data *sd,int target_id)
 {
-// clif_tradestart flag: 0: You are too far away from the person to trade., 1: This Character is not currently online or does not exist, 2: The person is in another trade., 3: (trade ok->open the trade window)., 4: The deal has been rejected.
+	// clif_tradestart flag: 0: You are too far away from the person to trade., 1: This Character is not currently online or does not exist, 2: The person is in another trade., 3: (trade ok->open the trade window)., 4: The deal has been rejected.
 	struct map_session_data *target_sd;
 
 	nullpo_retv(sd);
@@ -32,7 +32,7 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 		npc_event_dequeue(sd);
 
 	if((target_sd = map_id2sd(target_id)) != NULL && sd != target_sd) { // check same player to avoid hack
-		if(target_sd->vender_id != 0) {
+		if(target_sd->vender_id != 0 || target_sd->state.mail_appending) {
 			clif_tradestart(sd, 4);
 			return;
 		}

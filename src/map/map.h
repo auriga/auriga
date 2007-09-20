@@ -304,6 +304,7 @@ struct map_session_data {
 		unsigned friend_sended : 1;
 		unsigned wis_all : 1;	// Wis全拒否許可フラグ
 		unsigned joinchat : 1;	// 参加or主催
+		unsigned mail_appending : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -586,9 +587,11 @@ struct map_session_data {
 	int kill_charid, killed_charid;
 
 	// メール添付情報
-	int mail_zeny;
-	int mail_amount;
-	struct item mail_item;
+	struct {
+		int index;
+		int amount;
+		int zeny;
+	} mail_append;
 
 	char eventqueue[MAX_EVENTQUEUE][50];
 	int eventtimer[MAX_EVENTTIMER];

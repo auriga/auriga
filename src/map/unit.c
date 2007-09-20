@@ -27,6 +27,7 @@
 #include "mob.h"
 #include "vending.h"
 #include "intif.h"
+#include "mail.h"
 #include "merc.h"
 
 static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data);
@@ -2040,6 +2041,9 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		// 養子要請を拒否する
 		if(sd->adopt_invite > 0)
 			pc_adopt_reply(sd,0,0,0);
+
+		// メール添付情報を破棄
+		mail_removeitem(sd,0);
 
 		pc_delinvincibletimer(sd);		// 無敵タイマー削除
 
