@@ -6826,8 +6826,15 @@ int status_change_clear(struct block_list *bl,int type)
 			if(type == 0 && unit_isdead(bl))
 				continue;
 		}
-		if(sc_data[i].timer != -1)	/* 異常があるならタイマーを削除する */
+
+		/* 異常があるならタイマーを削除する */
+		if(i == SC_DANCING) {
+			skill_stop_dancing(bl,0);
+		} else {
+			if(i == SC_BASILICA)
+				skill_basilica_cancel(bl);
 			status_change_end(bl,i,-1);
+		}
 	}
 	status_calc_pc_stop_end(bl);
 
@@ -7169,16 +7176,15 @@ int status_change_attacked_end(struct block_list *bl)
 	struct status_change *sc_data;
 
 	nullpo_retr(0, bl);
+	nullpo_retr(0, sc_data = status_get_sc_data(bl));
 
-	sc_data = status_get_sc_data(bl);
-	if(sc_data) {
-		if(sc_data[SC_FREEZE].timer != -1)
-			status_change_end(bl,SC_FREEZE,-1);
-		if(sc_data[SC_STONE].timer != -1 && sc_data[SC_STONE].val2 == 0)
-			status_change_end(bl,SC_STONE,-1);
-		if(sc_data[SC_SLEEP].timer != -1)
-			status_change_end(bl,SC_SLEEP,-1);
-	}
+	if(sc_data[SC_FREEZE].timer != -1)
+		status_change_end(bl,SC_FREEZE,-1);
+	if(sc_data[SC_STONE].timer != -1 && sc_data[SC_STONE].val2 == 0)
+		status_change_end(bl,SC_STONE,-1);
+	if(sc_data[SC_SLEEP].timer != -1)
+		status_change_end(bl,SC_SLEEP,-1);
+
 	return 0;
 }
 
@@ -7202,6 +7208,59 @@ int status_change_hidden_end(struct block_list *bl)
 		if (((*option) & 0x4004) == 0x4004)
 			status_change_end(bl,SC_CHASEWALK,-1);
 	}
+	return 0;
+}
+
+/*==========================================
+ * ステータス異常(マップ離脱時)終了
+ *------------------------------------------
+ */
+int status_change_removemap_end(struct block_list *bl)
+{
+	struct status_change *sc_data;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, sc_data = status_get_sc_data(bl));
+
+	status_calc_pc_stop_begin(bl);
+
+	if(sc_data[SC_BLADESTOP].timer != -1)
+		status_change_end(bl, SC_BLADESTOP, -1);
+	if(sc_data[SC_GRAFFITI].timer != -1)
+		status_change_end(bl, SC_GRAFFITI, -1);
+	if(sc_data[SC_ANKLE].timer != -1)
+		status_change_end(bl, SC_ANKLE, -1);
+	if(sc_data[SC_GOSPEL].timer != -1)
+		status_change_end(bl, SC_GOSPEL, -1);
+	if(sc_data[SC_GRAVITATION_USER].timer != -1)
+		status_change_end(bl, SC_GRAVITATION_USER, -1);
+	if(sc_data[SC_TRICKDEAD].timer != -1)
+		status_change_end(bl, SC_TRICKDEAD, -1);
+	if(sc_data[SC_RUN].timer != -1)
+		status_change_end(bl, SC_RUN, -1);
+	if(sc_data[SC_MARIONETTE].timer != -1)
+		status_change_end(bl, SC_MARIONETTE, -1);
+	if(sc_data[SC_MARIONETTE2].timer != -1)
+		status_change_end(bl, SC_MARIONETTE2, -1);
+	if(sc_data[SC_AVOID].timer != -1)
+		status_change_end(bl, SC_AVOID, -1);
+	if(sc_data[SC_CHANGE].timer != -1)
+		status_change_end(bl, SC_CHANGE, -1);
+	if(sc_data[SC_DEFENCE].timer != -1)
+		status_change_end(bl, SC_DEFENCE, -1);
+	if(sc_data[SC_BLOODLUST].timer != -1)
+		status_change_end(bl, SC_BLOODLUST, -1);
+	if(sc_data[SC_FLEET].timer != -1)
+		status_change_end(bl, SC_FLEET, -1);
+	if(sc_data[SC_SPEED].timer != -1)
+		status_change_end(bl, SC_SPEED, -1);
+
+	if(sc_data[SC_BASILICA].timer != -1) {
+		skill_basilica_cancel(bl);
+		status_change_end(bl, SC_BASILICA, -1);
+	}
+	status_calc_pc_stop_end(bl);
+
 	return 0;
 }
 

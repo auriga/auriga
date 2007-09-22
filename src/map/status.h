@@ -96,6 +96,7 @@ int status_change_release(struct block_list *bl,int mask);
 int status_clearpretimer(struct block_list *bl);
 int status_change_attacked_end(struct block_list *bl);
 int status_change_hidden_end(struct block_list *bl);
+int status_change_removemap_end(struct block_list *bl);
 
 // 状態チェック
 int status_check_no_magic_damage(struct block_list *bl);

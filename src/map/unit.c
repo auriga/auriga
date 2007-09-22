@@ -1947,7 +1947,6 @@ int unit_iswalking(struct block_list *bl)
 int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 {
 	struct unit_data *ud;
-	struct status_change *sc_data;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ud = unit_bl2ud(bl));
@@ -1971,36 +1970,8 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 	status_clearpretimer( bl );
 	skill_cleartimerskill( bl );			// タイマースキルクリア
 
-	// MAP を離れるときの状態異常関連
-	sc_data = status_get_sc_data(bl);
-	if( sc_data ) {
-		// ブレードストップを終わらせる
-		if(sc_data[SC_BLADESTOP].timer != -1) {
-			status_change_end(bl,SC_BLADESTOP,-1);
-		}
-		// バシリカ削除
-		if(sc_data[SC_BASILICA].timer != -1) {
-			skill_basilica_cancel( bl );
-			status_change_end(bl,SC_BASILICA,-1);
-		}
-		// グラフィティ削除
-		if(sc_data[SC_GRAFFITI].timer != -1) {
-			status_change_end(bl, SC_GRAFFITI, -1);
-		}
-		// アンクルスネア撤去
-		if(sc_data[SC_ANKLE].timer != -1) {
-			status_change_end(bl, SC_ANKLE, -1);
-		}
-		// ゴスペル削除
-		if(sc_data[SC_GOSPEL].timer != -1) {
-			status_change_end(bl, SC_GOSPEL, -1);
-		}
-		// グラビテーションフィールド使用者削除
-		if(sc_data[SC_GRAVITATION_USER].timer != -1) {
-			status_change_end(bl, SC_GRAVITATION_USER, -1);
-		}
-		sc_data = NULL;
-	}
+	// MAPを離れるときの状態異常解除
+	status_change_removemap_end(bl);
 
 	if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data*)bl;

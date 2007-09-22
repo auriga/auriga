@@ -3,39 +3,50 @@
 #include <stdlib.h>
 
 #include "utils.h"
+#include "malloc.h"
 
 
 /*==========================================
  * Hex Dump
+ *  標準出力の表示をスムーズにするため
+ *  自前で完全バッファリングする
  *------------------------------------------
  */
 void hex_dump(FILE *fp, const unsigned char *buf, int len)
 {
 	int i, j;
+	char *output, *p;
 
-	fprintf(fp, "      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F   0123456789ABCDEF" RETCODE);
-	fprintf(fp, "----  -----------------------------------------------   ----------------");
+	output = (char *)aCalloc((3 + (len - 1) / 16) * 96, sizeof(char));	// 1行あたり96文字として計算
+	p = output;
+
+	p += sprintf(p, "      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F   0123456789ABCDEF" RETCODE);
+	p += sprintf(p, "----  -----------------------------------------------   ----------------");
 
 	for(i = 0; i < len; i += 16) {
-		fprintf(fp, RETCODE "%04X  ", i);
+		p += sprintf(p, RETCODE "%04X  ", i);
 		for(j = i; j < i + 16; j++) {
 			if(j < len)
-				fprintf(fp, "%02x ", buf[j]);
+				p += sprintf(p, "%02x ", buf[j]);
 			else
-				fprintf(fp, "   ");
+				p += sprintf(p, "   ");
 		}
 
-		fprintf(fp, "  ");
+		p += sprintf(p, "  ");
 		for(j = i; j < i + 16; j++) {
 			if(j < len)
-				fprintf(fp, "%c", (buf[j] <= 0x20) ? '.' : buf[j]);
+				p += sprintf(p, "%c", (buf[j] <= 0x20) ? '.' : buf[j]);
 			else
-				fprintf(fp, " ");
+				p += sprintf(p, " ");
 		}
 	}
-	fprintf(fp, RETCODE);
-}
+	p += sprintf(p, "\n");
 
+	fprintf(fp, output);
+	fflush(fp);
+
+	aFree(output);
+}
 
 /*==========================================
  * 32bit線形合同法(戻り値は24ビット有効)

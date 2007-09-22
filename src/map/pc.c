@@ -3702,15 +3702,6 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		strcat(mapname,".gat");
 	}
 
-	// マップ移動、蝿などあれば駆け足を止める
-	if(sd->sc_data[SC_RUN].timer != -1)
-		status_change_end(&sd->bl,SC_RUN,-1);
-	// マリオネット状態なら解除する
-	if(sd->sc_data[SC_MARIONETTE].timer != -1)
-		status_change_end(&sd->bl,SC_MARIONETTE,-1);
-	if(sd->sc_data[SC_MARIONETTE2].timer != -1)
-		status_change_end(&sd->bl,SC_MARIONETTE2,-1);
-
 	// 座っていたら立ち上がる
 	if(pc_issit(sd)) {
 		pc_setstand(sd);

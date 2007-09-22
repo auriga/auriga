@@ -9963,13 +9963,6 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	else if(sd->status.manner < 0)
 		status_change_start(&sd->bl,SC_NOCHAT,0,0,0,0,0,0);
 
-	if(sd->sc_count > 0) {
-		if(sd->sc_data[SC_TRICKDEAD].timer != -1)
-			status_change_end(&sd->bl,SC_TRICKDEAD,-1);
-		if(sd->sc_data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(7,sd->def_ele))
-			status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
-	}
-
 	map_foreachinarea(clif_getareachar,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,BL_ALL,sd);
 
 	if(sd->state.connect_new) {
