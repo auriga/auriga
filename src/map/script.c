@@ -3901,8 +3901,8 @@ struct script_function buildin_func[] = {
 	{buildin_classchange,"classchange","ii"},
 	{buildin_misceffect,"misceffect","i*"},
 	{buildin_areamisceffect,"areamisceffect","siiiii"},
-	{buildin_soundeffect,"soundeffect","si"},
-	{buildin_areasoundeffect,"areasoundeffect","siiiisi"},
+	{buildin_soundeffect,"soundeffect","si*"},
+	{buildin_areasoundeffect,"areasoundeffect","siiiisi*"},
 	{buildin_gmcommand,"gmcommand","s"},
 	{buildin_dispbottom,"dispbottom","s"},
 	{buildin_getusersname,"getusersname",""},
@@ -8893,18 +8893,20 @@ int buildin_areamisceffect(struct script_state *st)
  */
 int buildin_soundeffect(struct script_state *st)
 {
-	struct map_session_data *sd=script_rid2sd(st);
+	struct map_session_data *sd = script_rid2sd(st);
 	char *name;
-	int type;
+	int type, interval = 0;
 
 	name = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	type = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(st->end > st->start+4)
+		interval = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	if(sd) {
 		if(st->oid)
-			clif_soundeffect(sd,map_id2bl(st->oid),name,type);
+			clif_soundeffect(sd,map_id2bl(st->oid),name,type,interval);
 		else
-			clif_soundeffect(sd,&sd->bl,name,type);
+			clif_soundeffect(sd,&sd->bl,name,type,interval);
 	}
 	return 0;
 }
@@ -8916,13 +8918,14 @@ int buildin_soundeffect(struct script_state *st)
 static int buildin_soundeffect_sub(struct block_list *bl,va_list ap)
 {
 	struct map_session_data *sd;
-	char *name = va_arg(ap,char *);
-	int type   = va_arg(ap,int);
+	char *name   = va_arg(ap,char *);
+	int type     = va_arg(ap,int);
+	int interval = va_arg(ap,int);
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	clif_soundeffect(sd,bl,name,type);
+	clif_soundeffect(sd,bl,name,type,interval);
 
 	return 0;
 }
@@ -8931,6 +8934,7 @@ int buildin_areasoundeffect(struct script_state *st)
 {
 	char *name,*str;
 	int type,m,x0,y0,x1,y1;
+	int interval = 0;
 
 	str  = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	x0   = conv_num(st,& (st->stack->stack_data[st->start+3]));
@@ -8939,10 +8943,12 @@ int buildin_areasoundeffect(struct script_state *st)
 	y1   = conv_num(st,& (st->stack->stack_data[st->start+6]));
 	name = conv_str(st,& (st->stack->stack_data[st->start+7]));
 	type = conv_num(st,& (st->stack->stack_data[st->start+8]));
+	if(st->end > st->start+9)
+		interval = conv_num(st,& (st->stack->stack_data[st->start+9]));
 
 	m = script_mapname2mapid(st,str);
 	if(m >= 0)
-		map_foreachinarea(buildin_soundeffect_sub,m,x0,y0,x1,y1,BL_PC,name,type);
+		map_foreachinarea(buildin_soundeffect_sub,m,x0,y0,x1,y1,BL_PC,name,type,interval);
 	return 0;
 }
 

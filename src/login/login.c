@@ -2055,7 +2055,7 @@ int parse_login(int fd)
 
 		default:
 #ifdef DUMP_UNKNOWN_PACKET
-			hex_dump(stdout, (char *)RFIFOP(fd,0), RFIFOREST(fd));
+			hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
 			printf("\n");
 #endif
 			close(fd);

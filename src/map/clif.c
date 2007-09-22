@@ -8761,7 +8761,7 @@ static void clif_wisall(struct map_session_data *sd, int type, unsigned char fla
  * サウンドエフェクト
  *------------------------------------------
  */
-void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type)
+void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type,int interval)
 {
 	int fd;
 
@@ -8774,7 +8774,7 @@ void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const ch
 	WFIFOW(fd,0)=0x1d3;
 	strncpy(WFIFOP(fd,2),name,24);
 	WFIFOB(fd,26)=type;
-	WFIFOL(fd,27)=0;
+	WFIFOL(fd,27)=interval;
 	WFIFOL(fd,31)=bl->id;
 	WFIFOSET(fd,packet_db[0x1d3].len);
 
@@ -9733,7 +9733,7 @@ void clif_send_packet(struct map_session_data *sd, const char *message)
 			WFIFOB(fd,i)= (p[i]=atn_rand()%256);
 	}
 	printf("clif_send_packet: test packet = 0x%x, len = %d\n", packet, db_len);
-	hex_dump(stdout, (char *)WFIFOP(fd,0), len);
+	hex_dump(stdout, WFIFOP(fd,0), len);
 	printf("\n");
 
 	WFIFOSET(fd,len);
@@ -13430,7 +13430,7 @@ int clif_parse(int fd)
 			if(battle_config.error_log) {
 				printf("clif_parse : %d %d %x\n",fd,packet_len,cmd);
 #ifdef DUMP_UNKNOWN_PACKET
-				hex_dump(stdout, (char *)RFIFOP(fd,0), packet_len);
+				hex_dump(stdout, RFIFOP(fd,0), packet_len);
 				printf("\n");
 #endif
 			}

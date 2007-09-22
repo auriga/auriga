@@ -1139,26 +1139,35 @@ int homun_calc_skilltree(struct homun_data *hd)
 
 	c = hd->status.class_ - HOM_ID;
 
-	for(i=0; i<MAX_HOMSKILL; i++)
+	for(i=0; i<MAX_HOMSKILL; i++) {
 		hd->status.skill[i].id = 0;
+		if(hd->status.skill[i].flag) {		// cardスキルなら
+			hd->status.skill[i].lv   = (hd->status.skill[i].flag == 1)? 0: hd->status.skill[i].flag-2;	// 本当のlvに
+			hd->status.skill[i].flag = 0;	// flagは0にしておく
+		}
+	}
+
 	do {
 		flag = 0;
 		for(i=0; (id = homun_skill_tree[c][i].id) > 0; i++) {
-			int j, f = 1;
-			for(j=0; j<5; j++) {
-				if( homun_skill_tree[c][i].need[j].id &&
-				    homun_checkskill(hd,homun_skill_tree[c][i].need[j].id) < homun_skill_tree[c][i].need[j].lv )
-					f = 0;
+			if(hd->status.skill[id].id > 0)
+				continue;
+			if(!battle_config.skillfree) {
+				int j, fail = 0;
+				for(j=0; j<5 && homun_skill_tree[c][i].need[j].id > 0; j++) {
+					if(homun_checkskill(hd,homun_skill_tree[c][i].need[j].id) < homun_skill_tree[c][i].need[j].lv) {
+						fail = 1;
+						break;
+					}
+				}
+				if(fail)
+					continue;
+				if(hd->status.base_level < homun_skill_tree[c][i].base_level ||
+				   hd->status.intimate < homun_skill_tree[c][j].intimate)
+					continue;
 			}
-			if(hd->status.base_level < homun_skill_tree[c][i].base_level)
-				f = 0;
-			if(hd->status.intimate < homun_skill_tree[c][j].intimate)
-				f = 0;
-			id -= HOM_SKILLID;
-			if(f && hd->status.skill[id].id == 0 && id >= 0) {
-				hd->status.skill[id].id = id + HOM_SKILLID;
-				flag = 1;
-			}
+			hd->status.skill[id-HOM_SKILLID].id = id;
+			flag = 1;
 		}
 	} while(flag);
 

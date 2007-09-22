@@ -1390,29 +1390,31 @@ AurigaNPCScript
 			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 		soundeffect命令
-			soundeffect <name>,<type>;
+			soundeffect <name>,<type>[,<interval>];
 
-			name	文字列(24文字まで)
-			type	数値
+			name		文字列 (24文字まで)
+			type		数値
+			interval	数値、省略可
 
 			<name>で指定したエフェクト音を発生させます。
 			<type>
 				0	1回鳴らす
-				1	繰り返し鳴らす
+				1	<interval>ミリ秒間隔で繰り返し鳴らす
 				2	繰り返しの停止
 
 		areasoundeffect命令
-			areasoundeffect <gatname>,<x0>,<y0>,<x1>,<y1>,<name>,<type>;
+			areasoundeffect <gatname>,<x0>,<y0>,<x1>,<y1>,<name>,<type>[,<interval>];
 
-			name	文字列(24文字まで)
-			type	数値
+			name		文字列 (24文字まで)
+			type		数値
+			interval	数値、省略可
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内のプレイヤーに対し
 			<name>で指定したエフェクト音を発生させます。
 			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			<type>
 				0	1回鳴らす
-				1	繰り返し鳴らす
+				1	<interval>ミリ秒間隔で繰り返し鳴らす
 				2	繰り返しの停止
 
 		setmapflag命令

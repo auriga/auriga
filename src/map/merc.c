@@ -642,24 +642,34 @@ int merc_calc_skilltree(struct merc_data *mcd)
 
 	c = mcd->status.class_ - MERC_ID;
 
-	for(i=0; i<MAX_MERCSKILL; i++)
+	for(i=0; i<MAX_MERCSKILL; i++) {
 		mcd->status.skill[i].id = 0;
+		if(mcd->status.skill[i].flag) {		// cardスキルなら
+			mcd->status.skill[i].lv   = (mcd->status.skill[i].flag == 1)? 0: mcd->status.skill[i].flag-2;	// 本当のlvに
+			mcd->status.skill[i].flag = 0;	// flagは0にしておく
+		}
+	}
+
 	do {
 		flag = 0;
 		for(i=0; (id = merc_skill_tree[c][i].id) > 0; i++) {
-			int j, f = 1;
-			for(j=0; j<5; j++) {
-				if( merc_skill_tree[c][i].need[j].id &&
-				    merc_checkskill(mcd,merc_skill_tree[c][i].need[j].id) < merc_skill_tree[c][i].need[j].lv )
-					f = 0;
+			if(mcd->status.skill[id].id > 0)
+				continue;
+			if(!battle_config.skillfree) {
+				int j, fail = 0;
+				for(j=0; j<5 && merc_skill_tree[c][i].need[j].id > 0; j++) {
+					if(merc_checkskill(mcd,merc_skill_tree[c][i].need[j].id) < merc_skill_tree[c][i].need[j].lv) {
+						fail = 1;
+						break;
+					}
+				}
+				if(fail)
+					continue;
+				if(mcd->status.base_level < merc_skill_tree[c][i].base_level)
+					continue;
 			}
-			if(mcd->status.base_level < merc_skill_tree[c][i].base_level)
-				f = 0;
-			id -= MERC_SKILLID;
-			if(f && mcd->status.skill[id].id == 0 && id >= 0) {
-				mcd->status.skill[id].id = id + MERC_SKILLID;
-				flag = 1;
-			}
+			mcd->status.skill[id-MERC_SKILLID].id = id;
+			flag = 1;
 		}
 	} while(flag);
 
