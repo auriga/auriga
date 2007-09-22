@@ -1375,9 +1375,9 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,int data)
 	if(battle_config.itemidentify)
 		temp_item.identify = 1;
 
-	if(ditem->first_bl && ditem->first_bl->prev != NULL && ditem->first_bl->type == BL_PC) {
-		struct map_session_data *sd = (struct map_session_data *)ditem->first_bl;
-		if(sd && sd->state.autoloot && !unit_isdead(&sd->bl) && sd->bl.m == ditem->m) {
+	if(ditem->first_id > 0) {
+		struct map_session_data *sd = map_id2sd(ditem->first_id);
+		if(sd && sd->bl.prev && sd->state.autoloot && !unit_isdead(&sd->bl) && sd->bl.m == ditem->m) {
 			int flag;
 			struct party *p = NULL;
 
@@ -1396,9 +1396,10 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,int data)
 
 	map_addflooritem(
 		&temp_item,temp_item.amount,ditem->m,ditem->x,ditem->y,
-		ditem->first_bl,ditem->second_bl,ditem->third_bl,0
+		ditem->first_id,ditem->second_id,ditem->third_id,0
 	);
 	aFree(ditem);
+
 	return 0;
 }
 
@@ -1419,9 +1420,9 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 			printf("mob_delay_item_drop2: que pop error!!\n");
 	}
 
-	if(ditem->first_bl && ditem->first_bl->prev != NULL && ditem->first_bl->type == BL_PC) {
-		struct map_session_data *sd = (struct map_session_data *)ditem->first_bl;
-		if(sd && sd->state.autoloot && !unit_isdead(&sd->bl) && sd->bl.m == ditem->m) {
+	if(ditem->first_id > 0) {
+		struct map_session_data *sd = map_id2sd(ditem->first_id);
+		if(sd && sd->bl.prev && sd->state.autoloot && !unit_isdead(&sd->bl) && sd->bl.m == ditem->m) {
 			int flag;
 			struct party *p = NULL;
 
@@ -1440,9 +1441,10 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 
 	map_addflooritem(
 		&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,
-		ditem->first_bl,ditem->second_bl,ditem->third_bl,0
+		ditem->first_id,ditem->second_id,ditem->third_id,0
 	);
 	aFree(ditem);
+
 	return 0;
 }
 
@@ -1869,9 +1871,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->m         = md->bl.m;
 				ditem->x         = md->bl.x;
 				ditem->y         = md->bl.y;
-				ditem->first_bl  = mvp[0].bl;
-				ditem->second_bl = mvp[1].bl;
-				ditem->third_bl  = mvp[2].bl;
+				ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
+				ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
+				ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
 				add_timer2(tick+500+i,mob_delay_item_drop,(int)ditem,0,TIMER_FREE_ID);
 			}
 		}
@@ -1904,9 +1906,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					ditem->m         = md->bl.m;
 					ditem->x         = md->bl.x;
 					ditem->y         = md->bl.y;
-					ditem->first_bl  = mvp[0].bl;
-					ditem->second_bl = mvp[1].bl;
-					ditem->third_bl  = mvp[2].bl;
+					ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
+					ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
+					ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
 					add_timer2(tick+520+i,mob_delay_item_drop,(int)ditem,0,TIMER_FREE_ID);
 				}
 			}
@@ -1931,9 +1933,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->m         = md->bl.m;
 				ditem->x         = md->bl.x;
 				ditem->y         = md->bl.y;
-				ditem->first_bl  = mvp[0].bl;
-				ditem->second_bl = mvp[1].bl;
-				ditem->third_bl  = mvp[2].bl;
+				ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
+				ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
+				ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
 				add_timer2(tick + 520 + i, mob_delay_item_drop, (int)ditem, 0, TIMER_FREE_ID);
 			}
 		}
@@ -1946,9 +1948,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->m         = md->bl.m;
 				ditem->x         = md->bl.x;
 				ditem->y         = md->bl.y;
-				ditem->first_bl  = mvp[0].bl;
-				ditem->second_bl = mvp[1].bl;
-				ditem->third_bl  = mvp[2].bl;
+				ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
+				ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
+				ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
 				ditem->next      = NULL;
 
 				if(ditem->item_data.card[0] == (short)0xff00) {
@@ -2017,12 +2019,14 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					item.identify = 1;
 				if(mvpsd->weight * 2 > mvpsd->max_weight) {
 					clif_mvp_fail_item(mvpsd);
-					map_addflooritem(&item,1,mvpsd->bl.m,mvpsd->bl.x,mvpsd->bl.y,mvp[0].bl,mvp[1].bl,mvp[2].bl,1);
+					map_addflooritem(&item,1,mvpsd->bl.m,mvpsd->bl.x,mvpsd->bl.y,
+						(mvp[0].bl ? mvp[0].bl->id : 0),(mvp[1].bl ? mvp[1].bl->id : 0),(mvp[2].bl ? mvp[2].bl->id : 0),1);
 				} else {
 					clif_mvp_item(mvpsd,item.nameid);
 					if((ret = pc_additem(mvpsd,&item,1))) {
 						clif_additem(sd,0,0,ret);
-						map_addflooritem(&item,1,mvpsd->bl.m,mvpsd->bl.x,mvpsd->bl.y,mvp[0].bl,mvp[1].bl,mvp[2].bl,1);
+						map_addflooritem(&item,1,mvpsd->bl.m,mvpsd->bl.x,mvpsd->bl.y,
+							(mvp[0].bl ? mvp[0].bl->id : 0),(mvp[1].bl ? mvp[1].bl->id : 0),(mvp[2].bl ? mvp[2].bl->id : 0),1);
 					}
 				}
 				break;

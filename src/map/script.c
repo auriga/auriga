@@ -5114,7 +5114,7 @@ int buildin_getitem(struct script_state *st)
 		if((ret = pc_additem(sd,&item_tmp,amount))) {
 			clif_additem(sd,0,0,ret);
 			if(!pc_candrop(sd,nameid))
-				map_addflooritem(&item_tmp,amount,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+				map_addflooritem(&item_tmp,amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
 	}
 
@@ -5201,7 +5201,7 @@ int buildin_getitem2(struct script_state *st)
 
 		if((flag = pc_additem(sd,&item_tmp,amount))) {
 			clif_additem(sd,0,0,flag);
-			map_addflooritem(&item_tmp,amount,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+			map_addflooritem(&item_tmp,amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
 	}
 
@@ -8420,7 +8420,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 				item_tmp.identify = 1;
 				if( (flag = pc_additem(sd,&item_tmp,1)) ) {	// 持てないならドロップ
 					clif_additem(sd,0,0,flag);
-					map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+					map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 				}
 			}
 		} else {
@@ -8443,7 +8443,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 			pc_delitem(sd,i,1,0);
 			if( (flag=pc_additem(sd,&item_tmp,1)) ) {	// 持てないならドロップ
 				clif_additem(sd,0,0,flag);
-				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 			}
 		}
 		return 1;	// 処理完了
@@ -10900,7 +10900,7 @@ int buildin_dropitem(struct script_state *st)
 
 		item_tmp.limit = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
 		battle_config.flooritem_lifetime += tick;
-		map_addflooritem(&item_tmp,amount,m,x,y,NULL,NULL,NULL,0);
+		map_addflooritem(&item_tmp,amount,m,x,y,0,0,0,0);
 		battle_config.flooritem_lifetime -= tick;
 	}
 

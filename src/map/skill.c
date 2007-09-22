@@ -4520,7 +4520,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			eflag = pc_additem(sd,&item_tmp,1);
 			if(eflag) {
 				clif_additem(sd,0,0,eflag);
-				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 			}
 		}
 		break;
@@ -4536,7 +4536,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			eflag = pc_additem(sd,&item_tmp,1);
 			if(eflag) {
 				clif_additem(sd,0,0,eflag);
-				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 			}
 		}
 		break;
@@ -5237,7 +5237,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						item_tmp.identify = 1;
 						if((flag = pc_additem(sd,&item_tmp,item_tmp.amount))) {
 							clif_additem(sd,0,0,flag);
-							map_addflooritem(&item_tmp,item_tmp.amount,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+							map_addflooritem(&item_tmp,item_tmp.amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 						}
 					}
 				} else {
@@ -5246,7 +5246,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					item_tmp.identify = 1;
 					if((flag = pc_additem(sd,&item_tmp,1))) {
 						clif_additem(sd,0,0,flag);
-						map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+						map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 					}
 				}
 
@@ -10790,7 +10790,7 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 						memset(&item_tmp,0,sizeof(item_tmp));
 						item_tmp.nameid   = 1065;
 						item_tmp.identify = 1;
-						map_addflooritem(&item_tmp,1,bl->m,bl->x,bl->y,NULL,NULL,NULL,0);	// 罠返還
+						map_addflooritem(&item_tmp,1,bl->m,bl->x,bl->y,0,0,0,0);	// 罠返還
 					}
 				}
 				break;
@@ -11581,7 +11581,7 @@ void skill_arrow_create(struct map_session_data *sd, int nameid)
 		}
 		if((flag = pc_additem(sd,&tmp_item,tmp_item.amount))) {
 			clif_additem(sd,0,0,flag);
-			map_addflooritem(&tmp_item,tmp_item.amount,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+			map_addflooritem(&tmp_item,tmp_item.amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
 	}
 

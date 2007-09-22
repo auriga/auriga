@@ -1178,8 +1178,7 @@ int map_searchfreecell(struct cell_xy *list,int m,int x0,int y0,int x1,int y1)
  * item_dataはamount以外をcopyする
  *------------------------------------------
  */
-int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,struct block_list *first_bl,
-	struct block_list *second_bl,struct block_list *third_bl,int type)
+int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,int first_id,int second_id,int third_id,int type)
 {
 	struct cell_xy free_cell[3*3];
 	int count;
@@ -1209,22 +1208,22 @@ int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,struct 
 			int r = atn_rand();
 			unsigned int tick = gettick();
 
-			if(first_bl) {
-				fitem->first_get_id = first_bl->id;
+			if(first_id > 0) {
+				fitem->first_get_id = first_id;
 				if(type)
 					fitem->first_get_tick = tick + battle_config.mvp_item_first_get_time;
 				else
 					fitem->first_get_tick = tick + battle_config.item_first_get_time;
 			}
-			if(second_bl) {
-				fitem->second_get_id = second_bl->id;
+			if(second_id > 0) {
+				fitem->second_get_id = second_id;
 				if(type)
 					fitem->second_get_tick = tick + battle_config.mvp_item_first_get_time + battle_config.mvp_item_second_get_time;
 				else
 					fitem->second_get_tick = tick + battle_config.item_first_get_time + battle_config.item_second_get_time;
 			}
-			if(third_bl) {
-				fitem->third_get_id = third_bl->id;
+			if(third_id > 0) {
+				fitem->third_get_id = third_id;
 				if(type)
 					fitem->third_get_tick = tick + battle_config.mvp_item_first_get_time + battle_config.mvp_item_second_get_time + battle_config.mvp_item_third_get_time;
 				else

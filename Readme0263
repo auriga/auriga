@@ -1,4 +1,15 @@
 ----------------------------------------
+//0343 [2007/09/23] by Rayce
+
+・delay_item_dropおよびdelay_item_drop2構造体に保存するアイテムルート優先者の情報は、block_list型ではなく
+　int型でIDだけを保存するように修正（map.*, mob.c, pc.c, pet.c, script.c, skill.c）
+	partially merged from eA, thanks
+
+	MOBを倒したときのドロップアイテムが出現するまでの間（約500ms）にルート優先者がMAPから
+	消滅していると、既にfreeされた領域にアクセスしてしまう致命的なバグが修正されます。
+	それに付随して map_addflooritem() の引数をint型に変更しています。
+
+----------------------------------------
 //0342 [2007/09/23] by Rayce
 
 ・マップ離脱時に解除すべきステータス異常を status_change_removemap_end() としてまとめる

@@ -3208,7 +3208,7 @@ int pc_dropitem(struct map_session_data *sd, int n, int amount)
 	if(pc_candrop(sd,sd->status.inventory[n].nameid))
 		return 0;
 
-	if(map_addflooritem(&sd->status.inventory[n],amount,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0)) {
+	if(map_addflooritem(&sd->status.inventory[n],amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0)) {
 		pc_delitem(sd,n,amount,0);
 		return 1;
 	}
@@ -5204,7 +5204,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		item_tmp.card[0]  = 0x00fe;
 		item_tmp.card[1]  = 0;
 		*((unsigned long *)(&item_tmp.card[2])) = sd->status.char_id;	// キャラID
-		map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+		map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 	}
 
 	for(i=0; i<5; i++) {

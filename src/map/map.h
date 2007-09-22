@@ -913,13 +913,13 @@ struct flooritem_data {
 struct delay_item_drop {
 	int m,x,y;
 	int nameid,amount;
-	struct block_list *first_bl,*second_bl,*third_bl;
+	int first_id,second_id,third_id;
 };
 
 struct delay_item_drop2 {
 	int m,x,y;
 	struct item item_data;
-	struct block_list *first_bl,*second_bl,*third_bl;
+	int first_id,second_id,third_id;
 	struct delay_item_drop2 *next;
 };
 
@@ -1126,7 +1126,7 @@ int map_addnpc(int,struct npc_data *);
 // 床アイテム関連
 int map_clearflooritem_timer(int,unsigned int,int,int);
 #define map_clearflooritem(id) map_clearflooritem_timer(0,0,id,1)
-int map_addflooritem(struct item *,int,int,int,int,struct block_list *,struct block_list *,struct block_list *,int);
+int map_addflooritem(struct item *,int,int,int,int,int,int,int,int);
 int map_searchfreecell(struct cell_xy *list,int m,int x0,int y0,int x1,int y1);
 
 // ドロップディレイキュー

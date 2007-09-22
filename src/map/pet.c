@@ -546,7 +546,7 @@ int pet_get_egg(int account_id,int pet_id,int flag)
 
 		if((ret = pc_additem(sd,&tmp_item,1))) {
 			clif_additem(sd,0,0,ret);
-			map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+			map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
 	} else {
 		intif_delete_petdata(pet_id);
@@ -668,7 +668,7 @@ static int pet_return_egg(struct map_session_data *sd)
 
 	if((flag = pc_additem(sd,&tmp_item,1))) {
 		clif_additem(sd,0,0,flag);
-		map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+		map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 	}
 	if(battle_config.pet_status_support && sd->pet.intimate > 0) {
 		if(sd->bl.prev != NULL)
@@ -715,7 +715,7 @@ static int pet_unequipitem(struct map_session_data *sd)
 
 	if((flag = pc_additem(sd,&tmp_item,1))) {
 		clif_additem(sd,0,0,flag);
-		map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,NULL,NULL,NULL,0);
+		map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 	}
 
 	return 0;
@@ -1193,9 +1193,12 @@ static int pet_delay_item_drop2(int tid,unsigned int tick,int id,int data)
 			printf("pet_delay_item_drop2: que pop error!!\n");
 	}
 
-	map_addflooritem(&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,ditem->first_bl,ditem->second_bl,ditem->third_bl,0);
-
+	map_addflooritem(
+		&ditem->item_data,ditem->item_data.amount,ditem->m,ditem->x,ditem->y,
+		ditem->first_id,ditem->second_id,ditem->third_id,0
+	);
 	aFree(ditem);
+
 	return 0;
 }
 
@@ -1221,7 +1224,7 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 			// 落とさないで直接PCのItem欄へ
 			if((flag = pc_additem(sd,item_data,item_data->amount))) {
 				clif_additem(sd,0,0,flag);
-				map_addflooritem(item_data,item_data->amount,pd->bl.m,pd->bl.x,pd->bl.y,NULL,NULL,NULL,0);
+				map_addflooritem(item_data,item_data->amount,pd->bl.m,pd->bl.x,pd->bl.y,0,0,0,0);
 			}
 		} else {
 			struct delay_item_drop2 *ditem;
@@ -1231,9 +1234,9 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 			ditem->m = pd->bl.m;
 			ditem->x = pd->bl.x;
 			ditem->y = pd->bl.y;
-			ditem->first_bl  = NULL;
-			ditem->second_bl = NULL;
-			ditem->third_bl  = NULL;
+			ditem->first_id  = 0;
+			ditem->second_id = 0;
+			ditem->third_id  = 0;
 			ditem->next      = NULL;
 
 			if(ditem->item_data.card[0] == (short)0xff00) {
