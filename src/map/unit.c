@@ -2103,15 +2103,25 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		}
 	} else if(bl->type == BL_PET) {
 		struct pet_data *pd = (struct pet_data*)bl;
+
 		clif_clearchar_area(&pd->bl,0);
 		map_delblock(&pd->bl);
 	} else if(bl->type == BL_HOM) {
 		struct homun_data *hd = (struct homun_data*)bl;
+
+		if(battle_config.homun_skilldelay_reset) {
+			unsigned int tick = gettick();
+			int i;
+			for(i = 0; i < MAX_HOMSKILL; i++) {
+				hd->skillstatictimer[i] = tick;
+			}
+		}
 		clif_clearchar_area(&hd->bl,clrtype);
 		mob_ai_hard_spawn( &hd->bl, 0 );
 		map_delblock(&hd->bl);
 	} else if(bl->type == BL_MERC) {
 		struct merc_data *mcd = (struct merc_data*)bl;
+
 		clif_clearchar_area(&mcd->bl,clrtype);
 		mob_ai_hard_spawn( &mcd->bl, 0 );
 		map_delblock(&mcd->bl);

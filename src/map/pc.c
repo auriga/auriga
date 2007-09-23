@@ -8303,6 +8303,9 @@ int pc_readdb(void)
 			continue;
 
 		skillid = atoi(split[2]);
+		if(skillid < 0 || skillid >= MAX_SKILL)
+			continue;
+
 		st = skill_tree[upper][i];
 		for(j=0; st[j].id && st[j].id != skillid; j++);
 

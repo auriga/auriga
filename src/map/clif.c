@@ -10171,7 +10171,9 @@ static void clif_parse_GlobalMessage(int fd,struct map_session_data *sd, int cmd
 	message = (char *)RFIFOP(fd, GETPACKETPOS(cmd,1));
 	message_size = len - GETPACKETPOS(cmd,1); // including NULL
 
-	if (message_size < 8) // name (mini:4) + " : " (3) + NULL (1) (void mesages are possible for skills)
+	if (message_size < 8)	// name (mini:4) + " : " (3) + NULL (1) (void mesages are possible for skills)
+		return;
+	if (message_size > 255)	// too long
 		return;
 
 	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
@@ -10439,7 +10441,9 @@ static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
 	message_size = RFIFOW(fd,GETPACKETPOS(cmd,0)) - GETPACKETPOS(cmd,2); // including NULL
 	message = (char *)RFIFOP(fd,GETPACKETPOS(cmd,2));
 
-	if (message_size <= 1) // NULL (1) (no void message)
+	if (message_size <= 1)	// NULL (1) (no void message)
+		return;
+	if (message_size > 255)	// too long
 		return;
 
 	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
@@ -10475,7 +10479,9 @@ static void clif_parse_GMmessage(int fd,struct map_session_data *sd, int cmd)
 	message_size = RFIFOW(fd,GETPACKETPOS(cmd,0)) - GETPACKETPOS(cmd,1); // including NULL
 	message = (char *)RFIFOP(fd,GETPACKETPOS(cmd,1));
 
-	if (message_size <= 1) // NULL (1) (no void message)
+	if (message_size <= 1)	// NULL (1) (no void message)
+		return;
+	if (message_size > 255)	// too long
 		return;
 
 	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
@@ -11698,7 +11704,9 @@ static void clif_parse_LGMmessage(int fd,struct map_session_data *sd, int cmd)
 
 	len = RFIFOW(fd,GETPACKETPOS(cmd,0));
 	message_size = len - GETPACKETPOS(cmd,1);
-	if (message_size <= 0) // must have at least \0
+	if (message_size <= 0)	// must have at least \0
+		return;
+	if (message_size > 255)	// too long
 		return;
 
 	// force \0 against hack
@@ -11987,8 +11995,11 @@ static void clif_parse_PartyMessage(int fd,struct map_session_data *sd, int cmd)
 	message = (char *)RFIFOP(fd, GETPACKETPOS(cmd,1));
 	message_size = RFIFOW(fd, GETPACKETPOS(cmd,0)) - GETPACKETPOS(cmd,1);
 
-	if (message_size <= 0) // against hack
+	if (message_size <= 0)	// against hack
 		return;
+	if (message_size > 255)	// too long
+		return;
+
 	// normal client send NULL -> force it (against hacker)
 	message[message_size - 1] = '\0';
 
@@ -12329,8 +12340,11 @@ static void clif_parse_GuildMessage(int fd,struct map_session_data *sd, int cmd)
 	message = (char *)RFIFOP(fd, GETPACKETPOS(cmd,1));
 	message_size = RFIFOW(fd, GETPACKETPOS(cmd,0)) - GETPACKETPOS(cmd,1);
 
-	if (message_size <= 0) // against hack
+	if (message_size <= 0)	// against hack
 		return;
+	if (message_size > 255)	// too long
+		return;
+
 	// normal client send NULL -> force it (against hacker)
 	message[message_size - 1] = '\0';
 

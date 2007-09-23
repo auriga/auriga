@@ -530,6 +530,8 @@ extern struct Battle_Config {
 	int master_get_merc_job_exp;
 
 	int party_invite_range_check;
+	int homun_skilldelay_reset;
+	int homun_statuschange_reset;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

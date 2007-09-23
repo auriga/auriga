@@ -374,11 +374,8 @@ int homun_calc_status(struct homun_data *hd)
 	// チェンジインストラクション
 	if((lv = homun_checkskill(hd,HVAN_INSTRUCT)) > 0)
 	{
-		static int instruct_str[11] = { 0,1,1,3,4,4,6,7,7,9,10 };	// 10まで拡張
-		if(lv > 10)
-			lv = 10;
-		hd->str  += instruct_str[lv];
-		hd->int_ += lv;
+		hd->str  += lv - ((lv % 3 == 2)? 1 : 0);
+		hd->int_ += lv - ((lv % 3 == 0)? 1 : 0);
 	}
 	// 脳手術
 	if((lv = homun_checkskill(hd,HLIF_BRAIN)) > 0)
@@ -400,8 +397,10 @@ int homun_calc_status(struct homun_data *hd)
 		if(hd->sc_data[SC_AVOID].timer != -1)
 			speed_rate -= hd->sc_data[SC_AVOID].val1*10;
 		// メンタルチェンジ
-		if(hd->sc_data[SC_CHANGE].timer != -1)
-			hd->int_ += 60;
+		if(hd->sc_data[SC_CHANGE].timer != -1) {
+			hd->vit  += 30 * hd->sc_data[SC_CHANGE].val1;
+			hd->int_ += 20 * hd->sc_data[SC_CHANGE].val1;
+		}
 		// ブラッドラスト
 		if(hd->sc_data[SC_BLOODLUST].timer != -1)
 			atk_rate += hd->sc_data[SC_BLOODLUST].val1*10+20;
@@ -504,20 +503,6 @@ int homun_calc_status(struct homun_data *hd)
 		hd->aspd = hd->aspd*aspd_rate/100;
 	if(speed_rate != 100)
 		hd->speed = hd->speed*speed_rate/100;
-
-	// メンタルチェンジ
-	if(hd->sc_data && hd->sc_data[SC_CHANGE].timer != -1)
-	{
-		int atk_,hp_;
-
-		atk_ = hd->atk;
-		hd->atk  = hd->matk;
-		hd->matk = atk_;
-
-		hp_ = hd->max_hp;
-		hd->max_hp = hd->max_sp;
-		hd->max_sp = hp_;
-	}
 
 	if(hd->max_hp <= 0)
 		hd->max_hp = 1;	// mhp 0 だとクライアントエラー
@@ -1150,6 +1135,7 @@ int homun_calc_skilltree(struct homun_data *hd)
 	do {
 		flag = 0;
 		for(i=0; (id = homun_skill_tree[c][i].id) > 0; i++) {
+			id -= HOM_SKILLID;
 			if(hd->status.skill[id].id > 0)
 				continue;
 			if(!battle_config.skillfree) {
@@ -1166,7 +1152,7 @@ int homun_calc_skilltree(struct homun_data *hd)
 				   hd->status.intimate < homun_skill_tree[c][j].intimate)
 					continue;
 			}
-			hd->status.skill[id-HOM_SKILLID].id = id;
+			hd->status.skill[id].id = id + HOM_SKILLID;
 			flag = 1;
 		}
 	} while(flag);
@@ -1697,6 +1683,9 @@ static int homun_readdb(void)
 			continue;
 
 		skillid = atoi(split[1]);
+		if(skillid < HOM_SKILLID || skillid >= MAX_HOM_SKILLID)
+			continue;
+
 		st = homun_skill_tree[i];
 		for(j=0; st[j].id && st[j].id != skillid; j++);
 

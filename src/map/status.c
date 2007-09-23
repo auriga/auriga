@@ -6581,8 +6581,8 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			return 0;
 		}
 		break;
-	case SC_DANCING: // ダンススキルの時間SP消費
-		if(sd) {
+	case SC_DANCING:
+		if(sd) {	// ダンススキルの時間SP消費
 			int s = 0, cost = 1;
 			if(sc_data[type].val1 == CG_HERMODE)
 				cost = 5;
@@ -6717,6 +6717,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			sc_data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 			return 0;
 		}
+		break;
+	case SC_CHANGE:		/* メンタルチェンジ */
+		unit_heal(bl, -status_get_hp(bl)+10, -status_get_sp(bl)+10);	// 時間切れのときのみHP,SPが10になる
 		break;
 	}
 
@@ -7242,22 +7245,24 @@ int status_change_removemap_end(struct block_list *bl)
 		status_change_end(bl, SC_MARIONETTE, -1);
 	if(sc_data[SC_MARIONETTE2].timer != -1)
 		status_change_end(bl, SC_MARIONETTE2, -1);
-	if(sc_data[SC_AVOID].timer != -1)
-		status_change_end(bl, SC_AVOID, -1);
-	if(sc_data[SC_CHANGE].timer != -1)
-		status_change_end(bl, SC_CHANGE, -1);
-	if(sc_data[SC_DEFENCE].timer != -1)
-		status_change_end(bl, SC_DEFENCE, -1);
-	if(sc_data[SC_BLOODLUST].timer != -1)
-		status_change_end(bl, SC_BLOODLUST, -1);
-	if(sc_data[SC_FLEET].timer != -1)
-		status_change_end(bl, SC_FLEET, -1);
-	if(sc_data[SC_SPEED].timer != -1)
-		status_change_end(bl, SC_SPEED, -1);
-
 	if(sc_data[SC_BASILICA].timer != -1) {
 		skill_basilica_cancel(bl);
 		status_change_end(bl, SC_BASILICA, -1);
+	}
+
+	if(battle_config.homun_statuschange_reset) {
+		if(sc_data[SC_AVOID].timer != -1)
+			status_change_end(bl, SC_AVOID, -1);
+		if(sc_data[SC_CHANGE].timer != -1)
+			status_change_end(bl, SC_CHANGE, -1);
+		if(sc_data[SC_DEFENCE].timer != -1)
+			status_change_end(bl, SC_DEFENCE, -1);
+		if(sc_data[SC_BLOODLUST].timer != -1)
+			status_change_end(bl, SC_BLOODLUST, -1);
+		if(sc_data[SC_FLEET].timer != -1)
+			status_change_end(bl, SC_FLEET, -1);
+		if(sc_data[SC_SPEED].timer != -1)
+			status_change_end(bl, SC_SPEED, -1);
 	}
 	status_calc_pc_stop_end(bl);
 

@@ -9048,6 +9048,14 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 	else
 		sp += hd->status.max_sp * abs(sp_rate) / 100;
 
+	switch(sc->id) {
+		case HLIF_HEAL:
+		case HLIF_AVOID:
+			if(hd->sc_data[SC_CHANGE].timer != -1)
+				return 0;
+			break;
+	}
+
 	if(!(type&2)) {
 		if(hp > 0 && hd->status.hp < hp)	/* HPチェック */
 			return 0;

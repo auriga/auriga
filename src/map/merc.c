@@ -653,6 +653,7 @@ int merc_calc_skilltree(struct merc_data *mcd)
 	do {
 		flag = 0;
 		for(i=0; (id = merc_skill_tree[c][i].id) > 0; i++) {
+			id -= MERC_SKILLID;
 			if(mcd->status.skill[id].id > 0)
 				continue;
 			if(!battle_config.skillfree) {
@@ -668,7 +669,7 @@ int merc_calc_skilltree(struct merc_data *mcd)
 				if(mcd->status.base_level < merc_skill_tree[c][i].base_level)
 					continue;
 			}
-			mcd->status.skill[id-MERC_SKILLID].id = id;
+			mcd->status.skill[id].id = id + MERC_SKILLID;
 			flag = 1;
 		}
 	} while(flag);
@@ -1058,6 +1059,9 @@ static int merc_readdb(void)
 			continue;
 
 		skillid = atoi(split[1]);
+		if(skillid < MERC_SKILLID || skillid >= MAX_MERC_SKILLID)
+			continue;
+
 		st = merc_skill_tree[i];
 		for(j=0; st[j].id && st[j].id != skillid; j++);
 

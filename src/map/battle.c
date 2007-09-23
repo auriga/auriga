@@ -901,7 +901,8 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		int t_size = status_get_size(target);
 		int idx    = (lh == 0)? sd->equip_index[9]: sd->equip_index[8];
 
-		if(skill_num == HW_MAGICCRASHER) {		// マジッククラッシャーはMATKで殴る
+		if(skill_num == HW_MAGICCRASHER || (skill_num == 0 && sc_data && sc_data[SC_CHANGE].timer != -1)) {
+			// マジッククラッシャーまたはメンタルチェンジ中の通常攻撃ならMATKで殴る
 			damage = status_get_matk1(src);
 		} else {
 			damage = status_get_baseatk(src);
@@ -972,7 +973,8 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			damage = status_get_baseatk(src);
 		else
 			damage = 0;
-		if(skill_num == HW_MAGICCRASHER) {	// マジッククラッシャーはMATKで殴る
+		if(skill_num == HW_MAGICCRASHER || (skill_num == 0 && sc_data && sc_data[SC_CHANGE].timer != -1)) {
+			// マジッククラッシャーまたはメンタルチェンジ中の通常攻撃ならMATKで殴る
 			atkmin = status_get_matk1(src);
 			atkmax = status_get_matk2(src);
 		} else {
@@ -5089,6 +5091,8 @@ int battle_config_read(const char *cfgName)
 		{ "master_get_merc_base_exp",           &battle_config.master_get_merc_base_exp,           100      },
 		{ "master_get_merc_job_exp",            &battle_config.master_get_merc_job_exp,            0        },
 		{ "party_invite_range_check",           &battle_config.party_invite_range_check,           0        },
+		{ "homun_skilldelay_reset",             &battle_config.homun_skilldelay_reset,             1        },
+		{ "homun_statuschange_reset",           &battle_config.homun_statuschange_reset,           1        },
 		{ NULL,                                 NULL,                                              0        },
 
 	};
