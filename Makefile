@@ -245,7 +245,7 @@ all clean: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakef
 
 ifdef SQLFLAG
 sql: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakefile src/char/GNUmakefile src/map/GNUmakefile src/converter/GNUmakefile
-	cd src ; cd common ; $(MAKE) $(MKDEF) $@ ; cd ..
+	cd src ; cd common ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
 	cd src ; cd common ; cd zlib ; $(MAKE) $(MKDEF) $@ ; cd ..
 	cd src ; cd login ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
 	cd src ; cd char ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
