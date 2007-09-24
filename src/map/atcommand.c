@@ -1125,6 +1125,7 @@ atcommand_option(
 	sd->opt2 = param2;
 	sd->opt3 = param4;
 
+	clif_changeoption2(&sd->bl);
 	pc_setoption(sd, param3);
 
 	clif_displaymessage(fd, msg_txt(9));

@@ -3828,7 +3828,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		} else if(mcd) {
 			mcd->status.hp = mcd->max_hp;
 			clif_send_mercstatus(mcd->msd,0);
-			clif_mercskillinfoblock(mcd->msd);
 		}
 		break;
 	case SM_ENDURE:			/* インデュア */
@@ -9220,12 +9219,10 @@ static int skill_check_condition2_merc(struct merc_data *mcd, struct skill_condi
 		if(sp > 0) {				// SP消費
 			mcd->status.sp -= sp;
 			clif_send_mercstatus(msd,0);
-			clif_mercskillinfoblock(msd);
 		}
 		if(hp > 0) {				// HP消費
 			mcd->status.hp -= hp;
 			clif_send_mercstatus(msd,0);
-			clif_mercskillinfoblock(msd);
 		}
 		if(zeny > 0)				// Zeny消費
 			pc_payzeny(msd,zeny);

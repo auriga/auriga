@@ -1,4 +1,16 @@
 ----------------------------------------
+//0346 [2007/09/25] by Rayce
+
+・パケットに0x28a関する修正 from eA
+　（atcommand.c, clif.*, merc.c, status.c）
+	0x28aは傭兵出現パケットではなく、0x229では出来ないopt3の更新を行うためのパケットでした。
+	clif_send_mercdata() を削除し、clif_changeoption2() に変更
+	これにより @option を使ったときにopt3による見た目の変更が即座に反映されます。
+
+・clif_mercskillinfoblock() を clif_send_mercstatus() 内にまとめる
+　（clif.c, merc.c, skill.c, statuts.c）
+
+----------------------------------------
 //0345 [2007/09/24] by Rayce
 
 ・path.cの全体的な細かい整形、can_place() をマクロに変更（path.c）

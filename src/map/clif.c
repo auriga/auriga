@@ -3953,6 +3953,27 @@ void clif_changeoption(struct block_list* bl)
 }
 
 /*==========================================
+ * 表示オプション変更2
+ *------------------------------------------
+ */
+void clif_changeoption2(struct block_list *bl)
+{
+	unsigned char buf[24];
+	int level;
+
+	nullpo_retv(bl);
+
+	WBUFW(buf,0)  = 0x28a;
+	WBUFL(buf,2)  = bl->id;
+	WBUFL(buf,6)  = *status_get_option(bl);
+	WBUFL(buf,10) = ((level = status_get_lv(bl)) > 99)? 99: level;
+	WBUFL(buf,14) = *status_get_opt3(bl);
+	clif_send(buf,packet_db[0x28a].len,bl,AREA);
+
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -9587,29 +9608,6 @@ void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int 
  *
  *------------------------------------------
  */
-void clif_send_mercdata(struct map_session_data *sd)
-{
-	int fd;
-	struct merc_data *mcd;
-
-	nullpo_retv(sd);
-	nullpo_retv(mcd = sd->mcd);
-
-	fd = sd->fd;
-	WFIFOW(fd,0)  = 0x28a;
-	WFIFOL(fd,2)  = mcd->bl.id;
-	WFIFOL(fd,6)  = mcd->status.option;
-	WFIFOL(fd,10) = mcd->status.base_level;
-	WFIFOL(fd,14) = mcd->opt3;
-	WFIFOSET(fd,packet_db[0x28a].len);
-
-	return;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
 void clif_send_mercstatus(struct map_session_data *sd, int flag)
 {
 	int fd;
@@ -9641,6 +9639,11 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
 	WFIFOL(fd,66) = mcd->status.kill_count;	// キルカウント
 	WFIFOW(fd,70) = mcd->attackable;	// 攻撃可否フラグ 0:不可/1:許可
 	WFIFOSET(fd,packet_db[0x29b].len);
+
+	if(!flag) {
+		// 0x29bを送るとスキルツリーが消えるので再送信する
+		clif_mercskillinfoblock(sd);
+	}
 
 	return;
 }
@@ -9906,10 +9909,8 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		map_addblock(&sd->mcd->bl);
 		mob_ai_hard_spawn( &sd->mcd->bl, 1 );
 		clif_spawnmerc(sd->mcd);
-		clif_send_mercdata(sd);
 		clif_send_mercstatus(sd,1);
 		clif_send_mercstatus(sd,0);
-		clif_mercskillinfoblock(sd);
 	}
 
 	if(sd->state.connect_new) {

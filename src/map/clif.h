@@ -79,6 +79,7 @@ void clif_misceffect(struct block_list* bl, int type);
 void clif_misceffect2(struct block_list *bl, int type);
 void clif_misceffect3(struct block_list *bl, int type);
 void clif_changeoption(struct block_list *bl);
+void clif_changeoption2(struct block_list *bl);
 void clif_useitemack(struct map_session_data *sd, int idx, int amount, unsigned char ok);
 void clif_GlobalMessage(struct block_list *bl,const char *message);
 void clif_createchat(struct map_session_data *sd, unsigned char fail);
@@ -328,7 +329,6 @@ void clif_homskillup(struct map_session_data *sd, int skill_num);
 
 // merc
 void clif_spawnmerc(struct merc_data *mcd);
-void clif_send_mercdata(struct map_session_data *sd);
 void clif_send_mercstatus(struct map_session_data *sd, int flag);
 void clif_mercskillinfoblock(struct map_session_data *sd);
 

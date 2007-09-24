@@ -535,10 +535,8 @@ int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int f
 			map_addblock(&sd->mcd->bl);
 			mob_ai_hard_spawn( &sd->mcd->bl, 1 );
 			clif_spawnmerc(sd->mcd);
-			clif_send_mercdata(sd);
 			clif_send_mercstatus(sd,1);
 			clif_send_mercstatus(sd,0);
-			clif_mercskillinfoblock(sd);
 			merc_save_data(sd);
 			skill_unit_move(&sd->mcd->bl,gettick(),1);
 		}
@@ -585,7 +583,6 @@ int merc_menu(struct map_session_data *sd, int menunum)
 	switch(menunum) {
 		case 1:
 			clif_send_mercstatus(sd,0);
-			clif_mercskillinfoblock(sd);
 			break;
 		case 2:
 			clif_disp_onlyself(sd->fd, msg_txt(190));	// 傭兵を解雇しました。
@@ -748,7 +745,6 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 	status_change_hidden_end(&mcd->bl);
 
 	clif_send_mercstatus(sd,0);
-	clif_mercskillinfoblock(sd);
 
 	// 死亡していた
 	if(mcd->status.hp <= 0) {
@@ -804,10 +800,8 @@ int merc_heal(struct merc_data *mcd,int hp,int sp)
 	mcd->status.sp += sp;
 	if(mcd->status.sp <= 0)
 		mcd->status.sp = 0;
-	if((hp || sp) && mcd->msd) {
+	if((hp || sp) && mcd->msd)
 		clif_send_mercstatus(mcd->msd,0);
-		clif_mercskillinfoblock(mcd->msd);
-	}
 
 	return hp + sp;
 }
@@ -836,10 +830,8 @@ static int merc_natural_heal_hp(int tid,unsigned int tick,int id,int data)
 		mcd->status.hp += mcd->nhealhp;
 		if(mcd->status.hp > mcd->max_hp)
 			mcd->status.hp = mcd->max_hp;
-		if(bhp != mcd->status.hp && mcd->msd) {
+		if(bhp != mcd->status.hp && mcd->msd)
 			clif_send_mercstatus(mcd->msd,0);
-			clif_mercskillinfoblock(mcd->msd);
-		}
 	}
 	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,0);
 
@@ -866,10 +858,8 @@ static int merc_natural_heal_sp(int tid,unsigned int tick,int id,int data)
 		mcd->status.sp += mcd->nhealsp;
 		if(mcd->status.sp > mcd->max_sp)
 			mcd->status.sp = mcd->max_sp;
-		if(bsp != mcd->status.sp && mcd->msd) {
+		if(bsp != mcd->status.sp && mcd->msd)
 			clif_send_mercstatus(mcd->msd,0);
-			clif_mercskillinfoblock(mcd->msd);
-		}
 	}
 	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,0);
 

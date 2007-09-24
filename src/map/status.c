@@ -5339,7 +5339,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	}
 
 	/* optionの変更 */
-	opt_flag = 1;
 	switch(type) {
 		// opt1
 		case SC_STONE:
@@ -5363,6 +5362,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				*opt1 = 6;
 			else
 				*opt1 = type - SC_STONE + 1;
+			opt_flag = 1;
 			break;
 		// opt2
 		case SC_POISON:
@@ -5370,22 +5370,24 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SILENCE:
 		case SC_CONFUSION:
 			*opt2 |= 1<<(type-SC_POISON);
+			opt_flag = 1;
 			break;
 		case SC_FOGWALLPENALTY:
 		case SC_BLIND:
 			if(sc_data[SC_FOGWALLPENALTY].timer == -1) {
 				*opt2 |= 0x00010;
+				opt_flag = 1;
 				if(md && !(flag&2))
 					md->target_id = 0;
-			} else {
-				opt_flag = 0;
 			}
 			break;
 		case SC_DPOISON:
 			*opt2 |= 0x00080;
+			opt_flag = 1;
 			break;
 		case SC_SIGNUMCRUCIS:
 			*opt2 |= 0x00040;
+			opt_flag = 1;
 			break;
 		// opt3
 		case SC_ONEHAND:		/* 1HQ */
@@ -5394,41 +5396,52 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_CONCENTRATION:		/* コンセントレーション */
 		case SC_WEAPONQUICKEN:		/* ウェポンクイッケン */
 			*opt3 |= 0x00001;
+			opt_flag = 2;
 			break;
 		case SC_OVERTHRUST:		/* オーバートラスト */
 		case SC_SWOO:			/* エスウ */
 			*opt3 |= 0x00002;
+			opt_flag = 2;
 			break;
 		case SC_ENERGYCOAT:		/* エナジーコート */
 		case SC_SKE:			/* エスク */
 			*opt3 |= 0x00004;
+			opt_flag = 2;
 			break;
 		case SC_EXPLOSIONSPIRITS:	/* 爆裂波動 */
 			*opt3 |= 0x00008;
+			opt_flag = 2;
 			break;
 		case SC_STEELBODY:		/* 金剛 */
 		case SC_SKA:			/* エスカ */
 			*opt3 |= 0x00010;
+			opt_flag = 2;
 			break;
 		case SC_BLADESTOP:		/* 白刃取り */
 			*opt3 |= 0x00020;
+			opt_flag = 2;
 			break;
 		case SC_BERSERK:		/* バーサーク */
 			*opt3 |= 0x00080;
+			opt_flag = 2;
 			break;
 		case SC_MARIONETTE:		/* マリオネットコントロール */
 		case SC_MARIONETTE2:		/* マリオネットコントロール */
 			*opt3 |= 0x00400;
+			opt_flag = 2;
 			break;
 		case SC_ASSUMPTIO:		/* アスムプティオ */
 			*opt3 |= 0x00800;
 			clif_misceffect2(bl,375);
+			opt_flag = 2;
 			break;
 		case SC_WARM:			/* 温もり */
 			*opt3 |= 0x01000;
+			opt_flag = 2;
 			break;
 		case SC_KAITE:
 			*opt3 |= 0x02000;
+			opt_flag = 2;
 			break;
 		case SC_MONK:			/* モンクの魂 */
 		case SC_STAR:			/* ケンセイの魂 */
@@ -5452,50 +5465,61 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_COLLECTOR:		/* コレクターの魂 */
 			*opt3 |= 0x08000;
 			clif_misceffect2(bl,424);
+			opt_flag = 2;
 			break;
 		// option
 		case SC_SIGHT:
 			*option |= 0x00001;
+			opt_flag = 1;
 			break;
 		case SC_HIDING:
 			if(sd && val3 == 0)	// 霞斬りでない通常のハイドならアイコン表示
 				clif_status_change(bl,SI_HIDING,1);
 			unit_stopattack(bl);
 			*option |= 0x00002;
+			opt_flag = 1;
 			break;
 		case SC_CLOAKING:
 			unit_stopattack(bl);
 			*option |= 0x00004;
+			opt_flag = 1;
 			break;
 		case SC_INVISIBLE:
 			unit_stopattack(bl);
 			*option |= 0x00040;
+			opt_flag = 1;
 			break;
 		case SC_REVERSEORCISH:
 			*option |= 0x00800;
+			opt_flag = 1;
 			break;
 		case SC_WEDDING:
 			*option |= 0x01000;
+			opt_flag = 1;
 			break;
 		case SC_RUWACH:
 			*option |= 0x02000;
+			opt_flag = 1;
 			break;
 		case SC_CHASEWALK:
 			unit_stopattack(bl);
 			*option |= 0x04004;
+			opt_flag = 1;
 			break;
 		case SC_FUSION:
 			*option |= 0x08000;
-			break;
-		default:
-			opt_flag = 0;
+			opt_flag = 1;
 			break;
 	}
 
-	if(opt_flag) {	/* optionの変更 */
+	/* optionの変更 */
+	if(opt_flag == 1) {
 		clif_changeoption(bl);
 		clif_send_clothcolor(bl);
+	} else if(opt_flag == 2) {
+		clif_changeoption2(bl);
 	}
+
 	(*sc_count)++;	/* ステータス異常の数 */
 
 	sc_data[type].val1 = val1;
@@ -5516,7 +5540,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		} else if(mcd) {
 			merc_calc_status(mcd);
 			clif_send_mercstatus(mcd->msd,0);
-			clif_mercskillinfoblock(mcd->msd);
 		}
 	}
 	// 計算後に走らせる
@@ -5985,7 +6008,6 @@ int status_change_end( struct block_list* bl , int type,int tid)
 	if(sd && StatusIconChangeTable[type] != SI_BLANK)
 		clif_status_change(bl,StatusIconChangeTable[type],0);	// アイコン消去
 
-	opt_flag = 1;
 	switch(type) {	/* 正常に戻るときなにか処理が必要 */
 		// opt1
 		case SC_STONE:
@@ -5993,33 +6015,38 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_STAN:
 		case SC_SLEEP:
 			*opt1 = 0;
+			opt_flag = 1;
 			break;
 		// opt2
 		case SC_POISON:
 			*opt2 &= ~0x00001;
+			opt_flag = 1;
 			break;
 		case SC_CURSE:
 		case SC_SILENCE:
 		case SC_CONFUSION:
 			*opt2 &= ~(1<<(type-SC_POISON));
+			opt_flag = 1;
 			break;
 		case SC_FOGWALLPENALTY:
-			if(sc_data[SC_BLIND].timer == -1)
+			if(sc_data[SC_BLIND].timer == -1) {
 				*opt2 &= ~0x00010;
-			else
-				opt_flag = 0;
+				opt_flag = 1;
+			}
 			break;
 		case SC_BLIND:
-			if(sc_data[SC_FOGWALLPENALTY].timer == -1)
+			if(sc_data[SC_FOGWALLPENALTY].timer == -1) {
 				*opt2 &= ~0x00010;
-			else
-				opt_flag = 0;
+				opt_flag = 1;
+			}
 			break;
 		case SC_DPOISON:
 			*opt2 &= ~0x00080;
+			opt_flag = 1;
 			break;
 		case SC_SIGNUMCRUCIS:
 			*opt2 &= ~0x00040;
+			opt_flag = 1;
 			break;
 		// opt3
 		case SC_ONEHAND:		/* 1HQ */
@@ -6028,40 +6055,51 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_CONCENTRATION:		/* コンセントレーション */
 		case SC_WEAPONQUICKEN:		/* ウェポンクイッケン */
 			*opt3 &= ~0x00001;
+			opt_flag = 2;
 			break;
 		case SC_OVERTHRUST:		/* オーバートラスト */
 		case SC_SWOO:			/* エスウ */
 			*opt3 &= ~0x00002;
+			opt_flag = 2;
 			break;
 		case SC_ENERGYCOAT:		/* エナジーコート */
 		case SC_SKE:			/* エスク */
 			*opt3 &= ~0x00004;
+			opt_flag = 2;
 			break;
 		case SC_EXPLOSIONSPIRITS:	/* 爆裂波動 */
 			*opt3 &= ~0x00008;
+			opt_flag = 2;
 			break;
 		case SC_STEELBODY:		/* 金剛 */
 		case SC_SKA:			/* エスカ */
 			*opt3 &= ~0x00010;
+			opt_flag = 2;
 			break;
 		case SC_BLADESTOP:		/* 白刃取り */
 			*opt3 &= ~0x00020;
+			opt_flag = 2;
 			break;
 		case SC_BERSERK:		/* バーサーク */
 			*opt3 &= ~0x00080;
+			opt_flag = 2;
 			break;
 		case SC_MARIONETTE:		/* マリオネットコントロール */
 		case SC_MARIONETTE2:		/* マリオネットコントロール */
 			*opt3 &= ~0x00400;
+			opt_flag = 2;
 			break;
 		case SC_ASSUMPTIO:		/* アスムプティオ */
 			*opt3 &= ~0x00800;
+			opt_flag = 2;
 			break;
 		case SC_WARM:			/* 温もり */
 			*opt3 &= ~0x01000;
+			opt_flag = 2;
 			break;
 		case SC_KAITE:			/* カイト */
 			*opt3 &= ~0x02000;
+			opt_flag = 2;
 			break;
 		case SC_MONK:			/* モンクの魂 */
 		case SC_STAR:			/* ケンセイの魂 */
@@ -6084,46 +6122,56 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		case SC_DEATHKINGHT:		/* デスナイトの魂 */
 		case SC_COLLECTOR:		/* コレクターの魂 */
 			*opt3 &= ~0x08000;
+			opt_flag = 2;
 			break;
 		// option
 		case SC_SIGHT:
 			*option &= ~0x00001;
+			opt_flag = 1;
 			break;
 		case SC_HIDING:
 			// 霞斬りでない通常のハイドならアイコン消去
 			if(sd && sc_data[type].val3 == 0)
 				clif_status_change(bl,SI_HIDING,0);
 			*option &= ~0x00002;
+			opt_flag = 1;
 			break;
 		case SC_CLOAKING:
 			*option &= ~0x00004;
+			opt_flag = 1;
 			break;
 		case SC_INVISIBLE:
 			*option &= ~0x00040;
+			opt_flag = 1;
 			break;
 		case SC_REVERSEORCISH:
 			*option &= ~0x00800;
+			opt_flag = 1;
 			break;
 		case SC_WEDDING:		/* ウェディング */
 			*option &= ~0x01000;
+			opt_flag = 1;
 			break;
 		case SC_RUWACH:
 			*option &= ~0x02000;
+			opt_flag = 1;
 			break;
 		case SC_CHASEWALK:		/* チェイスウォーク */
 			*option &= ~0x04004;
+			opt_flag = 1;
 			break;
 		case SC_FUSION:
 			*option &= ~0x08000;
-			break;
-		default:
-			opt_flag = 0;
+			opt_flag = 1;
 			break;
 	}
 
-	if(opt_flag) {	/* optionの変更 */
+	/* optionの変更 */
+	if(opt_flag == 1) {
 		clif_changeoption(bl);
 		clif_send_clothcolor(bl);
+	} else if(opt_flag == 2) {
+		clif_changeoption2(bl);
 	}
 
 	/* ステータス再計算 */
@@ -6140,7 +6188,6 @@ int status_change_end( struct block_list* bl , int type,int tid)
 		if(calc_flag) {
 			merc_calc_status(mcd);
 			clif_send_mercstatus(mcd->msd,0);
-			clif_mercskillinfoblock(mcd->msd);
 		}
 	}
 
@@ -6646,7 +6693,6 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				} else if(mcd) {
 					mcd->status.hp -= dmg;
 					clif_send_mercstatus(mcd->msd,0);
-					clif_mercskillinfoblock(mcd->msd);
 				}
 				sc_data[type].timer = add_timer(	/* タイマー再設定 */
 					10000+tick, status_change_timer,
