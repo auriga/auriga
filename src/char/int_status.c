@@ -23,8 +23,8 @@
 int status_dummy_init(void) { return 0; }
 int status_dummy_sync(void) { return 0; }
 int status_dummy_delete(int char_id) { return 0; }
-struct status_change_data *status_dummy_load(int char_id) { return NULL; }
-int status_dummy_save(struct status_change_data *sc2) { return 0; }
+struct scdata *status_dummy_load(int char_id) { return NULL; }
+int status_dummy_save(struct scdata *sc2) { return 0; }
 void status_dummy_final(void) { return; }
 void status_dummy_config_read_sub(const char *w1,const char *w2) { return; }
 
@@ -43,7 +43,7 @@ static char status_journal_file[1024]="./save/scdata.journal";
 static int status_journal_cache = 1000;
 #endif
 
-static int status_tostr(char *str, struct status_change_data *sc)
+static int status_tostr(char *str, struct scdata *sc)
 {
 	int i;
 	char *str_p = str;
@@ -60,7 +60,7 @@ static int status_tostr(char *str, struct status_change_data *sc)
 	return 0;
 }
 
-static int status_fromstr(char *str, struct status_change_data *sc)
+static int status_fromstr(char *str, struct scdata *sc)
 {
 	int i,next,set,len;
 	int tmp_int[6];
@@ -103,10 +103,10 @@ static int status_fromstr(char *str, struct status_change_data *sc)
 // ------------------------------------------
 int status_journal_rollforward( int key, void* buf, int flag )
 {
-	struct status_change_data *sc = (struct status_change_data *)numdb_search( scdata_db, key );
+	struct scdata *sc = (struct scdata *)numdb_search( scdata_db, key );
 
 	// 念のためチェック
-	if( flag == JOURNAL_FLAG_WRITE && key != ((struct status_change_data *)buf)->char_id )
+	if( flag == JOURNAL_FLAG_WRITE && key != ((struct scdata *)buf)->char_id )
 	{
 		printf("int_status: journal: key != char_id !\n");
 		return 0;
@@ -119,7 +119,7 @@ int status_journal_rollforward( int key, void* buf, int flag )
 			numdb_erase(scdata_db, key);
 			aFree(sc);
 		} else {
-			memcpy( sc, buf, sizeof(struct status_change_data) );
+			memcpy( sc, buf, sizeof(struct scdata) );
 		}
 		return 1;
 	}
@@ -127,8 +127,8 @@ int status_journal_rollforward( int key, void* buf, int flag )
 	// 追加
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
-		sc = (struct status_change_data *)aCalloc( 1, sizeof( struct status_change_data ) );
-		memcpy( sc, buf, sizeof(struct status_change_data) );
+		sc = (struct scdata *)aCalloc( 1, sizeof( struct scdata ) );
+		memcpy( sc, buf, sizeof(struct scdata) );
 		numdb_insert( scdata_db, key, sc );
 		return 1;
 	}
@@ -141,7 +141,7 @@ int status_txt_sync(void);
 int status_txt_init(void)
 {
 	char line[8192];
-	struct status_change_data *sc;
+	struct scdata *sc;
 	FILE *fp;
 	int c=0;
 
@@ -150,7 +150,7 @@ int status_txt_init(void)
 	if( (fp=fopen(scdata_txt,"r")) == NULL )
 		return 1;
 	while(fgets(line,sizeof(line),fp)) {
-		sc = (struct status_change_data *)aCalloc(1,sizeof(struct status_change_data));
+		sc = (struct scdata *)aCalloc(1,sizeof(struct scdata));
 		if(status_fromstr(line,sc) == 0) {
 			numdb_insert(scdata_db,sc->char_id,sc);
 		} else {
@@ -166,7 +166,7 @@ int status_txt_init(void)
 	if( status_journal_enable )
 	{
 		// ジャーナルデータのロールフォワード
-		if( journal_load( &status_journal, sizeof(struct status_change_data), status_journal_file ) )
+		if( journal_load( &status_journal, sizeof(struct scdata), status_journal_file ) )
 		{
 			int c = journal_rollforward( &status_journal, status_journal_rollforward );
 
@@ -179,7 +179,7 @@ int status_txt_init(void)
 		{
 			// ジャーナルを新規作成する
 			journal_final( &status_journal );
-			journal_create( &status_journal, sizeof(struct status_change_data), status_journal_cache, status_journal_file );
+			journal_create( &status_journal, sizeof(struct scdata), status_journal_cache, status_journal_file );
 		}
 	}
 #endif
@@ -191,7 +191,7 @@ static int status_txt_sync_sub(void *key, void *data, va_list ap)
 {
 	char line[8192];
 	FILE *fp;
-	struct status_change_data *sc = (struct status_change_data *)data;
+	struct scdata *sc = (struct scdata *)data;
 
 	// countが0のときは書き込みしない
 	if(sc->count > 0) {
@@ -223,7 +223,7 @@ int status_txt_sync(void)
 	{
 		// コミットしたのでジャーナルを新規作成する
 		journal_final( &status_journal );
-		journal_create( &status_journal, sizeof(struct status_change_data), status_journal_cache, status_journal_file );
+		journal_create( &status_journal, sizeof(struct scdata), status_journal_cache, status_journal_file );
 	}
 #endif
 
@@ -232,7 +232,7 @@ int status_txt_sync(void)
 
 int status_txt_delete(int char_id)
 {
-	struct status_change_data *sc = (struct status_change_data *)numdb_search(scdata_db,char_id);
+	struct scdata *sc = (struct scdata *)numdb_search(scdata_db,char_id);
 
 	if(sc == NULL)
 		return 1;
@@ -249,17 +249,17 @@ int status_txt_delete(int char_id)
 }
 
 /* 負荷軽減を優先してconstを付けない */
-struct status_change_data *status_txt_load(int char_id)
+struct scdata *status_txt_load(int char_id)
 {
-	return (struct status_change_data *)numdb_search(scdata_db,char_id);
+	return (struct scdata *)numdb_search(scdata_db,char_id);
 }
 
-int status_txt_save(struct status_change_data *sc2)
+int status_txt_save(struct scdata *sc2)
 {
-	struct status_change_data *sc1 = (struct status_change_data *)numdb_search(scdata_db,sc2->char_id);
+	struct scdata *sc1 = (struct scdata *)numdb_search(scdata_db,sc2->char_id);
 
 	if(sc1 == NULL) {
-		sc1 = (struct status_change_data *)aCalloc(1,sizeof(struct status_change_data));
+		sc1 = (struct scdata *)aCalloc(1,sizeof(struct scdata));
 		numdb_insert(scdata_db,sc2->char_id,sc1);
 		sc1->account_id = sc2->account_id;
 		sc1->char_id    = sc2->char_id;
@@ -267,7 +267,7 @@ int status_txt_save(struct status_change_data *sc2)
 
 	// データが共に0個ならコピーしない
 	if(sc1->count > 0 || sc2->count > 0)
-		memcpy(sc1,sc2,sizeof(struct status_change_data));
+		memcpy(sc1,sc2,sizeof(struct scdata));
 
 #ifdef TXT_JOURNAL
 	if( status_journal_enable )
@@ -278,7 +278,7 @@ int status_txt_save(struct status_change_data *sc2)
 
 static int status_txt_final_sub(void *key, void *data, va_list ap)
 {
-	struct status_change_data *sc = (struct status_change_data *)data;
+	struct scdata *sc = (struct scdata *)data;
 
 	aFree(sc);
 
@@ -341,7 +341,7 @@ int status_sql_sync(void)
 
 int status_sql_delete(int char_id)
 {
-	struct status_change_data *sc = (struct status_change_data *)numdb_search(scdata_db,char_id);
+	struct scdata *sc = (struct scdata *)numdb_search(scdata_db,char_id);
 
 	if(sc && sc->char_id == char_id) {
 		numdb_erase(scdata_db,char_id);
@@ -355,22 +355,22 @@ int status_sql_delete(int char_id)
 }
 
 /* 負荷軽減を優先してconstを付けない */
-struct status_change_data *status_sql_load(int char_id)
+struct scdata *status_sql_load(int char_id)
 {
 	int i=0;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
-	struct status_change_data *sc = (struct status_change_data *)numdb_search(scdata_db,char_id);
+	struct scdata *sc = (struct scdata *)numdb_search(scdata_db,char_id);
 
 	if(sc && sc->char_id == char_id) {
 		// 既にキャッシュが存在する
 		return sc;
 	}
 	if(sc == NULL) {
-		sc = (struct status_change_data *)aMalloc(sizeof(struct status_change_data));
+		sc = (struct scdata *)aMalloc(sizeof(struct scdata));
 		numdb_insert(scdata_db,char_id,sc);
 	}
-	memset(sc, 0, sizeof(struct status_change_data));
+	memset(sc, 0, sizeof(struct scdata));
 
 	sc->char_id = char_id;
 
@@ -413,9 +413,9 @@ struct status_change_data *status_sql_load(int char_id)
 	return sc;
 }
 
-int status_sql_save(struct status_change_data *sc2)
+int status_sql_save(struct scdata *sc2)
 {
-	struct status_change_data *sc1 = status_sql_load(sc2->char_id);
+	struct scdata *sc1 = status_sql_load(sc2->char_id);
 	int i;
 
 	if(sc1 != NULL && sc1->count <= 0) {
@@ -443,7 +443,7 @@ int status_sql_save(struct status_change_data *sc2)
 	}
 
 	if(sc1) {
-		memcpy(sc1,sc2,sizeof(struct status_change_data));
+		memcpy(sc1,sc2,sizeof(struct scdata));
 	}
 
 	return 0;
@@ -451,7 +451,7 @@ int status_sql_save(struct status_change_data *sc2)
 
 static int status_sql_final_sub(void *key, void *data, va_list ap)
 {
-	struct status_change_data *sc = (struct status_change_data *)data;
+	struct scdata *sc = (struct scdata *)data;
 
 	aFree(sc);
 
@@ -483,7 +483,7 @@ void status_sql_config_read_sub(const char *w1, const char *w2)
 
 int mapif_load_scdata(int fd,int account_id,int char_id)
 {
-	struct status_change_data *sc = status_load(char_id);
+	struct scdata *sc = status_load(char_id);
 
 	if(sc) {
 		if(sc->account_id <= 0) {	// アカウントIDがないのは困るので補完
@@ -542,7 +542,7 @@ int mapif_parse_LoadStatusChange(int fd)
 // ステータス異常データ保存
 int mapif_parse_SaveStatusChange(int fd)
 {
-	struct status_change_data sc;
+	struct scdata sc;
 	int i,p;
 	short len = RFIFOW(fd,2);
 

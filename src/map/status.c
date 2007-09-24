@@ -51,7 +51,11 @@ static struct refine_db {
 int current_equip_item_index;	// ステータス計算用
 int current_equip_card_id;
 static char race_name[11][5] = {{"無形"},{"不死"},{"動物"},{"植物"},{"昆虫"},{""},{"魚貝"},{"悪魔"},{"人間"},{"天使"},{"竜"}};
+
+#ifdef DYNAMIC_SC_DATA
 struct status_change dummy_sc_data[MAX_STATUSCHANGE];
+#endif
+
 static struct scdata_db scdata_db[MAX_STATUSCHANGE];	// ステータス異常データベース
 
 static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
@@ -4165,6 +4169,10 @@ unsigned int *status_get_option(struct block_list *bl)
 	return NULL;
 }
 
+/*==========================================
+ * 魔法無効かどうか
+ *------------------------------------------
+ */
 int status_check_no_magic_damage(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
@@ -7522,14 +7530,14 @@ int status_readdb(void) {
 	fclose(fp);
 	printf("read db/scdata_db.txt done (count=%d)\n",i);
 
+#ifdef DYNAMIC_SC_DATA
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
 		dummy_sc_data[i].timer = -1;
 		dummy_sc_data[i].val1 = dummy_sc_data[i].val2 = dummy_sc_data[i].val3 = dummy_sc_data[i].val4 = 0;
 	}
-
-#ifdef DYNAMIC_SC_DATA
 	printf("status_readdb: enable dynamic sc_data.\n");
 #endif
+
 	return 0;
 }
 

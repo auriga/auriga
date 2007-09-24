@@ -13,7 +13,7 @@ struct accreg {
 	struct global_reg reg[ACCOUNT_REG_NUM];
 };
 
-struct status_change_data {
+struct scdata {
 	int account_id;
 	int char_id;
 	short count;
@@ -76,7 +76,7 @@ static int accreg_tosql(struct accreg *reg)
 }
 
 // ステータス異常データを文字列から変換
-static int status_fromstr(char *str, struct status_change_data *sc)
+static int status_fromstr(char *str, struct scdata *sc)
 {
 	int i,next,set,len;
 	int tmp_int[6];
@@ -114,7 +114,7 @@ static int status_fromstr(char *str, struct status_change_data *sc)
 }
 
 // ステータス異常データを書き込み
-static int status_tosql(struct status_change_data *sc)
+static int status_tosql(struct scdata *sc)
 {
 	int i;
 
@@ -299,7 +299,7 @@ int inter_convert(void)
 	printf("\nDo you wish to convert your Status Change Data to SQL? (y/n) : ");
 	input = getchar();
 	if(input == 'y' || input == 'Y') {
-		struct status_change_data sc;
+		struct scdata sc;
 		printf("\nConverting Status Change Data...\n");
 		fp = fopen(scdata_txt,"r");
 		if(fp == NULL) {

@@ -1,7 +1,7 @@
 #ifndef _INT_STATUS_H_
 #define _INT_STATUS_H_
 
-struct status_change_data {
+struct scdata {
 	int account_id;
 	int char_id;
 	short count;
@@ -19,8 +19,8 @@ int inter_status_parse_frommap(int fd);
 int status_dummy_init(void);
 int status_dummy_sync(void);
 int status_dummy_delete(int char_id);
-struct status_change_data *status_dummy_load(int char_id);
-int status_dummy_save(struct status_change_data *sc2);
+struct scdata *status_dummy_load(int char_id);
+int status_dummy_save(struct scdata *sc2);
 void status_dummy_final(void);
 void status_dummy_config_read_sub(const char *w1,const char *w2);
 
@@ -39,8 +39,8 @@ void status_dummy_config_read_sub(const char *w1,const char *w2);
 int  status_txt_init(void);
 int  status_txt_sync(void);
 int  status_txt_delete(int char_id);
-struct status_change_data *status_txt_load(int char_id);
-int  status_txt_save(struct status_change_data *sc2);
+struct scdata *status_txt_load(int char_id);
+int  status_txt_save(struct scdata *sc2);
 void status_txt_final(void);
 void status_txt_config_read_sub(const char *w1,const char *w2);
 
@@ -59,8 +59,8 @@ void status_txt_config_read_sub(const char *w1,const char *w2);
 int  status_sql_init(void);
 int  status_sql_sync(void);
 int  status_sql_delete(int char_id);
-struct status_change_data *status_sql_load(int char_id);
-int  status_sql_save(struct status_change_data *sc2);
+struct scdata *status_sql_load(int char_id);
+int  status_sql_save(struct scdata *sc2);
 void status_sql_final(void);
 void status_sql_config_read_sub(const char *w1,const char *w2);
 

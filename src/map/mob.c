@@ -769,9 +769,10 @@ static int mob_randomwalk(struct mob_data *md,unsigned int tick)
 				md->move_fail_count++;
 				if(md->move_fail_count > 1000) {
 					if(battle_config.error_log)
-						printf("MOB cant move. random spawn %d, class = %d\n",md->bl.id,md->class_);
+						printf("MOB cant move. hold position %d, class = %d\n",md->bl.id,md->class_);
 					md->move_fail_count = 0;
-					mob_spawn(md->bl.id);
+					md->ud.canmove_tick = gettick() + 60000;
+					return 0;
 				}
 			}
 		}
@@ -1322,24 +1323,22 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
 	{
 		int mode = mob_db[md->class_].mode;
 		if( map[md->bl.m].users > 0 ) {
-			// 同じマップにPCがいるので、少しましな手抜き処理をする
+			// 同じマップにPC, HOM, MERCがいるので、少しましな手抜き処理をする
 
-			// 時々移動する
-			if( (mode&1) && atn_rand()%1000 < MOB_LAZYMOVEPERC )
+			if( (mode&1) && atn_rand()%1000 < MOB_LAZYMOVEPERC ) {
+				// 時々移動する
 				mob_randomwalk(md,tick);
-
-			// 時々スキルを使う
-			else if( MOB_LAZYSKILLUSEPERC > 0 && atn_rand()%1000 < MOB_LAZYSKILLUSEPERC )
+			}
+			else if( MOB_LAZYSKILLUSEPERC > 0 && atn_rand()%1000 < MOB_LAZYSKILLUSEPERC ) {
+				// 時々スキルを使う
 				mobskill_use(md,tick,-1);
-
-			// 召喚MOBでなく、BOSSでもないMOBは時々、沸きなおす
-			else if( (mode&1) && !(mode & 0x20) && atn_rand()%1000 < MOB_LAZYWARPPERC && md->x0 <= 0 && !md->master_id && mob_db[md->class_].mexp <= 0 )
-				mob_spawn(md->bl.id);
+			}
 		} else {
 			// 同じマップにすらPCがいないので、とっても適当な処理をする
 			// 召喚MOBでない、BOSSでもないMOBは場合、時々ワープする
-			if( (mode&1) && !(mode & 0x20) && atn_rand()%1000 < MOB_LAZYWARPPERC && md->x0 <= 0 && !md->master_id && mob_db[md->class_].mexp <= 0 )
+			if( (mode&1) && !(mode & 0x20) && atn_rand()%1000 < MOB_LAZYWARPPERC && md->x0 <= 0 && !md->master_id && mob_db[md->class_].mexp <= 0 ) {
 				mob_warp(md,-1,-1,-1,-1);
+			}
 		}
 		md->next_walktime = tick + atn_rand()%10000 + 5000;
 	}
