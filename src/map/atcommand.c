@@ -1110,23 +1110,23 @@ atcommand_option(
 	const int fd, struct map_session_data* sd,
 	const char* command, const char* message)
 {
-	unsigned short param1, param2 = 0;
-	unsigned int param3 = 0, param4 = 0;
+	unsigned short opt1, opt2 = 0;
+	unsigned int opt3 = 0, option = 0;
 
 	nullpo_retr(-1, sd);
 
 	if (!message || !*message)
 		return -1;
 
-	if (sscanf(message, "%hu %hu %u %u", &param1, &param2, &param3, &param4) < 1)
+	if (sscanf(message, "%hu %hu %u %u", &opt1, &opt2, &option, &opt3) < 1)
 		return -1;
 
-	sd->opt1 = param1;
-	sd->opt2 = param2;
-	sd->opt3 = param4;
+	sd->opt1 = opt1;
+	sd->opt2 = opt2;
+	sd->opt3 = opt3;
 
 	clif_changeoption2(&sd->bl);
-	pc_setoption(sd, param3);
+	pc_setoption(sd, option);
 
 	clif_displaymessage(fd, msg_txt(9));
 
@@ -3025,6 +3025,7 @@ atcommand_character_option(
 			pl_sd->opt1 = opt1;
 			pl_sd->opt2 = opt2;
 			pl_sd->opt3 = opt3;
+			clif_changeoption2(&pl_sd->bl);
 			pc_setoption(pl_sd, option);
 			clif_displaymessage(fd, msg_txt(55));
 		}

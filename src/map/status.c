@@ -4258,19 +4258,24 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 
 	nullpo_retr(0, bl);
 
-	if(type < 0)
+	if(type < 0 || type >= MAX_STATUSCHANGE)
 		return 0;
-	if(bl->type == BL_SKILL)
+	sc_data = status_get_sc_data(bl);
+	if(sc_data == NULL)
 		return 0;
+
 	if(bl->type == BL_HOM && !battle_config.allow_homun_status_change)
 	{
 		if(type < SC_AVOID || type > SC_SPEED)
 			return 0;
 	}
 #ifdef DYNAMIC_SC_DATA
-	status_calloc_sc_data(bl);
+	if(status_calloc_sc_data(bl)) {
+		sc_data = status_get_sc_data(bl);
+		if(sc_data == NULL)
+			return 0;
+	}
 #endif
-	nullpo_retr(0, sc_data = status_get_sc_data(bl));
 	nullpo_retr(0, sc_count = status_get_sc_count(bl));
 	nullpo_retr(0, option = status_get_option(bl));
 	nullpo_retr(0, opt1 = status_get_opt1(bl));
@@ -4349,12 +4354,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 
 	if(!(flag&8) && scdef >= 100)	// flagが+8なら完全耐性計算しない
 		return 0;
-
-	if( bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_HOM && bl->type != BL_MERC ) {
-		if(battle_config.error_log)
-			printf("status_change_start: neither PC, MOB, HOM, MERC !\n");
-		return 0;
-	}
 
 	sd  = BL_DOWNCAST( BL_PC,   bl );
 	md  = BL_DOWNCAST( BL_MOB,  bl );
@@ -4785,7 +4784,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				status_change_end(bl,SC_ASSUMPTIO,-1);
 			// キリエを掛ける
 			val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 10) / 100);	// 耐久度
-			val3 = (val1 / 2 + 5);	// 回数
+			val3 = val1 / 2 + 5;	// 回数
 			break;
 		case SC_QUAGMIRE:			/* クァグマイア */
 			calc_flag = 1;
@@ -4861,17 +4860,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_VOLCANO:
 			calc_flag = 1;
 			val3 = val1*10;
-			val4 = val1*(11-val1)/2 + 5;
+			val4 = (val1 > 5)? 20: val1*(11-val1)/2 + 5;
 			break;
 		case SC_DELUGE:
 			calc_flag = 1;
-			val3 = val1*(11-val1)/2;
-			val4 = val1*(11-val1)/2 + 5;
+			val3 = (val1 > 5)? 15: val1*(11-val1)/2;
+			val4 = (val1 > 5)? 20: val1*(11-val1)/2 + 5;
 			break;
 		case SC_VIOLENTGALE:
 			calc_flag = 1;
 			val3 = val1*3;
-			val4 = val1*(11-val1)/2 + 5;
+			val4 = (val1 > 5)? 20: val1*(11-val1)/2 + 5;
 			break;
 		case SC_SPEARSQUICKEN:		/* スピアクイッケン */
 			calc_flag = 1;
@@ -4939,7 +4938,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = 75 + 25*val1;
 			break;
 		case SC_AUTOCOUNTER:
-			val3 = val4 = 0;
+			val3 = 0;
+			val4 = 0;
 			break;
 		case SC_POISONPOTION:		/* 毒薬の瓶 */
 			calc_flag = 1;
@@ -5233,7 +5233,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sc_data[SC_ASSUMPTIO].timer != -1)
 				status_change_end(bl,SC_ASSUMPTIO,-1);
 			// 反射回数
-			val2 = (val1 >= 5)? 2: 1;
+			val2 = val1 / 5 + 1;
 			break;
 		case SC_SWOO:			/* エスウ */
 			calc_flag = 1;
@@ -5571,7 +5571,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
  * ステータス異常終了
  *------------------------------------------
  */
-int status_change_end( struct block_list* bl , int type,int tid)
+int status_change_end(struct block_list* bl, int type, int tid)
 {
 	struct map_session_data *sd  = NULL;
 	struct mob_data         *md  = NULL;
@@ -5584,21 +5584,15 @@ int status_change_end( struct block_list* bl , int type,int tid)
 	unsigned int *opt3, *option;
 
 	nullpo_retr(0, bl);
-
-	if(type < 0)
-		return 0;
-	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_HOM && bl->type != BL_MERC) {
-		if(battle_config.error_log)
-			printf("status_change_end: neither PC, MOB, HOM, MERC !\n");
-		return 0;
-	}
-
 	nullpo_retr(0, sc_data = status_get_sc_data(bl));
 	nullpo_retr(0, sc_count = status_get_sc_count(bl));
 	nullpo_retr(0, option = status_get_option(bl));
 	nullpo_retr(0, opt1 = status_get_opt1(bl));
 	nullpo_retr(0, opt2 = status_get_opt2(bl));
 	nullpo_retr(0, opt3 = status_get_opt3(bl));
+
+	if(type < 0)
+		return 0;
 
 	if(type >= MAX_STATUSCHANGE) {
 		switch(type) {
@@ -5933,7 +5927,7 @@ int status_change_end( struct block_list* bl , int type,int tid)
 
 				if(sc_data[type].val4 && (dsd = map_id2sd(sc_data[type].val4))) {
 					// 合奏で相手がいる場合相手のval4を0にする
-					if(dsd->sc_data && dsd->sc_data[type].timer != -1)
+					if(dsd->sc_data[type].timer != -1)
 						dsd->sc_data[type].val4 = 0;
 				}
 				if(sc_data[SC_LONGINGFREEDOM].timer != -1)
@@ -6358,7 +6352,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 	struct merc_data        *mcd = NULL;
 	struct status_change *sc_data;
 
-	if(type < 0)
+	if(type < 0 || type >= MAX_STATUSCHANGE)
 		return 0;
 
 	if((bl = map_id2bl(id)) == NULL)
@@ -6444,8 +6438,8 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				range = (sc_data[type].val4 == NPC_WIDESIGHT)? 5: 3;
 
 			map_foreachinarea(status_change_timer_sub,
-				bl->m, bl->x-range, bl->y-range, bl->x+range,bl->y+range,BL_CHAR,
-				bl,type,tick);
+				bl->m, bl->x-range, bl->y-range, bl->x+range,bl->y+range, BL_CHAR,
+				bl, type, sc_data[type].val1, tick);
 
 			if((--sc_data[type].val2) > 0) {
 				sc_data[type].timer = add_timer(	/* タイマー再設定 */
@@ -6527,11 +6521,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			sc_data[type].val2 = 0;
 			sc_data[type].val4 = 0;
 			unit_stop_walking(bl,1);
-			if(opt1) {
-				*opt1 = 1;
-				clif_changeoption(bl);
-				clif_send_clothcolor(bl);
-			}
+			*opt1 = 1;
+			clif_changeoption(bl);
+			clif_send_clothcolor(bl);
 			sc_data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 			return 0;
 		}
@@ -6792,10 +6784,10 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
  * ステータス異常タイマー範囲処理
  *------------------------------------------
  */
-int status_change_timer_sub(struct block_list *bl, va_list ap )
+int status_change_timer_sub(struct block_list *bl, va_list ap)
 {
 	struct block_list *src;
-	int type;
+	int type, skilllv;
 	unsigned int tick;
 	unsigned int *opt;
 
@@ -6803,43 +6795,42 @@ int status_change_timer_sub(struct block_list *bl, va_list ap )
 	nullpo_retr(0, ap);
 	nullpo_retr(0, src = va_arg(ap,struct block_list*));
 
-	type = va_arg(ap,int);
-	tick = va_arg(ap,unsigned int);
+	type    = va_arg(ap,int);
+	skilllv = va_arg(ap,int);
+	tick    = va_arg(ap,unsigned int);
 
 	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC)))
 		return 0;
 
-	opt = status_get_option(bl);
+	nullpo_retr(0, opt = status_get_option(bl));
 
 	switch( type ) {
 	case SC_SIGHT:	/* サイト */
 	case SC_CONCENTRATE:
-		if( *opt&0x06 ) {
-			status_change_end( bl, SC_HIDING, -1);
-			status_change_end( bl, SC_CLOAKING, -1);
+		if(*opt&0x06) {
+			status_change_end(bl, SC_HIDING, -1);
+			status_change_end(bl, SC_CLOAKING, -1);
 		}
 		break;
 	case SC_RUWACH:	/* ルアフ */
-		if( *opt&0x06 ) {
-			status_change_end( bl, SC_HIDING, -1);
-			status_change_end( bl, SC_CLOAKING, -1);
-			if(battle_check_target( src,bl, BCT_ENEMY ) > 0) {
-				struct status_change *sc_data = status_get_sc_data(src);
-				if(sc_data)
-					battle_skill_attack(BF_MAGIC,src,src,bl,AL_RUWACH,sc_data[type].val1,tick,0);
-			}
+		if(*opt&0x06) {
+			status_change_end(bl, SC_HIDING, -1);
+			status_change_end(bl, SC_CLOAKING, -1);
+			if(battle_check_target(src, bl, BCT_ENEMY) > 0)
+				battle_skill_attack(BF_MAGIC,src,src,bl,AL_RUWACH,skilllv,tick,0);
 		}
 		break;
 	case SC_SIGHTBLASTER:
-		if( *opt&0x06 ) {
-			status_change_end( bl, SC_HIDING, -1);
-			status_change_end( bl, SC_CLOAKING, -1);
+		if(*opt&0x06) {
+			status_change_end(bl, SC_HIDING, -1);
+			status_change_end(bl, SC_CLOAKING, -1);
 		}
-		if(battle_check_target( src,bl, BCT_ENEMY ) > 0 && !unit_isdead(bl)) {
-			struct status_change *sc_data = status_get_sc_data(src);
-			if(sc_data) {
-				battle_skill_attack(BF_MAGIC,src,src,bl,WZ_SIGHTBLASTER,sc_data[type].val1,tick,0);
-				sc_data[type].val2 = 0;
+		if(battle_check_target(src, bl, BCT_ENEMY) > 0 && !unit_isdead(bl)) {
+			struct status_change *ssc_data;
+			battle_skill_attack(BF_MAGIC,src,src,bl,WZ_SIGHTBLASTER,skilllv,tick,0);
+			ssc_data = status_get_sc_data(src);
+			if(ssc_data) {
+				ssc_data[type].val2 = 0;
 			}
 			status_change_end(src,SC_SIGHTBLASTER,-1);
 		}
@@ -6861,17 +6852,17 @@ int status_change_clear(struct block_list *bl,int type)
 	int i;
 
 	nullpo_retr(0, bl);
-
-#ifdef DYNAMIC_SC_DATA
-	if(status_check_dummy_sc_data(bl))
-		return 0;
-#endif
 	nullpo_retr(0, sc_data = status_get_sc_data(bl));
 	nullpo_retr(0, sc_count = status_get_sc_count(bl));
 	nullpo_retr(0, option = status_get_option(bl));
 	nullpo_retr(0, opt1 = status_get_opt1(bl));
 	nullpo_retr(0, opt2 = status_get_opt2(bl));
 	nullpo_retr(0, opt3 = status_get_opt3(bl));
+
+#ifdef DYNAMIC_SC_DATA
+	if(status_check_dummy_sc_data(bl))
+		return 0;
+#endif
 
 	if(*sc_count <= 0)
 		return 0;
@@ -6919,13 +6910,13 @@ int status_change_release(struct block_list *bl,int mask)
 	int i;
 
 	nullpo_retr(0, bl);
+	nullpo_retr(0, sc_data = status_get_sc_data(bl));
+	nullpo_retr(0, sc_count = status_get_sc_count(bl));
 
 #ifdef DYNAMIC_SC_DATA
 	if(status_check_dummy_sc_data(bl))
 		return 0;
 #endif
-	nullpo_retr(0, sc_data = status_get_sc_data(bl));
-	nullpo_retr(0, sc_count = status_get_sc_count(bl));
 
 	if(*sc_count <= 0)
 		return 0;
@@ -7063,7 +7054,7 @@ int status_change_resistclear(struct block_list *bl)
 	nullpo_retr(0, sc_data = status_get_sc_data(bl));
 
 	status_calc_pc_stop_begin(bl);
-	// 耐性
+
 	if(sc_data[SC_RESISTWATER].timer != -1)
 		status_change_end(bl,SC_RESISTWATER,-1);
 	if(sc_data[SC_RESISTGROUND].timer != -1)
@@ -7082,6 +7073,7 @@ int status_change_resistclear(struct block_list *bl)
 		status_change_end(bl,SC_RESISTTELEKINESIS,-1);
 	if(sc_data[SC_RESISTUNDEAD].timer != -1)
 		status_change_end(bl,SC_RESISTUNDEAD,-1);
+
 	status_calc_pc_stop_end(bl);
 
 	return 0;
@@ -7257,12 +7249,12 @@ int status_change_hidden_end(struct block_list *bl)
 
 	option = status_get_option(bl);
 
-	if (option && *option > 0) {
-		if ((*option) & 0x02)
+	if(option && *option > 0) {
+		if((*option) & 0x02)
 			status_change_end(bl,SC_HIDING,-1);
-		if (((*option) & 0x4004) == 4)
+		if(((*option) & 0x4004) == 4)
 			status_change_end(bl,SC_CLOAKING,-1);
-		if (((*option) & 0x4004) == 0x4004)
+		if(((*option) & 0x4004) == 0x4004)
 			status_change_end(bl,SC_CHASEWALK,-1);
 	}
 	return 0;
@@ -7533,7 +7525,10 @@ int status_readdb(void) {
 #ifdef DYNAMIC_SC_DATA
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
 		dummy_sc_data[i].timer = -1;
-		dummy_sc_data[i].val1 = dummy_sc_data[i].val2 = dummy_sc_data[i].val3 = dummy_sc_data[i].val4 = 0;
+		dummy_sc_data[i].val1  = 0;
+		dummy_sc_data[i].val2  = 0;
+		dummy_sc_data[i].val3  = 0;
+		dummy_sc_data[i].val4  = 0;
 	}
 	printf("status_readdb: enable dynamic sc_data.\n");
 #endif

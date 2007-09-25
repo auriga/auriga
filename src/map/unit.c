@@ -1527,7 +1527,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 		int mode, race;
 		if(src_md->opt1 > 0 || src_md->option&2)
 			return 0;
-		if(src_md->sc_data && src_md->sc_data[SC_WINKCHARM].timer != -1)
+		if(src_md->sc_data[SC_WINKCHARM].timer != -1)
 			return 0;
 
 		mode = status_get_mode(src);
@@ -2150,7 +2150,7 @@ int unit_free(struct block_list *bl, int clrtype)
 		if(unit_isdead(&sd->bl))
 			pc_setrestartvalue(sd,2);
 
-		if(sd->sc_data && sd->sc_data[SC_BERSERK].timer != -1) // バーサーク中の終了はHPを100に
+		if(sd->sc_data[SC_BERSERK].timer != -1) // バーサーク中の終了はHPを100に
 			sd->status.hp = 100;
 
 		// OnPCLogoutイベント
@@ -2219,7 +2219,7 @@ int unit_free(struct block_list *bl, int clrtype)
 		struct merc_data *mcd = (struct merc_data*)bl;
 		struct map_session_data *sd = mcd->msd;
 
-		if(mcd->sc_data && mcd->sc_data[SC_BERSERK].timer != -1) // バーサーク中の終了はHPを100に
+		if(mcd->sc_data[SC_BERSERK].timer != -1) // バーサーク中の終了はHPを100に
 			mcd->status.hp = 100;
 
 		status_change_clear(&mcd->bl,1);			// ステータス異常を解除する
@@ -2234,6 +2234,7 @@ int unit_free(struct block_list *bl, int clrtype)
 		map_freeblock(mcd);
 	}
 	map_freeblock_unlock();
+
 	return 0;
 }
 

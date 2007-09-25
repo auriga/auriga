@@ -677,13 +677,17 @@ static int homun_data_init(struct map_session_data *sd)
 	// ステータス異常の初期化
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
 		hd->sc_data[i].timer = -1;
-		hd->sc_data[i].val1 = hd->sc_data[i].val2 = hd->sc_data[i].val3 = hd->sc_data[i].val4 = 0;
+		hd->sc_data[i].val1  = 0;
+		hd->sc_data[i].val2  = 0;
+		hd->sc_data[i].val3  = 0;
+		hd->sc_data[i].val4  = 0;
 	}
 	hd->sc_count = 0;
+	hd->opt1     = 0;
+	hd->opt2     = 0;
+	hd->opt3     = 0;
+
 	hd->status.option &= OPTION_MASK;
-	hd->opt1 = 0;
-	hd->opt2 = 0;
-	hd->opt3 = 0;
 
 	homun_calc_status(hd);			// ステータス計算
 	unit_dataset(&hd->bl);
@@ -1215,7 +1219,7 @@ int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_e
 	if(hd->bl.prev == NULL || unit_isdead(&hd->bl))
 		return 0;
 
-	if(md && md->sc_data && md->sc_data[SC_RICHMANKIM].timer != -1) {
+	if(md && md->sc_data[SC_RICHMANKIM].timer != -1) {
 		base_exp = base_exp * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
 		job_exp  = job_exp  * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
 	}

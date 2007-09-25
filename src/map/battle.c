@@ -351,23 +351,23 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		// 属性場のダメージ増加
 		if(sc_data[SC_VOLCANO].timer != -1 && damage > 0) {	// ボルケーノ
 			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE )
-				damage += damage*sc_data[SC_VOLCANO].val4/100;
+				damage += damage * sc_data[SC_VOLCANO].val4/100;
 			else if( !(flag&BF_SKILL) && status_get_attack_element(bl) == ELE_FIRE )
-				damage += damage*sc_data[SC_VOLCANO].val4/100;
+				damage += damage * sc_data[SC_VOLCANO].val4/100;
 		}
 
 		if(sc_data[SC_VIOLENTGALE].timer != -1 && damage > 0) {	// バイオレントゲイル
 			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_WIND )
-				damage += damage*sc_data[SC_VIOLENTGALE].val4/100;
+				damage += damage * sc_data[SC_VIOLENTGALE].val4/100;
 			else if( !(flag&BF_SKILL) && status_get_attack_element(bl) == ELE_WIND )
-				damage += damage*sc_data[SC_VIOLENTGALE].val4/100;
+				damage += damage * sc_data[SC_VIOLENTGALE].val4/100;
 		}
 
 		if(sc_data[SC_DELUGE].timer != -1 && damage > 0) {	// デリュージ
 			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_WATER )
-				damage += damage*sc_data[SC_DELUGE].val4/100;
+				damage += damage * sc_data[SC_DELUGE].val4/100;
 			else if( !(flag&BF_SKILL) && status_get_attack_element(bl) == ELE_WATER )
-				damage += damage*sc_data[SC_DELUGE].val4/100;
+				damage += damage * sc_data[SC_DELUGE].val4/100;
 		}
 
 		if(sc_data[SC_ENERGYCOAT].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != PA_PRESSURE) {	// エナジーコート プレッシャーは軽減しない
@@ -640,7 +640,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 
 				if(src->type == BL_PC || src->type == BL_MOB || src->type == BL_HOM || src->type == BL_MERC)
 				{
-					if(atn_rand()%10000 < rate ) {
+					if(atn_rand()%10000 < rate) {
 						if(battle_config.battle_log)
 							printf("PC %d skill_addreveff: cardによる異常発動 %d %d\n",tsd->bl.id,i,tsd->addreveff[i-SC_STONE]);
 						status_change_start(src,i,7,0,0,0,(i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7),0);
@@ -771,7 +771,7 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 	{
 		damage += (skill * 4);
 
-		if(sd->sc_data && sd->sc_data[SC_HUNTER].timer != -1)
+		if(sd->sc_data[SC_HUNTER].timer != -1)
 			damage += status_get_str(&sd->bl);
 	}
 	weapon = (type == 0)? sd->weapontype1: sd->weapontype2;
@@ -1082,12 +1082,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	t_enemy   = status_get_enemy_type(target);	// 対象の敵タイプ
 	t_size    = status_get_size(target);		// 対象のサイズ
 	t_mode    = status_get_mode(target);		// 対象のMode
-	t_sc_data = status_get_sc_data(target);		// 対象のステータス異常
 	t_group   = status_get_group(target);
 	t_class   = status_get_class(target);
 	t_flee    = status_get_flee(target);
 	t_def1    = status_get_def(target);
 	t_def2    = status_get_def2(target);
+	t_sc_data = status_get_sc_data(target);		// 対象のステータス異常
 
 	if(src_sd && skill_num != CR_GRANDCROSS && skill_num != NPC_DARKGRANDCROSS)
 		src_sd->state.attack_type = BF_WEAPON;	// 攻撃タイプは武器攻撃
@@ -3301,12 +3301,12 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 
 	case NPC_DARKBREATH:
 		{
-			struct status_change *sc_data = status_get_sc_data(target);
+			struct status_change *t_sc_data = status_get_sc_data(target);
 			int hitrate = status_get_hit(bl) - status_get_flee(target) + 80;
 			int t_hp = status_get_hp(target);
 			hitrate = (hitrate > 95)? 95: (hitrate < 5)? 5: hitrate;
-			if(sc_data && (sc_data[SC_SLEEP].timer != -1 || sc_data[SC_STAN].timer != -1 ||
-				sc_data[SC_FREEZE].timer != -1 || (sc_data[SC_STONE].timer != -1 && sc_data[SC_STONE].val2 == 0) ) )
+			if(t_sc_data && (t_sc_data[SC_SLEEP].timer != -1 || t_sc_data[SC_STAN].timer != -1 ||
+				t_sc_data[SC_FREEZE].timer != -1 || (t_sc_data[SC_STONE].timer != -1 && t_sc_data[SC_STONE].val2 == 0) ) )
 				hitrate = 1000000;
 			if(atn_rand()%100 < hitrate)
 				mid.damage = t_hp*(skill_lv*6)/100;
@@ -3606,7 +3606,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			spelllv = 1;
 
 		if(sd) {
-			if(sd->sc_data[SC_SAGE].timer != -1)	// セージの魂
+			if(sc_data[SC_SAGE].timer != -1)	// セージの魂
 				spelllv = pc_checkskill(sd,spellid);
 			sp = skill_get_sp(spellid,spelllv)*2/3;
 			if(sd->status.sp < sp)
@@ -4400,12 +4400,13 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 			struct map_session_data* tsd = (struct map_session_data*)target;
 
 			// battle_config.no_pk_level以下　1次は味方　転生は駄目
-			if((ssd->sc_data && ssd->sc_data[SC_PK_PENALTY].timer != -1) ||
-			   (ssd->status.base_level <= battle_config.no_pk_level && (ssd->s_class.job <= 6 || ssd->s_class.job == 24) && ssd->s_class.upper != 1))
+			if(ssd->sc_data[SC_PK_PENALTY].timer != -1)
+				return 1;
+			if(ssd->status.base_level <= battle_config.no_pk_level && (ssd->s_class.job <= 6 || ssd->s_class.job == 24) && ssd->s_class.upper != 1)
 				return 1;
 			if(tsd->status.base_level <= battle_config.no_pk_level && (tsd->s_class.job <= 6 || tsd->s_class.job == 24) && tsd->s_class.upper != 1)
 				return 1;
-			if(su && su->group->target_flag == BCT_NOENEMY)
+			if(su && su->group && su->group->target_flag == BCT_NOENEMY)
 				return 1;
 			if(s_p > 0 && t_p > 0 && s_p == t_p)
 				return 1;

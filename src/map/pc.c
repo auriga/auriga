@@ -1062,6 +1062,10 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->sc_data[i].val4  = 0;
 	}
 	sd->sc_count = 0;
+	sd->opt1     = 0;
+	sd->opt2     = 0;
+	sd->opt3     = 0;
+
 	sd->status.option &= OPTION_MASK;
 
 	// アイテムチェックは必ずステータス異常の初期化後に行う
@@ -3618,7 +3622,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 		return 0;
 	if(mob_db[md->class_].mexp > 0 || mob_db[md->class_].mode&0x20)
 		return 0;
-	if(md->sc_data && (md->sc_data[SC_STONE].timer != -1 || md->sc_data[SC_FREEZE].timer != -1))
+	if(md->sc_data[SC_STONE].timer != -1 || md->sc_data[SC_FREEZE].timer != -1)
 		return 0;
 
 	skill = (sd->paramc[4] - mob_db[md->class_].dex)/2 + pc_checkskill(sd,TF_STEAL) * 6 + 10;
@@ -3670,7 +3674,7 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
 
 	if(md->state.steal_coin_flag)
 		return 0;
-	if(md->sc_data && (md->sc_data[SC_STONE].timer != -1 || md->sc_data[SC_FREEZE].timer != -1))
+	if(md->sc_data[SC_STONE].timer != -1 || md->sc_data[SC_FREEZE].timer != -1)
 		return 0;
 
 	skill = pc_checkskill(sd,RG_STEALCOIN)*10;
@@ -4459,7 +4463,7 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		base_exp = base_exp * (100 + sd->exp_rate[race_id] + tk_exp_rate) / 100;
 		job_exp  = job_exp  * (100 + sd->job_rate[race_id] + tk_exp_rate) / 100;
 
-		if (md->sc_data && md->sc_data[SC_RICHMANKIM].timer != -1) {
+		if (md->sc_data[SC_RICHMANKIM].timer != -1) {
 			base_exp = base_exp * (125 + md->sc_data[SC_RICHMANKIM].val1 * 11) / 100;
 			job_exp  = job_exp  * (125 + md->sc_data[SC_RICHMANKIM].val1 * 11) / 100;
 		}
@@ -5113,7 +5117,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 	}
 
 	// カイゼル
-	if(sd->sc_data && sd->sc_data[SC_KAIZEL].timer != -1)
+	if(sd->sc_data[SC_KAIZEL].timer != -1)
 		kaizel_lv = sd->sc_data[SC_KAIZEL].val1;	// ステータス異常が解除される前にスキルLvを保存
 
 	// アイテム消滅

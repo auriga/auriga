@@ -366,6 +366,7 @@ int mob_spawn(int id)
 	if(md->lootitem)
 		memset(md->lootitem,0,sizeof(md->lootitem));
 	md->lootitem_count = 0;
+
 #ifdef DYNAMIC_SC_DATA
 	// ダミー挿入
 	if(md->sc_data == NULL)
@@ -373,9 +374,13 @@ int mob_spawn(int id)
 #else
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
 		md->sc_data[i].timer = -1;
-		md->sc_data[i].val1  = md->sc_data[i].val2 = md->sc_data[i].val3 = md->sc_data[i].val4 = 0;
+		md->sc_data[i].val1  = 0;
+		md->sc_data[i].val2  = 0;
+		md->sc_data[i].val3  = 0;
+		md->sc_data[i].val4  = 0;
 	}
 #endif
+
 	md->sc_count = 0;
 	md->opt1     = 0;
 	md->opt2     = 0;
@@ -468,7 +473,7 @@ static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
  */
 static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 {
-	struct status_change *sc_data;
+	struct status_change *tsc_data;
 	unsigned int *option;
 	int mode, race;
 
@@ -480,10 +485,10 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 	mode = status_get_mode(&md->bl);
 	race = status_get_race(&md->bl);
 
-	sc_data = status_get_sc_data(bl);
+	tsc_data = status_get_sc_data(bl);
 	option  = status_get_option(bl);
 
-	if( sc_data && (sc_data[SC_TRICKDEAD].timer != -1 || sc_data[SC_FORCEWALKING].timer != -1) )
+	if( tsc_data && (tsc_data[SC_TRICKDEAD].timer != -1 || tsc_data[SC_FORCEWALKING].timer != -1) )
 		return 0;
 	if( md->sc_data[SC_WINKCHARM].timer != -1 )
 		return 0;
@@ -2498,10 +2503,12 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 		md->spawndelay2 = -1;	// 一度のみフラグ
 		md->ai_pc_count = 0;
 		md->ai_prev = md->ai_next = NULL;
+
 #ifdef DYNAMIC_SC_DATA
 		// ダミー挿入
 		md->sc_data = dummy_sc_data;
 #endif
+
 		memset(md->npc_event,0,sizeof(md->npc_event));
 		map_addiddb(&md->bl);
 		mob_spawn(md->bl.id);
@@ -3194,18 +3201,18 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		case MSC_TARGETSTATUSON:	// target status[num] on
 		case MSC_TARGETSTATUSOFF:	// target status[num] off
 			if(target) {
-				struct status_change *sc_data = status_get_sc_data(target);
-				if( !sc_data ) {
+				struct status_change *tsc_data = status_get_sc_data(target);
+				if( !tsc_data ) {
 					flag = 0;
 				} else if( c2 == -1 ) {
 					int j = 0;
-					if(sc_data[SC_STONE].timer != -1)
-						flag = ( sc_data[SC_STONE].val2 == 0 );
+					if(tsc_data[SC_STONE].timer != -1)
+						flag = ( tsc_data[SC_STONE].val2 == 0 );
 					for(j=SC_STONE+1; j<=SC_BLIND && !flag; j++) {
-						flag = ( sc_data[j].timer != -1 );
+						flag = ( tsc_data[j].timer != -1 );
 					}
 				} else {
-					flag = ( sc_data[c2].timer != -1 );
+					flag = ( tsc_data[c2].timer != -1 );
 				}
 				flag ^= ( ms[i].cond1 == MSC_TARGETSTATUSOFF );
 			}
@@ -3219,18 +3226,18 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		case MSC_MASTERSTATUSON:	// master status[num] on
 		case MSC_MASTERSTATUSOFF:	// master status[num] off
 			if(master) {
-				struct status_change *sc_data = status_get_sc_data(master);
-				if( !sc_data ) {
+				struct status_change *msc_data = status_get_sc_data(master);
+				if( !msc_data ) {
 					flag = 0;
 				} else if( c2 == -1 ) {
 					int j = 0;
-					if(sc_data[SC_STONE].timer != -1)
-						flag = ( sc_data[SC_STONE].val2 == 0 );
+					if(msc_data[SC_STONE].timer != -1)
+						flag = ( msc_data[SC_STONE].val2 == 0 );
 					for(j=SC_STONE+1; j<=SC_BLIND && !flag; j++) {
-						flag = ( sc_data[j].timer != -1 );
+						flag = ( msc_data[j].timer != -1 );
 					}
 				} else {
-					flag = ( sc_data[c2].timer != -1 );
+					flag = ( msc_data[c2].timer != -1 );
 				}
 				flag ^= ( ms[i].cond1 == MSC_MASTERSTATUSOFF );
 			}

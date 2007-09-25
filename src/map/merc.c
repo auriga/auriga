@@ -469,13 +469,17 @@ static int merc_data_init(struct map_session_data *sd)
 	// ステータス異常の初期化
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
 		mcd->sc_data[i].timer = -1;
-		mcd->sc_data[i].val1 = mcd->sc_data[i].val2 = mcd->sc_data[i].val3 = mcd->sc_data[i].val4 = 0;
+		mcd->sc_data[i].val1  = 0;
+		mcd->sc_data[i].val2  = 0;
+		mcd->sc_data[i].val3  = 0;
+		mcd->sc_data[i].val4  = 0;
 	}
 	mcd->sc_count = 0;
+	mcd->opt1     = 0;
+	mcd->opt2     = 0;
+	mcd->opt3     = 0;
+
 	mcd->status.option &= OPTION_MASK;
-	mcd->opt1 = 0;
-	mcd->opt2 = 0;
-	mcd->opt3 = 0;
 
 	merc_calc_status(mcd);			// ステータス計算
 	unit_dataset(&mcd->bl);
@@ -685,7 +689,7 @@ int merc_gainexp(struct merc_data *mcd,struct mob_data *md,atn_bignumber base_ex
 	if(mcd->bl.prev == NULL || unit_isdead(&mcd->bl))
 		return 0;
 
-	if(md && md->sc_data && md->sc_data[SC_RICHMANKIM].timer != -1) {
+	if(md && md->sc_data[SC_RICHMANKIM].timer != -1) {
 		base_exp = base_exp * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
 		job_exp  = job_exp  * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
 	}
