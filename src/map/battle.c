@@ -5089,6 +5089,7 @@ int battle_config_read(const char *cfgName)
 		{ "party_invite_range_check",           &battle_config.party_invite_range_check,           0        },
 		{ "homun_skilldelay_reset",             &battle_config.homun_skilldelay_reset,             1        },
 		{ "homun_statuschange_reset",           &battle_config.homun_statuschange_reset,           1        },
+		{ "free_sc_data_dynamically",           &battle_config.free_sc_data_dynamically,           0        },
 		{ NULL,                                 NULL,                                              0        },
 
 	};

@@ -3927,10 +3927,6 @@ void clif_changeoption(struct block_list* bl)
 	nullpo_retv(bl);
 
 	sc = status_get_sc(bl);
-	if(sc == NULL) {
-		// NPCからはNULLが返って来る、要修正
-		return;
-	}
 
 	if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)bl;
@@ -3941,17 +3937,17 @@ void clif_changeoption(struct block_list* bl)
 #if PACKETVER < 7
 	WBUFW(buf, 0) = 0x119;
 	WBUFL(buf, 2) = bl->id;
-	WBUFW(buf, 6) = sc->opt1;
-	WBUFW(buf, 8) = sc->opt2;
-	WBUFW(buf,10) = sc->option;
+	WBUFW(buf, 6) = (sc) ? sc->opt1 : 0;
+	WBUFW(buf, 8) = (sc) ? sc->opt2 : 0;
+	WBUFW(buf,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : 0;
 	WBUFB(buf,12) = 0;
 	clif_send(buf,packet_db[0x119].len,bl,AREA);
 #else
 	WBUFW(buf, 0) = 0x229;
 	WBUFL(buf, 2) = bl->id;
-	WBUFW(buf, 6) = sc->opt1;
-	WBUFW(buf, 8) = sc->opt2;
-	WBUFL(buf,10) = sc->option;
+	WBUFW(buf, 6) = (sc) ? sc->opt1 : 0;
+	WBUFW(buf, 8) = (sc) ? sc->opt2 : 0;
+	WBUFL(buf,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : 0;
 	WBUFB(buf,14) = 0;
 	clif_send(buf,packet_db[0x229].len,bl,AREA);
 #endif
@@ -3972,16 +3968,12 @@ void clif_changeoption2(struct block_list *bl)
 	nullpo_retv(bl);
 
 	sc = status_get_sc(bl);
-	if(sc == NULL) {
-		// NPCからはNULLが返って来る、要修正
-		return;
-	}
 
 	WBUFW(buf,0)  = 0x28a;
 	WBUFL(buf,2)  = bl->id;
-	WBUFL(buf,6)  = sc->option;
+	WBUFL(buf,6)  = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : 0;
 	WBUFL(buf,10) = ((level = status_get_lv(bl)) > 99)? 99: level;
-	WBUFL(buf,14) = sc->opt3;
+	WBUFL(buf,14) = (sc) ? sc->opt3 : 0;
 	clif_send(buf,packet_db[0x28a].len,bl,AREA);
 
 	return;

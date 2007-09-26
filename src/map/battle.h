@@ -532,6 +532,7 @@ extern struct Battle_Config {
 	int party_invite_range_check;
 	int homun_skilldelay_reset;
 	int homun_statuschange_reset;
+	int free_sc_data_dynamically;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

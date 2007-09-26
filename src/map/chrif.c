@@ -103,7 +103,7 @@ int chrif_isconnect(void)
  * キャラ永続変数保存
  *------------------------------------------
  */
-int chrif_save_globalreg(struct map_session_data *sd)
+static int chrif_save_globalreg(struct map_session_data *sd)
 {
 	int i,p;
 
@@ -161,7 +161,7 @@ int chrif_save(struct map_session_data *sd)
  * 接続
  *------------------------------------------
  */
-int chrif_connect(int fd)
+static int chrif_connect(int fd)
 {
 	// 暗号化ログインのチャレンジ要求
 	WFIFOW(fd,0)=0x2b2a;
@@ -183,7 +183,7 @@ int chrif_connect(int fd)
  * 暗号化ログイン
  *------------------------------------------
  */
-int chrif_cram_connect( int fd )
+static int chrif_cram_connect(int fd)
 {
 	WFIFOW(fd,0)=0x2b2c;
 	memcpy(WFIFOP(fd,2),userid,24);
@@ -194,6 +194,7 @@ int chrif_cram_connect( int fd )
 	WFIFOL(fd,54)=clif_getip();
 	WFIFOW(fd,58)=clif_getport();
 	WFIFOSET(fd,60);
+
 	return 0;
 }
 
@@ -201,7 +202,7 @@ int chrif_cram_connect( int fd )
  * マップ送信
  *------------------------------------------
  */
-int chrif_sendmap(int fd)
+static int chrif_sendmap(int fd)
 {
 	int i;
 
@@ -218,7 +219,7 @@ int chrif_sendmap(int fd)
  * マップ受信
  *------------------------------------------
  */
-int chrif_recvmap(int fd)
+static int chrif_recvmap(int fd)
 {
 	int i,j;
 	unsigned long ip;
@@ -244,7 +245,7 @@ int chrif_recvmap(int fd)
  * 削除マップ受信
  *------------------------------------------
  */
-int chrif_recverasemap(int fd)
+static int chrif_recverasemap(int fd)
 {
 	int i,j,ret = 0;
 	unsigned long ip;
@@ -298,7 +299,7 @@ int chrif_changemapserver(struct map_session_data *sd,char *name,int x,int y,uns
  * マップ鯖間移動ack
  *------------------------------------------
  */
-int chrif_changemapserverack(int fd)
+static int chrif_changemapserverack(int fd)
 {
 	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
 
@@ -319,7 +320,7 @@ int chrif_changemapserverack(int fd)
  * 接続完了
  *------------------------------------------
  */
-int chrif_connectack(int fd)
+static int chrif_connectack(int fd)
 {
 	if(RFIFOB(fd,2)){
 		printf("chrif : connect char server failed %d\n",RFIFOB(fd,2));
@@ -345,7 +346,7 @@ int chrif_connectack(int fd)
  * マップ送信終了
  *------------------------------------------
  */
-int chrif_sendmapack(int fd)
+static int chrif_sendmapack(int fd)
 {
 	if(RFIFOB(fd,2)){
 		printf("chrif : send map list to char server failed %d\n",RFIFOB(fd,2));
@@ -383,7 +384,7 @@ int chrif_authreq(struct map_session_data *sd)
  * クライアントの認証完了
  *------------------------------------------
  */
-int chrif_authok(int fd)
+static int chrif_authok(int fd)
 {
 	struct map_session_data *sd=map_id2sd(RFIFOL(fd,4));
 	struct mmo_charstatus *st;
@@ -485,7 +486,7 @@ int chrif_changesex(int id,int sex)
  * GMに変化終了
  *------------------------------------------
  */
-int chrif_changedgm(int fd)
+static int chrif_changedgm(int fd)
 {
 	int oldacc,newacc;
 	struct map_session_data *sd;
@@ -512,7 +513,7 @@ int chrif_changedgm(int fd)
  * 性別変化終了
  *------------------------------------------
  */
-int chrif_changedsex(int fd)
+static int chrif_changedsex(int fd)
 {
 	int acc = RFIFOL(fd,2);
 
@@ -562,7 +563,7 @@ int chrif_saveaccountreg2(struct map_session_data *sd)
  * アカウント変数通知
  *------------------------------------------
  */
-int chrif_accountreg2(int fd)
+static int chrif_accountreg2(int fd)
 {
 	int j,p;
 	struct map_session_data *sd;
@@ -599,7 +600,7 @@ int chrif_reqdivorce(int char_id)
  * 離婚情報同期受付
  *------------------------------------------
  */
-int chrif_divorce(int char_id)
+static int chrif_divorce(int char_id)
 {
 	struct map_session_data *sd = NULL;
 
@@ -663,7 +664,7 @@ int chrif_maintenance(int maintenance)
  * charサーバメンテナンス応答
  *------------------------------------------
  */
-int chrif_maintenanceack(int maintenance)
+static int chrif_maintenanceack(int maintenance)
 {
 	if(maintenance)
 		clif_GMmessage(NULL,msg_txt(82),strlen(msg_txt(82))+1,0);
@@ -696,7 +697,7 @@ int chrif_chardisconnect(struct map_session_data *sd)
  * charからキャラクター強制切断要求
  *------------------------------------------
  */
-int chrif_parse_chardisconnectreq(int account_id)
+static int chrif_parse_chardisconnectreq(int account_id)
 {
 	struct map_session_data *sd=map_id2sd(account_id);
 
@@ -710,7 +711,7 @@ int chrif_parse_chardisconnectreq(int account_id)
  * ニ重ログイン時の処理
  *------------------------------------------
  */
-int chrif_parse_chardisconnect_doublelogin(int account_id)
+static int chrif_parse_chardisconnect_doublelogin(int account_id)
 {
 	struct map_session_data *sd=map_id2sd(account_id);
 
@@ -744,7 +745,7 @@ int chrif_friend_delete( struct map_session_data* sd, int account_id, int char_i
  * 友達リストの削除通知
  *------------------------------------------
  */
-int chrif_parse_friend_delete( int fd )
+static int chrif_parse_friend_delete( int fd )
 {
 	friend_del_from_otherserver( RFIFOL(fd,2), RFIFOL(fd,6), RFIFOL(fd,10), RFIFOL(fd,14) );
 	return 0;
@@ -780,7 +781,7 @@ int chrif_friend_online( struct map_session_data *sd, int flag )
  * 友達リストのオンライン情報通知受信
  *------------------------------------------
  */
-int chrif_parse_friend_online( int fd )
+static int chrif_parse_friend_online( int fd )
 {
 	friend_send_online_from_otherserver( RFIFOL(fd,4), RFIFOL(fd,8), RFIFOL(fd,12), ( (RFIFOW(fd,2)-16)/8 ), (int*)RFIFOP( fd,16 ) );
 	return 0;
@@ -807,7 +808,7 @@ int chrif_req_break_adoption(int char_id, const char *name)
  * 養子情報同期受付
  *------------------------------------------
  */
-int chrif_breakadoption(int char_id, unsigned char *name)
+static int chrif_breakadoption(int char_id, unsigned char *name)
 {
 	struct map_session_data *sd = NULL;
 	char output[100];
@@ -873,7 +874,7 @@ int chrif_ranking_update(struct Ranking_Data *rd,int ranking_id,int rank)
  * ランキングデータ受信
  *------------------------------------------
  */
-int chrif_ranking_recv(int fd)
+static int chrif_ranking_recv(int fd)
 {
 	ranking_set_data((int)RFIFOW(fd,4),(struct Ranking_Data *)RFIFOP(fd,6));
 	return 0;
@@ -893,7 +894,7 @@ int chrif_disconnect_sub(struct map_session_data* sd,va_list va)
  * 切断された場合の処理
  *------------------------------------------
  */
-int chrif_disconnect(int fd)
+static int chrif_disconnect(int fd)
 {
 	if (fd == char_fd) {
 		char_fd = -1;
@@ -1003,7 +1004,7 @@ static int send_users_tochar(int tid,unsigned int tick,int id,int data)
  */
 // timer関数
 // char鯖との接続を確認し、もし切れていたら再度接続する
-int check_connect_char_server(int tid,unsigned int tick,int id,int data)
+static int check_connect_char_server(int tid,unsigned int tick,int id,int data)
 {
 	if (char_fd < 0 || session[char_fd] == NULL) {
 		chrif_state = 0;

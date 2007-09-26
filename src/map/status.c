@@ -4172,10 +4172,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			return 0;
 	}
 
-#ifdef DYNAMIC_SC_DATA
-	status_calloc_sc_data(sc);
-#endif
-
 	race = status_get_race(bl);
 	mode = status_get_mode(bl);
 	elem = status_get_elem_type(bl);
@@ -4322,6 +4318,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			sc->count--;
 			delete_timer(sc->data[type].timer, status_change_timer);
 			sc->data[type].timer = -1;
+#ifdef DYNAMIC_SC_DATA
+			if(sc->count <= 0 && battle_config.free_sc_data_dynamically)
+				status_free_sc_data(sc);
+#endif
 		}
 	}
 
@@ -5422,6 +5422,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		clif_changeoption2(bl);
 	}
 
+#ifdef DYNAMIC_SC_DATA
+	status_calloc_sc_data(sc);
+#endif
+
 	sc->count++;	/* ステータス異常の数 */
 
 	sc->data[type].val1 = val1;
@@ -5512,6 +5516,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 	/* 該当の異常を正常に戻す */
 	sc->data[type].timer = -1;
 	sc->count--;
+
+#ifdef DYNAMIC_SC_DATA
+	if(sc->count <= 0 && battle_config.free_sc_data_dynamically)
+		status_free_sc_data(sc);
+#endif
 
 	sd  = BL_DOWNCAST( BL_PC,   bl );
 	md  = BL_DOWNCAST( BL_MOB,  bl );
