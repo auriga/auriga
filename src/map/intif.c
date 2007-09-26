@@ -1122,16 +1122,16 @@ int intif_save_scdata(struct map_session_data *sd)
 	WFIFOL(inter_fd,8) = sd->status.char_id;
 
 	p=12;
-	if(sd->sc_count > 0) {
+	if(sd->sc.count > 0) {
 		for(i=0; i<MAX_STATUSCHANGE; i++) {
-			if(sd->sc_data[i].timer != -1 && status_can_save(i))
+			if(sd->sc.data[i].timer != -1 && status_can_save(i))
 			{
-				td = get_timer(sd->sc_data[i].timer);
+				td = get_timer(sd->sc.data[i].timer);
 				WFIFOW(inter_fd,p)    = i;
-				WFIFOL(inter_fd,p+2)  = sd->sc_data[i].val1;
-				WFIFOL(inter_fd,p+6)  = sd->sc_data[i].val2;
-				WFIFOL(inter_fd,p+10) = sd->sc_data[i].val3;
-				WFIFOL(inter_fd,p+14) = sd->sc_data[i].val4;
+				WFIFOL(inter_fd,p+2)  = sd->sc.data[i].val1;
+				WFIFOL(inter_fd,p+6)  = sd->sc.data[i].val2;
+				WFIFOL(inter_fd,p+10) = sd->sc.data[i].val3;
+				WFIFOL(inter_fd,p+14) = sd->sc.data[i].val4;
 				WFIFOL(inter_fd,p+18) = DIFF_TICK(td->tick, tick);	// 残り時間
 				p+=22;
 			}

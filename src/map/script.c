@@ -6082,7 +6082,7 @@ int buildin_checkoption(struct script_state *st)
 
 	type=(unsigned int)conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	if(sd && sd->status.option & type){
+	if(sd && sd->sc.option & type){
 		push_val(st->stack,C_INT,1);
 	} else {
 		push_val(st->stack,C_INT,0);
@@ -7266,8 +7266,8 @@ int buildin_sc_ison(struct script_state *st)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
 	if(bl) {
-		struct status_change *sc_data = status_get_sc_data(bl);
-		if(sc_data && sc_data[type].timer != -1) {
+		struct status_change *sc = status_get_sc(bl);
+		if(sc && sc->data[type].timer != -1) {
 			push_val(st->stack,C_INT,1);
 			return 0;
 		}

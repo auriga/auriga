@@ -529,7 +529,7 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 		pc_setpos(sd,nd->u.warp.name,nd->u.warp.x,nd->u.warp.y,0);
 		break;
 	case SCRIPT:
-		if(sd->sc_data[SC_FORCEWALKING].timer == -1) {
+		if(sd->sc.data[SC_FORCEWALKING].timer == -1) {
 			char name[50];
 			if(sd->areanpc_id == nd->bl.id)
 				return 1;
@@ -1134,9 +1134,6 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4,int lines)
 		nd->class_ = WARP_DEBUG_CLASS;
 	nd->speed  = 200;
 	nd->option = 0;
-	nd->opt1   = 0;
-	nd->opt2   = 0;
-	nd->opt3   = 0;
 	memcpy(nd->u.warp.name,to_mapname,16);
 	nd->u.warp.name[15] = '\0';	// force \0 terminal
 	xs += 2;
@@ -1283,9 +1280,6 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 	nd->speed   = 200;
 	nd->chat_id = 0;
 	nd->option  = 0;
-	nd->opt1    = 0;
-	nd->opt2    = 0;
-	nd->opt3    = 0;
 	npc_shop++;
 	nd->bl.type    = BL_NPC;
 	nd->bl.subtype = subtype;
@@ -1666,9 +1660,6 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 	nd->u.scr.src_id = src_id;
 	nd->chat_id = 0;
 	nd->option  = 0;
-	nd->opt1    = 0;
-	nd->opt2    = 0;
-	nd->opt3    = 0;
 
 	npc_script++;
 	nd->bl.type    = BL_NPC;

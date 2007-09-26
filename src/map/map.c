@@ -1482,6 +1482,10 @@ int map_quit(struct map_session_data *sd)
 		script_free_stack( sd->stack );
 	}
 
+#ifdef DYNAMIC_SC_DATA
+	status_free_sc_data(&sd->sc);
+#endif
+
 	// ２重ログイン時、後にログインしたキャラのid_dbは削除しない
 	if(sd->new_fd != -1)
 		numdb_erase(id_db,sd->bl.id);

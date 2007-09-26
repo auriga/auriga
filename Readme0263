@@ -1,4 +1,27 @@
 ----------------------------------------
+//0349 [2007/09/27] by Rayce
+
+・status_change構造体の変更 merged from eA, thanks
+	ステータス異常の数やoption系を一つにまとめます。
+	data部分はstatus_change_data構造体として再定義します。
+	status_get_sc_count() や status_get_option() などが不要になるため、関数呼び出しの
+	オーバーヘッドが減るなどの利点があります。
+
+	PC, HOM, MERCのstatusにあるoptionとstatus_changeのoptionが重なりますが、MAPサーバでは
+	全てstatus_changeのoptionを参照します。
+	セーブの直前にstatusにコピーしてcharサーバに送ります（statusのoptionは通信用の受け皿）。
+
+・プレイヤー、ホム、傭兵にもDYNAMIC_SC_DATAによるステータス異常の動的確保を適用する
+	status_change構造体の変更に伴う副作用により、動的確保せざるを得なくなりました。
+	特にプレイヤーは頻繁にステータス異常に掛かる可能性が高いため動的確保するメリットは
+	薄いですが、デメリットもほとんどないため問題ないと考えました。
+
+・status_calloc_sc_data() および status_free_sc_data() の引数をstatus_change型に変更
+・status_get_sc_data() を status_get_sc() に改名（status.*）
+・status_check_dummy_sc_data() はあまり意味がないので削除（status.*）
+・npc_data構造体から使われていないメンバ opt1, opt2, opt3 を削除（map.h, npc.c）
+
+----------------------------------------
 //0348 [2007/09/26] by Rayce
 
 ・水遁のAGIペナルティ計算式を一般式化（skill.c）

@@ -391,64 +391,64 @@ int homun_calc_status(struct homun_data *hd)
 		hd->hprecov_rate += lv*5;
 	}
 	// ステータス変化による基本パラメータ補正ホムスキル
-	if(hd->sc_count > 0)
+	if(hd->sc.count > 0)
 	{
 		// 緊急回避
-		if(hd->sc_data[SC_AVOID].timer != -1)
-			speed_rate -= hd->sc_data[SC_AVOID].val1*10;
+		if(hd->sc.data[SC_AVOID].timer != -1)
+			speed_rate -= hd->sc.data[SC_AVOID].val1*10;
 		// メンタルチェンジ
-		if(hd->sc_data[SC_CHANGE].timer != -1) {
-			hd->vit  += 30 * hd->sc_data[SC_CHANGE].val1;
-			hd->int_ += 20 * hd->sc_data[SC_CHANGE].val1;
+		if(hd->sc.data[SC_CHANGE].timer != -1) {
+			hd->vit  += 30 * hd->sc.data[SC_CHANGE].val1;
+			hd->int_ += 20 * hd->sc.data[SC_CHANGE].val1;
 		}
 		// ブラッドラスト
-		if(hd->sc_data[SC_BLOODLUST].timer != -1)
-			atk_rate += hd->sc_data[SC_BLOODLUST].val1*10+20;
+		if(hd->sc.data[SC_BLOODLUST].timer != -1)
+			atk_rate += hd->sc.data[SC_BLOODLUST].val1*10+20;
 		// フリットムーブ
-		if(hd->sc_data[SC_FLEET].timer != -1) {
-			aspd_rate -= hd->sc_data[SC_FLEET].val1*3;
-			atk_rate  += 5+hd->sc_data[SC_FLEET].val1*5;
+		if(hd->sc.data[SC_FLEET].timer != -1) {
+			aspd_rate -= hd->sc.data[SC_FLEET].val1*3;
+			atk_rate  += 5+hd->sc.data[SC_FLEET].val1*5;
 		}
 
 		// ステータス変化による基本パラメータ補正
 		if(battle_config.allow_homun_status_change)
 		{
 			// ゴスペルALL+20
-			if(hd->sc_data[SC_INCALLSTATUS].timer != -1) {
-				hd->str  += hd->sc_data[SC_INCALLSTATUS].val1;
-				hd->agi  += hd->sc_data[SC_INCALLSTATUS].val1;
-				hd->vit  += hd->sc_data[SC_INCALLSTATUS].val1;
-				hd->int_ += hd->sc_data[SC_INCALLSTATUS].val1;
-				hd->dex  += hd->sc_data[SC_INCALLSTATUS].val1;
-				hd->luk  += hd->sc_data[SC_INCALLSTATUS].val1;
+			if(hd->sc.data[SC_INCALLSTATUS].timer != -1) {
+				hd->str  += hd->sc.data[SC_INCALLSTATUS].val1;
+				hd->agi  += hd->sc.data[SC_INCALLSTATUS].val1;
+				hd->vit  += hd->sc.data[SC_INCALLSTATUS].val1;
+				hd->int_ += hd->sc.data[SC_INCALLSTATUS].val1;
+				hd->dex  += hd->sc.data[SC_INCALLSTATUS].val1;
+				hd->luk  += hd->sc.data[SC_INCALLSTATUS].val1;
 			}
 
-			if(hd->sc_data[SC_INCREASEAGI].timer != -1)	// 速度増加
-				hd->agi += 2+hd->sc_data[SC_INCREASEAGI].val1;
+			if(hd->sc.data[SC_INCREASEAGI].timer != -1)	// 速度増加
+				hd->agi += 2+hd->sc.data[SC_INCREASEAGI].val1;
 
-			if(hd->sc_data[SC_DECREASEAGI].timer != -1)	// 速度減少(agiはbattle.cで)
-				hd->agi -= 2+hd->sc_data[SC_DECREASEAGI].val1;
+			if(hd->sc.data[SC_DECREASEAGI].timer != -1)	// 速度減少(agiはbattle.cで)
+				hd->agi -= 2+hd->sc.data[SC_DECREASEAGI].val1;
 
-			if(hd->sc_data[SC_BLESSING].timer != -1) {	// ブレッシング
-				hd->str  += hd->sc_data[SC_BLESSING].val1;
-				hd->dex  += hd->sc_data[SC_BLESSING].val1;
-				hd->int_ += hd->sc_data[SC_BLESSING].val1;
+			if(hd->sc.data[SC_BLESSING].timer != -1) {	// ブレッシング
+				hd->str  += hd->sc.data[SC_BLESSING].val1;
+				hd->dex  += hd->sc.data[SC_BLESSING].val1;
+				hd->int_ += hd->sc.data[SC_BLESSING].val1;
 			}
-			if(hd->sc_data[SC_SUITON].timer != -1) {	// 水遁
-				if(hd->sc_data[SC_SUITON].val3)
-					hd->agi += hd->sc_data[SC_SUITON].val3;
-				if(hd->sc_data[SC_SUITON].val4)
+			if(hd->sc.data[SC_SUITON].timer != -1) {	// 水遁
+				if(hd->sc.data[SC_SUITON].val3)
+					hd->agi += hd->sc.data[SC_SUITON].val3;
+				if(hd->sc.data[SC_SUITON].val4)
 					hd->speed = hd->speed*2;
 			}
 
-			if(hd->sc_data[SC_GLORIA].timer != -1)	// グロリア
+			if(hd->sc.data[SC_GLORIA].timer != -1)	// グロリア
 				hd->luk += 30;
 
-			if(hd->sc_data[SC_QUAGMIRE].timer != -1) {	// クァグマイア
+			if(hd->sc.data[SC_QUAGMIRE].timer != -1) {	// クァグマイア
 				short subagi = 0;
 				short subdex = 0;
-				subagi = (hd->status.agi/2 < hd->sc_data[SC_QUAGMIRE].val1*10) ? hd->status.agi/2 : hd->sc_data[SC_QUAGMIRE].val1*10;
-				subdex = (hd->status.dex/2 < hd->sc_data[SC_QUAGMIRE].val1*10) ? hd->status.dex/2 : hd->sc_data[SC_QUAGMIRE].val1*10;
+				subagi = (hd->status.agi/2 < hd->sc.data[SC_QUAGMIRE].val1*10) ? hd->status.agi/2 : hd->sc.data[SC_QUAGMIRE].val1*10;
+				subdex = (hd->status.dex/2 < hd->sc.data[SC_QUAGMIRE].val1*10) ? hd->status.dex/2 : hd->sc.data[SC_QUAGMIRE].val1*10;
 				if(map[hd->bl.m].flag.pvp || map[hd->bl.m].flag.gvg) {
 					subagi /= 2;
 					subdex /= 2;
@@ -475,11 +475,11 @@ int homun_calc_status(struct homun_data *hd)
 	hd->aspd = aspd_k - (aspd_k * hd->agi / 250 + aspd_k * hd->dex / 1000) - 200;
 
 	// ディフェンス
-	if(hd->sc_data[SC_DEFENCE].timer != -1)
-		hd->def += hd->sc_data[SC_DEFENCE].val1*2;
+	if(hd->sc.data[SC_DEFENCE].timer != -1)
+		hd->def += hd->sc.data[SC_DEFENCE].val1*2;
 	// オーバードスピード
-	if(hd->sc_data[SC_SPEED].timer != -1)
-		hd->flee = hd->flee + 10 + hd->sc_data[SC_SPEED].val1*10;
+	if(hd->sc.data[SC_SPEED].timer != -1)
+		hd->flee = hd->flee + 10 + hd->sc.data[SC_SPEED].val1*10;
 	// 補正
 	if(atk_rate != 100)
 		hd->atk = hd->atk*atk_rate/100;
@@ -674,20 +674,28 @@ static int homun_data_init(struct map_session_data *sd)
 	} else {
 		hd->intimate = hd->status.intimate;
 	}
+
+#ifdef DYNAMIC_SC_DATA
+	// ダミー挿入
+	hd->sc.data = dummy_sc_data;
+#else
 	// ステータス異常の初期化
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
-		hd->sc_data[i].timer = -1;
-		hd->sc_data[i].val1  = 0;
-		hd->sc_data[i].val2  = 0;
-		hd->sc_data[i].val3  = 0;
-		hd->sc_data[i].val4  = 0;
+		hd->sc.data[i].timer = -1;
+		hd->sc.data[i].val1  = 0;
+		hd->sc.data[i].val2  = 0;
+		hd->sc.data[i].val3  = 0;
+		hd->sc.data[i].val4  = 0;
 	}
-	hd->sc_count = 0;
-	hd->opt1     = 0;
-	hd->opt2     = 0;
-	hd->opt3     = 0;
+#endif
+
+	hd->sc.count = 0;
+	hd->sc.opt1  = 0;
+	hd->sc.opt2  = 0;
+	hd->sc.opt3  = 0;
 
 	hd->status.option &= OPTION_MASK;
+	hd->sc.option = hd->status.option;	// optionはscに移して使う
 
 	homun_calc_status(hd);			// ステータス計算
 	unit_dataset(&hd->bl);
@@ -1219,9 +1227,9 @@ int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_e
 	if(hd->bl.prev == NULL || unit_isdead(&hd->bl))
 		return 0;
 
-	if(md && md->sc_data[SC_RICHMANKIM].timer != -1) {
-		base_exp = base_exp * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
-		job_exp  = job_exp  * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
+	if(md && md->sc.data[SC_RICHMANKIM].timer != -1) {
+		base_exp = base_exp * (125 + md->sc.data[SC_RICHMANKIM].val1*11)/100;
+		job_exp  = job_exp  * (125 + md->sc.data[SC_RICHMANKIM].val1*11)/100;
 	}
 
 	if(hd->msd) {	// 主人へ指定倍の経験値
@@ -1314,7 +1322,7 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
 	// 歩いていたら足を止める
 	unit_stop_walking(&hd->bl,battle_config.pc_hit_stop_type);
 
-	if(damage > 0 && hd->sc_data[SC_GRAVITATION_USER].timer != -1)
+	if(damage > 0 && hd->sc.data[SC_GRAVITATION_USER].timer != -1)
 		status_change_end(&hd->bl, SC_GRAVITATION_USER, -1);
 
 	if(hd->bl.prev == NULL) {
@@ -1361,7 +1369,7 @@ int homun_heal(struct homun_data *hd,int hp,int sp)
 	nullpo_retr(0, hd);
 
 	// バーサーク中は回復させない
-	if(hd->sc_data[SC_BERSERK].timer != -1) {
+	if(hd->sc.data[SC_BERSERK].timer != -1) {
 		if(sp > 0)
 			sp = 0;
 		if(hp > 0)
@@ -1502,6 +1510,10 @@ int homun_save_data(struct map_session_data *sd)
 
 	if(battle_config.save_homun_temporal_intimate)
 		pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
+
+	// optionのコピー
+	hd->status.option = hd->sc.option;
+
 	memcpy(&sd->hom,&hd->status,sizeof(struct mmo_homunstatus));
 	intif_save_homdata(sd->status.account_id,&sd->hd->status);
 

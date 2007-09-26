@@ -195,7 +195,7 @@ int mob_once_spawn(struct map_session_data *sd,const char *mapname,
 
 #ifdef DYNAMIC_SC_DATA
 		// ダミー挿入
-		md->sc_data = dummy_sc_data;
+		md->sc.data = dummy_sc_data;
 #endif
 
 		strncpy(md->npc_event,event,sizeof(md->npc_event));
@@ -369,23 +369,23 @@ int mob_spawn(int id)
 
 #ifdef DYNAMIC_SC_DATA
 	// ダミー挿入
-	if(md->sc_data == NULL)
-		md->sc_data = dummy_sc_data;
+	if(md->sc.data == NULL)
+		md->sc.data = dummy_sc_data;
 #else
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
-		md->sc_data[i].timer = -1;
-		md->sc_data[i].val1  = 0;
-		md->sc_data[i].val2  = 0;
-		md->sc_data[i].val3  = 0;
-		md->sc_data[i].val4  = 0;
+		md->sc.data[i].timer = -1;
+		md->sc.data[i].val1  = 0;
+		md->sc.data[i].val2  = 0;
+		md->sc.data[i].val3  = 0;
+		md->sc.data[i].val4  = 0;
 	}
 #endif
 
-	md->sc_count = 0;
-	md->opt1     = 0;
-	md->opt2     = 0;
-	md->opt3     = 0;
-	md->option   = 0;
+	md->sc.count  = 0;
+	md->sc.opt1   = 0;
+	md->sc.opt2   = 0;
+	md->sc.opt3   = 0;
+	md->sc.option = 0;
 
 	md->hp = status_get_max_hp(&md->bl);
 	if(md->hp <= 0) {
@@ -395,7 +395,7 @@ int mob_spawn(int id)
 	unit_dataset( &md->bl );
 
 	if(mob_is_pcview(md->class_))
-		md->option |= mob_db[md->class_].option;
+		md->sc.option |= mob_db[md->class_].option;
 
 	map_addblock(&md->bl);
 	skill_unit_move(&md->bl,tick,1);	// sc_data初期化後の必要がある
@@ -473,8 +473,7 @@ static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
  */
 static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 {
-	struct status_change *tsc_data;
-	unsigned int *option;
+	struct status_change *tsc;
 	int mode, race;
 
 	nullpo_retr(0, md);
@@ -484,15 +483,13 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 
 	mode = status_get_mode(&md->bl);
 	race = status_get_race(&md->bl);
+	tsc  = status_get_sc(bl);
 
-	tsc_data = status_get_sc_data(bl);
-	option  = status_get_option(bl);
-
-	if( tsc_data && (tsc_data[SC_TRICKDEAD].timer != -1 || tsc_data[SC_FORCEWALKING].timer != -1) )
+	if( tsc && (tsc->data[SC_TRICKDEAD].timer != -1 || tsc->data[SC_FORCEWALKING].timer != -1) )
 		return 0;
-	if( md->sc_data[SC_WINKCHARM].timer != -1 )
+	if( md->sc.data[SC_WINKCHARM].timer != -1 )
 		return 0;
-	if( !(mode&0x20) && option && ((*option)&0x4006) && race != RCT_INSECT && race != RCT_DEMON )
+	if( !(mode&0x20) && tsc && (tsc->option&0x4006) && race != RCT_INSECT && race != RCT_DEMON )
 		return 0;
 
 	if(bl->type == BL_PC) {
@@ -589,7 +586,7 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 
 	// アクティブ
 	if( (flag & 1) && (bl->type & BL_CHAR) ) {
-		int range = (smd->sc_data[SC_BLIND].timer != -1 || smd->sc_data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
+		int range = (smd->sc.data[SC_BLIND].timer != -1 || smd->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
 
 		// ターゲット射程内にいるなら、ロックする
 		if(dist <= range && battle_check_target(&smd->bl,bl,BCT_ENEMY) >= 1 && mob_can_lock(smd,bl) ) {
@@ -830,10 +827,10 @@ static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	mode = status_get_mode( &md->bl );
 
 	// 異常
-	if( (md->opt1 > 0 && md->opt1 != 6) || md->sc_data[SC_BLADESTOP].timer != -1 )
+	if( (md->sc.opt1 > 0 && md->sc.opt1 != 6) || md->sc.data[SC_BLADESTOP].timer != -1 )
 		return 0;
 
-	if( md->target_id > 0 && (!(mode&0x80) || md->sc_data[SC_BLIND].timer != -1 || md->sc_data[SC_FOGWALLPENALTY].timer != -1) )
+	if( md->target_id > 0 && (!(mode&0x80) || md->sc.data[SC_BLIND].timer != -1 || md->sc.data[SC_FOGWALLPENALTY].timer != -1) )
 		md->target_id = 0;
 
 	if( md->target_id <= 0 )
@@ -1523,7 +1520,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 
 	max_hp = status_get_max_hp(&md->bl);
 
-	if((md->sc_data[SC_ENDURE].timer == -1 || map[md->bl.m].flag.gvg) && md->sc_data[SC_BERSERK].timer == -1)
+	if((md->sc.data[SC_ENDURE].timer == -1 || map[md->bl.m].flag.gvg) && md->sc.data[SC_BERSERK].timer == -1)
 		unit_stop_walking(&md->bl,3);
 	if(damage > max_hp>>2)
 		skill_stop_dancing(&md->bl,0);
@@ -1843,8 +1840,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			}
 			if(flag && (base_exp > 0 || job_exp > 0))	// 各自取得
 			{
-				if( (tmpsd->sc_data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// 死んだふりしていない
-				    (tmpsd->sc_data[SC_HIDING].timer == -1    || !battle_config.noexp_hiding) )		// ハイドしていない
+				if( (tmpsd->sc.data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// 死んだふりしていない
+				    (tmpsd->sc.data[SC_HIDING].timer == -1    || !battle_config.noexp_hiding) )		// ハイドしていない
 					pc_gainexp(tmpsd, md, base_exp, job_exp);
 			}
 		}
@@ -2093,10 +2090,10 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 int mob_droprate_fix(struct block_list *bl,int item,int drop)
 {
 	int drop_fix = drop;
-	struct status_change *sc_data = NULL;
+	struct status_change *sc = NULL;
 
 	if(bl)
-		sc_data = status_get_sc_data(bl);
+		sc = status_get_sc(bl);
 
 	if(drop < 1) return 0;
 	if(drop > 10000) return 10000;
@@ -2177,8 +2174,8 @@ int mob_droprate_fix(struct block_list *bl,int item,int drop)
 	}
 
 	// バブルガム
-	if(sc_data && sc_data[SC_ITEMDROPRATE].timer != -1)
-		drop_fix = drop_fix * sc_data[SC_ITEMDROPRATE].val1 / 100;
+	if(sc && sc->data[SC_ITEMDROPRATE].timer != -1)
+		drop_fix = drop_fix * sc->data[SC_ITEMDROPRATE].val1 / 100;
 
 	if(drop_fix > 10000)
 		drop_fix = 10000;
@@ -2506,7 +2503,7 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 
 #ifdef DYNAMIC_SC_DATA
 		// ダミー挿入
-		md->sc_data = dummy_sc_data;
+		md->sc.data = dummy_sc_data;
 #endif
 
 		memset(md->npc_event,0,sizeof(md->npc_event));
@@ -2918,7 +2915,7 @@ static int mob_getfriendstatus_sub(struct block_list *bl,va_list ap)
 	int cond1, cond2;
 	struct block_list **fr;
 	struct mob_data *mmd = NULL;
-	struct status_change *sc_data;
+	struct status_change *sc;
 	int flag = 0;
 
 	nullpo_retr(0, bl);
@@ -2936,15 +2933,15 @@ static int mob_getfriendstatus_sub(struct block_list *bl,va_list ap)
 	cond2 = va_arg(ap,int);
 	fr    = va_arg(ap,struct block_list **);
 
-	sc_data = status_get_sc_data(bl);
-	if(sc_data) {
+	sc = status_get_sc(bl);
+	if(sc) {
 		if(cond2 == -1) {
 			int j;
 			for(j=SC_STONE; j<=SC_BLIND && !flag; j++) {
-				flag = (sc_data[j].timer != -1);
+				flag = (sc->data[j].timer != -1);
 			}
 		} else {
-			flag = (sc_data[cond2].timer != -1);
+			flag = (sc->data[cond2].timer != -1);
 		}
 		if( flag^(cond1 == MSC_FRIENDSTATUSOFF) ) {
 			int *c = va_arg(ap,int *);
@@ -3087,7 +3084,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 	if(battle_config.mob_skill_use == 0 || md->ud.skilltimer != -1)
 		return 0;
 
-	if(md->sc_data[SC_SELFDESTRUCTION].timer != -1)	// 自爆中はスキルを使わない
+	if(md->sc.data[SC_SELFDESTRUCTION].timer != -1)	// 自爆中はスキルを使わない
 		return 0;
 
 	if(md->state.special_mob_ai >= 2)		// スフィアーマインはスキルを使わない
@@ -3153,10 +3150,10 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			if( c2 == -1 ) {
 				int j;
 				for(j=SC_STONE; j<=SC_BLIND && !flag; j++) {
-					flag = ( md->sc_data[j].timer != -1 );
+					flag = ( md->sc.data[j].timer != -1 );
 				}
 			} else {
-				flag = ( md->sc_data[c2].timer != -1 );
+				flag = ( md->sc.data[c2].timer != -1 );
 			}
 			flag ^= ( ms[i].cond1 == MSC_MYSTATUSOFF );
 			break;
@@ -3201,18 +3198,18 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		case MSC_TARGETSTATUSON:	// target status[num] on
 		case MSC_TARGETSTATUSOFF:	// target status[num] off
 			if(target) {
-				struct status_change *tsc_data = status_get_sc_data(target);
-				if( !tsc_data ) {
+				struct status_change *tsc = status_get_sc(target);
+				if( !tsc ) {
 					flag = 0;
 				} else if( c2 == -1 ) {
 					int j = 0;
-					if(tsc_data[SC_STONE].timer != -1)
-						flag = ( tsc_data[SC_STONE].val2 == 0 );
+					if(tsc->data[SC_STONE].timer != -1)
+						flag = ( tsc->data[SC_STONE].val2 == 0 );
 					for(j=SC_STONE+1; j<=SC_BLIND && !flag; j++) {
-						flag = ( tsc_data[j].timer != -1 );
+						flag = ( tsc->data[j].timer != -1 );
 					}
 				} else {
-					flag = ( tsc_data[c2].timer != -1 );
+					flag = ( tsc->data[c2].timer != -1 );
 				}
 				flag ^= ( ms[i].cond1 == MSC_TARGETSTATUSOFF );
 			}
@@ -3226,18 +3223,18 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		case MSC_MASTERSTATUSON:	// master status[num] on
 		case MSC_MASTERSTATUSOFF:	// master status[num] off
 			if(master) {
-				struct status_change *msc_data = status_get_sc_data(master);
-				if( !msc_data ) {
+				struct status_change *msc = status_get_sc(master);
+				if( !msc ) {
 					flag = 0;
 				} else if( c2 == -1 ) {
 					int j = 0;
-					if(msc_data[SC_STONE].timer != -1)
-						flag = ( msc_data[SC_STONE].val2 == 0 );
+					if(msc->data[SC_STONE].timer != -1)
+						flag = ( msc->data[SC_STONE].val2 == 0 );
 					for(j=SC_STONE+1; j<=SC_BLIND && !flag; j++) {
-						flag = ( msc_data[j].timer != -1 );
+						flag = ( msc->data[j].timer != -1 );
 					}
 				} else {
-					flag = ( msc_data[c2].timer != -1 );
+					flag = ( msc->data[c2].timer != -1 );
 				}
 				flag ^= ( ms[i].cond1 == MSC_MASTERSTATUSOFF );
 			}

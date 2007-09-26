@@ -861,8 +861,8 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 	for(i=c=0;i<MAX_PARTY;i++)
 	{
 		if((sd = p->member[i].sd) != NULL && sd->bl.prev && sd->bl.m == md->bl.m && !unit_isdead(&sd->bl)) {
-			if( (sd->sc_data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// 死んだふりしていない
-			    (sd->sc_data[SC_HIDING].timer == -1	   || !battle_config.noexp_hiding   ) )		// ハイドしていない
+			if( (sd->sc.data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// 死んだふりしていない
+			    (sd->sc.data[SC_HIDING].timer == -1	   || !battle_config.noexp_hiding   ) )		// ハイドしていない
 				sdlist[c++] = sd;
 		}
 	}

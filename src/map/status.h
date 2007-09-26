@@ -62,12 +62,7 @@ int status_get_mexp(struct block_list *bl);
 int status_get_enemy_type(struct block_list *bl);
 short status_get_clothes_color(struct block_list *bl);
 
-struct status_change *status_get_sc_data(struct block_list *bl);
-short *status_get_sc_count(struct block_list *bl);
-unsigned short *status_get_opt1(struct block_list *bl);
-unsigned short *status_get_opt2(struct block_list *bl);
-unsigned int *status_get_opt3(struct block_list *bl);
-unsigned int *status_get_option(struct block_list *bl);
+struct status_change *status_get_sc(struct block_list *bl);
 
 int status_get_matk1(struct block_list *bl);
 int status_get_matk2(struct block_list *bl);
@@ -102,10 +97,9 @@ int status_change_removemap_end(struct block_list *bl);
 int status_check_no_magic_damage(struct block_list *bl);
 
 #ifdef DYNAMIC_SC_DATA
-int status_calloc_sc_data(struct block_list *bl);
-int status_free_sc_data(struct block_list *bl);
-int status_check_dummy_sc_data(struct block_list *bl);
-extern struct status_change dummy_sc_data[MAX_STATUSCHANGE];
+int status_calloc_sc_data(struct status_change *sc);
+int status_free_sc_data(struct status_change *sc);
+extern struct status_change_data dummy_sc_data[MAX_STATUSCHANGE];
 #endif
 
 // ステータス計算

@@ -183,9 +183,20 @@ struct script_regstr {
 	char data[256];
 };
 
-struct status_change {
+struct status_change_data {
 	int timer;
 	int val1,val2,val3,val4;
+};
+
+struct status_change {
+	short count;
+#ifdef DYNAMIC_SC_DATA
+	struct status_change_data *data; //[MAX_STATUSCHANGE];
+#else
+	struct status_change_data data[MAX_STATUSCHANGE];
+#endif;
+	unsigned short opt1, opt2;
+	unsigned int opt3, option;
 };
 
 struct vending {
@@ -269,6 +280,9 @@ struct square;
 struct map_session_data {
 	struct block_list bl;
 	struct unit_data  ud;
+	struct mmo_charstatus status;
+	struct registry save_reg;
+	struct status_change sc;
 	struct {
 		unsigned auth : 1;
 		unsigned menu_or_input : 1;
@@ -320,9 +334,8 @@ struct map_session_data {
 		unsigned fix_damage : 1;
 		unsigned no_knockback : 1;
 	} special_state;
+
 	int char_id,login_id1,login_id2,sex;
-	struct mmo_charstatus status;
-	struct registry save_reg;
 	struct item_data *inventory_data[MAX_INVENTORY];
 	struct linkdb_node *inventory_timer;
 	unsigned int inventory_sortkey;
@@ -334,8 +347,6 @@ struct map_session_data {
 	char mapname[24];
 	int fd,new_fd;
 	short speed, prev_speed;
-	unsigned short opt1,opt2;
-	unsigned int opt3;
 	char dir,head_dir;
 	unsigned int client_tick;
 	int npc_id,areanpc_id,npc_shopid;
@@ -508,8 +519,6 @@ struct map_session_data {
 	int regstr_num;
 	struct script_regstr *regstr;
 
-	struct status_change sc_data[MAX_STATUSCHANGE];
-	short sc_count;
 	struct square dev;
 
 	int trade_partner;
@@ -640,8 +649,7 @@ struct npc_data {
 	char exname[24];
 	char position[24];
 	int chat_id;
-	unsigned short opt1,opt2;
-	unsigned int opt3,option;
+	unsigned int option;
 	short flag;
 	short view_size;
 	union {
@@ -669,6 +677,7 @@ struct npc_data {
 struct mob_data {
 	struct block_list bl;
 	struct unit_data  ud;
+	struct status_change sc;
 	short n;
 	short base_class,class_,dir,mode;
 	short m,x0,y0,xs,ys;
@@ -695,15 +704,6 @@ struct mob_data {
 	struct item *lootitem;
 	short lootitem_count;
 	short move_fail_count;
-
-#ifdef	DYNAMIC_SC_DATA
-	struct status_change *sc_data;	//[MAX_STATUSCHANGE];
-#else
-	struct status_change sc_data[MAX_STATUSCHANGE];
-#endif
-	short sc_count;
-	unsigned short opt1,opt2;
-	unsigned int opt3,option;
 	int guild_id;
 	int deletetimer;
 	short min_chase;
@@ -761,6 +761,7 @@ struct pet_data {
 struct homun_data {
 	struct block_list bl;
 	struct unit_data  ud;
+	struct status_change sc;
 	struct mmo_homunstatus status;
 	short dir;
 	short speed;
@@ -774,10 +775,6 @@ struct homun_data {
 	int intimate;
 	int target_id;
 	unsigned int skillstatictimer[MAX_HOMSKILL];
-	struct status_change sc_data[MAX_STATUSCHANGE];
-	short sc_count;
-	unsigned short opt1,opt2;
-	unsigned int opt3;
 	char attackable;
 	char limits_to_growth;
 	short view_class;
@@ -793,6 +790,7 @@ struct merc_data {
 	struct block_list bl;
 	struct unit_data  ud;
 	struct mmo_mercstatus status;
+	struct status_change sc;
 	short dir;
 	short speed;
 	short view_size;
@@ -805,10 +803,6 @@ struct merc_data {
 	short attackrange;
 	int target_id;
 	unsigned int skillstatictimer[MAX_HOMSKILL];
-	struct status_change sc_data[MAX_STATUSCHANGE];
-	short sc_count;
-	unsigned short opt1,opt2;
-	unsigned int opt3;
 	short attackable;
 	short view_class;
 	int nhealhp,nhealsp;

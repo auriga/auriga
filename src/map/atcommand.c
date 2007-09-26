@@ -1121,9 +1121,9 @@ atcommand_option(
 	if (sscanf(message, "%hu %hu %u %u", &opt1, &opt2, &option, &opt3) < 1)
 		return -1;
 
-	sd->opt1 = opt1;
-	sd->opt2 = opt2;
-	sd->opt3 = opt3;
+	sd->sc.opt1 = opt1;
+	sd->sc.opt2 = opt2;
+	sd->sc.opt3 = opt3;
 
 	clif_changeoption2(&sd->bl);
 	pc_setoption(sd, option);
@@ -1145,12 +1145,12 @@ atcommand_hide(
 	nullpo_retr(-1, sd);
 
 	if (pc_isinvisible(sd)) {
-		sd->status.option &= ~0x40;
+		sd->sc.option &= ~0x40;
 		clif_displaymessage(fd, msg_txt(10));
 		if(battle_config.gm_perfect_hide)	// 完全なインビジブルモードなら出現させる
 			clif_spawnpc(sd);
 	} else {
-		sd->status.option |= 0x40;
+		sd->sc.option |= 0x40;
 		clif_displaymessage(fd, msg_txt(11));
 		if(battle_config.gm_perfect_hide)	// 完全なインビジブルモードなら消滅させる
 			clif_clearchar(&sd->bl,0);
@@ -3022,9 +3022,9 @@ atcommand_character_option(
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
-			pl_sd->opt1 = opt1;
-			pl_sd->opt2 = opt2;
-			pl_sd->opt3 = opt3;
+			pl_sd->sc.opt1 = opt1;
+			pl_sd->sc.opt2 = opt2;
+			pl_sd->sc.opt3 = opt3;
 			clif_changeoption2(&pl_sd->bl);
 			pc_setoption(pl_sd, option);
 			clif_displaymessage(fd, msg_txt(55));
@@ -5642,7 +5642,7 @@ int atcommand_cloneskill(
 	if (ret == 1)
 		skilllv = skill_get_max(skillid);
 
-	if (pc_checkskill(sd,RG_PLAGIARISM) && sd->sc_data[SC_PRESERVE].timer == -1)
+	if (pc_checkskill(sd,RG_PLAGIARISM) && sd->sc.data[SC_PRESERVE].timer == -1)
 		skill_clone(sd, skillid, skilllv);
 
 	return 0;

@@ -178,7 +178,7 @@ int pc_isquitable(struct map_session_data *sd)
 
 	nullpo_retr(0, sd);
 
-	if(!unit_isdead(&sd->bl) && (sd->opt1 || sd->opt2))
+	if(!unit_isdead(&sd->bl) && (sd->sc.opt1 || sd->sc.opt2))
 		return 1;
 	if(sd->ud.skilltimer != -1)
 		return 1;
@@ -188,10 +188,10 @@ int pc_isquitable(struct map_session_data *sd)
 		return 1;
 	if(unit_isrunning(&sd->bl))
 		return 1;
-	if(sd->sc_data[SC_MARIONETTE].timer != -1)
+	if(sd->sc.data[SC_MARIONETTE].timer != -1)
 		return 1;
-	if(sd->sc_data[SC_DANCING].timer != -1 && sd->sc_data[SC_DANCING].val4) {
-		struct skill_unit_group *sg = (struct skill_unit_group *)sd->sc_data[SC_DANCING].val2;
+	if(sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_DANCING].val4) {
+		struct skill_unit_group *sg = (struct skill_unit_group *)sd->sc.data[SC_DANCING].val2;
 		if(sg && sg->src_id == sd->bl.id)
 			return 1;
 	}
@@ -466,18 +466,18 @@ static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *
 
 	nullpo_retr(0, sd);
 
-	if(sd->sc_data[SC_REDEMPTIO].timer != -1) {
+	if(sd->sc.data[SC_REDEMPTIO].timer != -1) {
 		status_change_end(&sd->bl,SC_REDEMPTIO,-1);
-		per -= sd->sc_data[SC_REDEMPTIO].val1;
+		per -= sd->sc.data[SC_REDEMPTIO].val1;
 		if(per <= 0)
 			return 0;
 	} else {
 		if(map[sd->bl.m].flag.nopenalty)
 			return 0;
-		if(sd->sc_data[SC_BABY].timer != -1)
+		if(sd->sc.data[SC_BABY].timer != -1)
 			return 0;
-		if(sd->sc_data[SC_LIFEINSURANCE].timer != -1) {
-			if(--sd->sc_data[SC_LIFEINSURANCE].val1 <= 0)
+		if(sd->sc.data[SC_LIFEINSURANCE].timer != -1) {
+			if(--sd->sc.data[SC_LIFEINSURANCE].val1 <= 0)
 				status_change_end(&sd->bl,SC_LIFEINSURANCE,-1);
 			return 0;
 		}
@@ -640,6 +640,9 @@ int pc_makesavestatus(struct map_session_data *sd)
 	if(sd->status.manner > 0)
 		sd->status.manner = 0;
 
+	// optionのコピー
+	sd->status.option = sd->sc.option;
+
 	return 0;
 }
 
@@ -651,7 +654,7 @@ void pc_setstand(struct map_session_data *sd)
 {
 	nullpo_retv(sd);
 
-	if(sd->sc_data[SC_TENSIONRELAX].timer != -1)
+	if(sd->sc.data[SC_TENSIONRELAX].timer != -1)
 		status_change_end(&sd->bl,SC_TENSIONRELAX,-1);
 
 	sd->state.dead_sit = 0;
@@ -825,10 +828,10 @@ static int pc_isequip(struct map_session_data *sd,int n)
 	//if(sd->state.casting) return 0;
 
 	// スパノビの魂
-	if(sd->sc_data[SC_SUPERNOVICE].timer != -1) {
+	if(sd->sc.data[SC_SUPERNOVICE].timer != -1) {
 		if(item->equip & 0x0002 && sd->status.base_level >= 96)
 		{
-			if(sd->sc_data[SC_STRIPWEAPON].timer != -1)
+			if(sd->sc.data[SC_STRIPWEAPON].timer != -1)
 				return 0;
 			if(item->wlv >= 4 && item->type == 4)
 			{
@@ -859,7 +862,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 			if(item->elv > 0 && sd->status.base_level < item->elv)
 				return 0;
 			// 頭でストリップなら失敗
-			if(item->equip & 0x0100 && sd->sc_data[SC_STRIPHELM].timer != -1)
+			if(item->equip & 0x0100 && sd->sc.data[SC_STRIPHELM].timer != -1)
 				return 0;
 			// 頭なら成功
 			// 頭上段
@@ -934,13 +937,13 @@ static int pc_isequip(struct map_session_data *sd,int n)
 		}
 	}
 
-	if(sd->sc_data[SC_STRIPWEAPON].timer != -1 && item->equip & 0x0002)
+	if(sd->sc.data[SC_STRIPWEAPON].timer != -1 && item->equip & 0x0002)
 		return 0;
-	if(sd->sc_data[SC_STRIPSHIELD].timer != -1 && item->equip & 0x0020)
+	if(sd->sc.data[SC_STRIPSHIELD].timer != -1 && item->equip & 0x0020)
 		return 0;
-	if(sd->sc_data[SC_STRIPARMOR].timer != -1 && item->equip & 0x0010)
+	if(sd->sc.data[SC_STRIPARMOR].timer != -1 && item->equip & 0x0010)
 		return 0;
-	if(sd->sc_data[SC_STRIPHELM].timer != -1 && item->equip & 0x0100)
+	if(sd->sc.data[SC_STRIPHELM].timer != -1 && item->equip & 0x0100)
 		return 0;
 
 	return 1;
@@ -1053,20 +1056,27 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// 傭兵初期化
 	sd->mcd = NULL;
 
+#ifdef DYNAMIC_SC_DATA
+	// ダミー挿入
+	sd->sc.data = dummy_sc_data;
+#else
 	// ステータス異常の初期化
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
-		sd->sc_data[i].timer = -1;
-		sd->sc_data[i].val1  = 0;
-		sd->sc_data[i].val2  = 0;
-		sd->sc_data[i].val3  = 0;
-		sd->sc_data[i].val4  = 0;
+		sd->sc.data[i].timer = -1;
+		sd->sc.data[i].val1  = 0;
+		sd->sc.data[i].val2  = 0;
+		sd->sc.data[i].val3  = 0;
+		sd->sc.data[i].val4  = 0;
 	}
-	sd->sc_count = 0;
-	sd->opt1     = 0;
-	sd->opt2     = 0;
-	sd->opt3     = 0;
+#endif
+
+	sd->sc.count = 0;
+	sd->sc.opt1  = 0;
+	sd->sc.opt2  = 0;
+	sd->sc.opt3  = 0;
 
 	sd->status.option &= OPTION_MASK;
+	sd->sc.option = sd->status.option;	// optionはscに移して使う
 
 	// アイテムチェックは必ずステータス異常の初期化後に行う
 	sd->state.inventory_dirty = 1;
@@ -1401,7 +1411,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 
 	// 埋め込み
 	// アルケミストの魂
-	if(sd->sc_data[SC_ALCHEMIST].timer != -1)
+	if(sd->sc.data[SC_ALCHEMIST].timer != -1)
 	{
 		if(pc_checkskill(sd,AM_PHARMACY) == 10)
 		{
@@ -1441,7 +1451,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 		}
 	}
 	// ナイトの魂
-	if(sd->sc_data[SC_KNIGHT].timer != -1)
+	if(sd->sc.data[SC_KNIGHT].timer != -1)
 	{
 		if(pc_checkskill(sd,KN_TWOHANDQUICKEN) == 10)
 		{
@@ -1454,7 +1464,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 		}
 	}
 	// ブラックスミスの魂
-	if(sd->sc_data[SC_BLACKSMITH].timer != -1)
+	if(sd->sc.data[SC_BLACKSMITH].timer != -1)
 	{
 		if(pc_checkskill(sd,BS_ADRENALINE) == 5)
 		{
@@ -1467,7 +1477,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 		}
 	}
 	// ハンターの魂
-	if(sd->sc_data[SC_HUNTER].timer != -1)
+	if(sd->sc.data[SC_HUNTER].timer != -1)
 	{
 		if(pc_checkskill(sd,AC_DOUBLE) == 10)
 		{
@@ -1482,7 +1492,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 	}
 
 	// バードとダンサーの魂
-	if(sd->sc_data[SC_BARDDANCER].timer != -1)
+	if(sd->sc.data[SC_BARDDANCER].timer != -1)
 	{
 		int lv;
 		if((lv = pc_checkskill(sd,BA_WHISTLE)) > 0) {
@@ -3622,7 +3632,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 		return 0;
 	if(mob_db[md->class_].mexp > 0 || mob_db[md->class_].mode&0x20)
 		return 0;
-	if(md->sc_data[SC_STONE].timer != -1 || md->sc_data[SC_FREEZE].timer != -1)
+	if(md->sc.data[SC_STONE].timer != -1 || md->sc.data[SC_FREEZE].timer != -1)
 		return 0;
 
 	skill = (sd->paramc[4] - mob_db[md->class_].dex)/2 + pc_checkskill(sd,TF_STEAL) * 6 + 10;
@@ -3674,7 +3684,7 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
 
 	if(md->state.steal_coin_flag)
 		return 0;
-	if(md->sc_data[SC_STONE].timer != -1 || md->sc_data[SC_FREEZE].timer != -1)
+	if(md->sc.data[SC_STONE].timer != -1 || md->sc.data[SC_FREEZE].timer != -1)
 		return 0;
 
 	skill = pc_checkskill(sd,RG_STEALCOIN)*10;
@@ -3774,8 +3784,8 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		skill_stop_dancing(&sd->bl, 2);	// 移動先にユニットを移動するかどうかの判断もする
 
 		// 温もりユニット移動
-		if(sd->sc_data[SC_WARM].timer != -1) {
-			struct skill_unit_group *sg = (struct skill_unit_group *)sd->sc_data[SC_WARM].val4;
+		if(sd->sc.data[SC_WARM].timer != -1) {
+			struct skill_unit_group *sg = (struct skill_unit_group *)sd->sc.data[SC_WARM].val4;
 			if(sg)
 				skill_unit_move_unit_group(sg, sd->bl.m, x-sd->bl.x, y-sd->bl.y);
 		}
@@ -3784,19 +3794,19 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		skill_stop_dancing(&sd->bl, 1);
 
 		// 温もりユニット削除
-		if(sd->sc_data[SC_WARM].timer != -1)
+		if(sd->sc.data[SC_WARM].timer != -1)
 			status_change_end(&sd->bl, SC_WARM, -1);
 
 		// 太陽・月・星の安楽効果削除
-		if(sd->sc_data[SC_SUN_COMFORT].timer != -1)
+		if(sd->sc.data[SC_SUN_COMFORT].timer != -1)
 			status_change_end(&sd->bl, SC_SUN_COMFORT, -1);
-		if(sd->sc_data[SC_MOON_COMFORT].timer != -1)
+		if(sd->sc.data[SC_MOON_COMFORT].timer != -1)
 			status_change_end(&sd->bl, SC_MOON_COMFORT, -1);
-		if(sd->sc_data[SC_STAR_COMFORT].timer != -1)
+		if(sd->sc.data[SC_STAR_COMFORT].timer != -1)
 			status_change_end(&sd->bl, SC_STAR_COMFORT, -1);
 
 		// 凸面鏡の効果削除
-		if(sd->sc_data[SC_BOSSMAPINFO].timer != -1)
+		if(sd->sc.data[SC_BOSSMAPINFO].timer != -1)
 			status_change_end(&sd->bl, SC_BOSSMAPINFO, -1);
 	}
 	status_change_hidden_end(&sd->bl);
@@ -4103,13 +4113,13 @@ int pc_runtodir(struct map_session_data *sd)
 
 	// 進めない場合駆け足終了
 	if(to_x == sd->bl.x && to_y == sd->bl.y) {
-		if(sd->sc_data[SC_RUN].timer != -1) {
+		if(sd->sc.data[SC_RUN].timer != -1) {
 			int dir = sd->dir;
 			int head_dir = sd->head_dir;
 
 			// 初回呼び出し時で一歩も動けないときはノックバックしない
-			if(sd->sc_data[SC_RUN].val4 > 0)
-				skill_blown(&sd->bl,&sd->bl,skill_get_blewcount(TK_RUN,sd->sc_data[SC_RUN].val1)|SAB_NODAMAGE);
+			if(sd->sc.data[SC_RUN].val4 > 0)
+				skill_blown(&sd->bl,&sd->bl,skill_get_blewcount(TK_RUN,sd->sc.data[SC_RUN].val1)|SAB_NODAMAGE);
 			status_change_end(&sd->bl,SC_RUN,-1);
 			clif_status_change(&sd->bl,SI_RUN_STOP,1);
 			pc_setdir(sd, dir, head_dir);
@@ -4206,7 +4216,7 @@ static int pc_checkallowskill(struct map_session_data *sd)
 
 	nullpo_retr(0, sd);
 
-	if( sd->sc_count <= 0 )
+	if( sd->sc.count <= 0 )
 		return 0;
 
 	mask = 1 << sd->status.weapon;
@@ -4214,28 +4224,28 @@ static int pc_checkallowskill(struct map_session_data *sd)
 	// 武器が合わないならステータス異常を解除
 	for(i=0; i < sizeof(skill_list)/sizeof(skill_list[0]); i++) {
 		int type = SkillStatusChangeTable[skill_list[i]];
-		if( type >= 0 && sd->sc_data[type].timer != -1 ) {
+		if( type >= 0 && sd->sc.data[type].timer != -1 ) {
 			if( !(skill_get_weapontype(skill_list[i]) & mask) )
 				status_change_end(&sd->bl, type, -1);
 		}
 	}
 
-	if( sd->sc_data[SC_DANCING].timer != -1 ) {
-		if( !(skill_get_weapontype(sd->sc_data[SC_DANCING].val1) & mask) )
+	if( sd->sc.data[SC_DANCING].timer != -1 ) {
+		if( !(skill_get_weapontype(sd->sc.data[SC_DANCING].val1) & mask) )
 			skill_stop_dancing(&sd->bl,0);	// 演奏解除
 	}
-	if( sd->sc_data[SC_SPURT].timer != -1 && (sd->weapontype1 != WT_FIST || sd->weapontype2 != WT_FIST) ) {
+	if( sd->sc.data[SC_SPURT].timer != -1 && (sd->weapontype1 != WT_FIST || sd->weapontype2 != WT_FIST) ) {
 		status_change_end(&sd->bl,SC_SPURT,-1);	// 駆け足STR
 	}
 
 	if(sd->status.shield <= 0) {
-		if(sd->sc_data[SC_AUTOGUARD].timer != -1) {		// オートガード
+		if(sd->sc.data[SC_AUTOGUARD].timer != -1) {		// オートガード
 			status_change_end(&sd->bl,SC_AUTOGUARD,-1);
 		}
-		if(sd->sc_data[SC_DEFENDER].timer != -1) {		// ディフェンダー
+		if(sd->sc.data[SC_DEFENDER].timer != -1) {		// ディフェンダー
 			status_change_end(&sd->bl,SC_DEFENDER,-1);
 		}
-		if(sd->sc_data[SC_REFLECTSHIELD].timer != -1) {		// リフレクトシールド
+		if(sd->sc.data[SC_REFLECTSHIELD].timer != -1) {		// リフレクトシールド
 			status_change_end(&sd->bl,SC_REFLECTSHIELD,-1);
 		}
 	}
@@ -4449,7 +4459,7 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		int race_id = status_get_race(&md->bl);
 		int tk_exp_rate = 0;
 
-		if (sd->sc_data[SC_MIRACLE].timer != -1) { // 太陽と月と星の奇跡
+		if (sd->sc.data[SC_MIRACLE].timer != -1) { // 太陽と月と星の奇跡
 			tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
 		} else {                                  // 太陽の祝福、月の祝福、星の祝福
 			if ((battle_config.allow_skill_without_day || is_day_of_sun()) && md->class_ == sd->hate_mob[0])
@@ -4463,20 +4473,20 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		base_exp = base_exp * (100 + sd->exp_rate[race_id] + tk_exp_rate) / 100;
 		job_exp  = job_exp  * (100 + sd->job_rate[race_id] + tk_exp_rate) / 100;
 
-		if (md->sc_data[SC_RICHMANKIM].timer != -1) {
-			base_exp = base_exp * (125 + md->sc_data[SC_RICHMANKIM].val1 * 11) / 100;
-			job_exp  = job_exp  * (125 + md->sc_data[SC_RICHMANKIM].val1 * 11) / 100;
+		if (md->sc.data[SC_RICHMANKIM].timer != -1) {
+			base_exp = base_exp * (125 + md->sc.data[SC_RICHMANKIM].val1 * 11) / 100;
+			job_exp  = job_exp  * (125 + md->sc.data[SC_RICHMANKIM].val1 * 11) / 100;
 		}
 	}
-	if (sd->sc_data[SC_MEAL_INCEXP].timer != -1) {
-		base_exp = base_exp * sd->sc_data[SC_MEAL_INCEXP].val1 / 100;
+	if (sd->sc.data[SC_MEAL_INCEXP].timer != -1) {
+		base_exp = base_exp * sd->sc.data[SC_MEAL_INCEXP].val1 / 100;
 	}
-	if (sd->sc_data[SC_MEAL_INCJOB].timer != -1) {
-		job_exp  = job_exp  * sd->sc_data[SC_MEAL_INCJOB].val1 / 100;
+	if (sd->sc.data[SC_MEAL_INCJOB].timer != -1) {
+		job_exp  = job_exp  * sd->sc.data[SC_MEAL_INCJOB].val1 / 100;
 	}
-	if (sd->sc_data[SC_COMBATHAN].timer != -1) {
-		base_exp = base_exp * sd->sc_data[SC_COMBATHAN].val1 / 100;
-		job_exp  = job_exp  * sd->sc_data[SC_COMBATHAN].val1 / 100;
+	if (sd->sc.data[SC_COMBATHAN].timer != -1) {
+		base_exp = base_exp * sd->sc.data[SC_COMBATHAN].val1 / 100;
+		job_exp  = job_exp  * sd->sc.data[SC_COMBATHAN].val1 / 100;
 	}
 
 	if (sd->status.guild_id > 0) {	// ギルドに上納
@@ -5017,14 +5027,14 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	}
 
 	// 歩いていたら足を止める
-	if((sd->sc_data[SC_ENDURE].timer == -1 || map[sd->bl.m].flag.gvg) && sd->sc_data[SC_BERSERK].timer == -1 && !sd->special_state.infinite_endure && !unit_isrunning(&sd->bl))
+	if((sd->sc.data[SC_ENDURE].timer == -1 || map[sd->bl.m].flag.gvg) && sd->sc.data[SC_BERSERK].timer == -1 && !sd->special_state.infinite_endure && !unit_isrunning(&sd->bl))
 		unit_stop_walking(&sd->bl,battle_config.pc_hit_stop_type);
 
 	// 演奏/ダンスの中断
 	if(damage > sd->status.max_hp>>2)
 		skill_stop_dancing(&sd->bl,0);
 
-	if(damage > 0 && sd->sc_data[SC_GRAVITATION_USER].timer != -1)
+	if(damage > 0 && sd->sc.data[SC_GRAVITATION_USER].timer != -1)
 		status_change_end(&sd->bl, SC_GRAVITATION_USER, -1);
 
 	// 先制された場合は共闘参加
@@ -5058,9 +5068,9 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		// まだ生きているならHP更新
 		clif_updatestatus(sd,SP_HP);
 
-		if( sd->sc_data[SC_AUTOBERSERK].timer != -1 &&
+		if( sd->sc.data[SC_AUTOBERSERK].timer != -1 &&
 		    sd->status.hp < sd->status.max_hp>>2 &&
-		    (sd->sc_data[SC_PROVOKE].timer == -1 || sd->sc_data[SC_PROVOKE].val2 == 0) )
+		    (sd->sc.data[SC_PROVOKE].timer == -1 || sd->sc.data[SC_PROVOKE].val2 == 0) )
 		{
 			// オートバーサーク発動
 			status_change_start(&sd->bl,SC_PROVOKE,10,1,0,0,0,0);
@@ -5068,7 +5078,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		return 0;
 	}
 	// スパノビがExp99%でHPが0になるとHPが回復して金剛状態になる
-	if(sd->s_class.job == 23 && pc_nextbaseexp(sd) && sd->status.base_exp*100/pc_nextbaseexp(sd) >= 99 && sd->sc_data[SC_STEELBODY].timer == -1) {
+	if(sd->s_class.job == 23 && pc_nextbaseexp(sd) && sd->status.base_exp*100/pc_nextbaseexp(sd) >= 99 && sd->sc.data[SC_STEELBODY].timer == -1) {
 		clif_skill_nodamage(&sd->bl,&sd->bl,MO_STEELBODY,5,1);
 		status_change_start(&sd->bl,SkillStatusChangeTable[MO_STEELBODY],5,0,0,0,skill_get_time(MO_STEELBODY,5),0);
 		sd->status.hp = sd->status.max_hp;
@@ -5117,8 +5127,8 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 	}
 
 	// カイゼル
-	if(sd->sc_data[SC_KAIZEL].timer != -1)
-		kaizel_lv = sd->sc_data[SC_KAIZEL].val1;	// ステータス異常が解除される前にスキルLvを保存
+	if(sd->sc.data[SC_KAIZEL].timer != -1)
+		kaizel_lv = sd->sc.data[SC_KAIZEL].val1;	// ステータス異常が解除される前にスキルLvを保存
 
 	// アイテム消滅
 	if(sd->loss_equip_flag&0x0001) {
@@ -5174,11 +5184,11 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 	skill_stop_dancing(&sd->bl, 0);
 	clif_clearchar_area(&sd->bl,1);
 	skill_unit_move(&sd->bl,gettick(),0);
-	if(sd->sc_data[SC_BLADESTOP].timer != -1)		// 白刃は事前に解除
+	if(sd->sc.data[SC_BLADESTOP].timer != -1)		// 白刃は事前に解除
 		status_change_end(&sd->bl,SC_BLADESTOP,-1);
-	if(sd->sc_data[SC_CLOSECONFINE].timer != -1)	// クローズコンファインは事前に解除
+	if(sd->sc.data[SC_CLOSECONFINE].timer != -1)	// クローズコンファインは事前に解除
 		status_change_end(&sd->bl,SC_CLOSECONFINE,-1);
-	if(sd->sc_data[SC_HOLDWEB].timer != -1)
+	if(sd->sc.data[SC_HOLDWEB].timer != -1)
 		status_change_end(&sd->bl,SC_HOLDWEB,-1);
 	sd->status.die_counter++;	// 死にカウンター書き込み
 	status_change_release(&sd->bl,0x01);	// ステータス異常を解除する
@@ -5434,7 +5444,7 @@ int pc_readparam(struct map_session_data *sd,int type)
 		val = sd->status.partner_id;
 		break;
 	case SP_CART:
-		val = sd->status.option&CART_MASK;
+		val = sd->sc.option&CART_MASK;
 		break;
 	case SP_STR:
 		val = sd->status.str;
@@ -5791,7 +5801,7 @@ int pc_heal(struct map_session_data *sd,int hp,int sp)
 		sp = 0;
 
 	// バーサーク中は回復させない
-	if(sd->sc_data[SC_BERSERK].timer != -1) {
+	if(sd->sc.data[SC_BERSERK].timer != -1) {
 		if(sp > 0)
 			sp = 0;
 		if(hp > 0)
@@ -5857,13 +5867,13 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			hp = hp * bonus / 100;
 		if(sd->use_nameditem && ranking_get_id2rank(sd->use_nameditem,RK_ALCHEMIST))
 		{
-			if(sd->sc_data[SC_ROGUE].timer != -1)
+			if(sd->sc.data[SC_ROGUE].timer != -1)
 				hp = hp * 2;
 			else
 				hp = hp * 150 / 100;
 		}
-		if(sd->sc_data[SC_CRITICALWOUND].timer != -1)
-			hp = hp * (100 - sd->sc_data[SC_CRITICALWOUND].val1 * 10) / 100;
+		if(sd->sc.data[SC_CRITICALWOUND].timer != -1)
+			hp = hp * (100 - sd->sc.data[SC_CRITICALWOUND].val1 * 10) / 100;
 	}
 	if(sp > 0) {
 		bonus = (sd->paramc[3]<<1) + 100 + pc_checkskill(sd,MG_SRECOVERY)*10;
@@ -5878,7 +5888,7 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			sp  = sp * bonus / 100;
 		if(sd->use_nameditem && ranking_get_id2rank(sd->use_nameditem,RK_ALCHEMIST))
 		{
-			if(sd->sc_data[SC_ROGUE].timer != -1)
+			if(sd->sc.data[SC_ROGUE].timer != -1)
 				sp = sp * 2;
 			else
 				sp = sp * 150 / 100;
@@ -6114,7 +6124,7 @@ int pc_changelook(struct map_session_data *sd,int type,int val)
 	case LOOK_CLOTHES_COLOR:
 		if(val < 0 || val >= MAX_CLOTH_COLOR)
 			return 0;
-		if(sd->sc_data[SC_BUNSINJYUTSU].timer != -1)	// 影分身中は強制的に0
+		if(sd->sc.data[SC_BUNSINJYUTSU].timer != -1)	// 影分身中は強制的に0
 			val = 0;
 		sd->status.clothes_color = val;
 		break;
@@ -6164,7 +6174,7 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 		clif_cart_clear(sd);
 	}
 
-	sd->status.option = type;
+	sd->sc.option = type;
 	clif_changeoption(&sd->bl);
 	clif_send_clothcolor(&sd->bl);
 	status_calc_pc(sd,0);
@@ -6198,7 +6208,7 @@ void pc_setcart(struct map_session_data *sd, unsigned short type)
 	if(pc_checkskill(sd,MC_PUSHCART) > 0) {	// プッシュカートスキル所持
 		if(sd->status.base_level > cart[type].level) {
 			// suppress actual cart; conserv other options
-			pc_setoption(sd, (sd->status.option & ~CART_MASK) | cart[type].opt);
+			pc_setoption(sd, (sd->sc.option & ~CART_MASK) | cart[type].opt);
 		}
 	}
 
@@ -6777,7 +6787,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	pc_checkallowskill(sd);	// 装備品でスキルか解除されるかチェック
 	status_calc_pc(sd,0);
 
-	if(sd->sc_data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_HUMAN,sd->def_ele))
+	if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_HUMAN,sd->def_ele))
 		status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
 
 	return;
@@ -6871,7 +6881,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 	}
 	if(!type) {
 		status_calc_pc(sd,0);
-		if(sd->sc_data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_HUMAN,sd->def_ele))
+		if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_HUMAN,sd->def_ele))
 			status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
 	}
 
@@ -7464,21 +7474,21 @@ int pc_break_equip(struct map_session_data *sd, unsigned short where)
 		case EQP_WEAPON:
 			if((sd->weapontype1 >= WT_1HAXE && sd->weapontype1 <= WT_STAFF) || sd->weapontype1 == WT_BOOK)
 				return 0;
-			if(sd->sc_data[SC_CP_WEAPON].timer != -1)
+			if(sd->sc.data[SC_CP_WEAPON].timer != -1)
 				return 0;
 			break;
 		case EQP_ARMOR:
-			if(sd->sc_data[SC_CP_ARMOR].timer != -1)
+			if(sd->sc.data[SC_CP_ARMOR].timer != -1)
 				return 0;
 			break;
 		case EQP_SHIELD:
 			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == 4)	// 左手が武器なら
 				return 0;
-			if(sd->sc_data[SC_CP_SHIELD].timer != -1)
+			if(sd->sc.data[SC_CP_SHIELD].timer != -1)
 				return 0;
 			break;
 		case EQP_HELM:
-			if(sd->sc_data[SC_CP_HELM].timer != -1)
+			if(sd->sc.data[SC_CP_HELM].timer != -1)
 				return 0;
 			break;
 		default:
@@ -7519,32 +7529,32 @@ int pc_break_equip2(struct map_session_data *sd,int where)
 		case 6:	// 頭上段
 			if(sd->unbreakable_equip & EQP_HELM)
 				return 0;
-			if(sd->sc_data[SC_CP_HELM].timer != -1)
+			if(sd->sc.data[SC_CP_HELM].timer != -1)
 				return 0;
 			break;
 		case 7:	// 体
 			if(sd->unbreakable_equip & EQP_ARMOR)
 				return 0;
-			if(sd->sc_data[SC_CP_ARMOR].timer != -1)
+			if(sd->sc.data[SC_CP_ARMOR].timer != -1)
 				return 0;
 			break;
 		case 8:	// 左手
 			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == 4) {	// 武器
 				if(sd->unbreakable_equip & EQP_WEAPON)
 					return 0;
-				if(sd->sc_data[SC_CP_WEAPON].timer != -1)
+				if(sd->sc.data[SC_CP_WEAPON].timer != -1)
 					return 0;
 			} else {	// 盾
 				if(sd->unbreakable_equip & EQP_SHIELD)
 					return 0;
-				if(sd->sc_data[SC_CP_SHIELD].timer != -1)
+				if(sd->sc.data[SC_CP_SHIELD].timer != -1)
 					return 0;
 			}
 			break;
 		case 9:	// 右手
 			if(sd->unbreakable_equip & EQP_WEAPON)
 				return 0;
-			if(sd->sc_data[SC_CP_WEAPON].timer != -1)
+			if(sd->sc.data[SC_CP_WEAPON].timer != -1)
 				return 0;
 			break;
 		case 10: // 矢
@@ -7587,8 +7597,8 @@ static int pc_hpheal(struct map_session_data *sd)
 	a = natural_heal_diff_tick;
 	if(pc_issit(sd))
 		a += a;
-	if(sd->sc_data[SC_REGENERATION].timer != -1) {
-		switch(sd->sc_data[SC_REGENERATION].val1)
+	if(sd->sc.data[SC_REGENERATION].timer != -1) {
+		switch(sd->sc.data[SC_REGENERATION].val1)
 		{
 			case 1:
 			case 2:
@@ -7620,10 +7630,10 @@ static int pc_spheal(struct map_session_data *sd)
 	a = natural_heal_diff_tick;
 	if(pc_issit(sd))
 		a += a;
-	if(sd->sc_data[SC_MAGNIFICAT].timer != -1)	// マグニフィカート
+	if(sd->sc.data[SC_MAGNIFICAT].timer != -1)	// マグニフィカート
 		a += a;
-	if(sd->sc_data[SC_REGENERATION].timer != -1) {
-		switch(sd->sc_data[SC_REGENERATION].val1)
+	if(sd->sc.data[SC_REGENERATION].timer != -1) {
+		switch(sd->sc.data[SC_REGENERATION].val1)
 		{
 			case 2:
 				a += a;
@@ -7658,7 +7668,7 @@ static int pc_natural_heal_hp(struct map_session_data *sd)
 
 	if(sd->ud.walktimer == -1) {
 		inc_num = pc_hpheal(sd);
-		if(sd->sc_data[SC_TENSIONRELAX].timer != -1) {	// テンションリラックス
+		if(sd->sc.data[SC_TENSIONRELAX].timer != -1) {	// テンションリラックス
 			sd->hp_sub += 2*inc_num;
 			sd->inchealhptick += 3*natural_heal_diff_tick;
 		} else {
@@ -7735,7 +7745,7 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 	bsp = sd->status.sp;
 
 	inc_num = pc_spheal(sd);
-	if(sd->s_class.job == 23 || sd->sc_data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc_data[SC_MONK].timer != -1)
+	if(sd->s_class.job == 23 || sd->sc.data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc.data[SC_MONK].timer != -1)
 		sd->sp_sub += inc_num;
 	if(sd->ud.walktimer == -1)
 		sd->inchealsptick += natural_heal_diff_tick;
@@ -8025,23 +8035,23 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	if( (battle_config.natural_heal_weight_rate > 100 || sd->weight*100/sd->max_weight < battle_config.natural_heal_weight_rate) &&
 	    !unit_isdead(&sd->bl) &&
 	    !pc_ishiding(sd) &&
-	    sd->sc_data[SC_POISON].timer == -1 &&	// 毒状態ではHPが回復しない
-	    sd->sc_data[SC_BLEED].timer == -1 &&	// 出血状態ではHPが回復しない
-	    sd->sc_data[SC_TRICKDEAD].timer == -1 &&	// 死んだふり状態ではHPが回復しない
-	    sd->sc_data[SC_GOSPEL].timer == -1 &&	// ゴスペル状態ではHPが回復しない
-	    sd->sc_data[SC_BERSERK].timer == -1 )	// バーサーク状態ではHPが回復しない
+	    sd->sc.data[SC_POISON].timer == -1 &&	// 毒状態ではHPが回復しない
+	    sd->sc.data[SC_BLEED].timer == -1 &&	// 出血状態ではHPが回復しない
+	    sd->sc.data[SC_TRICKDEAD].timer == -1 &&	// 死んだふり状態ではHPが回復しない
+	    sd->sc.data[SC_GOSPEL].timer == -1 &&	// ゴスペル状態ではHPが回復しない
+	    sd->sc.data[SC_BERSERK].timer == -1 )	// バーサーク状態ではHPが回復しない
 	{
 		pc_natural_heal_hp(sd);
-		if( sd->sc_data[SC_MAXIMIZEPOWER].timer == -1 &&	// マキシマイズパワー状態ではSPが回復しない
-		    sd->sc_data[SC_EXTREMITYFIST].timer == -1 &&	// 阿修羅状態ではSPが回復しない
-		    sd->sc_data[SC_DANCING].timer == -1 &&		// ダンス状態ではSPが回復しない
-		    sd->sc_data[SC_BERSERK].timer == -1 )		// バーサーク状態ではSPが回復しない
+		if( sd->sc.data[SC_MAXIMIZEPOWER].timer == -1 &&	// マキシマイズパワー状態ではSPが回復しない
+		    sd->sc.data[SC_EXTREMITYFIST].timer == -1 &&	// 阿修羅状態ではSPが回復しない
+		    sd->sc.data[SC_DANCING].timer == -1 &&		// ダンス状態ではSPが回復しない
+		    sd->sc.data[SC_BERSERK].timer == -1 )		// バーサーク状態ではSPが回復しない
 			pc_natural_heal_sp(sd);
 	} else {
 		sd->hp_sub = sd->inchealhptick = 0;
 		sd->sp_sub = sd->inchealsptick = 0;
 	}
-	if(pc_checkskill(sd,MO_SPIRITSRECOVERY) > 0 && !pc_ishiding(sd) && sd->sc_data[SC_POISON].timer == -1) {
+	if(pc_checkskill(sd,MO_SPIRITSRECOVERY) > 0 && !pc_ishiding(sd) && sd->sc.data[SC_POISON].timer == -1) {
 		pc_spirit_heal_hp(sd);
 		pc_spirit_heal_sp(sd);
 	} else {
@@ -8050,13 +8060,13 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	}
 
 	// 安らかな休息
-	if(pc_checkskill(sd,TK_HPTIME) > 0 && !pc_ishiding(sd) && sd->sc_data[SC_POISON].timer == -1)
+	if(pc_checkskill(sd,TK_HPTIME) > 0 && !pc_ishiding(sd) && sd->sc.data[SC_POISON].timer == -1)
 		pc_rest_heal_hp(sd);
 	else
 		sd->inchealresthptick = 0;
 
 	// 楽しい休息
-	if(pc_checkskill(sd,TK_SPTIME) > 0 && !pc_ishiding(sd) && sd->sc_data[SC_POISON].timer == -1)
+	if(pc_checkskill(sd,TK_SPTIME) > 0 && !pc_ishiding(sd) && sd->sc.data[SC_POISON].timer == -1)
 		pc_rest_heal_sp(sd);
 	else
 		sd->inchealrestsptick = 0;

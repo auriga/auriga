@@ -217,59 +217,59 @@ int merc_calc_status(struct merc_data *mcd)
 	mcd->sprecov_rate = 100;
 
 	// ステータス変化による基本パラメータ補正
-	if(mcd->sc_count > 0)
+	if(mcd->sc.count > 0)
 	{
 		int sc_speed_rate = 100;
 
-		if(mcd->sc_data[SC_INCREASEAGI].timer != -1 && sc_speed_rate > 75)	// 速度増加による移動速度増加
+		if(mcd->sc.data[SC_INCREASEAGI].timer != -1 && sc_speed_rate > 75)	// 速度増加による移動速度増加
 			sc_speed_rate = 75;
-		if(mcd->sc_data[SC_BERSERK].timer != -1 && sc_speed_rate > 75)	// バーサークによる移動速度増加
+		if(mcd->sc.data[SC_BERSERK].timer != -1 && sc_speed_rate > 75)	// バーサークによる移動速度増加
 			sc_speed_rate = 75;
 
 		mcd->speed = mcd->speed * sc_speed_rate / 100;
 
-		if(mcd->sc_data[SC_DECREASEAGI].timer != -1) {		// 速度減少(agiはbattle.cで)
-			if(mcd->sc_data[SC_DEFENDER].timer == -1) {	// ディフェンダー時は速度低下しない
-				mcd->speed = mcd->speed *((mcd->sc_data[SC_DECREASEAGI].val1 > 5)? 150: 133)/100;
+		if(mcd->sc.data[SC_DECREASEAGI].timer != -1) {		// 速度減少(agiはbattle.cで)
+			if(mcd->sc.data[SC_DEFENDER].timer == -1) {	// ディフェンダー時は速度低下しない
+				mcd->speed = mcd->speed *((mcd->sc.data[SC_DECREASEAGI].val1 > 5)? 150: 133)/100;
 			}
 		}
 
 		// ゴスペルALL+20
-		if(mcd->sc_data[SC_INCALLSTATUS].timer != -1) {
-			mcd->str  += mcd->sc_data[SC_INCALLSTATUS].val1;
-			mcd->agi  += mcd->sc_data[SC_INCALLSTATUS].val1;
-			mcd->vit  += mcd->sc_data[SC_INCALLSTATUS].val1;
-			mcd->int_ += mcd->sc_data[SC_INCALLSTATUS].val1;
-			mcd->dex  += mcd->sc_data[SC_INCALLSTATUS].val1;
-			mcd->luk  += mcd->sc_data[SC_INCALLSTATUS].val1;
+		if(mcd->sc.data[SC_INCALLSTATUS].timer != -1) {
+			mcd->str  += mcd->sc.data[SC_INCALLSTATUS].val1;
+			mcd->agi  += mcd->sc.data[SC_INCALLSTATUS].val1;
+			mcd->vit  += mcd->sc.data[SC_INCALLSTATUS].val1;
+			mcd->int_ += mcd->sc.data[SC_INCALLSTATUS].val1;
+			mcd->dex  += mcd->sc.data[SC_INCALLSTATUS].val1;
+			mcd->luk  += mcd->sc.data[SC_INCALLSTATUS].val1;
 		}
 
-		if(mcd->sc_data[SC_INCREASEAGI].timer != -1)	// 速度増加
-			mcd->agi += 2+mcd->sc_data[SC_INCREASEAGI].val1;
+		if(mcd->sc.data[SC_INCREASEAGI].timer != -1)	// 速度増加
+			mcd->agi += 2+mcd->sc.data[SC_INCREASEAGI].val1;
 
-		if(mcd->sc_data[SC_DECREASEAGI].timer != -1)	// 速度減少(agiはbattle.cで)
-			mcd->agi -= 2+mcd->sc_data[SC_DECREASEAGI].val1;
+		if(mcd->sc.data[SC_DECREASEAGI].timer != -1)	// 速度減少(agiはbattle.cで)
+			mcd->agi -= 2+mcd->sc.data[SC_DECREASEAGI].val1;
 
-		if(mcd->sc_data[SC_BLESSING].timer != -1) {	// ブレッシング
-			mcd->str  += mcd->sc_data[SC_BLESSING].val1;
-			mcd->dex  += mcd->sc_data[SC_BLESSING].val1;
-			mcd->int_ += mcd->sc_data[SC_BLESSING].val1;
+		if(mcd->sc.data[SC_BLESSING].timer != -1) {	// ブレッシング
+			mcd->str  += mcd->sc.data[SC_BLESSING].val1;
+			mcd->dex  += mcd->sc.data[SC_BLESSING].val1;
+			mcd->int_ += mcd->sc.data[SC_BLESSING].val1;
 		}
-		if(mcd->sc_data[SC_SUITON].timer != -1) {	// 水遁
-			if(mcd->sc_data[SC_SUITON].val3)
-				mcd->agi += mcd->sc_data[SC_SUITON].val3;
-			if(mcd->sc_data[SC_SUITON].val4)
+		if(mcd->sc.data[SC_SUITON].timer != -1) {	// 水遁
+			if(mcd->sc.data[SC_SUITON].val3)
+				mcd->agi += mcd->sc.data[SC_SUITON].val3;
+			if(mcd->sc.data[SC_SUITON].val4)
 				mcd->speed = mcd->speed*2;
 		}
 
-		if(mcd->sc_data[SC_GLORIA].timer != -1)	// グロリア
+		if(mcd->sc.data[SC_GLORIA].timer != -1)	// グロリア
 			mcd->luk += 30;
 
-		if(mcd->sc_data[SC_QUAGMIRE].timer != -1) {	// クァグマイア
+		if(mcd->sc.data[SC_QUAGMIRE].timer != -1) {	// クァグマイア
 			short subagi = 0;
 			short subdex = 0;
-			subagi = (mcd->status.agi/2 < mcd->sc_data[SC_QUAGMIRE].val1*10) ? mcd->status.agi/2 : mcd->sc_data[SC_QUAGMIRE].val1*10;
-			subdex = (mcd->status.dex/2 < mcd->sc_data[SC_QUAGMIRE].val1*10) ? mcd->status.dex/2 : mcd->sc_data[SC_QUAGMIRE].val1*10;
+			subagi = (mcd->status.agi/2 < mcd->sc.data[SC_QUAGMIRE].val1*10) ? mcd->status.agi/2 : mcd->sc.data[SC_QUAGMIRE].val1*10;
+			subdex = (mcd->status.dex/2 < mcd->sc.data[SC_QUAGMIRE].val1*10) ? mcd->status.dex/2 : mcd->sc.data[SC_QUAGMIRE].val1*10;
 			if(map[mcd->bl.m].flag.pvp || map[mcd->bl.m].flag.gvg) {
 				subagi /= 2;
 				subdex /= 2;
@@ -279,7 +279,7 @@ int merc_calc_status(struct merc_data *mcd)
 			mcd->dex -= subdex;
 		}
 
-		if(mcd->sc_data[SC_BERSERK].timer != -1) {	// バーサーク
+		if(mcd->sc.data[SC_BERSERK].timer != -1) {	// バーサーク
 			def_rate  = 0;
 			mdef_rate = 0;
 			aspd_rate -= 30;
@@ -287,16 +287,16 @@ int merc_calc_status(struct merc_data *mcd)
 			mcd->max_hp = mcd->max_hp * 3;
 		}
 
-		if(mcd->sc_data[SC_DEFENDER].timer != -1) {	// ディフェンダー
-			mcd->aspd += (25 - mcd->sc_data[SC_DEFENDER].val1*5);
-			mcd->speed = (mcd->speed * (155 - mcd->sc_data[SC_DEFENDER].val1*5)) / 100;
+		if(mcd->sc.data[SC_DEFENDER].timer != -1) {	// ディフェンダー
+			mcd->aspd += (25 - mcd->sc.data[SC_DEFENDER].val1*5);
+			mcd->speed = (mcd->speed * (155 - mcd->sc.data[SC_DEFENDER].val1*5)) / 100;
 		}
 
 		// ウェポンクイッケン
-		if(mcd->sc_data[SC_WEAPONQUICKEN].timer != -1 &&
-		   mcd->sc_data[SC_QUAGMIRE].timer == -1 &&
-		   mcd->sc_data[SC_DONTFORGETME].timer == -1 &&
-		   mcd->sc_data[SC_DECREASEAGI].timer == -1)
+		if(mcd->sc.data[SC_WEAPONQUICKEN].timer != -1 &&
+		   mcd->sc.data[SC_QUAGMIRE].timer == -1 &&
+		   mcd->sc.data[SC_DONTFORGETME].timer == -1 &&
+		   mcd->sc.data[SC_DECREASEAGI].timer == -1)
 			aspd_rate -= 30;
 	}
 
@@ -356,9 +356,9 @@ int merc_calc_status(struct merc_data *mcd)
 	// スキルツリーの再計算不要
 	//merc_calc_skilltree(mcd);
 
-	if( mcd->sc_data[SC_AUTOBERSERK].timer != -1 &&
+	if( mcd->sc.data[SC_AUTOBERSERK].timer != -1 &&
 	    mcd->status.hp < mcd->status.max_hp>>2 &&
-	    (mcd->sc_data[SC_PROVOKE].timer == -1 || mcd->sc_data[SC_PROVOKE].val2 == 0) &&
+	    (mcd->sc.data[SC_PROVOKE].timer == -1 || mcd->sc.data[SC_PROVOKE].val2 == 0) &&
 	    !unit_isdead(&mcd->bl) )
 	{
 		// オートバーサーク発動
@@ -466,20 +466,27 @@ static int merc_data_init(struct map_session_data *sd)
 	for(i=0; i<MAX_MERCSKILL; i++)
 		mcd->skillstatictimer[i] = tick;
 
+#ifdef DYNAMIC_SC_DATA
+	// ダミー挿入
+	mcd->sc.data = dummy_sc_data;
+#else
 	// ステータス異常の初期化
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
-		mcd->sc_data[i].timer = -1;
-		mcd->sc_data[i].val1  = 0;
-		mcd->sc_data[i].val2  = 0;
-		mcd->sc_data[i].val3  = 0;
-		mcd->sc_data[i].val4  = 0;
+		mcd->sc.data[i].timer = -1;
+		mcd->sc.data[i].val1  = 0;
+		mcd->sc.data[i].val2  = 0;
+		mcd->sc.data[i].val3  = 0;
+		mcd->sc.data[i].val4  = 0;
 	}
-	mcd->sc_count = 0;
-	mcd->opt1     = 0;
-	mcd->opt2     = 0;
-	mcd->opt3     = 0;
+#endif
+
+	mcd->sc.count = 0;
+	mcd->sc.opt1  = 0;
+	mcd->sc.opt2  = 0;
+	mcd->sc.opt3  = 0;
 
 	mcd->status.option &= OPTION_MASK;
+	mcd->sc.option = mcd->status.option;	// optionはscに移して使う
 
 	merc_calc_status(mcd);			// ステータス計算
 	unit_dataset(&mcd->bl);
@@ -689,9 +696,9 @@ int merc_gainexp(struct merc_data *mcd,struct mob_data *md,atn_bignumber base_ex
 	if(mcd->bl.prev == NULL || unit_isdead(&mcd->bl))
 		return 0;
 
-	if(md && md->sc_data[SC_RICHMANKIM].timer != -1) {
-		base_exp = base_exp * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
-		job_exp  = job_exp  * (125 + md->sc_data[SC_RICHMANKIM].val1*11)/100;
+	if(md && md->sc.data[SC_RICHMANKIM].timer != -1) {
+		base_exp = base_exp * (125 + md->sc.data[SC_RICHMANKIM].val1*11)/100;
+		job_exp  = job_exp  * (125 + md->sc.data[SC_RICHMANKIM].val1*11)/100;
 	}
 
 	if(mcd->msd) {	// 主人へ指定倍の経験値
@@ -724,10 +731,10 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 		return 0;
 
 	// 歩いていたら足を止める
-	if((mcd->sc_data[SC_ENDURE].timer == -1 || map[mcd->bl.m].flag.gvg) && mcd->sc_data[SC_BERSERK].timer == -1)
+	if((mcd->sc.data[SC_ENDURE].timer == -1 || map[mcd->bl.m].flag.gvg) && mcd->sc.data[SC_BERSERK].timer == -1)
 		unit_stop_walking(&mcd->bl,battle_config.pc_hit_stop_type);
 
-	if(damage > 0 && mcd->sc_data[SC_GRAVITATION_USER].timer != -1)
+	if(damage > 0 && mcd->sc.data[SC_GRAVITATION_USER].timer != -1)
 		status_change_end(&mcd->bl, SC_GRAVITATION_USER, -1);
 
 	if(mcd->bl.prev == NULL) {
@@ -763,9 +770,9 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 		clif_disp_onlyself(sd->fd, msg_txt(189));	// 傭兵が死亡しました。
 		merc_delete_data(sd);
 	} else {
-		if( mcd->sc_data[SC_AUTOBERSERK].timer != -1 &&
+		if( mcd->sc.data[SC_AUTOBERSERK].timer != -1 &&
 		    mcd->status.hp < mcd->status.max_hp>>2 &&
-		    (mcd->sc_data[SC_PROVOKE].timer == -1 || mcd->sc_data[SC_PROVOKE].val2 == 0) )
+		    (mcd->sc.data[SC_PROVOKE].timer == -1 || mcd->sc.data[SC_PROVOKE].val2 == 0) )
 		{
 			// オートバーサーク発動
 			status_change_start(&mcd->bl,SC_PROVOKE,10,1,0,0,0,0);
@@ -784,7 +791,7 @@ int merc_heal(struct merc_data *mcd,int hp,int sp)
 	nullpo_retr(0, mcd);
 
 	// バーサーク中は回復させない
-	if(mcd->sc_data[SC_BERSERK].timer != -1) {
+	if(mcd->sc.data[SC_BERSERK].timer != -1) {
 		if(sp > 0)
 			sp = 0;
 		if(hp > 0)
@@ -899,6 +906,9 @@ int merc_save_data(struct map_session_data *sd)
 
 	//if(battle_config.save_homun_temporal_intimate)
 	//	pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",mcd->intimate);
+
+	// optionのコピー
+	mcd->status.option = mcd->sc.option;
 
 	intif_save_mercdata(sd->status.account_id,&sd->mcd->status);
 
