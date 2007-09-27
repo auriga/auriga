@@ -2164,7 +2164,6 @@ int unit_free(struct block_list *bl, int clrtype)
 		storage_delete(sd->status.account_id);
 		pc_clearitemlimit(sd);
 		pc_makesavestatus(sd);
-		sd->state.waitingdisconnect = 1;
 	} else if( bl->type == BL_PET ) {
 		struct pet_data *pd = (struct pet_data*)bl;
 		struct map_session_data *sd = pd->msd;

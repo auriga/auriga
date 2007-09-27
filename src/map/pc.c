@@ -538,9 +538,9 @@ int pc_setrestartvalue(struct map_session_data *sd,int type)
 		sd->status.sp = sd->status.max_sp;
 	} else {
 		if(sd->s_class.job != 0) {	// ノビは既に死亡直後でHP補正済み
-			if(battle_config.restart_hp_rate <= 0)
+			if(battle_config.restart_hp_rate <= 0) {
 				sd->status.hp = 1;
-			else {
+			} else {
 				sd->status.hp = sd->status.max_hp * battle_config.restart_hp_rate /100;
 				if(sd->status.hp <= 0)
 					sd->status.hp = 1;
@@ -591,50 +591,47 @@ int pc_makesavestatus(struct map_session_data *sd)
 	if(!battle_config.save_clothcolor)
 		sd->status.clothes_color = 0;
 
-	// 切断待ちの時は処理しない
-	if(!sd->state.waitingdisconnect) {
-		// 死亡状態だったのでhpを1、位置をセーブ場所に変更
-		if(unit_isdead(&sd->bl)) {
-			pc_setrestartvalue(sd,0);
-			memcpy(&sd->status.last_point,&sd->status.save_point,sizeof(sd->status.last_point));
-		} else {
-			memcpy(sd->status.last_point.map,sd->mapname,24);
-			sd->status.last_point.x = sd->bl.x;
-			sd->status.last_point.y = sd->bl.y;
-		}
-
-		// セーブ禁止マップだったので指定位置に移動
-		if(map[sd->bl.m].flag.nosave) {
-			struct map_data *m = &map[sd->bl.m];
-			if(strcmp(m->save.map,"SavePoint") == 0)
-				memcpy(&sd->status.last_point,&sd->status.save_point,sizeof(sd->status.last_point));
-			else
-				memcpy(&sd->status.last_point,&m->save,sizeof(sd->status.last_point));
-		}
-
-		// アルケミの連続成功数保存
-		if(battle_config.save_am_pharmacy_success && (sd->am_pharmacy_success > 0 || ranking_get_point(sd,RK_ALCHEMIST) > 0))
-			pc_setglobalreg(sd,"PC_PHARMACY_SUCCESS_COUNT",sd->am_pharmacy_success);
-
-		// ランキングポイントの保存
-		if(battle_config.save_all_ranking_point_when_logout)
-			ranking_setglobalreg_all(sd);
-
-		// クローンスキル保存
-		if(sd->cloneskill_id || sd->cloneskill_lv) {
-			pc_setglobalreg(sd,"PC_CLONESKILL_ID",sd->cloneskill_id);
-			pc_setglobalreg(sd,"PC_CLONESKILL_LV",sd->cloneskill_lv);
-		}
-
-		// キラー情報保存
-		if(battle_config.save_pckiller_type) {
-			pc_setglobalreg(sd,"PC_KILL_CHAR",sd->kill_charid);
-			pc_setglobalreg(sd,"PC_KILLED_CHAR",sd->killed_charid);
-		}
-
-		// ショップポイント保存
-		pc_setglobalreg(sd,"PC_SHOP_POINT",sd->shop_point);
+	// 死亡状態だったのでhpを1、位置をセーブ場所に変更
+	if(unit_isdead(&sd->bl)) {
+		pc_setrestartvalue(sd,0);
+		memcpy(&sd->status.last_point,&sd->status.save_point,sizeof(sd->status.last_point));
+	} else {
+		memcpy(sd->status.last_point.map,sd->mapname,24);
+		sd->status.last_point.x = sd->bl.x;
+		sd->status.last_point.y = sd->bl.y;
 	}
+
+	// セーブ禁止マップだったので指定位置に移動
+	if(map[sd->bl.m].flag.nosave) {
+		struct map_data *m = &map[sd->bl.m];
+		if(strcmp(m->save.map,"SavePoint") == 0)
+			memcpy(&sd->status.last_point,&sd->status.save_point,sizeof(sd->status.last_point));
+		else
+			memcpy(&sd->status.last_point,&m->save,sizeof(sd->status.last_point));
+	}
+
+	// アルケミの連続成功数保存
+	if(battle_config.save_am_pharmacy_success && (sd->am_pharmacy_success > 0 || ranking_get_point(sd,RK_ALCHEMIST) > 0))
+		pc_setglobalreg(sd,"PC_PHARMACY_SUCCESS_COUNT",sd->am_pharmacy_success);
+
+	// ランキングポイントの保存
+	if(battle_config.save_all_ranking_point_when_logout)
+		ranking_setglobalreg_all(sd);
+
+	// クローンスキル保存
+	if(sd->cloneskill_id || sd->cloneskill_lv) {
+		pc_setglobalreg(sd,"PC_CLONESKILL_ID",sd->cloneskill_id);
+		pc_setglobalreg(sd,"PC_CLONESKILL_LV",sd->cloneskill_lv);
+	}
+
+	// キラー情報保存
+	if(battle_config.save_pckiller_type) {
+		pc_setglobalreg(sd,"PC_KILL_CHAR",sd->kill_charid);
+		pc_setglobalreg(sd,"PC_KILLED_CHAR",sd->killed_charid);
+	}
+
+	// ショップポイント保存
+	pc_setglobalreg(sd,"PC_SHOP_POINT",sd->shop_point);
 
 	// マナーポイントがプラスだった場合0に
 	if(sd->status.manner > 0)
@@ -3750,8 +3747,9 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 			memcpy(sd->status.last_point.map,mapname,24);
 			sd->status.last_point.x = x;
 			sd->status.last_point.y = y;
-			chrif_save(sd);
+			chrif_save(sd, 1);
 			chrif_changemapserver(sd,mapname,x,y,ip,port);
+			sd->state.waitingdisconnect = 1;
 			return 0;
 		}
 		return 1;
@@ -7362,7 +7360,7 @@ int pc_break_adoption(struct map_session_data *sd)
 		baby->status.parent_id[1] = 0;
 		pc_jobchange(baby,baby->s_class.job,0);
 		clif_disp_onlyself(baby->fd, output);
-		chrif_save(baby);
+		chrif_save(baby,0);
 	} else if(b_id > 0) {
 		chrif_req_break_adoption(b_id, sd->status.name);
 		chrif_searchcharid(b_id);
@@ -7372,7 +7370,7 @@ int pc_break_adoption(struct map_session_data *sd)
 		p1->status.baby_id = 0;
 		status_calc_pc(p1,0);	// WE_BABYを破棄するためにスキルツリー再計算
 		clif_disp_onlyself(p1->fd, output);
-		chrif_save(p1);
+		chrif_save(p1,0);
 	} else if(p1_id > 0) {
 		chrif_req_break_adoption(p1_id, sd->status.name);
 		chrif_searchcharid(p1_id);
@@ -7382,7 +7380,7 @@ int pc_break_adoption(struct map_session_data *sd)
 		p2->status.baby_id = 0;
 		status_calc_pc(p2,0);
 		clif_disp_onlyself(p2->fd, output);
-		chrif_save(p2);
+		chrif_save(p2,0);
 	} else if(p2_id > 0) {
 		chrif_req_break_adoption(p2_id, sd->status.name);
 		chrif_searchcharid(p2_id);
@@ -7438,7 +7436,7 @@ int pc_divorce(struct map_session_data *sd)
 	else
 		clif_divorced(sd, "");
 
-	chrif_save(sd);
+	chrif_save(sd, 0);
 
 	return 0;
 }
@@ -8116,7 +8114,7 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 			homun_save_data(sd);
 		if(sd->status.merc_id > 0 && sd->mcd)
 			merc_save_data(sd);
-		chrif_save(sd);
+		chrif_save(sd,0);
 		if(sd->state.storage_flag == 2)
 			storage_guild_storagesave(sd);
 		else if(sd->state.storage_flag == 1)

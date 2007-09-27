@@ -1475,7 +1475,8 @@ int map_quit(struct map_session_data *sd)
 			unit_free( &sd->mcd->bl, 0);
 		}
 		unit_free(&sd->bl, 2);
-		chrif_save(sd);
+		chrif_save(sd, 1);
+		sd->state.waitingdisconnect = 1;
 	}
 
 	if(sd->stack) {

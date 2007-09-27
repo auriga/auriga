@@ -133,14 +133,19 @@ static int chrif_save_globalreg(struct map_session_data *sd)
  * キャラクターデータ保存
  *------------------------------------------
  */
-int chrif_save(struct map_session_data *sd)
+int chrif_save(struct map_session_data *sd, int final)
 {
 	nullpo_retr(-1, sd);
 
 	if (char_fd < 0)
 		return -1;
 
-	pc_makesavestatus(sd);
+	// 切断待ちの時は処理しない
+	if(sd->state.waitingdisconnect)
+		return 0;
+
+	if(!final)
+		pc_makesavestatus(sd);
 
 	if(sd->state.reg_dirty) {	// キャラ永続変数は変更があったときのみセーブする
 		sd->state.reg_dirty = 0;

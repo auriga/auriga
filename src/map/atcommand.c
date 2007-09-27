@@ -1016,7 +1016,7 @@ atcommand_save(
 	pc_setsavepoint(sd, sd->mapname, sd->bl.x, sd->bl.y);
 	if (sd->status.pet_id > 0 && sd->pd)
 		intif_save_petdata(sd->status.account_id, &sd->pet);
-	chrif_save(sd);
+	chrif_save(sd,0);
 	storage_storage_save(sd);
 	clif_displaymessage(fd, msg_txt(6));
 
@@ -1822,7 +1822,7 @@ atcommand_gm(
 	} else {
 		if (sd->status.pet_id > 0 && sd->pd)
 			intif_save_petdata(sd->status.account_id, &sd->pet);
-		chrif_save(sd);
+		chrif_save(sd,0);
 		storage_storage_save(sd);
 		clif_displaymessage(fd, msg_txt(30));
 		chrif_changegm(sd->status.account_id, password, strlen(password) + 1);
@@ -5264,7 +5264,7 @@ atcommand_resetfeel(
 		sd->feel_index[i] = -1;
 		memset(&sd->status.feel_map[i], 0, sizeof(sd->status.feel_map[0]));
 	}
-	chrif_save(sd);
+	chrif_save(sd,0);
 
 	return 0;
 }

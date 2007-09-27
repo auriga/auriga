@@ -572,7 +572,7 @@ int merc_delete_data(struct map_session_data *sd)
 		unit_free(&sd->mcd->bl,0);
 		intif_delete_mercdata(sd->status.account_id,sd->status.char_id,sd->status.merc_id);
 		sd->status.merc_id = 0;
-		chrif_save(sd);
+		chrif_save(sd,0);
 		if(sd->state.storage_flag == 1)
 			storage_storage_save(sd);
 	}

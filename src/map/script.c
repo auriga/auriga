@@ -7440,7 +7440,7 @@ int buildin_changesex(struct script_state *st)
 			sd->status.class_ += 1;
 	}
 	chrif_changesex(sd->status.account_id,sd->sex);
-	chrif_save(sd);
+	chrif_save(sd,0);
 	return 0;
 }
 

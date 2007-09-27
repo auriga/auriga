@@ -179,8 +179,8 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 	}
 
 	// save both players to avoid crash: they always have no advantage/disadvantage between the 2 players
-	chrif_save(sd);
-	chrif_save(vsd);
+	chrif_save(sd,0);
+	chrif_save(vsd,0);
 
 	return;
 }

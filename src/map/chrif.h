@@ -10,7 +10,7 @@ int chrif_parse(int fd);
 int chrif_isconnect(void);
 
 int chrif_authreq(struct map_session_data *);
-int chrif_save(struct map_session_data*);
+int chrif_save(struct map_session_data*, int final);
 int chrif_charselectreq(struct map_session_data *);
 
 int chrif_changemapserver(struct map_session_data *sd,char *name,int x,int y,unsigned long ip,unsigned short port);

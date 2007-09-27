@@ -386,7 +386,7 @@ static int pet_birth_process(struct map_session_data *sd)
 	}
 
 	intif_save_petdata(sd->status.account_id,&sd->pet);
-	chrif_save(sd);
+	chrif_save(sd,0);
 	if(sd->state.storage_flag == 1)
 		storage_storage_save(sd);
 
@@ -678,7 +678,7 @@ static int pet_return_egg(struct map_session_data *sd)
 	}
 
 	intif_save_petdata(sd->status.account_id,&sd->pet);
-	chrif_save(sd);
+	chrif_save(sd,0);
 	if(sd->state.storage_flag == 1)
 		storage_storage_save(sd);
 
@@ -948,7 +948,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			unit_free(&sd->pd->bl,0);
 			sd->status.pet_id = 0;
 			sd->pd = NULL;
-			chrif_save(sd);
+			chrif_save(sd,0);
 			if(sd->state.storage_flag == 1)
 				storage_storage_save(sd);
 		} else {

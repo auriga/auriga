@@ -430,7 +430,7 @@ void storage_storageclose(struct map_session_data *sd)
 		storage_sortitem(stor->store_item, MAX_STORAGE, &stor->sortkey, battle_config.personal_storage_sort);
 		intif_send_storage(stor);
 		if(battle_config.save_player_when_storage_closed) {
-			chrif_save(sd);
+			chrif_save(sd,0);
 		}
 		stor->dirty = 0;
 	}
@@ -780,7 +780,7 @@ void storage_guild_storageclose(struct map_session_data *sd)
 		storage_sortitem(stor->store_item, MAX_GUILD_STORAGE, &stor->sortkey, battle_config.guild_storage_sort);
 		intif_send_guild_storage(sd->status.account_id,stor);
 		if(battle_config.save_player_when_storage_closed) {
-			chrif_save(sd);
+			chrif_save(sd,0);
 		}
 		stor->dirty = 0;
 	}
