@@ -455,7 +455,6 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->bl.id       = npc_get_new_npc_id();
 	mcd->dir         = sd->dir;
 	mcd->speed       = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
-	mcd->bl.subtype  = MONS;
 	mcd->bl.type     = BL_MERC;
 	mcd->target_id   = 0;
 	mcd->attackable  = 1;	// これを0にすると、クライアントから攻撃パケットを出さなくなる

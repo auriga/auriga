@@ -922,19 +922,19 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 
 	// コンディション確認
 	{
-		struct skill_condition sc;
+		struct skill_condition cnd;
 
-		sc.id     = skill_num;
-		sc.lv     = skill_lv;
-		sc.x      = 0;
-		sc.y      = 0;
-		sc.target = target_id;
+		cnd.id     = skill_num;
+		cnd.lv     = skill_lv;
+		cnd.x      = 0;
+		cnd.y      = 0;
+		cnd.target = target_id;
 
-		if(!skill_check_condition2(src, &sc, 0)) return 0;
+		if(!skill_check_condition2(src, &cnd, 0)) return 0;
 
-		skill_num = sc.id;
-		skill_lv  = sc.lv;
-		target_id = sc.target;
+		skill_num = cnd.id;
+		skill_lv  = cnd.lv;
+		target_id = cnd.target;
 	}
 
 	/* 射程と障害物チェック */
@@ -1185,20 +1185,20 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 
 	// コンディション確認
 	{
-		struct skill_condition sc;
+		struct skill_condition cnd;
 
-		sc.id     = skill_num;
-		sc.lv     = skill_lv;
-		sc.x      = skill_x;
-		sc.y      = skill_y;
-		sc.target = 0;
+		cnd.id     = skill_num;
+		cnd.lv     = skill_lv;
+		cnd.x      = skill_x;
+		cnd.y      = skill_y;
+		cnd.target = 0;
 
-		if(!skill_check_condition2(src, &sc ,0)) return 0;
+		if(!skill_check_condition2(src, &cnd ,0)) return 0;
 
-		skill_num = sc.id;
-		skill_lv  = sc.lv;
-		skill_x   = sc.x;
-		skill_y   = sc.y;
+		skill_num = cnd.id;
+		skill_lv  = cnd.lv;
+		skill_x   = cnd.x;
+		skill_y   = cnd.y;
 	}
 
 	/* 射程と障害物チェック */

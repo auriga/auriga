@@ -170,8 +170,8 @@ int mapreg_setreg(int num,int val,int eternal);
 int mapreg_setregstr(int num,const char *str,int eternal);
 
 #ifndef NO_CSVDB_SCRIPT
-int script_csvinit( void );
-int script_csvfinal( void );
+static int script_csvinit( void );
+static int script_csvfinal( void );
 #endif
 
 /*==========================================
@@ -9874,7 +9874,7 @@ int buildin_getnpcposition(struct script_state *st)
  */
 static struct dbt* script_csvdb;
 
-int script_csvinit(void)
+static int script_csvinit(void)
 {
 	script_csvdb = strdb_init(0);
 	return 0;
@@ -9884,12 +9884,11 @@ static int script_csvfinal_sub(void *key, void *data, va_list ap)
 {
 	struct csvdb_data *csv = (struct csvdb_data *)data;
 
-	aFree(key);
 	csvdb_close( csv );
 	return 0;
 }
 
-int script_csvfinal(void)
+static int script_csvfinal(void)
 {
 	strdb_final( script_csvdb, script_csvfinal_sub );
 	return 0;
@@ -9932,7 +9931,7 @@ static struct csvdb_data* script_csvload(const char *file)
 		csv = csvdb_open( file, 0 );
 		if( csv ) {
 			printf("script_csvload: %s load successfully\n", file);
-			strdb_insert( script_csvdb, aStrdup(file), csv );
+			strdb_insert( script_csvdb, csv->file, csv );
 		}
 	}
 	return csv;
@@ -10125,27 +10124,12 @@ int buildin_csvwritearray(struct script_state *st)
 }
 
 // csvreload <file>
-static int script_csvreload_sub(void *key, void *data, va_list ap)
-{
-	char *file = va_arg(ap, char*);
-	int  *find = va_arg(ap, int*);
-
-	if( *find == 0 && strcmp((char*)key, file) == 0 ) {
-		strdb_erase( script_csvdb, key );
-		aFree( key );
-		*find = 1;
-	}
-	return 0;
-}
-
 int buildin_csvreload(struct script_state *st)
 {
 	char *file = conv_str(st,& (st->stack->stack_data[st->start+2]));
-	struct csvdb_data *csv = (struct csvdb_data *)strdb_search( script_csvdb, file );
+	struct csvdb_data *csv = (struct csvdb_data *)strdb_erase( script_csvdb, file );
 
 	if( csv ) {
-		int find = 0;
-		strdb_foreach( script_csvdb, script_csvreload_sub, file, &find );
 		csvdb_close( csv );
 	}
 	return 0;
@@ -10325,7 +10309,7 @@ int buildin_getvariableofnpc(struct script_state *st)
 			// ' 変数以外はダメ
 			printf("buildin_getvariableofnpc: invalid scope %s\n", var_name);
 			push_val(st->stack,C_INT,0);
-		} else if( nd == NULL || nd->bl.subtype != SCRIPT || !nd->u.scr.script) {
+		} else if( nd == NULL || nd->subtype != SCRIPT || !nd->u.scr.script) {
 			// NPC が見つからない or SCRIPT以外のNPC
 			printf("buildin_getvariableofnpc: can't find npc %s\n", npc_name);
 			push_val(st->stack,C_INT,0);

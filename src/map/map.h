@@ -60,7 +60,6 @@ enum {
 	SHOP,
 	POINTSHOP,
 	SCRIPT,
-	MONS
 };
 
 enum {
@@ -133,7 +132,6 @@ struct block_list {
 	int id;
 	short m,x,y;
 	unsigned short type;
-	unsigned char subtype;
 };
 
 struct walkpath_data {
@@ -650,8 +648,9 @@ struct npc_data {
 	char position[24];
 	int chat_id;
 	unsigned int option;
-	short flag;
 	short view_size;
+	char flag;
+	unsigned char subtype;
 	union {
 		struct {
 			struct script_code *script;

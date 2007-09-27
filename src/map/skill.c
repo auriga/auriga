@@ -7680,8 +7680,6 @@ int skill_check_condition(struct block_list *bl, int type)
 
 	nullpo_retr( 0, ud );
 
-	memset( &cnd, 0, sizeof( struct skill_condition ) );
-
 	cnd.id     = ud->skillid;
 	cnd.lv     = ud->skilllv;
 	cnd.x      = ud->skillx;
@@ -10398,7 +10396,7 @@ static int skill_hermode_wp_check_sub(struct block_list *bl, va_list ap )
 	if(*flag)
 		return 1;
 
-	if(nd->bl.subtype == WARP || (nd->bl.subtype == SCRIPT && nd->class_ == WARP_CLASS))
+	if(nd->subtype == WARP || (nd->subtype == SCRIPT && nd->class_ == WARP_CLASS))
 		*flag = 1;
 
 	return *flag;

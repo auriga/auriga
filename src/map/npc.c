@@ -497,7 +497,7 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 			f = 0;
 			continue;
 		}
-		switch(nd->bl.subtype) {
+		switch(nd->subtype) {
 		case WARP:
 			xs = nd->u.warp.xs;
 			ys = nd->u.warp.ys;
@@ -520,7 +520,7 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 		}
 		return 1;
 	}
-	switch(nd->bl.subtype) {
+	switch(nd->subtype) {
 	case WARP:
 		// 隠れているとワープできない
 		if(pc_ishiding(sd))
@@ -620,7 +620,7 @@ void npc_click(struct map_session_data *sd, int id)
 
 	sd->npc_allowuseitem = -1;
 
-	switch(nd->bl.subtype) {
+	switch(nd->subtype) {
 	case SHOP:
 		sd->npc_id = id;
 		clif_npcbuysell(sd,id);
@@ -679,7 +679,7 @@ void npc_buysellsel(struct map_session_data *sd, int id, unsigned char type)
 	if (npc_checknear(sd, nd)) // check NULL of nd and if nd->bl.type is BL_NPC
 		return;
 
-	if (nd->bl.subtype != SHOP) {
+	if (nd->subtype != SHOP) {
 		if (battle_config.error_log)
 			printf("no such shop npc : %d\n",id);
 		sd->npc_id = 0;
@@ -719,7 +719,7 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned short *item_list)
 	if (npc_checknear(sd, nd)) // check NULL of nd and if nd->bl.type is BL_NPC
 		return 3;
 
-	if (nd->bl.subtype != SHOP)
+	if (nd->subtype != SHOP)
 		return 3;
 
 	w = 0;
@@ -827,7 +827,7 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 	if (npc_checknear(sd, nd)) // check NULL of nd and if nd->bl.type is BL_NPC
 		return 1;
 
-	if (nd->bl.subtype != SHOP)
+	if (nd->subtype != SHOP)
 		return 1;
 
 	// get inventory of player
@@ -907,7 +907,7 @@ int npc_pointshop_buy(struct map_session_data *sd,int nameid,int amount)
 	if(npc_checknear(sd, nd)) // check NULL of nd and if nd->bl.type is BL_NPC
 		return 1;
 
-	if(nd->bl.subtype != POINTSHOP)
+	if(nd->subtype != POINTSHOP)
 		return 1;
 
 	if(sd->state.deal_mode != 0)
@@ -1152,8 +1152,8 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4,int lines)
 	}
 
 	npc_warp++;
-	nd->bl.type    = BL_NPC;
-	nd->bl.subtype = WARP;
+	nd->bl.type = BL_NPC;
+	nd->subtype = WARP;
 	map_addblock(&nd->bl);
 	clif_spawnnpc(nd);
 	strdb_insert(npcname_db,nd->exname,nd);
@@ -1240,11 +1240,11 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 			printf("bad substore name! (not exist) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
-		if(nd2->bl.subtype != SHOP && nd2->bl.subtype != POINTSHOP) {
+		if(nd2->subtype != SHOP && nd2->subtype != POINTSHOP) {
 			printf("bad substore name! (not shop) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
-		subtype = nd2->bl.subtype;
+		subtype = nd2->subtype;
 		while(nd2->u.shop_item[pos++].nameid);
 
 		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd2->u.shop_item[0]) * pos);
@@ -1281,8 +1281,8 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 	nd->chat_id = 0;
 	nd->option  = 0;
 	npc_shop++;
-	nd->bl.type    = BL_NPC;
-	nd->bl.subtype = subtype;
+	nd->bl.type = BL_NPC;
+	nd->subtype = subtype;
 	map_addiddb(&nd->bl);
 
 	if(m >= 0) {
@@ -1589,7 +1589,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 			printf("bad duplicate name! (not exist) : %s line %d\a\n",srcname,*lines);
 			return 0;
 		}
-		if(nd2->bl.subtype != SCRIPT) {
+		if(nd2->subtype != SCRIPT) {
 			printf("bad duplicate name! (not script) : %s line %d\a\n",srcname,*lines);
 			return 0;
 		}
@@ -1662,8 +1662,8 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 	nd->option  = 0;
 
 	npc_script++;
-	nd->bl.type    = BL_NPC;
-	nd->bl.subtype = SCRIPT;
+	nd->bl.type = BL_NPC;
+	nd->subtype = SCRIPT;
 
 	//printf("script npc %s %d %d read done\n",mapname,nd->bl.id,nd->class_);
 
@@ -2182,7 +2182,7 @@ int do_final_npc(void)
 					aFree(cd);
 					cd = NULL;
 				}
-				if(nd->bl.subtype == SCRIPT) {
+				if(nd->subtype == SCRIPT) {
 					if(nd->u.scr.timer_event)
 						aFree(nd->u.scr.timer_event);
 					if(nd->u.scr.src_id == 0) {

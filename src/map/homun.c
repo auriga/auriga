@@ -655,7 +655,6 @@ static int homun_data_init(struct map_session_data *sd)
 	hd->bl.id            = npc_get_new_npc_id();
 	hd->dir              = sd->dir;
 	hd->speed            = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
-	hd->bl.subtype       = MONS;
 	hd->bl.type          = BL_HOM;
 	hd->target_id        = 0;
 	hd->attackable       = 1;	// これを0にすると、クライアントから攻撃パケットを出さなくなる

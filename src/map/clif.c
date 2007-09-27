@@ -1160,7 +1160,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFW(buf,6)=nd->speed;
 	WBUFW(buf,12)=nd->option;
 	WBUFW(buf,14)=nd->class_;
-	if( nd->bl.subtype != WARP &&
+	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
 	    nd->u.scr.guild_id > 0 &&
 	    (g = guild_search(nd->u.scr.guild_id)) )

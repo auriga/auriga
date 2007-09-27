@@ -331,7 +331,6 @@ static int pet_data_init(struct map_session_data *sd)
 		pd->speed = status_get_speed(&sd->bl);
 	else
 		pd->speed = sd->petDB->speed;
-	pd->bl.subtype      = MONS;
 	pd->bl.type         = BL_PET;
 	pd->target_id       = 0;
 	pd->move_fail_count = 0;

@@ -5484,7 +5484,7 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,ch
 			return 56;
 		}
 		nd = npc_name2id(name);
-		if(nd == NULL || nd->bl.subtype != SCRIPT || !nd->u.scr.script) {
+		if(nd == NULL || nd->subtype != SCRIPT || !nd->u.scr.script) {
 			return 58;
 		}
 		ref = &nd->u.scr.script->script_vars;

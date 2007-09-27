@@ -1,4 +1,17 @@
 ----------------------------------------
+//0352 [2007/09/28] by Rayce
+
+・block_list構造体のsubtypeをnpc_data構造体に移動（map.h）
+	subtypeはNPCにしか意味がないのでnpc_data構造体が持つだけで十分
+	またblock_list構造体のサイズが傭兵実装以前に戻ったのでメモリの消費が抑えられます
+
+・csvreload命令の処理を改善（script.c）
+	file名のaStrdupではなくcsv_dataのfileをキーとする
+	script_csvreload_sub() は不要になったので削除
+
+・skill_condition型の変数名を改名し忘れ箇所を修正（skill.*, unit.c）
+
+----------------------------------------
 //0351 [2007/09/28] by Rayce
 
 ・切断待ちのプレイヤーは chrif_save() でセーブしないように修正
