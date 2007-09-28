@@ -1,4 +1,19 @@
 ----------------------------------------
+//0353 [2007/09/29] by Rayce
+
+・script_code構造体を "struct hack" で利用するように変更してみる（script.*）
+	script_bufがreallocで縮小されない分とcalloc用のヘッダの分だけメモリが削減されます
+	全てのスクリプトを読み込ませて約1.5MB節約
+
+・scriptlabel_dbはtree_dbにする意味があまりないのでlinkdbに変更（npc.c, script.*）
+	npc_convertlabel_db() を変更
+	アクセスが面倒なので script_get_label_db() を廃止して scriptlabel_db をexternする
+	ラベルデータのコンバートが完了した時点で linkdb_final() してメモリ解放する
+
+・0348以降、SC_SoulClearなどの特殊系ステータス異常が作動しなくなっていたので修正（status.c）
+・mob_data構造体のメンバ recallmob_count をint型からshort型に変更（map.h）
+
+----------------------------------------
 //0352 [2007/09/28] by Rayce
 
 ・block_list構造体のsubtypeをnpc_data構造体に移動（map.h）

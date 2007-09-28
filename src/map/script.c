@@ -83,8 +83,8 @@ static struct dbt *mapregstr_db=NULL;
 static int mapreg_dirty = 0;
 #define MAPREG_AUTOSAVE_INTERVAL	(300*1000)
 
-static struct dbt *scriptlabel_db=NULL;
-static struct dbt *userfunc_db=NULL;
+struct linkdb_node *scriptlabel_db = NULL;
+static struct dbt *userfunc_db = NULL;
 
 static char refine_posword[11][32] = { "頭","体","左手","右手","ローブ","靴","アクセサリー1","アクセサリー2","頭2","頭3","装着していない" };
 
@@ -178,11 +178,6 @@ static int script_csvfinal( void );
  *
  *------------------------------------------
  */
-struct dbt* script_get_label_db(void)
-{
-	return scriptlabel_db;
-}
-
 struct dbt* script_get_userfunc_db(void)
 {
 	if(!userfunc_db)
@@ -1675,13 +1670,11 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 	}
 
 	// 外部用label dbの初期化
-	strdb_clear(scriptlabel_db,NULL);
+	linkdb_final(&scriptlabel_db);
 
 	// 例外処理
 	if( setjmp( error_jump ) != 0 ) {
 		int i;
-		const int size = sizeof(syntax.curly)/sizeof(syntax.curly[0]);
-
 		script_error(src,file,line,error_msg,error_pos);
 		// 後始末
 		aFree( error_msg );
@@ -1693,9 +1686,10 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 			if(str_data[i].type == C_NOP)
 				str_data[i].type = C_NAME;
 		}
-		for(i=0; i<size; i++) {
+		for(i=0; i<sizeof(syntax.curly)/sizeof(syntax.curly[0]); i++) {
 			linkdb_final(&syntax.curly[i].case_label);
 		}
+		linkdb_final(&scriptlabel_db);
 		return &error_code;
 	}
 
@@ -1730,7 +1724,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 						disp_error_message("invalid label name",p);
 					}
 				}
-				strdb_insert(scriptlabel_db,p,script_pos);	// 外部用label db登録
+				linkdb_insert(&scriptlabel_db,p,(void*)script_pos);	// 外部用label db登録
 			}
 			*p2 = c;
 			p=tmpp+1;
@@ -1749,9 +1743,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 	}
 
 	add_scriptc(C_NOP);
-
 	script_size = script_pos;
-	script_buf=(unsigned char *)aRealloc(script_buf,script_pos);
 
 	// 未解決のラベルを解決
 	for(i=LABEL_START;i<str_num;i++){
@@ -1850,10 +1842,12 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 	}
 #endif
 
-	code = (struct script_code *)aCalloc(1, sizeof(struct script_code));
-	code->script_buf  = script_buf;
-	code->script_size = script_size;
+	code = (struct script_code *)aCalloc(1, sizeof(struct script_code) + script_size);
 	code->script_vars = NULL;
+	code->script_size = script_size;
+	memcpy(code->script_buf, script_buf, script_size);
+	aFree(script_buf);
+
 	return code;
 }
 
@@ -2229,7 +2223,6 @@ void script_free_stack(struct script_stack *stack)
 void script_free_code(struct script_code* code)
 {
 	script_free_vars( &code->script_vars );
-	aFree( code->script_buf );
 	aFree( code );
 }
 
@@ -3409,10 +3402,10 @@ int do_final_script()
 		numdb_final(mapreg_db,NULL);
 	if(mapregstr_db)
 		strdb_final(mapregstr_db,mapregstr_db_final);
-	if(scriptlabel_db)
-		strdb_final(scriptlabel_db,NULL);
 	if(userfunc_db)
 		strdb_final(userfunc_db,userfunc_db_final);
+	if(scriptlabel_db)
+		linkdb_final(&scriptlabel_db);
 	if(sleep_db) {
 		struct linkdb_node *n = sleep_db;
 		while(n) {
@@ -3457,12 +3450,6 @@ int do_init_script()
 
 	add_timer_interval(gettick()+MAPREG_AUTOSAVE_INTERVAL,
 		script_autosave_mapreg,0,0,MAPREG_AUTOSAVE_INTERVAL);
-
-	// do init が呼ばれる順番が違う場合の対策
-	if(scriptlabel_db) {
-		strdb_final(scriptlabel_db,NULL);
-	}
-	scriptlabel_db=strdb_init(24);
 
 #ifndef NO_CSVDB_SCRIPT
 	script_csvinit();

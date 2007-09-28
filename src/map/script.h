@@ -13,9 +13,9 @@ struct script_data {
 };
 
 struct script_code {
-	int script_size;
-	unsigned char* script_buf;
 	struct linkdb_node* script_vars;
+	int script_size;
+	unsigned char script_buf[1];
 };
 
 struct script_stack {
@@ -42,7 +42,6 @@ void script_error(char *src,const char *file,int start_line, const char *error_m
 void script_free_stack(struct script_stack *stack);
 void script_free_code(struct script_code* code);
 
-struct dbt* script_get_label_db(void);
 struct dbt* script_get_userfunc_db(void);
 
 int script_config_read(char *cfgName);
@@ -50,6 +49,7 @@ int do_init_script(void);
 int do_final_script(void);
 
 extern struct script_code error_code;
+extern struct linkdb_node *scriptlabel_db;
 
 // @readvars, @writevars
 int script_check_variable(const char *name,int array_flag,int read_only);

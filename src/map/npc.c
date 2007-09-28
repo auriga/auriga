@@ -1300,17 +1300,13 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
  * NPCのラベルデータコンバート
  *------------------------------------------
  */
-static int npc_convertlabel_db(void *key,void *data,va_list ap)
+static int npc_convertlabel_db(struct npc_data *nd, char *lname, int pos)
 {
-	char *lname = (char *)key;
-	int pos = (int)data;
-	struct npc_data *nd;
 	struct npc_label_list *lst;
 	int num;
 	char c, *p;
 
-	nullpo_retr(0, ap);
-	nullpo_retr(0, nd = va_arg(ap,struct npc_data *));
+	nullpo_retr(0, nd);
 
 	lst = nd->u.scr.label_list;
 	num = nd->u.scr.label_list_num;
@@ -1700,7 +1696,12 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		// script本体がある場合の処理
 		if(script) {
 			// コードがあるならラベルデータをコンバート
-			strdb_foreach(script_get_label_db(), npc_convertlabel_db, nd);
+			struct linkdb_node *node = scriptlabel_db;
+			while(node) {
+				npc_convertlabel_db(nd, (char *)node->key, (int)node->data);
+				node = node->next;
+			}
+			linkdb_final(&scriptlabel_db);
 		}
 		aFree(srcbuf);	// もう使わないのでバッファ解放
 	} else {

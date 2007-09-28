@@ -4159,7 +4159,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 
 	nullpo_retr(0, bl);
 
-	if(type < 0 || type >= MAX_STATUSCHANGE)
+	if(type < 0)
 		return 0;
 
 	sc = status_get_sc(bl);

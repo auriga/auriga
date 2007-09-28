@@ -711,7 +711,7 @@ struct mob_data {
 	int def_ele;
 	int master_id,master_dist;
 	char npc_event[50];
-	int recallmob_count;
+	short recallmob_count;
 	short recallcount;
 	short guardup_lv;
 	int ai_pc_count; // 近くにいるPCの数
