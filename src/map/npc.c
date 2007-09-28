@@ -1300,37 +1300,47 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
  * NPCのラベルデータコンバート
  *------------------------------------------
  */
-static int npc_convertlabel_db(struct npc_data *nd, char *lname, int pos)
+static int npc_convertlabel_db(struct npc_data *nd)
 {
 	struct npc_label_list *lst;
-	int num;
-	char c, *p;
+	struct linkdb_node *node;
+	int num = 0, i = 0;
 
 	nullpo_retr(0, nd);
 
-	lst = nd->u.scr.label_list;
-	num = nd->u.scr.label_list_num;
+	node = scriptlabel_db;
+	if(node == NULL)
+		return 0;
 
-	if(lst == NULL) {
-		lst = (struct npc_label_list *)aCalloc(1,sizeof(struct npc_label_list));
-		num = 0;
-	} else {
-		lst = (struct npc_label_list *)aRealloc(lst,sizeof(struct npc_label_list)*(num+1));
+	while(node) {
+		num++;
+		node = node->next;
 	}
+	lst = (struct npc_label_list *)aCalloc(num, sizeof(struct npc_label_list));
 
-	p = lname;
-	while(isalnum((unsigned char)*p) || *p == '_' ) {
-		p++;
+	node = scriptlabel_db;
+	while(node) {
+		unsigned char *p = (unsigned char *)node->key;
+		unsigned char c;
+
+		while( isalnum(*p) || *p == '_' ) {
+			p++;
+		}
+		c = *p;
+		*p = '\0';
+		strncpy(lst[i].name, (char *)node->key, 24);
+		lst[i].name[23] = '\0';	// force \0 terminal
+		*p = c;
+		lst[i].pos = (int)node->data;
+		i++;
+		node = node->next;
 	}
-	c = *p;
-	*p = '\0';
-	strncpy(lst[num].name,lname,24);
-	lst[num].name[23] = '\0';	// force \0 terminal
-	*p = c;
-	lst[num].pos = pos;
 
 	nd->u.scr.label_list     = lst;
-	nd->u.scr.label_list_num = num+1;
+	nd->u.scr.label_list_num = num;
+
+	// もう要らなくなったので解放
+	linkdb_final(&scriptlabel_db);
 
 	return 0;
 }
@@ -1358,7 +1368,7 @@ static int npc_exportlabel_data(struct npc_data *nd)
 		ev->next = NULL;
 		snprintf(ev->key, 50, "%s::%s", nd->exname, lname);
 		if(strdb_search(ev_db,ev->key)) {
-			printf("npc_parse_script : dup event %s\n",ev->key);
+			printf("npc_exportlabel_data : dup event %s\n",ev->key);
 			aFree(ev->key);
 			aFree(ev);
 			return 1;
@@ -1480,7 +1490,7 @@ static int npc_parse_script_line(const unsigned char *p,int *curly_count,int lin
 static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line,FILE *fp,int *lines,const char* file)
 {
 	int x, y, m, xs, ys;
-	int dir = 0, class_ = 0, label_dupnum = 0, src_id = 0, ret = 0;
+	int dir = 0, class_ = 0, label_dupnum = 0, src_id = 0, fail = 0;
 	char *p, *srcbuf = NULL;
 	struct script_code *script;
 	struct npc_data *nd;
@@ -1672,16 +1682,18 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 
 		if(class_ < 0) {	// イベント型
 			struct event_data *ev, *old_ev;
-			ev      = (struct event_data *)aCalloc(1,sizeof(struct event_data));
-			ev->nd  = nd;
-			ev->pos = 0;
-			old_ev  = (struct event_data *)strdb_insert(ev_db,nd->exname,ev);
+			ev       = (struct event_data *)aCalloc(1,sizeof(struct event_data));
+			ev->key  = NULL;
+			ev->nd   = nd;
+			ev->pos  = 0;
+			ev->next = NULL;
+			old_ev   = (struct event_data *)strdb_insert(ev_db,nd->exname,ev);
 			if(old_ev) {
 				// イベントが重複している場合。ここでreturnすると以前の処理が
 				// 中途半端になる為、処理を続行する。
 				printf("npc_parse_script : dup event name %s\n",nd->exname);
 				aFree(old_ev);
-				ret = 1; // 戻り値
+				fail = 1;
 			}
 		} else {
 			clif_spawnnpc(nd);
@@ -1696,12 +1708,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		// script本体がある場合の処理
 		if(script) {
 			// コードがあるならラベルデータをコンバート
-			struct linkdb_node *node = scriptlabel_db;
-			while(node) {
-				npc_convertlabel_db(nd, (char *)node->key, (int)node->data);
-				node = node->next;
-			}
-			linkdb_final(&scriptlabel_db);
+			npc_convertlabel_db(nd);
 		}
 		aFree(srcbuf);	// もう使わないのでバッファ解放
 	} else {
@@ -1711,12 +1718,18 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 	}
 
 	// イベント用ラベルデータのエクスポート
-	ret |= npc_exportlabel_data(nd);
+	if(fail == 0)
+		fail = npc_exportlabel_data(nd);
 
 	nd->u.scr.nexttimer = -1;
 	nd->u.scr.timerid   = -1;
 
-	return ret;
+	if(fail) {
+		// データを正常に復帰できないのでサーバ終了
+		exit(1);
+	}
+
+	return 0;
 }
 
 /*==========================================
@@ -1787,13 +1800,13 @@ static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_li
 	}
 	if(script == NULL) {
 		// コードを持たないfunctionは不正と見なして登録しない
-		printf("npc_parse_function : nothing function %s\n",w3);
+		printf("npc_parse_function : nothing function %s\a\n",w3);
 		return 0;
 	}
 	if(strdb_search(script_get_userfunc_db(),w3) != NULL) {
-		printf("npc_parse_function : dup function name %s\n",w3);
+		printf("npc_parse_function : dup function name %s\a\n",w3);
 		script_free_code(script);
-		return 1;
+		return 0;
 	}
 
 	p = (char *)aCalloc(50,sizeof(char));
@@ -2138,7 +2151,7 @@ int npc_set_mapflag_sub(int m,char *str,short flag)
 			}
 		}
 		if(i >= MAX_DROP_PER_MAP)
-			printf("npc_set_mapflag_sub: drop list is full (%s, size = %d)\n", map[m].name, i);
+			printf("npc_set_mapflag_sub: drop list is full (%s, size = %d)\a\n", map[m].name, i);
 		return 1;
 	}
 	return 0;
@@ -2149,6 +2162,7 @@ static int ev_db_final(void *key,void *data,va_list ap)
 	aFree(data);
 	if(strstr((const char *)key,"::") != NULL)
 		aFree(key);
+
 	return 0;
 }
 
@@ -2235,9 +2249,8 @@ int do_final_npc(void)
 int do_init_npc(void)
 {
 	struct npc_src_list *nsl;
-	FILE *fp;
 	char line[1024];
-	int lines, count = 0, ret = 0;
+	int lines, number = 0, ret = 0;
 	time_t now;
 
 	ev_db = strdb_init(48);
@@ -2246,16 +2259,16 @@ int do_init_npc(void)
 	time(&now);
 	memcpy(&ev_tm_b, localtime(&now), sizeof(ev_tm_b));
 
-	for(nsl=npc_src_first; nsl; nsl=nsl->next) {
+	for(nsl = npc_src_first; nsl; nsl = nsl->next) {
 		int comment_flag = 0;
+		FILE *fp = fopen(nsl->name,"r");
 
-		fp = fopen(nsl->name,"r");
 		if(fp == NULL) {
-			printf("reading npc file not found : %s\n",nsl->name);
-			exit(1);
-		} else {
-			printf("reading npc [%4d] %-60s",++count,nsl->name);
+			printf("reading npc file not found : %s\a\n",nsl->name);
+			continue;
 		}
+		printf("reading npc [%4d] %-60s",++number,nsl->name);
+
 		lines = 0;
 		while(fgets(line,1020,fp)) {
 			char w1[1024], w2[1024], w3[1024], w4[1024];
@@ -2337,15 +2350,17 @@ int do_init_npc(void)
 				break;
 			}
 			if(ret) {
-				exit(1);
+				// エラー発生時はファイルの解析終了
+				break;
 			}
 		}
 		fclose(fp);
-		printf("\r");
 
-		if(comment_flag) {	// scriptブロック外部でマルチラインコメントを閉じ忘れ
-			printf("Missing */ on %s\n", nsl->name);
-			exit(1);
+		if(comment_flag) {
+			// scriptブロック外部でマルチラインコメントを閉じ忘れ
+			printf("Missing */ on %s\a\n", nsl->name);
+		} else {
+			printf("\r");
 		}
 		npc_parse_script_line(NULL,0,0);	// scriptブロック内部のcomment_flagを初期化
 	}
