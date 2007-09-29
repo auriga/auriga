@@ -368,27 +368,30 @@ void* aCalloc_(size_t num, size_t size, const char *file, int line, const char *
 void* aRealloc_(void *memblock, size_t size, const char *file, int line, const char *func )
 {
 	size_t old_size;
+	void *p;
 
-	if(memblock == NULL) {
+	if(memblock == NULL)
 		return aMalloc_(size,file,line,func);
+
+	if(size == 0) {
+		aFree_(memblock,file,line,func);
+		return NULL;
 	}
 
 	old_size = ((struct unit_head *)((char *)memblock - sizeof(struct unit_head) + sizeof(long)))->size;
 	if( old_size == 0 ) {
 		old_size = ((struct unit_head_large *)((char *)memblock - sizeof(struct unit_head_large) + sizeof(long)))->size;
 	}
-	if(old_size > size) {
-		// サイズ縮小 -> そのまま返す（手抜き）
-		return memblock;
-	} else {
-		// サイズ拡大
-		void *p = aMalloc_(size,file,line,func);
-		if(p != NULL) {
-			memcpy(p,memblock,old_size);
-		}
-		aFree_(memblock,file,line,func);
-		return p;
+
+	p = aMalloc_(size,file,line,func);
+	if(p != NULL) {
+		if(old_size > size)
+			memcpy(p, memblock, size);	// サイズ縮小
+		else
+			memcpy(p, memblock, old_size);	// サイズ拡大
 	}
+	aFree_(memblock,file,line,func);
+	return p;
 }
 
 void* aStrdup_(const void* string, const char *file, int line, const char *func )

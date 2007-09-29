@@ -57,7 +57,7 @@
 
 #define SCRIPT_BLOCK_SIZE 512
 
-enum { LABEL_NEXTLINE=1,LABEL_START };
+enum { LABEL_NEXTLINE = 1, LABEL_START };
 
 static unsigned char * script_buf;
 static int script_pos,script_size;
@@ -73,13 +73,13 @@ static struct script_str_data {
 } *str_data;
 
 static char *str_buf;
-int str_num=LABEL_START,str_data_size;
+int str_num = LABEL_START, str_data_size;
 
 #define SCRIPT_HASH_SIZE 1021
 int str_hash[SCRIPT_HASH_SIZE];
 
-static struct dbt *mapreg_db=NULL;
-static struct dbt *mapregstr_db=NULL;
+static struct dbt *mapreg_db    = NULL;
+static struct dbt *mapregstr_db = NULL;
 static int mapreg_dirty = 0;
 #define MAPREG_AUTOSAVE_INTERVAL	(300*1000)
 
@@ -109,7 +109,7 @@ static char*   error_pos;
 struct script_code error_code;	// エラー時のダミーデータ
 
 // if , switch の実装
-enum { TYPE_NULL = 0 , TYPE_IF , TYPE_SWITCH , TYPE_WHILE , TYPE_FOR , TYPE_DO , TYPE_USERFUNC};
+enum { TYPE_NULL = 0, TYPE_IF, TYPE_SWITCH, TYPE_WHILE, TYPE_FOR, TYPE_DO, TYPE_USERFUNC };
 
 static struct {
 	struct {
@@ -123,10 +123,6 @@ static struct {
 	int index;			// スクリプト内で使用した構文の数
 } syntax;
 
-unsigned char* parse_curly_close(unsigned char *p);
-unsigned char* parse_syntax_close(unsigned char *p);
-unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag);
-unsigned char* parse_syntax(unsigned char *p);
 static int parse_syntax_for_flag = 0;
 
 #ifdef DEBUG_VARS
@@ -162,6 +158,11 @@ enum {
  * ローカルプロトタイプ宣言 (必要な物のみ)
  *------------------------------------------
  */
+unsigned char* parse_curly_close(unsigned char *p);
+unsigned char* parse_syntax_close(unsigned char *p);
+unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag);
+unsigned char* parse_syntax(unsigned char *p);
+
 unsigned char* parse_subexpr(unsigned char *,int);
 int get_com(unsigned char *script,int *pos);
 int get_num(unsigned char *script,int *pos);
@@ -1842,7 +1843,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 	}
 #endif
 
-	code = (struct script_code *)aCalloc(1, sizeof(struct script_code) + script_size);
+	code = (struct script_code *)aMalloc(sizeof(struct script_code) + script_size);
 	code->script_vars = NULL;
 	code->script_size = script_size;
 	memcpy(code->script_buf, script_buf, script_size);

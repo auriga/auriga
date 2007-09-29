@@ -1564,7 +1564,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		if(curly_count > 0) {
 			script_error( srcbuf, file, startline, "missing right curly", srcbuf + strlen(srcbuf) );
 			aFree(srcbuf);
-			return 0;
+			return 1;
 		}
 		if(strcmp(w1,"-") != 0 && m < 0) {	// assignされてないMAPなのでparseせずに終了
 			aFree(srcbuf);
@@ -1787,7 +1787,7 @@ static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_li
 	if(curly_count > 0) {
 		script_error( srcbuf, file, startline, "missing right curly", srcbuf + strlen(srcbuf) );
 		aFree(srcbuf);
-		return 0;
+		return 1;
 	}
 	script = parse_script(srcbuf,file,startline);
 
