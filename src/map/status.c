@@ -31,10 +31,8 @@
 
 static struct job_db {
 	int max_weight_base;
-	int hp_coefficient;
-	int hp_coefficient2;
-	int sp_coefficient;
-	int hp_sigma[MAX_LEVEL];
+	int hp_base[MAX_LEVEL];
+	int sp_base[MAX_LEVEL];
 	int bonus[3][MAX_LEVEL];
 	int aspd_base[WT_MAX];
 } job_db[MAX_PC_CLASS];
@@ -1413,52 +1411,50 @@ L_RECALC:
 	if(sd->attackrange < sd->attackrange_)
 		sd->attackrange = sd->attackrange_;
 
-	blv = sd->status.base_level;
+	blv = (sd->status.base_level > 0)? sd->status.base_level - 1: 0;
 
 	// 最大HP計算
-	// 転生職の場合最大HP25%UP
-	calc_val = (3500 + blv * job_db[sd->s_class.job].hp_coefficient2 + job_db[sd->s_class.job].hp_sigma[(blv > 0)? blv-1: 0])/100 *
-			(100 + sd->paramc[2])/100 + (sd->parame[2] - sd->paramcard[2]);
-	if(pc_isupper(sd))
-		sd->status.max_hp += calc_val * battle_config.upper_hp_rate/100;
+	calc_val = job_db[sd->s_class.job].hp_base[blv] * (100 + sd->paramc[2]) / 100 + (sd->parame[2] - sd->paramcard[2]);
+
+	if(pc_isupper(sd))	// 転生職の場合最大HP25%UP
+		sd->status.max_hp += calc_val * battle_config.upper_hp_rate / 100;
 	else if(pc_isbaby(sd))	// 養子の場合最大HP70%
-		sd->status.max_hp += calc_val * battle_config.baby_hp_rate/100;
+		sd->status.max_hp += calc_val * battle_config.baby_hp_rate / 100;
 	else
-		sd->status.max_hp += calc_val * battle_config.normal_hp_rate/100;
+		sd->status.max_hp += calc_val * battle_config.normal_hp_rate / 100;
 
 	if(sd->hprate != 100)
-		sd->status.max_hp = sd->status.max_hp*sd->hprate/100;
+		sd->status.max_hp = sd->status.max_hp * sd->hprate / 100;
 
 	if(sd->sc.data[SC_BERSERK].timer != -1) {	// バーサーク
-		sd->status.max_hp = sd->status.max_hp * 3;
+		sd->status.max_hp *= 3;
 	}
 	if(sd->sc.data[SC_INCMHP2].timer != -1) {
-		sd->status.max_hp *= (100+sd->sc.data[SC_INCMHP2].val1)/100;
+		sd->status.max_hp *= (100 + sd->sc.data[SC_INCMHP2].val1) / 100;
 	}
 
 	// 最大SP計算
-	// 転生職の場合最大SP125%
-	calc_val = (1000 + blv * job_db[sd->s_class.job].sp_coefficient)/100 *
-			(100 + sd->paramc[3])/100 + (sd->parame[3] - sd->paramcard[3]);
-	if(pc_isupper(sd))
-		sd->status.max_sp += calc_val * battle_config.upper_sp_rate/100;
+	calc_val = job_db[sd->s_class.job].sp_base[blv] * (100 + sd->paramc[3]) / 100 + (sd->parame[3] - sd->paramcard[3]);
+
+	if(pc_isupper(sd))	// 転生職の場合最大SP125%
+		sd->status.max_sp += calc_val * battle_config.upper_sp_rate / 100;
 	else if(pc_isbaby(sd))	// 養子の場合最大SP70%
-		sd->status.max_sp += calc_val * battle_config.baby_sp_rate/100;
+		sd->status.max_sp += calc_val * battle_config.baby_sp_rate / 100;
 	else
-		sd->status.max_sp += calc_val * battle_config.normal_sp_rate/100;
+		sd->status.max_sp += calc_val * battle_config.normal_sp_rate / 100;
 
 	if(sd->sprate != 100)
-		sd->status.max_sp = sd->status.max_sp*sd->sprate/100;
+		sd->status.max_sp = sd->status.max_sp * sd->sprate / 100;
 
 	if((skill = pc_checkskill(sd,HP_MEDITATIO)) > 0) // メディタティオ
-		sd->status.max_sp += sd->status.max_sp*skill/100;
+		sd->status.max_sp += sd->status.max_sp * skill / 100;
 	if((skill = pc_checkskill(sd,HW_SOULDRAIN)) > 0) // ソウルドレイン
-		sd->status.max_sp += sd->status.max_sp*2*skill/100;
+		sd->status.max_sp += sd->status.max_sp * 2 * skill / 100;
 	if((skill = pc_checkskill(sd,SL_KAINA)) > 0)	// カイナ
-		sd->status.max_sp += 30*skill;
+		sd->status.max_sp += 30 * skill;
 
 	if(sd->sc.data[SC_INCMSP2].timer != -1) {
-		sd->status.max_sp *= (100+sd->sc.data[SC_INCMSP2].val1)/100;
+		sd->status.max_sp *= (100 + sd->sc.data[SC_INCMSP2].val1) / 100;
 	}
 
 	// 自然回復HP
@@ -7204,21 +7200,6 @@ int status_change_removemap_end(struct block_list *bl)
  * データベース読み込み
  *------------------------------------------
  */
-static int status_calc_sigma(void)
-{
-	int i,j,k;
-
-	for(i=0; i<MAX_PC_CLASS; i++) {
-		memset(job_db[i].hp_sigma,0,sizeof(job_db[i].hp_sigma));
-		for(k=0,j=2; j<=MAX_LEVEL; j++) {
-			k += job_db[i].hp_coefficient*j + 50;
-			k -= k%100;
-			job_db[i].hp_sigma[j-1] = k;
-		}
-	}
-	return 0;
-}
-
 int status_readdb(void) {
 	int i,j,k;
 	FILE *fp;
@@ -7235,6 +7216,8 @@ int status_readdb(void) {
 	i=0;
 	while(fgets(line,1020,fp)){
 		char *split[WT_MAX+4];
+		int hp_coefficient, sp_coefficient;
+
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(split,0,sizeof(split));
@@ -7246,18 +7229,87 @@ int status_readdb(void) {
 		if(j < 4)
 			continue;
 		job_db[i].max_weight_base = atoi(split[0]);
-		job_db[i].hp_coefficient  = atoi(split[1]);
-		job_db[i].hp_coefficient2 = atoi(split[2]);
-		job_db[i].sp_coefficient  = atoi(split[3]);
-		for(j=0; j<WT_MAX && split[j+4]; j++)
+
+		hp_coefficient = atoi(split[1]);
+		if(hp_coefficient >= 0) {
+			int hp_coefficient2 = atoi(split[2]);
+			int sigma = 0;
+			for(j = 1; j <= MAX_LEVEL; j++) {
+				// 基本HP = 35 + BaseLevel * Job倍率 + Jobボーナス
+				job_db[i].hp_base[j-1] = (3500 + j * hp_coefficient2 + sigma) / 100;
+				sigma += hp_coefficient * (j + 1) + 50;
+				sigma -= sigma % 100;
+			}
+		}
+
+		sp_coefficient = atoi(split[3]);
+		if(sp_coefficient >= 0) {
+			for(j = 1; j < MAX_LEVEL; j++) {
+				// 基本SP = 10 + BaseLevel * Job係数
+				job_db[i].sp_base[j-1] = (1000 + j * sp_coefficient) / 100;
+			}
+		}
+
+		for(j=0; j<WT_MAX && split[j+4]; j++) {
 			job_db[i].aspd_base[j] = atoi(split[j+4]);
-		i++;
-		if(i >= MAX_VALID_PC_CLASS)
+		}
+		if(++i >= MAX_VALID_PC_CLASS)
 			break;
 	}
 	fclose(fp);
-	status_calc_sigma();
 	printf("read db/job_db1.txt done\n");
+
+	// 基本HP個別設定
+	fp=fopen("db/job_hp_db.txt","r");
+	if(fp==NULL){
+		printf("can't read db/job_hp_db.txt\n");
+		return 1;
+	}
+	i=0;
+	while(fgets(line,1020,fp)){
+		if(line[0]=='/' && line[1]=='/')
+			continue;
+		for(j=0,p=line;j<MAX_VALID_PC_CLASS && p;j++){
+			if(sscanf(p,"%d",&k) == 0)
+				break;
+			if(job_db[j].hp_base[i] == 0) {
+				// job_db1.txtでHP未設定の場合のみ補完
+				job_db[j].hp_base[i] = (k > 0)? k: 1;
+			}
+			p=strchr(p,',');
+			if(p) *p++=0;
+		}
+		if(++i >= MAX_LEVEL)
+			break;
+	}
+	fclose(fp);
+	printf("read db/job_hp_db.txt done\n");
+
+	// 基本SP個別設定
+	fp=fopen("db/job_sp_db.txt","r");
+	if(fp==NULL){
+		printf("can't read db/job_sp_db.txt\n");
+		return 1;
+	}
+	i=0;
+	while(fgets(line,1020,fp)){
+		if(line[0]=='/' && line[1]=='/')
+			continue;
+		for(j=0,p=line;j<MAX_VALID_PC_CLASS && p;j++){
+			if(sscanf(p,"%d",&k) == 0)
+				break;
+			if(job_db[j].sp_base[i] == 0) {
+				// job_db1.txtでSP未設定の場合のみ補完
+				job_db[j].sp_base[i] = (k > 0)? k: 1;
+			}
+			p=strchr(p,',');
+			if(p) *p++=0;
+		}
+		if(++i >= MAX_LEVEL)
+			break;
+	}
+	fclose(fp);
+	printf("read db/job_sp_db.txt done\n");
 
 	// JOBボーナス
 	fp=fopen("db/job_db2.txt","r");
@@ -7277,8 +7329,7 @@ int status_readdb(void) {
 			p=strchr(p,',');
 			if(p) p++;
 		}
-		i++;
-		if(i >= MAX_VALID_PC_CLASS)
+		if(++i >= MAX_VALID_PC_CLASS)
 			break;
 	}
 	fclose(fp);
@@ -7301,8 +7352,7 @@ int status_readdb(void) {
 			p=strchr(p,',');
 			if(p) p++;
 		}
-		i++;
-		if(i >= MAX_VALID_PC_CLASS)
+		if(++i >= MAX_VALID_PC_CLASS)
 			break;
 	}
 	fclose(fp);
@@ -7337,8 +7387,9 @@ int status_readdb(void) {
 		refine_db[i].safety_bonus = atoi(split[0]);	// 精錬ボーナス
 		refine_db[i].over_bonus   = atoi(split[1]);	// 過剰精錬ボーナス
 		refine_db[i].limit        = atoi(split[2]);	// 安全精錬限界
-		for(j=0; j<MAX_REFINE && split[j+3]; j++)
+		for(j=0; j<MAX_REFINE && split[j+3]; j++) {
 			refine_db[i].per[j] = atoi(split[j+3]);
+		}
 		if(++i > MAX_WEAPON_LEVEL)
 			break;
 	}
@@ -7368,8 +7419,9 @@ int status_readdb(void) {
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		for(j=0; j<WT_MAX && split[j]; j++)
+		for(j=0; j<WT_MAX && split[j]; j++) {
 			atkmods[i][j] = atoi(split[j]);
+		}
 		if(++i > MAX_SIZE_FIX)
 			break;
 	}

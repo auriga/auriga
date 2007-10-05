@@ -6057,10 +6057,14 @@ atcommand_callmerc(
 {
 	nullpo_retr(-1, sd);
 
+#ifdef TXT_ONLY
 	if(!message && !*message)
 		return -1;
 
 	merc_callmerc(sd, atoi(message));
+#else
+	clif_displaymessage(fd, "not supported in SQL mode");
+#endif
 
 	return 0;
 }

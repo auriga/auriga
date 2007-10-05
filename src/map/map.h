@@ -192,7 +192,7 @@ struct status_change {
 	struct status_change_data *data; //[MAX_STATUSCHANGE];
 #else
 	struct status_change_data data[MAX_STATUSCHANGE];
-#endif;
+#endif
 	unsigned short opt1, opt2;
 	unsigned int opt3, option;
 };
