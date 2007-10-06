@@ -107,7 +107,6 @@ double uptime(void)
 
 #ifdef _WIN32
 
-#include <windows.h>
 #include <imagehlp.h>
 #pragma comment(lib, "imagehlp.lib")
 
@@ -131,40 +130,40 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 	const char* ErrType = "UNKNOWN";
 
 	switch( e->ExceptionRecord->ExceptionCode ) {
-	case EXCEPTION_ACCESS_VIOLATION:
-		ErrType = "ACCESS_VIOLATION";
-		break;
-	case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
-		ErrType = "ARRAY_BOUNDS_EXCEEDED";
-		break;
-	case EXCEPTION_DATATYPE_MISALIGNMENT:
-		ErrType = "DATATYPE_MISALIGNMENT";
-		break;
-	case EXCEPTION_FLT_DIVIDE_BY_ZERO:
-		ErrType = "FLT_DIVIDE_BY_ZERO";
-		break;
-	case EXCEPTION_ILLEGAL_INSTRUCTION:
-		ErrType = "ILLEGAL_INSTRUCTION";
-		break;
-	case EXCEPTION_IN_PAGE_ERROR:
-		ErrType = "IN_PAGE_ERROR";
-		break;
-	case EXCEPTION_INT_DIVIDE_BY_ZERO:
-		ErrType = "INT_DIVIDE_BY_ZERO";
-		break;
-	case EXCEPTION_PRIV_INSTRUCTION:
-		ErrType = "PRIV_INSTRUCTION";
-		break;
-	case EXCEPTION_STACK_OVERFLOW:
-		ErrType = "STACK_OVERFLOW";
-		break;
-	case EXCEPTION_NONCONTINUABLE_EXCEPTION:
-		ErrType = "NONCONTINUABLE_EXCEPTION";
-		break;
-	case EXCEPTION_INVALID_DISPOSITION:
-	default:
-		// 例外ハンドラのミス or 何もしない例外
-		return EXCEPTION_CONTINUE_SEARCH;
+		case EXCEPTION_ACCESS_VIOLATION:
+			ErrType = "ACCESS_VIOLATION";
+			break;
+		case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
+			ErrType = "ARRAY_BOUNDS_EXCEEDED";
+			break;
+		case EXCEPTION_DATATYPE_MISALIGNMENT:
+			ErrType = "DATATYPE_MISALIGNMENT";
+			break;
+		case EXCEPTION_FLT_DIVIDE_BY_ZERO:
+			ErrType = "FLT_DIVIDE_BY_ZERO";
+			break;
+		case EXCEPTION_ILLEGAL_INSTRUCTION:
+			ErrType = "ILLEGAL_INSTRUCTION";
+			break;
+		case EXCEPTION_IN_PAGE_ERROR:
+			ErrType = "IN_PAGE_ERROR";
+			break;
+		case EXCEPTION_INT_DIVIDE_BY_ZERO:
+			ErrType = "INT_DIVIDE_BY_ZERO";
+			break;
+		case EXCEPTION_PRIV_INSTRUCTION:
+			ErrType = "PRIV_INSTRUCTION";
+			break;
+		case EXCEPTION_STACK_OVERFLOW:
+			ErrType = "STACK_OVERFLOW";
+			break;
+		case EXCEPTION_NONCONTINUABLE_EXCEPTION:
+			ErrType = "NONCONTINUABLE_EXCEPTION";
+			break;
+		case EXCEPTION_INVALID_DISPOSITION:
+		default:
+			// 例外ハンドラのミス or 何もしない例外
+			return EXCEPTION_CONTINUE_SEARCH;
 	}
 
 	hThread  = GetCurrentThread();
@@ -173,18 +172,21 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 		"crashdump.log", GENERIC_WRITE, FILE_SHARE_READ, NULL,
 		OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL
 	);
+
 	// ログが取れなかったので何もしない。
-	if( hFile == INVALID_HANDLE_VALUE ) return EXCEPTION_CONTINUE_SEARCH;
-	SetFilePointer( hFile, 0, NULL, FILE_END);
+	if( hFile == INVALID_HANDLE_VALUE )
+		return EXCEPTION_CONTINUE_SEARCH;
+
+	SetFilePointer( hFile, 0, NULL, FILE_END );
 	GetLocalTime( &time );
 	len = wsprintf(
 		buf, "%04u/%02u/%02u %02u:%02u:%02u crashed by %s.\r\n",
 		time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, ErrType
 	);
-	WriteFile( hFile, buf, len, &temp, NULL);
+	WriteFile( hFile, buf, len, &temp, NULL );
 
 	len = wsprintf(buf, "\t%s\r\n", GetCommandLine());
-	WriteFile( hFile, buf, len, &temp, NULL);
+	WriteFile( hFile, buf, len, &temp, NULL );
 
 #ifdef _WIN64
 	len = wsprintf(
@@ -193,14 +195,13 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 		(int)(e->ContextRecord->Rsp >> 32), (int)(e->ContextRecord->Rsp & 0xFFFFFFFF),
 		(int)(e->ContextRecord->Rbp >> 32), (int)(e->ContextRecord->Rbp & 0xFFFFFFFF)
 	);
-	WriteFile( hFile, buf, len, &temp, NULL);
+	WriteFile( hFile, buf, len, &temp, NULL );
 #else
 	len = wsprintf(
 		buf, "\tEIP: %08x ESP: %08x EBP: %08x\r\n\r\n",
-		e->ContextRecord->Eip, e->ContextRecord->Esp,
-		e->ContextRecord->Ebp
+		e->ContextRecord->Eip, e->ContextRecord->Esp, e->ContextRecord->Ebp
 	);
-	WriteFile( hFile, buf, len, &temp, NULL);
+	WriteFile( hFile, buf, len, &temp, NULL );
 #endif
 
 	symbol = (IMAGEHLP_SYMBOL *)GlobalAlloc( GMEM_FIXED, sizeof(symbol) + 512 );
@@ -228,12 +229,15 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 
 	SymSetOptions(SymGetOptions() | SYMOPT_LOAD_LINES);
 	SymInitialize(hProcess, NULL, TRUE);
+
 #ifdef _WIN64
-	while(StackWalk64(IMAGE_FILE_MACHINE_AMD64, hProcess, hThread, &stack,
-					  e->ContextRecord, NULL, SymFunctionTableAccess64, SymGetModuleBase64, NULL)
+	while(StackWalk64(
+		IMAGE_FILE_MACHINE_AMD64, hProcess, hThread, &stack,
+		e->ContextRecord, NULL, SymFunctionTableAccess64, SymGetModuleBase64, NULL)
 #else
-	while(StackWalk(IMAGE_FILE_MACHINE_I386, hProcess, hThread, &stack,
-					e->ContextRecord, NULL, SymFunctionTableAccess, SymGetModuleBase, NULL)
+	while(StackWalk(
+		IMAGE_FILE_MACHINE_I386, hProcess, hThread, &stack,
+		e->ContextRecord, NULL, SymFunctionTableAccess, SymGetModuleBase, NULL)
 #endif
 	) {
 #ifdef __BORLANDC__
@@ -243,51 +247,55 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 #elif defined(_WIN64)
 		// SymGetSymFromAddr64 は使用するべきじゃないらしい…。
 		if(SymGetSymFromAddr(hProcess, stack.AddrPC.Offset, &offset, symbol)) {
+			len = wsprintf(
+				buf, "\t0x%08x%08x : %s + 0x%x",
+				(int)(stack.AddrPC.Offset >> 32),
+				(int)(stack.AddrPC.Offset & 0xFFFFFFFF), symbol->Name, (int)offset
+			);
 			if( SymGetLineFromAddr64( hProcess, stack.AddrPC.Offset, &temp, &lineinfo ) ) {
-				len = wsprintf(buf, "\t0x%08x%08x : %s + 0x%x (%s line %d)\r\n",
-							   (int)(stack.AddrPC.Offset >> 32),
-							   (int)(stack.AddrPC.Offset & 0xFFFFFFFF), symbol->Name,
-							   (int)offset, lineinfo.FileName, lineinfo.LineNumber);
-			} else {
-				len = wsprintf(buf, "\t0x%08x%08x : %s + 0x%x\r\n",
-							   (int)(stack.AddrPC.Offset >> 32),
-							   (int)(stack.AddrPC.Offset & 0xFFFFFFFF), symbol->Name,
-							   (int)offset);
+				len += wsprintf(
+					buf+len, " (%s line %d)",
+					lineinfo.FileName, lineinfo.LineNumber
+				);
 			}
+			len += wsprintf(buf+len, "\r\n");
 		} else {
-			len = wsprintf(buf, "\t0x%08x%08x : unknown\r\n",
-						   (int)(stack.AddrPC.Offset >> 32),
-						   (int)(stack.AddrPC.Offset & 0xFFFFFFFF));
+			len = wsprintf(
+				buf, "\t0x%08x%08x : unknown\r\n",
+				(int)(stack.AddrPC.Offset >> 32),
+				(int)(stack.AddrPC.Offset & 0xFFFFFFFF)
+			);
 		}
 #else
 		if(SymGetSymFromAddr(hProcess, stack.AddrPC.Offset, &offset, symbol)) {
+			len = wsprintf(
+				buf, "\t0x%08x : %s + 0x%x",
+				stack.AddrPC.Offset, symbol->Name, offset
+			);
 			if( SymGetLineFromAddr( hProcess, stack.AddrPC.Offset, &temp, &lineinfo ) ) {
-				len = wsprintf(buf, "\t0x%08x : %s + 0x%x (%s line %d)\r\n",
-							   stack.AddrPC.Offset, symbol->Name, offset,
-							   lineinfo.FileName, lineinfo.LineNumber);
-			} else {
-				len = wsprintf(buf, "\t0x%08x : %s + 0x%x\r\n",
-							   stack.AddrPC.Offset, symbol->Name, offset);
+				len += wsprintf(
+					buf+len, " (%s line %d)",
+					lineinfo.FileName, lineinfo.LineNumber
+				);
 			}
+			len += wsprintf(buf+len, "\r\n");
 		} else {
 			len = wsprintf(buf, "\t0x%08x : unknown\r\n", stack.AddrPC.Offset);
 		}
 #endif
-		WriteFile( hFile, buf, len, &temp, NULL);
+		WriteFile( hFile, buf, len, &temp, NULL );
 	}
 
 	SymCleanup( hProcess );
 	GlobalFree( symbol );
 
 	len = wsprintf(buf, "\r\n\r\n----------------------------------------\r\n");
-	WriteFile( hFile, buf, len, &temp, NULL);
+	WriteFile( hFile, buf, len, &temp, NULL );
 	CloseHandle( hFile );
-#ifdef _MSC_VER
-	return EXCEPTION_CONTINUE_SEARCH;
-#else
+#ifndef _MSC_VER
 	ExitProcess(0);
-	return EXCEPTION_CONTINUE_SEARCH;
 #endif
+	return EXCEPTION_CONTINUE_SEARCH;
 }
 
 #endif
@@ -324,12 +332,12 @@ int main(int argc,char **argv)
 		add_timer_interval(gettick()+packet_parse_time,parsepacket_timer,0,0,packet_parse_time);
 
 		while(auriga_is_running) {
-			next=do_timer(gettick_nocache());
+			next = do_timer(gettick_nocache());
 			do_sendrecv(next);
 		}
 	} else {
 		while(auriga_is_running) {
-			next=do_timer(gettick_nocache());
+			next = do_timer(gettick_nocache());
 			do_sendrecv(next);
 			do_parsepacket();
 		}

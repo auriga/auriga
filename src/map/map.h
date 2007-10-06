@@ -801,7 +801,7 @@ struct merc_data {
 	short hit,critical,flee,aspd;
 	short attackrange;
 	int target_id;
-	unsigned int skillstatictimer[MAX_HOMSKILL];
+	unsigned int skillstatictimer[MAX_MERCSKILL];
 	short attackable;
 	short view_class;
 	int nhealhp,nhealsp;
