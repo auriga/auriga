@@ -3676,35 +3676,43 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			battle_attack_drain(target,rdamage,0,battle_config.weapon_reflect_drain_enable_type);
 	}
 
-	if(t_sc && t_sc->data[SC_AUTOCOUNTER].timer != -1 && t_sc->data[SC_AUTOCOUNTER].val4 > 0) {
-		if(t_sc->data[SC_AUTOCOUNTER].val3 == src->id)
-			battle_weapon_attack(target,src,tick,0x8000|t_sc->data[SC_AUTOCOUNTER].val1);
-		status_change_end(target,SC_AUTOCOUNTER,-1);
-	}
-	if(t_sc && t_sc->data[SC_BLADESTOP_WAIT].timer != -1 && !(status_get_mode(src)&0x20)) {	// ボスには無効
-		int lv = t_sc->data[SC_BLADESTOP_WAIT].val1;
-		status_change_end(target,SC_BLADESTOP_WAIT,-1);
-		status_change_start(src,SC_BLADESTOP,lv,1,src->id,target->id,skill_get_time2(MO_BLADESTOP,lv),0);
-		status_change_start(target,SC_BLADESTOP,lv,2,target->id,src->id,skill_get_time2(MO_BLADESTOP,lv),0);
-	}
-	if(t_sc && t_sc->data[SC_POISONREACT].timer != -1) {
-		if( (src->type == BL_MOB && status_get_elem_type(src) == ELE_POISON) || status_get_attack_element(src) == ELE_POISON ) {
-			// 毒属性mobまたは毒属性による攻撃ならば反撃
-			if( battle_check_range(target,src,status_get_range(target)+1) ) {
-				t_sc->data[SC_POISONREACT].val2 = 0;
-				battle_skill_attack(BF_WEAPON,target,target,src,AS_POISONREACT,t_sc->data[SC_POISONREACT].val1,tick,0);
-			}
-		} else {
-			// それ以外の通常攻撃に対するインベ反撃（射線チェックなし）
-			--t_sc->data[SC_POISONREACT].val2;
-			if(atn_rand()&1) {
-				if( tsd == NULL || pc_checkskill(tsd,TF_POISON) >= 5 )
-					battle_skill_attack(BF_WEAPON,target,target,src,TF_POISON,5,tick,flag);
-			}
+	// 対象にステータス異常がある場合
+	if(t_sc && t_sc->count > 0)
+	{
+		if(t_sc->data[SC_AUTOCOUNTER].timer != -1 && t_sc->data[SC_AUTOCOUNTER].val4 > 0) {
+			if(t_sc->data[SC_AUTOCOUNTER].val3 == src->id)
+				battle_weapon_attack(target,src,tick,0x8000|t_sc->data[SC_AUTOCOUNTER].val1);
+			status_change_end(target,SC_AUTOCOUNTER,-1);
 		}
-		if (t_sc->data[SC_POISONREACT].val2 <= 0)
-			status_change_end(target,SC_POISONREACT,-1);
+		if(t_sc->data[SC_BLADESTOP_WAIT].timer != -1 &&
+		   !(status_get_mode(src)&0x20) &&
+		   (map[target->m].flag.pvp || unit_distance2(src,target) <= 2)) {	// PvP以外での有効射程は2セル
+			int lv   = t_sc->data[SC_BLADESTOP_WAIT].val1;
+			int tick = skill_get_time2(MO_BLADESTOP,lv);
+			status_change_end(target,SC_BLADESTOP_WAIT,-1);
+			status_change_start(src,SC_BLADESTOP,lv,1,src->id,target->id,tick,0);
+			status_change_start(target,SC_BLADESTOP,lv,2,target->id,src->id,tick,0);
+		}
+		if(t_sc->data[SC_POISONREACT].timer != -1) {
+			if( (src->type == BL_MOB && status_get_elem_type(src) == ELE_POISON) || status_get_attack_element(src) == ELE_POISON ) {
+				// 毒属性mobまたは毒属性による攻撃ならば反撃
+				if( battle_check_range(target,src,status_get_range(target)+1) ) {
+					t_sc->data[SC_POISONREACT].val2 = 0;
+					battle_skill_attack(BF_WEAPON,target,target,src,AS_POISONREACT,t_sc->data[SC_POISONREACT].val1,tick,0);
+				}
+			} else {
+				// それ以外の通常攻撃に対するインベ反撃（射線チェックなし）
+				--t_sc->data[SC_POISONREACT].val2;
+				if(atn_rand()&1) {
+					if( tsd == NULL || pc_checkskill(tsd,TF_POISON) >= 5 )
+						battle_skill_attack(BF_WEAPON,target,target,src,TF_POISON,5,tick,flag);
+				}
+			}
+			if(t_sc->data[SC_POISONREACT].val2 <= 0)
+				status_change_end(target,SC_POISONREACT,-1);
+		}
 	}
+
 	map_freeblock_unlock();
 	return wd.dmg_lv;
 }

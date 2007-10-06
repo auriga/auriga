@@ -1080,11 +1080,12 @@ R 01be
 S 01bf <01固定>.B
 	0x1beでOKボタンを押した
 S 01c0
-	GMコマンド/ソ莖ンにて発行。何かの要求パケ
+	GMコマンド/ソ莖ンにて発行。何かの要求パケ。/料金？
 	langtype 0のとき、ログイン時に自動的に送られてくる？
 R 01c1 <type>.l <?>.l <?>.l
 	白の文字化け、不明
 	バイナリに記述された文字列が吐き出されてるようなので現在未使用？
+	もしかしたら0x1c0の応答パケットかもしれない
 	typeは1,2のいずれか？
 R 01c2 <type?>.l <?>.l
 	何もしないようにフラグが規定されている
@@ -1702,6 +1703,10 @@ S 02a5 <?>.w <?>.l
 	未調査
 R 02ae
 	ログイン系？未調査
+S 02b0 <version>.l <account name>.24B <password>.24B <version2>.B <ip>.16B <?>.14B
+	アカウントID&パスワード送信
+	0x277の上位版？
+	langtypeが0のときのみ有効
 R 02b1 <len>.w <?>.l { <questID>.l <active>.B }.5B*
 	基本クエストウィンドウ
 R 02b2 <len>.w <?>.l { <questID>.l <?>.l <limited>.l <loop>.B <0?>.B { <mobID>.l <kill>.w <mob name>.24B }.30B*3 }.104B*

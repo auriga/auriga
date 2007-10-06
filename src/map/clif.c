@@ -10518,6 +10518,7 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 	}
 
 	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc.opt1 > 0 || sd->chatID || sd->state.mail_appending ||
+	    pc_iscloaking(sd) ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_RUN].timer != -1 ||			// タイリギ
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中拾えない
@@ -10526,8 +10527,6 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 		clif_additem(sd,0,0,6);
 		return;
 	}
-	if(pc_iscloaking(sd) || pc_ischasewalk(sd))
-		return;
 
 	bl = map_id2bl(RFIFOL(fd,GETPACKETPOS(cmd,0)));	// map_object_id
 	if(bl && bl->type == BL_ITEM)
@@ -12893,6 +12892,16 @@ static void clif_parse_GMcheck(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * GMコマンド /ソ莖ン
+ *------------------------------------------
+ */
+static void clif_parse_GMcharge(int fd,struct map_session_data *sd, int cmd)
+{
+	// 効果不明
+	return;
+}
+
+/*==========================================
  * 友達リスト追加要請
  *------------------------------------------
  */
@@ -13598,6 +13607,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_GMchangemaptype,           "changemaptype"             },
 		{ clif_parse_GMrc,                      "gmrc"                      },
 		{ clif_parse_GMcheck,                   "gmcheck"                   },
+		{ clif_parse_GMcharge,                  "gmcharge"                  },
 		{ clif_parse_FriendAddRequest,          "friendaddrequest"          },
 		{ clif_parse_FriendAddReply,            "friendaddreply"            },
 		{ clif_parse_FriendDeleteRequest,       "frienddeleterequest"       },

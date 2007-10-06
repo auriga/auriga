@@ -1783,6 +1783,7 @@ int parse_login(int fd)
 		case 0x01dd:	// 暗号化ログイン要求
 		case 0x0277:	// クライアントログイン要求？
 		case 0x027c:	// 暗号化ログイン要求
+		case 0x02b0:	// クライアントログイン要求（langtype=0）
 		{
 			int length = 0, result = -1;
 			int enc_flag;
@@ -1792,6 +1793,7 @@ int parse_login(int fd)
 				case 0x01dd: length = 47; break;
 				case 0x0277: length = 84; break;
 				case 0x027c: length = 60; break;
+				case 0x02b0: length = 85; break;
 			}
 			if(length == 0 || RFIFOREST(fd) < length)
 				return 0;
