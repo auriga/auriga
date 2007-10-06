@@ -4379,6 +4379,9 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		clif_updatestatus(sd,SP_STATUSPOINT);
 		clif_updatestatus(sd,SP_BASELEVEL);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
+
+		status_calc_pc_stop_begin(&sd->bl);
+
 		status_calc_pc(sd,0);
 		pc_heal(sd,sd->status.max_hp,sd->status.max_sp);
 
@@ -4399,6 +4402,8 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		else {
 			clif_misceffect(&sd->bl,0);
 		}
+
+		status_calc_pc_stop_end(&sd->bl);
 
 		// レベルアップしたのでパーティー情報を更新する（公平範囲チェック）
 		party_send_movemap(sd);
@@ -4504,68 +4509,50 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 	//------------- Base ----------------
 	per = battle_config.next_exp_limit;
 	if (base_exp > 0) {
-		if ((next = pc_nextbaseexp(sd)) > 0) {
-			while(base_exp + sd->status.base_exp >= next) {	// LvUP
-				atn_bignumber temp_exp = next - sd->status.base_exp;
-				int rate = (int)(100 - (atn_bignumber)sd->status.base_exp * 100 / next);
-				if (per - rate < 0)
-					break;
-				per -= rate;
-				sd->status.base_exp = (int)next;
-				if (!pc_checkbaselevelup(sd) || (next = pc_nextbaseexp(sd)) <= 0)
-					break;
-				base_exp -= temp_exp;
-			}
-			if ((next = pc_nextbaseexp(sd)) > 0 && (base_exp * 100 / next) > per)
-				sd->status.base_exp = (int)(next * per / 100);
-			else if (base_exp + sd->status.base_exp > 0x7fffffff)
-				sd->status.base_exp = 0x7fffffff;
-			else
-				sd->status.base_exp += (int)base_exp;
-
-			if (sd->status.base_exp < 0)
-				sd->status.base_exp = 0;
+		while((next = pc_nextbaseexp(sd)) > 0 && base_exp + sd->status.base_exp >= next) {	// LvUP
+			int rate = (int)(100 - (atn_bignumber)sd->status.base_exp * 100 / next);
+			if (per - rate < 0)
+				break;
+			per -= rate;
+			base_exp = base_exp + sd->status.base_exp - next;
+			sd->status.base_exp = (int)next;
 			pc_checkbaselevelup(sd);
-		} else {
-			if (base_exp + sd->status.base_exp > 0x7fffffff)
-				sd->status.base_exp = 0x7fffffff;
-			else
-				sd->status.base_exp += (int)base_exp;
 		}
+		if (next > 0 && (base_exp * 100 / next) > per)
+			sd->status.base_exp = (int)(next * per / 100);
+		else if (base_exp + sd->status.base_exp > 0x7fffffff)
+			sd->status.base_exp = 0x7fffffff;
+		else
+			sd->status.base_exp += (int)base_exp;
+
+		if (sd->status.base_exp < 0)
+			sd->status.base_exp = 0;
+		pc_checkbaselevelup(sd);
 		clif_updatestatus(sd, SP_BASEEXP);
 	}
 
 	//------------- Job ----------------
 	per = battle_config.next_exp_limit;
 	if (job_exp > 0) {
-		if ((next = pc_nextjobexp(sd)) > 0) {
-			while(job_exp + sd->status.job_exp >= next) {	// LvUP
-				atn_bignumber temp_exp = next - sd->status.job_exp;
-				int rate = (int)(100 - (atn_bignumber)sd->status.job_exp * 100 / next);
-				if (per - rate <= 0)
-					break;
-				per -= rate;
-				sd->status.job_exp = (int)next;
-				if (!pc_checkjoblevelup(sd) || (next = pc_nextjobexp(sd)) <= 0)
-					break;
-				job_exp -= temp_exp;
-			}
-			if ((next = pc_nextjobexp(sd)) > 0 && (job_exp * 100 / next) > per)
-				sd->status.job_exp = (int)(next * per / 100);
-			else if (job_exp + sd->status.job_exp > 0x7fffffff)
-				sd->status.job_exp = 0x7fffffff;
-			else
-				sd->status.job_exp += (int)job_exp;
-
-			if (sd->status.job_exp < 0)
-				sd->status.job_exp = 0;
+		while((next = pc_nextjobexp(sd)) > 0 && job_exp + sd->status.job_exp >= next) {	// LvUP
+			int rate = (int)(100 - (atn_bignumber)sd->status.job_exp * 100 / next);
+			if (per - rate <= 0)
+				break;
+			per -= rate;
+			job_exp = job_exp + sd->status.job_exp - next;
+			sd->status.job_exp = (int)next;
 			pc_checkjoblevelup(sd);
-		} else {
-			if (job_exp + sd->status.job_exp > 0x7fffffff)
-				sd->status.job_exp = 0x7fffffff;
-			else
-				sd->status.job_exp += (int)job_exp;
 		}
+		if (next > 0 && (job_exp * 100 / next) > per)
+			sd->status.job_exp = (int)(next * per / 100);
+		else if (job_exp + sd->status.job_exp > 0x7fffffff)
+			sd->status.job_exp = 0x7fffffff;
+		else
+			sd->status.job_exp += (int)job_exp;
+
+		if (sd->status.job_exp < 0)
+			sd->status.job_exp = 0;
+		pc_checkjoblevelup(sd);
 		clif_updatestatus(sd, SP_JOBEXP);
 	}
 
@@ -5075,14 +5062,22 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		}
 		return 0;
 	}
-	// スパノビがExp99%でHPが0になるとHPが回復して金剛状態になる
-	if(sd->s_class.job == 23 && pc_nextbaseexp(sd) && sd->status.base_exp*100/pc_nextbaseexp(sd) >= 99 && sd->sc.data[SC_STEELBODY].timer == -1) {
-		clif_skill_nodamage(&sd->bl,&sd->bl,MO_STEELBODY,5,1);
-		status_change_start(&sd->bl,SkillStatusChangeTable[MO_STEELBODY],5,0,0,0,skill_get_time(MO_STEELBODY,5),0);
-		sd->status.hp = sd->status.max_hp;
-		clif_updatestatus(sd,SP_HP);
-		return 0;
+
+	// スパノビがHP0になったとき、Exp99.0%以上かLv100状態ならばHPが全回復して金剛状態になる
+	if(sd->s_class.job == 23 && !sd->state.snovice_dead_flag) {
+		int next = pc_nextbaseexp(sd);
+		if( (next > 0 && (atn_bignumber)sd->status.base_exp * 1000 / next >= 990) ||
+		    (next <= 0 && sd->status.base_exp >= battle_config.snovice_maxexp_border) )
+		{
+			sd->status.hp = sd->status.max_hp;
+			clif_updatestatus(sd,SP_HP);
+			clif_skill_nodamage(&sd->bl,&sd->bl,MO_STEELBODY,5,1);
+			status_change_start(&sd->bl,SkillStatusChangeTable[MO_STEELBODY],5,0,0,0,skill_get_time(MO_STEELBODY,5),0);
+			sd->state.snovice_dead_flag = 1;
+			return 0;
+		}
 	}
+
 	// 死亡処理
 	pc_dead(src, sd);
 
@@ -5633,20 +5628,16 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 		}
 		break;
 	case SP_BASEEXP:
-		if(pc_nextbaseexp(sd) > 0) {
-			sd->status.base_exp = val;
-			if(sd->status.base_exp < 0)
-				sd->status.base_exp = 0;
-			pc_checkbaselevelup(sd);
-		}
+		sd->status.base_exp = val;
+		if(sd->status.base_exp < 0)
+			sd->status.base_exp = 0;
+		pc_checkbaselevelup(sd);
 		break;
 	case SP_JOBEXP:
-		if(pc_nextjobexp(sd) > 0) {
-			sd->status.job_exp = val;
-			if(sd->status.job_exp < 0)
-				sd->status.job_exp = 0;
-			pc_checkjoblevelup(sd);
-		}
+		sd->status.job_exp = val;
+		if(sd->status.job_exp < 0)
+			sd->status.job_exp = 0;
+		pc_checkjoblevelup(sd);
 		break;
 
 	// paramだがupdatestatus出来ないもの

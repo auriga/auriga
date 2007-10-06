@@ -6091,7 +6091,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
  * ステータス再計算を一時停止する
  *------------------------------------------
  */
-static int status_calc_pc_stop_begin(struct block_list *bl)
+int status_calc_pc_stop_begin(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 
@@ -6104,7 +6104,7 @@ static int status_calc_pc_stop_begin(struct block_list *bl)
  * ステータス再計算を再開する
  *------------------------------------------
  */
-static int status_calc_pc_stop_end(struct block_list *bl)
+int status_calc_pc_stop_end(struct block_list *bl)
 {
 	nullpo_retr(0, bl);
 
@@ -7150,7 +7150,10 @@ int status_change_removemap_end(struct block_list *bl)
 	struct status_change *sc;
 
 	nullpo_retr(0, bl);
-	nullpo_retr(0, sc = status_get_sc(bl));
+
+	sc = status_get_sc(bl);
+	if(sc == NULL || sc->count <= 0)
+		return 0;
 
 	status_calc_pc_stop_begin(bl);
 

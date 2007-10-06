@@ -317,6 +317,7 @@ struct map_session_data {
 		unsigned wis_all : 1;	// Wis全拒否許可フラグ
 		unsigned joinchat : 1;	// 参加or主催
 		unsigned mail_appending : 1;
+		unsigned snovice_dead_flag : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
