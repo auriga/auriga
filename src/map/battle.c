@@ -3687,11 +3687,11 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if(t_sc->data[SC_BLADESTOP_WAIT].timer != -1 &&
 		   !(status_get_mode(src)&0x20) &&
 		   (map[target->m].flag.pvp || unit_distance2(src,target) <= 2)) {	// PvP以外での有効射程は2セル
-			int lv   = t_sc->data[SC_BLADESTOP_WAIT].val1;
-			int tick = skill_get_time2(MO_BLADESTOP,lv);
+			int lv  = t_sc->data[SC_BLADESTOP_WAIT].val1;
+			int sec = skill_get_time2(MO_BLADESTOP,lv);
 			status_change_end(target,SC_BLADESTOP_WAIT,-1);
-			status_change_start(src,SC_BLADESTOP,lv,1,src->id,target->id,tick,0);
-			status_change_start(target,SC_BLADESTOP,lv,2,target->id,src->id,tick,0);
+			status_change_start(src,SC_BLADESTOP,lv,1,src->id,target->id,sec,0);
+			status_change_start(target,SC_BLADESTOP,lv,2,target->id,src->id,sec,0);
 		}
 		if(t_sc->data[SC_POISONREACT].timer != -1) {
 			if( (src->type == BL_MOB && status_get_elem_type(src) == ELE_POISON) || status_get_attack_element(src) == ELE_POISON ) {

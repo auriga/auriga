@@ -71,6 +71,7 @@
 92,SC_LIGHTNINGLOADER,1,103,0		// ライトニングローダー
 93,SC_SEISMICWEAPON,1,103,0		// サイズミックウェポン
 //
+102,SC_WE_FEMALE,0,1,0			// あなたに尽くします
 103,SC_AURABLADE,1,7,0			// オーラブレード
 104,SC_PARRYING,1,7,0			// パリイング
 105,SC_CONCENTRATION,1,7,6		// コンセントレーション

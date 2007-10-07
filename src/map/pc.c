@@ -4387,11 +4387,11 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 
 		// スパノビはキリエ、イムポ、マニピ、グロ、サフラがかかる
 		if(sd->s_class.job == 23) {
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_KYRIE],10,0,0,0,skill_get_time(PR_KYRIE,10),0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_IMPOSITIO],5,0,0,0,skill_get_time(PR_IMPOSITIO,5),0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_MAGNIFICAT],5,0,0,0,skill_get_time(PR_MAGNIFICAT,5),0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_GLORIA],5,0,0,0,skill_get_time(PR_GLORIA,5),0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_SUFFRAGIUM],3,0,0,0,skill_get_time(PR_SUFFRAGIUM,3),0);
+			status_change_start(&sd->bl,SkillStatusChangeTable[PR_KYRIE],10,0,0,0,120000,0);
+			status_change_start(&sd->bl,SkillStatusChangeTable[PR_IMPOSITIO],5,0,0,0,120000,0);
+			status_change_start(&sd->bl,SkillStatusChangeTable[PR_MAGNIFICAT],5,0,0,0,120000,0);
+			status_change_start(&sd->bl,SkillStatusChangeTable[PR_GLORIA],5,0,0,0,120000,0);
+			status_change_start(&sd->bl,SkillStatusChangeTable[PR_SUFFRAGIUM],3,0,0,0,120000,0);
 			clif_misceffect(&sd->bl,7);	// スパノビ天使
 		}
 		else if(sd->s_class.job >= 24 && sd->s_class.job <= 27) {

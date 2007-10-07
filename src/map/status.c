@@ -78,7 +78,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 90- */
 	SI_FLAMELAUNCHER,SI_FROSTWEAPON,SI_LIGHTNINGLOADER,SI_SEISMICWEAPON,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 	/* 100- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_AURABLADE,SI_PARRYING,SI_CONCENTRATION,SI_TENSIONRELAX,SI_BERSERK,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_BLANK,SI_WE_FEMALE,SI_AURABLADE,SI_PARRYING,SI_CONCENTRATION,SI_TENSIONRELAX,SI_BERSERK,SI_BLANK,SI_BLANK,
 	/* 110- */
 	SI_ASSUMPTIO,SI_BLANK,SI_BLANK,SI_MAGICPOWER,SI_EDP,SI_TRUESIGHT,SI_WINDWALK,SI_MELTDOWN,SI_CARTBOOST,SI_CHASEWALK,
 	/* 120- */
@@ -1150,6 +1150,25 @@ L_RECALC:
 							sd->paramb[5] = battle_config.max_marionette_luk - sd->status.luk;
 					}
 				}
+			}
+		}
+		if(sd->sc.data[SC_WE_FEMALE].timer != -1) {	// あなたに尽くします
+			if(sd->sc.data[SC_WE_FEMALE].val2 == 1) {
+				// 自分は全て-1
+				sd->paramb[0]--;
+				sd->paramb[1]--;
+				sd->paramb[2]--;
+				sd->paramb[3]--;
+				sd->paramb[4]--;
+				sd->paramb[5]--;
+			} else if(sd->sc.data[SC_WE_FEMALE].val2 == 2) {
+				// 相手は全て+1
+				sd->paramb[0]++;
+				sd->paramb[1]++;
+				sd->paramb[2]++;
+				sd->paramb[3]++;
+				sd->paramb[4]++;
+				sd->paramb[5]++;
 			}
 		}
 	}
@@ -4491,6 +4510,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_STONESKIN:			/* ストーンスキン */
 		case SC_ANTIMAGIC:			/* アンチマジック */
 		case SC_WEAPONQUICKEN:			/* ウェポンクイッケン */
+		case SC_WE_FEMALE:			/* あなたに尽くします */
 			calc_flag = 1;
 			break;
 
@@ -5159,8 +5179,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SUPERNOVICE:		/* スーパーノービスの魂 */
 			if(sd) {
 				// 1%で死亡フラグ消す
-				if(sd->status.base_level >= 90 && atn_rand()%10000 < battle_config.repeal_die_counter_rate)
+				if(atn_rand()%10000 < battle_config.repeal_die_counter_rate) {
 					sd->status.die_counter = 0;	// 死にカウンターリセット
+					if(sd->status.job_level >= 70)
+						clif_misceffect(&sd->bl,7);	// スパノビ天使
+				}
 				if(battle_config.disp_job_soul_state_change)
 					clif_disp_onlyself(sd->fd,"魂状態になりました");
 			}
@@ -5641,6 +5664,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_STONESKIN:			/* ストーンスキン */
 		case SC_ANTIMAGIC:			/* アンチマジック */
 		case SC_WEAPONQUICKEN:			/* ウェポンクイッケン */
+		case SC_WE_FEMALE:			/* あなたに尽くします */
 			calc_flag = 1;
 			break;
 		case SC_ELEMENTWATER:		// 水

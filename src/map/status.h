@@ -220,7 +220,7 @@ enum {
 	//
 	//
 	//
-	//
+	SC_WE_FEMALE            = 102,
 	SC_AURABLADE            = 103,
 	SC_PARRYING             = 104,
 	SC_CONCENTRATION        = 105,
@@ -578,6 +578,7 @@ enum {
 	SI_SEISMICWEAPON    = 93,
 	SI_HOLDWEB          = 95,
 	SI_UNDEAD           = 97,
+	SI_WE_FEMALE        = 102,
 	SI_AURABLADE        = 103,
 	SI_PARRYING         = 104,
 	SI_CONCENTRATION    = 105,
