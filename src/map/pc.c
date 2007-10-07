@@ -3589,7 +3589,7 @@ static int pc_show_steal(struct block_list *bl,va_list ap)
 	struct map_session_data *sd;
 	struct item_data *item = NULL;
 	char output[100];
-	int itemid, type;
+	int type;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
@@ -3598,11 +3598,11 @@ static int pc_show_steal(struct block_list *bl,va_list ap)
 	if(bl->type != BL_PC)
 		return 0;
 
-	itemid = va_arg(ap,int);
-	type   = va_arg(ap,int);
+	item = va_arg(ap,struct item_data *);
+	type = va_arg(ap,int);
 
 	if(!type) {
-		if((item = itemdb_exists(itemid)) == NULL)
+		if(item == NULL)
 			sprintf(output, msg_txt(136), sd->status.name);
 		else
 			sprintf(output, msg_txt(137), sd->status.name, item->jname);
@@ -3653,10 +3653,10 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 					tmp_item.identify = !itemdb_isequip3(itemid);
 					flag = pc_additem(sd,&tmp_item,1);
 					if(battle_config.show_steal_in_same_party)
-						party_foreachsamemap(pc_show_steal,sd,PT_AREA_SIZE,sd,tmp_item.nameid,0);
+						party_foreachsamemap(pc_show_steal,sd,PT_AREA_SIZE,sd,itemdb_exists(tmp_item.nameid),0);
 					if(flag) {
 						if(battle_config.show_steal_in_same_party)
-							party_foreachsamemap(pc_show_steal,sd,PT_AREA_SIZE,sd,tmp_item.nameid,1);
+							party_foreachsamemap(pc_show_steal,sd,PT_AREA_SIZE,sd,itemdb_exists(tmp_item.nameid),1);
 						clif_additem(sd,0,0,flag);
 					}
 					md->state.steal_flag = 1;

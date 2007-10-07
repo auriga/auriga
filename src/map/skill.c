@@ -1907,6 +1907,8 @@ int skill_castend_id( int tid, unsigned int tick, int id,int data )
 				case NJ_KAMAITACHI:
 				case MA_SHARPSHOOTING:
 				case ML_BRANDISH:
+				case PR_LEXDIVINA:
+				case MER_LEXDIVINA:
 					fail_flag = 0;
 					break;
 				case SA_SPELLBREAKER:
@@ -3384,14 +3386,18 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case PR_LEXDIVINA:		/* レックスディビーナ */
 	case MER_LEXDIVINA:
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if( dstsd && dstsd->special_state.no_magic_damage )
-			break;
 		sc = status_get_sc(bl);
-		if(sc && sc->data[SC_SILENCE].timer != -1) {
-			status_change_end(bl,SC_SILENCE,-1);
-		} else if( atn_rand()%100 < sc_def_vit ) {
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		if(sc) {
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			if( dstsd && dstsd->special_state.no_magic_damage )
+				break;
+			if(sc->data[SC_SILENCE].timer != -1) {
+				// 沈黙中なら敵味方問わず沈黙解除
+				status_change_end(bl,SC_SILENCE,-1);
+			}
+			else if(battle_check_target(src,bl,BCT_ENEMY) > 0 && atn_rand()%100 < sc_def_vit) {
+				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			}
 		}
 		break;
 	case SA_ABRACADABRA:
@@ -5314,9 +5320,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int penalty_flag = 1;
 			int raise_member_count = 0;	// 生き返らせた数
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			map_foreachinarea(skill_redemptio,sd->bl.m,sd->bl.x-7,sd->bl.y-7,sd->bl.x+7,sd->bl.y+7,BL_PC,&sd->bl,&raise_member_count);
+			party_foreachsamemap(skill_redemptio,sd,7,&sd->bl,&raise_member_count,tick);
 
-			if(penalty_flag && battle_config.redemptio_penalty_type&8) {
+			if(battle_config.redemptio_penalty_type&8) {
 				// 無条件にペナルティ無し
 				penalty_flag = 0;
 			}
@@ -9991,21 +9997,23 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
  * レディムプティオ
  *------------------------------------------
  */
-static int skill_redemptio(struct block_list *bl, va_list ap )
+static int skill_redemptio(struct block_list *bl, va_list ap)
 {
-	struct block_list * src = NULL;
+	struct block_list *src;
 	int *count;
+	unsigned int tick;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, src=va_arg(ap,struct block_list*));
+	nullpo_retr(0, src = va_arg(ap,struct block_list*));
 
-	count=va_arg(ap,int *);
+	count = va_arg(ap,int *);
+	tick  = va_arg(ap,unsigned int);
 
-	if(unit_isdead(bl) && status_get_party_id(src) == status_get_party_id(bl))
+	if(unit_isdead(bl))
 	{
 		status_change_start(bl,SC_REDEMPTIO,20,0,0,0,3600000,0);
-		skill_castend_nodamage_id(src,bl,ALL_RESURRECTION,3,gettick(),1);
+		skill_castend_nodamage_id(src,bl,ALL_RESURRECTION,3,tick,1);
 		(*count)++;
 	}
 
