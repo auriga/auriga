@@ -7,10 +7,6 @@
 #include "malloc.h"
 #include "lock.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 /*==========================================
  * 平衡木データベース
  *------------------------------------------

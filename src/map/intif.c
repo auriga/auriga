@@ -37,10 +37,6 @@
 #include "npc.h"
 #include "merc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 static const int packet_len_table[]={
 	-1,-1,27, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  0, 0,  0, 0,	// 3810-

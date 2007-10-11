@@ -29,10 +29,6 @@
 #include "unit.h"
 #include "skill.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 struct homun_db homun_db[MAX_HOMUN_DB];
 struct random_homun_data embryo_data[MAX_HOMUN_DB];
 int embryo_default = 6001;

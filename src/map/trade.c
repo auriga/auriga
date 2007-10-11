@@ -13,10 +13,6 @@
 #include "chrif.h"
 #include "unit.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 /*==========================================
  * 取引要請を相手に送る
  *------------------------------------------

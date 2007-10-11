@@ -40,10 +40,6 @@
 #include "md5calc.h"
 #endif
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 static const char sex2str[] = "FMS";
 
 static int server_num = 0;

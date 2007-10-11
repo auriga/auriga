@@ -33,10 +33,6 @@
 #include "npc.h"
 #include "merc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 #define SKILLUNITTIMER_INVERVAL	100
 
 /* スキル番号＝＞ステータス異常番号変換テーブル */

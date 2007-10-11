@@ -20,10 +20,6 @@
 #include "unit.h"
 #include "atcommand.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 #define PARTY_SEND_XYHP_INVERVAL	1000	// 座標やＨＰ送信の間隔
 
 static struct dbt* party_db = NULL;

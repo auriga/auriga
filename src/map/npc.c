@@ -26,10 +26,6 @@
 #include "unit.h"
 #include "status.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 struct npc_src_list {
 	struct npc_src_list * next;
 	struct npc_src_list * prev;

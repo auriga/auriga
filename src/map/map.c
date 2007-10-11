@@ -47,10 +47,6 @@
 #include "ranking.h"
 #include "merc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 // 極力 staticでローカルに収める
 static struct dbt *id_db = NULL;
 static struct dbt *map_db = NULL;

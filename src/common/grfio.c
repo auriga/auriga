@@ -72,10 +72,6 @@
 	#define zlib_crc32       crc32
 #endif
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 #ifndef BYTE
 	typedef unsigned char BYTE;
 #endif

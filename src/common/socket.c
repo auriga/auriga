@@ -39,10 +39,6 @@
 	#define sock(fd) (fd)
 #endif
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 fd_set readfds;
 int fd_max;
 

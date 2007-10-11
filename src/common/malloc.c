@@ -153,10 +153,22 @@ double memmgr_usage(void)
  *       ニットが、1024個集まって出来ていたり、64Byteのユニットが 512個集まって
  *       出来ていたりします。（padding,unit_head を除く）
  *
- *     ・ブロック同士はリンクリスト(block_prev,block_next) でつながり、同じサイ
- *       ズを持つブロック同士もリンクリスト(hash_prev,hash_nect) でつな
- *       がっています。それにより、不要となったメモリの再利用が効率的に行えます。
+ *     ・ブロック同士はリンクリスト(block_next) でつながり、同じサイズを持つ
+ *       ブロック同士もリンクリスト(unfill_prev,unfill_next) でつながって
+ *       います。それにより、不要となったメモリの再利用が効率的に行えます。
  */
+
+/* ユニット */
+struct unit_head {
+	struct block   *block;
+	const char     *file;
+	unsigned short line;
+	unsigned short size;
+#ifdef DEBUG_MEMMGR
+	time_t time_stamp;
+#endif
+	long checksum;
+};
 
 /* ブロックのアライメント */
 #define BLOCK_ALIGNMENT1	16
@@ -169,7 +181,7 @@ double memmgr_usage(void)
 /* ブロックの大きさ: 16*128 + 64*608 = 40KB */
 #define BLOCK_DATA_SIZE1	( BLOCK_ALIGNMENT1 * BLOCK_DATA_COUNT1 )
 #define BLOCK_DATA_SIZE2	( BLOCK_ALIGNMENT2 * BLOCK_DATA_COUNT2 )
-#define BLOCK_DATA_SIZE		( BLOCK_DATA_SIZE1 + BLOCK_DATA_SIZE2 )
+#define BLOCK_DATA_SIZE		( BLOCK_DATA_SIZE1 + BLOCK_DATA_SIZE2 + sizeof(struct unit_head) )
 
 /* 一度に確保するブロックの数 */
 #define BLOCK_ALLOC		104
@@ -186,17 +198,6 @@ struct block {
 	unsigned short unit_unfill;		/* 未使用ユニットの場所 */
 	unsigned short unit_maxused;		/* 使用ユニットの最大値 */
 	char data[ BLOCK_DATA_SIZE ];
-};
-
-struct unit_head {
-	struct block   *block;
-	const  char*   file;
-	unsigned short line;
-	unsigned short size;
-#ifdef DEBUG_MEMMGR
-	time_t time_stamp;
-#endif
-	long checksum;
 };
 
 static struct block* hash_unfill[BLOCK_DATA_COUNT1 + BLOCK_DATA_COUNT2 + 1];
@@ -230,7 +231,7 @@ static unsigned short size2hash( size_t size )
 	if( size <= BLOCK_DATA_SIZE1 )
 		return (unsigned short)(size + BLOCK_ALIGNMENT1 - 1) / BLOCK_ALIGNMENT1;
 
-	if( size <= BLOCK_DATA_SIZE )
+	if( size <= BLOCK_DATA_SIZE1 + BLOCK_DATA_SIZE2 )
 		return (unsigned short)(size - BLOCK_DATA_SIZE1 + BLOCK_ALIGNMENT2 - 1) / BLOCK_ALIGNMENT2 + BLOCK_DATA_COUNT1;
 
 	return 0xffff;	// ブロック長を超える場合は hash にしない
@@ -257,7 +258,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 
 	/* ブロック長を超える領域の確保には、malloc() を用いる */
 	/* その際、unit_head.block に NULL を代入して区別する */
-	if(hash2size(size_hash) > BLOCK_DATA_SIZE - sizeof(struct unit_head)) {
+	if(size_hash == 0xffff) {
 		struct unit_head_large* p = (struct unit_head_large *)malloc(sizeof(struct unit_head_large) + size);
 
 		if(p == NULL) {

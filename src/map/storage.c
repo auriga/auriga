@@ -15,10 +15,6 @@
 #include "battle.h"
 #include "chrif.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 static struct dbt *storage_db;
 static struct dbt *guild_storage_db;
 

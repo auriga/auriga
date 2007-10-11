@@ -51,10 +51,6 @@
 #include "unit.h"
 #include "homun.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 #define SCRIPT_BLOCK_SIZE 512
 
 enum { LABEL_NEXTLINE = 1, LABEL_START };

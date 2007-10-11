@@ -16,10 +16,6 @@
 #include "script.h"
 #include "pc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 #define MAX_RANDTYPE	20
 
 // ** ITEMDB_OVERRIDE_NAME_VERBOSE **

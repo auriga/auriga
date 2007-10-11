@@ -24,10 +24,6 @@
 #include "atcommand.h"
 #include "unit.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 static struct dbt *guild_db = NULL;
 static struct dbt *guild_expcache_db = NULL;
 static struct dbt *guild_infoevent_db = NULL;

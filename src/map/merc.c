@@ -27,10 +27,6 @@
 #include "storage.h"
 #include "unit.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 struct merc_db merc_db[MAX_MERC_DB];
 
 static struct merc_skill_tree_entry {

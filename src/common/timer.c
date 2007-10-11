@@ -15,10 +15,6 @@
 #include "timer.h"
 #include "malloc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 // タイマー間隔の最小値。モンスターの大量召還時、多数のクライアント接続時に
 // サーバーが反応しなくなる場合は、TIMER_MIN_INTERVAL を増やしてください。
 

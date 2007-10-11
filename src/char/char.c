@@ -47,10 +47,6 @@
 #include "int_status.h"
 #include "int_merc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 static struct mmo_map_server server[MAX_MAP_SERVERS];
 static int server_fd[MAX_MAP_SERVERS];
 

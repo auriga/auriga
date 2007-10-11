@@ -7,10 +7,6 @@
 #include "battle.h"
 #include "nullpo.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 #define MAX_BLOWNPOS 20
 #define MAX_HEAP 150
 

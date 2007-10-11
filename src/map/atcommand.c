@@ -36,10 +36,6 @@
 #include "unit.h"
 #include "merc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 static char command_symbol = '@'; /* first char of the commands */
 
 #define COMMAND_HASH_SIZE 127

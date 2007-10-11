@@ -29,10 +29,6 @@
 #include "status.h"
 #include "storage.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 static const int packet_len_table[]={
 	60, 3,-1, 3,23,-1, 7, 6,		// 2af8-2aff
 	 6,-1,19, 7,-1,41,40, 0,		// 2b00-2b07

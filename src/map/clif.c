@@ -52,10 +52,6 @@
 #include "ranking.h"
 #include "merc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 /* パケットデータベース */
 struct packet_db packet_db[MAX_PACKET_DB];
 

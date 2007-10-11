@@ -25,10 +25,6 @@
 #include "ranking.h"
 #include "merc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 struct Battle_Config battle_config;
 
 struct battle_delay_damage_ {

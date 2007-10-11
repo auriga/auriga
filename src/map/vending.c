@@ -16,10 +16,6 @@
 #include "atcommand.h"
 #include "unit.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 /*==========================================
  * 露店閉鎖
  *------------------------------------------

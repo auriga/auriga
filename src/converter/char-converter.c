@@ -14,10 +14,6 @@
 #include "converter.h"
 #include "char-converter.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 
 static int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 {

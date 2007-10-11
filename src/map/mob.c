@@ -30,10 +30,6 @@
 #include "ranking.h"
 #include "merc.h"
 
-#ifdef MEMWATCH
-#include "memwatch.h"
-#endif
-
 #define MIN_MOBTHINKTIME 100
 
 #define MOB_LAZYMOVEPERC     50		// 手抜きモードMOBの移動確率（千分率）
