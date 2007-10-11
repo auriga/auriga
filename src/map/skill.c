@@ -4547,7 +4547,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case RG_STRIPHELM:			/* ストリップヘルム */
 		{
 			int cp_scid, scid, equip;
-			int strip_fix, strip_time, strip_per;
+			int strip_fix, strip_time;
 
 			scid = SkillStatusChangeTable[skillid];
 			if(scid < 0)
@@ -4583,12 +4583,18 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			strip_fix = status_get_dex(src) - status_get_dex(bl);
 			if(strip_fix < 0)
 				strip_fix = 0;
-			strip_per = 5 + 5 * skilllv + strip_fix / 5;
-			if(atn_rand()%100 >= strip_per)
+			if(atn_rand()%100 >= 5 + 5 * skilllv + strip_fix / 5)
 				break;
 
 			if(dstsd) {
 				int i;
+				if(equip == EQP_SHIELD) {
+					// ストリップシールドは弓以外の両手武器には失敗
+					if( dstsd->equip_index[8] >= 0 &&
+					    dstsd->inventory_data[dstsd->equip_index[8]]->type == 4 &&
+					    dstsd->status.weapon != WT_BOW )
+						break;
+				}
 				for(i=0; i<MAX_INVENTORY; i++) {
 					if(dstsd->status.inventory[i].equip && (dstsd->status.inventory[i].equip & equip)) {
 						pc_unequipitem(dstsd,i,0);
@@ -4608,13 +4614,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case ST_FULLSTRIP:		/* フルストリップ */
 		{
-			int strip_fix, strip_time, strip_per;
+			int strip_fix, strip_time;
+			int fail = 1;
 
 			strip_fix = status_get_dex(src) - status_get_dex(bl);
 			if(strip_fix < 0)
 				strip_fix = 0;
-			strip_per = 5 + 2 * skilllv;
-			if(atn_rand()%100 >= strip_per)
+			if(atn_rand()%100 >= 5 + 2 * skilllv + strip_fix / 5)
 				break;
 			strip_time = skill_get_time(skillid,skilllv) + strip_fix / 2;
 
@@ -4626,34 +4632,55 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					    (!sc || (sc->data[SC_CP_WEAPON].timer == -1 && sc->data[SC_STRIPWEAPON].timer == -1)) ) {
 						pc_unequipitem(dstsd,i,0);
 						status_change_start(bl,SkillStatusChangeTable[RG_STRIPWEAPON],skilllv,0,0,0,strip_time,0);
+						fail = 0;
 					}
-					if( dstsd->status.inventory[i].equip & EQP_SHIELD &&
-					    (!sc || (sc->data[SC_CP_SHIELD].timer == -1 && sc->data[SC_STRIPSHIELD].timer == -1))) {
-						pc_unequipitem(dstsd,i,0);
-						status_change_start(bl,SkillStatusChangeTable[RG_STRIPSHIELD],skilllv,0,0,0,strip_time,0);
+					if( dstsd->status.inventory[i].equip & EQP_SHIELD ) {
+						// ストリップシールドは弓以外の両手武器には失敗
+						if( dstsd->equip_index[8] >= 0 &&
+						    dstsd->inventory_data[dstsd->equip_index[8]]->type == 4 &&
+						    dstsd->status.weapon != WT_BOW ) {
+							;
+						}
+						else if( !sc || (sc->data[SC_CP_SHIELD].timer == -1 && sc->data[SC_STRIPSHIELD].timer == -1) ) {
+							pc_unequipitem(dstsd,i,0);
+							status_change_start(bl,SkillStatusChangeTable[RG_STRIPSHIELD],skilllv,0,0,0,strip_time,0);
+							fail = 0;
+						}
 					}
 					if( dstsd->status.inventory[i].equip & EQP_ARMOR &&
-					    (!sc || (sc->data[SC_CP_ARMOR].timer == -1 && sc->data[SC_STRIPARMOR].timer == -1))) {
+					    (!sc || (sc->data[SC_CP_ARMOR].timer == -1 && sc->data[SC_STRIPARMOR].timer == -1)) ) {
 						pc_unequipitem(dstsd,i,0);
 						status_change_start(bl,SkillStatusChangeTable[RG_STRIPARMOR],skilllv,0,0,0,strip_time,0);
+						fail = 0;
 					}
 					if( dstsd->status.inventory[i].equip & EQP_HELM &&
-					    (!sc || (sc->data[SC_CP_HELM].timer == -1 && sc->data[SC_STRIPHELM].timer == -1))) {
+					    (!sc || (sc->data[SC_CP_HELM].timer == -1 && sc->data[SC_STRIPHELM].timer == -1)) ) {
 						pc_unequipitem(dstsd,i,0);
 						status_change_start(bl,SkillStatusChangeTable[RG_STRIPHELM],skilllv,0,0,0,strip_time,0);
+						fail = 0;
 					}
 				}
 			} else {
-				if(!sc || (sc->data[SC_CP_WEAPON].timer == -1 && sc->data[SC_STRIPWEAPON].timer == -1))
+				if(!sc || (sc->data[SC_CP_WEAPON].timer == -1 && sc->data[SC_STRIPWEAPON].timer == -1)) {
 					status_change_start(bl,SkillStatusChangeTable[RG_STRIPWEAPON],skilllv,0,0,0,strip_time,0);
-				if(!sc || (sc->data[SC_CP_SHIELD].timer == -1 && sc->data[SC_STRIPSHIELD].timer == -1))
+					fail = 0;
+				}
+				if(!sc || (sc->data[SC_CP_SHIELD].timer == -1 && sc->data[SC_STRIPSHIELD].timer == -1)) {
 					status_change_start(bl,SkillStatusChangeTable[RG_STRIPSHIELD],skilllv,0,0,0,strip_time,0);
-				if(!sc || (sc->data[SC_CP_ARMOR].timer == -1 && sc->data[SC_STRIPARMOR].timer == -1))
+					fail = 0;
+				}
+				if(!sc || (sc->data[SC_CP_ARMOR].timer == -1 && sc->data[SC_STRIPARMOR].timer == -1)) {
 					status_change_start(bl,SkillStatusChangeTable[RG_STRIPARMOR],skilllv,0,0,0,strip_time,0);
-				if(!sc || (sc->data[SC_CP_HELM].timer == -1 && sc->data[SC_STRIPHELM].timer == -1))
+					fail = 0;
+				}
+				if(!sc || (sc->data[SC_CP_HELM].timer == -1 && sc->data[SC_STRIPHELM].timer == -1)) {
 					status_change_start(bl,SkillStatusChangeTable[RG_STRIPHELM],skilllv,0,0,0,strip_time,0);
+					fail = 0;
+				}
 			}
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			if(fail && sd)
+				clif_fullstrip_fail(sd);
 		}
 		break;
 	case AM_POTIONPITCHER:		/* ポーションピッチャー */

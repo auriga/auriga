@@ -44,9 +44,9 @@
 40,SC_SPEEDPOTION3,0,23,0		// バーサークピッチャー
 //
 50,SC_STRIPWEAPON,0,13,0		// ストリップウェポン
-51,SC_STRIPSHIELD,1,13,0		// ストリップシールド
-52,SC_STRIPARMOR,1,13,0			// ストリップアーマー
-53,SC_STRIPHELM,1,13,0			// ストリップヘルム
+51,SC_STRIPSHIELD,0,13,0		// ストリップシールド
+52,SC_STRIPARMOR,0,13,0			// ストリップアーマー
+53,SC_STRIPHELM,0,13,0			// ストリップヘルム
 54,SC_CP_WEAPON,1,1,0			// ケミカルウェポンチャージ
 55,SC_CP_SHIELD,1,1,0			// ケミカルシールドチャージ
 56,SC_CP_ARMOR,1,1,0			// ケミカルアーマーチャージ

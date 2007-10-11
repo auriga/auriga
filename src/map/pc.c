@@ -932,7 +932,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 
 	if(sd->sc.data[SC_STRIPWEAPON].timer != -1 && item->equip & 0x0002)
 		return 0;
-	if(sd->sc.data[SC_STRIPSHIELD].timer != -1 && item->equip & 0x0020)
+	if(sd->sc.data[SC_STRIPSHIELD].timer != -1 && item->equip & 0x0020 && item->type != 4)
 		return 0;
 	if(sd->sc.data[SC_STRIPARMOR].timer != -1 && item->equip & 0x0010)
 		return 0;

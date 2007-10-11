@@ -172,6 +172,7 @@ void clif_coin(struct map_session_data *sd);
 void clif_combo_delay(struct block_list *bl, int wait);
 void clif_bladestop(struct block_list *src, int dst_id, int flag);
 void clif_gospel_message(struct map_session_data *sd, int type);
+#define clif_fullstrip_fail(sd) clif_gospel_message((sd), 0x28);
 void clif_changemapcell(int m, int x, int y, int cell_type, int type);
 
 void clif_feel_info(struct map_session_data *sd, int skilllv);
