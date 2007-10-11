@@ -6176,7 +6176,7 @@ static int status_pretimer(int tid, unsigned int tick, int id, int data)
 			if( target == NULL || bl->m != target->m || unit_isdead(bl) || unit_isdead(target) )
 				break;
 		} else {
-			if(bl->m != stpt->map)
+			if(bl->m != stpt->m)
 				break;
 		}
 
@@ -6230,7 +6230,7 @@ int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int 
 	stpt = (struct status_pretimer *)aCalloc(1, sizeof(struct status_pretimer));
 	stpt->timer     = add_timer(pre_tick, status_pretimer, bl->id, (int)stpt);
 	stpt->target_id = bl->id;
-	stpt->map       = bl->m;
+	stpt->m         = bl->m;
 	stpt->type      = type;
 	stpt->val1      = val1;
 	stpt->val2      = val2;

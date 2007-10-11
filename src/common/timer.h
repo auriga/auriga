@@ -20,9 +20,8 @@ struct TimerData {
 	int (*func)(int,unsigned int,int,int);
 	int id;
 	int data;
-	int type;
 	int interval;
-	int heap_pos;
+	short type;
 	unsigned short free_flag;
 };
 

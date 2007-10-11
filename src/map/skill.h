@@ -13,8 +13,7 @@ struct skill_timerskill {
 	int timer;
 	int src_id;
 	int target_id;
-	int map;
-	short x,y;
+	short m,x,y;
 	short skill_id,skill_lv;
 	int type;
 	int flag;
@@ -34,7 +33,7 @@ struct skill_db {
 	unsigned int weapon;
 	int state,spiritball[MAX_SKILL_LEVEL],coin[MAX_SKILL_LEVEL],arrow_cost[MAX_SKILL_LEVEL],arrow_type;
 	int itemid[10],amount[10];
-	int unit_id[4];
+	int unit_id[2];
 	int unit_layout_type[MAX_SKILL_LEVEL];
 	int unit_range;
 	int unit_interval;

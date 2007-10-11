@@ -4,8 +4,8 @@
 struct status_pretimer {
 	int timer;
 	int target_id;
-	int map;
-	int type;
+	short m;
+	short type;
 	int val1,val2,val3,val4;
 	int tick;
 	int flag;

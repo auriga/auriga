@@ -207,9 +207,7 @@ struct skill_unit_group;
 
 struct skill_unit {
 	struct block_list bl;
-
 	struct skill_unit_group *group;
-
 	int limit;
 	int val1,val2;
 	short alive,range;
@@ -219,17 +217,16 @@ struct skill_unit_group {
 	int src_id;
 	int party_id;
 	int guild_id;
-	int map;
+	int m;
 	int target_flag;
 	unsigned int tick;
 	int limit,interval;
-
-	int skill_id,skill_lv;
+	short skill_id,skill_lv;
 	int val1,val2,val3;
 	char *valstr;
 	int unit_id;
 	int group_id;
-	int unit_count,alive_count;
+	short unit_count,alive_count;
 	struct skill_unit *unit;
 	struct linkdb_node *tickset;
 };
@@ -745,14 +742,14 @@ struct pet_data {
 	short view_size;
 	short equip;
 	int target_id;
-	int move_fail_count;
 	unsigned int next_walktime,last_thinktime;
 	int hungry_timer;
 	struct item *lootitem;
+	unsigned int lootitem_timer;
 	short loottype;
 	short lootitem_count;
 	short lootitem_weight;
-	int lootitem_timer;
+	short move_fail_count;
 	struct map_session_data *msd;
 	struct pet_skill_attack *a_skill;
 	struct pet_skill_support *s_skill;
@@ -905,13 +902,13 @@ struct flooritem_data {
 };
 
 struct delay_item_drop {
-	int m,x,y;
+	short m,x,y;
 	int nameid,amount;
 	int first_id,second_id,third_id;
 };
 
 struct delay_item_drop2 {
-	int m,x,y;
+	short m,x,y;
 	struct item item_data;
 	int first_id,second_id,third_id;
 	struct delay_item_drop2 *next;

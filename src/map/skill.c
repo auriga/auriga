@@ -253,7 +253,7 @@ struct skill_abra_db skill_abra_db[MAX_SKILL_ABRA_DB];
 
 /* プロトタイプ */
 static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,int x,int y);
-static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id);
+static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id,unsigned int tick);
 
 static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd, int type, int *itemid, int *amount);
 
@@ -1712,7 +1712,7 @@ static int skill_timerskill(int tid, unsigned int tick, int id,int data )
 				break;
 			}
 		} else {
-			if(src->m != skl->map)
+			if(src->m != skl->m)
 				break;
 
 			switch(skl->skill_id) {
@@ -1721,7 +1721,7 @@ static int skill_timerskill(int tid, unsigned int tick, int id,int data )
 				skill_area_temp[1] = skl->src_id;
 				skill_area_temp[2] = skl->x;
 				skill_area_temp[3] = skl->y;
-				map_foreachinarea(skill_area_sub,skl->map,
+				map_foreachinarea(skill_area_sub,skl->m,
 					skl->x-range,skl->y-range,skl->x+range,skl->y+range,BL_CHAR,
 					src,skl->skill_id,skl->skill_lv,tick,skl->flag|BCT_ENEMY|2,
 					skill_castend_nodamage_id);
@@ -1769,7 +1769,7 @@ int skill_addtimerskill(struct block_list *src,unsigned int tick,int target,int 
 	skl->target_id = target;
 	skl->skill_id  = skill_id;
 	skl->skill_lv  = skill_lv;
-	skl->map       = src->m;
+	skl->m         = src->m;
 	skl->x         = x;
 	skl->y         = y;
 	skl->type      = type;
@@ -6478,7 +6478,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		break;
 	}
 
-	nullpo_retr(NULL, group = skill_initunitgroup(src,layout->count,skillid,skilllv,unit_id));
+	nullpo_retr( NULL, group = skill_initunitgroup(src,layout->count,skillid,skilllv,unit_id,gettick()) );
 	group->limit       = limit;
 	group->val1        = val1;
 	group->val2        = val2;
@@ -10479,7 +10479,7 @@ static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,
 
 	unit->bl.id   = map_addobject(&unit->bl);
 	unit->bl.type = BL_SKILL;
-	unit->bl.m    = group->map;
+	unit->bl.m    = group->m;
 	unit->bl.x    = x;
 	unit->bl.y    = y;
 	unit->group   = group;
@@ -10540,7 +10540,7 @@ int skill_delunit(struct skill_unit *unit)
  */
 static int skill_unit_group_newid = MAX_SKILL;
 
-static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id)
+static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id,unsigned int tick)
 {
 	struct unit_data *ud = unit_bl2ud(src);
 	struct skill_unit_group *group;
@@ -10559,10 +10559,10 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 	group->skill_id   = skillid;
 	group->skill_lv   = skilllv;
 	group->unit_id    = unit_id;
-	group->map        = src->m;
+	group->m          = src->m;
 	group->limit      = 10000;
 	group->interval   = 1000;
-	group->tick       = gettick();
+	group->tick       = tick;
 	group->valstr     = NULL;
 	linkdb_insert( &ud->skillunit, group, group );
 

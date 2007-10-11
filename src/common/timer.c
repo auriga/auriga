@@ -39,20 +39,20 @@ static int* timer_heap = NULL;
 struct timer_func_list {
 	int (*func)(int,unsigned int,int,int);
 	struct timer_func_list* next;
-	char name[4];
+	char name[1];
 };
 
-static struct timer_func_list* tfl_root=NULL;
+static struct timer_func_list* tfl_root = NULL;
 
 
 int add_timer_func_list(int (*func)(int,unsigned int,int,int),const char* name)
 {
 	struct timer_func_list* tfl;
 
-	tfl = (struct timer_func_list*)aCalloc(1,sizeof(*tfl) + strlen(name)+1);
+	tfl = (struct timer_func_list *)aCalloc(1, sizeof(struct timer_func_list) + strlen(name) + 1);
 	tfl->next = tfl_root;
 	tfl->func = func;
-	strncpy(tfl->name,name,strlen(name)+1);
+	strncpy(tfl->name, name, strlen(name) + 1);
 	tfl_root = tfl;
 
 	return 0;
@@ -62,7 +62,7 @@ const char* search_timer_func_list(int (*func)(int,unsigned int,int,int))
 {
 	struct timer_func_list* tfl;
 
-	for(tfl = tfl_root;tfl;tfl = tfl->next) {
+	for(tfl = tfl_root; tfl; tfl = tfl->next) {
 		if (func == tfl->func)
 			return tfl->name;
 	}
@@ -140,7 +140,7 @@ static void check_timer_heap(void)
 static void push_timer_heap(int index)
 {
 	if (timer_heap == NULL || timer_heap[0] + 1 >= timer_heap_max) {
-		int first = timer_heap == NULL;
+		int first = (timer_heap == NULL);
 
 		timer_heap_max += 256;
 		timer_heap = (int*)aRealloc(timer_heap, sizeof(int) * timer_heap_max);
@@ -168,7 +168,7 @@ static void push_timer_heap(int index)
 		int min = 1;
 		int max = timer_heap[0] + 1;
 		while(max != min + 1) {
-			int mid = (min + max)/2;
+			int mid = (min + max) / 2;
 			if(DIFF_TICK(timer_data[index].tick,timer_data[timer_heap[mid]].tick) >= 0) {
 				max = mid;
 			} else {
@@ -238,7 +238,7 @@ static int top_timer_heap(void)
 
 	// tick が 0xFFFFFFFF -> 0x00000000 に繰り上がる時の暫定対策
 	// temporary fix for timer not working 49.7 days period
-	if( gettick() < 0x08000000 ) {
+	if (gettick() < 0x08000000) {
 		unsigned int tick = timer_data[ timer_heap[1] ].tick;
 		if( tick == 0 || tick > 0xF8000000 ) {
 			timer_data[ timer_heap[1] ].tick = 0;
@@ -253,7 +253,7 @@ static void pop_timer_heap(int i)
 	if (timer_heap == NULL || timer_heap[0] <= 0)
 		return;
 
-	if( i != timer_heap[0]) {
+	if (i != timer_heap[0]) {
 		memmove( &timer_heap[i], &timer_heap[i + 1], (timer_heap[0] - i) * sizeof(int) );
 	}
 	timer_heap[0]--;
@@ -268,10 +268,13 @@ int add_timer_real(unsigned int tick,int (*func)(int,unsigned int,int,int),int i
 		do {
 			i = free_timer_list[--free_timer_list_pos];
 		} while(i >= timer_data_num && free_timer_list_pos > 0);
-	} else
+	} else {
 		i = timer_data_num;
+	}
+
 	if (i >= timer_data_num)
-		for (i = timer_data_num;i<timer_data_max && timer_data[i].type; i++);
+		for (i = timer_data_num; i < timer_data_max && timer_data[i].type; i++);
+
 	if (i >= timer_data_num && i >= timer_data_max) {
 		int j;
 		if (timer_data_max == 0) {
@@ -281,23 +284,24 @@ int add_timer_real(unsigned int tick,int (*func)(int,unsigned int,int,int),int i
 		} else {
 			timer_data_max += 256;
 			timer_data = (struct TimerData*)aRealloc(timer_data,sizeof(struct TimerData) * timer_data_max);
-			memset(timer_data + (timer_data_max - 256), 0,
-				sizeof(struct TimerData) * 256);
+			memset(timer_data + (timer_data_max - 256), 0, sizeof(struct TimerData) * 256);
 		}
-		for(j = timer_data_max-256;j<timer_data_max; j++)
+		for(j = timer_data_max - 256; j < timer_data_max; j++) {
 			timer_data[j].type = 0;
+		}
 	}
-	td = &timer_data[i];
-	td->tick = tick;
-	td->func = func;
-	td->id = id;
-	td->data = data;
-	td->type = TIMER_ONCE_AUTODEL;
-	td->interval = 1000;
+	td            = &timer_data[i];
+	td->tick      = tick;
+	td->func      = func;
+	td->id        = id;
+	td->data      = data;
+	td->type      = TIMER_ONCE_AUTODEL;
+	td->interval  = 1000;
 	td->free_flag = flag;
 	push_timer_heap(i);
 	if (i >= timer_data_num)
 		timer_data_num = i + 1;
+
 	return i;
 }
 
@@ -308,6 +312,7 @@ int add_timer_interval(unsigned int tick,int (*func)(int,unsigned int,int,int),i
 	tid = add_timer(tick,func,id,data);
 	timer_data[tid].type = TIMER_INTERVAL;
 	timer_data[tid].interval = interval;
+
 	return tid;
 }
 
@@ -318,17 +323,19 @@ int delete_timer(int id,int (*func)(int,unsigned int,int,int))
 		return -1;
 	}
 	if (timer_data[id].func != func) {
-		printf("delete_timer error : function dismatch %08x(%s) != %08x(%s)\n",
-			 (int)timer_data[id].func,
-				search_timer_func_list(timer_data[id].func),
-			 (int)func,
-				search_timer_func_list(func));
+		printf(
+			"delete_timer error : function dismatch %08x(%s) != %08x(%s)\n",
+			(int)timer_data[id].func, search_timer_func_list(timer_data[id].func),
+			(int)func, search_timer_func_list(func)
+		);
 		return -2;
 	}
+
 	// そのうち消えるにまかせる
 	timer_data[id].func = NULL;
 	timer_data[id].type = TIMER_ONCE_AUTODEL;
 	// timer_data[id].tick -= 60 * 60 * 1000;
+
 	return 0;
 }
 
@@ -337,6 +344,7 @@ unsigned int addtick_timer(int tid,unsigned int tick)
 	delete_timer_heap(tid);
 	timer_data[tid].tick += tick;
 	push_timer_heap(tid);
+
 	return timer_data[tid].tick;
 }
 
@@ -349,10 +357,10 @@ void do_final_timer(void)
 {
 	struct timer_func_list *tfl,*tfl_next;
 
-	for(tfl = tfl_root;tfl;tfl=tfl_next) {
+	for(tfl = tfl_root; tfl; tfl = tfl_next) {
 		tfl_next = tfl->next;
 		aFree(tfl);
-		tfl=NULL;
+		tfl = NULL;
 	}
 	if(timer_heap)
 		aFree(timer_heap);
@@ -383,7 +391,7 @@ int do_timer(unsigned int tick)
 
 #if 0
 	static int disp_tick = 0;
-	if (DIFF_TICK(disp_tick,tick)<-5000 || DIFF_TICK(disp_tick,tick)>5000) {
+	if (DIFF_TICK(disp_tick, tick) < -5000 || DIFF_TICK(disp_tick, tick) > 5000) {
 		printf("timer %d(%d + %d)\n",timer_data_num,timer_heap[0],free_timer_list_pos);
 		disp_tick = tick;
 	}
@@ -391,14 +399,14 @@ int do_timer(unsigned int tick)
 
 	while((j = top_timer_heap()) >= 0) {
 		i = timer_heap[ j ];
-		if (DIFF_TICK(timer_data[i].tick , tick)>0) {
+		if (DIFF_TICK(timer_data[i].tick, tick) > 0) {
 			nextmin = DIFF_TICK(timer_data[i].tick , tick);
 			break;
 		}
 		pop_timer_heap(j);
 		timer_data[i].type |= TIMER_REMOVE_HEAP;
 		if (timer_data[i].func) {
-			if (DIFF_TICK(timer_data[i].tick , tick) < -1000) {
+			if (DIFF_TICK(timer_data[i].tick, tick) < -1000) {
 				// 1秒以上の大幅な遅延が発生しているので、
 				// timer処理タイミングを現在値とする事で
 				// 呼び出し時タイミング(引数のtick)相対で処理してる
@@ -408,7 +416,7 @@ int do_timer(unsigned int tick)
 				timer_data[i].func(i,timer_data[i].tick,timer_data[i].id,timer_data[i].data);
 			}
 		}
-		if (timer_data[i].type&TIMER_REMOVE_HEAP) {
+		if (timer_data[i].type & TIMER_REMOVE_HEAP) {
 			switch(timer_data[i].type & ~TIMER_REMOVE_HEAP) {
 			case TIMER_ONCE_AUTODEL:
 				timer_data[i].type = 0;

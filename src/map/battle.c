@@ -35,8 +35,8 @@ struct battle_delay_damage_ {
 	struct block_list *src;
 	int target;
 	int damage;
-	int skillid;
-	int skilllv;
+	short skillid;
+	short skilllv;
 	int flag;
 };
 
