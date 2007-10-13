@@ -181,6 +181,7 @@ int mob_delayspawn(int tid,unsigned int tick,int id,int data);
 int mob_unlocktarget(struct mob_data *md,unsigned int tick);
 int mob_droprate_fix(struct block_list *bl,int item,int drop);
 
+int mob_ai_sub_hard(struct mob_data *md,unsigned int tick);
 int mob_ai_hard_add(struct mob_data *md);
 int mob_ai_hard_del(struct mob_data *md);
 int mob_ai_hard_spawn( struct block_list *bl, int flag );

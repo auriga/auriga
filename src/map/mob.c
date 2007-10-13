@@ -791,7 +791,7 @@ static int mob_randomwalk(struct mob_data *md,unsigned int tick)
  * PCが近くにいるMOBのAI
  *------------------------------------------
  */
-static int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
+int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 {
 	struct block_list *tbl = NULL;
 	int dist = 0;

@@ -371,24 +371,27 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,ud->walkpath.path_pos);
 	} else {
 		// 目的地に着いた
-		if(sd && sd->sc.data[SC_RUN].timer != -1){
+		if(sd && sd->sc.data[SC_RUN].timer != -1) {
 			// 継続判定
 			pc_runtodir(sd);
 		}
-		if(sc) {
-			if(sc->data[SC_FORCEWALKING].timer != -1) {
-				if(sc->data[SC_FORCEWALKING].val4 == 0) {
-					sc->data[SC_FORCEWALKING].val4++;
-					unit_walktodir(bl,1);
-				}
-				else if(sc->data[SC_FORCEWALKING].val4 == 1) {
-					sc->data[SC_FORCEWALKING].val4++;
-				}
-			}
-			if(sc->data[SC_SELFDESTRUCTION].timer != -1 && md) {
-				md->dir = sc->data[SC_SELFDESTRUCTION].val4;
+		else if(md && md->sc.data[SC_SELFDESTRUCTION].timer != -1) {
+			md->dir = md->sc.data[SC_SELFDESTRUCTION].val4;
+			unit_walktodir(bl,1);
+		}
+		else if(sc && sc->data[SC_FORCEWALKING].timer != -1) {
+			if(sc->data[SC_FORCEWALKING].val4 == 0) {
+				sc->data[SC_FORCEWALKING].val4++;
 				unit_walktodir(bl,1);
 			}
+			else if(sc->data[SC_FORCEWALKING].val4 == 1) {
+				sc->data[SC_FORCEWALKING].val4++;
+			}
+		}
+		else if(md && md->target_id > 0) {
+			// MobはAIを実行
+			md->last_thinktime = 0;
+			mob_ai_sub_hard(md, tick);
 		}
 
 		// とまったときの位置の再送信は不要（カクカクするため）
