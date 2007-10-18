@@ -1,4 +1,16 @@
 ----------------------------------------
+//0369 [2007/10/19] by Rayce
+
+・pc_authok() で位置の設定に失敗したときは未認証に戻して接続を切断するように修正（pc.c）
+・clif_misceffect3() の引数を変更（battle.c, clif.*, script.c）
+・@weatherを少し最適化（atcommand.c）
+
+・@usersの書き直し（atcommand.c）
+	-> users_dbを使用しない
+	-> battle_auriga.confの hide_GM_session の設定を適用する
+	-> 人数の割合は小数点第二位まで表示する
+
+----------------------------------------
 //0368 [2007/10/19] by Rayce
 
 ・バッファオーバーラン対策として、msg_txt() をフォーマットとして利用する場合は

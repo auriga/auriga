@@ -4109,157 +4109,155 @@ int atcommand_giveitem(const int fd, struct map_session_data* sd, AtCommandType 
  */
 int atcommand_weather(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	struct map_session_data *psd=NULL;
-	int i,type,map_id,effno=0;
-	char weather[100],map_name[100] = "";
+	int type, m = -1, effno = -1;
+	char weather[100], map_name[100] = "";
 
 	if (sscanf(message, "%99s %99s", weather, map_name) < 1)
 		return -1;
 
-	if (map_name[0] == '\0')
-		strcpy(map_name, sd->mapname);
-	else if (strstr(map_name, ".gat") == NULL && strlen(map_name) < 13)
-		strcat(map_name, ".gat");
+	if (map_name[0]) {
+		if (strstr(map_name, ".gat") == NULL && strlen(map_name) < 13)
+			strcat(map_name, ".gat");
+		m = map_mapname2mapid(map_name);
+	}
+	if (m < 0)
+		m = sd->bl.m;
 
-	if ((map_id = map_mapname2mapid(map_name)) < 0)
-		map_id = sd->bl.m;
-
-	if(!atoi(weather)){
+	type = atoi(weather);
+	if(type == 0 && strcmp(weather, "0") != 0) {
 		if(!strcmp(weather,"day"))
-			type=0;
-		else if(!strcmp(weather,"0"))
-			type=0;
+			type = 0;
 		else if(!strcmp(weather,"rain"))
-			type=1;
+			type = 1;
 		else if(!strcmp(weather,"snow"))
-			type=2;
+			type = 2;
 		else if(!strcmp(weather,"sakura"))
-			type=3;
+			type = 3;
 		else if(!strcmp(weather,"fog"))
-			type=4;
+			type = 4;
 		else if(!strcmp(weather,"leaves"))
-			type=5;
+			type = 5;
 		else if(!strcmp(weather,"fireworks"))
-			type=6;
+			type = 6;
 		else if(!strcmp(weather,"cloud1"))
-			type=7;
+			type = 7;
 		else if(!strcmp(weather,"cloud2"))
-			type=8;
+			type = 8;
 		else if(!strcmp(weather,"cloud3"))
-			type=9;
+			type = 9;
 		else
 			return -1;
-	} else {
-		type=atoi(weather);
 	}
 
-	if(type<0 || type>9)
-		return -1;
-
-	switch(type){
+	switch(type) {
 		case 0:
-			if(map[map_id].flag.rain==1)
-				effno=410;
-			map[map_id].flag.rain=0;
-			map[map_id].flag.snow=0;
-			map[map_id].flag.sakura=0;
-			map[map_id].flag.fog=0;
-			map[map_id].flag.leaves=0;
-			map[map_id].flag.fireworks=0;
-			map[map_id].flag.cloud1=0;
-			map[map_id].flag.cloud2=0;
-			map[map_id].flag.cloud3=0;
+			if(map[m].flag.rain) {
+				effno = 410;
+			}
+			map[m].flag.rain      = 0;
+			map[m].flag.snow      = 0;
+			map[m].flag.sakura    = 0;
+			map[m].flag.fog       = 0;
+			map[m].flag.leaves    = 0;
+			map[m].flag.fireworks = 0;
+			map[m].flag.cloud1    = 0;
+			map[m].flag.cloud2    = 0;
+			map[m].flag.cloud3    = 0;
 			clif_displaymessage(fd, msg_txt(112));
 			break;
 		case 1:
-			if(!map[map_id].flag.rain){
-				effno=161;
-				map[map_id].flag.rain=1;
+			if(!map[m].flag.rain) {
+				effno = 161;
+				map[m].flag.rain = 1;
 				clif_displaymessage(fd, msg_txt(84));
-			}else{
-				map[map_id].flag.rain=0;
+			} else {
+				map[m].flag.rain = 0;
 			}
 			break;
 		case 2:
-			if(!map[map_id].flag.snow){
-				effno=162;
-				map[map_id].flag.snow=1;
+			if(!map[m].flag.snow) {
+				effno = 162;
+				map[m].flag.snow = 1;
 				clif_displaymessage(fd, msg_txt(85));
-			}else{
-				map[map_id].flag.snow=0;
+			} else {
+				map[m].flag.snow = 0;
 			}
 			break;
 		case 3:
-			if(!map[map_id].flag.sakura){
-				effno=163;
-				map[map_id].flag.sakura=1;
+			if(!map[m].flag.sakura) {
+				effno = 163;
+				map[m].flag.sakura = 1;
 				clif_displaymessage(fd, msg_txt(86));
-			}else{
-				map[map_id].flag.sakura=0;
+			} else {
+				map[m].flag.sakura = 0;
 			}
 			break;
 		case 4:
-			if(!map[map_id].flag.fog){
-				effno=515;
-				map[map_id].flag.fog=1;
+			if(!map[m].flag.fog) {
+				effno = 515;
+				map[m].flag.fog = 1;
 				clif_displaymessage(fd, msg_txt(87));
-			}else{
-				map[map_id].flag.fog=0;
+			} else {
+				map[m].flag.fog = 0;
 			}
 			break;
 		case 5:
-			if(!map[map_id].flag.leaves){
-				effno=333;
-				map[map_id].flag.leaves=1;
+			if(!map[m].flag.leaves) {
+				effno = 333;
+				map[m].flag.leaves = 1;
 				clif_displaymessage(fd, msg_txt(88));
-			}else{
-				map[map_id].flag.leaves=0;
+			} else {
+				map[m].flag.leaves = 0;
 			}
 			break;
 		case 6:
-			if(!map[map_id].flag.fireworks){
-				effno=301;
-				map[map_id].flag.fireworks=1;
+			if(!map[m].flag.fireworks) {
+				effno = 301;
+				map[m].flag.fireworks = 1;
 				clif_displaymessage(fd, msg_txt(119));
-			}else{
-				map[map_id].flag.fireworks=0;
+			} else {
+				map[m].flag.fireworks = 0;
 			}
 			break;
 		case 7:
-			if(!map[map_id].flag.cloud1){
-				effno=230;
-				map[map_id].flag.cloud1=1;
+			if(!map[m].flag.cloud1) {
+				effno = 230;
+				map[m].flag.cloud1 = 1;
 				clif_displaymessage(fd, msg_txt(120));
-			}else{
-				map[map_id].flag.cloud1=0;
+			} else {
+				map[m].flag.cloud1 = 0;
 			}
 			break;
 		case 8:
-			if(!map[map_id].flag.cloud2){
-				effno=233;
-				map[map_id].flag.cloud2=1;
+			if(!map[m].flag.cloud2) {
+				effno = 233;
+				map[m].flag.cloud2 = 1;
 				clif_displaymessage(fd, msg_txt(121));
-			}else{
-				map[map_id].flag.cloud2=0;
+			} else {
+				map[m].flag.cloud2 = 0;
 			}
 			break;
 		case 9:
-			if(!map[map_id].flag.cloud3){
-				effno=516;
-				map[map_id].flag.cloud3=1;
+			if(!map[m].flag.cloud3) {
+				effno = 516;
+				map[m].flag.cloud3 = 1;
 				clif_displaymessage(fd, msg_txt(122));
-			}else{
-				map[map_id].flag.cloud3=0;
+			} else {
+				map[m].flag.cloud3 = 0;
 			}
 			break;
-		default:
-			break;
 	}
-	// 指定マップ内に既に居るキャラは即時に天候変化
-	for(i=0; effno && i < fd_max; i++) {
-		if (session[i] && (psd = (struct map_session_data *)session[i]->session_data) != NULL && psd->state.auth) {
-			if(strcmp(map_name,"all.gat") && !strcmp(map_name,psd->mapname))
-				clif_misceffect3(&psd->bl,effno);
+
+	if(effno >= 0) {
+		struct map_session_data *psd;
+		int i;
+
+		// 指定マップ内に既に居るキャラは即時に天候変化
+		for(i=0; i < fd_max; i++) {
+			if (session[i] && (psd = (struct map_session_data *)session[i]->session_data) != NULL && psd->state.auth) {
+				if(psd->bl.m == m)
+					clif_misceffect3(psd->fd, psd->bl.id, effno);
+			}
 		}
 	}
 
@@ -4305,47 +4303,40 @@ int atcommand_pettalk(const int fd, struct map_session_data* sd, AtCommandType c
 }
 
 /*==========================================
- * @users
  * サーバー内の人数マップを表示させる
- * 手抜きのため汚くなっているのは仕様です。
  *------------------------------------------
  */
-static struct dbt *users_db;
-static int users_all;
-
-static int atcommand_users_sub1(struct map_session_data* sd,va_list ap)
-{
-	int users = (int)numdb_search(users_db,(int)sd->bl.m) + 1;
-
-	users_all++;
-	numdb_insert(users_db,(int)sd->bl.m,users);
-
-	return 0;
-}
-
-static int atcommand_users_sub2(void* key,void* val,va_list ap)
-{
-	char output[256];
-	int users = (int)val;
-	int fd = va_arg(ap,int);
-
-	sprintf(output, "%s : %d (%d%%)", map[(int)key].name, users, users * 100 / users_all);
-	clif_displaymessage(fd, output);
-
-	return 0;
-}
-
 int atcommand_users(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	char output[256];
+	struct map_session_data *pl_sd;
+	char output[64];
+	int i, count = 0;
+	int *users;
 
-	users_all = 0;
-	users_db = numdb_init();
-	clif_foreachclient(atcommand_users_sub1);
-	numdb_foreach(users_db,atcommand_users_sub2,sd->fd);
-	snprintf(output, sizeof output, msg_txt(171), users_all); // all : %d
+	users = (int *)aCalloc(map_num, sizeof(int));
+
+	for (i = 0; i < fd_max; i++) {
+		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) &&
+		    pl_sd->state.auth && !pl_sd->state.waitingdisconnect)
+		{
+			if (!(battle_config.hide_GM_session && pc_isGM(pl_sd))) {
+				users[pl_sd->bl.m]++;
+				count++;
+			}
+		}
+	}
+
+	if (count > 0) {
+		for (i = 0; i < map_num; i++) {
+			if (users[i] > 0) {
+				sprintf(output, "%s : %d (%02.02lf%%)", map[i].name, users[i], (double)users[i] * 100. / count);
+				clif_displaymessage(fd, output);
+			}
+		}
+	}
+	snprintf(output, sizeof output, msg_txt(171), count); // all : %d
 	clif_displaymessage(fd, output);
-	numdb_final(users_db,NULL);
+	aFree(users);
 
 	return 0;
 }

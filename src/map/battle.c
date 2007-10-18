@@ -2785,8 +2785,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			{
 				int heal = skill_fix_heal(target, SL_KAAHI, 200 * kaahi_lv);
 				unit_heal(target,heal,-5*kaahi_lv);
-				if(target->type == BL_PC)
-					clif_misceffect3(target,7);				// 回復した本人にのみ回復エフェクト
+				if(target_sd)
+					clif_misceffect3(target_sd->fd, target_sd->bl.id, 7);	// 回復した本人にのみ回復エフェクト
 			}
 		}
 	}

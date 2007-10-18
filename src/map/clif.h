@@ -77,7 +77,7 @@ void clif_equipitemack(struct map_session_data *sd, int n, int pos, unsigned cha
 void clif_unequipitemack(struct map_session_data *sd, int n, int pos, unsigned char ok);
 void clif_misceffect(struct block_list* bl, int type);
 void clif_misceffect2(struct block_list *bl, int type);
-void clif_misceffect3(struct block_list *bl, int type);
+void clif_misceffect3(int fd, int id, int type);
 void clif_changeoption(struct block_list *bl);
 void clif_changeoption2(struct block_list *bl);
 void clif_useitemack(struct map_session_data *sd, int idx, int amount, unsigned char ok);

@@ -1572,27 +1572,27 @@ void clif_spawnpc(struct map_session_data *sd)
 		clif_misceffect2(&sd->bl,422+sd->view_size);
 
 	if (map[sd->bl.m].flag.rain)
-		clif_misceffect3(&sd->bl, 161);
+		clif_misceffect3(sd->fd, sd->bl.id, 161);
 	if (map[sd->bl.m].flag.snow)
-		clif_misceffect3(&sd->bl, 162);
+		clif_misceffect3(sd->fd, sd->bl.id, 162);
 	if (map[sd->bl.m].flag.sakura)
-		clif_misceffect3(&sd->bl, 163);
+		clif_misceffect3(sd->fd, sd->bl.id, 163);
 	if (map[sd->bl.m].flag.leaves)
-		clif_misceffect3(&sd->bl, 333);
+		clif_misceffect3(sd->fd, sd->bl.id, 333);
 	if (map[sd->bl.m].flag.fireworks)
-		clif_misceffect3(&sd->bl, 297);
+		clif_misceffect3(sd->fd, sd->bl.id, 297);
 	if (map[sd->bl.m].flag.fireworks)
-		clif_misceffect3(&sd->bl, 299);
+		clif_misceffect3(sd->fd, sd->bl.id, 299);
 	if (map[sd->bl.m].flag.fireworks)
-		clif_misceffect3(&sd->bl, 301);
+		clif_misceffect3(sd->fd, sd->bl.id, 301);
 	if (map[sd->bl.m].flag.cloud1)
-		clif_misceffect3(&sd->bl, 230);
+		clif_misceffect3(sd->fd, sd->bl.id, 230);
 	if (map[sd->bl.m].flag.cloud2)
-		clif_misceffect3(&sd->bl, 233);
+		clif_misceffect3(sd->fd, sd->bl.id, 233);
 	if (map[sd->bl.m].flag.cloud3)
-		clif_misceffect3(&sd->bl, 516);
+		clif_misceffect3(sd->fd, sd->bl.id, 516);
 	if (map[sd->bl.m].flag.fog)
-		clif_misceffect3(&sd->bl, 515);
+		clif_misceffect3(sd->fd, sd->bl.id, 515);
 
 	return;
 }
@@ -3892,19 +3892,10 @@ void clif_misceffect2(struct block_list *bl,int type)
  *
  *------------------------------------------
  */
-void clif_misceffect3(struct block_list *bl,int type)
+void clif_misceffect3(int fd, int id, int type)
 {
-	struct map_session_data *sd;
-	int fd;
-
-	nullpo_retv(bl);
-
-	if(bl->type != BL_PC || (sd = (struct map_session_data *)bl) == NULL)
-		return;
-
-	fd=sd->fd;
 	WFIFOW(fd,0)=0x1f3;
-	WFIFOL(fd,2)=bl->id;
+	WFIFOL(fd,2)=id;
 	WFIFOL(fd,6)=type;
 	WFIFOSET(fd,packet_db[0x1f3].len);
 

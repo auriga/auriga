@@ -8845,11 +8845,13 @@ int buildin_misceffect(struct script_state *st)
  */
 static int buildin_misceffect_sub(struct block_list *bl,va_list ap)
 {
+	struct map_session_data *sd;
 	int type = va_arg(ap,int);
 
 	nullpo_retr(0, bl);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	clif_misceffect3(bl,type);
+	clif_misceffect3(sd->fd, sd->bl.id, type);
 	return 0;
 }
 

@@ -1105,7 +1105,12 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->eventtimer[i] = -1;
 
 	// 位置の設定
-	pc_setpos(sd, sd->status.last_point.map, sd->status.last_point.x, sd->status.last_point.y, 0);
+	if(pc_setpos(sd, sd->status.last_point.map, sd->status.last_point.x, sd->status.last_point.y, 0)) {
+		// 失敗したので接続を切断する
+		clif_authfail_fd(sd->fd,0);
+		session[sd->fd]->auth = 0;
+		return 1;
+	}
 
 	// ペット、ホム、傭兵データ要求
 	if(sd->status.pet_id > 0)
