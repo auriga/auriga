@@ -1,4 +1,28 @@
 ----------------------------------------
+//0367 [2007/10/19] by Rayce
+
+・ATCOMMAND_FUNC() の引数には文字列（const char）ではなくタイプ（AtCommandType）を渡すように変更
+　これに合わせて以下のコマンドを修正
+	@monster, @monstermap
+	@kami, @kamib, @kamic
+	@str, @agi, @vit, @int, @dex, @luk
+
+・atcommand() を is_atcommand_sub() に統合
+・atcommand_killmonster2() を atcommand_killmonster() に統合
+・atcommand_raisemap() を atcommand_raise() に統合
+・atcommand_doommap() を atcommand_doom() に統合
+
+・@goにベインズを追加 merged from eA
+・@goをマップ名の略式で指定できるように拡張
+	gat名の頭文字から区別できる最小の文字数さえ合えば発動します。
+	例えば以下の通り。
+	　　@go pr    → プロンテラ
+	　　@go i     → イズルード
+	　　@go einbe → アインベフ
+	これにより番号がわからなくてもマップ名さえ推測できていれば使えます。
+	アインブログは南口にしか飛べませんが仕様とします。
+
+----------------------------------------
 //0366 [2007/10/19] by Rayce
 
 ・@コマンドのsynonymを高速化（atcommand.*）

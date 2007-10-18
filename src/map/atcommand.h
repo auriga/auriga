@@ -2,7 +2,7 @@
 #ifndef _ATCOMMAND_H_
 #define _ATCOMMAND_H_
 
-enum AtCommandType {
+typedef enum {
 	AtCommand_None = -1,
 	AtCommand_Broadcast = 0,
 	AtCommand_LocalBroadcast,
@@ -57,7 +57,6 @@ enum AtCommandType {
 	AtCommand_StatusPoint,
 	AtCommand_SkillPoint,
 	AtCommand_Zeny,
-	AtCommand_Param,
 	AtCommand_Strength,
 	AtCommand_Agility,
 	AtCommand_Vitality,
@@ -173,17 +172,15 @@ enum AtCommandType {
 	AtCommand_CallMerc,
 	AtCommand_Unknown,
 	AtCommand_MAX,
-};
+} AtCommandType;
 
 struct map_session_data;
-
-typedef enum AtCommandType AtCommandType;
 
 typedef struct AtCommandInfo {
 	AtCommandType type;
 	const char* command;
 	int level;
-	int (*proc)(const int, struct map_session_data*, const char* command, const char* message);
+	int (*proc)(const int, struct map_session_data*, AtCommandType command, const char* message);
 	struct AtCommandInfo *next;
 } AtCommandInfo;
 
