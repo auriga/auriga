@@ -667,10 +667,9 @@ int chrif_maintenance(int maintenance)
  */
 static int chrif_maintenanceack(int maintenance)
 {
-	if(maintenance)
-		clif_GMmessage(NULL,msg_txt(82),strlen(msg_txt(82))+1,0);
-	else
-		clif_GMmessage(NULL,msg_txt(83),strlen(msg_txt(83))+1,0);
+	const char *mes = (maintenance)? msg_txt(82): msg_txt(83);
+
+	clif_GMmessage(NULL, mes, strlen(mes) + 1, 0);
 
 	return 0;
 }

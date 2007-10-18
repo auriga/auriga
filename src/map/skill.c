@@ -4320,12 +4320,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		skill_addtimerskill(src,tick+3000,bl->id,0,0,skillid,skilllv,0,flag);
 		if(md) {		// Mobは喋れないから、スキル名を叫ばせてみる
-			char temp[100];
+			char output[100];
 			if(skillid == BA_FROSTJOKE)
-				sprintf(temp, msg_txt(181), md->name); // %s : 寒いジョーク !!
+				snprintf(output, sizeof(output), msg_txt(181), md->name); // %s : 寒いジョーク !!
 			else
-				sprintf(temp, msg_txt(182), md->name); // %s : スクリーム !!
-			clif_GlobalMessage(&md->bl,temp);
+				snprintf(output, sizeof(output), msg_txt(182), md->name); // %s : スクリーム !!
+			clif_GlobalMessage(&md->bl, output);
 		}
 		break;
 

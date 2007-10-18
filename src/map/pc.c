@@ -3027,7 +3027,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 #endif
 		// 通常アイテムの使用期限切れ削除
 		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 0);
-		sprintf(output, msg_txt(187), ((data->view_id > 0)? itemdb_jname(data->view_id): data->jname));
+		snprintf(output, sizeof(output), msg_txt(187), ((data->view_id > 0)? itemdb_jname(data->view_id): data->jname));
 		clif_disp_onlyself(sd->fd, output);
 	}
 
@@ -3584,14 +3584,19 @@ static int pc_show_steal(struct block_list *bl,va_list ap)
 {
 	struct map_session_data *sd;
 	struct item_data *item = NULL;
-	char output[100];
-	int type;
+	char output[200];
+	int type, fd = -1;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
 	nullpo_retr(0, sd = va_arg(ap,struct map_session_data *));
 
-	if(bl->type != BL_PC)
+	if(bl->type == BL_PC) {
+		struct map_session_data *dsd = (struct map_session_data *)bl;
+		if(dsd)
+			fd = dsd->fd;
+	}
+	if(fd < 0)
 		return 0;
 
 	item = va_arg(ap,struct item_data *);
@@ -3599,13 +3604,13 @@ static int pc_show_steal(struct block_list *bl,va_list ap)
 
 	if(!type) {
 		if(item == NULL)
-			sprintf(output, msg_txt(136), sd->status.name);
+			snprintf(output, sizeof(output), msg_txt(136), sd->status.name);
 		else
-			sprintf(output, msg_txt(137), sd->status.name, item->jname);
+			snprintf(output, sizeof(output), msg_txt(137), sd->status.name, item->jname);
 	} else {
-		sprintf(output, msg_txt(138), sd->status.name);
+		snprintf(output, sizeof(output), msg_txt(138), sd->status.name);
 	}
-	clif_displaymessage( ((struct map_session_data *)bl)->fd, output);
+	clif_displaymessage(fd, output);
 
 	return 0;
 }

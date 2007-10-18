@@ -903,8 +903,8 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 				c--;
 			} else {
 				if(battle_config.party_item_share_show && psd[i] != sd) {
-					char output[64];
-					sprintf(output, msg_txt(177), psd[i]->status.name);
+					char output[128];
+					snprintf(output, sizeof(output), msg_txt(177), psd[i]->status.name);
 					clif_displaymessage(sd->fd,output);
 				}
 				return 0;

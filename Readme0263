@@ -1,4 +1,19 @@
 ----------------------------------------
+//0368 [2007/10/19] by Rayce
+
+・バッファオーバーラン対策として、msg_txt() をフォーマットとして利用する場合は
+　snprintfを使うように修正
+　（atcommand.c, party.c, pc.c, ranking.c, skill.c, vending.c）
+
+・細かい最適化（atcommand.c, chrif.c, pc.c）
+	atcommand_add_hashtable()
+	atcommand_mobsearch()
+	atcommand_weather()
+	atcommand_connectlimit()
+	chrif_maintenanceack()
+	pc_show_steal()
+
+----------------------------------------
 //0367 [2007/10/19] by Rayce
 
 ・ATCOMMAND_FUNC() の引数には文字列（const char）ではなくタイプ（AtCommandType）を渡すように変更
