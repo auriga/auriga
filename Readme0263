@@ -1,4 +1,21 @@
 ----------------------------------------
+//0370 [2007/10/20] by Rayce
+
+・gccコンパイル時の警告修正（atcommand.c）
+	atcommand_go()
+	atcommand_param()
+
+・0208以降、@ecoffが機能しなくなっていたバグを修正
+・@mapflagでw4が不定になる可能性があるので空文字で初期化するように修正
+・@produceで装備品以外のアイテムを指定した場合はメッセージが表示されるように改善
+・@resetfeelおよび@resethateの配列サイズのチェックを修正
+
+・@questskill, @charquestskill, @lostskill, @charlostskillでスキルIDの範囲チェックを省略
+　範囲外だった場合は次の skill_get_inf2() の判定が偽になるので問題は無い
+・@charquestskillおよび@charlostskillにおいて、クエストスキル以外のスキルIDを指定すると
+　「そんな人は存在しません。」と表示されるバグを修正
+
+----------------------------------------
 //0369 [2007/10/19] by Rayce
 
 ・pc_authok() で位置の設定に失敗したときは未認証に戻して接続を切断するように修正（pc.c）

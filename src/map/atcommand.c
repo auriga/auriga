@@ -1877,35 +1877,35 @@ int atcommand_model(const int fd, struct map_session_data* sd, AtCommandType com
 int atcommand_go(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	int town;
-	char *np;
+	char *np = NULL;
 	static const struct {
 		struct point p;
 		int len;
 	} data[] = {
-		{ "prontera.gat",    156, 191, 2 },	// 0=プロンテラ
-		{ "morocc.gat",      156,  93, 1 },	// 1=モロク
-		{ "geffen.gat",      119,  59, 2 },	// 2=ゲフェン
-		{ "payon.gat",       174, 104, 2 },	// 3=フェイヨン
-		{ "alberta.gat",     192, 147, 2 },	// 4=アルベルタ
-		{ "izlude.gat",      128, 114, 1 },	// 5=イズルード
-		{ "aldebaran.gat",   140, 131, 2 },	// 6=アルデバラン
-		{ "xmas.gat",        147, 134, 1 },	// 7=ルティエ
-		{ "comodo.gat",      209, 143, 1 },	// 8=コモド
-		{ "yuno.gat",        157,  51, 1 },	// 9=ジュノー
-		{ "amatsu.gat",      198,  84, 2 },	// 10=アマツ
-		{ "gonryun.gat",     160, 120, 2 },	// 11=コンロン
-		{ "umbala.gat",       89, 157, 1 },	// 12=ウンバラ
-		{ "niflheim.gat",    202, 177, 1 },	// 13=ニブルヘルム
-		{ "louyang.gat",     217,  40, 2 },	// 14=龍之城
-		{ "jawaii.gat",      241, 116, 1 },	// 15=ジャワイ
-		{ "ayothaya.gat",    217, 187, 2 },	// 16=アユタヤ
-		{ "einbroch.gat",    149,  38, 5 },	// 17=アインブロック(南口)
-		{ "einbroch.gat",    158, 317, 5 },	// 18=アインブロック(北口)
-		{ "einbech.gat",     103, 197, 5 },	// 19=アインベフ
-		{ "lighthalzen.gat", 214, 322, 2 },	// 20=リヒタルゼン
-		{ "hugel.gat",        95,  63, 1 },	// 21=フィゲル
-		{ "rachel.gat",      131, 115, 1 },	// 22=ラヘル
-		{ "veins.gat",       216, 123, 1 },	// 23=ベインズ
+		{ { "prontera.gat",    156, 191 }, 2 },	// 0=プロンテラ
+		{ { "morocc.gat",      156,  93 }, 1 },	// 1=モロク
+		{ { "geffen.gat",      119,  59 }, 2 },	// 2=ゲフェン
+		{ { "payon.gat",       174, 104 }, 2 },	// 3=フェイヨン
+		{ { "alberta.gat",     192, 147 }, 2 },	// 4=アルベルタ
+		{ { "izlude.gat",      128, 114 }, 1 },	// 5=イズルード
+		{ { "aldebaran.gat",   140, 131 }, 2 },	// 6=アルデバラン
+		{ { "xmas.gat",        147, 134 }, 1 },	// 7=ルティエ
+		{ { "comodo.gat",      209, 143 }, 1 },	// 8=コモド
+		{ { "yuno.gat",        157,  51 }, 1 },	// 9=ジュノー
+		{ { "amatsu.gat",      198,  84 }, 2 },	// 10=アマツ
+		{ { "gonryun.gat",     160, 120 }, 2 },	// 11=コンロン
+		{ { "umbala.gat",       89, 157 }, 1 },	// 12=ウンバラ
+		{ { "niflheim.gat",    202, 177 }, 1 },	// 13=ニブルヘルム
+		{ { "louyang.gat",     217,  40 }, 2 },	// 14=龍之城
+		{ { "jawaii.gat",      241, 116 }, 1 },	// 15=ジャワイ
+		{ { "ayothaya.gat",    217, 187 }, 2 },	// 16=アユタヤ
+		{ { "einbroch.gat",    149,  38 }, 5 },	// 17=アインブロック(南口)
+		{ { "einbroch.gat",    158, 317 }, 5 },	// 18=アインブロック(北口)
+		{ { "einbech.gat",     103, 197 }, 5 },	// 19=アインベフ
+		{ { "lighthalzen.gat", 214, 322 }, 2 },	// 20=リヒタルゼン
+		{ { "hugel.gat",        95,  63 }, 1 },	// 21=フィゲル
+		{ { "rachel.gat",      131, 115 }, 1 },	// 22=ラヘル
+		{ { "veins.gat",       216, 123 }, 1 },	// 23=ベインズ
 	};
 
 	nullpo_retr(-1, sd);
@@ -2145,9 +2145,7 @@ int atcommand_produce(const int fd, struct map_session_data* sd, AtCommandType c
 			if ((flag = pc_additem(sd, &tmp_item, 1)))
 				clif_additem(sd, 0, 0, flag);
 		} else {
-			if (battle_config.error_log)
-				printf("%cproduce NOT WEAPON [%d]\n", command_symbol, item_id);
-			return -1;
+			clif_displaymessage(fd, msg_txt(192));
 		}
 	}
 
@@ -2358,6 +2356,8 @@ int atcommand_param(const int fd, struct map_session_data* sd, AtCommandType com
 		case AtCommand_Luck:
 			status = &sd->status.luk;
 			max    = battle_config.max_parameter_luk;
+			break;
+		default:
 			break;
 	}
 	if (status == NULL)
@@ -3132,7 +3132,7 @@ int atcommand_questskill(const int fd, struct map_session_data* sd, AtCommandTyp
 		return -1;
 
 	skill_id = atoi(message);
-	if (skill_id > 0 && skill_id < MAX_SKILL && skill_get_inf2(skill_id) & 0x01) {
+	if (skill_get_inf2(skill_id) & 0x01) {
 		pc_skill(sd, skill_id, 1, 0);
 		clif_displaymessage(fd, msg_txt(70));
 	}
@@ -3146,25 +3146,22 @@ int atcommand_questskill(const int fd, struct map_session_data* sd, AtCommandTyp
  */
 int atcommand_charquestskill(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	char character[100] = "";
+	char character[100];
 	char output[100];
 	struct map_session_data *pl_sd;
-	int skill_id = 0;
+	int skill_id;
 
 	if (!message || !*message)
 		return -1;
-	if (sscanf(message, "%d %99[^\n]", &skill_id, character) < 2 || skill_id < 0)
+	if (sscanf(message, "%d %99[^\n]", &skill_id, character) < 2)
 		return -1;
 
-	if (skill_id < 0 && skill_id >= MAX_SKILL)
-		return -1;
-
-	if (skill_get_inf2(skill_id) & 0x01 &&
-	    (pl_sd = map_nick2sd(character)) != NULL &&
-	    pc_checkskill2(pl_sd, skill_id) == 0) {
-		pc_skill(pl_sd, skill_id, 1, 0);
-		snprintf(output, sizeof output, msg_txt(110), pl_sd->status.name);
-		clif_displaymessage(fd, output);
+	if ((pl_sd = map_nick2sd(character)) != NULL) {
+		if (skill_get_inf2(skill_id) & 0x01 && pc_checkskill2(pl_sd, skill_id) == 0) {
+			pc_skill(pl_sd, skill_id, 1, 0);
+			snprintf(output, sizeof output, msg_txt(110), pl_sd->status.name);
+			clif_displaymessage(fd, output);
+		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
@@ -3184,14 +3181,14 @@ int atcommand_lostskill(const int fd, struct map_session_data* sd, AtCommandType
 
 	if (!message || !*message)
 		return -1;
-	skill_id = atoi(message);
-	if (skill_id > 0 && skill_id < MAX_SKILL && pc_checkskill2(sd, skill_id) == 0)
-		return -1;
 
-	sd->status.skill[skill_id].lv = 0;
-	sd->status.skill[skill_id].flag = 0;
-	clif_skillinfoblock(sd);
-	clif_displaymessage(fd, msg_txt(71));
+	skill_id = atoi(message);
+	if (skill_get_inf2(skill_id) & 0x01 && pc_checkskill2(sd, skill_id) > 0) {
+		sd->status.skill[skill_id].lv   = 0;
+		sd->status.skill[skill_id].flag = 0;
+		clif_skillinfoblock(sd);
+		clif_displaymessage(fd, msg_txt(71));
+	}
 
 	return 0;
 }
@@ -3202,26 +3199,24 @@ int atcommand_lostskill(const int fd, struct map_session_data* sd, AtCommandType
  */
 int atcommand_charlostskill(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	char character[100] = "";
+	char character[100];
 	char output[100];
 	struct map_session_data *pl_sd;
-	int skill_id = 0;
+	int skill_id;
 
 	if (!message || !*message)
 		return -1;
-	if (sscanf(message, "%d %99[^\n]", &skill_id, character) < 2 || skill_id < 0)
-		return -1;
-	if (skill_id < 0 || skill_id >= MAX_SKILL)
+	if (sscanf(message, "%d %99[^\n]", &skill_id, character) < 2)
 		return -1;
 
-	if (skill_get_inf2(skill_id) & 0x01 &&
-	    (pl_sd = map_nick2sd(character)) != NULL &&
-	    pc_checkskill2(pl_sd, skill_id) > 0) {
-		pl_sd->status.skill[skill_id].lv = 0;
-		pl_sd->status.skill[skill_id].flag = 0;
-		clif_skillinfoblock(pl_sd);
-		snprintf(output, sizeof output, msg_txt(111), pl_sd->status.name);
-		clif_displaymessage(fd, output);
+	if ((pl_sd = map_nick2sd(character)) != NULL) {
+		if (skill_get_inf2(skill_id) & 0x01 && pc_checkskill2(pl_sd, skill_id) > 0) {
+			pl_sd->status.skill[skill_id].lv   = 0;
+			pl_sd->status.skill[skill_id].flag = 0;
+			clif_skillinfoblock(pl_sd);
+			snprintf(output, sizeof output, msg_txt(111), pl_sd->status.name);
+			clif_displaymessage(fd, output);
+		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
@@ -4549,7 +4544,7 @@ int atcommand_itemmonster(const int fd, struct map_session_data* sd, AtCommandTy
  */
 int atcommand_mapflag(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	char w3[100],w4[100];
+	char w3[100], w4[100] = "";
 	char output[100];
 
 	if (sscanf(message, "%99s %99s", w3, w4) < 1)
@@ -4662,6 +4657,7 @@ int atcommand_ecoff(const int fd, struct map_session_data* sd, AtCommandType com
 	if(sd->status.guild_id <= 0)
 		return -1;
 
+	g = guild_search(sd->status.guild_id);
 	if(g == NULL || sd == g->member[0].sd)
 		return -1;
 
@@ -4795,11 +4791,11 @@ int atcommand_resetfeel(const int fd, struct map_session_data* sd, AtCommandType
 	if (sscanf(message, "%d", &i) < 1)
 		return -1;
 
-	if (i >= 0 && i < 3) {
+	if (i >= 0 && i < sizeof(sd->feel_index)/sizeof(sd->feel_index[0])) {
 		sd->feel_index[i] = -1;
 		memset(&sd->status.feel_map[i], 0, sizeof(sd->status.feel_map[0]));
+		chrif_save(sd,0);
 	}
-	chrif_save(sd,0);
 
 	return 0;
 }
@@ -4817,7 +4813,7 @@ int atcommand_resethate(const int fd, struct map_session_data* sd, AtCommandType
 	if (sscanf(message, "%d", &i) < 1)
 		return -1;
 
-	if(i >= 0 && i < 3)
+	if (i >= 0 && i < sizeof(sd->hate_mob)/sizeof(sd->hate_mob[0]))
 		sd->hate_mob[i] = -1;
 
 	return 0;
