@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include <ctype.h>
 #include <math.h>
 #include <time.h>
@@ -374,6 +375,24 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_Unknown,            NULL,              100, NULL,                          NULL },
 };
 
+/*==========================================
+ * フォーマット付きメッセージ出力
+ *------------------------------------------
+ */
+static void msg_output(const int fd, const char *format, ...)
+{
+	char output[256];
+	va_list ap;
+
+	va_start(ap, format);
+	vsnprintf(output, sizeof(output), format, ap);
+	va_end(ap);
+
+	clif_displaymessage(fd, output);
+
+	return;
+}
+
 /*===============================================
  * This function return the GM command symbol
  *-----------------------------------------------
@@ -439,7 +458,6 @@ int get_atcommand_level(const AtCommandType type)
 AtCommandType is_atcommand_sub(const int fd, struct map_session_data *sd, const char *str, int gmlvl)
 {
 	AtCommandInfo *info;
-	char output[200];
 	char command[100];
 	const char *p = str;
 
@@ -467,16 +485,14 @@ AtCommandType is_atcommand_sub(const int fd, struct map_session_data *sd, const 
 	info = get_atcommandinfo_byname(command + 1);
 	if (info == NULL || info->proc == NULL || gmlvl < info->level) {
 		if (pc_isGM(sd)) {
-			snprintf(output, sizeof output, msg_txt(132), command);
-			clif_displaymessage(fd, output);
+			msg_output(fd, msg_txt(132), command);
 			return AtCommand_Unknown;
 		}
 		return AtCommand_None;
 	}
 
 	if (map[sd->bl.m].flag.nocommand && map[sd->bl.m].flag.nocommand > gmlvl) {
-		snprintf(output, sizeof output, msg_txt(180), command);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(180), command);
 	} else {
 		// コマンド実行
 		if (isspace((unsigned char)*p)) {
@@ -485,8 +501,7 @@ AtCommandType is_atcommand_sub(const int fd, struct map_session_data *sd, const 
 		if (info->proc(fd, sd, info->type, p) != 0) {
 			if (pc_isGM(sd)) {
 				// 異常終了
-				snprintf(output, sizeof output, msg_txt(133), command);
-				clif_displaymessage(fd, output);
+				msg_output(fd, msg_txt(133), command);
 			} else {
 				return AtCommand_None;
 			}
@@ -873,9 +888,7 @@ int atcommand_where(const int fd, struct map_session_data* sd, AtCommandType com
 			return -1;
 		intif_where(sd->status.account_id, character);
 	} else {
-		char output[100];
-		snprintf(output, sizeof output, "%s %s %d %d",sd->status.name,sd->mapname,sd->bl.x,sd->bl.y);
-		clif_displaymessage(sd->fd, output);
+		msg_output(fd, "%s %s %d %d", sd->status.name, sd->mapname, sd->bl.x, sd->bl.y);
 	}
 	return 0;
 }
@@ -920,10 +933,8 @@ int atcommand_jump(const int fd, struct map_session_data* sd, AtCommandType comm
 	}
 
 	if (x >= 0 && x < map[sd->bl.m].xs && y >= 0 && y < map[sd->bl.m].ys) {
-		char output[200];
 		pc_setpos(sd, sd->mapname, x, y, 3);
-		snprintf(output, sizeof output, msg_txt(5), x, y);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(5), x, y);
 	} else {
 		clif_displaymessage(fd, msg_txt(2));
 	}
@@ -948,17 +959,15 @@ int atcommand_who(const int fd, struct map_session_data* sd, AtCommandType comma
  */
 int atcommand_whop(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	char output[200];
 	struct map_session_data *pl_sd;
 	int i;
 
 	for (i = 0; i < fd_max; i++) {
 		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 			if (!(battle_config.hide_GM_session && pc_isGM(pl_sd))) {
-				snprintf(output, sizeof output, "%s [%d/%d] %s %d %d",
+				msg_output(fd, "%s [%d/%d] %s %d %d",
 					pl_sd->status.name, pl_sd->status.base_level, pl_sd->status.job_level,
 					pl_sd->mapname, pl_sd->bl.x, pl_sd->bl.y);
-				clif_displaymessage(fd, output);
 			}
 		}
 	}
@@ -2231,21 +2240,18 @@ int atcommand_memo(const int fd, struct map_session_data* sd, AtCommandType comm
  */
 int atcommand_gat(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	char output[64];
 	int y = 0;
 
 	nullpo_retr(-1, sd);
 
 	for (y = 2; y >= -2; y--) {
-		snprintf(output, sizeof output,
-			"%s (x= %d, y= %d) %02X %02X %02X %02X %02X",
+		msg_output(fd, "%s (x= %d, y= %d) %02X %02X %02X %02X %02X",
 			map[sd->bl.m].name, sd->bl.x - 2, sd->bl.y + y,
 			map_getcell(sd->bl.m, sd->bl.x - 2, sd->bl.y + y, CELL_GETTYPE),
 			map_getcell(sd->bl.m, sd->bl.x - 1, sd->bl.y + y, CELL_GETTYPE),
 			map_getcell(sd->bl.m, sd->bl.x,     sd->bl.y + y, CELL_GETTYPE),
 			map_getcell(sd->bl.m, sd->bl.x + 1, sd->bl.y + y, CELL_GETTYPE),
 			map_getcell(sd->bl.m, sd->bl.x + 2, sd->bl.y + y, CELL_GETTYPE));
-		clif_displaymessage(fd, output);
 	}
 
 	return 0;
@@ -2653,7 +2659,6 @@ int atcommand_recallguild(const int fd, struct map_session_data* sd, AtCommandTy
 {
 	int i;
 	char guild_name[100];
-	char output[200];
 	struct map_session_data *pl_sd;
 	struct guild *g;
 
@@ -2671,8 +2676,7 @@ int atcommand_recallguild(const int fd, struct map_session_data* sd, AtCommandTy
 			    pl_sd->status.guild_id == g->guild_id)
 				pc_setpos(pl_sd, sd->mapname, sd->bl.x, sd->bl.y, 2);
 		}
-		snprintf(output, sizeof output, msg_txt(106), g->name);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(106), g->name);
 	} else {
 		clif_displaymessage(fd, msg_txt(107));
 	}
@@ -2688,7 +2692,6 @@ int atcommand_recallparty(const int fd, struct map_session_data* sd, AtCommandTy
 {
 	int i;
 	char party_name[100];
-	char output[200];
 	struct map_session_data *pl_sd;
 	struct party *p;
 
@@ -2706,8 +2709,7 @@ int atcommand_recallparty(const int fd, struct map_session_data* sd, AtCommandTy
 			    pl_sd->status.party_id == p->party_id)
 				pc_setpos(pl_sd, sd->mapname, sd->bl.x, sd->bl.y, 2);
 		}
-		snprintf(output, sizeof output, msg_txt(108), p->name);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(108), p->name);
 	} else {
 		clif_displaymessage(fd, msg_txt(109));
 	}
@@ -2799,34 +2801,20 @@ int atcommand_character_stats(const int fd, struct map_session_data* sd, AtComma
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
-		char output[200];
-		int i;
-		struct {
-			const char* format;
-			int value;
-		} output_table[14];
-
-		output_table[ 0].format = msg_txt(158); output_table[ 0].value = pl_sd->status.base_level; // Base Level: %d
-		output_table[ 1].format = msg_txt(159); output_table[ 1].value = pl_sd->status.job_level; // Job Level: %d
-		output_table[ 2].format = msg_txt(160); output_table[ 2].value = pl_sd->status.hp; // Hp: %d
-		output_table[ 3].format = msg_txt(161); output_table[ 3].value = pl_sd->status.max_hp; // MaxHp: %d
-		output_table[ 4].format = msg_txt(162); output_table[ 4].value = pl_sd->status.sp; // Sp: %d
-		output_table[ 5].format = msg_txt(163); output_table[ 5].value = pl_sd->status.max_sp; // MaxSp: %d
-		output_table[ 6].format = msg_txt(164); output_table[ 6].value = pl_sd->status.str; // Str: %d
-		output_table[ 7].format = msg_txt(165); output_table[ 7].value = pl_sd->status.agi; // Agi: %d
-		output_table[ 8].format = msg_txt(166); output_table[ 8].value = pl_sd->status.vit; // Vit: %d
-		output_table[ 9].format = msg_txt(167); output_table[ 9].value = pl_sd->status.int_; // Int: %d
-		output_table[10].format = msg_txt(168); output_table[10].value = pl_sd->status.dex; // Dex: %d
-		output_table[11].format = msg_txt(169); output_table[11].value = pl_sd->status.luk; // Luk: %d
-		output_table[12].format = msg_txt(170); output_table[12].value = pl_sd->status.zeny; // Zeny: %d
-		output_table[13].format = NULL;         output_table[13].value = 0;
-
-		snprintf(output, sizeof output, msg_txt(53), pl_sd->status.name);
-		clif_displaymessage(fd, output);
-		for (i = 0; output_table[i].format != NULL; i++) {
-			snprintf(output, sizeof output, output_table[i].format, output_table[i].value);
-			clif_displaymessage(fd, output);
-		}
+		msg_output(fd, msg_txt(53),  pl_sd->status.name);
+		msg_output(fd, msg_txt(158), pl_sd->status.base_level);
+		msg_output(fd, msg_txt(159), pl_sd->status.job_level);
+		msg_output(fd, msg_txt(160), pl_sd->status.hp);
+		msg_output(fd, msg_txt(161), pl_sd->status.max_hp);
+		msg_output(fd, msg_txt(162), pl_sd->status.sp);
+		msg_output(fd, msg_txt(163), pl_sd->status.max_sp);
+		msg_output(fd, msg_txt(164), pl_sd->status.str);
+		msg_output(fd, msg_txt(165), pl_sd->status.agi);
+		msg_output(fd, msg_txt(166), pl_sd->status.vit);
+		msg_output(fd, msg_txt(167), pl_sd->status.int_);
+		msg_output(fd, msg_txt(168), pl_sd->status.dex);
+		msg_output(fd, msg_txt(169), pl_sd->status.luk);
+		msg_output(fd, msg_txt(170), pl_sd->status.zeny);
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
@@ -3203,7 +3191,6 @@ int atcommand_questskill(const int fd, struct map_session_data* sd, AtCommandTyp
 int atcommand_charquestskill(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char character[100];
-	char output[100];
 	struct map_session_data *pl_sd;
 	int skill_id;
 
@@ -3215,8 +3202,7 @@ int atcommand_charquestskill(const int fd, struct map_session_data* sd, AtComman
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		if (skill_get_inf2(skill_id) & 0x01 && pc_checkskill2(pl_sd, skill_id) == 0) {
 			pc_skill(pl_sd, skill_id, 1, 0);
-			snprintf(output, sizeof output, msg_txt(110), pl_sd->status.name);
-			clif_displaymessage(fd, output);
+			msg_output(fd, msg_txt(110), pl_sd->status.name);
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
@@ -3256,7 +3242,6 @@ int atcommand_lostskill(const int fd, struct map_session_data* sd, AtCommandType
 int atcommand_charlostskill(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char character[100];
-	char output[100];
 	struct map_session_data *pl_sd;
 	int skill_id;
 
@@ -3270,8 +3255,7 @@ int atcommand_charlostskill(const int fd, struct map_session_data* sd, AtCommand
 			pl_sd->status.skill[skill_id].lv   = 0;
 			pl_sd->status.skill[skill_id].flag = 0;
 			clif_skillinfoblock(pl_sd);
-			snprintf(output, sizeof output, msg_txt(111), pl_sd->status.name);
-			clif_displaymessage(fd, output);
+			msg_output(fd, msg_txt(111), pl_sd->status.name);
 		}
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
@@ -3426,12 +3410,11 @@ static int atcommand_idsearch_sub(void *key, void *data, va_list ap)
 	int fd     = va_arg(ap,int);
 
 	if (strstr(item->jname, str)) {
-		char output[128], slot[16] = "";
+		char slot[16] = "";
 		if (item->slot > 0) {
 			sprintf(slot, " [%d]", item->slot);
 		}
-		snprintf(output, sizeof(output), msg_txt(78), item->jname, slot, item->nameid);	// "%s%s : %d"
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(78), item->jname, slot, item->nameid);	// "%s%s : %d"
 		(*match)++;
 	}
 	return 0;
@@ -3440,7 +3423,6 @@ static int atcommand_idsearch_sub(void *key, void *data, va_list ap)
 int atcommand_idsearch(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char item_name[100];
-	char output[100];
 	int match;
 
 	if (!message || !*message)
@@ -3448,13 +3430,10 @@ int atcommand_idsearch(const int fd, struct map_session_data* sd, AtCommandType 
 	if (sscanf(message, "%99[^\n]", item_name) < 1)
 		return -1;
 
-	snprintf(output, sizeof output, msg_txt(77), item_name);
-	clif_displaymessage(fd, output);
+	msg_output(fd, msg_txt(77), item_name);
 
 	match = itemdb_idsearch(fd, item_name, atcommand_idsearch_sub);
-
-	snprintf(output, sizeof output, msg_txt(79), match);
-	clif_displaymessage(fd, output);
+	msg_output(fd, msg_txt(79), match);
 
 	return 0;
 }
@@ -3609,7 +3588,6 @@ int atcommand_summon(const int fd, struct map_session_data* sd, AtCommandType co
 int atcommand_charskreset(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char character[100];
-	char output[200];
 	struct map_session_data *pl_sd;
 
 	nullpo_retr(-1, sd);
@@ -3623,8 +3601,7 @@ int atcommand_charskreset(const int fd, struct map_session_data* sd, AtCommandTy
 		if (pc_isGM(sd) < pc_isGM(pl_sd))
 			return -1;
 		pc_resetskill(pl_sd, -1);
-		snprintf(output, sizeof output, msg_txt(99), character);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(99), character);
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
@@ -3639,7 +3616,6 @@ int atcommand_charskreset(const int fd, struct map_session_data* sd, AtCommandTy
 int atcommand_charstreset(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char character[100];
-	char output[200];
 	struct map_session_data *pl_sd;
 
 	nullpo_retr(-1, sd);
@@ -3653,8 +3629,7 @@ int atcommand_charstreset(const int fd, struct map_session_data* sd, AtCommandTy
 		if (pc_isGM(sd) < pc_isGM(pl_sd))
 			return -1;
 		pc_resetstate(pl_sd);
-		snprintf(output, sizeof output, msg_txt(100), character);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(100), character);
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
@@ -3669,7 +3644,6 @@ int atcommand_charstreset(const int fd, struct map_session_data* sd, AtCommandTy
 int atcommand_charreset(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char character[100];
-	char output[200];
 	struct map_session_data *pl_sd;
 
 	nullpo_retr(-1, sd);
@@ -3684,8 +3658,7 @@ int atcommand_charreset(const int fd, struct map_session_data* sd, AtCommandType
 			return -1;
 		pc_resetstate(pl_sd);
 		pc_resetskill(pl_sd, -1);
-		snprintf(output, sizeof output, msg_txt(101), character);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(101), character);
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
@@ -3701,7 +3674,6 @@ int atcommand_charstpoint(const int fd, struct map_session_data* sd, AtCommandTy
 {
 	struct map_session_data *pl_sd;
 	char character[100];
-	char output[100];
 	int new_status_point;
 	int point = 0;
 
@@ -3720,8 +3692,7 @@ int atcommand_charstpoint(const int fd, struct map_session_data* sd, AtCommandTy
 			return -1;
 		pl_sd->status.status_point = new_status_point;
 		clif_updatestatus(pl_sd, SP_STATUSPOINT);
-		snprintf(output, sizeof output, msg_txt(102), character);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(102), character);
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
@@ -3737,7 +3708,6 @@ int atcommand_charskpoint(const int fd, struct map_session_data* sd, AtCommandTy
 {
 	struct map_session_data *pl_sd;
 	char character[100];
-	char output[100];
 	int new_skill_point;
 	int point = 0;
 
@@ -3756,8 +3726,7 @@ int atcommand_charskpoint(const int fd, struct map_session_data* sd, AtCommandTy
 			return -1;
 		pl_sd->status.skill_point = new_skill_point;
 		clif_updatestatus(pl_sd, SP_SKILLPOINT);
-		snprintf(output, sizeof output, msg_txt(103), character);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(103), character);
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
@@ -3773,7 +3742,6 @@ int atcommand_charzeny(const int fd, struct map_session_data* sd, AtCommandType 
 {
 	struct map_session_data *pl_sd;
 	char character[100];
-	char output[100];
 	int zeny = 0, new_zeny;
 
 	if (!message || !*message)
@@ -3791,8 +3759,7 @@ int atcommand_charzeny(const int fd, struct map_session_data* sd, AtCommandType 
 			return -1;
 		pl_sd->status.zeny = new_zeny;
 		clif_updatestatus(pl_sd, SP_ZENY);
-		snprintf(output, sizeof output, msg_txt(104), character);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(104), character);
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
 	}
@@ -3814,16 +3781,16 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 	struct map_session_data *pl_sd;
 	struct npc_data *nd = NULL;
 	struct chat_data *cd = NULL;
-	char output[200], map_name[100] = "";
+	char map_name[100] = "";
 	int m_id, i, chat_num, list = 0;
 
 	nullpo_retr(-1, sd);
 
-	if (!message || !*message)
-		return -1;
-	sscanf(message, "%d %99s", &list, map_name);
-	if (list < 0 || list > 3)
-		return -1;
+	if (message && *message) {
+		sscanf(message, "%d %99s", &list, map_name);
+		if (list < 0 || list > 3)
+			return -1;
+	}
 
 	if (map_name[0] == '\0')
 		strcpy(map_name, sd->mapname);
@@ -3834,12 +3801,9 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 		return -1;
 
 	clif_displaymessage(fd, "------ Map Info ------");
-	sprintf(output, "Map Name: %s", map_name);
-	clif_displaymessage(fd, output);
-	sprintf(output, "Players In Map: %d", map[m_id].users);
-	clif_displaymessage(fd, output);
-	sprintf(output, "NPCs In Map: %d", map[m_id].npc_num);
-	clif_displaymessage(fd, output);
+	msg_output(fd, "Map Name: %s", map_name);
+	msg_output(fd, "Players In Map: %d", map[m_id].users);
+	msg_output(fd, "NPCs In Map: %d", map[m_id].npc_num);
 
 	for (i=chat_num=0; i<fd_max; i++) {
 		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) &&
@@ -3847,51 +3811,28 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 			chat_num++;
 	}
 
-	sprintf(output, "Chats In Map: %d", chat_num);
-	clif_displaymessage(fd, output);
+	msg_output(fd, "Chats In Map: %d", chat_num);
 	clif_displaymessage(fd, "------ Map Flags ------");
-	sprintf(output, "Player vs Player: %s | No Guild: %s | No Party: %s",
+
+	msg_output(fd, "Player vs Player: %s | No Guild: %s | No Party: %s",
 		(map[m_id].flag.pvp) ? "True" : "False",
 		(map[m_id].flag.pvp_noguild) ? "True" : "False",
 		(map[m_id].flag.pvp_noparty) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "Guild vs Guild: %s | No Party: %s",
+	msg_output(fd, "Guild vs Guild: %s | No Party: %s",
 		(map[m_id].flag.gvg) ? "True" : "False",
 		(map[m_id].flag.gvg_noparty) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No Dead Branch: %s",
-		(map[m_id].flag.nobranch) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No Memo: %s",
-		(map[m_id].flag.nomemo) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No Penalty: %s",
-		(map[m_id].flag.nopenalty) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No Return: %s",
-		(map[m_id].flag.noreturn) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No Save: %s",
-		(map[m_id].flag.nosave) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No Teleport: %s",
-		(map[m_id].flag.noteleport) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No Portal: %s",
-		(map[m_id].flag.noportal) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No Monster Teleport: %s",
-		(map[m_id].flag.monster_noteleport) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No Zeny Penalty: %s",
-		(map[m_id].flag.nozenypenalty) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "No IceWall: %s",
-		(map[m_id].flag.noicewall) ? "True" : "False");
-	clif_displaymessage(fd, output);
-	sprintf(output, "PK: %s",
-		(map[m_id].flag.pk) ? "True" : "False");
-	clif_displaymessage(fd, output);
+
+	msg_output(fd, "No Dead Branch: %s", (map[m_id].flag.nobranch) ? "True" : "False");
+	msg_output(fd, "No Memo: %s", (map[m_id].flag.nomemo) ? "True" : "False");
+	msg_output(fd, "No Penalty: %s", (map[m_id].flag.nopenalty) ? "True" : "False");
+	msg_output(fd, "No Return: %s", (map[m_id].flag.noreturn) ? "True" : "False");
+	msg_output(fd, "No Save: %s", (map[m_id].flag.nosave) ? "True" : "False");
+	msg_output(fd, "No Teleport: %s", (map[m_id].flag.noteleport) ? "True" : "False");
+	msg_output(fd, "No Portal: %s", (map[m_id].flag.noportal) ? "True" : "False");
+	msg_output(fd, "No Monster Teleport: %s", (map[m_id].flag.monster_noteleport) ? "True" : "False");
+	msg_output(fd, "No Zeny Penalty: %s", (map[m_id].flag.nozenypenalty) ? "True" : "False");
+	msg_output(fd, "No IceWall: %s", (map[m_id].flag.noicewall) ? "True" : "False");
+	msg_output(fd, "PK: %s", (map[m_id].flag.pk) ? "True" : "False");
 
 	switch (list) {
 		case 0:
@@ -3903,9 +3844,8 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 				if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) &&
 				    pl_sd->state.auth && strcmp(pl_sd->mapname, map_name) == 0)
 				{
-					sprintf(output, "Player '%s' (session #%d) | Location: %d,%d",
+					msg_output(fd, "Player '%s' (session #%d) | Location: %d,%d",
 						pl_sd->status.name, i, pl_sd->bl.x, pl_sd->bl.y);
-					clif_displaymessage(fd, output);
 				}
 			}
 			break;
@@ -3914,7 +3854,7 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 			for (i = 0; i < map[m_id].npc_num; i++) {	// map[].npcには接触型のNPCしか保存されていない（手抜き）
 				const char *direction;
 				nd = map[m_id].npc[i];
-				switch(nd->dir) {
+				switch (nd->dir) {
 					case 0:  direction = "North";      break;
 					case 1:  direction = "North West"; break;
 					case 2:  direction = "West";       break;
@@ -3926,9 +3866,8 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 					case 9:  direction = "North";      break;
 					default: direction = "Unknown";    break;
 				}
-				sprintf(output, "NPC %d: %s | Direction: %s | Sprite: %d | Location: %d %d",
+				msg_output(fd, "NPC %d: %s | Direction: %s | Sprite: %d | Location: %d %d",
 				        i+1, nd->name, direction, nd->class_, nd->bl.x, nd->bl.y);
-				clif_displaymessage(fd, output);
 			}
 			break;
 		case 3:
@@ -3941,18 +3880,12 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 				    strcmp(pl_sd->mapname, map_name) == 0 &&
 				    cd->usersd[0] == pl_sd)
 				{
-					sprintf(output, "Chat %d: %s | Player: %s | Location: %d %d",
+					msg_output(fd, "Chat %d: %s | Player: %s | Location: %d %d",
 							i, cd->title, pl_sd->status.name, cd->bl.x, cd->bl.y);
-					clif_displaymessage(fd, output);
-					sprintf(output, "   Users: %d/%d | Password: %8s | Public: %s",
+					msg_output(fd, "   Users: %d/%d | Password: %8s | Public: %s",
 							cd->users, cd->limit, cd->pass, (cd->pub) ? "Yes" : "No");
-					clif_displaymessage(fd, output);
 				}
 			}
-			break;
-		default: // normally impossible to arrive here
-			sprintf(output, "Please, enter at least a valid list number (usage: %cmapinfo <0-3> [map]).", command_symbol);
-			clif_displaymessage(fd, output);
 			break;
 	}
 
@@ -3968,7 +3901,6 @@ static int atcommand_mobsearch_sub(struct block_list *bl,va_list ap)
 	int mob_id, fd;
 	int *number;
 	struct mob_data *md;
-	char output[128];
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, md = (struct mob_data *)bl);
@@ -3993,8 +3925,7 @@ static int atcommand_mobsearch_sub(struct block_list *bl,va_list ap)
 				return 0;
 			break;
 	}
-	snprintf(output, sizeof output, msg_txt(94), ++(*number), md->bl.x, md->bl.y, md->name);
-	clif_displaymessage(fd, output);
+	msg_output(fd, msg_txt(94), ++(*number), md->bl.x, md->bl.y, md->name);
 
 	return 0;
 }
@@ -4002,7 +3933,6 @@ static int atcommand_mobsearch_sub(struct block_list *bl,va_list ap)
 int atcommand_mobsearch(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char mob_name[100], map_name[100] = "";
-	char output[100];
 	const char *p;
 	int mob_id, map_id = 0, number = 0;
 
@@ -4016,8 +3946,7 @@ int atcommand_mobsearch(const int fd, struct map_session_data* sd, AtCommandType
 	if ((mob_id = atoi(mob_name)) == 0)
 		mob_id = mobdb_searchname(mob_name);
 	if (mob_id != -1 && mob_id != -2 && mob_id != -3 && !mobdb_checkid(mob_id)) {
-		snprintf(output, sizeof output, msg_txt(93), mob_name);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(93), mob_name);
 		return 0;
 	}
 
@@ -4033,8 +3962,7 @@ int atcommand_mobsearch(const int fd, struct map_session_data* sd, AtCommandType
 	if ((map_id = map_mapname2mapid(map_name)) < 0)
 		map_id = sd->bl.m;
 
-	snprintf(output, sizeof output, msg_txt(92), p, map[map_id].name);
-	clif_displaymessage(fd, output);
+	msg_output(fd, msg_txt(92), p, map[map_id].name);
 
 	map_foreachinarea(atcommand_mobsearch_sub, map_id, 0, 0, map[map_id].xs, map[map_id].ys, BL_MOB, mob_id, fd, &number);
 
@@ -4078,15 +4006,13 @@ int atcommand_cleanmap(const int fd, struct map_session_data* sd, AtCommandType 
  */
 int atcommand_clock(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	char output[100];
 	struct tm *tm;
 	time_t t;
 
 	t = time(NULL);
 	tm = localtime(&t);
 
-	snprintf(output, sizeof(output), msg_txt(96), tm->tm_hour, tm->tm_min, tm->tm_sec);
-	clif_displaymessage(fd, output);
+	msg_output(fd, msg_txt(96), tm->tm_hour, tm->tm_min, tm->tm_sec);
 
 	return 0;
 }
@@ -4124,7 +4050,7 @@ int atcommand_giveitem(const int fd, struct map_session_data* sd, AtCommandType 
 {
 	struct map_session_data *pl_sd = NULL;
 	struct item_data *item_data = NULL;
-	char item_name[100], character[100], output[100];
+	char item_name[100], character[100];
 	int number, item_id;
 
 	if (!message || !*message)
@@ -4158,21 +4084,17 @@ int atcommand_giveitem(const int fd, struct map_session_data* sd, AtCommandType 
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) { // 該当名のキャラが存在する
 		atcommand_giveitem_sub(pl_sd,item_data,number);
-		snprintf(output, sizeof output, msg_txt(97), item_data->jname, number);
-		clif_displaymessage(pl_sd->fd, output);
-		snprintf(output, sizeof output, msg_txt(98), pl_sd->status.name, item_data->jname, number);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(97), item_data->jname, number);
+		msg_output(fd, msg_txt(98), pl_sd->status.name, item_data->jname, number);
 	} else if (strcmp(character,"ALL") == 0) {	// 名前がALLなら、接続者全員へ
 		int i;
 		for (i = 0; i < fd_max; i++) {
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data)) {
 				atcommand_giveitem_sub(pl_sd,item_data,number);
-				snprintf(output, sizeof output, msg_txt(97), item_data->jname, number);
-				clif_displaymessage(pl_sd->fd, output);
+				msg_output(fd, msg_txt(97), item_data->jname, number);
 			}
 		}
-		snprintf(output, sizeof output, msg_txt(98), msg_txt(135), item_data->jname, number);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(98), msg_txt(135), item_data->jname, number);
 	} else {
 		return -1;
 	}
@@ -4394,7 +4316,6 @@ int atcommand_pettalk(const int fd, struct map_session_data* sd, AtCommandType c
 int atcommand_users(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	struct map_session_data *pl_sd;
-	char output[64];
 	int i, count = 0;
 	int *users;
 
@@ -4414,13 +4335,11 @@ int atcommand_users(const int fd, struct map_session_data* sd, AtCommandType com
 	if (count > 0) {
 		for (i = 0; i < map_num; i++) {
 			if (users[i] > 0) {
-				sprintf(output, "%s : %d (%02.02lf%%)", map[i].name, users[i], (double)users[i] * 100. / count);
-				clif_displaymessage(fd, output);
+				msg_output(fd, "%s : %d (%02.02lf%%)", map[i].name, users[i], (double)users[i] * 100. / count);
 			}
 		}
 	}
-	snprintf(output, sizeof output, msg_txt(171), count); // all : %d
-	clif_displaymessage(fd, output);
+	msg_output(fd, msg_txt(171), count); // all : %d
 	aFree(users);
 
 	return 0;
@@ -4634,7 +4553,6 @@ int atcommand_itemmonster(const int fd, struct map_session_data* sd, AtCommandTy
 int atcommand_mapflag(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char w3[100], w4[100] = "";
-	char output[100];
 
 	nullpo_retr(-1, sd);
 
@@ -4648,8 +4566,7 @@ int atcommand_mapflag(const int fd, struct map_session_data* sd, AtCommandType c
 		return 0;
 	}
 	map_field_setting();
-	snprintf(output, sizeof(output), msg_txt(125), w3);
-	clif_displaymessage(fd,output);
+	msg_output(fd, msg_txt(125), w3);
 
 	return 0;
 }
@@ -4702,9 +4619,7 @@ int atcommand_connectlimit(const int fd, struct map_session_data* sd, AtCommandT
 	intif_char_connect_limit(limit);
 
 	if (limit) {
-		char output[100];
-		snprintf(output, sizeof output, msg_txt(126), limit);
-		clif_displaymessage(fd, output);
+		msg_output(fd, msg_txt(126), limit);
 	} else {
 		clif_displaymessage(fd, msg_txt(127));
 	}
@@ -4719,7 +4634,6 @@ int atcommand_connectlimit(const int fd, struct map_session_data* sd, AtCommandT
 int atcommand_econ(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	struct guild *g = NULL;
-	char output[100];
 
 	nullpo_retr(-1, sd);
 
@@ -4731,8 +4645,7 @@ int atcommand_econ(const int fd, struct map_session_data* sd, AtCommandType comm
 		return -1;
 
 	sd->state.refuse_emergencycall = 0;
-	snprintf(output, sizeof output, msg_txt(128), g->master);
-	clif_displaymessage(fd, output);
+	msg_output(fd, msg_txt(128), g->master);
 
 	return 0;
 }
@@ -4744,7 +4657,6 @@ int atcommand_econ(const int fd, struct map_session_data* sd, AtCommandType comm
 int atcommand_ecoff(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	struct guild *g = NULL;
-	char output[100];
 
 	nullpo_retr(-1, sd);
 
@@ -4756,8 +4668,7 @@ int atcommand_ecoff(const int fd, struct map_session_data* sd, AtCommandType com
 		return -1;
 
 	sd->state.refuse_emergencycall = 1;
-	snprintf(output, sizeof output, msg_txt(129), g->master);
-	clif_displaymessage(fd, output);
+	msg_output(fd, msg_txt(129), g->master);
 
 	return 0;
 }
@@ -5172,11 +5083,8 @@ int atcommand_readvars(const int fd, struct map_session_data* sd, AtCommandType 
 		return -1;
 
 	errno = atcommand_vars_sub(sd, vars, name, NULL);
-	if (errno >= 0) {	// エラー時
-		char output[200];
-		snprintf(output, sizeof output, msg_txt(errno), vars);
-		clif_displaymessage(fd, output);
-	}
+	if (errno >= 0)	// エラー時
+		msg_output(fd, msg_txt(errno), vars);
 
 	return 0;
 }
@@ -5223,11 +5131,8 @@ int atcommand_writevars(const int fd, struct map_session_data* sd, AtCommandType
 	}
 
 	errno = atcommand_vars_sub(sd, vars, name, str);
-	if (errno >= 0) {	// エラー時
-		char output[200];
-		snprintf(output, sizeof output, msg_txt(errno), vars);
-		clif_displaymessage(fd, output);
-	}
+	if (errno >= 0)	// エラー時
+		msg_output(fd, msg_txt(errno), vars);
 
 	return 0;
 }
@@ -5302,10 +5207,10 @@ int atcommand_mobinfo(const int fd, struct map_session_data* sd, AtCommandType c
 	const char msize[3][5] = { "小型", "中型", "大型" };
 	const char mrace[12][9] = { "無", "不死", "動物", "植物", "昆虫", "魚", "悪魔", "人間", "天使", "竜", "Boss", "Non-Boss" };
 	const char melement[11][5] = { "無", "無", "水", "地", "火", "風", "毒", "聖", "闇", "念", "不死" };
-	char output[200], output2[200];
+	char output[200];
 	struct item_data *item_data;
 	struct mob_db *m;
-	int i, j, mob_id;
+	int i, j, len, mob_id;
 
 	nullpo_retr(-1, sd);
 
@@ -5323,15 +5228,13 @@ int atcommand_mobinfo(const int fd, struct map_session_data* sd, AtCommandType c
 	m = &mob_db[mob_id];
 
 	// stats
-	sprintf(output, "%s Monster: %s/%s (%d)", ((m->mexp)? "MVP": ""),
+	msg_output(fd, "%s Monster: %s/%s (%d)", ((m->mexp)? "MVP": ""),
 		m->name, m->jname, mob_id);
-	clif_displaymessage(fd, output);
-	sprintf(output, " Level:%d  HP:%d  SP:%d  Base EXP:%d  Job EXP:%d",
+	msg_output(fd, " Level:%d  HP:%d  SP:%d  Base EXP:%d  Job EXP:%d",
 		m->lv, m->max_hp, m->max_sp, m->base_exp, m->job_exp);
-	clif_displaymessage(fd, output);
-	sprintf(output, " DEF:%d  MDEF:%d  STR:%d  AGI:%d  VIT:%d  INT:%d  DEX:%d  LUK:%d",
+	msg_output(fd, " DEF:%d  MDEF:%d  STR:%d  AGI:%d  VIT:%d  INT:%d  DEX:%d  LUK:%d",
 		m->def, m->mdef, m->str, m->agi, m->vit, m->int_, m->dex, m->luk);
-	clif_displaymessage(fd, output);
+
 	if (m->element < 20) {
 		//Element - None, Level 0
 		i = 0;
@@ -5342,26 +5245,25 @@ int atcommand_mobinfo(const int fd, struct map_session_data* sd, AtCommandType c
 		if (i > 10)
 			i = 0;
 	}
-	sprintf(output, " ATK:%d-%d  Range:%d-%d-%d  Size: %s  Race: %s  Element: %s (Lv:%d)",
+	msg_output(fd, " ATK:%d-%d  Range:%d-%d-%d  Size: %s  Race: %s  Element: %s (Lv:%d)",
 		m->atk1, m->atk2, m->range, m->range2 , m->range3,
 		((m->size > 3)? "-": msize[m->size]), ((m->race > 12)? "-": mrace[m->race]), melement[i], j);
-	clif_displaymessage(fd, output);
 
 	// drops
 	clif_displaymessage(fd, " Drops:");
 	strcpy(output, " ");
-	j = 0;
-	for (i = 0; i < ITEM_DROP_COUNT; i++) {
+	len = strlen(output);
+	for (i = 0, j = 0; i < ITEM_DROP_COUNT; i++) {
 		int rate;
 		if (m->dropitem[i].nameid <= 0 || (item_data = itemdb_exists(m->dropitem[i].nameid)) == NULL)
 			continue;
 		rate = mob_droprate_fix(&sd->bl, m->dropitem[i].nameid, m->dropitem[i].p);
 		if (rate > 0) {
-			sprintf(output2, " - %s  %02.02lf%%", item_data->jname, (double)rate / 100.);
-			strcat(output, output2);
+			len += sprintf(output + len, " - %s  %02.02lf%%", item_data->jname, (double)rate / 100.);
 			if (++j % 3 == 0) {
 				clif_displaymessage(fd, output);
 				strcpy(output, " ");
+				len = 1;
 			}
 		}
 	}
@@ -5372,17 +5274,18 @@ int atcommand_mobinfo(const int fd, struct map_session_data* sd, AtCommandType c
 
 	// mvp
 	if (m->mexp) {
-		sprintf(output, " MVP Bonus EXP:%d  %02.02lf%%", m->mexp, (double)m->mexpper / 100.);
-		clif_displaymessage(fd, output);
+		msg_output(fd, " MVP Bonus EXP:%d  %02.02lf%%", m->mexp, (double)m->mexpper / 100.);
 		strcpy(output, " MVP Items:");
-		j = 0;
-		for (i = 0; i < 3; i++) {
+		len = strlen(output);
+		for (i = 0, j = 0; i < 3; i++) {
 			if (m->mvpitem[i].nameid <= 0 || (item_data = itemdb_exists(m->mvpitem[i].nameid)) == NULL)
 				continue;
 			if (m->mvpitem[i].p > 0) {
-				j++;
-				sprintf(output2, " %s%s  %02.02lf%%", ((j == 1)? "- ": ""), item_data->jname, (double)m->mvpitem[i].p / 100.);
-				strcat(output, output2);
+				if (j++ == 0) {
+					strcat(output, " -");
+					len += 2;
+				}
+				len += sprintf(output + len, " %s  %02.02lf%%", item_data->jname, (double)m->mvpitem[i].p / 100.);
 			}
 		}
 		if (j == 0)
@@ -5615,7 +5518,6 @@ int atcommand_changemaptype(const int fd, struct map_session_data* sd, AtCommand
 int atcommand_hotkeyset(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	int num;
-	char output[128];
 
 	nullpo_retr(-1, sd);
 
@@ -5627,11 +5529,10 @@ int atcommand_hotkeyset(const int fd, struct map_session_data* sd, AtCommandType
 	if (num >= 0 && num <= (MAX_HOTKEYS - 1) / 27) {
 		sd->hotkey_set = num;
 		clif_send_hotkey(sd);
-		snprintf(output, sizeof output, msg_txt(184), sd->hotkey_set);
+		msg_output(fd, msg_txt(184), sd->hotkey_set);
 	} else {
-		snprintf(output, sizeof output, msg_txt(185), (MAX_HOTKEYS - 1) / 27);
+		msg_output(fd, msg_txt(185), (MAX_HOTKEYS - 1) / 27);
 	}
-	clif_displaymessage(fd, output);
 
 	return 0;
 }
