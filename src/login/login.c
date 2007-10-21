@@ -84,7 +84,7 @@ static int login_journal_cache = 1000;
 static char GM_account_filename[1024] = "conf/GM_account.txt";
 static struct dbt *gm_account_db = NULL;
 
-int login_log(char *fmt,...);
+static int login_log(const char *fmt, ...);
 static int isGM(int account_id);
 static int gm_account_db_final(void *key, void *data, va_list ap);
 
@@ -1021,36 +1021,31 @@ static int gm_account_db_final(void *key, void *data, va_list ap)
 	return 0;
 }
 
-int login_log(char *fmt,...)
+static int login_log(const char *fmt, ...)
 {
 #ifdef TXT_ONLY
 	FILE *logfp;
 	va_list ap;
 
-	va_start(ap,fmt);
+	va_start(ap, fmt);
 
-	logfp=fopen(login_log_filename,"a");
-	if(logfp){
-		vfprintf(logfp,fmt,ap);
-		fprintf(logfp,RETCODE);
+	logfp = fopen(login_log_filename, "a");
+	if(logfp) {
+		vfprintf(logfp, fmt, ap);
+		fprintf(logfp, RETCODE);
 		fclose(logfp);
 	}
-
 	va_end(ap);
 #else
-	char log[256], buf[512];
+	char msg[256], buf[512];
 	va_list ap;
 
-	va_start(ap,fmt);
-
-	(void) vsnprintf(log,256,fmt,ap);
+	va_start(ap, fmt);
+	vsnprintf(msg, sizeof(msg), fmt, ap);
 	va_end(ap);
 
-	sprintf(
-		tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')",
-		loginlog_db, strecpy(buf,log)
-	);
-	if(mysql_query(&mysql_handle, tmp_sql) ){
+	sprintf(tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')", loginlog_db, strecpy(buf,msg));
+	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (insert `%s`)- %s\n", loginlog_db, mysql_error(&mysql_handle) );
 	}
 #endif
@@ -1090,20 +1085,20 @@ int mmo_auth(struct login_session_data* sd)
 	    (sd->userid[len+1] == 'F' || sd->userid[len+1] == 'M') &&
 	    new_account_flag != 0) {
 		// 新規アカウント作成
-		char *adm_pass=strchr(sd->pass,'@');
-		if(adm_pass==NULL)
-			adm_pass="";
+		char *adm_pass = strchr(sd->pass,'@');
+		if(adm_pass == NULL)
+			adm_pass += strlen(adm_pass);
 		else
 			adm_pass++;
 
-		if(strcmp(adm_pass,admin_pass)==0) {
-			if(adm_pass[0])
-				*(adm_pass-1)=0;
-
-			newaccount=1;
-			sd->userid[len]=0;
+		if(strcmp(adm_pass, admin_pass) == 0) {
+			if(*adm_pass) {
+				*(adm_pass - 1) = 0;
+			}
+			newaccount      = 1;
+			sd->userid[len] = 0;
 		} else {
-			sd->userid[0]=0;
+			sd->userid[0] = 0;
 		}
 	}
 
@@ -1128,35 +1123,34 @@ int mmo_auth(struct login_session_data* sd)
 		return 0;
 	}
 	if(sd->passwdenc > 0){
-		int j = sd->passwdenc;
+		int enc = sd->passwdenc;
 		char md5str[192],md5bin[32];
 
-		if(!sd->md5keylen){
+		if(!sd->md5keylen) {
 			login_log("md5key not created %s %s",tmpstr,sd->userid);
 			return 1;
 		}
-		if(j==4)
+		if(enc == 4)
 		{
 			HMAC_MD5_Binary( ac->pass, strlen(ac->pass), sd->md5key, sd->md5keylen, md5bin );
 			encpasswdok = ( memcmp( sd->pass, md5bin, 16) == 0);
 		}
-		else if(j<=3)
+		else if(enc <= 3)
 		{
-			if(j>2) j=1;
+			if(enc > 2) enc = 1;
 			do {
-				if(j==1) {
+				if(enc == 1) {
 					snprintf(md5str, sizeof(md5str), "%s%s", sd->md5key, ac->pass);
-				} else if(j==2) {
+				} else if(enc == 2) {
 					snprintf(md5str, sizeof(md5str), "%s%s", ac->pass, sd->md5key);
 				} else {
 					md5str[0] = 0;
 				}
 				MD5_String2binary(md5str,md5bin);
 				encpasswdok = ( memcmp( sd->pass, md5bin, 16) == 0);
-			} while(j<2 && !encpasswdok && (j++) != sd->passwdenc);
+			} while(enc < 2 && !encpasswdok && (enc++) != sd->passwdenc);
 		}
-//		printf("key[%s] md5 [%s] ",md5key,md5);
-//		printf("client [%s] accountpass [%s]\n",account->passwd,auth_dat[i].pass);
+
 		if(!encpasswdok) {
 			// 認証失敗
 			char logbuf[1024],*p=logbuf;

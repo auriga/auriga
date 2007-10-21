@@ -8581,7 +8581,6 @@ static int pc_extra(int tid, unsigned int tick, int id, int data)
 					if ((long)pl_sd->status.zeny < -quantity)
 						quantity = -((long)pl_sd->status.zeny);
 					if (quantity < 0) {
-						char output[200];
 						snprintf(output, sizeof output, msg_txt(149), -quantity); // Server (special action): you lost %ld zenys.
 						clif_displaymessage(pl_sd->fd, output);
 						pl_sd->status.zeny += quantity;

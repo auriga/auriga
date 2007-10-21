@@ -283,7 +283,7 @@ static int itemdb_read_itemdb(void)
 	struct item_data *id;
 	struct script_code *script = NULL;
 	int i=0;
-	char *filename[] = { "db/item_db.txt","db/addon/item_db_add.txt" };
+	const char *filename[] = { "db/item_db.txt","db/addon/item_db_add.txt" };
 
 	for(i=0;i<2;i++){
 		fp=fopen(filename[i],"r");

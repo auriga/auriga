@@ -104,19 +104,19 @@ const int diry[8] = { 1, 1, 0,-1,-1,-1, 0, 1 };
 
 #ifdef TXT_ONLY
 
-int do_txt_init_map(void)
+static int do_txt_init_map(void)
 {
 	// nothing to do
 	return 0;
 }
 
-int do_txt_final_map(void)
+static int do_txt_final_map(void)
 {
 	// nothing to do
 	return 0;
 }
 
-int map_txt_config_read_sub(const char *w1,const char *w2)
+static int map_txt_config_read_sub(const char *w1,const char *w2)
 {
 	if(strcmpi(w1,"mapreg_txt") == 0) {
 		strncpy(mapreg_txt, w2, sizeof(mapreg_txt) - 1);
@@ -146,7 +146,7 @@ static char script_server_pw[32]      = "ragnarok";
 static char script_server_db[32]      = "ragnarok";
 static char script_server_charset[32] = "";
 
-int do_sql_init_map(void)
+static int do_sql_init_map(void)
 {
 	// DB connection initialized
 	mysql_init(&mysql_handle);
@@ -198,7 +198,7 @@ int do_sql_init_map(void)
 	return 0;
 }
 
-int do_sql_final_map(void)
+static int do_sql_final_map(void)
 {
 	mysql_close(&mysql_handle);
 	mysql_close(&mysql_handle_script);
@@ -207,7 +207,7 @@ int do_sql_final_map(void)
 	return 0;
 }
 
-int map_sql_config_read_sub(const char* w1,const char* w2)
+static int map_sql_config_read_sub(const char* w1,const char* w2)
 {
 	if(strcmpi(w1,"map_server_ip") == 0) {
 		strncpy(map_server_ip, w2, sizeof(map_server_ip) - 1);
@@ -2378,7 +2378,7 @@ static void map_delmap(char *mapname)
  * マップ1枚読み込み
  *------------------------------------------
  */
-static int map_readmap(int m,char *fn,int *map_cache)
+static int map_readmap(int m,char *fn,int *cache)
 {
 	size_t size;
 
@@ -2387,7 +2387,7 @@ static int map_readmap(int m,char *fn,int *map_cache)
 
 	if(map_cache_read(&map[m])) {
 		// キャッシュから読み込めた
-		(*map_cache)++;
+		(*cache)++;
 	} else {
 		int wh;
 		int x,y,xs,ys;
@@ -2453,7 +2453,7 @@ static void map_readallmap(void)
 {
 	int i;
 	char fn[256];
-	int map_cache = 0;
+	int cache = 0;
 	int maps_removed = 0;
 
 	// マップキャッシュを開く
@@ -2465,7 +2465,7 @@ static void map_readallmap(void)
 		if(strstr(map[i].name,".gat") == NULL)
 			continue;
 		sprintf(fn,"data\\%s",map[i].name);
-		if(map_readmap(i, fn, &map_cache) == -1) {
+		if(map_readmap(i, fn, &cache) == -1) {
 			map_delmap(map[i].name);
 			maps_removed++;
 			i--;
@@ -2479,7 +2479,7 @@ static void map_readallmap(void)
 	if(maps_removed) {
 		printf("%d maps in configuration file. %d map%s removed.\n", map_num + maps_removed, maps_removed, (maps_removed > 1) ? "s" : "");
 	}
-	printf("Map read done (%d map%s, %d map%s in cache). %24s\n", map_num, (map_num > 1) ? "s" : "", map_cache, (map_cache > 1) ? "s" : "", "");
+	printf("Map read done (%d map%s, %d map%s in cache). %24s\n", map_num, (map_num > 1) ? "s" : "", cache, (cache > 1) ? "s" : "", "");
 
 	// マップキャッシュを閉じる
 	map_cache_close();
@@ -2743,7 +2743,7 @@ int map_field_setting(void)
  * socket コントロールパネルから呼ばれる
  *------------------------------------------
  */
-void map_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
+static void map_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 {
 	struct socket_data *sd = session[fd];
 

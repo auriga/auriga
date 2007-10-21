@@ -365,7 +365,7 @@ int encode_zip(char *dest, unsigned long* destLen, const char* source, unsigned 
  *	File List : Hash make
  *------------------------------------------
  */
-static int filehash(unsigned char *fname)
+static int filehash(const unsigned char *fname)
 {
 	unsigned int h = 0;
 
@@ -395,7 +395,7 @@ static void hashinit(void)
  *	File List : File find
  *------------------------------------------
  */
-FILELIST *filelist_find(char *fname)
+static FILELIST *filelist_find(const char *fname)
 {
 	int idx;
 
@@ -473,7 +473,7 @@ static void filelist_adjust(void)
  *	Grfio : Resource file size get
  *------------------------------------------
  */
-int grfio_size(char *fname)
+int grfio_size(const char *fname)
 {
 	FILELIST *entry;
 
@@ -510,7 +510,7 @@ int grfio_size(char *fname)
  *	Grfio : Resource file read & size get
  *------------------------------------------
  */
-void* grfio_reads(char *fname, int *size)
+void* grfio_reads(const char *fname, int *size)
 {
 	FILE *in = NULL;
 	unsigned char *buf=NULL,*buf2=NULL;
@@ -601,7 +601,7 @@ errret:
  *	Grfio : Resource file read
  *------------------------------------------
  */
-void* grfio_read(char *fname)
+void* grfio_read(const char *fname)
 {
 	return grfio_reads(fname, NULL);
 }
@@ -914,7 +914,7 @@ int grfio_add(const char *fname)
  * Grfio : Finalize
  *------------------------------------------
  */
-void grfio_final(void)
+static void grfio_final(void)
 {
 	int lop;
 
@@ -977,7 +977,7 @@ unsigned long grfio_crc32(const char *buf, unsigned int len)
 	return zlib_crc32(zlib_crc32(0L, Z_NULL, 0), buf, len);
 }
 
-void grfio_init(char *fname)
+void grfio_init(const char *fname)
 {
 	FILE *data_conf;
 	char line[1024],w1[1024],w2[1024];

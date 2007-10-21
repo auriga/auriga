@@ -4,7 +4,9 @@
 #include "../common/mmo.h"
 #include "../common/malloc.h"
 #include "../common/utils.h"
+
 #include "converter.h"
+#include "inter-converter.h"
 
 
 struct accreg {

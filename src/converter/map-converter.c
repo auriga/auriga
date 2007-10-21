@@ -3,7 +3,9 @@
 
 #include "../common/malloc.h"
 #include "../common/utils.h"
+
 #include "converter.h"
+#include "map-converter.h"
 
 struct script_mapreg {
 	char name[256];

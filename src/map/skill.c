@@ -5259,7 +5259,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			} else if(sd) {
 				// 罠を取り返す
 				struct item item_tmp;
-				int flag;
+				int eflag;
 				if(battle_config.skill_removetrap_type == 1) {
 					int i;
 					for(i=0; i<10; i++) {
@@ -5269,8 +5269,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						item_tmp.nameid = skill_db[su->group->skill_id].itemid[i];
 						item_tmp.amount = skill_db[su->group->skill_id].amount[i];
 						item_tmp.identify = 1;
-						if((flag = pc_additem(sd,&item_tmp,item_tmp.amount))) {
-							clif_additem(sd,0,0,flag);
+						if((eflag = pc_additem(sd,&item_tmp,item_tmp.amount))) {
+							clif_additem(sd,0,0,eflag);
 							map_addflooritem(&item_tmp,item_tmp.amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 						}
 					}
@@ -5278,8 +5278,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					memset(&item_tmp,0,sizeof(item_tmp));
 					item_tmp.nameid   = 1065;
 					item_tmp.identify = 1;
-					if((flag = pc_additem(sd,&item_tmp,1))) {
-						clif_additem(sd,0,0,flag);
+					if((eflag = pc_additem(sd,&item_tmp,1))) {
+						clif_additem(sd,0,0,eflag);
 						map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 					}
 				}
@@ -6231,7 +6231,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
  * スキル使用（詠唱完了、map指定）
  *------------------------------------------
  */
-void skill_castend_map( struct map_session_data *sd,int skill_num, const char *map)
+void skill_castend_map( struct map_session_data *sd,int skill_num, const char *mapname)
 {
 	nullpo_retv(sd);
 
@@ -6258,10 +6258,10 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 	unit_stopattack(&sd->bl);
 
 	if(battle_config.pc_skill_log)
-		printf("PC %d skill castend skill =%d map=%s\n",sd->bl.id,skill_num,map);
+		printf("PC %d skill castend skill =%d map=%s\n",sd->bl.id,skill_num,mapname);
 	unit_stop_walking(&sd->bl,0);
 
-	if(strcmp(map,"cancel") == 0)
+	if(strcmp(mapname,"cancel") == 0)
 		return;
 
 	switch(skill_num) {
@@ -6270,7 +6270,7 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 			int alive = 1;
 			map_foreachinarea(skill_landprotector,sd->bl.m,sd->bl.x,sd->bl.y,sd->bl.x,sd->bl.y,BL_SKILL,AL_TELEPORT,&alive);
 			if(sd && alive) {
-				if(strcmp(map,"Random") == 0)
+				if(strcmp(mapname,"Random") == 0)
 					pc_randomwarp(sd,3);
 				else
 					pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,3);
@@ -6296,7 +6296,7 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 				}
 			}
 			for(i=0; i<sd->ud.skilllv; i++) {
-				if(strcmp(map,p[i]->map) == 0) {
+				if(strcmp(mapname,p[i]->map) == 0) {
 					x = p[i]->x;
 					y = p[i]->y;
 					break;
@@ -6321,7 +6321,7 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 			if((group = skill_unitsetting(&sd->bl,sd->ud.skillid,sd->ud.skilllv,sd->ud.skillx,sd->ud.skilly,0)) == NULL)
 				break;
 			group->valstr = (char *)aCalloc(16, sizeof(char)); // max map_name is 15 char + NULL
-			memcpy(group->valstr, map, 15);
+			memcpy(group->valstr, mapname, 15);
 			group->val2 = (x<<16)|y;
 		}
 		break;
@@ -6517,9 +6517,14 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 
 	for(i=0; i<layout->count; i++) {
 		struct skill_unit *unit;
-		int ux,uy,val1=skilllv,val2=0,limit=group->limit,alive=1;
-		ux = x + layout->dx[i];
-		uy = y + layout->dy[i];
+		int ux, uy, alive = 1;
+
+		ux    = x + layout->dx[i];
+		uy    = y + layout->dy[i];
+		val1  = skilllv;
+		val2  = 0;
+		limit = group->limit;
+
 		switch (skillid) {
 			case MG_FIREWALL:		/* ファイヤーウォール */
 				val2 = group->val2;
@@ -7446,7 +7451,7 @@ static int skill_unit_effect(struct block_list *bl,va_list ap)
  * スキルユニットの限界イベント
  *------------------------------------------
  */
-int skill_unit_onlimit(struct skill_unit *src,unsigned int tick)
+static int skill_unit_onlimit(struct skill_unit *src,unsigned int tick)
 {
 	struct skill_unit_group *sg;
 
@@ -9418,13 +9423,13 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
  * ディレイ計算
  *------------------------------------------
  */
-int skill_delayfix( struct block_list *bl, int time, int cast )
+int skill_delayfix( struct block_list *bl, int delay, int cast )
 {
 	struct status_change *sc;
 
 	nullpo_retr(0, bl);
 
-	if(time <= 0 && cast <= 0)
+	if(delay <= 0 && cast <= 0)
 		return ( status_get_adelay(bl) / 2 );
 
 	sc = status_get_sc(bl);
@@ -9433,28 +9438,28 @@ int skill_delayfix( struct block_list *bl, int time, int cast )
 		struct map_session_data *sd = (struct map_session_data *)bl;
 		if(battle_config.delay_dependon_dex) {	// dexの影響を計算する
 			if(battle_config.no_delay_dex > status_get_dex(bl)) {
-				time = time * (battle_config.no_delay_dex - status_get_dex(bl)) / battle_config.no_delay_dex;
+				delay = delay * (battle_config.no_delay_dex - status_get_dex(bl)) / battle_config.no_delay_dex;
 			} else {
-				time = 0;
+				delay = 0;
 			}
 		}
-		time = time * battle_config.delay_rate / 100;
+		delay = delay * battle_config.delay_rate / 100;
 		if(sd && sd->skill_delay_rate)
-			time = time * (100 + sd->skill_delay_rate) / 100;
+			delay = delay * (100 + sd->skill_delay_rate) / 100;
 	}
 
 	/* ブラギの詩 */
 	if(sc) {
 		if(sc->data[SC_POEMBRAGI].timer != -1) {
-			time = time * (100 - (sc->data[SC_POEMBRAGI].val1 * 5 + sc->data[SC_POEMBRAGI].val2 * 2
+			delay = delay * (100 - (sc->data[SC_POEMBRAGI].val1 * 5 + sc->data[SC_POEMBRAGI].val2 * 2
 					+ (sc->data[SC_POEMBRAGI].val3 & 0xffff))) / 100;
 		} else if(sc->data[SC_POEMBRAGI_].timer != -1) {
-			time = time * (100 - (sc->data[SC_POEMBRAGI_].val1 * 5 + sc->data[SC_POEMBRAGI_].val2 * 2
+			delay = delay * (100 - (sc->data[SC_POEMBRAGI_].val1 * 5 + sc->data[SC_POEMBRAGI_].val2 * 2
 					+ (sc->data[SC_POEMBRAGI_].val3 & 0xffff))) / 100;
 		}
 	}
 
-	return (time > 0) ? time : 0;
+	return (delay > 0) ? delay : 0;
 }
 
 /*=========================================
@@ -12448,7 +12453,7 @@ static int skill_readdb(void)
 	int i,j,k,m;
 	FILE *fp;
 	char line[1024],*p;
-	char *filename[]={
+	const char *filename[] = {
 		"db/skill_db.txt",         "db/addon/skill_db_add.txt",
 		"db/skill_require_db.txt", "db/addon/skill_require_db_add.txt",
 		"db/skill_cast_db.txt",    "db/addon/skill_cast_db_add.txt",

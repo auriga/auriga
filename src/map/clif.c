@@ -520,7 +520,7 @@ int clif_clearchar_delay(unsigned int tick,struct block_list *bl)
  *
  *------------------------------------------
  */
-void clif_clearchar_id(int id, unsigned char type, int fd)
+static void clif_clearchar_id(int id, unsigned char type, int fd)
 {
 	if(fd < 0)
 		return;
@@ -4663,7 +4663,7 @@ void clif_storageclose(struct map_session_data *sd)
  * 通常攻撃エフェクト＆ダメージ
  *------------------------------------------
  */
-void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div, int type, int damage2)
+void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2)
 {
 	unsigned char buf[32];
 	struct status_change *sc;
@@ -4693,7 +4693,7 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 	WBUFL(buf,14)=sdelay;
 	WBUFL(buf,18)=ddelay;
 	WBUFW(buf,22)=(damage > 0x7fff)? 0x7fff:damage;
-	WBUFW(buf,24)=div;
+	WBUFW(buf,24)=div_;
 	WBUFB(buf,26)=type;
 	WBUFW(buf,27)=damage2;
 	clif_send(buf,packet_db[0x8a].len,src,AREA);
@@ -5491,7 +5491,7 @@ void clif_skill_fail(struct map_session_data *sd, int skill_id, unsigned char ty
  *------------------------------------------
  */
 void clif_skill_damage(struct block_list *src,struct block_list *dst,
-	unsigned int tick,int sdelay,int ddelay,int damage,int div,int skill_id,int skill_lv,int type)
+	unsigned int tick,int sdelay,int ddelay,int damage,int div_,int skill_id,int skill_lv,int type)
 {
 	unsigned char buf[36];
 	struct status_change *sc;
@@ -5520,7 +5520,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 	WBUFL(buf,20)=ddelay;
 	WBUFW(buf,24)=damage;
 	WBUFW(buf,26)=skill_lv;
-	WBUFW(buf,28)=div;
+	WBUFW(buf,28)=div_;
 	WBUFB(buf,30)=(type>0)?type:skill_get_hit(skill_id);
 	clif_send(buf,packet_db[0x114].len,src,AREA);
 #else
@@ -5533,7 +5533,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 	WBUFL(buf,20)=ddelay;
 	WBUFL(buf,24)=damage;
 	WBUFW(buf,28)=skill_lv;
-	WBUFW(buf,30)=div;
+	WBUFW(buf,30)=div_;
 	WBUFB(buf,32)=(type>0)?type:skill_get_hit(skill_id);
 	clif_send(buf,packet_db[0x1de].len,src,AREA);
 #endif
@@ -6019,13 +6019,13 @@ void clif_set0199(int fd, unsigned short type)
  * PvP・GvG実装（MAP全体）
  *------------------------------------------
  */
-void clif_send0199(int map, unsigned short type)
+void clif_send0199(int m, unsigned short type)
 {
 	struct block_list bl;
 	unsigned char buf[4];
 
 	memset(&bl,0,sizeof(bl));
-	bl.m = map;
+	bl.m = m;
 
 	WBUFW(buf,0)=0x199;
 	WBUFW(buf,2)=type;
@@ -13341,7 +13341,7 @@ static void clif_parse_MercMenu(int fd,struct map_session_data *sd, int cmd)
  * クライアントのデストラクタ
  *------------------------------------------
  */
-int clif_disconnect(int fd)
+static int clif_disconnect(int fd)
 {
 	struct map_session_data *sd = (struct map_session_data *)session[fd]->session_data;
 

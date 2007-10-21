@@ -637,7 +637,7 @@ static void party_send_xy_clear(struct party *p)
  * パーティメンバの移動通知
  *------------------------------------------
  */
-void party_recv_movemap(int party_id, int account_id, char *map, unsigned char online, unsigned short lv, const char* name)
+void party_recv_movemap(int party_id, int account_id, char *mapname, unsigned char online, unsigned short lv, const char* name)
 {
 	struct map_session_data *sd;
 	struct party *p;
@@ -653,7 +653,7 @@ void party_recv_movemap(int party_id, int account_id, char *map, unsigned char o
 			return;
 		}
 		if (m->account_id == account_id && strncmp(m->name, name, 24) == 0){
-			memcpy(m->map,map,16);
+			memcpy(m->map,mapname,16);
 			m->online=online;
 			m->lv=lv;
 			break;

@@ -49,7 +49,7 @@ static int max_persist_requests = 32;	// 持続通信での最大リクエスト
 void httpd_set_max_persist_requests( int i ) { max_persist_requests = i; }
 
 static int request_timeout[] = { 2500, 60*1000 };	// タイムアウト(最初、持続)
-void httpd_set_request_timeout( int idx, int time ) { request_timeout[idx]=time; }
+void httpd_set_request_timeout( int idx, int t ) { request_timeout[idx] = t; }
 
 static char document_root[256]="./httpd/";	// ドキュメントルート
 void httpd_set_document_root( const char *str ) { strncpy( document_root, str, sizeof(document_root) - 1 ); }
@@ -946,7 +946,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 				if( n>=sizeof(username) )
 					return 0;
 				strcpy( username, buf );
-				i+= 11 + n;
+				i += 11 + n;
 			}
 			else
 				return 0;
@@ -958,7 +958,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 				if( n>=sizeof(realm) || strcmp(buf,a->realm)!=0 )
 					return 0;
 				strcpy( realm, buf );
-				i+= 8 + n;
+				i += 8 + n;
 			}
 			else
 				return 0;
@@ -970,7 +970,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 				if( n>=sizeof(nonce) || n<40  )
 					return 0;
 				strcpy( nonce, buf );
-				i+= 8 + n;
+				i += 8 + n;
 			}
 			else
 				return 0;
@@ -979,7 +979,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		{
 			if( sscanf(sd->auth+i+5,"%[^\"]%n", uri, &n )==1 )
 			{
-				i+= 6 + n;
+				i += 6 + n;
 			}
 			else
 				return 0;
@@ -987,18 +987,18 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		if( strncasecmp( sd->auth+i, "algorithm=", 10) ==0 )	// アルゴリズム（MD5固定）
 		{
 			if( strncasecmp(sd->auth+i+10, "MD5", 3)==0 )
-				i+= 14;
+				i += 14;
 			else if( strncasecmp(sd->auth+i+10, "\"MD5\"", 5)==0 )	// ie のバグを吸収
-				i+= 16;
+				i += 16;
 			else
 				return 0;
 		}
 		if( strncasecmp( sd->auth+i, "qop=", 4) ==0 )			// qop（auth固定）
 		{
 			if( strncasecmp(sd->auth+i+4, "auth", 4)==0 )
-				i+= 8;
+				i += 8;
 			else if( strncasecmp(sd->auth+i+4, "\"auth\"", 6)==0 )	// ie のバグを吸収
-				i+=10;
+				i +=10;
 			else
 				return 0;
 		}
@@ -1021,7 +1021,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 				if( n!=8 )
 					return 0;
 				strcpy( nc, buf );
-				i+= 11;
+				i += 11;
 			}
 			else
 				return 0;
@@ -1033,7 +1033,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 				if( n!=32 )
 					return 0;
 				strcpy( response, buf );
-				i+= 43;
+				i += 43;
 			}
 			else
 				return 0;
@@ -1041,7 +1041,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		if( strncasecmp( sd->auth+i, "auth_param=", 11 )==0 )	// auth_param
 		{
 			int c=',';
-			i+=11;
+			i += 11;
 			if( sd->auth[i]=='\"' ) c='\"';
 			while( sd->auth[i] && sd->auth[i]!=c )
 				i++;
@@ -1081,11 +1081,11 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 
 	// uri の妥当性検査
 	{
-		int i=0;
 		char req_uri[1024];
 		const char *line = sd->request_line;
 		while( *line && *line!=' ' ) line++;
 		line++;
+		i = 0;
 		while( *line && *line!=' ' )
 			req_uri[i++] = *(line++);
 		req_uri[i]='\0';
@@ -1114,7 +1114,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		if( strcmpi( nonce+8, buf2 )!=0 )	// 計算方法が違う
 			return 0;
 
-		if( (int)( gettick() - tick ) > auth_digest_period )	// 有効期限が切れたので stale フラグ設定
+		if( DIFF_TICK( gettick(), tick ) > auth_digest_period )	// 有効期限が切れたので stale フラグ設定
 		{
 			sd->auth_digest_stale = 1;
 			return 0;
@@ -1123,7 +1123,6 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 
 	// nc の妥当性検査
 	{
-		int i;
 		unsigned int nci;
 
 		if( sscanf(nc,"%08x",&nci )!=1 )	// nc がない
@@ -1151,7 +1150,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 	}
 	// rensponse の妥当性検査
 	{
-		static const char *method[]={"","GET","POST"};
+		const char *method[]={"","GET","POST"};
 		char a1[33],a2[33],res[33];
 
 		// A1 計算
@@ -1203,7 +1202,7 @@ int httpd_check_access_user_basic( struct httpd_access *a, struct httpd_session_
 
 	if( httpd_decode_base64( buf, sd->auth+6 ) && sscanf(buf,"%[^:]:%[^\r]",name,passwd) == 2 )
 	{
-		char *apass[4]={NULL,NULL,NULL,""};
+		const char *apass[4];
 
 		// 登録された認証関数があればそれを使って比較する
 		if( auth_func[a->auth_func_id] && auth_func[a->auth_func_id]( a, sd, name, passwd2 ) && strcmp(passwd, passwd2)==0 )
@@ -1212,9 +1211,10 @@ int httpd_check_access_user_basic( struct httpd_access *a, struct httpd_session_
 			return 1;
 		}
 
-		apass[0]=passwd;
-		apass[1]=buf;
-		apass[2]=buf+64;
+		apass[0] = passwd;
+		apass[1] = buf;
+		apass[2] = buf+64;
+		apass[3] = "";
 
 		sprintf( buf+128, "%s:%s", name, passwd );
 		MD5_String( buf+128, buf );
@@ -1247,7 +1247,7 @@ int httpd_check_access( struct httpd_session_data *sd, int *st )
 	// 一番長くマッチする条件を探す
 	for( i=0; i<htaccess_count; i++ )
 	{
-		struct httpd_access *a = htaccess[i];
+		a = htaccess[i];
 		if( a->urllen > len && strncasecmp( a->url, sd->url-1, a->urllen )==0 ) {
 			n=i; len = a->urllen;
 		}
@@ -2125,7 +2125,6 @@ void httpd_page_external_cgi_send( struct httpd_session_data* sd )
 	if( GetFileSize( sd->cgi_hErr, NULL ) != 0 )
 	{
 		// cgi でエラーがあったらしい
-		DWORD dwRead = 0;
 		ReadFile( sd->cgi_hErr, szBuf, sizeof(szBuf)-16, &dwRead, NULL );
 		szBuf[dwRead] = '\0';
 		printf("error --\n%s\n---\n", szBuf );
@@ -3139,14 +3138,8 @@ void httpd_config_read_add_authuser( struct httpd_access *a, const char *name, c
 	// 必要ならメモリを拡張
 	if( a->user_count == a->user_max )
 	{
-		struct httpd_access_user* au = (struct httpd_access_user *)aMalloc( sizeof(struct httpd_access_user) * (a->user_max + 16) );
-		if( a->user )
-		{
-			memcpy( au, a->user, sizeof(struct httpd_access_user) * a->user_count );
-			aFree( a->user );
-		}
-		a->user = au;
 		a->user_max += 16;
+		a->user = (struct httpd_access_user *)aRealloc( a->user, sizeof(struct httpd_access_user) * a->user_max );
 	}
 
 	// ユーザー追加
@@ -3191,10 +3184,10 @@ static void httpd_config_read_add_ip( unsigned long **list, int *count, int *max
 	}
 	else if( sscanf( w2,"%d.%d.%d.%d/%d", &i1, &i2, &i3, &i4, &m1 )==5 )	// 192.168.0.0/24 形式
 	{
-		int mask = 0xffffffff << (32-m1);
+		int bit = 0xffffffff << (32-m1);
 		pip[0] = i1;		pip[1] = i2;		pip[2] = i3;		pip[3] = i4;
-		pmask[0] = (mask>>24);		pmask[1] = (mask>>16);
-		pmask[2] = (mask>>8);		pmask[3] = mask;
+		pmask[0] = (bit>>24);		pmask[1] = (bit>>16);
+		pmask[2] = (bit>>8);		pmask[3] = bit;
 	}
 	else if( sscanf( w2,"%d.%d.%d.%d", &i1, &i2, &i3, &i4 )==4 )	// 192.168.0.1 形式 (サブネットマスク 255.255.255.255 )
 	{
@@ -3242,7 +3235,6 @@ static void httpd_config_read_add_ip( unsigned long **list, int *count, int *max
 // ------------------------------------------
 int httpd_config_read(char *cfgName)
 {
-	int i;
 	char line[1024],w1[1024],w2[1024];
 	FILE *fp;
 	struct httpd_access *a = NULL;
@@ -3255,8 +3247,7 @@ int httpd_config_read(char *cfgName)
 	while(fgets(line,1020,fp)){
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		i=sscanf(line,"%[^:]: %[^\r\n]",w1,w2);
-		if(i!=2)
+		if(sscanf(line,"%[^:]: %[^\r\n]",w1,w2) != 2)
 			continue;
 
 		if(strcmpi(w1,"enable")==0)
@@ -3382,14 +3373,8 @@ int httpd_config_read(char *cfgName)
 					int j;
 					if( htaccess_count==htaccess_max )
 					{
-						struct httpd_access **a = (struct httpd_access **)aMalloc( sizeof( struct httpd_access* ) * htaccess_max+16 );
-						if( htaccess )
-						{
-							memcpy( a, htaccess, sizeof( struct httpd_access* ) * htaccess_count );
-							aFree( htaccess );
-						}
-						htaccess = a;
 						htaccess_max += 16;
+						htaccess = (struct httpd_access **)aRealloc( htaccess, sizeof(struct httpd_access*) * htaccess_max );
 					}
 					// データの追加＆初期化
 					a = htaccess[ htaccess_count++ ] = (struct httpd_access *)aMalloc( sizeof( struct httpd_access ) );

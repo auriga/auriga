@@ -31,12 +31,12 @@
 #ifdef _WIN32
 	#undef close
 	#define close(id) do{ if(session[id]) closesocket(session[id]->socket); } while(0);
-	#define sock(fd) (session[fd]->socket)
+	#define sockfd(fd) (session[fd]->socket)
 	static void SessionInsertSocket(const SOCKET elem, int pos2);
 	static void SessionRemoveSocket(const SOCKET elem);
 #else
 	#undef close
-	#define sock(fd) (fd)
+	#define sockfd(fd) (fd)
 #endif
 
 fd_set readfds;
@@ -109,7 +109,7 @@ static int recv_to_fifo(int fd)
 	if (sd->eof || (recv_limit_rate_enable && sd->auth >= 0 && DIFF_TICK(sd->rlr_tick, tick) > 0))	// 帯域制限中
 		return -1;
 
-	len = recv(sock(fd), sd->rdata_size, RFIFOSPACE(fd), 0);
+	len = recv(sockfd(fd), sd->rdata_size, RFIFOSPACE(fd), 0);
 	//{ int i; printf("recv %d : ", fd); for(i = 0; i < len; i++) { printf("%02x ", sd->rdata_size[i]); } printf("\n"); }
 	if (len > 0) {
 		sd->rdata_size += len;
@@ -174,7 +174,7 @@ static int send_from_fifo(int fd)
 	if (sd->eof || WFIFOREST(fd) == 0)
 		return -1;
 
-	len = send(sock(fd), sd->wdata_pos, WFIFOREST(fd), 0);
+	len = send(sockfd(fd), sd->wdata_pos, WFIFOREST(fd), 0);
 	//{ int i; printf("send %d : ", fd); for(i = 0; i < len; i++) { printf("%02x ", session[fd]->wdata_pos[i]); } printf("\n"); }
 	if (len > 0) {
 		sd->wdata_pos += len;
@@ -216,7 +216,7 @@ static int connect_client(int listen_fd)
 	int fd, len, yes;
 	struct sockaddr_in client_address;
 #ifdef _WIN32
-	SOCKET socket;
+	SOCKET sock;
 #endif
 
 	len = sizeof(client_address);
@@ -307,11 +307,11 @@ static int connect_client(int listen_fd)
 	FD_SET(fd, &readfds);
 
 #ifdef _WIN32
-	socket = fd;
+	sock = fd;
 	fd = 2;
 	while(session[fd] != NULL && fd < fd_max)
 		fd++;
-	SessionInsertSocket(socket, fd);
+	SessionInsertSocket(sock, fd);
 #endif
 
 	session[fd] = (struct socket_data *)aCalloc(1, sizeof(*session[fd]));
@@ -320,7 +320,7 @@ static int connect_client(int listen_fd)
 	session[fd]->func_parse  = default_func_parse;
 	session[fd]->client_addr = client_address;
 #if _WIN32
-	session[fd]->socket      = socket;
+	session[fd]->socket      = sock;
 #endif
 	session[fd]->tick        = gettick();
 	session[fd]->auth        = 0;
@@ -636,9 +636,9 @@ void delete_session(int fd)
 		if (session[fd]->func_destruct)
 			session[fd]->func_destruct(fd);
 		close(fd);
-		FD_CLR(sock(fd), &readfds);
+		FD_CLR(sockfd(fd), &readfds);
 #ifdef _WIN32
-		SessionRemoveSocket(sock(fd));
+		SessionRemoveSocket(sockfd(fd));
 #endif
 		if (session[fd]->rdata)
 			aFree(session[fd]->rdata);
@@ -983,11 +983,11 @@ void do_sendrecv(int next)
 		if (sd) {
 			// バッファにデータがあるなら送信可能かチェックする
 			if (sd->wdata_size != sd->wdata_pos)
-				FD_SET(sock(i), &wfd);
+				FD_SET(sockfd(i), &wfd);
 
 			// 受信帯域制限中ならこの socket は受信可能かチェックしない
 			if (recv_limit_rate_enable && sd->auth >= 0 && DIFF_TICK(sd->rlr_tick, tick) > 0)
-				FD_CLR(sock(i), &rfd);
+				FD_CLR(sockfd(i), &rfd);
 		}
 	}
 
@@ -1270,7 +1270,7 @@ static int connect_check_clear(int tid, unsigned int tick, int id, int data)
 }
 
 // IPマスクチェック
-int access_ipmask(const char *str,struct _access_control* acc)
+static int access_ipmask(const char *str,struct _access_control* acc)
 {
 	unsigned int mask = 0, i = 0, m, ip, a0, a1, a2, a3;
 
@@ -1406,7 +1406,7 @@ static void socket_config_read(void)
 	return;
 }
 
-void do_final_socket(void)
+static void do_final_socket(void)
 {
 	int i;
 	struct _connect_history *hist, *hist2;
@@ -1630,20 +1630,20 @@ void socket_set_httpd_page_connection_func(void (*func)(int fd,char*,char*,char*
 // ==========================================
 // 接続状況確認
 // ------------------------------------------
-static void socket_httpd_page_connection(struct httpd_session_data *sd, const char *url)
+static void socket_httpd_page_connection(struct httpd_session_data *hsd, const char *url)
 {
 	int i, n, len;
-	int fd = sd->fd;
+	int fd = hsd->fd;
 	char *p;
 
 	// 強制切断
-	p = httpd_get_value(sd, "disconnect");
+	p = httpd_get_value(hsd, "disconnect");
 	if (*p) {
 		for(i = 1; i < fd_max; i++) {
 			char buf[32];
 			char* p2;
 			sprintf(buf, "discon%04x", i);
-			p2 = httpd_get_value(sd, buf);
+			p2 = httpd_get_value(hsd, buf);
 			if (*p2 && session[i]->func_recv != connect_client)
 				session[i]->eof = 1;
 			aFree(p2);
@@ -1651,7 +1651,7 @@ static void socket_httpd_page_connection(struct httpd_session_data *sd, const ch
 	}
 	aFree(p);
 
-	socket_httpd_page_header(sd);
+	socket_httpd_page_header(hsd);
 
 	len = sprintf(WFIFOP(fd,0),
 	      "<h2>Connection list</h2>\n"
@@ -1708,7 +1708,7 @@ static void socket_httpd_page_connection(struct httpd_session_data *sd, const ch
 	len = sprintf(WFIFOP(fd,0), "</table>\n%d connection(s) found.\n", n);
 	WFIFOSET(fd, len);
 
-	socket_httpd_page_footer(sd->fd);
+	socket_httpd_page_footer(hsd->fd);
 
 	return;
 }

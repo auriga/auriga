@@ -65,7 +65,7 @@ void clif_delitem(struct map_session_data *sd, int n, int amount);
 void clif_delitem_timeout(struct map_session_data *sd, int n, int itemid);
 void clif_updatestatus(struct map_session_data *sd, int type);
 void clif_changestatus(struct block_list *bl, int type, int val);
-void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div, int type, int damage2);	// area
+void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2);	// area
 void clif_takeitem(struct block_list *src, int dst_id);
 void clif_changelook(struct block_list *bl, int type, int val);
 void clif_send_clothcolor(struct block_list *bl);
@@ -139,17 +139,13 @@ void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int rang
 void clif_skillinfoblock(struct map_session_data *sd);
 void clif_skillup(struct map_session_data *sd, int skill_num);
 
-void clif_skillcasting(struct block_list* bl,
-	int src_id,int dst_id,int dst_x,int dst_y,int skill_num,int casttime);
+void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int dst_y,int skill_num,int casttime);
 void clif_skillcastcancel(struct block_list* bl);
 void clif_skill_fail(struct map_session_data *sd, int skill_id, unsigned char type, unsigned short btype);
 void clif_skill_damage(struct block_list *src,struct block_list *dst,
-	unsigned int tick,int sdelay,int ddelay,int damage,int div,
-	int skill_id,int skill_lv,int type);
-void clif_skill_nodamage(struct block_list *src,struct block_list *dst,
-	int skill_id,int heal,int fail);
-void clif_skill_poseffect(struct block_list *src,int skill_id,
-	int val,int x,int y,int tick);
+	unsigned int tick,int sdelay,int ddelay,int damage,int div_,int skill_id,int skill_lv,int type);
+void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill_id,int heal,int fail);
+void clif_skill_poseffect(struct block_list *src,int skill_id,int val,int x,int y,int tick);
 void clif_skill_estimation(struct map_session_data *sd, struct block_list *dst);
 void clif_skill_warppoint(struct map_session_data *sd,int skill_num,
 	const char *map1,const char *map2,const char *map3,const char *map4);
@@ -279,7 +275,7 @@ void clif_heal(int fd, int type, int val);
 void clif_resurrection(struct block_list *bl, unsigned short type);
 void clif_set0199(int fd, unsigned short type);
 void clif_pvpset(struct map_session_data *sd, int pvprank, int pvpnum, char type);
-void clif_send0199(int map, unsigned short type);
+void clif_send0199(int m, unsigned short type);
 void clif_refine(int fd, unsigned short fail, int idx, int val);
 void clif_send_packet(struct map_session_data *sd, const char *message);
 

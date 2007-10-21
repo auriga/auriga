@@ -231,7 +231,7 @@ void trade_tradecancel(struct map_session_data *sd)
  * Check here if we can add items in inventories (against full inventory)
  *------------------------------------------
  */
-int trade_check(struct map_session_data *sd) {
+static int trade_check(struct map_session_data *sd) {
 	struct item inventory[MAX_INVENTORY];
 	struct item inventory2[MAX_INVENTORY];
 	struct item_data *data;

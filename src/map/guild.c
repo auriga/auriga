@@ -643,7 +643,7 @@ void guild_recv_info(struct guild *sg)
 	}
 
 	for(i=0; i<g->max_member; i++) {		// 情報の送信
-		struct map_session_data *sd = g->member[i].sd;
+		sd = g->member[i].sd;
 		if(sd == NULL)
 			continue;
 
@@ -1096,7 +1096,7 @@ void guild_send_memberinfoshort(struct map_session_data *sd, unsigned char onlin
  */
 void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsigned char online, int lv, int class_)
 {
-	int i,alv,c,idx=-1,om=0;
+	int i, alv = 0, c = 0, idx = -1, om = 0;
 	unsigned char oldonline = !online;
 	struct guild *g=guild_search(guild_id);
 	struct map_session_data *sd;
@@ -1104,7 +1104,7 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
 	if(g==NULL)
 		return;
 
-	for(i=0,alv=0,c=0,om=0;i<g->max_member;i++){
+	for(i=0;i<g->max_member;i++){
 		struct guild_member *m=&g->member[i];
 		if(!m) continue;
 		if(m->account_id==account_id && m->char_id==char_id ){
@@ -1123,7 +1123,7 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
 	}
 	if(idx == -1 || c == 0) {
 		// ギルドのメンバー外なので追放扱いする
-		struct map_session_data *sd = map_id2sd(account_id);
+		sd = map_id2sd(account_id);
 		if(sd && sd->status.char_id == char_id) {
 			sd->status.guild_id    = 0;
 			sd->guild_emblem_id    = 0;
@@ -1137,7 +1137,7 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
 	g->connect_member=om;
 
 	for(i=0;i<g->max_member;i++){	// sd再設定
-		sd= map_id2sd(g->member[i].account_id);
+		sd = map_id2sd(g->member[i].account_id);
 		g->member[i].sd=(sd!=NULL &&
 			sd->status.char_id==g->member[i].char_id &&
 			sd->status.guild_id==guild_id &&
@@ -1537,7 +1537,7 @@ void guild_skillupack(int guild_id, int skill_num, int account_id)
  * ギルド同盟数取得
  *------------------------------------------
  */
-int guild_get_alliance_count(struct guild *g,int flag)
+static int guild_get_alliance_count(struct guild *g,int flag)
 {
 	int i,c;
 
@@ -1856,11 +1856,11 @@ void guild_allianceack(int guild_id1, int guild_id2, int account_id1, int accoun
 
 
 	for(i=0;i<2-(flag&1);i++) {	// 同盟/敵対リストの再送信
-		struct map_session_data *sd;
+		struct map_session_data *tmpsd;
 		if(g[i]!=NULL) {
 			for(j=0;j<g[i]->max_member;j++) {
-				if((sd=g[i]->member[j].sd)!=NULL)
-					clif_guild_allianceinfo(sd, g[i]);
+				if((tmpsd=g[i]->member[j].sd)!=NULL)
+					clif_guild_allianceinfo(tmpsd, g[i]);
 			}
 		}
 	}

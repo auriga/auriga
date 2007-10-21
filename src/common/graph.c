@@ -15,7 +15,7 @@
 #define GRP_COLOR    graph_rgb(0,0,255)		// グラフの色
 
 /* フォント類(8*16pixel)。みっともないので、誰か書き直しキボンヌ */
-static char *graph_fonts[16] = {
+static const char *graph_fonts[16] = {
 /* 0123456789. */
 	"xxxxxxx      xx xxxxxxx xxxxxxx xx   xx xxxxxxx xxxxxxx xxxxxxx xxxxxxx xxxxxxx         ",
 	"xxxxxxx      xx xxxxxxx xxxxxxx xx   xx xxxxxxx xxxxxxx xxxxxxx xxxxxxx xxxxxxx         ",
@@ -142,7 +142,7 @@ static int graph_getpixel(struct graph* g, int x, int y)
 	return g->raw_data[y * (g->width + 1) + x + 1];
 }*/
 
-const unsigned char* graph_output(struct graph* g,int *len)
+static const unsigned char* graph_output(struct graph* g,int *len)
 {
 	unsigned long inflate_len;
 	unsigned char *p;
@@ -248,7 +248,7 @@ static void graph_line(struct graph* g, int x0, int y0, int x1, int y1,int color
 static void graph_drawtext(struct graph *g, const char *str, int x, int y, int color)
 {
 	int i, j;
-	char *fonts = "0123456789.";
+	const char *fonts = "0123456789.";
 
 	while( *str ) {
 		char *p = strchr(fonts, *str);
@@ -280,7 +280,7 @@ static void graph_data(struct graph* g,double value)
 		g->graph_max_value = value;
 
 	if(g->line_pos == NULL || value > g->graph_max) {
-		int div, cutf = 0;
+		int div_num, cutf = 0;
 		double base;
 		// 最大値が更新されたか最初の描画なので、一端画面を消去して
 		// ゼロから書き直す
@@ -292,26 +292,26 @@ static void graph_data(struct graph* g,double value)
 		// 最上位桁を10の整数乗単位で切り捨て( 3 -> 1, 48 -> 10, 100 -> 100 )
 		if( value < 0.04 ) {
 			base = 0.01;
-			div  = 4;
+			div_num  = 4;
 		} else {
 			base = pow(10.0, floor(log10(value) ) );
-			div  = (int)ceil(value / base);
+			div_num  = (int)ceil(value / base);
 		}
 		// 分割数の調整( 3 - 5 )
-		if( div <= 2 ) { div *= 2;  base /= 2;       }
-		if( div <= 2 ) { div *= 2;  base /= 2;       }
-		if( div >  5 ) { div = (div+1)/2; base *= 2; }
+		if( div_num <= 2 ) { div_num *= 2;  base /= 2;       }
+		if( div_num <= 2 ) { div_num *= 2;  base /= 2;       }
+		if( div_num >  5 ) { div_num = (div_num+1)/2; base *= 2; }
 		aFree( g->line_pos );
-		g->line_pos   = (int *)aMalloc( (int)(div < 0 ? 4 : (div+1) * sizeof(int)) );
-		g->line_count = div+1;
-		g->graph_max  = div * base; // グラフ上の最大値
+		g->line_pos   = (int *)aMalloc( (int)(div_num < 0 ? 4 : (div_num+1) * sizeof(int)) );
+		g->line_count = div_num+1;
+		g->graph_max  = div_num * base; // グラフ上の最大値
 
 		// 軸上の目盛りを打つ
-		for(i = div; i >= 0; i--) {
+		for(i = div_num; i >= 0; i--) {
 			char buf[256];
 			int  ypos;
 			// 目盛り上の横線の位置を計算
-			ypos = (GRP_HEIGHT)*(div-i)/div;
+			ypos = (GRP_HEIGHT)*(div_num-i)/div_num;
 			g->line_pos[i] = ypos;
 
 			// 目盛りの文字を描画
@@ -324,10 +324,10 @@ static void graph_data(struct graph* g,double value)
 			}
 			if( strlen(buf) < 6 ) {
 				// ６文字に満たないので先頭にスペースを付加する
-				int i, len = strlen(buf);
+				int len = strlen(buf);
 				char buf2[256];
-				for(i = 0; i < 6 - len; i++) buf2[i] = ' ';
-				buf2[i] = 0;
+				for(j = 0; j < 6 - len; j++) buf2[j] = ' ';
+				buf2[j] = 0;
 				strcat(buf2, buf);
 				strcpy(buf, buf2);
 			} else {

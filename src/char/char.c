@@ -79,7 +79,7 @@ char default_map_name[16] = "prontera.gat";
 int  default_map_type = 0;
 static int max_char_slot = 9;	// キャラクタースロットの最大数
 
-static int char_log(char *fmt,...);
+static int char_log(const char *fmt, ...);
 int parse_char(int fd);
 
 #ifdef TXT_JOURNAL
@@ -718,52 +718,54 @@ void char_txt_final(void)
 
 const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *flag)
 {
-	int i,j;
+	int n, idx;
 	char name[24];
 
 	memset(name, 0, sizeof(name));
-	for(i=0;i<24 && dat[i];i++){
-		if(dat[i]<0x20 || dat[i]==0x7f)
+	for(n = 0; n < 24 && dat[n]; n++) {
+		if(dat[n] < 0x20 || dat[n] == 0x7f)
 			return NULL;
-		name[i] = dat[i];
+		name[n] = dat[n];
 	}
 	name[23] = '\0';	// force \0 terminal
 
-	for(i = 24;i<=29;i++) {
-		if(dat[i] > 9) return NULL;
+	for(n = 24; n <= 29; n++) {
+		if(dat[n] > 9)
+			return NULL;
 	}
-	if(dat[30] >= max_char_slot){
+	if(dat[30] >= max_char_slot) {
 		*flag = 0x02;
-		printf("make new char over slot!! (%d / %d)\n",dat[30]+1,max_char_slot);
+		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
 		return NULL;
 	}
-	if(dat[24]+dat[25]+dat[26]+dat[27]+dat[28]+dat[29]>5*6 || dat[30]>=9 || dat[33]==0 || dat[33]>=24 || dat[31]>=9)
+	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[30] >= 9 ||	dat[33] == 0 || dat[33] >= 24 || dat[31] >= 9)
 	{
 		char_log(
 			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",
-			dat[30],name,dat[24],dat[25],dat[26],dat[27],dat[28],dat[29],dat[33],dat[31]
+			dat[30], name, dat[24], dat[25], dat[26], dat[27], dat[28], dat[29], dat[33], dat[31]
 		);
 		return NULL;
 	}
-	char_log("make new char %d %s",dat[30],name);
+	char_log("make new char %d %s", dat[30], name);
 
-	for(i=0;i<char_num;i++){
-		if(strcmp(char_dat[i].st.name,name) == 0)
+	for(n = 0; n < char_num; n++) {
+		if(strcmp(char_dat[n].st.name, name) == 0)
 			return NULL;
-		if(char_dat[i].st.account_id > 0 && char_dat[i].st.account_id == account_id && char_dat[i].st.char_num == dat[30])
+		if(char_dat[n].st.account_id > 0 && char_dat[n].st.account_id == account_id && char_dat[n].st.char_num == dat[30])
 			return NULL;
 	}
 
-	if(char_num>=char_max) {
+	if(char_num >= char_max) {
 		// realloc() するとchar_datの位置が変わるので、session のデータを見て
 		// 強制的に置き換える処理をしないとダメ。
-		int i,j;
+		int i, j;
 		struct mmo_chardata *char_dat_old = char_dat;
 		struct mmo_chardata *char_dat_new = (struct mmo_chardata *)aMalloc(sizeof(struct mmo_chardata) * (char_max + 256));
-		memcpy(char_dat_new,char_dat_old,sizeof(struct mmo_chardata) * char_max);
-		memset(char_dat_new + char_max,0,256 * sizeof(struct mmo_chardata));
+
+		memcpy(char_dat_new, char_dat_old, sizeof(struct mmo_chardata) * char_max);
+		memset(char_dat_new + char_max, 0, 256 * sizeof(struct mmo_chardata));
 		char_max += 256;
-		for(i = 0; i <= fd_max; i++) {
+		for(i = 0; i < fd_max; i++) {
 			struct char_session_data *sd;
 			if(session[i] && session[i]->func_parse == parse_char && (sd = (struct char_session_data *)session[i]->session_data)) {
 				for(j = 0; j < max_char_slot; j++) {
@@ -776,71 +778,71 @@ const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *
 		char_dat = char_dat_new;
 		aFree(char_dat_old);
 	}
-	memset(&char_dat[i],0,sizeof(char_dat[0]));
+	memset(&char_dat[n], 0, sizeof(char_dat[0]));
 
-	char_dat[i].st.char_id       = char_id_count++;
-	char_dat[i].st.account_id    = account_id;
-	char_dat[i].st.char_num      = dat[30];
-	strncpy(char_dat[i].st.name,name,24);
-	char_dat[i].st.class_        = 0;
-	char_dat[i].st.base_level    = 1;
-	char_dat[i].st.job_level     = 1;
-	char_dat[i].st.base_exp      = 0;
-	char_dat[i].st.job_exp       = 0;
-	char_dat[i].st.zeny          = start_zeny;
-	char_dat[i].st.str           = dat[24];
-	char_dat[i].st.agi           = dat[25];
-	char_dat[i].st.vit           = dat[26];
-	char_dat[i].st.int_          = dat[27];
-	char_dat[i].st.dex           = dat[28];
-	char_dat[i].st.luk           = dat[29];
-	char_dat[i].st.max_hp        = 40 * (100 + char_dat[i].st.vit) / 100;
-	char_dat[i].st.max_sp        = 11 * (100 + char_dat[i].st.int_) / 100;
-	char_dat[i].st.hp            = char_dat[i].st.max_hp;
-	char_dat[i].st.sp            = char_dat[i].st.max_sp;
-	char_dat[i].st.status_point  = 0;
-	char_dat[i].st.skill_point   = 0;
-	char_dat[i].st.option        = 0;
-	char_dat[i].st.karma         = 0;
-	char_dat[i].st.manner        = 0;
-	char_dat[i].st.die_counter   = 0;
-	char_dat[i].st.party_id      = 0;
-	char_dat[i].st.guild_id      = 0;
-	char_dat[i].st.hair          = dat[33];
-	char_dat[i].st.hair_color    = dat[31];
-	char_dat[i].st.clothes_color = 0;
+	char_dat[n].st.char_id       = char_id_count++;
+	char_dat[n].st.account_id    = account_id;
+	char_dat[n].st.char_num      = dat[30];
+	strncpy(char_dat[n].st.name, name, 24);
+	char_dat[n].st.class_        = 0;
+	char_dat[n].st.base_level    = 1;
+	char_dat[n].st.job_level     = 1;
+	char_dat[n].st.base_exp      = 0;
+	char_dat[n].st.job_exp       = 0;
+	char_dat[n].st.zeny          = start_zeny;
+	char_dat[n].st.str           = dat[24];
+	char_dat[n].st.agi           = dat[25];
+	char_dat[n].st.vit           = dat[26];
+	char_dat[n].st.int_          = dat[27];
+	char_dat[n].st.dex           = dat[28];
+	char_dat[n].st.luk           = dat[29];
+	char_dat[n].st.max_hp        = 40 * (100 + char_dat[n].st.vit) / 100;
+	char_dat[n].st.max_sp        = 11 * (100 + char_dat[n].st.int_) / 100;
+	char_dat[n].st.hp            = char_dat[n].st.max_hp;
+	char_dat[n].st.sp            = char_dat[n].st.max_sp;
+	char_dat[n].st.status_point  = 0;
+	char_dat[n].st.skill_point   = 0;
+	char_dat[n].st.option        = 0;
+	char_dat[n].st.karma         = 0;
+	char_dat[n].st.manner        = 0;
+	char_dat[n].st.die_counter   = 0;
+	char_dat[n].st.party_id      = 0;
+	char_dat[n].st.guild_id      = 0;
+	char_dat[n].st.hair          = dat[33];
+	char_dat[n].st.hair_color    = dat[31];
+	char_dat[n].st.clothes_color = 0;
 
-	j = 0;
+	idx = 0;
 	if(start_weapon > 0) {
-		char_dat[i].st.inventory[j].id       = 1;
-		char_dat[i].st.inventory[j].nameid   = start_weapon;
-		char_dat[i].st.inventory[j].amount   = 1;
-		char_dat[i].st.inventory[j].equip    = 0x02;
-		char_dat[i].st.inventory[j].identify = 1;
-		char_dat[i].st.weapon = 1;
-		j++;
+		char_dat[n].st.inventory[idx].id       = 1;
+		char_dat[n].st.inventory[idx].nameid   = start_weapon;
+		char_dat[n].st.inventory[idx].amount   = 1;
+		char_dat[n].st.inventory[idx].equip    = 0x02;
+		char_dat[n].st.inventory[idx].identify = 1;
+		char_dat[n].st.weapon = 1;
+		idx++;
 	}
 	if(start_armor > 0) {
-		char_dat[i].st.inventory[j].id       = 2;
-		char_dat[i].st.inventory[j].nameid   = start_armor;
-		char_dat[i].st.inventory[j].amount   = 1;
-		char_dat[i].st.inventory[j].equip    = 0x10;
-		char_dat[i].st.inventory[j].identify = 1;
+		char_dat[n].st.inventory[idx].id       = 2;
+		char_dat[n].st.inventory[idx].nameid   = start_armor;
+		char_dat[n].st.inventory[idx].amount   = 1;
+		char_dat[n].st.inventory[idx].equip    = 0x10;
+		char_dat[n].st.inventory[idx].identify = 1;
 	}
-	char_dat[i].st.shield      = 0;
-	char_dat[i].st.head_top    = 0;
-	char_dat[i].st.head_mid    = 0;
-	char_dat[i].st.head_bottom = 0;
-	memcpy(&char_dat[i].st.last_point,&start_point,sizeof(start_point));
-	memcpy(&char_dat[i].st.save_point,&start_point,sizeof(start_point));
+	char_dat[n].st.shield      = 0;
+	char_dat[n].st.head_top    = 0;
+	char_dat[n].st.head_mid    = 0;
+	char_dat[n].st.head_bottom = 0;
+	memcpy(&char_dat[n].st.last_point, &start_point, sizeof(start_point));
+	memcpy(&char_dat[n].st.save_point, &start_point, sizeof(start_point));
 	char_num++;
 
 #ifdef TXT_JOURNAL
 	if( char_journal_enable )
-		journal_write( &char_journal, char_dat[i].st.char_id, &char_dat[i] );
+		journal_write( &char_journal, char_dat[n].st.char_id, &char_dat[n] );
 #endif
 
-	return &char_dat[i];
+	return &char_dat[n];
 }
 
 int char_txt_load_all(struct char_session_data* sd,int account_id)
@@ -1727,15 +1729,14 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *flag)
 {
-	int  i;
-	int  char_id;
+	int i, char_id;
 	char name[24], buf[256];
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
 	memset(name, 0, sizeof(name));
-	for(i=0;i<24 && dat[i];i++){
-		if(dat[i]<0x20 || dat[i]==0x7f)
+	for(i = 0; i < 24 && dat[i]; i++) {
+		if(dat[i] < 0x20 || dat[i] == 0x7f)
 		// MySQLのバグをAuriga側で抑制
 		//if(dat[i]<0x20 || dat[i]==0x7f || dat[i]>=0xfd)
 			return NULL;
@@ -1743,23 +1744,24 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 	}
 	name[23] = '\0';	// force \0 terminal
 
-	for(i=24;i<=29;i++) {
-		if(dat[i] > 9) return NULL;
+	for(i = 24; i <= 29; i++) {
+		if(dat[i] > 9)
+			return NULL;
 	}
-	if(dat[30] >= max_char_slot){
+	if(dat[30] >= max_char_slot) {
 		*flag = 0x02;
-		printf("make new char over slot!! (%d / %d)\n",dat[30]+1,max_char_slot);
+		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
 		return NULL;
 	}
-	if(dat[24]+dat[25]+dat[26]+dat[27]+dat[28]+dat[29]>5*6 || dat[30]>=9 || dat[33]==0 || dat[33]>=24 || dat[31]>=9)
+	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[30] >= 9 || dat[33] == 0 || dat[33] >= 24 || dat[31] >= 9)
 	{
 		char_log(
 			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",
-			dat[30],name,dat[24],dat[25],dat[26],dat[27],dat[28],dat[29],dat[33],dat[31]
+			dat[30], name, dat[24], dat[25], dat[26], dat[27], dat[28], dat[29], dat[33], dat[31]
 		);
 		return NULL;
 	}
-	char_log("make new char %d %s",dat[30],name);
+	char_log("make new char %d %s", dat[30], name);
 
 	// 同一アカウントID、同一キャラスロットチェック
 	sprintf(
@@ -1767,20 +1769,23 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 		"SELECT COUNT(*) FROM `%s` WHERE `account_id` = '%d' AND `char_num` = '%d'",
 		char_db, account_id, dat[30]
 	);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
+	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
 		return NULL;
 	}
 	sql_res = mysql_store_result(&mysql_handle);
-	if (!sql_res) return NULL;
+	if(!sql_res)
+		return NULL;
+
 	sql_row = mysql_fetch_row(sql_res);
 	i = atoi(sql_row[0]);
 	mysql_free_result(sql_res);
-	if(i) return NULL;
+	if(i)
+		return NULL;
 
 	// 同名チェック
 	sprintf(tmp_sql, "SELECT `name` FROM `%s` WHERE `name` = '%s'", char_db, strecpy(buf,name));
-	if (mysql_query(&mysql_handle, tmp_sql)) {
+	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
 		return NULL;
 	}
@@ -1802,12 +1807,12 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 		"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`hair`,`hair_color`,`last_map`,`last_x`,"
 		"`last_y`,`save_map`,`save_x`,`save_y`) VALUES ('%d','%d','%s','%d','%d','%d','%d',"
 		"'%d','%d','%d','%d','%d','%d','%d','%d','%d','%s','%d','%d','%s','%d','%d')",
-		char_db,account_id,dat[30],strecpy(buf,name),start_zeny,dat[24],dat[25],dat[26],
-		dat[27],dat[28],dat[29],40 * (100 + dat[26])/100,40 * (100 + dat[26])/100,
-		11 * (100 + dat[27])/100,11 * (100 + dat[27])/100,dat[33],dat[31],start_point.map,
-		start_point.x, start_point.y, start_point.map, start_point.x,start_point.y
+		char_db, account_id, dat[30], strecpy(buf,name), start_zeny, dat[24], dat[25], dat[26],
+		dat[27], dat[28], dat[29], 40 * (100 + dat[26]) / 100, 40 * (100 + dat[26]) / 100,
+		11 * (100 + dat[27]) / 100, 11 * (100 + dat[27]) / 100, dat[33], dat[31], start_point.map,
+		start_point.x, start_point.y, start_point.map, start_point.x, start_point.y
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)){
+	if(mysql_query(&mysql_handle, tmp_sql)) {
 		printf("failed (insert in `%s`), SQL error: %s\n", char_db, mysql_error(&mysql_handle));
 		return NULL; // No, stop the procedure!
 	}
@@ -1820,7 +1825,8 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 	if(start_weapon > 0) {
 		sprintf(
 			tmp_sql,"INSERT INTO `%s` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
-			"VALUES (1, '%d', '%d', '%d', '%d', '%d')",inventory_db, char_id, start_weapon,1,0x02,1
+			"VALUES (1, '%d', '%d', '%d', '%d', '%d')",
+			inventory_db, char_id, start_weapon, 1, 0x02, 1
 		);
 		if (mysql_query(&mysql_handle, tmp_sql)){
 			printf("fail (insert in inventory ID %d), SQL error: %s\n", start_weapon, mysql_error(&mysql_handle));
@@ -1830,7 +1836,8 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 	// cotton shirt
 	if(start_armor > 0) {
 		sprintf(tmp_sql,"INSERT INTO `%s` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
-			"VALUES (2, '%d', '%d', '%d', '%d', '%d')", inventory_db, char_id, start_armor,1,0x10,1
+			"VALUES (2, '%d', '%d', '%d', '%d', '%d')",
+			inventory_db, char_id, start_armor, 1, 0x10, 1
 		);
 		if (mysql_query(&mysql_handle, tmp_sql)){
 			printf("fail (insert in inventory ID %d), SQL error: %s\n", start_armor, mysql_error(&mysql_handle));
@@ -2182,35 +2189,31 @@ static int mmo_char_sync_timer(int tid,unsigned int tick,int id,int data)
 	return 0;
 }
 
-static int char_log(char *fmt,...)
+static int char_log(const char *fmt, ...)
 {
 #ifdef TXT_ONLY
 	FILE *logfp;
 	va_list ap;
-	va_start(ap,fmt);
 
-	logfp=fopen(char_log_filename,"a");
-	if(logfp){
-		vfprintf(logfp,fmt,ap);
-		fprintf(logfp,RETCODE);
+	va_start(ap, fmt);
+
+	logfp = fopen(char_log_filename, "a");
+	if(logfp) {
+		vfprintf(logfp, fmt, ap);
+		fprintf(logfp, RETCODE);
 		fclose(logfp);
 	}
-
 	va_end(ap);
 #else
-	char log[256], buf[512];
+	char msg[256], buf[512];
 	va_list ap;
 
-	va_start(ap,fmt);
-
-	(void) vsnprintf(log,256,fmt,ap);
+	va_start(ap, fmt);
+	vsnprintf(msg, sizeof(msg), fmt, ap);
 	va_end(ap);
 
-	sprintf(
-		tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')",
-		charlog_db,strecpy(buf,log)
-	);
-	if(mysql_query(&mysql_handle, tmp_sql) ){
+	sprintf(tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')", charlog_db,strecpy(buf,msg));
+	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (insert `%s`)- %s\n", charlog_db, mysql_error(&mysql_handle) );
 	}
 #endif
@@ -2739,14 +2742,14 @@ int parse_tologin(int fd)
 			if(RFIFOREST(fd)<7)
 				return 0;
 			{
-				int i,j,sex = RFIFOB(fd,6);
+				int sex = RFIFOB(fd,6);
 				unsigned char buf[8];
-				struct char_session_data sd;
+				struct char_session_data csd;
 				struct mmo_charstatus    st;
-				int found_char = char_load_all(&sd,RFIFOL(fd,2));
+				int found_char = char_load_all(&csd,RFIFOL(fd,2));
 				for(i=0;i<found_char;i++){
 					int flag = 0;
-					memcpy(&st,&sd.found_char[i]->st,sizeof(struct mmo_charstatus));
+					memcpy(&st,&csd.found_char[i]->st,sizeof(struct mmo_charstatus));
 					// 雷鳥は職も変更
 					if(st.class_ == 19 || st.class_ == 20){
 						flag = 1; st.class_ = (sex ? 19 : 20);
@@ -2757,6 +2760,7 @@ int parse_tologin(int fd)
 					}
 					if(flag) {
 						// 雷鳥装備外し
+						int j;
 						for(j=0;j<MAX_INVENTORY;j++) {
 							if(st.inventory[j].equip) st.inventory[j].equip=0;
 						}
@@ -2809,11 +2813,10 @@ int parse_tologin(int fd)
 		case 0x272a:
 			{
 				// 該当キャラクターの削除
-				int i;
-				struct char_session_data sd;
-				int max = char_load_all(&sd,RFIFOL(fd,2));
+				struct char_session_data csd;
+				int max = char_load_all(&csd,RFIFOL(fd,2));
 				for(i=0;i<max;i++) {
-					char_delete(sd.found_char[i]);
+					char_delete(csd.found_char[i]);
 				}
 				// 倉庫の削除
 				storage_delete(RFIFOL(fd,2));
@@ -3049,7 +3052,7 @@ int parse_frommap(int fd)
 				if (k == -1) { // the map isn't assigned to any server
 					// 担当マップサーバーが決まっていないマップなら設定
 					if (j == 0) {
-						server[id].map = (char *)aCalloc(16, sizeof(char));
+						server[id].map = (char *)aMalloc(16 * sizeof(char));
 					} else {
 						server[id].map = (char *)aRealloc(server[id].map, sizeof(char) * 16 * (j + 1));
 					}
@@ -3337,7 +3340,7 @@ int parse_frommap(int fd)
 		case 0x2b10:
 			{
 				struct global_reg reg[ACCOUNT_REG2_NUM];
-				int j,p,acc;
+				int p,acc;
 				if(RFIFOREST(fd)<4)
 					return 0;
 				if(RFIFOREST(fd)<RFIFOW(fd,2))
@@ -3437,7 +3440,6 @@ int parse_frommap(int fd)
 				if(cpcd) {
 					unsigned char buf[32];
 					struct mmo_charstatus st = cpcd->st;
-					int i;
 
 					for( i=0; i<st.friend_num; i++ )
 					{
@@ -3496,7 +3498,7 @@ int parse_frommap(int fd)
 		case 0x2b2d:
 			{
 				struct global_reg reg[GLOBAL_REG_NUM];
-				int i,p,account_id,char_id;
+				int p,account_id,char_id;
 				if(RFIFOREST(fd)<4)
 					return 0;
 				if(RFIFOREST(fd)<RFIFOW(fd,2))
@@ -3518,14 +3520,12 @@ int parse_frommap(int fd)
 		case 0x2b2e:
 			if(RFIFOREST(fd) < 2)
 				return 0;
-			{
-				int i;
-				for(i=0; i<MAX_RANKING; i++) {
-					int len = char_set_ranking_send(i,WFIFOP(fd,0));
-					WFIFOSET(fd,len);
-				}
-				RFIFOSKIP(fd,2);
+
+			for(i=0; i<MAX_RANKING; i++) {
+				int len = char_set_ranking_send(i,WFIFOP(fd,0));
+				WFIFOSET(fd,len);
 			}
+			RFIFOSKIP(fd,2);
 			break;
 
 		// ランキングデータ更新

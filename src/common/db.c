@@ -480,9 +480,9 @@ void* db_erase(struct dbt *table,void* key)
 		p->data    = NULL;
 		if(table->cmp == strdb_cmp) {
 			if(table->maxlen) {
-				char *key = (char*)aMalloc(table->maxlen);
-				memcpy(key,p->key,table->maxlen);
-				p->key = key;
+				char *buf = (char*)aMalloc(table->maxlen);
+				memcpy(buf,p->key,table->maxlen);
+				p->key = buf;
 			} else {
 				p->key = aStrdup((const char*)p->key);
 			}
@@ -864,7 +864,7 @@ int csvdb_find_str(struct csvdb_data *csv, int col, const char* value)
 }
 
 // csv のリサイズ(ただし、列数は無視される)
-int csvdb_resize(struct csvdb_data *csv, int row, int col)
+static int csvdb_resize(struct csvdb_data *csv, int row, int col)
 {
 	int i;
 

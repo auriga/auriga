@@ -1529,7 +1529,7 @@ static int read_homundb(void)
 	int i, j;
 	int lines, count = 0;
 	struct script_code *script = NULL;
-	char *filename[] = { "db/homun_db.txt", "db/addon/homun_db_add.txt" };
+	const char *filename[] = { "db/homun_db.txt", "db/addon/homun_db_add.txt" };
 
 	// DB情報の初期化
 	for(i=0; i<MAX_HOMUN_DB; i++) {
@@ -1549,7 +1549,7 @@ static int read_homundb(void)
 		lines=0;
 		while(fgets(line,1020,fp)){
 			int nameid;
-			char *str[50],*p,*np;
+			char *str[32],*p,*np;
 			lines++;
 
 			if(line[0] == '/' && line[1] == '/')

@@ -291,7 +291,7 @@ void intif_wis_message(struct map_session_data *sd, char *nick, char *mes, int m
 }
 
 // Wisの返事
-int intif_wis_replay(int id,int flag)
+static int intif_wis_replay(int id,int flag)
 {
 	if (inter_fd < 0)
 		return -1;

@@ -3314,17 +3314,17 @@ int atcommand_party(const int fd, struct map_session_data* sd, AtCommandType com
  */
 int atcommand_partyoption(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int exp, item, item2;
+	int exp_flag, item_flag, item2_flag;
 
 	nullpo_retr(-1, sd);
 
 	if (!message || !*message)
 		return -1;
 
-	if (sscanf(message, "%d %d %d", &exp, &item, &item2) < 3)
+	if (sscanf(message, "%d %d %d", &exp_flag, &item_flag, &item2_flag) < 3)
 		return -1;
 
-	party_changeoption(sd, exp&1, (item? 1 : 0) | (item2? 2 : 0));
+	party_changeoption(sd, exp_flag&1, (item_flag ? 1 : 0) | (item2_flag ? 2 : 0));
 
 	return 0;
 }
@@ -5070,7 +5070,7 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,ch
  */
 int atcommand_readvars(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int errno;
+	int err;
 	char vars[100], name[100];
 
 	nullpo_retr(-1, sd);
@@ -5082,9 +5082,9 @@ int atcommand_readvars(const int fd, struct map_session_data* sd, AtCommandType 
 	if (sscanf(message, "%99s %99[^\n]", vars, name) < 1)
 		return -1;
 
-	errno = atcommand_vars_sub(sd, vars, name, NULL);
-	if (errno >= 0)	// エラー時
-		msg_output(fd, msg_txt(errno), vars);
+	err = atcommand_vars_sub(sd, vars, name, NULL);
+	if (err >= 0)	// エラー時
+		msg_output(fd, msg_txt(err), vars);
 
 	return 0;
 }
@@ -5095,7 +5095,7 @@ int atcommand_readvars(const int fd, struct map_session_data* sd, AtCommandType 
  */
 int atcommand_writevars(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int errno, next = 0;
+	int err, next = 0;
 	char vars[100], name[100], str[100];
 	char c = 0;
 
@@ -5130,9 +5130,9 @@ int atcommand_writevars(const int fd, struct map_session_data* sd, AtCommandType
 			return -1;
 	}
 
-	errno = atcommand_vars_sub(sd, vars, name, str);
-	if (errno >= 0)	// エラー時
-		msg_output(fd, msg_txt(errno), vars);
+	err = atcommand_vars_sub(sd, vars, name, str);
+	if (err >= 0)	// エラー時
+		msg_output(fd, msg_txt(err), vars);
 
 	return 0;
 }

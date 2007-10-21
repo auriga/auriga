@@ -938,7 +938,6 @@ int guild_sql_sync(void)
 
 const struct guild *guild_sql_load_num(int guild_id)
 {
-	int i;
 	char emblem_data[4096];
 	char *pstr;
 	struct guild *g;
@@ -971,6 +970,7 @@ const struct guild *guild_sql_load_num(int guild_id)
 
 	sql_res = mysql_store_result(&mysql_handle);
 	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
+		int i;
 		sql_row = mysql_fetch_row(sql_res);
 		if (sql_row==NULL) {
 			mysql_free_result(sql_res);

@@ -49,7 +49,7 @@ char mail_dir[1024]            = "save/mail_data/";
 char mapreg_txt[1024]          = "save/mapreg.txt";
 
 
-int config_read(const char *cfgName)
+static int config_read(const char *cfgName)
 {
 	int i;
 	char line[1024], w1[1024], w2[1024];

@@ -1704,9 +1704,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		int damage;
 		int id = (int)node->key;
 		if(id > 0) {
-			struct map_session_data *sd = map_charid2sd(id);
-			if(sd)
-				tmpbl[i] = &sd->bl;
+			struct map_session_data *tmpsd = map_charid2sd(id);
+			if(tmpsd)
+				tmpbl[i] = &tmpsd->bl;
 		} else {
 			tmpbl[i] = map_id2bl(-id);	// ホム・傭兵の場合はIDが負に反転されている
 		}
@@ -2429,7 +2429,7 @@ int mob_countslave(struct mob_data *md)
  * 指定範囲内の取り巻きの数計算
  *------------------------------------------
  */
-int mob_countslave_area(struct mob_data *md,int range)
+static int mob_countslave_area(struct mob_data *md,int range)
 {
 	int c = 0;
 
@@ -3449,9 +3449,10 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 }
 
 /*==========================================
- * スキル用タイマー削除
+ * スキル用タイマー削除（未使用）
  *------------------------------------------
  */
+/*
 int mobskill_deltimer(struct mob_data *md )
 {
 	nullpo_retr(0, md);
@@ -3465,6 +3466,7 @@ int mobskill_deltimer(struct mob_data *md )
 	}
 	return 0;
 }
+*/
 
 //
 // 初期化
@@ -3535,7 +3537,7 @@ static int mob_readdb(void)
 {
 	FILE *fp;
 	char line[1024];
-	char *filename[] = { "db/mob_db.txt","db/addon/mob_db_add.txt" };
+	const char *filename[] = { "db/mob_db.txt","db/addon/mob_db_add.txt" };
 	int n;
 
 	memset(mob_db_real,0,sizeof(mob_db_real));
@@ -3747,7 +3749,7 @@ static int mob_readdb_mobavail(void)
 			mob_db[class_].head_top      = atoi(str[9]);
 			mob_db[class_].head_mid      = atoi(str[10]);
 			mob_db[class_].head_bottom   = atoi(str[11]);
-			mob_db[class_].option        = ((unsigned int)atoi(str[12])) & ~0x46;
+			mob_db[class_].option        = ((unsigned int)atoi(str[12])) & ~0x46UL;
 
 			mob_db[class_].view_class = pc_calc_class_job(mob_db[class_].view_class, atoi(str[13]));
 		}
@@ -3909,7 +3911,7 @@ static int mob_readskilldb(void)
 	};
 
 	int x, lineno;
-	char *filename[] = { "db/mob_skill_db.txt","db/addon/mob_skill_db_add.txt" };
+	const char *filename[] = { "db/mob_skill_db.txt","db/addon/mob_skill_db_add.txt" };
 
 	for(x=0;x<2;x++){
 		fp=fopen(filename[x],"r");

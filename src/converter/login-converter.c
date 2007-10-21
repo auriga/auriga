@@ -9,7 +9,9 @@
 #include "../common/db.h"
 #include "../common/malloc.h"
 #include "../common/utils.h"
+
 #include "converter.h"
+#include "login-converter.h"
 
 static struct dbt *gm_account_db = NULL;
 
@@ -41,7 +43,7 @@ static int gm_account_db_final(void *key, void *data, va_list ap)
 	return 0;
 }
 
-void read_gm_account(void)
+static void read_gm_account(void)
 {
 	char line[8192];
 	struct gm_account *p;

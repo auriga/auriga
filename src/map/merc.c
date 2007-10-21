@@ -924,7 +924,7 @@ static int read_mercdb(void)
 	int i, j;
 	int lines, count = 0;
 	struct script_code *script = NULL;
-	char *filename[] = { "db/merc_db.txt", "db/addon/merc_db_add.txt" };
+	const char *filename[] = { "db/merc_db.txt", "db/addon/merc_db_add.txt" };
 
 	// DB情報の初期化
 	for(i=0; i<MAX_MERC_DB; i++) {
@@ -944,7 +944,7 @@ static int read_mercdb(void)
 		lines=0;
 		while(fgets(line,1020,fp)){
 			int nameid;
-			char *str[50],*p,*np;
+			char *str[30],*p,*np;
 			lines++;
 
 			if(line[0] == '/' && line[1] == '/')

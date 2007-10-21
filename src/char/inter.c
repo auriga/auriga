@@ -509,33 +509,31 @@ int inter_config_read(const char *cfgName)
 //--------------------------------------------------------
 // ログ書き出し
 
-int inter_log(char *fmt,...)
+int inter_log(const char *fmt, ...)
 {
 #ifdef TXT_ONLY
 	FILE *logfp;
 	va_list ap;
 
-	va_start(ap,fmt);
+	va_start(ap, fmt);
 
-	logfp=fopen(inter_log_filename,"a");
-	if(logfp){
-		vfprintf(logfp,fmt,ap);
-		fprintf(logfp,RETCODE);
+	logfp = fopen(inter_log_filename, "a");
+	if(logfp) {
+		vfprintf(logfp, fmt, ap);
+		fprintf(logfp, RETCODE);
 		fclose(logfp);
 	}
 	va_end(ap);
 #else
-	char log[256], buf[512];
+	char msg[256], buf[512];
 	va_list ap;
 
-	va_start(ap,fmt);
-
-	(void) vsnprintf(log,256,fmt,ap);
+	va_start(ap, fmt);
+	vsnprintf(msg, sizeof(msg), fmt, ap);
 	va_end(ap);
 
-	sprintf(tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')", interlog_db, strecpy(buf,log));
-
-	if(mysql_query(&mysql_handle, tmp_sql) ){
+	sprintf(tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')", interlog_db, strecpy(buf,msg));
+	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (insert `%s`)- %s\n", interlog_db, mysql_error(&mysql_handle) );
 	}
 #endif

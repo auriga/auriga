@@ -34,7 +34,7 @@ int packet_parse_time = 0;
 static volatile int auriga_is_running = 1;
 
 #ifdef _WIN32
-BOOL WINAPI core_CtrlHandlerRoutine( DWORD dwCtrlType )
+static BOOL WINAPI core_CtrlHandlerRoutine( DWORD dwCtrlType )
 {
 	auriga_is_running = 0;
 	return TRUE;
@@ -106,10 +106,10 @@ double uptime(void)
 #include <imagehlp.h>
 #pragma comment(lib, "imagehlp.lib")
 
-LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
+static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 {
 	HANDLE hProcess, hThread, hFile;
-	SYSTEMTIME time;
+	SYSTEMTIME t;
 	DWORD len, temp;
 #ifdef _WIN64
 	DWORD64            offset;
@@ -174,10 +174,10 @@ LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 		return EXCEPTION_CONTINUE_SEARCH;
 
 	SetFilePointer( hFile, 0, NULL, FILE_END );
-	GetLocalTime( &time );
+	GetLocalTime( &t );
 	len = wsprintf(
 		buf, "%04u/%02u/%02u %02u:%02u:%02u crashed by %s.\r\n",
-		time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, ErrType
+		t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond, ErrType
 	);
 	WriteFile( hFile, buf, len, &temp, NULL );
 

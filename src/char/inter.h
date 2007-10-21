@@ -6,7 +6,7 @@ int inter_sync(void);
 int inter_parse_frommap(int fd);
 int inter_mapif_init(int fd);
 
-int inter_log(char *fmt,...);
+int inter_log(const char *fmt, ...);
 
 void do_final_inter(void);
 

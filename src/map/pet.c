@@ -1326,10 +1326,10 @@ int read_petdb()
 {
 	FILE *fp;
 	char line[1024];
-	int i,j=0,k;
+	int i, j, k;
 	int lines;
 	struct script_code *script = NULL;
-	char *filename[] = { "db/pet_db.txt","db/addon/pet_db_add.txt" };
+	const char *filename[] = { "db/pet_db.txt","db/addon/pet_db_add.txt" };
 
 	for(i=0;i<2;i++){
 		fp=fopen(filename[i],"r");
@@ -1342,7 +1342,7 @@ int read_petdb()
 		lines = 0;
 		while(fgets(line,1020,fp)){
 			int nameid;
-			char *str[32],*p,*np;
+			char *str[20],*p,*np;
 			lines++;
 
 			if(line[0] == '/' && line[1] == '/')
