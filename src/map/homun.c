@@ -1526,8 +1526,7 @@ static int read_homundb(void)
 {
 	FILE *fp;
 	char line[1024];
-	int i;
-	int j=0;
+	int i, j;
 	int lines, count = 0;
 	struct script_code *script = NULL;
 	char *filename[] = { "db/homun_db.txt", "db/addon/homun_db_add.txt" };
@@ -1549,20 +1548,20 @@ static int read_homundb(void)
 		}
 		lines=0;
 		while(fgets(line,1020,fp)){
-			int nameid,i;
+			int nameid;
 			char *str[50],*p,*np;
 			lines++;
 
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 
-			for(i=0,p=line;i<32;i++){
+			for(j=0,p=line;j<32;j++){
 				if((np=strchr(p,','))!=NULL){
-					str[i]=p;
+					str[j]=p;
 					*np=0;
 					p=np+1;
 				} else {
-					str[i]=p;
+					str[j]=p;
 					p+=strlen(p);
 				}
 			}
@@ -1609,8 +1608,8 @@ static int read_homundb(void)
 			homun_db[j].skillpoint = homun_db[j].base_level/3; // 予約 とりあえずベース/3
 
 			// force \0 terminal
-			homun_db[i].name[23]  = '\0';
-			homun_db[i].jname[23] = '\0';
+			homun_db[j].name[23]  = '\0';
+			homun_db[j].jname[23] = '\0';
 
 			if((np = strchr(p,'{')) == NULL)
 				continue;

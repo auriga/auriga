@@ -4,8 +4,8 @@
 #include "utils.h"
 #include "map.h"
 
-#define OPTION_MASK 0xd7b8
-#define CART_MASK 0x788
+#define OPTION_MASK 0xd7b8UL
+#define CART_MASK   0x788UL
 
 #define MAX_SKILL_TREE 100
 

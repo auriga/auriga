@@ -1,4 +1,18 @@
 ----------------------------------------
+//0373 [2007/10/22] by Rayce
+
+・db/pet_db.txt, db/homun_db.txt, db/merc_db.txt のスクリプトを解析する際に
+　バッファオーバーランが発生するバグを修正（pet.c, homun.c, merc.c）
+
+・grfファイル検索用ハッシュテーブルのサイズをFILELIST_HASHとして定義、521に拡大（grfio.c）
+・定数 FILELIST_ADDS を撤廃、grfio_add() は1つずつreallocするように変更（grfio.c）
+・grfio.cの細かい整形
+
+・char_make() の引数変更（char.c）
+・定数 OPTION_MASK および CART_MASK をunsingedに修正（pc.h）
+・存在しない関数 guild_read_db() の宣言を削除（guild.h）
+
+----------------------------------------
 //0372 [2007/10/21] by Rayce
 
 ・フォーマット付きメッセージ出力関数 msg_output() を追加（atcommand.c）

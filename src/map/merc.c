@@ -921,8 +921,7 @@ static int read_mercdb(void)
 {
 	FILE *fp;
 	char line[1024];
-	int i;
-	int j=0;
+	int i, j;
 	int lines, count = 0;
 	struct script_code *script = NULL;
 	char *filename[] = { "db/merc_db.txt", "db/addon/merc_db_add.txt" };
@@ -944,20 +943,20 @@ static int read_mercdb(void)
 		}
 		lines=0;
 		while(fgets(line,1020,fp)){
-			int nameid,i;
+			int nameid;
 			char *str[50],*p,*np;
 			lines++;
 
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 
-			for(i=0,p=line;i<32;i++){
+			for(j=0,p=line;j<30;j++){
 				if((np=strchr(p,','))!=NULL){
-					str[i]=p;
+					str[j]=p;
 					*np=0;
 					p=np+1;
 				} else {
-					str[i]=p;
+					str[j]=p;
 					p+=strlen(p);
 				}
 			}
@@ -1001,8 +1000,8 @@ static int read_mercdb(void)
 			merc_db[j].limit      = (unsigned int)atoi(str[29]);
 
 			// force \0 terminal
-			merc_db[i].name[23]  = '\0';
-			merc_db[i].jname[23] = '\0';
+			merc_db[j].name[23]  = '\0';
+			merc_db[j].jname[23] = '\0';
 
 			if((np = strchr(p,'{')) == NULL)
 				continue;

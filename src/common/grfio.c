@@ -106,20 +106,19 @@ typedef struct {
 
 // ※FILELIST.gentryをcharで定義しているのでgrfio_addで追加できる上限は127コまでになります
 #define GENTRY_LIMIT 127
-//#define FILELIST_LIMIT 65535 // 仮上限,理論上上限は2G
 
-static FILELIST *filelist = NULL;
-static int filelist_entrys = 0;
+static FILELIST *filelist    = NULL;
+static int filelist_entrys   = 0;
 static int filelist_maxentry = 0;
 
 static char **gentry_table = NULL;
-static int gentry_entrys = 0;
-static int gentry_maxentry = 0;
+static int gentry_entrys   = 0;
 
 //----------------------------
 //	file list hash table
 //----------------------------
-static int filelist_hash[256]; // hash table
+#define FILELIST_HASH 521
+static int filelist_hash[FILELIST_HASH]; // hash table
 
 //----------------------------
 //	grf decode data table
@@ -128,19 +127,19 @@ static unsigned char BitMaskTable[8] = {
 	0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01
 };
 
-static char	BitSwapTable1[64] = {
+static char BitSwapTable1[64] = {
 	58, 50, 42, 34, 26, 18, 10,  2, 60, 52, 44, 36, 28, 20, 12,  4,
 	62, 54, 46, 38, 30, 22, 14,  6, 64, 56, 48, 40, 32, 24, 16,  8,
 	57, 49, 41, 33, 25, 17,  9,  1, 59, 51, 43, 35, 27, 19, 11,  3,
 	61, 53, 45, 37, 29, 21, 13,  5, 63, 55, 47, 39, 31, 23, 15,  7
 };
-static char	BitSwapTable2[64] = {
+static char BitSwapTable2[64] = {
 	40,  8, 48, 16, 56, 24, 64, 32, 39,  7, 47, 15, 55, 23, 63, 31,
 	38,  6, 46, 14, 54, 22, 62, 30, 37,  5, 45, 13, 53, 21, 61, 29,
 	36,  4, 44, 12, 52, 20, 60, 28, 35,  3, 43, 11, 51, 19, 59, 27,
 	34,  2, 42, 10, 50, 18, 58, 26, 33,  1, 41,  9, 49, 17, 57, 25
 };
-static char	BitSwapTable3[32] = {
+static char BitSwapTable3[32] = {
 	16,  7, 20, 21, 29, 12, 28, 17,  1, 15, 23, 26,  5, 18, 31, 10,
 	 2,  8, 24, 14, 32, 27,  3,  9, 19, 13, 30,  6, 22, 11,  4, 25
 };
@@ -173,11 +172,7 @@ static unsigned char NibbleData[4][64]={
  */
 static unsigned int getlong(unsigned char *p)
 {
-	//return *p+p[1]*256+(p[2]+p[3]*256)*65536;
-	return p[0] +
-	      (p[1] << 0x08) +
-	      (p[2] << 0x10) +
-	      (p[3] << 0x18); // speeder
+	return p[0] + (p[1] << 8) + (p[2] << 16) + (p[3] << 24);
 }
 
 /*==========================================
@@ -363,7 +358,7 @@ int encode_zip(char *dest, unsigned long* destLen, const char* source, unsigned 
 }
 
 /***********************************************************
- ***                File List Sobroutines                ***
+ ***                File List Subroutines                ***
  ***********************************************************/
 
 /*==========================================
@@ -372,14 +367,14 @@ int encode_zip(char *dest, unsigned long* destLen, const char* source, unsigned 
  */
 static int filehash(unsigned char *fname)
 {
-	unsigned int hash=0;
+	unsigned int h = 0;
 
 	while(*fname) {
-		hash = ((hash<<1)+(hash>>7)*9+(unsigned int)tolower(*fname));
+		h = ((h<<1)+(h>>7)*9+(unsigned int)tolower(*fname));
 		fname++;
 	}
 
-	return hash & 255;
+	return h % FILELIST_HASH;
 }
 
 /*==========================================
@@ -388,10 +383,10 @@ static int filehash(unsigned char *fname)
  */
 static void hashinit(void)
 {
-	int lop;
+	int i;
 
-	for(lop=0;lop<256;lop++)
-		filelist_hash[lop] = -1;
+	for(i = 0; i < FILELIST_HASH; i++)
+		filelist_hash[i] = -1;
 
 	return;
 }
@@ -422,15 +417,8 @@ static FILELIST* filelist_add(FILELIST *entry)
 {
 	int hash;
 
-	/*
-	if (filelist_entrys>=FILELIST_LIMIT) { // is that necessary?
-		printf("filelist limit : filelist_add\n");
-		exit(1);
-	}*/
-
 	if (filelist_entrys >= filelist_maxentry) {
-		FILELIST *new_filelist = (FILELIST*)aRealloc((void*)filelist, (filelist_maxentry + FILELIST_ADDS) * sizeof(FILELIST));
-		filelist = new_filelist;
+		filelist = (FILELIST *)aRealloc(filelist, (filelist_maxentry + FILELIST_ADDS) * sizeof(FILELIST));
 		memset(filelist + filelist_maxentry, 0, FILELIST_ADDS * sizeof(FILELIST));
 		filelist_maxentry += FILELIST_ADDS;
 	}
@@ -469,9 +457,7 @@ static void filelist_adjust(void)
 {
 	if (filelist!=NULL) {
 		if (filelist_maxentry>filelist_entrys) {
-			FILELIST *new_filelist = (FILELIST*)aRealloc(
-				(void*)filelist,filelist_entrys*sizeof(FILELIST) );
-			filelist = new_filelist;
+			filelist = (FILELIST*)aRealloc(filelist, filelist_entrys * sizeof(FILELIST));
 			filelist_maxentry = filelist_entrys;
 		}
 	}
@@ -480,7 +466,7 @@ static void filelist_adjust(void)
 }
 
 /***********************************************************
- ***                  Grfio Sobroutines                  ***
+ ***                  Grfio Subroutines                  ***
  ***********************************************************/
 
 /*==========================================
@@ -499,7 +485,11 @@ int grfio_size(char *fname)
 		struct stat st;
 
 		strncpy(lfname,fname,255);
-		for(p=&lfname[0];*p!=0;p++) if (*p=='\\') *p = '/';	// ※Unix時のみ
+		lfname[sizeof(lfname)-1] = '\0';
+		for(p = lfname; *p; p++) {	// ※Unix時のみ
+			if (*p == '\\')
+				*p = '/';
+		}
 
 		if (stat(lfname,&st)==0) {
 			strncpy(lentry.fn, fname, sizeof(lentry.fn)-1 );
@@ -534,9 +524,11 @@ void* grfio_reads(char *fname, int *size)
 		FILELIST lentry;
 
 		strncpy(lfname,fname,255);
-		for(p=&lfname[0];*p!=0;p++)	// ※Unix時のみ
-			if (*p=='\\')
+		lfname[sizeof(lfname)-1]= '\0';
+		for(p = lfname; *p; p++) {	// ※Unix時のみ
+			if (*p == '\\')
 				*p = '/';
+		}
 
 		in = fopen(lfname,"rb");
 		if(in!=NULL) {
@@ -547,7 +539,7 @@ void* grfio_reads(char *fname, int *size)
 				lentry.declen = ftell(in);
 			}
 			fseek(in,0,0);	// SEEK_SET
-			buf2 = (unsigned char *)aCalloc(1,lentry.declen+1024);
+			buf2 = (unsigned char *)aCalloc(lentry.declen + 1024, sizeof(char));
 			fread(buf2,1,lentry.declen,in);
 			fclose(in);
 			in = NULL;
@@ -564,7 +556,7 @@ void* grfio_reads(char *fname, int *size)
 		}
 	}
 	if (entry!=NULL && entry->gentry>0) {	// Archive[GRF] File Read
-		buf = (unsigned char *)aCalloc(1,entry->srclen_aligned+1024);
+		buf = (unsigned char *)aCalloc(entry->srclen_aligned + 1024, sizeof(char));
 		gfname = gentry_table[entry->gentry-1];
 		in = fopen(gfname,"rb");
 		if(in==NULL) {
@@ -574,7 +566,7 @@ void* grfio_reads(char *fname, int *size)
 		fseek(in,entry->srcpos,0);
 		fread(buf,1,entry->srclen_aligned,in);
 		fclose(in);
-		buf2=(unsigned char *)aCalloc(1,entry->declen+1024);
+		buf2 = (unsigned char *)aCalloc(entry->declen + 1024, sizeof(char));
 		if(entry->type==1 || entry->type==3 || entry->type==5) {
 			uLongf len;
 			if (entry->cycle>=0) {
@@ -903,25 +895,16 @@ static void grfio_resourcecheck(const char *data_dir)
  * Grfio : Resource add
  *------------------------------------------
  */
-#define GENTRY_ADDS 16 // gentry_tableエントリ数増分
-
 int grfio_add(const char *fname)
 {
-	if (gentry_entrys>=GENTRY_LIMIT) {
+	if (gentry_entrys >= GENTRY_LIMIT) {
 		printf("gentrys limit : grfio_add\n");
 		exit(1);
 	}
 
 	printf("%s file reading...\n",fname);
 
-	if (gentry_entrys>=gentry_maxentry) {
-		char **new_gentry = (char**)aRealloc((void*)gentry_table, (gentry_maxentry+GENTRY_ADDS) * sizeof(char*));
-		int lop;
-		gentry_table = new_gentry;
-		gentry_maxentry += GENTRY_ADDS;
-		for(lop=gentry_entrys;lop<gentry_maxentry;lop++)
-			gentry_table[lop] = NULL;
-	}
+	gentry_table = (char **)aRealloc(gentry_table, (gentry_entrys + 1) * sizeof(char*));
 	gentry_table[gentry_entrys++] = (char *)aStrdup(fname);
 
 	return grfio_entryread(fname,gentry_entrys-1);
@@ -952,7 +935,6 @@ void grfio_final(void)
 		gentry_table = NULL;
 	}
 	gentry_entrys = 0;
-	gentry_maxentry = 0;
 
 #if defined(_WIN32) && !defined(LOCALZLIB)
 	FreeLibrary(zlib_dll);

@@ -716,7 +716,7 @@ void char_txt_final(void)
 #endif
 }
 
-const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned char *dat,int *flag)
+const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *flag)
 {
 	int i,j;
 	char name[24];
@@ -750,7 +750,7 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 	for(i=0;i<char_num;i++){
 		if(strcmp(char_dat[i].st.name,name) == 0)
 			return NULL;
-		if(char_dat[i].st.account_id > 0 && char_dat[i].st.account_id == sd->account_id && char_dat[i].st.char_num == dat[30])
+		if(char_dat[i].st.account_id > 0 && char_dat[i].st.account_id == account_id && char_dat[i].st.char_num == dat[30])
 			return NULL;
 	}
 
@@ -779,7 +779,7 @@ const struct mmo_chardata *char_txt_make(struct char_session_data *sd,unsigned c
 	memset(&char_dat[i],0,sizeof(char_dat[0]));
 
 	char_dat[i].st.char_id       = char_id_count++;
-	char_dat[i].st.account_id    = sd->account_id;
+	char_dat[i].st.account_id    = account_id;
 	char_dat[i].st.char_num      = dat[30];
 	strncpy(char_dat[i].st.name,name,24);
 	char_dat[i].st.class_        = 0;
@@ -1725,7 +1725,7 @@ int char_sql_save(struct mmo_charstatus *st2)
 	return 0;
 }
 
-const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned char *dat,int *flag)
+const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *flag)
 {
 	int  i;
 	int  char_id;
@@ -1765,7 +1765,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 	sprintf(
 		tmp_sql,
 		"SELECT COUNT(*) FROM `%s` WHERE `account_id` = '%d' AND `char_num` = '%d'",
-		char_db, sd->account_id, dat[30]
+		char_db, account_id, dat[30]
 	);
 	if (mysql_query(&mysql_handle, tmp_sql)) {
 		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
@@ -1802,7 +1802,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 		"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`hair`,`hair_color`,`last_map`,`last_x`,"
 		"`last_y`,`save_map`,`save_x`,`save_y`) VALUES ('%d','%d','%s','%d','%d','%d','%d',"
 		"'%d','%d','%d','%d','%d','%d','%d','%d','%d','%s','%d','%d','%s','%d','%d')",
-		char_db,sd->account_id,dat[30],strecpy(buf,name),start_zeny,dat[24],dat[25],dat[26],
+		char_db,account_id,dat[30],strecpy(buf,name),start_zeny,dat[24],dat[25],dat[26],
 		dat[27],dat[28],dat[29],40 * (100 + dat[26])/100,40 * (100 + dat[26])/100,
 		11 * (100 + dat[27])/100,11 * (100 + dat[27])/100,dat[33],dat[31],start_point.map,
 		start_point.x, start_point.y, start_point.map, start_point.x,start_point.y
@@ -1838,7 +1838,7 @@ const struct mmo_chardata* char_sql_make(struct char_session_data *sd,unsigned c
 		}
 	}
 
-	printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", sd->account_id, char_id, dat[30], name);
+	printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", account_id, char_id, dat[30], name);
 
 	return char_sql_load(char_id);
 }
@@ -3812,7 +3812,7 @@ int parse_char(int fd)
 				return 0;
 			{
 				int flag=0x00;
-				const struct mmo_chardata *cd = char_make(sd,RFIFOP(fd,2),&flag);
+				const struct mmo_chardata *cd = char_make(sd->account_id,RFIFOP(fd,2),&flag);
 				const struct mmo_charstatus *st;
 				struct global_reg reg[ACCOUNT_REG2_NUM];
 #if PACKETVER >= 8

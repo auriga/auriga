@@ -1341,20 +1341,20 @@ int read_petdb()
 		}
 		lines = 0;
 		while(fgets(line,1020,fp)){
-			int nameid,i;
+			int nameid;
 			char *str[32],*p,*np;
 			lines++;
 
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 
-			for(i=0,p=line;i<20;i++){
+			for(j=0,p=line;j<20;j++){
 				if((np=strchr(p,','))!=NULL){
-					str[i]=p;
+					str[j]=p;
 					*np=0;
 					p=np+1;
 				} else {
-					str[i]=p;
+					str[j]=p;
 					p+=strlen(p);
 				}
 			}
