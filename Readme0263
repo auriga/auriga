@@ -1,4 +1,18 @@
 ----------------------------------------
+//0375 [2007/10/22] by Rayce
+
+・コンパイルオプション -Wredundant-decls を参考に、宣言が重複している以下の関数を削除
+	guild_txt_delete()
+	status_get_atk2()
+
+・コンパイルオプション -Wold-style-definition で警告が出る部分を修正
+　（inter.c, int_storage.c, pet.c, script.c）
+・コンパイルオプション -Wunreachable-code を参考に、実行されないコードを部分的に修正
+　（atcommand.c, script.c）
+・コンパイルオプション -Wunused-macro を参考に、使われてないマクロを修正
+　（int_guild.c, int_status.c）
+
+----------------------------------------
 //0374 [2007/10/22] by Rayce
 
 ・コンパイルオプション -Wshadow を参考に、変数のシャドーイングを出来る限り修正

@@ -3954,7 +3954,7 @@ int atcommand_mobsearch(const int fd, struct map_session_data* sd, AtCommandType
 		p = msg_txt(153); // all
 	else if (mob_id == -2 || mob_id == -3)
 		p = msg_txt(154); // boss
-	else if (mob_id > 0 && mob_id == atoi(mob_name) && mob_db[mob_id].jname)
+	else if (mob_id > 0 && mob_id == atoi(mob_name) && mob_db[mob_id].jname[0])
 		p = mob_db[mob_id].jname; // --ja--
 	else
 		p = mob_name;

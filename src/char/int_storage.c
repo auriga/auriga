@@ -510,7 +510,7 @@ int guild_storage_journal_rollforward( int key, void* buf, int flag )
 #endif
 
 // 倉庫データを読み込む
-int storage_txt_init()
+int storage_txt_init(void)
 {
 	char line[65536];
 	int c=0,tmp_int;

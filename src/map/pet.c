@@ -1322,7 +1322,7 @@ int pet_skill_support_timer(int tid,unsigned int tick,int id,int data)
  * ペットデータ読み込み
  *------------------------------------------
  */
-int read_petdb()
+int read_petdb(void)
 {
 	FILE *fp;
 	char line[1024];

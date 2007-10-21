@@ -78,8 +78,6 @@ static int guildcastle_journal_cache = 1000;
 
 #endif
 
-void guild_txt_delete(int guild_id);
-
 // ギルドデータの文字列への変換
 static int guild_tostr(char *str,struct guild *g)
 {
@@ -804,7 +802,7 @@ static int guildcastle_txt_sync(void)
 }
 
 #define guild_new      guild_txt_new
-#define guild_fin      guild_txt_fin
+#define guild_final    guild_txt_final
 #define guild_init     guild_txt_init
 #define guild_save     guild_txt_save
 #define guild_sync     guild_txt_sync
@@ -1561,7 +1559,7 @@ void guild_sql_final(void)
 		numdb_final(guild_db,guild_sql_db_final);
 }
 
-#define guild_fin      guild_sql_fin
+#define guild_final    guild_sql_final
 #define guild_new      guild_sql_new
 #define guild_save     guild_sql_save
 #define guild_init     guild_sql_init

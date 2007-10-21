@@ -1,5 +1,5 @@
 
-#define _INT_STAUTS_C_
+#define _INT_STATUS_C_
 
 #include <stdio.h>
 #include <stdlib.h>

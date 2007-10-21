@@ -3392,7 +3392,7 @@ static int userfunc_db_final(void *key,void *data,va_list ap)
 	return 0;
 }
 
-int do_final_script()
+int do_final_script(void)
 {
 	if(mapreg_dirty)
 		script_save_mapreg();
@@ -3438,7 +3438,7 @@ int do_final_script()
  * 初期化
  *------------------------------------------
  */
-int do_init_script()
+int do_init_script(void)
 {
 	mapreg_db=numdb_init();
 	mapregstr_db=numdb_init();
@@ -9048,7 +9048,7 @@ int buildin_getpetinfo(struct script_state *st)
 					push_val(st->stack,C_INT,0);
 				break;
 			case 2:
-				if(sd->pet.name)
+				if(sd->pet.name[0])
 					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->pet.name));
 				else
 					push_str(st->stack,C_CONSTSTR,"");
@@ -9092,7 +9092,7 @@ int buildin_gethomuninfo(struct script_state *st)
 					push_val(st->stack,C_INT,0);
 				break;
 			case 2:
-				if(sd->hd && sd->hd->status.name)
+				if(sd->hd && sd->hd->status.name[0])
 					push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->hd->status.name));
 				else
 					push_str(st->stack,C_CONSTSTR,"");
