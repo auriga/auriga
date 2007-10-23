@@ -249,7 +249,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_base_atk;
 	int b_tigereye;
 	struct skill b_skill[MAX_SKILL];
-	int i,blv,calc_val,index;
+	int i,blv,calc_val,idx;
 	int skill,aspd_rate,wele,wele_,def_ele,refinedef;
 	int pele,pdef_ele;
 	int str,dstr,dex;
@@ -528,26 +528,26 @@ L_RECALC:
 	memset(&sd->skill_healup,0,sizeof(sd->skill_healup));
 
 	for(i=0; i<10; i++) {
-		index = sd->equip_index[i];
+		idx = sd->equip_index[i];
 		current_equip_item_index = i;	// 部位チェック用
-		if(index < 0)
+		if(idx < 0)
 			continue;
-		if(i == 9 && sd->equip_index[8] == index)
+		if(i == 9 && sd->equip_index[8] == idx)
 			continue;
-		if(i == 5 && sd->equip_index[4] == index)
+		if(i == 5 && sd->equip_index[4] == idx)
 			continue;
-		if(i == 6 && (sd->equip_index[5] == index || sd->equip_index[4] == index))
+		if(i == 6 && (sd->equip_index[5] == idx || sd->equip_index[4] == idx))
 			continue;
 
-		if(sd->inventory_data[index]) {
-			if(sd->inventory_data[index]->type == 4) {
-				if( !itemdb_isspecial(sd->status.inventory[index].card[0]) ) {
+		if(sd->inventory_data[idx]) {
+			if(sd->inventory_data[idx]->type == 4) {
+				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
 					int j;
-					for(j=0; j<sd->inventory_data[index]->slot; j++) {	// カード
-						int c = sd->status.inventory[index].card[j];
+					for(j=0; j<sd->inventory_data[idx]->slot; j++) {	// カード
+						int c = sd->status.inventory[idx].card[j];
 						current_equip_card_id = c;		// オートスペル(重複チェック用)
 						if(c > 0) {
-							if(i == 8 && sd->status.inventory[index].equip == 0x20)
+							if(i == 8 && sd->status.inventory[idx].equip == 0x20)
 								sd->state.lr_flag = 1;
 							if(calclimit == 2)
 								run_script(itemdb_usescript(c),0,sd->bl.id,0);
@@ -557,11 +557,11 @@ L_RECALC:
 					}
 				}
 			}
-			else if(sd->inventory_data[index]->type == 5) { // 防具
-				if( !itemdb_isspecial(sd->status.inventory[index].card[0]) ) {
+			else if(sd->inventory_data[idx]->type == 5) { // 防具
+				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
 					int j;
-					for(j=0; j<sd->inventory_data[index]->slot; j++) {	// カード
-						int c = sd->status.inventory[index].card[j];
+					for(j=0; j<sd->inventory_data[idx]->slot; j++) {	// カード
+						int c = sd->status.inventory[idx].card[j];
 						current_equip_card_id = c;		// オートスペル(重複チェック用)
 						if(c > 0) {
 							if(calclimit == 2)
@@ -589,83 +589,83 @@ L_RECALC:
 
 	// 装備品によるステータス変化はここで実行
 	for(i=0; i<10; i++) {
-		index = sd->equip_index[i];
+		idx = sd->equip_index[i];
 		current_equip_item_index = i;	// 部位チェック用
-		current_equip_card_id = index;	// オートスペル(重複チェック用)
-		if(index < 0)
+		current_equip_card_id = idx;	// オートスペル(重複チェック用)
+		if(idx < 0)
 			continue;
-		if(i == 9 && sd->equip_index[8] == index)
+		if(i == 9 && sd->equip_index[8] == idx)
 			continue;
-		if(i == 5 && sd->equip_index[4] == index)
+		if(i == 5 && sd->equip_index[4] == idx)
 			continue;
-		if(i == 6 && (sd->equip_index[5] == index || sd->equip_index[4] == index))
+		if(i == 6 && (sd->equip_index[5] == idx || sd->equip_index[4] == idx))
 			continue;
-		if(sd->inventory_data[index]) {
-			sd->def += sd->inventory_data[index]->def;
-			if(sd->inventory_data[index]->type == 4) {
-				int r,wlv = sd->inventory_data[index]->wlv;
-				if(i == 8 && sd->status.inventory[index].equip == 0x20) {
+		if(sd->inventory_data[idx]) {
+			sd->def += sd->inventory_data[idx]->def;
+			if(sd->inventory_data[idx]->type == 4) {
+				int r,wlv = sd->inventory_data[idx]->wlv;
+				if(i == 8 && sd->status.inventory[idx].equip == 0x20) {
 					// 二刀流用データ入力
-					sd->watk_ += sd->inventory_data[index]->atk;
-					sd->watk_2 = (r = sd->status.inventory[index].refine) * refine_db[wlv].safety_bonus;	// 精錬攻撃力
+					sd->watk_ += sd->inventory_data[idx]->atk;
+					sd->watk_2 = (r = sd->status.inventory[idx].refine) * refine_db[wlv].safety_bonus;	// 精錬攻撃力
 					if((r -= refine_db[wlv].limit) > 0)	// 過剰精錬ボーナス
 						sd->overrefine_ = r*refine_db[wlv].over_bonus;
 
-					if(sd->status.inventory[index].card[0] == 0x00ff) {	// 製造武器
-						sd->star_ = (sd->status.inventory[index].card[1]>>8);	// 星のかけら
+					if(sd->status.inventory[idx].card[0] == 0x00ff) {	// 製造武器
+						sd->star_ = (sd->status.inventory[idx].card[1]>>8);	// 星のかけら
 						if(sd->star_ == 15)
 							sd->star_ = 40;
-						wele_= sd->status.inventory[index].card[1] & 0x0f;	// 属 性
+						wele_= sd->status.inventory[idx].card[1] & 0x0f;	// 属 性
 						// ランキングボーナス
-						if(ranking_get_id2rank(*((unsigned long *)(&sd->status.inventory[index].card[2])), RK_BLACKSMITH))
+						if(ranking_get_id2rank(*((unsigned long *)(&sd->status.inventory[idx].card[2])), RK_BLACKSMITH))
 							sd->ranker_weapon_bonus_ = 10;
 					}
-					sd->attackrange_ += sd->inventory_data[index]->range;
+					sd->attackrange_ += sd->inventory_data[idx]->range;
 					sd->state.lr_flag = 1;
 					if(calclimit == 2)
-						run_script(sd->inventory_data[index]->use_script,0,sd->bl.id,0);
-					run_script(sd->inventory_data[index]->equip_script,0,sd->bl.id,0);
+						run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);
+					run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
 					sd->state.lr_flag = 0;
 				} else {
 					// 二刀流武器以外
-					sd->watk  += sd->inventory_data[index]->atk;
-					sd->watk2 += (r = sd->status.inventory[index].refine) * refine_db[wlv].safety_bonus;	// 精錬攻撃力
+					sd->watk  += sd->inventory_data[idx]->atk;
+					sd->watk2 += (r = sd->status.inventory[idx].refine) * refine_db[wlv].safety_bonus;	// 精錬攻撃力
 					if((r -= refine_db[wlv].limit) > 0)	// 過剰精錬ボーナス
 						sd->overrefine += r*refine_db[wlv].over_bonus;
 
-					if(sd->status.inventory[index].card[0] == 0x00ff) {	// 製造武器
-						sd->star += (sd->status.inventory[index].card[1]>>8);	// 星のかけら
+					if(sd->status.inventory[idx].card[0] == 0x00ff) {	// 製造武器
+						sd->star += (sd->status.inventory[idx].card[1]>>8);	// 星のかけら
 						if(sd->star == 15)
 							sd->star = 40;
-						wele = sd->status.inventory[index].card[1] & 0x0f;	// 属 性
+						wele = sd->status.inventory[idx].card[1] & 0x0f;	// 属 性
 						// ランキングボーナス
-						if(ranking_get_id2rank(*((unsigned long *)(&sd->status.inventory[index].card[2])),RK_BLACKSMITH))
+						if(ranking_get_id2rank(*((unsigned long *)(&sd->status.inventory[idx].card[2])),RK_BLACKSMITH))
 							sd->ranker_weapon_bonus = 10;
 					}
-					sd->attackrange += sd->inventory_data[index]->range;
+					sd->attackrange += sd->inventory_data[idx]->range;
 					if(calclimit == 2)
-						run_script(sd->inventory_data[index]->use_script,0,sd->bl.id,0);
-					run_script(sd->inventory_data[index]->equip_script,0,sd->bl.id,0);
+						run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);
+					run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
 				}
-			} else if(sd->inventory_data[index]->type == 5) {
-				sd->watk  += sd->inventory_data[index]->atk;
-				refinedef += sd->status.inventory[index].refine*refine_db[0].safety_bonus;
+			} else if(sd->inventory_data[idx]->type == 5) {
+				sd->watk  += sd->inventory_data[idx]->atk;
+				refinedef += sd->status.inventory[idx].refine*refine_db[0].safety_bonus;
 				if(calclimit == 2)
-					run_script(sd->inventory_data[index]->use_script,0,sd->bl.id,0);
-				run_script(sd->inventory_data[index]->equip_script,0,sd->bl.id,0);
+					run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);
+				run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
 			}
 		}
 	}
 
 	if(sd->equip_index[10] >= 0) { // 矢
-		index = sd->equip_index[10];
-		if(sd->inventory_data[index]) {		// まだ属性が入っていない
+		idx = sd->equip_index[10];
+		if(sd->inventory_data[idx]) {		// まだ属性が入っていない
 			sd->state.lr_flag = 2;
 			if(calclimit == 2)
-				run_script(sd->inventory_data[index]->use_script,0,sd->bl.id,0);
-			run_script(sd->inventory_data[index]->equip_script,0,sd->bl.id,0);
+				run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);
+			run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
 			sd->state.lr_flag = 0;
-			sd->arrow_atk += sd->inventory_data[index]->atk;
+			sd->arrow_atk += sd->inventory_data[idx]->atk;
 		}
 	}
 
@@ -1585,18 +1585,18 @@ L_RECALC:
 			sd->def2 = sd->def2*(110+5*sd->sc.data[SC_ANGELUS].val1)/100;
 		if(sd->sc.data[SC_IMPOSITIO].timer != -1) {// インポシティオマヌス
 			sd->watk += sd->sc.data[SC_IMPOSITIO].val1*5;
-			index = sd->equip_index[8];
+			idx = sd->equip_index[8];
 			// 左手には適用しない
-			//if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4)
+			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
 			//	sd->watk_ += sd->sc.data[SC_IMPOSITIO].val1*5;
 		}
 		if(sd->sc.data[SC_PROVOKE].timer != -1) {	// プロボック
 			sd->def2 = sd->def2*(100-6*sd->sc.data[SC_PROVOKE].val1)/100;
 			sd->base_atk = sd->base_atk*(100+2*sd->sc.data[SC_PROVOKE].val1)/100;
 			sd->watk = sd->watk*(100+2*sd->sc.data[SC_PROVOKE].val1)/100;
-			index = sd->equip_index[8];
+			idx = sd->equip_index[8];
 			// 左手には適用しない
-			//if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4)
+			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
 			//	sd->watk_ = sd->watk_*(100+2*sd->sc.data[SC_PROVOKE].val1)/100;
 		}
 		if(sd->sc.data[SC_POISON].timer != -1)	// 毒状態
@@ -1607,8 +1607,8 @@ L_RECALC:
 			// ATK半減
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
-			index = sd->equip_index[8];
-			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4)
+			idx = sd->equip_index[8];
+			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
 				sd->watk_ = sd->watk_ * 50/100;
 		}
 		if(sd->sc.data[SC_STRENGTH].timer != -1) {
@@ -1620,8 +1620,8 @@ L_RECALC:
 			// ATK半減、MATK半減
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
-			index = sd->equip_index[8];
-			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4) {
+			idx = sd->equip_index[8];
+			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4) {
 				sd->watk_ = sd->watk_ * 50/100;
 			}
 			sd->matk1 = sd->matk1*50/100;
@@ -1631,8 +1631,8 @@ L_RECALC:
 			// ATK、MATK、回避、命中、防御力が全て20%ずつ下落する
 			sd->base_atk = sd->base_atk * 80/100;
 			sd->watk = sd->watk * 80/100;
-			index = sd->equip_index[8];
-			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4) {
+			idx = sd->equip_index[8];
+			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4) {
 				sd->watk_ = sd->watk_ * 80/100;
 			}
 			sd->matk1 = sd->matk1*80/100;
@@ -1647,18 +1647,18 @@ L_RECALC:
 		if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// 戦太鼓の響き
 			sd->watk += sd->sc.data[SC_DRUMBATTLE].val2;
 			sd->def  += sd->sc.data[SC_DRUMBATTLE].val3;
-			index = sd->equip_index[8];
+			idx = sd->equip_index[8];
 			// 左手には適用しない
-			//if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4)
+			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
 			//	sd->watk_ += sd->sc.data[SC_DRUMBATTLE].val2;
 		}
 		if(sd->sc.data[SC_NIBELUNGEN].timer != -1) {	// ニーベルングの指輪
-			index = sd->equip_index[9];
-			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->wlv >= 4)
+			idx = sd->equip_index[9];
+			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
 				sd->watk += sd->sc.data[SC_NIBELUNGEN].val2;
-			index = sd->equip_index[8];
+			idx = sd->equip_index[8];
 			// 左手には適用しない
-			//if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->wlv >= 4)
+			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
 			//	sd->watk_ += sd->sc.data[SC_NIBELUNGEN].val2;
 		}
 
@@ -1677,8 +1677,8 @@ L_RECALC:
 		if(sd->sc.data[SC_CONCENTRATION].timer != -1) {	// コンセントレーション
 			sd->base_atk = sd->base_atk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->watk = sd->watk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
-			index = sd->equip_index[8];
-			if(index >= 0 && sd->inventory_data[index] && sd->inventory_data[index]->type == 4)
+			idx = sd->equip_index[8];
+			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
 				sd->watk_ = sd->watk_ * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->def = sd->def * (100 - 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->def2 = sd->def2 * (100 - 5*sd->sc.data[SC_CONCENTRATION].val1)/100;

@@ -9273,7 +9273,7 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 {
 	struct map_session_data *sd = NULL;
 	struct status_change *sc;
-	int i, index[10];
+	int i, idx[10];
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, cnd);
@@ -9293,7 +9293,7 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 	for(i=0; i<10; i++) {
 		int x = (cnd->lv > 10)? 9: cnd->lv - 1;
 
-		index[i] = -1;
+		idx[i] = -1;
 		if(itemid[i] <= 0)
 			continue;
 
@@ -9310,8 +9310,8 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 		if((cnd->id == AM_POTIONPITCHER || cnd->id == CR_SLIMPITCHER || cnd->id == CR_CULTIVATION) && i != x)
 			continue;
 
-		index[i] = pc_search_inventory(sd,itemid[i]);
-		if(index[i] < 0 || sd->status.inventory[index[i]].amount < amount[i]) {
+		idx[i] = pc_search_inventory(sd,itemid[i]);
+		if(idx[i] < 0 || sd->status.inventory[idx[i]].amount < amount[i]) {
 			if(itemid[i] == 716 || itemid[i] == 717)
 				clif_skill_fail(sd,cnd->id,(7+(itemid[i]-716)),0);
 			else
@@ -9320,15 +9320,15 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 		}
 		if(cnd->id == MG_STONECURSE && cnd->lv >= 6 && itemid[i] >= 715 && itemid[i] <= 717) {
 			// ストーンカースLv6以上はジェム消費なしにしておく
-			index[i] = -1;
+			idx[i] = -1;
 		}
 	}
 
 	if(type&1 && (cnd->id != AL_WARP || type&2)) {
 		if(cnd->id != AM_POTIONPITCHER && cnd->id != CR_SLIMPITCHER) {
 			for(i=0; i<10; i++) {
-				if(index[i] >= 0)
-					pc_delitem(sd,index[i],amount[i],0);	// アイテム消費
+				if(idx[i] >= 0)
+					pc_delitem(sd,idx[i],amount[i],0);	// アイテム消費
 			}
 		}
 	}

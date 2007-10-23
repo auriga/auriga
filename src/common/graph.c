@@ -91,18 +91,18 @@ static struct graph* graph_create(unsigned int x, unsigned int y)
 }
 
 // パレットの設定
-static void graph_pallet(struct graph* g, int index, unsigned long c)
+static void graph_pallet(struct graph* g, int idx, unsigned long c)
 {
 	if (g == NULL || c >= 256)
 		return;
 
-	if (g->pallet_count <= index) {
-		memset(g->png_data + 0x29 + 3 * g->pallet_count,0,(index - g->pallet_count) * 3);
-		g->pallet_count = index + 1;
+	if (g->pallet_count <= idx) {
+		memset(g->png_data + 0x29 + 3 * g->pallet_count,0,(idx - g->pallet_count) * 3);
+		g->pallet_count = idx + 1;
 	}
-	g->png_data[0x29 + index * 3    ] = (unsigned char)((c >> 16) & 0xFF); // R
-	g->png_data[0x29 + index * 3 + 1] = (unsigned char)((c >>  8) & 0xFF); // G
-	g->png_data[0x29 + index * 3 + 2] = (unsigned char)( c        & 0xFF); // B
+	g->png_data[0x29 + idx * 3    ] = (unsigned char)((c >> 16) & 0xFF); // R
+	g->png_data[0x29 + idx * 3 + 1] = (unsigned char)((c >>  8) & 0xFF); // G
+	g->png_data[0x29 + idx * 3 + 2] = (unsigned char)( c        & 0xFF); // B
 	graph_write_dword(g->png_data + 0x21,g->pallet_count * 3);
 	graph_write_dword(
 		g->png_data + 0x29 + g->pallet_count * 3,

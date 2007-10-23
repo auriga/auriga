@@ -27,17 +27,17 @@ static const unsigned char walk_choice[3][3] =
  * 経路探索補助heap push
  *------------------------------------------
  */
-static void push_heap_path(int *heap,struct tmp_path *tp,int index)
+static void push_heap_path(int *heap,struct tmp_path *tp,int idx)
 {
 	int i, h = heap[0];
 
 	heap[0]++;
 
-	for(i = (h-1)/2; h > 0 && tp[index].cost < tp[heap[i+1]].cost; i = (h-1)/2) {
+	for(i = (h-1)/2; h > 0 && tp[idx].cost < tp[heap[i+1]].cost; i = (h-1)/2) {
 		heap[h+1] = heap[i+1];
 		h = i;
 	}
-	heap[h+1] = index;
+	heap[h+1] = idx;
 }
 
 /*==========================================
@@ -45,23 +45,23 @@ static void push_heap_path(int *heap,struct tmp_path *tp,int index)
  * costが減ったので根の方へ移動
  *------------------------------------------
  */
-static void update_heap_path(int *heap,struct tmp_path *tp,int index)
+static void update_heap_path(int *heap,struct tmp_path *tp,int idx)
 {
 	int i, h;
 
 	for(h = 0; h < heap[0]; h++) {
-		if(heap[h+1] == index)
+		if(heap[h+1] == idx)
 			break;
 	}
 	if(h == heap[0]) {
 		fprintf(stderr,"update_heap_path bug\n");
 		exit(1);
 	}
-	for(i = (h-1)/2; h > 0 && tp[index].cost < tp[heap[i+1]].cost; i = (h-1)/2) {
+	for(i = (h-1)/2; h > 0 && tp[idx].cost < tp[heap[i+1]].cost; i = (h-1)/2) {
 		heap[h+1] = heap[i+1];
 		h = i;
 	}
-	heap[h+1] = index;
+	heap[h+1] = idx;
 }
 
 /*==========================================

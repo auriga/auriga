@@ -133,7 +133,7 @@ static void check_timer_heap(void)
 
 #endif
 
-static void push_timer_heap(int index)
+static void push_timer_heap(int idx)
 {
 	if (timer_heap == NULL || timer_heap[0] + 1 >= timer_heap_max) {
 		int first = (timer_heap == NULL);
@@ -151,35 +151,35 @@ static void push_timer_heap(int index)
 	if(timer_heap[0] == 0) {
 		// データが無い : 先頭に追加
 		timer_heap[0]++;
-		timer_heap[1] = index;
-	} else if(DIFF_TICK(timer_data[timer_heap[timer_heap[0]]].tick,timer_data[index].tick) > 0) {
+		timer_heap[1] = idx;
+	} else if(DIFF_TICK(timer_data[timer_heap[timer_heap[0]]].tick,timer_data[idx].tick) > 0) {
 		// 最後尾に追加
-		timer_heap[++timer_heap[0]] = index;
-	} else if(DIFF_TICK(timer_data[timer_heap[1]].tick,timer_data[index].tick) <= 0) {
+		timer_heap[++timer_heap[0]] = idx;
+	} else if(DIFF_TICK(timer_data[timer_heap[1]].tick,timer_data[idx].tick) <= 0) {
 		// 先頭に追加
 		memmove(&timer_heap[2],&timer_heap[1],timer_heap[0] * sizeof(int));
 		timer_heap[0]++;
-		timer_heap[1] = index;
+		timer_heap[1] = idx;
 	} else {
 		int min = 1;
 		int max = timer_heap[0] + 1;
 		while(max != min + 1) {
 			int mid = (min + max) / 2;
-			if(DIFF_TICK(timer_data[index].tick,timer_data[timer_heap[mid]].tick) >= 0) {
+			if(DIFF_TICK(timer_data[idx].tick,timer_data[timer_heap[mid]].tick) >= 0) {
 				max = mid;
 			} else {
 				min = mid;
 			}
 		}
 		memmove(&timer_heap[min+2],&timer_heap[min+1],(timer_heap[0] - min) * sizeof(int));
-		timer_heap[min+1] = index;
+		timer_heap[min+1] = idx;
 		timer_heap[0]++;
 	}
 	// check_timer_heap();
 }
 
 // 指定したindex を持つタイマーヒープを返す
-static int search_timer_heap(int index)
+static int search_timer_heap(int idx)
 {
 	if (timer_heap == NULL || timer_heap[0] <= 0) {
 		return -1;
@@ -188,38 +188,38 @@ static int search_timer_heap(int index)
 		int max = timer_heap[0] + 1;
 		while(max != min + 1) {
 			int mid = (min + max)/2;
-			if(DIFF_TICK(timer_data[index].tick,timer_data[timer_heap[mid]].tick) > 0) {
+			if(DIFF_TICK(timer_data[idx].tick,timer_data[timer_heap[mid]].tick) > 0) {
 				max = mid;
 			} else {
 				min = mid;
 			}
 		}
-		if(timer_heap[min] == index) {
+		if(timer_heap[min] == idx) {
 			return min;
 		} else {
 			int pos = min - 1;
-			while(pos > 0 && timer_data[index].tick == timer_data[timer_heap[pos]].tick) {
-				if(timer_heap[pos] == index) {
+			while(pos > 0 && timer_data[idx].tick == timer_data[timer_heap[pos]].tick) {
+				if(timer_heap[pos] == idx) {
 					return pos;
 				}
 				pos--;
 			}
 			pos = min + 1;
-			while(pos <= timer_heap[0] && timer_data[index].tick == timer_data[timer_heap[pos]].tick) {
-				if(timer_heap[pos] == index) {
+			while(pos <= timer_heap[0] && timer_data[idx].tick == timer_data[timer_heap[pos]].tick) {
+				if(timer_heap[pos] == idx) {
 					return pos;
 				}
 				pos++;
 			}
-			printf("search_timer_heap : can't find tid:%d\n",index);
+			printf("search_timer_heap : can't find tid:%d\n",idx);
 			return -1;
 		}
 	}
 }
 
-static void delete_timer_heap(int index)
+static void delete_timer_heap(int idx)
 {
-	int pos = search_timer_heap(index);
+	int pos = search_timer_heap(idx);
 
 	if(pos != -1) {
 		memmove(&timer_heap[pos],&timer_heap[pos+1],(timer_heap[0] - pos) * sizeof(int));

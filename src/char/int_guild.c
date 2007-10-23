@@ -1892,25 +1892,25 @@ int mapif_guild_emblem(struct guild *g)
 	return 0;
 }
 
-int mapif_guild_castle_dataload(int castle_id,int index,int value)
+int mapif_guild_castle_dataload(int castle_id,int idx,int value)
 {
 	unsigned char buf[16];
 
 	WBUFW(buf, 0)=0x3840;
 	WBUFW(buf, 2)=castle_id;
-	WBUFB(buf, 4)=index;
+	WBUFB(buf, 4)=idx;
 	WBUFL(buf, 5)=value;
 	mapif_sendall(buf,9);
 	return 0;
 }
 
-int mapif_guild_castle_datasave(int castle_id,int index,int value)
+int mapif_guild_castle_datasave(int castle_id,int idx,int value)
 {
 	unsigned char buf[16];
 
 	WBUFW(buf, 0)=0x3841;
 	WBUFW(buf, 2)=castle_id;
-	WBUFB(buf, 4)=index;
+	WBUFB(buf, 4)=idx;
 	WBUFL(buf, 5)=value;
 	mapif_sendall(buf,9);
 	return 0;
@@ -2338,7 +2338,7 @@ int mapif_parse_GuildEmblem(int fd,int len,int guild_id,int dummy,const char *da
 	return mapif_guild_emblem(&g2);
 }
 
-int mapif_parse_GuildCastleDataLoad(int fd,int castle_id,int index)
+int mapif_parse_GuildCastleDataLoad(int fd,int castle_id,int idx)
 {
 	struct guild_castle *gc;
 
@@ -2347,46 +2347,46 @@ int mapif_parse_GuildCastleDataLoad(int fd,int castle_id,int index)
 	}
 	gc = &castle_db[castle_id];
 
-	switch(index){
-		case 1:  return mapif_guild_castle_dataload(gc->castle_id,index,gc->guild_id);   break;
-		case 2:  return mapif_guild_castle_dataload(gc->castle_id,index,gc->economy);    break;
-		case 3:  return mapif_guild_castle_dataload(gc->castle_id,index,gc->defense);    break;
-		case 4:  return mapif_guild_castle_dataload(gc->castle_id,index,gc->triggerE);   break;
-		case 5:  return mapif_guild_castle_dataload(gc->castle_id,index,gc->triggerD);   break;
-		case 6:  return mapif_guild_castle_dataload(gc->castle_id,index,gc->nextTime);   break;
-		case 7:  return mapif_guild_castle_dataload(gc->castle_id,index,gc->payTime);    break;
-		case 8:  return mapif_guild_castle_dataload(gc->castle_id,index,gc->createTime); break;
-		case 9:  return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleC);   break;
-		case 10: return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleG0);  break;
-		case 11: return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleG1);  break;
-		case 12: return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleG2);  break;
-		case 13: return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleG3);  break;
-		case 14: return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleG4);  break;
-		case 15: return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleG5);  break;
-		case 16: return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleG6);  break;
-		case 17: return mapif_guild_castle_dataload(gc->castle_id,index,gc->visibleG7);  break;
+	switch(idx){
+		case 1:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guild_id);   break;
+		case 2:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->economy);    break;
+		case 3:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->defense);    break;
+		case 4:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->triggerE);   break;
+		case 5:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->triggerD);   break;
+		case 6:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->nextTime);   break;
+		case 7:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->payTime);    break;
+		case 8:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->createTime); break;
+		case 9:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleC);   break;
+		case 10: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG0);  break;
+		case 11: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG1);  break;
+		case 12: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG2);  break;
+		case 13: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG3);  break;
+		case 14: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG4);  break;
+		case 15: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG5);  break;
+		case 16: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG6);  break;
+		case 17: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG7);  break;
 		default:
-			printf("mapif_parse_GuildCastleDataLoad ERROR!! (Not found index=%d)\n", index);
+			printf("mapif_parse_GuildCastleDataLoad ERROR!! (Not found index=%d)\n", idx);
 			break;
 	}
 	return 0;
 }
 
-int mapif_parse_GuildCastleDataSave(int fd,int castle_id,int index,int value)
+int mapif_parse_GuildCastleDataSave(int fd,int castle_id,int idx,int value)
 {
 	struct guild_castle *gc;
 
 	if(castle_id < 0 || castle_id >= MAX_GUILDCASTLE) {
-		return mapif_guild_castle_datasave(castle_id,index,value);
+		return mapif_guild_castle_datasave(castle_id,idx,value);
 	}
 	gc = &castle_db[castle_id];
 
-	switch(index){
+	switch(idx){
 		case 1:
 			if( gc->guild_id != value ) {
 				inter_log(
 					"guild id=%d %s castle id=%d",
-					((value)? value: gc->guild_id), ((value)? "occupy": "abandon"), index
+					((value)? value: gc->guild_id), ((value)? "occupy": "abandon"), idx
 				);
 			}
 			gc->guild_id = value;
@@ -2408,14 +2408,14 @@ int mapif_parse_GuildCastleDataSave(int fd,int castle_id,int index,int value)
 		case 16: gc->visibleG6  = value; break;
 		case 17: gc->visibleG7  = value; break;
 		default:
-			printf("mapif_parse_GuildCastleDataSave ERROR!! (Not found index=%d)\n", index);
+			printf("mapif_parse_GuildCastleDataSave ERROR!! (Not found index=%d)\n", idx);
 			return 0;
 	}
 #if defined(TXT_ONLY) && defined(TXT_JOURNAL)
 	if( guildcastle_journal_enable )
 		journal_write( &guildcastle_journal, gc->castle_id, gc );
 #endif
-	return mapif_guild_castle_datasave(gc->castle_id,index,value);
+	return mapif_guild_castle_datasave(gc->castle_id,idx,value);
 }
 
 // ギルドチェック要求

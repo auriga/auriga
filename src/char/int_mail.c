@@ -2,6 +2,7 @@
 #define _INT_MAIL_C_
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "mmo.h"

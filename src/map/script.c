@@ -8217,7 +8217,7 @@ int buildin_getcastlename(struct script_state *st)
 int buildin_getcastledata(struct script_state *st)
 {
 	char *mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
-	int index     = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int idx       = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	struct guild_castle *gc;
 	int i,val = 0;
 
@@ -8230,7 +8230,7 @@ int buildin_getcastledata(struct script_state *st)
 		mapname = map[m].name;
 	}
 
-	if(index == 0) {
+	if(idx == 0) {
 		int j = -1;
 		for(i=0; i<MAX_GUILDCASTLE; i++) {
 			if((gc = guild_castle_search(i)) != NULL && strcmp(mapname,gc->map_name) == 0)
@@ -8248,7 +8248,7 @@ int buildin_getcastledata(struct script_state *st)
 	} else {
 		for(i=0; i<MAX_GUILDCASTLE; i++) {
 			if((gc = guild_castle_search(i)) != NULL && strcmp(mapname,gc->map_name) == 0) {
-				switch(index) {
+				switch(idx) {
 					case 1:  val = gc->guild_id;   break;
 					case 2:  val = gc->economy;    break;
 					case 3:  val = gc->defense;    break;
@@ -8282,7 +8282,7 @@ int buildin_getcastledata(struct script_state *st)
 int buildin_setcastledata(struct script_state *st)
 {
 	char *mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
-	int index     = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int idx       = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	int value     = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	struct guild_castle *gc;
 	int i;
@@ -8296,7 +8296,7 @@ int buildin_setcastledata(struct script_state *st)
 
 	for(i=0; i<MAX_GUILDCASTLE; i++) {
 		if((gc = guild_castle_search(i)) != NULL && strcmp(mapname,gc->map_name) == 0) {
-			switch(index) {
+			switch(idx) {
 				case 1:  gc->guild_id   = value; break;
 				case 2:  gc->economy    = value; break;
 				case 3:  gc->defense    = value; break;
@@ -8316,7 +8316,7 @@ int buildin_setcastledata(struct script_state *st)
 				case 17: gc->visibleG7  = value; break;
 				default: return 0;
 			}
-			guild_castledatasave(gc->castle_id,index,value);
+			guild_castledatasave(gc->castle_id,idx,value);
 			break;
 		}
 	}
