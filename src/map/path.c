@@ -444,7 +444,7 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 		for(i = rp, j = len-1; j >= 0; i = tp[i].before, j--) {
 			int tx = tp[i].x - tp[tp[i].before].x;
 			int ty = tp[i].y - tp[tp[i].before].y;
-			wpd->path[j] = walk_choice[ty+1][tx+1];
+			wpd->path[j] = walk_choice[-ty+1][tx+1];
 		}
 #if 0
 		// test

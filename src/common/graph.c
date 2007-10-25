@@ -408,9 +408,10 @@ static void graph_parse_httpd(struct httpd_session_data *sd,const char* url)
 
 	if(id > 0 && id <= sensor_max) {
 		// output graph
-		int len;
+		int len = 0;
 		const char* data = graph_output(sensor[id-1].graph,&len);
-		httpd_send(sd,200,"image/png",len,data);
+		if(data)
+			httpd_send(sd,200,"image/png",len,data);
 	} else {
 		// output html
 		char buf[8192];

@@ -2356,7 +2356,7 @@ int atcommand_zeny(const int fd, struct map_session_data* sd, AtCommandType comm
  */
 int atcommand_param(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int max, value, new_value;
+	int max = 0, value, new_value;
 	short *status = NULL;
 
 	nullpo_retr(-1, sd);
