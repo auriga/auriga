@@ -735,8 +735,8 @@ static unsigned char* parse_line(unsigned char *p)
 	p=skip_space(p);
 	if(*p==';') {
 		// if(); for(); while(); のために閉じ判定
-		p = parse_syntax_close(p);
-		return p+1;
+		p = parse_syntax_close(p + 1);
+		return p;
 	}
 	if(*p==')' && parse_syntax_for_flag)
 		return p+1;
@@ -936,7 +936,6 @@ static unsigned char* parse_syntax(unsigned char *p)
 			if(*p != ';') {
 				disp_error_message("need ';'",p);
 			}
-			p++;
 			// if, for , while の閉じ判定
 			p = parse_syntax_close(p + 1);
 			return p;
@@ -1052,7 +1051,6 @@ static unsigned char* parse_syntax(unsigned char *p)
 			if(*p != ';') {
 				disp_error_message("need ';'",p);
 			}
-			p++;
 			// if, for , while の閉じ判定
 			p = parse_syntax_close(p + 1);
 			return p;
@@ -1198,7 +1196,8 @@ static unsigned char* parse_syntax(unsigned char *p)
 			// function - name
 			func_name = p;
 			p=skip_word(p);
-			if(*skip_space(p) == ';') {
+			p2=skip_space(p);
+			if(*p2 == ';') {
 				// 関数の宣言 - 名前を登録して終わり
 				unsigned char c = *p;
 				int l;
@@ -1210,8 +1209,10 @@ static unsigned char* parse_syntax(unsigned char *p)
 				} else if(str_data[l].type == C_INT || str_data[l].type == C_PARAM) {
 					disp_error_message("invalid label name",p);
 				}
-				return skip_space(p) + 1;
-			} else {
+				// if, for, while の閉じ判定
+				p = parse_syntax_close(p2 + 1);
+				return p;
+			} else if(*p2 == '{') {
 				// 関数の中身
 				char label[256];
 				unsigned char c = *p;
@@ -1239,6 +1240,8 @@ static unsigned char* parse_syntax(unsigned char *p)
 				}
 				set_label(l,script_pos,p);
 				return skip_space(p);
+			} else {
+				disp_error_message("expect ';' or '{' at function syntax",p);
 			}
 		}
 		break;
@@ -1505,7 +1508,7 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 		l=add_str(label);
 		set_label(l,script_pos,p);
 		syntax.curly_count--;
-		return p + 1;
+		return p;
 	}
 	*flag = 0;
 
