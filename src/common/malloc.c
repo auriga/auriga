@@ -348,7 +348,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 	*(long*)((char*)head + sizeof(struct unit_head) - sizeof(long) + size) = 0xdeadbeaf;
 
 	return (char *)head + sizeof(struct unit_head) - sizeof(long);
-};
+}
 
 void* aCalloc_(size_t num, size_t size, const char *file, int line, const char *func)
 {

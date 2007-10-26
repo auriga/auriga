@@ -77,11 +77,11 @@ struct linkdb_node {
 	void               *data;
 };
 
-void  linkdb_insert (struct linkdb_node** head, void *key, void* data); // 重複を考慮しない
+void  linkdb_insert(struct linkdb_node** head, void *key, void* data); // 重複を考慮しない
 void* linkdb_replace(struct linkdb_node** head, void *key, void* data); // 重複を考慮する
-void* linkdb_search (struct linkdb_node** head, void *key);
-void* linkdb_erase  (struct linkdb_node** head, void *key);
-void  linkdb_final  (struct linkdb_node** head);
+void* linkdb_search(struct linkdb_node** head, void *key);
+void* linkdb_erase(struct linkdb_node** head, void *key);
+void  linkdb_final(struct linkdb_node** head);
 
 // csvdb -- csv ファイルの読み込み関数
 
@@ -106,20 +106,20 @@ struct csvdb_data {
 };
 
 struct csvdb_data* csvdb_open(const char* file, int skip_comment);
-int         csvdb_get_rows(struct csvdb_data *csv);
-int         csvdb_get_columns(struct csvdb_data *csv, int row);
-int         csvdb_get_num(struct csvdb_data *csv, int row, int col);
+int csvdb_get_rows(struct csvdb_data *csv);
+int csvdb_get_columns(struct csvdb_data *csv, int row);
+int csvdb_get_num(struct csvdb_data *csv, int row, int col);
 const char* csvdb_get_str(struct csvdb_data *csv, int row, int col);
-int         csvdb_set_num(struct csvdb_data *csv, int row, int col, int num);
-int         csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str);
-int         csvdb_find_num(struct csvdb_data *csv, int col, int value);
-int         csvdb_find_str(struct csvdb_data *csv, int col, const char* value);
-int         csvdb_clear_row(struct csvdb_data *csv, int row);
-int         csvdb_sort(struct csvdb_data *csv, int key, int order);
-int         csvdb_delete_row(struct csvdb_data *csv, int row);
-int         csvdb_insert_row(struct csvdb_data *csv, int row);
-int         csvdb_flush(struct csvdb_data *csv);
-void        csvdb_close(struct csvdb_data *csv);
-void        csvdb_dump(struct csvdb_data* csv);
+int csvdb_set_num(struct csvdb_data *csv, int row, int col, int num);
+int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str);
+int csvdb_find_num(struct csvdb_data *csv, int col, int value);
+int csvdb_find_str(struct csvdb_data *csv, int col, const char* value);
+int csvdb_clear_row(struct csvdb_data *csv, int row);
+int csvdb_sort(struct csvdb_data *csv, int key, int order);
+int csvdb_delete_row(struct csvdb_data *csv, int row);
+int csvdb_insert_row(struct csvdb_data *csv, int row);
+int csvdb_flush(struct csvdb_data *csv);
+void csvdb_close(struct csvdb_data *csv);
+void csvdb_dump(struct csvdb_data* csv);
 
 #endif

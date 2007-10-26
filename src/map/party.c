@@ -245,6 +245,28 @@ void party_recv_info(struct party *sp)
 }
 
 /*==========================================
+ * 位置通知クリア
+ *------------------------------------------
+ */
+static void party_send_xy_clear(struct party *p)
+{
+	int i;
+
+	nullpo_retv(p);
+
+	for(i=0;i<MAX_PARTY;i++){
+		struct map_session_data *sd;
+		if((sd=p->member[i].sd)!=NULL){
+			sd->party_x=-1;
+			sd->party_y=-1;
+			sd->party_hp=-1;
+		}
+	}
+
+	return;
+}
+
+/*==========================================
  * パーティへの勧誘
  *------------------------------------------
  */
@@ -366,8 +388,13 @@ static void party_check_conflict(struct map_session_data *sd)
  */
 void party_member_added(int party_id, int account_id, unsigned char flag, const char* name)
 {
-	struct map_session_data *sd = map_id2sd(account_id),*sd2;
+	struct map_session_data *sd, *sd2;
+	struct party *p;
 
+	if((p = party_search(party_id)) == NULL)
+		return;
+
+	sd = map_id2sd(account_id);
 	if(sd == NULL) {
 		if(flag == 0) {
 			if(battle_config.error_log)
@@ -395,6 +422,9 @@ void party_member_added(int party_id, int account_id, unsigned char flag, const 
 
 	// いちおう競合確認
 	party_check_conflict(sd);
+
+	// 座標再通知要請
+	party_send_xy_clear(p);
 
 	return;
 }
@@ -607,28 +637,6 @@ void party_optionchanged(int party_id, int account_id, unsigned char exp, unsign
 			clif_party_main_info(p,-1);
 	}
 	clif_party_option(p,sd,flag);
-
-	return;
-}
-
-/*==========================================
- * 位置通知クリア
- *------------------------------------------
- */
-static void party_send_xy_clear(struct party *p)
-{
-	int i;
-
-	nullpo_retv(p);
-
-	for(i=0;i<MAX_PARTY;i++){
-		struct map_session_data *sd;
-		if((sd=p->member[i].sd)!=NULL){
-			sd->party_x=-1;
-			sd->party_y=-1;
-			sd->party_hp=-1;
-		}
-	}
 
 	return;
 }

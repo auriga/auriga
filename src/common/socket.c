@@ -1272,21 +1272,22 @@ static int connect_check_clear(int tid, unsigned int tick, int id, int data)
 // IPマスクチェック
 static int access_ipmask(const char *str,struct _access_control* acc)
 {
-	unsigned int mask = 0, i = 0, m, ip, a0, a1, a2, a3;
+	unsigned int mask = 0, ip;
 
 	if (!strcmp(str, "all")) {
 		ip   = 0;
 		mask = 0;
 	} else {
-		if (sscanf(str, "%d.%d.%d.%d%n", &a0, &a1, &a2, &a3, &i) != 4 || i == 0) {
+		unsigned int i = 0, m, a0, a1, a2, a3;
+		if (sscanf(str, "%u.%u.%u.%u%n", &a0, &a1, &a2, &a3, &i) != 4 || i == 0) {
 			printf("access_ipmask: unknown format %s\n", str);
 			return 0;
 		}
 		ip = (a3 << 24) | (a2 << 16) | (a1 << 8) | a0;
 
-		if (sscanf(str + i, "/%d.%d.%d.%d", &a0, &a1, &a2, &a3) == 4) {
+		if (sscanf(str + i, "/%u.%u.%u.%u", &a0, &a1, &a2, &a3) == 4) {
 			mask = (a3 << 24) | (a2 << 16) | (a1 << 8) | a0;
-		} else if (sscanf(str + i, "/%d", &m) == 1) {
+		} else if (sscanf(str + i, "/%u", &m) == 1) {
 			for(i = 0; i < m; i++) {
 				mask = (mask >> 1) | 0x80000000;
 			}
