@@ -441,8 +441,8 @@ int unit_walktoxy(struct block_list *bl, int x, int y)
 
 	// 強制移動中は混乱から除外
 	if(sc && sc->data[SC_CONFUSION].timer != -1 && sc->data[SC_FORCEWALKING].timer == -1) {
-		ud->to_x = sd->bl.x + atn_rand()%7 - 3;
-		ud->to_y = sd->bl.y + atn_rand()%7 - 3;
+		ud->to_x = bl->x + atn_rand()%7 - 3;
+		ud->to_y = bl->y + atn_rand()%7 - 3;
 	} else {
 		ud->to_x = x;
 		ud->to_y = y;

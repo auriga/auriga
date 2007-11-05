@@ -4483,23 +4483,21 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case AL_TELEPORT:			/* テレポート */
 		{
 			int alive = 1;
-			map_foreachinarea(skill_landprotector,src->m,src->x,src->y,src->x,src->y,BL_SKILL,skillid,&alive);
-			if(sd && alive) {
-				if(map[sd->bl.m].flag.noteleport) {	// テレポ禁止
-					clif_skill_teleportmessage(sd,0);
-					break;
+			if(!md || !(md->mode&0x20) || !battle_config.boss_teleport_on_landprotector) {
+				// PCおよび一般MOBはランドプロテクター上ではテレポート不可
+				map_foreachinarea(skill_landprotector,src->m,src->x,src->y,src->x,src->y,BL_SKILL,skillid,&alive);
+			}
+			if(alive) {
+				if(sd) {
+					clif_skill_nodamage(src,bl,skillid,skilllv,1);
+					if(sd->ud.skilllv == 1) {
+						clif_skill_warppoint(sd,sd->ud.skillid,"Random","","","");
+					} else {
+						clif_skill_warppoint(sd,sd->ud.skillid,"Random",sd->status.save_point.map,"","");
+					}
+				} else if(md) {
+					mob_warp(md,-1,-1,-1,3);
 				}
-				// 対象がLP上に居る場合は無効
-				if(map_find_skill_unit_oncell(bl,bl->x,bl->y,SA_LANDPROTECTOR,NULL))
-					break;
-				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				if(sd->ud.skilllv == 1) {
-					clif_skill_warppoint(sd,sd->ud.skillid,"Random","","","");
-				} else {
-					clif_skill_warppoint(sd,sd->ud.skillid,"Random",sd->status.save_point.map,"","");
-				}
-			} else if(dstmd && alive) {
-				mob_warp(dstmd,-1,-1,-1,3);
 			}
 		}
 		break;
@@ -8367,9 +8365,14 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		break;
 	case AL_TELEPORT:
 		{
-			int alive = 1;
-			map_foreachinarea(skill_landprotector,bl->m,bl->x,bl->y,bl->x,bl->y,BL_SKILL,AL_TELEPORT,&alive);
-			if(alive==0 || map[bl->m].flag.noteleport){
+			int alive;
+			if(map[bl->m].flag.noteleport) {
+				alive = 0;
+			} else {
+				alive = 1;
+				map_foreachinarea(skill_landprotector,bl->m,bl->x,bl->y,bl->x,bl->y,BL_SKILL,AL_TELEPORT,&alive);
+			}
+			if(!alive) {
 				clif_skill_teleportmessage(sd,0);
 				return 0;
 			}

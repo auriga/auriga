@@ -419,6 +419,7 @@ extern struct Battle_Config {
 	int allow_weaponrearch_to_weaponrefine;
 	int boss_no_knockbacking;
 	int boss_no_element_change;
+	int boss_teleport_on_landprotector;
 	int scroll_produce_rate;
 	int scroll_item_name_input;
 	int pet_leave;
