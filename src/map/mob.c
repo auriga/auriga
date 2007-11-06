@@ -360,7 +360,7 @@ int mob_spawn(int id)
 		md->skilldelay[i] = c;
 	}
 	if(md->lootitem)
-		memset(md->lootitem,0,sizeof(md->lootitem));
+		memset(md->lootitem, 0, sizeof(struct item) * LOOTITEM_SIZE);
 	md->lootitem_count = 0;
 
 #ifdef DYNAMIC_SC_DATA
@@ -712,7 +712,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 	// 主がいて、主がロックしていて自分はロックしていない
 	if(mmd->target_id > 0 && !md->target_id) {
 		struct block_list *tbl = map_id2bl(mmd->target_id);
-		if(tbl && mob_can_lock(md,tbl)) {
+		if(tbl && (tbl->type != BL_ITEM || md->mode & 0x02) && mob_can_lock(md,tbl)) {
 			md->target_id = tbl->id;
 			md->min_chase = 5 + unit_distance(md->bl.x,md->bl.y,tbl->x,tbl->y);
 			md->state.master_check = 1;
@@ -2239,8 +2239,10 @@ static int mob_class_change_id(struct mob_data *md,int mob_id)
 	md->ud.skillid = 0;
 	md->ud.skilllv = 0;
 
-	if(md->lootitem == NULL && mob_db[md->class_].mode&0x02)
+	if(md->lootitem == NULL && mob_db[md->class_].mode&0x02) {
 		md->lootitem = (struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
+		md->lootitem_count = 0;
+	}
 
 	skill_clear_unitgroup(&md->bl);
 	skill_cleartimerskill(&md->bl);

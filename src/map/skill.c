@@ -2966,6 +2966,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		if(bl->type == BL_PC) {
 			struct block_list *dstbl;
 			int sp, rate;
+			if(status_check_no_magic_damage(bl))
+				break;
 			if(sd && !map[sd->bl.m].flag.pvp && !map[sd->bl.m].flag.gvg && !map[sd->bl.m].flag.pk)
 				break;
 			rate = (skilllv >= 5)? 70: 10 * skilllv + 30;

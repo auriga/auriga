@@ -2345,12 +2345,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				// calc_flag.nocardfix = 1;
 			}
 			// サクリファイス
-			if(sc->data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {
-				int dmg = status_get_max_hp(src) * 9 / 100;
-				battle_heal(NULL, src, -dmg, 0, 0);
-				wd.damage = dmg * (90 + sc->data[SC_SACRIFICE].val1 * 10) / 100;
-				wd.damage2 = 0;
-				clif_misceffect2(src,366);
+			if(sc->data[SC_SACRIFICE].timer != -1 && !skill_num) {
+				if(t_class != 1288) {
+					int dmg = status_get_max_hp(src) * 9 / 100;
+					battle_heal(NULL, src, -dmg, 0, 0);
+					wd.damage  = dmg * (90 + sc->data[SC_SACRIFICE].val1 * 10) / 100;
+					wd.damage2 = 0;
+					clif_misceffect2(src,366);
+				}
 				if((--sc->data[SC_SACRIFICE].val2) <= 0)
 					status_change_end(src, SC_SACRIFICE,-1);
 			}
