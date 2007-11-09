@@ -38,7 +38,7 @@ void hex_dump(FILE *fp, const unsigned char *buf, int len);
 // =====================
 // 大きな数字用の型
 // ---------------------
-#if defined(BIGNUMBER_DOUBLE)
+#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
 	typedef double atn_bignumber;
 #else
 	typedef atn_int64 atn_bignumber;
@@ -47,9 +47,9 @@ void hex_dump(FILE *fp, const unsigned char *buf, int len);
 // =====================
 // 大きな数字用の変換指定子
 // ---------------------
-#if defined(BIGNUMBER_DOUBLE)
+#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
 #	define BIGNUMCODE ".0f"
-#elif defined(_WIN32) && ( defined(__BORLANDC__) || defined(_MSC_VER) )
+#elif defined(_WIN32) && defined(_MSC_VER)
 #	define BIGNUMCODE "I64d"
 #else
 #	define BIGNUMCODE "lld"

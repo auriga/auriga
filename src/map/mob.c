@@ -1765,8 +1765,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 		node = md->dmglog;
 		for(i=0; node; node = node->next,i++) {
-			int pid, flag = 1;
-			int damage, rate;
+			int damage, rate, pid;
 			atn_bignumber base_exp, job_exp;
 			struct map_session_data *tmpsd = NULL;
 
@@ -1785,7 +1784,6 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				if(base_exp < 0)
 					base_exp = 0;
 			}
-
 			if(job_exp_rate <= 0) {
 				job_exp = 0;
 			} else {
@@ -1814,11 +1812,11 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 			if((pid = tmpsd->status.party_id) > 0) {	// パーティに入っている
 				int j;
-				for(j=0; j<pnum; j++) {	// 公平パーティリストにいるかどうか
+				for(j = 0; j < pnum; j++) {	// 公平パーティリストにいるかどうか
 					if(pt[j].id == pid)
 						break;
 				}
-				if(j == pnum) {	// いないときは公平かどうか確認
+				if(j >= pnum) {	// いないときは公平かどうか確認
 					struct party *p = party_search(pid);
 					if(p && p->exp != 0) {
 						pt[pnum].id       = pid;
@@ -1826,15 +1824,15 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 						pt[pnum].base_exp = base_exp;
 						pt[pnum].job_exp  = job_exp;
 						pnum++;
-						flag = 0;
+						continue;
 					}
 				} else {	// いるときは公平
 					pt[j].base_exp += base_exp;
 					pt[j].job_exp  += job_exp;
-					flag = 0;
+					continue;
 				}
 			}
-			if(flag && (base_exp > 0 || job_exp > 0))	// 各自取得
+			if(base_exp > 0 || job_exp > 0)	// 各自取得
 			{
 				if( (tmpsd->sc.data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// 死んだふりしていない
 				    (tmpsd->sc.data[SC_HIDING].timer == -1    || !battle_config.noexp_hiding) )		// ハイドしていない
@@ -1842,7 +1840,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			}
 		}
 		// 公平分配
-		for(i=0; i<pnum; i++)
+		for(i = 0; i < pnum; i++)
 			party_exp_share(pt[i].p, md, pt[i].base_exp, pt[i].job_exp);
 	}
 	aFree( pt );
