@@ -4370,7 +4370,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_FOGWALLPENALTY:
 		case SC_FOGWALL:
 		case SC_REVERSEORCISH:
-		case SC_REDEMPTIO:
 		case SC_GRAVITATION_USER:
 		case SC_BLADESTOP_WAIT:			/* 白刃取り(待ち) */
 		case SC_SAFETYWALL:			/* セーフティウォール */
@@ -6775,11 +6774,8 @@ int status_change_clear(struct block_list *bl,int type)
 
 	status_calc_pc_stop_begin(bl);
 	for(i = 0; i < MAX_STATUSCHANGE; i++) {
-		if(i == SC_BABY || i == SC_REDEMPTIO)
-		{
-			if(type == 0 && unit_isdead(bl))
-				continue;
-		}
+		if(i == SC_BABY && type == 0 && unit_isdead(bl))
+			continue;
 
 		/* 異常があるならタイマーを削除する */
 		if(i == SC_DANCING) {

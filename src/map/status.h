@@ -455,7 +455,7 @@ enum {
 	SC_GRAVITATION          = 339,
 	SC_FOGWALL              = 340,
 	SC_FOGWALLPENALTY       = 341,
-	SC_REDEMPTIO            = 342,
+	//
 	//
 	SC_HOLDWEB              = 344,
 	SC_INVISIBLE            = 345,

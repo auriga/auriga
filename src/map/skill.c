@@ -259,7 +259,6 @@ static int skill_frostjoke_scream(struct block_list *bl,va_list ap);
 static int skill_abra_dataset(struct map_session_data *sd, int skilllv);
 static int skill_clear_element_field(struct block_list *bl);
 static int skill_landprotector(struct block_list *bl, va_list ap );
-static int skill_redemptio(struct block_list *bl, va_list ap );
 static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,int wheel);
 static int skill_trap_splash(struct block_list *bl, va_list ap );
 static int skill_count_target(struct block_list *bl, va_list ap );
@@ -3153,7 +3152,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	if(bl->prev == NULL)
 		return 1;
-	if(unit_isdead(bl) && skillid != ALL_RESURRECTION)
+	if(unit_isdead(bl) && skillid != ALL_RESURRECTION && skillid != PR_REDEMPTIO)
 		return 1;
 	if(status_get_class(bl) == 1288)
 		return 1;
@@ -3315,42 +3314,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(exp > 0 || jexp > 0)
 				pc_gainexp(sd,NULL,exp,jexp);
 		}
-
-		if( dstsd->sc.data[SC_REDEMPTIO].timer != -1 && battle_config.death_penalty_type&1 &&
-		    !map[dstsd->bl.m].flag.nopenalty && !map[dstsd->bl.m].flag.gvg )
-		{
-			atn_bignumber base_exp = 0, job_exp = 0;
-			int per = dstsd->sc.data[SC_REDEMPTIO].val1;
-			if(per > 100)
-				per = 100;
-			if(battle_config.death_penalty_base > 0) {
-				if(battle_config.death_penalty_type&2)
-					base_exp = (atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000;
-				else if(pc_nextbaseexp(sd) > 0)
-					base_exp = (atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000;
-			}
-			if(battle_config.death_penalty_job > 0) {
-				if(battle_config.death_penalty_type&2)
-					job_exp = (atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000;
-				else if(pc_nextjobexp(sd) > 0)
-					job_exp = (atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000;
-			}
-
-			if(per != 100) {
-				base_exp = base_exp * per/100;
-				job_exp = job_exp * per/100;
-			}
-			if(dstsd->status.base_exp && base_exp) {
-				sd->status.base_exp += (int)base_exp;
-				clif_updatestatus(sd,SP_BASEEXP);
-			}
-			if(dstsd->status.job_exp && job_exp) {
-				sd->status.job_exp += (int)job_exp;
-				clif_updatestatus(sd,SP_JOBEXP);
-			}
-		}
-		if(dstsd->sc.data[SC_REDEMPTIO].timer != -1)
-			status_change_end(bl,SC_REDEMPTIO,-1);
 		break;
 
 	case AL_DECAGI:			/* 速度減少 */
@@ -5339,35 +5302,34 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		break;
 	case PR_REDEMPTIO:		/* レデムプティオ */
-		if(sd) {
-			int penalty_flag = 1;
-			int raise_member_count = 0;	// 生き返らせた数
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			party_foreachsamemap(skill_redemptio,sd,7,&sd->bl,&raise_member_count,tick);
+		if(sd == NULL)
+			break;
+		if(flag&1) {
+			if(unit_isdead(bl)) {
+				skill_area_temp[0]++;
+				skill_castend_nodamage_id(src,bl,ALL_RESURRECTION,3,tick,1);
+			}
+		} else {
+			skill_area_temp[0] = 0;
+			party_foreachsamemap(skill_area_sub,
+				sd,AREA_SIZE,
+				src,skillid,skilllv,tick, flag|BCT_PARTY|1,
+				skill_castend_nodamage_id);
 
-			if(battle_config.redemptio_penalty_type&8) {
-				// 無条件にペナルティ無し
-				penalty_flag = 0;
-			}
-			if(penalty_flag && battle_config.redemptio_penalty_type&1 && raise_member_count == 0) {
-				penalty_flag = 0;
-			}
-			if(penalty_flag && battle_config.redemptio_penalty_type&2 && raise_member_count >= 5) {
-				penalty_flag  = 0;
-				sd->status.hp = 1;
-				clif_updatestatus(sd,SP_HP);
-			}
-			if(penalty_flag && battle_config.redemptio_penalty_type&4) {
-				penalty_flag  = 0;
-				sd->status.hp = 1;
-				clif_updatestatus(sd,SP_HP);
-			}
-			if(penalty_flag) {
-				if(raise_member_count >= 5 || raise_member_count == 0)
-					status_change_start(&sd->bl,SC_REDEMPTIO,100,0,0,0,3600000,0);
-				else
-					status_change_start(&sd->bl,SC_REDEMPTIO,20*raise_member_count,0,0,0,3600000,0);
-				pc_damage(NULL,sd,sd->status.hp);
+			if(!battle_config.redemptio_penalty_type)
+				break;
+			if(battle_config.redemptio_penalty_type&1 && skill_area_temp[0] == 0)
+				break;
+			if(battle_config.redemptio_penalty_type&2 && skill_area_temp[0] >= 5)
+				break;
+
+			// HP1, SP0
+			pc_heal(sd, -sd->status.hp + 1, -sd->status.sp);
+
+			// 経験値ペナルティ
+			if(skill_area_temp[0] < 5) {
+				int per = (5 - skill_area_temp[0]) * 20;
+				pc_exp_penalty(sd, NULL, per, 3);
 			}
 		}
 		break;
@@ -8708,11 +8670,22 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case PR_REDEMPTIO:
-		if(!(battle_config.redemptio_penalty_type&8) && !map[sd->bl.m].flag.nopenalty
-				&& sd->status.base_exp < pc_nextbaseexp(sd)/100*battle_config.death_penalty_base/100)
-		{
-			clif_skill_fail(sd,cnd->id,0,0);
-			return 0;
+		if(battle_config.redemptio_penalty_type) {
+			int exp = pc_nextbaseexp(sd);
+			if(exp <= 0) {
+				// オーラの場合は現在のレベルに必要な経験値を参照する
+				sd->status.base_level--;
+				exp = pc_nextbaseexp(sd);
+				sd->status.base_level++;
+				if(exp <= 0) {
+					// それでもexpが未設定なら許可
+					break;
+				}
+			}
+			if(sd->status.base_exp < exp / 100 * battle_config.death_penalty_base / 100) {
+				clif_skill_fail(sd,cnd->id,0,0);
+				return 0;
+			}
 		}
 		break;
 	case GS_GLITTERING:		/* フリップザコイン */
@@ -10023,33 +9996,6 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 		if(alive && unit->group->skill_id==SA_LANDPROTECTOR)
 			(*alive)=0;
 	}
-	return 0;
-}
-
-/*==========================================
- * レディムプティオ
- *------------------------------------------
- */
-static int skill_redemptio(struct block_list *bl, va_list ap)
-{
-	struct block_list *src;
-	int *count;
-	unsigned int tick;
-
-	nullpo_retr(0, bl);
-	nullpo_retr(0, ap);
-	nullpo_retr(0, src = va_arg(ap,struct block_list*));
-
-	count = va_arg(ap,int *);
-	tick  = va_arg(ap,unsigned int);
-
-	if(unit_isdead(bl))
-	{
-		status_change_start(bl,SC_REDEMPTIO,20,0,0,0,3600000,0);
-		skill_castend_nodamage_id(src,bl,ALL_RESURRECTION,3,tick,1);
-		(*count)++;
-	}
-
 	return 0;
 }
 

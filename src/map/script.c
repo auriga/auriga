@@ -8912,8 +8912,10 @@ int buildin_repairitem(struct script_state *st)
 				c++;
 			}
 		}
-		clif_itemlist(sd);
-		clif_equiplist(sd);
+		if(c > 0) {
+			clif_itemlist(sd);
+			clif_equiplist(sd);
+		}
 	}
 	return 0;
 }

@@ -453,21 +453,17 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 
 /*==========================================
  * Expペナルティ
+ *   type&1 : 経験値更新
+ *   type&2 : レディムプティオ
  *------------------------------------------
  */
-static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, int type)
+int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, int per, int type)
 {
-	int per = 100;
 	atn_bignumber loss_base = 0, loss_job = 0;
 
 	nullpo_retr(0, sd);
 
-	if(sd->sc.data[SC_REDEMPTIO].timer != -1) {
-		status_change_end(&sd->bl,SC_REDEMPTIO,-1);
-		per -= sd->sc.data[SC_REDEMPTIO].val1;
-		if(per <= 0)
-			return 0;
-	} else {
+	if(!(type&2)) {
 		if(map[sd->bl.m].flag.nopenalty)
 			return 0;
 		if(sd->sc.data[SC_BABY].timer != -1)
@@ -481,34 +477,41 @@ static int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *
 	if(sd->s_class.job == 0 || map[sd->bl.m].flag.gvg)
 		return 0;
 
+	// レディムプティオのペナルティの場合、オーラならば現在の取得経験値から差し引く
 	if(battle_config.death_penalty_base > 0) {
-		if(battle_config.death_penalty_type&2) {
-			loss_base = (atn_bignumber)pc_nextbaseexp(sd) * battle_config.death_penalty_base/10000 * per/100;
+		int nextbase;
+		if( battle_config.death_penalty_type&2 && ((nextbase = pc_nextbaseexp(sd)) > 0 || !(type&2)) ) {
+			loss_base = (atn_bignumber)nextbase;
 		} else {
-			loss_base = (atn_bignumber)sd->status.base_exp * battle_config.death_penalty_base/10000 * per/100;
+			loss_base = (atn_bignumber)sd->status.base_exp;
 		}
-		if(sd->status.base_exp < loss_base)
-			loss_base = sd->status.base_exp;
-		sd->status.base_exp -= (int)loss_base;
-		if(sd->status.base_exp < 0)
-			sd->status.base_exp = 0;
-		if(type&1)
-			clif_updatestatus(sd,SP_BASEEXP);
+		loss_base = loss_base * battle_config.death_penalty_base / 10000 * per / 100;
+
+		if(loss_base) {
+			sd->status.base_exp -= (int)loss_base;
+			if(sd->status.base_exp < 0)
+				sd->status.base_exp = 0;
+			if(type&1)
+				clif_updatestatus(sd,SP_BASEEXP);
+		}
 	}
 
 	if(battle_config.death_penalty_job > 0) {
-		if(battle_config.death_penalty_type&2) {
-			loss_job = (atn_bignumber)pc_nextjobexp(sd) * battle_config.death_penalty_job/10000 * per/100;
+		int nextjob;
+		if( battle_config.death_penalty_type&2 && ((nextjob = pc_nextjobexp(sd)) > 0 || !(type&2)) ) {
+			loss_job = (atn_bignumber)nextjob;
 		} else {
-			loss_job = (atn_bignumber)sd->status.job_exp * battle_config.death_penalty_job/10000 * per/100;
+			loss_job = (atn_bignumber)sd->status.job_exp;
 		}
-		if(sd->status.job_exp < loss_job)
-			loss_job = sd->status.job_exp;
-		sd->status.job_exp -= (int)loss_job;
-		if(sd->status.job_exp < 0)
-			sd->status.job_exp = 0;
-		if(type&1)
-			clif_updatestatus(sd,SP_JOBEXP);
+		loss_job = loss_job * battle_config.death_penalty_job / 10000 * per / 100;
+
+		if(loss_job) {
+			sd->status.job_exp -= (int)loss_job;
+			if(sd->status.job_exp < 0)
+				sd->status.job_exp = 0;
+			if(type&1)
+				clif_updatestatus(sd,SP_JOBEXP);
+		}
 	}
 
 	if(ssd) {
@@ -554,7 +557,7 @@ int pc_setrestartvalue(struct map_session_data *sd,int type)
 	}
 	if(type&2) {
 		if(!(battle_config.death_penalty_type&1))	// デスペナ
-			pc_exp_penalty(sd, NULL, type);
+			pc_exp_penalty(sd, NULL, 100, type&1);
 
 		if(!map[sd->bl.m].flag.nozenypenalty) {
 			atn_bignumber zeny_penalty;
@@ -5229,7 +5232,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 
 	// 死亡直後にデスペナルティを発生させる場合
 	if(battle_config.death_penalty_type&1)
-		pc_exp_penalty(sd, ssd, 1);
+		pc_exp_penalty(sd, ssd, 100, 1);
 
 	// PK
 	if(map[sd->bl.m].flag.pk) {

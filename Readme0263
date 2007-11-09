@@ -1,4 +1,30 @@
 ----------------------------------------
+//0383 [2007/11/10] by Rayce
+
+・レディムプティオを本鯖仕様に修正
+	reported by Cocoaさん
+
+	-> スキル発動時は死亡するのではなくHP1, SP0になる
+	-> 効果範囲を15x15から29x29に修正
+	-> オーラの場合、経験値がオーラレベルに必要な経験値の1%以下ならスキル失敗
+	-> オーラの場合、発動時には取得経験値の1%を基準としてExpペナルティが発生する
+	-> ペナルティは街中でも発生する
+
+　　※以下変更箇所
+	-> conf/battle_auriga.confの redemptio_penalty_type の仕様変更（battle.c）
+	   デフォルトは1、誰も生き返らないときだけHP/SP/Expペナルティ無し設定
+	-> skill_redemptio() を撤廃（skill.c）
+	   party_foreachsamemap() は再帰的に skill_castend_nodamage_id() を呼ぶだけ
+	-> SC_REDEMPTIOを撤廃（skill.c, status.*）
+	-> pc_exp_penalty() の拡張（pc.*, skill.c）
+	   レディムプティオのExpペナルティにも適用できるように
+
+・buildin_repairitem() を少し修正（script.c）
+	reported by Cocoaさん
+
+・conf/battle_auriga.confの death_penalty_type のデフォルトを3に変更しておく（battle.c）
+
+----------------------------------------
 //0382 [2007/11/07] by Rayce
 
 ・ルート属性を持つMOBがルート属性を持たない取り巻きを召喚すると、取り巻きがアイテムを
