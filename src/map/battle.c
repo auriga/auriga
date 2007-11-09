@@ -1179,12 +1179,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* ４．右手・左手判定 */
-	calc_flag.rh = 1;	// 基本は右手のみ
-	if(src_sd) {
+	calc_flag.rh = 1;		// 基本は右手のみ
+	if(src_sd && skill_num == 0) {	// スキル攻撃は常に右手を参照
 		if(src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 > WT_FIST) {	// 左手のみ武器装備
 			calc_flag.rh = 0;
 			calc_flag.lh = 1;
-		} else if(skill_num == 0 && src_sd->status.weapon > WT_HUUMA) {		// 通常攻撃で二刀流（スキル攻撃に左手は乗らない）
+		} else if(src_sd->status.weapon > WT_HUUMA || src_sd->status.weapon == WT_KATAR) {	// 二刀流
 			calc_flag.lh = 1;
 		}
 	}

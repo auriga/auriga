@@ -6026,7 +6026,7 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	}
 
 	if((sd->sex == 0 && job == 19) || (sd->sex == 1 && job == 20) ||
-	   job == 13 || job == 21 || job == 22 || job == 26 || job == 27 ||
+	   job == 13 || job == 21 || job == 22 || job == 26 ||
 	   sd->status.class_ == b_class)	// ♀はバードになれない、♂はダンサーになれない、結婚衣裳もお断り
 		return 1;
 

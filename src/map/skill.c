@@ -6131,6 +6131,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			if((tmpmd = map_id2md(id)) != NULL) {
 				tmpmd->master_id    = sd->bl.id;
 				tmpmd->hp           = 2000 + skilllv * 400;
+				tmpmd->def_ele      = 40 + ELE_WATER;
 				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,0);
 				tmpmd->state.nodrop = battle_config.spheremine_no_drop;
 				tmpmd->state.noexp  = battle_config.spheremine_no_exp;

@@ -1,4 +1,17 @@
 ----------------------------------------
+//0385 [2007/11/10] by Rayce
+
+・0313以降、ソウルリンカーの転職できなくなっていたバグを修正（pc.c）
+	reported by Cocoaさん
+・スフィアーマインを強制的に水属性Lv2に修正（skill.c）
+	reported by Cocoaさん
+・カタール装備時、左手の追撃分が常にMissになるバグを修正（battle.c）
+	reported by Cocoaさん
+
+・左手にのみ武器を装備している状態で武器スキルを使う場合は右手のみを参照するように修正（battle.c）
+	merged from eA, thx a lot!!
+
+----------------------------------------
 //0384 [2007/11/10] by Rayce
 
 ・BCCのとき、atn_bignumber型は__int64型ではなくdouble型を使うように戻す（utils.h）
