@@ -18,14 +18,25 @@ void  aFree_( void *p, const char *file, int line, const char *func );
 #define aFree(p)      do { aFree_(p,ALC_MARK); p = NULL; } while(0)
 
 // ついでに置き換え
-#if !defined(_MALLOC_C_) && !defined(MEMWATCH)
+#ifndef MEMWATCH
+
+#ifndef _MALLOC_C_
+
 #undef  strdup
 #define malloc(n)    aMalloc_(n,ALC_MARK)
 #define calloc(m,n)  aCalloc_(m,n,ALC_MARK)
 #define realloc(p,n) aRealloc_(p,n,ALC_MARK)
 #define strdup(p)    aStrdup_(p,ALC_MARK)
 #define free(p)      do { aFree_(p,ALC_MARK); p = NULL; } while(0)
+
+#elif _MSC_VER >= 1400
+
+#undef  strdup
+#define strdup _strdup
+
 #endif
+
+#endif /* MEMWATCH */
 
 int do_init_memmgr(const char* file);
 double memmgr_usage(void);

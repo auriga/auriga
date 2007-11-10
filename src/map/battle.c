@@ -3881,24 +3881,27 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* コンボ */
 	if(sd) {
-		// 連打掌ここから
-		if(skillid == MO_CHAINCOMBO) {
-			int delay = 1000 - 4 * status_get_agi(src) - 2 *  status_get_dex(src); // 基本ディレイの計算
-			if(damage < status_get_hp(bl)) { // ダメージが対象のHPより小さい場合
+		int delay;
+
+		switch(skillid) {
+		case MO_CHAINCOMBO:	// 連打掌
+			delay = 1000 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
+			if(damage < status_get_hp(bl)) {
 				if(pc_checkskill(sd, MO_COMBOFINISH) > 0 && sd->spiritball > 0) { // 猛龍拳取得＆気球保持時は+300ms
-					delay += 300 * battle_config.combo_delay_rate /100; // 追加ディレイをconfにより調整
+					delay += 300 * battle_config.combo_delay_rate /100;
 					// コンボ入力時間の最低保障追加
 					if(delay < battle_config.combo_delay_lower_limits)
 						delay = battle_config.combo_delay_lower_limits;
 				}
-				status_change_start(src,SC_COMBO,MO_CHAINCOMBO,skilllv,0,0,delay,0); // コンボ状態に
+				status_change_start(src,SC_COMBO,MO_CHAINCOMBO,skilllv,0,0,delay,0);
 			}
-			sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
-			clif_combo_delay(src,delay); // コンボディレイパケットの送信
-		}
-		// 猛龍拳ここから
-		else if(skillid == MO_COMBOFINISH) {
-			int delay = 700 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
+			if(delay > 0) {
+				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
+				clif_combo_delay(src,delay);
+			}
+			break;
+		case MO_COMBOFINISH:	// 猛龍拳
+			delay = 700 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
 			if(damage < status_get_hp(bl)) {
 				// 阿修羅覇凰拳取得＆気球4個保持＆爆裂波動状態時は+300ms
 				// 伏虎拳取得時も+300ms
@@ -3906,63 +3909,71 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				   (pc_checkskill(sd, CH_TIGERFIST) > 0 && sd->spiritball > 0) ||
 				   (pc_checkskill(sd, CH_CHAINCRUSH) > 0 && sd->spiritball > 1))
 				{
-					delay += 300 * battle_config.combo_delay_rate /100; // 追加ディレイをconfにより調整
+					delay += 300 * battle_config.combo_delay_rate /100;
 					// コンボ入力時間最低保障追加
 					if(delay < battle_config.combo_delay_lower_limits)
 						delay = battle_config.combo_delay_lower_limits;
 				}
-				status_change_start(src,SC_COMBO,MO_COMBOFINISH,skilllv,0,0,delay,0); // コンボ状態に
+				status_change_start(src,SC_COMBO,MO_COMBOFINISH,skilllv,0,0,delay,0);
 			}
-			sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
-			clif_combo_delay(src,delay); // コンボディレイパケットの送信
-		}
-		// 伏虎拳ここから
-		else if(skillid == CH_TIGERFIST) {
-			int delay = 1000 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
+			if(delay > 0) {
+				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
+				clif_combo_delay(src,delay);
+			}
+			break;
+		case CH_TIGERFIST:	// 伏虎拳
+			delay = 1000 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
 			if(damage < status_get_hp(bl)) {
 				if(pc_checkskill(sd, CH_CHAINCRUSH) > 0) { // 連柱崩撃取得時は+300ms
-					delay += 300 * battle_config.combo_delay_rate /100; // 追加ディレイをconfにより調整
+					delay += 300 * battle_config.combo_delay_rate /100;
 					// コンボ入力時間最低保障追加
 					if(delay < battle_config.combo_delay_lower_limits)
 						delay = battle_config.combo_delay_lower_limits;
 				}
-				status_change_start(src,SC_COMBO,CH_TIGERFIST,skilllv,0,0,delay,0); // コンボ状態に
+				status_change_start(src,SC_COMBO,CH_TIGERFIST,skilllv,0,0,delay,0);
 			}
-			sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
-			clif_combo_delay(src,delay); // コンボディレイパケットの送信
-		}
-		// 連柱崩撃ここから
-		else if(skillid == CH_CHAINCRUSH) {
-			int delay = 1000 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
+			if(delay > 0) {
+				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
+				clif_combo_delay(src,delay);
+			}
+			break;
+		case CH_CHAINCRUSH:	// 連柱崩撃
+			delay = 1000 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
 			if(damage < status_get_hp(bl)) {
 				// 伏虎拳習得または阿修羅習得＆気球1個保持＆爆裂波動時ディレイ
 				if(pc_checkskill(sd, CH_TIGERFIST) > 0 || (pc_checkskill(sd, MO_EXTREMITYFIST) > 0 && sd->spiritball >= 1 && sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1))
 				{
-					delay += (600+(skilllv/5)*200) * battle_config.combo_delay_rate /100; // 追加ディレイをconfにより調整
+					delay += (600+(skilllv/5)*200) * battle_config.combo_delay_rate /100;
 					// コンボ入力時間最低保障追加
 					if(delay < battle_config.combo_delay_lower_limits)
 						delay = battle_config.combo_delay_lower_limits;
 				}
-				status_change_start(src,SC_COMBO,CH_CHAINCRUSH,skilllv,0,0,delay,0); // コンボ状態に
+				status_change_start(src,SC_COMBO,CH_CHAINCRUSH,skilllv,0,0,delay,0);
 			}
-			sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
-			clif_combo_delay(src,delay); // コンボディレイパケットの送信
-		}
-		// TKコンボ
-		else if(skillid == TK_STORMKICK || skillid == TK_DOWNKICK || skillid == TK_TURNKICK || skillid == TK_COUNTER) {
+			if(delay > 0) {
+				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
+				clif_combo_delay(src,delay);
+			}
+			break;
+		case TK_STORMKICK:
+		case TK_DOWNKICK:
+		case TK_TURNKICK:
+		case TK_COUNTER:
 			if(ranking_get_pc_rank(sd,RK_TAEKWON) > 0) {	// テコンランカーはコンボ続行
-				int delay = status_get_adelay(src);
+				delay = status_get_adelay(src);
 				if(damage < status_get_hp(bl)) {
-					delay += 2000 - 4*status_get_agi(src) - 2*status_get_dex(src);	// eA方式
+					delay += 2000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);	// eA方式
 					// TKコンボ入力時間最低保障追加
 					if(delay < battle_config.tkcombo_delay_lower_limits)
 						delay = battle_config.tkcombo_delay_lower_limits;
 					status_change_start(src,SC_TKCOMBO,skillid,0,0,TK_MISSION,delay,0);
 				}
-				sd->ud.attackabletime = tick + delay;
+				if(delay > 0)
+					sd->ud.attackabletime = tick + delay;
 			} else {
 				status_change_end(src,SC_TKCOMBO,-1);
 			}
+			break;
 		}
 	}
 
