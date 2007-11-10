@@ -2109,7 +2109,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case LK_SPIRALPIERCE:		/* スパイラルピアース */
 	case LK_HEADCRUSH:			/* ヘッドクラッシュ */
 	case LK_JOINTBEAT:			/* ジョイントビート */
-	case PA_PRESSURE:			/* プレッシャー */
 	case ASC_BREAKER:			/* ソウルブレーカー */
 	case HW_MAGICCRASHER:		/* マジッククラッシャー */
 	case KN_BRANDISHSPEAR:		/* ブランディッシュスピア */
@@ -2921,6 +2920,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 
 	/* その他 */
 	case TF_THROWSTONE:			/* 石投げ */
+	case PA_PRESSURE:			/* プレッシャー */
 	case SN_FALCONASSAULT:			/* ファルコンアサルト */
 	case NPC_DARKBREATH:
 		battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,flag);

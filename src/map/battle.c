@@ -288,9 +288,9 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		if(damage_rate != 100)
 			damage = damage*damage_rate/100;
 	}
-	if(sc && sc->count > 0) {
+	if(sc && sc->count > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
 		// アスムプティオ
-		if(sc->data[SC_ASSUMPTIO].timer != -1 && damage > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
+		if(sc->data[SC_ASSUMPTIO].timer != -1 && damage > 0) {
 			if(map[bl->m].flag.pvp || map[bl->m].flag.gvg)
 				damage = damage * 2 / 3;
 			else
@@ -298,7 +298,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// ゴスペルの特殊状態異常
-		if(sc->data[SC_INCDAMAGE].timer != -1 && damage > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION)
+		if(sc->data[SC_INCDAMAGE].timer != -1 && damage > 0)
 			damage += damage * sc->data[SC_INCDAMAGE].val1/100;
 
 		// バジリカ
@@ -328,7 +328,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// カウプ
-		if(sc->data[SC_KAUPE].timer != -1 && skill_num != PA_PRESSURE && atn_rand()%100 < sc->data[SC_KAUPE].val2) {
+		if(sc->data[SC_KAUPE].timer != -1 && atn_rand()%100 < sc->data[SC_KAUPE].val2) {
 			status_change_end(bl,SC_KAUPE,-1);
 			damage = 0;
 		}
@@ -341,7 +341,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// レックスエーテルナ
-		if(sc->data[SC_AETERNA].timer != -1 && damage > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
+		if(sc->data[SC_AETERNA].timer != -1 && damage > 0) {
 			damage <<= 1;
 			status_change_end(bl,SC_AETERNA,-1);
 		}
@@ -367,7 +367,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// エナジーコート
-		if(sc->data[SC_ENERGYCOAT].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != PA_PRESSURE && skill_num != CR_ACIDDEMONSTRATION) {
+		if(sc->data[SC_ENERGYCOAT].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != CR_ACIDDEMONSTRATION) {
 			if(tsd) {
 				if(tsd->status.sp > 0) {
 					int per = tsd->status.sp * 5 / (tsd->status.max_sp + 1);
@@ -2648,9 +2648,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	if(src_sd && src_sd->special_state.fix_damage)
 		DMG_SET( src_sd->fix_damage );
 
-	if(skill_num == PA_PRESSURE)	// プレッシャー必中
-		DMG_SET( 500+300*skill_lv );
-
 	/* 30．左手ダメージの補正 */
 	if(calc_flag.rh == 0 && calc_flag.lh == 1) {	// 左手のみ武器装備
 		wd.damage = wd.damage2;
@@ -3319,6 +3316,10 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 			if(atn_rand()%100 < hitrate)
 				mid.damage = t_hp*(skill_lv*6)/100;
 		}
+		break;
+	case PA_PRESSURE:		// プレッシャー
+		mid.damage = 500 + 300 * skill_lv;
+		damagefix = 0;
 		break;
 	case SN_FALCONASSAULT:		// ファルコンアサルト
 		if(sd == NULL || (skill = pc_checkskill(sd,HT_STEELCROW)) <= 0)
