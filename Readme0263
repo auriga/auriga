@@ -1,4 +1,13 @@
 ----------------------------------------
+//0392 [2007/11/13] by Rayce
+
+・AthenaProject2322より、battle_auriga.confに homun_rename を追加（battle.c, homun.c）
+	thanks to Quaplaさん
+
+・db/const.txtにSC_PROVOKEとSC_BLESSINGを追加
+・db/item_db.txtを最新まで更新、thanks to huge cgi
+
+----------------------------------------
 //0391 [2007/11/13] by Rayce
 
 ・db/skill_require_db2.txtには設定項目があるスキルだけを列挙するように変更

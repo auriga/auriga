@@ -535,6 +535,7 @@ extern struct Battle_Config {
 	int homun_statuschange_reset;
 	int free_sc_data_dynamically;
 	int snovice_maxexp_border;
+	int homun_rename;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

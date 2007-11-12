@@ -5123,6 +5123,7 @@ int battle_config_read(const char *cfgName)
 		{ "homun_statuschange_reset",           &battle_config.homun_statuschange_reset,           1        },
 		{ "free_sc_data_dynamically",           &battle_config.free_sc_data_dynamically,           0        },
 		{ "snovice_maxexp_border",              &battle_config.snovice_maxexp_border,              99999999 },
+		{ "homun_rename",                       &battle_config.homun_rename,                       0        },
 		{ NULL,                                 NULL,                                              0        },
 
 	};

@@ -995,14 +995,15 @@ int homun_change_name(struct map_session_data *sd,char *name)
 
 	nullpo_retr(1, sd);
 
+	if(!sd->hd)
+		return 1;
+	if(sd->hd->status.rename_flag == 1 && battle_config.homun_rename == 0)
+		return 1;
+
 	for(i=0; i<24 && name[i]; i++) {
 		if( !(name[i]&0xe0) || name[i]==0x7f )
 			return 1;
 	}
-	if(!sd->hd)
-		return 1;
-	if(sd->hd->status.rename_flag == 1 && battle_config.pet_rename == 0)
-		return 1;
 
 	unit_stop_walking(&sd->hd->bl,1);
 	strncpy(sd->hd->status.name,name,24);
