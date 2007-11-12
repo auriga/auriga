@@ -181,6 +181,8 @@ S 0099 <len>.w <message>.?B
 	GMコマンド/b,/bb,/nbにて発行。サーバー内ブロードキャスト
 R 009a <len>.w <message>.?B
 	GMからの天の声
+	<message>の先頭4byteに "blue" があると青文字になる
+	"tool" というのもあるみたい？
 S 009b <head dir>.w <dir>.B
 	体&頭の方向変更要求。クライアントへの応答は無い模様
 	dirは00〜07で体の向き。00で北から反時計回りに45°単位で07まで
@@ -1160,10 +1162,16 @@ R 01d4 <ID>.l
 	文字列入力窓表示(IDはNPCのIDが入る)
 S 01d5 <len>.w <ID>.l <input>.?B 00
 	文字列入力内容送信(IDはNPCのIDが入る)
-R 01d6 <type?>.w
-	表示関連か？jROで受信を確認
-	0x5,0x6,0xa,0xbなら何もしない
-	0x12ならエフェクト簡略化
+R 01d6 <type>.w
+	0x199の拡張版？
+	type=0x00 街
+	type=0x01 室内
+	type=0x02 メモ可能フィールド
+	type=0x03 メモ不可フィールド
+	type=0x06 pvp
+	type=0x08 gvg
+	type=0x0c ターボトラック
+	type=0x12 エフェクト強制簡略化
 R 01d7 <ID>.l <equip point>.B <item id1>.w <item id2>.w
 	装備グラフィック <equip point> は 02手と09足のみ確認。id2は左手
 R 01d8 <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <?>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <?>.B <?>.B <sit>.B <Lv>.B <?>.B
@@ -1764,6 +1772,9 @@ S 02c8 <flag>.B
 R 02c9 <flag>.B
 	flag=00 すべてのパーティー招待を受諾します
 	flag=01 すべてのパーティー招待を拒否します
+S 02ca <type?>.B
+	<type>は0〜5
+	未調査
 R 02d0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
 	所有装備リスト、0x295の上位版
 R 02d1 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
@@ -1774,3 +1785,14 @@ R 02d3 <index>.w
 	アイテムの帰属？
 R 02d4 <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <time>.l <flag?>.w
 	アイテム獲得、0x29aの上位版
+R 02dc <len>.w <?>.28B <?>.?B
+	未調査
+R 02dd <ID>.l <?>.24B <?>.B <?>.B
+	NPCの頭上にレッドスリムポーションが表示される
+	未調査
+R 02de <?>.w <?>.w
+	未調査
+R 02df <ID>.l <?>.26B <?>.w <?>.w
+	未調査
+R 02e0 <ID>.l <?>.24B <?>.w <?>.w
+	未調査

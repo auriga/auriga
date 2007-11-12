@@ -1,4 +1,11 @@
 ----------------------------------------
+//0391 [2007/11/13] by Rayce
+
+・db/skill_require_db2.txtには設定項目があるスキルだけを列挙するように変更
+・db/packet_db.txt更新
+・doc/client_packet.txt更新
+
+----------------------------------------
 //0390 [2007/11/13] by Rayce
 
 ・AthenaProject2321より以下をmerge、thanks to Blazeさん
