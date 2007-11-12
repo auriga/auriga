@@ -1567,7 +1567,7 @@ OnTouch:
 	next;
 	mes "[チュンおじさん]";
 	mes "じゃーんけーん！";
-	while('@game==5 || '@win==3) {	//5戦やるか3回勝つまで
+	while('@game < 5 && '@win < 3) {	//5戦やるか3回勝つまで
 		next;
 		set @menu,select("チョキ","グー","パー");
 		gmcommand "@emotion "+(@menu+9);

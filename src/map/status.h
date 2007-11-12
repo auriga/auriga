@@ -459,7 +459,7 @@ enum {
 	//
 	SC_STOP                 = 344,
 	SC_INVISIBLE            = 345,
-	//
+	SC_MODECHANGE           = 346,
 	SC_FLING                = 347,
 	SC_MADNESSCANCEL        = 348,
 	SC_ADJUSTMENT           = 349,

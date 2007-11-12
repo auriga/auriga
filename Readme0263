@@ -1,4 +1,12 @@
 ----------------------------------------
+//0390 [2007/11/13] by Rayce
+
+・AthenaProject2321より以下をmerge、thanks to Blazeさん
+	-> NPCスキル、モードチェンジ「NPC_EMOTION_ON」実装（skill.*, status.*, skill_db.txt）
+	-> トムヤンクンクエストの一部不具合でクエストが進行しなかったのを修正
+	   （npc_town_ayothaya.txt）
+
+----------------------------------------
 //0389 [2007/11/13] by Rayce
 
 ・AthenaProject2321より内部処理名称変更をmerge、thanks to Blazeさん

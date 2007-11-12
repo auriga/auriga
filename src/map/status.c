@@ -5009,6 +5009,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = tick/250;
 			tick = 10;
 			break;
+
+		case SC_MODECHANGE:
+			tick = 1200;
+			break;
 		case SC_AUTOGUARD:
 			val2 = (val1 > 10)? 30: (22 - val1) * val1 / 4;
 			if(sd) {
@@ -6527,7 +6531,11 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 	case SC_RUN:
 	case SC_MARIONETTE:
 	case SC_MARIONETTE2:
-		sc->data[type].timer = add_timer(1000*600+tick, status_change_timer, bl->id, data);
+		sc->data[type].timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
+		return 0;
+	case SC_MODECHANGE:
+		clif_emotion(bl,1);
+		sc->data[type].timer = add_timer(1500 + tick, status_change_timer, bl->id, data);
 		return 0;
 	case SC_LONGINGFREEDOM:
 		if(sd && sd->status.sp >= 3) {

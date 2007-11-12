@@ -308,7 +308,7 @@
 //
 344,SC_STOP,-1,1,0			// ホールドウェブ
 345,SC_INVISIBLE,0,1,0			// インビジブル
-//
+346,SC_MODECHANGE,0,0,0			// モードチェンジ
 347,SC_FLING,0,1,0			// フライング
 348,SC_MADNESSCANCEL,0,1,0		// マッドネスキャンセラー
 349,SC_ADJUSTMENT,0,1,0			// アジャストメント

@@ -132,7 +132,7 @@ int SkillStatusChangeTable[MAX_SKILL] = {	/* status.hのenumのSC_***とあわ�
 	/* 460- */
 	SC_HUNTER,SC_SOULLINKER,SC_KAIZEL,SC_KAAHI,SC_KAUPE,SC_KAITE,-1,-1,-1,SC_SMA,
 	/* 470- */
-	SC_SWOO,SC_SKE,SC_SKA,-1,-1,SC_PRESERVE,-1,-1,-1,-1,
+	SC_SWOO,SC_SKE,SC_SKA,-1,SC_MODECHANGE,SC_PRESERVE,-1,-1,-1,-1,
 	/* 480- */
 	-1,-1,SC_DOUBLECASTING,-1,SC_GRAVITATION_USER,-1,SC_OVERTHRUSTMAX,SC_LONGINGFREEDOM,SC_HERMODE,-1,
 	/* 490- */
@@ -5091,12 +5091,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case NPC_EMOTION:			/* エモーション */
+	case NPC_EMOTION_ON:			/* モードチェンジ */
 		if(md && md->skillidx != -1) {
 			clif_emotion(&md->bl,mob_db[md->class_].skill[md->skillidx].val[0]);
 			if(mob_db[md->class_].skill[md->skillidx].val[1]) {	// モードチェンジ
 				md->mode = mob_db[md->class_].skill[md->skillidx].val[1];
 				mob_unlocktarget(md, tick);
 			}
+			status_change_end(src,SC_MODECHANGE,-1);
+			if(skillid == NPC_EMOTION_ON)
+				status_change_start(src,SC_MODECHANGE,skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 
