@@ -7405,7 +7405,7 @@ int buildin_getscrate(struct script_state *st)
 			case SC_FREEZE:
 				sc_def = 100 - (3 + status_get_mdef(bl) + luk/3);
 				break;
-			case SC_STAN:
+			case SC_STUN:
 			case SC_POISON:
 			case SC_SILENCE:
 			case SC_BLEED:

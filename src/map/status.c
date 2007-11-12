@@ -126,7 +126,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 330- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_TIGEREYE,SI_BLANK,SI_BLANK,
 	/* 340- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_HOLDWEB,SI_BLANK,SI_BLANK,SI_BLANK,SI_MADNESSCANCEL,SI_ADJUSTMENT,
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_STOP,SI_BLANK,SI_BLANK,SI_BLANK,SI_MADNESSCANCEL,SI_ADJUSTMENT,
 	/* 350- */
 	SI_INCREASING,SI_BLANK,SI_GATLINGFEVER,SI_BLANK,SI_BLANK,SI_UTSUSEMI,SI_BUNSINJYUTSU,SI_BLANK,SI_NEN,SI_BLANK,
 	/* 360- */
@@ -4229,7 +4229,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_FREEZE:
 			scdef = 3+status_get_mdef(bl)+status_get_luk(bl)/3;
 			break;
-		case SC_STAN:
+		case SC_STUN:
 		case SC_SILENCE:
 		case SC_POISON:
 		case SC_DPOISON:
@@ -4309,7 +4309,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(sc->data[SC_DECREASEAGI].timer != -1 && status_is_disable(type,0x08))
 		return 0;
 
-	if(type == SC_STAN || type == SC_SLEEP)
+	if(type == SC_STUN || type == SC_SLEEP)
 		unit_stop_walking(bl,1);
 
 	if(type == SC_BLESSING && (sd || (!battle_check_undead(race,elem) && race != RCT_DEMON))) {
@@ -4324,7 +4324,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			type != SC_SPEEDPOTION0 && type != SC_SPEEDPOTION1 && type != SC_SPEEDPOTION2 && type != SC_SPEEDPOTION3 &&
 			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND)
 			return 0;
-		if((type >= SC_STAN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING)
+		if((type >= SC_STUN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING)
 			return 0;	/* 継ぎ足しができない状態異常である時は状態異常を行わない */
 		if(type == SC_GRAFFITI || type == SC_SEVENWIND) {
 			// 異常中にもう一度状態異常になった時に解除してから再度かかる
@@ -4490,7 +4490,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SKE:				/* エスク */
 		case SC_SKA:				/* エスカ */
 		case SC_CLOSECONFINE:			/* クローズコンファイン */
-		case SC_HOLDWEB:			/* ホールドウェブ */
+		case SC_STOP:				/* ホールドウェブ */
 		case SC_DISARM:				/* ディスアーム */
 		case SC_GATLINGFEVER:			/* ガトリングフィーバー */
 		case SC_FLING:				/* フライング */
@@ -4914,7 +4914,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick = tick * sc_def / 100;
 			}
 			break;
-		case SC_STAN:				/* スタン（val2にミリ秒セット） */
+		case SC_STUN:				/* スタン（val2にミリ秒セット） */
 			if(!(flag&2)) {
 				int sc_def = 100 - (status_get_vit(bl) + status_get_luk(bl)/3);
 				tick = tick * sc_def / 100;
@@ -5263,7 +5263,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		// opt1
 		case SC_STONE:
 		case SC_FREEZE:
-		case SC_STAN:
+		case SC_STUN:
 		case SC_SLEEP:
 			unit_stopattack(bl);	// 攻撃停止
 			skill_stop_dancing(bl,0);	// 演奏/ダンスの中断
@@ -5820,7 +5820,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			}
 			break;
 		case SC_CLOSECONFINE:
-		case SC_HOLDWEB:
+		case SC_STOP:
 			{
 				struct block_list *tbl = map_id2bl(sc->data[type].val4);
 				if(tbl) {
@@ -5928,7 +5928,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		// opt1
 		case SC_STONE:
 		case SC_FREEZE:
-		case SC_STAN:
+		case SC_STUN:
 		case SC_SLEEP:
 			sc->opt1 = 0;
 			opt_flag = 1;

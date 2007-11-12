@@ -248,7 +248,7 @@ enum {
 	//
 	SC_STONE                = 128,
 	SC_FREEZE               = 129,
-	SC_STAN                 = 130,
+	SC_STUN                 = 130,
 	SC_SLEEP                = 131,
 	SC_POISON               = 132,
 	SC_CURSE                = 133,
@@ -457,7 +457,7 @@ enum {
 	SC_FOGWALLPENALTY       = 341,
 	//
 	//
-	SC_HOLDWEB              = 344,
+	SC_STOP                 = 344,
 	SC_INVISIBLE            = 345,
 	//
 	SC_FLING                = 347,
@@ -575,7 +575,7 @@ enum {
 	SI_FROSTWEAPON      = 91,
 	SI_LIGHTNINGLOADER  = 92,
 	SI_SEISMICWEAPON    = 93,
-	SI_HOLDWEB          = 95,
+	SI_STOP             = 95,
 	SI_UNDEAD           = 97,
 	SI_WE_FEMALE        = 102,
 	SI_AURABLADE        = 103,

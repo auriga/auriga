@@ -1000,7 +1000,7 @@ OnTimer900000:
 	case 2: sc_start3 SC_STONE,0,0,0,0,4000,10; break;
 	case 3: sc_start3 SC_SLEEP,0,0,0,0,4000,10; break;
 	case 4: sc_start3 SC_FREEZE,0,0,0,0,4000,10; gmcommand "@emotion 19"; break;
-	case 5: sc_start3 SC_STAN,0,0,0,0,4000,10; break;
+	case 5: sc_start3 SC_STUN,0,0,0,0,4000,10; break;
 	case 6: sc_start3 SC_CONFUSION,0,0,0,0,8000,10; break;
 	}
 	end;

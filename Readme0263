@@ -1,4 +1,19 @@
 ----------------------------------------
+//0389 [2007/11/13] by Rayce
+
+・AthenaProject2321より内部処理名称変更をmerge、thanks to Blazeさん
+	SC_STAN → SC_STUN
+	SC_HOLDWEB → SC_STOP
+	SI_HOLDWEB → SI_STOP
+	NPC_EXPLOSIONSPIRITS → NPC_POWERUP
+	NPC_INCREASEFLEE → NPC_AGIUP
+	NPC_ELEMENTUNDEAD → NPC_CHANGEUNDEAD
+	NPC_DARKSOULSTRIKE → NPC_DARKSTRIKE
+	NPC_RUNAWAY → NPC_RUN
+	NPC_DARKGRANDCROSS → NPC_GRANDDARKNESS
+	NPC_DARKJUPITEL → NPC_DARKTHUNDER
+
+----------------------------------------
 //0388 [2007/11/13] by Rayce
 
 ・inter_send_packet_length[] は使われていないので削除（inter.c）

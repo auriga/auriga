@@ -331,29 +331,35 @@
 329,0,6,4,0,1,10,1,no,0,0,0,misc,0	//DC_FORTUNEKISS#幸運のキス#
 330,0,6,4,0,1,10,1,no,0,0,0,misc,0	//DC_SERVICEFORYOU#サービスフォーユー#
 331,1,6,4,3,2,10,1,no,0,2,0,misc,3	//NPC_SELFDESTRUCTION2#自爆2#
-//332
-//333
+//331#NPC_RANDOMMOVE#ランダム移動#
+//332#NPC_SPEEDUP#スピードアップ#
+//333#NPC_REVENGE#リベンジ#
 334,9,6,4,0,1,1,1,yes,0,0,1,magic,0	//WE_MALE#君だけは護るよ#
 335,9,6,4,0,1,1,1,yes,0,0,1,magic,0	//WE_FEMALE#あなたに尽くします#
 336,0,6,4,0,1,1,1,yes,0,0,1,magic,0	//WE_CALLPARTNER#あなたに逢いたい#
 337,9,6,1,0,0,1,1,no,0,0,0,weapon,0	//ITM_TOMAHAWK#トマホーク投げ#
 338,-2,8,1,7,0,10,2,no,0,0,0,weapon,0	//NPC_DARKCROSS#ダーククロス#
-339,0,6,4,7,0,10,1,no,33,256,0,magic,0		//NPC_DARKGRANDCROSS#グランドダークネス#
-340,9,8,1,7,0,10,1:1:2:2:3:3:4:4:5:5,yes,0,0,0,magic,0	//NPC_DARKSOULSTRIKE#ダークストライク#
-341,9,8,1,7,0,10,3:4:5:6:7:8:9:10:11:12,yes,0,0,0,magic,2:3:3:4:4:5:5:6:6:7//NPC_DARKJUPITEL#ダークサンダー#
-342,9,6,1,0,1,1,1,no,0,0,0,magic,0	//NPC_HOLDWEB#ホールドウェブ#
+339,0,6,4,7,0,10,1,no,33,256,0,magic,0		//NPC_GRANDDARKNESS#グランドダークネス#
+340,9,8,1,7,0,10,1:1:2:2:3:3:4:4:5:5,yes,0,0,0,magic,0	//NPC_DARKSTRIKE#ダークストライク#
+341,9,8,1,7,0,10,3:4:5:6:7:8:9:10:11:12,yes,0,0,0,magic,2:3:3:4:4:5:5:6:6:7//NPC_DARKTHUNDER#ダークサンダー#
+342,9,6,1,0,1,1,1,no,0,0,0,magic,0	//NPC_STOP#ホールドウェブ#
 343,9,6,1,0,0,5,1,no,0,2,0,weapon,0	//NPC_BREAKWEAPON#ブレイクウェポン#
 344,9,6,1,0,0,5,1,no,0,2,0,weapon,0	//NPC_BREAKARMOR#ブレイクアーマー#
 345,9,6,1,0,0,5,1,no,0,2,0,weapon,0	//NPC_BREAKHELM#ブレイクヘルム#
 346,9,6,1,0,0,5,1,no,0,2,0,weapon,0	//NPC_BREAKSIELD#ブレイクシールド#
 347,-9,6,1,9,0,10,1,no,0,2,0,weapon,0	//NPC_UNDEADATTACK#不死属性攻撃#
-348,2,6,4,0,1,20,0,no,0,2,0,magic,0	//NPC_RUNAWAY#後退#
-349,0,6,4,0,1,10,0,no,0,2,0,weapon,0	//NPC_EXPLOSIONSPIRITS#ラッシュアタック#
-350,0,6,4,0,1,10,0,no,0,2,0,magic,0	//NPC_INCREASEFLEE#速度強化#
-351,9,6,1,9,1,5,1,yes,0,2,0,magic,0	//NPC_ELEMENTUNDEAD#不死属性付与#
+//348#NPC_CHANGEUNDEAD#不死属性付与#
+348,2,6,4,0,1,20,0,no,0,2,0,magic,0	//NPC_RUN#後退#
+349,0,6,4,0,1,10,0,no,0,2,0,weapon,0	//NPC_POWERUP#ラッシュアタック#
+350,0,6,4,0,1,10,0,no,0,2,0,magic,0	//NPC_AGIUP#速度強化#
+351,9,6,1,9,1,5,1,yes,0,2,0,magic,0	//NPC_CHANGEUNDEAD#不死属性付与#
 352,0,6,4,0,1,10,1,no,0,2,0,weapon,0	//NPC_INVISIBLE#インビジブル#
-//353攻撃系スキルエフェクト
+//353
 354,2,6,4,0,1,1,0,no,0,2,0,magic,0	//NPC_RECALL#取り巻き呼び戻し#
+//351#NPC_SIEGEMODE#シーズモードチェンジ#
+//352#NPC_CALLSLAVE#取り巻き呼び戻し#
+//353#NPC_INVISIBLE#インビジブル#
+//354#NPC_RUN#後退#
 355,0,6,4,0,1,5,1,no,0,0,0,weapon,0	//LK_AURABLADE#オーラブレイド#
 356,0,6,4,0,1,10,1,no,0,0,0,weapon,0	//LK_PARRYING#パリイング#
 357,0,6,4,0,1,5,1,no,0,0,0,weapon,0	//LK_CONCENTRATION#コンセントレイション#
@@ -472,7 +478,7 @@
 470,9,6,1,0,1,7,1,yes,0,0,0,magic,0	//SL_SWOO#エスウ#
 471,9,6,1,0,1,3,1,yes,0,0,0,magic,0	//SL_SKE#エスク#
 472,9,6,1,0,1,3,1,yes,0,0,0,magic,0	//SL_SKASL_SKA#エスカ#
-//
+//473#SM_SELFPROVOKE#セルフプロボック#
 //
 475,0,6,4,0,1,1,0,yes,0,16,0,magic,0	//ST_PRESERVE#プリザーブ#
 476,1,6,1,0,1,5,0,yes,0,4,0,magic,0	//ST_FULLSTRIP#フルストリップ#

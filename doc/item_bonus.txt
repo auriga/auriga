@@ -274,7 +274,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus2 bResEff,e,n;					状態異常eの耐性+n%(nは万分率)
 					Eff_Blind		暗黒			Eff_Sleep		睡眠
 					Eff_Poison		毒				Eff_Freeze		凍結
-					Eff_Silenc		沈黙			Eff_Stan		スタン
+					Eff_Silenc		沈黙			Eff_Stun		スタン
 					Eff_Curse		呪い			Eff_Confusion	混乱
 					Eff_Stone		石化			Eff_Bleed		出血)
 	bonus bCurseByMuramasa,n;			LV>LUKの時,n%の確率で呪いにかかる(nは万分率)

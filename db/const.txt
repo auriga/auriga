@@ -357,7 +357,7 @@ bNoKnockback	2010
 
 Eff_Stone	0
 Eff_Freeze	1
-Eff_Stan	2
+Eff_Stun	2
 Eff_Sleep	3
 Eff_Poison	4
 Eff_Curse	5
@@ -368,7 +368,7 @@ Eff_Bleed	9
 
 SC_Stone	128
 SC_Freeze	129
-SC_Stan		130
+SC_Stun		130
 SC_Sleep	131
 SC_Poison	132
 SC_Curse	133

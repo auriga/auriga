@@ -633,7 +633,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			// 対象に状態異常
 			if(i == SC_STONE || i == SC_FREEZE)
 				sc_def_card = sc_def_mdef;
-			else if(i == SC_STAN || i == SC_POISON || i == SC_SILENCE || i == SC_BLEED)
+			else if(i == SC_STUN || i == SC_POISON || i == SC_SILENCE || i == SC_BLEED)
 				sc_def_card = sc_def_vit;
 			else if(i == SC_SLEEP || i == SC_CONFUSION || i == SC_BLIND)
 				sc_def_card = sc_def_int;
@@ -1095,7 +1095,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	t_def2  = status_get_def2(target);
 	t_sc    = status_get_sc(target);		// 対象のステータス異常
 
-	if(src_sd && skill_num != CR_GRANDCROSS && skill_num != NPC_DARKGRANDCROSS)
+	if(src_sd && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS)
 		src_sd->state.attack_type = BF_WEAPON;	// 攻撃タイプは武器攻撃
 
 	/* １．オートカウンター処理 */
@@ -1103,7 +1103,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		(target_md && battle_config.monster_auto_counter_type&2))
 	) {
 		if( skill_num != CR_GRANDCROSS &&
-		    skill_num != NPC_DARKGRANDCROSS &&
+		    skill_num != NPC_GRANDDARKNESS &&
 		    t_sc &&
 		    t_sc->data[SC_AUTOCOUNTER].timer != -1 )
 		{
@@ -1366,7 +1366,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case HVAN_EXPLOSION:		// バイオエクスプロージョン
 		case RG_BACKSTAP:		// バックスタブ
 		case CR_GRANDCROSS:		// グランドクロス
-		case NPC_DARKGRANDCROSS:	// グランドダークネス
+		case NPC_GRANDDARKNESS:		// グランドダークネス
 		case AM_DEMONSTRATION:		// デモンストレーション
 		case TK_COUNTER:		// アプチャオルリギ
 		case AS_SPLASHER:		// ベナムスプラッシャー
@@ -1484,7 +1484,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	// 対象が状態異常中の場合の必中ボーナス
 	if(calc_flag.hitrate < 1000000 && t_sc) {
 		if( t_sc->data[SC_SLEEP].timer != -1 ||
-		    t_sc->data[SC_STAN].timer != -1 ||
+		    t_sc->data[SC_STUN].timer != -1 ||
 		    t_sc->data[SC_FREEZE].timer != -1 ||
 		    (t_sc->data[SC_STONE].timer != -1 && t_sc->data[SC_STONE].val2 == 0) ) {
 			calc_flag.hitrate = 1000000;
@@ -1783,8 +1783,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NPC_DARKCROSS:	// ダーククロス
 			DMG_FIX( 100+35*skill_lv, 100 );
 			break;
-		case CR_GRANDCROSS:		// グランドクロス
-		case NPC_DARKGRANDCROSS:	// グランドダークネス
+		case CR_GRANDCROSS:	// グランドクロス
+		case NPC_GRANDDARKNESS:	// グランドダークネス
 			if (!battle_config.gx_cardfix)
 				calc_flag.nocardfix = 1;
 			break;
@@ -2412,7 +2412,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		    skill_num != MO_INVESTIGATE &&
 		    skill_num != MO_EXTREMITYFIST &&
 		    skill_num != CR_GRANDCROSS &&
-		    skill_num != NPC_DARKGRANDCROSS &&
+		    skill_num != NPC_GRANDDARKNESS &&
 		    skill_num != LK_SPIRALPIERCE &&
 		    skill_num != CR_ACIDDEMONSTRATION &&
 		    skill_num != NJ_ZENYNAGE )
@@ -2735,11 +2735,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	// bNoWeaponDamageでグランドクロスじゃない場合はダメージが0
-	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != NPC_DARKGRANDCROSS)
+	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS)
 		wd.damage = wd.damage2 = 0;
 
 	/* 34．ダメージ最終計算 */
-	if(skill_num != CR_GRANDCROSS && skill_num != NPC_DARKGRANDCROSS) {
+	if(skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS) {
 		if(wd.damage2 < 1) {		// ダメージ最終修正
 			wd.damage  = battle_calc_damage(src,target,wd.damage,wd.div_,skill_num,skill_lv,wd.flag);
 		} else if(wd.damage < 1) {	// 右手がミス？
@@ -2987,7 +2987,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case WZ_METEOR:
 		case WZ_JUPITEL:	// ユピテルサンダー
-		case NPC_DARKJUPITEL:	// 闇ユピテル
+		case NPC_DARKTHUNDER:	// ダークサンダー
 			break;
 		case WZ_VERMILION:	// ロードオブバーミリオン
 			MATK_FIX( 80+20*skill_lv, 100 );
@@ -3147,7 +3147,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	mgd.damage = battle_attr_fix(mgd.damage, ele, status_get_element(target));
 
 	/* ８．スキル修正１ */
-	if(skill_num == CR_GRANDCROSS || skill_num == NPC_DARKGRANDCROSS) {	// グランドクロス
+	if(skill_num == CR_GRANDCROSS || skill_num == NPC_GRANDDARKNESS) {	// グランドクロス
 		static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		wd = battle_calc_weapon_attack(bl,target,skill_num,skill_lv,flag);
 		mgd.damage = (mgd.damage + wd.damage) * (100 + 40*skill_lv)/100;
@@ -3310,7 +3310,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 			int hitrate = status_get_hit(bl) - status_get_flee(target) + 80;
 			int t_hp = status_get_hp(target);
 			hitrate = (hitrate > 95)? 95: (hitrate < 5)? 5: hitrate;
-			if(t_sc && (t_sc->data[SC_SLEEP].timer != -1 || t_sc->data[SC_STAN].timer != -1 ||
+			if(t_sc && (t_sc->data[SC_SLEEP].timer != -1 || t_sc->data[SC_STUN].timer != -1 ||
 				t_sc->data[SC_FREEZE].timer != -1 || (t_sc->data[SC_STONE].timer != -1 && t_sc->data[SC_STONE].val2 == 0) ) )
 				hitrate = 1000000;
 			if(atn_rand()%100 < hitrate)
@@ -3873,7 +3873,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	if(damage <= 0 || damage < dmg.div_)	// 吹き飛ばし判定
 		dmg.blewcount = 0;
 
-	if(skillid == CR_GRANDCROSS || skillid == NPC_DARKGRANDCROSS) {	// グランドクロス
+	if(skillid == CR_GRANDCROSS || skillid == NPC_GRANDDARKNESS) {	// グランドクロス
 		if(battle_config.gx_disptype)
 			dsrc = src;	// 敵ダメージ白文字表示
 		if(src == bl)

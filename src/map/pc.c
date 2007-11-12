@@ -5193,8 +5193,8 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		status_change_end(&sd->bl,SC_BLADESTOP,-1);
 	if(sd->sc.data[SC_CLOSECONFINE].timer != -1)	// クローズコンファインは事前に解除
 		status_change_end(&sd->bl,SC_CLOSECONFINE,-1);
-	if(sd->sc.data[SC_HOLDWEB].timer != -1)
-		status_change_end(&sd->bl,SC_HOLDWEB,-1);
+	if(sd->sc.data[SC_STOP].timer != -1)
+		status_change_end(&sd->bl,SC_STOP,-1);
 	sd->status.die_counter++;	// 死にカウンター書き込み
 	status_change_release(&sd->bl,0x01);	// ステータス異常を解除する
 

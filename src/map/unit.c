@@ -1404,7 +1404,7 @@ int unit_can_move(struct block_list *bl)
 		    sc->data[SC_BLADESTOP].timer != -1 ||	// 白刃取り
 		    sc->data[SC_SPIDERWEB].timer != -1 ||	// スパイダーウェッブ
 		    sc->data[SC_TIGERFIST].timer != -1 ||	// 伏虎拳
-		    sc->data[SC_HOLDWEB].timer != -1 ||		// ホールドウェブ
+		    sc->data[SC_STOP].timer != -1 ||		// ホールドウェブ
 		    sc->data[SC_MADNESSCANCEL].timer != -1 ||	// マッドネスキャンセラー
 		    sc->data[SC_CLOSECONFINE].timer != -1 ||	// クローズコンファイン
 		    (sc->data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2) ||	//グラビテーションフィールド使用者
