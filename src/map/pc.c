@@ -5129,8 +5129,11 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 	}
 
 	// カイゼル
-	if(sd->sc.data[SC_KAIZEL].timer != -1)
+	if(sd->sc.data[SC_KAIZEL].timer != -1) {
 		kaizel_lv = sd->sc.data[SC_KAIZEL].val1;	// ステータス異常が解除される前にスキルLvを保存
+		if(kaizel_lv > 10)
+			kaizel_lv = 10;
+	}
 
 	// アイテム消滅
 	if(sd->loss_equip_flag&0x0001) {
@@ -5299,16 +5302,16 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		}
 	}
 
-	// 強制送還
 	if((map[sd->bl.m].flag.pvp && sd->pvp_point < 0) || map[sd->bl.m].flag.gvg || map[sd->bl.m].flag.norevive) {
+		// 強制送還
 		sd->pvp_point = 0;
 		pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,0);
 	}
-	// 全ての処理が完了してからカイゼルによる復活
 	else if(kaizel_lv > 0) {
+		// 全ての処理が完了してからカイゼルによる復活
 		pc_setstand(sd);
 		clif_skill_nodamage(&sd->bl,&sd->bl,ALL_RESURRECTION,4,1);
-		sd->status.hp = sd->status.max_hp*kaizel_lv*10/100;
+		sd->status.hp = sd->status.max_hp * kaizel_lv / 10;
 		clif_updatestatus(sd,SP_HP);
 		clif_resurrection(&sd->bl,1);
 		clif_skill_nodamage(&sd->bl,&sd->bl,PR_KYRIE,kaizel_lv,1);

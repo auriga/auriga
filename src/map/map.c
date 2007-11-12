@@ -2006,6 +2006,7 @@ static struct waterlist {
 } *waterlist = NULL;
 
 static int waterlist_num = 0;
+static int waterlist_max = 0;
 
 #define NO_WATER 1000000
 
@@ -2043,14 +2044,12 @@ static void map_readwater(const char *watertxt)
 		if(map_waterheight(w1) != NO_WATER) {
 			printf("Error: Duplicated map [%s] in waterlist (file '%s').\n", w1, watertxt);
 		} else {
-			if(waterlist_num == 0) {
-				waterlist = (struct waterlist *)aCalloc(1, sizeof(struct waterlist));
-			} else {
-				waterlist = (struct waterlist *)aRealloc(waterlist, sizeof(struct waterlist) * (waterlist_num + 1));
-				//memset(waterlist + waterlist_num, 0, sizeof(struct waterlist));
+			if(waterlist_num >= waterlist_max) {
+				waterlist_max += 64;
+				waterlist = (struct waterlist *)aRealloc(waterlist, sizeof(struct waterlist) * waterlist_max);
 			}
-			memset(waterlist[waterlist_num].mapname, 0, sizeof(waterlist[waterlist_num].mapname));
-			strncpy(waterlist[waterlist_num].mapname, w1, 15);
+			strncpy(waterlist[waterlist_num].mapname, w1, 16);
+			waterlist[waterlist_num].mapname[15] = '\0';
 			waterlist[waterlist_num].waterheight = (count >= 2)? wh: 3;
 			waterlist_num++;
 		}
@@ -2475,6 +2474,7 @@ static void map_readallmap(void)
 	if(waterlist_num > 0) {
 		aFree(waterlist);
 		waterlist_num = 0;
+		waterlist_max = 0;
 	}
 	if(maps_removed) {
 		printf("%d maps in configuration file. %d map%s removed.\n", map_num + maps_removed, maps_removed, (maps_removed > 1) ? "s" : "");
@@ -2860,6 +2860,7 @@ void do_final(void)
 	if(waterlist) {
 		aFree(waterlist);
 		waterlist_num = 0;
+		waterlist_max = 0;
 	}
 
 	if(map_db)
