@@ -1083,6 +1083,9 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if((!tsc || tsc->data[SC_FREEZE].timer == -1) && atn_rand()%100 < rate)
 			status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv)*(1-sc_def_mdef/100),0);
 		break;
+	case NPC_ACIDBREATH:		/* アシッドブレス */
+		status_change_start(bl,SC_POISON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
 	case NPC_BLEEDING:		/* 出血攻撃 */
 		if(atn_rand()%100 < skilllv*20)
 			status_change_start(bl,SC_BLEED,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
@@ -1095,7 +1098,6 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_start(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case NPC_CRITICALWOUND:		/* 致命傷攻撃 */
-		// 確率不明なのでとりあえず100%
 		status_change_start(bl,SC_CRITICALWOUND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case MER_CRASH:			/* クラッシュ */
@@ -4716,13 +4718,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					hp = hp * (100 + sd->status.base_level) / 100;
 					sp = sp * (100 + sd->status.base_level) / 100;
 				}
-				hp = skill_fix_heal(&sd->bl, skillid, hp);
 			} else {
 				hp = (1 + atn_rand()%400) * (100 + skilllv*10) / 100;
 				hp = hp * (100 + (status_get_vit(bl)<<1)) / 100;
 				if(dstsd)
 					hp = hp * (100 + pc_checkskill(dstsd,SM_RECOVERY)*10) / 100;
 			}
+			hp = skill_fix_heal(&sd->bl, skillid, hp);
+
 			memset(&tbl, 0, sizeof(tbl));
 			tbl.m = src->m;
 			tbl.x = src->x;

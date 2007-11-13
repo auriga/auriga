@@ -1,4 +1,17 @@
 ----------------------------------------
+//0397 [2007/11/14] by Rayce
+
+・AthenaProject Rev.65よりmerge、thanks to Blazeさん
+	-> NPCスキル「アシッドブレス」の属性を毒に、毒付与効果を追加
+	   （skill_cast_db.txt, skill_db.txt, skill.c）
+
+・AthenaProject Rev.66を参考に修正、thanks to Blazeさん
+	-> ストーンスキン、アンチマジックの効果時間をスキルLvに関わらず30秒に固定（skill_cast_db.txt）
+	-> 新モンスタースキルについてskill_db.txtを修正
+	-> モンスターがポーションピッチャーでHP回復する場合でも致命傷による回復低下が発生
+	   するように修正（skill.c）
+
+----------------------------------------
 //0396 [2007/11/14] by Rayce
 
 ・AthenaProject Rev.58を参考に、一般的な配布形式に合わせるため
