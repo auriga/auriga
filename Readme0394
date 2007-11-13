@@ -1,4 +1,14 @@
 ----------------------------------------
+//0396 [2007/11/14] by Rayce
+
+・AthenaProject Rev.58を参考に、一般的な配布形式に合わせるため
+　LICENCE(_JA)をCOPYING(_JA)にリネーム
+	thanks to mizukiさん
+
+・AthenaProject Rev.75を参考に、各ソースにGPLのライセンス表記を追加
+	thanks to mizukiさん
+
+----------------------------------------
 //0395 [2007/11/14] by Cocoa
 
 ・db/const.txtからSC_ItemDelayを削除

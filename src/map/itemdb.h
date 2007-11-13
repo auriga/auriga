@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2002-2007  Auriga
+ *
+ * This file is part of Auriga.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ */
+
 #ifndef _ITEMDB_H_
 #define _ITEMDB_H_
 
@@ -25,8 +46,8 @@ struct item_data {
 	int elv;
 	int wlv;
 	int refine;
-	struct script_code *use_script;	// 回復とかも全部この中でやろうかなと
-	struct script_code *equip_script;	// 攻撃,防御の属性設定もこの中で可能かな?
+	struct script_code *use_script;
+	struct script_code *equip_script;
 	struct {
 		unsigned available : 1;
 		unsigned value_notdc : 1;
