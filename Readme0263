@@ -1,4 +1,11 @@
 ----------------------------------------
+//0393 [2007/11/14] by Rayce
+
+・db/mob_db.txtおよびdb/mob_skill_db.txtを最新まで更新、thanks to huge cgi
+・ランダム系アイテムのデータベースをdb/random/内に移動する
+	based on Freya
+
+----------------------------------------
 //0392 [2007/11/13] by Rayce
 
 ・AthenaProject2322より、battle_auriga.confに homun_rename を追加（battle.c, homun.c）
