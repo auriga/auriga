@@ -205,7 +205,7 @@ enum {
 	SC_AUTOSPELL            = 65,
 	//
 	//
-	SC_SPEARSQUICKEN        = 68,
+	SC_SPEARQUICKEN         = 68,
 	//
 	//
 	//
@@ -588,7 +588,7 @@ enum {
 	SI_PROVIDENCE       = 61,
 	SI_DEFENDER         = 62,
 	SI_AUTOSPELL        = 65,
-	SI_SPEARSQUICKEN    = 68,
+	SI_SPEARQUICKEN     = 68,
 	SI_EXPLOSIONSPIRITS = 86,
 	SI_STEELBODY        = 87,
 	SI_COMBO            = 89,

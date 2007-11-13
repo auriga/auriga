@@ -89,7 +89,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 50- */
 	SI_STRIPWEAPON,SI_STRIPSHIELD,SI_STRIPARMOR,SI_STRIPHELM,SI_CP_WEAPON,SI_CP_SHIELD,SI_CP_ARMOR,SI_CP_HELM,SI_AUTOGUARD,SI_REFLECTSHIELD,
 	/* 60- */
-	SI_DEVOTION,SI_PROVIDENCE,SI_DEFENDER,SI_BLANK,SI_BLANK,SI_AUTOSPELL,SI_BLANK,SI_BLANK,SI_SPEARSQUICKEN,SI_BLANK,
+	SI_DEVOTION,SI_PROVIDENCE,SI_DEFENDER,SI_BLANK,SI_BLANK,SI_AUTOSPELL,SI_BLANK,SI_BLANK,SI_SPEARQUICKEN,SI_BLANK,
 	/* 70- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 	/* 80- */
@@ -1739,20 +1739,20 @@ L_RECALC:
 			else
 				aspd_rate -= 25;
 		}
-		if(sd->sc.data[SC_SPEARSQUICKEN].timer != -1 && sd->sc.data[SC_ADRENALINE].timer == -1 && sd->sc.data[SC_ADRENALINE2].timer == -1 &&
+		if(sd->sc.data[SC_SPEARQUICKEN].timer != -1 && sd->sc.data[SC_ADRENALINE].timer == -1 && sd->sc.data[SC_ADRENALINE2].timer == -1 &&
 			sd->sc.data[SC_TWOHANDQUICKEN].timer == -1 && sd->sc.data[SC_ONEHAND].timer == -1 &&
 			sd->sc.data[SC_QUAGMIRE].timer == -1 && sd->sc.data[SC_DONTFORGETME].timer == -1 && sd->sc.data[SC_DECREASEAGI].timer == -1)	// スピアクィッケン
-			aspd_rate -= sd->sc.data[SC_SPEARSQUICKEN].val2;
+			aspd_rate -= sd->sc.data[SC_SPEARQUICKEN].val2;
 
 		if(sd->sc.data[SC_ASSNCROS].timer != -1 && // 夕陽のアサシンクロス
 		   sd->sc.data[SC_TWOHANDQUICKEN].timer == -1 && sd->sc.data[SC_ONEHAND].timer == -1 &&
 		   sd->sc.data[SC_ADRENALINE].timer == -1 && sd->sc.data[SC_ADRENALINE2].timer == -1 &&
-		   sd->sc.data[SC_SPEARSQUICKEN].timer == -1 && sd->sc.data[SC_DONTFORGETME].timer == -1 && sd->status.weapon != WT_BOW && !(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE))
+		   sd->sc.data[SC_SPEARQUICKEN].timer == -1 && sd->sc.data[SC_DONTFORGETME].timer == -1 && sd->status.weapon != WT_BOW && !(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE))
 				aspd_rate -= 5+sd->sc.data[SC_ASSNCROS].val1+sd->sc.data[SC_ASSNCROS].val2+sd->sc.data[SC_ASSNCROS].val3;
 		else if(sd->sc.data[SC_ASSNCROS_].timer != -1 && // 夕陽のアサシンクロス
 		        sd->sc.data[SC_TWOHANDQUICKEN].timer == -1 && sd->sc.data[SC_ONEHAND].timer == -1 &&
 		        sd->sc.data[SC_ADRENALINE].timer == -1 && sd->sc.data[SC_ADRENALINE2].timer == -1 &&
-		        sd->sc.data[SC_SPEARSQUICKEN].timer == -1 && sd->sc.data[SC_DONTFORGETME].timer == -1 && sd->status.weapon != WT_BOW && !(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE))
+		        sd->sc.data[SC_SPEARQUICKEN].timer == -1 && sd->sc.data[SC_DONTFORGETME].timer == -1 && sd->status.weapon != WT_BOW && !(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE))
 				aspd_rate -= 5+sd->sc.data[SC_ASSNCROS_].val1+sd->sc.data[SC_ASSNCROS_].val2+sd->sc.data[SC_ASSNCROS_].val3;
 
 		if(sd->sc.data[SC_DONTFORGETME].timer != -1) {		// 私を忘れないで
@@ -3522,14 +3522,14 @@ int status_get_adelay(struct block_list *bl)
 					aspd_rate -= 25;
 			}
 			// スピアクィッケン時は減算
-			if(sc->data[SC_SPEARSQUICKEN].timer != -1 && sc->data[SC_ADRENALINE].timer == -1 && sc->data[SC_ADRENALINE2].timer == -1 &&
+			if(sc->data[SC_SPEARQUICKEN].timer != -1 && sc->data[SC_ADRENALINE].timer == -1 && sc->data[SC_ADRENALINE2].timer == -1 &&
 				sc->data[SC_TWOHANDQUICKEN].timer == -1 && sc->data[SC_ONEHAND].timer == -1 &&
 				sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1)
-				aspd_rate -= sc->data[SC_SPEARSQUICKEN].val2;
+				aspd_rate -= sc->data[SC_SPEARQUICKEN].val2;
 			// 夕日のアサシンクロス時は減算
 			if(sc->data[SC_ASSNCROS].timer != -1 &&
 				sc->data[SC_TWOHANDQUICKEN].timer == -1 && sc->data[SC_ONEHAND].timer == -1 &&
-				sc->data[SC_ADRENALINE].timer == -1 && sc->data[SC_ADRENALINE2].timer == -1 && sc->data[SC_SPEARSQUICKEN].timer == -1 &&
+				sc->data[SC_ADRENALINE].timer == -1 && sc->data[SC_ADRENALINE2].timer == -1 && sc->data[SC_SPEARQUICKEN].timer == -1 &&
 				sc->data[SC_DONTFORGETME].timer == -1)
 				aspd_rate -= 5+sc->data[SC_ASSNCROS].val1+sc->data[SC_ASSNCROS].val2+sc->data[SC_ASSNCROS].val3;
 			// 私を忘れないで…時は加算
@@ -3618,13 +3618,13 @@ int status_get_amotion(struct block_list *bl)
 				else
 					aspd_rate -= 25;
 			}
-			if(sc->data[SC_SPEARSQUICKEN].timer != -1 && sc->data[SC_ADRENALINE].timer == -1 && sc->data[SC_ADRENALINE2].timer == -1 &&
+			if(sc->data[SC_SPEARQUICKEN].timer != -1 && sc->data[SC_ADRENALINE].timer == -1 && sc->data[SC_ADRENALINE2].timer == -1 &&
 				sc->data[SC_TWOHANDQUICKEN].timer == -1 && sc->data[SC_ONEHAND].timer == -1 &&
 				sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1)	// スピアクィッケン
-				aspd_rate -= sc->data[SC_SPEARSQUICKEN].val2;
+				aspd_rate -= sc->data[SC_SPEARQUICKEN].val2;
 			if(sc->data[SC_ASSNCROS].timer != -1 && // 夕陽のアサシンクロス
 				sc->data[SC_TWOHANDQUICKEN].timer == -1 && sc->data[SC_ONEHAND].timer == -1 &&
-				sc->data[SC_ADRENALINE].timer == -1 && sc->data[SC_ADRENALINE2].timer == -1 && sc->data[SC_SPEARSQUICKEN].timer == -1 &&
+				sc->data[SC_ADRENALINE].timer == -1 && sc->data[SC_ADRENALINE2].timer == -1 && sc->data[SC_SPEARQUICKEN].timer == -1 &&
 				sc->data[SC_DONTFORGETME].timer == -1)
 				aspd_rate -= 5+sc->data[SC_ASSNCROS].val1+sc->data[SC_ASSNCROS].val2+sc->data[SC_ASSNCROS].val3;
 			if(sc->data[SC_DONTFORGETME].timer != -1)		// 私を忘れないで
@@ -4561,8 +4561,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				status_change_end(bl,SC_INCREASEAGI,-1);
 			if(sc->data[SC_TWOHANDQUICKEN].timer != -1)
 				status_change_end(bl,SC_TWOHANDQUICKEN,-1);
-			if(sc->data[SC_SPEARSQUICKEN].timer != -1)
-				status_change_end(bl,SC_SPEARSQUICKEN,-1);
+			if(sc->data[SC_SPEARQUICKEN].timer != -1)
+				status_change_end(bl,SC_SPEARQUICKEN,-1);
 			if(sc->data[SC_ADRENALINE].timer != -1)
 				status_change_end(bl,SC_ADRENALINE,-1);
 			break;
@@ -4722,8 +4722,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				status_change_end(bl,SC_INCREASEAGI,-1);
 			if(sc->data[SC_TWOHANDQUICKEN].timer != -1)
 				status_change_end(bl,SC_TWOHANDQUICKEN,-1);
-			if(sc->data[SC_SPEARSQUICKEN].timer != -1)
-				status_change_end(bl,SC_SPEARSQUICKEN,-1);
+			if(sc->data[SC_SPEARQUICKEN].timer != -1)
+				status_change_end(bl,SC_SPEARQUICKEN,-1);
 			if(sc->data[SC_ADRENALINE].timer != -1)
 				status_change_end(bl,SC_ADRENALINE,-1);
 			if(sc->data[SC_ADRENALINE2].timer != -1)
@@ -4800,7 +4800,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val3 = val1*3;
 			val4 = (val1 > 5)? 20: val1*(11-val1)/2 + 5;
 			break;
-		case SC_SPEARSQUICKEN:		/* スピアクイッケン */
+		case SC_SPEARQUICKEN:		/* スピアクイッケン */
 			calc_flag = 1;
 			val2 = 20+val1;
 			break;
@@ -4836,8 +4836,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				status_change_end(bl,SC_INCREASEAGI,-1);
 			if(sc->data[SC_TWOHANDQUICKEN].timer != -1)
 				status_change_end(bl,SC_TWOHANDQUICKEN,-1);
-			if(sc->data[SC_SPEARSQUICKEN].timer != -1)
-				status_change_end(bl,SC_SPEARSQUICKEN,-1);
+			if(sc->data[SC_SPEARQUICKEN].timer != -1)
+				status_change_end(bl,SC_SPEARQUICKEN,-1);
 			if(sc->data[SC_ADRENALINE].timer != -1)
 				status_change_end(bl,SC_ADRENALINE,-1);
 			if(sc->data[SC_ADRENALINE2].timer != -1)
@@ -4917,9 +4917,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				int sc_def = status_get_mdef(bl)*200;
 				tick = tick - sc_def;
 			}
-			val3 = tick/1000;
-			if(val3 < 1) val3 = 1;
-			tick = 5000;
+			val3 = tick / 1000;
+			if(val3 < 1)
+				val3 = 1;
+			tick = val4;
+			if(tick < 1000)
+				tick = 1000;
 			val2 = 1;
 			break;
 		case SC_SLEEP:				/* 睡眠 */
@@ -5335,7 +5338,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		// opt3
 		case SC_ONEHAND:		/* 1HQ */
 		case SC_TWOHANDQUICKEN:		/* 2HQ */
-		case SC_SPEARSQUICKEN:		/* スピアクイッケン */
+		case SC_SPEARQUICKEN:		/* スピアクイッケン */
 		case SC_CONCENTRATION:		/* コンセントレーション */
 		case SC_WEAPONQUICKEN:		/* ウェポンクイッケン */
 			sc->opt3 |= 0x00001;
@@ -5588,7 +5591,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_MINDBREAKER:			/* マインドブレーカー */
 		case SC_QUAGMIRE:			/* クァグマイア */
 		case SC_PROVIDENCE:			/* プロヴィデンス */
-		case SC_SPEARSQUICKEN:			/* スピアクイッケン */
+		case SC_SPEARQUICKEN:			/* スピアクイッケン */
 		case SC_VOLCANO:
 		case SC_DELUGE:
 		case SC_VIOLENTGALE:
@@ -5990,7 +5993,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		// opt3
 		case SC_ONEHAND:		/* 1HQ */
 		case SC_TWOHANDQUICKEN:		/* 2HQ */
-		case SC_SPEARSQUICKEN:		/* スピアクイッケン */
+		case SC_SPEARQUICKEN:		/* スピアクイッケン */
 		case SC_CONCENTRATION:		/* コンセントレーション */
 		case SC_WEAPONQUICKEN:		/* ウェポンクイッケン */
 			sc->opt3 &= ~0x00001;

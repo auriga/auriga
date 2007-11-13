@@ -107,7 +107,7 @@ int SkillStatusChangeTable[MAX_SKILL] = {	/* status.hのenumのSC_***とあわ�
 	/* 240- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,SC_AUTOGUARD,
 	/* 250- */
-	-1,-1,SC_REFLECTSHIELD,-1,-1,SC_DEVOTION,SC_PROVIDENCE,SC_DEFENDER,SC_SPEARSQUICKEN,-1,
+	-1,-1,SC_REFLECTSHIELD,-1,-1,SC_DEVOTION,SC_PROVIDENCE,SC_DEFENDER,SC_SPEARQUICKEN,-1,
 	/* 260- */
 	-1,-1,-1,-1,-1,-1,-1,-1,SC_STEELBODY,SC_BLADESTOP_WAIT,
 	/* 270- */
@@ -3712,17 +3712,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case PR_ASPERSIO:		/* アスペルシオ */
+	case PR_KYRIE:			/* キリエエレイソン */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if( dstsd && dstsd->special_state.no_magic_damage )
 			break;
 		if(dstmd)
 			break;
 		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
-		break;
-	case PR_KYRIE:			/* キリエエレイソン */
-		clif_skill_nodamage(bl,bl,skillid,skilllv,1);
-		if(dstsd && !dstsd->special_state.no_magic_damage)
-			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
 	case SM_AUTOBERSERK:
 	case KN_AUTOCOUNTER:		/* オートカウンター */
@@ -4353,7 +4349,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_end(bl,SC_STONE,-1);
 		}
 		else if(!battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) && atn_rand()%100 < skilllv*4+20) {
-			status_change_start(bl,SC_STONE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+			status_change_start(bl,SC_STONE,skilllv,0,0,5000,skill_get_time2(skillid,skilllv),0);
 		}
 		else {
 			if(sd)

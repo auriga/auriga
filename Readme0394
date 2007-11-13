@@ -1,4 +1,13 @@
 ----------------------------------------
+//0400 [2007/11/14] by Rayce
+
+・AthenaProject Rev.67よりmerge、thanks to Blazeさん
+	-> 「SPEARQUICKEN」と「SPEARSQUICKEN」で名称が一致していなかったのを修正（pc.c, skill.c, status.*）
+	-> 状態異常「石化進行中」の持続時間をストーンカース以外は1000msに修正（skill.c, status.c）
+
+・ホムや傭兵にはキリエエレイソンが適用されるように0398を修正（skill.c）
+
+----------------------------------------
 //0399 [2007/11/14] by Cocoa
 
 ・AthenaProject Rev.113よりmerge、thanks to Blazeさん
