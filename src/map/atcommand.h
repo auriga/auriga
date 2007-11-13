@@ -146,6 +146,7 @@ typedef enum {
 	AtCommand_Weather,
 	AtCommand_NpcTalk,
 	AtCommand_PetTalk,
+	AtCommand_HomTalk,
 	AtCommand_Users,
 	AtCommand_ReloadAtcommand,
 	AtCommand_ReloadBattleConf,

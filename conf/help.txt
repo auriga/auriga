@@ -198,6 +198,7 @@
 
 @npctalk npc名 comment       ---- 指定したNPCにcommentを発言させる
 @pettalk comment             ---- ペットにcommentを発言させる
+@homtalk comment             ---- ホムンクルスにcommentを発言させる
 
 broadcast ---- ワールド全体に発言
     /nb comment  ---- 黄文字で上部に発言(名前無し)

@@ -1,4 +1,13 @@
 ----------------------------------------
+//0401 [2007/11/14] by Rayce
+
+・AthenaProject Rev.69を参考に@homtalkを実装（atcommand.*）
+	thanks to Quaplaさん
+
+・AthenaProject Rev.73を参考に日本語の誤字脱字を修正（doc/item_bonus.txt）
+	thanks to izayoiさん
+
+----------------------------------------
 //0400 [2007/11/14] by Rayce
 
 ・AthenaProject Rev.67よりmerge、thanks to Blazeさん

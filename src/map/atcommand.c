@@ -174,6 +174,7 @@ ATCOMMAND_FUNC(giveitem);
 ATCOMMAND_FUNC(weather);
 ATCOMMAND_FUNC(npctalk);
 ATCOMMAND_FUNC(pettalk);
+ATCOMMAND_FUNC(homtalk);
 ATCOMMAND_FUNC(users);
 ATCOMMAND_FUNC(reloadatcommand);
 ATCOMMAND_FUNC(reloadbattleconf);
@@ -342,6 +343,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_Weather,            "@weather",          0, atcommand_weather,             NULL },
 	{ AtCommand_NpcTalk,            "@npctalk",          0, atcommand_npctalk,             NULL },
 	{ AtCommand_PetTalk,            "@pettalk",          0, atcommand_pettalk,             NULL },
+	{ AtCommand_HomTalk,            "@homtalk" ,         0, atcommand_homtalk,             NULL },
 	{ AtCommand_Users,              "@users",            0, atcommand_users,               NULL },
 	{ AtCommand_ReloadAtcommand,    "@reloadatcommand",  0, atcommand_reloadatcommand,     NULL },
 	{ AtCommand_ReloadBattleConf,   "@reloadbattleconf", 0, atcommand_reloadbattleconf,    NULL },
@@ -4320,11 +4322,34 @@ int atcommand_pettalk(const int fd, struct map_session_data* sd, AtCommandType c
 		return -1;
 	if (sscanf(message, "%99[^\n]", mes) < 1)
 		return -1;
-	if (!sd->status.pet_id || sd->pd == NULL)
+	if (sd->pd == NULL || sd->status.pet_id <= 0)
 		return -1;
 
 	sprintf(output, "%s : %s", sd->pet.name, mes);
 	clif_GlobalMessage(&sd->pd->bl, output);
+
+	return 0;
+}
+
+/*==========================================
+ * HOMに話させる
+ *------------------------------------------
+ */
+int atcommand_homtalk(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	char mes[100], output[128];
+
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message)
+		return -1;
+	if (sscanf(message, "%99[^\n]", mes) < 1)
+		return -1;
+	if (sd->hd == NULL || sd->status.homun_id <= 0 || unit_isdead(&sd->hd->bl))
+		return -1;
+
+	sprintf(output, "%s : %s", sd->hd->status.name, mes);
+	clif_GlobalMessage(&sd->hd->bl, output);
 
 	return 0;
 }
