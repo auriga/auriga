@@ -381,7 +381,6 @@ SC_Hallucination 34
 SC_SpeedPot0	37
 SC_SpeedPot1	38
 SC_SpeedPot2	39
-SC_ItemDelay	41
 SC_Santa	63
 SC_Summer	64
 SC_INCATK	185

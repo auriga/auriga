@@ -80,7 +80,7 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 		return;
 	if (sd->bl.m != vsd->bl.m)
 		return;
-	if (unit_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.x) > AREA_SIZE)
+	if (unit_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE)
 		return;
 
 	// check number of buying items
