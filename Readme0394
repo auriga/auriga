@@ -1,4 +1,15 @@
 ----------------------------------------
+//0399 [2007/11/14] by Cocoa
+
+・AthenaProject Rev.113よりmerge、thanks to Blazeさん
+	-> TheSignNPCで入力が文字列で判定が数値型になっていたのを修正（npc_quest_thesign.txt）
+	-> アルベルタのTheSign関係NPCが重複していたのを削除（npc_town_alberta.txt）
+	-> コモド武器商人の販売商品を正常化（npc_town_comodo.txt）
+
+・AthenaProject Rev.104よりmerge、thanks to Forestさん
+	-> 龍之城 武器商人NPCが販売している「パイク」がS4だったものをS3に修正（npc_town_louyang.txt）
+
+----------------------------------------
 //0398 [2007/11/14] by Cocoa
 
 ・一部モンスターが召還する取り巻きの数が異なっていた点を修正（db/mob_skill_db.txt）
