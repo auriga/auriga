@@ -1,4 +1,2013 @@
 ----------------------------------------
+//0393 [2007/11/14] by Rayce
+
+・db/mob_db.txtおよびdb/mob_skill_db.txtを最新まで更新、thanks to huge cgi
+・ランダム系アイテムのデータベースをdb/random/内に移動する
+	based on Freya
+
+----------------------------------------
+//0392 [2007/11/13] by Rayce
+
+・AthenaProject2322より、battle_auriga.confに homun_rename を追加（battle.c, homun.c）
+	thanks to Quaplaさん
+
+・db/const.txtにSC_PROVOKEとSC_BLESSINGを追加
+・db/item_db.txtを最新まで更新、thanks to huge cgi
+
+----------------------------------------
+//0391 [2007/11/13] by Rayce
+
+・db/skill_require_db2.txtには設定項目があるスキルだけを列挙するように変更
+・db/packet_db.txt更新
+・doc/client_packet.txt更新
+
+----------------------------------------
+//0390 [2007/11/13] by Rayce
+
+・AthenaProject2321より以下をmerge、thanks to Blazeさん
+	-> NPCスキル、モードチェンジ「NPC_EMOTION_ON」実装（skill.*, status.*, skill_db.txt）
+	-> トムヤンクンクエストの一部不具合でクエストが進行しなかったのを修正
+	   （npc_town_ayothaya.txt）
+
+----------------------------------------
+//0389 [2007/11/13] by Rayce
+
+・AthenaProject2321より内部処理名称変更をmerge、thanks to Blazeさん
+	SC_STAN → SC_STUN
+	SC_HOLDWEB → SC_STOP
+	SI_HOLDWEB → SI_STOP
+	NPC_EXPLOSIONSPIRITS → NPC_POWERUP
+	NPC_INCREASEFLEE → NPC_AGIUP
+	NPC_ELEMENTUNDEAD → NPC_CHANGEUNDEAD
+	NPC_DARKSOULSTRIKE → NPC_DARKSTRIKE
+	NPC_RUNAWAY → NPC_RUN
+	NPC_DARKGRANDCROSS → NPC_GRANDDARKNESS
+	NPC_DARKJUPITEL → NPC_DARKTHUNDER
+
+----------------------------------------
+//0388 [2007/11/13] by Rayce
+
+・inter_send_packet_length[] は使われていないので削除（inter.c）
+・Lv11以上のカイゼルを使うと、復活時にHPが最大HPを越える可能性を修正（pc.c）
+・map_readwater() を少し最適化（map.c）
+
+----------------------------------------
+//0387 [2007/11/11] by Rayce
+
+・プレッシャーおよびグラビテーションフィールドがセーフティウォールやエナジーコート等あらゆる
+　バリアを無視して固定ダメージを与えるように修正（battle.c）
+
+・プレッシャーを武器スキル（BF_WEAPON）からその他スキル（BF_MISC）に変更してみる（battle.c, skill.c）
+	based on eA, thx a lot!!
+
+----------------------------------------
+//0386 [2007/11/11] by Rayce
+
+・0336以降、他人の露店を見ることができなくなっていたバグを修正（vending.c）
+	reported by Cocoaさん
+
+・VC8.0以上のときはstrdupの代わりに_strdupを使うように修正（malloc.h）
+・battle_skill_attack() を少し最適化（battle.c）
+　if-elseをswitchにすることでswitch tableの形成を促す
+
+----------------------------------------
+//0385 [2007/11/10] by Rayce
+
+・0313以降、ソウルリンカーの転職できなくなっていたバグを修正（pc.c）
+	reported by Cocoaさん
+・スフィアーマインを強制的に水属性Lv2に修正（skill.c）
+	reported by Cocoaさん
+・カタール装備時、左手の追撃分が常にMissになるバグを修正（battle.c）
+	reported by Cocoaさん
+
+・左手にのみ武器を装備している状態で武器スキルを使う場合は右手のみを参照するように修正（battle.c）
+	merged from eA, thx a lot!!
+
+----------------------------------------
+//0384 [2007/11/10] by Rayce
+
+・BCCのとき、atn_bignumber型は__int64型ではなくdouble型を使うように戻す（utils.h）
+	reported by Cocoaさん
+
+	0153での変更を巻き戻します。
+	__int64型の二項代入演算を行うと極稀に予期せぬ演算結果が返る特有のバグがある模様。
+	BCCの__int64型は不安定要素が多いので使わないようにします。
+	double型に戻したことにより演算速度と精度の低下が発生します。
+	BCCを使う方はその点を留意しておいてください。
+
+・mob_dead() を少し最適化（mob.c）
+
+----------------------------------------
+//0383 [2007/11/10] by Rayce
+
+・レディムプティオを本鯖仕様に修正
+	reported by Cocoaさん
+
+	-> スキル発動時は死亡するのではなくHP1, SP0になる
+	-> 効果範囲を15x15から29x29に修正
+	-> オーラの場合、経験値がオーラレベルに必要な経験値の1%以下ならスキル失敗
+	-> オーラの場合、発動時には取得経験値の1%を基準としてExpペナルティが発生する
+	-> ペナルティは街中でも発生する
+
+　　※以下変更箇所
+	-> conf/battle_auriga.confの redemptio_penalty_type の仕様変更（battle.c）
+	   デフォルトは1、誰も生き返らないときだけHP/SP/Expペナルティ無し設定
+	-> skill_redemptio() を撤廃（skill.c）
+	   party_foreachsamemap() は再帰的に skill_castend_nodamage_id() を呼ぶだけ
+	-> SC_REDEMPTIOを撤廃（skill.c, status.*）
+	-> pc_exp_penalty() の拡張（pc.*, skill.c）
+	   レディムプティオのExpペナルティにも適用できるように
+
+・buildin_repairitem() を少し修正（script.c）
+	reported by Cocoaさん
+
+・conf/battle_auriga.confの death_penalty_type のデフォルトを3に変更しておく（battle.c）
+
+----------------------------------------
+//0382 [2007/11/07] by Rayce
+
+・ルート属性を持つMOBがルート属性を持たない取り巻きを召喚すると、取り巻きがアイテムを
+　ターゲッティングしてしまうため "mob_ai_sub_hard target type error" となるバグを修正（mob.c）
+	reported by Cocoaさん
+
+・mob_spawn() 時に行うルートアイテムの初期化サイズが間違っていたので修正（mob.c）
+・ソウルバーンが黄金蟲カードで無効化されるように修正（skill.c）
+・サクリファイス中にエンペリウムを攻撃したときは攻撃回数が減少するように修正（battle.c）
+
+----------------------------------------
+//0381 [2007/11/06] by Rayce
+
+・報告された項目について修正
+	reported by Cocoaさん
+
+　　-> プレイヤー以外が混乱状態になると歩行時にサーバクラッシュするバグを修正（unit.c）
+　　-> カートターミネーションのダメージ倍率がカートの最大重量にのみ依存していたのを修正（battle.c）
+　　-> アシッドデモンストレーションがエナジーコートを貫通するように修正（battle.c）
+　　-> ボス属性はランドプロテクター上でもテレポートできるように修正（battle.*, skill.c）
+　　   battle_auriga.confに boss_teleport_on_landprotector を追加
+　　   デフォルトではyes、jRO 2007/10/30以前の旧仕様にしたい場合はnoに設定すること
+
+----------------------------------------
+//0380 [2007/10/27] by Rayce
+
+・PT加入時に他のメンバーのHPバーが即座に更新されるように修正（party.c）
+
+・コンパイルオプション -Wc++-compat で警告が出る部分を修正（login.c）
+・コンパイルオプション -pedantic における警告の中で気になった箇所を修正（malloc.c, socket.c, db.h）
+
+----------------------------------------
+//0379 [2007/10/27] by Rayce
+
+・スクリプトエンジンの若干の最適化（script.c）
+	-> 条件分岐はif-elseではなく出来るだけswitchを使うように変更
+	   コンパイラのオプティマイザによってswitch tableが形成されることが期待できるため
+	-> バイトコードに直接命令を書き込む場合は add_str() ではなく search_str() を使う
+	-> function構文の終わりに自動的に付加するreturn命令は parse_line() を経由せずに
+	   バイトコードに直接書き込むように改善
+	-> parse_syntax() での skip_word() は各case内で行うように改善
+	-> doの閉じ判定時に skip_space() が一つ不要だったので削除
+	-> push_val() および push_str() でスタックを拡張する際のmemsetを省略
+
+----------------------------------------
+//0378 [2007/10/26] by Rayce
+
+・スクリプトエンジンの {} 閉じ関連について機能強化（script.c）
+
+　　１．breakやcontinueの後でif, for, whileが閉じるとき、直後に命令が連結していると解析エラーと
+　　　　なるバグを修正
+　　　　以下の例文は今後正常なコードとして扱われます。
+		while(1)
+			break;next;	// スペースを入れずいきなり命令があるとアウトだった
+
+　　２．if(); や do; を閉じるとき、続けてelseやwhileが置けなかったバグを修正
+　　　　以下の例文は今後正常なコードとして扱われます。
+		if(rand(2));		// if(); が正しく閉じられてなかった
+		else
+			mes "hoge";
+
+　　３．function構文の関数宣言だけを行った場合、if, for, whileが閉じられないバグを修正
+　　　　以下の例文は今後正常なコードとして扱われます。
+		if(rand(2))
+			function test;
+		else
+			mes "hoge";	// ifが終わってないのでelseが失敗していた
+
+　　４．function構文の関数定義を閉じるとき、} の直後に命令が連結していると解析エラーと
+　　　　なるバグを修正
+　　　　以下の例文は今後正常なコードとして扱われます。
+		function test {
+			mes "hoge";
+		}next;	// スペースを入れずいきなり命令があるとアウトだった
+
+　　５．funciton構文で関数定義を行うとき、関数名のあとに { を付けることを強制するように変更
+　　　　以下の例文は今後エラーとして扱われます。
+		function test		// { がない定義
+			mes getarg(0);
+		test "hoge";
+
+----------------------------------------
+//0377 [2007/10/26] by Rayce
+
+・0374以降、歩行経路計算が狂っていたバグを修正（path.c）
+・gccコンパイル時の警告抑制（graph.c, atcommand.c）
+
+----------------------------------------
+//0376 [2007/10/24] by Rayce
+
+・コンパイルオプション -Wshadow を参考に、変数indexをidxに改名
+・Makefileでgccのversionの自動取得が正しく行われない場合があるので修正
+
+・SQL: atoiのwarningを修正（int_mail.c）
+
+----------------------------------------
+//0375 [2007/10/22] by Rayce
+
+・コンパイルオプション -Wredundant-decls を参考に、宣言が重複している以下の関数を削除
+	guild_txt_delete()
+	status_get_atk2()
+
+・コンパイルオプション -Wold-style-definition で警告が出る部分を修正
+　（inter.c, int_storage.c, pet.c, script.c）
+・コンパイルオプション -Wunreachable-code を参考に、実行されないコードを部分的に修正
+　（atcommand.c, script.c）
+・コンパイルオプション -Wunused-macro を参考に、使われてないマクロを修正
+　（int_guild.c, int_status.c）
+
+----------------------------------------
+//0374 [2007/10/22] by Rayce
+
+・コンパイルオプション -Wshadow を参考に、変数のシャドーイングを出来る限り修正
+・コンパイルオプション -Wwrite-strings を参考に、文字列リテラルに出来る限りconstを修飾する
+・コンパイルオプション -Wmissing-declarations を参考に、一部の関数にstaticを修飾する
+
+・conf/httpd.confで "target" の項目を指定してメモリ拡張が行われる際、拡張するべきサイズの
+　計算が間違っていたバグを修正（httpd.c）
+・マクロ sock() は紛らわしいので sockfd() に改名（socket.c）
+
+----------------------------------------
+//0373 [2007/10/22] by Rayce
+
+・db/pet_db.txt, db/homun_db.txt, db/merc_db.txt のスクリプトを解析する際に
+　バッファオーバーランが発生するバグを修正（pet.c, homun.c, merc.c）
+
+・grfファイル検索用ハッシュテーブルのサイズをFILELIST_HASHとして定義、521に拡大（grfio.c）
+・定数 FILELIST_ADDS を撤廃、grfio_add() は1つずつreallocするように変更（grfio.c）
+・grfio.cの細かい整形
+
+・char_make() の引数変更（char.c）
+・定数 OPTION_MASK および CART_MASK をunsingedに修正（pc.h）
+・存在しない関数 guild_read_db() の宣言を削除（guild.h）
+
+----------------------------------------
+//0372 [2007/10/21] by Rayce
+
+・フォーマット付きメッセージ出力関数 msg_output() を追加（atcommand.c）
+	出力用バッファを内包した clif_displaymessage() のラッパー関数。
+	atcommand.c専用として使うのでstaticが付いてます。
+
+・0371以降、@mapinfoの引数が省略できなくなっていたので修正（atcommand.c）
+
+----------------------------------------
+//0371 [2007/10/20] by Rayce
+
+・@コマンドの各処理に渡されるmessageのNULLチェックを強化
+・@コマンドの各処理におけるnullpoチェックを強化
+
+・@item3でバッファオーバーランが生じる可能性を修正
+・atcommand.cの全体的な細かい最適化および整形
+
+----------------------------------------
+//0370 [2007/10/20] by Rayce
+
+・gccコンパイル時の警告修正（atcommand.c）
+	atcommand_go()
+	atcommand_param()
+
+・0208以降、@ecoffが機能しなくなっていたバグを修正
+・@mapflagでw4が不定になる可能性があるので空文字で初期化するように修正
+・@produceで装備品以外のアイテムを指定した場合はメッセージが表示されるように改善
+・@resetfeelおよび@resethateの配列サイズのチェックを修正
+
+・@questskill, @charquestskill, @lostskill, @charlostskillでスキルIDの範囲チェックを省略
+　範囲外だった場合は次の skill_get_inf2() の判定が偽になるので問題は無い
+・@charquestskillおよび@charlostskillにおいて、クエストスキル以外のスキルIDを指定すると
+　「そんな人は存在しません。」と表示されるバグを修正
+
+----------------------------------------
+//0369 [2007/10/19] by Rayce
+
+・pc_authok() で位置の設定に失敗したときは未認証に戻して接続を切断するように修正（pc.c）
+・clif_misceffect3() の引数を変更（battle.c, clif.*, script.c）
+・@weatherを少し最適化（atcommand.c）
+
+・@usersの書き直し（atcommand.c）
+	-> users_dbを使用しない
+	-> battle_auriga.confの hide_GM_session の設定を適用する
+	-> 人数の割合は小数点第二位まで表示する
+
+----------------------------------------
+//0368 [2007/10/19] by Rayce
+
+・バッファオーバーラン対策として、msg_txt() をフォーマットとして利用する場合は
+　snprintfを使うように修正
+　（atcommand.c, party.c, pc.c, ranking.c, skill.c, vending.c）
+
+・細かい最適化（atcommand.c, chrif.c, pc.c）
+	atcommand_add_hashtable()
+	atcommand_mobsearch()
+	atcommand_weather()
+	atcommand_connectlimit()
+	chrif_maintenanceack()
+	pc_show_steal()
+
+----------------------------------------
+//0367 [2007/10/19] by Rayce
+
+・ATCOMMAND_FUNC() の引数には文字列（const char）ではなくタイプ（AtCommandType）を渡すように変更
+　これに合わせて以下のコマンドを修正
+	@monster, @monstermap
+	@kami, @kamib, @kamic
+	@str, @agi, @vit, @int, @dex, @luk
+
+・atcommand() を is_atcommand_sub() に統合
+・atcommand_killmonster2() を atcommand_killmonster() に統合
+・atcommand_raisemap() を atcommand_raise() に統合
+・atcommand_doommap() を atcommand_doom() に統合
+
+・@goにベインズを追加 merged from eA
+・@goをマップ名の略式で指定できるように拡張
+	gat名の頭文字から区別できる最小の文字数さえ合えば発動します。
+	例えば以下の通り。
+	　　@go pr    → プロンテラ
+	　　@go i     → イズルード
+	　　@go einbe → アインベフ
+	これにより番号がわからなくてもマップ名さえ推測できていれば使えます。
+	アインブログは南口にしか飛べませんが仕様とします。
+
+----------------------------------------
+//0366 [2007/10/19] by Rayce
+
+・@コマンドのsynonymを高速化（atcommand.*）
+　synonymを大量に作っても検索速度の極端な低下が起こらないよう改善されます
+	-> synonym_tableの型をAtCommandInfoに変更
+	-> synonymは実行時にコマンドを置換するのではなく登録時にコマンドをコピーしておく
+	-> AtCommandInfo型のnextを配列のインデックスではなくポインタで扱う
+	-> synonymのコマンドもハッシュテーブルに登録する
+	   通常のコマンド同様 get_atcommandinfo_byname() が使えるので検索が速い
+	-> @reloadatcommandの際、synonym tableだけをハッシュテーブルから削除するのは手間が
+	   かかるのでハッシュテーブルを丸ごと初期化するように変更
+
+・以下の関数について細かい最適化（atcommand.c）
+	atcommand()
+	is_atcommand_sub()
+
+----------------------------------------
+//0365 [2007/10/14] by Rayce
+
+・Mobが自分より歩行速度の遅いPCを追跡する際、MOBがPCに対して１マス程度の間隔を開け続けて
+　いつまでも追いつけない問題を暫定修正（mob.*, unit.c）
+	reported by apacheさん
+
+	歩行目的地に到着してもAIの実行時間になるまで次の行動が待機させられるため、
+	その間にプレイヤーが移動しているとまた間隔が開いてしまうのが原因です。
+	歩行目的地に到着した時点で直接AIを実行するように変更しましたが、場合によって
+	はAIの実行頻度が高くなりすぎて処理上の負荷がかかる可能性が考えられます。
+	もう少し良い方法が思い付き次第改善する予定です。
+
+----------------------------------------
+//0364 [2007/10/12] by Rayce
+
+・ストリップ系スキルに関する修正
+	reported by Cocoaさん
+
+	-> ストリップシールド/アーマー/ヘルムはリログで解除されるように修正（scdata_db.txt）
+	-> フルストリップの成功確率計算にDEX差が加味されてなかったのを修正（skill.c）
+	-> 弓以外の両手武器はストリップシールドで外せないように修正（skill.c）
+	-> ストリップシールドに掛かっていると両手武器が装備できなかったのを修正（pc.c）
+	-> フルコート状態の対象にフルストリップを使った場合は失敗メッセージが出す（clif.h, skill.c）
+
+----------------------------------------
+//0363 [2007/10/12] by Rayce
+
+・BLOCK_DATA_SIZE にunit_head構造体のサイズを加算するように変更（malloc.c）
+	40948〜40960byteのメモリをアロケートするとき、size2hash() では許容範囲内の
+	ハッシュ値になるにも関わらずブロック長を超えるサイズとみなされてしまい、
+	unit_head_large になる気持ち悪さを修正します。
+
+・各ファイルにある memwatch.h のincludeを削除
+　malloc.hに一括するので不要
+
+----------------------------------------
+//0362 [2007/10/12] by Rayce
+
+・メモリマネージャにおいて、ユニットが全て埋まって空きが無いブロックに対してメモリリーク検出が
+　行われない潜在的なバグを修正（malloc.c）
+	unfill_prevがNULLのときは、「ブロックが空っぽ」「ブロックが満タン」の2つの状態の
+	いずれかを意味します。
+	したがってunfill_prevではブロックにまだユニットが残っているかどうかを判定すること
+	はできません。
+	代わりにunit_usedを見るように修正しています。
+
+・timer.cの細かい整形（timer.c）
+・一部の構造体のメンバを見直し（timer.h, battle.c, map.h, skill.*, status.*）
+
+----------------------------------------
+//0361 [2007/10/08] by Rayce
+
+・PT未所属の状態でレディムプティオを使うと、周囲のPT未所属のプレイヤーを生き返らせることが
+　出来たバグを修正（skill.c）
+・レックスティビーナをShift押しで味方に使うと沈黙解除できるように修正（skill.c）
+・pc_show_steal() を少し修正（pc.c）
+
+----------------------------------------
+//0360 [2007/10/08] by Rayce
+
+・スーパーノービス関連の修正、thanks to Cocoaさん
+　　-> レベルアップ時に受ける支援効果時間を全て120秒固定に修正（pc.c）
+
+　　-> Lvが最大でも経験値がbattle_auriga.confの snovice_maxexp_border 以上であれば
+　　   爆裂波動が発動するように修正（clif.c）
+
+　　-> スーパーノービスの魂付与時に受ける無死亡ボーナスについて（status.c）
+　　　　　　条件をBaseLevel90以上ではなくJobLevel70以上に修正
+　　　　　　JobLevelが70未満でも死亡記録が削除されるように修正
+　　　　　　JobLevelが70以上なら天使のエフェクトが出るように修正
+
+　　-> スーパーノービスの妻が夫に「あなたに尽くします」を使用したとき、10%の確率で
+　　   ステータス付与の効果が発現するように修正（skill.c, status.*）
+　　　　　　状態異常 SC_WE_FEMALE を追加
+　　　　　　アイコン SI_WE_FEMALE は暫定で102番を利用
+
+・変数名の変更（battle.c）
+
+----------------------------------------
+//0359 [2007/10/07] by Rayce
+
+・ペットがMAPから離脱するときに status_change_removemap_end() でnullpoエラーが
+　発生するバグを修正（status.c）
+	reported by Cocoaさん
+
+・スーバーノービスの金剛について（battle.*, map.h, pc.c）
+	thanks to Cocoaさん
+
+	-> 経験値計算の過程でオーバーフローするため「Base経験値が99.0〜99.9%」の判定が
+	   失敗してしまうバグを修正
+	-> Lvが最大でも経験値がbattle_auriga.confの snovice_maxexp_border 以上なら
+	   何時でも金剛が発動するように修正
+	   snovice_maxexp_border はいわゆるLv100状態に必要な経験値で、デフォルトは
+	   99,999,999に設定されています
+	-> スクリプトから set BASEEXP,100; のように経験値を獲得する場合、Lvが最大でも
+	   経験値がセットされるように変更
+	-> 金剛が発動するのはログイン後一度だけになるように修正
+
+・BaseLevelが上がって最大になったとき、取得した経験値がそのまま加算されてしまうのを修正（pc.c）
+・pc_checkbaselevelup() で status_calc_pc() が不必要に呼ばれないように修正（pc.c, status.*）
+
+----------------------------------------
+//0358 [2007/10/07] by Rayce
+
+・傭兵が歩行するとサーバクラッシュする致命的なバグを修正（map.h）
+・core_ExceptionRoutine() の細かい整形（core.c）
+
+----------------------------------------
+//0357 [2007/10/07] by Rayce
+
+・パケット0x1c0の抑制（clif.c）
+	langtypeが0だとログイン時に必ず送信されてくるようなので、ダンプ抑制のために
+	clif_parse_GMcharge() を追加。
+・eAの情報を元にパケット0x2b0をサポート（login.c）
+	langtypeが0のときの非暗号化ログインパケットのようです。
+
+・リジェクトソードの効果が死亡時に解除されないように修正（scdata_db.txt）
+・クローキング中にアイテムを拾おうとすると、以後アイテムが拾えなくなるバグを修正（clif.c）
+・チェイスウォーク中はアイテムを拾えるように修正（clif.c）
+・白刃取りはPvP以外では2セル以上離れている場合は掴めないように修正（battle.c）
+
+----------------------------------------
+//0356 [2007/10/06] by Rayce
+
+・ガンスリンガーと忍者の基本HP/SPを本鯖通りに合わせる（status.c）
+	reported by Cocoaさん
+
+	ガンスリンガーと忍者の基本HP/SPは個別に設定されているのか、JOB係数/倍率を用いて
+	一意的に計算することができないようです。
+	job_db1.txtのhpおよびspの項目を-1にするとjob_hp_db.txtおよびjob_sp_db.txtの値を
+	基本HP/SPとして設定するように拡張しました。
+	他の職業でも-1にしておくことでJOB係数/倍率に縛られることなく個別に基本HP/SPを
+	設定することも可能です。
+
+　　※ガンスリンガーと忍者について、Lv100以上の場合は以下のJOB係数/倍率を用いてLv255まで
+　　　値を外挿してあります。
+　　　　　ガンスリンガー：基本HP係数 85, 基本HP倍率 350, 基本SP係数 430
+　　　　　忍者　　　　　：基本HP係数 75, 基本HP倍率 350, 基本SP係数 470
+
+・0349以降に発生していたgccでのwarning修正（map.h）
+・事故防止のためSQLモードでは@callmercが使えないように変更（atcommand.c）
+	傭兵はまだ整備が完了してないため現状ではTXTモードのみ
+	動作確認のために利用を許可しているに過ぎません
+
+----------------------------------------
+//0355 [2007/09/30] by Rayce
+
+・aReallocのサイズ縮小対応（malloc.c）
+　aReallocにサイズ0を指定した場合はaFreeと同様に機能するように修正
+
+・aCallocをaMallocに修正（script.c）
+・スクリプトの解析時に "missing right curly" エラーとなる場合は1を返すように修正（npc.c）
+
+----------------------------------------
+//0354 [2007/09/29] by Rayce
+
+・スクリプトコンパイルエラー時の処理を変更（npc.c）
+　以下のエラー時にはサーバ終了扱い（compile error）せずに警告扱い（warning）にして
+　出来る限り解析を続行する
+
+	-> map_auriga.confで指定したスクリプトが見つからない場合
+	-> "Missing */ on ???" の警告が出る場合
+	-> NPCスクリプトのヘッダがsyntax errorになった場合
+	   その行以下の部分は全て捨てられるが、残りのファイルの解析は続行
+	-> script構文の解析途中でエラーが発生した場合
+	   その行以下の部分は全て捨てられるが、残りのファイルの解析は続行
+	-> function構文で関数名の重複が起こった場合
+	   そのスクリプトだけ無効になるが、残りのスクリプトの解析は続行される
+
+　　※イベント名の重複が発生したときのみサーバ終了（compile error）となります。
+　　　既にNPCが出現した後に発生するエラーであり、そのためイベントデータベースへの登録が中途半端な
+　　　状態になってしまうためです。
+
+　　※あくまでもサーバ終了されないだけで、警告時には部分的にデータの整合性が失われている可能性が
+　　　あります。
+　　　一度サーバを停止してからスクリプトを正常に修正することをお勧めします。
+
+・npc_convertlabel_db() の改善（npc.c）
+
+----------------------------------------
+//0353 [2007/09/29] by Rayce
+
+・script_code構造体を "struct hack" で利用するように変更してみる（script.*）
+	script_bufがreallocで縮小されない分とcalloc用のヘッダの分だけメモリが削減されます
+	全てのスクリプトを読み込ませて約1.5MB節約
+
+・scriptlabel_dbはtree_dbにする意味があまりないのでlinkdbに変更（npc.c, script.*）
+	npc_convertlabel_db() を変更
+	アクセスが面倒なので script_get_label_db() を廃止して scriptlabel_db をexternする
+	ラベルデータのコンバートが完了した時点で linkdb_final() してメモリ解放する
+
+・0348以降、SC_SoulClearなどの特殊系ステータス異常が作動しなくなっていたので修正（status.c）
+・mob_data構造体のメンバ recallmob_count をint型からshort型に変更（map.h）
+
+----------------------------------------
+//0352 [2007/09/28] by Rayce
+
+・block_list構造体のsubtypeをnpc_data構造体に移動（map.h）
+	subtypeはNPCにしか意味がないのでnpc_data構造体が持つだけで十分
+	またblock_list構造体のサイズが傭兵実装以前に戻ったのでメモリの消費が抑えられます
+
+・csvreload命令の処理を改善（script.c）
+	file名のaStrdupではなくcsv_dataのfileをキーとする
+	script_csvreload_sub() は不要になったので削除
+
+・skill_condition型の変数名を改名し忘れ箇所を修正（skill.*, unit.c）
+
+----------------------------------------
+//0351 [2007/09/28] by Rayce
+
+・切断待ちのプレイヤーは chrif_save() でセーブしないように修正
+	切断待ちの間にセーブが行われると最終データが不正に上書きされるバグが修正されます。
+	これはeAの finalsave による二重呼び出しのブロッキングと同じ手法です。
+
+----------------------------------------
+//0350 [2007/09/27] by Rayce
+
+・battle_auriga.confに free_sc_data_dynamically を追加（battle.*, status.c）
+	DYNAMIC_SC_DATAが有効のときに効果があります。
+	yesにすればステータス異常の数が0になった時点でメモリを解放しますので、メモリの使用量を
+	さらに減らすことができます。
+	動的確保するメリットの薄かったプレイヤーに対しても効率良くメモリを利用できるようになる
+	可能性があります。
+	ただし頻繁にステータス異常にかかるような状況だと若干ですが負荷が増えるかもしれません。
+
+・0349に変更によってhideonnpc/hideoffnpc命令が作動しなくなっていたので修正（clif.c）
+・関数にstaticを付ける（chrif.c, intif.c）
+
+----------------------------------------
+//0349 [2007/09/27] by Rayce
+
+・status_change構造体の変更 merged from eA, thanks
+	ステータス異常の数やoption系を一つにまとめます。
+	data部分はstatus_change_data構造体として再定義します。
+	status_get_sc_count() や status_get_option() などが不要になるため、関数呼び出しの
+	オーバーヘッドが減るなどの利点があります。
+
+	PC, HOM, MERCのstatusにあるoptionとstatus_changeのoptionが重なりますが、MAPサーバでは
+	全てstatus_changeのoptionを参照します。
+	セーブの直前にstatusにコピーしてcharサーバに送ります（statusのoptionは通信用の受け皿）。
+
+・プレイヤー、ホム、傭兵にもDYNAMIC_SC_DATAによるステータス異常の動的確保を適用する
+	status_change構造体の変更に伴う副作用により、動的確保せざるを得なくなりました。
+	特にプレイヤーは頻繁にステータス異常に掛かる可能性が高いため動的確保するメリットは
+	薄いですが、デメリットもほとんどないため問題ないと考えました。
+
+・status_calloc_sc_data() および status_free_sc_data() の引数をstatus_change型に変更
+・status_get_sc_data() を status_get_sc() に改名（status.*）
+・status_check_dummy_sc_data() はあまり意味がないので削除（status.*）
+・npc_data構造体から使われていないメンバ opt1, opt2, opt3 を削除（map.h, npc.c）
+
+----------------------------------------
+//0348 [2007/09/26] by Rayce
+
+・水遁のAGIペナルティ計算式を一般式化（skill.c）
+・カイトの反射回数計算を一般式化（status.c）
+・ボルケーノ、デリュージ、バイオレントゲイルでスキルLvが5より大きいとき、ボーナス値の計算を
+　Lv5でキャップするように修正（status.c）
+
+・status_change_timer_sub() にスキルLvを渡すように引数追加（skill.c, status.c）
+・0346の @option と同じように @charoption も修正（atcommand.c）
+・一部の紛らわしい変数名を改名（skill.c）
+
+・ステータス異常呼び出し時にtypeがMAX_STATUSCHANGEを越えていないかチェックするように強化（status.c）
+・ステータス異常が利用可能かどうかの判定はsc_dataがNULLかどうかで行うように変更（status.c）
+・sc_dataのNULLチェックが不要な部分を省略
+
+----------------------------------------
+//0347 [2007/09/25] by Rayce
+
+・mob_spawn() の呼び出しに関して（mob.c）
+	MOBがMAP上に存在している状態でいきなり mob_spawn() を行ってはいけません！
+	map_delblock() されないためブロックリストが異常になったり、ステータス異常が勝手に
+	初期化されてステータス異常タイマーがエラーになったりするバグが発生してしまいます。
+
+	-> MOBがAIが手抜きモードで同一MAPにPCが居るとき、時々沸き直していたのを廃止
+	   本鯖には特にそのようなシステムはないはず
+	-> mob_randomwalk() で移動可能場所の検索に失敗したとき、沸き直さずにPETと同じく
+	   移動停止状態にするように修正
+
+・dummy_sc_dataはDYMANIC_SC_DATAがオンのときだけコンパイルするように変更（status.*）
+・int_status.hで定義しているstatus_change_data構造体をscdata構造体に改名
+　（int_status.*, inter-converter.c）
+
+----------------------------------------
+//0346 [2007/09/25] by Rayce
+
+・パケットに0x28a関する修正 from eA
+　（atcommand.c, clif.*, merc.c, status.c）
+	0x28aは傭兵出現パケットではなく、0x229では出来ないopt3の更新を行うためのパケットでした。
+	clif_send_mercdata() を削除し、clif_changeoption2() に変更
+	これにより @option を使ったときにopt3による見た目の変更が即座に反映されます。
+
+・clif_mercskillinfoblock() を clif_send_mercstatus() 内にまとめる
+　（clif.c, merc.c, skill.c, statuts.c）
+
+----------------------------------------
+//0345 [2007/09/24] by Rayce
+
+・path.cの全体的な細かい整形、can_place() をマクロに変更（path.c）
+・Makefileを少し修正
+
+----------------------------------------
+//0344 [2007/09/24] by Rayce
+
+・0341で混入したホムと傭兵のスキルツリー計算の致命的なバグを修正（homun.c, merc.c）
+・プレイヤー、ホム、傭兵のスキルツリー読み込み時にスキルIDの範囲チェックを行うように修正
+　（pc.c, homun.c, merc.c）
+・hacker対策として256文字以上のチャットメッセージは受け取らないように強化（clif.c）
+
+・チェンジインストラクションの修正（homun.c）
+	-> ステータスアップの計算を一般式化
+	-> INT増加が間違っていたので以下のように修正
+	     Lv1: +1, Lv2: +2, Lv3: +2, Lv4: +4, Lv5: +5
+
+・メンタルチェンジの修正（battle.c, homun.c, skill.c, status.c, db/skill_require_db.txt）
+	-> VITとINTがスキルLvに比例して加算されるように修正
+	-> MAXHPとMAXSPの交換が行われないように修正
+	-> ATKとMATKの交換が行われないように修正
+	   マジッククラッシャーと同じくMATKで攻撃を行う
+	-> 効果時間中は治療の手助けと緊急回避が使えないように修正
+	-> 効果が切れたときHPとSPが10になるように修正
+	   MAP移動などで効果が中断されたときはこのペナルティを受けない
+	-> 消費SPを 1 → 100 に修正
+
+・battle_auriga.confに homun_skilldelay_reset, homun_statuschange_reset を追加
+　（battle.*, status.c, unit.c）
+	マップ離脱時（テレポ、マップ移動など）にスキル使用後ディレイやホムスキル効果による
+	ステータス異常をリセットするかどうかを設定できます。
+	デフォルトでは共にyesでリセットされます。
+
+　　※将来的に、マップ離脱時にステータス異常を解除するかどうかの制御はdb/scdata_db.txtで
+　　　行えるように変更するかもしれません。
+　　　そのときは homun_statuschange_reset は削除します。
+
+----------------------------------------
+//0343 [2007/09/23] by Rayce
+
+・delay_item_dropおよびdelay_item_drop2構造体に保存するアイテムルート優先者の情報は、block_list型ではなく
+　int型でIDだけを保存するように修正（map.*, mob.c, pc.c, pet.c, script.c, skill.c）
+	partially merged from eA, thanks
+
+	MOBを倒したときのドロップアイテムが出現するまでの間（約500ms）にルート優先者がMAPから
+	消滅していると、既にfreeされた領域にアクセスしてしまう致命的なバグが修正されます。
+	それに付随して map_addflooritem() の引数をint型に変更しています。
+
+----------------------------------------
+//0342 [2007/09/23] by Rayce
+
+・マップ離脱時に解除すべきステータス異常を status_change_removemap_end() としてまとめる
+　（clif.c, pc.c, status.*, unit.c）
+・ホムスキルから発生するステータス異常はマップ離脱（テレポやMAP移動）で解除されるように修正（status.c）
+・MAPロード時に行っていたシグナムクルシス状態のチェックは無くても問題ないので削除（clif.c）
+・status_change_clear() でダンス状態とバジリカ状態の削除を考慮するように修正（status.c）
+
+・表示をスムーズにするため hex_dump() を自前の完全バッファリングにする（utils.c）
+・doc/client_packet.txt更新
+
+----------------------------------------
+//0341 [2007/09/23] by Rayce
+
+・soundeffect命令、areasoundeffect命令で繰り返しサウンドを鳴らす場合、間隔をミリ秒で指定できる
+　ように拡張（clif.*, script.c）
+	clif_soundeffect() で不明だった部分は実は時間間隔を設定する機能があった模様。
+	効果があるのは繰り返し鳴らす場合のみです。
+
+・0336以降、チャットに入れない場合があるミスを修正（chat.c）
+・hex_dump() 呼び出し時の余計なキャストを削除（char.c, login.c. clif.c）
+・ホムと傭兵のスキルツリー計算をPCの処理方法に合わせる（homun.c, merc.c）
+　battle_auriga.confのskillfreeをホムと傭兵にも適用する
+
+----------------------------------------
+//0340 [2007/09/21] by Rayce
+
+・0339のitem_db.txtのType変更により、Rの箱系が使用できなくなっていたので修正（pc.c）
+・pc_putitemtocart() および pc_getitemfromcart() から露店かどうかのチェックを外す（pc.c）
+　チェック自体は既にclif.cで行っているので不要
+・packet_dbのposのサイズを 20 → 8 に縮小（clif.h）
+・packetdb_readdb() を少し修正（clif.c）
+
+・ROメールに別のアイテムやZenyを添付しようとすると表示上戻ってこない問題を修正
+　（clif.c, intif.c, mail.*, pc.c, trade.c, unit.c）
+	0337で添付成功のパケットとして0x255を使うようにしたため、メールに貼り付けたアイテムを
+	戻したりするときに clif_additem() を送り付けないといけなくなりました。
+	インベントリのインデックスを保存する必要があるため、全体的な処理を取引と同じ方法に変更
+	することにしました。
+	アイテムを添付した時点で mail_appending フラグがオンになります。
+	mail_appending中は取引と同じくアイテムに関連する行動が全て制限されます。
+
+　　※本来はメールボックスを開いた時点でフラグを立てて行動制限するべきですが、メールを閉じたとき
+　　　を判定する術がない（0x246は送信ボックスの開閉両方で飛んでくる）ため、添付アイテムがあるとき
+　　　だけチェックを行う形をとっています。
+
+----------------------------------------
+//0339 [2007/09/20] by Rayce
+
+・db/item_db.txtのTypeを本鯖仕様に修正（clif.*, itemdb.c, pc.c）
+	矢は10、弾丸は16、苦無は17、Rの箱は18、で分類されます。
+	これによりRの箱系を使用すると開封していいかどうかの確認ダイアログが出るようなります。
+
+・上記変更に合わせて db/item_db.txtを修正、ついでに最新まで更新
+	thanks to huge cgi
+
+・0311以降、ファイアピラーなどでnullpoエラーが誤検出されるバグを修正（skill.c）
+・ファイアピラー発動後に呼び出す battle_skill_attack_area() の引数が間違っていたので修正（skill.c）
+・hex_dump() の改行コードを RETCODE に変更（utils.c）
+
+----------------------------------------
+//0338 [2007/09/20] by Rayce
+
+・パケットのダンプ時に文字も表示するように改善 from eA（utils.*, login.c, char.c, clif.c）
+	hex_dump() 追加
+	特に@packetの出力フォーマットがより見やすい形になってるはず
+
+----------------------------------------
+//0337 [2007/09/19] by Rayce
+
+・086以降、緊急回避とディフェンスのスキル使用後ディレイが無くなっていたのを修正（skill.c）
+・clif_receive_mail() でバッファオーバーフローが発生する可能性を修正（clif.c）
+・ROメールに添付されたアイテムに刺さっているカードが見えるように修正（clif.c）
+
+・clif_res_sendmail_setappend() を mail_setitem() に統合する（clif.c, mail.*）
+・clif_parse_RefleshMailBox() でも添付アイテム用のデータを削除するようにしてみる（clif.c）
+
+・ROメールにアイテムを添付したときにメッセージが出ないように変更（clif.*, mail.c）
+	解析した限りにおいて clif_res_sendmail_setappend() は0x245ではなく0x255のパケットを
+	使うのが正しい仕様のようです。
+	アイテムのインデックスが必要になるので引数を1つ追加。
+	また添付不可能なアイテムを添付すると「このアイテムはメールに添付することができません」
+	のメッセージが出るようになっています。
+
+・ROメールに添付されたアイテムを受け取ったときにメッセージが出るように変更（clif.*, mail.c）
+	clif_mail_getappend() 追加、0x245を使います。
+	重量オーバーなどでアイテム取得できなかった時は「アイテムはメールにて保管されています」
+	のメッセージが出るようになっています。
+
+・mob_data構造体の並びを変更、8byteのメモリ節約（map.h）
+・map_session_data構造体から不要なメンバ server_tick を削除（clif.c, map.h）
+・map_session_data構造体の以下のメンバをstateに移動（map.h）
+	deal_mode, deal_locked, party_sended, guild_sended, friend_sended, wis_all, joinchat
+
+----------------------------------------
+//0336 [2007/09/18] by Rayce
+
+・hacker対策のためのチェック強化（clif.c, chat.c, friend.c, guild.c, vending.c）
+	-> 太陽と月と星の感情によるMAPセーブ時に、スキルを取得しているかどうかをチェックする
+	-> 死亡時にリスタートボタンを押した際にプレイヤーが死亡しているかどうかをチェックする
+	-> チャット参加時に視界内に居るかどうかをチェックする
+	-> 友達要請時に同一MAPか、視界内か、自分に対する要請でないかチェックする
+	-> ギルドの役職変更時にidxの範囲チェックをする
+	-> ギルド同盟/敵対要請時に同一MAPか、視界内か、同じギルドに対する要請でないか、要請者が
+	   ギルドマスターかをチェックする
+	-> 露店アイテムリスト要求時に同一MAPか、視界内かチェックする
+	-> 露店アイテム購入時に同一MAPか、視界内かチェックする
+
+・ギルドに関する修正（clif.c, guild.*）
+	-> ギルドエンブレム変更時のマスターチェックはguild.cではなくclif.cで行うように変更
+	-> guild_invite() で視界内に居るかどうかのチェックは　map_countnearpc() ではなく
+	   unit_distance() を使うように変更
+	-> guild_member_added() でサーバクラッシュする可能性を修正
+	-> guild_send_xy_timer() で可変引数は不要なのでtickを削除
+	-> guild_change_position() で guild_search() を実行しないように修正
+	   ギルドの不正チェックは既にclif.cで行っているので不要
+
+・以下の関数で出来る限り GETPACKETPOS() を利用するように修正（clif.c, db/packet_db.txt）
+	clif_parse_GuildChangePositionInfo()
+	clif_parse_GuildChangeMemberPosition()
+	clif_parse_SendMail()
+
+・0335に添付し忘れていたconf/battle_auriga.confを同梱
+
+----------------------------------------
+//0335 [2007/09/18] by Rayce
+
+・clif_parse_HomMercActionRequest() を少し修正（clif.c）
+	クライアントを調べた限り、プレイヤーとは違い once attack しかありませんでした。
+	hacker対策として continueous attack の部分は削除します。
+
+・PK MAPに入ったときに赤文字の注意勧告が表示されるように修正（clif.c）
+・/acceptの存在を忘れていたので clif_parse_RefusePartyInvite() を修正（clif.c）
+・clif_parse_func[] を packetdb_readdb() の中に収める（clif.c）
+・clif.cの細かい整形（clif.c）
+
+・battle_auriga.confに allow_guild_alliance_in_agit を追加（battle.*, guild.c）
+	攻城戦中にギルドの同盟/敵対ができるかどうかを決めます
+	デフォルトはnoなので、攻城戦中なら如何なるMAPにおいても同盟/敵対の要請は不可です。
+・battle_auriga.confの allow_guild_invite_in_gvg と allow_guild_leave_in_gvg はGvG設定MAPで
+　あっても攻城戦中でないならギルドメンバーの加入/脱退が出来るように変更（guild.c）
+
+----------------------------------------
+//0334 [2007/09/14] by Rayce
+
+・PACKETVERを10に引き上げる
+	2007-09-04aSakexe以降がPACKETVER 10になります。
+	2007-09-04aSakexeより古いクライアントを使う場合にはPACKETVERを9以下に戻す必要があります。
+
+・PACKETVERが10以上のとき、パケット0x2d0, 0x2d1, 0x2d2, 0x2d4をサポート（clif.c）
+	末端に伸びた2byteはアイテムの永続装備？のためのもの。
+	詳細不明なのでこれについては現在のところ未実装。
+
+・PACKETVERが10以上のとき、パケット0x2c5, 0x2c6をサポート（clif.c）
+	2007-09-04aSakexe以降はパーティ勧誘の応答に0xfdではなく0x2c5を使わないと時々メッセージが
+	表示されない問題が発生するようです。
+
+・/refuseをサポート（clif.c, map.h, party.c）
+	パーティ勧誘の拒否/受諾を行うためのコマンド。
+	map_session_data構造体のstate内に refuse_partyinvite 追加。
+
+・パーティ勧誘に関する修正（clif.*, party.c）
+	-> 2007-09-04aSakexe以降のクライアントにおいて、勧誘された人が基本スキルLvが4以下なら
+	   「パーティ加入不可」メッセージを表示するように修正
+	-> 相手が見つからない場合は「該当キャラがいない」メッセージを表示するように修正
+	-> 要請者がリーダーかどうかをチェックするように強化
+	-> clif_party_invite() の引数変更
+
+----------------------------------------
+//0333 [2007/09/13] by Rayce
+
+・スタック位置にワープしたとき、ワープ先の検索は1000回で打ち切るように修正（pc.c）
+・スクリプトのresetskill命令に可変引数を渡せるように拡張（atcommand.c, clif.c, pc.*, script.c）
+・db/item_db2.txtのZoneに +256, +512 を追加（pc.c）
+　mapflagにnopenaltyが設定されているかどうかでアイテムの使用可否を決定することができます
+
+・script/functionを新設
+	function_itemdb.txtにはdb/item_db.txtで利用するfunctionを集めます
+	function_global.txtには各NPCファイルで共通で使うfucntionを集めます
+
+・巨大なハエの羽、キラキラスティックの効果実装
+	originally created by Cocoaさん、thx a lot!!
+
+　　※キラキラスティックの相違点
+　　　重量が0でないと使用できないはずだが使えてしまう。
+
+----------------------------------------
+//0332 [2007/09/13] by Rayce
+
+・以下の傭兵専用スキルを実装（battle.c, skill.c）
+	MER_QUICKEN, MER_CRASH, MER_REGAIN, MER_TENDER, MER_BENEDICTION, MER_RECUPERATE,
+	MER_MENTALCURE, MER_COMPRESS, MER_SCAPEGOAT
+
+　消費SPがわからなかったので他のスキルを適当に参照（db/skill_require_db.txt）
+	MER_QUICKEN   → 2HQ
+	MER_CRASH     → バッシュ
+	MER_SCAPEGOAT → SP1
+	その他        → キュア
+
+・SC_WEAPONQUICKEN追加、ただし実装はかなり適当（merc.c, skill.c, status.*）
+・MAX_HOMCSKILL_TREEを16に戻しておく、ついでにMAX_MERCSKILL_TREEを16に変更（homun.h, merc.h）
+
+----------------------------------------
+//0331 [2007/09/13] by Rayce
+
+・以下の傭兵スキルを実装（battle.c, merc.c, skill.c, status.c, unit.c）
+　ただしステータス異常は適当だったり未実装だったりします
+	MS_BASH, MS_MAGNUM, MS_BOWLINGBASH, MS_PARRYING, MS_REFLECTSHIELD, MS_BERSERK,
+	MA_DOUBLE, MA_SHOWER, MA_CHARGEARROW, MA_SHARPSHOOTING,
+	MA_SKIDTRAP, MA_LANDMINE, MA_SANDMAN, MA_FREEZINGTRAP, MA_REMOVETRAP,
+	ML_PIERCE, ML_BRANDISH, ML_SPIRALPIERCE, ML_DEFENDER, ML_AUTOGUARD,
+	MER_MAGNIFICAT, MER_SIGHT, MER_PROVOKE, MER_AUTOBERSERK, MER_DECAGI,
+	MER_LEXDIVINA, MER_ESTIMATION
+
+・傭兵のスキル一覧が消えてしまう問題を暫定的に修正（clif.c, merc.c, skill.c, status.c）
+	clif_send_mercstatus() を送信するとスキル一覧が消えるみたいなので、clif_send_mercstatus()
+	の後には必ず clif_mercskillinfoblock() を送信するようにしています
+
+・merc_calc_status() に適当に状態異常判定を追加（merc.c）
+・pc_checkoverhp() および pc_checkoversp() をstaticに変更（pc.*）
+
+----------------------------------------
+//0330 [2007/09/12] by Rayce
+
+・オートバーサークの処理方法がパッシブスキルだった頃のままだったので修正（clif.c, status.c）
+	オートバーサークを使ってないのに勝手にプロボック状態になったり、
+	オートバーサークをOFFにしてもプロボック状態が解除されないなどのバグが解消されます
+
+・スキルツリーの計算処理を高速化（pc.c）
+・battle_auriga.confの gm_allskill が設定されているときで且つ CLASS_DKDC が有効のとき、
+　DK/DCスキルの一部が取得できなかった問題を修正（pc.c）
+・doevent命令でプレイヤーがアタッチされてないときは警告を出すように修正（script.c）
+
+・typo修正、MER_LEXDEVINA → MER_LEXDIVINA（skill.*）
+・db/skill_unit_db.txtに傭兵の罠スキル4種追加
+　ついでに細かい整形
+
+----------------------------------------
+//0329 [2007/09/11] by Rayce
+
+・以下をeAよりmerge
+	-> clif_clearflooritem() を少し修正（clif.c）
+	-> ファイヤーウォールとアイスウォールを足元に出すときの向きをAegisに合わせて6にする（skill.c）
+	-> 切断待ちの相手にパーティおよびギルドの勧誘をすると失敗するように修正（guild.c, party.c）
+	-> パーティが定員オーバーのときはメッセージを表示するように修正（party.c）
+
+・SkillStatusChangeTableの整理（skill.c）
+・StatusChangeTable系およびStatusIconChangeTableにおいて、初期化の間違いをコンパイルエラーで
+　検出できるように配列のサイズを指定するように修正（skill.*, status.c）
+
+----------------------------------------
+//0328 [2007/09/11] by Rayce
+
+・ホムンクルスが攻撃してタゲをとったモンスターに殺されたあと、そのモンスターに攻撃しても
+　反撃してこない時が発生するバグを修正（mob.c）
+		reported by Cocoaさん
+	Athena1046以降から発生して今まで残っていた隠れバグのようです。
+	MOBと交戦中に攻撃主が消滅（PCならALT+F4による強制終了、HOMなら死亡）したとき、mob_data
+	構造体のattacked_idが0に初期化されなかったのが原因です。
+	mob_damage() でターゲットを獲得するためにはattacked_idが0になってる必要があります。
+
+・新ギルドスキル？GD_ITEMEMEGENCYCALLが追加されていたので、MAX_GUILDSKILLを16にしておく（mmo.h）
+　現在はアイコンが実装されてないらしくリソースエラーになるのでコメントアウト
+
+・傭兵スキルをdbで有効化
+	db/skill_cast_db.txt
+	db/skill_db2.txt
+	db/skill_require_db.txt
+	db/skill_require_db2.txt
+
+----------------------------------------
+//0327 [2007/09/11] by Rayce
+
+・傭兵がスキルを使えるように（clif.c, skill.c, unit.c）
+・NPC_KEEPINGを使ってもキーピング状態にならなかったバグを修正（skill.c）
+・緊急回避とディフェンスは主人だけでなくホム自身にも効果が発現するように修正（skill.c）
+
+・スキルの仕様拡張（skill.c, unit.c）
+	-> ストリップ系スキルがホムや傭兵にも効果が発現するように拡張
+	-> ホムスキルも地面指定型スキルを扱えるように拡張
+	-> ホムスキルについて、db/skill_require_db.txtのstateに sight, explosionspirits, cartboost
+	   nen, water が指定できるように拡張
+	-> 以下のスキルをホム以外が使ってもある程度効果が発現するように拡張
+	   　　ブラッドラスト
+	   　　フリートムーブ
+	   　　オーバードスピード
+	   　　メンタルチェンジ
+	   　　バイオエクスプロージョン
+
+・pet_target_check() を少し整形（pet.c）
+・skill.cの全体的な整形（skill.c）
+
+----------------------------------------
+//0326 [2007/09/10] by Rayce
+
+・傭兵スキルの実装準備
+	-> 傭兵スキルの定義を追加（skill.h）
+	-> skill_get_skilldb_id() を傭兵スキルに対応（skill.h）
+	-> MercStatusChangeTable[] 追加（skill.*）
+	-> db/merc_skill_tree.txt追加
+	-> 傭兵召喚時にスキルツリーにあるスキルを全て取得する（merc.c）
+	-> スキル一覧を表示できるように修正（clif.c, merc.c）
+	   ホムと違い、傭兵メニューを開くタイミングでスキル一覧パケットを送信しないと
+	   表示されないようです
+
+　　※相変わらずdb/merc_skill_tree.txtは適当です。
+　　　まだ仕様を固めてないのでフォーマットが変更される可能性があります。
+
+----------------------------------------
+//0325 [2007/09/10] by Rayce
+
+・スキルIDの定義をmmo.hにまとめて整理する
+　（int_homun.c, atcommand.c, map.h, pc.c, skill.*）
+	-> skill.hにあった MAX_SKILL_DB, MAX_HOMSKILL_DB, MAX_GUILDSKILL_DB は混乱を招くので廃止
+	-> MAX_SKILL_DB を skill_get_skilldb_id() 用IDの最大値として再定義
+
+・skill_db構造体にidを追加、スキルIDを保存しておくようにする（skill.*）
+　weaponをunsigned int型に修正
+・ホムスキルやギルドスキルに対してもスキルユニット配置情報を作成できるように拡張（skill.c）
+
+・pc_allskillup() を少し最適化（pc.c）
+
+----------------------------------------
+//0324 [2007/09/09] by Rayce
+
+・パケット0x2c4, 0x2c7に対応（clif.c, party.*）
+	2007-09-04aSakexeからパーティ勧誘パケットが変更されているので、それぞれ
+	clif_parse_PartyInvite2(), clif_parse_ReplyPartyInvite2() を使います。
+
+・battle_auriga.confに party_invite_range_check 追加（battle.*, party.c）
+	主に2007-09-04aSakexe以降用です。
+	PTウィンドウや /invite でパーティ要請する際に、遠くに離れている場合は要請不可に
+	したい場合は yes にすると良いです。
+
+・party_reply_invite() でパーティ勧誘中フラグが無い場合はinterサーバに追加要求せずにすぐに
+　拒否するように修正（party.c）
+・db/pet_db.txtをリロードすると現在出現しているペットの情報が狂う場合があるので、データベースの
+　初期化はサーバ起動時にのみ行うように修正（pet.c）
+
+・db/pet_db.txtおよびdoc/db_ref.txtを少しだけ修正
+・db/packet_db.txt更新
+・doc/client_packet.txt更新
+
+----------------------------------------
+//0323 [2007/09/08] by Rayce
+
+・傭兵の雇用期限実装（map.h, merc.*, unit.c）
+	db/merc_db.txtのlimitで指定した時間（デフォルトでは30分）経過したら、傭兵は消滅します
+	現在の仕様ではログインしていなくても実時間で30分経つと期限切れとみなされます
+	（課金アイテムである強化装備系の使用期限と同じ扱いです）
+
+・ペットとホムの腹減りタイマーはmap_session_data構造体ではなく、pet_dataおよびhomun_data構造体が
+　受け持つように変更（homun.*, map.h, pc.c, pet.*, unit.c）
+
+----------------------------------------
+//0322 [2007/09/08] by Rayce
+
+・スクリプトにchecksit関数、checkdead関数を追加（script.c）
+・太陽と月と星の憎しみでプレイヤーを指定した場合、職業名が表示されるように修正（clif.c）
+
+・スキルツリーのバイナリサーチでidが0の場合を弾くように修正（homun.c, merc.c, pc.c）
+・@makepetで存在しないモンスターを指定した場合は0を返すように変更（atcommand.c）
+・既にホムを作成済みの場合において、homun_recv_homdata() でデータを取得した際にホムの呼び出しに
+　成功したときのみホムスキル一覧パケットを送信するように修正（homun.c）
+・merc_callmerc() が成功時には1、失敗時には0を返すように変更（merc.c）
+
+----------------------------------------
+//0321 [2007/09/07] by Rayce
+
+・傭兵実装解禁
+	-> @callmerc追加（atcommand.*）
+	-> "@callmerc 傭兵ID" で指定した傭兵を召喚できます
+
+・傭兵の雇い主が死亡したら傭兵が消滅するように修正（pc.c）
+・傭兵が消滅する際に死亡/解雇/逃走のメッセージを表示するように（merc.c）
+	msgstringtable.txtにはメッセージが用意されているが、調べた限りにおいてはこれらの
+	メッセージを表示する手段が見つからないので暫定的にconf/msg_auriga.confを使います。
+
+・strnlen() がコンパイラによって未定義になってたりして怪しいので削除（login.c, utils.*）
+　memchr() を使って自前で判定するように変更
+・コンパイル時の警告修正（clif.c）
+・Makefileに int_merc.c, int_merc.h, merc.c, merc.h 追加
+・*.dspファイル修正
+
+　　※現時点での傭兵は移動して戦闘して経験値を取得できるだけです。
+　　　とりあえず動かしてみたい人向け。
+　　　傭兵特有のシステムや状態異常、スキルなどはまだ未実装。
+
+----------------------------------------
+//0320 [2007/09/07] by Rayce
+
+・傭兵実装準備その７
+	-> 経験値が取得できるように（mob.c, merc.c）
+	   傭兵自体にレベルアップの概念が無いようなので、雇用主に経験値が渡されるだけで
+	   傭兵自体が経験値を獲得するわけではありません
+	-> battle_auriga.confに master_get_homun_base_exp, master_get_homun_job_exp を追加（battle.*）
+	   ホムのと同じ使い方です
+
+・傭兵に関する細かい修正（battle.c, map.c, npc.c）
+・clif.hからstorage.hのincludeを外す
+　（atcommand.c, clif.h, chrif.c, homun.c, merc.c, pet.c, unit.c）
+
+----------------------------------------
+//0319 [2007/09/07] by Rayce
+
+・傭兵実装準備その６
+	-> HPとSPが自然回復できるように（merc.*, unit.c）
+	-> map_id2mcd() 追加（map.*）
+	-> homun.hの NATURAL_HEAL_HP_INTERVAL, NATURAL_HEAL_SP_INTERVAL をそれぞれ
+	   HOM_NATURAL_HEAL_HP_INTERVAL, HOM_NATURAL_HEAL_SP_INTERVAL に変更（homun.*）
+
+・MOBが傭兵に攻撃できなかったバグを修正（mob.c）
+・傭兵のaspd_kが間違っていたため攻撃モーションが出なかったバグを修正（merc.c）
+
+・pc_itemlimit_timer をtimer関数リストに登録し忘れてたので追記（pc.c）
+・pc_homisalive() を homun_isalive() に変更（pc.*, homun.*, skill.c）
+
+----------------------------------------
+//0318 [2007/09/07] by Rayce
+
+・傭兵実装準備その５
+	-> 戦闘ができるように（battle.c, skill.c, unit.c）
+	   battle_check_target() は結構適当です、いずれ関数ごと見直して修正します
+	-> clif_parse_HomActionRequest() を clif_parse_HomMercActionRequest() に変更（clif.c）
+	   攻撃要求パケットもホムと傭兵で共通
+	-> merc_damage() および merc_heal() 有効化（merc.*）
+
+　　※何故か傭兵の攻撃射程が1で、しかも攻撃時にモーションが全く出ません。
+　　　表示パケットが間違っているのか、それとも他の要因があるのか、今のところ不明。
+
+----------------------------------------
+//0317 [2007/09/07] by Rayce
+
+・グラビテーションフィールドに関する修正
+	-> skill_stop_gravitation() を削除（homun.c, pc.c, skill.*, status.c）
+	   スキルユニット削除処理はゴスペルやグラフィティと同じく status_change_end() に
+	   一括してまとめるように変更
+	-> battle_auriga.confの player_gravitation_type が2以外のとき、グラビテーションフィールド
+	   使用者が通常攻撃が可能になっていたバグを修正（clif.c）
+	-> グラビテーションフィールド使用者はアイテム使用不可に修正（clif.c）
+	-> グラビテーションフィールド発動後5秒間はリログ禁止に修正（skill.c）
+	-> グラビテーションフィールド使用中にワープした場合は解除されるようにしてみる（unit.c）
+
+・skill_unit_ondamaged() はtargetがNULLの場合があるのでチェックを入れるように修正（skill.c）
+・0312でホムは skill_unit_move() を呼ばないようにしたが、今後の拡張を考えて巻き戻す（homun.c）
+
+----------------------------------------
+//0316 [2007/09/07] by Rayce
+
+・battle_damage() をまとめ直し（battle.c）
+・PC以外がシュリンクを使っている場合でも攻撃主を吹き飛ばせるように拡張（battle.c）
+・ティオアプチャギによる対象のステータス異常解除がPCとMOB以外にも発動するように拡張（battle.c）
+・unit_getdir() は status_get_dir() と同じなので削除（unit.*）
+・MOBのrudeattackedが誤作動する可能性を修正（mob.c）
+・PETとHOMも unit_remove_map() で skill_cleartimerskill() を実行するように修正（unit.c）
+
+----------------------------------------
+//0315 [2007/09/06] by Rayce
+
+・傭兵実装準備その４
+	-> ステータス再計算を暫定的に用意（merc.*, status.c）
+	-> スキルツリーの準備（clif.*, merc.*）
+
+・clif_homskillinfoblock() を少し整形（clif.c）
+・MAX_HOMSKILL_TREEを5に縮小（homun.*）
+	ホムの各クラスにおいて取得可能なスキルは最大で4個になります。
+	さらに増やしたい方はdb/homun_skill_tree.txtにスキルを書き加えた上で
+	MAX_HOMSKILL_TREE を適宜変更してください。
+
+・AthenaProject2318よりmerge、thanks to ICOさん
+	-> おいしい血の炭酸ソーダの材料を修正（db/produce_db.txt）
+
+----------------------------------------
+//0314 [2007/09/06] by Rayce
+
+・ジークフリードの証の効果実装（clif.c）
+	clif_parse_Revive() 追加。
+	ジークフリードの証には専用のパケットは存在せず、単に所持しているだけで
+	死亡時に復活ダイアログが出てくる仕組みのようです。
+	何もないと寂しいので復活時にリザレクションのエフェクトを付けています。
+
+・db/packet_db.txtに revive 追記
+・doc/client_packet.txt更新
+
+----------------------------------------
+//0313 [2007/09/05] by Rayce
+
+・ステータス異常 SC_SUMMER 追加（pc.c, script.c, status.*）
+	サンタ服と同じ原理。
+	2007-08-08aSakexeくらいから「涼しい夏衣装」が使えるはず。
+
+・サンタ中と夏衣装中はスキルが使えないように修正（clif.c）
+・db/const.txtに SC_Summer を登録
+
+----------------------------------------
+//0312 [2007/09/05] by Rayce
+
+・0311で修正し忘れていたmob.cを添付（mob.c）
+・ホムは出現時および消滅時に skill_unit_move() を呼ばないように修正（homun.c）
+	ホムはスキルユニットの影響を受けないため、この関数を呼び出す必要がない
+
+・ワープポータル発動時に skill_unit_effect() を呼ばないように修正（skill.c）
+	ワープポータルは既にAthena1891で位置発動ユニットからタイマー発動ユニットに
+	変更されているため不要
+
+・skill_chastle_mob_changetarget() のtypo修正（skill.c）
+・skill_hermode_wp_check() の引数変更（skill.*, unit.c）
+・skill_hermode_wp_check() および skill_delunit_by_ganbantein() の位置を移動（skill.c）
+・skill.cの全体的な整形
+
+----------------------------------------
+//0311 [2007/09/05] by Rayce
+
+・map_foreach系の改善 merged from eA
+　（atcommand.c, clif.c, map.*, mob.c, npc.c, pet.c, script.c, skill.c, status.c, unit.c）
+	BL_CHARおよびBL_ALL追加。
+	map_foreach*** を呼び出す際にBLの型を明示する。
+	呼び出されたサブルーチンにおけるblock_listのprevチェックを省略。
+
+----------------------------------------
+//0310 [2007/09/04] by Rayce
+
+・傭兵実装準備その３
+	-> 歩行できるように（pc.c, unit.c）
+	-> clif_parse_HomWalkMaster() および clif_parse_HomWalkToXY() をそれぞれ
+	   clif_parse_HomMercWalkMaster() および clif_parse_HomMercWalkToXY() に変更（clif.c, merc.c）
+	   移動系はホムと傭兵で共通のパケットを使うようです
+	-> status_get_***系を一式用意（status.c）
+	-> merc_data構造体に暫定でメンバ attackrange を追加（map.h）
+	-> 傭兵もMOBのAIリンクリストに登録する（merc.c, mob.c, unit.c）
+
+・battle_auriga.confに merc_speed_is_same_as_pc を追加（battle.*, status.c）
+
+----------------------------------------
+//0309 [2007/09/04] by Rayce
+
+・キャラクターが召喚中の傭兵IDをセーブできるように（char.c）
+	TXTならsave/auriga.txtのホムIDの次に保存されます。
+	SQLなら `merc_id` フィールドに保存されます。
+
+・TXT: JOURNAL_IDENTIFIERをバージョン07に変更しておく（journal.c）
+
+・SQL: 「SELECT *」のようにワイルドカードを使うとカラムの並びに強く依存してしまうので、
+       必要なフィールドを直接指定するように修正（char.c, int_guild.c, int_mail.c）
+・SQL: `char` テーブルの `homun_id` フィールドのカラム位置を移動
+・SQL: main.sql修正、Auriga-309_changetable.sql添付
+・SQL: txt-converter対応（char-converter.c）
+
+----------------------------------------
+//0308 [2007/09/03] by Rayce
+
+・傭兵実装準備その２
+	-> int_merc.c, int_merc.h追加
+	-> 傭兵の作成/情報送受信/セーブ送信/削除用interパケット一式追加（inter.c, intif.*）
+	-> 暫定的に傭兵のデータをセーブできるように（char.c, int_merc.c）
+	   TXTならsave/mercenary.txtにセーブされます、SQLは準備のみ
+	   ただしフォーマットが変更される可能性が高いです
+	-> inter_auriga.confに傭兵の項目追加（inter.c, int_merc.c）
+	-> 既に傭兵を召喚済みの状態でログインすると傭兵が出現するように（clif.c, merc.c, pc.c）
+
+----------------------------------------
+//0307 [2007/09/03] by Rayce
+
+・ホムデータの要求および削除をinterサーバに行う際、ホムIDがWORDで計算されていたのでDWORDに修正
+　（inter.c, int_homun.c）
+・intif_char_connect_limit() のパケット番号を 0x3070 → 0x3008 に変更（intif.c, inter.c）
+・doc/inter_server_pacekt.txt修正
+
+----------------------------------------
+//0306 [2007/09/03] by Rayce
+
+・傭兵実装準備
+	-> merc.c, merc.h追加
+	-> mmo_charstatus構造体にメンバ merc_id を追加（mmo.h）
+	-> 暫定的にmmo_mercstatus構造体を追加（mmo.h）
+	-> 暫定的にmerc_data構造体を追加（map.h）
+	-> 傭兵の出現/表示/情報通知パケットを一式用意（clif.*）
+	-> 傭兵メニュー要求パケット0x29f追加（clif.c）
+	-> 傭兵データの解放処理（map.c, merc.c, pc.c, unit.c）
+	-> 暫定的にdb/merc_db.txt追加
+
+　　※とりあえず出現してメモリ解放するところまで。
+　　　データのセーブとかはまだ先。
+　　　基本的にはホムの流用です。
+　　　穴ポコだらけですが少しずつ実装していきます。
+　　　dbや構造体のメンバなどは今後の成り行きによって変更される可能性が高いのでご注意を。
+
+----------------------------------------
+//0305 [2007/09/03] by Rayce
+
+・homun_callhom() を少し修正（homun.c）
+・mmo.hに傭兵用の定数を定義（mmo.h）
+・新規ブロックリストタイプとして BL_MERC を定義（map.h）
+・doc/client_packet.txt更新
+
+----------------------------------------
+//0304 [2007/09/03] by Rayce
+
+・hacker対策として、超短時間に連続してパーティ作成、ギルド作成、コールホムンクルスしても作成要求が
+　二重に行われないように修正（atcommand.c, guild.c, homun.c, map.h, party.c）
+
+・homun_data構造体から意味のないメンバ equip を削除、および整理（mmo.h, map.h, clif.c, homun.c）
+・homun_db, mob_db, pet_db構造体の整理（homun.h, mob.h, pet.h）
+・homun_data構造体の homskillstatictimer を skillstatictimer に改名（clif.c, homun.c, map.h, skill.c）
+・db/homun_db.txtのNameをクライアント定義の名前に修正
+
+----------------------------------------
+//0303 [2007/09/02] by Rayce
+
+・スキル系dbについて
+	-> ID577以降の定義が間違っていたので修正
+	-> DA系統および傭兵スキルを追加
+	-> skill_cast_db.txtおよびskill_require_db.txtの整形
+
+・battle_calc_misc_attack() の変数名を変更（battle.c）
+・以下の関数の位置を移動（clif.c）
+	clif_send_homdata()
+	clif_send_homstatus()
+	clif_hom_food()
+	clif_homskillinfoblock()
+	clif_homskillup()
+
+----------------------------------------
+//0302 [2007/09/02] by Rayce
+
+・pet_data構造体およびhomun_data構造体から使われてないstateを削除（map.h, homun.c, pet.c）
+・mob_data構造体の skillstate のビットフィールドを 8 → 4 に縮小（map.h）
+・mob_readskilldb() を少しだけ修正（mob.c）
+・MSS_***系定数の値を変更（mob.h）
+
+----------------------------------------
+//0301 [2007/09/01] by Rayce
+
+・使用期限付きアイテムの生成を実装（atcommand.c, script.c）
+	-> @item2
+	   　引数を一つ追加、省略できないので10個の引数全て入力しないと発動しません。
+	-> getitem2命令
+	   　account_idの前に使用可能時間の設定を追加。
+	   　引数の使い方が変更されているので、今までgetitem2命令でaccount_idを省略せずに
+	   　指定していた場合は各自修正すること。
+	-> getinventorylist命令、getcartlist命令
+	   　@inventorylist_limitおよび@cartlist_limitに使用期限がUNIX時間で代入されます。
+	   　使用期限は内部ではunsignedで計算されていますが、スクリプトで使う変数はsignedなので
+	   　場合によっては負の値になっている可能性もあります。
+	   　その点を考慮に入れた上で利用してください。
+	-> dropitem命令
+	   　省略可能な引数を一つ追加
+
+・hacker対策として、db/item_db.txtでNPC売却不可設定にしているアイテムが絶対に売却できないように
+　サーバ側でも判定を行うよう強化（npc.c）
+
+・db/item_db.txtにバブルガム、凸面鏡、Rの箱系を正式実装
+　ついでにhuge cgiより最新まで更新、thx a lot!!
+・db/item_db2.txtに強化装備アイテムを追加
+　ドロップ不可、倉庫移動不可、カート移動不可
+
+----------------------------------------
+//0300 [2007/09/01] by Rayce
+
+・アイテムの使用期限のセーブに対応（char.c, int_mail.c, int_storage.c）
+・TXT: JOURNAL_IDENTIFIERをバージョン06に変更しておく（journal.c）
+・SQL: main.sql修正、Auriga-300_changetable.sql添付
+・SQL: txt-converter対応（char-converter.c, inter-converter.c）
+
+・パケット0x296が非対応になってたので修正（clif.c）
+・battle_auriga.confのitem_checkをyesにした状態で、@giveitemを使って存在しないアイテムIDを指定すると
+　サーバクラッシュするバグを修正（atcommand.c）
+
+----------------------------------------
+//0299 [2007/09/01] by Rayce
+
+・アイテムに使用期限が設定できるように追加（mmo.h, clif.*, map.h, pc.*, unit.c）
+　　課金アイテムである強化装備系再現のための下準備。
+　　実行本体を実装しただけで、まだアイテムを生成する手段もないしセーブもされません。
+
+	-> item構造体にメンバ limit 追加
+	-> map_session_data構造体にメンバ inventory_timer 追加
+	   使用期限付きアイテムのタイマーIDをリンクリストで保存しておく
+	-> clif_delitem_timeout() 追加
+	   ただしPACKETVERが9以上でないとこの関数は使えない
+	-> アイテムに使用期限が設定されている場合はタイマーに登録します
+	   期限が1時間を超える場合、タイマーは1時間でセットされ、1時間後に期限切れになっている
+	   かどうかをチェックしてまだ時間になってない場合は再度1時間のタイマーをセットします
+	   add_timer() に非常に長い時間をセットするとオーバーフローを起こしてタイマーが誤作動
+	   する恐れがあるのでこのような仕様になってます
+	-> pc_checkitem() でアイテムをソートする際、アイテムのインデックスが変化してしまうので
+	   inventory_timerの再構築を行います
+	   力技でやってるので処理がかなり煩雑です
+	-> 本鯖準拠の課金アイテム以外でも使用期限を設定できるように実装されています
+	-> 使用期限を設定したアイテムを捨てたり倉庫に預けたりしても問題ないように実装されています
+	   タイマーが動くのはプレイヤーの所持品の中にある場合のみです
+	   アイテムを削除したときには同時にタイマーも破棄されます
+	   再びアイテムを取得したときに期限切れかどうかの判定が行われ、期限が切れていたらアイテムを
+	   取得した直後に削除されます
+	-> PACKETVERが9よりも古い場合でも問題なく作動します
+	   しかしアイテムを右クリックしても期限時間が見えないので、PACKETVERを9以上にすることを
+	   お勧めします
+
+・マクロ itemdb_jname() を追加（itemdb.*, pc.c）
+・conf/msg_auriga.confに187番を追加
+
+----------------------------------------
+//0298 [2007/08/30] by Rayce
+
+・NPCイベントのブロードキャストを高速化（npc.c）
+	OnInitやOnPCDieなどサーバから直接呼び出されるイベントや、"::OnKilled" のようにdonpcevent命令を
+	ブロードキャストする場合の処理速度が大幅に改善されます。
+	同じラベル名を持つイベント同士を単方向リンクリストに連結しておくことで、npc_event_doall()
+	および npc_event_doall_id() においてstrdb_foreachで全巡回することなく効率的にイベントの
+	呼び出しができます。
+
+	ラベルデータをエクスポートする際、ラベルそのものをev_dbに登録しておきます。
+	これはリンクリストの先頭を取得するためのダミーデータです。
+	例えば "AA::OnInit" と "BB::OnInit" を順番に登録した場合、必ず "::OnInit" が最初に登録されます。
+
+	　　"::OnInit" → "AA::OnInit" → "BB::OnInit"
+
+	doallを呼び出す場合は "::OnInit" をキーにして ev_db を strdb_search() で検索し、順にリストを
+	辿りながら run_script() を実行すればよいことになります。
+
+	ただしOnTimer系ラベルはリンクリストを作りません。
+	OnTimer系ラベルは量が多すぎること、またOnTimerをブロードキャストする場面はほとんどないと考え
+	られるため。
+	従って donpcevent "::OnTimer1000"; とかは今後作動しなくなりますのでご注意ください。
+
+・OnTimer を予約ラベルにする（npc.c）
+	今までは "OnTimer1000L" のように数値の後ろに文字が続く場合はタイマーラベルではなく単なる
+	イベントラベルとして扱われていました。
+	今後は OnTimer で始まるラベルは必ずタイマーイベントとしてみなされます。
+	上記のように余計な文字が含まれる場合には「invalid OnTimer label」の警告が出力され
+	サーバが落とされるようになります。
+
+・ラベルデータが重複していて「dup event」になる場合はサーバを落とすように変更（npc.c）
+
+----------------------------------------
+//0297 [2007/08/29] by Rayce
+
+・AthenaProject2277を参考にNPCタイマーを修正、thanks to Yasさん（npc.c）
+	-> npc_event_do_clock() から続く npc_event_doall() 以下の関数内部でlocaltimeを使うと
+	   時間が狂って時計イベントが発動しない場合が発生する問題を修正
+	   localtimeで取得したデータを一旦バッファにコピーしてから参照する
+	-> ev_tm_b を現在時刻で初期化するように変更
+
+・OnDayラベルの仕様変更、OnMonthDayラベルの追加（npc.c）
+	OnDayラベルは毎月指定日に発動するイベントに変更されます。
+	これまでのOnDayラベルと同等の機能がOnMonthDayラベルとなります。
+	OnDayラベルをスクリプトで利用していた方は各自修正してください。
+	詳細はdoc/script_ref.txt参照。
+
+・clif_send_homdata() と clif_spawnhom() のパケット区切りをクライアントの解析方法に合わせる
+　（atcommand.c, battle.c, clif.*, homun.c, pc.c, skill.c）
+
+----------------------------------------
+//0296 [2007/08/27] by Rayce
+
+・0291〜0293で追加したNPCスキルのエフェクトが出ないので暫定的に修正（skill.c）
+	何故か clif_skill_nodamage() ではなく clif_skill_damage() にエフェクトが含まれている模様。
+	流石にエフェクトがないと寂しいので無理矢理修正しています。
+
+・致命傷攻撃を強制無属性の遠距離攻撃にしてみる（battle.c）
+・エクスパルシオンを必中の遠距離攻撃にしてみる（battle.c）
+　処理方法はインティミデイトと同じにしてみる
+・インティミデイトの処理で map_searchfreecell() を使うように最適化（skill.c）
+
+----------------------------------------
+//0295 [2007/08/27] by Rayce
+
+・パケット0x124の上位版0x1c5追加（clif.c）
+	カートにアイテムを入れるときにアイテムのtypeを付加することができるようです。
+	恐らく本鯖はかなり昔に上位版に移行していたと考えられますので、PACKETVERが7以上のときに
+	0x1c5をサポートするようにしています。
+
+・PACKETVERが9以上のとき、パケット0x295, 0x296, 0x297, 0x29aをサポート（clif.c）
+	末端に伸びた4byteは強化装備アイテムの効果が切れる時間を入れるためのもの。
+	少なくとも2007年5月付近の蔵だとこれら上位パケットには無反応だったので、2007-07-11aSakexe
+	より古い蔵はサポート対象外ということにしておきます。
+
+・サーバ停止時に全てのMobを削除する際、念のため各MAPの持つボス情報をNULLクリアするように修正（npc.c）
+
+・doc/client_packet.txt更新
+・battle_auriga.confの mvp_announce の説明を補足
+
+----------------------------------------
+//0294 [2007/08/27] by Rayce
+
+・バブルガムの効果実装（atcommand.c, mob.*, pc.c, status.*）
+　　モンスターからのアイテムドロップ率を変化させます。
+　　val1に百分率でドロップ確率を設定します。
+	-> SC_ITEMDROPRATE および SI_ITEMDROPRATE 追加
+	-> mob_drop_fix() に引数を一つ追加
+
+　　例）12210,Unknown_Item,バブルガム,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_ITEMDROPRATE,1800000,200; },{}
+
+・凸面鏡の効果実装（clif.*, map.h, npc.c, pc.c, status.*, unit.c）
+　　MVPボスがMAPに居ない場合はメッセージを表示して終了します。
+　　居る場合は出現するまでの時間をアナウンスします。
+　　既に出現している場合はミニMAPにボスの座標が表示されます。
+　　ボスが倒されたら効果は削除されます。
+　　また死亡時やMAP移動でも効果は削除されます。
+　　対象となるのは再出現可能なMVPボスのみです。
+　　従ってロードオブデスや生体工学研究所のボスには反応しませんが、これは公式通りの仕様です。
+	-> SC_BOSSMAPINFO および SI_BOSSMAPINFO 追加
+	-> clif_bossmapinfo() 追加
+	-> map_data構造体にメンバ mvpboss を追加
+	-> スクリプト解析時にMVPボスであれば mvpboss に登録しておく
+	   同一MAPに複数のMVPボスが配置される場合は一番最後に記述されたもののみが登録対象となる
+	-> Mobが死亡したとき、mob_data構造体の last_spawntime に再出現時間を保存するようにしておく
+	   現在時間とlast_spawntimeの差を取れば次回に出現するまでの時間が算出できる
+
+　　例）12214,Unknown_Item,凸面鏡,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_BOSSMAPINFO,600000,0; },{}
+
+----------------------------------------
+//0293 [2007/08/26] by Rayce
+
+・NPCスキル「ストーンスキン」「アンチマジック」を仮実装（skill.c, status.*）
+・既に同じ状態異常になっている場合、タイマーを解除したあとdb/scdata_db.txtのDisableで無効化されると
+　状態異常の後始末が中途半端になるので判定タイミングを変更する（status.c）
+
+・各街にスペシャルアイテム販売NPCを設置（script/npc/misc/npc_misc_pointshop.txt）
+	thanks to Cocoaさん
+
+----------------------------------------
+//0292 [2007/08/26] by Rayce
+
+・以下のNPCスキルをeAをベースに仮実装（battle.c, skill.c, status.c）
+	ワイドサイト
+	エクスパルシオン
+	マジックミラー
+
+・以下のステータス異常を実装（pc.c, skill.c, status.*）
+	スロウキャスト状態
+	致命傷状態
+	マジックミラー状態
+
+・bAddSkillHealRateの効果はHPに対してのみかかるように変更してみる（skill.c）
+・MAX_STATUSCHANGEを390に拡張（mmo.h）
+
+----------------------------------------
+//0291 [2007/08/25] by Rayce
+
+・以下のNPCスキルをeAをベースに仮実装（skill.c, status.*）
+	範囲沈黙攻撃
+	範囲凍結攻撃
+	範囲出血攻撃
+	範囲石化攻撃
+	範囲混乱攻撃
+	範囲睡眠攻撃
+	範囲呪い攻撃
+	範囲スタン攻撃
+	スロウキャスト
+	致命傷攻撃
+
+・skill_castend_id() と skill_castend_pos() を移動（skill.c）
+・グラウンドドリフトから skill_additional_effect() が呼ばれると鯖落ちする可能性を修正（skill.c）
+
+----------------------------------------
+//0290 [2007/08/25] by Rayce
+
+・eAを参考に以下について修正
+	-> conf/motd.txtを起動時に読み込んで保存しておくように改善（pc.*）
+	   読み込める行数は MOTD_LINE_SIZE で32までです
+	-> @reloadmotdを追加（atcommand.*）
+	   conf/motd.txtの内容を変更したあとはこのコマンドを使うことでサーバ内に反映されます
+	-> clif_send_hotkey() を clif_parse_LoadEndAck() で呼ぶように修正（clif.c, pc.c）
+
+----------------------------------------
+//0289 [2007/08/25] by Rayce
+
+・ギルドスキルやホムスキルを詠唱中の相手に対してスペルブレイカーを使うと鯖落ちするバグを修正（skill.*）
+	skill_get_skill_type() 追加
+
+・skill_castend_nodamage_id() の細かい整形（skill.c）
+・緊急召集の詠唱をスペルブレイカーで妨害できるようにしてみる（db/skill_db.txt）
+
+・PACKETVERを9に引き上げる（clif.c）
+	2007-07-11aSakexeより古いクライアントが clif_send_hotkey() を受け取ると、それ以降に受信した
+	パケットが時々破棄されてしまう現象が発生していました。
+	仕方がないのでPACKETVERで処理を分岐することにしました。
+
+　　※2007-07-11aSakexe以降がPACKETVER 9になります。
+　　　2007-07-11aSakexeより古いクライアントを使う場合にはPACKETVERを8以下に戻す必要があります。
+
+----------------------------------------
+//0288 [2007/08/24] by Rayce
+
+・skill_check_condition2_pc() を少しだけ整理（skill.c）
+・処理効率を上げるために clif_takeitem() をマクロから関数に変更
+　（clif.*, mob.c, pc.c, pet.c, skill.c）
+
+・conf/script_auriga.confに error_marker_start, error_marker_end を追加（script.c）
+	スクリプトの解析エラーが発生したとき、エラー箇所を特定しやすくするために好きな文字列を
+	指定することができます（15文字まで）。
+	script.c内部でのデフォルトは空文字になっているので、該当項目をコメントアウトすれば
+	文字を表示しない設定にすることもできます。
+
+・以下のスキルについて、skill_require_db.txtのstateの項目にfalconを設定しなかったときでもスキルが
+　発動できるように拡張（skill.c）
+	ブリッツビート
+	ディテクティング
+	スプリングトラップ
+	ファルコンアサルト
+・skill_require_db.txtのstateの項目に新しく以下の2つを追加（skill.*）
+	cartboost: カートブースト状態
+	nen: 念状態
+
+・db/skill_require_db.txtを上記変更に従って修正
+・doc/script_ref.txtにpet命令が記載されてなかったので修正
+
+----------------------------------------
+//0287 [2007/08/24] by Rayce
+
+・TXT: 0140以降、サーバ起動中にアカウントやキャラを削除すると、他の特定のアカウントやキャラがログイン
+       不可能になる致命的なバグを修正（login.c, char.c）
+		reported by Cocoaさん、thanks a lot!!
+
+	アカウントやキャラを削除するときにIDも0に初期化してしまうため、バイナリサーチが正常に機能
+	しなくなるのがが原因でした。
+	IDは維持したままの状態にして、他のメンバで削除されているかどうかを判定するようにします。
+	loginの場合はmmo_account構造体のuseridが空文字ならauth_datから削除済み、
+	charの場合はmmo_charstatus構造体のaccount_idが0ならchar_datから削除済み、とみなします。
+
+・SQL: loginサーバで使うアカウントデータのキャッシュが有効利用されてなかったので修正（login.c）
+・SQL: loginサーバ起動中にアカウントを削除するとそのアカウントがキャッシュから削除されずに
+       残り続けるバグを修正（login.c）
+
+・MAX_SERVERSを MAX_CHAR_SERVERS に改名（login.*）
+　MAX_CHAR_SERVERS を 30 → 8 に縮小しておく
+・MAX_MAP_SERVERS を 30 → 8 に縮小しておく（char.*）
+
+　　※charサーバおよびmapサーバを8個よりもさらに設置したい場合はこれらの値を増やしてください
+
+----------------------------------------
+//0286 [2007/08/23] by Rayce
+
+・AthenaProject2317より、エスマのLv10以外の倍率を修正（battle.c）
+・Athena1468で抜け落ちたディバインプロテクションの効果を再実装（battle.c）
+	from AthenaProject BTS, thanks
+・聖体降福が対人エリアだと自身とPTメンバーにしか掛からなかったのを修正（skill.c）
+　味方であっても不死や悪魔であればダメージが入るように修正
+	from AthenaProject Forum, thanks
+
+・セージスキルのテイミングモンスターの処理を少し最適化（skill.c）
+・skill_am_twilight1(), skill_am_twilight2(), skill_am_twilight3() をまとめて
+　skill_am_twilight() とする（skill.c）
+
+----------------------------------------
+//0285 [2007/08/22] by Rayce
+
+・pointshopを2007-07-11aSakexe以降のクライアントに対応（clif.c）
+	0x289のパケット長を見て処理分岐しています。
+	0x288に付属してる末端の4byte分は謎なので無視。
+
+・doc/client_packet.txt更新
+・SQL: `hotkey` テーブルにKEYを張り忘れてたので追加（Auriga285_changetable.sql）
+
+----------------------------------------
+//0284 [2007/08/22] by Rayce
+
+・スペシャルアイテム販売NPCの実装（clif.*, map.h, npc.*, pc.c）
+	pointshopでNPCを定義します。
+	shopと同じ形式ですが、<point>に負数を指定するとそのまま負数になるので注意。
+	課金アイテムに限らずあらゆるアイテムをポイントで販売することができます。
+	プレイヤーのショップポイントはキャラ永続変数 PC_SHOP_POINT に保存されます。
+	埋め込み変数として実装されているので、db/const.txtにある通り変数の操作が可能です。
+	例えばスクリプトから以下のような形でポイントを与えます。
+		set PC_SHOP_POINT,100;
+
+　※2007-07-11aSakexe以降のクライアントには対応していません。
+　　修正されるまでpointshopは使わないで下さい。
+
+・db/packet_db.txtに "npcpointshopbuy" を追加
+・doc/script_ref.txt更新
+
+----------------------------------------
+//0283 [2007/08/21] by Rayce
+
+・0x272eのパケット処理部分を少し修正（char.c）
+・skill_check_condition2_pc() でSP消費なしの場合、すぐにreturnで返すと以降の処理が無視されてしまう
+　ので、変数spを0にするだけに修正（skill.c）
+・カートレボリューションの範囲攻撃の挙動が狂っていたバグを修正（skill.c）
+	reported by Cocoaさん
+
+・スクリプトの menu/select命令 の拡張 from eA（script.c）
+	メニューに ":" (半角コロン) を含む文字列を渡した場合も正常に値が返るようになります。
+	":" は蔵の仕様上デリミタとして扱われるので、メニュー選択後に補正します。
+
+　　例１）select("AA:BB:CC") は select("AA","BB","CC") と同じ
+　　　　　"AA" -> 1, "BB" -> 2, "CC" -> 3
+　　例２）select("AA:BB::CC") は select("AA","BB","","CC") と同じ
+　　　　　"AA" -> 1, "BB" -> 2, "CC" -> 4
+　　例３）select("AA:","BB:CC") は select("AA","","BB","CC") と同じ
+　　　　　"AA" -> 1, "BB" -> 3, "CC" -> 4
+
+----------------------------------------
+//0282 [2007/08/21] by Rayce
+
+・サーバ側でのホットキー保存に対応（mmo.h, char.c, clif.*, pc.c）
+	merged from AthenaProject, thanks a lot!!
+
+　※TXTに関してですが、eAのようにsave/hotkeys.txtとして別ファイルに保存することも考えましたが
+　　journalとかの兼ね合いで面倒になったのでAthenaProjectに沿ってsave/auriga.txtに保存しています。
+　　ただし保存形式は異なるので注意。
+　　本パッチ以降、Athenaからのセーブデータの流用が完全に不可能になります！
+　　SQLに関してもAthenaと比較してフィールドが一つ増えてるので注意。
+
+・db/packet_db.txtを2007-05-07と2007-07-11までサポート
+・TXT: JOURNAL_IDENTIFIERをバージョン05に変更しておく（journal.c）
+・SQL: main.sql修正、Auriga-0282_changetable.sql添付
+・SQL: txt-converterをホットキーに対応（char-converter.c）
+
+・@hotkeyset追加（atcommand.*, clif.c, map.h）
+	ホットキーを27個以上登録/利用できるようにするための拡張システム。
+	mmo.hのMAX_HOTKEYSをデフォルトの27よりも大きく設定している場合に意味があります。
+	9x3ページ = 27個を1セットとして扱い、ホットキーセットを切り替えることで擬似的に
+	ページを増やします。
+	@hotkeysetを使ったあとF12でページをめくったりすると画面に更新されます。
+
+　　例）MAX_HOTKEYSを54にしている場合
+　　　　　　@hotkeyset 0 →  0 〜 26まで
+　　　　　　@hotkeyset 1 → 27 〜 53まで
+
+----------------------------------------
+//0281 [2007/08/19] by Rayce
+
+・ipに関する型をunsigned long型に統一
+・portに関する型をunsigned short型に統一
+
+・ファイルへの書き込みを fopen() ではなく lock_fopen() を使うように修正（core.c, db.c）
+・lock_fopen() で10000回トライしても安全なファイル名が得られない場合はNULLを返すように修正（lock.c）
+・gccでの警告潰し（skill.c）
+
+----------------------------------------
+//0280 [2007/08/19] by Rayce
+
+・MAPサーバ分散している状態でギルド倉庫を利用すると、MAPサーバ間でアイテムデータの同期が取れないため
+　預けたはずのアイテムが見えなくなったり容易にデュープが発生する致命的な問題を修正
+　（mmo.h, int_storage.*, intif.c, script.c）
+	-> guild_storage構造体にメンバ last_fd を追加
+	-> ギルド倉庫のロック取得権をinter鯖に依頼したとき、最後にギルド倉庫を利用したMAP鯖と同じか
+	   どうかを照合して、異なる場合はリロードフラグを返す
+	-> MAP鯖が intif_parse_TrylockGuildStorageAck() でリロードフラグを受け取ったときは
+	   ギルド倉庫のキャッシュを削除してinter鯖から倉庫データを再取得させるようにする
+	-> MAP鯖分散してない場合はこれまでの処理とほぼ変化はない
+	-> gstorage_save() に引数を1つ追加、SQL専用
+	   easyの場合は storage_status や last_fd を書き換えるだけにして、アイテムデータのクエリを発行
+	   しなくて済むように改善
+
+----------------------------------------
+//0279 [2007/08/18] by Rayce
+
+・暖かい風に関する修正（pc.c, skill.c, status.c）
+	-> SC_SEVENWIND追加
+	-> 聖はアスペルシオと同じだが、他はSC_SEVENWIND状態となる
+	-> SC_SEVENWINDは属性付与（フレイムランチャー等）とは重複しない
+	   ただし既にエンチャントポイズンが掛かっている場合は、そのエンチャントポイズンは解除しない
+	   毒属性は無くなるが毒付与の機能だけ残る
+	-> 聖以外は武器を持ち替えても効果が消えない
+
+　※実質的にAthena1380まで巻き戻した形となります。
+　　従ってAthena1399で追加された SC_DARKELEMENT, SC_ATTENELEMENT は使われなくなりました。
+　　今後はスクリプトのsc_start命令などからのみ発現可能です。
+
+・db/scdata_db.txtの変更
+	-> SC_DARKELEMENT がゴスペル使用時に解除されるようにしてみる
+	-> SC_ATTENELEMENT, SC_UNDEADELEMENT がゴスペル使用時とディスペルで解除されるようにしてみる
+	-> SC_SEVENWIND は死亡時に解除されない以外は他の属性付与と同じ性質にしてみる
+
+・関数名のtypo修正（pc.c, status.*）
+	status_encchant_eremental_end      → status_enchant_elemental_end
+	status_enchant_armor_eremental_end → status_enchant_armor_elemental_end
+
+----------------------------------------
+//0278 [2007/08/18] by Rayce
+
+・battle_configに関して（battle.*, pc.c）
+	-> battle_configの初期化にデフォルト値の設定をまとめる based on eA
+	-> デフォルト値がconf/battle_auriga.confの値と合っていない箇所を修正
+	-> battle_auriga.confのItem_resをitem_resに改名
+
+・chat_data構造体のメンバの型を最適化（map.h）
+・chat.cの細かい整形（chat.c）
+
+----------------------------------------
+//0277 [2007/08/18] by Rayce
+
+・charサーバがmapサーバから担当マップ名を受信する際（0x2afa）、1024MAP以上でバッファオーバーフローが
+　発生するときはcharサーバではなくmapサーバを落とすように変更（char.c）
+・0x2afcでの認証に失敗したときの警告文を少し変更（char.c）
+・auth_fifoのメンバ tick をunsigned int型に修正（login.c, char.c）
+・login.cおよびchar.cの細かい整形（login.c, char.c）
+
+・skill_additional_effect() の整形（skill.c）
+・battle_damage() および battle_delay_damage() に引数を2つ追加（battle.*, skill.c, unit.c）
+　スキルIDとスキルLvを参照できるようになります
+・以下のスキルはディボーションでダメージを肩代わりできないように修正（battle.c）
+	プレッシャー
+	コーマ
+	NPCダークブレッシング
+	グランドクロスの反動
+
+----------------------------------------
+//0276 [2007/08/17] by Rayce
+
+・0019以降、Mobに先制攻撃されると経験値が全く入らなくなってしまうバグを修正（mob.c）
+・0225以降、キャラを新規作成するとキャラ名の末尾にゴミ文字が付加するバグを多分修正（char.c）
+	reported by Cocoaさん and ぽぽりさん
+
+----------------------------------------
+//0275 [2007/08/17] by Rayce
+
+・ディボーションの修正（battle.c, skill.c, status.c, unit.c）
+	-> 献身対象者から来るダメージによって術者の詠唱が妨害されるように修正
+	-> 献身対象者がダメージを受けても献身対象者の凍結/石化/睡眠が解除されないように修正
+	-> 献身対象者がダメージを食らった場合、術者に被弾共闘が入るように修正
+	-> 献身対象者がダメージを食らったとき術者が位置ズレを起こすので、ダメージディレイ
+	   （ヒットストップ）を入れるように修正してみる
+	-> 術者がインデュア、オートガード、リフレクトシールド、ディフェンダーを使ったら
+	   献身対象者にも同じ効果がかかるように修正
+	   ただし被ディボーション者にかかるディフェンダーは強制的にLv1
+	-> 術者がインデュア、オートガード、リフレクトシールド、ディフェンダーを解除したら
+	   献身対象者も解除されるように修正
+	-> ディボーションが終了したとき、献身対象者にかかっているインデュア、オートガード、
+	   リフレクトシールド、ディフェンダーを全て解除するように修正
+	-> 献身対象者にかかったリフレクトシールドはプレイヤーから攻撃されたときのみ効果が
+	   発動するように修正
+	-> 定員がいっぱいのときは詠唱できずにスキル使用失敗となるように修正
+	-> 違うクルセから既にディボーションされている人にはスキルが使用できないように修正
+	-> Mobに対してスキルを使用したとき詠唱反応Mobのタゲ取りができるように修正
+	-> ディボーション解除時の処理方法を少し変更
+	   skill_devotion_end() は skill_devotion() に取り込んだので削除
+	-> skill_devotion3() で既に糸が切れているときはパケット送信しないように改善
+	-> stauts_change_start() で不要なステータス再計算をしないように修正
+
+　※インデュア、オートガード、リフレクトシールド、ディフェンダーに関連する部分は本鯖の挙動が
+　　イマイチわからないのでeAのコードを参考にしています。
+
+・オートガードのガード確率計算式を一般式化（status.c）
+・紛らわしい変数名を変更（clif.c, skill.*）
+
+----------------------------------------
+//0274 [2007/08/16] by Rayce
+
+・ステータス異常 SC_ITEM_DELAY と SC_ACTION_DELAY の撤廃（clif.c, map.h, pc.c, status.*）
+	プレイヤーにしか必要がない上に、不正検出のための重要なシステムでありながらスクリプトの
+	sc_start命令等で操作される可能性があるという極めて良くない実装でした。
+	代わりにmap_session_data構造体にメンバ item_delay_tick, drop_delay_tick, drop_delay_count
+	を用意してこれまでと同様の不正検出を行うことにします。
+
+・map_session_data構造体のメンバemotion_lasttickをemotion_delay_tickに改名（clif.c, map.h, pc.c）
+・map_session_data構造体のメンバinfinit_tigereyeをspecial_stateに変更（map.h, pc.c, status.c）
+
+・dropitem命令を使ったスクリプトの引数指定方法が間違っていたので修正（npc_quest_kiel.txt）
+	reported by Cocoaさん
+
+----------------------------------------
+//0273 [2007/08/15] by Rayce
+
+・倉庫関連の関数を見直し（mmo.h, guild.c, intif.c, storage.*, unit.c）
+	-> intif_parse_LoadStorage() の内容を storage_storageload() として分離
+	-> intif_parse_LoadGuildStorage() の内容を storage_guild_storageload() として分離
+	-> storage_storage_quit() および storage_guild_storage_quit() はそれぞれ
+	   storage_storageclose() および storage_guild_storageclose() にまとめる
+	-> ギルド解散時にギルドメンバーが倉庫を開いていた場合の処理を少し書き換え
+	-> storage構造体およびguild_storage構造体にdirtyメンバを追加
+	   倉庫内アイテムのデータが変更されたときのみセーブを行うように改善
+	-> 細かい整形
+
+・pc_takeitem_sub() でPT未所属でもPT共有設定とみなされていた問題を修正（pc.c）
+・account_db_final() におけるキャストミスを修正（login.c）
+	thanks to FPE in AthenaProject Forum
+
+----------------------------------------
+//0272 [2007/08/14] by Rayce
+
+・死んだ状態から@loadや@goなどで pc_setpos() を実行すると、デスペナが無くなったり
+　移動先ですぐに死んでしまう等の問題を修正（clif.c, pc.c）
+・VC++で警告レベルを /W4 にした際に得られた結果の中で気になった箇所を修正
+　（db.c, malloc.c, socket.c, char.c, int_guild.c, clif.c, map.h, pc.c, status.c, login-converter.c）
+
+・converterの起動時にもコマンドライン引数をサポートする（converter.*）
+　　以下のコマンドを使ってconfファイルへのパスを変更することができます。
+
+　　converter
+	--converter-config <filename>
+
+----------------------------------------
+//0271 [2007/08/13] by Rayce
+
+・AthenaProject2314よりmerge、thanks to Paraさん
+	-> clif_sitting() を少し変更して「立つ」処理もまとめる（clif.*, skill.c）
+	-> スクリプトにgetcartlist命令を追加（script.c）
+
+・カート内アイテム削除命令を一式追加（script.c）
+　これらはプレイヤーがカートを持っていなくてもアイテムの削除を行います
+　カートがあるときだけ削除したい場合はcheckcart関数でカートの有無をチェックする必要があります
+	delcartitem命令
+	delcartitem2命令
+	clearcartitem命令
+
+・delinventory命令をdelitem2命令に改名（script.c）
+	カート用の命令と一律の名前にするため
+	delinventory命令をスクリプトで利用している場合は各自delitem2命令に変更してください
+
+----------------------------------------
+//0270 [2007/08/13] by Rayce
+
+・db/item_avail.txtを使ったアイテムをshop販売するとアイテム数超過扱いにされて
+　アイテムが買えない問題を修正（npc.c）
+	ただし販売品目の中でavail元のアイテムIDが重複している場合にアイテムを正しく
+	買うことができませんが、これはクライアントの仕様に依ります。
+	例えばdb/item_avail.txtに 600,512 を記述して600のIDを作ったとき
+		prontera.gat,116,192,4	shop	shopper	112,512:10,600:10
+	となっている場合は600のアイテムを買うことができません（恐らく512になる）
+	この事例が発生し得るときはdb/item_avail.txtを使わないことをお勧めします。
+
+・ELE_MAXを10より小さい値に設定している場合、モンスター情報を使うと「unknown attr type」
+　のエラー文が出るバグを修正（clif.c）
+・鉱石の製造確率でDEX依存部分の計算式が間違っていたのを修正（skill.c）
+	reported by Cocoaさん
+
+----------------------------------------
+//0269 [2007/08/12] by Rayce
+
+・スキル使用チェック時のアイテム消費処理を skill_item_consume() としてまとめる（skill.c）
+	-> inf2で処理分岐せず、植物栽培も一つにまとめる
+	-> アイテム消費なしにする場合はgotoを使わずitem_nocostフラグをオンにする
+	-> 副作用としてホムがジェムの必要なスキルを使うとき、主人がミストレスカードを
+	   装備していればジェム消費なしになる
+
+----------------------------------------
+//0268 [2007/08/10] by Rayce
+
+・nextやselectで待機中に run_script() が再帰的に実行されると元のスクリプトが
+　破棄されてスクリプトがそれ以降停止してしまうバグを修正（script.c）
+・別MAPに移動すると地面に設置したスキルユニットが消滅するように修正（pc.c）
+	reported by Cocoaさん
+
+----------------------------------------
+//0267 [2007/08/09] by Rayce
+
+・クレイモアトラップが攻撃されても移動しないように修正（battle.c, skill.c）
+・PTメンバーのHPが0x7fffを越えている場合、HPメーターが更新されない問題を修正（clif.c）
+　MAXHPが0x7fffのときは0x7fffで規格化する
+・party_send_xyhp_timer() を少し修正（party.c）
+・gccでの警告修正（pc.c）
+
+・以下のファイルの改行コードをCR/LFに変更
+	script/npc/town/npc_town_hugel.txt
+	src/common/zlib/
+	src/map/status.c
+
+----------------------------------------
+//0266 [2007/08/01] by Rayce
+
+・オートスペルでリムーブトラップが使えないバグを修正（battle.c, skill.c, unit.c）
+	db/skill_db.txtのinfが32の罠の場合は、場所スキルとしてではなく対象指定スキルとして
+	扱われなければなりません
+
+・運命のタロットカード専用の状態異常 SC_THE_MAGICIAN, SC_STRENGTH, SC_THE_DEVIL, SC_THE_SUN の
+　使い方が特殊だったので仕様変更（skill.c, status.*）
+	-> 魔法師、力、悪魔、太陽の効果がそれぞれ重複するようにしてみる
+	-> 不要になった SC_TAROTCARD を削除
+
+・ディテクティング用の状態異常 SC_DETECTING の使い方が特殊だったので仕様変更（skill.c, status.*）
+	-> サイトと同じ処理方法で周囲のPCおよびMOBを炙り出す
+	-> ディテクティングでNPCインビジブルが見破れなくなるが当面の間仕様にしておく
+	-> 不要になった SC_DETECTING を削除
+
+----------------------------------------
+//0265 [2007/08/01] by Rayce
+
+・スキルのstatictimerをギルドスキルも一括して扱えるように変更（map.h）
+・臨戦態勢、激励、治療、緊急召集のスキルディレイはstatictimerを使うように変更（clif.c, skill,c status.*）
+　以下のステータス異常は不要になったので削除
+	SC_BATTLEORDER_DELAY
+	SC_REGENERATION_DELAY,
+	SC_RESTORE_DELAY
+	SC_EMERGENCYCALL_DELAY,
+・スキルのstatictimerの初期化が二重に行われていた無駄を修正（pc.c）
+	pc_setnewpc() ではなく pc_authok() だけで行えば良い
+
+----------------------------------------
+//0264 [2007/08/01] by Rayce
+
+・オートスペル使用後にディレイが無かったのを修正（battle.*, skill.*）
+	battle_auriga.confに skill_autospell_delay_enable と bonus_autospell_delay_enable を追加
+	スキル由来かアイテムボーナス由来かで個別に設定できます
+	デフォルトでは共にyesですが、noにすれば今まで通りディレイ無しになります
+
+・skill_bonus_autospell() の引数tickがunsigned int型になっていなかったので修正（skill.*）
+
+----------------------------------------
+//0263 [2007/07/30] by Rayce
+
+・サーバースナップショット（version.h）
+・不要なファイルをフォルダごと削除
+	./script/mosnter/etc
+
+----------------------------------------
 //0262 [2007/07/30] by Rayce
 
 ・スキルIDからスキルツリー情報を取得する際の処理を高速化（homun.*, pc.*）
