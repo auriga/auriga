@@ -590,6 +590,11 @@ que_sign02.gat	mapflag	noteleport	dummy
 que_sign02.gat	mapflag	nosave	SavePoint
 que_sign02.gat	mapflag	nobranch	dummy
 que_sign02.gat	mapflag	nopenalty	dummy
+que_thor.gat	mapflag	nomemo	dummy
+que_thor.gat	mapflag	noteleport	dummy
+que_thor.gat	mapflag	nosave	SavePoint
+que_thor.gat	mapflag	nobranch	dummy
+que_thor.gat	mapflag	nopenalty	dummy
 ra_in01.gat	mapflag	nomemo	dummy
 ra_in01.gat	mapflag	noteleport	dummy
 ra_in01.gat	mapflag	nobranch	dummy
@@ -636,6 +641,14 @@ thana_boss.gat	mapflag	nosave	SavePoint
 thana_scene01.gat	mapflag	nomemo	dummy
 thana_step.gat	mapflag	nomemo	dummy
 thana_step.gat	mapflag	noteleport	dummy
+thor_camp.gat	mapflag	nomemo	dummy
+thor_camp.gat	mapflag	noteleport	dummy
+thor_camp.gat	mapflag	nosave	SavePoint
+thor_camp.gat	mapflag	nobranch	dummy
+thor_camp.gat	mapflag	nopenalty	dummy
+thor_v01.gat	mapflag	nomemo	dummy
+thor_v02.gat	mapflag	nomemo	dummy
+thor_v03.gat	mapflag	nomemo	dummy
 treasure01.gat	mapflag	nomemo	dummy
 treasure02.gat	mapflag	nomemo	dummy
 tur_dun01.gat	mapflag	nomemo	dummy

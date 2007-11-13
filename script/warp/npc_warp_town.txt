@@ -2059,3 +2059,64 @@ que_rachel.gat,206,93,0		warp	rachelwarp1079	1,1,que_rachel.gat,312,258
 que_rachel.gat,312,253,0	warp	rachelwarp1080	1,1,que_rachel.gat,206,88
 que_rachel.gat,275,332,0	warp	rachelwarp1081	1,1,que_rachel.gat,27,305
 que_rachel.gat,27,299,0		warp	rachelwarp1082	1,1,que_rachel.gat,275,328
+
+
+
+//---ベインス追加マップ
+
+
+//==============================================================
+// -----  ベインス -----
+// veins.gat		峡谷都市ベインス
+// ve_in.gat		ベインス 室内
+// ve_in02.gat		ベインス 室内
+// -----
+// ve_fild06.gat	ベインスフィールド 06
+// ve_fild07.gat	ベインスフィールド 07
+//==============================================================
+//峡谷都市ベインス⇒ベインスフィールド 06
+veins.gat,218,361,0	warp	veinswarp0501	1,1,ve_fild06.gat,148,225
+//峡谷都市ベインス⇒ベインスフィールド 07
+veins.gat,143,25,0	warp	veinswarp0502	1,1,ve_fild07.gat,147,366
+//アルナベルツ教国首都 ラヘル⇒ベインスフィールド 02
+rachel.gat,130,21,0	warp	veinswarp0502	1,1,ve_fild02.gat,195,377
+
+//セスルムニル神殿
+veins.gat,197,260,0	warp	veinswarp1001	1,1,ve_in.gat,351,321
+ve_in.gat,351,317,0	warp	veinswarp1002	1,1,veins.gat,197,255
+//旅館
+veins.gat,114,278,0	warp	veinswarp1003	1,1,ve_in.gat,183,207
+ve_in.gat,183,203,0	warp	veinswarp1004	1,1,veins.gat,110,278
+veins.gat,128,270,0	warp	veinswarp1005	1,1,ve_in.gat,201,211
+ve_in.gat,206,211,0	warp	veinswarp1006	1,1,veins.gat,128,266
+//旅館別館
+veins.gat,130,238,0	warp	veinswarp1007	1,1,ve_in.gat,99,219
+ve_in.gat,99,215,0	warp	veinswarp1008	1,1,veins.gat,127,235
+ve_in.gat,76,229,0	warp	veinswarp1009	1,1,ve_in.gat,75,160
+ve_in.gat,71,160,0	warp	veinswarp1010	1,1,ve_in.gat,72,229
+//武器屋
+veins.gat,150,179,0	warp	veinswarp1011	1,1,ve_in.gat,349,223
+ve_in.gat,349,219,0	warp	veinswarp1012	1,1,veins.gat,150,175
+ve_in.gat,347,250,0	warp	veinswarp1013	1,1,ve_in.gat,282,223
+ve_in.gat,286,223,0	warp	veinswarp1014	1,1,ve_in.gat,352,250
+//道具屋
+veins.gat,230,166,0	warp	veinswarp1015	1,1,ve_in.gat,251,287
+ve_in.gat,251,283,0	warp	veinswarp1016	1,1,veins.gat,230,161
+ve_in.gat,261,315,0	warp	veinswarp1017	1,1,ve_in.gat,177,297
+ve_in.gat,177,293,0	warp	veinswarp1018	1,1,ve_in.gat,261,311
+//酒場
+veins.gat,148,220,0	warp	veinswarp1019	1,1,ve_in.gat,252,127
+ve_in.gat,256,127,0	warp	veinswarp1020	1,1,veins.gat,150,215
+ve_in.gat,224,115,0	warp	veinswarp1021	1,1,ve_in.gat,313,114
+ve_in.gat,309,114,0	warp	veinswarp1022	1,1,ve_in.gat,220,115
+//治安管理所
+veins.gat,88,173,0	warp	veinswarp1019	1,1,ve_in.gat,77,295
+ve_in.gat,77,291,0	warp	veinswarp1020	1,1,veins.gat,88,168
+ve_in.gat,98,299,0	warp	veinswarp1021	1,1,ve_in.gat,124,372
+ve_in.gat,128,372,0	warp	veinswarp1022	1,1,ve_in.gat,102,299
+//民家
+veins.gat,337,231,0	warp	veinswarp1019	1,1,ve_in.gat,194,374
+ve_in.gat,194,369,0	warp	veinswarp1020	1,1,veins.gat,331,231
+//工場
+veins.gat,267,230,0	warp	veinswarp1019	1,1,ve_in02.gat,17,19
+ve_in02.gat,13,19,0	warp	veinswarp1020	1,1,veins.gat,269,225

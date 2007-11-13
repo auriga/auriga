@@ -310,3 +310,41 @@ ra_in01.gat,376,69,4	script	ホテル職員	931,{
 		close;
 	}
 }
+
+//ベインス
+ve_in.gat,157,219,5	script	旅館の主人	709,{
+	mes "[旅館の主人]";
+	mes "こんにちは！";
+	mes "ベインスで一番涼しい旅館へ";
+	mes "ようこそ！";
+	next;
+	switch(select("セーブする","休む - 5000z","止める")) {
+	case 1:
+		savepoint "ve_in.gat",157,210;
+		mes "[旅館の主人]";
+		mes "はい！";
+		mes "ここにセーブしました！";
+		mes "毎度、ありがとうございます。";
+		close;
+	case 2:
+		if(Zeny<5000) {
+			mes "[旅館の主人]";
+			mes "旅館の宿泊料は 5000z です。";
+			mes "お金が足りない様ですね……。";
+			close;
+		}
+		mes "[旅館の主人]";
+		mes "では、ごゆっくりどうぞ。";
+		close2;
+		set Zeny,Zeny-5000;
+		warp "ve_in",184,228;
+		percentheal 100,100;
+		end;
+	case 3:
+		mes "[旅館の主人]";
+		mes "またのご利用を";
+		mes "お待ちしております。";
+		mes "ありがとうございました。";
+		close;
+	}
+}

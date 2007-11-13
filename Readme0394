@@ -1,4 +1,31 @@
 ----------------------------------------
+//0402 [2007/11/14] by Rayce
+
+・AthenaProject Rev.82よりmerge、thanks to Blazeさん
+	-> ラヘル〜ベインス追加マップの水位を設定（conf/water_height.txt）
+	-> ベインス追加マップのマップフラグを設定（mapflag/mapflag.txt）
+
+・AthenaProject Rev.83よりmerge、thanks to Blazeさん
+	-> ベインス追加ワープリンクの追加（タウン、ダンジョン、フィールド）
+
+・AthenaProject Rev.84よりmerge、thanks to Blazeさん
+	-> ベインスクエスト関連アイテムの特殊フラグを設定
+
+・AthenaProject Rev.85よりmerge、thanks to Blazeさん
+	-> ベインスNPC実装
+	-> ベインスクエスト4種実装
+	-> ベインスにジョンダ職員NPC追加
+	-> ベインスに案内要員NPC追加
+	-> ベインスに宿屋NPC追加
+
+・AthenaProject Rev.86よりmerge、thanks to Blazeさん
+	-> ベインスモンスター配置変更点を修正
+	-> ベインスフィールド、トール火山ダンジョンのモンスターを実装
+
+・AthenaProject Rev.87よりmerge、thanks to Blazeさん
+	-> map_athena.confをベインスに対応、最新情報に更新
+
+----------------------------------------
 //0401 [2007/11/14] by Rayce
 
 ・AthenaProject Rev.69を参考に@homtalkを実装（atcommand.*）

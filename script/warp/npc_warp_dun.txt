@@ -1096,3 +1096,27 @@ ice_dun02.gat,150,285,0	warp	rachelwarp4016	1,1,ice_dun03.gat,149,24
 ice_dun03.gat,149,19,0	warp	rachelwarp4017	1,1,ice_dun02.gat,150,280
 //氷の洞窟04⇒氷の洞窟03
 ice_dun04.gat,33,140,0	warp	rachelwarp4018	1,1,ice_dun03.gat,149,130
+
+
+
+//---ベインス追加マップ
+
+
+//==============================================================
+// thor_v01.gat		トール火山ダンジョン 01
+// thor_v02.gat		トール火山ダンジョン 02
+// thor_v03.gat		トール火山ダンジョン 03
+// -----
+// que_thor.gat		トール火山ダンジョン
+// thor_camp.gat	トール火山兵站基地
+// ve_fild03.gat	ベインスフィールド 03
+//==============================================================
+//トール火山ダンジョン 01⇒ベインスフィールド 03
+thor_v01.gat,21,224,0	warp	veinswarp0501	1,1,ve_fild03.gat,168,235
+
+//トール火山ダンジョン 01⇔トール火山ダンジョン 02
+thor_v01.gat,201,37,0	warp	veinswarp4001	1,1,thor_v02.gat,78,203
+thor_v02.gat,73,203,0	warp	veinswarp4002	1,1,thor_v01.gat,196,37
+//トール火山ダンジョン 02⇔トール火山ダンジョン 03
+thor_v02.gat,192,60,0	warp	veinswarp4003	1,1,thor_v03.gat,35,262
+thor_v03.gat,30,262,0	warp	veinswarp4004	1,1,thor_v02.gat,187,58

@@ -89,3 +89,12 @@ hugel.gat	7
 hu_fild02.gat	10
 hu_fild06.gat	3
 kh_dun02.gat	25
+rachel.gat	5
+ra_fild01.gat	5
+ra_fild03.gat	50
+ra_san01.gat	5
+ra_san02.gat	3
+ra_san05.gat	8
+ice_dun01.gat	70
+ve_fild01.gat	10
+ve_fild07.gat	10

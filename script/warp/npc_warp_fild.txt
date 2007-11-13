@@ -1275,3 +1275,63 @@ ra_fild12.gat,303,27,0		warp	rachelwarp5027	1,1,ra_fild13.gat,295,341
 ra_fild13.gat,295,346,0		warp	rachelwarp5028	1,1,ra_fild12.gat,303,33
 
 
+
+//---ベインス追加マップ
+
+
+//==============================================================
+// -----  ベインス -----
+// ve_fild01.gat	ベインスフィールド 01
+// ve_fild02.gat	ベインスフィールド 02
+// ve_fild03.gat	ベインスフィールド 03
+// ve_fild04.gat	ベインスフィールド 04
+// ve_fild05.gat	ベインスフィールド 05
+// ve_fild06.gat	ベインスフィールド 06
+// ve_fild07.gat	ベインスフィールド 07
+// -----
+// veins.gat		峡谷都市ベインス
+// rachel.gat		アルナベルツ教国首都 ラヘル
+// ra_fild11.gat	イダ平原
+// ra_fild13.gat	涙の海岸
+// thor_v01.gat		トール火山ダンジョン 01
+//==============================================================
+//ベインスフィールド 06⇒峡谷都市ベインス
+ve_fild06.gat,153,220,0		warp	veinswarp0101	1,1,veins.gat,218,355
+//ベインスフィールド 07⇒峡谷都市ベインス
+ve_fild07.gat,147,371,0		warp	veinswarp0102	1,1,veins.gat,146,28
+//ベインスフィールド 02⇒アルナベルツ教国首都 ラヘル
+ve_fild02.gat,195,382,0		warp	veinswarp0103	1,1,rachel.gat,130,25
+
+//ベインスフィールド 03⇒トール火山ダンジョン 01
+ve_fild03.gat,168,240,0		warp	veinswarp0401	1,1,thor_v01.gat,21,229
+
+//ベインスフィールド 01⇔ラヘルフィールド 11
+ve_fild01.gat,243,368,0		warp	veinswarp5001	1,1,ra_fild11.gat,232,32
+ra_fild11.gat,233,27,0		warp	veinswarp5002	1,1,ve_fild01.gat,243,363
+//ベインスフィールド 01⇔ベインスフィールド 02
+ve_fild01.gat,366,267,0		warp	veinswarp5003	1,1,ve_fild02.gat,36,263
+ve_fild02.gat,31,263,0		warp	veinswarp5004	1,1,ve_fild01.gat,361,267
+ve_fild01.gat,350,92,0		warp	veinswarp5005	1,1,ve_fild02.gat,78,133
+ve_fild02.gat,73,133,0		warp	veinswarp5006	1,1,ve_fild01.gat,345,92
+//ベインスフィールド 01⇔ベインスフィールド 04
+ve_fild01.gat,184,20,0		warp	veinswarp5007	1,1,ve_fild04.gat,174,334
+ve_fild04.gat,174,339,0		warp	veinswarp5008	1,1,ve_fild01.gat,184,25
+//ベインスフィールド 02⇔ラヘルフィールド 13
+ve_fild02.gat,385,308,0		warp	veinswarp5009	1,1,ra_fild13.gat,34,308
+ra_fild13.gat,29,308,0		warp	veinswarp5010	1,1,ve_fild02.gat,184,25
+//ベインスフィールド 03⇔ベインスフィールド 04
+ve_fild03.gat,355,223,0		warp	veinswarp5011	1,1,ve_fild04.gat,49,249
+ve_fild04.gat,44,249,0		warp	veinswarp5012	1,1,ve_fild03.gat,350,220
+//ベインスフィールド 03⇔ベインスフィールド 05
+ve_fild03.gat,222,43,0		warp	veinswarp5013	1,1,ve_fild05.gat,200,325
+ve_fild05.gat,200,330,0		warp	veinswarp5014	1,1,ve_fild03.gat,222,48
+//ベインスフィールド 04⇒ベインスフィールド 06
+ve_fild04.gat,115,50,0		warp	veinswarp5015	1,1,ve_fild06.gat,80,183
+//ベインスフィールド 05⇒ベインスフィールド 06
+ve_fild05.gat,359,192,0		warp	veinswarp5016	1,1,ve_fild06.gat,80,183
+//ベインスフィールド 06⇒ベインスフィールド 04・05
+ve_fild06.gat,81,177,0		script	#veinswarp5017	45,1,1,{
+	if(rand(2)) warp "ve_fild04.gat",115,55;
+	else warp "ve_fild05.gat",354,191;
+	end;
+}

@@ -2536,3 +2536,153 @@ rachel.gat,138,146,5	script	ラヘル案内要員	934,{
 		}
 	}
 }
+
+//----------------------------------------------------------------------
+//[案内要員 - ベインス]
+
+veins.gat,210,345,5	script	ベインス案内兵士#ve	934,{
+	mes "[ベインス案内兵士]";
+	mes "砂嵐を通り抜けて来た皆様、";
+	mes "ようこそ！";
+	mes "ここは";
+	mes "峡谷都市「ベインス」です。";
+	next;
+	mes "[ベインス案内兵士]";
+	mes "初めて案内をお受けになられるなら、";
+	mes "「告知事項」メニューを";
+	mes "選択して見てください。";
+	while(1) {
+		next;
+		switch (select("街の案内を受ける","ミニMAP上の位置表示を消す","告知事項","やめる")) {
+		case 1:
+			mes "[ベインス案内兵士]";
+			mes "どの場所を調べられますか？";
+			if(@compass&0x0800 == 0 && '@flag == 0) {
+				mes "ミニマップに位置表示を残しますか？";
+				next;
+				if(select("はい","いいえ")==1)
+					set @compass,@compass|0x1000;
+			}
+			set '@flag,1;
+			while(1) {
+				next;
+				switch (select("セスルムニル神殿","ホテル","武器屋","道具屋","飛行船","酒場","地質学研究所","治安管理所","取り消し")) {
+				case 1:
+					mes "[ベインス案内兵士]";
+					mes "神にお祈りをする参拝客で";
+					mes "賑わうセスルムニル神殿は、";
+					mes "ベインスの北側にあります。";
+					if(@compass&0x1000)
+						viewpoint 1,195,275,1,0xFF0000;
+					continue;
+				case 2:
+					mes "[ベインス案内兵士]";
+					mes "旅の疲れを癒してくれる";
+					mes "ホテルは、";
+					mes "ベインスの北西にあります。";
+					if(@compass&0x1000)
+						viewpoint 1,130,280,2,0xFF00FF;
+					continue;
+				case 3:
+					mes "[ベインス案内兵士]";
+					mes "自分の身を守るには";
+					mes "武器が重要です。";
+					mes "良質で安い武器を扱う";
+					mes "武器屋は、";
+					mes "ベインスの西にあります。";
+					if(@compass&0x1000)
+						viewpoint 1,148,185,3,0x99FFFF;
+					continue;
+				case 4:
+					mes "[ベインス案内兵士]";
+					mes "旅には色んな物が必要です。";
+					mes "ベインスの中央にある";
+					mes "道具屋で揃えてください。";
+					if(@compass&0x1000)
+						viewpoint 1,230,173,4,0x0000FF;
+					continue;
+				case 5:
+					mes "[ベインス案内兵士]";
+					mes "ベインスの飛行船は、";
+					mes "貨物の運搬のみに";
+					mes "使われております。";
+					if(@compass&0x1000)
+						viewpoint 1,271,292,5,0xCC99FF;
+					continue;
+				case 6:
+					mes "[ベインス案内兵士]";
+					mes "ベインスの地元の人と話したい時は、";
+					mes "酒場に立ち寄ると良いです。";
+					mes "酒場はベインスの西にあります。";
+					if(@compass&0x1000)
+						viewpoint 1,140,228,6,0xCCCC33;
+					continue;
+				case 7:
+					mes "[ベインス案内兵士]";
+					mes "地質学に興味をお持ちですか？";
+					mes "では、武器屋の2階にある";
+					mes "地質学研究所に行ってください。";
+					if(@compass&0x1000)
+						viewpoint 1,148,185,7,0xFF9900;
+					continue;
+				case 8:
+					mes "[ベインス案内兵士]";
+					mes "ベインスには治安を守る";
+					mes "治安管理所があります。";
+					mes "何か困った事がありましたら、";
+					mes "そこに行ってください。";
+					if(@compass&0x1000)
+						viewpoint 1,87,170,8,0xFF9900;
+					continue;
+				case 9:
+					mes "[ベインス案内兵士]";
+					mes "位置標識を消したい時は";
+					mes "「ミニMAP上の位置表示を消す」を";
+					mes "選択してください。";
+				}
+				break;
+			}
+			continue;
+		case 2:
+			viewpoint 2,195,275,1,0xFF0000;
+			viewpoint 2,130,280,2,0xFF00FF;
+			viewpoint 2,148,185,3,0x99FFFF;
+			viewpoint 2,230,173,4,0x0000FF;
+			viewpoint 2,271,292,5,0xCC99FF;
+			viewpoint 2,140,228,6,0xCCCC33;
+			viewpoint 2,148,185,7,0xFF9900;
+			viewpoint 2,87,170,8,0xFF9900;
+			set @compass,@compass&~0x1000;
+			set '@flag,0;
+			mes "[ベインス案内兵士]";
+			mes "ミニMAP上の位置表示を";
+			mes "全部消しました。";
+			mes "また、気になる事がありましたら";
+			mes "いつでも、聞いてください。";
+			continue;
+		case 3:
+			mes "[ベインス案内兵士]";
+			mes "街の案内は、モニター右上にある";
+			mes "ミニMAPを参考してください。";
+			next;
+			mes "[ベインス案内兵士]";
+			mes "ミニMAPが表示されていない場合は";
+			mes "ショートカットキー「Ctrl + Tab」";
+			mes "または基本情報ウインドウの";
+			mes "「map」ボタンを";
+			mes "クリックしてください。";
+			next;
+			mes "[フィゲル案内要員]";
+			mes "ミニMAPが表示されたら";
+			mes " ^3333FF-^000000 ボタンをクリックして";
+			mes "マップの全体が見えるように";
+			mes "設定してください。";
+			continue;
+		case 4:
+			mes "[ベインス案内兵士]";
+			mes "では、良い旅を。";
+			close;
+		}
+	}
+}
+veins.gat,189,101,5	duplicate(ベインス案内兵士#ve)	ベインス案内兵士	934
