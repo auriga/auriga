@@ -1232,9 +1232,6 @@ static int homun_checkbaselevelup(struct homun_data *hd)
  */
 int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp)
 {
-	int per;
-	atn_bignumber next;
-
 	nullpo_retr(0, hd);
 
 	if(hd->bl.prev == NULL || unit_isdead(&hd->bl))
@@ -1256,36 +1253,40 @@ int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_e
 			pc_gainexp(hd->msd,md,mbexp,mjexp);
 	}
 
-	per = battle_config.next_exp_limit;
 	if(base_exp > 0) {
-		if((next = homun_nextbaseexp(hd)) > 0) {
-			while(base_exp + hd->status.base_exp >= next) {	// LvUP
-				atn_bignumber temp_exp = next - hd->status.base_exp;
-				int rate = (int)(100 - (atn_bignumber)hd->status.base_exp * 100 / next);
-				if(per - rate < 0)
-					break;
-				per -= rate;
-				hd->status.base_exp = (int)next;
-				if(!homun_checkbaselevelup(hd) || (next = homun_nextbaseexp(hd)) <= 0)
-					break;
-				base_exp -= temp_exp;
-			}
-			if((next = homun_nextbaseexp(hd)) > 0 && (base_exp * 100 / next) > per)
-				hd->status.base_exp = (int)(next * per / 100);
-			else if(base_exp + hd->status.base_exp > 0x7fffffff)
-				hd->status.base_exp = 0x7fffffff;
-			else
-				hd->status.base_exp += (int)base_exp;
+		atn_bignumber next = homun_nextbaseexp(hd);
+		int per = battle_config.next_exp_limit;
 
-			if(hd->status.base_exp < 0)
-				hd->status.base_exp = 0;
-			homun_checkbaselevelup(hd);
-		} else {
-			if(base_exp + hd->status.base_exp > 0x7fffffff)
-				hd->status.base_exp = 0x7fffffff;
-			else
-				hd->status.base_exp += (int)base_exp;
+		if(next > 0) {
+			if(per <= 0) {
+				// 本鯖仕様の取得経験値上限
+				atn_bignumber limit_exp = next * 2 - hd->status.base_exp - 1;
+				if(base_exp > limit_exp)
+					base_exp = limit_exp;
+			}
+			while(next > 0 && base_exp + hd->status.base_exp >= next) {	// LvUP
+				if(battle_config.next_exp_limit > 0) {
+					int rate = (int)(100 - (atn_bignumber)hd->status.base_exp * 100 / next);
+					if(per < rate)
+						break;
+					per -= rate;
+				}
+				base_exp = base_exp + hd->status.base_exp - next;
+				hd->status.base_exp = (int)next;
+				homun_checkbaselevelup(hd);
+				next = homun_nextbaseexp(hd);
+			}
 		}
+		if(next > 0 && battle_config.next_exp_limit > 0 && (base_exp * 100 / next) > per)
+			hd->status.base_exp = (int)(next * per / 100);
+		else if (base_exp + hd->status.base_exp > 0x7fffffff)
+			hd->status.base_exp = 0x7fffffff;
+		else
+			hd->status.base_exp += (int)base_exp;
+
+		if(hd->status.base_exp < 0)
+			hd->status.base_exp = 0;
+		homun_checkbaselevelup(hd);
 		if(hd->msd)
 			clif_send_homstatus(hd->msd,0);
 	}

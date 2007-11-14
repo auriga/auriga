@@ -4480,9 +4480,6 @@ static int pc_checkjoblevelup(struct map_session_data *sd)
  */
 int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber base_exp, atn_bignumber job_exp)
 {
-	int per;
-	atn_bignumber next;
-
 	nullpo_retr(0, sd);
 
 	if (sd->bl.prev == NULL || unit_isdead(&sd->bl))
@@ -4537,18 +4534,31 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 	}
 
 	//------------- Base ----------------
-	per = battle_config.next_exp_limit;
 	if (base_exp > 0) {
-		while((next = pc_nextbaseexp(sd)) > 0 && base_exp + sd->status.base_exp >= next) {	// LvUP
-			int rate = (int)(100 - (atn_bignumber)sd->status.base_exp * 100 / next);
-			if (per - rate < 0)
-				break;
-			per -= rate;
-			base_exp = base_exp + sd->status.base_exp - next;
-			sd->status.base_exp = (int)next;
-			pc_checkbaselevelup(sd);
+		atn_bignumber next = pc_nextbaseexp(sd);
+		int per = battle_config.next_exp_limit;
+
+		if (next > 0) {
+			if (per <= 0) {
+				// 本鯖仕様の取得経験値上限
+				atn_bignumber limit_exp = next * 2 - sd->status.base_exp - 1;
+				if(base_exp > limit_exp)
+					base_exp = limit_exp;
+			}
+			while(next > 0 && base_exp + sd->status.base_exp >= next) {	// LvUP
+				if (battle_config.next_exp_limit > 0) {
+					int rate = (int)(100 - (atn_bignumber)sd->status.base_exp * 100 / next);
+					if (per < rate)
+						break;
+					per -= rate;
+				}
+				base_exp = base_exp + sd->status.base_exp - next;
+				sd->status.base_exp = (int)next;
+				pc_checkbaselevelup(sd);
+				next = pc_nextbaseexp(sd);
+			}
 		}
-		if (next > 0 && (base_exp * 100 / next) > per)
+		if (next > 0 && battle_config.next_exp_limit > 0 && (base_exp * 100 / next) > per)
 			sd->status.base_exp = (int)(next * per / 100);
 		else if (base_exp + sd->status.base_exp > 0x7fffffff)
 			sd->status.base_exp = 0x7fffffff;
@@ -4562,18 +4572,31 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 	}
 
 	//------------- Job ----------------
-	per = battle_config.next_exp_limit;
 	if (job_exp > 0) {
-		while((next = pc_nextjobexp(sd)) > 0 && job_exp + sd->status.job_exp >= next) {	// LvUP
-			int rate = (int)(100 - (atn_bignumber)sd->status.job_exp * 100 / next);
-			if (per - rate <= 0)
-				break;
-			per -= rate;
-			job_exp = job_exp + sd->status.job_exp - next;
-			sd->status.job_exp = (int)next;
-			pc_checkjoblevelup(sd);
+		atn_bignumber next = pc_nextjobexp(sd);
+		int per = battle_config.next_exp_limit;
+
+		if (next > 0) {
+			if (per <= 0) {
+				// 本鯖仕様の取得経験値上限
+				atn_bignumber limit_exp = next * 2 - sd->status.job_exp - 1;
+				if (job_exp > limit_exp)
+					job_exp = limit_exp;
+			}
+			while(next > 0 && job_exp + sd->status.job_exp >= next) {	// LvUP
+				if (battle_config.next_exp_limit > 0) {
+					int rate = (int)(100 - (atn_bignumber)sd->status.job_exp * 100 / next);
+					if (per < rate)
+						break;
+					per -= rate;
+				}
+				job_exp = job_exp + sd->status.job_exp - next;
+				sd->status.job_exp = (int)next;
+				pc_checkjoblevelup(sd);
+				next = pc_nextjobexp(sd);
+			}
 		}
-		if (next > 0 && (job_exp * 100 / next) > per)
+		if (next > 0 && battle_config.next_exp_limit > 0 && (job_exp * 100 / next) > per)
 			sd->status.job_exp = (int)(next * per / 100);
 		else if (job_exp + sd->status.job_exp > 0x7fffffff)
 			sd->status.job_exp = 0x7fffffff;
@@ -5664,13 +5687,13 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 		sd->status.base_exp = val;
 		if(sd->status.base_exp < 0)
 			sd->status.base_exp = 0;
-		pc_checkbaselevelup(sd);
+		while(pc_checkbaselevelup(sd));
 		break;
 	case SP_JOBEXP:
 		sd->status.job_exp = val;
 		if(sd->status.job_exp < 0)
 			sd->status.job_exp = 0;
-		pc_checkjoblevelup(sd);
+		while(pc_checkjoblevelup(sd));
 		break;
 
 	// paramだがupdatestatus出来ないもの

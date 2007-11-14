@@ -4897,7 +4897,7 @@ int battle_config_read(const char *cfgName)
 		{ "weapon_drop_rate",                   &battle_config.weapon_drop_rate,                   100      },
 		{ "other_drop_rate",                    &battle_config.other_drop_rate,                    100      },
 		{ "item_res",                           &battle_config.item_res,                           1        },
-		{ "next_exp_limit",                     &battle_config.next_exp_limit,                     150      },
+		{ "next_exp_limit",                     &battle_config.next_exp_limit,                     0        },
 		{ "heal_counterstop",                   &battle_config.heal_counterstop,                   11       },
 		{ "finding_ore_drop_rate",              &battle_config.finding_ore_drop_rate,              100      },
 		{ "joint_struggle_exp_bonus",           &battle_config.joint_struggle_exp_bonus,           25       },
@@ -5297,7 +5297,7 @@ int battle_config_read(const char *cfgName)
 			battle_config.castle_defense_rate = 100;
 
 		if(battle_config.next_exp_limit < 0)
-			battle_config.next_exp_limit = 150;
+			battle_config.next_exp_limit = 0;
 
 		if(battle_config.card_drop_rate < 0)
 			battle_config.card_drop_rate = 0;

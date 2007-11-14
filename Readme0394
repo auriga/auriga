@@ -1,4 +1,22 @@
 ----------------------------------------
+//0404 [2007/11/15] by Rayce
+
+・AthenaProject Rev.89を参考に、獲得経験値の上限設定の仕様を変更（battle.c, pc.c）
+	thanks to Blazeさん
+
+	conf/battle_auriga.conf の next_exp_limit の使い方を変更します。
+	next_exp_limitの値が0以下の場合は本鯖仕様の制限が適用されます。
+	（現Lvから次Lvへの総必要経験値分×2 - 現経験値 - 1）
+	それ以外の値の場合は従来通り%表記で制限します。
+	AthenaProjectとは仕様が異なるので注意してください。
+
+・AthenaProject Rev.91を参考に、ホムにも獲得経験値の上限設定を適用するように修正（homun.c）
+	thanks to Blazeさん
+
+・スクリプトの "set BASEEXP,???;" や @コマンドの "@writevars BASEEXP ???" 等で多量の経験値を直接
+　得る場合、現在Expが100%を越えてLvUpしなかったのを修正（pc.c）
+
+----------------------------------------
 //0403 [2007/11/15] by Rayce
 
 ・Webチャットのメッセージ履歴をリングバッファにし、memmoveしないように改善（clif.c）
