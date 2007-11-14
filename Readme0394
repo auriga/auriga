@@ -1,4 +1,14 @@
 ----------------------------------------
+//0405 [2007/11/15] by Cocoa
+
+・AthenaProject Rev.111よりmerge、thanks to Rohypnolさん
+	ソウルバーン前提スキルをスペルブレイカーからディスペルに修正(skill_tree.txt)
+
+・プレイヤーとモンスターの最大攻撃速度のデフォルト値を190に修正（battle_auriga.conf）
+
+・植物栽培で生成された植物が5分で消滅するように修正（skill.c, skill_cast_db.txt）
+
+----------------------------------------
 //0404 [2007/11/15] by Rayce
 
 ・AthenaProject Rev.89を参考に、獲得経験値の上限設定の仕様を変更（battle.c, pc.c）

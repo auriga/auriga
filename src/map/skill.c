@@ -6129,16 +6129,20 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case CR_CULTIVATION:	/* 植物栽培 */
 		if(sd) {
-			int n = (skilllv > 2)? 1: 0;
+			int id, n = (skilllv > 2)? 1: 0;
 			int summons[2][6] = {
 				{ 1084, 1085, 1084, 1085, 1084, 1085 },
 				{ 1078, 1079, 1080, 1081, 1082, 1083 }
 			};
+			struct mob_data *tmpmd = NULL;
 			if(atn_rand()%100 < 50) {	// 50%で失敗
 				clif_skill_fail(sd,skillid,0,0);
 				break;
 			}
-			mob_once_spawn(sd,"this", x, y,"--ja--",summons[n][atn_rand()%6], 1, "");
+			id = mob_once_spawn(sd,"this", x, y,"--ja--",summons[n][atn_rand()%6], 1, "");
+
+			if((tmpmd = map_id2md(id)) != NULL)
+				tmpmd->deletetimer = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,0);
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 		}
 		break;
