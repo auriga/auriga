@@ -1,4 +1,16 @@
 ----------------------------------------
+//0406 [2007/11/15] by Rayce
+
+・AthenaProject Rev.94よりmerge、thanks to Blazeさん
+	-> ID338〜354の第二期NPCスキルの宣言名、IDを本鯖と同期
+	   エフェクトを正常表示するように（skill.*）
+	-> ID変更に伴い、「不死属性付与」「取り巻き呼び戻し」「後退」「インビジブル」の使用Mobの
+	   スキルを修正（mob_skill_db.txt）
+	-> NPCスキル判断定義に第三期NPCスキルを追加（skill.c）
+
+・0405における最大攻撃速度のデフォルト値変更がbattle.cに反映されてなかったので修正（battle.c）
+
+----------------------------------------
 //0405 [2007/11/15] by Cocoa
 
 ・AthenaProject Rev.111よりmerge、thanks to Rohypnolさん
