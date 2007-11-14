@@ -8675,7 +8675,7 @@ void clif_sitting(struct block_list *bl, int sit)
  * 叫ぶ
  *------------------------------------------
  */
-static void clif_onlymessage(char *mes, int len)
+void clif_onlymessage(const char *mes, int len)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+8);
 
@@ -13725,6 +13725,7 @@ static void packetdb_readdb(void)
 #define MAX_CHAT_MESSAGE 15
 
 static char webchat_message[MAX_CHAT_MESSAGE][256*4+1];
+static int webchat_pos = 0;
 
 void clif_webchat_message(const char* head,const char *mes1,const char *mes2)
 {
@@ -13734,17 +13735,21 @@ void clif_webchat_message(const char* head,const char *mes1,const char *mes2)
 
 	snprintf(temp, sizeof(temp), "%s %s : %s", head, mes1, mes2);
 	p = httpd_quote_meta(temp);
+
 	// 重複メッセージがある場合発言取り消し
 	for(i = 0; i < MAX_CHAT_MESSAGE; i++) {
-		if(!strcmp(p,webchat_message[i])) {
+		if(!strcmp(p, webchat_message[i])) {
 			aFree(p);
 			return;
 		}
 	}
 	clif_onlymessage(temp,strlen(temp) + 1);
 
-	memmove(&webchat_message[1],&webchat_message[0],sizeof(webchat_message[0]) * (MAX_CHAT_MESSAGE - 1));
-	strcpy(webchat_message[0],p);
+	strncpy(webchat_message[webchat_pos], p, sizeof(webchat_message[0]));
+	webchat_message[webchat_pos][sizeof(webchat_message[0])-1] = '\0';
+	if(++webchat_pos >= MAX_CHAT_MESSAGE)
+		webchat_pos = 0;
+
 	aFree(p);
 
 	return;
@@ -13761,7 +13766,7 @@ void clif_webchat(struct httpd_session_data* sd,const char* url)
 	char *p = buf;
 
 	do {
-		int i;
+		int i, j;
 		if(get_atcommand_level(AtCommand_MesWeb) > 0) {
 			err = "Chat system disabled."; break;
 		} else if(!name1[0]) {
@@ -13787,9 +13792,14 @@ void clif_webchat(struct httpd_session_data* sd,const char* url)
 		p += sprintf(p,"<input type=\"hidden\" name=\"name\" value=\"%s\">\n",name3);
 		p += sprintf(p,"<input type=\"submit\" value=\"Send!\">\n");
 		p += sprintf(p,"</form>\n");
-		for(i = 0;i < MAX_CHAT_MESSAGE; i++) {
-			if(webchat_message[i][0])
+
+		i = webchat_pos;
+		for(j = 0; j < MAX_CHAT_MESSAGE; j++) {
+			if(webchat_message[i][0]) {
 				p += sprintf(p,"%s<br>\n",webchat_message[i]);
+			}
+			if(++i >= MAX_CHAT_MESSAGE)
+				i = 0;
 		}
 		p += sprintf(p,"</body></html>\n");
 		httpd_send(sd,200,"text/html",p - buf,buf);
@@ -13841,6 +13851,8 @@ void do_init_clif(void)
 		printf("can't bind game port\n");
 		exit(1);
 	}
+	memset(webchat_message, 0, sizeof(webchat_message));
+
 	add_timer_func_list(clif_waitclose, "clif_waitclose");
 	add_timer_func_list(clif_clearchar_delay_sub, "clif_clearchar_delay_sub");
 

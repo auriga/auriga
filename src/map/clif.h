@@ -292,6 +292,7 @@ void clif_displaymessage(const int fd, const char* mes);
 void clif_disp_onlyself(const int fd, const char *mes);
 void clif_GMmessage(struct block_list *bl, const char* mes, int len, int flag);
 void clif_announce(struct block_list *bl, const char* mes, int len, unsigned long color, int flag);
+void clif_onlymessage(const char *mes, int len);
 void clif_heal(int fd, int type, int val);
 void clif_resurrection(struct block_list *bl, unsigned short type);
 void clif_set0199(int fd, unsigned short type);

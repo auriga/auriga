@@ -151,6 +151,7 @@ ATCOMMAND_FUNC(guild);
 ATCOMMAND_FUNC(agitstart);
 ATCOMMAND_FUNC(agitend);
 ATCOMMAND_FUNC(onlymes);
+ATCOMMAND_FUNC(mesweb);
 ATCOMMAND_FUNC(mapexit);
 ATCOMMAND_FUNC(idsearch);
 ATCOMMAND_FUNC(itemidentify);
@@ -319,7 +320,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_AgitStart,          "@agitstart",        0, atcommand_agitstart,           NULL },
 	{ AtCommand_AgitEnd,            "@agitend",          0, atcommand_agitend,             NULL },
 	{ AtCommand_OnlyMes,            "@mes",              0, atcommand_onlymes,             NULL },
-	{ AtCommand_MesWeb,             "@mesweb",           0, atcommand_onlymes,             NULL },
+	{ AtCommand_MesWeb,             "@mesweb",           0, atcommand_mesweb,              NULL },
 	{ AtCommand_MapExit,            "@mapexit",          0, atcommand_mapexit,             NULL },
 	{ AtCommand_IDSearch,           "@idsearch",         0, atcommand_idsearch,            NULL },
 	{ AtCommand_ItemIdentify,       "@itemidentify",     0, atcommand_itemidentify,        NULL },
@@ -1255,6 +1256,27 @@ int atcommand_kami(const int fd, struct map_session_data* sd, AtCommandType comm
  *------------------------------------------
  */
 int atcommand_onlymes(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	char temp[200], buf[512];
+
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message)
+		return -1;
+	if (sscanf(message, "%199[^#\n]", temp) < 1)
+		return -1;
+
+	snprintf(buf, sizeof(buf), "%s %s : %s", msg_txt(156), sd->status.name, temp);	// [mes]
+	clif_onlymessage(buf, strlen(buf) + 1);
+
+	return 0;
+}
+
+/*==========================================
+ * Webチャット
+ *------------------------------------------
+ */
+int atcommand_mesweb(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char temp[200];
 

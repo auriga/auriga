@@ -181,7 +181,7 @@
     マップ未記入の時は、今居るマップ
     0:day,天候フラグ消去 1:rain 2:snow 3:sakura 4:fog 5:leaves 6:fireworks 7:low clouds 8:high clouds 9:fast low clouds
 @mes comment    ---- すべてのプレイヤーにメッセージを送信
-@mesweb comment ---- すべてのプレイヤーにメッセージを送信
+@mesweb comment ---- すべてのプレイヤーにWebチャットを送信
 @users          ---- サーバー内の人数分布を表示
 
 @idsearch 文字列    ---- 指定した文字を含むItemを検索
