@@ -167,8 +167,8 @@
 165,0,6,4,4,1,10,1,no,0,2,0,magic,0	//NPC_CHANGEWIND#風属性変化#
 166,0,6,4,5,1,10,1,no,0,2,0,magic,0	//NPC_CHANGEPOISON#毒属性変化#
 167,0,6,4,6,1,10,1,no,0,2,0,magic,0	//NPC_CHANGEHOLY#聖属性変化#
-168,0,6,4,8,1,10,1,no,0,2,0,magic,0	//NPC_CHANGETELEKINESIS#念属性変化#
-169,0,6,4,7,1,10,1,no,0,2,0,magic,0	//NPC_CHANGEDARKNESS#闇属性変化#
+168,0,6,4,7,1,10,1,no,0,2,0,magic,0	//NPC_CHANGEDARKNESS#闇属性変化#
+169,0,6,4,8,1,10,1,no,0,2,0,magic,0	//NPC_CHANGETELEKINESIS#念属性変化#
 170,-9,6,1,0,0,10,1,no,0,2,0,weapon,0	//NPC_CRITICALSLASH#防御無視攻撃#
 171,-9,8,1,0,0,10,2:3:4:5:6:7:8:9:10:11,no,0,2,0,weapon,0	//NPC_COMBOATTACK#多段攻撃#
 172,-9,6,1,0,0,10,1,no,0,2,0,weapon,0	//NPC_GUIDEATTACK#必中攻撃#

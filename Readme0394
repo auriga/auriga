@@ -1,4 +1,15 @@
 ----------------------------------------
+//0407 [2007/11/15] by Rayce
+
+・AthenaProject Rev.95よりmerge、thanks to Blazeさん
+	-> 初心者修練場に特殊一次職の説明を追加（npc_job_00novice.txt）
+・AthenaProject Rev.96よりmerge、thanks to Blazeさん
+	-> リヒタルゼンNPCに追加クエスト「レッケンベルのアルバイト」を実装（npc_town_lighthalzen.txt）
+・AthenaProject Rev.97より部分的にmerge、thanks to Blazeさん
+	-> NPCスキル「闇属性変化」と「念属性変化」のIDが入れ替わってたのを修正（skill.*）
+	-> Ep10.3〜Ep11.2までのMob使用スキルを本鯖準拠に更新
+
+----------------------------------------
 //0406 [2007/11/15] by Rayce
 
 ・AthenaProject Rev.94よりmerge、thanks to Blazeさん
