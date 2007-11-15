@@ -1,4 +1,19 @@
 ----------------------------------------
+//0408 [2007/11/16] by Cocoa
+
+・AthenaProject Rev.95より一部merge、thanks to Blazeさん
+	-> NPCスキル「インビジブル」の効果時間がskill_cast_dbの設定に関わらず、
+	   5秒になっていたのを修正（status.c）
+
+・AthenaProject Rev.106よりmerge、thanks to Forestさん
+	-> 養子状態でアルケミスト試験を受け、転職を行うと
+	   通常のキャラに再設定されてしまう不具合を修正（npc_job_18alchemist.txt）
+
+・リフレクトシールドでアシッドデモンストレーションを反射できないように修正（battle.c）
+
+・script_ref.txtの誤字修正
+
+----------------------------------------
 //0407 [2007/11/15] by Rayce
 
 ・AthenaProject Rev.95よりmerge、thanks to Blazeさん

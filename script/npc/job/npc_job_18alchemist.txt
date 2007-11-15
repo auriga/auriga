@@ -1492,7 +1492,7 @@ alde_alche.gat,101,184,4	script	マスターアルケミスト	122,{
 		mes "学んで来たかね。ご苦労。";
 		next;
 		unequip;
-		jobchange 18,0;
+		jobchange 18;
 		set CHANGE_AM,0;
 		mes "[ビンセント=カーシャル]";
 		mes "これからお前も錬金術師として";

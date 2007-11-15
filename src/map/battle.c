@@ -4013,7 +4013,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			if(sc &&
 			   sc->data[SC_REFLECTSHIELD].timer != -1 &&
 			   (sd || sc->data[SC_DEVOTION].timer == -1) &&	// 被ディボーション者ならPCから以外は反応しない
-			   skillid != WS_CARTTERMINATION)
+			   skillid != WS_CARTTERMINATION && skillid != CR_ACIDDEMONSTRATION)
 			{
 				rdamage += damage * sc->data[SC_REFLECTSHIELD].val2 / 100;	// 跳ね返し計算
 				if(rdamage < 1) rdamage = 1;
