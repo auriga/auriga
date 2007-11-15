@@ -1544,7 +1544,7 @@ int homun_save_data(struct map_session_data *sd)
 static int read_homundb(void)
 {
 	FILE *fp;
-	char line[1024];
+	char line[4096];
 	int i, j;
 	int lines, count = 0;
 	struct script_code *script = NULL;
@@ -1566,7 +1566,7 @@ static int read_homundb(void)
 			return -1;
 		}
 		lines=0;
-		while(fgets(line,1020,fp)){
+		while(fgets(line,sizeof(line),fp)){
 			int nameid;
 			char *str[32],*p,*np;
 			lines++;

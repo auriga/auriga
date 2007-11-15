@@ -1,4 +1,17 @@
 ----------------------------------------
+//0412 [2007/11/16] by Rayce
+
+・AthenaProject Rev.113より、初心者修練場の追加職説明の終了処理を修正（npc_job_00novice.txt）
+	thanks to Blazeさん
+
+・AthenaProject Rev.123よりmerge、thanks to Blazeさん（skill.c, skill_cast_db.txt）
+	-> NPCスキル「アイスブレス」に凍結効果を付与
+	-> NPCスキル「アシッドブレス」の毒付与判定式を追加
+
+・各種NPCファイル、およびアイテム/ペット/ホム/傭兵データベースにおいて、１行当たり読み込める
+　最大文字数を1019から4095文字に拡張（homun.c, itemdb.c, merc.c, npc.c, pet.c）
+
+----------------------------------------
 //0411 [2007/11/16] by Rayce
 
 ・0397以降、PC以外がポーションピッチャーを使うとnullpoエラーが出る致命的なバグを修正（skill.c）

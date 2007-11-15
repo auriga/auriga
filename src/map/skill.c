@@ -1078,13 +1078,21 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 	case NJ_HYOUSYOURAKU:		/* 氷柱落し */
 		rate = (skilllv*5+10)*sc_def_mdef/100-(status_get_int(bl)+status_get_luk(bl))/15;
-		if(rate <= 5)
+		if(rate < 5)
+			rate = 5;
+		if((!tsc || tsc->data[SC_FREEZE].timer == -1) && atn_rand()%100 < rate)
+			status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv)*(1-sc_def_mdef/100),0);
+		break;
+	case NPC_ICEBREATH:		/* アイスブレス */
+		rate = 70*sc_def_mdef/100-(status_get_int(bl)+status_get_luk(bl))/15;
+		if(rate < 5)
 			rate = 5;
 		if((!tsc || tsc->data[SC_FREEZE].timer == -1) && atn_rand()%100 < rate)
 			status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv)*(1-sc_def_mdef/100),0);
 		break;
 	case NPC_ACIDBREATH:		/* アシッドブレス */
-		status_change_start(bl,SC_POISON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		if(atn_rand()%100 < 70*sc_def_vit/100)
+			status_change_start(bl,SC_POISON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case NPC_BLEEDING:		/* 出血攻撃 */
 		if(atn_rand()%100 < skilllv*20)

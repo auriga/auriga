@@ -1099,7 +1099,7 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4,int lines)
 {
 	int m, x, y, dir = 0, xs, ys, to_x, to_y;
 	int i, j, n;
-	char mapname[1024], to_mapname[1024];
+	char mapname[4096], to_mapname[4096];
 	char *p;
 	struct npc_data *nd;
 
@@ -1191,7 +1191,7 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 	int m, x, y, dir = 0;
 	int n, pos = 0;
 	unsigned char subtype;
-	char mapname[1024];
+	char mapname[4096];
 	struct npc_data *nd;
 
 	if(strcmp(w2,"shop") == 0)
@@ -1246,7 +1246,7 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 		nd = (struct npc_data *)aRealloc(nd, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * pos);
 	} else {
 		// substoreはコピーするだけ
-		char srcname[1024];
+		char srcname[4096];
 		struct npc_data *nd2;
 
 		if(sscanf(w2,"substore(%[^)])%n",srcname,&n) != 1 || w2[n] != 0) {
@@ -1520,7 +1520,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		m = -1;
 	} else {
 		// 引数の個数チェック
-		char mapname[1024];
+		char mapname[4096];
 		int n;
 
 		if(sscanf(w1,"%[^,],%d,%d,%d%n",mapname,&x,&y,&dir,&n) != 4 || w1[n] != 0 ||
@@ -1538,7 +1538,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		int len;
 		int curly_count = 0, startline = 0;
 		unsigned int srcsize = 32768, srclen;
-		char line[1024];
+		char line[4096];
 
 		srcbuf = (char *)aMalloc(srcsize);
 		srcbuf[0] = 0;
@@ -1597,7 +1597,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		}
 	} else {
 		// duplicateする
-		char srcname[1024];
+		char srcname[4096];
 		struct npc_data *nd2;
 		int n;
 
@@ -1761,7 +1761,7 @@ static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_li
 	struct script_code *script;
 	int curly_count = 0, startline = 0;
 	unsigned int srcsize = 32768, srclen;
-	char line[1024];
+	char line[4096];
 
 	// スクリプトの解析
 	srcbuf = (char *)aMalloc(srcsize);
@@ -1843,8 +1843,8 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
 	int m, x, y, xs, ys, class_, num, delay1, delay2;
 	int i, n, guild_id = 0;
 	char mapname[24];
-	char eventname[1024] = "";
-	char eventtemp[1024] = "";
+	char eventname[4096] = "";
+	char eventtemp[4096] = "";
 	struct mob_data *md;
 
 	// 引数の個数チェック
@@ -1998,7 +1998,7 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
 static int npc_parse_mapflag(char *w1,char *w2,char *w3,char *w4,int lines)
 {
 	int m;
-	char mapname[1024];
+	char mapname[4096];
 
 	// 引数の個数チェック
 	if(sscanf(w1,"%[^,]",mapname) != 1 || strlen(w1) != strlen(mapname)) {
@@ -2026,7 +2026,7 @@ int npc_set_mapflag(int m,char *w3,char *w4)
 		return 0;
 
 	if (strcmpi(w3,"nosave") == 0) {
-		char savemap[1024];
+		char savemap[4096];
 		int savex, savey;
 		if (strcmp(w4,"SavePoint") == 0) {
 			strncpy(map[m].save.map,"SavePoint",16);
@@ -2137,7 +2137,7 @@ int npc_set_mapflag(int m,char *w3,char *w4)
  */
 int npc_set_mapflag_sub(int m,char *str,short flag)
 {
-	char drop_arg1[1024], drop_arg2[1024];
+	char drop_arg1[4096], drop_arg2[4096];
 	int drop_id = 0, drop_type = 0, drop_per = 0;
 
 	if(sscanf(str, "%[^,],%[^,],%d", drop_arg1, drop_arg2, &drop_per) != 3)
@@ -2267,7 +2267,7 @@ int do_final_npc(void)
 int do_init_npc(void)
 {
 	struct npc_src_list *nsl;
-	char line[1024];
+	char line[4096];
 	int lines, number = 0, ret = 0;
 	time_t now;
 
@@ -2288,8 +2288,8 @@ int do_init_npc(void)
 		printf("reading npc [%4d] %-60s",++number,nsl->name);
 
 		lines = 0;
-		while(fgets(line,1020,fp)) {
-			char w1[1024], w2[1024], w3[1024], w4[1024];
+		while(fgets(line,sizeof(line),fp)) {
+			char w1[4096], w2[4096], w3[4096], w4[4096];
 			char *lp;
 			int i, j, w4pos = 0, count;
 			lines++;
@@ -2336,7 +2336,7 @@ int do_init_npc(void)
 			// MAPの存在チェック自体は各parserで行う
 			if(strcmp(w1,"-") != 0 && strcmpi(w1,"function") != 0) {
 				int len;
-				char mapname[1024] = "";
+				char mapname[4096] = "";
 				sscanf(w1,"%[^,]",mapname);
 				len = strlen(mapname);
 				if(len <= 4 || len > 24 || strcmp(mapname+len-4,".gat") != 0) {

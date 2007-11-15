@@ -3056,7 +3056,7 @@ new_1-4.gat,91,22,3	script	職業教官	57,{
 					mes "……大丈夫みたいですね。";
 					mes "では、ヘイスンに話しかけて";
 					mes "ください。";
-					break;
+					close;
 				}
 				if(CHANGE_NV &0x1000 == 0)
 					set CHANGE_NV,CHANGE_NV|0x1000;

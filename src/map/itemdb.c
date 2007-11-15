@@ -298,7 +298,7 @@ static int itemdb_read_itemslottable(void)
 static int itemdb_read_itemdb(void)
 {
 	FILE *fp;
-	char line[1024];
+	char line[4096];
 	int ln=0,lines=0;
 	int nameid,j;
 	char *str[32],*p,*np;
@@ -316,7 +316,7 @@ static int itemdb_read_itemdb(void)
 			exit(1);
 		}
 		lines=0;
-		while(fgets(line,1020,fp)){
+		while(fgets(line,sizeof(line),fp)){
 			lines++;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
@@ -413,7 +413,7 @@ static int itemdb_read_itemdb(void)
 		return 0;
 	}
 	ln=0;
-	while(fgets(line,1020,fp)){
+	while(fgets(line,sizeof(line),fp)){
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
@@ -445,7 +445,7 @@ static int itemdb_read_itemdb(void)
 		printf("can't read db/item_arrowtype.txt\n");
 		return 0;
 	}
-	while(fgets(line,1020,fp)){
+	while(fgets(line,sizeof(line),fp)){
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
@@ -471,7 +471,7 @@ static int itemdb_read_itemdb(void)
 		printf("can't read db/item_group_db.txt\n");
 		return 0;
 	}
-	while(fgets(line,1020,fp)){
+	while(fgets(line,sizeof(line),fp)){
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
