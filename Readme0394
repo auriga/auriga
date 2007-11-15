@@ -1,4 +1,20 @@
 ----------------------------------------
+//0410 [2007/11/16] by Rayce
+
+・AthenaProject Rev.112およびeAthenaを参考に以下を実行、thanks to Blazeさん
+　（clif.c, map.h, pc.c, skill.*, status.*, unit.c）
+
+	-> 「穏やかな休息」「楽しい休息」の効果を「周囲にテコン系列キャラクターが座っている状態」
+	   のみ発動するように修正
+	-> テコン休息とギャングスターパラダイスのコードを共有するために skill_gangsterparadise() を
+	   skill_sit() に変更
+	-> テコン休息中のdoridori追加効果値を修正
+	-> 「楽しい状態」の実装
+	   確率的にSP10消費する代わりにアーススパイクスクロールの消費が無しになる
+	   ただし battle_auriga.conf の item_res がnoときは意味がない
+	-> 暫定で205をSI_HAPPYとして使う
+
+----------------------------------------
 //0409 [2007/11/16] by Rayce
 
 ・AthenaProject Rev.105よりmerge、thanks to Forestさん

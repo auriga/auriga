@@ -2044,7 +2044,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			sd->pvp_timer = -1;
 		}
 
-		skill_gangsterparadise(sd,0);			// ギャングスターパラダイス削除
+		skill_sit(sd,0);			// ギャングスターパラダイスおよびテコン休息削除
 
 		clif_clearchar_area(&sd->bl,clrtype&0xffff);
 		mob_ai_hard_spawn( &sd->bl, 0 );

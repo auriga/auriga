@@ -9777,85 +9777,137 @@ void skill_autospell(struct map_session_data *sd, int skillid)
 }
 
 /*==========================================
- * ギャングスターパラダイス判定処理(foreachinarea)
+ * ギャングスターパラダイスおよびテコン休息
+ * 判定処理判定処理
  *------------------------------------------
  */
-static int skill_gangster_count(struct block_list *bl,va_list ap)
+static int skill_sit_count(struct block_list *bl,va_list ap)
 {
 	int *c;
+	int flag;
 	struct map_session_data *sd;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	c = va_arg(ap,int *);
+	flag = va_arg(ap,int);
+	c    = va_arg(ap,int *);
 
-	if(pc_issit(sd) && pc_checkskill(sd,RG_GANGSTER) > 0)
-		(*c)++;
+	if(!pc_issit(sd))
+		return 0;
+
+	if(flag&1) {
+		if(pc_checkskill(sd,RG_GANGSTER) > 0) {
+			(*c)++;
+			return 0;
+		}
+	}
+	if(flag&2) {
+		if(sd->status.class_ == PC_CLASS_TK ||
+		   sd->status.class_ == PC_CLASS_SG ||
+		   sd->status.class_ == PC_CLASS_SG2 ||
+		   sd->status.class_ == PC_CLASS_SL) {
+			(*c)++;
+			return 0;
+		}
+	}
+
 	return 0;
 }
 
-static int skill_gangster_in(struct block_list *bl,va_list ap)
+static int skill_sit_in(struct block_list *bl,va_list ap)
 {
+	int flag;
 	struct map_session_data *sd;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	if(pc_issit(sd) && pc_checkskill(sd,RG_GANGSTER) > 0)
-		sd->state.gangsterparadise = 1;
+	flag = va_arg(ap,int);
+
+	if(!pc_issit(sd))
+		return 0;
+
+	if(flag&1) {
+		if(pc_checkskill(sd,RG_GANGSTER) > 0)
+			sd->state.gangsterparadise = 1;
+	}
+	if(flag&2) {
+		if(sd->status.class_ == PC_CLASS_TK ||
+		   sd->status.class_ == PC_CLASS_SG ||
+		   sd->status.class_ == PC_CLASS_SG2 ||
+		   sd->status.class_ == PC_CLASS_SL)
+			sd->state.taekwonrest = 1;
+	}
+
 	return 0;
 }
 
-static int skill_gangster_out(struct block_list *bl,va_list ap)
+static int skill_sit_out(struct block_list *bl,va_list ap)
 {
 	struct map_session_data *sd;
-	int c=0;
+	int flag;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	if(sd->state.gangsterparadise) {
-		map_foreachinarea(skill_gangster_count,bl->m,
+	flag = va_arg(ap,int);
+
+	if((flag&1 && sd->state.gangsterparadise) || (flag&2 && sd->state.taekwonrest)) {
+		int c = 0;
+		map_foreachinarea(skill_sit_count,bl->m,
 			bl->x-1,bl->y-1,
-			bl->x+1,bl->y+1,BL_PC,&c);
-		if(c < 2)
-			sd->state.gangsterparadise = 0;
+			bl->x+1,bl->y+1,BL_PC,flag,&c);
+		if(c < 2) {
+			if(flag&1)
+				sd->state.gangsterparadise = 0;
+			if(flag&2)
+				sd->state.taekwonrest = 0;
+		}
 	}
 	return 0;
 }
 
-int skill_gangsterparadise(struct map_session_data *sd ,int type)
+int skill_sit(struct map_session_data *sd, int type)
 {
-	int c=0;
+	int flag = 0;
 
 	nullpo_retr(0, sd);
 
-	if(pc_checkskill(sd,RG_GANGSTER) <= 0)
+	if(pc_checkskill(sd,RG_GANGSTER) > 0)
+		flag |= 1;
+	if(pc_checkskill(sd,TK_HPTIME) > 0 || pc_checkskill(sd,TK_SPTIME) > 0)
+		flag |= 2;
+
+	if(!flag)
 		return 0;
 
-	if(type==1) {/* 座った時の処理 */
-		map_foreachinarea(skill_gangster_count,sd->bl.m,
+	if(type) {
+		// 座った時の処理
+		int c = 0;
+		map_foreachinarea(skill_sit_count,sd->bl.m,
 			sd->bl.x-1,sd->bl.y-1,
-			sd->bl.x+1,sd->bl.y+1,BL_PC,&c);
-		if(c > 1) {/*ギャングスター成功したら自分にもギャングスター属性付与*/
-			map_foreachinarea(skill_gangster_in,sd->bl.m,
+			sd->bl.x+1,sd->bl.y+1,BL_PC,flag,&c);
+		if(c > 1) {
+			// 成功したら効果付与
+			map_foreachinarea(skill_sit_in,sd->bl.m,
 				sd->bl.x-1,sd->bl.y-1,
-				sd->bl.x+1,sd->bl.y+1,BL_PC);
-			sd->state.gangsterparadise = 1;
+				sd->bl.x+1,sd->bl.y+1,BL_PC,flag);
 		}
-		return 0;
-	}
-	else if(type==0) {/* 立ち上がったときの処理 */
-		sd->state.gangsterparadise = 0;
-		map_foreachinarea(skill_gangster_out,sd->bl.m,
+	} else {
+		// 立ち上がったときの処理
+		map_foreachinarea(skill_sit_out,sd->bl.m,
 			sd->bl.x-1,sd->bl.y-1,
-			sd->bl.x+1,sd->bl.y+1,BL_PC);
-		return 0;
+			sd->bl.x+1,sd->bl.y+1,BL_PC,flag);
+		if(flag&1)
+			sd->state.gangsterparadise = 0;
+		if(flag&2)
+			sd->state.taekwonrest = 0;
 	}
+
 	return 0;
 }
 

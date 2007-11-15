@@ -3379,7 +3379,6 @@ void pc_useitem(struct map_session_data *sd, int n)
 {
 	int nameid,amount;
 	struct item_data *item;
-	struct script_code *script;
 
 	nullpo_retv(sd);
 
@@ -3390,10 +3389,7 @@ void pc_useitem(struct map_session_data *sd, int n)
 	nameid = sd->status.inventory[n].nameid;
 	amount = sd->status.inventory[n].amount;
 
-	if( sd->status.inventory[n].nameid <= 0 ||
-	    sd->status.inventory[n].amount <= 0 ||
-	    !pc_isUseitem(sd,n) )
-	{
+	if(nameid <= 0 || amount <= 0 || !pc_isUseitem(sd,n)) {
 		clif_useitemack(sd,n,0,0);
 		return;
 	}
@@ -3402,23 +3398,33 @@ void pc_useitem(struct map_session_data *sd, int n)
 		sd->use_nameditem = *((unsigned long *)(&sd->status.inventory[n].card[2]));
 	else
 		sd->use_nameditem = 0;
-	script = sd->inventory_data[n]->use_script;
 
-	if (battle_config.item_res) {
-		amount = sd->status.inventory[n].amount;
-		clif_useitemack(sd,n,amount-1,1);
-		pc_delitem(sd,n,1,1);
+	if(battle_config.item_res) {
+		if(sd->sc.data[SC_HAPPY].timer != -1 &&
+		   (nameid == 686 || nameid == 687) &&
+		   sd->status.sp >= 10 &&
+		   atn_rand()%100 >= 11 - sd->sc.data[SC_HAPPY].val1) {
+			// 楽しい状態なら確率的にアーススパイクスクロールの消費無し
+			sd->status.sp -= 10;
+			clif_updatestatus(sd,SP_SP);
+			clif_useitemack(sd,n,amount,1);
+		} else {
+			clif_useitemack(sd,n,amount-1,1);
+			pc_delitem(sd,n,1,1);
+		}
 	} else {
 		clif_useitemack(sd,n,amount,1);
 	}
-	if(script)
-		run_script(script,0,sd->bl.id,0);
-	if(item && item->delay)
-		sd->item_delay_tick = gettick() + item->delay;
+
+	if(item) {
+		if(item->use_script)
+			run_script(item->use_script,0,sd->bl.id,0);
+		if(item->delay)
+			sd->item_delay_tick = gettick() + item->delay;
+	}
 
 	return;
 }
-
 
 /*==========================================
  * カートアイテム追加。個数のみitem構造体の数字を無視
@@ -3746,7 +3752,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 	// 座っていたら立ち上がる
 	if(pc_issit(sd)) {
 		pc_setstand(sd);
-		skill_gangsterparadise(sd,0);
+		skill_sit(sd,0);
 	}
 
 	// 死んでいたら立ち上がる
@@ -5061,7 +5067,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	// 座ってたら立ち上がる
 	if(pc_issit(sd)) {
 		pc_setstand(sd);
-		skill_gangsterparadise(sd,0);
+		skill_sit(sd,0);
 	}
 
 	// 歩いていたら足を止める
@@ -7951,8 +7957,9 @@ static int pc_rest_heal_hp(struct map_session_data *sd)
 
 	if(sd->inchealresthptick >= interval) {
 		int bonus_hp = sd->tk_nhealhp;
+
 		if(sd->tk_doridori_counter_hp)
-			bonus_hp += bonus_hp;
+			bonus_hp += 30;
 		sd->tk_doridori_counter_hp = 0;
 
 		while(sd->inchealresthptick >= interval) {
@@ -8000,13 +8007,16 @@ static int pc_rest_heal_sp(struct map_session_data *sd)
 
 	if(sd->inchealrestsptick >= interval) {
 		int bonus_sp = sd->tk_nhealsp;
-		int skilllv  = pc_checkskill(sd,SL_KAINA);
+		int skilllv;
 
-		if(skilllv > 0)
-			bonus_sp += bonus_sp*(30+10*skilllv)/100;
-		if(sd->tk_doridori_counter_sp)
-			bonus_sp += bonus_sp;
+		if(sd->tk_doridori_counter_sp) {
+			bonus_sp += 3;
+			status_change_start(&sd->bl,SC_HAPPY,pc_checkskill(sd,TK_SPTIME),0,0,0,1800000,0);
+		}
 		sd->tk_doridori_counter_sp = 0;
+
+		if((skilllv = pc_checkskill(sd,SL_KAINA)) > 0)
+			bonus_sp += bonus_sp*(30+10*skilllv)/100;
 
 		while(sd->inchealrestsptick >= interval) {
 			if(pc_issit(sd)) {
@@ -8105,13 +8115,13 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	}
 
 	// 安らかな休息
-	if(pc_checkskill(sd,TK_HPTIME) > 0 && !pc_ishiding(sd) && sd->sc.data[SC_POISON].timer == -1)
+	if(pc_checkskill(sd,TK_HPTIME) > 0 && sd->state.taekwonrest && sd->sc.data[SC_POISON].timer == -1)
 		pc_rest_heal_hp(sd);
 	else
 		sd->inchealresthptick = 0;
 
 	// 楽しい休息
-	if(pc_checkskill(sd,TK_SPTIME) > 0 && !pc_ishiding(sd) && sd->sc.data[SC_POISON].timer == -1)
+	if(pc_checkskill(sd,TK_SPTIME) > 0 && sd->state.taekwonrest && sd->sc.data[SC_POISON].timer == -1)
 		pc_rest_heal_sp(sd);
 	else
 		sd->inchealrestsptick = 0;

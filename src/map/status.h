@@ -518,6 +518,7 @@ enum {
 	SC_STONESKIN            = 381,
 	SC_ANTIMAGIC            = 382,
 	SC_WEAPONQUICKEN        = 383,
+	SC_HAPPY                = 384,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
@@ -660,6 +661,7 @@ enum {
 	SI_CLOSECONFINE2    = 201,
 	SI_MADNESSCANCEL    = 203,
 	SI_GATLINGFEVER     = 204,
+	SI_HAPPY            = 205,
 	SI_UTSUSEMI         = 206,
 	SI_BUNSINJYUTSU     = 207,
 	SI_NEN              = 208,

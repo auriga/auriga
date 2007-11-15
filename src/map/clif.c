@@ -10387,7 +10387,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 3) {
 			pc_setsit(sd);
 			clif_sitting(&sd->bl, 1);
-			skill_gangsterparadise(sd,1);	// ギャングスターパラダイス設定
+			skill_sit(sd,1);	// ギャングスターパラダイスおよびテコン休息設定
 		} else {
 			clif_skill_fail(sd,1,0,2);
 		}
@@ -10395,7 +10395,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	case 0x03:	// standup
 		pc_setstand(sd);
 		clif_sitting(&sd->bl, 0);
-		skill_gangsterparadise(sd,0);	// ギャングスターパラダイス解除
+		skill_sit(sd,0);	// ギャングスターパラダイスおよびテコン休息解除
 		break;
 	}
 

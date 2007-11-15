@@ -346,6 +346,7 @@
 381,SC_STONESKIN,0,1,0			// ストーンスキン
 382,SC_ANTIMAGIC,0,1,0			// アンチマジック
 383,SC_WEAPONQUICKEN,0,7,14		// ウェポンクイッケン
+384,SC_HAPPY,0,1,0			// 楽しい状態
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

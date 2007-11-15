@@ -153,7 +153,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 370- */
 	SI_ITEMDROPRATE,SI_BOSSMAPINFO,SI_MEAL_INCSTR2,SI_MEAL_INCAGI2,SI_MEAL_INCVIT2,SI_MEAL_INCDEX2,SI_MEAL_INCINT2,SI_MEAL_INCLUK2,SI_SLOWCAST,SI_CRITICALWOUND,
 	/* 380- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_HAPPY,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 };
 
 /*==========================================
@@ -4434,6 +4434,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_CRITICALWOUND:			/* 致命傷 */
 		case SC_MAGICMIRROR:			/* マジックミラー */
 		case SC_ITEMDROPRATE:			/* バブルガム */
+		case SC_HAPPY:				/* 楽しい状態 */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
