@@ -1,4 +1,23 @@
 ----------------------------------------
+//0413 [2007/11/16] by Rayce
+
+・AthenaProject Rev.119より、暫定的にLv11以上のメテオストームの効果範囲を拡大する（skill.c）
+	thanks to RINさん
+
+・AthenaProject Rev.120より以下の項目をmerge、thanks to Blazeさん
+　（battle.*, skill.c, status.c）
+
+	-> heal_counter_stopを廃止
+	   Mob独自オーバースキルの発動Lvを設定する「monster_skill_over」を追加
+	-> 「ファイアーボール」「サイトラッシャー」「ツーハンドクイッケン」のオーバースキル効果を実装
+
+　　※conf/battle_auriga.conf に追加された monster_skill_over のデフォルトは11です。
+　　　AthenaProjectとは違いますので注意してください。
+　　　AthenaProjectのようにデフォルトを10にしてしまうと、通常効果としてのスキルLv10を使用する
+　　　ことができなくなってしまうためです。
+　　　そのためAthenaProject Rev.120におけるdb/mob_skill_db.txtの更新はmerge対象から外しました。
+
+----------------------------------------
 //0412 [2007/11/16] by Rayce
 
 ・AthenaProject Rev.113より、初心者修練場の追加職説明の終了処理を修正（npc_job_00novice.txt）

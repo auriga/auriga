@@ -289,7 +289,7 @@ extern struct Battle_Config {
 
 	int item_res;
 	int next_exp_limit;
-	int heal_counterstop;
+	int monster_skill_over;
 	int finding_ore_drop_rate;
 	int joint_struggle_exp_bonus;
 	int joint_struggle_limit;

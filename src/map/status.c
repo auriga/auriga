@@ -1721,7 +1721,7 @@ L_RECALC:
 
 		// ASPD/移動速度変化系
 		if(sd->sc.data[SC_TWOHANDQUICKEN].timer != -1 && sd->sc.data[SC_QUAGMIRE].timer == -1 && sd->sc.data[SC_DONTFORGETME].timer == -1 && sd->sc.data[SC_DECREASEAGI].timer == -1)	// 2HQ
-			aspd_rate -= 30;
+			aspd_rate -= sd->sc.data[SC_TWOHANDQUICKEN].val2;
 
 		if(sd->sc.data[SC_ONEHAND].timer != -1 && sd->sc.data[SC_QUAGMIRE].timer == -1 && sd->sc.data[SC_DONTFORGETME].timer == -1 && sd->sc.data[SC_DECREASEAGI].timer == -1)	// 1HQ
 			aspd_rate -= 30;
@@ -3499,7 +3499,7 @@ int status_get_adelay(struct block_list *bl)
 		if(sc) {
 			// ツーハンドクイッケン使用時でクァグマイアでも私を忘れないで…でもない時は3割減算
 			if(sc->data[SC_TWOHANDQUICKEN].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1)	// 2HQ
-				aspd_rate -= 30;
+				aspd_rate -= sc->data[SC_TWOHANDQUICKEN].val2;;
 			// ワンハンドクイッケン使用時でクァグマイアでも私を忘れないで…でもない時は3割減算
 			if(sc->data[SC_ONEHAND].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1)	// 1HQ
 				aspd_rate -= 30;
@@ -3601,7 +3601,7 @@ int status_get_amotion(struct block_list *bl)
 
 		if(sc) {
 			if(sc->data[SC_TWOHANDQUICKEN].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1)	// 2HQ
-				aspd_rate -= 30;
+				aspd_rate -= sc->data[SC_TWOHANDQUICKEN].val2;;
 			if(sc->data[SC_ONEHAND].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1)	// 1HQ
 				aspd_rate -= 30;
 
@@ -4462,7 +4462,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SUMMER:
 		case SC_TRUESIGHT:			/* トゥルーサイト */
 		case SC_SPIDERWEB:			/* スパイダーウェッブ */
-		case SC_TWOHANDQUICKEN:			/* 2HQ */
 		case SC_STEELBODY:			/* 金剛 */
 		case SC_CONCENTRATION:			/* コンセントレーション */
 		case SC_MARIONETTE:			/* マリオネットコントロール */
@@ -4801,6 +4800,13 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			val3 = val1*3;
 			val4 = (val1 > 5)? 20: val1*(11-val1)/2 + 5;
+			break;
+		case SC_TWOHANDQUICKEN:			/* 2HQ */
+			calc_flag = 1;
+			if(bl->type == BL_MOB && battle_config.monster_skill_over && val1 >= battle_config.monster_skill_over)
+				val2 = 50;
+			else
+				val2 = 30;
 			break;
 		case SC_SPEARQUICKEN:		/* スピアクイッケン */
 			calc_flag = 1;

@@ -1757,8 +1757,7 @@ static int skill_timerskill(int tid, unsigned int tick, int id,int data )
 						skill_unitsetting(src,skl->skill_id,skl->skill_lv,x,y,0);
 					if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
 						clif_skill_poseffect(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,tick);
-				}
-				else {
+				} else {
 					if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
 						skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
 				}
@@ -3231,10 +3230,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, skilllv));
 			int heal_get_jobexp;
 			sc = status_get_sc(bl);
-			if(battle_config.heal_counterstop) {
-				if(skilllv >= battle_config.heal_counterstop)
-					heal = 9999;	// 9999ヒール
-			}
+			if(md && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over)
+				heal = 9999;	// 9999ヒール
 			if(dstsd && dstsd->special_state.no_magic_damage)
 				heal = 0;	// 黄金蟲カード（ヒール量０）
 			if(sc && sc->data[SC_BERSERK].timer != -1)
@@ -3279,10 +3276,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(skill > 0)
 					heal += heal * skill / 50;
 			}
-			if(battle_config.heal_counterstop) {
-				if(skilllv >= battle_config.heal_counterstop)
-					heal = 9999;	// 9999ヒール
-			}
+			if(md && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over)
+				heal = 9999;	// 9999ヒール
 			if(dstsd && dstsd->special_state.no_magic_damage)
 				heal = 0;	// 黄金蟲カード（ヒール量０）
 			if(sc && sc->data[SC_BERSERK].timer != -1)
@@ -6054,21 +6049,25 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 
 	case WZ_METEOR:			/* メテオストーム */
 		{
-			int tmpx = 0, tmpy = 0, x1 = 0, y1 = 0;
-			int i;
+			int i, tmpx = 0, tmpy = 0, x1 = 0, y1 = 0;
+			int interval = (skilllv > 10)? 2500: 1000;
 			for(i=0; i<2+(skilllv>>1); i++) {
-				tmpx = x + (atn_rand()%7 - 3);
-				tmpy = y + (atn_rand()%7 - 3);
-
+				if(skilllv > 10) {
+					tmpx = x + (atn_rand()%29 - 14);
+					tmpy = y + (atn_rand()%29 - 14);
+				} else {
+					tmpx = x + (atn_rand()%7 - 3);
+					tmpy = y + (atn_rand()%7 - 3);
+				}
 				if(i == 0 && map_getcell(src->m,tmpx,tmpy,CELL_CHKPASS)) {
 					clif_skill_poseffect(src,skillid,skilllv,tmpx,tmpy,tick);
+				} else if(i > 0) {
+					skill_addtimerskill(src,tick+i*interval,0,tmpx,tmpy,skillid,skilllv,(x1<<16)|y1,0);
 				}
-				if(i > 0)
-					skill_addtimerskill(src,tick+i*1000,0,tmpx,tmpy,skillid,skilllv,(x1<<16)|y1,0);
 				x1 = tmpx;
 				y1 = tmpy;
 			}
-			skill_addtimerskill(src,tick+i*1000,0,tmpx,tmpy,skillid,skilllv,-1,0);
+			skill_addtimerskill(src,tick+i*interval,0,tmpx,tmpy,skillid,skilllv,-1,0);
 		}
 		break;
 

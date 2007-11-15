@@ -2974,7 +2974,11 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			if(flag > 2) {
 				matk1 = matk2 = 0;
 			} else {
-				MATK_FIX( 70+10*skill_lv, 100 );
+				if(bl->type == BL_MOB && battle_config.monster_skill_over && skill_lv >= battle_config.monster_skill_over) {
+					MATK_FIX( 1000, 100 );
+				} else {
+					MATK_FIX( 70+10*skill_lv, 100 );
+				}
 				if(flag == 2)
 					MATK_FIX( 3, 4 );
 			}
@@ -3004,7 +3008,11 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			matk2 += 50;
 			break;
 		case WZ_SIGHTRASHER:
-			MATK_FIX( 100+20*skill_lv, 100);
+			if(bl->type == BL_MOB && battle_config.monster_skill_over && skill_lv >= battle_config.monster_skill_over) {
+				MATK_FIX( 1000, 100 );
+			} else {
+				MATK_FIX( 100+20*skill_lv, 100 );
+			}
 			break;
 		case WZ_METEOR:
 		case WZ_JUPITEL:	// ユピテルサンダー
@@ -4899,7 +4907,7 @@ int battle_config_read(const char *cfgName)
 		{ "other_drop_rate",                    &battle_config.other_drop_rate,                    100      },
 		{ "item_res",                           &battle_config.item_res,                           1        },
 		{ "next_exp_limit",                     &battle_config.next_exp_limit,                     0        },
-		{ "heal_counterstop",                   &battle_config.heal_counterstop,                   11       },
+		{ "monster_skill_over",                 &battle_config.monster_skill_over,                 11       },
 		{ "finding_ore_drop_rate",              &battle_config.finding_ore_drop_rate,              100      },
 		{ "joint_struggle_exp_bonus",           &battle_config.joint_struggle_exp_bonus,           25       },
 		{ "joint_struggle_limit",               &battle_config.joint_struggle_limit,               600      },
@@ -5322,8 +5330,8 @@ int battle_config_read(const char *cfgName)
 		if(battle_config.other_drop_rate < 0)
 			battle_config.other_drop_rate = 0;
 
-		if(battle_config.heal_counterstop < 0)
-			battle_config.heal_counterstop = 0;
+		if(battle_config.monster_skill_over < 0)
+			battle_config.monster_skill_over = 0;
 		if (battle_config.finding_ore_drop_rate < 0)
 			battle_config.finding_ore_drop_rate = 0;
 		else if (battle_config.finding_ore_drop_rate > 10000)
