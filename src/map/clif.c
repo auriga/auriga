@@ -3143,8 +3143,10 @@ void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storag
 	int i,j,n,fd;
 #if PACKETVER < 9
 	unsigned char buf[4+20*MAX_GUILD_STORAGE];
-#else
+#elif PACKETVER < 10
 	unsigned char buf[4+24*MAX_GUILD_STORAGE];
+#else
+	unsigned char buf[4+26*MAX_GUILD_STORAGE];
 #endif
 
 	nullpo_retv(sd);

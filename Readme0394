@@ -1,4 +1,18 @@
 ----------------------------------------
+//0409 [2007/11/16] by Rayce
+
+・AthenaProject Rev.105よりmerge、thanks to Forestさん
+	-> MAP名のミスにより、タナトスタワー入り口のMAPでワープポータルメモが取れて
+	   しまっていた不具合修正（mapflag.txt）
+
+・AthenaProject Rev.108およびRev.109よりmerge、thanks to allegroさん
+	-> 神器クエスト内、#Brysinggamenにてgmcommandが使われていた部分をemotionに変更
+	-> 神器クエスト内、書類管理人内に余分な部分が有った物を削除
+
+・PACKETVERが10以上のとき、ギルド倉庫の装備品リスト用のバッファサイズを修正（clif.c）
+・0408を少し整形（battle.c, status.c）
+
+----------------------------------------
 //0408 [2007/11/16] by Cocoa
 
 ・AthenaProject Rev.95より一部merge、thanks to Blazeさん

@@ -638,7 +638,7 @@ tha_t12.gat	mapflag	nomemo	dummy
 tha_t12.gat	mapflag	noteleport	dummy
 thana_boss.gat	mapflag	nomemo	dummy
 thana_boss.gat	mapflag	nosave	SavePoint
-thana_scene01.gat	mapflag	nomemo	dummy
+tha_scene01.gat	mapflag	nomemo	dummy
 thana_step.gat	mapflag	nomemo	dummy
 thana_step.gat	mapflag	noteleport	dummy
 thor_camp.gat	mapflag	nomemo	dummy

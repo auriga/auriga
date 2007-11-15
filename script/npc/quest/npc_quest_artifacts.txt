@@ -161,13 +161,6 @@ prt_in.gat,172,106,0	script	書類管理人	833,{
 	mes "いるというのに、図書館まで";
 	mes "来るとはなかなか熱心な人だ。";
 	close;
-	mes "[管理人 ゼガン]";
-	mes "はい、他の場所で";
-	mes "資料を探してみてください。";
-	mes "近頃本を読む人すら減って";
-	mes "いるというのに、図書館まで";
-	mes "来るとはなかなか熱心な人だ。";
-	close;
 }
 prt_in.gat,169,108,4	script	書類ファイル#prtbook	111,{
 	mes "[管理人 ゼガン]";
@@ -744,7 +737,7 @@ xmas.gat,38,105,4	script	　	111,{
 }
 xmas.gat,38,105,4	script	#Brysinggamen	139,3,3,{
 OnTouch:
-	gmcommand "@emotion 0";
+	emotion 0;
 	end;
 }
 prt_fild02.gat,185,269,4	script	#	111,{

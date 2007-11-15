@@ -4428,6 +4428,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_PK_PENALTY:
 		case SC_HERMODE:
 		case SC_TATAMIGAESHI:			/* 畳返し */
+		case SC_INVISIBLE:			/* インビジブル */
 		case SC_NPC_DEFENDER:
 		case SC_SLOWCAST:			/* スロウキャスト */
 		case SC_CRITICALWOUND:			/* 致命傷 */
@@ -5023,8 +5024,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			} else {
 				tick = 5000*val1;
 			}
-			break;
-		case SC_INVISIBLE:		/* インビジブル */
 			break;
 		case SC_SIGHTBLASTER:		/* サイトブラスター */
 		case SC_SIGHT:			/* サイト */
