@@ -226,7 +226,7 @@ int skill_marionette(struct map_session_data *sd,int target_id);
 void skill_marionette2(struct map_session_data *dstsd,int src_id);
 
 #define skill_calc_heal(bl,skill_lv) ( (status_get_lv(bl) + status_get_int(bl)) / 8 * (4 + (skill_lv) * 8) )
-int skill_fix_heal(struct block_list *bl, int skill_id, int heal);
+int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, int heal);
 
 int skill_castend_id( int tid, unsigned int tick, int id,int data );
 int skill_castend_pos( int tid, unsigned int tick, int id,int data );

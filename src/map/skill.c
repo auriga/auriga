@@ -3220,7 +3220,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	{
 	case AL_HEAL:				/* ヒール */
 		{
-			int heal = skill_fix_heal(src, skillid, skill_calc_heal(src, skilllv));
+			int heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, skilllv));
 			int heal_get_jobexp;
 			sc = status_get_sc(bl);
 			if(battle_config.heal_counterstop) {
@@ -3264,7 +3264,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case HLIF_HEAL:		/* 治癒の手助け */
 		{
-			int heal = skill_fix_heal(src, skillid, skill_calc_heal(src, skilllv));
+			int heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, skilllv));
 			sc = status_get_sc(bl);
 			if(hd) {
 				int skill = homun_checkskill(hd,HLIF_BRAIN);
@@ -4385,7 +4385,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case NV_FIRSTAID:			/* 応急手当 */
 		{
-			int heal = skill_fix_heal(src, skillid, 5);
+			int heal = skill_fix_heal(src, bl, skillid, 5);
 			clif_skill_nodamage(src,bl,skillid,heal,1);
 			battle_heal(NULL,bl,heal,0,0);
 		}
@@ -4719,7 +4719,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(dstsd)
 					hp = hp * (100 + pc_checkskill(dstsd,SM_RECOVERY)*10) / 100;
 			}
-			hp = skill_fix_heal(&sd->bl, skillid, hp);
+			hp = skill_fix_heal(src, bl, skillid, hp);
 
 			memset(&tbl, 0, sizeof(tbl));
 			tbl.m = src->m;
@@ -4745,7 +4745,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(dstsd) {
 				hp = hp * (100 + pc_checkskill(dstsd,SM_RECOVERY)*10)/100;
 			}
-			hp = skill_fix_heal(&sd->bl, skillid, hp);
+			hp = skill_fix_heal(&sd->bl, bl, skillid, hp);
 			memset(&tbl, 0, sizeof(tbl));
 			tbl.m = src->m;
 			tbl.x = src->x;
@@ -5130,7 +5130,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			else
 				gain_hp = sd->status.max_hp;
 			gain_hp = gain_hp * abs(hp_rate) / 100;
-			gain_hp = skill_fix_heal(&sd->bl, skillid, gain_hp);
+			gain_hp = skill_fix_heal(&sd->bl, &dstsd->bl, skillid, gain_hp);
 			clif_skill_nodamage(src,bl,skillid,gain_hp,1);
 			battle_heal(NULL,bl,gain_hp,0,0);
 		}
@@ -5605,8 +5605,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case HVAN_CHAOTIC:		/* カオティックベネディクション */
 		if(hd) {
-			struct block_list* heal_tearget = NULL;
-			int heal = skill_fix_heal(src, skillid, skill_calc_heal(src, 1+atn_rand()%skilllv));
+			struct block_list* heal_target = NULL;
 			int n = (skilllv < 5)? skilllv - 1: 4;
 			int rnd = atn_rand()%100;
 			static const int per[5][2] = {
@@ -5615,24 +5614,27 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 			if(rnd < per[n][0]) {
 				// ホム
-				heal_tearget = &hd->bl;
+				heal_target = &hd->bl;
 			} else if(rnd < per[n][1]) {
 				// 主人
 				if(!unit_isdead(&hd->msd->bl))	// 生存
-					heal_tearget = &hd->msd->bl;
+					heal_target = &hd->msd->bl;
 				else
-					heal_tearget = &hd->bl;
+					heal_target = &hd->bl;
 			} else {
 				// MOB
-				heal_tearget = map_id2bl(hd->target_id);
-				if(heal_tearget == NULL)
-					heal_tearget = &hd->bl;
+				heal_target = map_id2bl(hd->target_id);
+				if(heal_target == NULL)
+					heal_target = &hd->bl;
 			}
-			// エフェクト出ないのでヒール
-			clif_skill_nodamage(src,heal_tearget,AL_HEAL,heal,1);
-			clif_skill_nodamage(src,heal_tearget,skillid,heal,1);
-			battle_heal(NULL,heal_tearget,heal,0,0);
-			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
+			if(heal_target) {
+				int heal = skill_fix_heal(&hd->bl, heal_target, skillid, skill_calc_heal(src, 1+atn_rand()%skilllv));
+				// エフェクト出ないのでヒール
+				clif_skill_nodamage(src,heal_target,AL_HEAL,heal,1);
+				clif_skill_nodamage(src,heal_target,skillid,heal,1);
+				battle_heal(NULL,heal_target,heal,0,0);
+				hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
+			}
 		}
 		break;
 	case HLIF_AVOID:		/* 緊急回避 */
@@ -6368,7 +6370,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		break;
 	case PR_SANCTUARY:			/* サンクチュアリ */
 		val1 = skilllv*2+6;
-		val2 = skill_fix_heal(src, skillid, ((skilllv > 6)? 777: skilllv * 100));
+		val2 = skill_fix_heal(src, NULL, skillid, ((skilllv > 6)? 777: skilllv * 100));
 		interval = interval + 500;
 		break;
 	case WZ_FIREPILLAR:			/* ファイアーピラー */
@@ -6919,9 +6921,12 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				if (battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0))
 					sg->val1 = sg->val1-2;	// チャットキャンセルに対応
 			} else {
-				int heal = sg->val2;
+				int heal;
 				if (status_get_hp(bl) >= status_get_max_hp(bl))
 					break;
+				heal = sg->val2;
+				if(sc && sc->data[SC_CRITICALWOUND].timer != -1)
+					heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
 				if(bl->type == BL_PC && ((struct map_session_data *)bl)->special_state.no_magic_damage)
 					heal = 0;	/* 黄金蟲カード（ヒール量０） */
 				if(sc && sc->data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
@@ -10101,7 +10106,7 @@ static int skill_idun_heal(struct block_list *bl, va_list ap )
 		return 0;
 
 	heal = 30+sg->skill_lv*5+((sg->val1)>>16)*5+((sg->val2)&0xfff)/2;
-	heal = skill_fix_heal(src, sg->skill_id, heal);
+	heal = skill_fix_heal(src, bl, sg->skill_id, heal);
 
 	clif_skill_nodamage(&unit->bl,bl,AL_HEAL,heal,1);
 	battle_heal(NULL,bl,heal,0,0);
@@ -12177,17 +12182,18 @@ int skill_clone(struct map_session_data* sd,int skillid,int skilllv)
  * 回復量補正
  *------------------------------------------
  */
-int skill_fix_heal(struct block_list *bl, int skill_id, int heal)
+int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, int heal)
 {
 	struct map_session_data *sd = NULL;
-	struct status_change *sc;
+	struct status_change *sc = NULL;
 
-	nullpo_retr(0, bl);
+	nullpo_retr(0, src);
 
-	if(bl->type == BL_PC)
-		sd = (struct map_session_data *)bl;
+	if(src->type == BL_PC)
+		sd = (struct map_session_data *)src;
+	if(bl)
+		sc = status_get_sc(bl);
 
-	sc = status_get_sc(bl);
 	if(sc && sc->data[SC_CRITICALWOUND].timer != -1)
 		heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
 
