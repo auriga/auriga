@@ -3499,7 +3499,7 @@ int status_get_adelay(struct block_list *bl)
 		if(sc) {
 			// ツーハンドクイッケン使用時でクァグマイアでも私を忘れないで…でもない時は3割減算
 			if(sc->data[SC_TWOHANDQUICKEN].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1)	// 2HQ
-				aspd_rate -= sc->data[SC_TWOHANDQUICKEN].val2;;
+				aspd_rate -= sc->data[SC_TWOHANDQUICKEN].val2;
 			// ワンハンドクイッケン使用時でクァグマイアでも私を忘れないで…でもない時は3割減算
 			if(sc->data[SC_ONEHAND].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1)	// 1HQ
 				aspd_rate -= 30;

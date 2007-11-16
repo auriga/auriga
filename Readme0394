@@ -1,4 +1,15 @@
 ----------------------------------------
+//0415 [2007/11/17] by Cocoa
+
+・矢作成のサクライ新規材料追加（create_arrow_db.txt）
+
+・セミコロン（;）が余計に付いてたので削除（status.c）
+
+・dbフォルダ内のファイルで改行で終了していないものを修正
+　（exp_guild.txt, exp_homun.txt, item_group_db.txt,
+　　job_db2.txt, refine_db.txt, random/item_rjc2006.txt）
+
+----------------------------------------
 //0414 [2007/11/17] by Rayce
 
 ・AthenaProject Rev.125よりmerge、thanks to Blazeさん
