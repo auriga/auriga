@@ -9472,7 +9472,7 @@ void clif_mission_mob(struct map_session_data *sd, int id, int count)
 }
 
 /*==========================================
- * 太陽と月と星の天使（未実装）
+ * 太陽と月と星の天使
  *------------------------------------------
  */
 void clif_angel_message(struct map_session_data *sd)

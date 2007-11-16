@@ -4871,7 +4871,7 @@ int atcommand_resetfeel(const int fd, struct map_session_data* sd, AtCommandType
 	if (sscanf(message, "%d", &i) < 1)
 		return -1;
 
-	if (i >= 0 && i < sizeof(sd->feel_index)/sizeof(sd->feel_index[0])) {
+	if (i >= 0 && i < 3) {
 		sd->feel_index[i] = -1;
 		memset(&sd->status.feel_map[i], 0, sizeof(sd->status.feel_map[0]));
 		chrif_save(sd,0);
@@ -4886,6 +4886,7 @@ int atcommand_resetfeel(const int fd, struct map_session_data* sd, AtCommandType
  */
 int atcommand_resethate(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
+	const char *reg[3] = { "PC_HATE_MOB_SUN", "PC_HATE_MOB_MOON", "PC_HATE_MOB_STAR" };
 	int i;
 
 	nullpo_retr(-1, sd);
@@ -4895,8 +4896,10 @@ int atcommand_resethate(const int fd, struct map_session_data* sd, AtCommandType
 	if (sscanf(message, "%d", &i) < 1)
 		return -1;
 
-	if (i >= 0 && i < sizeof(sd->hate_mob)/sizeof(sd->hate_mob[0]))
+	if (i >= 0 && i < 3) {
 		sd->hate_mob[i] = -1;
+		pc_setglobalreg(sd,reg[i],0);
+	}
 
 	return 0;
 }

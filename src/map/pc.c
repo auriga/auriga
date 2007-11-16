@@ -8012,6 +8012,18 @@ static int pc_rest_heal_sp(struct map_session_data *sd)
 		if(sd->tk_doridori_counter_sp) {
 			bonus_sp += 3;
 			status_change_start(&sd->bl,SC_HAPPY,pc_checkskill(sd,TK_SPTIME),0,0,0,1800000,0);
+			if(atn_rand()%10000 < battle_config.sg_angel_rate) {	// 太陽と月と星の天使
+				int i;
+				for(i = 0; i < 3; i++) {
+					sd->feel_index[i] = -1;
+					sd->hate_mob[i]   = -1;
+				}
+				memset(sd->status.feel_map, 0, sizeof(sd->status.feel_map));
+				pc_setglobalreg(sd,"PC_HATE_MOB_SUN",0);
+				pc_setglobalreg(sd,"PC_HATE_MOB_MOON",0);
+				pc_setglobalreg(sd,"PC_HATE_MOB_STAR",0);
+				clif_angel_message(sd);
+			}
 		}
 		sd->tk_doridori_counter_sp = 0;
 
