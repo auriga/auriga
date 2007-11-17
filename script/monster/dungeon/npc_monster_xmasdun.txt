@@ -1,5 +1,5 @@
 //= Athena Script ==============================================================
-// Ragnarok Online Xmas Dungeon Monster Spawn Script　　Ep 10.4
+// Ragnarok Online Xmas Dungeon Monster Spawn Script　　Ep 11.2
 //==============================================================================
 
 //============================================================
@@ -23,5 +23,5 @@ xmas_dun02.gat,0,0,0,0	monster	クッキー	1246,20,0,0,0
 xmas_dun02.gat,0,0,0,0	monster	クッキー	1265,20,0,0,0
 xmas_dun02.gat,0,0,0,0	monster	クルーザー	1248,35,0,0,0
 xmas_dun02.gat,0,0,0,0	monster	ミストケース	1249,50,0,0,0
-xmas_dun02.gat,0,0,0,0	monster	ストームナイト	1251,1,3600000,7200000,0
 xmas_dun02.gat,0,0,0,0	monster	ハティーベベ	1515,1,1800000,0,0
+xmas_dun02.gat,0,0,0,0	monster	ストームナイト	1251,1,3600000,7200000,0

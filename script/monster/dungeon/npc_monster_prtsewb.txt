@@ -1,14 +1,14 @@
 //= Athena Script ==============================================================
-// Ragnarok Online Prontera Sewers Monster Spawn Script　　Ep 10.4
+// Ragnarok Online Prontera Sewers Monster Spawn Script　　Ep 11.2
 //==============================================================================
 
 //============================================================
 // プロンテラ地下水路 B1F - prt_sewb1.gat
 //------------------------------------------------------------
-prt_sewb1.gat,0,0,0,0	monster	盗蟲の卵	1048,90,0,0,0
-prt_sewb1.gat,0,0,0,0	monster	盗蟲		1051,40,0,0,0
-prt_sewb1.gat,0,0,0,0	monster	ファミリアー	1005,20,0,0,0
-prt_sewb1.gat,0,0,0,0	monster	タロウ		1175,20,0,0,0
+prt_sewb1.gat,0,0,0,0	monster	盗蟲の卵	1048,80,0,0,0
+prt_sewb1.gat,0,0,0,0	monster	盗蟲		1051,30,0,0,0
+prt_sewb1.gat,0,0,0,0	monster	ファミリアー	1005,10,0,0,0
+prt_sewb1.gat,0,0,0,0	monster	タロウ		1175,10,0,0,0
 
 //============================================================
 // プロンテラ地下水路 B2F - prt_sewb2.gat

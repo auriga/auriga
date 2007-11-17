@@ -8351,13 +8351,12 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case TF_HIDING:			/* ハイディング */
 	case AS_CLOAKING:		/* クローキング */
 	case CR_AUTOGUARD:		/* オートガード */
-	case CR_DEFENDER:		/* ディフェンダー */
 	case PA_GOSPEL:			/* ゴスペル */
 	case ST_CHASEWALK:		/* チェイスウォーク */
 	case NPC_INVISIBLE:		/* インビジブル */
 	case TK_RUN:			/* タイリギ */
 	case GS_GATLINGFEVER:		/* ガトリングフィーバー */
-	case ML_DEFENDER:
+	case CR_SHRINK:			/* シュリンク */
 	case ML_AUTOGUARD:
 		{
 			int sc_type = GetSkillStatusChangeTable(cnd->id);
