@@ -3816,20 +3816,9 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 		sd->ud.to_x = x;
 		sd->ud.to_y = y;
 		skill_stop_dancing(&sd->bl, 2);	// 移動先にユニットを移動するかどうかの判断もする
-
-		// 温もりユニット移動
-		if(sd->sc.data[SC_WARM].timer != -1) {
-			struct skill_unit_group *sg = (struct skill_unit_group *)sd->sc.data[SC_WARM].val4;
-			if(sg)
-				skill_unit_move_unit_group(sg, sd->bl.m, x-sd->bl.x, y-sd->bl.y);
-		}
 	} else {
 		// 違うマップなのでダンスユニット削除
 		skill_stop_dancing(&sd->bl, 1);
-
-		// 温もりユニット削除
-		if(sd->sc.data[SC_WARM].timer != -1)
-			status_change_end(&sd->bl, SC_WARM, -1);
 
 		// 太陽・月・星の安楽効果削除
 		if(sd->sc.data[SC_SUN_COMFORT].timer != -1)
@@ -3844,6 +3833,10 @@ int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,in
 			status_change_end(&sd->bl, SC_BOSSMAPINFO, -1);
 	}
 	status_change_hidden_end(&sd->bl);
+
+	// 温もりユニット削除
+	if(sd->sc.data[SC_WARM].timer != -1)
+		status_change_end(&sd->bl, SC_WARM, -1);
 
 	if(sd->bl.prev != NULL) {
 		if(m != sd->bl.m) {

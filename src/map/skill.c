@@ -7197,9 +7197,18 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		}
 		break;
 	case UNT_WARM:		/* 温もり */
-		if(battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0)) {
+		{
+			const int x = bl->x, y = bl->y;
+			int hit   = 0;
 			int count = skill_get_blewcount(sg->skill_id,sg->skill_lv);
-			skill_blown(&src->bl,bl,count|SAB_REVERSEBLOW|SAB_NOPATHSTOP);
+
+			do {
+				if(battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0)) {
+					if(bl->type != BL_PC)
+						skill_blown(&src->bl,bl,count|SAB_REVERSEBLOW|SAB_NOPATHSTOP);
+				}
+			} while(sg->alive_count > 0 && !unit_isdead(bl) && x == bl->x && y == bl->y &&
+				sg->interval > 0 && ++hit < SKILLUNITTIMER_INVERVAL / sg->interval);
 		}
 		break;
 	case UNT_SPIDERWEB:	/* スパイダーウェッブ */
