@@ -194,6 +194,7 @@ int pc_addspiritball(struct map_session_data *sd,int,int);
 int pc_delspiritball(struct map_session_data *sd,int,int);
 int pc_addcoin(struct map_session_data *sd,int,int);
 int pc_delcoin(struct map_session_data *sd,int,int);
+int pc_addkaahi(struct map_session_data *sd,int,int);
 
 int pc_runtodir(struct map_session_data *sd);
 

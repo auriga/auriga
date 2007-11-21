@@ -574,6 +574,10 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		tmd->target_id = mtg;	// ターゲットを戻す
 	}
 
+	//カアヒ
+	if(tsd && tsd->bl.type == BL_PC && src && src!=bl && !unit_isdead(src) && tsd->status.hp > 0 && skill_num==0 && tsd->sc.data[SC_KAAHI].timer!=-1)
+		pc_addkaahi(tsd,500+(status_get_amotion(src)),10);
+
 	// PCの反撃オートスペル
 	if(tsd && src != &tsd->bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0)
 	{
@@ -2806,27 +2810,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		pc_heal(src_sd,-hp,0);
 	}
 
-	/* 37．カアヒ */
-	if(skill_num == 0 && wd.flag&BF_WEAPON && t_sc && t_sc->data[SC_KAAHI].timer != -1)
-	{
-		int kaahi_lv = t_sc->data[SC_KAAHI].val1;
-		if(status_get_hp(target) < status_get_max_hp(target))
-		{
-			if(target->type == BL_MOB || status_get_sp(target) > 5*kaahi_lv)	// 対象がmob以外でSPが減少量以下のときは発生しない
-			{
-				int heal = skill_fix_heal(src, target, SL_KAAHI, 200 * kaahi_lv);
-				unit_heal(target,heal,-5*kaahi_lv);
-				if(target_sd)
-					clif_misceffect3(target_sd->fd, target_sd->bl.id, 7);	// 回復した本人にのみ回復エフェクト
-			}
-		}
-	}
-
-	/* 38．太陽と月と星の奇跡 */
+	/* 37．太陽と月と星の奇跡 */
 	if(src_sd && wd.flag&BF_WEAPON && (src_sd->status.class_==PC_CLASS_SG || src_sd->status.class_==PC_CLASS_SG2) && atn_rand()%10000 < battle_config.sg_miracle_rate)
 		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
 
-	/* 39．計算結果の最終補正 */
+	/* 38．計算結果の最終補正 */
 	if(!calc_flag.lh)
 		wd.damage2 = 0;
 	wd.amotion = status_get_amotion(src);

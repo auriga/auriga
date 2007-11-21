@@ -529,6 +529,8 @@ struct map_session_data {
 	int spirit_timer[MAX_SKILL_LEVEL];
 	short coin, coin_old;
 	int coin_timer[MAX_SKILL_LEVEL];
+	short kaahi;
+	int kaahi_timer[MAX_SKILL_LEVEL];
 
 	short doridori_counter;
 
