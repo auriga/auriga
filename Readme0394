@@ -1,4 +1,12 @@
 ----------------------------------------
+//0422 [2007/11/22] by Cocoa
+
+・AthenaProject Rev.138より以下の項目をmerge、thanks to Blazeさん（battle.c, skill_cast_db.txt, skill_db.txt）
+	-> 忍者スキル「手裏剣投げ」「苦無投げ」のダメージ計算を修正、必中ダメージ実装
+	-> 風魔手裏剣投げを詠唱妨害されるように修正
+	-> 「苦無投げ」「風魔手裏剣投げ」「空蝉」「龍炎陣」「氷柱落とし」の使用後ディレイを本家同等に修正
+
+----------------------------------------
 //0421 [2007/11/22] by Cocoa
 
 ・AthenaProject Rev.133よりmerge、thanks to Blazeさん（battle.c, map.h, pc.*, skill.c）

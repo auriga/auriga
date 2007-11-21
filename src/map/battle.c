@@ -2096,24 +2096,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				src_sd->state.arrow_atk = 1;
 			break;
 		case NJ_SYURIKEN:	// 手裏剣投げ
-			if(src_sd) {
-				if(!src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
-					int arr = atn_rand()%(src_sd->arrow_atk+1);
-					DMG_ADD( arr );
-				}
-				src_sd->state.arrow_atk = 1;
-			}
-			DMG_ADD( skill_lv*3 );
-			break;
 		case NJ_KUNAI:		// 苦無投げ
 			if(src_sd) {
-				if(!src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
-					int arr = atn_rand()%(src_sd->arrow_atk+1);
-					DMG_ADD( arr );
-				}
 				src_sd->state.arrow_atk = 1;
 			}
-			DMG_FIX( 300, 100 );
 			break;
 		case NJ_HUUMA:		// 風魔手裏剣投げ
 			{
@@ -2419,9 +2405,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					}
 				}
 				break;
-			case NJ_SYURIKEN:		// 手裏剣投げ
-				wd.damage += pc_checkskill(src_sd,NJ_TOBIDOUGU) * 3;
-				break;
 			}
 		}
 
@@ -2653,9 +2636,35 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage -= (t_def1 + t_def2 + ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1)) + status_get_mdef(target) + status_get_mdef2(target))/2;
 		}
 	}
+	// 手裏剣投げ必中ダメージ
+	if(skill_num==NJ_SYURIKEN) {
+		if(src_sd) {
+			DMG_ADD( pc_checkskill(src_sd,NJ_TOBIDOUGU) * 3 );
+			if(src_sd->arrow_atk) {
+				DMG_ADD( src_sd->arrow_atk );
+			}
+		}
+		DMG_ADD( skill_lv*4 );
+	}
+	// 苦無投げ必中ダメージ
+	if(skill_num==NJ_KUNAI) {
+		int kunai_damage=0;
+
+		if(src_sd) {
+			kunai_damage  += src_sd->star;
+			kunai_damage  += src_sd->spiritball*3;
+			kunai_damage  += src_sd->coin*3;
+			kunai_damage  += src_sd->bonus_damage;
+			kunai_damage  += src_sd->ranker_weapon_bonus;
+			if(src_sd->arrow_atk) {
+				kunai_damage  += src_sd->arrow_atk*3;
+			}
+		}
+		DMG_ADD( kunai_damage * 3 );
+	}
 
 	/* 28．星のかけら、気球の適用 */
-	if(src_sd) {
+	else if(src_sd) {
 		DMG_ADD( src_sd->spiritball*3 );
 		DMG_ADD( src_sd->coin*3 );
 		DMG_ADD( src_sd->bonus_damage );
