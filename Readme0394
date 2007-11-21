@@ -1,5 +1,14 @@
 ----------------------------------------
-//0418 [2007/11/20] by Cocoa
+//0420 [2007/11/22] by Cocoa
+
+・AthenaProject Rev.131よりmerge、thanks to Blazeさん
+	-> 「太陽と月と星の奇跡」「太陽と月と星の天使」は職業が拳聖のときのみ発動するように修正（battle.c, pc.c）
+
+・AthenaProject Rev.132より以下の項目をmerge、thanks to Blazeさん
+	-> 拳聖スキル「太陽と月と星の友」の発動確率を修正（battle.c）
+
+----------------------------------------
+//0419 [2007/11/20] by Cocoa
 
 ・create_arrow_db.txtをID順にソート
 	thanks to ぽぽりさん

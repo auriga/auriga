@@ -1216,12 +1216,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// 三段掌
 			if((skill = pc_checkskill(src_sd,MO_TRIPLEATTACK)) > 0 && src_sd->status.weapon <= WT_HUUMA)
 			{
-				int triple_rate = 0;
+				int triple_rate = 30 - skill;
 				if(sc && sc->data[SC_TRIPLEATTACK_RATE_UP].timer != -1) {
-					triple_rate = (30 - skill)*(150+50*sc->data[SC_TRIPLEATTACK_RATE_UP].val1)/100;
+					triple_rate  += triple_rate*(sc->data[SC_TRIPLEATTACK_RATE_UP].val2)/100;
 					status_change_end(src,SC_TRIPLEATTACK_RATE_UP,-1);
-				} else {
-					triple_rate = 30 - skill;
 				}
 				if(atn_rand()%100 < triple_rate) {
 					calc_flag.da = 2;
@@ -1863,7 +1861,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							continue;
 						if(src_sd->bl.m == psrc_sd->bl.m && pc_checkskill(psrc_sd,TK_COUNTER) > 0)
 						{
-							status_change_start(&psrc_sd->bl,SC_COUNTER_RATE_UP,1,0,0,0,battle_config.tk_counter_rate_up_keeptime,0);
+							status_change_start(&psrc_sd->bl,SC_COUNTER_RATE_UP,1,50+50*pc_checkskill(psrc_sd,SG_FRIEND),0,0,battle_config.tk_counter_rate_up_keeptime,0);
 						}
 					}
 				}
@@ -1895,7 +1893,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							continue;
 						if(src_sd->bl.m == psrc_sd->bl.m && pc_checkskill(psrc_sd,MO_TRIPLEATTACK) > 0)
 						{
-							status_change_start(&psrc_sd->bl,SC_TRIPLEATTACK_RATE_UP,skill,0,0,0,battle_config.tripleattack_rate_up_keeptime,0);
+							status_change_start(&psrc_sd->bl,SC_TRIPLEATTACK_RATE_UP,skill,50+50*skill,0,0,battle_config.tripleattack_rate_up_keeptime,0);
 						}
 					}
 				}
@@ -2825,7 +2823,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 38．太陽と月と星の奇跡 */
-	if(src_sd && wd.flag&BF_WEAPON && pc_checkskill(src_sd,SG_FEEL) > 2 && atn_rand()%10000 < battle_config.sg_miracle_rate)
+	if(src_sd && wd.flag&BF_WEAPON && (src_sd->status.class_==PC_CLASS_SG || src_sd->status.class_==PC_CLASS_SG2) && atn_rand()%10000 < battle_config.sg_miracle_rate)
 		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
 
 	/* 39．計算結果の最終補正 */
