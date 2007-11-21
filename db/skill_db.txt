@@ -389,7 +389,7 @@
 //386,0,0,4,0,1,1,1,yes,0,0,0,magic,0	//WS_CREATENUGGET#塊製造#
 387,0,6,4,0,1,1,1,no,0,0,0,weapon,0	//WS_CARTBOOST#カートブースト#
 //388,9,6,2,0,1,5,1,no,0,0,0,none,0	//WS_SYSTEMCREATE#自動攻撃装置製作#
-389,0,6,4,0,1,5,1,no,0,0,0,none,0	//ST_CHASEWALK#チェイスウォーク#
+389,0,6,4,0,1,5,1,yes,0,0,0,none,0	//ST_CHASEWALK#チェイスウォーク#
 390,0,0,4,0,1,5,1,yes,0,0,0,magic,0	//ST_REJECTSWORD#リジェクトソード#
 //391,0,0,4,0,1,1,1,yes,0,0,0,magic,0	//ST_STEALBACKPACK#スティールバックパック#
 //392,0,0,4,0,1,1,1,yes,0,0,0,magic,0	//CR_ALCHEMY#アルケミー#

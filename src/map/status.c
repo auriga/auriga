@@ -1713,7 +1713,7 @@ L_RECALC:
 		if(sd->sc.data[SC_MINDBREAKER].timer != -1) {
 			sd->matk1 += (sd->matk1*20*sd->sc.data[SC_MINDBREAKER].val1)/100;
 			sd->matk2 += (sd->matk2*20*sd->sc.data[SC_MINDBREAKER].val1)/100;
-			sd->mdef  -= (sd->mdef*12*sd->sc.data[SC_MINDBREAKER].val1)/100;
+			sd->mdef  -= (sd->mdef2*12*sd->sc.data[SC_MINDBREAKER].val1)/100;
 		}
 		if(sd->sc.data[SC_ENDURE].timer != -1) {
 			sd->mdef += sd->sc.data[SC_ENDURE].val1;

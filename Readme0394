@@ -1,4 +1,16 @@
 ----------------------------------------
+//0423 [2007/11/22] by Cocoa
+
+・AthenaProject Rev.140よりmerge、thanks to Rohypnolさん
+	-> マインドブレイカーによるMDEF減少効果を除算MDEF対象から減算MDEF対象に修正（status.c）
+
+・AthenaProject Rev.142より以下の項目をmerge、thanks to Blazeさん
+	-> Mobのランダム移動判定に射線チェックを追加（mob.c）
+
+・AthenaProject Rev.151より以下の項目をmerge、thanks to ViViさん
+	-> チェイスウォークを詠唱妨害可能に修正（skill_db.txt）
+
+----------------------------------------
 //0422 [2007/11/22] by Cocoa
 
 ・AthenaProject Rev.138より以下の項目をmerge、thanks to Blazeさん（battle.c, skill_cast_db.txt, skill_db.txt）
@@ -152,7 +164,7 @@
 ----------------------------------------
 //0408 [2007/11/16] by Cocoa
 
-・AthenaProject Rev.95より一部merge、thanks to Blazeさん
+・AthenaProject Rev.99より一部merge、thanks to Blazeさん
 	-> NPCスキル「インビジブル」の効果時間がskill_cast_dbの設定に関わらず、
 	   5秒になっていたのを修正（status.c）
 
