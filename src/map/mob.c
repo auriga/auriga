@@ -780,10 +780,11 @@ static int mob_randomwalk(struct mob_data *md,unsigned int tick)
 			int r = atn_rand();
 			x = md->bl.x + r%(d*2+1) - d;
 			y = md->bl.y + r/(d*2+1)%(d*2+1) - d;
-			if(map_getcell(md->bl.m,x,y,CELL_CHKPASS) && unit_walktoxy(&md->bl,x,y) &&
-				path_search_long_real(NULL,md->bl.m,md->bl.x,md->bl.y,x,y,CELL_CHKNOPASS)) {
+			if(map_getcell(md->bl.m,x,y,CELL_CHKPASS) && path_search_long_real(NULL,md->bl.m,md->bl.x,md->bl.y,x,y,CELL_CHKNOPASS)) {
+				if(unit_walktoxy(&md->bl,x,y)) {
 					md->move_fail_count = 0;
 					break;
+				}
 			}
 			if(i+1 >= retrycount) {
 				md->move_fail_count++;
@@ -1321,7 +1322,10 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
 
 	if(DIFF_TICK(tick,md->last_thinktime) < MIN_MOBTHINKTIME * 20)
 		return 0;
+
 	md->last_thinktime = tick;
+	if(md->target_id)
+		mob_unlocktarget(md,tick);
 
 	if(md->bl.prev == NULL || md->ud.skilltimer != -1) {
 		if(DIFF_TICK(tick,md->next_walktime) > MIN_MOBTHINKTIME * 20)

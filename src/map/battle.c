@@ -1156,13 +1156,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* ２．初期化補正 */
-	// 属性無し(!=無属性)
 	if( (src_sd && battle_config.pc_attack_attr_none) ||
 	    (src_md && battle_config.mob_attack_attr_none) ||
 	    (src_pd && battle_config.pet_attack_attr_none) ||
 	     src_hd ||
 	     src_mcd )
 	{
+		// 属性無し(!=無属性)
 		if (s_ele == ELE_NEUTRAL)
 			s_ele  = ELE_NONE;
 		if (s_ele_ == ELE_NEUTRAL)
@@ -1170,9 +1170,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	calc_flag.hitrate = status_get_hit(src) - t_flee + 80;	// 命中率計算
-	// 霧のHIT補正
-	if(skill_num == 0 && t_sc && t_sc->data[SC_FOGWALL].timer != -1)
+
+	if(skill_num == 0 && t_sc && t_sc->data[SC_FOGWALL].timer != -1) {
+		// 霧のHIT補正
 		calc_flag.hitrate -= 50;
+	}
 
 	/* ３．wd構造体の初期設定 */
 	wd.type      = 0;
@@ -1492,18 +1494,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 		}
 	}
-	// サクリファイス
-	if(sc && sc->data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {
+
+	if(sc && sc->data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {	// サクリファイス
 		calc_flag.hitrate = 1000000;
 		s_ele = s_ele_ = ELE_NEUTRAL;
 	}
-	// カード効果による必中ボーナス
-	if(src_sd && src_sd->perfect_hit > 0) {
+	if(src_sd && src_sd->perfect_hit > 0) {	// カード効果による必中ボーナス
 		if(atn_rand()%100 < src_sd->perfect_hit)
 			calc_flag.hitrate = 1000000;
 	}
-	// 対象が状態異常中の場合の必中ボーナス
-	if(calc_flag.hitrate < 1000000 && t_sc) {
+	if(calc_flag.hitrate < 1000000 && t_sc) {	// 対象が状態異常中の場合の必中ボーナス
 		if( t_sc->data[SC_SLEEP].timer != -1 ||
 		    t_sc->data[SC_STUN].timer != -1 ||
 		    t_sc->data[SC_FREEZE].timer != -1 ||
@@ -2095,9 +2095,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NJ_SYURIKEN:	// 手裏剣投げ
 		case NJ_KUNAI:		// 苦無投げ
-			if(src_sd) {
+			if(src_sd)
 				src_sd->state.arrow_atk = 1;
-			}
 			break;
 		case NJ_HUUMA:		// 風魔手裏剣投げ
 			{
@@ -2585,10 +2584,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 24．アイテムボーナスのフラグ処理 */
-	// 状態異常のレンジフラグ
-	//   addeff_range_flag  0:指定無し 1:近距離 2:遠距離 3,4:それぞれのレンジで状態異常を発動させない
-	//   flagがあり、攻撃タイプとflagが一致しないときは、flag+2する
 	if(src_sd && wd.flag&BF_WEAPON) {
+		// 状態異常のレンジフラグ
+		//   addeff_range_flag  0:指定無し 1:近距離 2:遠距離 3,4:それぞれのレンジで状態異常を発動させない
+		//   flagがあり、攻撃タイプとflagが一致しないときは、flag+2する
+
 		for(i=SC_STONE; i<=SC_BLEED; i++) {
 			if( (src_sd->addeff_range_flag[i-SC_STONE] == 1 && wd.flag&BF_LONG ) ||
 			    (src_sd->addeff_range_flag[i-SC_STONE] == 2 && wd.flag&BF_SHORT) ) {
@@ -2618,15 +2618,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
 
 	/* 27．スキル修正４（追加ダメージ） */
-	// マグナムブレイク状態
-	if(sc && sc->data[SC_MAGNUM].timer != -1) {
+	if(sc && sc->data[SC_MAGNUM].timer != -1) {	// マグナムブレイク状態
 		int bonus_damage = battle_attr_fix(wd.damage, ELE_FIRE, status_get_element(target)) * 20/100;	// 火属性攻撃ダメージの20%を追加
 		if(bonus_damage > 0) {
 			DMG_ADD( bonus_damage );
 		}
 	}
-	// ソウルブレイカー
-	if(skill_num == ASC_BREAKER) {
+	if(skill_num == ASC_BREAKER) {			// ソウルブレイカー
 		wd.damage += damage_sbr;		// 魔法ダメージ
 		wd.damage += 500 + (atn_rand() % 500);	// ランダムダメージ
 		if(t_def1 < 1000000) {
@@ -2634,46 +2632,36 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage -= (t_def1 + t_def2 + ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1)) + status_get_mdef(target) + status_get_mdef2(target))/2;
 		}
 	}
-	// 手裏剣投げ必中ダメージ
-	if(skill_num==NJ_SYURIKEN) {
+
+	/* 28．必中ダメージの加算 */
+	if(skill_num == NJ_SYURIKEN) {	// 手裏剣投げ
 		if(src_sd) {
-			DMG_ADD( pc_checkskill(src_sd,NJ_TOBIDOUGU) * 3 );
+			skill = pc_checkskill(src_sd,NJ_TOBIDOUGU);
+			DMG_ADD( skill * 3 );
 			if(src_sd->arrow_atk) {
 				DMG_ADD( src_sd->arrow_atk );
 			}
 		}
 		DMG_ADD( skill_lv*4 );
 	}
-	// 苦無投げ必中ダメージ
-	if(skill_num==NJ_KUNAI) {
-		int kunai_damage=0;
 
-		if(src_sd) {
-			kunai_damage  += src_sd->star;
-			kunai_damage  += src_sd->spiritball*3;
-			kunai_damage  += src_sd->coin*3;
-			kunai_damage  += src_sd->bonus_damage;
-			kunai_damage  += src_sd->ranker_weapon_bonus;
+	if(src_sd) {
+		// 星のかけら、気球の適用
+		int hit_bonus  = src_sd->spiritball * 3 + src_sd->coin * 3 + src_sd->bonus_damage;
+		int hit_damage = hit_bonus + src_sd->star + src_sd->ranker_weapon_bonus;
+
+		if(skill_num == NJ_KUNAI) {	// 苦無投げ
 			if(src_sd->arrow_atk) {
-				kunai_damage  += src_sd->arrow_atk*3;
+				hit_damage += src_sd->arrow_atk * 3;
 			}
-		}
-		DMG_ADD( kunai_damage * 3 );
-	}
-
-	/* 28．星のかけら、気球の適用 */
-	else if(src_sd) {
-		DMG_ADD( src_sd->spiritball*3 );
-		DMG_ADD( src_sd->coin*3 );
-		DMG_ADD( src_sd->bonus_damage );
-
-		wd.damage += src_sd->star;
-		wd.damage += src_sd->ranker_weapon_bonus;
-		if(calc_flag.lh) {
-			wd.damage2 += src_sd->star_;
-			wd.damage2 += src_sd->ranker_weapon_bonus_;
+			wd.damage += hit_damage * 3;
+		} else {
+			wd.damage += hit_damage;
+			if(calc_flag.lh) {
+				wd.damage2 += hit_bonus + src_sd->star_ + src_sd->ranker_weapon_bonus_;
 		}
 	}
+
 	/* 29．必中固定ダメージ */
 	if(src_sd && src_sd->special_state.fix_damage)
 		DMG_SET( src_sd->fix_damage );
@@ -2699,8 +2687,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage2 = 0;	// 念のため0を明示しておく
 	}
 
-	// 右手,短剣のみ
-	if(calc_flag.da > 0) {
+	if(calc_flag.da > 0) {	// 右手,短剣のみ
 		wd.type = 0x08;
 		switch (calc_flag.da) {
 			case 1:		// ダブルアタック
@@ -2746,8 +2733,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.dmg_lv  = ATK_LUCKY;
 	}
 
-	// 対象が完全回避をする設定がONなら
-	if(battle_config.enemy_perfect_flee) {
+	if(battle_config.enemy_perfect_flee) {	// 対象が完全回避をする設定がONなら
 		if(skill_num == 0 && skill_lv >= 0 && target_md != NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) ) {
 			wd.damage  = 0;
 			wd.damage2 = 0;
@@ -2764,9 +2750,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage2 = 1;
 	}
 
-	// bNoWeaponDamageでグランドクロスじゃない場合はダメージが0
 	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS)
+		// bNoWeaponDamageでグランドクロスじゃない場合はダメージが0
 		wd.damage = wd.damage2 = 0;
+	}
 
 	/* 34．ダメージ最終計算 */
 	if(skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS) {

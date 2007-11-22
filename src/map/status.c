@@ -1713,7 +1713,7 @@ L_RECALC:
 		if(sd->sc.data[SC_MINDBREAKER].timer != -1) {
 			sd->matk1 += (sd->matk1*20*sd->sc.data[SC_MINDBREAKER].val1)/100;
 			sd->matk2 += (sd->matk2*20*sd->sc.data[SC_MINDBREAKER].val1)/100;
-			sd->mdef  -= (sd->mdef2*12*sd->sc.data[SC_MINDBREAKER].val1)/100;
+			sd->mdef2 -= (sd->mdef2*12*sd->sc.data[SC_MINDBREAKER].val1)/100;
 		}
 		if(sd->sc.data[SC_ENDURE].timer != -1) {
 			sd->mdef += sd->sc.data[SC_ENDURE].val1;
@@ -3270,9 +3270,6 @@ int status_get_mdef(struct block_list *bl)
 			// 凍結、石化時は1.25倍
 			if(sc->data[SC_FREEZE].timer != -1 || (sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0))
 				mdef = mdef*125/100;
-			// マインドブレイカー
-			if(sc->data[SC_MINDBREAKER].timer != -1 && bl->type != BL_PC)
-				mdef -= (mdef*12*sc->data[SC_MINDBREAKER].val1)/100;
 			// ストーンスキン
 			if(sc->data[SC_STONESKIN].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (100 - 20 * sc->data[SC_STONESKIN].val1) / 100;
@@ -3369,6 +3366,9 @@ int status_get_mdef2(struct block_list *bl)
 		// エスカ
 		if(sc->data[SC_SKA].timer != -1 && bl->type == BL_MOB)
 			mdef2 = 90;
+		// マインドブレイカー
+		if(sc->data[SC_MINDBREAKER].timer != -1 && bl->type != BL_PC)
+			mdef2 -= (mdef2*12*sc->data[SC_MINDBREAKER].val1)/100;
 	}
 	return mdef2;
 }
