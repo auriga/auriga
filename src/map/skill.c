@@ -3759,6 +3759,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SG_MOON_COMFORT:
 	case SG_STAR_COMFORT:
 	case SL_KAIZEL:			/* カイゼル */
+	case SL_KAAHI:			/* カアヒ */
 	case SL_KAITE:			/* カイト */
 	case SL_KAUPE:			/* カウプ */
 	case GS_INCREASING:		/* インクリージングアキュアラシー */
@@ -3773,13 +3774,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case MER_AUTOBERSERK:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
-		break;
-	case SL_KAAHI://カアヒ
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		sc = status_get_sc(bl);
-		if(sc->data && sc->data[SC_KAAHI].timer != -1)
-			status_change_end(bl,SC_KAAHI,-1);
-		status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
 		break;
 	case NPC_STONESKIN:		/* ストーンスキン */
 	case NPC_ANTIMAGIC:		/* アンチマジック */

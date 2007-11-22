@@ -574,10 +574,6 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		tmd->target_id = mtg;	// ターゲットを戻す
 	}
 
-	//カアヒ
-	if(tsd && tsd->bl.type == BL_PC && src && src!=bl && !unit_isdead(src) && tsd->status.hp > 0 && skill_num==0 && tsd->sc.data[SC_KAAHI].timer!=-1)
-		pc_addkaahi(tsd,500+(status_get_amotion(src)),10);
-
 	// PCの反撃オートスペル
 	if(tsd && src != &tsd->bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0)
 	{
@@ -1220,10 +1216,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// 三段掌
 			if((skill = pc_checkskill(src_sd,MO_TRIPLEATTACK)) > 0 && src_sd->status.weapon <= WT_HUUMA)
 			{
-				int triple_rate = 30 - skill;
+				int triple_rate = 0;
 				if(sc && sc->data[SC_TRIPLEATTACK_RATE_UP].timer != -1) {
-					triple_rate  += triple_rate*(sc->data[SC_TRIPLEATTACK_RATE_UP].val2)/100;
+					triple_rate = (30 - skill)*(150+50*sc->data[SC_TRIPLEATTACK_RATE_UP].val1)/100;
 					status_change_end(src,SC_TRIPLEATTACK_RATE_UP,-1);
+				} else {
+					triple_rate = 30 - skill;
 				}
 				if(atn_rand()%100 < triple_rate) {
 					calc_flag.da = 2;
@@ -1865,7 +1863,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							continue;
 						if(src_sd->bl.m == psrc_sd->bl.m && pc_checkskill(psrc_sd,TK_COUNTER) > 0)
 						{
-							status_change_start(&psrc_sd->bl,SC_COUNTER_RATE_UP,1,50+50*pc_checkskill(psrc_sd,SG_FRIEND),0,0,battle_config.tk_counter_rate_up_keeptime,0);
+							status_change_start(&psrc_sd->bl,SC_COUNTER_RATE_UP,1,0,0,0,battle_config.tk_counter_rate_up_keeptime,0);
 						}
 					}
 				}
@@ -1897,7 +1895,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							continue;
 						if(src_sd->bl.m == psrc_sd->bl.m && pc_checkskill(psrc_sd,MO_TRIPLEATTACK) > 0)
 						{
-							status_change_start(&psrc_sd->bl,SC_TRIPLEATTACK_RATE_UP,skill,50+50*skill,0,0,battle_config.tripleattack_rate_up_keeptime,0);
+							status_change_start(&psrc_sd->bl,SC_TRIPLEATTACK_RATE_UP,skill,0,0,0,battle_config.tripleattack_rate_up_keeptime,0);
 						}
 					}
 				}
@@ -2819,11 +2817,27 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		pc_heal(src_sd,-hp,0);
 	}
 
-	/* 37．太陽と月と星の奇跡 */
+	/* 37．カアヒ */
+	if(skill_num == 0 && wd.flag&BF_WEAPON && t_sc && t_sc->data[SC_KAAHI].timer != -1)
+	{
+		int kaahi_lv = t_sc->data[SC_KAAHI].val1;
+		if(status_get_hp(target) < status_get_max_hp(target))
+		{
+			if(target->type == BL_MOB || status_get_sp(target) > 5*kaahi_lv)	// 対象がmob以外でSPが減少量以下のときは発生しない
+			{
+				int heal = skill_fix_heal(src, target, SL_KAAHI, 200 * kaahi_lv);
+				unit_heal(target,heal,-5*kaahi_lv);
+				if(target_sd)
+					clif_misceffect3(target_sd->fd, target_sd->bl.id, 7);	// 回復した本人にのみ回復エフェクト
+			}
+		}
+	}
+
+	/* 38．太陽と月と星の奇跡 */
 	if(src_sd && wd.flag&BF_WEAPON && (src_sd->status.class_==PC_CLASS_SG || src_sd->status.class_==PC_CLASS_SG2) && atn_rand()%10000 < battle_config.sg_miracle_rate)
 		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
 
-	/* 38．計算結果の最終補正 */
+	/* 39．計算結果の最終補正 */
 	if(!calc_flag.lh)
 		wd.damage2 = 0;
 	wd.amotion = status_get_amotion(src);

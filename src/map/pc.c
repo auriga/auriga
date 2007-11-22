@@ -473,64 +473,6 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 }
 
 /*==========================================
- * カアヒ回復タイマー
- *------------------------------------------
- */
-static int pc_kaahi_timer(int tid,unsigned int tick,int id,int data)
-{
-	struct map_session_data *sd = map_id2sd(id);
-	int i,hp,sp;
-
-	if( sd == NULL )
-		return 1;
-
-	for(i=0; i<sd->kaahi; i++) {
-		if(sd->kaahi_timer[i] != tid)
-			continue;
-		sd->kaahi--;
-
-		memmove(sd->kaahi_timer+i,sd->kaahi_timer+i+1,(sd->kaahi)*sizeof(int));
-		sd->kaahi_timer[sd->kaahi]=-1;
-
-		if(sd->sc.data[SC_KAAHI].timer==-1)
-			return 0;
-		hp = 200 * (sd->sc.data[SC_KAAHI].val1);
-		sp = 5 * (sd->sc.data[SC_KAAHI].val1);
-		if(sd->status.hp >= sd->status.max_hp || sd->status.sp <= sp) //HPが満タン 又は 消費SP以下だと効果なし（未満ではない）
-			return 0;
-		if(sd->status.max_hp < hp+sd->status.hp)
-			hp = sd->status.max_hp - sd->status.hp;
-		sd->status.sp -= sp;
-		sd->status.hp += hp;
-		clif_heal(sd->fd,SP_HP,hp);
-		clif_updatestatus(sd,SP_SP);
-	}
-
-	return 0;
-}
-
-int pc_addkaahi(struct map_session_data *sd,int interval,int max)
-{
-	nullpo_retr(0, sd);
-
-	if(max > MAX_SKILL_LEVEL)
-		max = MAX_SKILL_LEVEL;
-	if(sd->kaahi < 0)
-		sd->kaahi = 0;
-
-	if(sd->kaahi >= max) {
-		if(sd->kaahi_timer[0] != -1)
-			delete_timer(sd->kaahi_timer[0],pc_kaahi_timer);
-		memmove(sd->kaahi_timer,sd->kaahi_timer+1,(sd->kaahi-1)*sizeof(int));
-	} else
-		sd->kaahi++;
-	sd->kaahi_timer[sd->kaahi-1] = add_timer(gettick()+interval,pc_kaahi_timer,sd->bl.id,0);
-	//sd->kaahi_timer[sd->kaahi-1] = add_timer2(gettick()+interval,pc_kaahi_timer,sd->bl.id,0,TIMER_FREE_DATA);
-
-	return 0;
-}
-
-/*==========================================
  * Expペナルティ
  *   type&1 : 経験値更新
  *   type&2 : レディムプティオ
@@ -8063,7 +8005,7 @@ static int pc_rest_heal_sp(struct map_session_data *sd)
 		if(sd->tk_doridori_counter_sp) {
 			bonus_sp += 3;
 			status_change_start(&sd->bl,SC_HAPPY,pc_checkskill(sd,TK_SPTIME),0,0,0,1800000,0);
-			if((sd->status.class_==PC_CLASS_SG || sd->status.class_==PC_CLASS_SG2) && atn_rand()%10000 < battle_config.sg_angel_rate) {	// 太陽と月と星の天使
+			if(atn_rand()%10000 < battle_config.sg_angel_rate) {	// 太陽と月と星の天使
 				int i;
 				for(i = 0; i < 3; i++) {
 					sd->feel_index[i] = -1;
@@ -8856,7 +8798,6 @@ int do_init_pc(void)
 	add_timer_func_list(pc_autosave,"pc_autosave");
 	add_timer_func_list(pc_spiritball_timer,"pc_spiritball_timer");
 	add_timer_func_list(pc_coin_timer,"pc_coin_timer");
-	add_timer_func_list(pc_kaahi_timer,"pc_kaahi_timer");
 	add_timer_func_list(pc_extra,"pc_extra");
 	add_timer_func_list(pc_itemlimit_timer,"pc_itemlimit_timer");
 
