@@ -1,4 +1,17 @@
 ----------------------------------------
+//0425 [2007/11/23] by Rayce
+
+・skill_sit_count() および skill_sit_in() を最適化（skill.c）
+・「太陽と月と星の奇跡」の職業判定はs_classを参照するように修正（battle.c）
+
+・/doridoriに関する修正（clif.c, map.h）
+	-> doridori_counterをsn_doridoriに改名してstate構造体内に移動
+	-> tk_doridori_counter_hp, tk_doridori_counter_spをそれぞれ
+	   tk_doridori_hp, tk_doridori_spに改名してstate構造体内に移動
+	-> /doridoriはスーパーノービス、テコン系のみに効果が発揮されるようにチェック強化
+	-> packet_db.txtの sndoridori を doridori に改名
+
+----------------------------------------
 //0424 [2007/11/23] by Rayce
 
 ・0420における「太陽と月と星の友」の修正はmergeが中途半端なので巻き戻し（battle.c）

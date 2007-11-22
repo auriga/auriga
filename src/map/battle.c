@@ -2834,7 +2834,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 38．太陽と月と星の奇跡 */
-	if(src_sd && wd.flag&BF_WEAPON && (src_sd->status.class_==PC_CLASS_SG || src_sd->status.class_==PC_CLASS_SG2) && atn_rand()%10000 < battle_config.sg_miracle_rate)
+	if(src_sd && wd.flag&BF_WEAPON && src_sd->s_class.job == 25 && atn_rand()%10000 < battle_config.sg_miracle_rate)
 		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
 
 	/* 39．計算結果の最終補正 */

@@ -9817,21 +9817,10 @@ static int skill_sit_count(struct block_list *bl,va_list ap)
 	if(!pc_issit(sd))
 		return 0;
 
-	if(flag&1) {
-		if(pc_checkskill(sd,RG_GANGSTER) > 0) {
-			(*c)++;
-			return 0;
-		}
-	}
-	if(flag&2) {
-		if(sd->status.class_ == PC_CLASS_TK ||
-		   sd->status.class_ == PC_CLASS_SG ||
-		   sd->status.class_ == PC_CLASS_SG2 ||
-		   sd->status.class_ == PC_CLASS_SL) {
-			(*c)++;
-			return 0;
-		}
-	}
+	if(flag&1 && pc_checkskill(sd,RG_GANGSTER) > 0)
+		(*c)++;
+	else if(flag&2 && sd->s_class.job >= 24 && sd->s_class.job <= 27)
+		(*c)++;
 
 	return 0;
 }
@@ -9850,17 +9839,10 @@ static int skill_sit_in(struct block_list *bl,va_list ap)
 	if(!pc_issit(sd))
 		return 0;
 
-	if(flag&1) {
-		if(pc_checkskill(sd,RG_GANGSTER) > 0)
-			sd->state.gangsterparadise = 1;
-	}
-	if(flag&2) {
-		if(sd->status.class_ == PC_CLASS_TK ||
-		   sd->status.class_ == PC_CLASS_SG ||
-		   sd->status.class_ == PC_CLASS_SG2 ||
-		   sd->status.class_ == PC_CLASS_SL)
-			sd->state.taekwonrest = 1;
-	}
+	if(flag&1 && pc_checkskill(sd,RG_GANGSTER) > 0)
+		sd->state.gangsterparadise = 1;
+	else if(flag&2 && sd->s_class.job >= 24 && sd->s_class.job <= 27)
+		sd->state.taekwonrest = 1;
 
 	return 0;
 }

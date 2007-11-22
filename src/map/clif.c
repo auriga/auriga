@@ -12618,16 +12618,20 @@ static void clif_parse_GMReqNoChatCount(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * スパノビの/doridoriによるSPR2倍
+ * /doridoriによるSPR2倍
  *------------------------------------------
  */
-static void clif_parse_sn_doridori(int fd,struct map_session_data *sd, int cmd)
+static void clif_parse_doridori(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-	sd->doridori_counter = 1;
-	sd->tk_doridori_counter_hp = 1;
-	sd->tk_doridori_counter_sp = 1;
+	if(sd->s_class.job == 23) {
+		sd->state.sn_doridori = 1;
+	}
+	else if(sd->state.taekwonrest && sd->s_class.job >= 24 && sd->s_class.job <= 27) {
+		sd->state.tk_doridori_hp = 1;
+		sd->state.tk_doridori_sp = 1;
+	}
 
 	return;
 }
@@ -13606,7 +13610,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_GMHide,                    "gmhide"                    },
 		{ clif_parse_GMReqNoChat,               "gmreqnochat"               },
 		{ clif_parse_GMReqNoChatCount,          "gmreqnochatcount"          },
-		{ clif_parse_sn_doridori,               "sndoridori"                },
+		{ clif_parse_doridori,                  "doridori"                  },
 		{ clif_parse_sn_explosionspirits,       "snexplosionspirits"        },
 		{ clif_parse_wisexin,                   "wisexin"                   },
 		{ clif_parse_wisexlist,                 "wisexlist"                 },

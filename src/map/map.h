@@ -337,6 +337,9 @@ struct map_session_data {
 		unsigned joinchat : 1;	// 参加or主催
 		unsigned mail_appending : 1;
 		unsigned snovice_dead_flag : 1;
+		unsigned sn_doridori : 1;
+		unsigned tk_doridori_hp : 1;
+		unsigned tk_doridori_sp : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -530,8 +533,6 @@ struct map_session_data {
 	short coin, coin_old;
 	int coin_timer[MAX_SKILL_LEVEL];
 
-	short doridori_counter;
-
 	int reg_num;
 	struct script_reg *reg;
 	int regstr_num;
@@ -581,8 +582,6 @@ struct map_session_data {
 
 	int tk_nhealhp,tk_nhealsp;	// 安らかな休息,楽しい休息
 	int inchealresthptick,inchealrestsptick;
-	short tk_doridori_counter_hp;
-	short tk_doridori_counter_sp;
 
 	int ranking_point[MAX_RANKING];
 	short am_pharmacy_success;

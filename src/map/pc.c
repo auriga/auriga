@@ -1033,10 +1033,6 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->inchealresthptick = 0;
 	sd->inchealrestsptick = 0;
 
-	sd->doridori_counter       = 0;
-	sd->tk_doridori_counter_hp = 0;
-	sd->tk_doridori_counter_sp = 0;
-
 	sd->spiritball = 0;
 	sd->repair_target = 0;
 
@@ -7814,11 +7810,11 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 
 	if(sd->nshealsp > 0) {
 		if(sd->inchealsptick >= battle_config.natural_heal_skill_interval && sd->status.sp < sd->status.max_sp) {
-			if(sd->doridori_counter && sd->s_class.job == 23)
-				bonus = sd->nshealsp*2;
-			else
-				bonus = sd->nshealsp;
-			sd->doridori_counter = 0;
+			bonus = sd->nshealsp;
+			if(sd->state.sn_doridori && sd->s_class.job == 23) {
+				bonus *= 2;
+			}
+			sd->state.sn_doridori = 0;
 			while(sd->inchealsptick >= battle_config.natural_heal_skill_interval) {
 				sd->inchealsptick -= battle_config.natural_heal_skill_interval;
 				if(sd->status.sp + bonus <= sd->status.max_sp) {
@@ -7951,9 +7947,10 @@ static int pc_rest_heal_hp(struct map_session_data *sd)
 	if(sd->inchealresthptick >= interval) {
 		int bonus_hp = sd->tk_nhealhp;
 
-		if(sd->tk_doridori_counter_hp)
+		if(sd->state.tk_doridori_hp) {
 			bonus_hp += 30;
-		sd->tk_doridori_counter_hp = 0;
+		}
+		sd->state.tk_doridori_hp = 0;
 
 		while(sd->inchealresthptick >= interval) {
 			if(pc_issit(sd)) {
@@ -8002,7 +7999,7 @@ static int pc_rest_heal_sp(struct map_session_data *sd)
 		int bonus_sp = sd->tk_nhealsp;
 		int skilllv;
 
-		if(sd->tk_doridori_counter_sp) {
+		if(sd->state.tk_doridori_sp) {
 			bonus_sp += 3;
 			status_change_start(&sd->bl,SC_HAPPY,pc_checkskill(sd,TK_SPTIME),0,0,0,1800000,0);
 			if(atn_rand()%10000 < battle_config.sg_angel_rate) {	// 太陽と月と星の天使
@@ -8018,7 +8015,7 @@ static int pc_rest_heal_sp(struct map_session_data *sd)
 				clif_angel_message(sd);
 			}
 		}
-		sd->tk_doridori_counter_sp = 0;
+		sd->state.tk_doridori_sp = 0;
 
 		if((skilllv = pc_checkskill(sd,SL_KAINA)) > 0)
 			bonus_sp += bonus_sp*(30+10*skilllv)/100;
