@@ -669,6 +669,44 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 					clif_skill_fail(sd,skillid,0,0);
 			}
 		}
+		/* テコン蹴り構え */
+		if(sd && sd->sc.data[SC_TKCOMBO].timer == -1) {
+			int id = 0, lv = 0;
+			if(sd->sc.data[SC_READYSTORM].timer != -1 && (lv = pc_checkskill(sd,TK_STORMKICK)) > 0 && atn_rand()%100 < 15) {
+				// フェオリチャギ
+				id = TK_STORMKICK;
+			}
+			else if(sd->sc.data[SC_READYDOWN].timer != -1 && (lv = pc_checkskill(sd,TK_DOWNKICK)) > 0 && atn_rand()%100 < 15) {
+				// ネリョチャギ
+				id = TK_DOWNKICK;
+			}
+			else if(sd->sc.data[SC_READYTURN].timer != -1 && (lv = pc_checkskill(sd,TK_TURNKICK)) > 0 && atn_rand()%100 < 15) {
+				// トルリョチャギ
+				id = TK_TURNKICK;
+			}
+			else if(sd->sc.data[SC_READYCOUNTER].timer != -1 && (lv = pc_checkskill(sd,TK_COUNTER)) > 0) {
+				// アプチャオルリギ
+				int counter_rate = 20;
+				if(sd->sc.data[SC_COUNTER_RATE_UP].timer != -1 && (skill = pc_checkskill(sd,SG_FRIEND)) > 0) {
+					counter_rate += counter_rate * (50 + 50 * skill);
+					status_change_end(&sd->bl,SC_COUNTER_RATE_UP,-1);
+				}
+				if(atn_rand()%100 < counter_rate)
+					id = TK_COUNTER;
+			}
+			if(id > 0 && lv > 0) {
+				int delay = status_get_adelay(src) + 2000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
+				// TKコンボ入力時間の最低保障追加
+				if(delay < battle_config.tkcombo_delay_lower_limits) {
+					delay = battle_config.tkcombo_delay_lower_limits;
+				}
+				if(delay > 0) {
+					status_change_start(&sd->bl,SC_TKCOMBO,id,lv,0,0,delay,0);
+					sd->ud.attackabletime = tick + delay;
+				}
+				clif_skill_nodamage(&sd->bl,&sd->bl,id-1,pc_checkskill(sd,id-1),1);
+			}
+		}
 		/* エンチャントデットリーポイズン(猛毒効果) */
 		if(sd && sd->sc.data[SC_EDP].timer != -1 && !(status_get_mode(bl)&0x20) && atn_rand() % 10000 < sd->sc.data[SC_EDP].val2 * sc_def_vit) {
 			int lv = sd->sc.data[SC_EDP].val1;

@@ -1070,7 +1070,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		int lh;			// 左手
 		int hitrate;		// ヒット確率
 		int autocounter;	// オートカウンターON
-		int da;			// 連撃判定（0〜6）
+		int da;			// 連撃判定（0〜2）
 		int idef;		// DEF無視
 		int idef_;		// DEf無視（左手）
 		int nocardfix;		// カード補正なし
@@ -1184,7 +1184,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 	if(skill_num == GS_DESPERADO)
 		wd.div_ = 1;
-	if(wd.div_ <= 0 || wd.div_ >= 251)			// 251〜254 = テコン蹴り、255 = 三段掌として予約済
+	else if(wd.div_ <= 0 || wd.div_ >= 255)			// 255 = 三段掌として予約済
 		wd.div_ = 1;
 
 	if(src_sd) {
@@ -1218,12 +1218,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// 三段掌
 			if((skill = pc_checkskill(src_sd,MO_TRIPLEATTACK)) > 0 && src_sd->status.weapon <= WT_HUUMA)
 			{
-				int triple_rate = 0;
+				int triple_rate = 30 - skill;
 				if(sc && sc->data[SC_TRIPLEATTACK_RATE_UP].timer != -1) {
-					triple_rate = (30 - skill)*(150+50*sc->data[SC_TRIPLEATTACK_RATE_UP].val1)/100;
+					triple_rate += triple_rate * (50 + 50 * sc->data[SC_TRIPLEATTACK_RATE_UP].val1) / 100;
 					status_change_end(src,SC_TRIPLEATTACK_RATE_UP,-1);
-				} else {
-					triple_rate = 30 - skill;
 				}
 				if(atn_rand()%100 < triple_rate) {
 					calc_flag.da = 2;
@@ -1240,36 +1238,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if((skill = pc_checkskill(src_sd,GS_CHAINACTION)) > 0 && src_sd->weapontype1 == WT_HANDGUN && atn_rand()%100 < skill*5) {
 				calc_flag.da = 1;
 				break;
-			}
-			// フェオリチャギ
-			if(sc && sc->data[SC_READYSTORM].timer != -1 && pc_checkskill(src_sd,TK_STORMKICK) > 0 && atn_rand()%100 < 15) {
-				calc_flag.da = 3;
-				break;
-			}
-			// ネリョチャギ
-			if(sc && sc->data[SC_READYDOWN].timer != -1 && pc_checkskill(src_sd,TK_DOWNKICK) > 0 && atn_rand()%100 < 15) {
-				calc_flag.da = 4;
-				break;
-			}
-			// トルリョチャギ
-			if(sc && sc->data[SC_READYTURN].timer != -1 &&  pc_checkskill(src_sd,TK_TURNKICK) > 0 && atn_rand()%100 < 15) {
-				calc_flag.da = 5;
-				break;
-			}
-			// アプチャオルリギ
-			if(sc && sc->data[SC_READYCOUNTER].timer != -1 && pc_checkskill(src_sd,TK_COUNTER) > 0)
-			{
-				int counter_rate = 0;
-				if(sc->data[SC_COUNTER_RATE_UP].timer != -1 && (skill = pc_checkskill(src_sd,SG_FRIEND)) > 0) {
-					counter_rate = 30+10*skill;
-					status_change_end(src,SC_COUNTER_RATE_UP,-1);
-				} else {
-					counter_rate = 20;
-				}
-				if(atn_rand()%100 < counter_rate) {
-					calc_flag.da = 6;
-					break;
-				}
 			}
 			// サイドワインダー等
 			if(src_sd->double_rate > 0 && atn_rand()%100 < src_sd->double_rate) {
@@ -2697,12 +2665,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			case 2:		// 三段掌
 				wd.div_ = 255;
 				break;
-			case 3:		// フェオリチャギ
-			case 4:		// ネリョチャギ
-			case 5:		// トルリョチャギ
-			case 6:		// アプチャオルリギ
-				wd.div_ = 248+calc_flag.da;
-				break;
 		}
 	}
 
@@ -3584,22 +3546,6 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if(wd.damage> 0 && tsd && pc_checkskill(tsd,RG_PLAGIARISM) && sc && sc->data[SC_PRESERVE].timer == -1) {
 			skill_clone(tsd,MO_TRIPLEATTACK,pc_checkskill(sd, MO_TRIPLEATTACK));
 		}
-	} else if(wd.div_ >= 251 && wd.div_ <= 254 && sd) {	// テコン蹴り系統
-		int delay = 0;
-		int skillid = TK_STORMKICK + 2*(wd.div_-251);
-		int skilllv;
-		delay = status_get_adelay(src);
-		if(wd.damage+wd.damage2 < status_get_hp(target)) {
-			if((skilllv = pc_checkskill(sd, skillid)) > 0) {
-				delay += 2000 - 4*status_get_agi(src) - 2*status_get_dex(src);
-				// TKコンボ入力時間の最低保障追加
-				if( delay < battle_config.tkcombo_delay_lower_limits )
-					delay = battle_config.tkcombo_delay_lower_limits;
-			}
-			status_change_start(src,SC_TKCOMBO,skillid,skilllv,0,0,delay,0);
-		}
-		sd->ud.attackabletime = tick + delay;
-		clif_skill_nodamage(&sd->bl,&sd->bl,skillid-1,pc_checkskill(sd,skillid-1),1);
 	} else {
 		clif_damage(src, target, tick, wd.amotion, wd.dmotion, wd.damage, wd.div_, wd.type, wd.damage2);
 
@@ -3911,7 +3857,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 		switch(skillid) {
 		case MO_CHAINCOMBO:	// 連打掌
-			delay = 1000 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
+			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
 			if(damage < status_get_hp(bl)) {
 				if(pc_checkskill(sd, MO_COMBOFINISH) > 0 && sd->spiritball > 0) { // 猛龍拳取得＆気球保持時は+300ms
 					delay += 300 * battle_config.combo_delay_rate /100;
@@ -3927,7 +3873,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			}
 			break;
 		case MO_COMBOFINISH:	// 猛龍拳
-			delay = 700 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
+			delay = 700 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
 			if(damage < status_get_hp(bl)) {
 				// 阿修羅覇凰拳取得＆気球4個保持＆爆裂波動状態時は+300ms
 				// 伏虎拳取得時も+300ms
@@ -3948,7 +3894,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			}
 			break;
 		case CH_TIGERFIST:	// 伏虎拳
-			delay = 1000 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
+			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
 			if(damage < status_get_hp(bl)) {
 				if(pc_checkskill(sd, CH_CHAINCRUSH) > 0) { // 連柱崩撃取得時は+300ms
 					delay += 300 * battle_config.combo_delay_rate /100;
@@ -3964,7 +3910,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			}
 			break;
 		case CH_CHAINCRUSH:	// 連柱崩撃
-			delay = 1000 - 4 * status_get_agi(src) - 2 *  status_get_dex(src);
+			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
 			if(damage < status_get_hp(bl)) {
 				// 伏虎拳習得または阿修羅習得＆気球1個保持＆爆裂波動時ディレイ
 				if(pc_checkskill(sd, CH_TIGERFIST) > 0 || (pc_checkskill(sd, MO_EXTREMITYFIST) > 0 && sd->spiritball >= 1 && sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1))
