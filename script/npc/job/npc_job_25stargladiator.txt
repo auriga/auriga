@@ -806,7 +806,7 @@ comodo.gat,172,230,3	script	放浪武道家	730,{
 // 試験
 //------------------------------------------
 
-job_star.gat,29,32,3	script	タル	59,{
+job_star.gat,29,33,0	script	タル	59,{
 	if(Class != 24) {
 		mes "[タル]";
 		mes "転職試験を邪魔しないでくださいね。";
@@ -971,39 +971,36 @@ job_star.gat,29,32,3	script	タル	59,{
 			mes "そこに座って";
 			mes "太陽の偉大さを感じてください。";
 			set CHANGE_SG,4;
-			set @star_test,gettimetick(0);
 			close;
 		}
 	case 4:
-		if(@star_test == 0) //タイマーが作動していなかったら
-			set @star_test,gettimetick(0);
-		if((gettimetick(0)-@star_test) >= 60000) {
+		if(rand(5)) {
 			mes "[タル]";
-			mes "太陽がどんな存在なのか";
-			mes "分かりましたか？";
-			mes "頭で理解するよりも";
-			mes "胸で感じる方がもっと重要です。";
+			mes "静かに心を沈め……";
+			mes "目をつむって……";
+			mes "徐々に近付く";
+			mes "太陽の暖かさを感じてください。";
 			next;
 			mes "[タル]";
-			mes "お疲れ様でした。";
-			mes "十分に理解していると信じて";
-			mes "月の部屋へ送ってさしあげます。";
-			set @star_test,0;
-			set CHANGE_SG,5;
-			close2;
-			warp "job_star.gat",100,13;
-			end;
+			mes "次の話は太陽を存分に";
+			mes "感じれた後に続けることにします。";
+			close;
 		}
 		mes "[タル]";
-		mes "静かに心を沈め……";
-		mes "目をつむって……";
-		mes "徐々に近付く";
-		mes "太陽の暖かさを感じてください。";
+		mes "太陽がどんな存在なのか";
+		mes "分かりましたか？";
+		mes "頭で理解するよりも";
+		mes "胸で感じる方がもっと重要です。";
 		next;
 		mes "[タル]";
-		mes "次の話は太陽を存分に";
-		mes "感じれた後に続けることにします。";
-		close;
+		mes "お疲れ様でした。";
+		mes "十分に理解していると信じて";
+		mes "月の部屋へ送ってさしあげます。";
+		set @star_test,0;
+		set CHANGE_SG,5;
+		close2;
+		warp "job_star.gat",100,13;
+		end;
 	case 5:
 	case 6:
 		mes "[タル]";
@@ -1028,7 +1025,7 @@ job_star.gat,29,32,3	script	タル	59,{
 	}
 }
 
-job_star.gat,95,33,3	script	ピリュ	106,{
+job_star.gat,95,33,0	script	ピリュ	106,{
 	if(Class != 24) {
 		mes "[ピリュ]";
 		mes "転職試験の邪魔になる。";
@@ -1283,7 +1280,7 @@ job_star.gat,95,33,3	script	ピリュ	106,{
 	}
 }
 
-job_star.gat,161,33,3	script	チヒ	77,{
+job_star.gat,161,33,0	script	チヒ	77,{
 	if(Class != 24) {
 		mes "[チヒ]";
 		mes "星明かりが美しいでしょう？";
