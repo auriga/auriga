@@ -347,16 +347,6 @@ L_RECALC:
 	if((skill = pc_checkskill(sd,MC_INCCARRY)) > 0)	// 所持量増加
 		sd->max_weight += skill*2000;
 
-	if((skill = pc_checkskill(sd,SG_KNOWLEDGE)) > 0)	// 太陽と月と星の知識
-	{
-		if(battle_config.check_knowlege_map) {	// 場所チェックを行なう
-			if(sd->bl.m == sd->feel_index[0] || sd->bl.m == sd->feel_index[1] || sd->bl.m == sd->feel_index[2])
-				sd->max_weight += sd->max_weight*skill/10;
-		} else {
-			sd->max_weight += sd->max_weight*skill/10;
-		}
-	}
-
 	if(first&1) {
 		sd->weight = 0;
 		for(i=0; i<MAX_INVENTORY; i++) {

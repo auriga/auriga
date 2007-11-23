@@ -180,7 +180,7 @@ int mob_once_spawn(struct map_session_data *sd,const char *mapname,
 		if(x <= 0) x = sd->bl.x;
 		if(y <= 0) y = sd->bl.y;
 	} else if(x <= 0 || y <= 0) {
-		printf("mob_once_spawn: ??\n");
+		printf("mob_once_spawn: Map %s, Class %d\n",mapname,class_);
 	}
 
 	for(count=0; count<amount; count++) {
