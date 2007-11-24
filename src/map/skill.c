@@ -2330,7 +2330,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NJ_ISSEN:		/* 一閃 */
 		{
 			int dist = unit_distance2(src,bl);
-			if(sd) {
+			if(sd && (skillid == KN_CHARGEATK && !map[sd->bl.m].flag.gvg)) {
 				int dx = bl->x - sd->bl.x;
 				int dy = bl->y - sd->bl.y;
 

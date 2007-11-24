@@ -1211,16 +1211,6 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// ステータス初期計算など
 	status_calc_pc(sd,1);
 
-	if((skill = pc_checkskill(sd,SG_KNOWLEDGE)) > 0)	// 太陽と月と星の知識
-	{
-		if(battle_config.check_knowlege_map) {	// 場所チェックを行なう
-			if(sd->bl.m == sd->feel_index[0] || sd->bl.m == sd->feel_index[1] || sd->bl.m == sd->feel_index[2])
-				sd->max_weight += sd->max_weight*skill/10;
-		} else {
-			sd->max_weight += sd->max_weight*skill/10;
-		}
-	}
-
 	// クローンスキルの初期化
 	if((lv = pc_checkskill2(sd,RG_PLAGIARISM)) > 0) {
 		sd->cloneskill_id = pc_readglobalreg(sd,"PC_CLONESKILL_ID");
