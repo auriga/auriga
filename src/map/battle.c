@@ -4779,6 +4779,7 @@ int battle_config_read(const char *cfgName)
 		{ "gvg_edp_down_rate",                  &battle_config.gvg_edp_down_rate,                  100      },
 		{ "pvp_edp_down_rate",                  &battle_config.pvp_edp_down_rate,                  100      },
 		{ "pk_edp_down_rate",                   &battle_config.pk_edp_down_rate,                   100      },
+		{ "gvg_chargeattack_move",              &battle_config.gvg_chargeattack_move,              0        },
 		{ "player_attack_direction_change",     &battle_config.pc_attack_direction_change,         1        },
 		{ "monster_attack_direction_change",    &battle_config.monster_attack_direction_change,    0        },
 		{ "player_land_skill_limit",            &battle_config.pc_land_skill_limit,                1        },

@@ -227,6 +227,7 @@ extern struct Battle_Config {
 	int gvg_edp_down_rate;
 	int pvp_edp_down_rate;
 	int pk_edp_down_rate;
+	int gvg_chargeattack_move;
 	int pc_attack_direction_change;
 	int monster_attack_direction_change;
 	int pc_land_skill_limit;
