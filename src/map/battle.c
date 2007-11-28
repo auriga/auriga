@@ -2625,7 +2625,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage += hit_damage * 3;
 		} else {
 			wd.damage += hit_damage;
-			if(calc_flag.lh) {
+			if(calc_flag.lh)
 				wd.damage2 += hit_bonus + src_sd->star_ + src_sd->ranker_weapon_bonus_;
 		}
 	}
@@ -2712,7 +2712,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage2 = 1;
 	}
 
-	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS)
+	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS) {
 		// bNoWeaponDamageでグランドクロスじゃない場合はダメージが0
 		wd.damage = wd.damage2 = 0;
 	}

@@ -974,7 +974,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 {
 	struct map_session_data *sd = map_id2sd(id);
-	int i,lv,skill;
+	int i,lv;
 	unsigned int tick = gettick();
 
 	if(sd == NULL)
