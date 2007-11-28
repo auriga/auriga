@@ -1435,7 +1435,7 @@ L_RECALC:
 	}
 
 	if((skill = pc_checkskill(sd,BS_SKINTEMPER)) > 0) { // スキンテンパリング
-		sd->subele[ELE_FIRE]    += skill*5;
+		sd->subele[ELE_FIRE]    += skill*4;
 		sd->subele[ELE_NEUTRAL] += skill*1;
 	}
 

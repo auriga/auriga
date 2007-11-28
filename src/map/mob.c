@@ -1619,6 +1619,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 				md->dir = map_calc_dir(src,md->bl.x,md->bl.y);
 				md->mode |= 0x1;
 				md->state.special_mob_ai++;
+				md->speed = mob_db[md->class_].speed;
 				status_change_start(&md->bl,SC_SELFDESTRUCTION,0,0,0,md->dir,0,0);
 			}
 		}
