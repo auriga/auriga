@@ -2901,14 +2901,16 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		if(flag&1) {
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1]) {
-				int dist = 0;
+				int count;
 				if(skillid == MG_FIREBALL) {
 					/* ファイヤーボールなら中心からの距離を計算 */
-					dist = unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
+					count = unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
+				} else {
+					count = skill_area_temp[0];
 				}
 				if(skillid != HW_NAPALMVULCAN)
-					dist |= 0x0500;
-				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,dist);
+					count |= 0x0500;
+				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,count);
 			}
 		} else {
 			int ar = 0;
@@ -4099,16 +4101,15 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case KN_BRANDISHSPEAR:	/* ブランディッシュスピア */
 	case ML_BRANDISH:
 		{
-			int c, ar, n = 4;
+			int c, n = 4;
 			int dir = map_calc_dir(src,bl->x,bl->y);
 			struct square tc;
 
-			ar = skilllv / 3;
 			skill_brandishspear_first(&tc,dir,bl->x,bl->y);
 			skill_brandishspear_dir(&tc,dir,4);
 
 			/* 範囲4 */
-			if(skilllv == 10) {
+			if(skilllv > 9) {
 				for(c=1; c<4; c++) {
 					map_foreachinarea(skill_area_sub,
 						bl->m,tc.val1[c],tc.val2[c],tc.val1[c],tc.val2[c],(BL_CHAR|BL_SKILL),
@@ -9485,7 +9486,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
  * ディレイ計算
  *------------------------------------------
  */
-int skill_delayfix( struct block_list *bl, int delay, int cast )
+int skill_delayfix(struct block_list *bl, int delay, int cast)
 {
 	struct status_change *sc;
 
@@ -9528,8 +9529,8 @@ int skill_delayfix( struct block_list *bl, int delay, int cast )
  * ブランディッシュスピア 初期範囲決定
  *----------------------------------------
  */
-static void skill_brandishspear_first(struct square *tc,int dir,int x,int y){
-
+static void skill_brandishspear_first(struct square *tc,int dir,int x,int y)
+{
 	nullpo_retv(tc);
 
 	if(dir == 0){
