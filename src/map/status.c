@@ -1221,17 +1221,6 @@ L_RECALC:
 	sd->matk1 += sd->paramc[3]+(sd->paramc[3]/5)*(sd->paramc[3]/5);
 	sd->matk2 += sd->paramc[3]+(sd->paramc[3]/7)*(sd->paramc[3]/7);
 
-	// アイテム補正
-	if(sd->sc.count > 0) {
-		if(sd->sc.data[SC_MEAL_INCATK].timer != -1) {
-			sd->base_atk += sd->sc.data[SC_MEAL_INCATK].val1;
-		}
-		if(sd->sc.data[SC_MEAL_INCMATK].timer != -1) {
-			sd->matk1 += sd->sc.data[SC_MEAL_INCMATK].val1;
-			sd->matk2 += sd->sc.data[SC_MEAL_INCMATK].val1;
-		}
-	}
-
 	if(sd->matk1 < sd->matk2) {
 		int temp = sd->matk2;
 		sd->matk2 = sd->matk1;
@@ -1247,6 +1236,12 @@ L_RECALC:
 
 	// アイテム補正
 	if(sd->sc.count > 0) {
+		if(sd->sc.data[SC_MEAL_INCATK].timer != -1)
+			sd->base_atk += sd->sc.data[SC_MEAL_INCATK].val1;
+		if(sd->sc.data[SC_MEAL_INCMATK].timer != -1) {
+			sd->matk1 += sd->sc.data[SC_MEAL_INCMATK].val1;
+			sd->matk2 += sd->sc.data[SC_MEAL_INCMATK].val1;
+		}
 		if(sd->sc.data[SC_MEAL_INCHIT].timer != -1)
 			sd->hit += sd->sc.data[SC_MEAL_INCHIT].val1;
 		if(sd->sc.data[SC_MEAL_INCFLEE].timer != -1)
@@ -1259,6 +1254,23 @@ L_RECALC:
 			sd->def += sd->sc.data[SC_MEAL_INCDEF].val1;
 		if(sd->sc.data[SC_MEAL_INCMDEF].timer != -1)
 			sd->mdef += sd->sc.data[SC_MEAL_INCMDEF].val1;
+	}
+
+	if(sd->sc.data[SC_MADNESSCANCEL].timer != -1) {	// マッドネスキャンセラー
+		sd->base_atk += 100;
+	}
+	if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ガトリングフィーバー
+		sd->base_atk += 30+(sd->sc.data[SC_GATLINGFEVER].val1*10);
+	}
+	if(sd->sc.data[SC_VOLCANO].timer != -1 && sd->def_ele == ELE_FIRE) {	// ボルケーノ
+		sd->base_atk += sd->sc.data[SC_VOLCANO].val3;
+	}
+	if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// 戦太鼓の響き
+		sd->base_atk += sd->sc.data[SC_DRUMBATTLE].val2;
+		//idx = sd->equip_index[8];
+		// 左手には適用しない
+		//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
+		//	sd->watk_ += sd->sc.data[SC_DRUMBATTLE].val2;
 	}
 
 	if(sd->base_atk < 1)
@@ -1664,26 +1676,18 @@ L_RECALC:
 		}
 
 		if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// 戦太鼓の響き
-			sd->watk += sd->sc.data[SC_DRUMBATTLE].val2;
 			sd->def  += sd->sc.data[SC_DRUMBATTLE].val3;
-			idx = sd->equip_index[8];
-			// 左手には適用しない
-			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
-			//	sd->watk_ += sd->sc.data[SC_DRUMBATTLE].val2;
 		}
 		if(sd->sc.data[SC_NIBELUNGEN].timer != -1) {	// ニーベルングの指輪
 			idx = sd->equip_index[9];
 			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
 				sd->watk += sd->sc.data[SC_NIBELUNGEN].val2;
-			idx = sd->equip_index[8];
+			//idx = sd->equip_index[8];
 			// 左手には適用しない
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
 			//	sd->watk_ += sd->sc.data[SC_NIBELUNGEN].val2;
 		}
 
-		if(sd->sc.data[SC_VOLCANO].timer != -1 && sd->def_ele == ELE_FIRE) {	// ボルケーノ
-			sd->watk += sd->sc.data[SC_VOLCANO].val3;
-		}
 		if(sd->sc.data[SC_INCATK2].timer != -1) {
 			sd->watk = sd->watk*(100+sd->sc.data[SC_INCATK2].val1)/100;
 		}
@@ -1826,7 +1830,6 @@ L_RECALC:
 			sd->def = sd->def * (100 - 5*sd->sc.data[SC_FLING].val1)/100;
 		}
 		if(sd->sc.data[SC_MADNESSCANCEL].timer != -1) {	// マッドネスキャンセラー
-			sd->base_atk += 100;
 			aspd_rate    -= 20;
 		}
 		if(sd->sc.data[SC_ADJUSTMENT].timer != -1) {	// アジャストメント
@@ -1837,7 +1840,6 @@ L_RECALC:
 			sd->hit += 20;
 		}
 		if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ガトリングフィーバー
-			sd->base_atk += 30+(sd->sc.data[SC_GATLINGFEVER].val1*10);
 			aspd_rate    -= sd->sc.data[SC_GATLINGFEVER].val1*2;
 			sd->flee     -= sd->sc.data[SC_GATLINGFEVER].val1*5;
 			sd->speed    = (sd->speed * 135) / 100;
