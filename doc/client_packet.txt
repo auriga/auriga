@@ -75,12 +75,14 @@ R 0073 <server tick>.l <coordidate>.3B <05 05固定>.2B
 R 0074 <?>.B
 	サーバとの接続が失敗しました。
 R 0078 <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <clothes color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <05固定>.B <05固定>.B <sit>.B <Lv>.B
+       <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <clothes color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <05固定>.B <05固定>.B <sit>.B <Lv>.B (2007-11-06aSakexe以降)
 	マップロード時&移動時用、向き付き用キャラ情報?
 R 0079 <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <clothes color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <05固定>.B <05固定>.B <Lv>.B
 	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報?
 R 007b <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <server tick>.l <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <?>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_X_Y>.5B <?>.B <?>.B <?>.B <Lv>.B
 	表示範囲内キャラ移動情報
 R 007c <ID>.l <speed>.w <?>.6w <class>.w <?>.7w <X_Y>.3B <?>.2B
+       <ID>.l <0?>.B <speed>.w <?>.6w <class>.w <?>.7w <X_Y>.3B <?>.2B (2007-11-06aSakexe以降)
 	NPC用表示範囲内キャラ情報
 S 007d
 	mapロード終り
@@ -1401,6 +1403,7 @@ R 022a <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id
 R 022b <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w
 	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報?(01d9の上位バージョン)
 R 022c <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w
+       <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w (2007-11-06aSakexe以降)
 	表示範囲内キャラ移動情報(01daの上位バージョン)
 
 S 022d <0固定>.w <menu>.B
@@ -1685,6 +1688,7 @@ R 0299 <index>.w <itemid>.w
 R 029a <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <time>.l
 	アイテム獲得、0xa0の上位版
 R 029b <ID>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <limit>.l <name_value>.w <call_count>.l <kill_count>.l <attackable>.w
+       <ID>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.l <max_hp>.l <sp>.l <max_sp>.l <limit>.l <name_value>.w <call_count>.l <kill_count>.l <attackable>.w (2007-11-06aSakexe以降)
 	傭兵のステータス情報まとめて送り付け、0x22eの傭兵版
 R 029d <len>.w {<skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	傭兵用スキル情報の塊、0x10fと同じ
@@ -1775,6 +1779,14 @@ R 02c9 <flag>.B
 S 02ca <type?>.B
 	<type>は0〜5
 	未調査
+R 02cb
+	未調査
+R 02cc
+	未調査
+R 02cd
+	未調査
+R 02ce
+	未調査
 R 02d0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
 	所有装備リスト、0x295の上位版
 R 02d1 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
@@ -1785,6 +1797,14 @@ R 02d3 <index>.w
 	アイテムの帰属？
 R 02d4 <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <time>.l <flag?>.w
 	アイテム獲得、0x29aの上位版
+R 02d5
+	未調査
+R 02d7
+	未調査
+R 02d9
+	未調査
+R 02da
+	未調査
 R 02dc <len>.w <?>.28B <?>.?B
 	未調査
 R 02dd <ID>.l <?>.24B <?>.B <?>.B
@@ -1795,4 +1815,24 @@ R 02de <?>.w <?>.w
 R 02df <ID>.l <?>.26B <?>.w <?>.w
 	未調査
 R 02e0 <ID>.l <?>.24B <?>.w <?>.w
+	未調査
+R 02e1
+	未調査
+R 02e7
+	未調査
+R 02e8
+	未調査
+R 02e9
+	未調査
+R 02ea
+	未調査
+R 02eb
+	未調査
+R 02ec
+	未調査
+R 02ed
+	未調査
+R 02ee
+	未調査
+R 02ef
 	未調査

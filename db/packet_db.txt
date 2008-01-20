@@ -578,8 +578,8 @@
 0x02a3,0
 0x02a4,0
 0x02a5,8
-0x02a6,22
-0x02a7,22
+0x02a6,204
+0x02a7,204
 0x02a8,162
 0x02a9,58
 0x02aa,4
@@ -637,6 +637,21 @@
 0x02de,6
 0x02df,36
 0x02e0,34
+0x02e1,33
+0x02e2,14
+0x02e3,25
+0x02e4,8
+0x02e5,8
+0x02e6,6
+0x02e7,-1
+0x02e8,-1
+0x02e9,-1
+0x02ea,-1
+0x02eb,13
+0x02ec,67
+0x02ed,59
+0x02ee,60
+0x02ef,8
 
 
 // 2005-04-12より古い jRO はここまで
@@ -1115,7 +1130,31 @@
 //0x01fd,15,repairitem,2
 
 //2007-07-11aSakexe
+//0x0072,25,useskilltoid,6:10:21
+//0x007e,102,useskilltopos,5:9:12:20:22
+//0x0089,8,ticksend,4
+//0x0085,11,changedir,7:10
+//0x008c,11,getcharnamerequest,7
+//0x0094,14,movetokafra,7:10
+//0x009b,26,wanttoconnection,4:9:17:18:25
+//0x009f,14,useitem,4:10
+//0x00a2,15,solvecharname,11
+//0x00a7,8,walktoxy,5
+//0x00f3,-1,globalmessage,2:4
+//0x00f5,8,takeitem,4
+//0x00f7,22,movefromkafra,14:18
+//0x0113,22,useskilltopos,5:9:12:20
+//0x0116,10,dropitem,5:8
+//0x0190,19,actionrequest,5:18
+//0x0193,2,closekafra,0
+//0x01fd,15,repairitem,2
+//0x0288,10,npcpointshopbuy,2:4:6
+//0x0289,12
+
+//2007-11-06aSakexe
 0x0072,25,useskilltoid,6:10:21
+0x0078,55
+0x007c,42
 0x007e,102,useskilltopos,5:9:12:20:22
 0x0089,8,ticksend,4
 0x0085,11,changedir,7:10
@@ -1133,5 +1172,7 @@
 0x0190,19,actionrequest,5:18
 0x0193,2,closekafra,0
 0x01fd,15,repairitem,2
+0x022c,65
 0x0288,10,npcpointshopbuy,2:4:6
 0x0289,12
+0x029b,80
