@@ -3625,7 +3625,7 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 		mes "関係する街へお送りしましょう。";
 		next;
 		mes "^882420[支給内訳]^000099";
-		switch('@id) {
+		switch('@i) {
 		case 1:
 			mes "ファルシオン 1個";
 			getitem 1104,1;
@@ -3713,7 +3713,7 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 		mes "お選びください。";
 		next;
 		set '@name$['@i],"";	//検査結果と同じ職業は空文字で埋める
-		set '@id,select('@name$[1],'@name$[2],'@name$[3],'@name$[4],'@name$[5],'@name$[6]);
+		set '@i,select('@name$[1],'@name$[2],'@name$[3],'@name$[4],'@name$[5],'@name$[6]);
 		mes "[ヘイスン]";
 		mes '@name$['@i]+ "ですね。";
 		Place '@i;

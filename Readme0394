@@ -1,4 +1,15 @@
 ----------------------------------------
+//0437 [2008/01/21] by Cocoa
+・AthenaProject Rev.251をmerge、thanks to Blazeさん
+	-> 飛行船NPCの襲撃イベントの発動条件を修正
+
+・AthenaProject Rev.252をmerge、thanks to Blazeさん
+	-> 初心者修練場NPCの職業適性の判定結果格納変数を修正
+
+・AthenaProject Rev.253をmerge、thanks to Arc87さん
+	-> 茹でサソリの材料修正
+
+----------------------------------------
 //0436 [2008/01/21] by Rayce
 
 ・PACKETVERを11に引き上げる（clif.c）

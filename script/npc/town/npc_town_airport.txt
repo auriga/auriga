@@ -813,9 +813,11 @@ OnTimer26000:
 	announce "当船は現在、イズルードに向かっております。",9,0x00FF00;
 	end;
 OnTimer31000:
-	if('count == 0 && rand(3) == 0)
-		callsub L_Attack;
-	set 'count,12;
+	if('count <= 0) {
+		if(rand(3) == 0)
+			callsub L_Attack;
+		set 'count,12;
+	}
 	end;
 OnTimer51000:
 	announce "まもなく、イズルードに着陸いたします。",9,0x00FF00;
