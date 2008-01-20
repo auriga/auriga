@@ -1116,7 +1116,7 @@ geffen.gat,172,52,1	script	グッドデー	826,{
 		set SKILL_GREED,1;
 		close;
 	case 1:
-		if((MaxWeight - Weight) >= 500) {
+		if((MaxWeight - Weight) >= 5000) {
 			mes "[グッドマン]";
 			mes "うーん……だめだなあ。";
 			mes "ひと目見ても私が言った課題を満たして";

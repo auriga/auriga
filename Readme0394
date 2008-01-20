@@ -1,4 +1,26 @@
 ----------------------------------------
+//0439 [2008/01/21] by Cocoa
+
+・AthenaProject Rev.204をmerge、thanks to Blazeさん
+	-> 重量チェックの値がおかしかったのを修正
+	-> ベインスクエスト「黒い石」のLv判定を追加
+	-> ラヘルクエスト「ブルーの行方」の結末修正
+	-> ニブルヘイムのカプラ職員の処理修正
+	-> 初心者修練場のメッセージ微修正
+
+・AthenaProject Rev.222をmerge、thanks to ViViさん
+	-> ルティエ：サンタの家ワープポイントバグ修正
+
+・AthenaProject Rev.223より一部merge、thanks to Blazeさん
+	-> クリスマスイベントモンスターの出現情報を最新に更新
+
+・AthenaProject Rev.224をmerge、thanks to Shimodaさん
+	-> インクリージングアキュラシーのコイン消費枚数を修正
+
+・AthenaProject Rev.225をmerge、thanks to Shimodaさん
+	-> ベインスアップデートにより、NPCから購入できるようになった銃を追加
+
+----------------------------------------
 //0438 [2008/01/21] by Cocoa
 
 ・AthenaProject Rev.227をmerge、thanks to Blazeさん

@@ -425,7 +425,7 @@ amatsu.gat,208,123,3	script	輸入洋酒屋	766,{
 		mes "そうかい。";
 		close;
 	}
-	if((MaxWeight - Weight) < 200) {
+	if((MaxWeight - Weight) < 2000) {
 		mes "[輸入洋酒屋のおじいさん]";
 		mes "お客さん、荷物が溢れそうじゃぞ。";
 		mes "酒はかさばるからのう……";
@@ -1018,7 +1018,7 @@ amatsu.gat,165,121,1	script	怪しい男	64,{
 // 鍵屋のお兄さん
 //=====================================================================
 amatsu.gat,213,254,5	script	鍵屋のお兄さん	763,{
-	if((MaxWeight - Weight) < 200) {
+	if((MaxWeight - Weight) < 2000) {
 		mes "[鍵屋錠兵衛]";
 		mes "……なんだなんだ？";
 		mes "やたら大量のアイテムを持ってるな。";
@@ -1416,7 +1416,7 @@ amatsu.gat,213,254,5	script	鍵屋のお兄さん	763,{
 // クジ引きお姉さん
 //=====================================================================
 amatsu.gat,208,134,3	script	クジ引きお姉さん	758,{
-	if((MaxWeight - Weight) < 200) {
+	if((MaxWeight - Weight) < 2000) {
 		mes "[美香]";
 		mes "あら？";
 		mes "そんなにたくさんアイテムを持って";
@@ -2090,7 +2090,7 @@ amatsu.gat,260,246,4	script	牌籠お姉さん	757,{
 			mes "お寿司10個持ってないじゃない！";
 			close;
 		}
-		if((MaxWeight - Weight) < 350) {
+		if((MaxWeight - Weight) < 3500) {
 			mes "[紘子]";
 			mes "あっ……";
 			mes "もしキミが勝っても、お寿司を全部";
@@ -2241,7 +2241,7 @@ amatsu.gat,260,246,4	script	牌籠お姉さん	757,{
 // 一本釣りおじさん
 //=====================================================================
 amatsu.gat,252,87,3	script	一本釣りおじさん	709,{
-	if((MaxWeight - Weight) < 200) {
+	if((MaxWeight - Weight) < 2000) {
 		mes "[一本釣りおじさん]";
 		mes "ん？";
 		mes "そんなにたくさんアイテムを持って";
@@ -2696,7 +2696,7 @@ amatsu.gat,168,100,5	script	3周年アイスクリーム商人	85,{
 }
 
 amatsu.gat,169,99,3	script	犬	81,{
-	if((MaxWeight - Weight) < 200) {
+	if((MaxWeight - Weight) < 2000) {
 		mes "[犬]";
 		mes "ワン！";
 		close;

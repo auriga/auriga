@@ -1099,7 +1099,7 @@ aldeba_in.gat,79,161,6	script	カプラ職員	115,{
 	mes "^660066100p から 3000p まで^000000";
 	mes "を賞品と交換致します。";
 	next;
-	if(MaxWeight-Weight < 1100) {
+	if(MaxWeight-Weight < 11000) {
 		mes "[カプラ職員]";
 		mes "お客様、少々荷物を持ちすぎて";
 		mes "おりませんか？";

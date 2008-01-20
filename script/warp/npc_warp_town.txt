@@ -60,7 +60,7 @@ xmas_in.gat,163,93,0		warp	xmaswarp1008		1,1,xmas.gat,172,158
 xmas.gat,181,169,0		warp	xmaswarp1009		1,1,xmas_in.gat,177,107
 xmas_in.gat,179,109,0		warp	xmaswarp1010		1,1,xmas.gat,184,168
 xmas.gat,142,239,0		warp	xmaswarp1011		1,1,xmas_in.gat,94,85
-xmas_in.gat,94,83,0		warp	xmaswarp1012		1,1,xmas.gat,142,238
+xmas_in.gat,94,83,0		warp	xmaswarp1012		1,1,xmas.gat,142,237
 xmas.gat,149,239,0		warp	xmaswarp1013		1,1,xmas_in.gat,104,85
 xmas_in.gat,104,83,0		warp	xmaswarp1014		1,1,xmas.gat,149,237
 xmas.gat,149,256,0		warp	xmaswarp1015		1,1,xmas_in.gat,104,115

@@ -890,6 +890,12 @@ ve_in.gat,119,386,3	script	罪人？	946,{
 ve_fild05.gat,257,130,4	script	腰を叩いている老人	945,{
 	switch(VE_1QUE) {
 	case 0:
+		if(BaseLevel < 50) {
+			mes "[ジャバル]";
+			mes "痛っ……";
+			mes "どうも腰が痛むな……";
+			close;
+		}
 		mes "[ジャバル]";
 		mes "痛っ……";
 		mes "ずっと石を拾っていたら";
@@ -6197,9 +6203,17 @@ ve_in.gat,280,214,0	script	本棚	111,{
 		next;
 		set VE_4QUE,26;
 		getexp 800000,0;
-		switch(rand(2)) {
-			case 0: getitem 12027,5; break;
-			case 1: getitem 12103,1; break;
+		switch(rand(10)) {
+			case 0:
+			case 1:
+			case 2: getitem 12027,5; break;
+			case 3:
+			case 4:
+			case 5: getitem 12104,1; break;
+			case 6:
+			case 7:
+			case 8: getitem 661,1; break;
+			case 9: getitem 12103,1; break;
 		}
 		mes "[" +strcharinfo(0)+ "]";
 		mes "（ここで得られる情報は";

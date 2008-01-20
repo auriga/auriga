@@ -737,21 +737,34 @@ niflheim.gat,202,180,3	script	カプラ職員	791,{
 	mes "死んでも皆様のそばにいます。";
 	mes "何をお手伝いしましょう？";
 	next;
-	switch (select("倉庫サービス","終了")) {
-	case 1:
-		percentheal 0,-10;
-		callfunc "KafraStorage",150;
-		end;
-	case 2:
-		percentheal 0,-10;
+	if(select("倉庫サービス","終了")==2) {
+		percentheal 0,-25;
 		mes "[カプラ職員]";
 		mes "我々カプラサービスは…… ";
 		mes "いつでもどこででも…… ";
 		mes "お客様のそばに……います。";
 		mes "……ですから決して……";
 		mes "忘れないでください……";
-		break;
+		close;
 	}
+	if(basicskillcheck() && getskilllv(1) < 6) {
+		mes "[カプラ職員]";
+		mes "倉庫は……基本スキルレベル6を";
+		mes "習得してから利用可能となります……";
+		close;
+	}
+	else if(Zeny < 150) {
+		percentheal -50,-50;
+		mes "[カプラ職員]";
+		mes "お客様……お金が足りません。";
+		mes "倉庫利用料金は 150 Zenyです……";
+		mes "足りなければ……あなたの生命を……";
+		mes "私に……分けてください……";
+		close;
+	}
+	set Zeny,Zeny-150;
+	percentheal 0,-10;
+	openstorage;
 	close;
 }
 
