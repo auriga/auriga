@@ -1,4 +1,17 @@
 ----------------------------------------
+//0440 [2008/01/22] by Cocoa
+
+・AthenaProjectよりMob使用スキルをmerge、thanks to Blazeさん
+	-> 初期〜Ep5、Ep6〜Ep10.2までのMob使用スキルを本鯖準拠に更新（Rev.99,120,228）
+	Lv10のヒール、ファイアーボール、サイトラッシャー、ツーハンドクイッケンをLv11にしてあります。
+
+・AthenaProject Rev.99より一部をmerge、thanks to Blazeさん
+	-> Mobのスキル登録最大数を増加
+
+・AthenaProject Rev.228より一部をmerge、thanks to Blazeさん
+	->フェイヨン地下洞窟、ベインスフィールド、トール火山ダンジョンのモンスター出現情報を更新
+
+----------------------------------------
 //0439 [2008/01/21] by Cocoa
 
 ・AthenaProject Rev.204をmerge、thanks to Blazeさん
