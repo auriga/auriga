@@ -55,6 +55,7 @@ struct battle_delay_damage_ {
 	short skillid;
 	short skilllv;
 	int flag;
+	int dist;
 };
 
 /*==========================================
@@ -69,7 +70,8 @@ static int battle_delay_damage_sub(int tid,unsigned int tick,int id,int data)
 		struct block_list *target = map_id2bl(dat->target);
 
 		if(map_id2bl(id) == dat->src && target && target->prev != NULL) {
-			battle_damage(dat->src,target,dat->damage,dat->skillid,dat->skilllv,dat->flag);
+			if(dat->src->m == target->m && dat->dist + 10 >= unit_distance2(dat->src, target))
+				battle_damage(dat->src,target,dat->damage,dat->skillid,dat->skilllv,dat->flag);
 		}
 		aFree(dat);
 	}
@@ -90,6 +92,7 @@ int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_li
 	dat->skillid = skillid;
 	dat->skilllv = skilllv;
 	dat->flag    = flag;
+	dat->dist    = unit_distance2(src, target);
 	add_timer2(tick,battle_delay_damage_sub,src->id,(int)dat,TIMER_FREE_DATA);
 
 	return 0;

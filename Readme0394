@@ -1,4 +1,14 @@
 ----------------------------------------
+//0441 [2008/01/26] by Rayce
+
+・AthenaProject Rev.141よりmerge、thanks to Blazeさん
+	-> ダメージディレイ間のテレポートダメージキャンセル実装（battle.c）
+
+・AthenaProject Rev.145を参考に修正、thanks to Blazeさん
+	-> 幻覚状態時のダメージ表示式を修正、回避してもヒットストップするように（clif.c）
+	-> battle_auriga.confの「錯覚スキルを無効にする」を「エフェクトを無効にする」に改名
+
+----------------------------------------
 //0440 [2008/01/22] by Cocoa
 
 ・AthenaProjectよりMob使用スキルをmerge、thanks to Blazeさん

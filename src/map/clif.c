@@ -4960,10 +4960,8 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 			type = 9;
 	}
 	if(sc && sc->data[SC_HALLUCINATION].timer != -1) {
-		if(damage > 0)
-			damage = damage*(5+sc->data[SC_HALLUCINATION].val1) + atn_rand()%100;
-		if(damage2 > 0)
-			damage2 = damage2*(5+sc->data[SC_HALLUCINATION].val1) + atn_rand()%100;
+		damage  = atn_rand() & 0x7fff;
+		damage2 = atn_rand() & 0x7fff;
 	}
 
 	WBUFW(buf,0)=0x8a;
@@ -4972,7 +4970,7 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 	WBUFL(buf,10)=tick;
 	WBUFL(buf,14)=sdelay;
 	WBUFL(buf,18)=ddelay;
-	WBUFW(buf,22)=(damage > 0x7fff)? 0x7fff:damage;
+	WBUFW(buf,22)=(damage > 0x7fff)? 0x7fff: damage;
 	WBUFW(buf,24)=div_;
 	WBUFB(buf,26)=type;
 	WBUFW(buf,27)=damage2;
@@ -5786,8 +5784,8 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 	if(sc) {
 		if(type != 5 && (sc->data[SC_ENDURE].timer != -1 || sc->data[SC_BERSERK].timer != -1))
 			type = 9;
-		if(sc->data[SC_HALLUCINATION].timer != -1 && damage > 0)
-			damage = damage*(5+sc->data[SC_HALLUCINATION].val1) + atn_rand()%100;
+		if(sc->data[SC_HALLUCINATION].timer != -1)
+			damage = atn_rand() & 0x7fff;
 	}
 
 #if PACKETVER < 3
@@ -5841,8 +5839,8 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 	if(sc) {
 		if(type != 5 && (sc->data[SC_ENDURE].timer != -1 || sc->data[SC_BERSERK].timer != -1))
 			type = 9;
-		if(sc->data[SC_HALLUCINATION].timer != -1 && damage > 0)
-			damage = damage*(5+sc->data[SC_HALLUCINATION].val1) + atn_rand()%100;
+		if(sc->data[SC_HALLUCINATION].timer != -1)
+			damage = atn_rand() & 0x7fff;
 	}
 
 	WBUFW(buf,0)=0x115;
