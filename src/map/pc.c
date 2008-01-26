@@ -3683,6 +3683,8 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 					tmp_item.nameid = itemid;
 					tmp_item.amount = 1;
 					tmp_item.identify = !itemdb_isequip3(itemid);
+					if(battle_config.itemidentify)
+						tmp_item.identify = 1;
 					flag = pc_additem(sd,&tmp_item,1);
 					if(battle_config.show_steal_in_same_party)
 						party_foreachsamemap(pc_show_steal,sd,PT_AREA_SIZE,sd,itemdb_exists(tmp_item.nameid),0);

@@ -1,4 +1,16 @@
 ----------------------------------------
+//0442 [2008/01/27] by Cocoa
+
+・AthenaProject Rev.240より一部merge、thx a lot!!
+	-> mob_db.txtを080112時点での最新版に更新
+
+・オシリスとドッペルゲンガーの召還する取り巻きが1匹になっていたのを修正（mob_skill_db.txt）
+
+・太陽と月と星の融合状態でHPが20%未満の時、プレイヤー以外を攻撃しても即死するように修正（battle.c）
+
+・battle_configのitemidentifyがyesでもスティールで取得する装備品は未鑑定だったのを修正（pc.c）
+
+----------------------------------------
 //0441 [2008/01/26] by Rayce
 
 ・AthenaProject Rev.141よりmerge、thanks to Blazeさん
