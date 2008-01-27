@@ -758,7 +758,7 @@ const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *
 		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
 		return NULL;
 	}
-	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[30] >= 9 ||	dat[33] == 0 || dat[33] >= 24 || dat[31] >= 9)
+	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[30] >= 9 ||	dat[33] == 0 || dat[33] >= MAX_HAIR_STYLE || dat[31] >= MAX_HAIR_COLOR)
 	{
 		char_log(
 			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",
@@ -1773,7 +1773,7 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
 		return NULL;
 	}
-	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[30] >= 9 || dat[33] == 0 || dat[33] >= 24 || dat[31] >= 9)
+	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[30] >= 9 || dat[33] == 0 || dat[33] >= MAX_HAIR_STYLE || dat[31] >= MAX_HAIR_COLOR)
 	{
 		char_log(
 			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",

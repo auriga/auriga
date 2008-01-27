@@ -2759,12 +2759,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	if(src_sd && sc && sc->data[SC_FUSION].timer != -1)
 	{
 		int hp;
-		if(target->type == BL_PC)
+		if(src_sd->status.hp < src_sd->status.max_hp * 20 / 100)	// HPが20％未満の時に攻撃をすれば即死
+			hp = src_sd->status.hp;
+		else if(target->type == BL_PC)
 			hp = src_sd->status.max_hp * 8 / 100;
 		else
 			hp = src_sd->status.max_hp * 2 / 100;
-		if( src_sd->status.hp < (src_sd->status.max_hp * 20 / 100))	// HPが20％未満である時、攻撃をすれば即死します。
-			hp = src_sd->status.hp;
+
 		pc_heal(src_sd,-hp,0);
 	}
 
