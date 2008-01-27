@@ -237,6 +237,8 @@ void clif_update_temper(struct map_session_data *sd);
 
 void clif_send_hotkey(struct map_session_data *sd);
 void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int y, int tick, int type);
+void clif_msgstringtable(struct map_session_data *sd, int line);
+void clif_send_equipopen(struct map_session_data *sd);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);
@@ -261,6 +263,7 @@ void clif_party_message(struct party *p, int account_id, char *mes, int len);
 void clif_party_xy(struct map_session_data *sd);
 void clif_party_hp(struct map_session_data *sd);
 //void clif_party_move(struct party *p, struct map_session_data *sd, unsigned char online);
+void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *tsd);
 
 // guild
 void clif_guild_created(struct map_session_data *sd, unsigned char flag);

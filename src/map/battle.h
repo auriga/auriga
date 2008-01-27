@@ -559,6 +559,7 @@ extern struct Battle_Config {
 	int free_sc_data_dynamically;
 	int snovice_maxexp_border;
 	int homun_rename;
+	int equip_window_type;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

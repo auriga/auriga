@@ -340,6 +340,7 @@ struct map_session_data {
 		unsigned sn_doridori : 1;
 		unsigned tk_doridori_hp : 1;
 		unsigned tk_doridori_sp : 1;
+		unsigned show_equip : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;

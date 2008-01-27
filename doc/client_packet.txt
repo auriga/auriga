@@ -1776,9 +1776,9 @@ S 02c8 <flag>.B
 R 02c9 <flag>.B
 	flag=00 すべてのパーティー招待を受諾します
 	flag=01 すべてのパーティー招待を拒否します
-S 02ca <type?>.B
+R 02ca <type?>.B
 	<type>は0〜5
-	未調査
+	ログイン系？未調査
 R 02cb
 	未調査
 R 02cc
@@ -1799,12 +1799,21 @@ R 02d4 <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine
 	アイテム獲得、0x29aの上位版
 R 02d5
 	未調査
-R 02d7
-	未調査
-R 02d9
-	未調査
-R 02da
-	未調査
+	0x105とも関連がありそう
+S 02d6 <ID>.l
+	プレイヤー装備ウィンドウ要求
+R 02d7 <len>.w <name>.24B <class>.w <hairstyle>.w <<up-viewid>.w <mid-viewid>.w <low-viewid>.w <haircolor>.w <cloth-dye>.w <gender>.B {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
+	プレイヤー装備ウィンドウ情報
+S 02d8 <0固定>.l <flag>.l
+	装備公開要求
+	flag=00 Off
+	flag=01 On
+R 02d9 <0固定>.l <flag>.l
+	装備公開返答
+R 02da <flag>.B
+	ログイン時に装備公開してるかどうか
+	flag=00 msgstringtableの1359行目を表示
+	flag=01 msgstringtableの1360行目を表示
 R 02dc <len>.w <?>.28B <?>.?B
 	未調査
 R 02dd <ID>.l <?>.24B <?>.B <?>.B
@@ -1826,8 +1835,9 @@ R 02e9
 	未調査
 R 02ea
 	未調査
-R 02eb
-	未調査
+R 02eb <?>.l <?>.B <?>B <?>.B <?>.4B
+	ログイン系？未調査
+	"PingLog.txt" とか
 R 02ec
 	未調査
 R 02ed

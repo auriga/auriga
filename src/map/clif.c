@@ -9969,6 +9969,117 @@ void clif_mercskillinfoblock(struct map_session_data *sd)
 }
 
 /*==========================================
+ * msgstringtable表示
+ *------------------------------------------
+ */
+void clif_msgstringtable(struct map_session_data *sd, int line)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x291;
+	WFIFOW(fd,2) = line;
+	WFIFOSET(fd,packet_db[0x291].len);
+
+	return;
+}
+
+/*==========================================
+ * 装備ウィンドウ情報
+ *------------------------------------------
+ */
+void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *tsd)
+{
+	int i, j, n, fd;
+
+	nullpo_retv(sd);
+	nullpo_retv(tsd);
+
+	fd = sd->fd;
+
+	WFIFOW(fd,0) = 0x2d7;
+	memcpy(WFIFOP(fd,4), tsd->status.name, 24);
+	WFIFOW(fd,28) = tsd->status.class_;
+	WFIFOW(fd,30) = tsd->status.hair;
+	WFIFOW(fd,32) = tsd->status.head_top;
+	WFIFOW(fd,34) = tsd->status.head_mid;
+	WFIFOW(fd,36) = tsd->status.head_bottom;
+	WFIFOW(fd,38) = tsd->status.hair_color;
+	WFIFOW(fd,40) = tsd->status.clothes_color;
+	WFIFOB(fd,42) = tsd->sex;
+
+	for(i = 0, n = 0; i < MAX_INVENTORY; i++) {
+		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL || !itemdb_isequip2(tsd->inventory_data[i]))
+			continue;
+		WFIFOW(fd,n*26+43) = i + 2;
+		if(tsd->inventory_data[i]->view_id > 0)
+			WFIFOW(fd,n*26+45) = tsd->inventory_data[i]->view_id;
+		else
+			WFIFOW(fd,n*26+45) = tsd->status.inventory[i].nameid;
+		WFIFOB(fd,n*26+47) = (tsd->inventory_data[i]->type == 7)? 4: tsd->inventory_data[i]->type;
+		WFIFOB(fd,n*26+48) = tsd->status.inventory[i].identify;
+		WFIFOW(fd,n*26+49) = pc_equippoint(tsd,i);
+		WFIFOW(fd,n*26+51) = tsd->status.inventory[i].equip;
+		WFIFOB(fd,n*26+53) = tsd->status.inventory[i].attribute;
+		WFIFOB(fd,n*26+54) = tsd->status.inventory[i].refine;
+		if(itemdb_isspecial(tsd->status.inventory[n].card[0])) {
+			WFIFOW(fd,n*26+55) = tsd->status.inventory[i].card[0];
+			WFIFOW(fd,n*26+57) = tsd->status.inventory[i].card[1];
+			WFIFOW(fd,n*26+59) = tsd->status.inventory[i].card[2];
+			WFIFOW(fd,n*26+61) = tsd->status.inventory[i].card[3];
+		} else {
+			if(tsd->status.inventory[i].card[0] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[0])) > 0)
+				WFIFOW(fd,n*26+55) = j;
+			else
+				WFIFOW(fd,n*26+55) = tsd->status.inventory[i].card[0];
+			if(tsd->status.inventory[i].card[1] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[1])) > 0)
+				WFIFOW(fd,n*26+57) = j;
+			else
+				WFIFOW(fd,n*26+57) = tsd->status.inventory[i].card[1];
+			if(tsd->status.inventory[i].card[2] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[2])) > 0)
+				WFIFOW(fd,n*26+59) = j;
+			else
+				WFIFOW(fd,n*26+59) = tsd->status.inventory[i].card[2];
+			if(tsd->status.inventory[i].card[3] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[3])) > 0)
+				WFIFOW(fd,n*26+61) = j;
+			else
+				WFIFOW(fd,n*26+61) = tsd->status.inventory[i].card[3];
+		}
+		WFIFOL(fd,n*26+63) = tsd->status.inventory[i].limit;
+		WFIFOW(fd,n*26+67) = 0;
+		n++;
+	}
+	if(n) {
+		WFIFOW(fd,2) = 43 + n*26;
+		WFIFOSET(fd,WFIFOW(fd,2));
+	}
+
+	return;
+}
+
+/*==========================================
+ * 装備を公開しているかどうか
+ *------------------------------------------
+ */
+void clif_send_equipopen(struct map_session_data *sd)
+{
+#if PACKETVER >= 11
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x2da;
+	WFIFOB(fd,2) = sd->state.show_equip;
+	WFIFOSET(fd,packet_db[0x2da].len);
+#endif
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -10203,6 +10314,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 
 		clif_skillinfoblock(sd);
 		clif_send_hotkey(sd);
+		clif_send_equipopen(sd);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
 		clif_updatestatus(sd,SP_NEXTJOBEXP);
 		clif_updatestatus(sd,SP_SKILLPOINT);
@@ -13632,6 +13744,35 @@ static void clif_parse_MercMenu(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * 装備ウィンドウ表示要求
+ *------------------------------------------
+ */
+static void clif_parse_PartyEquipWindow(int fd,struct map_session_data *sd, int cmd)
+{
+	party_equip_window(sd, RFIFOL(fd,GETPACKETPOS(cmd,0)));
+
+	return;
+}
+
+/*==========================================
+ * 装備公開要求
+ *------------------------------------------
+ */
+static void clif_parse_PartyEquipOpen(int fd,struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+
+	sd->state.show_equip = RFIFOL(fd,GETPACKETPOS(cmd,0));
+
+	WFIFOW(fd,0) = 0x2d9;
+	WFIFOL(fd,2) = 0;
+	WFIFOL(fd,6) = sd->state.show_equip;
+	WFIFOSET(fd,packet_db[0x2d9].len);
+
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -13920,6 +14061,8 @@ static void packetdb_readdb(void)
 		{ clif_parse_HotkeySave,                "hotkeysave"                },
 		{ clif_parse_Revive,                    "revive"                    },
 		{ clif_parse_MercMenu,                  "mercmenu"                  },
+		{ clif_parse_PartyEquipWindow,          "partyequipwindow"          },
+		{ clif_parse_PartyEquipOpen,            "partyequipopen"            },
 		{ NULL,                                 NULL                        },
 	};
 

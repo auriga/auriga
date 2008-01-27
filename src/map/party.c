@@ -946,6 +946,41 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 }
 
 /*==========================================
+ * 装備ウィンドウ表示
+ *------------------------------------------
+ */
+void party_equip_window(struct map_session_data *sd, int account_id)
+{
+	struct map_session_data *tsd;
+
+	nullpo_retv(sd);
+
+	if(battle_config.equip_window_type == 0)
+		return;
+
+	tsd = map_id2sd(account_id);
+	if(tsd == NULL)
+		return;
+
+	if(tsd->state.waitingdisconnect)	// 相手が切断待ち
+		return;
+	if(battle_config.equip_window_type == 1) {
+		if(tsd->status.party_id <= 0 || sd->status.party_id != tsd->status.party_id)	// PTが異なる
+			return;
+	}
+	if(sd->bl.m != tsd->bl.m || unit_distance(sd->bl.x, sd->bl.y, tsd->bl.x, tsd->bl.y) > AREA_SIZE)	// 距離が遠い
+		return;
+	if(!tsd->state.show_equip) {	// 相手が装備を公開してない
+		clif_msgstringtable(sd, 0x54d);
+		return;
+	}
+
+	clif_party_equiplist(sd, tsd);
+
+	return;
+}
+
+/*==========================================
  * 同じマップのパーティメンバー全体に処理をかける
  *------------------------------------------
  */
