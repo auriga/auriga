@@ -4945,7 +4945,7 @@ void clif_storageclose(struct map_session_data *sd)
  */
 void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2)
 {
-	unsigned char buf[32];
+	unsigned char buf[36];
 	struct status_change *sc;
 
 	nullpo_retv(src);
@@ -4964,6 +4964,7 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 		damage2 = atn_rand() & 0x7fff;
 	}
 
+#if PACKETVER < 12
 	WBUFW(buf,0)=0x8a;
 	WBUFL(buf,2)=src->id;
 	WBUFL(buf,6)=dst->id;
@@ -4975,6 +4976,19 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 	WBUFB(buf,26)=type;
 	WBUFW(buf,27)=damage2;
 	clif_send(buf,packet_db[0x8a].len,src,AREA);
+#else
+	WBUFW(buf,0)=0x2e1;
+	WBUFL(buf,2)=src->id;
+	WBUFL(buf,6)=dst->id;
+	WBUFL(buf,10)=tick;
+	WBUFL(buf,14)=sdelay;
+	WBUFL(buf,18)=ddelay;
+	WBUFL(buf,22)=damage;
+	WBUFW(buf,26)=div_;
+	WBUFB(buf,28)=type;
+	WBUFL(buf,29)=damage2;
+	clif_send(buf,packet_db[0x2e1].len,src,AREA);
+#endif
 
 	return;
 }
