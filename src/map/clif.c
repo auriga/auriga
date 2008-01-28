@@ -13773,6 +13773,26 @@ static void clif_parse_PartyEquipOpen(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
+ * ハンティングリスト
+ * 詳細不明なため未実装
+ *------------------------------------------
+ */
+static void clif_parse_HuntingList(int fd,struct map_session_data *sd, int cmd)
+{
+/*
+	const char buf[] = "";
+
+	nullpo_retv(sd);
+
+	WFIFOW(fd,0) = 0x27a;
+	WFIFOW(fd,2) = strlen(buf) + 1;
+	memcpy(WFIFOP(fd,4), buf, sizeof(buf));
+	WFIFOSET(fd,WFIFOW(fd,2));
+*/
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -14063,6 +14083,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_MercMenu,                  "mercmenu"                  },
 		{ clif_parse_PartyEquipWindow,          "partyequipwindow"          },
 		{ clif_parse_PartyEquipOpen,            "partyequipopen"            },
+		{ clif_parse_HuntingList,               "huntinglist"               },
 		{ NULL,                                 NULL                        },
 	};
 
