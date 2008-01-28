@@ -3450,7 +3450,8 @@ int pc_cart_additem(struct map_session_data *sd,struct item *item_data,int amoun
 			   sd->status.cart[i].card[0] == item_data->card[0] &&
 			   sd->status.cart[i].card[1] == item_data->card[1] &&
 			   sd->status.cart[i].card[2] == item_data->card[2] &&
-			   sd->status.cart[i].card[3] == item_data->card[3])
+			   sd->status.cart[i].card[3] == item_data->card[3] &&
+			   sd->status.cart[i].limit   == item_data->limit)
 			{
 				if(sd->status.cart[i].amount+amount > MAX_AMOUNT)
 					return 1;
