@@ -1783,13 +1783,21 @@ R 02c9 <flag>.B
 R 02ca <type?>.B
 	<type>は0〜5
 	ログイン系？未調査
-R 02cb
+R 02cb <name>.61B <?>.w
+	ALT+B、メモリアルダンジョンウィンドウ表示
 	未調査
-R 02cc
-	未調査
-R 02cd
+R 02cc <flag?>.w
+	メモリアルダンジョンウィンドウの切り替え？
+	flag=-1 閉じる
+R 02cd <name>.61B <color?>.l <time>.l
+	ALT+B、メモリアルダンジョンウィンドウ表示
 	未調査
 R 02ce
+	未調査
+S 02cf <flag?>.l
+	メモリアルダンジョンウィンドウでcancelを押した
+	flag=00 0x2cbへの返信
+	flag=01 0x2cdへの返信
 	未調査
 R 02d0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
 	所有装備リスト、0x295の上位版
@@ -1818,35 +1826,43 @@ R 02da <flag>.B
 	ログイン時に装備公開してるかどうか
 	flag=00 msgstringtableの1359行目を表示
 	flag=01 msgstringtableの1360行目を表示
-R 02dc <len>.w <?>.28B <?>.?B
-	未調査
+S 02db <len>.w <str>.?B
+	戦場チャット送信
+R 02dc <len>.w <ID>.l <name>.24B <str>.?B
+	戦場チャット受信
 R 02dd <ID>.l <?>.24B <?>.B <?>.B
 	NPCの頭上にレッドスリムポーションが表示される
 	未調査
 R 02de <?>.w <?>.w
+	PvPランク系？
 	未調査
 R 02df <ID>.l <?>.26B <?>.w <?>.w
 	未調査
-R 02e0 <ID>.l <?>.24B <?>.w <?>.w
-	未調査
-R 02e1
-	未調査
+R 02e0 <ID>.l <?>.24B <hp>.w <max_hp>.w
+	NPCにHPゲージが出る
+R 02e1 <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1>.l <param2>.w <type>.B <param3>.l
+	通常攻撃エフェクト＆ダメージ、0x8aの上位版
 R 02e7
 	未調査
-R 02e8
-	未調査
-R 02e9
-	未調査
-R 02ea
-	未調査
+R 02e8 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
+	所有消耗品&収集品リスト
+	矢の場合は<?>.2Bが0x8000になる
+	0x1eeの上位版
+R 02e9 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
+	カート内アイテム。消耗品/収集品
+	0x1efの上位版
+R 02ea <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
+	カプラさんに預けてある消耗品&収集品リスト
+	0x1f0の上位版
 R 02eb <?>.l <?>.B <?>B <?>.B <?>.4B
 	ログイン系？未調査
 	"PingLog.txt" とか
-R 02ec
-	未調査
-R 02ed
-	未調査
-R 02ee
-	未調査
+R 02ec <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w <?>.w
+	表示範囲内キャラ移動情報(0x22cの上位バージョン)
+R 02ed <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <?>.w
+	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報?(0x22bの上位バージョン)
+R 02ee <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <?>.w
+	マップロード時&移動時用、向き付き用キャラ情報?(0x22aの上位バージョン)
+
 R 02ef <ID>.l <?>.w
 	未調査

@@ -5056,6 +5056,7 @@ int battle_config_read(const char *cfgName)
 		{ "check_player_name_global_msg",       &battle_config.check_player_name_global_msg,       0        },
 		{ "check_player_name_party_msg",        &battle_config.check_player_name_party_msg,        0        },
 		{ "check_player_name_guild_msg",        &battle_config.check_player_name_guild_msg,        0        },
+		{ "check_player_name_battle_msg",       &battle_config.check_player_name_battle_msg,       0        },
 		{ "save_player_when_drop_item",         &battle_config.save_player_when_drop_item,         0        },
 		{ "save_player_when_storage_closed",    &battle_config.save_player_when_storage_closed,    0        },
 		{ "allow_homun_status_change",          &battle_config.allow_homun_status_change,          0        },

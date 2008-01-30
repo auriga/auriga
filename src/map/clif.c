@@ -14152,7 +14152,7 @@ static void clif_parse_PartyEquipOpen(int fd,struct map_session_data *sd, int cm
 static void clif_parse_HuntingList(int fd,struct map_session_data *sd, int cmd)
 {
 /*
-	const char buf[] = "";
+	char buf[] = "";
 
 	nullpo_retv(sd);
 
@@ -14161,6 +14161,64 @@ static void clif_parse_HuntingList(int fd,struct map_session_data *sd, int cmd)
 	memcpy(WFIFOP(fd,4), buf, sizeof(buf));
 	WFIFOSET(fd,WFIFOW(fd,2));
 */
+	return;
+}
+
+/*==========================================
+ * 戦場チャット送信要求
+ * 詳細不明なため未実装
+ *------------------------------------------
+ */
+static void clif_parse_BattleMessage(int fd,struct map_session_data *sd, int cmd)
+{
+	char *message;
+	int len, message_size;
+
+	nullpo_retv(sd);
+
+	len = RFIFOW(fd, GETPACKETPOS(cmd,0));
+	message = (char *)RFIFOP(fd, GETPACKETPOS(cmd,1));
+	message_size = len - GETPACKETPOS(cmd,1); // including NULL
+
+	if (message_size < 8)	// name (mini:4) + " : " (3) + NULL (1) (void mesages are possible for skills)
+		return;
+	if (message_size > 255)	// too long
+		return;
+
+	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
+
+	if (battle_config.check_player_name_battle_msg) {
+		// structure of message: <player_name> : <message>
+		int name_length;
+		char *p_message;
+		name_length = strlen(sd->status.name);
+		if (name_length > 24)
+			name_length = 24;
+		p_message = message + name_length;
+		if (message_size < name_length + 3 + 1 || // check void message (at least 1 char) -> normal client refuse to send void message (but some skills can)
+		    memcmp(message, sd->status.name, name_length) != 0 || // check player name
+		    *p_message != ' ' || *(p_message + 1) != ':' || *(p_message + 2) != ' ') { // check ' : '
+			// add here a message if necessary
+			return;
+		}
+	}
+
+	if (is_atcommand(fd, sd, message) != AtCommand_None)
+		return;
+
+	// バーサーク、チャット禁止状態なら会話不可
+	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1)
+		return;
+
+/*
+	WFIFOW(fd,0) = 0x2dc;
+	WFIFOW(fd,2) = message_size + 32;
+	WFIFOL(fd,4) = sd->bl.id;
+	memcpy(WFIFOP(fd,8), sd->status.name, 24);
+	memcpy(WFIFOP(fd,32), message, message_size);
+	clif_send(WFIFOP(fd,0), WFIFOW(fd,2), &sd->bl, AREA);
+*/
+
 	return;
 }
 
@@ -14456,6 +14514,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyEquipWindow,          "partyequipwindow"          },
 		{ clif_parse_PartyEquipOpen,            "partyequipopen"            },
 		{ clif_parse_HuntingList,               "huntinglist"               },
+		{ clif_parse_BattleMessage,             "battlemessage"             },
 		{ NULL,                                 NULL                        },
 	};
 

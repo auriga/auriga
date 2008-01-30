@@ -1,4 +1,17 @@
 ----------------------------------------
+//0449 [2008/01/31] by Rayce
+
+・戦場チャットの下準備（clif.c）
+	/battlechatに対応。
+	ただし発言の受信は戦場システムの詳細が判明するまでは未実装。
+
+・battle_auriga.confに check_player_name_battle_msg を追加（battle.*）
+	ただし現時点では効果無し
+
+・db/packet_db.txt更新
+・doc/client_packet.txt更新
+
+----------------------------------------
 //0448 [2008/01/30] by Rayce
 
 ・PACKERVERが13以上のとき、パケット0x2ec, 0x2ed, 0x2efをサポート（clif.c）

@@ -521,6 +521,7 @@ extern struct Battle_Config {
 	int check_player_name_global_msg;
 	int check_player_name_party_msg;
 	int check_player_name_guild_msg;
+	int check_player_name_battle_msg;
 	int save_player_when_drop_item;
 	int save_player_when_storage_closed;
 
