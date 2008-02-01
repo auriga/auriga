@@ -1,4 +1,17 @@
 ----------------------------------------
+//0450 [2008/02/02] by Rayce
+
+・PACKETVER 9以降の番号を１つズラし、2007-05-21aSakexeを挿入（clif.c, pc.c）
+	最新のPACKETVERは 13 → 14 に変更されています
+
+・2007-05-21aSakexe以降のクライアントで、map_auriga.confの packet_parse_time を
+　1以上に設定しないとMAPサーバにログインできない問題を修正（clif.c）
+	merged from eA, thx a lot!!
+
+・キャラクター作成時の失敗メッセージを修正（char.c）
+・doc/client_packet.txt更新
+
+----------------------------------------
 //0449 [2008/01/31] by Rayce
 
 ・戦場チャットの下準備（clif.c）
@@ -110,9 +123,9 @@
 
 ・AthenaProject Rev.204をmerge、thanks to Blazeさん
 	-> 重量チェックの値がおかしかったのを修正
-	-> ベインスクエスト「黒い石」のLv判定を追加
-	-> ラヘルクエスト「ブルーの行方」の結末修正
-	-> ニブルヘイムのカプラ職員の処理修正
+	-> ベインスクエスト「黒い石」のLv判定を追加 
+	-> ラヘルクエスト「ブルーの行方」の結末修正 
+	-> ニブルヘイムのカプラ職員の処理修正 
 	-> 初心者修練場のメッセージ微修正
 
 ・AthenaProject Rev.222をmerge、thanks to ViViさん
@@ -475,7 +488,7 @@
 //0405 [2007/11/15] by Cocoa
 
 ・AthenaProject Rev.111よりmerge、thanks to Rohypnolさん
-	ソウルバーン前提スキルをスペルブレイカーからディスペルに修正(skill_tree.txt)
+	ソウルバーン前提スキルをスペルブレイカーからディスペルに修正(skill_tree.txt) 
 
 ・プレイヤーとモンスターの最大攻撃速度のデフォルト値を190に修正（battle_auriga.conf）
 

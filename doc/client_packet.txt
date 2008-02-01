@@ -59,7 +59,10 @@ R 006e <error No>.B
 	キャラクタ作成失敗
 		err No=00 同じ名前のキャラクターがいます
 		err No=01 このサーバーは18歳未満はアクセスできません
-		err No=02 キャラクターの作成が拒否されました
+		err No=02 24時間より後に試みてください
+		err No=03 作成できないキャラクタースロットです
+		err No=04 キャラクターの作成が拒否されました
+		err No=0B プレミアムサービスを利用してください
 R 006f
 	キャラクタ削除成功
 R 0070 <error No>.B
@@ -838,9 +841,12 @@ R 0187 <account ID>.l
 	alive信号受信?
 R 0188 <fail?>.w <index>.w <val>.w
 	武器精錬。結果+val武器に
-R 0189 <fail?>.w
+R 0189 <fail>.w
 	テレポ(ワープポータルmemo)失敗
-	1 memo禁止地域
+	fail=0 テレポート不可能地域です
+	fail=1 memo不可能地域です
+	fail=2 この場所では使うことができないスキルです
+	fail=3 この場所では使うことができないアイテムです
 S 018a <0固定>.w
 	ゲーム終了
 R 018b <fail>.w
@@ -1780,25 +1786,35 @@ S 02c8 <flag>.B
 R 02c9 <flag>.B
 	flag=00 すべてのパーティー招待を受諾します
 	flag=01 すべてのパーティー招待を拒否します
-R 02ca <type?>.B
-	<type>は0〜5
-	ログイン系？未調査
-R 02cb <name>.61B <?>.w
-	ALT+B、メモリアルダンジョンウィンドウ表示
-	未調査
-R 02cc <flag?>.w
-	メモリアルダンジョンウィンドウの切り替え？
-	flag=-1 閉じる
-R 02cd <name>.61B <color?>.l <time>.l
-	ALT+B、メモリアルダンジョンウィンドウ表示
-	未調査
-R 02ce
-	未調査
+R 02ca <fail>.B
+	サーバ統合用？
+	fail=0 使うことができないスロットです。
+	fail=1 Base Levelが15を越えています。
+	fail=2 Job Levelが15を越えています。
+	fail=3 該当キャラクタースロットに商人が存在しているのでゲームができません。
+	fail=4 追後使用予定
+	fail=5 無料使用者は最大50000ゼニーまで所有することができます。
+R 02cb <str>.61B <number>.w
+	メモリアルダンジョン待機中
+R 02cc <number>.w
+	メモリアルダンジョン待機順番変更
+	number=0xffffのとき「メモリアルダンジョンの予約が取り消しされました」
+
+R 02cd <str>.61B <time1>.l <time2>.l
+	メモリアルダンジョン受付
+	time1 = 0,  time2 = 0 : 進行中
+	time1 > 0,  time2 = 0 : 進行中、ダンジョンミッション制限時間<time1>
+	time1 >= 0, time2 > 0 : 入場可能、<time2>までに入場しない場合
+
+R 02ce <type>.l <time>.l
+	type=00 受付時間を<time>に変更
+	type=01 メモリアルダンジョンが維持時間制限によって削除されました。
+	type=02 メモリアルダンジョンが入場時間制限によって削除されました。
+	type=03 メモリアルダンジョンが削除されました。
 S 02cf <flag?>.l
 	メモリアルダンジョンウィンドウでcancelを押した
 	flag=00 0x2cbへの返信
 	flag=01 0x2cdへの返信
-	未調査
 R 02d0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
 	所有装備リスト、0x295の上位版
 R 02d1 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
@@ -1810,8 +1826,8 @@ R 02d3 <index>.w
 R 02d4 <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.w <type>.B <fail>.B <time>.l <flag?>.w
 	アイテム獲得、0x29aの上位版
 R 02d5
-	0x105とも関連がありそう
-	未調査
+	「メモリアルダンジョンにシステム異常が発生しました」
+	クライアントを強制終了する
 S 02d6 <ID>.l
 	プレイヤー装備ウィンドウ要求
 R 02d7 <len>.w <name>.24B <class>.w <hair>.w <head option top>.w <head option mid>.w <head option bottom>.w <hair color>.w <clothes_color>.w <sex>.B {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
@@ -1824,8 +1840,8 @@ R 02d9 <0固定>.l <flag>.l
 	装備公開返答
 R 02da <flag>.B
 	ログイン時に装備公開してるかどうか
-	flag=00 msgstringtableの1359行目を表示
-	flag=01 msgstringtableの1360行目を表示
+	flag=00 装備を他のプレイヤーに公開しません。
+	flag=01 装備を他のプレイヤーに公開します。
 S 02db <len>.w <str>.?B
 	戦場チャット送信
 R 02dc <len>.w <ID>.l <name>.24B <str>.?B
@@ -1842,7 +1858,9 @@ R 02e0 <ID>.l <?>.24B <hp>.w <max_hp>.w
 	NPCにHPゲージが出る
 R 02e1 <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1>.l <param2>.w <type>.B <param3>.l
 	通常攻撃エフェクト＆ダメージ、0x8aの上位版
-R 02e7
+R 02e7 <len>.w <?>.w <str?>.?B
+	<str?>には -, + のチェックあり
+	数値を文字列として入れる？
 	未調査
 R 02e8 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
 	所有消耗品&収集品リスト

@@ -15,13 +15,14 @@ set __VCVER__=7
 
 rem ----------------------------------------------------------------
 rem パケット定義
-rem 2008-01-02aSakexe: 13
-rem 2007-11-28aSakexe: 12
-rem 2007-11-06aSakexe: 11
-rem 2007-09-04aSakexe: 10
-rem 2007-07-11aSakexe:  9
+rem 2008-01-02aSakexe: 14
+rem 2007-11-28aSakexe: 13
+rem 2007-11-06aSakexe: 12
+rem 2007-09-04aSakexe: 11
+rem 2007-07-11aSakexe: 10
+rem 2007-05-21aSakexe:  9
 rem 2007-02-12aSakexe:  8
-set __PACKETDEF__=/D "PACKETVER=13" /D "NEW_006b"
+set __PACKETDEF__=/D "PACKETVER=14" /D "NEW_006b"
 
 rem ----------------------------------------------------------------
 rem コンパイラごとの設定（自分の環境にあうもののコメントアウトをはずす）
@@ -187,24 +188,24 @@ if "%__ZLIB__%"=="" goto NOZLIB2
 cl %__warning__% %__cpu__% %__opt1__% *.c
 :NOZLIB2
 cd ..\
-cl %__warning__% %__cpu__% %__opt1__% *.c
+cl %__warning__% %__cpu__% %__opt1__% *.c 
 
 rem サーバー本体のビルド
 cd ..\login
-cl %__warning__% %__cpu__% %__opt1__% *.c
+cl %__warning__% %__cpu__% %__opt1__% *.c 
 link %__opt2__% /out:"../../login-server.exe"
 cd ..\char
-cl %__warning__% %__cpu__% %__opt1__% *.c
+cl %__warning__% %__cpu__% %__opt1__% *.c 
 link %__opt2__% /out:"../../char-server.exe"
 cd ..\map
-cl %__warning__% %__cpu__% %__opt1__% *.c
+cl %__warning__% %__cpu__% %__opt1__% *.c 
 link %__opt2__% /out:"../../map-server.exe"
 
 rem 必要なら txt-converter をビルド
 if NOT "%__TXT_MODE__%"=="" goto NOCONVERTER1
 if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER1
 cd ..\converter
-cl %__warning__% %__cpu__% %__opt1__% *.c
+cl %__warning__% %__cpu__% %__opt1__% *.c 
 link %__opt2__% /out:"../../txt-converter.exe"
 :NOCONVERTER1
 

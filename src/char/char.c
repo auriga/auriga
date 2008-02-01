@@ -754,7 +754,7 @@ const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *
 			return NULL;
 	}
 	if(dat[30] >= max_char_slot) {
-		*flag = 0x02;
+		*flag = 0x03;
 		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
 		return NULL;
 	}
@@ -769,8 +769,10 @@ const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *
 	char_log("make new char %d %s", dat[30], name);
 
 	for(n = 0; n < char_num; n++) {
-		if(strcmp(char_dat[n].st.name, name) == 0)
+		if(strcmp(char_dat[n].st.name, name) == 0) {
+			*flag = 0x00;
 			return NULL;
+		}
 		if(char_dat[n].st.account_id > 0 && char_dat[n].st.account_id == account_id && char_dat[n].st.char_num == dat[30])
 			return NULL;
 	}
@@ -1769,7 +1771,7 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 			return NULL;
 	}
 	if(dat[30] >= max_char_slot) {
-		*flag = 0x02;
+		*flag = 0x03;
 		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
 		return NULL;
 	}
@@ -1813,6 +1815,7 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 	if(sql_res) {
 		while( (sql_row = mysql_fetch_row(sql_res)) ) {
 			if(strncmp(name, sql_row[0], 24) == 0) {
+				*flag = 0x00;
 				mysql_free_result(sql_res);
 				return NULL;
 			}
@@ -3831,7 +3834,7 @@ int parse_char(int fd)
 			if(RFIFOREST(fd)<37)
 				return 0;
 			{
-				int flag=0x00;
+				int flag=0x04;
 				const struct mmo_chardata *cd = char_make(sd->account_id,RFIFOP(fd,2),&flag);
 				const struct mmo_charstatus *st;
 				struct global_reg reg[ACCOUNT_REG2_NUM];

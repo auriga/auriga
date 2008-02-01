@@ -3042,7 +3042,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 		char output[256];
 		struct item_data *data = sd->inventory_data[idx];
 
-#if PACKETVER >= 9
+#if PACKETVER >= 10
 		if(itemdb_isequip2(data)) {
 			// 強化装備アイテムの削除
 			pc_delitem(sd, idx, sd->status.inventory[idx].amount, 1);
@@ -8679,7 +8679,7 @@ static int pc_extra(int tid, unsigned int tick, int id, int data)
 								quantity = -((long)pl_sd->status.inventory[j].amount);
 							if (quantity < 0) {
 								if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
-									intif_delete_petdata(*((long *)(&pl_sd->status.inventory[i].card[1])));
+					 				intif_delete_petdata(*((long *)(&pl_sd->status.inventory[i].card[1])));
 								pc_delitem(pl_sd, j, -quantity, 0);
 								snprintf(output, sizeof output, msg_txt(151), -quantity, item_data->jname); // Server (special action): you lost %ld %s.
 								clif_displaymessage(pl_sd->fd, output);
