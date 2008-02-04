@@ -1,4 +1,12 @@
 ----------------------------------------
+//0452 [2008/02/05] by Cocoa
+
+・0451のスクリプトミスを修正
+
+・AthenaProject Rev.174よりmerge、thanks to ViViさん
+	-> エスマでマップサーバーがダウンする不具合を修正（battle.c）
+
+----------------------------------------
 //0451 [2008/02/05] by Cocoa
 
 ・AthenaProject Rev.161よりmerge、thanks to ViViさん

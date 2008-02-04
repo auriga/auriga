@@ -665,7 +665,7 @@ morocc.gat,159,143,3	script	パーミリア#Haloween	799,{
 		mes "嘘つき……";
 		mes "チケットを持ってないじゃない！";
 		mes "嘘つきの血は吸ってやる！";
-		@emotion 23;
+		emotion 23;
 		percentheal -20,0;
 		close;
 	}

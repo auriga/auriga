@@ -2767,7 +2767,7 @@ prt_fild01.gat,141,363,3	script	アンズ	96,{
 		mes "そこまではあってるけど……";
 		next;
 		misceffect 1;
-		@emotion 23;
+		emotion 23;
 		percentheal -50,0;
 		mes "[アンズ]";
 		mes "赤い帽子を被って、";

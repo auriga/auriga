@@ -782,7 +782,7 @@ amatsu.gat,188,153,5	script	わたあめ親父#summer	826,{
 	mes "なんかようかい？";
 	mes "なんつってな!!　ガハハ!!";
 	next;
-	@emotion 9;
+	emotion 9;
 	misceffect 28;
 	mes "[" +strcharinfo(0)+ "]";
 	mes "………………";
@@ -931,7 +931,7 @@ amatsu.gat,158,127,3	script	丁半お爺さん#summer	765,{
 			next;
 			if('@odd == '@result) {
 				emotion 23;
-				@emotion 2;
+				emotion 2;
 				getitem 551,'@bet * 2;
 				mes "[寿司田部太郎]";
 				mes "ぶふぉっ！";

@@ -3017,7 +3017,18 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				status_change_start(bl,SC_SMA,skill_lv,0,0,0,3000,0);
 			break;
 		case SL_SMA:	// エスマ
-			MATK_FIX( 40+sd->status.base_level, 100 );
+			if(bl->type == BL_PC) {
+				MATK_FIX( 40+sd->status.base_level, 100 );
+			} else if(bl->type == BL_MOB) {
+				struct mob_data *md = BL_DOWNCAST(BL_MOB, bl);
+				MATK_FIX( 40+mob_db[md->class_].lv, 100 );
+			} else if(bl->type == BL_MOB) {
+				struct homun_data *hd = BL_DOWNCAST(BL_HOM, bl);
+				MATK_FIX(40+hd->status.base_level, 100);
+			} else if(bl->type == BL_HOM) {
+				struct merc_data *mcd = BL_DOWNCAST(BL_MERC, bl);
+				MATK_FIX( 40+mcd->status.base_level, 100 );
+			}
 			ele = status_get_attack_element_nw(bl);
 			if(sc && sc->data[SC_SMA].timer != -1)
 				status_change_end(bl,SC_SMA,-1);
