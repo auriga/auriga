@@ -121,7 +121,7 @@ function	script	ValentineBreid	{
 				mes "とりあえず、回復してやろう。";
 			}
 			next;
-			gmcommand "@misceffect 207";
+			misceffect 207;
 			percentheal 100,0;
 			mes "["+strcharinfo(0)+"]";
 			mes "え……？";
@@ -230,7 +230,7 @@ function	script	ValentineBreid	{
 			mes "しなきゃいけないんだ！　しかし、";
 			mes "なんでオレがこんなことを……!!";
 			next;
-			gmcommand "@misceffect 207";
+			misceffect 207;
 			percentheal 100,0;
 			cutin "v_breid01",2;
 			mes "[ブレイド]";
@@ -709,7 +709,7 @@ function	script	ValentineBreid	{
 				mes "[ブレイド]";
 				mes "ほらよっと。";
 				mes "あまり無理をするなよ。";
-				gmcommand "@misceffect 207";
+				misceffect 207;
 				percentheal 100,0;
 			}
 			else {
@@ -756,7 +756,7 @@ function	script	ValentineBreid	{
 			mes "最上級のポーションだ。";
 			mes "これくらい鮮度が高い良品だと、";
 			mes "使った価値あり!!　って感じるなぁ。";
-			gmcommand "@misceffect 207";
+			misceffect 207;
 			percentheal 100,0;
 		}
 		return;
@@ -814,12 +814,12 @@ function	script	ValentineBreid	{
 			mes "人がわざわざ頭を下げて";
 			mes "謝ってやってるのに!!";
 			next;
-			gmcommand "@misceffect 2";
+			misceffect 2;
 			percentheal -50,0;
 			mes "[ブレイド]";
 			mes "もう一度言ってみろ!!";
 			next;
-			gmcommand "@misceffect 2";
+			misceffect 2;
 			percentheal -40,0;
 			mes "[ブレイド]";
 			mes "オレが無神経だとっ!?";
@@ -839,7 +839,7 @@ function	script	ValentineBreid	{
 			mes "……";
 			mes "ようやく理解したか。";
 			next;
-			gmcommand "@misceffect 207";
+			misceffect 207;
 			percentheal 100,0;
 			mes "[ブレイド]";
 			mes "……治療してやる……";
@@ -873,7 +873,7 @@ function	script	ValentineBreid	{
 					if(Sex==0)
 						return;
 					next;
-					gmcommand "@misceffect 2";
+					misceffect 2;
 					percentheal -50,0;
 					mes "[ブレイド]";
 					mes "こんなふうにな!!";
@@ -895,7 +895,7 @@ function	script	ValentineBreid	{
 					mes "暴力反対とか言いながら、";
 					mes "私の顔を殴ったのはどこの誰ですか!?";
 					next;
-					gmcommand "@misceffect 207";
+					misceffect 207;
 					percentheal 100,0;
 					cutin "v_breid04",2;
 					mes "[ブレイド]";
@@ -1207,7 +1207,7 @@ function	script	ValentineBreid	{
 			if(rand(3)) {
 				mes "[ブレイド]";
 				mes "ポーションピッチャー！";
-				gmcommand "@misceffect 207";
+				misceffect 207;
 				percentheal 100,0;
 				next;
 				mes "["+strcharinfo(0)+"]";
@@ -1241,7 +1241,7 @@ function	script	ValentineBreid	{
 			cutin "v_breid05",2;
 			mes "[ブレイド]";
 			mes "……ポーションピッチャー！";
-			gmcommand "@misceffect 207";
+			misceffect 207;
 			percentheal 100,0;
 			next;
 			mes "["+strcharinfo(0)+"]";
@@ -1710,7 +1710,7 @@ function	script	ValentineSprakki	{
 			mes "どこが痛いんです？";
 			mes "え、えっと……まずは治療剤を……";
 			next;
-			gmcommand "@misceffect 207";
+			misceffect 207;
 			percentheal 100,0;
 			mes "[スプラキ]";
 			mes "えっ、こんなに!?";
@@ -2046,7 +2046,7 @@ function	script	ValentineSprakki	{
 						mes "-一口飲むと口の中いっぱいに";
 						mes "甘酸っぱい香りが広がる-^000000";
 						percentheal 100,0;
-						gmcommand "@misceffect 83";
+						misceffect 83;
 						delitem 538,1;
 						return;
 					}
@@ -2081,7 +2081,7 @@ function	script	ValentineSprakki	{
 					mes "香りが鼻腔をくすぐる-";
 					mes "-一口飲むと口の中いっぱいに";
 					mes "甘酸っぱい香りが広がる-^000000";
-					gmcommand "@misceffect 83";
+					misceffect 83;
 					return;
 				case 2:
 					mes "[スプラキ]";
@@ -2111,7 +2111,7 @@ function	script	ValentineSprakki	{
 					mes "うわっ、な、何だこれ!!";
 					mes "すっごく苦い!!　それに……";
 					mes "やたらとドロドロしてて気持ち悪い!!";
-					gmcommand "@misceffect 118";
+					misceffect 118;
 					next;
 					cutin "v_sprakki05",255;
 					mes "[スプラキ]";
@@ -2144,7 +2144,7 @@ function	script	ValentineSprakki	{
 					mes "これは香りを楽しむ飲み物ですね。";
 					mes "強烈なハーブの香りをゆっくり吸うと、";
 					mes "頭がすっきりするんですよ。";
-					gmcommand "@misceffect 14";
+					misceffect 14;
 					return;
 				case 4:
 					cutin "v_sprakki01",2;

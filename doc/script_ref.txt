@@ -1360,7 +1360,7 @@ AurigaNPCScript
 			name		文字列、省略可
 
 			<name>で指定したNPCに<n>エモーションを出します。
-			<name>を省略すると、命令を実行したNPCが対象になります。
+			<name>を省略すると、命令を実行したNPC、もしくはプレイヤーが対象になります。
 
 		classchange命令
 			classchange <class>,<type>;

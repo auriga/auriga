@@ -506,7 +506,7 @@ prt_castle.gat,43,30,3	script	シャルル・オルレアン	878,{
 				next;
 				cutin "nyuang_4",2;
 				emotion 6,"猫を持っている子#Cooking";
-				gmcommand "@misceffect 1";
+				misceffect 1;
 				percentheal -10,0;
 				mes "[猫を持っている子]";
 				mes "フウーーー!!　ニャ!!";

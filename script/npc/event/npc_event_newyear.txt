@@ -1318,7 +1318,7 @@ amatsu.gat,44,105,5	script	おみくじ巫女さん#chance	769,{
 				mes "休息は適度にとりましょう。";
 				break;
 			case 3:
-				gmcommand "@misceffect 169";
+				misceffect 169;
 				mes "[御神籤][吉]";
 				mes "前進することも大事ですが、";
 				mes "時には立ち止まって";

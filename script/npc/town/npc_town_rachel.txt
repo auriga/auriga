@@ -190,7 +190,7 @@ rachel.gat,127,117,4	script	少女信徒	914,{
 	mes "すべき事を果たし、神の御意思を持つ。";
 	mes "それが正しいです。";
 	next;
-	gmcommand "@emotion 1";
+	emotion 1;
 	mes "[ティノ]";
 	mes "今は、私の言う事がわからなくても";
 	mes "いつかわかる日が来ます。";
@@ -372,7 +372,7 @@ rachel.gat,206,30,3	script	フレイヤ神官	920,{
 		next;
 		mes "-あなたは最高にウケると";
 		mes "　思う話を披露した-";
-		gmcommand "@misceffect 295";
+		misceffect 295;
 		next;
 		mes "[フレイヤ神官]";
 		mes "ハァ……";
@@ -2075,7 +2075,7 @@ ra_temin.gat,277,159,3	script	ジェド大神官	932,{
 		mes "女神フレイヤ様の祝福があらん事を……";
 		close2;
 		cutin "ra_gman",255;
-		gmcommand "@misceffect 253";
+		misceffect 253;
 		set RA_4QUE,13;
 		getexp 900000,0;
 		end;
@@ -2498,7 +2498,7 @@ ra_temin.gat,277,159,3	script	ジェド大神官	932,{
 		mes "本当にお疲れさま。";
 		close2;
 		cutin "ra_gman",255;
-		gmcommand "@misceffect 253";
+		misceffect 253;
 		set RA_2QUE,10;
 		getexp 900000,600000;
 		end;
@@ -2520,7 +2520,7 @@ ra_temin.gat,277,159,3	script	ジェド大神官	932,{
 		mes "ボランティア様が";
 		mes "きてくださったようだね。";
 		next;
-		gmcommand "@emotion 54";
+		emotion 54;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "……からかわないでください。";
 		next;
@@ -7119,7 +7119,7 @@ ice_dun02.gat,120,105,3	script	氷の中の男#ra	924,{
 		mes "………………";
 		mes "…………";
 		next;
-		gmcommand "@emotion 52";
+		emotion 52;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "それで、どうしたのですか？";
 		next;
@@ -7430,7 +7430,7 @@ OnTimer10800000:
 	initnpctimer;
 	end;
 //OnTouch2:	//Mobに対して発動
-//	gmcommand "@emotion 29";
+//	emotion 29;
 //	emotion 6;
 //	end;
 }

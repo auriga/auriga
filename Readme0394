@@ -1,4 +1,15 @@
 ----------------------------------------
+//0451 [2008/02/05] by Cocoa
+
+・AthenaProject Rev.161よりmerge、thanks to ViViさん
+	-> チェイスウォーク解除時は詠唱無しに修正（unit.c）
+
+・AthenaProject Rev.170よりmerge、thanks to Blazeさん
+	-> スクリプト「emotion」で指定NPCが見つからなかった場合はアタッチ中のプレイヤーに表示させるように修正（script.c）
+	-> それにともないscript_ref.txtを修正
+	-> 全スクリプトからgmcommand命令を撤廃
+
+----------------------------------------
 //0450 [2008/02/02] by Rayce
 
 ・PACKETVER 9以降の番号を１つズラし、2007-05-21aSakexeを挿入（clif.c, pc.c）

@@ -649,7 +649,7 @@ ve_in.gat,237,131,1	script	酒場の客	940,{
 	if(Sex) {
 		mes "お隣の方はどうですか？";
 		next;
-		gmcommand "@emotion 19";
+		emotion 19;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "えっ？　私ですか？";
 		next;
@@ -657,7 +657,7 @@ ve_in.gat,237,131,1	script	酒場の客	940,{
 		mes "う〜ん……";
 		mes "悪くないけど、";
 		mes "私のタイプじゃないな〜";
-		gmcommand "@emotion 9";
+		emotion 9;
 	}
 	else {
 		next;
@@ -3625,7 +3625,7 @@ veins.gat,327,185,3	script	子供	944,{
 		mes "[" +strcharinfo(0)+ "]";
 		mes "よし、いい返事だね！";
 		mes "それじゃ、またね!!";
-		gmcommand "@misceffect 253";
+		misceffect 253;
 		set VE_3QUE,25;
 		getexp 1000000,600000;
 		close;
@@ -6553,7 +6553,7 @@ thor_camp.gat,250,104,3	script	サヘディ	934,{
 		mes "急な温度上昇は過去何度もあり、";
 		mes "環境の変化が気になります。";
 		next;
-		gmcommand "@emotion 19";
+		emotion 19;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "え？　……ぁ……";
 		mes "はい！　そうです！";
@@ -6640,7 +6640,7 @@ thor_camp.gat,250,104,3	script	サヘディ	934,{
 		mes "何度も言ってたのに……";
 		mes "結局こうなるとは……";
 		next;
-		gmcommand "@emotion 52";
+		emotion 52;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "あの……自分で言うのも";
 		mes "お恥ずかしいのですが、";
@@ -6659,7 +6659,7 @@ thor_camp.gat,250,104,3	script	サヘディ	934,{
 		mes "という事は、";
 		mes "火山がすぐにでも噴火すると!?";
 		next;
-		gmcommand "@emotion 52";
+		emotion 52;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "えっと……";
 		mes "先程までの調査結果によると、";
@@ -6879,7 +6879,7 @@ thor_camp.gat,159,74,3	script	ビト大佐	939,{
 			next;
 			if(select("オーディン様","フレイヤ様","トール様")==2)
 				break;
-			gmcommand "@misceffect 1";
+			misceffect 1;
 			percentheal -10,0;
 			mes "[ビト大佐]";
 			mes "この愚か者が！";
@@ -7182,7 +7182,7 @@ thor_camp.gat,109,167,0	script	動力制御機	111,{
 thor_camp.gat,150,65,0	script	かかし#ve1	111,{
 	if(VE_4QUE == 20) {
 		misceffect 1;
-		gmcommand "@emotion 23";
+		emotion 23;
 		mes "-バシッ！-";
 		next;
 		mes "[ビト大佐]";

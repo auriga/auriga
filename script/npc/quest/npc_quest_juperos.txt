@@ -18,7 +18,7 @@ juperos_01.gat,100,91,0		script	juperoswarp4003		139,2,2{
 	mes "ああ……。";
 	next;
 	if(select("もう少しの間、この光に包まれていたい……","あっ！　そんなこと考えてる場合じゃない！")==1) {
-		gmcommand "@misceffect 348";
+		misceffect 348;
 		mes "^797979["+strcharinfo(0)+"]^000000";
 		mes "ああ……。";
 		mes "体が軽くなっていく気がする……。";
@@ -53,7 +53,7 @@ jupe_gate.gat,50,171,0		script	juperoswarp4006		139,4,0{
 	mes "ワープのようだ。";
 	next;
 	if(select("ワープに身を任せる","ワープから離れる")==1) {
-		gmcommand "@misceffect 348";
+		misceffect 348;
 		mes "^797979["+strcharinfo(0)+"]^000000";
 		mes "体が軽くなったような感じがする……。";
 		next;

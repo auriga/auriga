@@ -1026,7 +1026,7 @@ jawaii_in.gat,28,124,2	script	バーテンダー	46,{
 				mes "- 被りたくなった。 -";
 				mes "- その勢いで口の中へお酒を -";
 				mes "- 一気に放り込んだ。 -";
-				gmcommand "@misceffect 17";
+				misceffect 17;
 				break;
 			case 1:
 				mes "[バーテンダー]";
@@ -1054,7 +1054,7 @@ jawaii_in.gat,28,124,2	script	バーテンダー	46,{
 				next;
 				mes "- 唇の位置に気をつけて -";
 				mes "- ゆっくり飲んだ。 -";
-				gmcommand "@misceffect 38";
+				misceffect 38;
 				break;
 			case 2:
 				mes "[バーテンダー]";
@@ -1078,7 +1078,7 @@ jawaii_in.gat,28,124,2	script	バーテンダー	46,{
 				mes "喉が焼けるような感じになりますよ。";
 				next;
 				mes "- 一気に飲み干した。 -";
-				gmcommand "@misceffect 124";
+				misceffect 124;
 				break;
 			case 3:
 				mes "[バーテンダー]";
@@ -1104,7 +1104,7 @@ jawaii_in.gat,28,124,2	script	バーテンダー	46,{
 				mes "好んで飲むものなんです。";
 				next;
 				mes "- 少しずつ味わいながら飲んだ。 -";
-				gmcommand "@misceffect 118";
+				misceffect 118;
 				break;
 			}
 			set '@flag,1;
@@ -1140,7 +1140,7 @@ jawaii_in.gat,28,124,2	script	バーテンダー	46,{
 			next;
 			mes "- 感想はやはり -";
 			mes "- 「うまい!!」 -";
-			gmcommand "@misceffect 18";
+			misceffect 18;
 			break;
 		case 3:
 			mes "[バーテンダー]";
@@ -1166,7 +1166,7 @@ jawaii_in.gat,28,124,2	script	バーテンダー	46,{
 			mes "- 三度に分けて飲んでみた。 -";
 			mes "- 口の中一杯に甘酸っぱい香りが -";
 			mes "- 広がる。本当においしい。 -";
-			gmcommand "@misceffect 83";
+			misceffect 83;
 			break;
 		case 4:
 			mes "[バーテンダー]";
@@ -1198,7 +1198,7 @@ jawaii_in.gat,28,124,2	script	バーテンダー	46,{
 			next;
 			mes "- 巨大な砲撃を受けたような -";
 			mes "- 衝撃が走った。 -";
-			gmcommand "@misceffect 106";
+			misceffect 106;
 			break;
 		case 5:
 			mes "[バーテンダー]";
@@ -1227,7 +1227,7 @@ jawaii_in.gat,28,124,2	script	バーテンダー	46,{
 			mes "- 一口飲んでみた。 -";
 			mes "- ……!! -";
 			mes "- すぐに吐き出してしまった。 -";
-			gmcommand "@misceffect 5";
+			misceffect 5;
 			break;
 		}
 		if(@menu>1) {

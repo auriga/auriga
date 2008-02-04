@@ -1053,6 +1053,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		}
 		nomemorize = 1;
 		break;
+	case ST_CHASEWALK:	/* チェイスウォーク */
+		if(sc && sc->data[SC_CHASEWALK].timer != -1)
+			casttime = 0;
+		break;
 	}
 
 	// メモライズ状態ならキャストタイムが1/2

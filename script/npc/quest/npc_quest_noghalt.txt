@@ -658,7 +658,7 @@ hu_fild05.gat,168,304,0	script	柱	111,{
 		mes "-どこかから引っ張られたかのように";
 		mes "足元がスッと消えた感じがした-";
 		misceffect 99;
-		gmcommand "@misceffect 321";
+		misceffect 321;
 		close2;
 		delitem 1035,1;
 		delitem 1036,1;
@@ -676,7 +676,7 @@ hu_fild05.gat,168,304,0	script	柱	111,{
 	delitem 1035,1;
 	delitem 1036,1;
 	delitem 1037,1;
-	gmcommand "@emotion 23";
+	emotion 23;
 	percentheal -10,0;
 	close;
 OnTimer10000:
@@ -713,7 +713,7 @@ hu_fild05.gat,171,211,0	script	柱	111,{
 		mes "足元がスッと消えた感じがした-";
 		next;
 		misceffect 99;
-		gmcommand "@misceffect 321";
+		misceffect 321;
 		close2;
 		warp "hu_fild05.gat",169,305;
 		end;
@@ -730,7 +730,7 @@ hu_fild05.gat,171,211,0	script	柱	111,{
 	mes "どこかへ投げ飛ばされた-";
 	next;
 	misceffect 99;
-	gmcommand "@misceffect 321";
+	misceffect 321;
 	close2;
 	warp "hu_fild05.gat",158,274;
 	end;

@@ -8220,8 +8220,13 @@ int buildin_emotion(struct script_state *st)
 	else
 		nd = map_id2nd(st->oid);
 
-	if(nd && type >= 0)
+	if(nd)
 		clif_emotion(&nd->bl,type);
+	else{
+		struct map_session_data *sd=script_rid2sd(st);
+		if(sd)
+			clif_emotion(&sd->bl, type);
+	}
 	return 0;
 }
 

@@ -711,7 +711,7 @@ hugel.gat,56,104,3	script	クルペ	709,3,3,{
 		mes "おかげで明日の牛乳配達も";
 		mes "問題無いよ。";
 		mes "これはお礼だ。";
-		gmcommand "@misceffect 71";
+		misceffect 71;
 		set HU_2QUE,10;
 		getitem 12063,3;
 		getexp 100000,0;
@@ -1262,7 +1262,7 @@ hugel.gat,107,67,3	script	トピ	706,{
 		mes "あぁぁぁん！";
 		next;
 		if(select("もっと詳しく聞く","厄介事には関わらない")==2) {
-			gmcommand "@emotion 9";
+			emotion 9;
 			mes "^830083こんな事には関わらないのが";
 			mes "賢明だと判断した。";
 			mes "早くこの場を離れよう。^000000";
@@ -1274,7 +1274,7 @@ hugel.gat,107,67,3	script	トピ	706,{
 		mes "そしたらママも……";
 		mes "あぁぁぁぁぁん!!";
 		next;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^830083あんまり泣くので";
 		mes "可愛そうな気がしてきた。";
 		mes "村の外に出たという";
@@ -1310,7 +1310,7 @@ hugel.gat,107,67,3	script	トピ	706,{
 		mes "言っておいてよ。";
 		mes "ほら、早く！";
 		next;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^830083この子は本当にさっきの子？";
 		mes "泣いていた時と全然雰囲気が違う。";
 		mes "子供とは思えない、";
@@ -1323,7 +1323,7 @@ hugel.gat,107,67,3	script	トピ	706,{
 		mes "ママは村の外にいるんでしょ？";
 		mes "ねぇ、はやくはやく！";
 		next;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^830083子供っぽい素振りをしている。";
 		mes "しかし、先ほど垣間見た姿は、";
 		mes "プロの暗殺者が夜の闇に";
@@ -1331,7 +1331,7 @@ hugel.gat,107,67,3	script	トピ	706,{
 		mes "本当に恐ろしい子供だ……^000000";
 		close;
 	case 8:
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^830083子供の一人言が聞こえる。^000000";
 		next;
 		mes "[トピ]";
@@ -1350,7 +1350,7 @@ hugel.gat,107,67,3	script	トピ	706,{
 		set HU_3QUE,9;
 		close;
 	case 9:
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^830083あの年で父親に";
 		mes "セクシーなお嫁さんを要求する";
 		mes "あの勇気と雄大な願望は";
@@ -1434,7 +1434,7 @@ hu_fild06.gat,190,367,3	script	トピのママ	701,{
 		mes "それにわざわざ料理まで……";
 		mes "ご迷惑をおかけしました。";
 		mes "あの、よかったらこれを。";
-		gmcommand "@misceffect 71";
+		misceffect 71;
 		set HU_3QUE,8;
 		getitem 12065,3;
 		close;
@@ -1445,13 +1445,13 @@ hu_fild06.gat,190,367,3	script	トピのママ	701,{
 		mes "わからなくなるわ。";
 		close;
 	case 9:
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^830083結婚相手を探してくるという";
 		mes "賭けを何故か鬼ごっこで……";
 		mes "妙に腹黒い感じのする息子と";
 		mes "何も理解していない母親……^000000";
 		next;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^830083トピが幼いのかあの人が幼いのか";
 		mes "わからなくなると言った彼女は、";
 		mes "自分自身が一番幼くて";
@@ -1464,7 +1464,7 @@ hu_fild06.gat,190,367,3	script	トピのママ	701,{
 hugel.gat,100,176,0	script	タル#hu	111,{
 	switch(HU_3QUE) {
 	default:
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^840084何か変な音が聞こえる。";
 		mes "小さい穴の間から";
 		mes "かなり低い音が聞こえる。";
@@ -1478,7 +1478,7 @@ hugel.gat,100,176,0	script	タル#hu	111,{
 		mes "蒸しガニを食べれば……";
 		mes "すぐにでも力が…………";
 		next;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^840084タルがしゃべっている。";
 		mes "ありえない……";
 		mes "世界の終末か!?";
@@ -1491,7 +1491,7 @@ hugel.gat,100,176,0	script	タル#hu	111,{
 			mes "なんてやつだ!!";
 			mes "天罰を受けろ!!";
 			next;
-			gmcommand "@emotion 9";
+			emotion 9;
 			mes "^840084天罰よりタルを相手に話す方が";
 			mes "100倍は危ないだろう。";
 			mes "それにしても……";
@@ -1507,7 +1507,7 @@ hugel.gat,100,176,0	script	タル#hu	111,{
 		mes "黄ポーション1個";
 		mes "で作れるVIT強化型の料理だ!!";
 		next;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^840084お腹がすいて力が出ないと";
 		mes "言っていたのに……";
 		mes "たった一言で元気になるとは。";
@@ -1520,7 +1520,7 @@ hugel.gat,100,176,0	script	タル#hu	111,{
 		mes "あぁ……蒸しガニ……";
 		mes "頼む……それを……";
 		next;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^840084タルがこれほどまでに願うなら";
 		mes "なんとか手に入れてきてみよう。";
 		mes "もしかするとタルが宝箱に変わって";
@@ -1546,7 +1546,7 @@ hugel.gat,100,176,0	script	タル#hu	111,{
 		next;
 		set HU_3QUE,5;
 		delitem 12051,1;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^840084私もタルが宝箱に変わると思うと";
 		mes "力が湧いてくる！";
 		mes "さぁ、はやく食べて宝箱に！^000000";
@@ -1562,25 +1562,25 @@ hugel.gat,100,176,0	script	タル#hu	111,{
 		hideonnpc;
 		end;
 	case 6:
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^840084タルの中身となった彼と";
 		mes "話を続けるより、";
 		mes "彼の家族にこのタルの事を";
 		mes "話す方が精神的によさそうだ。^000000";
 		close;
 	case 7:
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^840084トピのママにもこのタルは";
 		mes "ただのタルではないということを";
 		mes "知らせてあげなければ。^000000";
 		close;
 	case 8:
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^840084あのタルの中であの人は";
 		mes "いつまで隠れるつもりなんだろう……^000000";
 		close;
 	case 9:
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "^830083あのタルは鬼ごっこで";
 		mes "お嫁さんを探すという約束を";
 		mes "必ず守らないという";
@@ -1597,7 +1597,7 @@ hugel.gat,100,174,3	script	グェイン#hu	898,{
 		mes "満腹まんぷくー";
 		close;
 	}
-	gmcommand "@emotion 9";
+	emotion 9;
 	mes "^840084な、なんてことだ！";
 	mes "タルが宝箱ではなく人間に！";
 	mes "私の……私の夢が……";
@@ -1618,7 +1618,7 @@ hugel.gat,100,174,3	script	グェイン#hu	898,{
 	mes "息子とかくれんぼをしているから";
 	mes "ここに隠れているだけだ。";
 	next;
-	gmcommand "@emotion 9";
+	emotion 9;
 	mes "^840084息子とかくれんぼ？";
 	mes "どこかで聞いたような……";
 	mes "もしかして……^000000";
@@ -1635,7 +1635,7 @@ hugel.gat,100,174,3	script	グェイン#hu	898,{
 	mes "どうやら人気者らしいな。";
 	mes "いや、参った参った。";
 	next;
-	gmcommand "@emotion 9";
+	emotion 9;
 	mes "^840084なんという誇大妄想……";
 	mes "こんな人とこれ以上会話を";
 	mes "続けたら、お礼の代わりに";
@@ -1653,7 +1653,7 @@ hugel.gat,100,174,3	script	グェイン#hu	898,{
 	mes "っということなんで！";
 	mes "俺は隠れる！";
 	next;
-	gmcommand "@emotion 9";
+	emotion 9;
 	mes "^840084様子を見る限り";
 	mes "とてもすごい要求らしい。";
 	mes "トピとトピの母親に";
@@ -1675,7 +1675,7 @@ OnInit:
 //------------------------------------------------------------
 hugel.gat,198,169,0	script	木	139,2,2,{
 	if(HU_4QUE == 6) {
-		gmcommand "@misceffect 57";
+		misceffect 57;
 		mes "-何!?　この感じ!?-";
 		mes "-これは……ニブルヘイム!?-";
 		mes "-何故急にニブルヘイムが!?-";
@@ -2189,7 +2189,7 @@ hugel.gat,196,164,3	script	エルシャングト	50,{
 		next;
 		mes "[エルシャングト]";
 		mes "カナイン……";
-		gmcommand "@misceffect 71";
+		misceffect 71;
 		set HU_4QUE,12;
 		getexp 50000,0;
 		getitem 603,1;
@@ -2602,7 +2602,7 @@ hu_in01.gat,387,245,1	script	エロン・シュイル	849,2,2,{
 		mes "ちゃんと薬を買ってくるよ。";
 		close2;
 		hideonnpc "ポスティール・シュイル#hu";
-		gmcommand "@emotion 4";
+		emotion 4;
 		emotion 4;
 		set HU_5QUE,11;
 		close;
@@ -2776,7 +2776,7 @@ OnTouch:
 	case 12:
 		mes "-本棚の奥に箱が1つあった-";
 		close2;
-		gmcommand "@misceffect 71";
+		misceffect 71;
 		set HU_5QUE,13;
 		getexp 50000,0;
 		getitem 603,1;
@@ -4538,7 +4538,7 @@ yuno.gat,111,156,3	script	ユスラン	90,{
 		mes "[ユスラン]";
 		mes "……本当にありがとうございました。";
 		close2;
-		gmcommand "@misceffect 253";
+		misceffect 253;
 		set HU_7QUE,12;
 		getexp 900000,600000;
 		end;
@@ -7309,7 +7309,7 @@ hugel.gat,70,137,5	script	シイデ	879,{
 			mes "モクス虫の皮を5個。";
 			mes "よろしくお願いします。";
 			next;
-			gmcommand "@emotion 9";
+			emotion 9;
 			mes "[" +strcharinfo(0)+ "]";
 			mes "-………………-";
 			set HU_9QUE,13;
@@ -7375,7 +7375,7 @@ hugel.gat,70,137,5	script	シイデ	879,{
 		mes "あの方も私に……";
 		mes "本当にありがとう。";
 		next;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "-材料が何かわかったら";
 		mes "間違いなく顔は覚えるな……-";
@@ -7435,16 +7435,16 @@ hu_fild06.gat,168,359,0	script	モクスきのこ#hu1	111,{
 	}
 	mes "-あなたはきのこを取り始めた-";
 	next;
-	gmcommand "@misceffect 71";
+	misceffect 71;
 	mes "-ぐいっぐいっぐいっぐい-";
 	next;
 	if(rand(5) == 0) {
-		gmcommand "@misceffect 194";
+		misceffect 194;
 		mes "-きのこが折れてしまった-";
 		mes "-これでは使えそうも無い-";
 		close;
 	}
-	gmcommand "@misceffect 364";
+	misceffect 364;
 	set HU_9QUE,HU_9QUE+1;
 	mes "-綺麗にきのこが取れた-";
 	mes "-モクスきのこ水溶液の数：" +(HU_9QUE - 7)+ "個-";
@@ -7478,15 +7478,15 @@ hugel.gat,209,163,0	script	貝#hu1	111,{
 	mes "-あなたはむきみを取り出すため、";
 	mes "貝を開け始めた-";
 	next;
-	gmcommand "@misceffect 71";
+	misceffect 71;
 	mes "-ぐっグッぐっグッ-";
 	next;
 	if(rand(5) == 0) {
-		gmcommand "@misceffect 194";
+		misceffect 194;
 		mes "-どうやっても貝が開かない-";
 		close;
 	}
-	gmcommand "@misceffect 364";
+	misceffect 364;
 	set HU_9QUE,HU_9QUE+1;
 	mes "-貝のむきみを手に入れた-";
 	mes "-むきみの数：" +(HU_9QUE - 1)+ "個-";
@@ -7525,15 +7525,15 @@ OnTouch:
 	next;
 	mes "-………………………………-";
 	next;
-	gmcommand "@misceffect 71";
+	misceffect 71;
 	mes "-○×△□○×△□○×△□-";
 	next;
 	if(rand(5) == 0) {
-		gmcommand "@misceffect 194";
+		misceffect 194;
 		mes "-虫に逃げられた-";
 		close;
 	}
-	gmcommand "@misceffect 364";
+	misceffect 364;
 	set HU_9QUE,HU_9QUE+1;
 	mes "-虫の皮を手に入れた-";
 	mes "-モクス虫の皮の数：" +(HU_9QUE - 13)+ "個-";
@@ -7912,17 +7912,17 @@ hu_in01.gat,256,40,3	script	ヘリコ	897,{
 			mes "[ヘリコ]";
 			mes "………………………………";
 			next;
-			gmcommand "@misceffect 3";
+			misceffect 3;
 			percentheal -5,0;
 			mes "[ヘリコ]";
 			mes "吐け!!";
 			next;
-			gmcommand "@misceffect 3";
+			misceffect 3;
 			percentheal -5,0;
 			mes "[ヘリコ]";
 			mes "吐くのだ!!";
 			next;
-			gmcommand "@misceffect 3";
+			misceffect 3;
 			percentheal -5,0;
 			mes "[ヘリコ]";
 			mes "吐けーーーーー!!";
@@ -7933,7 +7933,7 @@ hu_in01.gat,256,40,3	script	ヘリコ	897,{
 			next;
 			cutin "heri2",2;
 			emotion 9;
-			gmcommand "@emotion 28";
+			emotion 28;
 			mes "[ヘリコ]";
 			mes "……ハハハ。";
 			mes "年寄りを驚かせるでない。";
@@ -7958,7 +7958,7 @@ hu_in01.gat,256,40,3	script	ヘリコ	897,{
 		mes "[" +strcharinfo(0)+ "]";
 		mes "……何か知っているんですね。";
 		next;
-		gmcommand "@emotion 23";
+		emotion 23;
 		mes "[ヘリコ]";
 		mes "……ワシはバルムント先生と同じ";
 		mes "^3131FFレゲンシュルム";
@@ -9175,7 +9175,7 @@ lhz_dun02.gat,244,226,0	script	原子変換器機	111,{
 
 lhz_dun02.gat,244,227,0	script	爆発#hu	139,5,5,{
 	percentheal -10,0;
-	gmcommand "@misceffect 4";
+	misceffect 4;
 	hideonnpc;
 	end;
 OnInit:

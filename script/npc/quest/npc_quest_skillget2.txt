@@ -1476,7 +1476,7 @@ prt_church.gat,111,112,2	script	ライナース修道女	79,{
 		mes "レディムプティオ!!^000000";
 		next;
 		if(JobLevel+25 <= rand(100)) {
-			gmcommand "@misceffect 53";
+			misceffect 53;
 			delitem 523,1;
 			delitem 717,1;
 			mes "[ライナース修道女]";
@@ -1485,7 +1485,7 @@ prt_church.gat,111,112,2	script	ライナース修道女	79,{
 			mes "もう一度やってみましょう。";
 			close;
 		}
-		gmcommand "@misceffect 14";
+		misceffect 14;
 		delitem 523,30;
 		delitem 717,20;
 		set SKILL_REDEMPTIO,0;

@@ -1326,7 +1326,7 @@ OnTouch:
 		mes "相手を縛るであろう！";
 		next;
 		mes "-パシッ-";
-		gmcommand "@misceffect 372";
+		misceffect 372;
 		next;
 		mes "[ジルタス]";
 		mes "……これが契約の印だ。";

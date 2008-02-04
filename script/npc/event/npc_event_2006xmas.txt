@@ -453,7 +453,6 @@ xmas_in.gat,93,97,0	script	ロバートメイ	873,{
 	mes "夜になるほど光ってる鼻♪";
 	next;
 	emotion 23;
-	gmcommand "@emotion 23";
 	mes "[ロバートメイ]";
 	mes "まったく！";
 	mes "誰が笑いものだ！";
@@ -737,7 +736,7 @@ prontera.gat,155,285,3	script	エンジョイ#Xmas	753,{
 			mes "……………………";
 			next;
 			misceffect 328;
-			gmcommand "@misceffect 1";
+			misceffect 1;
 			heal -(Hp-1),-(Sp-1);
 			mes "[エンジョイ]";
 			mes "…………………………";
@@ -826,7 +825,7 @@ prontera.gat,155,285,3	script	エンジョイ#Xmas	753,{
 		mes "……エンジョイさん……？";
 		next;
 		misceffect 328;
-		gmcommand "@misceffect 1";
+		misceffect 1;
 		percentheal -50,0;
 		mes "[エンジョイ]";
 		mes "……ッ！";
@@ -838,7 +837,7 @@ prontera.gat,155,285,3	script	エンジョイ#Xmas	753,{
 		end;
 	default:
 		misceffect 328;
-		gmcommand "@misceffect 1";
+		misceffect 1;
 		percentheal -50,0;
 		mes "[エンジョイ]";
 		mes "まだいたのか！";
@@ -861,7 +860,7 @@ prontera.gat,155,237,0	script	手紙#Xmas1	844,3,3,{
 		mes "仲間を集めて、ある場所に";
 		mes "来いと言っているのか！";
 		next;
-		gmcommand "@emotion 5";
+		emotion 5;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "なら……最初に行くのは……";
 		mes "あの人がいる所だ！";
@@ -953,7 +952,7 @@ prontera.gat,155,237,0	script	手紙#Xmas1	844,3,3,{
 	mes "-^FF00000^000000-";
 	next;
 	misceffect 183;
-	gmcommand "@emotion 23";
+	emotion 23;
 	percentheal -30,0;
 	set XMAS_1EVE,3;
 	close;
@@ -1176,7 +1175,7 @@ prontera.gat,163,66,7	script	クリス	748,{
 
 prontera.gat,35,209,5	script	マス	881,{
 	if(XMAS_1EVE <= 6) {
-		gmcommand "@emotion 23";
+		emotion 23;
 		mes "[マス]";
 		mes "…………";
 		mes "私も大好きだよ、カプラお姉様〜!!";
@@ -1199,7 +1198,7 @@ prontera.gat,35,209,5	script	マス	881,{
 		if(XMAS_1EVE != 6)
 			close;
 		next;
-		gmcommand "@emotion 28";
+		emotion 28;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "マ、マスさん……";
 		mes "エンジョイさんから何か";
@@ -1263,7 +1262,7 @@ prt_fild05.gat,355,254,0	script	手紙#Xmas2	844,3,3,{
 		mes "古木の枝 1個^000000";
 		mes "だったかな……";
 		next;
-		gmcommand "@emotion 5";
+		emotion 5;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "そして……";
 		mes "^0000FF水と森が出会う場所";
@@ -1317,7 +1316,7 @@ prt_fild05.gat,355,254,0	script	手紙#Xmas2	844,3,3,{
 	mes "-^FF00000^000000-";
 	next;
 	misceffect 183;
-	gmcommand "@emotion 23";
+	emotion 23;
 	percentheal -30,0;
 	set XMAS_1EVE,8;
 	close;
@@ -1737,7 +1736,7 @@ xmas.gat,152,290,3	script	ポウ	716,{
 		mes "[ポウ]";
 		mes "やだぁぁぁぁぁぁ！";
 		next;
-		gmcommand "@emotion 16";
+		emotion 16;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "……っというのは無理みたいだから、";
 		mes "とりあえず卵について";
@@ -1780,7 +1779,7 @@ xmas.gat,152,290,3	script	ポウ	716,{
 		next;
 		switch(select("卵と一緒に水に入れて沸かす","卵に穴を空けて粉を入れる","卵の表面に粉を振り掛ける","粉を水に溶かして塗りつける")) {
 		case 1:
-			gmcommand "@misceffect 302";
+			misceffect 302;
 			mes "[" +strcharinfo(0)+ "]";
 			mes "（こうかな？）";
 			mes "粉を水で溶かして";
@@ -1796,7 +1795,7 @@ xmas.gat,152,290,3	script	ポウ	716,{
 			warp "xmas.gat",148,116;
 			end;
 		case 2:
-			gmcommand "@misceffect 194";
+			misceffect 194;
 			mes "[" +strcharinfo(0)+ "]";
 			mes "（こうかな？）";
 			mes "卵の上の方に穴をあけて";
@@ -1814,7 +1813,7 @@ xmas.gat,152,290,3	script	ポウ	716,{
 		case 3:
 			break;
 		case 4:
-			gmcommand "@misceffect 214";
+			misceffect 214;
 			mes "[" +strcharinfo(0)+ "]";
 			mes "（こうかな？）";
 			mes "粉を水に溶かして";
@@ -1834,9 +1833,8 @@ xmas.gat,152,290,3	script	ポウ	716,{
 		mes "（こうかな？）";
 		mes "粉をそのまま卵に振りかけてみよう。";
 		next;
-		gmcommand "@misceffect 77";
+		misceffect 77;
 		emotion 0;
-		gmcommand "@emotion 0";
 		mes "-あなたは^0000FF祝福の粉^000000を";
 		mes "指でつまみ、卵に向かって";
 		mes "振りかけた-";
@@ -1883,7 +1881,7 @@ xmas.gat,152,290,3	script	ポウ	716,{
 		mes "困ったなぁ……";
 		mes "どうすれば……";
 		next;
-		gmcommand "@emotion 5";
+		emotion 5;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "あ！　そうだ！";
 		mes "じゃあこうしよう！";
@@ -2384,8 +2382,8 @@ prontera.gat,226,306,3	script	ホーリー	79,{
 		mes "さあ、気を楽にしてください。";
 		next;
 		misceffect 75;
-		gmcommand "@misceffect 194";
-		gmcommand "@emotion 23";
+		misceffect 194;
+		emotion 23;
 		percentheal -30,0;
 		mes "[ホーリー]";
 		mes "ではいきますよ！";
@@ -2768,8 +2766,8 @@ prt_fild01.gat,141,363,3	script	アンズ	96,{
 		mes "プレゼントを持ってきてくれるの。";
 		mes "そこまではあってるけど……";
 		next;
-		gmcommand "@misceffect 1";
-		gmcommand "@emotion 23";
+		misceffect 1;
+		@emotion 23;
 		percentheal -50,0;
 		mes "[アンズ]";
 		mes "赤い帽子を被って、";
@@ -2844,8 +2842,8 @@ payon.gat,242,282,3	script	レイシ	703,{
 		mes "[レイシ]";
 		mes "……";
 		next;
-		gmcommand "@misceffect 1";
-		gmcommand "@emotion 23";
+		misceffect 1;
+		emotion 23;
 		percentheal -50,0;
 		mes "[レイシ]";
 		mes "……サンタじゃない……";
@@ -2917,8 +2915,8 @@ alb2trea.gat,110,99,0	script	デーマリー	706,{
 		mes "[デーマリー]";
 		mes "はん、嘘ってばればれだよ。";
 		next;
-		gmcommand "@misceffect 1";
-		gmcommand "@emotion 23";
+		misceffect 1;
+		emotion 23;
 		percentheal -50,0;
 		mes "[デーマリー]";
 		mes "サンタはな、赤い帽子を被って";
@@ -2992,8 +2990,8 @@ yuno.gat,103,185,3	script	ミヒル	72,{
 		mes "[ミヒル]";
 		mes "ふん、嘘つき！";
 		next;
-		gmcommand "@misceffect 1";
-		gmcommand "@emotion 23";
+		misceffect 1;
+		emotion 23;
 		percentheal -50,0;
 		mes "[ミヒル]";
 		mes "サンタさんはそんなかっこじゃない！";
@@ -3064,8 +3062,8 @@ xmas.gat,137,233,3	script	イシテ	793,{
 			mes "[イシテ]";
 			mes "……サンタ？";
 			next;
-			gmcommand "@misceffect 49";
-			gmcommand "@emotion 23";
+			misceffect 49;
+			emotion 23;
 			percentheal -50,0;
 			mes "[イシテ]";
 			mes "サンタって言う前に、";
@@ -3142,7 +3140,7 @@ xmas.gat,137,233,3	script	イシテ	793,{
 		mes "[" +strcharinfo(0)+ "]";
 		mes "え？　……いや、その……";
 		next;
-		gmcommand "@emotion 23";
+		emotion 23;
 		mes "-女の子はいきなりの事で戸惑う";
 		mes "あなたの手首をつかみ、";
 		mes "ぐいっと引き寄せた-";
@@ -3183,7 +3181,7 @@ xmas.gat,137,233,3	script	イシテ	793,{
 		next;
 	default:
 		emotion 18;
-		gmcommand "@emotion 23";
+		emotion 23;
 		mes "[イシテ]";
 		mes "フフフ……カプラ倉庫かぁ……";
 		mes "ねぇ？";
@@ -3265,7 +3263,7 @@ xmas.gat,137,233,3	script	イシテ	793,{
 	mes "[イシテ]";
 	mes "……………………ありがとう。";
 	next;
-	gmcommand "@emotion 23";
+	emotion 23;
 	mes "[" +strcharinfo(0)+ "]";
 	mes "も、もういいでしょ！";
 	mes "……これ以上は……ぇ？";
@@ -3322,7 +3320,7 @@ xmas.gat,137,233,3	script	イシテ	793,{
 	mes "……頂いたサンタの衣装です。";
 	mes "気に入ってもらえると思います。";
 	next;
-	gmcommand "@emotion 18";
+	emotion 18;
 	mes "[" +strcharinfo(0)+ "]";
 	mes "ぇ……ぁ……これはどうも……";
 	next;
@@ -3389,7 +3387,7 @@ xmas_in.gat,109,109,3	script	イシル	887,{
 		mes "それに、どこかで見たような……";
 		mes "ックシュン！　ゲホ。";
 		next;
-		gmcommand "@emotion 28";
+		emotion 28;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "早くやらなきゃいけない事を";
 		mes "教えてください!!";
@@ -3537,7 +3535,7 @@ xmas_in.gat,109,109,3	script	イシル	887,{
 		next;
 		input '@word$;
 		emotion 23;
-		gmcommand "@emotion 23";
+		emotion 23;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "私は^4A4AFF" +'@word$+ "^000000ですから！";
 		next;
@@ -3552,7 +3550,7 @@ xmas_in.gat,109,109,3	script	イシル	887,{
 		mes "何をお願いしてもいいんですね……";
 		mes "ゴ……ゴホ……ゴホ！　ゴホ！";
 		next;
-		gmcommand "@emotion 4";
+		emotion 4;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "（……あれー……）";
 		mes "（何か変な方向に話が進んでるー……）";
@@ -4066,7 +4064,7 @@ xmas.gat,119,155,5	script	ジョイユ	878,{
 			mes "たとえ土で出来ていたとしても";
 			mes "残らず全部食べてしまいます。";
 			next;
-			gmcommand "@emotion 19";
+			emotion 19;
 			mes "[" +strcharinfo(0)+ "]";
 			mes "……これじゃないみたいだ……";
 			close;
@@ -4081,7 +4079,7 @@ xmas.gat,119,155,5	script	ジョイユ	878,{
 		mes "本当においしそうです。";
 		mes "どうです？　ご一緒にパーティなど？";
 		next;
-		gmcommand "@emotion 19";
+		emotion 19;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "いや……アハハハハ……";
 		mes "有難いお話ですが、";
@@ -4197,7 +4195,7 @@ xmas.gat,157,126,5	script	ノエル	717,{
 			mes "何でもないよ〜";
 			mes "すぐ戻るって〜";
 			next;
-			gmcommand "@emotion 9";
+			emotion 9;
 			mes "-彼女は声のした方に向かって、";
 			mes "にっこりと微笑みかけた-";
 			close;
@@ -4246,7 +4244,7 @@ xmas.gat,157,126,5	script	ノエル	717,{
 		mes "キャ、何でもないわよ。";
 		mes "クリスマスケーキを届けてくれた人。";
 		next;
-		gmcommand "@emotion 9";
+		emotion 9;
 		mes "-彼女は声のした方に向かって、";
 		mes "にっこりと微笑みかけた-";
 		set XMAS_4EVE,8;
@@ -4272,7 +4270,7 @@ xmas.gat,157,126,5	script	ノエル	717,{
 		}
 		if(XMAS_4EVE >= 8) {
 			emotion 18;
-			gmcommand "@emotion 9";
+			emotion 9;
 			mes "[ノエル]";
 			mes "キャハッ♪　まだ行ってないの？";
 			mes "ぼーっとしてたら、";
@@ -4285,7 +4283,7 @@ xmas.gat,157,126,5	script	ノエル	717,{
 		mes "クリスマスケーキの配達です！";
 		next;
 		emotion 18;
-		gmcommand "@emotion 6";
+		emotion 6;
 		mes "[ノエル]";
 		mes "キャハッ♪";
 		mes "お姉さんはもうちょっとがんばって";
@@ -4312,7 +4310,7 @@ xmas.gat,157,126,5	script	ノエル	717,{
 			mes "そんなケーキ、";
 			mes "私は注文してないよ〜";
 			next;
-			gmcommand "@emotion 6";
+			emotion 6;
 			mes "[" +strcharinfo(0)+ "]";
 			mes "………………………………";
 			close;
@@ -4325,7 +4323,7 @@ xmas.gat,157,126,5	script	ノエル	717,{
 		mes "キャハ♪　がんばってね。";
 		mes "ぁ、ケーキはそこに置いといてね〜";
 		next;
-		gmcommand "@emotion 6";
+		emotion 6;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "ハ……ハハハ……";
 		set XMAS_4EVE,8;

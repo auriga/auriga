@@ -702,13 +702,13 @@ pay_fild08.gat,43,77,0		duplicate(WhitedayNavi#0)	WhitedayNavi#3	139,3,3
 		mes "なるほど" +getitemname('@item)+ "をあげればいいんだね。";
 		mes "じゃあ……1個……2個……";
 		next;
-		gmcommand "@misceffect 18";
+		misceffect 18;
 		mes "["+strcharinfo(0)+"]";
 		mes "3個……4個……";
 		mes "まだ芽は出ないなぁ。";
 		mes "5個……6個……";
 		next;
-		gmcommand "@misceffect 18";
+		misceffect 18;
 		mes "["+strcharinfo(0)+"]";
 		mes "……………………";
 		mes "ぴかぴかと光ってるなぁ。";
