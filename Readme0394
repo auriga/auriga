@@ -1,4 +1,19 @@
 ----------------------------------------
+//0453 [2008/02/06] by Cocoa
+
+・0452のmergeミスを修正（battle.c）
+
+・AthenaProject Rev.218よりmerge、thanks to Blazeさん
+	-> アルケミストスキル「安息」の条件判定で、基本HPを参照していたのを増減分もチェックするように修正（skill.c）
+
+・AthenaProject Rev.221よりmerge、thanks to Blazeさん
+	-> ハンタースキル「ビーストストレイフィング」の条件に「ダブルストレイフィング使用後」の判定がされていなかったのを修正（skill.c）
+	-> ビーストストレイフィングに矢消費判定、使用時消費するように（battle.txt）
+
+・AthenaProject Rev.229よりmerge、thanks to Shimodaさん
+	-> フライング・トリプルアクション・ブルズアイの弾丸消費を修正（skill_require_db2.txt, battle.c, skill.c）
+
+----------------------------------------
 //0452 [2008/02/05] by Cocoa
 
 ・0451のスクリプトミスを修正

@@ -8598,7 +8598,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case AM_REST:			/* 安息 */
-		if(!homun_isalive(sd) || status_get_hp(&sd->hd->bl) < sd->hd->status.max_hp * 80 / 100) {
+		if(!homun_isalive(sd) || status_get_hp(&sd->hd->bl) < sd->hd->max_hp * 80 / 100) {
 			// ホムのHPがMHPの80%以上であること
 			clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
@@ -8779,6 +8779,13 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		break;
+	case HT_POWER://ビーストストレイフィング
+		if(sd->sc.data[SC_DOUBLE].timer == -1)
+		{
+			clif_skill_fail(sd,cnd->id,0,0);
+			return 0;
+		}
+		//矢消費判定にfall through
 	case AC_DOUBLE:
 	case AC_SHOWER:
 	case AC_CHARGEARROW:
@@ -8799,6 +8806,8 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case GS_PIERCINGSHOT:
 	case GS_DESPERADO:
 	case GS_SPREADATTACK:
+	case GS_TRIPLEACTION:
+	case GS_BULLSEYE:
 	case GS_RAPIDSHOWER:
 	case GS_FULLBUSTER:
 	case NJ_SYURIKEN:

@@ -3022,10 +3022,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			} else if(bl->type == BL_MOB) {
 				struct mob_data *md = BL_DOWNCAST(BL_MOB, bl);
 				MATK_FIX( 40+mob_db[md->class_].lv, 100 );
-			} else if(bl->type == BL_MOB) {
+			} else if(bl->type == BL_HOM) {
 				struct homun_data *hd = BL_DOWNCAST(BL_HOM, bl);
 				MATK_FIX(40+hd->status.base_level, 100);
-			} else if(bl->type == BL_HOM) {
+			} else if(bl->type == BL_MERC) {
 				struct merc_data *mcd = BL_DOWNCAST(BL_MERC, bl);
 				MATK_FIX( 40+mcd->status.base_level, 100 );
 			}
@@ -3789,6 +3789,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			case BA_MUSICALSTRIKE:
 			case DC_THROWARROW:
 			case CG_ARROWVULCAN:
+			case HT_POWER:
 			case AS_VENOMKNIFE:
 			case NJ_SYURIKEN:
 			case NJ_KUNAI:
@@ -3796,6 +3797,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			case GS_DISARM:
 			case GS_PIERCINGSHOT:
 			case GS_DUST:
+			case GS_TRIPLEACTION:
+			case GS_BULLSEYE:
 			case GS_RAPIDSHOWER:
 			case GS_FULLBUSTER:
 				if( !battle_delarrow(sd, cost, skillid) )
