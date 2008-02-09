@@ -2185,6 +2185,121 @@ static int ev_db_final(void *key,void *data,va_list ap)
 }
 
 /*==========================================
+ * NPCファイル解析
+ *------------------------------------------
+ */
+static int npc_parse_srcfile(const char *filepath)
+{
+	char line[4096];
+	int lines, number = 0, ret = 0;
+	int comment_flag = 0;
+	FILE *fp = fopen(filepath,"r");
+
+	if(fp == NULL) {
+		printf("reading npc file not found : %s\a\n",filepath);
+		return 0;
+	}
+	printf("reading npc [%4d] %-60s",++number,filepath);
+
+	lines = 0;
+	while(fgets(line,sizeof(line),fp)) {
+		char w1[4096], w2[4096], w3[4096], w4[4096];
+		char *lp;
+		int i, j, w4pos = 0, count;
+		lines++;
+
+		// 不要なスペースやタブの連続は詰める
+		i = j = 0;
+		while(line[i]) {
+			switch(line[i]) {
+			case ' ':
+				if(!j || line[j-1] != ',') {
+					if(!line[i+1]) {
+						line[j++] = ' ';
+					} else if(!isspace((unsigned char)line[i+1]) && line[i+1] != ',') {
+						line[j++] = ' ';
+					}
+				}
+				break;
+			case '\t':
+				if(!j || line[j-1] != '\t') {
+					line[j++] = '\t';
+				}
+				break;
+			default:
+				line[j++] = line[i];
+			}
+			i++;
+		}
+		line[j] = 0;
+
+		// lineに含まれるコメント部分をスキップ
+		lp = npc_skip_line(line, &comment_flag);
+		if(lp == NULL)
+			continue;
+
+		// 最初はタブ区切りでチェックしてみて、ダメならスペース区切りで確認
+		if((count = sscanf(lp,"%[^\t]\t%[^\t]\t%[^\t\r\n]\t%n%[^\t\r\n]",w1,w2,w3,&w4pos,w4)) < 3 &&
+		   (count = sscanf(lp,"%s%s%s%n%s",w1,w2,w3,&w4pos,w4)) < 3)
+		{
+			script_error(lp, filepath, lines, "npc file syntax error", lp+w4pos);
+			break;
+		}
+
+		// マップ名として記述されているか確認
+		// MAPの存在チェック自体は各parserで行う
+		if(strcmp(w1,"-") != 0 && strcmpi(w1,"function") != 0) {
+			int len;
+			char mapname[4096] = "";
+			sscanf(w1,"%[^,]",mapname);
+			len = strlen(mapname);
+			if(len <= 4 || len > 24 || strcmp(mapname+len-4,".gat") != 0) {
+				script_error(lp, filepath, lines, "npc file syntax error", lp);
+				break;
+			}
+		}
+
+		if (strcmpi(w2,"warp") == 0 && count > 3) {
+			ret = npc_parse_warp(w1,w2,w3,w4,lines);
+		} else if ((strcmpi(w2,"shop") == 0 || strcmpi(w2,"pointshop") == 0) && count > 3) {
+			ret = npc_parse_shop(w1,w2,w3,w4,lines);
+		} else if ((i = 0, sscanf(w2,"substore%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
+			ret = npc_parse_shop(w1,w2,w3,w4,lines);
+		} else if (strcmpi(w2,"script") == 0 && count > 3) {
+			if(strcmpi(w1,"function") == 0) {
+				ret = npc_parse_function(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
+			} else {
+				ret = npc_parse_script(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
+			}
+		} else if ((i = 0, sscanf(w2,"duplicate%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
+			ret = npc_parse_script(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
+		} else if (strcmpi(w2,"monster") == 0 && count > 3) {
+			ret = npc_parse_mob(w1,w2,w3,w4,lines);
+		} else if (strcmpi(w2,"mapflag") == 0 && count >= 3) {
+			ret = npc_parse_mapflag(w1,w2,w3,w4,lines);
+		} else {
+			script_error(lp, filepath, lines, "npc file syntax error", lp+strlen(w1)+1);
+			break;
+		}
+		if(ret) {
+			// エラー発生時はファイルの解析終了
+			break;
+		}
+	}
+	fclose(fp);
+
+	if(comment_flag) {
+		// scriptブロック外部でマルチラインコメントを閉じ忘れ
+		printf("Missing */ on %s\a\n", filepath);
+	} else {
+		printf("\r");
+	}
+	npc_parse_script_line(NULL,0,0);	// scriptブロック内部のcomment_flagを初期化
+
+	return 1;
+}
+
+/*==========================================
  * 終了
  *------------------------------------------
  */
@@ -2267,8 +2382,6 @@ int do_final_npc(void)
 int do_init_npc(void)
 {
 	struct npc_src_list *nsl;
-	char line[4096];
-	int lines, number = 0, ret = 0;
 	time_t now;
 
 	ev_db = strdb_init(48);
@@ -2278,109 +2391,7 @@ int do_init_npc(void)
 	memcpy(&ev_tm_b, localtime(&now), sizeof(ev_tm_b));
 
 	for(nsl = npc_src_first; nsl; nsl = nsl->next) {
-		int comment_flag = 0;
-		FILE *fp = fopen(nsl->name,"r");
-
-		if(fp == NULL) {
-			printf("reading npc file not found : %s\a\n",nsl->name);
-			continue;
-		}
-		printf("reading npc [%4d] %-60s",++number,nsl->name);
-
-		lines = 0;
-		while(fgets(line,sizeof(line),fp)) {
-			char w1[4096], w2[4096], w3[4096], w4[4096];
-			char *lp;
-			int i, j, w4pos = 0, count;
-			lines++;
-
-			// 不要なスペースやタブの連続は詰める
-			i = j = 0;
-			while(line[i]) {
-				switch(line[i]) {
-				case ' ':
-					if(!j || line[j-1] != ',') {
-						if(!line[i+1]) {
-							line[j++] = ' ';
-						} else if(!isspace((unsigned char)line[i+1]) && line[i+1] != ',') {
-							line[j++] = ' ';
-						}
-					}
-					break;
-				case '\t':
-					if(!j || line[j-1] != '\t') {
-						line[j++] = '\t';
-					}
-					break;
-				default:
-					line[j++] = line[i];
-				}
-				i++;
-			}
-			line[j] = 0;
-
-			// lineに含まれるコメント部分をスキップ
-			lp = npc_skip_line(line, &comment_flag);
-			if(lp == NULL)
-				continue;
-
-			// 最初はタブ区切りでチェックしてみて、ダメならスペース区切りで確認
-			if((count = sscanf(lp,"%[^\t]\t%[^\t]\t%[^\t\r\n]\t%n%[^\t\r\n]",w1,w2,w3,&w4pos,w4)) < 3 &&
-			   (count = sscanf(lp,"%s%s%s%n%s",w1,w2,w3,&w4pos,w4)) < 3)
-			{
-				script_error(lp, nsl->name, lines, "npc file syntax error", lp+w4pos);
-				break;
-			}
-
-			// マップ名として記述されているか確認
-			// MAPの存在チェック自体は各parserで行う
-			if(strcmp(w1,"-") != 0 && strcmpi(w1,"function") != 0) {
-				int len;
-				char mapname[4096] = "";
-				sscanf(w1,"%[^,]",mapname);
-				len = strlen(mapname);
-				if(len <= 4 || len > 24 || strcmp(mapname+len-4,".gat") != 0) {
-					script_error(lp, nsl->name, lines, "npc file syntax error", lp);
-					break;
-				}
-			}
-
-			if (strcmpi(w2,"warp") == 0 && count > 3) {
-				ret = npc_parse_warp(w1,w2,w3,w4,lines);
-			} else if ((strcmpi(w2,"shop") == 0 || strcmpi(w2,"pointshop") == 0) && count > 3) {
-				ret = npc_parse_shop(w1,w2,w3,w4,lines);
-			} else if ((i = 0, sscanf(w2,"substore%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
-				ret = npc_parse_shop(w1,w2,w3,w4,lines);
-			} else if (strcmpi(w2,"script") == 0 && count > 3) {
-				if(strcmpi(w1,"function") == 0) {
-					ret = npc_parse_function(w1,w2,w3,w4,line+w4pos,fp,&lines,nsl->name);
-				} else {
-					ret = npc_parse_script(w1,w2,w3,w4,line+w4pos,fp,&lines,nsl->name);
-				}
-			} else if ((i = 0, sscanf(w2,"duplicate%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
-				ret = npc_parse_script(w1,w2,w3,w4,line+w4pos,fp,&lines,nsl->name);
-			} else if (strcmpi(w2,"monster") == 0 && count > 3) {
-				ret = npc_parse_mob(w1,w2,w3,w4,lines);
-			} else if (strcmpi(w2,"mapflag") == 0 && count >= 3) {
-				ret = npc_parse_mapflag(w1,w2,w3,w4,lines);
-			} else {
-				script_error(lp, nsl->name, lines, "npc file syntax error", lp+strlen(w1)+1);
-				break;
-			}
-			if(ret) {
-				// エラー発生時はファイルの解析終了
-				break;
-			}
-		}
-		fclose(fp);
-
-		if(comment_flag) {
-			// scriptブロック外部でマルチラインコメントを閉じ忘れ
-			printf("Missing */ on %s\a\n", nsl->name);
-		} else {
-			printf("\r");
-		}
-		npc_parse_script_line(NULL,0,0);	// scriptブロック内部のcomment_flagを初期化
+		npc_parse_srcfile(nsl->name);
 	}
 	npc_clearsrcfile();
 

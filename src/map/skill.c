@@ -1791,12 +1791,12 @@ static int skill_timerskill(int tid, unsigned int tick, int id,int data )
 			case WZ_METEOR:
 				if(skl->type >= 0) {
 					int x = skl->type>>16, y = skl->type&0xffff;
-					if(map_getcell(src->m,x,y,CELL_CHKPASS))
+					if(skl->skill_lv > 10 || map_getcell(src->m,x,y,CELL_CHKPASS))
 						skill_unitsetting(src,skl->skill_id,skl->skill_lv,x,y,0);
-					if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
+					if(skl->skill_lv > 10 || map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
 						clif_skill_poseffect(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,tick);
 				} else {
-					if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
+					if(skl->skill_lv > 10 || map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
 						skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
 				}
 				break;
@@ -6101,7 +6101,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 					tmpx = x + (atn_rand()%7 - 3);
 					tmpy = y + (atn_rand()%7 - 3);
 				}
-				if(i == 0 && map_getcell(src->m,tmpx,tmpy,CELL_CHKPASS)) {
+				if(i == 0 && (skilllv > 10 || map_getcell(src->m,tmpx,tmpy,CELL_CHKPASS))) {
 					clif_skill_poseffect(src,skillid,skilllv,tmpx,tmpy,tick);
 				} else if(i > 0) {
 					skill_addtimerskill(src,tick+i*interval,0,tmpx,tmpy,skillid,skilllv,(x1<<16)|y1,0);

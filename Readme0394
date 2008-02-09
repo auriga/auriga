@@ -1,4 +1,18 @@
 ----------------------------------------
+//0456 [2008/02/10] by Rayce
+
+・レベルオーバーのメテオは壁チェックなしで貫通して落下する（skill.c）
+	reported by seikaiさん
+
+・スクリプトにgetiteminfo関数を追加（script.c）
+	関数名はeAと同名ですが、引数が異なるので注意。
+	アイテムの持つ全てのデータを取得することができます。
+	getiteminfo(<itemid>,0) と getitemid(<name>) は等価です
+	getiteminfo(<itemid>,2) と getitemname(<itemid>) は等価です
+
+・NPCファイル解析の部分を npc_parse_srcfile() として分離（npc.c）
+
+----------------------------------------
 //0455 [2008/02/10] by Rayce
 
 ・矢/弾丸の消費処理の改善（battle.c, skill.c）

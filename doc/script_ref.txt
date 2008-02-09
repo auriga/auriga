@@ -2919,6 +2919,45 @@ AurigaNPCScript
 			セキュリティの面から、sqlquery関数でデータに文字列が含まれる場合には必ずこの関数を
 			通してください。
 
+		getiteminfo 関数
+			getiteminfo(<itemid>,<num>)
+
+			<itemid>	数値または文字列
+			<num>		数値
+
+			アイテムの情報を取得します。
+
+			num=0		ID
+			num=1		Name
+			num=2		Jname
+			num=3		Type
+			num=4		Price
+			num=5		Sell
+			num=6		Weight
+			num=7		ATK
+			num=8		DEF
+			num=9		Range
+			num=10		Slot
+			num=11		Job
+			num=12		Gender
+			num=13		Loc
+			num=14		wLv
+			num=15		eLv
+			num=16		View
+			num=17		Refine
+			num=18		Upper
+			num=19		Zone
+			num=20		Dropable
+			num=21		Storageable
+			num=22		Cartable
+			num=23		Delay
+			num=24		Avaiable
+			num=25		Not_DC
+			num=26		Not_OC
+			num=27		Group
+			num=28		ArrowType
+			num=29		CardIllustName
+
 
 	＊csv アクセス命令 / 関数
 

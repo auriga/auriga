@@ -1279,6 +1279,9 @@ R 01f8
 	養子ターゲット表示、現在未使用？
 S 01f9 <ID>.l
 	養子要求
+S 01fa <version>.l <account name>.24B <md5 binary>.16B <version2>.B <?>.B
+	id&暗号化済みpass送信
+	langtypeが5のときのみ有効
 R 01fc <length>.w { <?1>.w <RepairItemID>.w <?2>.9B }.13B*
 	修理可能アイテムリスト表示
 S 01fd <?1>.w
@@ -1743,8 +1746,8 @@ S 02b6 <questID>.l <active>.B
 	クエストのactive切り替え要求
 R 02b7 <questID>.l <active>.B
 	クエストのactive切り替え応答
-R 02b8 <ID>.l <?>.w <?>.B <?>.B <?>.B <?>.w <?>.w <?>.w <?>.w <?>.w <?>.B
-	恐らくPTメンバーのアイテム獲得メッセージ
+R 02b8 <ID>.l <itemid>.w <identify>.B <attribute>.B <refine>.B <card>.4w <equip_type>.w <type>.B
+	PTメンバーのアイテム獲得メッセージ
 	何故かメッセージが出力されない？
 	未調査
 R 02b9 { <type>.B <ID>.l <lv>.w }.7B*27

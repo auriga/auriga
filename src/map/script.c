@@ -3852,6 +3852,7 @@ int buildin_sqlquery(struct script_state *st);
 int buildin_strescape(struct script_state *st);
 int buildin_dropitem(struct script_state *st);
 int buildin_getexp(struct script_state *st);
+int buildin_getiteminfo(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4101,6 +4102,7 @@ struct script_function buildin_func[] = {
 	{buildin_strescape,"strescape","s"},
 	{buildin_dropitem,"dropitem","siiiii*"},
 	{buildin_getexp,"getexp","ii"},
+	{buildin_getiteminfo,"getiteminfo","si"},
 	{NULL,NULL,NULL}
 };
 
@@ -8214,18 +8216,18 @@ int buildin_emotion(struct script_state *st)
 	struct npc_data *nd;
 	int type;
 
-	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	if( st->end > st->start+3 )
 		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
 	else
 		nd = map_id2nd(st->oid);
 
-	if(nd)
+	if(nd) {
 		clif_emotion(&nd->bl,type);
-	else{
-		struct map_session_data *sd=script_rid2sd(st);
+	} else {
+		struct map_session_data *sd = script_rid2sd(st);
 		if(sd)
-			clif_emotion(&sd->bl, type);
+			clif_emotion(&sd->bl,type);
 	}
 	return 0;
 }
@@ -11047,5 +11049,68 @@ int buildin_getexp(struct script_state *st)
 		return 0;
 	pc_gainexp(sd,NULL,base,job);
 
+	return 0;
+}
+
+/*==========================================
+ * アイテムデータ取得
+ *------------------------------------------
+ */
+int buildin_getiteminfo(struct script_state *st)
+{
+	int num, val = -1;
+	char *str = NULL;
+	struct script_data *data;
+	struct item_data *item = NULL;
+
+	data = &(st->stack->stack_data[st->start+2]);
+	get_val(st,data);
+	if( isstr(data) ) {
+		const char *name = conv_str(st,data);
+		item = itemdb_searchname(name);
+	} else {
+		int nameid = conv_num(st,data);
+		item = itemdb_exists(nameid);
+	}
+	num = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	if(item) {
+		switch(num) {
+			case 0:  val = item->nameid;           break;
+			case 1:  str = item->name;             break;
+			case 2:  str = item->jname;            break;
+			case 3:  val = item->type;             break;
+			case 4:  val = item->value_buy;        break;
+			case 5:  val = item->value_sell;       break;
+			case 6:  val = item->weight;           break;
+			case 7:  val = item->atk;              break;
+			case 8:  val = item->def;              break;
+			case 9:  val = item->range;            break;
+			case 10: val = item->slot;             break;
+			case 11: val = item->class_;           break;
+			case 12: val = item->sex;              break;
+			case 13: val = item->look;             break;
+			case 14: val = item->wlv;              break;
+			case 15: val = item->elv;              break;
+			case 16: val = item->view_id;          break;
+			case 17: val = item->refine;           break;
+			case 18: val = item->upper;            break;
+			case 19: val = item->zone;             break;
+			case 20: val = item->flag.dropable;    break;
+			case 21: val = item->flag.storageable; break;
+			case 22: val = item->flag.cartable;    break;
+			case 23: val = item->delay;            break;
+			case 24: val = item->flag.available;   break;
+			case 25: val = item->flag.value_notdc; break;
+			case 26: val = item->flag.value_notoc; break;
+			case 27: val = item->group;            break;
+			case 28: val = item->arrow_type;       break;
+			case 29: str = item->cardillustname;   break;
+		}
+	}
+	if(str)
+		push_str(st->stack,C_CONSTSTR,str);
+	else
+		push_val(st->stack,C_INT,val);
 	return 0;
 }
