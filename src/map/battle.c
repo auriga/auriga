@@ -3771,33 +3771,22 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	if(sd) {
 		int cost = skill_get_arrow_cost(skillid,skilllv);
 		if(cost > 0) {
-			switch(skillid)
-			{
-			case AC_DOUBLE:
-			case AC_CHARGEARROW:
-			case BA_MUSICALSTRIKE:
-			case DC_THROWARROW:
-			case CG_ARROWVULCAN:
-			case HT_POWER:
-			case AS_VENOMKNIFE:
-			case NJ_SYURIKEN:
-			case NJ_KUNAI:
-			case GS_TRACKING:
-			case GS_DISARM:
-			case GS_PIERCINGSHOT:
-			case GS_DUST:
-			case GS_TRIPLEACTION:
-			case GS_BULLSEYE:
-			case GS_RAPIDSHOWER:
-			case GS_FULLBUSTER:
-				if( !battle_delarrow(sd, cost, skillid) )
-					return 0;
-				break;
-			case SN_SHARPSHOOTING:
-			case GS_SPREADATTACK:
-				if( type == 0 && !battle_delarrow(sd, cost, skillid) )
-					return 0;
-				break;
+			switch(skillid) {
+				case AC_SHOWER:
+				case MA_SHOWER:
+				case GS_DESPERADO:
+				case GS_GROUNDDRIFT:
+					// 既に消費処理は完了しているので除外
+					break;
+				case SN_SHARPSHOOTING:
+				case GS_SPREADATTACK:
+					if( type == 0 && !battle_delarrow(sd, cost, skillid) )
+						return 0;
+					break;
+				default:
+					if( !battle_delarrow(sd, cost, skillid) )
+						return 0;
+					break;
 			}
 		}
 	}

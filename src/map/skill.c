@@ -6522,12 +6522,14 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			if(sd) {
 				short idx = sd->equip_index[10];
 				if(idx >= 0) {
-					int n = sd->status.inventory[idx].nameid - 13203;
-					if(n < 0 || n > 4)
-						n = 0;
-					unit_id = drift_id[n];
-				} else {
-					unit_id = drift_id[0];
+					int n;
+					for(n = 0; n < 5; n++) {
+						// スフィアのタイプでスキルユニットを決める
+						if(sd->inventory_data[idx]->arrow_type & (512 << n)) {
+							unit_id = drift_id[n];
+							break;
+						}
+					}
 				}
 			} else {
 				unit_id = drift_id[atn_rand()%5];
@@ -8117,7 +8119,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 // PC用判定( 0: 使用失敗 1: 使用成功 )
 static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_condition *cnd, int type)
 {
-	int i,hp,sp,hp_rate,sp_rate,zeny,weapon,state,spiritball,coin,skilldb_id,mana;
+	int i,hp,sp,hp_rate,sp_rate,zeny,weapon,state,spiritball,coin,skilldb_id,mana,arrow;
 	int itemid[10],amount[10];
 	int item_nocost = 0;
 	struct block_list *bl = NULL, *target = NULL;
@@ -8229,6 +8231,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	state      = skill_db[skilldb_id].state;
 	spiritball = (cnd->lv <= 0)? 0: skill_db[skilldb_id].spiritball[cnd->lv-1];
 	coin       = (cnd->lv <= 0)? 0: skill_db[skilldb_id].coin[cnd->lv-1];
+	arrow      = skill_get_arrow_cost(cnd->id,cnd->lv);
 
 	for(i=0; i<10; i++) {
 		itemid[i] = skill_db[skilldb_id].itemid[i];
@@ -8777,88 +8780,39 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case GS_GLITTERING:		/* フリップザコイン */
-		if(sd->coin>=10){
+		if(sd->coin >= 10) {
 			clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
 		}
 		break;
-	case HT_POWER://ビーストストレイフィング
-		if(sd->sc.data[SC_DOUBLE].timer == -1)
-		{
-			clif_skill_fail(sd,cnd->id,0,0);
-			return 0;
-		}
-		//矢消費判定にfall through
-	case AC_DOUBLE:
-	case AC_SHOWER:
-	case AC_CHARGEARROW:
-	case BA_MUSICALSTRIKE:
-	case DC_THROWARROW:
-	case CG_ARROWVULCAN:
-	case SN_SHARPSHOOTING:
-		if(sd->equip_index[10]==-1 || !(sd->inventory_data[sd->equip_index[10]]->arrow_type&skill_get_arrow_type(cnd->id))
-			|| sd->status.inventory[sd->equip_index[10]].amount<skill_get_arrow_cost(cnd->id,cnd->lv))
-		{
-			clif_arrow_fail(sd,0);
-			return 0;
-		}
-		break;
-	case AS_VENOMKNIFE:
-	case GS_TRACKING:
-	case GS_DISARM:
-	case GS_PIERCINGSHOT:
-	case GS_DESPERADO:
-	case GS_SPREADATTACK:
-	case GS_TRIPLEACTION:
-	case GS_BULLSEYE:
-	case GS_RAPIDSHOWER:
-	case GS_FULLBUSTER:
-	case NJ_SYURIKEN:
-	case NJ_KUNAI:
-		if(sd->equip_index[10]==-1 || !(sd->inventory_data[sd->equip_index[10]]->arrow_type&skill_get_arrow_type(cnd->id))
-			|| sd->status.inventory[sd->equip_index[10]].amount<skill_get_arrow_cost(cnd->id,cnd->lv))
-		{
+	case HT_POWER:			/* ビーストストレイフィング */
+		if(sd->sc.data[SC_DOUBLE].timer == -1) {
 			clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
 		}
 		break;
-	case GS_GROUNDDRIFT:
-		if(sd->equip_index[10]==-1 || !(sd->inventory_data[sd->equip_index[10]]->arrow_type&skill_get_arrow_type(cnd->id))
-			|| !(13203<=sd->status.inventory[sd->equip_index[10]].nameid && sd->status.inventory[sd->equip_index[10]].nameid<=13207)
-			|| sd->status.inventory[sd->equip_index[10]].amount<skill_get_arrow_cost(cnd->id,cnd->lv))
-		{
-			clif_skill_fail(sd,cnd->id,0,0);
-			return 0;
-		}
-		break;
-	}
 
-	// ギルドスキル
-	switch(cnd->id)
-	{
-		case GD_BATTLEORDER:		/* 臨戦態勢 */
-		case GD_REGENERATION:		/* 激励 */
-		case GD_RESTORE:		/* 治療 */
-		case GD_EMERGENCYCALL:		/* 緊急招集 */
-			if(!battle_config.guild_skill_available){
-				clif_skill_fail(sd,cnd->id,0,0);
-				return 0;
-			}
-			if(battle_config.allow_guild_skill_in_gvg_only && !map[bl->m].flag.gvg){
-				clif_skill_fail(sd,cnd->id,0,0);
-				return 0;
-			}
-			if(battle_config.guild_skill_in_pvp_limit && map[bl->m].flag.pvp){
-				clif_skill_fail(sd,cnd->id,0,0);
-				return 0;
-			}
-			if(cnd->id == GD_EMERGENCYCALL && battle_config.no_emergency_call){
-				clif_skill_fail(sd,cnd->id,0,0);
-				return 0;
-			}
-			break;
-		default:
-			break;
+	case GD_BATTLEORDER:		/* 臨戦態勢 */
+	case GD_REGENERATION:		/* 激励 */
+	case GD_RESTORE:		/* 治療 */
+	case GD_EMERGENCYCALL:		/* 緊急招集 */
+		if(!battle_config.guild_skill_available){
+			clif_skill_fail(sd,cnd->id,0,0);
+			return 0;
+		}
+		if(battle_config.allow_guild_skill_in_gvg_only && !map[bl->m].flag.gvg){
+			clif_skill_fail(sd,cnd->id,0,0);
+			return 0;
+		}
+		if(battle_config.guild_skill_in_pvp_limit && map[bl->m].flag.pvp){
+			clif_skill_fail(sd,cnd->id,0,0);
+			return 0;
+		}
+		if(cnd->id == GD_EMERGENCYCALL && battle_config.no_emergency_call){
+			clif_skill_fail(sd,cnd->id,0,0);
+			return 0;
+		}
+		break;
 	}
 
 	if(!(type&2)) {
@@ -8888,6 +8842,16 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		if(coin > 0 && sd->coin < coin) {
 			clif_skill_fail(sd,cnd->id,0,0);		// コイン不足
 			return 0;
+		}
+		if(arrow > 0) {						// 矢不足
+			int idx = sd->equip_index[10];
+			if( idx == -1 ||
+			    !(sd->inventory_data[idx]->arrow_type & skill_get_arrow_type(cnd->id)) ||
+			    sd->status.inventory[idx].amount < arrow )
+			{
+				clif_skill_fail(sd,cnd->id,0,0);
+				return 0;
+			}
 		}
 	}
 
