@@ -1792,6 +1792,7 @@ int parse_login(int fd)
 
 		case 0x0064:	// クライアントログイン要求
 		case 0x01dd:	// 暗号化ログイン要求
+		case 0x01fa:	// 暗号化ログイン要求（langtype=5）
 		case 0x0277:	// クライアントログイン要求？
 		case 0x027c:	// 暗号化ログイン要求
 		case 0x02b0:	// クライアントログイン要求（langtype=0）
@@ -1802,6 +1803,7 @@ int parse_login(int fd)
 			switch(cmd) {
 				case 0x0064: length = 55; break;
 				case 0x01dd: length = 47; break;
+				case 0x01fa: length = 48; break;
 				case 0x0277: length = 84; break;
 				case 0x027c: length = 60; break;
 				case 0x02b0: length = 85; break;
@@ -1809,7 +1811,7 @@ int parse_login(int fd)
 			if(length == 0 || RFIFOREST(fd) < length)
 				return 0;
 
-			enc_flag = (cmd == 0x1dd || cmd == 0x27c);
+			enc_flag = (cmd == 0x1dd || cmd == 0x1fa || cmd == 0x27c);
 
 			memcpy(sd->userid,RFIFOP(fd,6),24);
 			sd->userid[23] = '\0';

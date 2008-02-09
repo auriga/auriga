@@ -4156,7 +4156,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				pc_addcoin(sd,skill_get_time(skillid,skilllv),10);
 			} else {
 				pc_delcoin(sd,1,0);
-				clif_skill_fail(sd,skillid,0,0);
 			}
 		}
 		break;
@@ -5604,10 +5603,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case GS_CRACKER:			/* クラッカー */
 		{
-			int dist = unit_distance2(src,bl);
+			int cost, dist;
+			cost = skill_get_arrow_cost(skillid,skilllv);
+			if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
+				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			dist = unit_distance2(src,bl);
 			if( atn_rand()%100 < (50 - dist * 5) * sc_def_vit / 100 ) {
-				status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+				status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			} else if(sd) {
 				clif_skill_fail(sd,skillid,0,0);
 			}
