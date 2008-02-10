@@ -3111,44 +3111,37 @@ int parse_frommap(int fd)
 			}
 
 			RFIFOSKIP(fd,RFIFOW(fd,2));
-			{
-				unsigned char buf[16 * 1024];
 
-				if(j*16+12 > sizeof(buf)) {	// 1024MAP以上なら警告して終了
-					printf("parse_frommap 0x2afa: %d buffer overflow!! (%d maps)\n", fd, j);
-					WFIFOW(fd,0) = 0x2afb;	// failed
-					WFIFOW(fd,2) = 1;
-					WFIFOSET(fd,3);
-					break;
-				}
-				WFIFOW(fd,0) = 0x2afb;
-				WFIFOW(fd,2) = 0; // ok
-				WFIFOSET(fd,3);
+			WFIFOW(fd,0) = 0x2afb;
+			WFIFOW(fd,2) = 0; // ok
+			WFIFOSET(fd,3);
+
+			for(i = 0; i < MAX_MAP_SERVERS; i++) {
+				int dfd = server_fd[i];
+				if(dfd < 0)
+					continue;
 
 				// 他のマップサーバーに担当マップ情報を送信
-				// map 鯖はchar鯖からのこのパケットを受信して初めて、
+				// map 鯖はchar鯖からのこのパケットを受信して初めて
 				// 自分が担当するマップが分かる
-				WBUFW(buf, 0) = 0x2b04;
-				WBUFW(buf, 2) = j * 16 + 12;
-				WBUFL(buf, 4) = server[id].ip;
-				WBUFW(buf, 8) = server[id].port;
-				WBUFW(buf,10) = j;
-				memcpy(WBUFP(buf,12), server[id].map, 16 * j);
-				mapif_sendall(buf, WBUFW(buf,2));
+				WFIFORESERVE(dfd, j * 16 + 12);
+				WFIFOW(dfd, 0) = 0x2b04;
+				WFIFOW(dfd, 2) = j * 16 + 12;
+				WFIFOL(dfd, 4) = server[id].ip;
+				WFIFOW(dfd, 8) = server[id].port;
+				WFIFOW(dfd,10) = j;
+				memcpy(WFIFOP(dfd,12), server[id].map, 16 * j);
+				WFIFOSET(dfd, WFIFOW(dfd,2));
 
-				// 他のマップサーバーの担当マップを送信
-				for(i = 0; i < MAX_MAP_SERVERS; i++) {
-					if (server_fd[i] >= 0 && i != id) {
-						if (server[i].map_num > 0) {
-							WFIFOW(fd, 0) = 0x2b04;
-							WFIFOW(fd, 2) = server[i].map_num * 16 + 12;
-							WFIFOL(fd, 4) = server[i].ip;
-							WFIFOW(fd, 8) = server[i].port;
-							WFIFOW(fd,10) = server[i].map_num;
-							memcpy(WFIFOP(fd, 12), server[i].map, 16 * server[i].map_num);
-							WFIFOSET(fd, WFIFOW(fd,2));
-						}
-					}
+				if (i != id && server[i].map_num > 0) {
+					// 他のマップサーバーの担当マップを送信
+					WFIFOW(fd, 0) = 0x2b04;
+					WFIFOW(fd, 2) = server[i].map_num * 16 + 12;
+					WFIFOL(fd, 4) = server[i].ip;
+					WFIFOW(fd, 8) = server[i].port;
+					WFIFOW(fd,10) = server[i].map_num;
+					memcpy(WFIFOP(fd, 12), server[i].map, 16 * server[i].map_num);
+					WFIFOSET(fd, WFIFOW(fd,2));
 				}
 			}
 			break;
@@ -3397,7 +3390,7 @@ int parse_frommap(int fd)
 			if(RFIFOREST(fd)<3)
 				return 0;
 			server[id].active=RFIFOB(fd,2);
-			printf("char: map_server_active: %d %d\n",id,server[id].active);
+			printf("char: map %s: %d\n",(server[id].active)? "active": "inactive",id);
 			RFIFOSKIP(fd,3);
 			break;
 

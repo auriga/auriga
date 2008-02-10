@@ -3285,7 +3285,9 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		break;
 
 	case BA_DISSONANCE:	// 不協和音
-		mid.damage = (skill_lv)*20+pc_checkskill(sd,BA_MUSICALLESSON)*3;
+		mid.damage = skill_lv * 20;
+		if(sd)
+			mid.damage += pc_checkskill(sd,BA_MUSICALLESSON)*3;
 		break;
 	case NPC_SELFDESTRUCTION:	// 自爆
 	case NPC_SELFDESTRUCTION2:	// 自爆2
@@ -3419,7 +3421,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
  */
 static struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag)
 {
-	struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	switch(attack_type) {
 		case BF_WEAPON:
@@ -3804,10 +3806,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* ダメージ計算 */
-	if(skillid == GS_GROUNDDRIFT)	// グラウンドドリフトはdsrcを引数として渡す
-		dmg = battle_calc_attack(attack_type,dsrc,bl,skillid,skilllv,flag&0xff);
-	else
-		dmg = battle_calc_attack(attack_type,src,bl,skillid,skilllv,flag&0xff);
+	dmg = battle_calc_attack(attack_type,(skillid == GS_GROUNDDRIFT)? dsrc: src,bl,skillid,skilllv,flag&0xff);
 
 	/* マジックロッド */
 	if(attack_type&BF_MAGIC && sc && sc->data[SC_MAGICROD].timer != -1 && src == dsrc) {

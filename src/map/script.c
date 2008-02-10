@@ -2782,10 +2782,11 @@ static void run_script_main(struct script_state *st);
 void run_script(struct script_code *rootscript,int pos,int rid,int oid)
 {
 	struct script_state *st;
-	struct map_session_data *sd=NULL;
+	struct map_session_data *sd = NULL;
 
-	if(rootscript==NULL || pos<0)
+	if(rootscript == NULL || pos < 0)
 		return;
+
 	sd = map_id2sd(rid);
 	st = (struct script_state *)aCalloc(1, sizeof(struct script_state));
 
@@ -2800,7 +2801,7 @@ void run_script(struct script_code *rootscript,int pos,int rid,int oid)
 		sd->npc_scriptstate = 0;
 	} else {
 		// スタック初期化
-		st->stack = (struct script_stack *)aCalloc(1,sizeof(struct script_stack));
+		st->stack = (struct script_stack *)aMalloc(sizeof(struct script_stack));
 		st->stack->sp     = 0;
 		st->stack->defsp  = 0;
 		st->stack->sp_max = 64;
