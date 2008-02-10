@@ -6982,9 +6982,9 @@ void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int
 
 	if(sd->repair_target && sd->bl.id != sd->repair_target && flag==0) {	// 成功したら相手にも通知
 		struct map_session_data *dstsd = map_id2sd(sd->repair_target);
+		sd->repair_target=0;
 		if(dstsd)
 			clif_item_repaireffect(dstsd,flag,nameid);
-		sd->repair_target=0;
 	}
 
 	return;

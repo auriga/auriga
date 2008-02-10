@@ -104,6 +104,14 @@ login_log_filename
 ladmin_pass
 	Password for remote administration (ladmin)
 
+ristrict_admin_local
+	管理者パケットをローカルホストに限定するかどうかです。
+	ログインサーバとladminを別サーバで運用している場合は有効にしないでください。
+	ladminが接続できなくなります。
+	また、有効にする場合は、管理者アクセスはループバックインターフェイスを利用して接続するようにしてください。
+	1で有効、0で無効。
+	デフォルトは無効。
+
 httpd_enable
 	httpd が有効の無効を切り替えます。
 	1 で有効, 0 で無効, -1 で socket.conf の設定を引き継ぎます。

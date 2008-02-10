@@ -94,6 +94,7 @@ static char ladmin_pass[64]=""; // for remote administration
 static char login_log_filename[1024] = "log/login.log";
 static int login_version = 0, login_type = 0;
 static int detect_multiple_login = 1;
+static int ristrict_admin_local = 0;
 
 #ifdef TXT_JOURNAL
 static int login_journal_enable = 1;
@@ -1757,11 +1758,10 @@ int parse_login(int fd)
 
 	while(RFIFOREST(fd)>=2){
 		int cmd = RFIFOW(fd,0);
-		if(cmd < 0x7530) {
-			if(cmd == 0x64 || cmd == 0x01dd || cmd == 0x027c || cmd == 0x0277)
-				printf("parse_login : %d %3d 0x%04x %-24s\n",fd,RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
-			else
-				printf("parse_login : %d %3d 0x%04x\n",fd,RFIFOREST(fd),cmd);
+		if(cmd == 0x64 || cmd == 0x01dd || cmd == 0x01fa || cmd == 0x027c || cmd == 0x0277 || cmd == 0x02b0) {
+			printf("parse_login : %d %3d 0x%04x %-24s\n",fd,RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
+		} else if(cmd < 0x7530) {
+			printf("parse_login : %d %3d 0x%04x\n",fd,RFIFOREST(fd),cmd);
 		}
 
 		switch(cmd) {
@@ -1955,13 +1955,14 @@ int parse_login(int fd)
 		case 0x2710:	// Charサーバー接続要求
 		case 0x272f:	// Charサーバー接続要求(暗号化ログイン)
 			if(RFIFOREST(fd)<84)
-				return 0;
+				break;
 			if( login_sport != 0 && login_port != login_sport && session[fd]->server_port != login_sport ) {
 				printf("server login failed: connected port %d\n", session[fd]->server_port);
 				RFIFOSKIP(fd,84);
 				session[fd]->eof = 1;
-				return 0;
+				break;
 			}
+
 			{
 				unsigned char *p = (unsigned char *)&session[fd]->client_addr.sin_addr;
 				sprintf(sd->lastip,"%d.%d.%d.%d",p[0],p[1],p[2],p[3]);
@@ -1996,7 +1997,7 @@ int parse_login(int fd)
 				WFIFOSET(fd,3);
 			}
 			RFIFOSKIP(fd,84);
-			return 0;
+			break;
 
 		case 0x7530:	// Auriga情報取得
 			WFIFOW(fd,0)=0x7531;
@@ -2017,55 +2018,61 @@ int parse_login(int fd)
 			return 0;
 
 		case 0x7918:	// 管理モードログイン
-			{
-				struct login_session_data *ld = (struct login_session_data *)session[fd]->session_data;
-				if (RFIFOREST(fd) < 6 || RFIFOREST(fd)<RFIFOW(fd,2) || RFIFOREST(fd) < ((RFIFOW(fd,4) == 0) ? 30 : 22))
-					return 0;
-				if (RFIFOW(fd,2) != ((RFIFOW(fd,4) == 0) ? 30 : 22)) {
-					printf("server login failed: invalid length %d\n", (int)RFIFOW(fd,2));
-					session[fd]->eof = 1;
-					return 0;
+			if(ristrict_admin_local) {
+				unsigned long ip = *((unsigned long *)&session[fd]->client_addr.sin_addr);
+				if(ip != inet_addr("127.0.0.1")) {
+					// ローカルホスト以外は失敗
+					printf("parse_admin failed: source ip address is not localhost: %s\n", ip);
+					break;
 				}
-				if( login_sport != 0 && login_port != login_sport && session[fd]->server_port != login_sport ) {
-					printf("server login failed: connected port %d\n", session[fd]->server_port);
-					RFIFOSKIP(fd,RFIFOW(fd,2));
-					session[fd]->eof = 1;
-					return 0;
-				}
-				WFIFOW(fd,0)=0x7919;
-				WFIFOB(fd,2)=1;
+			}
+			if (RFIFOREST(fd) < 6 || RFIFOREST(fd)<RFIFOW(fd,2) || RFIFOREST(fd) < ((RFIFOW(fd,4) == 0) ? 30 : 22))
+				break;
+			if (RFIFOW(fd,2) != ((RFIFOW(fd,4) == 0) ? 30 : 22)) {
+				printf("server login failed: invalid length %d\n", (int)RFIFOW(fd,2));
+				session[fd]->eof = 1;
+				break;
+			}
+			if( login_sport != 0 && login_port != login_sport && session[fd]->server_port != login_sport ) {
+				printf("server login failed: connected port %d\n", session[fd]->server_port);
+				RFIFOSKIP(fd,RFIFOW(fd,2));
+				session[fd]->eof = 1;
+				break;
+			}
+			WFIFOW(fd,0)=0x7919;
+			WFIFOB(fd,2)=1;
 
-				if(RFIFOW(fd,4)==0){	// プレーン
-					if(strcmp(RFIFOP(fd,6),ladmin_pass)==0){
+			if(RFIFOW(fd,4)==0){	// プレーン
+				if(strcmp(RFIFOP(fd,6),ladmin_pass)==0){
+					WFIFOB(fd,2)=0;
+					session[fd]->func_parse=parse_admin;
+					session[fd]->func_destruct = parse_admin_disconnect;
+					session[fd]->auth = -1; // 認証終了を socket.c に伝える
+				}
+			}else{					// 暗号化
+				struct login_session_data *ld = (struct login_session_data *)session[fd]->session_data;
+				if(!ld){
+					printf("login: md5key not created for admin login\n");
+				}else{
+					char md5str[192]="",md5bin[32];
+					if(RFIFOW(fd,4)==1){
+						strncpy(md5str,ld->md5key,sizeof(md5str)-sizeof(ladmin_pass)-1);
+						strcat(md5str,ladmin_pass);
+					}else if(RFIFOW(fd,4)==2){
+						strncpy(md5str,ladmin_pass,sizeof(md5str)-sizeof(ld->md5key)-1);
+						strcat(md5str,ld->md5key);
+					};
+					MD5_String2binary(md5str,md5bin);
+					if(memcmp(md5bin,RFIFOP(fd,6),16)==0){
 						WFIFOB(fd,2)=0;
 						session[fd]->func_parse=parse_admin;
 						session[fd]->func_destruct = parse_admin_disconnect;
 						session[fd]->auth = -1; // 認証終了を socket.c に伝える
 					}
-				}else{					// 暗号化
-					if(!ld){
-						printf("login: md5key not created for admin login\n");
-					}else{
-						char md5str[192]="",md5bin[32];
-						if(RFIFOW(fd,4)==1){
-							strncpy(md5str,ld->md5key,sizeof(md5str)-sizeof(ladmin_pass)-1);
-							strcat(md5str,ladmin_pass);
-						}else if(RFIFOW(fd,4)==2){
-							strncpy(md5str,ladmin_pass,sizeof(md5str)-sizeof(ld->md5key)-1);
-							strcat(md5str,ld->md5key);
-						};
-						MD5_String2binary(md5str,md5bin);
-						if(memcmp(md5bin,RFIFOP(fd,6),16)==0){
-							WFIFOB(fd,2)=0;
-							session[fd]->func_parse=parse_admin;
-							session[fd]->func_destruct = parse_admin_disconnect;
-							session[fd]->auth = -1; // 認証終了を socket.c に伝える
-						}
-					}
 				}
-				WFIFOSET(fd,3);
-				RFIFOSKIP(fd,RFIFOW(fd,2));
 			}
+			WFIFOSET(fd,3);
+			RFIFOSKIP(fd,RFIFOW(fd,2));
 			break;
 
 		default:
@@ -2150,6 +2157,8 @@ static void login_config_read(const char *cfgName)
 			ladmin_pass[sizeof(ladmin_pass) - 1] = '\0';
 		} else if (strcmpi(w1, "detect_multiple_login") == 0) {
 			detect_multiple_login = atoi(w2);
+		} else if (strcmpi(w1, "ristrict_admin_local") == 0) {
+			ristrict_admin_local = atoi(w2);
 		} else if (strcmpi(w1, "httpd_enable")==0){
 			socket_enable_httpd(atoi(w2));
 		} else if (strcmpi(w1, "httpd_document_root") == 0) {
