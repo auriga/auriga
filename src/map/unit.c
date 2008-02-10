@@ -934,12 +934,11 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			}
 		case BD_ENCORE:					/* アンコール */
 			 // 前回使用した踊りがないとだめ
-			if(!src_sd->skillid_dance || (src_sd->skillid_dance && pc_checkskill(src_sd,src_sd->skillid_dance) <= 0)) {
+			if(!src_sd->skillid_dance || pc_checkskill(src_sd,src_sd->skillid_dance) <= 0) {
 				clif_skill_fail(src_sd,skill_num,0,0);
 				return 0;
-			} else {
-				src_sd->skillid_old = skill_num;
 			}
+			src_sd->skillid_old = skill_num;
 			break;
 		}
 	}
@@ -1437,12 +1436,16 @@ int unit_can_move(struct block_list *bl)
 		)
 			return 0;
 
-		if(sc->data[SC_LONGINGFREEDOM].timer == -1 && sc->data[SC_DANCING].timer != -1) {
+		if(sc->data[SC_LONGINGFREEDOM].timer == -1 && sc->data[SC_DANCING].timer != -1)
+		{
+			struct skill_unit_group *sg = NULL;
+
 			// 合奏スキル演奏中
 			if(sc->data[SC_DANCING].val4)
 				return 0;
 			// 単独合奏時に動けない設定
-			if(skill_get_unit_flag(sc->data[SC_DANCING].val1) & UF_ENSEMBLE) {
+			sg = (struct skill_unit_group *)sc->data[SC_DANCING].val2;
+			if(sg && skill_get_unit_flag(sg->skill_id, sg->skill_lv) & UF_ENSEMBLE) {
 				if(!sd || (!battle_config.player_skill_partner_check && !(battle_config.sole_concert_type & 1)))
 					return 0;
 			}

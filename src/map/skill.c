@@ -499,10 +499,13 @@ int skill_get_unit_target(int id)
 	id = skill_get_skilldb_id(id);
 	return skill_db[id].unit_target;
 }
-int skill_get_unit_flag(int id)
+int skill_get_unit_flag(int id,int lv)
 {
+	if(lv<=0) return 0;
+
 	id = skill_get_skilldb_id(id);
-	return skill_db[id].unit_flag;
+	if(lv > MAX_SKILL_LEVEL) lv = MAX_SKILL_LEVEL;
+	return skill_db[id].unit_flag[lv-1];
 }
 int skill_get_arrow_cost(int id,int lv)
 {
@@ -5866,14 +5869,14 @@ int skill_castend_pos( int tid, unsigned int tick, int id,int data )
 		if( (src_sd && !battle_config.pc_skill_reiteration) ||
 		    (src_md && !battle_config.monster_skill_reiteration) )
 		{
-			if( skill_get_unit_flag(src_ud->skillid)&UF_NOREITERATION &&
+			if( skill_get_unit_flag(src_ud->skillid,src_ud->skilllv)&UF_NOREITERATION &&
 			    skill_check_unit_range(src->m,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv) )
 				break;
 		}
 		if( (src_sd && battle_config.pc_skill_nofootset) ||
 		    (src_md && battle_config.monster_skill_nofootset) )
 		{
-			if( skill_get_unit_flag(src_ud->skillid)&UF_NOFOOTSET &&
+			if( skill_get_unit_flag(src_ud->skillid,src_ud->skilllv)&UF_NOFOOTSET &&
 			    skill_check_unit_range2(src->m,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv) )
 				break;
 		}
@@ -6277,6 +6280,10 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 	if( sd->bl.prev == NULL || unit_isdead(&sd->bl) )
 		return;
 
+	// 不正パケット
+	if(skill_num != sd->ud.skillid)
+		return;
+
 	if( sd->sc.opt1 > 0 || sd->sc.option&2 )
 		return;
 
@@ -6288,10 +6295,6 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 	    sd->sc.data[SC_STEELBODY].timer != -1 ||
 	    sd->sc.data[SC_BERSERK].timer != -1 ||
 	    (skill_num != CG_LONGINGFREEDOM && sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_LONGINGFREEDOM].timer == -1) )
-		return;
-
-	// 不正パケット
-	if(skill_num != sd->ud.skillid)
 		return;
 
 	unit_stopattack(&sd->bl);
@@ -6345,12 +6348,12 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 				break;
 
 			if(!battle_config.pc_skill_reiteration) {
-				if( skill_get_unit_flag(skill_num)&UF_NOREITERATION &&
+				if( skill_get_unit_flag(sd->ud.skillid,sd->ud.skilllv)&UF_NOREITERATION &&
 				    skill_check_unit_range(sd->bl.m,sd->ud.skillx,sd->ud.skilly,sd->ud.skillid,sd->ud.skilllv) )
 					break;
 			}
 			if(battle_config.pc_skill_nofootset) {
-				if( skill_get_unit_flag(skill_num)&UF_NOFOOTSET &&
+				if( skill_get_unit_flag(sd->ud.skillid,sd->ud.skilllv)&UF_NOFOOTSET &&
 				    skill_check_unit_range2(sd->bl.m,sd->ud.skillx,sd->ud.skilly,sd->ud.skillid,sd->ud.skilllv) )
 					break;
 			}
@@ -6390,7 +6393,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	range     = skill_get_unit_range(skillid);
 	interval  = skill_get_unit_interval(skillid);
 	target    = skill_get_unit_target(skillid);
-	unit_flag = skill_get_unit_flag(skillid);
+	unit_flag = skill_get_unit_flag(skillid,skilllv);
 	layout    = skill_get_unit_layout(skillid,skilllv,src,x,y);
 	unit_id   = skill_get_unit_id(skillid,flag&1);
 
@@ -6896,7 +6899,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		return 0;
 
 	// 前に影響を受けてからintervalの間は影響を受けない
-	if(skill_get_unit_flag(sg->skill_id)&UF_NOOVERLAP) {
+	if(skill_get_unit_flag(sg->skill_id,sg->skill_lv)&UF_NOOVERLAP) {
 		tickset_id = sg->skill_id;
 		node       = &ud->skilltickset;
 	} else {
@@ -8261,17 +8264,18 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		break;
 	case CG_LONGINGFREEDOM:
 		// 合奏以外使えない
-		if(sd->sc.data[SC_DANCING].timer==-1)
-		{
+		if(sd->sc.data[SC_DANCING].timer == -1) {
 			clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
-		}
-		if((sd->sc.data[SC_DANCING].val1>=BA_WHISTLE && sd->sc.data[SC_DANCING].val1<=BA_APPLEIDUN) ||
-			(sd->sc.data[SC_DANCING].val1>=DC_HUMMING && sd->sc.data[SC_DANCING].val1<=DC_SERVICEFORYOU) ||
-			sd->sc.data[SC_DANCING].val1==CG_MOONLIT || sd->sc.data[SC_DANCING].val1==CG_HERMODE)
-		{
-			clif_skill_fail(sd,cnd->id,0,0);
-			return 0;
+		} else {
+			int dance_id = sd->sc.data[SC_DANCING].val1;
+			if( (dance_id >= BA_WHISTLE && dance_id <= BA_APPLEIDUN) ||
+			    (dance_id >= DC_HUMMING && dance_id <= DC_SERVICEFORYOU) ||
+			    dance_id == CG_MOONLIT || dance_id == CG_HERMODE )
+			{
+				clif_skill_fail(sd,cnd->id,0,0);
+				return 0;
+			}
 		}
 		break;
 	case CG_MOONLIT:			/* 月明りの下で */
@@ -9968,9 +9972,9 @@ static int skill_abra_dataset(struct map_session_data *sd, int skilllv)
 	int skill = atn_rand()%MAX_SKILL_ABRA_DB;
 
 	// セージの転生スキル使用を許可しない
-	if(battle_config.extended_abracadabra == 0 && sd->s_class.upper == 0 &&
-		skill_upperskill( skill_abra_db[skill].nameid )
-	)
+	if( battle_config.extended_abracadabra == 0 &&
+	    sd->s_class.upper == 0 &&
+	    skill_upperskill(skill_abra_db[skill].nameid) )
 		return 0;
 
 	// dbに基づくレベル・確率判定
@@ -9982,7 +9986,7 @@ static int skill_abra_dataset(struct map_session_data *sd, int skilllv)
 		return 0;
 
 	// 演奏スキルはダメ
-	if (skill_get_unit_flag(skill_abra_db[skill].nameid)&UF_DANCE)
+	if (skill_get_unit_flag(skill_abra_db[skill].nameid, skilllv)&UF_DANCE)
 		return 0;
 
 	return skill_abra_db[skill].nameid;
@@ -10618,6 +10622,7 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 {
 	struct unit_data *ud = unit_bl2ud(src);
 	struct skill_unit_group *group;
+	int unit_flag;
 
 	nullpo_retr(NULL, ud);
 
@@ -10643,7 +10648,8 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 	if(skill_unit_group_newid <= 0)
 		skill_unit_group_newid = MAX_SKILL;
 
-	if(skill_get_unit_flag(skillid)&UF_DANCE) {
+	unit_flag = skill_get_unit_flag(skillid, skilllv);
+	if(unit_flag&UF_DANCE) {
 		struct map_session_data *sd = NULL;
 		if(src->type == BL_PC && (sd = (struct map_session_data *)src)) {
 			sd->skillid_dance = skillid;
@@ -10651,7 +10657,7 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 		}
 		status_change_start(src,SC_DANCING,skillid,(int)group,0,0,skill_get_time(skillid,skilllv)+1000,0);
 		// 合奏スキルは相方をダンス状態にする
-		if(sd && skill_get_unit_flag(skillid)&UF_ENSEMBLE) {
+		if(sd && unit_flag&UF_ENSEMBLE) {
 			int c = 0;
 			map_foreachinarea(skill_check_condition_use_sub,sd->bl.m,
 				sd->bl.x-1,sd->bl.y-1,sd->bl.x+1,sd->bl.y+1,BL_PC,sd,&c);
@@ -10680,7 +10686,7 @@ int skill_delunitgroup(struct skill_unit_group *group)
 		ud = unit_bl2ud(src);
 
 	// ダンススキルはダンス状態を解除する
-	if(skill_get_unit_flag(group->skill_id)&UF_DANCE) {
+	if(skill_get_unit_flag(group->skill_id,group->skill_lv)&UF_DANCE) {
 		if(src)
 			status_change_end(src,SC_DANCING,-1);
 	}
@@ -11005,7 +11011,7 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 		return 0;
 
 	// 移動可能なスキルはダンス系と罠と温もりのみ
-	if( !(skill_get_unit_flag(group->skill_id)&UF_DANCE) &&
+	if( !(skill_get_unit_flag(group->skill_id,group->skill_lv)&UF_DANCE) &&
 	     !skill_unit_istrap(group->unit_id) &&
 	     group->unit_id != UNT_WARM )
 		return 0;
@@ -12267,6 +12273,28 @@ static int skill_split_atoi(char *str,int *val,int num)
 }
 
 /*==========================================
+ * 文字列処理
+ *   ':' で区切ってstrtolしてvalに戻す
+ *------------------------------------------
+ */
+static int skill_split_strtol(char *str,int *val,int num,int base)
+{
+	int i, max = 0;
+
+	for (i=0; i<num; i++) {
+		if (str) {
+			val[i] = max = strtol(str, NULL, base);
+			str = strchr(str,':');
+			if (str)
+				*str++=0;
+		} else {
+			val[i] = max;
+		}
+	}
+	return i;
+}
+
+/*==========================================
  * スキルユニットの配置情報作成
  *------------------------------------------
  */
@@ -12770,7 +12798,7 @@ static int skill_readdb(void)
 		skill_db[i].unit_range    = atoi(split[4]);
 		skill_db[i].unit_interval = atoi(split[5]);
 		skill_db[i].unit_target   = strtol(split[6],NULL,16);
-		skill_db[i].unit_flag     = strtol(split[7],NULL,16);
+		skill_split_strtol(split[7],skill_db[i].unit_flag,MAX_SKILL_LEVEL,16);
 		k++;
 	}
 	fclose(fp);

@@ -198,6 +198,7 @@ Target : 効果を及ぼす相手
 	0x20000 = BCT_ALL	全て
 	0x40000 = BCT_ENEMY	敵
 Flag : スキルユニットの性質、加算すること
+       レベル別に設定する場合は「:」を使うこと
 	 +0x001 = UF_DEFNOTENEMY	defunit_not_enemyの影響を受ける
 	 +0x002 = UF_NOREITERRATION	重ね置き不可
 	 +0x004 = UF_NOFOOTSET		足元置き不可

@@ -59,7 +59,7 @@ struct skill_db {
 	int unit_range;
 	int unit_interval;
 	int unit_target;
-	int unit_flag;
+	int unit_flag[MAX_SKILL_LEVEL];
 	int cloneable;
 	int misfire;
 	int zone;
@@ -165,7 +165,7 @@ int skill_get_unit_layout_type(int id,int lv);
 int skill_get_unit_interval(int id);
 int skill_get_unit_range(int id);
 int skill_get_unit_target(int id);
-int skill_get_unit_flag(int id);
+int skill_get_unit_flag(int id,int lv);
 int skill_get_arrow_cost(int id,int lv);
 int skill_get_arrow_type(int id);
 int skill_get_cloneable(int id);
