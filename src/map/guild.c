@@ -2197,20 +2197,15 @@ void guild_agit_end(void)
  */
 static int guild_gvg_eliminate_timer(int tid,unsigned int tick,int id,int data)
 {
-	char   *p  = (char*)data;
-	size_t len = strlen(p);
-	int c=0;
+	char *evname = (char *)data;
 
-	if(agit_flag) {
-		char *evname = (char*)aCalloc(len+5, sizeof(char));
-		memcpy(evname,p,len-5);
-		strcpy(evname+len-5,"Eliminate");
-		c = npc_event_do(evname);
-		printf("NPC_Event:[%s] Run (%d) Events.\n",evname,c);
+	if(evname) {
+		if(agit_flag) {
+			int c = npc_event_do(evname);
+			printf("NPC_Event:[%s] Run (%d) Events.\n",evname,c);
+		}
 		aFree(evname);
 	}
-	if(p)
-		aFree(p);
 
 	return 0;
 }
@@ -2221,13 +2216,21 @@ static int guild_gvg_eliminate_timer(int tid,unsigned int tick,int id,int data)
  */
 void guild_agit_break(struct mob_data *md)
 {
+	int len;
+	char *evname;
+
 	nullpo_retv(md);
 
 	if(!agit_flag)	// Agit already End
 		return;
 
+	len = strlen(md->npc_event);
+	evname = (char *)aCalloc(len + 5, sizeof(char));
+	memcpy(evname, md->npc_event, len - 5);
+	strcat(evname, "Eliminate");
+
 	add_timer2(gettick()+battle_config.gvg_eliminate_time,guild_gvg_eliminate_timer,
-		md->bl.m,(int)aStrdup(md->npc_event),TIMER_FREE_DATA);
+		md->bl.m,(int)evname,TIMER_FREE_DATA);
 
 	return;
 }

@@ -2190,8 +2190,8 @@ static int ev_db_final(void *key,void *data,va_list ap)
  */
 static int npc_parse_srcfile(const char *filepath)
 {
-	char line[4096];
-	int lines, number = 0, ret = 0;
+	char line[4096], w1[4096], w2[4096], w3[4096], w4[4096];
+	int lines = 0, ret = 0;
 	int comment_flag = 0;
 	FILE *fp = fopen(filepath,"r");
 
@@ -2199,17 +2199,14 @@ static int npc_parse_srcfile(const char *filepath)
 		printf("reading npc file not found : %s\a\n",filepath);
 		return 0;
 	}
-	printf("reading npc [%4d] %-60s",++number,filepath);
 
-	lines = 0;
 	while(fgets(line,sizeof(line),fp)) {
-		char w1[4096], w2[4096], w3[4096], w4[4096];
 		char *lp;
-		int i, j, w4pos = 0, count;
+		int i = 0, j = 0, w4pos = 0, count;
+
 		lines++;
 
 		// 不要なスペースやタブの連続は詰める
-		i = j = 0;
 		while(line[i]) {
 			switch(line[i]) {
 			case ' ':
@@ -2381,6 +2378,7 @@ int do_final_npc(void)
  */
 int do_init_npc(void)
 {
+	int number = 0;
 	struct npc_src_list *nsl;
 	time_t now;
 
@@ -2391,7 +2389,9 @@ int do_init_npc(void)
 	memcpy(&ev_tm_b, localtime(&now), sizeof(ev_tm_b));
 
 	for(nsl = npc_src_first; nsl; nsl = nsl->next) {
-		npc_parse_srcfile(nsl->name);
+		printf("reading npc [%4d] %-60s", ++number, nsl->name);
+		if( !npc_parse_srcfile(nsl->name) )
+			number--;
 	}
 	npc_clearsrcfile();
 
