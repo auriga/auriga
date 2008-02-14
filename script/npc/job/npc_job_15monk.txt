@@ -659,6 +659,16 @@ monk_in.gat,99,58,4	script	長老	60,{
 //------------------------------------------
 
 prt_monk.gat,251,255,4	script	童巴	79,{
+	//'@list$の文字列をシャッフルして@monk_word$に格納する
+	function Shuffle {
+		setarray '@num,0,1,2,3,4,5,6,7,8,9;
+		for(set '@i,10; '@i>0; set '@i,'@i-1) {
+			set '@r,rand('@i);
+			set @monk_word$[10-'@i],getelementofarray(getarg(0),'@num['@r]);	//グローバル変数として扱う
+			deletearray '@num['@r],1;						//選択された番号は削る
+		}
+		return;
+	}
 	switch(CHANGE_MO) {
 	default:
 		mes "[童巴]";
@@ -775,7 +785,6 @@ prt_monk.gat,251,255,4	script	童巴	79,{
 	mes "はい、ここまでです。";
 	mes strcharinfo(0)+ "、あなたの番です。";
 	next;
-	function Shuffle;
 	for(set '@c,0; '@c<10; set '@c,'@c+1) {
 		Shuffle '@list$;
 		set '@ret,select(	@monk_word$[0],@monk_word$[1],@monk_word$[2],@monk_word$[3],@monk_word$[4],
@@ -839,17 +848,6 @@ prt_monk.gat,251,255,4	script	童巴	79,{
 	mes "これを終えなければ";
 	mes "先に進むことはできません。";
 	close;
-
-	//'@list$の文字列をシャッフルして@monk_word$に格納する
-	function Shuffle {
-		setarray '@num,0,1,2,3,4,5,6,7,8,9;
-		for(set '@i,10; '@i>0; set '@i,'@i-1) {
-			set '@r,rand('@i);
-			set @monk_word$[10-'@i],getelementofarray(getarg(0),'@num['@r]);	//グローバル変数として扱う
-			deletearray '@num['@r],1;						//選択された番号は削る
-		}
-		return;
-	}
 }
 
 //==========================================
