@@ -8055,7 +8055,8 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 		break;
 	case NPC_SUMMONSLAVE:
 	case NPC_SUMMONMONSTER:
-		if(bl->type != BL_MOB || ((struct mob_data*)bl)->master_id != 0)
+		//if(bl->type != BL_MOB || ((struct mob_data*)bl)->master_id != 0)
+		if(bl->type != BL_MOB)
 			return 0;
 		break;
 	case WE_BABY:
