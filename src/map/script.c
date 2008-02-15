@@ -426,19 +426,18 @@ static void add_scriptl(int l)
  */
 static void set_label(int l,int pos,unsigned char *p)
 {
-	int i, next, type;
+	int i, next;
 
 	if(str_data[l].label != -1) {
 		disp_error_message("dup label",p);
 	}
-	type = (str_data[l].type == C_USERFUNC) ? C_USERFUNC_POS : C_POS;
-	str_data[l].type  = type;
+	str_data[l].type  = (str_data[l].type == C_USERFUNC) ? C_USERFUNC_POS : C_POS;
 	str_data[l].label = pos;
 
 	i = str_data[l].backpatch;
 	while(i >= 0 && i != 0x00ffffff) {
 		next = (*(int*)(script_buf+i)) & 0x00ffffff;
-		script_buf[i-1] = type;
+		script_buf[i-1] = C_POS;
 		script_buf[i]   = pos;
 		script_buf[i+1] = pos>>8;
 		script_buf[i+2] = pos>>16;
@@ -607,7 +606,11 @@ static unsigned char* parse_simpleexpr(unsigned char *p)
 		*p2 = c;
 		p = p2;
 
-		if(str_data[l].type != C_FUNC && c == '[') {
+		if(str_data[l].type == C_USERFUNC || str_data[l].type == C_USERFUNC_POS) {
+			add_scriptl(search_str("callsub"));
+			add_scriptc(C_ARG);
+			add_scriptl(l);
+		} else if(str_data[l].type != C_FUNC && c == '[') {
 			// array( name[i][j] => getelementofarray(name,i,j) )
 			add_scriptl(search_str("getelementofarray"));
 			add_scriptc(C_ARG);
@@ -620,10 +623,6 @@ static unsigned char* parse_simpleexpr(unsigned char *p)
 				}
 			}
 			add_scriptc(C_FUNC);
-		} else if(str_data[l].type == C_USERFUNC || str_data[l].type == C_USERFUNC_POS) {
-			add_scriptl(search_str("callsub"));
-			add_scriptc(C_ARG);
-			add_scriptl(l);
 		} else {
 			add_scriptl(l);
 		}
@@ -2953,7 +2952,7 @@ static void run_script_main(struct script_state *st)
 			break;
 		default:
 			if(battle_config.error_log)
-				printf("unknown command : %d @ %d\n",c,st->pos);
+				printf("unknown command : %d @ 0x%06x\n",c,st->pos);
 			st->state = END;
 			break;
 		}
@@ -4197,7 +4196,7 @@ int buildin_callsub(struct script_state *st)
 {
 	int pos = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	if(st->stack->stack_data[st->start+2].type != C_POS && st->stack->stack_data[st->start+2].type != C_USERFUNC_POS) {
+	if(st->stack->stack_data[st->start+2].type != C_POS) {
 		printf("buildin_callsub: not label !\n");
 		st->state=END;
 	} else {
