@@ -561,6 +561,7 @@ extern struct Battle_Config {
 	int snovice_maxexp_border;
 	int homun_rename;
 	int equip_window_type;
+	int summonslave_generation;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

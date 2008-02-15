@@ -5093,6 +5093,7 @@ int battle_config_read(const char *cfgName)
 		{ "snovice_maxexp_border",              &battle_config.snovice_maxexp_border,              99999999 },
 		{ "homun_rename",                       &battle_config.homun_rename,                       0        },
 		{ "equip_window_type",                  &battle_config.equip_window_type,                  1        },
+		{ "summonslave_generation",             &battle_config.summonslave_generation,             2        },
 		{ NULL,                                 NULL,                                              0        },
 
 	};

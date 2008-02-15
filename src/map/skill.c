@@ -8055,7 +8055,6 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 		break;
 	case NPC_SUMMONSLAVE:
 	case NPC_SUMMONMONSTER:
-		//if(bl->type != BL_MOB || ((struct mob_data*)bl)->master_id != 0)
 		if(bl->type != BL_MOB)
 			return 0;
 		break;
@@ -9071,6 +9070,38 @@ static int skill_check_condition2_mob(struct mob_data *md, struct skill_conditio
 	}
 	if(md->sc.opt1 > 0)
 		return 0;
+
+	switch(cnd->id)
+	{
+		case NPC_SUMMONMONSTER:
+			if(md->master_id > 0 && md->state.special_mob_ai) {
+				// 召還主がPCなら使用不可
+				return 0;
+			}
+			break;
+		case NPC_SUMMONSLAVE:
+			if(md->master_id <= 0)
+				break;
+			if(md->state.special_mob_ai) {
+				// 召還主がPCなら使用不可
+				return 0;
+			}
+			if(battle_config.summonslave_generation > 0) {
+				// 召還世代を計算する
+				int count = battle_config.summonslave_generation;
+				int id    = md->master_id;
+				do {
+					struct mob_data *mmd = map_id2md(id);
+					if(mmd == NULL || mmd->bl.prev == NULL || unit_isdead(&mmd->bl) || mmd->m != md->m)
+						break;
+					id = mmd->master_id;
+				} while(--count > 0);
+
+				if(count <= 0)
+					return 0;
+			}
+			break;
+	}
 
 	return 1;
 }
