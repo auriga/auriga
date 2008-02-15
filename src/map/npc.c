@@ -2398,9 +2398,9 @@ int do_init_npc(void)
 	printf("\nread %d npcs done (%d warp, %d shop, %d script, %d mob)\n",
 		   npc_id-START_NPC_NUM,npc_warp,npc_shop,npc_script,npc_mob);
 
-	add_timer_func_list(npc_event_timer,"npc_event_timer");
-	add_timer_func_list(npc_event_do_clock,"npc_event_do_clock");
-	add_timer_func_list(npc_timerevent,"npc_timerevent");
+	add_timer_func_list(npc_event_timer);
+	add_timer_func_list(npc_event_do_clock);
+	add_timer_func_list(npc_timerevent);
 
 	return 0;
 }

@@ -478,7 +478,7 @@ void do_init_graph(void)
 {
 	grfio_load_zlib();
 	httpd_pages("/graph",graph_parse_httpd);
-	add_timer_func_list(graph_timer,"graph_timer");
+	add_timer_func_list(graph_timer);
 	atexit(do_final_graph);
 
 	return;

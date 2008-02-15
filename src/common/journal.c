@@ -85,7 +85,7 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 	if( first )
 	{
 		first = 0;
-		add_timer_func_list( journal_flush_timer, "journal_flush_timer");
+		add_timer_func_list( journal_flush_timer );
 	}
 
 	journal_init_( j, datasize, filename );

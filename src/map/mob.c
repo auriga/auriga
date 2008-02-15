@@ -4144,12 +4144,12 @@ int do_init_mob(void)
 	mob_read_randommonster();
 	mob_readskilldb();
 
-	add_timer_func_list(mob_delayspawn,"mob_delayspawn");
-	add_timer_func_list(mob_delay_item_drop,"mob_delay_item_drop");
-	add_timer_func_list(mob_delay_item_drop2,"mob_delay_item_drop2");
-	add_timer_func_list(mob_ai_hard,"mob_ai_hard");
-	add_timer_func_list(mob_ai_lazy,"mob_ai_lazy");
-	add_timer_func_list(mob_timer_delete,"mob_timer_delete");
+	add_timer_func_list(mob_delayspawn);
+	add_timer_func_list(mob_delay_item_drop);
+	add_timer_func_list(mob_delay_item_drop2);
+	add_timer_func_list(mob_ai_hard);
+	add_timer_func_list(mob_ai_lazy);
+	add_timer_func_list(mob_timer_delete);
 	add_timer_interval(gettick()+MIN_MOBTHINKTIME,mob_ai_hard,0,0,MIN_MOBTHINKTIME);
 	add_timer_interval(gettick()+MIN_MOBTHINKTIME*20,mob_ai_lazy,0,0,MIN_MOBTHINKTIME*20);
 

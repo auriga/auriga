@@ -5346,7 +5346,7 @@ int battle_config_read(const char *cfgName)
  */
 int do_init_battle(void)
 {
-	add_timer_func_list(battle_delay_damage_sub, "battle_delay_damage_sub");
+	add_timer_func_list(battle_delay_damage_sub);
 
 	return 0;
 }

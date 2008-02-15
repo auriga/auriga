@@ -62,7 +62,9 @@ struct TimerData *get_timer(int tid);
 
 int do_timer(unsigned int tick);
 
-int add_timer_func_list(int (*)(int,unsigned int,int,int),const char*);
+int add_timer_func_list_real(int (*)(int,unsigned int,int,int),const char*);
+#define add_timer_func_list(x) add_timer_func_list_real(x, #x)
+
 void do_final_timer(void);
 const char* search_timer_func_list(int (*)(int,unsigned int,int,int));
 

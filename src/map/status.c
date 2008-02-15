@@ -7543,8 +7543,8 @@ int do_init_status(void)
 {
 	status_readdb();
 
-	add_timer_func_list(status_change_timer,"status_change_timer");
-	add_timer_func_list(status_pretimer,"status_pretimer");
+	add_timer_func_list(status_change_timer);
+	add_timer_func_list(status_pretimer);
 
 	return 0;
 }

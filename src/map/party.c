@@ -1086,7 +1086,7 @@ void do_init_party(void)
 {
 	party_db=numdb_init();
 
-	add_timer_func_list(party_send_xyhp_timer,"party_send_xyhp_timer");
+	add_timer_func_list(party_send_xyhp_timer);
 	add_timer_interval(gettick()+PARTY_SEND_XYHP_INVERVAL,party_send_xyhp_timer,0,0,PARTY_SEND_XYHP_INVERVAL);
 
 	return;

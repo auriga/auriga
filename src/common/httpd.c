@@ -198,12 +198,12 @@ struct httpd_cgi_kill {
 #ifndef NO_HTTPD_CGI
 static struct httpd_cgi_kill httpd_cgi_kill_list[HTTPD_CGI_KILL_SIZE];
 static int httpd_cgi_kill_size;
+int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, int data);
+int httpd_get_external_cgi_process_count(void);
 #endif
 
-int  httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, int data);
 void httpd_page_external_cgi_disconnect( struct httpd_session_data* );
 void httpd_page_external_cgi_final(void);
-int httpd_get_external_cgi_process_count(void);
 
 
 // ==========================================
@@ -342,8 +342,10 @@ void do_init_httpd(void)
 
 	server_max_requests_tick = gettick();
 
-	add_timer_func_list( httpd_page_external_cgi_abort_timer, "httpd_page_external_cgi_abort_timer" );
+#ifndef NO_HTTPD_CGI
+	add_timer_func_list( httpd_page_external_cgi_abort_timer );
 	add_timer_interval( gettick()+HTTPD_CGI_KILL_INVERVAL, httpd_page_external_cgi_abort_timer, 0, 0, HTTPD_CGI_KILL_INVERVAL );
+#endif
 }
 
 // ==========================================
@@ -3064,9 +3066,7 @@ void httpd_cgi_log( struct httpd_session_data *sd, const char* str )
 // ------------------------------------------
 void httpd_page_external_cgi( struct httpd_session_data* sd ) { return; }
 void httpd_page_external_cgi_disconnect( struct httpd_session_data* sd ) { return; }
-int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, int data) { return 0; }
 void httpd_page_external_cgi_final(void) { return; }
-int httpd_get_external_cgi_process_count(void) { return 0; }
 
 #endif
 

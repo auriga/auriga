@@ -4453,9 +4453,9 @@ int do_init(int argc,char **argv)
 	if (char_sport != 0 && char_port != char_sport)
 		char_sfd = make_listen_port(char_sport, char_sip);
 
-	add_timer_func_list(check_connect_login_server,"check_connect_login_server");
-	add_timer_func_list(send_users_tologin,"send_users_tologin");
-	add_timer_func_list(mmo_char_sync_timer,"mmo_char_sync_timer");
+	add_timer_func_list(check_connect_login_server);
+	add_timer_func_list(send_users_tologin);
+	add_timer_func_list(mmo_char_sync_timer);
 
 	add_timer_interval(gettick()+1000,check_connect_login_server,0,0,10*1000);
 	add_timer_interval(gettick()+1000,send_users_tologin,0,0,5*1000);

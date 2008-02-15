@@ -2963,8 +2963,8 @@ int do_init(int argc,char *argv[])
 	grfio_init(grf_path_txt);
 	map_readallmap();
 
-	add_timer_func_list(map_freeblock_timer,"map_freeblock_timer");
-	add_timer_func_list(map_clearflooritem_timer,"map_clearflooritem_timer");
+	add_timer_func_list(map_freeblock_timer);
+	add_timer_func_list(map_clearflooritem_timer);
 	add_timer_interval(gettick()+1000,map_freeblock_timer,0,0,600*1000);
 
 	do_init_battle();

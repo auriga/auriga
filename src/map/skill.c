@@ -12950,11 +12950,11 @@ int do_init_skill(void)
 {
 	skill_readdb();
 
-	add_timer_func_list(skill_unit_timer,"skill_unit_timer");
-	add_timer_func_list(skill_castend_id,"skill_castend_id");
-	add_timer_func_list(skill_castend_pos,"skill_castend_pos");
-	add_timer_func_list(skill_timerskill,"skill_timerskill");
-	add_timer_func_list(skill_castend_delay_sub,"skill_castend_delay_sub");
+	add_timer_func_list(skill_unit_timer);
+	add_timer_func_list(skill_castend_id);
+	add_timer_func_list(skill_castend_pos);
+	add_timer_func_list(skill_timerskill);
+	add_timer_func_list(skill_castend_delay_sub);
 
 	add_timer_interval(gettick()+SKILLUNITTIMER_INVERVAL,skill_unit_timer,0,0,SKILLUNITTIMER_INVERVAL);
 

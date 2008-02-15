@@ -1135,9 +1135,9 @@ int do_init_merc(void)
 	read_mercdb();
 	merc_readdb();
 
-	add_timer_func_list(merc_natural_heal_hp,"merc_natural_heal_hp");
-	add_timer_func_list(merc_natural_heal_sp,"merc_natural_heal_sp");
-	add_timer_func_list(merc_employ_timer,"merc_employ_timer");
+	add_timer_func_list(merc_natural_heal_hp);
+	add_timer_func_list(merc_natural_heal_sp);
+	add_timer_func_list(merc_employ_timer);
 
 	return 0;
 }

@@ -2398,9 +2398,9 @@ void do_init_guild(void)
 	guild_read_castledb();
 	guild_read_guildskill_tree_db();
 
-	add_timer_func_list(guild_gvg_eliminate_timer,"guild_gvg_eliminate_timer");
-	add_timer_func_list(guild_payexp_timer,"guild_payexp_timer");
-	add_timer_func_list(guild_send_xy_timer,"guild_send_xy_timer");
+	add_timer_func_list(guild_gvg_eliminate_timer);
+	add_timer_func_list(guild_payexp_timer);
+	add_timer_func_list(guild_send_xy_timer);
 	add_timer_interval(gettick()+GUILD_PAYEXP_INVERVAL,guild_payexp_timer,0,0,GUILD_PAYEXP_INVERVAL);
 	add_timer_interval(gettick()+GUILD_SEND_XY_INVERVAL,guild_send_xy_timer,0,0,GUILD_SEND_XY_INVERVAL);
 

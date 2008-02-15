@@ -8791,15 +8791,15 @@ int do_init_pc(void)
 	pc_read_motd();
 	pc_read_gm_account();
 
-	add_timer_func_list(pc_natural_heal,"pc_natural_heal");
-	add_timer_func_list(pc_invincible_timer,"pc_invincible_timer");
-	add_timer_func_list(pc_eventtimer,"pc_eventtimer");
-	add_timer_func_list(pc_calc_pvprank_timer,"pc_calc_pvprank_timer");
-	add_timer_func_list(pc_autosave,"pc_autosave");
-	add_timer_func_list(pc_spiritball_timer,"pc_spiritball_timer");
-	add_timer_func_list(pc_coin_timer,"pc_coin_timer");
-	add_timer_func_list(pc_extra,"pc_extra");
-	add_timer_func_list(pc_itemlimit_timer,"pc_itemlimit_timer");
+	add_timer_func_list(pc_natural_heal);
+	add_timer_func_list(pc_invincible_timer);
+	add_timer_func_list(pc_eventtimer);
+	add_timer_func_list(pc_calc_pvprank_timer);
+	add_timer_func_list(pc_autosave);
+	add_timer_func_list(pc_spiritball_timer);
+	add_timer_func_list(pc_coin_timer);
+	add_timer_func_list(pc_extra);
+	add_timer_func_list(pc_itemlimit_timer);
 
 	natural_heal_prev_tick = gettick() + NATURAL_HEAL_INTERVAL;
 	add_timer_interval(natural_heal_prev_tick,pc_natural_heal,0,0,NATURAL_HEAL_INTERVAL);

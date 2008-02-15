@@ -62,7 +62,7 @@ struct timer_func_list {
 static struct timer_func_list* tfl_root = NULL;
 
 
-int add_timer_func_list(int (*func)(int,unsigned int,int,int),const char* name)
+int add_timer_func_list_real(int (*func)(int,unsigned int,int,int),const char* name)
 {
 	struct timer_func_list* tfl;
 

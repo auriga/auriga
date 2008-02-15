@@ -14727,8 +14727,8 @@ void do_init_clif(void)
 	}
 	memset(webchat_message, 0, sizeof(webchat_message));
 
-	add_timer_func_list(clif_waitclose, "clif_waitclose");
-	add_timer_func_list(clif_clearchar_delay_sub, "clif_clearchar_delay_sub");
+	add_timer_func_list(clif_waitclose);
+	add_timer_func_list(clif_clearchar_delay_sub);
 
 	return;
 }

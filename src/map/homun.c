@@ -1827,10 +1827,10 @@ int do_init_homun(void)
 	homun_readdb();
 	homun_read_embryodb();
 
-	add_timer_func_list(homun_natural_heal_hp,"homun_natural_heal_hp");
-	add_timer_func_list(homun_natural_heal_sp,"homun_natural_heal_sp");
-	add_timer_func_list(homun_hungry,"homun_hungry");
-	add_timer_func_list(homun_hungry_cry,"homun_hungry_cry");
+	add_timer_func_list(homun_natural_heal_hp);
+	add_timer_func_list(homun_natural_heal_sp);
+	add_timer_func_list(homun_hungry);
+	add_timer_func_list(homun_hungry_cry);
 
 	return 0;
 }

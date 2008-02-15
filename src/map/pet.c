@@ -1446,10 +1446,10 @@ int do_init_pet(void)
 
 	read_petdb();
 
-	add_timer_func_list(pet_hungry,"pet_hungry");
-	add_timer_func_list(pet_ai_hard,"pet_ai_hard");
-	add_timer_func_list(pet_delay_item_drop2,"pet_delay_item_drop2");
-	add_timer_func_list(pet_skill_support_timer,"pet_skill_support_timer");
+	add_timer_func_list(pet_hungry);
+	add_timer_func_list(pet_ai_hard);
+	add_timer_func_list(pet_delay_item_drop2);
+	add_timer_func_list(pet_skill_support_timer);
 
 	add_timer_interval(gettick()+MIN_PETTHINKTIME,pet_ai_hard,0,0,MIN_PETTHINKTIME);
 

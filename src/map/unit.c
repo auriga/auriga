@@ -2276,8 +2276,8 @@ int unit_free(struct block_list *bl, int clrtype)
  */
 int do_init_unit(void)
 {
-	add_timer_func_list(unit_attack_timer,"unit_attack_timer");
-	add_timer_func_list(unit_walktoxy_timer,"unit_walktoxy_timer");
+	add_timer_func_list(unit_attack_timer);
+	add_timer_func_list(unit_walktoxy_timer);
 	return 0;
 }
 
