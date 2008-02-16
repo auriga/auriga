@@ -519,6 +519,7 @@ enum {
 	SC_ANTIMAGIC            = 382,
 	SC_WEAPONQUICKEN        = 383,
 	SC_HAPPY                = 384,
+	SC_NATURAL_HEAL_STOP    = 385,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,

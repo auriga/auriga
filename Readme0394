@@ -1,4 +1,15 @@
 ----------------------------------------
+//0467 [2008/02/17] by Rayce
+
+・バーサーク終了後、自然回復が停止するように修正（pc.c, status.*）
+	SC_NATURAL_HEAL_STOP 追加
+	効果時間は db/skill_cast_db.txt のupkeep_time2を利用
+	デフォルトでは5分
+
+・conf/battle_auriga.conf の free_sc_data_dynamically がyesのとき、一部の状態異常が
+　正常に解除されないバグを修正（status.c）
+
+----------------------------------------
 //0466 [2008/02/16] by Rayce
 
 ・取り巻きが取り巻き召還をする際、召還可能な世代数を規定できるように拡張（battle.*, skill.c）

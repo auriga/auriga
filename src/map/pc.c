@@ -8099,13 +8099,15 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	    sd->sc.data[SC_BLEED].timer == -1 &&	// 出血状態ではHPが回復しない
 	    sd->sc.data[SC_TRICKDEAD].timer == -1 &&	// 死んだふり状態ではHPが回復しない
 	    sd->sc.data[SC_GOSPEL].timer == -1 &&	// ゴスペル状態ではHPが回復しない
-	    sd->sc.data[SC_BERSERK].timer == -1 )	// バーサーク状態ではHPが回復しない
+	    sd->sc.data[SC_BERSERK].timer == -1 &&	// バーサーク状態ではHPが回復しない
+	    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 	{
 		pc_natural_heal_hp(sd);
 		if( sd->sc.data[SC_MAXIMIZEPOWER].timer == -1 &&	// マキシマイズパワー状態ではSPが回復しない
 		    sd->sc.data[SC_EXTREMITYFIST].timer == -1 &&	// 阿修羅状態ではSPが回復しない
 		    sd->sc.data[SC_DANCING].timer == -1 &&		// ダンス状態ではSPが回復しない
-		    sd->sc.data[SC_BERSERK].timer == -1 )		// バーサーク状態ではSPが回復しない
+		    sd->sc.data[SC_BERSERK].timer == -1 &&		// バーサーク状態ではSPが回復しない
+		    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 			pc_natural_heal_sp(sd);
 	} else {
 		sd->hp_sub = sd->inchealhptick = 0;

@@ -4437,6 +4437,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_MAGICMIRROR:			/* マジックミラー */
 		case SC_ITEMDROPRATE:			/* バブルガム */
 		case SC_HAPPY:				/* 楽しい状態 */
+		case SC_NATURAL_HEAL_STOP:		/* 自然回復停止 */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -5570,11 +5571,6 @@ int status_change_end(struct block_list* bl, int type, int tid)
 	sc->data[type].timer = -1;
 	sc->count--;
 
-#ifdef DYNAMIC_SC_DATA
-	if(sc->count <= 0 && battle_config.free_sc_data_dynamically)
-		status_free_sc_data(sc);
-#endif
-
 	sd  = BL_DOWNCAST( BL_PC,   bl );
 	md  = BL_DOWNCAST( BL_MOB,  bl );
 	hd  = BL_DOWNCAST( BL_HOM,  bl );
@@ -5797,8 +5793,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 		case SC_BERSERK:			/* バーサーク */
 			calc_flag = 1;
-			if(sd)
+			if(sd) {
 				clif_status_change(bl,SI_INCREASEAGI,0);	// アイコン消去
+				status_change_start(bl,SC_NATURAL_HEAL_STOP,0,0,0,0,skill_get_time2(LK_BERSERK,sc->data[type].val1),0);
+			}
 			break;
 		case SC_HALLUCINATION:
 			if(sd)
@@ -6124,6 +6122,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 	} else if(opt_flag == 2) {
 		clif_changeoption2(bl);
 	}
+
+#ifdef DYNAMIC_SC_DATA
+	if(sc->count <= 0 && battle_config.free_sc_data_dynamically)
+		status_free_sc_data(sc);
+#endif
 
 	/* ステータス再計算 */
 	if(sd) {
