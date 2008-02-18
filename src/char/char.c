@@ -2987,21 +2987,21 @@ static int search_mapserver_char(char *map, struct mmo_charstatus *cd)
 
 int char_erasemap(int fd, int id)
 {
-	unsigned char buf[16 * 1024];
+	int i;
 
-	if(server[id].map_num*16+12 > sizeof(buf)) {	// 1024MAP以上なら警告して終了
-		printf("char_erasemap: buffer overflow!! %d (%d maps)\n", fd, server[id].map_num);
-		exit(1);
+	for(i = 0; i < MAX_MAP_SERVERS; i++) {
+		int dfd = server_fd[i];
+		if(dfd >= 0 && i != id) {
+			WFIFORESERVE(dfd, server[id].map_num * 16 + 12);
+			WFIFOW(dfd, 0) = 0x2b16;
+			WFIFOW(dfd, 2) = server[id].map_num * 16 + 12;
+			WFIFOL(dfd, 4) = server[id].ip;
+			WFIFOW(dfd, 8) = server[id].port;
+			WFIFOW(dfd,10) = server[id].map_num;
+			memcpy(WFIFOP(dfd,12), server[id].map, 16 * server[id].map_num);
+			WFIFOSET(dfd, WFIFOW(dfd,2));
+		}
 	}
-
-	WBUFW(buf, 0) = 0x2b16;
-	WBUFW(buf, 2) = server[id].map_num * 16 + 12;
-	WBUFL(buf, 4) = server[id].ip;
-	WBUFW(buf, 8) = server[id].port;
-	memcpy(WBUFP(buf,12), server[id].map, 16 * server[id].map_num);
-	WBUFW(buf,10) = server[id].map_num;
-	mapif_sendallwos(fd, buf, WBUFW(buf,2));
-
 	printf("char: map erase: %d (%d maps)\n", id, server[id].map_num);
 
 	aFree(server[id].map);

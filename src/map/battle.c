@@ -1023,7 +1023,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 	if(type == 0x0a) {
 		/* クリティカル攻撃 */
 		damage += atkmax;
-		if(sd && (sd->atk_rate != 100 || sd->weapon_atk_rate != 0)) {
+		if(sd && (sd->atk_rate != 100 || sd->weapon_atk_rate[sd->status.weapon] != 0)) {
 			damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon])) / 100;
 
 			// クリティカル時ダメージ増加
@@ -1037,7 +1037,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			damage += atkmin + atn_rand() % (atkmax - atkmin + 1);
 		else
 			damage += atkmin;
-		if(sd && (sd->atk_rate != 100 || sd->weapon_atk_rate != 0)) {
+		if(sd && (sd->atk_rate != 100 || sd->weapon_atk_rate[sd->status.weapon] != 0)) {
 			damage  = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon])) / 100;
 		}
 	}
