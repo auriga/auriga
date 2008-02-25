@@ -6363,9 +6363,10 @@ char *pc_readregstr(struct map_session_data *sd,int reg)
  * script用文字列変数の値を設定
  *------------------------------------------
  */
-int pc_setregstr(struct map_session_data *sd,int reg,char *str)
+int pc_setregstr(struct map_session_data *sd,int reg,const char *str)
 {
 	int i;
+	struct script_regstr *p;
 
 	nullpo_retr(0, sd);
 
@@ -6380,10 +6381,17 @@ int pc_setregstr(struct map_session_data *sd,int reg,char *str)
 			return 0;
 		}
 	}
+
+	// strが同一のregstr配列上に存在している可能性があるので
+	// reallocせずに先にstrをコピーしてからfreeする
+	p = (struct script_regstr *)aMalloc(sizeof(sd->regstr[0]) * (sd->regstr_num + 1));
+	memcpy(p, sd->regstr, sizeof(sd->regstr[0]) * sd->regstr_num);
+	p[i].index = reg;
+	strncpy(p[i].data, str, 256);
 	sd->regstr_num++;
-	sd->regstr = (struct script_regstr *)aRealloc(sd->regstr, sizeof(sd->regstr[0]) * sd->regstr_num);
-	sd->regstr[i].index = reg;
-	strncpy(sd->regstr[i].data,str,256);
+
+	aFree(sd->regstr);
+	sd->regstr = p;
 
 	return 0;
 }

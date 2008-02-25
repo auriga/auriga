@@ -2097,7 +2097,7 @@ static int get_val(struct script_state *st,struct script_data *data)
  * 変数の読み取り2
  *------------------------------------------
  */
-static void* get_val2(struct script_state*st,int num,struct linkdb_node **ref)
+static void* get_val2(struct script_state *st,int num,struct linkdb_node **ref)
 {
 	struct script_data dat;
 
@@ -2120,7 +2120,7 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 
 	if(postfix == '$') {
 		// 文字列型
-		char *str = (char*)v;
+		const char *str = (const char*)v;
 		if(prefix == '@') {
 			pc_setregstr(sd,num,str);
 		} else if(prefix == '$') {
@@ -2187,22 +2187,28 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 static char* conv_str(struct script_state *st,struct script_data *data)
 {
 	get_val(st,data);
-	if(data->type==C_INT){
-		char *buf;
-		buf=(char *)aCalloc(16,sizeof(char));
-		sprintf(buf,"%d",data->u.num);
-		data->type=C_STR;
-		data->u.str=buf;
-	} else if(data->type==C_POS) {
+
+	switch(data->type) {
+	case C_INT:
+		{
+			char *buf = (char *)aCalloc(16, sizeof(char));
+			sprintf(buf, "%d", data->u.num);
+			data->type  = C_STR;
+			data->u.str = buf;
+		}
+		break;
+	case C_POS:
 		// スクリプトのバグ（ラベルを引数に渡した場合）
 		// 例: mes -;
 		data->type  = C_CONSTSTR;
 		data->u.str = "** SCRIPT ERROR **";
 		printf("script: conv_str: label has used as argument !\n");
-	} else if(data->type==C_NAME){
+		break;
+	case C_NAME:
 		// テンポラリ。本来無いはず
-		data->type=C_CONSTSTR;
-		data->u.str=str_buf+str_data[data->u.num].str;
+		data->type  = C_CONSTSTR;
+		data->u.str = str_buf+str_data[data->u.num].str;
+		break;
 	}
 	return data->u.str;
 }
@@ -2458,17 +2464,22 @@ static int isstr(struct script_data *c)
  */
 static void op_add(struct script_state* st)
 {
-	st->stack->sp--;
-	get_val(st,&(st->stack->stack_data[st->stack->sp]));
-	get_val(st,&(st->stack->stack_data[st->stack->sp-1]));
+	struct script_data *s1, *s2;
 
-	if(isstr(&st->stack->stack_data[st->stack->sp]) || isstr(&st->stack->stack_data[st->stack->sp-1])){
-		conv_str(st,&(st->stack->stack_data[st->stack->sp]));
-		conv_str(st,&(st->stack->stack_data[st->stack->sp-1]));
+	st->stack->sp--;
+	s1 = &st->stack->stack_data[st->stack->sp-1];
+	s2 = &st->stack->stack_data[st->stack->sp];
+
+	get_val(st,s1);
+	get_val(st,s2);
+
+	if(isstr(s1) || isstr(s2)) {
+		conv_str(st,s1);
+		conv_str(st,s2);
 	}
-	if(st->stack->stack_data[st->stack->sp].type==C_INT){ // ii
-		int *i1 = &st->stack->stack_data[st->stack->sp-1].u.num;
-		int *i2 = &st->stack->stack_data[st->stack->sp].u.num;
+	if(s2->type == C_INT) { // ii
+		int *i1 = &s1->u.num;
+		int *i2 = &s2->u.num;
 		int ret = *i1 + *i2;
 		atn_bignumber ret_bignum = (atn_bignumber)*i1 + (atn_bignumber)*i2;
 		if(ret_bignum > 0x7FFFFFFF || ret_bignum < -1 * 0x7FFFFFFF) {
@@ -2477,19 +2488,17 @@ static void op_add(struct script_state* st)
 		}
 		*i1 = ret;
 	} else { // ssの予定
-		char *buf;
-		buf=(char *)aCalloc(strlen(st->stack->stack_data[st->stack->sp-1].u.str)+
-				strlen(st->stack->stack_data[st->stack->sp].u.str)+1,sizeof(char));
-		strcpy(buf,st->stack->stack_data[st->stack->sp-1].u.str);
-		strcat(buf,st->stack->stack_data[st->stack->sp].u.str);
-		if(st->stack->stack_data[st->stack->sp-1].type==C_STR)
-			aFree(st->stack->stack_data[st->stack->sp-1].u.str);
-		if(st->stack->stack_data[st->stack->sp].type==C_STR)
-			aFree(st->stack->stack_data[st->stack->sp].u.str);
-		st->stack->stack_data[st->stack->sp-1].type= C_STR;
-		st->stack->stack_data[st->stack->sp-1].u.str=buf;
+		char *buf = (char *)aCalloc(strlen(s1->u.str) + strlen(s2->u.str) + 1, sizeof(char));
+		strcpy(buf,s1->u.str);
+		strcat(buf,s2->u.str);
+		if(s1->type == C_STR)
+			aFree(s1->u.str);
+		if(s2->type == C_STR)
+			aFree(s2->u.str);
+		s1->type  = C_STR;
+		s1->u.str = buf;
 	}
-	st->stack->stack_data[st->stack->sp-1].ref = NULL;
+	s1->ref = NULL;
 }
 
 /*==========================================
@@ -4291,17 +4300,19 @@ int buildin_return(struct script_state *st)
 
 		if(sd->type == C_NAME) {
 			char *name = str_buf + str_data[sd->u.num&0x00ffffff].str;
-			if( name[0] == '\'' && name[1] == '@') {
-				// '@ 変数を参照渡しにすると危険なので値渡しにする
-				get_val(st,sd);
-				if(isstr(sd)) {		// 文字列の場合はaStrdupしないといけない
-					sd->type  = C_STR;
-					sd->u.str = (char *)aStrdup(sd->u.str);
+			if( name[0] == '\'' ) {
+				if( name[1] == '@' ) {
+					// '@ 変数を参照渡しにすると危険なので値渡しにする
+					get_val(st,sd);
+					if(isstr(sd)) {		// 文字列の場合はaStrdupしないといけない
+						sd->type  = C_STR;
+						sd->u.str = (char *)aStrdup(sd->u.str);
+					}
+				} else if( !sd->ref ) {
+					// ' 変数は参照渡しでも良いが、参照元が設定されていないと
+					// 元のスクリプトの値を差してしまうので補正する
+					sd->ref = &st->script->script_vars;
 				}
-			} else if( name[0] == '\'' && !sd->ref) {
-				// ' 変数は参照渡しでも良いが、参照元が設定されていないと
-				// 元のスクリプトの値を差してしまうので補正する
-				sd->ref = &st->script->script_vars;
 			}
 		}
 	}

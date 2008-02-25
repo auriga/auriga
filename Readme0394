@@ -1,4 +1,22 @@
 ----------------------------------------
+//0469 [2008/02/26] by Rayce
+
+・キャラ一時変数に文字列を追加するとき、ダングリングポインタが発生するバグを修正（script.c）
+	pc_setregstr() の *str と sd->regstr[] が同一アドレスの場合、aRealloc() の時点で
+	*str がfree済みの領域を指していました。
+	DEBUG_MEMMGRのdefineをオンにし、以下のスクリプトを実行すると再現できます。
+
+	set '@data1$,"dummy";
+	set '@data2$,'@data1$;
+	debugmes '@data2$;
+
+・一部の文字列にconstを付与する（pc.*, script.c）
+・以下の関数を整理（script.c）
+	conv_str()
+	op_add()
+	buildin_return()
+
+----------------------------------------
 //0468 [2008/02/19] by Rayce
 
 ・0458の１MAPサーバ当たり1023マップまでしか利用できない制限の撤廃が char_erasemap()
