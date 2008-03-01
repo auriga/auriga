@@ -1,4 +1,27 @@
 ----------------------------------------
+//0470 [2008/03/02] by Rayce
+
+・db/const.txtに文字列を定数として設定できるように拡張（script.c）
+	文字列の場合はポストフィックス$を付ける必要があります。
+	C_STRとして扱い、解析時に直接文字列をバイトコードに書き込みます。
+
+	例）db/const.txt
+		FUGA$	string
+	    呼び出し
+		debugmes FUGA$;	// "string" を表示
+
+・変数読み取り時に、プレイヤーにアタッチできなかった場合は初期値を入れるように修正（script.c）
+	文字列 → ""
+	数値   → 0
+
+・add_str() で一度にメモリ確保するサイズを拡張（script.c）
+	str_data 128 → 512
+	str_buf  256 → 4096
+
+・一部の関数の引数にconstを付与（script.*）
+・script.cの細かい整形（script.c）
+
+----------------------------------------
 //0469 [2008/02/26] by Rayce
 
 ・キャラ一時変数に文字列を追加するとき、ダングリングポインタが発生するバグを修正（script.c）
@@ -6,9 +29,9 @@
 	*str がfree済みの領域を指していました。
 	DEBUG_MEMMGRのdefineをオンにし、以下のスクリプトを実行すると再現できます。
 
-	set '@data1$,"dummy";
-	set '@data2$,'@data1$;
-	debugmes '@data2$;
+	set @data1$,"dummy";
+	set @data2$,@data1$;
+	debugmes @data2$;
 
 ・一部の文字列にconstを付与する（pc.*, script.c）
 ・以下の関数を整理（script.c）

@@ -65,7 +65,7 @@ void script_free_code(struct script_code* code);
 
 struct dbt* script_get_userfunc_db(void);
 
-int script_config_read(char *cfgName);
+int script_config_read(const char *cfgName);
 int do_init_script(void);
 int do_final_script(void);
 

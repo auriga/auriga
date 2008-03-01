@@ -85,7 +85,10 @@ static struct script_str_data {
 	int backpatch;
 	int label;
 	int (*func)(struct script_state *st);
-	int val;
+	union {
+		int val;
+		char *str;
+	} u;
 	int next;
 } *str_data;
 
@@ -315,15 +318,15 @@ static int add_str(const unsigned char *p)
 		str_data[i].next=str_num;
 	}
 	if(str_num >= str_data_size){
-		str_data_size += 128;
+		str_data_size += 512;
 		str_data = (struct script_str_data *)aRealloc(str_data,sizeof(str_data[0])*str_data_size);
-		memset(str_data + (str_data_size - 128), '\0', 128);
+		memset(str_data + (str_data_size - 512), '\0', 512);
 	}
 	len=(int)strlen(p);
 	while(str_pos+len+1 >= str_size){
-		str_size += 256;
+		str_size += 4096;
 		str_buf = (char *)aRealloc(str_buf,str_size);
-		memset(str_buf + (str_size - 256), '\0', 256);
+		memset(str_buf + (str_size - 4096), '\0', 4096);
 	}
 	memcpy(str_buf+str_pos,p,len+1);
 	str_data[str_num].type      = C_NOP;
@@ -386,9 +389,7 @@ static void add_scripti(int a)
 // 最大16Mまで
 static void add_scriptl(int l)
 {
-	int backpatch = str_data[l].backpatch;
-
-	switch(str_data[l].type){
+	switch(str_data[l].type) {
 	case C_POS:
 	case C_USERFUNC_POS:
 		add_scriptc(C_POS);
@@ -399,16 +400,29 @@ static void add_scriptl(int l)
 	case C_NOP:
 	case C_USERFUNC:
 		// ラベルの可能性があるのでbackpatch用データ埋め込み
-		add_scriptc(C_NAME);
-		str_data[l].backpatch=script_pos;
-		add_scriptb(backpatch);
-		add_scriptb(backpatch>>8);
-		add_scriptb(backpatch>>16);
+		{
+			int backpatch = str_data[l].backpatch;
+			add_scriptc(C_NAME);
+			str_data[l].backpatch=script_pos;
+			add_scriptb(backpatch);
+			add_scriptb(backpatch>>8);
+			add_scriptb(backpatch>>16);
+		}
 		break;
 	case C_INT:
-		add_scripti(abs(str_data[l].val));
-		if(str_data[l].val < 0)
+		add_scripti(abs(str_data[l].u.val));
+		if(str_data[l].u.val < 0)
 			add_scriptc(C_NEG);
+		break;
+	case C_STR:
+		{
+			char *p = str_data[l].u.str;
+			add_scriptc(C_STR);
+			while(p && *p) {
+				add_scriptb(*p++);
+			}
+			add_scriptb(0);
+		}
 		break;
 	default:
 		// もう他の用途と確定してるので数字をそのまま
@@ -755,7 +769,7 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 
 			// 関数の持つ引数の数をチェック
 			if(str_data[parse_cmd].type == C_FUNC && script_config.warn_cmd_mismatch_paramnum) {
-				arg = buildin_func[str_data[parse_cmd].val].arg;
+				arg = buildin_func[str_data[parse_cmd].u.val].arg;
 				for(j = 0; arg[j]; j++) {
 					if(arg[j] == '*')
 						break;
@@ -892,7 +906,7 @@ static unsigned char* parse_line(unsigned char *p)
 
 	// 関数の持つ引数の数をチェック
 	if(str_data[parse_cmd].type == C_FUNC && script_config.warn_cmd_mismatch_paramnum) {
-		arg = buildin_func[str_data[parse_cmd].val].arg;
+		arg = buildin_func[str_data[parse_cmd].u.val].arg;
 		for(j = 0; arg[j]; j++) {
 			if(arg[j] == '*')
 				break;
@@ -1105,7 +1119,7 @@ static unsigned char* parse_syntax(unsigned char *p)
 				if(i < 0 || str_data[i].type != C_INT) {
 					disp_error_message("'case' label not integer",p2);
 				}
-				v = str_data[i].val;
+				v = str_data[i].u.val;
 			}
 			p = skip_space(p);
 			if(*p != ':') {
@@ -1661,7 +1675,7 @@ static void add_buildin_func(void)
 	for(i=0;buildin_func[i].func;i++){
 		n=add_str(buildin_func[i].name);
 		str_data[n].type=C_FUNC;
-		str_data[n].val=i;
+		str_data[n].u.val=i;
 		str_data[n].func=buildin_func[i].func;
 	}
 }
@@ -1673,26 +1687,32 @@ static void add_buildin_func(void)
 static void read_constdb(void)
 {
 	FILE *fp;
-	char line[1024],name[1024],val[1024];
-	int n,type;
+	char line[1024], name[1024], val[1024];
+	int n, type;
 
-	fp=fopen("db/const.txt","r");
-	if(fp==NULL){
+	fp = fopen("db/const.txt","r");
+	if(fp == NULL) {
 		printf("can't read db/const.txt\n");
 		return;
 	}
-	while(fgets(line,1020,fp)){
-		if(line[0]=='/' && line[1]=='/')
+	while(fgets(line,1020,fp)) {
+		if(line[0] == '/' && line[1] == '/')
 			continue;
-		type=0;
-		if(sscanf(line,"%[A-Za-z0-9_],%[-0-9xXA-Fa-f],%d",name,val,&type)>=2 ||
-		   sscanf(line,"%[A-Za-z0-9_] %[-0-9xXA-Fa-f] %d",name,val,&type)>=2){
-			n=add_str(name);
-			if(type==0)
-				str_data[n].type=C_INT;
-			else
-				str_data[n].type=C_PARAM;
-			str_data[n].val = (int)strtol(val,NULL,0);
+		type = 0;
+		if(sscanf(line, "%[A-Za-z0-9_],%[-0-9xXA-Fa-f],%d", name, val, &type) >= 2 ||
+		   sscanf(line, "%[A-Za-z0-9_] %[-0-9xXA-Fa-f] %d", name, val, &type) >= 2)
+		{
+			n = add_str(name);
+			str_data[n].type  = (type == 0)? C_INT: C_PARAM;
+			str_data[n].u.val = (int)strtol(val,NULL,0);
+		} else {
+			if(sscanf(line, "%[A-Za-z0-9_]$,%[^\r\n]", name, val) == 2 ||
+			   sscanf(line, "%[A-Za-z0-9_]$ %[^\r\n]", name, val) == 2)
+			{
+				n = add_str(strcat(name, "$"));
+				str_data[n].type  = C_STR;
+				str_data[n].u.str = (char *)aStrdup(val);
+			}
 		}
 	}
 	fclose(fp);
@@ -2016,81 +2036,115 @@ static struct map_session_data *script_rid2sd(struct script_state *st)
  * 変数の読み取り
  *------------------------------------------
  */
-static int get_val(struct script_state *st,struct script_data *data)
+static void get_val(struct script_state *st,struct script_data *data)
 {
 	struct map_session_data *sd = NULL;
+	char *name;
+	char prefix, postfix;
 
-	if(data->type == C_NAME) {
-		char *name   = str_buf+str_data[data->u.num&0x00ffffff].str;
-		char prefix  = *name;
-		char postfix = name[strlen(name)-1];
+	if(data->type != C_NAME)
+		return;
 
-		if(prefix != '$' && prefix != '\'') {
-			if((sd=script_rid2sd(st)) == NULL)
+	name    = str_buf+str_data[data->u.num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if(prefix != '$' && prefix != '\'') {
+		if((postfix == '$' && str_data[data->u.num&0x00ffffff].type == C_STR) ||
+		   (postfix != '$' && str_data[data->u.num&0x00ffffff].type == C_INT))
+		{
+			if((sd = script_rid2sd(st)) == NULL) {
 				printf("get_val error name?: %s\n",name);
-		}
-		if(postfix == '$') {
-			// 文字列型
-			data->type = C_CONSTSTR;
-			if(prefix == '@') {
-				if(sd)
-					data->u.str = pc_readregstr(sd,data->u.num);
-			} else if(prefix == '$') {
-				data->u.str = (char *)numdb_search(mapregstr_db,data->u.num);
-			} else if(prefix == '\'') {
-				struct linkdb_node **n;
-				if( data->ref ) {
-					n = data->ref;
-				} else if( name[1] == '@' ) {
-					n = st->stack->var_function;
-				} else {
-					n = &st->script->script_vars;
-				}
-				data->u.str = (char *)linkdb_search(n, (void*)data->u.num );
-			} else {
-				printf("script: get_val: illegal scope string variable.\n");
-				data->u.str = "!!ERROR!!";
-			}
-			if( data->u.str == NULL )
-				data->u.str = "";
-		} else {
-			// 数値型
-			data->type = C_INT;
-			if(str_data[data->u.num&0x00ffffff].type == C_INT) {
-				data->u.num = str_data[data->u.num&0x00ffffff].val;
-			} else if(str_data[data->u.num&0x00ffffff].type == C_PARAM) {
-				if(sd)
-					data->u.num = pc_readparam(sd,str_data[data->u.num&0x00ffffff].val);
-			} else if(prefix == '@') {
-				if(sd)
-					data->u.num = pc_readreg(sd,data->u.num);
-			} else if(prefix == '$') {
-				data->u.num = (int)numdb_search(mapreg_db,data->u.num);
-			} else if(prefix == '#') {
-				if( name[1] == '#') {
-					if(sd)
-						data->u.num = pc_readaccountreg2(sd,name);
-				} else {
-					if(sd)
-						data->u.num = pc_readaccountreg(sd,name);
-				}
-			} else if(prefix == '\'') {
-				struct linkdb_node **n;
-				if( data->ref ) {
-					n = data->ref;
-				} else if( name[1] == '@' ) {
-					n = st->stack->var_function;
-				} else {
-					n = &st->script->script_vars;
-				}
-				data->u.num = (int)linkdb_search(n, (void*)data->u.num);
-			} else {
-				if(sd)
-					data->u.num = pc_readglobalreg(sd,name);
+				if(postfix == '$')
+					data->u.str = NULL;
+				else
+					data->u.num = 0;
 			}
 		}
 	}
-	return 0;
+
+	if(postfix == '$') {
+		// 文字列型
+		data->type = C_CONSTSTR;
+		if(str_data[data->u.num&0x00ffffff].type == C_STR) {
+			data->u.str = str_data[data->u.num&0x00ffffff].u.str;
+		} else {
+			switch(prefix) {
+			case '@':
+				if(sd)
+					data->u.str = pc_readregstr(sd,data->u.num);
+				break;
+			case '$':
+				data->u.str = (char *)numdb_search(mapregstr_db,data->u.num);
+				break;
+			case '\'':
+				{
+					struct linkdb_node **n;
+					if( data->ref ) {
+						n = data->ref;
+					} else if( name[1] == '@' ) {
+						n = st->stack->var_function;
+					} else {
+						n = &st->script->script_vars;
+					}
+					data->u.str = (char *)linkdb_search(n, (void*)data->u.num);
+				}
+				break;
+			default:
+				printf("script: get_val: illegal scope string variable.\n");
+				data->u.str = "!!ERROR!!";
+				break;
+			}
+		}
+		if( data->u.str == NULL )
+			data->u.str = "";
+	} else {
+		// 数値型
+		data->type = C_INT;
+		if(str_data[data->u.num&0x00ffffff].type == C_INT) {
+			data->u.num = str_data[data->u.num&0x00ffffff].u.val;
+		} else if(str_data[data->u.num&0x00ffffff].type == C_PARAM) {
+			if(sd)
+				data->u.num = pc_readparam(sd,str_data[data->u.num&0x00ffffff].u.val);
+		} else {
+			switch(prefix) {
+			case '@':
+				if(sd)
+					data->u.num = pc_readreg(sd,data->u.num);
+				break;
+			case '$':
+				data->u.num = (int)numdb_search(mapreg_db,data->u.num);
+				break;
+			case '#':
+				if(sd) {
+					if(name[1] == '#')
+						data->u.num = pc_readaccountreg2(sd,name);
+					else
+						data->u.num = pc_readaccountreg(sd,name);
+				}
+				break;
+			case '\'':
+				{
+					struct linkdb_node **n;
+					if( data->ref ) {
+						n = data->ref;
+					} else if( name[1] == '@' ) {
+						n = st->stack->var_function;
+					} else {
+						n = &st->script->script_vars;
+					}
+					data->u.num = (int)linkdb_search(n, (void*)data->u.num);
+				}
+				break;
+			default:
+				if(sd)
+					data->u.num = pc_readglobalreg(sd,name);
+				break;
+			}
+		}
+	}
+
+	return;
 }
 
 /*==========================================
@@ -2113,68 +2167,85 @@ static void* get_val2(struct script_state *st,int num,struct linkdb_node **ref)
  * 変数設定用
  *------------------------------------------
  */
-static int set_reg(struct script_state *st,struct map_session_data *sd,int num,const char *name,void *v,struct linkdb_node** ref)
+static int set_reg(struct script_state *st,struct map_session_data *sd,int num,const char *name,const void *v,struct linkdb_node** ref)
 {
 	char prefix  = *name;
 	char postfix = name[strlen(name)-1];
 
 	if(postfix == '$') {
 		// 文字列型
-		const char *str = (const char*)v;
-		if(prefix == '@') {
+		const char *str = (const char *)v;
+		switch(prefix) {
+		case '@':
 			pc_setregstr(sd,num,str);
-		} else if(prefix == '$') {
+			break;
+		case '$':
 			mapreg_setregstr(num,str,(name[1] == '@')? 0: 1);
-		} else if(prefix == '\'') {
-			char *old_str;
-			struct linkdb_node **n;
-			if( ref ) {
-				n = ref;
-			} else if( name[1] == '@' ) {
-				n = st->stack->var_function;
-			} else {
-				n = &st->script->script_vars;
+			break;
+		case '\'':
+			{
+				char *old_str;
+				struct linkdb_node **n;
+				if( ref ) {
+					n = ref;
+				} else if( name[1] == '@' ) {
+					n = st->stack->var_function;
+				} else {
+					n = &st->script->script_vars;
+				}
+				if( str[0] ) {
+					old_str = (char *)linkdb_replace(n, (void*)num, aStrdup(str));
+				} else {
+					old_str = (char *)linkdb_erase(n, (void*)num);
+				}
+				if(old_str)
+					aFree(old_str);
 			}
-			if( str[0] ) {
-				old_str = (char *)linkdb_replace(n, (void*)num, aStrdup(str));
-			} else {
-				old_str = (char *)linkdb_erase(n, (void*)num);
-			}
-			if(old_str)
-				aFree(old_str);
-		} else {
+			break;
+		default:
 			printf("script: set_reg: illegal scope string variable !");
+			break;
 		}
 	} else {
 		// 数値型
 		int val = (int)v;
 		if(str_data[num&0x00ffffff].type == C_PARAM) {
-			pc_setparam(sd,str_data[num&0x00ffffff].val,val);
-		} else if(prefix == '@') {
-			pc_setreg(sd,num,val);
-		} else if(prefix == '$') {
-			mapreg_setreg(num,val,(name[1] == '@')? 0: 1);
-		} else if(prefix == '#') {
-			if( name[1] == '#' )
-				pc_setaccountreg2(sd,name,val);
-			else
-				pc_setaccountreg(sd,name,val);
-		} else if(prefix == '\'') {
-			struct linkdb_node **n;
-			if( ref ) {
-				n = ref;
-			} else if( name[1] == '@' ) {
-				n = st->stack->var_function;
-			} else {
-				n = &st->script->script_vars;
-			}
-			if( val != 0 ) {
-				linkdb_replace(n, (void*)num, (void*)val);
-			} else {
-				linkdb_erase(n, (void*)num);
-			}
+			pc_setparam(sd,str_data[num&0x00ffffff].u.val,val);
 		} else {
-			pc_setglobalreg(sd,name,val);
+			switch(prefix) {
+			case '@':
+				pc_setreg(sd,num,val);
+				break;
+			case '$':
+				mapreg_setreg(num,val,(name[1] == '@')? 0: 1);
+				break;
+			case '#':
+				if(name[1] == '#')
+					pc_setaccountreg2(sd,name,val);
+				else
+					pc_setaccountreg(sd,name,val);
+				break;
+			case '\'':
+				{
+					struct linkdb_node **n;
+					if( ref ) {
+						n = ref;
+					} else if( name[1] == '@' ) {
+						n = st->stack->var_function;
+					} else {
+						n = &st->script->script_vars;
+					}
+					if( val != 0 ) {
+						linkdb_replace(n, (void*)num, (void*)val);
+					} else {
+						linkdb_erase(n, (void*)num);
+					}
+				}
+				break;
+			default:
+				pc_setglobalreg(sd,name,val);
+				break;
+			}
 		}
 	}
 	return 0;
@@ -2219,15 +2290,14 @@ static char* conv_str(struct script_state *st,struct script_data *data)
  */
 static int conv_num(struct script_state *st,struct script_data *data)
 {
-	char *p;
-
 	get_val(st,data);
-	if(data->type==C_STR || data->type==C_CONSTSTR){
-		p=data->u.str;
+	if(data->type == C_STR || data->type == C_CONSTSTR) {
+		char *p = data->u.str;
 		data->u.num = atoi(p);
-		if(data->type==C_STR)
+		if(data->type == C_STR) {
 			aFree(p);
-		data->type=C_INT;
+		}
+		data->type = C_INT;
 	}
 	return data->u.num;
 }
@@ -3264,33 +3334,29 @@ static int script_autosave_mapreg(int tid,unsigned int tick,int id,int data)
  * poswordの設定
  *------------------------------------------
  */
-static int set_posword(char *p)
+static void set_posword(char *p)
 {
-	char *np, *str[11];
-	int i=0;
+	char *np;
+	int i;
 
-	for(i=0;i<11;i++) {
-		if((np=strchr(p,','))!=NULL) {
-			str[i]=p;
-			*np=0;
-			p=np+1;
-		} else {
-			str[i]=p;
-			p+=strlen(p);
+	for(i = 0; i < 11; i++) {
+		if((np = strchr(p,',')) != NULL) {
+			*np = 0;
 		}
-		if(str[i]) {
-			strncpy(refine_posword[i],str[i],32);
-			refine_posword[i][31] = '\0';	// force \0 terminal
-		}
+		strncpy(refine_posword[i], p, 32);
+		refine_posword[i][31] = '\0';	// force \0 terminal
+
+		if(np == NULL)
+			break;
+		p = np + 1;
 	}
-	return 0;
 }
 
 /*==========================================
  * config読み込み
  *------------------------------------------
  */
-int script_config_read(char *cfgName)
+int script_config_read(const char *cfgName)
 {
 	int i;
 	char line[1024],w1[1024],w2[1024];
@@ -3381,6 +3447,7 @@ int script_check_variable(const char *name,int array_flag,int read_only)
 				return 1;
 			break;
 		case C_INT:		// 定数は[]がなくて読み取り時のみ許可
+		case C_STR:
 			if(!array_flag && read_only)
 				return 1;
 			break;
@@ -3543,6 +3610,8 @@ static int userfunc_db_final(void *key,void *data,va_list ap)
 
 int do_final_script(void)
 {
+	int i;
+
 	if(mapreg_dirty)
 		script_save_mapreg();
 
@@ -3577,6 +3646,10 @@ int do_final_script(void)
 	script_csvfinal();
 #endif
 
+	for(i = LABEL_START; i < str_num; i++) {
+		if(str_data[i].type == C_STR)
+			aFree(str_data[i].u.str);
+	}
 	aFree(str_buf);
 	aFree(str_data);
 
@@ -10170,19 +10243,18 @@ int buildin_csvreadarray(struct script_state *st)
 	}
 
 	if( csv ) {
+		const void *v;
 		int max = csvdb_get_columns( csv, row );
 		if( max + (num >> 24) > 128 ) {
 			max = 128 - (num>>24);
 		}
+		if( postfix == '$' )
+			v = (const void *)csvdb_get_str(csv, row, i);
+		else
+			v = (const void *)csvdb_get_num(csv, row, i);
+
 		for( i = 0; i < max; i++ ) {
-			if( postfix == '$' ) {
-				// set_regはconstが付いてないので、一旦strdupしている
-				void *v = aStrdup(csvdb_get_str(csv, row, i));
-				set_reg(st,sd,num+(i<<24),name,v,st->stack->stack_data[st->start+4].ref);
-				aFree(v);
-			} else {
-				set_reg(st,sd,num+(i<<24),name,(void*)csvdb_get_num(csv, row, i),st->stack->stack_data[st->start+4].ref);
-			}
+			set_reg(st,sd,num+(i<<24),name,v,st->stack->stack_data[st->start+4].ref);
 		}
 	}
 	return 0;
