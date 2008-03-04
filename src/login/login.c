@@ -552,6 +552,7 @@ int login_sql_init(void)
 	mysql_init(&mysql_handle);
 	printf("Connecting Database Server");
 	if(login_server_charset[0]) {
+		mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, login_server_charset);
 		printf(" (charset: %s)",login_server_charset);
 	}
 	printf("...\n");
@@ -561,15 +562,8 @@ int login_sql_init(void)
 		// pointer check
 		printf("%s\n", mysql_error(&mysql_handle));
 		exit(1);
-	} else {
-		printf("connect success!\n");
 	}
-	if(login_server_charset[0]) {
-		sprintf(tmp_sql,"SET NAMES %s",login_server_charset);
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (charset)- %s\n", mysql_error(&mysql_handle));
-		}
-	}
+	printf("connect success!\n");
 
 	sprintf(
 		tmp_sql, "INSERT DELAYED INTO `%s`(`time`,`log`) "

@@ -228,6 +228,7 @@ int do_init(int argc,char **argv)
 	mysql_init(&mysql_handle);
 	printf("Connect DB server");
 	if(db_server_charset[0]) {
+		mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, db_server_charset);
 		printf(" (charset: %s)",db_server_charset);
 	}
 	printf("...\n");
@@ -238,13 +239,6 @@ int do_init(int argc,char **argv)
 		exit(1);
 	}
 	printf("connect success!\n");
-
-	if(db_server_charset[0]) {
-		sprintf(tmp_sql,"SET NAMES %s",db_server_charset);
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (charset)- %s\n", mysql_error(&mysql_handle));
-		}
-	}
 
 	printf("Warning : Make sure you backup your databases before continuing!\n");
 	printf("Convert start...\n");
@@ -271,6 +265,9 @@ void do_pre_final(void)
 
 void do_final(void)
 {
+	mysql_close(&mysql_handle);
+	printf("close DB connect....\n");
+
 	exit_dbn();
 	do_final_timer();
 }

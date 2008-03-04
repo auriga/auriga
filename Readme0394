@@ -1,4 +1,24 @@
 ----------------------------------------
+//0471 [2008/03/05] by Rayce
+
+・[SQL] configで設定したcharsetがMySQLサーバに正しく反映されてなかった問題を修正
+	（login.c, char.c, map.c, converter.c）
+
+	MySQLサーバ接続時にSET NAMESを送っていましたが、SET NAMESだとクライアントの
+	文字セットの情報を送るだけで、mysql_real_escape_stirng() には影響しないという
+	現象がありました。
+	代わりに mysql_options() で MYSQL_SET_CHARSET_NAME を設定するように変更しました。
+
+	これにより、sjis以外（cp932など）のcharsetを設定しているのも関わらず、「表」の
+	ようにSJISで0x5c（バックスラッシュ \）を末尾に含む文字列がクエリ発行できない問題が
+	解消されます。
+
+・[SQL] 052で実装した TRIM_ESCAPE_AS_SJIS のdefineを撤廃（utils.c）
+	上記修正により、strecpy() の強引な拡張は不要になったため
+
+・[SQL] converterの終了時に、mysql_close() が呼ばれてなかったのを修正（converter.c）
+
+----------------------------------------
 //0470 [2008/03/02] by Rayce
 
 ・db/const.txtに文字列を定数として設定できるように拡張（script.c）

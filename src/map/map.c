@@ -174,6 +174,7 @@ static int do_sql_init_map(void)
 	mysql_init(&mysql_handle);
 	printf("Connect DB server");
 	if(map_server_charset[0]) {
+		mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, map_server_charset);
 		printf(" (charset: %s)",map_server_charset);
 	}
 	printf("...\n");
@@ -183,20 +184,14 @@ static int do_sql_init_map(void)
 	) {
 		printf("%s\n",mysql_error(&mysql_handle));
 		exit(1);
-	} else {
-		printf("Connect Success!\n");
 	}
-	if(map_server_charset[0]) {
-		sprintf(tmp_sql,"SET NAMES %s",map_server_charset);
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (charset)- %s\n", mysql_error(&mysql_handle));
-		}
-	}
+	printf("Connect Success!\n");
 
 	if(sql_script_enable) {
 		mysql_init(&mysql_handle_script);
 		printf("Connect Script server");
 		if(script_server_charset[0]) {
+			mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, script_server_charset);
 			printf(" (charset: %s)",script_server_charset);
 		}
 		printf("...\n");
@@ -206,15 +201,8 @@ static int do_sql_init_map(void)
 		) {
 			printf("%s\n",mysql_error(&mysql_handle_script));
 			exit(1);
-		} else {
-			printf("Connect Success!\n");
 		}
-		if(script_server_charset[0]) {
-			sprintf(tmp_sql,"SET NAMES %s",script_server_charset);
-			if (mysql_query(&mysql_handle_script, tmp_sql)) {
-				printf("DB server Error (charset)- %s\n", mysql_error(&mysql_handle_script));
-			}
-		}
+		printf("Connect Success!\n");
 	}
 
 	return 0;

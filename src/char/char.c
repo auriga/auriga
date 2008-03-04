@@ -1197,6 +1197,7 @@ static int char_sql_init(void)
 	mysql_init(&mysql_handle);
 	printf("Connect Character DB server");
 	if(char_server_charset[0]) {
+		mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, char_server_charset);
 		printf(" (charset: %s)",char_server_charset);
 	}
 	printf("...\n");
@@ -1206,15 +1207,8 @@ static int char_sql_init(void)
 	) {
 		printf("%s\n",mysql_error(&mysql_handle));
 		exit(1);
-	} else {
-		printf("Connect Success! (Character Server)\n");
 	}
-	if(char_server_charset[0]) {
-		sprintf(tmp_sql,"SET NAMES %s",char_server_charset);
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (charset)- %s\n", mysql_error(&mysql_handle));
-		}
-	}
+	printf("Connect Success! (Character Server)\n");
 
 	return 1;
 }
