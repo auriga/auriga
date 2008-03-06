@@ -2644,7 +2644,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		// 一応左右を入れ替えておく
 		calc_flag.rh = 1;
 		calc_flag.lh = 0;
-	} else if(src_sd && calc_flag.lh) {		// 左手があるなら右手・左手修練の適用
+	} else if(src_sd && calc_flag.lh && src_sd->status.weapon != WT_KATAR) {		// 左手があるなら右手・左手修練の適用
 		int dmg = wd.damage, dmg2 = wd.damage2;
 		// 右手修練(60% 〜 100%) 右手全般
 		skill = pc_checkskill(src_sd,AS_RIGHT);
