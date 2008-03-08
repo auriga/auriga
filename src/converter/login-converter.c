@@ -26,10 +26,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../common/mmo.h"
-#include "../common/db.h"
-#include "../common/malloc.h"
-#include "../common/utils.h"
+#include "mmo.h"
+#include "db.h"
+#include "malloc.h"
+#include "sqldbs.h"
 
 #include "converter.h"
 #include "login-converter.h"

@@ -55,8 +55,6 @@ void storage_txt_config_read_sub(const char* w1,const char* w2);
 #endif /* _INT_STORAGE_C_ */
 
 #else /* TXT_ONLY */
-	extern char storage_db_[256];
-	extern char guild_storage_db_[256];
 	const struct storage* storage_sql_load(int account_id);
 	int  storage_sql_save(struct storage *s2);
 	int  storage_sql_init(void);

@@ -22,7 +22,7 @@
 #ifndef _SCRIPT_H_
 #define _SCRIPT_H_
 
-#include "utils.h"
+#include "sqldbs.h"
 
 struct script_data {
 	int type;

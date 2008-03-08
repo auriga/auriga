@@ -31,7 +31,7 @@
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
-#include "utils.h"
+#include "sqldbs.h"
 
 #include "char.h"
 #include "inter.h"
@@ -379,8 +379,6 @@ void merc_txt_final(void)
 #define merc_final  merc_txt_final
 
 #else /* TXT_ONLY */
-static char merc_db_[256]      = "mercenary";
-static char merc_skill_db[256] = "mercenary_skill";
 
 int merc_sql_init(void)
 {
@@ -403,20 +401,16 @@ int merc_sql_delete(int merc_id)
 		aFree(p);
 	}
 	// printf("Request del  merc  (%6d)[",merc_id);
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `merc_id`='%d'",merc_db_, merc_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `%s`)- %s\n", merc_db_, mysql_error(&mysql_handle) );
-	}
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `merc_id`='%d'",merc_skill_db, merc_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `%s`)- %s\n", merc_skill_db, mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_TABLE "` WHERE `merc_id`='%d'", merc_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_SKILL_TABLE "` WHERE `merc_id`='%d'", merc_id);
 	// printf("]\n");
+
 	return 0;
 }
 
 const struct mmo_mercstatus* merc_sql_load(int merc_id)
 {
+	int rc;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 	struct mmo_mercstatus *p = (struct mmo_mercstatus *)numdb_search(merc_db,merc_id);
@@ -435,22 +429,21 @@ const struct mmo_mercstatus* merc_sql_load(int merc_id)
 	// `mercenary` (`merc_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,
 	//	`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,
 	//	`kill_count`,`limit`)
-	sprintf(
-		tmp_sql,
+	rc = sqldbs_query(
+		&mysql_handle,
 		"SELECT `class`,`name`,`account_id`,`char_id`,`base_level`,"
 		"`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,"
 		"`kill_count`,`limit` "
-		"FROM `%s` WHERE `merc_id`='%d'",
-		merc_db_, merc_id
+		"FROM `" MERC_TABLE "` WHERE `merc_id`='%d'",
+		merc_id
 	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `%s`)- %s\n", merc_db_, mysql_error(&mysql_handle) );
+	if(rc) {
 		p->merc_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle);
-	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
-		sql_row = mysql_fetch_row(sql_res);
+	sql_res = sqldbs_store_result(&mysql_handle);
+	if (sql_res!=NULL && sqldbs_num_rows(sql_res)>0) {
+		sql_row = sqldbs_fetch(sql_res);
 
 		p->merc_id      = merc_id;
 		p->class_       = atoi(sql_row[0]);
@@ -473,24 +466,21 @@ const struct mmo_mercstatus* merc_sql_load(int merc_id)
 		p->limit        = (unsigned int)atoi(sql_row[16]);
 	} else {
 		p->merc_id = -1;
-		if( sql_res ) mysql_free_result(sql_res);
+		if( sql_res ) sqldbs_free_result(sql_res);
 		return NULL;
 	}
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
 
-	sprintf(
-		tmp_sql,"SELECT `id`,`lv` FROM `%s` WHERE `merc_id`='%d'",
-		merc_skill_db, merc_id
-	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `%s`)- %s\n", merc_skill_db, mysql_error(&mysql_handle) );
+	rc = sqldbs_query(&mysql_handle, "SELECT `id`,`lv` FROM `" MERC_SKILL_TABLE "` WHERE `merc_id`='%d'", merc_id);
+
+	if(rc) {
 		p->merc_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle);
-	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
+	sql_res = sqldbs_store_result(&mysql_handle);
+	if (sql_res!=NULL && sqldbs_num_rows(sql_res)>0) {
 		int i;
-		for(i=0;((sql_row = mysql_fetch_row(sql_res))&&i<MAX_MERCSKILL);i++){
+		for(i=0;((sql_row = sqldbs_fetch(sql_res))&&i<MAX_MERCSKILL);i++){
 			int id = atoi(sql_row[0]);
 			if( id < MERC_SKILLID || id >= MERC_SKILLID + MAX_MERCSKILL ) {
 				// DB操作して変なスキルを覚えさせられる可能性があるのでチェック
@@ -501,7 +491,7 @@ const struct mmo_mercstatus* merc_sql_load(int merc_id)
 			}
 		}
 	}
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
 
 	p->option = 0;
 
@@ -536,8 +526,10 @@ int merc_sql_save(struct mmo_mercstatus* p2)
 	// printf("Request save merc  (%6d)[",p2->merc_id);
 	sep = ' ';
 	// basic information
-	p =  tmp_sql;
-	p += sprintf(p,"UPDATE `%s` SET",merc_db_);
+	p = tmp_sql;
+	strcpy(p, "UPDATE `" MERC_TABLE "` SET");
+	p += strlen(p);
+
 	UPDATE_NUM(class_      ,"class");
 	UPDATE_STR(name        ,"name");
 	UPDATE_NUM(account_id  ,"account_id");
@@ -558,30 +550,21 @@ int merc_sql_save(struct mmo_mercstatus* p2)
 
 	if(sep == ',') {
 		sprintf(p," WHERE `merc_id` = '%d'",p2->merc_id);
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (update `%s`)- %s\n", merc_db_, mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, tmp_sql);
 		// printf("basic ");
 	}
 
 	if(memcmp(p1->skill, p2->skill, sizeof(p1->skill)) ) {
-		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `merc_id`='%d'",merc_skill_db,p2->merc_id);
-		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (delete `%s`)- %s\n", merc_skill_db, mysql_error(&mysql_handle) );
-		}
-		p  = tmp_sql;
-		p += sprintf(tmp_sql, "INSERT INTO `%s` (`merc_id`,`id`,`lv`) VALUES", merc_skill_db);
-		sep = ' ';
+		sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_SKILL_TABLE "` WHERE `merc_id`='%d'", p2->merc_id);
+
 		for(i=0;i<MAX_MERCSKILL;i++) {
 			if(p2->skill[i].id && p2->skill[i].flag!=1){
 				int lv = (p2->skill[i].flag==0)? p2->skill[i].lv: p2->skill[i].flag-2;
-				p += sprintf(p,"%c('%d','%d','%d')", sep,p2->merc_id,p2->skill[i].id,lv);
-				sep = ',';
-			}
-		}
-		if(sep == ',') {
-			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `%s`)- %s\n", merc_skill_db, mysql_error(&mysql_handle) );
+				sqldbs_query(
+					&mysql_handle,
+					"INSERT INTO `" MERC_SKILL_TABLE "` (`merc_id`,`id`,`lv`) VALUES ('%d','%d','%d')",
+					p2->merc_id, p2->skill[i].id, lv
+				);
 			}
 		}
 		// printf("skill ");
@@ -598,45 +581,38 @@ int merc_sql_save(struct mmo_mercstatus* p2)
 int merc_sql_new(struct mmo_mercstatus *p)
 {
 	// 傭兵IDを読み出す
-	int i;
-	char t_name[64], sep, *buf;
+	int i, rc;
+	char t_name[64];
 	struct mmo_mercstatus *p2;
 
 	// printf("Request make merc  (------)[");
-	sprintf(
-		tmp_sql,
-		"INSERT INTO `%s` (`class`,`name`,`account_id`,`char_id`,`base_level`,"
+	rc = sqldbs_query(
+		&mysql_handle,
+		"INSERT INTO `" MERC_TABLE "` (`class`,`name`,`account_id`,`char_id`,`base_level`,"
 		"`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,"
 		"`kill_count`,`limit`) "
 		"VALUES ('%d', '%s', '%d', '%d',"
 		"'%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d',"
 		"'%d', '%u')",
-		merc_db_, p->class_, strecpy(t_name, p->name), p->account_id, p->char_id,
+		p->class_, strecpy(t_name, p->name), p->account_id, p->char_id,
 		p->base_level, p->max_hp, p->hp, p->max_sp, p->sp, p->str, p->agi, p->vit, p->int_, p->dex, p->luk,
 		p->kill_count, p->limit
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)){
-		printf("failed (insert `%s`), SQL error: %s\n", merc_db_, mysql_error(&mysql_handle));
+	if(rc){
 		aFree(p);
 		return 1;
 	}
 
-	p->merc_id = (int)mysql_insert_id(&mysql_handle);
+	p->merc_id = (int)sqldbs_insert_id(&mysql_handle);
 
 	// skill
-	buf  = tmp_sql;
-	buf += sprintf(tmp_sql, "INSERT INTO `%s` (`merc_id`,`id`,`lv`) VALUES", merc_skill_db);
-	sep = ' ';
 	for(i=0;i<MAX_MERCSKILL;i++) {
 		if(p->skill[i].id && p->skill[i].flag!=1){
 			int lv = (p->skill[i].flag==0)? p->skill[i].lv: p->skill[i].flag-2;
-			buf += sprintf(buf,"%c('%d','%d','%d')", sep,p->merc_id,p->skill[i].id,lv);
-			sep = ',';
-		}
-	}
-	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (insert `%s`)- %s\n", merc_skill_db, mysql_error(&mysql_handle) );
+			sqldbs_query(&mysql_handle,
+				"INSERT INTO `" MERC_SKILL_TABLE "` (`merc_id`,`id`,`lv`) VALUES ('%d','%d','%d')",
+				p->merc_id, p->skill[i].id, lv
+			);
 		}
 	}
 

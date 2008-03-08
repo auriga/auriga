@@ -30,7 +30,7 @@
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
-#include "utils.h"
+#include "sqldbs.h"
 
 #include "char.h"
 #include "inter.h"
@@ -677,9 +677,6 @@ void storage_txt_config_read_sub(const char* w1,const char* w2)
 
 #else /* TXT_ONLY */
 
-char storage_db_[256]       = "storage";
-char guild_storage_db_[256] = "guild_storage";
-
 int storage_sql_init(void)
 {
 	storage_db  = numdb_init();
@@ -695,7 +692,7 @@ const struct storage* storage_sql_load(int account_id)
 		s = (struct storage *)aCalloc(1,sizeof(struct storage));
 		s->account_id = account_id;
 		numdb_insert(storage_db,s->account_id,s);
-		s->storage_amount = char_sql_loaditem(s->store_item,MAX_STORAGE,account_id,TABLE_STORAGE);
+		s->storage_amount = char_sql_loaditem(s->store_item,MAX_STORAGE,account_id,TABLE_NUM_STORAGE);
 	}
 	return s;
 }
@@ -706,7 +703,7 @@ int storage_sql_save(struct storage *s2)
 
 	if(memcmp(s1,s2,sizeof(struct storage))) {
 		struct storage *s3 = (struct storage *)numdb_search(storage_db, s2->account_id);
-		char_sql_saveitem(s2->store_item,MAX_STORAGE,s2->account_id,TABLE_STORAGE);
+		char_sql_saveitem(s2->store_item,MAX_STORAGE,s2->account_id,TABLE_NUM_STORAGE);
 		if(s3)
 			memcpy(s3, s2, sizeof(struct storage));
 	}
@@ -734,10 +731,7 @@ int storage_sql_delete(int account_id)
 	}
 
 	// delete
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `account_id`='%d'",storage_db_,account_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n",storage_db_,mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" STORAGE_TABLE "` WHERE `account_id`='%d'", account_id);
 
 	s2 = (struct storage *)numdb_search(storage_db, account_id);
 	if(s2) {
@@ -771,7 +765,7 @@ const struct guild_storage *gstorage_sql_load(int guild_id)
 		s->guild_id = guild_id;
 		s->last_fd  = -1;
 		numdb_insert(gstorage_db,s->guild_id,s);
-		s->storage_amount = char_sql_loaditem(s->store_item,MAX_GUILD_STORAGE,guild_id,TABLE_GUILD_STORAGE);
+		s->storage_amount = char_sql_loaditem(s->store_item,MAX_GUILD_STORAGE,guild_id,TABLE_NUM_GUILD_STORAGE);
 	}
 	return s;
 }
@@ -783,7 +777,7 @@ int gstorage_sql_save(struct guild_storage *gs2, int easy)
 	if(memcmp(gs1,gs2,sizeof(struct guild_storage))) {
 		struct guild_storage *gs3 = (struct guild_storage*)numdb_search( gstorage_db, gs2->guild_id );
 		if(!easy) {
-			char_sql_saveitem(gs2->store_item,MAX_GUILD_STORAGE,gs2->guild_id,TABLE_GUILD_STORAGE);
+			char_sql_saveitem(gs2->store_item,MAX_GUILD_STORAGE,gs2->guild_id,TABLE_NUM_GUILD_STORAGE);
 		}
 		if(gs3)
 			memcpy(gs3, gs2, sizeof(struct guild_storage));
@@ -812,10 +806,7 @@ int gstorage_sql_delete(int guild_id)
 	}
 
 	// delete
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `guild_id`='%d'",guild_storage_db_,guild_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n",guild_storage_db_,mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" GUILD_STORAGE_TABLE "` WHERE `guild_id`='%d'", guild_id);
 
 	s2 = (struct guild_storage*)numdb_search( gstorage_db, guild_id );
 	if(s2) {

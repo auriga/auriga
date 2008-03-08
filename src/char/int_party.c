@@ -31,7 +31,7 @@
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
-#include "utils.h"
+#include "sqldbs.h"
 
 #include "char.h"
 #include "inter.h"
@@ -379,8 +379,6 @@ void party_txt_final(void)
 
 #else /* TXT_ONLY */
 
-static char party_db_[256] = "party";
-
 int party_sql_init(void)
 {
 	party_db = numdb_init();
@@ -400,22 +398,17 @@ const struct party* party_sql_load_str(char *str)
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
-	sprintf(
-		tmp_sql,"SELECT `party_id`,`name` FROM `%s` WHERE `name` = '%s'",
-		party_db_,strecpy(buf,str)
-	);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", party_db_, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sqldbs_query(&mysql_handle, "SELECT `party_id`,`name` FROM `" PARTY_TABLE "` WHERE `name` = '%s'", strecpy(buf,str));
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+		while( (sql_row = sqldbs_fetch(sql_res)) ) {
 			if(strcmp(str, sql_row[1]) == 0) {
 				id_num = atoi(sql_row[0]);
 				break;
 			}
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 	if(id_num >= 0) {
 		return party_sql_load_num(id_num);
@@ -425,7 +418,7 @@ const struct party* party_sql_load_str(char *str)
 
 const struct party* party_sql_load_num(int party_id)
 {
-	int leader_id=0;
+	int leader_id=0, rc;
 	struct party *p = (struct party *)numdb_search(party_db,party_id);
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
@@ -439,20 +432,15 @@ const struct party* party_sql_load_num(int party_id)
 	}
 	memset(p, 0, sizeof(struct party));
 
-	sprintf(
-		tmp_sql,
-		"SELECT `name`,`exp`,`item`,`leader_id` FROM `%s` WHERE `party_id`='%d'",
-		party_db_, party_id
-	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
+	rc = sqldbs_query(&mysql_handle, "SELECT `name`,`exp`,`item`,`leader_id` FROM `" PARTY_TABLE "` WHERE `party_id`='%d'", party_id);
+	if(rc) {
 		p->party_id = -1;
 		return NULL;
 	}
 
-	sql_res = mysql_store_result(&mysql_handle);
-	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
-		sql_row     = mysql_fetch_row(sql_res);
+	sql_res = sqldbs_store_result(&mysql_handle);
+	if (sql_res!=NULL && sqldbs_num_rows(sql_res)>0) {
+		sql_row     = sqldbs_fetch(sql_res);
 		p->party_id = party_id;
 		strncpy(p->name, sql_row[0], 24);
 		p->name[23] = '\0';	// force \0 terminal
@@ -460,27 +448,22 @@ const struct party* party_sql_load_num(int party_id)
 		p->item     = atoi(sql_row[2]);
 		leader_id   = atoi(sql_row[3]);
 	} else {
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 		p->party_id = -1;
 		return NULL;
 	}
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
 
 	// Load members
-	sprintf(
-		tmp_sql,
-		"SELECT `account_id`,`name` FROM `%s` WHERE `party_id`='%d'",
-		char_db, party_id
-	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
+	rc = sqldbs_query(&mysql_handle, "SELECT `account_id`,`name` FROM `" CHAR_TABLE "` WHERE `party_id`='%d'", party_id);
+	if(rc) {
 		p->party_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
 		int i;
-		for(i=0;(sql_row = mysql_fetch_row(sql_res));i++){
+		for(i=0;(sql_row = sqldbs_fetch(sql_res));i++){
 			struct party_member *m = &p->member[i];
 			m->account_id = atoi(sql_row[0]);
 			m->leader     = (m->account_id == leader_id) ? 1 : 0;
@@ -488,7 +471,7 @@ const struct party* party_sql_load_num(int party_id)
 			m->name[23] = '\0';	// force \0 terminal
 		}
 	}
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
 
 	return p;
 }
@@ -502,14 +485,11 @@ int party_sql_save(struct party* p2)
 
 	if(strcmp(p1->name,p2->name) || p1->exp != p2->exp || p1->item != p2->item) {
 		// 'party' ('party_id','name','exp','item','leader')
-		sprintf(
-			tmp_sql,
-			"UPDATE `%s` SET `name`='%s', `exp`='%d', `item`='%d' WHERE `party_id`='%d'",
-			party_db_,strecpy(t_name,p2->name),p2->exp,p2->item,p2->party_id
+		sqldbs_query(
+			&mysql_handle,
+			"UPDATE `" PARTY_TABLE "` SET `name`='%s', `exp`='%d', `item`='%d' WHERE `party_id`='%d'",
+			strecpy(t_name,p2->name),p2->exp,p2->item,p2->party_id
 		);
-		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (update `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
-		}
 	}
 
 	{
@@ -529,10 +509,8 @@ int party_sql_delete(int party_id)
 		aFree(p);
 	}
 
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `party_id`='%d'",party_db_, party_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" PARTY_TABLE "` WHERE `party_id`='%d'", party_id);
+
 	return 0;
 }
 
@@ -544,7 +522,7 @@ int party_sql_config_read_sub(const char *w1,const char *w2)
 
 int party_sql_new(struct party *p)
 {
-	int i = 0;
+	int i = 0, rc;
 	int leader_id = -1;
 	char t_name[64];
 	MYSQL_RES* sql_res;
@@ -558,41 +536,30 @@ int party_sql_new(struct party *p)
 	}
 	if ( leader_id == -1 ) { return 0; }
 	// パーティIDを読み出す
-	sprintf(
-		tmp_sql,
-		"SELECT MAX(`party_id`) FROM `%s`",
-		party_db_
-	);
-	if(mysql_query(&mysql_handle, tmp_sql)){
-		printf("failed (get party_id), SQL error: %s\n", mysql_error(&mysql_handle));
+	rc = sqldbs_query(&mysql_handle, "SELECT MAX(`party_id`) FROM `" PARTY_TABLE "`");
+	if(rc)
 		return 0;
+
+	// query ok -> get the data!
+	sql_res = sqldbs_store_result(&mysql_handle);
+	if(!sql_res)
+		return 0;
+
+	sql_row = sqldbs_fetch(sql_res);
+	if(sql_row[0]) {
+		p->party_id = atoi(sql_row[0]) + 1;
 	} else {
-		// query ok -> get the data!
-		sql_res = mysql_store_result(&mysql_handle);
-		if(!sql_res){
-			printf("failed (get party_id), SQL error: %s\n", mysql_error(&mysql_handle));
-			return 0;
-		}
-		sql_row = mysql_fetch_row(sql_res);
-		if(sql_row[0]) {
-			p->party_id = atoi(sql_row[0]) + 1;
-		} else {
-			p->party_id = 100;
-		}
-		mysql_free_result(sql_res);
+		p->party_id = 100;
 	}
+	sqldbs_free_result(sql_res);
 
 	// DBに挿入
-	sprintf(
-		tmp_sql,
-		"INSERT INTO `%s` (`party_id`, `name`, `exp`, `item`, `leader_id`) "
+	sqldbs_query(
+		&mysql_handle,
+		"INSERT INTO `" PARTY_TABLE "` (`party_id`, `name`, `exp`, `item`, `leader_id`) "
 		"VALUES ('%d','%s', '%d', '%d', '%d')",
-		party_db_,p->party_id,strecpy(t_name,p->name), p->exp, p->item,leader_id
+		p->party_id, strecpy(t_name,p->name), p->exp, p->item,leader_id
 	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (inset `%s`)- %s\n", party_db_, mysql_error(&mysql_handle) );
-		return 0;
-	}
 
 	numdb_insert(party_db,p->party_id,p);
 	return 1;

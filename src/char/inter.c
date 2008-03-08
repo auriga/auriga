@@ -30,6 +30,7 @@
 #include "malloc.h"
 #include "journal.h"
 #include "utils.h"
+#include "sqldbs.h"
 
 #include "char.h"
 #include "inter.h"
@@ -367,8 +368,6 @@ void accreg_txt_final(void)
 
 #else /* TXT_ONLY */
 
-static char interlog_db[256] = "interlog";
-
 int accreg_sql_init(void)
 {
 	accreg_db = numdb_init();
@@ -392,21 +391,15 @@ void accreg_sql_save(struct accreg *reg)
 	char temp_str[128];
 
 	// `global_reg_value` (`type`, `account_id`, `char_id`, `str`, `value`)
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`=2 AND `account_id`='%d'",reg_db, reg->account_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`=2 AND `account_id`='%d'", reg->account_id);
 
 	for(j=0; j<reg->reg_num; j++) {
 		if(reg->reg[j].str[0] && reg->reg[j].value != 0) {
-			sprintf(
-				tmp_sql,
-				"INSERT INTO `%s` (`type`, `account_id`, `str`, `value`) VALUES (2,'%d','%s','%d')",
-				reg_db, reg->account_id, strecpy(temp_str,reg->reg[j].str), reg->reg[j].value
+			sqldbs_query(
+				&mysql_handle,
+				"INSERT INTO `" REG_TABLE "` (`type`, `account_id`, `str`, `value`) VALUES (2,'%d','%s','%d')",
+				reg->account_id, strecpy(temp_str,reg->reg[j].str), reg->reg[j].value
 			);
-			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `%s`)- %s\n", reg_db, mysql_error(&mysql_handle) );
-			}
 		}
 	}
 }
@@ -426,19 +419,17 @@ const struct accreg* accreg_sql_load(int account_id)
 	reg->account_id = account_id;
 
 	// `global_reg_value` (`type`, `account_id`, `char_id`, `str`, `value`)
-	sprintf(tmp_sql, "SELECT `str`, `value` FROM `%s` WHERE `type`=2 AND `account_id`='%d'",reg_db, reg->account_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `%s`)- %s\n", reg_db, mysql_error(&mysql_handle) );
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sqldbs_query(&mysql_handle, "SELECT `str`, `value` FROM `" REG_TABLE "` WHERE `type`=2 AND `account_id`='%d'", reg->account_id);
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 
 	if (sql_res) {
-		for(j=0; (sql_row = mysql_fetch_row(sql_res)); j++) {
+		for(j=0; (sql_row = sqldbs_fetch(sql_res)); j++) {
 			strncpy(reg->reg[j].str, sql_row[0],32);
 			reg->reg[j].str[31] = '\0';	// force \0 terminal
 			reg->reg[j].value   = atoi(sql_row[1]);
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 	reg->reg_num = j;
 	return reg;
@@ -539,10 +530,7 @@ int inter_log(const char *fmt, ...)
 	vsnprintf(msg, sizeof(msg), fmt, ap);
 	va_end(ap);
 
-	sprintf(tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')", interlog_db, strecpy(buf,msg));
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `%s`)- %s\n", interlog_db, mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "INSERT INTO `" INTERLOG_TABLE "` (`time`,`log`) VALUES (NOW(),'%s')", strecpy(buf,msg));
 #endif
 	return 0;
 }

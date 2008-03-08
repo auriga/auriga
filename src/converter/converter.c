@@ -23,12 +23,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../common/core.h"
-#include "../common/db.h"
-#include "../common/mmo.h"
-#include "../common/malloc.h"
-#include "../common/timer.h"
-#include "../common/utils.h"
+#include "core.h"
+#include "db.h"
+#include "mmo.h"
+#include "malloc.h"
+#include "timer.h"
+#include "sqldbs.h"
 
 #include "converter.h"
 #include "login-converter.h"
@@ -208,7 +208,7 @@ static int config_read(const char *cfgName)
 
 int do_init(int argc,char **argv)
 {
-	int i;
+	int i, rc;
 
 	for(i = 1; i < argc - 1; i += 2) {
 		if(strcmp(argv[i], "--converter_config") == 0 || strcmp(argv[i], "--converter-config") == 0) {
@@ -225,20 +225,11 @@ int do_init(int argc,char **argv)
 	config_read(converter_conf_filename);
 
 	// DB connection initialized
-	mysql_init(&mysql_handle);
-	printf("Connect DB server");
-	if(db_server_charset[0]) {
-		mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, db_server_charset);
-		printf(" (charset: %s)",db_server_charset);
-	}
-	printf("...\n");
-	if(!mysql_real_connect(&mysql_handle, db_server_ip, db_server_id, db_server_pw,
-		db_server_logindb, db_server_port, (char *)NULL, 0)) {
-		// pointer check
-		printf("%s\n",mysql_error(&mysql_handle));
+	rc = sqldbs_connect(&mysql_handle,
+		db_server_ip, db_server_id, db_server_pw, db_server_logindb, db_server_port, db_server_charset
+	);
+	if(rc)
 		exit(1);
-	}
-	printf("connect success!\n");
 
 	printf("Warning : Make sure you backup your databases before continuing!\n");
 	printf("Convert start...\n");
@@ -265,8 +256,7 @@ void do_pre_final(void)
 
 void do_final(void)
 {
-	mysql_close(&mysql_handle);
-	printf("close DB connect....\n");
+	sqldbs_close(&mysql_handle);
 
 	exit_dbn();
 	do_final_timer();

@@ -30,7 +30,7 @@
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
-#include "utils.h"
+#include "sqldbs.h"
 
 #include "char.h"
 #include "inter.h"
@@ -427,44 +427,33 @@ void mail_txt_config_read_sub(const char *w1, const char *w2)
 
 #else /* TXT_ONLY */
 
-static char mail_db_[256]  = "mail";
-static char mail_data[256] = "mail_data";
-
 int mail_sql_store_mail(int char_id,struct mail_data *md)
 {
 	unsigned int i;
-	char buf[3][256];
-	char *p;
+	char buf[3][256], body_data[1024];
+	char *p = body_data;
 
 	if(!md)
 		return 0;
 
-	p  = tmp_sql;
-	p += sprintf(
-		p,
-		"INSERT INTO `%s` (`char_id`, `number`, `read`, `send_name`, `receive_name`, `title`, "
-		"`times`, `size`, `body`, `zeny`, "
-		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`, `limit`) "
-		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','",
-		mail_data, char_id, md->mail_num, md->read, strecpy(buf[0],md->char_name), strecpy(buf[1],md->receive_name), strecpy(buf[2],md->title),
-		md->times, md->body_size
-	);
-
 	// SELECT HEX()
-	for(i=0; i<md->body_size; i++) {
+	for(i = 0; i< md->body_size; i++) {
 		p += sprintf(p, "%02X", (unsigned char)(md->body[i]));
 	}
 
-	p += sprintf(
-		p,
-		"','%d','%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
+	sqldbs_query(
+		&mysql_handle,
+		"INSERT INTO `" MAIL_DATA_TABLE "` (`char_id`, `number`, `read`, `send_name`, `receive_name`, `title`, "
+		"`times`, `size`, `body`, `zeny`, "
+		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
+		"`card0`, `card1`, `card2`, `card3`, `limit`) "
+		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','%s',"
+		"'%d','%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
+		char_id, md->mail_num, md->read, strecpy(buf[0],md->char_name), strecpy(buf[1],md->receive_name), strecpy(buf[2],md->title),
+		md->times, md->body_size, body_data,
 		md->zeny, md->item.id, md->item.nameid, md->item.amount, md->item.equip, md->item.identify, md->item.refine, md->item.attribute,
 		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3], md->item.limit
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (insert `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
-	}
 
 	return 0;
 }
@@ -475,20 +464,17 @@ int mail_sql_save_mail(int char_id,int i,int store,struct mail_data md[MAIL_STOR
 		return 0;
 
 	// readもしくはzeny,itemデータを更新するだけでよい
-	sprintf(
-		tmp_sql,
-		"UPDATE `%s` SET `read` = '%d', `zeny` = '%d', "
+	sqldbs_query(
+		&mysql_handle,
+		"UPDATE `" MAIL_DATA_TABLE "` SET `read` = '%d', `zeny` = '%d', "
 		"`id` = '%u', `nameid` = '%d', `amount` = '%d', `equip` = '%d', `identify` = '%d', `refine` = '%d', `attribute` = '%d', "
 		"`card0` = '%d', `card1` = '%d', `card2` = '%d', `card3` = '%d', `limit` = '%u' "
 		"WHERE `char_id` = '%d' AND `number` = '%u'",
-		mail_data, md[i].read, md[i].zeny,
+		md[i].read, md[i].zeny,
 		md[i].item.id, md[i].item.nameid, md[i].item.amount, md[i].item.equip, md[i].item.identify, md[i].item.refine, md[i].item.attribute,
 		md[i].item.card[0], md[i].item.card[1], md[i].item.card[2], md[i].item.card[3], md[i].item.limit,
 		char_id, md[i].mail_num
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (update `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
-	}
 
 	return 0;
 }
@@ -502,19 +488,17 @@ int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 	if(m == NULL)
 		return 1;
 
-	sprintf(tmp_sql, "SELECT "
+	sqldbs_query(&mysql_handle, "SELECT "
 		"`number`, `read`, `send_name`, `receive_name`, `title`, `times`, `size`, `body`, `zeny`,"
 		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`"
 		"`card0`, `card1`, `card2`, `card3`, `limit`"
-		" FROM `%s` WHERE `char_id` = '%d' ORDER BY `number`", mail_data, char_id);
+		" FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' ORDER BY `number`", char_id
+	);
 
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - (select `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sql_res = sqldbs_store_result(&mysql_handle);
 
-	if(sql_res && mysql_num_rows(sql_res) > 0) {
-		while((sql_row = mysql_fetch_row(sql_res)) && i < MAIL_STORE_MAX) {
+	if(sql_res && sqldbs_num_rows(sql_res) > 0) {
+		while((sql_row = sqldbs_fetch(sql_res)) && i < MAIL_STORE_MAX) {
 			unsigned int n;
 			char *p;
 
@@ -561,7 +545,7 @@ int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 		}
 	}
 	if(sql_res)
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 
 	if(i != m->store) {	// 数に相違あり？
 		struct mail m2;
@@ -600,12 +584,9 @@ int mail_sql_deletemail(int char_id,unsigned int mail_num,const struct mail *m)
 	if(i >= m->store)
 		return 1;
 
-	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id` = '%d' AND `number` = '%u'", mail_data, char_id, mail_num);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' AND `number` = '%u'", char_id, mail_num);
 
-	if(mysql_affected_rows(&mysql_handle) <= 0) {
+	if(sqldbs_affected_rows(&mysql_handle) <= 0) {
 		// 削除失敗
 		return 1;
 	}
@@ -651,20 +632,15 @@ int mail_sql_delete(int char_id)
 		}
 	}
 
-	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id` = '%d'", mail_db_, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", mail_db_, mysql_error(&mysql_handle));
-	}
-	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id` = '%d'", mail_data, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", mail_data, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_TABLE "` WHERE `char_id` = '%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d'", char_id);
 
 	return 0;
 }
 
 const struct mail* mail_sql_load(int char_id)
 {
+	int rc;
 	struct mail *m = (struct mail *)numdb_search(mail_db,char_id);
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
@@ -682,25 +658,20 @@ const struct mail* mail_sql_load(int char_id)
 	m->char_id = char_id;
 
 	// `mail` (`char_id`, `account_id`, `rates`, `store`)
-	sprintf(
-		tmp_sql,
-		"SELECT `account_id`, `rates`, `store`"
-		"FROM `%s` WHERE `char_id` = '%d'",
-		mail_db_, char_id
-	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `%s`)- %s\n", mail_db_, mysql_error(&mysql_handle) );
+	rc = sqldbs_query(&mysql_handle, "SELECT `account_id`, `rates`, `store` FROM `" MAIL_TABLE "` WHERE `char_id` = '%d'", char_id);
+
+	if(rc) {
 		m->char_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sql_res = sqldbs_store_result(&mysql_handle);
 
-	if(sql_res && mysql_num_rows(sql_res) > 0) {
-		sql_row = mysql_fetch_row(sql_res);
+	if(sql_res && sqldbs_num_rows(sql_res) > 0) {
+		sql_row = sqldbs_fetch(sql_res);
 		if(sql_row == NULL) {
 			printf("mail - failed\n");
 			m->char_id = -1;
-			mysql_free_result(sql_res);
+			sqldbs_free_result(sql_res);
 			return NULL;
 		}
 		m->account_id = atoi(sql_row[0]);
@@ -712,11 +683,11 @@ const struct mail* mail_sql_load(int char_id)
 			memset(md, 0, sizeof(md));
 			mail_sql_read_mail(m->char_id, m, md);
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	} else {
 		// 見つからなくても正常
 		if(sql_res)
-			mysql_free_result(sql_res);
+			sqldbs_free_result(sql_res);
 		return NULL;
 	}
 
@@ -730,19 +701,14 @@ int mail_sql_save(struct mail* m2)
 	if(m1 == NULL || m1->char_id != m2->char_id)
 		return 0;
 
-	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d'", mail_db_, m2->char_id);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", mail_db_, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_TABLE "` WHERE `char_id`='%d'", m2->char_id);
 
 	// `mail` (`char_id`, `account_id`, `rates`, `store`)
-	sprintf(
-		tmp_sql, "INSERT INTO `%s` (`char_id`, `account_id`, `rates`, `store`) VALUES ('%d','%d','%u','%d')",
-		mail_db_, m2->char_id, m2->account_id, m2->rates, m2->store
+	sqldbs_query(
+		&mysql_handle,
+		"INSERT INTO `" MAIL_TABLE "` (`char_id`, `account_id`, `rates`, `store`) VALUES ('%d','%d','%u','%d')",
+		m2->char_id, m2->account_id, m2->rates, m2->store
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (insert `%s`)- %s\n", mail_db_, mysql_error(&mysql_handle));
-	}
 
 	{
 		struct mail *m3 = (struct mail *)numdb_search(mail_db,m2->char_id);
@@ -768,13 +734,11 @@ int mail_sql_new(int account_id,int char_id)
 	m->rates = 1;
 	m->store = 1;
 
-	sprintf(
-		tmp_sql, "INSERT INTO `%s` (`char_id`, `account_id`, `rates`, `store`) VALUES ('%d','%d','%u','%d')",
-		mail_db_, m->char_id, m->account_id, m->rates, m->store
+	sqldbs_query(
+		&mysql_handle,
+		"INSERT INTO `" MAIL_TABLE "` (`char_id`, `account_id`, `rates`, `store`) VALUES ('%d','%d','%u','%d')",
+		m->char_id, m->account_id, m->rates, m->store
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (insert `%s`)- %s\n", mail_db_, mysql_error(&mysql_handle));
-	}
 
 	return 0;
 }

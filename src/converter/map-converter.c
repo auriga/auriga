@@ -22,8 +22,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../common/malloc.h"
-#include "../common/utils.h"
+#include "malloc.h"
+#include "sqldbs.h"
 
 #include "converter.h"
 #include "map-converter.h"

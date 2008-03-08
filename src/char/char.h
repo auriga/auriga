@@ -94,16 +94,13 @@ const struct mmo_chardata* char_sql_nick2chardata(const char *char_name);
 
 // for sql
 enum {
-	TABLE_INVENTORY,
-	TABLE_CART,
-	TABLE_STORAGE,
-	TABLE_GUILD_STORAGE,
+	TABLE_NUM_INVENTORY,
+	TABLE_NUM_CART,
+	TABLE_NUM_STORAGE,
+	TABLE_NUM_GUILD_STORAGE,
 };
 int char_sql_saveitem(struct item *item, int max, int id, int tableswitch);
 int char_sql_loaditem(struct item *item, int max, int id, int tableswitch);
-
-extern char char_db[256];
-extern char reg_db[256];
 
 #endif /* TXT_ONLY */
 

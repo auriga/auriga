@@ -31,7 +31,7 @@
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
-#include "utils.h"
+#include "sqldbs.h"
 
 #include "char.h"
 #include "inter.h"
@@ -345,8 +345,6 @@ void status_txt_config_read_sub(const char *w1, const char *w2)
 
 #else /* TXT_ONLY */
 
-static char scdata_db_[256] = "status_change";
-
 int status_sql_init(void)
 {
 	scdata_db = numdb_init();
@@ -367,17 +365,15 @@ int status_sql_delete(int char_id)
 		numdb_erase(scdata_db,char_id);
 		aFree(sc);
 	}
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",scdata_db_, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", scdata_db_, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'", char_id);
+
 	return 0;
 }
 
 /* 負荷軽減を優先してconstを付けない */
 struct scdata *status_sql_load(int char_id)
 {
-	int i=0;
+	int i=0, rc;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 	struct scdata *sc = (struct scdata *)numdb_search(scdata_db,char_id);
@@ -395,21 +391,20 @@ struct scdata *status_sql_load(int char_id)
 	sc->char_id = char_id;
 
 	// `status_change` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`)
-	sprintf(
-		tmp_sql,
+	rc = sqldbs_query(
+		&mysql_handle,
 		"SELECT `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick` "
-		"FROM `%s` WHERE `char_id`='%d'",
-		scdata_db_, char_id
+		"FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'",
+		char_id
 	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `%s`)- %s\n", scdata_db_, mysql_error(&mysql_handle) );
+	if(rc) {
 		sc->char_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sql_res = sqldbs_store_result(&mysql_handle);
 
-	if(sql_res && mysql_num_rows(sql_res) > 0) {
-		for(i=0; (sql_row = mysql_fetch_row(sql_res)) && i<MAX_STATUSCHANGE; i++) {
+	if(sql_res && sqldbs_num_rows(sql_res) > 0) {
+		for(i=0; (sql_row = sqldbs_fetch(sql_res)) && i<MAX_STATUSCHANGE; i++) {
 			if(sc->account_id == 0) {
 				sc->account_id = atoi(sql_row[0]);
 			}
@@ -422,11 +417,11 @@ struct scdata *status_sql_load(int char_id)
 		}
 		sc->count = (i < MAX_STATUSCHANGE)? i: MAX_STATUSCHANGE;
 
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	} else {
 		// 見つからなくても正常
 		if(sql_res)
-			mysql_free_result(sql_res);
+			sqldbs_free_result(sql_res);
 		return NULL;
 	}
 
@@ -443,23 +438,17 @@ int status_sql_save(struct scdata *sc2)
 			return 0;
 	} else {
 		// データサーバ側にデータがあるときだけ削除クエリを発行
-		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",scdata_db_, sc2->char_id);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `%s`)- %s\n", scdata_db_, mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, "DELETE FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'", sc2->char_id);
 	}
 
 	for(i=0; i<sc2->count; i++) {
-		sprintf(
-			tmp_sql,
-			"INSERT INTO `%s` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`) "
+		sqldbs_query(
+			&mysql_handle,
+			"INSERT INTO `" SCDATA_TABLE "` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`) "
 			"VALUES ('%d','%d','%d','%d','%d','%d','%d','%d')",
-			scdata_db_, sc2->char_id, sc2->account_id, sc2->data[i].type,
+			sc2->char_id, sc2->account_id, sc2->data[i].type,
 			sc2->data[i].val1, sc2->data[i].val2, sc2->data[i].val3, sc2->data[i].val4, sc2->data[i].tick
 		);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (insert `%s`)- %s\n", scdata_db_, mysql_error(&mysql_handle));
-		}
 	}
 
 	if(sc1) {

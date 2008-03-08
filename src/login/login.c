@@ -54,6 +54,7 @@
 #include "graph.h"
 #include "journal.h"
 #include "utils.h"
+#include "sqldbs.h"
 
 #include "login.h"
 
@@ -533,47 +534,20 @@ char login_server_id[32]      = "ragnarok";
 char login_server_pw[32]      = "ragnarok";
 char login_server_db[32]      = "ragnarok";
 char login_server_charset[32] = "";
-char login_db[256]    = "login";
-char loginlog_db[256] = "loginlog";
-char reg_db[256]      = "global_reg_value";
-
-// added to help out custom login tables, without having to recompile
-// source so options are kept in the login_auriga.conf or the inter_auriga.conf
-char login_db_account_id[256] = "account_id";
-char login_db_userid[256]     = "userid";
-char login_db_user_pass[256]  = "user_pass";
-char login_db_level[256]      = "level";
 
 static struct dbt *account_db;
 
 int login_sql_init(void)
 {
 	// DB connection start
-	mysql_init(&mysql_handle);
-	printf("Connecting Database Server");
-	if(login_server_charset[0]) {
-		mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, login_server_charset);
-		printf(" (charset: %s)",login_server_charset);
-	}
-	printf("...\n");
-
-	if (!mysql_real_connect(&mysql_handle, login_server_ip, login_server_id, login_server_pw,
-	    login_server_db, login_server_port, (char *)NULL, 0)) {
-		// pointer check
-		printf("%s\n", mysql_error(&mysql_handle));
-		exit(1);
-	}
-	printf("connect success!\n");
-
-	sprintf(
-		tmp_sql, "INSERT DELAYED INTO `%s`(`time`,`log`) "
-		"VALUES (NOW(), 'lserver 100 login server started')", loginlog_db
+	int rc = sqldbs_connect(&mysql_handle,
+		login_server_ip, login_server_id, login_server_pw, login_server_db, login_server_port, login_server_charset
 	);
+	if(rc)
+		exit(1);
 
-	// query
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle,
+		"INSERT DELAYED INTO `" LOGINLOG_TABLE "` (`time`,`log`) VALUES (NOW(), 'lserver 100 login server started')");
 
 	account_db = numdb_init();
 
@@ -592,18 +566,10 @@ static int account_db_final(void *key,void *data,va_list ap)
 void login_sql_final(void)
 {
 	// set log.
-	sprintf(
-		tmp_sql,"INSERT DELAYED INTO `%s`(`time`,`log`) VALUES "
-		"(NOW(), 'lserver 100 login server shutdown')",loginlog_db
-	);
+	sqldbs_query(&mysql_handle,
+		"INSERT DELAYED INTO `" LOGINLOG_TABLE "` (`time`,`log`) VALUES (NOW(), 'lserver 100 login server shutdown')");
 
-	// query
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle));
-	}
-
-	mysql_close(&mysql_handle);
-	printf("close DB connect....\n");
+	sqldbs_close(&mysql_handle);
 
 	numdb_final(account_db,account_db_final);
 	if(gm_account_db)
@@ -652,14 +618,9 @@ int login_sql_account_delete(int account_id)
 	if(ac)
 		aFree(ac);
 
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `%s` = '%d'",login_db,login_db_account_id,account_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
-	}
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`='1' AND `account_id`='%d'", reg_db, account_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" LOGIN_TABLE "` WHERE `account_id` = '%d'", account_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`='1' AND `account_id`='%d'", account_id);
+
 	return 0;
 }
 
@@ -681,23 +642,21 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 	}
 
 	// basic information
-	sprintf(
-		tmp_sql,
-		"SELECT `%s`,`%s`,`lastlogin`,`logincount`,`sex`,`state`,`email` FROM `%s` WHERE `%s` = '%d'",
-		login_db_userid,login_db_user_pass,login_db,login_db_account_id,account_id
+	sqldbs_query(
+		&mysql_handle,
+		"SELECT `userid`,`user_pass`,`lastlogin`,`logincount`,`sex`,`state`,`email` FROM `" LOGIN_TABLE "` WHERE `account_id` = '%d'",
+		account_id
 	);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (!sql_res) {
 		printf("login_sql_account_load_num: DB result error ! \n");
 		return NULL;
 	}
-	sql_row = mysql_fetch_row(sql_res);
+	sql_row = sqldbs_fetch(sql_res);
 	if (!sql_row) {
 		// 未登録
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 		return NULL;
 	}
 
@@ -715,7 +674,7 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 	ac->sex        = sql_row[4][0];
 	ac->state      = atoi(sql_row[5]);
 	strncpy(ac->mail, sql_row[6], 40);
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
 	ac->sex = (ac->sex == 'S' ? 2 : ac->sex == 'M' ? 1 : 0);
 
 	// force \0 terminal
@@ -726,13 +685,11 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 
 	// global reg
 	ac->account_reg2_num = 0;
-	sprintf(tmp_sql, "SELECT `str`,`value` FROM `%s` WHERE `type`='1' AND `account_id`='%d'", reg_db, account_id);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sqldbs_query(&mysql_handle, "SELECT `str`,`value` FROM `" REG_TABLE "` WHERE `type`='1' AND `account_id`='%d'", account_id);
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+		while( (sql_row = sqldbs_fetch(sql_res)) ) {
 			strncpy(ac->account_reg2[ac->account_reg2_num].str,sql_row[0],32);
 			ac->account_reg2[ac->account_reg2_num].str[31] = '\0';	// force \0 terminal
 			ac->account_reg2[ac->account_reg2_num].value   = atoi(sql_row[1]);
@@ -740,7 +697,8 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 				break;
 		}
 	}
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
+
 	return ac;
 }
 
@@ -752,22 +710,18 @@ const struct mmo_account* login_sql_account_load_str(const char *account_id)
 	MYSQL_ROW  sql_row = NULL;
 
 	if( !account_id[0] ) return NULL;
-	sprintf(
-		tmp_sql,"SELECT `%s`,`%s` FROM `%s` WHERE `%s` = '%s'",
-		login_db_account_id,login_db_userid,login_db,login_db_userid,strecpy(buf,account_id)
-	);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+
+	sqldbs_query(&mysql_handle, "SELECT `account_id`,`userid` FROM `" LOGIN_TABLE "` WHERE `userid` = '%s'", strecpy(buf,account_id));
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+		while( (sql_row = sqldbs_fetch(sql_res)) ) {
 			if(strncmp(account_id, sql_row[1], 24) == 0) {
 				id_num = atoi(sql_row[0]);
 				break;
 			}
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 	if(id_num >= 0) {
 		return login_sql_account_load_num(id_num);
@@ -781,22 +735,19 @@ const struct mmo_account* login_sql_account_load_idx(int idx)
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
-	if(idx < 0) return NULL;
-	sprintf(
-		tmp_sql,"SELECT `%s` FROM `%s` ORDER BY `%s` ASC LIMIT %d,1",
-		login_db_account_id,login_db,login_db_account_id,idx
-	);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	if(idx < 0)
+		return NULL;
+
+	sqldbs_query(&mysql_handle, "SELECT `account_id` FROM `" LOGIN_TABLE "` ORDER BY `account_id` ASC LIMIT %d,1", idx);
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		sql_row = mysql_fetch_row(sql_res);
+		sql_row = sqldbs_fetch(sql_res);
 		if(sql_row) {
 			id_num  = atoi(sql_row[0]);
 		}
 	}
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
 	if(id_num >= 0) {
 		return login_sql_account_load_num(id_num);
 	}
@@ -815,18 +766,19 @@ int login_sql_account_save(struct mmo_account *ac2)
 	if(ac1 == NULL) return 0;
 
 	// basic information
-	p  = tmp_sql;
-	p += sprintf(p,"UPDATE `%s` SET",login_db);
+	p = tmp_sql;
+	strcpy(p, "UPDATE `" LOGIN_TABLE "` SET");
+	p += strlen(p);
 
 	// userid
 	if(strcmp(ac1->userid,ac2->userid)) {
-		p += sprintf(p,"%c`%s` = '%s'",sep,login_db_userid,strecpy(buf,ac2->userid));
+		p += sprintf(p,"%c`userid` = '%s'",sep,strecpy(buf,ac2->userid));
 		sep = ',';
 	}
 
 	// user_pass
 	if(strcmp(ac1->pass,ac2->pass)) {
-		p += sprintf(p,"%c`%s` = '%s'",sep,login_db_user_pass,strecpy(buf,ac2->pass));
+		p += sprintf(p,"%c`user_pass` = '%s'",sep,strecpy(buf,ac2->pass));
 		sep = ',';
 	}
 
@@ -867,10 +819,8 @@ int login_sql_account_save(struct mmo_account *ac2)
 	}
 
 	if(sep == ',') {
-		sprintf(p," WHERE `%s` = '%d'",login_db_account_id,ac2->account_id);
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (update `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
-		}
+		sprintf(p," WHERE `account_id` = '%d'",ac2->account_id);
+		sqldbs_query(&mysql_handle, tmp_sql);
 	}
 
 	// account reg
@@ -879,21 +829,15 @@ int login_sql_account_save(struct mmo_account *ac2)
 		memcmp(ac1->account_reg2,ac2->account_reg2,sizeof(ac1->account_reg2[0])*ac1->account_reg2_num)
 	) {
 		int i;
-		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`='1' AND `account_id`='%d'", reg_db, ac2->account_id);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
-		}
+
+		sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`='1' AND `account_id`='%d'", ac2->account_id);
 		for(i = 0;i < ac2->account_reg2_num ; i++) {
-			sprintf(
-				tmp_sql,
-				"INSERT INTO `%s` (`type`, `account_id`, `str`, `value`) "
+			sqldbs_query(
+				&mysql_handle,
+				"INSERT INTO `" REG_TABLE "` (`type`, `account_id`, `str`, `value`) "
 				"VALUES ( 1 , '%d' , '%s' , '%d')",
-				reg_db, ac2->account_id,
-				strecpy(buf,ac2->account_reg2[i].str),ac2->account_reg2[i].value
+				ac2->account_id,strecpy(buf,ac2->account_reg2[i].str),ac2->account_reg2[i].value
 			);
-			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (insert `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
-			}
 		}
 	}
 
@@ -927,17 +871,14 @@ int login_sql_account_new(struct mmo_account* account,const char *tmpstr)
 		// 同じアカウントが既に存在
 		return 0;
 	}
-	sprintf(
-		tmp_sql,
-		"INSERT INTO `%s` (`%s`,`%s`,`lastlogin`,`sex`,`logincount`,`%s`,`state`,`email`) "
+
+	sqldbs_query(
+		&mysql_handle,
+		"INSERT INTO `" LOGIN_TABLE "` (`userid`,`user_pass`,`lastlogin`,`sex`,`logincount`,`level`,`state`,`email`) "
 		"VALUES('%s','%s',NOW(),'%c','0','0','0','%s')",
-		login_db,login_db_userid,login_db_user_pass,login_db_level,
-		strecpy(buf1,account->userid),strecpy(buf2,account->pass),
-		sex2str[account->sex],strecpy(buf3,account->mail)
+		strecpy(buf1,account->userid),strecpy(buf2,account->pass),sex2str[account->sex],strecpy(buf3,account->mail)
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (insert `%s`)- %s\n", login_db, mysql_error(&mysql_handle));
-	}
+
 	return 1;
 }
 
@@ -1060,10 +1001,7 @@ static int login_log(const char *fmt, ...)
 	vsnprintf(msg, sizeof(msg), fmt, ap);
 	va_end(ap);
 
-	sprintf(tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')", loginlog_db, strecpy(buf,msg));
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `%s`)- %s\n", loginlog_db, mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "INSERT INTO `" LOGINLOG_TABLE "` (`time`,`log`) VALUES (NOW(),'%s')", strecpy(buf,msg));
 #endif
 	return 0;
 }

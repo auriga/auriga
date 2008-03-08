@@ -43,6 +43,7 @@
 #include "graph.h"
 #include "socket.h"
 #include "utils.h"
+#include "sqldbs.h"
 
 #include "map.h"
 #include "chrif.h"
@@ -171,38 +172,18 @@ static char script_server_charset[32] = "";
 static int do_sql_init_map(void)
 {
 	// DB connection initialized
-	mysql_init(&mysql_handle);
-	printf("Connect DB server");
-	if(map_server_charset[0]) {
-		mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, map_server_charset);
-		printf(" (charset: %s)",map_server_charset);
-	}
-	printf("...\n");
-
-	if(!mysql_real_connect(&mysql_handle, map_server_ip, map_server_id, map_server_pw,
-		map_server_db, map_server_port, (char *)NULL, 0)
-	) {
-		printf("%s\n",mysql_error(&mysql_handle));
+	int rc = sqldbs_connect(&mysql_handle,
+		map_server_ip, map_server_id, map_server_pw, map_server_db, map_server_port, map_server_charset
+	);
+	if(rc)
 		exit(1);
-	}
-	printf("Connect Success!\n");
 
 	if(sql_script_enable) {
-		mysql_init(&mysql_handle_script);
-		printf("Connect Script server");
-		if(script_server_charset[0]) {
-			mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, script_server_charset);
-			printf(" (charset: %s)",script_server_charset);
-		}
-		printf("...\n");
-
-		if(!mysql_real_connect(&mysql_handle_script, script_server_ip, script_server_id, script_server_pw,
-			script_server_db, script_server_port, (char *)NULL, 0)
-		) {
-			printf("%s\n",mysql_error(&mysql_handle_script));
+		rc = sqldbs_connect(&mysql_handle_script,
+			script_server_ip, script_server_id, script_server_pw, script_server_db, script_server_port, script_server_charset
+		);
+		if(rc)
 			exit(1);
-		}
-		printf("Connect Success!\n");
 	}
 
 	return 0;
@@ -210,9 +191,8 @@ static int do_sql_init_map(void)
 
 static int do_sql_final_map(void)
 {
-	mysql_close(&mysql_handle);
-	mysql_close(&mysql_handle_script);
-	printf("close DB connect....\n");
+	sqldbs_close(&mysql_handle);
+	sqldbs_close(&mysql_handle_script);
 
 	return 0;
 }

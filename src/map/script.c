@@ -49,6 +49,7 @@
 #include "lock.h"
 #include "nullpo.h"
 #include "utils.h"
+#include "sqldbs.h"
 
 #include "map.h"
 #include "guild.h"
@@ -3218,7 +3219,6 @@ static int script_txt_save_mapreg(void)
 #else /* TXT_ONLY */
 
 MYSQL mysql_handle_script;
-char mapreg_sqldb[256] = "mapreg";
 
 /*==========================================
  * 永続的マップ変数の読み込み(SQL)
@@ -3230,16 +3230,14 @@ static int script_sql_load_mapreg(void)
 	MYSQL_ROW  sql_row = NULL;
 	char buf[64];
 
-	sprintf(tmp_sql, "SELECT `reg`,`index`,`value` FROM `%s` WHERE `server_tag` = '%s'", mapreg_sqldb, strecpy(buf,map_server_tag));
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", mapreg_sqldb, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sqldbs_query(&mysql_handle, "SELECT `reg`,`index`,`value` FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s'", strecpy(buf,map_server_tag));
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 
 	if(sql_res) {
 		int i,s;
 		char name[256];
-		while((sql_row = mysql_fetch_row(sql_res)) != NULL) {
+		while((sql_row = sqldbs_fetch(sql_res)) != NULL) {
 			i = atoi(sql_row[1]);
 			if(i < 0 || i >= 128)
 				continue;
@@ -3253,7 +3251,7 @@ static int script_sql_load_mapreg(void)
 				numdb_insert(mapreg_db,(i<<24)|s,atoi(sql_row[2]));
 			}
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 	return 0;
 }
@@ -3269,14 +3267,11 @@ static int script_sql_save_mapreg_intsub(void *key,void *data,va_list ap)
 
 	if( name[1]!='@' ){
 		char buf1[64], buf2[1024];
-		sprintf(
-			tmp_sql,
-			"INSERT INTO `%s` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%d')",
-			mapreg_sqldb, strecpy(buf1,map_server_tag), strecpy(buf2,name), i, (int)data
+		sqldbs_query(
+			&mysql_handle,
+			"INSERT INTO `" MAPREG_TABLE "` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%d')",
+			strecpy(buf1,map_server_tag), strecpy(buf2,name), i, (int)data
 		);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (insert `%s`)- %s\n", mapreg_sqldb, mysql_error(&mysql_handle));
-		}
 	}
 	return 0;
 }
@@ -3288,14 +3283,11 @@ static int script_sql_save_mapreg_strsub(void *key,void *data,va_list ap)
 
 	if( name[1]!='@' ){
 		char buf1[64], buf2[1024], buf3[4096];
-		sprintf(
-			tmp_sql,
-			"INSERT INTO `%s` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%s')",
-			mapreg_sqldb, strecpy(buf1,map_server_tag), strecpy(buf2,name), i, strecpy(buf3,(char*)data)
+		sqldbs_query(
+			&mysql_handle,
+			"INSERT INTO `" MAPREG_TABLE"` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%s')",
+			strecpy(buf1,map_server_tag), strecpy(buf2,name), i, strecpy(buf3,(char*)data)
 		);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (insert `%s`)- %s\n", mapreg_sqldb, mysql_error(&mysql_handle));
-		}
 	}
 	return 0;
 }
@@ -3304,10 +3296,8 @@ static int script_sql_save_mapreg(void)
 {
 	char buf[64];
 
-	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `server_tag` = '%s'", mapreg_sqldb, strecpy(buf,map_server_tag));
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", mapreg_sqldb, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s'", strecpy(buf,map_server_tag));
+
 	numdb_foreach(mapreg_db,script_sql_save_mapreg_intsub);
 	numdb_foreach(mapregstr_db,script_sql_save_mapreg_strsub);
 	mapreg_dirty=0;
@@ -10941,7 +10931,7 @@ int buildin_recalcstatus(struct script_state *st)
 int buildin_sqlquery(struct script_state *st)
 {
 #ifndef TXT_ONLY
-	int count = -1;
+	int count = -1, rc;
 	MYSQL_RES* sql_res;
 	char *query = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
@@ -10950,16 +10940,16 @@ int buildin_sqlquery(struct script_state *st)
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	if(mysql_query(&mysql_handle_script, query)) {
-		printf("DB server Error - %s\n", mysql_error(&mysql_handle_script));
+	rc = sqldbs_query(&mysql_handle_script, query);
+	if(rc) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	sql_res = mysql_store_result(&mysql_handle_script);
+	sql_res = sqldbs_store_result(&mysql_handle_script);
 
 	// SELECT以外はここで完了
 	if(sql_res == NULL) {
-		count = (int)mysql_affected_rows(&mysql_handle_script);
+		count = (int)sqldbs_affected_rows(&mysql_handle_script);
 		push_val(st->stack,C_INT,count);
 		return 0;
 	}
@@ -11003,12 +10993,12 @@ int buildin_sqlquery(struct script_state *st)
 				len--;
 		}
 
-		max = mysql_num_fields(sql_res);
+		max = sqldbs_num_fields(sql_res);
 		if(max + (num >> 24) > 128) {
 			max = 128 - (num>>24);
 		}
 
-		for(count = 0; elem < 128 && (sql_row = mysql_fetch_row(sql_res)); count++) {
+		for(count = 0; elem < 128 && (sql_row = sqldbs_fetch(sql_res)); count++) {
 			int i,tmp_num;
 
 			if(count > 0) {	// 結果セットが複数行あるので変数名を合成する
@@ -11026,7 +11016,7 @@ int buildin_sqlquery(struct script_state *st)
 		aFree(var);
 	} while(0);
 
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
 	push_val(st->stack,C_INT,count);
 #else
 	// TXTは何もしない

@@ -31,7 +31,7 @@
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
-#include "utils.h"
+#include "sqldbs.h"
 
 #include "char.h"
 #include "inter.h"
@@ -341,8 +341,6 @@ void pet_txt_final(void)
 
 #else /* TXT_ONLY */
 
-static char pet_db_[256] = "pet";
-
 int pet_sql_init(void)
 {
 	pet_db = numdb_init();
@@ -360,10 +358,7 @@ int pet_sql_delete(int pet_id)
 	struct s_pet *p;
 
 	// printf("Request del  pet  (%6d)[",pet_id);
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `pet_id`='%d'",pet_db_, pet_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `%s`)- %s\n", pet_db_, mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" PET_TABLE "` WHERE `pet_id`='%d'", pet_id);
 	// printf("]\n");
 
 	p = (struct s_pet *)numdb_search(pet_db,pet_id);
@@ -371,7 +366,7 @@ int pet_sql_delete(int pet_id)
 		numdb_erase(pet_db,p->pet_id);
 		aFree(p);
 	} else {
-		if(mysql_affected_rows(&mysql_handle) <= 0)
+		if(sqldbs_affected_rows(&mysql_handle) <= 0)
 			return 1;	// SQLから削除できないときだけfail
 	}
 
@@ -382,6 +377,7 @@ int pet_sql_delete(int pet_id)
 
 const struct s_pet* pet_sql_load(int pet_id)
 {
+	int rc;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 	struct s_pet *p = (struct s_pet *)numdb_search(pet_db,pet_id);
@@ -398,20 +394,19 @@ const struct s_pet* pet_sql_load(int pet_id)
 	memset(p, 0, sizeof(struct s_pet));
 
 	// `pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
-	sprintf(
-		tmp_sql,
+	rc = sqldbs_query(
+		&mysql_handle,
 		"SELECT `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,"
-		"`intimate`,`hungry`,`rename_flag`,`incubate` FROM `%s` WHERE `pet_id`='%d'",
-		pet_db_, pet_id
+		"`intimate`,`hungry`,`rename_flag`,`incubate` FROM `" PET_TABLE "` WHERE `pet_id`='%d'",
+		pet_id
 	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (select `%s`)- %s\n", pet_db_, mysql_error(&mysql_handle) );
+	if(rc) {
 		p->pet_id = -1;
 		return NULL;
 	}
-	sql_res = mysql_store_result(&mysql_handle);
-	if (sql_res!=NULL && mysql_num_rows(sql_res)>0) {
-		sql_row = mysql_fetch_row(sql_res);
+	sql_res = sqldbs_store_result(&mysql_handle);
+	if (sql_res!=NULL && sqldbs_num_rows(sql_res)>0) {
+		sql_row = sqldbs_fetch(sql_res);
 
 		p->pet_id      = pet_id;
 		p->class_      = atoi(sql_row[0]);
@@ -428,7 +423,7 @@ const struct s_pet* pet_sql_load(int pet_id)
 		p->incubate    = atoi(sql_row[10]);
 	} else {
 		p->pet_id = -1;
-		if( sql_res ) mysql_free_result(sql_res);
+		if( sql_res ) sqldbs_free_result(sql_res);
 		return NULL;
 	}
 	if(p->hungry < 0)
@@ -440,7 +435,7 @@ const struct s_pet* pet_sql_load(int pet_id)
 	else if(p->intimate > 1000)
 		p->intimate = 1000;
 
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
 
 	// printf("]\n");
 	return p;
@@ -458,16 +453,13 @@ int pet_sql_save(struct s_pet* p2)
 	// `pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	if(memcmp(p1,p2,sizeof(struct s_pet))) {
 		// row reside -> updating
-		sprintf(
-			tmp_sql,
-			"UPDATE `%s` SET `class`='%d',`name`='%s',`account_id`='%d',`char_id`='%d',`level`='%d',`egg_id`='%d',"
+		sqldbs_query(
+			&mysql_handle,
+			"UPDATE `" PET_TABLE "` SET `class`='%d',`name`='%s',`account_id`='%d',`char_id`='%d',`level`='%d',`egg_id`='%d',"
 			"`equip`='%d',`intimate`='%d',`hungry`='%d',`rename_flag`='%d',`incubate`='%d' WHERE `pet_id`='%d'",
-			pet_db_, p2->class_, strecpy(t_name, p2->name), p2->account_id, p2->char_id, p2->level, p2->egg_id,
+			p2->class_, strecpy(t_name, p2->name), p2->account_id, p2->char_id, p2->level, p2->egg_id,
 			p2->equip, p2->intimate, p2->hungry, p2->rename_flag, p2->incubate, p2->pet_id
 		);
-		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (update `%s`)- %s\n", pet_db_, mysql_error(&mysql_handle) );
-		}
 		// printf("basic ");
 	}
 	// printf("]\n");
@@ -482,25 +474,25 @@ int pet_sql_save(struct s_pet* p2)
 int pet_sql_new(struct s_pet *p)
 {
 	// ペットIDを読み出す
+	int rc;
 	char t_name[64];
 
 	// printf("Request make pet  (------)[");
 	// rename_flag = -1, incubate = char_id のダミーデータを入れて
-	sprintf(
-		tmp_sql,
-		"INSERT INTO `%s` (`class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,"
+	rc = sqldbs_query(
+		&mysql_handle,
+		"INSERT INTO `" PET_TABLE "` (`class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,"
 		"`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`) VALUES ('%d', '%s', '%d',"
 		"'%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d')",
-		pet_db_, p->class_,strecpy(t_name, p->name), p->account_id, p->char_id, p->level, p->egg_id,
+		p->class_, strecpy(t_name, p->name), p->account_id, p->char_id, p->level, p->egg_id,
 		p->equip, p->intimate, p->hungry, p->rename_flag, p->incubate
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)){
-		printf("failed (insert `%s`), SQL error: %s\n", pet_db_, mysql_error(&mysql_handle));
+	if(rc){
 		aFree(p);
 		return 1;
 	}
 
-	p->pet_id = (int)mysql_insert_id(&mysql_handle);
+	p->pet_id = (int)sqldbs_insert_id(&mysql_handle);
 
 	numdb_insert(pet_db,p->pet_id,p);
 	return 0;

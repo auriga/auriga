@@ -55,6 +55,7 @@
 #include "journal.h"
 #include "md5calc.h"
 #include "utils.h"
+#include "sqldbs.h"
 
 #include "char.h"
 #include "inter.h"
@@ -1053,17 +1054,6 @@ static char char_server_pw[32]      = "ragnarok";
 static char char_server_db[32]      = "ragnarok";
 static char char_server_charset[32] = "";
 
-char char_db[256]                   = "char";
-char reg_db[256]                    = "global_reg_value";
-char friend_db[256]                 = "friend";
-static char cart_db[256]            = "cart_inventory";
-static char inventory_db[256]       = "inventory";
-static char charlog_db[256]         = "charlog";
-static char skill_db[256]           = "skill";
-static char memo_db[256]            = "memo";
-static char feel_db[256]            = "feel_info";
-static char hotkey_db[256]          = "hotkey";
-
 int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 {
 	int i = 0;
@@ -1075,20 +1065,20 @@ int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 	memset(item,0,sizeof(struct item) * max);
 
 	switch (tableswitch) {
-	case TABLE_INVENTORY:
-		tablename    = inventory_db;
+	case TABLE_NUM_INVENTORY:
+		tablename    = INVENTORY_TABLE;
 		selectoption = "char_id";
 		break;
-	case TABLE_CART:
-		tablename    = cart_db;
+	case TABLE_NUM_CART:
+		tablename    = CART_TABLE;
 		selectoption = "char_id";
 		break;
-	case TABLE_STORAGE:
-		tablename    = storage_db_;
+	case TABLE_NUM_STORAGE:
+		tablename    = STORAGE_TABLE;
 		selectoption = "account_id";
 		break;
-	case TABLE_GUILD_STORAGE:
-		tablename    = guild_storage_db_;
+	case TABLE_NUM_GUILD_STORAGE:
+		tablename    = GUILD_STORAGE_TABLE;
 		selectoption = "guild_id";
 		break;
 	default:
@@ -1101,13 +1091,11 @@ int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 		"`card0`, `card1`, `card2`, `card3`, `limit` FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id
 	);
 
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", tablename, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, tmp_sql);
 
-	sql_res = mysql_store_result(&mysql_handle);
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		for(i=0;(sql_row = mysql_fetch_row(sql_res)) && i < max;i++){
+		for(i=0;(sql_row = sqldbs_fetch(sql_res)) && i < max;i++){
 			item[i].id        = (unsigned int)atoi(sql_row[0]);
 			item[i].nameid    = atoi(sql_row[1]);
 			item[i].amount    = atoi(sql_row[2]);
@@ -1121,7 +1109,7 @@ int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 			item[i].card[3]   = atoi(sql_row[10]);
 			item[i].limit     = (unsigned int)atoi(sql_row[11]);
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 
 	return i;
@@ -1136,20 +1124,20 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 	char sep = ' ';
 
 	switch (tableswitch) {
-	case TABLE_INVENTORY:
-		tablename    = inventory_db;
+	case TABLE_NUM_INVENTORY:
+		tablename    = INVENTORY_TABLE;
 		selectoption = "char_id";
 		break;
-	case TABLE_CART:
-		tablename    = cart_db;
+	case TABLE_NUM_CART:
+		tablename    = CART_TABLE;
 		selectoption = "char_id";
 		break;
-	case TABLE_STORAGE:
-		tablename    = storage_db_;
+	case TABLE_NUM_STORAGE:
+		tablename    = STORAGE_TABLE;
 		selectoption = "account_id";
 		break;
-	case TABLE_GUILD_STORAGE:
-		tablename    = guild_storage_db_;
+	case TABLE_NUM_GUILD_STORAGE:
+		tablename    = GUILD_STORAGE_TABLE;
 		selectoption = "guild_id";
 		break;
 	default:
@@ -1158,10 +1146,7 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 	}
 
 	// delete
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `%s`='%d'",tablename,selectoption,id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (DELETE `%s`)- %s\n", tablename, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id);
 
 	p  = tmp_sql;
 	p += sprintf(
@@ -1181,9 +1166,7 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 		}
 	}
 	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (INSERT `%s`)- %s\n", tablename, mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, tmp_sql);
 	}
 
 	return 0;
@@ -1191,24 +1174,14 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 
 static int char_sql_init(void)
 {
-	char_db_ = numdb_init();
-
 	// DB connection initialized
-	mysql_init(&mysql_handle);
-	printf("Connect Character DB server");
-	if(char_server_charset[0]) {
-		mysql_options(&mysql_handle, MYSQL_SET_CHARSET_NAME, char_server_charset);
-		printf(" (charset: %s)",char_server_charset);
-	}
-	printf("...\n");
-
-	if(!mysql_real_connect(&mysql_handle, char_server_ip, char_server_id, char_server_pw,
-		char_server_db, char_server_port, (char *)NULL, 0)
-	) {
-		printf("%s\n",mysql_error(&mysql_handle));
+	int rc = sqldbs_connect(&mysql_handle,
+		char_server_ip, char_server_id, char_server_pw, char_server_db, char_server_port, char_server_charset
+	);
+	if(rc)
 		exit(1);
-	}
-	printf("Connect Success! (Character Server)\n");
+
+	char_db_ = numdb_init();
 
 	return 1;
 }
@@ -1233,26 +1206,22 @@ const struct mmo_chardata* char_sql_load(int char_id)
 
 	// printf("Request load char (%6d)[",char_id);
 
-	sprintf(tmp_sql, "SELECT "
+	sqldbs_query(&mysql_handle, "SELECT "
 		"`account_id`, `char_num`, `name`, `class`, `base_level`, `job_level`, `base_exp`, `job_exp`, `zeny`,"
 		"`str`, `agi`, `vit`, `int`, `dex`, `luk`, `max_hp`, `hp`, `max_sp`, `sp`, `status_point`, `skill_point`,"
 		"`option`, `karma`, `manner`, `die_counter`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `merc_id`,"
 		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `head_top`, `head_mid`, `head_bottom`,"
 		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
 		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`"
-		" FROM `%s` WHERE `char_id` = '%d'",char_db, char_id);
+		" FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", char_id);
 
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
-	}
-
-	sql_res = mysql_store_result(&mysql_handle);
+	sql_res = sqldbs_store_result(&mysql_handle);
 
 	if (sql_res) {
-		sql_row = mysql_fetch_row(sql_res);
+		sql_row = sqldbs_fetch(sql_res);
 		if(sql_row == NULL) {
 			// 見つからなくても正常
-			mysql_free_result(sql_res);
+			sqldbs_free_result(sql_res);
 			return NULL;
 		}
 		if(p == NULL) {
@@ -1317,7 +1286,7 @@ const struct mmo_chardata* char_sql_load(int char_id)
 		p->st.save_point.map[23] = '\0';
 
 		// free mysql result.
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	} else {
 		printf("char - failed\n");	// Error?! ERRRRRR WHAT THAT SAY!?
 		return NULL;
@@ -1326,60 +1295,51 @@ const struct mmo_chardata* char_sql_load(int char_id)
 
 	// read memo data
 	// `memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
-	sprintf(tmp_sql, "SELECT `map`,`x`,`y` FROM `%s` WHERE `char_id`='%d'",memo_db, char_id); // TBR
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sqldbs_query(&mysql_handle, "SELECT `map`,`x`,`y` FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", char_id);
+	sql_res = sqldbs_store_result(&mysql_handle);
 
 	if (sql_res) {
-		for(i = 0; i < MAX_PORTAL_MEMO && (sql_row = mysql_fetch_row(sql_res)); i++) {
+		for(i = 0; i < MAX_PORTAL_MEMO && (sql_row = sqldbs_fetch(sql_res)); i++) {
 			strncpy(p->st.memo_point[i].map, sql_row[0], 24);
 			p->st.memo_point[i].map[23] = '\0';	// force \0 terminal
 			p->st.memo_point[i].x       = atoi(sql_row[1]);
 			p->st.memo_point[i].y       = atoi(sql_row[2]);
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 	// printf("memo ");
 
 	// read inventory
-	char_sql_loaditem(p->st.inventory,MAX_INVENTORY,p->st.char_id,TABLE_INVENTORY);
+	char_sql_loaditem(p->st.inventory,MAX_INVENTORY,p->st.char_id,TABLE_NUM_INVENTORY);
 	// printf("inventory ");
 
 	// read cart.
-	char_sql_loaditem(p->st.cart,MAX_CART,p->st.char_id,TABLE_CART);
+	char_sql_loaditem(p->st.cart,MAX_CART,p->st.char_id,TABLE_NUM_CART);
 	// printf("cart ");
 
 	// read skill
 	// `skill` (`char_id`, `id`, `lv`)
-	sprintf(tmp_sql, "SELECT `id`, `lv` FROM `%s` WHERE `char_id`='%d'",skill_db, char_id); // TBR
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sqldbs_query(&mysql_handle, "SELECT `id`, `lv` FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", char_id);
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		for(i=0;(sql_row = mysql_fetch_row(sql_res));i++){
+		for(i=0;(sql_row = sqldbs_fetch(sql_res));i++){
 			n = atoi(sql_row[0]);
 			if(n >= 0 && n < MAX_SKILL) {
 				p->st.skill[n].id = n;
 				p->st.skill[n].lv = atoi(sql_row[1]);
 			}
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 	// printf("skill ");
 
 	// global_reg
 	// `global_reg_value` (`char_id`, `str`, `value`)
-	sprintf(tmp_sql, "SELECT `str`, `value` FROM `%s` WHERE `type`=3 AND `char_id`='%d'",reg_db, char_id); // TBR
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "SELECT `str`, `value` FROM `" REG_TABLE "` WHERE `type`=3 AND `char_id`='%d'", char_id);
 	i = 0;
-	sql_res = mysql_store_result(&mysql_handle);
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		for(i=0; (sql_row = mysql_fetch_row(sql_res));i++){
+		for(i=0; (sql_row = sqldbs_fetch(sql_res));i++){
 			if(i < GLOBAL_REG_NUM) {
 				strncpy(p->reg.global[i].str, sql_row[0], 32);
 				p->reg.global[i].str[31] = '\0';	// force \0 terminal
@@ -1388,83 +1348,68 @@ const struct mmo_chardata* char_sql_load(int char_id)
 				printf("char_load %d: couldn't load %s (GLOBAL_REG_NUM = %d)\a\n", p->st.char_id, sql_row[0], GLOBAL_REG_NUM);
 			}
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 	p->reg.global_num = (i < GLOBAL_REG_NUM)? i: GLOBAL_REG_NUM;
 	// printf("global_reg ");
 
 	// friend list
 	p->st.friend_num = 0;
-	sprintf( tmp_sql, "SELECT `id1`, `id2`, `name` FROM `%s` WHERE `char_id`='%d'", friend_db, char_id );
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", friend_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result( &mysql_handle );
+	sqldbs_query(&mysql_handle, "SELECT `id1`, `id2`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", char_id);
+	sql_res = sqldbs_store_result( &mysql_handle );
 	if( sql_res )
 	{
-		for( i=0; i < MAX_FRIEND && (sql_row = mysql_fetch_row(sql_res)); i++ )
+		for( i=0; i < MAX_FRIEND && (sql_row = sqldbs_fetch(sql_res)); i++ )
 		{
 			p->st.friend_data[i].account_id = atoi( sql_row[0] );
 			p->st.friend_data[i].char_id = atoi( sql_row[1] );
 			strncpy( p->st.friend_data[i].name, sql_row[2], 24 );
 			p->st.friend_data[i].name[23] = '\0';	// force \0 terminal
 		}
-		mysql_free_result( sql_res );
+		sqldbs_free_result( sql_res );
 		p->st.friend_num = (i < MAX_FRIEND)? i: MAX_FRIEND;
 	}
 	// friend list のチェックと訂正
 	for(i=0; i<p->st.friend_num; i++ )
 	{
-		sprintf( tmp_sql, "SELECT `id1`, `name` FROM `%s` WHERE `char_id`='%d' AND `id2`='%d'", friend_db, p->st.friend_data[i].char_id, p->st.char_id );
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (select `%s` / check )- %s\n", friend_db, mysql_error(&mysql_handle));
-		}
-		sql_res = mysql_store_result( &mysql_handle );
+		sqldbs_query(&mysql_handle, "SELECT `id1`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `id2`='%d'", p->st.friend_data[i].char_id, p->st.char_id);
+		sql_res = sqldbs_store_result( &mysql_handle );
 		if( !sql_res ) {
 			// 相手に存在しないので、友達リストから削除する
-			sprintf( tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d' AND `id2`='%d'", friend_db, p->st.char_id, p->st.friend_data[i].char_id );
-			if (mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (delete `%s` / correct)- %s\n", friend_db, mysql_error(&mysql_handle));
-			}
+			sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `id2`='%d'", p->st.char_id, p->st.friend_data[i].char_id);
 			p->st.friend_num--;
 			memmove( &p->st.friend_data[i], &p->st.friend_data[i+1], sizeof(p->st.friend_data[0])* (p->st.friend_num - i ) );
 			i--;
 			printf("*friend_data_correct*\n");
 		} else {
-			mysql_free_result( sql_res );
+			sqldbs_free_result( sql_res );
 		}
 	}
 	// printf("friend ");
 
 	// feel_info
 	// `feel_info` (`feel_id`,`char_id`,`map`,`lv`)
-	sprintf(tmp_sql, "SELECT `map`,`lv` FROM `%s` WHERE `char_id`='%d'",feel_db, char_id);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sqldbs_query(&mysql_handle, "SELECT `map`,`lv` FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", char_id);
+	sql_res = sqldbs_store_result(&mysql_handle);
 
 	if (sql_res) {
-		for(i = 0; (sql_row = mysql_fetch_row(sql_res)); i++) {
+		for(i = 0; (sql_row = sqldbs_fetch(sql_res)); i++) {
 			n = atoi(sql_row[1]);
 			if(n >= 0 && n < 3) {
 				strncpy(p->st.feel_map[n], sql_row[0], 24);
 				p->st.feel_map[n][23] = '\0';	// force \0 terminal
 			}
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 
 	// hotkey
 	// `hotkey` (`char_id`,`key`,`type`,`id`,`lv`)
-	sprintf(tmp_sql, "SELECT `key`, `type`, `id`, `lv` FROM `%s` WHERE `char_id`='%d'", hotkey_db, char_id);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", hotkey_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sqldbs_query(&mysql_handle, "SELECT `key`, `type`, `id`, `lv` FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", char_id);
+	sql_res = sqldbs_store_result(&mysql_handle);
 
 	if (sql_res) {
-		for(i = 0; (sql_row = mysql_fetch_row(sql_res)); i++) {
+		for(i = 0; (sql_row = sqldbs_fetch(sql_res)); i++) {
 			n = atoi(sql_row[0]);
 			if(n >= 0 && n < MAX_HOTKEYS) {
 				p->st.hotkey[n].type = (char)atoi(sql_row[1]);
@@ -1472,7 +1417,7 @@ const struct mmo_chardata* char_sql_load(int char_id)
 				p->st.hotkey[n].lv   = (unsigned short)atoi(sql_row[3]);
 			}
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 
 	// printf("]\n");	// ok. all data load successfuly!
@@ -1491,21 +1436,16 @@ int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
 
 	//printf("- Save global_reg_value data to MySQL!\n");
 	// `global_reg_value` (`char_id`, `str`, `value`)
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`=3 AND `char_id`='%d'",reg_db, char_id);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`=3 AND `char_id`='%d'", char_id);
 
 	// insert here.
 	for(i=0;i<num;i++){
 		if (reg[i].str[0] && reg[i].value != 0) {
-			sprintf(
-				tmp_sql,"INSERT INTO `%s` (`char_id`, `str`, `value`) VALUES ('%d', '%s', '%d')",
-				reg_db, char_id, strecpy(buf,reg[i].str), reg[i].value
+			sqldbs_query(
+				&mysql_handle,
+				"INSERT INTO `" REG_TABLE "` (`char_id`, `str`, `value`) VALUES ('%d', '%s', '%d')",
+				char_id, strecpy(buf,reg[i].str), reg[i].value
 			);
-			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (insert `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
-			}
 		}
 	}
 
@@ -1548,7 +1488,8 @@ int char_sql_save(struct mmo_charstatus *st2)
 	// printf("Request save char (%6d)[",st2->char_id);
 
 	// basic information
-	p += sprintf(p,"UPDATE `%s` SET",char_db);
+	strcpy(p, "UPDATE `" CHAR_TABLE "` SET");
+	p += strlen(p);
 
 	UPDATE_NUM(account_id    ,"account_id");
 	UPDATE_NUM(char_num      ,"char_num");
@@ -1601,29 +1542,23 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 	if(sep == ',') {
 		sprintf(p," WHERE `char_id` = '%d'",st2->char_id);
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (update `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, tmp_sql);
 		// printf("char ");
 	}
 
 	// memo
 	if (memcmp(st1->memo_point,st2->memo_point,sizeof(st1->memo_point))) {
 		// `memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
-		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",memo_db, st2->char_id);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, "DELETE FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
 		// insert here.
 		for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 			if(st2->memo_point[i].map[0]) {
-				sprintf(
-					tmp_sql,"INSERT INTO `%s`(`char_id`,`map`,`x`,`y`) VALUES ('%d', '%s', '%d', '%d')",
-					memo_db, st2->char_id, strecpy(buf,st2->memo_point[i].map), st2->memo_point[i].x, st2->memo_point[i].y
+				sqldbs_query(
+					&mysql_handle,
+					"INSERT INTO `" MEMO_TABLE "` (`char_id`,`map`,`x`,`y`) VALUES ('%d', '%s', '%d', '%d')",
+					st2->char_id, strecpy(buf,st2->memo_point[i].map), st2->memo_point[i].x, st2->memo_point[i].y
 				);
-				if(mysql_query(&mysql_handle, tmp_sql))
-					printf("DB server Error (insert `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
 			}
 		}
 		// printf("memo ");
@@ -1631,13 +1566,13 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 	// inventory
 	if (memcmp(st1->inventory, st2->inventory, sizeof(st1->inventory))) {
-		char_sql_saveitem(st2->inventory,MAX_INVENTORY,st2->char_id,TABLE_INVENTORY);
+		char_sql_saveitem(st2->inventory,MAX_INVENTORY,st2->char_id,TABLE_NUM_INVENTORY);
 		// printf("inventory ");
 	}
 
 	// cart
 	if (memcmp(st1->cart, st2->cart, sizeof(st1->cart))) {
-		char_sql_saveitem(st2->cart,MAX_CART,st2->char_id,TABLE_CART);
+		char_sql_saveitem(st2->cart,MAX_CART,st2->char_id,TABLE_NUM_CART);
 		// printf("cart ");
 	}
 
@@ -1646,25 +1581,18 @@ int char_sql_save(struct mmo_charstatus *st2)
 		unsigned short sk_lv;
 		//printf("- Save skill data to MySQL!\n");
 		// `skill` (`char_id`, `id`, `lv`)
-		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",skill_db, st2->char_id);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, "DELETE FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", st2->char_id);
+
 		//printf("- Insert skill \n");
 		// insert here.
-		p  = tmp_sql;
-		p += sprintf(p,"INSERT INTO `%s`(`char_id`, `id`, `lv`) VALUES",skill_db);
-		sep = ' ';
 		for(i=0;i<MAX_SKILL;i++){
 			sk_lv = (st2->skill[i].flag==0)? st2->skill[i].lv: st2->skill[i].flag-2;
 			if(st2->skill[i].id && st2->skill[i].flag!=1){
-				p += sprintf(p,"%c('%d','%d','%d')",sep,st2->char_id, st2->skill[i].id, sk_lv);
-				sep = ',';
-			}
-		}
-		if(sep == ',') {
-			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (insert `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
+				sqldbs_query(
+					&mysql_handle,
+					"INSERT INTO `" SKILL_TABLE "` (`char_id`, `id`, `lv`) VALUES ('%d','%d','%d')",
+					st2->char_id, st2->skill[i].id, sk_lv
+				);
 			}
 		}
 		// printf("skill ");
@@ -1674,19 +1602,15 @@ int char_sql_save(struct mmo_charstatus *st2)
 	if( st1->friend_num != st2->friend_num ||
 	    memcmp(st1->friend_data, st2->friend_data, sizeof(st1->friend_data)) != 0 )
 	{
-		sprintf( tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d'", friend_db, st2->char_id );
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `%s`)- %s\n", friend_db, mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
 		for( i=0; i<st2->friend_num; i++ )
 		{
-			sprintf( tmp_sql, "INSERT INTO `%s` (`char_id`, `id1`, `id2`, `name`) VALUES ('%d', '%d', '%d', '%s')",
-				friend_db, st2->char_id, st2->friend_data[i].account_id, st2->friend_data[i].char_id,
-				strecpy( buf, st2->friend_data[i].name ) );
-			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (insert `%s`)- %s\n", friend_db, mysql_error(&mysql_handle));
-			}
+			sqldbs_query(
+				&mysql_handle,
+				"INSERT INTO `" FRIEND_TABLE "` (`char_id`, `id1`, `id2`, `name`) VALUES ('%d', '%d', '%d', '%s')",
+				st2->char_id, st2->friend_data[i].account_id, st2->friend_data[i].char_id, strecpy(buf, st2->friend_data[i].name)
+			);
 		}
 		// printf("friend ");
 	}
@@ -1694,20 +1618,16 @@ int char_sql_save(struct mmo_charstatus *st2)
 	// feel_info
 	if (memcmp(st1->feel_map,st2->feel_map,sizeof(st1->feel_map))) {
 		// `feel_info` (`feel_id`,`char_id`,`map`,`lv`)
-		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",feel_db, st2->char_id);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, "DELETE FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
 		// insert here.
 		for(i = 0; i < 3; i++) {
 			if(st2->feel_map[i][0]) {
-				sprintf(
-					tmp_sql,"INSERT INTO `%s`(`char_id`,`map`,`lv`) VALUES ('%d', '%s', '%d')",
-					feel_db, st2->char_id, strecpy(buf,st2->feel_map[i]), i
+				sqldbs_query(
+					&mysql_handle,
+					"INSERT INTO `" FEEL_TABLE "` (`char_id`,`map`,`lv`) VALUES ('%d', '%s', '%d')",
+					st2->char_id, strecpy(buf,st2->feel_map[i]), i
 				);
-				if(mysql_query(&mysql_handle, tmp_sql))
-					printf("DB server Error (insert `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
 			}
 		}
 	}
@@ -1715,20 +1635,16 @@ int char_sql_save(struct mmo_charstatus *st2)
 	// hotkey
 	if (memcmp(st1->hotkey,st2->hotkey,sizeof(st1->hotkey))) {
 		// `hotkey` (`char_id`,`key`,`type`,`id`,`lv`)
-		sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",hotkey_db, st2->char_id);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `%s`)- %s\n", hotkey_db, mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, "DELETE FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
 		// insert here.
 		for(i = 0; i < MAX_HOTKEYS; i++) {
 			if(st2->hotkey[i].id > 0) {
-				sprintf(
-					tmp_sql,"INSERT INTO `%s`(`char_id`,`key`,`type`,`id`,`lv`) VALUES ('%d', '%d', '%d', '%d', '%d')",
-					hotkey_db, st2->char_id, i, st2->hotkey[i].type, st2->hotkey[i].id, st2->hotkey[i].lv
+				sqldbs_query(
+					&mysql_handle,
+					"INSERT INTO `" HOTKEY_TABLE "` (`char_id`,`key`,`type`,`id`,`lv`) VALUES ('%d', '%d', '%d', '%d', '%d')",
+					st2->char_id, i, st2->hotkey[i].type, st2->hotkey[i].id, st2->hotkey[i].lv
 				);
-				if(mysql_query(&mysql_handle, tmp_sql))
-					printf("DB server Error (insert `%s`)- %s\n", hotkey_db, mysql_error(&mysql_handle));
 			}
 		}
 	}
@@ -1745,7 +1661,7 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *flag)
 {
-	int i, char_id;
+	int i, rc, char_id;
 	char name[24], buf[256];
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
@@ -1780,86 +1696,80 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 	char_log("make new char %d %s", dat[30], name);
 
 	// 同一アカウントID、同一キャラスロットチェック
-	sprintf(
-		tmp_sql,
-		"SELECT COUNT(*) FROM `%s` WHERE `account_id` = '%d' AND `char_num` = '%d'",
-		char_db, account_id, dat[30]
+	rc = sqldbs_query(&mysql_handle,
+		"SELECT COUNT(*) FROM `" CHAR_TABLE "` WHERE `account_id` = '%d' AND `char_num` = '%d'",
+		account_id, dat[30]
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
+	if(rc)
 		return NULL;
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if(!sql_res)
 		return NULL;
 
-	sql_row = mysql_fetch_row(sql_res);
+	sql_row = sqldbs_fetch(sql_res);
 	i = atoi(sql_row[0]);
-	mysql_free_result(sql_res);
+	sqldbs_free_result(sql_res);
 	if(i)
 		return NULL;
 
 	// 同名チェック
-	sprintf(tmp_sql, "SELECT `name` FROM `%s` WHERE `name` = '%s'", char_db, strecpy(buf,name));
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
+	rc = sqldbs_query(&mysql_handle, "SELECT `name` FROM `" CHAR_TABLE "` WHERE `name` = '%s'", strecpy(buf,name));
+	if(rc)
 		return NULL;
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if(sql_res) {
-		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+		while( (sql_row = sqldbs_fetch(sql_res)) ) {
 			if(strncmp(name, sql_row[0], 24) == 0) {
 				*flag = 0x00;
-				mysql_free_result(sql_res);
+				sqldbs_free_result(sql_res);
 				return NULL;
 			}
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 
 	// Insert the char to the 'chardb' ^^
-	sprintf(
-		tmp_sql,
-		"INSERT INTO `%s` (`account_id`,`char_num`,`name`,`zeny`,`str`,`agi`,`vit`,`int`,"
+	rc = sqldbs_query(
+		&mysql_handle,
+		"INSERT INTO `" CHAR_TABLE "` (`account_id`,`char_num`,`name`,`zeny`,`str`,`agi`,`vit`,`int`,"
 		"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`hair`,`hair_color`,`last_map`,`last_x`,"
 		"`last_y`,`save_map`,`save_x`,`save_y`) VALUES ('%d','%d','%s','%d','%d','%d','%d',"
 		"'%d','%d','%d','%d','%d','%d','%d','%d','%d','%s','%d','%d','%s','%d','%d')",
-		char_db, account_id, dat[30], strecpy(buf,name), start_zeny, dat[24], dat[25], dat[26],
+		account_id, dat[30], strecpy(buf,name), start_zeny, dat[24], dat[25], dat[26],
 		dat[27], dat[28], dat[29], 40 * (100 + dat[26]) / 100, 40 * (100 + dat[26]) / 100,
 		11 * (100 + dat[27]) / 100, 11 * (100 + dat[27]) / 100, dat[33], dat[31], start_point.map,
 		start_point.x, start_point.y, start_point.map, start_point.x, start_point.y
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("failed (insert in `%s`), SQL error: %s\n", char_db, mysql_error(&mysql_handle));
+	if(rc)
 		return NULL; // No, stop the procedure!
-	}
 
 	// Now we need the charid from sql!
-	char_id = (int)mysql_insert_id(&mysql_handle);
+	char_id = (int)sqldbs_insert_id(&mysql_handle);
 
 	// Give the char the default items
 	// knife
 	if(start_weapon > 0) {
-		sprintf(
-			tmp_sql,"INSERT INTO `%s` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
+		rc = sqldbs_query(
+			&mysql_handle,
+			"INSERT INTO `" INVENTORY_TABLE "` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
 			"VALUES (1, '%d', '%d', '%d', '%d', '%d')",
-			inventory_db, char_id, start_weapon, 1, 0x02, 1
+			char_id, start_weapon, 1, 0x02, 1
 		);
-		if (mysql_query(&mysql_handle, tmp_sql)){
-			printf("fail (insert in inventory ID %d), SQL error: %s\n", start_weapon, mysql_error(&mysql_handle));
+		if(rc)
 			return NULL;
-		}
 	}
 	// cotton shirt
 	if(start_armor > 0) {
-		sprintf(tmp_sql,"INSERT INTO `%s` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
+		rc = sqldbs_query(
+			&mysql_handle,
+			"INSERT INTO `" INVENTORY_TABLE "` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
 			"VALUES (2, '%d', '%d', '%d', '%d', '%d')",
-			inventory_db, char_id, start_armor, 1, 0x10, 1
+			char_id, start_armor, 1, 0x10, 1
 		);
-		if (mysql_query(&mysql_handle, tmp_sql)){
-			printf("fail (insert in inventory ID %d), SQL error: %s\n", start_armor, mysql_error(&mysql_handle));
+		if(rc)
 			return NULL; // end....
-		}
 	}
 
 	printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", account_id, char_id, dat[30], name);
@@ -1869,7 +1779,7 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 
 int char_sql_load_all(struct char_session_data* sd,int account_id)
 {
-	int i,j;
+	int i,j,rc;
 	int found_id[9];
 	int found_num = 0;
 	const struct mmo_chardata *cd;
@@ -1879,19 +1789,18 @@ int char_sql_load_all(struct char_session_data* sd,int account_id)
 	memset(&found_id,0,sizeof(found_id));
 
 	// search char.
-	sprintf(tmp_sql, "SELECT `char_id` FROM `%s` WHERE `account_id` = '%d'",char_db, account_id);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
+	rc = sqldbs_query(&mysql_handle, "SELECT `char_id` FROM `" CHAR_TABLE "` WHERE `account_id` = '%d'", account_id);
+	if(rc)
 		return 0;
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		while((sql_row = mysql_fetch_row(sql_res))) {
+		while((sql_row = sqldbs_fetch(sql_res))) {
 			found_id[found_num++] = atoi(sql_row[0]);
 			if(found_num == sizeof(found_id)/sizeof(found_id[0]))
 				break;
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 	j = 0;
 	for(i = 0;i < found_num ; i++) {
@@ -1916,53 +1825,14 @@ int char_sql_delete_sub(int char_id)
 	if(p)
 		aFree(p);
 
-	// char
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",char_db, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
-	}
-
-	// memo
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",memo_db, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", memo_db, mysql_error(&mysql_handle));
-	}
-
-	// inventory
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",inventory_db, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", inventory_db, mysql_error(&mysql_handle));
-	}
-
-	// cart
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",cart_db, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", cart_db, mysql_error(&mysql_handle));
-	}
-
-	// skill
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",skill_db, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", skill_db, mysql_error(&mysql_handle));
-	}
-
-	// global_reg
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `type`=3 AND `char_id`='%d'",reg_db, char_id);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
-	}
-
-	// friend
-	sprintf(tmp_sql, "DELETE FROM `%s` WHERE `char_id`='%d'", friend_db, char_id);
-	if (mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", friend_db, mysql_error(&mysql_handle));
-	}
-
-	// feel_info
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `char_id`='%d'",feel_db, char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", feel_db, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `" CHAR_TABLE "` WHERE `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" INVENTORY_TABLE "` WHERE `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" CART_TABLE "` WHERE `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`=3 AND `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", char_id);
 
 	return 1;
 }
@@ -1978,9 +1848,7 @@ static int char_db_final(void *key,void *data,va_list ap)
 
 void char_sql_final(void)
 {
-	mysql_close(&mysql_handle);
-	printf("close DB connect....\n");
-
+	sqldbs_close(&mysql_handle);
 	numdb_final(char_db_,char_db_final);
 
 	return;
@@ -2017,13 +1885,11 @@ const struct mmo_chardata* char_sql_nick2chardata(const char *char_name)
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
-	sprintf(tmp_sql,"SELECT `char_id`,`name` FROM `%s` WHERE `name` = '%s'",char_db,strecpy(buf,char_name));
-	if(mysql_query(&mysql_handle, tmp_sql)){
-		printf("DB server Error (select `%s`) : %s\n", char_db, mysql_error(&mysql_handle));
-	}
-	sql_res = mysql_store_result(&mysql_handle);
+	sqldbs_query(&mysql_handle, "SELECT `char_id`,`name` FROM `" CHAR_TABLE "` WHERE `name` = '%s'", strecpy(buf,char_name));
+
+	sql_res = sqldbs_store_result(&mysql_handle);
 	if(sql_res){
-		while( (sql_row = mysql_fetch_row(sql_res)) ) {
+		while( (sql_row = sqldbs_fetch(sql_res)) ) {
 			if(strcmp(char_name, sql_row[1]) == 0) {
 				int char_id = atoi(sql_row[0]);
 				if(char_id > 0) {
@@ -2032,7 +1898,7 @@ const struct mmo_chardata* char_sql_nick2chardata(const char *char_name)
 				break;
 			}
 		}
-		mysql_free_result(sql_res);
+		sqldbs_free_result(sql_res);
 	}
 
 	return cd;
@@ -2040,17 +1906,11 @@ const struct mmo_chardata* char_sql_nick2chardata(const char *char_name)
 
 int char_sql_set_online(int char_id,int online)
 {
-	char *p = tmp_sql;
-
-	p += sprintf(p, "UPDATE `%s` SET `online` = '%d' WHERE ", char_db, online);
 	if(char_id > 0)
-		sprintf(p, "`char_id` = '%d'", char_id);
+		sqldbs_query(&mysql_handle, "UPDATE `" CHAR_TABLE "` SET `online` = '%d' WHERE `char_id` = '%d'", online, char_id);
 	else
-		sprintf(p, "`online` = '%d'", online^1);
+		sqldbs_query(&mysql_handle, "UPDATE `" CHAR_TABLE "` SET `online` = '%d' WHERE `online` = '%d'", online, online^1);
 
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (update set_online)- %s\n", mysql_error(&mysql_handle));
-	}
 	return 0;
 }
 
@@ -2065,42 +1925,38 @@ static int char_sql_build_ranking(void)
 
 	for(i=0; i<MAX_RANKING; i++) {
 		max = 0;
-		sprintf(
-			tmp_sql,
-			"SELECT `value`,`char_id` FROM `%s` WHERE `type` = 3 AND `str` = '%s' AND `value` > 0 ORDER BY `value` DESC LIMIT 0,%d",
-			reg_db, strecpy(buf,ranking_reg[i]), MAX_RANKER
+		sqldbs_query(
+			&mysql_handle,
+			"SELECT `value`,`char_id` FROM `" REG_TABLE "` WHERE `type` = 3 AND `str` = '%s' AND `value` > 0 ORDER BY `value` DESC LIMIT 0,%d",
+			strecpy(buf,ranking_reg[i]), MAX_RANKER
 		);
-		if (mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (select `%s`)- %s\n", reg_db, mysql_error(&mysql_handle));
-		}
-		sql_res = mysql_store_result(&mysql_handle);
+
+		sql_res = sqldbs_store_result(&mysql_handle);
 
 		if(sql_res) {
-			for(j=0; j<MAX_RANKER && (sql_row = mysql_fetch_row(sql_res)); j++) {
+			for(j=0; j<MAX_RANKER && (sql_row = sqldbs_fetch(sql_res)); j++) {
 				ranking_data[i][j].point   = atoi(sql_row[0]);
 				ranking_data[i][j].char_id = atoi(sql_row[1]);
 			}
-			mysql_free_result(sql_res);
+			sqldbs_free_result(sql_res);
 			max = j;
 		}
 
 		// キャラ名の補完
 		for(j=0; j<max; j++) {
-			sprintf(tmp_sql, "SELECT `name` FROM `%s` WHERE `char_id` = '%d'", char_db, ranking_data[i][j].char_id);
-			if (mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (select `%s`)- %s\n", char_db, mysql_error(&mysql_handle));
-			}
-			sql_res = mysql_store_result(&mysql_handle);
+			sqldbs_query(&mysql_handle, "SELECT `name` FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", ranking_data[i][j].char_id);
 
-			if(sql_res && (sql_row = mysql_fetch_row(sql_res))) {
+			sql_res = sqldbs_store_result(&mysql_handle);
+
+			if(sql_res && (sql_row = sqldbs_fetch(sql_res))) {
 				strncpy(ranking_data[i][j].name, sql_row[0], 24);
 				ranking_data[i][j].name[23] = '\0';	// force \0 terminal
-				mysql_free_result(sql_res);
+				sqldbs_free_result(sql_res);
 			} else {
 				printf("char_build_ranking: char_name not found in %s (ID = %d, Rank = %d)\n", ranking_reg[i], ranking_data[i][j].char_id, j+1);
 				memcpy(ranking_data[i][j].name, unknown_char_name, 24);
 				if(sql_res)
-					mysql_free_result(sql_res);
+					sqldbs_free_result(sql_res);
 			}
 		}
 	}
@@ -2229,10 +2085,7 @@ static int char_log(const char *fmt, ...)
 	vsnprintf(msg, sizeof(msg), fmt, ap);
 	va_end(ap);
 
-	sprintf(tmp_sql,"INSERT INTO `%s` (`time`,`log`) VALUES (NOW(),'%s')", charlog_db,strecpy(buf,msg));
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `%s`)- %s\n", charlog_db, mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "INSERT INTO `" CHARLOG_TABLE "` (`time`,`log`) VALUES (NOW(),'%s')", strecpy(buf,msg));
 #endif
 	return 0;
 }
