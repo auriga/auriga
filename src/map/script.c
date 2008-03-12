@@ -1699,6 +1699,8 @@ static void read_constdb(void)
 	while(fgets(line,1020,fp)) {
 		if(line[0] == '/' && line[1] == '/')
 			continue;
+		if(line[0] == '\r' || line[0] == '\n')
+			continue;
 		type = 0;
 		if(sscanf(line, "%[A-Za-z0-9_],%[-0-9xXA-Fa-f],%d", name, val, &type) >= 2 ||
 		   sscanf(line, "%[A-Za-z0-9_] %[-0-9xXA-Fa-f] %d", name, val, &type) >= 2)
@@ -2042,6 +2044,7 @@ static void get_val(struct script_state *st,struct script_data *data)
 	struct map_session_data *sd = NULL;
 	char *name;
 	char prefix, postfix;
+	int type;
 
 	if(data->type != C_NAME)
 		return;
@@ -2049,10 +2052,11 @@ static void get_val(struct script_state *st,struct script_data *data)
 	name    = str_buf+str_data[data->u.num&0x00ffffff].str;
 	prefix  = *name;
 	postfix = name[strlen(name)-1];
+	type    = str_data[data->u.num&0x00ffffff].type;
 
 	if(prefix != '$' && prefix != '\'') {
-		if((postfix == '$' && str_data[data->u.num&0x00ffffff].type == C_STR) ||
-		   (postfix != '$' && str_data[data->u.num&0x00ffffff].type == C_INT))
+		if( (postfix == '$' && type == C_STR) ||
+		    (postfix != '$' && (type == C_INT || type == C_PARAM)) )
 		{
 			if((sd = script_rid2sd(st)) == NULL) {
 				printf("get_val error name?: %s\n",name);
@@ -2067,7 +2071,7 @@ static void get_val(struct script_state *st,struct script_data *data)
 	if(postfix == '$') {
 		// 文字列型
 		data->type = C_CONSTSTR;
-		if(str_data[data->u.num&0x00ffffff].type == C_STR) {
+		if(type == C_STR) {
 			data->u.str = str_data[data->u.num&0x00ffffff].u.str;
 		} else {
 			switch(prefix) {
@@ -2102,9 +2106,9 @@ static void get_val(struct script_state *st,struct script_data *data)
 	} else {
 		// 数値型
 		data->type = C_INT;
-		if(str_data[data->u.num&0x00ffffff].type == C_INT) {
+		if(type == C_INT) {
 			data->u.num = str_data[data->u.num&0x00ffffff].u.val;
-		} else if(str_data[data->u.num&0x00ffffff].type == C_PARAM) {
+		} else if(type == C_PARAM) {
 			if(sd)
 				data->u.num = pc_readparam(sd,str_data[data->u.num&0x00ffffff].u.val);
 		} else {
