@@ -2044,7 +2044,6 @@ static void get_val(struct script_state *st,struct script_data *data)
 	struct map_session_data *sd = NULL;
 	char *name;
 	char prefix, postfix;
-	int type;
 
 	if(data->type != C_NAME)
 		return;
@@ -2052,32 +2051,21 @@ static void get_val(struct script_state *st,struct script_data *data)
 	name    = str_buf+str_data[data->u.num&0x00ffffff].str;
 	prefix  = *name;
 	postfix = name[strlen(name)-1];
-	type    = str_data[data->u.num&0x00ffffff].type;
-
-	if(prefix != '$' && prefix != '\'') {
-		if( (postfix == '$' && type == C_STR) ||
-		    (postfix != '$' && (type == C_INT || type == C_PARAM)) )
-		{
-			if((sd = script_rid2sd(st)) == NULL) {
-				printf("get_val error name?: %s\n",name);
-				if(postfix == '$')
-					data->u.str = NULL;
-				else
-					data->u.num = 0;
-			}
-		}
-	}
 
 	if(postfix == '$') {
 		// 文字列型
 		data->type = C_CONSTSTR;
-		if(type == C_STR) {
+		if(str_data[data->u.num&0x00ffffff].type == C_STR) {
 			data->u.str = str_data[data->u.num&0x00ffffff].u.str;
 		} else {
 			switch(prefix) {
 			case '@':
-				if(sd)
+				if((sd = script_rid2sd(st)) == NULL) {
+					printf("get_val error name?: %s\n", name);
+					data->u.str = "";
+				} else {
 					data->u.str = pc_readregstr(sd,data->u.num);
+				}
 				break;
 			case '$':
 				data->u.str = (char *)numdb_search(mapregstr_db,data->u.num);
@@ -2096,32 +2084,44 @@ static void get_val(struct script_state *st,struct script_data *data)
 				}
 				break;
 			default:
-				printf("script: get_val: illegal scope string variable.\n");
+				printf("script: get_val: illegal scope string variable %s.\n", name);
 				data->u.str = "!!ERROR!!";
 				break;
 			}
 		}
-		if( data->u.str == NULL )
+		if(data->u.str == NULL) {
 			data->u.str = "";
+		}
 	} else {
 		// 数値型
 		data->type = C_INT;
-		if(type == C_INT) {
+		if(str_data[data->u.num&0x00ffffff].type == C_INT) {
 			data->u.num = str_data[data->u.num&0x00ffffff].u.val;
-		} else if(type == C_PARAM) {
-			if(sd)
+		} else if(str_data[data->u.num&0x00ffffff].type == C_PARAM) {
+			if((sd = script_rid2sd(st)) == NULL) {
+				printf("get_val error name?: %s\n", name);
+				data->u.num = 0;
+			} else {
 				data->u.num = pc_readparam(sd,str_data[data->u.num&0x00ffffff].u.val);
+			}
 		} else {
 			switch(prefix) {
 			case '@':
-				if(sd)
+				if((sd = script_rid2sd(st)) == NULL) {
+					printf("get_val error name?: %s\n", name);
+					data->u.num = 0;
+				} else {
 					data->u.num = pc_readreg(sd,data->u.num);
+				}
 				break;
 			case '$':
 				data->u.num = (int)numdb_search(mapreg_db,data->u.num);
 				break;
 			case '#':
-				if(sd) {
+				if((sd = script_rid2sd(st)) == NULL) {
+					printf("get_val error name?: %s\n", name);
+					data->u.num = 0;
+				} else {
 					if(name[1] == '#')
 						data->u.num = pc_readaccountreg2(sd,name);
 					else
@@ -2142,8 +2142,12 @@ static void get_val(struct script_state *st,struct script_data *data)
 				}
 				break;
 			default:
-				if(sd)
+				if((sd = script_rid2sd(st)) == NULL) {
+					printf("get_val error name?: %s\n", name);
+					data->u.num = 0;
+				} else {
 					data->u.num = pc_readglobalreg(sd,name);
+				}
 				break;
 			}
 		}
