@@ -754,7 +754,7 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 	int  i;
 	char buf[8192];
 	FILE *fp = fopen(file, "r");
-	struct csvdb_data *csv = (struct csvdb_data*)aCalloc( sizeof(struct csvdb_data), 1);
+	struct csvdb_data *csv = (struct csvdb_data*)aCalloc( 1, sizeof(struct csvdb_data) );
 
 	csv->file = (char *)aStrdup( file );
 	if(fp == NULL) {
@@ -896,7 +896,7 @@ static int csvdb_resize(struct csvdb_data *csv, int row, int col)
 		while( csv->row_max <= row ) {
 			csv->row_max += 32;
 			csv->data = (struct csvdb_line*)aRealloc(
-				csv->data, sizeof(struct csvdb_data) * csv->row_max
+				csv->data, sizeof(struct csvdb_line) * csv->row_max
 			);
 			csv->index = (int*)aRealloc(
 				csv->index, sizeof(int) * csv->row_max

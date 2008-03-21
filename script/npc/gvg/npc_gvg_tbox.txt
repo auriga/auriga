@@ -49,18 +49,20 @@ OnKilled:
 
 
 //-----GM専用デバッグモード-----
-//===========================================================
-//prontera.gat,159,208,0	script	TBOX-Control	111,{
-//	if(getgmlevel(0))==0)
-//		end;
-//	mes "[TBOX-Control^ff0000(GM専用)^000000]";
-//	mes "宝箱を発生させますか？";
-//	next;
-//	if(select("はい","いいえ")==2)
-//		close;
-//	donpcevent "#TresureBox::OnClock0000";
-//	mes "[TBOX-Control^ff0000(GM専用)^000000]";
-//	mes "宝箱を発生させました。";
-//	close;
-//}
-//===========================================================
+/*
+===========================================================
+prontera.gat,156,195,0	script	TBOX-Control	111,{
+	if(getgmlevel()==0)
+		end;
+	mes "[TBOX-Control^ff0000(GM専用)^000000]";
+	mes "宝箱を発生させますか？";
+	next;
+	if(select("はい","いいえ")==2)
+		close;
+	donpcevent "#TresureBox::OnClock0000";
+	mes "[TBOX-Control^ff0000(GM専用)^000000]";
+	mes "宝箱を発生させました。";
+	close;
+}
+===========================================================
+*/
