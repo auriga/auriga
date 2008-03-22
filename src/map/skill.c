@@ -4392,7 +4392,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sc && sc->data[SC_STONE].timer != -1) {
 			status_change_end(bl,SC_STONE,-1);
 		}
-		else if(!battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) && atn_rand()%100 < skilllv*4+20) {
+		else if(!battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) && atn_rand()%100 < (skilllv*4+20)*(97-status_get_mdef(bl)-status_get_luk(bl)/5)/100) {
 			status_change_start(bl,SC_STONE,skilllv,0,0,5000,skill_get_time2(skillid,skilllv),0);
 		}
 		else {
