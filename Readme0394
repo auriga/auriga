@@ -1,7 +1,13 @@
 ----------------------------------------
+//0477 [2008/03/23] by Cocoa
+
+・AthenaProject Rev.293を参考に矢作成データベースを修正
+	thanks to Shimodaさん
+
+----------------------------------------
 //0476 [2008/03/22] by Rayce
 
-・AthenaProject Rev.296より、CSV命令/関数を使用するとサーバクラッシュするバグを修正（db.c）
+・AthenaProject Rev.294より、CSV命令/関数を使用するとサーバクラッシュするバグを修正（db.c）
 	thanks to soriaさん
 
 ・砦の宝箱のGM専用デバッグモードが作動しなくなっていたのを修正（npc_gvg_tbox.txt）
