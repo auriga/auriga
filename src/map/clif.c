@@ -3615,8 +3615,10 @@ void clif_guildstorageitemlist(struct map_session_data *sd, struct guild_storage
 	int i,n,fd;
 #if PACKETVER < 5
 	unsigned char buf[4+10*MAX_GUILD_STORAGE];
-#else
+#elif PACKETVER < 14
 	unsigned char buf[4+18*MAX_GUILD_STORAGE];
+#else
+	unsigned char buf[4+22*MAX_GUILD_STORAGE];
 #endif
 
 	nullpo_retv(sd);
@@ -3704,7 +3706,7 @@ void clif_guildstorageitemlist(struct map_session_data *sd, struct guild_storage
 		WBUFW(buf,n*22+16)=stor->store_item[i].card[1];
 		WBUFW(buf,n*22+18)=stor->store_item[i].card[2];
 		WBUFW(buf,n*22+20)=stor->store_item[i].card[3];
-		WBUFL(buf,n*22*22)=stor->store_item[i].limit;
+		WBUFL(buf,n*22+22)=stor->store_item[i].limit;
 		n++;
 	}
 	if(n){
@@ -3737,6 +3739,7 @@ void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storag
 #endif
 
 	nullpo_retv(sd);
+	nullpo_retv(stor);
 
 	fd=sd->fd;
 
@@ -3886,7 +3889,7 @@ void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storag
 				WBUFW(buf,n*26+22)=stor->store_item[i].card[3];
 		}
 		WBUFL(buf,n*26+24)=stor->store_item[i].limit;
-		WBUFL(buf,n*26+28)=0;
+		WBUFW(buf,n*26+28)=0;
 		n++;
 	}
 	if(n){
