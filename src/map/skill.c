@@ -5612,7 +5612,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			dist = unit_distance2(src,bl);
-			if( atn_rand()%100 < (50 - dist * 5) * sc_def_vit / 100 ) {
+			if( atn_rand()%100 < (65 - dist * 5) * sc_def_vit / 100 ) {
 				status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			} else if(sd) {
 				clif_skill_fail(sd,skillid,0,0);

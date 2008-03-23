@@ -1,4 +1,18 @@
 ----------------------------------------
+//0481 [2008/03/24] by Cocoa
+
+・AthenaProject Rev.203より一部merge
+	-> スタン確率の判定式を修正（skill.c）
+	thanks to Blazeさん
+
+・AthenaProject Rev.233よりmerge、thanks to ico776さん
+	-> ステータス固定系ボーナスで、-の値を設定できないように修正（status.c）
+	-> アイテムボーナスbFixCriticalの最大値を100から無制限に修正（status.c）
+
+・AthenaProject Rev.234を参考に修正、thanks to ico776さん
+	-> ドロップ率0%のアイテムがスティール可能だった不具合修正（pc.c）
+
+----------------------------------------
 //0480 [2008/03/24] by Rayce
 
 ・0447以降、PACKETVERが14以上のときにギルド倉庫が開けなかったバグを修正（clif.c）

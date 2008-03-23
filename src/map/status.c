@@ -2019,17 +2019,17 @@ L_RECALC:
 		sd->aspd = sd->aspd*(100 + 10*(5 - pc_checkskill(sd,KN_CAVALIERMASTERY)))/ 100;
 
 	// ステータス固定
-	if(sd->fix_status.max_hp) {
+	if(sd->fix_status.max_hp > 0) {
 		sd->status.max_hp = sd->fix_status.max_hp;
 	}
-	if(sd->fix_status.max_sp) {
+	if(sd->fix_status.max_sp > 0) {
 		sd->status.max_sp = sd->fix_status.max_sp;
 	}
-	if(sd->fix_status.atk) {
+	if(sd->fix_status.atk > 0) {
 		sd->base_atk = sd->fix_status.atk;
 		sd->watk = sd->watk2 = 0;
 	}
-	if(sd->fix_status.matk) {
+	if(sd->fix_status.matk > 0) {
 		sd->matk1 = sd->matk2 = sd->fix_status.matk;
 	}
 	if(sd->fix_status.def > 0 && sd->fix_status.def <= 100) {
@@ -2038,13 +2038,13 @@ L_RECALC:
 	if(sd->fix_status.mdef > 0 && sd->fix_status.mdef <= 100) {
 		sd->mdef = sd->fix_status.mdef;
 	}
-	if(sd->fix_status.hit) {
+	if(sd->fix_status.hit > 0) {
 		sd->hit = sd->fix_status.hit;
 	}
-	if(sd->fix_status.critical > 0 && sd->fix_status.critical <= 100) {
+	if(sd->fix_status.critical > 0) {
 		sd->critical = 10 * sd->fix_status.critical;
 	}
-	if(sd->fix_status.flee) {
+	if(sd->fix_status.flee > 0) {
 		sd->flee = sd->fix_status.flee;
 	}
 	if(sd->fix_status.aspd >= 10 && sd->fix_status.aspd <= 199) {
