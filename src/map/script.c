@@ -10246,12 +10246,11 @@ int buildin_csvreadarray(struct script_state *st)
 		if( max + (num >> 24) > 128 ) {
 			max = 128 - (num>>24);
 		}
-		if( postfix == '$' )
-			v = (const void *)csvdb_get_str(csv, row, i);
-		else
-			v = (const void *)csvdb_get_num(csv, row, i);
-
 		for( i = 0; i < max; i++ ) {
+			if( postfix == '$' )
+				v = (const void *)csvdb_get_str(csv, row, i);
+			else
+				v = (const void *)csvdb_get_num(csv, row, i);
 			set_reg(st,sd,num+(i<<24),name,v,st->stack->stack_data[st->start+4].ref);
 		}
 	}
