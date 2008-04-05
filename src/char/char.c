@@ -2425,10 +2425,10 @@ static int char_delete(const struct mmo_chardata *cd)
 		merc_delete(cd->st.merc_id);
 	// ギルド脱退
 	if(cd->st.guild_id)
-		inter_guild_leave(cd->st.guild_id,cd->st.account_id,cd->st.char_id);
+		inter_guild_leave(cd->st.guild_id, cd->st.account_id, cd->st.char_id);
 	// パーティー脱退
 	if(cd->st.party_id)
-		inter_party_leave(cd->st.party_id, cd->st.account_id, cd->st.name);
+		inter_party_leave(cd->st.party_id, cd->st.account_id, cd->st.char_id);
 	// 離婚
 	if(cd->st.partner_id){
 		const struct mmo_chardata *p_cd = char_load(cd->st.partner_id);

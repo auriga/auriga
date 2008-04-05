@@ -5,7 +5,7 @@ R inter鯖=>map鯖
 R 3800-389f
 	-1,-1,27, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  0, 0,  0, 0,	// 3810-
-	35,-1,35,13, 34,29, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
+	35,-1,39,13, 38,33, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 14,67,186,-1,	// 3830-
 	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
@@ -16,15 +16,14 @@ R 3800-389f
 S 3000-309f
 	-1,-1, 7, 0, -1, 6, 0, 0,  6, 0, 0, 0,  0, 0,  0, 0,	// 3000-
 	 6,-1, 0, 0,  0, 0, 0, 0, 10,-1,14, 6,  0, 0,  0, 0,	// 3010-
-	72, 6,52,16, 34,53, 6,-1, 34, 0, 0, 0,  0, 0,  0, 0,	// 3020-
+	78, 6,56,16, 14,33, 6,-1, 14, 0, 0, 0,  0, 0,  0, 0,	// 3020-
 	-1, 6,-1, 0, 55,19, 6,-1, 14,-1,-1,-1, 18,19,186,-1,	// 3030-
-	 5, 9, 0, 0,  0, 0, 0, 0,  0. 6,-1,10, 10,10, -1, 0,	// 3040-
+	 5, 9, 0, 0,  0, 0, 0, 0,  0, 6,-1,10, 10,10, -1, 0,	// 3040-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3050-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-
 	-1,14,-1,14,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3070-
 	48,14,-1, 6,  0, 0, 0, 0, -1,14,-1,14,  0, 0,  0, 0,	// 3080-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3090-
-
 
 
 S 3000 <len>.w <message>.?B
@@ -85,7 +84,7 @@ R 381b <guild_id>.l <succeed>.B
 	ギルド倉庫ロック解除返答
 	succeed=0 失敗、succeed=1 成功（失敗でも構わないので返信を待たなくてもいい）
 
-S 3020 <account_id>.l <party_name>.24B <nick_name>.24B <map_name>.16B <level>.w
+S 3020 <account_id>.l <char_id>.l <party_name>.24B <item>.B <item2>.B <nick_name>.24B <map_name>.16B <level>.w
 	パーティ作成要求
 R 3820 <account_id>.l <fail>.B <party_id>.l <party_name>.24B 
 	パーティ成功可否（自分のマップ鯖のみ）
@@ -98,9 +97,9 @@ R 3821 <len>.w <struct party>.?B
 	len=8 パーティは存在しない（受信したら該当キャラを未所属に変更する）
 	len>8 パーティ情報（受信したらクライアントに送ること）
 	（要求してきたマップ鯖へ）
-S 3022 <party_id>.l <account_id>.l <nick>.24B <map_name>.16B <level>.w
+S 3022 <party_id>.l <account_id>.l <char_id>.l <nick>.24B <map_name>.16B <level>.w
 	パーティ追加要求
-R 3822 <party_id>.l <account_id>.l <fail>.B <nick>.24B
+R 3822 <party_id>.l <account_id>.l <char_id>.l <fail>.B <nick>.24B
 	パーティ追加通知（要求してきたマップ鯖へ）
 	fail=00で成功、fail=01で失敗
 	（成功時はこの直後に全鯖にパーティ情報が送られる）
@@ -111,13 +110,13 @@ R 3823 <party_id>.l <account_id>.l <exp>.B <item>.B <fail>.B
 	fail=0x00 パーティ設定変更完了
 	fail=0x01 expの変更失敗
 	fail=0x10 itemの変更失敗
-S 3024 <party_id>.l <account_id>.l <nick>.24B
+S 3024 <party_id>.l <account_id>.l <char_id>.l
 	パーティ脱退要求
-R 3824 <party_id>.l <account_id>.l <nick>.24B
+R 3824 <party_id>.l <account_id>.l <char_id>.l <nick>.24B
 	パーティ脱退通知（全マップ鯖へ）
-S 3025 <party_id>.l <account_id>.l <map_name>.16B <online>.B <level>.w <nick>.24B
+S 3025 <party_id>.l <account_id>.l <char_id>.l <map_name>.16B <online>.B <level>.w
 	パーティマップ更新/オンライン要求
-R 3825 <party_id>.l <account_id>.l <map_name>.16B <online>.B <level>.w <nick>.24B
+R 3825 <party_id>.l <account_id>.l <char_id>.l <map_name>.16B <online>.B <level>.w
 	パーティマップ更新通知（全マップ鯖へ）
 S 3026 <party_id>.l
 	パーティ解散要求（送られることはないと思われる）
@@ -129,7 +128,7 @@ S 3027 <len>.w <party_id>.l <account_id>.l <message>.?B
 	パーティ内発言要求
 R 3827 <len>.w <party_id>.l <account_id>.l <message>.?B
 	パーティ内発言通知（全マップ鯖へ）
-S 3028 <party_id>.l <account_id>.l <nick>.24B
+S 3028 <party_id>.l <account_id>.l <char_id>.l
 	別パーティに所属していないかチェック<party_id>は本来の所属
 
 S 3030 <len>.w <account_id>.l <guild_name>.24B <struct guild_member>.?B

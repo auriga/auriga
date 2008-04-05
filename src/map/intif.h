@@ -43,11 +43,11 @@ void intif_create_party(struct map_session_data *sd, char *name, int item, int i
 int intif_request_partyinfo(int party_id);
 void intif_party_addmember(struct map_session_data *sd);
 void intif_party_changeoption(int party_id, int account_id, int baby_id, int exp, int item);
-void intif_party_leave(int party_id, int account_id, const char * name);
+void intif_party_leave(int party_id, int account_id, int char_id);
 void intif_party_changemap(struct map_session_data *sd, unsigned char online);
 int intif_break_party(int party_id);
 int intif_party_message(int party_id,int account_id,char *mes,int len);
-int intif_party_checkconflict(int party_id,int account_id,char *nick);
+int intif_party_checkconflict(int party_id,int account_id,int char_id);
 
 
 void intif_guild_create(const char *name, const struct guild_member *master);

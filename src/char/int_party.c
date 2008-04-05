@@ -63,8 +63,8 @@ static int party_tostr(char *str,struct party *p)
 		p->party_id,p->name,p->exp,p->item);
 	for(i=0;i<MAX_PARTY;i++){
 		struct party_member *m = &p->member[i];
-		len+=sprintf(str+len,"%d,%d\t%s\t",
-			m->account_id,m->leader,
+		len+=sprintf(str+len,"%d,%d,%d\t%s\t",
+			m->account_id,m->char_id,m->leader,
 			((m->account_id>0)? m->name: "NoMember"));
 	}
 	return 0;
@@ -97,13 +97,22 @@ static int party_fromstr(char *str,struct party *p)
 		struct party_member *m = &p->member[i];
 		if(str==NULL)
 			return 1;
-		s=sscanf(str+1,"%d,%d\t%255[^\t]\t",
-			&tmp_int[0],&tmp_int[1],tmp_str);
-		if(s!=3)
-			return 1;
+		// Auriga-0482以降の形式
+		s=sscanf(str+1,"%d,%d,%d\t%255[^\t]\t",
+			&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str);
+		if(s!=4) {
+			const struct mmo_chardata *cd;
+			s=sscanf(str+1,"%d,%d\t%255[^\t]\t",
+				&tmp_int[0],&tmp_int[2],tmp_str);
+			if(s!=3)
+				return 1;
+			cd = char_nick2chardata(tmp_str);
+			tmp_int[1] = (cd)? cd->st.char_id: 0;
+		}
 
 		m->account_id = tmp_int[0];
-		m->leader     = tmp_int[1];
+		m->char_id    = tmp_int[1];
+		m->leader     = tmp_int[2];
 		strncpy(m->name,tmp_str,24);
 		m->name[23] = '\0';	// force \0 terminal
 
@@ -455,7 +464,7 @@ const struct party* party_sql_load_num(int party_id)
 	sqldbs_free_result(sql_res);
 
 	// Load members
-	rc = sqldbs_query(&mysql_handle, "SELECT `account_id`,`name` FROM `" CHAR_TABLE "` WHERE `party_id`='%d'", party_id);
+	rc = sqldbs_query(&mysql_handle, "SELECT `account_id`,`char_id`,`name` FROM `" CHAR_TABLE "` WHERE `party_id`='%d'", party_id);
 	if(rc) {
 		p->party_id = -1;
 		return NULL;
@@ -466,8 +475,9 @@ const struct party* party_sql_load_num(int party_id)
 		for(i=0;(sql_row = sqldbs_fetch(sql_res));i++){
 			struct party_member *m = &p->member[i];
 			m->account_id = atoi(sql_row[0]);
+			m->char_id    = atoi(sql_row[1]);
 			m->leader     = (m->account_id == leader_id) ? 1 : 0;
-			strncpy(m->name,sql_row[1],24);
+			strncpy(m->name,sql_row[2],24);
 			m->name[23] = '\0';	// force \0 terminal
 		}
 	}
@@ -691,14 +701,15 @@ int mapif_party_info(int fd,const struct party *p)
 }
 
 // パーティメンバ追加可否
-void mapif_party_memberadded(int fd, int party_id, int account_id, const char * name, unsigned char flag)
+void mapif_party_memberadded(int fd, int party_id, int account_id, int char_id, const char *name, unsigned char flag)
 {
 	WFIFOW(fd,0)=0x3822;
 	WFIFOL(fd,2)=party_id;
 	WFIFOL(fd,6)=account_id;
-	WFIFOB(fd,10)=flag;
-	strncpy(WFIFOP(fd,11), name, 24);
-	WFIFOSET(fd,35);
+	WFIFOL(fd,10)=char_id;
+	WFIFOB(fd,14)=flag;
+	strncpy(WFIFOP(fd,15), name, 24);
+	WFIFOSET(fd,39);
 
 	return;
 }
@@ -723,32 +734,33 @@ int mapif_party_optionchanged(int fd,struct party *p,int account_id,int flag)
 }
 
 // パーティ脱退通知
-int mapif_party_leaved(int party_id,int account_id,char *name)
+int mapif_party_leaved(int party_id,int account_id,int char_id,const char *name)
 {
 	unsigned char buf[64];
 
 	WBUFW(buf,0)=0x3824;
 	WBUFL(buf,2)=party_id;
 	WBUFL(buf,6)=account_id;
-	memcpy(WBUFP(buf,10),name,24);
-	mapif_sendall(buf,34);
+	WBUFL(buf,10)=char_id;
+	strncpy(WBUFP(buf,14),name,24);
+	mapif_sendall(buf,38);
 	printf("int_party: party leaved %d %d %s\n",party_id,account_id,name);
 	return 0;
 }
 
 // パーティマップ更新通知
-static void mapif_party_membermoved(struct party *p,int idx)
+static void mapif_party_membermoved(int party_id, struct party_member *m)
 {
-	unsigned char buf[53];
+	unsigned char buf[36];
 
 	WBUFW(buf,0)=0x3825;
-	WBUFL(buf,2)=p->party_id;
-	WBUFL(buf,6)=p->member[idx].account_id;
-	memcpy(WBUFP(buf,10),p->member[idx].map,16);
-	WBUFB(buf,26)=p->member[idx].online;
-	WBUFW(buf,27)=p->member[idx].lv;
-	memcpy(WBUFP(buf,29),p->member[idx].name,24);
-	mapif_sendall(buf,53);
+	WBUFL(buf,2)=party_id;
+	WBUFL(buf,6)=m->account_id;
+	WBUFL(buf,10)=m->char_id;
+	memcpy(WBUFP(buf,14),m->map,16);
+	WBUFB(buf,30)=m->online;
+	WBUFW(buf,31)=m->lv;
+	mapif_sendall(buf,33);
 
 	return;
 }
@@ -785,7 +797,8 @@ int mapif_party_message(int party_id,int account_id,char *mes,int len)
 
 
 // パーティ
-int mapif_parse_CreateParty(int fd,int account_id,char *name,int item,int item2,char *nick,char *map,int lv)
+int mapif_parse_CreateParty(int fd, int account_id, int char_id, char *name,
+	unsigned char item, unsigned char item2, char *nick, char *map, unsigned short lv)
 {
 	struct party *p;
 	int i;
@@ -808,6 +821,7 @@ int mapif_parse_CreateParty(int fd,int account_id,char *name,int item,int item2,
 	p->exp  = 0;
 	p->item = (item? 1: 0) | (item2? 2: 0);
 	p->member[0].account_id = account_id;
+	p->member[0].char_id    = char_id;
 	memcpy(p->member[0].name,nick,24);
 	memcpy(p->member[0].map,map,16);
 	p->member[0].map[15] = '\0';	// force \0 terminal
@@ -840,31 +854,31 @@ int mapif_parse_PartyInfo(int fd,int party_id)
 }
 
 // パーティ追加要求
-int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,char *nick,char *map,int lv)
+int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,int char_id,char *nick,char *map,int lv)
 {
 	const struct party *p1 = party_load_num(party_id);
 	struct party p2;
 	int i;
 
 	if(p1 == NULL){
-		mapif_party_memberadded(fd, party_id, account_id, nick, 1);
+		mapif_party_memberadded(fd, party_id, account_id, char_id, nick, 1);
 		return 0;
 	}
 	memcpy(&p2,p1,sizeof(struct party));
 
 	for(i=0;i<MAX_PARTY;i++){
-		if (p2.member[i].account_id==account_id &&
-		    strncmp(p2.member[i].name, nick, 24) == 0)
+		if(p2.member[i].account_id == account_id && p2.member[i].char_id == char_id)
 			break;
-		if(p2.member[i].account_id==0){
-			p2.member[i].account_id=account_id;
+		if(p2.member[i].account_id == 0) {
+			p2.member[i].account_id = account_id;
+			p2.member[i].char_id    = char_id;
 			memcpy(p2.member[i].name,nick,24);
 			memcpy(p2.member[i].map,map,16);
 			p2.member[i].map[15] = '\0';	// force \0 terminal
 			p2.member[i].leader  = 0;
 			p2.member[i].online  = 1;
 			p2.member[i].lv=lv;
-			mapif_party_memberadded(fd, party_id, account_id, nick, 0);
+			mapif_party_memberadded(fd, party_id, account_id, char_id, nick, 0);
 			mapif_party_info(-1,&p2);
 
 			if( p2.exp>0 && !party_check_exp_share(&p2,0) ){
@@ -875,7 +889,7 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,char *nick,cha
 			return 0;
 		}
 	}
-	mapif_party_memberadded(fd, party_id, account_id, nick, 1);
+	mapif_party_memberadded(fd, party_id, account_id, char_id, nick, 1);
 	party_save(&p2);
 	return 0;
 }
@@ -905,7 +919,7 @@ int mapif_parse_PartyChangeOption(int fd,int party_id,int account_id,int baby_id
 }
 
 // パーティ脱退要求
-void mapif_parse_PartyLeave(int fd, int party_id, int account_id, const char * name)
+void mapif_parse_PartyLeave(int fd, int party_id, int account_id, int char_id)
 {
 	const struct party *p1 = party_load_num(party_id);
 	struct party p2;
@@ -916,10 +930,9 @@ void mapif_parse_PartyLeave(int fd, int party_id, int account_id, const char * n
 
 	memcpy(&p2,p1,sizeof(struct party));
 	for(i=0;i<MAX_PARTY;i++){
-		if (p2.member[i].account_id == account_id &&
-		    strncmp(p2.member[i].name, name, 24) == 0)
+		if(p2.member[i].account_id == account_id && p2.member[i].char_id == char_id)
 		{
-			mapif_party_leaved(party_id,account_id,p2.member[i].name);
+			mapif_party_leaved(party_id,account_id,p2.member[i].char_id,p2.member[i].name);
 			memset(&p2.member[i],0,sizeof(struct party_member));
 			if( party_check_empty(&p2) ) {
 				// 空になったので解散
@@ -943,7 +956,7 @@ void mapif_parse_PartyLeave(int fd, int party_id, int account_id, const char * n
 }
 
 // パーティマップ更新要求
-static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, char *map, unsigned char online, unsigned short lv, const char* name)
+static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, int char_id, char *map, unsigned char online, unsigned short lv)
 {
 	const struct party *p1 = party_load_num(party_id);
 	struct party p2;
@@ -954,14 +967,12 @@ static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, cha
 
 	memcpy(&p2,p1,sizeof(struct party));
 	for(i=0;i<MAX_PARTY;i++){
-		if (p2.member[i].account_id == account_id &&
-		    strncmp(p2.member[i].name, name, 24) == 0)
-		{
+		if(p2.member[i].account_id == account_id && p2.member[i].char_id == char_id) {
 			memcpy(p2.member[i].map,map,16);
 			p2.member[i].map[15] = '\0';	// force \0 terminal
 			p2.member[i].online  = online;
 			p2.member[i].lv      = lv;
-			mapif_party_membermoved(&p2,i);
+			mapif_party_membermoved(party_id, &p2.member[i]);
 
 			if( p2.exp>0 && !party_check_exp_share(&p2,0) ){
 				p2.exp=0;
@@ -995,7 +1006,7 @@ int mapif_parse_PartyMessage(int fd,int party_id,int account_id,char *mes,int le
 }
 
 // パーティチェック要求
-int mapif_parse_PartyCheck(int fd,int party_id,int account_id,char *nick)
+int mapif_parse_PartyCheck(int fd,int party_id,int account_id,int char_id)
 {
 	// とりあえず無視
 	return 0;
@@ -1009,15 +1020,15 @@ int mapif_parse_PartyCheck(int fd,int party_id,int account_id,char *nick)
 int inter_party_parse_frommap(int fd)
 {
 	switch(RFIFOW(fd,0)){
-	case 0x3020: mapif_parse_CreateParty(fd,RFIFOL(fd,2),RFIFOP(fd,6),RFIFOB(fd,30),RFIFOB(fd,31),RFIFOP(fd,32),RFIFOP(fd,56),RFIFOW(fd,72)); break;
+	case 0x3020: mapif_parse_CreateParty(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10),RFIFOB(fd,34),RFIFOB(fd,35),RFIFOP(fd,36),RFIFOP(fd,60),RFIFOW(fd,76)); break;
 	case 0x3021: mapif_parse_PartyInfo(fd,RFIFOL(fd,2)); break;
-	case 0x3022: mapif_parse_PartyAddMember(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10),RFIFOP(fd,34),RFIFOW(fd,50)); break;
+	case 0x3022: mapif_parse_PartyAddMember(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOP(fd,38),RFIFOW(fd,54)); break;
 	case 0x3023: mapif_parse_PartyChangeOption(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOB(fd,14),RFIFOB(fd,15)); break;
-	case 0x3024: mapif_parse_PartyLeave(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10)); break;
-	case 0x3025: mapif_parse_PartyChangeMap(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10),RFIFOB(fd,26),RFIFOW(fd,27),RFIFOP(fd,29)); break;
+	case 0x3024: mapif_parse_PartyLeave(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10)); break;
+	case 0x3025: mapif_parse_PartyChangeMap(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOB(fd,30),RFIFOW(fd,31)); break;
 	case 0x3026: mapif_parse_BreakParty(fd,RFIFOL(fd,2)); break;
 	case 0x3027: mapif_parse_PartyMessage(fd,RFIFOL(fd,4),RFIFOL(fd,8),RFIFOP(fd,12),RFIFOW(fd,2)-12); break;
-	case 0x3028: mapif_parse_PartyCheck(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10)); break;
+	case 0x3028: mapif_parse_PartyCheck(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10)); break;
 	default:
 		return 0;
 	}
@@ -1025,9 +1036,9 @@ int inter_party_parse_frommap(int fd)
 }
 
 // サーバーから脱退要求（キャラ削除用）
-void inter_party_leave(int party_id, int account_id, const char * name)
+void inter_party_leave(int party_id, int account_id, int char_id)
 {
-	mapif_parse_PartyLeave(-1, party_id, account_id, name);
+	mapif_parse_PartyLeave(-1, party_id, account_id, char_id);
 
 	return;
 }

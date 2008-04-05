@@ -60,7 +60,7 @@
 static const int packet_len_table[]={
 	-1,-1,27, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  0, 0,  0, 0,	// 3810-
-	35,-1,35,13, 34,53, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
+	35,-1,39,13, 38,33, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 14,67,186,-1,	// 3830-
 	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
@@ -460,13 +460,14 @@ void intif_create_party(struct map_session_data *sd, char *name, int item, int i
 
 	WFIFOW(inter_fd,0) = 0x3020;
 	WFIFOL(inter_fd,2) = sd->status.account_id;
-	memcpy(WFIFOP(inter_fd, 6),name,24);
-	WFIFOB(inter_fd,30) = item;
-	WFIFOB(inter_fd,31) = item2;
-	memcpy(WFIFOP(inter_fd,32),sd->status.name,24);
-	memcpy(WFIFOP(inter_fd,56),map[sd->bl.m].name,16);
-	WFIFOW(inter_fd,72)= sd->status.base_level;
-	WFIFOSET(inter_fd,74);
+	WFIFOL(inter_fd,6) = sd->status.char_id;
+	memcpy(WFIFOP(inter_fd, 10),name,24);
+	WFIFOB(inter_fd,34) = item;
+	WFIFOB(inter_fd,35) = item2;
+	memcpy(WFIFOP(inter_fd,36),sd->status.name,24);
+	memcpy(WFIFOP(inter_fd,60),map[sd->bl.m].name,16);
+	WFIFOW(inter_fd,76)= sd->status.base_level;
+	WFIFOSET(inter_fd,78);
 
 	return;
 }
@@ -487,19 +488,19 @@ int intif_request_partyinfo(int party_id)
 // パーティ追加要求
 void intif_party_addmember(struct map_session_data *sd)
 {
-	if (inter_fd < 0)
-		return;
+	nullpo_retv(sd);
 
-	if (sd == NULL)
+	if (inter_fd < 0)
 		return;
 
 	WFIFOW(inter_fd, 0) = 0x3022;
 	WFIFOL(inter_fd, 2) = sd->party_invite;
 	WFIFOL(inter_fd, 6) = sd->status.account_id;
-	memcpy(WFIFOP(inter_fd,10),sd->status.name,24);
-	memcpy(WFIFOP(inter_fd,34),map[sd->bl.m].name,16);
-	WFIFOW(inter_fd,50) = sd->status.base_level;
-	WFIFOSET(inter_fd,52);
+	WFIFOL(inter_fd,10) = sd->status.char_id;
+	memcpy(WFIFOP(inter_fd,14),sd->status.name,24);
+	memcpy(WFIFOP(inter_fd,38),map[sd->bl.m].name,16);
+	WFIFOW(inter_fd,54) = sd->status.base_level;
+	WFIFOSET(inter_fd,56);
 
 	return;
 }
@@ -522,7 +523,7 @@ void intif_party_changeoption(int party_id, int account_id, int baby_id, int exp
 }
 
 // パーティ脱退要求
-void intif_party_leave(int party_id, int account_id, const char * name)
+void intif_party_leave(int party_id, int account_id, int char_id)
 {
 	if (inter_fd < 0)
 		return;
@@ -530,8 +531,8 @@ void intif_party_leave(int party_id, int account_id, const char * name)
 	WFIFOW(inter_fd,0)=0x3024;
 	WFIFOL(inter_fd,2)=party_id;
 	WFIFOL(inter_fd,6)=account_id;
-	strncpy(WFIFOP(inter_fd,10), name, 24);
-	WFIFOSET(inter_fd,34);
+	WFIFOL(inter_fd,10)=char_id;
+	WFIFOSET(inter_fd,14);
 
 	return;
 }
@@ -539,20 +540,19 @@ void intif_party_leave(int party_id, int account_id, const char * name)
 // パーティ移動要求
 void intif_party_changemap(struct map_session_data *sd, unsigned char online)
 {
-	if (inter_fd < 0)
-		return;
+	nullpo_retv(sd);
 
-	if (sd == NULL)
+	if (inter_fd < 0)
 		return;
 
 	WFIFOW(inter_fd,0)=0x3025;
 	WFIFOL(inter_fd,2)=sd->status.party_id;
 	WFIFOL(inter_fd,6)=sd->status.account_id;
-	memcpy(WFIFOP(inter_fd,10),map[sd->bl.m].name,16);
-	WFIFOB(inter_fd,26)=online;
-	WFIFOW(inter_fd,27)=sd->status.base_level;
-	memcpy(WFIFOP(inter_fd,29),sd->status.name,24);
-	WFIFOSET(inter_fd,53);
+	WFIFOL(inter_fd,10)=sd->status.char_id;
+	memcpy(WFIFOP(inter_fd,14),map[sd->bl.m].name,16);
+	WFIFOB(inter_fd,30)=online;
+	WFIFOW(inter_fd,31)=sd->status.base_level;
+	WFIFOSET(inter_fd,33);
 
 	return;
 }
@@ -587,7 +587,7 @@ int intif_party_message(int party_id,int account_id,char *mes,int len)
 }
 
 // パーティ競合チェック要求
-int intif_party_checkconflict(int party_id,int account_id,char *nick)
+int intif_party_checkconflict(int party_id,int account_id,int char_id)
 {
 	if (inter_fd < 0)
 		return -1;
@@ -595,8 +595,8 @@ int intif_party_checkconflict(int party_id,int account_id,char *nick)
 	WFIFOW(inter_fd,0)=0x3028;
 	WFIFOL(inter_fd,2)=party_id;
 	WFIFOL(inter_fd,6)=account_id;
-	memcpy(WFIFOP(inter_fd,10),nick,24);
-	WFIFOSET(inter_fd,34);
+	WFIFOL(inter_fd,10)=char_id;
+	WFIFOSET(inter_fd,14);
 
 	return 0;
 }
@@ -1353,8 +1353,8 @@ static int intif_parse_PartyInfo(int fd)
 static void intif_parse_PartyMemberAdded(int fd)
 {
 	if(battle_config.etc_log)
-		printf("intif: party member added %d %d %d %-24s\n",RFIFOL(fd,2),RFIFOL(fd,6),RFIFOB(fd,10),RFIFOP(fd,11));
-	party_member_added(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOB(fd,10),RFIFOP(fd,11));
+		printf("intif: party member added %d %d %d %-24s\n",RFIFOL(fd,2),RFIFOL(fd,6),RFIFOB(fd,14),RFIFOP(fd,15));
+	party_member_added(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOB(fd,14));
 
 	return;
 }
@@ -1370,8 +1370,8 @@ static int intif_parse_PartyOptionChanged(int fd)
 static int intif_parse_PartyMemberLeaved(int fd)
 {
 	if(battle_config.etc_log)
-		printf("intif: party member leaved %d %d %s\n",RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10));
-	party_member_leaved(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10));
+		printf("intif: party member leaved %d %d %s\n",RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,14));
+	party_member_leaved(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10));
 	return 0;
 }
 
@@ -1385,7 +1385,7 @@ static int intif_parse_PartyBroken(int fd)
 // パーティ移動通知
 static void intif_parse_PartyMove(int fd)
 {
-	party_recv_movemap(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10),RFIFOB(fd,26),RFIFOW(fd,27),RFIFOP(fd,29));
+	party_recv_movemap(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOB(fd,30),RFIFOW(fd,31));
 
 	return;
 }

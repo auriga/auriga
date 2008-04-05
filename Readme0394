@@ -1,4 +1,17 @@
 ----------------------------------------
+//0482 [2008/04/06] by Rayce
+
+・パーティメンバーの照合はキャラ名ではなくキャラIDで行うように改善
+　（int_party.*, inter.c, mmo.h, intif.*, party.*）
+	-> party_member構造体にchar_idメンバを追加
+	-> inter, mapサーバ間のパケットを一部変更
+
+・意味のない関数 party_check_conflict() の呼び出しをコメントアウト（party.c）
+・TXT: JOURNAL_IDENTIFIER を 08 に引き上げ（journal.c）
+
+・0481の pc_steal_item() をさらに修正（pc.c）
+
+----------------------------------------
 //0481 [2008/03/24] by Cocoa
 
 ・AthenaProject Rev.203より一部merge

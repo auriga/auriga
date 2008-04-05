@@ -3670,12 +3670,11 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 		for(i=0; i<ITEM_DROP_COUNT-1; i++) {
 			itemid = mob_db[md->class_].dropitem[i].nameid;
 			if(itemid > 0 && itemdb_type(itemid) != 6) {
-				if(mob_db[md->class_].dropitem[i].p<=0)
-					rate = 0;
-				else
-					rate = mob_db[md->class_].dropitem[i].p * skill * battle_config.steal_rate / 10000 + 1;
+				if(mob_db[md->class_].dropitem[i].p <= 0)
+					continue;
+				rate = mob_db[md->class_].dropitem[i].p * skill * battle_config.steal_rate / 10000 + 1;
 				if(rate > 0 && sd->add_steal_rate > 0)
-					rate *= sd->add_steal_rate/100;
+					rate = rate * sd->add_steal_rate / 100;
 
 				if(battle_config.battle_log)
 					printf("skill=%d, mob base=%d, rate=%d, bc.rate=%d, add=%d\n",

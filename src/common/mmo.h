@@ -283,6 +283,7 @@ struct gm_account {
 
 struct party_member {
 	int account_id;
+	int char_id;
 	char name[24],map[24];
 	unsigned char leader,online;
 	unsigned short lv;
