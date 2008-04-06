@@ -932,6 +932,14 @@ void mapif_parse_PartyLeave(int fd, int party_id, int account_id, int char_id)
 	for(i=0;i<MAX_PARTY;i++){
 		if(p2.member[i].account_id == account_id && p2.member[i].char_id == char_id)
 		{
+			const struct mmo_chardata *cd = char_load(char_id);
+			if(cd) {
+				// パーティIDを0に初期化
+				struct mmo_charstatus st;
+				memcpy(&st, &cd->st, sizeof(st));
+				st.party_id = 0;
+				char_save(&st);
+			}
 			mapif_party_leaved(party_id,account_id,p2.member[i].char_id,p2.member[i].name);
 			memset(&p2.member[i],0,sizeof(struct party_member));
 			if( party_check_empty(&p2) ) {

@@ -74,21 +74,25 @@ extern char inter_conf_filename[];
 
 #ifdef TXT_ONLY
 
+int char_txt_save(struct mmo_charstatus *st);
 const struct mmo_chardata* char_txt_load(int char_id);
 const struct mmo_chardata* char_txt_nick2chardata(const char *char_name);
 
 #ifndef _CHAR_C_
-#define char_load char_txt_load
+#define char_save          char_txt_save
+#define char_load          char_txt_load
 #define char_nick2chardata char_txt_nick2chardata
 #endif /* _CHAR_C_ */
 
 #else
 
+int char_sql_save(struct mmo_charstatus *st);
 const struct mmo_chardata* char_sql_load(int char_id);
 const struct mmo_chardata* char_sql_nick2chardata(const char *char_name);
 
 #ifndef _CHAR_C_
-#define char_load char_sql_load
+#define char_save          char_sql_save
+#define char_load          char_sql_load
 #define char_nick2chardata char_sql_nick2chardata
 #endif /* _CHAR_C_ */
 
