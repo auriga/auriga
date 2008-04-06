@@ -1833,6 +1833,7 @@ int char_sql_delete_sub(int char_id)
 	sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`=3 AND `char_id`='%d'", char_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", char_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", char_id);
 
 	return 1;
 }
