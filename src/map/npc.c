@@ -571,7 +571,7 @@ static int npc_checknear(struct map_session_data *sd, struct npc_data *nd)
 	nullpo_retr(1, sd);
 
 	if (nd == NULL || nd->bl.type != BL_NPC) {
-		printf("npc_checknear: npc not found!!");
+		printf("npc_checknear: npc not found!!\n");
 		return 1;
 	}
 

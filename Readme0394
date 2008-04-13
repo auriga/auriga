@@ -1,4 +1,23 @@
 ----------------------------------------
+//0485 [2008/04/14] by Cocoa
+
+・特定の条件でクリティカルダメージが増加しない不具合修正（battle.c）
+
+・AthenaProject Rev.265よりmerge、thanks to Arc87さん
+	-> 料理材料の再修正
+
+・AthenaProject Rev.281よりmerge、thanks to miyajiさん
+	-> 「十字架のヘアバンド」作成クエストの成功アイテムIDが小悪魔帽になっていたのを修正
+
+・AthenaProject Rev.282よりmerge、thanks to Arc87さん
+	-> 「ピアノの鍵盤クエスト」と「TheSignクエスト」で魔女の処理に不都合が出ていたのを修正
+
+・AthenaProject Rev.284よりmerge、thanks to Blazeさん
+	-> 名も無き島アップデート関連のモンスター出現情報を最新化
+
+・細々した点を修正（npc.c）
+
+----------------------------------------
 //0484 [2008/04/07] by Rayce
 
 ・キャラ削除時はパーティIDとギルドIDの0初期化は不要なので、0483を修正（int_guild.c, int_party.c）

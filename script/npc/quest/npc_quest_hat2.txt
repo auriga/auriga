@@ -615,7 +615,7 @@ comodo.gat,228,159,4	script	ヘアバンドお姉さん	700,{
 	case 1:
 		setarray '@need,2608,7069;
 		setarray '@amount,1,500;
-		set '@gain,5038;
+		set '@gain,5036;
 		break;
 	case 2:
 		setarray '@need,2233,746;

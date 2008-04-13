@@ -1023,14 +1023,17 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 	if(type == 0x0a) {
 		/* クリティカル攻撃 */
 		damage += atkmax;
-		if(sd && (sd->atk_rate != 100 || sd->weapon_atk_rate[sd->status.weapon] != 0)) {
-			damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon])) / 100;
+		if(sd) {
+			if(sd->atk_rate != 100 || sd->weapon_atk_rate[sd->status.weapon] != 0)
+				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon])) / 100;
 
 			// クリティカル時ダメージ増加
-			damage += damage *sd->critical_damage / 100;
+			if(sd->critical_damage != 100)
+				damage += damage * sd->critical_damage / 100;
+
+			if(sd->state.arrow_atk)
+				damage += sd->arrow_atk;
 		}
-		if(sd && sd->state.arrow_atk)
-			damage += sd->arrow_atk;
 	} else {
 		/* 通常攻撃・スキル攻撃 */
 		if(atkmax > atkmin)

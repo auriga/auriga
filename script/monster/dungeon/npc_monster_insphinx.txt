@@ -30,7 +30,7 @@ in_sphinx3.gat,0,0,0,0	monster	ミミック	1191,5,600000,300000,1
 // スフィンクスダンジョン B4F - in_sphinx4.gat
 //------------------------------------------------------------
 in_sphinx4.gat,0,0,0,0	monster	ミノタウロス	1149,50,0,0,0
-in_sphinx4.gat,0,0,0,0	monster	マルドゥーク	1140,15,0,0,0
+in_sphinx4.gat,0,0,0,0	monster	アヌビス	1098,15,0,0,0
 in_sphinx4.gat,0,0,0,0	monster	ミミック	1191,4,600000,300000,1
 in_sphinx4.gat,0,0,0,0	monster	パサナ		1154,20,0,0,0
 
@@ -40,6 +40,6 @@ in_sphinx4.gat,0,0,0,0	monster	パサナ		1154,20,0,0,0
 in_sphinx5.gat,0,0,0,0	monster	パサナ			1154,70,0,0,0
 in_sphinx5.gat,0,0,0,0	monster	マーター		1146,10,0,0,0
 in_sphinx5.gat,0,0,0,0	monster	サイドワインダー	1037,20,0,0,0
-in_sphinx5.gat,0,0,0,0	monster	マルドゥーク		1140,10,0,0,0
+in_sphinx5.gat,0,0,0,0	monster	アヌビス		1098,10,0,0,0
 in_sphinx5.gat,0,0,0,0	monster	ミミック		1191,7,600000,300000,1
 in_sphinx5.gat,0,0,0,0	monster	ファラオ		1157,1,3600000,1800000,1
