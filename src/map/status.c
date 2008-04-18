@@ -3486,7 +3486,10 @@ int status_get_adelay(struct block_list *bl)
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl) {
 			int guardup_lv = ((struct mob_data*)bl)->guardup_lv;
-			adelay = mob_db[((struct mob_data *)bl)->class_].adelay;
+			if(mob_db[((struct mob_data *)bl)->class_].adelay < mob_db[((struct mob_data *)bl)->class_].amotion)
+				adelay = mob_db[((struct mob_data *)bl)->class_].amotion;
+			else
+				adelay = mob_db[((struct mob_data *)bl)->class_].adelay;
 
 			if(guardup_lv > 0)
 				aspd_rate -= 5 + 5*guardup_lv;
