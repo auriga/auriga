@@ -6765,24 +6765,22 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 	switch( type ) {
 	case SC_SIGHT:	/* サイト */
 	case SC_CONCENTRATE:
-		if(sc->option & 0x06) {
+		if(sc->option & 0x46) {
 			status_change_end(bl, SC_HIDING, -1);
 			status_change_end(bl, SC_CLOAKING, -1);
+			status_change_end( bl, SC_INVISIBLE, -1);
 		}
 		break;
 	case SC_RUWACH:	/* ルアフ */
-		if(sc->option & 0x06) {
+		if(sc->option & 0x46) {
 			status_change_end(bl, SC_HIDING, -1);
 			status_change_end(bl, SC_CLOAKING, -1);
+			status_change_end( bl, SC_INVISIBLE, -1);
 			if(battle_check_target(src, bl, BCT_ENEMY) > 0)
 				battle_skill_attack(BF_MAGIC,src,src,bl,AL_RUWACH,skilllv,tick,0);
 		}
 		break;
 	case SC_SIGHTBLASTER:
-		if(sc->option & 0x06) {
-			status_change_end(bl, SC_HIDING, -1);
-			status_change_end(bl, SC_CLOAKING, -1);
-		}
 		if(battle_check_target(src, bl, BCT_ENEMY) > 0 && !unit_isdead(bl)) {
 			struct status_change *ssc;
 			battle_skill_attack(BF_MAGIC,src,src,bl,WZ_SIGHTBLASTER,skilllv,tick,0);

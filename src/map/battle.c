@@ -3001,9 +3001,6 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case AL_RUWACH:
 			MATK_FIX( 145, 100 );
 			break;
-		case WZ_SIGHTBLASTER:
-			MATK_FIX( 145, 100 );
-			break;
 		case SL_STIN:	// エスティン
 			if(status_get_size(target) == 0) {
 				MATK_FIX( 10*skill_lv, 100 );

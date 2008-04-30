@@ -2941,7 +2941,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					bl = src;
 					break;
 				case NJ_HYOUSYOURAKU:		/* 氷柱落し */
-					ar = 7;
+					ar = 3;
 					skill_area_temp[2] = bl->x;
 					skill_area_temp[3] = bl->y;
 					bl = src;

@@ -1,4 +1,17 @@
 ----------------------------------------
+//0488 [2008/05/01] by Cocoa
+
+・AthenaProject Rev.332よりmerge、thanks to nanashiさん
+	-> 氷晶落（氷柱落とし）の範囲を自分中心7x7セルに修正
+
+・AthenaProject Rev.328よりmerge、thanks to nanashiさん
+	-> サイトブラスターでクローキング、ハイディングを解除できないように修正
+	-> MATK倍率を等倍に変更
+
+・AthenaProject Rev.326を参考に修正
+	-> サイト、ワイドサイト、ルアフ、集中力向上、ディテクティングでインビジブルを解除できるように修正
+
+----------------------------------------
 //0487 [2008/05/01] by Cocoa
 
 ・AthenaProject Rev.291よりmerge、thanks to Blazeさん
