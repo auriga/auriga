@@ -3861,8 +3861,8 @@ int parse_char(int fd)
 			WFIFOB(fd,6)=AURIGA_RELEASE_FLAG;
 			WFIFOB(fd,7)=AURIGA_OFFICIAL_FLAG;
 			WFIFOB(fd,8)=AURIGA_SERVER_INTER | AURIGA_SERVER_CHAR;
-			WFIFOB(fd,9)=AURIGA_MOD_VERSION;
-			WFIFOSET(fd,10);
+			WFIFOW(fd,9)=get_current_version();
+			WFIFOSET(fd,11);
 			RFIFOSKIP(fd,2);
 			return 0;
 		case 0x7532:	// 接続の切断(defaultと処理は一緒だが明示的にするため)
@@ -4253,14 +4253,14 @@ int do_init(int argc,char **argv)
 {
 	int i;
 
-	printf("Auriga Char Server [%s] v%d.%d.%d mod%d\n",
+	printf("Auriga Char Server [%s] v%d.%d.%d version %04d\n",
 #ifdef TXT_ONLY
 		"TXT",
 #else
 		"SQL",
 #endif
-		AURIGA_MAJOR_VERSION,AURIGA_MINOR_VERSION,AURIGA_REVISION,
-		AURIGA_MOD_VERSION
+		AURIGA_MAJOR_VERSION, AURIGA_MINOR_VERSION, AURIGA_REVISION,
+		get_current_version()
 	);
 
 	for(i = 1; i < argc - 1; i += 2) {

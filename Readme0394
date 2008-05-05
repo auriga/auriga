@@ -1,4 +1,20 @@
 ----------------------------------------
+//0490 [2008/05/06] by Rayce
+
+・コンソールに表示するバージョン番号を、Readmeから参照するように（login.c, char.c, map.c）
+	common/version.cを追加
+	取得に失敗した場合は、AURIGA_REVISIONの値を使用する
+
+・AURIGA_MOD_VERSION は意味がないので、代わりにReameのバージョンを参照する（login.c, clif.c）
+	管理用パケット0x7531のパケット長を拡大
+	tool/ladmin, tool/checkversion, tool/php/auriga.php を修正
+
+・txt-converter.exeにもバージョン番号を表示するように（converter.c）
+・MAPサーバのコンソールに、タグ名 map_server_tag を表示するように（map.c）
+・サーバ起動時にPACKETVERを表示するように（core.c）
+・warning修正（login.c, party.c）
+
+----------------------------------------
 //0489 [2008/05/06] by Rayce
 
 ・0327以降、ギルドスキルが発動しなくなっていた致命的なバグを修正（clif.c）

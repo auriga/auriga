@@ -399,7 +399,7 @@ static void party_check_conflict(struct map_session_data *sd)
 {
 	nullpo_retv(sd);
 
-	intif_party_checkconflict(sd->status.party_id,sd->status.account_id,sd->status.char_id);
+	//intif_party_checkconflict(sd->status.party_id,sd->status.account_id,sd->status.char_id);
 
 	return;
 }
@@ -443,7 +443,7 @@ void party_member_added(int party_id, int account_id, int char_id, unsigned char
 		clif_party_inviteack(sd2,sd->status.name,2);
 
 	// いちおう競合確認
-	//party_check_conflict(sd);
+	party_check_conflict(sd);
 
 	// 座標再通知要請
 	party_send_xy_clear(p);
@@ -731,7 +731,7 @@ void party_send_movemap(struct map_session_data *sd)
 		return;
 
 	// 競合確認
-	//party_check_conflict(sd);
+	party_check_conflict(sd);
 
 	// あるならパーティ情報送信
 	if( (p=party_search(sd->status.party_id))!=NULL ){

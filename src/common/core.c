@@ -324,6 +324,7 @@ int main(int argc,char **argv)
 	pid_create(argv[0]);
 	do_init_memmgr(argv[0]); // 一番最初に実行する必要がある
 	do_socket();
+	printf("PACKETVER: %d\n", PACKETVER);
 
 #ifdef _WIN32
 	SetConsoleCtrlHandler( core_CtrlHandlerRoutine, TRUE );

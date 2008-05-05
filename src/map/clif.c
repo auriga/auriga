@@ -14291,8 +14291,8 @@ int clif_parse(int fd)
 				WFIFOB(fd,6)=AURIGA_RELEASE_FLAG;
 				WFIFOB(fd,7)=AURIGA_OFFICIAL_FLAG;
 				WFIFOB(fd,8)=AURIGA_SERVER_MAP;
-				WFIFOB(fd,9)=AURIGA_MOD_VERSION;
-				WFIFOSET(fd,10);
+				WFIFOW(fd,9)=get_current_version();
+				WFIFOSET(fd,11);
 				RFIFOSKIP(fd,2);
 				break;
 			case 0x7532:	// 接続の切断

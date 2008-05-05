@@ -15,7 +15,7 @@
 //        $array['AURIGA_RELEASE_FLAG']
 //        $array['AURIGA_OFFICIAL_FLAG']
 //        $array['AURIGA_SERVER_LOGIN']
-//        $array['AURIGA_MOD_VERSION']
+//        $array['AURIGA_CURRENT_VERSION']
 //   ladmin->accountinfo($id); -- based on list of account
 //      answer in a $array:
 //        $array['id']
@@ -211,12 +211,12 @@ class ladmin {
 			return false;
 		}
 		// read answer
-		$data = fread($this->sock, 8);
-		$data = unpack('cAURIGA_MAJOR_VERSION/cAURIGA_MINOR_VERSION/vAURIGA_REVISION/cAURIGA_RELEASE_FLAG/cAURIGA_OFFICIAL_FLAG/cAURIGA_SERVER_LOGIN/cAURIGA_MOD_VERSION',$data);
+		$data = fread($this->sock, 9);
+		$data = unpack('cAURIGA_MAJOR_VERSION/cAURIGA_MINOR_VERSION/vAURIGA_REVISION/cAURIGA_RELEASE_FLAG/cAURIGA_OFFICIAL_FLAG/cAURIGA_SERVER_LOGIN/vAURIGA_CURRENT_VERSION',$data);
 		// create string
 		$data['string']='Auriga version '.($data['AURIGA_RELEASE_FLAG']?'dev':'stable').'-'.$data['AURIGA_MAJOR_VERSION'].'.'.$data['AURIGA_MINOR_VERSION'];
 		if ($data['AURIGA_REVISION']) $data['string'].='r'.$data['AURIGA_REVISION'];
-		if ($data['AURIGA_OFFICIAL_FLAG']) $data['string'].='-mod'.$data['AURIGA_MOD_VERSION'];
+		if ($data['AURIGA_OFFICIAL_FLAG']) $data['string'].='-version'.$data['AURIGA_CURRENT_VERSION'];
 		return $data;
 	}
 

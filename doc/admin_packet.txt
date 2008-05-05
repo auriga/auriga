@@ -11,7 +11,7 @@
 
 S 7530
 	Auriga情報所得要求
-R 7531 <major_version>.B <minor_version>.B <revision>.w <release_flag>.B <official_flag>.B <server_type>.B <mod_version>.B
+R 7531 <major_version>.B <minor_version>.B <revision>.w <release_flag>.B <official_flag>.B <server_type>.B <current_version>.w
 	Auriga情報所得通知
 	release_flag : 0=release,1=debug
 	official_flag: 0=official,1=mod

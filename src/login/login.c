@@ -1391,8 +1391,8 @@ int parse_admin(int fd)
 			WFIFOB(fd,6)=AURIGA_RELEASE_FLAG;
 			WFIFOB(fd,7)=AURIGA_OFFICIAL_FLAG;
 			WFIFOB(fd,8)=AURIGA_SERVER_LOGIN;
-			WFIFOB(fd,9)=AURIGA_MOD_VERSION;
-			WFIFOSET(fd,10);
+			WFIFOW(fd,9)=get_current_version();
+			WFIFOSET(fd,11);
 			RFIFOSKIP(fd,2);
 			break;
 
@@ -1939,8 +1939,8 @@ int parse_login(int fd)
 			WFIFOB(fd,6)=AURIGA_RELEASE_FLAG;
 			WFIFOB(fd,7)=AURIGA_OFFICIAL_FLAG;
 			WFIFOB(fd,8)=AURIGA_SERVER_LOGIN;
-			WFIFOB(fd,9)=AURIGA_MOD_VERSION;
-			WFIFOSET(fd,10);
+			WFIFOW(fd,9)=get_current_version();
+			WFIFOSET(fd,11);
 			RFIFOSKIP(fd,2);
 			break;
 		case 0x7532:	// 接続の切断(defaultと処理は一緒だが明示的にするため)
@@ -1954,7 +1954,7 @@ int parse_login(int fd)
 				unsigned long ip = *((unsigned long *)&session[fd]->client_addr.sin_addr);
 				if(ip != inet_addr("127.0.0.1")) {
 					// ローカルホスト以外は失敗
-					printf("parse_admin failed: source ip address is not localhost: %s\n", ip);
+					printf("parse_admin failed: source ip address is not localhost: %lu\n", ip);
 					break;
 				}
 			}
@@ -2335,14 +2335,14 @@ int do_init(int argc,char **argv)
 {
 	int i;
 
-	printf("Auriga Login Server [%s] v%d.%d.%d mod%d\n",
+	printf("Auriga Login Server [%s] v%d.%d.%d version %04d\n",
 #ifdef TXT_ONLY
 		"TXT",
 #else
 		"SQL",
 #endif
-		AURIGA_MAJOR_VERSION,AURIGA_MINOR_VERSION,AURIGA_REVISION,
-		AURIGA_MOD_VERSION
+		AURIGA_MAJOR_VERSION, AURIGA_MINOR_VERSION, AURIGA_REVISION,
+		get_current_version()
 	);
 
 	for(i = 1; i < argc - 1; i += 2) {

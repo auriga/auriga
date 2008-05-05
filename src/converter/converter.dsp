@@ -137,6 +137,10 @@ SOURCE=..\common\timer.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\common\version.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\common\utils.c
 # End Source File
 # End Group

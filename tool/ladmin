@@ -372,9 +372,9 @@ exit(0);
 sub checkloginversion() {
 	print $so pack("v",30000); # 0x7530
 	$so->flush();
-	$buf=readso(10);
+	$buf=readso(11);
 	# Packet analyse
-	my($ret,$maver,$miver,$rev,$dev,$mod,$type,$mdver)=unpack("vc2vc4",$buf);
+	my($ret,$maver,$miver,$rev,$dev,$mod,$type,$curver)=unpack("vc2vc3v",$buf);
 	if ($ret != 30001) { #0x7531
 		print "Connection error to the server (incorrect answer).\n";
 		exit(6);
@@ -383,10 +383,7 @@ sub checkloginversion() {
 	print "  Login-Server [$loginserverip:$loginserverport]\n";
 	printf "  Auriga version %s-%d.%d", ("stable", "dev")[$dev], $maver, $miver;
 	printf " revision %d", $rev if $rev;
-	if ($mod != 0) {
-		printf "%s%d", ("", "-mod","-Auriga mod")[$mod], $mdver;
-	}
-	print ".\n";
+	printf " %s%04d.\n", ("-version", "-mod", "-Auriga mod")[$mod], $curver;
 
 	return 0;
 }

@@ -19,25 +19,45 @@
  *
  */
 
-#ifndef _VERSION_H_
-#define _VERSION_H_
+#include <stdio.h>
+#include <stdlib.h>
 
-#define AURIGA_MAJOR_VERSION	0	// Major Version
-#define AURIGA_MINOR_VERSION	0	// Minor Version
-#define AURIGA_REVISION			394	// Revision
+#include "version.h"
 
-#define AURIGA_RELEASE_FLAG		1	// 1=Develop,0=Stable
-#define AURIGA_OFFICIAL_FLAG	0	// 1=Mod,0=Official
 
-#define AURIGA_SERVER_LOGIN		1	// login server
-#define AURIGA_SERVER_CHAR		2	// char server
-#define AURIGA_SERVER_INTER		4	// inter server
-#define AURIGA_SERVER_MAP		8	// map server
+/*==========================================
+ * バージョンの取得
+ *------------------------------------------
+ */
+int get_current_version(void)
+{
+	static int auriga_version = 0;
 
-// AURIGA_MOD_VERSIONは未定義です
-// Revision番号を更新してください
-#define AURIGA_MOD_VERSION	0	// mod version
+	if(auriga_version == 0) {
+		FILE *fp;
+		char filename[256];
 
-int get_current_version(void);
+		if(AURIGA_REVISION < 100)
+			sprintf(filename, "Readme%03d", AURIGA_REVISION);
+		else
+			sprintf(filename, "Readme%04d", AURIGA_REVISION);
 
-#endif
+		fp = fopen(filename, "r");
+		if(fp) {
+			char line[1024];
+			int ver;
+
+			while(fgets(line, sizeof(line), fp)) {
+				if(sscanf(line, "//%d [%*d/%*d/%*d] by", &ver) == 1) {
+					auriga_version = ver;
+					break;
+				}
+			}
+			fclose(fp);
+		}
+		if(auriga_version == 0)
+			auriga_version = AURIGA_REVISION;
+	}
+
+	return auriga_version;
+}

@@ -28,6 +28,7 @@
 #include "mmo.h"
 #include "malloc.h"
 #include "timer.h"
+#include "version.h"
 #include "sqldbs.h"
 
 #include "converter.h"
@@ -209,6 +210,11 @@ static int config_read(const char *cfgName)
 int do_init(int argc,char **argv)
 {
 	int i, rc;
+
+	printf("Auriga Converter v%d.%d.%d version %04d\n",
+		AURIGA_MAJOR_VERSION, AURIGA_MINOR_VERSION, AURIGA_REVISION,
+		get_current_version()
+	);
 
 	for(i = 1; i < argc - 1; i += 2) {
 		if(strcmp(argv[i], "--converter_config") == 0 || strcmp(argv[i], "--converter-config") == 0) {

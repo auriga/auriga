@@ -53,7 +53,7 @@ print $so pack("v",30000);
 $so->flush();
 
 # 所得
-if( read($so,$buf,10)<10 ){
+if( read($so,$buf,11)<11 ){
 	print "socket read error. not auriga or too old version ?\n";
 	exit(5);
 }
@@ -63,7 +63,7 @@ print $so pack("v",30002);
 $so->flush();
 
 # パケット解析
-my($ret,$maver,$miver,$rev,$dev,$mod,$type,$mdver)=unpack("v c6 v",$buf);
+my($ret,$maver,$miver,$rev,$dev,$mod,$type,$curver)=unpack("vc2vc3v",$buf);
 
 if($ret!=30001){
 	print "server error. not auriga or too old version ?\n";
@@ -73,7 +73,7 @@ if($ret!=30001){
 print "[$server:$port]\n";
 printf "Auriga %s-%d.%d", ("stable","dev")[$dev], $maver,$miver;
 printf ".%d",$rev if $rev;
-printf "%s%d\n",("","-mod")[$mod],$mdver;
+printf " %s%04d.\n", ("-version", "-mod", "-Auriga mod")[$mod], $curver;
 my(@stype)=();
 foreach $i(0..3){
 	push @stype,(("login","char","inter","map")[$i]) if( $type & (1<<$i) );

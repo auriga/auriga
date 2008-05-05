@@ -2874,14 +2874,14 @@ int do_init(int argc,char *argv[])
 {
 	int i;
 
-	printf("Auriga Map Server [%s] v%d.%d.%d mod%d\n",
+	printf("Auriga Map Server [%s] v%d.%d.%d version %04d\n",
 #ifdef TXT_ONLY
 		"TXT",
 #else
 		"SQL",
 #endif
-		AURIGA_MAJOR_VERSION,AURIGA_MINOR_VERSION,AURIGA_REVISION,
-		AURIGA_MOD_VERSION
+		AURIGA_MAJOR_VERSION, AURIGA_MINOR_VERSION, AURIGA_REVISION,
+		get_current_version()
 	);
 
 	for(i = 1; i < argc - 1; i += 2) {
@@ -2914,6 +2914,8 @@ int do_init(int argc,char *argv[])
 	if(map_config_read(map_conf_filename)) {
 		exit(1);
 	}
+	printf("MAP Server Tag: %s\n", map_server_tag);
+
 	battle_config_read(battle_conf_filename);
 	atcommand_config_read(atcommand_conf_filename);
 	script_config_read(script_conf_filename);
