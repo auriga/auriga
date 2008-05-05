@@ -1480,7 +1480,7 @@ L_RECALC:
 		sd->status.max_hp *= 3;
 	}
 	if(sd->sc.data[SC_INCMHP2].timer != -1) {
-		sd->status.max_hp *= (100 + sd->sc.data[SC_INCMHP2].val1) / 100;
+		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_INCMHP2].val1) / 100);
 	}
 
 	// 最大SP計算
@@ -1504,7 +1504,7 @@ L_RECALC:
 		sd->status.max_sp += 30 * skill;
 
 	if(sd->sc.data[SC_INCMSP2].timer != -1) {
-		sd->status.max_sp *= (100 + sd->sc.data[SC_INCMSP2].val1) / 100;
+		sd->status.max_sp = (int)((atn_bignumber)sd->status.max_sp * (100 + sd->sc.data[SC_INCMSP2].val1) / 100);
 	}
 
 	// 自然回復HP
@@ -1819,7 +1819,7 @@ L_RECALC:
 		if(sd->sc.data[SC_INCHIT].timer != -1)
 			sd->hit += sd->sc.data[SC_INCHIT].val1;
 		if(sd->sc.data[SC_INCHIT2].timer != -1)
-			sd->hit *= (100+sd->sc.data[SC_INCHIT2].val1)/100;
+			sd->hit = sd->hit * (100+sd->sc.data[SC_INCHIT2].val1)/100;
 		if(sd->sc.data[SC_BERSERK].timer != -1)
 			sd->flee -= sd->flee*50/100;
 		if(sd->sc.data[SC_INCFLEE].timer != -1)	// 速度強化
@@ -6765,17 +6765,23 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 	switch( type ) {
 	case SC_SIGHT:	/* サイト */
 	case SC_CONCENTRATE:
-		if(sc->option & 0x46) {
+		if(sc->option & 0x06) {
 			status_change_end(bl, SC_HIDING, -1);
 			status_change_end(bl, SC_CLOAKING, -1);
-			status_change_end( bl, SC_INVISIBLE, -1);
+		}
+		if(sc->option & 0x40) {
+			status_change_end(bl, SC_INVISIBLE, -1);
 		}
 		break;
 	case SC_RUWACH:	/* ルアフ */
 		if(sc->option & 0x46) {
-			status_change_end(bl, SC_HIDING, -1);
-			status_change_end(bl, SC_CLOAKING, -1);
-			status_change_end( bl, SC_INVISIBLE, -1);
+			if(sc->option & 0x06) {
+				status_change_end(bl, SC_HIDING, -1);
+				status_change_end(bl, SC_CLOAKING, -1);
+			}
+			if(sc->option & 0x40) {
+				status_change_end(bl, SC_INVISIBLE, -1);
+			}
 			if(battle_check_target(src, bl, BCT_ENEMY) > 0)
 				battle_skill_attack(BF_MAGIC,src,src,bl,AL_RUWACH,skilllv,tick,0);
 		}

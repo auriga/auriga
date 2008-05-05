@@ -2369,7 +2369,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					int idx = src_sd->equip_index[8];
 					if(src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == 5) {
 						int refinedamage = 2*(src_sd->status.inventory[idx].refine-4) + src_sd->status.inventory[idx].refine * src_sd->status.inventory[idx].refine;
-						wd.damage *= (100+30*skill_lv)/100;
+						wd.damage = wd.damage * (100+30*skill_lv)/100;
 						if(refinedamage > 0)
 							wd.damage += atn_rand() % refinedamage;
 						wd.damage = (wd.damage+100) * 5;

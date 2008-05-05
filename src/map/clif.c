@@ -11967,9 +11967,13 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			return;
 		}
 	} else if(skillnum >= GUILD_SKILLID) {
+		struct guild *g = guild_search(sd->status.guild_id);
+
 		// ギルドスキルはギルマスのみ
-		if(sd != guild_get_guildmaster_sd(guild_search(sd->status.guild_id)))
+		if(g == NULL || sd != guild_get_guildmaster_sd(g))
 			return;
+		// skilllvは常に0なので現在のスキルLvで補正する
+		skilllv = guild_checkskill(g, skillnum);
 	}
 
 	if(sd->ud.skilltimer != -1) {
