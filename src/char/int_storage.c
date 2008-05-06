@@ -29,6 +29,7 @@
 #include "db.h"
 #include "lock.h"
 #include "malloc.h"
+#include "timer.h"
 #include "journal.h"
 #include "sqldbs.h"
 
@@ -928,6 +929,15 @@ int mapif_unlock_guild_storage_ack(int fd,int guild_id,char succeed)
 	return 0;
 }
 
+// ギルド倉庫デッドロックチェック
+int mapif_checklock_guild_storage(int fd,int guild_id)
+{
+	WFIFOW(fd,0) = 0x381c;
+	WFIFOL(fd,2) = guild_id;
+	WFIFOSET(fd,6);
+	return 0;
+}
+
 //---------------------------------------------------------
 // map serverからの通信
 
@@ -953,12 +963,14 @@ int mapif_parse_SaveStorage(int fd)
 	return 0;
 }
 
+// ギルド倉庫データ要求受信
 int mapif_parse_LoadGuildStorage(int fd)
 {
 	mapif_load_guild_storage(fd,RFIFOL(fd,2),RFIFOL(fd,6));
 	return 0;
 }
 
+// ギルド倉庫データ受信＆保存
 int mapif_parse_SaveGuildStorage(int fd)
 {
 	int guild_id=RFIFOL(fd,8);
@@ -973,6 +985,7 @@ int mapif_parse_SaveGuildStorage(int fd)
 	return 0;
 }
 
+// ギルド倉庫ロック要求受信
 int mapif_parse_TrylockGuildStorage(int fd)
 {
 	char flag = 0;
@@ -992,6 +1005,7 @@ int mapif_parse_TrylockGuildStorage(int fd)
 	return 0;
 }
 
+// ギルド倉庫ロック解除受信
 int mapif_parse_UnlockGuildStorage(int fd)
 {
 	char succeed = 0;
@@ -1006,6 +1020,35 @@ int mapif_parse_UnlockGuildStorage(int fd)
 		succeed = 1;
 	}
 	mapif_unlock_guild_storage_ack(fd,guild_id,succeed);
+
+	return 0;
+}
+
+// ギルド倉庫デッドロック解除受信
+int mapif_parse_DeadlockGuildStorage(int fd)
+{
+	printf("guild_storage_deadlock_timer: storage deadlocked!! (%d)\n", RFIFOL(fd,2));
+
+	// 通常のロック解除と同じ
+	mapif_parse_UnlockGuildStorage(fd);
+
+	return 0;
+}
+
+// ギルド倉庫デッドロック検出タイマー
+static int guild_storage_deadlock_timer_sub(void *key, void *data, va_list ap)
+{
+	struct guild_storage *gs = (struct guild_storage *)data;
+
+	if(gs && gs->storage_status == 1 && gs->last_fd >= 0)
+		mapif_checklock_guild_storage(gs->last_fd, gs->guild_id);
+
+	return 0;
+}
+
+int guild_storage_deadlock_timer(int tid, unsigned int tick, int id, int data)
+{
+	numdb_foreach(gstorage_db, guild_storage_deadlock_timer_sub);
 
 	return 0;
 }
@@ -1025,8 +1068,16 @@ int inter_storage_parse_frommap(int fd)
 	case 0x3019: mapif_parse_SaveGuildStorage(fd); break;
 	case 0x301a: mapif_parse_TrylockGuildStorage(fd); break;
 	case 0x301b: mapif_parse_UnlockGuildStorage(fd); break;
+	case 0x301c: mapif_parse_DeadlockGuildStorage(fd); break;
 	default:
 		return 0;
 	}
 	return 1;
+}
+
+int inter_storage_init(void)
+{
+	add_timer_interval(gettick()+1000, guild_storage_deadlock_timer, 0, 0, 3600 * 1000);
+
+	return 0;
 }

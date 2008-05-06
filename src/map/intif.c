@@ -59,7 +59,7 @@
 
 static const int packet_len_table[]={
 	-1,-1,27, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
-	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  0, 0,  0, 0,	// 3810-
+	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  6, 0,  0, 0,	// 3810-
 	35,-1,39,13, 38,33, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 14,67,186,-1,	// 3830-
 	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
@@ -444,6 +444,19 @@ int intif_unlock_guild_storage(int guild_id)
 		return -1;
 
 	WFIFOW(inter_fd,0) = 0x301b;
+	WFIFOL(inter_fd,2) = guild_id;
+	WFIFOSET(inter_fd,6);
+
+	return 0;
+}
+
+// ギルド倉庫デッドロック解除
+int intif_deadlock_guild_storage(int guild_id)
+{
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0) = 0x301c;
 	WFIFOL(inter_fd,2) = guild_id;
 	WFIFOSET(inter_fd,6);
 
@@ -1322,6 +1335,14 @@ static int intif_parse_UnlockGuildStorageAck(int fd)
 	return 0;
 }
 
+// ギルド倉庫デッドロックチェック
+static int intif_parse_ChecklockGuildStorage(int fd)
+{
+	storage_guild_checklock(RFIFOL(fd,2));
+
+	return 0;
+}
+
 // パーティ作成可否
 static int intif_parse_PartyCreated(int fd)
 {
@@ -1957,6 +1978,7 @@ int intif_parse(int fd)
 	case 0x3819: intif_parse_SaveGuildStorage(fd); break;
 	case 0x381a: intif_parse_TrylockGuildStorageAck(fd); break;
 	case 0x381b: intif_parse_UnlockGuildStorageAck(fd); break;
+	case 0x381c: intif_parse_ChecklockGuildStorage(fd); break;
 	case 0x3820: intif_parse_PartyCreated(fd); break;
 	case 0x3821: intif_parse_PartyInfo(fd); break;
 	case 0x3822: intif_parse_PartyMemberAdded(fd); break;

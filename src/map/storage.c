@@ -829,6 +829,36 @@ void storage_guild_storagesave(struct map_session_data *sd)
 	return;
 }
 
+/*==========================================
+ * ギルド倉庫のデッドロックチェック
+ *------------------------------------------
+ */
+int storage_guild_checklock(int guild_id)
+{
+	int i;
+	struct guild *g;
+	struct guild_storage *stor;
+
+	if((g = guild_search(guild_id)) == NULL)
+		return 0;
+
+	for(i = 0; i < g->max_member; i++) {
+		struct map_session_data *sd = g->member[i].sd;
+		if(sd && sd->state.storage_flag == 2) {
+			// 倉庫を開いている人が居たのでOK
+			return 0;
+		}
+	}
+
+	// 誰も使用していないのでデッドロックを解除する
+	stor = (struct guild_storage *)numdb_search(guild_storage_db, guild_id);
+	if(stor) {
+		stor->storage_status = 0;
+	}
+	intif_deadlock_guild_storage(guild_id);
+
+	return 1;
+}
 
 /*==========================================
  *

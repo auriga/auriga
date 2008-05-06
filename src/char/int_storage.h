@@ -89,5 +89,6 @@ void storage_txt_config_read_sub(const char* w1,const char* w2);
 #endif /* TXT_ONLY */
 
 int inter_storage_parse_frommap(int fd);
+int inter_storage_init(void);
 
 #endif /* _INT_STORAGE_H_ */

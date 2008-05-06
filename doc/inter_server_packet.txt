@@ -83,6 +83,10 @@ S 301b <guild_id>.l
 R 381b <guild_id>.l <succeed>.B
 	ギルド倉庫ロック解除返答
 	succeed=0 失敗、succeed=1 成功（失敗でも構わないので返信を待たなくてもいい）
+S 301c <guild_id>.l
+	ギルド倉庫デッドロック解除
+R 381c <guild_id>.l
+	ギルド倉庫デッドロックチェック
 
 S 3020 <account_id>.l <char_id>.l <party_name>.24B <item>.B <item2>.B <nick_name>.24B <map_name>.16B <level>.w
 	パーティ作成要求

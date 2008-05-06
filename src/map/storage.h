@@ -44,6 +44,8 @@ void storage_guild_storagegettocart(struct map_session_data *sd, int idx, int am
 void storage_guild_storageclose(struct map_session_data *sd);
 void storage_guild_storagesave(struct map_session_data *sd);
 
+int storage_guild_checklock(int guild_id);
+
 void do_init_storage(void);
 void do_final_storage(void);
 void storage_clear_cache(void);

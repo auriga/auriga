@@ -38,6 +38,7 @@ int intif_request_guild_storage(int account_id,int guild_id);
 int intif_send_guild_storage(int account_id,struct guild_storage *gstor);
 int intif_trylock_guild_storage(struct map_session_data *sd,int npc_id);
 int intif_unlock_guild_storage(int guild_id);
+int intif_deadlock_guild_storage(int guild_id);
 
 void intif_create_party(struct map_session_data *sd, char *name, int item, int item2);
 int intif_request_partyinfo(int party_id);

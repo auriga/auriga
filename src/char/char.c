@@ -4289,6 +4289,7 @@ int do_init(int argc,char **argv)
 	}
 	char_online_db = numdb_init();
 	char_init();
+	inter_storage_init();
 	char_build_ranking();
 	read_gm_account();
 	inter_init(inter_conf_filename);	// inter server 初期化
