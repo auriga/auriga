@@ -524,16 +524,18 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 					damage -= damage * gc->defense / 100 * battle_config.castle_defense_rate / 100;
 				}
 			}
-			if(flag&BF_WEAPON) {
-				if(flag&BF_SHORT)
-					damage = damage * battle_config.gvg_short_damage_rate / 100;
-				if(flag&BF_LONG)
-					damage = damage * battle_config.gvg_long_damage_rate / 100;
+			if(skill_num != NPC_SELFDESTRUCTION && skill_num != NPC_SELFDESTRUCTION2) {
+				if(flag&BF_WEAPON) {
+					if(flag&BF_SHORT)
+						damage = damage * battle_config.gvg_short_damage_rate / 100;
+					if(flag&BF_LONG)
+						damage = damage * battle_config.gvg_long_damage_rate / 100;
+				}
+				if(flag&BF_MAGIC)
+					damage = damage * battle_config.gvg_magic_damage_rate / 100;
+				if(flag&BF_MISC)
+					damage = damage * battle_config.gvg_misc_damage_rate / 100;
 			}
-			if(flag&BF_MAGIC)
-				damage = damage * battle_config.gvg_magic_damage_rate / 100;
-			if(flag&BF_MISC)
-				damage = damage * battle_config.gvg_misc_damage_rate / 100;
 			if(damage < 1)
 				damage = (!battle_config.skill_min_damage && flag&BF_MAGIC && src->type == BL_PC)? 0: 1;
 		}
@@ -3292,7 +3294,6 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	case NPC_SELFDESTRUCTION:	// 自爆
 	case NPC_SELFDESTRUCTION2:	// 自爆2
 		mid.damage = status_get_hp(bl)-((bl == target)? 1: 0);
-		damagefix = 0;
 		break;
 
 	case NPC_DARKBREATH:
@@ -4259,7 +4260,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 	}
 
 	if( flag&0x20000 ) {
-		if( target->type == BL_MOB || target->type == BL_PC )
+		if( target->type == BL_MOB || (target->type == BL_PC && !pc_isinvisible((struct map_session_data *)target)) )
 			return 1;
 		if( target->type == BL_HOM && src->type != BL_SKILL )	// ホムはスキルユニットの影響を受けない
 			return 1;

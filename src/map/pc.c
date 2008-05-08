@@ -8066,7 +8066,7 @@ static int pc_bleeding(struct map_session_data *sd)
 
 	nullpo_retr(0, sd);
 
-	if (sd->hp_penalty_value > 0) {
+	if (sd->hp_penalty_value != 0) {
 		sd->hp_penalty_tick += natural_heal_diff_tick;
 		if (sd->hp_penalty_tick >= sd->hp_penalty_time) {
 			do {
@@ -8077,7 +8077,7 @@ static int pc_bleeding(struct map_session_data *sd)
 		}
 	}
 
-	if (sd->sp_penalty_value > 0) {
+	if (sd->sp_penalty_value != 0) {
 		sd->sp_penalty_tick += natural_heal_diff_tick;
 		if (sd->sp_penalty_tick >= sd->sp_penalty_time) {
 			do {
@@ -8088,7 +8088,7 @@ static int pc_bleeding(struct map_session_data *sd)
 		}
 	}
 
-	if (hp > 0 || sp > 0)
+	if (hp != 0 || sp != 0)
 		pc_heal(sd,-hp,-sp);
 
 	return 0;
@@ -8143,7 +8143,7 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	else
 		sd->inchealrestsptick = 0;
 
-	if (sd->hp_penalty_value > 0 || sd->sp_penalty_value > 0)
+	if (sd->hp_penalty_value != 0 || sd->sp_penalty_value != 0)
 		pc_bleeding(sd);
 	else
 		sd->hp_penalty_tick = sd->sp_penalty_tick = 0;

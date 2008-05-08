@@ -1,4 +1,17 @@
 ----------------------------------------
+//0492 [2008/05/09] by Cocoa
+
+・AthenaProject Rev.237よりmerge、thanks to ico776さん
+	-> アイテムボーナスHPPenaltyTimeで負数を設定した場合、nミリ秒でhpが回復するように修正（pc.c）
+
+・AthenaProject Rev.238を参考に修正、thanks to ico776さん
+	-> NPCスキル「自爆」のダメージが軽減できなかった不具合を修正（battle.c）
+	-> NPCスキル「自爆」はシーズ補正を受けないように修正（battle.c）
+
+・AthenaProject Rev.239よりmerge、thanks to ico776さん
+	-> GMハイド状態のPCが全てのキャラクターを対象とするスキルの効果を受けていたのを修正（battle.c）
+
+----------------------------------------
 //0491 [2008/05/07] by Rayce
 
 ・ギルド倉庫のデッドロック検出を実装（char.c, int_storage.*, inter.c, intif.*, storage.*）
