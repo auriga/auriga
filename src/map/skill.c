@@ -6183,7 +6183,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case CR_CULTIVATION:	/* 植物栽培 */
 		if(sd) {
-			int id, n = (skilllv > 2)? 1: 0;
+			int id, n = (skilllv >= 2)? 1: 0;
 			int summons[2][6] = {
 				{ 1084, 1085, 1084, 1085, 1084, 1085 },
 				{ 1078, 1079, 1080, 1081, 1082, 1083 }
