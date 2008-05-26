@@ -330,14 +330,14 @@ int main(int argc,char **argv)
 	SetConsoleCtrlHandler( core_CtrlHandlerRoutine, TRUE );
 	SetUnhandledExceptionFilter( core_ExceptionRoutine );
 
-	srand(gettick() ^ (GetCurrentProcessId() << 8));
-	atn_srand(gettick() ^ (GetCurrentProcessId() << 8));
+	srand((unsigned int)time(NULL) ^ (GetCurrentProcessId() << 8));
+	atn_srand(unsigned int)time(NULL) ^ (GetCurrentProcessId() << 8));
 #else
 	signal(SIGTERM,sig_proc);
 	signal(SIGINT,sig_proc);
 
-	srand(gettick() ^ (getpid() << 8));
-	atn_srand(gettick() ^ (getpid() << 8));
+	srand((unsigned int)time(NULL) ^ (getpid() << 8));
+	atn_srand((unsigned int)time(NULL) ^ (getpid() << 8));
 #ifdef SIGPIPE
 	signal(SIGPIPE,SIG_IGN);
 #endif

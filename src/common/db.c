@@ -776,16 +776,17 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 				csv->index, sizeof(int) * csv->row_max );
 		}
 		max = (int)strlen(buf);
-		if( buf[max-1] == '\n' ) buf[--max] = 0;
+		if( buf[max-1] == '\n' )
+			max--;
 
 		// lineにコピーし、行末にNUL を２つ続けさせる
-		buf[max  ] = ' '; // ダミー文字
-		buf[max+1] = 0;
 		line = &csv->data[csv->row_count++];
-		line->buf = (char *)aStrdup( buf );
-		line->num = 0;
+		line->buf = (char *)aMalloc(max+2);	// 1byte余分に確保
+		memcpy(line->buf, buf, max);
 		line->buf[max  ] = 0;
 		line->buf[max+1] = 0;
+		line->num = 0;
+
 		for(s = line->buf; s[0] && line->num < MAX_CSVCOL; ) {
 			if( *s == '"' ) {
 				// [""] を ["] に置き換え、[",] を終了の合図とする。
@@ -818,10 +819,12 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 		}
 	}
 	fclose(fp);
+
 	for(i = 0; i < csv->row_count; i++) {
 		csv->index[i] = i;
 	}
 	csv->row_notempty = csv->row_count;
+
 	return csv;
 }
 
