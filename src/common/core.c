@@ -331,7 +331,7 @@ int main(int argc,char **argv)
 	SetUnhandledExceptionFilter( core_ExceptionRoutine );
 
 	srand((unsigned int)time(NULL) ^ (GetCurrentProcessId() << 8));
-	atn_srand(unsigned int)time(NULL) ^ (GetCurrentProcessId() << 8));
+	atn_srand((unsigned int)time(NULL) ^ (GetCurrentProcessId() << 8));
 #else
 	signal(SIGTERM,sig_proc);
 	signal(SIGINT,sig_proc);

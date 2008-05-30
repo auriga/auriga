@@ -759,7 +759,7 @@ const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *
 		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
 		return NULL;
 	}
-	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[30] >= 9 ||	dat[33] == 0 || dat[33] >= MAX_HAIR_STYLE || dat[31] >= MAX_HAIR_COLOR)
+	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[33] == 0 || dat[33] >= MAX_HAIR_STYLE || dat[31] >= MAX_HAIR_COLOR)
 	{
 		char_log(
 			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",
@@ -1685,7 +1685,7 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
 		return NULL;
 	}
-	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[30] >= 9 || dat[33] == 0 || dat[33] >= MAX_HAIR_STYLE || dat[31] >= MAX_HAIR_COLOR)
+	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[33] == 0 || dat[33] >= MAX_HAIR_STYLE || dat[31] >= MAX_HAIR_COLOR)
 	{
 		char_log(
 			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",
@@ -1780,7 +1780,7 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 int char_sql_load_all(struct char_session_data* sd,int account_id)
 {
 	int i,j,rc;
-	int found_id[9];
+	int found_id[MAX_CHAR_SLOT];
 	int found_num = 0;
 	const struct mmo_chardata *cd;
 	MYSQL_RES* sql_res;
@@ -4144,9 +4144,9 @@ static void char_config_read(const char *cfgName)
 			default_map_name[15] = '\0';
 		} else if (strcmpi(w1, "max_char_slot") == 0) {
 			max_char_slot = atoi(w2);
-			if (max_char_slot <= 0 || max_char_slot > 9) {
-				printf("char_config_read: Invalid max_char_slot value: %d. Set to 9 (default).\n", max_char_slot);
-				max_char_slot = 9;
+			if (max_char_slot <= 0 || max_char_slot > MAX_CHAR_SLOT) {
+				printf("char_config_read: Invalid max_char_slot value: %d. Set to %d (default).\n", max_char_slot, MAX_CHAR_SLOT);
+				max_char_slot = MAX_CHAR_SLOT;
 			}
 		} else if (strcmpi(w1, "httpd_enable") == 0) {
 			socket_enable_httpd(atoi(w2));

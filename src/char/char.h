@@ -42,10 +42,12 @@ struct mmo_chardata {
 	struct registry reg;
 };
 
+#define MAX_CHAR_SLOT 12
+
 struct char_session_data {
 	int state;
 	int account_id,login_id1,login_id2,sex;
-	const struct mmo_chardata *found_char[9];
+	const struct mmo_chardata *found_char[MAX_CHAR_SLOT];
 };
 
 struct cram_session_data {
