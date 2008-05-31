@@ -32,7 +32,7 @@
 #endif
 #include "map.h"
 
-#define MAX_PACKET_DB 0x300
+#define MAX_PACKET_DB 0x400
 
 struct packet_db {
 	short len;

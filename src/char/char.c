@@ -99,6 +99,7 @@ char GM_account_filename[1024] = "conf/GM_account.txt";
 char default_map_name[16] = "prontera.gat";
 int  default_map_type = 0;
 static int max_char_slot = 9;	// キャラクタースロットの最大数
+static int check_status_polygon = 2;
 
 static int char_log(const char *fmt, ...);
 int parse_char(int fd);
@@ -740,6 +741,9 @@ void char_txt_final(void)
 const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *flag)
 {
 	int n, idx;
+	short str, agi, vit, int_, dex, luk;
+	short hair, hair_color;
+	unsigned char slot;
 	char name[24];
 
 	memset(name, 0, sizeof(name));
@@ -750,33 +754,57 @@ const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *
 	}
 	name[23] = '\0';	// force \0 terminal
 
-	for(n = 24; n <= 29; n++) {
-		if(dat[n] > 9)
-			return NULL;
-	}
-	if(dat[30] >= max_char_slot) {
+	slot = dat[30];
+	if(slot >= max_char_slot) {
 		*flag = 0x03;
-		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
+		printf("make new char over slot!! %s (%d / %d)\n", name, slot + 1, max_char_slot);
 		return NULL;
 	}
-	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[33] == 0 || dat[33] >= MAX_HAIR_STYLE || dat[31] >= MAX_HAIR_COLOR)
-	{
+
+	str  = dat[24];
+	agi  = dat[25];
+	vit  = dat[26];
+	int_ = dat[27];
+	dex  = dat[28];
+	luk  = dat[29];
+
+	if(str > 9 || agi > 9 || vit > 9 || int_ > 9 || dex > 9 || luk > 9)
+		return NULL;
+
+	// ステータスポリゴンのチェック
+	if(check_status_polygon == 1 && str + agi + vit + int_ + dex + luk > 5 * 6) {
 		char_log(
-			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",
-			dat[30], name, dat[24], dat[25], dat[26], dat[27], dat[28], dat[29], dat[33], dat[31]
+			"make new char error: status point over %d %s %d,%d,%d,%d,%d,%d",
+			slot, name, str, agi, vit, int_, dex, luk
 		);
 		return NULL;
 	}
-	char_log("make new char %d %s", dat[30], name);
+	if(check_status_polygon == 2 && (str + int_ != 10 || agi + luk != 10 || vit + dex != 10)) {
+		char_log(
+			"make new char error: invalid status point %d %s %d,%d,%d,%d,%d,%d",
+			slot, name, str, agi, vit, int_, dex, luk
+		);
+		return NULL;
+	}
+
+	hair       = dat[33];
+	hair_color = dat[31];
+
+	if(hair == 0 || hair >= MAX_HAIR_STYLE || hair_color >= MAX_HAIR_COLOR) {
+		char_log("make new char error: invalid hair %d %s %d,%d", slot, name, hair, hair_color);
+		return NULL;
+	}
 
 	for(n = 0; n < char_num; n++) {
 		if(strcmp(char_dat[n].st.name, name) == 0) {
 			*flag = 0x00;
 			return NULL;
 		}
-		if(char_dat[n].st.account_id > 0 && char_dat[n].st.account_id == account_id && char_dat[n].st.char_num == dat[30])
+		if(char_dat[n].st.account_id > 0 && char_dat[n].st.account_id == account_id && char_dat[n].st.char_num == slot)
 			return NULL;
 	}
+
+	char_log("make new char %d %s", slot, name);
 
 	if(char_num >= char_max) {
 		// realloc() するとchar_datの位置が変わるので、session のデータを見て
@@ -805,7 +833,7 @@ const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *
 
 	char_dat[n].st.char_id       = char_id_count++;
 	char_dat[n].st.account_id    = account_id;
-	char_dat[n].st.char_num      = dat[30];
+	char_dat[n].st.char_num      = slot;
 	strncpy(char_dat[n].st.name, name, 24);
 	char_dat[n].st.class_        = 0;
 	char_dat[n].st.base_level    = 1;
@@ -813,14 +841,14 @@ const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *
 	char_dat[n].st.base_exp      = 0;
 	char_dat[n].st.job_exp       = 0;
 	char_dat[n].st.zeny          = start_zeny;
-	char_dat[n].st.str           = dat[24];
-	char_dat[n].st.agi           = dat[25];
-	char_dat[n].st.vit           = dat[26];
-	char_dat[n].st.int_          = dat[27];
-	char_dat[n].st.dex           = dat[28];
-	char_dat[n].st.luk           = dat[29];
-	char_dat[n].st.max_hp        = 40 * (100 + char_dat[n].st.vit) / 100;
-	char_dat[n].st.max_sp        = 11 * (100 + char_dat[n].st.int_) / 100;
+	char_dat[n].st.str           = str;
+	char_dat[n].st.agi           = agi;
+	char_dat[n].st.vit           = vit;
+	char_dat[n].st.int_          = int_;
+	char_dat[n].st.dex           = dex;
+	char_dat[n].st.luk           = luk;
+	char_dat[n].st.max_hp        = 40 * (100 + vit)  / 100;
+	char_dat[n].st.max_sp        = 11 * (100 + int_) / 100;
 	char_dat[n].st.hp            = char_dat[n].st.max_hp;
 	char_dat[n].st.sp            = char_dat[n].st.max_sp;
 	char_dat[n].st.status_point  = 0;
@@ -831,8 +859,8 @@ const struct mmo_chardata *char_txt_make(int account_id,unsigned char *dat,int *
 	char_dat[n].st.die_counter   = 0;
 	char_dat[n].st.party_id      = 0;
 	char_dat[n].st.guild_id      = 0;
-	char_dat[n].st.hair          = dat[33];
-	char_dat[n].st.hair_color    = dat[31];
+	char_dat[n].st.hair          = hair;
+	char_dat[n].st.hair_color    = hair_color;
 	char_dat[n].st.clothes_color = 0;
 
 	idx = 0;
@@ -1662,6 +1690,9 @@ int char_sql_save(struct mmo_charstatus *st2)
 const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *flag)
 {
 	int i, rc, char_id;
+	short str, agi, vit, int_, dex, luk;
+	short hair, hair_color;
+	unsigned char slot;
 	char name[24], buf[256];
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
@@ -1676,29 +1707,51 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 	}
 	name[23] = '\0';	// force \0 terminal
 
-	for(i = 24; i <= 29; i++) {
-		if(dat[i] > 9)
-			return NULL;
-	}
-	if(dat[30] >= max_char_slot) {
+	slot = dat[30];
+	if(slot >= max_char_slot) {
 		*flag = 0x03;
-		printf("make new char over slot!! (%d / %d)\n", dat[30] + 1, max_char_slot);
+		printf("make new char over slot!! %s (%d / %d)\n", name, slot + 1, max_char_slot);
 		return NULL;
 	}
-	if(dat[24] + dat[25] + dat[26] + dat[27] + dat[28] + dat[29] > 5 * 6 || dat[33] == 0 || dat[33] >= MAX_HAIR_STYLE || dat[31] >= MAX_HAIR_COLOR)
-	{
+
+	str  = dat[24];
+	agi  = dat[25];
+	vit  = dat[26];
+	int_ = dat[27];
+	dex  = dat[28];
+	luk  = dat[29];
+
+	if(str > 9 || agi > 9 || vit > 9 || int_ > 9 || dex > 9 || luk > 9)
+		return NULL;
+
+	// ステータスポリゴンのチェック
+	if(check_status_polygon == 1 && str + agi + vit + int_ + dex + luk > 5 * 6) {
 		char_log(
-			"make new char error %d %s %d,%d,%d,%d,%d,%d %d,%d",
-			dat[30], name, dat[24], dat[25], dat[26], dat[27], dat[28], dat[29], dat[33], dat[31]
+			"make new char error: status point over %d %s %d,%d,%d,%d,%d,%d",
+			slot, name, str, agi, vit, int_, dex, luk
 		);
 		return NULL;
 	}
-	char_log("make new char %d %s", dat[30], name);
+	if(check_status_polygon == 2 && (str + int_ != 10 || agi + luk != 10 || vit + dex != 10)) {
+		char_log(
+			"make new char error: invalid status point %d %s %d,%d,%d,%d,%d,%d",
+			slot, name, str, agi, vit, int_, dex, luk
+		);
+		return NULL;
+	}
+
+	hair       = dat[33];
+	hair_color = dat[31];
+
+	if(hair == 0 || hair >= MAX_HAIR_STYLE || hair_color >= MAX_HAIR_COLOR) {
+		char_log("make new char error: invalid hair %d %s %d,%d", slot, name, hair, hair_color);
+		return NULL;
+	}
 
 	// 同一アカウントID、同一キャラスロットチェック
 	rc = sqldbs_query(&mysql_handle,
 		"SELECT COUNT(*) FROM `" CHAR_TABLE "` WHERE `account_id` = '%d' AND `char_num` = '%d'",
-		account_id, dat[30]
+		account_id, slot
 	);
 	if(rc)
 		return NULL;
@@ -1730,6 +1783,8 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 		sqldbs_free_result(sql_res);
 	}
 
+	char_log("make new char %d %s", slot, name);
+
 	// Insert the char to the 'chardb' ^^
 	rc = sqldbs_query(
 		&mysql_handle,
@@ -1737,9 +1792,9 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 		"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`hair`,`hair_color`,`last_map`,`last_x`,"
 		"`last_y`,`save_map`,`save_x`,`save_y`) VALUES ('%d','%d','%s','%d','%d','%d','%d',"
 		"'%d','%d','%d','%d','%d','%d','%d','%d','%d','%s','%d','%d','%s','%d','%d')",
-		account_id, dat[30], strecpy(buf,name), start_zeny, dat[24], dat[25], dat[26],
-		dat[27], dat[28], dat[29], 40 * (100 + dat[26]) / 100, 40 * (100 + dat[26]) / 100,
-		11 * (100 + dat[27]) / 100, 11 * (100 + dat[27]) / 100, dat[33], dat[31], start_point.map,
+		account_id, slot, strecpy(buf,name), start_zeny, str, agi, vit,
+		int_, dex, luk, 40 * (100 + vit) / 100, 40 * (100 + vit) / 100,
+		11 * (100 + int_) / 100, 11 * (100 + int_) / 100, hair, hair_color, start_point.map,
 		start_point.x, start_point.y, start_point.map, start_point.x, start_point.y
 	);
 	if(rc)
@@ -1769,10 +1824,10 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 			char_id, start_armor, 1, 0x10, 1
 		);
 		if(rc)
-			return NULL; // end....
+			return NULL;
 	}
 
-	printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", account_id, char_id, dat[30], name);
+	printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", account_id, char_id, slot, name);
 
 	return char_sql_load(char_id);
 }
@@ -4148,6 +4203,8 @@ static void char_config_read(const char *cfgName)
 				printf("char_config_read: Invalid max_char_slot value: %d. Set to %d (default).\n", max_char_slot, MAX_CHAR_SLOT);
 				max_char_slot = MAX_CHAR_SLOT;
 			}
+		} else if (strcmpi(w1, "check_status_polygon") == 0) {
+			check_status_polygon = atoi(w2);
 		} else if (strcmpi(w1, "httpd_enable") == 0) {
 			socket_enable_httpd(atoi(w2));
 		} else if (strcmpi(w1, "httpd_document_root") == 0) {

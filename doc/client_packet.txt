@@ -37,6 +37,8 @@ R 006a <error No>.B <message>.20B
 		err No=14  MSI_REFUSE_NOT_PERMITTED_GROUP
 		err No=15  MSI_REFUSE_WAIT_FOR_SAKRAY_ACTIVE
 		err No=16  [No Msg]
+		err No=17  不法プログラムを使ったか、あるいはハッキングを試みた勘定です。ブロック終了時間 : %s
+		err No=18  不法プログラムが実行、ウイルス感染、またはハッキングツールが設置されている可能性があります。
 		err No=99  対象のアカウントは削除されたIDです
 		err No=100 <message>に接続情報が残っています
 		err No=101 アカウント盗用の調査のためにログインが禁止されました。詳しいお問い合わせはアカウント盗用関連お問い合わせへメールしてください。
@@ -448,6 +450,7 @@ R 00fa <fail>.B
 	fail=00 「パーティーを結成しました。」
 	fail=01 「同じ名前のパーティーがあります。」
 	fail=02 「すでにパーティーに加入しています。」
+	fail=03 「このマップではパーティーを結成することができません。」
 R 00fb <len>.w <party name>.24B {<ID>.l <nick>.24B <map name>.16B <leader>.B <offline>.B}.46B*
 	パーティ情報まとめて送り
 S 00fc <ID>.l
@@ -1779,6 +1782,7 @@ R 02c5 <nick>.24B <fail>.l
 	fail=04 相手の別キャラが既にパーティに入っていた
 	fail=05 相手がパーティー招待拒否状態
 	fail=07 該当キャラクターがいない
+	fail=08 相手がパーティに参加できないマップにいる
 R 02c6 <ID>.l <party name>.24B
 	パーティに誘われた、0xfeの上位版
 S 02c7 <ID>.l <flag>.B
@@ -1875,9 +1879,11 @@ R 02e9 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.
 R 02ea <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
 	カプラさんに預けてある消耗品&収集品リスト
 	0x1f0の上位版
-R 02eb <?>.l <?>.B <?>B <?>.B <?>.4B
-	ログイン系？未調査
-	"PingLog.txt" とか
+R 02eb <server tick>.l <coordidate>.3B <05 05固定>.2B <flag?>.B <?>.B
+	ゲーム鯖接続成功&サーバ側1ms時計&出現位置
+	<flag>が0以外のとき、発言が文字化けする
+	0x73の上位版？
+
 R 02ec <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w <?>.w
 	表示範囲内キャラ移動情報(0x22cの上位バージョン)
 R 02ed <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <?>.w
@@ -1885,5 +1891,25 @@ R 02ed <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id
 R 02ee <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <?>.w
 	マップロード時&移動時用、向き付き用キャラ情報?(0x22aの上位バージョン)
 
-R 02ef <ID>.l <?>.w
+R 02ef <ID>.l <flag?>.w
+	<flag>が0以外のとき、<ID>のキャラの発言が文字化けする
+
+R 02f0 <0>.4B <time>.l
+	頭上のバーが増えて<time>秒後に消える
+R 02f2
+	未調査
+R 02f3 <len>.w <?>.B <?>.B <?>.B <?>.B
+	未調査
+
+R 02f4〜02f8
+	未調査
+R 02f9, 03B4〜03BB
+	未調査
+R 02fa, 02fb, 02fe〜0300
+	act, spr不足エラー
+	未調査
+R 02fc
+	act, spr不足エラー
+	未調査
+R 0301〜0303, 0307
 	未調査
