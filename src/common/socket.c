@@ -254,7 +254,7 @@ static int connect_client(int listen_fd)
 
 	yes = 1;
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&yes, sizeof yes) != 0) {
-#ifdef __WIN32
+#ifdef _WIN32
 		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
 #else
 		close(fd);
@@ -264,7 +264,7 @@ static int connect_client(int listen_fd)
 #ifdef SO_REUSEPORT
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, (char *)&yes, sizeof yes) != 0) {
-#ifdef __WIN32
+#ifdef _WIN32
 		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
 #else
 		close(fd);
@@ -274,7 +274,7 @@ static int connect_client(int listen_fd)
 #endif
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&yes, sizeof yes) != 0) {
-#ifdef __WIN32
+#ifdef _WIN32
 		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
 #else
 		close(fd);
@@ -381,7 +381,7 @@ int make_listen_port(unsigned short port, unsigned long sip)
 	yes = 1;
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&yes, sizeof yes) != 0) {
 		perror("make_listen_port: setsockopt (SO_REUSEADDR) error (socket.c).");
-#ifdef __WIN32
+#ifdef _WIN32
 		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
 #else
 		close(fd);
@@ -392,7 +392,7 @@ int make_listen_port(unsigned short port, unsigned long sip)
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, (char *)&yes, sizeof yes) != 0) {
 		perror("make_listen_port: setsockopt (SO_REUSEPORT) error (socket.c).");
-#ifdef __WIN32
+#ifdef _WIN32
 		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
 #else
 		close(fd);
@@ -403,7 +403,7 @@ int make_listen_port(unsigned short port, unsigned long sip)
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&yes, sizeof yes) != 0) {
 		perror("make_listen_port: setsockopt (TCP_NODELAY) error (socket.c).");
-#ifdef __WIN32
+#ifdef _WIN32
 		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
 #else
 		close(fd);
@@ -522,7 +522,7 @@ int make_connection(unsigned long ip, unsigned short port)
 	yes = 1;
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&yes, sizeof yes) != 0) {
 		perror("make_connection: setsockopt (SO_REUSEADDR) error (socket.c).");
-#ifdef __WIN32
+#ifdef _WIN32
 		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
 #else
 		close(fd);
@@ -533,7 +533,7 @@ int make_connection(unsigned long ip, unsigned short port)
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, (char *)&yes, sizeof yes) != 0) {
 		perror("make_connection: setsockopt (SO_REUSEPORT) error (socket.c).");
-#ifdef __WIN32
+#ifdef _WIN32
 		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
 #else
 		close(fd);
@@ -544,7 +544,7 @@ int make_connection(unsigned long ip, unsigned short port)
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&yes, sizeof yes) != 0) {
 		perror("make_connection: setsockopt (TCP_NODELAY) error (socket.c).");
-#ifdef __WIN32
+#ifdef _WIN32
 		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
 #else
 		close(fd);

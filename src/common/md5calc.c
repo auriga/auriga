@@ -30,9 +30,9 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <malloc.h>
 
 #include "md5calc.h"
+#include "malloc.h"
 
 #ifndef UINT_MAX
 #define UINT_MAX 4294967295U

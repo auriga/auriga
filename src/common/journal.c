@@ -30,7 +30,7 @@
 #include "grfio.h"
 
 #ifndef _WIN32
-#	include "unistd.h"
+#	include <unistd.h>
 #endif
 
 #define UNUSEDCHUNK_DEFAULT_QUEUESIZE	256		// キューの最小サイズ ( 2 の累乗であること )

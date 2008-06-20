@@ -1,4 +1,13 @@
 ----------------------------------------
+//0497 [2008/06/21] by Rayce
+
+・Athena Rev.330よりmerge、thanks to mizukiさん
+	-> __WIN32は定義されていないため、ソケットハンドルがリークしていたのを修正（socket.c）
+
+・includeを修正（journal.*, md5calc.c）
+・clif_skillinfoblock() を蔵のパケット解析方法に合わせるように少し修正（clif.c）
+
+----------------------------------------
 //0496 [2008/06/01] by Rayce
 
 ・conf/char_auriga.confに check_status_polygon を追加（char.c）

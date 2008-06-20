@@ -22,9 +22,10 @@
 #ifndef _JOURNAL_H_
 #define _JOURNAL_H_
 
-#include "db.h"
 #include <stdio.h>
 #include <time.h>
+
+#include "db.h"
 
 struct journal_fileheader
 {

@@ -495,7 +495,7 @@ R 010d
 	MVPになりましたが、重量オーバーでMVPアイテムがの獲得ができません
 R 010e <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
 	スキル情報更新。spは未使用?
-R 010f <len>.w {<skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
+R 010f <len>.w {<skill ID>.w <target type>.l <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	スキル情報の塊。skill nameは一部流れて来ない物がある＞AL_PNEUMA,PR_SLOWPOISON等
 	target typeは0-パッシブ、1-敵、2-場所、4-即時発動、16-味方
 	lv=0 up=0の場合はリストに出してない?
@@ -1445,7 +1445,7 @@ S 0233 <ID>.l <target_id>.l <0固定>.B
 	ホム&傭兵攻撃要求
 S 0234 <ID>.l
 	ホム&傭兵をマスターの元へ戻す
-R 0235 <len>.w {<skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
+R 0235 <len>.w {<skill ID>.w <target type>.l <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	ホム用スキル情報の塊、0x10fと同じ
 R 0236 <point>.l <total>.l
 	虐殺者ランキングポイントが<point>上昇して、<total>になりました。
@@ -1704,7 +1704,7 @@ R 029a <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine
 R 029b <ID>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <limit>.l <name_value>.w <call_count>.l <kill_count>.l <attackable>.w
        <ID>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.l <max_hp>.l <sp>.l <max_sp>.l <limit>.l <name_value>.w <call_count>.l <kill_count>.l <attackable>.w (2007-11-06aSakexe以降)
 	傭兵のステータス情報まとめて送り付け、0x22eの傭兵版
-R 029d <len>.w {<skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
+R 029d <len>.w {<skill ID>.w <target type>.l <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	傭兵用スキル情報の塊、0x10fと同じ
 R 029e <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
 	傭兵用スキル情報更新、0x10eと同じ

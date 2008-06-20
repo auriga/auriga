@@ -6000,12 +6000,11 @@ void clif_skillinfoblock(struct map_session_data *sd)
 	for (i=0; i < MAX_SKILL; i++){
 		if( (i==sd->cloneskill_id && (id=sd->cloneskill_id)!=0) || (id=sd->status.skill[i].id)!=0 ){
 			WBUFW(buf,len  ) = id;
-			WBUFW(buf,len+2) = skill_get_inf(id);
-			WBUFW(buf,len+4) = 0;
+			WBUFL(buf,len+2) = skill_get_inf(id);
 			if(tk_ranker_bonus && sd->status.skill[i].flag==0)
 				skill_lv = pc_get_skilltree_max(&sd->s_class,id);
 			else if(i==sd->cloneskill_id)
-				skill_lv = sd->status.skill[i].lv>sd->cloneskill_lv?sd->status.skill[i].lv:sd->cloneskill_lv;
+				skill_lv = (sd->status.skill[i].lv > sd->cloneskill_lv)? sd->status.skill[i].lv: sd->cloneskill_lv;
 			else
 				skill_lv = sd->status.skill[i].lv;
 			WBUFW(buf,len+6) = skill_lv;
