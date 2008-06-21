@@ -1,4 +1,13 @@
 ----------------------------------------
+//0498 [2008/06/22] by Rayce
+
+・IDが0のタイマーを delete_timer() で削除できないバグを修正（timer.c）
+	merged from eA, thx a lot!!
+
+・状態異常アイコン SI_*** の定義をAegisから補完（status.h）
+	thanks to しゃずさん
+
+----------------------------------------
 //0497 [2008/06/21] by Rayce
 
 ・Athena Rev.330よりmerge、thanks to mizukiさん

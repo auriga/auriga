@@ -576,6 +576,7 @@ enum {
 	SI_SPEEDPOTION3     = 40,
 	SI_INCREASEAGI2     = 41,
 	SI_INCREASEAGI3     = 42,
+	//SI_BARRIER        = 49,
 	SI_STRIPWEAPON      = 50,
 	SI_STRIPSHIELD      = 51,
 	SI_STRIPARMOR       = 52,
@@ -589,8 +590,13 @@ enum {
 	SI_DEVOTION         = 60,
 	SI_PROVIDENCE       = 61,
 	SI_DEFENDER         = 62,
+	//SI_MAGICROD       = 63,
+	//SI_WEAPONPROPERTY = 64,
 	SI_AUTOSPELL        = 65,
+	//SI_SPECIALZONE    = 66,
+	//SI_MASK           = 67,
 	SI_SPEARQUICKEN     = 68,
+	//SI_BLADESTOP      = 85,
 	SI_EXPLOSIONSPIRITS = 86,
 	SI_STEELBODY        = 87,
 	SI_COMBO            = 89,
@@ -606,7 +612,10 @@ enum {
 	SI_CONCENTRATION    = 105,
 	SI_TENSIONRELAX     = 106,
 	SI_BERSERK          = 107,
+	//SI_SACRIFICE      = 108,
+	//SI_GOSPEL         = 109,
 	SI_ASSUMPTIO        = 110,
+	//SI_BASILICA       = 111,
 	SI_ELEMENTFIELD     = 112,
 	SI_MAGICPOWER       = 113,
 	SI_EDP              = 114,
@@ -621,6 +630,9 @@ enum {
 	SI_MOONLIT          = 123,
 	SI_HEADCRUSH        = 124,
 	SI_JOINTBEAT        = 125,
+	//SI_MINDBREAKER    = 126,
+	//SI_MEMORIZE       = 127,
+	//SI_FOGWALL        = 128,
 	SI_BABY             = 130,
 	SI_MAGNUM           = 131,
 	SI_AUTOBERSERK      = 132,
@@ -636,6 +648,8 @@ enum {
 	SI_ADRENALINE2      = 147,
 	SI_ATTENELEMENT     = 148,
 	SI_SOULLINK         = 149,
+	//SI_PLUSATTACKPOWER= 150,
+	//SI_PLUSMAGICPOWER = 151,
 	SI_DEVIL            = 152,
 	SI_KAITE            = 153,
 	SI_KAIZEL           = 156,
@@ -653,7 +667,9 @@ enum {
 	SI_PRESERVE         = 181,
 	SI_CHASEWALK_STR    = 182,
 	SI_TIGEREYE         = 184,
+	//SI_MOVESLOW_POTION= 185,
 	SI_DOUBLECASTING    = 186,
+	//SI_GRAVITATION    = 187,
 	SI_OVERTHRUSTMAX    = 188,
 	SI_TAROTCARD        = 191,
 	SI_SHRINK           = 197,
@@ -668,6 +684,22 @@ enum {
 	SI_NEN              = 208,
 	SI_ADJUSTMENT       = 209,
 	SI_INCREASING       = 210,
+	//SI_MENTAL         = 213,
+	//SI_EXPMEMORY      = 214,
+	//SI_PERFORMANCE    = 215
+	//SI_GAIN           = 216
+	//SI_DRIFT          = 218
+	//SI_WALLSHIFT      = 219
+	//SI_REINCARNATION  = 220
+	//SI_DENERGY        = 227
+	//SI_DAURA          = 232
+	//SI_DFREEZER       = 233
+	//SI_DPUNISH        = 234
+	//SI_DBARRIER       = 235
+	//SI_DWARNING       = 236
+	//SI_MOUSEWHEEL     = 237
+	//SI_DACCEL         = 239
+	//SI_DBLOCK         = 240
 	SI_MEAL_INCSTR      = 241,
 	SI_MEAL_INCAGI      = 242,
 	SI_MEAL_INCVIT      = 243,
@@ -681,33 +713,57 @@ enum {
 	SI_LIFEINSURANCE    = 251,
 	SI_ITEMDROPRATE     = 252,
 	SI_BOSSMAPINFO      = 253,
-	//260：全てのMobがドラキュラに見える
-	//263：死んだふりと同じアイコンだが倒れない
-	//264：一瞬画面が霞んでグロリアアイコンが付く
+	//SI_DA_ENERGY      = 254
+	//SI_DA_FIRSTSLOT   = 255
+	//SI_DA_HEADDEF     = 256
+	//SI_DA_SPACE       = 257
+	//SI_DA_ITEMREBUILD = 259
+	//SI_DA_ILLUSION    = 260
+	//SI_DA_EARPLUG     = 262
+	//SI_DA_CONTRACT    = 263
+	//SI_DA_BLACK       = 264
+	//SI_DA_MAGICCART   = 265
+	//SI_CRYSTAL        = 266
+	//SI_DA_REBUILD     = 267
+	//SI_DA_EDARKNESS   = 268
+	//SI_DA_EGUARDIAN   = 269
+	//SI_DA_TIMEOUT     = 270
 	SI_MEAL_INCSTR2     = 271,
 	SI_MEAL_INCAGI2     = 272,
 	SI_MEAL_INCVIT2     = 273,
 	SI_MEAL_INCDEX2     = 274,
 	SI_MEAL_INCINT2     = 275,
 	SI_MEAL_INCLUK2     = 276,
-	//
+	//SI_MER_FLEE       = 277,
+	//SI_MER_ATK        = 278,
+	//SI_MER_HP         = 279,
+	//SI_MER_SP         = 280,
+	//SI_MER_HIT        = 281,
 	SI_SLOWCAST         = 282,
 	//
 	SI_CRITICALWOUND    = 286,
-	//289：??
-	//290：盾アップのマーク
-	//291：魔方陣アップのマーク
-	//292：瓶アップのマーク
-	//293：ハートアップのマーク
-	//294：二重ハートアップのマーク
-	//295：光る剣のマーク
-	//296：人アップのマーク
-	//
-	//300：キラキラマーク
-	//301：RST
-	//302：光る鎧マーク
-	//
-	//304：骸骨マーク
+	//SI_MOVHASTE_HORSE = 289,
+	//SI_PROTECT_DEF    = 290,
+	//SI_PROTECT_MDEF   = 291,
+	//SI_HEALPLUS       = 292,
+	//SI_S_LIFEPOTION   = 293,
+	//SI_L_LIFEPOTION   = 294,
+	//SI_CRITICALPERCENT= 295,
+	//SI_PLUSAVOIDVALUE = 296,
+	//SI_ATKER_ASPD     = 297,
+	//SI_TARGET_ASPD    = 298
+	//SI_ATKER_MOVESPEED= 299
+	//SI_ATKER_BLOOD    = 300
+	//SI_TARGET_BLOOD   = 301
+	//SI_ARMOR_PROPERTY = 302
+	//SI_REUSE_LIMIT_A  = 303
+	//SI_HELLPOWER      = 304
+	//SI_STEAMPACK      = 305
+	//SI_REUSE_LIMIT_B  = 306
+	//SI_REUSE_LIMIT_C  = 307
+	//SI_REUSE_LIMIT_D  = 308
+	//SI_REUSE_LIMIT_E  = 309
+	//SI_REUSE_LIMIT_F  = 310
 	//
 	//312：Job教範50
 	//313：肉マーク

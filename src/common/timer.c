@@ -335,7 +335,7 @@ int add_timer_interval(unsigned int tick,int (*func)(int,unsigned int,int,int),i
 
 int delete_timer(int id,int (*func)(int,unsigned int,int,int))
 {
-	if (id <= 0 || id >= timer_data_num) {
+	if (id < 0 || id >= timer_data_num) {
 		printf("delete_timer error : no such timer %d\n", id);
 		return -1;
 	}
