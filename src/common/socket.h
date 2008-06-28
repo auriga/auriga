@@ -36,6 +36,9 @@
 #define RFIFOSIZE_SERVERLINK 128 * 1024
 #define WFIFOSIZE_SERVERLINK 128 * 1024
 
+// クライアントが１度に受け取れるのは21820byteまで
+#define SOCKET_EMPTY_SIZE (20 * 1024)
+
 // ここで閉じるのではなく、socket.c で閉じる
 #define close(id) do { if (session[id]) session[id]->eof = 1; } while(0);
 

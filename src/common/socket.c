@@ -710,9 +710,8 @@ void realloc_fifo(int fd, int new_rfifo_size, int new_wfifo_size)
 void WFIFORESERVE(int fd, int len)
 {
 	struct socket_data *s = session[fd];
-	static const int empty_size = 16*1024;	// 最小限必要な空きサイズ
 
-	while(len + empty_size > (s->max_wdata - s->wdata)) {
+	while(len + SOCKET_EMPTY_SIZE > (s->max_wdata - s->wdata)) {
 		int new_size = (s->max_wdata - s->wdata) << 1;
 
 		// 送信バッファの制限サイズ超過チェック

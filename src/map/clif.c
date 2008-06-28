@@ -45,6 +45,7 @@
 #include "nullpo.h"
 #include "httpd.h"
 #include "utils.h"
+#include "mmo.h"
 
 #include "map.h"
 #include "chrif.h"
@@ -3335,103 +3336,282 @@ void clif_equiplist(struct map_session_data *sd)
 }
 
 /*==========================================
+ * 倉庫の消耗品&収集品リスト
+ *------------------------------------------
+ */
+static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, int max)
+{
+	struct item_data *id;
+	int i, len = 4;
+
+	nullpo_retv(item);
+
+#if PACKETVER < 5
+	WFIFOW(fd,0)=0xa5;
+	for(i = idx; i < max; i++) {
+		if(item[i].nameid <= 0)
+			continue;
+		nullpo_retv(id = itemdb_search(item[i].nameid));
+		if(itemdb_isequip2(id))
+			continue;
+		if(len + 10 > SOCKET_EMPTY_SIZE)
+			break;
+
+		WFIFOW(fd,len)=i+1;
+		if(id->view_id > 0)
+			WFIFOW(fd,len+2)=id->view_id;
+		else
+			WFIFOW(fd,len+2)=item[i].nameid;
+		WFIFOB(fd,len+4)=id->type;
+		WFIFOB(fd,len+5)=item[i].identify;
+		WFIFOW(fd,len+6)=item[i].amount;
+		WFIFOW(fd,len+8)=0;
+		len += 10;
+	}
+#elif PACKETVER < 14
+	WFIFOW(fd,0)=0x1f0;
+	for(i = idx; i < max; i++) {
+		if(item[i].nameid <= 0)
+			continue;
+		nullpo_retv(id = itemdb_search(item[i].nameid));
+		if(itemdb_isequip2(id))
+			continue;
+		if(len + 18 > SOCKET_EMPTY_SIZE)
+			break;
+
+		WFIFOW(fd,len)=i+1;
+		if(id->view_id > 0)
+			WFIFOW(fd,len+2)=id->view_id;
+		else
+			WFIFOW(fd,len+2)=item[i].nameid;
+		WFIFOB(fd,len+4)=id->type;
+		WFIFOB(fd,len+5)=item[i].identify;
+		WFIFOW(fd,len+6)=item[i].amount;
+		WFIFOW(fd,len+8)=0;
+		WFIFOW(fd,len+10)=item[i].card[0];
+		WFIFOW(fd,len+12)=item[i].card[1];
+		WFIFOW(fd,len+14)=item[i].card[2];
+		WFIFOW(fd,len+16)=item[i].card[3];
+		len += 18;
+	}
+#else
+	WFIFOW(fd,0)=0x2ea;
+	for(i = idx; i < max; i++) {
+		if(item[i].nameid <= 0)
+			continue;
+		nullpo_retv(id = itemdb_search(item[i].nameid));
+		if(itemdb_isequip2(id))
+			continue;
+		if(len + 22 > SOCKET_EMPTY_SIZE)
+			break;
+
+		WFIFOW(fd,len)=i+1;
+		if(id->view_id > 0)
+			WFIFOW(fd,len+2)=id->view_id;
+		else
+			WFIFOW(fd,len+2)=item[i].nameid;
+		WFIFOB(fd,len+4)=id->type;
+		WFIFOB(fd,len+5)=item[i].identify;
+		WFIFOW(fd,len+6)=item[i].amount;
+		WFIFOW(fd,len+8)=0;
+		WFIFOW(fd,len+10)=item[i].card[0];
+		WFIFOW(fd,len+12)=item[i].card[1];
+		WFIFOW(fd,len+14)=item[i].card[2];
+		WFIFOW(fd,len+16)=item[i].card[3];
+		WFIFOL(fd,len+18)=item[i].limit;
+		len += 22;
+	}
+#endif
+	if(len > 4) {
+		WFIFOW(fd,2)=len;
+		WFIFOSET(fd,len);
+		if(i < max) {
+			// 超過分はパケット分割
+			clif_storageitemlist_sub(fd, item, i, max);
+		}
+	}
+
+	return;
+}
+
+/*==========================================
+ * 倉庫の装備リスト
+ *------------------------------------------
+ */
+static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, int max)
+{
+	struct item_data *id;
+	int i, j, len = 4;
+
+	nullpo_retv(item);
+
+#if PACKETVER < 10
+	WFIFOW(fd,0)=0xa6;
+	for(i = idx; i < max; i++) {
+		if(item[i].nameid <= 0)
+			continue;
+		nullpo_retv(id = itemdb_search(item[i].nameid));
+		if(!itemdb_isequip2(id))
+			continue;
+		if(len + 20 > SOCKET_EMPTY_SIZE)
+			break;
+
+		WFIFOW(fd,len)=i+1;
+		if(id->view_id > 0)
+			WFIFOW(fd,len+2)=id->view_id;
+		else
+			WFIFOW(fd,len+2)=item[i].nameid;
+		WFIFOB(fd,len+4)=(id->type == 7)? 4: id->type;
+		WFIFOB(fd,len+5)=item[i].identify;
+		WFIFOW(fd,len+6)=id->equip;
+		WFIFOW(fd,len+8)=item[i].equip;
+		WFIFOB(fd,len+10)=item[i].attribute;
+		WFIFOB(fd,len+11)=item[i].refine;
+		if(itemdb_isspecial(item[i].card[0])) {
+			WFIFOW(fd,len+12)=item[i].card[0];
+			WFIFOW(fd,len+14)=item[i].card[1];
+			WFIFOW(fd,len+16)=item[i].card[2];
+			WFIFOW(fd,len+18)=item[i].card[3];
+		} else {
+			if(item[i].card[0] > 0 && (j=itemdb_viewid(item[i].card[0])) > 0)
+				WFIFOW(fd,len+12)=j;
+			else
+				WFIFOW(fd,len+12)=item[i].card[0];
+			if(item[i].card[1] > 0 && (j=itemdb_viewid(item[i].card[1])) > 0)
+				WFIFOW(fd,len+14)=j;
+			else
+				WFIFOW(fd,len+14)=item[i].card[1];
+			if(item[i].card[2] > 0 && (j=itemdb_viewid(item[i].card[2])) > 0)
+				WFIFOW(fd,len+16)=j;
+			else
+				WFIFOW(fd,len+16)=item[i].card[2];
+			if(item[i].card[3] > 0 && (j=itemdb_viewid(item[i].card[3])) > 0)
+				WFIFOW(fd,len+18)=j;
+			else
+				WFIFOW(fd,len+18)=item[i].card[3];
+		}
+		len += 20;
+	}
+#elif PACKETVER < 11
+	WFIFOW(fd,0)=0x296;
+	for(i = idx; i < max; i++) {
+		if(item[i].nameid <= 0)
+			continue;
+		nullpo_retv(id = itemdb_search(item[i].nameid));
+		if(!itemdb_isequip2(id))
+			continue;
+		if(len + 24 > SOCKET_EMPTY_SIZE)
+			break;
+
+		WFIFOW(fd,len)=i+1;
+		if(id->view_id > 0)
+			WFIFOW(fd,len+2)=id->view_id;
+		else
+			WFIFOW(fd,len+2)=item[i].nameid;
+		WFIFOB(fd,len+4)=(id->type == 7)? 4: id->type;
+		WFIFOB(fd,len+5)=item[i].identify;
+		WFIFOW(fd,len+6)=id->equip;
+		WFIFOW(fd,len+8)=item[i].equip;
+		WFIFOB(fd,len+10)=item[i].attribute;
+		WFIFOB(fd,len+11)=item[i].refine;
+		if(itemdb_isspecial(item[i].card[0])) {
+			WFIFOW(fd,len+12)=item[i].card[0];
+			WFIFOW(fd,len+14)=item[i].card[1];
+			WFIFOW(fd,len+16)=item[i].card[2];
+			WFIFOW(fd,len+18)=item[i].card[3];
+		} else {
+			if(item[i].card[0] > 0 && (j=itemdb_viewid(item[i].card[0])) > 0)
+				WFIFOW(fd,len+12)=j;
+			else
+				WFIFOW(fd,len+12)=item[i].card[0];
+			if(item[i].card[1] > 0 && (j=itemdb_viewid(item[i].card[1])) > 0)
+				WFIFOW(fd,len+14)=j;
+			else
+				WFIFOW(fd,len+14)=item[i].card[1];
+			if(item[i].card[2] > 0 && (j=itemdb_viewid(item[i].card[2])) > 0)
+				WFIFOW(fd,len+16)=j;
+			else
+				WFIFOW(fd,len+16)=item[i].card[2];
+			if(item[i].card[3] > 0 && (j=itemdb_viewid(item[i].card[3])) > 0)
+				WFIFOW(fd,len+18)=j;
+			else
+				WFIFOW(fd,len+18)=item[i].card[3];
+		}
+		WFIFOL(fd,len+20)=item[i].limit;
+		len += 24;
+	}
+#else
+	WFIFOW(fd,0)=0x2d1;
+	for(i = idx; i < max; i++) {
+		if(item[i].nameid <= 0)
+			continue;
+		nullpo_retv(id = itemdb_search(item[i].nameid));
+		if(!itemdb_isequip2(id))
+			continue;
+		if(len + 26 > SOCKET_EMPTY_SIZE)
+			break;
+
+		WFIFOW(fd,len)=i+1;
+		if(id->view_id > 0)
+			WFIFOW(fd,len+2)=id->view_id;
+		else
+			WFIFOW(fd,len+2)=item[i].nameid;
+		WFIFOB(fd,len+4)=(id->type == 7)? 4: id->type;
+		WFIFOB(fd,len+5)=item[i].identify;
+		WFIFOW(fd,len+6)=id->equip;
+		WFIFOW(fd,len+8)=item[i].equip;
+		WFIFOB(fd,len+10)=item[i].attribute;
+		WFIFOB(fd,len+11)=item[i].refine;
+		if(itemdb_isspecial(item[i].card[0])) {
+			WFIFOW(fd,len+12)=item[i].card[0];
+			WFIFOW(fd,len+14)=item[i].card[1];
+			WFIFOW(fd,len+16)=item[i].card[2];
+			WFIFOW(fd,len+18)=item[i].card[3];
+		} else {
+			if(item[i].card[0] > 0 && (j=itemdb_viewid(item[i].card[0])) > 0)
+				WFIFOW(fd,len+12)=j;
+			else
+				WFIFOW(fd,len+12)=item[i].card[0];
+			if(item[i].card[1] > 0 && (j=itemdb_viewid(item[i].card[1])) > 0)
+				WFIFOW(fd,len+14)=j;
+			else
+				WFIFOW(fd,len+14)=item[i].card[1];
+			if(item[i].card[2] > 0 && (j=itemdb_viewid(item[i].card[2])) > 0)
+				WFIFOW(fd,len+16)=j;
+			else
+				WFIFOW(fd,len+16)=item[i].card[2];
+			if(item[i].card[3] > 0 && (j=itemdb_viewid(item[i].card[3])) > 0)
+				WFIFOW(fd,len+18)=j;
+			else
+				WFIFOW(fd,len+18)=item[i].card[3];
+		}
+		WFIFOL(fd,len+20)=item[i].limit;
+		WFIFOW(fd,len+24)=0;
+		len += 26;
+	}
+#endif
+	if(len > 4) {
+		WFIFOW(fd,2)=len;
+		WFIFOSET(fd,len);
+		if(i < max) {
+			// 超過分はパケット分割
+			clif_storageequiplist_sub(fd, item, i, max);
+		}
+	}
+
+	return;
+}
+
+/*==========================================
  * カプラさんに預けてある消耗品&収集品リスト
  *------------------------------------------
  */
 void clif_storageitemlist(struct map_session_data *sd, struct storage *stor)
 {
-	struct item_data *id;
-	int i,n,fd;
-	unsigned char *buf;
-
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	fd=sd->fd;
-	buf = WFIFOP(fd,0);
-
-#if PACKETVER < 5
-	WBUFW(buf,0)=0xa5;
-	for(i=0,n=0;i<MAX_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(itemdb_isequip2(id))
-			continue;
-
-		WBUFW(buf,n*10+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*10+6)=id->view_id;
-		else
-			WBUFW(buf,n*10+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*10+8)=id->type;
-		WBUFB(buf,n*10+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*10+10)=stor->store_item[i].amount;
-		WBUFW(buf,n*10+12)=0;
-		n++;
-	}
-	if(n){
-		WBUFW(buf,2)=4+n*10;
-		WFIFOSET(fd,WFIFOW(fd,2));
-	}
-#elif PACKETVER < 14
-	WBUFW(buf,0)=0x1f0;
-	for(i=0,n=0;i<MAX_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(itemdb_isequip2(id))
-			continue;
-
-		WBUFW(buf,n*18+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*18+6)=id->view_id;
-		else
-			WBUFW(buf,n*18+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*18+8)=id->type;
-		WBUFB(buf,n*18+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*18+10)=stor->store_item[i].amount;
-		WBUFW(buf,n*18+12)=0;
-		WBUFW(buf,n*18+14)=stor->store_item[i].card[0];
-		WBUFW(buf,n*18+16)=stor->store_item[i].card[1];
-		WBUFW(buf,n*18+18)=stor->store_item[i].card[2];
-		WBUFW(buf,n*18+20)=stor->store_item[i].card[3];
-		n++;
-	}
-	if(n){
-		WBUFW(buf,2)=4+n*18;
-		WFIFOSET(fd,WFIFOW(fd,2));
-	}
-#else
-	WBUFW(buf,0)=0x2ea;
-	for(i=0,n=0;i<MAX_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(itemdb_isequip2(id))
-			continue;
-
-		WBUFW(buf,n*22+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*22+6)=id->view_id;
-		else
-			WBUFW(buf,n*22+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*22+8)=id->type;
-		WBUFB(buf,n*22+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*22+10)=stor->store_item[i].amount;
-		WBUFW(buf,n*22+12)=0;
-		WBUFW(buf,n*22+14)=stor->store_item[i].card[0];
-		WBUFW(buf,n*22+16)=stor->store_item[i].card[1];
-		WBUFW(buf,n*22+18)=stor->store_item[i].card[2];
-		WBUFW(buf,n*22+20)=stor->store_item[i].card[3];
-		WBUFL(buf,n*22+22)=stor->store_item[i].limit;
-		n++;
-	}
-	if(n){
-		WBUFW(buf,2)=4+n*22;
-		WFIFOSET(fd,WFIFOW(fd,2));
-	}
-#endif
+	clif_storageitemlist_sub(sd->fd, stor->store_item, 0, MAX_STORAGE);
 
 	return;
 }
@@ -3442,464 +3622,38 @@ void clif_storageitemlist(struct map_session_data *sd, struct storage *stor)
  */
 void clif_storageequiplist(struct map_session_data *sd, struct storage *stor)
 {
-	struct item_data *id;
-	int i,j,n,fd;
-	unsigned char *buf;
-
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	fd=sd->fd;
-	buf = WFIFOP(fd,0);
-
-#if PACKETVER < 10
-	WBUFW(buf,0)=0xa6;
-	for(i=0,n=0;i<MAX_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(!itemdb_isequip2(id))
-			continue;
-		WBUFW(buf,n*20+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*20+6)=id->view_id;
-		else
-			WBUFW(buf,n*20+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*20+8)=(id->type == 7)? 4: id->type;
-		WBUFB(buf,n*20+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*20+10)=id->equip;
-		WBUFW(buf,n*20+12)=stor->store_item[i].equip;
-		WBUFB(buf,n*20+14)=stor->store_item[i].attribute;
-		WBUFB(buf,n*20+15)=stor->store_item[i].refine;
-		if(itemdb_isspecial(stor->store_item[i].card[0])) {
-			WBUFW(buf,n*20+16)=stor->store_item[i].card[0];
-			WBUFW(buf,n*20+18)=stor->store_item[i].card[1];
-			WBUFW(buf,n*20+20)=stor->store_item[i].card[2];
-			WBUFW(buf,n*20+22)=stor->store_item[i].card[3];
-		} else {
-			if(stor->store_item[i].card[0] > 0 && (j=itemdb_viewid(stor->store_item[i].card[0])) > 0)
-				WBUFW(buf,n*20+16)=j;
-			else
-				WBUFW(buf,n*20+16)=stor->store_item[i].card[0];
-			if(stor->store_item[i].card[1] > 0 && (j=itemdb_viewid(stor->store_item[i].card[1])) > 0)
-				WBUFW(buf,n*20+18)=j;
-			else
-				WBUFW(buf,n*20+18)=stor->store_item[i].card[1];
-			if(stor->store_item[i].card[2] > 0 && (j=itemdb_viewid(stor->store_item[i].card[2])) > 0)
-				WBUFW(buf,n*20+20)=j;
-			else
-				WBUFW(buf,n*20+20)=stor->store_item[i].card[2];
-			if(stor->store_item[i].card[3] > 0 && (j=itemdb_viewid(stor->store_item[i].card[3])) > 0)
-				WBUFW(buf,n*20+22)=j;
-			else
-				WBUFW(buf,n*20+22)=stor->store_item[i].card[3];
-		}
-		n++;
-	}
-	if(n){
-		WBUFW(buf,2)=4+n*20;
-		WFIFOSET(fd,WFIFOW(fd,2));
-	}
-#elif PACKETVER < 11
-	WBUFW(buf,0)=0x296;
-	for(i=0,n=0;i<MAX_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(!itemdb_isequip2(id))
-			continue;
-		WBUFW(buf,n*24+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*24+6)=id->view_id;
-		else
-			WBUFW(buf,n*24+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*24+8)=(id->type == 7)? 4: id->type;
-		WBUFB(buf,n*24+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*24+10)=id->equip;
-		WBUFW(buf,n*24+12)=stor->store_item[i].equip;
-		WBUFB(buf,n*24+14)=stor->store_item[i].attribute;
-		WBUFB(buf,n*24+15)=stor->store_item[i].refine;
-		if(itemdb_isspecial(stor->store_item[i].card[0])) {
-			WBUFW(buf,n*24+16)=stor->store_item[i].card[0];
-			WBUFW(buf,n*24+18)=stor->store_item[i].card[1];
-			WBUFW(buf,n*24+20)=stor->store_item[i].card[2];
-			WBUFW(buf,n*24+22)=stor->store_item[i].card[3];
-		} else {
-			if(stor->store_item[i].card[0] > 0 && (j=itemdb_viewid(stor->store_item[i].card[0])) > 0)
-				WBUFW(buf,n*24+16)=j;
-			else
-				WBUFW(buf,n*24+16)=stor->store_item[i].card[0];
-			if(stor->store_item[i].card[1] > 0 && (j=itemdb_viewid(stor->store_item[i].card[1])) > 0)
-				WBUFW(buf,n*24+18)=j;
-			else
-				WBUFW(buf,n*24+18)=stor->store_item[i].card[1];
-			if(stor->store_item[i].card[2] > 0 && (j=itemdb_viewid(stor->store_item[i].card[2])) > 0)
-				WBUFW(buf,n*24+20)=j;
-			else
-				WBUFW(buf,n*24+20)=stor->store_item[i].card[2];
-			if(stor->store_item[i].card[3] > 0 && (j=itemdb_viewid(stor->store_item[i].card[3])) > 0)
-				WBUFW(buf,n*24+22)=j;
-			else
-				WBUFW(buf,n*24+22)=stor->store_item[i].card[3];
-		}
-		WBUFL(buf,n*24+24)=stor->store_item[i].limit;
-		n++;
-	}
-	if(n){
-		WBUFW(buf,2)=4+n*24;
-		WFIFOSET(fd,WFIFOW(fd,2));
-	}
-#else
-	WBUFW(buf,0)=0x2d1;
-	for(i=0,n=0;i<MAX_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(!itemdb_isequip2(id))
-			continue;
-		WBUFW(buf,n*26+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*26+6)=id->view_id;
-		else
-			WBUFW(buf,n*26+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*26+8)=(id->type == 7)? 4: id->type;
-		WBUFB(buf,n*26+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*26+10)=id->equip;
-		WBUFW(buf,n*26+12)=stor->store_item[i].equip;
-		WBUFB(buf,n*26+14)=stor->store_item[i].attribute;
-		WBUFB(buf,n*26+15)=stor->store_item[i].refine;
-		if(itemdb_isspecial(stor->store_item[i].card[0])) {
-			WBUFW(buf,n*26+16)=stor->store_item[i].card[0];
-			WBUFW(buf,n*26+18)=stor->store_item[i].card[1];
-			WBUFW(buf,n*26+20)=stor->store_item[i].card[2];
-			WBUFW(buf,n*26+22)=stor->store_item[i].card[3];
-		} else {
-			if(stor->store_item[i].card[0] > 0 && (j=itemdb_viewid(stor->store_item[i].card[0])) > 0)
-				WBUFW(buf,n*26+16)=j;
-			else
-				WBUFW(buf,n*26+16)=stor->store_item[i].card[0];
-			if(stor->store_item[i].card[1] > 0 && (j=itemdb_viewid(stor->store_item[i].card[1])) > 0)
-				WBUFW(buf,n*26+18)=j;
-			else
-				WBUFW(buf,n*26+18)=stor->store_item[i].card[1];
-			if(stor->store_item[i].card[2] > 0 && (j=itemdb_viewid(stor->store_item[i].card[2])) > 0)
-				WBUFW(buf,n*26+20)=j;
-			else
-				WBUFW(buf,n*26+20)=stor->store_item[i].card[2];
-			if(stor->store_item[i].card[3] > 0 && (j=itemdb_viewid(stor->store_item[i].card[3])) > 0)
-				WBUFW(buf,n*26+22)=j;
-			else
-				WBUFW(buf,n*26+22)=stor->store_item[i].card[3];
-		}
-		WBUFL(buf,n*26+24)=stor->store_item[i].limit;
-		WBUFW(buf,n*26+28)=0;
-		n++;
-	}
-	if(n){
-		WBUFW(buf,2)=4+n*26;
-		WFIFOSET(fd,WFIFOW(fd,2));
-	}
-#endif
+	clif_storageequiplist_sub(sd->fd, stor->store_item, 0, MAX_STORAGE);
 
 	return;
 }
 
 /*==========================================
  * ギルド倉庫に預けてある消耗品&収集品リスト
- * 16KB超過に備えてWFIFORESERVEする
  *------------------------------------------
  */
 void clif_guildstorageitemlist(struct map_session_data *sd, struct guild_storage *stor)
 {
-	struct item_data *id;
-	int i,n,fd;
-#if PACKETVER < 5
-	unsigned char buf[4+10*MAX_GUILD_STORAGE];
-#elif PACKETVER < 14
-	unsigned char buf[4+18*MAX_GUILD_STORAGE];
-#else
-	unsigned char buf[4+22*MAX_GUILD_STORAGE];
-#endif
-
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	fd=sd->fd;
-
-#if PACKETVER < 5
-	WBUFW(buf,0)=0xa5;
-	for(i=0,n=0;i<MAX_GUILD_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(itemdb_isequip2(id))
-			continue;
-
-		WBUFW(buf,n*10+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*10+6)=id->view_id;
-		else
-			WBUFW(buf,n*10+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*10+8)=id->type;
-		WBUFB(buf,n*10+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*10+10)=stor->store_item[i].amount;
-		WBUFW(buf,n*10+12)=0;
-		n++;
-	}
-	if(n){
-		int len=4+n*10;
-		WBUFW(buf,2)=len;
-		WFIFORESERVE(fd,len);
-		memcpy(WFIFOP(fd,0), WBUFP(buf,0), len);
-		WFIFOSET(fd,len);
-	}
-#elif PACKETVER < 14
-	WBUFW(buf,0)=0x1f0;
-	for(i=0,n=0;i<MAX_GUILD_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(itemdb_isequip2(id))
-			continue;
-
-		WBUFW(buf,n*18+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*18+6)=id->view_id;
-		else
-			WBUFW(buf,n*18+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*18+8)=id->type;
-		WBUFB(buf,n*18+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*18+10)=stor->store_item[i].amount;
-		WBUFW(buf,n*18+12)=0;
-		WBUFW(buf,n*18+14)=stor->store_item[i].card[0];
-		WBUFW(buf,n*18+16)=stor->store_item[i].card[1];
-		WBUFW(buf,n*18+18)=stor->store_item[i].card[2];
-		WBUFW(buf,n*18+20)=stor->store_item[i].card[3];
-		n++;
-	}
-	if(n){
-		int len=4+n*18;
-		WBUFW(buf,2)=len;
-		WFIFORESERVE(fd,len);
-		memcpy(WFIFOP(fd,0), WBUFP(buf,0), len);
-		WFIFOSET(fd,len);
-	}
-#else
-	WBUFW(buf,0)=0x2ea;
-	for(i=0,n=0;i<MAX_GUILD_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(itemdb_isequip2(id))
-			continue;
-
-		WBUFW(buf,n*22+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*22+6)=id->view_id;
-		else
-			WBUFW(buf,n*22+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*22+8)=id->type;
-		WBUFB(buf,n*22+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*22+10)=stor->store_item[i].amount;
-		WBUFW(buf,n*22+12)=0;
-		WBUFW(buf,n*22+14)=stor->store_item[i].card[0];
-		WBUFW(buf,n*22+16)=stor->store_item[i].card[1];
-		WBUFW(buf,n*22+18)=stor->store_item[i].card[2];
-		WBUFW(buf,n*22+20)=stor->store_item[i].card[3];
-		WBUFL(buf,n*22+22)=stor->store_item[i].limit;
-		n++;
-	}
-	if(n){
-		int len=4+n*22;
-		WBUFW(buf,2)=len;
-		WFIFORESERVE(fd,len);
-		memcpy(WFIFOP(fd,0), WBUFP(buf,0), len);
-		WFIFOSET(fd,len);
-	}
-#endif
+	clif_storageitemlist_sub(sd->fd, stor->store_item, 0, MAX_GUILD_STORAGE);
 
 	return;
 }
 
 /*==========================================
  * ギルド倉庫に預けてある装備品リスト
- * 16KB超過に備えてWFIFORESERVEする
  *------------------------------------------
  */
 void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storage *stor)
 {
-	struct item_data *id;
-	int i,j,n,fd;
-#if PACKETVER < 10
-	unsigned char buf[4+20*MAX_GUILD_STORAGE];
-#elif PACKETVER < 11
-	unsigned char buf[4+24*MAX_GUILD_STORAGE];
-#else
-	unsigned char buf[4+26*MAX_GUILD_STORAGE];
-#endif
-
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	fd=sd->fd;
-
-#if PACKETVER < 10
-	WBUFW(buf,0)=0xa6;
-	for(i=0,n=0;i<MAX_GUILD_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(!itemdb_isequip2(id))
-			continue;
-		WBUFW(buf,n*20+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*20+6)=id->view_id;
-		else
-			WBUFW(buf,n*20+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*20+8)=(id->type == 7)? 4: id->type;
-		WBUFB(buf,n*20+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*20+10)=id->equip;
-		WBUFW(buf,n*20+12)=stor->store_item[i].equip;
-		WBUFB(buf,n*20+14)=stor->store_item[i].attribute;
-		WBUFB(buf,n*20+15)=stor->store_item[i].refine;
-		if(itemdb_isspecial(stor->store_item[i].card[0])) {
-			WBUFW(buf,n*20+16)=stor->store_item[i].card[0];
-			WBUFW(buf,n*20+18)=stor->store_item[i].card[1];
-			WBUFW(buf,n*20+20)=stor->store_item[i].card[2];
-			WBUFW(buf,n*20+22)=stor->store_item[i].card[3];
-		} else {
-			if(stor->store_item[i].card[0] > 0 && (j=itemdb_viewid(stor->store_item[i].card[0])) > 0)
-				WBUFW(buf,n*20+16)=j;
-			else
-				WBUFW(buf,n*20+16)=stor->store_item[i].card[0];
-			if(stor->store_item[i].card[1] > 0 && (j=itemdb_viewid(stor->store_item[i].card[1])) > 0)
-				WBUFW(buf,n*20+18)=j;
-			else
-				WBUFW(buf,n*20+18)=stor->store_item[i].card[1];
-			if(stor->store_item[i].card[2] > 0 && (j=itemdb_viewid(stor->store_item[i].card[2])) > 0)
-				WBUFW(buf,n*20+20)=j;
-			else
-				WBUFW(buf,n*20+20)=stor->store_item[i].card[2];
-			if(stor->store_item[i].card[3] > 0 && (j=itemdb_viewid(stor->store_item[i].card[3])) > 0)
-				WBUFW(buf,n*20+22)=j;
-			else
-				WBUFW(buf,n*20+22)=stor->store_item[i].card[3];
-		}
-		n++;
-	}
-	if(n){
-		int len=4+n*20;
-		WBUFW(buf,2)=len;
-		WFIFORESERVE(fd,len);
-		memcpy(WFIFOP(fd,0), WBUFP(buf,0), len);
-		WFIFOSET(fd,len);
-	}
-#elif PACKETVER < 11
-	WBUFW(buf,0)=0x296;
-	for(i=0,n=0;i<MAX_GUILD_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(!itemdb_isequip2(id))
-			continue;
-		WBUFW(buf,n*24+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*24+6)=id->view_id;
-		else
-			WBUFW(buf,n*24+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*24+8)=(id->type == 7)? 4: id->type;
-		WBUFB(buf,n*24+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*24+10)=id->equip;
-		WBUFW(buf,n*24+12)=stor->store_item[i].equip;
-		WBUFB(buf,n*24+14)=stor->store_item[i].attribute;
-		WBUFB(buf,n*24+15)=stor->store_item[i].refine;
-		if(itemdb_isspecial(stor->store_item[i].card[0])) {
-			WBUFW(buf,n*24+16)=stor->store_item[i].card[0];
-			WBUFW(buf,n*24+18)=stor->store_item[i].card[1];
-			WBUFW(buf,n*24+20)=stor->store_item[i].card[2];
-			WBUFW(buf,n*24+22)=stor->store_item[i].card[3];
-		} else {
-			if(stor->store_item[i].card[0] > 0 && (j=itemdb_viewid(stor->store_item[i].card[0])) > 0)
-				WBUFW(buf,n*24+16)=j;
-			else
-				WBUFW(buf,n*24+16)=stor->store_item[i].card[0];
-			if(stor->store_item[i].card[1] > 0 && (j=itemdb_viewid(stor->store_item[i].card[1])) > 0)
-				WBUFW(buf,n*24+18)=j;
-			else
-				WBUFW(buf,n*24+18)=stor->store_item[i].card[1];
-			if(stor->store_item[i].card[2] > 0 && (j=itemdb_viewid(stor->store_item[i].card[2])) > 0)
-				WBUFW(buf,n*24+20)=j;
-			else
-				WBUFW(buf,n*24+20)=stor->store_item[i].card[2];
-			if(stor->store_item[i].card[3] > 0 && (j=itemdb_viewid(stor->store_item[i].card[3])) > 0)
-				WBUFW(buf,n*24+22)=j;
-			else
-				WBUFW(buf,n*24+22)=stor->store_item[i].card[3];
-		}
-		WBUFL(buf,n*24+24)=stor->store_item[i].limit;
-		n++;
-	}
-	if(n){
-		int len=4+n*24;
-		WBUFW(buf,2)=len;
-		WFIFORESERVE(fd,len);
-		memcpy(WFIFOP(fd,0), WBUFP(buf,0), len);
-		WFIFOSET(fd,len);
-	}
-#else
-	WBUFW(buf,0)=0x2d1;
-	for(i=0,n=0;i<MAX_GUILD_STORAGE;i++){
-		if(stor->store_item[i].nameid<=0)
-			continue;
-		nullpo_retv(id = itemdb_search(stor->store_item[i].nameid));
-		if(!itemdb_isequip2(id))
-			continue;
-		WBUFW(buf,n*26+4)=i+1;
-		if(id->view_id > 0)
-			WBUFW(buf,n*26+6)=id->view_id;
-		else
-			WBUFW(buf,n*26+6)=stor->store_item[i].nameid;
-		WBUFB(buf,n*26+8)=(id->type == 7)? 4: id->type;
-		WBUFB(buf,n*26+9)=stor->store_item[i].identify;
-		WBUFW(buf,n*26+10)=id->equip;
-		WBUFW(buf,n*26+12)=stor->store_item[i].equip;
-		WBUFB(buf,n*26+14)=stor->store_item[i].attribute;
-		WBUFB(buf,n*26+15)=stor->store_item[i].refine;
-		if(itemdb_isspecial(stor->store_item[i].card[0])) {
-			WBUFW(buf,n*26+16)=stor->store_item[i].card[0];
-			WBUFW(buf,n*26+18)=stor->store_item[i].card[1];
-			WBUFW(buf,n*26+20)=stor->store_item[i].card[2];
-			WBUFW(buf,n*26+22)=stor->store_item[i].card[3];
-		} else {
-			if(stor->store_item[i].card[0] > 0 && (j=itemdb_viewid(stor->store_item[i].card[0])) > 0)
-				WBUFW(buf,n*26+16)=j;
-			else
-				WBUFW(buf,n*26+16)=stor->store_item[i].card[0];
-			if(stor->store_item[i].card[1] > 0 && (j=itemdb_viewid(stor->store_item[i].card[1])) > 0)
-				WBUFW(buf,n*26+18)=j;
-			else
-				WBUFW(buf,n*26+18)=stor->store_item[i].card[1];
-			if(stor->store_item[i].card[2] > 0 && (j=itemdb_viewid(stor->store_item[i].card[2])) > 0)
-				WBUFW(buf,n*26+20)=j;
-			else
-				WBUFW(buf,n*26+20)=stor->store_item[i].card[2];
-			if(stor->store_item[i].card[3] > 0 && (j=itemdb_viewid(stor->store_item[i].card[3])) > 0)
-				WBUFW(buf,n*26+22)=j;
-			else
-				WBUFW(buf,n*26+22)=stor->store_item[i].card[3];
-		}
-		WBUFL(buf,n*26+24)=stor->store_item[i].limit;
-		WBUFW(buf,n*26+28)=0;
-		n++;
-	}
-	if(n){
-		int len=4+n*26;
-		WBUFW(buf,2)=len;
-		WFIFORESERVE(fd,len);
-		memcpy(WFIFOP(fd,0), WBUFP(buf,0), len);
-		WFIFOSET(fd,len);
-	}
-#endif
+	clif_storageequiplist_sub(sd->fd, stor->store_item, 0, MAX_GUILD_STORAGE);
 
 	return;
 }
