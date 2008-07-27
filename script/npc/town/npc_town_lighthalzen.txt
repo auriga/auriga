@@ -2639,7 +2639,8 @@ lighthalzen.gat,267,200,3	script	治安維持員#Lhz	868,{
 		mes "静かに通ってみよう-";
 	}
 	close2;
-	set 'count,'count+1;
+	if('count < 15)
+		set 'count,'count+1;
 	if(strnpcinfo(2)=="Lhz")
 		warp "lighthalzen.gat",303,229;
 	else

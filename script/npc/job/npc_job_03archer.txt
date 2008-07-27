@@ -28,6 +28,7 @@ payon_in02.gat,64,71,4	script	ギルド関係者	85,{
 			mes "見かけは初心者ではありませんが…";
 			mes "他の職業を選択した以上、";
 			mes "アーチャーにはなれません。";
+			close;
 		}
 		if(Upper == 1 && OLD_CLASS != 11 && OLD_CLASS != 19 && OLD_CLASS != 20) {
 			//転生前が弓手系でないとき、未調査？

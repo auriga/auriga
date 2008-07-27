@@ -619,7 +619,7 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 		}
 	}
 	// ルート
-	if( (flag & 2) && bl->type == BL_ITEM && smd->target_id < MAX_FLOORITEM && dist < 9 ) {
+	if( (flag & 2) && bl->type == BL_ITEM && smd->target_id < MAX_FLOORITEM && dist < 11 ) {
 		if( mob_can_reach(smd,bl,12) && atn_rand()%1000 < 1000/(++cnt[1]) ) {	// 範囲内アイテムで等確率にする
 			smd->target_id = bl->id;
 			smd->min_chase = 13;
