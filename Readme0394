@@ -1,4 +1,13 @@
 ----------------------------------------
+//0501 [2008/07/28] by Cocoa
+
+・Athena Rev.295よりmerge、thanks to Arc87さん
+	-> 一セルに栽培可能な数を一つまでに限定（skill.c）
+
+・Athena Rev.349よりmerge、thanks to nanashiさん
+	-> skill_db.txt内の誤表記を訂正
+
+----------------------------------------
 //0500 [2008/07/28] by Cocoa
 
 ・Athena Rev.342よりmerge、thanks to Forestさん
