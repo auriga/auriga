@@ -6190,21 +6190,16 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			};
 			int i = skilllv - 1;
 			int j = pc_search_inventory(sd,skill_db[skillid].itemid[i]);
-			int id = 0;
 			struct mob_data *tmpmd = NULL;
 
 			if(j < 0 || skill_db[skillid].itemid[i] <= 0 || sd->inventory_data[j] == NULL ||
 				sd->status.inventory[j].amount < skill_db[skillid].amount[i] ||
-				map_count_oncell(src->m,x,y,BL_MOB) > 0
-			) {
+				map_count_oncell(src->m,x,y,BL_MOB) || atn_rand()%100 < 50)
+			{
 				clif_skill_fail(sd,skillid,0,0);
 				break;
 			}
 
-			if(atn_rand()%100 < 50) {	// 50%で失敗
-				clif_skill_fail(sd,skillid,0,0);
-				break;
-			}
 			id = mob_once_spawn(sd,"this", x, y,"--ja--",summons[n][atn_rand()%6], 1, "");
 
 			if((tmpmd = map_id2md(id)) != NULL)
