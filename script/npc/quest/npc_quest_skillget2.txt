@@ -1516,7 +1516,7 @@ gef_tower.gat,115,36,4	script	ニャオ	876,{
 		mes "難しくないでしょう？";
 		mes "一度やってみなさい。";
 		next;
-		gmcommand "@misceffect 183";
+		misceffect2 183;
 		mes "-ポポポン!!　ポン!!-";
 		next;
 		mes "[ニャオ]";
@@ -1531,7 +1531,7 @@ gef_tower.gat,115,36,4	script	ニャオ	876,{
 		mes "-一週間ニャオの厳しい特訓を受けた-";
 		mes "-" +strcharinfo(0)+ "はようやく";
 		mes "^FF0000サイトブラスター^000000を使えるようになった-";
-		gmcommand "@misceffect 253";
+		misceffect2 253;
 		delitem 991,10;
 		delitem 993,10;
 		delitem 990,10;

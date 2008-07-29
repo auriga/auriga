@@ -1519,7 +1519,7 @@
 4150,Goat_Card,ゴートカード,6,20,,10,,,,,,,16,,,,,{},{ if(getequiprefinerycnt(2)<6) bonus bDef,2; bonus bMdef,5; }
 4151,Gajomart_Card,ガジョマートカード,6,20,,10,,,,,,,64,,,,,{},{ bonus2 bExpRate,3,10; bonus2 bJobRate,3,10; bonus2 bSubRace,3,-20; }
 4152,Garapago_Card,ガラパゴカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,531,4,100; bonus3 bAddMonsterDropItem,532,4,100; bonus3 bAddMonsterDropItem,534,4,100; bonus2 bItemHealRate,4,50; }
-4153,Crab_Card,カニカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bBaseAtk,5; bonus2 bAddGroup,8,30; if(equippeditem(4247)==0 || equippeditem(4273)==0) end; if(equippeditem(4153)>1){ bonus2 bAddEle,1,15; bonus3 bAddMonsterDropItem,961,5,15; }else{ bonus2 bAddEle,1,30; bonus3 bAddMonsterDropItem,961,5,30; } }
+4153,Crab_Card,カニカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bBaseAtk,5; bonus2 bAddGroup,8,30; if(equippeditem(4247)==0 || equippeditem(4273)==0) end; if(equippeditem(4153)>1){ bonus2 bAddEle,1,15; bonus3 bAddMonsterDropItem,961,5,15; }else{ bonus2 bAddEle,1,30; bonus3 bAddMonsterDropItem,544,5,30; } }
 4154,Rice_Cake_Boy_Card,団子童子カード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,529,7,300; bonus3 bAddMonsterDropItem,530,7,100; bonus2 bItemHealRate,3,50; }
 4155,Goblin_Leader_Card,ゴブリンリーダーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddGroup,1,30; }
 4156,Steam_Goblin_Card,ゴブリンライダーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bCriticalRace,0,7; bonus bAddCriticalDamage,10; }
@@ -1739,7 +1739,7 @@
 4370,Dimik_Card,ディミックカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bVit,getequiprefinerycnt(2)-5; }
 4371,Archdam_Card,アークダムカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bAtk,10; bonus bCastrate,20; if(equippeditem(4311)==0 || equippeditem(4319)==0 || equippeditem(4331)==0) end; bonus bStr,1; bonus bInt,1; bonus bDef,2; bonus bSPrecovRate,10; bonus2 bAddSkillDamageRate,368,10; bonus2 bAddSkillDamageRate,480,10; bonus bCastrate,-10; if(Class!=14) end; bonus bDefEle,6; }
 4372,Bacsojin_Card,ペクソジンカード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bAddSkillHealRate,28,30; bonus2 bAddSkillHealRate,70,30; bonus2 bAddSkillHealRate,231,30; bonus bUseSPrate,15; }
-4373,Chung_E_Card,チュンイーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bLuk,getequiprefinerycnt(5)-5; bonus bCritical,getequiprefinerycnt(5)-5; }
+4373,Chung_E_Card,チュンイーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bLuk,getequiprefinerycnt(5)-5; bonus bCritical,getequiprefinerycnt(5); }
 4374,Apocalips_H_Card,ヴェスパーカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bIgnoreMDefRace,10; bonus bDex,2; }
 4375,Orc_Baby_Card,オークベイビーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bFlee,10; bonus2 bSubEle,0,10; if(getequiprefinerycnt(5)<9)end; bonus bFlee,5; bonus2 bSubEle,0,5; }
 4376,Lady_tanee_Card,レディータニーカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bMaxSPrate,50; bonus bMaxHPrate,-40; bonus3 bAddMonsterDropItem,513,11,200; }

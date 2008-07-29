@@ -1,4 +1,20 @@
 ----------------------------------------
+//0505 [2008/07/30] by Cocoa
+
+・プレイヤーからエフェクトを発生させるmisceffect2命令を実装（script.c）
+	-> script_ref.txtにmisceffet2命令の記述を追加
+	-> npc_quest_skillget2.txtのgmcommandをmisceffect2に置き換え
+
+・Athena Rev.419よりmerge、thanks to Blazeさん
+	-> 名も無き島とモスコビア関連マップのmapflagを設定
+
+・Athena Rev.437よりmerge、thanks to frankenさん
+	-> カニカードのセット効果でおさしみではなく貝をドロップしていた不具合を修正
+
+・Athena Rev.490よりmerge、thanks to yuyuyuさん
+	-> チュンイーカードでCritical-5されていた部分を削除
+
+----------------------------------------
 //0504 [2008/07/30] by Cocoa
 
 ・Athena Rev.494よりmerge、thanks to yuyuyuさん
