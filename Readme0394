@@ -1,4 +1,16 @@
 ----------------------------------------
+//0503 [2008/07/30] by Cocoa
+
+・Athena Rev.515よりmerge、thanks to Blazeさん
+	-> セージ転職クエストNPC実装
+
+・Athena Rev.516よりmerge、thanks to Blazeさん
+	-> 2次職クエストスキルNPC追加
+
+・Athena Rev.517よりmerge、thanks to Blazeさん
+	-> 1次職クエストNPC実装
+
+----------------------------------------
 //0502 [2008/07/29] by Cocoa
 
 ・0501でコンパイルが通らない不具合修正（skill.c）
