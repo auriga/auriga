@@ -1745,6 +1745,7 @@ airplane_01.gat,50,66,5	duplicate(AirApple)	リンゴ商人#メルツ	86
 			mes "はい、リンゴよ。";
 			mes "よかったら、また勝負しようね。";
 			getitem 512,'@apple*2;
+			close;
 		}
 		if('@mine > '@enemy) {	//勝った場合
 			mes "合計が^FF0000" +'@mine+ "^000000の";
@@ -1752,11 +1753,13 @@ airplane_01.gat,50,66,5	duplicate(AirApple)	リンゴ商人#メルツ	86
 			mes "はい、リンゴよ。";
 			mes "よかったら、また勝負しようね。";
 			getitem 512,'@apple*2;
+			close;
 		}
 		if('@mine < '@enemy) {	//負けた場合
 			mes "合計が^FF0000" +'@mine+ "^000000の";
 			mes "^FF0000" +strcharinfo(0)+ "^000000さんの負け！";
 			mes "残念だったね。";
+			close;
 		}
 		if('@mine == '@enemy) {	//同点の場合
 			mes "これは、引き分けね！";
@@ -1764,8 +1767,8 @@ airplane_01.gat,50,66,5	duplicate(AirApple)	リンゴ商人#メルツ	86
 			mes "最初に賭けたリンゴを返すわ。";
 			mes "よかったら、また勝負しようね。";
 			getitem 512,'@apple;
+			close;
 		}
-		close;
 	case 2:
 		mes "[" +strnpcinfo(1)+ "]";
 		mes "じゃあ、サイコロゲームのルールを";

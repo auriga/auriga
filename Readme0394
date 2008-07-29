@@ -1,4 +1,16 @@
 ----------------------------------------
+//0504 [2008/07/30] by Cocoa
+
+・Athena Rev.494よりmerge、thanks to yuyuyuさん
+	-> サイコロゲームで勝ちと負け両方のメッセージが出ていたのを修正
+
+・Athena Rev.501よりmerge、thanks to Blazeさん
+	-> ゲフェンNPCに吟遊詩人クエストを実装
+
+・Athena Rev.506よりmerge、thanks to frankenさん
+	-> 名も無き島修道院のmapflagを設定
+
+----------------------------------------
 //0503 [2008/07/30] by Cocoa
 
 ・Athena Rev.515よりmerge、thanks to Blazeさん
