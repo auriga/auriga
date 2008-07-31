@@ -1373,7 +1373,9 @@ int pc_calc_skilltree(struct map_session_data *sd)
 		// 養子スキル除外
 		for(i=355; i<408; i++)
 			sd->status.skill[i].id = i;
-		for(i=411; i<545; i++)
+		for(i=411; i<473; i++)
+			sd->status.skill[i].id = i;
+		for(i=475; i<545; i++)
 			sd->status.skill[i].id = i;
 #ifdef CLASS_DKDC
 		for(i=545; i<619; i++)

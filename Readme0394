@@ -1,4 +1,13 @@
 ----------------------------------------
+//0508 [2008/08/01] by Cocoa
+
+・Athena Rev.452よりmerge、thanks to nanashiさん
+	-> GMキャラクターの全スキルリストにNPCスキルが紛れ込んでいたのを修正
+
+・Athena Rev.455よりmerge、thanks to Blazeさん
+	-> モスコビア関連マップのwarp追加
+
+----------------------------------------
 //0507 [2008/08/01] by Cocoa
 
 ・Athena Rev.412よりmerge、thanks to Blazeさん
