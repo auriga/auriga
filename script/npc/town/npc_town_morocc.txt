@@ -1,5 +1,7 @@
 //= Athena Script ==============================================================
-// Ragnarok Online Morocc Town Script	2004-09-11
+// Ragnarok Online Morocc Town Script	by Blaze
+//= Registry ===================================================================
+// $MoroccAttack -> 魔王モロク復活度
 //==============================================================================
 
 //============================================================
@@ -144,4 +146,7864 @@ morocc.gat,44,180,0	script	青年	89,{
 	mes "見てみたいけど、俺には";
 	mes "そんなことは夢のような話だなぁ。";
 	close;
+}
+
+//============================================================
+// 魔王モロククエストNPC
+//- Registry -------------------------------------------------
+// MOC_1QUE -> 0〜128
+//------------------------------------------------------------
+izlude.gat,103,106,3	script	ギルド関係者#moc1	48,3,3,{
+	if(BaseLevel < 60) {
+		mes "[ギルド関係者]";
+		mes "こんなうわさを聞いたことが";
+		mes "ありますか？";
+		mes "「モロク近辺で子供の失踪事件相次ぐ」";
+		mes "恐ろしい……";
+		mes "貴方も気をつけてください。";
+		close;
+	}
+	if(Class != Job_Novice && Class != Job_SuperNovice && Class != Job_Swordman && Class != Job_Knight && Class != Job_Crusader) {
+		mes "[ギルド関係者]";
+		mes "最近、こんなうわさを";
+		mes "聞いた事がありますか？";
+		mes "モロクのうわさなんですが、";
+		mes "「とても素敵なペコペコが大量発生？」";
+		mes "……";
+		next;
+		mes "[ギルド関係者]";
+		mes "えっとこれではなくて……";
+		mes "「モロク近辺で子供の失踪事件相次ぐ」";
+		mes "……知ってますか？";
+		mes "私も詳しくは知らないのですが……";
+		close;
+	}
+	switch(MOC_1QUE) {
+	case 0:
+		break;
+	case 1:
+		switch(Class) {
+		case Job_Novice:
+		case Job_SuperNovice:
+			mes "[ギルド関係者]";
+			mes "あれ、まだいらっしゃったんですか？";
+			mes "あ……！";
+			mes "ああ……そうでした。";
+			mes "私が、どこへ行くべきかはっきりと";
+			mes "言っておりませんでしたね。";
+			next;
+			mes "[ギルド関係者]";
+			mes "モロクの中央にある湖のやや西側に、";
+			mes "訝しげな古い家があるはずです。";
+			next;
+			mes "[ギルド関係者]";
+			mes "私も詳しくは存じませんが、";
+			mes "アサシンギルドの方が";
+			mes "お待ちしているそうです。";
+			mes "行ってみればわかるでしょう。";
+			close;
+		case Job_Swordman:
+			mes "[ギルド関係者]";
+			mes "モロクの中央にある湖のやや西側に、";
+			mes "古い家があるらしいです。";
+			next;
+			mes "[ギルド関係者]";
+			mes "その近辺に、アサシンギルドの関係者が";
+			mes "待っているとのことです。";
+			mes "行ってよく探してみると良いでしょう。";
+			close;
+		case Job_Knight:
+			mes "[" +strcharinfo(0)+ "]";
+			mes "どこへ行けばいいのですか？";
+			mes "私は……モロクへ向かえば";
+			mes "良いのですか？";
+			next;
+			mes "[ギルド関係者]";
+			mes "説明不足でしたね、";
+			mes "申し訳ございません。";
+			next;
+			mes "[ギルド関係者]";
+			mes "行き先は、モロクの中央にある湖の";
+			mes "やや西側だそうです。";
+			mes "その付近に、アサシンギルドの方が";
+			mes "待っているそうです。";
+			next;
+			mes "[ギルド関係者]";
+			mes "これ以上は、私から";
+			mes "申し上げることはできません。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "そうですか。";
+			mes "何か隠し事がありそうですね……";
+			close;
+		case Job_Crusader:
+			mes "[ギルド関係者]";
+			mes "目的地は、モロクの中央にある湖の";
+			mes "やや西側だそうです。";
+			next;
+			mes "[ギルド関係者]";
+			mes "迎えの方が待っているそうなので、";
+			mes "行けばわかると思いますよ。";
+			close;
+		}
+	default:
+		mes "[ギルド関係者]";
+		mes "近頃、アサシンギルドの方々と";
+		mes "一緒のところをよく見かけます。";
+		mes "貴方が無事遂行することを";
+		mes "祈ってますよ。";
+		close;
+	case 30:
+	case 128:
+		mes "[ギルド関係者]";
+		mes "ああ、今日は天気が良い。";
+		mes "こんな日は、何か大きな事件でも";
+		mes "起こると面白いんですが……";
+		mes "そう思いませんか？";
+		close;
+	}
+OnTouch:
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Novice && Class != Job_SuperNovice && Class != Job_Swordman && Class != Job_Knight && Class != Job_Crusader))
+		end;
+	if(checkweight(7416,1) != 1) {
+		mes "-所持アイテムの重量が多いため";
+		mes "アイテムを受けとることができません-";
+		mes "-所持アイテムを減らしてから、再度";
+		mes "話しかけてください-";
+		close;
+	}
+	switch(Class) {
+	case Job_Novice:
+	case Job_SuperNovice:
+		mes "[ギルド関係者]";
+		mes "あ……";
+		mes strcharinfo(0)+ "様！";
+		mes "やっと見つけましたよ。";
+		mes "ここで待っていれば、いつかは";
+		mes "お会いできると思ってました。";
+		next;
+		mes "[ギルド関係者]";
+		mes "もう……ノービスの方は、";
+		mes "あっちこっちに歩き回って";
+		mes "ギルドにも立ち寄らないから、";
+		mes "探すのが大変ですよ。";
+		next;
+		mes "[ギルド関係者]";
+		mes "アルデバランのノービスクラブから";
+		mes "貴方に伝言があります。";
+		next;
+		mes "[ギルド関係者]";
+		mes "最近モロク近辺で、";
+		mes "子供の失踪事件が相次いで";
+		mes "起きているのはご存知ですか？";
+		mes "その事件に関連した内容のようです。";
+		mes "しかも、依頼主はアサシンギルド";
+		mes "らしいですよ。驚きですね。";
+		next;
+		mes "[ギルド関係者]";
+		mes "アサシンギルドはその事件に";
+		mes "関連した事で困った状況らしく、";
+		mes "人手を貸して欲しいとノービスクラブに";
+		mes "要請があったようです。";
+		next;
+		mes "[ギルド関係者]";
+		mes "そして、" +strcharinfo(0)+ "様が";
+		mes "適任であると、ノービスクラブが";
+		mes "推薦いたしました。";
+		mes "推薦状を預かっておりますので、";
+		mes "受け取ってください。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		next;
+		mes "[ギルド関係者]";
+		mes "それでは、確かに渡しましたよ！";
+		mes "依頼の遂行、よろしくお願いします。";
+		close;
+	case Job_Swordman:
+		mes "[ギルド関係者]";
+		mes strcharinfo(0)+ "!!";
+		mes "思った通り、ここにいましたね。";
+		next;
+		mes "[ギルド関係者]";
+		mes "今すぐ荷物をまとめ、";
+		mes "モロクに向かってください。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ええ!?　いきなり何ですか？";
+		mes "モロク……？";
+		next;
+		mes "[ギルド関係者]";
+		mes "最近モロク近辺で、子供の";
+		mes "失踪事件が相次いで起きています。";
+		mes "そこで、この事件を調査する";
+		mes "人手を貸して欲しいと、";
+		mes "アサシンギルドから要請がありました。";
+		next;
+		mes "[ギルド関係者]";
+		mes "ギルド内で協議した結果、";
+		mes "貴方が適任だと判断いたしました。";
+		mes "これがギルドからの推薦状です。";
+		mes "さぁ、向かってください。";
+		mes "あらゆる経験が、貴方の成長に";
+		mes "つながるのです。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		close;
+	case Job_Knight:
+		mes "[ギルド関係者]";
+		mes "お待ちください、";
+		mes strcharinfo(0)+ "殿！";
+		mes "騎士団からの伝言があります。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "私に？";
+		mes "何事だろう……";
+		mes "伺いましょう。";
+		next;
+		mes "[ギルド関係者]";
+		mes "ハッ！";
+		mes "プロンテラ騎士団員、";
+		mes strcharinfo(0)+ "殿に、";
+		mes "次の指令を命ずる。";
+		next;
+		mes "[ギルド関係者]";
+		mes "最近モロク近辺で、子供の";
+		mes "失踪事件が相次いで起きている。";
+		mes "貴殿はアサシンギルドに協力し、";
+		mes "この事件の調査をせよ。";
+		mes "以上、騎士団長ヘルマン。";
+		next;
+		mes "[ギルド関係者]";
+		mes "これが騎士団の推薦状です。";
+		mes "確かにお伝えいたしました。";
+		mes "ご武運を祈ります！";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		close;
+	case Job_Crusader:
+		mes "[ギルド関係者]";
+		mes strcharinfo(0)+ "様！";
+		mes "急に呼び止めて申し訳ございません。";
+		mes "マスタークルセイダーである";
+		mes "ミケル=レカント=ニキータ様から、";
+		mes "貴方への伝言を預かっております。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ミケル様から？";
+		mes "まさか、聖戦でも始まるんだろうか？";
+		mes "出兵命令かな……";
+		next;
+		mes "[ギルド関係者]";
+		mes "私も詳しくは存じておりませんが……";
+		mes "とにかく、伝言を伝えます。";
+		next;
+		mes "[ギルド関係者]";
+		mes "アサシンギルドから、人手を一人";
+		mes "貸して欲しいとの要請がありました。";
+		mes "そして、その適任者に";
+		mes strcharinfo(0)+ "様が";
+		mes "選抜されました。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……？";
+		mes "何だろう？";
+		mes "アサシンギルドがクルセイダーに";
+		mes "どういった用件が？";
+		next;
+		mes "[ギルド関係者]";
+		mes "最近モロク近辺で子供の失踪事件が";
+		mes "相次いでいるのですが、";
+		mes "それに関連しているようです。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		next;
+		mes "[ギルド関係者]";
+		mes "では、確かにお伝えいたしました。";
+		close;
+	}
+}
+
+prontera.gat,237,313,3	script	聖堂関係者#moc	79,3,3,{
+	if(BaseLevel < 60) {
+		mes "[聖堂関係者]";
+		mes "最近モロク付近で、変なうわさを";
+		mes "聞いたことがありませんか？";
+		mes "あ、何でもないです……";
+		mes "気にしないでください。";
+		close;
+	}
+	if(Class != Job_Acolyte && Class != Job_Priest && Class != Job_Monk) {
+		mes "[聖堂関係者]";
+		mes "もし旅先で聖職者に会うことが";
+		mes "ありましたら、聖堂に立ち寄るよう";
+		mes "お伝えください。";
+		next;
+		mes "[聖堂関係者]";
+		mes "緊急時に召集したくても、";
+		mes "皆さんどこにいらっしゃるのか……";
+		mes "探し回るのが大変ですよ。";
+		mes "ふぅ……";
+		close;
+	}
+	switch(MOC_1QUE) {
+	case 0:
+		break;
+	case 1:
+		mes "[聖堂関係者]";
+		mes "……？";
+		mes "どうかいたしましたか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "モロクの、どこに行けば";
+		mes "良いのでしょうか？";
+		next;
+		mes "[聖堂関係者]";
+		mes "あ、説明不足でしたね、";
+		mes "申し訳ございません。";
+		mes "行き先は、モロクの中央にある湖の";
+		mes "やや西側だそうです。";
+		mes "アサシンギルドの方がいるはずですので";
+		mes "行けばわかると思います。";
+		next;
+		mes "[聖堂関係者]";
+		mes "何故行き先をアサシンギルドに";
+		mes "指定しなかったのか、";
+		mes "私も不思議に思っておりますが……";
+		mes "とにかく、そこへ行けば";
+		mes "出迎えてくれるはずです。";
+		close;
+	default:
+		mes "[聖堂関係者]";
+		mes "近頃、アサシンギルドの方々と";
+		mes "一緒のところをよく見かけます。";
+		mes "貴方が無事遂行することを";
+		mes "祈ってますよ。";
+		close;
+	case 30:
+	case 128:
+		mes "[聖堂関係者]";
+		mes "ああ、今日は天気が良い。";
+		mes "こんな日は、何か大きな事件でも";
+		mes "起こると面白いんですが……";
+		mes "そう思いませんか？";
+		close;
+	}
+OnTouch:
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Acolyte && Class != Job_Priest && Class != Job_Monk))
+		end;
+	if(checkweight(7416,1) != 1) {
+		mes "-所持アイテムの重量が多いため";
+		mes "アイテムを受けとることができません-";
+		mes "-所持アイテムを減らしてから、再度";
+		mes "話しかけてください-";
+		close;
+	}
+	mes "[聖堂関係者]";
+	mes strcharinfo(0)+ "様！";
+	mes "探しましたよ。";
+	mes "聖堂に寄ってくださいますか？";
+	mes "貴方に伝えることがあります。";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "何か緊急事態ですか？";
+	next;
+	mes "[聖堂関係者]";
+	mes "最近、モロク近辺で子供の失踪事件が";
+	mes "起きているのはご存知ですか？";
+	mes "聖堂では、この事件を解決するために";
+	mes "何か手を尽くそうと考えています。";
+	next;
+	mes "[聖堂関係者]";
+	mes "丁度そこに、事件の調査を手伝う";
+	mes "人手を貸して欲しいと、";
+	mes "アサシンギルドから要請がありました。";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "子供の失踪事件とアサシンギルドは、";
+	mes "何か関係しているのでしょうか？";
+	next;
+	mes "[聖堂関係者]";
+	mes "どうやら、アサシンギルドで";
+	mes "予定していた仕事が、";
+	mes "事件と関連しているようです。";
+	mes "詳しい内容については、";
+	mes "私も存じておりません。";
+	next;
+	mes "[聖堂関係者]";
+	mes strcharinfo(0)+ "様。";
+	mes "貴方は、すぐにモロクへ向かい、";
+	mes "アサシンギルドに協力してください。";
+	mes "大主教様の推薦状を預かって";
+	mes "おりますので、これをお持ちください。";
+	set MOC_1QUE,1;
+	getitem 7416,1;
+	next;
+	mes "[聖堂関係者]";
+	mes "どうか、お気をつけて。";
+	mes "アサシンギルドとはあまり関わりたく";
+	mes "ないですが、彼らが私達に協力を";
+	mes "求めるくらいですから、";
+	mes "よほどのことなのでしょう。";
+	close;
+}
+
+alberta.gat,129,59,3	script	ギルド関係者#moc2	49,3,3,{
+	if(BaseLevel < 60) {
+		mes "[ギルド関係者]";
+		mes "最近、モロクで妙なうわさが";
+		mes "流れてるみたいですね。";
+		mes "何か知っていたら、教えてください。";
+		close;
+	}
+	if(Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchemist && Class != Job_Linker) {
+		mes "[ギルド関係者]";
+		mes "はぁ……商人達は商売のため";
+		mes "各地に散らばっているので、";
+		mes "探すのが大変だ……";
+		mes "みんな、たまにはギルドに";
+		mes "寄ってくれればいいのに。";
+		close;
+	}
+	switch(MOC_1QUE) {
+	case 0:
+		break;
+	case 1:
+		switch(Class) {
+		case Job_Merchant:
+			mes "[ギルド関係者]";
+			mes "ああ、一つ言い忘れてました。";
+			mes "モロクの中央にある湖のやや西側に、";
+			mes "古い家があります。";
+			mes "モロクへ着いたら、";
+			mes "まずそこへ向かってください。";
+			next;
+			mes "[ギルド関係者]";
+			mes "そこに、アサシンギルドから";
+			mes "派遣された人が待っているはずです。";
+			mes "よろしくお願いします。";
+			close;
+		case Job_Blacksmith:
+			mes "[ギルド関係者]";
+			mes "あれ？　まだいらっしゃったんですか？";
+			mes "すぐにでもモロクへ向かって欲しいの";
+			mes "ですが……";
+			mes "ホルグレンに推薦されたことが、";
+			mes "あまりに衝撃でしたか？";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "いえ、そうではなくて……";
+			mes "モロクのどこに行けばいいのか";
+			mes "わからなくて……";
+			next;
+			mes "[ギルド関係者]";
+			mes "ああ、なるほど。ええと……";
+			mes "モロクの中央にある湖のやや西側に、";
+			mes "古い家があります。";
+			mes "そこに行けば、アサシンギルドの方が";
+			mes "出迎えてくれるそうです。";
+			next;
+			mes "[ギルド関係者]";
+			mes "それでは、いってらっしゃい！";
+			close;
+		case Job_Alchemist:
+			mes "[ギルド関係者]";
+			mes "え、どこに行けばいいかわからない？";
+			next;
+			mes "[ギルド関係者]";
+			mes "モロクの中央にある湖のやや西側に、";
+			mes "古い家があります。";
+			mes "そこで、アサシンギルドから";
+			mes "派遣された方がお待ちしています。";
+			next;
+			mes "[ギルド関係者]";
+			mes "それではお気をつけて。";
+			mes "我がギルドの代表として、";
+			mes "しっかりとお願いしますよ。";
+			close;
+		case Job_Linker:
+			mes "[ギルド関係者]";
+			mes "ん……どうしました？";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "例の件について、もう少し";
+			mes "詳しく教えていただけますか？";
+			next;
+			mes "[ギルド関係者]";
+			mes "わかりました。";
+			mes "では、貴方が行くべき場所を";
+			mes "お教えしましょう。";
+			next;
+			mes "[ギルド関係者]";
+			mes "モロクの中央にある湖のやや西側に";
+			mes "古い家があります。";
+			mes "そこに、アサシンギルドの関係者が";
+			mes "待機しているようなので、";
+			mes "まず貴方はそこへ行くべきでしょう。";
+			next;
+			mes "[ギルド関係者]";
+			mes "それでは、よろしくお願いします。";
+			mes "……貴方に、ご武運を……！";
+			close;
+		}
+	default:
+		mes "[ギルド関係者]";
+		mes "近頃、アサシンギルドの方々と";
+		mes "一緒のところをよく見かけます。";
+		mes "貴方が無事遂行することを";
+		mes "祈ってますよ。";
+		close;
+	case 30:
+	case 128:
+		mes "[ギルド関係者]";
+		mes "ああ、今日は天気が良い。";
+		mes "こんな日は、何か大きな事件でも";
+		mes "起こると面白いんですが……";
+		mes "そう思いませんか？";
+		close;
+	}
+OnTouch:
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchemist && Class != Job_Linker))
+		end;
+	if(checkweight(7416,1) != 1) {
+		mes "-所持アイテムの重量が多いため";
+		mes "アイテムを受けとることができません-";
+		mes "-所持アイテムを減らしてから、再度";
+		mes "話しかけてください-";
+		close;
+	}
+	switch(Class) {
+	case Job_Merchant:
+		mes "[ギルド関係者]";
+		mes "あ、" +strcharinfo(0)+ "さん！";
+		mes "一体どこに行ってたんですか!?";
+		mes "ずいぶん探したんですよ！";
+		mes "今、お時間はありますか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "何の用ですか？";
+		mes "商人が商売に出かけるのが、";
+		mes "何か問題ですか？";
+		next;
+		mes "[ギルド関係者]";
+		mes "ああ、いえいえ。まぁ落ち着いて……";
+		mes "実はですね、商人組合から";
+		mes "貴方に伝言があるんです。";
+		mes "所在がわからなかったので、";
+		mes "探し回るよりここで待つ方がいい";
+		mes "と思って、待ってたんですよ。";
+		next;
+		mes "[ギルド関係者]";
+		mes "これが商人組合からの推薦状です。";
+		mes "ええと、モロクに向かうよう指示が";
+		mes "出てますね。アサシンギルドに";
+		mes "協力して欲しいそうです。";
+		next;
+		mes "[ギルド関係者]";
+		mes "アサシンギルドが、何故商人の助けを";
+		mes "必要としているのかはわかりませんが、";
+		mes "アサシンギルドと友好関係を築くことは";
+		mes "悪くないでしょう。我々商人にとって、";
+		mes "商売圏を広げることは重要ですからね。";
+		mes "さぁ、さっそく向かってください。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		close;
+	case Job_Blacksmith:
+		mes "[ギルド関係者]";
+		mes "ここで待っていれば、";
+		mes "必ず会えると思ってましたよ。";
+		next;
+		mes "[ギルド関係者]";
+		mes "急で申し訳ないですが、";
+		mes "ブラックスミスギルドから指令です。";
+		mes "すぐにモロクへ行き、";
+		mes "アサシンギルドに協力してください。";
+		next;
+		mes "[ギルド関係者]";
+		mes "アサシンギルドは、頻繁に武器を";
+		mes "購入してくれる常連さんです。";
+		mes "積極的に協力させていただきましょう！";
+		mes "貴方が適任者として選ばれたので、";
+		mes "よろしくお願いします。";
+		next;
+		mes "[ギルド関係者]";
+		mes "では、これがギルドからの推薦状です。";
+		mes "貴方は我々ブラックスミスの";
+		mes "代表者です。";
+		mes "しっかり頼みますよ！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……何かギルドから、面倒事を";
+		mes "押し付けられたような気がします……";
+		next;
+		mes "[ギルド関係者]";
+		mes "いやいや、そうではないです。";
+		mes "貴方が適任だと判断したんですよ！";
+		mes "ホルグレンが貴方を";
+		mes "推薦したってのもありますが……";
+		mes "とにかく、頼みますよ！";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		close;
+	case Job_Alchemist:
+		mes "[ギルド関係者]";
+		mes "あ、ちょっと待ってください！";
+		mes strcharinfo(0)+ "さんですよね？";
+		mes "私は、アルデバランの";
+		mes "錬金術師ギルドから派遣された者です。";
+		next;
+		mes "[ギルド関係者]";
+		mes "いや、やっとお会いできました。";
+		mes "主要な街に絞り、待っていた甲斐が";
+		mes "ありました。";
+		next;
+		mes "[ギルド関係者]";
+		mes "最近モロクで起きている事件の";
+		mes "調査のため、アサシンギルドから";
+		mes "協力の要請がありました。";
+		next;
+		mes "[ギルド関係者]";
+		mes "それで適任者を選出した結果……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "私が選ばれたと？";
+		next;
+		mes "[ギルド関係者]";
+		mes "はい。すぐモロクへ向かってください。";
+		mes "以後、調査についての管理と責任は";
+		mes "すべて、アサシンギルドで";
+		mes "請け負ってもらいます。";
+		mes "これが我がギルドからの推薦状です。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		close;
+	case Job_Linker:
+		mes "[ギルド関係者]";
+		mes "そこを行く魂よ……";
+		mes "しばらく私の話を";
+		mes "聞いてくれませんか？";
+		next;
+		mes "[ギルド関係者]";
+		mes "……何も申さずともわかります。";
+		mes "貴方は言葉ではなく、";
+		mes "魂で返事をしてくれてますから。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "魂がリンクした状態……";
+		mes "なるほど……";
+		mes "貴方は私の先輩のようですね。";
+		mes "それなら話を聞いてみましょう。";
+		mes "貴方の気が散らないよう、";
+		mes "私は黙っております。";
+		next;
+		mes "[ギルド関係者]";
+		mes "ありがとうございます。";
+		mes "では、しばらくお聞きください。";
+		mes "これはただの話ではございません。";
+		mes "指令です。任務です。";
+		mes "アサシンギルドが協力者を";
+		mes "探しています。";
+		next;
+		mes "[ギルド関係者]";
+		mes "その任に当たるに、";
+		mes "貴方が相応しいと判断しました。";
+		mes "その任とは……そうです。";
+		mes "近頃、モロクで起きている件です。";
+		next;
+		mes "[ギルド関係者]";
+		mes "子供の失踪事件が相次いでいる……";
+		mes "そうです。既にご存知のようですね。";
+		mes "……ところで……貴方は何故";
+		mes "しきりに割り込んでくるのですか？";
+		mes "私の話を黙って聞いてくださるのでは";
+		mes "なかったのですか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "すみません、意識の統一が甘かった";
+		mes "ようです。……つまりモロクへ向かい、";
+		mes "アサシンギルドに協力をすれば";
+		mes "良いのですね？";
+		next;
+		mes "[ギルド関係者]";
+		mes "その通りです。これが推薦状です。";
+		mes "我々は各地に散らばっているので、";
+		mes "適任を探すのに時間がかかりました。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		next;
+		mes "[ギルド関係者]";
+		mes "それでは、よろしくお願いします。";
+		mes "……貴方に、ご武運を……！";
+		mes "さて、用件は以上です。";
+		mes "さっそく向かってください。";
+		close;
+	}
+}
+
+geffen.gat,123,109,3	script	魔法学校関係者#moc	742,3,3,{
+	if(BaseLevel < 60) {
+		mes "[魔法学校関係者]";
+		mes "地下へ向かうつもりですか？";
+		mes "貴方にはまだ厳しいのでは";
+		mes "ないですか？";
+		next;
+		mes "[魔法学校関係者]";
+		mes "それより、この頃変なうわさを";
+		mes "聞いたことがありませんか？";
+		mes "モロクで子供が失踪する……";
+		mes "といったような。";
+		next;
+		mes "[魔法学校関係者]";
+		mes "知りませんか？";
+		close;
+	}
+	if(Class != Job_Mage && Class != Job_Wizard && Class != Job_Sage) {
+		mes "[魔法学校関係者]";
+		mes "もしマジシャンやウィザードなど、";
+		mes "魔法職の者を見かけたら、";
+		mes "魔法学校へ来るよう伝えてください。";
+		close;
+	}
+	switch(MOC_1QUE) {
+	case 0:
+		break;
+	case 1:
+		mes "[魔法学校関係者]";
+		mes "もう出発しますか？";
+		mes "ああ……そういえば、";
+		mes "モロクのどこへ行くのかを";
+		mes "言ってませんでしたね。";
+		next;
+		mes "[魔法学校関係者]";
+		mes "モロクの中央にある湖のやや西側に、";
+		mes "古い家があります。";
+		mes "そこにアサシンギルドが人を";
+		mes "待機させているそうですので、";
+		mes "行ってみればわかるでしょう。";
+		next;
+		mes "[魔法学校関係者]";
+		mes "私も詳しくは知りませんが、モロクで";
+		mes "妙なうわさが立っているようです。";
+		mes "気をつけてください。";
+		close;
+	default:
+		mes "[魔法学校関係者]";
+		mes "近頃、アサシンギルドの方々と";
+		mes "一緒のところをよく見かけます。";
+		mes "貴方が無事遂行することを";
+		mes "祈ってますよ。";
+		close;
+	case 30:
+	case 128:
+		mes "[魔法学校関係者]";
+		mes "ああ、今日は天気が良い。";
+		mes "こんな日は、何か大きな事件でも";
+		mes "起こると面白いんですが……";
+		mes "そう思いませんか？";
+		close;
+	}
+OnTouch:
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Mage && Class != Job_Wizard && Class != Job_Sage))
+		end;
+	if(checkweight(7416,1) != 1) {
+		mes "-所持アイテムの重量が多いため";
+		mes "アイテムを受けとることができません-";
+		mes "-所持アイテムを減らしてから、再度";
+		mes "話しかけてください-";
+		close;
+	}
+	mes "[魔法学校関係者]";
+	mes strcharinfo(0)+ "さん！";
+	mes "やはりここを通ると思ってましたよ。";
+	next;
+	mes "[魔法学校関係者]";
+	mes "私は、ゲフェンの魔法学校から";
+	mes "派遣された者です。魔法学校に、";
+	mes "アサシンギルドからある要請が";
+	mes "来ているのは知っていますか？";
+	mes "……どうやら知らないようですね。";
+	next;
+	mes "[魔法学校関係者]";
+	mes "それでは、今回の件について、";
+	mes "何も知らないんですね？";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……何か重大な問題でも？";
+	next;
+	mes "[魔法学校関係者]";
+	mes "まだ詳しいことはわかっていません。";
+	mes "とにかく、魔法学校では";
+	mes "アサシンギルドの要請を受け入れて";
+	mes "人を派遣することにしました。";
+	next;
+	mes "[魔法学校関係者]";
+	mes "そしてその適任者として、";
+	mes strcharinfo(0)+ "さんが";
+	mes "選出されました。";
+	mes "魔法学校の代表として、";
+	mes "任に当たってください。";
+	next;
+	mes "[魔法学校関係者]";
+	mes "これが魔法学校からの推薦状です。";
+	mes "まずはモロクへ行ってください。";
+	set MOC_1QUE,1;
+	getitem 7416,1;
+	next;
+	mes "[魔法学校関係者]";
+	mes "それでは、確かに推薦状、";
+	mes "お渡ししましたよ？";
+	mes "よろしくお願いします。";
+	close;
+}
+
+morocc.gat,155,56,5	script	少女#moc	93,3,3,{
+	if(BaseLevel < 60) {
+		mes "[少女]";
+		mes "最近物騒なうわさが立っているようね。";
+		mes "貴方のような子をさらっていく事件が";
+		mes "相次いでいるみたい。";
+		next;
+		mes "[少女]";
+		mes "気をつけてね。";
+		close;
+	}
+	if(Class != Job_Thief && Class != Job_Assassin && Class != Job_Rogue && Class != Job_Star) {
+		mes "[少女]";
+		mes "……";
+		mes "……";
+		mes "貴方に話す事は無いんだけど？";
+		mes "用が無いなら、もう行って。";
+		close;
+	}
+	switch(MOC_1QUE) {
+	case 0:
+		break;
+	case 1:
+		switch(Class) {
+		case Job_Thief:
+		case Job_Rogue:
+			mes "[ミヤ]";
+			mes "この街の西側に";
+			mes "アサシンギルドから派遣された人が";
+			mes "いるみたい。";
+			mes "すぐにその人に会うようにって。";
+			close;
+		case Job_Assassin:
+			mes "[ミヤ]";
+			mes "この街の西側に古い家があるの。";
+			mes "そこの近くに人を派遣しているから、";
+			mes "行けばわかるはずよ。";
+			close;
+		case Job_Star:
+			mes "[ミヤ]";
+			mes "この街の西側に、アサシンギルドから";
+			mes "派遣された人がいるらしいから、";
+			mes "すぐに行ってみてね。";
+			close;
+		}
+	default:
+		mes "[ミヤ]";
+		mes "最近調子はどう？";
+		mes "ギルドに異変は起きてない？";
+		mes "さっきキドとリーンが、転げる";
+		mes "ようにして走っていったけど……？";
+		close;
+	case 30:
+	case 128:
+		mes "[ミヤ]";
+		mes "ああ、今日は天気が良い。";
+		mes "こんな日は、何か大きな事件でも";
+		mes "起こると面白いんだけど……";
+		mes "そう思わない？";
+		close;
+	}
+OnTouch:
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Thief && Class != Job_Assassin && Class != Job_Rogue && Class != Job_Star))
+		end;
+	if(checkweight(7416,1) != 1) {
+		mes "-所持アイテムの重量が多いため";
+		mes "アイテムを受けとることができません-";
+		mes "-所持アイテムを減らしてから、再度";
+		mes "話しかけてください-";
+		close;
+	}
+	switch(Class) {
+	case Job_Thief:
+	case Job_Rogue:
+		mes "[ミヤ]";
+		mes strcharinfo(0)+ "！";
+		mes "ちょっと聞いて〜！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "私かな？　何でしょう？";
+		next;
+		mes "[ミヤ]";
+		mes "これ……貴方に渡すよう頼まれたの。";
+		mes "推薦状みたい。";
+		mes "アサシンギルドに協力しなさいって。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		next;
+		mes "[ミヤ]";
+		mes "ええと、この街の西側に";
+		mes "アサシンギルドから派遣された人が";
+		mes "いるみたい。";
+		mes "すぐにその人に会うようにって。";
+		mes "それじゃ、私はちゃんと伝えたからね。";
+		close;
+	case Job_Assassin:
+		mes "[ミヤ]";
+		mes strcharinfo(0)+ "！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ん……何でしょう？";
+		next;
+		mes "[ミヤ]";
+		mes "アサシンギルドから指令よ。";
+		mes "例の場所へ行けって。";
+		mes "すぐに向かってちょうだい。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "え？　例の場所って？";
+		mes "ギルドじゃなく……？";
+		next;
+		mes "[ミヤ]";
+		mes "そういえば、外部で任務を";
+		mes "受けるのは初めてかしら？";
+		mes "この街の西側に古い家があるの。";
+		mes "そこの近くに人を派遣しているから、";
+		mes "行けばわかるはずよ。";
+		next;
+		mes "[ミヤ]";
+		mes "場所を覚えておくといいわ。";
+		mes "今後利用することもあるだろうし。";
+		set MOC_1QUE,1;
+		close;
+	case Job_Star:
+		mes "[ミヤ]";
+		mes "ちょっと、そこの拳聖！";
+		mes "そう、貴方よ！";
+		mes "あるお兄さんに、伝言を頼まれたの。";
+		next;
+		mes "[ミヤ]";
+		mes "何も言わず、アサシンギルドの";
+		mes "手伝いをするように……";
+		mes "ですって。";
+		mes "お兄さんからの推薦状もあるよ。";
+		next;
+		mes "[ミヤ]";
+		mes "この街の西側に、アサシンギルドから";
+		mes "派遣された人がいるらしいから、";
+		mes "すぐに行ってみてね。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		next;
+		mes "[ミヤ]";
+		mes "それじゃ、伝えたからね！";
+		close;
+	}
+}
+
+payon.gat,231,323,3	script	ギルド関係者#moc3	59,3,3,{
+	if(BaseLevel < 60) {
+		mes "[ギルド関係者]";
+		mes "モロクへ行く時は気をつけてください。";
+		mes "最近失踪事件が相次いで";
+		mes "起きているようですから。";
+		close;
+	}
+	if(Class != Job_Archer && Class != Job_Hunter && Class != Job_Bard && Class != Job_Dancer && Class != Job_Taekwon) {
+		mes "[ギルド関係者]";
+		mes "もしアーチャーやハンターなど";
+		mes "弓を使う職業の方を見かけたら、";
+		mes "私の所に来るよう伝えてください。";
+		next;
+		mes "[ギルド関係者]";
+		mes "はぁ、なかなか見つからないなぁ。";
+		close;
+	}
+	switch(MOC_1QUE) {
+	case 0:
+		break;
+	case 1:
+		switch(Class) {
+		case Job_Archer:
+		case Job_Hunter:
+			mes "[ギルド関係者]";
+			mes "モロクの中央にある湖のやや西側に、";
+			mes "アサシンギルドの方が";
+			mes "待機しているようです。";
+			mes "まずはその方に会うと良いでしょう。";
+			close;
+		case Job_Bard:
+			mes "[ギルド関係者]";
+			mes "モロクの中央にある湖のやや西側に、";
+			mes "アサシンギルドの人が待機してるって。";
+			mes "さぁ、いってらっしゃ〜い！";
+			close;
+		case Job_Dancer:
+			mes "[ギルド関係者]";
+			mes "モロクの中央にある湖のやや西側の";
+			mes "古い家の近くにアサシンギルドから";
+			mes "派遣した人が待機しているそうです。";
+			close;
+		case Job_Taekwon:
+			mes "[ギルド関係者]";
+			mes "モロクの中央にある湖のやや西側に、";
+			mes "アサシンギルドの方が";
+			mes "待機しているようです。";
+			mes "まずはその方に会うと良いでしょう。";
+			close;
+		}
+	default:
+		mes "[ギルド関係者]";
+		mes "近頃、アサシンギルドの方々と";
+		mes "一緒のところをよく見かけます。";
+		mes "貴方が無事遂行することを";
+		mes "祈ってますよ。";
+		close;
+	case 30:
+	case 128:
+		mes "[ギルド関係者]";
+		mes "ああ、今日は天気が良い。";
+		mes "こんな日は、何か大きな事件でも";
+		mes "起こると面白いんですが……";
+		mes "そう思いませんか？";
+		close;
+	}
+OnTouch:
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Archer && Class != Job_Hunter && Class != Job_Bard && Class != Job_Dancer && Class != Job_Taekwon))
+		end;
+	if(checkweight(7416,1) != 1) {
+		mes "-所持アイテムの重量が多いため";
+		mes "アイテムを受けとることができません-";
+		mes "-所持アイテムを減らしてから、再度";
+		mes "話しかけてください-";
+		close;
+	}
+	switch(Class) {
+	case Job_Archer:
+	case Job_Hunter:
+		mes "[ギルド関係者]";
+		mes "あ……す、すみません！";
+		mes strcharinfo(0)+ "さんでしょう？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "はい、そうですが？";
+		mes "何でしょうか。";
+		next;
+		mes "[ギルド関係者]";
+		mes "ええと、ギルドから貴方に指令です。";
+		next;
+		mes "[ギルド関係者]";
+		mes "最近モロクで事件が発生している";
+		mes "ようです。その調査のため、";
+		mes "アサシンギルドから協力要請が";
+		mes "きました。";
+		next;
+		mes "[ギルド関係者]";
+		mes "我がギルドは、適任者として";
+		mes "貴方を選出しました。";
+		mes "こちらがギルドの推薦状です。";
+		mes "すぐにモロクへ向かってください。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		next;
+		mes "[ギルド関係者]";
+		mes "モロクの中央にある湖のやや西側に、";
+		mes "アサシンギルドの方が";
+		mes "待機しているようです。";
+		mes "まずはその方に会うと良いでしょう。";
+		next;
+		mes "[ギルド関係者]";
+		mes "それでは、よろしくお願いします。";
+		close;
+	case Job_Bard:
+		mes "[ギルド関係者]";
+		mes "あっ、" +strcharinfo(0)+ "先輩！";
+		mes "きっとここを通ると思ったよ。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ん？　そ、その服は何だい？";
+		next;
+		mes "[ギルド関係者]";
+		mes "ふふ、これね、";
+		mes "ゆったりしてて着心地良いし、";
+		mes "とても涼しいんだよ！　いいでしょ〜？";
+		mes "あ、実はアイオルデ先輩から";
+		mes "伝言を頼まれたんだ。";
+		next;
+		mes "[ギルド関係者]";
+		mes "詳しい事はよくわからないけど、";
+		mes "アサシンギルドからアイオルデ先輩に、";
+		mes "協力要請がきたんだって。";
+		next;
+		mes "[ギルド関係者]";
+		mes "多分、最近モロクで起きている、";
+		mes "子供の失踪事件のことだろうけど。";
+		mes "で、アイオルデ先輩は忙しいから……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "それで……私が代わりに？";
+		next;
+		mes "[ギルド関係者]";
+		mes "お察しの通り！";
+		mes "これ、アイオルデ先輩の推薦状ね。";
+		mes "見て見て！";
+		mes strcharinfo(0)+ "先輩のことを";
+		mes "めちゃくちゃ褒めちぎってるよ！";
+		mes "あはは、面白い！";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		next;
+		mes "[ギルド関係者]";
+		mes "モロクの中央にある湖のやや西側に、";
+		mes "アサシンギルドの人が待機してるって。";
+		mes "さぁ、いってらっしゃ〜い！";
+		close;
+	case Job_Dancer:
+		mes "[ギルド関係者]";
+		mes "あ、すみません……";
+		mes strcharinfo(0)+ "さんですよね？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ええ、そうですが……？";
+		next;
+		mes "[ギルド関係者]";
+		mes "ああ、やっと見つけました。";
+		mes "エイルさんからの指令です。";
+		next;
+		mes "[ギルド関係者]";
+		mes "詳しい内容は私もわかりませんが、";
+		mes "モロクで起きている事件の調査に";
+		mes "ついて、アサシンギルドから";
+		mes "協力要請がきてるみたいです。";
+		next;
+		mes "[ギルド関係者]";
+		mes "それでその適任者として、";
+		mes strcharinfo(0)+ "さんが";
+		mes "選ばれました。";
+		mes "これが推薦状です。";
+		mes "受け取ってください。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		next;
+		mes "[ギルド関係者]";
+		mes "どうやら緊急事態のようで、";
+		mes "すぐにでもモロクに";
+		mes "向かってほしいそうです。";
+		next;
+		mes "[ギルド関係者]";
+		mes "モロクの中央にある湖のやや西側の";
+		mes "古い家の近くにアサシンギルドから";
+		mes "派遣した人が待機しているそうです。";
+		next;
+		mes "[ギルド関係者]";
+		mes "まずはその人と話してください。";
+		mes "よろしくお願いします。";
+		close;
+	case Job_Taekwon:
+		mes "[ギルド関係者]";
+		mes "あ……す、すみません！";
+		mes strcharinfo(0)+ "さんでしょう？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "はい、そうですが？";
+		mes "何でしょうか。";
+		next;
+		mes "[ギルド関係者]";
+		mes "ええと、ギルドから貴方に指令です。";
+		next;
+		mes "[ギルド関係者]";
+		mes "最近モロクで事件が発生している";
+		mes "ようです。その調査のため、";
+		mes "アサシンギルドから協力要請が";
+		mes "きました。";
+		next;
+		mes "[ギルド関係者]";
+		mes "我がギルドは、適任者として";
+		mes "貴方を選出しました。";
+		mes "これがギルドの推薦状です。";
+		mes "すぐにモロクへ向かってください。";
+		set MOC_1QUE,1;
+		getitem 7416,1;
+		next;
+		mes "[ギルド関係者]";
+		mes "モロクの中央にある湖のやや西側に、";
+		mes "アサシンギルドの方が";
+		mes "待機しているようです。";
+		mes "まずはその方に会うと良いでしょう。";
+		next;
+		mes "[ギルド関係者]";
+		mes "それでは、よろしくお願いします。";
+		close;
+	}
+}
+
+airplane.gat,251,64,3	script	ギルド関係者#moc4	48,3,3,{
+	if(BaseLevel < 60) {
+		mes "[ギルド関係者]";
+		mes "こんなうわさを聞いたことが";
+		mes "ありますか？";
+		mes "「モロク近辺で子供の失踪事件相次ぐ」";
+		mes "恐ろしい……";
+		mes "貴方も気をつけてください。";
+		close;
+	}
+	if(Class != Job_Gunslinger && Class != Job_Ninja) {
+		mes "[ギルド関係者]";
+		mes "いつどこで会えるか分からない人に";
+		mes "出会うにはなかなか難しいですね。";
+		mes "それなりに考えてはいますが……";
+		close;
+	}
+	switch(MOC_1QUE) {
+	case 0:
+		break;
+	case 1:
+		mes "[ギルド関係者]";
+		mes "モロクの中央にある湖のやや西側に、";
+		mes "古い家があるらしいです。";
+		next;
+		mes "[ギルド関係者]";
+		mes "その近辺に、アサシンギルドの関係者が";
+		mes "待っているとのことです。";
+		mes "行ってよく探してみると良いでしょう。";
+		close;
+	default:
+		mes "[ギルド関係者]";
+		mes "近頃、アサシンギルドの方々と";
+		mes "一緒のところをよく見かけます。";
+		mes "貴方が無事遂行することを";
+		mes "祈ってますよ。";
+		close;
+	case 30:
+	case 128:
+		mes "[ギルド関係者]";
+		mes "ああ、今日は天気が良い。";
+		mes "こんな日は、何か大きな事件でも";
+		mes "起こると面白いんですが……";
+		mes "そう思いませんか？";
+		close;
+	}
+OnTouch:
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Gunslinger && Class != Job_Ninja))
+		end;
+	if(checkweight(7416,1) != 1) {
+		mes "-所持アイテムの重量が多いため";
+		mes "アイテムを受けとることができません-";
+		mes "-所持アイテムを減らしてから、再度";
+		mes "話しかけてください-";
+		close;
+	}
+	mes "[ギルド関係者]";
+	mes strcharinfo(0)+ "様ですか？";
+	mes "飛行船なら会えると思いました。";
+	next;
+	mes "[ギルド関係者]";
+	mes "あなたへの伝言があります。";
+	mes "アサシンギルドがどうも大変なことに";
+	mes "なっているようです。";
+	mes "残念ながら、";
+	mes "状況はあまり掴めていません。";
+	next;
+	mes "[ギルド関係者]";
+	mes "あなたはギルド内で有名です。";
+	mes "よって事態の調査に";
+	mes "あなたが適任だと判断しました。";
+	mes "この推薦状を持ってモロクへ";
+	mes "向かってください。";
+	set MOC_1QUE,1;
+	getitem 7416,1;
+	next;
+	mes "[ギルド関係者]";
+	mes "では、確かにお伝えしました。";
+	mes "任務は迅速に！";
+	mes "ご存知ですね？";
+	close;
+}
+
+morocc.gat,43,108,5	script	鋭い印象の少年	82,{
+	if(Class == Job_Assassin) {
+		switch(MOC_1QUE) {
+		case 0:
+			mes "[ジャック]";
+			mes "おい！";
+			mes "お前はまだ、ここに入る権利はない。";
+			next;
+			mes "[ジャック]";
+			mes "マスターが酒の1杯くらいなら";
+			mes "おごってくれるかもしれんが……";
+			close;
+		case 1:
+			mes "[ジャック]";
+			mes "待ってたよ。";
+			mes "ここは初めてなのか？";
+			mes "今後よく利用することになるから、";
+			mes "覚えておくといい。";
+			next;
+			mes "[ジャック]";
+			mes "さぁ、早く入って。";
+			close;
+		default:
+			mes "[ジャック]";
+			mes "忙しそうだな。";
+			mes "任務ご苦労。";
+			close;
+		}
+	}
+	switch(MOC_1QUE) {
+	case 1:
+		if(countitem(7416)) {
+			mes "[ジャック]";
+			mes "推薦状を持っているようだな。";
+			mes "では、中に入ってそれを";
+			mes "マスターに見せてくれ。";
+			next;
+			mes "[ジャック]";
+			mes "もたもたするな！";
+			mes "早く入れ！";
+			close;
+		}
+	case 0:
+		mes "[ジャック]";
+		mes "……";
+		mes "何だ？";
+		mes "用が無いなら消えてくれ。";
+		close;
+	default:
+		mes "[ジャック]";
+		mes "お前か……";
+		mes "俺にいちいち確認しなくても、";
+		mes "お前は勝手に入っていいぞ。";
+		close;
+	}
+}
+
+morocc.gat,45,110,0	script	#mocbar1	45,2,2,{
+	if(MOC_1QUE || Class == Job_Assassin) {
+		warp "que_job01.gat",9,94;
+		end;
+	}
+	if(rand(3)) {
+		mes "[ジャック]";
+		mes "どこへ行くつもりだ？";
+		mes "今すぐ消えろ！";
+		close2;
+		warp "morocc.gat",45,103;
+		end;
+	}
+	mes "[ジャック]";
+	mes "おおっと、ここに入るつもりかい？";
+	mes "ここは誰でも入っていいってわけじゃ";
+	mes "ないんだぜ？";
+	next;
+	mes "[ジャック]";
+	mes "ここに入るには通行料が必要だ。";
+	mes "1,000Zenyよこすんだな。";
+	mes "それが嫌なら帰りな。";
+	next;
+	if(select("お金を渡す","お金を渡さない")==2) {
+		mes "[ジャック]";
+		mes "ちっ、貧乏人が……";
+		next;
+		mes "[ジャック]";
+		mes "今すぐ消えろ！";
+		close2;
+		warp "morocc.gat",45,103;
+		end;
+	}
+	if(Zeny < 1000) {
+		mes "[ジャック]";
+		mes "……";
+		mes "貧しいんだな……";
+		mes "家に帰るといい。";
+		close;
+	}
+	mes "[ジャック]";
+	mes "よし、話が早いな！";
+	set Zeny,Zeny-1000;
+	close2;
+	warp "que_job01.gat",9,94;
+	end;
+}
+
+que_job01.gat,6,94,0	warp	#mocbar2	2,2,morocc.gat,45,103
+
+que_job01.gat,17,48,0	warp	#mocbar3	2,2,que_job01.gat,68,92
+
+que_job01.gat,68,96,0	warp	#mocbar4	2,2,que_job01.gat,17,53
+
+que_job01.gat,80,77,0	script	#mocbar5	45,2,2,{
+	if(MOC_1QUE > 1) {
+		warp "que_job01.gat",61,50;
+		end;
+	}
+	mes "[リテルン]";
+	mes "おいおい、そこはお前みたいな奴が";
+	mes "入れる場所じゃないぜ？";
+	mes "マスター！　こいつは許可したの？";
+	next;
+	if(PRT_2QUE != 24) {
+		mes "[マスター]";
+		mes "いや、許可していない。";
+		next;
+		mes "[リテルン]";
+		mes "だってさ。じゃぁな！";
+		close2;
+		warp "que_job01.gat",85,77;
+		end;
+	}
+	mes "[" +strcharinfo(0)+ "]";
+	mes "貴方とは関係ありません。";
+	mes "私は関係者に会わなくては";
+	mes "いけないんです！";
+	next;
+	mes "[リテルン]";
+	mes "マスター！　こいつどうする？";
+	mes "何だか、面倒そうだぜ？";
+	next;
+	mes "[マスター]";
+	mes "いいさ、好きにさせてやれ。";
+	mes "どうせその一つ先に行ったところで、";
+	mes "何も無いからな。";
+	next;
+	mes "[リテルン]";
+	mes "ふ〜ん、マスターがそう言うなら……";
+	mes "一杯おごってくれたら許可しよう。";
+	mes "この酒な、1,000Zenyだ。";
+	next;
+	if(select("わかりました","断ります")==2) {
+		mes "[リテルン]";
+		mes "断るって？";
+		mes "それじゃぁ俺もお断りだ！";
+		close2;
+		warp "que_job01.gat",85,77;
+		end;
+	}
+	if(Zeny < 1000) {
+		mes "[リテルン]";
+		mes "ん……何だ、金無いのか？";
+		mes "ヒョー！　これじゃぁ水も飲めないぜ？";
+		mes "あ〜あ、話になんないよ！";
+		close2;
+		warp "que_job01.gat",85,77;
+		end;
+	}
+	mes "[リテルン]";
+	mes "よしよし、そうこなくっちゃな！";
+	mes "マスター！　一杯よろしく！";
+	set Zeny,Zeny-1000;
+	next;
+	mes "[リテルン]";
+	mes "さぁ、入って入って！";
+	close2;
+	warp "que_job01.gat",61,50;
+	end;
+}
+
+que_job01.gat,65,50,0	warp	#mocbar5-2	2,2,que_job01.gat,84,77
+
+que_job01.gat,68,88,5	script	男#Simon	881,{
+	mes "[男]";
+	mes "……嫌だ……";
+	mes "何回言えばわかるんだ！";
+	emotion 32,"男#Simon";
+	next;
+	mes "[少女]";
+	mes "そんな……";
+	mes "私をきちんと見て！";
+	emotion 28,"少女#Kimmie";
+	next;
+	mes "[男]";
+	mes "こっちに来るな！";
+	mes "おれがいなくなった所で、";
+	mes "何も困らないだろう!?";
+	next;
+	mes "[少女]";
+	mes "何で家出なんかするのよ！";
+	mes "ママが心配してるんだから、";
+	mes "早く帰ってきてよ！";
+	emotion 6,"少女#Kimmie";
+	next;
+	mes "[男]";
+	mes "おれはあの家には戻りたくない！";
+	mes "あ〜、酒がうまいぜ!!";
+	next;
+	mes "[少女]";
+	mes "もう、馬鹿!!";
+	mes "兄さんなんか……お酒を飲みすぎて、";
+	mes "死んでしまえばいいんだわ！";
+	next;
+	mes "-兄妹で何やら言い争っているようだ-";
+	close;
+}
+que_job01.gat,70,84,1	duplicate(男#Simon)	少女#Kimmie	882
+
+que_job01.gat,81,79,5	script	遊んでいる騎士	733,{
+	mes "[リテルン]";
+	mes "ナイトがここで何をしてるかって？";
+	mes "ナイトはここに来ちゃいけないのか？";
+	if(Class == Job_Knight) mes "お前だってナイトだろうが……";
+	next;
+	mes "[リテルン]";
+	mes "おれとマスターは、古い付き合いでな。";
+	mes "お前にあれこれ言われる筋合いは";
+	mes "ねーんだよ！　邪魔だ！";
+	mes "あっちに行って一人で飲んでろ！";
+	close;
+}
+
+que_job01.gat,82,95,3	script	バーのマスター	46,{
+	if(Class == Job_Assassin) {
+		mes "[マスター]";
+		mes "いらっしゃい。";
+		mes "何か飲むかい？";
+	}
+	else if(Class == Job_Thief || Class == Job_Rogue) {
+		mes "[マスター]";
+		mes "……お前みたいなよそ者が";
+		mes "入ってくるってことは、ジャックの奴";
+		mes "居眠りしてやがるのか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "マスター、客に向かっていきなり";
+		mes "それはないんじゃないですか？";
+		next;
+		mes "[マスター]";
+		mes "ふん……まぁいいか。";
+		mes "注文は？";
+		next;
+	}
+	else {
+		mes "[マスター]";
+		mes "ん……？";
+		mes "お前、アサシンでも、";
+		mes "モロクの住民でもないようだが……";
+		mes "まぁ今日はいいが、あまり頻繁に";
+		mes "出入りしないでくれよ。";
+		mes "さ、注文は？";
+	}
+	next;
+	switch(select("注文する","任務について聞く","やめる")) {
+	case 1:
+		mes "[マスター]";
+		mes "トロピカル・ソグラト、";
+		mes "ヴァーミリオン・ザ・ビーチ、";
+		mes "どっちを飲むかね？";
+		next;
+		if(select("トロピカル・ソグラト","ヴァーミリオン・ザ・ビーチ","タダですか？")==3) {
+			mes "[マスター]";
+			mes "……";
+			mes "金が無いなら出て行きな。";
+			close;
+		}
+		if(Class == Job_Assassin) {
+			mes "[マスター]";
+			mes "お前には特別に安くしよう。";
+			if(Zeny < 800) {
+				mes "ん……金が足りないようだな。";
+				mes "所持金を確認してから注文してくれ。";
+				mes "アサシンは、特価800Zenyだ。";
+				close;
+			}
+			mes "さ、出来たよ。";
+			if(@menu == 1) {
+				mes "果汁が主成分ではあるが、";
+				mes "飲みすぎには注意しろよ。";
+			}
+			set Zeny,Zeny-800;
+			getitem 12111+@menu,1;
+			close;
+		}
+		if(Zeny < 1000) {
+			mes "[マスター]";
+			mes "おいおい、所持金を確認してから";
+			mes "注文してくれよ。";
+			mes "一杯1,000Zenyだ。";
+			close;
+		}
+		mes "[マスター]";
+		mes "ほら、出来たぞ。";
+		if(@menu == 1)
+			mes "果汁が主成分ではあるが、";
+		mes "飲みすぎには注意してくれ。";
+		set Zeny,Zeny-1000;
+		getitem 12111+@menu,1;
+		close;
+	case 2:
+		switch(MOC_1QUE) {
+		case 0:
+			if(Class == Job_Assassin) {
+				mes "[マスター]";
+				mes "お前は……まだ任務を受けたことが";
+				mes "ないようだな。";
+				next;
+				mes "[マスター]";
+				mes "……ここが気に入ったか？";
+				mes "お前がその気なら、ギルドマスターに";
+				mes "お前を推薦してやろう。";
+				mes "ただし、もっと強くなってからな。";
+				close;
+			}
+			mes "[マスター]";
+			mes "任務？　何の話だ？";
+			mes "わけのわからない事言わず、";
+			mes "注文をしてくれ。";
+			close;
+		case 1:
+			if(Class == Job_Assassin) {
+				mes "[マスター]";
+				mes "そうか、依頼を受けて来たのか。";
+				mes "関係者が中で待っている。";
+				mes "すぐに話を聞くがいい。";
+				next;
+				mes "[マスター]";
+				mes "今度の仕事は少々危険だ。";
+				mes "気をつけるように。";
+				set MOC_1QUE,2;
+				close;
+			}
+			mes "[マスター]";
+			mes "ん……？";
+			next;
+			menu "推薦状を見せる",-;
+			if(countitem(7416) < 1) {
+				mes "[マスター]";
+				mes "何だ？　持ってないのか？";
+				next;
+				mes "[マスター]";
+				mes "怪しい奴だな……";
+				mes "……";
+				mes "おい、こいつを追い出せ！";
+				next;
+				mes "[客達]";
+				mes "はい！";
+				next;
+				mes "-大勢に取り囲まれ、";
+				mes "店の外へ叩き出された-";
+				close2;
+				warp "morocc.gat",45,106;
+				end;
+			}
+			mes "[マスター]";
+			mes "ふむ……確かに確認した。";
+			next;
+			mes "[マスター]";
+			mes "ここは我がギルドの隠れ家だ。";
+			mes "そうそう部外者を出入りさせるわけに";
+			mes "いかないので、わざわざギルドの";
+			mes "推薦状を確認させてもらった。";
+			next;
+			mes "[マスター]";
+			mes "さて……向こうの隅にナイトが";
+			mes "立っているだろう。";
+			mes "その先に廊下へ通じる扉がある。";
+			mes "さっそく行ってもらおう。";
+			next;
+			mes "[マスター]";
+			mes "行けば、また案内者がいる。";
+			mes "……";
+			mes "おい、リテルン！";
+			mes "この者を通してくれ。";
+			next;
+			mes "[マスター]";
+			mes "え、ああ。";
+			mes "そんじゃ、こっちだぜ。";
+			next;
+			mes "[マスター]";
+			mes "さぁ、中へ。";
+			set MOC_1QUE,2;
+			close;
+		case 2:
+			mes "[マスター]";
+			mes "中の部屋で待っている。";
+			mes "早く向かってくれ。";
+			close;
+		default:
+			mes "[マスター]";
+			mes "仕事は順調か？";
+			if(Class == Job_Assassin) mes "たまには飲んでいけよ。";
+			else mes "まぁ、私が気にしてもしょうがないが。";
+			close;
+		}
+	case 3:
+		mes "[マスター]";
+		mes "ふむ……";
+		close;
+	}
+}
+
+que_job01.gat,49,49,4	script	タオ	877,{
+	if(MOC_1QUE == 28 || MOC_1QUE == 29 || MOC_1QUE == 126 || MOC_1QUE == 127) {
+		mes "[タオ]";
+		mes "怪我は無いかにゃ？";
+		mes "タオが看病してあげるにゃ〜？";
+		mes "ところで、キドには会ったかにゃ？";
+		next;
+		mes "[タオ]";
+		mes "キドが、お前が来たら";
+		mes "マスターの部屋に来るよう伝えろ";
+		mes "って言ってたにゃ！";
+		mes "すぐ向かうにゃ！";
+		close;
+	}
+	mes "[タオ]";
+	mes "止まるにゃ！　何の用にゃ!!";
+	next;
+	switch(select("任務のため","君こそ何をしてるの？","……何故猫言葉なの……？")) {
+	case 1:
+		if(MOC_1QUE > 1) {
+			mes "[タオ]";
+			mes "それなら、左側の部屋にゃ！";
+			mes "わかるかにゃ？";
+			close;
+		}
+		mes "[タオ]";
+		mes "任務？　怪しいにゃ！";
+		mes "ここはタオが通さないにゃ！";
+		close;
+	case 2:
+		mes "[タオ]";
+		mes "タオは、ここの門番にゃ！";
+		mes "怪しい奴は絶対通さないんにゃ!!";
+		mes "にゃるるるるるるる！";
+		next;
+		mes "[タオ]";
+		mes "お前は怪しいにゃ！";
+		mes "通すわけにはいかないにゃ〜!!";
+		close;
+	case 3:
+		mes "[タオ]";
+		mes "それはだにゃ……";
+		mes "だいぶ前の事になるんだがにゃ……";
+		next;
+		mes "[タオ]";
+		mes "大きなリボンが欲しくて、";
+		mes "ワイルドローズを探しに行ったのにゃ。";
+		mes "そしたらいきなり後ろから……";
+		next;
+		mes "[タオ]";
+		mes "にゃにゃ!?";
+		mes "何でお前にこんな話をしなきゃ";
+		mes "いけないんにゃ!?";
+		next;
+		mes "[タオ]";
+		mes "にゃるるるるるるる!!";
+		mes "お前は何者にゃ！";
+		next;
+		if(Class != Job_Assassin) {
+			mes "[タオ]";
+			mes "今すぐ出て行くにゃ！";
+			close;
+		}
+		mes "[" +strcharinfo(0)+ "]";
+		mes "タオ、お" +(Sex? "兄": "姉")+ "さんを覚えてないのかい？";
+		next;
+		mes "[タオ]";
+		mes "にゃにゃ？　知らないにゃ！";
+		mes "とにかくここは関係者以外";
+		mes "立ち入り禁止にゃ〜〜!!";
+		close;
+	}
+}
+
+que_job01.gat,51,55,0	script	#roombar1	45,1,1,{
+	if(MOC_1QUE != 2 && MOC_1QUE != 24 && MOC_1QUE != 28 && MOC_1QUE != 29 &&
+		MOC_1QUE != 123 && MOC_1QUE != 126 && MOC_1QUE != 127 && PRT_2QUE != 24) {
+		mes "[タオ]";
+		mes "誰にゃ？";
+		mes "ここは関係者以外立ち入り禁止にゃ！";
+		mes "許可をもらってないにゃ？";
+		mes "今すぐ出て行くにゃ!!";
+		close2;
+		warp "que_job01.gat",52,50;
+		end;
+	}
+	if(getnpctimer(1)) {
+		mes "[タオ]";
+		mes "今は中に人がいるにゃ。";
+		mes "後でまた来るにゃ〜！";
+		close2;
+		warp "que_job01.gat",52,50;
+		end;
+	}
+	initnpctimer;
+	announce "マスターゾーン第1区域、境界魔法を設定します。",9,0x70DBDB;
+	if(MOC_1QUE == 2 || MOC_1QUE == 28 || MOC_1QUE == 29 || MOC_1QUE == 126 || MOC_1QUE == 127) {
+		hideoffnpc "バルデス#moc1";
+		hideoffnpc "リーン#moc1";
+		hideoffnpc "キド#moc1";
+	}
+	else if(MOC_1QUE == 24) {
+		hideoffnpc "バルデス#moc2";
+		hideoffnpc "キド#moc2";
+		hideoffnpc "#moctable";
+	}
+	else if(MOC_1QUE == 123) {
+		hideoffnpc "バルデス#moc2";
+		hideoffnpc "リーン#moc2";
+		hideoffnpc "#moctable";
+	}
+	else if(PRT_2QUE == 24)
+		hideoffnpc "マルザナ#poison";
+	mes "[タオ]";
+	mes "保安魔法がかかってるにゃ。";
+	mes "^4D4DFF4分^000000与えるにゃ。";
+	mes "その間に全部終らせるにゃ！";
+	close2;
+	if(MOC_1QUE == 24 || MOC_1QUE == 123) warp "que_job01.gat",15,8;
+	else warp "que_job01.gat",11,7;
+	end;
+OnTimer240000:
+	areawarp "que_job01.gat",6,4,19,23,"que_job01.gat",52,50;
+	end;
+OnTimer245000:
+	hideonnpc "バルデス#moc1";
+	hideonnpc "バルデス#moc2";
+	hideonnpc "リーン#moc1";
+	hideonnpc "リーン#moc2";
+	hideonnpc "キド#moc1";
+	hideonnpc "キド#moc2";
+	hideonnpc "マルザナ#poison";
+	hideoffnpc "#moctable";
+	end;
+OnTimer250000:
+	announce "マスターゾーン第1区域、境界魔法を解除します。",9,0x70DBDB;
+	stopnpctimer;
+	end;
+OnStop:
+	announce "マスターゾーン第1区域、境界魔法を解除します。",9,0x70DBDB;
+	hideonnpc "バルデス#moc1";
+	hideonnpc "バルデス#moc2";
+	hideonnpc "リーン#moc1";
+	hideonnpc "リーン#moc2";
+	hideonnpc "キド#moc1";
+	hideonnpc "キド#moc2";
+	hideonnpc "マルザナ#poison";
+	hideonnpc "#moctable";
+	stopnpctimer;
+	end;
+}
+
+que_job01.gat,11,4,0	script	#roombar1exit	45,1,1,{
+	warp "que_job01.gat",52,50;
+	donpcevent "#roombar1::OnStop";
+	end;
+}
+
+que_job01.gat,51,44,0	script	#roombar2	45,1,1,{
+	if(MOC_1QUE == 121) {
+		mes "[" +strcharinfo(0)+ "]";
+		mes "タナトスタワーの調査が、";
+		mes "あまり進んでいない……";
+		mes "このまま帰ってしまっては、";
+		mes "リーンに申し訳ない……";
+		close2;
+		warp "que_job01.gat",52,50;
+		end;
+	}
+	if(MOC_1QUE != 25 && (MOC_1QUE < 103 || MOC_1QUE > 122)) {
+		mes "[タオ]";
+		mes "誰にゃ？";
+		mes "ここは関係者以外立ち入り禁止にゃ！";
+		mes "許可をもらってないにゃ？";
+		mes "今すぐ出て行くにゃ!!";
+		close2;
+		warp "que_job01.gat",52,50;
+		end;
+	}
+	if(getnpctimer(1)) {
+		mes "-扉は鍵がかかっている-";
+		mes "-内側から開けなくては";
+		mes "いけないようだ-";
+		if(MOC_1QUE > 102 && MOC_1QUE < 122) {
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "R！　開けてください！";
+			next;
+			mes "[R]";
+			mes "ああ、すみませんが今はダメです。";
+			mes "また後で来てもらえませんか？";
+		}
+		close2;
+		warp "que_job01.gat",52,50;
+		end;
+	}
+	initnpctimer;
+	announce "マスターゾーン第2区域、境界魔法を設定します。",9,0x70DBDB;
+	if(MOC_1QUE == 25) {
+		hideoffnpc "バルデス#moc3";
+		hideoffnpc "キド#moc3";
+		hideoffnpc "#mocrabsent";
+	}
+	else if(MOC_1QUE == 122) {
+		hideoffnpc "#mocempty";
+	}
+	mes "[タオ]";
+	mes "保安魔法がかかってるにゃ。";
+	mes "^4D4DFF4分^000000与えるにゃ。";
+	mes "その間に全部終らせるにゃ！";
+	close2;
+	if(MOC_1QUE > 102 && MOC_1QUE < 122) warp "que_job01.gat",80,21;
+	else warp "que_job01.gat",144,57;
+	end;
+OnTimer240000:
+	areawarp "que_job01.gat",74,6,87,27,"que_job01.gat",52,50;
+	areawarp "que_job01.gat",138,40,151,61,"que_job01.gat",52,50;
+	end;
+OnTimer245000:
+	hideonnpc "バルデス#moc3";
+	hideonnpc "リーン#moc3";
+	hideonnpc "キド#moc3";
+	hideonnpc "#mocrabsent";
+	hideonnpc "#mocempty";
+	end;
+OnTimer250000:
+	announce "マスターゾーン第2区域、境界魔法を解除します。",9,0x70DBDB;
+	stopnpctimer;
+	end;
+OnStop:
+	announce "マスターゾーン第2区域、境界魔法を解除します。",9,0x70DBDB;
+	hideonnpc "バルデス#moc3";
+	hideonnpc "リーン#moc3";
+	hideonnpc "キド#moc3";
+	hideonnpc "#mocrabsent";
+	hideonnpc "#mocempty";
+	stopnpctimer;
+	end;
+}
+
+que_job01.gat,80,27,0	script	#roombar2exit	45,1,1,{
+	warp "que_job01.gat",52,50;
+	donpcevent "#roombar2::OnStop";
+	end;
+}
+
+que_job01.gat,144,61,0	script	#roombar2_exit	45,1,1,{
+	warp "que_job01.gat",52,50;
+	donpcevent "#roombar2::OnStop";
+	end;
+}
+
+que_job01.gat,16,21,5	script	バルデス#moc1	55,{
+	switch(MOC_1QUE) {
+	case 2:
+		if(Class == Job_Assassin) {
+			mes "[バルデス]";
+			mes "よく来たな。お前はここで任務を";
+			mes "受けるのは初めてだろう？";
+			next;
+			mes "[バルデス]";
+			mes "任務の際は、私の指示に従ってもらう。";
+			mes "今我がギルドには、二つの依頼が";
+			mes "来ている。";
+			next;
+			mes "[バルデス]";
+			mes "それぞれ依頼主は別だが、";
+			mes "どちらも、最近モロクで起きている";
+			mes "子供の失踪事件に関係することだ。";
+			mes "そのうち一つを、お前に";
+			mes "遂行してもらいたい。";
+			next;
+			mes "[バルデス]";
+			mes "詳細内容は、依頼書を受領した後、";
+			mes "依頼主と直接会って話を聞いてくれ。";
+			next;
+			mes "[バルデス]";
+			mes "二つの依頼とは、";
+			mes "^3355FFある人物を調査して確保する事^000000と、";
+			mes "^3355FF依頼主を保護する事^000000だ。";
+			next;
+			mes "[バルデス]";
+			mes "時間が無いので、今すぐどちらの";
+			mes "依頼を遂行するか、決定してくれ。";
+			mes "ここは保安魔法がかかっているので、";
+			mes "長く滞在できないからな。";
+			next;
+			if(select("ある人物を調査して確保する","依頼主を保護する")==1) {
+				mes "[バルデス]";
+				mes "そうか、では、これからキドと";
+				mes "行動を共にするように。";
+				mes "キド、お前は先輩なんだから、";
+				mes "ちゃんと補助してやれよ。";
+				next;
+				cutin "mocseal_kid01",2;
+				emotion 33,"キド#moc1";
+				mes "[キド]";
+				mes "キドだ。";
+				mes "これからよろしく。";
+				next;
+				cutin "mocseal_kid01",255;
+				mes "[バルデス]";
+				mes "これがダンデリオンの依頼書だ。";
+				mes "彼と会い、詳しい話を聞いてくれ。";
+				set MOC_1QUE,3;
+				getitem 7417,1;
+				next;
+				mes "[バルデス]";
+				mes "保護の依頼は、リーンに任せよう。";
+				mes "では、解散！";
+				close;
+			}
+			mes "[バルデス]";
+			mes "そうか、では、これからリーンと";
+			mes "行動を共にするように。";
+			mes "リーン、お前は先輩なんだから、";
+			mes "ちゃんと補助してやれよ。";
+			next;
+			cutin "mocseal_rin01",2;
+			emotion 33,"リーン#moc1";
+			mes "[リーン]";
+			mes "リーンだ。";
+			mes "よろしくね。";
+			next;
+			cutin "mocseal_rin01",255;
+			mes "[バルデス]";
+			mes "これがR氏の依頼書だ。";
+			mes "向こうの部屋で待っている。";
+			mes "詳しい話は、彼から聞いてくれ。";
+			set MOC_1QUE,103;
+			getitem 7418,1;
+			close;
+		}
+		mes "[バルデス]";
+		mes "よく来た。";
+		mes "時間が無いから手短に話そう。";
+		mes "今我がギルドには、二つの依頼が";
+		mes "来ている。";
+		next;
+		mes "[バルデス]";
+		mes "それぞれ依頼主は別だが、";
+		mes "どちらも、最近モロクで起きている";
+		mes "子供の失踪事件に関係することだ。";
+		mes "そのうち一つを、お前に";
+		mes "遂行してもらいたい。";
+		next;
+		mes "[バルデス]";
+		mes "我々アサシンは、";
+		mes "普段から「生」よりも「死」に";
+		mes "関わることが多い……";
+		mes "そんな我々は、この二つの依頼に";
+		mes "戸惑った。";
+		next;
+		mes "[バルデス]";
+		mes "多くの子供達の命がかかっている、";
+		mes "非常にデリケートな問題だ。";
+		mes "そこで、我々だけで単独活動を";
+		mes "するよりも、他の者達の協力を";
+		mes "得た方が良いだろうと判断したのだ。";
+		next;
+		mes "[バルデス]";
+		mes "……そしてお前が来た、というわけだ。";
+		next;
+		mes "[バルデス]";
+		mes "我々が受けた依頼は二つ。一つは";
+		mes "^3355FFある人物を調査して確保する事^000000で、";
+		mes "もう一つは^3355FF依頼主を保護する事^000000だ。";
+		next;
+		mes "[バルデス]";
+		mes "どちらか一つを、";
+		mes "お前に請け負ってもらいたい。";
+		mes "さぁ、選んでくれ。";
+		next;
+		if(select("ある人物を調査して確保する","依頼主を保護する")==1) {
+			mes "[バルデス]";
+			mes "そうか、わかった。";
+			mes "横にいるキドがお前のパートナーだ。";
+			mes "彼と一緒に依頼の遂行を頼む。";
+			next;
+			cutin "mocseal_kid01",2;
+			emotion 33,"キド#moc1";
+			mes "[キド]";
+			mes "キドだ。";
+			mes "これからよろしく。";
+			next;
+			cutin "mocseal_kid01",255;
+			mes "[バルデス]";
+			mes "これがダンデリオンの依頼書だ。";
+			mes "詳しい話は、彼から直接聞いてくれ。";
+			set MOC_1QUE,3;
+			getitem 7417,1;
+			next;
+			mes "[バルデス]";
+			mes "保護の依頼は、リーンに任せよう。";
+			mes "それでは、各々よろしく頼む。";
+			close;
+		}
+		mes "[バルデス]";
+		mes "では、今後はリーンと";
+		mes "行動を共にしてくれ。";
+		next;
+		cutin "mocseal_rin01",2;
+		emotion 33,"リーン#moc1";
+		mes "[リーン]";
+		mes "リーンだ。";
+		mes "よろしく頼む。";
+		next;
+		cutin "mocseal_rin01",255;
+		mes "[バルデス]";
+		mes "これがRの依頼書だ。";
+		mes "向こうの部屋で待っている。";
+		mes "詳しい話は、彼から聞いてくれ。";
+		set MOC_1QUE,103;
+		getitem 7418,1;
+		next;
+		mes "[バルデス]";
+		mes "では、追跡の依頼はキドに任せよう。";
+		mes "それでは、解散！";
+		close;
+	case 3:
+	case 103:
+		if(Class == Job_Assassin) {
+			mes "[バルデス]";
+			mes "何をしている……？";
+			mes "早く依頼主に会って話を聞くんだ。。";
+			close;
+		}
+		mes "[バルデス]";
+		mes "時間が無いんだ。";
+		mes "早く依頼主に会い、";
+		mes "詳しい話を聞いてくれ。";
+		close;
+	case 28:
+	case 29:
+		mes "[バルデス]";
+		mes "皆、集まったな。";
+		mes "では……今回の仕事は";
+		mes "これで終了とする。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "リーン、例の人物は捕まえたんですか？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "取り逃がした……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "リーン？";
+		next;
+		mes "[リーン]";
+		mes "見事に騙され、さんざん利用された上";
+		mes "目の前で逃げられてしまった……";
+		mes "でも、もう追う必要はない。";
+		next;
+		mes "[リーン]";
+		mes "そいつは、私が必ず捕まえるから！";
+		next;
+		cutin "mocseal_kid01",0;
+		mes "[キド]";
+		mes "奴に逃げられたのは、仕方がない。";
+		mes "連中の邪魔が入ったからな。";
+		mes "それにリーン。";
+		mes "お前に課せられた任務に忠実だった。";
+		mes "自分を責めるな。";
+		next;
+		mes "[バルデス]";
+		mes "キドの言う通りだ。過ぎたことを";
+		mes "後悔するよりも、今後どうするか、だ。";
+		mes "リーン、奴の処理は任せる。";
+		mes "冷静に対処しろ。";
+		mes "では、解散。皆疲れただろう。";
+		mes "各々休むがいい。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "……申し訳ありません……マスター。";
+		mes "先に、失礼します……";
+		next;
+		cutin "mocseal_rin01",255;
+		hideonnpc "リーン#moc1";
+		mes "[" +strcharinfo(0)+ "]";
+		mes "リーン、だいぶ落ち込んでいる";
+		mes "ようですね。";
+		next;
+		mes "[バルデス]";
+		mes "無理もない。今回の仕事は、";
+		mes "色々と問題が多かったからな。";
+		mes "さて、今回の報酬だ。";
+		delitem 7416,countitem(7416);
+		delitem 7417,countitem(7417);
+		if(MOC_1QUE == 28) getexp 1050000,0;
+		else if(MOC_1QUE == 29) getexp 1280000,0;
+		set MOC_1QUE,30;
+		getitem 12107,1;
+		next;
+		if(Class == Job_Assassin) {
+			mes "[バルデス]";
+			mes "今回の仕事、ご苦労だった。";
+			mes "……残念ながら、子供達を救うことは";
+			mes "できなかったが……";
+		}
+		else {
+			mes "[バルデス]";
+			mes "今回の仕事、ご苦労だったな。";
+			mes "協力に感謝する。";
+			mes "……残念ながら、子供達を救うことは";
+			mes "できなかったが……";
+			next;
+			mes "[バルデス]";
+			mes "では、お前との契約もここまでだ。";
+			mes "……帰るがいい。";
+			mes "もう会うことはないだろう。……だが、";
+			mes "我々アサシンギルドは、今回お前が";
+			mes "協力してくれたことを決して忘れない。";
+			mes "……さらばだ！";
+		}
+		next;
+		mes "[バルデス]";
+		mes "キド、お前はプロンテラに行ってこい。";
+		mes "ちょっと頼みがある。";
+		next;
+		mes "[キド]";
+		mes "はい、マスター。";
+		close2;
+		hideonnpc "キド#moc1";
+		end;
+	case 126:
+	case 127:
+		mes "[バルデス]";
+		mes "今回の仕事について、";
+		mes "色々と説明が必要のようだな。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ええ、ぜひ説明を……";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "私からします、マスター。";
+		next;
+		mes "[バルデス]";
+		mes "任せよう。";
+		next;
+		mes "[リーン]";
+		mes "……簡潔に言うと……";
+		mes "我々は騙されたのだ……";
+		mes "あいつに！";
+		mes "あいつは我々を利用し、";
+		mes "魔王の復活を目論んでいたのだ。";
+		next;
+		mes "[リーン]";
+		mes "見事に騙され、利用された。";
+		mes "そして、まんまと逃げられたよ……";
+		mes "ハハ……ハ……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "リーン……";
+		next;
+		mes "[リーン]";
+		mes "連中の邪魔がひどく、";
+		mes "捕まえることができなかった……";
+		mes "すまない……";
+		next;
+		cutin "mocseal_kid01",0;
+		mes "[キド]";
+		mes "リーン、自分だけを責めるな。";
+		mes "あの状況ではしかたがなかった。";
+		next;
+		cutin "mocseal_kid01",255;
+		mes "[バルデス]";
+		mes "そうだ。今回の仕事は誰のせいで";
+		mes "失敗したか？";
+		mes "そんなことは問題じゃない。";
+		mes "重要なのは、何者かが魔王の復活を";
+		mes "目論んでいるということだ。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "これからどうしますか？";
+		mes "このまま放っておけないでしょう。";
+		next;
+		mes "[バルデス]";
+		mes "まずは奴を探すことだ。";
+		mes "そして、背後の繋がりを突き止める。";
+		if(Class == Job_Assassin) {
+			mes "だが、お前は今回の件は";
+			mes "もう手を引くがいい。";
+			mes "今後は、適任者に任せるとしよう。";
+		}
+		else {
+			mes "だが、お前は今回の件は";
+			mes "もう手を引くがいい。契約終了だ。";
+			mes "今後は、我々に任せてもらう。";
+		}
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "……";
+		mes "当然です、マスター。";
+		mes "あいつは、私が処理するんですから。";
+		next;
+		mes "[バルデス]";
+		mes "そして、これが今回の任務の報酬だ。";
+		mes "ご苦労だった。";
+		delitem 7416,countitem(7416);
+		delitem 7418,countitem(7418);
+		if(MOC_1QUE == 126) getexp 1050000,0;
+		else if(MOC_1QUE == 127) getexp 1280000,0;
+		set MOC_1QUE,128;
+		getitem 12106,1;
+		next;
+		mes "[バルデス]";
+		mes "今回の仕事、ご苦労だった。";
+		mes "……残念ながら、子供達を";
+		mes "救うことはできなかったが……";
+		next;
+		mes "[リーン]";
+		mes "……マスター、先に失礼します。";
+		next;
+		cutin "mocseal_rin01",255;
+		hideonnpc "リーン#moc1";
+		if(Class == Job_Assassin) {
+			mes "[バルデス]";
+			mes "……";
+			mes "また仕事が入ったら呼ぶ。";
+			mes "お前も休むがよい。";
+		}
+		else {
+			mes "[バルデス]";
+			mes "では、お前との契約もここまでだ。";
+			mes "……帰るがいい。";
+			mes "もう会うことはないだろう。……だが、";
+			mes "我々アサシンギルドは、今回お前が";
+			mes "協力してくれたことを決して忘れない。";
+			mes "……さらばだ！";
+		}
+		next;
+		mes "[バルデス]";
+		mes "キド、お前はプロンテラに行ってこい。";
+		mes "ちょっと頼みがある。";
+		next;
+		mes "[キド]";
+		mes "はい、マスター。";
+		close2;
+		hideonnpc "キド#moc1";
+		end;
+	case 30:
+	case 128:
+		if(Class == Job_Assassin) {
+			mes "[バルデス]";
+			mes "次の任務まで、ゆっくり休むがいい。";
+			close;
+		}
+		mes "[バルデス]";
+		mes "協力、感謝する。";
+		mes "ゆっくり休んでくれ。";
+		close;
+	}
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,17,11,3	script	バルデス#moc2	55,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,142,56,5	script	バルデス#moc3	55,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,19,18,3	script	リーン#moc1	885,{
+	cutin "mocseal_rin01",2;
+	switch(MOC_1QUE) {
+	case 0:
+	case 1:
+	case 2:
+		mes "[リーン]";
+		mes "……";
+		mes "お前が訪ねる相手は、私ではない……";
+		break;
+	case 3:
+		mes "[リーン]";
+		mes "キドのパートナー？";
+		mes "よろしく頼む。";
+		break;
+	case 28:
+	case 29:
+		mes "[リーン]";
+		mes "……";
+		next;
+		mes "-リーンは、心身共に疲弊していて";
+		mes "憂鬱そうだ-";
+		mes "-マスターに相談した方が良さそうだ-";
+		break;
+	case 103:
+		mes "[リーン]";
+		mes "まず依頼主に会い、詳しい話を聞こう。";
+		mes "向こうの部屋にいるはずだ。";
+		close2;
+		cutin "mocseal_rin01",255;
+		hideonnpc;
+		end;
+	case 126:
+	case 127:
+		mes "[リーン]";
+		mes "……キドには世話になったと";
+		mes "伝えておいて……";
+		mes strcharinfo(0)+ "、すまないな。";
+		next;
+		mes "-リーンは、心身共に疲弊していて";
+		mes "憂鬱そうだ-";
+		mes "-マスターに相談した方が良さそうだ-";
+		break;
+	}
+	close2;
+	cutin "mocseal_rin01",255;
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,13,9,7	script	リーン#moc2	885,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,13,17,5	script	キド#moc1	884,{
+	cutin "mocseal_kid01",2;
+	switch(MOC_1QUE) {
+	case 0:
+	case 1:
+	case 2:
+		mes "[キド]";
+		mes "……";
+		mes "お前には、特に用はないよ。";
+		break;
+	case 3:
+		mes "[キド]";
+		mes "依頼主のダンデリオン団員は、";
+		mes "ホールにいる。";
+		mes "今回の仕事が終わるまで";
+		mes "ずっといることになるだろう。";
+		mes "おれは先に行く。後から来るように。";
+		close2;
+		cutin "mocseal_kid01",255;
+		hideonnpc;
+		end;
+	case 28:
+	case 29:
+	case 126:
+	case 127:
+		mes "[キド]";
+		mes "……来たな。";
+		next;
+		mes "[バルデス]";
+		mes "しばらくここで話をしよう。";
+		break;
+	case 103:
+		mes "[キド]";
+		mes "リーンのパートナーだな。";
+		mes "引き受けた仕事は、";
+		mes "きちんとこなすんだぞ。";
+		break;
+	}
+	close2;
+	cutin "mocseal_kid01",255;
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,12,8,7	script	キド#moc2	884,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,148,54,3	script	キド#moc3	884,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,91,83,3	script	キド	884,{
+	switch(MOC_1QUE) {
+	default:
+		mes "[キド]";
+		mes "……";
+		close;
+	case 3:
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "ですから……";
+		mes "その「レイヤン・ムーア」という者が";
+		mes "うちの団で保護した子供達を";
+		mes "拉致したのは間違いないです。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "その者を、どうやって探せばいい？";
+		mes "何か特徴はあるのか？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "それは、まずこれを見てください。";
+		mes "子供達に聞き込みをし、";
+		mes "いくつか情報を得ました。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "すみません、何をしているのですか？";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "依頼主に、状況を確認している。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "どなたですか……？";
+		mes "あ、私の依頼書を持ってますね。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "調査対象の人物について聞いていた。";
+		mes "資料を見せてもらったが、";
+		mes "かなり学識のある人物のようだ。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "それに、あちこちの遺跡を";
+		mes "所有しているようです。";
+		next;
+		mes "-依頼主はそう言った後、";
+		mes "首にかけていたペンダントを額に当て";
+		mes "何かをつぶやいた-";
+		set MOC_1QUE,4;
+		break;
+	case 4:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "（キド、あの人は";
+		mes "何をしているのですか？）";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "さぁ？　おれに聞くなよ。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "ああ、お祈りをしていたんです。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "見たところ、オーディンに対する";
+		mes "祈祷ではないようだね。";
+		mes "まぁ、おれには関係のないことか……";
+		mes "で、子供達の行方に目星は？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "それが、まったくわかりません。";
+		mes "団員のほとんどは、誘拐された子供の";
+		mes "親達へ謝罪・慰労などで奔走中なので、";
+		mes "まったく調査ができていません。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "なるほど、だいたいの状況はわかった。";
+		mes "まずジュノーの共和国図書館に";
+		mes "行ってみるか。えーっと……";
+		mes "お前には説明が必要かな？";
+		next;
+		if(select("はい、お願いします","理由を聞かなくても、指示通り動きます")==1) {
+			mes "[キド]";
+			mes "依頼主によれば、";
+			mes "調査対象「レイヤン・ムーア」が";
+			mes "最後に訪れた場所は、";
+			mes "ジュノーの共和国図書館だ。";
+			next;
+			mes "[キド]";
+			mes "調査対象の居場所を探るには、";
+			mes "最後に訪れた場所を徹底的に調べる。";
+			mes "そういうもんだろう？";
+		}
+		else {
+			mes "[キド]";
+			mes "ほぅ……理由など知らなくても、";
+			mes "おれが指示を出せばその通りに動くと？";
+			next;
+			mes "[キド]";
+			mes "まぁ、その方がおれは楽でいいがな。";
+		}
+		next;
+		mes "[キド]";
+		mes "さて、無駄話はこれくらいにして、";
+		mes "さっそく行動を開始するか。";
+		next;
+		mes "[キド]";
+		mes "ジュノーの共和国図書館に行き、";
+		mes "「レイヤン・ムーア」の行動を";
+		mes "探ってきてくれ。";
+		mes "おれも後から行く。";
+		set MOC_1QUE,5;
+		break;
+	case 5:
+	case 6:
+	case 7:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "どうした？";
+		mes "おれはまだ調べることがあってな。";
+		mes "先に行って調査をしてくれ。";
+		mes "後から行く。";
+		break;
+	case 8:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "本当に、このメモから";
+		mes "ムーアが調査していた内容が";
+		mes "何かわからないのか？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "わかりませんね。";
+		mes "我々は、ムーアが拉致した子供達の";
+		mes "行方が知りたいだけですから。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "うーん……";
+		mes "しかし、ここに書いてある";
+		mes "モロクの四方位の防衛ってのは何だ？";
+		mes "気になるな。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "「レイヤン・ムーア」は、";
+		mes "その場所に行ったのかもしれませんね。";
+		next;
+		mes "[キド]";
+		mes "ムーアが調査していることを追うか。";
+		mes "事件が起きる前にすでに行っている";
+		mes "可能性もあるが、";
+		mes "これから行く可能性もある。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "そうですね。";
+		mes "今のところ手がかりが";
+		mes "それしかないですし。";
+		next;
+		mes "[キド]";
+		mes "運が良ければ、";
+		mes "彼を確保できるかもしれないな。";
+		mes "よし、行ってこい。";
+		set MOC_1QUE,9;
+		break;
+	case 9:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "行ってこいって……";
+		mes "まずはどこに？";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "お前は西の方を頼む。";
+		mes "スフィンクス近辺だな。";
+		next;
+		mes "[キド]";
+		mes "おれは南の方だ。";
+		mes "経過報告は、ここでしよう。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "よろしくお願いします。";
+		set MOC_1QUE,10;
+		break;
+	case 10:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "西の方……";
+		mes "スフィンクス近辺のはずだが、";
+		mes "防衛地域という言葉からするに、";
+		mes "入り口の近くだと思うんだが……";
+		next;
+		mes "[キド]";
+		mes "とにかく、何か気づいたら";
+		mes "すぐに報告してくれ。";
+		break;
+	case 11:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "戻ってきたな。お前も、";
+		mes "おれと同じようなものを見ただろう。";
+		mes "おれは、大地の文様が";
+		mes "彫られているものを確認した。";
+		mes "その場所は、地の属性の力が";
+		mes "非常に強まっていた。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "私が見たのは、風の文様でした。";
+		mes "同じく、風の属性が";
+		mes "非常に強まってました。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "^3355FF防衛……属性……最大限……早く^000000";
+		mes "この部分と関係があるのでしょうか？";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "それに、ムーアは何が目的で";
+		mes "そんなことをするのか……";
+		mes "ちっ、おれ達は後処理部隊じゃ";
+		mes "ないっての……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ええ、我々の目的は、";
+		mes "「レイヤン・ムーア」を捕まえ、";
+		mes "陰謀を阻止することですから。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "しかし、図書館から持ってきた";
+		mes "資料の内容からすると、";
+		mes "無視していいものかどうか……";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "モロク……召喚……防衛……属性……";
+		mes "何か共通点はあるか？";
+		mes "うーん……";
+		mes "いちいちこんなことで悩んでられない。";
+		next;
+		mes "[キド]";
+		mes strcharinfo(0)+ "。";
+		mes "とにかく、ムーアの行動を阻止しよう。";
+		mes "ムーアが属性を強化したのであれば、";
+		mes "それと反対の属性で";
+		mes "相殺し、無効化できるんじゃないか？";
+		next;
+		mes "[キド]";
+		mes "では、東西南北の四方位にある属性を";
+		mes "無効化してくれ。";
+		next;
+		if(select("キドは何を？","キドは何歳ですか？")==1) {
+			mes "[キド]";
+			mes "ん？";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "キドは何をするんですか？";
+		}
+		else {
+			mes "[キド]";
+			mes "……？　歳？";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "いや、私にばかり雑用させるので……";
+			next;
+			mes "[キド]";
+			mes "そんなことないが……";
+			mes "それに、歳は関係ないだろう？";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "ハハ……まぁまぁ。";
+			mes "私の予想だと、キド大将は";
+			mes "26歳くらいでは？";
+			next;
+			mes "[キド]";
+			mes "おれはまだそんな歳じゃない！";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "ハハ……";
+			mes "そうですか。";
+		}
+		next;
+		mes "[キド]";
+		mes "……おれは、";
+		mes "お前が各属性を相殺する間、";
+		mes "近くの歴史学者を訪ねてみる。";
+		mes "メモの内容から何かわからないか、";
+		mes "聞いてみるつもりだ。";
+		next;
+		mes "[キド]";
+		mes "さぁ、行動開始だ。";
+		set MOC_1QUE,12;
+		break;
+	case 12:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "モロクの東西南北にある";
+		mes "属性の力を無効化してくれ。";
+		next;
+		mes "[キド]";
+		mes "西の属性の位置はお前が知ってるよな。";
+		mes "南は、モロクを出て";
+		mes "すぐのフィールドの一番南側にあった。";
+		mes "東と北に関しては、自分で探してくれ。";
+		break;
+	case 13:
+	case 14:
+	case 15:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "属性の無力化は進んでいるか？";
+		break;
+	case 16:
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "あ、戻られたようですね。";
+		mes "ちょっと耳を貸してください。";
+		mes "今、キド大将は機嫌が悪いようです。";
+		mes "気を付けた方がいいですよ。ハハハ。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "……聞こえてる！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "えっと……";
+		mes "何か良くない事でもありましたか？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "大将から直接聞いてください。";
+		set MOC_1QUE,17;
+		break;
+	case 17:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "属性の装置のことを聞きに歴史学者を";
+		mes "訪ねたら、門前払いにあった。";
+		mes "代わりにお前が行ってくれ。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "門前払い？";
+		mes "一体何故ですか？";
+		mes "キド……何かしたのですか？";
+		next;
+		mes "[キド]";
+		mes "おれのせいじゃない！";
+		mes "……アサシンが嫌いなんだとよ！";
+		next;
+		if(Class == Job_Assassin) {
+			mes "[" +strcharinfo(0)+ "]";
+			mes "……";
+			mes "えーっと……";
+			mes "……";
+			mes "私もアサシンなんですが……";
+			next;
+			mes "[キド]";
+			mes "変装でもして行ってみろ。";
+			mes "アサシンってばれなきゃいいだろ。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "……それなら、キドが変装して";
+			mes "行けばいいじゃないですか……？";
+			next;
+			mes "[キド]";
+			mes "おれはアサシンとしての";
+			mes "プライドがある。";
+			mes "変装なんかする気はない！";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "……それなら、私のアサシン";
+			mes "としてのプライドは……";
+			next;
+			mes "[キド]";
+			mes "………………";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "………………";
+			next;
+			mes "[キド]";
+			mes "………………";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "わかりました……";
+			mes "行ってくればいいんでしょう……";
+		}
+		else {
+			mes "[" +strcharinfo(0)+ "]";
+			mes "なるほど……では、私が行ってきます。";
+			mes "その人はどこにいるのですか？";
+		}
+		next;
+		mes "[キド]";
+		mes "その学者は、旅館にいる。";
+		mes "行って、今回の件を聞いてみてくれ。";
+		mes "属性の装置は何なのか。";
+		mes "それに、メモの内容……";
+		next;
+		mes "[キド]";
+		mes "^3355FFモロクは……塔……召喚された……";
+		mes "……する……プロンテラを……";
+		mes "……衝撃で砂漠……モロク……";
+		mes "ためには……モロクの……四方位の";
+		mes "……防衛……しなければ……";
+		mes "……最大限……早く……^000000";
+		next;
+		mes "[キド]";
+		mes "^3355FF……属性を……する……";
+		mes "……均衡を……する……^000000";
+		next;
+		mes "[キド]";
+		mes "これも何か心当たりがないか。";
+		mes "頼んだよ。";
+		set MOC_1QUE,18;
+		break;
+	case 18:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "その学者は、旅館にいる。";
+		mes "行って、今回の件を聞いてみてくれ。";
+		mes "属性の装置は何なのか。";
+		mes "それに、メモの内容……";
+		next;
+		mes "[キド]";
+		mes "^3355FFモロクは……塔……召喚された……";
+		mes "……する……プロンテラを……";
+		mes "……衝撃で砂漠……モロク……";
+		mes "ためには……モロクの……四方位の";
+		mes "……防衛……しなければ……";
+		mes "……最大限……早く……^000000";
+		next;
+		mes "[キド]";
+		mes "^3355FF……属性を……する……";
+		mes "……均衡を……する……^000000";
+		next;
+		mes "[キド]";
+		mes "これも何か心当たりがないか。";
+		mes "頼んだよ。";
+		break;
+	case 19:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "学者は何と言っていた？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ええと……あれ？";
+		mes "何を飲んでいるのですか？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "トロピカル・ソグラトです。";
+		mes "これは美味しいですね。";
+		mes "貴方もどうですか？";
+		mes "私がおごりましょう。";
+		mes "マスター。私と同じものを";
+		mes "この方にもお願いします。";
+		next;
+		mes "[マスター]";
+		mes "ほぅ、得したな。";
+		mes "トロピカル・ソグラトだ。";
+		set MOC_1QUE,20;
+		getitem 12112,1;
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "飲むのは後にして、学者と話した";
+		mes "内容について報告してくれるか？";
+		mes "何故、おれを門前払いにしたのか？";
+		break;
+	case 20:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "頂きます。";
+		mes "おお、これは美味しいですね！";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "おい……任務中だということを";
+		mes "忘れるなよ？";
+		mes "早く報告しろ！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……武器で脅したそうですね？";
+		next;
+		mes "[キド]";
+		mes "あんまり相手をしないもんだから、";
+		mes "仕方なくやったんだ！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "考えてみてもください。";
+		mes "いきなり武器を突きつけられたら、";
+		mes "どう思うか……";
+		mes "ただでさえアサシンを警戒して";
+		mes "いるのだから、ますます警戒するのは";
+		mes "当然ですよ。";
+		next;
+		mes "[キド]";
+		mes "その話はもういい。";
+		mes "結果だけ報告しろ。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……わかりました。";
+		mes "学者には会うことができず、";
+		mes "助手の方に話を伺いました。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "まず、「レイヤン・ムーア」のメモに";
+		mes "書いてあった「塔」は、";
+		mes "おそらくタナトスタワーを";
+		mes "指しているということ。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "魔王モロクはタナトスタワーから";
+		mes "魔族を呼び出し、この地を進攻した。";
+		mes "だが激しい戦闘の末敗北し、";
+		mes "この地に封印されたため、";
+		mes "ここはモロクという名が付いたこと。";
+		next;
+		mes "[キド]";
+		mes "モロクの名の由来は知っている。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "あと、タナトスタワーは、";
+		mes "現在何者かによって発掘が";
+		mes "行われていると言っていました。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "魔族とは天使達が激怒した姿なのだと。";
+		mes "そして天使の怒りが爆発した時、";
+		mes "魔王が復活するのだと。";
+		mes "その話が本当なら、いつ魔王が復活";
+		mes "してもおかしくない世の中ですよね。";
+		next;
+		mes "[キド]";
+		mes "で……タナトスタワーとモロクと";
+		mes "子供達とレイヤンの関係は？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "あ……";
+		mes "えーっと……";
+		mes " ";
+		mes "[キド]";
+		mes "肝心なことを聞き忘れたのか？";
+		set MOC_1QUE,21;
+		break;
+	case 21:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "タナトスタワーに行くべきか、";
+		mes "もう一度歴史学者に会って";
+		mes "話を聞くべきか……";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "子供達は……レイヤンは……？";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "落ち着いてくれ。";
+		mes "……さぁ……";
+		mes "どっちがいいか……";
+		next;
+		if(select("歴史学者に話を聞きましょう","タナトスタワーに行きましょう")==1) {
+			mes "[キド]";
+			mes "うむ、やはりもう一度歴史学者に会い、";
+			mes "きちんと話を聞くべきだな。";
+			mes "レイヤンの目的は何なのか、";
+			mes "属性の装置はいつどういった目的で";
+			mes "作られたのか。";
+			mes "色々と聞きたいことはあるな。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "ええ、もう一度行って";
+			mes "詳しく聞いてみます。";
+			next;
+			mes "[キド]";
+			mes "よし、ではタナトスタワーの";
+			mes "調査をしてくれ。";
+			mes "歴史学者は、おれが話を聞いてくる。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "……え？";
+			mes "何ですって？";
+			next;
+			mes "[キド]";
+			mes "タナトスタワーの調査をしろ";
+			mes "と言ったんだ。";
+			mes "レイヤンはそこに行ったはずだ。";
+			mes "奴の行動を追いつつ";
+			mes "タナトスタワーの調査を進めてくれ。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "…………";
+			next;
+			mes "[キド]";
+			mes "…………";
+			mes " ";
+			mes "[" +strcharinfo(0)+ "]";
+			mes "…………";
+			next;
+			mes "[ダンデリオン代表]";
+			mes "ハハ……どうしました？";
+			mes "調査、よろしくお願いしますよ。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "ふぅ……何かいつも損な役回りを";
+			mes "している気がする……";
+			set MOC_1QUE,22;
+			break;
+		}
+		mes "[キド]";
+		mes "タナトスタワーか……";
+		mes "やはりレイヤンは、そこに";
+		mes "行ったはずだよな？";
+		mes "いや、これからかもしれないが。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ええ、運が良ければ捕まえることが";
+		mes "できるかもしれませんね。";
+		next;
+		mes "[キド]";
+		mes "では、おれはもう一度歴史学者に";
+		mes "会いに行き、詳しい話を聞いてこよう。";
+		mes "あ、もしも……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "もしも？";
+		next;
+		mes "[キド]";
+		mes "タナトスタワーでレイヤンを";
+		mes "見つけたら、即確保するように。";
+		mes "抵抗するなら……";
+		mes "息の根を止めることも許可しよう。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "そ、その前に、子供達の居場所を";
+		mes "聞き出すことを忘れないでください！";
+		mes "居場所さえわかれば、レイヤンが";
+		mes "どうなろうと私は構いません。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "わかったな？";
+		mes "では、気をつけて行ってこいよ。";
+		mes "……怒れる天使か……";
+		mes "純粋さから生まれた怒りは、";
+		mes "何よりも無慈悲で恐ろしいものだ……";
+		set MOC_1QUE,22;
+		break;
+	case 22:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "タナトスタワーの調査は？";
+		next;
+		if(select("ただいま戻りました","まだです")==2) {
+			mes "[キド]";
+			mes "調査は慎重に頼むぞ。その間に、";
+			mes "おれは歴史学者に会ってくる。";
+			break;
+		}
+		if(THA_QUE < 2) {
+			mes "[キド]";
+			mes "何だ？　あまり進んでないようだな。";
+			mes "もう一度行ってこい！";
+			break;
+		}
+		mes "[キド]";
+		mes "で、タナトスタワーの調査は";
+		mes "どうだった？";
+		next;
+		mes "-私はキドに、タナトスタワーで";
+		mes "経験したことを話した-";
+		next;
+		mes "[キド]";
+		mes "ほぅ、そうか……";
+		mes "それでは、魔王モロクは";
+		mes "本当にモロクの地下に封印されている、";
+		mes "ということだな。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "そうですね。キドは、";
+		mes "歴史学者と話はできましたか？";
+		next;
+		mes "[キド]";
+		mes "歴史学者の助手に話を聞いてきた。";
+		mes "彼は、モロクの属性の装置について";
+		mes "調査をしていたようだ。";
+		next;
+		mes "[キド]";
+		mes "そして恐ろしい結論に達した。";
+		mes "……以前、魔王モロクの復活を";
+		mes "試みた者がいた、という話が";
+		mes "あっただろう？";
+		next;
+		mes "[キド]";
+		mes "その者は装置を使って属性を操り、";
+		mes "自然の力のバランスを不安定にし、";
+		mes "魔王が復活しやすい環境を";
+		mes "作っていたそうだ。そして……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "そして？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "そして、封印を解くための儀式に、";
+		mes "子供達の血を使ったらしい……";
+		mes "とのことだ。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "何ですって!?";
+		mes "それではレイヤンは……!!";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "そうだ。";
+		mes "魔王モロクを復活させる儀式のため、";
+		mes "子供を拉致したとみて間違いない。";
+		mes "奴の一連の行動がそれを裏付けている。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "い、急がなくては！";
+		mes "奴を早く捕まえなければ、";
+		mes "子供達が……!!";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "あせるな！　次の行動を考える！";
+		set MOC_1QUE,23;
+		break;
+	case 23:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "おい、タナトスタワーで、";
+		mes "何かしらの手がかりは";
+		mes "見つからなかったのか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "何も……";
+		mes "何度も注意深く調査したのですが……";
+		mes "タナトスタワーの調査は、";
+		mes "無駄足だったようです。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "ううむ……子供達の行方は一体……";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "おれも怪しい所はすべて確認したが、";
+		mes "何も見つからなかった。";
+		mes "く……手詰まりか？";
+		next;
+		mes "[リテルン]";
+		mes "えっと、話に割り込んですまないが……";
+		next;
+		mes "[キド]";
+		mes "何だ！　くだらないことだったら";
+		mes "張り倒すぞ!?";
+		next;
+		cutin "mocseal_kid01",255;
+		mes "[リテルン]";
+		mes "いやいや、まぁ聞いてくれ。";
+		mes "不本意ながら、君達の話が";
+		mes "聞こえてしまってね。";
+		mes "で、君達が追っている人物って……";
+		next;
+		mes "[ダンデリオン代表]";
+		mes "レイヤン・ムーアです。";
+		next;
+		mes "[リテルン]";
+		mes "そう、そいつ。";
+		mes "えっと、あんた……";
+		mes "ダン……デリオンだっけ？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "それがどうかしましたか？";
+		next;
+		mes "[リテルン]";
+		mes "実は、あんたとまったく同じ服装を";
+		mes "した奴を見てね。で、そいつは、";
+		mes "リーンがRと呼んでいる";
+		mes "人物じゃないのかな、と思ってね。";
+		mes "リーンの依頼主の「R」な。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "リーンの依頼主だと!?";
+		mes "ちょっと待て……";
+		mes strcharinfo(0)+ "！";
+		mes "おれ達が依頼を受けた時のことを";
+		mes "思い出せ……";
+		next;
+		if(select("ええと、何でしたっけ……","確か、二つの依頼が……")==1) {
+			mes "[キド]";
+			mes "ええい、使えない奴だ！";
+		}
+		else {
+			mes "[キド]";
+			mes "そうだ！";
+			mes "おれ達は追跡、リーンは保護だ！";
+			mes "つまりリーンの依頼主が……";
+			mes "くっ、何て馬鹿な話だ……！";
+		}
+		mes "今すぐマスターに会うぞ！";
+		next;
+		mes "[リテルン]";
+		mes "わっ!?　な、なんだ血相を変えて？";
+		mes "おれ、まずいことでも言ったか？";
+		next;
+		mes "[キド]";
+		mes "いや、お前のおかげで、";
+		mes "パズルの最後のピースがはまったよ。";
+		mes "後で、おごらせてくれ！";
+		set MOC_1QUE,24;
+		break;
+	case 24:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "……ある人物を追跡する任務、";
+		mes "それと同時に保護する任務……";
+		mes "おれとリーンがそれぞれ担当し、";
+		mes "リーンが担当した方の依頼主が、";
+		mes "「R」……おれ達が追跡する人物、";
+		mes "「レイヤン・ムーア」……";
+		next;
+		mes "[キド]";
+		mes "こうしてはいられない、";
+		mes "マスターの部屋で会おう！";
+		mes "おれも整理がついたら向かう！";
+		break;
+	case 25:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "レイヤン・ムーアがいる部屋は、";
+		mes "マスタールームのすぐ向こうだ。";
+		mes "すぐに行くぞ！";
+		break;
+	case 26:
+	case 27:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "お前はすぐに、モロク城へ行ってくれ！";
+		mes "おそらく奴はそこにいるはずだ！";
+		next;
+		mes "[キド]";
+		mes "おれも後から合流する。急げ!!";
+		break;
+	case 124:
+	case 125:
+		mes "[ダンデリオン代表]";
+		mes "先ほどの声を聞きましたか？";
+		mes "悠長にしている場合ではない!!";
+		next;
+		mes "[キド]";
+		mes "何が起きているんだ……";
+		next;
+		mes "[ダンデリオン代表]";
+		mes "……何者かが、立ち聞きしています。";
+		break;
+	case 28:
+	case 29:
+	case 126:
+	case 127:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "……";
+		mes "詳しい話は、マスターの部屋でする。";
+		mes "そして……レイヤンは";
+		mes "リーンが追って行ったきりだが……";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "それに……子供達は既に……";
+		mes "ああ……何てことだ……";
+		emotion 9,"";
+		break;
+	case 30:
+	case 128:
+		cutin "mocseal_kid01",1;
+		mes "[キド]";
+		mes "つまらないな……";
+		mes "リーンだけ苦労しているようだ。";
+		mes "はぁ……";
+		break;
+	}
+	close2;
+	cutin "mocseal_kid01",255;
+	end;
+}
+
+que_job01.gat,89,85,5	script	ダンデリオン代表	880,{
+	switch(MOC_1QUE) {
+	default:
+		mes "[ダンデリオン代表]";
+		mes "私達がどういった集団かわかりますか？";
+		next;
+		if(select("わかる","わからない")==1) {
+			mes "[ダンデリオン代表]";
+			mes "ほぅ、ご存じですか？";
+			mes "夜明けと共に起き、";
+			mes "青く染まった砂漠を眺めながら";
+			mes "街の掃除をしていると、とても";
+			mes "清々しい気持ちになります。";
+			next;
+			mes "[ダンデリオン代表]";
+			mes "私達ダンデリオンの団員は、";
+			mes "何の目的もなく生きるのではなく、";
+			mes "価値のある行動をしようという趣旨で";
+			mes "さまざまなボランティア活動を";
+			mes "しています。";
+		}
+		else {
+			mes "[ダンデリオン代表]";
+			mes "わかりませんか。";
+			mes "まだ私達の認知度は低いようですね。";
+			mes "私達は、人々がより豊かに";
+			mes "暮らせるように奉仕活動をする、";
+			mes "ボランティア集団です。";
+		}
+		next;
+		mes "[ダンデリオン代表]";
+		mes "中でも、一番やりがいがあることは、";
+		mes "保育所の運営です。";
+		mes "今はそれどころじゃないですが……";
+		next;
+		mes "[キド]";
+		mes "えーっと、もう結構……";
+		mes "急いでるんで……";
+		next;
+		mes "[ダンデリオン代表]";
+		mes "そうですか、それでは失礼します。";
+		close;
+	case 3:
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "ですから……";
+		mes "その「レイヤン・ムーア」という者が";
+		mes "うちの団で保護した子供達を";
+		mes "拉致したのは間違いないです。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "その者を、どうやって探せばいい？";
+		mes "何か特徴はあるのか？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "それは、まずこれを見てください。";
+		mes "子供達に聞き込みをし、";
+		mes "いくつか情報を得ました。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "すみません、何をしているのですか？";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "依頼主に、状況を確認している。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "どなたですか……？";
+		mes "あ、私の依頼書を持ってますね。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "調査対象の人物について聞いていた。";
+		mes "資料を見せてもらったが、";
+		mes "かなり学識のある人物のようだ。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "それに、あちこちの遺跡を";
+		mes "所有しているようです。";
+		next;
+		mes "-依頼主はそう言った後、";
+		mes "首にかけていたペンダントを額に当て";
+		mes "何かをつぶやいた-";
+		set MOC_1QUE,4;
+		break;
+	case 4:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "我々で調査した資料は、";
+		mes "貴方の相棒に渡しておきました。";
+		mes "お二人で、相談されると良いでしょう。";
+		next;
+		mes "-彼はそう言うと、";
+		mes "またペンダントを額に当てた-";
+		break;
+	case 5:
+	case 6:
+	case 7:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "出発するのですね。";
+		mes "その者を捕まえ、子供達の居場所を";
+		mes "聞き出すことができれば";
+		mes "良いのですが……";
+		mes "あんな奴、捕まえるのが無理なら";
+		mes "いっそ殺してしまえば……！";
+		next;
+		mes "[ダンデリオン代表]";
+		mes "あなた達だって、生け捕りに";
+		mes "するよりはその方が楽でしょう……";
+		break;
+	case 8:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "どうでしたか？";
+		mes "大体の話は伺ってます。";
+		break;
+	case 9:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "奴の研究は、とても危険に感じます。";
+		mes "モロクの属性の防衛だなんて……";
+		mes "何を意味するんでしょうか？";
+		break;
+	case 10:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "現場を確認に行くのですね？";
+		mes "何か手がかりが見つかれば";
+		mes "良いのですが……";
+		break;
+	case 11:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "風の文様が彫られたもの？";
+		mes "なるほど……先ほどキド大将から、";
+		mes "大地の文様を見つけたという";
+		mes "報告を受けました。";
+		mes "詳しい話は、彼を交えてした方が";
+		mes "良いですね。";
+		break;
+	case 12:
+	case 13:
+	case 14:
+	case 15:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "レイヤンムーア……";
+		mes "その一人のために、多くの人々が";
+		mes "苦労させられている。";
+		mes "一体そんな装置と、子供達は";
+		mes "何の関係があるというのか……";
+		break;
+	case 16:
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "あ、戻られたようですね。";
+		mes "ちょっと耳を貸してください。";
+		mes "今、キド大将は機嫌が悪いようです。";
+		mes "気を付けた方がいいですよ。ハハハ。";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "……聞こえてる！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "えっと……";
+		mes "何か良くない事でもありましたか？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "大将から直接聞いてください。";
+		set MOC_1QUE,17;
+		break;
+	case 17:
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "キド大将がご機嫌ナナメのようだ。";
+		mes "ハハ……慰めてあげたらどうだい？";
+		break;
+	case 18:
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "熱心に調査してくださっているのは";
+		mes "よくわかっているのですが、";
+		mes "「レイヤン」はいつ見つかるのですか？";
+		mes "フウ……";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "こっちも調査を進めている。";
+		mes "そう急かさないで欲しいのだが……";
+		break;
+	case 19:
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "このトロピカル・ソグラトは";
+		mes "実に美味しいですね。";
+		mes "貴方もどうですか？";
+		mes "私がおごりましょう。";
+		mes "マスター。私と同じものを";
+		mes "この方にもお願いします。";
+		next;
+		mes "[マスター]";
+		mes "ほぅ、得したな。";
+		mes "トロピカル・ソグラトだ。";
+		set MOC_1QUE,20;
+		getitem 12112,1;
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "飲むのは後にして、学者と話した";
+		mes "内容について報告してくれるか？";
+		mes "何故、おれを門前払いにしたのか？";
+		break;
+	case 20:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "頂きます。";
+		mes "おお、これは美味しいですね！";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "おい……任務中だということを";
+		mes "忘れるなよ？";
+		mes "早く報告しろ！";
+		break;
+	case 21:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "最近、キド大将は機嫌が悪いですね。";
+		mes "ところで、タナトスタワーと";
+		mes "モロクと子供達とレイヤンの関係に";
+		mes "ついては、何かわかりましたか？";
+		break;
+	case 22:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "結局タナトスタワーの調査を";
+		mes "することになりましたね……";
+		mes "無事を祈っております。";
+		mes "そこで、レイヤンを捕まえられれば";
+		mes "良いのですが……";
+		break;
+	case 23:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "ああ……";
+		next;
+		mes "[ダンデリオン代表]";
+		mes "レイヤンは、本当に魔王モロクの";
+		mes "復活を企んでいるのでしょうか？";
+		mes "こ、子供達は……";
+		mes "子供達はどうなるんでしょうか!?";
+		break;
+	case 24:
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "何をしている!?";
+		mes "おれの指示が聞こえないのか？";
+		mes "早くマスターの部屋に行け！";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "魔王モロクを復活させるため、";
+		mes "子供達の命を犠牲にするとは……";
+		mes "そして、自分は身の安全を";
+		mes "確保する……何て非道な……";
+		next;
+		mes "[ダンデリオン代表]";
+		mes "むぅぅぅ!!";
+		mes "許されることではない！";
+		mes "それにアサシンギルドも、今回の件は";
+		mes "責任があるのではないでしょうか!?";
+		mes "相反する依頼を同時に受けてしまう";
+		mes "なんて、管理が行き届いていない！";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "うるさい！";
+		mes "今すぐそいつを捕まえてきてやる！";
+		mes "待ってろ！";
+		break;
+	case 25:
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "私達が調査する対象の「レイヤン」を、";
+		mes "アサシンギルドで保護している";
+		mes "というのは事実ですか？";
+		mes "そいつは……どこに!?　一体？";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "興奮するな！　すぐ捕まえる！";
+		break;
+	case 26:
+	case 27:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "私も不気味な言葉を聞きました。";
+		mes "レイヤンが、儀式を始めたとしか……";
+		mes "ああ……何とか阻止してください！";
+		next;
+		mes "[ダンデリオン代表]";
+		mes "私も私の団員と一緒に向かいます。";
+		next;
+		cutin "mocseal_dan01",255;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "はい、魔王モロクが復活してからでは";
+		mes "遅いですからね……";
+		mes "先に行き、レイヤンの居場所を";
+		mes "突き止めます。";
+		mes "^778899（子供達の安否も心配だ……）^000000";
+		close;
+	case 124:
+	case 125:
+		mes "[ダンデリオン代表]";
+		mes "先ほどの声を聞きましたか？";
+		mes "悠長にしている場合ではない!!";
+		next;
+		mes "[キド]";
+		mes "何が起きているんだ……";
+		next;
+		mes "[ダンデリオン代表]";
+		mes "……何者かが、立ち聞きしています。";
+		break;
+	case 28:
+	case 29:
+	case 126:
+	case 127:
+		cutin "mocseal_dan01",1;
+		mes "[ダンデリオン代表]";
+		mes "…………";
+		mes "レイヤンを追跡するよう";
+		mes "団員に命じたのですが、";
+		mes "成果は期待できそうにありませんね……";
+		break;
+	case 30:
+	case 128:
+		cutin "mocseal_dan01",0;
+		mes "[ダンデリオン代表]";
+		mes "子供達の親には、";
+		mes "何と説明したらいいのか……";
+		mes "いや、祈ればきっと助かるはず！";
+		next;
+		mes "[ダンデリオン代表]";
+		mes "子供達は皆、^4D4DFFフレイヤ^000000が";
+		mes "護ってくださるはずです。";
+		mes "何が起きても、女神^4D4DFFフレイヤの祝福^000000が";
+		mes "ある限りは……！";
+		next;
+		cutin "mocseal_kid01",2;
+		mes "[キド]";
+		mes "……何故、主神オーディンではなく";
+		mes "フレイヤなんだ……？";
+		mes "…………";
+		mes "まぁ、どうでもいいか。";
+		break;
+	}
+	close2;
+	cutin "mocseal_dan01",255;
+	end;
+}
+
+que_job01.gat,84,17,3	script	リーン	885,{
+	switch(MOC_1QUE) {
+	case 103:
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "なるほど、理解したわ。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R]";
+		mes "それで私は、ジュノーの";
+		mes "共和国図書館に行きます。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "すみませんが……何の話を？";
+		next;
+		mes "[R]";
+		mes "どなたですか？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "私のパートナー。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R]";
+		mes "そうですか。では、今話した内容は、";
+		mes "貴女から伝えてください。";
+		next;
+		mes "-Rはそう言った後、首にかけていた";
+		mes "ペンダントをそっと額に当て、";
+		mes "何かをつぶやいた-";
+		set MOC_1QUE,104;
+		break;
+	case 104:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "あれは何ですか？　祈祷……？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "さぁな。言葉からするにオーディンに";
+		mes "対する祈祷ではないようだが、";
+		mes "私達には関係のないことだ。";
+		mes "それより今後の手順を説明する。";
+		next;
+		mes "[リーン]";
+		mes "彼は、ジュノーの共和国図書館で";
+		mes "重要な資料を整理している際に、";
+		mes "何者かに襲われたそうだ。";
+		mes "だが、刺客から慌てて逃げてきたため、";
+		mes "資料のほとんどが置きっぱなしの";
+		mes "状態だそうだ。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R]";
+		mes "それらの資料はとても大事なもの";
+		mes "なので、取りに戻るつもりです。";
+		mes "ですから、護衛をお願いしたいのです。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "まずは共和国図書館までの護衛ね。";
+		next;
+		if(select("なるほど……ですが……","なるほど……しかし……")==1) {
+			mes "[" +strcharinfo(0)+ "]";
+			mes "危険ではないですか？";
+			mes "また襲われるかもしれませんよ？";
+			next;
+			mes "[リーン]";
+			mes "それで？";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "資料を持ってくるだけなら、";
+			mes "何も全員で行く必要はないのでは？";
+			mes "私かリーンのどちらかが行けば";
+			mes "良いのではないでしょうか？";
+		}
+		else {
+			mes "[" +strcharinfo(0)+ "]";
+			mes "また襲われる可能性もあるのでは？";
+			mes "危険じゃないでしょうか？";
+			next;
+			mes "[リーン]";
+			mes "何だ、戦闘が怖いのか？";
+			mes "それとも何か良い方法があるのか？";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "戦闘には自信があります。";
+			mes "ただ、刺客との戦闘の際、依頼主を";
+			mes "完全に保護できる保証はないでしょう。";
+			mes "もちろん、貴女の実力を疑うわけでは";
+			mes "ないですが、確証はない。";
+			next;
+			mes "[リーン]";
+			mes "ふん……私は人を守るより";
+			mes "殺す方が得意だからな。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "リーン！";
+			mes "私は貴女を侮辱してるんじゃない！";
+			mes "現実的に一番安全な方法を取りたい、";
+			mes "と言っているんです！";
+		}
+		next;
+		mes "[リーン]";
+		mes "う〜ん……";
+		mes "依頼主さん、どう思う？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R]";
+		mes "この方の言う通り、もし刺客に";
+		mes "襲われた際、私が確実に安全である";
+		mes "保証はないでしょう。";
+		mes "大事なことは資料を確保すること";
+		mes "ですから、私が直接行く必要は";
+		mes "ないですね。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "なるほど……わかった。";
+		mes "では依頼主さんはここへ残って。";
+		next;
+		mes "[リーン]";
+		mes "ここは保安魔法で防御されているので";
+		mes "安全よ。依頼主さんは魔法の影響を";
+		mes "受けないよう、魔法の設定を";
+		mes "変更しておくわ。";
+		next;
+		mes "[リーン]";
+		mes "あと、私も残ろう。";
+		mes "保安魔法なら安全だが、万が一の";
+		mes "事態に備えて私が側にいよう。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "では、私が資料の回収ですね。";
+		next;
+		mes "[リーン]";
+		mes "ええ、お願い。";
+		mes "ジュノーの共和国図書館へ行き、";
+		mes "依頼主の資料を回収してきて。";
+		mes "ええっと……";
+		mes "依頼主は、ムーアという名前で";
+		mes "入館したそうよ。";
+		next;
+		mes "[リーン]";
+		mes "^4D4DFFユニア^000000という少女を訪ねれば";
+		mes "わかるらしいわ。";
+		mes "それでは、よろしく頼む。";
+		set MOC_1QUE,105;
+		break;
+	case 105:
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "何だ、不満そうだな……";
+		mes "お前の任務の方が負担が大きい";
+		mes "かもしれないが、こちらが落ち着いたら";
+		mes "私も追いかける。";
+		mes "しっかり頼むよ。";
+		next;
+		mes "[リーン]";
+		mes "では、すぐにジュノーへ向かってくれ。";
+		mes "もし邪魔が入った場合は……";
+		mes "力ずくで切り抜けてくれ。";
+		mes "任務最優先だ。私が許可しよう。";
+		break;
+	case 106:
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "ユニアには会えたか？";
+		mes "で……資料は取ってきたか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "彼女、怖い目に遭ったものだから、";
+		mes "少し疑心暗鬼のようで……";
+		mes "本当にムーアさんに依頼されて来たのか";
+		mes "疑われてしまいました。";
+		mes "とても、不安そうでしたよ。";
+		mes "……もう一度行ってきます。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "ユニア……";
+		mes "彼女には迷惑をかけてしまったな。";
+		break;
+	case 107:
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "資料は？";
+		mes "ムーアさんに渡して。";
+		mes "それじゃ、今度はムーアさんに";
+		mes "話をしてもらう番ね。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "ありがとうございます。";
+		mes "おお……綺麗に整理されてますね。";
+		mes "フムフム……";
+		set MOC_1QUE,108;
+		break;
+	case 108:
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "で、その資料は今回の件と";
+		mes "どういった関係が？";
+		break;
+	case 109:
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "では、近い西の方から";
+		mes "行ってみましょうか？";
+		next;
+		mes "[R・ムーア]";
+		mes "ピラミッドの近く……";
+		mes "というのはわかっているのですが、";
+		mes "正確な場所はわかりません。";
+		mes "あたりをつけて、属性を";
+		mes "活性化させてください。";
+		next;
+		cutin "mocseal_rin01",1;
+		mes "[リーン]";
+		mes "よし、では行ってきて。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "え？　また私が？";
+		mes "リーンは行かないんですか？";
+		next;
+		mes "[リーン]";
+		mes "こん^A9A9A9かい^000000もおまえ^A9A9A9だ^000000。";
+		mes "なにかふま^A9A9A9んで^000000も？";
+		mes "さぁ、^A9A9A9た^000000だちにむか^A9A9A9い^000000なさい。";
+		mes "^A9A9A9き^000000んきゅうじたいがはっ^A9A9A9せ^000000いしたら、";
+		mes "すぐれんらくする^A9A9A9よ^000000うに。";
+		break;
+	case 110:
+	case 111:
+	case 112:
+	case 113:
+	case 114:
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "私が言ったこと、覚えたね？";
+		mes "では、ムーアさんの指示通り、";
+		mes "各地の属性を活性化させる。";
+		break;
+	case 115:
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "お前にだけ伝えることがある。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "そういえば歴史学者に会いに行くと";
+		mes "言ってましたが、";
+		mes "その後どうなりましたか？";
+		next;
+		mes "[リーン]";
+		mes "それが、会えなくてね……";
+		mes "あっちこっちに行ってはみたんだが……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "なるほど……";
+		mes "で、私は何をすれば良いでしょうか？";
+		next;
+		mes "[リーン]";
+		mes "魔王とモロク、そしてタナトス……";
+		mes "依頼主が研究している内容だ。";
+		mes "我々も関わりのある内容だが、";
+		mes "子供達の失踪がどう関係して";
+		mes "いるのかがわからない……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "そうですか。";
+		mes "では私は歴史学者に会い、それらの";
+		mes "研究内容について調べてみます。";
+		next;
+		mes "[リーン]";
+		mes "ええ、お願い。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "何の話をしていたのですか？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "たいした話じゃないわ。";
+		mes "で、属性はすべて活性化させたよ。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "それでは、次の指示を出して";
+		mes "よろしいですか？";
+		mes "……？";
+		mes strcharinfo(0)+ "さん、どちらへ？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "あ、いや……えっと〜";
+		mes "[リーン]";
+		mes "食料の買い出しに行ってもらおうかと。";
+		mes "次の指示は、私が聞いておけば";
+		mes "問題ないでしょう。";
+		mes "ムーアさんは、何か希望のものはある？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "そうですね……私はこのカクテルを";
+		mes "もう一杯頂きましょう。";
+		mes "トロピカル・ソグラト？";
+		mes "これは実に美味しいですね。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "^A9A9A9そ^000000うね。^A9A9A9ト^000000ロピカル・ソグラト";
+		mes "目当て^A9A9A9に^000000来る客も多いし。";
+		mes "^A9A9A9で^000000は、もう一杯もっ^A9A9A9て^000000来て。";
+		set MOC_1QUE,116;
+		break;
+	case 116:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……あの……リーン？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "何をしている？";
+		mes "私の指示がわからないの？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "どうしました？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "いえ……こっちの話。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "では、次の指示を出しますよ？";
+		mes "……" +strcharinfo(0)+ "さん？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "えっと……";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "早く買い出しに行って。";
+		mes "話は私が聞いておくから。";
+		break;
+	case 117:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……ただいま……";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "ちょっと！　^A9A9A9かいだ^000000しでそ^A9A9A9ん^000000な^A9A9A9に^000000";
+		mes "時間かかるの？";
+		mes "ど^A9A9A9こい^000000ったのか^A9A9A9と^000000……";
+		mes "^A9A9A9いった^000000い、どうしたん^A9A9A9だ^000000？";
+		mes "ん、まだ何も買ってないのか？";
+		mes "^A9A9A9ろ^000000くに買い出しもできないのか？";
+		next;
+		mes "[リーン]";
+		mes "もう一回行ってこい!!";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ヒィィ!!";
+		mes "行って来ます！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "^333333（もうリーンのあの話法も、";
+		mes "だいぶ慣れてきたな……）^000000";
+		break;
+	case 118:
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "ではそろそろ、次の依頼を";
+		mes "お伝えします。";
+		mes "……が、お二人は何か隠し事を";
+		mes "してらっしゃいませんか？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "隠し事とは何だ？";
+		mes "信用できないのなら、";
+		mes "依頼をしなければ良いだろう。";
+		mes "さぁ、早く次の指示を出して。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "では、申し上げます……";
+		mes "タナトスタワーの調査を";
+		mes "したいと思います。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "やはりタナトスタワーか。";
+		mes "……ムーアさん、";
+		mes "私は貴方を信じないわけではないが、";
+		mes "釈然としない部分がいくつかある。";
+		mes "少し質問をしても良いかしら？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "何でしょうか？";
+		mes "私も、「やはりタナトスタワーか」";
+		mes "というセリフは気になります。";
+		mes "まるで、私が何をしようと";
+		mes "しているのか、知っているかの";
+		mes "ような言い方ですね。";
+		set MOC_1QUE,119;
+		break;
+	case 119:
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "私に聞きたいこととは何ですか？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "貴方の依頼を遂行中、近くの";
+		mes "歴史学者に話を伺ったのだが……";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "それがどうかしましたか？";
+		mes "彼らが何か言ってましたか？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "彼らから聞けた話は、";
+		mes "モロクの地名の由来がどうとか、";
+		mes "そういったことが主だったが……";
+		mes "一つ気になったことを";
+		mes "単刀直入に聞くが、";
+		next;
+		menu "魔王を復活させるつもりか？",-;
+		cutin "mocseal_rin01",255;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "リーンには、何もわからない振りを";
+		mes "しろと言われていたが、";
+		mes "この際はっきり確認したいです。";
+		mes "子供達を拉致したのは貴方ですか？";
+		mes "属性を活性化させることも、";
+		mes "魔王復活と関係があるのでは？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "……";
+		mes "それを言ってしまった以上、";
+		mes "私からもはっきり言おう。";
+		mes "我々は貴方がやろうとしていることに";
+		mes "疑心を抱いている。";
+		next;
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "うむむ……そういうことですか。";
+		mes "しかし、半分は当たっていて、";
+		mes "半分は間違いです。";
+		next;
+		mes "[リーン]";
+		mes "説明してほしい。";
+		next;
+		mes "[R・ムーア]";
+		mes "属性を調整する装置は、以前";
+		mes "愚かな人間が魔王を復活させるために";
+		mes "設置したことは、間違いなく事実です。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "で……我々がしたことは!?";
+		next;
+		mes "[R・ムーア]";
+		mes "封印が解けないように、";
+		mes "封印の力を強化したのです。";
+		mes "私が魔王の復活を目論んでいる……";
+		mes "といった疑心は捨ててください。";
+		next;
+		mes "[R・ムーア]";
+		mes "それに、子供達を私が拉致したと？";
+		mes "それでは、その子供達はいったい";
+		mes "どこに？　その疑念も捨ててください。";
+		mes "私はただ、魔王が復活できないよう";
+		mes "封印を守りたいだけです。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "それではR、貴方を邪魔した者達は";
+		mes "一体何者ですか？";
+		next;
+		mes "[R・ムーア]";
+		mes "それは私にもわかりません。";
+		mes "彼らが封印を解こうとしているのか……";
+		mes "心配です。　私は貴方達に依頼し、";
+		mes "封印が確実に施されているかどうか";
+		mes "確認をしてもらったのです。";
+		next;
+		mes "[R・ムーア]";
+		mes "タナトスタワーの調査をすれば、";
+		mes "私がしていることの意味を";
+		mes "理解してもらえると思います。";
+		mes "魔王モロクの話は事実か、";
+		mes "ただの伝説にすぎないのか……";
+		next;
+		mes "[R・ムーア]";
+		mes "お願いです。タナトスタワーの";
+		mes "調査をしてください。";
+		mes "タナトスタワーの調査を最後に、";
+		mes "私なりの結論を出します。";
+		mes "これが皆さんへの最後の指示です。";
+		set MOC_1QUE,120;
+		break;
+	case 120:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "リーン。";
+		mes "どうしましょう？";
+		mes "行くのですか？";
+		mes "タナトスタワーへ……";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "……頼む。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "え……？";
+		mes "リーン、私は貴女の部下ではない。";
+		mes "あくまでも派遣された者、";
+		mes "協力関係です。この最後の仕事は、";
+		mes "貴女も一緒に行きましょう。";
+		next;
+		mes "[リーン]";
+		mes "すまないな、こき使って。";
+		mes "だが、これが最後だ。";
+		next;
+		mes "[リーン]";
+		mes "私は、今回の件全体を整理したい。";
+		mes "何か腑におちない……";
+		mes "だから頼む。タナトスタワーの調査に";
+		mes "行ってきてくれ。";
+		mes "帰ってきたら、話をしよう。";
+		set MOC_1QUE,121;
+		break;
+	case 121:
+		mes "-そう言った後リーンは何かを";
+		mes "考え込み、反応がなくなった-";
+		mes "-タナトスタワーに行ってこよう-";
+		close;
+	}
+	close2;
+	cutin "mocseal_rin01",255;
+	end;
+}
+
+que_job01.gat,79,15,1	script	R	880,{
+	switch(MOC_1QUE) {
+	case 103:
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "なるほど、理解したわ。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R]";
+		mes "それで私は、ジュノーの";
+		mes "共和国図書館に行きます。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "すみませんが……何の話を？";
+		next;
+		mes "[R]";
+		mes "どなたですか？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "私のパートナー。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R]";
+		mes "そうですか。では、今話した内容は、";
+		mes "貴女から伝えてください。";
+		next;
+		mes "-Rはそう言った後、首にかけていた";
+		mes "ペンダントをそっと額に当て、";
+		mes "何かをつぶやいた-";
+		set MOC_1QUE,104;
+		break;
+	case 104:
+		cutin "mocseal_dan01",1;
+		mes "[R]";
+		mes "詳しい内容は彼女にすべて";
+		mes "伝えてあります。";
+		mes "彼女に聞いてください。";
+		next;
+		mes "-Rはそう言った後、首にかけていた";
+		mes "ペンダントをそっと額に当て、";
+		mes "何かをつぶやいた-";
+		break;
+	case 105:
+		cutin "mocseal_dan01",1;
+		mes "[R]";
+		mes "ジュノーの図書館は、";
+		mes "三つの区域に分かれています。";
+		mes "二つの区域は書物保管室で、";
+		mes "残りの一つは読書や勉強などが";
+		mes "自由にできる空間です。";
+		next;
+		mes "[R]";
+		mes "読書が自由にできる所に、";
+		mes "ユニアという女性がいるはずです。";
+		mes "彼女が私の資料をまとめて";
+		mes "保管してくれているはずです。";
+		break;
+	case 106:
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "ユニアには会えたか？";
+		mes "で……資料は取ってきたか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "彼女、怖い目に遭ったものだから、";
+		mes "少し疑心暗鬼のようで……";
+		mes "本当にムーアさんに依頼されて来たのか";
+		mes "疑われてしまいました。";
+		mes "とても、不安そうでしたよ。";
+		mes "……もう一度行ってきます。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "ユニア……";
+		mes "彼女には迷惑をかけてしまったな。";
+		break;
+	case 107:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "資料を持ってきました。";
+		mes "ユニアさんが整理してくれたようです。";
+		mes "少し見せていただきましたが、";
+		mes "興味深いですね。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "ほぅ……詳しく知りたいですか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "はい……気になります。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "ふむ……";
+		mes "で、その資料と今回の件、";
+		mes "どういった関係があるのか？";
+		set MOC_1QUE,108;
+		break;
+	case 108:
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "持ってきていただいたこの資料は、";
+		mes "これから私達がすべきことと";
+		mes "深い関わりがあります。";
+		mes "しかし残念ですが、内容まで";
+		mes "お教えすることはできません。";
+		next;
+		mes "[R・ムーア]";
+		mes "私は貴方達に仕事を依頼した。";
+		mes "貴方達は依頼主である";
+		mes "私の指示に従い、任務をこなす。";
+		mes "それだけのことです。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "ふん、言われるまでもない。";
+		mes "理由は何であれ、";
+		mes "依頼を受けた以上は最優先で行う。";
+		mes "念を押されるまでもない。";
+		mes "で、次は何をすれば良いのか？";
+		next;
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "ふむ……リーン、貴女には";
+		mes "嫌われてしまったようですね。";
+		mes "残念です……";
+		mes "では、次の指示を出します。";
+		next;
+		mes "[R・ムーア]";
+		mes "モロクを中心として東西南北の4方位に";
+		mes "古くから伝わる遺跡があります。";
+		mes "それぞれ、^4D4DFF水風地火^000000の自然の力である";
+		mes "4属性を管理しています。";
+		next;
+		mes "[R・ムーア]";
+		mes "今のモロクは、";
+		mes "自然の力のバランスが崩れ、";
+		mes "とても不安定な状態です。";
+		mes "ですから、それを元通りに";
+		mes "していただきたいのです。";
+		next;
+		mes "[R・ムーア]";
+		mes "^4D4DFFそれぞれの属性を秘めた属性石を使い、";
+		mes "属性の力を強化してください。^000000";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "理由は？";
+		mes "我々の任務は依頼主である貴方を";
+		mes "保護すること。そんな内容は";
+		mes "依頼に含まれていないが？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "……その通りです。";
+		mes "現段階では、私が行っていることを";
+		mes "具体的に説明することはできません。";
+		next;
+		mes "[R・ムーア]";
+		mes "しかし、多くの子供達の命が";
+		mes "かかっているのです。";
+		mes "今はただ、私を信じて依頼を";
+		mes "遂行していただきたい……";
+		set MOC_1QUE,109;
+		break;
+	case 109:
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "では、近い西の方から";
+		mes "行ってみましょうか？";
+		next;
+		mes "[R・ムーア]";
+		mes "ピラミッドの近く……";
+		mes "というのはわかっているのですが、";
+		mes "正確な場所はわかりません。";
+		mes "あたりをつけて、属性を";
+		mes "活性化させてください。";
+		next;
+		cutin "mocseal_rin01",1;
+		mes "[リーン]";
+		mes "よし、では行ってきて。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "え？　また私が？";
+		mes "リーンは行かないんですか？";
+		next;
+		mes "[リーン]";
+		mes "こん^A9A9A9かい^000000もおまえ^A9A9A9だ^000000。";
+		mes "なにかふま^A9A9A9んで^000000も？";
+		mes "さぁ、^A9A9A9た^000000だちにむか^A9A9A9い^000000なさい。";
+		mes "^A9A9A9き^000000んきゅうじたいがはっ^A9A9A9せ^000000いしたら、";
+		mes "すぐれんらくする^A9A9A9よ^000000うに。";
+		break;
+	case 110:
+	case 111:
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "モロクの西にあるピラミッドの近くに、";
+		mes "属性を強化する装置があるはずです。";
+		mes "それを使って、属性を";
+		mes "活性化してください。";
+		break;
+	case 112:
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "指示通り、属性を活性化して";
+		mes "くれたようですね。";
+		mes "残りの場所は、私もわかりません。";
+		mes "そこまで調査する余裕がなかった";
+		mes "ものですから……";
+		next;
+		mes "[R・ムーア]";
+		mes "私もぜひお手伝いをしたいのですが、";
+		mes "安全面を考え、ここから出ることは";
+		mes "できませんから……";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "……何か不満でも？";
+		mes "貴方の依頼通り、身の安全を保ちつつも";
+		mes "指示に従って動いている。";
+		mes "どこに不満が？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "不満？　何もないです。";
+		mes "ただ、お手伝いできないのが残念で……";
+		next;
+		cutin "mocseal_dan01",255;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "^A9A9A9（今日はいつもに増して雰囲気が";
+		mes "険悪だな……二人、口論でもしたの";
+		mes "だろうか？　とばっちりを受ける前に";
+		mes "席を外そう……）";
+		mes "それでは、私は他の場所の属性を";
+		mes "活性化させてきます。";
+		close;
+	case 113:
+	case 114:
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "大変そうですね。";
+		mes "手伝いできず、申し訳ない。";
+		mes "しかし、あなた方がしている事は、";
+		mes "後々人のためになることです。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "ん？　何か言った？";
+		next;
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes strcharinfo(0)+ "さんが大変そうだなと。";
+		mes "ハハハ……";
+		break;
+	case 115:
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "戻りましたね。";
+		mes "それでは、次の指示を出しても……";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "ちょっと待って。";
+		next;
+		mes "[リーン]";
+		mes "話に割り込んですまないが……";
+		mes "我々二人で話したいことがある。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "……わかりました。";
+		break;
+	case 116:
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "買い出しに行くんですよね。";
+		mes "トロピカル・ソグラトを、";
+		mes "お待ちしてますよ。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "^A9A9A9そ^000000うね。^A9A9A9ト^000000ロピカル・ソグラト";
+		mes "目当て^A9A9A9に^000000来る客も多いし。";
+		mes "^A9A9A9で^000000は、もう一杯もっ^A9A9A9て^000000来て。";
+		break;
+	case 117:
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "戻ってきたようですね。";
+		mes "では、話の続きですが……";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "ちょっと！　^A9A9A9かいだ^000000しでそ^A9A9A9ん^000000な^A9A9A9に^000000";
+		mes "時間かかるの？";
+		mes "ど^A9A9A9こい^000000ったのか^A9A9A9と^000000……";
+		mes "^A9A9A9いった^000000い、どうしたん^A9A9A9だ^000000？";
+		mes "ん、まだ何も買ってないのか？";
+		mes "^A9A9A9ろ^000000くに買い出しもできないのか？";
+		next;
+		mes "[リーン]";
+		mes "もう一回行ってこい!!";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ヒィィ!!";
+		mes "行って来ます！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "^333333（もうリーンのあの話法も、";
+		mes "だいぶ慣れてきたな……）^000000";
+		break;
+	case 118:
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "ではそろそろ、次の依頼を";
+		mes "お伝えします。";
+		mes "……が、お二人は何か隠し事を";
+		mes "してらっしゃいませんか？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "隠し事とは何だ？";
+		mes "信用できないのなら、";
+		mes "依頼をしなければ良いだろう。";
+		mes "さぁ、早く次の指示を出して。";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "では、申し上げます……";
+		mes "タナトスタワーの調査を";
+		mes "したいと思います。";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "やはりタナトスタワーか。";
+		mes "……ムーアさん、";
+		mes "私は貴方を信じないわけではないが、";
+		mes "釈然としない部分がいくつかある。";
+		mes "少し質問をしても良いかしら？";
+		next;
+		cutin "mocseal_dan01",0;
+		mes "[R・ムーア]";
+		mes "何でしょうか？";
+		mes "私も、「やはりタナトスタワーか」";
+		mes "というセリフは気になります。";
+		mes "まるで、私が何をしようと";
+		mes "しているのか、知っているかの";
+		mes "ような言い方ですね。";
+		set MOC_1QUE,119;
+		break;
+	case 119:
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "リーンは、私に質問があるのですね。";
+		mes "では、話をした後に、";
+		mes "次の日程について言いましょう。";
+		break;
+	case 120:
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "お願いします。";
+		mes "タナトスタワーを調査してください。";
+		mes "タナトスタワーの調査を最後に、";
+		mes "私なりの結論を出します。";
+		mes "これが皆さんへの最後の指示です。";
+		break;
+	case 121:
+		cutin "mocseal_dan01",1;
+		mes "[R・ムーア]";
+		mes "タナトスタワーの調査に";
+		mes "行く決心をしてくれましたか？";
+		mes "これが最後です。";
+		mes "報告をお待ちしております。";
+		next;
+		mes "-Rはそう言った後、首にかけていた";
+		mes "ペンダントをそっと額に当て、";
+		mes "何かをつぶやいた-";
+		break;
+	}
+	close2;
+	cutin "mocseal_dan01",255;
+	end;
+}
+
+yuno_in04.gat,180,106,3	script	読書中の少女	73,{
+	switch(MOC_1QUE) {
+	case 5:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "読書中すみません。";
+		mes "ちょっとお聞きしたいことが……";
+		next;
+		mes "[ユニア]";
+		mes "何でしょうか？";
+		next;
+		if(select("レイヤン・ムーアを知ってる？","何を読んでる？")==2) {
+			mes "[ユニア]";
+			mes "これは最近大人気の本なんですが……";
+			mes "従兄弟の借金の代わりに、";
+			mes "奴隷として売られた少年の話です。";
+			next;
+			mes "[ユニア]";
+			mes "少年はある悪徳領主に";
+			mes "奴隷として売られたのですが、";
+			mes "二人の間には謎めいた事情が……";
+			mes "……と、興味がありましたら";
+			mes "続きはご自分で読んでください。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "いえ……結構です。";
+			mes "失礼しました。";
+			close;
+		}
+		mes "[ユニア]";
+		mes "「レイヤン・ムーア」？";
+		mes "貴方……";
+		mes "ムーアさんを知ってるんですか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "え……貴女は知ってるんですね？";
+		mes "最後に見たのはいつですか？";
+		next;
+		mes "[ユニア]";
+		mes "えっと……数日前ですが。";
+		mes "何かを熱心に調査中だったようで、";
+		mes "毎日ここに来ていました。";
+		mes "その時、事件が起きたんです。";
+		next;
+		mes "[ユニア]";
+		mes "正体不明の人達が現れて、";
+		mes "ムーアさんを連れて行こうとしました。";
+		mes "幸いムーアさんは";
+		mes "逃げたようでしたけど……";
+		next;
+		mes "[ユニア]";
+		mes "ムーアさんは慌てて逃げたため、";
+		mes "整理中だった資料をすべて";
+		mes "置いて行ってしまいました。";
+		next;
+		if(select("資料？","どこへ行ったのでしょう？")==1) {
+			mes "[ユニア]";
+			mes "ええ、熱心に調査していた";
+			mes "ものの資料です。";
+			mes "大部分が史学書のようですが……";
+			mes "何かとても難しい内容のものです。";
+			set MOC_1QUE,6;
+			close;
+		}
+		mes "[ユニア]";
+		mes "そこまでは知りませんが……";
+		mes "ムーアさんが戻ってくると思い、";
+		mes "資料は私がまとめて保管してました。";
+		set MOC_1QUE,6;
+		close;
+	case 6:
+		mes "[ユニア]";
+		mes "まだ何か？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ムーアさんが整理していたという";
+		mes "資料なんですが、";
+		mes "見せてもらっても良いですか？";
+		next;
+		mes "[ユニア]";
+		mes "あ、資料はもうないです。";
+		mes "他の人に渡してしまったので……";
+		next;
+		menu "え、渡した？",-,"え、誰に!?",-;
+		mes "[ユニア]";
+		mes "お、落ち着いて……";
+		next;
+		mes "[ユニア]";
+		mes "確かこの本の前編を読んでいる時に、";
+		mes "ムーアさんについて";
+		mes "尋ねてきた人がきて、";
+		mes "資料を持って行きました。";
+		next;
+		mes "[ユニア]";
+		mes "ムーアさんに頼まれて来たと";
+		mes "言っていたので……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "その人はどこに行ったのですか!?";
+		mes "資料の内容は、一体!?";
+		next;
+		mes "[ユニア]";
+		mes "大きな声を出さないで！";
+		mes "……";
+		mes "私もその人が誰で、";
+		mes "どこへ行ったかは知りません。";
+		next;
+		mes "[ユニア]";
+		mes "ムーアさんが使っていた机に、";
+		mes "調査の参考にしていた書物が";
+		mes "そのまま置いてあります。";
+		mes "内容を知りたければ、";
+		mes "それを自分で見てください。";
+		next;
+		mes "[ユニア]";
+		mes "それと……ここは図書館ですので、";
+		mes "静かにしてくださいね。";
+		set MOC_1QUE,7;
+		close;
+	case 7:
+		mes "[ユニア]";
+		mes "ムーアさんが使っていた机が";
+		mes "どれかわからない？";
+		mes "階段を上がって、隅の席です。";
+		close;
+	case 105:
+		mes "[" +strcharinfo(0)+ "]";
+		mes "すみません、ユニアという方を";
+		mes "ご存知ですか？";
+		next;
+		mes "[ユニア]";
+		mes "私がユニアですが……";
+		mes "何のご用でしょうか？";
+		next;
+		if(select("ムーアさんについてです","何の本を読んでいるんですか？")==2) {
+			mes "[ユニア]";
+			mes "これは最近大人気の本なんですが……";
+			mes "従兄弟の借金の代わりに、";
+			mes "奴隷として売られた少年の話です。";
+			next;
+			mes "[ユニア]";
+			mes "少年はある悪徳領主に";
+			mes "奴隷として売られたのですが、";
+			mes "二人の間には謎めいた事情が……";
+			mes "……と、興味がありましたら";
+			mes "続きはご自分で読んでください。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "いえ……結構です。";
+			mes "失礼しました。";
+			close;
+		}
+		mes "[ユニア]";
+		mes "え、ムーアさん!?";
+		mes "そ、その方は無事ですか？";
+		mes "ああ……あの時は本当に怖かった！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "はい、無事です。";
+		mes "実は、ムーアさんに頼まれて来ました。";
+		mes "調査中だった資料を";
+		mes "すべて置いてきてしまったようで……";
+		next;
+		mes "[ユニア]";
+		mes "それなら、私が保管してます。";
+		mes "それと、整理しておきました。";
+		mes "……ご覧になりますか？";
+		next;
+		menu "ええ、見せてください",-,"あ、ええと……",-;
+		mes "[ユニア]";
+		mes "あの……この資料はムーアさんが";
+		mes "とても大事にしていたようなんです。";
+		mes "でも、何者かがこれを狙っている";
+		mes "ようで、あんな事が……疑うようで";
+		mes "申し訳ないですが、あなたは";
+		mes "ムーアさんの味方……ですよね？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ええ、ムーアさんの依頼で";
+		mes "来たのですが……";
+		mes "そ、そう不安な顔をされると";
+		mes "困ってしまいますね……ハハハ……";
+		set MOC_1QUE,106;
+		close;
+	case 106:
+		mes "[ユニア]";
+		mes "では……これが資料です。";
+		mes "かなり散らばってたので、";
+		mes "集めて整理するのが大変でしたよ。";
+		next;
+		mes "-綺麗に整理されたノートと";
+		mes "パンフレットを受け取り、";
+		mes "ざっと目を通した-";
+		mes "-内容は主に、歴史についてのようだ-";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ん……線が引いてある部分がある……";
+		mes "それに、小さい文字で";
+		mes "何かコメントが書いてある。";
+		next;
+		mes "^4D4DFFやがて、魔王は眠りについた。";
+		mes "だが、この世はまるで地獄のような";
+		mes "有り様だった。魔王が……^000000";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……う〜ん、太い線が引かれていて、";
+		mes "読みづらい……";
+		next;
+		mes "^4D4DFF魔王が封印された場所に、";
+		mes "城を建てた。その城は魔王の名を取り、";
+		mes "モロクとされた。^000000";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ふむふむ……なるほど。";
+		mes "続きが知りたいところだけど、";
+		mes "任務が優先だ。持ち帰ってから";
+		mes "続きを読ませてもらおう……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ユニアさん、ありがとう。";
+		mes "これはムーアさんに渡しますね。";
+		next;
+		mes "[ユニア]";
+		mes "はい！　ムーアさんに";
+		mes "よろしくお伝えください！";
+		set MOC_1QUE,107;
+		close;
+	default:
+		mes "[ユニア]";
+		mes "申し訳ないですが、これ以上読書の";
+		mes "邪魔をされたくないのですが……";
+		mes "静かに本を読みたいのです。";
+		close;
+	}
+}
+
+yuno_in04.gat,175,129,0	script	整理ノート	111,{
+	if(MOC_1QUE > 7) {
+		mes "-中のページが破り取られている";
+		mes "ノートがある-";
+		close;
+	}
+	if(MOC_1QUE != 7) {
+		mes "-何かが書き殴られたノートがある-";
+		mes "-誰かが資料を整理していて、";
+		mes "そのまま置いて行ったようだ-";
+		close;
+	}
+	if(getnpctimer(1)) {
+		mes "-何かが書き殴られたノートがある-";
+		mes "-字が汚くて、読めない-";
+		close;
+	}
+	initnpctimer;
+	mes "-何かが乱雑に記録されたノートが";
+	mes "置いてある-";
+	mes "-しわくちゃになっていることから、";
+	mes "資料を整理する際のメモ代わりに";
+	mes "使われていたようだ-";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "何だ、ゴミだけか……";
+	next;
+	hideoffnpc "キド#book";
+	cutin "mocseal_kid01",0;
+	mes "[キド]";
+	mes "いや、細かく確認しよう。";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "わ!?　いつの間に現れたんですか？";
+	next;
+	mes "[キド]";
+	mes "おれも後から行くと言ったろう。";
+	mes "そのノート、確認してみろ。";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "^3355FF……モロクは……塔……";
+	mes "……召喚……する……^000000";
+	mes "うーん、これは……";
+	mes "まともに読むことができない……";
+	next;
+	mes "[キド]";
+	mes "^3355FFモロクは……塔……召喚された……";
+	mes "……する……プロンテラを……";
+	mes "……衝撃で砂漠……モロク……";
+	mes "ためには……モロクの……四方位の";
+	mes "……防衛……しなければ……";
+	mes "……最大限……早く……^000000";
+	next;
+	mes "[キド]";
+	mes "^3355FF……属性を……する……";
+	mes "……均衡を……する……";
+	mes "やつらが来た！^000000";
+	mes "……こいつ、すごく悪筆だな。";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "意味、わかりますか……？";
+	next;
+	mes "[キド]";
+	mes "……モロクを中心とした四方位の";
+	mes "地域が、占領された……？";
+	mes "うーむ……帰るか……";
+	next;
+	mes "[キド]";
+	mes "これはおれが持っておこう。";
+	mes "では、帰るぞ。";
+	set MOC_1QUE,8;
+	close2;
+	cutin "mocseal_kid01",255;
+OnTimer180000:
+	hideonnpc "キド#book";
+	stopnpctimer;
+	end;
+}
+
+yuno_in04.gat,174,130,5	script	キド#book	884,{
+	mes "[キド]";
+	mes "……";
+	close;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,8,77,1	script	#linstairs	139,3,3,{
+	switch(MOC_1QUE) {
+	case 109:
+		hideoffnpc "リーン#stairs";
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "来たか……ちょっと話がある。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "うわっ！";
+		mes "び、びっくりさせないでください！";
+		next;
+		mes "[リーン]";
+		mes "すまないね。";
+		mes "時間がないから簡潔に言う。";
+		mes "依頼主を疑うのは悪い癖だが、";
+		mes "正直信用できない。";
+		next;
+		mes "[リーン]";
+		mes "……とりあえず、お前は";
+		mes "彼の言う通りに仕事をして。";
+		mes "私は、旅館に泊まっている";
+		mes "歴史学者に話を聞いてみる。";
+		next;
+		mes "[リーン]";
+		mes "依頼主が言っていることが";
+		mes "事実なのかどうか、確認してみる。";
+		next;
+		mes "[リーン]";
+		mes "それでは、それぞれ調査を進めよう。";
+		mes "頼むぞ。";
+		set MOC_1QUE,110;
+		break;
+	case 115:
+		hideoffnpc "リーン#stairs";
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "待って待って、ストップ！";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "!?　あ、リーン……";
+		mes "びっくりさせないでください。";
+		next;
+		mes "[リーン]";
+		mes "これぐらいでびっくりしないで。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "どうしました？";
+		mes "歴史学者には会えましたか？";
+		next;
+		mes "[リーン]";
+		mes "それなんだけど……";
+		mes "歴史学者に会えなかったの。";
+		mes "悪いんだけど、お前が代わりに";
+		mes "会って話を聞いてちょうだい。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "何を聞けば良いですか？";
+		next;
+		mes "[リーン]";
+		mes "魔王とモロク、そしてタナトス……";
+		mes "依頼主が研究している内容だ。";
+		mes "我々も関わりのある内容だが、";
+		mes "子供達の失踪がどう関係して";
+		mes "いるのかがわからない……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "そうですか。";
+		mes "では私は歴史学者に会い、それらの";
+		mes "研究内容について調べてみます。";
+		next;
+		mes "[リーン]";
+		mes "ええ、お願い。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……神出鬼没だな……";
+		set MOC_1QUE,116;
+		cutin "mocseal_rin01",255;
+		hideonnpc "リーン#stairs";
+		close;
+	case 117:
+		hideoffnpc "リーン#stairs";
+		mes "[" +strcharinfo(0)+ "]";
+		mes "リーン？";
+		next;
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "もう驚かないみたいね。";
+		mes "で、どうだったの？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "それがですね……";
+		mes "この地は魔王モロクが封印されて";
+		mes "いるから、モロクという名前に";
+		mes "なったという話を聞かされました。";
+		next;
+		mes "[リーン]";
+		mes "……そんなの、誰でも";
+		mes "知ってる話じゃないか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "魔王モロクが魔族を呼び入れた場所が、";
+		mes "遥か北にあるタナトスタワー";
+		mes "という所らしいです。";
+		next;
+		mes "[リーン]";
+		mes "それは、現在誰かが発掘中の";
+		mes "場所じゃないの？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "詳しいですね。昔の話によれば、";
+		mes "タナトスタワーには魔族が";
+		mes "出現するようですが。";
+		next;
+		mes "[リーン]";
+		mes "何故そんな物を発掘しようと";
+		mes "するのかしら？";
+		mes "発掘作業中の事故で、何人もの";
+		mes "犠牲者を出してるはずなのに……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "魔族とは、怒れる天使の姿なのだとも";
+		mes "言われているようです。";
+		mes "昔その話を信じたある者が、";
+		mes "魔王モロクの復活を試みたようです。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "結果は失敗に終わりましたが、";
+		mes "復活の儀式のために多くの罪のない";
+		mes "子供達が犠牲になったと。";
+		next;
+		mes "[リーン]";
+		mes "どういうことだ？";
+		mes "この地に魔王モロクが封印されていて、";
+		mes "その封印を解く儀式に子供達の血が";
+		mes "必要ということか？";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "そういうことでしょう……";
+		mes "しかし、魔王モロクが本当に";
+		mes "封印されているのでしょうか？";
+		mes "そのタナトスタワーが、";
+		mes "本当に魔王モロクが魔族を";
+		mes "呼び出した場所なら……";
+		next;
+		mes "[リーン]";
+		mes "塔内には魔族が溢れているだろうな。";
+		mes "しかし天使達が守っているのか……？";
+		mes "……確認してみる価値はありそうだね。";
+		next;
+		mes "[リーン]";
+		mes "とりあえず、依頼主には何と話そう……";
+		mes "タナトスタワーを調査してくれ、";
+		mes "と言うわけにもいかないし……";
+		next;
+		mes "[リーン]";
+		mes "まずは部屋に戻ろう。";
+		mes "ここでの話は依頼主には言わないこと。";
+		mes "もし約束を破るようなら……";
+		mes "私の手で地獄行きだ。いいな？";
+		set MOC_1QUE,118;
+		break;
+	case 121:
+		if(THA_QUE < 2)
+			end;
+		hideoffnpc "リーン#stairs";
+		cutin "mocseal_rin01",2;
+		mes "[リーン]";
+		mes "タナトスタワーの調査を";
+		mes "してきたようだな？";
+		mes "まずは、私に報告して。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "Rにも一緒に報告しようかと……";
+		next;
+		mes "[リーン]";
+		mes "お前がタナトスタワーに向かった後、";
+		mes "私は今回の件についてよく考えた。";
+		mes "私達は、何かを見逃して";
+		mes "いるのではないか……";
+		mes "そして、やっと考えがまとまった。";
+		next;
+		mes "[リーン]";
+		mes "今回の依頼を受ける時、";
+		mes "二つの依頼が同時に入ってきた";
+		mes "ということを覚えているか？";
+		mes "……まぁ、それは後でいい。";
+		mes "先にタナトスタワーの調査の";
+		mes "報告をしてちょうだい。";
+		next;
+		mes "-私はリーンに、タナトスタワーで";
+		mes "経験したことを報告した-";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……というわけで、";
+		mes "本当にモロクの地下に、";
+		mes "魔王モロクが封印されているようです。";
+		mes "そして今……";
+		next;
+		mes "[リーン]";
+		mes "魔王モロクを復活させる者と、それを";
+		mes "阻止する者がいる、というわけだ。";
+		mes "Rの言葉通りなら、我々が阻止する側";
+		mes "ということになるな。";
+		next;
+		mes "[リーン]";
+		mes "つまり、Rを襲った集団が、";
+		mes "魔王モロクの復活を企んでいる奴らだ。";
+		mes "そして、奴らの正体は……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……正体は？";
+		next;
+		mes "[リーン]";
+		mes "よく考えろ。今キドが担当している";
+		mes "依頼の主が、奴らの一味ということだ！";
+		mes "マスターに確認してみよう。キドが";
+		mes "追跡中の人物がRなら、ここも危険だ。";
+		next;
+		mes "[リーン]";
+		mes "……しかし、マスターは";
+		mes "こんな依頼が同時に入ってきた時、";
+		mes "怪しいと思わなかったのだろうか……";
+		next;
+		mes "[リーン]";
+		mes "私はマスターの所へ行く。";
+		mes "お前はRの所へ行ってくれ。";
+		mes "私の推測が正しければ、";
+		mes "魔王復活のカギは我々が";
+		mes "握っていることになるな。";
+		set MOC_1QUE,122;
+		break;
+	default:
+		end;
+	}
+	close2;
+	cutin "mocseal_rin01",255;
+	hideonnpc "リーン#stairs";
+	end;
+}
+
+que_job01.gat,6,79,5	script	リーン#stairs	885,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+moc_fild19.gat,21,33,0	script	掘り返した跡	844,{
+	switch(MOC_1QUE) {
+	case 10:
+		cutin "mocseal_wind01",2;
+		mes "-掘り返された砂の中に何かが見える-";
+		mes "-それには、風の文様が彫られている-";
+		mes "-風の文様が彫りこまれた何かが、";
+		mes "かすかに青い光を発している-";
+		mes "-たまに風の文様の周囲に、";
+		mes "風が強く吹き込んでいる-";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "これがモロクの防衛の属性……？";
+		mes "まずキドに報告するか。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "しかし、キドは人使いが荒いな。";
+		mes "私の方が年上だと思うんだけど……";
+		mes "まったく……";
+		set MOC_1QUE,11;
+		break;
+	case 11:
+		cutin "mocseal_wind01",2;
+		mes "-掘り返された砂の中に何かが見える-";
+		mes "-それには、風の文様が彫られている-";
+		mes "-風の文様が彫りこまれた何かが、";
+		mes "かすかに青い光を発している-";
+		mes "-たまに風の文様の周囲に、";
+		mes "風が強く吹き込んでいる-";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "帰ってキドに報告しよう。";
+		break;
+	case 12:
+		cutin "mocseal_wind01",2;
+		if(countitem(997) < 1) {
+			mes "-掘り返された砂の中に何かが見える-";
+			mes "-それには、風の文様が彫られている-";
+			mes "-風の文様が彫りこまれた何かが、";
+			mes "かすかに青い光を発している-";
+			mes "-たまに風の文様の周囲に、";
+			mes "風が強く吹き込んでいる-";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "風……風に強い属性か。";
+			mes "風属性のモンスターに";
+			mes "有効な属性は……？";
+			next;
+			menu "火",-,"水",-,"風",-,"地",-;
+			setarray '@str$[1],"火","水","風","地";
+			mes "[" +strcharinfo(0)+ "]";
+			mes '@str$[@menu]+ "……？";
+			if(@menu != 4) mes "いや、" +'@str$[@menu]+ "ではないな……";
+			else mes "そうだ、地属性だな。";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "必要なのは、地属性だ。";
+			mes "グレイトネイチャが必要だ。";
+			break;
+		}
+		mes "-砂の中に、風の文様が";
+		mes "彫られた何かが、";
+		mes "かすかに青い光を発している-";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "さぁ、このグレイトネイチャを……";
+		mes "おお？";
+		next;
+		misceffect 56;
+		misceffect 57;
+		mes "-風の文様は、グレイトネイチャの";
+		mes "力を吸収し始めた-";
+		next;
+		cutin "mocseal_wind02",2;
+		misceffect 72;
+		mes "-風と大地の属性がお互いを相殺し、";
+		mes "属性の力が弱まった-";
+		mes "-周囲の空気の流れが弱まったようだ-";
+		delitem 997,1;
+		set MOC_1QUE,13;
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "これでいいのかな……";
+		mes "次は、南に行くか。";
+		break;
+	case 110:
+		cutin "mocseal_wind02",2;
+		mes "-掘り返された砂の中に何かが見える-";
+		mes "-それには、風の文様が彫られている-";
+		mes "-そこに周囲の風が集まろうとするが、";
+		mes "何かの力で散らばってしまっている-";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "これが依頼主が言っていた場所か……";
+		mes "風が集まろうとするが、";
+		mes "散らばってしまうなんて……";
+		mes "属性を活性化させればいいのかな？";
+		mes "^4D4DFFラフウィンド^000000が必要そうだ。";
+		set MOC_1QUE,111;
+		break;
+	case 111:
+		cutin "mocseal_wind02",2;
+		if(countitem(996) < 1) {
+			mes "-属性を活性化させるには、";
+			mes "風の属性が凝縮された";
+			mes "ラフウィンドが必要のようだ-";
+			break;
+		}
+		mes "[" +strcharinfo(0)+ "]";
+		mes "さぁ、ラフウィンドを持ってきたぞ。";
+		mes "お……おお？";
+		next;
+		misceffect 56;
+		mes "-風の文様が彫られている何かは、";
+		mes "即座にラフウィンドに反応を示した-";
+		mes "-周囲の風が、急速に集まり始めた-";
+		delitem 996,1;
+		set MOC_1QUE,112;
+		next;
+		cutin "mocseal_wind01",2;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "……これでいいのかな……？";
+		mes "青い光を発している……？";
+		mes "とにかく、リーンに報告しよう。";
+		mes "残りは、東南北か……";
+		break;
+	default:
+		if(MOC_1QUE >= 13 && MOC_1QUE < 100) {
+			cutin "mocseal_wind02",2;
+			mes "-掘り返された砂の中に何かが見える-";
+			mes "-それには、風の文様が彫られている-";
+			mes "-風の文様からは、";
+			mes "何の力も感じられない-";
+			break;
+		}
+		if(MOC_1QUE >= 112) {
+			cutin "mocseal_wind01",2;
+			mes "-風の文様が彫りこまれた何かが、";
+			mes "かすかに青い光を発している-";
+			mes "-たまに周辺の風が";
+			mes "強く吹き込んでいる-";
+			break;
+		}
+		end;
+	}
+	close2;
+	cutin "mocseal_wind01",255;
+	end;
+}
+
+moc_fild12.gat,280,36,0	script	掘り返した跡	844,{
+	switch(MOC_1QUE) {
+	case 13:
+		cutin "mocseal_earth01",2;
+		mes "-掘り返された砂の中に何かが見える-";
+		mes "-それには大地の文様が彫られている-";
+		mes "-大地の文様は明るい光を発している-";
+		next;
+		if(countitem(994) < 1) {
+			mes "-属性を無効化させるには、";
+			mes "フレイムハートが必要のようだ-";
+			break;
+		}
+		mes "[" +strcharinfo(0)+ "]";
+		mes "さぁ、フレイムハートを……";
+		next;
+		misceffect 57;
+		misceffect 55;
+		mes "-大地の文様がフレイムハートの";
+		mes "力を吸収した-";
+		mes "-二つの属性が入り混じっていく-";
+		next;
+		cutin "mocseal_earth02",2;
+		misceffect 72;
+		mes "-フレイムハートの熱気が去った後、";
+		mes "何の力も感じられない-";
+		mes "-二つの属性がお互いに相殺し、";
+		mes "力を失ったようだ-";
+		delitem 994,1;
+		set MOC_1QUE,14;
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "よし、ここもOKかな。";
+		mes "次は東に行ってみよう。";
+		break;
+	case 112:
+		cutin "mocseal_earth02",2;
+		mes "-掘り返された砂の中に何かが見える-";
+		mes "-それには大地の文様が彫られている-";
+		mes "-大地の属性を活性化させるには、";
+		mes "グレイトネイチャが必要のようだ-";
+		next;
+		if(countitem(997) < 1) {
+			mes "[" +strcharinfo(0)+ "]";
+			mes "やれやれ、グレイトネイチャを";
+			mes "持ってこなければだめか……";
+			break;
+		}
+		mes "[" +strcharinfo(0)+ "]";
+		mes "グレイトネイチャを持ってきたぞ。";
+		next;
+		misceffect 57;
+		mes "-大地の文様が彫られている何かは、";
+		mes "即座にグレイトネイチャに";
+		mes "反応を示した-";
+		mes "-大地が揺れ、その何かに";
+		mes "周囲の砂が流れ込んでいる-";
+		delitem 997,1;
+		set MOC_1QUE,113;
+		next;
+		cutin "mocseal_earth01",2;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "青い光を発している……";
+		mes "これでいいのかな？";
+		mes "後は、東と北か。";
+		break;
+	default:
+		if(MOC_1QUE >= 14 && MOC_1QUE < 100) {
+			cutin "mocseal_earth02",2;
+			mes "-大地の文様が彫られている-";
+			mes "-そこからは何の力も感じられない-";
+			break;
+		}
+		if(MOC_1QUE >= 113) {
+			cutin "mocseal_earth01",2;
+			mes "-大地の文様が明るい光を発している-";
+			break;
+		}
+		end;
+	}
+	close2;
+	cutin "mocseal_earth01",255;
+	end;
+}
+
+moc_fild10.gat,281,148,0	script	掘り返した跡	844,{
+	switch(MOC_1QUE) {
+	case 14:
+		cutin "mocseal_ice01",2;
+		mes "-掘り返された砂の中に、";
+		mes "水の文様が彫られたものが見える-";
+		mes "-文様が、仄かに光っている-";
+		next;
+		if(countitem(996) < 1) {
+			mes "-属性を無効化するには、";
+			mes "ラフウィンドが必要のようだ-";
+			break;
+		}
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ラフウィンドを持ってきた……";
+		next;
+		misceffect 54;
+		misceffect 56;
+		mes "-水の文様が、ラフウィンドの";
+		mes "力を吸収し始めた-";
+		mes "-二つの属性が混ざり始めた-";
+		next;
+		cutin "mocseal_ice02",2;
+		misceffect 72;
+		mes "-水飛沫が飛び散った後、";
+		mes "静かになった-";
+		mes "-属性が無効化されたようだ-";
+		delitem 996,1;
+		set MOC_1QUE,15;
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ここもOKかな。";
+		mes "次は、北かな。";
+		break;
+	case 113:
+		cutin "mocseal_ice02",2;
+		mes "-掘り返された砂の中に何かが見える-";
+		mes "-それには、水の文様が彫られている-";
+		mes "-水の属性を活性化させるには、";
+		mes "ミスティックフローズンが";
+		mes "必要のようだ-";
+		next;
+		if(countitem(995) < 1) {
+			mes "[" +strcharinfo(0)+ "]";
+			mes "ミスティックフローズンが";
+			mes "必要のようだ……";
+			mes "やれやれ、持って来るか。";
+			break;
+		}
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ミスティックフローズンを";
+		mes "持ってきたが……";
+		next;
+		cutin "mocseal_ice01",2;
+		misceffect 54;
+		mes "-水の文様が彫られている何かは、";
+		mes "即座にミスティックフローズンに";
+		mes "反応を示した-";
+		mes "-急に周辺の空気が冷たくなり、";
+		mes "水に波紋が生じた-";
+		delitem 995,1;
+		set MOC_1QUE,114;
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "これで良しと……";
+		mes "残るは、北か。";
+		break;
+	default:
+		if(MOC_1QUE >= 15 && MOC_1QUE < 100) {
+			cutin "mocseal_ice02",2;
+			mes "-掘り返された砂の中に、";
+			mes "水の文様が彫られたものが見える-";
+			mes "-文様からは何の力も感じられない-";
+			break;
+		}
+		if(MOC_1QUE >= 114) {
+			cutin "mocseal_ice01",2;
+			mes "-水の文様が彫られた何かが、";
+			mes "明るい光を発している-";
+			break;
+		}
+		end;
+	}
+	close2;
+	cutin "mocseal_ice01",255;
+	end;
+}
+
+moc_fild07.gat,192,166,0	script	掘り返した跡	844,{
+	switch(MOC_1QUE) {
+	case 15:
+		cutin "mocseal_fire01",2;
+		mes "-掘り返された砂の中に、";
+		mes "火の文様が彫られた何かが見える-";
+		mes "-それは、仄かに光を発している-";
+		next;
+		if(countitem(995) < 1) {
+			mes "-属性を無効化するには、";
+			mes "ミスティックフローズンが";
+			mes "必要のようだ-";
+			break;
+		}
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ミスティックフローズンを……";
+		next;
+		misceffect 55;
+		misceffect 54;
+		mes "-ミスティックフローズンを出すと、";
+		mes "火の文様はそれを吸収し始めた-";
+		mes "-二つの属性が入り混じっていく-";
+		next;
+		cutin "mocseal_fire02",2;
+		misceffect 72;
+		mes "-周囲の空気が、急に冷たく";
+		mes "なったような気がする-";
+		mes "-属性が無効化されたようだ-";
+		delitem 995,1;
+		set MOC_1QUE,16;
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "ここも良し……と。";
+		mes "キドに報告するか。";
+		break;
+	case 114:
+		cutin "mocseal_fire02",2;
+		mes "-掘り返された砂の中に何かが見える-";
+		mes "-それには、火の文様が彫られている-";
+		mes "-活性化させるには、";
+		mes "フレイムハートが必要のようだ-";
+		next;
+		if(countitem(994) < 1) {
+			mes "[" +strcharinfo(0)+ "]";
+			mes "フレイムハートを持ってくれば";
+			mes "いいんだな。";
+			mes "やれやれ、しかたないな。";
+			break;
+		}
+		mes "[" +strcharinfo(0)+ "]";
+		mes "さぁ、フレイムハートを……";
+		next;
+		cutin "mocseal_fire01",2;
+		misceffect 55;
+		mes "-火の文様は、即座に";
+		mes "フレイムハートに反応を示した-";
+		mes "-急に周辺の空気が熱くなり、";
+		mes "火の文様をした何かが光を発した-";
+		delitem 994,1;
+		set MOC_1QUE,115;
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "これで終わりだな……";
+		mes "報告に戻ろう。";
+		break;
+	default:
+		if(MOC_1QUE >= 16 && MOC_1QUE < 100) {
+			cutin "mocseal_fire02",2;
+			mes "-掘り返された砂の中に";
+			mes "火の文様が彫られた何かが見える-";
+			mes "-そこからは何の力も感じられない-";
+			break;
+		}
+		if(MOC_1QUE >= 115) {
+			cutin "mocseal_fire01",2;
+			mes "-火の文様が、明るい光を発している-";
+			break;
+		}
+		end;
+	}
+	close2;
+	cutin "mocseal_fire01",255;
+	end;
+}
+
+morocc_in.gat,46,125,5	script	歴史学者助手	729,{
+	switch(MOC_1QUE) {
+	case 18:
+		mes "[セピト]";
+		mes "ほぅ、人が訪ねてくるとは珍しい。";
+		mes "何の用ですか？";
+		mes "先生は今忙しいから、";
+		mes "緊急の用事以外なら帰ってください。";
+		next;
+		menu "聞きたいことがあります",-;
+		mes "[セピト]";
+		mes "何でしょうか？";
+		mes "簡単なことでしたら、";
+		mes "先生の代わりに私がお答えしますよ。";
+		mes "先生は今、他の仕事で手一杯ですから。";
+		next;
+		if(select("アサシンとは会わないようですが？","実は色々と聞きたいことがあって……")==1) {
+			mes "[セピト]";
+			mes "いえ、絶対に会わないという";
+			mes "わけではないですが……";
+			mes "どなたか、門前払いにあいましたか？";
+			next;
+			mes "[セピト]";
+			mes "そうですね……そういえば、";
+			mes "最近先生はアサシンを";
+			mes "警戒しているようですね。";
+			mes "以前それが原因で、相手のアサシンに";
+			mes "武器を突きつけられたことが";
+			mes "あるそうですよ。";
+			next;
+			mes "[セピト]";
+			mes "当然その後は、もっと警戒するように";
+			mes "なったそうですが。";
+			mes "ハハハ……！";
+			mes "それで、聞きたいこととは何ですか？";
+			next;
+		}
+		mes "-私はモロクの周囲の属性を無効化";
+		mes "したこと、ジュノーの図書館から";
+		mes "持って来た「レイヤン・ムーア」の";
+		mes "メモのことを話した-";
+		next;
+		mes "[セピト]";
+		mes "ふむ……その装置で活性化されていた";
+		mes "属性を、相殺させて無効化したと……";
+		mes "それはいいことですね。";
+		next;
+		mes "[セピト]";
+		mes "メモに書いてある「塔」というのは、";
+		mes "おそらくタナトスタワーの";
+		mes "ことでしょう。";
+		next;
+		mes "[セピト]";
+		mes "タナトスタワーは、昔、魔王モロクが";
+		mes "魔族を呼び出した場所として有名です。";
+		mes "そして、この大陸全土を揺るがす、";
+		mes "壮絶な戦闘が繰り広げられたそうです。";
+		next;
+		mes "[セピト]";
+		mes "あくまで伝説なので本当かどうかは";
+		mes "わかりませんが、戦闘に敗退した";
+		mes "魔王モロクはここで封印されたため、";
+		mes "この地がモロクという名になった";
+		mes "という説があります。";
+		next;
+		mes "[セピト]";
+		mes "その時の戦闘の衝撃により、";
+		mes "この周辺は砂漠と化したと言われて";
+		mes "いますが、真実はわかりません。";
+		next;
+		mes "[セピト]";
+		mes "タナトスタワーは現在何者かに";
+		mes "よって発掘作業が行われている";
+		mes "ようですが……こんな話もあります。";
+		mes "魔族とは天使達が激怒した姿なのだと。";
+		mes "そして天使の怒りが爆発した時、";
+		mes "魔王が復活するのだと。";
+		next;
+		mes "[セピト]";
+		mes "その話が本当なら、魔族が現れても";
+		mes "何の不思議もないですね。";
+		mes "そう思いませんか？";
+		if(@menu == 2) {
+			next;
+			mes "[セピト]";
+			mes "……え？　アサシンを門前払いに";
+			mes "したかですって？";
+			mes "最近先生はアサシンを";
+			mes "警戒しているようですね。";
+			next;
+			mes "[セピト]";
+			mes "以前それが原因で、相手のアサシンに";
+			mes "武器を突きつけられたことが";
+			mes "あるそうですよ。";
+			next;
+			mes "[セピト]";
+			mes "当然その後は、もっと警戒するように";
+			mes "なったそうですが。";
+			mes "ハハハ……！";
+		}
+		set MOC_1QUE,19;
+		close;
+	case 116:
+		mes "[セピト]";
+		mes "ほぅ、人が訪ねてくるとは珍しい。";
+		mes "何の用ですか？";
+		mes "先生は今忙しいから、";
+		mes "緊急の用事以外なら帰ってください。";
+		next;
+		menu "聞きたいことがあります",-;
+		mes "[セピト]";
+		mes "先生は忙しいので、私が答えられる";
+		mes "内容でしたらお教えしましょう。";
+		mes "こう見えても、私は先生の助手を";
+		mes "やっている者です。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "私の前に、アサシンクロスが";
+		mes "訪ねてきませんでしたか？";
+		next;
+		mes "[セピト]";
+		mes "来ましたね。";
+		mes "最近先生は、アサシンを";
+		mes "警戒しているようです。";
+		mes "理由は私も存じませんが……で、";
+		mes "先生が相手をしないものですから、";
+		mes "怒って帰ってしまったようです。";
+		next;
+		mes "[セピト]";
+		mes "もしその方が武器でも出していたら、";
+		mes "門前払いなんてできなかった";
+		mes "でしょうけどね……";
+		mes "ところで、聞きたいこととは";
+		mes "何ですか？";
+		next;
+		mes "-私はセピトに、モロク周辺の属性を";
+		mes "活性化させたことと、";
+		mes "ムーアが整理した内容の一部を話した-";
+		mes "-そして、それらがどういった";
+		mes "関係があるのかを質問した-";
+		next;
+		mes "[セピト]";
+		mes "魔王モロクと関わる話ですね……";
+		mes "属性を活性化させて、周辺の";
+		mes "自然の力を安定させたのですね。";
+		mes "それは、良いことです。";
+		mes "自然の力が安定している程、";
+		mes "封印の効果も安定しますから。";
+		next;
+		mes "[セピト]";
+		mes "魔王モロクは、今もモロクの地下に";
+		mes "封印されていると言われています。";
+		next;
+		mes "[セピト]";
+		mes "魔王モロクは、遥か北にある";
+		mes "タナトスタワーから魔族を呼び出し、";
+		mes "この大陸を侵攻しました。";
+		mes "しかし、彼に対抗する者達に倒され、";
+		mes "封印されました。";
+		next;
+		mes "[セピト]";
+		mes "その時の戦闘の衝撃により、";
+		mes "この周辺は砂漠と化したと言われて";
+		mes "いますが、真実はわかりません。";
+		next;
+		mes "[セピト]";
+		mes "タナトスタワーは現在何者かによって";
+		mes "発掘作業が行われているようですが、";
+		mes "……こんな話もあります。";
+		mes "魔族とは天使達が激怒した姿なのだと。";
+		mes "そして天使の怒りが爆発した時、";
+		mes "魔王が復活するのだと。";
+		next;
+		mes "[セピト]";
+		mes "相当前に、この話を信じたある城主が、";
+		mes "魔王を復活させようと試みました。";
+		mes "子供達の命を奪い、天使の怒りを";
+		mes "誘ったのです。";
+		mes "だが魔王は現われず、多くの罪のない";
+		mes "子供達が犠牲になりました。";
+		next;
+		mes "[セピト]";
+		mes "……それでも人々は魔王は実在した";
+		mes "のだと信じる理由は何なのでしょう。";
+		mes "真実は、誰にもわかりませんが……";
+		set MOC_1QUE,117;
+		close;
+	default:
+		if(MOC_1QUE >= 19 && MOC_1QUE < 100 || MOC_1QUE >= 117) {
+			mes "[セピト]";
+			mes "私の話が、役に立てば良いですね。";
+			mes "モロクは色々と研究対象が多いです。";
+			mes "時間があれば、タナトスタワーを";
+			mes "集中的に調査してみたいものです。";
+			close;
+		}
+		mes "[セピト]";
+		mes "ほぅ、人が訪ねてくるとは珍しい。";
+		mes "何の用ですか？";
+		mes "先生は今忙しいから、緊急の用事";
+		mes "以外なら帰ってください。";
+		next;
+		mes "[セピト]";
+		mes "あ、そうそう。私が面白い話を";
+		mes "してあげましょう。";
+		mes "貴方は、何故この街がモロクという";
+		mes "名前になったのかご存知ですか？";
+		next;
+		mes "[セピト]";
+		mes "魔王モロクを封印して、";
+		mes "この地に城を建てたため、";
+		mes "この地はモロクと名づけられたのです。";
+		next;
+		mes "[セピト]";
+		mes "魔王モロクが、どのような封印を";
+		mes "施されたかご存知ですか？";
+		mes "知らない？　知らないですよね？";
+		next;
+		mes "[セピト]";
+		mes "教えて差し上げたいが……";
+		mes "うーん、やっぱりやめておきましょう。";
+		close;
+	}
+}
+
+que_job01.gat,15,8,0	script	#moctable	139,1,1,{
+	switch(MOC_1QUE) {
+	case 24:
+		mes "[バルデス]";
+		mes "何だ!?　騒がしいぞ!?";
+		mes "一体どうしたんだ？";
+		next;
+		mes "[キド]";
+		mes "マスター！";
+		mes "すべて知っているんでしょう？";
+		mes "知らん顔はやめてください!!";
+		next;
+		mes "[バルデス]";
+		mes "だから、何の話だ!?";
+		mes "いきなりすべて説明しろと言われても、";
+		mes "何のことか意味がわからないだろう!?";
+		next;
+		mes "[キド]";
+		mes "そうですか、では一つだけ聞きます。";
+		mes "おれが受けた依頼の調査対象、";
+		mes "つまりダンデリオンが追跡する";
+		mes "「レイヤン・ムーア」という人物と、";
+		mes "リーンが保護している「R」は";
+		mes "同一人物ですか？";
+		next;
+		mes "[バルデス]";
+		mes "うむむ……";
+		next;
+		mes "[キド]";
+		mes "当たりですか？";
+		mes "……？";
+		mes "返事が無いということは、";
+		mes "当たりのようですね？";
+		next;
+		mes "[キド]";
+		mes "では、リーンの依頼主である「R」は";
+		mes "ここにいますね？";
+		next;
+		mes "[バルデス]";
+		mes "ううむ…………";
+		next;
+		mes "[キド]";
+		mes "マスター。どういうつもりですか？";
+		mes "調査対象がここにいるとも知らず、";
+		mes "おれは四方八方駆け回ったんですよ？";
+		next;
+		mes "[キド]";
+		mes "リーンはどこにいますか？";
+		mes "いや……そもそも、こんな二つの";
+		mes "依頼を同時に受けたのは";
+		mes "どういうつもりだったのですか？";
+		mes "レイヤンが何を企んでいるのか、";
+		mes "ご存知なのですか!?";
+		next;
+		mes "[バルデス]";
+		mes "……わかった。";
+		mes "まず、依頼を同時に受けた理由だが、";
+		mes "私も同時に相反する依頼が";
+		mes "入ってきたことは、何か引っかかった。";
+		next;
+		mes "[バルデス]";
+		mes "この二つの依頼には、";
+		mes "何か陰謀が隠されている……";
+		mes "私は久しく悩んだ。";
+		mes "そして、依頼主のどちらかが嘘を";
+		mes "言っているだろうと思った。";
+		next;
+		mes "[バルデス]";
+		mes "とりあえず、進行してみなければ";
+		mes "わからないと考え、";
+		mes "二つの依頼を受けることにした。";
+		mes "リーンが、依頼者をここで";
+		mes "保護するとは予想しなかったがね。";
+		next;
+		mes "[バルデス]";
+		mes "お前の意見はわかった。";
+		mes "だが、リーンの意見も聞きたい。";
+		mes "リーンと相談させてくれ。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "話に割り込んですみませんが、";
+		mes "時間がありません。今すぐに";
+		mes "レイヤンを確保しなくてはなりません。";
+		next;
+		mes "[キド]";
+		mes "そうです。レイヤンが何を";
+		mes "企んでいるかご存知ですか？";
+		mes "そいつは、子供達を拉致した";
+		mes "張本人なんです!!";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "そして、子供達の血で魔王モロクの";
+		mes "封印を解くつもりです！";
+		next;
+		mes "[バルデス]";
+		mes "…………!!";
+		mes "何……？";
+		mes "それは、本当なのか？";
+		next;
+		mes "[キド]";
+		mes "説明する時間はありません。";
+		mes "リーンには悪いが、今すぐレイヤンを";
+		mes "捕まえ、直接尋問しましょう。";
+		next;
+		mes "[バルデス]";
+		mes "……わかった。";
+		mes "許可しよう。";
+		mes "レイヤンは他の部屋で保護中だ。";
+		mes "行って尋問することを許可する。";
+		next;
+		mes "[バルデス]";
+		mes "では、付いて来なさい。";
+		next;
+		hideonnpc "バルデス#moc2";
+		mes "[キド]";
+		mes "はい、すぐに行きましょう。";
+		mes "おい、お前も一緒に行くぞ。";
+		set MOC_1QUE,25;
+		close2;
+		hideonnpc "キド#moc2";
+		end;
+	case 123:
+		mes "[バルデス]";
+		mes "何だ!?　騒がしいぞ!?";
+		mes "一体どうしたんだ？";
+		next;
+		mes "[リーン]";
+		mes "マスター！";
+		mes "すべて知っているんでしょう？";
+		mes "知らん顔はやめてください!!";
+		next;
+		mes "[バルデス]";
+		mes "だから、何の話だ!?";
+		mes "いきなりすべて説明しろと言われても、";
+		mes "何のことか意味がわからないだろう!?";
+		next;
+		mes "[リーン]";
+		mes "そうですか、では一つだけ聞きます。";
+		mes "キドが追跡中の人物と、";
+		mes "私が保護中の「R」は同一人物ですか？";
+		next;
+		mes "[バルデス]";
+		mes "うむむ……";
+		next;
+		mes "[リーン]";
+		mes "当たりですか？";
+		mes "……？";
+		mes "返事が無いということは、";
+		mes "当たりのようですね？";
+		next;
+		mes "[リーン]";
+		mes "マスター、一体どういうつもりですか？";
+		mes "キドには追跡をさせて、";
+		mes "私には保護をさせる……";
+		mes "キドは、まだこの事実に";
+		mes "気づいていないのですか？";
+		next;
+		mes "[リーン]";
+		mes "何故こんな依頼を引き受けたのですか？";
+		mes "私は相手がキドだと知らず、";
+		mes "身辺を探っていたんですよ？";
+		mes "それはキドも同じでしょう。";
+		mes "馬鹿馬鹿しい!!";
+		next;
+		mes "[リーン]";
+		mes "それに今回の件は、どんな陰謀が";
+		mes "隠されているか知っているのですか？";
+		next;
+		mes "[バルデス]";
+		mes "……落ち着いてくれ、リーン。";
+		mes "まず、依頼を同時に受けた理由だが、";
+		mes "私も同時に相反する依頼が";
+		mes "入ってきたことは、何か引っかかった。";
+		next;
+		mes "[バルデス]";
+		mes "この二つの依頼には、";
+		mes "何か陰謀が隠されている……";
+		mes "私は久しく悩んだ。";
+		mes "そして、依頼主のどちらかが嘘を";
+		mes "言っているだろうと思った。";
+		next;
+		mes "[バルデス]";
+		mes "とりあえず、進行してみなければ";
+		mes "わからないと考え、";
+		mes "二つの依頼を受けることにした。";
+		mes "リーンが、依頼者をここで";
+		mes "保護するとは予想しなかったがね。";
+		next;
+		mes "[バルデス]";
+		mes "とにかく、裏でどんな陰謀が";
+		mes "進行しているのか、私も";
+		mes "詳しくはわからない。";
+		next;
+		mes "[バルデス]";
+		mes "R……いや、レイヤン・ムーアに、";
+		mes "詳しく話を聞いてみよう。";
+		mes "Rを追跡する「ダンデリオン」に";
+		mes "ついて、何かわかるかもしれない。";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "リーン!!";
+		mes "話に割り込んですみませんが……";
+		mes "Rがいない!!";
+		next;
+		mes "[リーン]";
+		mes "何!?　どういうことだ!?";
+		announce "……血を……命令……魂……義……怒り……廃……",0x09,0x7B68EE;
+		next;
+		mes "[リーン]";
+		mes "な、何だ!?";
+		mes "この頭に響いてくる不快な言葉は!?";
+		next;
+		mes "[バルデス]";
+		mes "うむぅ……これは……";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "何が起きているんですか？";
+		mes "リーン、マスター？";
+		mes "この言葉は、まさか……？";
+		announce "……眠り……更に……眠り……更に……神よ……盛大な……血の……儀式を……",0x09,0x7B68EE;
+		next;
+		mes "[リーン]";
+		mes "そのまさかだ！　魔王モロクを";
+		mes "復活させようとしている!!";
+		mes "もしかしたらRは、それを阻止するため";
+		mes "一人で向かったのでは……？";
+		next;
+		mes "[バルデス]";
+		mes "くっ……私はアサシンギルドに戻り";
+		mes "応援を呼んでくる！";
+		mes "お前達は、この儀式を中断させろ！";
+		announce "……モロ……ク……加護を……不死……生贄を……",0x09,0x7B68EE;
+		next;
+		mes "[リーン]";
+		mes "はい、わかりました！";
+		next;
+		hideonnpc "リーン#moc2";
+		mes "[バルデス]";
+		mes "頼むぞ！";
+		mes "何としても、儀式を中断するのだ！";
+		set MOC_1QUE,124;
+		close2;
+		warp "que_job01.gat",11,4;
+		end;
+	}
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,147,55,0	script	#mocempty	139,1,1,{
+	if(MOC_1QUE != 122)
+		end;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "あれ……";
+	mes "これは……？";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "リーンの声が聞こえる……";
+	mes "リーン、どこですか？";
+	set MOC_1QUE,123;
+	close;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job01.gat,144,57,0	script	#mocrabsent	139,1,1,{
+	if(MOC_1QUE != 25)
+		end;
+	mes "[キド]";
+	mes "……いないぞ？";
+	next;
+	mes "[バルデス]";
+	mes "おかしい……この部屋にいるはず";
+	mes "なんだが……保安魔法も正常に";
+	mes "作動しているようだが……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "一体どこへ行ったんでしょう……？";
+	next;
+	mes "[キド]";
+	mes "リーン!?　リーンはどこだ？";
+	announce "……血を……命令……魂……義……怒り……廃……",0x09,0x7B68EE;
+	next;
+	mes "[キド]";
+	mes "な、何だ!?";
+	mes "この頭に響いてくる不快な言葉は!?";
+	next;
+	mes "[バルデス]";
+	mes "うむぅ……これは……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "何が起きているんですか？";
+	mes "キド、マスター？";
+	mes "この言葉は、まさか……？";
+	announce "……眠り……更に……眠り……更に……神よ……盛大な……血の……儀式を……",0x09,0x7B68EE;
+	next;
+	mes "[キド]";
+	mes "そのまさかだ！　魔王モロクを";
+	mes "復活させようとしている!!";
+	mes "リーン……リーンはどこだ!?";
+	next;
+	mes "[バルデス]";
+	mes "くっ……私はアサシンギルドに戻り";
+	mes "応援を呼んでくる！";
+	mes "お前達は、この儀式を中断させろ！";
+	announce "……モロ……ク……加護を……不死……生贄を……",0x09,0x7B68EE;
+	next;
+	mes "[キド]";
+	mes "はい、わかりました！";
+	next;
+	hideonnpc "キド#moc3";
+	mes "[バルデス]";
+	mes "頼むぞ！";
+	mes "何としても、儀式を中断するのだ！";
+	set MOC_1QUE,26;
+	close2;
+	warp "que_job01.gat",144,61;
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+moc_castle.gat,40,20,3	script	男	849,{
+	if((MOC_1QUE > 27 && MOC_1QUE < 31) || (MOC_1QUE > 125 && MOC_1QUE < 129)) {
+		mes "-男の死体がある-";
+		emotion 9,"";
+		close;
+	}
+	mes "-男が倒れている-";
+	mes "-男の顔には血の気が無いが、";
+	mes "何かをつぶやいている-";
+	if(MOC_1QUE != 26 && MOC_1QUE != 27 && MOC_1QUE != 124 && MOC_1QUE != 125)
+		close;
+	next;
+	mes "[男]";
+	mes "ク……クク……";
+	mes "神よ……偉大なる神よ……";
+	mes "この血を捧げよう……";
+	mes "私の……私の血を……";
+	mes "貴方の生贄となろう……";
+	mes "クク……ククク……";
+	close2;
+	if((MOC_1QUE == 26 || MOC_1QUE == 27) && getnpctimer(1,"#mocgate1") == 0) {
+		initnpctimer "#mocgate1";
+		warp "que_job02.gat",14,182;
+	}
+	else if((MOC_1QUE == 124 || MOC_1QUE == 125) && getnpctimer(1,"#mocgate2") == 0) {
+		initnpctimer "#mocgate2";
+		warp "que_job03.gat",14,182;
+	}
+	end;
+}
+
+que_job02.gat,0,0,0	script	#mocgate1	-1,{
+OnTimer580000:
+	announce "……血……血が……もっと必要……このままでは……",0x09,0xDDA0DD;
+	end;
+OnTimer590000:
+	announce "……もう少し……目覚める……仕方ない……更に……生贄を……",0x09,0xDDA0DD;
+	end;
+OnTimer595000:
+	mapwarp "que_job02.gat","morocc.gat",160,129;
+	end;
+OnTimer596000:
+	hideoffnpc "#mocgate1_talk1";
+	hideoffnpc "#mocgate1_talk2";
+	hideoffnpc "#mocgate1_talk3";
+	hideoffnpc "#mocgate1_talk4";
+	hideoffnpc "#mocgate1_talk5";
+	hideoffnpc "#mocgate1_talk6";
+	hideoffnpc "#mocgate1_talk7";
+	hideoffnpc "#mocgate1_battle";
+	hideonnpc "#mocgate1_end";
+	hideonnpc "#mocgate1_end2";
+	hideonnpc "ダンデリオン代表#1_bt";
+	hideonnpc "キド#mocgate1_1";
+	hideonnpc "キド#mocgate1_2";
+	hideonnpc "リーン#mocgate1_1";
+	hideonnpc "リーン#mocgate1_2";
+	hideonnpc "R#mocgate1";
+	hideonnpc "ダンデリオン#mocgate1_1";
+	hideonnpc "ダンデリオン#mocgate1_2";
+	hideonnpc "ダンデリオン#mocgate1_3";
+	hideonnpc "ダンデリオン#mocgate1_4";
+	end;
+OnTimer597000:
+	stopnpctimer;
+	end;
+}
+
+que_job02.gat,14,181,0	script	#mocgate1_talk1	139,2,2,{
+	mes "^4D4DFF偉大なる神よ……この血を捧げよう";
+	mes "……貴方の生贄となろう……";
+	mes "ククク……^000000";
+	next;
+	mes "-男の最後の笑い声が頭から離れない-";
+	mes "-ふと気づくと、知らない場所にいた-";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "ここは、どこだろう？";
+	mes "う……頭が痛い……！";
+	mes "魔王モロクの封印を解く儀式を";
+	mes "阻止しなくてはいけないのに……!!";
+	announce "……血を……命令……魂……義……怒り……廃……",0x09,0x7B68EE;
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……この声の主を探さなくては……";
+	mes "キド……マスター？";
+	mes "どこですか!?";
+	next;
+	mes "-私の声に反応するものは無かった-";
+	mes "-まるで異空間にでもいるかのようだ-";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "私一人か……";
+	close2;
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,17,150,0	script	#mocgate1_talk2	139,2,2,{
+	mes "…………";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "……今日は満月か。";
+	mes "月明かりがとても明るいな。";
+	next;
+	mes "[？？？]";
+	mes "そうですね。";
+	mes "警備は今のところ、異常なしです。";
+	next;
+	mes "[？？？]";
+	mes "何故満月の夜は、警備を";
+	mes "二倍に強化しなくてはいけないんだ？";
+	next;
+	mes "[？？？]";
+	mes "しかし、本当に明るいな。";
+	mes "月が真っ赤に輝いている。";
+	mes "こんなに赤い月は一年振りだ。";
+	next;
+	mes "…………";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……この声は？　何の話だろう？";
+	mes "警備兵だろうか……？";
+	mes "キド!?　キド、聞こえますか？";
+	next;
+	mes "…………";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "今の声は、何だったんだろう？";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,16,97,0	script	#mocgate1_talk3	139,2,2,{
+	mes "…………";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "お前、ここの地元の人々に";
+	mes "伝わる話を知ってるか？";
+	next;
+	mes "[？？？]";
+	mes "昔、魔王が地獄の軍隊を率いて、";
+	mes "この世界を侵攻した。";
+	mes "しかし突然現われた英雄によって、";
+	mes "封印されたらしい。";
+	next;
+	mes "[？？？]";
+	mes "その魔王が封印された場所が、";
+	mes "まさにこの城だとさ。";
+	mes "そしてそれ以来、何故かはわからないが";
+	mes "ここから見る月は赤く見えるように";
+	mes "なったという話だ。";
+	next;
+	mes "[？？？]";
+	mes "この周囲には、恨みのこもった";
+	mes "魔王の血が充満しているからだと";
+	mes "言われているそうだ。";
+	next;
+	mes "…………";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……またか!?";
+	mes "一体どこから聞こえるんだ？";
+	next;
+	mes "…………";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,44,33,0	script	#mocgate1_talk4	139,2,2,{
+	mes "…………";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "……また始まりましたね。";
+	next;
+	mes "[？？？]";
+	mes "あの煙……あの中で、満月の度に";
+	mes "何が行われているのでしょうか？";
+	next;
+	mes "[？？？]";
+	mes "そんなこと、おれ達の知ったことか。";
+	next;
+	mes "[？？？]";
+	mes "うわ、何だ!?　警備員!!";
+	next;
+	mes "…………";
+	announce "……血が……もっと必要だ……目覚め……もう少し……目覚め……血を……",0x09,0xDDA0DD;
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "この声は……";
+	mes "封印された魔王と、";
+	mes "関係のあることなのか……";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,93,21,0	script	#mocgate1_talk5	139,2,2,{
+	mes "…………";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "報告いたします。";
+	mes "調査をした結果、";
+	mes "何やら不審な点がありました。";
+	next;
+	mes "[？？？]";
+	mes "半月に一度、外から城の中に";
+	mes "入ってくる馬車があるのですが、";
+	mes "それには毎回子供が20名から30名";
+	mes "乗っていたということがわかりました。";
+	mes "今まで誰も気づきませんでしたが……";
+	next;
+	mes "[？？？]";
+	mes "それに、入ってくるばかりで、";
+	mes "一人として城の外へ戻っていった";
+	mes "子供はいないようです。";
+	next;
+	mes "[？？？]";
+	mes "……行くぞ！";
+	next;
+	mes "……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "過去に、封印を解こうとした者の";
+	mes "話だろうか？";
+	mes "その時も、誰かが陰謀に";
+	mes "気づいていたのか……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "この人達は、一体何者なんだろう……";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,179,61,0	script	#mocgate1_talk6	139,2,2,{
+	mes "……";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "何だ？　外が騒がしいようだが。";
+	next;
+	mes "[？？？]";
+	mes "申し訳ございません。";
+	mes "たいしたことではないです。";
+	mes "迷い込んだ者がいるようです。";
+	next;
+	mes "……";
+	next;
+	mes "……";
+	next;
+	mes "[？？？]";
+	mes "暑い……ここが立ち入り禁止の塔？";
+	mes "こんな所で何してるんだ？";
+	next;
+	mes "……";
+	next;
+	mes "[？？？]";
+	mes "確実に始末しろ。";
+	mes "万が一にも、我々の計画に";
+	mes "支障がないように……";
+	next;
+	mes "……";
+	next;
+	mes "……";
+	announce "……血は、魂の源……後六人だ……",0x09,0x7B68EE;
+	next;
+	mes "[？？？]";
+	mes "……!?";
+	mes "……鎖……それに子供？";
+	mes "あれは、何だ!?";
+	next;
+	mes "……";
+	announce "……魔王様は、もっと新鮮な血を欲している……",0x09,0x7B68EE;
+	next;
+	mes "[？？？]";
+	mes "……嘘だ!!　これは夢だ！";
+	mes "……嘘だって言ってくれ!!";
+	next;
+	mes "……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "く……何だ、この不気味な音は!!";
+	mes "一体レイヤンは、どこにいるんだ……！";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,180,144,0	script	#mocgate1_talk7	139,2,2,{
+	mes "……";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "何をしているんだ!?";
+	next;
+	mes "[？？？]";
+	mes "まったく……";
+	mes "一体見張りの奴は何をしているんだ？";
+	next;
+	mes "……";
+	next;
+	mes "[？？？]";
+	mes "それは何年もの間埋められていて、";
+	mes "既に腐敗している過去の産物だ。";
+	mes "それを今更蘇らせて、";
+	mes "一体何をしようっていうんだ？";
+	next;
+	mes "[？？？]";
+	mes "やれやれ……おかげで、また私が";
+	mes "封じなくてはならないではないか。";
+	next;
+	mes "……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……誰だろう？";
+	mes "誰かが、計画を阻みに来たのか……？";
+	mes "一体誰が？";
+	mes "これは、過去のこと……？";
+	mes "それとも、今起きていることなのか？";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,77,179,0	script	#mocgate1_talk8	139,2,2,{
+	initnpctimer;
+	hideonnpc;
+	end;
+OnTimer1000:
+	announce "……血は魂の源……",0x09,0x7B68EE;
+	end;
+OnTimer4000:
+	announce "……六つの生命を与え、七つの生命を受けよう……",0x09,0x7B68EE;
+	end;
+OnTimer8000:
+	announce "……血は魂の源……",0x09,0x7B68EE;
+	end;
+OnTimer12000:
+	announce "……この最も崇高にして尊い血を捧げる……",0x09,0x7B68EE;
+	end;
+OnTimer16000:
+	announce "……天地すべてに血の雨を降らせ、死骸の山に君臨せよ……",0x09,0x7B68EE;
+	end;
+OnTimer20000:
+	announce "……クク……クフフフフ……ハハハハハハ……!!!!",0x09,0x7B68EE;
+	stopnpctimer;
+	end;
+}
+
+que_job02.gat,73,82,0	script	#mocgate1_battle	139,2,2,{
+	initnpctimer "#mocgate1_bt";
+	emotion 23,"";
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,73,82,0	script	#mocgate1_bt	139,{
+	end;
+OnTimer500:
+	monster "que_job02.gat",71,85,"ミイラ",1041,1,"#mocgate1_bt::OnKilled";
+	monster "que_job02.gat",79,85,"ミイラ",1041,1,"#mocgate1_bt::OnKilled";
+	monster "que_job02.gat",71,80,"ミイラ",1041,1,"#mocgate1_bt::OnKilled";
+	monster "que_job02.gat",79,80,"ミイラ",1041,1,"#mocgate1_bt::OnKilled";
+	end;
+OnTimer5000:
+	announce "危ない!!!!",0x09,0x90EE90;
+	hideoffnpc "ダンデリオン代表#1_bt";
+	end;
+OnTimer6000:
+	misceffect 90;
+	end;
+OnTimer6500:
+	killmonster "que_job02.gat","#mocgate1_bt::OnKilled";
+	stopnpctimer;
+	end;
+OnKilled:
+	end;
+}
+
+que_job02.gat,66,85,5	script	ダンデリオン代表#1_bt	880,{
+	if(MOC_1QUE != 26 && MOC_1QUE != 27)
+		end;
+	mes "[ダンデリオン代表]";
+	mes "無事ですか？";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "はい、何とか……";
+	mes "貴方の方は、どうしたんですか？";
+	mes "一人ですか？";
+	next;
+	mes "[ダンデリオン代表]";
+	mes "ええ、団員を集めるのに時間が";
+	mes "かかりそうなので、私は先に来ました。";
+	mes "……しかし、いつ魔王が現れても";
+	mes "おかしくない状況になって";
+	mes "しまいましたね。";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "キドは……？　キドはどこに？";
+	next;
+	mes "[ダンデリオン代表]";
+	mes "キド大将は先に来ているはずです。";
+	next;
+	mes "[キドの声]";
+	mes "……こ、ここは……!!";
+	emotion 0;
+	next;
+	mes "[ダンデリオン代表]";
+	mes "い、今のは？　キド大将の声では？";
+	mes "私が見てきましょう。";
+	next;
+	mes "[ダンデリオン代表]";
+	mes "では、私は先に！";
+	mes "危ないですから、";
+	mes strcharinfo(0)+ "さんはここで";
+	mes "待っていた方が良いかもしれませんね。";
+	close2;
+	emotion 0,"";
+	set MOC_1QUE,27;
+	hideonnpc;
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,87,83,0	script	#mocgate1_setting	139,2,2,{
+	if(MOC_1QUE != 27)
+		end;
+	hideoffnpc "#mocgate1_end";
+	hideoffnpc "キド#mocgate1_1";
+	hideoffnpc "リーン#mocgate1_1";
+	hideoffnpc "R#mocgate1";
+	hideoffnpc "ダンデリオン#mocgate1_1";
+	hideoffnpc "ダンデリオン#mocgate1_2";
+	end;
+}
+
+que_job02.gat,117,101,0	script	#mocgate1_end	139,3,3,{
+	if(MOC_1QUE != 27)
+		end;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "キド!?";
+	mes "リーン!?";
+	mes "ダンデリオン!?";
+	emotion 0,"";
+	next;
+	cutin "mocseal_kid01",0;
+	mes "[キド]";
+	mes "リーン、そこをどけ！";
+	mes "何故そこに立ち塞がるんだ!?";
+	next;
+	cutin "mocseal_rin01",2;
+	mes "[リーン]";
+	mes "お前こそ、何故ここにいるんだ？";
+	mes "後ろにいる真っ黒い奴らは何者だ？";
+	emotion 6,"リーン#mocgate1_1";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……どういうことだ……";
+	mes "話が複雑になってしまっている……";
+	next;
+	cutin "mocseal_kid01",0;
+	mes "[キド]";
+	mes "リーン、はっきり言おう。";
+	mes "魔王の復活を企んでいるのは、";
+	mes "「R」……つまりお前が保護している";
+	mes "レイヤン・ムーアだ!!";
+	next;
+	cutin "mocseal_rin01",2;
+	mes "[リーン]";
+	mes "もしそうなら、拉致された子供達は";
+	mes "どこにいるんだ？　Rはこの数日間、";
+	mes "ずっと私と一緒だった。";
+	mes "本当にRが子供を拉致した犯人なら、";
+	mes "子供達はもう飢え死にしていて";
+	mes "生贄にならないではないか!?";
+	next;
+	mes "[リーン]";
+	mes "お前こそ、その正体不明の集団が何か";
+	mes "説明して!!";
+	emotion 9,"R#mocgate1";
+	next;
+	cutin "mocseal_rin01",255;
+	mes "[R・ムーア]";
+	mes "リーンの言う通りです。";
+	mes "私が誘拐犯なら、生贄にする子供達が";
+	mes "飢え死にして役に立たなく";
+	mes "なってしまうでしょう。";
+	next;
+	mes "[R・ムーア]";
+	mes "だが、そんな必要はもうありません。";
+	mes "子供達はもういませんから……";
+	mes "そしてリーン！　貴女も魔王のために";
+	mes "血を捧げなくてはいけません!!";
+	mes "フハハハハハハ!!!!!!";
+	misceffect 54,"R#mocgate1";
+	emotion 0,"キド#mocgate1_1";
+	emotion 0,"";
+	next;
+	mes "[キド]";
+	mes "危ない!!!!";
+	misceffect 92,"#mocgate1_bt2";
+	hideonnpc "キド#mocgate1_1";
+	hideonnpc "リーン#mocgate1_1";
+	hideoffnpc "キド#mocgate1_2";
+	hideoffnpc "リーン#mocgate1_2";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "キド!!　リーン!!";
+	next;
+	mes "[リーン]";
+	mes "何故……？";
+	mes "R……貴方は、魔王の復活を";
+	mes "阻止しようとしていたのではないのか？";
+	next;
+	mes "[キド]";
+	mes "そんなのは嘘だ！";
+	mes "お前を利用するための嘘に";
+	mes "決まっているだろう!?";
+	next;
+	mes "[R・ムーア]";
+	mes "ククク……ようやく理解したようだな。";
+	mes "私も善良に生きる道を選びたかったが、";
+	mes "今の世の中の腐敗ぶりは見て見ぬふりを";
+	mes "できるものではないからな。";
+	mes "ククク……さぁ、魔王モロクの偉大さを";
+	mes "身をもって感じるがいい！";
+	emotion 29,"R#mocgate1";
+	next;
+	hideonnpc "R#mocgate1";
+	initnpctimer "#mocgate1_bt2";
+	monster "que_job02.gat",121,118,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled";
+	monster "que_job02.gat",121,115,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled";
+	monster "que_job02.gat",121,112,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled";
+	monster "que_job02.gat",107,106,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled";
+	monster "que_job02.gat",111,106,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled";
+	monster "que_job02.gat",115,106,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled";
+	monster "que_job02.gat",135,105,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled";
+	monster "que_job02.gat",132,105,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled";
+	monster "que_job02.gat",128,105,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled";
+	mes "[" +strcharinfo(0)+ "]";
+	mes "ク……モンスター……!?";
+	mes "あ、待て!!";
+	next;
+	mes "[リーン]";
+	mes "奴は私が追跡する!!";
+	mes "お前は、ここを!!";
+	set MOC_1QUE,28;
+	set $MoroccAttack,$MoroccAttack+1;
+	close2;
+	hideonnpc "リーン#mocgate1_2";
+	hideonnpc;
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,122,106,0	script	#mocgate1_bt2	139,{
+	end;
+OnTimer500:
+	announce "援護します！",0x09,0x90EE90;
+	hideoffnpc "ダンデリオン#mocgate1_3";
+	hideoffnpc "ダンデリオン#mocgate1_4";
+	emotion 27,"ダンデリオン#mocgate1_1";
+	emotion 27,"ダンデリオン#mocgate1_2";
+	emotion 27,"ダンデリオン#mocgate1_3";
+	emotion 27,"ダンデリオン#mocgate1_4";
+	end;
+OnTimer3000:
+	misceffect 54,"ダンデリオン#mocgate1_3";
+	misceffect 54,"ダンデリオン#mocgate1_2";
+	end;
+OnTimer4000:
+	misceffect 90,"ダンデリオン#mocgate1_4";
+	misceffect 90,"ダンデリオン#mocgate1_2";
+	end;
+OnTimer5000:
+	killmonster "que_job02.gat","#mocgate1_bt2::OnKilled";
+	end;
+OnTimer5500:
+	set 'mob,3;
+	monster "que_job02.gat",128,105,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled2";
+	monster "que_job02.gat",115,106,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled2";
+	monster "que_job02.gat",121,112,"ミイラ",1041,1,"#mocgate1_bt2::OnKilled2";
+	end;
+OnTimer7000:
+	announce "ダンデリオン代表！　レイヤンを追跡するぞ!!",0x09,0x90EE90;
+	end;
+OnTimer10000:
+	announce "キド大将！　後ろをお願いします!!",0x09,0x90EE90;
+	hideonnpc "ダンデリオン#mocgate1_1";
+	hideonnpc "ダンデリオン#mocgate1_2";
+	hideonnpc "ダンデリオン#mocgate1_3";
+	hideonnpc "ダンデリオン#mocgate1_4";
+	stopnpctimer;
+	end;
+OnKilled:
+	end;
+OnKilled2:
+	set 'mob,'mob-1;
+	if('mob == 0)
+		hideoffnpc "#mocgate1_end2";
+	end;
+}
+
+que_job02.gat,122,106,0	script	#mocgate1_end2	139,15,15,{
+	if(MOC_1QUE != 28)
+		end;
+	cutin "mocseal_kid01",0;
+	mes "[キド]";
+	mes strcharinfo(0)+ "！　無事か？";
+	mes "ひとまず、帰ろう。";
+	mes "ギルドに戻って整理をする。";
+	set MOC_1QUE,29;
+	close2;
+	mapwarp "que_job02.gat","que_job01.gat",59,51;
+	hideoffnpc "#mocgate1_talk1";
+	hideoffnpc "#mocgate1_talk2";
+	hideoffnpc "#mocgate1_talk3";
+	hideoffnpc "#mocgate1_talk4";
+	hideoffnpc "#mocgate1_talk5";
+	hideoffnpc "#mocgate1_talk6";
+	hideoffnpc "#mocgate1_talk7";
+	hideoffnpc "#mocgate1_battle";
+	hideonnpc "#mocgate1_end";
+	hideonnpc "#mocgate1_end2";
+	hideonnpc "ダンデリオン代表#1_bt";
+	hideonnpc "キド#mocgate1_1";
+	hideonnpc "キド#mocgate1_2";
+	hideonnpc "リーン#mocgate1_1";
+	hideonnpc "リーン#mocgate1_2";
+	hideonnpc "R#mocgate1";
+	hideonnpc "ダンデリオン#mocgate1_1";
+	hideonnpc "ダンデリオン#mocgate1_2";
+	hideonnpc "ダンデリオン#mocgate1_3";
+	hideonnpc "ダンデリオン#mocgate1_4";
+	stopnpctimer "#mocgate1";
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,116,108,5	script	キド#mocgate1_1	884,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,126,103,5	script	キド#mocgate1_2	884,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,121,106,1	script	リーン#mocgate1_1	885,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,127,101,1	script	リーン#mocgate1_2	885,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,124,109,3	script	R#mocgate1	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,113,107,5	script	ダンデリオン#mocgate1_1	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,121,100,7	script	ダンデリオン#mocgate1_2	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,122,98,1	script	ダンデリオン#mocgate1_3	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job02.gat,122,111,5	script	ダンデリオン#mocgate1_4	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,0,0,0	script	#mocgate2	-1,{
+OnTimer580000:
+	announce "……血……血が……もっと必要……このままでは……",0x09,0xDDA0DD;
+	end;
+OnTimer590000:
+	announce "……もう少し……目覚める……仕方ない……更に……生贄を……",0x09,0xDDA0DD;
+	end;
+OnTimer595000:
+	mapwarp "que_job02.gat","morocc.gat",160,129;
+	end;
+OnTimer596000:
+	hideoffnpc "#mocgate2_talk1";
+	hideoffnpc "#mocgate2_talk2";
+	hideoffnpc "#mocgate2_talk3";
+	hideoffnpc "#mocgate2_talk4";
+	hideoffnpc "#mocgate2_talk5";
+	hideoffnpc "#mocgate2_talk6";
+	hideoffnpc "#mocgate2_talk7";
+	hideoffnpc "#mocgate2_battle";
+	hideonnpc "#mocgate2_end";
+	hideonnpc "#mocgate2_end2";
+	hideonnpc "ダンデリオン代表#2_bt";
+	hideonnpc "キド#mocgate2_1";
+	hideonnpc "キド#mocgate2_2";
+	hideonnpc "リーン#mocgate2_1";
+	hideonnpc "リーン#mocgate2_2";
+	hideonnpc "R#mocgate2";
+	hideonnpc "ダンデリオン#mocgate2_1";
+	hideonnpc "ダンデリオン#mocgate2_2";
+	hideonnpc "ダンデリオン#mocgate2_3";
+	hideonnpc "ダンデリオン#mocgate2_4";
+	end;
+OnTimer597000:
+	stopnpctimer;
+	end;
+}
+
+que_job03.gat,14,181,0	script	#mocgate2_talk1	139,2,2,{
+	mes "^4D4DFF偉大なる神よ……この血を捧げよう";
+	mes "……貴方の生贄となろう……";
+	mes "ククク……^000000";
+	next;
+	mes "-男の最後の笑い声が頭から離れない-";
+	mes "-ふと気づくと、知らない場所にいた-";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "ここは、どこだろう？";
+	mes "う……頭が痛い……！";
+	mes "魔王モロクの封印を解く儀式を";
+	mes "阻止しなくてはいけないのに……!!";
+	announce "……血を……命令……魂……義……怒り……廃……",0x09,0x7B68EE;
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……この声の主を探さなくては……";
+	mes "リーン……マスター？";
+	mes "どこですか!?";
+	next;
+	mes "-私の声に反応するものは無かった-";
+	mes "-まるで異空間にでもいるかのようだ-";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "私一人か……";
+	close2;
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,17,150,0	script	#mocgate2_talk2	139,2,2,{
+	mes "…………";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "……今日は満月か。";
+	mes "月明かりがとても明るいな。";
+	next;
+	mes "[？？？]";
+	mes "そうですね。";
+	mes "警備は今のところ、異常なしです。";
+	next;
+	mes "[？？？]";
+	mes "何故満月の夜は、警備を";
+	mes "二倍に強化しなくてはいけないんだ？";
+	next;
+	mes "[？？？]";
+	mes "しかし、本当に明るいな。";
+	mes "月が真っ赤に輝いている。";
+	mes "こんなに赤い月は一年振りだ。";
+	next;
+	mes "…………";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……この声は？　何の話だろう？";
+	mes "警備兵だろうか……？";
+	mes "リーン!?　リーン、聞こえますか？";
+	next;
+	mes "…………";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "今の声は、何だったんだろう？";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,16,97,0	script	#mocgate2_talk3	139,2,2,{
+	mes "…………";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "お前、ここの地元の人々に";
+	mes "伝わる話を知ってるか？";
+	next;
+	mes "[？？？]";
+	mes "昔、魔王が地獄の軍隊を率いて、";
+	mes "この世界を侵攻した。";
+	mes "しかし突然現われた英雄によって、";
+	mes "封印されたらしい。";
+	next;
+	mes "[？？？]";
+	mes "その魔王が封印された場所が、";
+	mes "まさにこの城だとさ。";
+	mes "そしてそれ以来、何故かはわからないが";
+	mes "ここから見る月は赤く見えるように";
+	mes "なったという話だ。";
+	next;
+	mes "[？？？]";
+	mes "この周囲には、恨みのこもった";
+	mes "魔王の血が充満しているからだと";
+	mes "言われているそうだ。";
+	next;
+	mes "…………";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……またか!?";
+	mes "一体どこから聞こえるんだ？";
+	next;
+	mes "…………";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,44,33,0	script	#mocgate2_talk4	139,2,2,{
+	mes "…………";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "……また始まりましたね。";
+	next;
+	mes "[？？？]";
+	mes "あの煙……あの中で、満月の度に";
+	mes "何が行われているのでしょうか？";
+	next;
+	mes "[？？？]";
+	mes "そんなこと、おれ達の知ったことか。";
+	next;
+	mes "[？？？]";
+	mes "うわ、何だ!?　警備員!!";
+	next;
+	mes "…………";
+	announce "……血が……もっと必要だ……目覚め……もう少し……目覚め……血を……",0x09,0xDDA0DD;
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "この声は……";
+	mes "封印された魔王と、";
+	mes "関係のあることなのか……";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,93,21,0	script	#mocgate2_talk5	139,2,2,{
+	mes "…………";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "報告いたします。";
+	mes "調査をした結果、";
+	mes "何やら不審な点がありました。";
+	next;
+	mes "[？？？]";
+	mes "半月に一度、外から城の中に";
+	mes "入ってくる馬車があるのですが、";
+	mes "それには毎回子供が20名から30名";
+	mes "乗っていたということがわかりました。";
+	mes "今まで誰も気づきませんでしたが……";
+	next;
+	mes "[？？？]";
+	mes "それに、入ってくるばかりで、";
+	mes "一人として城の外へ戻っていった";
+	mes "子供はいないようです。";
+	next;
+	mes "[？？？]";
+	mes "……行くぞ！";
+	next;
+	mes "……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "過去に、封印を解こうとした者の";
+	mes "話だろうか？";
+	mes "その時も、誰かが陰謀に";
+	mes "気づいていたのか……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "この人達は、一体何者なんだろう……";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,179,61,0	script	#mocgate2_talk6	139,2,2,{
+	mes "……";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "何だ？　外が騒がしいようだが。";
+	next;
+	mes "[？？？]";
+	mes "申し訳ございません。";
+	mes "たいしたことではないです。";
+	mes "迷い込んだ者がいるようです。";
+	next;
+	mes "……";
+	next;
+	mes "……";
+	next;
+	mes "[？？？]";
+	mes "暑い……ここが立ち入り禁止の塔？";
+	mes "こんな所で何してるんだ？";
+	next;
+	mes "……";
+	next;
+	mes "[？？？]";
+	mes "確実に始末しろ。";
+	mes "万が一にも、我々の計画に";
+	mes "支障がないように……";
+	next;
+	mes "……";
+	next;
+	mes "……";
+	announce "……血は、魂の源……後六人だ……",0x09,0x7B68EE;
+	next;
+	mes "[？？？]";
+	mes "……!?";
+	mes "……鎖……それに子供？";
+	mes "あれは、何だ!?";
+	next;
+	mes "……";
+	announce "……魔王様は、もっと新鮮な血を欲している……",0x09,0x7B68EE;
+	next;
+	mes "[？？？]";
+	mes "……嘘だ!!　これは夢だ！";
+	mes "……嘘だって言ってくれ!!";
+	next;
+	mes "……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "く……何だ、この不気味な音は!!";
+	mes "一体何が起きているんだ？";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,180,144,0	script	#mocgate2_talk7	139,2,2,{
+	mes "……";
+	next;
+	soundeffect "wander_man_move.wav",0;
+	sc_start3 SC_BLIND,0,0,0,0,60000,10;
+	mes "[？？？]";
+	mes "何をしているんだ!?";
+	next;
+	mes "[？？？]";
+	mes "まったく……";
+	mes "一体見張りの奴は何をしているんだ？";
+	next;
+	mes "……";
+	next;
+	mes "[？？？]";
+	mes "それは何年もの間埋められていて、";
+	mes "既に腐敗している過去の産物だ。";
+	mes "それを今更蘇らせて、";
+	mes "一体何をしようっていうんだ？";
+	next;
+	mes "[？？？]";
+	mes "やれやれ……おかげで、また私が";
+	mes "封じなくてはならないではないか。";
+	next;
+	mes "……";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……誰だろう？";
+	mes "誰かが、計画を阻みに来たのか……？";
+	mes "一体誰が？";
+	mes "これは、過去のこと……？";
+	mes "それとも、今起きていることなのか？";
+	close2;
+	soundeffect "wander_man_move.wav",0;
+	sc_end SC_BLIND;
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,77,179,0	script	#mocgate2_talk8	139,2,2,{
+	initnpctimer;
+	hideonnpc;
+	end;
+OnTimer1000:
+	announce "……血は魂の源……",0x09,0x7B68EE;
+	end;
+OnTimer4000:
+	announce "……六つの生命を与え、七つの生命を受けよう……",0x09,0x7B68EE;
+	end;
+OnTimer8000:
+	announce "……血は魂の源……",0x09,0x7B68EE;
+	end;
+OnTimer12000:
+	announce "……この最も崇高にして尊い血を捧げる……",0x09,0x7B68EE;
+	end;
+OnTimer16000:
+	announce "……天地すべてに血の雨を降らせ、死骸の山に君臨せよ……",0x09,0x7B68EE;
+	end;
+OnTimer20000:
+	announce "……クク……クフフフフ……ハハハハハハ……!!!!",0x09,0x7B68EE;
+	stopnpctimer;
+	end;
+}
+
+que_job03.gat,73,82,0	script	#mocgate2_battle	139,2,2,{
+	initnpctimer "#mocgate2_bt";
+	emotion 23,"";
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,73,82,0	script	#mocgate2_bt	139,{
+	end;
+OnTimer500:
+	monster "que_job03.gat",71,85,"ミイラ",1041,1,"#mocgate2_bt::OnKilled";
+	monster "que_job03.gat",79,85,"ミイラ",1041,1,"#mocgate2_bt::OnKilled";
+	monster "que_job03.gat",71,80,"ミイラ",1041,1,"#mocgate2_bt::OnKilled";
+	monster "que_job03.gat",79,80,"ミイラ",1041,1,"#mocgate2_bt::OnKilled";
+	end;
+OnTimer5000:
+	announce "危ない!!!!",0x09,0x90EE90;
+	hideoffnpc "ダンデリオン代表#2_bt";
+	end;
+OnTimer6000:
+	misceffect 90;
+	end;
+OnTimer6500:
+	killmonster "que_job03.gat","#mocgate2_bt::OnKilled";
+	stopnpctimer;
+	end;
+OnKilled:
+	end;
+}
+
+que_job03.gat,66,85,5	script	ダンデリオン代表#2_bt	880,{
+	if(MOC_1QUE != 124 && MOC_1QUE != 125)
+		end;
+	mes "[ダンデリオン代表]";
+	mes "無事ですか？";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "R……？　あ、違った……";
+	mes "助かりました、ありがとうございます。";
+	mes "ところであなたは誰ですか？";
+	mes "何故こんな所に？";
+	mes "あ……すみません、女性のアサシンを";
+	mes "見ませんでしたか？";
+	next;
+	mes "[ダンデリオン代表]";
+	mes "私はダンデリオンの代表です。";
+	mes "ここへ来たのは、私の依頼の遂行者が";
+	mes "こちらに来ているからです。";
+	mes "あなたは、レイヤンの依頼を";
+	mes "受けた方ですね？";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……？　私を知っているのですか？";
+	mes "レイヤン……Rを知っているんですか？";
+	mes "まさか……あなたが……!?";
+	next;
+	mes "[ダンデリオン代表]";
+	mes "申し訳ありませんが、キド大将の所に";
+	mes "行かなければいけませんので。";
+	next;
+	mes "[リーンの声]";
+	mes "……そ、そんな……!!";
+	emotion 0;
+	next;
+	mes "[ダンデリオン代表]";
+	mes "今のは……？";
+	mes "女性の声が聞こえませんでしたか？";
+	mes "あなたの仲間かもしれませんね。";
+	next;
+	mes "[ダンデリオン代表]";
+	mes "お先に失礼します。";
+	mes "危ないですから" +strcharinfo(0)+ "様は";
+	mes "ここで待っていても良いですが。";
+	mes "それでは。";
+	emotion 0,"";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "ど、どういうことだ!?";
+	mes "彼らは、Rを追跡している集団では";
+	mes "ないのか？　魔王を復活させようと";
+	mes "企んでいるのではないのか？";
+	close2;
+	set MOC_1QUE,125;
+	hideonnpc;
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,87,83,0	script	#mocgate2_setting	139,2,2,{
+	if(MOC_1QUE != 125)
+		end;
+	hideoffnpc "#mocgate2_end";
+	hideoffnpc "キド#mocgate2_1";
+	hideoffnpc "リーン#mocgate2_1";
+	hideoffnpc "R#mocgate2";
+	hideoffnpc "ダンデリオン#mocgate2_1";
+	hideoffnpc "ダンデリオン#mocgate2_2";
+	end;
+}
+
+que_job03.gat,117,101,0	script	#mocgate2_end	139,3,3,{
+	if(MOC_1QUE != 125)
+		end;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "キド!?";
+	mes "リーン!?";
+	mes "ダンデリオン!?";
+	emotion 0,"";
+	next;
+	cutin "mocseal_kid01",0;
+	mes "[キド]";
+	mes "リーン、そこをどけ！";
+	mes "何故そこに立ち塞がるんだ!?";
+	next;
+	cutin "mocseal_rin01",2;
+	mes "[リーン]";
+	mes "お前こそ、何故ここにいるんだ？";
+	mes "後ろにいる真っ黒い奴らは何者だ？";
+	emotion 6,"リーン#mocgate2_1";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……どういうことだ……";
+	mes "話が複雑になってしまっている……";
+	next;
+	cutin "mocseal_kid01",0;
+	mes "[キド]";
+	mes "リーン、はっきり言おう。";
+	mes "魔王の復活を企んでいるのは、";
+	mes "「R」……つまりお前が保護している";
+	mes "レイヤン・ムーアだ!!";
+	next;
+	cutin "mocseal_rin01",2;
+	mes "[リーン]";
+	mes "もしそうなら、拉致された子供達は";
+	mes "どこにいるんだ？　Rはこの数日間、";
+	mes "ずっと私と一緒だった。";
+	mes "本当にRが子供を拉致した犯人なら、";
+	mes "子供達はもう飢え死にしていて";
+	mes "生贄にならないではないか!?";
+	next;
+	mes "[リーン]";
+	mes "お前こそ、その正体不明の集団が何か";
+	mes "説明して!!";
+	emotion 9,"R#mocgate2";
+	next;
+	cutin "mocseal_rin01",255;
+	mes "[R・ムーア]";
+	mes "リーンの言う通りです。";
+	mes "私が誘拐犯なら、生贄にする子供達が";
+	mes "飢え死にして役に立たなく";
+	mes "なってしまうでしょう。";
+	next;
+	mes "[R・ムーア]";
+	mes "だが、そんな必要はもうありません。";
+	mes "子供達はもういませんから……";
+	mes "そしてリーン！　貴女も魔王のために";
+	mes "血を捧げなくてはいけません!!";
+	mes "フハハハハハハ!!!!!!";
+	misceffect 54,"R#mocgate2";
+	emotion 0,"キド#mocgate2_1";
+	emotion 0,"";
+	next;
+	mes "[キド]";
+	mes "危ない!!!!";
+	misceffect 92,"#mocgate2_bt2";
+	hideonnpc "キド#mocgate2_1";
+	hideonnpc "リーン#mocgate2_1";
+	hideoffnpc "キド#mocgate2_2";
+	hideoffnpc "リーン#mocgate2_2";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "キド!!　リーン!!";
+	next;
+	mes "[リーン]";
+	mes "何故……？";
+	mes "R……貴方は、魔王の復活を";
+	mes "阻止しようとしていたのではないのか？";
+	next;
+	mes "[キド]";
+	mes "そんなのは嘘だ！";
+	mes "お前を利用するための嘘に";
+	mes "決まっているだろう!?";
+	next;
+	mes "[R・ムーア]";
+	mes "ククク……ようやく理解したようだな。";
+	mes "私も善良に生きる道を選びたかったが、";
+	mes "今の世の中の腐敗ぶりは見て見ぬふりを";
+	mes "できるものではないからな。";
+	mes "ククク……さぁ、魔王モロクの偉大さを";
+	mes "身をもって感じるがいい！";
+	emotion 29,"R#mocgate2";
+	next;
+	hideonnpc "R#mocgate2";
+	initnpctimer "#mocgate2_bt2";
+	monster "que_job03.gat",121,118,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled";
+	monster "que_job03.gat",121,115,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled";
+	monster "que_job03.gat",121,112,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled";
+	monster "que_job03.gat",107,106,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled";
+	monster "que_job03.gat",111,106,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled";
+	monster "que_job03.gat",115,106,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled";
+	monster "que_job03.gat",135,105,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled";
+	monster "que_job03.gat",132,105,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled";
+	monster "que_job03.gat",128,105,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled";
+	mes "[" +strcharinfo(0)+ "]";
+	mes "ク……モンスター……!?";
+	mes "あ、待て!!";
+	next;
+	mes "[リーン]";
+	mes "奴は私が追跡する!!";
+	mes "お前は、ここを!!";
+	set MOC_1QUE,126;
+	set $MoroccAttack,$MoroccAttack+1;
+	close2;
+	hideonnpc "リーン#mocgate2_2";
+	hideonnpc;
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,122,106,0	script	#mocgate2_bt2	139,{
+	end;
+OnTimer500:
+	announce "援護します！",0x09,0x90EE90;
+	hideoffnpc "ダンデリオン#mocgate2_3";
+	hideoffnpc "ダンデリオン#mocgate2_4";
+	emotion 27,"ダンデリオン#mocgate2_1";
+	emotion 27,"ダンデリオン#mocgate2_2";
+	emotion 27,"ダンデリオン#mocgate2_3";
+	emotion 27,"ダンデリオン#mocgate2_4";
+	end;
+OnTimer3000:
+	misceffect 54,"ダンデリオン#mocgate2_3";
+	misceffect 54,"ダンデリオン#mocgate2_2";
+	end;
+OnTimer4000:
+	misceffect 90,"ダンデリオン#mocgate2_4";
+	misceffect 90,"ダンデリオン#mocgate2_2";
+	end;
+OnTimer5000:
+	killmonster "que_job03.gat","#mocgate2_bt2::OnKilled";
+	end;
+OnTimer5500:
+	set 'mob,3;
+	monster "que_job03.gat",128,105,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled2";
+	monster "que_job03.gat",115,106,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled2";
+	monster "que_job03.gat",121,112,"ミイラ",1041,1,"#mocgate2_bt2::OnKilled2";
+	end;
+OnTimer7000:
+	announce "ダンデリオン代表！　レイヤンを追跡するぞ!!",0x09,0x90EE90;
+	end;
+OnTimer10000:
+	announce "キド大将！　後ろをお願いします!!",0x09,0x90EE90;
+	hideonnpc "ダンデリオン#mocgate2_1";
+	hideonnpc "ダンデリオン#mocgate2_2";
+	hideonnpc "ダンデリオン#mocgate2_3";
+	hideonnpc "ダンデリオン#mocgate2_4";
+	stopnpctimer;
+	end;
+OnKilled:
+	end;
+OnKilled2:
+	set 'mob,'mob-1;
+	if('mob == 0)
+		hideoffnpc "#mocgate2_end2";
+	end;
+}
+
+que_job03.gat,122,106,0	script	#mocgate2_end2	139,15,15,{
+	if(MOC_1QUE != 126)
+		end;
+	cutin "mocseal_kid01",0;
+	mes "[キド]";
+	mes strcharinfo(0)+ "！　無事か？";
+	mes "ひとまず、帰ろう。";
+	mes "ギルドに戻って整理をする。";
+	set MOC_1QUE,127;
+	close2;
+	mapwarp "que_job03.gat","que_job01.gat",59,51;
+	hideoffnpc "#mocgate2_talk1";
+	hideoffnpc "#mocgate2_talk2";
+	hideoffnpc "#mocgate2_talk3";
+	hideoffnpc "#mocgate2_talk4";
+	hideoffnpc "#mocgate2_talk5";
+	hideoffnpc "#mocgate2_talk6";
+	hideoffnpc "#mocgate2_talk7";
+	hideoffnpc "#mocgate2_battle";
+	hideonnpc "#mocgate2_end";
+	hideonnpc "#mocgate2_end2";
+	hideonnpc "ダンデリオン代表#2_bt";
+	hideonnpc "キド#mocgate2_1";
+	hideonnpc "キド#mocgate2_2";
+	hideonnpc "リーン#mocgate2_1";
+	hideonnpc "リーン#mocgate2_2";
+	hideonnpc "R#mocgate2";
+	hideonnpc "ダンデリオン#mocgate2_1";
+	hideonnpc "ダンデリオン#mocgate2_2";
+	hideonnpc "ダンデリオン#mocgate2_3";
+	hideonnpc "ダンデリオン#mocgate2_4";
+	stopnpctimer "#mocgate2";
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,116,108,5	script	キド#mocgate2_1	884,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,126,103,5	script	キド#mocgate2_2	884,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,121,106,1	script	リーン#mocgate2_1	885,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,127,101,1	script	リーン#mocgate2_2	885,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,124,109,3	script	R#mocgate2	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,113,107,5	script	ダンデリオン#mocgate2_1	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,121,100,7	script	ダンデリオン#mocgate2_2	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,122,98,1	script	ダンデリオン#mocgate2_3	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+que_job03.gat,122,111,5	script	ダンデリオン#mocgate2_4	880,{
+	end;
+OnInit:
+	hideonnpc;
+	end;
+}
+
+morocc.gat,30,29,5	script	団員#moc1	880,10,15,{
+	mes "[団員代表]";
+	mes "皆さん、今日はこれで終了にします。";
+	mes "明日は、南門の掃除をいたしましょう。";
+	mes "準備を怠らないようにしてください。";
+	next;
+	mes "[団員]";
+	mes "東門はいつ掃除しますか？";
+	next;
+	mes "[団員代表]";
+	mes "それは明日決定しましょう。";
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "……ボランティア活動か。";
+	close;
+OnTouch:
+	if(MOC_1QUE != 30 && MOC_1QUE != 128)
+		end;
+	mes "[？？？]";
+	mes "……今回は失敗に終わったか。";
+	next;
+	mes "[？？？]";
+	mes "……惜しかったがな。";
+	next;
+	mes "[？？？]";
+	mes "しかし、当初の目的は";
+	mes "果たしたのではないでしょうか？";
+	next;
+	mes "[？？？]";
+	mes "シッ！　声が大きい。";
+	next;
+	mes "[？？？]";
+	mes "一つ言えることは……";
+	mes "このままでは終わらないということだ。";
+	next;
+	mes "[？？？]";
+	mes "誰かに聞かれては困る。";
+	mes "この話はこれまでにしよう。";
+	close2;
+	hideonnpc "団員#moc1";
+	hideonnpc "団員#moc2";
+	hideonnpc "団員#moc3";
+	hideonnpc "団員#moc4";
+	initnpctimer "MoroccAttack";
+	end;
+}
+morocc.gat,29,26,0	duplicate(団員#moc1)	団員#moc2	880
+morocc.gat,33,27,1	duplicate(団員#moc1)	団員#moc3	880
+morocc.gat,34,30,3	duplicate(団員#moc1)	団員#moc4	880
+
+morocc.gat,0,0,0	script	MoroccAttack	-1,{
+OnTimer300000:
+	if($MoroccAttack < 50) {
+		hideoffnpc "団員#moc1";
+		hideoffnpc "団員#moc2";
+		hideoffnpc "団員#moc3";
+		hideoffnpc "団員#moc4";
+		stopnpctimer;
+		end;
+	}
+	set $MoroccAttack,0;
+	announce "……封印を……解く……神よ……偉大なる……儀式を……",9,0x7B68EE;
+	sleep 5000;
+	announce "……邪魔する……愚かな者等……",9,0x7B68EE;
+	sleep 5000;
+	announce "……復活の……儀式は……失敗に……",9,0x7B68EE;
+	sleep 5000;
+	announce "……お前達には……血の……安息を……",9,0x7B68EE;
+	sleep 5000;
+	announce "……その命を奉じて……償うがよい!!!!",9,0x7B68EE;
+	sleep 5000;
+	announce "誰かの叫び : 魔王の怒りが……ああ……た、助けてくれ!!",9,0x00FF00;
+	monster "morocc.gat",163,185,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,185,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,185,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,185,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,185,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",163,191,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,191,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,191,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,191,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,191,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	sleep 2000;
+	monster "morocc.gat",163,194,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,194,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,194,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,194,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,194,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",163,197,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,197,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,197,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,197,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,197,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",163,200,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,200,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,200,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,200,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,200,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	sleep 2000;
+	announce "カプラビニット : こちら、カプラサービスモロク支社！　ああ……モンスターがっ!!!!",8;
+	monster "morocc.gat",163,203,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,203,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,203,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,203,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,203,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",163,206,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,206,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,206,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,206,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,206,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",163,209,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,209,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,209,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,209,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,209,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	sleep 2000;
+	monster "morocc.gat",163,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",163,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",161,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",159,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",157,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",155,212,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	sleep 2000;
+	monster "morocc.gat",138,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",140,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",142,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",146,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",148,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",150,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",152,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",154,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",156,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",158,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",160,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",162,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",164,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",166,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",168,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",170,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",172,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",174,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",176,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",178,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",180,162,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",138,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",140,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",142,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",146,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",148,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",150,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",152,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",154,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",156,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",158,160,"魔王の絶望",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",160,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",162,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",164,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",166,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",168,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",170,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",172,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",174,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",176,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",178,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",180,160,"魔王の怒り",1154,1,"MoroccAttack::OnKilled";
+	sleep 2000;
+	announce "絶望の淵に落ちるがいい!!!!　ハハハハハハハ!!!!",9,0x7B68EE;
+	monster "morocc.gat",138,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",140,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",142,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",146,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",148,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",150,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",152,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",154,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",156,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",158,158,"魔王の絶望",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",160,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",162,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",164,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",166,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",168,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",170,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",172,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",174,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",176,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",178,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	monster "morocc.gat",180,158,"魔王の怒り",1041,1,"MoroccAttack::OnKilled";
+	areamonster "morocc.gat",0,0,320,320,"魔王の絶望",1041,20,"MoroccAttack::OnKilled";
+	areamonster "morocc.gat",0,0,320,320,"魔王の怒り",1041,20,"MoroccAttack::OnKilled";
+	end;
+OnTimer1800000:
+	killmonster "morocc.gat","MoroccAttack::OnKilled";
+	hideoffnpc "団員#moc1";
+	hideoffnpc "団員#moc2";
+	hideoffnpc "団員#moc3";
+	hideoffnpc "団員#moc4";
+	stopnpctimer;
+	end;
+OnKilled:
+	end;
 }

@@ -1473,7 +1473,7 @@ L_RECALC:
 	else
 		sd->status.max_hp += calc_val * battle_config.normal_hp_rate / 100;
 
-	sd->status.max_hp +=  + (sd->parame[2] - sd->paramcard[2]);
+	sd->status.max_hp += sd->parame[2] - sd->paramcard[2];
 
 	if(sd->hprate != 100)
 		sd->status.max_hp = sd->status.max_hp * sd->hprate / 100;

@@ -586,11 +586,17 @@ que_hugel.gat	mapflag	nobranch	dummy
 que_hugel.gat	mapflag	nopenalty	dummy
 que_job01.gat	mapflag	nomemo	dummy
 que_job01.gat	mapflag	noteleport	dummy
+que_job01.gat	mapflag	nosave	SavePoint
 que_job01.gat	mapflag	nobranch	dummy
 que_job01.gat	mapflag	nopenalty	dummy
 que_job02.gat	mapflag	nomemo	dummy
+que_job02.gat	mapflag	nosave	SavePoint
 que_job02.gat	mapflag	noteleport	dummy
 que_job02.gat	mapflag	nobranch	dummy
+que_job03.gat	mapflag	nomemo	dummy
+que_job03.gat	mapflag	nosave	SavePoint
+que_job03.gat	mapflag	noteleport	dummy
+que_job03.gat	mapflag	nobranch	dummy
 que_ng.gat	mapflag	nomemo	dummy
 que_ng.gat	mapflag	noteleport	dummy
 que_ng.gat	mapflag	nobranch	dummy
