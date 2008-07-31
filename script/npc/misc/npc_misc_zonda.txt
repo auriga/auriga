@@ -21,9 +21,11 @@
 	mes "最高のサービスを提供しております。";
 	mes "どのサービスをご利用いたしますか？";
 	next;
-	switch(select("位置セーブサービス","倉庫サービス","カートサービス","終了")) {
+	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);
+	if('@map$ == "rachel.gat" || '@map$ == "veins.gat")
+		set '@word$,"空間移動サービス";
+	switch(select("位置セーブサービス","倉庫サービス",'@word$,"カートサービス","終了")) {
 	case 1:
-		set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);
 		if('@map$ == "lighthalzen.gat")
 			savepoint "lighthalzen.gat",94,240;
 		else if('@map$ == "hugel.gat")
@@ -63,6 +65,35 @@
 		cutin "zonda_01",255;
 		end;
 	case 3:
+		mes "[ジョンダ職員]";
+		mes "目的地を選んでください。";
+		next;
+		if('@map$ == "rachel.gat")
+			set '@word$,"ベインス";
+		else if('@map$ == "veins.gat")
+			set '@word$,"ラヘル";
+		if(select('@word$+ " -> 2200 z","キャンセル")==2) {
+			mes "[ジョンダ職員]";
+			mes "またご利用くださいませ。";
+			break;
+		}
+		if(Zeny < 2200) {
+			mes "[ジョンダ職員]";
+			mes "お客様、" +'@word$+ "までの";
+			mes "空間移動サービスの料金は";
+			mes "2200 Zenyとなっております。";
+			mes "所持金をお確かめの上、";
+			mes "再度ご利用ください。";
+			break;
+		}
+		cutin "zonda_01",255;
+		set Zeny,Zeny-2200;
+		if('@map$ == "rachel.gat")
+			warp "veins.gat",205,102;
+		else if('@map$ == "veins.gat")
+			warp "rachel.gat",115,125;
+		end;
+	case 4:
 		if(Class != 5 && Class != 10 && Class != 18) {
 			mes "[ジョンダ職員]";
 			mes "お客様、大変申し訳ございませんが、";
@@ -103,7 +134,7 @@
 		set Zeny,Zeny-800;
 		setcart;
 		break;
-	case 4:
+	case 5:
 		mes "[ジョンダ職員]";
 		mes "（有）ジョンダイベントは、お客様に";
 		mes "常に最高のサービスを";

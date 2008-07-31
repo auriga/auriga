@@ -1,4 +1,19 @@
 ----------------------------------------
+//0507 [2008/08/01] by Cocoa
+
+・Athena Rev.412よりmerge、thanks to Blazeさん
+	-> ラヘルとベインスのジョンダ職員に空間転送機能を追加
+
+・Athena Rev.416よりmerge、thanks to Blazeさん
+	-> モスコビア追加マップのmonster定義を追加
+
+・Athena Rev.417より一部merge、thanks to Blazeさん
+	-> モスコビアNPC実装
+
+・Athena Rev.418よりmerge、thanks to Blazeさん
+	-> モスコビアの案内要員とカプラ職員NPCを追加
+
+----------------------------------------
 //0506 [2008/08/01] by Cocoa
 
 ・Athena Rev.413よりmerge、thanks to Blazeさん
@@ -8,13 +23,13 @@
 ・Athena Rev.414よりmerge、thanks to Blazeさん
 	-> 名も無き島の秘密クエストNPC実装
 	->プロンテラとラヘルの名も無き島関連NPCの修正
-	->map_athena.confに名も無き島関連ファイルを定義追加
+	-> map_auriga.confに名も無き島関連ファイルを定義追加
 
 ・Athena Rev.415よりmerge、thanks to Blazeさん
 	-> モスコビアのwarp定義を追加
 
 ・Athena Rev.417より一部merge、thanks to Blazeさん
-	-> map_athena.confにモスコビア関連ファイルを定義追加
+	-> map_auriga.confにモスコビア関連ファイルを定義追加
 
 ・Athena Rev.486よりmerge、thanks to nanashiさん
 	-> アサテンプレ、ROratorioを参考に最大HP/SP計算式修正(status.c)
