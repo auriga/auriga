@@ -1120,3 +1120,47 @@ thor_v02.gat,73,203,0	warp	veinswarp4002	1,1,thor_v01.gat,196,37
 //トール火山ダンジョン 02⇔トール火山ダンジョン 03
 thor_v02.gat,192,60,0	warp	veinswarp4003	1,1,thor_v03.gat,35,262
 thor_v03.gat,30,262,0	warp	veinswarp4004	1,1,thor_v02.gat,187,58
+
+
+
+//---名もなき島追加マップ
+
+
+//==============================================================
+// nameless_n.gat	名もなき島 夜
+// -----
+// abbey01.gat		修道院 01
+// abbey02.gat		修道院 02
+// abbey03.gat		修道院 03
+//==============================================================
+//修道院 01⇒名もなき島 夜
+abbey01.gat,51,10,0	warp	namelesswarp0101	1,1,nameless_n.gat,162,184
+
+//修道院 01
+abbey01.gat,87,122,0	warp	namelesswarp4001	1,1,abbey01.gat,12,200
+abbey01.gat,12,205,0	warp	namelesswarp4002	1,1,abbey01.gat,89,118
+//修道院 01⇔修道院 02
+abbey01.gat,322,101,0	warp	namelesswarp4003	1,1,abbey02.gat,149,12
+abbey02.gat,149,7,0	warp	namelesswarp4004	1,1,abbey01.gat,322,96
+//修道院 02⇔修道院 03
+abbey02.gat,149,290,0	warp	namelesswarp4005	1,1,abbey03.gat,120,9
+abbey03.gat,119,6,0	warp	namelesswarp4006	1,1,abbey02.gat,149,285
+
+
+
+//---モスコビア追加マップ
+
+
+//==============================================================
+// -----  モスコビア -----
+// mosk_dun01.gat	森
+// mosk_dun02.gat	深い森
+// -----
+// mosk_fild02.gat	モスコビアフィールド
+// mosk_in.gat		モスコビア 内部
+//==============================================================
+//深い森⇒ババヤガの家
+mosk_dun02.gat,53,220,0	warp	moscoviawarp0101	1,1,mosk_in.gat,215,41
+
+//森⇒モスコビアフィールド
+mosk_dun01.gat,189,42,0	warp	moscoviawarp0501	1,1,mosk_fild02.gat,190,254

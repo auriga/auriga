@@ -2107,13 +2107,86 @@ ve_in.gat,256,127,0	warp	veinswarp1020	1,1,veins.gat,150,215
 ve_in.gat,224,115,0	warp	veinswarp1021	1,1,ve_in.gat,313,114
 ve_in.gat,309,114,0	warp	veinswarp1022	1,1,ve_in.gat,220,115
 //治安管理所
-veins.gat,88,173,0	warp	veinswarp1019	1,1,ve_in.gat,77,295
-ve_in.gat,77,291,0	warp	veinswarp1020	1,1,veins.gat,88,168
-ve_in.gat,98,299,0	warp	veinswarp1021	1,1,ve_in.gat,124,372
-ve_in.gat,128,372,0	warp	veinswarp1022	1,1,ve_in.gat,102,299
+veins.gat,88,173,0	warp	veinswarp1023	1,1,ve_in.gat,77,295
+ve_in.gat,77,291,0	warp	veinswarp1024	1,1,veins.gat,88,168
+ve_in.gat,98,299,0	warp	veinswarp1025	1,1,ve_in.gat,124,372
+ve_in.gat,128,372,0	warp	veinswarp1026	1,1,ve_in.gat,102,299
 //民家
-veins.gat,337,231,0	warp	veinswarp1019	1,1,ve_in.gat,194,374
-ve_in.gat,194,369,0	warp	veinswarp1020	1,1,veins.gat,331,231
+veins.gat,337,231,0	warp	veinswarp1027	1,1,ve_in.gat,194,374
+ve_in.gat,194,369,0	warp	veinswarp1028	1,1,veins.gat,331,231
 //工場
-veins.gat,267,230,0	warp	veinswarp1019	1,1,ve_in02.gat,17,19
-ve_in02.gat,13,19,0	warp	veinswarp1020	1,1,veins.gat,269,225
+veins.gat,267,230,0	warp	veinswarp1029	1,1,ve_in02.gat,17,19
+ve_in02.gat,13,19,0	warp	veinswarp1030	1,1,veins.gat,269,225
+
+
+
+//---名もなき島追加マップ
+
+
+//==============================================================
+// nameless_i.gat	名もなき島 朝
+// nameless_n.gat	名もなき島 夜
+// nameless_in.gat	名もなき島 室内
+// -----
+// abbey01.gat		修道院 01
+//==============================================================
+//名もなき島 夜⇒修道院
+nameless_n.gat,157,184,0	warp	namelesswarp0401	1,1,abbey01.gat,51,15
+
+//北東の家
+nameless_i.gat,228,232,0	warp	namelesswarp1001	1,1,nameless_in.gat,12,172
+nameless_in.gat,12,169,0	warp	namelesswarp1002	1,1,nameless_i.gat,230,229
+//北西の家
+nameless_i.gat,75,251,0		warp	namelesswarp1003	1,1,nameless_in.gat,82,159
+nameless_in.gat,86,159,0	warp	namelesswarp1004	1,1,nameless_i.gat,78,246
+nameless_i.gat,100,259,0	warp	namelesswarp1005	1,1,nameless_in.gat,97,180
+nameless_in.gat,96,177,0	warp	namelesswarp1006	1,1,nameless_i.gat,99,255
+//南東の家
+nameless_i.gat,252,130,0	warp	namelesswarp1007	1,1,nameless_in.gat,26,128
+nameless_in.gat,23,128,0	warp	namelesswarp1008	1,1,nameless_i.gat,249,127
+nameless_i.gat,253,116,0	warp	namelesswarp1009	1,1,nameless_in.gat,12,109
+nameless_in.gat,12,112,0	warp	namelesswarp1010	1,1,nameless_i.gat,254,121
+
+
+
+//---モスコビア追加マップ
+
+
+//==============================================================
+// -----  モスコビア -----
+// moscovia.gat		モスコビア
+// mosk_in.gat		モスコビア 内部
+// -----
+// mosk_dun02.gat	深い森
+//==============================================================
+//王宮
+moscovia.gat,256,138,0	warp	moscoviawarp1001	1,1,mosk_in.gat,96,61
+mosk_in.gat,93,61,0	warp	moscoviawarp1002	1,1,moscovia.gat,255,140
+mosk_in.gat,99,126,0	warp	moscoviawarp1003	1,1,mosk_in.gat,21,116
+mosk_in.gat,21,113,0	warp	moscoviawarp1004	1,1,mosk_in.gat,99,123
+//武器屋
+moscovia.gat,185,188,0	warp	moscoviawarp1005	1,1,mosk_in.gat,15,179
+mosk_in.gat,12,179,0	warp	moscoviawarp1006	1,1,moscovia.gat,186,191
+//防具屋
+moscovia.gat,203,171,0	warp	moscoviawarp1007	1,1,mosk_in.gat,86,180
+mosk_in.gat,89,180,0	warp	moscoviawarp1008	1,1,moscovia.gat,204,169
+//道具屋
+moscovia.gat,223,174,0	warp	moscoviawarp1009	1,1,mosk_in.gat,14,246
+mosk_in.gat,11,246,0	warp	moscoviawarp1010	1,1,moscovia.gat,222,176
+//旅館
+moscovia.gat,229,208,0	warp	moscoviawarp1011	1,1,mosk_in.gat,142,178
+mosk_in.gat,142,175,0	warp	moscoviawarp1012	1,1,moscovia.gat,227,207
+mosk_in.gat,150,192,0	warp	moscoviawarp1013	1,1,mosk_in.gat,204,188
+mosk_in.gat,202,188,0	warp	moscoviawarp1014	1,1,mosk_in.gat,148,192
+//民家
+moscovia.gat,256,179,0	warp	moscoviawarp1015	1,1,mosk_in.gat,211,114
+mosk_in.gat,211,111,0	warp	moscoviawarp1016	1,1,moscovia.gat,253,179
+mosk_in.gat,222,128,0	warp	moscoviawarp1017	1,1,mosk_in.gat,288,118
+mosk_in.gat,288,116,0	warp	moscoviawarp1018	1,1,mosk_in.gat,222,126
+//ミハイルの家
+moscovia.gat,205,98,0	warp	moscoviawarp1019	1,1,mosk_in.gat,214,255
+mosk_in.gat,214,252,0	warp	moscoviawarp1020	1,1,moscovia.gat,203,96
+mosk_in.gat,220,273,0	warp	moscoviawarp1021	1,1,mosk_in.gat,152,275
+mosk_in.gat,152,272,0	warp	moscoviawarp1022	1,1,mosk_in.gat,220,270
+//ババヤガの家
+mosk_in.gat,215,36,0	warp	moscoviawarp1023	1,1,mosk_dun02.gat,53,217

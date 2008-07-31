@@ -1464,7 +1464,7 @@ L_RECALC:
 	blv = (sd->status.base_level > 0)? sd->status.base_level - 1: 0;
 
 	// 最大HP計算
-	calc_val = job_db[sd->s_class.job].hp_base[blv] * (100 + sd->paramc[2]) / 100 + (sd->parame[2] - sd->paramcard[2]);
+	calc_val = job_db[sd->s_class.job].hp_base[blv] * (100 + sd->paramc[2]) / 100;
 
 	if(pc_isupper(sd))	// 転生職の場合最大HP25%UP
 		sd->status.max_hp += calc_val * battle_config.upper_hp_rate / 100;
@@ -1472,6 +1472,8 @@ L_RECALC:
 		sd->status.max_hp += calc_val * battle_config.baby_hp_rate / 100;
 	else
 		sd->status.max_hp += calc_val * battle_config.normal_hp_rate / 100;
+
+	sd->status.max_hp +=  + (sd->parame[2] - sd->paramcard[2]);
 
 	if(sd->hprate != 100)
 		sd->status.max_hp = sd->status.max_hp * sd->hprate / 100;
