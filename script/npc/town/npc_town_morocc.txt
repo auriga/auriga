@@ -555,7 +555,7 @@ alberta.gat,129,59,3	script	ギルド関係者#moc2	49,3,3,{
 		mes "何か知っていたら、教えてください。";
 		close;
 	}
-	if(Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchemist && Class != Job_Linker) {
+	if(Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchem && Class != Job_SoulLinker) {
 		mes "[ギルド関係者]";
 		mes "はぁ……商人達は商売のため";
 		mes "各地に散らばっているので、";
@@ -605,7 +605,7 @@ alberta.gat,129,59,3	script	ギルド関係者#moc2	49,3,3,{
 			mes "[ギルド関係者]";
 			mes "それでは、いってらっしゃい！";
 			close;
-		case Job_Alchemist:
+		case Job_Alchem:
 			mes "[ギルド関係者]";
 			mes "え、どこに行けばいいかわからない？";
 			next;
@@ -620,7 +620,7 @@ alberta.gat,129,59,3	script	ギルド関係者#moc2	49,3,3,{
 			mes "我がギルドの代表として、";
 			mes "しっかりとお願いしますよ。";
 			close;
-		case Job_Linker:
+		case Job_SoulLinker:
 			mes "[ギルド関係者]";
 			mes "ん……どうしました？";
 			next;
@@ -662,7 +662,7 @@ alberta.gat,129,59,3	script	ギルド関係者#moc2	49,3,3,{
 		close;
 	}
 OnTouch:
-	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchemist && Class != Job_Linker))
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchem && Class != Job_SoulLinker))
 		end;
 	if(checkweight(7416,1) != 1) {
 		mes "-所持アイテムの重量が多いため";
@@ -745,7 +745,7 @@ OnTouch:
 		set MOC_1QUE,1;
 		getitem 7416,1;
 		close;
-	case Job_Alchemist:
+	case Job_Alchem:
 		mes "[ギルド関係者]";
 		mes "あ、ちょっと待ってください！";
 		mes strcharinfo(0)+ "さんですよね？";
@@ -777,7 +777,7 @@ OnTouch:
 		set MOC_1QUE,1;
 		getitem 7416,1;
 		close;
-	case Job_Linker:
+	case Job_SoulLinker:
 		mes "[ギルド関係者]";
 		mes "そこを行く魂よ……";
 		mes "しばらく私の話を";
@@ -967,7 +967,7 @@ morocc.gat,155,56,5	script	少女#moc	93,3,3,{
 		mes "気をつけてね。";
 		close;
 	}
-	if(Class != Job_Thief && Class != Job_Assassin && Class != Job_Rogue && Class != Job_Star) {
+	if(Class != Job_Thief && Class != Job_Assassin && Class != Job_Rogue && Class != Job_StarGladiator) {
 		mes "[少女]";
 		mes "……";
 		mes "……";
@@ -994,7 +994,7 @@ morocc.gat,155,56,5	script	少女#moc	93,3,3,{
 			mes "そこの近くに人を派遣しているから、";
 			mes "行けばわかるはずよ。";
 			close;
-		case Job_Star:
+		case Job_StarGladiator:
 			mes "[ミヤ]";
 			mes "この街の西側に、アサシンギルドから";
 			mes "派遣された人がいるらしいから、";
@@ -1018,7 +1018,7 @@ morocc.gat,155,56,5	script	少女#moc	93,3,3,{
 		close;
 	}
 OnTouch:
-	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Thief && Class != Job_Assassin && Class != Job_Rogue && Class != Job_Star))
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Thief && Class != Job_Assassin && Class != Job_Rogue && Class != Job_StarGladiator))
 		end;
 	if(checkweight(7416,1) != 1) {
 		mes "-所持アイテムの重量が多いため";
@@ -1079,7 +1079,7 @@ OnTouch:
 		mes "今後利用することもあるだろうし。";
 		set MOC_1QUE,1;
 		close;
-	case Job_Star:
+	case Job_StarGladiator:
 		mes "[ミヤ]";
 		mes "ちょっと、そこの拳聖！";
 		mes "そう、貴方よ！";
@@ -1112,7 +1112,7 @@ payon.gat,231,323,3	script	ギルド関係者#moc3	59,3,3,{
 		mes "起きているようですから。";
 		close;
 	}
-	if(Class != Job_Archer && Class != Job_Hunter && Class != Job_Bard && Class != Job_Dancer && Class != Job_Taekwon) {
+	if(Class != Job_Archer && Class != Job_Hunter && Class != Job_Bard && Class != Job_Dancer && Class != Job_TaeKwonBoy) {
 		mes "[ギルド関係者]";
 		mes "もしアーチャーやハンターなど";
 		mes "弓を使う職業の方を見かけたら、";
@@ -1147,7 +1147,7 @@ payon.gat,231,323,3	script	ギルド関係者#moc3	59,3,3,{
 			mes "古い家の近くにアサシンギルドから";
 			mes "派遣した人が待機しているそうです。";
 			close;
-		case Job_Taekwon:
+		case Job_TaeKwonBoy:
 			mes "[ギルド関係者]";
 			mes "モロクの中央にある湖のやや西側に、";
 			mes "アサシンギルドの方が";
@@ -1172,7 +1172,7 @@ payon.gat,231,323,3	script	ギルド関係者#moc3	59,3,3,{
 		close;
 	}
 OnTouch:
-	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Archer && Class != Job_Hunter && Class != Job_Bard && Class != Job_Dancer && Class != Job_Taekwon))
+	if(BaseLevel < 60 || MOC_1QUE || (Class != Job_Archer && Class != Job_Hunter && Class != Job_Bard && Class != Job_Dancer && Class != Job_TaeKwonBoy))
 		end;
 	if(checkweight(7416,1) != 1) {
 		mes "-所持アイテムの重量が多いため";
@@ -1302,7 +1302,7 @@ OnTouch:
 		mes "まずはその人と話してください。";
 		mes "よろしくお願いします。";
 		close;
-	case Job_Taekwon:
+	case Job_TaeKwonBoy:
 		mes "[ギルド関係者]";
 		mes "あ……す、すみません！";
 		mes strcharinfo(0)+ "さんでしょう？";

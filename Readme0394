@@ -1,4 +1,12 @@
 ----------------------------------------
+//0511 [2008/08/07] by Cocoa
+
+・npc_morocc.txtで職業変数の定義が間違っていた不具合修正
+
+・Athena Rev.497よりmerge、thanks to Blazeさん
+	-> スクリプト命令「mapwarp」追加
+
+----------------------------------------
 //0510 [2008/08/07] by Cocoa
 
 ・Athena Rev.287よりmerge、thanks to ico776さん

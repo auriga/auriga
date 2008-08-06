@@ -3698,6 +3698,7 @@ int buildin_close2(struct script_state *st);
 int buildin_menu(struct script_state *st);
 int buildin_rand(struct script_state *st);
 int buildin_warp(struct script_state *st);
+int buildin_mapwarp(struct script_state *st);
 int buildin_areawarp(struct script_state *st);
 int buildin_heal(struct script_state *st);
 int buildin_itemheal(struct script_state *st);
@@ -3950,6 +3951,7 @@ struct script_function buildin_func[] = {
 	{buildin_jobchange,"jobchange","i*"},
 	{buildin_input,"input","s"},
 	{buildin_warp,"warp","sii"},
+	{buildin_mapwarp,"mapwarp","ssii"},
 	{buildin_areawarp,"areawarp","siiiisii"},
 	{buildin_setlook,"setlook","ii"},
 	{buildin_getlook,"getlook","i"},
@@ -4564,21 +4566,21 @@ int buildin_warp(struct script_state *st)
 }
 
 /*==========================================
- * エリア指定ワープ
+ * マップ指定ワープ
  *------------------------------------------
  */
-static int buildin_areawarp_sub(struct block_list *bl,va_list ap)
+static int buildin_mapwarp_sub(struct block_list *bl,va_list ap)
 {
 	int x,y;
 	char *mapname;
 	struct map_session_data *sd;
 
-	nullpo_retr(0, bl);
-	nullpo_retr(0, sd = (struct map_session_data *)bl);
+	mapname=va_arg(ap, char *);
+	x=va_arg(ap,int);
+	y=va_arg(ap,int);
 
-	mapname = va_arg(ap, char *);
-	x = va_arg(ap,int);
-	y = va_arg(ap,int);
+	if((sd=(struct map_session_data *)bl) == NULL)
+		return 0;
 
 	if(strcmp(mapname,"Random")==0)
 		pc_randomwarp(sd,3);
@@ -4587,13 +4589,43 @@ static int buildin_areawarp_sub(struct block_list *bl,va_list ap)
 	else
 		pc_setpos(sd,mapname,x,y,0);
 
-	if(unit_isdead(&sd->bl)) {
-		pc_setstand(sd);
-		pc_setrestartvalue(sd,3);
-	}
 	return 0;
 }
 
+int buildin_mapwarp(struct script_state *st)
+{
+	int x,y,m;
+	char *str;
+	char *mapname;
+
+	mapname=conv_str(st,& (st->stack->stack_data[st->start+2]));
+	str=conv_str(st,& (st->stack->stack_data[st->start+3]));
+	x=conv_num(st,& (st->stack->stack_data[st->start+4]));
+	y=conv_num(st,& (st->stack->stack_data[st->start+5]));
+
+	if(strcmp(mapname,"this")==0){
+		struct npc_data *nd = map_id2nd(st->oid);
+		if(nd)
+			m=nd->bl.m;
+		else {
+			struct map_session_data *sd=script_rid2sd(st);
+			if(sd)
+				m=sd->bl.m;
+			else
+				return 0;
+		}
+	}
+	else if( (m=map_mapname2mapid(mapname))< 0)
+		return 0;
+
+	map_foreachinarea(buildin_mapwarp_sub,m,0,0,map[m].xs,map[m].ys,BL_PC, str,x,y);
+	return 0;
+}
+
+/*==========================================
+ * エリア指定ワープ
+ *------------------------------------------
+ */
 int buildin_areawarp(struct script_state *st)
 {
 	int x,y,m;
@@ -4610,9 +4642,22 @@ int buildin_areawarp(struct script_state *st)
 	x=conv_num(st,& (st->stack->stack_data[st->start+8]));
 	y=conv_num(st,& (st->stack->stack_data[st->start+9]));
 
-	m = script_mapname2mapid(st,mapname);
-	if(m >= 0)
-		map_foreachinarea(buildin_areawarp_sub,m,x0,y0,x1,y1,BL_PC,str,x,y);
+	if(strcmp(mapname,"this")==0){
+		struct npc_data *nd = map_id2nd(st->oid);
+		if(nd)
+			m=nd->bl.m;
+		else {
+			struct map_session_data *sd=script_rid2sd(st);
+			if(sd)
+				m=sd->bl.m;
+			else
+				return 0;
+		}
+	}
+	else if( (m=map_mapname2mapid(mapname))< 0)
+		return 0;
+
+	map_foreachinarea(buildin_mapwarp_sub,m,x0,y0,x1,y1,BL_PC,str,x,y);
 	return 0;
 }
 

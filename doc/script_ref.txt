@@ -1182,6 +1182,14 @@ AurigaNPCScript
 			<color>指定時はその色でＧＭアナウンスします。
 			このとき<flag>の値は無視されます。
 
+		mapwarp命令
+			areawarp <gatname>,<gatname2>,<x>,<y>;
+
+			gatname,gatname2	文字列
+
+			<gatname>にいるPCを<gatname2>の座標<x>,<y>に移動させます。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
+
 		areawarp命令
 			areawarp <gatname>,<x0>,<y0>,<x1>,<y1>,<gatname2>,<x>,<y>;
 
