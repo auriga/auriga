@@ -279,10 +279,10 @@
 277,9,6,1,0,1,5,1,yes,0,0,0,maigc,0	//SA_SPELLBREAKER#スペルブレイカー#
 278,0,0,0,0,0,10,0,no,0,0,0,magic,0	//SA_FREECAST#フリーキャスト#
 279,0,6,4,0,1,10,1,yes,0,0,0,magic,0	//SA_AUTOSPELL#オートスペル#
-280,9,6,16,0,1,5,1,yes,0,0,0,magic,0	//SA_FLAMELAUNCHER#フレイムランチャー#
-281,9,6,16,0,1,5,1,yes,0,0,0,magic,0	//SA_FROSTWEAPON#フロストウェポン#
-282,9,6,16,0,1,5,1,yes,0,0,0,magic,0	//SA_LIGHTNINGLOADER#ライトニングローダー#
-283,9,6,16,0,1,5,1,yes,0,0,0,magic,0	//SA_SEISMICWEAPON#サイズミックウェポン#
+280,9,6,16,0,1,5,1,yes,0,3072,0,magic,0	//SA_FLAMELAUNCHER#フレイムランチャー#
+281,9,6,16,0,1,5,1,yes,0,3072,0,magic,0	//SA_FROSTWEAPON#フロストウェポン#
+282,9,6,16,0,1,5,1,yes,0,3072,0,magic,0	//SA_LIGHTNINGLOADER#ライトニングローダー#
+283,9,6,16,0,1,5,1,yes,0,3072,0,magic,0	//SA_SEISMICWEAPON#サイズミックウェポン#
 284,0,0,0,0,0,5,0,no,0,0,0,weapon,0	//SA_DRAGONOLOGY#ドラゴノロジー#
 285,1,6,2,0,1,5,1,yes,0,0,0,magic,0	//SA_VOLCANO#ボルケーノ#
 286,1,6,2,0,1,5,1,yes,0,0,0,magic,0	//SA_DELUGE#デリュージ#

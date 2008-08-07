@@ -1936,10 +1936,6 @@ int skill_castend_id( int tid, unsigned int tick, int id,int data )
 			if(target->type != BL_SKILL && (dist == 0 || map_check_dir(dir,t_dir)))
 				break;
 		}
-		else if(src_ud->skillid >= SA_FLAMELAUNCHER && src_ud->skillid <= SA_SEISMICWEAPON ) {
-			if (src_sd && battle_check_target(src,target,BCT_PARTY)<=0)
-				break;
-		}
 
 		// 沈黙や状態異常など
 		if(src_md) {
