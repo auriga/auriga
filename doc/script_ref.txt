@@ -2398,6 +2398,16 @@ AurigaNPCScript
 			<例> 配列@hogeが 1,2,3,4,5 だとすると、
 			     getarraysize(@hoge)=5, getarraysize(@hoge[10])=10;
 
+		printarray関数
+			printarray(<variable>[,<delimiter>])
+
+			variable	変数
+			delimiter	文字列、省略可
+
+			配列<variable>を<delimiter>で区切って連結した文字列を返します。
+			<variable>は配列名を指定すると最初から、要素番号も指定すれば途中から文字列にします。
+			delimiterを省略すると ":" が区切り文字になります。
+
 		getelementofarray関数
 			getelementofarray(<variable>,<num>)
 

@@ -3713,6 +3713,7 @@ int buildin_cleararray(struct script_state *st);
 int buildin_copyarray(struct script_state *st);
 int buildin_getarraysize(struct script_state *st);
 int buildin_deletearray(struct script_state *st);
+int buildin_printarray(struct script_state *st);
 int buildin_getelementofarray(struct script_state *st);
 int buildin_getitem(struct script_state *st);
 int buildin_getitem2(struct script_state *st);
@@ -3961,6 +3962,7 @@ struct script_function buildin_func[] = {
 	{buildin_copyarray,"copyarray","iii"},
 	{buildin_getarraysize,"getarraysize","i"},
 	{buildin_deletearray,"deletearray","ii"},
+	{buildin_printarray,"printarray","s*"},
 	{buildin_getelementofarray,"getelementofarray","ii*"},
 	{buildin_getitem,"getitem","ii**"},
 	{buildin_getitem2,"getitem2","iiiiiiiii*"},
@@ -4443,10 +4445,11 @@ int buildin_menu(struct script_state *st)
 	}
 
 	if(sd->state.menu_or_input == 0) {
-		int len;
+		int len = 0;
 		char *buf;
 		st->state = RERUNLINE;
 		sd->state.menu_or_input = 1;
+
 		if((st->end - st->start - 2) % 2 == 1) {
 			// 引数の数が奇数なのでエラー扱い
 			printf("buildin_menu: illigal argument count(%d).\n", st->end - st->start - 2);
@@ -4454,21 +4457,26 @@ int buildin_menu(struct script_state *st)
 			st->state = END;
 			return 0;
 		}
-		for(i=st->start+2, len=0; i<st->end; i+=2) {
-			conv_str(st,& (st->stack->stack_data[i]));
-			len += strlen(st->stack->stack_data[i].u.str) + 1;
-		}
-		buf = (char *)aCalloc(len + 1, sizeof(char));
-		for(i=st->start+2, len=0; i<st->end; i+=2) {
-			if(st->stack->stack_data[i].u.str[0]) {
-				if(i > st->start+2) {
-					strcat(buf,":");
-				}
-				strcat(buf,st->stack->stack_data[i].u.str);
+		if(st->end > st->start+3) {
+			for(i=st->start+2; i<st->end; i+=2) {
+				conv_str(st,& (st->stack->stack_data[i]));
+				len += strlen(st->stack->stack_data[i].u.str) + 1;
 			}
+			buf = (char *)aCalloc(len + 1, sizeof(char));
+			for(i=st->start+2; i<st->end; i+=2) {
+				if(st->stack->stack_data[i].u.str[0]) {
+					if(buf[0]) {
+						strcat(buf,":");
+					}
+					strcat(buf,st->stack->stack_data[i].u.str);
+				}
+			}
+			clif_scriptmenu(sd,st->oid,buf);
+			aFree(buf);
+		} else {
+			buf = conv_str(st,& (st->stack->stack_data[st->start+2]));
+			clif_scriptmenu(sd,st->oid,buf);
 		}
-		clif_scriptmenu(sd,st->oid,buf);
-		aFree(buf);
 	} else if(sd->npc_menu <= 0 || sd->npc_menu == 0xff) {	// invalid or cancel
 		sd->state.menu_or_input = 0;
 		st->state = END;
@@ -4477,17 +4485,19 @@ int buildin_menu(struct script_state *st)
 		sd->state.menu_or_input = 0;
 		// 空文字と : のメニュー補正
 		for(i=st->start+2; count < sd->npc_menu && i<st->end; i+=2) {
-			char *p = conv_str(st,& (st->stack->stack_data[i]));
+			char *p  = conv_str(st,& (st->stack->stack_data[i]));
+			char *np = NULL;
 			count++;
 			if(*p == '\0') {
 				sd->npc_menu++;
 				continue;
 			}
-			while(count < sd->npc_menu && (p = strchr(p,':')) != NULL) {
+			while(count <= sd->npc_menu && (p = strchr(p,':')) != NULL) {
 				count++;
-				p++;
-				if(*p == '\0' || *p == ':')
+				if(np == p) {
 					sd->npc_menu++;
+				}
+				p = np + 1;
 			}
 		}
 		if(count >= sd->npc_menu) {
@@ -4599,9 +4609,7 @@ static int buildin_mapwarp_sub(struct block_list *bl,va_list ap)
 int buildin_mapwarp(struct script_state *st)
 {
 	int x,y,m;
-	char *str;
-	char *mapname;
-	int x0,y0,x1,y1;
+	char *mapname, *str;
 
 	mapname=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	str=conv_str(st,& (st->stack->stack_data[st->start+3]));
@@ -4621,8 +4629,7 @@ int buildin_mapwarp(struct script_state *st)
 int buildin_areawarp(struct script_state *st)
 {
 	int x,y,m;
-	char *str;
-	char *mapname;
+	char *mapname, *str;
 	int x0,y0,x1,y1;
 
 	mapname=conv_str(st,& (st->stack->stack_data[st->start+2]));
@@ -5026,6 +5033,77 @@ int buildin_deletearray(struct script_state *st)
 	for(j=0;j<count;j++){
 		set_reg(st,sd,num+((i+j)<<24),name, (postfix == '$')? "": 0, st->stack->stack_data[st->start+2].ref);
 	}
+	return 0;
+}
+
+/*==========================================
+ * 配列を文字列として出力
+ *------------------------------------------
+ */
+int buildin_printarray(struct script_state *st)
+{
+	struct map_session_data *sd = NULL;
+	int num;
+	char *name;
+	char prefix, postfix;
+	int i, len = 0, count = 0;
+	char *buf;
+	const char *delimiter = ":";
+	void *list[128];
+
+	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
+		printf("buildin_printarray: param not name\n");
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+		printf("buildin_printarray: illegal scope !\n");
+		return 0;
+	}
+	if( prefix != '$' && prefix != '\'' )
+		sd = script_rid2sd(st);
+
+	if(st->end > st->start+3)
+		delimiter = conv_str(st,& (st->stack->stack_data[st->start+3]));
+
+	// getarraysize
+	for(i = 0; i < 128 - (num>>24); i++) {
+		void *v = get_val2(st, num+(i<<24), st->stack->stack_data[st->start+2].ref);
+
+		list[i] = v;
+		if( postfix == '$' && *(char*)v ) {
+			len += strlen((char*)v);
+			count = i + 1;
+		}
+		if( postfix != '$' && (int)v ) {
+			len += 16;
+			count = i + 1;
+		}
+	}
+
+	if(count > 0) {
+		len += (count - 1) * strlen(delimiter);
+	}
+	buf = (char *)aCalloc(len + 1, sizeof(char));
+
+	for(i = 0; i < count; i++) {
+		if(i > 0) {
+			strcat(buf, delimiter);
+		}
+		if( postfix == '$' ) {
+			strcat(buf, (char*)list[i]);
+		} else {
+			char val[16];
+			sprintf(val, "%d", (int)list[i]);
+			strcat(buf, val);
+		}
+	}
+
+	push_str(st->stack, C_STR, buf);
 	return 0;
 }
 
@@ -9467,25 +9545,31 @@ int buildin_select(struct script_state *st)
 	}
 
 	if(sd->state.menu_or_input == 0) {
-		int len;
+		int len = 0;
 		char *buf;
 		st->state = RERUNLINE;
 		sd->state.menu_or_input = 1;
-		for(i=st->start+2, len=0; i<st->end; i++) {
-			conv_str(st,& (st->stack->stack_data[i]));
-			len += strlen(st->stack->stack_data[i].u.str) + 1;
-		}
-		buf = (char *)aCalloc(len + 1, sizeof(char));
-		for(i=st->start+2, len=0; i<st->end; i++) {
-			if(st->stack->stack_data[i].u.str[0]) {
-				if(i > st->start+2) {
-					strcat(buf,":");
-				}
-				strcat(buf,st->stack->stack_data[i].u.str);
+
+		if(st->end > st->start+3) {
+			for(i=st->start+2; i<st->end; i++) {
+				conv_str(st,& (st->stack->stack_data[i]));
+				len += strlen(st->stack->stack_data[i].u.str) + 1;
 			}
+			buf = (char *)aCalloc(len + 1, sizeof(char));
+			for(i=st->start+2; i<st->end; i++) {
+				if(st->stack->stack_data[i].u.str[0]) {
+					if(buf[0]) {
+						strcat(buf,":");
+					}
+					strcat(buf,st->stack->stack_data[i].u.str);
+				}
+			}
+			clif_scriptmenu(sd,st->oid,buf);
+			aFree(buf);
+		} else {
+			buf = conv_str(st,& (st->stack->stack_data[st->start+2]));
+			clif_scriptmenu(sd,st->oid,buf);
 		}
-		clif_scriptmenu(sd,st->oid,buf);
-		aFree(buf);
 	} else if(sd->npc_menu <= 0 || sd->npc_menu == 0xff) {	// invalid or cancel
 		sd->state.menu_or_input = 0;
 		st->state = END;
@@ -9494,17 +9578,19 @@ int buildin_select(struct script_state *st)
 		sd->state.menu_or_input = 0;
 		// 空文字と : のメニュー補正
 		for(i=st->start+2; count < sd->npc_menu && i<st->end; i++) {
-			char *p = conv_str(st,& (st->stack->stack_data[i]));
+			char *p  = conv_str(st,& (st->stack->stack_data[i]));
+			char *np = NULL;
 			count++;
 			if(*p == '\0') {
 				sd->npc_menu++;
 				continue;
 			}
-			while(count < sd->npc_menu && (p = strchr(p,':')) != NULL) {
+			while(count <= sd->npc_menu && (np = strchr(p,':')) != NULL) {
 				count++;
-				p++;
-				if(*p == '\0' || *p == ':')
+				if(np == p) {
 					sd->npc_menu++;
+				}
+				p = np + 1;
 			}
 		}
 		if(count >= sd->npc_menu) {
