@@ -210,7 +210,7 @@ static int chrif_cram_connect(int fd)
 {
 	WFIFOW(fd,0)=0x2b2c;
 	memcpy(WFIFOP(fd,2),userid,24);
-	HMAC_MD5_Binary( passwd, strlen(passwd), RFIFOP(fd,4), RFIFOW(fd,2)-4, WFIFOP(fd,26) );
+	HMAC_MD5_Binary( passwd, (int)strlen(passwd), RFIFOP(fd,4), RFIFOW(fd,2)-4, WFIFOP(fd,26) );
 	WFIFOL(fd,42)=0;
 	WFIFOL(fd,46)=4;	// HMAC-MD5
 	WFIFOL(fd,50)=0;
@@ -471,13 +471,13 @@ void chrif_searchcharid(int char_id)
  * GMに変化要求
  *------------------------------------------
  */
-int chrif_changegm(int id,const char *pass,int len)
+int chrif_changegm(int id,const char *pass,size_t len)
 {
 	if (char_fd < 0)
 		return -1;
 
 	WFIFOW(char_fd,0)=0x2b0a;
-	WFIFOW(char_fd,2)=len+8;
+	WFIFOW(char_fd,2)=(unsigned short)(len+8);
 	WFIFOL(char_fd,4)=id;
 	memcpy(WFIFOP(char_fd,8),pass,len);
 	WFIFOSET(char_fd,len+8);

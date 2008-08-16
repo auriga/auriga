@@ -2778,7 +2778,7 @@ int parse_tologin(int fd)
 				// 暗号化ログイン
 				WFIFOW(login_fd,0)=0x272f;
 				memcpy(WFIFOP(login_fd,2),userid,24);
-				HMAC_MD5_Binary( passwd, strlen(passwd), RFIFOP(fd,4), RFIFOW(fd,2)-4, WFIFOP(login_fd,26) );
+				HMAC_MD5_Binary( passwd, (int)strlen(passwd), RFIFOP(fd,4), RFIFOW(fd,2)-4, WFIFOP(login_fd,26) );
 				WFIFOL(login_fd,42)=0;
 				WFIFOL(login_fd,46)=4;	// 暗号化に HMAC-MD5 を使う
 				WFIFOL(login_fd,50)=0;
@@ -3085,7 +3085,7 @@ int parse_frommap(int fd)
 					size_t s2 = sizeof(struct registry);
 
 					WFIFOW(fd,0) = 0x2afd;
-					WFIFOW(fd,2) = 12 + s1 + s2;
+					WFIFOW(fd,2) = (unsigned short)(12 + s1 + s2);
 					WFIFOL(fd,4) = RFIFOL(fd,2); // account id
 					//WFIFOL(fd,8) = RFIFOL(fd,6);
 					WFIFOL(fd,8) = auth_fifo[i].login_id2;
@@ -3855,7 +3855,7 @@ int parse_char(int fd)
 				if( RFIFOW(fd,46) == 4 && csd && csd->md5keylen )	// HMAC-MD5
 				{
 					char md5bin[16];
-					HMAC_MD5_Binary( passwd, strlen(passwd), csd->md5key, csd->md5keylen, md5bin );
+					HMAC_MD5_Binary( passwd, (int)strlen(passwd), csd->md5key, csd->md5keylen, md5bin );
 					authok = ( memcmp( md5bin, RFIFOP(fd,26), 16 ) == 0 );
 				}
 			}

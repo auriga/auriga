@@ -130,7 +130,7 @@ static int recv_to_fifo(int fd)
 	if (sd->eof || (recv_limit_rate_enable && sd->auth >= 0 && DIFF_TICK(sd->rlr_tick, tick) > 0))	// 帯域制限中
 		return -1;
 
-	len = recv(sockfd(fd), sd->rdata_size, RFIFOSPACE(fd), 0);
+	len = recv(sockfd(fd), sd->rdata_size, (int)RFIFOSPACE(fd), 0);
 	//{ int i; printf("recv %d : ", fd); for(i = 0; i < len; i++) { printf("%02x ", sd->rdata_size[i]); } printf("\n"); }
 	if (len > 0) {
 		sd->rdata_size += len;
@@ -142,7 +142,7 @@ static int recv_to_fifo(int fd)
 		if (sd->max_rdata - sd->rdata > RFIFO_SIZE && sd->func_parse != httpd_parse) {
 #endif
 			if (sd->max_rdata == sd->rdata_size && (sd->rdata_pos - sd->rdata) < RFIFOSIZE_SERVERLINK) // read data is full and is used for less than step (RFIFOSIZE_SERVERLINK)
-				realloc_fifo(fd, (sd->max_rdata - sd->rdata) + RFIFOSIZE_SERVERLINK, -1); // increase read buffer of 1 step for next time
+				realloc_fifo(fd, (sd->max_rdata - sd->rdata) + RFIFOSIZE_SERVERLINK, 0); // increase read buffer of 1 step for next time
 		}
 
 //		printf("rs: %d %d\n",len, session[fd]->auth );
@@ -195,7 +195,7 @@ static int send_from_fifo(int fd)
 	if (sd->eof || WFIFOREST(fd) == 0)
 		return -1;
 
-	len = send(sockfd(fd), sd->wdata_pos, WFIFOREST(fd), 0);
+	len = send(sockfd(fd), sd->wdata_pos, (int)WFIFOREST(fd), 0);
 	//{ int i; printf("send %d : ", fd); for(i = 0; i < len; i++) { printf("%02x ", session[fd]->wdata_pos[i]); } printf("\n"); }
 	if (len > 0) {
 		sd->wdata_pos += len;
@@ -234,10 +234,12 @@ static int null_parse(int fd)
  */
 static int connect_client(int listen_fd)
 {
-	int fd, len, yes;
+	int len, yes, pos;
 	struct sockaddr_in client_address;
 #ifdef _WIN32
-	SOCKET sock;
+	SOCKET fd;
+#else
+	int fd;
 #endif
 
 	len = sizeof(client_address);
@@ -328,44 +330,47 @@ static int connect_client(int listen_fd)
 	FD_SET(fd, &readfds);
 
 #ifdef _WIN32
-	sock = fd;
-	fd = 2;
-	while(session[fd] != NULL && fd < fd_max)
-		fd++;
-	SessionInsertSocket(sock, fd);
+	pos = 2;
+	while(session[pos] != NULL && pos < fd_max)
+		pos++;
+	SessionInsertSocket(fd, pos);
+#else
+	pos = fd;
 #endif
 
-	session[fd] = (struct socket_data *)aCalloc(1, sizeof(*session[fd]));
-	session[fd]->func_recv   = recv_to_fifo;
-	session[fd]->func_send   = send_from_fifo;
-	session[fd]->func_parse  = default_func_parse;
-	session[fd]->client_addr = client_address;
+	session[pos] = (struct socket_data *)aCalloc(1, sizeof(*session[pos]));
+	session[pos]->func_recv   = recv_to_fifo;
+	session[pos]->func_send   = send_from_fifo;
+	session[pos]->func_parse  = default_func_parse;
+	session[pos]->client_addr = client_address;
 #if _WIN32
-	session[fd]->socket      = sock;
+	session[pos]->socket      = fd;
 #endif
-	session[fd]->tick        = gettick();
-	session[fd]->auth        = 0;
-	session[fd]->rlr_tick    = gettick();
-	session[fd]->rlr_bytes   = 0;
-	session[fd]->rlr_disc    = 0;
-	session[fd]->server_port = session[listen_fd]->server_port;
+	session[pos]->tick        = gettick();
+	session[pos]->auth        = 0;
+	session[pos]->rlr_tick    = gettick();
+	session[pos]->rlr_bytes   = 0;
+	session[pos]->rlr_disc    = 0;
+	session[pos]->server_port = session[listen_fd]->server_port;
 
-	session[fd]->func_destruct = default_func_destruct;
-	realloc_fifo(fd, RFIFO_SIZE, WFIFO_SIZE);
+	session[pos]->func_destruct = default_func_destruct;
+	realloc_fifo(pos, RFIFO_SIZE, WFIFO_SIZE);
 
-	if (fd_max <= fd)
-		fd_max = fd + 1;
+	if (fd_max <= pos)
+		fd_max = pos + 1;
 
-	return fd;
+	return pos;
 }
 
 int make_listen_port(unsigned short port, unsigned long sip)
 {
 	struct sockaddr_in server_address;
-	int fd, yes;
+	int yes, pos;
 	unsigned long result;
 #ifdef _WIN32
-	SOCKET sock;
+	SOCKET fd;
+#else
+	int fd;
 #endif
 
 	fd = socket(AF_INET, SOCK_STREAM, 0); // under winsock: SOCKET type is unsigned (http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winsock/winsock/porting_socket_applications_to_winsock.asp)
@@ -478,35 +483,38 @@ int make_listen_port(unsigned short port, unsigned long sip)
 	FD_SET(fd, &readfds);
 
 #ifdef _WIN32
-	sock = fd;
-	fd = 2;
-	while(session[fd] != NULL && fd < fd_max)
-		fd++;
-	SessionInsertSocket(sock, fd);
+	pos = 2;
+	while(session[pos] != NULL && pos < fd_max)
+		pos++;
+	SessionInsertSocket(fd, pos);
+#else
+	pos = fd;
 #endif
 
-	session[fd]              = (struct socket_data *)aCalloc(1, sizeof(*session[fd]));
-	session[fd]->func_recv   = connect_client;
-	session[fd]->auth        = -1;
-	session[fd]->server_port = port;
+	session[pos]              = (struct socket_data *)aCalloc(1, sizeof(*session[pos]));
+	session[pos]->func_recv   = connect_client;
+	session[pos]->auth        = -1;
+	session[pos]->server_port = port;
 #ifdef _WIN32
-	session[fd]->socket      = sock;
+	session[pos]->socket      = fd;
 #endif
 
-	if (fd_max <= fd)
-		fd_max = fd + 1;
+	if (fd_max <= pos)
+		fd_max = pos + 1;
 
-	return fd;
+	return pos;
 }
 
 
 int make_connection(unsigned long ip, unsigned short port)
 {
 	struct sockaddr_in server_address;
-	int fd, yes;
+	int yes, pos;
 	unsigned long result;
 #ifdef _WIN32
-	SOCKET sock;
+	SOCKET fd;
+#else
+	int fd;
 #endif
 
 	fd = socket(AF_INET, SOCK_STREAM, 0); // under winsock: SOCKET type is unsigned (http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winsock/winsock/porting_socket_applications_to_winsock.asp)
@@ -615,31 +623,32 @@ int make_connection(unsigned long ip, unsigned short port)
 	FD_SET(fd, &readfds);
 
 #ifdef _WIN32
-	sock = fd;
-	fd = 2;
-	while(session[fd] != NULL && fd < fd_max)
-		fd++;
-	SessionInsertSocket(sock, fd);
+	pos = 2;
+	while(session[pos] != NULL && pos < fd_max)
+		pos++;
+	SessionInsertSocket(fd, pos);
+#else
+	pos = fd;
 #endif
 
-	session[fd] = (struct socket_data *)aCalloc(1, sizeof(*session[fd]));
-	session[fd]->func_recv     = recv_to_fifo;
-	session[fd]->func_send     = send_from_fifo;
-	session[fd]->func_parse    = default_func_parse;
+	session[pos] = (struct socket_data *)aCalloc(1, sizeof(*session[pos]));
+	session[pos]->func_recv     = recv_to_fifo;
+	session[pos]->func_send     = send_from_fifo;
+	session[pos]->func_parse    = default_func_parse;
 #if _WIN32
-	session[fd]->socket        = sock;
+	session[pos]->socket        = fd;
 #endif
-	session[fd]->func_destruct = default_func_destruct;
-	session[fd]->tick          = gettick();
-	session[fd]->auth          = 0;
-	session[fd]->rlr_tick      = gettick();
-	session[fd]->rlr_bytes     = 0;
-	session[fd]->rlr_disc      = 0;
-	realloc_fifo(fd, RFIFO_SIZE, WFIFO_SIZE);
-	if (fd_max <= fd)
-		fd_max = fd + 1;
+	session[pos]->func_destruct = default_func_destruct;
+	session[pos]->tick          = gettick();
+	session[pos]->auth          = 0;
+	session[pos]->rlr_tick      = gettick();
+	session[pos]->rlr_bytes     = 0;
+	session[pos]->rlr_disc      = 0;
+	realloc_fifo(pos, RFIFO_SIZE, WFIFO_SIZE);
+	if (fd_max <= pos)
+		fd_max = pos + 1;
 
-	return fd;
+	return pos;
 }
 
 void delete_session(int fd)
@@ -677,7 +686,7 @@ void delete_session(int fd)
 	return;
 }
 
-void realloc_fifo(int fd, int new_rfifo_size, int new_wfifo_size)
+void realloc_fifo(int fd, size_t new_rfifo_size, size_t new_wfifo_size)
 {
 	struct socket_data *s;
 
@@ -687,7 +696,8 @@ void realloc_fifo(int fd, int new_rfifo_size, int new_wfifo_size)
 	s = session[fd];
 	if (new_rfifo_size > 0 &&
 	    s->max_rdata - s->rdata != new_rfifo_size &&
-	    s->rdata_size - s->rdata < new_rfifo_size) {
+	    (size_t)(s->rdata_size - s->rdata) < new_rfifo_size)
+	{
 		unsigned char * p = s->rdata;
 		s->rdata      = (unsigned char *)aRealloc(s->rdata, new_rfifo_size);
 		s->rdata_pos  = s->rdata + (s->rdata_pos  - p);
@@ -696,7 +706,8 @@ void realloc_fifo(int fd, int new_rfifo_size, int new_wfifo_size)
 	}
 	if (new_wfifo_size > 0 &&
 	    s->max_wdata  - s->wdata != new_wfifo_size &&
-	    s->wdata_size - s->wdata < new_wfifo_size) {
+	    (size_t)(s->wdata_size - s->wdata) < new_wfifo_size)
+	{
 		unsigned char * p = s->wdata;
 		s->wdata      = (unsigned char *)aRealloc(s->wdata, new_wfifo_size);
 		s->wdata_pos  = s->wdata + (s->wdata_pos  - p);
@@ -707,32 +718,32 @@ void realloc_fifo(int fd, int new_rfifo_size, int new_wfifo_size)
 	return;
 }
 
-void WFIFORESERVE(int fd, int len)
+void WFIFORESERVE(int fd, size_t len)
 {
 	struct socket_data *s = session[fd];
 
-	while(len + SOCKET_EMPTY_SIZE > (s->max_wdata - s->wdata)) {
-		int new_size = (s->max_wdata - s->wdata) << 1;
+	while(len + SOCKET_EMPTY_SIZE > (size_t)(s->max_wdata - s->wdata)) {
+		size_t new_size = (s->max_wdata - s->wdata) << 1;
 
 		// 送信バッファの制限サイズ超過チェック
-		if (s->auth >= 0 && new_size > send_limit_buffer_size) {
+		if (s->auth >= 0 && new_size > (size_t)send_limit_buffer_size) {
 			printf("socket: %d wdata (%d) exceed limited size.\n", fd, new_size);
 			s->wdata_pos  = s->wdata;	// データを消してとりあえず空きを作る
 			s->wdata_size = s->wdata;
 			// 空きスペースが足りないかもしれないので、再確保
-			realloc_fifo(fd, -1, len);
+			realloc_fifo(fd, 0, len);
 			s->eof = 1;
 			return;
 		}
 
-		realloc_fifo(fd, -1, new_size);
+		realloc_fifo(fd, 0, new_size);
 		printf("socket: %d wdata expanded to %d bytes.\n", fd, s->max_wdata - s->wdata);
 	}
 
 	return;
 }
 
-void WFIFOSET(int fd, int len)
+void WFIFOSET(int fd, size_t len)
 {
 	struct socket_data *s = session[fd];
 
@@ -876,18 +887,19 @@ static void SessionRemoveSocket(const SOCKET elem)
 static void process_fdset(fd_set* rfd, fd_set* wfd)
 {
 	unsigned int i;
-	size_t fd;
+	size_t pos;
+	int fd;
 
 	for(i = 0; i < rfd->fd_count; i++) {
-		if (SessionFindSocket(rfd->fd_array[i], &fd)) {
-			fd = sessionsockets[fd].pos;
+		if (SessionFindSocket(rfd->fd_array[i], &pos)) {
+			fd = sessionsockets[pos].pos;
 			if (session[fd] && session[fd]->func_recv)
 				session[fd]->func_recv(fd);
 		}
 	}
 	for(i = 0; i < wfd->fd_count; i++) {
-		if (SessionFindSocket(wfd->fd_array[i], &fd)) {
-			fd = sessionsockets[fd].pos;
+		if (SessionFindSocket(wfd->fd_array[i], &pos)) {
+			fd = sessionsockets[pos].pos;
 			if (session[fd] && session[fd]->func_send)
 				session[fd]->func_send(fd);
 		}
@@ -1048,7 +1060,7 @@ void do_parsepacket(void)
 
 			// パケットの解析
 			if (sd->func_parse && sd->rdata_size != sd->rdata_pos) {
-				int s = RFIFOREST(i);
+				size_t s = RFIFOREST(i);
 #ifdef NO_HTTPD
 				sd->func_parse(i);
 #else
@@ -1496,7 +1508,7 @@ void do_socket(void)
 // ------------------------------------------
 static void socket_httpd_page_send(int fd, const char *str)
 {
-	int len = strlen(str);
+	size_t len = strlen(str);
 
 	memcpy(WFIFOP(fd,0), str, len);
 	WFIFOSET(fd,len);

@@ -32,9 +32,9 @@
  *  自前で完全バッファリングする
  *------------------------------------------
  */
-void hex_dump(FILE *fp, const unsigned char *buf, int len)
+void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 {
-	int i, j;
+	size_t i, j;
 	char *output, *p;
 
 	output = (char *)aCalloc((3 + (len - 1) / 16) * 96, sizeof(char));	// 1行あたり96文字として計算

@@ -114,9 +114,9 @@ extern unsigned long listen_ip;
 int make_listen_port(unsigned short, unsigned long);
 int make_connection(unsigned long, unsigned short);
 void delete_session(int);
-void realloc_fifo(int fd, int rfifo_size, int wfifo_size);
-void WFIFOSET(int fd, int len);
-void WFIFORESERVE(int fd, int len);
+void realloc_fifo(int fd, size_t new_rfifo_size, size_t new_wfifo_size);
+void WFIFOSET(int fd, size_t len);
+void WFIFORESERVE(int fd, size_t len);
 
 void do_sendrecv(int next);
 void do_parsepacket(void);

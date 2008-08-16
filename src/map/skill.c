@@ -6766,7 +6766,7 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 		if (sg->src_id==bl->id && battle_config.allow_me_concert_effect==0)
 			break;
 
-		if (sg->unit_id==0xa3) {
+		if (sg->unit_id == UNT_ROKISWEIL) {
 			// ロキを自分に適用しない
 			if(sg->src_id==bl->id && battle_config.allow_me_concert_effect==1 && battle_config.allow_me_rokisweil==1)
 				break;
@@ -6775,7 +6775,7 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 				break;
 		}
 		// 永遠の混沌はボス無効
-		if (sg->unit_id==0xa0) {
+		else if (sg->unit_id == UNT_ETERNALCHAOS) {
 			if(status_get_mode(bl)&0x20)
 				break;
 		}

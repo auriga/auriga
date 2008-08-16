@@ -332,7 +332,7 @@ void chat_kickchat(struct map_session_data *sd, char *kickusername)
  *------------------------------------------
  */
 int chat_createnpcchat(
-	struct npc_data *nd,int limit,int pub,int trigger,char* title,int titlelen,const char *ev,
+	struct npc_data *nd,int limit,int pub,int trigger,char* title,size_t titlelen,const char *ev,
 	int zeny,int lowlv,int highlv,unsigned int job,int upper)
 {
 	int change_flag = 0;

@@ -179,12 +179,12 @@ static const unsigned char* graph_output(struct graph* g,int *len)
 	memcpy(p + 4,"IDAT",4);
 	encode_zip(p + 8,&inflate_len,g->raw_data,(g->width + 1) * g->height);
 	graph_write_dword(p,inflate_len);
-	graph_write_dword(p + 8 + inflate_len,grfio_crc32(p + 4, inflate_len + 4));
+	graph_write_dword(p + 8 + inflate_len,grfio_crc32(p + 4, (unsigned int)(inflate_len + 4)));
 
 	p += 0x0C + inflate_len;
 	memcpy(p,"\x00\x00\x00\x00\x49\x45\x4E\x44\xAE\x42\x60\x82",0x0C);
 	p += 0x0C;
-	g->png_len   = p - g->png_data;
+	g->png_len   = (int)(p - g->png_data);
 	g->png_dirty = 0;
 	*len = g->png_len;
 
@@ -271,9 +271,9 @@ static void graph_drawtext(struct graph *g, const char *str, int x, int y, int c
 	const char *fonts = "0123456789.";
 
 	while( *str ) {
-		char *p = strchr(fonts, *str);
+		const char *p = strchr(fonts, *str);
 		if( p ) {
-			int fontno = p - fonts;
+			int fontno = (int)(p - fonts);
 			for(i = 0; i < 16; i++) {
 				for(j = 0; j < 8; j++) {
 					if( graph_fonts[i][8*fontno+j] == 'x' ) {
@@ -290,7 +290,7 @@ static void graph_drawtext(struct graph *g, const char *str, int x, int y, int c
 
 static void graph_data(struct graph* g,double value)
 {
-	int i, j, start;
+	int i, start;
 
 	if(g == NULL) return;
 	if(value <= 0) value = 0;
@@ -344,10 +344,10 @@ static void graph_data(struct graph* g,double value)
 			}
 			if( strlen(buf) < 6 ) {
 				// ６文字に満たないので先頭にスペースを付加する
-				int len = strlen(buf);
+				size_t len = 6 - strlen(buf);
 				char buf2[256];
-				for(j = 0; j < 6 - len; j++) buf2[j] = ' ';
-				buf2[j] = 0;
+				memset(buf2, ' ', len);
+				buf2[len] = 0;
 				strcat(buf2, buf);
 				strcpy(buf, buf2);
 			} else {
@@ -365,6 +365,8 @@ static void graph_data(struct graph* g,double value)
 		int h0 = (int)(g->graph_value[(i==48?0:i-49)] * (GRP_HEIGHT) / g->graph_max);
 		int h1 = (int)(g->graph_value[i-48]           * (GRP_HEIGHT) / g->graph_max);
 		int h2 = (h0 < h1 ? 1 : -1);
+		int j;
+
 		for(j = 0; j < g->line_count; j++) {
 			graph_setpixel(g,i,g->line_pos[j],1);
 		}
@@ -452,7 +454,7 @@ static void graph_parse_httpd(struct httpd_session_data *sd,const char* url)
 			);
 		}
 		p += sprintf(p,"</body></html>\n");
-		httpd_send(sd,200,"text/html",p - buf,buf);
+		httpd_send(sd,200,"text/html",(int)(p - buf),buf);
 	}
 	aFree(graph_no);
 

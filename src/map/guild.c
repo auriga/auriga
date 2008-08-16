@@ -2216,7 +2216,7 @@ static int guild_gvg_eliminate_timer(int tid,unsigned int tick,int id,int data)
  */
 void guild_agit_break(struct mob_data *md)
 {
-	int len;
+	size_t len;
 	char *evname;
 
 	nullpo_retv(md);

@@ -448,7 +448,7 @@ int npc_event(struct map_session_data *sd,const char *eventname)
 	ev = (struct event_data *)strdb_search(ev_db,eventname);
 
 	if (ev == NULL) {
-		int len = strlen(eventname) - 9;
+		int len = (int)strlen(eventname) - 9;
 		if (len >= 0 && strcmp(eventname + len, "::OnTouch") == 0)
 			return 1;
 	}
@@ -596,7 +596,7 @@ int npc_globalmessage(const char *name,char *mes)
 {
 	struct npc_data *nd = npc_name2id(name);
 	char temp[100], *p;
-	int len;
+	size_t len;
 
 	if(!nd)
 		return 0;
@@ -1451,7 +1451,7 @@ static int npc_exportlabel_data(struct npc_data *nd)
  */
 static int npc_parse_script_line(const unsigned char *p,int *curly_count,int line)
 {
-	int i,j;
+	size_t i, len;
 	int string_flag = 0;
 	static int comment_flag = 0;
 
@@ -1460,39 +1460,39 @@ static int npc_parse_script_line(const unsigned char *p,int *curly_count,int lin
 		return 0;
 	}
 
-	i = strlen(p);
-	for(j = 0; j < i ; j++) {
+	len = strlen(p);
+	for(i = 0; i < len ; i++) {
 		if(comment_flag) {
-			if(p[j] == '*' && p[j+1] == '/') {
+			if(p[i] == '*' && p[i+1] == '/') {
 				// マルチラインコメント終了
-				j++;
+				i++;
 				(*curly_count)--;
 				comment_flag = 0;
 			}
 		} else if(string_flag) {
-			if(p[j] == '"') {
+			if(p[i] == '"') {
 				string_flag = 0;
-			} else if(p[j] == '\\' && p[j-1] <= 0x7e) {
+			} else if(p[i] == '\\' && p[i-1] <= 0x7e) {
 				// エスケープ
-				j++;
+				i++;
 			}
 		} else {
-			if(p[j] == '"') {
+			if(p[i] == '"') {
 				string_flag = 1;
-			} else if(p[j] == '}') {
+			} else if(p[i] == '}') {
 				if(*curly_count == 0) {
 					break;
 				} else {
 					(*curly_count)--;
 				}
-			} else if(p[j] == '{') {
+			} else if(p[i] == '{') {
 				(*curly_count)++;
-			} else if(p[j] == '/' && p[j+1] == '/') {
+			} else if(p[i] == '/' && p[i+1] == '/') {
 				// コメント
 				break;
-			} else if(p[j] == '/' && p[j+1] == '*') {
+			} else if(p[i] == '/' && p[i+1] == '*') {
 				// マルチラインコメント
-				j++;
+				i++;
 				(*curly_count)++;
 				comment_flag = 1;
 			}
@@ -1535,9 +1535,9 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 	if(strcmp(w2,"script") == 0) {
 		// スクリプトの解析
 		// { , } の入れ子許したらこっちでも簡易解析しないといけなくなったりもする
-		int len;
+		size_t len, srclen;
+		size_t srcsize = 32768;
 		int curly_count = 0, startline = 0;
-		unsigned int srcsize = 32768, srclen;
 		char line[4096];
 
 		srcbuf = (char *)aMalloc(srcsize);
@@ -1756,11 +1756,11 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
  */
 static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_line,FILE *fp,int *lines,const char* file)
 {
-	int len;
+	size_t len, srclen;
+	size_t srcsize = 32768;
 	char *p, *srcbuf = NULL;
 	struct script_code *script;
 	int curly_count = 0, startline = 0;
-	unsigned int srcsize = 32768, srclen;
 	char line[4096];
 
 	// スクリプトの解析
@@ -2246,7 +2246,7 @@ static int npc_parse_srcfile(const char *filepath)
 		// マップ名として記述されているか確認
 		// MAPの存在チェック自体は各parserで行う
 		if(strcmp(w1,"-") != 0 && strcmpi(w1,"function") != 0) {
-			int len;
+			size_t len;
 			char mapname[4096] = "";
 			sscanf(w1,"%[^,]",mapname);
 			len = strlen(mapname);

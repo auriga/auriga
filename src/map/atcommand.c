@@ -5089,7 +5089,8 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,ch
 
 	// []があるときはgetelementofarrayと同様の処理をする
 	if (p) {
-		int len, flag = 0;
+		size_t len;
+		int flag = 0;
 		if (postfix == '$') {	// postfixは削る
 			dst_var[strlen(dst_var)-1] = 0;
 		}
@@ -5280,7 +5281,8 @@ int atcommand_mobinfo(const int fd, struct map_session_data* sd, AtCommandType c
 	char output[200];
 	struct item_data *item_data;
 	struct mob_db *m;
-	int i, j, len, mob_id;
+	int i, j, mob_id;
+	size_t len;
 
 	nullpo_retr(-1, sd);
 

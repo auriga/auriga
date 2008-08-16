@@ -689,7 +689,7 @@ int mapif_party_info(int fd,const struct party *p)
 	unsigned char *buf = (unsigned char *)aMalloc(size+4);
 
 	WBUFW(buf,0)=0x3821;
-	WBUFW(buf,2)=size+4;
+	WBUFW(buf,2)=(unsigned short)(size+4);
 	memcpy(WBUFP(buf,4),p,size);
 	if(fd<0)
 		mapif_sendall(buf,WBUFW(buf,2));

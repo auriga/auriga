@@ -2058,7 +2058,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 	// <Agit> NPC Event [OnAgitBreak]
 	if(md->npc_event[0]) {
-		int len = strlen(md->npc_event) - 13;
+		int len = (int)strlen(md->npc_event) - 13;
 		if(len >= 0 && strcmp(md->npc_event + len, "::OnAgitBreak") == 0) {
 			printf("MOB.C: Run NPC_Event[OnAgitBreak].\n");
 			if(agit_flag == 1)	// Call to Run NPC_Event[OnAgitBreak]

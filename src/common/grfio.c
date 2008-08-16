@@ -663,7 +663,8 @@ static int grfio_entryread(const char *gfname,int gentry)
 	FILE *fp;
 	int grf_size,list_size;
 	unsigned char grf_header[0x2e];
-	int lop,entry,entrys,ofs,ofs2,grf_version;
+	int lop,entry,entrys,grf_version;
+	size_t ofs,ofs2;
 	unsigned char *fname;
 	unsigned char *grf_filelist;
 	int count=0;
@@ -993,7 +994,7 @@ void grfio_load_zlib(void)
 	return;
 }
 
-unsigned long grfio_crc32(const char *buf, unsigned int len)
+unsigned long grfio_crc32(const unsigned char *buf, unsigned int len)
 {
 	return zlib_crc32(zlib_crc32(0L, Z_NULL, 0), buf, len);
 }

@@ -2727,7 +2727,7 @@ void clif_scriptmes(struct map_session_data *sd, int npcid, char *mes)
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0xb4;
-	WFIFOW(fd,2)=strlen(mes)+9;
+	WFIFOW(fd,2)=(unsigned short)(strlen(mes)+9);
 	WFIFOL(fd,4)=npcid;
 	strncpy(WFIFOP(fd,8),mes,strlen(mes)+1);
 	WFIFOSET(fd,WFIFOW(fd,2));
@@ -2783,7 +2783,7 @@ void clif_scriptmenu(struct map_session_data *sd, int npcid, char *mes)
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0xb7;
-	WFIFOW(fd,2)=strlen(mes)+9;
+	WFIFOW(fd,2)=(unsigned short)(strlen(mes)+9);
 	WFIFOL(fd,4)=npcid;
 	strncpy(WFIFOP(fd,8),mes,strlen(mes)+1);
 	WFIFOSET(fd,WFIFOW(fd,2));
@@ -4406,7 +4406,7 @@ void clif_dispchat(struct chat_data *cd, int fd)
 		return;
 
 	WBUFW(buf, 0)=0xd7;
-	WBUFW(buf, 2)=strlen(cd->title)+18;
+	WBUFW(buf, 2)=(unsigned short)(strlen(cd->title)+18);
 	WBUFL(buf, 4)=(*cd->owner)->id;
 	WBUFL(buf, 8)=cd->bl.id;
 	WBUFW(buf,12)=cd->limit;
@@ -4436,7 +4436,7 @@ void clif_changechatstatus(struct chat_data *cd)
 		return;
 
 	WBUFW(buf, 0)=0xdf;
-	WBUFW(buf, 2)=strlen(cd->title)+18;
+	WBUFW(buf, 2)=(unsigned short)(strlen(cd->title)+18);
 	WBUFL(buf, 4)=cd->usersd[0]->bl.id;
 	WBUFL(buf, 8)=cd->bl.id;
 	WBUFW(buf,12)=cd->limit;
@@ -6243,10 +6243,10 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag)
  */
 void clif_displaymessage(const int fd, const char* mes)
 {
-	int len = strlen(mes)+1;
+	size_t len = strlen(mes)+1;
 
 	WFIFOW(fd,0)=0x8e;
-	WFIFOW(fd,2)=4+len;
+	WFIFOW(fd,2)=(unsigned short)(4+len);
 	strncpy(WFIFOP(fd,4),mes,len);
 	WFIFOSET(fd,WFIFOW(fd,2));
 
@@ -6259,10 +6259,10 @@ void clif_displaymessage(const int fd, const char* mes)
  */
 void clif_disp_onlyself(const int fd, const char *mes)
 {
-	int len = strlen(mes)+1;
+	size_t len = strlen(mes)+1;
 
 	WFIFOW(fd,0)=0x17f;
-	WFIFOW(fd,2)=4+len;
+	WFIFOW(fd,2)=(unsigned short)(4+len);
 	memcpy(WFIFOP(fd,4),mes,len);
 	WFIFOSET(fd,WFIFOW(fd,2));
 
@@ -6273,13 +6273,13 @@ void clif_disp_onlyself(const int fd, const char *mes)
  * 天の声を送信する
  *------------------------------------------
  */
-void clif_GMmessage(struct block_list *bl, const char* mes, int len, int flag)
+void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+8);
 	int lp = (flag&0x10)? 8: 4;
 
 	WBUFW(buf,0) = 0x9a;
-	WBUFW(buf,2) = len+lp;
+	WBUFW(buf,2) = (unsigned short)(len+lp);
 	if(lp == 8)
 		memcpy(WBUFP(buf,4), "blue", 4);
 	memcpy(WBUFP(buf,lp), mes, len);
@@ -6301,7 +6301,7 @@ void clif_GMmessage(struct block_list *bl, const char* mes, int len, int flag)
 void clif_GlobalMessage(struct block_list *bl,const char *message)
 {
 	unsigned char buf[128];
-	int len;
+	size_t len;
 
 	nullpo_retv(bl);
 
@@ -6313,7 +6313,7 @@ void clif_GlobalMessage(struct block_list *bl,const char *message)
 		len = sizeof(buf) - 8;
 
 	WBUFW(buf,0)=0x8d;
-	WBUFW(buf,2)=len+8;
+	WBUFW(buf,2)=(unsigned short)(len+8);
 	WBUFL(buf,4)=bl->id;
 	strncpy(WBUFP(buf,8),message,len);
 	clif_send(buf,WBUFW(buf,2),bl,AREA_CHAT_WOC);
@@ -6325,12 +6325,12 @@ void clif_GlobalMessage(struct block_list *bl,const char *message)
  * 天の声（マルチカラー）を送信
  *------------------------------------------
  */
-void clif_announce(struct block_list *bl, const char* mes, int len, unsigned long color, int flag)
+void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned long color, int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+16);
 
 	WBUFW(buf,0) = 0x1c3;
-	WBUFW(buf,2) = len+16;
+	WBUFW(buf,2) = (unsigned short)(len+16);
 	WBUFL(buf,4) = color;
 	WBUFW(buf,8) = 400;	// Font style? Type?
 	WBUFW(buf,10) = 12;	// Font size
@@ -9060,31 +9060,31 @@ void clif_sitting(struct block_list *bl, int sit)
  * 叫ぶ
  *------------------------------------------
  */
-void clif_onlymessage(const char *mes, int len)
+void clif_onlymessage(const char *mes, size_t len)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+8);
 
 	switch (battle_config.mes_send_type) {
 		case 0:	// ギルド会話
 			WBUFW(buf, 0)=0x17f;
-			WBUFW(buf, 2)=len+4;
+			WBUFW(buf, 2)=(unsigned short)(len+4);
 			memcpy(WBUFP(buf,4),mes,len);
 			break;
 		case 1:	// オープン会話
 			WBUFW(buf, 0)=0x8d;
-			WBUFW(buf, 2)=len+8;
+			WBUFW(buf, 2)=(unsigned short)(len+8);
 			WBUFL(buf, 4)=0;
 			memcpy(WBUFP(buf,8),mes,len);
 			break;
 		case 2:	// パーティ会話
 			WBUFW(buf, 0)=0x109;
-			WBUFW(buf, 2)=len+8;
+			WBUFW(buf, 2)=(unsigned short)(len+8);
 			WBUFL(buf, 4)=0xffffffff;	// account_idは0だと無反応なのでダミーを入れておく
 			memcpy(WBUFP(buf,8),mes,len);
 			break;
 		case 3:	// オープンGM会話
 			WBUFW(buf, 0)=0x8d;
-			WBUFW(buf, 2)=len+8;
+			WBUFW(buf, 2)=(unsigned short)(len+8);
 			WBUFL(buf, 4)=pc_get_gm_account_dummy();	// ダミー用GMアカウントを入れる
 			memcpy(WBUFP(buf,8),mes,len);
 			break;
@@ -10712,7 +10712,7 @@ static void clif_parse_GlobalMessage(int fd,struct map_session_data *sd, int cmd
 		// structure of message: <player_name> : <message>
 		int name_length;
 		char *p_message;
-		name_length = strlen(sd->status.name);
+		name_length = (int)strlen(sd->status.name);
 		if (name_length > 24)
 			name_length = 24;
 		p_message = message + name_length;
@@ -12542,7 +12542,7 @@ static void clif_parse_PartyMessage(int fd,struct map_session_data *sd, int cmd)
 		// structure of message: <player_name> : <message>
 		char *p_message;
 		int name_length;
-		name_length = strlen(sd->status.name);
+		name_length = (int)strlen(sd->status.name);
 		if (name_length > 24)
 			name_length = 24;
 		p_message = message + name_length;
@@ -12887,7 +12887,7 @@ static void clif_parse_GuildMessage(int fd,struct map_session_data *sd, int cmd)
 		// structure of message: <player_name> : <message>
 		char *p_message;
 		int name_length;
-		name_length = strlen(sd->status.name);
+		name_length = (int)strlen(sd->status.name);
 		if (name_length > 24)
 			name_length = 24;
 		p_message = message + name_length;
@@ -13957,7 +13957,7 @@ static void clif_parse_BattleMessage(int fd,struct map_session_data *sd, int cmd
 		// structure of message: <player_name> : <message>
 		int name_length;
 		char *p_message;
-		name_length = strlen(sd->status.name);
+		name_length = (int)strlen(sd->status.name);
 		if (name_length > 24)
 			name_length = 24;
 		p_message = message + name_length;
@@ -14436,11 +14436,11 @@ void clif_webchat(struct httpd_session_data* sd,const char* url)
 				i = 0;
 		}
 		p += sprintf(p,"</body></html>\n");
-		httpd_send(sd,200,"text/html",p - buf,buf);
+		httpd_send(sd,200,"text/html",(int)(p - buf),buf);
 	} while(0);
 
 	if(err != NULL) {
-		httpd_send(sd,200,"text/html",strlen(err),err);
+		httpd_send(sd,200,"text/html",(int)strlen(err),err);
 	}
 	aFree(name1);
 	aFree(name2);

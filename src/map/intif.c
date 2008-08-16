@@ -257,7 +257,7 @@ void intif_delete_mercdata(int account_id, int char_id, int merc_id)
 }
 
 // GMメッセージを送信
-void intif_GMmessage(char* mes, int len, int flag)
+void intif_GMmessage(char* mes, size_t len, int flag)
 {
 	int lp;
 
@@ -266,7 +266,7 @@ void intif_GMmessage(char* mes, int len, int flag)
 
 	lp = (flag&0x10)? 4: 0;
 	WFIFOW(inter_fd,0) = 0x3000;
-	WFIFOW(inter_fd,2) = lp + len + 8;
+	WFIFOW(inter_fd,2) = (unsigned short)(lp + len + 8);
 	WFIFOL(inter_fd,4) = 0xFF000000;	// non color用ダミーコード
 	if(lp) {
 		strncpy(WFIFOP(inter_fd,8), "blue", 4);
@@ -278,13 +278,13 @@ void intif_GMmessage(char* mes, int len, int flag)
 }
 
 // GMメッセージ（マルチカラー）を送信
-int intif_announce(char* mes,int len,unsigned long color)
+int intif_announce(char* mes,size_t len,unsigned long color)
 {
 	if (inter_fd < 0)
 		return -1;
 
 	WFIFOW(inter_fd,0) = 0x3000;
-	WFIFOW(inter_fd,2) = 8+len;
+	WFIFOW(inter_fd,2) = (unsigned short)(8+len);
 	WFIFOL(inter_fd,4) = color;
 	memcpy(WFIFOP(inter_fd,8), mes, len);
 	WFIFOSET(inter_fd, WFIFOW(inter_fd,2));
@@ -990,14 +990,14 @@ int intif_charmovereq2(struct map_session_data *sd,char *name,char *mapname,shor
  */
 int intif_displaymessage(int account_id, char* mes)
 {
-	int len;
+	size_t len;
 
 	if (inter_fd < 0)
 		return -1;
 
 	len = strlen(mes)+1;
 	WFIFOW(inter_fd,0) = 0x3093;
-	WFIFOW(inter_fd,2) = len + 8;
+	WFIFOW(inter_fd,2) = (unsigned short)(len + 8);
 	WFIFOL(inter_fd,4) = account_id;
 	strncpy(WFIFOP(inter_fd,8), mes, len);
 	WFIFOSET(inter_fd, WFIFOW(inter_fd,2));

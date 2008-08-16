@@ -71,7 +71,7 @@ static void journal_init_( struct journal* j, size_t datasize, const char* filen
 	j->unusedchunk_queue = NULL;
 	j->cache_timer = -1;
 	j->mode = 0;
-	strcpy( j->filename, filename );
+	strncpy( j->filename, filename, sizeof(j->filename)-1 );
 }
 
 // ==========================================
@@ -92,13 +92,13 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 
 	// ファイルヘッダの設定
 	memcpy( j->fhd.identifier, JOURNAL_IDENTIFIER, sizeof(j->fhd.identifier) );
-	j->fhd.datasize = datasize;
+	j->fhd.datasize = (unsigned int)datasize;
 
 	// ファイルを作ってヘッダ書き込み
 	if( ( j->fp = fopen( filename, "w+b" ) ) == NULL )
 	{
 		printf("journal: fopen [%s]: failed\n", filename );
-		exit(-1);
+		exit(1);
 	}
 	fwrite( &j->fhd, sizeof(j->fhd), 1, j->fp );
 
@@ -298,7 +298,7 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 	else
 	{
 		// 空きがないので新しく作る
-		dat->idx = ( j->nextchunk ++ );
+		dat->idx = (int)( j->nextchunk ++ );
 	}
 
 	// ジャーナル書き込み用のヘッダ設定
@@ -306,10 +306,10 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 	jhd.timestamp = timestamp;
 	jhd.tick = tick;
 	jhd.flag = dat->flag;
-	jhd.crc32 = grfio_crc32( (const char *)dat->buf, j->datasize );
+	jhd.crc32 = grfio_crc32( (const unsigned char *)dat->buf, (unsigned int)j->datasize );
 
 	// データ書き込み
-	fseek( j->fp, dat->idx * j->chunksize, SEEK_SET );
+	fseek( j->fp, (long)(dat->idx * j->chunksize), SEEK_SET );
 	if( fwrite( &jhd, sizeof(jhd), 1, j->fp )==0 ||
 		fwrite( dat->buf, j->datasize, 1, j->fp )==0 )
 	{
@@ -405,7 +405,7 @@ int journal_load( struct journal* j, size_t datasize, const char* filename )
 	// ファイルが正しいかチェック
 	fread( &j->fhd, 1, sizeof(j->fhd), j->fp );
 	if( memcmp( j->fhd.identifier, JOURNAL_IDENTIFIER, sizeof(j->fhd.identifier) ) !=0 ||
-		j->fhd.datasize != datasize )
+		j->fhd.datasize != (unsigned int)datasize )
 	{
 		printf("journal: file version or datasize mismatch ! [%s]\n", filename );
 		abort();
@@ -413,14 +413,13 @@ int journal_load( struct journal* j, size_t datasize, const char* filename )
 
 	// データの読み込みループ
 	c = 0;
-	for( i=1; fseek( j->fp, i*j->chunksize, SEEK_SET ), fread( &jhd, sizeof(jhd), 1, j->fp ) > 0; i++ )
+	for( i=1; fseek( j->fp, (long)(i*j->chunksize), SEEK_SET ), fread( &jhd, sizeof(jhd), 1, j->fp ) > 0; i++ )
 	{
 		struct journal_data *dat;
-		int x;
-		char* buf = (char *)aCalloc( 1, datasize );
+		unsigned char* buf = (unsigned char *)aCalloc( 1, datasize );
 
 		// データ本体の読み込みと crc32 チェック
-		if( (x=fread( buf, datasize, 1, j->fp )) == 0 || grfio_crc32( buf, datasize ) != jhd.crc32 )
+		if( fread( buf, datasize, 1, j->fp ) == 0 || grfio_crc32( buf, (unsigned int)datasize ) != jhd.crc32 )
 		{
 			printf("journal: file broken [%s], but continue...\n", filename );
 			aFree( buf );

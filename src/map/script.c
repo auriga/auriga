@@ -687,7 +687,7 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 	p = skip_space(p);
 
 	while(1) {
-		int priority, len = 0;
+		int priority = 0, len = 0;
 		switch(*p) {
 			case '(': op = C_FUNC; priority = 11; len = 1; break;
 			case '*': op = C_MUL;  priority =  9; len = 1; break;
@@ -4445,7 +4445,6 @@ int buildin_menu(struct script_state *st)
 	}
 
 	if(sd->state.menu_or_input == 0) {
-		int len = 0;
 		char *buf;
 		st->state = RERUNLINE;
 		sd->state.menu_or_input = 1;
@@ -4458,6 +4457,7 @@ int buildin_menu(struct script_state *st)
 			return 0;
 		}
 		if(st->end > st->start+3) {
+			size_t len = 0;
 			for(i=st->start+2; i<st->end; i+=2) {
 				conv_str(st,& (st->stack->stack_data[i]));
 				len += strlen(st->stack->stack_data[i].u.str) + 1;
@@ -5046,7 +5046,8 @@ int buildin_printarray(struct script_state *st)
 	int num;
 	char *name;
 	char prefix, postfix;
-	int i, len = 0, count = 0;
+	int i, count = 0;
+	size_t len = 0;
 	char *buf;
 	const char *delimiter = ":";
 	void *list[128];
@@ -5143,7 +5144,7 @@ int buildin_getelementofarray(struct script_state *st)
 	} else {
 		int num      = st->stack->stack_data[st->start+2].u.num;
 		char *name   = str_buf+str_data[num&0x00ffffff].str;
-		int len      = strlen(name);
+		size_t len   = strlen(name);
 		char postfix = name[len-1];
 		char *var    = (char *)aCalloc(1+len+count*5, sizeof(char));	// 1つ当たり最大で [xxx] の5文字
 		char *p;
@@ -7059,7 +7060,7 @@ int buildin_announce(struct script_state *st)
 {
 	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int flag  = conv_num(st,& (st->stack->stack_data[st->start+3]));
-	int len;
+	size_t len;
 	char *color = NULL;
 
 	if(st->end > st->start+4)
@@ -7098,12 +7099,13 @@ int buildin_announce(struct script_state *st)
 static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 {
 	char *str,*color;
-	int len,flag;
+	size_t len;
+	int flag;
 
 	nullpo_retr(0, bl);
 
 	str   = va_arg(ap,char *);
-	len   = va_arg(ap,int);
+	len   = va_arg(ap,size_t);
 	flag  = va_arg(ap,int);
 	color = va_arg(ap,char *);
 
@@ -9545,12 +9547,12 @@ int buildin_select(struct script_state *st)
 	}
 
 	if(sd->state.menu_or_input == 0) {
-		int len = 0;
 		char *buf;
 		st->state = RERUNLINE;
 		sd->state.menu_or_input = 1;
 
 		if(st->end > st->start+3) {
+			size_t len = 0;
 			for(i=st->start+2; i<st->end; i++) {
 				conv_str(st,& (st->stack->stack_data[i]));
 				len += strlen(st->stack->stack_data[i].u.str) + 1;
@@ -10929,7 +10931,7 @@ int buildin_getstrlen(struct script_state *st)
 {
 	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	push_val(st->stack,C_INT,strlen(str));
+	push_val(st->stack,C_INT,(int)strlen(str));
 
 	return 0;
 }
@@ -10946,7 +10948,7 @@ int buildin_substr(struct script_state *st)
 	str    = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	offset = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	len = strlen(str);
+	len = (int)strlen(str);
 	if(offset < 0)		// 開始位置が負なので末尾から位置を計算
 		offset += len;
 	if(offset < 0 || offset >= len) {
@@ -11125,10 +11127,10 @@ int buildin_sqlquery(struct script_state *st)
 
 		if((p = strrchr(var,'[')) != NULL) {
 			elem = atoi(p+1);	// 配列の二次元目の要素を取得
-			len  = p - var;
+			len  = (int)(p - var);
 		} else {
 			elem = 0;
-			len = strlen(var);
+			len = (int)strlen(var);
 			if(postfix == '$')
 				len--;
 		}

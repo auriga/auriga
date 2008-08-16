@@ -32,6 +32,6 @@ int decode_zip(char *dest, unsigned long* destLen, const char* source, unsigned 
 int encode_zip(char *dest, unsigned long* destLen, const char* source, unsigned long sourceLen);
 
 void grfio_load_zlib(void);
-unsigned long grfio_crc32(const char *buf, unsigned int len);
+unsigned long grfio_crc32(const unsigned char *buf, unsigned int len);
 
 #endif	// _GRFIO_H_

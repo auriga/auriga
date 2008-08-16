@@ -1010,7 +1010,8 @@ static int login_log(const char *fmt, ...)
 int mmo_auth(struct login_session_data* sd)
 {
 	char tmpstr[24];
-	int len,newaccount=0;
+	size_t len;
+	int newaccount=0;
 	const struct mmo_account *ac;
 	int encpasswdok=0;
 
@@ -1086,7 +1087,7 @@ int mmo_auth(struct login_session_data* sd)
 		}
 		if(enc == 4)
 		{
-			HMAC_MD5_Binary( ac->pass, strlen(ac->pass), sd->md5key, sd->md5keylen, md5bin );
+			HMAC_MD5_Binary( ac->pass, (int)strlen(ac->pass), sd->md5key, sd->md5keylen, md5bin );
 			encpasswdok = ( memcmp( sd->pass, md5bin, 16) == 0);
 		}
 		else if(enc <= 3)
@@ -2185,9 +2186,9 @@ static double login_users(void)
 static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 {
 	char* userid     = httpd_get_value(sd,"userid");
-	int   userid_len = strlen(userid);
+	int   userid_len = (int)strlen(userid);
 	char* passwd     = httpd_get_value(sd,"passwd");
-	int   passwd_len = strlen(passwd);
+	int   passwd_len = (int)strlen(passwd);
 	char* gender     = httpd_get_value(sd,"gender");
 	char* check      = httpd_get_value(sd,"check");
 	const char* msg  = "";
@@ -2253,7 +2254,7 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 	// HTTP/1.1で返すとアカウントを連続して作成する馬鹿がいそうなので、
 	// あえてHTTP/1.0扱いしている。
 	httpd_send_head(sd,200,"text/plain",-1);
-	httpd_send_data(sd,strlen(msg),msg);
+	httpd_send_data(sd,(int)strlen(msg),msg);
 
 	aFree(userid);
 	aFree(passwd);

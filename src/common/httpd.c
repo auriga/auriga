@@ -160,7 +160,8 @@ struct httpd_access_user {
 // アクセス制御データの構造体
 struct httpd_access {
 	unsigned char url[256];
-	int type, urllen;
+	int type;
+	size_t urllen;
 
 	int dip_count, aip_count, dip_max, aip_max;
 	unsigned long *dip, *aip;
@@ -474,7 +475,7 @@ void httpd_send_error(struct httpd_session_data* sd,int status)
 {
 	const char* msg = httpd_get_error( sd, &status );
 
-	httpd_send(sd,status,"text/plain",strlen(msg),msg);
+	httpd_send(sd,status,"text/plain",(int)strlen(msg),msg);
 }
 
 // ==========================================
@@ -634,7 +635,8 @@ void httpd_send_data(struct httpd_session_data* sd,int content_len,const void *d
 		if(send_byte > 12*1024) send_byte = 12*1024;
 		memcpy(WFIFOP(sd->fd,0),msg,send_byte);
 		WFIFOSET(sd->fd,send_byte);
-		msg += send_byte; content_len -= send_byte;
+		msg += send_byte;
+		content_len -= send_byte;
 	}
 	sd->status = HTTPD_WAITING_SEND;
 }
@@ -738,7 +740,7 @@ int httpd_parse(int fd)
 		}
 		else
 		{
-			int limit = RFIFOREST(fd);
+			int limit = (int)RFIFOREST(fd);
 			unsigned char *req = RFIFOP(fd,0);
 
 			// 秒間処理数制限のチェック
@@ -760,7 +762,7 @@ int httpd_parse(int fd)
 			}
 
 			// リクエストの解析
-			sd->header_len = RFIFOREST(fd);
+			sd->header_len = (int)RFIFOREST(fd);
 			do {
 				if(*req == '\n' && limit > 0) {
 					limit--; req++;
@@ -769,7 +771,7 @@ int httpd_parse(int fd)
 						int status;
 						// HTTPヘッダの終点を見つけた
 						*req   = 0;
-						sd->header_len = (req - RFIFOP(fd,0)) + 1;
+						sd->header_len = (int)(req - RFIFOP(fd,0) + 1);
 						status = httpd_parse_header(sd);
 						if(sd->status == HTTPD_REQUEST_WAIT) {
 							sd->status = HTTPD_REQUEST_OK;
@@ -1263,7 +1265,8 @@ int httpd_check_access_user_basic( struct httpd_access *a, struct httpd_session_
 int httpd_check_access( struct httpd_session_data *sd, int *st )
 {
 	int i;
-	int n=-1, len=0;
+	int n=-1;
+	size_t len=0;
 	struct httpd_access *a;
 
 	// 一番長くマッチする条件を探す
@@ -1441,7 +1444,7 @@ int httpd_parse_header(struct httpd_session_data* sd)
 			if(req[i] != ' ') return 400; // Bad Request
 			req[i]     = 0;
 			sd->url    = req;
-			sd->query_len = req + i - sd->query;
+			sd->query_len = (int)(req + i - sd->query);
 		} else {
 			return 400; // Bad Request
 		}
@@ -1567,7 +1570,7 @@ void httpd_parse_request_ok(struct httpd_session_data *sd)
 // ------------------------------------------
 char* httpd_get_value(struct httpd_session_data* sd,const char* val)
 {
-	int src_len = strlen(val);
+	size_t src_len = strlen(val);
 	const unsigned char* src_p = sd->query;
 
 	if(src_p == NULL) return (char *)aStrdup("");
@@ -1664,7 +1667,6 @@ static const char* httpd_mimetype(const char* url)
 const char* httpd_complement_file( const char* url, char* buf )
 {
 	char file_buf[2048];
-	int last;
 	const char* cfile = "index.html";	// デフォルト
 
 	// URL なしならデフォルト
@@ -1672,8 +1674,7 @@ const char* httpd_complement_file( const char* url, char* buf )
 		return cfile;
 
 	// スラッシュで終わっていたらデフォルトを追加
-	last = strlen( url ) - 1;
-	if( url[last]=='/' )
+	if( url[strlen(url)-1] == '/' )
 	{
 		sprintf( buf, "%s%s", url, cfile );
 		return buf;
@@ -1824,7 +1825,7 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url)
 		if( file_size > bigfile_threshold )		// 大きなファイルは分割転送
 		{
 			fclose( fp );
-			realloc_fifo( sd->fd, -1, bigfile_splitsize );
+			realloc_fifo( sd->fd, 0, bigfile_splitsize );
 			httpd_send_head(sd,status,httpd_mimetype(url),file_size);
 			sd->status = HTTPD_SENDING_BIGFILE;
 			sd->file_pos = sd->range_start;
@@ -1832,7 +1833,7 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url)
 		}
 		else		// 小さなファイルは FIFO に一気に送る
 		{
-			realloc_fifo( sd->fd, -1, file_size + 32768 );
+			realloc_fifo( sd->fd, 0, file_size + 32768 );
 			httpd_send_head(sd,status,httpd_mimetype(url),file_size);
 			fseek( fp, sd->range_start, SEEK_SET );
 			while(file_size > 0) {
@@ -1896,7 +1897,7 @@ void httpd_send_bigfile( struct httpd_session_data* sd )
 		session[sd->fd]->eof = 1;
 		return;
 	} else {
-		int send_size = WFIFOSPACE( sd->fd ) - 32768;
+		int send_size = (int)(WFIFOSPACE( sd->fd ) - 32768);
 		if( send_size > sd->data_len )
 			send_size = sd->data_len;
 
@@ -1926,7 +1927,7 @@ int httpd_page_external_cgi_abort( struct httpd_cgi_kill* p );
 
 void httpd_page_cgi_calc_document_root( struct httpd_session_data *sd, char* path, size_t pathsize, int c1, int c2 );
 void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t envsize, char** envp2, size_t envpsize, const char* path );
-int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, size_t bytes, int* pstatus );
+unsigned int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, size_t bytes, int* pstatus );
 
 void httpd_cgi_log( struct httpd_session_data *sd, const char* str );
 
@@ -2051,7 +2052,8 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	// カレントディレクトリとコマンド抽出
 	// ------------
 	{
-		int j, i, x, y;
+		size_t i, x;
+		int j, y;
 		sprintf( szCwd, "%s\\", szPath );
 		for( j=y=0, x=i=strlen(szCwd); sd->url[j]; j++,i++ )
 		{
@@ -2139,7 +2141,8 @@ void httpd_page_external_cgi_send( struct httpd_session_data* sd )
 {
 	char szBuf[8192];
 	DWORD dwRead;
-	int i, status;
+	unsigned int i;
+	int status;
 
 	// ------------
 	// 標準エラー出力を調べる
@@ -2788,7 +2791,7 @@ void httpd_page_cgi_calc_document_root( struct httpd_session_data *sd, char* pat
 	if( document_root[0]!='/' && document_root[1]!=':' )	// 必要ならカレントディレクトリと結合
 	{
 #ifdef _WIN32
-		i = GetCurrentDirectory( pathsize, path );
+		i = GetCurrentDirectory( (DWORD)pathsize, path );
 #else
 		getcwd( path, pathsize );
 		i = strlen( path );
@@ -2909,23 +2912,25 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 // ==========================================
 // 共通： cgi ヘッダ処理
 // ------------------------------------------
-int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, size_t bytes, int* pstatus )
+unsigned int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, size_t bytes, int* pstatus )
 {
-	char out[8192];
 	char status[256]="200 OK\r\n";
-	unsigned int x = 0 ,y = 0;
-	int i;
-	int ctype_flag = 0;
-	int status_flag = 0;
+	size_t x = 0;
 
 	if( strncasecmp( buf, "HTTP/1.", 7 )==0 && (buf[7]=='0' || buf[7]=='1') && buf[8]==' ')
 	{
 		// nph 処理
-		memcpy( WFIFOP( sd->fd, 0 ), buf, i = bytes );
-		WFIFOSET( sd->fd, i );
+		memcpy( WFIFOP( sd->fd, 0 ), buf, bytes );
+		WFIFOSET( sd->fd, (int)bytes );
 	}
 	else
 	{
+		char out[8192];
+		int i;
+		int ctype_flag = 0;
+		int status_flag = 0;
+		unsigned int y = 0;
+
 		// nph ではない
 		while( buf[x] && buf[x]!='\r' && buf[x]!='\n' && bytes > x + 2 )	// ヘッダが終わるまで繰り返す
 		{
@@ -3005,13 +3010,13 @@ int httpd_page_cgi_process_header( struct httpd_session_data *sd, char* buf, siz
 		memcpy( WFIFOP( sd->fd, i ), out, y );
 		i += y;
 		memcpy( WFIFOP( sd->fd, i ), buf + x, bytes - x );
-		i += bytes - x;
+		i += (int)(bytes - x);
 		WFIFOSET( sd->fd, i );
 	}
 
 	*pstatus = atoi( status );
 
-	return x;
+	return (unsigned int)x;
 }
 
 /*

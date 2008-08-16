@@ -37,7 +37,7 @@ char tmp_sql[65535];
  */
 char* strecpy(char* pt, const char* spt)
 {
-	mysql_real_escape_string(&mysql_handle, pt, spt, strlen(spt));
+	mysql_real_escape_string(&mysql_handle, pt, spt, (unsigned long)strlen(spt));
 
 	return pt;
 }

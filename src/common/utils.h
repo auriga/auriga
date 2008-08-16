@@ -23,7 +23,7 @@
 #define _UTILS_H_
 
 
-void hex_dump(FILE *fp, const unsigned char *buf, int len);
+void hex_dump(FILE *fp, const unsigned char *buf, size_t len);
 
 // =====================
 // 関数名マクロ
