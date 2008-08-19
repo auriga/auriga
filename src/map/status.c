@@ -7292,6 +7292,8 @@ int status_readdb(void) {
 		char *split[WT_MAX+4];
 		int hp_coefficient, sp_coefficient;
 
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(split,0,sizeof(split));
@@ -7341,6 +7343,8 @@ int status_readdb(void) {
 	}
 	i=0;
 	while(fgets(line,1020,fp)){
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<MAX_VALID_PC_CLASS && p;j++){
@@ -7367,6 +7371,8 @@ int status_readdb(void) {
 	}
 	i=0;
 	while(fgets(line,1020,fp)){
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<MAX_VALID_PC_CLASS && p;j++){
@@ -7393,6 +7399,8 @@ int status_readdb(void) {
 	}
 	i=0;
 	while(fgets(line,1020,fp)){
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<MAX_LEVEL && p;j++){
@@ -7417,6 +7425,8 @@ int status_readdb(void) {
 	}
 	i=0;
 	while(fgets(line,1020,fp)){
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(j=0,p=line;j<MAX_LEVEL && p;j++){
@@ -7448,6 +7458,8 @@ int status_readdb(void) {
 	i=0;
 	while(fgets(line,1020,fp)){
 		char *split[MAX_REFINE+3];
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		if(atoi(line) <= 0)
@@ -7483,6 +7495,8 @@ int status_readdb(void) {
 	i=0;
 	while(fgets(line,1020,fp)){
 		char *split[WT_MAX];
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		if(atoi(line) <= 0)
@@ -7512,9 +7526,9 @@ int status_readdb(void) {
 	i=0;
 	while(fgets(line,1020,fp)){
 		char *split[5];
-		if(line[0] == '/' && line[1] == '/')
+		if(line[0] == '\0' || line[0] == '\n')
 			continue;
-		if(line[0] == '\r' || line[0] == '\n')
+		if(line[0] == '/' && line[1] == '/')
 			continue;
 		memset(split,0,sizeof(split));
 		for(j=0,p=line;j<5 && p;j++){

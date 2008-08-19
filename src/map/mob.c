@@ -3581,6 +3581,8 @@ static int mob_readdb(void)
 			char *str[37+ITEM_DROP_COUNT*2];
 			char *p,*np;
 
+			if(line[0] == '\0' || line[0] == '\n')
+				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 
@@ -3692,6 +3694,8 @@ static int mob_readdb(void)
 		int class_,i;
 		char *str[3],*p,*np;
 
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
 
@@ -3736,6 +3740,8 @@ static int mob_readdb_mobavail(void)
 	}
 
 	while(fgets(line,1020,fp)){
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
@@ -3813,6 +3819,8 @@ static int mob_read_randommonster(void)
 		}
 		while(fgets(line,1020,fp)){
 			int class_,per;
+			if(line[0] == '\0' || line[0] == '\n')
+				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 			memset(str,0,sizeof(str));
@@ -3955,6 +3963,8 @@ static int mob_readskilldb(void)
 			int j=0;
 
 			lineno++;
+			if(line[0] == '\0' || line[0] == '\n')
+				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 

@@ -318,6 +318,8 @@ static int itemdb_read_itemdb(void)
 		lines=0;
 		while(fgets(line,sizeof(line),fp)){
 			lines++;
+			if(line[0] == '\0' || line[0] == '\n')
+				continue;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
 			memset(str,0,sizeof(str));
@@ -414,6 +416,8 @@ static int itemdb_read_itemdb(void)
 	}
 	ln=0;
 	while(fgets(line,sizeof(line),fp)){
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
@@ -446,6 +450,8 @@ static int itemdb_read_itemdb(void)
 		return 0;
 	}
 	while(fgets(line,sizeof(line),fp)){
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
@@ -472,6 +478,8 @@ static int itemdb_read_itemdb(void)
 		return 0;
 	}
 	while(fgets(line,sizeof(line),fp)){
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
@@ -513,6 +521,8 @@ static int itemdb_read_itemvaluedb(void)
 	}
 
 	while(fgets(line,1020,fp)){
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
@@ -591,6 +601,8 @@ static int itemdb_read_randomitem(void)
 		}
 
 		while(fgets(line,1020,fp)) {
+			if(line[0] == '\0' || line[0] == '\n')
+				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 			memset(str,0,sizeof(str));
@@ -645,6 +657,8 @@ static int itemdb_read_itemavail(void)
 
 	while(fgets(line,1020,fp)){
 		struct item_data *id=NULL;
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));

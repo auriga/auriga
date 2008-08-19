@@ -1,4 +1,13 @@
 ----------------------------------------
+//0515 [2008/08/20] by Rayce
+
+・OnGuildBreakラベルが作動しないバグを修正（guild.c）
+	reported by Cocoaさん
+
+・skill_unit_timer() で、map_freeblock_lock/unlockが二重に呼ばれるのを修正（skill.c）
+・dbやconfファイル読み込み時、空行は読み飛ばすように改善
+
+----------------------------------------
 //0514 [2008/08/17] by Rayce
 
 ・size_tやポインタのアドレス計算部分に関する型を修正

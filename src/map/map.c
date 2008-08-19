@@ -2025,6 +2025,8 @@ static void map_readwater(const char *watertxt)
 
 	while(fgets(line, sizeof(line), fp)) {
 		int wh, count;
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
 		if((count = sscanf(line, "%s%d", w1, &wh)) < 1) {
@@ -2589,6 +2591,8 @@ static int map_config_read(char *cfgName)
 	}
 
 	while(fgets(line, sizeof(line) - 1, fp)) {
+		if (line[0] == '\0' || line[0] == '\n')
+			continue;
 		if (line[0] == '/' && line[1] == '/')
 			continue;
 

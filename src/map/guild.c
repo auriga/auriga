@@ -2303,9 +2303,16 @@ static void guild_read_castledb(void)
 
 	while(fgets(line,1020,fp)){
 		int id;
+		size_t max;
 
-		if(line[0]=='/' && line[1]=='/')
+		if(line[0] == '\0' || line[0] == '\n')
 			continue;
+		if(line[0] == '/' && line[1] == '/')
+			continue;
+		max = strlen(line) - 1;
+		if(line[max] == '\n')
+			line[max] = 0;
+
 		memset(str,0,sizeof(str));
 		for(j=0,p=line;j<4 && p;j++){
 			str[j]=p;
@@ -2353,6 +2360,8 @@ static void guild_read_guildskill_tree_db(void)
 	id = 0;
 	while(fgets(line,1020,fp)){
 		char *split[12];
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		for(i=0,p=line;i<12 && p;i++){

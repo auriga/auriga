@@ -10968,11 +10968,7 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
  */
 static int skill_unit_timer( int tid,unsigned int tick,int id,int data)
 {
-	map_freeblock_lock();
-
 	map_foreachobject( skill_unit_timer_sub, BL_SKILL, tick );
-
-	map_freeblock_unlock();
 
 	return 0;
 }
@@ -12591,6 +12587,8 @@ static int skill_readdb(void)
 		k = 0;
 		while(fgets(line,1020,fp)){
 			char *split[50];
+			if(line[0] == '\0' || line[0] == '\n')
+				continue;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
 			j = skill_split_str(line,split,14);
@@ -12645,6 +12643,8 @@ static int skill_readdb(void)
 	k = 0;
 	while(fgets(line,1020,fp)){
 		char *split[50];
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		j = skill_split_str(line,split,9);
@@ -12677,6 +12677,8 @@ static int skill_readdb(void)
 		k = 0;
 		while(fgets(line,1020,fp)){
 			char *split[50];
+			if(line[0] == '\0' || line[0] == '\n')
+				continue;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
 			j = skill_split_str(line,split,29);
@@ -12761,6 +12763,8 @@ static int skill_readdb(void)
 	k = 0;
 	while(fgets(line,1020,fp)){
 		char *split[50];
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		j = skill_split_str(line,split,6);
@@ -12791,6 +12795,8 @@ static int skill_readdb(void)
 		k = 0;
 		while(fgets(line,1020,fp)){
 			char *split[50];
+			if(line[0] == '\0' || line[0] == '\n')
+				continue;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
 			j = skill_split_str(line,split,6);
@@ -12821,6 +12827,8 @@ static int skill_readdb(void)
 	k = 0;
 	while (fgets(line,1020,fp)) {
 		char *split[50];
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if (line[0]=='/' && line[1]=='/')
 			continue;
 		j = skill_split_str(line,split,8);
@@ -12859,6 +12867,8 @@ static int skill_readdb(void)
 		while(fgets(line,1020,fp)){
 			char *split[6 + MAX_PRODUCE_RESOURCE * 2];
 			int x,y;
+			if(line[0] == '\0' || line[0] == '\n')
+				continue;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
 			memset(split,0,sizeof(split));
@@ -12907,6 +12917,8 @@ static int skill_readdb(void)
 	while(fgets(line,1020,fp)){
 		char *split[16];
 		int x,y;
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(split,0,sizeof(split));
@@ -12944,6 +12956,8 @@ static int skill_readdb(void)
 	k=0;
 	while(fgets(line,1020,fp)){
 		char *split[16];
+		if(line[0] == '\0' || line[0] == '\n')
+			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(split,0,sizeof(split));
