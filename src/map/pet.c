@@ -200,7 +200,7 @@ int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
  * 腹減り
  *------------------------------------------
  */
-static int pet_hungry(int tid,unsigned int tick,int id,int data)
+static int pet_hungry(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	int interval, t;
@@ -244,7 +244,7 @@ static int pet_hungry(int tid,unsigned int tick,int id,int data)
 		interval = sd->petDB->hungry_delay;
 	if(interval <= 0)
 		interval = 1;
-	sd->pd->hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,0);
+	sd->pd->hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,NULL);
 
 	return 0;
 }
@@ -364,7 +364,7 @@ static int pet_data_init(struct map_session_data *sd)
 		interval = sd->petDB->hungry_delay;
 	if(interval <= 0)
 		interval = 1;
-	pd->hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,0);
+	pd->hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,NULL);
 	pd->lootitem = (struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
 	pd->loottype = (!battle_config.pet_lootitem)? 0: battle_config.petowneditem;
 	pd->lootitem_count  = 0;
@@ -1185,7 +1185,7 @@ static int pet_ai_sub_foreachclient(struct map_session_data *sd,va_list ap)
 	return 0;
 }
 
-static int pet_ai_hard(int tid,unsigned int tick,int id,int data)
+static int pet_ai_hard(int tid,unsigned int tick,int id,void *data)
 {
 	clif_foreachclient(pet_ai_sub_foreachclient,tick);
 
@@ -1196,11 +1196,11 @@ static int pet_ai_hard(int tid,unsigned int tick,int id,int data)
  * delay付きitem drop (timer関数)
  *------------------------------------------
  */
-static int pet_delay_item_drop2(int tid,unsigned int tick,int id,int data)
+static int pet_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
 {
 	struct delay_item_drop2 *ditem;
 
-	ditem = (struct delay_item_drop2 *)id;
+	ditem = (struct delay_item_drop2 *)data;
 
 	// ペットの卵ならドロップディレイキューからpopする
 	if(ditem->item_data.card[0] == (short)0xff00) {
@@ -1258,9 +1258,9 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 			if(ditem->item_data.card[0] == (short)0xff00) {
 				// ペットの卵はドロップディレイキューに保存する
 				map_push_delayitem_que(ditem);
-				add_timer(tick+540,pet_delay_item_drop2,(int)ditem,0);
+				add_timer(tick+540,pet_delay_item_drop2,0,ditem);
 			} else {
-				add_timer2(tick+540+i,pet_delay_item_drop2,(int)ditem,0,TIMER_FREE_ID);
+				add_timer2(tick+540+i,pet_delay_item_drop2,0,ditem);
 			}
 		}
 	}
@@ -1296,7 +1296,7 @@ int pet_lootitem_free(struct pet_data *pd)
  * ペットスキル
  *------------------------------------------
  */
-int pet_skill_support_timer(int tid,unsigned int tick,int id,int data)
+int pet_skill_support_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	struct pet_data *pd;
@@ -1322,7 +1322,7 @@ int pet_skill_support_timer(int tid,unsigned int tick,int id,int data)
 		// Wait (how long? 1 sec for every 10% of remaining)
 		if(rate < 10)
 			rate = 10;
-		pd->s_skill->timer = add_timer(gettick()+rate*100,pet_skill_support_timer,sd->bl.id,0);
+		pd->s_skill->timer = add_timer(gettick()+rate*100,pet_skill_support_timer,sd->bl.id,NULL);
 		return 0;
 	}
 
@@ -1334,7 +1334,7 @@ int pet_skill_support_timer(int tid,unsigned int tick,int id,int data)
 		unit_skilluse_id(&pd->bl, sd->bl.id, pd->s_skill->id, pd->s_skill->lv);
 	}
 
-	pd->s_skill->timer = add_timer(tick+pd->s_skill->delay*1000,pet_skill_support_timer,sd->bl.id,0);
+	pd->s_skill->timer = add_timer(tick+pd->s_skill->delay*1000,pet_skill_support_timer,sd->bl.id,NULL);
 
 	return 0;
 }
@@ -1453,7 +1453,7 @@ int do_init_pet(void)
 	add_timer_func_list(pet_delay_item_drop2);
 	add_timer_func_list(pet_skill_support_timer);
 
-	add_timer_interval(gettick()+MIN_PETTHINKTIME,pet_ai_hard,0,0,MIN_PETTHINKTIME);
+	add_timer_interval(gettick()+MIN_PETTHINKTIME,pet_ai_hard,0,NULL,MIN_PETTHINKTIME);
 
 	return 0;
 }

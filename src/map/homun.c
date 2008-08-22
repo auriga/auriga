@@ -167,7 +167,7 @@ static int homun_calc_pos(struct homun_data *hd,int tx,int ty,int dir)
  * 腹減り
  *------------------------------------------
  */
-static int homun_hungry_cry(int tid,unsigned int tick,int id,int data)
+static int homun_hungry_cry(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 
@@ -181,12 +181,12 @@ static int homun_hungry_cry(int tid,unsigned int tick,int id,int data)
 	}
 	sd->hd->hungry_cry_timer = -1;
 	clif_emotion(&sd->hd->bl,28);
-	sd->hd->hungry_cry_timer = add_timer(tick+20*1000,homun_hungry_cry,sd->bl.id,0);
+	sd->hd->hungry_cry_timer = add_timer(tick+20*1000,homun_hungry_cry,sd->bl.id,NULL);
 
 	return 0;
 }
 
-static int homun_hungry(int tid,unsigned int tick,int id,int data)
+static int homun_hungry(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	int interval;
@@ -220,7 +220,7 @@ static int homun_hungry(int tid,unsigned int tick,int id,int data)
 		if(f)
 			sd->hd->intimate = sd->hd->status.intimate;
 		if(sd->hd->hungry_cry_timer == -1)
-			sd->hd->hungry_cry_timer = add_timer(tick+20*1000,homun_hungry_cry,sd->bl.id,0);
+			sd->hd->hungry_cry_timer = add_timer(tick+20*1000,homun_hungry_cry,sd->bl.id,NULL);
 	} else if(sd->hd->hungry_cry_timer != -1) {
 		delete_timer(sd->hd->hungry_cry_timer,homun_hungry_cry);
 		sd->hd->hungry_cry_timer = -1;
@@ -231,7 +231,7 @@ static int homun_hungry(int tid,unsigned int tick,int id,int data)
 	clif_send_homstatus(sd,0);
 
 	interval = 60*1000;
-	sd->hd->hungry_timer = add_timer(tick+interval,homun_hungry,sd->bl.id,0);
+	sd->hd->hungry_timer = add_timer(tick+interval,homun_hungry,sd->bl.id,NULL);
 
 	return 0;
 }
@@ -638,8 +638,8 @@ int homun_create_hom(struct map_session_data *sd,int homunid)
 	return 0;
 }
 
-static int homun_natural_heal_hp(int tid,unsigned int tick,int id,int data);
-static int homun_natural_heal_sp(int tid,unsigned int tick,int id,int data);
+static int homun_natural_heal_hp(int tid,unsigned int tick,int id,void *data);
+static int homun_natural_heal_sp(int tid,unsigned int tick,int id,void *data);
 
 /*==========================================
  *
@@ -713,11 +713,11 @@ static int homun_data_init(struct map_session_data *sd)
 	unit_dataset(&hd->bl);
 	map_addiddb(&hd->bl);
 
-	hd->natural_heal_hp = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
-	hd->natural_heal_sp = add_timer(tick+HOM_NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
-	hd->hungry_timer    = add_timer(tick+60*1000,homun_hungry,sd->bl.id,0);
+	hd->natural_heal_hp = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,NULL);
+	hd->natural_heal_sp = add_timer(tick+HOM_NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,NULL);
+	hd->hungry_timer    = add_timer(tick+60*1000,homun_hungry,sd->bl.id,NULL);
 	if(hd->status.hungry < 10)
-		hd->hungry_cry_timer = add_timer(tick+20*1000,homun_hungry_cry,sd->bl.id,0);
+		hd->hungry_cry_timer = add_timer(tick+20*1000,homun_hungry_cry,sd->bl.id,NULL);
 	else
 		hd->hungry_cry_timer = -1;
 	hd->view_size = 0;
@@ -1431,7 +1431,7 @@ int homun_isalive(struct map_session_data *sd)
  * 自然回復物
  *------------------------------------------
  */
-static int homun_natural_heal_hp(int tid,unsigned int tick,int id,int data)
+static int homun_natural_heal_hp(int tid,unsigned int tick,int id,void *data)
 {
 	struct homun_data *hd = map_id2hd(id);
 	int bhp;
@@ -1454,12 +1454,12 @@ static int homun_natural_heal_hp(int tid,unsigned int tick,int id,int data)
 		if(bhp != hd->status.hp && hd->msd)
 			clif_send_homstatus(hd->msd,0);
 	}
-	hd->natural_heal_hp = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,0);
+	hd->natural_heal_hp = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,NULL);
 
 	return 0;
 }
 
-static int homun_natural_heal_sp(int tid,unsigned int tick,int id,int data)
+static int homun_natural_heal_sp(int tid,unsigned int tick,int id,void *data)
 {
 	struct homun_data *hd = map_id2hd(id);
 	int bsp;
@@ -1490,7 +1490,7 @@ static int homun_natural_heal_sp(int tid,unsigned int tick,int id,int data)
 		if(bsp != hd->status.sp && hd->msd)
 			clif_send_homstatus(hd->msd,0);
 	}
-	hd->natural_heal_sp = add_timer(tick+HOM_NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,0);
+	hd->natural_heal_sp = add_timer(tick+HOM_NATURAL_HEAL_SP_INTERVAL,homun_natural_heal_sp,hd->bl.id,NULL);
 
 	return 0;
 }

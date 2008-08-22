@@ -54,7 +54,7 @@ static int* timer_heap = NULL;
 
 // for debug
 struct timer_func_list {
-	int (*func)(int,unsigned int,int,int);
+	int (*func)(int,unsigned int,int,void*);
 	struct timer_func_list* next;
 	char name[1];
 };
@@ -62,7 +62,7 @@ struct timer_func_list {
 static struct timer_func_list* tfl_root = NULL;
 
 
-int add_timer_func_list_real(int (*func)(int,unsigned int,int,int),const char* name)
+int add_timer_func_list_real(int (*func)(int,unsigned int,int,void*),const char* name)
 {
 	struct timer_func_list* tfl;
 
@@ -75,7 +75,7 @@ int add_timer_func_list_real(int (*func)(int,unsigned int,int,int),const char* n
 	return 0;
 }
 
-const char* search_timer_func_list(int (*func)(int,unsigned int,int,int))
+const char* search_timer_func_list(int (*func)(int,unsigned int,int,void*))
 {
 	struct timer_func_list* tfl;
 
@@ -276,7 +276,7 @@ static void pop_timer_heap(int i)
 	timer_heap[0]--;
 }
 
-int add_timer_real(unsigned int tick,int (*func)(int,unsigned int,int,int),int id,int data,unsigned short flag)
+int add_timer_real(unsigned int tick,int (*func)(int,unsigned int,int,void*),int id,void *data,short flag)
 {
 	struct TimerData* td;
 	int i;
@@ -322,7 +322,7 @@ int add_timer_real(unsigned int tick,int (*func)(int,unsigned int,int,int),int i
 	return i;
 }
 
-int add_timer_interval(unsigned int tick,int (*func)(int,unsigned int,int,int),int id,int data,int interval)
+int add_timer_interval(unsigned int tick,int (*func)(int,unsigned int,int,void*),int id,void *data,int interval)
 {
 	int tid;
 
@@ -333,7 +333,7 @@ int add_timer_interval(unsigned int tick,int (*func)(int,unsigned int,int,int),i
 	return tid;
 }
 
-int delete_timer(int id,int (*func)(int,unsigned int,int,int))
+int delete_timer(int id,int (*func)(int,unsigned int,int,void*))
 {
 	if (id < 0 || id >= timer_data_num) {
 		printf("delete_timer error : no such timer %d\n", id);
@@ -341,9 +341,9 @@ int delete_timer(int id,int (*func)(int,unsigned int,int,int))
 	}
 	if (timer_data[id].func != func) {
 		printf(
-			"delete_timer error : function dismatch %08x(%s) != %08x(%s)\n",
-			(int)timer_data[id].func, search_timer_func_list(timer_data[id].func),
-			(int)func, search_timer_func_list(func)
+			"delete_timer error : function dismatch 0x%p (%s) != 0x%p (%s)\n",
+			timer_data[id].func, search_timer_func_list(timer_data[id].func),
+			func, search_timer_func_list(func)
 		);
 		return -2;
 	}
@@ -384,18 +384,13 @@ void do_final_timer(void)
 	if(free_timer_list)
 		aFree(free_timer_list);
 	if(timer_data) {
-		// add_timer2によるidとdataの解放
+		// add_timer2によるdataの解放
 		int i;
 		for(i = 0; i < timer_data_num; i++) {
 			struct TimerData *td = &timer_data[i];
-			void *v;
-			if(td->free_flag & TIMER_FREE_ID) {
-				v = (void *)td->id;
-				aFree( v );
-			}
-			if(td->free_flag & TIMER_FREE_DATA) {
-				v = (void *)td->data;
-				aFree( v );
+
+			if(td->free_flag) {
+				aFree(td->data);
 			}
 		}
 		aFree(timer_data);

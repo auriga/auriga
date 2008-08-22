@@ -1137,8 +1137,8 @@ int map_quit(struct map_session_data *);
 int map_addnpc(int,struct npc_data *);
 
 // 床アイテム関連
-int map_clearflooritem_timer(int,unsigned int,int,int);
-#define map_clearflooritem(id) map_clearflooritem_timer(0,0,id,1)
+int map_clearflooritem_timer(int,unsigned int,int,void*);
+#define map_clearflooritem(id) map_clearflooritem_timer(0,0,id,(void*)1)
 int map_addflooritem(struct item *,int,int,int,int,int,int,int,int);
 int map_searchfreecell(struct cell_xy *list,int m,int x0,int y0,int x1,int y1);
 

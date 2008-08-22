@@ -121,7 +121,7 @@ void WFIFORESERVE(int fd, size_t len);
 void do_sendrecv(int next);
 void do_parsepacket(void);
 void flush_fifo(int fd);
-int parsepacket_timer(int tid, unsigned int tick, int id, int data);
+int parsepacket_timer(int tid, unsigned int tick, int id, void *data);
 void do_socket(void);
 
 void set_defaultparse(int (*defaultparse)(int));

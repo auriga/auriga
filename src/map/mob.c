@@ -279,7 +279,7 @@ int mob_once_spawn_area(struct map_session_data *sd,const char *mapname,
  * delay付きmob spawn (timer関数)
  *------------------------------------------
  */
-int mob_delayspawn(int tid,unsigned int tick,int id,int data)
+int mob_delayspawn(int tid,unsigned int tick,int id,void *data)
 {
 	mob_spawn(id);
 	return 0;
@@ -338,7 +338,7 @@ int mob_spawn(int id)
 				return 1;
 		} else {
 			// 1秒後にリトライする
-			add_timer(tick+1000,mob_delayspawn,id,0);
+			add_timer(tick+1000,mob_delayspawn,id,NULL);
 			return 1;
 		}
 	}
@@ -1224,7 +1224,7 @@ static int mob_ai_hard_createlist(void)
 	return i;
 }
 
-static int mob_ai_hard(int tid,unsigned int tick,int id,int data)
+static int mob_ai_hard(int tid,unsigned int tick,int id,void *data)
 {
 	unsigned int limit = MIN_MOBTHINKTIME * battle_config.mob_ai_cpu_usage / 100;
 
@@ -1373,7 +1373,7 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
  * PC視界外のmob用手抜き処理 (interval timer関数)
  *------------------------------------------
  */
-static int mob_ai_lazy(int tid,unsigned int tick,int id,int data)
+static int mob_ai_lazy(int tid,unsigned int tick,int id,void *data)
 {
 	map_foreachiddb(mob_ai_sub_lazy,tick);
 
@@ -1384,12 +1384,12 @@ static int mob_ai_lazy(int tid,unsigned int tick,int id,int data)
  * delay付きitem drop (timer関数)
  *------------------------------------------
  */
-static int mob_delay_item_drop(int tid,unsigned int tick,int id,int data)
+static int mob_delay_item_drop(int tid,unsigned int tick,int id,void *data)
 {
 	struct delay_item_drop *ditem;
 	struct item temp_item;
 
-	nullpo_retr(0, ditem = (struct delay_item_drop *)id);
+	nullpo_retr(0, ditem = (struct delay_item_drop *)data);
 
 	memset(&temp_item, 0, sizeof(temp_item));
 	temp_item.nameid   = ditem->nameid;
@@ -1430,11 +1430,11 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,int data)
  * delay付きitem drop (timer関数) - lootitem
  *------------------------------------------
  */
-static int mob_delay_item_drop2(int tid,unsigned int tick,int id,int data)
+static int mob_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
 {
 	struct delay_item_drop2 *ditem;
 
-	nullpo_retr(0, ditem = (struct delay_item_drop2 *)id);
+	nullpo_retr(0, ditem = (struct delay_item_drop2 *)data);
 
 	// ペットの卵ならドロップディレイキューからpopする
 	if(ditem->item_data.card[0] == (short)0xff00) {
@@ -1475,7 +1475,7 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,int data)
  *
  *------------------------------------------
  */
-int mob_timer_delete(int tid, unsigned int tick, int id, int data)
+int mob_timer_delete(int tid, unsigned int tick, int id, void *data)
 {
 	struct block_list *bl = map_id2bl(id);
 
@@ -1896,7 +1896,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
 				ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
 				ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
-				add_timer2(tick+500+i,mob_delay_item_drop,(int)ditem,0,TIMER_FREE_ID);
+				add_timer2(tick+500+i,mob_delay_item_drop,0,ditem);
 			}
 		}
 		if(sd) {
@@ -1931,7 +1931,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
 					ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
 					ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
-					add_timer2(tick+520+i,mob_delay_item_drop,(int)ditem,0,TIMER_FREE_ID);
+					add_timer2(tick+520+i,mob_delay_item_drop,0,ditem);
 				}
 			}
 			if(sd->get_zeny_num > 0)
@@ -1958,7 +1958,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
 				ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
 				ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
-				add_timer2(tick + 520 + i, mob_delay_item_drop, (int)ditem, 0, TIMER_FREE_ID);
+				add_timer2(tick + 520 + i, mob_delay_item_drop, 0, ditem);
 			}
 		}
 		if(md->lootitem) {
@@ -1978,9 +1978,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				if(ditem->item_data.card[0] == (short)0xff00) {
 					// ペットの卵はドロップディレイキューに保存する
 					map_push_delayitem_que(ditem);
-					add_timer(tick+540,mob_delay_item_drop2,(int)ditem,0);
+					add_timer(tick+540,mob_delay_item_drop2,0,ditem);
 				} else {
-					add_timer2(tick+540+i,mob_delay_item_drop2,(int)ditem,0,TIMER_FREE_ID);
+					add_timer2(tick+540+i,mob_delay_item_drop2,0,ditem);
 				}
 			}
 			md->lootitem_count = 0;
@@ -4160,8 +4160,8 @@ int do_init_mob(void)
 	add_timer_func_list(mob_ai_hard);
 	add_timer_func_list(mob_ai_lazy);
 	add_timer_func_list(mob_timer_delete);
-	add_timer_interval(gettick()+MIN_MOBTHINKTIME,mob_ai_hard,0,0,MIN_MOBTHINKTIME);
-	add_timer_interval(gettick()+MIN_MOBTHINKTIME*20,mob_ai_lazy,0,0,MIN_MOBTHINKTIME*20);
+	add_timer_interval(gettick()+MIN_MOBTHINKTIME,mob_ai_hard,0,NULL,MIN_MOBTHINKTIME);
+	add_timer_interval(gettick()+MIN_MOBTHINKTIME*20,mob_ai_lazy,0,NULL,MIN_MOBTHINKTIME*20);
 
 	return 0;
 }

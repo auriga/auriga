@@ -326,7 +326,7 @@ int map_freeblock_unlock(void)
  * 定期的にblock_free_lockをリセット
  *------------------------------------------
  */
-static int map_freeblock_timer(int tid,unsigned int tick,int id,int data)
+static int map_freeblock_timer(int tid,unsigned int tick,int id,void *data)
 {
 	if(block_free_lock > 0) {
 		printf("map_freeblock_timer: block_free_lock(%d) is invalid.\n",block_free_lock);
@@ -1112,20 +1112,21 @@ void map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
  * map.h内で#defineしてある
  *------------------------------------------
  */
-int map_clearflooritem_timer(int tid,unsigned int tick,int id,int data)
+int map_clearflooritem_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct block_list *bl = object[id];
 	struct flooritem_data *fitem = NULL;
+	int flag = (int)data;
 
 	if(bl && bl->type == BL_ITEM)
 		fitem = (struct flooritem_data *)bl;
 
-	if(fitem == NULL || (!data && fitem->cleartimer != tid)) {
+	if(fitem == NULL || (flag == 0 && fitem->cleartimer != tid)) {
 		if(battle_config.error_log)
 			printf("map_clearflooritem_timer : error\n");
 		return 1;
 	}
-	if(data == 1)
+	if(flag == 1)
 		delete_timer(fitem->cleartimer,map_clearflooritem_timer);
 	else if(fitem->item_data.card[0] == (short)0xff00)
 		intif_delete_petdata(*((long *)(&fitem->item_data.card[1])));
@@ -1220,7 +1221,7 @@ int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,int fir
 			fitem->item_data.amount = amount;
 			fitem->subx = (r&3)*3+3;
 			fitem->suby = ((r>>2)&3)*3+3;
-			fitem->cleartimer = add_timer(tick+battle_config.flooritem_lifetime,map_clearflooritem_timer,fitem->bl.id,0);
+			fitem->cleartimer = add_timer(tick+battle_config.flooritem_lifetime,map_clearflooritem_timer,fitem->bl.id,(void*)0);
 
 			map_addblock(&fitem->bl);
 			clif_dropflooritem(fitem);
@@ -2826,7 +2827,7 @@ void do_final(void)
 		if(object[i] == NULL)
 			continue;
 		if(object[i]->type == BL_ITEM) {
-			map_clearflooritem_timer(-1, tick, i, 2);
+			map_clearflooritem_timer(-1, tick, i, (void*)2);
 		}
 	}
 	map_clear_delayitem_que();
@@ -2939,7 +2940,7 @@ int do_init(int argc,char *argv[])
 
 	add_timer_func_list(map_freeblock_timer);
 	add_timer_func_list(map_clearflooritem_timer);
-	add_timer_interval(gettick()+1000,map_freeblock_timer,0,0,600*1000);
+	add_timer_interval(gettick()+1000,map_freeblock_timer,0,NULL,600*1000);
 
 	do_init_battle();
 	do_init_chrif();

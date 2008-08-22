@@ -159,7 +159,7 @@ int pc_addeventtimercount(struct map_session_data *sd,const char *name,int tick)
 int pc_geteventtimerdiff(struct map_session_data *sd,const char *name);
 
 int pc_calc_pvprank(struct map_session_data *sd);
-int pc_calc_pvprank_timer(int tid,unsigned int tick,int id,int data);
+int pc_calc_pvprank_timer(int tid,unsigned int tick,int id,void *data);
 
 int pc_ismarried(struct map_session_data *sd);
 int pc_marriage(struct map_session_data *sd,struct map_session_data *dstsd);

@@ -2930,7 +2930,7 @@ static struct linkdb_node* script_erase_sleepdb(struct linkdb_node *n)
  * sleep用タイマー関数
  *------------------------------------------
  */
-static int run_script_timer(int tid, unsigned int tick, int id, int data)
+static int run_script_timer(int tid, unsigned int tick, int id, void *data)
 {
 	struct script_state *st     = (struct script_state *)data;
 	struct linkdb_node *node    = sleep_db;
@@ -3054,7 +3054,7 @@ static void run_script_main(struct script_state *st)
 	if(st->sleep.tick > 0) {
 		// スタック情報をsleep_dbに保存
 		st->sleep.charid = (sd) ? sd->status.char_id : 0;
-		st->sleep.timer  = add_timer(gettick()+st->sleep.tick, run_script_timer, st->sleep.charid, (int)st);
+		st->sleep.timer  = add_timer(gettick()+st->sleep.tick, run_script_timer, st->sleep.charid, st);
 		linkdb_insert(&sleep_db, (void*)st->oid, st);
 		return;
 	}
@@ -3321,7 +3321,7 @@ static int script_sql_save_mapreg(void)
  * 永続的マップ変数の自動セーブ
  *------------------------------------------
  */
-static int script_autosave_mapreg(int tid,unsigned int tick,int id,int data)
+static int script_autosave_mapreg(int tid,unsigned int tick,int id,void *data)
 {
 	if(mapreg_dirty)
 		script_save_mapreg();
@@ -3670,7 +3670,7 @@ int do_init_script(void)
 	add_timer_func_list(script_autosave_mapreg);
 
 	add_timer_interval(gettick()+MAPREG_AUTOSAVE_INTERVAL,
-		script_autosave_mapreg,0,0,MAPREG_AUTOSAVE_INTERVAL);
+		script_autosave_mapreg,0,NULL,MAPREG_AUTOSAVE_INTERVAL);
 
 #ifndef NO_CSVDB_SCRIPT
 	script_csvinit();
@@ -8310,7 +8310,7 @@ int buildin_pvpon(struct script_state *st)
 		for(i=0; i<fd_max; i++) {	// 人数分ループ
 			if(session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 				if(m == pl_sd->bl.m && pl_sd->pvp_timer == -1) {
-					pl_sd->pvp_timer = add_timer(gettick()+200,pc_calc_pvprank_timer,pl_sd->bl.id,0);
+					pl_sd->pvp_timer = add_timer(gettick()+200,pc_calc_pvprank_timer,pl_sd->bl.id,NULL);
 					pl_sd->pvp_rank = 0;
 					pl_sd->pvp_lastusers = 0;
 					pl_sd->pvp_point = 5;
@@ -9812,7 +9812,7 @@ int buildin_summon(struct script_state *st)
 		md->state.special_mob_ai = 1;
 		md->master_id   = sd->bl.id;
 		md->mode        = mob_db[md->class_].mode | 0x04;
-		md->deletetimer = add_timer(tick+60000,mob_timer_delete,id,0);
+		md->deletetimer = add_timer(tick+60000,mob_timer_delete,id,NULL);
 		clif_misceffect2(&md->bl,344);
 	}
 	clif_skill_poseffect(&sd->bl,AM_CALLHOMUN,1,sd->bl.x,sd->bl.y,tick);
@@ -10101,7 +10101,7 @@ int buildin_petskillsupport(struct script_state *st)
 		pd->s_skill->hp    = conv_num(st,& (st->stack->stack_data[st->start+5]));
 		pd->s_skill->sp    = conv_num(st,& (st->stack->stack_data[st->start+6]));
 
-		pd->s_skill->timer = add_timer(gettick()+pd->s_skill->delay*1000, pet_skill_support_timer ,sd->bl.id,0);
+		pd->s_skill->timer = add_timer(gettick()+pd->s_skill->delay*1000, pet_skill_support_timer ,sd->bl.id, NULL);
 	}
 	return 0;
 }

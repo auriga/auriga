@@ -2160,7 +2160,7 @@ static void display_conf_warnings(void)
 	return;
 }
 
-int login_sync_timer(int tid, unsigned int tick, int id,int data)
+int login_sync_timer(int tid, unsigned int tick, int id,void *data)
 {
 	login_sync();
 
@@ -2376,7 +2376,7 @@ int do_init(int argc,char **argv)
 	socket_set_httpd_page_connection_func( login_socket_ctrl_panel_func );
 
 	add_timer_func_list(login_sync_timer);
-	add_timer_interval(gettick()+10*1000,login_sync_timer,0,0,login_autosave_time*1000);
+	add_timer_interval(gettick()+10*1000,login_sync_timer,0,NULL,login_autosave_time*1000);
 
 	// for httpd support
 	do_init_httpd();

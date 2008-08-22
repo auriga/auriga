@@ -48,7 +48,7 @@ struct journal_header {
 	int key, flag;
 };
 
-static int journal_flush_timer( int tid, unsigned int tick, int id, int data );
+static int journal_flush_timer( int tid, unsigned int tick, int id, void *data );
 
 // ==========================================
 // ジャーナルの初期化( load と共通部分)
@@ -106,7 +106,7 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 	if( cache_interval > 0)
 	{
 		j->cache_timer = add_timer_interval( gettick()+ atn_rand()%cache_interval + cache_interval,
-											 journal_flush_timer, 0, (int)j, cache_interval);
+											 journal_flush_timer, 0, j, cache_interval);
 	}
 }
 
@@ -345,7 +345,7 @@ int journal_flush( struct journal* j )
 // ==========================================
 // ジャーナルの全キャッシュをファイルへ書き込む(タイマー)
 // ------------------------------------------
-static int journal_flush_timer( int tid, unsigned int tick, int id, int data )
+static int journal_flush_timer( int tid, unsigned int tick, int id, void *data )
 {
 	journal_flush( (struct journal* )data );
 	return 0;

@@ -199,7 +199,7 @@ struct httpd_cgi_kill {
 #ifndef NO_HTTPD_CGI
 static struct httpd_cgi_kill httpd_cgi_kill_list[HTTPD_CGI_KILL_SIZE];
 static int httpd_cgi_kill_size;
-int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, int data);
+int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, void *data);
 int httpd_get_external_cgi_process_count(void);
 #endif
 
@@ -345,7 +345,7 @@ void do_init_httpd(void)
 
 #ifndef NO_HTTPD_CGI
 	add_timer_func_list( httpd_page_external_cgi_abort_timer );
-	add_timer_interval( gettick()+HTTPD_CGI_KILL_INVERVAL, httpd_page_external_cgi_abort_timer, 0, 0, HTTPD_CGI_KILL_INVERVAL );
+	add_timer_interval( gettick()+HTTPD_CGI_KILL_INVERVAL, httpd_page_external_cgi_abort_timer, 0, NULL, HTTPD_CGI_KILL_INVERVAL );
 #endif
 }
 
@@ -2721,7 +2721,7 @@ struct httpd_cgi_kill* httpd_page_external_cgi_abort_insert( struct httpd_sessio
 // ==========================================
 // 共通 : 外部 cgi 処理 / 中断リストタイマ処理
 // ------------------------------------------
-int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, int data)
+int httpd_page_external_cgi_abort_timer( int tid, unsigned int tick, int id, void *data)
 {
 	int i, num = httpd_cgi_kill_size;
 

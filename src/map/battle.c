@@ -62,7 +62,7 @@ struct battle_delay_damage_ {
  * ダメージの遅延
  *------------------------------------------
  */
-static int battle_delay_damage_sub(int tid,unsigned int tick,int id,int data)
+static int battle_delay_damage_sub(int tid,unsigned int tick,int id,void *data)
 {
 	struct battle_delay_damage_ *dat = (struct battle_delay_damage_ *)data;
 
@@ -93,7 +93,7 @@ int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_li
 	dat->skilllv = skilllv;
 	dat->flag    = flag;
 	dat->dist    = unit_distance2(src, target);
-	add_timer2(tick,battle_delay_damage_sub,src->id,(int)dat,TIMER_FREE_DATA);
+	add_timer2(tick,battle_delay_damage_sub,src->id,dat);
 
 	return 0;
 }

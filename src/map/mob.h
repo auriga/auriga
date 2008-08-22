@@ -180,7 +180,7 @@ int mob_heal(struct mob_data*,int);
 int do_init_mob(void);
 int do_final_mob(void);
 
-int mob_timer_delete(int tid, unsigned int tick, int id, int data);
+int mob_timer_delete(int tid, unsigned int tick, int id, void *data);
 
 int mob_deleteslave(struct mob_data *md);
 
@@ -198,7 +198,7 @@ int mob_countslave(struct mob_data *md);
 
 int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl);
 void mob_reload(void);
-int mob_delayspawn(int tid,unsigned int tick,int id,int data);
+int mob_delayspawn(int tid,unsigned int tick,int id,void *data);
 int mob_unlocktarget(struct mob_data *md,unsigned int tick);
 int mob_droprate_fix(struct block_list *bl,int item,int drop);
 

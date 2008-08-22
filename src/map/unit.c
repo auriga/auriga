@@ -51,8 +51,8 @@
 #include "mail.h"
 #include "merc.h"
 
-static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data);
-static int unit_attack_timer(int tid,unsigned int tick,int id,int data);
+static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data);
+static int unit_attack_timer(int tid,unsigned int tick,int id,void *data);
 
 /*==========================================
  * 二点間の距離を返す
@@ -153,7 +153,7 @@ static int unit_walktoxy_sub(struct block_list *bl)
 	else
 		i = status_get_speed(bl);
 	if(i > 0) {
-		ud->walktimer = add_timer(gettick()+i,unit_walktoxy_timer,bl->id,0);
+		ud->walktimer = add_timer(gettick()+i,unit_walktoxy_timer,bl->id,(void*)0);
 	}
 
 	return 1;
@@ -163,7 +163,7 @@ static int unit_walktoxy_sub(struct block_list *bl)
  *
  *------------------------------------------
  */
-static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
+static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 {
 	int i;
 	int moveblock;
@@ -201,7 +201,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 	ud->walktimer = -1;
 	if( bl->prev == NULL ) return 0; // block_list から抜けているので移動停止する
 
-	if(ud->walkpath.path_pos >= ud->walkpath.path_len || ud->walkpath.path_pos != data)
+	if(ud->walkpath.path_pos >= ud->walkpath.path_len || ud->walkpath.path_pos != (int)data)
 		return 0;
 
 	// 歩いたので息吹のタイマーを初期化
@@ -389,7 +389,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,int data)
 				return 0;
 			}
 		}
-		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,ud->walkpath.path_pos);
+		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,(void*)ud->walkpath.path_pos);
 	} else {
 		// 目的地に着いた
 		if(sd && sd->sc.data[SC_RUN].timer != -1) {
@@ -1110,7 +1110,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 
 	if(casttime > 0) {
 		int skill;
-		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_id, src->id, 0);
+		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_id, src->id, NULL);
 		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
 			src_sd->prev_speed = src_sd->speed;
 			src_sd->speed = src_sd->speed*(175 - skill*5)/100;
@@ -1121,7 +1121,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	} else {
 		if(skill_num != SA_CASTCANCEL)
 			src_ud->skilltimer = -1;
-		skill_castend_id(src_ud->skilltimer,tick,src->id,0);
+		skill_castend_id(src_ud->skilltimer,tick,src->id,NULL);
 	}
 	return 1;
 }
@@ -1288,7 +1288,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 
 	if(casttime > 0) {
 		int skill;
-		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_pos, src->id, 0);
+		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_pos, src->id, NULL);
 		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
 			src_sd->prev_speed = src_sd->speed;
 			src_sd->speed = src_sd->speed*(175 - skill*5)/100;
@@ -1298,7 +1298,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 		}
 	} else {
 		src_ud->skilltimer = -1;
-		skill_castend_pos(src_ud->skilltimer,tick,src->id,0);
+		skill_castend_pos(src_ud->skilltimer,tick,src->id,NULL);
 	}
 	return 1;
 }
@@ -1364,10 +1364,10 @@ int unit_attack(struct block_list *src,int target_id,int type)
 	d = DIFF_TICK(src_ud->attackabletime,gettick());
 	if(d > 0) {
 		// 攻撃delay中
-		src_ud->attacktimer = add_timer(src_ud->attackabletime,unit_attack_timer,src->id,0);
+		src_ud->attacktimer = add_timer(src_ud->attackabletime,unit_attack_timer,src->id,NULL);
 	} else {
 		// 本来timer関数なので引数を合わせる
-		unit_attack_timer(-1,gettick(),src->id,0);
+		unit_attack_timer(-1,gettick(),src->id,NULL);
 	}
 
 	return 0;
@@ -1482,7 +1482,7 @@ int unit_isrunning(struct block_list *bl)
  * 攻撃 (timer関数)
  *------------------------------------------
  */
-static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
+static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 {
 	struct block_list *src, *target;
 	struct status_change *sc, *tsc;
@@ -1658,12 +1658,12 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,int data)
 	}
 
 	if(src_ud->state.attack_continue) {
-		src_ud->attacktimer = add_timer(src_ud->attackabletime,unit_attack_timer,src->id,0);
+		src_ud->attacktimer = add_timer(src_ud->attackabletime,unit_attack_timer,src->id,NULL);
 	}
 	return 1;
 }
 
-static int unit_attack_timer(int tid,unsigned int tick,int id,int data)
+static int unit_attack_timer(int tid,unsigned int tick,int id,void *data)
 {
 	if(unit_attack_timer_sub(tid, tick, id, data) == 0) {
 		unit_unattackable( map_id2bl(id) );
@@ -2126,7 +2126,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			if(DIFF_TICK(spawntime3,md->last_spawntime) > 0) {
 				md->last_spawntime = spawntime3;
 			}
-			add_timer(md->last_spawntime,mob_delayspawn,bl->id,0);
+			add_timer(md->last_spawntime,mob_delayspawn,bl->id,NULL);
 		}
 	} else if(bl->type == BL_PET) {
 		struct pet_data *pd = (struct pet_data*)bl;

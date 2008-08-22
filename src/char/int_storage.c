@@ -1046,7 +1046,7 @@ static int guild_storage_deadlock_timer_sub(void *key, void *data, va_list ap)
 	return 0;
 }
 
-int guild_storage_deadlock_timer(int tid, unsigned int tick, int id, int data)
+int guild_storage_deadlock_timer(int tid, unsigned int tick, int id, void *data)
 {
 	numdb_foreach(gstorage_db, guild_storage_deadlock_timer_sub);
 
@@ -1077,7 +1077,7 @@ int inter_storage_parse_frommap(int fd)
 
 int inter_storage_init(void)
 {
-	add_timer_interval(gettick()+1000, guild_storage_deadlock_timer, 0, 0, 3600 * 1000);
+	add_timer_interval(gettick()+1000, guild_storage_deadlock_timer, 0, NULL, 3600 * 1000);
 
 	return 0;
 }

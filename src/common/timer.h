@@ -24,26 +24,20 @@
 #ifndef	_TIMER_H_
 #define	_TIMER_H_
 
-#define TIMER_ONCE_AUTODEL 1
-#define TIMER_INTERVAL 2
-#define TIMER_REMOVE_HEAP 16
+#define TIMER_ONCE_AUTODEL 0x01
+#define TIMER_INTERVAL     0x02
+#define TIMER_REMOVE_HEAP  0x10
 
 #define DIFF_TICK(a,b) ((int)((a)-(b)))
-
-enum {
-	TIMER_FREE_ID   = 0x01,
-	TIMER_FREE_DATA = 0x02
-};
 
 // Struct declaration
 struct TimerData {
 	unsigned int tick;
-	int (*func)(int,unsigned int,int,int);
+	int (*func)(int,unsigned int,int,void*);
 	int id;
-	int data;
+	void *data;
 	int interval;
-	short type;
-	unsigned short free_flag;
+	short type, free_flag;
 };
 
 // Function prototype declaration
@@ -51,21 +45,21 @@ struct TimerData {
 unsigned int gettick_nocache(void);
 unsigned int gettick(void);
 
-int add_timer_real(unsigned int,int (*)(int,unsigned int,int,int),int,int,unsigned short);
-#define add_timer(tick,func,id,data)       add_timer_real(tick,func,id,data,0)
-#define add_timer2(tick,func,id,data,flag) add_timer_real(tick,func,id,data,flag)
-int add_timer_interval(unsigned int,int (*)(int,unsigned int,int,int),int,int,int);
-int delete_timer(int,int (*)(int,unsigned int,int,int));
+int add_timer_real(unsigned int,int (*)(int,unsigned int,int,void*),int,void*,short);
+#define add_timer(tick,func,id,data)  add_timer_real(tick,func,id,data,0)
+#define add_timer2(tick,func,id,data) add_timer_real(tick,func,id,data,1)
+int add_timer_interval(unsigned int,int (*)(int,unsigned int,int,void*),int,void*,int);
+int delete_timer(int,int (*)(int,unsigned int,int,void*));
 
 unsigned int addtick_timer(int tid,unsigned int tick);
 struct TimerData *get_timer(int tid);
 
 int do_timer(unsigned int tick);
 
-int add_timer_func_list_real(int (*)(int,unsigned int,int,int),const char*);
+int add_timer_func_list_real(int (*)(int,unsigned int,int,void*),const char*);
 #define add_timer_func_list(x) add_timer_func_list_real(x, #x)
 
 void do_final_timer(void);
-const char* search_timer_func_list(int (*)(int,unsigned int,int,int));
+const char* search_timer_func_list(int (*)(int,unsigned int,int,void*));
 
 #endif	// _TIMER_H_

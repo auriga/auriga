@@ -70,7 +70,7 @@ int pet_change_name(struct map_session_data *sd,char *name);
 void pet_equipitem(struct map_session_data *sd, int idx);
 int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd);
 int pet_lootitem_free(struct pet_data *pd);
-int pet_skill_support_timer(int tid,unsigned int tick,int id,int data);
+int pet_skill_support_timer(int tid,unsigned int tick,int id,void *data);
 int do_init_pet(void);
 int do_final_pet(void);
 

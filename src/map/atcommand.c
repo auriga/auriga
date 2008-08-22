@@ -1853,7 +1853,7 @@ int atcommand_pvpon(const int fd, struct map_session_data* sd, AtCommandType com
 		for (i = 0; i < fd_max; i++) {
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 				if (sd->bl.m == pl_sd->bl.m && pl_sd->pvp_timer == -1) {
-					pl_sd->pvp_timer = add_timer(gettick() + 200,pc_calc_pvprank_timer, pl_sd->bl.id, 0);
+					pl_sd->pvp_timer = add_timer(gettick() + 200,pc_calc_pvprank_timer, pl_sd->bl.id, NULL);
 					pl_sd->pvp_rank = 0;
 					pl_sd->pvp_lastusers = 0;
 					pl_sd->pvp_point = 5;
@@ -3617,7 +3617,7 @@ int atcommand_summon(const int fd, struct map_session_data* sd, AtCommandType co
 		md->state.special_mob_ai = 1;
 		md->master_id   = sd->bl.id;
 		md->mode        = mob_db[md->class_].mode | 0x04;
-		md->deletetimer = add_timer(tick+60000,mob_timer_delete,id,0);
+		md->deletetimer = add_timer(tick+60000,mob_timer_delete,id,NULL);
 		clif_misceffect2(&md->bl,344);
 	}
 	clif_skill_poseffect(&sd->bl,AM_CALLHOMUN,1,x,y,tick);

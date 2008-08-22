@@ -347,7 +347,7 @@ int main(int argc,char **argv)
 	do_init(argc,argv);
 	if (packet_parse_time > 0) {
 		add_timer_func_list(parsepacket_timer);
-		add_timer_interval(gettick()+packet_parse_time,parsepacket_timer,0,0,packet_parse_time);
+		add_timer_interval(gettick()+packet_parse_time,parsepacket_timer,0,NULL,packet_parse_time);
 
 		while(auriga_is_running) {
 			next = do_timer(gettick_nocache());

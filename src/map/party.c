@@ -832,7 +832,7 @@ static int party_send_xyhp_timer_sub(void *key, void *data, va_list ap)
 	return 0;
 }
 
-static int party_send_xyhp_timer(int tid, unsigned int tick, int id, int data)
+static int party_send_xyhp_timer(int tid, unsigned int tick, int id, void *data)
 {
 	numdb_foreach(party_db,party_send_xyhp_timer_sub);
 
@@ -1082,7 +1082,7 @@ void do_init_party(void)
 	party_db=numdb_init();
 
 	add_timer_func_list(party_send_xyhp_timer);
-	add_timer_interval(gettick()+PARTY_SEND_XYHP_INVERVAL,party_send_xyhp_timer,0,0,PARTY_SEND_XYHP_INVERVAL);
+	add_timer_interval(gettick()+PARTY_SEND_XYHP_INVERVAL,party_send_xyhp_timer,0,NULL,PARTY_SEND_XYHP_INVERVAL);
 
 	return;
 }

@@ -1115,7 +1115,7 @@ void flush_fifo(int fd)
 	return;
 }
 
-int parsepacket_timer(int tid, unsigned int tick, int id, int data)
+int parsepacket_timer(int tid, unsigned int tick, int id, void *data)
 {
 	do_parsepacket();
 
@@ -1266,7 +1266,7 @@ static int connect_check_(unsigned long ip)
 	return connect_ok;
 }
 
-static int connect_check_clear(int tid, unsigned int tick, int id, int data)
+static int connect_check_clear(int tid, unsigned int tick, int id, void *data)
 {
 	int i;
 	int clear = 0;
@@ -1497,7 +1497,7 @@ void do_socket(void)
 
 	// とりあえず５分ごとに不要なデータを削除する
 	add_timer_func_list(connect_check_clear);
-	add_timer_interval(gettick() + 1000, connect_check_clear, 0, 0, 300 * 1000);
+	add_timer_interval(gettick() + 1000, connect_check_clear, 0, NULL, 300 * 1000);
 
 	return;
 }

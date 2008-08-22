@@ -378,7 +378,7 @@ void guild_flush_expcache(void)
 	return;
 }
 
-static int guild_payexp_timer(int tid,unsigned int tick,int id,int data)
+static int guild_payexp_timer(int tid,unsigned int tick,int id,void *data)
 {
 	guild_flush_expcache();
 	return 0;
@@ -1034,7 +1034,7 @@ static int guild_send_xy_timer_sub(void *key,void *data,va_list ap)
 	return 0;
 }
 
-static int guild_send_xy_timer(int tid,unsigned int tick,int id,int data)
+static int guild_send_xy_timer(int tid,unsigned int tick,int id,void *data)
 {
 	numdb_foreach(guild_db,guild_send_xy_timer_sub);
 
@@ -2195,7 +2195,7 @@ void guild_agit_end(void)
  * 排除タイマー（OnAgitEliminate）
  *------------------------------------------
  */
-static int guild_gvg_eliminate_timer(int tid,unsigned int tick,int id,int data)
+static int guild_gvg_eliminate_timer(int tid,unsigned int tick,int id,void *data)
 {
 	char *evname = (char *)data;
 
@@ -2229,8 +2229,7 @@ void guild_agit_break(struct mob_data *md)
 	memcpy(evname, md->npc_event, len - 5);
 	strcat(evname, "Eliminate");
 
-	add_timer2(gettick()+battle_config.gvg_eliminate_time,guild_gvg_eliminate_timer,
-		md->bl.m,(int)evname,TIMER_FREE_DATA);
+	add_timer2(gettick()+battle_config.gvg_eliminate_time,guild_gvg_eliminate_timer,md->bl.m,evname);
 
 	return;
 }
@@ -2410,8 +2409,8 @@ void do_init_guild(void)
 	add_timer_func_list(guild_gvg_eliminate_timer);
 	add_timer_func_list(guild_payexp_timer);
 	add_timer_func_list(guild_send_xy_timer);
-	add_timer_interval(gettick()+GUILD_PAYEXP_INVERVAL,guild_payexp_timer,0,0,GUILD_PAYEXP_INVERVAL);
-	add_timer_interval(gettick()+GUILD_SEND_XY_INVERVAL,guild_send_xy_timer,0,0,GUILD_SEND_XY_INVERVAL);
+	add_timer_interval(gettick()+GUILD_PAYEXP_INVERVAL,guild_payexp_timer,0,NULL,GUILD_PAYEXP_INVERVAL);
+	add_timer_interval(gettick()+GUILD_SEND_XY_INVERVAL,guild_send_xy_timer,0,NULL,GUILD_SEND_XY_INVERVAL);
 
 	return;
 }

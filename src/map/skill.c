@@ -1614,7 +1614,7 @@ struct castend_delay {
 	int flag;
 };
 
-static int skill_castend_delay_sub(int tid, unsigned int tick, int id, int data)
+static int skill_castend_delay_sub(int tid, unsigned int tick, int id, void *data)
 {
 	struct castend_delay *dat = (struct castend_delay *)data;
 	struct block_list *target = map_id2bl(dat->target);
@@ -1638,7 +1638,7 @@ int skill_castend_delay(struct block_list* src, struct block_list *bl,int skilli
 	dat->id     = skillid;
 	dat->lv     = skilllv;
 	dat->flag   = flag;
-	add_timer2(tick, skill_castend_delay_sub, src->id, (int)dat, TIMER_FREE_DATA);
+	add_timer2(tick, skill_castend_delay_sub, src->id, dat);
 
 	return 0;
 }
@@ -1689,7 +1689,7 @@ static int skill_count_water(struct block_list *src,int range)
  *
  *------------------------------------------
  */
-static int skill_timerskill(int tid, unsigned int tick, int id,int data )
+static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data)
 {
 	struct block_list *src = map_id2bl(id);
 	struct unit_data *ud;
@@ -1828,7 +1828,7 @@ int skill_addtimerskill(struct block_list *src,unsigned int tick,int target,int 
 	nullpo_retr(1, ud = unit_bl2ud( src ) );
 
 	skl            = (struct skill_timerskill *)aCalloc( 1, sizeof(struct skill_timerskill) );
-	skl->timer     = add_timer(tick, skill_timerskill, src->id, (int)skl);
+	skl->timer     = add_timer(tick, skill_timerskill_timer, src->id, skl);
 	skl->src_id    = src->id;
 	skl->target_id = target;
 	skl->skill_id  = skill_id;
@@ -1859,7 +1859,7 @@ int skill_cleartimerskill(struct block_list *src)
 	while( node1 ) {
 		struct skill_timerskill *skl = (struct skill_timerskill *)node1->data;
 		if( skl->timer != -1 ) {
-			delete_timer(skl->timer, skill_timerskill);
+			delete_timer(skl->timer, skill_timerskill_timer);
 		}
 		node2 = node1->next;
 		aFree( skl );
@@ -1878,7 +1878,7 @@ int skill_cleartimerskill(struct block_list *src)
  * スキル使用（詠唱完了、ID指定）
  *------------------------------------------
  */
-int skill_castend_id( int tid, unsigned int tick, int id,int data )
+int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 {
 	struct block_list *target, *src = map_id2bl(id);
 	struct map_session_data *src_sd   = NULL;
@@ -5818,7 +5818,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
  * スキル使用（詠唱完了、場所指定）
  *------------------------------------------
  */
-int skill_castend_pos( int tid, unsigned int tick, int id,int data )
+int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 {
 	struct block_list *src = map_id2bl(id);
 	struct map_session_data *src_sd  = NULL;
@@ -6172,7 +6172,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				// 非移動でアクティブで反撃する[0x0:非移動 0x1:移動 0x4:ACT 0x8:非ACT 0x40:反撃無 0x80:反撃有]
 				tmpmd->mode = 0x0 + 0x4 + 0x80;
 
-				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,0);
+				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
 				tmpmd->state.nodrop = battle_config.cannibalize_no_drop;
 				tmpmd->state.noexp  = battle_config.cannibalize_no_exp;
 				tmpmd->state.nomvp  = battle_config.cannibalize_no_mvp;
@@ -6203,7 +6203,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			id = mob_once_spawn(sd,"this", x, y,"--ja--",summons[n][atn_rand()%6], 1, "");
 
 			if((tmpmd = map_id2md(id)) != NULL)
-				tmpmd->deletetimer = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,0);
+				tmpmd->deletetimer = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 		}
 		break;
@@ -6218,7 +6218,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				tmpmd->master_id    = sd->bl.id;
 				tmpmd->hp           = 2000 + skilllv * 400;
 				tmpmd->def_ele      = 40 + ELE_WATER;
-				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,0);
+				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
 				tmpmd->state.nodrop = battle_config.spheremine_no_drop;
 				tmpmd->state.noexp  = battle_config.spheremine_no_exp;
 				tmpmd->state.nomvp  = battle_config.spheremine_no_mvp;
@@ -10977,7 +10977,7 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
  * スキルユニットタイマー処理
  *------------------------------------------
  */
-static int skill_unit_timer( int tid,unsigned int tick,int id,int data)
+static int skill_unit_timer( int tid,unsigned int tick,int id,void *data)
 {
 	map_foreachobject( skill_unit_timer_sub, BL_SKILL, tick );
 
@@ -13016,10 +13016,10 @@ int do_init_skill(void)
 	add_timer_func_list(skill_unit_timer);
 	add_timer_func_list(skill_castend_id);
 	add_timer_func_list(skill_castend_pos);
-	add_timer_func_list(skill_timerskill);
+	add_timer_func_list(skill_timerskill_timer);
 	add_timer_func_list(skill_castend_delay_sub);
 
-	add_timer_interval(gettick()+SKILLUNITTIMER_INVERVAL,skill_unit_timer,0,0,SKILLUNITTIMER_INVERVAL);
+	add_timer_interval(gettick()+SKILLUNITTIMER_INVERVAL,skill_unit_timer,0,NULL,SKILLUNITTIMER_INVERVAL);
 
 	return 0;
 }

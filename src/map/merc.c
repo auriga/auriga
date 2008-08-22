@@ -164,7 +164,7 @@ static int merc_calc_pos(struct merc_data *mcd,int tx,int ty,int dir)
  * 雇用期限タイマー
  *------------------------------------------
  */
-static int merc_employ_timer(int tid,unsigned int tick,int id,int data)
+static int merc_employ_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 
@@ -441,8 +441,8 @@ int merc_callmerc(struct map_session_data *sd,int class_)
 	return 1;
 }
 
-static int merc_natural_heal_hp(int tid,unsigned int tick,int id,int data);
-static int merc_natural_heal_sp(int tid,unsigned int tick,int id,int data);
+static int merc_natural_heal_hp(int tid,unsigned int tick,int id,void *data);
+static int merc_natural_heal_sp(int tid,unsigned int tick,int id,void *data);
 
 /*==========================================
  *
@@ -507,14 +507,14 @@ static int merc_data_init(struct map_session_data *sd)
 	unit_dataset(&mcd->bl);
 	map_addiddb(&mcd->bl);
 
-	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,0);
-	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,0);
+	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,NULL);
+	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,NULL);
 
 	if(mcd->status.limit > now)
 		diff = (mcd->status.limit - now) * 1000;
 	else
 		diff = 1;
-	mcd->limit_timer = add_timer(tick+diff,merc_employ_timer,sd->bl.id,0);
+	mcd->limit_timer = add_timer(tick+diff,merc_employ_timer,sd->bl.id,NULL);
 
 	mcd->view_size = 0;
 
@@ -836,7 +836,7 @@ int merc_heal(struct merc_data *mcd,int hp,int sp)
  * 自然回復物
  *------------------------------------------
  */
-static int merc_natural_heal_hp(int tid,unsigned int tick,int id,int data)
+static int merc_natural_heal_hp(int tid,unsigned int tick,int id,void *data)
 {
 	struct merc_data *mcd = map_id2mcd(id);
 	int bhp;
@@ -859,12 +859,12 @@ static int merc_natural_heal_hp(int tid,unsigned int tick,int id,int data)
 		if(bhp != mcd->status.hp && mcd->msd)
 			clif_send_mercstatus(mcd->msd,0);
 	}
-	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,0);
+	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,NULL);
 
 	return 0;
 }
 
-static int merc_natural_heal_sp(int tid,unsigned int tick,int id,int data)
+static int merc_natural_heal_sp(int tid,unsigned int tick,int id,void *data)
 {
 	struct merc_data *mcd = map_id2mcd(id);
 	int bsp;
@@ -887,7 +887,7 @@ static int merc_natural_heal_sp(int tid,unsigned int tick,int id,int data)
 		if(bsp != mcd->status.sp && mcd->msd)
 			clif_send_mercstatus(mcd->msd,0);
 	}
-	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,0);
+	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,NULL);
 
 	return 0;
 }

@@ -159,7 +159,7 @@ struct npc_data* npc_name2id(const char *name)
  * イベントの遅延実行
  *------------------------------------------
  */
-static int npc_event_timer(int tid,unsigned int tick,int id,int data)
+static int npc_event_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	char *p = (char *)data;
@@ -196,7 +196,7 @@ int npc_event_dequeue(struct map_session_data *sd)
 		sd->eventqueue[MAX_EVENTQUEUE-1][0] = 0;
 
 		// add the timer
-		add_timer2(gettick()+100,npc_event_timer,sd->bl.id,(int)name,TIMER_FREE_DATA);
+		add_timer2(gettick()+100,npc_event_timer,sd->bl.id,name);
 	}
 	return 0;
 }
@@ -274,7 +274,7 @@ int npc_event_do(const char *name)
  * 時計イベント実行
  *------------------------------------------
  */
-static int npc_event_do_clock(int tid,unsigned int tick,int id,int data)
+static int npc_event_do_clock(int tid,unsigned int tick,int id,void *data)
 {
 	time_t now;
 	struct tm t;
@@ -315,7 +315,7 @@ int npc_event_do_oninit(void)
 	int c = npc_event_doall("OnInit");
 
 	printf("npc: OnInit Event done. (%d npc)\n",c);
-	add_timer_interval(gettick()+100,npc_event_do_clock,0,0,1000);
+	add_timer_interval(gettick()+100,npc_event_do_clock,0,NULL,1000);
 
 	return 0;
 }
@@ -324,9 +324,8 @@ int npc_event_do_oninit(void)
  * タイマーイベント実行
  *------------------------------------------
  */
-static int npc_timerevent(int tid,unsigned int tick,int id,int data)
+static int npc_timerevent(int tid,unsigned int tick,int id,void *data)
 {
-	int next;
 	struct npc_data* nd = map_id2nd(id);
 	struct npc_timerevent_list *te;
 
@@ -338,11 +337,11 @@ static int npc_timerevent(int tid,unsigned int tick,int id,int data)
 	te = nd->u.scr.timer_event + nd->u.scr.nexttimer;
 	nd->u.scr.timerid = -1;
 
-	nd->u.scr.timer += data;
+	nd->u.scr.timer += (int)data;
 	nd->u.scr.nexttimer++;
 	if( nd->u.scr.timeramount > nd->u.scr.nexttimer ) {
-		next = nd->u.scr.timer_event[nd->u.scr.nexttimer].timer - nd->u.scr.timer;
-		nd->u.scr.timerid = add_timer(tick+next,npc_timerevent,id,next);
+		int next = nd->u.scr.timer_event[nd->u.scr.nexttimer].timer - nd->u.scr.timer;
+		nd->u.scr.timerid = add_timer(tick+next,npc_timerevent,id,(void*)next);
 	}
 
 	run_script(nd->u.scr.script,te->pos,0,nd->bl.id);
@@ -374,7 +373,7 @@ int npc_timerevent_start(struct npc_data *nd)
 		return 0;
 
 	next = nd->u.scr.timer_event[j].timer - nd->u.scr.timer;
-	nd->u.scr.timerid = add_timer(gettick()+next,npc_timerevent,nd->bl.id,next);
+	nd->u.scr.timerid = add_timer(gettick()+next,npc_timerevent,nd->bl.id,(void*)next);
 	return 0;
 }
 

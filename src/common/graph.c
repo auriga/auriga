@@ -392,7 +392,7 @@ struct graph_sensor {
 static struct graph_sensor *sensor = NULL;
 static int                  sensor_max = 0;
 
-static int graph_timer(int tid,unsigned int tick,int id,int data)
+static int graph_timer(int tid,unsigned int tick,int id,void *data)
 {
 	if(id >= 0 && id < sensor_max)
 		graph_data(sensor[id].graph,sensor[id].func());
@@ -416,7 +416,7 @@ void graph_add_sensor(const char* string, int interval, double (*callback_func)(
 	sensor[sensor_max].graph    = g;
 	sensor[sensor_max].str      = (char *)aStrdup(string);
 	sensor[sensor_max].func     = callback_func;
-	sensor[sensor_max].tid      = add_timer_interval(gettick(),graph_timer,sensor_max,0,interval);
+	sensor[sensor_max].tid      = add_timer_interval(gettick(),graph_timer,sensor_max,NULL,interval);
 	sensor[sensor_max].interval = interval;
 	sensor_max++;
 

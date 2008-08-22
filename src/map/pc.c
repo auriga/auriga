@@ -220,7 +220,7 @@ int pc_isquitable(struct map_session_data *sd)
  * 無敵時間タイマー
  *------------------------------------------
  */
-static int pc_invincible_timer(int tid,unsigned int tick,int id,int data)
+static int pc_invincible_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 
@@ -248,7 +248,7 @@ int pc_setinvincibletimer(struct map_session_data *sd,int val)
 
 	if(sd->invincible_timer != -1)
 		delete_timer(sd->invincible_timer,pc_invincible_timer);
-	sd->invincible_timer = add_timer(gettick()+val,pc_invincible_timer,sd->bl.id,0);
+	sd->invincible_timer = add_timer(gettick()+val,pc_invincible_timer,sd->bl.id,NULL);
 
 	return 0;
 }
@@ -274,7 +274,7 @@ int pc_delinvincibletimer(struct map_session_data *sd)
  * 気球タイマー
  *------------------------------------------
  */
-static int pc_spiritball_timer(int tid,unsigned int tick,int id,int data)
+static int pc_spiritball_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	int i;
@@ -327,7 +327,7 @@ int pc_addspiritball(struct map_session_data *sd,int interval,int max)
 		sd->spiritball++;
 	}
 
-	sd->spirit_timer[sd->spiritball-1] = add_timer(gettick()+interval+sd->spiritball,pc_spiritball_timer,sd->bl.id,0);
+	sd->spirit_timer[sd->spiritball-1] = add_timer(gettick()+interval+sd->spiritball,pc_spiritball_timer,sd->bl.id,NULL);
 	clif_spiritball(sd);
 
 	return 0;
@@ -375,7 +375,7 @@ int pc_delspiritball(struct map_session_data *sd,int count,int type)
  * コインタイマー
  *-----------------------------------------
  */
-static int pc_coin_timer(int tid,unsigned int tick,int id,int data)
+static int pc_coin_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	int i;
@@ -428,7 +428,7 @@ int pc_addcoin(struct map_session_data *sd,int interval,int max)
 		sd->coin++;
 	}
 
-	sd->coin_timer[sd->coin-1] = add_timer(gettick()+interval+sd->coin,pc_coin_timer,sd->bl.id,0);
+	sd->coin_timer[sd->coin-1] = add_timer(gettick()+interval+sd->coin,pc_coin_timer,sd->bl.id,NULL);
 	clif_coin(sd);
 
 	return 0;
@@ -2988,7 +2988,7 @@ int pc_search_inventory(struct map_session_data *sd,int item_id)
  * アイテム使用期限タイマー
  *------------------------------------------
  */
-static int pc_itemlimit_timer(int tid, unsigned int tick, int id, int data)
+static int pc_itemlimit_timer(int tid, unsigned int tick, int id, void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	struct linkdb_node *node;
@@ -3031,7 +3031,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 		unsigned int diff = sd->status.inventory[idx].limit - now;
 		if(diff > 3600)
 			diff = 3600;
-		return add_timer(tick + diff * 1000, pc_itemlimit_timer, sd->bl.id, 0) + 1;	// 0とNULLが被るので+1しておく
+		return add_timer(tick + diff * 1000, pc_itemlimit_timer, sd->bl.id, NULL) + 1;	// 0とNULLが被るので+1しておく
 	}
 
 	// 時間切れにより削除
@@ -6583,7 +6583,7 @@ int pc_setaccountreg2(struct map_session_data *sd,const char *reg,int val)
  * イベントタイマー処理
  *------------------------------------------
  */
-static int pc_eventtimer(int tid,unsigned int tick,int id,int data)
+static int pc_eventtimer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	char *p = (char *)data;
@@ -6624,7 +6624,7 @@ int pc_addeventtimer(struct map_session_data *sd,int tick,const char *name)
 	}
 	if(i < MAX_EVENTTIMER) {
 		char *evname = (char *)aStrdup(name);
-		sd->eventtimer[i] = add_timer(gettick()+tick,pc_eventtimer,sd->bl.id,(int)evname);
+		sd->eventtimer[i] = add_timer(gettick()+tick,pc_eventtimer,sd->bl.id,evname);
 	} else {
 		if(battle_config.error_log)
 			printf("pc_addtimer: event timer is full !\n");
@@ -7221,7 +7221,7 @@ int pc_calc_pvprank(struct map_session_data *sd)
  * PVP順位計算(timer)
  *------------------------------------------
  */
-int pc_calc_pvprank_timer(int tid,unsigned int tick,int id,int data)
+int pc_calc_pvprank_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 
@@ -8157,7 +8157,7 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
  * HP/SP自然回復 (interval timer関数)
  *------------------------------------------
  */
-static int pc_natural_heal(int tid,unsigned int tick,int id,int data)
+static int pc_natural_heal(int tid,unsigned int tick,int id,void *data)
 {
 	natural_heal_tick = tick;
 	natural_heal_diff_tick = DIFF_TICK(natural_heal_tick,natural_heal_prev_tick);
@@ -8206,7 +8206,7 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
  * 自動セーブ (timer関数)
  *------------------------------------------
  */
-static int pc_autosave(int tid,unsigned int tick,int id,int data)
+static int pc_autosave(int tid,unsigned int tick,int id,void *data)
 {
 	int interval, users = 0;
 
@@ -8221,7 +8221,7 @@ static int pc_autosave(int tid,unsigned int tick,int id,int data)
 	if(agit_flag == 1)	// GvG中はインターバルを長く取ることでラグを緩和する
 		interval = interval * autosave_gvg_rate / 100;
 
-	add_timer(gettick()+interval,pc_autosave,0,0);
+	add_timer(gettick()+interval,pc_autosave,0,NULL);
 
 	return 0;
 }
@@ -8536,7 +8536,7 @@ static struct extra {
 } *extra_dat = NULL;
 static int extra_num = 0;
 
-static int pc_extra(int tid, unsigned int tick, int id, int data)
+static int pc_extra(int tid, unsigned int tick, int id, void *data)
 {
 	FILE *fp;
 	static int extra_file_readed = 0;
@@ -8822,10 +8822,10 @@ int do_init_pc(void)
 	add_timer_func_list(pc_itemlimit_timer);
 
 	natural_heal_prev_tick = gettick() + NATURAL_HEAL_INTERVAL;
-	add_timer_interval(natural_heal_prev_tick,pc_natural_heal,0,0,NATURAL_HEAL_INTERVAL);
+	add_timer_interval(natural_heal_prev_tick,pc_natural_heal,0,NULL,NATURAL_HEAL_INTERVAL);
 
-	add_timer(gettick()+autosave_interval,pc_autosave,0,0);
-	add_timer_interval(gettick()+10000,pc_extra,0,0,60000);
+	add_timer(gettick()+autosave_interval,pc_autosave,0,NULL);
+	add_timer_interval(gettick()+10000,pc_extra,0,NULL,60000);
 
 	return 0;
 }

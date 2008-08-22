@@ -1008,7 +1008,7 @@ int chrif_parse(int fd)
  */
 // timer関数
 // 今このmap鯖に繋がっているクライアント人数をchar鯖へ送る
-static int send_users_tochar(int tid,unsigned int tick,int id,int data)
+static int send_users_tochar(int tid,unsigned int tick,int id,void *data)
 {
 	if (char_fd < 0 || session[char_fd] == NULL || session[char_fd]->auth == 0)
 		return 0;
@@ -1026,7 +1026,7 @@ static int send_users_tochar(int tid,unsigned int tick,int id,int data)
  */
 // timer関数
 // char鯖との接続を確認し、もし切れていたら再度接続する
-static int check_connect_char_server(int tid,unsigned int tick,int id,int data)
+static int check_connect_char_server(int tid,unsigned int tick,int id,void *data)
 {
 	if (char_fd < 0 || session[char_fd] == NULL) {
 		chrif_state = 0;
@@ -1078,8 +1078,8 @@ int do_init_chrif(void)
 {
 	add_timer_func_list(check_connect_char_server);
 	add_timer_func_list(send_users_tochar);
-	add_timer_interval(gettick()+1000,check_connect_char_server,0,0,10*1000);
-	add_timer_interval(gettick()+1000,send_users_tochar,0,0,5*1000);
+	add_timer_interval(gettick()+1000,check_connect_char_server,0,NULL,10*1000);
+	add_timer_interval(gettick()+1000,send_users_tochar,0,NULL,5*1000);
 
 	return 0;
 }

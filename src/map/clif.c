@@ -514,15 +514,15 @@ void clif_clearchar(struct block_list *bl, int type)
 	return;
 }
 
-static int clif_clearchar_delay_sub(int tid,unsigned int tick,int id,int data)
+static int clif_clearchar_delay_sub(int tid,unsigned int tick,int id,void *data)
 {
-	struct block_list *bl = (struct block_list *)id;
+	struct block_list *bl = (struct block_list *)data;
 	unsigned char buf[8];
 
 	WBUFW(buf,0) = 0x80;
 	WBUFL(buf,2) = bl->id;
 	WBUFB(buf,6) = 0;
-	clif_send(buf,packet_db[0x80].len,bl,(data == 1) ? AREA_WOS : ALL_SAMEMAP);
+	clif_send(buf,packet_db[0x80].len,bl,(id == 1) ? AREA_WOS : ALL_SAMEMAP);
 
 	aFree(bl);
 	return 0;
@@ -533,7 +533,7 @@ int clif_clearchar_delay(unsigned int tick,struct block_list *bl)
 	struct block_list *tmpbl = (struct block_list *)aMalloc(sizeof(struct block_list));
 
 	memcpy(tmpbl,bl,sizeof(struct block_list));
-	add_timer2(tick,clif_clearchar_delay_sub,(int)tmpbl,battle_config.pcview_mob_clear_type,TIMER_FREE_ID);
+	add_timer2(tick,clif_clearchar_delay_sub,battle_config.pcview_mob_clear_type,tmpbl);
 
 	return 0;
 }
@@ -2359,7 +2359,7 @@ static void clif_quitsave(struct map_session_data *sd)
  *
  *------------------------------------------
  */
-static int clif_waitclose(int tid,unsigned int tick,int id,int data)
+static int clif_waitclose(int tid,unsigned int tick,int id,void *data)
 {
 	if(session[id])
 		session[id]->eof=1;
@@ -2374,7 +2374,7 @@ static int clif_waitclose(int tid,unsigned int tick,int id,int data)
  */
 void clif_setwaitclose(int fd)
 {
-	add_timer(gettick()+5000,clif_waitclose,fd,0);
+	add_timer(gettick()+5000,clif_waitclose,fd,NULL);
 
 	return;
 }
@@ -10403,7 +10403,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		if(battle_config.pk_noshift)
 			clif_set0199(sd->fd,1);
 	} else if(map[sd->bl.m].flag.pvp) {
-		sd->pvp_timer     = add_timer(gettick()+200,pc_calc_pvprank_timer,sd->bl.id,0);
+		sd->pvp_timer     = add_timer(gettick()+200,pc_calc_pvprank_timer,sd->bl.id,NULL);
 		sd->pvp_rank      = 0;
 		sd->pvp_lastusers = 0;
 		sd->pvp_point     = 5;

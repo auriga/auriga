@@ -2110,7 +2110,7 @@ static void read_gm_account(void)
 	return;
 }
 
-static int mmo_char_sync_timer(int tid,unsigned int tick,int id,int data)
+static int mmo_char_sync_timer(int tid,unsigned int tick,int id,void *data)
 {
 	char_sync();
 	inter_sync();
@@ -4002,7 +4002,7 @@ void mapif_parse_CharConnectLimit(int fd)
 	return;
 }
 
-int send_users_tologin(int tid,unsigned int tick,int id,int data)
+int send_users_tologin(int tid,unsigned int tick,int id,void *data)
 {
 	if (login_fd >= 0 && session[login_fd] && session[login_fd]->auth) {
 		int i, users = 0;
@@ -4029,7 +4029,7 @@ int send_users_tologin(int tid,unsigned int tick,int id,int data)
 	return 0;
 }
 
-static int check_connect_login_server(int tid,unsigned int tick,int id,int data)
+static int check_connect_login_server(int tid,unsigned int tick,int id,void *data)
 {
 	if (login_fd < 0 || session[login_fd] == NULL) {
 		login_fd = make_connection(login_ip, login_port);
@@ -4363,9 +4363,9 @@ int do_init(int argc,char **argv)
 	add_timer_func_list(send_users_tologin);
 	add_timer_func_list(mmo_char_sync_timer);
 
-	add_timer_interval(gettick()+1000,check_connect_login_server,0,0,10*1000);
-	add_timer_interval(gettick()+1000,send_users_tologin,0,0,5*1000);
-	add_timer_interval(gettick()+autosave_interval,mmo_char_sync_timer,0,0,autosave_interval);
+	add_timer_interval(gettick()+1000,check_connect_login_server,0,NULL,10*1000);
+	add_timer_interval(gettick()+1000,send_users_tologin,0,NULL,5*1000);
+	add_timer_interval(gettick()+autosave_interval,mmo_char_sync_timer,0,NULL,autosave_interval);
 
 	// for httpd support
 	do_init_httpd();
