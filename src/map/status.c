@@ -6291,9 +6291,9 @@ int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int 
  *
  * ソースを修正する方への注意
  *
- * ・状態異常継続時には、add_timer() した直後にreturn すること
+ * ・状態異常継続時には、add_timer() した直後に break すること
  * ・状態異常終了時には、関数の最後にあるstatus_change_end() の
- * 　呼び出し前に return しないこと
+ *   呼び出し前に return しないこと
  *
  * この２点が守られていないと、他人の状態異常が勝手に解除されたり、
  * delete_timer errorが出てくるなどのバグが発生します。
@@ -6301,7 +6301,8 @@ int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int 
  */
 int status_change_timer(int tid, unsigned int tick, int id, int data)
 {
-	int type = data;
+	int type  = data;
+	int timer = -1;
 	struct block_list *bl;
 	struct map_session_data *sd  = NULL;
 	struct mob_data         *md  = NULL;
@@ -6328,6 +6329,8 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 		return 0;
 	}
 
+	map_freeblock_lock();
+
 	switch(type) {	/* 特殊な処理になる場合 */
 	case SC_MAXIMIZEPOWER:	/* マキシマイズパワー */
 	case SC_CLOAKING:	/* クローキング */
@@ -6336,10 +6339,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			if(sd->status.sp > 0) {	/* SP切れるまで持続 */
 				sd->status.sp--;
 				clif_updatestatus(sd,SP_SP);
-				sc->data[type].timer = add_timer(	/* タイマー再設定 */
+				timer = add_timer(	/* タイマー再設定 */
 					sc->data[type].val2+tick, status_change_timer,
-					bl->id, data);
-				return 0;
+					bl->id, type);
 			}
 		}
 		break;
@@ -6353,16 +6355,14 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				sd->status.sp -= sp;
 				clif_updatestatus(sd,SP_SP);
 				if((++sc->data[SC_CHASEWALK].val4) == 1) {
-					// ローグの魂
-					if(sc->data[SC_ROGUE].timer != -1)
-						status_change_start(bl, SC_CHASEWALK_STR, 1<<(sc->data[SC_CHASEWALK].val1-1), 0, 0, 0, 300000, 0);
-					else
-						status_change_start(bl, SC_CHASEWALK_STR, 1<<(sc->data[SC_CHASEWALK].val1-1), 0, 0, 0, 30000, 0);
-					status_calc_pc(sd, 0);
+					// ローグの魂なら効果時間10倍
+					status_change_start(
+						bl, SC_CHASEWALK_STR, 1<<(sc->data[SC_CHASEWALK].val1-1), 0, 0, 0,
+						((sc->data[SC_ROGUE].timer != -1)? 300000: 30000), 0
+					);
 				}
-				sc->data[type].timer = add_timer( /* タイマー再設定 */
-					sc->data[type].val2+tick, status_change_timer, bl->id, data);
-				return 0;
+				timer = add_timer( /* タイマー再設定 */
+					sc->data[type].val2+tick, status_change_timer, bl->id, type);
 			}
 		}
 		break;
@@ -6374,10 +6374,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 					sd->status.sp--;
 					clif_updatestatus(sd,SP_SP);
 				}
-				sc->data[type].timer = add_timer(	/* タイマー再設定 */
+				timer = add_timer(	/* タイマー再設定 */
 					1000+tick, status_change_timer,
-					bl->id, data);
-				return 0;
+					bl->id, type);
 			}
 		}
 		break;
@@ -6399,10 +6398,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				bl, type, sc->data[type].val1, tick);
 
 			if((--sc->data[type].val2) > 0) {
-				sc->data[type].timer = add_timer(	/* タイマー再設定 */
+				timer = add_timer(	/* タイマー再設定 */
 					250+tick, status_change_timer,
-					bl->id, data);
-				return 0;
+					bl->id, type);
 			}
 		}
 		break;
@@ -6411,8 +6409,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 		{
 			int race = status_get_race(bl);
 			if(race == RCT_DEMON || battle_check_undead(race,status_get_elem_type(bl))) {
-				sc->data[type].timer = add_timer(1000*600+tick, status_change_timer, bl->id, data);
-				return 0;
+				timer = add_timer(1000*600+tick, status_change_timer, bl->id, type);
 			}
 		}
 		break;
@@ -6421,8 +6418,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 		if(sc->data[type].val2 != 0) {	/* オートバーサーク（１秒ごとにHPチェック） */
 			if(status_get_hp(bl) > status_get_max_hp(bl)>>2)	/* 停止 */
 				break;
-			sc->data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
-			return 0;
+			timer = add_timer(1000+tick, status_change_timer, bl->id, type);
 		}
 		break;
 
@@ -6436,10 +6432,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			if(!src)
 				break;
 			battle_skill_attack(BF_MISC,src,&unit->bl,bl,unit->group->skill_id,sc->data[type].val1,tick,0);
-			sc->data[type].timer = add_timer(
+			timer = add_timer(
 				skill_get_time2(unit->group->skill_id,unit->group->skill_lv)+tick, status_change_timer,
-				bl->id, data);
-			return 0;
+				bl->id, type);
 		}
 		break;
 	case SC_UGLYDANCE:	/* 自分勝手なダンス */
@@ -6452,10 +6447,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			if(!src)
 				break;
 			skill_additional_effect(src,bl,unit->group->skill_id,sc->data[type].val1,0,tick);
-			sc->data[type].timer = add_timer(
+			timer = add_timer(
 				skill_get_time2(unit->group->skill_id,unit->group->skill_lv)+tick, status_change_timer,
-				bl->id, data);
-			return 0;
+				bl->id, type);
 		}
 		break;
 
@@ -6465,10 +6459,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			if(!unit || !unit->group || unit->group->src_id == bl->id)
 				break;
 			skill_additional_effect(bl,bl,unit->group->skill_id,sc->data[type].val1,BF_LONG|BF_SKILL|BF_MISC,tick);
-			sc->data[type].timer = add_timer(
+			timer = add_timer(
 				skill_get_time(unit->group->skill_id,unit->group->skill_lv)/10+tick, status_change_timer,
-				bl->id, data);
-			return 0;
+				bl->id, type);
 		}
 		break;
 
@@ -6480,8 +6473,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			sc->opt1 = 1;
 			clif_changeoption(bl);
 			clif_send_clothcolor(bl);
-			sc->data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
-			return 0;
+			timer = add_timer(1000+tick, status_change_timer, bl->id, type);
 		}
 		if((--sc->data[type].val3) > 0) {
 			int hp = status_get_max_hp(bl);
@@ -6489,8 +6481,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				hp = (hp < 100)? 1: hp/100;
 				unit_heal(bl,-hp,0);
 			}
-			sc->data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
-			return 0;
+			timer = add_timer(1000+tick, status_change_timer, bl->id, type);
 		}
 		break;
 	case SC_POISON:
@@ -6505,8 +6496,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			}
 		}
 		if(sc->data[type].val3 > 0) {
-			sc->data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
-			return 0;
+			timer = add_timer(1000+tick, status_change_timer, bl->id, type);
 		}
 		break;
 	case SC_DPOISON:
@@ -6518,8 +6508,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			}
 		}
 		if(sc->data[type].val3 > 0) {
-			sc->data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
-			return 0;
+			timer = add_timer(1000+tick, status_change_timer, bl->id, type);
 		}
 		break;
 	case SC_BLEED:
@@ -6532,8 +6521,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				unit_heal(bl, -dmg, 0);
 			}
 			if(!unit_isdead(bl)) {
-				sc->data[type].timer = add_timer(10000+tick, status_change_timer, bl->id, data);
-				return 0;
+				timer = add_timer(10000+tick, status_change_timer, bl->id, type);
 			}
 		}
 		break;
@@ -6544,13 +6532,12 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 					sd->status.sp -= 12;
 					clif_updatestatus(sd,SP_SP);
 				}
-				sc->data[type].timer = add_timer(	/* タイマー再設定 */
+				timer = add_timer(	/* タイマー再設定 */
 					10000+tick, status_change_timer,
-					bl->id, data);
-				return 0;
-			}
-			if(sd->status.max_hp <= sd->status.hp)
+					bl->id, type);
+			} else if(sd->status.max_hp <= sd->status.hp) {
 				status_change_end(&sd->bl,SC_TENSIONRELAX,-1);
+			}
 		}
 		break;
 
@@ -6570,12 +6557,12 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 	case SC_RUN:
 	case SC_MARIONETTE:
 	case SC_MARIONETTE2:
-		sc->data[type].timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
-		return 0;
+		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, type);
+		break;
 	case SC_MODECHANGE:
 		clif_emotion(bl,1);
-		sc->data[type].timer = add_timer(1500 + tick, status_change_timer, bl->id, data);
-		return 0;
+		timer = add_timer(1500 + tick, status_change_timer, bl->id, type);
+		break;
 	case SC_LONGINGFREEDOM:
 		if(sd && sd->status.sp >= 3) {
 			if(--sc->data[type].val3 <= 0)
@@ -6584,8 +6571,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				clif_updatestatus(sd, SP_SP);
 				sc->data[type].val3 = 3;
 			}
-			sc->data[type].timer = add_timer(1000 + tick, status_change_timer, bl->id, data);
-			return 0;
+			timer = add_timer(1000 + tick, status_change_timer, bl->id, type);
 		}
 		break;
 	case SC_DANCING:
@@ -6633,10 +6619,9 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 					sd->status.sp -= cost;
 					clif_updatestatus(sd,SP_SP);
 				}
-				sc->data[type].timer = add_timer(	/* タイマー再設定 */
+				timer = add_timer(	/* タイマー再設定 */
 					1000+tick, status_change_timer,
-					bl->id, data);
-				return 0;
+					bl->id, type);
 			}
 		}
 		break;
@@ -6654,25 +6639,30 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 					mcd->status.hp -= dmg;
 					clif_send_mercstatus(mcd->msd,0);
 				}
-				sc->data[type].timer = add_timer(	/* タイマー再設定 */
+				timer = add_timer(	/* タイマー再設定 */
 					10000+tick, status_change_timer,
-					bl->id, data);
-				return 0;
+					bl->id, type);
+			} else {
+				if(sd) {
+					sd->status.hp = 100;
+					clif_updatestatus(sd,SP_HP);
+				} else if(hd) {
+					hd->status.hp = 100;
+					clif_send_homstatus(hd->msd,0);
+				} else if(mcd) {
+					mcd->status.hp = 100;
+					clif_send_mercstatus(mcd->msd,0);
+				}
 			}
-			if(sd)       sd->status.hp  = 100;
-			else if(hd)  hd->status.hp  = 100;
-			else if(mcd) mcd->status.hp = 100;
 		}
 		break;
 	case SC_NOCHAT:			/* チャット禁止状態 */
 		if(sd) {
-			time_t timer;
-			if(++sd->status.manner && time(&timer) < (sc->data[type].val2 - 60*sd->status.manner)) {	// 開始からstatus.manner分経ってないので継続
+			if(++sd->status.manner && time(NULL) < (sc->data[type].val2 - 60*sd->status.manner)) {	// 開始からstatus.manner分経ってないので継続
 				clif_updatestatus(sd,SP_MANNER);
-				sc->data[type].timer = add_timer(	/* タイマー再設定(60秒) */
+				timer = add_timer(	/* タイマー再設定(60秒) */
 					60000+tick, status_change_timer,
-					bl->id, data);
-				return 0;
+					bl->id, type);
 			}
 		}
 		break;
@@ -6685,8 +6675,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 			unit_walktodir(&md->bl,1);	// 速度が変わるので毎回呼び出す
 
 			/* タイマー再設定 */
-			sc->data[type].timer = add_timer(100+tick, status_change_timer, bl->id, data);
-			return 0;
+			timer = add_timer(100+tick, status_change_timer, bl->id, type);
 		}
 		break;
 	case SC_BOSSMAPINFO:			/* 凸面鏡 */
@@ -6720,8 +6709,7 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 				}
 			}
 			/* タイマー再設定 */
-			sc->data[type].timer = add_timer(1000+tick, status_change_timer, bl->id, data);
-			return 0;
+			timer = add_timer(1000+tick, status_change_timer, bl->id, type);
 		}
 		break;
 	case SC_CHANGE:		/* メンタルチェンジ */
@@ -6729,11 +6717,18 @@ int status_change_timer(int tid, unsigned int tick, int id, int data)
 		break;
 	}
 
-	if(sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
+	if(timer != -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
 	{
-		sc->data[type].timer = add_timer(	/* タイマー再設定 */
+		timer = add_timer(	/* タイマー再設定 */
 			sd->eternal_status_change[type]+tick, status_change_timer,
-			bl->id, data);
+			bl->id, type);
+	}
+
+	map_freeblock_unlock();
+
+	if(timer != -1) {
+		// タイマーIDを保存して継続する
+		sc->data[type].timer = timer;
 		return 0;
 	}
 

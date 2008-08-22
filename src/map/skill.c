@@ -6635,7 +6635,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			}
 		}
 
-		if(unit_flag&UF_PATHCHECK) { // 射線チェック
+		if(unit_flag&UF_PATHCHECK && alive) { // 射線チェック
 			if(!path_search_long(NULL,src->m,src->x,src->y,ux,uy))
 				alive = 0;
 		}
@@ -6656,15 +6656,20 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			unit->val2  = val2;
 			unit->limit = limit;
 			unit->range = range;
-			if(range == 0)
-				map_foreachinarea(skill_unit_effect,unit->bl.m,
-					unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,
-					(BL_PC|BL_MOB|BL_MERC),&unit->bl,gettick(),1);
 		}
 	}
 
-	if(on_flag && group)
-	{
+	// 全てのユニットの設置が終わってからスキル効果を発動させる
+	for(i=0; i<layout->count; i++) {
+		struct skill_unit *unit = &group->unit[i];
+
+		if(unit->alive && unit->range == 0)
+			map_foreachinarea(skill_unit_effect,unit->bl.m,
+				unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,
+				(BL_PC|BL_MOB|BL_MERC),&unit->bl,gettick(),1);
+	}
+
+	if(on_flag && group) {
 		switch(skillid) {
 		case MG_FIREWALL:
 			group->limit = group->limit*150/100;
@@ -6673,6 +6678,12 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			group->limit *= 2;
 			break;
 		}
+	}
+
+	if(group->alive_count <= 0) {
+		// ユニットが発生しなかった
+		skill_delunitgroup(group);
+		group = NULL;
 	}
 
 	return group;
