@@ -1,4 +1,32 @@
 ----------------------------------------
+//0518 [2008/08/27] by Rayce
+
+・Athena Rev.505より部分的にmerge、thanks to Blazeさん（grfio.c, map.c）
+	-> 水場の高さをrswファイルから読むように
+	-> conf/water_height.txtはrswの高さをオーバーライドする際に利用する
+	   デフォルトでは未記入状態
+	-> mapキャッシュ読み込み時、conf/water_height.txtに記述があるmapに
+	   対してのみ水場が変更されていないかのチェックを行う
+
+	※mapキャッシュを利用している方は、map.infoを削除して再度
+	  作成し直して下さい
+	※rswファイルが変更されてもmapキャッシュの自動再作成は行われないので、
+	  その場合はmapキャッシュを削除してから再度作成し直して下さい
+
+・conf/water_height.txtで、高さを省略した場合は全水場になるように修正（map.c）
+	機能が中途半端で動作していなかったので有効化
+	mapflagのrainを指定しなくても全てのセルを水場に設定できます
+
+・conf/water_height.txtはmap_auriga.confの読み込みが終わった後に
+  読み込みを行うように変更（map.c）
+
+・map読み込み時、128MAP単位でメモリを拡張するように改善（map.c）
+・map名の拡張子が .gat かどうかのチェックは map_readallmap() ではなく
+  map_addmap() で行うように変更（map.c）
+
+・BLOCK_FREE_MAXを超過したとき、blockがfreeされないのを修正（map.c）
+
+----------------------------------------
 //0517 [2008/08/23] by Rayce
 
 ・add_timer_real() のdataをint型からvoid型のポインタに変更

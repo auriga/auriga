@@ -92,6 +92,7 @@ static struct delay_item_drop2 *delayitem_head = NULL, *delayitem_tail = NULL;
 
 struct map_data *map = NULL;
 int map_num = 0;
+static int map_max = 0;
 
 int autosave_interval = DEFAULT_AUTOSAVE_INTERVAL;
 int autosave_gvg_rate = 100;
@@ -117,8 +118,9 @@ char motd_txt[256]           = "conf/motd.txt";
 char help_txt[256]           = "conf/help.txt";
 char extra_add_file_txt[256] = "map_extra_add.txt"; // to add items from external software (use append to add a line)
 
-static char map_cache_file[256] = "map.info";	// マップキャッシュファイル名
-static char grf_path_txt[256]   = "conf/grf-files.txt";
+static char map_cache_file[256]   = "map.info";	// マップキャッシュファイル名
+static char grf_path_txt[256]     = "conf/grf-files.txt";
+static char water_height_txt[256] = "conf/water_height.txt";
 
 // 向き計算用
 const int dirx[8] = { 0,-1,-1,-1, 0, 1, 1, 1 };
@@ -281,6 +283,7 @@ int map_freeblock(void *bl)
 		bl = NULL;
 	} else {
 		if(block_free_count >= BLOCK_FREE_MAX) {
+			aFree(bl);
 			if(battle_config.error_log)
 				printf("map_freeblock: *WARNING* too many free block! %d %d\n", block_free_count, block_free_lock);
 		} else {
@@ -1999,33 +2002,62 @@ static struct waterlist {
 static int waterlist_num = 0;
 static int waterlist_max = 0;
 
-#define NO_WATER 1000000
+#define NO_WATER  0x7fffffff
+#define ALL_WATER 0x80000000
 
-static int map_waterheight(const char *mapname)
+static int map_search_waterheight(const char *mapname)
 {
 	int i;
 
 	for(i = 0; i < waterlist_num; i++) {
 		if(strncmp(waterlist[i].mapname, mapname, 16) == 0)
-			return waterlist[i].waterheight;
+			return i;
 	}
 
-	return NO_WATER;
+	return -1;
 }
 
-static void map_readwater(const char *watertxt)
+static int map_waterheight(const char *mapname)
+{
+	int wh, idx;
+
+	idx = map_search_waterheight(mapname);
+	if(idx >= 0) {
+		// water_height.txtを優先する
+		wh = waterlist[idx].waterheight;
+	} else {
+		char fn[32];
+		char *rsw;
+
+		// rswファイルから読み込み
+		sprintf(fn, "data\\%s", mapname);
+		memcpy(fn + strlen(fn) - 4, ".rsw", 4);
+		rsw = (char *)grfio_read(fn);
+
+		if(rsw) {
+			wh = (int)(*(float*)(rsw + 166));
+			aFree(rsw);
+		} else {
+			wh = NO_WATER;
+		}
+	}
+
+	return wh;
+}
+
+static void map_readwater(void)
 {
 	char line[1024], w1[1024];
 	FILE *fp;
 
-	fp = fopen(watertxt, "r");
-	if(fp == NULL) {
-		printf("file not found: %s\n", watertxt);
+	fp = fopen(water_height_txt, "r");
+	if(fp == NULL)
 		return;
-	}
 
 	while(fgets(line, sizeof(line), fp)) {
-		int wh, count;
+		struct waterlist *p = NULL;
+		int idx, wh, count;
+
 		if(line[0] == '\0' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
@@ -2034,22 +2066,24 @@ static void map_readwater(const char *watertxt)
 			continue;
 		}
 
-		if(map_waterheight(w1) != NO_WATER) {
-			printf("Error: Duplicated map [%s] in waterlist (file '%s').\n", w1, watertxt);
+		idx = map_search_waterheight(w1);
+		if(idx >= 0) {
+			p = &waterlist[idx];
 		} else {
 			if(waterlist_num >= waterlist_max) {
-				waterlist_max += 64;
+				waterlist_max += 16;
 				waterlist = (struct waterlist *)aRealloc(waterlist, sizeof(struct waterlist) * waterlist_max);
 			}
-			strncpy(waterlist[waterlist_num].mapname, w1, 16);
-			waterlist[waterlist_num].mapname[15] = '\0';
-			waterlist[waterlist_num].waterheight = (count >= 2)? wh: 3;
-			waterlist_num++;
+			p = &waterlist[waterlist_num];
 		}
+		strncpy(p->mapname, w1, 16);
+		p->mapname[15] = '\0';
+		p->waterheight = (count >= 2)? wh: ALL_WATER;
+		waterlist_num++;
 	}
 	fclose(fp);
 
-	printf("File '%s' readed ('%d' entrie%s).\n", watertxt, waterlist_num, (waterlist_num > 1) ? "s" : "");
+	printf("File '%s' readed ('%d' entrie%s).\n", water_height_txt, waterlist_num, (waterlist_num > 1) ? "s" : "");
 
 	return;
 }
@@ -2102,7 +2136,7 @@ static void map_cache_close(void)
 	return;
 }
 
-static int map_cache_open(char *fn)
+static int map_cache_open(const char *fn)
 {
 	atexit(map_cache_close);
 	if(map_cache.fp) {
@@ -2152,8 +2186,9 @@ static int map_cache_read(struct map_data *m)
 
 	for(i = 0; i < map_cache.head.nmaps ; i++) {
 		if(!strcmp(m->name,map_cache.map[i].fn)) {
-			if(map_cache.map[i].water_height != map_waterheight(m->name)) {
-				// 水場の高さが違うので読み直し
+			int idx = map_search_waterheight(m->name);
+			if(idx >= 0 && map_cache.map[i].water_height != waterlist[idx].waterheight) {
+				// water_hegiht.txtの水場の高さと違うので読み直し
 				return 0;
 			}
 			if(map_cache.map[i].compressed == 0) {
@@ -2307,9 +2342,10 @@ static int map_cache_write(struct map_data *m)
  * 読み込むmapを追加する
  *------------------------------------------
  */
-static void map_addmap(char *mapname)
+static void map_addmap(const char *mapname)
 {
 	int i;
+	size_t len;
 
 	if(strcmpi(mapname, "clear") == 0) {
 		if(map != NULL) {
@@ -2317,19 +2353,22 @@ static void map_addmap(char *mapname)
 			map = NULL;
 		}
 		map_num = 0;
+		map_max = 0;
 		return;
 	}
 
+	len = strlen(mapname);
+	if(len < 4 || strcasecmp(mapname + len - 4, ".gat") != 0)
+		return;
+
 	for(i = 0; i < map_num; i++) {
-		if(strcmp(map[i].name,mapname) == 0)
+		if(strcmp(map[i].name, mapname) == 0)
 			return;		// 既に追加済みのMAP
 	}
 
-	if(map_num == 0) {
-		map = (struct map_data *)aCalloc(1, sizeof(struct map_data));
-	} else {
-		map = (struct map_data *)aRealloc(map, sizeof(struct map_data) * (map_num + 1));
-		memset(map + map_num, 0, sizeof(struct map_data));
+	if(map_num >= map_max) {
+		map_max += 128;
+		map = (struct map_data *)aRealloc(map, sizeof(struct map_data) * map_max);
 	}
 	memcpy(map[map_num].name, mapname, 24);
 	map[map_num].name[23] = '\0';	// force \0 terminal
@@ -2342,12 +2381,13 @@ static void map_addmap(char *mapname)
  * 読み込むmapを削除する
  *------------------------------------------
  */
-static void map_delmap(char *mapname)
+static void map_delmap(const char *mapname)
 {
 	int i;
 
-	if(strcmpi(mapname,"all") == 0) {
+	if(strcmpi(mapname, "all") == 0) {
 		map_num = 0;
+		map_max = 0;
 		if(map != NULL) {
 			aFree(map);
 			map = NULL;
@@ -2356,10 +2396,10 @@ static void map_delmap(char *mapname)
 	}
 
 	for(i = 0; i < map_num; i++) {
-		if(strcmp(map[i].name,mapname) == 0) {
-			memmove(map+i,map+i+1,sizeof(map[0])*(map_num-i-1));
+		if(strcmp(map[i].name, mapname) == 0) {
 			map_num--;
-			map = (struct map_data *)aRealloc(map, sizeof(struct map_data) * map_num);
+			memmove(map + i, map + i + 1, sizeof(struct map_data) * (map_num - i));
+			memset(map + map_num, 0, sizeof(struct map_data));
 		}
 	}
 
@@ -2370,7 +2410,7 @@ static void map_delmap(char *mapname)
  * マップ1枚読み込み
  *------------------------------------------
  */
-static int map_readmap(int m,char *fn,int *cache)
+static int map_readmap(int m,const char *fn,int *cache)
 {
 	size_t size;
 
@@ -2413,7 +2453,7 @@ static int map_readmap(int m,char *fn,int *cache)
 			for(x = 0; x < xs; x++) {
 				if(wh != NO_WATER && p->type == 0) {
 					// 水場判定
-					map[m].gat[x+y*xs] = (p->high[0] > wh || p->high[1] > wh || p->high[2] > wh || p->high[3] > wh) ? 3 : 0;
+					map[m].gat[x+y*xs] = (wh == ALL_WATER || p->high[0] > wh || p->high[1] > wh || p->high[2] > wh || p->high[3] > wh) ? 3 : 0;
 				} else {
 					map[m].gat[x+y*xs] = p->type;
 				}
@@ -2444,7 +2484,6 @@ static int map_readmap(int m,char *fn,int *cache)
 static void map_readallmap(void)
 {
 	int i;
-	char fn[256];
 	int cache = 0;
 	int maps_removed = 0;
 
@@ -2453,10 +2492,15 @@ static void map_readallmap(void)
 		map_cache_open(map_cache_file);
 	}
 
+	map_readwater();
+
+	// リサイズ
+	map = (struct map_data *)aRealloc(map, sizeof(struct map_data) * map_num);
+	map_max = map_num;
+
 	for(i = 0; i < map_num; i++) {
-		if(strstr(map[i].name,".gat") == NULL)
-			continue;
-		sprintf(fn,"data\\%s",map[i].name);
+		char fn[32];
+		sprintf(fn, "data\\%s", map[i].name);
 		if(map_readmap(i, fn, &cache) == -1) {
 			map_delmap(map[i].name);
 			maps_removed++;
@@ -2579,7 +2623,7 @@ static int map_pk_nightmaredrop(int flag)
  * 設定ファイルを読み込む
  *------------------------------------------
  */
-static int map_config_read(char *cfgName)
+static int map_config_read(const char *cfgName)
 {
 	char line[1024], w1[1024], w2[1024];
 	FILE *fp;
@@ -2645,7 +2689,8 @@ static int map_config_read(char *cfgName)
 			strncpy(map_server_tag, w2, sizeof(map_server_tag) - 1);
 			map_server_tag[sizeof(map_server_tag) - 1] = '\0';
 		} else if (strcmpi(w1, "water_height") == 0) {
-			map_readwater(w2);
+			strncpy(water_height_txt, w2, sizeof(water_height_txt) - 1);
+			water_height_txt[sizeof(water_height_txt) - 1] = '\0';
 		} else if (strcmpi(w1, "gm_account_filename") == 0) {
 			pc_set_gm_account_fname(w2);
 		} else if (strcmpi(w1, "grf_path_txt") == 0) {
@@ -2851,6 +2896,7 @@ void do_final(void)
 		map = NULL;
 	}
 	map_num = 0;
+	map_max = 0;
 
 	if(waterlist) {
 		aFree(waterlist);

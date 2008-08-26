@@ -717,11 +717,11 @@ static int grfio_entryread(const char *gfname,int gentry)
 				}
 				srclen=getlong(grf_filelist+ofs2)-getlong(grf_filelist+ofs2+8)-715;
 
-				// gatとtxt以外は不要なので読み込まない
+				// gat,txt,rsw以外は不要なので読み込まない
 				ext_ptr = fname + strlen(fname) -4;
 				if(strcasecmp(ext_ptr,".gat") == 0) {	// もし必要ならばgnd,act,sprもsrccount=0
 					srccount = 0;
-				} else if(strcasecmp(ext_ptr,".txt") == 0) {
+				} else if(strcasecmp(ext_ptr,".txt") == 0 || strcasecmp(ext_ptr,".rsw") == 0) {
 					for(lop=10,srccount=1;srclen>=lop;lop=lop*10,srccount++)
 						;
 				} else {
@@ -809,9 +809,9 @@ static int grfio_entryread(const char *gfname,int gentry)
 			}
 			ofs2 = ofs+strlen(grf_filelist+ofs)+1;
 
-			// gatとtxt以外は不要なので読み込まない
+			// gat,txt,rsw以外は不要なので読み込まない
 			ext_ptr = fname + strlen(fname) -4;
-			if(strcasecmp(ext_ptr,".gat") != 0 && strcasecmp(ext_ptr,".txt") != 0)
+			if(strcasecmp(ext_ptr,".gat") != 0 && strcasecmp(ext_ptr,".txt") != 0 && strcasecmp(ext_ptr,".rsw") != 0)
 				continue;
 
 			type = grf_filelist[ofs2+12];
@@ -885,9 +885,9 @@ static void grfio_resourcecheck(const char *data_dir)
 			char *ext_ptr;
 			w2[sizeof(w2)-1] = 0;
 
-			// gatとtxtのみチェック
-			ext_ptr = w2 + strlen(w2) -4;
-			if(strcasecmp(ext_ptr,".gat") == 0 || strcasecmp(ext_ptr,".txt") == 0) {
+			// gat,txt,rswのみチェック
+			ext_ptr = w2 + strlen(w2) - 4;
+			if(strcasecmp(ext_ptr,".gat") == 0 || strcasecmp(ext_ptr,".txt") == 0 || strcasecmp(ext_ptr,".rsw") == 0) {
 				sprintf(dst,"data\\%s",w2);
 
 				entry = filelist_find(dst);
