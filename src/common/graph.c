@@ -322,7 +322,7 @@ static void graph_data(struct graph* g,double value)
 		if( div_num <= 2 ) { div_num *= 2;  base /= 2;       }
 		if( div_num >  5 ) { div_num = (div_num+1)/2; base *= 2; }
 		aFree( g->line_pos );
-		g->line_pos   = (int *)aMalloc( (int)(div_num < 0 ? 4 : (div_num+1) * sizeof(int)) );
+		g->line_pos   = (int *)aMalloc( div_num < 0 ? 4 : (div_num+1) * sizeof(int) );
 		g->line_count = div_num+1;
 		g->graph_max  = div_num * base; // グラフ上の最大値
 

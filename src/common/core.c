@@ -87,22 +87,23 @@ static void pid_delete(void)
 static void pid_create(const char* file)
 {
 	FILE *fp;
-	int len, lock;
+	int lock;
+	char *p = NULL;
 
-	strncpy(pid_file, file, sizeof(pid_file) - 1);
-	pid_file[sizeof(pid_file)-1] = '\0';
+	strncpy(pid_file, file, sizeof(pid_file) - 5);
+	pid_file[sizeof(pid_file)-5] = '\0';
 
-	len = (int)strlen(pid_file);
-	if(len > 4 && pid_file[len - 4] == '.') {
-		pid_file[len - 4] = 0;
-	}
-	strcat(pid_file,".pid");
+	p = strrchr(pid_file, '.');
+	if(p)
+		*p = '\0';
+
+	strcat(pid_file, ".pid");
 	fp = lock_fopen(pid_file, &lock);
 	if(fp) {
 #ifdef _WIN32
-		fprintf(fp,"%lu",(unsigned long)GetCurrentProcessId());
+		fprintf(fp,"%lu", (unsigned long)GetCurrentProcessId());
 #else
-		fprintf(fp,"%d",getpid());
+		fprintf(fp,"%d", getpid());
 #endif
 		lock_fclose(fp, pid_file, &lock);
 		atexit(pid_delete);
@@ -265,9 +266,8 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 		// SymGetSymFromAddr64 は使用するべきじゃないらしい…。
 		if(SymGetSymFromAddr(hProcess, stack.AddrPC.Offset, &offset, symbol)) {
 			len = wsprintf(
-				buf, "\t0x%08x%08x : %s + 0x%x",
-				(int)(stack.AddrPC.Offset >> 32),
-				(int)(stack.AddrPC.Offset & 0xFFFFFFFF), symbol->Name, (int)offset
+				buf, "\t0x%016I64x : %s + 0x%I64x",
+				stack.AddrPC.Offset, symbol->Name, offset
 			);
 			if( SymGetLineFromAddr64( hProcess, stack.AddrPC.Offset, &temp, &lineinfo ) ) {
 				len += wsprintf(
@@ -277,11 +277,7 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 			}
 			len += wsprintf(buf+len, "\r\n");
 		} else {
-			len = wsprintf(
-				buf, "\t0x%08x%08x : unknown\r\n",
-				(int)(stack.AddrPC.Offset >> 32),
-				(int)(stack.AddrPC.Offset & 0xFFFFFFFF)
-			);
+			len = wsprintf(buf, "\t0x%016I64x : unknown\r\n", stack.AddrPC.Offset);
 		}
 #else
 		if(SymGetSymFromAddr(hProcess, stack.AddrPC.Offset, &offset, symbol)) {
@@ -306,7 +302,7 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 	SymCleanup( hProcess );
 	GlobalFree( symbol );
 
-	len = wsprintf(buf, "\r\n\r\n----------------------------------------\r\n");
+	len = wsprintf(buf, "\r\n----------------------------------------\r\n");
 	WriteFile( hFile, buf, len, &temp, NULL );
 	CloseHandle( hFile );
 #ifndef _MSC_VER

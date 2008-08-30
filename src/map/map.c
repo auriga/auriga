@@ -609,7 +609,7 @@ void map_foreachinarea(int (*func)(struct block_list*,va_list),int m,int x0,int 
 	va_list ap;
 
 	if(m < 0) {
-		printf("map_foreachinarea: invalid map index!! func = 0x%08x\n",(int)func);
+		printf("map_foreachinarea: invalid map index!! func = 0x%p\n", func);
 		return;
 	}
 

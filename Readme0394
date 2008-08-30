@@ -1,4 +1,12 @@
 ----------------------------------------
+//0519 [2008/08/31] by Rayce
+
+・pid_create() を少し修正（core.c）
+・core_ExceptionRoutine() を少し修正（core.c）
+・不要なintのキャストを削除（graph.c）
+・map_foreachinarea() のエラー時の出力を少し修正（map.c）
+
+----------------------------------------
 //0518 [2008/08/27] by Rayce
 
 ・Athena Rev.505より部分的にmerge、thanks to Blazeさん（grfio.c, map.c）
