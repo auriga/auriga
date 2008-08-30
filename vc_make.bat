@@ -115,9 +115,6 @@ rem set __AC_MAIL__=/D "AC_MAIL"
 rem ステータス異常データの保存を無効にする場合はコメントアウトをはずす
 rem set __NO_SCDATA_SAVING__=/D "NO_SCDATA_SAVING"
 
-rem スクリプトで使用された変数の一覧を出力する場合はコメントアウトをはずす
-rem set __DEBUG_VARS__=/D "DEBUG_VARS"
-
 rem ---------------------------
 rem コンパイルオプション設定
 

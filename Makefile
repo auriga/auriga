@@ -100,9 +100,6 @@ CFLAGS += -DNO_HTTPD_CGI
 # disable save of status change data
 #CFLAGS += -DNO_SCDATA_SAVING
 
-# output list of used variables in script
-#CFLAGS += -DDEBUG_VARS
-
 #-----------------CPU MARCH-------------------
 #GCC 3.2.x~
 

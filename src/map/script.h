@@ -29,6 +29,7 @@ struct script_data {
 	union {
 		int num;
 		char *str;
+		void *ptr;
 	} u;
 	struct linkdb_node** ref; // リファレンス
 };

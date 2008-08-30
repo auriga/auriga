@@ -119,6 +119,7 @@ static struct Script_Config {
 	int warn_cmd_mismatch_paramnum;
 	int check_cmdcount;
 	int check_gotocount;
+	int debug_vars;
 } script_config;
 
 static int parse_cmd;
@@ -154,7 +155,6 @@ static struct {
 
 static int parse_syntax_for_flag = 0;
 
-#ifdef DEBUG_VARS
 static int vars_count = 0;
 static struct dbt* vars_db = NULL;
 
@@ -163,7 +163,6 @@ struct vars_info {
 	char *file;
 	int   line;
 };
-#endif
 
 extern struct script_function {
 	int (*func)(struct script_state *st);
@@ -181,6 +180,7 @@ enum {
 	C_FUNC,
 	C_STR,
 	C_CONSTSTR,
+	C_PTR,
 	C_ARG,
 	C_NAME,
 	C_EOL,
@@ -1909,21 +1909,22 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 			int j,next;
 			str_data[i].type=C_NAME;
 			str_data[i].label=i;
-#ifdef DEBUG_VARS
-			if( str_data[i].backpatch != -1 ) {
-				struct vars_info *v = (struct vars_info *)numdb_search(vars_db, i);
-				if( v == NULL ) {
-					v            = (struct vars_info *)aMalloc( sizeof( struct vars_info ) );
-					v->file      = (char *)aStrdup( file );
-					v->line      = line;
-					v->use_count = 1;
-					numdb_insert(vars_db, i, v);
-					vars_count++;
-				} else {
-					v->use_count++;
+
+			if(vars_db) {
+				if( str_data[i].backpatch != -1 ) {
+					struct vars_info *v = (struct vars_info *)numdb_search(vars_db, i);
+					if( v == NULL ) {
+						v            = (struct vars_info *)aMalloc( sizeof( struct vars_info ) );
+						v->file      = (char *)aStrdup( file );
+						v->line      = line;
+						v->use_count = 1;
+						numdb_insert(vars_db, i, v);
+						vars_count++;
+					} else {
+						v->use_count++;
+					}
 				}
 			}
-#endif
 			for(j=str_data[i].backpatch;j>=0 && j!=0x00ffffff;){
 				next=(*(int*)(script_buf+j)) & 0x00ffffff;
 				script_buf[j]=i;
@@ -2312,15 +2313,24 @@ static int conv_num(struct script_state *st,struct script_data *data)
 }
 
 /*==========================================
+ * スタックの拡張
+ *------------------------------------------
+ */
+static void expand_stack(struct script_stack *stack)
+{
+	stack->sp_max += 64;
+	stack->stack_data = (struct script_data *)aRealloc(stack->stack_data, sizeof(stack->stack_data[0]) * stack->sp_max);
+}
+
+/*==========================================
  * スタックへ数値をプッシュ
  *------------------------------------------
  */
 static void push_val(struct script_stack *stack,int type,int val)
 {
-	if(stack->sp >= stack->sp_max){
-		stack->sp_max += 64;
-		stack->stack_data = (struct script_data *)aRealloc(stack->stack_data, sizeof(stack->stack_data[0]) * stack->sp_max);
-	}
+	if(stack->sp >= stack->sp_max)
+		expand_stack(stack);
+
 	stack->stack_data[stack->sp].type  = type;
 	stack->stack_data[stack->sp].u.num = val;
 	stack->stack_data[stack->sp].ref   = NULL;
@@ -2343,12 +2353,26 @@ static void push_val2(struct script_stack *stack,int type,int val,struct linkdb_
  */
 static void push_str(struct script_stack *stack,int type,unsigned char *str)
 {
-	if(stack->sp>=stack->sp_max){
-		stack->sp_max += 64;
-		stack->stack_data = (struct script_data *)aRealloc(stack->stack_data, sizeof(stack->stack_data[0]) * stack->sp_max);
-	}
+	if(stack->sp >= stack->sp_max)
+		expand_stack(stack);
+
 	stack->stack_data[stack->sp].type  = type;
 	stack->stack_data[stack->sp].u.str = str;
+	stack->stack_data[stack->sp].ref   = NULL;
+	stack->sp++;
+}
+
+/*==========================================
+ * スタックへポインタをプッシュ
+ *------------------------------------------
+ */
+static void push_ptr(struct script_stack *stack,int type,void *ptr)
+{
+	if(stack->sp >= stack->sp_max)
+		expand_stack(stack);
+
+	stack->stack_data[stack->sp].type  = type;
+	stack->stack_data[stack->sp].u.ptr = ptr;
 	stack->stack_data[stack->sp].ref   = NULL;
 	stack->sp++;
 }
@@ -2365,6 +2389,9 @@ static void push_copy(struct script_stack *stack,int pos)
 		break;
 	case C_STR:
 		push_str(stack,C_STR,(unsigned char *)aStrdup(stack->stack_data[pos].u.str));
+		break;
+	case C_PTR:
+		push_str(stack,C_PTR,stack->stack_data[pos].u.ptr);
 		break;
 	default:
 		push_val2(
@@ -2847,9 +2874,9 @@ static int run_func(struct script_state *st)
 		aFree(st->stack->var_function);
 
 		j = conv_num(st,& (st->stack->stack_data[st->stack->defsp-5]));									// 引数の数取得
-		st->pos=conv_num(st,& (st->stack->stack_data[st->stack->defsp-1]));								// スクリプト位置の復元
-		st->script=(struct script_code*)conv_num(st,& (st->stack->stack_data[st->stack->defsp-3]));		// スクリプトを復元
-		st->stack->var_function = (struct linkdb_node**)st->stack->stack_data[st->stack->defsp-2].u.num; // 関数依存変数
+		st->pos = conv_num(st,& (st->stack->stack_data[st->stack->defsp-1]));								// スクリプト位置の復元
+		st->script = (struct script_code*)st->stack->stack_data[st->stack->defsp-3].u.ptr;		// スクリプトを復元
+		st->stack->var_function = (struct linkdb_node**)st->stack->stack_data[st->stack->defsp-2].u.ptr; // 関数依存変数
 
 		st->stack->defsp=conv_num(st,& (st->stack->stack_data[st->stack->defsp-4]));	// 基準スタックポインタを復元
 		pop_stack(st->stack,olddefsp-5-j,olddefsp);		// 要らなくなったスタック(引数と復帰用データ)削除
@@ -3356,12 +3383,12 @@ static void set_posword(char *p)
  */
 int script_config_read(const char *cfgName)
 {
-	int i;
-	char line[1024],w1[1024],w2[1024];
+	char line[1024], w1[1024], w2[1024];
 	FILE *fp;
 	static int count = 0;
 
 	if(count++ == 0) {
+		script_config.debug_vars = 0;
 		script_config.warn_func_no_comma = 1;
 		script_config.warn_cmd_no_comma  = 1;
 		script_config.warn_func_mismatch_paramnum = 1;
@@ -3370,37 +3397,40 @@ int script_config_read(const char *cfgName)
 		script_config.check_gotocount = 16384;
 	}
 
-	fp=fopen(cfgName,"r");
-	if(fp==NULL){
-		printf("file not found: %s\n",cfgName);
+	fp = fopen(cfgName,"r");
+	if(fp == NULL) {
+		printf("file not found: %s\n", cfgName);
 		return 1;
 	}
-	while(fgets(line,1020,fp)){
+	while(fgets(line, 1020, fp)) {
 		if(line[0] == '\0' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		i=sscanf(line,"%[^:]: %[^\r\n]",w1,w2);
-		if(i!=2)
+		if(sscanf(line, "%[^:]: %[^\r\n]", w1, w2) != 2)
 			continue;
-		if(strcmpi(w1,"refine_posword")==0) {
+
+		if(strcmpi(w1, "debug_vars") == 0) {
+			script_config.debug_vars = atoi(w2);
+		}
+		else if(strcmpi(w1, "refine_posword") == 0) {
 			set_posword(w2);
 		}
-		else if(strcmpi(w1,"check_cmdcount")==0) {
+		else if(strcmpi(w1, "check_cmdcount") == 0) {
 			script_config.check_cmdcount = atoi(w2);
 		}
-		else if(strcmpi(w1,"check_gotocount")==0) {
+		else if(strcmpi(w1, "check_gotocount") == 0) {
 			script_config.check_gotocount = atoi(w2);
 		}
-		else if(strcmpi(w1,"error_marker_start")==0) {
+		else if(strcmpi(w1, "error_marker_start") == 0) {
 			strncpy(error_marker_start, w2, 16);
 			error_marker_start[15] = '\0';
 		}
-		else if(strcmpi(w1,"error_marker_end")==0) {
+		else if(strcmpi(w1, "error_marker_end") == 0) {
 			strncpy(error_marker_end, w2, 16);
 			error_marker_end[15] = '\0';
 		}
-		else if(strcmpi(w1,"import")==0) {
+		else if(strcmpi(w1,"import") == 0) {
 			script_config_read(w2);
 		}
 	}
@@ -3477,11 +3507,9 @@ void script_write_vars(struct map_session_data *sd,const char *var,int elem,void
 }
 
 /*==========================================
- * デバッグ情報の出力
+ * 使用された変数の一覧を出力
  *------------------------------------------
  */
-#ifdef DEBUG_VARS
-
 static int varlist_sort1(void *key,void *data,va_list ap)
 {
 	int *count  = va_arg(ap, int*);
@@ -3536,8 +3564,10 @@ static int varsdb_output(void)
 	return 0;
 }
 
-#endif
-
+/*==========================================
+ * ハッシュ関連情報を出力
+ *------------------------------------------
+ */
 #ifdef DEBUG_HASH
 
 static int debug_hash_output(void)
@@ -3633,10 +3663,7 @@ int do_final_script(void)
 		}
 		linkdb_final(&sleep_db);
 	}
-
-#ifdef DEBUG_VARS
 	varsdb_output();
-#endif
 
 #ifdef DEBUG_HASH
 	debug_hash_output();
@@ -3676,9 +3703,8 @@ int do_init_script(void)
 	script_csvinit();
 #endif
 
-#ifdef DEBUG_VARS
-	vars_db = numdb_init();
-#endif
+	if(script_config.debug_vars)
+		vars_db = numdb_init();
 
 	return 0;
 }
@@ -4244,8 +4270,8 @@ int buildin_callfunc(struct script_state *st)
 
 		push_val(st->stack,C_INT,j);				// 引数の数をプッシュ
 		push_val(st->stack,C_INT,st->stack->defsp);		// 現在の基準スタックポインタをプッシュ
-		push_val(st->stack,C_INT,(int)st->script);		// 現在のスクリプトをプッシュ
-		push_val(st->stack,C_INT,(int)st->stack->var_function);	// 現在の関数依存変数をプッシュ
+		push_ptr(st->stack,C_PTR,st->script);		// 現在のスクリプトをプッシュ
+		push_ptr(st->stack,C_PTR,st->stack->var_function);	// 現在の関数依存変数をプッシュ
 		push_val(st->stack,C_RETINFO,st->pos);			// 現在のスクリプト位置をプッシュ
 
 		oldscr = st->script;
@@ -4297,8 +4323,8 @@ int buildin_callsub(struct script_state *st)
 
 		push_val(st->stack,C_INT,j);				// 引数の数をプッシュ
 		push_val(st->stack,C_INT,st->stack->defsp);		// 現在の基準スタックポインタをプッシュ
-		push_val(st->stack,C_INT,(int)st->script);		// 現在のスクリプトをプッシュ
-		push_val(st->stack,C_INT,(int)st->stack->var_function);	// 現在の関数依存変数をプッシュ
+		push_ptr(st->stack,C_PTR,st->script);		// 現在のスクリプトをプッシュ
+		push_ptr(st->stack,C_PTR,st->stack->var_function);	// 現在の関数依存変数をプッシュ
 		push_val(st->stack,C_RETINFO,st->pos);			// 現在のスクリプト位置をプッシュ
 
 		st->pos=pos;

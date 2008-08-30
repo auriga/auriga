@@ -57,9 +57,6 @@ set __NO_HTTPD_CGI__=-DNO_HTTPD_CGI
 @rem ステータス異常データの保存を無効にする場合コメントアウトをはずす
 :set __NO_SCDATA_SAVING__=-DNO_SCDATA_SAVING
 
-@rem スクリプトで使用された変数の一覧を出力する
-:set __DEBUG_VARS__=-DDEBUG_VARS
-
 @rem CPU最適化スイッチ 以下の例を参考にCPU名を記入してください。
 set _model_=Pentium4
 
