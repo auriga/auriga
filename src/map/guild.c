@@ -2146,8 +2146,25 @@ void guild_castlealldataload(int len, struct guild_castle *gc)
 			printf("guild_castlealldataload ??\n");
 			continue;
 		}
-		memcpy(&c->guild_id,&gc->guild_id,
-			sizeof(struct guild_castle) - ((int)&c->guild_id - (int)c) );
+
+		c->guild_id   = gc->guild_id;
+		c->economy    = gc->economy;
+		c->defense    = gc->defense;
+		c->triggerE   = gc->triggerE;
+		c->triggerD   = gc->triggerD;
+		c->nextTime   = gc->nextTime;
+		c->payTime    = gc->payTime;
+		c->createTime = gc->createTime;
+		c->visibleC   = gc->visibleC;
+		c->visibleG0  = gc->visibleG0;
+		c->visibleG1  = gc->visibleG1;
+		c->visibleG2  = gc->visibleG2;
+		c->visibleG3  = gc->visibleG3;
+		c->visibleG4  = gc->visibleG4;
+		c->visibleG5  = gc->visibleG5;
+		c->visibleG6  = gc->visibleG6;
+		c->visibleG7  = gc->visibleG7;
+
 		if( c->guild_id ){
 			if(i!=ev)
 				guild_request_info(c->guild_id);

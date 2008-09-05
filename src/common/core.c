@@ -208,10 +208,8 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 
 #ifdef _WIN64
 	len = wsprintf(
-		buf, "\tRIP: %08x%08x RSP: %08x%08x RBP: %08x%08x\r\n\r\n",
-		(int)(e->ContextRecord->Rip >> 32), (int)(e->ContextRecord->Rip & 0xFFFFFFFF),
-		(int)(e->ContextRecord->Rsp >> 32), (int)(e->ContextRecord->Rsp & 0xFFFFFFFF),
-		(int)(e->ContextRecord->Rbp >> 32), (int)(e->ContextRecord->Rbp & 0xFFFFFFFF)
+		buf, "\tRIP: %016I64x RSP: %016I64x RBP: %016I64x\r\n\r\n",
+		e->ContextRecord->Rip, e->ContextRecord->Rsp, e->ContextRecord->Rbp
 	);
 	WriteFile( hFile, buf, len, &temp, NULL );
 #else

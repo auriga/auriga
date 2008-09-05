@@ -489,10 +489,13 @@ int skill_get_unit_interval(int id)
 	id = skill_get_skilldb_id(id);
 	return skill_db[id].unit_interval;
 }
-int skill_get_unit_range(int id)
+int skill_get_unit_range(int id,int lv)
 {
+	if(lv<=0) return 0;
+
 	id = skill_get_skilldb_id(id);
-	return skill_db[id].unit_range;
+	if(lv > MAX_SKILL_LEVEL) lv = MAX_SKILL_LEVEL;
+	return skill_db[id].unit_range[lv-1];
 }
 int skill_get_unit_target(int id)
 {
@@ -1539,7 +1542,7 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 static int skill_check_unit_range(int m,int x,int y,int skillid,int skilllv)
 {
 	int c = 0;
-	int range = skill_get_unit_range(skillid);
+	int range = skill_get_unit_range(skillid,skilllv);
 	int layout_type = skill_get_unit_layout_type(skillid,skilllv);
 
 	if(layout_type == -1 || layout_type > MAX_SQUARE_LAYOUT) {
@@ -1586,7 +1589,7 @@ static int skill_check_unit_range2_sub( struct block_list *bl,va_list ap )
 static int skill_check_unit_range2(int m,int x,int y,int skillid, int skilllv)
 {
 	int c = 0;
-	int range = skill_get_unit_range(skillid);
+	int range = skill_get_unit_range(skillid,skilllv);
 	int layout_type = skill_get_unit_layout_type(skillid,skilllv);
 
 	if(layout_type == -1 || layout_type > MAX_SQUARE_LAYOUT) {
@@ -6397,7 +6400,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		sd = (struct map_session_data *)src;
 
 	limit     = skill_get_time(skillid,skilllv);
-	range     = skill_get_unit_range(skillid);
+	range     = skill_get_unit_range(skillid,skilllv);
 	interval  = skill_get_unit_interval(skillid);
 	target    = skill_get_unit_target(skillid);
 	unit_flag = skill_get_unit_flag(skillid,skilllv);
@@ -7299,7 +7302,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		if(!(status_get_mode(bl)&0x20))
 		{
 			int d = unit_distance2(&src->bl,bl);
-			int range = skill_get_unit_range(CG_MOONLIT);
+			int range = skill_get_unit_range(sg->skill_id,sg->skill_lv);
 			int count = (d < range)? range-d+2: 1;
 			skill_blown(&src->bl,bl,count|SAB_NODAMAGE);
 		}
@@ -8299,7 +8302,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case CG_MOONLIT:			/* 月明りの下で */
 		{
 			int x1,x2,y1,y2,i,j;
-			int range = skill_get_unit_range(CG_MOONLIT)+1;
+			int range = skill_get_unit_range(cnd->id,cnd->lv)+1;
 			x1 = bl->x - range;
 			x2 = bl->x + range;
 			y1 = bl->y - range;
@@ -10021,6 +10024,8 @@ static int skill_abra_dataset(struct map_session_data *sd, int skilllv)
 {
 	int skill = atn_rand()%MAX_SKILL_ABRA_DB;
 
+	nullpo_retr(0, sd);
+
 	// セージの転生スキル使用を許可しない
 	if( battle_config.extended_abracadabra == 0 &&
 	    sd->s_class.upper == 0 &&
@@ -10046,11 +10051,15 @@ static int skill_abra_dataset(struct map_session_data *sd, int skilllv)
  * バジリカのセルを設定する
  *------------------------------------------
  */
-static void skill_basilica_cell(struct skill_unit *unit,int flag)
+static void skill_basilica_cell(struct skill_unit *unit,int skilllv,int flag)
 {
 	int i,x,y;
-	int range = skill_get_unit_range(HP_BASILICA);
-	int size = range*2+1;
+	int range, size;
+
+	nullpo_retv(unit);
+
+	range = skill_get_unit_range(HP_BASILICA, skilllv);
+	size  = range*2+1;
 
 	for (i=0;i<size*size;i++) {
 		x = unit->bl.x+(i%size-range);
@@ -10063,19 +10072,20 @@ static void skill_basilica_cell(struct skill_unit *unit,int flag)
  * バジリカの発動を止める
  *------------------------------------------
  */
-void skill_basilica_cancel( struct block_list *bl )
+void skill_basilica_cancel(struct block_list *bl)
 {
-	struct unit_data *ud = unit_bl2ud( bl );
+	struct unit_data *ud = NULL;
 	struct linkdb_node *node, *node2;
 	struct skill_unit_group   *group;
 
-	nullpo_retv(ud);
+	nullpo_retv(bl);
+	nullpo_retv(ud = unit_bl2ud(bl));
 
 	node = ud->skillunit;
 	while( node ) {
 		node2 = node->next;
 		group = (struct skill_unit_group *)node->data;
-		if(group->skill_id == HP_BASILICA)
+		if(group && group->skill_id == HP_BASILICA)
 			skill_delunitgroup(group);
 		node = node2;
 	}
@@ -10087,20 +10097,29 @@ void skill_basilica_cancel( struct block_list *bl )
  */
 static int skill_clear_element_field(struct block_list *bl)
 {
-	struct unit_data *ud = unit_bl2ud( bl );
+	struct unit_data *ud = NULL;
 	struct linkdb_node *node, *node2;
 	struct skill_unit_group   *group;
-	int skillid;
 
-	nullpo_retr(0, ud);
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ud = unit_bl2ud(bl));
 
 	node = ud->skillunit;
 	while( node ) {
-		node2   = node->next;
-		group   = (struct skill_unit_group *)node->data;
-		skillid = group->skill_id;
-		if(skillid==SA_DELUGE || skillid==SA_VOLCANO || skillid==SA_VIOLENTGALE || skillid==SA_LANDPROTECTOR || skillid==NJ_SUITON || skillid == NJ_KAENSIN)
-			skill_delunitgroup(group);
+		node2 = node->next;
+		group = (struct skill_unit_group *)node->data;
+		if(group) {
+			switch(group->skill_id) {
+				case SA_DELUGE:
+				case SA_VOLCANO:
+				case SA_VIOLENTGALE:
+				case SA_LANDPROTECTOR:
+				case NJ_SUITON:
+				case NJ_KAENSIN:
+					skill_delunitgroup(group);
+					break;
+			}
+		}
 		node = node2;
 	}
 	return 0;
@@ -10119,6 +10138,7 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
 	nullpo_retr(0, unit = (struct skill_unit *)bl);
+	nullpo_retr(0, unit->group);
 
 	skillid = va_arg(ap,int);
 	alive   = va_arg(ap,int *);
@@ -10619,7 +10639,7 @@ static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,
 	clif_skill_setunit(unit);
 
 	if(group->skill_id == HP_BASILICA)
-		skill_basilica_cell(unit,CELL_SETBASILICA);
+		skill_basilica_cell(unit,group->skill_lv,CELL_SETBASILICA);
 
 	return unit;
 }
@@ -10649,7 +10669,7 @@ int skill_delunit(struct skill_unit *unit)
 	}
 
 	if(group->skill_id == HP_BASILICA)
-		skill_basilica_cell(unit,CELL_CLRBASILICA);
+		skill_basilica_cell(unit,group->skill_lv,CELL_CLRBASILICA);
 
 	clif_skill_delunit(unit);
 
@@ -12853,7 +12873,7 @@ static int skill_readdb(void)
 		skill_db[i].unit_id[0] = strtol(split[1],NULL,16);
 		skill_db[i].unit_id[1] = strtol(split[2],NULL,16);
 		skill_split_atoi(split[3],skill_db[i].unit_layout_type,MAX_SKILL_LEVEL);
-		skill_db[i].unit_range    = atoi(split[4]);
+		skill_split_atoi(split[4],skill_db[i].unit_range,MAX_SKILL_LEVEL);
 		skill_db[i].unit_interval = atoi(split[5]);
 		skill_db[i].unit_target   = strtol(split[6],NULL,16);
 		skill_split_strtol(split[7],skill_db[i].unit_flag,MAX_SKILL_LEVEL,16);

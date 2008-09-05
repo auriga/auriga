@@ -762,7 +762,7 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 	}
 
 	while( fgets( buf, sizeof(buf)-1, fp) ) {
-		int max = 0;
+		size_t max = 0;
 		char *s;
 		struct csvdb_line *line;
 
@@ -775,7 +775,7 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 			csv->index = (int*)aRealloc(
 				csv->index, sizeof(int) * csv->row_max );
 		}
-		max = (int)strlen(buf);
+		max = strlen(buf);
 		if( buf[max-1] == '\n' )
 			max--;
 
