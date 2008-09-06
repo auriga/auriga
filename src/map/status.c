@@ -6717,7 +6717,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	}
 
-	if(timer != -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
+	if(timer == -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
 	{
 		timer = add_timer(	/* タイマー再設定 */
 			sd->eternal_status_change[type]+tick, status_change_timer,

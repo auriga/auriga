@@ -2839,21 +2839,15 @@ int parse_tologin(int fd)
  * mapが含まれているmap-serverを探す
  *------------------------------------------
  */
-static int search_mapserver(char *map)
+static int search_mapserver(const char *map)
 {
 	int i, j;
-	char map_temp[16]; // 15 + NULL
-
-	strncpy(map_temp, map, 16);
-	map_temp[15] = '\0';
-	if (strstr(map_temp, ".gat") == NULL && strlen(map_temp) < 12)
-		strcat(map_temp, ".gat");
 
 	for(i = 0; i < MAX_MAP_SERVERS; i++) {
 		if (server_fd[i] < 0)
 			continue;
 		for(j = 0; j < server[i].map_num; j++) {
-			if (!strcmp(server[i].map + (j * 16), map_temp))
+			if (!strncmp(server[i].map + (j * 16), map, 16))
 				return i;
 		}
 	}
@@ -2861,7 +2855,7 @@ static int search_mapserver(char *map)
 	return -1;
 }
 
-static int search_mapserver_char(char *map, struct mmo_charstatus *cd)
+static int search_mapserver_char(const char *map, struct mmo_charstatus *cd)
 {
 	int i;
 

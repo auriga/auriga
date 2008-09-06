@@ -1733,7 +1733,7 @@ int map_mapname2mapid(const char *name)
  * 他鯖map名からip,port変換
  *------------------------------------------
  */
-int map_mapname2ipport(char *name,unsigned long *ip,unsigned short *port)
+int map_mapname2ipport(const char *name,unsigned long *ip,unsigned short *port)
 {
 	struct map_data_other_server *mdos;
 

@@ -690,10 +690,6 @@ int pc_setsavepoint(struct map_session_data *sd,char *mapname,int x,int y)
 	sd->status.save_point.x = x;
 	sd->status.save_point.y = y;
 
-	if(strcmp(sd->status.save_point.map,"SavePoint") != 0 && strstr(sd->status.save_point.map,".gat") == NULL) {
-		if(strlen(sd->status.save_point.map) < 20)
-			strcat(sd->status.save_point.map,".gat");
-	}
 	return 0;
 }
 
@@ -3739,18 +3735,11 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
  * PCの位置設定
  *------------------------------------------
  */
-int pc_setpos(struct map_session_data *sd,const char *mapname_org,int x,int y,int clrtype)
+int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int clrtype)
 {
-	char mapname[24];
 	int m, move_flag = 0;
 
 	nullpo_retr(1, sd);
-
-	strncpy(mapname,mapname_org,16);
-	mapname[16] = 0;
-	if(strstr(mapname,".gat") == NULL && strlen(mapname) < 16) {
-		strcat(mapname,".gat");
-	}
 
 	// 座っていたら立ち上がる
 	if(pc_issit(sd)) {

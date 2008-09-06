@@ -1,4 +1,11 @@
 ----------------------------------------
+//0523 [2008/09/07] by Rayce
+
+・0516で、bEternalStatusChangeの発動判定が間違っていた致命的なバグを修正（status.c）
+・map名に ".gat" が含まれているかどうかの判定は不要なので削除（char.c, pc.c）
+・一部の関数の引数にconstを付与（char.c, chrif.*, map.*）
+
+----------------------------------------
 //0522 [2008/09/06] by Rayce
 
 ・AthenaProject Rev.548よりmerge、thanks to ico776さん

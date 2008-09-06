@@ -296,7 +296,7 @@ static int chrif_recverasemap(int fd)
  * マップ鯖間移動のためのデータ準備要求
  *------------------------------------------
  */
-int chrif_changemapserver(struct map_session_data *sd,char *name,int x,int y,unsigned long ip,unsigned short port)
+int chrif_changemapserver(struct map_session_data *sd,const char *name,int x,int y,unsigned long ip,unsigned short port)
 {
 	nullpo_retr(-1, sd);
 

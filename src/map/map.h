@@ -1165,7 +1165,7 @@ struct skill_unit * map_id2su(int);
 struct block_list * map_id2bl(int);
 
 int map_mapname2mapid(const char*);
-int map_mapname2ipport(char*,unsigned long*,unsigned short*);
+int map_mapname2ipport(const char*,unsigned long*,unsigned short*);
 int map_setipport(char *name,unsigned long ip,unsigned short port);
 int map_eraseipport(char *name,unsigned long ip,unsigned short port);
 void map_eraseallipport(void);
