@@ -289,6 +289,7 @@ static int skill_castle_mob_changetarget(struct block_list *bl,va_list ap);
 static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap );
 static int skill_count_unitgroup(struct unit_data *ud,int skillid);
 static int skill_am_twilight(struct map_session_data* sd, int skillid);
+static int skill_check_condition_use_sub(struct block_list *bl,va_list ap);
 
 /* スキルユニットの配置情報を返す */
 static struct skill_unit_layout skill_unit_layout[MAX_SKILL_UNIT_LAYOUT];
@@ -5220,16 +5221,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(battle_config.pc_land_skill_limit) {
 				int maxcount = skill_get_maxcount(sd->ud.skillid,sd->ud.skilllv);
 				if(maxcount > 0) {
-					int c = 0;
-					struct linkdb_node *node = sd->ud.skillunit;
-					while( node ) {
-						struct skill_unit_group *group = (struct skill_unit_group *)node->data;
-						if(group->alive_count > 0 && group->skill_id == sd->ud.skillid) {
-							c++;
-						}
-						node = node->next;
-					}
-					if(c >= maxcount) {
+					if(skill_count_unitgroup(&sd->ud, sd->ud.skillid) >= maxcount) {
 						clif_skill_fail(sd,sd->ud.skillid,0,0);
 						sd->ud.canact_tick  = tick;
 						sd->ud.canmove_tick = tick;
@@ -6567,6 +6559,20 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		group->valstr = (char *)aCalloc(80,sizeof(char));
 		if(sd)
 			memcpy(group->valstr,sd->message,80);
+	}
+
+	if(unit_flag&UF_DANCE) {
+		if(sd) {
+			sd->skillid_dance = skillid;
+			sd->skilllv_dance = skilllv;
+		}
+		status_change_start(src,SC_DANCING,skillid,(int)group,0,0,skill_get_time(skillid,skilllv)+1000,0);
+		// 合奏スキルは相方をダンス状態にする
+		if(sd && unit_flag&UF_ENSEMBLE) {
+			int c = 0;
+			map_foreachinarea(skill_check_condition_use_sub,sd->bl.m,
+				sd->bl.x-1,sd->bl.y-1,sd->bl.x+1,sd->bl.y+1,BL_PC,sd,&c);
+		}
 	}
 
 	for(i=0; i<layout->count; i++) {
@@ -10508,7 +10514,7 @@ void skill_stop_dancing(struct block_list *src, int flag)
 		struct map_session_data* dsd=map_id2sd(sc->data[SC_DANCING].val4); // 相方のsd取得
 		if(flag){ // ログアウトなど片方が落ちても演奏が継続される
 			if(dsd && src->id == group->src_id){ // グループを持ってるPCが落ちる
-				group->src_id=sc->data[SC_DANCING].val4; // 相方にグループを任せる
+				group->src_id = dsd->bl.id; // 相方にグループを任せる
 				linkdb_insert( &dsd->ud.skillunit, group, group );
 				linkdb_erase( &sd->ud.skillunit, group );
 				if(flag&1) // ログアウト
@@ -10690,11 +10696,11 @@ static int skill_unit_group_newid = MAX_SKILL;
 
 static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id,unsigned int tick)
 {
-	struct unit_data *ud = unit_bl2ud(src);
+	struct unit_data *ud;
 	struct skill_unit_group *group;
-	int unit_flag;
 
-	nullpo_retr(NULL, ud);
+	nullpo_retr(NULL, src);
+	nullpo_retr(NULL, ud = unit_bl2ud(src));
 
 	group             = (struct skill_unit_group *)aCalloc(1,sizeof(struct skill_unit_group));
 	group->src_id     = src->id;
@@ -10718,21 +10724,6 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 	if(skill_unit_group_newid <= 0)
 		skill_unit_group_newid = MAX_SKILL;
 
-	unit_flag = skill_get_unit_flag(skillid, skilllv);
-	if(unit_flag&UF_DANCE) {
-		struct map_session_data *sd = NULL;
-		if(src->type == BL_PC && (sd = (struct map_session_data *)src)) {
-			sd->skillid_dance = skillid;
-			sd->skilllv_dance = skilllv;
-		}
-		status_change_start(src,SC_DANCING,skillid,(int)group,0,0,skill_get_time(skillid,skilllv)+1000,0);
-		// 合奏スキルは相方をダンス状態にする
-		if(sd && unit_flag&UF_ENSEMBLE) {
-			int c = 0;
-			map_foreachinarea(skill_check_condition_use_sub,sd->bl.m,
-				sd->bl.x-1,sd->bl.y-1,sd->bl.x+1,sd->bl.y+1,BL_PC,sd,&c);
-		}
-	}
 	return group;
 }
 

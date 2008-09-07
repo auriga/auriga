@@ -1,4 +1,11 @@
 ----------------------------------------
+//0524 [2008/09/08] by Rayce
+
+・battle_auriga.confの player_land_skill_limit がyesのときの地面スキルの
+  設置個数の計算は skill_count_unitgroup() を使うように修正（skill.c）
+・skill_initunitgroup() からダンスの処理を分離（skill.c）
+
+----------------------------------------
 //0523 [2008/09/07] by Rayce
 
 ・0516で、bEternalStatusChangeの発動判定が間違っていた致命的なバグを修正（status.c）
