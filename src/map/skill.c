@@ -6576,11 +6576,10 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	}
 
 	for(i=0; i<layout->count; i++) {
-		struct skill_unit *unit;
-		int ux, uy, alive = 1;
+		int ux = x + layout->dx[i];
+		int uy = y + layout->dy[i];
+		int alive = 1;
 
-		ux    = x + layout->dx[i];
-		uy    = y + layout->dy[i];
 		val1  = skilllv;
 		val2  = 0;
 		limit = group->limit;
@@ -6624,6 +6623,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				val1 = 4+(skilllv+1)/2;
 				break;
 		}
+
 		// 直上スキルの場合設置座標上にランドプロテクターがないかチェック
 		if(range <= 0) {
 			switch(skillid) {
@@ -6660,6 +6660,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		}
 
 		if(alive) {
+			struct skill_unit *unit;
 			nullpo_retr(NULL, unit = skill_initunit(group,i,ux,uy));
 			unit->val1  = val1;
 			unit->val2  = val2;
@@ -6668,17 +6669,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		}
 	}
 
-	// 全てのユニットの設置が終わってからスキル効果を発動させる
-	for(i=0; i<layout->count; i++) {
-		struct skill_unit *unit = &group->unit[i];
-
-		if(unit->alive && unit->range == 0)
-			map_foreachinarea(skill_unit_effect,unit->bl.m,
-				unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,
-				(BL_PC|BL_MOB|BL_MERC),&unit->bl,gettick(),1);
-	}
-
-	if(on_flag && group) {
+	if(on_flag) {
 		switch(skillid) {
 		case MG_FIREWALL:
 			group->limit = group->limit*150/100;
@@ -6689,7 +6680,25 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		}
 	}
 
-	if(group->alive_count <= 0) {
+	map_freeblock_lock();
+
+	// 全てのユニットの設置が終わってからスキル効果を発動させる
+	for(i=0; i<layout->count; i++) {
+		struct skill_unit *unit = &group->unit[i];
+
+		if(unit->alive && unit->range == 0) {
+			map_foreachinarea(skill_unit_effect,unit->bl.m,
+				unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,
+				(BL_PC|BL_MOB|BL_MERC),&unit->bl,gettick(),1);
+		}
+	}
+
+	// スキルユニットグループが既に消滅している可能性があるので再取得
+	group = map_id2sg(group->bl.id);
+
+	map_freeblock_unlock();
+
+	if(group && group->alive_count <= 0) {
 		// ユニットが発生しなかった
 		skill_delunitgroup(group);
 		group = NULL;

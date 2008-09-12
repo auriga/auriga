@@ -71,18 +71,17 @@
 #include "merc.h"
 
 // 極力 staticでローカルに収める
-static struct dbt *id_db = NULL;
-static struct dbt *map_db = NULL;
-static struct dbt *nick_db = NULL;
-static struct dbt *charid_db = NULL;
+static struct dbt *id_db        = NULL;
+static struct dbt *map_db       = NULL;
+static struct dbt *nick_db      = NULL;
+static struct dbt *charid_db    = NULL;
+static struct dbt *freeblock_db = NULL;
 
 static int users;
 static struct block_list *object[MAX_FLOORITEM];
 static int first_free_object_id, last_object_id;
 
-#define BLOCK_FREE_MAX (128*1024)
-static void *block_free[BLOCK_FREE_MAX];
-static int block_free_count = 0, block_free_lock = 0;
+static int block_free_lock = 0;
 
 #define BLOCK_LIST_MAX (256*1024)
 static struct block_list *bl_list[BLOCK_LIST_MAX];
@@ -282,14 +281,9 @@ int map_freeblock(void *bl)
 		aFree(bl);
 		bl = NULL;
 	} else {
-		if(block_free_count >= BLOCK_FREE_MAX) {
-			aFree(bl);
-			if(battle_config.error_log)
-				printf("map_freeblock: *WARNING* too many free block! %d %d\n", block_free_count, block_free_lock);
-		} else {
-			block_free[block_free_count++] = bl;
-		}
+		numdb_insert(freeblock_db, bl, bl);
 	}
+
 	return block_free_lock;
 }
 
@@ -308,15 +302,16 @@ int map_freeblock_lock(void)
  * バッファにたまっていたblockを全部削除
  *------------------------------------------
  */
+static int freeblock_db_final(void *key, void *data, va_list ap)
+{
+	aFree(data);
+	return 0;
+}
+
 int map_freeblock_unlock(void)
 {
 	if((--block_free_lock) == 0) {
-		int i;
-		for(i = 0; i < block_free_count; i++) {
-			aFree(block_free[i]);
-			block_free[i] = NULL;
-		}
-		block_free_count = 0;
+		numdb_clear(freeblock_db, freeblock_db_final);
 	} else if(block_free_lock < 0) {
 		if(battle_config.error_log)
 			printf("map_freeblock_unlock: lock count < 0 !\n");
@@ -2921,14 +2916,16 @@ void do_final(void)
 		waterlist_max = 0;
 	}
 
+	if(freeblock_db)
+		numdb_final(freeblock_db, freeblock_db_final);
 	if(map_db)
-		strdb_final(map_db,NULL);
+		strdb_final(map_db, NULL);
 	if(nick_db)
-		strdb_final(nick_db,nick_db_final);
+		strdb_final(nick_db, nick_db_final);
 	if(charid_db)
-		numdb_final(charid_db,charid_db_final);
+		numdb_final(charid_db, charid_db_final);
 	if(id_db)
-		numdb_final(id_db,NULL);
+		numdb_final(id_db, NULL);
 
 	exit_dbn();
 	do_final_timer();
@@ -2991,10 +2988,11 @@ int do_init(int argc,char *argv[])
 
 	socket_set_httpd_page_connection_func(map_socket_ctrl_panel_func);
 
-	id_db     = numdb_init();
-	map_db    = strdb_init(16);
-	nick_db   = strdb_init(24);
-	charid_db = numdb_init();
+	id_db        = numdb_init();
+	map_db       = strdb_init(16);
+	nick_db      = strdb_init(24);
+	charid_db    = numdb_init();
+	freeblock_db = numdb_init();
 
 	do_init_map();
 
