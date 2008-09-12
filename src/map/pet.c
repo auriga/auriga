@@ -1366,7 +1366,7 @@ int read_petdb(void)
 			char *str[20],*p,*np;
 			lines++;
 
-			if(line[0] == '\0' || line[0] == '\n')
+			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;

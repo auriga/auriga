@@ -389,7 +389,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 				return 0;
 			}
 		}
-		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,(void*)ud->walkpath.path_pos);
+		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,(void*)((int)ud->walkpath.path_pos));
 	} else {
 		// 目的地に着いた
 		if(sd && sd->sc.data[SC_RUN].timer != -1) {

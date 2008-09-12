@@ -3270,6 +3270,8 @@ int httpd_config_read(char *cfgName)
 		return 1;
 	}
 	while(fgets(line,1020,fp)){
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
 		if(sscanf(line,"%[^:]: %[^\r\n]",w1,w2) != 2)

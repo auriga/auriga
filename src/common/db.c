@@ -774,8 +774,11 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 		char *s;
 		struct csvdb_line *line;
 
-		if( buf[0] == '\n' || !buf[0] )                      continue; // 空行
-		if( skip_comment && buf[0] == '/' && buf[1] == '/' ) continue; // コメント
+		if( buf[0] == '\0' || buf[0] == '\r' || buf[0] == '\n' )
+			continue; // 空行
+		if( skip_comment && buf[0] == '/' && buf[1] == '/' )
+			continue; // コメント
+
 		if( csv->row_count == csv->row_max ) {
 			csv->row_max += 64;
 			csv->data  = (struct csvdb_line*)aRealloc(

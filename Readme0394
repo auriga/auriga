@@ -1,4 +1,16 @@
 ----------------------------------------
+//0529 [2008/09/13] by Rayce
+
+・MVP獲得者がホムで、主人がMVPアイテムを重量オーバーで所持できないとき、
+　nullpoエラーが表示されるバグを修正（mob.c）
+	merged from fix by ultramage on AthenaProject, thanks a lot!!
+
+・ポインタへキャストする際のwarningを修正（unit.c）
+
+・0515のdbやconfファイルの空行読み飛ばしにおいて、UNIX環境下で改行コードが
+　CR/LFの場合を考慮してなかった問題を修正
+
+----------------------------------------
 //0528 [2008/09/13] by Rayce
 
 ・map_freeblock_lock() 中に同一のポインタが複数回 map_freeblock()

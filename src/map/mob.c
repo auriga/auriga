@@ -2046,7 +2046,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				} else {
 					clif_mvp_item(mvpsd,item.nameid);
 					if((ret = pc_additem(mvpsd,&item,1))) {
-						clif_additem(sd,0,0,ret);
+						clif_additem(mvpsd,0,0,ret);
 						map_addflooritem(&item,1,mvpsd->bl.m,mvpsd->bl.x,mvpsd->bl.y,
 							(mvp[0].bl ? mvp[0].bl->id : 0),(mvp[1].bl ? mvp[1].bl->id : 0),(mvp[2].bl ? mvp[2].bl->id : 0),1);
 					}
@@ -3581,7 +3581,7 @@ static int mob_readdb(void)
 			char *str[37+ITEM_DROP_COUNT*2];
 			char *p,*np;
 
-			if(line[0] == '\0' || line[0] == '\n')
+			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;
@@ -3694,7 +3694,7 @@ static int mob_readdb(void)
 		int class_,i;
 		char *str[3],*p,*np;
 
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
@@ -3740,7 +3740,7 @@ static int mob_readdb_mobavail(void)
 	}
 
 	while(fgets(line,1020,fp)){
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
@@ -3819,7 +3819,7 @@ static int mob_read_randommonster(void)
 		}
 		while(fgets(line,1020,fp)){
 			int class_,per;
-			if(line[0] == '\0' || line[0] == '\n')
+			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;
@@ -3963,7 +3963,7 @@ static int mob_readskilldb(void)
 			int j=0;
 
 			lineno++;
-			if(line[0] == '\0' || line[0] == '\n')
+			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;

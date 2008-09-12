@@ -2070,7 +2070,7 @@ static void map_readwater(void)
 		struct waterlist *p = NULL;
 		int idx, wh, count;
 
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
@@ -2648,7 +2648,7 @@ static int map_config_read(const char *cfgName)
 	}
 
 	while(fgets(line, sizeof(line) - 1, fp)) {
-		if (line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if (line[0] == '/' && line[1] == '/')
 			continue;

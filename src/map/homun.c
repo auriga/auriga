@@ -1571,7 +1571,7 @@ static int read_homundb(void)
 			char *str[32],*p,*np;
 			lines++;
 
-			if(line[0] == '\0' || line[0] == '\n')
+			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;
@@ -1670,7 +1670,7 @@ static int homun_readdb(void)
 	i=0;
 	while(fgets(line,1020,fp)){
 		int b0,b1,b2,b3,b4,b5;
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
@@ -1701,7 +1701,7 @@ static int homun_readdb(void)
 		char *split[15];
 		struct homun_skill_tree_entry *st;
 
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
@@ -1779,7 +1779,7 @@ static int homun_read_embryodb(void)
 	}
 
 	while(fgets(line,1020,fp)){
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;

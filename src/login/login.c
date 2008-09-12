@@ -2034,9 +2034,10 @@ static void login_config_read(const char *cfgName)
 	}
 
 	while(fgets(line, sizeof(line) - 1, fp)) {
+		if (line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
 		if (line[0] == '/' && line[1] == '/')
 			continue;
-
 		if (sscanf(line, "%[^:]: %[^\r\n]", w1, w2) != 2)
 			continue;
 

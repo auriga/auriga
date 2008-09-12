@@ -14302,7 +14302,7 @@ static void packetdb_readdb(void)
 	}
 	while(fgets(line,1020,fp)){
 		ln++;
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;

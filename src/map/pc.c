@@ -8321,7 +8321,7 @@ int pc_readdb(void)
 	i = 0;
 	while(fgets(line,1020,fp)) {
 		int bn,b1,b2,b3,b4,b5,b6,jn,j1,j2,j3,j4,j5,j6,j7,j8;
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
@@ -8362,7 +8362,7 @@ int pc_readdb(void)
 		int upper = 0,skillid;
 		struct skill_tree_entry *st;
 
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
@@ -8441,7 +8441,7 @@ int pc_readdb(void)
 	while(fgets(line,1020,fp)) {
 		char *split[10];
 		int lv,n;
-		if(line[0] == '\0' || line[0] == '\n')
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
@@ -8456,7 +8456,9 @@ int pc_readdb(void)
 		for(i=0; i<n; ) {
 			if( !fgets(line,1020,fp) )
 				break;
-			if(line[0]=='/' && line[1]=='/')
+			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+				continue;
+			if(line[0] == '/' && line[1] == '/')
 				continue;
 
 			for(j=0,p=line;j<n && p;j++) {
