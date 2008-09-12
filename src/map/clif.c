@@ -10226,7 +10226,7 @@ void clif_send_packet(struct map_session_data *sd, const char *message)
 				&p[20],&p[21],&p[22],&p[23],&p[24],&p[25],&p[26],&p[27],&p[28],&p[29]);
 	if(n == 0)
 		return;
-	if(packet < 0 || packet > MAX_PACKET_DB)
+	if(packet < 0 || packet >= MAX_PACKET_DB)
 		return;
 	db_len = packet_db[packet].len;
 	if(db_len > 255){
@@ -11552,6 +11552,8 @@ static void clif_parse_TradeCommit(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_StopAttack(int fd,struct map_session_data *sd, int cmd)
 {
+	nullpo_retv(sd);
+
 	unit_stopattack(&sd->bl);
 
 	return;
@@ -11593,6 +11595,8 @@ static void clif_parse_GetItemFromCart(int fd,struct map_session_data *sd, int c
  */
 static void clif_parse_RemoveOption(int fd,struct map_session_data *sd, int cmd)
 {
+	nullpo_retv(sd);
+
 	if (sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->state.mail_appending)
 		return;
 	pc_setoption(sd,0);
@@ -12211,6 +12215,8 @@ static void clif_parse_SolveCharName(int fd,struct map_session_data *sd, int cmd
  */
 static void clif_parse_ResetChar(int fd,struct map_session_data *sd, int cmd)
 {
+	nullpo_retv(sd);
+
 	if (battle_config.atc_gmonly == 0 ||
 	    pc_isGM(sd) >= get_atcommand_level(AtCommand_ResetState)) {
 		switch(RFIFOW(fd,GETPACKETPOS(cmd,0))){
@@ -13276,13 +13282,13 @@ static void clif_parse_wisexlist(int fd,struct map_session_data *sd, int cmd)
 static void clif_parse_wisall(int fd,struct map_session_data *sd, int cmd)
 {
 	int type = RFIFOB(fd,GETPACKETPOS(cmd,0));
-	int i;
 
 	nullpo_retv(sd);
 
 	if(type==0) {	// exall
 		sd->state.wis_all = 1;
 	} else {	// inall
+		int i;
 		for(i=0;i<MAX_WIS_REFUSAL;i++)	// 拒否リストを空に
 			sd->wis_refusal[i][0]=0;
 		sd->state.wis_all = 0;
@@ -14056,19 +14062,21 @@ int clif_parse(int fd)
 			return 0;
 		}
 
-		// ゲーム用以外パケットか、認証を終える前に0072以外が来たら、切断する
-		if( cmd >= MAX_PACKET_DB ||
-		    packet_db[cmd].len == 0 ||
-		    ((!sd || sd->state.auth == 0) && packet_db[cmd].func != clif_parse_WantToConnection) )
-		{
+		// ゲーム用以外のパケットなので切断
+		if(cmd >= MAX_PACKET_DB || packet_db[cmd].len == 0) {
+			printf("clif_parse: unsupported packet 0x%04x disconnect %d\n", cmd, fd);
 			close(fd);
 			session[fd]->eof = 1;
-			if(cmd < MAX_PACKET_DB && packet_db[cmd].len == 0) {
-				printf("clif_parse : %d %d %x\n",fd,packet_db[cmd].len,cmd);
-				printf("%x length 0 packet disconnect %d\n",cmd,fd);
-			}
 			return 0;
 		}
+
+		// 認証を終える前に0072以外が来たので切断
+		if((!sd || sd->state.auth == 0) && packet_db[cmd].func != clif_parse_WantToConnection) {
+			close(fd);
+			session[fd]->eof = 1;
+			return 0;
+		}
+
 		// パケット長を計算
 		packet_len = packet_db[cmd].len;
 		if(packet_len == -1) {
@@ -14076,17 +14084,19 @@ int clif_parse(int fd)
 				return 0;	// 可変長パケットで長さの所までデータが来てない
 			packet_len = RFIFOW(fd,2);
 			if(packet_len < 4 || packet_len > 0x8000) {
+				printf("clif_parse: invalid packet 0x%04x length %d disconnect %d\n", cmd, packet_len, fd);
 				close(fd);
 				session[fd]->eof = 1;
 				return 0;
 			}
 		}
-
 		if(RFIFOREST(fd) < packet_len)
 			return 0;	// まだ1パケット分データが揃ってない
 
 		if(sd && sd->state.auth == 1 && sd->state.waitingdisconnect) {
 			;	// 切断待ちの場合パケットを処理しない
+		} else if(sd && sd->bl.prev == NULL && packet_db[cmd].func != clif_parse_LoadEndAck) {
+			;	// ブロックに繋がっていないときに007d以外が来たら処理しない
 		} else if(packet_db[cmd].func) {
 			g_packet_len = packet_len;	// GETPACKETPOS 用に保存
 			// パケット処理
@@ -14094,7 +14104,7 @@ int clif_parse(int fd)
 		} else {
 			// 不明なパケット
 			if(battle_config.error_log) {
-				printf("clif_parse : %d %d %x\n",fd,packet_len,cmd);
+				printf("clif_parse: unknown packet 0x%04x %d\n", cmd, fd);
 #ifdef DUMP_UNKNOWN_PACKET
 				hex_dump(stdout, RFIFOP(fd,0), packet_len);
 				printf("\n");
