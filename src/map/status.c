@@ -5135,7 +5135,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			{
 				struct skill_unit_group *sg = skill_unitsetting(bl,RG_GRAFFITI,val1,val2,val3,0);
 				if(sg)
-					val4 = (int)sg;
+					val4 = sg->bl.id;
 			}
 			break;
 		case SC_OVERTHRUSTMAX:		/* オーバートラストマックス */
@@ -5892,7 +5892,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_WARM:
 		case SC_GRAVITATION_USER:
 			{
-				struct skill_unit_group *sg = (struct skill_unit_group *)sc->data[type].val4;	// val4がgroup_id
+				struct skill_unit_group *sg = map_id2sg(sc->data[type].val4);	// val4がgroup_id
 				sc->data[type].val4 = 0;
 				if(sg)
 					skill_delunitgroup(sg);
@@ -5913,7 +5913,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 		case SC_ANKLE:
 			{
-				struct skill_unit_group *sg = (struct skill_unit_group *)sc->data[SC_ANKLE].val2;
+				struct skill_unit_group *sg = map_id2sg(sc->data[SC_ANKLE].val2);
 				// skill_delunitgroupからstatus_change_end が呼ばれない為に、
 				// 一端発動していない事にしてからグループ削除する。
 				if(sg) {

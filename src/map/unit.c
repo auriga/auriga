@@ -262,12 +262,12 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	if(sd) {
 		if(sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_LONGINGFREEDOM].timer == -1)	// Not 拘束しないで
 		{
-			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc.data[SC_DANCING].val2,sd->bl.m,dx,dy);
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_DANCING].val2),sd->bl.m,dx,dy);
 			sd->dance.x += dx;
 			sd->dance.y += dy;
 		}
 		if(sd->sc.data[SC_WARM].timer != -1)
-			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc.data[SC_WARM].val4,sd->bl.m,dx,dy);
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_WARM].val4),sd->bl.m,dx,dy);
 	}
 
 	ud->walktimer = 1;
@@ -684,7 +684,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 
 		// 温もりの位置変更
 		if(sd->sc.data[SC_WARM].timer != -1) {
-			skill_unit_move_unit_group((struct skill_unit_group *)sd->sc.data[SC_WARM].val4,sd->bl.m,dx,dy);
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_WARM].val4),sd->bl.m,dx,dy);
 		}
 
 		if(map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
@@ -1444,7 +1444,7 @@ int unit_can_move(struct block_list *bl)
 			if(sc->data[SC_DANCING].val4)
 				return 0;
 			// 単独合奏時に動けない設定
-			sg = (struct skill_unit_group *)sc->data[SC_DANCING].val2;
+			sg = map_id2sg(sc->data[SC_DANCING].val2);
 			if(sg && skill_get_unit_flag(sg->skill_id, sg->skill_lv) & UF_ENSEMBLE) {
 				if(!sd || (!battle_config.player_skill_partner_check && !(battle_config.sole_concert_type & 1)))
 					return 0;

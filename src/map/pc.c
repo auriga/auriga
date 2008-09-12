@@ -208,7 +208,7 @@ int pc_isquitable(struct map_session_data *sd)
 	if(sd->sc.data[SC_MARIONETTE].timer != -1)
 		return 1;
 	if(sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_DANCING].val4) {
-		struct skill_unit_group *sg = (struct skill_unit_group *)sd->sc.data[SC_DANCING].val2;
+		struct skill_unit_group *sg = map_id2sg(sd->sc.data[SC_DANCING].val2);
 		if(sg && sg->src_id == sd->bl.id)
 			return 1;
 	}

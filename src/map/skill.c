@@ -3719,7 +3719,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			sg = skill_unitsetting(src,skillid,skilllv,src->x,src->y,0);
 			if(sg) {
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,bl->id,0,(int)sg,skill_get_time(skillid,skilllv),0);
+				status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,bl->id,0,sg->bl.id,skill_get_time(skillid,skilllv),0);
 			}
 		}
 		break;
@@ -4328,7 +4328,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_release(src,0x04);	// ゴスペル術者のステータス異常解除
 			if(sg) {
 				clif_skill_poseffect(src,skillid,skilllv,src->x,src->y,tick);
-				status_change_start(bl,SC_GOSPEL,skilllv,bl->id,0,(int)sg,skill_get_time(skillid,skilllv),0);
+				status_change_start(bl,SC_GOSPEL,skilllv,bl->id,0,sg->bl.id,skill_get_time(skillid,skilllv),0);
 			}
 		}
 		break;
@@ -6061,7 +6061,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 					// 発動後5秒間はリログ禁止
 					ud->canact_tick = tick + 5000;
 				}
-				status_change_start(src,SC_GRAVITATION_USER,skilllv,0,0,(int)sg,skill_get_time(skillid,skilllv),0);
+				status_change_start(src,SC_GRAVITATION_USER,skilllv,0,0,sg->bl.id,skill_get_time(skillid,skilllv),0);
 			}
 		}
 		break;
@@ -6566,7 +6566,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			sd->skillid_dance = skillid;
 			sd->skilllv_dance = skilllv;
 		}
-		status_change_start(src,SC_DANCING,skillid,(int)group,0,0,skill_get_time(skillid,skilllv)+1000,0);
+		status_change_start(src,SC_DANCING,skillid,group->bl.id,0,0,skill_get_time(skillid,skilllv)+1000,0);
 		// 合奏スキルは相方をダンス状態にする
 		if(sd && unit_flag&UF_ENSEMBLE) {
 			int c = 0;
@@ -7115,7 +7115,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			// 最低拘束時間補償（式はeAのものをとりあえず採用）
 			if(sec < 3000 + 30 * sg->skill_lv)
 				sec = 3000 + 30 * sg->skill_lv;
-			status_change_start(bl,SC_ANKLE,sg->skill_lv,(int)sg,0,0,sec,0);
+			status_change_start(bl,SC_ANKLE,sg->skill_lv,sg->bl.id,0,0,sec,0);
 			// 本来ならボス属性なら吸い寄せられないが、skill_delunitgroup() 等の処理と上手く折り合いが付かないので保留
 			unit_movepos(bl, src->bl.x, src->bl.y, 0);
 			clif_01ac(&src->bl);
@@ -8545,7 +8545,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			struct skill_unit_group *group=NULL;
 			if(
 				sd->sc.data[SC_DANCING].timer==-1 ||
-				((group=(struct skill_unit_group*)sd->sc.data[SC_DANCING].val2) &&
+				((group=map_id2sg(sd->sc.data[SC_DANCING].val2)) &&
 				(skill_get_time(sd->sc.data[SC_DANCING].val1,group->skill_lv) -
 				sd->sc.data[SC_DANCING].val3*1000) <= skill_get_time2(cnd->id,cnd->lv))
 			){
@@ -10494,56 +10494,56 @@ int skill_check_cloaking(struct block_list *bl)
 void skill_stop_dancing(struct block_list *src, int flag)
 {
 	struct map_session_data *sd = NULL;
-	struct status_change* sc;
-	struct skill_unit_group* group;
+	struct status_change *sc;
+	struct skill_unit_group *group;
 
 	nullpo_retv(src);
 
-	sc=status_get_sc(src);
-	if(sc==NULL)
+	sc = status_get_sc(src);
+	if(sc == NULL)
 		return;
-	if(sc->data[SC_DANCING].timer==-1)
+	if(sc->data[SC_DANCING].timer == -1)
 		return;
 
 	if(src->type == BL_PC)
 		sd = (struct map_session_data *)src;
 
-	group=(struct skill_unit_group *)sc->data[SC_DANCING].val2; // ダンスのスキルユニットIDはval2に入ってる
+	group = map_id2sg(sc->data[SC_DANCING].val2); // ダンスのスキルユニットIDはval2に入ってる
 
-	if(group && sd && sc->data[SC_DANCING].val4){ // 合奏中断
-		struct map_session_data* dsd=map_id2sd(sc->data[SC_DANCING].val4); // 相方のsd取得
-		if(flag){ // ログアウトなど片方が落ちても演奏が継続される
-			if(dsd && src->id == group->src_id){ // グループを持ってるPCが落ちる
+	if(sd && group && sc->data[SC_DANCING].val4) { // 合奏中断
+		struct map_session_data* dsd = map_id2sd(sc->data[SC_DANCING].val4); // 相方のsd取得
+		if(flag) { // ログアウトなど片方が落ちても演奏が継続される
+			if(dsd && src->id == group->src_id) { // グループを持ってるPCが落ちる
 				group->src_id = dsd->bl.id; // 相方にグループを任せる
-				linkdb_insert( &dsd->ud.skillunit, group, group );
-				linkdb_erase( &sd->ud.skillunit, group );
+				linkdb_insert( &dsd->ud.skillunit, (void*)group->bl.id, group );
+				linkdb_erase( &sd->ud.skillunit, (void*)group->bl.id );
 				if(flag&1) // ログアウト
-					dsd->sc.data[SC_DANCING].val4=0; // 相方の相方を0にして合奏終了→通常のダンス状態
+					dsd->sc.data[SC_DANCING].val4 = 0; // 相方の相方を0にして合奏終了→通常のダンス状態
 				if(flag&2) // ハエ飛びなど
 					return; // 合奏もダンス状態も終了させない＆スキルユニットは置いてけぼり
-			}else if(dsd && dsd->bl.id == group->src_id){ // 相方がグループを持っているPCが落ちる(自分はグループを持っていない)
+			} else if(dsd && dsd->bl.id == group->src_id) { // 相方がグループを持っているPCが落ちる(自分はグループを持っていない)
 				if(flag&1) // ログアウト
-					dsd->sc.data[SC_DANCING].val4=0; // 相方の相方を0にして合奏終了→通常のダンス状態
+					dsd->sc.data[SC_DANCING].val4 = 0; // 相方の相方を0にして合奏終了→通常のダンス状態
 				if(flag&2) // ハエ飛びなど
 					return; // 合奏もダンス状態も終了させない＆スキルユニットは置いてけぼり
 			}
-			status_change_end(src,SC_DANCING,-1);// 自分のステータスを終了させる
+			status_change_end(src, SC_DANCING, -1);	// 自分のステータスを終了させる
 			// そしてグループは消さない＆消さないのでステータス計算もいらない？
 			return;
-		}else{
-			if(dsd && src->id == group->src_id){ // グループを持ってるPCが止める
-				status_change_end(&dsd->bl,SC_DANCING,-1);// 相手のステータスを終了させる
+		} else {
+			if(dsd && src->id == group->src_id) { // グループを持ってるPCが止める
+				status_change_end(&dsd->bl, SC_DANCING, -1);// 相手のステータスを終了させる
 			}
-			if(dsd && dsd->bl.id == group->src_id){ // 相方がグループを持っているPCが止める(自分はグループを持っていない)
-				status_change_end(src,SC_DANCING,-1);// 自分のステータスを終了させる
+			else if(dsd && dsd->bl.id == group->src_id) { // 相方がグループを持っているPCが止める(自分はグループを持っていない)
+				status_change_end(src, SC_DANCING, -1);// 自分のステータスを終了させる
 			}
 		}
 	}
-	if(flag&2 && group && sd) { // ハエで飛んだときとかはユニットも飛ぶ
-		skill_unit_move_unit_group(group, sd->bl.m,(sd->ud.to_x - sd->bl.x),(sd->ud.to_y - sd->bl.y));
+	if(flag&2 && sd && group) { // ハエで飛んだときとかはユニットも飛ぶ
+		skill_unit_move_unit_group(group, sd->bl.m, (sd->ud.to_x - sd->bl.x), (sd->ud.to_y - sd->bl.y));
 		return;
 	}
-	if( group )
+	if(group)
 		skill_delunitgroup(group);
 	if(sd)
 		status_calc_pc(sd,0);
@@ -10633,7 +10633,7 @@ static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,
 
 	unit->bl.id   = map_addobject(&unit->bl);
 	unit->bl.type = BL_SKILL;
-	unit->bl.m    = group->m;
+	unit->bl.m    = group->bl.m;
 	unit->bl.x    = x;
 	unit->bl.y    = y;
 	unit->group   = group;
@@ -10692,8 +10692,6 @@ int skill_delunit(struct skill_unit *unit)
  * スキルユニットグループ初期化
  *------------------------------------------
  */
-static int skill_unit_group_newid = MAX_SKILL;
-
 static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id,unsigned int tick)
 {
 	struct unit_data *ud;
@@ -10703,10 +10701,12 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 	nullpo_retr(NULL, ud = unit_bl2ud(src));
 
 	group             = (struct skill_unit_group *)aCalloc(1,sizeof(struct skill_unit_group));
+	group->bl.id      = map_addobject(&group->bl);
+	group->bl.type    = BL_GRP;
+	group->bl.m       = src->m;
 	group->src_id     = src->id;
 	group->party_id   = status_get_party_id(src);
 	group->guild_id   = status_get_guild_id(src);
-	group->group_id   = skill_unit_group_newid++;
 	group->unit       = (struct skill_unit *)aCalloc(count,sizeof(struct skill_unit));
 	group->unit_count = count;
 	group->val1       = 0;
@@ -10714,15 +10714,11 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 	group->skill_id   = skillid;
 	group->skill_lv   = skilllv;
 	group->unit_id    = unit_id;
-	group->m          = src->m;
 	group->limit      = 10000;
 	group->interval   = 1000;
 	group->tick       = tick;
 	group->valstr     = NULL;
-	linkdb_insert( &ud->skillunit, group, group );
-
-	if(skill_unit_group_newid <= 0)
-		skill_unit_group_newid = MAX_SKILL;
+	linkdb_insert( &ud->skillunit, (void*)group->bl.id, group );
 
 	return group;
 }
@@ -10770,7 +10766,7 @@ int skill_delunitgroup(struct skill_unit_group *group)
 	}
 
 	if(ud) {
-		if( linkdb_erase( &ud->skillunit, group ) == NULL ) {
+		if( linkdb_erase( &ud->skillunit, (void*)group->bl.id ) == NULL ) {
 			// 見つからなかった
 			return 0;
 		}
@@ -10790,7 +10786,7 @@ int skill_delunitgroup(struct skill_unit_group *group)
 
 	linkdb_final( &group->tickset );
 	map_freeblock(group->unit);	/* free()の替わり */
-	map_freeblock(group);
+	map_delobject(group->bl.id);
 
 	return 0;
 }

@@ -66,11 +66,12 @@ enum {
 	BL_MOB   = 0x002,
 	BL_PET   = 0x004,
 	BL_HOM   = 0x008,
-	BL_ITEM  = 0x010,
-	BL_SKILL = 0x020,
-	BL_NPC   = 0x040,
-	BL_CHAT  = 0x080,
-	BL_MERC  = 0x100,
+	BL_MERC  = 0x010,
+	BL_ITEM  = 0x020,
+	BL_SKILL = 0x040,
+	BL_NPC   = 0x080,
+	BL_CHAT  = 0x100,
+	BL_GRP   = 0x200,
 };
 
 #define BL_CHAR (BL_PC | BL_MOB | BL_HOM | BL_MERC)
@@ -235,10 +236,10 @@ struct skill_unit {
 };
 
 struct skill_unit_group {
+	struct block_list bl;
 	int src_id;
 	int party_id;
 	int guild_id;
-	int m;
 	int target_flag;
 	unsigned int tick;
 	int limit,interval;
@@ -246,7 +247,6 @@ struct skill_unit_group {
 	int val1,val2,val3;
 	char *valstr;
 	int unit_id;
-	int group_id;
 	short unit_count,alive_count;
 	struct skill_unit *unit;
 	struct linkdb_node *tickset;
@@ -1162,6 +1162,7 @@ struct merc_data * map_id2mcd(int);
 struct npc_data * map_id2nd(int);
 struct chat_data * map_id2cd(int);
 struct skill_unit * map_id2su(int);
+struct skill_unit_group * map_id2sg(int);
 struct block_list * map_id2bl(int);
 
 int map_mapname2mapid(const char*);
@@ -1211,14 +1212,15 @@ int map_who(int fd);
 //     }
 
 typedef struct map_session_data TBL_PC;
-typedef struct npc_data         TBL_NPC;
 typedef struct mob_data         TBL_MOB;
-typedef struct flooritem_data   TBL_ITEM;
-typedef struct chat_data        TBL_CHAT;
-typedef struct skill_unit       TBL_SKILL;
 typedef struct pet_data         TBL_PET;
 typedef struct homun_data       TBL_HOM;
 typedef struct merc_data        TBL_MERC;
+typedef struct flooritem_data   TBL_ITEM;
+typedef struct skill_unit       TBL_SKILL;
+typedef struct npc_data         TBL_NPC;
+typedef struct chat_data        TBL_CHAT;
+typedef struct skill_unit_group TBL_GRP;
 
 #define BL_DOWNCAST(type_, bl) \
 	((bl) == (struct block_list*)NULL || (bl)->type != (type_) ? (T ## type_ *)(NULL) : (T ## type_ *)(bl))

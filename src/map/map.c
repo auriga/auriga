@@ -991,9 +991,7 @@ void map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4
 
 /*==========================================
  * 床アイテムやエフェクト用の一時obj割り当て
- * object[]への保存とid_db登録まで
- *
- * bl->idもこの中で設定して問題無い?
+ * object[]への保存
  *------------------------------------------
  */
 int map_addobject(struct block_list *bl)
@@ -1018,7 +1016,6 @@ int map_addobject(struct block_list *bl)
 	if(last_object_id < i)
 		last_object_id = i;
 	object[i] = bl;
-	//numdb_insert(id_db,i,bl);
 
 	return i;
 }
@@ -1034,7 +1031,6 @@ int map_delobjectnofree(int id)
 		return 0;
 
 	map_delblock(object[id]);
-	//numdb_erase(id_db,id);
 	object[id] = NULL;
 
 	if(first_free_object_id > id)
@@ -1607,6 +1603,27 @@ struct skill_unit * map_id2su(int id)
 				printf("map_id2su : block id mismatch !!\n");
 			else
 				return (struct skill_unit *)bl;
+		}
+	}
+	return NULL;
+}
+
+/*==========================================
+ * id番号のGRPを探す。居なければNULL
+ *------------------------------------------
+ */
+struct skill_unit_group * map_id2sg(int id)
+{
+	struct block_list *bl;
+
+	// スキルユニットグループは一時object
+	if(id > 0 && id < MAX_FLOORITEM) {
+		bl = object[id];
+		if(bl && bl->type == BL_GRP) {
+			if(id != bl->id)
+				printf("map_id2sg : block id mismatch !!\n");
+			else
+				return (struct skill_unit_group *)bl;
 		}
 	}
 	return NULL;

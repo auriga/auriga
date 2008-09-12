@@ -1,4 +1,25 @@
 ----------------------------------------
+//0526 [2008/09/13] by Rayce
+
+・スキルユニットグループに関連するキャスト問題バグ対策
+　（map.*, pc.c, skill.c, status.c, unit.c）
+
+	変更前
+		status_change_start(bl,SC_ANKLE,sg->skill_lv,(int)sg,0,0,sec,0);
+		    ↓
+		struct skill_unit_group *sg = (struct skill_unit_group *)sc->data[SC_ANKLE].val2;
+	変更後
+		status_change_start(bl,SC_ANKLE,sg->skill_lv,sg->bl.id,0,0,sec,0);
+		    ↓
+		struct skill_unit_group *sg = map_id2sg(sc->data[SC_ANKLE].val2);
+
+	スキルユニットグループについても、アドレスをintにキャストして保存する方法を廃止します。
+	skill_unit_group型のデータを参照するときには、必ず map_id2sg() を経由してください。
+	またスキルユニットグループをID管理する必要があるので、skill_unit_group構造体に
+	block_list構造体を追加しています。
+	BL_CHATと同じくブロックリストには繋がれません。
+
+----------------------------------------
 //0525 [2008/09/13] by Rayce
 
 ・マップ移動の最中は clif_parse_LoadEndAck 以外のパケットを
