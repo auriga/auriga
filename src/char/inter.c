@@ -75,7 +75,6 @@ struct WisData {
 	char src[24],dst[24],msg[512];
 };
 static struct dbt * wis_db = NULL;
-static int wis_dellist[WISDELLIST_MAX], wis_delnum;
 
 
 // WISデータの生存チェック
@@ -84,29 +83,19 @@ static int check_ttl_wisdata_sub(void *key,void *data,va_list ap)
 	unsigned int tick;
 	struct WisData *wd = (struct WisData *)data;
 
-	tick = va_arg(ap,unsigned int);
+	tick = va_arg(ap, unsigned int);
 
-	if( DIFF_TICK(tick,wd->tick) > WISDATA_TTL && wis_delnum < WISDELLIST_MAX ) {
-		wis_dellist[wis_delnum++] = wd->id;
+	if(DIFF_TICK(tick, wd->tick) > WISDATA_TTL) {
+		printf("inter: wis data id=%d time out : from %s to %s\n", wd->id, wd->src, wd->dst);
+		numdb_erase(wis_db, wd->id);
+		aFree(wd);
 	}
 	return 0;
 }
 
 static int check_ttl_wisdata(void)
 {
-	unsigned int tick = gettick();
-	int i;
-
-	do {
-		wis_delnum = 0;
-		numdb_foreach(wis_db, check_ttl_wisdata_sub, tick);
-		for(i=0; i<wis_delnum; i++) {
-			struct WisData *wd = (struct WisData *)numdb_search(wis_db, wis_dellist[i]);
-			printf("inter: wis data id=%d time out : from %s to %s\n", wd->id, wd->src, wd->dst);
-			numdb_erase(wis_db, wd->id);
-			aFree(wd);
-		}
-	} while(wis_delnum >= WISDELLIST_MAX);
+	numdb_foreach(wis_db, check_ttl_wisdata_sub, gettick());
 
 	return 0;
 }
@@ -209,14 +198,13 @@ int accreg_txt_init(void)
 	char line[8192];
 	FILE *fp;
 	int c=0;
-	struct accreg *reg;
 
 	accreg_db = numdb_init();
 
 	if( (fp=fopen(accreg_txt,"r"))==NULL )
 		return 1;
 	while(fgets(line,sizeof(line),fp)) {
-		reg = (struct accreg *)aCalloc(1,sizeof(struct accreg));
+		struct accreg *reg = (struct accreg *)aCalloc(1,sizeof(struct accreg));
 
 		if(accreg_fromstr(line,reg) == 0 && reg->account_id > 0) {
 			numdb_insert(accreg_db,reg->account_id,reg);

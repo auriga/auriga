@@ -29,7 +29,6 @@
 #include "memwatch.h"
 #endif
 
-#define _MALLOC_C_
 #include "malloc.h"
 
 // 独自メモリマネージャを使用しない場合、次をコメントアウトしてください

@@ -47,12 +47,18 @@ static void * malloc_dbn(void)
 
 	if(dbn_free==NULL){
 		if(dbn_root_rest<=0){
+			void *p;
 			if(dbn_root_num >= ROOT_BUCKET) {
 				// メモリ確保出来ないのでサーバを落とす
 				printf("malloc_dbn: dbn memory over %dx%d !!\n", ROOT_BUCKET, ROOT_SIZE);
 				exit(1);
 			}
-			dbn_root[dbn_root_num]=(struct dbn *)aCalloc(ROOT_SIZE,sizeof(struct dbn));
+			p = calloc(ROOT_SIZE, sizeof(struct dbn));
+			if(p == NULL) {
+				printf("malloc_dbn: dbn malloc failed.\n");
+				exit(1);
+			}
+			dbn_root[dbn_root_num] = (struct dbn *)p;
 			dbn_root_rest=ROOT_SIZE;
 			dbn_root_num++;
 		}
@@ -81,8 +87,10 @@ void exit_dbn(void)
 	int i;
 
 	for (i=0;i<dbn_root_num;i++) {
-		if (dbn_root[i])
-			aFree(dbn_root[i]);
+		if (dbn_root[i]) {
+			free(dbn_root[i]);
+			dbn_root[i] = NULL;
+		}
 	}
 	dbn_root_rest=0;
 	dbn_root_num=0;
