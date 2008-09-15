@@ -315,6 +315,11 @@ int main(int argc,char **argv)
 {
 	int next;
 
+	if(sizeof(int8) != 1 || sizeof(int16) != 2 || sizeof(int32) != 4 || sizeof(int64) != 8 || sizeof(intptr) != sizeof(void*)) {
+		printf("exact-width integer types does not compatible with this machine\n");
+		exit(1);
+	}
+
 	pid_create(argv[0]);
 	do_init_memmgr(argv[0]); // 一番最初に実行する必要がある
 	do_socket();

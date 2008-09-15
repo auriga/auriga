@@ -23,7 +23,55 @@
 #define _UTILS_H_
 
 
-void hex_dump(FILE *fp, const unsigned char *buf, size_t len);
+// =====================
+// Platform
+// ---------------------
+#if defined(__ILP64__) || defined(__ILP64) || defined(_ILP64) || defined(ILP64)
+#error "this specific 64bit architecture is not supported"
+#endif
+
+#if defined(_M_IA64) || defined(_M_X64) || defined(_WIN64) || defined(__LP64__) || defined(__LP64) || defined(_LP64) || defined(LP64) || defined(__ppc64__)
+#define __64BIT__
+#endif
+
+#if (defined(__WIN32__) || defined(__WIN32) || defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(_MSC_VER) || defined(__BORLANDC__)) && !defined(WINDOWS)
+#define WINDOWS
+#endif
+
+
+// =====================
+// stdint.h
+// ---------------------
+typedef char  int8;
+typedef short int16;
+typedef int   int32;
+
+typedef signed char  sint8;
+typedef signed short sint16;
+typedef signed int   sint32;
+
+typedef unsigned char  uint8;
+typedef unsigned short uint16;
+typedef unsigned int   uint32;
+
+#if defined(_MSC_VER) || defined(__BORLANDC__)
+typedef __int64          int64;
+typedef signed __int64   sint64;
+typedef unsigned __int64 uint64;
+#else
+typedef long long          int64;
+typedef signed long long   sint64;
+typedef unsigned long long uint64;
+#endif
+
+#ifdef __64BIT__
+typedef uint64 uintptr;
+typedef int64  intptr;
+#else
+typedef uint32 uintptr;
+typedef int32  intptr;
+#endif
+
 
 // =====================
 // 関数名マクロ
@@ -48,21 +96,12 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len);
 
 
 // =====================
-// longlong 型定義
-// ---------------------
-#if defined(_WIN32) && ( defined(__BORLANDC__) || defined(_MSC_VER) )
-	typedef __int64 atn_int64;
-#else
-	typedef long long int atn_int64;
-#endif
-
-// =====================
 // 大きな数字用の型
 // ---------------------
 #if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
 	typedef double atn_bignumber;
 #else
-	typedef atn_int64 atn_bignumber;
+	typedef int64 atn_bignumber;
 #endif
 
 // =====================
@@ -211,5 +250,11 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len);
 #	define atn_srand(x)	srand(x)
 #	define ATN_RAND_MAX	RAND_MAX
 #endif
+
+
+// =====================
+// utils.c
+// ---------------------
+void hex_dump(FILE *fp, const unsigned char *buf, size_t len);
 
 #endif	// _UTILS_H_

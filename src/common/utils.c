@@ -91,7 +91,7 @@ int atn_int24_random32(void)
  *------------------------------------------
  */
 #ifdef RANDOM64
-static atn_int64 seed64 = 0x1234ABCD330E;
+static int64 seed64 = 0x1234ABCD330E;
 
 void atn_int31_srandom64( int seed )
 {
