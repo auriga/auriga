@@ -214,9 +214,9 @@ prt_in.gat,56,140,4	duplicate(PvPguide)	PVPガイド#4	84
 		}
 		set Zeny,Zeny-500;
 		if('@ret==1)
-			warp "pvp_n_room",51,23;
+			warp "pvp_n_room.gat",51,23;
 		else
-			warp "pvp_y_room",51,23;
+			warp "pvp_y_room.gat",51,23;
 		end;
 	}
 	//case3のときはfall through

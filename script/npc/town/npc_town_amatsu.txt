@@ -111,7 +111,7 @@ alberta.gat,245,93,3	script	貿易船船長	709,{
 		mes "よし、出発だ！";
 		close2;
 		set Zeny,Zeny-10000;
-		warp "amatsu",197,83;
+		warp "amatsu.gat",197,83;
 		end;
 	case 3:
 		mes "[ワルター=メオス]";
@@ -135,7 +135,7 @@ amatsu.gat,194,79,5	script	貿易船船長	709,{
 		mes "帰ったら友達に土産話でも";
 		mes "してやりな。";
 		close2;
-		warp "alberta",243,91;
+		warp "alberta.gat",243,91;
 		end;
 	}
 	mes "[ワルター=メオス]";
@@ -1259,7 +1259,7 @@ ama_in01.gat,22,111,0	script	お婆さん#ama	761,{
 		mes "その日までここにある……";
 		mes "邪魔をするな！^000000";
 		close2;
-		warp "amatsu",167,197;
+		warp "amatsu.gat",167,197;
 		end;
 	case 4:
 		mes "[…]";
@@ -1285,7 +1285,7 @@ ama_in01.gat,22,111,0	script	お婆さん#ama	761,{
 			mes "つもりか？クキキ……";
 			mes "消えろ!!!^000000";
 			close2;
-			warp "amatsu",167,197;
+			warp "amatsu.gat",167,197;
 			end;
 		}
 		mes "[…]";
@@ -1920,7 +1920,7 @@ amatsu.gat,223,236,3	script	出版社職員	763,{
 			mes "<モモタロ体験館>!!";
 			mes "楽しんできてください";
 			close2;
-			warp "ama_test",52,35;
+			warp "ama_test.gat",52,35;
 			end;
 		case 3:
 			mes "[出版社職員]";

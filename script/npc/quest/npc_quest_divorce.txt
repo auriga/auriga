@@ -48,7 +48,7 @@ nif_in.gat,190,112,5	script	デビルチ	738,{
 		mes "後でわしに泣きついたって";
 		mes "知らないからな！";
 		close2;
-		warp "niflheim",169,162;
+		warp "niflheim.gat",169,162;
 		end;
 	}
 	mes "[デビルチ]";

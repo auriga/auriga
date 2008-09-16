@@ -69,7 +69,7 @@ cmd_in02.gat,174,89,7	script	平凡な男	97,{
 	mes "ここは人目が多いからね……";
 	close2;
 	set NAME_1QUE,3;
-	warp "cmd_in02",110,53;
+	warp "cmd_in02.gat",110,53;
 	end;
 }
 
@@ -166,7 +166,7 @@ ra_in01.gat,308,59,1	script	従業員	930,{
 	mes "では、こちらへどうぞ。";
 	close2;
 	set NAME_1QUE,7;
-	warp "ra_in01",303,43;
+	warp "ra_in01.gat",303,43;
 	end;
 }
 
@@ -625,8 +625,8 @@ ve_fild07.gat,125,128,0	script	船	111,{
 		}
 		mes "-船を動かした-";
 		close2;
-		if(NAME_1QUE < 20) warp "nameless_i",257,217;
-		else warp "nameless_n",257,217;
+		if(NAME_1QUE < 20) warp "nameless_i.gat",257,217;
+		else warp "nameless_n.gat",257,217;
 		end;
 	}
 	mes "-ケインのお父さんの船だ。";
@@ -724,7 +724,7 @@ ve_fild07.gat,125,128,0	script	船	111,{
 	close2;
 	hideonnpc "調査員#name";
 	set NAME_1QUE,17;
-	warp "nameless_i",257,217;
+	warp "nameless_i.gat",257,217;
 	end;
 }
 
@@ -748,7 +748,7 @@ ve_fild07.gat,128,130,1	script	調査員#name	97,{
 	close2;
 	hideonnpc "調査員#name";
 	set NAME_1QUE,17;
-	warp "nameless_i",257,217;
+	warp "nameless_i.gat",257,217;
 	end;
 OnInit:
 	hideonnpc;
@@ -776,7 +776,7 @@ nameless_i.gat,259,218,3	script	ラルヒス	97,{
 	mes "わかった。";
 	mes "それじゃあ乗ってくれ。";
 	close2;
-	warp "ve_fild07",130,130;
+	warp "ve_fild07.gat",130,130;
 	end;
 }
 
@@ -824,7 +824,7 @@ nameless_i.gat,127,207,0	script	カラスの死骸	111,{
 		mes "確か、島の北側にあった家だ。";
 		mes "もう一度、行ってみよう。";
 		close2;
-		warp "nameless_i",168,252;
+		warp "nameless_i.gat",168,252;
 		end;
 	}
 	if(NAME_1QUE != 17) {
@@ -866,13 +866,13 @@ nameless_i.gat,127,207,0	script	カラスの死骸	111,{
 	mes "　気を失ってしまった-";
 	close2;
 	set NAME_1QUE,18;
-	warp "nameless_in",15,60;
+	warp "nameless_in.gat",15,60;
 	end;
 }
 
 nameless_i.gat,168,257,0	script	北の家#name	45,1,1,{
 	if(NAME_1QUE == 18 || NAME_1QUE == 19) {
-		warp "nameless_in",12,41;
+		warp "nameless_in.gat",12,41;
 		end;
 	}
 	mes "-ドアが壊れている。";
@@ -1004,7 +1004,7 @@ nameless_in.gat,12,37,0	script	name_warp	45,1,1,{
 	if(NAME_1QUE != 19)
 		end;
 	set NAME_1QUE,20;
-	warp "nameless_n",168,252;
+	warp "nameless_n.gat",168,252;
 	end;
 OnInit:
 	disablenpc;
@@ -1087,7 +1087,7 @@ nameless_n.gat,259,218,3	script	ラルヒス	97,{
 	mes "わかった。";
 	mes "それじゃあ乗ってくれ。";
 	close2;
-	warp "ve_fild07",130,130;
+	warp "ve_fild07.gat",130,130;
 	end;
 }
 

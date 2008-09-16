@@ -207,7 +207,7 @@ prt_in.gat,88,105,2	script	騎士団募集官	105,{
 		mes "あ、入り口に行きたいんですか？";
 		next;
 		if(select("地下水路の入り口へ行く","やめる")==1) {
-			warp "prt_fild05",274,208;
+			warp "prt_fild05.gat",274,208;
 			end;
 		}
 		close;
@@ -273,7 +273,7 @@ prt_in.gat,88,105,2	script	騎士団募集官	105,{
 		mes "「next」ボタンを押せば";
 		mes "地下水路へワープできます。";
 		next;
-		warp "prt_fild05",274,208;
+		warp "prt_fild05.gat",274,208;
 		end;
 	}
 }
@@ -293,7 +293,7 @@ prt_fild05.gat,270,212,5	script	地下水路管理兵	105,{
 	mes "こちらが地下水路の入り口です。";
 	next;
 	if(select("地下水路に入る。","やめる。")==1) {
-		warp "prt_sewb1",131,247;
+		warp "prt_sewb1.gat",131,247;
 		end;
 	}
 	close;

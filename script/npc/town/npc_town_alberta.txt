@@ -36,9 +36,9 @@ alberta.gat,189,151,6	script	船員	100,{
 	}
 	set Zeny,Zeny-'@price;
 	switch(@menu) {
-	case 1: warp "alb2trea",43,53; break;
-	case 2: warp "izlude",176,182; break;
-	case 3: warp "cmd_fild07",82,121; break;
+	case 1: warp "alb2trea.gat",43,53; break;
+	case 2: warp "izlude.gat",176,182; break;
+	case 3: warp "cmd_fild07.gat",82,121; break;
 	}
 	end;
 }
@@ -47,7 +47,7 @@ alb2trea.gat,39,50,6	script	船員	100,{
 	mes "[船員]";
 	mes "あ、お客様ーお帰りですか？";
 	if(select("アルベルタへ帰る","やめる")==1) {
-		warp "alberta",192,169;
+		warp "alberta.gat",192,169;
 		end;
 	}
 	close;

@@ -964,31 +964,31 @@ OnTimer900000:
 }
 
 -	script	フライング1#turbo	139,{
-	warp strnpcinfo(2),59,364;
+	warp strnpcinfo(2)+".gat",59,364;
 	end;
 }
 
 -	script	フライング2#turbo	139,{
-	warp strnpcinfo(2),59,364;
+	warp strnpcinfo(2)+".gat",59,364;
 	end;
 }
 
 -	script	落とし穴#turbo	-1,{
 	switch(rand(3)) {
-	case 0:	warp strnpcinfo(2),72,372; break;
-	case 1:	warp strnpcinfo(2),72,365; break;
-	case 2:	warp strnpcinfo(2),72,357; break;
+	case 0:	warp strnpcinfo(2)+".gat",72,372; break;
+	case 1:	warp strnpcinfo(2)+".gat",72,365; break;
+	case 2:	warp strnpcinfo(2)+".gat",72,357; break;
 	}
 	end;
 }
 
 -	script	ワープ#turbo	-1,{
 	switch(rand(20)) {
-	case 0: warp strnpcinfo(2),216,378; break;
-	case 1: warp strnpcinfo(2),218,360; break;
-	case 2: warp strnpcinfo(2),223,361; break;
-	case 3: warp strnpcinfo(2),243,342; break;
-	case 4: warp strnpcinfo(2),247,364; break;
+	case 0: warp strnpcinfo(2)+".gat",216,378; break;
+	case 1: warp strnpcinfo(2)+".gat",218,360; break;
+	case 2: warp strnpcinfo(2)+".gat",223,361; break;
+	case 3: warp strnpcinfo(2)+".gat",243,342; break;
+	case 4: warp strnpcinfo(2)+".gat",247,364; break;
 	}
 	end;
 }
@@ -1058,13 +1058,13 @@ OnTimer900000:
 
 -	script	妨害#turbo	45,{
 	switch(rand(4)) {
-	case 0: warp strnpcinfo(2),217,232; break;
-	case 1: warp strnpcinfo(2),233,207; break;
-	case 2: warp strnpcinfo(2),208,219; break;
-	case 3: warp strnpcinfo(2),219,202; break;
-	case 4: warp strnpcinfo(2),218,228; break;
+	case 0: warp strnpcinfo(2)+".gat",217,232; break;
+	case 1: warp strnpcinfo(2)+".gat",233,207; break;
+	case 2: warp strnpcinfo(2)+".gat",208,219; break;
+	case 3: warp strnpcinfo(2)+".gat",219,202; break;
+	case 4: warp strnpcinfo(2)+".gat",218,228; break;
 	case 5: if(strnpcinfo(1) == "妨害2")
-			warp strnpcinfo(2),220,195;
+			warp strnpcinfo(2)+".gat",220,195;
 		break;
 	}
 	if(strnpcinfo(1) == "妨害1") {
@@ -1081,32 +1081,32 @@ OnInit:
 -	script	蛇の道1#turbo	45,{
 	switch(rand(7)) {
 	case 0:
-	case 1: warp strnpcinfo(2),370,292; break;
+	case 1: warp strnpcinfo(2)+".gat",370,292; break;
 	case 2:
-	case 3: warp strnpcinfo(2),295,293; break;
+	case 3: warp strnpcinfo(2)+".gat",295,293; break;
 	case 4:
-	case 5: warp strnpcinfo(2),355,292; break;
-	case 6: warp strnpcinfo(2),279,292; break;
+	case 5: warp strnpcinfo(2)+".gat",355,292; break;
+	case 6: warp strnpcinfo(2)+".gat",279,292; break;
 	}
 	end;
 }
 
 -	script	蛇の道2#turbo	45,{
 	switch(rand(4)) {
-	case 0: warp strnpcinfo(2),287,256; break;
-	case 1: warp strnpcinfo(2),303,256; break;
-	case 2: warp strnpcinfo(2),347,256; break;
-	case 3: warp strnpcinfo(2),363,256; break;
+	case 0: warp strnpcinfo(2)+".gat",287,256; break;
+	case 1: warp strnpcinfo(2)+".gat",303,256; break;
+	case 2: warp strnpcinfo(2)+".gat",347,256; break;
+	case 3: warp strnpcinfo(2)+".gat",363,256; break;
 	}
 	end;
 }
 
 -	script	蛇の道3#turbo	45,{
 	switch(rand(4)) {
-	case 0: warp strnpcinfo(2),279,292; break;
-	case 1: warp strnpcinfo(2),311,292; break;
-	case 2: warp strnpcinfo(2),347,256; break;
-	case 3: warp strnpcinfo(2),370,292; break;
+	case 0: warp strnpcinfo(2)+".gat",279,292; break;
+	case 1: warp strnpcinfo(2)+".gat",311,292; break;
+	case 2: warp strnpcinfo(2)+".gat",347,256; break;
+	case 3: warp strnpcinfo(2)+".gat",370,292; break;
 	}
 	end;
 }
@@ -1114,12 +1114,12 @@ OnInit:
 -	script	蛇の道4#turbo	45,{
 	switch(rand(7)) {
 	case 0:
-	case 1: warp strnpcinfo(2),363,256; break;
+	case 1: warp strnpcinfo(2)+".gat",363,256; break;
 	case 2:
-	case 3: warp strnpcinfo(2),295,293; break;
+	case 3: warp strnpcinfo(2)+".gat",295,293; break;
 	case 4:
-	case 5: warp strnpcinfo(2),355,292; break;
-	case 6: warp strnpcinfo(2),287,256; break;
+	case 5: warp strnpcinfo(2)+".gat",355,292; break;
+	case 6: warp strnpcinfo(2)+".gat",287,256; break;
 	}
 	end;
 }
@@ -1175,59 +1175,59 @@ OnInit:
 -	script	通過1#turbo	45,{
 	announce strcharinfo(0) +"様が、丸太橋コースを通過しました！",9,0x73DEDE;
 	switch(rand(3)) {
-	case 0: warp strnpcinfo(2),210,369; break;
-	case 1: warp strnpcinfo(2),210,361; break;
-	case 2: warp strnpcinfo(2),210,354; break;
+	case 0: warp strnpcinfo(2)+".gat",210,369; break;
+	case 1: warp strnpcinfo(2)+".gat",210,361; break;
+	case 2: warp strnpcinfo(2)+".gat",210,354; break;
 	}
 	end;
 }
 
 -	script	通過2#turbo	45,{
 	announce strcharinfo(0) +"様が、箱の丘コースを通過しました！",9,0x73DEDE;
-	warp strnpcinfo(2),316,365;
+	warp strnpcinfo(2)+".gat",316,365;
 	end;
 }
 
 -	script	通過3#turbo	45,{
 	announce strcharinfo(0) +"様が、呪いと混乱の砂漠コースを通過しました！",9,0x73DEDE;
 	switch(rand(4)) {
-	case 0: warp strnpcinfo(2),46,254; break;
-	case 1: warp strnpcinfo(2),76,227; break;
-	case 2: warp strnpcinfo(2),42,197; break;
-	case 3: warp strnpcinfo(2),86,220; break;
+	case 0: warp strnpcinfo(2)+".gat",46,254; break;
+	case 1: warp strnpcinfo(2)+".gat",76,227; break;
+	case 2: warp strnpcinfo(2)+".gat",42,197; break;
+	case 3: warp strnpcinfo(2)+".gat",86,220; break;
 	}
 	end;
 }
 
 -	script	暗闇出口#turbo	45,{
 	announce strcharinfo(0) +"様が、暗黒の迷路コースを通過しました！",9,0x73DEDE;
-	warp strnpcinfo(2),185,227;
+	warp strnpcinfo(2)+".gat",185,227;
 	end;
 }
 
 -	script	通過5#turbo	45,{
 	announce strcharinfo(0) +"様が、かたつむりコースを通過しました！",9,0x73DEDE;
-	warp strnpcinfo(2),268,275;
+	warp strnpcinfo(2)+".gat",268,275;
 	end;
 }
 
 -	script	通過6#turbo	45,{
 	announce strcharinfo(0) +"様が、蛇の道コースを通過しました！",9,0x73DEDE;
-	warp strnpcinfo(2),5,91;
+	warp strnpcinfo(2)+".gat",5,91;
 	end;
 }
 
 -	script	通過7#turbo	45,{
 	if(strnpcinfo(2) == "turbo_n_1" || strnpcinfo(2) == "turbo_n_16" || strnpcinfo(2) == "turbo_e_16") {
 		announce strcharinfo(0) +"様が、小さな洞窟コースを通過しました！",9,0x73DEDE;
-		warp strnpcinfo(2),167,55;
+		warp strnpcinfo(2)+".gat",167,55;
 		end;
 	}
 	announce strcharinfo(0) +"様が、小さな洞窟コースを通過！　最後のコースへ入りました!!",9,0x73DEDE;
 	switch(rand(3)) {
-	case 0: warp strnpcinfo(2),307,52; break;
-	case 1: warp strnpcinfo(2),307,46; break;
-	case 2: warp strnpcinfo(2),307,40; break;
+	case 0: warp strnpcinfo(2)+".gat",307,52; break;
+	case 1: warp strnpcinfo(2)+".gat",307,46; break;
+	case 2: warp strnpcinfo(2)+".gat",307,40; break;
 	}
 	end;
 }
@@ -1235,9 +1235,9 @@ OnInit:
 -	script	通過8#turbo	45,{
 	announce strcharinfo(0) +"様が、見えない迷路コースを通過！　最後のコースへ入りました!!",9,0x73DEDE;
 	switch(rand(3)) {
-	case 0: warp strnpcinfo(2),307,52; break;
-	case 1: warp strnpcinfo(2),307,46; break;
-	case 2: warp strnpcinfo(2),307,40; break;
+	case 0: warp strnpcinfo(2)+".gat",307,52; break;
+	case 1: warp strnpcinfo(2)+".gat",307,46; break;
+	case 2: warp strnpcinfo(2)+".gat",307,40; break;
 	}
 	end;
 }
@@ -1281,10 +1281,11 @@ function	script	TurboGoal	{
 			else
 				set $TurboNameE$[getarg(3)%10],strcharinfo(0);
 			mapannounce "turbo_room.gat","おめでとうございます！"+strcharinfo(0)+"様が、"+((getarg(3) < 10)? "一般": "熟練")+"・"+(1<<(getarg(3)%10)+1)+"モードを優勝しました!!",0,0x70DBDB;
-			warp getarg(0),384,161;
+			warp getarg(0)+".gat",384,161;
 		}
-		else
+		else {
 			warp "turbo_room.gat",71,89;
+		}
 	}
 	else {
 		announce strcharinfo(0) +"様がゴールしました!!",9;
@@ -1295,7 +1296,7 @@ function	script	TurboGoal	{
 			set TURBO_POINT,TURBO_POINT+30;
 		}
 		set TURBO_POINT,TURBO_POINT+getarg(1);
-		warp getarg(0),384,161;
+		warp getarg(0)+".gat",384,161;
 	}
 	hideonnpc;
 	if(getarg(2) < 3 && (getarg(0) == "turbo_n_8" || getarg(0) == "turbo_e_8" || getarg(0) == "turbo_n_16" || getarg(0) == "turbo_e_16"))
@@ -1303,7 +1304,7 @@ function	script	TurboGoal	{
 	else {
 		stopnpctimer "コンパニオン#"+strnpcinfo(2);
 		donpcevent ((getarg(0) == "turbo_n_1")? "進行要員": "優勝者ガイド")+ "#" +getarg(0)+ "::OnStart";
-	}	
+	}
 	return;
 }
 

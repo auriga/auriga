@@ -219,7 +219,7 @@ lhz_in02.gat,230,284,4	script	ホテル従業員	86,{
 		close2;
 		sc_start 10,240000,10;	//SC_BLESSING
 		set Zeny,Zeny-5000;
-		warp "lhz_in02",220,150;
+		warp "lhz_in02.gat",220,150;
 		percentheal 100,100;
 		end;
 	case 3:
@@ -260,7 +260,7 @@ hu_in01.gat,246,107,3	script	旅館職員	53,{
 		mes "どうぞごゆっくり。";
 		close2;
 		set Zeny,Zeny-5000;
-		warp "hu_in01",267,5;
+		warp "hu_in01.gat",267,5;
 		percentheal 100,100;
 		end;
 	case 3:
@@ -301,7 +301,7 @@ ra_in01.gat,376,69,4	script	ホテル職員	931,{
 		mes "では、ごゆっくり。";
 		close2;
 		set Zeny,Zeny-5000;
-		warp "ra_in01",358,130;
+		warp "ra_in01.gat",358,130;
 		percentheal 100,100;
 		end;
 	case 3:
@@ -337,7 +337,7 @@ ve_in.gat,157,219,5	script	旅館の主人	709,{
 		mes "では、ごゆっくりどうぞ。";
 		close2;
 		set Zeny,Zeny-5000;
-		warp "ve_in",184,228;
+		warp "ve_in.gat",184,228;
 		percentheal 100,100;
 		end;
 	case 3:

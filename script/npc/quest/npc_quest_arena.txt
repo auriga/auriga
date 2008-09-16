@@ -118,7 +118,7 @@ arena_room.gat,105,93,2	script	(株)闇転送	55,{
 		mes "[(株)闇転送]";
 		mes "じゃあついてきな。";
 		close2;
-		warp "prt_are_in",60,14;
+		warp "prt_are_in.gat",60,14;
 		end;
 	}
 	mes "[(株)闇転送]";
@@ -685,7 +685,7 @@ function	script	ArenaClear	{
 	}
 	stopnpctimer "ArenaStage" +getarg(0);
 	enablewaitingroomevent "[LV " +getarg(1)+ "]控室#arena";
-	warp "arena_room",100,75;
+	warp "arena_room.gat",100,75;
 	return;
 }
 
@@ -1081,7 +1081,7 @@ prt_are_in.gat,129,187,3	script	進行要員#arenafailed	67,{
 	mes "お待ちしております。";
 	close2;
 	set ARENA_PIT,ARENA_PIT+1;
-	warp "arena_room",100,75;
+	warp "arena_room.gat",100,75;
 	end;
 }
 
@@ -2961,7 +2961,7 @@ prt_are_in.gat,77,135,3	script	進行要員	67,{
 		close2;
 		set ARENA_PIT,ARENA_PIT+40;
 	}
-	warp "arena_room",100,75;
+	warp "arena_room.gat",100,75;
 	end;
 }
 

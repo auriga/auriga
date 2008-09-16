@@ -1436,7 +1436,7 @@ yuno_in03.gat,169,180,3	script	実技試験教授	755,{
 		mes "よし、ではすぐ始めよう。";
 		mes "頑張ってくれたまえ。";
 		close2;
-		warp "job_sage",50,154;
+		warp "job_sage.gat",50,154;
 		end;
 	case 7:
 		mes "[ヘルメス=トリス]";
@@ -1458,7 +1458,7 @@ yuno_in03.gat,169,180,3	script	実技試験教授	755,{
 		mes "よし、ではすぐ始めよう。";
 		mes "頑張ってくれたまえ。";
 		close2;
-		warp "job_sage",50,154;
+		warp "job_sage.gat",50,154;
 		end;
 	case 8:
 		mes "[ヘルメス=トリス]";

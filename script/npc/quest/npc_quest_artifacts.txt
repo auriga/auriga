@@ -984,7 +984,7 @@ mjolnir_11.gat,149,247,3	script	ドワーフの鍛冶屋	826,{
 			mes "[ドワーフ・グルンブルティ]";
 			mes "わしの後を遅れずについて来い。";
 			close2;
-			warp "que_god01",214,62;
+			warp "que_god01.gat",214,62;
 			end;
 		}
 	}
@@ -1000,7 +1000,7 @@ OnInit:
 	end;
 OnWarp:
 	disablewaitingroomevent;
-	warpwaitingpc "que_god01",155,62,1;
+	warpwaitingpc "que_god01.gat",155,62,1;
 	initnpctimer "timequegod";
 	end;
 }
