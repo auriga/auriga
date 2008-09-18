@@ -3664,7 +3664,7 @@ int parse_char(int fd)
 						char_save(&st);
 					}
 				}
-				if(strstr(st.last_point.map,".gat") == NULL) {
+				if(strstr(st.last_point.map,".gat") == NULL && strlen(st.last_point.map) < 20) {
 					strcat(st.last_point.map,".gat");
 					char_save(&st);
 				}

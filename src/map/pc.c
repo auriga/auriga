@@ -3772,7 +3772,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 				unit_free(&sd->mcd->bl, 0);
 			}
 			unit_free(&sd->bl,clrtype);
-			memcpy(sd->status.last_point.map,mapname,24);
+			strncpy(sd->status.last_point.map,mapname,24);
 			sd->status.last_point.x = x;
 			sd->status.last_point.y = y;
 			chrif_save(sd, 1);
@@ -3857,7 +3857,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		clif_changemap(sd,map[m].name,x,y);
 	}
 
-	memcpy(sd->mapname,mapname,24);
+	strncpy(sd->mapname,mapname,24);
 	sd->bl.m = m;
 	sd->bl.x = x;
 	sd->bl.y = y;

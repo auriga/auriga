@@ -4578,6 +4578,37 @@ int buildin_rand(struct script_state *st)
  *
  *------------------------------------------
  */
+static int script_warp(struct map_session_data *sd, const char *mapname, int x, int y)
+{
+	nullpo_retr(0, sd);
+
+	if(strcmp(mapname, "Random") == 0) {
+		pc_randomwarp(sd, 3);
+	} else if(strcmp(mapname, "SavePoint") == 0) {
+		pc_setpos(sd, sd->status.save_point.map, sd->status.save_point.x, sd->status.save_point.y, 3);
+	} else {
+		if(pc_setpos(sd, mapname, x, y, 0)) {
+			// 失敗したので .gat を付けてリトライ
+			char *str = (char *)aMalloc(strlen(mapname) + 5);
+			memcpy(str, mapname, strlen(mapname) + 1);
+			strcat(str, ".gat");
+			pc_setpos(sd, str, x, y, 0);
+			aFree(str);
+		}
+	}
+
+	if(unit_isdead(&sd->bl)) {
+		pc_setstand(sd);
+		pc_setrestartvalue(sd, 3);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 int buildin_warp(struct script_state *st)
 {
 	int x,y;
@@ -4589,17 +4620,9 @@ int buildin_warp(struct script_state *st)
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	x=conv_num(st,& (st->stack->stack_data[st->start+3]));
 	y=conv_num(st,& (st->stack->stack_data[st->start+4]));
-	if(strcmp(str,"Random")==0)
-		pc_randomwarp(sd,3);
-	else if(strcmp(str,"SavePoint")==0)
-		pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,3);
-	else
-		pc_setpos(sd,str,x,y,0);
 
-	if(unit_isdead(&sd->bl)) {
-		pc_setstand(sd);
-		pc_setrestartvalue(sd,3);
-	}
+	script_warp(sd, str, x, y);
+
 	return 0;
 }
 
@@ -4620,17 +4643,8 @@ static int buildin_mapwarp_sub(struct block_list *bl,va_list ap)
 	x = va_arg(ap,int);
 	y = va_arg(ap,int);
 
-	if(strcmp(mapname,"Random")==0)
-		pc_randomwarp(sd,3);
-	else if(strcmp(mapname,"SavePoint")==0)
-		pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,3);
-	else
-		pc_setpos(sd,mapname,x,y,0);
+	script_warp(sd, mapname, x, y);
 
-	if(unit_isdead(&sd->bl)) {
-		pc_setstand(sd);
-		pc_setrestartvalue(sd,3);
-	}
 	return 0;
 }
 
@@ -8021,13 +8035,7 @@ int buildin_warpwaitingpc(struct script_state *st)
 			continue;
 		mapreg_setreg(num+(j<<24),sd->bl.id,0);
 		j++;
-
-		if(strcmp(str,"Random") == 0)
-			pc_randomwarp(sd,3);
-		else if(strcmp(str,"SavePoint") == 0)
-			pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,3);
-		else
-			pc_setpos(sd,str,x,y,0);
+		script_warp(sd, str, x, y);
 	}
 	mapreg_setreg(add_str("$@warpwaitingpcnum"),j,0);
 	return 0;
