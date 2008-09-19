@@ -48,7 +48,8 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 	if(sd->npc_id)
 		npc_event_dequeue(sd);
 
-	if((target_sd = map_id2sd(target_id)) != NULL && sd != target_sd) { // check same player to avoid hack
+	target_sd = map_id2sd(target_id);
+	if(target_sd && target_sd->bl.prev && sd != target_sd) { // check same player to avoid hack
 		if(target_sd->vender_id != 0 || target_sd->state.mail_appending) {
 			clif_tradestart(sd, 4);
 			return;
@@ -99,7 +100,8 @@ void trade_tradeack(struct map_session_data *sd, unsigned char type)
 	if(sd->npc_id != 0)
 		npc_event_dequeue(sd);
 
-	if((target_sd = map_id2sd(sd->trade_partner)) != NULL){
+	target_sd = map_id2sd(sd->trade_partner);
+	if(target_sd && target_sd->bl.prev) {
 		if(sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
 			trade_tradecancel(sd);
 			return;
@@ -135,7 +137,8 @@ void trade_tradeadditem(struct map_session_data *sd, int idx, int amount)
 
 	nullpo_retv(sd);
 
-	if ((target_sd = map_id2sd(sd->trade_partner)) != NULL && sd->state.deal_locked < 1) {
+	target_sd = map_id2sd(sd->trade_partner);
+	if (target_sd && target_sd->bl.prev && sd->state.deal_locked < 1) {
 		if (idx < 2 || idx >= MAX_INVENTORY + 2) {
 			if (idx == 0 && amount > 0 && amount <= sd->status.zeny) {
 				if(
@@ -184,7 +187,8 @@ void trade_tradeok(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	if((target_sd = map_id2sd(sd->trade_partner)) != NULL){
+	target_sd = map_id2sd(sd->trade_partner);
+	if(target_sd && target_sd->bl.prev) {
 		if (sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
 			trade_tradecancel(sd);
 			return;
@@ -211,7 +215,8 @@ void trade_tradecancel(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	if((target_sd = map_id2sd(sd->trade_partner)) != NULL){
+	target_sd = map_id2sd(sd->trade_partner);
+	if(target_sd && target_sd->bl.prev) {
 		for(trade_i = 0; trade_i < MAX_DEAL_ITEMS; trade_i++) { //give items back (only virtual)
 			if(target_sd->deal_item_amount[trade_i] != 0) {
 				clif_additem(target_sd,target_sd->deal_item_index[trade_i]-2,target_sd->deal_item_amount[trade_i],0);
@@ -252,14 +257,15 @@ void trade_tradecancel(struct map_session_data *sd)
  * Check here if we can add items in inventories (against full inventory)
  *------------------------------------------
  */
-static int trade_check(struct map_session_data *sd) {
+static int trade_check(struct map_session_data *sd, struct map_session_data *target_sd)
+{
 	struct item inventory[MAX_INVENTORY];
 	struct item inventory2[MAX_INVENTORY];
 	struct item_data *data;
-	struct map_session_data *target_sd;
 	int trade_i, i, amount, idx;
 
-	target_sd = map_id2sd(sd->trade_partner);
+	nullpo_retr(0, sd);
+	nullpo_retr(0, target_sd);
 
 	// get inventory of players
 	memcpy(&inventory, &sd->status.inventory, sizeof(struct item) * MAX_INVENTORY);
@@ -371,13 +377,14 @@ void trade_tradecommit(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	if((target_sd = map_id2sd(sd->trade_partner)) != NULL){
+	target_sd = map_id2sd(sd->trade_partner);
+	if(target_sd && target_sd->bl.prev) {
 		if (sd->state.deal_locked >= 1 && target_sd->state.deal_locked >= 1) { // both have pressed 'ok'
 			if (sd->state.deal_locked < 2) // set locked to 2
 				sd->state.deal_locked = 2;
 			if(target_sd->state.deal_locked == 2) { // the other one pressed 'trade' too
 				// checks quantity of items
-				if (!trade_check(sd)) { // this function do like the real trade, but with virtual inventories
+				if (!trade_check(sd, target_sd)) { // this function do like the real trade, but with virtual inventories
 					trade_tradecancel(sd);
 					return;
 				}

@@ -64,6 +64,8 @@ void vending_vendinglistreq(struct map_session_data *sd,int id)
 
 	if((vsd = map_id2sd(id)) == NULL)
 		return;
+	if(vsd->bl.prev == NULL)
+		return;
 	if(vsd->vender_id == 0 || vsd->state.deal_mode != 0)
 		return;
 	if(sd->vender_id != 0 || sd->state.deal_mode != 0)
@@ -94,6 +96,8 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 
 	vsd = map_id2sd(id);
 	if (vsd == NULL)
+		return;
+	if (vsd->bl.prev == NULL)
 		return;
 	if (vsd->vender_id == 0)
 		return;

@@ -1,4 +1,13 @@
 ----------------------------------------
+//0535 [2008/09/20] by Rayce
+
+・WBUFPOS, WBUFPOS2 を修正（clif.c）
+	merged from eA, thx a lot!!
+
+・念のため、マップ移動中には露店と取引の処理を行わないように強化（trade.c, vending.c）
+・trade_check() の引数を変更（trade.c）
+
+----------------------------------------
 //0534 [2008/09/20] by Blaze
 
 ・パーティーの接続人数を返すスクリプト関数「getonlinepartymember」を追加

@@ -100,11 +100,29 @@ enum {
 	SELF
 };
 
-#define WBUFPOS(p,pos,x,y) { unsigned char *__p = (p); __p+=(pos); __p[0] = (unsigned char)((x)>>2); __p[1] = (unsigned char)(((x)<<6) | (((y)>>4)&0x3f)); __p[2] = (unsigned char)((y)<<4); }
-#define WBUFPOS2(p,pos,x0,y0,x1,y1) { unsigned char *__p = (p); __p+=(pos); __p[0] = (unsigned char)((x0)>>2); __p[1] = (unsigned char)(((x0)<<6) | (((y0)>>4)&0x3f)); __p[2] = (unsigned char)(((y0)<<4) | (((x1)>>6)&0x0f)); __p[3] = (unsigned char)(((x1)<<2) | (((y1)>>8)&0x03)); __p[4] = (unsigned char)(y1); }
+#define WBUFPOS(p,pos,x,y,dir) \
+	{ \
+		unsigned char *__p = (p); \
+		__p += (pos); \
+		__p[0] = (unsigned char)((x)>>2); \
+		__p[1] = (unsigned char)(((x)<<6) | (((y)>>4)&0x3f)); \
+		__p[2] = (unsigned char)(((y)<<4) | ((dir)&0xf)); \
+	}
 
-#define WFIFOPOS(fd,pos,x,y) { WBUFPOS(WFIFOP(fd,pos),0,x,y); }
-#define WFIFOPOS2(fd,pos,x0,y0,x1,y1) { WBUFPOS2(WFIFOP(fd,pos),0,x0,y0,x1,y1); }
+#define WBUFPOS2(p,pos,x0,y0,x1,y1,sx0,sy0) \
+	{ \
+		unsigned char *__p = (p); \
+		__p += (pos); \
+		__p[0] = (unsigned char)((x0)>>2); \
+		__p[1] = (unsigned char)(((x0)<<6) | (((y0)>>4)&0x3f)); \
+		__p[2] = (unsigned char)(((y0)<<4) | (((x1)>>6)&0x0f)); \
+		__p[3] = (unsigned char)(((x1)<<2) | (((y1)>>8)&0x03)); \
+		__p[4] = (unsigned char)(y1); \
+		__p[5] = (unsigned char)(((sx0)<<4) | ((sy0)&0x0f)); \
+	}
+
+#define WFIFOPOS(fd,pos,x,y,dir) { WBUFPOS(WFIFOP(fd,pos),0,x,y,dir); }
+#define WFIFOPOS2(fd,pos,x0,y0,x1,y1,sx0,sy0) { WBUFPOS2(WFIFOP(fd,pos),0,x0,y0,x1,y1,sx0,sy0); }
 
 static char map_ip_str[16];
 static unsigned long map_ip;
@@ -398,7 +416,7 @@ void clif_authok(struct map_session_data *sd)
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x73;
 	WFIFOL(fd,2)=gettick();
-	WFIFOPOS(fd,6,sd->bl.x,sd->bl.y);
+	WFIFOPOS(fd,6,sd->bl.x,sd->bl.y,sd->dir);
 	WFIFOB(fd,9)=5;
 	WFIFOB(fd,10)=5;
 	WFIFOSET(fd,packet_db[0x73].len);
@@ -588,8 +606,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,42)=sd->status.manner;
 	WBUFB(buf,44)=(unsigned char)sd->status.karma;
 	WBUFB(buf,45)=sd->sex;
-	WBUFPOS(buf,46,sd->bl.x,sd->bl.y);
-	WBUFB(buf,48)|=sd->dir&0x0f;
+	WBUFPOS(buf,46,sd->bl.x,sd->bl.y,sd->dir);
 	WBUFB(buf,49)=5;
 	WBUFB(buf,50)=5;
 	WBUFB(buf,51)=sd->state.dead_sit;
@@ -642,8 +659,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,42)=sd->sc.opt3;
 	WBUFB(buf,44)=(unsigned char)sd->status.karma;
 	WBUFB(buf,45)=sd->sex;
-	WBUFPOS(buf,46,sd->bl.x,sd->bl.y);
-	WBUFB(buf,48)|=sd->dir&0x0f;
+	WBUFPOS(buf,46,sd->bl.x,sd->bl.y,sd->dir);
 	WBUFB(buf,49)=5;
 	WBUFB(buf,50)=5;
 	WBUFB(buf,51)=sd->state.dead_sit;
@@ -696,8 +712,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,44)=sd->sc.opt3;
 	WBUFB(buf,48)=(unsigned char)sd->status.karma;
 	WBUFB(buf,49)=sd->sex;
-	WBUFPOS(buf,50,sd->bl.x,sd->bl.y);
-	WBUFB(buf,52)|=sd->dir&0x0f;
+	WBUFPOS(buf,50,sd->bl.x,sd->bl.y,sd->dir);
 	WBUFB(buf,53)=5;
 	WBUFB(buf,54)=5;
 	WBUFB(buf,55)=sd->state.dead_sit;
@@ -750,8 +765,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,44)=sd->sc.opt3;
 	WBUFB(buf,48)=(unsigned char)sd->status.karma;
 	WBUFB(buf,49)=sd->sex;
-	WBUFPOS(buf,50,sd->bl.x,sd->bl.y);
-	WBUFB(buf,52)|=sd->dir&0x0f;
+	WBUFPOS(buf,50,sd->bl.x,sd->bl.y,sd->dir);
 	WBUFB(buf,53)=5;
 	WBUFB(buf,54)=5;
 	WBUFB(buf,55)=sd->state.dead_sit;
@@ -796,8 +810,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,46)=sd->status.manner;
 	WBUFB(buf,48)=(unsigned char)sd->status.karma;
 	WBUFB(buf,49)=sd->sex;
-	WBUFPOS2(buf,50,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y);
-	WBUFB(buf,55)=0;
+	WBUFPOS2(buf,50,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
 	WBUFB(buf,56)=5;
 	WBUFB(buf,57)=5;
 	WBUFW(buf,58)=(sd->status.base_level>99)?99:sd->status.base_level;
@@ -850,8 +863,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,46)=sd->sc.opt3;
 	WBUFB(buf,48)=(unsigned char)sd->status.karma;
 	WBUFB(buf,49)=sd->sex;
-	WBUFPOS2(buf,50,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y);
-	WBUFB(buf,55)=0;
+	WBUFPOS2(buf,50,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
 	WBUFB(buf,56)=5;
 	WBUFB(buf,57)=5;
 	WBUFW(buf,58)=(sd->status.base_level>99)?99:sd->status.base_level;
@@ -904,8 +916,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,48)=sd->sc.opt3;
 	WBUFB(buf,52)=(unsigned char)sd->status.karma;
 	WBUFB(buf,53)=sd->sex;
-	WBUFPOS2(buf,54,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y);
-	WBUFB(buf,59)=0x88;
+	WBUFPOS2(buf,54,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
 	WBUFB(buf,60)=0;
 	WBUFB(buf,61)=0;
 	WBUFW(buf,62)=(sd->status.base_level>99)?99:sd->status.base_level;
@@ -959,8 +970,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,49)=sd->sc.opt3;
 	WBUFB(buf,53)=(unsigned char)sd->status.karma;
 	WBUFB(buf,54)=sd->sex;
-	WBUFPOS2(buf,55,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y);
-	WBUFB(buf,60)=0x88;
+	WBUFPOS2(buf,55,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
 	WBUFB(buf,61)=0;
 	WBUFB(buf,62)=0;
 	WBUFW(buf,63)=(sd->status.base_level>99)?99:sd->status.base_level;
@@ -1014,8 +1024,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,49)=sd->sc.opt3;
 	WBUFB(buf,53)=(unsigned char)sd->status.karma;
 	WBUFB(buf,54)=sd->sex;
-	WBUFPOS2(buf,55,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y);
-	WBUFB(buf,60)=0x88;
+	WBUFPOS2(buf,55,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
 	WBUFB(buf,61)=0;
 	WBUFB(buf,62)=0;
 	WBUFW(buf,63)=(sd->status.base_level>99)?99:sd->status.base_level;
@@ -1084,8 +1093,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,42)=md->sc.opt3;
 		WBUFB(buf,44)=1;
 		WBUFB(buf,45)=mob_get_sex(md->class_);
-		WBUFPOS(buf,46,md->bl.x,md->bl.y);
-		WBUFB(buf,48)|=md->dir&0x0f;
+		WBUFPOS(buf,46,md->bl.x,md->bl.y,md->dir);
 		WBUFB(buf,49)=5;
 		WBUFB(buf,50)=5;
 		WBUFW(buf,52)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1118,8 +1126,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,42)=md->sc.opt3;
 		WBUFB(buf,44)=1;
 		WBUFB(buf,45)=mob_get_sex(md->class_);
-		WBUFPOS(buf,46,md->bl.x,md->bl.y);
-		WBUFB(buf,48)|=md->dir&0x0f;
+		WBUFPOS(buf,46,md->bl.x,md->bl.y,md->dir);
 		WBUFB(buf,49)=5;
 		WBUFB(buf,50)=5;
 		WBUFW(buf,52)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1152,8 +1159,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,44)=md->sc.opt3;
 		WBUFB(buf,48)=1;
 		WBUFB(buf,49)=mob_get_sex(md->class_);
-		WBUFPOS(buf,50,md->bl.x,md->bl.y);
-		WBUFB(buf,52)|=md->dir&0x0f;
+		WBUFPOS(buf,50,md->bl.x,md->bl.y,md->dir);
 		WBUFB(buf,53)=5;
 		WBUFB(buf,54)=5;
 		WBUFW(buf,56)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1186,8 +1192,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,44)=md->sc.opt3;
 		WBUFB(buf,48)=1;
 		WBUFB(buf,49)=mob_get_sex(md->class_);
-		WBUFPOS(buf,50,md->bl.x,md->bl.y);
-		WBUFB(buf,52)|=md->dir&0x0f;
+		WBUFPOS(buf,50,md->bl.x,md->bl.y,md->dir);
 		WBUFB(buf,53)=5;
 		WBUFB(buf,54)=5;
 		WBUFW(buf,56)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1213,8 +1218,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,26)=md->guild_id;
 	}
 	WBUFW(buf,42)=md->sc.opt3;
-	WBUFPOS(buf,46,md->bl.x,md->bl.y);
-	WBUFB(buf,48)|=md->dir&0x0f;
+	WBUFPOS(buf,46,md->bl.x,md->bl.y,md->dir);
 	WBUFB(buf,49)=5;
 	WBUFB(buf,50)=5;
 	WBUFW(buf,52)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1233,8 +1237,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,27)=md->guild_id;
 	}
 	WBUFW(buf,43)=md->sc.opt3;
-	WBUFPOS(buf,47,md->bl.x,md->bl.y);
-	WBUFB(buf,49)|=md->dir&0x0f;
+	WBUFPOS(buf,47,md->bl.x,md->bl.y,md->dir);
 	WBUFB(buf,50)=5;
 	WBUFB(buf,51)=5;
 	WBUFW(buf,53)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1282,7 +1285,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,46)=md->sc.opt3;
 		WBUFB(buf,48)=1;
 		WBUFB(buf,49)=mob_get_sex(md->class_);
-		WBUFPOS2(buf,50,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y);
+		WBUFPOS2(buf,50,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 		WBUFB(buf,56)=5;
 		WBUFB(buf,57)=5;
 		WBUFW(buf,58)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1316,7 +1319,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,46)=md->sc.opt3;
 		WBUFB(buf,48)=1;
 		WBUFB(buf,49)=mob_get_sex(md->class_);
-		WBUFPOS2(buf,50,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y);
+		WBUFPOS2(buf,50,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 		WBUFB(buf,56)=5;
 		WBUFB(buf,57)=5;
 		WBUFW(buf,58)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1350,8 +1353,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,48)=md->sc.opt3;
 		WBUFB(buf,52)=1;
 		WBUFB(buf,53)=mob_get_sex(md->class_);
-		WBUFPOS2(buf,54,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y);
-		WBUFB(buf,59)=0x88;
+		WBUFPOS2(buf,54,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 		WBUFB(buf,60)=0;
 		WBUFB(buf,61)=0;
 		WBUFW(buf,62)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1386,8 +1388,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,49)=md->sc.opt3;
 		WBUFB(buf,53)=1;
 		WBUFB(buf,54)=mob_get_sex(md->class_);
-		WBUFPOS2(buf,55,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y);
-		WBUFB(buf,60)=0x88;
+		WBUFPOS2(buf,55,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 		WBUFB(buf,61)=0;
 		WBUFB(buf,62)=0;
 		WBUFW(buf,63)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1422,8 +1423,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,49)=md->sc.opt3;
 		WBUFB(buf,53)=1;
 		WBUFB(buf,54)=mob_get_sex(md->class_);
-		WBUFPOS2(buf,55,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y);
-		WBUFB(buf,60)=0x88;
+		WBUFPOS2(buf,55,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 		WBUFB(buf,61)=0;
 		WBUFB(buf,62)=0;
 		WBUFW(buf,63)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1449,7 +1449,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,30)=md->guild_id;
 	}
 	WBUFW(buf,46)=md->sc.opt3;
-	WBUFPOS2(buf,50,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y);
+	WBUFPOS2(buf,50,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 	WBUFB(buf,56)=5;
 	WBUFB(buf,57)=5;
 	WBUFW(buf,58)=((level = status_get_lv(&md->bl))>99)? 99:level;
@@ -1483,8 +1483,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 		WBUFL(buf,22)=g->emblem_id;
 		WBUFL(buf,26)=g->guild_id;
 	}
-	WBUFPOS(buf,46,nd->bl.x,nd->bl.y);
-	WBUFB(buf,48)|=nd->dir&0x0f;
+	WBUFPOS(buf,46,nd->bl.x,nd->bl.y,nd->dir);
 	WBUFB(buf,49)=5;
 	WBUFB(buf,50)=5;
 #else
@@ -1501,8 +1500,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 		WBUFL(buf,23)=g->emblem_id;
 		WBUFL(buf,27)=g->guild_id;
 	}
-	WBUFPOS(buf,47,nd->bl.x,nd->bl.y);
-	WBUFB(buf,49)|=nd->dir&0x0f;
+	WBUFPOS(buf,47,nd->bl.x,nd->bl.y,nd->dir);
 	WBUFB(buf,50)=5;
 	WBUFB(buf,51)=5;
 #endif
@@ -1538,8 +1536,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,28)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,30)=mob_get_clothes_color(pd->class_);
 		WBUFB(buf,45)=mob_get_sex(pd->class_);
-		WBUFPOS(buf,46,pd->bl.x,pd->bl.y);
-		WBUFB(buf,48)|=pd->dir&0x0f;
+		WBUFPOS(buf,46,pd->bl.x,pd->bl.y,pd->dir);
 		WBUFB(buf,49)=0;
 		WBUFB(buf,50)=0;
 		WBUFW(buf,52)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1562,8 +1559,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,28)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,30)=mob_get_clothes_color(pd->class_);
 		WBUFB(buf,45)=mob_get_sex(pd->class_);
-		WBUFPOS(buf,46,pd->bl.x,pd->bl.y);
-		WBUFB(buf,48)|=pd->dir&0x0f;
+		WBUFPOS(buf,46,pd->bl.x,pd->bl.y,pd->dir);
 		WBUFB(buf,49)=0;
 		WBUFB(buf,50)=0;
 		WBUFW(buf,52)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1586,8 +1582,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,30)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,32)=mob_get_clothes_color(pd->class_);
 		WBUFB(buf,49)=mob_get_sex(pd->class_);
-		WBUFPOS(buf,50,pd->bl.x,pd->bl.y);
-		WBUFB(buf,52)|=pd->dir&0x0f;
+		WBUFPOS(buf,50,pd->bl.x,pd->bl.y,pd->dir);
 		WBUFB(buf,53)=0;
 		WBUFB(buf,54)=0;
 		WBUFW(buf,56)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1610,8 +1605,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,30)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,32)=mob_get_clothes_color(pd->class_);
 		WBUFB(buf,49)=mob_get_sex(pd->class_);
-		WBUFPOS(buf,50,pd->bl.x,pd->bl.y);
-		WBUFB(buf,52)|=pd->dir&0x0f;
+		WBUFPOS(buf,50,pd->bl.x,pd->bl.y,pd->dir);
 		WBUFB(buf,53)=0;
 		WBUFB(buf,54)=0;
 		WBUFW(buf,56)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1632,8 +1626,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,20)=view;
 	else
 		WBUFW(buf,20)=pd->equip;
-	WBUFPOS(buf,46,pd->bl.x,pd->bl.y);
-	WBUFB(buf,48)|=pd->dir&0x0f;
+	WBUFPOS(buf,46,pd->bl.x,pd->bl.y,pd->dir);
 	WBUFB(buf,49)=0;
 	WBUFB(buf,50)=0;
 	WBUFW(buf,52)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1647,8 +1640,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,21)=view;
 	else
 		WBUFW(buf,21)=pd->equip;
-	WBUFPOS(buf,47,pd->bl.x,pd->bl.y);
-	WBUFB(buf,49)|=pd->dir&0x0f;
+	WBUFPOS(buf,47,pd->bl.x,pd->bl.y,pd->dir);
 	WBUFB(buf,50)=0;
 	WBUFB(buf,51)=0;
 	WBUFW(buf,53)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1686,7 +1678,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,32)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,34)=mob_get_clothes_color(pd->class_);
 		WBUFB(buf,49)=mob_get_sex(pd->class_);
-		WBUFPOS2(buf,50,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y);
+		WBUFPOS2(buf,50,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 		WBUFB(buf,56)=0;
 		WBUFB(buf,57)=0;
 		WBUFW(buf,58)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1710,7 +1702,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,32)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,34)=mob_get_clothes_color(pd->class_);
 		WBUFB(buf,49)=mob_get_sex(pd->class_);
-		WBUFPOS2(buf,50,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y);
+		WBUFPOS2(buf,50,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 		WBUFB(buf,56)=0;
 		WBUFB(buf,57)=0;
 		WBUFW(buf,58)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1734,8 +1726,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,34)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,36)=mob_get_clothes_color(pd->class_);
 		WBUFB(buf,53)=mob_get_sex(pd->class_);
-		WBUFPOS2(buf,54,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y);
-		WBUFB(buf,59)=0x88;
+		WBUFPOS2(buf,54,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 		WBUFB(buf,60)=0;
 		WBUFB(buf,61)=0;
 		WBUFW(buf,62)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1760,8 +1751,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,35)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,37)=mob_get_clothes_color(pd->class_);
 		WBUFB(buf,54)=mob_get_sex(pd->class_);
-		WBUFPOS2(buf,55,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y);
-		WBUFB(buf,60)=0x88;
+		WBUFPOS2(buf,55,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 		WBUFB(buf,61)=0;
 		WBUFB(buf,62)=0;
 		WBUFW(buf,63)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1786,8 +1776,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,35)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,37)=mob_get_clothes_color(pd->class_);
 		WBUFB(buf,54)=mob_get_sex(pd->class_);
-		WBUFPOS2(buf,55,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y);
-		WBUFB(buf,60)=0x88;
+		WBUFPOS2(buf,55,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 		WBUFB(buf,61)=0;
 		WBUFB(buf,62)=0;
 		WBUFW(buf,63)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1808,7 +1797,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 	else
 		WBUFW(buf,20)=pd->equip;
 	WBUFL(buf,22)=gettick();
-	WBUFPOS2(buf,50,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y);
+	WBUFPOS2(buf,50,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 	WBUFB(buf,56)=0;
 	WBUFB(buf,57)=0;
 	WBUFW(buf,58)=((level = status_get_lv(&pd->bl))>99)? 99:level;
@@ -1839,8 +1828,7 @@ static int clif_hom0078(struct homun_data *hd,unsigned char *buf)
 	WBUFW(buf,16)=battle_config.pet0078_hair_id;
 	WBUFW(buf,20)=0;
 	WBUFW(buf,42)=hd->sc.opt3;
-	WBUFPOS(buf,46,hd->bl.x,hd->bl.y);
-	WBUFB(buf,48)=hd->dir&0x0f;
+	WBUFPOS(buf,46,hd->bl.x,hd->bl.y,hd->dir);
 	WBUFB(buf,49)=0;
 	WBUFB(buf,50)=0;
 	WBUFW(buf,52)=((level = status_get_lv(&hd->bl))>99)? 99:level;
@@ -1855,8 +1843,7 @@ static int clif_hom0078(struct homun_data *hd,unsigned char *buf)
 	WBUFW(buf,17)=battle_config.pet0078_hair_id;
 	WBUFW(buf,21)=0;
 	WBUFW(buf,43)=hd->sc.opt3;
-	WBUFPOS(buf,47,hd->bl.x,hd->bl.y);
-	WBUFB(buf,49)=hd->dir&0x0f;
+	WBUFPOS(buf,47,hd->bl.x,hd->bl.y,hd->dir);
 	WBUFB(buf,50)=0;
 	WBUFB(buf,51)=0;
 	WBUFW(buf,53)=((level = status_get_lv(&hd->bl))>99)? 99:level;
@@ -1891,7 +1878,7 @@ static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
 		WBUFW(buf,20)=hd->status.equip;
 	WBUFL(buf,22)=gettick();
 	WBUFW(buf,46)=hd->sc.opt3;
-	WBUFPOS2(buf,50,hd->bl.x,hd->bl.y,hd->ud.to_x,hd->ud.to_y);
+	WBUFPOS2(buf,50,hd->bl.x,hd->bl.y,hd->ud.to_x,hd->ud.to_y,8,8);
 	WBUFB(buf,56)=0;
 	WBUFB(buf,57)=0;
 	WBUFW(buf,58)=((level = status_get_lv(&hd->bl))>99)? 99:level;
@@ -1922,8 +1909,7 @@ static int clif_merc0078(struct merc_data *mcd,unsigned char *buf)
 	WBUFW(buf,16)=battle_config.pet0078_hair_id;
 	WBUFW(buf,20)=0;
 	WBUFW(buf,42)=mcd->sc.opt3;
-	WBUFPOS(buf,46,mcd->bl.x,mcd->bl.y);
-	WBUFB(buf,48)=mcd->dir&0x0f;
+	WBUFPOS(buf,46,mcd->bl.x,mcd->bl.y,mcd->dir);
 	WBUFB(buf,49)=0;
 	WBUFB(buf,50)=0;
 	WBUFW(buf,52)=((level = status_get_lv(&mcd->bl))>99)? 99:level;
@@ -1938,8 +1924,7 @@ static int clif_merc0078(struct merc_data *mcd,unsigned char *buf)
 	WBUFW(buf,17)=battle_config.pet0078_hair_id;
 	WBUFW(buf,21)=0;
 	WBUFW(buf,43)=mcd->sc.opt3;
-	WBUFPOS(buf,47,mcd->bl.x,mcd->bl.y);
-	WBUFB(buf,49)=mcd->dir&0x0f;
+	WBUFPOS(buf,47,mcd->bl.x,mcd->bl.y,mcd->dir);
 	WBUFB(buf,50)=0;
 	WBUFB(buf,51)=0;
 	WBUFW(buf,53)=((level = status_get_lv(&mcd->bl))>99)? 99:level;
@@ -1970,7 +1955,7 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 	WBUFW(buf,16)=battle_config.pet0078_hair_id;
 	WBUFL(buf,22)=gettick();
 	WBUFW(buf,46)=mcd->sc.opt3;
-	WBUFPOS2(buf,50,mcd->bl.x,mcd->bl.y,mcd->ud.to_x,mcd->ud.to_y);
+	WBUFPOS2(buf,50,mcd->bl.x,mcd->bl.y,mcd->ud.to_x,mcd->ud.to_y,8,8);
 	WBUFB(buf,56)=0;
 	WBUFB(buf,57)=0;
 	WBUFW(buf,58)=((level = status_get_lv(&mcd->bl))>99)? 99:level;
@@ -2092,14 +2077,14 @@ void clif_spawnnpc(struct npc_data *nd)
 	WBUFW(buf,6)=nd->speed;
 	WBUFW(buf,12)=nd->option;
 	WBUFW(buf,20)=nd->class_;
-	WBUFPOS(buf,36,nd->bl.x,nd->bl.y);
+	WBUFPOS(buf,36,nd->bl.x,nd->bl.y,nd->dir);
 #else
 	WBUFB(buf,2)=0;
 	WBUFL(buf,3)=nd->bl.id;
 	WBUFW(buf,7)=nd->speed;
 	WBUFW(buf,13)=nd->option;
 	WBUFW(buf,21)=nd->class_;
-	WBUFPOS(buf,37,nd->bl.x,nd->bl.y);
+	WBUFPOS(buf,37,nd->bl.x,nd->bl.y,nd->dir);
 #endif
 
 	clif_send(buf,packet_db[0x7c].len,&nd->bl,AREA);
@@ -2135,7 +2120,7 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFW(buf,10)=md->sc.opt2;
 		WBUFW(buf,12)=md->sc.option;
 		WBUFW(buf,20)=mob_get_viewclass(md->class_);
-		WBUFPOS(buf,36,md->bl.x,md->bl.y);
+		WBUFPOS(buf,36,md->bl.x,md->bl.y,md->dir);
 #else
 		WBUFB(buf,2)=0;
 		WBUFL(buf,3)=md->bl.id;
@@ -2144,7 +2129,7 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFW(buf,11)=md->sc.opt2;
 		WBUFW(buf,13)=md->sc.option;
 		WBUFW(buf,21)=mob_get_viewclass(md->class_);
-		WBUFPOS(buf,37,md->bl.x,md->bl.y);
+		WBUFPOS(buf,37,md->bl.x,md->bl.y,md->dir);
 #endif
 
 		clif_send(buf,packet_db[0x7c].len,&md->bl,AREA);
@@ -2179,13 +2164,13 @@ void clif_spawnpet(struct pet_data *pd)
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
 		WBUFW(buf,20)=mob_get_viewclass(pd->class_);
-		WBUFPOS(buf,36,pd->bl.x,pd->bl.y);
+		WBUFPOS(buf,36,pd->bl.x,pd->bl.y,pd->dir);
 #else
 		WBUFB(buf,2)=0;
 		WBUFL(buf,3)=pd->bl.id;
 		WBUFW(buf,7)=pd->speed;
 		WBUFW(buf,21)=mob_get_viewclass(pd->class_);
-		WBUFPOS(buf,37,pd->bl.x,pd->bl.y);
+		WBUFPOS(buf,37,pd->bl.x,pd->bl.y,pd->dir);
 #endif
 
 		clif_send(buf,packet_db[0x7c].len,&pd->bl,AREA);
@@ -2220,14 +2205,14 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFW(buf,6) =hd->speed;
 	WBUFW(buf,20)=hd->view_class;
 	WBUFW(buf,28)=8;		// 調べた限り固定
-	WBUFPOS(buf,36,hd->bl.x,hd->bl.y);
+	WBUFPOS(buf,36,hd->bl.x,hd->bl.y,hd->dir);
 #else
 	WBUFB(buf,2) =0;
 	WBUFL(buf,3) =hd->bl.id;
 	WBUFW(buf,7) =hd->speed;
 	WBUFW(buf,21)=hd->view_class;
 	WBUFW(buf,29)=8;		// 調べた限り固定
-	WBUFPOS(buf,37,hd->bl.x,hd->bl.y);
+	WBUFPOS(buf,37,hd->bl.x,hd->bl.y,hd->dir);
 #endif
 
 	clif_send(buf,packet_db[0x7c].len,&hd->bl,AREA);
@@ -2259,14 +2244,14 @@ void clif_spawnmerc(struct merc_data *mcd)
 	WBUFW(buf,6) =mcd->speed;
 	WBUFW(buf,20)=mcd->view_class;
 	WBUFW(buf,28)=8;
-	WBUFPOS(buf,36,mcd->bl.x,mcd->bl.y);
+	WBUFPOS(buf,36,mcd->bl.x,mcd->bl.y,mcd->dir);
 #else
 	WBUFB(buf,2) =0;
 	WBUFL(buf,3) =mcd->bl.id;
 	WBUFW(buf,7) =mcd->speed;
 	WBUFW(buf,21)=mcd->view_class;
 	WBUFW(buf,29)=8;
-	WBUFPOS(buf,37,mcd->bl.x,mcd->bl.y);
+	WBUFPOS(buf,37,mcd->bl.x,mcd->bl.y,mcd->dir);
 #endif
 
 	clif_send(buf,packet_db[0x7c].len,&mcd->bl,AREA);
@@ -2308,8 +2293,7 @@ void clif_walkok(struct map_session_data *sd)
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x87;
 	WFIFOL(fd,2)=gettick();
-	WFIFOPOS2(fd,6,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y);
-	WFIFOB(fd,11)=0;
+	WFIFOPOS2(fd,6,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
 	WFIFOSET(fd,packet_db[0x87].len);
 
 	return;
@@ -2336,7 +2320,7 @@ void clif_move(struct block_list *bl)
 
 	WBUFW(buf,0)=0x86;
 	WBUFL(buf,2)=bl->id;
-	WBUFPOS2(buf,6,bl->x,bl->y,ud->to_x,ud->to_y);
+	WBUFPOS2(buf,6,bl->x,bl->y,ud->to_x,ud->to_y,8,8);
 	WBUFL(buf,12)=gettick();
 	clif_send(buf, packet_db[0x86].len, bl, AREA_WOS);
 
@@ -10488,10 +10472,12 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	clif_send_clothcolor(&sd->bl);
 
 	// 暫定赤エモ防止処理
-	if(battle_config.nomanner_mode && sd->status.manner < 0)
-		sd->status.manner = 0;
-	else if(sd->status.manner < 0)
-		status_change_start(&sd->bl,SC_NOCHAT,0,0,0,0,0,0);
+	if(sd->status.manner < 0) {
+		if(battle_config.nomanner_mode)
+			sd->status.manner = 0;
+		else
+			status_change_start(&sd->bl,SC_NOCHAT,0,0,0,0,0,0);
+	}
 
 	map_foreachinarea(clif_getareachar,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,BL_ALL,sd);
 
