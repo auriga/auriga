@@ -3964,6 +3964,7 @@ int buildin_strescape(struct script_state *st);
 int buildin_dropitem(struct script_state *st);
 int buildin_getexp(struct script_state *st);
 int buildin_getiteminfo(struct script_state *st);
+int buildin_getonlinepartymember(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4217,6 +4218,7 @@ struct script_function buildin_func[] = {
 	{buildin_dropitem,"dropitem","siiiii*"},
 	{buildin_getexp,"getexp","ii"},
 	{buildin_getiteminfo,"getiteminfo","si"},
+	{buildin_getonlinepartymember,"getonlinepartymember","*"},
 	{NULL,NULL,NULL}
 };
 
@@ -11363,5 +11365,34 @@ int buildin_getiteminfo(struct script_state *st)
 		push_str(st->stack,C_CONSTSTR,str);
 	else
 		push_val(st->stack,C_INT,val);
+	return 0;
+}
+
+/*==========================================
+ * パーティーの接続人数取得
+ *------------------------------------------
+ */
+int buildin_getonlinepartymember(struct script_state *st)
+{
+	int count = 0;
+	int i;
+	struct party *pt = NULL;
+
+	if(st->end>st->start+2)
+		pt = party_search(conv_num(st,&(st->stack->stack_data[st->start+2])));
+	else {
+		struct map_session_data *sd = script_rid2sd(st);
+		if(sd)
+			pt = party_search(sd->status.party_id);
+	}
+	if(pt == NULL)
+		return 0;
+
+	for(i=0; i<MAX_PARTY; i++) {
+		if(pt->member[i].online && pt->member[i].sd != NULL)
+			count++;
+	}
+	push_val(st->stack,C_INT,count);
+
 	return 0;
 }

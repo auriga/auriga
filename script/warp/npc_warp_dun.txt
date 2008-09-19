@@ -65,27 +65,26 @@ xmas_dun02.gat,129,130,0	warp	xmaswarp4002		1,1,xmas_dun01.gat,132,130
 // anthell01.gat	蟻地獄ダンジョン B1F
 // anthell02.gat	蟻地獄ダンジョン B2F
 // -----
-// moc_fild01.gat	ソクラド砂漠 01 〜 19
-//
-//　■ ANTHELL_FLAG -> npc_warp_fild.txtにて発行
+// moc_fild20.gat	次元の狭間 01
 //==============================================================
 //anthell01.gat,35,267,0	warp	anthellwarp0501		1,1,moc_fild04.gat,213,327
 //anthell02.gat,171,169,0	warp	anthellwarp0502		1,2,moc_fild04.gat,213,327
-
-anthell01.gat,35,267,0		script	#anthellwarp0501	45,1,1,{
-	if(ANTHELL_FLAG)
-		warp "moc_fild15.gat",251,248;
-	else
-		warp "moc_fild04.gat",213,327;
-	end;
-}
-anthell02.gat,171,169,0		script	#anthellwarp0502	45,1,2,{
-	if(ANTHELL_FLAG)
-		warp "moc_fild04.gat",213,327;
-	else
-		warp "moc_fild15.gat",251,248;
-	end;
-}
+//anthell01.gat,35,267,0		script	#anthellwarp0501	45,1,1,{
+//	if(ANTHELL_FLAG)
+//		warp "moc_fild15.gat",251,248;
+//	else
+//		warp "moc_fild04.gat",213,327;
+//	end;
+//}
+//anthell02.gat,171,169,0		script	#anthellwarp0502	45,1,2,{
+//	if(ANTHELL_FLAG)
+//		warp "moc_fild04.gat",213,327;
+//	else
+//		warp "moc_fild15.gat",251,248;
+//	end;
+//}
+anthell01.gat,35,267,0	warp	anthellwarp0501		1,1,moc_fild20.gat,161,144
+anthell02.gat,171,170,0	warp	anthellwarp0502		1,1,moc_fild20.gat,333,315
 
 anthell01.gat,253,32,0		warp	anthellwarp4001		2,1,anthell02.gat,34,263
 anthell02.gat,32,267,0		warp	anthellwarp4001		2,2,anthell01.gat,253,35

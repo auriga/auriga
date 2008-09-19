@@ -461,11 +461,13 @@ gef_tower.gat,62,87,0		warp	geffenwarp1051		1,1,gef_tower.gat,60,30
 // -----
 // moc_pryd01.gat	ピラミッドダンジョン 1F
 // moc_fild01.gat	ソクラド砂漠 01 〜 19
+// moc_fild20.gat	次元の狭間 01
 //==============================================================
 moc_ruins.gat,54,161,0		warp	moroccwarp0401		2,3,moc_pryd01.gat,192,9
 moc_ruins.gat,71,16,0		warp	moroccwarp0501		8,2,moc_fild19.gat,71,167
 morocc.gat,160,297,0		warp	moroccwarp0502		2,2,moc_fild07.gat,198,25
-morocc.gat,302,207,0		warp	moroccwarp0503		2,2,moc_fild10.gat,22,207
+//morocc.gat,302,207,0		warp	moroccwarp0503		2,2,moc_fild10.gat,22,207
+morocc.gat,299,207,0		warp	moroccwarp0503		1,1,moc_fild20.gat,36,177
 morocc.gat,160,17,0		warp	moroccwarp0504		2,2,moc_fild12.gat,159,378
 morocc.gat,24,164,0		warp	moroccwarp0505		1,2,moc_fild19.gat,164,107
 
@@ -515,7 +517,8 @@ morocc_in.gat,86,101,0		warp	moroccwarp1043		2,1,morocc_in.gat,86,120
 morocc_in.gat,86,117,0		warp	moroccwarp1044		3,1,morocc_in.gat,86,98
 
 // morocc castle
-morocc.gat,160,183,0		warp	moroccwarp1045		2,1,moc_castle.gat,94,181
+//morocc.gat,160,183,0		warp	moroccwarp1045		2,1,moc_castle.gat,94,181
+morocc.gat,287,64,0		warp	moroccwarp1045		2,1,moc_castle.gat,134,136
 moc_castle.gat,94,183,0		warp	moroccwarp1046		2,1,morocc.gat,160,185
 moc_castle.gat,107,163,0	warp	moroccwarp1047		2,3,moc_castle.gat,124,163
 moc_castle.gat,120,163,0	warp	moroccwarp1048		2,3,moc_castle.gat,103,163
@@ -523,7 +526,8 @@ moc_castle.gat,120,75,0		warp	moroccwarp1049		2,3,moc_castle.gat,56,33
 moc_castle.gat,59,34,0		warp	moroccwarp1050		2,3,moc_castle.gat,124,75
 moc_castle.gat,134,101,0	warp	moroccwarp1051		1,1,moc_castle.gat,134,128
 moc_castle.gat,134,124,0	warp	moroccwarp1052		2,2,moc_castle.gat,134,98
-moc_castle.gat,134,139,0	warp	moroccwarp1053		1,1,moc_castle.gat,134,160
+//moc_castle.gat,134,139,0	warp	moroccwarp1053		1,1,moc_castle.gat,134,160
+moc_castle.gat,134,139,0	warp	moroccwarp1053		1,1,morocc.gat,283,64
 moc_castle.gat,134,156,0	warp	moroccwarp1054		2,2,moc_castle.gat,134,136
 moc_castle.gat,149,163,0	warp	moroccwarp1055		2,3,moc_castle.gat,162,163
 moc_castle.gat,158,163,0	warp	moroccwarp1056		2,3,moc_castle.gat,145,163
@@ -535,7 +539,7 @@ moc_castle.gat,29,163,0		warp	moroccwarp1061		2,2,moc_castle.gat,44,163
 moc_castle.gat,40,163,0		warp	moroccwarp1062		2,2,moc_castle.gat,25,163
 moc_castle.gat,51,114,0		warp	moroccwarp1063		3,2,moc_castle.gat,54,65
 moc_castle.gat,54,69,0		warp	moroccwarp1064		3,2,moc_castle.gat,52,117
-moc_castle.gat,54,139,0		warp	moroccwarp1065		2,2,moc_castle.gat,54,160
+//moc_castle.gat,54,139,0	warp	moroccwarp1065		2,2,moc_castle.gat,54,160
 moc_castle.gat,54,156,0		warp	moroccwarp1066		2,2,moc_castle.gat,54,134
 moc_castle.gat,63,89,0		warp	moroccwarp1067		2,3,moc_castle.gat,83,89
 moc_castle.gat,80,89,0		warp	moroccwarp1068		2,3,moc_castle.gat,60,89
@@ -1016,92 +1020,92 @@ yuno_in05.gat,196,194,0		warp	yunowarp1064		1,1,yuno_in02.gat,85,14
 // Yuno In05 (Entering Random Warps) -------------------------------------------
 yuno_in05.gat,153,141,0		script	#yunowarp1065	45,1,1,{
 	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",192,102; end;
-		case 1:	warp "yuno_in05.gat",145,82;  end;
+		case 0:	warp "yuno_in05",192,102; end;
+		case 1:	warp "yuno_in05",145,82;  end;
 	}
 }
 // Yuno In05 (Random Warps - Cross Shaped) -------------------------------------
 yuno_in05.gat,196,102,0		script	#yunowarp1066	45,1,1,{
 	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",169,102; end;
-		case 1:	warp "yuno_in05.gat",128,82;  end;
-		case 2:	warp "yuno_in05.gat",156,141; end;
+		case 0:	warp "yuno_in05",169,102; end;
+		case 1:	warp "yuno_in05",128,82;  end;
+		case 2:	warp "yuno_in05",156,141; end;
 	}
 }
 yuno_in05.gat,181,116,0		script	#yunowarp1067	45,1,1,{
 	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
+		case 0:	warp "yuno_in05",181,94; end;
+		case 1:	warp "yuno_in05",176,13; end;
+		case 2:	warp "yuno_in05",136,75; end;
 	}
 }
 yuno_in05.gat,165,102,0		script	#yunowarp1068	45,1,1,{
 	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",192,102; end;
-		case 1:	warp "yuno_in05.gat",145,82;  end;
+		case 0:	warp "yuno_in05",192,102; end;
+		case 1:	warp "yuno_in05",145,82;  end;
 	}
 }
 yuno_in05.gat,181,91,0		script	#yunowarp1069	45,1,1,{
 	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",181,112; end;
-		case 1:	warp "yuno_in05.gat",176,48;  end;
+		case 0:	warp "yuno_in05",181,112; end;
+		case 1:	warp "yuno_in05",176,48;  end;
 	}
 }
 // Yuno In05 (Random Warps - T-Shaped) -----------------------------------------
 yuno_in05.gat,148,82,0		script	#yunowarp1070	45,1,1,{
 	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",169,102; end;
-		case 1:	warp "yuno_in05.gat",128,82;  end;
-		case 2:	warp "yuno_in05.gat",156,141; end;
+		case 0:	warp "yuno_in05",169,102; end;
+		case 1:	warp "yuno_in05",128,82;  end;
+		case 2:	warp "yuno_in05",156,141; end;
 	}
 }
 yuno_in05.gat,125,82,0		script	#yunowarp1071	45,1,1,{
 	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",192,102; end;
-		case 1:	warp "yuno_in05.gat",145,82;  end;
+		case 0:	warp "yuno_in05",192,102; end;
+		case 1:	warp "yuno_in05",145,82;  end;
 	}
 }
 yuno_in05.gat,136,71,0		script	#yunowarp1072	45,1,1,{
 	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,112; end;
-		case 1:	warp "yuno_in05.gat",16,185;  end;
-		case 2:	warp "yuno_in05.gat",176,48;  end;
+		case 0:	warp "yuno_in05",181,112; end;
+		case 1:	warp "yuno_in05",16,185;  end;
+		case 2:	warp "yuno_in05",176,48;  end;
 	}
 }
 // Yuno In05 (Random Warps - Other) --------------------------------------------
 yuno_in05.gat,16,188,0		script	#yunowarp1073	45,1,1,{
 	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
+		case 0:	warp "yuno_in05",181,94; end;
+		case 1:	warp "yuno_in05",176,13; end;
+		case 2:	warp "yuno_in05",136,75; end;
 	}
 }
 yuno_in05.gat,176,9,0		script	#yunowarp1074	45,1,1,{
 	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",181,112; end;
-		case 1:	warp "yuno_in05.gat",176,48;  end;
+		case 0:	warp "yuno_in05",181,112; end;
+		case 1:	warp "yuno_in05",176,48;  end;
 	}
 }
 yuno_in05.gat,176,52,0		script	#yunowarp1075	45,1,1,{
 	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
+		case 0:	warp "yuno_in05",181,94; end;
+		case 1:	warp "yuno_in05",176,13; end;
+		case 2:	warp "yuno_in05",136,75; end;
 	}
 }
 // Yuno In05 (Destination - Room) ----------------------------------------------
 yuno_in05.gat,40,178,0		script	#yunowarp1076	45,1,1,{
 	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
+		case 0:	warp "yuno_in05",181,94; end;
+		case 1:	warp "yuno_in05",176,13; end;
+		case 2:	warp "yuno_in05",136,75; end;
 	}
 }
 yuno_in05.gat,47,186,0		script	#yunowarp1077	45,1,1,{
 	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
+		case 0:	warp "yuno_in05",181,94; end;
+		case 1:	warp "yuno_in05",176,13; end;
+		case 2:	warp "yuno_in05",136,75; end;
 	}
 }
 // Yuno In05 (Destination - Escaped Random Warps) ------------------------------

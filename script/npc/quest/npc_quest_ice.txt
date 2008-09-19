@@ -1,30 +1,63 @@
 //----------------------------------------------------------------------
-// スクリプト : Event_Ice v1.1
+// スクリプト : Event_Ice v2
 //----------------------------------------------------------------------
-
 -	script	IceBuyer	85,{
 	mes "[アイスクリーム商人]";
-	mes "さぁ、夏と言えば冷たい";
-	mes "アイスクリーム！";
-	mes "^3355FF100 Zeny^000000で";
-	mes "身も心も爽やかに！";
+	if(strnpcinfo(2) == "moc") {
+		mes "さぁ、モロクが大変な";
+		mes "今だからこそ";
+		mes "冷たいアイスクリーム！";
+		mes "^3355FF100 Zeny^000000で";
+		mes "身も心も爽やかにリフレッシュ！";
+		mes "明日への活力にいかがですか！";
+	}
+	else if(strnpcinfo(2) == "moc_") {
+		mes "さぁ、思わず食べたくなる";
+		mes "冷たいアイスクリーム！";
+		mes "^3355FF100 Zeny^000000で";
+		mes "身も心も爽やかに！";
+	}
+	else {
+		mes "冷たくて甘〜い";
+		mes "アイスクリーム！";
+		mes "^3355FF100 Zeny^000000で";
+		mes "身も心も爽やかに！";
+	}
 	next;
-	switch (select("アイスクリームをください！","アイスクリームについて","取引をやめる")) {
+	switch(select("アイスクリームをください！","アイスクリームについて","取引をやめる")) {
 	case 1:
 		mes "[アイスクリーム商人]";
-		mes "冷たくて甘いアイスクリームは";
-		mes "この暑い砂漠の街にピッタリ！";
-		mes "一度に10個まで";
-		mes "お買い求めいただけます。";
+		if(strnpcinfo(2) == "moc") {
+			mes "ありがとうございます!!";
+			mes "このキャンプに移転したのを";
+			mes "きっかけに製造数を増やしたので";
+			mes "当店では一度に^0000FF100個^000000まで";
+			mes "お買い求めいただけます！";
+			set '@max,100;
+		}
+		else if(strnpcinfo(2) == "moc_") {
+			mes "冷たくて甘いアイスクリームは";
+			mes "こんな砂漠では本当に大事な";
+			mes "補給源。一度に10個まで";
+			mes "お買い求めいただけます。";
+			set '@max,10;
+		}
+		else {
+			mes "アイスクリームは";
+			mes "おやつにぴったり！";
+			mes "一度に10個まで";
+			mes "お買い求めいただけます。";
+			set '@max,10;
+		}
 		while(1) {
 			next;
 			input '@num;
-			if('@num > 10) {
+			if('@num > '@max) {
 				mes "[アイスクリーム商人]";
 				mes "え？";
 				mes "ちょっと多すぎです。";
 				mes "一度に販売できるのは";
-				mes "10個までです。";
+				mes '@max+ "個までです。";
 				mes "あまり食べ過ぎると";
 				mes "お腹を壊しますよ〜。";
 				continue;
@@ -81,13 +114,14 @@
 	case 3:
 		mes "[アイスクリーム商人]";
 		mes "今この機会を逃すと";
-		mes "来年の夏まで味わうことが";
+		mes "もう味わうことが";
 		mes "できなくなるかもしれませんよ？";
 		mes "さぁ、さぁ、いかがですか〜？";
 		close;
 	}
 }
 
-morocc.gat,160,143,4	duplicate(IceBuyer)	アイスクリーム商人	85
-alberta.gat,107,73,4	duplicate(IceBuyer)	アイスクリーム商人	85
-moc_fild16.gat,88,304,4	duplicate(IceBuyer)	アイスクリーム商人	85
+//morocc.gat,160,143,4	duplicate(IceBuyer)	アイスクリーム商人#moc	85
+moc_ruins.gat,81,155,4	duplicate(IceBuyer)	アイスクリーム商人#moc	85
+alberta.gat,107,73,4	duplicate(IceBuyer)	アイスクリーム商人#alb	85
+moc_fild16.gat,88,304,4	duplicate(IceBuyer)	アイスクリーム商人#moc_	85

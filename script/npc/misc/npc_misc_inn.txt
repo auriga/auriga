@@ -153,21 +153,21 @@ payon_in01.gat,132,62,2	script	旅館従業員	53,{
 }
 
 // モロク
-morocc_in.gat,147,141,2	script	旅館従業員	53,{
-	mes "[従業員ハーシャ]";
-	mes "いらっしゃいませ！";
-	mes "何をお手伝いしましょうか？";
-	callfunc "TownInn",0,"従業員ハーシャ","morocc_in.gat",142,139,173,135;
-	close;
-}
+//morocc_in.gat,147,141,2	script	旅館従業員	53,{
+//	mes "[従業員ハーシャ]";
+//	mes "いらっしゃいませ！";
+//	mes "何をお手伝いしましょうか？";
+//	callfunc "TownInn",0,"従業員ハーシャ","morocc_in.gat",142,139,173,135;
+//	close;
+//}
 
-morocc_in.gat,78,100,4	script	旅館従業員	53,{
-	mes "[従業員マナル]";
-	mes "いらっしゃいませ！";
-	mes "何をお手伝いしましょうか？";
-	callfunc "TownInn",0,"従業員マナル","morocc_in.gat",78,95,78,95;
-	close;
-}
+//morocc_in.gat,78,100,4	script	旅館従業員	53,{
+//	mes "[従業員マナル]";
+//	mes "いらっしゃいませ！";
+//	mes "何をお手伝いしましょうか？";
+//	callfunc "TownInn",0,"従業員マナル","morocc_in.gat",78,95,78,95;
+//	close;
+//}
 
 // アルベルタ
 alberta_in.gat,32,142,2	script	旅館従業員	53,{

@@ -1,4 +1,29 @@
 ----------------------------------------
+//0534 [2008/09/20] by Blaze
+
+・パーティーの接続人数を返すスクリプト関数「getonlinepartymember」を追加
+	（script.c, script_ref.txt）
+
+・魔王モロクNPC追加・モロクNPCの変更
+	（npc_town_morocc.txt）
+
+・魔王モロクで変更されたNPCを対応
+	（npc_misc_inn.txt, npc_misc_board.txt, npc_misc_refine.txt,
+		npc_misc_zonda.txt, npc_quest_cooking.txt, npc_quest_ice.txt）
+
+・魔王モロク追加マップの読み込み定義を追加
+	（map_auriga.conf）
+
+・魔王モロク追加マップのマップフラグ設定を追加
+	（mapflag.txt）
+
+・魔王モロク追加マップのモンスター出現情報を追加
+	（npc_monster_mocfild.txt）
+
+・魔王モロク追加マップのワープ定義を追加・修正
+	（npc_warp_fild.txt, npc_warp_dun.txt, npc_warp_town.txt）
+
+----------------------------------------
 //0533 [2008/09/19] by Rayce
 
 ・0531のwarp命令に関する仕様を若干変更（script.c）

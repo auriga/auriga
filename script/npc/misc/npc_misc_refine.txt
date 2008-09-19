@@ -746,7 +746,8 @@ ein_in01.gat,18,82,5	duplicate(ChangeStone)	マティシュタイン	84
 
 alberta_in.gat,31,65,4	duplicate(Repairer)	修理工	84
 prt_in.gat,63,54,2	duplicate(Repairer)	修理工	86
-morocc_in.gat,71,41,4	duplicate(Repairer)	修理工	99
+//morocc_in.gat,71,41,4	duplicate(Repairer)	修理工	99
+moc_ruins.gat,107,94,4	duplicate(Repairer)	修理工	99
 payon.gat,143,165,7	duplicate(Repairer)	修理工	88
 geffen_in.gat,34,166,2	duplicate(Repairer)	修理工	86
 aldeba_in.gat,38,60,2	duplicate(Repairer)	修理工	86

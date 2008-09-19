@@ -80,6 +80,10 @@ c_tower1.gat	mapflag	nomemo	dummy
 c_tower2.gat	mapflag	nomemo	dummy
 c_tower3.gat	mapflag	nomemo	dummy
 c_tower4.gat	mapflag	nomemo	dummy
+cave.gat	mapflag	nomemo	dummy
+cave.gat	mapflag	noteleport	dummy
+cave.gat	mapflag	nobranch	dummy
+cave.gat	mapflag	nopenalty	dummy
 cmd_fild02.gat	mapflag	nomemo	dummy
 cmd_fild03.gat	mapflag	nomemo	dummy
 cmd_fild04.gat	mapflag	nomemo	dummy
@@ -423,6 +427,9 @@ moc_fild15.gat	mapflag	nomemo	dummy
 moc_fild16.gat	mapflag	nomemo	dummy
 moc_fild17.gat	mapflag	nomemo	dummy
 moc_fild18.gat	mapflag	nomemo	dummy
+moc_fild20.gat	mapflag	nomemo	dummy
+moc_fild21.gat	mapflag	nomemo	dummy
+moc_fild22.gat	mapflag	nomemo	dummy
 moc_pryd01.gat	mapflag	nomemo	dummy
 moc_pryd02.gat	mapflag	nomemo	dummy
 moc_pryd03.gat	mapflag	nomemo	dummy
@@ -430,6 +437,7 @@ moc_pryd04.gat	mapflag	nomemo	dummy
 moc_pryd05.gat	mapflag	nomemo	dummy
 moc_pryd06.gat	mapflag	nomemo	dummy
 moc_prydb1.gat	mapflag	nomemo	dummy
+moc_ruins.gat	mapflag	nopenalty	dummy
 monk_in.gat	mapflag	nomemo	dummy
 monk_in.gat	mapflag	noteleport	dummy
 monk_in.gat	mapflag	nobranch	dummy
@@ -564,6 +572,10 @@ prt_sewb1.gat	mapflag	nomemo	dummy
 prt_sewb2.gat	mapflag	nomemo	dummy
 prt_sewb3.gat	mapflag	nomemo	dummy
 prt_sewb4.gat	mapflag	nomemo	dummy
+que_ba.gat	mapflag	nomemo	dummy
+que_ba.gat	mapflag	noteleport	dummy
+que_ba.gat	mapflag	nobranch	dummy
+que_ba.gat	mapflag	nopenalty	dummy
 que_bingo.gat	mapflag	nomemo	dummy
 que_bingo.gat	mapflag	noteleport	dummy
 que_bingo.gat	mapflag	nosave	SavePoint

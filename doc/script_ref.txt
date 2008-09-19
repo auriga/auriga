@@ -2989,6 +2989,15 @@ AurigaNPCScript
 			num=28		ArrowType
 			num=29		CardIllustName
 
+		getonlinepartymember 関数
+			getonlinepartymember([<party_id>])
+
+			<party_id>	パーティーID、省略可
+					省略した場合、自分自身のパーティーが対象
+
+			<party_id>で指定されたIDのパーティーの接続人数を返します。
+			<party_id>を省略した場合、自分のパーティーを参照します。
+
 
 	＊csv アクセス命令 / 関数
 
