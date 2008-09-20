@@ -1660,7 +1660,10 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 	nullpo_retr(0, md);	// srcはNULLで呼ばれる場合もあるので、他でチェック
 
-	mobskill_use(md,tick,-1);	// 死亡時スキル
+	if(src) {
+		// コマンドやスクリプトでの死亡でないならスキル使用
+		mobskill_use(md,tick,-1);
+	}
 
 	memset(mvp,0,sizeof(mvp));
 
@@ -3115,12 +3118,13 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 
 	if(md->hp <= 0) {
 		md->state.skillstate = MSS_DEAD;
-	}
-	if(md->ud.attacktimer != -1) {
-		md->state.skillstate = MSS_ATTACK;
-	}
-	if(md->ud.walktimer != -1 && md->state.skillstate != MSS_CHASE) {
-		md->state.skillstate = MSS_WALK;
+	} else {
+		if(md->ud.attacktimer != -1) {
+			md->state.skillstate = MSS_ATTACK;
+		}
+		if(md->ud.walktimer != -1 && md->state.skillstate != MSS_CHASE) {
+			md->state.skillstate = MSS_WALK;
+		}
 	}
 
 	// ターゲットとマスターの情報取得

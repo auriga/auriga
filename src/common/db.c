@@ -140,8 +140,8 @@ struct dbt* strdb_init_(int maxlen,const char *file,int line)
 
 static int numdb_cmp(struct dbt* table,void* a,void* b)
 {
-	intptr ia = (intptr)a;
-	intptr ib = (intptr)b;
+	uintptr ia = (uintptr)a;
+	uintptr ib = (uintptr)b;
 
 	return (ia < ib) ? -1 : (ia > ib) ? 1 : 0;
 }

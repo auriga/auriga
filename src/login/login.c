@@ -1042,7 +1042,7 @@ int mmo_auth(struct login_session_data* sd)
 		// 新規アカウント作成
 		char *adm_pass = strchr(sd->pass,'@');
 		if(adm_pass == NULL)
-			adm_pass += strlen(adm_pass);
+			adm_pass = sd->pass + strlen(sd->pass);
 		else
 			adm_pass++;
 
@@ -1067,8 +1067,8 @@ int mmo_auth(struct login_session_data* sd)
 			// 新規作成
 			struct mmo_account ac2;
 			memset( &ac2, 0, sizeof(ac2) );
-			memcpy(ac2.userid,sd->userid,24);
-			memcpy(ac2.pass  ,sd->pass  ,24);
+			strncpy(ac2.userid,sd->userid,24);
+			strncpy(ac2.pass  ,sd->pass  ,24);
 			ac2.sex = (sd->userid[len+1] == 'M')? 1: 0;
 			if( !account_new(&ac2,tmpstr) ){
 				// 作成失敗
