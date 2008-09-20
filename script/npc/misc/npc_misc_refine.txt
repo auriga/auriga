@@ -66,7 +66,7 @@ function	script	Refine1	{
 	}
 	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
 	if('price[0]==0) {
-		setarray 'price,20000,500,2000,25000,50000;
+		setarray 'price,10000,250,1000,10000,20000;
 		setarray 'itemid,985,1010,1011,984,984;
 	}
 	set '@wlv,getequipweaponlv('@i);
@@ -74,31 +74,31 @@ function	script	Refine1	{
 	case 0:
 		mes "君が選んだ装備を精錬するには";
 		mes "^ff9999エルニウム^000000と";
-		mes "手数料20000Zenyが必要だな。";
+		mes "手数料10000Zenyが必要だな。";
 		mes "続けるかい？";
 		break;
 	case 1:
 		mes "レベル1の武器を精錬したいのかい？";
 		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料500Zenyが必要だな。";
+		mes "手数料250Zenyが必要だな。";
 		mes "続けるのか？";
 		break;
 	case 2:
 		mes "レベル2の武器を精錬したいのかい？";
 		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料2000Zenyが必要だな。";
+		mes "手数料1000Zenyが必要だな。";
 		mes "続けるのか？";
 		break;
 	case 3:
 		mes "レベル3の武器を精錬したいのかい？";
 		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料25000Zenyが必要だな。";
+		mes "手数料10000Zenyが必要だな。";
 		mes "続けるのか？";
 		break;
 	case 4:
 		mes "レベル4の武器を精錬したいのかい？";
 		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料50000Zenyが必要だな。";
+		mes "手数料20000Zenyが必要だな。";
 		mes "続けるのか？";
 		break;
 	}
@@ -241,7 +241,7 @@ function	script	Refine2	{
 	}
 	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
 	if('price[0]==0 || 'itemid[0]==0) {
-		setarray 'price,20000,500,2000,25000,50000;
+		setarray 'price,10000,250,1000,10000,20000;
 		setarray 'itemid,985,1010,1011,984,984;
 	}
 	set '@wlv,getequipweaponlv('@i);
@@ -249,31 +249,31 @@ function	script	Refine2	{
 	case 0:
 		mes "お前が選んだ装備を精錬するには";
 		mes "^ff9999エルニウム^000000と";
-		mes "手数料20000Zenyが必要だな。";
+		mes "手数料10000Zenyが必要だな。";
 		mes "ビタ1Zeny負けられない。";
 		break;
 	case 1:
 		mes "レベル1の武器を精錬したいのか？";
 		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料500Zenyが必要だな。";
+		mes "手数料250Zenyが必要だな。";
 		mes "ビタ1Zeny負けられない。";
 		break;
 	case 2:
 		mes "レベル2の武器を精錬したいのか？";
 		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料2000Zenyが必要だな。";
+		mes "手数料1000Zenyが必要だな。";
 		mes "ビタ1Zeny負けられない。";
 		break;
 	case 3:
 		mes "レベル3の武器を精錬したいのか？";
 		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料25000Zenyが必要だな。";
+		mes "手数料10000Zenyが必要だな。";
 		mes "久しぶりに俺の実力を見せてやるか。";
 		break;
 	case 4:
 		mes "レベル4の武器を精錬したいのか？";
 		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料50000Zenyが必要だな。";
+		mes "手数料20000Zenyが必要だな。";
 		mes "レベル4の武器か…興奮するぜ！";
 		break;
 	}
@@ -397,7 +397,7 @@ function	script	Refine3	{
 	}
 	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
 	if('price[0]==0 || 'itemid[0]==0) {
-		setarray 'price,20000,500,2000,25000,50000;
+		setarray 'price,10000,250,1000,10000,20000;
 		setarray 'itemid,985,1010,1011,984,984;
 	}
 	set '@wlv,getequipweaponlv('@i);
@@ -405,31 +405,31 @@ function	script	Refine3	{
 	case 0:
 		mes "汝が選んだ装備を精錬するには";
 		mes "^ff9999エルニウム^000000と ";
-		mes "手数料20000Zenyが必要だ。";
+		mes "手数料10000Zenyが必要だ。";
 		mes "続けるか？";
 		break;
 	case 1:
 		mes "レベル1の武器を精錬したいのか？";
 		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料500Zenyが必要だ。";
+		mes "手数料250Zenyが必要だ。";
 		mes "続けるか？";
 		break;
 	case 2:
 		mes "レベル2の武器を精錬したいのか？";
 		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料2000Zenyが必要だ。";
+		mes "手数料1000Zenyが必要だ。";
 		mes "続けるか？";
 		break;
 	case 3:
 		mes "レベル3の武器を精錬したいのか？";
 		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料25000Zenyが必要だ。";
+		mes "手数料10000Zenyが必要だ。";
 		mes "続けるか？";
 		break;
 	case 4:
 		mes "レベル4の武器を精錬したいのか？";
 		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料50000Zenyが必要だ。";
+		mes "手数料20000Zenyが必要だ。";
 		mes "続けるか？";
 		break;
 	}

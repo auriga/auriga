@@ -3965,6 +3965,7 @@ int buildin_dropitem(struct script_state *st);
 int buildin_getexp(struct script_state *st);
 int buildin_getiteminfo(struct script_state *st);
 int buildin_getonlinepartymember(struct script_state *st);
+int buildin_getonlineguildmember(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4219,6 +4220,7 @@ struct script_function buildin_func[] = {
 	{buildin_getexp,"getexp","ii"},
 	{buildin_getiteminfo,"getiteminfo","si"},
 	{buildin_getonlinepartymember,"getonlinepartymember","*"},
+	{buildin_getonlineguildmember,"getonlineguildmember","*"},
 	{NULL,NULL,NULL}
 };
 
@@ -11385,14 +11387,33 @@ int buildin_getonlinepartymember(struct script_state *st)
 		if(sd)
 			pt = party_search(sd->status.party_id);
 	}
-	if(pt == NULL)
-		return 0;
-
-	for(i=0; i<MAX_PARTY; i++) {
-		if(pt->member[i].online && pt->member[i].sd != NULL)
-			count++;
+	if(pt != NULL) {
+		for(i=0; i<MAX_PARTY; i++) {
+			if(pt->member[i].online && pt->member[i].sd != NULL)
+				count++;
+		}
 	}
 	push_val(st->stack,C_INT,count);
+
+	return 0;
+}
+
+/*==========================================
+ * ギルドの接続人数取得
+ *------------------------------------------
+ */
+int buildin_getonlineguildmember(struct script_state *st)
+{
+	struct guild *g = NULL;
+
+	if(st->end>st->start+2)
+		g = guild_search(conv_num(st,&(st->stack->stack_data[st->start+2])));
+	else {
+		struct map_session_data *sd = script_rid2sd(st);
+		if(sd)
+			g = guild_search(sd->status.guild_id);
+	}
+	push_val(st->stack,C_INT,g!=NULL? g->connect_member: 0);
 
 	return 0;
 }

@@ -2993,10 +2993,19 @@ AurigaNPCScript
 			getonlinepartymember([<party_id>])
 
 			<party_id>	パーティーID、省略可
-					省略した場合、自分自身のパーティーが対象
 
 			<party_id>で指定されたIDのパーティーの接続人数を返します。
-			<party_id>を省略した場合、自分のパーティーを参照します。
+			パーティーIDを省略した場合、自分のパーティーを参照します。
+			パーティーに未所属の場合やパーティーIDが無効の場合、0を返します。
+
+		getonlineguildmember 関数
+			getonlineguildmember([<guild_id>])
+
+			<guild_id>	ギルドID、省略可
+
+			<guild_id>で指定されたIDのギルドの接続人数を返します。
+			ギルドIDを省略した場合、自分のギルドを参照します。
+			ギルドに未所属の場合やギルドIDが無効の場合、0を返します。
 
 
 	＊csv アクセス命令 / 関数

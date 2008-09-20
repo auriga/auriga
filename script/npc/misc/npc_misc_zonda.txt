@@ -392,15 +392,15 @@ OnTimer60000:
 		if($VoteKafraP >= 2) set '@warp2$,"ノーグロード2層 -> 4000z";
 		switch(select("おもちゃ分類所 -> 4000 z",'@warp1$,'@warp2$,"取り消し")) {
 		case 1:	//おもちゃ分類所
-			set '@mapname$,"xmas_dun02";
+			set '@mapname$,"xmas_dun02.gat";
 			setarray '@warp,130,123;
 			break;
 		case 2:	//アルデバラン時計塔地下3F
-			set '@mapname$,"alde_dun03";
+			set '@mapname$,"alde_dun03.gat";
 			setarray '@warp,265,22;
 			break;
 		case 3:	//ノーグロード2層
-			set '@mapname$,"mag_dun02";
+			set '@mapname$,"mag_dun02.gat";
 			setarray '@warp,47,40;
 			break;
 		case 4: break;	//fall through
@@ -592,15 +592,15 @@ OnTimer60000:
 		if($VoteZondaP >= 2) set '@warp2$,"グラストヘイム古城 -> 4000z";
 		switch(select("イズルード海底洞窟3層 -> 4000 z",'@warp1$,'@warp2$,"取り消し")) {
 		case 1:	//イズルード海底洞窟3層
-			set '@mapname$,"iz_dun02";
+			set '@mapname$,"iz_dun02.gat";
 			setarray '@warp,234,206;
 			break;
 		case 2:	//アルデバラン時計塔地上3F
-			set '@mapname$,"c_tower3";
+			set '@mapname$,"c_tower3.gat";
 			setarray '@warp,64,143;
 			break;
 		case 3:	//グラストヘイム古城
-			set '@mapname$,"glast_01";
+			set '@mapname$,"glast_01.gat";
 			setarray '@warp,368,303;
 			break;
 		case 4: break;	//fall through

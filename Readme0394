@@ -1,4 +1,40 @@
 ----------------------------------------
+//0536 [2008/09/21] by Blaze
+
+・スクリプト関数「getonlinepartymember」でパーティー未所属だった場合、
+　返り値がおかしかったのを修正
+	thanks to Rayceさん
+	（script.c）
+
+・ギルドの接続人数を返すスクリプト関数「getonlineguildmember」を追加
+	（script.c, script_ref.txt）
+
+・0534でwarp処理に関するスクリプトが巻き戻っていたのを修正
+	thanks to Rayceさん
+	（npc_misc_zonda.txt、npc_warp_town.txt）
+
+・0534でmoc_fild16のモンスター出現情報が誤って無効になっていたのを修正
+	（npc_monster_mocfild.txt）
+
+・ayo_dun02のモンスター出現情報を修正
+	（npc_monster_ayodun.txt）
+
+・新スロットエンチャント実装、旧スロットエンチャントの成功確率を修正、
+　拡張性を考慮し、処理の書式を全面的に変更
+	（npc_quest_slotenchant.txt）
+
+・以下の二次職クエストスキルの取得NPC実装
+	ベナムナイフ、ソニックアクセラレーション、ファンタズミックアロー
+	パンボイス、クローズコンファイン、レジストポーション
+	（npc_quest_skillget2.txt）
+
+・ベインスクエスト「スパイ疑惑」の一部NPCを魔王モロク変更に対応
+	（npc_town_veins.txt）
+	
+・本鯖で変更された精錬NPCの手数料を適用
+	（npc_misc_refine.txt）
+
+----------------------------------------
 //0535 [2008/09/20] by Rayce
 
 ・WBUFPOS, WBUFPOS2 を修正（clif.c）
@@ -15,7 +51,7 @@
 
 ・魔王モロクNPC追加・モロクNPCの変更
 	（npc_town_morocc.txt）
-
+	
 ・魔王モロクで変更されたNPCを対応
 	（npc_misc_inn.txt, npc_misc_board.txt, npc_misc_refine.txt,
 		npc_misc_zonda.txt, npc_quest_cooking.txt, npc_quest_ice.txt）
@@ -560,7 +596,7 @@
 
 ・コンソールに表示するバージョン番号を、Readmeから参照するように（login.c, char.c, map.c）
 	common/version.cを追加
-	取得に失敗した場合は、AURIGA_REVISIONの値を使用する
+  	取得に失敗した場合は、AURIGA_REVISIONの値を使用する
 
 ・AURIGA_MOD_VERSION は意味がないので、代わりにReameのバージョンを参照する（login.c, clif.c）
 	管理用パケット0x7531のパケット長を拡大
@@ -613,16 +649,16 @@
 ・特定の条件でクリティカルダメージが増加しない不具合修正（battle.c）
 
 ・AthenaProject Rev.265よりmerge、thanks to Arc87さん
-	-> 料理材料の再修正
+	-> 料理材料の再修正 
 
 ・AthenaProject Rev.281よりmerge、thanks to miyajiさん
-	-> 「十字架のヘアバンド」作成クエストの成功アイテムIDが小悪魔帽になっていたのを修正
+	-> 「十字架のヘアバンド」作成クエストの成功アイテムIDが小悪魔帽になっていたのを修正 
 
 ・AthenaProject Rev.282よりmerge、thanks to Arc87さん
 	-> 「ピアノの鍵盤クエスト」と「TheSignクエスト」で魔女の処理に不都合が出ていたのを修正
 
 ・AthenaProject Rev.284よりmerge、thanks to Blazeさん
-	-> 名も無き島アップデート関連のモンスター出現情報を最新化
+	-> 名も無き島アップデート関連のモンスター出現情報を最新化 
 
 ・細々した点を修正（npc.c）
 
