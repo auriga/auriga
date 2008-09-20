@@ -483,8 +483,8 @@ void clif_dropflooritem(struct flooritem_data *fitem)
 	WBUFB(buf,8)=fitem->item_data.identify;
 	WBUFW(buf,9)=fitem->bl.x;
 	WBUFW(buf,11)=fitem->bl.y;
-	WBUFB(buf,13)=(unsigned char)fitem->subx;
-	WBUFB(buf,14)=(unsigned char)fitem->suby;
+	WBUFB(buf,13)=fitem->subx;
+	WBUFB(buf,14)=fitem->suby;
 	WBUFW(buf,15)=fitem->item_data.amount;
 	clif_send(buf,packet_db[0x9e].len,&fitem->bl,AREA);
 
@@ -5283,8 +5283,8 @@ static void clif_getareachar_item(struct map_session_data* sd, struct flooritem_
 	WFIFOW(fd,9)=fitem->bl.x;
 	WFIFOW(fd,11)=fitem->bl.y;
 	WFIFOW(fd,13)=fitem->item_data.amount;
-	WFIFOB(fd,15)=(unsigned char)fitem->subx;
-	WFIFOB(fd,16)=(unsigned char)fitem->suby;
+	WFIFOB(fd,15)=fitem->subx;
+	WFIFOB(fd,16)=fitem->suby;
 	WFIFOSET(fd,packet_db[0x9d].len);
 
 	return;

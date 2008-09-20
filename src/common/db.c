@@ -50,7 +50,7 @@ static void * malloc_dbn(void)
 			void *p;
 			if(dbn_root_num >= ROOT_BUCKET) {
 				// メモリ確保出来ないのでサーバを落とす
-				printf("malloc_dbn: dbn memory over %dx%d !!\n", ROOT_BUCKET, ROOT_SIZE);
+				printf("malloc_dbn: dbn out of memory %dx%d !!\n", ROOT_BUCKET, ROOT_SIZE);
 				exit(1);
 			}
 			p = calloc(ROOT_SIZE, sizeof(struct dbn));
@@ -111,28 +111,27 @@ static int strdb_cmp(struct dbt* table,void* a,void* b)
 static unsigned int strdb_hash(struct dbt* table,void* a)
 {
 	int i;
-	unsigned int h;
+	unsigned int h = 0;
 	unsigned char *p = (unsigned char *)a;
 
-	i=table->maxlen;
-	if(i==0) i=0x7fffffff;
-	for(h=0;*p && --i>=0;){
-		h=(h*33 + *p++) ^ (h>>24);
+	i = table->maxlen;
+	if(i == 0)
+		i = 0x7fffffff;
+
+	while(*p && --i >= 0) {
+		h = (h*33 + *p++) ^ (h>>24);
 	}
 	return h;
 }
 
 struct dbt* strdb_init_(int maxlen,const char *file,int line)
 {
-	int i;
 	struct dbt* table;
 
-	table = (struct dbt*)aCalloc(1,sizeof(struct dbt));
-	table->cmp=strdb_cmp;
-	table->hash=strdb_hash;
-	table->maxlen=maxlen;
-	for(i=0;i<HASH_SIZE;i++)
-		table->ht[i]=NULL;
+	table = (struct dbt *)aCalloc(1, sizeof(struct dbt));
+	table->cmp        = strdb_cmp;
+	table->hash       = strdb_hash;
+	table->maxlen     = maxlen;
 	table->alloc_file = file;
 	table->alloc_line = line;
 	table->item_count = 0;
@@ -141,15 +140,10 @@ struct dbt* strdb_init_(int maxlen,const char *file,int line)
 
 static int numdb_cmp(struct dbt* table,void* a,void* b)
 {
-	int ia,ib;
+	intptr ia = (intptr)a;
+	intptr ib = (intptr)b;
 
-	ia=(int)a;
-	ib=(int)b;
-
-	if((ia^ib) & 0x80000000)
-		return ia<0 ? -1 : 1;
-
-	return ia-ib;
+	return (ia < ib) ? -1 : (ia > ib) ? 1 : 0;
 }
 
 static unsigned int numdb_hash(struct dbt* table,void* a)
@@ -159,15 +153,12 @@ static unsigned int numdb_hash(struct dbt* table,void* a)
 
 struct dbt* numdb_init_(const char *file,int line)
 {
-	int i;
 	struct dbt* table;
 
-	table = (struct dbt*)aCalloc(1,sizeof(struct dbt));
-	table->cmp=numdb_cmp;
-	table->hash=numdb_hash;
-	table->maxlen=sizeof(int);
-	for(i=0;i<HASH_SIZE;i++)
-		table->ht[i]=NULL;
+	table = (struct dbt *)aCalloc(1, sizeof(struct dbt));
+	table->cmp        = numdb_cmp;
+	table->hash       = numdb_hash;
+	table->maxlen     = sizeof(int);
 	table->alloc_file = file;
 	table->alloc_line = line;
 	table->item_count = 0;

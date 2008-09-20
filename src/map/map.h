@@ -916,7 +916,7 @@ struct map_data_other_server {
 
 struct flooritem_data {
 	struct block_list bl;
-	short subx,suby;
+	unsigned char subx,suby;
 	int cleartimer;
 	int first_get_id,second_get_id,third_get_id;
 	unsigned int first_get_tick,second_get_tick,third_get_tick;

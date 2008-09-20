@@ -2286,7 +2286,7 @@ void login_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 	}
 	else if( sd->func_parse == parse_login && sd->auth )
 	{
-		sprintf( user, "%s (%d)", ld->userid, (int)ld->account_id );
+		sprintf( user, "%s (%d)", ld->userid, ld->account_id );
 	}
 }
 

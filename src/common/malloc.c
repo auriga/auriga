@@ -220,8 +220,9 @@ struct block {
 	char data[ BLOCK_DATA_SIZE ];
 };
 
-static struct block* hash_unfill[BLOCK_DATA_COUNT1 + BLOCK_DATA_COUNT2 + 1];
-static struct block* block_first, *block_last, block_head;
+static struct block *hash_unfill[BLOCK_DATA_COUNT1 + BLOCK_DATA_COUNT2 + 1];
+static struct block *block_first, *block_last;
+static struct block block_head;
 
 /* メモリを使い回せない領域用のデータ */
 struct unit_head_large {
@@ -451,7 +452,7 @@ void aFree_(void *ptr, const char *file, int line, const char *func)
 		/* ユニット解放 */
 		struct block *block = head->block;
 
-		if( (char*)head - (char*)block > sizeof(struct block) ) {
+		if( (uintptr)block + sizeof(struct block) < (uintptr)head ) {
 			memmgr_warning("memmgr: args of aFree is invalid pointer %s line %d\n",file,line);
 		} else if(head->block == NULL) {
 			memmgr_warning("memmgr: args of aFree is freed pointer %s line %d\n",file,line);
@@ -480,7 +481,7 @@ void aFree_(void *ptr, const char *file, int line, const char *func)
 					hash_unfill[ block->unit_hash ] = block;
 				}
 				head->size = block->unit_unfill;
-				block->unit_unfill = (unsigned short)(((unsigned long)head - (unsigned long)block->data) / block->unit_size);
+				block->unit_unfill = (unsigned short)(((uintptr)head - (uintptr)block->data) / block->unit_size);
 			}
 		}
 	}
@@ -504,12 +505,7 @@ static struct block* block_malloc(unsigned short hash)
 			printf("MEMMGR::block_alloc failed.\n");
 			exit(1);
 		}
-#ifdef _WIN64
-		if( ((__int64)p + sizeof(struct block) * BLOCK_ALLOC) >> 32 ) {
-			printf("memmgr: 64bit version does not compatible with this machine\n");
-			exit(1);
-		}
-#endif
+
 		if(block_first == NULL) {
 			/* 初回確保 */
 			block_first = p;
@@ -667,7 +663,10 @@ static void memmer_exit(void)
 
 int do_init_memmgr(const char* file)
 {
-	sprintf(memmer_logfile,"%s.log",file);
+	strncpy(memmer_logfile, file, sizeof(memmer_logfile) - 5);
+	memmer_logfile[sizeof(memmer_logfile)-5] = '\0';
+	strcat(memmer_logfile, ".log");
+
 	atexit(memmer_exit);
 	printf("memmgr: initialised: %s\n",memmer_logfile);
 	return 0;
