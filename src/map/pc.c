@@ -1849,24 +1849,6 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		if(sd->state.lr_flag != 2)
 			sd->matk_rate += val;
 		break;
-	case SP_IGNORE_DEF_ELE:
-		if(!sd->state.lr_flag)
-			sd->ignore_def_ele |= 1<<val;
-		else if(sd->state.lr_flag == 1)
-			sd->ignore_def_ele_ |= 1<<val;
-		break;
-	case SP_IGNORE_DEF_RACE:
-		if(!sd->state.lr_flag)
-			sd->ignore_def_race |= 1<<val;
-		else if(sd->state.lr_flag == 1)
-			sd->ignore_def_race_ |= 1<<val;
-		break;
-	case SP_IGNORE_DEF_ENEMY:
-		if(!sd->state.lr_flag)
-			sd->ignore_def_enemy |= 1<<val;
-		else if(sd->state.lr_flag == 1)
-			sd->ignore_def_enemy_ |= 1<<val;
-		break;
 	case SP_ATK_RATE:
 		if(sd->state.lr_flag != 2)
 			sd->atk_rate += val;
@@ -1878,18 +1860,6 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 	case SP_MISC_ATK_DEF:
 		if(sd->state.lr_flag != 2)
 			sd->misc_def_rate += val;
-		break;
-	case SP_IGNORE_MDEF_ELE:
-		if(sd->state.lr_flag != 2)
-			sd->ignore_mdef_ele |= 1<<val;
-		break;
-	case SP_IGNORE_MDEF_RACE:
-		if(sd->state.lr_flag != 2)
-			sd->ignore_mdef_race |= 1<<val;
-		break;
-	case SP_IGNORE_MDEF_ENEMY:
-		if(sd->state.lr_flag != 2)
-			sd->ignore_mdef_enemy |= 1<<val;
 		break;
 	case SP_PERFECT_HIT_RATE:
 		if(sd->state.lr_flag != 2 && sd->perfect_hit < val)
@@ -2619,6 +2589,36 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		sd->skill_healup.id[sd->skill_healup.count] = type2;
 		sd->skill_healup.rate[sd->skill_healup.count] = val;
 		sd->skill_healup.count++;
+		break;
+	case SP_IGNORE_DEF_ELE:
+		if(!sd->state.lr_flag)
+			sd->ignore_def_ele[type2] += val;
+		else if(sd->state.lr_flag == 1)
+			sd->ignore_def_ele_[type2] += val;
+		break;
+	case SP_IGNORE_DEF_RACE:
+		if(!sd->state.lr_flag)
+			sd->ignore_def_race[type2] += val;
+		else if(sd->state.lr_flag == 1)
+			sd->ignore_def_race_[type2] += val;
+		break;
+	case SP_IGNORE_DEF_ENEMY:
+		if(!sd->state.lr_flag)
+			sd->ignore_def_enemy[type2] += val;
+		else if(sd->state.lr_flag == 1)
+			sd->ignore_def_enemy_[type2] += val;
+		break;
+	case SP_IGNORE_MDEF_ELE:
+		if(sd->state.lr_flag != 2)
+			sd->ignore_mdef_ele[type2] += val;
+		break;
+	case SP_IGNORE_MDEF_RACE:
+		if(sd->state.lr_flag != 2)
+			sd->ignore_mdef_race[type2] += val;
+		break;
+	case SP_IGNORE_MDEF_ENEMY:
+		if(sd->state.lr_flag != 2)
+			sd->ignore_mdef_enemy[type2] += val;
 		break;
 	default:
 		if(battle_config.error_log)

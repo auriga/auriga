@@ -1,4 +1,17 @@
 ----------------------------------------
+//0539 [2008/09/22] by Rayce
+
+・AthenaProject Rev.262よりmerge、thanks to ico776さん
+	bIgnoreDef系およびbIgnoreMDef系の防御無視ボーナスで、
+	効果の比率を設定できるように仕様を変更（battle.c, map.h, pc.c, status.c）
+
+・AthenaProject Rev.264よりmerge、thanks to ico776さん
+	アイテムボーナス「bBreakMyEquipWhenAttack」「bBreakMyEquipWhenHit」の
+	解説を修正（doc/item_bonus.txt）
+
+・db/item_db.txtを修正
+
+----------------------------------------
 //0538 [2008/09/21] by Rayce
 
 ・0374で、非暗号化ログインで且つクライアントからのアカウント作成を許可

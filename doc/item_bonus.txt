@@ -126,16 +126,16 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 
 
 ・防御無視攻撃
-	bonus bIgnoreDefRace,n;				n種族に対して防御力無視ダメージ
-	bonus bIgnoreMDefRace,n;			n種族に対して魔法防御力無視ダメージ
+	bonus2 bIgnoreDefRace,n,x;				n種族に対してx%の防御力無視ダメージ
+	bonus2 bIgnoreMDefRace,n,x;			n種族に対してx%の魔法防御力無視ダメージ
 	bonus bDefRatioAtkRace,n;			n種族に対して防御力が高ければ高いほど大きなダメージを与える(防御無視)
 					0,無形　1,不死　2,動物　3,植物　4,昆虫　5,魚貝　6,悪魔　7,人間　8,天使　9,竜族　10,ボスモンスター　11,ボスモンスター以外(普通のモンスター、プレイヤーも含む)
-	bonus bIgnoreDefEle,n;				n属性に対して防御力無視ダメージ
-	bonus bIgnoreMDefEle,n;				n属性に対して魔法防御力無視ダメージ
+	bonus2 bIgnoreDefEle,n,x;				n属性に対してx%の防御力無視ダメージ
+	bonus2 bIgnoreMDefEle,n,x;				n属性に対してx%の魔法防御力無視ダメージ
 	bonus bDefRatioAtkEle,n;			n属性に対して防御力が高ければ高いほど大きなダメージを与える(防御無視)
 					0,無　1,水　2,土　3,火　4,風　5,毒　6,聖　7,闇　8,念　9,不死
-	bonus bIgnoreDefEnemy,n;			敵タイプnに対して防御力無視ダメージ
-	bonus bIgnoreMDefEnemy,n;			敵タイプnに対して魔法防御力無視ダメージ
+	bonus2 bIgnoreDefEnemy,n,x;			敵タイプnに対してx%の防御力無視ダメージ
+	bonus2 bIgnoreMDefEnemy,n,x;			敵タイプnに対してx%の魔法防御力無視ダメージ
 	bonus bDefRatioAtkEnemy,n;			敵タイプnに対して防御力が高ければ高いほど大きなダメージを与える(防御無視)
 					0,その他　1,プレイヤー　2,ボス以外のモンスター　3,ホムンクルス
 
@@ -261,8 +261,8 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bUnbreakableShield,n;			絶対に盾が破壊されない(nは無意味)
 	bonus bLossEquipWhenDie,n;			死亡時n%の確率で装備アイテムがなくなる(nは万分率)
 	bonus bLossEquipWhenAttack,n;		攻撃時n%の確率で装備アイテムがなくなる(nは万分率)
-	bonus bBreakMyEquipWhenAttack,n,x;	攻撃時n%の確率で装備アイテムが壊れる(xは万分率)
-	bonus bBreakMyEquipWhenHit,n;		攻撃を受けた時n%の確率で装備アイテムが壊れる(xは万分率)
+	bonus bBreakMyEquipWhenAttack,n;	攻撃時n%の確率で装備アイテムが壊れる(nは万分率)
+	bonus bBreakMyEquipWhenHit,n;		攻撃を受けた時n%の確率で装備アイテムが壊れる(nは万分率)
 
 
 ・状態異常

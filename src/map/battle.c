@@ -2186,16 +2186,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			{
 				int mask = (1<<t_race) | ( (t_mode&0x20)? (1<<10): (1<<11) );
 
-				// bIgnoreDef系
-				if( !calc_flag.idef && (src_sd->ignore_def_ele & (1<<t_ele) || src_sd->ignore_def_race & mask || src_sd->ignore_def_enemy & (1<<t_enemy)) )
-					calc_flag.idef = 1;
-				if( calc_flag.lh ) {
-					if( !calc_flag.idef_ && (src_sd->ignore_def_ele_ & (1<<t_ele) || src_sd->ignore_def_race_ & mask || src_sd->ignore_def_enemy_ & (1<<t_enemy)) ) {
-						calc_flag.idef_ = 1;
-						if(battle_config.left_cardfix_to_right)
-							calc_flag.idef = 1;
-					}
-				}
 				// bDefRatioATK系
 				if( !calc_flag.idef && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy)) ) {
 					wd.damage = (wd.damage * (t_def1 + t_def2))/100;
@@ -2235,13 +2225,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// DEF無視フラグがないとき
 			if( ((calc_flag.rh && !calc_flag.idef) || (calc_flag.lh && !calc_flag.idef_)) && t_def1 < 1000000 )
 			{
-				int t_def, vitbonusmax;
-				int target_count = 1;
+				int ignored_rate = 100, ignored_rate_ = 100;
+				int vitbonusmax;
 
-				if(target->type != BL_HOM) {
-					target_count = unit_counttargeted(target,battle_config.vit_penalty_count_lv);
-				}
 				if(battle_config.vit_penalty_type > 0 && (!t_sc || t_sc->data[SC_STEELBODY].timer == -1)) {
+					int target_count = 1;
+
+					if(target->type != BL_HOM) {
+						target_count = unit_counttargeted(target,battle_config.vit_penalty_count_lv);
+					}
 					if(target_count >= battle_config.vit_penalty_count) {
 						if(battle_config.vit_penalty_type == 1) {
 							t_def1 = (t_def1 * (100 - (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num))/100;
@@ -2255,35 +2247,65 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 						}
 						if(t_def1 < 0) t_def1 = 0;
 						if(t_def2 < 1) t_def2 = 1;
-						if(t_vit < 1) t_vit = 1;
+						if(t_vit  < 1) t_vit  = 1;
 					}
 				}
-				t_def = t_def2*8/10;
 
 				// ディバインプロテクション
 				if(target_sd && (skill = pc_checkskill(target_sd,AL_DP)) > 0) {
 					int s_race = status_get_race(src);
 					if(battle_check_undead(s_race,status_get_elem_type(src)) || s_race == RCT_DEMON)
-						t_def += ((300 + 4 * target_sd->status.base_level) * skill + 50) / 100;
+						t_def2 += ((300 + 4 * target_sd->status.base_level) * skill + 50) / 100;
+				}
+
+				if(src_sd) {
+					// bIgnoreDef系
+					ignored_rate  = ignored_rate  - src_sd->ignore_def_ele[t_ele]  - src_sd->ignore_def_race[t_race]  - src_sd->ignore_def_enemy[t_enemy];
+					ignored_rate_ = ignored_rate_ - src_sd->ignore_def_ele_[t_ele] - src_sd->ignore_def_race_[t_race] - src_sd->ignore_def_enemy_[t_enemy];
+					if(t_mode & 0x20) {
+						ignored_rate  -= src_sd->ignore_def_race[RCT_BOSS];
+						ignored_rate_ -= src_sd->ignore_def_race_[RCT_BOSS];
+					} else {
+						ignored_rate  -= src_sd->ignore_def_race[RCT_NONBOSS];
+						ignored_rate_ -= src_sd->ignore_def_race_[RCT_NONBOSS];
+					}
+
+					if(battle_config.left_cardfix_to_right) {
+						// 左手カード補正設定あり
+						ignored_rate -= ignored_rate_;
+						ignored_rate_ = 100;
+					}
 				}
 				vitbonusmax = (t_vit/20)*(t_vit/20)-1;
 
 				if(calc_flag.rh && !calc_flag.idef) {
-					if(battle_config.player_defense_type) {
-						wd.damage = wd.damage - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1) );
-						damage_ot = damage_ot - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1) );
-					} else {
-						wd.damage = wd.damage * (100 - t_def1) /100 - t_def - ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1) );
-						damage_ot = damage_ot * (100 - t_def1) /100;
+					if(ignored_rate > 0) {
+						int t_def1_fix   = t_def1 * ignored_rate / 100;
+						int t_def2_fix   = (t_def2*8/10) * ignored_rate / 100;
+						int vitbonus_fix = vitbonusmax * ignored_rate / 100;
+
+						if(battle_config.player_defense_type) {
+							wd.damage = wd.damage - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+							damage_ot = damage_ot - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+						} else {
+							wd.damage = wd.damage * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+							damage_ot = damage_ot * (100 - t_def1_fix) /100;
+						}
 					}
 				}
 				if(calc_flag.lh && !calc_flag.idef_) {
-					if(battle_config.player_defense_type) {
-						wd.damage2 = wd.damage2 - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1) );
-						damage_ot2 = damage_ot2 - (t_def1 * battle_config.player_defense_type) - t_def - ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1) );
-					} else {
-						wd.damage2 = wd.damage2 * (100 - t_def1) /100 - t_def - ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1) );
-						damage_ot2 = damage_ot2 * (100 - t_def1) /100;
+					if(ignored_rate_ > 0) {
+						int t_def1_fix   = t_def1 * ignored_rate_ / 100;
+						int t_def2_fix   = (t_def2*8/10) * ignored_rate_ / 100;
+						int vitbonus_fix = vitbonusmax * ignored_rate_ / 100;
+
+						if(battle_config.player_defense_type) {
+							wd.damage2 = wd.damage2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+							damage_ot2 = damage_ot2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+						} else {
+							wd.damage2 = wd.damage2 * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+							damage_ot2 = damage_ot2 * (100 - t_def1_fix) /100;
+						}
 					}
 				}
 			}
@@ -3059,17 +3081,21 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 
 	/* ４．一般魔法ダメージ計算 */
 	if(normalmagic_flag) {
-		int imdef_flag = 0;
+		int rate = 100;
 		if(matk1 > matk2)
 			mgd.damage = matk2+atn_rand()%(matk1-matk2+1);
 		else
 			mgd.damage = matk2;
 		if(sd) {
-			int mask = (1<<t_race) | ( (t_mode&0x20)? (1<<RCT_BOSS): (1<<RCT_NONBOSS) );
-			if(sd->ignore_mdef_ele & (1<<t_ele) || sd->ignore_mdef_race & mask || sd->ignore_mdef_enemy & (1<<t_enemy))
-				imdef_flag = 1;
+			rate = rate - sd->ignore_mdef_ele[t_ele] - sd->ignore_mdef_race[t_race] - sd->ignore_mdef_enemy[t_enemy];
+			if(t_mode & 0x20)
+				rate -= sd->ignore_mdef_race[RCT_BOSS];
+			else
+				rate -= sd->ignore_mdef_race[RCT_NONBOSS];
 		}
-		if(!imdef_flag) {
+		if(rate > 0) {
+			mdef1 = mdef1 * rate / 100;
+			mdef2 = mdef2 * rate / 100;
 			if(battle_config.magic_defense_type) {
 				mgd.damage = mgd.damage - (mdef1 * battle_config.magic_defense_type) - mdef2;
 			} else {

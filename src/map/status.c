@@ -449,9 +449,15 @@ L_RECALC:
 	sd->double_rate  = 0;
 	sd->near_attack_def_rate = sd->long_attack_def_rate = 0;
 	sd->atk_rate = sd->matk_rate = 100;
-	sd->ignore_def_ele = sd->ignore_def_race = sd->ignore_def_enemy = 0;
-	sd->ignore_def_ele_ = sd->ignore_def_race_ = sd->ignore_def_enemy_ = 0;
-	sd->ignore_mdef_ele = sd->ignore_mdef_race = sd->ignore_mdef_enemy = 0;
+	memset(sd->ignore_def_ele,0,sizeof(sd->ignore_def_ele));
+	memset(sd->ignore_def_race,0,sizeof(sd->ignore_def_race));
+	memset(sd->ignore_def_enemy,0,sizeof(sd->ignore_def_enemy));
+	memset(sd->ignore_def_ele_,0,sizeof(sd->ignore_def_ele_));
+	memset(sd->ignore_def_race_,0,sizeof(sd->ignore_def_race_));
+	memset(sd->ignore_def_enemy_,0,sizeof(sd->ignore_def_enemy_));
+	memset(sd->ignore_mdef_ele,0,sizeof(sd->ignore_mdef_ele));
+	memset(sd->ignore_mdef_race,0,sizeof(sd->ignore_mdef_race));
+	memset(sd->ignore_mdef_enemy,0,sizeof(sd->ignore_mdef_enemy));
 	sd->arrow_cri = 0;
 	sd->magic_def_rate = sd->misc_def_rate = 0;
 	memset(sd->arrow_addele,0,sizeof(sd->arrow_addele));

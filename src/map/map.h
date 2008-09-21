@@ -421,9 +421,9 @@ struct map_session_data {
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
 	int aspd_rate,speed_rate,hprecov_rate,sprecov_rate,critical_def,double_rate;
 	int near_attack_def_rate,long_attack_def_rate,magic_def_rate,misc_def_rate,matk_rate;
-	int ignore_def_ele,ignore_def_race,ignore_def_enemy;
-	int ignore_def_ele_,ignore_def_race_,ignore_def_enemy_;
-	int ignore_mdef_ele,ignore_mdef_race,ignore_mdef_enemy;
+	int ignore_def_ele[ELE_MAX],ignore_def_race[RCT_MAX],ignore_def_enemy[4];
+	int ignore_def_ele_[ELE_MAX],ignore_def_race_[RCT_MAX],ignore_def_enemy_[4];
+	int ignore_mdef_ele[ELE_MAX],ignore_mdef_race[RCT_MAX],ignore_mdef_enemy[4];
 	int magic_addele[ELE_MAX],magic_addrace[RCT_MAX],magic_addenemy[4];
 	int magic_subrace[RCT_MAX],magic_subsize[MAX_SIZE_FIX];
 	int perfect_hit,get_zeny_num,get_zeny_num2;
