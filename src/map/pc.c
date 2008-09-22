@@ -3790,7 +3790,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		int i = 0;
 		if(x || y) {
 			if(battle_config.error_log)
-				printf("stacked (%d,%d)\n",x,y);
+				printf("stacked %s (%d,%d)\n", map[m].name, x, y);
 		}
 		do {
 			x = atn_rand()%(map[m].xs-2)+1;
@@ -3798,7 +3798,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		} while(map_getcell(m,x,y,CELL_CHKNOPASS) && (i++) < 1000);
 		if(i >= 1000) {
 			if(battle_config.error_log)
-				printf("pc_setpos: not found free cell!!\n");
+				printf("pc_setpos: not found free cell in %s!!\n", map[m].name);
 			return 1;
 		}
 	}

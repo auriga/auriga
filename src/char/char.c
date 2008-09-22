@@ -3644,10 +3644,10 @@ int parse_char(int fd)
 						break;
 				}
 				RFIFOSKIP(fd,3);
-				if(ch == max_char_slot)
+				if(ch >= max_char_slot)
 					break;
 
-				char_log("char select %d-%d %s",sd->account_id,RFIFOB(fd,2),sd->found_char[ch]->st.name);
+				char_log("char select %d - %d %s",sd->account_id,sd->found_char[ch]->st.char_num,sd->found_char[ch]->st.name);
 				memcpy(&st,&sd->found_char[ch]->st,sizeof(struct mmo_charstatus));
 
 				i = search_mapserver_char(st.last_point.map, NULL);

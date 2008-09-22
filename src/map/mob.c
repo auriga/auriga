@@ -1044,8 +1044,10 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		return search_flag;
 	} else {
 		// 攻撃対象以外をターゲッティングした（バグ
-		if(battle_config.error_log)
-			printf("mob_ai_sub_hard target type error (type = 0x%03x, id = %d)\n",tbl->type,tbl->id);
+		if(battle_config.error_log) {
+			printf("mob_ai_sub_hard target type error (%d: %s type = 0x%03x) in %s (%d,%d)\n",
+				md->class_, mob_db[md->class_].jname, tbl->type, map[md->bl.m].name, md->bl.x, md->bl.y);
+		}
 		if(md->target_id > 0) {
 			mob_unlocktarget(md,tick);
 			if(md->ud.walktimer != -1)

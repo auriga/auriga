@@ -6481,7 +6481,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			clif_send_clothcolor(bl);
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
-		if((--sc->data[type].val3) > 0) {
+		else if((--sc->data[type].val3) > 0) {
 			int hp = status_get_max_hp(bl);
 			if((++sc->data[type].val4)%5 == 0 && status_get_hp(bl) > hp>>2) {
 				hp = (hp < 100)? 1: hp/100;
