@@ -1,4 +1,10 @@
 ----------------------------------------
+//0540 [2008/09/23] by Rayce
+
+・0519以降、auriga-start のstopとkillが動作しなくなっていたバグを修正（core.c）
+	reported by シスカさん
+
+----------------------------------------
 //0539 [2008/09/22] by Rayce
 
 ・AthenaProject Rev.262よりmerge、thanks to ico776さん

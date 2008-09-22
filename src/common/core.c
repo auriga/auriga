@@ -88,14 +88,19 @@ static void pid_create(const char* file)
 {
 	FILE *fp;
 	int lock;
-	char *p = NULL;
+	size_t i;
 
 	strncpy(pid_file, file, sizeof(pid_file) - 5);
 	pid_file[sizeof(pid_file)-5] = '\0';
 
-	p = strrchr(pid_file, '.');
-	if(p)
-		*p = '\0';
+	for(i = strlen(pid_file); i >= 0; i--) {
+		if(pid_file[i] == '/' || pid_file[i] == '\\')
+			break;
+		if(pid_file[i] == '.') {
+			pid_file[i] = '\0';
+			break;
+		}
+	}
 
 	strcat(pid_file, ".pid");
 	fp = lock_fopen(pid_file, &lock);
