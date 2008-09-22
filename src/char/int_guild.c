@@ -47,6 +47,15 @@ static int guild_extension_increment = 4;
 static struct dbt *guild_db = NULL;
 static struct guild_castle castle_db[MAX_GUILDCASTLE];
 
+struct {
+	int id;
+	int max;
+	struct{
+		short id;
+		short lv;
+	} need[5];
+} guild_skill_tree[MAX_GUILDSKILL];
+
 int mapif_guild_broken(int guild_id,int flag);
 int guild_check_empty(const struct guild *g);
 int guild_calcinfo(struct guild *g);
@@ -57,21 +66,66 @@ static int guild_readdb(void)
 {
 	int i;
 	FILE *fp;
-	char line[256];
+	char line[1024],*p;
 
+	// ギルド経験値
 	fp=fopen("db/exp_guild.txt","r");
 	if(fp==NULL){
 		printf("can't read db/exp_guild.txt\n");
 		return 1;
 	}
 	i=0;
-	while(fgets(line,255,fp) && i<MAX_GUILDLEVEL){
-		if(line[0]=='/' && line[1]=='/')
+	while(fgets(line,1020,fp)) {
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0] == '/' && line[1] == '/')
 			continue;
 		guild_exp[i]=atoi(line);
 		i++;
+		if(i >= MAX_GUILDLEVEL)
+			break;
 	}
 	fclose(fp);
+	printf("read db/exp_guild.txt done.\n");
+
+	// ギルドスキルツリー
+	memset(guild_skill_tree,0,sizeof(guild_skill_tree));
+
+	fp=fopen("db/guild_skill_tree.txt","r");
+	if(fp==NULL){
+		printf("can't read db/guild_skill_tree.txt\n");
+		return 1;
+	}
+
+	while(fgets(line,1020,fp)){
+		int skillid, id, k;
+		char *split[12];
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0] == '/' && line[1] == '/')
+			continue;
+		for(i=0,p=line;i<12 && p;i++){
+			split[i]=p;
+			p=strchr(p,',');
+			if(p) *p++=0;
+		}
+		if(i<12)
+			continue;
+
+		skillid = atoi(split[0]);
+		id = skillid - GUILD_SKILLID;
+		if(id < 0 || id >= MAX_GUILDSKILL)
+			continue;
+		guild_skill_tree[id].id  = skillid;
+		guild_skill_tree[id].max = atoi(split[1]);
+
+		for(k=0;k<5;k++){
+			guild_skill_tree[id].need[k].id=atoi(split[k*2+2]);
+			guild_skill_tree[id].need[k].lv=atoi(split[k*2+3]);
+		}
+	}
+	fclose(fp);
+	printf("read db/guild_skill_tree.txt done\n");
 
 	return 0;
 }
@@ -1508,6 +1562,30 @@ int guild_checkskill(const struct guild *g,int id)
 	return g->skill[idx].lv;
 }
 
+// ギルドスキルツリーチェック
+int guild_check_skill_require(struct guild *g,int id)
+{
+	int i,skillid;
+	int idx = id - GUILD_SKILLID;
+
+	if(g == NULL)
+		return 0;
+
+	if(idx < 0 || idx >= MAX_GUILDSKILL)
+		return 0;
+	if(guild_skill_tree[idx].id <= 0)
+		return 0;
+	if(guild_skill_tree[idx].max <= 0)
+		return 0;
+
+	for(i=0; i<5 && (skillid = guild_skill_tree[idx].need[i].id) > 0; i++)
+	{
+		if(guild_skill_tree[idx].need[i].lv > guild_checkskill(g,skillid))
+			return 0;
+	}
+	return 1;
+}
+
 // ギルドの情報の再計算
 int guild_calcinfo(struct guild *g)
 {
@@ -1818,6 +1896,20 @@ int mapif_guild_castle_alldataload(int fd)
 	WFIFOW(fd,2)=4+sizeof(castle_db);
 	memcpy(WFIFOP(fd,4), castle_db, sizeof(castle_db));
 	WFIFOSET(fd,WFIFOW(fd,2));
+	return 0;
+}
+
+int mapif_guild_skillmax_load(int fd)
+{
+	int i, len = 4;
+
+	WFIFOW(fd,0) = 0x3843;
+	for(i = 0; i < MAX_GUILDSKILL; i++) {
+		WFIFOL(fd,len) = guild_skill_tree[i].max;
+		len += 4;
+	}
+	WFIFOW(fd,2) = len;
+	WFIFOSET(fd,len);
 	return 0;
 }
 
@@ -2143,15 +2235,21 @@ int mapif_parse_GuildSkillUp(int fd,int guild_id,int skill_num,int account_id,in
 
 	if (g1 == NULL || idx < 0 || idx >= MAX_GUILDSKILL)
 		return 0;
+
 	memcpy(&g2,g1,sizeof(struct guild));
-	if( g2.skill_point>0 || flag&1 ) {
+
+	if( (g2.skill_point > 0 || flag&1) &&
+	    g2.skill[idx].id > 0 &&
+	    guild_check_skill_require(&g2,skill_num) &&
+	    g2.skill[idx].lv < guild_skill_tree[idx].max )
+	{
 		g2.skill[idx].lv++;
 		if(!(flag&1)) g2.skill_point--;
 		if(guild_calcinfo(&g2)==0)
 			mapif_guild_info(-1,&g2);
 		mapif_guild_skillupack(guild_id,skill_num,account_id);
 		guild_save(&g2);
-		printf("int_guild: skill %d up\n",skill_num);
+		printf("int_guild: %d skill %d up\n",guild_id,skill_num);
 	}
 	return 0;
 }
@@ -2368,7 +2466,9 @@ int inter_guild_parse_frommap(int fd)
 // マップサーバーの接続時処理
 int inter_guild_mapif_init(int fd)
 {
-	return mapif_guild_castle_alldataload(fd);
+	mapif_guild_castle_alldataload(fd);
+	mapif_guild_skillmax_load(fd);
+	return 0;
 }
 
 // サーバーから脱退要求（キャラ削除用）

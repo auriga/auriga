@@ -62,7 +62,7 @@ static const int packet_len_table[]={
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  6, 0,  0, 0,	// 3810-
 	35,-1,39,13, 38,33, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 14,67,186,-1,	// 3830-
-	 9, 9,-1, 0,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
+	 9, 9,-1,-1,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3860-
 	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3870-
@@ -1590,6 +1590,14 @@ static void intif_parse_GuildCastleAllDataLoad(int fd)
 	return;
 }
 
+// ギルドスキルツリー最大値受信(初期化時)
+static void intif_parse_GuildSkillMaxLoad(int fd)
+{
+	guild_skillmax_load(RFIFOW(fd,2),(int *)RFIFOP(fd,4));
+
+	return;
+}
+
 // pet
 static int intif_parse_CreatePet(int fd)
 {
@@ -2004,6 +2012,7 @@ int intif_parse(int fd)
 	case 0x3840: intif_parse_GuildCastleDataLoad(fd); break;
 	case 0x3841: intif_parse_GuildCastleDataSave(fd); break;
 	case 0x3842: intif_parse_GuildCastleAllDataLoad(fd); break;
+	case 0x3843: intif_parse_GuildSkillMaxLoad(fd); break;
 	case 0x3848: intif_parse_MailSendRes(fd); break;
 	case 0x3849: intif_parse_MailBoxLoad(fd); break;
 	case 0x384a: intif_parse_ArriveNewMail(fd); break;

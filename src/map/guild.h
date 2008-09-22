@@ -35,11 +35,10 @@ int guild_check_alliance(int guild_id1, int guild_id2, int flag);
 int guild_skill_get_inf(int id);
 int guild_skill_get_sp(int id,int lv);
 int guild_skill_get_range(int id,int lv);
-int guild_skill_get_max(int id);
 int guild_skill_get_lv(struct guild *g,int id);
 
+void guild_skillmax_load(int len, int *maxlv);
 int guild_get_skilltree_max(int id);
-int guild_check_skill_require(struct guild *g,int id);
 int guild_checkskill(struct guild *g,int id);
 
 void do_init_guild(void);

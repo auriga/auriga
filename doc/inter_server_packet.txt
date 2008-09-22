@@ -211,6 +211,8 @@ R 3841 <castle_id>.w <index>.B <value>.l
 	ギルド城データ変更通知
 R 3842 <len>.w { <guild_castle>.?B }.?B
 	ギルド城データ一括送信
+R 3843 <len>.w { <maxlv>.l }.?B
+	ギルドスキルツリー最大値
 R 3848 <account>.l <flag>.B
 	メールが送れたかどうかの応答
 S 3049 <char_id>.l

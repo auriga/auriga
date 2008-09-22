@@ -1,4 +1,39 @@
 ----------------------------------------
+//0541 [2008/09/23] by Rayce
+
+・AthenaProject Rev.288を参考に、タイミングによってはギルドスキルを
+　レベル上限外まで取得できた問題を修正、thanks to ico776さん
+　（int_guild.c, clif.c, guild.*, intif.c）
+
+	サーバが過負荷のとき、もしくはマップサーバ分割時でタイミングに
+	よって発生していました。
+	MAPサーバでは各処理の同期を取るのが難しいので、スキル取得の
+	整合性チェックをinterサーバで行うように変更します。
+
+	従って、db/guild_skill_tree.txt の読み込みはinterサーバでのみ行います。
+	MAPサーバでもギルドスキルLvの最大値の情報は必要なので、MAPサーバの
+	初期化時にinterサーバから情報を受信し、guild_skill_max[] 配列に保存
+	する仕組みにしています。
+
+	上記変更により、ギルドスキルLvの最大値は db/guild_skill_tree.txt に
+	記載された値が参照されます。
+	db/skill_db.txt の値は使用されないので注意してください。
+
+	-> guild_skill_tree 構造体をint_guild.cに移動
+	-> guild_skill_max 配列追加
+	-> guild_read_guildskill_tree_db() をint_guild.cに吸収
+	-> guild_skill_get_max() は不要になったので削除
+	-> guild_check_skill_require() をint_guild.cに移動
+	-> guild_skillup() ではスキルツリーのチェックは行わないように変更
+	-> guild_skillup() で、clif_guild_skillinfo() が多重に呼ばれるので削除
+	-> clif_guild_skillinfo() でスキルツリーのチェックは行わないように変更
+	-> mapif_parse_GuildSkillUp() の判定処理を guild_skillup() に合わせる
+	-> mapif_guild_skillmax_load() 追加
+	-> intif_parse_GuildSkillMaxLoad() 追加
+	-> guild_skillmax_load() 追加
+	-> doc/inter_server_packet.txt に0x3843を追記
+
+----------------------------------------
 //0540 [2008/09/23] by Rayce
 
 ・0519以降、auriga-start のstopとkillが動作しなくなっていたバグを修正（core.c）

@@ -51,6 +51,7 @@ static struct dbt *guild_infoevent_db = NULL;
 static struct dbt *guild_castleinfoevent_db = NULL;
 
 static struct guild_castle castle_db[MAX_GUILDCASTLE];
+static int guild_skill_max[MAX_GUILDSKILL];
 
 struct eventlist {
 	char name[50];
@@ -67,15 +68,6 @@ struct guild_expcache {
 	int char_id;
 	int exp;
 };
-
-struct {
-	int id;
-	int max;
-	struct{
-		short id;
-		short lv;
-	} need[5];
-} guild_skill_tree[MAX_GUILDSKILL];
 
 /*==========================================
  * ギルドスキルdbのアクセサ（今は直打ちで代用）
@@ -96,11 +88,6 @@ int guild_skill_get_range(int id,int lv)
 	return skill_get_range(id,lv);
 }
 
-int guild_skill_get_max(int id)
-{
-	return skill_get_max(id);
-}
-
 int guild_skill_get_lv(struct guild *g,int id)
 {
 	int idx = id-GUILD_SKILLID;
@@ -114,6 +101,23 @@ int guild_skill_get_lv(struct guild *g,int id)
 }
 
 /*==========================================
+ * スキルのMaxLvを受信（初期化時）
+ *------------------------------------------
+ */
+void guild_skillmax_load(int len, int *maxlv)
+{
+	if( maxlv == NULL || sizeof(guild_skill_max) != len - 4) {
+		if(battle_config.etc_log)
+			printf("guild_skillmax_load: data size error %d %d\n", sizeof(guild_skill_max), len - 4);
+		memset(guild_skill_max, 0, sizeof(guild_skill_max));
+	} else {
+		memcpy(guild_skill_max, maxlv, sizeof(guild_skill_max));
+	}
+
+	return;
+}
+
+/*==========================================
  * スキルのMaxLvを返す
  *------------------------------------------
  */
@@ -124,34 +128,7 @@ int guild_get_skilltree_max(int id)
 	if(idx < 0 || idx >= MAX_GUILDSKILL)
 		return 0;
 
-	return guild_skill_tree[idx].max;
-}
-
-/*==========================================
- * ギルドスキルツリーチェック
- *------------------------------------------
- */
-int guild_check_skill_require(struct guild *g,int id)
-{
-	int i,skillid;
-	int idx = id - GUILD_SKILLID;
-
-	if(g == NULL)
-		return 0;
-
-	if(idx < 0 || idx >= MAX_GUILDSKILL)
-		return 0;
-	if(guild_skill_tree[idx].id <= 0)
-		return 0;
-	if(guild_skill_tree[idx].max <= 0)
-		return 0;
-
-	for(i=0; i<5 && (skillid = guild_skill_tree[idx].need[i].id) > 0; i++)
-	{
-		if(guild_skill_tree[idx].need[i].lv > guild_checkskill(g,skillid))
-			return 0;
-	}
-	return 1;
+	return guild_skill_max[idx];
 }
 
 /*==========================================
@@ -1518,12 +1495,11 @@ void guild_skillup(struct map_session_data *sd, int skill_num, int flag)
 
 	if( (g->skill_point > 0 || flag&1) &&
 	    g->skill[idx].id > 0 &&
-	    guild_check_skill_require(g,skill_num) &&
-	    g->skill[idx].lv < guild_skill_tree[idx].max )
+	    g->skill[idx].lv < guild_skill_max[idx] )
 	{
 		// 情報更新
+		// スキルツリーのチェックはint_guild.cで行う
 		intif_guild_skillup(g->guild_id,skill_num,sd->status.account_id,flag);
-		clif_guild_skillinfo(sd, g);
 	}
 
 	return;
@@ -2356,60 +2332,6 @@ static void guild_read_castledb(void)
 }
 
 /*==========================================
- * ギルドスキルtree読み込み
- *------------------------------------------
- */
-static void guild_read_guildskill_tree_db(void)
-{
-	int i,k,id,skillid;
-	FILE *fp;
-	char line[1024],*p;
-
-	memset(guild_skill_tree,0,sizeof(guild_skill_tree));
-
-	fp=fopen("db/guild_skill_tree.txt","r");
-	if(fp==NULL){
-		printf("can't read db/guild_skill_tree.txt\n");
-		return;
-	}
-
-	id = 0;
-	while(fgets(line,1020,fp)){
-		char *split[12];
-		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
-			continue;
-		if(line[0]=='/' && line[1]=='/')
-			continue;
-		for(i=0,p=line;i<12 && p;i++){
-			split[i]=p;
-			p=strchr(p,',');
-			if(p) *p++=0;
-		}
-		if(i<12)
-			continue;
-
-		skillid = atoi(split[0]);
-		id = skillid - GUILD_SKILLID;
-		if(id < 0 || id >= MAX_GUILDSKILL)
-			continue;
-		guild_skill_tree[id].id  = skillid;
-		guild_skill_tree[id].max = atoi(split[1]);
-
-		if(guild_skill_tree[id].max > guild_skill_get_max(skillid))
-			guild_skill_tree[id].max = guild_skill_get_max(skillid);
-
-		for(k=0;k<5;k++){
-			guild_skill_tree[id].need[k].id=atoi(split[k*2+2]);
-			guild_skill_tree[id].need[k].lv=atoi(split[k*2+3]);
-		}
-	}
-	fclose(fp);
-	printf("read db/guild_skill_tree.txt done\n");
-
-	return;
-}
-
-/*==========================================
  * 初期化
  *------------------------------------------
  */
@@ -2421,7 +2343,6 @@ void do_init_guild(void)
 	guild_castleinfoevent_db=numdb_init();
 
 	guild_read_castledb();
-	guild_read_guildskill_tree_db();
 
 	add_timer_func_list(guild_gvg_eliminate_timer);
 	add_timer_func_list(guild_payexp_timer);

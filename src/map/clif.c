@@ -8598,7 +8598,7 @@ void clif_guild_skillinfo(struct map_session_data *sd, struct guild *g)
 	WFIFOW(fd,0) = 0x162;
 	WFIFOW(fd,4) = g->skill_point;
 	for(i = 0; i < MAX_GUILDSKILL; i++) {
-		if((id = g->skill[i].id) > 0 && guild_check_skill_require(g,g->skill[i].id)) {
+		if((id = g->skill[i].id) > 0) {
 			WFIFOW(fd,c*37+ 6) = id;
 			WFIFOW(fd,c*37+ 8) = guild_skill_get_inf(id);
 			WFIFOW(fd,c*37+10) = 0;
