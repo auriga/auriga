@@ -10113,7 +10113,10 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 
 	WFIFOW(fd,0) = 0x2d7;
 	memcpy(WFIFOP(fd,4), tsd->status.name, 24);
-	WFIFOW(fd,28) = tsd->status.class_;
+	if(tsd->status.class_ == PC_CLASS_GS || tsd->status.class_ == PC_CLASS_NJ)
+		WFIFOW(fd,28) = tsd->status.class_-4;
+	else
+		WFIFOW(fd,28) = tsd->status.class_;
 	WFIFOW(fd,30) = tsd->status.hair;
 	WFIFOW(fd,32) = tsd->status.head_top;
 	WFIFOW(fd,34) = tsd->status.head_mid;

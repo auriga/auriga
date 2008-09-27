@@ -1009,7 +1009,7 @@ static int login_log(const char *fmt, ...)
 // 認証
 int mmo_auth(struct login_session_data* sd)
 {
-	char tmpstr[24];
+	char tmpstr[32];
 	size_t len;
 	int newaccount=0;
 	const struct mmo_account *ac;
@@ -1020,17 +1020,19 @@ int mmo_auth(struct login_session_data* sd)
 
 #ifdef _WIN32
 	{
+		size_t len;
 		time_t time_;
 		time(&time_);
-		strftime(tmpstr,24,"%Y-%m-%d %H:%M:%S",localtime(&time_));
-		sprintf(tmpstr+19,".%03d",0);
+		len = strftime(tmpstr,sizeof(tmpstr),"%Y-%m-%d %H:%M:%S",localtime(&time_));
+		sprintf(tmpstr+len,".%03d",0);
 	}
 #else
 	{
+		size_t len;
 		struct timeval tv;
 		gettimeofday(&tv,NULL);
-		strftime(tmpstr,24,"%Y-%m-%d %H:%M:%S",localtime(&(tv.tv_sec)));
-		sprintf(tmpstr+19,".%03d",(int)tv.tv_usec/1000);
+		len = strftime(tmpstr,sizeof(tmpstr),"%Y-%m-%d %H:%M:%S",localtime(&(tv.tv_sec)));
+		sprintf(tmpstr+len,".%03d",(int)tv.tv_usec/1000);
 	}
 #endif
 

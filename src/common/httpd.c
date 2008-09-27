@@ -245,11 +245,12 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 
 	// 時間文字列を求める
 	{
+		size_t len;
 		time_t time_;
 		time(&time_);
-		strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
+		len = strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
+		sprintf(timestr+len, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
 	}
-	sprintf(timestr+20, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
 
 	ip = (unsigned char*) &session[sd->fd]->client_addr.sin_addr;
 
@@ -3051,11 +3052,12 @@ void httpd_cgi_log( struct httpd_session_data *sd, const char* str )
 
 	// 時間文字列を求める
 	{
+		size_t len;
 		time_t time_;
 		time(&time_);
-		strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
+		len = strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
+		sprintf(timestr+len, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
 	}
-	sprintf(timestr+20, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
 
 	ip = sd ? (unsigned char*) &session[sd->fd]->client_addr.sin_addr : 0;
 
