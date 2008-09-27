@@ -489,8 +489,8 @@ int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 		return 1;
 
 	sqldbs_query(&mysql_handle, "SELECT "
-		"`number`, `read`, `send_name`, `receive_name`, `title`, `times`, `size`, `body`, `zeny`,"
-		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`"
+		"`number`, `read`, `send_name`, `receive_name`, `title`, `times`, `size`, `body`, `zeny`, "
+		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
 		"`card0`, `card1`, `card2`, `card3`, `limit`"
 		" FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' ORDER BY `number`", char_id
 	);
@@ -523,7 +523,7 @@ int mail_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL
 			// SELECT UNHEX()
 			for(n = 0, p = sql_row[7]; n < md[i].body_size && p[0] && p[1]; n++, p += 2) {
 				int c = 0;
-				sscanf(p,"%2x",&c);
+				sscanf(p,"%02x",&c);
 				WBUFB(md[i].body,n) = c;
 			}
 			md[i].body_size = n;

@@ -1,4 +1,15 @@
 ----------------------------------------
+//0545 [2008/09/28] by Rayce
+
+・SQL: charサーバ起動時にギルド城情報が初期化されてしまう致命的なバグを修正（int_guild.c）
+・SQL: ROメールを開くとき、SELECTの構文エラーが発生する致命的なバグを修正（int_mail.c）
+・SQL: mmo.hの MAX_CLOTH_COLOR を128以上にし、128番以上の服色を指定すると
+       キャラクターデータのセーブ時にUPDATEエラーが発生する問題を修正
+       （sql-files/Auriga545-changetable.sql）
+
+・SQL: 全てのフィールドの型をAuriga内部の変数の型に合わせる（sql-files/main.sql）
+
+----------------------------------------
 //0544 [2008/09/28] by Rayce
 
 ・strftime() の部分を少し手直し（httpd.c, login.c）

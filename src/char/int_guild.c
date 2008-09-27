@@ -911,9 +911,9 @@ static int guildcastle_sql_init(void)
 		castle_db[i].castle_id = i;
 
 	sqldbs_query(&mysql_handle, "SELECT "
-		"`guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`,"
+		"`castle_id`, `guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`,"
 		"`visibleC`, `visibleG0`, `visibleG1`, `visibleG2`, `visibleG3`, `visibleG4`, `visibleG5`, `visibleG6`, `visibleG7`"
-		" FROM `" GUILD_CASTLE_TABLE "` ORDER BY `castle_id`"
+		" FROM `" GUILD_CASTLE_TABLE
 	);
 
 	sql_res = sqldbs_store_result(&mysql_handle);
@@ -926,23 +926,23 @@ static int guildcastle_sql_init(void)
 				continue;
 			gc = &castle_db[id];
 
-			gc->guild_id   = atoi(sql_row[0]);
-			gc->economy    = atoi(sql_row[1]);
-			gc->defense    = atoi(sql_row[2]);
-			gc->triggerE   = atoi(sql_row[3]);
-			gc->triggerD   = atoi(sql_row[4]);
-			gc->nextTime   = atoi(sql_row[5]);
-			gc->payTime    = atoi(sql_row[6]);
-			gc->createTime = atoi(sql_row[7]);
-			gc->visibleC   = atoi(sql_row[8]);
-			gc->visibleG0  = atoi(sql_row[9]);
-			gc->visibleG1  = atoi(sql_row[10]);
-			gc->visibleG2  = atoi(sql_row[11]);
-			gc->visibleG3  = atoi(sql_row[12]);
-			gc->visibleG4  = atoi(sql_row[13]);
-			gc->visibleG5  = atoi(sql_row[14]);
-			gc->visibleG6  = atoi(sql_row[15]);
-			gc->visibleG7  = atoi(sql_row[16]);
+			gc->guild_id   = atoi(sql_row[1]);
+			gc->economy    = atoi(sql_row[2]);
+			gc->defense    = atoi(sql_row[3]);
+			gc->triggerE   = atoi(sql_row[4]);
+			gc->triggerD   = atoi(sql_row[5]);
+			gc->nextTime   = atoi(sql_row[6]);
+			gc->payTime    = atoi(sql_row[7]);
+			gc->createTime = atoi(sql_row[8]);
+			gc->visibleC   = atoi(sql_row[9]);
+			gc->visibleG0  = atoi(sql_row[10]);
+			gc->visibleG1  = atoi(sql_row[11]);
+			gc->visibleG2  = atoi(sql_row[12]);
+			gc->visibleG3  = atoi(sql_row[13]);
+			gc->visibleG4  = atoi(sql_row[14]);
+			gc->visibleG5  = atoi(sql_row[15]);
+			gc->visibleG6  = atoi(sql_row[16]);
+			gc->visibleG7  = atoi(sql_row[17]);
 		}
 		sqldbs_free_result(sql_res);
 	}
