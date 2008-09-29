@@ -1276,8 +1276,8 @@ lhz_fild01.gat,296,382,0	warp	rachelwarp5018	1,1,ra_fild06.gat,298,25
 ra_fild07.gat,215,27,0		warp	rachelwarp5019	1,1,ra_fild11.gat,201,329
 ra_fild11.gat,202,335,0		warp	rachelwarp5020	1,1,ra_fild07.gat,215,32
 //ラヘルフィールド 08⇔ラヘルフィールド 09
-ra_fild08.gat,368,234,0		warp	rachelwarp5021	1,1,ra_fild09,35,238
-ra_fild09.gat,27,238,0		warp	rachelwarp5022	1,1,ra_fild08,360,234
+ra_fild08.gat,368,234,0		warp	rachelwarp5021	1,1,ra_fild09.gat,35,238
+ra_fild09.gat,27,238,0		warp	rachelwarp5022	1,1,ra_fild08.gat,360,234
 //ラヘルフィールド 08⇔ラヘルフィールド 12
 ra_fild08.gat,165,29,0		warp	rachelwarp5023	1,1,ra_fild12.gat,149,369
 ra_fild12.gat,149,374,0		warp	rachelwarp5024	1,1,ra_fild08.gat,165,36

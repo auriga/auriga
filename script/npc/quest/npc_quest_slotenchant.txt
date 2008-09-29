@@ -1160,7 +1160,7 @@ lhz_in02.gat,269,33,4	duplicate(青年#slot)	青年	97
 				set '@amount,2;
 				set '@zeny,500000;
 				break;
-			case 2: //尖っているいばらのカタール
+			case 2: //尖ってるいばらのカタール
 				set '@delid,1257;
 				set '@getid,1276;
 				set '@need,984;
