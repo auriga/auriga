@@ -6055,13 +6055,15 @@ int buildin_getequipname(struct script_state *st)
 
 	if(num > 0 && num <= 11) {
 		struct map_session_data *sd = script_rid2sd(st);
-		char *buf = (char *)aCalloc(128,sizeof(char));
 		int i = pc_checkequip(sd,equip_pos[num-1]);
+		char *buf;
 
-		if(i >= 0 && sd->inventory_data[i])
-			sprintf(buf,"%s-[%s]",refine_posword[num-1],sd->inventory_data[i]->jname);
-		else
+		if(i >= 0 && sd->inventory_data[i]) {
+			buf = (char *)aStrdup(sd->inventory_data[i]->jname);
+		} else {
+			buf = (char *)aMalloc(sizeof(refine_posword) * 2 + 4);
 			sprintf(buf,"%s-[%s]",refine_posword[num-1],refine_posword[10]);
+		}
 		push_str(st->stack,C_STR,buf);
 	} else {
 		push_str(st->stack,C_CONSTSTR,"");
@@ -8979,12 +8981,16 @@ int buildin_breakadoption(struct script_state *st)
 int buildin_getitemname(struct script_state *st)
 {
 	int item_id;
-	struct item_data *i_data;
+	struct item_data *item;
 
-	item_id=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	item_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	i_data = itemdb_exists(item_id);
-	push_str(st->stack,C_CONSTSTR,(i_data? i_data->jname: ""));
+	item = itemdb_exists(item_id);
+	if(item)
+		push_str(st->stack,C_STR,(unsigned char *)aStrdup(item->jname));
+	else
+		push_str(st->stack,C_CONSTSTR,"");
+
 	return 0;
 }
 
@@ -11364,7 +11370,7 @@ int buildin_getiteminfo(struct script_state *st)
 		}
 	}
 	if(str)
-		push_str(st->stack,C_CONSTSTR,str);
+		push_str(st->stack,C_STR,(unsigned char *)aStrdup(str));
 	else
 		push_val(st->stack,C_INT,val);
 	return 0;

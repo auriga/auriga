@@ -913,7 +913,7 @@ static int guildcastle_sql_init(void)
 	sqldbs_query(&mysql_handle, "SELECT "
 		"`castle_id`, `guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`,"
 		"`visibleC`, `visibleG0`, `visibleG1`, `visibleG2`, `visibleG3`, `visibleG4`, `visibleG5`, `visibleG6`, `visibleG7`"
-		" FROM `" GUILD_CASTLE_TABLE
+		" FROM `" GUILD_CASTLE_TABLE "`"
 	);
 
 	sql_res = sqldbs_store_result(&mysql_handle);

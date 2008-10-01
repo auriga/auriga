@@ -539,8 +539,10 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 
 	for(i = 0; str[next] && str[next] != '\t' && str[next] != '\n' && str[next] != '\r'; i++) {
 		set=sscanf(str+next,"%d,%d,%d,%d%n",&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],&len);
-		if(set!=4)
-			return 0;
+		if(set!=4) {
+			// Athena形式も有り得るので成功扱いにする
+			return 1;
+		}
 		n = tmp_int[0];
 		if(n >= 0 && n < MAX_HOTKEYS) {
 			p->st.hotkey[n].type = (char)tmp_int[1];
