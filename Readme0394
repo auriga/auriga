@@ -1,4 +1,16 @@
 ----------------------------------------
+//0550 [2008/10/04] by Rayce
+
+・AthenaProject Rev.288よりmerge、thanks to ico776さん
+	-> guildskill命令でスキルレベルを0に指定した時、スキルが削除されなかったのを修正
+	-> guildskill命令で指定するスキルレベルは加算ではなく、そのままの値を使うよう変更
+	   （int_guild.c, inter.c, clif.c, guild.*, intif.*, script.c）
+
+・0548で、getequipname関数で確保する文字列のサイズが大きすぎたを修正（script.c）
+・intif_guild_alliance() のパケット長を修正（int_guild.c, inter.c, intif.c）
+・一部の計算式の処理を最適化（battle.c）
+
+----------------------------------------
 //0549 [2008/10/03] by Cocoa
 
 ・0539以降、left_cardfix_to_rightがyesになっている時

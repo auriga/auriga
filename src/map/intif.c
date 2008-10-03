@@ -790,7 +790,7 @@ void intif_guild_position(int guild_id, int idx, struct guild_position *p)
 }
 
 // ギルドスキルアップ要求
-int intif_guild_skillup(int guild_id,int skill_num,int account_id,int flag)
+int intif_guild_skillup(int guild_id,int skill_num,int account_id,int level,unsigned char flag)
 {
 	if (inter_fd < 0)
 		return -1;
@@ -799,8 +799,9 @@ int intif_guild_skillup(int guild_id,int skill_num,int account_id,int flag)
 	WFIFOL(inter_fd, 2)=guild_id;
 	WFIFOL(inter_fd, 6)=skill_num;
 	WFIFOL(inter_fd,10)=account_id;
-	WFIFOL(inter_fd,14)=flag;
-	WFIFOSET(inter_fd,18);
+	WFIFOL(inter_fd,14)=level;
+	WFIFOB(inter_fd,18)=flag;
+	WFIFOSET(inter_fd,19);
 
 	return 0;
 }
@@ -816,8 +817,8 @@ int intif_guild_alliance(int guild_id1,int guild_id2,int account_id1,int account
 	WFIFOL(inter_fd, 6)=guild_id2;
 	WFIFOL(inter_fd,10)=account_id1;
 	WFIFOL(inter_fd,14)=account_id2;
-	WFIFOB(inter_fd,18)=flag;
-	WFIFOSET(inter_fd,19);
+	WFIFOL(inter_fd,18)=flag;
+	WFIFOSET(inter_fd,22);
 
 	return 0;
 }

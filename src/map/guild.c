@@ -1477,7 +1477,7 @@ void guild_emblem_changed(int len, int guild_id, int emblem_id, const char *data
  * スキルポイント割り振り
  *------------------------------------------
  */
-void guild_skillup(struct map_session_data *sd, int skill_num, int flag)
+void guild_skillup(struct map_session_data *sd, int skill_num, int level, int flag)
 {
 	struct guild *g;
 	int idx;
@@ -1490,16 +1490,16 @@ void guild_skillup(struct map_session_data *sd, int skill_num, int flag)
 		return;
 
 	idx = skill_num - GUILD_SKILLID;
-	if (idx < 0 || idx >= MAX_GUILDSKILL)
+	if(idx < 0 || idx >= MAX_GUILDSKILL)
 		return;
 
-	if( (g->skill_point > 0 || flag&1) &&
-	    g->skill[idx].id > 0 &&
-	    g->skill[idx].lv < guild_skill_max[idx] )
-	{
+	if(g->skill[idx].id <= 0)
+		return;
+
+	if( level < 0 || ((g->skill_point > 0 || flag&1) && g->skill[idx].lv < guild_skill_max[idx]) ) {
 		// 情報更新
 		// スキルツリーのチェックはint_guild.cで行う
-		intif_guild_skillup(g->guild_id,skill_num,sd->status.account_id,flag);
+		intif_guild_skillup(g->guild_id, skill_num, sd->status.account_id, level, flag);
 	}
 
 	return;

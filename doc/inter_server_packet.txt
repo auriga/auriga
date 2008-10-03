@@ -182,11 +182,11 @@ S 303B <len>.w <guild_id>.l <position>.l <struct guild_position>.?B
 	ギルド役職変更要求
 R 383B <len>.w <guild_id>.l <position>.l <struct guild_position>.?B
 	ギルド役職変更通知
-S 303C <guild_id>.l <skill_num>.l <account_id>.l
+S 303C <guild_id>.l <skill_num>.l <account_id>.l <level>.l <flag>.B
 	ギルドスキル割り振り
 R 383C <guild_id>.l <skill_num>.l <account_id>.l <flag>.l
 	ギルドスキル割り振り(skill_num==0で失敗)
-S 303D <guild_id1>.l <guild_id2>.l <account_id1>.l <account_id2>.l <flag>.B
+S 303D <guild_id1>.l <guild_id2>.l <account_id1>.l <account_id2>.l <flag>.l
 	ギルド同盟/敵対要求
 	flag=0 同盟 / 1 敵対 / 8 同盟解除 / 9 敵対解除
 R 383D <guild_id1>.l <guild_id2>.l <account_id1>.l <account_id2>.l <flag>.B <name1>.24B <name2>.24B

@@ -6061,7 +6061,7 @@ int buildin_getequipname(struct script_state *st)
 		if(i >= 0 && sd->inventory_data[i]) {
 			buf = (char *)aStrdup(sd->inventory_data[i]->jname);
 		} else {
-			buf = (char *)aMalloc(sizeof(refine_posword) * 2 + 4);
+			buf = (char *)aMalloc(sizeof(refine_posword[0]) * 2 + 4);
 			sprintf(buf,"%s-[%s]",refine_posword[num-1],refine_posword[10]);
 		}
 		push_str(st->stack,C_STR,buf);
@@ -6372,8 +6372,10 @@ int buildin_guildskill(struct script_state *st)
 	if(st->end > st->start+4)
 		flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
-	for(i=0; i<level; i++)
-		guild_skillup(sd,id,flag);
+	if(level <= 0)
+		level = -1;
+
+	guild_skillup(sd,id,level,flag);
 
 	return 0;
 }

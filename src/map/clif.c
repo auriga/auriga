@@ -11625,7 +11625,7 @@ static void clif_parse_SkillUp(int fd,struct map_session_data *sd, int cmd)
 	int skill_num = RFIFOW(fd,GETPACKETPOS(cmd,0));
 
 	if( skill_num >= GUILD_SKILLID )	// ギルドスキル
-		guild_skillup(sd,skill_num,0);
+		guild_skillup(sd,skill_num,0,0);
 	else if( skill_num >= HOM_SKILLID )	// ホムンクルススキル
 		homun_skillup(sd,skill_num);
 	else

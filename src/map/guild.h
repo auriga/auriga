@@ -71,7 +71,7 @@ void guild_explusion(struct map_session_data *sd, int guild_id,
 	int account_id, int char_id, const char *mes);
 void guild_member_leaved(int guild_id, int account_id, int char_id, unsigned char flag,
 	const char *name, const char *mes);
-void guild_skillup(struct map_session_data *sd, int skill_num, int flag);
+void guild_skillup(struct map_session_data *sd, int skill_num, int level, int flag);
 void guild_reqalliance(struct map_session_data *sd, int account_id);
 void guild_reply_reqalliance(struct map_session_data *sd, int account_id, int flag);
 int guild_alliance(int guild_id1,int guild_id2,int account_id1,int account_id2);

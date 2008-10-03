@@ -2227,29 +2227,52 @@ int mapif_parse_GuildPosition(int fd,int guild_id,int idx,struct guild_position 
 }
 
 // ギルドスキルアップ要求
-int mapif_parse_GuildSkillUp(int fd,int guild_id,int skill_num,int account_id,int flag)
+int mapif_parse_GuildSkillUp(int fd,int guild_id,int skill_num,int account_id,int level,unsigned char flag)
 {
 	const struct guild *g1 = guild_load_num(guild_id);
 	struct guild g2;
 	int idx = skill_num - GUILD_SKILLID;
+	int succeed = 0;
 
 	if (g1 == NULL || idx < 0 || idx >= MAX_GUILDSKILL)
 		return 0;
 
 	memcpy(&g2,g1,sizeof(struct guild));
 
-	if( (g2.skill_point > 0 || flag&1) &&
-	    g2.skill[idx].id > 0 &&
-	    guild_check_skill_require(&g2,skill_num) &&
-	    g2.skill[idx].lv < guild_skill_tree[idx].max )
-	{
-		g2.skill[idx].lv++;
-		if(!(flag&1)) g2.skill_point--;
-		if(guild_calcinfo(&g2)==0)
-			mapif_guild_info(-1,&g2);
+	if(g2.skill[idx].id <= 0)
+		return 0;
+
+	if(level < 0) {
+		if(!(flag&1)) {
+			g2.skill_point += g2.skill[idx].lv;
+		}
+		g2.skill[idx].lv = 0;
+		succeed = 1;
+	} else {
+		if((g2.skill_point > 0 || flag&1) && guild_check_skill_require(&g2, skill_num)) {
+			if(level == 0)
+				level = g2.skill[idx].lv + 1;
+			if(level > guild_skill_tree[idx].max)
+				level = guild_skill_tree[idx].max;
+
+			if(!(flag&1)) {
+				g2.skill_point -= level - g2.skill[idx].lv;
+			}
+			g2.skill[idx].lv = level;
+			succeed = 1;
+		}
+	}
+
+	if(succeed) {
+		if(guild_calcinfo(&g2) == 0)
+			mapif_guild_info(-1, &g2);
 		mapif_guild_skillupack(guild_id,skill_num,account_id);
 		guild_save(&g2);
-		printf("int_guild: %d skill %d up\n",guild_id,skill_num);
+
+		if(level >= 0)
+			printf("int_guild: %d skill %d up %d\n", guild_id, skill_num, level);
+		else
+			printf("int_guild: %d skill %d lost\n", guild_id, skill_num);
 	}
 	return 0;
 }
@@ -2450,8 +2473,8 @@ int inter_guild_parse_frommap(int fd)
 	case 0x3039: mapif_parse_GuildBasicInfoChange(fd,RFIFOL(fd,4),RFIFOW(fd,8),RFIFOP(fd,10),RFIFOW(fd,2)-10); break;
 	case 0x303A: mapif_parse_GuildMemberInfoChange(fd,RFIFOL(fd,4),RFIFOL(fd,8),RFIFOL(fd,12),RFIFOW(fd,16),RFIFOP(fd,18),RFIFOW(fd,2)-18); break;
 	case 0x303B: mapif_parse_GuildPosition(fd,RFIFOL(fd,4),RFIFOL(fd,8),(struct guild_position *)RFIFOP(fd,12)); break;
-	case 0x303C: mapif_parse_GuildSkillUp(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14)); break;
-	case 0x303D: mapif_parse_GuildAlliance(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOB(fd,18)); break;
+	case 0x303C: mapif_parse_GuildSkillUp(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOB(fd,18)); break;
+	case 0x303D: mapif_parse_GuildAlliance(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOL(fd,18)); break;
 	case 0x303E: mapif_parse_GuildNotice(fd,RFIFOL(fd,2),RFIFOP(fd,6),RFIFOP(fd,66)); break;
 	case 0x303F: mapif_parse_GuildEmblem(fd,RFIFOW(fd,2)-12,RFIFOL(fd,4),RFIFOL(fd,8),RFIFOP(fd,12)); break;
 	case 0x3040: mapif_parse_GuildCastleDataLoad(fd,RFIFOW(fd,2),RFIFOB(fd,4)); break;

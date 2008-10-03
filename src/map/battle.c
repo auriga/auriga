@@ -2236,14 +2236,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					}
 					if(target_count >= battle_config.vit_penalty_count) {
 						if(battle_config.vit_penalty_type == 1) {
-							t_def1 = (t_def1 * (100 - (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num))/100;
-							t_def2 = (t_def2 * (100 - (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num))/100;
-							t_vit  = (t_vit  * (100 - (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num))/100;
-						}
-						else if(battle_config.vit_penalty_type == 2) {
-							t_def1 -= (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num;
-							t_def2 -= (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num;
-							t_vit  -= (target_count - (battle_config.vit_penalty_count - 1))*battle_config.vit_penalty_num;
+							int rate = 100 - (target_count - (battle_config.vit_penalty_count - 1)) * battle_config.vit_penalty_num;
+							t_def1 = t_def1 * rate / 100;
+							t_def2 = t_def2 * rate / 100;
+							t_vit  = t_vit  * rate / 100;
+						} else if(battle_config.vit_penalty_type == 2) {
+							int val = (target_count - (battle_config.vit_penalty_count - 1)) * battle_config.vit_penalty_num;
+							t_def1 -= val;
+							t_def2 -= val;
+							t_vit  -= val;
 						}
 						if(t_def1 < 0) t_def1 = 0;
 						if(t_def2 < 1) t_def2 = 1;
