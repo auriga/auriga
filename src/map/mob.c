@@ -51,8 +51,6 @@
 #include "ranking.h"
 #include "merc.h"
 
-#define MIN_MOBTHINKTIME 100
-
 #define MOB_LAZYMOVEPERC     50		// 手抜きモードMOBの移動確率（千分率）
 #define MOB_LAZYWARPPERC     20		// 手抜きモードMOBのワープ確率（千分率）
 #define MOB_LAZYSKILLUSEPERC  2		// 手抜きモードMOBのスキル使用確率（千分率）

@@ -6364,7 +6364,7 @@ int buildin_skill(struct script_state *st)
  */
 int buildin_guildskill(struct script_state *st)
 {
-	int i,id,level,flag=1;
+	int id,level,flag=1;
 	struct map_session_data *sd = script_rid2sd(st);
 
 	id    = conv_num(st,& (st->stack->stack_data[st->start+2]));

@@ -411,7 +411,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		}
 		else if(md && md->target_id > 0) {
 			// MobはAIを実行
-			md->last_thinktime = 0;
+			md->last_thinktime = tick + MIN_MOBTHINKTIME;
 			mob_ai_sub_hard(md, tick);
 		}
 

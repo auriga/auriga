@@ -27,6 +27,8 @@
 #define MAX_RANDOMMONSTER 3
 #define ITEM_DROP_COUNT 10
 
+#define MIN_MOBTHINKTIME 100
+
 struct mob_skill {
 	short state;
 	short skill_id,skill_lv;
