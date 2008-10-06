@@ -817,12 +817,14 @@ struct merc_data {
 	int hp_sub,sp_sub;
 	int max_hp,max_sp;
 	int str,agi,vit,int_,dex,luk;
-	short atk,matk,def,mdef;
-	short hit,critical,flee,aspd;
+	short atk1,atk2;
+	short matk1,matk2;
+	short def,mdef;
+	short hit,critical,flee;
+	short adelay,amotion,dmotion;
 	short attackrange;
 	int target_id;
 	unsigned int skillstatictimer[MAX_MERCSKILL];
-	short attackable;
 	short view_class;
 	int nhealhp,nhealsp;
 	int hprecov_rate,sprecov_rate;

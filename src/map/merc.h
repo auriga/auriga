@@ -31,24 +31,23 @@
 
 struct merc_db {
 	short class_;
-	unsigned short base_level;
 	char name[24],jname[24];
-	int hp,sp,hp_kmax,hp_kmin,sp_kmax,sp_kmin;
+	unsigned short lv;
+	int max_hp,max_sp;
+	int atk1,atk2;
+	int def,mdef;
 	int str,agi,vit,int_,dex,luk;
-	int base;
-	int str_k,agi_k,vit_k,int_k,dex_k,luk_k;
-	short aspd_k;
-	short view_class,size,race;
+	short size,race;
 	int element;
 	int range;
-	unsigned int limit;
+	int speed,adelay,amotion,dmotion;
 	struct script_code *script;
 };
 extern struct merc_db merc_db[MAX_MERC_DB];
 
 int merc_get_skilltree_max(int class_,int skillid);
 
-int merc_callmerc(struct map_session_data *sd, int class_);
+int merc_callmerc(struct map_session_data *sd, int class_, unsigned int limit);
 int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int flag);
 int merc_delete_data(struct map_session_data *sd);
 int merc_menu(struct map_session_data *sd, int menunum);
@@ -57,7 +56,6 @@ int merc_save_data(struct map_session_data *sd);
 
 int merc_calc_status(struct merc_data *mcd);
 int merc_checkskill(struct merc_data *mcd,int skill_id);
-int merc_calc_skilltree(struct merc_data *mcd);
 
 int merc_gainexp(struct merc_data *mcd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp);
 int merc_damage(struct block_list *src,struct merc_data *mcd,int damage);

@@ -269,4 +269,4 @@ changemaptype
 @autoloot      ---- アイテムの自動取得機能をOn/Offする
 @hotkeyset 値  ---- ホットキーセットを切り替える
 
-@callmerc 値   ---- 傭兵を召喚する
+@callmerc 値 [時間(秒)]   ---- 傭兵を召喚する

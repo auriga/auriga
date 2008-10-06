@@ -10002,14 +10002,14 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
 	fd = sd->fd;
 	WFIFOW(fd,0)  = 0x29b;
 	WFIFOL(fd,2)  = mcd->bl.id;
-	WFIFOW(fd,6)  = mcd->atk;
-	WFIFOW(fd,8)  = mcd->matk;
+	WFIFOW(fd,6)  = rand()%(mcd->atk2-mcd->atk1+1)+mcd->atk1;
+	WFIFOW(fd,8)  = mcd->matk1;
 	WFIFOW(fd,10) = mcd->hit;
 	WFIFOW(fd,12) = mcd->critical;
 	WFIFOW(fd,14) = mcd->def;
 	WFIFOW(fd,16) = mcd->mdef;
 	WFIFOW(fd,18) = mcd->flee;
-	WFIFOW(fd,20) = (flag)? 0: status_get_amotion(&mcd->bl) + 200;
+	WFIFOW(fd,20) = mcd->amotion;
 	memcpy(WFIFOP(fd,22), mcd->status.name, 24);
 	WFIFOW(fd,46) = mcd->status.base_level;
 #if PACKETVER < 12
@@ -10021,7 +10021,7 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
 	WFIFOW(fd,60) = 0;	// ネームバリュー
 	WFIFOL(fd,62) = 0;	// 召喚回数
 	WFIFOL(fd,66) = mcd->status.kill_count;	// キルカウント
-	WFIFOW(fd,70) = mcd->attackable;	// 攻撃可否フラグ 0:不可/1:許可
+	WFIFOW(fd,70) = mcd->attackrange;	// 攻撃範囲
 #else
 	WFIFOL(fd,48) = mcd->status.hp;
 	WFIFOL(fd,52) = mcd->max_hp;
@@ -10031,7 +10031,7 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
 	WFIFOW(fd,68) = 0;	// ネームバリュー
 	WFIFOL(fd,70) = 0;	// 召喚回数
 	WFIFOL(fd,74) = mcd->status.kill_count;	// キルカウント
-	WFIFOW(fd,78) = mcd->attackable;	// 攻撃可否フラグ 0:不可/1:許可
+	WFIFOW(fd,78) = mcd->attackrange;	// 攻撃範囲
 #endif
 	WFIFOSET(fd,packet_db[0x29b].len);
 

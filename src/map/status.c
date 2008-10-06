@@ -2922,7 +2922,7 @@ int status_get_atk(struct block_list *bl)
 	} else if(bl->type == BL_HOM && ((struct homun_data *)bl)) {
 		atk = ((struct homun_data *)bl)->atk-((struct homun_data *)bl)->atk/10;
 	} else if(bl->type == BL_MERC && ((struct merc_data *)bl)) {
-		atk = ((struct merc_data *)bl)->atk-((struct merc_data *)bl)->atk/10;
+		atk = ((struct merc_data *)bl)->atk1;
 	} else if(bl->type == BL_MOB) {
 		struct mob_data *md = (struct mob_data *)bl;
 		if(md) {
@@ -3000,7 +3000,7 @@ int status_get_atk2(struct block_list *bl)
 	} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		atk2 = ((struct homun_data *)bl)->atk;
 	} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
-		atk2 = ((struct merc_data *)bl)->atk;
+		atk2 = ((struct merc_data *)bl)->atk2;
 	} else {
 		struct status_change *sc = status_get_sc(bl);
 
@@ -3081,7 +3081,7 @@ int status_get_matk1(struct block_list *bl)
 	} else if (bl->type == BL_HOM) {
 		matk1 = ((struct homun_data *)bl)->matk-((struct homun_data *)bl)->matk/10;
 	} else if (bl->type == BL_MERC) {
-		matk1 = ((struct merc_data *)bl)->matk-((struct merc_data *)bl)->matk/10;
+		matk1 = ((struct merc_data *)bl)->matk1;
 	} else if (bl->type != BL_PET && bl->type != BL_MOB) {
 		matk1 = 0;
 	} else {
@@ -3130,7 +3130,7 @@ int status_get_matk2(struct block_list *bl)
 	} else if (bl->type == BL_HOM) {
 		matk2 = ((struct homun_data *)bl)->matk;
 	} else if (bl->type == BL_MERC) {
-		matk2 = ((struct merc_data *)bl)->matk;
+		matk2 = ((struct merc_data *)bl)->matk2;
 	} else if (bl->type != BL_PET && bl->type != BL_MOB) {
 		matk2 = 0;
 	} else {
@@ -3185,6 +3185,8 @@ int status_get_def(struct block_list *bl)
 		def = mob_db[((struct mob_data *)bl)->class_].def;
 	} else if(bl->type == BL_PET && (struct pet_data *)bl) {
 		def = mob_db[((struct pet_data *)bl)->class_].def;
+	} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
+		def = ((struct merc_data *)bl)->def;
 	} else {
 		def = 0;
 	}
@@ -3314,7 +3316,7 @@ int status_get_def2(struct block_list *bl)
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
 		def2 = ((struct homun_data *)bl)->def;
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
-		def2 = ((struct merc_data *)bl)->def;
+		def2 = ((struct merc_data *)bl)->vit;
 
 	if(sc) {
 		if(sc->data[SC_ANGELUS].timer != -1 && bl->type != BL_PC)
@@ -3370,7 +3372,7 @@ int status_get_mdef2(struct block_list *bl)
 	else if (bl->type == BL_HOM && (struct homun_data *)bl)
 		mdef2 = ((struct homun_data *)bl)->mdef;
 	else if (bl->type == BL_MERC && (struct merc_data *)bl)
-		mdef2 = ((struct merc_data *)bl)->mdef;
+		mdef2 = ((struct merc_data *)bl)->int_ + (((struct merc_data *)bl)->vit>>1);
 
 	if(sc) {
 		// エスカ
@@ -3506,7 +3508,7 @@ int status_get_adelay(struct block_list *bl)
 		} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 			adelay = (((struct homun_data *)bl)->aspd<<1);
 		} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
-			adelay = (((struct merc_data *)bl)->aspd<<1);
+			adelay = ((struct merc_data *)bl)->adelay;
 		}
 
 		if(sc) {
@@ -3609,7 +3611,7 @@ int status_get_amotion(struct block_list *bl)
 		} else if(bl->type == BL_HOM && (struct homun_data *)bl && ((struct homun_data *)bl)->msd) {
 			amotion = ((struct homun_data *)bl)->aspd;
 		} else if(bl->type == BL_MERC && (struct merc_data *)bl && ((struct merc_data *)bl)->msd) {
-			amotion = ((struct merc_data *)bl)->aspd;
+			amotion = ((struct merc_data *)bl)->amotion;
 		}
 
 		if(sc) {
@@ -3702,9 +3704,7 @@ int status_get_dmotion(struct block_list *bl)
 			dmotion = 400;
 	}
 	else if(bl->type == BL_MERC && (struct merc_data *)bl && ((struct merc_data *)bl)->msd) {
-		dmotion = 800 - ((struct merc_data *)bl)->status.agi*4;
-		if(dmotion < 400)
-			dmotion = 400;
+			dmotion = ((struct merc_data *)bl)->dmotion;
 	}
 	else if(bl->type == BL_PET && (struct pet_data *)bl) {
 		dmotion = mob_db[((struct pet_data *)bl)->class_].dmotion;

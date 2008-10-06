@@ -72,6 +72,7 @@
 #include "itemdb.h"
 #include "unit.h"
 #include "homun.h"
+#include "merc.h"
 
 #define SCRIPT_BLOCK_SIZE 512
 
@@ -3966,6 +3967,7 @@ int buildin_getexp(struct script_state *st);
 int buildin_getiteminfo(struct script_state *st);
 int buildin_getonlinepartymember(struct script_state *st);
 int buildin_getonlineguildmember(struct script_state *st);
+int buildin_makemerc(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4221,6 +4223,7 @@ struct script_function buildin_func[] = {
 	{buildin_getiteminfo,"getiteminfo","si"},
 	{buildin_getonlinepartymember,"getonlinepartymember","*"},
 	{buildin_getonlineguildmember,"getonlineguildmember","*"},
+	{buildin_makemerc,"makemerc","ii"},
 	{NULL,NULL,NULL}
 };
 
@@ -11422,6 +11425,26 @@ int buildin_getonlineguildmember(struct script_state *st)
 			g = guild_search(sd->status.guild_id);
 	}
 	push_val(st->stack,C_INT,g!=NULL? g->connect_member: 0);
+
+	return 0;
+}
+
+/*==========================================
+ * 傭兵作成
+ *------------------------------------------
+ */
+int buildin_makemerc(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int merc_id;
+	unsigned int limit;
+
+	nullpo_retr(0, sd);
+
+	merc_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	limit  = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	merc_callmerc(sd,merc_id,limit);
 
 	return 0;
 }

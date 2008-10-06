@@ -52,11 +52,6 @@ struct merc_db merc_db[MAX_MERC_DB];
 static struct merc_skill_tree_entry {
 	int id;
 	int max;
-	struct {
-		short id,lv;
-	} need[5];
-	unsigned short base_level;
-	int intimate;
 } merc_skill_tree[MAX_MERC_DB][MAX_MERCSKILL_TREE];
 
 /*==========================================
@@ -205,18 +200,22 @@ int merc_employ_timer_delete(struct merc_data *mcd)
  */
 int merc_calc_status(struct merc_data *mcd)
 {
-	int dstr,blv,aspd_k;
+	int class_;
 	int aspd_rate=100,speed_rate=100,atk_rate=100,matk_rate=100,hp_rate=100,sp_rate=100;
 	int flee_rate=100,def_rate=100,mdef_rate=100,critical_rate=100,hit_rate=100;
 
 	nullpo_retr(1, mcd);
 
-	mcd->atk      = 0;
-	mcd->matk     = 0;
+	class_  = mcd->status.class_-MERC_ID;
+
+	mcd->atk1     = merc_db[class_].atk1;
+	mcd->atk2     = merc_db[class_].atk2;
+	mcd->matk1    = 0;
+	mcd->matk2    = 0;
 	mcd->hit      = 0;
 	mcd->flee     = 0;
-	mcd->def      = 0;
-	mcd->mdef     = 0;
+	mcd->def      = merc_db[class_].def;
+	mcd->mdef     = merc_db[class_].mdef;
 	mcd->critical = 0;
 	mcd->max_hp   = mcd->status.max_hp;
 	mcd->max_sp   = mcd->status.max_sp;
@@ -227,6 +226,7 @@ int merc_calc_status(struct merc_data *mcd)
 	mcd->int_     = mcd->status.int_;
 	mcd->luk      = mcd->status.luk;
 	mcd->speed    = DEFAULT_WALK_SPEED;
+	mcd->amotion = merc_db[class_].amotion;
 	mcd->nhealhp  = 0;
 	mcd->nhealsp  = 0;
 	mcd->hprecov_rate = 100;
@@ -304,7 +304,7 @@ int merc_calc_status(struct merc_data *mcd)
 		}
 
 		if(mcd->sc.data[SC_DEFENDER].timer != -1) {	// ディフェンダー
-			mcd->aspd += (25 - mcd->sc.data[SC_DEFENDER].val1*5);
+			mcd->amotion += (25 - mcd->sc.data[SC_DEFENDER].val1*5);
 			mcd->speed = (mcd->speed * (155 - mcd->sc.data[SC_DEFENDER].val1*5)) / 100;
 		}
 
@@ -316,25 +316,23 @@ int merc_calc_status(struct merc_data *mcd)
 			aspd_rate -= 30;
 	}
 
-	dstr   = mcd->str / 10;
-	blv    = mcd->status.base_level;
-	aspd_k = merc_db[mcd->status.class_-MERC_ID].aspd_k;
 
-	mcd->atk      += mcd->str * 2 + blv + dstr * dstr;
-	mcd->matk     += mcd->int_+(mcd->int_/ 5) * (mcd->int_/ 5);
-	mcd->hit      += mcd->dex + blv;
-	mcd->flee     += mcd->agi + blv;
-	mcd->def      += mcd->vit + mcd->vit / 5 + blv / 10;
-	mcd->mdef     += mcd->int_/ 5 + blv / 10;
-	mcd->critical += mcd->luk / 3 + 1;
 
-	mcd->aspd = aspd_k - (aspd_k * mcd->agi / 250 + aspd_k * mcd->dex / 1000) - 200;
+	mcd->matk1    += mcd->int_+(mcd->int_/ 5) * (mcd->int_/ 5);
+	mcd->matk2    += mcd->int_+(mcd->int_/ 7) * (mcd->int_/ 7);
+	mcd->hit      += mcd->dex + mcd->status.base_level;
+	mcd->flee     += mcd->agi + mcd->status.base_level;
+	mcd->critical += mcd->luk * 3 + 10;
 
 	// 補正
-	if(atk_rate != 100)
-		mcd->atk = mcd->atk*atk_rate/100;
-	if(matk_rate != 100)
-		mcd->matk = mcd->matk*matk_rate/100;
+	if(atk_rate != 100) {
+		mcd->atk1 = mcd->atk1*atk_rate/100;
+		mcd->atk2 = mcd->atk2*atk_rate/100;
+	}
+	if(matk_rate != 100) {
+		mcd->matk1 = mcd->matk1*matk_rate/100;
+		mcd->matk2 = mcd->matk2*matk_rate/100;
+	}
 	if(hit_rate != 100)
 		mcd->hit = mcd->hit*hit_rate/100;
 	if(flee_rate != 100)
@@ -350,7 +348,7 @@ int merc_calc_status(struct merc_data *mcd)
 	if(sp_rate != 100)
 		mcd->max_sp = mcd->max_sp*sp_rate/100;
 	if(aspd_rate != 100)
-		mcd->aspd = mcd->aspd*aspd_rate/100;
+		mcd->amotion = mcd->amotion*aspd_rate/100;
 	if(speed_rate != 100)
 		mcd->speed = mcd->speed*speed_rate/100;
 
@@ -360,17 +358,12 @@ int merc_calc_status(struct merc_data *mcd)
 		mcd->max_sp = 1;
 
 	// 自然回復
-	mcd->nhealhp = mcd->max_hp/100 + mcd->vit/5 + 2;
-	mcd->nhealsp = (mcd->int_/6)+(mcd->max_sp/100)+1;
-	if(mcd->int_ >= 120)
-		mcd->nhealsp += ((mcd->int_-120)>>1) + 4;
+	mcd->nhealhp = (int)(((double)mcd->max_hp * mcd->vit / 10000 + 1) * 6);
+	mcd->nhealsp = (int)(((double)mcd->max_sp * (mcd->int_ + 10) / 750) + 1);
 	if(mcd->hprecov_rate != 100)
 		mcd->nhealhp = mcd->nhealhp*mcd->hprecov_rate/100;
 	if(mcd->sprecov_rate != 100)
 		mcd->nhealsp = mcd->nhealsp*mcd->sprecov_rate/100;
-
-	// スキルツリーの再計算不要
-	//merc_calc_skilltree(mcd);
 
 	if( mcd->sc.data[SC_AUTOBERSERK].timer != -1 &&
 	    mcd->status.hp < mcd->status.max_hp>>2 &&
@@ -388,7 +381,7 @@ int merc_calc_status(struct merc_data *mcd)
  * 傭兵召喚
  *------------------------------------------
  */
-int merc_callmerc(struct map_session_data *sd,int class_)
+int merc_callmerc(struct map_session_data *sd,int class_, unsigned int limit)
 {
 	struct mmo_mercstatus st;
 	int i, id;
@@ -398,6 +391,8 @@ int merc_callmerc(struct map_session_data *sd,int class_)
 	if(sd->status.merc_id > 0 || sd->mcd)	// 既に召喚中
 		return 0;
 	if(sd->state.merc_creating)
+		return 0;
+	if(limit <= 0)
 		return 0;
 
 	class_ -= MERC_ID;
@@ -410,20 +405,18 @@ int merc_callmerc(struct map_session_data *sd,int class_)
 	st.class_     = class_ + MERC_ID;
 	st.account_id = sd->status.account_id;
 	st.char_id    = sd->status.char_id;
-	st.base_level = merc_db[class_].base_level;
-	st.max_hp     = 1;
-	st.max_sp     = 0;
+	st.base_level = merc_db[class_].lv;
 
 	// 初期ステータスをDBから埋め込み
-	st.max_hp = merc_db[class_].hp;
-	st.max_sp = merc_db[class_].sp;
+	st.max_hp = merc_db[class_].max_hp;
+	st.max_sp = merc_db[class_].max_sp;
 	st.str    = merc_db[class_].str;
 	st.agi    = merc_db[class_].agi;
 	st.vit    = merc_db[class_].vit;
 	st.int_   = merc_db[class_].int_;
 	st.dex    = merc_db[class_].dex;
 	st.luk    = merc_db[class_].luk;
-	st.limit  = merc_db[class_].limit + (unsigned int)time(NULL);
+	st.limit  = limit + (unsigned int)time(NULL);
 
 	st.hp = st.max_hp;
 	st.sp = st.max_sp;
@@ -473,9 +466,8 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->speed       = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
 	mcd->bl.type     = BL_MERC;
 	mcd->target_id   = 0;
-	mcd->attackable  = 1;	// これを0にすると、クライアントから攻撃パケットを出さなくなる
 	mcd->msd         = sd;
-	mcd->view_class  = merc_db[class_].view_class;
+	mcd->view_class  = merc_db[class_].class_;
 	mcd->attackrange = merc_db[class_].range;
 
 	for(i=0; i<MAX_MERCSKILL; i++)
@@ -649,53 +641,6 @@ int merc_checkskill(struct merc_data *mcd,int skill_id)
 		return 0;
 	if(mcd->status.skill[skill_id].id == skill_id + MERC_SKILLID)
 		return mcd->status.skill[skill_id].lv;
-
-	return 0;
-}
-
-/*==========================================
- * 覚えられるスキルの計算
- *------------------------------------------
- */
-int merc_calc_skilltree(struct merc_data *mcd)
-{
-	int i, id, c, flag;
-
-	nullpo_retr(0, mcd);
-
-	c = mcd->status.class_ - MERC_ID;
-
-	for(i=0; i<MAX_MERCSKILL; i++) {
-		mcd->status.skill[i].id = 0;
-		if(mcd->status.skill[i].flag) {		// cardスキルなら
-			mcd->status.skill[i].lv   = (mcd->status.skill[i].flag == 1)? 0: mcd->status.skill[i].flag-2;	// 本当のlvに
-			mcd->status.skill[i].flag = 0;	// flagは0にしておく
-		}
-	}
-
-	do {
-		flag = 0;
-		for(i=0; (id = merc_skill_tree[c][i].id) > 0; i++) {
-			id -= MERC_SKILLID;
-			if(mcd->status.skill[id].id > 0)
-				continue;
-			if(!battle_config.skillfree) {
-				int j, fail = 0;
-				for(j=0; j<5 && merc_skill_tree[c][i].need[j].id > 0; j++) {
-					if(merc_checkskill(mcd,merc_skill_tree[c][i].need[j].id) < merc_skill_tree[c][i].need[j].lv) {
-						fail = 1;
-						break;
-					}
-				}
-				if(fail)
-					continue;
-				if(mcd->status.base_level < merc_skill_tree[c][i].base_level)
-					continue;
-			}
-			mcd->status.skill[id].id = id + MERC_SKILLID;
-			flag = 1;
-		}
-	} while(flag);
 
 	return 0;
 }
@@ -937,7 +882,7 @@ int merc_save_data(struct map_session_data *sd)
  * 傭兵初期ステータスデータ読み込み
  *------------------------------------------
  */
-static int read_mercdb(void)
+static int read_merc_db(void)
 {
 	FILE *fp;
 	char line[4096];
@@ -989,37 +934,31 @@ static int read_mercdb(void)
 			if(j < 0 || j >= MAX_MERC_DB)
 				continue;
 
-			merc_db[j].class_     = nameid;
-			merc_db[j].view_class = atoi(str[1]);
-			strncpy(merc_db[j].name,str[2],24);
-			strncpy(merc_db[j].jname,str[3],24);
-			merc_db[j].base_level = atoi(str[4]);
-			merc_db[j].hp         = atoi(str[5]);
-			merc_db[j].sp         = atoi(str[6]);
-			merc_db[j].str        = atoi(str[7]);
-			merc_db[j].agi        = atoi(str[8]);
-			merc_db[j].vit        = atoi(str[9]);
-			merc_db[j].int_       = atoi(str[10]);
-			merc_db[j].dex        = atoi(str[11]);
-			merc_db[j].luk        = atoi(str[12]);
+			merc_db[j].class_  = nameid;
+			strncpy(merc_db[j].name,str[1],24);
+			strncpy(merc_db[j].jname,str[2],24);
+			merc_db[j].lv = atoi(str[3]);
+			merc_db[j].max_hp  = atoi(str[4]);
+			merc_db[j].max_sp  = atoi(str[5]);
+			merc_db[j].range   = atoi(str[6]);
+			merc_db[j].atk1    = atoi(str[7]);
+			merc_db[j].atk2    = atoi(str[8]);
+			merc_db[j].def     = atoi(str[9]);
+			merc_db[j].mdef    = atoi(str[10]);
+			merc_db[j].str     = atoi(str[11]);
+			merc_db[j].agi     = atoi(str[12]);
+			merc_db[j].vit     = atoi(str[13]);
+			merc_db[j].int_    = atoi(str[14]);
+			merc_db[j].dex     = atoi(str[15]);
+			merc_db[j].luk     = atoi(str[16]);
 
-			merc_db[j].base       = atoi(str[13]);
-			merc_db[j].hp_kmax    = atoi(str[14]);
-			merc_db[j].hp_kmin    = atoi(str[15]);
-			merc_db[j].sp_kmax    = atoi(str[16]);
-			merc_db[j].sp_kmin    = atoi(str[17]);
-			merc_db[j].str_k      = atoi(str[18]);
-			merc_db[j].agi_k      = atoi(str[19]);
-			merc_db[j].vit_k      = atoi(str[20]);
-			merc_db[j].int_k      = atoi(str[21]);
-			merc_db[j].dex_k      = atoi(str[22]);
-			merc_db[j].luk_k      = atoi(str[23]);
-			merc_db[j].aspd_k     = atoi(str[24]);
-			merc_db[j].size       = atoi(str[25]);
-			merc_db[j].race       = atoi(str[26]);
-			merc_db[j].element    = atoi(str[27]);
-			merc_db[j].range      = atoi(str[28]);
-			merc_db[j].limit      = (unsigned int)atoi(str[29]);
+			merc_db[j].size    = atoi(str[17]);
+			merc_db[j].race    = atoi(str[18]);
+			merc_db[j].element = atoi(str[19]);
+			merc_db[j].speed   = atoi(str[20]);
+			merc_db[j].adelay  = atoi(str[21]);
+			merc_db[j].amotion = atoi(str[22]);
+			merc_db[j].dmotion = atoi(str[23]);
 
 			// force \0 terminal
 			merc_db[j].name[23]  = '\0';
@@ -1042,13 +981,12 @@ static int read_mercdb(void)
 }
 
 /*==========================================
- * 設定ファイル読み込む
- * merc_skill_tree.txt スキルツリー
+ * 傭兵スキルデータ読み込み
  *------------------------------------------
  */
-static int merc_readdb(void)
+static int read_merc_skilldb(void)
 {
-	int i,j,k,class_=0;
+	int i,j,class_=0;
 	FILE *fp;
 	char line[1024],*p;
 
@@ -1061,19 +999,19 @@ static int merc_readdb(void)
 	}
 	while(fgets(line,1020,fp)){
 		int skillid;
-		char *split[15];
+		char *split[3];
 		struct merc_skill_tree_entry *st;
 
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
-		for(j=0,p=line;j<15 && p;j++){
+		for(j=0,p=line;j<3 && p;j++){
 			split[j]=p;
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		if(j < 15)
+		if(j < 3)
 			continue;
 		class_ = atoi(split[0]);
 		i = class_ - MERC_ID;
@@ -1089,7 +1027,7 @@ static int merc_readdb(void)
 
 		if(j >= MAX_MERCSKILL_TREE - 1) {
 			// 末尾はアンカーとして0にしておく必要がある
-			printf("merc_readdb: skill (%d) is over max tree %d!!\n", skillid, MAX_MERCSKILL_TREE);
+			printf("read_merc_skilldb: skill (%d) is over max tree %d!!\n", skillid, MAX_MERCSKILL_TREE);
 			continue;
 		}
 		if(j > 0 && skillid < st[j-1].id) {
@@ -1106,13 +1044,6 @@ static int merc_readdb(void)
 
 		if(st[j].max > skill_get_max(skillid))
 			st[j].max = skill_get_max(skillid);
-
-		for(k=0; k<5; k++) {
-			st[j].need[k].id = atoi(split[k*2+3]);
-			st[j].need[k].lv = atoi(split[k*2+4]);
-		}
-		st[j].base_level = atoi(split[13]);
-		st[j].intimate   = atoi(split[14]);
 	}
 	fclose(fp);
 	printf("read db/merc_skill_tree.txt done\n");
@@ -1126,8 +1057,8 @@ static int merc_readdb(void)
  */
 void merc_reload(void)
 {
-	read_mercdb();
-	merc_readdb();
+	read_merc_db();
+	read_merc_skilldb();
 }
 
 /*==========================================
@@ -1136,8 +1067,8 @@ void merc_reload(void)
  */
 int do_init_merc(void)
 {
-	read_mercdb();
-	merc_readdb();
+	read_merc_db();
+	read_merc_skilldb();
 
 	add_timer_func_list(merc_natural_heal_hp);
 	add_timer_func_list(merc_natural_heal_sp);

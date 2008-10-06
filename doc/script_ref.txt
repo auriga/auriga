@@ -2062,6 +2062,14 @@ AurigaNPCScript
 			埋め込み変数であるBASEEXPやJOBEXPを直接操作するのとは異なり、戦闘教範による補正を受けたり、
 			ギルドへの上納などが自動的に行われます。
 
+		makemerc命令
+			makemerc <merc_id>,<time>;
+
+			merc_id		傭兵ID
+			time		召喚時間（秒）
+
+			<merc_id>で指定した傭兵を<time>秒の間召喚します。
+
 	＊関数
 		rand関数
 			rand(<n1>[,<n2>])
