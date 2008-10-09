@@ -90,7 +90,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bHPGainValue,n				敵を倒したとき、HPをn回復
 	bonus bSPGainValue,n				敵を倒したとき、SPをn回復
 	bonus2 bItemHealRate,n,x;			アイテム使用時nグループの回復効果+x%
-					1:ポーション 2:ハーブ 3:飴 4:ジュース 5:にく 6:さしみ　(item_group_db.txt参照)
+					1:ポーション 2:ハーブ 3:飴 4:ジュース 5:にく 6:さしみ 7:アイスクリーム　(item_group_db.txt参照)
 	bonus2 bSPVanish,n,x;				物理攻撃時n%の確率で敵の現SPをx%消失させる (nとxは加算)
 	bonus2 bRaise,n,x;					死亡時n%の確率でMaxHPのx%で蘇生(nは万分率)
 	bonus3 bRaise,n,x,y;				死亡時n%の確率でMaxHP/SPのx/y%で蘇生(nは万分率)
@@ -269,8 +269,8 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus2 bAddEff,e,n;					n%の確率で攻撃対象に状態異常e付与(nは万分率)
 	bonus2 bAddRevEff,e,n;				n%の確率で加害対象に状態異常e付与(nは万分率)
 	bonus2 bAddEff2,e,n;				n%の確率で自分に状態異常e付与(nは万分率)
-	bonus2 bAddEffShort,e,n;			近距離物理攻撃時、n%の確率で攻撃対象に暗黒付与(nは万分率)
-	bonus2 bAddEffLong,e,n;				遠距離物理攻撃時、n%の確率で攻撃対象に暗黒付与(nは万分率)
+	bonus2 bAddEffShort,e,n;			近距離物理攻撃時、n%の確率で攻撃対象に状態異常e付与(nは万分率)
+	bonus2 bAddEffLong,e,n;				遠距離物理攻撃時、n%の確率で攻撃対象に状態異常e付与(nは万分率)
 	bonus2 bResEff,e,n;					状態異常eの耐性+n%(nは万分率)
 					Eff_Blind		暗黒			Eff_Sleep		睡眠
 					Eff_Poison		毒				Eff_Freeze		凍結

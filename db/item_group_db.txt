@@ -1,6 +1,6 @@
 //item_db.txt＠AthenaDB計画 2004/08/30 20:38:16 +0900 (JST)
 //ID,Name,Jname,Group
-//1:ポーション 2:ハーブ 3:飴 4:ジュース 5:にく 6:さしみ
+//1:ポーション 2:ハーブ 3:飴 4:ジュース 5:にく 6:さしみ 7:アイスクリーム
 501,Red_Potion,赤ポーション,1
 502,Orange_Potion,紅ポーション,0
 503,Yellow_Potion,黄ポーション,1
@@ -34,7 +34,7 @@
 533,Grape_Juice,ブドウジュース,4
 534,Carrot_Juice,ニンジンジュース,4
 535,Pumkin,カボチャ,0
-536,Ice_Cream,アイスクリーム,0
+536,Ice_Cream,アイスクリーム,7
 537,Pet_Food,ペットフード,5
 538,Well-baked_Cookie,よく焼いたクッキー,0
 539,Piece_of_Cake,ひとくちケーキ,0
