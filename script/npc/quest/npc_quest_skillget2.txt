@@ -1519,7 +1519,7 @@ in_moc_16.gat,23,27,5	script	アサシン	885,{
 		mes "素晴らしいですわ！";
 		mes "それで良いのです！";
 		set SKILL_SONICACCEL,0;
-		skill 1004,1,0;
+		skill 1003,1,0;
 		next;
 		mes "[イスミル]";
 		mes "もう理解できたわね？";

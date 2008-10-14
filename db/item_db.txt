@@ -102,7 +102,7 @@
 
 601,Fly_Wing,ハエの羽,2,60,,50,,,,,1000333311,2,,,,,,{ warp "Random",0,0; },{}
 602,Butterfly_Wing,蝶の羽,2,300,,50,,,,,1000333311,2,,,,,,{ warp "SavePoint",0,0; },{}
-603,Old_Blue_Box,古く青い箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem BLUE_BOX,1,0; },{}
+603,Old_Blue_Box,古く青い箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_BLUE_BOX,1,0; },{}
 604,Dead_Branch,古木の枝,2,50,,50,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",-1,1,""; },{}
 605,Anodyne,アンティペインメント,2,2000,,100,,,,,1000333311,2,,,,,,{ itemskill 8,1,"アンティペインメント"; },{}
 606,Aloevera,アロエベラ,2,1500,,100,,,,,1000333311,2,,,,,,{ sc_end SC_PROVOKE; sc_start SC_PROVOKE,30000,1; npcskillsupport 6,1; },{}
@@ -115,8 +115,8 @@
 613,Iron_Hammer,鋼鉄の金槌,2,1000,,200,,,,,1000333311,2,,,,,,{ produce 1; },{}
 614,Golden_Hammer,黄金の金槌,2,3000,,300,,,,,1000333311,2,,,,,,{ produce 2; },{}
 615,Oridecon_Hammer,オリデオコンの金槌,2,5000,,400,,,,,1000333311,2,,,,,,{ produce 3; },{}
-616,Old_Card_Album,古いカード帖,2,10000,,50,,,,,1000333311,2,,,,,,{ getitem CARD_ALBUM,1; },{}
-617,Old_Purple_Box,古い紫色の箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem VIOLET_BOX,1,0; },{}
+616,Old_Card_Album,古いカード帖,2,10000,,50,,,,,1000333311,2,,,,,,{ getitem RAND_CARD_ALBUM,1; },{}
+617,Old_Purple_Box,古い紫色の箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_VIOLET_BOX,1,0; },{}
 618,Worn_Out_Scroll,古い巻物,2,50,,20,,,,,1000333311,2,,,,,,{},{}
 619,Unripe_Apple,まだ熟してないリンゴ,2,1000,,50,,,,,1000333311,2,,,,,,{ pet 1002; },{}
 620,Orange_Juice,オレンジジュース,2,1500,,50,,,,,1000333311,2,,,,,,{ pet 1113; },{}
@@ -143,7 +143,7 @@
 641,Contract_in_Shadow,闇の契約書,2,100,,50,,,,,1000333311,2,,,,,,{ pet 1109; },{}
 642,Book_of_the_Devil,悪魔召喚書,2,1800,,50,,,,,1000333311,2,,,,,,{ pet 1101; },{}
 643,Pet_Incubator,携帯卵孵化機,2,3000,,30,,,,,1000333311,2,,,,,,{ bpet; },{}
-644,Gift_Box,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem GIFT_BOX,1,0; },{}
+644,Gift_Box,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_GIFT_BOX,1,0; },{}
 645,Concentration_Potion,スピードアップポーション,2,800,,100,,,,,1000333311,2,,,,,,{ sc_end SC_POISONPOTION; sc_start SC_SpeedPot0,1800000,0; },{}
 
 656,Awakening_Potion,ハイスピードポーション,2,1500,,150,,,,,998760175,2,,,40,,,{ sc_end SC_POISONPOTION; sc_start SC_SpeedPot1,1800000,0; },{}
@@ -154,10 +154,10 @@
 661,Soft_Apron,高級エプロン,2,20000,,50,,,,,1000333311,2,,,,,,{ pet 1275; },{}
 662,Horse_Crest,馬牌,2,1500,,30,,,,,1000333311,2,,,,,,{ sc_start SC_INCREASEAGI,180000,-2; },{}
 663,Songpyun,中秋の餠,0,,,10,,,,,1000333311,2,,,,,,{ percentheal 10,10; },{}
-664,Gift_Box,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem GIFT_BOX,1,0; },{}
-665,Gift_Box_,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem GIFT_BOX,1,0; },{}
-666,Gift_Box__,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem GIFT_BOX,1,0; },{}
-667,Gift_Box___,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem GIFT_BOX,1,0; },{}
+664,Gift_Box,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_GIFT_BOX,1,0; },{}
+665,Gift_Box_,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_GIFT_BOX,1,0; },{}
+666,Gift_Box__,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_GIFT_BOX,1,0; },{}
+667,Gift_Box___,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_GIFT_BOX,1,0; },{}
 668,Handsei,お年玉,2,,,20,,,,,1000333311,2,,,,,,{ set Zeny,Zeny+rand(1000,10000); },{}
 669,Tempting_Rice-Cake_Soup,お雑煮,2,500,,100,,,,,1000333311,2,,,,,,{ percentheal 10,10; },{}
 670,Bag_of_Gold_Coins,金貨の袋,2,,,400,,,,,1000333311,2,,,,,,{},{}
@@ -490,8 +490,8 @@
 1139,Tale_Fing_,テイルフィング,4,20,,1000,200,,1,0,414946,2,2,4,40,2,1,{},{ bonus bAtkEle,7; bonus2 bHPPenaltyTime,10000,35; }
 1140,Byeorrun_Gum,別雲剣,4,20,,900,150,,1,0,414946,2,2,4,40,2,1,{},{ bonus2 bSubRace,11,-10; bonus2 bAddRace,10,50; bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; }
 1141,Immaterial_Sword,無形剣,4,20,,900,140,,1,0,414946,2,2,4,40,2,1,{},{ bonus bAtkEle,8; bonus2 bSPDrainValue,100,-1; bonus bUnbreakableWeapon,0; bonus2 bSPVanish,3,30; }
-1142,Jewel_Sword,ジュエルソード,4,20,,2200,104,,1,0,414946,2,2,3,68,2,1,{},{}
-1143,Gaia_Sword,ガイアソード,4,20,,2500,140,,1,0,414946,2,2,3,74,2,1,{},{}
+1142,Jewel_Sword,ジュエルソード,4,20,,2200,104,,1,0,414946,2,2,3,68,2,1,{ bonus3 bAddMonsterDropItem,RAND_JEWEL,11,100; },{}
+1143,Gaia_Sword,ガイアソード,4,20,,2500,140,,1,0,414946,2,2,3,74,2,1,{},{ bonus3 bAddMonsterDropItem,RAND_ORE,11,100; }
 1144,Sashimi,刺身包丁,4,20,,1400,75,,1,0,414946,2,2,3,48,2,1,{},{ bonus bAtkEle,4; bonus3 bAddMonsterDropItem,544,5,2500; }
 1145,Holy_Avenger,ホーリーアヴェンジャー,4,20,,1350,125,,1,0,16384,2,2,3,75,2,1,{},{ bonus bAtkEle,6; bonus bVit,2; }
 1146,Towner's_Sword,タウンソード,4,42000,,800,100,,1,1,8388609,2,2,3,30,2,1,{},{}
@@ -3266,14 +3266,14 @@
 12101,Citron,柚,2,,,300,,,,,1000333311,2,,,,,,{ sc_start SC_MFLEE,180000,30; },{}
 12102,Grilled_Skewer,焼き串,2,,,300,,,,,1000333311,2,,,,,,{ sc_start SC_MHIT,180000,30; },{}
 12103,Bloody_Branch,血塗られた古木の枝,2,10000,,200,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",-3,1,""; },{}
-12104,Random_Quiver,ランダム矢筒,2,,,200,,,,,1000333311,2,,,,,,{ getitem ARROW_QUIVER,1; },{}
-12105,Taming_Item_Giftset,テイミングプレゼントセット,2,,,200,,,,,1000333311,2,,,,,,{ getitem PET_BOX,1,0; getitem PET_BOX,1,0; getitem PET_BOX,1,0; },{}
-12106,Jewel_Box,宝石箱,2,,,200,,,,,1000333311,2,,,,,,{ getitem JEWEL_BOX,1,0; },{}
-12107,Wrapped_Mask,包装された仮面,2,,,200,,,,,1000333311,2,,,,,,{ getitem WRAPPED_MASK,1,0; },{}
-12108,Bundle_of_Spells,呪文書の束,2,,,200,,,,,1000333311,2,,,,,,{ getitem SCROLL,5; },{}
+12104,Random_Quiver,ランダム矢筒,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_QUIVER,1; },{}
+12105,Taming_Item_Giftset,テイミングプレゼントセット,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_TAIMING,1,0; getitem RAND_TAIMING,1,0; getitem RAND_TAIMING,1,0; },{}
+12106,Jewel_Box,宝石箱,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_ACCESSORY,1,0; },{}
+12107,Wrapped_Mask,包装された仮面,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_MASK,1,0; },{}
+12108,Bundle_of_Spells,呪文書の束,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_SCROLL,1; getitem RAND_SCROLL,1; getitem RAND_SCROLL,1; getitem RAND_SCROLL,1; getitem RAND_SCROLL,1; },{}
 12109,Poring_Box,ポリンボックス,2,10000,,200,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",-2,1; monster "this",0,0,"--ja--",-2,1; monster "this",0,0,"--ja--",-2,1; },{}
-12110,First_Aid_Box,救急箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem FA_BOX,1; getitem FA_BOX,1; getitem FA_BOX,1; getitem FA_BOX,1; getitem FA_BOX,1; },{}
-12111,Wrapped_Food,食料包み,2,,,200,,,,,1000333311,2,,,,,,{ getitem WRAPPED_FOOD,1; getitem WRAPPED_FOOD,1; getitem WRAPPED_FOOD,1; },{}
+12110,First_Aid_Box,救急箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_FIRST_AID,1; getitem RAND_FIRST_AID,1; getitem RAND_FIRST_AID,1; getitem RAND_FIRST_AID,1; getitem RAND_FIRST_AID,1; },{}
+12111,Wrapped_Food,食料包み,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_FOOD,1; getitem RAND_FOOD,1; getitem RAND_FOOD,1; },{}
 12112,Tropical_Sograt,トロピカル・ソグラト,2,1000,,100,,,,,1000333311,2,,,,,,{ sc_start2 SC_Curse,5000,0,10000; },{}
 12113,Vermilion_the_Beach,ヴァーミリオン・ザ・ビーチ,2,1000,,100,,,,,1000333311,2,,,,,,{ sc_start2 SC_Stun,5000,0,10000; },{}
 12114,Elemental_Converter_Fire,火属性コンバーター,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_FireWeapon,180000,1; },{}
@@ -3292,7 +3292,7 @@
 12127,Deluxe_Cooking_Set,高級調理器具,2,2000,,30,,,,,1000333311,2,,,,,,{ making 1000,1000; },{}
 12128,Court_Cooking_Set,宮廷用調理器具,2,5000,,70,,,,,1000333311,2,,,,,,{ making 1000,1500; },{}
 12129,Legendary_Cooking_Set,幻の調理器具,2,10000,,70,,,,,1000333311,2,,,,,,{ making 1000,2000; },{}
-12130,Cookie_Bag,菓子包み,2,,,70,,,,,1000333311,2,,,,,,{},{}
+12130,Cookie_Bag,菓子包み,2,,,70,,,,,1000333311,2,,,,,,{ getitem RAND_COOKIE,1; getitem RAND_COOKIE,1; getitem RAND_COOKIE,1; },{}
 12131,Lucky_Potion,幸運のポーション,2,,,100,,,,,1000333311,2,,,,,,{ sc_start SC_MLUK,180000,15; },{}
 12132,Red_Package,真っ赤な袋,2,,,200,,,,,1000333311,2,,,,,,{ sc_start SC_Santa,600000,0; },{}
 12133,McDonald's_Ice_Corn,マクドナルドアイスコーン,2,,,80,,,,,1000333311,2,,,,,,{},{}

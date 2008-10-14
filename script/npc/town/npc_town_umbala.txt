@@ -1379,59 +1379,67 @@ um_in.gat,44,71,2	script	ウータン族シャーマン	782,{
 		next;
 		switch(select("地属性","水属性","火属性","風属性")) {
 		case 1:
-			if(countitem(997) < 1) {
+			set '@need,997;
+			set '@gain,993;
+			break;
+		case 2:
+			set '@need,995;
+			set '@gain,991;
+			break;
+		case 3:
+			set '@need,994;
+			set '@gain,990;
+			break;
+		case 4:
+			set '@need,996;
+			set '@gain,992;
+			break;
+		}
+		mes "[プツチァルタン]";
+		mes "どれくらい分解したいのか？";
+		mes "君の持っている、君が望む";
+		mes "数を言いなさい。";
+		next;
+		input '@count;
+		if('@count < 1 || '@count > 10) {
+			mes "[プツチァルタン]";
+			mes "1から 10までの数を選びなさい。";
+			mes "これは、大事な事だ。";
+			mes "注意して、本当に望む数を";
+			mes "選びなさい。";
+			close;
+		}
+		if(countitem('@need) < '@count) {
+			switch('@need) {
+			case 997:
 				mes "[プツチァルタン]";
 				mes "地属性を分解したいのですか……";
 				mes "大地の気が一杯に満ちた結晶、";
-				mes "地の属性石が一つ必要です。";
-				mes "^3173FFグレイトネイチャが1個^000000";
-			}
-			else {
-				set '@need,997;
-				set '@gain,993;
-			}
-			break;
-		case 2:
-			if(countitem(995) < 1) {
+				mes "地の属性石が" +'@count+ "個必要です。";
+				mes "^3377FFグレイトネイチャが" +'@count+ "個^000000";
+				break;
+			case 995:
 				mes "[プツチァルタン]";
 				mes "水属性を分解したいのですか……";
 				mes "大洋の流れの神秘を氷結した";
-				mes "水の属性石が一つ必要です。";
-				mes "^3173FFミスティックフローズンが1個^000000";
-			}
-			else {
-				set '@need,995;
-				set '@gain,991;
-			}
-			break;
-		case 3:
-			if(countitem(994) < 1) {
+				mes "水の属性石が" +'@count+ "個必要です。";
+				mes "^3173FFミスティックフローズンが" +'@count+ "個^000000";
+				break;
+			case 994:
 				mes "[プツチァルタン]";
 				mes "火属性を分解したいのですか……";
 				mes "燃える火炎の心を持った結晶、";
-				mes "火の属性石が一つ必要です。";
-				mes "^3173FFフレイムハートが1個^000000";
-			}
-			else {
-				set '@need,994;
-				set '@gain,990;
-			}
-			break;
-		case 4:
-			if(countitem(996) < 1) {
+				mes "火の属性石が" +'@count+ "個必要です。";
+				mes "^3173FFフレイムハートが" +'@count+ "個^000000";
+				break;
+			case 996:
 				mes "[プツチァルタン]";
 				mes "風属性を分解したいのですか……";
 				mes "荒れ狂う風の姿が隠されている結晶、";
-				mes "風の属性石が一つ必要です。";
-				mes "^3173FFラフウィンドが1個^000000";
+				mes "風の属性石が" +'@count+ "個必要です。";
+				mes "^3173FFラフウィンドが" +'@count+ "個^000000";
+				break;
 			}
-			else {
-				set '@need,996;
-				set '@gain,992;
-			}
-			break;
-		}
-		if('@need == 0) {	//アイテム不足
 			next;
 			mes "[プツチァルタン]";
 			mes "必要な属性石はそれだけです……";
@@ -1479,36 +1487,38 @@ um_in.gat,44,71,2	script	ウータン族シャーマン	782,{
 		mes "オンバルヅ、ザン、クヌ！ウンバ！ク！";
 		mes "クン、ツン、ラクラクン！ウンバ！ハ！";
 		next;
-		delitem '@need,1;
-		if('@need == 997) { //グレイトネイチャ
-			switch(rand(5)) {
-			case 0: set '@num,10; break;
-			case 1: set '@num,8; break;
-			case 2:
-			case 3: set '@num,7; break;
-			case 4: set '@num,6+rand(2);
+		delitem '@need,'@count;
+		for(set '@num,0; '@count > 0; set '@count,'@count-1) {
+			if('@need == 997) { //グレイトネイチャ
+				switch(rand(5)) {
+				case 0: set '@num,'@num+10; break;
+				case 1: set '@num,'@num+8; break;
+				case 2:
+				case 3: set '@num,'@num+7; break;
+				case 4: set '@num,'@num+6+rand(2);
+				}
 			}
-		}
-		else if('@need == 996) { //ラフウィンド
-			switch(rand(10)) {
-			case 0: set '@num,rand(2)? 10: 6; break;
-			case 1:
-			case 2: set '@num,8; break;
-			case 3:
-			case 4:
-			case 5: set '@num,7; break;
-			default: set '@num,6;
+			else if('@need == 996) { //ラフウィンド
+				switch(rand(10)) {
+				case 0: set '@num,'@num+(rand(2)? 10: 6); break;
+				case 1:
+				case 2: set '@num,'@num+8; break;
+				case 3:
+				case 4:
+				case 5: set '@num,'@num+7; break;
+				default: set '@num,'@num+6;
+				}
 			}
-		}
-		else { //その他の属性石
-			switch(rand(10)) {
-			case 0: set '@num,10; break;
-			case 1:
-			case 2: set '@num,8; break;
-			case 3:
-			case 4:
-			case 5: set '@num,7; break;
-			default: set '@num,6;
+			else { //その他の属性石
+				switch(rand(10)) {
+				case 0: set '@num,'@num+10; break;
+				case 1:
+				case 2: set '@num,'@num+8; break;
+				case 3:
+				case 4:
+				case 5: set '@num,'@num+7; break;
+				default: set '@num,'@num+6;
+				}
 			}
 		}
 		getitem '@gain,'@num;

@@ -1425,6 +1425,6 @@ lhz_in02.gat,269,33,4	duplicate(青年#slot)	青年	97
 
 prontera.gat,244,169,5	duplicate(レアブルレム#slot)	レアブルレム	86
 moc_ruins.gat,154,86,3	duplicate(レアブルレム#slot)	レアブルレム	86
-payon.gat,140,151,5	duplicate(レアブルレム#slot)	レアブルレム	86
-lhz_in02.gat,281,35,4	duplicate(レアブルレム#slot)	レアブルレム	86
+payon.gat,236,199,3	duplicate(レアブルレム#slot)	レアブルレム	86
+lighthalzen.gat,96,137,3	duplicate(レアブルレム#slot)	レアブルレム	86
 

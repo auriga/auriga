@@ -91,31 +91,20 @@ int itemdb_idsearch(const int fd, const char *str, int (*func)(void*, void*, va_
 }
 
 /*==========================================
- * 箱系アイテム検索
+ * ランダム系アイテム検索
  *------------------------------------------
  */
 int itemdb_searchrandomid(int type)
 {
-	struct random_item_data *p;
-	int nameid;
+	int nameid = 0,num,i;
 
-	// typeは1以上なのでデクリメントする
-	type--;
 	if(type < 0 || type > MAX_RANDTYPE)
 		return 0;
 
-	p = &random_item[type];
-	nameid = p->default_id;
-
-	if(p->count > 0) {
-		int idx,i=0;
-		while(i++ < 1000) {
-			idx = atn_rand()%p->count;
-			if(atn_rand()%1000000 < p->data[idx].per) {
-				nameid = p->data[idx].nameid;
-				break;
-			}
-		}
+	if(random_item[type].entry) {
+		num = rand()%random_item[type].separate[random_item[type].entry-1];
+		for(i=0; i < random_item[type].entry, num >= random_item[type].separate[i]; i++);
+		nameid = random_item[type].nameid[i];
 	}
 	return nameid;
 }
@@ -566,74 +555,48 @@ static int itemdb_read_randomitem(void)
 {
 	FILE *fp;
 	char line[1024];
-	int nameid,i,j;
+	int randomid,nameid,range,i;
 	char *str[3],*p;
-	const char *filename[MAX_RANDTYPE] = {
-		"db/random/item_bluebox.txt",
-		"db/random/item_violetbox.txt",
-		"db/random/item_cardalbum.txt",
-		"db/random/item_giftbox.txt",
-		"db/random/item_scroll.txt",
-		"db/random/item_findingore.txt",
-		"db/random/item_arrowquiver.txt",
-		"db/random/item_diamond_weapon.txt",
-		"db/random/item_diamond_armor.txt",
-		"db/random/item_diamond_hood.txt",
-		"db/random/item_diamond_helm.txt",
-		"db/random/item_diamond_shoes.txt",
-		"db/random/item_diamond_shield.txt",
-		"db/random/item_jewel_box.txt",
-		"db/random/item_meiji_almond.txt",
-		"db/random/item_petbox.txt",
-		"db/random/item_mask.txt",
-		"db/random/item_fabox.txt",
-		"db/random/item_food.txt",
-		"db/random/item_rjc2006.txt",
-	};
 
 	// 読み込む度、初期化
 	memset(&random_item, 0, sizeof(random_item));
 
-	for(i=0; i<MAX_RANDTYPE; i++) {
-		if((fp = fopen(filename[i],"r")) == NULL) {
-			printf("can't read %s\n",filename[i]);
-			continue;
-		}
-
-		while(fgets(line,1020,fp)) {
-			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
-				continue;
-			if(line[0] == '/' && line[1] == '/')
-				continue;
-			memset(str,0,sizeof(str));
-			for(j=0,p=line;j<3 && p;j++){
-				str[j]=p;
-				p=strchr(p,',');
-				if(p) *p++=0;
-			}
-			if(str[0] == NULL)
-				continue;
-
-			nameid = atoi(str[0]);
-			if(nameid < 0)
-				continue;
-			if(nameid == 0) {
-				if(str[2])
-					random_item[i].default_id = atoi(str[2]);
-				continue;
-			}
-			if(str[2] && itemdb_exists(nameid)) {
-				int c = random_item[i].count;
-				random_item[i].data[c].nameid = nameid;
-				random_item[i].data[c].per    = atoi(str[2]);
-
-				if(++random_item[i].count >= MAX_RANDITEM)
-					break;
-			}
-		}
-		fclose(fp);
-		printf("read %s done (count=%d)\n",filename[i],random_item[i].count);
+	if((fp = fopen("db/item_random.txt","r")) == NULL) {
+		printf("can't read db/item_random.txt\n");
+		return 0;
 	}
+
+	while(fgets(line,sizeof(line),fp)) {
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0] == '/' && line[1] == '/')
+			continue;
+		memset(str,0,sizeof(str));
+		for(i=0,p=line; i<3 && p; i++) {
+			str[i]=p;
+			p=strchr(p,',');
+			if(p) *p++=0;
+		}
+		if(str[0] == NULL)
+			continue;
+
+		randomid = atoi(str[0]);
+		if(randomid < 0 || randomid > MAX_RANDTYPE)
+			continue;
+		nameid = atoi(str[1]);
+		if(nameid < 0 || !itemdb_exists(nameid))
+			continue;
+		range = atoi(str[2]);
+		if(range < 1 || random_item[randomid].separate[random_item[randomid].entry-1]+range >= MAX_RANDITEM)
+			continue;
+		range += random_item[randomid].separate[random_item[randomid].entry-1];
+
+		random_item[randomid].nameid[random_item[randomid].entry] = nameid;
+		random_item[randomid].separate[random_item[randomid].entry] = range;
+		random_item[randomid].entry++;
+	}
+	fclose(fp);
+	printf("read db/item_random.txt done\n");
 
 	return 0;
 }

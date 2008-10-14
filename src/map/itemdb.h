@@ -24,7 +24,7 @@
 
 #include "map.h"
 
-#define MAX_RANDITEM	2000
+#define MAX_RANDITEM	10000
 
 struct item_data {
 	int nameid;
@@ -65,12 +65,9 @@ struct item_data {
 };
 
 struct random_item_data {
-	int count;
-	int default_id;
-	struct {
-		int nameid;
-		int per;
-	} data[MAX_RANDITEM];
+	int nameid[MAX_RANDITEM];
+	int separate[MAX_RANDITEM];
+	int entry;
 };
 
 struct item_data* itemdb_searchname(const char *name);
