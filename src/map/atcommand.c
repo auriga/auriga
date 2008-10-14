@@ -5615,23 +5615,19 @@ int atcommand_hotkeyset(const int fd, struct map_session_data* sd, AtCommandType
  */
 int atcommand_callmerc(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int class_,retr;
+	int class_, retr;
 	unsigned int limit;
 
 	nullpo_retr(-1, sd);
 
-#ifdef TXT_ONLY
 	if (!message && !*message)
 		return -1;
-	if((retr = sscanf(message, "%d %d", &class_, &limit)) < 1)
+	if ((retr = sscanf(message, "%d %u", &class_, &limit)) < 1)
 		return -1;
-	if(retr == 1)
+	if (retr == 1)
 		limit = 1800;
 
-	merc_callmerc(sd, atoi(message),limit);
-#else
-	clif_displaymessage(fd, "not supported in SQL mode");
-#endif
+	merc_callmerc(sd, class_, limit);
 
 	return 0;
 }

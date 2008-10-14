@@ -37,7 +37,7 @@ struct merc_db {
 	int atk1,atk2;
 	int def,mdef;
 	int str,agi,vit,int_,dex,luk;
-	short size,race;
+	short view_class,size,race;
 	int element;
 	int range;
 	int speed,adelay,amotion,dmotion;

@@ -206,7 +206,7 @@ int merc_calc_status(struct merc_data *mcd)
 
 	nullpo_retr(1, mcd);
 
-	class_  = mcd->status.class_-MERC_ID;
+	class_ = mcd->status.class_ - MERC_ID;
 
 	mcd->atk1     = merc_db[class_].atk1;
 	mcd->atk2     = merc_db[class_].atk2;
@@ -226,7 +226,7 @@ int merc_calc_status(struct merc_data *mcd)
 	mcd->int_     = mcd->status.int_;
 	mcd->luk      = mcd->status.luk;
 	mcd->speed    = DEFAULT_WALK_SPEED;
-	mcd->amotion = merc_db[class_].amotion;
+	mcd->amotion  = merc_db[class_].amotion;
 	mcd->nhealhp  = 0;
 	mcd->nhealsp  = 0;
 	mcd->hprecov_rate = 100;
@@ -358,8 +358,8 @@ int merc_calc_status(struct merc_data *mcd)
 		mcd->max_sp = 1;
 
 	// 自然回復
-	mcd->nhealhp = (int)(((double)mcd->max_hp * mcd->vit / 10000 + 1) * 6);
-	mcd->nhealsp = (int)(((double)mcd->max_sp * (mcd->int_ + 10) / 750) + 1);
+	mcd->nhealhp = (int)(((atn_bignumber)mcd->max_hp * mcd->vit / 10000 + 1) * 6);
+	mcd->nhealsp = (int)(((atn_bignumber)mcd->max_sp * (mcd->int_ + 10) / 750) + 1);
 	if(mcd->hprecov_rate != 100)
 		mcd->nhealhp = mcd->nhealhp*mcd->hprecov_rate/100;
 	if(mcd->sprecov_rate != 100)
@@ -383,6 +383,7 @@ int merc_calc_status(struct merc_data *mcd)
  */
 int merc_callmerc(struct map_session_data *sd,int class_, unsigned int limit)
 {
+#ifdef TXT_ONLY
 	struct mmo_mercstatus st;
 	int i, id;
 
@@ -391,8 +392,6 @@ int merc_callmerc(struct map_session_data *sd,int class_, unsigned int limit)
 	if(sd->status.merc_id > 0 || sd->mcd)	// 既に召喚中
 		return 0;
 	if(sd->state.merc_creating)
-		return 0;
-	if(limit <= 0)
 		return 0;
 
 	class_ -= MERC_ID;
@@ -432,6 +431,10 @@ int merc_callmerc(struct map_session_data *sd,int class_, unsigned int limit)
 	intif_create_merc(sd->status.account_id,sd->status.char_id,&st);
 
 	return 1;
+#else
+	// SQLモードは非対応
+	return 0;
+#endif
 }
 
 static int merc_natural_heal_hp(int tid,unsigned int tick,int id,void *data);
@@ -467,7 +470,7 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->bl.type     = BL_MERC;
 	mcd->target_id   = 0;
 	mcd->msd         = sd;
-	mcd->view_class  = merc_db[class_].class_;
+	mcd->view_class  = merc_db[class_].view_class;
 	mcd->attackrange = merc_db[class_].range;
 
 	for(i=0; i<MAX_MERCSKILL; i++)
@@ -909,7 +912,7 @@ static int read_merc_db(void)
 		lines=0;
 		while(fgets(line,sizeof(line),fp)){
 			int nameid;
-			char *str[30],*p,*np;
+			char *str[25],*p,*np;
 			lines++;
 
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -917,7 +920,7 @@ static int read_merc_db(void)
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 
-			for(j=0,p=line;j<30;j++){
+			for(j=0,p=line;j<25;j++){
 				if((np=strchr(p,','))!=NULL){
 					str[j]=p;
 					*np=0;
@@ -934,31 +937,32 @@ static int read_merc_db(void)
 			if(j < 0 || j >= MAX_MERC_DB)
 				continue;
 
-			merc_db[j].class_  = nameid;
-			strncpy(merc_db[j].name,str[1],24);
-			strncpy(merc_db[j].jname,str[2],24);
-			merc_db[j].lv = atoi(str[3]);
-			merc_db[j].max_hp  = atoi(str[4]);
-			merc_db[j].max_sp  = atoi(str[5]);
-			merc_db[j].range   = atoi(str[6]);
-			merc_db[j].atk1    = atoi(str[7]);
-			merc_db[j].atk2    = atoi(str[8]);
-			merc_db[j].def     = atoi(str[9]);
-			merc_db[j].mdef    = atoi(str[10]);
-			merc_db[j].str     = atoi(str[11]);
-			merc_db[j].agi     = atoi(str[12]);
-			merc_db[j].vit     = atoi(str[13]);
-			merc_db[j].int_    = atoi(str[14]);
-			merc_db[j].dex     = atoi(str[15]);
-			merc_db[j].luk     = atoi(str[16]);
+			merc_db[j].class_     = nameid;
+			merc_db[j].view_class = atoi(str[1]);
+			strncpy(merc_db[j].name,str[2],24);
+			strncpy(merc_db[j].jname,str[3],24);
+			merc_db[j].lv      = atoi(str[4]);
+			merc_db[j].max_hp  = atoi(str[5]);
+			merc_db[j].max_sp  = atoi(str[6]);
+			merc_db[j].range   = atoi(str[7]);
+			merc_db[j].atk1    = atoi(str[8]);
+			merc_db[j].atk2    = atoi(str[9]);
+			merc_db[j].def     = atoi(str[10]);
+			merc_db[j].mdef    = atoi(str[11]);
+			merc_db[j].str     = atoi(str[12]);
+			merc_db[j].agi     = atoi(str[13]);
+			merc_db[j].vit     = atoi(str[14]);
+			merc_db[j].int_    = atoi(str[15]);
+			merc_db[j].dex     = atoi(str[16]);
+			merc_db[j].luk     = atoi(str[17]);
 
-			merc_db[j].size    = atoi(str[17]);
-			merc_db[j].race    = atoi(str[18]);
-			merc_db[j].element = atoi(str[19]);
-			merc_db[j].speed   = atoi(str[20]);
-			merc_db[j].adelay  = atoi(str[21]);
-			merc_db[j].amotion = atoi(str[22]);
-			merc_db[j].dmotion = atoi(str[23]);
+			merc_db[j].size    = atoi(str[18]);
+			merc_db[j].race    = atoi(str[19]);
+			merc_db[j].element = atoi(str[20]);
+			merc_db[j].speed   = atoi(str[21]);
+			merc_db[j].adelay  = atoi(str[22]);
+			merc_db[j].amotion = atoi(str[23]);
+			merc_db[j].dmotion = atoi(str[24]);
 
 			// force \0 terminal
 			merc_db[j].name[23]  = '\0';

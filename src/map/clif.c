@@ -9993,16 +9993,18 @@ void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int 
  */
 void clif_send_mercstatus(struct map_session_data *sd, int flag)
 {
-	int fd;
+	int fd, val;
 	struct merc_data *mcd;
 
 	nullpo_retv(sd);
 	nullpo_retv(mcd = sd->mcd);
 
+	val = mcd->atk2 - mcd->atk1 + 1;
+
 	fd = sd->fd;
 	WFIFOW(fd,0)  = 0x29b;
 	WFIFOL(fd,2)  = mcd->bl.id;
-	WFIFOW(fd,6)  = rand()%(mcd->atk2-mcd->atk1+1)+mcd->atk1;
+	WFIFOW(fd,6)  = (val > 0)? atn_rand() % val + mcd->atk1 : 0;
 	WFIFOW(fd,8)  = mcd->matk1;
 	WFIFOW(fd,10) = mcd->hit;
 	WFIFOW(fd,12) = mcd->critical;

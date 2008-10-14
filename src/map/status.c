@@ -3704,7 +3704,7 @@ int status_get_dmotion(struct block_list *bl)
 			dmotion = 400;
 	}
 	else if(bl->type == BL_MERC && (struct merc_data *)bl && ((struct merc_data *)bl)->msd) {
-			dmotion = ((struct merc_data *)bl)->dmotion;
+		dmotion = ((struct merc_data *)bl)->dmotion;
 	}
 	else if(bl->type == BL_PET && (struct pet_data *)bl) {
 		dmotion = mob_db[((struct pet_data *)bl)->class_].dmotion;

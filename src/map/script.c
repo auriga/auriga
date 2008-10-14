@@ -11439,10 +11439,8 @@ int buildin_makemerc(struct script_state *st)
 	int merc_id;
 	unsigned int limit;
 
-	nullpo_retr(0, sd);
-
 	merc_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	limit  = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	limit   = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	merc_callmerc(sd,merc_id,limit);
 

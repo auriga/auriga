@@ -1,4 +1,17 @@
 ----------------------------------------
+//0554 [2008/10/15] by Rayce
+
+・0552の傭兵に関する修正
+	-> 見た目を自由に変更できるように、db/merc_db.txtにViewClass項目を復活（merc.*）
+	-> 自然回復計算時、double型ではなくatn_bignumber型にキャストするように修正（merc.c）
+	-> SQLモードでmakemerc命令を使用すると整合性が取れなくなるので、merc_callmerc() 内部で
+	   SQLモードの処理をブロックするように修正（merc.c）
+	-> @callmercで桁落ちが発生する可能性を修正（atcommand.c）
+	-> makemerc命令を少し修正（script.c）
+	-> rand() を atn_rand() に修正（clif.c）
+	-> clif_send_mercstatus() で0除算が発生する可能性を修正（clif.c）
+
+----------------------------------------
 //0553 [2008/10/10] by Cocoa
 
 ・item_db更新
