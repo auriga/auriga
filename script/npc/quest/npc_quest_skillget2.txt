@@ -6547,7 +6547,7 @@ prt_monk.gat,270,198,3	script	修行中のモンク	753,{
 //	■ SKILL_BIOETHICS   -> 0〜13
 //-----------------------------------------------
 lhz_in01.gat,224,140,2	script	ケルラソス	57,{
-	if(Class != Job_Alchemist) {
+	if(Class != Job_Alchem) {
 		mes "[ケルラソス]";
 		mes "……";
 		mes "神の領域に挑戦する……";
@@ -7605,7 +7605,7 @@ lhz_in03.gat,109,31,4	script	ベニーネ	90,{
 //	■ SKILL_RESISTPOTION   -> 0〜11
 //-----------------------------------------------
 yuno_in04.gat,33,108,4	script	ピースリーク	883,{
-	if(Class != Job_Alchemist) {
+	if(Class != Job_Alchem) {
 		mes "[ピースリーク]";
 		mes "そこで何をしてる！";
 		mes "外に出てくれないか？";

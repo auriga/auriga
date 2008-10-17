@@ -772,26 +772,26 @@ um_dun01.gat,42,27,0		warp	umbalawarp0101		1,1,umbala.gat,109,284
 um_dun02.gat,126,162,0		warp	umbalawarp0501		1,1,yggdrasil01.gat,39,63
 
 //D1F ⇔ D2F
-um_dun01.gat,149,198,0		warp	umbalawarp4001		1,1,um_dun02,52,22
-um_dun02.gat,55,18,0		warp	umbalawarp4002		1,1,um_dun01,152,198
+um_dun01.gat,149,198,0		warp	umbalawarp4001		1,1,um_dun02.gat,52,22
+um_dun02.gat,55,18,0		warp	umbalawarp4002		1,1,um_dun01.gat,152,198
 //2FLink A
-um_dun02.gat,64,79,0		warp	umbalawarp4003		1,1,um_dun02,219,261
-um_dun02.gat,222,259,0		warp	umbalawarp4004		1,1,um_dun02,67,77
+um_dun02.gat,64,79,0		warp	umbalawarp4003		1,1,um_dun02.gat,219,261
+um_dun02.gat,222,259,0		warp	umbalawarp4004		1,1,um_dun02.gat,67,77
 //2FLink B
-um_dun02.gat,169,38,0		warp	umbalawarp4005		1,1,um_dun02,215,88
-um_dun02.gat,215,85,0		warp	umbalawarp4006		1,1,um_dun02,166,38
+um_dun02.gat,169,38,0		warp	umbalawarp4005		1,1,um_dun02.gat,215,88
+um_dun02.gat,215,85,0		warp	umbalawarp4006		1,1,um_dun02.gat,166,38
 //2FLink C
-um_dun02.gat,32,249,0		warp	umbalawarp4007		1,1,um_dun02,117,208
-um_dun02.gat,113,208,0		warp	umbalawarp4008		1,1,um_dun02,35,252
+um_dun02.gat,32,249,0		warp	umbalawarp4007		1,1,um_dun02.gat,117,208
+um_dun02.gat,113,208,0		warp	umbalawarp4008		1,1,um_dun02.gat,35,252
 //2FLink D
-um_dun02.gat,177,38,0		warp	umbalawarp4009		1,1,um_dun02,100,208
-um_dun02.gat,103,208,0		warp	umbalawarp4010		1,1,um_dun02,180,38
+um_dun02.gat,177,38,0		warp	umbalawarp4009		1,1,um_dun02.gat,100,208
+um_dun02.gat,103,208,0		warp	umbalawarp4010		1,1,um_dun02.gat,180,38
 //2FLink E
-um_dun02.gat,231,255,0		warp	umbalawarp4011		1,1,um_dun02,25,241
-um_dun02.gat,24,244,0		warp	umbalawarp4012		1,1,um_dun02,233,253
+um_dun02.gat,231,255,0		warp	umbalawarp4011		1,1,um_dun02.gat,25,241
+um_dun02.gat,24,244,0		warp	umbalawarp4012		1,1,um_dun02.gat,233,253
 //2FLink F
-um_dun02.gat,215,77,0		warp	umbalawarp4013		1,1,um_dun02,60,92
-um_dun02.gat,60,89,0		warp	umbalawarp4014		1,1,um_dun02,215,74
+um_dun02.gat,215,77,0		warp	umbalawarp4013		1,1,um_dun02.gat,60,92
+um_dun02.gat,60,89,0		warp	umbalawarp4014		1,1,um_dun02.gat,215,74
 
 
 
