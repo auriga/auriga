@@ -65,8 +65,10 @@ struct item_data {
 };
 
 struct random_item_data {
-	int nameid[MAX_RANDITEM];
-	int separate[MAX_RANDITEM];
+	struct {
+		int nameid;
+		int separate;
+	} data[MAX_RANDITEM];
 	int entry;
 };
 

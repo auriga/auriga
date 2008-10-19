@@ -5435,9 +5435,10 @@ int buildin_checkweight(struct script_state *st)
  */
 int buildin_getitem(struct script_state *st)
 {
-	int nameid=0, flag=0, amount;
+	int nameid=0, flag=0, ret=0, i=0, amount;
 	struct map_session_data *sd;
 	struct script_data *data;
+	struct item item_tmp;
 
 	sd = script_rid2sd(st);
 
@@ -5460,27 +5461,28 @@ int buildin_getitem(struct script_state *st)
 	if(sd == NULL)			// アイテムを渡す相手がいなかったらお帰り
 		return 0;
 
-	if(nameid < 0) {	// ランダム
-		nameid = itemdb_searchrandomid(-nameid);
-	}
-
-	if(nameid > 0) {
-		struct item item_tmp;
-		int ret = 0;
-
+	do {
 		memset(&item_tmp,0,sizeof(item_tmp));
-		item_tmp.nameid = nameid;
+
+		if(nameid < 0)		// ランダム
+			item_tmp.nameid = itemdb_searchrandomid(-nameid);
+		else
+			item_tmp.nameid = nameid;
+
+		if(item_tmp.nameid < 0 || !itemdb_exists(item_tmp.nameid))
+			break;
+
 		if(!flag || battle_config.itemidentify)
 			item_tmp.identify = 1;
 		else
-			item_tmp.identify = !itemdb_isequip3(nameid);
+			item_tmp.identify = !itemdb_isequip3(item_tmp.nameid);
 
-		if((ret = pc_additem(sd,&item_tmp,amount))) {
+		if((ret = pc_additem(sd,&item_tmp,(nameid<0)? 1: amount))) {
 			clif_additem(sd,0,0,ret);
-			if(!pc_candrop(sd,nameid))
-				map_addflooritem(&item_tmp,amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
+			if(!pc_candrop(sd,item_tmp.nameid))
+				map_addflooritem(&item_tmp,(nameid<0)? 1: amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
-	}
+	}while(nameid<0 && ++i<amount);	// ランダム系はアイテムの再抽選
 
 	return 0;
 }
@@ -5491,11 +5493,13 @@ int buildin_getitem(struct script_state *st)
  */
 int buildin_getitem2(struct script_state *st)
 {
-	int nameid=0, flag=0, amount;
+	int nameid=0, ret=0, i=0, amount;
 	int iden,ref,attr,c1,c2,c3,c4;
 	unsigned int limit=0;
 	struct map_session_data *sd;
 	struct script_data *data;
+	struct item_data *item_data;
+	struct item item_tmp;
 
 	sd = script_rid2sd(st);
 
@@ -5525,17 +5529,18 @@ int buildin_getitem2(struct script_state *st)
 	if(sd == NULL)			// アイテムを渡す相手がいなかったらお帰り
 		return 0;
 
-	if(nameid < 0) { // ランダム
-		nameid = itemdb_searchrandomid(-nameid);
-		flag = 1;
-	}
-
-	if(nameid > 0) {
-		struct item_data *item_data;
-		struct item item_tmp;
-
+	do {
 		memset(&item_tmp,0,sizeof(item_tmp));
-		item_data = itemdb_search(nameid);
+
+		if(nameid < 0)		// ランダム
+			item_tmp.nameid = itemdb_searchrandomid(-nameid);
+		else
+			item_tmp.nameid = nameid;
+
+		if(item_tmp.nameid < 0 || !itemdb_exists(item_tmp.nameid))
+			break;
+
+		item_data = itemdb_search(item_tmp.nameid);
 
 		if(item_data->type == 4 || item_data->type == 5) {
 			if(ref > MAX_REFINE)
@@ -5548,13 +5553,10 @@ int buildin_getitem2(struct script_state *st)
 			ref = attr = 0;
 		}
 
-		item_tmp.nameid = nameid;
-		if(battle_config.itemidentify)
+		if(iden || battle_config.itemidentify)
 			item_tmp.identify = 1;
-		else if(!flag)
-			item_tmp.identify = iden;
-		else if(item_data->type == 4 || item_data->type == 5)
-			item_tmp.identify = 0;
+		else
+			item_tmp.identify = !itemdb_isequip3(item_tmp.nameid);
 		item_tmp.refine    = ref;
 		item_tmp.attribute = attr;
 		item_tmp.card[0]   = c1;
@@ -5563,11 +5565,12 @@ int buildin_getitem2(struct script_state *st)
 		item_tmp.card[3]   = c4;
 		item_tmp.limit     = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
 
-		if((flag = pc_additem(sd,&item_tmp,amount))) {
-			clif_additem(sd,0,0,flag);
-			map_addflooritem(&item_tmp,amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
+		if((ret = pc_additem(sd,&item_tmp,(nameid<0)? 1: amount))) {
+			clif_additem(sd,0,0,ret);
+			if(!pc_candrop(sd,item_tmp.nameid))
+				map_addflooritem(&item_tmp,(nameid<0)? 1: amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
-	}
+	}while(nameid<0 && ++i<amount);	// ランダム系はアイテムの再抽選
 
 	return 0;
 }
@@ -11439,8 +11442,10 @@ int buildin_makemerc(struct script_state *st)
 	int merc_id;
 	unsigned int limit;
 
+	nullpo_retr(0, sd);
+
 	merc_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	limit   = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+3]));
+	limit  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	merc_callmerc(sd,merc_id,limit);
 

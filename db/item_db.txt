@@ -3267,13 +3267,13 @@
 12102,Grilled_Skewer,焼き串,2,,,300,,,,,1000333311,2,,,,,,{ sc_start SC_MHIT,180000,30; },{}
 12103,Bloody_Branch,血塗られた古木の枝,2,10000,,200,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",-3,1,""; },{}
 12104,Random_Quiver,ランダム矢筒,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_QUIVER,1; },{}
-12105,Taming_Item_Giftset,テイミングプレゼントセット,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_TAIMING,1,0; getitem RAND_TAIMING,1,0; getitem RAND_TAIMING,1,0; },{}
+12105,Taming_Item_Giftset,テイミングプレゼントセット,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_TAIMING,3,0; },{}
 12106,Jewel_Box,宝石箱,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_ACCESSORY,1,0; },{}
 12107,Wrapped_Mask,包装された仮面,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_MASK,1,0; },{}
-12108,Bundle_of_Spells,呪文書の束,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_SCROLL,1; getitem RAND_SCROLL,1; getitem RAND_SCROLL,1; getitem RAND_SCROLL,1; getitem RAND_SCROLL,1; },{}
+12108,Bundle_of_Spells,呪文書の束,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_SCROLL,5; },{}
 12109,Poring_Box,ポリンボックス,2,10000,,200,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",-2,1; monster "this",0,0,"--ja--",-2,1; monster "this",0,0,"--ja--",-2,1; },{}
-12110,First_Aid_Box,救急箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_FIRST_AID,1; getitem RAND_FIRST_AID,1; getitem RAND_FIRST_AID,1; getitem RAND_FIRST_AID,1; getitem RAND_FIRST_AID,1; },{}
-12111,Wrapped_Food,食料包み,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_FOOD,1; getitem RAND_FOOD,1; getitem RAND_FOOD,1; },{}
+12110,First_Aid_Box,救急箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_FIRST_AID,5; },{}
+12111,Wrapped_Food,食料包み,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_FOOD,3; },{}
 12112,Tropical_Sograt,トロピカル・ソグラト,2,1000,,100,,,,,1000333311,2,,,,,,{ sc_start2 SC_Curse,5000,0,10000; },{}
 12113,Vermilion_the_Beach,ヴァーミリオン・ザ・ビーチ,2,1000,,100,,,,,1000333311,2,,,,,,{ sc_start2 SC_Stun,5000,0,10000; },{}
 12114,Elemental_Converter_Fire,火属性コンバーター,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_FireWeapon,180000,1; },{}
@@ -3292,7 +3292,7 @@
 12127,Deluxe_Cooking_Set,高級調理器具,2,2000,,30,,,,,1000333311,2,,,,,,{ making 1000,1000; },{}
 12128,Court_Cooking_Set,宮廷用調理器具,2,5000,,70,,,,,1000333311,2,,,,,,{ making 1000,1500; },{}
 12129,Legendary_Cooking_Set,幻の調理器具,2,10000,,70,,,,,1000333311,2,,,,,,{ making 1000,2000; },{}
-12130,Cookie_Bag,菓子包み,2,,,70,,,,,1000333311,2,,,,,,{ getitem RAND_COOKIE,1; getitem RAND_COOKIE,1; getitem RAND_COOKIE,1; },{}
+12130,Cookie_Bag,菓子包み,2,,,70,,,,,1000333311,2,,,,,,{ getitem RAND_COOKIE,3; },{}
 12131,Lucky_Potion,幸運のポーション,2,,,100,,,,,1000333311,2,,,,,,{ sc_start SC_MLUK,180000,15; },{}
 12132,Red_Package,真っ赤な袋,2,,,200,,,,,1000333311,2,,,,,,{ sc_start SC_Santa,600000,0; },{}
 12133,McDonald's_Ice_Corn,マクドナルドアイスコーン,2,,,80,,,,,1000333311,2,,,,,,{},{}

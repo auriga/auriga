@@ -102,9 +102,9 @@ int itemdb_searchrandomid(int type)
 		return 0;
 
 	if(random_item[type].entry) {
-		num = rand()%random_item[type].separate[random_item[type].entry-1];
-		for(i=0; i < random_item[type].entry, num >= random_item[type].separate[i]; i++);
-		nameid = random_item[type].nameid[i];
+		num = atn_rand()%random_item[type].data[random_item[type].entry-1].separate;
+		for(i=0; i < random_item[type].entry && num >= random_item[type].data[i].separate; i++);
+		nameid = random_item[type].data[i].nameid;
 	}
 	return nameid;
 }
@@ -587,12 +587,15 @@ static int itemdb_read_randomitem(void)
 		if(nameid < 0 || !itemdb_exists(nameid))
 			continue;
 		range = atoi(str[2]);
-		if(range < 1 || random_item[randomid].separate[random_item[randomid].entry-1]+range >= MAX_RANDITEM)
+		if(range < 1)
 			continue;
-		range += random_item[randomid].separate[random_item[randomid].entry-1];
+		if(random_item[randomid].entry)
+			range += random_item[randomid].data[random_item[randomid].entry-1].separate;
+		 if(range >= MAX_RANDITEM)
+			continue;
 
-		random_item[randomid].nameid[random_item[randomid].entry] = nameid;
-		random_item[randomid].separate[random_item[randomid].entry] = range;
+		random_item[randomid].data[random_item[randomid].entry].nameid = nameid;
+		random_item[randomid].data[random_item[randomid].entry].separate = range;
 		random_item[randomid].entry++;
 	}
 	fclose(fp);
