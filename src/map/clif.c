@@ -9988,6 +9988,25 @@ void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int 
 }
 
 /*==========================================
+ * 読書ウィンドウの表示
+ *------------------------------------------
+ */
+void clif_openbook(struct map_session_data *sd, int nameid, int page)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0)  = 0x294;
+	WFIFOL(fd,2)  = nameid;
+	WFIFOL(fd,6)  = page;
+	WFIFOSET(fd,packet_db[0x294].len);
+
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */

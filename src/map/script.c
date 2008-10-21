@@ -3968,6 +3968,7 @@ int buildin_getiteminfo(struct script_state *st);
 int buildin_getonlinepartymember(struct script_state *st);
 int buildin_getonlineguildmember(struct script_state *st);
 int buildin_makemerc(struct script_state *st);
+int buildin_openbook(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4224,6 +4225,7 @@ struct script_function buildin_func[] = {
 	{buildin_getonlinepartymember,"getonlinepartymember","*"},
 	{buildin_getonlineguildmember,"getonlineguildmember","*"},
 	{buildin_makemerc,"makemerc","ii"},
+	{buildin_openbook,"openbook","i*"},
 	{NULL,NULL,NULL}
 };
 
@@ -11448,6 +11450,25 @@ int buildin_makemerc(struct script_state *st)
 	limit  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	merc_callmerc(sd,merc_id,limit);
+
+	return 0;
+}
+
+/*==========================================
+ * 読書ウィンドウの表示
+ *------------------------------------------
+ */
+int buildin_openbook(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int nameid, page;
+
+	nullpo_retr(0, sd);
+
+	nameid = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	page = (st->end>st->start+3)? conv_num(st,& (st->stack->stack_data[st->start+3])): 1;
+
+	clif_openbook(sd,nameid,page);
 
 	return 0;
 }

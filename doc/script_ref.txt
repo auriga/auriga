@@ -2070,6 +2070,15 @@ AurigaNPCScript
 
 			<merc_id>で指定した傭兵を<time>秒の間召喚します。
 
+		openbook命令
+			openbook <itemid>[,<page>];
+
+			itemid		アイテムID
+			page		数値、省略可
+
+			<itemid>の読書ウィンドウを表示します。
+			<page>で指定したページから表示できます。省略時は最初のページを表示します。
+
 	＊関数
 		rand関数
 			rand(<n1>[,<n2>])
