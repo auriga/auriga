@@ -5009,6 +5009,8 @@ int battle_config_read(const char *cfgName)
 		{ "normal_hp_rate",                     &battle_config.normal_hp_rate,                     100      },
 		{ "normal_sp_rate",                     &battle_config.normal_sp_rate,                     100      },
 		{ "baby_weight_rate",                   &battle_config.baby_weight_rate,                   100      },
+		{ "upper_weight_rate",                  &battle_config.upper_weight_rate,                  100      },
+		{ "normal_weight_rate",                 &battle_config.normal_weight_rate,                 100      },
 		{ "no_emergency_call",                  &battle_config.no_emergency_call,                  0        },
 		{ "save_am_pharmacy_success",           &battle_config.save_am_pharmacy_success,           1        },
 		{ "save_all_ranking_point_when_logout", &battle_config.save_all_ranking_point_when_logout, 0        },
@@ -5121,6 +5123,7 @@ int battle_config_read(const char *cfgName)
 		{ "snovice_maxexp_border",              &battle_config.snovice_maxexp_border,              99999999 },
 		{ "homun_rename",                       &battle_config.homun_rename,                       0        },
 		{ "equip_window_type",                  &battle_config.equip_window_type,                  1        },
+		{ "str_weight",                         &battle_config.str_weight,                         300      },
 		{ "summonslave_generation",             &battle_config.summonslave_generation,             2        },
 		{ NULL,                                 NULL,                                              0        },
 

@@ -421,6 +421,8 @@ extern struct Battle_Config {
 	int normal_hp_rate;
 	int normal_sp_rate;
 	int baby_weight_rate;
+	int upper_weight_rate;
+	int normal_weight_rate;
 	int no_emergency_call;
 	int save_am_pharmacy_success;
 	int save_all_ranking_point_when_logout;
@@ -562,6 +564,7 @@ extern struct Battle_Config {
 	int homun_rename;
 	int equip_window_type;
 	int summonslave_generation;
+	int str_weight;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

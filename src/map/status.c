@@ -337,10 +337,14 @@ L_RECALC:
 
 	pc_calc_skilltree(sd);	// スキルツリーの計算
 
-	sd->max_weight = job_db[sd->s_class.job].max_weight_base+sd->status.str*300;
+	sd->max_weight = job_db[sd->s_class.job].max_weight_base+sd->status.str*battle_config.str_weight;
 
 	if(battle_config.baby_weight_rate != 100 && pc_isbaby(sd))
 		sd->max_weight = sd->max_weight*battle_config.baby_weight_rate/100;
+	else if(battle_config.upper_weight_rate != 100 && pc_isupper(sd))
+		sd->max_weight = sd->max_weight*battle_config.upper_weight_rate/100;
+	else(battle_config.normal_weight_rate != 100)
+		sd->max_weight = sd->max_weight*battle_config.normal_weight_rate/100;
 
 
 	// ペコ騎乗時増えるよう移動

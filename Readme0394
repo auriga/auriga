@@ -1,4 +1,14 @@
 ----------------------------------------
+//0559 [2008/10/27] by Cocoa
+
+・AthenaProject Rev.255を参考にプレイヤーの所持限界量の倍率を追加
+	thanks to Blazeさん
+	（battle_auriga.conf, battle.*, status.c）
+
+・str1毎に追加される所持限界量の設定を追加
+	（battle_auriga.conf, battle.*, status.c）
+
+----------------------------------------
 //0558 [2008/10/22] by Blaze
 
 ・指定アイテムの読書ウィンドウを表示させる「openbook」命令実装
