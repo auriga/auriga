@@ -1582,7 +1582,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
 			}
-			DMG_FIX( 100+20*skill_lv, 100 );
+			DMG_FIX( (90+10*skill_lv)*2, 100 );
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;

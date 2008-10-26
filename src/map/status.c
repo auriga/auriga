@@ -343,9 +343,8 @@ L_RECALC:
 		sd->max_weight = sd->max_weight*battle_config.baby_weight_rate/100;
 	else if(battle_config.upper_weight_rate != 100 && pc_isupper(sd))
 		sd->max_weight = sd->max_weight*battle_config.upper_weight_rate/100;
-	else(battle_config.normal_weight_rate != 100)
+	else if(battle_config.normal_weight_rate != 100)
 		sd->max_weight = sd->max_weight*battle_config.normal_weight_rate/100;
-
 
 	// ペコ騎乗時増えるよう移動
 	if((skill = pc_checkskill(sd,MC_INCCARRY)) > 0)	// 所持量増加
@@ -1300,13 +1299,11 @@ L_RECALC:
 	if(sd->flee2 < 10) sd->flee2 = 10;
 	if(sd->def_rate != 100)
 		sd->def = (sd->def*sd->def_rate)/100;
-	if(sd->def < 0) sd->def = 0;
 	if(sd->def2_rate != 100)
 		sd->def2 = (sd->def2*sd->def2_rate)/100;
 	if(sd->def2 < 1) sd->def2 = 1;
 	if(sd->mdef_rate != 100)
 		sd->mdef = (sd->mdef*sd->mdef_rate)/100;
-	if(sd->mdef < 0) sd->mdef = 0;
 	if(sd->mdef2_rate != 100)
 		sd->mdef2 = (sd->mdef2*sd->mdef2_rate)/100;
 	if(sd->mdef2 < 1) sd->mdef2 = 1;
