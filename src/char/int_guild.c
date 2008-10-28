@@ -1372,7 +1372,7 @@ int guild_sql_save(struct guild* g2)
 			if(e->account_id>0) {
 				sqldbs_query(
 					&mysql_handle,
-					"INSERT INTO `%s` (`guild_id`,`name`,`mes`,`account_id`) VALUES "
+					"INSERT INTO `" GUILD_EXPULSION_TABLE "` (`guild_id`,`name`,`mes`,`account_id`) VALUES "
 					"('%d','%s','%s','%d')",
 					g2->guild_id,strecpy(buf,e->name),strecpy(buf2,e->mes),e->account_id
 				);

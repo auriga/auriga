@@ -96,17 +96,21 @@ int itemdb_idsearch(const int fd, const char *str, int (*func)(void*, void*, va_
  */
 int itemdb_searchrandomid(int type)
 {
-	int nameid = 0,num,i;
+	int c;
 
-	if(type < 0 || type > MAX_RANDTYPE)
+	// typeは1以上なのでデクリメントする
+	type--;
+	if(type < 0 || type >= MAX_RANDTYPE)
 		return 0;
 
-	if(random_item[type].entry) {
-		num = atn_rand()%random_item[type].data[random_item[type].entry-1].separate;
-		for(i=0; i < random_item[type].entry && num >= random_item[type].data[i].separate; i++);
-		nameid = random_item[type].data[i].nameid;
+	c = random_item[type].entry;
+	if(c > 0 && random_item[type].data[c-1].separate > 0) {
+		int i, num = atn_rand() % random_item[type].data[c-1].separate;
+		for(i=0; i < c && num < random_item[type].data[i].separate; i++);
+
+		return random_item[type].data[i].nameid;
 	}
-	return nameid;
+	return 0;
 }
 
 /*==========================================
@@ -555,7 +559,7 @@ static int itemdb_read_randomitem(void)
 {
 	FILE *fp;
 	char line[1024];
-	int randomid,nameid,range,i;
+	int randomid,nameid,range,i,c;
 	char *str[3],*p;
 
 	// 読み込む度、初期化
@@ -580,8 +584,8 @@ static int itemdb_read_randomitem(void)
 		if(str[0] == NULL)
 			continue;
 
-		randomid = atoi(str[0]);
-		if(randomid < 0 || randomid > MAX_RANDTYPE)
+		randomid = atoi(str[0]) - 1;
+		if(randomid < 0 || randomid >= MAX_RANDTYPE)
 			continue;
 		nameid = atoi(str[1]);
 		if(nameid < 0 || !itemdb_exists(nameid))
@@ -589,14 +593,16 @@ static int itemdb_read_randomitem(void)
 		range = atoi(str[2]);
 		if(range < 1)
 			continue;
-		if(random_item[randomid].entry)
-			range += random_item[randomid].data[random_item[randomid].entry-1].separate;
-		 if(range >= MAX_RANDITEM)
-			continue;
 
-		random_item[randomid].data[random_item[randomid].entry].nameid = nameid;
-		random_item[randomid].data[random_item[randomid].entry].separate = range;
-		random_item[randomid].entry++;
+		c = random_item[randomid].entry;
+		if(c > 0)
+			range += random_item[randomid].data[c-1].separate;
+
+		random_item[randomid].data[c].nameid   = nameid;
+		random_item[randomid].data[c].separate = range;
+
+		if(++random_item[randomid].entry >= MAX_RANDITEM)
+			break;
 	}
 	fclose(fp);
 	printf("read db/item_random.txt done\n");
