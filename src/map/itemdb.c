@@ -106,7 +106,7 @@ int itemdb_searchrandomid(int type)
 	c = random_item[type].entry;
 	if(c > 0 && random_item[type].data[c-1].separate > 0) {
 		int i, num = atn_rand() % random_item[type].data[c-1].separate;
-		for(i=0; i < c && num < random_item[type].data[i].separate; i++);
+		for(i=0; i < c && num >= random_item[type].data[i].separate; i++);
 
 		return random_item[type].data[i].nameid;
 	}

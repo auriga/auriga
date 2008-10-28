@@ -5471,7 +5471,7 @@ int buildin_getitem(struct script_state *st)
 		else
 			item_tmp.nameid = nameid;
 
-		if(item_tmp.nameid < 0 || !itemdb_exists(item_tmp.nameid))
+		if(!itemdb_exists(item_tmp.nameid))
 			break;
 
 		if(!flag || battle_config.itemidentify)
@@ -5479,12 +5479,12 @@ int buildin_getitem(struct script_state *st)
 		else
 			item_tmp.identify = !itemdb_isequip3(item_tmp.nameid);
 
-		if((ret = pc_additem(sd,&item_tmp,(nameid<0)? 1: amount))) {
+		if((ret = pc_additem(sd,&item_tmp,(nameid < 0)? 1: amount))) {
 			clif_additem(sd,0,0,ret);
 			if(!pc_candrop(sd,item_tmp.nameid))
-				map_addflooritem(&item_tmp,(nameid<0)? 1: amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
+				map_addflooritem(&item_tmp,(nameid < 0)? 1: amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
-	}while(nameid<0 && ++i<amount);	// ランダム系はアイテムの再抽選
+	} while(nameid < 0 && ++i < amount);	// ランダム系はアイテムの再抽選
 
 	return 0;
 }
@@ -5539,7 +5539,7 @@ int buildin_getitem2(struct script_state *st)
 		else
 			item_tmp.nameid = nameid;
 
-		if(item_tmp.nameid < 0 || !itemdb_exists(item_tmp.nameid))
+		if(!itemdb_exists(item_tmp.nameid))
 			break;
 
 		item_data = itemdb_search(item_tmp.nameid);
@@ -5559,6 +5559,7 @@ int buildin_getitem2(struct script_state *st)
 			item_tmp.identify = 1;
 		else
 			item_tmp.identify = !itemdb_isequip3(item_tmp.nameid);
+
 		item_tmp.refine    = ref;
 		item_tmp.attribute = attr;
 		item_tmp.card[0]   = c1;
@@ -5567,12 +5568,12 @@ int buildin_getitem2(struct script_state *st)
 		item_tmp.card[3]   = c4;
 		item_tmp.limit     = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
 
-		if((ret = pc_additem(sd,&item_tmp,(nameid<0)? 1: amount))) {
+		if((ret = pc_additem(sd,&item_tmp,(nameid < 0)? 1: amount))) {
 			clif_additem(sd,0,0,ret);
 			if(!pc_candrop(sd,item_tmp.nameid))
-				map_addflooritem(&item_tmp,(nameid<0)? 1: amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
+				map_addflooritem(&item_tmp,(nameid < 0)? 1: amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
-	}while(nameid<0 && ++i<amount);	// ランダム系はアイテムの再抽選
+	} while(nameid < 0 && ++i < amount);	// ランダム系はアイテムの再抽選
 
 	return 0;
 }
@@ -7848,7 +7849,7 @@ int buildin_waitingroom(struct script_state *st)
 		highlv = conv_num(st,& (st->stack->stack_data[st->start+8]));
 	}
 	if(st->end > st->start+10) {
-		job   = conv_num(st,& (st->stack->stack_data[st->start+9]));
+		job   = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+9]));
 		upper = conv_num(st,& (st->stack->stack_data[st->start+10]));
 	}
 	chat_createnpcchat(map_id2nd(st->oid),
@@ -11393,17 +11394,17 @@ int buildin_getiteminfo(struct script_state *st)
 int buildin_getonlinepartymember(struct script_state *st)
 {
 	int count = 0;
-	int i;
 	struct party *pt = NULL;
 
-	if(st->end>st->start+2)
+	if(st->end>st->start+2) {
 		pt = party_search(conv_num(st,&(st->stack->stack_data[st->start+2])));
-	else {
+	} else {
 		struct map_session_data *sd = script_rid2sd(st);
 		if(sd)
 			pt = party_search(sd->status.party_id);
 	}
 	if(pt != NULL) {
+		int i;
 		for(i=0; i<MAX_PARTY; i++) {
 			if(pt->member[i].online && pt->member[i].sd != NULL)
 				count++;
@@ -11422,14 +11423,14 @@ int buildin_getonlineguildmember(struct script_state *st)
 {
 	struct guild *g = NULL;
 
-	if(st->end>st->start+2)
+	if(st->end>st->start+2) {
 		g = guild_search(conv_num(st,&(st->stack->stack_data[st->start+2])));
-	else {
+	} else {
 		struct map_session_data *sd = script_rid2sd(st);
 		if(sd)
 			g = guild_search(sd->status.guild_id);
 	}
-	push_val(st->stack,C_INT,g!=NULL? g->connect_member: 0);
+	push_val(st->stack,C_INT,((g != NULL)? g->connect_member: 0));
 
 	return 0;
 }
@@ -11447,7 +11448,7 @@ int buildin_makemerc(struct script_state *st)
 	nullpo_retr(0, sd);
 
 	merc_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	limit  = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	limit   = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	merc_callmerc(sd,merc_id,limit);
 
@@ -11461,12 +11462,13 @@ int buildin_makemerc(struct script_state *st)
 int buildin_openbook(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
-	int nameid, page;
+	int nameid, page = 1;
 
 	nullpo_retr(0, sd);
 
 	nameid = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	page = (st->end>st->start+3)? conv_num(st,& (st->stack->stack_data[st->start+3])): 1;
+	if(st->end>st->start+3)
+		page = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	clif_openbook(sd,nameid,page);
 
