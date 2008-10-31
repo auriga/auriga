@@ -307,7 +307,7 @@ OnTouch:
 		mes "分かった。";
 		mes "それでは、儀式をはじめる。";
 		next;
-		misceffect 247;
+		misceffect 247,"";
 		mes "[マイア]";
 		mes "しおれないバラは、";
 		mes "お前の代わりに枯れ、";

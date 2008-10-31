@@ -230,7 +230,7 @@ geffen.gat,145,132,3	script	ホイリン	729,{
 			mes "これらが無いと作れないよ。";
 			close;
 		}
-		@misceffect 0;
+		misceffect 0,"";
 		mes "[ホイリン]";
 		mes "やった！";
 		mes "それじゃ、さっそく！";
@@ -665,7 +665,7 @@ morocc.gat,159,143,3	script	パーミリア#Haloween	799,{
 		mes "嘘つき……";
 		mes "チケットを持ってないじゃない！";
 		mes "嘘つきの血は吸ってやる！";
-		emotion 23;
+		emotion 23,"";
 		percentheal -20,0;
 		close;
 	}

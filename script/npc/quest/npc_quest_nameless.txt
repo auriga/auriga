@@ -1191,11 +1191,12 @@ OnInit:
 }
 
 //============================================================
-// アルナベルツ教国の平和クエスト
+// 大神官クエスト
 //- Registry -------------------------------------------------
 // NAME_2QUE -> 0〜24
 //------------------------------------------------------------
-morocc.gat,167,106,3	script	異国の商人	880,5,5,{
+//morocc.gat,167,106,3	script	異国の商人	880,5,5,{
+moc_ruins.gat,77,167,3	script	異国の商人	880,5,5,{
 	if(VE_4QUE != 27) {
 		mes "[異国の商人]";
 		mes "ハァ……ハァ……";
@@ -1375,7 +1376,8 @@ OnTouch:
 	close;
 }
 
-morocc.gat,147,151,0	script	異国の商人#name1	139,3,3,{
+//morocc.gat,147,151,0	script	異国の商人#name1	139,3,3,{
+moc_ruins.gat,90,139,0	script	異国の商人#name1	139,3,3,{
 	if(NAME_2QUE == 1)
 		set NAME_2QUE,2;
 	if(NAME_2QUE == 5) {
@@ -1389,26 +1391,30 @@ morocc.gat,147,151,0	script	異国の商人#name1	139,3,3,{
 	end;
 }
 
-morocc.gat,160,160,0	script	異国の商人#name2	139,3,3,{
+//morocc.gat,160,160,0	script	異国の商人#name2	139,3,3,{
+moc_ruins.gat,86,149,0	script	異国の商人#name2	139,3,3,{
 	if(NAME_2QUE == 2)
 		set NAME_2QUE,3;
 	end;
 }
 
-morocc.gat,171,151,0	script	異国の商人#name3	139,3,3,{
+//morocc.gat,171,151,0	script	異国の商人#name3	139,3,3,{
+moc_ruins.gat,109,146,0	script	異国の商人#name3	139,3,3,{
 	if(NAME_2QUE == 3)
 		set NAME_2QUE,4;
 	end;
 }
 
-morocc.gat,159,142,0 	script	異国の商人#name4	139,3,3,{
+//morocc.gat,159,142,0 	script	異国の商人#name4	139,3,3,{
+moc_ruins.gat,106,133,0	script	異国の商人#name4	139,3,3,{
 	if(NAME_2QUE == 4)
 		set NAME_2QUE,5;
 	end;
 }
 
-morocc.gat,140,160,7	script	異国の商人#name	929,{
-	if(NAME_2QUE != 6) {
+//morocc.gat,140,160,7	script	異国の商人#name	929,{
+moc_ruins.gat,101,133,7	script	異国の商人#name	929,{
+	if(NAME_2QUE < 1 || NAME_2QUE > 6) {
 		mes "[異国の商人]";
 		mes "すみません。";
 		mes "果実酒は売り切れました。";
@@ -1935,6 +1941,11 @@ ra_temple.gat,165,57,5	script	ニルエン大神官	915,{
 		set NAME_2QUE,14;
 		break;
 	case 14:
+		if(rand(10)) {
+			mes "[ニルエン大神官]";
+			mes "もう少し……考えさせてください。";
+			break;
+		}
 		mes "[ニルエン大神官]";
 		mes "……………………";
 		mes "……………………";
@@ -2505,6 +2516,7 @@ ra_fild03.gat,139,355,5	script	イスマエル	914,{
 		mes "-イスマエルから、";
 		mes "　偽の休暇書類を受け取った-";
 		set NAME_2QUE,19;
+		delitem 725,1;
 		getitem 7343,1;
 		next;
 		mes "^FF0000<<注意>>";

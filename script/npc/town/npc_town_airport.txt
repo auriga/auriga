@@ -2181,7 +2181,7 @@ airplane_01.gat,238,154,2	script	飛行船船長#Air	873,{
 		mes "私は、少し休むよ。";
 		mes "手紙の読み書きで";
 		mes "ちょっと疲れたからな。";
-		misceffect 231;
+		misceffect 231,"";
 		set AIR_1QUE,7;
 		getexp 200000,10000;
 		break;
@@ -2622,7 +2622,7 @@ airplane.gat,236,163,2	script	飛行船船長	873,{
 		cutin "fly_trock",255;
 		set AIR_2QUE,13;
 		getexp 700000,400000;
-		misceffect 253;
+		misceffect 253,"";
 		close2;
 		cutin "fly_trock",255;
 		end;

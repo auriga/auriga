@@ -1372,7 +1372,8 @@ AurigaNPCScript
 			name		文字列、省略可
 
 			<name>で指定したNPCに<n>エモーションを出します。
-			<name>を省略すると、命令を実行したNPC、もしくはプレイヤーが対象になります。
+			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
+			<name>を省略すると、命令を実行したNPCが対象になります。
 
 		classchange命令
 			classchange <class>,<type>;
@@ -1390,16 +1391,8 @@ AurigaNPCScript
 			name	文字列、省略可
 
 			<name>で指定したNPCにエフェクトを出します。
+			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
 			<name>を省略すると、命令を実行したNPCが対象になります。
-
-		misceffect2命令
-			misceffect2 <type>[,<target>];
-
-			type	数値
-			target	アカウントID
-
-			<target>で指定したプレイヤーにエフェクトを出します。
-			<target>を省略すると、NPCにアタッチしてるプレイヤーが対象になります。
 
 		areamisceffect命令
 			areamisceffect <gatname>,<x0>,<y0>,<x1>,<y1>,<type>;

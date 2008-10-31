@@ -1125,17 +1125,17 @@ OnInit:
 }
 
 -	script	通路#turbo	-1,{
-	emotion 1;
+	emotion 1,"";
 	end;
 }
 
 -	script	正路#turbo	-1,{
-	emotion 0;
+	emotion 0,"";
 	end;
 }
 
 -	script	ヒント#turbo	-1,{
-	emotion 19;
+	emotion 19,"";
 	if(rand(4))
 		end;
 	if(strnpcinfo(1) == "ヒント1") emotion 0,"正路1#"+strnpcinfo(2);

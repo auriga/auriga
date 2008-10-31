@@ -1,4 +1,23 @@
 ----------------------------------------
+//0563 [2008/11/01] by Blaze
+
+・0451のemotion仕様変更によるスクリプトの修正内容がすべて誤っていたのを修正
+	（script/npc/***.txt）
+
+・0505で追加された「misceffect2」命令を廃止
+	（script.c, script_ref.txt）
+
+・emotionとmisceffect命令をプレイヤー以外でも対象できるように
+　map_session_dataからblock_listで指定するように変更
+	（script.c）
+
+・誤認がないように「emotion」と「misceffect」の説明を修正
+	（script_ref.txt）
+
+・名もなき島の大神官クエストNPC実装
+	（npc_quest_nameless.txt, npc_town_rachel.txt, npc_warp_town.txt）
+
+----------------------------------------
 //0562 [2008/10/29] by Rayce
 
 ・0561のランダムアイテムの処理をさらに修正（itemdb.c）

@@ -24,7 +24,8 @@ prontera.gat,104,65,5	script	アマツ観光協会員#summer	757,{
 		mes "声をかけてくださいね！";
 		close;
 	}
-	emotion 27;
+	emotion 21;
+	emotion 27,"";
 	mes "[アマツ観光協会員]";
 	mes "かしこまりました！";
 	mes "それではアマツにご案内いたします!!";
@@ -307,7 +308,7 @@ amatsu.gat,195,238,4	script	カプラ職員？	791,{
 	mes "うらめしや〜〜……";
 	next;
 	if(countitem(719) < 1) {
-		emotion 23;
+		emotion 23,"";
 		mes "[" +strcharinfo(0)+ "]";
 		mes "ギャー!!";
 		mes "出たーっ!!";
@@ -315,7 +316,7 @@ amatsu.gat,195,238,4	script	カプラ職員？	791,{
 		warp "amatsu.gat",195,180;
 		end;
 	}
-	emotion 9;
+	emotion 9,"";
 	mes "-^63319Cアメジスト^000000を持っているからか-";
 	mes "-心が落ち着いていて-";
 	mes "-ちっとも怖くない。-";
@@ -536,7 +537,7 @@ amatsu.gat,189,90,6	script	腹ペコ少年	764,{
 	mes "こんなにお寿司くれるんだね!?";
 	mes "ありがとう!!";
 	next;
-	emotion 9;
+	emotion 9,"";
 	mes "^0000FF−少年はお寿司100個を−";
 	mes "−あっという間に平らげた……−^000000";
 	next;
@@ -782,8 +783,8 @@ amatsu.gat,188,153,5	script	わたあめ親父#summer	826,{
 	mes "なんかようかい？";
 	mes "なんつってな!!　ガハハ!!";
 	next;
-	emotion 9;
-	misceffect 28;
+	emotion 9,"";
+	misceffect 28,"";
 	mes "[" +strcharinfo(0)+ "]";
 	mes "………………";
 	close;
@@ -931,7 +932,7 @@ amatsu.gat,158,127,3	script	丁半お爺さん#summer	765,{
 			next;
 			if('@odd == '@result) {
 				emotion 23;
-				emotion 2;
+				emotion 2,"";
 				getitem 551,'@bet * 2;
 				mes "[寿司田部太郎]";
 				mes "ぶふぉっ！";
@@ -945,7 +946,7 @@ amatsu.gat,158,127,3	script	丁半お爺さん#summer	765,{
 				close;
 			}
 			emotion 2;
-			emotion 23;
+			emotion 23,"";
 			mes "[寿司田部太郎]";
 			mes "ふぉっふぉっふぉ！";
 			mes "お主の負けじゃ。";
@@ -1149,12 +1150,12 @@ amatsu.gat,213,254,5	script	鍵屋のお兄さん	763,{
 			next;
 			input '@num;
 			if('@num != '@wish) {	//失敗時
-				emotion 25;
+				emotion 25,"";
 				mes "<<" +'@name$['@c]+ "之鍵解除^FF0000失敗^000000!!>>";
 				next;
 				continue;
 			}
-			emotion 24;
+			emotion 24,"";
 			if('@c % 2)
 				set '@len,'@len+1;	//2回ごとに入力桁数+1
 			set '@flag,0;			//新規数列フラグリセット
@@ -1162,7 +1163,7 @@ amatsu.gat,213,254,5	script	鍵屋のお兄さん	763,{
 		}
 		set '@time,(gettimetick(0)-'@time)/1000;	//タイマー取得
 		if('@time > 90) {
-			emotion 9;
+			emotion 9,"";
 			mes "【^FF3100練習用^000000】<<数錠解除>>";
 			mes "■■■■■■■■■■■■";
 			mes "^9C9C9C子牛寅卯辰巳午未申酉戌亥^000000";
@@ -1171,7 +1172,7 @@ amatsu.gat,213,254,5	script	鍵屋のお兄さん	763,{
 			mes "　　^9C0031時　限　超　過^000000";
 		}
 		else {
-			misceffect 253;
+			misceffect 253,"";
 			mes "【^FF3100練習用^000000】<<数錠解除>>";
 			mes "■■■■■■■■■■■■";
 			mes "^0000FF子牛寅卯辰巳午未申酉戌亥^000000";
@@ -1273,7 +1274,7 @@ amatsu.gat,213,254,5	script	鍵屋のお兄さん	763,{
 			next;
 			input '@num;
 			if('@num != '@wish) {	//失敗時
-				emotion 25;
+				emotion 25,"";
 				if('@c < 12) {
 					percentheal -50,0;
 					sc_start3 SC_CURSE,0,0,0,0,10000,10;
@@ -1321,7 +1322,7 @@ amatsu.gat,213,254,5	script	鍵屋のお兄さん	763,{
 				mes "また挑戦してくれよ！";
 				close;
 			}
-			emotion 24;
+			emotion 24,"";
 			set '@flag,0;			//新規数列フラグリセット
 			set '@c,'@c+1;			//カウントアップ
 			if(('@c % 4) == 0)
@@ -1329,7 +1330,7 @@ amatsu.gat,213,254,5	script	鍵屋のお兄さん	763,{
 		}
 		set '@time,(gettimetick(0)-'@time)/1000;	//タイマー取得
 		if('@time > 90) {
-			emotion 9;
+			emotion 9,"";
 			mes "【^6331FF競技用^000000】<<数錠解除>>";
 			mes "■■■■■■■■■■■■";
 			mes "^9C9C9C子牛寅卯辰巳午未申酉戌亥^000000";
@@ -1339,7 +1340,7 @@ amatsu.gat,213,254,5	script	鍵屋のお兄さん	763,{
 			mes "　　^9C0031時　限　超　過^000000";
 		}
 		else {
-			misceffect 253;
+			misceffect 253,"";
 			percentheal 100,0;
 			if('@time > 90)
 				getitem 519,1;
@@ -1489,7 +1490,7 @@ amatsu.gat,208,134,3	script	クジ引きお姉さん	758,{
 				continue;
 			}
 			if('@num == '@hit) {	//当たり
-				misceffect 253;
+				misceffect 253,"";
 				emotion 2;
 				mes "[美香]";
 				mes "^0000FF当たり^000000です！";
@@ -2120,7 +2121,7 @@ amatsu.gat,260,246,4	script	牌籠お姉さん	757,{
 				set '@high,0;
 			set '@num2,rand(1,100);		//実際数
 			if(('@num1 < '@num2 && '@high == 1) || ('@num1 > '@num2 && '@high == 0)) {	//成功
-				emotion 24;
+				emotion 24,"";
 				mes "<<^0000FF" +(('@high)? "HIGH":"LOW")+ "!!　成功!!^000000>>";
 				mes " ";
 				mes "　　　-^006300" +'@num1+ "^000000-";
@@ -2129,7 +2130,7 @@ amatsu.gat,260,246,4	script	牌籠お姉さん	757,{
 				set '@success,'@success+1;	//成功数+1
 				continue;
 			}
-			emotion 25;
+			emotion 25,"";
 			mes "<<^FF0000" +(('@high)? "HIGH":"LOW")+ "!!　失敗!!^000000>>";
 			mes " ";
 			mes "　　　-^006300" +'@num1+ "^000000-";
@@ -2358,7 +2359,7 @@ amatsu.gat,252,87,3	script	一本釣りおじさん	709,{
 	mes "−投げてから^0000FF" +'@time1+ "〜" +'@time2+ "^000000秒で引き上げろ!!−";
 	menu "引き上げる！",-;
 	set '@time,(gettimetick(0)-'@time)/1000;	//タイマー取得
-	emotion 0;
+	emotion 0,"";
 	if('@time < '@time1 || '@time > '@time2) {	//失敗
 		mes " ";
 		mes "−　^FF0000失　敗　……^000000　−";
@@ -2641,7 +2642,7 @@ amatsu.gat,168,100,5	script	3周年アイスクリーム商人	85,{
 			case 2: set '@mine,10; break;	//チョキ
 			case 3: set '@mine,12; break;	//パー
 			}
-			emotion '@mine;
+			emotion '@mine,"";
 			set '@enemy,rand(10,12);
 			emotion '@enemy;
 			mes "[3周年アイスクリーム商人]";
@@ -2724,7 +2725,7 @@ amatsu.gat,169,99,3	script	犬	81,{
 		close;
 	}
 	emotion 6;
-	misceffect 122;
+	misceffect 122,"";
 	percentheal -25,0;
 	mes "[犬]";
 	mes "ガルルルル!!";

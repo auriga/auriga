@@ -5512,7 +5512,6 @@ ve_fild07.gat,235,42,3	script	銀砂ラクダ	938,{
 			delitem 519,2;
 			delitem 909,10;
 			delitem 511,20;
-			delitem 713,1;
 			mes "[" +strcharinfo(0)+ "]";
 			mes "（材料は全部食べたけど、";
 			mes "　何も出てこない……";
@@ -5526,9 +5525,9 @@ ve_fild07.gat,235,42,3	script	銀砂ラクダ	938,{
 		delitem 519,2;
 		delitem 909,10;
 		delitem 511,20;
-		delitem 713,1;
 		switch('@rand) {
 		case 0:
+			delitem 713,1;
 			set VE_3QUE,VE_3QUE+1;
 			mes "[" +strcharinfo(0)+ "]";
 			mes "（「" +(VE_3QUE%3 == 2? "○": "ウ")+(VE_3QUE%3 == 0? "○": "ン")+(VE_3QUE%3 == 1? "○": "チ")+ "」が出た!!";

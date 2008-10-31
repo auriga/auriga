@@ -2044,7 +2044,7 @@ ra_temin.gat,27,299,0	warp	rachelwarp1067	1,1,ra_temin.gat,275,328
 //フレイヤ神殿 執務室前⇒フレイヤ神殿 執務室入口
 ra_temin.gat,275,243,0	warp	rachelwarp1068	1,1,ra_temin.gat,131,131
 //フレイヤ神殿 室内⇔教皇執務室
-ra_temin.gat,275,226,0	warp	rachelwarp1069	1,1,ra_temsky.gat,99,11
+//ra_temin.gat,275,226,0	warp	rachelwarp1069	1,1,ra_temsky.gat,99,11
 ra_temsky.gat,99,8,0	warp	rachelwarp1070	1,1,ra_temin.gat,275,231
 //教皇執務室
 ra_temsky.gat,99,118,0	warp	rachelwarp1071	1,1,ra_temsky.gat,99,140

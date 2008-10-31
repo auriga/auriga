@@ -3239,7 +3239,7 @@ function	script	ギルナー夫妻#Einbroch	{
 	mes "旅人さん、お名前をお聞きして";
 	mes "よろしいですか？";
 	next;
-	emotion 18;
+	emotion 18,"";
 	mes "[" +strcharinfo(0)+ "]";
 	mes strcharinfo(0)+ "です。";
 	next;
@@ -3353,7 +3353,7 @@ ein_in01.gat,125,99,5	script	ダルシャ・ギルナー	850,{
 		mes "元坑夫だって言っていたっけ。";
 		mes "あれ…………？";
 		next;
-		emotion 0;
+		emotion 0,"";
 		mes "[" +strcharinfo(0)+ "]";
 		mes "!!";
 		next;
@@ -3390,7 +3390,7 @@ ein_in01.gat,125,99,5	script	ダルシャ・ギルナー	850,{
 		if(select("首をよく見る","手をよく見る","足をよく見る","額をよく見る") != 2) {
 			mes "-特に何も変わったことはない-";
 			next;
-			misceffect 81;
+			misceffect 81,"";
 			percentheal -10,0;
 			mes "[ゲロルド・ギルナー]";
 			mes "人の妻に何をしているのですか！";
@@ -3756,7 +3756,7 @@ einbech.gat,165,105,6	script	ビンデハイム	847,{
 		mes "[ビンデハイム]";
 		mes "…………………………";
 		next;
-		emotion 1;
+		emotion 1,"";
 		mes "[ビンデハイム]";
 		mes "…………!!";
 		mes "お前、お前は…………！";
@@ -4316,7 +4316,7 @@ ein_in01.gat,231,163,6	script	病んでいる老人	849,{
 		mes "今、君は何と言った？";
 		mes "私は何て言った？";
 		next;
-		emotion 29;
+		emotion 29,"";
 		mes "[" +strcharinfo(0)+ "]";
 		mes "やはりあなたがシドクスさんですね。";
 		next;

@@ -3888,7 +3888,6 @@ int buildin_getrepairableitemcount(struct script_state *st);
 int buildin_repairitem(struct script_state *st);
 int buildin_classchange(struct script_state *st);
 int buildin_misceffect(struct script_state *st);
-int buildin_misceffect2(struct script_state *st);
 int buildin_areamisceffect(struct script_state *st);
 int buildin_soundeffect(struct script_state *st);
 int buildin_areasoundeffect(struct script_state *st);
@@ -4145,7 +4144,6 @@ struct script_function buildin_func[] = {
 	{buildin_repairitem,"repairitem",""},
 	{buildin_classchange,"classchange","ii"},
 	{buildin_misceffect,"misceffect","i*"},
-	{buildin_misceffect2,"misceffect2","i*"},
 	{buildin_areamisceffect,"areamisceffect","siiiii"},
 	{buildin_soundeffect,"soundeffect","si*"},
 	{buildin_areasoundeffect,"areasoundeffect","siiiisi*"},
@@ -8466,9 +8464,9 @@ int buildin_emotion(struct script_state *st)
 	if(nd) {
 		clif_emotion(&nd->bl,type);
 	} else {
-		struct map_session_data *sd = script_rid2sd(st);
-		if(sd)
-			clif_emotion(&sd->bl,type);
+		struct block_list *bl = map_id2bl(st->rid);
+		if(bl)
+			clif_emotion(bl,type);
 	}
 	return 0;
 }
@@ -9229,31 +9227,10 @@ int buildin_misceffect(struct script_state *st)
 	if(nd) {
 		clif_misceffect2(&nd->bl,type);
 	} else {
-		struct map_session_data *sd = script_rid2sd(st);
-		if(sd)
-			clif_misceffect2(&sd->bl,type);
+		struct block_list *bl = map_id2bl(st->rid);
+		if(bl)
+			clif_misceffect2(bl,type);
 	}
-	return 0;
-}
-
-/*==========================================
- * プレイヤーから発生するエフェクト
- *------------------------------------------
- */
-int buildin_misceffect2(struct script_state *st)
-{
-	struct map_session_data *sd;
-	int type;
-
-	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	if(st->end > st->start+3)
-		sd = map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+3])));
-	else
-		sd = script_rid2sd(st);
-
-	if(sd)
-		clif_misceffect2(&sd->bl,type);
-
 	return 0;
 }
 

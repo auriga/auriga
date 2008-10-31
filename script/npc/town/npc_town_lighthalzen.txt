@@ -836,7 +836,7 @@ OnTouch:
 	mes "少しでも……";
 	next;
 	if(select("Zenyを少しあげる","無視する")==2) {
-		emotion 32;
+		emotion 32,"";
 		mes "["+strcharinfo(0)+"]";
 		mes "……";
 		close;
@@ -870,16 +870,16 @@ OnTouch:
 	mes "[物乞い]";
 	mes "役に立ったでしょうか……";
 	next;
-	emotion 9;
+	emotion 9,"";
 	mes "[" +strcharinfo(0)+ "]";
 	mes "…………";
 	next;
-	emotion 9;
+	emotion 9,"";
 	mes "[" +strcharinfo(0)+ "]";
 	mes "…………";
 	mes "…………";
 	next;
-	emotion 9;
+	emotion 9,"";
 	mes "[" +strcharinfo(0)+ "]";
 	mes "…………";
 	mes "…………";
@@ -3785,7 +3785,7 @@ lighthalzen.gat,344,277,0	script	呪い	139,3,3,{
 			next;
 			mes "……";
 			next;
-			emotion 1;
+			emotion 1,"";
 			mes "[" +strcharinfo(0)+ "]";
 			mes "な、何だ？　今の……";
 			mes "頭に直接響いてきた声は……";
@@ -3853,7 +3853,7 @@ lhz_in03.gat,178,22,0		script	呪い	139,3,3,{
 			next;
 			mes "……";
 			next;
-			emotion 1;
+			emotion 1,"";
 			mes "[" +strcharinfo(0)+ "]";
 			mes "また幻聴が……";
 			mes "一体何なんだ、今の声は!?";
@@ -4088,13 +4088,13 @@ lighthalzen.gat,346,263,3	script	長老	846,{
 			mes "何が起こるかはわからん。";
 			mes "では……";
 			next;
-			misceffect 22;
+			misceffect 22,"";
 			mes "[長老]";
 			mes "オムハマグハマヤリカリ……";
 			next;
-			misceffect 62;
-			misceffect 225;
-			misceffect 231;
+			misceffect 62,"";
+			misceffect 225,"";
+			misceffect 231,"";
 			mes "[長老]";
 			mes "ハアブ……!!!!";
 			next;
@@ -4194,11 +4194,11 @@ lighthalzen.gat,346,263,3	script	長老	846,{
 			mes "ふむ、用意はできたようじゃな。";
 			mes "では、精神を集中せよ……";
 			next;
-			misceffect 91;
+			misceffect 91,"";
 			mes "[長老]";
 			mes "オムハマグハマヤリカリ……";
 			next;
-			misceffect 86;
+			misceffect 86,"";
 			mes "[長老]";
 			mes "ハアブ……!!!!";
 			next;
@@ -5207,7 +5207,7 @@ lhz_in03.gat,32,162,3	script	足の悪い少女	53,{
 	mes "-少女の手に、";
 	mes "例のペンダントを握らせた-";
 	next;
-	misceffect 324;
+	misceffect 324,"";
 	mes "……";
 	next;
 	mes "[" +strcharinfo(0)+ "]";
@@ -5275,7 +5275,7 @@ lighthalzen.gat,319,321,0	script	#声	139,3,3,{
 	if(LHZ_2QUE == 16) {
 		mes "……";
 		next;
-		misceffect 231;
+		misceffect 231,"";
 		mes "（パァァッ）";
 		next;
 		mes "[？？？]";
@@ -10193,7 +10193,7 @@ lighthalzen.gat,220,169,3	script	男#Lhz1	870,2,2,{
 OnTouch:
 	switch(rand(3)) {
 	case 0:
-		misceffect 18;
+		misceffect 18,"";
 		if(Zeny >= 200)
 			set Zeny,Zeny-200;
 		mes (strnpcinfo(2) == "Lhz2")? "サササ": "サクサク";
@@ -10204,7 +10204,7 @@ OnTouch:
 		mes "フフフ……";
 		close;
 	case 1:
-		misceffect 18;
+		misceffect 18,"";
 		if(Zeny >= 100)
 			set Zeny,Zeny-100;
 		mes (strnpcinfo(2) == "Lhz3")? "バサ": "バサバサ";
@@ -10215,7 +10215,7 @@ OnTouch:
 		mes "クククク……";
 		close;
 	case 2:
-		misceffect 18;
+		misceffect 18,"";
 		if(Zeny >= 10)
 			set Zeny,Zeny-10;
 		mes ((strnpcinfo(2) == "Lhz1")? "サクサク。": (strnpcinfo(2) == "Lhz2")? "ササッ": "バサバサ");
