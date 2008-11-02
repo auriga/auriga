@@ -76,12 +76,13 @@ struct mob_db {
 };
 extern struct mob_db *mob_db;
 
+struct random_mob_data_entry {
+	int class_;
+	int qty;
+};
+
 struct random_mob_data {
-	struct {
-		int class_;
-		unsigned short lv;
-		int qty;
-	} data[MAX_RAND_MOB_ENTRY];
+	struct random_mob_data_entry data[MAX_RAND_MOB_ENTRY];
 	int entry;
 };
 
@@ -166,7 +167,7 @@ enum {
 
 int mobdb_searchname(const char *str);
 int mobdb_checkid(const int mob_id);
-int mobdb_searchrandomid(int type,unsigned int lv);
+int mobdb_searchrandomid(int type,unsigned short lv);
 
 int mob_once_spawn(struct map_session_data *sd,const char *mapname,
 	int x,int y,const char *mobname,int class_,int amount,const char *event);
@@ -198,7 +199,7 @@ int mob_timer_delete(int tid, unsigned int tick, int id, void *data);
 
 int mob_deleteslave(struct mob_data *md);
 
-int mob_class_change_randam(struct mob_data *md,int lv);
+int mob_class_change_randam(struct mob_data *md,unsigned short lv);
 int mob_class_change(struct mob_data *md,int *value,int value_count);
 int mob_warp(struct mob_data *md,int m,int x,int y,int type);
 

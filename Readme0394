@@ -1,4 +1,23 @@
 ----------------------------------------
+//0565 [2008/11/03] by Rayce
+
+・0564のランダム系モンスターの読み込みを最適化（mob.*）
+	データ１件ずつに対して挿入ソートを行うのは非効率なため、一旦全てのデータを
+	読み込んだ後、qsort() でMobのLvの低い順にソートするように変更
+
+・mob_read_randommonster() で、MAX_RAND_MOB_AMOUNT であるべきはずの所が
+　MAX_RAND_MOB_ENTRY になっていたのを修正（mob.c）
+
+・ランダム系モンスターを１件しか読み込んでいないとき、mobdb_searchrandomid() で
+　検索ができなかったのを修正（mob.c）
+
+・引数の型を正しい型に修正（mob.*）
+	-> mob_class_change_randam()
+	-> mobdb_searchrandomid()
+
+・guild_storage_deadlock_timer() がタイマーリストに登録されていなかったのを修正（int_storage.c）
+
+----------------------------------------
 //0564 [2008/11/03] by Blaze
 
 ・0562のランダムアイテムの処理をさらに修正（itemdb.*）
