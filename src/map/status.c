@@ -4450,6 +4450,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_ITEMDROPRATE:			/* バブルガム */
 		case SC_HAPPY:				/* 楽しい状態 */
 		case SC_NATURAL_HEAL_STOP:		/* 自然回復停止 */
+		case SC_REBIRTH:			/* リバース */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -6564,6 +6565,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_RUN:
 	case SC_MARIONETTE:
 	case SC_MARIONETTE2:
+	case SC_REBIRTH:
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:

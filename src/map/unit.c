@@ -1889,7 +1889,7 @@ int unit_isdead(struct block_list *bl)
  * clif_foreachclientのcallback関数
  *------------------------------------------
  */
-static int unit_mobstopattacked(struct map_session_data *sd,va_list ap)
+int unit_mobstopattacked(struct map_session_data *sd,va_list ap)
 {
 	int id;
 

@@ -97,7 +97,7 @@ int SkillStatusChangeTable[MAX_SKILL] = {	/* status.hのenumのSC_***とあわ�
 	/* 190- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 200- */
-	-1,SC_KEEPING,-1,-1,SC_BARRIER,SC_NPC_DEFENDER,-1,SC_HALLUCINATION,-1,-1,
+	-1,SC_KEEPING,-1,-1,SC_BARRIER,SC_NPC_DEFENDER,-1,SC_HALLUCINATION,SC_REBIRTH,-1,
 	/* 210- */
 	-1,-1,-1,-1,-1,SC_STRIPWEAPON,SC_STRIPSHIELD,SC_STRIPARMOR,SC_STRIPHELM,-1,
 	/* 220- */
@@ -5133,12 +5133,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case NPC_REBIRTH:
-		if(md) {
-			md->hp = mob_db[md->class_].max_hp * 10 * skilllv / 100;
+		if(md && !md->state.rebirth) {
+			// 1度もリバースを使ってない場合のみ発動
+			status_change_start(src,SC_REBIRTH,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
-		unit_stop_walking(src,1);
-		unit_stopattack(src);
-		unit_skillcastcancel(src,0);
 		break;
 	case NPC_RUN:		/* 後退 */
 		if(md) {

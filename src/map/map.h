@@ -712,6 +712,7 @@ struct mob_data {
 		unsigned noexp : 1;
 		unsigned nomvp : 1;
 		unsigned recall_flag : 1;
+		unsigned rebirth : 1;
 	} state;
 	short view_size;
 	short speed;

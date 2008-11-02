@@ -66,6 +66,7 @@ static struct random_mob_data random_mob[MAX_RAND_MOB_TYPE];
  */
 static int mob_makedummymobdb(int);
 static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned int tick);
+static int mob_rebirth(struct mob_data *md, unsigned int tick);
 static int mob_skillid2skillidx(int class_,int skillid);
 static int mobskill_use_id(struct mob_data *md,struct block_list *target,int skill_idx);
 
@@ -1677,7 +1678,10 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 	if(src) {
 		// コマンドやスクリプトでの死亡でないならスキル使用
+		md->hp = 1;
+		md->state.skillstate = MSS_DEAD;
 		mobskill_use(md,tick,-1);
+		md->hp = 0;
 	}
 
 	memset(mvp,0,sizeof(mvp));
@@ -1890,7 +1894,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	aFree( tmpbl );
 
 	// item drop
-	if(!(type&1) && !map[md->bl.m].flag.nodrop) {
+	if(!(type&1) && !map[md->bl.m].flag.nodrop && !md->state.rebirth) {
 		if(!md->state.nodrop) {
 			for(i=0; i<ITEM_DROP_COUNT; i++) {
 				struct delay_item_drop *ditem;
@@ -2110,14 +2114,72 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	}
 
 	if(md->hp <= 0) {
-		// スキルユニットからの離脱を先に済ませておく
-		md->hp = 1;
-		skill_unit_move(&md->bl,gettick(),0);
-		md->hp = 0;
-		unit_remove_map(&md->bl, 1, 0);
+		if(md->sc.data[SC_REBIRTH].timer != -1 && !md->state.rebirth) {
+			mob_rebirth(md, tick);
+		} else {
+			// スキルユニットからの離脱を先に済ませておく
+			md->hp = 1;
+			skill_unit_move(&md->bl,tick,0);
+			md->hp = 0;
+			unit_remove_map(&md->bl, 1, 0);
+		}
 	}
 
 	return 0;
+}
+
+/*==========================================
+ * リバース
+ *------------------------------------------
+ */
+static int mob_rebirth(struct mob_data *md, unsigned int tick)
+{
+	int skilllv;
+
+	nullpo_retr(0, md);
+
+	// ステータス異常が解除される前にスキルLvを保存
+	skilllv = md->sc.data[SC_REBIRTH].val1;
+	if(skilllv > 10)
+		skilllv = 10;
+
+	unit_stop_walking(&md->bl,1);
+	unit_stopattack(&md->bl);
+	unit_skillcastcancel(&md->bl,0);
+	skill_stop_dancing(&md->bl,1);
+	skill_clear_unitgroup(&md->bl);
+	skill_unit_move(&md->bl,tick,0);
+
+	linkdb_final( &md->dmglog );
+
+	clif_foreachclient(unit_mobstopattacked,md->bl.id);
+	status_change_clear(&md->bl,2);	// ステータス異常を解除する
+	if(md->deletetimer != -1) {
+		delete_timer(md->deletetimer,mob_timer_delete);
+		md->deletetimer = -1;
+	}
+
+	clif_clearchar_area(&md->bl,1);
+	if(mob_is_pcview(md->class_)) {
+		if(battle_config.pcview_mob_clear_type == 2)
+			clif_clearchar(&md->bl,0);
+		else
+			clif_clearchar_delay(tick+3000,&md->bl);
+	}
+
+	md->attacked_id      = 0;
+	md->attacked_players = 0;
+	md->hp               = mob_db[md->class_].max_hp * 10 * skilllv / 100;
+	md->state.rebirth    = 1;
+	md->state.skillstate = MSS_IDLE;
+	md->last_thinktime   = tick;
+	md->next_walktime    = tick + atn_rand()%50 + 5000;
+
+	skill_unit_move(&md->bl,tick,1);
+	clif_spawnmob(md);
+	mobskill_use(md, tick, MSC_SPAWN);
+
+	return 1;
 }
 
 /*==========================================
@@ -3120,9 +3182,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 	if(md->state.special_mob_ai >= 2)		// スフィアーマインはスキルを使わない
 		return 0;
 
-	if(md->hp <= 0) {
-		md->state.skillstate = MSS_DEAD;
-	} else {
+	if(md->state.skillstate != MSS_DEAD) {
 		if(md->ud.attacktimer != -1) {
 			md->state.skillstate = MSS_ATTACK;
 		}

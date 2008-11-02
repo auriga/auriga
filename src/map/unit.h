@@ -84,6 +84,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag);
 int unit_distance(int x0,int y0,int x1,int y1);
 int unit_free(struct block_list *bl, int clrtype);
 int unit_changeviewsize(struct block_list *bl,int size);
+int unit_mobstopattacked(struct map_session_data *sd,va_list ap);
 
 // 初期化ルーチン
 int do_init_unit(void);
