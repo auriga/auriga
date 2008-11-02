@@ -38,14 +38,12 @@
 #include "script.h"
 #include "pc.h"
 
-#define MAX_RANDTYPE	20
-
 // ** ITEMDB_OVERRIDE_NAME_VERBOSE **
 //   定義すると、itemdb.txtとgrfで名前が異なる場合、表示します.
 //#define ITEMDB_OVERRIDE_NAME_VERBOSE	1
 
 static struct dbt* item_db = NULL;
-static struct random_item_data random_item[MAX_RANDTYPE];
+static struct random_item_data random_item[MAX_RAND_ITEM_TYPE];
 
 /*==========================================
  * 名前で検索
@@ -100,13 +98,13 @@ int itemdb_searchrandomid(int type)
 
 	// typeは1以上なのでデクリメントする
 	type--;
-	if(type < 0 || type >= MAX_RANDTYPE)
+	if(type < 0 || type >= MAX_RAND_ITEM_TYPE)
 		return 0;
 
 	c = random_item[type].entry;
-	if(c > 0 && random_item[type].data[c-1].separate > 0) {
-		int i, num = atn_rand() % random_item[type].data[c-1].separate;
-		for(i=0; i < c && num >= random_item[type].data[i].separate; i++);
+	if(c > 0 && random_item[type].data[c-1].qty > 0) {
+		int i, num = atn_rand() % random_item[type].data[c-1].qty;
+		for(i=0; i < c && num >= random_item[type].data[i].qty; i++);
 
 		return random_item[type].data[i].nameid;
 	}
@@ -308,7 +306,7 @@ static int itemdb_read_itemdb(void)
 			printf("can't read %s\n",filename[i]);
 			exit(1);
 		}
-		lines=0;
+		lines=ln=0;
 		while(fgets(line,sizeof(line),fp)){
 			lines++;
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -581,28 +579,31 @@ static int itemdb_read_randomitem(void)
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		if(str[0] == NULL)
+		if(str[0] == NULL || str[1] == NULL || str[2] == NULL)
 			continue;
 
 		randomid = atoi(str[0]) - 1;
-		if(randomid < 0 || randomid >= MAX_RANDTYPE)
+		if(randomid < 0 || randomid >= MAX_RAND_ITEM_TYPE)
 			continue;
 		nameid = atoi(str[1]);
 		if(nameid < 0 || !itemdb_exists(nameid))
 			continue;
 		range = atoi(str[2]);
-		if(range < 1)
+		if(range < 1 || range >= MAX_RAND_ITEM_AMOUNT)
 			continue;
 
 		c = random_item[randomid].entry;
+		if(c >= MAX_RAND_ITEM_ENTRY)
+			continue;
 		if(c > 0)
-			range += random_item[randomid].data[c-1].separate;
+			range += random_item[randomid].data[c-1].qty;
+
+		if(range >= MAX_RAND_ITEM_AMOUNT)
+			continue;
 
 		random_item[randomid].data[c].nameid   = nameid;
-		random_item[randomid].data[c].separate = range;
-
-		if(++random_item[randomid].entry >= MAX_RANDITEM)
-			break;
+		random_item[randomid].data[c].qty = range;
+		random_item[randomid].entry++;
 	}
 	fclose(fp);
 	printf("read db/item_random.txt done\n");

@@ -24,7 +24,9 @@
 
 #include "map.h"
 
-#define MAX_RANDITEM	10000
+#define MAX_RAND_ITEM_TYPE		20
+#define MAX_RAND_ITEM_ENTRY		1000
+#define MAX_RAND_ITEM_AMOUNT	10000
 
 struct item_data {
 	int nameid;
@@ -67,8 +69,8 @@ struct item_data {
 struct random_item_data {
 	struct {
 		int nameid;
-		int separate;
-	} data[MAX_RANDITEM];
+		int qty;
+	} data[MAX_RAND_ITEM_ENTRY];
 	int entry;
 };
 

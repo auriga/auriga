@@ -1348,7 +1348,7 @@ int read_petdb(void)
 	FILE *fp;
 	char line[4096];
 	int i, j, k;
-	int lines;
+	int lines, count = 0;
 	struct script_code *script = NULL;
 	const char *filename[] = { "db/pet_db.txt","db/addon/pet_db_add.txt" };
 
@@ -1360,7 +1360,7 @@ int read_petdb(void)
 			printf("can't read %s\n",filename[i]);
 			return -1;
 		}
-		lines = 0;
+		lines=count=0;
 		while(fgets(line,sizeof(line),fp)){
 			int nameid;
 			char *str[20],*p,*np;
@@ -1429,9 +1429,10 @@ int read_petdb(void)
 			pet_db[j].script = (script != &error_code)? script: NULL;
 			if(k < 0)
 				pet_count++;
+			count++;
 		}
 		fclose(fp);
-		printf("read %s done (count=%d)\n",filename[i],pet_count);
+		printf("read %s done (count=%d)\n",filename[i],count);
 	}
 	return 0;
 }

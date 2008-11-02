@@ -3688,10 +3688,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				{
 					int i = 0;
 					while(i++ < 1000) {
-						sd->tk_mission_target = MOB_ID_MIN + atn_rand()%(MOB_ID_MAX-MOB_ID_MIN);
+						sd->tk_mission_target = mobdb_searchrandomid(1,sd->status.base_level);
 						if(mob_db[sd->tk_mission_target].max_hp <= 0)
-							continue;
-						if(mob_db[sd->tk_mission_target].summonper[0] == 0)	// 枝で呼ばれないのは除外
 							continue;
 						if(mob_db[sd->tk_mission_target].mode&0x20)	// ボス属性除外
 							continue;

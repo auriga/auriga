@@ -24,7 +24,10 @@
 
 #define MOB_ID_MIN 1001
 #define MOB_ID_MAX 2001
-#define MAX_RANDOMMONSTER 3
+#define MOB_ID_DEFAULT 1002
+#define MAX_RAND_MOB_TYPE	10
+#define MAX_RAND_MOB_ENTRY	1000
+#define MAX_RAND_MOB_AMOUNT	10000
 #define ITEM_DROP_COUNT 10
 
 #define MIN_MOBTHINKTIME 100
@@ -68,11 +71,19 @@ struct mob_db {
 	short group_id;
 	unsigned char sex,pcview_flag;
 	unsigned int option;
-	int summonper[MAX_RANDOMMONSTER];
 	int maxskill;
 	struct mob_skill skill[MAX_MOBSKILL];
 };
 extern struct mob_db *mob_db;
+
+struct random_mob_data {
+	struct {
+		int class_;
+		unsigned short lv;
+		int qty;
+	} data[MAX_RAND_MOB_ENTRY];
+	int entry;
+};
 
 enum {
 	MST_TARGET = 0,
@@ -155,6 +166,7 @@ enum {
 
 int mobdb_searchname(const char *str);
 int mobdb_checkid(const int mob_id);
+int mobdb_searchrandomid(int type,unsigned int lv);
 
 int mob_once_spawn(struct map_session_data *sd,const char *mapname,
 	int x,int y,const char *mobname,int class_,int amount,const char *event);

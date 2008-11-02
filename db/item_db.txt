@@ -103,7 +103,7 @@
 601,Fly_Wing,ハエの羽,2,60,,50,,,,,1000333311,2,,,,,,{ warp "Random",0,0; },{}
 602,Butterfly_Wing,蝶の羽,2,300,,50,,,,,1000333311,2,,,,,,{ warp "SavePoint",0,0; },{}
 603,Old_Blue_Box,古く青い箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_BLUE_BOX,1,0; },{}
-604,Dead_Branch,古木の枝,2,50,,50,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",-1,1,""; },{}
+604,Dead_Branch,古木の枝,2,50,,50,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",RAND_BRANCH,1,""; },{}
 605,Anodyne,アンティペインメント,2,2000,,100,,,,,1000333311,2,,,,,,{ itemskill 8,1,"アンティペインメント"; },{}
 606,Aloevera,アロエベラ,2,1500,,100,,,,,1000333311,2,,,,,,{ sc_end SC_PROVOKE; sc_start SC_PROVOKE,30000,1; npcskillsupport 6,1; },{}
 607,Yggdrasilberry,イグドラシルの実,0,5000,,300,,,,,1000333311,2,,,,,,{ percentheal 100,100; },{}
@@ -3265,13 +3265,13 @@
 12100,Nine_Tail_Dish,九尾狐のしっぽ料理,2,100000,,500,,,,,1000333311,2,,,,,,{ sc_start SC_MLUK,1200000,10; percentheal 14,8; },{}
 12101,Citron,柚,2,,,300,,,,,1000333311,2,,,,,,{ sc_start SC_MFLEE,180000,30; },{}
 12102,Grilled_Skewer,焼き串,2,,,300,,,,,1000333311,2,,,,,,{ sc_start SC_MHIT,180000,30; },{}
-12103,Bloody_Branch,血塗られた古木の枝,2,10000,,200,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",-3,1,""; },{}
+12103,Bloody_Branch,血塗られた古木の枝,2,10000,,200,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",RAND_BLOODY_BRANCH,1,""; },{}
 12104,Random_Quiver,ランダム矢筒,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_QUIVER,1; },{}
 12105,Taming_Item_Giftset,テイミングプレゼントセット,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_TAIMING,3,0; },{}
 12106,Jewel_Box,宝石箱,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_ACCESSORY,1,0; },{}
 12107,Wrapped_Mask,包装された仮面,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_MASK,1,0; },{}
 12108,Bundle_of_Spells,呪文書の束,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_SCROLL,5; },{}
-12109,Poring_Box,ポリンボックス,2,10000,,200,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",-2,1; monster "this",0,0,"--ja--",-2,1; monster "this",0,0,"--ja--",-2,1; },{}
+12109,Poring_Box,ポリンボックス,2,10000,,200,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",RAND_PORING_BOX,1; monster "this",0,0,"--ja--",RAND_PORING_BOX,1; monster "this",0,0,"--ja--",RAND_PORING_BOX,1; },{}
 12110,First_Aid_Box,救急箱,2,10000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_FIRST_AID,5; },{}
 12111,Wrapped_Food,食料包み,2,,,200,,,,,1000333311,2,,,,,,{ getitem RAND_FOOD,3; },{}
 12112,Tropical_Sograt,トロピカル・ソグラト,2,1000,,100,,,,,1000333311,2,,,,,,{ sc_start2 SC_Curse,5000,0,10000; },{}

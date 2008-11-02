@@ -1565,7 +1565,7 @@ static int read_homundb(void)
 			printf("can't read %s\n",filename[i]);
 			return -1;
 		}
-		lines=0;
+		lines=count=0;
 		while(fgets(line,sizeof(line),fp)){
 			int nameid;
 			char *str[32],*p,*np;

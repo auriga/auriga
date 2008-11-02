@@ -58,7 +58,7 @@
 static struct mob_db mob_db_real[MOB_ID_MAX-MOB_ID_MIN];
 struct mob_db *mob_db = &mob_db_real[-MOB_ID_MIN];
 
-static int mob_dummy_class[MAX_RANDOMMONSTER];	// ランダムモンスター選択失敗時のダミーID
+static struct random_mob_data random_mob[MAX_RAND_MOB_TYPE];
 
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
@@ -95,6 +95,32 @@ int mobdb_checkid(const int mob_id)
 			return mob_id;
 	}
 	return 0;
+}
+
+/*==========================================
+ * ランダム系モンスター検索
+ *------------------------------------------
+ */
+int mobdb_searchrandomid(int type,unsigned int lv)
+{
+	int c;
+
+	// typeは1以上なのでデクリメントする
+	type--;
+	if(type < 0 || type >= MAX_RAND_MOB_TYPE)
+		return MOB_ID_DEFAULT;
+
+	c = random_mob[type].entry;
+	if(battle_config.random_monster_checklv) {
+		for(; c > 1 && random_mob[type].data[c-1].lv > lv; c--);
+	}
+	if(c > 0 && random_mob[type].data[c-1].qty > 0) {
+		int i, num = atn_rand() % random_mob[type].data[c-1].qty;
+		for(i=0; i < c && num >= random_mob[type].data[i].qty; i++);
+
+		return random_mob[type].data[i].class_;
+	}
+	return MOB_ID_DEFAULT;
 }
 
 /*==========================================
@@ -157,22 +183,7 @@ int mob_once_spawn(struct map_session_data *sd,const char *mapname,
 	lv = (sd)? sd->status.base_level: MAX_LEVEL;
 
 	if(class_ < 0) {	// ランダムに召喚
-		int k, i = 0;
-		int j = -class_ - 1;
-
-		if(j >= 0 && j < MAX_RANDOMMONSTER) {
-			do {
-				class_ = atn_rand()%(MOB_ID_MAX-MOB_ID_MIN) + MOB_ID_MIN;
-				k = atn_rand()%1000000;
-			} while((mob_db[class_].max_hp <= 0 || mob_db[class_].summonper[j] <= k ||
-			        (lv < mob_db[class_].lv && battle_config.random_monster_checklv)) && (i++) < MOB_ID_MAX);
-
-			if(i >= MOB_ID_MAX) {
-				class_ = mob_dummy_class[j];
-			}
-		} else {
-			return 0;
-		}
+		class_ = mobdb_searchrandomid(-class_,lv);
 	}
 	if(sd) {
 		if(x <= 0) x = sd->bl.x;
@@ -1699,10 +1710,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			{
 				int c = 0;
 				while(c++ < 1000) {
-					sd->tk_mission_target = atn_rand()%(MOB_ID_MAX-MOB_ID_MIN) + MOB_ID_MIN;
+					sd->tk_mission_target = mobdb_searchrandomid(1,sd->status.base_level);
 					if(mob_db[sd->tk_mission_target].max_hp <= 0)
-						continue;
-					if(mob_db[sd->tk_mission_target].summonper[0] == 0)	// 枝で呼ばれないのは除外
 						continue;
 					if(mob_db[sd->tk_mission_target].mode & 0x20)	// ボス属性除外
 						continue;
@@ -2292,21 +2301,12 @@ static int mob_class_change_id(struct mob_data *md,int mob_id)
  */
 int mob_class_change_randam(struct mob_data *md,int lv)
 {
-	int i = 0, k;
 	int class_ = 1002;
 
 	nullpo_retr(0, md);
 
-	// mob_branch.txtからランダムに召喚
-	do {
-		class_ = atn_rand()%(MOB_ID_MAX-MOB_ID_MIN) + MOB_ID_MIN;
-		k = atn_rand()%1000000;
-	} while((mob_db[class_].max_hp <= 0 || mob_db[class_].summonper[0] <= k ||
-	        (lv < mob_db[class_].lv && battle_config.random_monster_checklv)) && (i++) < MOB_ID_MAX);
-
-	if(i >= MOB_ID_MAX) {
-		class_ = mob_dummy_class[0];
-	}
+	//古木の枝召喚リストからランダムに召喚
+	class_ = mobdb_searchrandomid(1,lv);
 
 	return mob_class_change_id(md,class_);
 }
@@ -3552,9 +3552,6 @@ static int mob_makedummymobdb(int class_)
 		mob_db[class_].mvpitem[i].nameid = 0;
 		mob_db[class_].mvpitem[i].p      = 0;
 	}
-	for(i=0; i<MAX_RANDOMMONSTER; i++) {
-		mob_db[class_].summonper[i] = 0;
-	}
 	return 0;
 }
 
@@ -3670,9 +3667,6 @@ static int mob_readdb(void)
 				mob_db[class_].mvpitem[i].p = atoi(str[num+1])*battle_config.mvp_item_rate/100;
 			}
 
-			for(i=0; i<MAX_RANDOMMONSTER; i++) {
-				mob_db[class_].summonper[i] = 0;
-			}
 			mob_db[class_].maxskill      = 0;
 			mob_db[class_].view_size     = 0;
 			mob_db[class_].sex           = 0;
@@ -3806,47 +3800,70 @@ static int mob_read_randommonster(void)
 	FILE *fp;
 	char line[1024];
 	char *str[3],*p;
-	int i,j;
+	int randomid,class_,range,i,c;
+	unsigned int lv;
 
-	const char* mobfile[MAX_RANDOMMONSTER] = {
-		"db/mob_branch.txt",
-		"db/mob_poring.txt",
-		"db/mob_boss.txt",
-	};
+	memset(&random_mob, 0, sizeof(random_mob));
 
-	for(i=0; i<MAX_RANDOMMONSTER; i++) {
-		mob_dummy_class[i] = 1002;	// 設定し忘れた場合はポリンが出るようにしておく
-		fp=fopen(mobfile[i],"r");
-		if(fp==NULL){
-			printf("can't read %s\n",mobfile[i]);
-			return -1;
-		}
-		while(fgets(line,1020,fp)){
-			int class_,per;
-			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
-				continue;
-			if(line[0] == '/' && line[1] == '/')
-				continue;
-			memset(str,0,sizeof(str));
-			for(j=0,p=line;j<3 && p;j++){
-				str[j]=p;
-				p=strchr(p,',');
-				if(p) *p++=0;
-			}
-			if(str[0] == NULL || str[2] == NULL)
-				continue;
-
-			class_ = atoi(str[0]);
-			per    = atoi(str[2]);
-
-			if(class_ == 0)
-				mob_dummy_class[i] = per;
-			else if(mobdb_checkid(class_))
-				mob_db[class_].summonper[i] = per;
-		}
-		fclose(fp);
-		printf("read %s done\n",mobfile[i]);
+	if((fp = fopen("db/mob_random.txt","r")) == NULL) {
+		printf("can't read db/mob_random.txt\n");
+		return 0;
 	}
+
+	while(fgets(line,sizeof(line),fp)) {
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0] == '/' && line[1] == '/')
+			continue;
+		memset(str,0,sizeof(str));
+		for(i=0,p=line; i<3 && p; i++) {
+			str[i]=p;
+			p=strchr(p,',');
+			if(p) *p++=0;
+		}
+		if(str[0] == NULL || str[1] == NULL || str[2] == NULL)
+			continue;
+
+		randomid = atoi(str[0]) - 1;
+		if(randomid < 0 || randomid >= MAX_RAND_MOB_TYPE)
+			continue;
+		class_ = atoi(str[1]);
+		if(!mobdb_checkid(class_))
+			continue;
+		range = atoi(str[2]);
+		if(range < 1 || range >= MAX_RAND_MOB_ENTRY)
+			continue;
+		lv = mob_db[class_].lv;
+
+		c = random_mob[randomid].entry;
+		if(c >= MAX_RAND_MOB_ENTRY)
+			continue;
+		if(c > 0) {
+			if(random_mob[randomid].data[c-1].qty + range >= MAX_RAND_MOB_ENTRY)
+				continue;
+
+			//Lvの低い順に並び替え
+			for(i=0; i < c && random_mob[randomid].data[i].lv <= lv; i++);	//挿入位置の探索
+
+			//挿入処理
+			if(i < c) {
+				int j;
+				memmove(&random_mob[randomid].data[i+1],&random_mob[randomid].data[i],sizeof(random_mob[randomid].data[0]) * (c - i));
+				for(j=i+1; j <= c; j++)
+					random_mob[randomid].data[j].qty += range;
+			}
+			//前要素から加算
+			if(i > 0)
+				range += random_mob[randomid].data[i-1].qty;
+		} else i = 0;
+		random_mob[randomid].data[i].class_ = class_;
+		random_mob[randomid].data[i].lv = lv;
+		random_mob[randomid].data[i].qty = range;
+		random_mob[randomid].entry++;
+	}
+	fclose(fp);
+	printf("read db/mob_random.txt done\n");
+
 	return 0;
 }
 
