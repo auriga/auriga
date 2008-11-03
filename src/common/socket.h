@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <sys/types.h>
-#ifdef _WIN32
+#ifdef WINDOWS
 	#include <winsock.h>
 #else
 	#include <sys/socket.h>
@@ -96,7 +96,7 @@ struct socket_data {
 	void* session_data;
 	void* session_data2;
 	unsigned short server_port;
-#ifdef _WIN32
+#ifdef WINDOWS
 	SOCKET socket;
 #endif
 };

@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#ifndef _WIN32
+#ifndef WINDOWS
 	#include <sys/time.h>
 #endif
 #include <time.h>

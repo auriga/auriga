@@ -30,7 +30,7 @@
 
 #include <time.h>
 
-#ifdef _WIN32
+#ifdef WINDOWS
 #	include <windows.h>
 #else
 #	include <sys/types.h>
@@ -73,7 +73,7 @@ struct httpd_session_data {
 	int range_start, range_end, inst_len;	// 範囲開始位置、終了位置、エンティティ全体のサイズ
 
 	int cgi_state;
-#ifdef _WIN32
+#ifdef WINDOWS
 	HANDLE	cgi_hCIn, cgi_hPIn, cgi_hOut, cgi_hErr, cgi_hProcess;
 	DWORD cgi_dwProcessID;
 #else

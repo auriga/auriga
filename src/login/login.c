@@ -22,7 +22,7 @@
 #define DUMP_UNKNOWN_PACKET	1
 
 #include <sys/types.h>
-#ifndef _WIN32
+#ifndef WINDOWS
 	#include <sys/socket.h>
 	#include <netinet/in.h>
 	#include <sys/ioctl.h>
@@ -1018,7 +1018,7 @@ int mmo_auth(struct login_session_data* sd)
 	if(!sd)
 		return 1;
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	{
 		size_t len;
 		time_t time_;

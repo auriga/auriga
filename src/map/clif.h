@@ -22,7 +22,7 @@
 #ifndef _CLIF_H_
 #define _CLIF_H_
 
-#ifndef _WIN32
+#ifndef WINDOWS
 	#include <sys/types.h>
 	#include <sys/socket.h>
 	#include <netinet/in.h>

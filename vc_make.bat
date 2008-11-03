@@ -7,11 +7,14 @@ rem  - Visual C++ .NET (Visual C++ .NET 2002)
 rem  - Visual C++ .NET 2003
 rem  - Visual C++ Toolkit 2003
 rem  - Visual C++ 2005 (Express Edition 含む)
+rem  - Visual C++ 2008 Express Edition
+rem  - Visual C++ 2008 64bitコンパイル
 
 rem ----------------------------------------------------------------
 rem 共通設定
 echo vc_make.bat - Auriga makefile for Visual C++
 set __VCVER__=7
+set __BITTYPE__=x32
 
 rem ----------------------------------------------------------------
 rem パケット定義
@@ -45,6 +48,21 @@ rem call "C:\Program Files\Microsoft Visual Studio 8\VC\bin\VCVARS32.BAT"
 rem set __VCVER__=8
 rem ---- VC++ 2005 (Express以外) の設定ここまで
 
+rem ---- VC++ 2008 Express Edition の設定 / 必要ならコメントアウトをはずす
+rem set PATH=C:\Program Files\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
+rem set INCLUDE=C:\Program Files\Microsoft Visual Studio 9.0\VC\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
+rem set LIB=C:\Program Files\Microsoft Visual Studio 9.0\VC\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
+rem set __VCVER__=9
+rem ---- VC++ 2008 Express Edition の設定ここまで
+
+rem ---- VC++ 2008 64bitコンパイル (Express以外) の設定 / 必要ならコメントアウトをはずす
+rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bin;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE;%PATH%
+rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\altmfc\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include;%INCLUDE%
+rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\lib\amd64;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\x64;C:\Program Files (x86)\Microsoft Visual Studio 9.0\SDK\v2.0\lib\amd64;%LIB%
+rem set __VCVER__=9
+rem set __BITTYPE__=x64
+rem ---- VC++ 2008 64bitコンパイル (Express以外) の設定ここまで
+
 rem ---- VC++ .NET 2003 の設定 / 必要ならコメントアウトをはずす
 rem call "C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin\vcvars32.bat"
 rem ---- VC++ .NET 2003 の設定ここまで
@@ -64,8 +82,9 @@ rem set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.0\Include;%INCLUDE%
 rem set LIB=C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt;%LIB%
 
 rem ----------------------------------------------------------------
-rem VC8 で指定できないオプションの回避処理
+rem VC8以上 で指定できないオプションの回避処理
 if "%__VCVER__%"=="8" goto SKIPVC8
+if "%__VCVER__%"=="9" goto SKIPVC8
 set __OPT_OP__=/Op
 :SKIPVC8
 
@@ -168,7 +187,10 @@ if "%__ZLIB__%"=="" goto NOZLIB1
 set __LINKZLIB__=../common/zlib/*.obj
 :NOZLIB1
 
-set __opt1__=/I "../common/zlib/" /I "../common/" /D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS" /D "_CRT_SECURE_NO_DEPRECATE" %__PACKETDEF__% %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
+if "%__BITTYPE__%"=="x32" set __BITOPTION__=/D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS"
+if "%__BITTYPE__%"=="x64" set __BITOPTION__=/D "WIN64" /D "_WIN64"
+
+set __opt1__=/I "../common/zlib/" /I "../common/" /D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" %__BITOPTION__% %__PACKETDEF__% %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
 set __opt2__=/DEBUG %__FIXOPT2__% user32.lib %__LINKZLIB__% ../common/*.obj *.obj
 
 rem ----------------------------------------------------------------

@@ -109,7 +109,7 @@ typedef int32  intptr;
 // ---------------------
 #if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
 #	define BIGNUMCODE ".0f"
-#elif defined(_WIN32) && defined(_MSC_VER)
+#elif defined(WINDOWS) && defined(_MSC_VER)
 #	define BIGNUMCODE "I64d"
 #else
 #	define BIGNUMCODE "lld"
@@ -121,7 +121,7 @@ typedef int32  intptr;
 // ---------------------
 #include <string.h>
 
-#ifndef _WIN32
+#ifndef WINDOWS
 #	ifndef strcmpi
 #		define strcmpi  strcasecmp
 #	endif
@@ -163,7 +163,7 @@ typedef int32  intptr;
 // =====================
 // VC での追加処理
 // ---------------------
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(WINDOWS) && defined(_MSC_VER)
 
 #	define snprintf  _snprintf
 #	define vsnprintf _vsnprintf
@@ -174,7 +174,7 @@ typedef int32  intptr;
 // =====================
 // atn_rand() 定義
 // ---------------------
-#ifndef _WIN32
+#ifndef WINDOWS
 #	define RANDOMSTD2X
 
 #elif defined(_MSC_VER)

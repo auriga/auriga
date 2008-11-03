@@ -24,7 +24,7 @@
 
 #ifndef TXT_ONLY
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	#include <winsock.h>
 #else
 	#include <sys/socket.h>

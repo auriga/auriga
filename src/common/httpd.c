@@ -19,7 +19,7 @@
  *
  */
 
-#ifndef _WIN32
+#ifndef WINDOWS
 #	include <unistd.h>
 #	include <sys/time.h>
 #	include <sys/wait.h>
@@ -189,7 +189,7 @@ static int nonce_log_pos = 0;
 struct httpd_cgi_kill {
 	int state;
 	unsigned int tick;
-#ifdef _WIN32
+#ifdef WINDOWS
 	HANDLE hProcess;
 	DWORD dwProcessID;
 #else
@@ -1686,7 +1686,7 @@ const char* httpd_complement_file( const char* url, char* buf )
 
 	// ディレクトリだったらデフォルトを追加
 	{
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(WINDOWS) && defined(_MSC_VER)
 		struct _stat st;
 		if( _stat( file_buf, &st ) == 0 )
 #else
@@ -1751,7 +1751,7 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url)
 	// 日付確認
 	{
 		time_t date = 0;
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(WINDOWS) && defined(_MSC_VER)
 		struct _stat st;
 		if( _stat( file_buf, &st ) == 0 )
 #else
@@ -1876,7 +1876,7 @@ void httpd_send_bigfile( struct httpd_session_data* sd )
 	if( sd->date )
 	{
 		time_t date = 0;
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(WINDOWS) && defined(_MSC_VER)
 		struct _stat st;
 		if( _stat( file_buf, &st ) == 0 )
 #else
@@ -1935,7 +1935,7 @@ void httpd_cgi_log( struct httpd_session_data *sd, const char* str );
 
 #ifndef NO_HTTPD_CGI
 
-#ifdef _WIN32
+#ifdef WINDOWS
 
 // ヘルパマクロ定義
 #	define SAFE_CLOSEHANDLE(h)	if( h != INVALID_HANDLE_VALUE ) { CloseHandle(h); h = INVALID_HANDLE_VALUE; }
@@ -2791,7 +2791,7 @@ void httpd_page_cgi_calc_document_root( struct httpd_session_data *sd, char* pat
 	i=j=0;
 	if( document_root[0]!='/' && document_root[1]!=':' )	// 必要ならカレントディレクトリと結合
 	{
-#ifdef _WIN32
+#ifdef WINDOWS
 		i = GetCurrentDirectory( (DWORD)pathsize, path );
 #else
 		getcwd( path, pathsize );

@@ -29,7 +29,7 @@
 #include "timer.h"
 #include "grfio.h"
 
-#ifndef _WIN32
+#ifndef WINDOWS
 #	include <unistd.h>
 #endif
 

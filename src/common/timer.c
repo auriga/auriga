@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#ifdef _WIN32
+#ifdef WINDOWS
 #include <winsock.h>
 #else
 #include <sys/socket.h>
@@ -95,7 +95,7 @@ static int gettick_count;
 
 unsigned int gettick_nocache(void)
 {
-#ifdef _WIN32
+#ifdef WINDOWS
 	gettick_count = 256;
 	return gettick_cache = GetTickCount();
 #else

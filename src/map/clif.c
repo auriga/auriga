@@ -25,7 +25,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef _WIN32
+#ifndef WINDOWS
 	#include <unistd.h>
 	#include <stdarg.h>
 	#include <sys/types.h>
@@ -14497,7 +14497,7 @@ void do_init_clif(void)
 	for(i=0;i<10;i++){
 		if ((map_fd = make_listen_port(map_port, listen_ip)))
 			break;
-#ifdef _WIN32
+#ifdef WINDOWS
 		Sleep(20);
 #else
 		sleep(20);

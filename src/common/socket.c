@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#ifdef _WIN32
+#ifdef WINDOWS
 	#include <winsock.h>
 	#include <windows.h>
 	#pragma comment(lib,"ws2_32.lib")
@@ -49,7 +49,7 @@
 #include "utils.h"
 
 // socket.h でdefine されたcloseを置き換え
-#ifdef _WIN32
+#ifdef WINDOWS
 	#undef close
 	#define close(id) do{ if(session[id]) closesocket(session[id]->socket); } while(0);
 	#define sockfd(fd) (session[fd]->socket)
@@ -174,7 +174,7 @@ static int recv_to_fifo(int fd)
 			}
 		}
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	} else if (len == 0 || len == SOCKET_ERROR) {
 #else
 	} else if (len <= 0) {
@@ -208,7 +208,7 @@ static int send_from_fifo(int fd)
 			sd->wdata_size = sd->wdata + WFIFOREST(fd);
 			sd->wdata_pos  = sd->wdata;
 		}
-#ifdef _WIN32
+#ifdef WINDOWS
 	} else if (len == 0 || len == SOCKET_ERROR) {
 #else
 	} else {
@@ -232,11 +232,20 @@ static int null_parse(int fd)
  *	CORE : Socket Function
  *--------------------------------------
  */
+static int socket_close(int fd)
+{
+#ifdef WINDOWS
+	return closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
+#else
+	return close(fd);
+#endif
+}
+
 static int connect_client(int listen_fd)
 {
 	int len, yes, pos;
 	struct sockaddr_in client_address;
-#ifdef _WIN32
+#ifdef WINDOWS
 	SOCKET fd;
 #else
 	int fd;
@@ -244,7 +253,7 @@ static int connect_client(int listen_fd)
 
 	len = sizeof(client_address);
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	fd = accept(session[listen_fd]->socket, (struct sockaddr*)&client_address, &len);
 	if (fd == SOCKET_ERROR || fd == INVALID_SOCKET)
 		return -1;
@@ -256,35 +265,23 @@ static int connect_client(int listen_fd)
 
 	yes = 1;
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&yes, sizeof yes) != 0) {
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		return -1;
 	}
 #ifdef SO_REUSEPORT
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, (char *)&yes, sizeof yes) != 0) {
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		return -1;
 	}
 #endif
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&yes, sizeof yes) != 0) {
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		return -1;
 	}
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	{
 		// Set the socket I/O mode: In this case FIONBIO
 		// enables or disables the blocking mode for the
@@ -304,7 +301,7 @@ static int connect_client(int listen_fd)
 	}
 #endif
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	// Don't use the SO_LINGER option that destroy unsent socket's data immediately if closesocket() is called. [Eoe]
 	// A problem exists on http that closes immediatly the connection.
 	// SO_LINGER option -> http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winsock/winsock/closesocket_2.asp
@@ -312,15 +309,11 @@ static int connect_client(int listen_fd)
 #endif
 
 	if (!connect_check(*(unsigned long *)(&client_address.sin_addr))) {
-#ifdef _WIN32
-		closesocket(fd);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		return -1;
 	}
 
-#ifndef _WIN32
+#ifndef WINDOWS
 	// check array (in win32, the macro FD_CLR, FD_ISSET, FD_SET and FD_ZERO don't use array based on FD_SETSIZE [Eoe])
 	if (fd < 1 || fd >= FD_SETSIZE) { // don't check fd = 0, keyboard
 		close(fd);
@@ -329,7 +322,7 @@ static int connect_client(int listen_fd)
 #endif
 	FD_SET(fd, &readfds);
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	pos = 2;
 	while(session[pos] != NULL && pos < fd_max)
 		pos++;
@@ -343,7 +336,7 @@ static int connect_client(int listen_fd)
 	session[pos]->func_send   = send_from_fifo;
 	session[pos]->func_parse  = default_func_parse;
 	session[pos]->client_addr = client_address;
-#if _WIN32
+#ifdef WINDOWS
 	session[pos]->socket      = fd;
 #endif
 	session[pos]->tick        = gettick();
@@ -367,14 +360,14 @@ int make_listen_port(unsigned short port, unsigned long sip)
 	struct sockaddr_in server_address;
 	int yes, pos;
 	unsigned long result;
-#ifdef _WIN32
+#ifdef WINDOWS
 	SOCKET fd;
 #else
 	int fd;
 #endif
 
 	fd = socket(AF_INET, SOCK_STREAM, 0); // under winsock: SOCKET type is unsigned (http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winsock/winsock/porting_socket_applications_to_winsock.asp)
-#ifdef _WIN32
+#ifdef WINDOWS
 	if (fd == INVALID_SOCKET) {
 #else
 	if (fd == -1) {
@@ -386,37 +379,25 @@ int make_listen_port(unsigned short port, unsigned long sip)
 	yes = 1;
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&yes, sizeof yes) != 0) {
 		perror("make_listen_port: setsockopt (SO_REUSEADDR) error (socket.c).");
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		exit(1);
 	}
 #ifdef SO_REUSEPORT
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, (char *)&yes, sizeof yes) != 0) {
 		perror("make_listen_port: setsockopt (SO_REUSEPORT) error (socket.c).");
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		exit(1);
 	}
 #endif
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&yes, sizeof yes) != 0) {
 		perror("make_listen_port: setsockopt (TCP_NODELAY) error (socket.c).");
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		exit(1);
 	}
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	{
 		// Set the socket I/O mode: In this case FIONBIO
 		// enables or disables the blocking mode for the
@@ -438,7 +419,7 @@ int make_listen_port(unsigned short port, unsigned long sip)
 	}
 #endif
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	// Don't use the SO_LINGER option that destroy unsent socket's data immediately if closesocket() is called. [Eoe]
 	// A problem exists on http that closes immediatly the connection.
 	// SO_LINGER option -> http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winsock/winsock/closesocket_2.asp
@@ -452,26 +433,18 @@ int make_listen_port(unsigned short port, unsigned long sip)
 	result = bind(fd, (struct sockaddr*)&server_address, sizeof(server_address));
 	if (result != 0) { // error when not 0 (can be -1 or any other value)
 		perror("make_listen_port: bind error (socket.c).");
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		exit(1);
 	}
 
 	result = listen(fd, 5);
 	if (result != 0) { // error when not 0 (can be -1 or any other value)
 		perror("make_listen_port: listen error (socket.c).");
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		exit(1);
 	}
 
-#ifndef _WIN32
+#ifdef WINDOWS
 	// check array (in win32, the macro FD_CLR, FD_ISSET, FD_SET and FD_ZERO don't use array based on FD_SETSIZE [Eoe])
 	if (fd < 1 || fd >= FD_SETSIZE) { // don't check fd = 0, keyboard
 		perror("make_listen_port: fd < 1 || fd >= FD_SETSIZE error (socket.c).");
@@ -482,7 +455,7 @@ int make_listen_port(unsigned short port, unsigned long sip)
 
 	FD_SET(fd, &readfds);
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	pos = 2;
 	while(session[pos] != NULL && pos < fd_max)
 		pos++;
@@ -495,7 +468,7 @@ int make_listen_port(unsigned short port, unsigned long sip)
 	session[pos]->func_recv   = connect_client;
 	session[pos]->auth        = -1;
 	session[pos]->server_port = port;
-#ifdef _WIN32
+#ifdef WINDOWS
 	session[pos]->socket      = fd;
 #endif
 
@@ -511,14 +484,14 @@ int make_connection(unsigned long ip, unsigned short port)
 	struct sockaddr_in server_address;
 	int yes, pos;
 	unsigned long result;
-#ifdef _WIN32
+#ifdef WINDOWS
 	SOCKET fd;
 #else
 	int fd;
 #endif
 
 	fd = socket(AF_INET, SOCK_STREAM, 0); // under winsock: SOCKET type is unsigned (http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winsock/winsock/porting_socket_applications_to_winsock.asp)
-#ifdef _WIN32
+#ifdef WINDOWS
 	if (fd == INVALID_SOCKET) {
 #else
 	if (fd == -1) {
@@ -530,37 +503,25 @@ int make_connection(unsigned long ip, unsigned short port)
 	yes = 1;
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&yes, sizeof yes) != 0) {
 		perror("make_connection: setsockopt (SO_REUSEADDR) error (socket.c).");
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		return -1;
 	}
 #ifdef SO_REUSEPORT
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, (char *)&yes, sizeof yes) != 0) {
 		perror("make_connection: setsockopt (SO_REUSEPORT) error (socket.c).");
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		return -1;
 	}
 #endif
 	yes = 1; // set again value. it can be changed by previous call
 	if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&yes, sizeof yes) != 0) {
 		perror("make_connection: setsockopt (TCP_NODELAY) error (socket.c).");
-#ifdef _WIN32
-		closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
-#else
-		close(fd);
-#endif
+		socket_close(fd);
 		return -1;
 	}
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	{
 		// Set the socket I/O mode: In this case FIONBIO
 		// enables or disables the blocking mode for the
@@ -582,7 +543,7 @@ int make_connection(unsigned long ip, unsigned short port)
 	}
 #endif
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	// Don't use the SO_LINGER option that destroy unsent socket's data immediately if closesocket() is called. [Eoe]
 	// A problem exists on http that closes immediatly the connection.
 	// SO_LINGER option -> http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winsock/winsock/closesocket_2.asp
@@ -596,7 +557,7 @@ int make_connection(unsigned long ip, unsigned short port)
 	result = connect(fd, (struct sockaddr *)(&server_address), sizeof(struct sockaddr_in));
 	if (result != 0) {
 		// 接続失敗
-#ifdef _WIN32
+#ifdef WINDOWS
 		if (WSAGetLastError() != WSAEWOULDBLOCK) {
 			printf("make_connection: connect error (socket.c) %08x:%d\n", (int)ip, port);
 			closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
@@ -611,7 +572,7 @@ int make_connection(unsigned long ip, unsigned short port)
 #endif
 	}
 
-#ifndef _WIN32
+#ifdef WINDOWS
 	// check array (in win32, the macro FD_CLR, FD_ISSET, FD_SET and FD_ZERO don't use array based on FD_SETSIZE [Eoe])
 	if (fd < 1 || fd >= FD_SETSIZE) { //don't check fd = 0, keyboard
 		perror("make_connection: fd < 1 || fd >= FD_SETSIZE error (socket.c).");
@@ -622,7 +583,7 @@ int make_connection(unsigned long ip, unsigned short port)
 
 	FD_SET(fd, &readfds);
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	pos = 2;
 	while(session[pos] != NULL && pos < fd_max)
 		pos++;
@@ -635,7 +596,7 @@ int make_connection(unsigned long ip, unsigned short port)
 	session[pos]->func_recv     = recv_to_fifo;
 	session[pos]->func_send     = send_from_fifo;
 	session[pos]->func_parse    = default_func_parse;
-#if _WIN32
+#ifdef WINDOWS
 	session[pos]->socket        = fd;
 #endif
 	session[pos]->func_destruct = default_func_destruct;
@@ -667,7 +628,7 @@ void delete_session(int fd)
 			session[fd]->func_destruct(fd);
 		close(fd);
 		FD_CLR(sockfd(fd), &readfds);
-#ifdef _WIN32
+#ifdef WINDOWS
 		SessionRemoveSocket(sockfd(fd));
 #endif
 		if (session[fd]->rdata)
@@ -764,7 +725,7 @@ void WFIFOSET(int fd, size_t len)
 	return;
 }
 
-#ifdef _WIN32
+#ifdef WINDOWS
 
 // the windows fd_set structures are simple
 // typedef struct fd_set {
@@ -908,7 +869,7 @@ static void process_fdset(fd_set* rfd, fd_set* wfd)
 	return;
 }
 
-#else /* _WIN32 */
+#else /* WINDOWS */
 
 // some unix, might work on darwin as well
 
@@ -998,7 +959,7 @@ static void process_fdset(fd_set* rfd, fd_set* wfd)
 
 	return;
 }
-#endif /* _WIN32 */
+#endif /* WINDOWS */
 
 void do_sendrecv(int next)
 {
@@ -1472,7 +1433,7 @@ void do_socket(void)
 {
 	FD_ZERO(&readfds);
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	{
 		WSADATA wsaData;
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {

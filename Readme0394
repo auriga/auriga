@@ -1,4 +1,20 @@
 ----------------------------------------
+//0567 [2008/11/04] by Rayce
+
+・vc_make.batにVC++2008 64bitコンパイルの記述を追加
+	64bitコンパイルを正式対応します
+	現時点ではLLP64（Windows）のみ対応です
+	LP64（UNIX/Linux）の対応は今しばらくお待ちください
+
+・vc_make.batにVC++2008ExpressEditionの記述を追加
+	thanks to poporiさん
+
+・WindowsとUNIX/Linuxの判定は、「_WIN32」ではなく「WINDOWS」の
+　#defineを参照するように統一
+	-> bcc32_make.batにWINDOWSの定義を追加
+	-> vc_make.batにWINDOWSの定義を追加
+
+----------------------------------------
 //0566 [2008/11/03] by Rayce
 
 ・Mobの死亡時スキル発動が正常に動作しない問題を修正（mob.c）

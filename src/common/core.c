@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef _WIN32
+#ifdef WINDOWS
 #	include <windows.h>
 #else
 #	include <unistd.h>
@@ -54,7 +54,7 @@ int packet_parse_time = 0;
 
 static volatile int auriga_is_running = 1;
 
-#ifdef _WIN32
+#ifdef WINDOWS
 static BOOL WINAPI core_CtrlHandlerRoutine( DWORD dwCtrlType )
 {
 	auriga_is_running = 0;
@@ -105,7 +105,7 @@ static void pid_create(const char* file)
 	strcat(pid_file, ".pid");
 	fp = lock_fopen(pid_file, &lock);
 	if(fp) {
-#ifdef _WIN32
+#ifdef WINDOWS
 		fprintf(fp,"%lu", (unsigned long)GetCurrentProcessId());
 #else
 		fprintf(fp,"%d", getpid());
@@ -128,7 +128,7 @@ double uptime(void)
 	return (now - boot) / 86400.0;
 }
 
-#ifdef _WIN32
+#ifdef WINDOWS
 
 #include <imagehlp.h>
 #pragma comment(lib, "imagehlp.lib")
@@ -330,7 +330,7 @@ int main(int argc,char **argv)
 	do_socket();
 	printf("PACKETVER: %d\n", PACKETVER);
 
-#ifdef _WIN32
+#ifdef WINDOWS
 	SetConsoleCtrlHandler( core_CtrlHandlerRoutine, TRUE );
 	SetUnhandledExceptionFilter( core_ExceptionRoutine );
 

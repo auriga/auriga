@@ -24,7 +24,7 @@
 #define DUMP_UNKNOWN_PACKET	1
 
 #include <sys/types.h>
-#ifndef _WIN32
+#ifndef WINDOWS
 	#include <sys/socket.h>
 	#include <sys/ioctl.h>
 	#include <unistd.h>

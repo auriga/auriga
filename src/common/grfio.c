@@ -56,7 +56,7 @@
 
 #define GRF_HEADER "Master of Magic"
 
-#if defined(_WIN32) && !defined(LOCALZLIB)
+#if defined(WINDOWS) && !defined(LOCALZLIB)
 	#include <windows.h>
 	#include "zlib\zlib.h"
 	HINSTANCE zlib_dll;
@@ -958,7 +958,7 @@ static void grfio_final(void)
 	}
 	gentry_entrys = 0;
 
-#if defined(_WIN32) && !defined(LOCALZLIB)
+#if defined(WINDOWS) && !defined(LOCALZLIB)
 	FreeLibrary(zlib_dll);
 	zlib_inflateInit_ = NULL;
 	zlib_inflate      = NULL;
@@ -974,7 +974,7 @@ static void grfio_final(void)
  */
 void grfio_load_zlib(void)
 {
-#if defined(_WIN32) && !defined(LOCALZLIB)
+#if defined(WINDOWS) && !defined(LOCALZLIB)
 	if(!zlib_dll) {
 		zlib_dll = LoadLibrary("zlib.dll");
 		if(zlib_dll == NULL) {
