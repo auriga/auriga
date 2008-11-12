@@ -24,7 +24,7 @@
 
 #define AURIGA_MAJOR_VERSION	0	// Major Version
 #define AURIGA_MINOR_VERSION	0	// Minor Version
-#define AURIGA_REVISION			394	// Revision
+#define AURIGA_REVISION			569	// Revision
 
 #define AURIGA_RELEASE_FLAG		1	// 1=Develop,0=Stable
 #define AURIGA_OFFICIAL_FLAG	0	// 1=Mod,0=Official

@@ -1,0 +1,10 @@
+----------------------------------------
+//0569 [2008/11/13] by Rayce
+
+・サーバースナップショット（version.h）
+
+・不要なファイルを削除
+	db/random/*.txt
+	db/mob_branch.txt
+	db/mob_poring.txt
+	db/mob_boss.txt
