@@ -562,6 +562,48 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 }
 
 /*==========================================
+ * 接触型のNPC処理(NPC用)
+ *------------------------------------------
+ */
+int npc_touch_areanpc2(struct mob_data *md,int m,int x,int y)
+{
+	int i, id, xs, ys;
+	struct npc_data *nd = NULL;
+
+	for(i=0;i<map[m].npc_num;i++) {
+		nd = map[m].npc[i];
+
+		if (nd->flag&1) {	// 無効化されている
+			continue;
+		}
+		if(nd->subtype == SCRIPT) {
+			xs=nd->u.scr.xs;
+			ys=nd->u.scr.ys;
+			if (x < nd->bl.x-xs/2 || x >= nd->bl.x-xs/2+xs ||
+			    y < nd->bl.y-ys/2 || y >= nd->bl.y-ys/2+ys)
+				continue;
+			if(md->sc.data[SC_FORCEWALKING].timer == -1) {
+				struct event_data *ev = NULL;
+				char name[50];
+
+				if(md->areanpc_id==nd->bl.id)
+					return 1;
+				sprintf(name, "%s::OnTouchNPC", nd->exname);
+				ev = strdb_search(ev_db,name);
+				if(ev == NULL || ev->nd == NULL)
+					return 1;
+				md->areanpc_id=nd->bl.id;
+				id = md->bl.id;
+				run_script(ev->nd->u.scr.script, ev->pos, md->bl.id, ev->nd->bl.id);
+				if(map_id2md(id) == NULL)
+					return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+/*==========================================
  * 近くかどうかの判定
  *------------------------------------------
  */

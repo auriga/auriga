@@ -4620,16 +4620,28 @@ int buildin_warp(struct script_state *st)
 {
 	int x,y;
 	char *str;
-	struct map_session_data *sd=script_rid2sd(st);
+	struct block_list *bl = map_id2bl(st->rid);
 
-	nullpo_retr(0, sd);
+	nullpo_retr(0, bl);
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	x=conv_num(st,& (st->stack->stack_data[st->start+3]));
 	y=conv_num(st,& (st->stack->stack_data[st->start+4]));
 
-	script_warp(sd, str, x, y);
+	if(bl->type == BL_PC) {
+		struct map_session_data *sd = (struct map_session_data *)bl;
 
+		script_warp(sd, str, x, y);
+	}
+	else if(bl->type == BL_MOB) {
+		struct mob_data *md = (struct mob_data *)bl;
+		int m = map_mapname2mapid(str);
+
+		if(strcmp(str,"Random")==0)
+			mob_warp(md,-1,-1,-1,3);
+		else if(m)
+			mob_warp(md,m,x,y,3);
+	}
 	return 0;
 }
 

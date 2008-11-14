@@ -7581,7 +7581,7 @@ rachel.gat,157,183,3	script	信徒ウスティアラー	916,{
 	end;
 }
 
-ice_dun02.gat,120,105,3	script	氷の中の男#ra	924,{
+ice_dun02.gat,120,105,3	script	氷の中の男#ra	924,5,5,{
 	switch(RA_5QUE) {
 	default:
 		end;
@@ -8071,10 +8071,10 @@ OnTimer10800000:
 	announce "どれだけ時間が経ったんだ……私は一生このままなのか？　くそ……",9,0xFFCE00;
 	initnpctimer;
 	end;
-//OnTouch2:	//Mobに対して発動
-//	emotion 29;
-//	emotion 6;
-//	end;
+OnTouchNPC:
+	emotion 29,"";
+	emotion 6;
+	end;
 }
 
 rachel.gat,264,98,3	script	ハミオン	930,{

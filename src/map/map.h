@@ -737,6 +737,7 @@ struct mob_data {
 	short guardup_lv;
 	int ai_pc_count; // 近くにいるPCの数
 	struct mob_data *ai_next, *ai_prev; // まじめAI用のリンクリスト
+	int areanpc_id;
 };
 
 struct pet_skill_attack {

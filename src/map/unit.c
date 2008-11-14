@@ -351,6 +351,12 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		else
 			sd->areanpc_id=0;
 	}
+	else if(md) {
+		if(map_getcell(bl->m,x,y,CELL_CHKNPC))
+			npc_touch_areanpc2(md,bl->m,x,y);
+		else
+			md->areanpc_id=0;
+	}
 
 	ud->walkpath.path_pos++;
 	if(ud->state.change_walk_target) {

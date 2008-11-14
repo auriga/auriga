@@ -434,6 +434,8 @@ int mob_spawn(int id)
 	clif_spawnmob(md);
 	mob_ai_hard_spawn( &md->bl, 1 );
 	mobskill_use(md, tick, MSC_SPAWN);
+	if(map_getcell(md->bl.m,md->bl.x,md->bl.y,CELL_CHKNPC))
+		npc_touch_areanpc2(md,md->bl.m,md->bl.x,md->bl.y);
 
 	return 0;
 }

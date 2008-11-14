@@ -3216,6 +3216,9 @@ AurigaNPCScript
 			範囲NPCの有効範囲にPCが入った場合に実行されます。
 			OnTouchを設定するNPCの名前はサーバー内でユニークな物にしなければなりません。
 
+		OnTouchNPCラベル
+			範囲NPCの有効範囲にNPCが入った場合に実行されます。（現在はMobのみ）
+			OnTouchNPCを設定するNPCの名前はサーバー内でユニークな物にしなければなりません。
 
 	＊OnPCイベントラベル
 

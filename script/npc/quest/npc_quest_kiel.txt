@@ -2569,6 +2569,17 @@ kh_dun01.gat,163,223,4	script	看板	857,{
 	close;
 }
 
+kh_dun01.gat,200,220,0	script	MonsterWarp#kiel1	139,5,20,{
+	end;
+OnTouchNPC:
+	warp "kh_dun01.gat",178,138;
+	end;
+}
+kh_dun01.gat,190,220,0	duplicate(MonsterWarp#kiel1)	MonsterWarp#kiel2	139,5,20
+kh_dun01.gat,180,220,0	duplicate(MonsterWarp#kiel1)	MonsterWarp#kiel3	139,5,20
+kh_dun01.gat,210,220,0	duplicate(MonsterWarp#kiel1)	MonsterWarp#kiel4	139,5,20
+kh_dun01.gat,220,220,0	duplicate(MonsterWarp#kiel1)	MonsterWarp#kiel5	139,5,20
+
 kh_dun01.gat,166,223,0	script	機械装置#kiel1	111,{
 	mes "-何かを入れることができる";
 	mes "機械装置だ-";

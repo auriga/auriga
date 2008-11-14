@@ -1,4 +1,21 @@
 ----------------------------------------
+//0570 [2008/11/15] by Blaze
+
+・AthenaProject Rev.499, Rev.518よりmerge
+　（npc.*, map.h, unit.c, mob.c, doc/script_ref.txt）
+	-> NPC接触判定にMob対応のOnTouchNPCラベルを追加
+	-> モンスター出現時にOnTouchNPC判定をするように修正
+
+・AthenaProject Rev.502, Rev.504よりmerge
+　（script.c, npc_quest_kiel.txt）
+	-> スクリプト命令「warp」をMob対象でも対応化
+	-> 機械人形工場1FのクエストエリアにMob禁止NPCを実装
+
+・AthenaProject Rev.500よりmerge
+　（npc_town_rachel.txt）
+	-> ラヘルクエストの一部NPCにOnTouchNPC実装
+
+----------------------------------------
 //0569 [2008/11/13] by Rayce
 
 ・サーバースナップショット（version.h）

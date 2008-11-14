@@ -28,7 +28,8 @@
 
 int npc_event_dequeue(struct map_session_data *sd);
 int npc_event(struct map_session_data *sd,const char *npcname);
-int npc_touch_areanpc(struct map_session_data *,int,int,int);
+int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y);
+int npc_touch_areanpc2(struct mob_data *md,int m,int x,int y);
 void npc_click(struct map_session_data *sd, int id);
 void npc_scriptcont(struct map_session_data *sd, int id);
 void npc_buysellsel(struct map_session_data *sd, int id, unsigned char type);
