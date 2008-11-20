@@ -3684,12 +3684,12 @@
 12212,Giant_Fly_Wing,巨大なハエの羽,2,,,10,,,,,1000333311,2,,,,,,{ callfunc "ItemdbPartyCall"; },{}
 12213,Neuralizer,キラキラスティック,2,,,0,,,,,1000333311,2,,,,,,{ callfunc "ItemdbResetSkill"; },{}
 12214,Convex_Mirror,凸面鏡,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_BOSSMAPINFO,600000,0; },{}
-12215,Blessing_10,ブレッシングLv10,2,,,10,,,,,1000333311,2,,,,,,{ sc_end SC_BLESSING; sc_start SC_BLESSING,240000,10; npcskillsupport 34,10; },{}
-12216,Increase_Agility_10,速度増加Lv10,2,,,10,,,,,1000333311,2,,,,,,{ sc_end SC_INCREASEAGI; sc_start SC_INCREASEAGI,240000,10; npcskillsupport 29,10; },{}
-12217,Aspersio_5,アスペルシオLv5,2,,,10,,,,,1000333311,2,,,,,,{ itemskill 68,5,""; },{}
-12218,Assumptio_5,アスムプティオLv5,2,,,10,,,,,1000333311,2,,,,,,{ sc_end SC_ASSUMPTIO; sc_start SC_ASSUMPTIO,60000,5; npcskillsupport 361,5; },{}
-12219,Wind_Walk_10,ウィンドウォークLv10,2,,,10,,,,,1000333311,2,,,,,,{ itemskill 383,10,""; },{}
-12220,Adrenaline_Rush_5,アドレナリンラッシュLv5,2,,,10,,,,,1000333311,2,,,,,,{ itemskill 111,5,""; },{}
+12215,Blessing_10,ブレッシングLv10,2,,,10,,,,,1000333311,2,,,,,,{ if(checksit() || checkcasting()) end; sc_end SC_BLESSING; sc_start SC_BLESSING,240000,10; npcskillsupport 34,10; },{}
+12216,Increase_Agility_10,速度増加Lv10,2,,,10,,,,,1000333311,2,,,,,,{ if(checksit() || checkcasting()) end; sc_end SC_INCREASEAGI; sc_start SC_INCREASEAGI,240000,10; npcskillsupport 29,10; },{}
+12217,Aspersio_5,アスペルシオLv5,2,,,10,,,,,1000333311,2,,,,,,{ sc_end SC_ASPERSIO; sc_start SC_ASPERSIO,180000,5; npcskillsupport 68,5; },{}
+12218,Assumptio_5,アスムプティオLv5,2,,,10,,,,,1000333311,2,,,,,,{ if(checksit() || checkcasting()) end; sc_end SC_ASSUMPTIO; sc_start SC_ASSUMPTIO,60000,5; npcskillsupport 361,5; },{}
+12219,Wind_Walk_10,ウィンドウォークLv10,2,,,10,,,,,1000333311,2,,,,,,{ if(checksit() || checkcasting()) end; sc_end SC_WINDWALK; sc_start SC_WINDWALK,400000,10; npcskillsupport 383,10; },{}
+12220,Adrenaline_Rush_5,アドレナリンラッシュLv5,2,,,10,,,,,1000333311,2,,,,,,{ if(checksit() || checkcasting()) end; itemskill 111,5,""; },{}
 12221,Megaphone_,拡声器,2,,,10,,,,,1000333311,2,,,,,,{},{}
 
 12225,Sweet_Candy_Cane,甘いスティックキャンディ,2,,,50,,,,,1000333311,2,,,,,,{ pet 1245; },{}

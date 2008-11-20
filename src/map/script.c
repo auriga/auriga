@@ -3915,6 +3915,7 @@ int buildin_checkfalcon(struct script_state *st);
 int buildin_checkriding(struct script_state *st);
 int buildin_checksit(struct script_state *st);
 int buildin_checkdead(struct script_state *st);
+int buildin_checkcasting(struct script_state *st);
 int buildin_adoption(struct script_state *st);
 int buildin_breakadoption(struct script_state *st);
 int buildin_petskillattack(struct script_state *st);
@@ -4171,6 +4172,7 @@ struct script_function buildin_func[] = {
 	{buildin_checkriding,"checkriding",""},
 	{buildin_checksit,"checksit",""},
 	{buildin_checkdead,"checkdead",""},
+	{buildin_checkcasting,"checkcasting",""},
 	{buildin_adoption,"adoption","s*"},
 	{buildin_breakadoption,"breakadoption","*"},
 	{buildin_petskillattack,"petskillattack","iiii"},
@@ -10080,6 +10082,19 @@ int buildin_checkdead(struct script_state *st)
 	struct map_session_data *sd = script_rid2sd(st);
 
 	push_val(st->stack,C_INT,(unit_isdead(&sd->bl)) ? 1 : 0);
+
+	return 0;
+}
+
+/*==========================================
+ * 詠唱しているかどうか
+ *------------------------------------------
+ */
+int buildin_checkcasting(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	push_val(st->stack,C_INT,(sd->ud.skilltimer != -1) ? 1 : 0);
 
 	return 0;
 }

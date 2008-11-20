@@ -2786,6 +2786,11 @@ AurigaNPCScript
 
 			死亡していたら１を、そうでなければ０を返します
 
+		checkcasting関数
+			checkcasting()
+
+			詠唱していたら１を、そうでなければ０を返します
+
 		adoption関数
 			adoption(<parent1>[,<parent2>])
 
