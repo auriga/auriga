@@ -288,9 +288,6 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	}
 	ud->walktimer = -1;
 
-	if(md && md->sc.option&4)
-		skill_check_cloaking(bl);
-
 	if(sd) {
 		if(sd->status.party_id > 0 && party_search(sd->status.party_id) != NULL) {	// パーティのＨＰ情報通知検査
 			int p_flag = 0;
@@ -349,13 +346,16 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		if(map_getcell(sd->bl.m,x,y,CELL_CHKNPC))
 			npc_touch_areanpc(sd,sd->bl.m,x,y);
 		else
-			sd->areanpc_id=0;
+			sd->areanpc_id = 0;
 	}
 	else if(md) {
-		if(map_getcell(bl->m,x,y,CELL_CHKNPC))
-			npc_touch_areanpc2(md,bl->m,x,y);
+		if(md->sc.option&4)
+			skill_check_cloaking(&md->bl);
+
+		if(map_getcell(md->bl.m,x,y,CELL_CHKNPC))
+			npc_touch_areanpc2(md,md->bl.m,x,y);
 		else
-			md->areanpc_id=0;
+			md->areanpc_id = 0;
 	}
 
 	ud->walkpath.path_pos++;

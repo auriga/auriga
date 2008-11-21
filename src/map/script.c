@@ -4631,18 +4631,17 @@ int buildin_warp(struct script_state *st)
 	y=conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	if(bl->type == BL_PC) {
-		struct map_session_data *sd = (struct map_session_data *)bl;
-
-		script_warp(sd, str, x, y);
-	}
-	else if(bl->type == BL_MOB) {
+		script_warp((struct map_session_data *)bl, str, x, y);
+	} else if(bl->type == BL_MOB) {
 		struct mob_data *md = (struct mob_data *)bl;
-		int m = map_mapname2mapid(str);
 
-		if(strcmp(str,"Random")==0)
-			mob_warp(md,-1,-1,-1,3);
-		else if(m)
-			mob_warp(md,m,x,y,3);
+		if(strcmp(str, "Random") == 0) {
+			mob_warp(md, -1, -1, -1, 3);
+		} else {
+			int m = map_mapname2mapid(str);
+			if(m >= 0)
+				mob_warp(md, m, x, y, 3);
+		}
 	}
 	return 0;
 }
@@ -10081,7 +10080,7 @@ int buildin_checkdead(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
 
-	push_val(st->stack,C_INT,(unit_isdead(&sd->bl)) ? 1 : 0);
+	push_val(st->stack,C_INT,(sd && unit_isdead(&sd->bl)) ? 1 : 0);
 
 	return 0;
 }
@@ -10094,7 +10093,7 @@ int buildin_checkcasting(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
 
-	push_val(st->stack,C_INT,(sd->ud.skilltimer != -1) ? 1 : 0);
+	push_val(st->stack,C_INT,(sd && sd->ud.skilltimer != -1) ? 1 : 0);
 
 	return 0;
 }
