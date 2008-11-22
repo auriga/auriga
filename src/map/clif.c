@@ -6260,11 +6260,13 @@ void clif_disp_onlyself(const int fd, const char *mes)
 void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+8);
-	int lp = (flag&0x10)? 8: 4;
+	int lp = (flag&0x30)? 8: 4;
 
 	WBUFW(buf,0) = 0x9a;
 	WBUFW(buf,2) = (unsigned short)(len+lp);
-	if(lp == 8)
+	if(flag&0x20)
+		memcpy(WBUFP(buf,4), "ssss", 4);
+	else if(flag&0x10)
 		memcpy(WBUFP(buf,4), "blue", 4);
 	memcpy(WBUFP(buf,lp), mes, len);
 	flag&=0x07;

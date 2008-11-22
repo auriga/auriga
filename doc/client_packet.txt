@@ -188,7 +188,7 @@ S 0099 <len>.w <message>.?B
 	GMコマンド/b,/bb,/nbにて発行。サーバー内ブロードキャスト
 R 009a <len>.w <message>.?B
 	GMからの天の声
-	<message>の先頭4byteに "blue" があると青文字になる
+	<message>の先頭4byteに "blue" があると青文字に、"ssss"があると攻城戦用になる。
 	"tool" というのもあるみたい？
 S 009b <head dir>.w <dir>.B
 	体&頭の方向変更要求。クライアントへの応答は無い模様

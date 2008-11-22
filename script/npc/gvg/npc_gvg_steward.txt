@@ -407,7 +407,7 @@ function	script	StewardMain	{
 				mes "マスター!!…";
 				mes "…い……やだ……ぁ……";
 				close2;
-				announce "砦 [" +getcastlename('@map$)+ "]を [" +getguildname(getcharid(2))+ "] ギルドが放棄しました。",0;
+				announce "砦 [" +getcastlename('@map$)+ "]を [" +getguildname(getcharid(2))+ "] ギルドが放棄しました。",0x20;
 				callfunc "AgitGiveUp",getarg(0);	//アジト放棄処理(npc_gvg_exe.txt)
 				end;
 			}

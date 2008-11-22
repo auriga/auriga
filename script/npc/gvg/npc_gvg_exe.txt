@@ -71,7 +71,7 @@ OnAgitBreak:
 	}
 	announce "エンペリウムが破壊されました",9,0x00ff00;
 	sleep 800;
-	announce "砦 [" +getcastlename('@map$)+ "]を [" +getguildname('@gid)+ "] ギルドが占領しました",0;
+	announce "砦 [" +getcastlename('@map$)+ "]を [" +getguildname('@gid)+ "] ギルドが占領しました",0x20;
 	donpcevent "::OnFlagEmb_"+strnpcinfo(2);	//フラッグエンブレムの変更(npc_gvg_flag.txt)
 	end;
 OnAgitEliminate:

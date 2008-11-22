@@ -264,13 +264,14 @@ void intif_GMmessage(char* mes, size_t len, int flag)
 	if (inter_fd < 0)
 		return;
 
-	lp = (flag&0x10)? 4: 0;
+	lp = (flag&0x30)? 4: 0;
 	WFIFOW(inter_fd,0) = 0x3000;
 	WFIFOW(inter_fd,2) = (unsigned short)(lp + len + 8);
 	WFIFOL(inter_fd,4) = 0xFF000000;	// non color用ダミーコード
-	if(lp) {
+	if(flag&0x20)
+		strncpy(WFIFOP(inter_fd,8), "ssss", 4);
+	else if(flag&0x10)
 		strncpy(WFIFOP(inter_fd,8), "blue", 4);
-	}
 	memcpy(WFIFOP(inter_fd,8+lp), mes, len);
 	WFIFOSET(inter_fd, WFIFOW(inter_fd,2));
 
