@@ -3969,6 +3969,7 @@ int buildin_getonlinepartymember(struct script_state *st);
 int buildin_getonlineguildmember(struct script_state *st);
 int buildin_makemerc(struct script_state *st);
 int buildin_openbook(struct script_state *st);
+int buildin_pushpc(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4226,6 +4227,7 @@ struct script_function buildin_func[] = {
 	{buildin_getonlineguildmember,"getonlineguildmember","*"},
 	{buildin_makemerc,"makemerc","ii"},
 	{buildin_openbook,"openbook","i*"},
+	{buildin_pushpc,"pushpc","ii"},
 	{NULL,NULL,NULL}
 };
 
@@ -11474,6 +11476,29 @@ int buildin_openbook(struct script_state *st)
 		page = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	clif_openbook(sd,nameid,page);
+
+	return 0;
+}
+
+/*==========================================
+ * ノックバック
+ *------------------------------------------
+ */
+int buildin_pushpc(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	struct block_list *bl = map_id2bl(st->oid);
+	int dir, count;
+
+	nullpo_retr(0, sd);
+
+	if(bl == NULL || bl->type != BL_NPC)
+		bl = &sd->bl;
+
+	dir = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	count = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	skill_blown(bl,&sd->bl,count|(dir<<20)|SAB_NODAMAGE|SAB_NOPATHSTOP);
 
 	return 0;
 }
