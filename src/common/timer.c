@@ -399,7 +399,7 @@ void do_final_timer(void)
 
 int do_timer(unsigned int tick)
 {
-	int i,j,nextmin = 1000;
+	int j, nextmin = 1000;
 
 #if 0
 	static int disp_tick = 0;
@@ -410,15 +410,17 @@ int do_timer(unsigned int tick)
 #endif
 
 	while((j = top_timer_heap()) >= 0) {
-		i = timer_heap[ j ];
-		if (DIFF_TICK(timer_data[i].tick, tick) > 0) {
-			nextmin = DIFF_TICK(timer_data[i].tick , tick);
+		int i    = timer_heap[j];
+		int diff = DIFF_TICK(timer_data[i].tick, tick);
+
+		if (diff > 0) {
+			nextmin = diff;
 			break;
 		}
 		pop_timer_heap(j);
 		timer_data[i].type |= TIMER_REMOVE_HEAP;
 		if (timer_data[i].func) {
-			if (DIFF_TICK(timer_data[i].tick, tick) < -1000) {
+			if (diff < -1000) {
 				// 1秒以上の大幅な遅延が発生しているので、
 				// timer処理タイミングを現在値とする事で
 				// 呼び出し時タイミング(引数のtick)相対で処理してる
@@ -443,7 +445,7 @@ int do_timer(unsigned int tick)
 				free_timer_list[free_timer_list_pos++] = i;
 				break;
 			case TIMER_INTERVAL:
-				if (DIFF_TICK(timer_data[i].tick , tick) < -1000) {
+				if (diff < -1000) {
 					timer_data[i].tick = tick + timer_data[i].interval;
 				} else {
 					timer_data[i].tick += timer_data[i].interval;
