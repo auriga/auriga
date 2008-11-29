@@ -340,8 +340,8 @@ int mob_spawn(int id)
 			x = atn_rand()%(map[md->bl.m].xs-2)+1;
 			y = atn_rand()%(map[md->bl.m].ys-2)+1;
 		} else {
-			x = md->x0+atn_rand()%(md->xs+1)-md->xs/2;
-			y = md->y0+atn_rand()%(md->ys+1)-md->ys/2;
+			x = md->x0+atn_rand()%(md->xs*2+1)-md->xs;
+			y = md->y0+atn_rand()%(md->ys*2+1)-md->ys;
 		}
 	} while(map_getcell(md->bl.m,x,y,CELL_CHKNOPASS) && (++i) < 50);
 
