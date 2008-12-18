@@ -1755,7 +1755,7 @@
 4224,Stem_Worm_Card,ステムワームカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12032,2,300; }
 4225,Stone_Shooter_Card,フレイムシューターカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bHit,10; bonus bBaseAtk,10; }
 4226,Sting_Card,スティングカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bDef,2; if(getequiprefinerycnt(3)>8) bonus bMdef,5; }
-4227,Spring_Labbit_Card,スプリングラビットカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,517,2,500; bonus3 bAddMonsterDropItem,528,2,500; bonus2 bItemHealRate,5,50; bonus2 bItemHealRate,5,50; }
+4227,Spring_Labbit_Card,スプリングラビットカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,517,2,500; bonus3 bAddMonsterDropItem,528,2,500; bonus2 bItemHealRate,5,50; bonus2 bItemHealRate,11,50; }
 4228,Sleeper_Card,スリーパーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12031,5,300; }
 4229,C_Tower_Manager_Card,時計塔管理者カード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,1; bonus bCastrate,-5; }
 4230,Shinobi_Card,カブキ忍者カード,6,20,,10,,,,,,,136,,,,,{},{ bonus bAgi,1; if(getskilllv(135)>0) bonus3 bRevAutoSelfSpell,135,5,100; }
