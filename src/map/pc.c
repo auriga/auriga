@@ -2841,21 +2841,28 @@ void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip)
 
 /*==========================================
  * スキルによる買い値修正
+ * sdがNULLのときは最安値を返す
  *------------------------------------------
  */
 int pc_modifybuyvalue(struct map_session_data *sd,int orig_value)
 {
-	int skill,val = orig_value;
-	int rate1 = 0,rate2 = 0;
+	int skill, val = orig_value;
+	int rate1 = 0, rate2 = 0;
 
-	if((skill = pc_checkskill(sd,MC_DISCOUNT)) > 0)		// ディスカウント
-		rate1 = 5+skill*2-((skill == 10)? 1: 0);
-	if((skill = pc_checkskill(sd,RG_COMPULSION)) > 0)	// コンパルションディスカウント
-		rate2 = 5+skill*4;
+	// ディスカウント
+	skill = (sd)? pc_checkskill(sd, MC_DISCOUNT): skill_get_max(MC_DISCOUNT);
+	if(skill > 0)
+		rate1 = 5 + skill * 2 - ((skill >= 10)? 1: 0);
+
+	// コンパルションディスカウント
+	skill = (sd)? pc_checkskill(sd, RG_COMPULSION): skill_get_max(RG_COMPULSION);
+	if(skill > 0)
+		rate2 = 5 + skill * 4;
+
 	if(rate1 < rate2)
 		rate1 = rate2;
 	if(rate1)
-		val = (int)((atn_bignumber)orig_value*(100-rate1)/100);
+		val = (int)((atn_bignumber)orig_value * (100 - rate1) / 100);
 
 	if(val < 0) val = 0;
 	if(orig_value > 0 && val < 1) val = 1;
@@ -2865,19 +2872,24 @@ int pc_modifybuyvalue(struct map_session_data *sd,int orig_value)
 
 /*==========================================
  * スキルによる売り値修正
+ * sdがNULLのときは最高値を返す
  *------------------------------------------
  */
 int pc_modifysellvalue(struct map_session_data *sd,int orig_value)
 {
-	int skill,val = orig_value,rate = 0;
+	int skill, val = orig_value;
+	int rate = 0;
 
-	if((skill = pc_checkskill(sd,MC_OVERCHARGE)) > 0)	// オーバーチャージ
-		rate = 5+skill*2-((skill == 10)? 1: 0);
+	// オーバーチャージ
+	skill = (sd)? pc_checkskill(sd, MC_OVERCHARGE): skill_get_max(MC_OVERCHARGE);
+	if(skill > 0)
+		rate = 5 + skill * 2 - ((skill >= 10)? 1: 0);
+
 	// マーダラーボーナス
-	if(ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point)
+	if(sd == NULL || ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point)
 		rate += 10;
 	if(rate)
-		val = (int)((atn_bignumber)orig_value*(100+rate)/100);
+		val = (int)((atn_bignumber)orig_value * (100 + rate) / 100);
 
 	if(val < 0) val = 0;
 	if(orig_value > 0 && val < 1) val = 1;

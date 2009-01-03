@@ -1268,13 +1268,24 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * (max + 1));
 		c = strchr(w4, ',');
 		while(c && pos < max) {
+			struct item_data *id = NULL;
 			int nameid, value;
 			c++;
 			if(sscanf(c, "%d:%d", &nameid, &value) != 2)
 				break;
+			id = itemdb_search(nameid);
 			nd->u.shop_item[pos].nameid = nameid;
-			if(value < 0 && subtype == SHOP) {
-				value = itemdb_value_buy(nameid);
+			if(subtype == SHOP) {
+				int sell_max, buy_max;
+				if(value < 0) {
+					value = id->value_buy;
+				}
+				sell_max = pc_modifysellvalue(NULL, id->value_sell);
+				buy_max  = pc_modifybuyvalue(NULL, value);
+				if(sell_max > buy_max) {
+					// 売り値が買い値を越える可能性があるので警告
+					printf("warning shop sell value (id = %d, %dz > %dz) : %s line %d\a\n", nameid, sell_max, buy_max, w3, lines);
+				}
 			}
 			nd->u.shop_item[pos].value = value;
 			pos++;
