@@ -978,8 +978,11 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	if(sd->new_fd) {
 		// ニ重login状態だったので、両方落す
 		clif_authfail_fd(sd->fd,2);
-		if(session[sd->new_fd] && ((struct block_list*)session[sd->new_fd])->id == id) {
-			clif_authfail_fd(sd->new_fd,2);
+		if(sd->new_fd > 0) {
+			struct map_session_data *new_sd = NULL;
+			if(session[sd->new_fd] && (new_sd = (struct map_session_data *)session[sd->new_fd]->session_data) && new_sd->bl.id == id) {
+				clif_authfail_fd(sd->new_fd,2);
+			}
 		}
 		return 1;
 	}

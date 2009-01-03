@@ -2071,7 +2071,7 @@ int atcommand_monster(const int fd, struct map_session_data* sd, AtCommandType c
 			mx = sd->bl.x;
 			my = sd->bl.y;
 		}
-		if (mob_once_spawn(sd, "this", mx, my, name, mob_id, 1, ""))
+		if (mob_once_spawn(sd, sd->bl.m, mx, my, name, mob_id, 1, ""))
 			count++;
 	}
 	if (count != 0)
@@ -3612,7 +3612,7 @@ int atcommand_summon(const int fd, struct map_session_data* sd, AtCommandType co
 	x = sd->bl.x + (atn_rand() % 10 - 5);
 	y = sd->bl.y + (atn_rand() % 10 - 5);
 
-	id = mob_once_spawn(sd,"this", x, y, sd->status.name, mob_id, 1, "");
+	id = mob_once_spawn(sd, sd->bl.m, x, y, sd->status.name, mob_id, 1, "");
 	if ((md = map_id2md(id)) != NULL) {
 		md->state.special_mob_ai = 1;
 		md->master_id   = sd->bl.id;
@@ -4606,7 +4606,7 @@ int atcommand_itemmonster(const int fd, struct map_session_data* sd, AtCommandTy
 		}
 		x = sd->bl.x + (atn_rand() % 10 - 5);
 		y = sd->bl.y + (atn_rand() % 10 - 5);
-		if (mob_once_spawn(sd, "this", x, y, "--ja--", mob_id, 1, "") == 0)
+		if (mob_once_spawn(sd, sd->bl.m, x, y, "--ja--", mob_id, 1, "") == 0)
 			clif_displaymessage(fd, msg_txt(118));
 	}
 

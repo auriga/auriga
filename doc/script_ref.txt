@@ -1004,7 +1004,7 @@ AurigaNPCScript
 			guild_id	数値、省略可
 
 			<gatname>の座標<x>,<y>に<mobname>を持つ<mobid>に指定されたID、もしくは名前を持つモンスターを<num>体出現させます。
-			<gatname>がthisの場合スクリプトを実行したプレイヤーがいるMAP、
+			<gatname>がthisの場合命令を実行したNPCのMAP、
 			<x><y>が-1の場合、スクリプトを実行したプレイヤーの座標、
 			<mobname>が--en--の場合英語名、--ja--の場合日本語名、<mobid>が-1の場合ランダム。
 			そのモンスターを倒したとき<event>を開始します。
@@ -1209,7 +1209,7 @@ AurigaNPCScript
 			event			文字列、省略可
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内に<mobname>を持つ<mobid>に指定されたID、もしくは名前を持つモンスターを<num>体出現させます。
-			<gatname>がthisの場合スクリプト実行MAP、<x0><y0>が共に0以下の場合ランダム座標、
+			<gatname>がthisの場合命令を実行したNPCのMAP、<x0><y0>が共に0以下の場合ランダム座標、
 			<mobname>が--en--の場合英語名、--ja--の場合日本語名、<mobid>が-1の場合ランダム。
 			そのモンスターを倒したとき<event>を開始します。
 

@@ -3477,7 +3477,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SA_SUMMONMONSTER:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(sd)
-			mob_once_spawn(sd,map[sd->bl.m].name,sd->bl.x,sd->bl.y,"--ja--",-1,1,"");
+			mob_once_spawn(sd,sd->bl.m,sd->bl.x,sd->bl.y,"--ja--",-1,1,"");
 		break;
 	case SA_LEVELUP:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -6160,7 +6160,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			struct mob_data *tmpmd = NULL;
 
 			n  = (skilllv > 5)? 4: skilllv - 1;
-			id = mob_once_spawn(sd,"this", x, y, sd->status.name, summons[n], 1, "");
+			id = mob_once_spawn(sd, sd->bl.m, x, y, sd->status.name, summons[n], 1, "");
 
 			if((tmpmd = map_id2md(id)) != NULL) {
 				tmpmd->master_id = sd->bl.id;
@@ -6198,7 +6198,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				break;
 			}
 
-			id = mob_once_spawn(sd,"this", x, y,"--ja--",summons[n][atn_rand()%6], 1, "");
+			id = mob_once_spawn(sd, sd->bl.m, x, y, "--ja--", summons[n][atn_rand()%6], 1, "");
 
 			if((tmpmd = map_id2md(id)) != NULL)
 				tmpmd->deletetimer = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
@@ -6210,7 +6210,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			int id = 0;
 			struct mob_data *tmpmd = NULL;
 
-			id = mob_once_spawn(sd,"this", x, y, sd->status.name, 1142, 1, "");
+			id = mob_once_spawn(sd, sd->bl.m, x, y, sd->status.name, 1142, 1, "");
 
 			if((tmpmd = map_id2md(id)) != NULL) {
 				tmpmd->master_id    = sd->bl.id;

@@ -1,4 +1,19 @@
 ----------------------------------------
+//0579 [2009/01/04] by Rayce
+
+・conf/login_auriga.conf の detect_multiple_login が0のとき、
+  MAPサーバで二重loginを検出する際の条件判定が間違っていたのを修正（pc.c）
+
+・areamonster命令で "this" 指定が作動していなかったのを修正
+　それに伴い、monster命令の "this" 指定の仕様変更
+　（atcommand.c, mob.*, script.c, skill.c）
+
+	-> 今までは実行プレイヤーのMAPを参照していましたが、他のスクリプト命令/関数と同様に
+	   NPCのMAPを優先して参照し、NPCが居ないときにプレイヤーのMAPを参照します。
+	   monster命令で "this" 指定を使っている人は、挙動が変わっていないかどうか
+	   確認してください。
+
+----------------------------------------
 //0578 [2008/12/19] by Cocoa
 
 ・MAX_ITEMGROUPを12に変更（map.h）

@@ -170,17 +170,12 @@ static int mob_spawn_dataset(struct mob_data *md,const char *mobname,int class_)
  * 一発MOB出現(スクリプト用)
  *------------------------------------------
  */
-int mob_once_spawn(struct map_session_data *sd,const char *mapname,
+int mob_once_spawn(struct map_session_data *sd,int m,
 	int x,int y,const char *mobname,int class_,int amount,const char *event)
 {
 	struct mob_data *md = NULL;
-	int m, count, lv;
+	int count, lv;
 	int r = class_;
-
-	if(sd && strcmp(mapname,"this") == 0)
-		m = sd->bl.m;
-	else
-		m = map_mapname2mapid(mapname);
 
 	if( m < 0 || amount <= 0 || (class_ >= 0 && !mobdb_checkid(class_)) )	// 値が異常なら召喚を止める
 		return 0;
@@ -242,22 +237,20 @@ int mob_once_spawn(struct map_session_data *sd,const char *mapname,
  * 一発MOB出現(スクリプト用＆エリア指定)
  *------------------------------------------
  */
-int mob_once_spawn_area(struct map_session_data *sd,const char *mapname,
+int mob_once_spawn_area(struct map_session_data *sd,int m,
 	int x0,int y0,int x1,int y1,const char *mobname,int class_,int amount,const char *event)
 {
-	int m, x, y, i, max;
+	int x, y, i, max;
 	int lx = -1, ly = -1, id = 0;
 
-	m = map_mapname2mapid(mapname);
+	if(m < 0)
+		return 0;
 
 	max = (y1-y0+1)*(x1-x0+1)*3;
 	if(x0 <= 0 && y0 <= 0)
 		max = 50;	// mob_spawnに倣って50
 	else if(max > 1000)
 		max = 1000;
-
-	if( m < 0 || amount <= 0 || (class_ >= 0 && !mobdb_checkid(class_)) )	// 値が異常なら召喚を止める
-		return 0;
 
 	for(i=0; i<amount; i++) {
 		int j = 0;
@@ -282,7 +275,7 @@ int mob_once_spawn_area(struct map_session_data *sd,const char *mapname,
 		}
 		if(x == 0 || y == 0)
 			printf("x or y=0, x=%d,y=%d,x0=%d,y0=%d\n",x,y,x0,y0);
-		id = mob_once_spawn(sd,mapname,x,y,mobname,class_,1,event);
+		id = mob_once_spawn(sd,m,x,y,mobname,class_,1,event);
 		lx = x;
 		ly = y;
 	}

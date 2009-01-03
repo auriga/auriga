@@ -169,9 +169,9 @@ int mobdb_searchname(const char *str);
 int mobdb_checkid(const int mob_id);
 int mobdb_searchrandomid(int type,unsigned short lv);
 
-int mob_once_spawn(struct map_session_data *sd,const char *mapname,
+int mob_once_spawn(struct map_session_data *sd,int m,
 	int x,int y,const char *mobname,int class_,int amount,const char *event);
-int mob_once_spawn_area(struct map_session_data *sd,const char *mapname,
+int mob_once_spawn_area(struct map_session_data *sd,int m,
 	int x0,int y0,int x1,int y1,const char *mobname,int class_,int amount,const char *event);
 
 int mob_target(struct mob_data *md,struct block_list *bl,int dist);

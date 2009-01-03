@@ -6779,7 +6779,7 @@ int buildin_makepet(struct script_state *st)
  */
 int buildin_monster(struct script_state *st)
 {
-	int mob_id,amount,x,y,guild_id=0,id;
+	int mob_id,amount,m,x,y,guild_id=0,id;
 	char *str,*mapname,*mobname;
 	const char *event = "";
 	struct mob_data *md;
@@ -6803,7 +6803,10 @@ int buildin_monster(struct script_state *st)
 		guild_id = conv_num(st,& (st->stack->stack_data[st->start+9]));
 	}
 
-	id = mob_once_spawn(map_id2sd(st->rid),mapname,x,y,str,mob_id,amount,event);
+	if((m = script_mapname2mapid(st,mapname)) < 0)
+		return 0;
+
+	id = mob_once_spawn(map_id2sd(st->rid),m,x,y,str,mob_id,amount,event);
 
 	if((md = map_id2md(id)) != NULL)
 	{
@@ -6840,7 +6843,7 @@ int buildin_monster(struct script_state *st)
  */
 int buildin_areamonster(struct script_state *st)
 {
-	int mob_id,amount,x0,y0,x1,y1;
+	int mob_id,amount,m,x0,y0,x1,y1;
 	char *str,*mapname,*mobname;
 	const char *event = "";
 
@@ -6859,7 +6862,9 @@ int buildin_areamonster(struct script_state *st)
 	if(st->end > st->start+10)
 		event = conv_str(st,& (st->stack->stack_data[st->start+10]));
 
-	mob_once_spawn_area(map_id2sd(st->rid), mapname, x0, y0, x1, y1, str, mob_id, amount, event);
+	m = script_mapname2mapid(st,mapname);
+	if(m >= 0)
+		mob_once_spawn_area(map_id2sd(st->rid), m, x0, y0, x1, y1, str, mob_id, amount, event);
 
 	return 0;
 }
@@ -9854,7 +9859,7 @@ int buildin_summon(struct script_state *st)
 	if( st->end>st->start+4 )
 		event = conv_str(st,& (st->stack->stack_data[st->start+4]));
 
-	id = mob_once_spawn(sd, "this", 0, 0, str, class_, 1, event);
+	id = mob_once_spawn(sd, sd->bl.m, 0, 0, str, class_, 1, event);
 	if((md = map_id2md(id)) != NULL) {
 		md->state.special_mob_ai = 1;
 		md->master_id   = sd->bl.id;
