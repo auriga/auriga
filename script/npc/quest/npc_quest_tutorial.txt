@@ -7685,7 +7685,7 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 		mes "スキルレベルが上がるほど、";
 		mes "割引効果が高くなる。^000000";
 		next;
-		if(getskilllv(42) < 4) {
+		if(getskilllv(37) < 4) {
 			mes "[ガーニン]";
 			mes "そこで！　ディスカウントをLv4まで";
 			mes "あげてくるように！";
@@ -7705,7 +7705,7 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 		mes "そこで！";
 		mes "ディスカウントをLv4まで";
 		mes "……っと思ったら、";
-		if(getskilllv(42) >= 10) {
+		if(getskilllv(37) >= 10) {
 			mes "もうLv10じゃないか！";
 			mes "うんうん、すごい！";
 			mes "プレゼントをあげよう！";
@@ -7732,7 +7732,7 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 		mes "仕入れ値を削る！";
 		mes "これこそ商売魂!!";
 		next;
-		if(getskilllv(42) < 4) {
+		if(getskilllv(37) < 4) {
 			mes "[ガーニン]";
 			mes "おいおい、ディスカウントを";
 			mes "Lv4以上と言っただろう。";
@@ -7740,7 +7740,7 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "時は金なり!!";
 			close;
 		}
-		if(getskilllv(42) >= 10) {
+		if(getskilllv(37) >= 10) {
 			mes "[ガーニン]";
 			mes "よしよしよ〜し、Lv4どころか、";
 			mes "Lv10までマスターしてくるとはな！";

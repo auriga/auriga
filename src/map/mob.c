@@ -2071,41 +2071,43 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		}
 	}
 
-	// <Agit> NPC Event [OnAgitBreak]
-	if(md->npc_event[0]) {
-		int len = (int)strlen(md->npc_event) - 13;
-		if(len >= 0 && strcmp(md->npc_event + len, "::OnAgitBreak") == 0) {
-			printf("MOB.C: Run NPC_Event[OnAgitBreak].\n");
-			if(agit_flag == 1)	// Call to Run NPC_Event[OnAgitBreak]
-				guild_agit_break(md);
-		}
-	}
-
-	// SCRIPT実行
-	if(md->npc_event[0]) {
-		struct map_session_data *ssd = NULL;
-		if(sd)
-			ssd = sd;
-		else if(src && src->type == BL_PET)
-			ssd = ((struct pet_data *)src)->msd;
-		else if(src && src->type == BL_HOM)
-			ssd = ((struct homun_data *)src)->msd;
-		else if(src && src->type == BL_MERC)
-			ssd = ((struct merc_data *)src)->msd;
-
-		if(ssd == NULL) {
-			if(mvp[0].bl != NULL && mvp[0].bl->type == BL_PC) {
-				ssd = (struct map_session_data*)mvp[0].bl;
-			} else {
-				for(i=0; i<fd_max; i++) {
-					if(session[i] && (ssd = (struct map_session_data *)session[i]->session_data) &&
-					   ssd->state.auth && md->bl.m == ssd->bl.m)
-						break;
-				}
+	if(!md->state.rebirth) {
+		// <Agit> NPC Event [OnAgitBreak]
+		if(md->npc_event[0]) {
+			int len = (int)strlen(md->npc_event) - 13;
+			if(len >= 0 && strcmp(md->npc_event + len, "::OnAgitBreak") == 0) {
+				printf("MOB.C: Run NPC_Event[OnAgitBreak].\n");
+				if(agit_flag == 1)	// Call to Run NPC_Event[OnAgitBreak]
+					guild_agit_break(md);
 			}
 		}
-		if(ssd)
-			npc_event(ssd,md->npc_event);
+
+		// SCRIPT実行
+		if(md->npc_event[0]) {
+			struct map_session_data *ssd = NULL;
+			if(sd)
+				ssd = sd;
+			else if(src && src->type == BL_PET)
+				ssd = ((struct pet_data *)src)->msd;
+			else if(src && src->type == BL_HOM)
+				ssd = ((struct homun_data *)src)->msd;
+			else if(src && src->type == BL_MERC)
+				ssd = ((struct merc_data *)src)->msd;
+
+			if(ssd == NULL) {
+				if(mvp[0].bl != NULL && mvp[0].bl->type == BL_PC) {
+					ssd = (struct map_session_data*)mvp[0].bl;
+				} else {
+					for(i=0; i<fd_max; i++) {
+						if(session[i] && (ssd = (struct map_session_data *)session[i]->session_data) &&
+						   ssd->state.auth && md->bl.m == ssd->bl.m)
+							break;
+					}
+				}
+			}
+			if(ssd)
+				npc_event(ssd,md->npc_event);
+		}
 	}
 
 	if(md->hp <= 0) {
