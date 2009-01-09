@@ -1,4 +1,26 @@
 ----------------------------------------
+//0583 [2009/01/10] by Rayce
+
+・0541以降、取得不可能なギルドスキルも一覧に表示されていた問題を修正（int_guild.c）
+	-> guild_calc_skilltree() を追加
+	   guild_check_skill_require() を削除
+	-> PCのスキルツリーと同様に、ギルドスキルについてもスキルツリーの計算を行います
+
+・ギルドスキルのポイント割り振りに失敗したとき、以後ポイント割り振りが
+  出来なくなる問題を修正（int_guild.c, clif.c, guild.*, intif.c）
+	-> 失敗時にも0x10eのパケットを送りつける
+	-> 0x383cのパケット長を14から15に拡張
+
+・ギルドスキルポイントを上げるためのコマンド @guildskpoint を追加（atommand.*, int_guild.c）
+	-> @guildlvup と同じくギルドマスターのみ使用可能
+	-> mapif_parse_GuildBasicInfoChange() に GBI_SKILLPOINT に対する処理を追加
+
+・clif_guild_skillinfo() のパケット定義を蔵の仕様に合わせる（clif.c）
+・mapif_parse_GuildMemberInfoChange() の細かい修正（int_guild.c）
+・mapif_parse_GuildAddMember() で mapif_guild_info() が2回呼び出される
+　可能性を修正（int_guild.c）
+
+----------------------------------------
 //0582 [2009/01/09] by Cocoa
 
 ・ローグギルドでモンスターを出現させる際、フラグをチェックするように変更（npc_job_17rogue.txt）

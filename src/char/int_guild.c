@@ -58,6 +58,7 @@ struct {
 
 int mapif_guild_broken(int guild_id,int flag);
 int guild_check_empty(const struct guild *g);
+void guild_calc_skilltree(struct guild *g);
 int guild_calcinfo(struct guild *g);
 int mapif_guild_info(int fd,const struct guild *g);
 
@@ -406,9 +407,9 @@ static int guild_fromstr(char *str,struct guild *g)
 		str=strchr(str+1,' ');
 	}
 
-	// 新ギルドスキルへ移行
+	// スキルツリー情報は初期化
 	for(i=0;i<MAX_GUILDSKILL;i++)
-		g->skill[i].id=GUILD_SKILLID+i;
+		g->skill[i].id = 0;
 
 	str=strchr(str+1,'\t');
 	//printf("GuildSkillInfo OK\n");
@@ -479,6 +480,7 @@ int guild_txt_init(void)
 			if(g->guild_id >= guild_newid)
 				guild_newid=g->guild_id+1;
 			numdb_insert(guild_db,g->guild_id,g);
+			guild_calc_skilltree(g);
 			guild_calcinfo(g);
 		}else{
 			printf("int_guild: broken data [%s] line %d\n",guild_txt,c);
@@ -1206,9 +1208,9 @@ const struct guild *guild_sql_load_num(int guild_id)
 			}
 		}
 
-		// 移行用
+		// スキルツリー情報は初期化
 		for(i = 0; i< MAX_GUILDSKILL;i++)
-			g->skill[i].id=GUILD_SKILLID+i;
+			g->skill[i].id = 0;
 	}
 	sqldbs_free_result(sql_res);
 	// printf("skill ");
@@ -1217,6 +1219,7 @@ const struct guild *guild_sql_load_num(int guild_id)
 	// この関数内部でメモリ内部のギルドデータが書き換えられるが、
 	// 渡すデータが同じなら帰ってくるデータも同じになるので、
 	// 放置することにする
+	guild_cacl_skilltree(g);
 	guild_calcinfo(g);
 
 	return g;
@@ -1562,28 +1565,34 @@ int guild_checkskill(const struct guild *g,int id)
 	return g->skill[idx].lv;
 }
 
-// ギルドスキルツリーチェック
-int guild_check_skill_require(struct guild *g,int id)
+// ギルドスキルツリー計算
+void guild_calc_skilltree(struct guild *g)
 {
-	int i,skillid;
-	int idx = id - GUILD_SKILLID;
+	int i, id, flag;
 
 	if(g == NULL)
-		return 0;
+		return;
 
-	if(idx < 0 || idx >= MAX_GUILDSKILL)
-		return 0;
-	if(guild_skill_tree[idx].id <= 0)
-		return 0;
-	if(guild_skill_tree[idx].max <= 0)
-		return 0;
+	do {
+		flag = 0;
+		for(i = 0; i < MAX_GUILDSKILL && (id = guild_skill_tree[i].id) > 0; i++) {
+			if(g->skill[i].id <= 0) {
+				int j, skillid, fail = 0;
+				for(j = 0; j < 5 && (skillid = guild_skill_tree[i].need[j].id) > 0; j++) {
+					if(guild_checkskill(g,skillid) < guild_skill_tree[i].need[j].lv) {
+						fail = 1;
+						break;
+					}
+				}
+				if(!fail) {
+					g->skill[i].id = id;
+					flag = 1;
+				}
+			}
+		}
+	} while(flag);
 
-	for(i=0; i<5 && (skillid = guild_skill_tree[idx].need[i].id) > 0; i++)
-	{
-		if(guild_skill_tree[idx].need[i].lv > guild_checkskill(g,skillid))
-			return 0;
-	}
-	return 1;
+	return;
 }
 
 // ギルドの情報の再計算
@@ -1592,10 +1601,6 @@ int guild_calcinfo(struct guild *g)
 	int i,c,nextexp;
 	int sum = 0;
 	struct guild before = *g;
-
-	// スキルIDの設定
-	for(i=0;i<MAX_GUILDSKILL;i++)
-		g->skill[i].id=i+GUILD_SKILLID;
 
 	// ギルドレベル
 	if(g->guild_lv <= 0)
@@ -1795,7 +1800,7 @@ int mapif_guild_memberinfochanged(int guild_id,int account_id,int char_id,int ty
 }
 
 // ギルドスキルアップ通知
-int mapif_guild_skillupack(int guild_id,int skill_num,int account_id)
+int mapif_guild_skillupack(int guild_id,int skill_num,int account_id,int flag)
 {
 	unsigned char buf[16];
 
@@ -1803,7 +1808,8 @@ int mapif_guild_skillupack(int guild_id,int skill_num,int account_id)
 	WBUFL(buf, 2)=guild_id;
 	WBUFL(buf, 6)=skill_num;
 	WBUFL(buf,10)=account_id;
-	mapif_sendall(buf,14);
+	WBUFB(buf,14)=flag;
+	mapif_sendall(buf,15);
 	return 0;
 }
 
@@ -1953,9 +1959,8 @@ int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member
 	g.max_member = (MAX_GUILD > 16)? 16: MAX_GUILD;
 	g.average_lv = master->lv;
 	g.guild_lv   = 1;
-	for(i=0;i<MAX_GUILDSKILL;i++)
-		g.skill[i].id=i+GUILD_SKILLID;
 
+	guild_calc_skilltree(&g);
 	guild_new(&g);
 
 	mapif_guild_created(fd,account_id,&g);
@@ -2006,8 +2011,8 @@ int mapif_parse_GuildAddMember(int fd,int guild_id,struct guild_member *m)
 		if(g2.member[i].account_id==0){
 			memcpy(&g2.member[i],m,sizeof(struct guild_member));
 			mapif_guild_memberadded(fd,guild_id,m->account_id,m->char_id,0);
-			guild_calcinfo(&g2);
-			mapif_guild_info(-1,&g2);
+			if(guild_calcinfo(&g2) == 0)
+				mapif_guild_info(-1,&g2);
 			guild_save(&g2);
 			return 0;
 		}
@@ -2127,26 +2132,35 @@ int mapif_parse_GuildMessage(int fd,int guild_id,int account_id,char *mes,int le
 int mapif_parse_GuildBasicInfoChange(int fd,int guild_id,int type,const char *data,int len)
 {
 	const struct guild *g1 = guild_load_num(guild_id);
+	struct guild g2;
 	short dw = *((short *)data);
 
 	if(g1 == NULL){
 		return 0;
 	}
-	if(type == GBI_GUILDLV) {
-		struct guild g2;
-		memcpy(&g2,g1,sizeof(struct guild));
-		if(dw > 0 && g2.guild_lv + dw <= MAX_GUILDLEVEL) {
-			g2.guild_lv    += dw;
-			g2.skill_point += dw;
-		} else if(dw < 0 && g2.guild_lv + dw >= 1) {
-			g2.guild_lv += dw;
+	memcpy(&g2,g1,sizeof(struct guild));
+
+	switch(type) {
+	case GBI_GUILDLV:
+		{
+			short dw = *((short *)data);
+			if(dw > 0 && g2.guild_lv + dw <= MAX_GUILDLEVEL) {
+				g2.guild_lv    += dw;
+				g2.skill_point += dw;
+			} else if(dw < 0 && g2.guild_lv + dw >= 1) {
+				g2.guild_lv += dw;
+			}
 		}
-		mapif_guild_info(-1,&g2);
-		guild_save(&g2);
-	} else {
+		break;
+	case GBI_SKILLPOINT:
+		g2.skill_point += *((int *)data);
+		break;
+	default:
 		printf("int_guild: GuildBasicInfoChange: Unknown type %d\n",type);
-		mapif_guild_basicinfochanged(guild_id,type,data,len);
+		return 0;
 	}
+	mapif_guild_info(-1,&g2);
+	guild_save(&g2);
 
 	return 0;
 }
@@ -2188,13 +2202,13 @@ int mapif_parse_GuildMemberInfoChange(int fd,int guild_id,int account_id,int cha
 			g2.exp = (tmp > 0x7fffffff)? 0x7fffffff: (tmp < 0)? 0: (int)tmp;
 
 			guild_calcinfo(&g2);	// Lvアップ判断
-			mapif_guild_basicinfochanged(guild_id,GBI_EXP,&g2.exp,4);
+			mapif_guild_basicinfochanged(guild_id,GBI_EXP,&g2.exp,sizeof(g2.exp));
 			p = &g2.member[i].exp;
 		}
 		break;
 	default:
 		printf("int_guild: GuildMemberInfoChange: Unknown type %d\n",type);
-		break;
+		return 0;
 	}
 	mapif_guild_memberinfochanged(guild_id,account_id,char_id,type,(p == NULL)? data: p,len);
 	guild_save(&g2);
@@ -2239,40 +2253,42 @@ int mapif_parse_GuildSkillUp(int fd,int guild_id,int skill_num,int account_id,in
 
 	memcpy(&g2,g1,sizeof(struct guild));
 
-	if(g2.skill[idx].id <= 0)
-		return 0;
-
-	if(level < 0) {
-		if(!(flag&1)) {
-			g2.skill_point += g2.skill[idx].lv;
-		}
-		g2.skill[idx].lv = 0;
-		succeed = 1;
-	} else {
-		if((g2.skill_point > 0 || flag&1) && guild_check_skill_require(&g2, skill_num)) {
-			if(level == 0)
-				level = g2.skill[idx].lv + 1;
-			if(level > guild_skill_tree[idx].max)
-				level = guild_skill_tree[idx].max;
-
+	if(g2.skill[idx].id > 0) {
+		if(level < 0) {
 			if(!(flag&1)) {
-				g2.skill_point -= level - g2.skill[idx].lv;
+				g2.skill_point += g2.skill[idx].lv;
 			}
-			g2.skill[idx].lv = level;
+			g2.skill[idx].lv = 0;
 			succeed = 1;
+		} else {
+			if((g2.skill_point > 0 || flag&1) && g2.skill[idx].id > 0) {
+				if(level == 0)
+					level = g2.skill[idx].lv + 1;
+				if(level > guild_skill_tree[idx].max)
+					level = guild_skill_tree[idx].max;
+
+				if(!(flag&1)) {
+					g2.skill_point -= level - g2.skill[idx].lv;
+				}
+				g2.skill[idx].lv = level;
+				succeed = 1;
+			}
 		}
 	}
 
 	if(succeed) {
+		guild_calc_skilltree(&g2);
 		if(guild_calcinfo(&g2) == 0)
 			mapif_guild_info(-1, &g2);
-		mapif_guild_skillupack(guild_id,skill_num,account_id);
+		mapif_guild_skillupack(guild_id,skill_num,account_id,1);
 		guild_save(&g2);
 
 		if(level >= 0)
 			printf("int_guild: %d skill %d up %d\n", guild_id, skill_num, level);
 		else
 			printf("int_guild: %d skill %d lost\n", guild_id, skill_num);
+	} else {
+		mapif_guild_skillupack(guild_id,skill_num,account_id,0);
 	}
 	return 0;
 }

@@ -92,7 +92,7 @@ void guild_change_emblem(int guild_id, int len, const char *data);
 void guild_emblem_changed(int len, int guild_id, int emblem_id, const char *data);
 void guild_send_message(struct map_session_data *sd, char *mes, int len);
 void guild_recv_message(int guild_id, int account_id, char *mes, int len);
-void guild_skillupack(int guild_id, int skill_num, int account_id);
+void guild_skillupack(int guild_id, int skill_num, int account_id,int flag);
 void guild_broken(int guild_id, unsigned char flag);
 void guild_break(struct map_session_data *sd, char *name);
 

@@ -748,7 +748,7 @@ R 0160 <len>.w {<index>.l <mode>.l <index>.l <exp_mode>.l}.16B
 	職位情報
 S 0161 <len>.w {<index>.l <mode>.l <index>.l <exp_mode>.l <nickname>.24B}.40B*
 	職位変更
-R 0162 <len>.w <skill_point>.w {<skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
+R 0162 <len>.w <skill_point>.w {<skill ID>.w <target type>.l <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	ギルドスキル
 R 0163 <len>.w { <nick>.24B <アカウントＩＤ>.24B <追放理由>.40B }.88B*
 	ギルド追放リスト

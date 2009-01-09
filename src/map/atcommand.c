@@ -116,6 +116,7 @@ ATCOMMAND_FUNC(skillpoint);
 ATCOMMAND_FUNC(zeny);
 ATCOMMAND_FUNC(param);
 ATCOMMAND_FUNC(guildlevelup);
+ATCOMMAND_FUNC(guildskillpoint);
 ATCOMMAND_FUNC(makepet);
 ATCOMMAND_FUNC(hatch);
 ATCOMMAND_FUNC(petfriendly);
@@ -283,6 +284,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_Dexterity,          "@dex",              0, atcommand_param,               NULL },
 	{ AtCommand_Luck,               "@luk",              0, atcommand_param,               NULL },
 	{ AtCommand_GuildLevelUp,       "@guildlvup",        0, atcommand_guildlevelup,        NULL },
+	{ AtCommand_GuildSkillPoint,    "@guildskpoint",     0, atcommand_guildskillpoint,     NULL },
 	{ AtCommand_MakePet,            "@makepet",          0, atcommand_makepet,             NULL },
 	{ AtCommand_Hatch,              "@hatch",            0, atcommand_hatch,               NULL },
 	{ AtCommand_PetFriendly,        "@petfriendly",      0, atcommand_petfriendly,         NULL },
@@ -2482,6 +2484,40 @@ int atcommand_guildlevelup(const int fd, struct map_session_data* sd, AtCommandT
 
 	if (g->guild_lv + level >= 1 && g->guild_lv + level <= MAX_GUILDLEVEL) {
 		intif_guild_change_basicinfo(g->guild_id, GBI_GUILDLV, &level, 2);
+	} else {
+		clif_displaymessage(fd, msg_txt(41));
+	}
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int atcommand_guildskillpoint(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	int point = 0;
+	struct guild *g = NULL;
+
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message)
+		return -1;
+
+	point = atoi(message);
+	if (sd->status.guild_id <= 0 ||
+	    (g = guild_search(sd->status.guild_id)) == NULL) {
+		clif_displaymessage(fd, msg_txt(43));
+		return 0;
+	}
+	if (strcmp(sd->status.name, g->master) != 0) {
+		clif_displaymessage(fd, msg_txt(44));
+		return 0;
+	}
+
+	if (point > 0 || g->skill_point + point >= 0) {
+		intif_guild_change_basicinfo(g->guild_id, GBI_SKILLPOINT, &point, sizeof(point));
 	} else {
 		clif_displaymessage(fd, msg_txt(41));
 	}

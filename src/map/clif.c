@@ -8602,8 +8602,7 @@ void clif_guild_skillinfo(struct map_session_data *sd, struct guild *g)
 	for(i = 0; i < MAX_GUILDSKILL; i++) {
 		if((id = g->skill[i].id) > 0) {
 			WFIFOW(fd,c*37+ 6) = id;
-			WFIFOW(fd,c*37+ 8) = guild_skill_get_inf(id);
-			WFIFOW(fd,c*37+10) = 0;
+			WFIFOL(fd,c*37+ 8) = guild_skill_get_inf(id);
 			WFIFOW(fd,c*37+12) = g->skill[i].lv;
 			WFIFOW(fd,c*37+14) = skill_get_sp(id,g->skill[i].lv);
 			WFIFOW(fd,c*37+16) = skill_get_range(id,g->skill[i].lv);
@@ -8776,7 +8775,7 @@ void clif_guild_message(struct guild *g, const char *mes, int len)
  * ギルドスキル割り振り通知
  *------------------------------------------
  */
-void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv)
+void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv, int flag)
 {
 	int fd;
 
@@ -8788,7 +8787,7 @@ void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv)
 	WFIFOW(fd,4) = lv;
 	WFIFOW(fd,6) = skill_get_sp(skill_num,lv);
 	WFIFOW(fd,8) = skill_get_range(skill_num,lv);
-	WFIFOB(fd,10) = 1;
+	WFIFOB(fd,10) = flag;
 	WFIFOSET(fd,packet_db[0x10e].len);
 
 	return;

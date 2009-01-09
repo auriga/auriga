@@ -1509,7 +1509,7 @@ void guild_skillup(struct map_session_data *sd, int skill_num, int level, int fl
  * スキルポイント割り振り通知
  *------------------------------------------
  */
-void guild_skillupack(int guild_id, int skill_num, int account_id)
+void guild_skillupack(int guild_id, int skill_num, int account_id, int flag)
 {
 	struct map_session_data *sd=map_id2sd(account_id);
 	struct guild *g=guild_search(guild_id);
@@ -1519,12 +1519,14 @@ void guild_skillupack(int guild_id, int skill_num, int account_id)
 		return;
 
 	if(sd!=NULL)
-		clif_guild_skillup(sd,skill_num,g->skill[skill_num-GUILD_SKILLID].lv);
+		clif_guild_skillup(sd,skill_num,g->skill[skill_num-GUILD_SKILLID].lv,flag);
 
-	// 全員に通知
-	for(i=0;i<g->max_member;i++) {
-		if((sd=g->member[i].sd)!=NULL)
-			clif_guild_skillinfo(sd, g);
+	if(flag) {
+		// 全員に通知
+		for(i=0;i<g->max_member;i++) {
+			if((sd=g->member[i].sd)!=NULL)
+				clif_guild_skillinfo(sd, g);
+		}
 	}
 
 	return;

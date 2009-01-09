@@ -283,7 +283,7 @@ void clif_guild_inviteack(struct map_session_data *sd, unsigned char flag);
 void clif_guild_leave(struct map_session_data *sd, const char *name, const char *mes);
 void clif_guild_explusion(struct map_session_data *sd, const char *name, const char *mes);
 void clif_guild_message(struct guild *g, const char *mes, int len);
-void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv);
+void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv, int flag);
 void clif_guild_reqalliance(struct map_session_data *sd, int account_id, const char *name);
 void clif_guild_allianceack(struct map_session_data *sd, unsigned int flag);
 void clif_guild_delalliance(struct map_session_data *sd, int guild_id, int flag);

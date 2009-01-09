@@ -84,6 +84,7 @@ typedef enum {
 	AtCommand_Dexterity,
 	AtCommand_Luck,
 	AtCommand_GuildLevelUp,
+	AtCommand_GuildSkillPoint,
 	AtCommand_MakePet,
 	AtCommand_Hatch,
 	AtCommand_PetFriendly,
