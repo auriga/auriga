@@ -971,30 +971,6 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		if(lh && atkmin > atkmax)
 			atkmin = atkmax;
 
-		/* 太陽と月と星の怒り */
-		if(target->type == BL_PC || target->type == BL_MOB || target->type == BL_HOM || target->type == BL_MERC)
-		{
-			int atk_rate = 0;
-			int str = status_get_str(src);
-			int luk = status_get_luk(src);
-			int tclass = status_get_class(target);
-
-			if(sc && sc->data[SC_MIRACLE].timer != -1) {	// 太陽と月と星の奇跡
-				// 全ての敵が星
-				atk_rate = (sd->status.base_level + dex + luk + str)/(12-3*pc_checkskill(sd,SG_STAR_ANGER));
-			} else {
-				if(tclass == sd->hate_mob[0] && pc_checkskill(sd,SG_SUN_ANGER) > 0)		// 太陽の怒り
-					atk_rate = (sd->status.base_level + dex + luk) / (12 - 3 * pc_checkskill(sd,SG_SUN_ANGER));
-				else if(tclass == sd->hate_mob[1] && pc_checkskill(sd,SG_MOON_ANGER) > 0)	// 月の怒り
-					atk_rate = (sd->status.base_level + dex + luk) / (12 - 3 * pc_checkskill(sd,SG_MOON_ANGER));
-				else if(tclass == sd->hate_mob[2] && pc_checkskill(sd,SG_STAR_ANGER) > 0)	// 星の怒り
-					atk_rate = (sd->status.base_level + dex + luk + str) / (12 - 3 * pc_checkskill(sd,SG_STAR_ANGER));
-			}
-			if(atk_rate > 0) {
-				atkmin += atkmin * atk_rate / 100;
-				atkmax += atkmax * atk_rate / 100;
-			}
-		}
 		/* 過剰精錬ボーナス */
 		if(!lh && sd->overrefine > 0)
 			damage += (atn_rand() % sd->overrefine ) + 1;
@@ -2410,18 +2386,44 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 		/* 18．スキル修正２（修練系）*/
 		// 修練ダメージ(右手のみ) ソニックブロー時は別処理（1撃に付き1/8適応)
-		if( src_sd &&
-		    skill_num != MO_INVESTIGATE &&
-		    skill_num != MO_EXTREMITYFIST &&
-		    skill_num != CR_GRANDCROSS &&
-		    skill_num != NPC_GRANDDARKNESS &&
-		    skill_num != LK_SPIRALPIERCE &&
-		    skill_num != CR_ACIDDEMONSTRATION &&
-		    skill_num != NJ_ZENYNAGE )
-		{
-			wd.damage = battle_addmastery(src_sd,target,wd.damage,0);
-			if(calc_flag.lh)
-				wd.damage2 = battle_addmastery(src_sd,target,wd.damage2,1);
+		if(src_sd) {
+			switch(skill_num) {
+		    case MO_INVESTIGATE:
+		    case MO_EXTREMITYFIST:
+		    case CR_GRANDCROSS:
+		    case NPC_GRANDDARKNESS:
+		    case LK_SPIRALPIERCE:
+			case CR_ACIDDEMONSTRATION:
+		    case NJ_ZENYNAGE:
+				break;
+			default:
+				wd.damage = battle_addmastery(src_sd,target,wd.damage,0);
+				if(calc_flag.lh)
+					wd.damage2 = battle_addmastery(src_sd,target,wd.damage2,1);
+				break;
+			}
+
+			if(target->type == BL_PC || target->type == BL_MOB || target->type == BL_HOM || target->type == BL_MERC) {
+				int rate = 0;
+				int s_dex = status_get_dex(src);
+				int s_luk = status_get_luk(src);
+				int tclass = status_get_class(target);
+
+				if(sc && sc->data[SC_MIRACLE].timer != -1) {	// 太陽と月と星の奇跡
+					// 全ての敵が星
+					rate = (src_sd->status.base_level + s_dex + s_luk + s_str) / (12 - 3 * pc_checkskill(src_sd,SG_STAR_ANGER));
+				} else {
+					if(tclass == src_sd->hate_mob[0] && pc_checkskill(src_sd,SG_SUN_ANGER) > 0)		// 太陽の怒り
+						rate = (src_sd->status.base_level + s_dex + s_luk) / (12 - 3 * pc_checkskill(src_sd,SG_SUN_ANGER));
+					else if(tclass == src_sd->hate_mob[1] && pc_checkskill(src_sd,SG_MOON_ANGER) > 0)	// 月の怒り
+						rate = (src_sd->status.base_level + s_dex + s_luk) / (12 - 3 * pc_checkskill(src_sd,SG_MOON_ANGER));
+					else if(tclass == src_sd->hate_mob[2] && pc_checkskill(src_sd,SG_STAR_ANGER) > 0)	// 星の怒り
+						rate = (src_sd->status.base_level + s_dex + s_luk + s_str) / (12 - 3 * pc_checkskill(src_sd,SG_STAR_ANGER));
+				}
+				if(rate > 0) {
+					DMG_FIX( rate, 100 );
+				}
+			}
 		}
 		if(sc) {
 			if(sc->data[SC_AURABLADE].timer != -1)		// オーラブレード
