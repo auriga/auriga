@@ -121,6 +121,7 @@ void WFIFORESERVE(int fd, size_t len);
 void do_sendrecv(int next);
 void do_parsepacket(void);
 void flush_fifo(int fd);
+unsigned long host2ip(const char *host, const char *mes);
 int parsepacket_timer(int tid, unsigned int tick, int id, void *data);
 void do_socket(void);
 

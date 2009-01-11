@@ -22,20 +22,6 @@
 #define DUMP_UNKNOWN_PACKET	1
 
 #include <sys/types.h>
-#ifndef WINDOWS
-	#include <sys/socket.h>
-	#include <netinet/in.h>
-	#include <sys/ioctl.h>
-	#include <unistd.h>
-	#include <signal.h>
-	#include <fcntl.h>
-	#include <netdb.h>
-	#include <arpa/inet.h>
-	#include <sys/time.h>
-#else
-	#include <process.h>
-	#include <winsock.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -68,7 +54,7 @@ static int server_num = 0;
 static int new_account_flag = 0;
 static int httpd_new_account_flag = 0;
 static unsigned short login_port = 6900;
-static char login_sip_str[16];
+static char login_shost[256] = "";
 static unsigned long login_sip = 0;
 static unsigned short login_sport = 0;
 static int login_autosave_time = 600;
@@ -1955,7 +1941,7 @@ int parse_login(int fd)
 		case 0x7918:	// 管理モードログイン
 			if(ristrict_admin_local) {
 				unsigned long ip = *((unsigned long *)&session[fd]->client_addr.sin_addr);
-				if(ip != inet_addr("127.0.0.1")) {
+				if(ip != host2ip("127.0.0.1", NULL)) {
 					// ローカルホスト以外は失敗
 					printf("parse_admin failed: source ip address is not localhost: %lu\n", ip);
 					break;
@@ -2025,7 +2011,6 @@ int parse_login(int fd)
 
 static void login_config_read(const char *cfgName)
 {
-	struct hostent *h = NULL;
 	char line[1024], w1[1024], w2[1024];
 	FILE *fp;
 
@@ -2060,17 +2045,14 @@ static void login_config_read(const char *cfgName)
 				login_port = (unsigned short)n;
 			}
 		} else if (strcmpi(w1, "listen_ip") == 0) {
-			unsigned long ip_result;
-			h = gethostbyname(w2);
-			if (h != NULL)
-				sprintf(w2, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-			if ((ip_result = inet_addr(w2)) == INADDR_NONE) // not always -1
+			unsigned long ip_result = host2ip(w2, NULL);
+			if (ip_result == INADDR_NONE) // not always -1
 				printf("login_config_read: Invalid listen_ip value: %s.\n", w2);
 			else
 				listen_ip = ip_result;
 		} else if (strcmpi(w1, "login_sip") == 0) {
-			memcpy(login_sip_str, w2, 16);
-			login_sip = inet_addr(login_sip_str);
+			memcpy(login_shost, w2, sizeof(login_shost));
+			login_shost[sizeof(login_shost)-1] = '\0';	// force \0 terminal
 		} else if (strcmpi(w1, "login_sport") == 0) {
 			int n = atoi(w2);
 			if (n < 1024 || n > 65535) {
@@ -2362,6 +2344,9 @@ int do_init(int argc,char **argv)
 
 	login_config_read(login_conf_filename);
 	display_conf_warnings();
+
+	if(login_shost[0])
+		login_sip = host2ip(login_shost, "Login server sIP address");
 
 	for(i=0;i<AUTH_FIFO_SIZE;i++){
 		auth_fifo[i].delflag=1;

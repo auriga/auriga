@@ -22,14 +22,6 @@
 #ifndef _CLIF_H_
 #define _CLIF_H_
 
-#ifndef WINDOWS
-	#include <sys/types.h>
-	#include <sys/socket.h>
-	#include <netinet/in.h>
-	#include <arpa/inet.h>
-#else
-	#include <winsock.h>
-#endif
 #include "map.h"
 
 #define MAX_PACKET_DB 0x400
@@ -40,7 +32,8 @@ struct packet_db {
 	short pos[8];
 };
 
-void clif_setip(char*);
+void clif_sethost(const char*);
+void clif_setip(void);
 void clif_setport(unsigned short);
 
 unsigned long clif_getip(void);

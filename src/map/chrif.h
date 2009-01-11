@@ -24,7 +24,8 @@
 
 void chrif_setuserid(char*);
 void chrif_setpasswd(char*);
-void chrif_setip(char*);
+void chrif_sethost(const char*);
+void chrif_setip(void);
 void chrif_setport(unsigned short);
 int chrif_parse(int fd);
 

@@ -24,13 +24,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef WINDOWS
-	#include <unistd.h>
-	#include <sys/types.h>
-	#include <sys/socket.h>
-	#include <netinet/in.h>
-	#include <arpa/inet.h>
-#endif
 
 #include "socket.h"
 #include "timer.h"
@@ -63,7 +56,7 @@ static const int packet_len_table[]={
 };
 
 int char_fd = -1;
-static char char_ip_str[16];
+static char char_host[256] = "";
 static unsigned long char_ip;
 static unsigned short char_port = 6121;
 static char userid[24] = "", passwd[24] = "";
@@ -90,13 +83,29 @@ void chrif_setpasswd(char *pwd)
 }
 
 /*==========================================
+ * ホストセット
+ *------------------------------------------
+ */
+void chrif_sethost(const char *host)
+{
+	size_t len = strlen(host) + 1;
+
+	if(len > sizeof(char_host))
+		len = sizeof(char_host);
+
+	memcpy(char_host, host, len);
+	char_host[len-1] = '\0';	// force \0 terminal
+
+	return;
+}
+
+/*==========================================
  * IP アドレスセット
  *------------------------------------------
  */
-void chrif_setip(char *ip)
+void chrif_setip(void)
 {
-	memcpy(char_ip_str,ip,16);
-	char_ip = inet_addr(char_ip_str);
+	char_ip = host2ip(char_host, "Character server IP address");
 }
 
 /*==========================================
@@ -1006,13 +1015,12 @@ int chrif_parse(int fd)
  * クライアント数通知
  *------------------------------------------
  */
-// timer関数
-// 今このmap鯖に繋がっているクライアント人数をchar鯖へ送る
 static int send_users_tochar(int tid,unsigned int tick,int id,void *data)
 {
 	if (char_fd < 0 || session[char_fd] == NULL || session[char_fd]->auth == 0)
 		return 0;
 
+	// 今このmap鯖に繋がっているクライアント人数をchar鯖へ送る
 	WFIFOW(char_fd,0)=0x2aff;
 	WFIFOL(char_fd,2)=clif_countusers();
 	WFIFOSET(char_fd,6);
@@ -1024,10 +1032,9 @@ static int send_users_tochar(int tid,unsigned int tick,int id,void *data)
  * 自動再接続
  *------------------------------------------
  */
-// timer関数
-// char鯖との接続を確認し、もし切れていたら再度接続する
 static int check_connect_char_server(int tid,unsigned int tick,int id,void *data)
 {
+	// char鯖との接続を確認し、もし切れていたら再度接続する
 	if (char_fd < 0 || session[char_fd] == NULL) {
 		chrif_state = 0;
 		char_fd = make_connection(char_ip,char_port);
@@ -1038,7 +1045,6 @@ static int check_connect_char_server(int tid,unsigned int tick,int id,void *data
 		realloc_fifo(char_fd, RFIFOSIZE_SERVERLINK, WFIFOSIZE_SERVERLINK);
 
 		chrif_connect(char_fd);
-//		chrif_mapactive(1);	// chrif_connectack()に移動
 	}
 
 	return 0;

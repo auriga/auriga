@@ -1,4 +1,16 @@
 ----------------------------------------
+//0585 [2009/01/12] by Rayce
+
+・サーバ起動時、接続サーバのIPアドレスは1回だけ表示されるように変更
+　（login.c, char.c, chrif.*, clif.*, map.c）
+	-> IPアドレスに変換後の文字列ではなく、confに記述されたホスト名を
+	   そのまま保持するように変更
+	-> chrif_sethost(), clif_sethost() を追加
+
+・gethostbyname() をラップした host2ip() を追加（socket.*）
+・不要になった #include を削除
+
+----------------------------------------
 //0584 [2009/01/12] by Rayce
 
 ・0583以降、mapif_parse_GuildBasicInfoChange() で警告が発生していたので修正（int_guild.c）

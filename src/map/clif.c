@@ -26,17 +26,10 @@
 #include <stdlib.h>
 #include <string.h>
 #ifndef WINDOWS
-	#include <unistd.h>
-	#include <stdarg.h>
-	#include <sys/types.h>
-	#include <sys/socket.h>
-	#include <netinet/in.h>
-	#include <arpa/inet.h>
+	#include <unistd.h>	// sleep
 #else
-	#include <winsock.h>
+	#include <windows.h>
 #endif
-
-#include <time.h>
 
 #include "socket.h"
 #include "timer.h"
@@ -124,7 +117,7 @@ enum {
 #define WFIFOPOS(fd,pos,x,y,dir) { WBUFPOS(WFIFOP(fd,pos),0,x,y,dir); }
 #define WFIFOPOS2(fd,pos,x0,y0,x1,y1,sx0,sy0) { WBUFPOS2(WFIFOP(fd,pos),0,x0,y0,x1,y1,sx0,sy0); }
 
-static char map_ip_str[16];
+static char map_host[256] = "";
 static unsigned long map_ip;
 static unsigned short map_port = 5121;
 static int map_fd;
@@ -134,13 +127,29 @@ static int g_packet_len = 0;
 
 
 /*==========================================
+ * map鯖のホスト設定
+ *------------------------------------------
+ */
+void clif_sethost(const char *host)
+{
+	size_t len = strlen(host) + 1;
+
+	if(len > sizeof(map_host))
+		len = sizeof(map_host);
+
+	memcpy(map_host, host, len);
+	map_host[len-1] = '\0';	// force \0 terminal
+
+	return;
+}
+
+/*==========================================
  * map鯖のip設定
  *------------------------------------------
  */
-void clif_setip(char *ip)
+void clif_setip(void)
 {
-	memcpy(map_ip_str,ip,16);
-	map_ip = inet_addr(map_ip_str);
+	map_ip = host2ip(map_host, "Map server IP address");
 
 	return;
 }

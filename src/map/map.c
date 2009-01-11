@@ -25,12 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#ifndef WINDOWS
-#	include <netdb.h>
-#	include <unistd.h>
-#else
-#	include <process.h>
-#endif
 
 #include "core.h"
 #include "timer.h"
@@ -2639,7 +2633,6 @@ static int map_config_read(const char *cfgName)
 {
 	char line[1024], w1[1024], w2[1024];
 	FILE *fp;
-	struct hostent *h = NULL;
 
 	fp = fopen(cfgName,"r");
 	if (fp == NULL) {
@@ -2661,12 +2654,7 @@ static int map_config_read(const char *cfgName)
 		} else if (strcmpi(w1, "passwd") == 0) {
 			chrif_setpasswd(w2);
 		} else if (strcmpi(w1, "char_ip") == 0) {
-			h = gethostbyname(w2);
-			if (h != NULL) {
-				printf("Character server IP address : %s -> %d.%d.%d.%d\n", w2, (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-				sprintf(w2, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-			}
-			chrif_setip(w2);
+			chrif_sethost(w2);
 		} else if (strcmpi(w1, "char_port") == 0) {
 			int n = atoi(w2);
 			if (n < 0 || n > 65535) {
@@ -2675,12 +2663,7 @@ static int map_config_read(const char *cfgName)
 			}
 			chrif_setport((unsigned short)n);
 		} else if (strcmpi(w1, "map_ip") == 0) {
-			h = gethostbyname(w2);
-			if(h != NULL) {
-				printf("Map server IP address : %s -> %d.%d.%d.%d\n", w2, (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-				sprintf(w2, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-			}
-			clif_setip(w2);
+			clif_sethost(w2);
 		} else if (strcmpi(w1, "map_port") == 0) {
 			int n = atoi(w2);
 			if (n < 0 || n > 65535) {
@@ -2689,11 +2672,8 @@ static int map_config_read(const char *cfgName)
 			}
 			clif_setport((unsigned short)n);
 		} else if (strcmpi(w1, "listen_ip") == 0) {
-			unsigned long ip_result;
-			h = gethostbyname(w2);
-			if (h != NULL)
-				sprintf(w2, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-			if ((ip_result = inet_addr(w2)) == INADDR_NONE) // not always -1
+			unsigned long ip_result = host2ip(w2, NULL);
+			if (ip_result == INADDR_NONE) // not always -1
 				printf("map_config_read: Invalid listen_ip value: %s.\n", w2);
 			else
 				listen_ip = ip_result;
@@ -2979,6 +2959,8 @@ int do_init(int argc,char *argv[])
 	if(map_config_read(map_conf_filename)) {
 		exit(1);
 	}
+	chrif_setip();
+	clif_setip();
 	printf("MAP Server Tag: %s\n", map_server_tag);
 
 	battle_config_read(battle_conf_filename);

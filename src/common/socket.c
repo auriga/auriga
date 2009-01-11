@@ -30,12 +30,14 @@
 	#include <windows.h>
 	#pragma comment(lib,"ws2_32.lib")
 #else
+	#include <netdb.h>
 	#include <sys/socket.h>
 	#include <sys/select.h>
 	#include <netinet/in.h>
 	#include <netinet/tcp.h>
 	#include <unistd.h>
 	#include <sys/time.h>
+	#include <arpa/inet.h>
 #endif
 #include <errno.h>
 #include <fcntl.h>
@@ -1074,6 +1076,23 @@ void flush_fifo(int fd)
 		send_from_fifo(fd);
 	}
 	return;
+}
+
+unsigned long host2ip(const char *host, const char *mes)
+{
+	char ip[16];
+	struct hostent *h = gethostbyname(host);
+
+	if(h) {
+		sprintf(ip, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
+		if(mes) {
+			printf("%s : %s -> %s\n", mes, host, ip);
+		}
+	} else {
+		memcpy(ip, host, sizeof(ip));
+		ip[sizeof(ip)-1] = '\0';
+	}
+	return inet_addr(ip);
 }
 
 int parsepacket_timer(int tid, unsigned int tick, int id, void *data)

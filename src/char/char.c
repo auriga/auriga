@@ -24,19 +24,6 @@
 #define DUMP_UNKNOWN_PACKET	1
 
 #include <sys/types.h>
-#ifndef WINDOWS
-	#include <sys/socket.h>
-	#include <sys/ioctl.h>
-	#include <unistd.h>
-	#include <signal.h>
-	#include <fcntl.h>
-	#include <netdb.h>
-	#include <netinet/in.h>
-	#include <arpa/inet.h>
-	#include <sys/time.h>
-#else
-	#include <winsock.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -77,13 +64,13 @@ static int char_sfd = -1;
 char userid[24] = "";
 char passwd[24] = "";
 char server_name[20] = "Auriga";
-char login_ip_str[16] = "";
+static char login_host[256] = "";
 unsigned long login_ip;
 unsigned short login_port = 6900;
-char char_ip_str[16] = "";
+static char char_host[256] = "";
 unsigned long char_ip;
 unsigned short char_port = 6121;
-char char_sip_str[16];
+static char char_shost[256] = "";
 unsigned long char_sip = 0;
 unsigned short char_sport = 0;
 static int char_loginaccess_autorestart;
@@ -4060,7 +4047,6 @@ static int check_connect_login_server(int tid,unsigned int tick,int id,void *dat
 
 static void char_config_read(const char *cfgName)
 {
-	struct hostent *h = NULL;
 	char line[1024], w1[1024], w2[1024];
 	FILE *fp;
 
@@ -4088,14 +4074,8 @@ static void char_config_read(const char *cfgName)
 			memcpy(server_name, w2, 20);
 			server_name[19] = '\0';
 		} else if (strcmpi(w1, "login_ip") == 0) {
-			h = gethostbyname(w2);
-			if (h != NULL) {
-				sprintf(login_ip_str, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-				printf("Login server IP address : %s -> %s\n", w2, login_ip_str);
-			} else {
-				memcpy(login_ip_str, w2, 16);
-				login_ip_str[15] = '\0';
-			}
+			memcpy(login_host, w2, sizeof(login_host));
+			login_host[sizeof(login_host)-1] = '\0';	// force \0 terminal
 		} else if (strcmpi(w1, "login_port") == 0) {
 			int n = atoi(w2);
 			if (n < 0 || n > 65535) {
@@ -4105,14 +4085,8 @@ static void char_config_read(const char *cfgName)
 				login_port = (unsigned short)n;
 			}
 		} else if (strcmpi(w1, "char_ip") == 0) {
-			h = gethostbyname(w2);
-			if (h != NULL) {
-				sprintf(char_ip_str, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-				printf("Character server IP address : %s -> %s\n", w2, char_ip_str);
-			} else {
-				memcpy(char_ip_str, w2, 16);
-				char_ip_str[15] = '\0';
-			}
+			memcpy(char_host, w2, sizeof(char_host));
+			char_host[sizeof(char_host)-1] = '\0';	// force \0 terminal
 		} else if (strcmpi(w1, "char_port") == 0) {
 			int n = atoi(w2);
 			if (n < 0 || n > 65535) {
@@ -4122,24 +4096,14 @@ static void char_config_read(const char *cfgName)
 				char_port = (unsigned short)n;
 			}
 		} else if (strcmpi(w1, "listen_ip") == 0) {
-			unsigned long ip_result;
-			h = gethostbyname(w2);
-			if (h != NULL)
-				sprintf(w2, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-			if ((ip_result = inet_addr(w2)) == INADDR_NONE) // not always -1
+			unsigned long ip_result = host2ip(w2, NULL);
+			if(ip_result == INADDR_NONE) // not always -1
 				printf("char_config_read: Invalid listen_ip value: %s.\n", w2);
 			else
 				listen_ip = ip_result;
 		} else if (strcmpi(w1, "char_sip") == 0) {
-			h = gethostbyname(w2);
-			if (h != NULL) {
-				sprintf(char_sip_str, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
-				printf("Character server sIP address : %s -> %s\n", w2, char_sip_str);
-			} else {
-				memcpy(char_sip_str, w2, 16);
-				char_sip_str[15] = '\0';
-			}
-			char_sip = inet_addr(char_sip_str);
+			memcpy(char_shost, w2, sizeof(char_shost));
+			char_shost[sizeof(char_shost)-1] = '\0';	// force \0 terminal
 		} else if (strcmpi(w1, "char_sport") == 0) {
 			int n = atoi(w2);
 			if (n< 0 || n > 65535) {
@@ -4334,8 +4298,10 @@ int do_init(int argc,char **argv)
 
 	char_config_read(char_conf_filename);
 
-	login_ip = inet_addr(login_ip_str);
-	char_ip  = inet_addr(char_ip_str);
+	login_ip = host2ip(login_host, "Login server IP address");
+	char_ip  = host2ip(char_host, "Character server IP address");
+	if(char_shost[0])
+		char_sip = host2ip(char_shost, "Character server sIP address");
 
 	for(i = 0; i < MAX_MAP_SERVERS; i++) {
 		server_fd[i] = -1;
