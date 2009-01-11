@@ -1219,7 +1219,7 @@ const struct guild *guild_sql_load_num(int guild_id)
 	// この関数内部でメモリ内部のギルドデータが書き換えられるが、
 	// 渡すデータが同じなら帰ってくるデータも同じになるので、
 	// 放置することにする
-	guild_cacl_skilltree(g);
+	guild_calc_skilltree(g);
 	guild_calcinfo(g);
 
 	return g;
@@ -2133,7 +2133,6 @@ int mapif_parse_GuildBasicInfoChange(int fd,int guild_id,int type,const char *da
 {
 	const struct guild *g1 = guild_load_num(guild_id);
 	struct guild g2;
-	short dw = *((short *)data);
 
 	if(g1 == NULL){
 		return 0;
