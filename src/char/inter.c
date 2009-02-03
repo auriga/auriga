@@ -215,7 +215,6 @@ int accreg_txt_init(void)
 		c++;
 	}
 	fclose(fp);
-	//printf("inter: %s read done (%d)\n",accreg_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( accreg_journal_enable )
@@ -272,7 +271,6 @@ int accreg_txt_sync(void)
 	}
 	numdb_foreach(accreg_db,accreg_txt_sync_sub,fp);
 	lock_fclose(fp,accreg_txt,&lock);
-	//printf("inter: %s saved.\n",accreg_txt);
 
 #ifdef TXT_JOURNAL
 	if( accreg_journal_enable )
@@ -378,14 +376,13 @@ void accreg_sql_save(struct accreg *reg)
 	int j;
 	char temp_str[128];
 
-	// `global_reg_value` (`type`, `account_id`, `char_id`, `str`, `value`)
-	sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`=2 AND `account_id`='%d'", reg->account_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" ACCOUNTREG_TABLE "` WHERE `account_id`='%d'", reg->account_id);
 
 	for(j=0; j<reg->reg_num; j++) {
 		if(reg->reg[j].str[0] && reg->reg[j].value != 0) {
 			sqldbs_query(
 				&mysql_handle,
-				"INSERT INTO `" REG_TABLE "` (`type`, `account_id`, `str`, `value`) VALUES (2,'%d','%s','%d')",
+				"INSERT INTO `" ACCOUNTREG_TABLE "` (`account_id`, `reg`, `value`) VALUES ('%d','%s','%d')",
 				reg->account_id, strecpy(temp_str,reg->reg[j].str), reg->reg[j].value
 			);
 		}
@@ -406,8 +403,7 @@ const struct accreg* accreg_sql_load(int account_id)
 	memset(reg, 0, sizeof(struct accreg));
 	reg->account_id = account_id;
 
-	// `global_reg_value` (`type`, `account_id`, `char_id`, `str`, `value`)
-	sqldbs_query(&mysql_handle, "SELECT `str`, `value` FROM `" REG_TABLE "` WHERE `type`=2 AND `account_id`='%d'", reg->account_id);
+	sqldbs_query(&mysql_handle, "SELECT `reg`, `value` FROM `" ACCOUNTREG_TABLE "` WHERE `account_id`='%d'", reg->account_id);
 
 	sql_res = sqldbs_store_result(&mysql_handle);
 

@@ -657,7 +657,6 @@ const struct mail* mail_sql_load(int char_id)
 
 	m->char_id = char_id;
 
-	// `mail` (`char_id`, `account_id`, `rates`, `store`)
 	rc = sqldbs_query(&mysql_handle, "SELECT `account_id`, `rates`, `store` FROM `" MAIL_TABLE "` WHERE `char_id` = '%d'", char_id);
 
 	if(rc) {
@@ -703,7 +702,6 @@ int mail_sql_save(struct mail* m2)
 
 	sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_TABLE "` WHERE `char_id`='%d'", m2->char_id);
 
-	// `mail` (`char_id`, `account_id`, `rates`, `store`)
 	sqldbs_query(
 		&mysql_handle,
 		"INSERT INTO `" MAIL_TABLE "` (`char_id`, `account_id`, `rates`, `store`) VALUES ('%d','%d','%u','%d')",

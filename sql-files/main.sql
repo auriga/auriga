@@ -15,15 +15,14 @@ CREATE TABLE `cart_inventory` (
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`, `char_id`),
-  KEY `char_id` (`char_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`char_id`, `id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
-# Table: 'char'
+# Table: 'char_data'
 # 
-CREATE TABLE `char` (
-  `char_id` int(11) NOT NULL auto_increment,
+CREATE TABLE `char_data` (
+  `char_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) NOT NULL default '0',
   `char_num` tinyint(4) unsigned NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
@@ -73,12 +72,11 @@ CREATE TABLE `char` (
   `parent_id2` int(11) NOT NULL default '0',
   `baby_id` int(11) NOT NULL default '0',
   `online` tinyint(4) NOT NULL default '0',
-  PRIMARY KEY  (`char_id`),
-  KEY `account_id` (`account_id`),
+  PRIMARY KEY (`char_id`),
+  UNIQUE `account_slot` (`account_id`, `char_num`),
   KEY `party_id` (`party_id`),
-  KEY `guild_id` (`guild_id`),
-  KEY `name` (`name`)
-) TYPE=MyISAM AUTO_INCREMENT=15000; 
+  UNIQUE `name` (`name`)
+) TYPE = MyISAM AUTO_INCREMENT=15000;
 
 # Database: Ragnarok
 # Table: 'charlog'
@@ -86,21 +84,37 @@ CREATE TABLE `char` (
 CREATE TABLE `charlog` (
   `time` datetime NOT NULL default '0000-00-00 00:00:00',
   `log` TEXT NOT NULL
-) TYPE=MyISAM; 
+) TYPE = MyISAM;
 
 # Database: Ragnarok
-# Table: 'global_reg_value'
+# Table: 'worldreg'
 # 
-CREATE TABLE `global_reg_value` (
-  `char_id` int(11) NOT NULL default '0',
-  `str` varchar(32) NOT NULL default '',
-  `value` int(11) NOT NULL default '0',
-  `type` tinyint(4) NOT NULL default '3',
+CREATE TABLE `worldreg` (
   `account_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`char_id`,`str`,`account_id`),
-  KEY `account_id` (`account_id`),
-  KEY `char_id` (`char_id`)
-) TYPE=MyISAM; 
+  `reg` varchar(32) NOT NULL default '',
+  `value` int(11) NOT NULL default '0',
+  PRIMARY KEY (`account_id`, `reg`)
+) TYPE = MyISAM;
+
+# Database: Ragnarok
+# Table: 'accountreg'
+#
+CREATE TABLE `accountreg` (
+  `account_id` int(11) NOT NULL default '0',
+  `reg` varchar(32) NOT NULL default '',
+  `value` int(11) NOT NULL default '0',
+  PRIMARY KEY (`account_id`, `reg`)
+) TYPE = MyISAM;
+
+# Database: Ragnarok
+# Table: 'globalreg'
+#
+CREATE TABLE `globalreg` (
+  `char_id` int(11) NOT NULL default '0',
+  `reg` varchar(32) NOT NULL default '',
+  `value` int(11) NOT NULL default '0',
+  PRIMARY KEY (`char_id`, `reg`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild'
@@ -121,8 +135,9 @@ CREATE TABLE `guild` (
   `emblem_len` int(11) NOT NULL default '0',
   `emblem_id` int(11) NOT NULL default '0',
   `emblem_data` blob NOT NULL,
-  PRIMARY KEY  (`guild_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`guild_id`),
+  UNIQUE `name` (`name`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_alliance'
@@ -132,8 +147,8 @@ CREATE TABLE `guild_alliance` (
   `opposition` int(11) NOT NULL default '0',
   `alliance_id` int(11) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
-  KEY `guild_id` (`guild_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`guild_id`, `alliance_id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_castle'
@@ -165,50 +180,30 @@ CREATE TABLE `guild_castle` (
   `gHP5` int(11) NOT NULL default '0',
   `gHP6` int(11) NOT NULL default '0',
   `gHP7` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`castle_id`),
-  KEY `guild_id` (`guild_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`castle_id`)
+) TYPE = MyISAM;
 
 INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('3','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('4','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('5','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('6','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('7','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('8','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('9','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('10','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('11','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('12','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('13','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('14','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('15','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('16','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('17','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('18','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES ('19','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
+VALUES
+  ( '1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ( '2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ( '3','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ( '4','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ( '5','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ( '6','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ( '7','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ( '8','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ( '9','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('10','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('11','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('12','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('13','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('14','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('15','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('16','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('17','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('18','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+  ('19','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
 
 # Database: Ragnarok
 # Table: 'guild_expulsion'
@@ -219,7 +214,7 @@ CREATE TABLE `guild_expulsion` (
   `mes` varchar(40) NOT NULL default '',
   `account_id` int(11) NOT NULL default '0',
   KEY `guild_id` (`guild_id`)
-) TYPE=MyISAM; 
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_member'
@@ -238,10 +233,8 @@ CREATE TABLE `guild_member` (
   `online` tinyint(4) unsigned NOT NULL default '0',
   `position` smallint(6) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
-  KEY `guild_id` (`guild_id`),
-  KEY `account_id` (`account_id`),
-  KEY `char_id` (`char_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`guild_id`, `char_id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_position'
@@ -252,8 +245,8 @@ CREATE TABLE `guild_position` (
   `name` varchar(24) NOT NULL default '',
   `mode` int(11) NOT NULL default '0',
   `exp_mode` int(11) NOT NULL default '0',
-  KEY `guild_id` (`guild_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`guild_id`, `position`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_skill'
@@ -262,8 +255,8 @@ CREATE TABLE `guild_skill` (
   `guild_id` int(11) NOT NULL default '0',
   `id` int(11) NOT NULL default '0',
   `lv` int(11) NOT NULL default '0',
-  KEY `guild_id` (`guild_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`guild_id`, `id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_storage'
@@ -282,9 +275,8 @@ CREATE TABLE `guild_storage` (
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`, `guild_id`),
-  KEY `guild_id` (`guild_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`guild_id`, `id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'interlog'
@@ -292,7 +284,7 @@ CREATE TABLE `guild_storage` (
 CREATE TABLE `interlog` (
   `time` datetime NOT NULL default '0000-00-00 00:00:00',
   `log` varchar(255) NOT NULL default ''
-) TYPE=MyISAM; 
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'inventory'
@@ -311,19 +303,8 @@ CREATE TABLE `inventory` (
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`, `char_id`),
-  KEY `char_id` (`char_id`)
-) TYPE=MyISAM; 
-
-# Database: Ragnarok
-# Table: 'ipbanlist'
-# 
-CREATE TABLE `ipbanlist` (
-  `list` varchar(255) NOT NULL default '',
-  `btime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `rtime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `reason` varchar(255) NOT NULL default ''
-) TYPE=MyISAM; 
+  PRIMARY KEY (`char_id`, `id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'login'
@@ -339,18 +320,20 @@ CREATE TABLE `login` (
   `level` smallint(3) NOT NULL default '0',
   `last_ip` varchar(16) NOT NULL default '',
   `state` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`account_id`),
-  KEY `name` (`userid`)
-) TYPE=MyISAM AUTO_INCREMENT=2000000;
+  PRIMARY KEY (`account_id`),
+  UNIQUE `name` (`userid`)
+) TYPE = MyISAM AUTO_INCREMENT=2000000;
 
 # added standard accounts for servers, VERY INSECURE!!!
 # inserted into the table called login which is above
 
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('1', 's1', 'p1', 'S','auriga@auriga.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('2', 's2', 'p2', 'S','auriga@auriga.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('3', 's3', 'p3', 'S','auriga@auriga.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('4', 's4', 'p4', 'S','auriga@auriga.com');
-INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES ('5', 's5', 'p5', 'S','auriga@auriga.com');
+INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`)
+VALUES
+  ('1', 's1', 'p1', 'S', 'auriga@auriga.com'),
+  ('2', 's2', 'p2', 'S', 'auriga@auriga.com'),
+  ('3', 's3', 'p3', 'S', 'auriga@auriga.com'),
+  ('4', 's4', 'p4', 'S', 'auriga@auriga.com'),
+  ('5', 's5', 'p5', 'S', 'auriga@auriga.com');
 
 # Database: Ragnarok
 # Table: 'loginlog'
@@ -358,19 +341,19 @@ INSERT INTO `login` (`account_id`, `userid`, `user_pass`, `sex`, `email`) VALUES
 CREATE TABLE `loginlog` (
   `time` datetime NOT NULL default '0000-00-00 00:00:00',
   `log` varchar(255) NOT NULL default ''
-) TYPE=MyISAM; 
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'memo'
 # 
 CREATE TABLE `memo` (
-  `memo_id` int(11) NOT NULL auto_increment,
   `char_id` int(11) NOT NULL default '0',
+  `index` int(11) NOT NULL default '0',
   `map` varchar(24) NOT NULL default '',
   `x` smallint(6) NOT NULL default '0',
   `y` smallint(6) NOT NULL default '0',
-  PRIMARY KEY  (`memo_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`char_id`, `index`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'party'
@@ -381,14 +364,15 @@ CREATE TABLE `party` (
   `exp` tinyint(4) unsigned NOT NULL default '0',
   `item` tinyint(4) unsigned NOT NULL default '0',
   `leader_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`party_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`party_id`),
+  UNIQUE `name` (`name`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'pet'
 # 
 CREATE TABLE `pet` (
-  `pet_id` int(11) NOT NULL auto_increment,
+  `pet_id` int(11) NOT NULL AUTO_INCREMENT,
   `class` smallint(6) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
   `account_id` int(11) NOT NULL default '0',
@@ -400,8 +384,8 @@ CREATE TABLE `pet` (
   `hungry` smallint(6) NOT NULL default '0',
   `rename_flag` tinyint(4) NOT NULL default '0',
   `incubate` tinyint(4) NOT NULL default '0',
-  PRIMARY KEY  (`pet_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`pet_id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'skill'
@@ -410,9 +394,8 @@ CREATE TABLE `skill` (
   `char_id` int(11) NOT NULL default '0',
   `id` smallint(6) unsigned NOT NULL default '0',
   `lv` smallint(6) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`char_id`,`id`),
-  KEY `char_id` (`char_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`char_id`,`id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'storage'
@@ -420,7 +403,6 @@ CREATE TABLE `skill` (
 CREATE TABLE `storage` (
   `id` int(11) unsigned NOT NULL default '0',
   `account_id` int(11) NOT NULL default '0',
-
   `nameid` smallint(6) NOT NULL default '0',
   `amount` smallint(6) NOT NULL default '0',
   `equip` smallint(6) unsigned NOT NULL default '0',
@@ -432,26 +414,25 @@ CREATE TABLE `storage` (
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`, `account_id`),
-  KEY `account_id` (`account_id`)
-) TYPE=MyISAM; 
+  PRIMARY KEY (`account_id`, `id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'friend'
 # 
-CREATE TABLE friend (
+CREATE TABLE `friend` (
   `char_id` int(11) NOT NULL default '0',
-  `id1` int(11) NOT NULL default '0',
-  `id2` int(11) NOT NULL default '0',
+  `friend_account` int(11) NOT NULL default '0',
+  `friend_id` int(11) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
-  KEY `char_id` (`char_id`)
-) TYPE=MyISAM;
+  PRIMARY KEY (`char_id`, `friend_id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'homunculus'
 # 
 CREATE TABLE `homunculus` (
-  `homun_id` int(11) NOT NULL auto_increment,
+  `homun_id` int(11) NOT NULL AUTO_INCREMENT,
   `class` smallint(6) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
   `account_id` int(11) NOT NULL default '0',
@@ -475,8 +456,8 @@ CREATE TABLE `homunculus` (
   `hungry` smallint(6) NOT NULL default '0',
   `rename_flag` tinyint(4) NOT NULL default '0',
   `incubate` tinyint(4) NOT NULL default '0',
-  PRIMARY KEY  (`homun_id`)
-) TYPE=MyISAM;
+  PRIMARY KEY (`homun_id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'homunculus_skill'
@@ -485,8 +466,8 @@ CREATE TABLE `homunculus_skill` (
   `homun_id` int(11) NOT NULL default '0',
   `id` smallint(6) unsigned NOT NULL default '0',
   `lv` smallint(6) unsigned NOT NULL default '0',
-  KEY `homun_id` (`homun_id`)
-) TYPE=MyISAM;
+  PRIMARY KEY (`homun_id`, `id`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'status_change'
@@ -500,8 +481,8 @@ CREATE TABLE `status_change` (
   `val3` int(11) NOT NULL default '0',
   `val4` int(11) NOT NULL default '0',
   `tick` int(11) NOT NULL default '0',
-  KEY `char_id` (`char_id`)
-) TYPE=MyISAM;
+  PRIMARY KEY (`char_id`, `type`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'mail'
@@ -512,7 +493,7 @@ CREATE TABLE `mail` (
   `rates` int(11) unsigned NOT NULL default '0',
   `store` int(11) NOT NULL default '0',
   PRIMARY KEY (`char_id`)
-) TYPE=MyISAM;
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'mail_data'
@@ -540,10 +521,8 @@ CREATE TABLE `mail_data` (
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
-  PRIMARY KEY (`char_id`,`number`),
-  KEY `char_id` (`char_id`),
-  KEY `number` (`number`)
-) TYPE=MyISAM;
+  PRIMARY KEY (`char_id`, `number`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'mapreg'
@@ -553,21 +532,18 @@ CREATE TABLE `mapreg` (
   `reg` varchar(255) NOT NULL default '',
   `index` smallint(6) NOT NULL default '0',
   `value` text NOT NULL,
-  PRIMARY KEY (`server_tag`, `reg`, `index`),
-  KEY `reg` (`reg`),
-  KEY `index` (`index`)
-) TYPE=MyISAM;
+  PRIMARY KEY (`server_tag`, `reg`, `index`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'feel_info'
 #
 CREATE TABLE `feel_info` (
-  `feel_id` bigint(20) unsigned NOT NULL auto_increment,
   `char_id` int(11) NOT NULL default '0',
   `map` varchar(24) NOT NULL default '',
   `lv` smallint(6) NOT NULL default '-1',
-  PRIMARY KEY  (`feel_id`)
-) TYPE=MyISAM;
+  PRIMARY KEY (`char_id`, `lv`)
+) TYPE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'hotkey'
@@ -578,6 +554,5 @@ CREATE TABLE `hotkey` (
   `type` tinyint(4) NOT NULL default '0',
   `id` int(11) NOT NULL default '0',
   `lv` smallint(6) unsigned NOT NULL default '0',
-  PRIMARY KEY (`char_id`, `key`),
-  KEY `char_id` (`char_id`)
-) TYPE=MyISAM;
+  PRIMARY KEY (`char_id`, `key`)
+) TYPE = MyISAM;

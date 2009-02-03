@@ -196,7 +196,6 @@ int storage_txt_sync(void)
 	}
 	numdb_foreach(storage_db,storage_txt_sync_sub,fp);
 	lock_fclose(fp,storage_txt,&lock);
-	//printf("int_storage: %s saved.\n",storage_txt);
 
 #ifdef TXT_JOURNAL
 	if( storage_journal_enable )
@@ -394,7 +393,6 @@ int gstorage_txt_sync(void)
 	}
 	numdb_foreach(gstorage_db,gstorage_txt_sync_sub,fp);
 	lock_fclose(fp,guild_storage_txt,&lock);
-	//printf("int_storage: %s saved.\n",guild_storage_txt);
 
 #ifdef TXT_JOURNAL
 	if( guild_storage_journal_enable )

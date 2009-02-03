@@ -236,7 +236,6 @@ int status_txt_sync(void)
 	}
 	numdb_foreach(scdata_db,status_txt_sync_sub,fp);
 	lock_fclose(fp,scdata_txt,&lock);
-	//printf("int_status: %s saved.\n",scdata_txt);
 
 #ifdef TXT_JOURNAL
 	if( status_journal_enable )
@@ -390,7 +389,6 @@ struct scdata *status_sql_load(int char_id)
 
 	sc->char_id = char_id;
 
-	// `status_change` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`)
 	rc = sqldbs_query(
 		&mysql_handle,
 		"SELECT `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick` "

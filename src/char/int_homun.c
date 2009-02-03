@@ -118,7 +118,6 @@ static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 
 	memset(h,0,sizeof(struct mmo_homunstatus));
 
-	//printf("sscanf homun main info\n");
 	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],tmp_str,
 		&tmp_int[2],&tmp_int[3],
@@ -257,7 +256,6 @@ int homun_txt_init(void)
 		c++;
 	}
 	fclose(fp);
-	//printf("int_homun: %s read done (%d homs)\n",homun_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
@@ -309,7 +307,6 @@ int homun_txt_sync(void)
 	}
 	numdb_foreach(homun_db,homun_txt_sync_sub,fp);
 	lock_fclose(fp,homun_txt,&lock);
-	//printf("int_homun: %s saved.\n",homun_txt);
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
@@ -426,10 +423,9 @@ int homun_sql_delete(int homun_id)
 		numdb_erase(homun_db,p->homun_id);
 		aFree(p);
 	}
-	// printf("Request del  hom  (%6d)[",homun_id);
+
 	sqldbs_query(&mysql_handle, "DELETE FROM `" HOMUN_TABLE "` WHERE `homun_id`='%d'", homun_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" HOMUN_SKILL_TABLE "` WHERE `homun_id`='%d'", homun_id);
-	// printf("]\n");
 
 	return 0;
 }
@@ -448,13 +444,8 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id)
 		p = (struct mmo_homunstatus *)aMalloc(sizeof(struct mmo_homunstatus));
 		numdb_insert(homun_db,homun_id,p);
 	}
-
-	// printf("Request load hom  (%6d)[",homun_id);
 	memset(p, 0, sizeof(struct mmo_homunstatus));
 
-	// `hom` (`homun_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,
-	//	`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,
-	//	`status_point`,`skill_point`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	rc = sqldbs_query(
 		&mysql_handle,
 		"SELECT `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,"
@@ -467,6 +458,7 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id)
 		p->homun_id = -1;
 		return NULL;
 	}
+
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res!=NULL && sqldbs_num_rows(sql_res)>0) {
 		sql_row = sqldbs_fetch(sql_res);
@@ -534,7 +526,6 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id)
 	else if(p->intimate > 100000)
 		p->intimate = 100000;
 
-	 //printf("]\n");
 	return p;
 }
 
@@ -549,18 +540,13 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id)
 
 int homun_sql_save(struct mmo_homunstatus* p2)
 {
-	// `hom` (`homun_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,
-	//	`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,
-	//	`status_point`,`skill_point`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	int  i;
 	char sep, *p, buf[64];
 	const struct mmo_homunstatus *p1 = homun_sql_load(p2->homun_id);
 
 	if(p1 == NULL) return 0;
 
-	// printf("Request save hom  (%6d)[",p2->homun_id);
 	sep = ' ';
-	// basic information
 	p = tmp_sql;
 	strcpy(p, "UPDATE `" HOMUN_TABLE "` SET");
 	p += strlen(p);
@@ -592,7 +578,6 @@ int homun_sql_save(struct mmo_homunstatus* p2)
 	if(sep == ',') {
 		sprintf(p," WHERE `homun_id` = '%d'",p2->homun_id);
 		sqldbs_query(&mysql_handle, tmp_sql);
-		// printf("basic ");
 	}
 
 	if(memcmp(p1->skill, p2->skill, sizeof(p1->skill)) ) {
@@ -608,9 +593,8 @@ int homun_sql_save(struct mmo_homunstatus* p2)
 				);
 			}
 		}
-		// printf("skill ");
 	}
-	// printf("]\n");
+
 	{
 		struct mmo_homunstatus *p3 = (struct mmo_homunstatus *)numdb_search(homun_db,p2->homun_id);
 		if(p3)
@@ -626,7 +610,6 @@ int homun_sql_new(struct mmo_homunstatus *p)
 	char t_name[64];
 	struct mmo_homunstatus *p2;
 
-	// printf("Request make hom  (------)[");
 	rc = sqldbs_query(
 		&mysql_handle,
 		"INSERT INTO `" HOMUN_TABLE "` (`class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,"
@@ -647,7 +630,6 @@ int homun_sql_new(struct mmo_homunstatus *p)
 
 	p->homun_id = (int)sqldbs_insert_id(&mysql_handle);
 
-	// skill
 	for(i=0;i<MAX_HOMSKILL;i++) {
 		if(p->skill[i].id && p->skill[i].flag!=1){
 			int lv = (p->skill[i].flag==0)? p->skill[i].lv: p->skill[i].flag-2;

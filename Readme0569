@@ -1,4 +1,43 @@
 ----------------------------------------
+//0587 [2009/02/04] by Rayce
+
+・ワープポータルのメモの順番が不定になる可能性を修正（char.c）
+・不要なコメントを削除
+
+・TXT: JOURNAL_IDENTIFIER を 09 に引き上げ（journal.c）
+・SQL: memo テーブルに index フィールドを追加（sql-files/Auriga587-changetable.sql）
+
+・SQL: テーブル定義の見直し（sql-files/main.sql）
+	-> char テーブルを char_data に改名
+	-> friend テーブルのカラム名を変更
+	-> memo, feel_info テーブルから実質使われていない auto_increment を削除
+	-> 重複する不要なINDEXの削除
+	   複合インデックスの左端の部分はキーとして利用できる
+	-> データの堅牢性向上のため、UNIQUEキーを張るように改善
+	-> EXPLAIN の実行結果より、インデックスが利用できていないクエリに対して
+	   INDEXを張るように改善
+	-> global_reg_value テーブルの type はカーディナリティが低いので
+	   worldreg, accountreg, globalreg テーブルにそれぞれ正規化する
+	-> ipbanlist テーブルは参照されていないので削除
+
+・SQL: 不要な ORDER BY を削除（int_guild.c）
+・SQL: sql-files/drop_table.sql に IF EXISTS を付ける
+
+  ※SQLモードについて、テーブル定義を変更しています。
+    外部のアプリ等でDBを参照している方は、テーブル名・カラム名の変更に合わせて
+    修正してください。
+    また、INDEXはAuriga内部で使われる最低限のものだけにしています。
+    DBを頻繁に参照する方は、各自適宜INDEXを張ってください。
+
+  ※SQLモードについて、ワープポータルのメモの情報は移行されません。
+    PRIMARY KEYを作り直す必要がある関係上、移行のスクリプトが極めて複雑になるため
+    サポートしないことにしました。
+    もしデータを移行したい方は、Auriga587-changetable.sql を実行する前に
+    バックアップを取った上、手動でデータを入力し直して下さい。
+
+  ※converter未対応です。
+
+----------------------------------------
 //0586 [2009/01/12] by Rayce
 
 ・太陽と月と星の怒りによるダメージボーナスは、基本武器ダメージ計算ではなく

@@ -43,10 +43,10 @@ extern char tmp_sql[65535];
 // login
 #define LOGIN_TABLE    "login"
 #define LOGINLOG_TABLE "loginlog"
-#define REG_TABLE      "global_reg_value"
+#define WORLDREG_TABLE "worldreg"
 
 // char
-#define CHAR_TABLE            "char"
+#define CHAR_TABLE            "char_data"
 #define FRIEND_TABLE          "friend"
 #define CART_TABLE            "cart_inventory"
 #define INVENTORY_TABLE       "inventory"
@@ -74,6 +74,8 @@ extern char tmp_sql[65535];
 #define STORAGE_TABLE         "storage"
 #define GUILD_STORAGE_TABLE   "guild_storage"
 #define INTERLOG_TABLE        "interlog"
+#define ACCOUNTREG_TABLE      "accountreg"
+#define GLOBALREG_TABLE       "globalreg"
 
 // map
 #define MAPREG_TABLE "mapreg"

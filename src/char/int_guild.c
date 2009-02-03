@@ -189,7 +189,7 @@ static int guild_tostr(char *str,struct guild *g)
 	}
 	len+=sprintf(str+len,"$\t");
 
-	// 同盟リスト
+	// 同盟/敵対リスト
 	for(i=0,c=0;i<MAX_GUILDALLIANCE;i++) {
 		if(g->alliance[i].guild_id>0)
 			c++;
@@ -298,7 +298,6 @@ static int guild_fromstr(char *str,struct guild *g)
 		printf("int_guild: max guild member changed %d -> %d\n", g->max_member, i);
 		g->max_member = i;
 	}
-	//printf("GuildMemberInfo OK\n");
 
 	// 役職
 	for(i=0;i<MAX_GUILDPOSITION;i++){
@@ -315,7 +314,6 @@ static int guild_fromstr(char *str,struct guild *g)
 		for(j=0;j<2 && str!=NULL;j++)	// 位置スキップ
 			str=strchr(str+1,'\t');
 	}
-	//printf("GuildPositionInfo OK\n");
 
 	// エンブレム
 	tmp_int[1]=0;
@@ -340,7 +338,7 @@ static int guild_fromstr(char *str,struct guild *g)
 	//printf("GuildEmblemInfo OK\n");
 	str=strchr(str+1,'\t');	// 位置スキップ
 
-	// 同盟リスト
+	// 同盟/敵対リスト
 	if( sscanf(str+1,"%d\t",&c)< 1)
 		return 1;
 	str=strchr(str+1,'\t');	// 位置スキップ
@@ -956,7 +954,6 @@ static int guildcastle_tosql(int castle_id)
 	int rc;
 	struct guild_castle *gc = &castle_db[castle_id];
 
-	//printf("Request save guild castle ....");
 	rc = sqldbs_query(&mysql_handle,
 		"UPDATE `" GUILD_CASTLE_TABLE "` SET guild_id = %d,economy = %d,"
 		"defense = %d,triggerE = %d,"
@@ -1017,7 +1014,7 @@ const struct guild *guild_sql_load_num(int guild_id)
 	}
 	memset(g,0,sizeof(struct guild));
 
-	// printf("Request load guild(% 6d)[",guild_id);
+	// 基本データ
 	rc = sqldbs_query(
 		&mysql_handle,
 		"SELECT `name`,`master`,`guild_lv`,`connect_member`,`max_member`,"
@@ -1078,16 +1075,14 @@ const struct guild *guild_sql_load_num(int guild_id)
 		return NULL;
 	}
 	sqldbs_free_result(sql_res);
-	// printf("basic ");
 
-	//printf("- Read guild_member %d from sql \n",guild_id);
+	// メンバー
 	rc = sqldbs_query(
 		&mysql_handle,
 		"SELECT `account_id`,`char_id`,`hair`,`hair_color`,`gender`,`class`,`lv`,"
 		"`exp`,`exp_payper`,`online`,`position`,`name` FROM `" GUILD_MEMBER_TABLE "` "
 		"WHERE `guild_id`='%d' ORDER BY `position`", guild_id
 	);
-	//printf("  %s\n",tmp_sql);
 	if(rc) {
 		g->guild_id = -1;
 		return NULL;
@@ -1116,15 +1111,13 @@ const struct guild *guild_sql_load_num(int guild_id)
 		}
 	}
 	sqldbs_free_result(sql_res);
-	// printf("member ");
 
-	//printf("- Read guild_position %d from sql \n",guild_id);
+	// 役職
 	rc = sqldbs_query(
 		&mysql_handle,
 		"SELECT `position`,`name`,`mode`,`exp_mode` FROM `" GUILD_POSITION_TABLE "` WHERE `guild_id`='%d'",
 		guild_id
 	);
-	//printf("  %s\n",tmp_sql);
 	if(rc) {
 		g->guild_id = -1;
 		return NULL;
@@ -1142,9 +1135,8 @@ const struct guild *guild_sql_load_num(int guild_id)
 		}
 	}
 	sqldbs_free_result(sql_res);
-	// printf("position ");
 
-	//printf("- Read guild_alliance %d from sql \n",guild_id);
+	// 同盟/敵対リスト
 	rc = sqldbs_query(
 		&mysql_handle,
 		"SELECT `opposition`,`alliance_id`,`name` FROM `" GUILD_ALLIANCE_TABLE "` WHERE `guild_id`='%d'",
@@ -1166,9 +1158,8 @@ const struct guild *guild_sql_load_num(int guild_id)
 		}
 	}
 	sqldbs_free_result(sql_res);
-	// printf("alliance ");
 
-	//printf("- Read guild_expulsion %d from sql \n",guild_id);
+	// 追放リスト
 	rc = sqldbs_query(&mysql_handle, "SELECT `name`,`mes`,`account_id` FROM `" GUILD_EXPULSION_TABLE "` WHERE `guild_id`='%d'", guild_id);
 	if(rc) {
 		g->guild_id = -1;
@@ -1189,10 +1180,9 @@ const struct guild *guild_sql_load_num(int guild_id)
 		}
 	}
 	sqldbs_free_result(sql_res);
-	// printf("expulsion ");
 
-	//printf("- Read guild_skill %d from sql \n",guild_id);
-	rc = sqldbs_query(&mysql_handle, "SELECT `id`,`lv` FROM `" GUILD_SKILL_TABLE "` WHERE `guild_id`='%d' ORDER BY `id`", guild_id);
+	// ギルドスキル
+	rc = sqldbs_query(&mysql_handle, "SELECT `id`,`lv` FROM `" GUILD_SKILL_TABLE "` WHERE `guild_id`='%d'", guild_id);
 	if(rc) {
 		g->guild_id = -1;
 		return NULL;
@@ -1213,8 +1203,6 @@ const struct guild *guild_sql_load_num(int guild_id)
 			g->skill[i].id = 0;
 	}
 	sqldbs_free_result(sql_res);
-	// printf("skill ");
-	// printf("]\n");
 
 	// この関数内部でメモリ内部のギルドデータが書き換えられるが、
 	// 渡すデータが同じなら帰ってくるデータも同じになるので、
@@ -1273,10 +1261,8 @@ int guild_sql_save(struct guild* g2)
 	if (g1 == NULL)
 		return 0;
 
-	// printf("Request save guild(% 6d)[",g2->guild_id);
-
+	// 基本情報
 	sep = ' ';
-	// basic information
 	p = tmp_sql;
 	strcpy(p, "UPDATE `" GUILD_TABLE "` SET");
 	p += strlen(p);
@@ -1306,13 +1292,12 @@ int guild_sql_save(struct guild* g2)
 	if(sep == ',') {
 		sprintf(p," WHERE `guild_id` = '%d'",g2->guild_id);
 		sqldbs_query(&mysql_handle, tmp_sql);
-		// printf("basic ");
 	}
 
+	// メンバー
 	if(memcmp(g1->member,g2->member,sizeof(g1->member))) {
 		sqldbs_query(&mysql_handle, "DELETE FROM `" GUILD_MEMBER_TABLE "` WHERE `guild_id`='%d'", g2->guild_id);
 
-		// printf("- Insert guild %d to guild_member\n",g2->guild_id);
 		for(i=0;i < g2->max_member;i++) {
 			if (g2->member[i].account_id>0){
 				struct guild_member *m = &g2->member[i];
@@ -1326,12 +1311,10 @@ int guild_sql_save(struct guild* g2)
 				);
 			}
 		}
-		// printf("member ");
 	}
 
-	//printf("- Insert guild %d to guild_position\n",g2->guild_id);
+	// 役職
 	if(memcmp(g1->position,g2->position,sizeof(g1->position))) {
-		//printf("- Delete guild %d from guild_position\n",g2->guild_id);
 		sqldbs_query(&mysql_handle, "DELETE FROM `" GUILD_POSITION_TABLE "` WHERE `guild_id`='%d'", g2->guild_id);
 
 		for(i=0;i<MAX_GUILDPOSITION;i++){
@@ -1342,12 +1325,10 @@ int guild_sql_save(struct guild* g2)
 				"('%d','%d','%s','%d','%d')",
 				g2->guild_id,i,strecpy(buf,pos->name),pos->mode,pos->exp_mode
 			);
-			//printf(" %s\n",tmp_sql);
 		}
-		// printf("position ");
 	}
 
-	//printf("- Insert guild %d to guild_alliance\n",g2->guild_id);
+	// 同盟/敵対リスト
 	if(memcmp(g1->alliance,g2->alliance,sizeof(g1->alliance))) {
 		sqldbs_query(&mysql_handle, "DELETE FROM `" GUILD_ALLIANCE_TABLE "` WHERE `guild_id`='%d'", g2->guild_id);
 
@@ -1362,11 +1343,9 @@ int guild_sql_save(struct guild* g2)
 				);
 			}
 		}
-		//printf(" %s\n",tmp_sql);
-		// printf("alliance ");
 	}
 
-	//printf("- Insert guild %d to guild_expulsion\n",g2->guild_id);
+	// 追放リスト
 	if(memcmp(g1->explusion,g2->explusion,sizeof(g1->explusion))) {
 		sqldbs_query(&mysql_handle, "DELETE FROM `" GUILD_EXPULSION_TABLE "` WHERE `guild_id`='%d'", g2->guild_id);
 
@@ -1381,9 +1360,9 @@ int guild_sql_save(struct guild* g2)
 				);
 			}
 		}
-		// printf("expulsion ");
 	}
 
+	// ギルドスキル
 	if(memcmp(g1->skill,g2->skill,sizeof(g1->skill))) {
 		sqldbs_query(&mysql_handle, "DELETE FROM `" GUILD_SKILL_TABLE "` WHERE `guild_id`='%d'", g2->guild_id);
 
@@ -1397,15 +1376,15 @@ int guild_sql_save(struct guild* g2)
 				);
 			}
 		}
-		// printf("skill ");
 	}
-	// printf("]\n");
+
 	{
 		struct guild* g3 = (struct guild *)numdb_search(guild_db,g2->guild_id);
 		if(g3)
 			memcpy(g3,g2,sizeof(struct guild));
 	}
 	guild_guildcastle_save();
+
 	return 1;
 }
 
@@ -1428,7 +1407,6 @@ void guild_sql_delete(int guild_id)
 {
 	int i;
 	struct guild* g = (struct guild *)numdb_search(guild_db,guild_id);
-	// printf("Request del  guild(%06d)[",guild_id);
 
 	if(g) {
 		numdb_erase(guild_db,g->guild_id);
@@ -1451,24 +1429,20 @@ void guild_sql_delete(int guild_id)
 			castle_db[i].castle_id = i;
 		}
 	}
-	// printf("]\n");
 }
 
 int guild_sql_new(struct guild *g)
 {
-	// Add new guild
 	int rc;
 	char t_name[64];
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
 	// ギルドIDを読み出す
-	// printf("Request make guild(------)[");
 	rc = sqldbs_query(&mysql_handle, "SELECT MAX(`guild_id`) FROM `" GUILD_TABLE "`");
 	if(rc)
 		return 0;
 
-	// query ok -> get the data!
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if(!sql_res)
 		return 0;
@@ -1488,7 +1462,6 @@ int guild_sql_new(struct guild *g)
 		g->guild_id,strecpy(t_name,g->name),g->max_member
 	);
 
-	// printf("]\n");
 	guild_sql_save(g);
 	return 1;
 }

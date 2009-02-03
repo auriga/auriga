@@ -605,7 +605,7 @@ int login_sql_account_delete(int account_id)
 		aFree(ac);
 
 	sqldbs_query(&mysql_handle, "DELETE FROM `" LOGIN_TABLE "` WHERE `account_id` = '%d'", account_id);
-	sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`='1' AND `account_id`='%d'", account_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" WORLDREG_TABLE "` WHERE `account_id`='%d'", account_id);
 
 	return 0;
 }
@@ -671,7 +671,7 @@ const struct mmo_account* login_sql_account_load_num(int account_id)
 
 	// global reg
 	ac->account_reg2_num = 0;
-	sqldbs_query(&mysql_handle, "SELECT `str`,`value` FROM `" REG_TABLE "` WHERE `type`='1' AND `account_id`='%d'", account_id);
+	sqldbs_query(&mysql_handle, "SELECT `reg`,`value` FROM `" WORLDREG_TABLE "` WHERE `account_id`='%d'", account_id);
 
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
@@ -816,12 +816,12 @@ int login_sql_account_save(struct mmo_account *ac2)
 	) {
 		int i;
 
-		sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`='1' AND `account_id`='%d'", ac2->account_id);
+		sqldbs_query(&mysql_handle, "DELETE FROM `" WORLDREG_TABLE "` WHERE `account_id`='%d'", ac2->account_id);
 		for(i = 0;i < ac2->account_reg2_num ; i++) {
 			sqldbs_query(
 				&mysql_handle,
-				"INSERT INTO `" REG_TABLE "` (`type`, `account_id`, `str`, `value`) "
-				"VALUES ( 1 , '%d' , '%s' , '%d')",
+				"INSERT INTO `" WORLDREG_TABLE "` (`account_id`, `reg`, `value`) "
+				"VALUES ('%d', '%s', '%d')",
 				ac2->account_id,strecpy(buf,ac2->account_reg2[i].str),ac2->account_reg2[i].value
 			);
 		}

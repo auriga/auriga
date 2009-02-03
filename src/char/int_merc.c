@@ -108,7 +108,6 @@ static int merc_fromstr(char *str,struct mmo_mercstatus *m)
 
 	memset(m,0,sizeof(struct mmo_mercstatus));
 
-	//printf("sscanf merc main info\n");
 	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%u%n",
 		&tmp_int[0],&tmp_int[1],tmp_str,
 		&tmp_int[2],&tmp_int[3],
@@ -231,7 +230,6 @@ int merc_txt_init(void)
 		c++;
 	}
 	fclose(fp);
-	//printf("int_merc: %s read done (%d mercs)\n",merc_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( merc_journal_enable )
@@ -283,7 +281,6 @@ int merc_txt_sync(void)
 	}
 	numdb_foreach(merc_db,merc_txt_sync_sub,fp);
 	lock_fclose(fp,merc_txt,&lock);
-	//printf("int_merc: %s saved.\n",merc_txt);
 
 #ifdef TXT_JOURNAL
 	if( merc_journal_enable )
@@ -400,10 +397,9 @@ int merc_sql_delete(int merc_id)
 		numdb_erase(merc_db,p->merc_id);
 		aFree(p);
 	}
-	// printf("Request del  merc  (%6d)[",merc_id);
+
 	sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_TABLE "` WHERE `merc_id`='%d'", merc_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_SKILL_TABLE "` WHERE `merc_id`='%d'", merc_id);
-	// printf("]\n");
 
 	return 0;
 }
@@ -422,13 +418,8 @@ const struct mmo_mercstatus* merc_sql_load(int merc_id)
 		p = (struct mmo_mercstatus *)aMalloc(sizeof(struct mmo_mercstatus));
 		numdb_insert(merc_db,merc_id,p);
 	}
-
-	// printf("Request load merc  (%6d)[",merc_id);
 	memset(p, 0, sizeof(struct mmo_mercstatus));
 
-	// `mercenary` (`merc_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,
-	//	`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,
-	//	`kill_count`,`limit`)
 	rc = sqldbs_query(
 		&mysql_handle,
 		"SELECT `class`,`name`,`account_id`,`char_id`,`base_level`,"
@@ -495,7 +486,6 @@ const struct mmo_mercstatus* merc_sql_load(int merc_id)
 
 	p->option = 0;
 
-	 //printf("]\n");
 	return p;
 }
 
@@ -514,18 +504,14 @@ const struct mmo_mercstatus* merc_sql_load(int merc_id)
 
 int merc_sql_save(struct mmo_mercstatus* p2)
 {
-	// `mercenary` (`merc_id`, `class`,`name`,`account_id`,`char_id`,`base_level`,
-	//	`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,
-	//	`kill_count`,`limit`)
 	int  i;
 	char sep, *p, buf[64];
 	const struct mmo_mercstatus *p1 = merc_sql_load(p2->merc_id);
 
-	if(p1 == NULL) return 0;
+	if(p1 == NULL)
+		return 0;
 
-	// printf("Request save merc  (%6d)[",p2->merc_id);
 	sep = ' ';
-	// basic information
 	p = tmp_sql;
 	strcpy(p, "UPDATE `" MERC_TABLE "` SET");
 	p += strlen(p);
@@ -551,7 +537,6 @@ int merc_sql_save(struct mmo_mercstatus* p2)
 	if(sep == ',') {
 		sprintf(p," WHERE `merc_id` = '%d'",p2->merc_id);
 		sqldbs_query(&mysql_handle, tmp_sql);
-		// printf("basic ");
 	}
 
 	if(memcmp(p1->skill, p2->skill, sizeof(p1->skill)) ) {
@@ -567,9 +552,8 @@ int merc_sql_save(struct mmo_mercstatus* p2)
 				);
 			}
 		}
-		// printf("skill ");
 	}
-	// printf("]\n");
+
 	{
 		struct mmo_mercstatus *p3 = (struct mmo_mercstatus *)numdb_search(merc_db,p2->merc_id);
 		if(p3)
@@ -585,7 +569,6 @@ int merc_sql_new(struct mmo_mercstatus *p)
 	char t_name[64];
 	struct mmo_mercstatus *p2;
 
-	// printf("Request make merc  (------)[");
 	rc = sqldbs_query(
 		&mysql_handle,
 		"INSERT INTO `" MERC_TABLE "` (`class`,`name`,`account_id`,`char_id`,`base_level`,"

@@ -187,7 +187,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 	);
 	for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 		if(p->st.memo_point[i].map[0])
-			str_p += sprintf(str_p,"%s,%d,%d ",p->st.memo_point[i].map,p->st.memo_point[i].x,p->st.memo_point[i].y);
+			str_p += sprintf(str_p,"%d,%s,%d,%d ",i,p->st.memo_point[i].map,p->st.memo_point[i].x,p->st.memo_point[i].y);
 	}
 	*(str_p++)='\t';
 
@@ -378,15 +378,23 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	if(str[next]=='\n' || str[next]=='\r')
 		return 1;	// 新規データ
 	next++;
+
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
-		set=sscanf(str+next,"%255[^,],%d,%d%n",tmp_str[0],&tmp_int[0],&tmp_int[1],&len);
-		if(set!=3)
-			return 0;
-		if(i < MAX_PORTAL_MEMO) {
-			strncpy(p->st.memo_point[i].map, tmp_str[0], 24);
-			p->st.memo_point[i].map[23] = '\0';	// force \0 terminal
-			p->st.memo_point[i].x       = tmp_int[0];
-			p->st.memo_point[i].y       = tmp_int[1];
+		// Auriga-0587以降の形式
+		set=sscanf(str+next,"%d,%255[^,],%d,%d%n",&tmp_int[0],tmp_str[0],&tmp_int[1],&tmp_int[2],&len);
+		if(set!=4) {
+			n = i;
+			set=sscanf(str+next,"%255[^,],%d,%d%n",tmp_str[0],&tmp_int[1],&tmp_int[2],&len);
+			if(set!=3)
+				return 0;
+		} else {
+			n = tmp_int[0];
+		}
+		if(n >= 0 && n < MAX_PORTAL_MEMO) {
+			strncpy(p->st.memo_point[n].map, tmp_str[0], 24);
+			p->st.memo_point[n].map[23] = '\0';	// force \0 terminal
+			p->st.memo_point[n].x       = tmp_int[1];
+			p->st.memo_point[n].y       = tmp_int[2];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -1168,7 +1176,7 @@ int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 	p  = tmp_sql;
 	p += sprintf(
 		p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
-		"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit` ) VALUES",tablename,selectoption
+		"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit`) VALUES",tablename,selectoption
 	);
 
 	for(i = 0 ; i < max ; i++) {
@@ -1220,8 +1228,6 @@ const struct mmo_chardata* char_sql_load(int char_id)
 		// 既にキャッシュが存在する
 		return p;
 	}
-
-	// printf("Request load char (%6d)[",char_id);
 
 	sqldbs_query(&mysql_handle, "SELECT "
 		"`account_id`, `char_num`, `name`, `class`, `base_level`, `job_level`, `base_exp`, `job_exp`, `zeny`,"
@@ -1302,40 +1308,36 @@ const struct mmo_chardata* char_sql_load(int char_id)
 		p->st.last_point.map[23] = '\0';
 		p->st.save_point.map[23] = '\0';
 
-		// free mysql result.
 		sqldbs_free_result(sql_res);
 	} else {
-		printf("char - failed\n");	// Error?! ERRRRRR WHAT THAT SAY!?
+		printf("char - failed\n");
 		return NULL;
 	}
-	// printf("char ");
 
 	// read memo data
-	// `memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
-	sqldbs_query(&mysql_handle, "SELECT `map`,`x`,`y` FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "SELECT `index`,`map`,`x`,`y` FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", char_id);
 	sql_res = sqldbs_store_result(&mysql_handle);
 
 	if (sql_res) {
-		for(i = 0; i < MAX_PORTAL_MEMO && (sql_row = sqldbs_fetch(sql_res)); i++) {
-			strncpy(p->st.memo_point[i].map, sql_row[0], 24);
-			p->st.memo_point[i].map[23] = '\0';	// force \0 terminal
-			p->st.memo_point[i].x       = atoi(sql_row[1]);
-			p->st.memo_point[i].y       = atoi(sql_row[2]);
+		for(i = 0; (sql_row = sqldbs_fetch(sql_res)); i++) {
+			n = atoi(sql_row[0]);
+			if(n >= 0 && n < MAX_PORTAL_MEMO) {
+				strncpy(p->st.memo_point[n].map, sql_row[1], 24);
+				p->st.memo_point[n].map[23] = '\0';	// force \0 terminal
+				p->st.memo_point[n].x       = atoi(sql_row[2]);
+				p->st.memo_point[n].y       = atoi(sql_row[3]);
+			}
 		}
 		sqldbs_free_result(sql_res);
 	}
-	// printf("memo ");
 
 	// read inventory
 	char_sql_loaditem(p->st.inventory,MAX_INVENTORY,p->st.char_id,TABLE_NUM_INVENTORY);
-	// printf("inventory ");
 
-	// read cart.
+	// read cart
 	char_sql_loaditem(p->st.cart,MAX_CART,p->st.char_id,TABLE_NUM_CART);
-	// printf("cart ");
 
 	// read skill
-	// `skill` (`char_id`, `id`, `lv`)
 	sqldbs_query(&mysql_handle, "SELECT `id`, `lv` FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", char_id);
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
@@ -1348,11 +1350,9 @@ const struct mmo_chardata* char_sql_load(int char_id)
 		}
 		sqldbs_free_result(sql_res);
 	}
-	// printf("skill ");
 
 	// global_reg
-	// `global_reg_value` (`char_id`, `str`, `value`)
-	sqldbs_query(&mysql_handle, "SELECT `str`, `value` FROM `" REG_TABLE "` WHERE `type`=3 AND `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "SELECT `reg`, `value` FROM `" GLOBALREG_TABLE "` WHERE `char_id`='%d'", char_id);
 	i = 0;
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
@@ -1368,11 +1368,10 @@ const struct mmo_chardata* char_sql_load(int char_id)
 		sqldbs_free_result(sql_res);
 	}
 	p->reg.global_num = (i < GLOBAL_REG_NUM)? i: GLOBAL_REG_NUM;
-	// printf("global_reg ");
 
 	// friend list
 	p->st.friend_num = 0;
-	sqldbs_query(&mysql_handle, "SELECT `id1`, `id2`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "SELECT `friend_account`, `friend_id`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", char_id);
 	sql_res = sqldbs_store_result( &mysql_handle );
 	if( sql_res )
 	{
@@ -1386,14 +1385,15 @@ const struct mmo_chardata* char_sql_load(int char_id)
 		sqldbs_free_result( sql_res );
 		p->st.friend_num = (i < MAX_FRIEND)? i: MAX_FRIEND;
 	}
+
 	// friend list のチェックと訂正
 	for(i=0; i<p->st.friend_num; i++ )
 	{
-		sqldbs_query(&mysql_handle, "SELECT `id1`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `id2`='%d'", p->st.friend_data[i].char_id, p->st.char_id);
+		sqldbs_query(&mysql_handle, "SELECT `friend_account`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `friend_id`='%d'", p->st.friend_data[i].char_id, p->st.char_id);
 		sql_res = sqldbs_store_result( &mysql_handle );
 		if( !sql_res ) {
 			// 相手に存在しないので、友達リストから削除する
-			sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `id2`='%d'", p->st.char_id, p->st.friend_data[i].char_id);
+			sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `friend_id`='%d'", p->st.char_id, p->st.friend_data[i].char_id);
 			p->st.friend_num--;
 			memmove( &p->st.friend_data[i], &p->st.friend_data[i+1], sizeof(p->st.friend_data[0])* (p->st.friend_num - i ) );
 			i--;
@@ -1402,10 +1402,8 @@ const struct mmo_chardata* char_sql_load(int char_id)
 			sqldbs_free_result( sql_res );
 		}
 	}
-	// printf("friend ");
 
 	// feel_info
-	// `feel_info` (`feel_id`,`char_id`,`map`,`lv`)
 	sqldbs_query(&mysql_handle, "SELECT `map`,`lv` FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", char_id);
 	sql_res = sqldbs_store_result(&mysql_handle);
 
@@ -1421,7 +1419,6 @@ const struct mmo_chardata* char_sql_load(int char_id)
 	}
 
 	// hotkey
-	// `hotkey` (`char_id`,`key`,`type`,`id`,`lv`)
 	sqldbs_query(&mysql_handle, "SELECT `key`, `type`, `id`, `lv` FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", char_id);
 	sql_res = sqldbs_store_result(&mysql_handle);
 
@@ -1437,8 +1434,6 @@ const struct mmo_chardata* char_sql_load(int char_id)
 		sqldbs_free_result(sql_res);
 	}
 
-	// printf("]\n");	// ok. all data load successfuly!
-
 	return p;
 }
 
@@ -1451,16 +1446,13 @@ int char_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
 	if(cd == NULL || cd->st.account_id != account_id)
 		return 0;
 
-	//printf("- Save global_reg_value data to MySQL!\n");
-	// `global_reg_value` (`char_id`, `str`, `value`)
-	sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`=3 AND `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" GLOBALREG_TABLE "` WHERE `char_id`='%d'", char_id);
 
-	// insert here.
 	for(i=0;i<num;i++){
 		if (reg[i].str[0] && reg[i].value != 0) {
 			sqldbs_query(
 				&mysql_handle,
-				"INSERT INTO `" REG_TABLE "` (`char_id`, `str`, `value`) VALUES ('%d', '%s', '%d')",
+				"INSERT INTO `" GLOBALREG_TABLE "` (`char_id`, `reg`, `value`) VALUES ('%d', '%s', '%d')",
 				char_id, strecpy(buf,reg[i].str), reg[i].value
 			);
 		}
@@ -1502,7 +1494,6 @@ int char_sql_save(struct mmo_charstatus *st2)
 	if(cd == NULL)
 		return 0;
 	st1 = &cd->st;
-	// printf("Request save char (%6d)[",st2->char_id);
 
 	// basic information
 	strcpy(p, "UPDATE `" CHAR_TABLE "` SET");
@@ -1560,48 +1551,39 @@ int char_sql_save(struct mmo_charstatus *st2)
 	if(sep == ',') {
 		sprintf(p," WHERE `char_id` = '%d'",st2->char_id);
 		sqldbs_query(&mysql_handle, tmp_sql);
-		// printf("char ");
 	}
 
 	// memo
 	if (memcmp(st1->memo_point,st2->memo_point,sizeof(st1->memo_point))) {
-		// `memo` (`memo_id`,`char_id`,`map`,`x`,`y`)
 		sqldbs_query(&mysql_handle, "DELETE FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
-		// insert here.
 		for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 			if(st2->memo_point[i].map[0]) {
 				sqldbs_query(
 					&mysql_handle,
-					"INSERT INTO `" MEMO_TABLE "` (`char_id`,`map`,`x`,`y`) VALUES ('%d', '%s', '%d', '%d')",
-					st2->char_id, strecpy(buf,st2->memo_point[i].map), st2->memo_point[i].x, st2->memo_point[i].y
+					"INSERT INTO `" MEMO_TABLE "` (`char_id`,`index`,`map`,`x`,`y`) VALUES ('%d', '%d', '%s', '%d', '%d')",
+					st2->char_id, i, strecpy(buf,st2->memo_point[i].map), st2->memo_point[i].x, st2->memo_point[i].y
 				);
 			}
 		}
-		// printf("memo ");
 	}
 
 	// inventory
 	if (memcmp(st1->inventory, st2->inventory, sizeof(st1->inventory))) {
 		char_sql_saveitem(st2->inventory,MAX_INVENTORY,st2->char_id,TABLE_NUM_INVENTORY);
-		// printf("inventory ");
 	}
 
 	// cart
 	if (memcmp(st1->cart, st2->cart, sizeof(st1->cart))) {
 		char_sql_saveitem(st2->cart,MAX_CART,st2->char_id,TABLE_NUM_CART);
-		// printf("cart ");
 	}
 
 	// skill
 	if(memcmp(st1->skill,st2->skill,sizeof(st1->skill))) {
 		unsigned short sk_lv;
-		//printf("- Save skill data to MySQL!\n");
-		// `skill` (`char_id`, `id`, `lv`)
+
 		sqldbs_query(&mysql_handle, "DELETE FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
-		//printf("- Insert skill \n");
-		// insert here.
 		for(i=0;i<MAX_SKILL;i++){
 			sk_lv = (st2->skill[i].flag==0)? st2->skill[i].lv: st2->skill[i].flag-2;
 			if(st2->skill[i].id && st2->skill[i].flag!=1){
@@ -1612,7 +1594,6 @@ int char_sql_save(struct mmo_charstatus *st2)
 				);
 			}
 		}
-		// printf("skill ");
 	}
 
 	// friend
@@ -1625,19 +1606,16 @@ int char_sql_save(struct mmo_charstatus *st2)
 		{
 			sqldbs_query(
 				&mysql_handle,
-				"INSERT INTO `" FRIEND_TABLE "` (`char_id`, `id1`, `id2`, `name`) VALUES ('%d', '%d', '%d', '%s')",
+				"INSERT INTO `" FRIEND_TABLE "` (`char_id`, `friend_account`, `friend_id`, `name`) VALUES ('%d', '%d', '%d', '%s')",
 				st2->char_id, st2->friend_data[i].account_id, st2->friend_data[i].char_id, strecpy(buf, st2->friend_data[i].name)
 			);
 		}
-		// printf("friend ");
 	}
 
 	// feel_info
 	if (memcmp(st1->feel_map,st2->feel_map,sizeof(st1->feel_map))) {
-		// `feel_info` (`feel_id`,`char_id`,`map`,`lv`)
 		sqldbs_query(&mysql_handle, "DELETE FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
-		// insert here.
 		for(i = 0; i < 3; i++) {
 			if(st2->feel_map[i][0]) {
 				sqldbs_query(
@@ -1651,10 +1629,8 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 	// hotkey
 	if (memcmp(st1->hotkey,st2->hotkey,sizeof(st1->hotkey))) {
-		// `hotkey` (`char_id`,`key`,`type`,`id`,`lv`)
 		sqldbs_query(&mysql_handle, "DELETE FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
-		// insert here.
 		for(i = 0; i < MAX_HOTKEYS; i++) {
 			if(st2->hotkey[i].id > 0) {
 				sqldbs_query(
@@ -1666,7 +1642,6 @@ int char_sql_save(struct mmo_charstatus *st2)
 		}
 	}
 
-	// printf("]\n");
 	{
 		struct mmo_chardata *cd2 = (struct mmo_chardata *)numdb_search(char_db_,st2->char_id);
 		if(cd2)
@@ -1774,7 +1749,6 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 
 	char_log("make new char %d %s", slot, name);
 
-	// Insert the char to the 'chardb' ^^
 	rc = sqldbs_query(
 		&mysql_handle,
 		"INSERT INTO `" CHAR_TABLE "` (`account_id`,`char_num`,`name`,`zeny`,`str`,`agi`,`vit`,`int`,"
@@ -1787,14 +1761,14 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 		start_point.x, start_point.y, start_point.map, start_point.x, start_point.y
 	);
 	if(rc)
-		return NULL; // No, stop the procedure!
+		return NULL;
 
-	// Now we need the charid from sql!
+	// キャラIDの取得
 	char_id = (int)sqldbs_insert_id(&mysql_handle);
 
-	// Give the char the default items
-	// knife
+	// デフォルト装備
 	if(start_weapon > 0) {
+		// ナイフ
 		rc = sqldbs_query(
 			&mysql_handle,
 			"INSERT INTO `" INVENTORY_TABLE "` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
@@ -1804,8 +1778,8 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 		if(rc)
 			return NULL;
 	}
-	// cotton shirt
 	if(start_armor > 0) {
+		// コットンシャツ
 		rc = sqldbs_query(
 			&mysql_handle,
 			"INSERT INTO `" INVENTORY_TABLE "` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
@@ -1874,7 +1848,7 @@ int char_sql_delete_sub(int char_id)
 	sqldbs_query(&mysql_handle, "DELETE FROM `" INVENTORY_TABLE "` WHERE `char_id`='%d'", char_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" CART_TABLE "` WHERE `char_id`='%d'", char_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", char_id);
-	sqldbs_query(&mysql_handle, "DELETE FROM `" REG_TABLE "` WHERE `type`=3 AND `char_id`='%d'", char_id);
+	sqldbs_query(&mysql_handle, "DELETE FROM `" GLOBALREG_TABLE "` WHERE `char_id`='%d'", char_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", char_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", char_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", char_id);
@@ -1972,7 +1946,7 @@ static int char_sql_build_ranking(void)
 		max = 0;
 		sqldbs_query(
 			&mysql_handle,
-			"SELECT `value`,`char_id` FROM `" REG_TABLE "` WHERE `type` = 3 AND `str` = '%s' AND `value` > 0 ORDER BY `value` DESC LIMIT 0,%d",
+			"SELECT `value`,`char_id` FROM `" GLOBALREG_TABLE "` WHERE `reg` = '%s' AND `value` > 0 ORDER BY `value` DESC LIMIT 0,%d",
 			strecpy(buf,ranking_reg[i]), MAX_RANKER
 		);
 

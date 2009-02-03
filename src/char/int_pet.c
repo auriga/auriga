@@ -195,7 +195,6 @@ int pet_txt_init(void)
 		c++;
 	}
 	fclose(fp);
-	//printf("int_pet: %s read done (%d pets)\n",pet_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( pet_journal_enable )
@@ -247,7 +246,6 @@ int pet_txt_sync(void)
 	}
 	numdb_foreach(pet_db,pet_txt_sync_sub,fp);
 	lock_fclose(fp,pet_txt,&lock);
-	//printf("int_pet: %s saved.\n",pet_txt);
 
 #ifdef TXT_JOURNAL
 	if( pet_journal_enable )
@@ -357,9 +355,7 @@ int pet_sql_delete(int pet_id)
 {
 	struct s_pet *p;
 
-	// printf("Request del  pet  (%6d)[",pet_id);
 	sqldbs_query(&mysql_handle, "DELETE FROM `" PET_TABLE "` WHERE `pet_id`='%d'", pet_id);
-	// printf("]\n");
 
 	p = (struct s_pet *)numdb_search(pet_db,pet_id);
 	if(p) {
@@ -389,11 +385,8 @@ const struct s_pet* pet_sql_load(int pet_id)
 		p = (struct s_pet *)aMalloc(sizeof(struct s_pet));
 		numdb_insert(pet_db,pet_id,p);
 	}
-
-	// printf("Request load pet  (%6d)[",pet_id);
 	memset(p, 0, sizeof(struct s_pet));
 
-	// `pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	rc = sqldbs_query(
 		&mysql_handle,
 		"SELECT `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,"
@@ -404,6 +397,7 @@ const struct s_pet* pet_sql_load(int pet_id)
 		p->pet_id = -1;
 		return NULL;
 	}
+
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res!=NULL && sqldbs_num_rows(sql_res)>0) {
 		sql_row = sqldbs_fetch(sql_res);
@@ -437,7 +431,6 @@ const struct s_pet* pet_sql_load(int pet_id)
 
 	sqldbs_free_result(sql_res);
 
-	// printf("]\n");
 	return p;
 }
 
@@ -446,13 +439,10 @@ int pet_sql_save(struct s_pet* p2)
 	char t_name[64];
 	const struct s_pet *p1 = pet_sql_load(p2->pet_id);
 
-	if(p1 == NULL) return 0;
+	if(p1 == NULL)
+		return 0;
 
-	// printf("Request save pet  (%6d)[",p2->pet_id);
-
-	// `pet` (`pet_id`, `class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`)
 	if(memcmp(p1,p2,sizeof(struct s_pet))) {
-		// row reside -> updating
 		sqldbs_query(
 			&mysql_handle,
 			"UPDATE `" PET_TABLE "` SET `class`='%d',`name`='%s',`account_id`='%d',`char_id`='%d',`level`='%d',`egg_id`='%d',"
@@ -460,9 +450,8 @@ int pet_sql_save(struct s_pet* p2)
 			p2->class_, strecpy(t_name, p2->name), p2->account_id, p2->char_id, p2->level, p2->egg_id,
 			p2->equip, p2->intimate, p2->hungry, p2->rename_flag, p2->incubate, p2->pet_id
 		);
-		// printf("basic ");
 	}
-	// printf("]\n");
+
 	{
 		struct s_pet *p3 = (struct s_pet *)numdb_search(pet_db,p2->pet_id);
 		if(p3)
@@ -477,8 +466,6 @@ int pet_sql_new(struct s_pet *p)
 	int rc;
 	char t_name[64];
 
-	// printf("Request make pet  (------)[");
-	// rename_flag = -1, incubate = char_id のダミーデータを入れて
 	rc = sqldbs_query(
 		&mysql_handle,
 		"INSERT INTO `" PET_TABLE "` (`class`,`name`,`account_id`,`char_id`,`level`,`egg_id`,"

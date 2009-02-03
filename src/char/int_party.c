@@ -494,7 +494,6 @@ int party_sql_save(struct party* p2)
 	if(p1 == NULL) return 0;
 
 	if(strcmp(p1->name,p2->name) || p1->exp != p2->exp || p1->item != p2->item) {
-		// 'party' ('party_id','name','exp','item','leader')
 		sqldbs_query(
 			&mysql_handle,
 			"UPDATE `" PARTY_TABLE "` SET `name`='%s', `exp`='%d', `item`='%d' WHERE `party_id`='%d'",
@@ -550,7 +549,6 @@ int party_sql_new(struct party *p)
 	if(rc)
 		return 0;
 
-	// query ok -> get the data!
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if(!sql_res)
 		return 0;
