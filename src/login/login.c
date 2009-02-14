@@ -697,15 +697,13 @@ const struct mmo_account* login_sql_account_load_str(const char *account_id)
 
 	if( !account_id[0] ) return NULL;
 
-	sqldbs_query(&mysql_handle, "SELECT `account_id`,`userid` FROM `" LOGIN_TABLE "` WHERE `userid` = '%s'", strecpy(buf,account_id));
+	sqldbs_query(&mysql_handle, "SELECT `account_id` FROM `" LOGIN_TABLE "` WHERE `userid` = '%s'", strecpy(buf,account_id));
 
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		while( (sql_row = sqldbs_fetch(sql_res)) ) {
-			if(strncmp(account_id, sql_row[1], 24) == 0) {
-				id_num = atoi(sql_row[0]);
-				break;
-			}
+		sql_row = sqldbs_fetch(sql_res);
+		if(sql_row) {
+			id_num = atoi(sql_row[0]);
 		}
 		sqldbs_free_result(sql_res);
 	}
@@ -732,8 +730,8 @@ const struct mmo_account* login_sql_account_load_idx(int idx)
 		if(sql_row) {
 			id_num  = atoi(sql_row[0]);
 		}
+		sqldbs_free_result(sql_res);
 	}
-	sqldbs_free_result(sql_res);
 	if(id_num >= 0) {
 		return login_sql_account_load_num(id_num);
 	}

@@ -25,7 +25,7 @@ CREATE TABLE `char_data` (
   `char_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) NOT NULL default '0',
   `char_num` tinyint(4) unsigned NOT NULL default '0',
-  `name` varchar(24) NOT NULL default '',
+  `name` varchar(24) BINARY NOT NULL default '',
   `class` smallint(6) NOT NULL default '0',
   `base_level` smallint(6) unsigned NOT NULL default '1',
   `job_level` smallint(6) unsigned NOT NULL default '1',
@@ -121,7 +121,7 @@ CREATE TABLE `globalreg` (
 # 
 CREATE TABLE `guild` (
   `guild_id` int(11) NOT NULL default '10000',
-  `name` varchar(24) NOT NULL default '',
+  `name` varchar(24) BINARY NOT NULL default '',
   `master` varchar(24) NOT NULL default '',
   `guild_lv` smallint(6) NOT NULL default '0',
   `connect_member` smallint(6) NOT NULL default '0',
@@ -311,7 +311,7 @@ CREATE TABLE `inventory` (
 # 
 CREATE TABLE `login` (
   `account_id` int(11) NOT NULL AUTO_INCREMENT,
-  `userid` varchar(24) NOT NULL default '',
+  `userid` varchar(24) BINARY NOT NULL default '',
   `user_pass` varchar(24) NOT NULL default '',
   `lastlogin` datetime NOT NULL default '0000-00-00 00:00:00',
   `sex` char(1) NOT NULL default 'M',
@@ -360,7 +360,7 @@ CREATE TABLE `memo` (
 # 
 CREATE TABLE `party` (
   `party_id` int(11) NOT NULL default '100',
-  `name` varchar(24) NOT NULL default '',
+  `name` varchar(24) BINARY NOT NULL default '',
   `exp` tinyint(4) unsigned NOT NULL default '0',
   `item` tinyint(4) unsigned NOT NULL default '0',
   `leader_id` int(11) NOT NULL default '0',

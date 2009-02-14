@@ -1731,20 +1731,20 @@ const struct mmo_chardata* char_sql_make(int account_id,unsigned char *dat,int *
 		return NULL;
 
 	// 同名チェック
-	rc = sqldbs_query(&mysql_handle, "SELECT `name` FROM `" CHAR_TABLE "` WHERE `name` = '%s'", strecpy(buf,name));
+	rc = sqldbs_query(&mysql_handle, "SELECT COUNT(*) FROM `" CHAR_TABLE "` WHERE `name` = '%s'", strecpy(buf,name));
 	if(rc)
 		return NULL;
 
 	sql_res = sqldbs_store_result(&mysql_handle);
-	if(sql_res) {
-		while( (sql_row = sqldbs_fetch(sql_res)) ) {
-			if(strncmp(name, sql_row[0], 24) == 0) {
-				*flag = 0x00;
-				sqldbs_free_result(sql_res);
-				return NULL;
-			}
-		}
-		sqldbs_free_result(sql_res);
+	if(!sql_res)
+		return NULL;
+
+	sql_row = sqldbs_fetch(sql_res);
+	i = atoi(sql_row[0]);
+	sqldbs_free_result(sql_res);
+	if(i) {
+		*flag = 0x00;
+		return NULL;
 	}
 
 	char_log("make new char %d %s", slot, name);
@@ -1904,18 +1904,13 @@ const struct mmo_chardata* char_sql_nick2chardata(const char *char_name)
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
-	sqldbs_query(&mysql_handle, "SELECT `char_id`,`name` FROM `" CHAR_TABLE "` WHERE `name` = '%s'", strecpy(buf,char_name));
+	sqldbs_query(&mysql_handle, "SELECT `char_id` FROM `" CHAR_TABLE "` WHERE `name` = '%s'", strecpy(buf,char_name));
 
 	sql_res = sqldbs_store_result(&mysql_handle);
-	if(sql_res){
-		while( (sql_row = sqldbs_fetch(sql_res)) ) {
-			if(strcmp(char_name, sql_row[1]) == 0) {
-				int char_id = atoi(sql_row[0]);
-				if(char_id > 0) {
-					cd = char_sql_load(char_id);
-				}
-				break;
-			}
+	if(sql_res) {
+		sql_row = sqldbs_fetch(sql_res);
+		if(sql_row) {
+			cd = char_sql_load(atoi(sql_row[0]));
 		}
 		sqldbs_free_result(sql_res);
 	}

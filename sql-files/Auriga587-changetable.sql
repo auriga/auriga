@@ -48,7 +48,9 @@ ALTER TABLE `storage` ADD PRIMARY KEY (`account_id`, `id`);
 ALTER TABLE `char_data` DROP KEY `account_id`;
 ALTER TABLE `char_data` ADD UNIQUE `account_slot` (`account_id`, `char_num`);
 ALTER TABLE `char_data` DROP KEY `name`;
+ALTER TABLE `char_data` MODIFY `name` varchar(24) BINARY NOT NULL default '';
 ALTER TABLE `char_data` ADD UNIQUE `name` (`name`);
+ALTER TABLE `guild` MODIFY `name` varchar(24) BINARY NOT NULL default '';
 ALTER TABLE `guild` ADD UNIQUE `name` (`name`);
 ALTER TABLE `guild_alliance` DROP KEY `guild_id`;
 ALTER TABLE `guild_alliance` ADD PRIMARY KEY (`guild_id`, `alliance_id`);
@@ -59,7 +61,9 @@ ALTER TABLE `guild_position` ADD PRIMARY KEY (`guild_id`, `position`);
 ALTER TABLE `guild_skill` DROP KEY `guild_id`;
 ALTER TABLE `guild_skill` ADD PRIMARY KEY (`guild_id`, `id`);
 ALTER TABLE `login` DROP KEY `name`;
+ALTER TABLE `login` MODIFY `userid` varchar(24) BINARY NOT NULL default '';
 ALTER TABLE `login` ADD UNIQUE `name` (`userid`);
+ALTER TABLE `party` MODIFY `name` varchar(24) BINARY NOT NULL default '';
 ALTER TABLE `party` ADD UNIQUE `name` (`name`);
 ALTER TABLE `friend` DROP KEY `char_id`;
 ALTER TABLE `friend` ADD PRIMARY KEY (`char_id`, `friend_id`);
@@ -103,3 +107,39 @@ DROP TABLE `global_reg_value`;
 
 # drop unused tables
 DROP TABLE IF EXISTS `ipbanlist`;
+
+
+# if your MySQL version is lower than 4.0,
+# please put comment out into the following all comands!
+
+# create temporary table
+CREATE TABLE `tmp_memo` (
+  `memo_id` int(11) NOT NULL AUTO_INCREMENT,
+  `char_id` int(11) NOT NULL default '0',
+  `map` varchar(24) NOT NULL default '',
+  `x` smallint(6) NOT NULL default '0',
+  `y` smallint(6) NOT NULL default '0',
+  PRIMARY KEY (`memo_id`)
+) TYPE = MyISAM;
+
+# transport data
+INSERT INTO `tmp_memo` (`char_id`, `map`, `x`, `y`)
+  SELECT `char_id`, `map`, `x`, `y` FROM `memo` ORDER BY `char_id`, `index`;
+
+# clear all data
+TRUNCATE TABLE `memo`;
+
+# write back renumbered data
+INSERT INTO `memo` (`char_id`, `index`, `map`, `x`, `y`)
+  SELECT t1.`char_id`, MOD(t1.`memo_id`, t2.count), t1.`map`, t1.`x`, t1.`y`
+  FROM
+  `tmp_memo` t1,
+  (
+    SELECT `char_id`, COUNT(*) count
+    FROM `tmp_memo`
+    GROUP BY `char_id`
+  ) t2
+  WHERE t1.`char_id` = t2.`char_id`;
+
+# drop temporary table
+DROP TABLE `tmp_memo`;

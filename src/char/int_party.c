@@ -407,15 +407,13 @@ const struct party* party_sql_load_str(char *str)
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
-	sqldbs_query(&mysql_handle, "SELECT `party_id`,`name` FROM `" PARTY_TABLE "` WHERE `name` = '%s'", strecpy(buf,str));
+	sqldbs_query(&mysql_handle, "SELECT `party_id` FROM `" PARTY_TABLE "` WHERE `name` = '%s'", strecpy(buf,str));
 
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		while( (sql_row = sqldbs_fetch(sql_res)) ) {
-			if(strcmp(str, sql_row[1]) == 0) {
-				id_num = atoi(sql_row[0]);
-				break;
-			}
+		sql_row = sqldbs_fetch(sql_res);
+		if(sql_row) {
+			id_num = atoi(sql_row[0]);
 		}
 		sqldbs_free_result(sql_res);
 	}

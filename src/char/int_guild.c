@@ -1222,16 +1222,14 @@ const struct guild* guild_sql_load_str(char *str)
 
 	sqldbs_query(
 		&mysql_handle,
-		"SELECT `guild_id`,`name` FROM `" GUILD_TABLE "` WHERE `name` = '%s'",
+		"SELECT `guild_id` FROM `" GUILD_TABLE "` WHERE `name` = '%s'",
 		strecpy(buf,str)
 	);
 	sql_res = sqldbs_store_result(&mysql_handle);
 	if (sql_res) {
-		while( (sql_row = sqldbs_fetch(sql_res)) ) {
-			if(strcmp(str, sql_row[1]) == 0) {
-				id_num = atoi(sql_row[0]);
-				break;
-			}
+		sql_row = sqldbs_fetch(sql_res);
+		if(sql_row) {
+			id_num = atoi(sql_row[0]);
 		}
 		sqldbs_free_result(sql_res);
 	}
