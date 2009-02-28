@@ -1285,7 +1285,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	/* ７．ヒット・属性・レンジ修正 */
+	/* ７．ヒット・属性・レンジ・ヒット回数修正 */
 	if(wd.type == 0) {
 		// 矢があるならヒットを加算
 		if(src_sd && src_sd->state.arrow_atk) {
@@ -1299,9 +1299,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		switch( skill_num ) {
 		case SM_BASH:			// バッシュ
 		case MS_BASH:
+			calc_flag.hitrate = calc_flag.hitrate*(100+5*skill_lv)/100;
+			break;
 		case KN_PIERCE:			// ピアース
 		case ML_PIERCE:
 			calc_flag.hitrate = calc_flag.hitrate*(100+5*skill_lv)/100;
+			wd.div_ = t_size + 1;
 			break;
 		case SM_MAGNUM:			// マグナムブレイク
 		case MS_MAGNUM:
@@ -1356,6 +1359,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			calc_flag.hitrate = calc_flag.hitrate*4+5;
 			calc_flag.dist = 1;
 			break;
+		case MO_FINGEROFFENSIVE:	// 指弾
+			if(src_sd && battle_config.finger_offensive_type == 0) {
+				wd.div_ = src_sd->spiritball_old;
+			} else {
+				wd.div_ = 1;
+			}
+			calc_flag.dist = 1;
+			break;
 		case AC_DOUBLE:			// ダブルストレイフィング
 		case HT_POWER:			// ビーストストレイフィング
 		case AC_SHOWER:			// アローシャワー
@@ -1364,7 +1375,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case KN_SPEARSTAB:		// スピアスタブ
 		case KN_SPEARBOOMERANG:		// スピアブーメラン
 		case AS_GRIMTOOTH:		// グリムトゥース
-		case MO_FINGEROFFENSIVE:	// 指弾
 		case LK_SPIRALPIERCE:		// スパイラルピアース
 		case HW_MAGICCRASHER:		// マジッククラッシャー
 		case ASC_BREAKER:		// ソウルブレイカー
@@ -1639,7 +1649,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case KN_PIERCE:		// ピアース
 		case ML_PIERCE:
-			wd.div_ = t_size+1;
 			DMG_FIX( (100+10*skill_lv) * wd.div_, 100 );
 			break;
 		case KN_SPEARSTAB:	// スピアスタブ
@@ -1770,13 +1779,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			calc_flag.nocardfix = 1;
 			break;
 		case MO_FINGEROFFENSIVE:	// 指弾
-			if(src_sd && battle_config.finger_offensive_type == 0) {
-				wd.div_ = src_sd->spiritball_old;
-				DMG_FIX( (100+50*skill_lv) * wd.div_, 100 );
-			} else {
-				wd.div_ = 1;
-				DMG_FIX( 100+50*skill_lv, 100 );
-			}
+			DMG_FIX( (100+50*skill_lv) * wd.div_, 100 );
 			break;
 		case MO_INVESTIGATE:	// 発勁
 			if(t_def1 < 1000000) {
