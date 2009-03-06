@@ -253,101 +253,55 @@ int homun_hungry_timer_delete(struct homun_data *hd)
 }
 
 /*==========================================
- * オートステ振り(statuspoint方式)
+ * 上昇ステ計算
  *------------------------------------------
  */
 int homun_upstatus(struct mmo_homunstatus *hd)
 {
-	int total,class_,ret = 0;
-
-	nullpo_retr(1, hd);
-
-	class_ = hd->class_ - HOM_ID;
-
-	total = homun_db[class_].str_k+homun_db[class_].agi_k+homun_db[class_].vit_k+homun_db[class_].int_k+homun_db[class_].dex_k+homun_db[class_].luk_k;
-	if(total <= 0)
-		return 0;
-
-	while(hd->status_point && ret++ < 64) {
-		int s = atn_rand()%total;
-		int require;
-
-		if((s -= homun_db[class_].str_k) < 0) {
-			require = (hd->str == 0)? 1: (hd->str-1)/10+2;
-			if(require < hd->status_point) {
-				hd->str++;
-				hd->status_point -= require;
-				continue;
-			}
-		} else if((s -= homun_db[class_].agi_k) < 0) {
-			require = (hd->agi == 0)? 1: (hd->agi-1)/10+2;
-			if(require < hd->status_point) {
-				hd->agi++;
-				hd->status_point -= require;
-				continue;
-			}
-		} else if((s -= homun_db[class_].vit_k) < 0) {
-			require = (hd->vit == 0)? 1: (hd->vit-1)/10+2;
-			if(require < hd->status_point) {
-				hd->vit++;
-				hd->status_point -= require;
-				continue;
-			}
-		} else if((s -= homun_db[class_].int_k) < 0) {
-			require = (hd->int_ == 0)? 1: (hd->int_-1)/10+2;
-			if(require < hd->status_point) {
-				hd->int_++;
-				hd->status_point -= require;
-				continue;
-			}
-		} else if((s -= homun_db[class_].dex_k) < 0) {
-			require = (hd->dex == 0)? 1: (hd->dex-1)/10+2;
-			if(require < hd->status_point) {
-				hd->dex++;
-				hd->status_point -= require;
-				continue;
-			}
-		} else if((s -= homun_db[class_].luk_k) < 0) {
-			require = (hd->luk == 0)? 1: (hd->luk-1)/10+2;
-			if(require < hd->status_point) {
-				hd->luk++;
-				hd->status_point -= require;
-				continue;
-			}
-		}
-
-		/* STポイントが足りなかった場合 */
-
-		//continue;	// 振れるだけ振る
-		break;		// 次にレベルが上がるまでSTポイントを保存する
-	}
-	return 0;
-}
-
-/*==========================================
- * 上昇ステ計算(非statuspoint方式)
- *------------------------------------------
- */
-int homun_upstatus2(struct mmo_homunstatus *hd)
-{
 	int class_;
+	int grow_hp,grow_sp;
+	short grow_str,grow_agi,grow_vit,grow_int,grow_dex,grow_luk;
 
 	nullpo_retr(1, hd);
 
 	class_ = hd->class_ - HOM_ID;
-	// 各BasePointに1割くらいの追加でボーナス上昇？
-	if(atn_rand()%100 < homun_db[class_].str_k)
-		hd->str  += (atn_rand()%(homun_db[class_].base*100-90))/100+1;
-	if(atn_rand()%100 < homun_db[class_].agi_k)
-		hd->agi  += (atn_rand()%(homun_db[class_].base*100-90))/100+1;
-	if(atn_rand()%100 < homun_db[class_].vit_k)
-		hd->vit  += (atn_rand()%(homun_db[class_].base*100-90))/100+1;
-	if(atn_rand()%100 < homun_db[class_].int_k)
-		hd->int_ += (atn_rand()%(homun_db[class_].base*100-90))/100+1;
-	if(atn_rand()%100 < homun_db[class_].dex_k)
-		hd->dex  += (atn_rand()%(homun_db[class_].base*100-90))/100+1;
-	if(atn_rand()%100 < homun_db[class_].luk_k)
-		hd->luk  += (atn_rand()%(homun_db[class_].base*100-90))/100+1;
+
+	grow_hp = homun_db[class_].grow_max.hp - homun_db[class_].grow_min.hp;
+	hd->max_hp += homun_db[class_].grow_min.hp + atn_rand()%grow_hp;
+	grow_sp = homun_db[class_].grow_max.sp - homun_db[class_].grow_min.sp;
+	hd->max_sp += homun_db[class_].grow_min.sp + atn_rand()%grow_sp;
+
+	//各ステータスは前回アップ時の端数分を加算して計算
+	grow_str = homun_db[class_].grow_max.str - homun_db[class_].grow_min.str;
+	grow_str = homun_db[class_].grow_min.str + atn_rand()%grow_str;
+	hd->str += (grow_str + hd->f_str) / 10;
+	hd->f_str = (grow_str + hd->f_str) % 10;
+
+	grow_agi = homun_db[class_].grow_max.agi - homun_db[class_].grow_min.agi;
+	grow_agi = homun_db[class_].grow_min.agi + atn_rand()%grow_agi;
+	hd->agi += (grow_agi + hd->f_agi) / 10;
+	hd->f_agi = (grow_agi + hd->f_agi) % 10;
+
+	grow_vit = homun_db[class_].grow_max.vit - homun_db[class_].grow_min.vit;
+	grow_vit = homun_db[class_].grow_min.vit + atn_rand()%grow_vit;
+	hd->vit += (grow_vit + hd->f_vit) / 10;
+	hd->f_vit = (grow_vit + hd->f_vit) % 10;
+
+	grow_int = homun_db[class_].grow_max.int_ - homun_db[class_].grow_min.int_;
+	grow_int = homun_db[class_].grow_min.int_ + atn_rand()%grow_int;
+	hd->int_ += (grow_int + hd->f_int) / 10;
+	hd->f_int = (grow_int + hd->f_int) % 10;
+
+	grow_dex = homun_db[class_].grow_max.dex - homun_db[class_].grow_min.dex;
+	grow_dex = homun_db[class_].grow_min.dex + atn_rand()%grow_dex;
+	hd->dex += (grow_dex + hd->f_dex) / 10;
+	hd->f_dex = (grow_dex + hd->f_dex) % 10;
+
+	grow_luk = homun_db[class_].grow_max.luk - homun_db[class_].grow_min.luk;
+	grow_luk = homun_db[class_].grow_min.luk + atn_rand()%grow_luk;
+	hd->luk += (grow_luk + hd->f_luk) / 10;
+	hd->f_luk = (grow_luk + hd->f_luk) % 10;
+
 	return 0;
 }
 
@@ -543,7 +497,7 @@ int homun_calc_status(struct homun_data *hd)
  */
 int homun_recalc_status(struct homun_data *hd)
 {
-	int lv,class_,hp,sp;
+	int lv,class_;
 
 	nullpo_retr(1, hd);
 
@@ -559,13 +513,7 @@ int homun_recalc_status(struct homun_data *hd)
 
 	for(lv=1; lv<hd->status.base_level; lv++)
 	{
-		// 実測値の、最大値〜最小値でランダム上昇
-		hp = homun_db[hd->status.class_-HOM_ID].hp_kmax - homun_db[hd->status.class_-HOM_ID].hp_kmin;
-		hd->status.max_hp += homun_db[hd->status.class_-HOM_ID].hp_kmin + atn_rand()%hp;
-		sp = homun_db[hd->status.class_-HOM_ID].sp_kmax - homun_db[hd->status.class_-HOM_ID].sp_kmin;
-		hd->status.max_sp += homun_db[hd->status.class_-HOM_ID].sp_kmin + atn_rand()%sp;
-		//homun_upstatus(&sd->hd->status);	// オートステ振り(statuspoint方式)
-		homun_upstatus2(&hd->status);	// ステアップ計算
+		homun_upstatus(&hd->status);	// ステアップ計算
 		homun_calc_status(hd);		// ステータス計算
 	}
 	return 0;
@@ -610,6 +558,14 @@ int homun_create_hom(struct map_session_data *sd,int homunid)
 	hd.max_sp       = 0;
 	hd.status_point = 0;
 	hd.skill_point  = homun_db[class_].skillpoint;	// 初期スキルポイント導入するかも…成長しないホム用
+
+	//各ステータスアップ時の端数保存用
+	hd.f_str = 0;
+	hd.f_agi = 0;
+	hd.f_vit = 0;
+	hd.f_int = 0;
+	hd.f_dex = 0;
+	hd.f_luk = 0;
 
 	// 初期ステータスをDBから埋め込み
 	hd.max_hp = homun_db[class_].hp;
@@ -1062,24 +1018,28 @@ int homun_change_class( struct map_session_data *sd, int class_ )
 	if( new_class < HOM_ID || new_class >= HOM_ID + MAX_HOMUN_DB )
 		return 1;
 
-	// change class
-	sd->hd->status.class_ = new_class;
-	sd->hd->view_class = homun_db[ new_class - HOM_ID ].view_class;
-
 	// evolution mode
 	if( class_ == -1 )
 	{
+		class_ = sd->hd->status.class_ - HOM_ID;
+
 		// change intimate to 19
 		sd->hd->intimate = 1900;
 
-		// gain all statuses by 1 ~ 10
-		sd->hd->status.str  += 1 + atn_rand() % 10;
-		sd->hd->status.vit  += 1 + atn_rand() % 10;
-		sd->hd->status.agi  += 1 + atn_rand() % 10;
-		sd->hd->status.int_ += 1 + atn_rand() % 10;
-		sd->hd->status.dex  += 1 + atn_rand() % 10;
-		sd->hd->status.luk  += 1 + atn_rand() % 10;
+		// 進化ステータスUP
+		sd->hd->status.max_hp += homun_db[class_].evo_min.hp + atn_rand()%(homun_db[class_].evo_max.hp - homun_db[class_].evo_min.hp);
+		sd->hd->status.max_sp += homun_db[class_].evo_min.sp + atn_rand()%(homun_db[class_].evo_max.sp - homun_db[class_].evo_min.sp);
+		sd->hd->status.str += homun_db[class_].evo_min.str + atn_rand()%(homun_db[class_].evo_max.str - homun_db[class_].evo_min.str);
+		sd->hd->status.agi += homun_db[class_].evo_min.agi + atn_rand()%(homun_db[class_].evo_max.agi - homun_db[class_].evo_min.agi);
+		sd->hd->status.vit += homun_db[class_].evo_min.vit + atn_rand()%(homun_db[class_].evo_max.vit - homun_db[class_].evo_min.vit);
+		sd->hd->status.int_ += homun_db[class_].evo_min.int_ + atn_rand()%(homun_db[class_].evo_max.int_ - homun_db[class_].evo_min.int_);
+		sd->hd->status.dex += homun_db[class_].evo_min.dex + atn_rand()%(homun_db[class_].evo_max.dex - homun_db[class_].evo_min.dex);
+		sd->hd->status.luk += homun_db[class_].evo_min.luk + atn_rand()%(homun_db[class_].evo_max.luk - homun_db[class_].evo_min.luk);
 	}
+
+	// change class
+	sd->hd->status.class_ = new_class;
+	sd->hd->view_class = homun_db[ new_class - HOM_ID ].view_class;
 
 	homun_return_embryo( sd );
 	homun_callhom( sd );
@@ -1192,7 +1152,6 @@ int homun_calc_skilltree(struct homun_data *hd)
 static int homun_checkbaselevelup(struct homun_data *hd)
 {
 	int next = homun_nextbaseexp(hd);
-	int hp,sp;
 
 	nullpo_retr(0, hd);
 
@@ -1205,14 +1164,7 @@ static int homun_checkbaselevelup(struct homun_data *hd)
 		if(hd->status.base_level%3 == 0)	// 3レベル毎にSkillPoint加算
 			hd->status.skill_point++;
 
-		// 実測値の、最大値〜最小値でランダム上昇
-		hp = homun_db[hd->status.class_-HOM_ID].hp_kmax - homun_db[hd->status.class_-HOM_ID].hp_kmin;
-		hd->status.max_hp += homun_db[hd->status.class_-HOM_ID].hp_kmin + atn_rand()%hp;
-		sp = homun_db[hd->status.class_-HOM_ID].sp_kmax - homun_db[hd->status.class_-HOM_ID].sp_kmin;
-		hd->status.max_sp += homun_db[hd->status.class_-HOM_ID].sp_kmin + atn_rand()%sp;
-
-		//homun_upstatus(&hd->status);	// オートステ振り(statuspoint方式)
-		homun_upstatus2(&hd->status);	// ステアップ計算
+		homun_upstatus(&hd->status);	// ステアップ計算
 		homun_calc_status(hd);			// ステータス計算
 		homun_heal(hd,hd->max_hp,hd->max_sp);
 		clif_misceffect2(&hd->bl,568);
@@ -1547,6 +1499,8 @@ static int read_homundb(void)
 	char line[4096];
 	int i, j;
 	int lines, count = 0;
+	int nameid;
+	char *str[32],*p,*np;
 	struct script_code *script = NULL;
 	const char *filename[] = { "db/homun_db.txt", "db/addon/homun_db_add.txt" };
 
@@ -1567,8 +1521,6 @@ static int read_homundb(void)
 		}
 		lines=count=0;
 		while(fgets(line,sizeof(line),fp)){
-			int nameid;
-			char *str[32],*p,*np;
 			lines++;
 
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -1609,17 +1561,17 @@ static int read_homundb(void)
 			homun_db[j].dex        = atoi(str[13]);
 			homun_db[j].luk        = atoi(str[14]);
 
-			homun_db[j].base       = atoi(str[15]);
-			homun_db[j].hp_kmax    = atoi(str[16]);
-			homun_db[j].hp_kmin    = atoi(str[17]);
-			homun_db[j].sp_kmax    = atoi(str[18]);
-			homun_db[j].sp_kmin    = atoi(str[19]);
-			homun_db[j].str_k      = atoi(str[20]);
-			homun_db[j].agi_k      = atoi(str[21]);
-			homun_db[j].vit_k      = atoi(str[22]);
-			homun_db[j].int_k      = atoi(str[23]);
-			homun_db[j].dex_k      = atoi(str[24]);
-			homun_db[j].luk_k      = atoi(str[25]);
+			//homun_db[j].base       = atoi(str[15]);
+			//homun_db[j].hp_kmax    = atoi(str[16]);
+			//homun_db[j].hp_kmin    = atoi(str[17]);
+			//homun_db[j].sp_kmax    = atoi(str[18]);
+			//homun_db[j].sp_kmin    = atoi(str[19]);
+			//homun_db[j].str_k      = atoi(str[20]);
+			//homun_db[j].agi_k      = atoi(str[21]);
+			//homun_db[j].vit_k      = atoi(str[22]);
+			//homun_db[j].int_k      = atoi(str[23]);
+			//homun_db[j].dex_k      = atoi(str[24]);
+			//homun_db[j].luk_k      = atoi(str[25]);
 			homun_db[j].aspd_k     = atoi(str[26]);
 			homun_db[j].size       = atoi(str[27]);
 			homun_db[j].race       = atoi(str[28]);
@@ -1645,6 +1597,76 @@ static int read_homundb(void)
 		fclose(fp);
 		printf("read %s done (count=%d)\n",filename[i],count);
 	}
+
+	fp=fopen("db/homun_db2.txt","r");
+	if(fp==NULL){
+		printf("can't read db/homun_db2.txt\n");
+		return -1;
+	}
+	lines=count=0;
+	while(fgets(line,sizeof(line),fp)){
+		lines++;
+
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0] == '/' && line[1] == '/')
+			continue;
+
+		for(j=0,p=line;j<33;j++){
+			if((np=strchr(p,','))!=NULL){
+				str[j]=p;
+				*np=0;
+				p=np+1;
+			} else {
+				str[j]=p;
+				p+=strlen(p);
+			}
+		}
+
+		nameid = atoi(str[0]);
+		j = nameid - HOM_ID;
+
+		if(j < 0 || j >= MAX_HOMUN_DB || homun_db[j].class_ != nameid)
+			continue;
+
+		homun_db[j].grow_min.hp   = atoi(str[1]);
+		homun_db[j].grow_max.hp   = atoi(str[2]);
+		homun_db[j].grow_min.sp   = atoi(str[3]);
+		homun_db[j].grow_max.sp   = atoi(str[4]);
+		homun_db[j].grow_min.str  = atoi(str[5]);
+		homun_db[j].grow_max.str  = atoi(str[6]);
+		homun_db[j].grow_min.agi  = atoi(str[7]);
+		homun_db[j].grow_max.agi  = atoi(str[8]);
+		homun_db[j].grow_min.vit  = atoi(str[9]);
+		homun_db[j].grow_max.vit  = atoi(str[10]);
+		homun_db[j].grow_min.int_ = atoi(str[11]);
+		homun_db[j].grow_max.int_ = atoi(str[12]);
+		homun_db[j].grow_min.dex  = atoi(str[13]);
+		homun_db[j].grow_max.dex  = atoi(str[14]);
+		homun_db[j].grow_min.luk  = atoi(str[15]);
+		homun_db[j].grow_max.luk  = atoi(str[16]);
+		homun_db[j].evo_min.hp    = atoi(str[17]);
+		homun_db[j].evo_max.hp    = atoi(str[18]);
+		homun_db[j].evo_min.sp    = atoi(str[19]);
+		homun_db[j].evo_max.sp    = atoi(str[20]);
+		homun_db[j].evo_min.str   = atoi(str[21]);
+		homun_db[j].evo_max.str   = atoi(str[22]);
+		homun_db[j].evo_min.agi   = atoi(str[23]);
+		homun_db[j].evo_max.agi   = atoi(str[24]);
+		homun_db[j].evo_min.vit   = atoi(str[25]);
+		homun_db[j].evo_max.vit   = atoi(str[26]);
+		homun_db[j].evo_min.int_  = atoi(str[27]);
+		homun_db[j].evo_max.int_  = atoi(str[28]);
+		homun_db[j].evo_min.dex   = atoi(str[29]);
+		homun_db[j].evo_max.dex   = atoi(str[30]);
+		homun_db[j].evo_min.luk   = atoi(str[31]);
+		homun_db[j].evo_max.luk   = atoi(str[32]);
+
+		count++;
+	}
+	fclose(fp);
+	printf("read db/homun_db2.txt done (count=%d)\n",count);
+
 	return 0;
 }
 

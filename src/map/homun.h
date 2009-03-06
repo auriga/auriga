@@ -29,14 +29,21 @@
 
 #define MAX_HOMSKILL_TREE 16
 
+struct homun_status {
+	int hp,sp;
+	short str,agi,vit,int_,dex,luk;
+};
+
 struct homun_db {
 	short class_;
 	unsigned short base_level;
 	char name[24],jname[24];
-	int hp,sp,hp_kmax,hp_kmin,sp_kmax,sp_kmin;
+	//int hp,sp,hp_kmax,hp_kmin,sp_kmax,sp_kmin;
+	int hp,sp;
 	int str,agi,vit,int_,dex,luk;
-	int base;
-	int str_k,agi_k,vit_k,int_k,dex_k,luk_k;
+	//int base;
+	//int str_k,agi_k,vit_k,int_k,dex_k,luk_k;
+	struct homun_status grow_min,grow_max,evo_min,evo_max;
 	short AcceID;
 	short FoodID;
 	short aspd_k;
@@ -73,7 +80,7 @@ int homun_calc_skilltree(struct homun_data *hd);
 int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp);
 int homun_nextbaseexp(struct homun_data *hd);
 int homun_calc_status(struct homun_data *hd);
-int homun_upstatus2(struct mmo_homunstatus *hd);
+int homun_upstatus(struct mmo_homunstatus *hd);
 
 int homun_damage(struct block_list *src,struct homun_data *hd,int damage);
 

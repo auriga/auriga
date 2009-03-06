@@ -228,6 +228,7 @@ struct mmo_homunstatus {
 	char name[24];
 	unsigned short base_level;
 	short str,agi,vit,int_,dex,luk;
+	short f_str,f_agi,f_vit,f_int,f_dex,f_luk;
 
 	short equip;
 	unsigned int option;

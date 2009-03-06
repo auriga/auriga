@@ -22,6 +22,7 @@ item_value_db.txt	アイテム価格のオーバーライド
 mob_db.txt		モンスターのデータを設定
 mob_skill_db.txt	モンスターの使用するスキルを設定
 homun_db.txt		ホムンクルスのデータを設定
+homun_db2.txt		ホムンクルスの成長データを設定
 homun_skill_tree.txt	ホムンクルスのスキルツリーを設定
 produce_db.txt		製造に関連するデータを設定
 scdata_db.txt		ステータス異常のデータを設定
@@ -704,12 +705,12 @@ SP : 作成直後のMSPの値
 Str,Agi,Vit,Int,Dex,Luk : 作成直後のステータスの値
 
 [Rate->] : ここから上昇ステータスに関する値の設定。（区切り）
-Base : レベルが１上がった時に、上昇するステータスの最大値
-HP_max : レベルが１上がった時に、上昇するHPの最大値
-HP_min : レベルが１上がった時に、上昇するHPの最低値
-SP_max : レベルが１上がった時に、上昇するSPの最大値
-SP_min : レベルが１上がった時に、上昇するSPの最低値
-Str,Agi,Vit,Int,Dex,Luk : レベルが１上がった時に、上昇する確率を百分率で表した数値
+Base : レベルが１上がった時に、上昇するステータスの最大値	※現在未使用
+HP_max : レベルが１上がった時に、上昇するHPの最大値		※現在未使用
+HP_min : レベルが１上がった時に、上昇するHPの最低値		※現在未使用
+SP_max : レベルが１上がった時に、上昇するSPの最大値		※現在未使用
+SP_min : レベルが１上がった時に、上昇するSPの最低値		※現在未使用
+Str,Agi,Vit,Int,Dex,Luk : レベルが１上がった時に、上昇する確率を百分率で表した数値	※現在未使用
 
 Aspd : 固有Aspd係数
 Size : サイズ（db/mob_db.txtの項を参照）
@@ -721,7 +722,36 @@ homun_script: ホムンクルスを持っている時適用されるステータ
 
 
 ==========================================================================
-14. db/homun_skill_tree.txt
+14. db/homun_db2.txt
+--------------------------------------------------------------------------
+Class,MinHP,MaxHP,MinSP,MaxSP,MinStr,MaxStr,MinAgi,MaxAgi,MinVit,MaxVit,MinInt,MaxInt,MinDex,MaxDex,MinLuk,MaxLuk,EvoMinHP,EvoMaxHP,EvoMinSP,EvoMaxSP,EvoMinStr,EvoMaxStr,EvoMinAgi,EvoMaxAgi,EvoMinVit,EvoMaxVit,EvoMinInt,EvoMaxInt,EvoMinDex,EvoMaxDex,EvoMinLuk,EvoMaxLuk
+
+Class     : homun_db.txtで指定したホムンクルスID
+MinHP     : レベルが１上がった時に上昇するHPの最小値
+MaxHP     : レベルが１上がった時に上昇するHPの最大値
+MinSP     : レベルが１上がった時に上昇するSPの最小値
+MaxSP     : レベルが１上がった時に上昇するSPの最大値
+MinStr    : レベルが１上がった時に上昇するStrの最小値x10 (少数第1位まで指定)
+MaxStr    : レベルが１上がった時に上昇するStrの最大値x10 (少数第1位まで指定)
+MinAgi    : レベルが１上がった時に上昇するAgiの最小値x10 (少数第1位まで指定)
+MaxAgi    : レベルが１上がった時に上昇するAgiの最大値x10 (少数第1位まで指定)
+（以下同）
+MinVit,MaxVit,MinInt,MaxInt,MinDex,MaxDex,MinLuk,MaxLuk
+
+EvoMinHP  : ホムンクルスが進化した時に上昇するHPの最小値
+EvoMaxHP  : ホムンクルスが進化した時に上昇するHPの最大値
+EvoMinSP  : ホムンクルスが進化した時に上昇するSPの最小値
+EvoMaxSP  : ホムンクルスが進化した時に上昇するSPの最大値
+EvoMinStr : ホムンクルスが進化した時に上昇するStrの最小値
+EvoMaxStr : ホムンクルスが進化した時に上昇するStrの最大値
+EvoMinAgi : ホムンクルスが進化した時に上昇するAgiの最小値
+EvoMaxAgi : ホムンクルスが進化した時に上昇するAgiの最大値
+（以下同）
+EvoMinVit,EvoMaxVit,EvoMinInt,EvoMaxInt,EvoMinDex,EvoMaxDex,EvoMinLuk,EvoMaxLuk
+
+
+==========================================================================
+15. db/homun_skill_tree.txt
 --------------------------------------------------------------------------
 Class,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,計5個まで繰り返し,BaseLv,Intimate
 
@@ -746,7 +776,7 @@ Intimate: 必要な親密度
 
 
 ==========================================================================
-15. db/produce_db.txt
+16. db/produce_db.txt
 --------------------------------------------------------------------------
 ID,ItemLV,RequireSkillid,RequireSkilllv,FixPer,MaterialID1,MaterialAmount1,MaterialID2,MaterialAmount2,MaterialID3,MaterialAmount3,MaterialID4,MaterialAmount4,MaterialID5,MaterialAmount5,MaterialID6,MaterialAmount6,MaterialID7,MaterialAmount7,MaterialID8,MaterialAmount8,MaterialID9,MaterialAmount9,MaterialID10,MaterialAmount10
 
@@ -796,7 +826,7 @@ MaterialAmount10: 同上
 
 
 ==========================================================================
-16. db/scdata_db.txt
+17. db/scdata_db.txt
 --------------------------------------------------------------------------
 ID,Name,SaveFlag,Releasable,Disable
 
@@ -827,7 +857,7 @@ Disable: 以下の条件下でステータス異常開始を無効にするな�
 
 
 ==========================================================================
-17. db/job_db1.txt
+18. db/job_db1.txt
 --------------------------------------------------------------------------
 weight,hp,hp2,sp,aspd*22(素手,短剣,片手剣,両手剣,片手槍,両手槍,片手斧,両手斧,片手鈍器,両手鈍器,杖,弓,爪,楽器,鞭,本,カタール,ハンドガン,ライフル,ショットガン,ガトリンガン,グレネードガン,風魔手裏剣)
 

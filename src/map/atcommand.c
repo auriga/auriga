@@ -5436,14 +5436,7 @@ int atcommand_homlevel(const int fd, struct map_session_data* sd, AtCommandType 
 			if (hd->status.base_level%3 == 0)	// 3レベル毎にSkillPoint加算
 				hd->status.skill_point++;
 
-			// 実測値の、最大値〜最小値でランダム上昇
-			hp = homun_db[hd->status.class_-HOM_ID].hp_kmax - homun_db[hd->status.class_-HOM_ID].hp_kmin;
-			hd->status.max_hp += homun_db[hd->status.class_-HOM_ID].hp_kmin + atn_rand()%hp;
-			sp = homun_db[hd->status.class_-HOM_ID].sp_kmax - homun_db[hd->status.class_-HOM_ID].sp_kmin;
-			hd->status.max_sp += homun_db[hd->status.class_-HOM_ID].sp_kmin + atn_rand()%sp;
-
-			//homun_upstatus(&hd->status);	// オートステ振り(statuspoint方式)
-			homun_upstatus2(&hd->status);	// ステアップ計算
+			homun_upstatus(&hd->status);	// ステアップ計算
 		}
 		if (flag) {
 			homun_calc_status(hd);			// ステータス計算
