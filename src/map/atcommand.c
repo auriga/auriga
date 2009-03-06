@@ -5426,7 +5426,7 @@ int atcommand_homlevel(const int fd, struct map_session_data* sd, AtCommandType 
 		return -1;
 
 	if (level >= 1) {
-		int i, hp = 0, sp = 0, flag = 0;
+		int i, flag = 0;
 		for (i = 1; i <= level; i++) {
 			if (homun_nextbaseexp(hd) <= 0)
 				break;

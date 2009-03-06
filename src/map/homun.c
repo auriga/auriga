@@ -266,38 +266,38 @@ int homun_upstatus(struct mmo_homunstatus *hd)
 
 	class_ = hd->class_ - HOM_ID;
 
-	grow_hp = homun_db[class_].grow_max.hp - homun_db[class_].grow_min.hp;
+	grow_hp = homun_db[class_].grow_max.hp - homun_db[class_].grow_min.hp + 1;
 	hd->max_hp += homun_db[class_].grow_min.hp + atn_rand()%grow_hp;
-	grow_sp = homun_db[class_].grow_max.sp - homun_db[class_].grow_min.sp;
+	grow_sp = homun_db[class_].grow_max.sp - homun_db[class_].grow_min.sp + 1;
 	hd->max_sp += homun_db[class_].grow_min.sp + atn_rand()%grow_sp;
 
 	//各ステータスは前回アップ時の端数分を加算して計算
-	grow_str = homun_db[class_].grow_max.str - homun_db[class_].grow_min.str;
+	grow_str = homun_db[class_].grow_max.str - homun_db[class_].grow_min.str + 1;
 	grow_str = homun_db[class_].grow_min.str + atn_rand()%grow_str;
 	hd->str += (grow_str + hd->f_str) / 10;
 	hd->f_str = (grow_str + hd->f_str) % 10;
 
-	grow_agi = homun_db[class_].grow_max.agi - homun_db[class_].grow_min.agi;
+	grow_agi = homun_db[class_].grow_max.agi - homun_db[class_].grow_min.agi + 1;
 	grow_agi = homun_db[class_].grow_min.agi + atn_rand()%grow_agi;
 	hd->agi += (grow_agi + hd->f_agi) / 10;
 	hd->f_agi = (grow_agi + hd->f_agi) % 10;
 
-	grow_vit = homun_db[class_].grow_max.vit - homun_db[class_].grow_min.vit;
+	grow_vit = homun_db[class_].grow_max.vit - homun_db[class_].grow_min.vit + 1;
 	grow_vit = homun_db[class_].grow_min.vit + atn_rand()%grow_vit;
 	hd->vit += (grow_vit + hd->f_vit) / 10;
 	hd->f_vit = (grow_vit + hd->f_vit) % 10;
 
-	grow_int = homun_db[class_].grow_max.int_ - homun_db[class_].grow_min.int_;
+	grow_int = homun_db[class_].grow_max.int_ - homun_db[class_].grow_min.int_ + 1;
 	grow_int = homun_db[class_].grow_min.int_ + atn_rand()%grow_int;
 	hd->int_ += (grow_int + hd->f_int) / 10;
 	hd->f_int = (grow_int + hd->f_int) % 10;
 
-	grow_dex = homun_db[class_].grow_max.dex - homun_db[class_].grow_min.dex;
+	grow_dex = homun_db[class_].grow_max.dex - homun_db[class_].grow_min.dex + 1;
 	grow_dex = homun_db[class_].grow_min.dex + atn_rand()%grow_dex;
 	hd->dex += (grow_dex + hd->f_dex) / 10;
 	hd->f_dex = (grow_dex + hd->f_dex) % 10;
 
-	grow_luk = homun_db[class_].grow_max.luk - homun_db[class_].grow_min.luk;
+	grow_luk = homun_db[class_].grow_max.luk - homun_db[class_].grow_min.luk + 1;
 	grow_luk = homun_db[class_].grow_min.luk + atn_rand()%grow_luk;
 	hd->luk += (grow_luk + hd->f_luk) / 10;
 	hd->f_luk = (grow_luk + hd->f_luk) % 10;
@@ -1027,14 +1027,14 @@ int homun_change_class( struct map_session_data *sd, int class_ )
 		sd->hd->intimate = 1900;
 
 		// 進化ステータスUP
-		sd->hd->status.max_hp += homun_db[class_].evo_min.hp + atn_rand()%(homun_db[class_].evo_max.hp - homun_db[class_].evo_min.hp);
-		sd->hd->status.max_sp += homun_db[class_].evo_min.sp + atn_rand()%(homun_db[class_].evo_max.sp - homun_db[class_].evo_min.sp);
-		sd->hd->status.str += homun_db[class_].evo_min.str + atn_rand()%(homun_db[class_].evo_max.str - homun_db[class_].evo_min.str);
-		sd->hd->status.agi += homun_db[class_].evo_min.agi + atn_rand()%(homun_db[class_].evo_max.agi - homun_db[class_].evo_min.agi);
-		sd->hd->status.vit += homun_db[class_].evo_min.vit + atn_rand()%(homun_db[class_].evo_max.vit - homun_db[class_].evo_min.vit);
-		sd->hd->status.int_ += homun_db[class_].evo_min.int_ + atn_rand()%(homun_db[class_].evo_max.int_ - homun_db[class_].evo_min.int_);
-		sd->hd->status.dex += homun_db[class_].evo_min.dex + atn_rand()%(homun_db[class_].evo_max.dex - homun_db[class_].evo_min.dex);
-		sd->hd->status.luk += homun_db[class_].evo_min.luk + atn_rand()%(homun_db[class_].evo_max.luk - homun_db[class_].evo_min.luk);
+		sd->hd->status.max_hp += homun_db[class_].evo_min.hp + atn_rand()%(homun_db[class_].evo_max.hp - homun_db[class_].evo_min.hp + 1);
+		sd->hd->status.max_sp += homun_db[class_].evo_min.sp + atn_rand()%(homun_db[class_].evo_max.sp - homun_db[class_].evo_min.sp + 1);
+		sd->hd->status.str += homun_db[class_].evo_min.str + atn_rand()%(homun_db[class_].evo_max.str - homun_db[class_].evo_min.str + 1);
+		sd->hd->status.agi += homun_db[class_].evo_min.agi + atn_rand()%(homun_db[class_].evo_max.agi - homun_db[class_].evo_min.agi + 1);
+		sd->hd->status.vit += homun_db[class_].evo_min.vit + atn_rand()%(homun_db[class_].evo_max.vit - homun_db[class_].evo_min.vit + 1);
+		sd->hd->status.int_ += homun_db[class_].evo_min.int_ + atn_rand()%(homun_db[class_].evo_max.int_ - homun_db[class_].evo_min.int_ + 1);
+		sd->hd->status.dex += homun_db[class_].evo_min.dex + atn_rand()%(homun_db[class_].evo_max.dex - homun_db[class_].evo_min.dex + 1);
+		sd->hd->status.luk += homun_db[class_].evo_min.luk + atn_rand()%(homun_db[class_].evo_max.luk - homun_db[class_].evo_min.luk + 1);
 	}
 
 	// change class
@@ -1500,7 +1500,7 @@ static int read_homundb(void)
 	int i, j;
 	int lines, count = 0;
 	int nameid;
-	char *str[32],*p,*np;
+	char *str[33],*p,*np;
 	struct script_code *script = NULL;
 	const char *filename[] = { "db/homun_db.txt", "db/addon/homun_db_add.txt" };
 
