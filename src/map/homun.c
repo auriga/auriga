@@ -510,6 +510,12 @@ int homun_recalc_status(struct homun_data *hd)
 	hd->status.int_ = homun_db[class_].int_;
 	hd->status.dex  = homun_db[class_].dex;
 	hd->status.luk  = homun_db[class_].luk;
+	hd->status.f_str = 0;
+	hd->status.f_agi = 0;
+	hd->status.f_vit = 0;
+	hd->status.f_int = 0;
+	hd->status.f_dex = 0;
+	hd->status.f_luk = 0;
 
 	for(lv=1; lv<hd->status.base_level; lv++)
 	{

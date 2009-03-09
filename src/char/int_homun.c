@@ -86,11 +86,12 @@ static int homun_tostr(char *str,struct mmo_homunstatus *h)
 	else if(h->intimate > 100000)
 		h->intimate = 100000;
 
-	str_p += sprintf(str,"%d,%d,%s\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d",
+	str_p += sprintf(str,"%d,%d,%s\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d",
 		h->homun_id,h->class_,h->name,
 		h->account_id,h->char_id,
 		h->base_level,h->base_exp,h->max_hp,h->hp,h->max_sp,h->sp,
 		h->str,h->agi,h->vit,h->int_,h->dex,h->luk,
+		h->f_str,h->f_agi,h->f_vit,h->f_int,h->f_dex,h->f_luk,
 		h->status_point,h->skill_point,
 		h->equip,h->intimate,h->hungry,h->rename_flag,h->incubate);
 
@@ -111,23 +112,43 @@ static int homun_tostr(char *str,struct mmo_homunstatus *h)
 static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 {
 	int i,s,next,set,len;
-	int tmp_int[23];
+	int tmp_int[29];
 	char tmp_str[256];
 
 	if(!h) return 0;
 
 	memset(h,0,sizeof(struct mmo_homunstatus));
 
-	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
+	// Auriga-0594以降の形式
+	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],tmp_str,
 		&tmp_int[2],&tmp_int[3],
 		&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],
 		&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],&tmp_int[14],&tmp_int[15],
-		&tmp_int[16],&tmp_int[17],
-		&tmp_int[18],&tmp_int[19],&tmp_int[20],&tmp_int[21],&tmp_int[22],&next);
+		&tmp_int[16],&tmp_int[17],&tmp_int[18],&tmp_int[19],&tmp_int[20],&tmp_int[21],
+		&tmp_int[22],&tmp_int[23],
+		&tmp_int[24],&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&next
+	);
 
-	if(s!=24)
-		return 1;
+	if(s!=30) {
+		tmp_int[16] = 0;	// f_str
+		tmp_int[17] = 0;	// f_agi
+		tmp_int[18] = 0;	// f_vit
+		tmp_int[19] = 0;	// f_int
+		tmp_int[20] = 0;	// f_dex
+		tmp_int[21] = 0;	// f_luk
+		s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
+			&tmp_int[0],&tmp_int[1],tmp_str,
+			&tmp_int[2],&tmp_int[3],
+			&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],
+			&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],&tmp_int[14],&tmp_int[15],
+			&tmp_int[22],&tmp_int[23],
+			&tmp_int[24],&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&next
+		);
+
+		if(s!=24)
+			return 1;
+	}
 
 	h->homun_id     = tmp_int[0];
 	h->class_       = tmp_int[1];
@@ -147,13 +168,19 @@ static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 	h->int_         = tmp_int[13];
 	h->dex          = tmp_int[14];
 	h->luk          = tmp_int[15];
-	h->status_point = tmp_int[16];
-	h->skill_point  = tmp_int[17];
-	h->equip        = tmp_int[18];
-	h->intimate     = tmp_int[19];
-	h->hungry       = tmp_int[20];
-	h->rename_flag  = tmp_int[21];
-	h->incubate     = tmp_int[22];
+	h->f_str        = tmp_int[16];
+	h->f_agi        = tmp_int[17];
+	h->f_vit        = tmp_int[18];
+	h->f_int        = tmp_int[19];
+	h->f_dex        = tmp_int[20];
+	h->f_luk        = tmp_int[21];
+	h->status_point = tmp_int[22];
+	h->skill_point  = tmp_int[23];
+	h->equip        = tmp_int[24];
+	h->intimate     = tmp_int[25];
+	h->hungry       = tmp_int[26];
+	h->rename_flag  = tmp_int[27];
+	h->incubate     = tmp_int[28];
 	h->option       = 0;
 
 	if(h->hungry < 0)
