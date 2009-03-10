@@ -43,7 +43,7 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 		if(@menu == 1) {
 			switch(select("剣士","マジシャン","アーチャー","アコライト","商人","シーフ","テコン少年/少女","やめる")) {
 				case 1: set '@job,Job_Swordman;   break;
-				case 2: set '@job,Job_Mage;       break;
+				case 2: set '@job,Job_Magician;   break;
 				case 3: set '@job,Job_Archer;     break;
 				case 4: set '@job,Job_Acolyte;    break;
 				case 5: set '@job,Job_Merchant;   break;
@@ -93,7 +93,7 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 				case 2: set '@job,Job_Monk;                    break;
 				case 3: set '@job,Job_Sage;                    break;
 				case 4: set '@job,Job_Rogue;                   break;
-				case 5: set '@job,Job_Alchem;                  break;
+				case 5: set '@job,Job_Alchemist;               break;
 				case 6: set '@job,(Sex? Job_Bard: Job_Dancer); break;
 				case 7: set '@job,Job_SoulLinker;              break;
 				case 8: break;
@@ -127,7 +127,7 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 	function Check_Condition {
 		switch(getarg(0)) {
 			case Job_Swordman:
-			case Job_Mage:
+			case Job_Magician:
 			case Job_Archer:
 			case Job_Acolyte:
 			case Job_Merchant:
@@ -142,9 +142,9 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 				return (Class == Job_Acolyte);
 			case Job_Wizard:
 			case Job_Sage:
-				return (Class == Job_Mage);
+				return (Class == Job_Magician);
 			case Job_BlackSmith:
-			case Job_Alchem:
+			case Job_Alchemist:
 				return (Class == Job_Merchant);
 			case Job_Hunter:
 			case Job_Bard:
