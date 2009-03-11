@@ -582,7 +582,7 @@ int merc_sql_new(struct mmo_mercstatus *p)
 		p->kill_count, p->limit
 	);
 	if(rc){
-		aFree(p);
+		p->merc_id = -1;
 		return 1;
 	}
 

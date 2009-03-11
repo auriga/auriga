@@ -475,7 +475,7 @@ int pet_sql_new(struct s_pet *p)
 		p->equip, p->intimate, p->hungry, p->rename_flag, p->incubate
 	);
 	if(rc){
-		aFree(p);
+		p->pet_id = -1;
 		return 1;
 	}
 

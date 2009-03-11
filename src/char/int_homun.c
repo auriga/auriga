@@ -477,6 +477,7 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id)
 		&mysql_handle,
 		"SELECT `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,"
 		"`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,"
+		"`f_str`,`f_agi`,`f_vit`,`f_int`,`f_dex`,`f_luk`,"
 		"`status_point`,`skill_point`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate` "
 		"FROM `" HOMUN_TABLE "` WHERE `homun_id`='%d'",
 		homun_id
@@ -508,13 +509,19 @@ const struct mmo_homunstatus* homun_sql_load(int homun_id)
 		p->int_         = atoi(sql_row[13]);
 		p->dex          = atoi(sql_row[14]);
 		p->luk          = atoi(sql_row[15]);
-		p->status_point = atoi(sql_row[16]);
-		p->skill_point  = atoi(sql_row[17]);
-		p->equip        = atoi(sql_row[18]);
-		p->intimate     = atoi(sql_row[19]);
-		p->hungry       = atoi(sql_row[20]);
-		p->rename_flag  = atoi(sql_row[21]);
-		p->incubate     = atoi(sql_row[22]);
+		p->f_str        = atoi(sql_row[16]);
+		p->f_agi        = atoi(sql_row[17]);
+		p->f_vit        = atoi(sql_row[18]);
+		p->f_int        = atoi(sql_row[19]);
+		p->f_dex        = atoi(sql_row[20]);
+		p->f_luk        = atoi(sql_row[21]);
+		p->status_point = atoi(sql_row[22]);
+		p->skill_point  = atoi(sql_row[23]);
+		p->equip        = atoi(sql_row[24]);
+		p->intimate     = atoi(sql_row[25]);
+		p->hungry       = atoi(sql_row[26]);
+		p->rename_flag  = atoi(sql_row[27]);
+		p->incubate     = atoi(sql_row[28]);
 	} else {
 		p->homun_id = -1;
 		if( sql_res ) sqldbs_free_result(sql_res);
@@ -594,6 +601,12 @@ int homun_sql_save(struct mmo_homunstatus* p2)
 	UPDATE_NUM(int_        ,"int");
 	UPDATE_NUM(dex         ,"dex");
 	UPDATE_NUM(luk         ,"luk");
+	UPDATE_NUM(f_str       ,"f_str");
+	UPDATE_NUM(f_agi       ,"f_agi");
+	UPDATE_NUM(f_vit       ,"f_vit");
+	UPDATE_NUM(f_int       ,"f_int");
+	UPDATE_NUM(f_dex       ,"f_dex");
+	UPDATE_NUM(f_luk       ,"f_luk");
 	UPDATE_NUM(status_point,"status_point");
 	UPDATE_NUM(skill_point ,"skill_point");
 	UPDATE_NUM(equip       ,"equip");
@@ -641,17 +654,20 @@ int homun_sql_new(struct mmo_homunstatus *p)
 		&mysql_handle,
 		"INSERT INTO `" HOMUN_TABLE "` (`class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,"
 		"`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,"
+		"`f_str`,`f_agi`,`f_vit`,`f_int`,`f_dex`,`f_luk`,"
 		"`status_point`,`skill_point`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`) "
 		"VALUES ('%d', '%s', '%d', '%d',"
 		"'%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d',"
+		"'%d', '%d', '%d', '%d', '%d', '%d',"
 		"'%d', '%d', '%d', '%d', '%d', '%d', '%d')",
 		p->class_, strecpy(t_name, p->name), p->account_id, p->char_id, p->base_level,
 		p->base_exp, p->max_hp, p->hp, p->max_sp, p->sp, p->str, p->agi, p->vit, p->int_, p->dex, p->luk,
+		p->f_str, p->f_agi, p->f_vit, p->f_int, p->f_dex, p->f_luk,
 		p->status_point, p->skill_point, p->equip, p->intimate,
 		p->hungry, p->rename_flag, p->incubate
 	);
 	if(rc){
-		aFree(p);
+		p->homun_id = -1;
 		return 1;
 	}
 
