@@ -10,7 +10,7 @@
 //------------------------------------------
 
 prt_monk.gat,59,247,4	script	修行僧	120,6,2,{
-	if(Class == 15) {
+	if(Class == Job_Monk) {
 		mes "[都護府員]";
 		mes "聖カピートリナ修道院にいらした";
 		mes "ことを歓迎します。";
@@ -63,7 +63,7 @@ prt_monk.gat,59,247,4	script	修行僧	120,6,2,{
 		setarray '@word$,"モンク達の修行姿を見ようと","モンクになろうと","修練場で休みに";
 		break;
 	case 1:
-		if(Class == 4 && JobLevel >= 40) {
+		if(Class == Job_Acolyte && JobLevel >= 40) {
 			mes "[都護府員]";
 			mes "どうですか？";
 			mes "何か考えが変わりましたか？";
@@ -99,7 +99,7 @@ prt_monk.gat,59,247,4	script	修行僧	120,6,2,{
 		set CHANGE_MO,1;
 		close;
 	case 2:
-		if(Class != 4) {
+		if(Class != Job_Acolyte) {
 			mes "[都護府員]";
 			mes "はは、おもしろい冗談を言いますね。";
 			close;
@@ -147,7 +147,7 @@ prt_monk.gat,59,247,4	script	修行僧	120,6,2,{
 		close;
 	}
 OnTouch:
-	if(Class == 15)
+	if(Class == Job_Monk)
 		end;
 	switch(CHANGE_MO) {
 	case 0:
@@ -196,7 +196,7 @@ monk_in.gat,99,58,4	script	長老	60,{
 		mes "皆消費して来なさい。";
 		close;
 	}
-	if(Class == 15) {
+	if(Class == Job_Monk) {
 		mes "[無涯長老]";
 		mes "修行は続けているか？";
 		mes "常に精進を心がけるように。";
@@ -212,7 +212,7 @@ monk_in.gat,99,58,4	script	長老	60,{
 		mes "気をつけるのじゃ。";
 		close;
 	}
-	if(Class != 4) {
+	if(Class != Job_Acolyte) {
 		mes "[無涯長老]";
 		mes "相談があるなら、プロンテラ大聖堂へ";
 		mes "行くがよい。ここは相談所ではない。";

@@ -126,7 +126,7 @@ ein_in01.gat,18,28,4	script	ギルド員	731,{
 	mes "金属を溶かして新しい武器を作る";
 	mes "技術は、まさに一つの芸術！";
 	next;
-	if(Class == 8) {
+	if(Class == Job_Priest) {
 		mes "[アルトアイゼン]";
 		mes "おや、神様の御使いですか！";
 		mes "よく来てくれました！";
@@ -134,7 +134,7 @@ ein_in01.gat,18,28,4	script	ギルド員	731,{
 		mes "お願いします。";
 		close;
 	}
-	if(Class == 10) {
+	if(Class == Job_Blacksmith) {
 		mes "[アルトアイゼン]";
 		mes "お！久しぶりだな！";
 		mes "クリストファーに何か用かい？";
@@ -143,7 +143,7 @@ ein_in01.gat,18,28,4	script	ギルド員	731,{
 		mes "きたよ…ははは…";
 		close;
 	}
-	if(Class != 5) {
+	if(Class != Job_Merchant) {
 		mes "[アルトアイゼン]";
 		mes "ふむ、いい目をしている" +(Sex? "男": "娘")+ "だな！";
 		mes "ブラックスミスになりたいかい？";
@@ -326,7 +326,7 @@ ein_in01.gat,201,27,4	script	ブラックスミスギルド員	63,{
 	mes "熱血!!俺は熱血ブラックスミス";
 	mes "ゲッシュだ！よろしく！";
 	next;
-	if(Class != 5) {
+	if(Class != Job_Merchant) {
 		mes "[ゲッシュ]";
 		mes "ブラックスミスは本当に充実感の";
 		mes "ある職業だよ！";

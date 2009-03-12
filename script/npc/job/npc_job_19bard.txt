@@ -23,7 +23,7 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
-	if(Class == 0) {
+	if(Class == Job_Novice) {
 		mes "[アイオルデ]";
 		mes "胸の中に一つ一つ刻まれる痛みを";
 		mes "全て数える事はできないさ。";
@@ -44,7 +44,7 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
-	if(Class == 19) {
+	if(Class == Job_Bard) {
 		mes "[アイオルデ]";
 		mes "やぁ、今日も元気に歌ってるかい？";
 		mes "たくさん歌えるようになったかい？";
@@ -61,7 +61,7 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
-	if(Class != 3) {
+	if(Class != Job_Archer) {
 		mes "[アイオルデ]";
 		mes "ラララ〜、ラララ〜、美しいコモド〜";
 		mes "いつも楽しいことで一杯なの〜";

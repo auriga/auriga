@@ -10,8 +10,8 @@
 //------------------------------------------
 
 izlude_in.gat,74,172,4	script	剣士ギルド員	119,{
-	if(Upper == 1 && (OLD_CLASS == 7 || OLD_CLASS == 14)) {	//転生処理メッセージ適当
-		if(Class==0) {
+	if(Upper == 1 && (OLD_CLASS == Job_Knight || OLD_CLASS == Job_Crusader)) {	//転生処理メッセージ適当
+		if(Class == Job_Novice) {
 			mes "[剣士ギルド員]";
 			mes "多くの試練を乗り越えてきたな。";
 			mes "君の活躍については";
@@ -63,14 +63,14 @@ izlude_in.gat,74,172,4	script	剣士ギルド員	119,{
 	next;
 	switch (select("剣士に転職する","剣士について聞く","剣士転職要件について聞く","やめる")) {
 	case 1:
-		if(Class == 1) {
+		if(Class == Job_Swordman) {
 			mes "[剣士ギルド員]";
 			mes "うはははは！";
 			mes "面白いジョーダンじゃねーか！";
 			mes "君はもう剣士だろう？";
 			close;
 		}
-		if(Class != 0) {
+		if(Class != Job_Novice) {
 			mes "[剣士ギルド員]";
 			mes "はは！まったく、変なことを言うな！";
 			mes "君はもう他の職業に";
@@ -108,8 +108,8 @@ izlude_in.gat,74,172,4	script	剣士ギルド員	119,{
 	case 3:
 		mes "[剣士ギルド員]";
 		mes "剣士になりたいのか？";
-		if(Class != 0) {
-			if(Class == 1) {
+		if(Class != Job_Novice) {
+			if(Class == Job_Swordman) {
 				mes "……っていうか、";
 				mes "君はもう剣士だろう……？";
 			}
@@ -239,14 +239,14 @@ izlude_in.gat,74,172,4	script	剣士ギルド員	119,{
 //------------------------------------------
 
 izlude_in.gat,62,170,6	script	剣士ギルド員	85,{
-	if(Class == 1) {
+	if(Class == Job_Swordman) {
 		mes "[剣士ギルド員]";
 		mes "止まれ！ここは初心者実地試験場だ！";
 		mes "既に転職したお前が入る理由はない！";
 		mes "帰れ！";
 		close;
 	}
-	if(Class != 0) {
+	if(Class != Job_Novice) {
 		mes "[剣士ギルド員]";
 		mes "何者だ！もう他の職業になっている";
 		mes "お前が、ここに来るんじゃない！";

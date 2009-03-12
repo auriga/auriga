@@ -11,7 +11,7 @@
 
 yuno_in02.gat,88,164,5	script	メテウスシルプ	742,{
 	if(TRANSMIGRATE == 0) {
-		if(BaseLevel < 99 || JobLevel < 50 || Class < 7 || Class > 20 || Upper != 0) {
+		if(BaseLevel < 99 || JobLevel < 50 || Class < Job_Knight || Class > Job_Dancer || Upper != 0) {
 			mes "[メテウスシルプ]";
 			mes "いらっしゃいませ。";
 			mes "こちらはシュバイチェル";
@@ -272,29 +272,29 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	mes "願います。";
 	close2;
 	switch(OLD_CLASS) {
-		case 7:
-		case 14:
+		case Job_Knight:
+		case Job_Crusader:
 			savepoint "izlude.gat",94,103;
 			break;
-		case 8:
-		case 15:
+		case Job_Priest:
+		case Job_Monk:
 			savepoint "prontera.gat",273,354;
 			break;
-		case 9:
-		case 16:
+		case Job_Wizard:
+		case Job_Sage:
 			savepoint "geffen.gat",120,100;
 			break;
-		case 10:
-		case 18:
+		case Job_Blacksmith:
+		case Job_Alchemist:
 			savepoint "alberta.gat",116,57;
 			break;
-		case 11:
-		case 19:
-		case 20:
+		case Job_Hunter:
+		case Job_Bard:
+		case Job_Dancer:
 			savepoint "payon.gat",160,58;
 			break;
-		case 12:
-		case 17:
+		case Job_Assassin:
+		case Job_Rogue:
 			savepoint "morocc.gat",160,94;
 			break;
 	}
@@ -703,7 +703,7 @@ function	script	JobChanger	{
 	}
 	unequip;
 	jobchange getarg(2),1;
-	if(Class==18 && SKILL_BIOETHICS==13) {
+	if(Class == Job_Alchemist && SKILL_BIOETHICS == 13) {
 		skill 238,1,0;
 		set SKILL_BIOETHICS,0;
 	}

@@ -14,13 +14,13 @@ que_ng.gat,180,79,3	shop	武器商人・ウィコ	900,13200:-1,13201:-1,13202:-1
 // 試験申請
 //------------------------------------------------------------
 que_ng.gat,152,167,3	script	マスターミラー	901,{
-	if(Class == 28) {
+	if(Class == Job_Gunslinger) {
 		mes "[マスターミラー]";
 		mes "久しぶりだな。";
 		mes "銃は大切に扱うんだぞ。";
 		close;
 	}
-	if(Class != 0 || Upper != 0) {
+	if(Class != Job_Novice || Upper != 0) {
 		mes "[マスターミラー]";
 		mes "私と目を合わせないでくれ。";
 		mes "ここはお店じゃないんだ。";
@@ -182,7 +182,7 @@ que_ng.gat,152,167,3	script	マスターミラー	901,{
 // 転職試験
 //------------------------------------------------------------
 payon.gat,184,65,3	script	ファンソプル	866,{
-	if(Class == 28) {
+	if(Class == Job_Gunslinger) {
 		mes "[ファンソプル]";
 		mes "うむ……久しぶりじゃの。";
 		mes "賢い野獣になるのじゃぞ。";
@@ -376,7 +376,7 @@ payon.gat,184,65,3	script	ファンソプル	866,{
 // 弾丸屋
 //------------------------------------------------------------
 que_ng.gat,187,156,3	script	弾丸屋・トニー	86,{
-	if(Class != 28) {
+	if(Class != Job_Gunslinger) {
 		mes "[トニー]";
 		mes "俺はガンスリンガーに";
 		mes "アイテムを支給している";
@@ -471,7 +471,7 @@ que_ng.gat,187,156,3	script	弾丸屋・トニー	86,{
 // 弾丸ケース屋
 //------------------------------------------------------------
 que_ng.gat,187,149,3	script	弾丸ケース屋・ケニー	83,{
-	if(Class != 28) {
+	if(Class != Job_Gunslinger) {
 		mes "[ケニー]";
 		mes "私はガンスリンガーの方に";
 		mes "弾丸と弾丸ケースを交換している";
@@ -571,7 +571,7 @@ que_ng.gat,187,149,3	script	弾丸ケース屋・ケニー	83,{
 // GUN_1QUE -> 0〜5
 //------------------------------------------------------------
 que_ng.gat,182,85,3	script	ガリスン	109,{
-	if(Class != 28) {
+	if(Class != Job_Gunslinger) {
 		mes "[ガリスン]";
 		mes "あなたはガンスリンガーでは";
 		mes "ありませんね。";
@@ -1072,7 +1072,7 @@ que_ng.gat,149,178,4	script	研究所企画者	744,{
 		mes "私は、アインブロック研究所企画者、";
 		mes "エイといいます。";
 		next;
-		if(Class != 28) {
+		if(Class != Job_Gunslinger) {
 			menu "話しをする",-;
 			mes "[エイ]";
 			mes "もし、知り合いに";
@@ -1522,7 +1522,7 @@ lighthalzen.gat,205,284,5	script	ヘリスン	85,{
 		mes "[ヘリスン]";
 		mes "あー……退屈だー";
 		mes "何か面白い事でもないかなぁ……";
-		if(GUN_2QUE != 0 || Class != 28 || BaseLevel < 68 || countitem(13158) < 1)
+		if(GUN_2QUE != 0 || Class != Job_Gunslinger || BaseLevel < 68 || countitem(13158) < 1)
 			close;
 		next;
 		mes "[ヘリスン]";
@@ -1738,7 +1738,7 @@ que_ng.gat,185,180,3	script	ベネッサ	726,{
 		mes "世界中の格闘技を";
 		mes "全部マスターするぞ！";
 		next;
-		if(Class != 28) {
+		if(Class != Job_Gunslinger) {
 			mes "[ベネッサ]";
 			mes "ん？　何？";
 			mes "練習の邪魔になるから";
@@ -2039,7 +2039,7 @@ que_ng.gat,187,163,3	script	イングリッド	744,{
 		mes "イングリッドと言います。";
 		mes "よろしくお願いします。";
 		next;
-		if(Class != 28) {
+		if(Class != Job_Gunslinger) {
 			mes "[イングリッド]";
 			mes "でも、残念ながら";
 			mes "私が制作する武器は";

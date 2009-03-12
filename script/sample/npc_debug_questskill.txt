@@ -13,11 +13,11 @@ prontera.gat,152,187,4	script	スキル屋	779,{
 	if(@menu == 1) {
 		switch(select("チャージアタック","シュリンク")) {
 		case 1:
-			if(Class == 7)
+			if(Class == Job_Knight)
 				skill 1001,1,0;
 			close;
 		case 2:
-			if(Class == 14)
+			if(Class == Job_Crusader)
 				skill 1002,1,0;
 			close;
 		}
@@ -25,11 +25,11 @@ prontera.gat,152,187,4	script	スキル屋	779,{
 	else if(@menu == 2) {
 		switch(select("サイトブラスター","コンバーター製造","水属性エレメンタルチェンジ","地属性エレメンタルチェンジ","火属性エレメンタルチェンジ","風属性エレメンタルチェンジ")) {
 		case 1:
-			if(Class == 9)
+			if(Class == Job_Wizard)
 				skill 1006,1,0;
 			close;
 		case 2:
-			if(Class == 16)
+			if(Class == Job_Sage)
 				skill 1007,1,0;
 			close;
 		case 3:
@@ -46,22 +46,22 @@ prontera.gat,152,187,4	script	スキル屋	779,{
 			break;
 		}
 		// 3〜6のとき続き
-		if(Class == 16 && getskilllv(1008) <= 0 && getskilllv(1017) <= 0 && getskilllv(1018) <= 0 && getskilllv(1019) <= 0)
+		if(Class == Job_Sage && getskilllv(1008) <= 0 && getskilllv(1017) <= 0 && getskilllv(1018) <= 0 && getskilllv(1019) <= 0)
 			skill '@skillid,1,0;
 		close;
 	}
 	else if(@menu == 3) {
 		switch(select("ファンタスミックアロー","パンボイス","魅惑のウィンク")) {
 		case 1:
-			if(Class == 11)
+			if(Class == Job_Hunter)
 				skill 1009,1,0;
 			close;
 		case 2:
-			if(Class == 19)
+			if(Class == Job_Bard)
 				skill 1010,1,0;
 			close;
 		case 3:
-			if(Class == 20)
+			if(Class == Job_Dancer)
 				skill 1011,1,0;
 			close;
 		}
@@ -69,15 +69,15 @@ prontera.gat,152,187,4	script	スキル屋	779,{
 	else if(@menu == 4) {
 		switch(select("レデムプティオ","気注入","気爆発")) {
 		case 1:
-			if(Class == 8)
+			if(Class == Job_Priest)
 				skill 1014,1,0;
 			close;
 		case 2:
-			if(Class == 15)
+			if(Class == Job_Monk)
 				skill 1015,1,0;
 			close;
 		case 3:
-			if(Class == 15)
+			if(Class == Job_Monk)
 				skill 1016,1,0;
 			close;
 		}
@@ -85,15 +85,15 @@ prontera.gat,152,187,4	script	スキル屋	779,{
 	else if(@menu == 5) {
 		switch(select("ソニックアクセラレーション","ベナムナイフ","クローズコンファイン")) {
 		case 1:
-			if(Class == 12)
+			if(Class == Job_Assassin)
 				skill 1003,1,0;
 			close;
 		case 2:
-			if(Class == 12)
+			if(Class == Job_Assassin)
 				skill 1004,1,0;
 			close;
 		case 3:
-			if(Class == 17)
+			if(Class == Job_Rogue)
 				skill 1005,1,0;
 			close;
 		}
@@ -101,11 +101,11 @@ prontera.gat,152,187,4	script	スキル屋	779,{
 	else if(@menu == 6) {
 		switch(select("アンフェアリートリック","貪欲")) {
 		case 1:
-			if(Class == 10)
+			if(Class == Job_Blacksmith)
 				skill 1012,1,0;
 			close;
 		case 2:
-			if(Class == 10)
+			if(Class == Job_Blacksmith)
 				skill 1013,1,0;
 			close;
 		}

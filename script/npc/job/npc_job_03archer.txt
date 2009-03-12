@@ -16,13 +16,13 @@ payon_in02.gat,64,71,4	script	ギルド関係者	85,{
 	next;
 	switch (select("アーチャーに転職","アーチャーの転職条件は？","なんでもありません。")) {
 	case 1:
-		if(Class == 3) {
+		if(Class == Job_Archer) {
 			mes "[アーチャーギルド関係者]";
 			mes "貴方はもうアーチャーに";
 			mes "転職されています。";
 			close;
 		}
-		if(Class != 0) {
+		if(Class != Job_Novice) {
 			mes "[アーチャーギルド関係者]";
 			mes "ふ…。";
 			mes "見かけは初心者ではありませんが…";
@@ -30,7 +30,7 @@ payon_in02.gat,64,71,4	script	ギルド関係者	85,{
 			mes "アーチャーにはなれません。";
 			close;
 		}
-		if(Upper == 1 && OLD_CLASS != 11 && OLD_CLASS != 19 && OLD_CLASS != 20) {
+		if(Upper == 1 && OLD_CLASS != Job_Hunter && OLD_CLASS != Job_Bard && OLD_CLASS != Job_Dancer) {
 			//転生前が弓手系でないとき、未調査？
 			close;
 		}
@@ -39,8 +39,8 @@ payon_in02.gat,64,71,4	script	ギルド関係者	85,{
 		mes "[アーチャーギルド関係者]";
 		mes "それじゃ、アーチャーの転職条件に";
 		mes "ついて説明します。";
-		if(Class != 0) {
-			if(Class == 3)
+		if(Class != Job_Novice) {
+			if(Class == Job_Archer)
 				mes "でも、貴方は既にアーチャーですが…";
 			else {
 				mes "でも、貴方ってもう他の職業に";

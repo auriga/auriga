@@ -88,13 +88,13 @@ hu_in01.gat,386,373,4	script	ハンターギルド員	727,{
 		mes "くださいね。";
 		close;
 	}
-	if(Class == 0) {
+	if(Class == Job_Novice) {
 		mes "[ハンターギルド員]";
 		mes "あら、ノービスさん…";
 		mes "この辺ではあまり見かけませんねぇ…。";
 		close;
 	}
-	if(Class == 11) {
+	if(Class == Job_Hunter) {
 		mes "[ハンターギルド員]";
 		mes "あ、" +strcharinfo(0)+ "さん！";
 		mes "お久しぶりです〜。";
@@ -104,7 +104,7 @@ hu_in01.gat,386,373,4	script	ハンターギルド員	727,{
 		mes "なさっていってください。";
 		close;
 	}
-	if(Class != 3) {
+	if(Class != Job_Archer) {
 		mes "[ハンターギルド員]";
 		mes "あら、いらっしゃいませ！";
 		mes "嬉しいですね〜。";
@@ -1549,7 +1549,7 @@ job_hunte.gat,102,109,0		duplicate(#HT_Abyss)	落とし穴	139,4,0
 
 //in_hunter.gat,146,99,2	script	ファルコン管理兵	105,{
 hu_in01.gat,381,304,5	script	ファルコン管理兵	105,{
-	if(Class != 11) {
+	if(Class != Job_Hunter) {
 		mes "バカやろ〜！ファルコンは";
 		mes "ハンターとスナイパー専用だ！";
 		close;

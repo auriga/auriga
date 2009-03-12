@@ -10,7 +10,7 @@
 //------------------------------------------
 
 payon.gat,157,141,5	script	鳳凰	753,{
-	if(Class == 24) {
+	if(Class == Job_TaeKwon) {
 		mes "[鳳凰]";
 		mes "修練を怠っていないか？";
 		mes "常に精進し、更なる上を";
@@ -18,7 +18,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 		mes "忘れぬようにな。";
 		close;
 	}
-	if(Class == 0 && Upper == 0 && CHANGE_TK == 3) {
+	if(Class == Job_Novice && Upper == 0 && CHANGE_TK == 3) {
 		mes "[鳳凰]";
 		mes "心の準備はできたか？";
 		mes "それでは最後の質問だ。";
@@ -107,7 +107,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 		mes "それは忘れずにな。";
 		close;
 	}
-	if(Class == 0 && Upper == 0 && CHANGE_TK == 2) {
+	if(Class == Job_Novice && Upper == 0 && CHANGE_TK == 2) {
 		mes "[鳳凰]";
 		mes "よし、準備ができたようだな。";
 		mes "では、講義に入ろう。";
@@ -397,7 +397,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 			close;
 		}
 	}
-	if(Class == 0 && Upper == 0 && CHANGE_TK == 1) {
+	if(Class == Job_Novice && Upper == 0 && CHANGE_TK == 1) {
 		if(BaseLevel > CHANGE_TK_LV) {
 			mes "[鳳凰]";
 			mes "うん？";
@@ -487,7 +487,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 	mes "世に広めることを決心した。";
 	mes "恐らく、それこそが、";
 	mes "俺にできる最善の事である。";
-	if(Class != 0 || Upper != 0)
+	if(Class != Job_Novice || Upper != 0)
 		close;
 	next;
 	mes "[鳳凰]";

@@ -281,7 +281,7 @@ payon.gat,132,235,4	script	モンスター学者	98,{
 }
 
 payon.gat,210,110,4	script	酔っ払いおじさん	120,{
-	if(Class==3) {
+	if(Class == Job_Archer) {
 		mes "[酔っ払いおじさん]";
 		mes "ひゅう〜っ！";
 		mes "アーチャーの友よぉ〜！";

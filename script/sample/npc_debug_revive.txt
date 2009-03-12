@@ -29,24 +29,24 @@ izlude.gat,125,65,4	script	バグりましたか？	825,{
 	mes "という風に配布されます。";
 	next;
 	switch(Class) {
-	case 0:
+	case Job_Novice:
 		mes "[バグりましたか？]";
 		mes "ノビさんの初期化しますね。";
 		next;
 		resetskill;
 		set SkillPoint,JobLevel-1;
 		break;
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 24:
-	case 28:
-	case 29:
-	case 30:
-	case 31:
+	case Job_Swordman:
+	case Job_Magician:
+	case Job_Archer:
+	case Job_Acolyte:
+	case Job_Merchant:
+	case Job_Thief:
+	case Job_TaeKwon:
+	case Job_Gunslinger:
+	case Job_Ninja:
+	case Job_DeathKnight:
+	case Job_DarkCollector:
 		mes "[バグりましたか？]";
 		mes "1次職さんの初期化しますね。";
 		next;

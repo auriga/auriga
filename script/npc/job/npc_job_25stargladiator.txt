@@ -8,7 +8,7 @@
 //------------------------------------------
 
 payon.gat,215,102,3	script	ムヒョン	828,3,3,{
-	if(Class == 25) {
+	if(Class == Job_StarGladiator) {
 		mes "[ムヒョン]";
 		mes "おや……君は……";
 		mes "太陽と月と星の戦士じゃないか!?";
@@ -18,7 +18,7 @@ payon.gat,215,102,3	script	ムヒョン	828,3,3,{
 		mes "アハハッ！";
 		close;
 	}
-	if(Class == 0) {
+	if(Class == Job_Novice) {
 		mes "[ムヒョン]";
 		mes "何か用かい？";
 		mes "君もテコンキッドになりたいのかな？";
@@ -33,7 +33,7 @@ payon.gat,215,102,3	script	ムヒョン	828,3,3,{
 		mes "フフ。";
 		close;
 	}
-	if(Class != 24) {
+	if(Class != Job_TaeKwon) {
 		mes "[ムヒョン]";
 		mes "用も無しにあまりつっつかないでよ。";
 		if(Sex) {
@@ -328,7 +328,7 @@ payon.gat,215,102,3	script	ムヒョン	828,3,3,{
 		close;
 	}
 OnTouch:
-	if(Class == 25) {
+	if(Class == Job_StarGladiator) {
 		mes "[ムヒョン]";
 		mes "おや……君は……";
 		mes "太陽と月と星の戦士じゃないか!?";
@@ -338,7 +338,7 @@ OnTouch:
 		mes "アハハッ！";
 		close;
 	}
-	if(Class != 24) {
+	if(Class != Job_TaeKwon) {
 		mes "[ムヒョン]";
 		mes "ちょっと！　そこどいてよ！";
 		mes "太陽の光が当たらないだろ！";
@@ -358,7 +358,7 @@ OnTouch:
 //------------------------------------------
 
 comodo.gat,172,230,3	script	放浪武道家	730,{
-	if(Class == 25) {
+	if(Class == Job_StarGladiator) {
 		mes "[ムヒョン]";
 		mes "久しぶりだな。";
 		mes "最近はどこに？";
@@ -411,7 +411,7 @@ comodo.gat,172,230,3	script	放浪武道家	730,{
 			end;
 		}
 	}
-	if(Class != 24) {
+	if(Class != Job_TaeKwon) {
 		mes "[放浪武道家]";
 		mes "君も山行を楽しんでるのか？";
 		mes "高い所から下を見下ろせば";
@@ -807,7 +807,7 @@ comodo.gat,172,230,3	script	放浪武道家	730,{
 //------------------------------------------
 
 job_star.gat,29,33,0	script	タル	59,{
-	if(Class != 24) {
+	if(Class != Job_TaeKwon) {
 		mes "[タル]";
 		mes "転職試験を邪魔しないでくださいね。";
 		mes "村に戻りますか？";
@@ -1026,7 +1026,7 @@ job_star.gat,29,33,0	script	タル	59,{
 }
 
 job_star.gat,95,33,0	script	ピリュ	106,{
-	if(Class != 24) {
+	if(Class != Job_TaeKwon) {
 		mes "[ピリュ]";
 		mes "転職試験の邪魔になる。";
 		mes "黙っていられないなら村に帰れ。";
@@ -1281,7 +1281,7 @@ job_star.gat,95,33,0	script	ピリュ	106,{
 }
 
 job_star.gat,161,33,0	script	チヒ	77,{
-	if(Class != 24) {
+	if(Class != Job_TaeKwon) {
 		mes "[チヒ]";
 		mes "星明かりが美しいでしょう？";
 		mes "村へ戻りますか？";

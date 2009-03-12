@@ -15,7 +15,7 @@ geffen_in.gat,164,124,4	script	ギルド関係者	123,{
 	next;
 	switch (select("マジシャンに転職","マジシャンの転職条件を聞く","やめる")) {
 	case 1:
-		if(Class == 2) {
+		if(Class == Job_Magician) {
 			mes "[魔術師ギルド関係者]";
 			mes "えー。あなたはもうマジシャンでしょ？";
 			mes "自分の事もわからないの？";
@@ -25,14 +25,14 @@ geffen_in.gat,164,124,4	script	ギルド関係者	123,{
 			mes "わかってくるんじゃないの？";
 			close;
 		}
-		if(Class != 0) {
+		if(Class != Job_Novice) {
 			mes "[魔術師ギルド関係者]";
 			mes "えー。あなたは、";
 			mes "マジシャンに転職できないよ。";
 			mes "既に他の職業に就いているでしょ？";
 			close;
 		}
-		if(Upper == 1 && OLD_CLASS != 9 && OLD_CLASS != 16) {
+		if(Upper == 1 && OLD_CLASS != Job_Wizard && OLD_CLASS != Job_Sage) {
 			//転生前が魔術師系でないとき、未調査？
 			close;
 		}

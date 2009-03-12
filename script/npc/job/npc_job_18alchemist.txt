@@ -36,7 +36,7 @@ alde_alche.gat,27,185,5	script	錬金術師ギルド員	744,{
 		mes "気のせいでしょうか……";
 		close;
 	}
-	if(Class == 18) {
+	if(Class == Job_Alchemist) {
 		mes "[パルミジァニーノ]";
 		mes "いらっしゃいませ";
 		mes strcharinfo(0)+ "様。";
@@ -53,7 +53,7 @@ alde_alche.gat,27,185,5	script	錬金術師ギルド員	744,{
 		mes "皆さん忙しいのですよ。";
 		close;
 	}
-	if(Class != 5) {
+	if(Class != Job_Merchant) {
 		mes "[バルミジャニーノ]";
 		mes "ようこそ。ここは錬金術師ギルドです。";
 		mes "私達はいつでも、才能溢れる";
@@ -290,7 +290,7 @@ alde_alche.gat,27,185,5	script	錬金術師ギルド員	744,{
 //------------------------------------------
 
 alde_alche.gat,175,107,2	script	気むずかしい錬金術師	749,{
-	if(Class == 18) {
+	if(Class == Job_Alchemist) {
 		mes "[グレゴリー]";
 		mes "キキキ　ケケケケ";
 		mes "ん、なんじゃ貴様は?!";
@@ -305,7 +305,7 @@ alde_alche.gat,175,107,2	script	気むずかしい錬金術師	749,{
 		mes "キキキキ　ケケケケケ……";
 		close;
 	}
-	if(Class != 5) {
+	if(Class != Job_Merchant) {
 		mes "[グレゴリー]";
 		mes "キキキキ、何か用か？";
 		mes "私の仕事が知りたいか……";
@@ -655,7 +655,7 @@ alde_alche.gat,175,107,2	script	気むずかしい錬金術師	749,{
 //------------------------------------------
 
 alde_alche.gat,13,15,7	script	研究者	750,{
-	if(Class == 18) {
+	if(Class == Job_Alchemist) {
 		mes "[ダルシア]";
 		mes "あ……君か。来たのか……そうだね。";
 		mes "立派な錬金術師になりに来たんだね……";
@@ -995,7 +995,7 @@ alde_alche.gat,13,15,7	script	研究者	750,{
 //------------------------------------------
 
 alde_alche.gat,79,19,5	script	実験専門家	748,{
-	if(Class == 18) {
+	if(Class == Job_Alchemist) {
 		mes "[ヴァン=ヘルモント]";
 		mes "なんだっ、私は今忙しいんだ!!";
 		mes "とっとと用件を言ったらどうだ。";
@@ -1398,7 +1398,7 @@ alde_alche.gat,145,19,1	script	首席研究員	57,{
 
 alde_alche.gat,101,184,4	script	マスターアルケミスト	122,{
 	cutin "job_alche_vincent",2;
-	if(Class == 0) {
+	if(Class == Job_Novice) {
 		mes "[ビンセント=カーシャル]";
 		mes "子供はあっちへ行きなさい。";
 		mes "こんな所で遊んでいたら怪我をするよ。";
@@ -1410,7 +1410,7 @@ alde_alche.gat,101,184,4	script	マスターアルケミスト	122,{
 		cutin "job_alche_vincent",255;
 		end;
 	}
-	if(Class == 18) {
+	if(Class == Job_Alchemist) {
 		mes "[ビンセント=カーシャル]";
 		mes "研究は進んでいるかね？";
 		mes "薬品を扱う時は十分";
@@ -1430,7 +1430,7 @@ alde_alche.gat,101,184,4	script	マスターアルケミスト	122,{
 		cutin "job_alche_vincent",255;
 		end;
 	}
-	if(Class != 5) {
+	if(Class != Job_Merchant) {
 		mes "[ビンセント=カーシャル]";
 		mes "民間人がこんな所に";
 		mes "何の用事で来たのかね。";

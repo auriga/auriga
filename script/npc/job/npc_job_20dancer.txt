@@ -61,7 +61,7 @@ job_duncer.gat,43,93,4	script	エイル	724,{
 		cutin "job_dancer_eir01",255;
 		end;
 	}
-	if(Class == 20) {
+	if(Class == Job_Dancer) {
 		mes "[エイル]";
 		mes "こんにちは〜";
 		mes "最近はどうですか？";
@@ -70,7 +70,7 @@ job_duncer.gat,43,93,4	script	エイル	724,{
 		cutin "job_dancer_eir01",255;
 		end;
 	}
-	if(Class != 3 || Sex == 1) {
+	if(Class != Job_Archer || Sex == 1) {
 		mes "[エイル]";
 		mes "お客さん、ここは関係者以外";
 		mes "立ち入り禁止ですよ？";
@@ -310,7 +310,7 @@ job_duncer.gat,43,93,4	script	エイル	724,{
 //------------------------------------------
 
 job_duncer.gat,95,93,4	script	ボルワージュ	101,{
-	if(Class == 20) {
+	if(Class == Job_Dancer) {
 		mes "[ボルワージュ]";
 		mes "あら、こんにちは〜";
 		next;
@@ -322,7 +322,7 @@ job_duncer.gat,95,93,4	script	ボルワージュ	101,{
 		mes "忘れないでね。";
 		close;
 	}
-	if(Class != 3 || Sex == 1) {
+	if(Class != Job_Archer || Sex == 1) {
 		mes "[ボルワージュ]";
 		mes "あら、外からいらしたの？";
 		mes "私の素敵な踊りを見るために、";

@@ -2316,7 +2316,7 @@ gon_in.gat,73,82,5	script	ギ ソンチョル	778,{
 gonryun.gat,180,118,4	script	ソン ムド	85,{
 	if(GON_3QUE == 3)
 		set GON_3QUE,1;
-	if(Class==0) {
+	if(Class==Job_Novice) {
 		mes "[ソン ムド]";
 		mes "ノービスは、街へ行け。";
 		close;
@@ -2340,10 +2340,10 @@ gonryun.gat,180,118,4	script	ソン ムド	85,{
 			mes "^0000FFソン ムドは、あなたより";
 			mes "かなり大きそうな石を指し、";
 			mes "持ち上げてみろと言った。^000000";
-			if(Class <= 6)
+			if(Class <= Job_Thief)
 				set '@stone,690;
-			else if(Class == 7 || Class == 10 || Class == 12 ||
-				Class == 14 || Class == 15 || Class == 17 || Class == 18)
+			else if(Class == Job_Knight || Class == Job_Blacksmith || Class == Job_Assassin ||
+				Class == Job_Crusader || Class == Job_Monk || Class == Job_Rogue || Class == Job_Alchemist)
 				set '@stone,770;
 			else
 				set '@stone,730;

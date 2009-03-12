@@ -1274,8 +1274,8 @@ ama_in01.gat,22,111,0	script	お婆さん#ama	761,{
 		mes "ことはかなわぬ！キヒヒヒ！^000000";
 		next;
 		menu "ハアアアアッ!!",-;
-		if(Class == 8) set '@success,rand(4);
-		else if(Class == 4 || Class == 15) set '@success,rand(2);
+		if(Class == Job_Priest) set '@success,rand(4);
+		else if(Class == Job_Acolyte || Class == Job_Monk) set '@success,rand(2);
 		else if(countitem(523) || countitem(948) || countitem(1029)) set '@success,rand(2);
 		else set '@success,rand(4)? 0: 1;
 		if('@success == 0) {
@@ -1715,7 +1715,7 @@ ama_in01.gat,162,17,1	script	寿司職人	765,{
 		set '@itemid,544;
 		break;
 	case 3:
-		if(Class == 0) {
+		if(Class == Job_Novice) {
 			mes "[マグマグ]";
 			mes "ほう？手伝ってくれると？";
 			mes "だが、もう少し修行してから";

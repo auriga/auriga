@@ -5,7 +5,7 @@
 //
 
 payon.gat,98,57,6	script	ラウリィ	86,{
-	if(Class != 3 && Class != 6 && Class != 11 && Class != 12 && Class != 17 && Class != 19 && Class != 20) {
+	if(Class != Job_Archer && Class != Job_Thief && Class != Job_Hunter && Class != Job_Assassin && Class != Job_Rogue && Class != Job_Bard && Class != Job_Dancer) {
 		mes "[ラウリィ]";
 		mes "やぁ、初めまして。旅人さん。";
 		mes "今日も天気がいいですねっ。";
