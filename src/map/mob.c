@@ -1704,6 +1704,10 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		if(hp || sp)
 			pc_heal(sd,hp,sp);
 
+		// 傭兵のキルカウント増加
+		if(sd->mcd)
+			merc_killcount(sd->mcd,mob_db[md->class_].lv);
+
 		// テコンミッションターゲット
 		if(sd->status.class_ == PC_CLASS_TK && md->class_ == sd->tk_mission_target) {
 			ranking_gain_point(sd,RK_TAEKWON,1);
@@ -1727,6 +1731,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			}
 		}
 	}
+	else if(src && src->type == BL_MERC)		// 傭兵のキルカウント増加（傭兵自身が倒したとき）
+		merc_killcount((struct merc_data *)src,mob_db[md->class_].lv);
 
 	// map外に消えた人は計算から除くので
 	// overkill分は無いけどsumはmax_hpとは違う

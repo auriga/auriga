@@ -345,8 +345,9 @@ void clif_homskillup(struct map_session_data *sd, int skill_num);
 
 // merc
 void clif_spawnmerc(struct merc_data *mcd);
-void clif_send_mercstatus(struct map_session_data *sd, int flag);
+void clif_send_mercstatus(struct map_session_data *sd);
 void clif_mercskillinfoblock(struct map_session_data *sd);
+void clif_mercupdatestatus(struct map_session_data *sd, int type);
 
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);

@@ -71,6 +71,7 @@
 
 #define MAX_MERC_DB 30			// 傭兵の数
 #define MERC_ID 6017			// 傭兵IDの開始値
+#define MAX_MERC_TYPE 3			// 傭兵の種類
 
 // スキルID定義
 #define HOM_SKILLID    8001		// ホムスキルIDの開始値
@@ -188,6 +189,8 @@ struct mmo_charstatus {
 	int die_counter;
 	short hair,hair_color,clothes_color;
 	int party_id,guild_id,pet_id,homun_id,merc_id;
+
+	int merc_fame[MAX_MERC_TYPE],merc_call[MAX_MERC_TYPE];
 
 	short weapon,shield;
 	short head_top,head_mid,head_bottom;

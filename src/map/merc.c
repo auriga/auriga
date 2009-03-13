@@ -82,6 +82,22 @@ static struct merc_skill_tree_entry* merc_search_skilltree(int class_, int skill
 }
 
 /*==========================================
+ * 傭兵の種類を返す
+ *------------------------------------------
+ */
+int merc_get_type(int class_)
+{
+	if(class_ >= MERC_ID && class_ < MERC_ID+10)
+		return MERC_TYPE_ARCHER;
+	else if(class_ >= MERC_ID+10 && class_ < MERC_ID+20)
+		return MERC_TYPE_LANCER;
+	else if(class_ >= MERC_ID+20 && class_ < MERC_ID+30)
+		return MERC_TYPE_SWORDMAN;
+
+	return -1;
+}
+
+/*==========================================
  * スキルのMaxLvを返す
  *------------------------------------------
  */
@@ -172,7 +188,12 @@ static int merc_employ_timer(int tid,unsigned int tick,int id,void *data)
 		return 0;
 	}
 	sd->mcd->limit_timer = -1;
-	clif_disp_onlyself(sd->fd, msg_txt(188));	// 傭兵雇用時間が満了しました。
+
+	// 名声値+1
+	merc_set_fame(sd->mcd,1);
+
+	//clif_disp_onlyself(sd->fd, msg_txt(188));	// 傭兵雇用時間が満了しました。
+	clif_msgstringtable(sd, 0x4f2);
 	merc_delete_data(sd);
 
 	return 0;
@@ -427,6 +448,9 @@ int merc_callmerc(struct map_session_data *sd,int class_, unsigned int limit)
 		st.skill[id].lv = merc_skill_tree[class_][i].max;
 	}
 
+	// 召喚回数+1
+	merc_set_call(sd->mcd,1);
+
 	sd->state.merc_creating = 1;
 	intif_create_merc(sd->status.account_id,sd->status.char_id,&st);
 
@@ -556,8 +580,8 @@ int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int f
 			map_addblock(&sd->mcd->bl);
 			mob_ai_hard_spawn( &sd->mcd->bl, 1 );
 			clif_spawnmerc(sd->mcd);
-			clif_send_mercstatus(sd,1);
-			clif_send_mercstatus(sd,0);
+			clif_send_mercstatus(sd);
+			clif_mercskillinfoblock(sd);
 			merc_save_data(sd);
 			skill_unit_move(&sd->mcd->bl,gettick(),1);
 		}
@@ -603,10 +627,12 @@ int merc_menu(struct map_session_data *sd, int menunum)
 
 	switch(menunum) {
 		case 1:
-			clif_send_mercstatus(sd,0);
+			clif_send_mercstatus(sd);
+			clif_mercskillinfoblock(sd);
 			break;
 		case 2:
-			clif_disp_onlyself(sd->fd, msg_txt(190));	// 傭兵を解雇しました。
+			//clif_disp_onlyself(sd->fd, msg_txt(190));	// 傭兵を解雇しました。
+			clif_msgstringtable(sd, 0x4f4);
 			merc_delete_data(sd);
 			break;
 	}
@@ -644,6 +670,119 @@ int merc_checkskill(struct merc_data *mcd,int skill_id)
 		return 0;
 	if(mcd->status.skill[skill_id].id == skill_id + MERC_SKILLID)
 		return mcd->status.skill[skill_id].lv;
+
+	return 0;
+}
+
+/*==========================================
+ * 名声値の取得
+ *------------------------------------------
+ */
+int merc_get_fame(struct merc_data *mcd)
+{
+	int type;
+	struct map_session_data *sd;
+
+	nullpo_retr(0, mcd);
+	nullpo_retr(0, sd = mcd->msd);
+
+	type = merc_get_type(mcd->status.class_);
+
+	if(type != -1)
+		return sd->status.merc_fame[type];
+
+	return 0;
+}
+
+/*==========================================
+ * 名声値の増減
+ *------------------------------------------
+ */
+int merc_set_fame(struct merc_data *mcd,int val)
+{
+	int type;
+	struct map_session_data *sd;
+
+	nullpo_retr(0, mcd);
+	nullpo_retr(0, sd = mcd->msd);
+
+	type = merc_get_type(mcd->status.class_);
+
+	if(type != -1) {
+		int *fame = &sd->status.merc_fame[type];
+		*fame += val;
+		if(*fame < 0)
+			*fame = 0;
+		clif_mercupdatestatus(sd,0xbe);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * 召喚回数の取得
+ *------------------------------------------
+ */
+int merc_get_call(struct merc_data *mcd)
+{
+	int type;
+	struct map_session_data *sd;
+
+	nullpo_retr(0, mcd);
+	nullpo_retr(0, sd = mcd->msd);
+
+	type = merc_get_type(mcd->status.class_);
+
+	if(type != -1)
+		return sd->status.merc_call[type];
+
+	return 0;
+}
+
+/*==========================================
+ * 召喚回数の増減
+ *------------------------------------------
+ */
+int merc_set_call(struct merc_data *mcd,int val)
+{
+	int type;
+	struct map_session_data *sd;
+
+	nullpo_retr(0, mcd);
+	nullpo_retr(0, sd = mcd->msd);
+
+	type = merc_get_type(mcd->status.class_);
+
+	if(type != -1) {
+		int *call = &sd->status.merc_call[type];
+		*call += val;
+		if(*call < 0)
+			*call = 0;
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * キルカウントの増加
+ *------------------------------------------
+ */
+int merc_killcount(struct merc_data *mcd,unsigned short lv)
+{
+	nullpo_retr(0, mcd);
+
+	// 相手のレベルが自分のレベルの1/2以上か？
+	if(lv >= mcd->status.base_level / 2) {
+		mcd->status.kill_count++;
+
+		// キルカウント50毎に名声値+1
+		if(mcd->status.kill_count % 50 == 0) {
+			merc_set_fame(mcd,1);
+		}
+
+		if(mcd->msd)
+			clif_mercupdatestatus(mcd->msd,0xbd);
+	}
 
 	return 0;
 }
@@ -718,7 +857,7 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 	// ハイド状態を解除
 	status_change_hidden_end(&mcd->bl);
 
-	clif_send_mercstatus(sd,0);
+	clif_mercupdatestatus(sd,SP_HP);
 
 	// 死亡していた
 	if(mcd->status.hp <= 0) {
@@ -730,7 +869,11 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 		skill_unit_move(&mcd->bl,gettick(),0);
 		mcd->status.hp = 0;
 
-		clif_disp_onlyself(sd->fd, msg_txt(189));	// 傭兵が死亡しました。
+		// 名声値-1
+		merc_set_fame(sd->mcd,-1);
+
+		//clif_disp_onlyself(sd->fd, msg_txt(189));	// 傭兵が死亡しました。
+		clif_msgstringtable(sd, 0x4f3);
 		merc_delete_data(sd);
 	} else {
 		if( mcd->sc.data[SC_AUTOBERSERK].timer != -1 &&
@@ -774,8 +917,12 @@ int merc_heal(struct merc_data *mcd,int hp,int sp)
 	mcd->status.sp += sp;
 	if(mcd->status.sp <= 0)
 		mcd->status.sp = 0;
-	if((hp || sp) && mcd->msd)
-		clif_send_mercstatus(mcd->msd,0);
+	if(mcd->msd) {
+		if(hp)
+			clif_mercupdatestatus(mcd->msd,SP_HP);
+		if(sp)
+			clif_mercupdatestatus(mcd->msd,SP_SP);
+	}
 
 	return hp + sp;
 }
@@ -805,7 +952,7 @@ static int merc_natural_heal_hp(int tid,unsigned int tick,int id,void *data)
 		if(mcd->status.hp > mcd->max_hp)
 			mcd->status.hp = mcd->max_hp;
 		if(bhp != mcd->status.hp && mcd->msd)
-			clif_send_mercstatus(mcd->msd,0);
+			clif_mercupdatestatus(mcd->msd,SP_HP);
 	}
 	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,NULL);
 
@@ -833,7 +980,7 @@ static int merc_natural_heal_sp(int tid,unsigned int tick,int id,void *data)
 		if(mcd->status.sp > mcd->max_sp)
 			mcd->status.sp = mcd->max_sp;
 		if(bsp != mcd->status.sp && mcd->msd)
-			clif_send_mercstatus(mcd->msd,0);
+			clif_mercupdatestatus(mcd->msd,SP_SP);
 	}
 	mcd->natural_heal_sp = add_timer(tick+MERC_NATURAL_HEAL_SP_INTERVAL,merc_natural_heal_sp,mcd->bl.id,NULL);
 

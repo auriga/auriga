@@ -10020,7 +10020,7 @@ void clif_openbook(struct map_session_data *sd, int nameid, int page)
  *
  *------------------------------------------
  */
-void clif_send_mercstatus(struct map_session_data *sd, int flag)
+void clif_send_mercstatus(struct map_session_data *sd)
 {
 	int fd, val;
 	struct merc_data *mcd;
@@ -10049,8 +10049,8 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
 	WFIFOW(fd,52) = mcd->status.sp;
 	WFIFOW(fd,54) = mcd->max_sp;
 	WFIFOL(fd,56) = mcd->status.limit;	// 雇用期限
-	WFIFOW(fd,60) = 0;	// ネームバリュー
-	WFIFOL(fd,62) = 0;	// 召喚回数
+	WFIFOW(fd,60) = merc_get_fame(mcd);	// 名声値
+	WFIFOL(fd,62) = merc_get_call(mcd);	// 召喚回数
 	WFIFOL(fd,66) = mcd->status.kill_count;	// キルカウント
 	WFIFOW(fd,70) = mcd->attackrange;	// 攻撃範囲
 #else
@@ -10059,17 +10059,12 @@ void clif_send_mercstatus(struct map_session_data *sd, int flag)
 	WFIFOL(fd,56) = mcd->status.sp;
 	WFIFOL(fd,60) = mcd->max_sp;
 	WFIFOL(fd,64) = mcd->status.limit;	// 雇用期限
-	WFIFOW(fd,68) = 0;	// ネームバリュー
-	WFIFOL(fd,70) = 0;	// 召喚回数
+	WFIFOW(fd,68) = merc_get_fame(mcd);	// 名声値
+	WFIFOL(fd,70) = merc_get_call(mcd);	// 召喚回数
 	WFIFOL(fd,74) = mcd->status.kill_count;	// キルカウント
 	WFIFOW(fd,78) = mcd->attackrange;	// 攻撃範囲
 #endif
 	WFIFOSET(fd,packet_db[0x29b].len);
-
-	if(!flag) {
-		// 0x29bを送るとスキルツリーが消えるので再送信する
-		clif_mercskillinfoblock(sd);
-	}
 
 	return;
 }
@@ -10107,6 +10102,75 @@ void clif_mercskillinfoblock(struct map_session_data *sd)
 	}
 	WFIFOW(fd,2) = len;
 	WFIFOSET(fd,len);
+
+	return;
+}
+
+/*==========================================
+ * 傭兵のステータスを送りつける
+ *------------------------------------------
+ */
+void clif_mercupdatestatus(struct map_session_data *sd, int type)
+{
+	int fd;
+	struct merc_data *mcd;
+
+	nullpo_retv(sd);
+	nullpo_retv(mcd = sd->mcd);
+
+	fd = sd->fd;
+
+	WFIFOW(fd,0)  = 0x2a2;
+	WFIFOW(fd,2)  = type;
+	switch(type){
+	case SP_HP:
+		WFIFOL(fd,4) = mcd->status.hp;
+		break;
+	case SP_MAXHP:
+		WFIFOL(fd,4) = mcd->max_hp;
+		break;
+	case SP_SP:
+		WFIFOL(fd,4) = mcd->status.sp;
+		break;
+	case SP_MAXSP:
+		WFIFOL(fd,4) = mcd->max_sp;
+		break;
+	case SP_ATK1:
+		{
+			int val = mcd->atk2 - mcd->atk1 + 1;
+			WFIFOL(fd,4) = (val > 0)? atn_rand()%val + mcd->atk1 : 0;
+		}
+		break;
+	case SP_MATK1:
+		WFIFOL(fd,4) = mcd->matk1;
+		break;
+	case SP_DEF1:
+		WFIFOL(fd,4) = mcd->def;
+		break;
+	case SP_MDEF1:
+		WFIFOL(fd,4) = mcd->mdef;
+		break;
+	case SP_HIT:
+		WFIFOL(fd,4) = mcd->hit;
+		break;
+	case SP_FLEE1:
+	case 0xa5:	//傭兵専用のFlee？
+		WFIFOL(fd,4) = mcd->flee;
+		break;
+	case SP_CRITICAL:
+		WFIFOL(fd,4) = mcd->critical;
+		break;
+	case SP_ASPD:
+		WFIFOL(fd,4) = mcd->amotion;
+		break;
+	case 0xbd:	//キルカウント
+		WFIFOL(fd,4) = mcd->status.kill_count;
+		break;
+	case 0xbe:	//名声値
+		WFIFOL(fd,4) = merc_get_fame(mcd);
+		break;
+	}
+	WFIFOSET(fd,packet_db[0x2a2].len);
 
 	return;
 }
@@ -10455,8 +10519,8 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		map_addblock(&sd->mcd->bl);
 		mob_ai_hard_spawn( &sd->mcd->bl, 1 );
 		clif_spawnmerc(sd->mcd);
-		clif_send_mercstatus(sd,1);
-		clif_send_mercstatus(sd,0);
+		clif_send_mercstatus(sd);
+		clif_mercskillinfoblock(sd);
 	}
 
 	if(sd->state.connect_new) {

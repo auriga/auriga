@@ -183,6 +183,7 @@ ATCOMMAND_FUNC(reloadbattleconf);
 ATCOMMAND_FUNC(reloadgmaccount);
 ATCOMMAND_FUNC(reloadhomundb);
 ATCOMMAND_FUNC(reloaditemdb);
+ATCOMMAND_FUNC(reloadmercdb);
 ATCOMMAND_FUNC(reloadmobdb);
 ATCOMMAND_FUNC(reloadpcdb);
 ATCOMMAND_FUNC(reloadskilldb);
@@ -353,6 +354,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_ReloadGMAccount,    "@reloadgmaccount",  0, atcommand_reloadgmaccount,     NULL },
 	{ AtCommand_ReloadHomunDB,      "@reloadhomundb",    0, atcommand_reloadhomundb,       NULL },
 	{ AtCommand_ReloadItemDB,       "@reloaditemdb",     0, atcommand_reloaditemdb,        NULL },
+	{ AtCommand_ReloadMercDB,       "@reloadmercdb",     0, atcommand_reloadmercdb,        NULL },
 	{ AtCommand_ReloadMobDB,        "@reloadmobdb",      0, atcommand_reloadmobdb,         NULL },
 	{ AtCommand_ReloadPcDB,         "@reloadpcdb",       0, atcommand_reloadpcdb,          NULL },
 	{ AtCommand_ReloadSkillDB,      "@reloadskilldb",    0, atcommand_reloadskilldb,       NULL },
@@ -4508,6 +4510,19 @@ int atcommand_reloaditemdb(const int fd, struct map_session_data* sd, AtCommandT
 {
 	itemdb_reload();
 	clif_displaymessage(fd, msg_txt(89));
+
+	return 0;
+}
+
+/*==========================================
+ * @reloadmercdb
+ *   傭兵関連DBのリロード
+ *------------------------------------------
+ */
+int atcommand_reloadmercdb(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	merc_reload();
+	clif_displaymessage(fd, msg_txt(193));
 
 	return 0;
 }

@@ -1,4 +1,21 @@
 ----------------------------------------
+//0597 [2009/03/14] by Blaze
+
+・傭兵関連の改正その２
+	（merc.*, clif.*, status.c, pc.c, mob.c, skill.c）
+	-> 傭兵のステータスを通知するパケット0x2a2に対応
+	-> 傭兵ステータスの通知は0x29bではなく、なるべく0x2a2を使用するように修正
+	-> キルカウント実装　※キルカウントボーナスは未実装
+	-> 名声値、召喚回数の計測実装
+	-> 傭兵関連メッセージをmsgstringtable.txtから読み込むように修正
+
+・名声値、召喚回数をキャラセーブデータに保存するように修正
+	（char.c, mmo.h, sql-files/main.sql, sql-files/Auriga597_changetable.sql）
+
+・傭兵関連のDBを再読込みする「@reloadmercdb」を実装
+	（atcommand.c, atcommand.h, conf/atcommand_auriga.conf, conf/msg_auriga.conf, conf/help.txt）
+
+----------------------------------------
 //0596 [2009/03/12] by Rayce
 
 ・TXT: 0594で、JOURNAL_IDENTIFIER を 10 に引き上げ忘れているので修正（journal.c）

@@ -143,6 +143,7 @@
 @reloadgmaccount   ---- gm_account_filenameを再読込する
 @reloadhomundb     ---- ホムンクルス関連DBを再読込する
 @reloaditemdb      ---- itemdbを再読込する
+@reloadmercdb      ---- 傭兵関連DBを再読込する
 @reloadmobdb       ---- mobdbを再読込する
 @reloadpcdb        ---- プレイヤー関連DBを再読込する
 @reloadskilldb     ---- skilldbを再読込する

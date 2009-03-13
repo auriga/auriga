@@ -5512,7 +5512,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			clif_send_homstatus(hd->msd,0);
 		} else if(mcd) {
 			merc_calc_status(mcd);
-			clif_send_mercstatus(mcd->msd,0);
+			clif_send_mercstatus(mcd->msd);
+			clif_mercskillinfoblock(mcd->msd);
 		}
 	}
 	// 計算後に走らせる
@@ -6154,7 +6155,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 	} else if(mcd) {
 		if(calc_flag) {
 			merc_calc_status(mcd);
-			clif_send_mercstatus(mcd->msd,0);
+			clif_send_mercstatus(mcd->msd);
+			clif_mercskillinfoblock(mcd->msd);
 		}
 	}
 
@@ -6646,7 +6648,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					clif_send_homstatus(hd->msd,0);
 				} else if(mcd) {
 					mcd->status.hp -= dmg;
-					clif_send_mercstatus(mcd->msd,0);
+					clif_mercupdatestatus(mcd->msd,SP_HP);
 				}
 				timer = add_timer(	/* タイマー再設定 */
 					10000+tick, status_change_timer,
@@ -6660,7 +6662,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					clif_send_homstatus(hd->msd,0);
 				} else if(mcd) {
 					mcd->status.hp = 100;
-					clif_send_mercstatus(mcd->msd,0);
+					clif_mercupdatestatus(mcd->msd,SP_HP);
 				}
 			}
 		}
