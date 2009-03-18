@@ -1,7 +1,18 @@
 ----------------------------------------
+//0599 [2009/03/19] by Cocoa
+
+・JobGroupを追加（function_jobgroup.txt、const.txt）
+	系列の職業かどうかを返します。
+	ソードマン系、シーフ系、マーチャント系という判定なら
+		callfunc("JobGroup", Grp_Swordman, Grp_Thief, Grp_Merchant)
+	という記述になります。
+
+・item_db.txtをJobGroupを使用した記述に変更
+
+----------------------------------------
 //0598 [2009/03/13] by Cocoa
 
-・タナトスタワー上層部07に進入できる様に変更
+・タナトスタワー上層部07に拡張１次職が進入できる様に変更
 	npc_warp_dun.txt
 
 ・スクリプト、item_dbでClassを数値で指定しているものをconstの定数に記述を統一

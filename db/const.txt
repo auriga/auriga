@@ -84,6 +84,15 @@ Job_Ninja	29
 Job_DeathKnight	30
 Job_DarkCollector	31
 
+Grp_Novice	0
+Grp_Swordman	1
+Grp_Magician	2
+Grp_Archer	3
+Grp_Acolyte	4
+Grp_Merchant	5
+Grp_Thief	6
+Grp_TaeKwon	7
+
 mf_nosave		0
 mf_nomemo		1
 mf_noteleport		2
