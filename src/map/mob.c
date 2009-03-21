@@ -1656,6 +1656,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	int drop_rate;
 	atn_bignumber tdmg = 0;
 	struct map_session_data *sd = NULL;
+	struct merc_data *mcd = NULL;
 	struct block_list **tmpbl = NULL;
 	struct linkdb_node *node;
 
@@ -1686,6 +1687,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			sd = (struct map_session_data *)src;
 		else if(src->type == BL_MOB)
 			mob_unlocktarget((struct mob_data *)src,tick);
+		else if(src->type == BL_MERC)
+			mcd = (struct merc_data *)src;
 	}
 
 	if(sd) {
@@ -1706,7 +1709,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 		// 傭兵のキルカウント増加
 		if(sd->mcd)
-			merc_killcount(sd->mcd,mob_db[md->class_].lv);
+			merc_killcount(sd->mcd, mob_db[md->class_].lv);
 
 		// テコンミッションターゲット
 		if(sd->status.class_ == PC_CLASS_TK && md->class_ == sd->tk_mission_target) {
@@ -1730,9 +1733,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				clif_mission_mob(sd,sd->tk_mission_target,0);
 			}
 		}
+	} else if(mcd) {	// 傭兵のキルカウント増加（傭兵自身が倒したとき）
+		merc_killcount(mcd, mob_db[md->class_].lv);
 	}
-	else if(src && src->type == BL_MERC)		// 傭兵のキルカウント増加（傭兵自身が倒したとき）
-		merc_killcount((struct merc_data *)src,mob_db[md->class_].lv);
 
 	// map外に消えた人は計算から除くので
 	// overkill分は無いけどsumはmax_hpとは違う

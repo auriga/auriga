@@ -10049,8 +10049,8 @@ void clif_send_mercstatus(struct map_session_data *sd)
 	WFIFOW(fd,52) = mcd->status.sp;
 	WFIFOW(fd,54) = mcd->max_sp;
 	WFIFOL(fd,56) = mcd->status.limit;	// 雇用期限
-	WFIFOW(fd,60) = merc_get_fame(mcd);	// 名声値
-	WFIFOL(fd,62) = merc_get_call(mcd);	// 召喚回数
+	WFIFOW(fd,60) = sd->status.merc_fame[mcd->class_type];	// 名声値
+	WFIFOL(fd,62) = sd->status.merc_call[mcd->class_type];	// 召喚回数
 	WFIFOL(fd,66) = mcd->status.kill_count;	// キルカウント
 	WFIFOW(fd,70) = mcd->attackrange;	// 攻撃範囲
 #else
@@ -10059,8 +10059,8 @@ void clif_send_mercstatus(struct map_session_data *sd)
 	WFIFOL(fd,56) = mcd->status.sp;
 	WFIFOL(fd,60) = mcd->max_sp;
 	WFIFOL(fd,64) = mcd->status.limit;	// 雇用期限
-	WFIFOW(fd,68) = merc_get_fame(mcd);	// 名声値
-	WFIFOL(fd,70) = merc_get_call(mcd);	// 召喚回数
+	WFIFOW(fd,68) = sd->status.merc_fame[mcd->class_type];	// 名声値
+	WFIFOL(fd,70) = sd->status.merc_call[mcd->class_type];	// 召喚回数
 	WFIFOL(fd,74) = mcd->status.kill_count;	// キルカウント
 	WFIFOW(fd,78) = mcd->attackrange;	// 攻撃範囲
 #endif
@@ -10154,7 +10154,7 @@ void clif_mercupdatestatus(struct map_session_data *sd, int type)
 		WFIFOL(fd,4) = mcd->hit;
 		break;
 	case SP_FLEE1:
-	case 0xa5:	//傭兵専用のFlee？
+	case SP_MERC_FLEE:
 		WFIFOL(fd,4) = mcd->flee;
 		break;
 	case SP_CRITICAL:
@@ -10163,11 +10163,11 @@ void clif_mercupdatestatus(struct map_session_data *sd, int type)
 	case SP_ASPD:
 		WFIFOL(fd,4) = mcd->amotion;
 		break;
-	case 0xbd:	//キルカウント
+	case SP_MERC_KILLCOUNT:
 		WFIFOL(fd,4) = mcd->status.kill_count;
 		break;
-	case 0xbe:	//名声値
-		WFIFOL(fd,4) = merc_get_fame(mcd);
+	case SP_MERC_FAME:
+		WFIFOL(fd,4) = sd->status.merc_fame[mcd->class_type];
 		break;
 	}
 	WFIFOSET(fd,packet_db[0x2a2].len);

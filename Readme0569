@@ -1,4 +1,34 @@
 ----------------------------------------
+//0600 [2009/03/22] by Rayce
+
+・名声値、召喚回数のセーブ方式の変更（char.c, sql-files/Auriga-600_changetable.sql）
+	MAX_MERC_TYPE を変更してもデータが正しくセーブできることを保証します
+		-> TXTは、ホットキーの後ろへ移動
+		-> SQLは、mercenaryテーブルへ正規化
+
+・傭兵のステータス通知用にenumを追加（clif.c, map.h, merc.c）
+	-> SP_MERC_FLEE=165
+	-> SP_MERC_KILLCOUNT=189
+	-> SP_MERC_FAME=190
+
+・傭兵の種類を自由にグループ化できるように、db/merc_db.txtに ClassType 項目を追加（merc.*）
+	デフォルトでは以下のように設定されています
+		0: 弓傭兵、1: 槍傭兵、2: 剣傭兵
+	MAX_MERC_TYPE を増やしてmerc_db.txtのClassTypeを変更することで、別の種類の
+	傭兵を作成することも可能です。
+
+・0597で追加された関数の見直し（merc.*）
+	-> merc_data 構造体自体に傭兵の種類を保存しておくようにしたので、merc_get_type() は不要
+	-> merc_get_fame() は使用せずに直接参照するように変更
+	-> merc_get_call() は使用せずに直接参照するように変更
+	-> merc_set_fame() は引数を変更（データを保存しているPCを主体にする）
+	-> merc_set_call() は引数を変更（データを保存しているPCを主体にする）
+
+・mob_dead() を少し書き換え（mob.c）
+
+・TXT: JOURNAL_IDENTIFIER を 11 に引き上げ（journal.c）
+
+----------------------------------------
 //0599 [2009/03/19] by Cocoa
 
 ・JobGroupを追加（function_jobgroup.txt、const.txt）

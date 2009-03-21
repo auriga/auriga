@@ -35,3 +35,4 @@ DROP TABLE IF EXISTS `mail_data`;
 DROP TABLE IF EXISTS `mapreg`;
 DROP TABLE IF EXISTS `feel_info`;
 DROP TABLE IF EXISTS `hotkey`;
+DROP TABLE IF EXISTS `mercenary`;

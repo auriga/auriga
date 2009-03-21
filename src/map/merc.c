@@ -82,22 +82,6 @@ static struct merc_skill_tree_entry* merc_search_skilltree(int class_, int skill
 }
 
 /*==========================================
- * 傭兵の種類を返す
- *------------------------------------------
- */
-int merc_get_type(int class_)
-{
-	if(class_ >= MERC_ID && class_ < MERC_ID+10)
-		return MERC_TYPE_ARCHER;
-	else if(class_ >= MERC_ID+10 && class_ < MERC_ID+20)
-		return MERC_TYPE_LANCER;
-	else if(class_ >= MERC_ID+20 && class_ < MERC_ID+30)
-		return MERC_TYPE_SWORDMAN;
-
-	return -1;
-}
-
-/*==========================================
  * スキルのMaxLvを返す
  *------------------------------------------
  */
@@ -190,7 +174,7 @@ static int merc_employ_timer(int tid,unsigned int tick,int id,void *data)
 	sd->mcd->limit_timer = -1;
 
 	// 名声値+1
-	merc_set_fame(sd->mcd,1);
+	merc_set_fame(sd, sd->mcd->class_type, 1);
 
 	//clif_disp_onlyself(sd->fd, msg_txt(188));	// 傭兵雇用時間が満了しました。
 	clif_msgstringtable(sd, 0x4f2);
@@ -449,7 +433,7 @@ int merc_callmerc(struct map_session_data *sd,int class_, unsigned int limit)
 	}
 
 	// 召喚回数+1
-	merc_set_call(sd->mcd,1);
+	merc_set_call(sd, merc_db[class_].class_type, 1);
 
 	sd->state.merc_creating = 1;
 	intif_create_merc(sd->status.account_id,sd->status.char_id,&st);
@@ -494,6 +478,7 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->bl.type     = BL_MERC;
 	mcd->target_id   = 0;
 	mcd->msd         = sd;
+	mcd->class_type  = merc_db[class_].class_type;
 	mcd->view_class  = merc_db[class_].view_class;
 	mcd->attackrange = merc_db[class_].range;
 
@@ -675,66 +660,24 @@ int merc_checkskill(struct merc_data *mcd,int skill_id)
 }
 
 /*==========================================
- * 名声値の取得
- *------------------------------------------
- */
-int merc_get_fame(struct merc_data *mcd)
-{
-	int type;
-	struct map_session_data *sd;
-
-	nullpo_retr(0, mcd);
-	nullpo_retr(0, sd = mcd->msd);
-
-	type = merc_get_type(mcd->status.class_);
-
-	if(type != -1)
-		return sd->status.merc_fame[type];
-
-	return 0;
-}
-
-/*==========================================
  * 名声値の増減
  *------------------------------------------
  */
-int merc_set_fame(struct merc_data *mcd,int val)
+int merc_set_fame(struct map_session_data *sd, short type, int val)
 {
-	int type;
-	struct map_session_data *sd;
+	struct merc_data *mcd;
 
-	nullpo_retr(0, mcd);
-	nullpo_retr(0, sd = mcd->msd);
+	nullpo_retr(0, sd);
+	nullpo_retr(0, mcd = sd->mcd);
 
-	type = merc_get_type(mcd->status.class_);
+	if(type < 0 || type >= MAX_MERC_TYPE)
+		return 0;
 
-	if(type != -1) {
-		int *fame = &sd->status.merc_fame[type];
-		*fame += val;
-		if(*fame < 0)
-			*fame = 0;
-		clif_mercupdatestatus(sd,0xbe);
-	}
+	sd->status.merc_fame[type] += val;
+	if(sd->status.merc_fame[type] < 0)
+		sd->status.merc_fame[type] = 0;
 
-	return 0;
-}
-
-/*==========================================
- * 召喚回数の取得
- *------------------------------------------
- */
-int merc_get_call(struct merc_data *mcd)
-{
-	int type;
-	struct map_session_data *sd;
-
-	nullpo_retr(0, mcd);
-	nullpo_retr(0, sd = mcd->msd);
-
-	type = merc_get_type(mcd->status.class_);
-
-	if(type != -1)
-		return sd->status.merc_call[type];
+	clif_mercupdatestatus(sd, SP_MERC_FAME);
 
 	return 0;
 }
@@ -743,22 +686,19 @@ int merc_get_call(struct merc_data *mcd)
  * 召喚回数の増減
  *------------------------------------------
  */
-int merc_set_call(struct merc_data *mcd,int val)
+int merc_set_call(struct map_session_data *sd, short type, int val)
 {
-	int type;
-	struct map_session_data *sd;
+	struct merc_data *mcd;;
 
-	nullpo_retr(0, mcd);
-	nullpo_retr(0, sd = mcd->msd);
+	nullpo_retr(0, sd);
+	nullpo_retr(0, mcd = sd->mcd);
 
-	type = merc_get_type(mcd->status.class_);
+	if(type < 0 || type >= MAX_MERC_TYPE)
+		return 0;
 
-	if(type != -1) {
-		int *call = &sd->status.merc_call[type];
-		*call += val;
-		if(*call < 0)
-			*call = 0;
-	}
+	sd->status.merc_call[type] += val;
+	if(sd->status.merc_call[type] < 0)
+		sd->status.merc_call[type] = 0;
 
 	return 0;
 }
@@ -767,7 +707,7 @@ int merc_set_call(struct merc_data *mcd,int val)
  * キルカウントの増加
  *------------------------------------------
  */
-int merc_killcount(struct merc_data *mcd,unsigned short lv)
+int merc_killcount(struct merc_data *mcd, unsigned short lv)
 {
 	nullpo_retr(0, mcd);
 
@@ -777,11 +717,11 @@ int merc_killcount(struct merc_data *mcd,unsigned short lv)
 
 		// キルカウント50毎に名声値+1
 		if(mcd->status.kill_count % 50 == 0) {
-			merc_set_fame(mcd,1);
+			merc_set_fame(mcd->msd, mcd->class_type, 1);
 		}
 
 		if(mcd->msd)
-			clif_mercupdatestatus(mcd->msd,0xbd);
+			clif_mercupdatestatus(mcd->msd, SP_MERC_KILLCOUNT);
 	}
 
 	return 0;
@@ -870,7 +810,7 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 		mcd->status.hp = 0;
 
 		// 名声値-1
-		merc_set_fame(sd->mcd,-1);
+		merc_set_fame(sd, mcd->class_type, -1);
 
 		//clif_disp_onlyself(sd->fd, msg_txt(189));	// 傭兵が死亡しました。
 		clif_msgstringtable(sd, 0x4f3);
@@ -1059,7 +999,8 @@ static int read_merc_db(void)
 		lines=count=0;
 		while(fgets(line,sizeof(line),fp)){
 			int nameid;
-			char *str[25],*p,*np;
+			short class_type;
+			char *str[26],*p,*np;
 			lines++;
 
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -1067,7 +1008,7 @@ static int read_merc_db(void)
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 
-			for(j=0,p=line;j<25;j++){
+			for(j=0,p=line;j<26;j++){
 				if((np=strchr(p,','))!=NULL){
 					str[j]=p;
 					*np=0;
@@ -1084,32 +1025,37 @@ static int read_merc_db(void)
 			if(j < 0 || j >= MAX_MERC_DB)
 				continue;
 
+			class_type = atoi(str[4]);
+			if(class_type < 0 || class_type >= MAX_MERC_TYPE)
+				continue;
+
 			merc_db[j].class_     = nameid;
+			merc_db[j].class_type = class_type;
 			merc_db[j].view_class = atoi(str[1]);
 			strncpy(merc_db[j].name,str[2],24);
 			strncpy(merc_db[j].jname,str[3],24);
-			merc_db[j].lv      = atoi(str[4]);
-			merc_db[j].max_hp  = atoi(str[5]);
-			merc_db[j].max_sp  = atoi(str[6]);
-			merc_db[j].range   = atoi(str[7]);
-			merc_db[j].atk1    = atoi(str[8]);
-			merc_db[j].atk2    = atoi(str[9]);
-			merc_db[j].def     = atoi(str[10]);
-			merc_db[j].mdef    = atoi(str[11]);
-			merc_db[j].str     = atoi(str[12]);
-			merc_db[j].agi     = atoi(str[13]);
-			merc_db[j].vit     = atoi(str[14]);
-			merc_db[j].int_    = atoi(str[15]);
-			merc_db[j].dex     = atoi(str[16]);
-			merc_db[j].luk     = atoi(str[17]);
+			merc_db[j].lv      = atoi(str[5]);
+			merc_db[j].max_hp  = atoi(str[6]);
+			merc_db[j].max_sp  = atoi(str[7]);
+			merc_db[j].range   = atoi(str[8]);
+			merc_db[j].atk1    = atoi(str[9]);
+			merc_db[j].atk2    = atoi(str[10]);
+			merc_db[j].def     = atoi(str[11]);
+			merc_db[j].mdef    = atoi(str[12]);
+			merc_db[j].str     = atoi(str[13]);
+			merc_db[j].agi     = atoi(str[14]);
+			merc_db[j].vit     = atoi(str[15]);
+			merc_db[j].int_    = atoi(str[16]);
+			merc_db[j].dex     = atoi(str[17]);
+			merc_db[j].luk     = atoi(str[18]);
 
-			merc_db[j].size    = atoi(str[18]);
-			merc_db[j].race    = atoi(str[19]);
-			merc_db[j].element = atoi(str[20]);
-			merc_db[j].speed   = atoi(str[21]);
-			merc_db[j].adelay  = atoi(str[22]);
-			merc_db[j].amotion = atoi(str[23]);
-			merc_db[j].dmotion = atoi(str[24]);
+			merc_db[j].size    = atoi(str[19]);
+			merc_db[j].race    = atoi(str[20]);
+			merc_db[j].element = atoi(str[21]);
+			merc_db[j].speed   = atoi(str[22]);
+			merc_db[j].adelay  = atoi(str[23]);
+			merc_db[j].amotion = atoi(str[24]);
+			merc_db[j].dmotion = atoi(str[25]);
 
 			// force \0 terminal
 			merc_db[j].name[23]  = '\0';

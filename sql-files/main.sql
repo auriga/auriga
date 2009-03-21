@@ -53,12 +53,6 @@ CREATE TABLE `char_data` (
   `pet_id` int(11) NOT NULL default '0',
   `homun_id` int(11) NOT NULL DEFAULT '0',
   `merc_id` int(11) NOT NULL DEFAULT '0',
-  `merc_fame1` int(11) NOT NULL DEFAULT '0',
-  `merc_call1` int(11) NOT NULL DEFAULT '0',
-  `merc_fame2` int(11) NOT NULL DEFAULT '0',
-  `merc_call2` int(11) NOT NULL DEFAULT '0',
-  `merc_fame3` int(11) NOT NULL DEFAULT '0',
-  `merc_call3` int(11) NOT NULL DEFAULT '0',
   `hair` smallint(6) NOT NULL default '0',
   `hair_color` smallint(6) NOT NULL default '0',
   `clothes_color` smallint(6) NOT NULL default '0',
@@ -567,4 +561,15 @@ CREATE TABLE `hotkey` (
   `id` int(11) NOT NULL default '0',
   `lv` smallint(6) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`, `key`)
+) TYPE = MyISAM;
+
+# Database: Ragnarok
+# Table: 'mercenary'
+#
+CREATE TABLE `mercenary` (
+  `char_id` int(11) NOT NULL default '0',
+  `type` tinyint(4) NOT NULL default '0',
+  `fame` int(11) NOT NULL DEFAULT '0',
+  `call` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`char_id`, `type`)
 ) TYPE = MyISAM;

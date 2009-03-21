@@ -827,7 +827,7 @@ struct merc_data {
 	short attackrange;
 	int target_id;
 	unsigned int skillstatictimer[MAX_MERCSKILL];
-	short view_class;
+	short class_type,view_class;
 	int nhealhp,nhealsp;
 	int hprecov_rate,sprecov_rate;
 	int natural_heal_hp,natural_heal_sp;
@@ -950,6 +950,7 @@ enum {
 	SP_MDEF2,SP_HIT,SP_FLEE1,SP_FLEE2,SP_CRITICAL,SP_ASPD,SP_36,SP_JOBLEVEL,	// 48-55
 	SP_UPPER,SP_PARTNER,SP_CART,SP_DIE_COUNTER,	// 56-59
 	SP_CARTINFO=99,	// 99
+	SP_MERC_FLEE=165,SP_MERC_KILLCOUNT=189,SP_MERC_FAME=190,
 
 	// globalreg save 500-
 	SP_CLONESKILL_ID=500,SP_CLONESKILL_LV,					// 500-501

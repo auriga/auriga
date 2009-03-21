@@ -29,12 +29,8 @@
 
 #define MAX_MERCSKILL_TREE 16
 
-#define MERC_TYPE_ARCHER	0
-#define MERC_TYPE_LANCER	1
-#define MERC_TYPE_SWORDMAN	2
-
 struct merc_db {
-	short class_;
+	short class_, class_type;
 	char name[24],jname[24];
 	unsigned short lv;
 	int max_hp,max_sp;
@@ -49,7 +45,6 @@ struct merc_db {
 };
 extern struct merc_db merc_db[MAX_MERC_DB];
 
-int merc_get_type(int class_);
 int merc_get_skilltree_max(int class_,int skillid);
 
 int merc_callmerc(struct map_session_data *sd, int class_, unsigned int limit);
@@ -62,10 +57,8 @@ int merc_save_data(struct map_session_data *sd);
 int merc_calc_status(struct merc_data *mcd);
 int merc_checkskill(struct merc_data *mcd,int skill_id);
 
-int merc_get_fame(struct merc_data *mcd);
-int merc_set_fame(struct merc_data *mcd,int val);
-int merc_get_call(struct merc_data *mcd);
-int merc_set_call(struct merc_data *mcd,int val);
+int merc_set_fame(struct map_session_data *sd, short type, int val);
+int merc_set_call(struct map_session_data *sd, short type, int val);
 
 int merc_killcount(struct merc_data *mcd,unsigned short lv);
 int merc_gainexp(struct merc_data *mcd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp);
