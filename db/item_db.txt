@@ -1242,7 +1242,7 @@
 2383,Brynhildr,ブリュンヒルデ,5,20,,400,,10,,0,1000333311,2,16,,94,0,,{},{ bonus bMaxHP,BaseLevel*20; bonus bMaxSP,BaseLevel*5; bonus bAtkRate,10; bonus bMatkRate,10; bonus bMdef,10; bonus bNoKnockback,0; bonus bUnbreakableArmor,0; }
 2384,Spiritual_Tunic,スピリチュアルチュニック,5,,,0,,10,,0,1000333311,2,16,,,,,{},{ bonus bMaxHP,800; bonus2 bResEff,Eff_Freeze,10000; bonus bMdef,5; bonus2 bSubEle,2,20; bonus2 bSubEle,3,20; bonus2 bSubEle,4,20; bonus2 bSubEle,5,20; bonus2 bSubEle,6,20; bonus2 bSubEle,7,20; bonus2 bSubEle,8,20; bonus2 bSubEle,9,20; }
 2385,Recuperative_Armor,リクパレイティブアーマー,5,,,0,,12,,0,1000333311,2,16,,,,,{},{ bonus bHPrecovStop,0; bonus bSPrecovStop,0; bonus bSPPenaltyUnrig,100; bonus bHPGainValue,60; bonus bSPGainValue,6; }
-2386,Chameleon_Armor,カメレオンアーマー,5,,,1700,,5,,0,2088832,2,16,,70,,1,{},{ bonus bMaxHP,BaseLevel; bonus bMaxSP,BaseLevel/2; if(callfuunc("JobGroup", Grp_Swordman, Grp_Merchant, Grp_Thief)) bonus bDef,3; else bonus bMdef,5; /*HP,SP増加率、AB発動率は暫定値*/ }
+2386,Chameleon_Armor,カメレオンアーマー,5,,,1700,,5,,0,2088832,2,16,,70,,1,{},{ bonus bMaxHP,BaseLevel; bonus bMaxSP,BaseLevel/2; if(callfunc("JobGroup", Grp_Swordman, Grp_Merchant, Grp_Thief)) bonus bDef,3; else bonus bMdef,5; /*HP,SP増加率、AB発動率は暫定値*/ }
 2387,Sprint_Mail,スプリントメイル,5,,,1000,,3,,1,2088832,2,16,,,,1,{},{ bonus bVit,1; bonus bHPrecovRate,5; }
 2388,Gandora,カンドラ,5,,,300,,4,,1,4096,2,16,,70,,1,{},{ bonus bAgi,1; bonus bFlee,5; bonus bAspdAddRate,2; /*Aspd上昇の重複可否は暫定仕様*/ }
 2389,Naga_Scale_Armor,ナーガの鱗鎧,5,,,1000,,5,,1,2088832,2,16,,,,1,{},{ bonus bMdef,2; }
@@ -1521,7 +1521,7 @@
 2767,Unknown_Item,アコライトフィギュア,5,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bInt,1; if(callfunc("JobGroup", Grp_Acolyte)) bonus bMaxSP,50; }
 2768,Unknown_Item,マジシャンフィギュア,5,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bInt,1; if(callfunc("JobGroup", Grp_Magician)) bonus bSPrecovRate,5; }
 2769,Unknown_Item,アーチャーフィギュア,5,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bDex,1; if(callfunc("JobGroup", Grp_Archer)) bonus bBaseAtk,10; }
-2770,Unknown_Item,シーフフィギュア,5,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bAgi,1; if(callfunc("JobGroup", Grp_Thief) bonus bAspdAddRate,3; /*ASPD増加の重複可否は暫定仕様*/ }
+2770,Unknown_Item,シーフフィギュア,5,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bAgi,1; if(callfunc("JobGroup", Grp_Thief)) bonus bAspdAddRate,3; /*ASPD増加の重複可否は暫定仕様*/ }
 2771,Unknown_Item,マーチャントフィギュア,5,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bStr,1; if(callfunc("JobGroup", Grp_Merchant)) bonus bCritical,5; }
 2772,Unknown_Item,グロリアスリング,5,,,0,,0,,0,991944702,2,136,,81,,,{},{}
 2773,Unknown_Item,グロリアス量産型リング,5,,,0,,0,,0,991944702,2,136,,61,,,{},{}
@@ -1811,7 +1811,7 @@
 4280,Geographer_Card,ジオグラファーカード,6,20,,10,,,,,,,16,,,,,{},{ if(getskilllv(34)<10){ bonus3 bRevAutoSelfSpell,34,2,300; }else{ bonus3 bRevAutoSelfSpell,34,10,300; } if(equippeditem(4185)==0 || equippeditem(4217)==0 || equippeditem(4293)==0 || equippeditem(4312)==0) end; bonus bVit,10; bonus bCastrate,-10; bonus bUseSPrate,-10; if(callfunc("JobGroup", Grp_Acolyte) == 0) end; bonus2 bSubRace,1,30; bonus2 bSubRace,6,30; bonus2 bExpRate,1,5; bonus2 bExpRate,6,5; bonus2 bJobRate,1,5; bonus2 bJobRate,6,5; }
 4281,Zipper_Bear_Card,チャッキーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bBaseAtk,30; bonus2 bSPDrainValue,100,-1; if(callfunc("JobGroup", Grp_Merchant) == 0) end; bonus bUnbreakableWeapon,0; }
 4282,Tengu_Card,酒天狗カード,6,20,,10,,,,,,,136,,,,,{},{}
-4283,Greatest_General_Card,天下大将軍カード,6,20,,10,,,,,,,136,,,,,{},{ if((callfunc("JobGroup", Grp_Acolyte) == 0){ if(Class == Job_Gunslinger){ bonus3 bAutoSpell,500,5,200; end; }{ bonus3 bAutoSpell,261,5,20; end; }} bonus3 bAutoSpell,261,5,200; }
+4283,Greatest_General_Card,天下大将軍カード,6,20,,10,,,,,,,136,,,,,{},{ if(callfunc("JobGroup", Grp_Acolyte) == 0){ if(Class == Job_Gunslinger){ bonus3 bAutoSpell,500,5,200; end; }{ bonus3 bAutoSpell,261,5,20; end; }} bonus3 bAutoSpell,261,5,200; }
 4284,Chepet_Card,チェペットカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bAutoSpell,28,5,500; }
 4285,Choco_Card,チョコカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bFlee2,5; bonus bFlee,10; }
 4286,Karakasa_Card,カラ傘カード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_ConFusion,1000; if(readparam(bStr)<77) end; bonus2 bAddRevEff,Eff_ConFusion,3000; }

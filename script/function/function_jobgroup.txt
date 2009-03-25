@@ -1,16 +1,18 @@
 //==============================================================================
 // Ragnarok Online Job Group Functions
 //==============================================================================
+//	Grp_Novice  ：　　ノービス系列（ノービス、スーパーノービス）
 //	Grp_Swordman：　ソードマン系列（ソードマン、ナイト、クルセイダー）
 //	Grp_Magician：　マジシャン系列（マジシャン、ウィザード、セージ）
 //	Grp_Archer  ：　アーチャー系列（アチャ、ハンタ、バード、ダンサー）
 //	Grp_Acolyte ：　アコライト系列（アコライト、プリースト、モンク）k
 //	Grp_Merchant：マーチャント系列（マーチャント、ブラックスミス、アルケミスト）
 //	Grp_Thief   ：　　　シーフ系列（シーフ、アサシン、ローグ）
+//	Grp_TaeKwon ：　　　テコン系列（テコンキッド、拳聖、ソウルリンカー）
 //------------------------------------------------------------------------------
 function	script	JobGroup	{
 	set '@cnt, 0;
-	while(getargcount() < '@cnt) {
+	while(getargcount() > '@cnt) {
 		switch(getarg('@cnt)) {
 		case Grp_Novice:
 			if(Class == Job_Novice || Class == Job_SuperNovice)
