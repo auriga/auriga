@@ -826,3 +826,61 @@ nguild_alde.gat,216,54,0	warp	naldebaranwarp3016	1,1,nguild_alde.gat,206,184
 nguild_alde.gat,46,197,0	warp	naldebaranwarp3017	1,1,nguild_alde.gat,232,182
 nguild_alde.gat,31,197,0	warp	naldebaranwarp3018	1,1,nguild_alde.gat,175,175
 nguild_alde.gat,39,222,0	warp	naldebaranwarp3019	1,1,nguild_alde.gat,70,108
+
+
+//==============================================================
+// ----- Schwaltzvalt シュバルツバルド -----
+// schg_cas01.gat	ニダヴェリール 砦1 〜 5
+// -----
+// sch_gld.gat	ニダヴェリール
+//==============================================================
+sch_gld.gat,354,89,0		warp	schwaltzvaltwarp0101	1,1,yuno.gat,16,126
+
+schg_cas01.gat,119,4,0		warp	schwaltzvaltwarp0201	1,1,sch_gld.gat,293,100
+schg_cas02.gat,339,73,0		warp	schwaltzvaltwarp0202	1,1,sch_gld.gat,288,252
+schg_cas03.gat,337,336,0	warp	schwaltzvaltwarp0203	1,1,sch_gld.gat,97,196
+schg_cas04.gat,119,4,0		warp	schwaltzvaltwarp0204	1,1,sch_gld.gat,137,90
+schg_cas05.gat,119,4,0		warp	schwaltzvaltwarp0205	1,1,sch_gld.gat,71,315
+
+sch_gld.gat,293,90,0		warp	schwaltzvaltwarp0301	1,1,schg_cas01.gat,119,8
+sch_gld.gat,288,258,0		warp	schwaltzvaltwarp0302	1,1,schg_cas02.gat,339,78
+sch_gld.gat,97,183,0		warp	schwaltzvaltwarp0303	1,1,schg_cas03.gat,337,330
+sch_gld.gat,137,98,0		warp	schwaltzvaltwarp0304	1,1,schg_cas04.gat,119,8
+sch_gld.gat,65,315,0		warp	schwaltzvaltwarp0305	1,1,schg_cas05.gat,119,8
+
+yuno.gat,13,126,0		warp	schwaltzvaltwarp2001	1,1,sch_gld.gat,351,89
+
+schg_cas01.gat,275,240,0	warp	schwaltzvaltwarp3101	1,1,schg_cas01.gat,120,7
+schg_cas02.gat,101,301,0	warp	schwaltzvaltwarp3201	1,1,schg_cas02.gat,340,78
+schg_cas03.gat,57,9,0		warp	schwaltzvaltwarp3301	1,1,schg_cas03.gat,337,330
+schg_cas04.gat,275,240,0	warp	schwaltzvaltwarp3401	1,1,schg_cas04.gat,120,7
+schg_cas05.gat,275,240,0	warp	schwaltzvaltwarp3501	1,1,schg_cas05.gat,120,7
+
+
+//==============================================================
+// ----- Arunafeltz アルナベルツ -----
+// arug_cas01.gat	ヴァルフレイヤ 砦1 〜 5
+// -----
+// aru_gld.gat	ヴァルフレイヤ
+//==============================================================
+arug_cas01.gat,281,93,0		warp	arunafeltzwarp0201	1,1,aru_gld.gat,158,272
+arug_cas02.gat,139,25,0		warp	arunafeltzwarp0202	1,1,aru_gld.gat,83,47
+arug_cas03.gat,141,40,0		warp	arunafeltzwarp0203	1,1,aru_gld.gat,68,155
+arug_cas04.gat,141,40,0		warp	arunafeltzwarp0204	1,1,aru_gld.gat,299,345
+arug_cas05.gat,141,40,0		warp	arunafeltzwarp0205	1,1,aru_gld.gat,292,107
+
+aru_gld.gat,155,274,0		warp	arunafeltzwarp0301	1,1,arug_cas01.gat,275,93
+aru_gld.gat,78,47,0		warp	arunafeltzwarp0302	1,1,arug_cas02.gat,139,31
+aru_gld.gat,68,150,0		warp	arunafeltzwarp0303	1,1,arug_cas03.gat,141,45
+aru_gld.gat,289,347,0		warp	arunafeltzwarp0304	1,1,arug_cas04.gat,141,45
+aru_gld.gat,287,107,0		warp	arunafeltzwarp0305	1,1,arug_cas05.gat,141,45
+
+aru_gld.gat,195,363,0		warp	arunafeltzwarp0501	1,1,ve_fild02.gat,191,24
+
+ve_fild02.gat,191,21,0		warp	arunafeltzwarp2001	1,1,aru_gld.gat,195,360
+
+arug_cas01.gat,127,357,0	warp	arunafeltzwarp3101	1,1,arug_cas01.gat,275,93
+arug_cas02.gat,393,324,0	warp	arunafeltzwarp3201	1,1,arug_cas02.gat,139,31
+arug_cas03.gat,321,52,0		warp	arunafeltzwarp3301	1,1,arug_cas03.gat,141,45
+arug_cas04.gat,321,52,0		warp	arunafeltzwarp3401	1,1,arug_cas04.gat,141,45
+arug_cas05.gat,321,52,0		warp	arunafeltzwarp3501	1,1,arug_cas05.gat,141,45

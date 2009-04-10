@@ -3970,6 +3970,11 @@ int buildin_getonlineguildmember(struct script_state *st);
 int buildin_makemerc(struct script_state *st);
 int buildin_openbook(struct script_state *st);
 int buildin_pushpc(struct script_state *st);
+int buildin_setcell(struct script_state *st);
+int buildin_areasetcell(struct script_state *st);
+int buildin_callguardian(struct script_state *st);
+int buildin_getguardianinfo(struct script_state *st);
+int buildin_getmobname(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4125,7 +4130,7 @@ struct script_function buildin_func[] = {
 	{buildin_agitend,"agitend",""},
 	{buildin_agitcheck,"agitcheck",""},
 	{buildin_flagemblem,"flagemblem","i"},
-	{buildin_getcastlename,"getcastlename","s"},
+	{buildin_getcastlename,"getcastlename","s*"},
 	{buildin_getcastledata,"getcastledata","si*"},
 	{buildin_setcastledata,"setcastledata","sii"},
 	{buildin_requestguildinfo,"requestguildinfo","i*"},
@@ -4228,6 +4233,11 @@ struct script_function buildin_func[] = {
 	{buildin_makemerc,"makemerc","ii"},
 	{buildin_openbook,"openbook","i*"},
 	{buildin_pushpc,"pushpc","ii"},
+	{buildin_setcell,"setcell","siii"},
+	{buildin_areasetcell,"areasetcell","siiiii"},
+	{buildin_callguardian,"callguardian","siissi*"},
+	{buildin_getguardianinfo,"getguardianinfo","sii"},
+	{buildin_getmobname,"getmobname","i"},
 	{NULL,NULL,NULL}
 };
 
@@ -8232,6 +8242,7 @@ static int* script_conv_mapflag(int m,int type)
 		case MF_TURBO:              return &map[m].flag.turbo;
 		case MF_NOREVIVE:           return &map[m].flag.norevive;
 		case MF_NOCOMMAND:          return &map[m].flag.nocommand;
+		case MF_NOJUMP:             return &map[m].flag.nojump;
 	}
 	return NULL;
 }
@@ -8592,7 +8603,10 @@ int buildin_getcastlename(struct script_state *st)
 {
 	char *mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	struct guild_castle *gc;
-	int i;
+	int i,type = 0;
+
+	if(st->end>st->start+3)
+		type = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	if(strcmp(mapname,"this") == 0) {
 		int m = script_mapname2mapid(st,mapname);
@@ -8606,7 +8620,7 @@ int buildin_getcastlename(struct script_state *st)
 	for(i=0; i<MAX_GUILDCASTLE; i++) {
 		if((gc = guild_castle_search(i)) != NULL) {
 			if(strcmp(mapname,gc->map_name) == 0) {
-				push_str(st->stack,C_STR,(unsigned char *)aStrdup(gc->castle_name));
+				push_str(st->stack,C_STR,(unsigned char *)aStrdup(type? gc->castle_name: gc->area_name));
 				return 0;
 			}
 		}
@@ -8655,23 +8669,23 @@ int buildin_getcastledata(struct script_state *st)
 		for(i=0; i<MAX_GUILDCASTLE; i++) {
 			if((gc = guild_castle_search(i)) != NULL && strcmp(mapname,gc->map_name) == 0) {
 				switch(idx) {
-					case 1:  val = gc->guild_id;   break;
-					case 2:  val = gc->economy;    break;
-					case 3:  val = gc->defense;    break;
-					case 4:  val = gc->triggerE;   break;
-					case 5:  val = gc->triggerD;   break;
-					case 6:  val = gc->nextTime;   break;
-					case 7:  val = gc->payTime;    break;
-					case 8:  val = gc->createTime; break;
-					case 9:  val = gc->visibleC;   break;
-					case 10: val = gc->visibleG0;  break;
-					case 11: val = gc->visibleG1;  break;
-					case 12: val = gc->visibleG2;  break;
-					case 13: val = gc->visibleG3;  break;
-					case 14: val = gc->visibleG4;  break;
-					case 15: val = gc->visibleG5;  break;
-					case 16: val = gc->visibleG6;  break;
-					case 17: val = gc->visibleG7;  break;
+					case 1:  val = gc->guild_id;    break;
+					case 2:  val = gc->economy;     break;
+					case 3:  val = gc->defense;     break;
+					case 4:  val = gc->triggerE;    break;
+					case 5:  val = gc->triggerD;    break;
+					case 6:  val = gc->nextTime;    break;
+					case 7:  val = gc->payTime;     break;
+					case 8:  val = gc->createTime;  break;
+					case 9:  val = gc->visibleC;    break;
+					case 10: val = gc->guardian[0].visible; break;
+					case 11: val = gc->guardian[1].visible; break;
+					case 12: val = gc->guardian[2].visible; break;
+					case 13: val = gc->guardian[3].visible; break;
+					case 14: val = gc->guardian[4].visible; break;
+					case 15: val = gc->guardian[5].visible; break;
+					case 16: val = gc->guardian[6].visible; break;
+					case 17: val = gc->guardian[7].visible; break;
 				}
 				break;
 			}
@@ -8703,23 +8717,23 @@ int buildin_setcastledata(struct script_state *st)
 	for(i=0; i<MAX_GUILDCASTLE; i++) {
 		if((gc = guild_castle_search(i)) != NULL && strcmp(mapname,gc->map_name) == 0) {
 			switch(idx) {
-				case 1:  gc->guild_id   = value; break;
-				case 2:  gc->economy    = value; break;
-				case 3:  gc->defense    = value; break;
-				case 4:  gc->triggerE   = value; break;
-				case 5:  gc->triggerD   = value; break;
-				case 6:  gc->nextTime   = value; break;
-				case 7:  gc->payTime    = value; break;
-				case 8:  gc->createTime = value; break;
-				case 9:  gc->visibleC   = value; break;
-				case 10: gc->visibleG0  = value; break;
-				case 11: gc->visibleG1  = value; break;
-				case 12: gc->visibleG2  = value; break;
-				case 13: gc->visibleG3  = value; break;
-				case 14: gc->visibleG4  = value; break;
-				case 15: gc->visibleG5  = value; break;
-				case 16: gc->visibleG6  = value; break;
-				case 17: gc->visibleG7  = value; break;
+				case 1:  gc->guild_id    = value; break;
+				case 2:  gc->economy     = value; break;
+				case 3:  gc->defense     = value; break;
+				case 4:  gc->triggerE    = value; break;
+				case 5:  gc->triggerD    = value; break;
+				case 6:  gc->nextTime    = value; break;
+				case 7:  gc->payTime     = value; break;
+				case 8:  gc->createTime  = value; break;
+				case 9:  gc->visibleC    = value; break;
+				case 10: gc->guardian[0].visible = value; break;
+				case 11: gc->guardian[1].visible = value; break;
+				case 12: gc->guardian[2].visible = value; break;
+				case 13: gc->guardian[3].visible = value; break;
+				case 14: gc->guardian[4].visible = value; break;
+				case 15: gc->guardian[5].visible = value; break;
+				case 16: gc->guardian[6].visible = value; break;
+				case 17: gc->guardian[7].visible = value; break;
 				default: return 0;
 			}
 			guild_castledatasave(gc->castle_id,idx,value);
@@ -11504,6 +11518,195 @@ int buildin_pushpc(struct script_state *st)
 	count = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	skill_blown(bl,&sd->bl,count|(dir<<20)|SAB_NODAMAGE|SAB_NOPATHSTOP);
+
+	return 0;
+}
+
+/*==========================================
+ * 指定セルのタイプを変更
+ *------------------------------------------
+ */
+int buildin_setcell(struct script_state *st)
+{
+	int m,x,y,type;
+	char *str;
+
+	str  = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x    = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y    = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	type = conv_num(st,& (st->stack->stack_data[st->start+5]));
+
+	m = script_mapname2mapid(st,str);
+	if(m < 0) {
+		return 0;
+	}
+	map_setcell(m,x,y,type);
+	clif_changemapcell(m,x,y,type,1);
+
+	return 0;
+}
+
+/*==========================================
+ * 指定範囲セルのタイプを変更
+ *------------------------------------------
+ */
+int buildin_areasetcell(struct script_state *st)
+{
+	int m,x,y,x0,y0,x1,y1,type;
+	char *str;
+
+	str  = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x0   = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y0   = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	x1   = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	y1   = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	type = conv_num(st,& (st->stack->stack_data[st->start+7]));
+
+	m = script_mapname2mapid(st,str);
+	if(m < 0) {
+		return 0;
+	}
+
+	for(y = y0; y <= y1; y++) {
+		for(x = x0; x <= x1; x++) {
+			map_setcell(m,x,y,type);
+			clif_changemapcell(m,x,y,type,1);
+		}
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * ガーディアン召喚
+ *------------------------------------------
+ */
+int buildin_callguardian(struct script_state *st)
+{
+	int mob_id,amount,m,x,y,index=0,id;
+	char *str,*mapname,*mobname;
+	const char *event = "";
+	struct mob_data *md;
+
+	mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x       = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y       = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	str     = conv_str(st,& (st->stack->stack_data[st->start+5]));
+	mobname = conv_str(st,& (st->stack->stack_data[st->start+6]));
+
+	if((mob_id = atoi(mobname)) == 0)
+		mob_id = mobdb_searchname(mobname);
+	if(mob_id >= 0 && !mobdb_checkid(mob_id))
+		return 0;
+
+	amount = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	if(st->end > st->start+8) {
+		event = conv_str(st,& (st->stack->stack_data[st->start+8]));
+	}
+	if(st->end > st->start+9) {	// ガーディアンindex
+		index = conv_num(st,& (st->stack->stack_data[st->start+9]));
+	}
+
+	if((m = script_mapname2mapid(st,mapname)) < 0)
+		return 0;
+
+	id = mob_once_spawn(map_id2sd(st->rid),m,x,y,str,mob_id,amount,event);
+
+	if((md = map_id2md(id)) != NULL)
+	{
+		struct guild_castle *gc = guild_mapname2gc(mapname);
+
+		md->guardup_lv = 0;
+		if(gc) {
+			struct guild *g;
+
+			// 砦情報に書き込み
+			if(index > 0 && index <= MAX_GUILDGUARDIAN) {
+				gc->guardian[index-1].visible = 1;
+				gc->guardian[index-1].id = id;
+				guild_castledatasave(gc->castle_id,index+9,1);
+			}
+			if((g = guild_search(gc->guild_id)) != NULL) {
+				md->guild_id   = g->guild_id;
+				md->guardup_lv = guild_checkskill(g,GD_GUARDUP);
+			}
+		}
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * ガーディアンの情報取得
+ *------------------------------------------
+ */
+int buildin_getguardianinfo(struct script_state *st)
+{
+	struct guild_castle *gc;
+	int val = 0;
+	char *str = NULL;
+	char *mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	int index     = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int type      = conv_num(st,& (st->stack->stack_data[st->start+4]));
+
+	if(strcmp(mapname,"this") == 0) {
+		int m = script_mapname2mapid(st,mapname);
+		if(m < 0) {
+			if(type == 2)
+				push_str(st->stack,C_CONSTSTR,"");
+			else
+				push_val(st->stack,C_INT,0);
+			return 0;
+		}
+		mapname = map[m].name;
+	}
+
+	if((gc = guild_mapname2gc(mapname)) != NULL) {
+		struct mob_data *md = map_id2md(gc->guardian[index-1].id);
+		if(md != NULL) {
+			switch(type) {
+			case 0:		// ID
+				val = md->bl.id;
+				break;
+			case 1:		// Class
+				val = md->class_;
+				break;
+			case 2:		// Name
+				str = (char*)aStrdup(md->name);
+				break;
+			case 3:		// HP
+				val = status_get_hp(&md->bl);
+				break;
+			case 4:		// MaxHP
+				val = status_get_max_hp(&md->bl);
+				break;
+			default:
+				val = 0;
+				break;
+			}
+		}
+	}
+
+	if(str)
+		push_str(st->stack,C_STR,str);
+	else
+		push_val(st->stack,C_INT,val);
+
+	return 0;
+}
+
+/*==========================================
+ * IDからモンスター名
+ *------------------------------------------
+ */
+int buildin_getmobname(struct script_state *st)
+{
+	int mob_class = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	if(!mobdb_checkid(mob_class))
+		push_str(st->stack,C_CONSTSTR,"");
+	else
+		push_str(st->stack,C_STR,(unsigned char *)aStrdup(mob_db[mob_class].jname));
 
 	return 0;
 }

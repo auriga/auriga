@@ -2018,23 +2018,23 @@ void guild_castledataloadack(int castle_id, int idx, int value)
 	}
 	code = castle_id | (idx << 16);
 	switch(idx) {
-		case  1: gc->guild_id   = value; break;
-		case  2: gc->economy    = value; break;
-		case  3: gc->defense    = value; break;
-		case  4: gc->triggerE   = value; break;
-		case  5: gc->triggerD   = value; break;
-		case  6: gc->nextTime   = value; break;
-		case  7: gc->payTime    = value; break;
-		case  8: gc->createTime = value; break;
-		case  9: gc->visibleC   = value; break;
-		case 10: gc->visibleG0  = value; break;
-		case 11: gc->visibleG1  = value; break;
-		case 12: gc->visibleG2  = value; break;
-		case 13: gc->visibleG3  = value; break;
-		case 14: gc->visibleG4  = value; break;
-		case 15: gc->visibleG5  = value; break;
-		case 16: gc->visibleG6  = value; break;
-		case 17: gc->visibleG7  = value; break;
+		case  1: gc->guild_id            = value; break;
+		case  2: gc->economy             = value; break;
+		case  3: gc->defense             = value; break;
+		case  4: gc->triggerE            = value; break;
+		case  5: gc->triggerD            = value; break;
+		case  6: gc->nextTime            = value; break;
+		case  7: gc->payTime             = value; break;
+		case  8: gc->createTime          = value; break;
+		case  9: gc->visibleC            = value; break;
+		case 10: gc->guardian[0].visible = value; break;
+		case 11: gc->guardian[1].visible = value; break;
+		case 12: gc->guardian[2].visible = value; break;
+		case 13: gc->guardian[3].visible = value; break;
+		case 14: gc->guardian[4].visible = value; break;
+		case 15: gc->guardian[5].visible = value; break;
+		case 16: gc->guardian[6].visible = value; break;
+		case 17: gc->guardian[7].visible = value; break;
 		default:
 			printf("guild_castledataloadack ERROR!! (Not found index=%d)\n", idx);
 			return;
@@ -2075,23 +2075,23 @@ void guild_castledatasaveack(int castle_id, int idx, int value)
 		return;
 	}
 	switch(idx) {
-		case  1: gc->guild_id   = value; break;
-		case  2: gc->economy    = value; break;
-		case  3: gc->defense    = value; break;
-		case  4: gc->triggerE   = value; break;
-		case  5: gc->triggerD   = value; break;
-		case  6: gc->nextTime   = value; break;
-		case  7: gc->payTime    = value; break;
-		case  8: gc->createTime = value; break;
-		case  9: gc->visibleC   = value; break;
-		case 10: gc->visibleG0  = value; break;
-		case 11: gc->visibleG1  = value; break;
-		case 12: gc->visibleG2  = value; break;
-		case 13: gc->visibleG3  = value; break;
-		case 14: gc->visibleG4  = value; break;
-		case 15: gc->visibleG5  = value; break;
-		case 16: gc->visibleG6  = value; break;
-		case 17: gc->visibleG7  = value; break;
+		case  1: gc->guild_id    = value; break;
+		case  2: gc->economy     = value; break;
+		case  3: gc->defense     = value; break;
+		case  4: gc->triggerE    = value; break;
+		case  5: gc->triggerD    = value; break;
+		case  6: gc->nextTime    = value; break;
+		case  7: gc->payTime     = value; break;
+		case  8: gc->createTime  = value; break;
+		case  9: gc->visibleC    = value; break;
+		case 10: gc->guardian[0].visible = value; break;
+		case 11: gc->guardian[1].visible = value; break;
+		case 12: gc->guardian[2].visible = value; break;
+		case 13: gc->guardian[3].visible = value; break;
+		case 14: gc->guardian[4].visible = value; break;
+		case 15: gc->guardian[5].visible = value; break;
+		case 16: gc->guardian[6].visible = value; break;
+		case 17: gc->guardian[7].visible = value; break;
 		default:
 			printf("guild_castledatasaveack ERROR!! (Not found index=%d)\n", idx);
 			return;
@@ -2125,23 +2125,23 @@ void guild_castlealldataload(int len, struct guild_castle *gc)
 			continue;
 		}
 
-		c->guild_id   = gc->guild_id;
-		c->economy    = gc->economy;
-		c->defense    = gc->defense;
-		c->triggerE   = gc->triggerE;
-		c->triggerD   = gc->triggerD;
-		c->nextTime   = gc->nextTime;
-		c->payTime    = gc->payTime;
-		c->createTime = gc->createTime;
-		c->visibleC   = gc->visibleC;
-		c->visibleG0  = gc->visibleG0;
-		c->visibleG1  = gc->visibleG1;
-		c->visibleG2  = gc->visibleG2;
-		c->visibleG3  = gc->visibleG3;
-		c->visibleG4  = gc->visibleG4;
-		c->visibleG5  = gc->visibleG5;
-		c->visibleG6  = gc->visibleG6;
-		c->visibleG7  = gc->visibleG7;
+		c->guild_id    = gc->guild_id;
+		c->economy     = gc->economy;
+		c->defense     = gc->defense;
+		c->triggerE    = gc->triggerE;
+		c->triggerD    = gc->triggerD;
+		c->nextTime    = gc->nextTime;
+		c->payTime     = gc->payTime;
+		c->createTime  = gc->createTime;
+		c->visibleC    = gc->visibleC;
+		c->guardian[0] = gc->guardian[0];
+		c->guardian[1] = gc->guardian[1];
+		c->guardian[2] = gc->guardian[2];
+		c->guardian[3] = gc->guardian[3];
+		c->guardian[4] = gc->guardian[4];
+		c->guardian[5] = gc->guardian[5];
+		c->guardian[6] = gc->guardian[6];
+		c->guardian[7] = gc->guardian[7];
 
 		if( c->guild_id ){
 			if(i!=ev)
@@ -2283,7 +2283,7 @@ static void guild_read_castledb(void)
 	FILE *fp;
 	char line[1024];
 	int j,ln=0;
-	char *str[4],*p;
+	char *str[5],*p;
 
 	// デフォルトデータを作成
 	memset(castle_db,0,sizeof(castle_db));
@@ -2308,7 +2308,7 @@ static void guild_read_castledb(void)
 			line[max] = 0;
 
 		memset(str,0,sizeof(str));
-		for(j=0,p=line;j<4 && p;j++){
+		for(j=0,p=line;j<5 && p;j++){
 			str[j]=p;
 			p=strchr(p,',');
 			if(p) *p++=0;
@@ -2318,12 +2318,14 @@ static void guild_read_castledb(void)
 			continue;
 
 		memcpy(castle_db[id].map_name,str[1],24);
-		memcpy(castle_db[id].castle_name,str[2],24);
-		memcpy(castle_db[id].castle_event,str[3],24);
+		memcpy(castle_db[id].area_name,str[2],24);
+		memcpy(castle_db[id].castle_name,str[3],32);
+		memcpy(castle_db[id].castle_event,str[4],24);
 
 		// force \0 terminal
 		castle_db[id].map_name[23]     = '\0';
-		castle_db[id].castle_name[23]  = '\0';
+		castle_db[id].area_name[23]    = '\0';
+		castle_db[id].castle_name[31]  = '\0';
 		castle_db[id].castle_event[23] = '\0';
 		ln++;
 	}

@@ -150,3 +150,91 @@ gefg_cas05.gat	mapflag	noteleport		dummy
 gefg_cas05.gat	mapflag	nobranch		dummy
 gefg_cas05.gat	mapflag	monster_noteleport	dummy
 gefg_cas05.gat	mapflag	gvg_noparty		dummy
+
+
+//============================================================
+// ニダヴェリール 砦 - schg_cas*.gat
+//------------------------------------------------------------
+schg_cas01.gat	mapflag	nosave			SavePoint
+schg_cas01.gat	mapflag	nomemo			dummy
+schg_cas01.gat	mapflag	noteleport		dummy
+schg_cas01.gat	mapflag	nobranch		dummy
+schg_cas01.gat	mapflag	monster_noteleport	dummy
+schg_cas01.gat	mapflag	gvg_noparty		dummy
+schg_cas01.gat	mapflag	nojump			dummy
+
+schg_cas02.gat	mapflag	nosave			SavePoint
+schg_cas02.gat	mapflag	nomemo			dummy
+schg_cas02.gat	mapflag	noteleport		dummy
+schg_cas02.gat	mapflag	nobranch		dummy
+schg_cas02.gat	mapflag	monster_noteleport	dummy
+schg_cas02.gat	mapflag	gvg_noparty		dummy
+schg_cas02.gat	mapflag	nojump			dummy
+
+schg_cas03.gat	mapflag	nosave			SavePoint
+schg_cas03.gat	mapflag	nomemo			dummy
+schg_cas03.gat	mapflag	noteleport		dummy
+schg_cas03.gat	mapflag	nobranch		dummy
+schg_cas03.gat	mapflag	monster_noteleport	dummy
+schg_cas03.gat	mapflag	gvg_noparty		dummy
+schg_cas03.gat	mapflag	nojump			dummy
+
+schg_cas04.gat	mapflag	nosave			SavePoint
+schg_cas04.gat	mapflag	nomemo			dummy
+schg_cas04.gat	mapflag	noteleport		dummy
+schg_cas04.gat	mapflag	nobranch		dummy
+schg_cas04.gat	mapflag	monster_noteleport	dummy
+schg_cas04.gat	mapflag	gvg_noparty		dummy
+schg_cas04.gat	mapflag	nojump			dummy
+
+schg_cas05.gat	mapflag	nosave			SavePoint
+schg_cas05.gat	mapflag	nomemo			dummy
+schg_cas05.gat	mapflag	noteleport		dummy
+schg_cas05.gat	mapflag	nobranch		dummy
+schg_cas05.gat	mapflag	monster_noteleport	dummy
+schg_cas05.gat	mapflag	gvg_noparty		dummy
+schg_cas05.gat	mapflag	nojump			dummy
+
+
+//============================================================
+// ヴァルフレイヤ 砦 - arug_cas*.gat
+//------------------------------------------------------------
+arug_cas01.gat	mapflag	nosave			SavePoint
+arug_cas01.gat	mapflag	nomemo			dummy
+arug_cas01.gat	mapflag	noteleport		dummy
+arug_cas01.gat	mapflag	nobranch		dummy
+arug_cas01.gat	mapflag	monster_noteleport	dummy
+arug_cas01.gat	mapflag	gvg_noparty		dummy
+arug_cas01.gat	mapflag	nojump			dummy
+
+arug_cas02.gat	mapflag	nosave			SavePoint
+arug_cas02.gat	mapflag	nomemo			dummy
+arug_cas02.gat	mapflag	noteleport		dummy
+arug_cas02.gat	mapflag	nobranch		dummy
+arug_cas02.gat	mapflag	monster_noteleport	dummy
+arug_cas02.gat	mapflag	gvg_noparty		dummy
+arug_cas02.gat	mapflag	nojump			dummy
+
+arug_cas03.gat	mapflag	nosave			SavePoint
+arug_cas03.gat	mapflag	nomemo			dummy
+arug_cas03.gat	mapflag	noteleport		dummy
+arug_cas03.gat	mapflag	nobranch		dummy
+arug_cas03.gat	mapflag	monster_noteleport	dummy
+arug_cas03.gat	mapflag	gvg_noparty		dummy
+arug_cas03.gat	mapflag	nojump			dummy
+
+arug_cas04.gat	mapflag	nosave			SavePoint
+arug_cas04.gat	mapflag	nomemo			dummy
+arug_cas04.gat	mapflag	noteleport		dummy
+arug_cas04.gat	mapflag	nobranch		dummy
+arug_cas04.gat	mapflag	monster_noteleport	dummy
+arug_cas04.gat	mapflag	gvg_noparty		dummy
+arug_cas04.gat	mapflag	nojump			dummy
+
+arug_cas05.gat	mapflag	nosave			SavePoint
+arug_cas05.gat	mapflag	nomemo			dummy
+arug_cas05.gat	mapflag	noteleport		dummy
+arug_cas05.gat	mapflag	nobranch		dummy
+arug_cas05.gat	mapflag	monster_noteleport	dummy
+arug_cas05.gat	mapflag	gvg_noparty		dummy
+arug_cas05.gat	mapflag	nojump			dummy

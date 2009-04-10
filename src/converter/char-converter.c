@@ -1029,24 +1029,24 @@ static int guildcastle_fromstr(char *str,struct guild_castle *gc)
 		&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
 		&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17]) <18 )
 		return 1;
-	gc->castle_id  = tmp_int[0];
-	gc->guild_id   = tmp_int[1];
-	gc->economy    = tmp_int[2];
-	gc->defense    = tmp_int[3];
-	gc->triggerE   = tmp_int[4];
-	gc->triggerD   = tmp_int[5];
-	gc->nextTime   = tmp_int[6];
-	gc->payTime    = tmp_int[7];
-	gc->createTime = tmp_int[8];
-	gc->visibleC   = tmp_int[9];
-	gc->visibleG0  = tmp_int[10];
-	gc->visibleG1  = tmp_int[11];
-	gc->visibleG2  = tmp_int[12];
-	gc->visibleG3  = tmp_int[13];
-	gc->visibleG4  = tmp_int[14];
-	gc->visibleG5  = tmp_int[15];
-	gc->visibleG6  = tmp_int[16];
-	gc->visibleG7  = tmp_int[17];
+	gc->castle_id           = tmp_int[0];
+	gc->guild_id            = tmp_int[1];
+	gc->economy             = tmp_int[2];
+	gc->defense             = tmp_int[3];
+	gc->triggerE            = tmp_int[4];
+	gc->triggerD            = tmp_int[5];
+	gc->nextTime            = tmp_int[6];
+	gc->payTime             = tmp_int[7];
+	gc->createTime          = tmp_int[8];
+	gc->visibleC            = tmp_int[9];
+	gc->guardian[0].visible = tmp_int[10];
+	gc->guardian[1].visible = tmp_int[11];
+	gc->guardian[2].visible = tmp_int[12];
+	gc->guardian[3].visible = tmp_int[13];
+	gc->guardian[4].visible = tmp_int[14];
+	gc->guardian[5].visible = tmp_int[15];
+	gc->guardian[6].visible = tmp_int[16];
+	gc->guardian[7].visible = tmp_int[17];
 
 	return 0;
 }
@@ -1065,7 +1065,7 @@ static int guildcastle_tosql(struct guild_castle *gc)
 		"`visibleC`, `visibleG0`, `visibleG1`, `visibleG2`, `visibleG3`, `visibleG4`, `visibleG5`, `visibleG6`, `visibleG7`) "
 		"VALUES ('%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d')",
 		gc->castle_id, gc->guild_id, gc->economy, gc->defense, gc->triggerE, gc->triggerD, gc->nextTime, gc->payTime, gc->createTime,
-		gc->visibleC, gc->visibleG0, gc->visibleG1, gc->visibleG2, gc->visibleG3, gc->visibleG4, gc->visibleG5, gc->visibleG6, gc->visibleG7
+		gc->visibleC, gc->guardian[0].visible, gc->guardian[1].visible, gc->guardian[2].visible, gc->guardian[3].visible, gc->guardian[4].visible, gc->guardian[5].visible, gc->guardian[6].visible, gc->guardian[7].visible
 	);
 
 	if(mysql_query(&mysql_handle, tmp_sql) ) {

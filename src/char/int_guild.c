@@ -721,8 +721,8 @@ static int guildcastle_tostr(char *str,struct guild_castle *gc)
 	sprintf(str,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
 		gc->castle_id,gc->guild_id,gc->economy,gc->defense,gc->triggerE,
 		gc->triggerD,gc->nextTime,gc->payTime,gc->createTime,gc->visibleC,
-		gc->visibleG0,gc->visibleG1,gc->visibleG2,gc->visibleG3,gc->visibleG4,
-		gc->visibleG5,gc->visibleG6,gc->visibleG7);
+		gc->guardian[0].visible,gc->guardian[1].visible,gc->guardian[2].visible,gc->guardian[3].visible,gc->guardian[4].visible,
+		gc->guardian[5].visible,gc->guardian[6].visible,gc->guardian[7].visible);
 
 	return 0;
 }
@@ -738,24 +738,24 @@ static int guildcastle_fromstr(char *str,struct guild_castle *gc)
 		&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
 		&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17]) <18 )
 		return 1;
-	gc->castle_id  = tmp_int[0];
-	gc->guild_id   = tmp_int[1];
-	gc->economy    = tmp_int[2];
-	gc->defense    = tmp_int[3];
-	gc->triggerE   = tmp_int[4];
-	gc->triggerD   = tmp_int[5];
-	gc->nextTime   = tmp_int[6];
-	gc->payTime    = tmp_int[7];
-	gc->createTime = tmp_int[8];
-	gc->visibleC   = tmp_int[9];
-	gc->visibleG0  = tmp_int[10];
-	gc->visibleG1  = tmp_int[11];
-	gc->visibleG2  = tmp_int[12];
-	gc->visibleG3  = tmp_int[13];
-	gc->visibleG4  = tmp_int[14];
-	gc->visibleG5  = tmp_int[15];
-	gc->visibleG6  = tmp_int[16];
-	gc->visibleG7  = tmp_int[17];
+	gc->castle_id           = tmp_int[0];
+	gc->guild_id            = tmp_int[1];
+	gc->economy             = tmp_int[2];
+	gc->defense             = tmp_int[3];
+	gc->triggerE            = tmp_int[4];
+	gc->triggerD            = tmp_int[5];
+	gc->nextTime            = tmp_int[6];
+	gc->payTime             = tmp_int[7];
+	gc->createTime          = tmp_int[8];
+	gc->visibleC            = tmp_int[9];
+	gc->guardian[0].visible = tmp_int[10];
+	gc->guardian[1].visible = tmp_int[11];
+	gc->guardian[2].visible = tmp_int[12];
+	gc->guardian[3].visible = tmp_int[13];
+	gc->guardian[4].visible = tmp_int[14];
+	gc->guardian[5].visible = tmp_int[15];
+	gc->guardian[6].visible = tmp_int[16];
+	gc->guardian[7].visible = tmp_int[17];
 
 	return 0;
 }
@@ -926,23 +926,23 @@ static int guildcastle_sql_init(void)
 				continue;
 			gc = &castle_db[id];
 
-			gc->guild_id   = atoi(sql_row[1]);
-			gc->economy    = atoi(sql_row[2]);
-			gc->defense    = atoi(sql_row[3]);
-			gc->triggerE   = atoi(sql_row[4]);
-			gc->triggerD   = atoi(sql_row[5]);
-			gc->nextTime   = atoi(sql_row[6]);
-			gc->payTime    = atoi(sql_row[7]);
-			gc->createTime = atoi(sql_row[8]);
-			gc->visibleC   = atoi(sql_row[9]);
-			gc->visibleG0  = atoi(sql_row[10]);
-			gc->visibleG1  = atoi(sql_row[11]);
-			gc->visibleG2  = atoi(sql_row[12]);
-			gc->visibleG3  = atoi(sql_row[13]);
-			gc->visibleG4  = atoi(sql_row[14]);
-			gc->visibleG5  = atoi(sql_row[15]);
-			gc->visibleG6  = atoi(sql_row[16]);
-			gc->visibleG7  = atoi(sql_row[17]);
+			gc->guild_id            = atoi(sql_row[1]);
+			gc->economy             = atoi(sql_row[2]);
+			gc->defense             = atoi(sql_row[3]);
+			gc->triggerE            = atoi(sql_row[4]);
+			gc->triggerD            = atoi(sql_row[5]);
+			gc->nextTime            = atoi(sql_row[6]);
+			gc->payTime             = atoi(sql_row[7]);
+			gc->createTime          = atoi(sql_row[8]);
+			gc->visibleC            = atoi(sql_row[9]);
+			gc->guardian[0].visible = atoi(sql_row[10]);
+			gc->guardian[1].visible = atoi(sql_row[11]);
+			gc->guardian[2].visible = atoi(sql_row[12]);
+			gc->guardian[3].visible = atoi(sql_row[13]);
+			gc->guardian[4].visible = atoi(sql_row[14]);
+			gc->guardian[5].visible = atoi(sql_row[15]);
+			gc->guardian[6].visible = atoi(sql_row[16]);
+			gc->guardian[7].visible = atoi(sql_row[17]);
 		}
 		sqldbs_free_result(sql_res);
 	}
@@ -969,10 +969,10 @@ static int guildcastle_tosql(int castle_id)
 		gc->triggerE,gc->triggerD,
 		gc->nextTime,gc->payTime,
 		gc->createTime,gc->visibleC,
-		gc->visibleG0,gc->visibleG1,
-		gc->visibleG2,gc->visibleG3,
-		gc->visibleG4,gc->visibleG5,
-		gc->visibleG6,gc->visibleG7,
+		gc->guardian[0].visible,gc->guardian[1].visible,
+		gc->guardian[2].visible,gc->guardian[3].visible,
+		gc->guardian[4].visible,gc->guardian[5].visible,
+		gc->guardian[6].visible,gc->guardian[7].visible,
 		gc->castle_id
 	);
 
@@ -2363,23 +2363,23 @@ int mapif_parse_GuildCastleDataLoad(int fd,int castle_id,int idx)
 	gc = &castle_db[castle_id];
 
 	switch(idx){
-		case 1:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guild_id);   break;
-		case 2:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->economy);    break;
-		case 3:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->defense);    break;
-		case 4:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->triggerE);   break;
-		case 5:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->triggerD);   break;
-		case 6:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->nextTime);   break;
-		case 7:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->payTime);    break;
-		case 8:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->createTime); break;
-		case 9:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleC);   break;
-		case 10: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG0);  break;
-		case 11: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG1);  break;
-		case 12: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG2);  break;
-		case 13: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG3);  break;
-		case 14: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG4);  break;
-		case 15: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG5);  break;
-		case 16: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG6);  break;
-		case 17: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleG7);  break;
+		case 1:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guild_id);             break;
+		case 2:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->economy);              break;
+		case 3:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->defense);              break;
+		case 4:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->triggerE);             break;
+		case 5:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->triggerD);             break;
+		case 6:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->nextTime);             break;
+		case 7:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->payTime);              break;
+		case 8:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->createTime);           break;
+		case 9:  return mapif_guild_castle_dataload(gc->castle_id,idx,gc->visibleC);             break;
+		case 10: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guardian[0].visible);  break;
+		case 11: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guardian[1].visible);  break;
+		case 12: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guardian[2].visible);  break;
+		case 13: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guardian[3].visible);  break;
+		case 14: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guardian[4].visible);  break;
+		case 15: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guardian[5].visible);  break;
+		case 16: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guardian[6].visible);  break;
+		case 17: return mapif_guild_castle_dataload(gc->castle_id,idx,gc->guardian[7].visible);  break;
 		default:
 			printf("mapif_parse_GuildCastleDataLoad ERROR!! (Not found index=%d)\n", idx);
 			break;
@@ -2406,22 +2406,22 @@ int mapif_parse_GuildCastleDataSave(int fd,int castle_id,int idx,int value)
 			}
 			gc->guild_id = value;
 			break;
-		case 2:  gc->economy    = value; break;
-		case 3:  gc->defense    = value; break;
-		case 4:  gc->triggerE   = value; break;
-		case 5:  gc->triggerD   = value; break;
-		case 6:  gc->nextTime   = value; break;
-		case 7:  gc->payTime    = value; break;
-		case 8:  gc->createTime = value; break;
-		case 9:  gc->visibleC   = value; break;
-		case 10: gc->visibleG0  = value; break;
-		case 11: gc->visibleG1  = value; break;
-		case 12: gc->visibleG2  = value; break;
-		case 13: gc->visibleG3  = value; break;
-		case 14: gc->visibleG4  = value; break;
-		case 15: gc->visibleG5  = value; break;
-		case 16: gc->visibleG6  = value; break;
-		case 17: gc->visibleG7  = value; break;
+		case 2:  gc->economy             = value; break;
+		case 3:  gc->defense             = value; break;
+		case 4:  gc->triggerE            = value; break;
+		case 5:  gc->triggerD            = value; break;
+		case 6:  gc->nextTime            = value; break;
+		case 7:  gc->payTime             = value; break;
+		case 8:  gc->createTime          = value; break;
+		case 9:  gc->visibleC            = value; break;
+		case 10: gc->guardian[0].visible = value; break;
+		case 11: gc->guardian[1].visible = value; break;
+		case 12: gc->guardian[2].visible = value; break;
+		case 13: gc->guardian[3].visible = value; break;
+		case 14: gc->guardian[4].visible = value; break;
+		case 15: gc->guardian[5].visible = value; break;
+		case 16: gc->guardian[6].visible = value; break;
+		case 17: gc->guardian[7].visible = value; break;
 		default:
 			printf("mapif_parse_GuildCastleDataSave ERROR!! (Not found index=%d)\n", idx);
 			return 0;

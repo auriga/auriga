@@ -255,7 +255,7 @@ int mob_once_spawn_area(struct map_session_data *sd,int m,
 	for(i=0; i<amount; i++) {
 		int j = 0;
 		do {
-			if(x0 <= 0 && y0 <= 0) {	// x0,y0が0以下のとき位置ランダム湧き
+			if(x0 <= 0 && y0 <= 0 && x1 <= 0 && y1 <= 0) {	// x0,y0,x1,y1が0以下のとき位置ランダム湧き
 				x = atn_rand()%(map[m].xs-2)+1;
 				y = atn_rand()%(map[m].ys-2)+1;
 			} else {
@@ -447,19 +447,18 @@ static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 	if(md->bl.m != bl-> m)	// 違うマップ
 		return 0;
 
-	if(md->class_ == 1285 || md->class_ == 1286 || md->class_ == 1287) {
+	if(md->guild_id) {
 		// ガーディアンはギルド城に属するPCには攻撃しない
 		if(bl->type == BL_PC) {
 			struct map_session_data *sd = (struct map_session_data *)bl;
-			struct guild_castle     *gc = guild_mapname2gc(map[bl->m].name);
 			struct guild *g;
 
-			if(!sd || !gc)
+			if(!sd)
 				return 0;
 			if(!map[bl->m].flag.gvg)
 				return 0;
 			g = guild_search(sd->status.guild_id);
-			if(g && (g->guild_id == gc->guild_id || guild_check_alliance(gc->guild_id, g->guild_id, 0)))
+			if(g && (g->guild_id == md->guild_id || guild_check_alliance(md->guild_id, g->guild_id, 0)))
 				return 0;
 		}
 	} else if(md->master_id > 0 && md->state.special_mob_ai && map[bl->m].flag.gvg) {
@@ -2081,6 +2080,20 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	}
 
 	if(!md->state.rebirth) {
+		// ガーディアンだったらアジト情報から削除
+		if(md->guild_id) {
+			struct guild_castle *gc = guild_mapname2gc(map[md->bl.m].name);
+			if(gc) {
+				for(i = 0; i < MAX_GUILDGUARDIAN; i++) {
+					if(gc->guardian[i].id == md->bl.id) {
+						gc->guardian[i].id = 0;
+						gc->guardian[i].visible = 0;
+						guild_castledatasave(gc->castle_id,i+10,0);
+					}
+				}
+			}
+		}
+
 		// <Agit> NPC Event [OnAgitBreak]
 		if(md->npc_event[0]) {
 			int len = (int)strlen(md->npc_event) - 13;
@@ -3529,7 +3542,7 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 	if(bl->type != BL_MOB || (md = (struct mob_data *)bl) == NULL)
 		return 1;
 
-	if(md->class_ == 1288 || md->class_ == 1287 || md->class_ == 1286 || md->class_ == 1285)
+	if(md->guild_id)
 	{
 		struct guild_castle *gc = guild_mapname2gc(map[sd->bl.m].name);
 		struct guild *g = guild_search(sd->status.guild_id);
@@ -3538,11 +3551,11 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 			return 0;	// ギルド未加入ならダメージ無し
 		if(gc != NULL && !map[sd->bl.m].flag.gvg)
 			return 0;	// 砦内でGvじゃないときはダメージなし
-		if(g && gc != NULL && g->guild_id == gc->guild_id)
+		if(g && g->guild_id == md->guild_id)
 			return 0;	// 自占領ギルドのエンペならダメージ無し
 		if(g && guild_checkskill(g,GD_APPROVAL) <= 0 && md->class_ == 1288)
 			return 0;	// 正規ギルド承認がないとダメージ無し
-		if(g && gc && guild_check_alliance(gc->guild_id, g->guild_id, 0) == 1)
+		if(g && guild_check_alliance(md->guild_id, g->guild_id, 0) == 1)
 			return 0;	// 同盟ならダメージ無し
 	}
 

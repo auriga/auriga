@@ -48,8 +48,9 @@
 #define MAX_GUILDPOSITION 20
 #define MAX_GUILDEXPLUSION 32
 #define MAX_GUILDALLIANCE 16
-#define MAX_GUILDCASTLE 20
+#define MAX_GUILDCASTLE 30
 #define MAX_GUILDLEVEL 50
+#define MAX_GUILDGUARDIAN 8
 #define MAX_FRIEND 20
 #define MAX_STATUSCHANGE 390
 #define MAX_PORTAL_MEMO 3
@@ -347,7 +348,8 @@ struct guild {
 struct guild_castle {
 	int castle_id;
 	char map_name[24];
-	char castle_name[24];
+	char area_name[24];
+	char castle_name[32];
 	char castle_event[24];
 	int guild_id;
 	int economy;
@@ -358,14 +360,10 @@ struct guild_castle {
 	int payTime;
 	int createTime;
 	int visibleC;
-	int visibleG0;
-	int visibleG1;
-	int visibleG2;
-	int visibleG3;
-	int visibleG4;
-	int visibleG5;
-	int visibleG6;
-	int visibleG7;
+	struct {
+		int visible;
+		int id;
+	} guardian[MAX_GUILDGUARDIAN];
 };
 struct square {
 	int val1[5];

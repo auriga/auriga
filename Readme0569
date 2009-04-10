@@ -1,4 +1,65 @@
 ----------------------------------------
+//0603 [2009/04/11] by Blaze
+
+・攻城戦スクリプトの改正
+	（npc_gvg_global.txt, npc_gvg_aldeg0*.txt, npc_gvg_gefg0*.txt,
+		npc_gvg_payg0*.txt, npc_gvg_prtg0*.txt）
+	※攻城戦の開始時間/終了時間の設定はdb/const.txtから
+	　script/npc/gvg/npc_gvg_global.txtに変更しました
+	-> マップ単位でファイルを区分
+	-> ガーディアンのHP表示実装
+	-> 執事メニューのアジト放棄は廃止
+	-> マスタールームに入場制限を追加
+	-> ギルドスキル「永久的な発展」の効果を実装
+	-> 攻城戦開始と終了時にアナウンスを表示するように修正
+
+・新攻城戦NPC実装
+	（npc_gvg_schg0*.txt, npc_gvg_arug0*.txt）
+
+・スクリプト命令/関数に以下を追加
+	（script.c）
+	-> setcell : 指定したセルの種類を変更します
+	-> areasetcell : setcellの範囲版
+	-> callguardian : 砦モンスター召喚
+	-> getguardianinfo : ガーディアン情報の取得
+	-> getmobname : Classからモンスター名を取得
+
+・砦の固有名をDBで保持し、スクリプト関数「getcastle」で取得できるように変更
+	（castle_db.txt, guild.c, script.c）
+
+・「areamonster」など、範囲指定モンスター出現でランダム出現する条件を変更
+	（mob.c）
+	変更前 : 始点x,yが0のときにランダム出現
+	変更後 : 始点x,yと終点x,yが全て0のときにランダム出現
+
+・guild_castle構造体にガーディアンのIDを保持するように変更
+	（int_guild.c, guild.c, mmo.h, char-converter.c）
+
+・攻城戦モンスターの特別処理をclassで判別してるのをguild_idで判別するように修正
+	（mob.c）
+
+・砦の防衛値に比例してガーディアン/エンペリウムのMaxHPが上昇するように修正
+	（status.c）
+
+・mapflagにテコンキッドスキル「ノピティギ」を制限する「nojump」を追加
+	（map.h, skill.c, script.c, npc.c）
+
+・新攻城戦マップのmapflag定義を追加
+	（mapflag_gvg.txt）
+
+・新攻城戦マップのwarp定義を追加
+	（npc_warp_vs.txt）
+
+・map_auriga.confに定義追加
+	（map_auriga.conf）
+
+・カプラ職員NPCの転送サービス選択肢を追加
+	（npc_misc_kafra.txt）
+
+・mob_db.txt更新
+	（mob_db.txt）
+
+----------------------------------------
 //0602 [2009/03/28] by Blaze
 
 ・モスコビアの「クジラ島をたずねて」クエストNPC実装

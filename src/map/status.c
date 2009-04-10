@@ -2403,16 +2403,20 @@ int status_get_max_hp(struct block_list *bl)
 		struct status_change *sc = status_get_sc(bl);
 
 		if(bl->type == BL_MOB && ((struct mob_data*)bl)) {
-			max_hp = mob_db[((struct mob_data*)bl)->class_].max_hp;
+			atn_bignumber hp = mob_db[((struct mob_data*)bl)->class_].max_hp;
+			struct guild_castle *gc = guild_mapname2gc(map[bl->m].name);
 			if(mob_db[((struct mob_data*)bl)->class_].mexp > 0) {
 				if(battle_config.mvp_hp_rate != 100) {
-					atn_bignumber hp = (atn_bignumber)max_hp * battle_config.mvp_hp_rate / 100;
-					max_hp = (hp > 0x7FFFFFFF ? 0x7FFFFFFF : (int)hp);
+					hp = (atn_bignumber)hp * battle_config.mvp_hp_rate / 100;
 				}
 			} else {
 				if(battle_config.monster_hp_rate != 100)
-					max_hp = (max_hp * battle_config.monster_hp_rate)/100;
+					hp = (atn_bignumber)hp * battle_config.monster_hp_rate / 100;
 			}
+			if(gc && ((struct mob_data*)bl)->guild_id == gc->guild_id) {
+				hp += gc->defense * 1000;
+			}
+			max_hp = (hp > 0x7FFFFFFF ? 0x7FFFFFFF : (int)hp);
 		} else if(bl->type == BL_PET && ((struct pet_data*)bl)) {
 			max_hp = mob_db[((struct pet_data*)bl)->class_].max_hp;
 			if(mob_db[((struct pet_data*)bl)->class_].mexp > 0) {

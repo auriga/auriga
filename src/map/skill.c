@@ -3670,7 +3670,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int y = src->y + diry[dir]*skilllv*2;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			// 着地地点とその一歩先が移動可能セルでPC,MOB,NPCいずれも居ないなら
-			if( !map[src->m].flag.pvp && (!map[src->m].flag.noteleport || map[src->m].flag.gvg) &&
+			if( !map[src->m].flag.pvp && (!map[src->m].flag.noteleport || map[src->m].flag.gvg) && !map[src->m].flag.nojump &&
 			    map_getcell(src->m,x,y,CELL_CHKPASS) && map_getcell(src->m,x+dirx[dir],y+diry[dir],CELL_CHKPASS) &&
 			    !map_count_oncell(src->m,x,y,BL_PC|BL_MOB|BL_NPC)
 			) {

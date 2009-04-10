@@ -295,6 +295,8 @@ AurigaNPCScript
 				死亡時にセーブポイントへ強制送還されます。
 			nocommand<tab><lv>
 				GMレベルが<lv>未満のプレイヤーに対してコマンドの使用を無効にします。
+			nojump<tab>dummy
+				スキル「ノピティギ」の使用を禁止します。
 
 	注釈１）
 		NPCの名前は識別子によって管理されています（表示名ではありません）。
@@ -1209,7 +1211,7 @@ AurigaNPCScript
 			event			文字列、省略可
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内に<mobname>を持つ<mobid>に指定されたID、もしくは名前を持つモンスターを<num>体出現させます。
-			<gatname>がthisの場合命令を実行したNPCのMAP、<x0><y0>が共に0以下の場合ランダム座標、
+			<gatname>がthisの場合命令を実行したNPCのMAP、<x0><y0><x1><y1>が共に0以下の場合ランダム座標、
 			<mobname>が--en--の場合英語名、--ja--の場合日本語名、<mobid>が-1の場合ランダム。
 			そのモンスターを倒したとき<event>を開始します。
 
@@ -2086,6 +2088,50 @@ AurigaNPCScript
 				６　２
 				７８１
 
+		setcell命令
+			setcell <gatname>,<x>,<y>,<type>;
+
+			gatname		文字列
+			x,y		数値
+			type		数値
+
+			<gatname>で指定したMAPの座標<x>,<y>のセルの属性を<type>に変更します。
+			type=0		通行可セル
+			type=1		壁型セル
+			type=3		水場セル
+			type=5		障害物セル
+
+		areasetcell命令
+			areasetcell <gatname>,<x0>,<y0>,<x1>,<y1>,<type>;
+
+			gatname		文字列
+			x0,y0,x1,y1	数値
+			type		数値
+
+			<gatname>で指定したMAPの座標<x0>,<y0>から<x1>,<y1>の範囲のセルの属性を<type>に変更します。
+			type=0		通行可セル
+			type=1		壁型セル
+			type=3		水場セル
+			type=5		障害物セル
+
+		callguardian命令
+			callguardian <gatname>,<x>,<y>,<mobname>,<mobid>,<num>[,<event>[,<index>]];
+
+			gatname		文字列
+			x,y		数値
+			mobname		文字列
+			num		数値
+			event		文字列、省略可
+			index		数値、省略可
+
+			<gatname>の座標<x>,<y>に<mobname>を持つ<mobid>に指定されたID、もしくは名前を持つモンスターを<num>体出現させます。
+			<gatname>が砦データを保持していた場合、その砦を占拠しているギルドや同盟ギルドに攻撃をしません。
+			<gatname>がthisの場合命令を実行したNPCのMAP、
+			<x><y>が-1の場合、スクリプトを実行したプレイヤーの座標、
+			<mobname>が--en--の場合英語名、--ja--の場合日本語名、<mobid>が-1の場合ランダム。
+			そのモンスターを倒したとき<event>を開始します。
+			<index>を指定すると、砦データのガーディアン1〜8の領域に情報を書き込みます。
+
 	＊関数
 		rand関数
 			rand(<n1>[,<n2>])
@@ -2707,11 +2753,14 @@ AurigaNPCScript
 			攻城戦が開始されている場合は1を、そうでない場合は0を返します。
 
 		getcastlename関数
-			getcastlename(<map>)
+			getcastlename(<map>[,<type>])
 
 			<map>	マップ名を指定します
+			<type>	出力する砦名の種類を指定します
 
-			指定したマップに存在する城の名前を返します。
+			指定したマップに存在する砦の名前を返します。
+			<type>が0もしくは省略時は砦の英名を、
+			1以上の場合は砦の固有名をそれぞれcastle_db.txtから読み込みます。
 			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 
 		getcastledata関数
@@ -3035,6 +3084,31 @@ AurigaNPCScript
 			<guild_id>で指定されたIDのギルドの接続人数を返します。
 			ギルドIDを省略した場合、自分のギルドを参照します。
 			ギルドに未所属の場合やギルドIDが無効の場合、0を返します。
+
+		getguardianinfo 関数
+			getguardianinfo(<gatname>,<index>,<type>)
+
+			<gatname>	文字列
+			<index>		数値
+			<type>		数値
+
+			<gatname>の砦に存在するガーディアンの情報を返します。
+			番号<index>のガーディアンが見つからない場合は0を、
+			存在する場合は<type>で指定した情報を返します。
+			type=0		ID
+			type=1		Class
+			type=2		Name
+			type=3		HP
+			type=4		MaxHP
+
+		getmobname 関数
+			getmobname(<mobid>)
+
+			<mobid>		数値
+
+			<mobid>に指定されたIDを持つモンスターのjnameを文字列で返します。
+			見つからない場合は ""（空文字）を返します。
+			なお、モンスター名はmob_db.txtを参照します
 
 
 	＊csv アクセス命令 / 関数
