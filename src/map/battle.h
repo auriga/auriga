@@ -541,6 +541,7 @@ extern struct Battle_Config {
 	int guild_storage_sort;
 	int allow_es_magic_all;
 	int trap_is_invisible;
+	int anklesnare_no_knockbacking;
 	int gm_perfect_hide;
 	int pcview_mob_clear_type;
 	int party_item_share_type;

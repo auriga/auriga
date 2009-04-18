@@ -11080,7 +11080,7 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 	     !skill_unit_istrap(group->unit_id) &&
 	     group->unit_id != UNT_WARM )
 		return 0;
-	if( group->unit_id == UNT_ANKLESNARE && group->val2 > 0 )	// 補足中のアンクルは移動不可
+	if( group->unit_id == UNT_ANKLESNARE && (battle_config.anklesnare_no_knockbacking || group->val2 > 0) )	// 補足中のアンクルは移動不可
 		return 0;
 
 	// 移動フラグ

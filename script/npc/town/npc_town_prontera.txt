@@ -3041,7 +3041,7 @@ prt_church.gat,185,106,3	script	バムプ神父	60,{
 
 prt_church.gat,184,110,3	script	ビスカス神父#prt	60,{
 	switch(PRT_2QUE) {
-	case 13:
+	case 35:
 		mes "[ビスカス神父]";
 		mes "バムプ神父様があのように";
 		mes "慌てるのは初めて見た。";

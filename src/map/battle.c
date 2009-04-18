@@ -1188,12 +1188,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	/* ４．右手・左手判定 */
 	calc_flag.rh = 1;		// 基本は右手のみ
 	if(src_sd && skill_num == 0) {	// スキル攻撃は常に右手を参照
-		if(src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 > WT_FIST) {	// 左手のみ武器装備
-			calc_flag.rh = 0;
-			calc_flag.lh = 1;
-		} else if(src_sd->status.weapon > WT_HUUMA || src_sd->status.weapon == WT_KATAR) {	// 二刀流
-			calc_flag.lh = 1;
-		}
+		if((src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 > WT_FIST) || (src_sd->status.weapon > WT_HUUMA || src_sd->status.weapon == WT_KATAR))
+			calc_flag.lh = 1;	// 左手も計算
 	}
 
 	/* ５．連撃判定 */
@@ -3179,7 +3175,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		if(bl == target) {
 			if(bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC)
 				mgd.damage = 0;		// MOB,HOM,MERCが使う場合は反動無し
-		} else {
+			else
 			 mgd.damage /= 2;	// 反動は半分
 		}
 	}
@@ -5108,6 +5104,7 @@ int battle_config_read(const char *cfgName)
 		{ "guild_storage_sort",                 &battle_config.guild_storage_sort,                 1        },
 		{ "allow_es_magic_all",                 &battle_config.allow_es_magic_all,                 0        },
 		{ "trap_is_invisible",                  &battle_config.trap_is_invisible,                  0        },
+		{ "anklesnare_no_knockbacking",         &battle_config.anklesnare_no_knockbacking,         1        },
 		{ "gm_perfect_hide",                    &battle_config.gm_perfect_hide,                    0        },
 		{ "pcview_mob_clear_type",              &battle_config.pcview_mob_clear_type,              1        },
 		{ "party_item_share_type",              &battle_config.party_item_share_type,              1        },
