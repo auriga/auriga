@@ -195,7 +195,7 @@
 230,SC_RUN,0,1,0			// タイリギ
 231,SC_SPURT,0,1,0			// タイリギスパート状態
 232,SC_TKCOMBO,0,1,0			// テコンコンボ
-233,SC_DODGE,1,0,0			// 落法
+233,SC_DODGE,0,0,0			// 落法
 234,SC_HERMODE,0,1,0			// ヘルモードの杖
 235,SC_TRIPLEATTACK_RATE_UP,0,1,0	// 三段発動率アップ
 236,SC_COUNTER_RATE_UP,0,1,0		// アプチャオルリギ発動率アップ

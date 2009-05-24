@@ -2257,7 +2257,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(calc_flag.rh && !calc_flag.idef) {
 					if(ignored_rate > 0) {
 						int t_def1_fix   = t_def1 * ignored_rate / 100;
-						int t_def2_fix   = (t_def2*8/10) * ignored_rate / 100;
+						int t_def2_fix   = t_def2 * ignored_rate / 100;
 						int vitbonus_fix = vitbonusmax * ignored_rate / 100;
 
 						if(battle_config.player_defense_type) {
@@ -2272,7 +2272,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(calc_flag.lh && !calc_flag.idef_) {
 					if(ignored_rate_ > 0) {
 						int t_def1_fix   = t_def1 * ignored_rate_ / 100;
-						int t_def2_fix   = (t_def2*8/10) * ignored_rate_ / 100;
+						int t_def2_fix   = t_def2 * ignored_rate_ / 100;
 						int vitbonus_fix = vitbonusmax * ignored_rate_ / 100;
 
 						if(battle_config.player_defense_type) {
@@ -3770,8 +3770,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	if(unit_isdead(src) || unit_isdead(dsrc) || unit_isdead(bl))	// すでに死んでいたら何もしない
 		return 0;
 
-	if(ssc) {		// 自分が強制移動もしくは魅惑のウィンク中なら何もしない
-		if(ssc->data[SC_FORCEWALKING].timer != -1 || ssc->data[SC_WINKCHARM].timer != -1)
+	if(ssc) {		// 自分が強制移動、魅惑のウィンク中、スタン、石化、凍結、睡眠なら何もしない
+		if(ssc->data[SC_FORCEWALKING].timer != -1 || ssc->data[SC_WINKCHARM].timer != -1 || ssc->opt1 > 0)
 			return 0;
 	}
 	if(sc) {
