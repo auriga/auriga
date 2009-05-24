@@ -107,6 +107,10 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 		return 1;
 	//if(sd->areanpc_id == nd->bl.id)
 	//	return 1;
+	if(!nd->flag&3) {
+		sd->areanpc_id=0;
+		return 1;
+	}
 
 	sd->areanpc_id = nd->bl.id;
 	sprintf(name, "%s::OnTouch", nd->exname);
@@ -137,7 +141,7 @@ int npc_enable(const char *name,int flag)
 		nd->flag |= 1;
 		clif_clearchar(&nd->bl,0);
 	}
-	if (flag&3 && (nd->u.scr.xs > 0 || nd->u.scr.ys >0)) {
+	if (nd->u.scr.xs > 0 || nd->u.scr.ys >0) {
 		map_foreachinarea(npc_enable_sub,
 			nd->bl.m,nd->bl.x-nd->u.scr.xs,nd->bl.y-nd->u.scr.ys,nd->bl.x+nd->u.scr.xs,nd->bl.y+nd->u.scr.ys,
 			BL_PC,nd);

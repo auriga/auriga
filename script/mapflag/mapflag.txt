@@ -215,6 +215,7 @@ in_rogue.gat	mapflag	noteleport	dummy
 in_rogue.gat	mapflag	nobranch	dummy
 in_rogue.gat	mapflag	nopenalty	dummy
 in_rogue.gat	mapflag	nosave	SavePoint
+in_rogue.gat	mapflag	nodrop	dummy
 in_sphinx1.gat	mapflag	nomemo	dummy
 in_sphinx2.gat	mapflag	nomemo	dummy
 in_sphinx3.gat	mapflag	nomemo	dummy
