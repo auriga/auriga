@@ -215,7 +215,7 @@ function	script	AgitTreasure	{
 //------------------------------------------------------------
 function	script	AgitEmblemFlag	{
 	set '@gid,getcastledata(getarg(1),1);
-	if(getcharid(2) == '@gid) {
+	if(getcharid(2) > 0 && getcharid(2) == '@gid) {
 		mes "[ 声 ]";
 		mes "勇者よ…";
 		mes "君の地に帰るか？";
@@ -223,7 +223,7 @@ function	script	AgitEmblemFlag	{
 		if(select("砦に帰る","やめる") == 1) {
 			// 移動前に再チェック
 			set '@gid,getcastledata(getarg(1),1);
-			if(getcharid(2) == '@gid)
+			if(getcharid(2) > 0 && getcharid(2) == '@gid)
 				warp getarg(1),getarg(2),getarg(3);
 		}
 		return;
