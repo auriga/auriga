@@ -215,7 +215,6 @@ in_rogue.gat	mapflag	noteleport	dummy
 in_rogue.gat	mapflag	nobranch	dummy
 in_rogue.gat	mapflag	nopenalty	dummy
 in_rogue.gat	mapflag	nosave	SavePoint
-in_rogue.gat	mapflag	nodrop	dummy
 in_sphinx1.gat	mapflag	nomemo	dummy
 in_sphinx2.gat	mapflag	nomemo	dummy
 in_sphinx3.gat	mapflag	nomemo	dummy
@@ -632,6 +631,11 @@ que_sign02.gat	mapflag	noteleport	dummy
 que_sign02.gat	mapflag	nosave	SavePoint
 que_sign02.gat	mapflag	nobranch	dummy
 que_sign02.gat	mapflag	nopenalty	dummy
+que_temsky.gat	mapflag	nomemo	dummy
+que_temsky.gat	mapflag	noteleport	dummy
+que_temsky.gat	mapflag	nosave	SavePoint
+que_temsky.gat	mapflag	nobranch	dummy
+que_temsky.gat	mapflag	nopenalty	dummy
 que_thor.gat	mapflag	nomemo	dummy
 que_thor.gat	mapflag	noteleport	dummy
 que_thor.gat	mapflag	nosave	SavePoint
@@ -767,3 +771,8 @@ yuno_pre.gat	mapflag	nomemo	dummy
 yuno_pre.gat	mapflag	noteleport	dummy
 yuno_pre.gat	mapflag	nobranch	dummy
 yuno_pre.gat	mapflag	nopenalty	dummy
+z_agit.gat	mapflag	nomemo	dummy
+z_agit.gat	mapflag	noteleport	dummy
+z_agit.gat	mapflag	nosave	SavePoint
+z_agit.gat	mapflag	nobranch	dummy
+z_agit.gat	mapflag	nopenalty	dummy

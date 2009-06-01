@@ -1088,111 +1088,111 @@ in_rogue.gat,15,185,0	script	#RG_Test01	139,8,0,{
 		end;
 	if(getnpctimer(1,"RG_Timer") == 0)	//タイマーが停止してたら始動
 		initnpctimer "RG_Timer";
-	monster "in_rogue.gat",13,188,"--ja--",1015,1;
-	monster "in_rogue.gat",14,189,"--ja--",1015,1;
-	monster "in_rogue.gat",15,190,"--ja--",1015,1;
-	monster "in_rogue.gat",16,188,"--ja--",1015,1;
-	monster "in_rogue.gat",17,189,"--ja--",1015,1;
-	monster "in_rogue.gat",18,190,"--ja--",1015,1;
+	monster "in_rogue.gat",13,188,"--ja--",1394,1;
+	monster "in_rogue.gat",14,189,"--ja--",1394,1;
+	monster "in_rogue.gat",15,190,"--ja--",1394,1;
+	monster "in_rogue.gat",16,188,"--ja--",1394,1;
+	monster "in_rogue.gat",17,189,"--ja--",1394,1;
+	monster "in_rogue.gat",18,190,"--ja--",1394,1;
 	end;
 }
 
 in_rogue.gat,15,245,0	script	#RG_Test02	139,8,0,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",13,248,"--ja--",1041,1;
-	monster "in_rogue.gat",15,248,"--ja--",1041,1;
-	monster "in_rogue.gat",17,248,"--ja--",1041,1;
+	monster "in_rogue.gat",13,248,"--ja--",1393,1;
+	monster "in_rogue.gat",15,248,"--ja--",1393,1;
+	monster "in_rogue.gat",17,248,"--ja--",1393,1;
 	end;
 }
 
 in_rogue.gat,15,333,0	script	#RG_Test03	139,8,0,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",15,336,"--ja--",1015,3;
+	monster "in_rogue.gat",15,336,"--ja--",1394,3;
 	end;
 }
 
 in_rogue.gat,35,342,0	script	#RG_Test04	139,0,8,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",38,340,"--ja--",1041,1;
-	monster "in_rogue.gat",37,342,"--ja--",1219,1;
-	monster "in_rogue.gat",39,342,"--ja--",1036,1;
-	monster "in_rogue.gat",38,344,"--ja--",1041,1;
+	monster "in_rogue.gat",38,340,"--ja--",1393,1;
+	monster "in_rogue.gat",37,342,"--ja--",1893,1;
+	monster "in_rogue.gat",39,342,"--ja--",1423,1;
+	monster "in_rogue.gat",38,344,"--ja--",1393,1;
 	end;
 }
 
 in_rogue.gat,57,306,0	script	#RG_Test05	139,4,0,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",59,301,"--ja--",1132,1;
+	monster "in_rogue.gat",59,301,"--ja--",1438,1;
 	end;
 }
 
 in_rogue.gat,96,333,0	script	#RG_Test06	139,0,4,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",92,325,"--ja--",1132,1;
+	monster "in_rogue.gat",92,325,"--ja--",1438,1;
 	end;
 }
 
 in_rogue.gat,139,313,0	script	#RG_Test07	139,4,0,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",139,309,"--ja--",1219,1;
+	monster "in_rogue.gat",139,309,"--ja--",1893,1;
 	end;
 }
 
 in_rogue.gat,135,246,0	script	#RG_Test08	139,0,4,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",140,246,"--ja--",1015,1;
-	monster "in_rogue.gat",141,246,"--ja--",1015,1;
-	monster "in_rogue.gat",142,246,"--ja--",1015,1;
-	monster "in_rogue.gat",148,246,"--ja--",1015,1;
-	monster "in_rogue.gat",149,246,"--ja--",1015,1;
-	monster "in_rogue.gat",150,246,"--ja--",1015,1;
+	monster "in_rogue.gat",140,246,"--ja--",1394,1;
+	monster "in_rogue.gat",141,246,"--ja--",1394,1;
+	monster "in_rogue.gat",142,246,"--ja--",1394,1;
+	monster "in_rogue.gat",148,246,"--ja--",1394,1;
+	monster "in_rogue.gat",149,246,"--ja--",1394,1;
+	monster "in_rogue.gat",150,246,"--ja--",1394,1;
 	end;
 }
 
 in_rogue.gat,199,218,0	script	#RG_Test09	139,0,8,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",157,218,"--ja--",1015,10;
-	monster "in_rogue.gat",157,218,"--ja--",1219,1;
-	monster "in_rogue.gat",157,218,"--ja--",1036,1;
-	monster "in_rogue.gat",157,218,"--ja--",1016,1;
+	monster "in_rogue.gat",157,218,"--ja--",1394,10;
+	monster "in_rogue.gat",157,218,"--ja--",1893,1;
+	monster "in_rogue.gat",157,218,"--ja--",1423,1;
+	monster "in_rogue.gat",157,218,"--ja--",1420,1;
 	end;
 }
 
 in_rogue.gat,86,187,0	script	#RG_Test10	139,0,8,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",88,190,"--ja--",1041,1;
-	monster "in_rogue.gat",88,187,"--ja--",1041,1;
-	monster "in_rogue.gat",88,184,"--ja--",1041,1;
+	monster "in_rogue.gat",88,190,"--ja--",1393,1;
+	monster "in_rogue.gat",88,187,"--ja--",1393,1;
+	monster "in_rogue.gat",88,184,"--ja--",1393,1;
 	end;
 }
 
 in_rogue.gat,225,187,0	script	#RG_Test11	139,0,8,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",232,191,"--ja--",1219,1;
-	monster "in_rogue.gat",233,190,"--ja--",1219,1;
-	monster "in_rogue.gat",234,189,"--ja--",1219,1;
+	monster "in_rogue.gat",232,191,"--ja--",1893,1;
+	monster "in_rogue.gat",233,190,"--ja--",1893,1;
+	monster "in_rogue.gat",234,189,"--ja--",1893,1;
 	end;
 }
 
 in_rogue.gat,252,320,0	script	#RG_Test12	139,0,8,{
 	if(CHANGE_RG != 12)
 		end;
-	monster "in_rogue.gat",252,319,"--ja--",1041,1;
-	monster "in_rogue.gat",252,321,"--ja--",1041,1;
-	monster "in_rogue.gat",252,319,"--ja--",1036,1;
-	monster "in_rogue.gat",252,321,"--ja--",1036,1;
-	monster "in_rogue.gat",257,320,"--ja--",1016,1;
-	monster "in_rogue.gat",248,320,"--ja--",1016,1;
+	monster "in_rogue.gat",252,319,"--ja--",1393,1;
+	monster "in_rogue.gat",252,321,"--ja--",1393,1;
+	monster "in_rogue.gat",252,319,"--ja--",1423,1;
+	monster "in_rogue.gat",252,321,"--ja--",1423,1;
+	monster "in_rogue.gat",257,320,"--ja--",1420,1;
+	monster "in_rogue.gat",248,320,"--ja--",1420,1;
 	end;
 }
 
