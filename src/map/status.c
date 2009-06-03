@@ -744,7 +744,8 @@ L_RECALC:
 	}
 	if(pc_checkskill(sd,BS_HILTBINDING)) {	// ヒルトバインディング
 		sd->paramb[0] += 1;
-		sd->watk += 4;
+		//本鯖未実装のためコメントアウト
+		//sd->watk += 4;
 	}
 	if((skill = pc_checkskill(sd,SA_DRAGONOLOGY)) > 0) {	// ドラゴノロジー
 		sd->paramb[3] += (skill+1)>>1;
@@ -1631,13 +1632,13 @@ L_RECALC:
 			//	sd->watk_ += sd->sc.data[SC_IMPOSITIO].val1*5;
 		}
 		if(sd->sc.data[SC_PROVOKE].timer != -1) {	// プロボック
-			sd->def2 = sd->def2*(100-6*sd->sc.data[SC_PROVOKE].val1)/100;
-			sd->base_atk = sd->base_atk*(100+2*sd->sc.data[SC_PROVOKE].val1)/100;
-			sd->watk = sd->watk*(100+2*sd->sc.data[SC_PROVOKE].val1)/100;
+			sd->def2 = sd->def2*( 100 + 5-5*sd->sc.data[SC_PROVOKE].val1 )/100;
+			sd->base_atk = sd->base_atk*(100+2+3*sd->sc.data[SC_PROVOKE].val1)/100;
+			sd->watk = sd->watk*( 100 + 2+3*sd->sc.data[SC_PROVOKE].val1 )/100;
 			idx = sd->equip_index[8];
 			// 左手には適用しない
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
-			//	sd->watk_ = sd->watk_*(100+2*sd->sc.data[SC_PROVOKE].val1)/100;
+			//	sd->watk_ = sd->watk_*(100+2+3*sd->sc.data[SC_PROVOKE].val1)/100;
 		}
 		if(sd->sc.data[SC_POISON].timer != -1)	// 毒状態
 			sd->def2 = sd->def2*75/100;
@@ -1796,18 +1797,31 @@ L_RECALC:
 			aspd_rate -= sd->sc.data[i].val2;
 
 		// HIT/FLEE変化系
-		if(sd->sc.data[SC_WHISTLE].timer != -1) {  // 口笛
-			sd->flee  += sd->flee * (sd->sc.data[SC_WHISTLE].val1+sd->sc.data[SC_WHISTLE].val2+(sd->sc.data[SC_WHISTLE].val3>>16))/100;
-			sd->flee2 += (sd->sc.data[SC_WHISTLE].val1+sd->sc.data[SC_WHISTLE].val2+(sd->sc.data[SC_WHISTLE].val3&0xffff)) * 10;
-		} else if(sd->sc.data[SC_WHISTLE_].timer != -1) {  // 口笛
-			sd->flee  += sd->flee * (sd->sc.data[SC_WHISTLE_].val1+sd->sc.data[SC_WHISTLE_].val2+(sd->sc.data[SC_WHISTLE_].val3>>16))/100;
-			sd->flee2 += (sd->sc.data[SC_WHISTLE_].val1+sd->sc.data[SC_WHISTLE_].val2+(sd->sc.data[SC_WHISTLE_].val3&0xffff)) * 10;
+		if(battle_config.whistle_perfect_flee) {	// 完全回避上昇あり
+
+			if(sd->sc.data[SC_WHISTLE].timer != -1) {  // 口笛
+				sd->flee  += sd->sc.data[SC_WHISTLE].val1+sd->sc.data[SC_WHISTLE].val2+(sd->sc.data[SC_WHISTLE].val3>>16);
+				sd->flee2 += (sd->sc.data[SC_WHISTLE].val1+sd->sc.data[SC_WHISTLE].val2+(sd->sc.data[SC_WHISTLE].val3&0xffff)) * 10;
+			} else if(sd->sc.data[SC_WHISTLE_].timer != -1) {  // 口笛
+				sd->flee  += sd->sc.data[SC_WHISTLE].val1+sd->sc.data[SC_WHISTLE].val2+(sd->sc.data[SC_WHISTLE].val3>>16);
+				sd->flee2 += (sd->sc.data[SC_WHISTLE_].val1+sd->sc.data[SC_WHISTLE_].val2+(sd->sc.data[SC_WHISTLE_].val3&0xffff)) * 10;
+			}
+
+		} else {		//完全回避上昇なし
+
+			if(sd->sc.data[SC_WHISTLE].timer != -1) {  // 口笛
+				sd->flee  += sd->sc.data[SC_WHISTLE].val1+sd->sc.data[SC_WHISTLE].val2+(sd->sc.data[SC_WHISTLE].val3);
+			} else if(sd->sc.data[SC_WHISTLE_].timer != -1) {  // 口笛
+
+				sd->flee  += sd->sc.data[SC_WHISTLE_].val1+sd->sc.data[SC_WHISTLE_].val2+(sd->sc.data[SC_WHISTLE_].val3);
+			}
+
 		}
 
 		if(sd->sc.data[SC_HUMMING].timer != -1) {  // ハミング
-			sd->hit += (sd->sc.data[SC_HUMMING].val1*2+sd->sc.data[SC_HUMMING].val2+sd->sc.data[SC_HUMMING].val3) * sd->hit/100;
+			sd->hit += 10+sd->sc.data[SC_HUMMING].val1*2+sd->sc.data[SC_HUMMING].val2+sd->sc.data[SC_HUMMING].val3;
 		} else if(sd->sc.data[SC_HUMMING_].timer != -1) {  // ハミング
-			sd->hit += (sd->sc.data[SC_HUMMING_].val1*2+sd->sc.data[SC_HUMMING_].val2+sd->sc.data[SC_HUMMING_].val3) * sd->hit/100;
+			sd->hit += 10+sd->sc.data[SC_HUMMING_].val1*2+sd->sc.data[SC_HUMMING_].val2+sd->sc.data[SC_HUMMING_].val3;
 		}
 
 		if(sd->sc.data[SC_VIOLENTGALE].timer != -1 && sd->def_ele == ELE_WIND) {	// バイオレントゲイル
@@ -1933,11 +1947,11 @@ L_RECALC:
 			}
 		}
 		if(sd->sc.data[SC_APPLEIDUN].timer != -1) {	// イドゥンの林檎
-			sd->status.max_hp += ((5+sd->sc.data[SC_APPLEIDUN].val1*2+((sd->sc.data[SC_APPLEIDUN].val2+1)>>1)
+			sd->status.max_hp += ((5+sd->sc.data[SC_APPLEIDUN].val1*2+sd->sc.data[SC_APPLEIDUN].val2
 						+sd->sc.data[SC_APPLEIDUN].val3/10) * sd->status.max_hp)/100;
 
 		} else if(sd->sc.data[SC_APPLEIDUN_].timer != -1) {	// イドゥンの林檎
-			sd->status.max_hp += ((5+sd->sc.data[SC_APPLEIDUN_].val1*2+((sd->sc.data[SC_APPLEIDUN_].val2+1)>>1)
+			sd->status.max_hp += ((5+sd->sc.data[SC_APPLEIDUN_].val1*2+sd->sc.data[SC_APPLEIDUN_].val2
 						+sd->sc.data[SC_APPLEIDUN_].val3/10) * sd->status.max_hp)/100;
 		}
 
@@ -1945,15 +1959,15 @@ L_RECALC:
 			sd->status.max_hp += sd->status.max_hp*sd->sc.data[SC_DELUGE].val3/100;
 		}
 		if(sd->sc.data[SC_SERVICE4U].timer != -1) {	// サービスフォーユー
-			sd->status.max_sp += sd->status.max_sp*(10+sd->sc.data[SC_SERVICE4U].val1+sd->sc.data[SC_SERVICE4U].val2
+			sd->status.max_sp += sd->status.max_sp*(15+sd->sc.data[SC_SERVICE4U].val1+sd->sc.data[SC_SERVICE4U].val2
 						+sd->sc.data[SC_SERVICE4U].val3)/100;
-			sd->dsprate -= 10+sd->sc.data[SC_SERVICE4U].val1*3+sd->sc.data[SC_SERVICE4U].val2+sd->sc.data[SC_SERVICE4U].val3;
+			sd->dsprate -= 20+sd->sc.data[SC_SERVICE4U].val1*3+sd->sc.data[SC_SERVICE4U].val2+sd->sc.data[SC_SERVICE4U].val3;
 			if(sd->dsprate < 0)
 				sd->dsprate = 0;
 		} else if(sd->sc.data[SC_SERVICE4U_].timer != -1) {	// サービスフォーユー
-			sd->status.max_sp += sd->status.max_sp*(10+sd->sc.data[SC_SERVICE4U_].val1+sd->sc.data[SC_SERVICE4U_].val2
+			sd->status.max_sp += sd->status.max_sp*(15+sd->sc.data[SC_SERVICE4U_].val1+sd->sc.data[SC_SERVICE4U_].val2
 						+sd->sc.data[SC_SERVICE4U_].val3)/100;
-			sd->dsprate -= 10+sd->sc.data[SC_SERVICE4U_].val1*3+sd->sc.data[SC_SERVICE4U_].val2+sd->sc.data[SC_SERVICE4U_].val3;
+			sd->dsprate -= 20+sd->sc.data[SC_SERVICE4U_].val1*3+sd->sc.data[SC_SERVICE4U_].val2+sd->sc.data[SC_SERVICE4U_].val3;
 			if(sd->dsprate < 0)
 				sd->dsprate = 0;
 		}

@@ -566,6 +566,8 @@ extern struct Battle_Config {
 	int equip_window_type;
 	int summonslave_generation;
 	int str_weight;
+
+	int whistle_perfect_flee;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

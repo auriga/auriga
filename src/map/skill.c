@@ -3893,8 +3893,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SM_PROVOKE:		/* プロボック */
 	case MER_PROVOKE:
-		// MVPmobと不死には効かない
-		if(status_get_mode(bl)&0x20 || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)))
+		// MVPmobと不死には効かない・成功判定
+		if( status_get_mode(bl)&0x20 || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) || atn_rand()%100 > (70 + skilllv * 3 + (sd->status.base_level - dstsd->status.base_level)) )
 		{
 			if(sd)
 				clif_skill_fail(sd,skillid,0,0);
@@ -6459,18 +6459,23 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		break;
 	case BA_WHISTLE:			/* 口笛 */
 		if(sd)
-			val1 = (pc_checkskill(sd,BA_MUSICALLESSON)+1)>>1;
-		val2 = ((status_get_agi(src)/10)&0xffff)<<16;
-		val2 |= (status_get_luk(src)/10)&0xffff;
+			val1 = pc_checkskill(sd,BA_MUSICALLESSON)>>1;
+
+		if(battle_config.whistle_perfect_flee) {	//完全回避上昇あり
+			val2 = ((status_get_agi(src)/10)&0xffff)<<16;
+			val2 |= (status_get_luk(src)/10)&0xffff;
+		} else {		//完全回避上昇なし
+			val2 = status_get_agi(src)/10;
+		}
 		break;
 	case DC_HUMMING:			/* ハミング */
 		if(sd)
-			val1 = (pc_checkskill(sd,DC_DANCINGLESSON)+1)>>1;
+			val1 = pc_checkskill(sd,DC_DANCINGLESSON)>>1;
 		val2 = status_get_dex(src)/10;
 		break;
 	case DC_DONTFORGETME:		/* 私を忘れないで… */
 		if(sd)
-			val1 = (pc_checkskill(sd,DC_DANCINGLESSON)+1)>>1;
+			val1 = pc_checkskill(sd,DC_DANCINGLESSON)>>1;
 		val2 = ((status_get_str(src)/20)&0xffff)<<16;
 		val2 |= (status_get_agi(src)/10)&0xffff;
 		break;
@@ -6488,17 +6493,17 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		break;
 	case DC_SERVICEFORYOU:		/* サービスフォーユー */
 		if(sd)
-			val1 = (pc_checkskill(sd,DC_DANCINGLESSON)+1)>>1;
+			val1 = pc_checkskill(sd,DC_DANCINGLESSON)>>1;
 		val2 = status_get_int(src)/10;
 		break;
 	case BA_ASSASSINCROSS:		/* 夕陽のアサシンクロス */
 		if(sd)
-			val1 = (pc_checkskill(sd,BA_MUSICALLESSON)+1)>>1;
+			val1 = pc_checkskill(sd,BA_MUSICALLESSON)>>1;
 		val2 = status_get_agi(src)/20;
 		break;
 	case DC_FORTUNEKISS:		/* 幸運のキス */
 		if(sd)
-			val1 = (pc_checkskill(sd,DC_DANCINGLESSON)+1)>>1;
+			val1 = pc_checkskill(sd,DC_DANCINGLESSON)>>1;
 		val2 = status_get_luk(src)/10;
 		break;
 	case HP_BASILICA:
