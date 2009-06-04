@@ -5127,7 +5127,8 @@ int battle_config_read(const char *cfgName)
 		{ "equip_window_type",                  &battle_config.equip_window_type,                  1        },
 		{ "str_weight",                         &battle_config.str_weight,                         300      },
 		{ "summonslave_generation",             &battle_config.summonslave_generation,             2        },
-		{ "whistle_perfect_flee",              &battle_config.whistle_perfect_flee,                0        },
+		{ "whistle_perfect_flee",               &battle_config.whistle_perfect_flee,               0        },
+		{ "pkmap_noteleport",                   &battle_config.pkmap_noteleport,                   1        },
 		{ NULL,                                 NULL,                                              0        },
 
 	};

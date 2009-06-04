@@ -568,6 +568,7 @@ extern struct Battle_Config {
 	int str_weight;
 
 	int whistle_perfect_flee;
+	int pkmap_noteleport;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

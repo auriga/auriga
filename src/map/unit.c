@@ -1016,6 +1016,11 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	case AS_SONICBLOW:
 		if(sc && sc->data[SC_ASSASIN].timer != -1 && !map[src->m].flag.gvg)
 			delay = delay/2;
+		else
+			delay = skill_get_delay(skill_num,skill_lv);
+		break;
+	case CG_ARROWVULCAN:
+		delay = skill_get_delay(skill_num,skill_lv);
 		break;
 	case MO_EXTREMITYFIST:	/* 阿修羅覇鳳拳 */
 		if(sc && sc->data[SC_COMBO].timer != -1 && (sc->data[SC_COMBO].val1 == MO_COMBOFINISH || sc->data[SC_COMBO].val1 == CH_CHAINCRUSH)) {

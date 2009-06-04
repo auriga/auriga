@@ -1311,7 +1311,7 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 		return 0;
 
 	if(target->type == BL_PC) {
-		if(((struct map_session_data *)target)->special_state.no_knockback)
+		if(src != target && ((struct map_session_data *)target)->special_state.no_knockback)
 			return 0;
 		// バジリカ中は吹き飛ばされない
 		if(sc && sc->data[SC_BASILICA].timer!=-1 && sc->data[SC_BASILICA].val2==target->id)
@@ -7294,10 +7294,18 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			int count = skill_get_blewcount(sg->skill_id,sg->skill_lv);
 
 			do {
-				if(battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0)) {
-					if(bl->type != BL_PC)
+				if(bl->type != BL_PC) {
+					if(battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0))
 						skill_blown(&src->bl,bl,count|SAB_REVERSEBLOW|SAB_NOPATHSTOP);
-				}
+				} else {
+					struct map_session_data *sd = (struct map_session_data *)bl;
+					if(sd) {
+						sd->status.sp -= 15;
+							if(sd->status.sp<0)
+								sd->status.sp = 0;
+							clif_updatestatus(sd,SP_SP);
+						}
+					}
 			} while(sg->alive_count > 0 && !unit_isdead(bl) && x == bl->x && y == bl->y &&
 				sg->interval > 0 && ++hit < SKILLUNITTIMER_INVERVAL / sg->interval);
 		}
@@ -8470,6 +8478,9 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		{
 			int alive;
 			if(map[bl->m].flag.noteleport) {
+				alive = 0;
+			}
+			if(battle_config.pkmap_noteleport && map[bl->m].flag.pk) {
 				alive = 0;
 			} else {
 				alive = 1;
