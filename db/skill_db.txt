@@ -263,14 +263,14 @@
 261,0,6,4,0,1,5,1,no,0,0,0,weapon,0	//MO_CALLSPIRITS#気功#
 262,9,6,16,0,1,1,1,yes,0,0,0,weapon,0	//MO_ABSORBSPIRITS#気奪#
 263,0,8,0,0,0,10,3,no,0,0,0,weapon,0	//MO_TRIPLEATTACK#三段掌#
-264,13,6,2,0,1,1,1,no,0,0,0,none,0	//MO_BODYRELOCATION#残影#
+264,14,6,2,0,1,1,1,no,0,0,0,none,0	//MO_BODYRELOCATION#残影#
 265,0,0,0,0,0,10,0,no,0,0,0,weapon,0	//MO_DODGE#見切り#
 266,1,6,1,0,0,5,1,no,0,0,0,weapon,0	//MO_INVESTIGATE#発勁#
 267,9,8,1,0,0,5,1:2:3:4:5,no,0,0,0,weapon,0	//MO_FINGEROFFENSIVE#指弾#
 268,0,6,4,0,1,5,1,no,0,0,0,weapon,0	//MO_STEELBODY#金剛#
 269,0,6,4,0,1,5,1,no,0,0,0,weapon,0	//MO_BLADESTOP#白刃取り#
 270,0,6,4,0,1,5,0,no,0,0,0,weapon,0	//MO_EXPLOSIONSPIRITS#爆裂波動#
-271,-3,6,4,0,0,5,1,yes,0,4,0,weapon,0	//MO_EXTREMITYFIST#阿修羅覇凰拳#
+271,3,6,4,0,0,5,1,yes,0,4,0,weapon,0	//MO_EXTREMITYFIST#阿修羅覇凰拳#
 272,-2,8,4,0,0,5,4,no,0,0,0,weapon,0	//MO_CHAINCOMBO#連打掌#
 273,-2,6,4,0,0,5,1,no,0,0,0,weapon,0	//MO_COMBOFINISH#猛龍拳#
 274,0,0,0,0,0,10,0,no,0,0,0,weapon,0	//SA_ADVANCEDBOOK#アドバンスドブック#
