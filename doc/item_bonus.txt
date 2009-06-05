@@ -27,7 +27,8 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bMatk,n;						魔法攻撃力1+n、魔法攻撃力2+n
 	bonus bMatk1,n;						魔法攻撃力1+n
 	bonus bMatk2,n;						魔法攻撃力2+n
-	bonus bMatkRate,n;					魔法攻撃力+n%
+	bonus bMatkRate,n;					魔法攻撃力+n%(杖補正以外)
+	bonus bMatk2Rate,n;					魔法攻撃力+n%(杖補正)
 	bonus bDef,n;						防御力+n
 	bonus bDefRate,n;					防御率+n%(装備)
 	bonus bDef2Rate,n;					防御率+n%(vitによる物)
@@ -60,7 +61,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bFixMaxHP,n;					最大HPをnに固定
 	bonus bFixMaxSP,n;					最大SPをnに固定
 	bonus bFixBaseAtk,n;				攻撃力をnに固定
-	bonus bFixMatk,n;					魔法攻撃力をnに固定
+	bonus bFixMatk,n;					魔法攻撃力をnに固定(MATK乗算系効果は影響有り)
 	bonus bFixDef,n;					防御力をnに固定(装備)
 	bonus bFixMdef,n;					魔法防御力をnに固定(装備)
 	bonus bFixHit,n;					命中力をnに固定

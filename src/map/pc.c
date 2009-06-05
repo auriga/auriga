@@ -2153,6 +2153,10 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 	case SP_FIX_SPEED:
 		sd->fix_status.speed = val;
 		break;
+	case SP_MATK2_RATE:
+		if(sd->state.lr_flag != 2)
+			sd->matk2_rate += val;
+		break;
 	default:
 		if(battle_config.error_log)
 			printf("pc_bonus: unknown type %d %d !\n",type,val);

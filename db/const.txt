@@ -351,6 +351,7 @@ bFixAspd		1154
 bFixSpeed		1155
 bAddFixCastRate		1156
 bAddSkillHealRate	1157
+bMatk2Rate		1158
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

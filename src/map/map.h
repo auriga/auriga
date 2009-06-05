@@ -420,7 +420,7 @@ struct map_session_data {
 	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[4],arrow_addsize[MAX_SIZE_FIX],arrow_addeff[10],arrow_addeff2[10];
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
 	int aspd_rate,speed_rate,hprecov_rate,sprecov_rate,critical_def,double_rate;
-	int near_attack_def_rate,long_attack_def_rate,magic_def_rate,misc_def_rate,matk_rate;
+	int near_attack_def_rate,long_attack_def_rate,magic_def_rate,misc_def_rate,matk_rate,matk2_rate;
 	int ignore_def_ele[ELE_MAX],ignore_def_race[RCT_MAX],ignore_def_enemy[4];
 	int ignore_def_ele_[ELE_MAX],ignore_def_race_[RCT_MAX],ignore_def_enemy_[4];
 	int ignore_mdef_ele[ELE_MAX],ignore_mdef_race[RCT_MAX],ignore_mdef_enemy[4];
@@ -996,7 +996,7 @@ enum {
 	SP_IGNORE_DEF_ENEMY,SP_IGNORE_MDEF_ENEMY,SP_DEF_RATIO_ATK_ENEMY,SP_ADDENEMY,SP_MAGIC_ADDENEMY,SP_SUBENEMY,	// 1138-1143
 	SP_SKILL_DELAY_RATE,SP_FIX_MAXHP,SP_FIX_MAXSP,SP_FIX_BASEATK,SP_FIX_MATK,SP_FIX_DEF,	// 1144-1149
 	SP_FIX_MDEF,SP_FIX_HIT,SP_FIX_CRITICAL,SP_FIX_FLEE,SP_FIX_ASPD,SP_FIX_SPEED,	// 1150-1155
-	SP_ADD_FIX_CAST_RATE,SP_ADD_SKILL_HEAL_RATE,	// 1156-1557
+	SP_ADD_FIX_CAST_RATE,SP_ADD_SKILL_HEAL_RATE,SP_MATK2_RATE,	// 1156-1558
 
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005

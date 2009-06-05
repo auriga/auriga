@@ -451,7 +451,7 @@ L_RECALC:
 	sd->critical_def = 0;
 	sd->double_rate  = 0;
 	sd->near_attack_def_rate = sd->long_attack_def_rate = 0;
-	sd->atk_rate = sd->matk_rate = 100;
+	sd->atk_rate = sd->matk_rate = sd->matk2_rate = 100;
 	memset(sd->ignore_def_ele,0,sizeof(sd->ignore_def_ele));
 	memset(sd->ignore_def_race,0,sizeof(sd->ignore_def_race));
 	memset(sd->ignore_def_enemy,0,sizeof(sd->ignore_def_enemy));
@@ -1599,7 +1599,11 @@ L_RECALC:
 		if(sd->sc.data[SC_INCFLEE2].timer != -1)
 			sd->flee += sd->sc.data[SC_INCFLEE2].val1;
 	}
-
+	// MATK乗算処理(杖補正以外)
+	if(sd->matk_rate != 100) {
+		sd->matk1 = sd->matk1*sd->matk_rate/100;
+		sd->matk2 = sd->matk2*sd->matk_rate/100;
+	}
 	// スキルやステータス異常による残りのパラメータ補正
 	if(sd->sc.count > 0) {
 		// 太陽の安楽 DEF増加
@@ -2041,6 +2045,12 @@ L_RECALC:
 	if(pc_isriding(sd))							// 騎兵修練
 		sd->aspd = sd->aspd*(100 + 10*(5 - pc_checkskill(sd,KN_CAVALIERMASTERY)))/ 100;
 
+	//MATK乗算処理(杖補正)
+	if(sd->matk2_rate != 100) {
+		sd->matk1 = sd->matk1*sd->matk2_rate/100;
+		sd->matk2 = sd->matk2*sd->matk2_rate/100;
+	}
+
 	// ステータス固定
 	if(sd->fix_status.max_hp > 0) {
 		sd->status.max_hp = sd->fix_status.max_hp;
@@ -2054,6 +2064,11 @@ L_RECALC:
 	}
 	if(sd->fix_status.matk > 0) {
 		sd->matk1 = sd->matk2 = sd->fix_status.matk;
+		//MATK乗算処理(固定値*(杖補正+杖補正以外))
+		if(sd->matk_rate != 100 || sd->matk2_rate != 100) {
+			sd->matk1 = sd->matk1*(sd->matk_rate+sd->matk2_rate-100)/100;
+			sd->matk2 = sd->matk2*(sd->matk_rate+sd->matk2_rate-100)/100;
+		}
 	}
 	if(sd->fix_status.def > 0 && sd->fix_status.def <= 100) {
 		sd->def = sd->fix_status.def;
@@ -2103,10 +2118,7 @@ L_RECALC:
 		sd->speed = sd->speed*(175 - skill*5)/100;
 	}
 
-	if(sd->matk_rate != 100) {
-		sd->matk1 = sd->matk1*sd->matk_rate/100;
-		sd->matk2 = sd->matk2*sd->matk_rate/100;
-	}
+	//MATK最低値保障
 	if(sd->matk1 < 1)
 	 	sd->matk1 = 1;
 	if(sd->matk2 < 1)
