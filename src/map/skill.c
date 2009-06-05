@@ -3894,7 +3894,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SM_PROVOKE:		/* プロボック */
 	case MER_PROVOKE:
 		// MVPmobと不死には効かない・成功判定
-		if( status_get_mode(bl)&0x20 || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) || atn_rand()%100 > (70 + skilllv * 3 + (sd->status.base_level - dstsd->status.base_level)) )
+		if( status_get_mode(bl)&0x20 || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) || atn_rand()%100 > (70 + skilllv * 3 + (status_get_lv(src) - status_get_lv(bl))) )
 		{
 			if(sd)
 				clif_skill_fail(sd,skillid,0,0);
