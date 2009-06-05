@@ -2740,24 +2740,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
-	case NPC_EARTHQUAKE:		/* アースクエイク */
-		if(flag&1) {
-			if(bl->id != skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
-		} else {
-			int ar = 5+(skilllv-1)%5*2;
-			skill_area_temp[0] = 0;
-			skill_area_temp[1] = bl->id;
-			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick,flag|BCT_ENEMY,
-				skill_area_sub_count);
-			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
-				skill_castend_damage_id);
-		}
-		break;
 	case NPC_FIREBREATH:		/* ファイアブレス */
 	case NPC_ICEBREATH:		/* アイスブレス */
 	case NPC_THUNDERBREATH:		/* サンダーブレス */
@@ -2992,7 +2974,24 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			}
 		}
 		break;
-
+	case NPC_EARTHQUAKE:		/* アースクエイク */
+		if(flag&1) {
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
+		} else {
+			int ar = 5+(skilllv-1)%5*2;
+			skill_area_temp[0] = 0;
+			skill_area_temp[1] = bl->id;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick,flag|BCT_ENEMY,
+				skill_area_sub_count);
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
 	/* その他 */
 	case TF_THROWSTONE:			/* 石投げ */
 	case PA_PRESSURE:			/* プレッシャー */

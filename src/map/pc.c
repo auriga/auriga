@@ -5000,6 +5000,13 @@ void pc_resetstate(struct map_session_data* sd)
 	clif_updatestatus(sd,SP_DEX);
 	clif_updatestatus(sd,SP_LUK);
 
+	clif_updatestatus(sd,SP_USTR);
+	clif_updatestatus(sd,SP_UAGI);
+	clif_updatestatus(sd,SP_UVIT);
+	clif_updatestatus(sd,SP_UINT);
+	clif_updatestatus(sd,SP_UDEX);
+	clif_updatestatus(sd,SP_ULUK);
+
 	status_calc_pc(sd,0);
 
 	return;
