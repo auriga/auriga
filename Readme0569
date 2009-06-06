@@ -1,4 +1,20 @@
 ----------------------------------------
+//0616 [2009/06/07] by popori
+
+・bInfiniteEndureに関する修正
+	(pc.c、status.c)
+	->bInfiniteEndureはGvGでは効果が出ないように修正
+	->bInfiniteEndureの効果が付いた装備品を装備中、GvGではダメージモーションが出るように修正
+	->Aegisでの検証により、bInfiniteEndureの効果が付いた装備品を装備中
+	  SI_ENDUREが表示されるので、SI_ENDUREが表示されるように修正
+
+・ヘルジャッジメントを魔法スキル扱いに
+	(skill.c)
+
+・payg_cas01の執事の座標がおかしいのを修正
+	(npc_gvg_payg01.txt)
+
+----------------------------------------
 //0615 [2009/06/06] by Lyese
 
 ・HP回復力向上の計算式を修正（status.c）

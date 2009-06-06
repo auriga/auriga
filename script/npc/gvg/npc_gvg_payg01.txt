@@ -104,7 +104,7 @@ OnAgitInit:
 //============================================================
 // 執事
 //------------------------------------------------------------
-payg_cas01.gat,218,175,0	script	グルナンディー	55,{
+payg_cas01.gat,120,58,4	script	グルナンディー	55,{
 	callfunc "AgitSteward","C1",'guardian_id,'guardian_x,'guardian_y,295,8;
 	close;
 OnAgitInit:

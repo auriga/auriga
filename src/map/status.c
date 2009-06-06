@@ -267,6 +267,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
 	int b_tigereye;
+	int b_infinite_endure;
 	struct skill b_skill[MAX_SKILL];
 	int i,blv,calc_val,idx;
 	int skill,aspd_rate,wele,wele_,def_ele,refinedef;
@@ -318,6 +319,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_class       = sd->view_class;
 	b_base_atk    = sd->base_atk;
 	b_tigereye    = sd->special_state.infinite_tigereye;
+	b_infinite_endure = sd->special_state.infinite_endure;
 
 L_RECALC:
 	// 本来の計算開始(元のパラメータを更新しないのは、計算中に計算処理が呼ばれたときの
@@ -334,6 +336,7 @@ L_RECALC:
 	sd->ranker_weapon_bonus  = 0;
 	sd->ranker_weapon_bonus_ = 0;
 	sd->special_state.infinite_tigereye = 0;
+	sd->special_state.infinite_endure = 0;
 
 	pc_calc_skilltree(sd);	// スキルツリーの計算
 
@@ -2143,6 +2146,9 @@ L_RECALC:
 	if(b_tigereye == 1 && sd->special_state.infinite_tigereye == 0 && sd->sc.data[SC_TIGEREYE].timer == -1)
 		clif_status_load(sd, SI_TIGEREYE, 0);
 
+	if(b_infinite_endure == 1 && sd->special_state.infinite_endure == 0)
+		clif_status_load(sd, SI_ENDURE, 0);
+
 	// 計算処理ここまで
 	if( sd->status_calc_pc_process > 1 ) {
 		// この関数が再帰的に呼ばれたので、再計算する
@@ -3720,7 +3726,7 @@ int status_get_dmotion(struct block_list *bl)
 	else if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)bl;
 		if(sd) {
-			if(sd->sc.data[SC_ENDURE].timer != -1 && (!map[sd->bl.m].flag.gvg || sd->special_state.infinite_endure)) {
+			if((sd->sc.data[SC_ENDURE].timer != -1 || sd->special_state.infinite_endure) && !map[sd->bl.m].flag.gvg) {
 				dmotion = 0;
 			} else {
 				dmotion = sd->dmotion;
