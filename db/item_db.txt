@@ -1958,7 +1958,7 @@
 4427,Sword_Guardian_Card,ソードガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(4),13)==11){bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,47,50;} }
 4428,Bow_Guardian_Card,ボウガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(3),13)==2 || getiteminfo(getequipid(4),13)==2 || getiteminfo(getequipid(4),13)==3){bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,62,25;} }
 4429,Salamander_Card,サラマンダーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bAddSkillDamageRate,83,40; bonus2 bAddSkillDamageRate,80,40; }
-4430,Ifrit_Card,イフリートカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bAtk,JobLevel/10; bonus bCritical,JobLevel/10; bonus bHit,JobLevel/10; bonus3 bRevAutoSpell,653,2,300; }
+4430,Ifrit_Card,イフリートカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bAtk,JobLevel/10; bonus bCritical,JobLevel/10; bonus bHit,JobLevel/10; bonus3 bRevAutoSelfSpell,653,2,300; }
 4431,Kasa_Card,カーサカード,6,20,,10,,,,,,,4,,,,,{},{ bonus3 bAutoSpell,17,5,500; bonus3 bAutoSpell,19,5,500; }
 4432,Magmaring_Card,マグマリンカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bAtk,5; bonus2 bAddEle,2,10; bonus2 bCriticalRace,2,15; bonus2 bCriticalRace,3,15; }
 4433,Imp_Card,インプカード,6,20,,10,,,,,,,136,,,,,{},{ bonus2 bAddSkillDamageRate,19,25; }

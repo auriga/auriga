@@ -1850,7 +1850,7 @@
 1492,怨霊武士＠取り巻き呼び戻し,attack,354,1,10000,0,30000,no,target,always,0,,,,,,
 1492,怨霊武士＠取り巻き呼び戻し,idle,354,1,10000,0,30000,no,self,always,0,,,,,,
 1492,怨霊武士＠ソウルブレイカー,attack,379,10,2000,500,30000,no,target,myhpltmaxrate,50,,,,,,
-1492,怨霊武士＠ヘルジャッジメント,attack,662,10,3000,0,20000,no,target,myhpltmaxrate,50,,,,,,
+1492,怨霊武士＠ヘルジャッジメント,attack,662,10,3000,0,20000,no,self,myhpltmaxrate,50,,,,,,
 1493,ドリアード＠ヒール,attack,28,9,10000,500,5000,yes,friend,friendhpltmaxrate,60,,,,,,02
 1493,ドリアード＠ヒール,chase,28,9,10000,500,5000,yes,friend,friendhpltmaxrate,60,,,,,,02
 1493,ドリアード＠地属性攻撃,attack,185,3,500,500,5000,no,target,always,0,,,,,,
@@ -2308,9 +2308,9 @@
 1623,RSX-0806＠速度強化,chase,350,5,10000,0,60000,no,self,myhpltmaxrate,30,,,,,,06
 1623,RSX-0806＠取り巻き呼び戻し,attack,354,1,10000,0,30000,no,target,always,0,,,,,,
 1623,RSX-0806＠取り巻き呼び戻し,idle,354,1,10000,0,30000,no,self,always,0,,,,,,
-1623,RSX-0806＠アースクエイク,chase,653,5,10000,2000,30000,no,target,myhpltmaxrate,50,,,,,,32
-1623,RSX-0806＠アースクエイク,attack,653,5,10000,2000,30000,no,target,myhpltmaxrate,50,,,,,,32
-1623,RSX-0806＠アースクエイク,attack,653,5,0,2000,30000,no,target,myhpltmaxrate,80,,,,,,
+1623,RSX-0806＠アースクエイク,chase,653,5,10000,2000,30000,no,self,myhpltmaxrate,50,,,,,,32
+1623,RSX-0806＠アースクエイク,attack,653,5,10000,2000,30000,no,self,myhpltmaxrate,50,,,,,,32
+1623,RSX-0806＠アースクエイク,attack,653,5,0,2000,30000,no,self,myhpltmaxrate,80,,,,,,
 1624,ジャンクポット＠石投げ,chase,152,1,1000,0,5000,no,target,always,0,,,,,,
 1624,ジャンクポット＠範囲攻撃,attack,174,1,500,0,5000,no,target,always,0,,,,,,
 1624,ジャンクポット＠スタン攻撃,attack,179,3,500,1500,5000,no,target,always,0,,,,,,

@@ -340,7 +340,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// セイフティウォール
-		if(sc->data[SC_SAFETYWALL].timer != -1 && flag&BF_SHORT && skill_num != NPC_GUIDEDATTACK) {
+		if(sc->data[SC_SAFETYWALL].timer != -1 && flag&BF_SHORT && skill_num != NPC_GUIDEDATTACK && skill_num != NPC_EARTHQUAKE) {
 			struct skill_unit *unit = map_id2su(sc->data[SC_SAFETYWALL].val2);
 			if(unit && unit->group) {
 				if((--unit->group->val2) <= 0)
@@ -359,7 +359,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 
 		// ニューマ
 		if( (sc->data[SC_PNEUMA].timer != -1 || sc->data[SC_TATAMIGAESHI].timer != -1) && damage > 0 &&
-		    flag&(BF_WEAPON|BF_MISC) && flag&BF_LONG && skill_num != NPC_GUIDEDATTACK )
+		    flag&(BF_WEAPON|BF_MISC) && flag&BF_LONG && skill_num != NPC_GUIDEDATTACK && skill_num != NPC_EARTHQUAKE)
 		{
 			damage = 0;
 		}
@@ -391,7 +391,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// エナジーコート
-		if(sc->data[SC_ENERGYCOAT].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != CR_ACIDDEMONSTRATION) {
+		if(sc->data[SC_ENERGYCOAT].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != CR_ACIDDEMONSTRATION && skill_num != NPC_EARTHQUAKE) {
 			if(tsd) {
 				if(tsd->status.sp > 0) {
 					int per = tsd->status.sp * 5 / (tsd->status.max_sp + 1);
@@ -429,7 +429,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// オートガード
-		if(sc->data[SC_AUTOGUARD].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != WS_CARTTERMINATION) {
+		if(sc->data[SC_AUTOGUARD].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != WS_CARTTERMINATION && skill_num != NPC_EARTHQUAKE) {
 			if(atn_rand()%100 < sc->data[SC_AUTOGUARD].val2) {
 				int delay;
 				damage = 0;
@@ -449,7 +449,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// パリイング
-		if(sc->data[SC_PARRYING].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != WS_CARTTERMINATION) {
+		if(sc->data[SC_PARRYING].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != WS_CARTTERMINATION && skill_num != NPC_EARTHQUAKE) {
 			if(atn_rand()%100 < sc->data[SC_PARRYING].val2)
 			{
 				int dir = map_calc_dir(bl,src->x,src->y);
@@ -462,7 +462,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// リジェクトソード
-		if(sc->data[SC_REJECTSWORD].timer != -1 && damage > 0 && flag&BF_WEAPON && atn_rand()%100 < 15*sc->data[SC_REJECTSWORD].val1) {
+		if(sc->data[SC_REJECTSWORD].timer != -1 && damage > 0 && flag&BF_WEAPON && atn_rand()%100 < 15*sc->data[SC_REJECTSWORD].val1 && skill_num != NPC_EARTHQUAKE) {
 			short weapon = -1;
 			if(src->type == BL_PC)
 				weapon = ((struct map_session_data *)src)->status.weapon;
@@ -1334,6 +1334,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case MO_INVESTIGATE:		// 発勁
 		case MO_EXTREMITYFIST:		// 阿修羅覇鳳拳
 		case NJ_ISSEN:			// 一閃
+		case NPC_EARTHQUAKE:		// アースクエイク
 			calc_flag.hitrate = 1000000;
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
@@ -1344,7 +1345,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_DEMONSTRATION:		// デモンストレーション
 		case TK_COUNTER:		// アプチャオルリギ
 		case AS_SPLASHER:		// ベナムスプラッシャー
-		case NPC_EARTHQUAKE:		// アースクエイク
 			calc_flag.hitrate = 1000000;
 			break;
 		case NPC_EXPULSION:		// エクスパルシオン
@@ -2096,7 +2096,34 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case NPC_EARTHQUAKE:		// アースクエイク
-			DMG_FIX( 500+500*skill_lv, 100 );
+			//DMG_FIX( 500+500*skill_lv, 100 );
+			switch(skill_lv){
+				case 1:	DMG_FIX( 300, 100 );
+					break;
+				case 2:	DMG_FIX( 500, 100 );
+					break;
+				case 3:	DMG_FIX( 600, 100 );
+					break;
+				case 4:	DMG_FIX( 800, 100 );
+					break;
+				case 5:	DMG_FIX( 1000, 100 );
+					break;
+				case 6:	DMG_FIX( 1200, 100 );
+					break;
+				case 7:	DMG_FIX( 1300, 100 );
+					break;
+				case 8:	DMG_FIX( 1500, 100 );
+					break;
+				case 9:	DMG_FIX( 1600, 100 );
+					break;
+				case 10:
+					DMG_FIX( 1800, 100 );
+					break;
+				default:
+					DMG_FIX( 180*skill_lv, 100 );
+					break;
+
+			}
 			if(wflag > 1) {
 				DMG_FIX( 1, wflag );
 			}
@@ -2149,6 +2176,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_ACIDTERROR:
 		case CR_ACIDDEMONSTRATION:
 		case NJ_ZENYNAGE:
+		case NPC_EARTHQUAKE:
 			break;
 		default:
 			if( wd.type != 0 )	// クリティカル時は無効
@@ -2444,7 +2472,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 20．カードによるダメージ追加処理 */
-	if( src_sd && wd.damage > 0 && calc_flag.rh && !calc_flag.nocardfix ) {
+	if( src_sd && wd.damage > 0 && calc_flag.rh && !calc_flag.nocardfix  && skill_num != NPC_EARTHQUAKE) {
 		cardfix = 100;
 		if(!src_sd->state.arrow_atk) {	// 弓矢以外
 			if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
@@ -2584,7 +2612,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 24．アイテムボーナスのフラグ処理 */
-	if(src_sd && wd.flag&BF_WEAPON) {
+	if(src_sd && wd.flag&BF_WEAPON && skill_num != NPC_EARTHQUAKE) {
 		// 状態異常のレンジフラグ
 		//   addeff_range_flag  0:指定無し 1:近距離 2:遠距離 3,4:それぞれのレンジで状態異常を発動させない
 		//   flagがあり、攻撃タイプとflagが一致しないときは、flag+2する
@@ -2607,6 +2635,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(cardfix != 100) {
 			DMG_FIX( cardfix, 100 );	// ステータス異常補正によるダメージ減少
 		}
+	}
+	if(skill_num == NPC_EARTHQUAKE && target_sd && target_sd->special_state.no_magic_damage) {	// アースクエイクの場合
+		wd.damage  = 0;	// 黄金蟲カード（魔法ダメージ０)
+		wd.damage2 = 0;
 	}
 
 	if(wd.damage  < 0) wd.damage  = 0;
@@ -2720,7 +2752,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 32．完全回避の判定 */
-	if(skill_num == 0 && skill_lv >= 0 && target_sd != NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) ) {
+	if(skill_num == 0 && skill_lv >= 0 && target_sd != NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target)  && skill_num != NPC_EARTHQUAKE) {
 		wd.damage  = 0;
 		wd.damage2 = 0;
 		wd.type    = 0x0b;
@@ -2764,8 +2796,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	/* 35．物理攻撃スキルによるオートスペル発動(item_bonus) */
-	if(wd.flag&BF_SKILL && src && src->type == BL_PC && src != target && (wd.damage+wd.damage2) > 0)
+	/* 35．物理攻撃スキルによるオートスペル発動(item_bonus) アースクエイクは例外 */
+	if(wd.flag&BF_SKILL && src && src->type == BL_PC && src != target && (wd.damage+wd.damage2) > 0 && skill_num != NPC_EARTHQUAKE)
 	{
 		unsigned long asflag = EAS_ATTACK;
 		if(skill_num == AM_DEMONSTRATION) {
@@ -2785,7 +2817,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 36．太陽と月と星の融合 HP2%消費 */
-	if(src_sd && sc && sc->data[SC_FUSION].timer != -1)
+	if(src_sd && sc && sc->data[SC_FUSION].timer != -1 && skill_num != NPC_EARTHQUAKE)
 	{
 		int hp;
 		if(src_sd->status.hp < src_sd->status.max_hp * 20 / 100)	// HPが20％未満の時に攻撃をすれば即死
@@ -2799,7 +2831,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 37．カアヒ */
-	if(skill_num == 0 && wd.flag&BF_WEAPON && t_sc && t_sc->data[SC_KAAHI].timer != -1)
+	if(skill_num == 0 && wd.flag&BF_WEAPON && t_sc && t_sc->data[SC_KAAHI].timer != -1 && skill_num != NPC_EARTHQUAKE)
 	{
 		int kaahi_lv = t_sc->data[SC_KAAHI].val1;
 		if(status_get_hp(target) < status_get_max_hp(target))
@@ -2815,7 +2847,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 38．太陽と月と星の奇跡 */
-	if(src_sd && wd.flag&BF_WEAPON && src_sd->s_class.job == 25 && atn_rand()%10000 < battle_config.sg_miracle_rate)
+	if(src_sd && wd.flag&BF_WEAPON && src_sd->s_class.job == 25 && atn_rand()%10000 < battle_config.sg_miracle_rate && skill_num != NPC_EARTHQUAKE)
 		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
 
 	/* 39．計算結果の最終補正 */
@@ -3972,7 +4004,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* ダメージ反射 */
-	if(attack_type&BF_WEAPON && damage > 0 && src != bl && src == dsrc) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆src=dsrc
+	if(attack_type&BF_WEAPON && damage > 0 && src != bl && src == dsrc && skillid != NPC_EARTHQUAKE) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆src=dsrc＆アースクエイクではない
 		if(dmg.flag&BF_SHORT) {	// 近距離攻撃時
 			if(tsd) {	// 対象がPCの時
 				if(tsd->short_weapon_damage_return > 0) {	// 近距離攻撃跳ね返し
@@ -4002,7 +4034,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		if(rdamage > 0)
 			clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0);
 	}
-	if(attack_type&BF_MAGIC && damage > 0 && src != bl) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う
+	if(attack_type&BF_MAGIC && damage > 0 && src != bl || skillid == NPC_EARTHQUAKE && damage > 0 && src != bl ) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う、またはアースクエイクである＆ダメージあり＆使用者と対象者が違う
 		if(tsd && src == dsrc) {	// 対象がPCの時
 			if(tsd->magic_damage_return > 0 && atn_rand()%100 < tsd->magic_damage_return) {	// 魔法攻撃跳ね返し？※
 				rdamage = damage;
@@ -4154,7 +4186,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	if((skillid || flag) && rdamage > 0) {
 		unsigned long asflag = EAS_WEAPON | EAS_ATTACK | EAS_NORMAL;
 
-		if(attack_type&BF_WEAPON) {
+		if(attack_type&BF_WEAPON && skillid != NPC_EARTHQUAKE) {
 			battle_delay_damage(tick+dmg.amotion,bl,src,rdamage,skillid,skilllv,0);
 			if(sd) {
 				// 反射ダメージのオートスペル
@@ -4178,7 +4210,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* オートカウンター */
-	if(attack_type&BF_WEAPON && sc && sc->data[SC_AUTOCOUNTER].timer != -1 && sc->data[SC_AUTOCOUNTER].val4 > 0) {
+	if(attack_type&BF_WEAPON && sc && sc->data[SC_AUTOCOUNTER].timer != -1 && sc->data[SC_AUTOCOUNTER].val4 > 0 && skillid != NPC_EARTHQUAKE) {
 		if(sc->data[SC_AUTOCOUNTER].val3 == dsrc->id)
 			battle_weapon_attack(bl,dsrc,tick,0x8000|sc->data[SC_AUTOCOUNTER].val1);
 		status_change_end(bl,SC_AUTOCOUNTER,-1);
@@ -4193,7 +4225,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		}
 	}
 	/* ブラッドラスト */
-	if(src->type == BL_HOM && ssc && ssc->data[SC_BLOODLUST].timer != -1 && dmg.flag&BF_WEAPON && src != bl && src == dsrc && damage > 0)
+	if(src->type == BL_HOM && ssc && ssc->data[SC_BLOODLUST].timer != -1 && dmg.flag&BF_WEAPON && src != bl && src == dsrc && damage > 0 && skillid != NPC_EARTHQUAKE)
 	{
 		struct homun_data *hd = (struct homun_data *)src;
 		if(hd && atn_rand()%100 < ssc->data[SC_BLOODLUST].val1*9)
