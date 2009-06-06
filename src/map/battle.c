@@ -2831,7 +2831,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 37．カアヒ */
-	if(skill_num == 0 && wd.flag&BF_WEAPON && t_sc && t_sc->data[SC_KAAHI].timer != -1 && skill_num != NPC_EARTHQUAKE)
+	if(skill_num == 0 && wd.flag&BF_WEAPON && t_sc && t_sc->data[SC_KAAHI].timer != -1)
 	{
 		int kaahi_lv = t_sc->data[SC_KAAHI].val1;
 		if(status_get_hp(target) < status_get_max_hp(target))
@@ -4034,7 +4034,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		if(rdamage > 0)
 			clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0);
 	}
-	if(attack_type&BF_MAGIC && damage > 0 && src != bl || skillid == NPC_EARTHQUAKE && damage > 0 && src != bl ) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う、またはアースクエイクである＆ダメージあり＆使用者と対象者が違う
+	if((attack_type&BF_MAGIC || skillid == NPC_EARTHQUAKE) && damage > 0 && src != bl) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う、またはアースクエイクである＆ダメージあり＆使用者と対象者が違う
 		if(tsd && src == dsrc) {	// 対象がPCの時
 			if(tsd->magic_damage_return > 0 && atn_rand()%100 < tsd->magic_damage_return) {	// 魔法攻撃跳ね返し？※
 				rdamage = damage;
