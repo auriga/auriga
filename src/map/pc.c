@@ -4704,6 +4704,9 @@ int pc_need_status_point(struct map_session_data *sd,int type)
 		case SP_LUK: val = sd->status.luk;  break;
 	}
 
+	if(val >= battle_config.max_parameter || (pc_isbaby(sd) && val >= battle_config.baby_status_max))
+		return 0;
+
 	return ((val < 0)? -1: (val+9)/10+1);
 }
 

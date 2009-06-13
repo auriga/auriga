@@ -1635,12 +1635,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				src_sd->status.sp -= 2;
 				clif_updatestatus(src_sd,SP_SP);
 			}
-			if(target_sd) {
-				target_sd->status.sp -= 15;
-				if(target_sd->status.sp < 0)
-					target_sd->status.sp = 0;
-				clif_updatestatus(target_sd,SP_SP);
-			}
 			wd.blewcount = 0;
 			break;
 		case KN_PIERCE:		// ピアース
@@ -4048,7 +4042,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			{
 				int idx;
 				clif_misceffect2(bl,438);
-				clif_skill_nodamage(bl,src,skillid,skilllv,1);
+				clif_skill_nodamage(src,src,skillid,skilllv,1);
 				if(--sc->data[SC_KAITE].val2 == 0)
 					status_change_end(bl,SC_KAITE,-1);
 
@@ -4187,7 +4181,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		unsigned long asflag = EAS_WEAPON | EAS_ATTACK | EAS_NORMAL;
 
 		if(attack_type&BF_WEAPON && skillid != NPC_EARTHQUAKE) {
-			battle_delay_damage(tick+dmg.amotion,bl,src,rdamage,skillid,skilllv,0);
+			battle_delay_damage(tick+dmg.amotion,src,src,rdamage,skillid,skilllv,0);
 			if(sd) {
 				// 反射ダメージのオートスペル
 				if(battle_config.weapon_reflect_autospell) {
@@ -4197,7 +4191,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					battle_attack_drain(bl,rdamage,0,battle_config.weapon_reflect_drain_enable_type);
 			}
 		} else {
-			battle_damage(bl,src,rdamage,skillid,skilllv,0);
+			battle_damage(src,src,rdamage,skillid,skilllv,0);
 			if(sd) {
 				// 反射ダメージのオートスペル
 				if(battle_config.magic_reflect_autospell) {

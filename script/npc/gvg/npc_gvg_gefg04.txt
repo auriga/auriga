@@ -103,7 +103,7 @@ OnAgitInit:
 //============================================================
 // 執事
 //------------------------------------------------------------
-gefg_cas04.gat,106,23,5	script	ケルバーリ	55,{
+gefg_cas04.gat,73,46,3	script	ケルバーリ	55,{
 	callfunc "AgitSteward","B4",'guardian_id,'guardian_x,'guardian_y,116,123;
 	close;
 OnAgitInit:

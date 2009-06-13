@@ -1436,6 +1436,7 @@ int unit_can_move(struct block_list *bl)
 		if( sc->data[SC_ANKLE].timer != -1 ||		// アンクルスネア
 		    sc->data[SC_AUTOCOUNTER].timer != -1 ||	// オートカウンター
 		    sc->data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
+		    sc->data[SC_BLADESTOP_WAIT].timer != -1 ||		// 白刃取り
 		    sc->data[SC_BLADESTOP].timer != -1 ||	// 白刃取り
 		    sc->data[SC_SPIDERWEB].timer != -1 ||	// スパイダーウェッブ
 		    sc->data[SC_TIGERFIST].timer != -1 ||	// 伏虎拳

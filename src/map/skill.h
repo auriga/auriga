@@ -189,6 +189,7 @@ enum {	// 吹き飛ばしフラグ
 	SAB_REVERSEBLOW = 0x10000,
 	SAB_NODAMAGE    = 0x20000,
 	SAB_NOPATHSTOP  = 0x40000,
+	SAB_NOTKNOCK    = 0x80000,
 };
 
 int skill_add_blown( struct block_list *src, struct block_list *target,int skillid,int flag);

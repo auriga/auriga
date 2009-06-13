@@ -1284,6 +1284,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
  *		SAB_REVERSEBLOW : targetの向きと逆方向に吹飛ぶ
  *		SAB_NODAMAGE    : ダメージを発生させずに吹飛ばす
  *		SAB_NOPATHSTOP  : 吹き飛び経路に壁があったらそこで止まる
+ *　	SAB_NOTKNOCK    : ノックバックではないスキル用の特殊フラグ
  *	Z: 吹き飛ばしセル数
  *-------------------------------------------------------------------------
  */
@@ -1311,7 +1312,7 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 		return 0;
 
 	if(target->type == BL_PC) {
-		if(src != target && ((struct map_session_data *)target)->special_state.no_knockback)
+		if(!(count&SAB_NOTKNOCK) && ((struct map_session_data *)target)->special_state.no_knockback)
 			return 0;
 		// バジリカ中は吹き飛ばされない
 		if(sc && sc->data[SC_BASILICA].timer!=-1 && sc->data[SC_BASILICA].val2==target->id)
@@ -1726,9 +1727,6 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 			}
 
 			switch(skl->skill_id) {
-			case TF_BACKSLIDING:
-				clif_skill_nodamage(src,src,skl->skill_id,skl->skill_lv,1);
-				break;
 			case RG_INTIMIDATE:
 				if(src->type == BL_PC && !map[src->m].flag.noteleport)
 					pc_randomwarp((struct map_session_data *)src,3);
@@ -4871,8 +4869,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				head_dir = sd->head_dir;
 			}
 			unit_stop_walking(src,1);
-			skill_blown(src,bl,count|SAB_REVERSEBLOW|SAB_NODAMAGE|SAB_NOPATHSTOP);
-			skill_addtimerskill(src,tick + 200,src->id,0,0,skillid,skilllv,0,flag);
+			clif_skill_nodamage(src,src,skillid,skilllv,1);
+			skill_blown(src,bl,count|SAB_REVERSEBLOW|SAB_NODAMAGE|SAB_NOPATHSTOP|SAB_NOTKNOCK);
 			if(sd)
 				pc_setdir(sd, dir, head_dir);
 			if(sc && sc->data[SC_CLOSECONFINE].timer != -1)
