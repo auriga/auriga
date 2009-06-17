@@ -286,7 +286,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 	struct map_session_data *tsd = NULL;
 	struct mob_data         *tmd = NULL;
 	struct unit_data *ud;
-	struct status_change *sc;
+	struct status_change *sc, *src_sc;
 	unsigned int tick = gettick();
 
 	nullpo_retr(0, src);
@@ -296,6 +296,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 	tmd = BL_DOWNCAST( BL_MOB, bl );
 
 	ud = unit_bl2ud(bl);
+	src_sc = status_get_sc(src);
 	sc = status_get_sc(bl);
 
 	// スキルダメージ補正
@@ -369,6 +370,10 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			damage <<= 1;
 			status_change_end(bl,SC_AETERNA,-1);
 		}
+
+		// バーサーク
+		if(src_sc->data[SC_BERSERK].timer != -1 && damage > 0)
+			damage <<= 1;
 
 		// 属性場のダメージ増加
 		if(sc->data[SC_VOLCANO].timer != -1 && damage > 0) {	// ボルケーノ
@@ -4042,7 +4047,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			{
 				int idx;
 				clif_misceffect2(bl,438);
-				clif_skill_nodamage(src,src,skillid,skilllv,1);
+				clif_skill_nodamage(bl,src,skillid,skilllv,1);
 				if(--sc->data[SC_KAITE].val2 == 0)
 					status_change_end(bl,SC_KAITE,-1);
 
