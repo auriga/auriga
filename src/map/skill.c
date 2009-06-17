@@ -1359,12 +1359,9 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 		skill_unit_move_unit_group(su->group,target->m,nx-target->x,ny-target->y);
 	}
 
-	if(target->type == BL_PC) {
-		if(sc && sc->data[SC_DANCING].timer!=-1) {
-			struct skill_unit_group *group = map_id2sg(sc->data[SC_DANCING].val2);
-			skill_unit_move_unit_group(group,target->m,nx-target->x,ny-target->y);
-		}
-		unit_movepos(target,nx,ny,(count&SAB_NODAMAGE)? 0: 1);
+	if(target->type == BL_SKILL) {
+		struct skill_unit *su = (struct skill_unit *)target;
+		skill_unit_move_unit_group(su->group,target->m,nx-target->x,ny-target->y);
 	} else {
 		unit_movepos(target,nx,ny,(count&SAB_NODAMAGE)? 0: 1);
 	}
