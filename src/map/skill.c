@@ -1357,11 +1357,6 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 	if(target->type == BL_SKILL) {
 		struct skill_unit *su = (struct skill_unit *)target;
 		skill_unit_move_unit_group(su->group,target->m,nx-target->x,ny-target->y);
-	}
-
-	if(target->type == BL_SKILL) {
-		struct skill_unit *su = (struct skill_unit *)target;
-		skill_unit_move_unit_group(su->group,target->m,nx-target->x,ny-target->y);
 	} else {
 		unit_movepos(target,nx,ny,(count&SAB_NODAMAGE)? 0: 1);
 	}
