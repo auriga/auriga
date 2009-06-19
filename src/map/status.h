@@ -521,6 +521,7 @@ enum {
 	SC_HAPPY                = 384,
 	SC_NATURAL_HEAL_STOP    = 385,
 	SC_REBIRTH              = 386,
+	SC_HELLPOWER			= 387,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
@@ -758,7 +759,7 @@ enum {
 	//SI_TARGET_BLOOD   = 301
 	//SI_ARMOR_PROPERTY = 302
 	//SI_REUSE_LIMIT_A  = 303
-	//SI_HELLPOWER      = 304
+	SI_HELLPOWER      = 304
 	//SI_STEAMPACK      = 305
 	//SI_REUSE_LIMIT_B  = 306
 	//SI_REUSE_LIMIT_C  = 307

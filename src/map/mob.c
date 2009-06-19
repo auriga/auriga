@@ -1064,8 +1064,14 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		}
 	}
 
-	// 歩行時/待機時スキル使用
-	if( mobskill_use(md,tick,-1) )
+	// 待機時スキル使用
+	if(md->state.skillstate == MSS_IDLE) {
+		if(++md->ud.idlecount%10 == 0) {		// 10回に1度使用判定
+			mobskill_use(md,tick,-1);
+			md->ud.idlecount = 0;
+			return search_flag;
+		}
+	} else if( mobskill_use(md,tick,-1) )		// 歩行時スキル使用
 		return search_flag;
 
 	// 歩行処理
@@ -4236,7 +4242,7 @@ static int mob_readskilldb(void)
 
 			ms->val[3] = atoi(sp[15]);
 			ms->val[4] = atoi(sp[16]);
-			if(strlen(sp[17]) > 2)
+			if(strlen(sp[17]) > 1)
 				ms->emotion = atoi(sp[17]);
 			else
 				ms->emotion = -1;

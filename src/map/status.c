@@ -153,7 +153,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 370- */
 	SI_ITEMDROPRATE,SI_BOSSMAPINFO,SI_MEAL_INCSTR2,SI_MEAL_INCAGI2,SI_MEAL_INCVIT2,SI_MEAL_INCDEX2,SI_MEAL_INCINT2,SI_MEAL_INCLUK2,SI_SLOWCAST,SI_CRITICALWOUND,
 	/* 380- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_HAPPY,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_HAPPY,SI_BLANK,SI_BLANK,SI_HELLPOWER,SI_BLANK,SI_BLANK,
 };
 
 /*==========================================
@@ -351,6 +351,9 @@ L_RECALC:
 
 	// ペコ騎乗時増えるよう移動
 	if((skill = pc_checkskill(sd,MC_INCCARRY)) > 0)	// 所持量増加
+		sd->max_weight += skill*2000;
+
+	if((skill = pc_checkskill(sd,ALL_INCCARRAY)) > 0)	// 所持量増加R
 		sd->max_weight += skill*2000;
 
 	if((skill = pc_checkskill(sd,SG_KNOWLEDGE)) > 0)	// 太陽と月と星の知識
@@ -929,8 +932,8 @@ L_RECALC:
 		if(sd->sc.data[SC_INCREASEAGI].timer != -1)	// 速度増加
 			sd->paramb[1] += 2+sd->sc.data[SC_INCREASEAGI].val1;
 
-		if(sd->sc.data[SC_DECREASEAGI].timer != -1)	// 速度減少(agiはbattle.cで)
-			sd->paramb[1] -= 2+sd->sc.data[SC_DECREASEAGI].val1;
+		if(sd->sc.data[SC_DECREASEAGI].timer != -1)	// 速度減少（オーバースキル仕様はAGI-50）
+			sd->paramb[1] -= (sd->sc.data[SC_DECREASEAGI].val2)? 50: 2+sd->sc.data[SC_DECREASEAGI].val1;
 
 		if(sd->sc.data[SC_BLESSING].timer != -1) {	// ブレッシング
 			sd->paramb[0] += sd->sc.data[SC_BLESSING].val1;
@@ -2548,8 +2551,8 @@ int status_get_agi(struct block_list *bl)
 			agi += sc->data[SC_SUITON].val3;
 		if(sc->data[SC_CONCENTRATE].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && bl->type != BL_PC)
 			agi += agi*(2+sc->data[SC_CONCENTRATE].val1)/100;
-		if(sc->data[SC_DECREASEAGI].timer != -1)	// 速度減少
-			agi -= 2+sc->data[SC_DECREASEAGI].val1;
+		if(sc->data[SC_DECREASEAGI].timer != -1)	// 速度減少（オーバースキル仕様はAGI-50）
+			agi -= (sc->data[SC_DECREASEAGI].val2)? 50: 2+sc->data[SC_DECREASEAGI].val1;
 		if(sc->data[SC_QUAGMIRE].timer != -1)	// クァグマイア
 			agi >>= 1;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
@@ -4487,6 +4490,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_HAPPY:				/* 楽しい状態 */
 		case SC_NATURAL_HEAL_STOP:		/* 自然回復停止 */
 		case SC_REBIRTH:			/* リバース */
+		case SC_HELLPOWER:			/* ヘルパワー */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */

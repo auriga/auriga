@@ -33,7 +33,7 @@
 #define PT_AREA_SIZE 20
 #define LOOTITEM_SIZE 10
 #define MAX_SKILL_LEVEL 12
-#define MAX_MOBSKILL	40
+#define MAX_MOBSKILL	64
 #define MAX_EVENTQUEUE	2
 #define MAX_EVENTTIMER	32
 #define NATURAL_HEAL_INTERVAL 500
@@ -185,6 +185,7 @@ struct unit_data {
 	unsigned int attackabletime;
 	unsigned int canact_tick;
 	unsigned int canmove_tick;
+	int   idlecount;
 	struct {
 		unsigned change_walk_target : 1;
 		unsigned skillcastcancel : 1;

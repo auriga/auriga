@@ -185,7 +185,7 @@ int SkillStatusChangeTable[MAX_SKILL] = {	/* status.hのenumのSC_***とあわ�
 	/* 670- */
 	-1,SC_MAGICMIRROR,SC_SLOWCAST,SC_CRITICALWOUND,-1,SC_STONESKIN,SC_ANTIMAGIC,SC_CURSE,SC_STUN,-1,
 	/* 680- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,SC_HELLPOWER,SC_HELLPOWER,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 700- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
@@ -2520,6 +2520,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500|type);
 			}
 		} else {
+			int ar = 2;
+			if(md && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over)
+				ar = 4;
+
 			/* スキルエフェクト表示 */
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
@@ -2527,7 +2531,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[2] = src->x;
 			skill_area_temp[3] = src->y;
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-2,src->y-2,src->x+2,src->y+2,(BL_CHAR|BL_SKILL),
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2804,6 +2808,24 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
+	case NPC_VAMPIRE_GIFT:		/* ヴァンパイアリックタッチ */
+		if(flag&1){
+			/* 個別にダメージを与える */
+			int heal = battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+			if(heal){
+				clif_skill_nodamage(src,src,AL_HEAL,heal,1);
+				battle_heal(NULL,src,heal,0,0);
+			}
+		}else{
+			int ar = 3 + (skilllv * 2);
+			ar = ar > 13? 13: ar;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_PC|BL_MOB|BL_HOM,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+
 	/* 魔法系スキル */
 	case MG_SOULSTRIKE:			/* ソウルストライク */
 	case NPC_DARKSTRIKE:		/* ダークストライク */
@@ -3350,6 +3372,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			break;
 		if(!unit_isdead(&dstsd->bl))			// 死亡判定
 			break;
+		if(dstsd->sc.data[SC_HELLPOWER].timer != -1)		// ヘルパワー状態は蘇生不可
+			break;
 
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		dstsd->status.hp = dstsd->status.max_hp * ((skilllv >= 4)? 80: skilllv*20-10)/100;
@@ -3392,7 +3416,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			break;
 		if( atn_rand()%100 < (50+skilllv*3+(status_get_lv(src)+status_get_int(src)/5)-sc_def_mdef) ) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			if(md && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over)
+				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,1,0,0,skill_get_time(skillid,skilllv),0);
+			else
+				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 
@@ -3463,6 +3490,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SA_FULLRECOVERY:
+	case NPC_ALLHEAL:		/* ライフストリーム */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if( dstsd ) {
 			if( dstsd->special_state.no_magic_damage )
@@ -3757,7 +3785,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(skillid == SL_SKE)
 			status_change_start(src,SC_SMA,skilllv,0,0,0,3000,0);
 		break;
-
+	case SL_KAAHI:			/* カアヒ */
+		{
+			sc = status_get_sc(src);
+			if(sc && sc->data[SC_KAAHI].timer != -1) {
+				status_change_end(src,SC_KAAHI,-1);
+			}
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		}
+		break;
 	case PR_ASPERSIO:		/* アスペルシオ */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if( dstsd && dstsd->special_state.no_magic_damage )
@@ -3810,7 +3847,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SG_MOON_COMFORT:
 	case SG_STAR_COMFORT:
 	case SL_KAIZEL:			/* カイゼル */
-	case SL_KAAHI:			/* カアヒ */
 	case SL_KAITE:			/* カイト */
 	case SL_KAUPE:			/* カウプ */
 	case GS_INCREASING:		/* インクリージングアキュアラシー */
@@ -3821,6 +3857,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_DEFENDER:
 	case NPC_MAGICMIRROR:		/* マジックミラー */
 	case MS_REFLECTSHIELD:
+	case NPC_HELLPOWER:		/* ヘルパワー */
 	case MER_QUICKEN:		/* ウェポンクイッケン */
 	case MER_AUTOBERSERK:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -5721,6 +5758,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_WIDESLEEP:		/* 範囲睡眠攻撃 */
 	case NPC_WIDECURSE:		/* 範囲呪い攻撃 */
 	case NPC_WIDESTUN:		/* 範囲スタン攻撃 */
+	case NPC_WIDEHELLDIGNITY:	/* ヘルディグニティ */
 		if(flag&1) {
 			if(skillid == NPC_DRAGONFEAR) {
 				const int sc_type[4] = { SC_STUN, SC_CURSE, SC_SILENCE, SC_BLEED };
@@ -5746,6 +5784,23 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		} else {
 			int ar = skilllv * 3 - 1;
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
+	case NPC_WIDESOULDRAIN:	/* マナバーン */
+		if(flag&1) {
+			if(dstsd) {
+				int sp = dstsd->status.max_sp * (((skilllv - 1) % 5 + 1) * 20) / 100;
+				if(sp < 1) sp = 1;
+				pc_heal(dstsd,0,-sp);
+			}
+		}
+		else {
+			int ar = (skilllv * 2) + 3;
+			ar = ar > 13? 13: ar;
 			map_foreachinarea(skill_area_sub,
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,

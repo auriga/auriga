@@ -1304,7 +1304,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case SM_MAGNUM:			// マグナムブレイク
 		case MS_MAGNUM:
-			calc_flag.hitrate = calc_flag.hitrate*(100+10*skill_lv)/100;
+			if(src_md && battle_config.monster_skill_over && skill_lv >= battle_config.monster_skill_over)
+				calc_flag.hitrate = calc_flag.hitrate*10;
+			else
+				calc_flag.hitrate = calc_flag.hitrate*(100+10*skill_lv)/100;
 			break;
 		case KN_AUTOCOUNTER:		// オートカウンター
 			wd.flag = (wd.flag&~BF_SKILLMASK)|BF_NORMAL;
@@ -1549,10 +1552,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case SM_MAGNUM:		// マグナムブレイク
 		case MS_MAGNUM:
-			if(!wflag) {	// 内周
-				DMG_FIX( 100+20*skill_lv, 100 );
-			} else {	// 外周
-				DMG_FIX( 100+10*skill_lv, 100 );
+			if(src_md && battle_config.monster_skill_over && skill_lv >= battle_config.monster_skill_over) {
+				DMG_FIX( 1000, 100 );
+			} else {
+				if(!wflag) {	// 内周
+					DMG_FIX( 100+20*skill_lv, 100 );
+				} else {	// 外周
+					DMG_FIX( 100+10*skill_lv, 100 );
+				}
 			}
 			break;
 		case MC_MAMMONITE:	// メマーナイト
@@ -2133,6 +2140,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NPC_PULSESTRIKE:		// パルスストライク
 			DMG_FIX( 100*skill_lv, 100 );
 			wd.blewcount = 0;
+			break;
+		case NPC_VAMPIRE_GIFT:		/* ヴァンパイアリックタッチ */
+			DMG_FIX( 100 * ((skill_lv - 1) % 5 + 1), 100 );
 			break;
 		case HFLI_MOON:		// ムーンライト
 			DMG_FIX( 110+110*skill_lv, 100 );
@@ -2830,12 +2840,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		int kaahi_lv = t_sc->data[SC_KAAHI].val1;
 		if(status_get_hp(target) < status_get_max_hp(target))
 		{
-			if(target->type == BL_MOB || status_get_sp(target) > 5*kaahi_lv)	// 対象がmob以外でSPが減少量以下のときは発生しない
+			if(target->type == BL_MOB || status_get_sp(target) >= 5*kaahi_lv)	// 対象がmob以外でSPが減少量以下のときは発生しない
 			{
 				int heal = skill_fix_heal(src, target, SL_KAAHI, 200 * kaahi_lv);
+				if(target_sd) {
+					if(target_sd->status.hp + heal > target_sd->status.max_hp)
+						heal = target_sd->status.max_hp - target_sd->status.hp;
+					clif_heal(target_sd->fd,SP_HP,heal);
+				}
 				unit_heal(target,heal,-5*kaahi_lv);
-				if(target_sd)
-					clif_misceffect3(target_sd->fd, target_sd->bl.id, 7);	// 回復した本人にのみ回復エフェクト
 			}
 		}
 	}
@@ -3031,8 +3044,13 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			}
 			break;
 		case WZ_METEOR:
-		case WZ_JUPITEL:	// ユピテルサンダー
 		case NPC_DARKTHUNDER:	// ダークサンダー
+			break;
+		case WZ_JUPITEL:	// ユピテルサンダー
+			if(bl->type == BL_MOB && battle_config.monster_skill_over && skill_lv >= battle_config.monster_skill_over) {
+				mgd.div_ = 30;
+				mgd.blewcount = 14;
+			}
 			break;
 		case WZ_VERMILION:	// ロードオブバーミリオン
 			MATK_FIX( 80+20*skill_lv, 100 );
