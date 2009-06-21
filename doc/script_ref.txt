@@ -89,7 +89,7 @@ AurigaNPCScript
 			prontera.gat,0,0,0,0	monster	--ja--	1002,1,0,0,,10001
 
 	＊店：アイテムの販売を行います。
-		<gatname>,<x>,<y>,<direction><tab>shop<tab><displayname><tab><npcid>,<item_id>:<price>
+		<gatname>,<x>,<y>,<direction><tab>shop<tab><displayname><tab><npcid>,<item_id>[:<price>]
 
 		gatname			配置するMAPファイル名を指定します。
 		x			配置する横座標を指定します。
@@ -103,8 +103,8 @@ AurigaNPCScript
 		displayname		配置する店の表示名を指定します。
 		npcid			配置する店の表示スプライトIDを指定します。
 		item_id			配置する店に置くアイテムIDを指定します。item_dbを参照してください。
-		price			item_idで指定したアイテムの値段を設定します。
-						負数を指定するとitem_db.txtで設定された値段になります。
+		price			item_idで指定したアイテムの値段を設定します。（省略可）
+						負数を指定、または省略するとitem_db.txtで設定された値段になります。
 			<item_id>:<price>は,（カンマ）区切りで複数指定できます。
 
 		「<gatname>,<x>,<y>,<direction><tab>」の部分を、「-<tab>」とすることで、
@@ -2131,6 +2131,41 @@ AurigaNPCScript
 			<mobname>が--en--の場合英語名、--ja--の場合日本語名、<mobid>が-1の場合ランダム。
 			そのモンスターを倒したとき<event>を開始します。
 			<index>を指定すると、砦データのガーディアン1〜8の領域に情報を書き込みます。
+
+		setshopitem命令
+			setshopitem <npcname>,<item_id1>,<price1>[,<item_idN>,<priceN>...];
+
+			npcname		文字列
+			item_id		数値
+			price		数値
+
+			<npcname>の名前を持つショップNPCの販売アイテムを再設定します。
+			今までショップ陳列していたアイテムを一旦削除し、
+			<item_id>で指定したアイテムIDを<price>の値段で陳列します。
+			<price>を負数で指定するとitem_db.txtで設定された値段になります。
+
+		addshopitem命令
+			addshopitem <npcname>,<item_id>[,<price>];
+
+			npcname		文字列
+			item_id		数値
+			price		数値、省略可
+
+			<npcname>の名前を持つショップNPCの販売アイテムを追加します。
+			今までショップに陳列していたアイテムに追加で、
+			<item_id>で指定したアイテムIDを<price>の値段で陳列します。
+			<price>を負数で指定、または省略するとitem_db.txtで設定された値段になります。
+
+		delshopitem命令
+			delshopitem <npcname>,<item_id>[,<price>];
+
+			npcname		文字列
+			item_id		数値
+			price		数値、省略可
+
+			<npcname>の名前を持つショップNPCの販売アイテムを削除します。
+			<item_id>のIDを持ち、<price>の値段で陳列されているアイテムを削除します。
+			<price>を負数で指定、または省略すると値段を無視し、アイテムIDと一致した陳列アイテムを削除します。
 
 	＊関数
 		rand関数

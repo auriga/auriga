@@ -1266,24 +1266,25 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 	}
 
 	if(subtype == SHOP || subtype == POINTSHOP) {
-		const int max = 100;
 		char *c;
 
-		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * (max + 1));
+		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data));
 		c = strchr(w4, ',');
-		while(c && pos < max) {
+		while(c && pos < MAX_SHOP_ITEM) {
 			struct item_data *id = NULL;
-			int nameid, value;
+			int ret,nameid, value = -1;
 			c++;
-			if(sscanf(c, "%d:%d", &nameid, &value) != 2)
+			ret = sscanf(c, "%d:%d", &nameid, &value);
+			if(ret < 1 || ret > 2)
 				break;
 			id = itemdb_search(nameid);
 			nd->u.shop_item[pos].nameid = nameid;
+			if(value < 0) {
+				value = id->value_buy;
+			}
 			if(subtype == SHOP) {
 				int sell_max, buy_max;
-				if(value < 0) {
-					value = id->value_buy;
-				}
+
 				sell_max = pc_modifysellvalue(NULL, id->value_sell);
 				buy_max  = pc_modifybuyvalue(NULL, value);
 				if(sell_max > buy_max) {
@@ -1300,8 +1301,6 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 			return 0;
 		}
 		nd->u.shop_item[pos++].nameid = 0;
-
-		nd = (struct npc_data *)aRealloc(nd, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * pos);
 	} else {
 		// substoreはコピーするだけ
 		char srcname[4096];
@@ -1323,7 +1322,7 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 		subtype = nd2->subtype;
 		while(nd2->u.shop_item[pos++].nameid);
 
-		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd2->u.shop_item[0]) * pos);
+		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data));
 		memcpy(&nd->u.shop_item, &nd2->u.shop_item, sizeof(nd2->u.shop_item[0]) * pos);
 	}
 
@@ -2390,7 +2389,7 @@ int do_final_npc(void)
 				if(nd->subtype == SCRIPT) {
 					if(nd->u.scr.timer_event)
 						aFree(nd->u.scr.timer_event);
-					if(nd->u.scr.src_id == 0) {
+				 	if(nd->u.scr.src_id == 0) {
 						if(nd->u.scr.script) {
 							script_free_code(nd->u.scr.script);
 							nd->u.scr.script = NULL;

@@ -1,4 +1,23 @@
 ----------------------------------------
+//0625 [2009/06/22] by Blaze
+
+・ショップNPCの行解析を変更（npc.c,map.h）
+	-> 商品アイテム構造体のメモリ動的確保を廃止し、定数指定分確保するように変更
+	※メンバの追加が困難なため
+	-> ショップNPCの宣言時、値段を省略できるように変更
+
+・ショップNPCの書式を変更（script/npc/***.txt）
+
+・スクリプト命令に以下のショップNPC操作命令を追加（script.c,doc/script_ref.txt）
+	-> setshopitem : 指定したショップNPCの商品を再設定します
+	-> addshopitem : 指定したショップNPCの商品を追加します
+	-> delshopitem : 指定したショップNPCの指定した商品を削除します
+
+・攻城戦の開始時間の判定不具合を修正（script/npc/gvg/npc_gvg_global.txt）
+・0624のMob使用スキルDB変更で誤字があったのを修正（mob_skill_db.txt）
+	（thx NP3228 さん）
+
+----------------------------------------
 //0624 [2009/06/20] by Blaze
 
 ・以下のスキルを実装（skill.*,battle.c,skill_db.txt,skill_db2.txt,skill_cast.txt）

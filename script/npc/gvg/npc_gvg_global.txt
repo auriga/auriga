@@ -63,7 +63,7 @@ OnMinute00:
 	set '@day,gettime(4);
 	set '@hour,gettime(3);
 	if('weekday & (1<<'@day)) {
-		if('st_time['@day+1] == 0 && 'ed_time['@day+1]) {
+		if('st_time['@day+1] == 0 && 'ed_time['@day+1] == 0) {
 			set '@st_time,'st_time;
 			set '@ed_time,'ed_time;
 		}
@@ -383,7 +383,7 @@ function	script	AgitSteward	{
 			mes "^ff0000商業発展値は";
 			mes "現在最大値となっております。";
 			mes "今は投資する必要がありません。^000000";
-			break;
+		 	break;
 		}
 		set '@tmp,('@val-'@count)/5;
 		set '@price,5000*(1+(1+'@tmp)*'@tmp/2)*(1+3*'@count);
