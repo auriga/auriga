@@ -1266,11 +1266,12 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 	}
 
 	if(subtype == SHOP || subtype == POINTSHOP) {
+		const int max = 100;
 		char *c;
 
-		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data));
+		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * (max + 1));
 		c = strchr(w4, ',');
-		while(c && pos < MAX_SHOP_ITEM) {
+		while(c && pos < max) {
 			struct item_data *id = NULL;
 			int ret,nameid, value = -1;
 			c++;
@@ -1301,6 +1302,8 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 			return 0;
 		}
 		nd->u.shop_item[pos++].nameid = 0;
+
+		nd = (struct npc_data *)aRealloc(nd, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * pos);
 	} else {
 		// substoreはコピーするだけ
 		char srcname[4096];
@@ -1322,7 +1325,7 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 		subtype = nd2->subtype;
 		while(nd2->u.shop_item[pos++].nameid);
 
-		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data));
+		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd2->u.shop_item[0]) * pos);
 		memcpy(&nd->u.shop_item, &nd2->u.shop_item, sizeof(nd2->u.shop_item[0]) * pos);
 	}
 

@@ -3975,9 +3975,6 @@ int buildin_areasetcell(struct script_state *st);
 int buildin_callguardian(struct script_state *st);
 int buildin_getguardianinfo(struct script_state *st);
 int buildin_getmobname(struct script_state *st);
-int buildin_setshopitem(struct script_state *st);
-int buildin_addshopitem(struct script_state *st);
-int buildin_delshopitem(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4241,9 +4238,6 @@ struct script_function buildin_func[] = {
 	{buildin_callguardian,"callguardian","siissi*"},
 	{buildin_getguardianinfo,"getguardianinfo","sii"},
 	{buildin_getmobname,"getmobname","i"},
-	{buildin_setshopitem,"setshopitem","s*"},
-	{buildin_addshopitem,"addshopitem","si*"},
-	{buildin_delshopitem,"delshopitem","si*"},
 	{NULL,NULL,NULL}
 };
 
@@ -11717,94 +11711,3 @@ int buildin_getmobname(struct script_state *st)
 	return 0;
 }
 
-/*==========================================
- * ショップNPCの商品設定
- *------------------------------------------
- */
-int buildin_setshopitem(struct script_state *st)
-{
-	struct npc_data *nd;
-
-	if((st->end - st->start - 2) % 2 == 0) {	// 引数の数チェック
-		printf("buildin_setshopitem: illigal argument count(%d).\n", st->end - st->start - 2);
-		return 0;
-	}
-
-	nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+2])));
-
-	if(nd && (nd->subtype == SHOP || nd->subtype == POINTSHOP)) {	// NPCの種類がSHOPかPOINTSHOPの場合
-		int i,pos = 0;
-
-		memset(&nd->u.shop_item, 0, sizeof(nd->u.shop_item));
-
-		for(i = st->start+3; i < st->end && pos < MAX_SHOP_ITEM; i += 2) {
-			int nameid = conv_num(st,& (st->stack->stack_data[i]));
-			int value  = conv_num(st,& (st->stack->stack_data[i+1]));
-
-			if(itemdb_exists(nameid) == NULL)
-				continue;
-
-			if(value < 0)
-				value = itemdb_search(nameid)->value_buy;
-
-			nd->u.shop_item[pos].nameid = nameid;
-			nd->u.shop_item[pos].value = value;
-			pos++;
-		}
-	}
-
-	return 0;
-}
-
-/*==========================================
- * ショップNPCの商品追加
- *------------------------------------------
- */
-int buildin_addshopitem(struct script_state *st)
-{
-	struct npc_data *nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+2])));
-	int nameid = conv_num(st,& (st->stack->stack_data[3]));
-	int i,value = -1;
-
-	if(st->end > st->start+4)
-		value = conv_num(st,& (st->stack->stack_data[4]));
-
-	if(nd && (nd->subtype == SHOP || nd->subtype == POINTSHOP)) {	// NPCの種類がSHOPかPOINTSHOPの場合
-		if(itemdb_exists(nameid) == NULL)
-			return 0;
-
-		for(i = 0; i < MAX_SHOP_ITEM && nd->u.shop_item[i].nameid != 0; i++);
-
-		if(i < MAX_SHOP_ITEM) {
-			if(value < 0)
-				value = itemdb_search(nameid)->value_buy;
-			nd->u.shop_item[i].nameid = nameid;
-			nd->u.shop_item[i].value = value;
-		}
-	}
-	return 0;
-}
-
-/*==========================================
- * ショップNPCの商品削除
- *------------------------------------------
- */
-int buildin_delshopitem(struct script_state *st)
-{
-	struct npc_data *nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+2])));
-	int nameid = conv_num(st,& (st->stack->stack_data[3]));
-	int i,value = -1;
-
-	if(st->end > st->start+4)
-		value = conv_num(st,& (st->stack->stack_data[4]));
-
-	if(nd && (nd->subtype == SHOP || nd->subtype == POINTSHOP)) {	// NPCの種類がSHOPかPOINTSHOPの場合
-		for(i = 0; i < MAX_SHOP_ITEM; i++) {
-			if(nd->u.shop_item[i].nameid == nameid) {	// 削除対象のアイテムIDを検索
-				if(value < 0 || nd->u.shop_item[i].value == value)	// 値段が-1の場合は値段判定を無視する
-					memmove(&nd->u.shop_item[i], &nd->u.shop_item[i+1], sizeof(nd->u.shop_item[0])*(MAX_SHOP_ITEM-i));
-			}
-		}
-	}
-	return 0;
-}

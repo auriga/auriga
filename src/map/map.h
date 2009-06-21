@@ -54,7 +54,7 @@
 #define MAX_REFINE 10		// 最大精錬値
 #define MAX_ELE_LEVEL 4		// 最大属性Lv
 #define MAX_SIZE_FIX 3		// サイズの種類
-#define MAX_SHOP_ITEM 100	// ショップNPCの最大商品数
+
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -684,13 +684,14 @@ struct npc_data {
 			struct npc_label_list *label_list;
 			int src_id;
 		} scr;
-		struct npc_item_list shop_item[MAX_SHOP_ITEM];
+		struct npc_item_list shop_item[1];
 		struct {
 			short xs,ys;
 			short x,y;
 			char name[16];
 		} warp;
 	} u;
+	// ここにメンバを追加してはならない(shop_itemが可変長の為)
 };
 
 struct mob_data {
