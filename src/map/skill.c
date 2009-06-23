@@ -11886,6 +11886,10 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 	nullpo_retr(0, sd);
 	nullpo_retr(0, bl);
 
+	// オートスペルが使えない状態異常中
+	if(sd->sc.data[SC_ROKISWEIL].timer != -1)
+		return 0;
+
 	// いつの間にか自分もしくは攻撃対象が死んでいた
 	if(unit_isdead(&sd->bl) || unit_isdead(bl))
 		return 0;
