@@ -4111,6 +4111,10 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* 吹き飛ばし処理とそのパケット */
 	if(dmg.blewcount > 0 && bl->type != BL_SKILL && !map[src->m].flag.gvg) {
+		// アンデッド以外の通常MOBはストームガストの3HIT目で弾かれない(滑りの布石)
+		if(!(skillid==WZ_STORMGUST && !(status_get_mode(bl)&0x20)
+			&& !battle_check_undead(status_get_race(bl),status_get_elem_type(bl))
+			&& sc->data && sc->data[SC_FREEZE].val3==2))
 		skill_blown(dsrc,bl,dmg.blewcount);
 	}
 	/* 吹き飛ばし処理とそのパケット カード効果 */
@@ -5173,7 +5177,11 @@ int battle_config_read(const char *cfgName)
 		{ "summonslave_generation",             &battle_config.summonslave_generation,             2        },
 		{ "whistle_perfect_flee",               &battle_config.whistle_perfect_flee,               0        },
 		{ "pkmap_noteleport",                   &battle_config.pkmap_noteleport,                   1        },
-		{ NULL,                                 NULL,                                              0        },
+		{ "sg_type",                  		&battle_config.sg_type,       		           1        },
+		{ "pvp_send_guild_xy",                  &battle_config.pvp_send_guild_xy,   	           1        },
+		{ "mvpitem_weight_limit",               &battle_config.mvpitem_weight_limit,   	           50       },
+		{ "roki_item_autospell",               	&battle_config.roki_item_autospell,   	           0  	    },
+		{ NULL,                                 NULL,                                              1        },
 
 	};
 

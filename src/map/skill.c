@@ -804,10 +804,18 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 #ifdef DYNAMIC_SC_DATA
 		status_calloc_sc_data(tsc);
 #endif
-		if(tsc) {
-			tsc->data[SC_FREEZE].val3++;
-			if(tsc->data[SC_FREEZE].val3 >= 3)
-				status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		if(tsc){   // ボス属性とその他でval3の用途が違うため演算位置を調整
+			if(status_get_mode(bl)&0x20){   // ボス属性
+				if(tsc->data[SC_FREEZE].val3 >= 3)
+					tsc->data[SC_FREEZE].val3 = 0;
+				tsc->data[SC_FREEZE].val3++; // 重複ダメージのタイミングに使用(skill_unit_onplace_timer()内にて使用)
+			}else{              // 非ボス属性
+				tsc->data[SC_FREEZE].val3++; // 通常通り凍結タイミングに使用
+				if(tsc->data[SC_FREEZE].val3 >= 3){
+					tsc->data[SC_FREEZE].val3 = 0;
+					status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+				}
+			}
 		}
 		break;
 
@@ -1655,6 +1663,22 @@ int skill_castend_delay(struct block_list* src, struct block_list *bl,int skilli
 static int skill_area_sub_count(struct block_list *src,struct block_list *target,int skillid,int skilllv,unsigned int tick,int flag)
 {
 	if(skill_area_temp[0] < 0xffff)
+		skill_area_temp[0]++;
+	return 0;
+}
+
+/* 特定のタイプの対象をカウントする(モンスター) */
+static int skill_area_sub_count_mob(struct block_list *src,struct block_list *target,int skillid,int skilllv,unsigned int tick,int flag)
+{
+	if(skill_area_temp[0] < 0xffff && target->type == BL_MOB)
+		skill_area_temp[0]++;
+	return 0;
+}
+
+/* 特定のタイプの対象をカウントする(プレイヤー) */
+static int skill_area_sub_count_pc(struct block_list *src,struct block_list *target,int skillid,int skilllv,unsigned int tick,int flag)
+{
+	if(skill_area_temp[0] < 0xffff && target->type == BL_PC)
 		skill_area_temp[0]++;
 	return 0;
 }
@@ -2744,7 +2768,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case NPC_EARTHQUAKE:		/* アースクエイク */
 		if(flag&1) {
-			if(bl->id != skill_area_temp[1]){
+			if(bl->id != skill_area_temp[1] && ( bl->type == BL_PC || bl->type == BL_MOB ) ) {
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
                                 battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
@@ -2756,7 +2780,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick,flag|BCT_ENEMY,
-				skill_area_sub_count);
+				skill_area_sub_count_mob);
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick,flag|BCT_ENEMY,
+				skill_area_sub_count_pc);
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
@@ -6080,7 +6108,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case WZ_FIREPILLAR:			/* ファイアピラー */
 	case WZ_QUAGMIRE:			/* クァグマイア */
 	case WZ_VERMILION:			/* ロードオブヴァーミリオン */
-	case WZ_STORMGUST:			/* ストームガスト */
 	case WZ_HEAVENDRIVE:		/* ヘヴンズドライブ */
 	case PR_SANCTUARY:			/* サンクチュアリ */
 	case PR_MAGNUS:				/* マグヌスエクソシズム */
@@ -6166,6 +6193,16 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			}
 			skill_addtimerskill(src,tick+i*interval,0,tmpx,tmpy,skillid,skilllv,-1,0);
 		}
+		break;
+
+	case WZ_STORMGUST:          /* ストームガスト */
+		if(battle_config.sg_type){  // 3x3のユニットを南西→北東まで81個作る
+			int i, j;
+			for(i=0;i<9;i++)	// こちらのrangeはskill_unitsetting()内にて設定
+				for(j=0;j<9;j++)
+					skill_unitsetting(src,skillid,skilllv,x-4+i,y-4+j,0);
+		}else
+			skill_unitsetting(src,skillid,skilllv,x,y,0);
 		break;
 
 	case AL_WARP:				/* ワープポータル */
@@ -6470,6 +6507,10 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	case WZ_VERMILION:
 		if(skilllv>10)			/* ロードオブバーミリオン(広範囲) */
 		range = 25;
+		break;
+	case WZ_STORMGUST:			/* ストームガスト */
+		if(battle_config.sg_type)
+			range = 1;
 		break;
 	case MG_FIREWALL:			/* ファイヤーウォール */
 		val2 = 4+skilllv;
@@ -7012,8 +7053,16 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	if(sg->skill_id == PR_SANCTUARY) {
 		diff += 500; // 新規に回復したユニットだけカウントするための仕掛け
 	}
-	if(diff < 0)
-		return 0;
+
+	if(diff < 0){
+		// ボス属性にはストームガストの3HIT毎に2HITのダメージが重なる
+		if( sg->skill_id == WZ_STORMGUST && status_get_mode(bl)&0x20 ){
+			sc = status_get_sc(bl);
+			if( !sc || sc->data[SC_FREEZE].val3 != 3)
+				return 0;
+		}else
+			return 0;
+	}
 
 	tickset_tick = tick + sg->interval;
 
@@ -11887,7 +11936,8 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 	nullpo_retr(0, bl);
 
 	// オートスペルが使えない状態異常中
-	if(sd->sc.data[SC_ROKISWEIL].timer != -1)
+	// ロキ内で、ロキ内アイテム オートスペルが許可されていない
+	if( !battle_config.roki_item_autospell && sd->sc.data[SC_ROKISWEIL].timer != -1)
 		return 0;
 
 	// いつの間にか自分もしくは攻撃対象が死んでいた

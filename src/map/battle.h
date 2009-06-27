@@ -569,6 +569,10 @@ extern struct Battle_Config {
 
 	int whistle_perfect_flee;
 	int pkmap_noteleport;
+	int sg_type;
+	int pvp_send_guild_xy;
+	int mvpitem_weight_limit;
+	int roki_item_autospell;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

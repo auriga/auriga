@@ -1,7 +1,37 @@
 ----------------------------------------
+//0628 [2009/06/28] by Salva
+
+・ストームガストの処理を以下のAthenaからMarge
+	（skill.c , battle.c , mob.c）
+	Athena 428,Athena 429,Athena 444,Athena 522,Athena 581
+	nanashiさん、Toshiさん、かんなぎさんに感謝
+
+・battle_auriga.confに以下を追加
+	（battle.c , mob.c , clif.c , skill.c , battle.c）
+	ストームガストの挙動(sg_type)
+		nanashiさんに感謝
+	PvPモードでギルドメンバーの位置情報の送信する(pvp_send_guild_xy)
+		Lyeseさんに感謝
+	MVPアイテムを所得時、落としてしまう所持重量率(mvpitem_weight_limit)
+		Toshiさんに感謝
+	ロキの中でアイテム オートスペルの発動を許可する(roki_item_autospell)
+
+・デスペラードからキャスティング1秒を削除(skill_cast_db.txt)
+	Toshiさんに感謝
+
+・ジュピロスダンジョン最深部への通行クエストのNPC設置順番を入れ替え(npc_quest_juperos.txt)
+	※クエスト進行上は問題ないが未だbTigereye使用時表示上の問題あり
+	mitaranさんに感謝
+
+・アースクエイクがプレイヤーとモンスターのみを攻撃対象にするよう修正(skill.c)
+
+・0627のReadmeを若干修正
+
+----------------------------------------
 //0627 [2009/06/24] by Salva
 
 ・ロキ内にいるときアイテム オートスペルを発動しないように修正（skill.c）
+	かんなぎさんに感謝
 
 ----------------------------------------
 //0626 [2009/06/22] by Blaze

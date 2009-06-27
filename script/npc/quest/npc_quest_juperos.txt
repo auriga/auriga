@@ -450,6 +450,30 @@ OnInit:
 //============================================================
 // エレベーター
 //------------------------------------------------------------
+jupe_ele_r.gat,51,98,0	script	スイッチ進行中#jupe_ele	844,{
+	mes "-この機械は、";
+	mes "誰かが使用しているようだ-";
+	close;
+OnInit:
+	hideonnpc;
+	end;
+OnKilled:
+	set 'mob,'mob-1;
+	if('mob == 0) {
+		stopnpctimer "スイッチ#jupe_ele";
+		sleep 5000;
+		announce "幻影を破りし者らよ、更に奥へ進んでみないか？",9,0x66FF00;
+		areasoundeffect "jupe_ele_r.gat",0,0,100,160,"earth_quake.wav",0;
+		sleep 4000;
+		disablenpc "juperoswarp4013";
+		areawarp "jupe_ele_r.gat",0,0,100,160,"jupe_ele.gat",42,47;
+		donpcevent "jupe_ele::OnSummon1";
+		initnpctimer "jupe_ele";
+		end;
+	}
+	end;
+}
+
 jupe_ele_r.gat,51,98,0	script	スイッチ#jupe_ele	844,{
 	cutin "5",2;
 	mes "-何かを作動させることが";
@@ -544,30 +568,6 @@ OnTimer144000:
 	killmonster "this","All";
 	hideonnpc "スイッチ進行中#jupe_ele";
 	hideoffnpc "スイッチ#jupe_ele";
-	end;
-}
-
-jupe_ele_r.gat,51,98,0	script	スイッチ進行中#jupe_ele	844,{
-	mes "-この機械は、";
-	mes "誰かが使用しているようだ-";
-	close;
-OnInit:
-	hideonnpc;
-	end;
-OnKilled:
-	set 'mob,'mob-1;
-	if('mob == 0) {
-		stopnpctimer "スイッチ#jupe_ele";
-		sleep 5000;
-		announce "幻影を破りし者らよ、更に奥へ進んでみないか？",9,0x66FF00;
-		areasoundeffect "jupe_ele_r.gat",0,0,100,160,"earth_quake.wav",0;
-		sleep 4000;
-		disablenpc "juperoswarp4013";
-		areawarp "jupe_ele_r.gat",0,0,100,160,"jupe_ele.gat",42,47;
-		donpcevent "jupe_ele::OnSummon1";
-		initnpctimer "jupe_ele";
-		end;
-	}
 	end;
 }
 

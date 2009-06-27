@@ -8923,15 +8923,18 @@ void clif_guild_broken(struct map_session_data *sd, unsigned int flag)
  */
 void clif_guild_xy(struct map_session_data *sd)
 {
-	unsigned char buf[10];
+	// PvPモードで送信するか
+	if( battle_config.pvp_send_guild_xy || !map[sd->bl.m].flag.pvp ){
+		unsigned char buf[10];
 
-	nullpo_retv(sd);
+		nullpo_retv(sd);
 
-	WBUFW(buf,0)=0x1eb;
-	WBUFL(buf,2)=sd->status.account_id;
-	WBUFW(buf,6)=sd->bl.x;
-	WBUFW(buf,8)=sd->bl.y;
-	clif_send(buf,packet_db[0x1eb].len,&sd->bl,GUILD_SAMEMAP_WOS);
+		WBUFW(buf,0)=0x1eb;
+		WBUFL(buf,2)=sd->status.account_id;
+		WBUFW(buf,6)=sd->bl.x;
+		WBUFW(buf,8)=sd->bl.y;
+		clif_send(buf,packet_db[0x1eb].len,&sd->bl,GUILD_SAMEMAP_WOS);
+	}
 
 	return;
 }
