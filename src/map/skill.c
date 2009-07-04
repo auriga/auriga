@@ -1428,7 +1428,9 @@ static int skill_area_sub( struct block_list *bl,va_list ap )
 	flag     = va_arg(ap,int);
 	func     = va_arg(ap,SkillFunc);
 
-	if(battle_check_target(src,bl,flag) > 0)
+	if(battle_check_target(src,bl,flag) > 0 ||	// 彼我敵対関係チェック
+	     // 彼我敵対関係を無視するスキル(通常はskill_castend_idとskill_castend_damage_idで指定)
+	     skill_id == KN_BRANDISHSPEAR && src->type == BL_PC )	// ブランディッシュスピアで使用者がプライヤーのとき無視
 		func(src,bl,skill_id,skill_lv,tick,flag);
 	return 0;
 }
@@ -1999,6 +2001,8 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 				case ML_BRANDISH:
 				case PR_LEXDIVINA:
 				case MER_LEXDIVINA:
+				case MO_EXTREMITYFIST:
+				case SA_DISPELL:
 					fail_flag = 0;
 					break;
 				case SA_SPELLBREAKER:
@@ -2135,6 +2139,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		case NJ_KAMAITACHI:
 		case MA_SHARPSHOOTING:
 		case ML_BRANDISH:
+		case MO_EXTREMITYFIST:
 			// skill_castend_idで許可したスキルはここで敵チェック
 			if(skill_get_inf2(skillid) & 0x04 || skill_get_inf(skillid) & 0x01) {
 				if(battle_check_target(src,bl,BCT_ENEMY) <= 0)
@@ -2206,7 +2211,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case LK_JOINTBEAT:			/* ジョイントビート */
 	case ASC_BREAKER:			/* ソウルブレーカー */
 	case HW_MAGICCRASHER:		/* マジッククラッシャー */
-	case KN_BRANDISHSPEAR:		/* ブランディッシュスピア */
 	case PA_SHIELDCHAIN:		/* シールドチェイン */
 	case WS_CARTTERMINATION:	/* カートターミネーション */
 	case CR_ACIDDEMONSTRATION:	/* アシッドデモンストレーション */
@@ -2241,6 +2245,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case ML_SPIRALPIERCE:
 	case MER_CRASH:			/* クラッシュ */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		break;
+	case KN_BRANDISHSPEAR:		/* ブランディッシュスピア */
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
 		break;
 	case AC_DOUBLE:			/* ダブルストレイフィング */
 	case MA_DOUBLE:
@@ -2443,7 +2450,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			}
 			sd->ud.to_x = sd->bl.x + dx;
 			sd->ud.to_y = sd->bl.y + dy;
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
 			clif_walkok(sd);
 			clif_move(&sd->bl);
 			if(dx < 0) dx = -dx;
@@ -2454,7 +2461,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			unit_movepos(&sd->bl,sd->ud.to_x,sd->ud.to_y,0);
 			status_change_end(&sd->bl,SC_COMBO,-1);
 		} else {
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
 		}
 		status_change_end(src, SC_EXPLOSIONSPIRITS, -1);
 		sc = status_get_sc(src);
@@ -7169,8 +7176,11 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			int i = src->range;
 			if(sg->skill_lv>5)
 				i += 2;
-			map_foreachinarea(battle_skill_attack_area,src->bl.m,src->bl.x-i,src->bl.y-i,src->bl.x+i,src->bl.y+i,
-				(BL_CHAR|BL_SKILL),BF_MAGIC,ss,&src->bl,sg->skill_id,sg->skill_lv,tick,0,BCT_ENEMY);
+			if(battle_config.firepillar_splash_on)
+				map_foreachinarea(battle_skill_attack_area,src->bl.m,src->bl.x-i,src->bl.y-i,src->bl.x+i,src->bl.y+i,
+					(BL_CHAR|BL_SKILL),BF_MAGIC,ss,&src->bl,sg->skill_id,sg->skill_lv,tick,0,BCT_ENEMY);
+			else
+				battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 		}
 		break;
 	case UNT_SKIDTRAP:	/* スキッドトラップ */
@@ -10566,9 +10576,11 @@ static int skill_trap_splash(struct block_list *bl, va_list ap )
 				break;
 			case UNT_BLASTMINE:	/* ブラストマイン */
 			case UNT_CLAYMORETRAP:	/* クレイモアートラップ */
-				for(i=0;i<splash_count;i++){
+				if(battle_config.trap_splash_on)
+					for(i=0;i<splash_count;i++)
+						battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
+				else
 					battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
-				}
 				break;
 			case UNT_FREEZINGTRAP:	/* フリージングトラップ */
 				battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);

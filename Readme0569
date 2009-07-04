@@ -1,4 +1,24 @@
 ----------------------------------------
+//0629 [2009/07/05] by Salva
+
+・ファイヤピラー、クレイモアトラップ、ブラストマインを乗算計算するか設定できるように修正(battle_auriga.conf,battle.h,battle.c,skill.c)
+	Thanks to Toshiさん
+
+・左手にbDefRatioATK効果の武器を装備しているとき、ソウルブレイカーにbDefRatioATKの効果が乗っていなかった問題を修正(battle.c)
+	Thanks to 大和さん
+
+・bDefRatioATK効果のアイテムとbIgnoreDef効果のアイテムを同時に装備しているとき
+	bDefRatioATKは発動しないよう修正(battle.c)
+
+・ディスペル、阿修羅覇王拳をシフトクリック使用ができるように修正(skill.c,battle.c)
+
+・ブランディッシュスピアをシフトクリック使用したとき
+	攻撃可能な対象が範囲内にいないときにエフェクトが出なかった問題を修正(skill.c)
+
+・プレイヤーが使う一部の地面スキルをプレイヤーやモンスターの足元に置くのを禁止するかどうか(player_skill_nofootset)の
+	初期値をyesに修正(battle_auriga.conf,battle.c)
+
+----------------------------------------
 //0628 [2009/06/28] by Salva
 
 ・ストームガストの処理を以下のAthenaからMarge

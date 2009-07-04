@@ -573,6 +573,8 @@ extern struct Battle_Config {
 	int pvp_send_guild_xy;
 	int mvpitem_weight_limit;
 	int roki_item_autospell;
+	int trap_splash_on;
+	int firepillar_splash_on;
 } battle_config;
 
 int battle_config_read(const char *cfgName);
