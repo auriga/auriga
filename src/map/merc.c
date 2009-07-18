@@ -773,7 +773,7 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 		return 0;
 
 	// 歩いていたら足を止める
-	if((mcd->sc.data[SC_ENDURE].timer == -1 || map[mcd->bl.m].flag.gvg) && mcd->sc.data[SC_BERSERK].timer == -1)
+	if((mcd->sc.data[SC_ENDURE].timer == -1 && mcd->sc.data[SC_BERSERK].timer == -1 ) || map[mcd->bl.m].flag.gvg )
 		unit_stop_walking(&mcd->bl,battle_config.pc_hit_stop_type);
 
 	if(damage > 0 && mcd->sc.data[SC_GRAVITATION_USER].timer != -1)

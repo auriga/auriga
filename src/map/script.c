@@ -7551,8 +7551,8 @@ int buildin_sc_start2(struct script_state *st)
 		if(sd && sd->state.potionpitcher_flag)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
-	if(atn_rand()%10000 < per && bl && !unit_isdead(bl))
-		status_change_start(bl,type,val1,0,0,0,tick,0);
+	if(bl && !unit_isdead(bl))
+		status_change_judge(status_change_start_sub,bl,type,per,0,6,val1,0,0,0,tick,0);
 	return 0;
 }
 
@@ -7610,7 +7610,8 @@ int buildin_sc_start3(struct script_state *st)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
 	if(bl && !unit_isdead(bl))
-		status_change_start(bl,type,val1,val2,val3,val4,tick,flag);
+		if(flag&8 || status_change_rate(bl,type,10000,0) > 0)
+			status_change_start(bl,type,val1,val2,val3,val4,tick,flag);
 	return 0;
 }
 

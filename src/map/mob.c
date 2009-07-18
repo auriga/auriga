@@ -1558,8 +1558,11 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 
 	max_hp = status_get_max_hp(&md->bl);
 
-	if((md->sc.data[SC_ENDURE].timer == -1 || map[md->bl.m].flag.gvg) && md->sc.data[SC_BERSERK].timer == -1)
-		unit_stop_walking(&md->bl,3);
+	if(( md->sc.data[SC_ENDURE].timer == -1 && md->sc.data[SC_BERSERK].timer == -1 ) || map[md->bl.m].flag.gvg )
+		if(atn_rand()%100 >= battle_config.mob_nohitstop_rate)
+			unit_stop_walking(&md->bl,3);
+		else
+			unit_stop_walking(&md->bl,11);
 	if(damage > max_hp>>2)
 		skill_stop_dancing(&md->bl,0);
 

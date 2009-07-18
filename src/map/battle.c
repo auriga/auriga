@@ -619,64 +619,25 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 	// PCの状態異常反撃
 	if(tsd && src != &tsd->bl && tsd->addreveff_flag && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0 && flag&BF_WEAPON)
 	{
-		int i, rate, luk;
-		int sc_def_card = 100;
-		int sc_def_mdef, sc_def_vit, sc_def_int, sc_def_luk;
+		int i, rate;
 		const int sc2[] = {
 			MG_STONECURSE,MG_FROSTDIVER,NPC_STUNATTACK,
 			NPC_SLEEPATTACK,TF_POISON,NPC_CURSEATTACK,
 			NPC_SILENCEATTACK,0,NPC_BLINDATTACK,LK_HEADCRUSH
 		};
 
-		// 対象の耐性
-		luk = status_get_luk(src);
-		sc_def_mdef = 50 - (3 + status_get_mdef(src) + luk/3);
-		sc_def_vit  = 50 - (3 + status_get_vit(src) + luk/3);
-		sc_def_int  = 50 - (3 + status_get_int(src) + luk/3);
-		sc_def_luk  = 50 - (3 + luk);
-
-		/*
-		if(target->bl.type == BL_MOB) {
-			if(sc_def_mdef < 50)
-				sc_def_mdef = 50;
-			if(sc_def_vit < 50)
-				sc_def_vit = 50;
-			if(sc_def_int < 50)
-				sc_def_int = 50;
-			if(sc_def_luk < 50)
-				sc_def_luk = 50;
-		}
-		*/
-
-		if(sc_def_mdef < 0)
-			sc_def_mdef = 0;
-		if(sc_def_vit < 0)
-			sc_def_vit = 0;
-		if(sc_def_int < 0)
-			sc_def_int = 0;
-
 		for(i = SC_STONE; i <= SC_BLEED; i++) {
-			// 対象に状態異常
-			if(i == SC_STONE || i == SC_FREEZE)
-				sc_def_card = sc_def_mdef;
-			else if(i == SC_STUN || i == SC_POISON || i == SC_SILENCE || i == SC_BLEED)
-				sc_def_card = sc_def_vit;
-			else if(i == SC_SLEEP || i == SC_CONFUSION || i == SC_BLIND)
-				sc_def_card = sc_def_int;
-			else if(i == SC_CURSE)
-				sc_def_card = sc_def_luk;
 
 			if(battle_config.reveff_plus_addeff)
-				rate = (tsd->addreveff[i-SC_STONE] + tsd->addeff[i-SC_STONE] + tsd->arrow_addeff[i-SC_STONE])*sc_def_card/100;
+				rate = (tsd->addreveff[i-SC_STONE] + tsd->addeff[i-SC_STONE] + tsd->arrow_addeff[i-SC_STONE]);
 			else
-				rate = (tsd->addreveff[i-SC_STONE])*sc_def_card/100;
+				rate = (tsd->addreveff[i-SC_STONE]);
 
 			if(src->type == BL_PC || src->type == BL_MOB || src->type == BL_HOM || src->type == BL_MERC)
 			{
-				if(atn_rand()%10000 < rate) {
+				if(!status_change_judge(status_change_start_sub,src,i,rate,status_get_lv(&tsd->bl),6,7,0,0,0,(i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7),0)){
 					if(battle_config.battle_log)
 						printf("PC %d skill_addreveff: cardによる異常発動 %d %d\n",tsd->bl.id,i,tsd->addreveff[i-SC_STONE]);
-					status_change_start(src,i,7,0,0,0,(i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7),0);
 				}
 			}
 		}
@@ -2197,9 +2158,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				/* bDefRatioATK系効果はbIgnoreDef系効果がある場合無視されるためここでも有無を判定 */
 
 				// 右手にbIgnoreDef系の効果がない
-				if(src_sd->ignore_def_ele[t_ele] == 0 && src_sd->ignore_def_race[t_race] == 0 && src_sd->ignore_def_enemy[t_enemy] ==0 && (!(t_mode & 0x20) && src_sd->ignore_def_race[RCT_BOSS] ==0) &&
+				if(src_sd->ignore_def_ele[t_ele] == 0 && src_sd->ignore_def_race[t_race] == 0 && src_sd->ignore_def_enemy[t_enemy] ==0 && (!(t_mode & 0x20) || src_sd->ignore_def_race[RCT_BOSS] == 0) &&
 				    // battle_config.left_cardfix_to_rightが有効かつ左手にbIgnoreDef系の効果がない
-				    (!battle_config.left_cardfix_to_right || (src_sd->ignore_def_ele_[t_ele] == 0 && src_sd->ignore_def_race_[t_race] == 0 && src_sd->ignore_def_enemy_[t_enemy] ==0 && (!(t_mode & 0x20) && src_sd->ignore_def_race_[RCT_BOSS] ==0) )))
+				    (!battle_config.left_cardfix_to_right || (src_sd->ignore_def_ele_[t_ele] == 0 && src_sd->ignore_def_race_[t_race] == 0 && src_sd->ignore_def_enemy_[t_enemy] ==0 && (!(t_mode & 0x20) || src_sd->ignore_def_race_[RCT_BOSS] == 0) )))
 					// bDefRatioATK系
 					if( !calc_flag.idef && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy)) )
 						if( skill_num != ASC_BREAKER || !calc_flag.idef_){
@@ -2207,9 +2168,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							calc_flag.idef = 1;
 						}
 				// 左手にbIgnoreDef系の効果がない
-				if(src_sd->ignore_def_ele_[t_ele] == 0 && src_sd->ignore_def_race_[t_race] == 0 && src_sd->ignore_def_enemy_[t_enemy] ==0 && (!(t_mode & 0x20) || src_sd->ignore_def_race_[RCT_BOSS] ==0) &&
+				if(src_sd->ignore_def_ele_[t_ele] == 0 && src_sd->ignore_def_race_[t_race] == 0 && src_sd->ignore_def_enemy_[t_enemy] ==0 && (!(t_mode & 0x20) || src_sd->ignore_def_race_[RCT_BOSS] == 0) &&
 				    // battle_config.left_cardfix_to_rightが有効かつ右手にbIgnoreDef系の効果がない
-				    (!battle_config.left_cardfix_to_right || (src_sd->ignore_def_ele[t_ele] == 0 && src_sd->ignore_def_race[t_race] == 0 && src_sd->ignore_def_enemy[t_enemy] ==0 && (!(t_mode & 0x20) && src_sd->ignore_def_race[RCT_BOSS] ==0) )))
+				    (!battle_config.left_cardfix_to_right || (src_sd->ignore_def_ele[t_ele] == 0 && src_sd->ignore_def_race[t_race] == 0 && src_sd->ignore_def_enemy[t_enemy] ==0 && (!(t_mode & 0x20) || src_sd->ignore_def_race[RCT_BOSS] == 0) )))
 					// bDefRatioATK系を左手も適用する場合
 					if( calc_flag.lh || skill_num == ASC_BREAKER )
 						if( !calc_flag.idef_ && (src_sd->def_ratio_atk_ele_ & (1<<t_ele) || src_sd->def_ratio_atk_race_ & mask || src_sd->def_ratio_atk_enemy_ & (1<<t_enemy)) &&
@@ -2466,7 +2427,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 						rate = (src_sd->status.base_level + s_dex + s_luk + s_str) / (12 - 3 * pc_checkskill(src_sd,SG_STAR_ANGER));
 				}
 				if(rate > 0) {
-					DMG_FIX( rate, 100 );
+					DMG_FIX( 100 + rate, 100 );
 				}
 			}
 		}
@@ -3889,7 +3850,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	if(flag & 0x01000000) {	// エフェクトだけ出してダメージなしで終了
 		clif_skill_damage(dsrc, bl, tick, status_get_amotion(src), 0, -1, 1, skillid, lv, type);
-		if(skillid == MO_EXTREMITYFIST){ // 阿修羅の場合SPを0にする
+		if(sd && skillid == MO_EXTREMITYFIST){ // 阿修羅の場合SPを0にする
 			sd->status.sp = 0;
 			clif_updatestatus(sd,SP_SP);
 		}
@@ -5201,6 +5162,8 @@ int battle_config_read(const char *cfgName)
 		{ "roki_item_autospell",               	&battle_config.roki_item_autospell,   	           0  	    },
 		{ "trap_splash_on",               	&battle_config.trap_splash_on,   	           0  	    },
 		{ "firepillar_splash_on",              	&battle_config.firepillar_splash_on,   	           0  	    },
+		{ "mob_nohitstop_rate",                 &battle_config.mob_nohitstop_rate,		   0	    },
+		{ "scdef_no_difflevel",                 &battle_config.scdef_no_difflevel,		   0	    },
 		{ NULL,                                 NULL,                                              1        },
 
 	};

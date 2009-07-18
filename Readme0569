@@ -1,4 +1,43 @@
 ----------------------------------------
+//0630 [2009/07/19] by Salva
+
+・HITSTOPの発生条件式を修正(pc.c,mob.c,merc.c)
+	shobonさんに感謝
+
+・阿修羅覇王拳を味方に使用した場合にSPを0にするときにプレイヤーかチェックするよう修正(battle.c)
+	Toshiさん、Cocoaさんに感謝
+
+・Auriga-0629で修正したブランディッシュスピアをシフトクリック使用したときの条件文を若干修正(skill.c)
+	poporiさんに感謝
+
+・天体の怒りのダメージ倍率を修正(battle.c)
+	shobonさんに感謝
+
+・天体の安楽状態のとき、安楽の効果を発揮する条件を修正(status.c)
+	shobonさんに感謝
+
+・bHPPenaltyTime、bHPPenaltyUnrigで死亡する問題を修正(pc.c)
+	 Toshiさんに感謝
+
+・bDefRatioATK効果がボス属性に適用されていなかった問題を修正(battle.c)
+	creaさんに感謝
+
+・ジークフリートをステータス耐性ではなく装備耐性として計算するよう修正(status.c)
+
+・速度減少の成否判定式修正(skill.c)
+
+・battle_confに以下2つを追加
+	mob_nohitstop_rate(モンスターが攻撃を受けた時にヒットストップしない確率)
+	 (battle_auriga.conf,mob.c,unit.c,battle.c,battle.h)
+		apacheさん、Toshiさん、mizukiさんに感謝
+	scdef_no_difflevel(状態異常の耐性としてベースレベルの差を計算しない)
+	 (status.c,battle.c,battle.h)
+
+・状態異常に関する修正
+   状態異常の耐性を一つの関数で行うように修正(skill.c,status.c,status.h,battle.c)
+   状態異常耐性式、状態異常時間算出式を騎士スレテンプレ、CrusaderTemplateを参考に修正(status.c)
+
+----------------------------------------
 //0629 [2009/07/05] by Salva
 
 ・ファイヤピラー、クレイモアトラップ、ブラストマインを乗算計算するか設定できるように修正(battle_auriga.conf,battle.h,battle.c,skill.c)

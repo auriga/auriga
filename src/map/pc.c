@@ -5078,7 +5078,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	}
 
 	// 歩いていたら足を止める
-	if((sd->sc.data[SC_ENDURE].timer == -1 || !sd->special_state.infinite_endure || map[sd->bl.m].flag.gvg) && sd->sc.data[SC_BERSERK].timer == -1 && !unit_isrunning(&sd->bl))
+	if(((sd->sc.data[SC_ENDURE].timer == -1 && sd->sc.data[SC_BERSERK].timer == -1 && !sd->special_state.infinite_endure) || map[sd->bl.m].flag.gvg) && !unit_isrunning(&sd->bl))
 		unit_stop_walking(&sd->bl,battle_config.pc_hit_stop_type);
 
 	// 演奏/ダンスの中断
@@ -6952,8 +6952,20 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 			status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
 	}
 
-	if(hp || sp)
-		pc_heal(sd,-hp,-sp);
+	if(hp){
+		if(sd->status.hp - hp > 0)
+			sd->status.hp -= hp;
+		else
+			sd->status.hp = 0;
+		clif_updatestatus(sd,SP_HP);
+	}
+	if(sp){
+		if(sd->status.sp - sp > 0)
+			sd->status.sp -= sp;
+		else
+			sd->status.sp = 0;
+		clif_updatestatus(sd,SP_SP);
+	}
 
 	return;
 }
@@ -8102,8 +8114,20 @@ static int pc_bleeding(struct map_session_data *sd)
 		}
 	}
 
-	if (hp != 0 || sp != 0)
-		pc_heal(sd,-hp,-sp);
+	if (hp){
+		if(sd->status.hp - hp > 0)
+			sd->status.hp -= hp;
+		else
+			sd->status.hp = 0;
+		clif_updatestatus(sd,SP_HP);
+	}
+	if (sp){
+		if(sd->status.sp - sp > 0)
+			sd->status.sp -= sp;
+		else
+			sd->status.sp = 0;
+		clif_updatestatus(sd,SP_SP);
+	}
 
 	return 0;
 }

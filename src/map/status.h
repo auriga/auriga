@@ -96,8 +96,10 @@ int status_get_aspd(struct block_list *bl);
 int status_can_save(int type);
 int status_is_disable(int type,int mask);
 int status_change_start(struct block_list *bl,int type,int val1,int val2,int val3,int val4,int tick,int flag);
+int status_change_start_sub(struct block_list *bl,int type,va_list ap);
 int status_change_end(struct block_list* bl, int type, int tid);
 int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int val3,int val4,int tick,int flag,int pre_tick);
+int status_change_pretimer_sub(struct block_list *bl,int type,va_list ap);
 int status_change_timer(int tid, unsigned int tick, int id, void *data);
 int status_change_timer_sub(struct block_list *bl, va_list ap);
 int status_change_race_end(struct block_list *bl,int type);
@@ -112,6 +114,8 @@ int status_clearpretimer(struct block_list *bl);
 int status_change_attacked_end(struct block_list *bl);
 int status_change_hidden_end(struct block_list *bl);
 int status_change_removemap_end(struct block_list *bl);
+int status_change_judge(int (*func)(struct block_list*,int,va_list),struct block_list *bl,int type,int rate,int src_level,int num,...);
+int status_change_rate(struct block_list *bl,int type,int rate,int src_level);
 
 // 状態チェック
 int status_check_no_magic_damage(struct block_list *bl);

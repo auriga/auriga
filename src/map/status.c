@@ -1613,17 +1613,17 @@ L_RECALC:
 	// スキルやステータス異常による残りのパラメータ補正
 	if(sd->sc.count > 0) {
 		// 太陽の安楽 DEF増加
-		if(sd->sc.data[SC_SUN_COMFORT].timer != -1 && sd->bl.m == sd->feel_index[0])
+		if(sd->sc.data[SC_SUN_COMFORT].timer != -1 )
 			sd->def2 += (sd->status.base_level + sd->status.dex + sd->status.luk)/2;
 			//sd->def += (sd->status.base_level + sd->status.dex + sd->status.luk + sd->paramb[4] + sd->paramb[5])/10;
 
 		// 月の安楽
-		if(sd->sc.data[SC_MOON_COMFORT].timer != -1 && sd->bl.m == sd->feel_index[1])
+		if(sd->sc.data[SC_SUN_COMFORT].timer != -1 && (sd->bl.m == sd->feel_index[0] || sd->sc.data[SC_MIRACLE].timer != -1))
 			sd->flee += (sd->status.base_level + sd->status.dex + sd->status.luk)/10;
 			//sd->flee += (sd->status.base_level + sd->status.dex + sd->status.luk + sd->paramb[4] + sd->paramb[5])/10;
 
 		// 星の安楽
-		if(sd->sc.data[SC_STAR_COMFORT].timer != -1 && sd->bl.m == sd->feel_index[2])
+		if(sd->sc.data[SC_STAR_COMFORT].timer != -1 && (sd->bl.m == sd->feel_index[2] || sd->sc.data[SC_MIRACLE].timer != -1))
 			aspd_rate -= (sd->status.base_level + sd->status.dex + sd->status.luk)/10;
 			//aspd_rate += (sd->status.base_level + sd->status.dex + sd->status.luk + sd->paramb[0] + sd->paramb[4] + sd->paramb[5])/10;
 
@@ -4191,6 +4191,111 @@ int status_check_no_magic_damage(struct block_list *bl)
 }
 
 /*==========================================
+ * 状態異常の耐性計算
+ *------------------------------------------
+ */
+
+int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
+{
+
+	struct status_change    *sc  = NULL;
+	int sc_flag = 0;
+	int diff_level;
+
+	nullpo_retr(0, bl);
+
+	if(type < 0)	// typeが0未満の場合失敗
+		return 1;
+
+	if(rate <= 0)	// 確率が0以下のものは失敗
+		return 1;
+
+	sc = status_get_sc(bl);
+
+	if(src_level && !battle_config.scdef_no_difflevel){
+		diff_level = src_level - status_get_lv(bl);
+	}else{
+		diff_level = 0;
+		src_level = 0;
+	}
+
+	switch(type) {	// 状態異常耐性ステータス rateは万分率
+		case SC_STONE:
+		case SC_FREEZE:
+			rate = rate*(100-status_get_mdef(bl))/100 + (diff_level - status_get_luk(bl))*10;
+			sc_flag = 1;
+			break;
+		case SC_STUN:
+		case SC_SILENCE:
+		case SC_POISON:
+		case SC_DPOISON:
+		case SC_BLEED:	// 詳細不明なのでとりあえずここで
+			rate = rate*(100-status_get_vit(bl))/100 + (diff_level - status_get_luk(bl))*10;
+			sc_flag = 1;
+			break;
+		case SC_SLEEP:
+		case SC_BLIND:
+			rate = rate*(100-status_get_int(bl))/100 + (diff_level - status_get_luk(bl))*10;
+			sc_flag = 1;
+			break;
+		case SC_CURSE:
+			if(src_level)	// 発動者レベルが0以外の場合
+				// 暫定で 基本確率×(1 + 術者BaseLv - 対象LUK)/術者BaseLv [%]
+				rate = rate*(1+src_level-status_get_luk(bl))/src_level;
+			else
+				rate = rate*(100-status_get_luk(bl))/100;
+			sc_flag = 1;
+			break;
+		case SC_CONFUSION: // 詳細不明なので暫定式(AGIとINT影響らしい)
+			rate = rate*(100-status_get_int(bl))/100 + (diff_level - status_get_agi(bl))*10;
+			sc_flag = 1;
+			break;
+		case SC_WINKCHARM: // 一応チャーム状態もこちらで計算、式不明のためそのまま
+			sc_flag = 1;
+			break;
+		default:
+			break;
+	}
+	if(sc_flag) {
+		if(sc->data[SC_STATUS_UNCHANGE].timer != -1 && status_is_disable(type,0x10))
+			return 0;	// ゴスペルの全状態異常耐性中なら無効
+	}
+
+	return rate;
+}
+
+/*==========================================
+ * 状態異常の成否
+ *	耐性の計算はstatus_change_rate()で行う
+ *------------------------------------------
+ */
+
+int status_change_judge(int (*func)(struct block_list*,int,va_list),struct block_list *bl,int type,int rate,int src_level,int val_list_num,...)
+{
+	va_list ap;
+
+	nullpo_retr(0, bl);
+
+	if(type < 0)
+		return 1;
+
+	if(rate <= 0)
+		return 1;
+
+	rate = status_change_rate(bl,type,rate,src_level);
+
+	if(atn_rand()%10000 <= rate){
+		va_start(ap,val_list_num);
+		func(bl,type,ap);
+		va_end(ap);
+	}else{
+		return 1;
+	}
+
+	return 0;
+}
+
+/*==========================================
  * ステータス異常データの動的確保
  *------------------------------------------
  */
@@ -4242,7 +4347,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	struct merc_data        *mcd = NULL;
 	struct status_change    *sc  = NULL;
 	int opt_flag = 0, calc_flag = 0, race, mode, elem;
-	int scdef = 0;
+	int sc_flag = 0;
 
 	nullpo_retr(0, bl);
 
@@ -4296,42 +4401,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 	}
 
-	switch(type) {
-		case SC_STONE:
-		case SC_FREEZE:
-			scdef = 3+status_get_mdef(bl)+status_get_luk(bl)/3;
-			break;
-		case SC_STUN:
-		case SC_SILENCE:
-		case SC_POISON:
-		case SC_DPOISON:
-		case SC_BLEED:	// 詳細不明なのでとりあえずここで
-			scdef = 3+status_get_vit(bl)+status_get_luk(bl)/3;
-			break;
-		case SC_SLEEP:
-		case SC_BLIND:
-			scdef = 3+status_get_int(bl)+status_get_luk(bl)/3;
-			break;
-		case SC_CURSE:
-			scdef = 3+status_get_luk(bl);
-			break;
-		case SC_CONFUSION:
-		default:
-			scdef = 0;
-	}
-	if(scdef) {
-		if(sc->data[SC_STATUS_UNCHANGE].timer != -1) {
-			if(status_is_disable(type,0x10))	// ゴスペルの全状態異常耐性中なら無効
-				return 0;
-		}
-		if(sc->data[SC_SIEGFRIED].timer != -1) {		// ジークフリードの状態異常耐性
-			scdef += 50;
-		}
-	}
-
-	if(!(flag&8) && scdef >= 100)	// flagが+8なら完全耐性計算しない
-		return 0;
-
 	sd  = BL_DOWNCAST( BL_PC,   bl );
 	md  = BL_DOWNCAST( BL_MOB,  bl );
 	hd  = BL_DOWNCAST( BL_HOM,  bl );
@@ -4345,6 +4414,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		if( type == SC_ADRENALINE2 && !(skill_get_weapontype(BS_ADRENALINE2)&(1<<sd->status.weapon)) )
 			return 0;
 		if( SC_STONE <= type && type <= SC_BLEED ) {	/* カードによる耐性 */
+			int scdef;
+			scdef = sd->reseff[type-SC_STONE];
+			if(sc->data[SC_SIEGFRIED].timer != -1) {		// ジークフリードの状態異常耐性
+				scdef += 5000;
+			}
 			if( !(flag&8) && sd->reseff[type-SC_STONE] > 0 && atn_rand()%10000 < sd->reseff[type-SC_STONE] ) {
 				if(battle_config.battle_log)
 					printf("PC %d skill_sc_start: cardによる異常耐性発動\n",sd->bl.id);
@@ -4978,8 +5052,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		/* option1 */
 		case SC_STONE:				/* 石化 */
 			if(!(flag&2)) {
-				int sc_def = status_get_mdef(bl)*200;
-				tick = tick - sc_def;
+				tick = tick - status_get_mdef(bl)*200;
 			}
 			val3 = tick / 1000;
 			if(val3 < 1)
@@ -5002,7 +5075,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_STUN:				/* スタン（val2にミリ秒セット） */
 			if(!(flag&2)) {
-				int sc_def = 100 - (status_get_vit(bl) + status_get_luk(bl)/3);
+				int sc_def = 100 - (4 + status_get_vit(bl) + status_get_luk(bl)/5);
 				tick = tick * sc_def / 100;
 			}
 			break;
@@ -5048,8 +5121,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_BLIND:				/* 暗黒 */
 			calc_flag = 1;
 			if(!(flag&2)) {
-				int sc_def = status_get_lv(bl)/10 + status_get_int(bl)/15;
-				tick = 30000 - sc_def;
+				int sc_def = status_get_lv(bl)*15 + status_get_int(bl)*10;
+				tick = 30000 - sc_def/150;
 			}
 			break;
 		case SC_CURSE:				/* 呪い */
@@ -5060,12 +5133,16 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			break;
 		case SC_CONFUSION:			/* 混乱 */
+			if(!(flag&2)) {	// 効果時間詳細不明なので暫定式を使用
+				int sc_def = status_get_lv(bl)*15 + status_get_int(bl)*10;
+				tick = 20000 - sc_def/150;
+			}
 			break;
 		case SC_BLEED:				/* 出血 */
 			if(!(flag&2)) {
-				// 効果時間の詳細不明なのでとりあえず毒のものを使う
-				int sc_def = 100 - (status_get_vit(bl) + status_get_luk(bl)/5);
-				tick = tick * sc_def / 100;
+				// 効果時間の詳細不明なので暫定式を使用
+				int sc_def = 100 - status_get_vit(bl);
+				tick = 120000 * sc_def/100;
 			}
 			val3 = (tick < 10000)? 1: tick/10000;
 			tick = 10000;	// ダメージ発生は10sec毎
@@ -5141,8 +5218,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			val4 = atn_rand()%6;
 			if(val4 == 5) {
-				// 首は強制的に出血付加
-				status_change_start(bl,SC_BLEED,val1,0,0,0,skill_get_time2(LK_JOINTBEAT,val1),10);
+				// 首は強制的に出血付加 ・ 使用者のレベルが取得できないのでとりあえず0を引数に
+				status_change_judge(status_change_start_sub,bl,SC_BLEED,10000,0,6,val1,0,0,0,skill_get_time2(LK_JOINTBEAT,val1),10);
 			}
 			if(!(flag&2)) {
 				tick = tick - (status_get_agi(bl)/10 + status_get_luk(bl)/4)*1000;
@@ -5569,6 +5646,22 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			unit_forcewalktodir(bl,val4);
 			break;
 	}
+
+	return 0;
+}
+
+int status_change_start_sub(struct block_list *bl,int type,va_list ap)
+{
+	int val1,val2,val3,val4,tick,flag;
+
+	val1 = va_arg(ap, int);
+	val2 = va_arg(ap, int);
+	val3 = va_arg(ap, int);
+	val4 = va_arg(ap, int);
+	tick = va_arg(ap, int);
+	flag = va_arg(ap, int);
+
+	status_change_start(bl,type,val1,val2,val3,val4,tick,flag);
 
 	return 0;
 }
@@ -6334,6 +6427,24 @@ int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int 
 	linkdb_insert(&ud->statuspretimer, stpt, stpt);
 
 	return 0;
+}
+
+int status_change_pretimer_sub(struct block_list *bl,int type,va_list ap){
+
+	int val1,val2,val3,val4,tick,flag,pre_tick;
+
+	val1 = va_arg(ap, int);
+	val2 = va_arg(ap, int);
+	val3 = va_arg(ap, int);
+	val4 = va_arg(ap, int);
+	tick = va_arg(ap, int);
+	flag = va_arg(ap, int);
+	pre_tick = va_arg(ap, int);
+
+	status_change_pretimer(bl,type,val1,val2,val3,val4,tick,flag,pre_tick);
+
+	return 0;
+
 }
 
 /*==========================================

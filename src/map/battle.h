@@ -575,6 +575,8 @@ extern struct Battle_Config {
 	int roki_item_autospell;
 	int trap_splash_on;
 	int firepillar_splash_on;
+	int mob_nohitstop_rate;
+	int scdef_no_difflevel;
 } battle_config;
 
 int battle_config_read(const char *cfgName);
