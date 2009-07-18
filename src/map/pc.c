@@ -6237,7 +6237,9 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 	clif_changeoption(&sd->bl);
 	clif_send_clothcolor(&sd->bl);
 	status_calc_pc(sd,0);
-
+#if PACKETVER > 14
+	clif_skillinfoblock(sd);
+#endif
 	return;
 }
 
@@ -6853,7 +6855,9 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 
 	pc_checkallowskill(sd);	// 装備品でスキルか解除されるかチェック
 	status_calc_pc(sd,0);
-
+#if PACKETVER > 14
+	clif_skillinfoblock(sd);
+#endif
 	if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_HUMAN,sd->def_ele))
 		status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
 

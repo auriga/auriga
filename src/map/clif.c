@@ -7924,6 +7924,9 @@ void clif_send_petstatus(struct map_session_data *sd)
 	WFIFOW(fd,29)=sd->pet.hungry;
 	WFIFOW(fd,31)=sd->pet.intimate;
 	WFIFOW(fd,33)=sd->pet.equip;
+#if PACKETVER > 14
+	WFIFOW(fd,35)=sd->pet.class_;
+#endif
 	WFIFOSET(fd,packet_db[0x1a2].len);
 
 	return;

@@ -1,4 +1,19 @@
 ----------------------------------------
+//0631 [2009/07/19] by popori
+
+・新クライアントに対応(clif.* script.c chrif.c pc.c packet_db.txt Makefile vc_make.bat bcc32_make.bat)
+ ->PACKETVERを15に引き上げ
+ ->MAX_PACKET_DBを0x500に引き上げ
+ ->PACKETVERが15以上の時に新スキルウインドウをサポート
+ ->2009-02-25から2009-06-17までのサクライ蔵まで対応
+　Thanks to eA Dev Team
+　とりあえずログインと新スキルウインドウ対応まで
+
+・db/const.txtにmf_nojumpが無いので追加 (const.txt)
+
+・0630のバグ修正と未使用の変数をコメントアウト (mob.c skill.c status.c)
+
+----------------------------------------
 //0630 [2009/07/19] by Salva
 
 ・HITSTOPの発生条件式を修正(pc.c,mob.c,merc.c)

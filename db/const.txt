@@ -134,6 +134,7 @@ mf_noicewall		37
 mf_turbo		38
 mf_norevive		39
 mf_nocommand		40
+mf_nojump		41
 
 StatusPoint	9	1
 BaseLevel	11	1

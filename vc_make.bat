@@ -18,6 +18,7 @@ set __BITTYPE__=x32
 
 rem ----------------------------------------------------------------
 rem パケット定義
+rem 2009-02-25aSakexe: 15
 rem 2008-01-02aSakexe: 14
 rem 2007-11-28aSakexe: 13
 rem 2007-11-06aSakexe: 12
@@ -25,7 +26,7 @@ rem 2007-09-04aSakexe: 11
 rem 2007-07-11aSakexe: 10
 rem 2007-05-21aSakexe:  9
 rem 2007-02-12aSakexe:  8
-set __PACKETDEF__=/D "PACKETVER=14" /D "NEW_006b"
+set __PACKETDEF__=/D "PACKETVER=15" /D "NEW_006b"
 
 rem ----------------------------------------------------------------
 rem コンパイラごとの設定（自分の環境にあうもののコメントアウトをはずす）

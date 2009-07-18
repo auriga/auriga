@@ -4347,7 +4347,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	struct merc_data        *mcd = NULL;
 	struct status_change    *sc  = NULL;
 	int opt_flag = 0, calc_flag = 0, race, mode, elem;
-	int sc_flag = 0;
+//	int sc_flag = 0;
 
 	nullpo_retr(0, bl);
 

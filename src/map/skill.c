@@ -882,7 +882,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	case LK_HEADCRUSH:		/* ヘッドクラッシュ */
 		{
-			int race = status_get_race(bl);
+//			int race = status_get_race(bl);
 			status_change_judge(status_change_start_sub,bl,SC_BLEED,5000,status_get_lv(src),6,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		}
 		break;
@@ -1010,7 +1010,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 	case GS_PIERCINGSHOT:		/* ピアーシングショット */
 		{
-			int race = status_get_race(bl);
+//			int race = status_get_race(bl);
 			status_change_judge(status_change_start_sub,bl,SC_BLEED,300*skilllv,status_get_lv(src),6,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		}
 		break;
