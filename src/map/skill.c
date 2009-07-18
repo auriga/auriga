@@ -4395,7 +4395,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_judge(status_change_start_sub,bl,SC_BLIND,10000,status_get_lv(src),6,1,0,0,0,120000,0);
 		}
 		if(dstmd) {
-			mob_unlocktarget( dstmd, tick );
+			mob_unlocktarget(dstmd,tick);
+			dstmd->attacked_id = 0;
+			dstmd->attacked_players = 0;
+
 		}
 		break;
 
@@ -8830,6 +8833,10 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		if(sd->sc.data[SC_BATTLEORDER_DELAY + cnd->id - GD_BATTLEORDER].timer != -1){
+			clif_skill_fail(sd,cnd->id,0,0);
+			return 0;
+		}
+		if(cnd->id == GD_EMERGENCYCALL && battle_config.no_emergency_call){
 			clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
 		}

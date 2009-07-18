@@ -5452,6 +5452,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				sc->opt1 = 6;
 			else
 				sc->opt1 = type - SC_STONE + 1;
+			if(md) {
+				mob_unlocktarget(md,gettick());
+				md->attacked_id = 0;
+				md->attacked_players = 0;
+			}
 			opt_flag = 1;
 			break;
 		// opt2
