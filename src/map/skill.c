@@ -5357,7 +5357,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						status_change_start(&member->bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0);
 				}
 			}
-			sd->skillstatictimer[skill_get_skilldb_id(skillid)] = tick + 300000;
+			if(skillid == GD_BATTLEORDER)
+				status_change_start(src,SC_BATTLEORDER_DELAY,0,0,0,0,300000,0);
+			else if(skillid == GD_REGENERATION)
+				status_change_start(src,SC_REGENERATION_DELAY,0,0,0,0,300000,0);
+			else
+				status_change_start(src,SC_RESTORE_DELAY,0,0,0,0,300000,0);
 		}
 		break;
 	case GD_EMERGENCYCALL:		/* 緊急招集 */
@@ -5405,7 +5410,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				}
 				pc_setpos(member,map[sd->bl.m].name,px,py,3);
 			}
-			sd->skillstatictimer[skill_get_skilldb_id(skillid)] = tick + 300000;
+			status_change_start(src,SC_EMERGENCYCALL_DELAY,0,0,0,0,300000,0);
 		}
 		break;
 
@@ -8824,7 +8829,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
 		}
-		if(cnd->id == GD_EMERGENCYCALL && battle_config.no_emergency_call){
+		if(sd->sc.data[SC_BATTLEORDER_DELAY + cnd->id - GD_BATTLEORDER].timer != -1){
 			clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
 		}

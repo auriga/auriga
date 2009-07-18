@@ -1,4 +1,12 @@
 ----------------------------------------
+//0632 [2009/07/19] by popori
+
+・packet_db.txtの修正 (packet_db.txt)
+　mitaranさんに感謝
+
+・ギルドスキルディレイの処理の一部を0265以前の処理に巻き戻す (status.* skill.c scdata.txt)
+
+----------------------------------------
 //0631 [2009/07/19] by popori
 
 ・新クライアントに対応(clif.* script.c chrif.c pc.c packet_db.txt Makefile vc_make.bat bcc32_make.bat)

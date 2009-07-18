@@ -4531,6 +4531,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_INCDAMAGE:			/* 被ダメージ%上昇 */
 		case SC_PRESERVE:			/* プリザーブ */
 		case SC_REGENERATION:			/* 激励 */
+		case SC_BATTLEORDER_DELAY:
+		case SC_REGENERATION_DELAY:
+		case SC_RESTORE_DELAY:
+		case SC_EMERGENCYCALL_DELAY:
 		case SC_MEAL_INCEXP:
 		case SC_MEAL_INCJOB:
 		case SC_COMBATHAN:			/* 戦闘教範 */
