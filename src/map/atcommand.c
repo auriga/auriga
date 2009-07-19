@@ -4806,7 +4806,7 @@ int atcommand_icon(const int fd, struct map_session_data* sd, AtCommandType comm
 	if (sscanf(message, "%d %d", &type, &on) < 1)
 		return -1;
 
-	clif_status_change(&sd->bl,type,on);
+	clif_status_change(&sd->bl,type,on,0);
 
 	return 0;
 }

@@ -385,7 +385,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			   map_count_oncell(sd->bl.m,x+dx,y+dy,BL_PC|BL_MOB|BL_NPC) > 0) {
 				skill_blown(&sd->bl,&sd->bl,skill_get_blewcount(TK_RUN,sd->sc.data[SC_RUN].val1)|SAB_NODAMAGE);
 				status_change_end(&sd->bl,SC_RUN,-1);
-				clif_status_change(&sd->bl,SI_RUN_STOP,1);
+				clif_status_change(&sd->bl,SI_RUN_STOP,1,0);
 				pc_setdir(sd, dir, dir);
 				return 0;
 			}

@@ -1982,7 +1982,10 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		if(battle_config.pc_skill_log)
 			printf("PC %d skill castend skill=%d\n",src->id,src_ud->skillid);
 		unit_stop_walking(src,0);
-
+#if PACKETVER > 14
+		if(src_sd)
+			clif_status_change(&src_sd->bl,SI_ACTIONDELAY,1,skill_delayfix(&src_sd->bl,skill_get_delay(src_ud->skillid,src_ud->skilllv),skill_get_cast(src_ud->skillid,src_ud->skilllv)));
+#endif
 		switch( skill_get_nk(src_ud->skillid)&3 )
 		{
 		case 0:	/* 攻撃系 */
@@ -3601,13 +3604,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case BA_PANGVOICE:	/* パンボイス */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		sc = status_get_sc(bl);
-		if(sc && sc->data[SC_CONFUSION].timer != -1)
+		if(sc && sc->data[SC_CONFUSION].timer != -1) {
 			status_change_end(bl,SC_CONFUSION,-1);
-		else if( !(status_get_mode(bl)&0x20) )
+		} else if( !(status_get_mode(bl)&0x20) ) {
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_CONFUSION,5000,status_get_lv(src)))
 				status_change_start(bl,SC_CONFUSION,7,0,0,0,10000+7000,0);
-		else if(sd)
+		} else if(sd) {
 			clif_skill_fail(sd,skillid,0,0);
+		}
 		break;
 	case DC_WINKCHARM:	/* 魅惑のウィンク */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -4081,12 +4085,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case BS_HAMMERFALL:		/* ハンマーフォール */
 		if( dstsd && dstsd->special_state.no_weapon_damage )
 			break;
-		if(skilllv > 5)
+		if(skilllv > 5) {
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,10000,status_get_lv(src)))
 				status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
-		else
+		} else {
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,2000+skilllv*1000,status_get_lv(src)))
 				status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		}
 		break;
 	case RG_RAID:			/* サプライズアタック */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -5934,6 +5939,10 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 
 		unit_stop_walking(src,0);
 		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
+#if PACKETVER > 14
+		if(src_sd)
+			clif_status_change(&src_sd->bl,SI_ACTIONDELAY,1,skill_delayfix(&src_sd->bl,skill_get_delay(src_ud->skillid,src_ud->skilllv),skill_get_cast(src_ud->skillid,src_ud->skilllv)));
+#endif
 		if(src_md)
 			src_md->skillidx = -1;
 		return 0;
@@ -9535,7 +9544,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 		if(sc->data[SC_MAGICPOWER].val2 > 0) {
 			/* 最初に通った時にはアイコン消去だけ */
 			sc->data[SC_MAGICPOWER].val2--;
-			clif_status_change(bl, SI_MAGICPOWER, 0);
+			clif_status_change(bl, SI_MAGICPOWER, 0, 0);
 		} else {
 			status_change_end(bl, SC_MAGICPOWER, -1);
 		}
