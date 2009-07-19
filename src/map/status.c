@@ -1844,7 +1844,7 @@ L_RECALC:
 		if(sd->sc.data[SC_WINDWALK].timer != -1)	// ウィンドウォーク
 			sd->flee += sd->flee*(sd->sc.data[SC_WINDWALK].val2)/100;
 		if(sd->sc.data[SC_SPIDERWEB].timer != -1)	// スパイダーウェブ
-			sd->flee -= sd->flee*50/100;
+			sd->flee -= 50;
 		if(sd->sc.data[SC_TRUESIGHT].timer != -1)	// トゥルーサイト
 			sd->hit += 3*(sd->sc.data[SC_TRUESIGHT].val1);
 		if(sd->sc.data[SC_CONCENTRATION].timer != -1)	// コンセントレーション
@@ -2750,7 +2750,7 @@ int status_get_flee(struct block_list *bl)
 		if(sc->data[SC_WINDWALK].timer != -1 && bl->type != BL_PC)		// ウィンドウォーク
 			flee += flee*(sc->data[SC_WINDWALK].val2)/100;
 		if(sc->data[SC_SPIDERWEB].timer != -1 && bl->type != BL_PC)	// スパイダーウェブ
-			flee -= flee*50/100;
+			flee -= 50;
 		if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)	// THE SUN
 			flee = flee*80/100;
 		if(sc->data[SC_GATLINGFEVER].timer != -1 && bl->type != BL_PC)	// ガトリングフィーバー

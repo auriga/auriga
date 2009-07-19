@@ -2339,6 +2339,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					battle_heal(NULL, src, -dmg, 0, 0);
 					wd.damage  = dmg * (90 + sc->data[SC_SACRIFICE].val1 * 10) / 100;
 					wd.damage2 = 0;
+					calc_flag.da = 0;
 					clif_misceffect2(src,366);
 				}
 				if((--sc->data[SC_SACRIFICE].val2) <= 0)
@@ -3606,7 +3607,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if(sd && (sd->status.weapon > WT_HUUMA || sd->status.weapon == WT_KATAR) && wd.damage2 == 0)
 			clif_damage(src, target, tick+10, wd.amotion, wd.dmotion, 0, 1, 0, 0);
 	}
-	if(sd && sd->splash_range > 0 && (wd.damage > 0 || wd.damage2 > 0))
+	if(sd && sd->splash_range > 0 && (wd.damage > 0 || wd.damage2 > 0) && (!sc || sc->data[SC_SACRIFICE].timer == -1))
 		skill_castend_damage_id(src,target,0,-1,tick,0);
 
 	map_freeblock_lock();
