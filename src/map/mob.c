@@ -2073,17 +2073,17 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				item.identify = !itemdb_isequip3(item.nameid);
 				if(battle_config.itemidentify)
 					item.identify = 1;
-				if(mvpsd->weight * 2 > mvpsd->max_weight) {
-					clif_mvp_fail_item(mvpsd);
-					map_addflooritem(&item,1,mvpsd->bl.m,mvpsd->bl.x,mvpsd->bl.y,
-						(mvp[0].bl ? mvp[0].bl->id : 0),(mvp[1].bl ? mvp[1].bl->id : 0),(mvp[2].bl ? mvp[2].bl->id : 0),1);
-				} else {
+				if(battle_config.mvpitem_weight_limit && mvpsd->weight * 100 <= mvpsd->max_weight * battle_config.mvpitem_weight_limit ){
 					clif_mvp_item(mvpsd,item.nameid);
 					if((ret = pc_additem(mvpsd,&item,1))) {
 						clif_additem(mvpsd,0,0,ret);
 						map_addflooritem(&item,1,mvpsd->bl.m,mvpsd->bl.x,mvpsd->bl.y,
 							(mvp[0].bl ? mvp[0].bl->id : 0),(mvp[1].bl ? mvp[1].bl->id : 0),(mvp[2].bl ? mvp[2].bl->id : 0),1);
 					}
+				} else {
+					clif_mvp_fail_item(mvpsd);
+					map_addflooritem(&item,1,mvpsd->bl.m,mvpsd->bl.x,mvpsd->bl.y,
+						(mvp[0].bl ? mvp[0].bl->id : 0),(mvp[1].bl ? mvp[1].bl->id : 0),(mvp[2].bl ? mvp[2].bl->id : 0),1);
 				}
 				break;
 			}

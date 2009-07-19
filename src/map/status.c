@@ -4265,37 +4265,6 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 }
 
 /*==========================================
- * 状態異常の成否
- *	耐性の計算はstatus_change_rate()で行う
- *------------------------------------------
- */
-
-int status_change_judge(int (*func)(struct block_list*,int,va_list),struct block_list *bl,int type,int rate,int src_level,int val_list_num,...)
-{
-	va_list ap;
-
-	nullpo_retr(0, bl);
-
-	if(type < 0)
-		return 1;
-
-	if(rate <= 0)
-		return 1;
-
-	rate = status_change_rate(bl,type,rate,src_level);
-
-	if(atn_rand()%10000 <= rate){
-		va_start(ap,val_list_num);
-		func(bl,type,ap);
-		va_end(ap);
-	}else{
-		return 1;
-	}
-
-	return 0;
-}
-
-/*==========================================
  * ステータス異常データの動的確保
  *------------------------------------------
  */
@@ -5124,14 +5093,13 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_BLIND:				/* 暗黒 */
 			calc_flag = 1;
-			if(!(flag&2)) {
-				int sc_def = status_get_lv(bl)*15 + status_get_int(bl)*10;
-				tick = 30000 - sc_def/150;
+			if(!(flag&2)) { /* 30 -　ＢaseLv÷10　 - INT÷15 [秒] */
+				tick = 30000 - status_get_lv(bl)*100 - status_get_int(bl)*150;
 			}
 			break;
 		case SC_CURSE:				/* 呪い */
 			calc_flag = 1;
-			if(!(flag&2)) {
+			if(!(flag&2)) {	/* 30秒×(100-VIT)÷100 */
 				int sc_def = 100 - status_get_vit(bl);
 				tick = tick * sc_def / 100;
 			}
@@ -5223,7 +5191,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val4 = atn_rand()%6;
 			if(val4 == 5) {
 				// 首は強制的に出血付加 ・ 使用者のレベルが取得できないのでとりあえず0を引数に
-				status_change_judge(status_change_start_sub,bl,SC_BLEED,10000,0,6,val1,0,0,0,skill_get_time2(LK_JOINTBEAT,val1),10);
+				if(atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,10000,0))
+					status_change_start(bl,SC_BLEED,val1,0,0,0,skill_get_time2(LK_JOINTBEAT,val1),10);
 			}
 			if(!(flag&2)) {
 				tick = tick - (status_get_agi(bl)/10 + status_get_luk(bl)/4)*1000;

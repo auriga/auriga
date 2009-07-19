@@ -6906,10 +6906,6 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 					sp += sd->status.max_sp*sd->sp_rate_penalty_unrig[i]/100;
 					sd->sp_rate_penalty_unrig[i] = 0;
 				}
-				if(!battle_config.death_by_unrig_penalty) {
-					if(sd->status.hp < hp)
-						hp = sd->status.hp-1;
-				}
 			}
 		}
 		if(sd->status.inventory[n].equip & 0x0002) {
@@ -6957,14 +6953,20 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 	}
 
 	if(hp){
-		if(sd->status.hp - hp > 0)
+		if(sd->status.hp > hp){
 			sd->status.hp -= hp;
-		else
-			sd->status.hp = 0;
-		clif_updatestatus(sd,SP_HP);
+			clif_updatestatus(sd,SP_HP);
+		} else {
+			if(!battle_config.death_by_unrig_penalty){
+				sd->status.hp = 0;
+				clif_updatestatus(sd,SP_HP);
+			} else {
+				pc_heal(sd,-sd->status.hp,0);
+			}
+		}
 	}
 	if(sp){
-		if(sd->status.sp - sp > 0)
+		if(sd->status.sp > sp)
 			sd->status.sp -= sp;
 		else
 			sd->status.sp = 0;
@@ -8118,15 +8120,20 @@ static int pc_bleeding(struct map_session_data *sd)
 		}
 	}
 
+	if(sd->status.max_hp < sd->status.hp - hp)
+		hp = sd->status.max_hp - sd->status.hp;
+	if(sd->status.max_sp < sd->status.sp - sp)
+		hp = sd->status.max_sp - sd->status.sp;
+
 	if (hp){
-		if(sd->status.hp - hp > 0)
+		if(sd->status.hp > hp)
 			sd->status.hp -= hp;
 		else
 			sd->status.hp = 0;
 		clif_updatestatus(sd,SP_HP);
 	}
 	if (sp){
-		if(sd->status.sp - sp > 0)
+		if(sd->status.sp > sp)
 			sd->status.sp -= sp;
 		else
 			sd->status.sp = 0;

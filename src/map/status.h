@@ -114,7 +114,6 @@ int status_clearpretimer(struct block_list *bl);
 int status_change_attacked_end(struct block_list *bl);
 int status_change_hidden_end(struct block_list *bl);
 int status_change_removemap_end(struct block_list *bl);
-int status_change_judge(int (*func)(struct block_list*,int,va_list),struct block_list *bl,int type,int rate,int src_level,int num,...);
 int status_change_rate(struct block_list *bl,int type,int rate,int src_level);
 
 // 状態チェック

@@ -1,4 +1,26 @@
 ----------------------------------------
+//0634 [2009/07/20] by Salva
+
+・0630の微修正
+
+・Auriga-0628で抜けていたmvpitem_weight_limitの処理を追加(mob.c)
+	Thanks to NP3228さん
+
+・mvpitem_weight_limitの仕様を修正(battle_auriga.conf,mob.c)
+	設定値自体は以前のまま
+
+・bHPPenaltyTime、bSPPenaltyTimeで回復時、HPが最大HP以上になる問題を修正(pc.c)
+	Thanks to mitaranさん
+
+・bHPPenaltyUnrig、bSPPenaltyUnrigでdeath_by_unrig_penaltyがnoのときHPの最低値が1になる問題を修正(pc.c)
+
+・Auriga-0630で追加したstatus_change_judge()を削除し、状態異常発生率のみを関数で計算し、判定は各所で行うよう修正
+	(skill.c,status.c,status.h,battle.c,script.c)
+	 Thanks to Arocさん
+
+・状態異常「暗黒」の持続時間計算式を修正(status.c)
+
+----------------------------------------
 //0633 [2009/07/19] by popori
 
 ・0632の微修正 (skill.c)
@@ -67,7 +89,7 @@
 	 (status.c,battle.c,battle.h)
 
 ・状態異常に関する修正
-   状態異常の耐性を一つの関数で行うように修正(skill.c,status.c,status.h,battle.c)
+   状態異常の耐性を一つの関数で行うように修正(skill.c,status.c,status.h,battle.c,script.c)
    状態異常耐性式、状態異常時間算出式を騎士スレテンプレ、CrusaderTemplateを参考に修正(status.c)
 
 ----------------------------------------

@@ -635,9 +635,10 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 
 			if(src->type == BL_PC || src->type == BL_MOB || src->type == BL_HOM || src->type == BL_MERC)
 			{
-				if(!status_change_judge(status_change_start_sub,src,i,rate,status_get_lv(&tsd->bl),6,7,0,0,0,(i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7),0)){
+				if(atn_rand() % 10000 < status_change_rate(src,i,rate,status_get_lv(&tsd->bl))) {
 					if(battle_config.battle_log)
 						printf("PC %d skill_addreveff: cardによる異常発動 %d %d\n",tsd->bl.id,i,tsd->addreveff[i-SC_STONE]);
+					status_change_start(src,i,7,0,0,0,(i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7),0);
 				}
 			}
 		}

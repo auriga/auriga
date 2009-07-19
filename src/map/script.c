@@ -7552,7 +7552,8 @@ int buildin_sc_start2(struct script_state *st)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
 	if(bl && !unit_isdead(bl))
-		status_change_judge(status_change_start_sub,bl,type,per,0,6,val1,0,0,0,tick,0);
+		if(atn_rand() % 10000 < status_change_rate(bl,type,per,0))
+			status_change_start(bl,type,val1,0,0,0,tick,0);
 	return 0;
 }
 
