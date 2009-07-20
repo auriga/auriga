@@ -577,6 +577,7 @@ extern struct Battle_Config {
 	int firepillar_splash_on;
 	int mob_nohitstop_rate;
 	int scdef_no_difflevel;
+	int refinery_research_lv;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

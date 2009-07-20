@@ -3560,8 +3560,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SA_ELEMENTFIRE:	/* ファイアーエレメンタルチェンジ */
 	case SA_ELEMENTWIND:	/* ウィンドエレメンタルチェンジ */
 		if(dstmd) {
-			// ボス属性だった場合、使用失敗
-			if(battle_config.boss_no_element_change && dstmd && dstmd->mode&0x20){
+			// ボス属性だった場合と暫定で40%の確率で使用失敗
+			if(battle_config.boss_no_element_change && dstmd && dstmd->mode&0x20 || atn_rand() % 100 < 40){
 				if(sd)
 					clif_skill_fail(sd,skillid,0,0);
 				break;
@@ -3585,7 +3585,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			//status_change_start(bl,SkillStatusChangeTable[skillid],dstmd->def_ele/20,0,0,0,skill_get_time(skillid,skilllv),0 );
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
-		else if(!dstsd || !dstsd->special_state.no_magic_damage) {
+		else if(!dstsd) {
 			status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);

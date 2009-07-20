@@ -1134,6 +1134,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.div_ = 1;
 
 	if(src_sd) {
+		calc_flag.hitrate *=1 + 2*pc_checkskill(src_sd,BS_WEAPONRESEARCH)/100;	//武器研究
+
 		if(src_sd->status.weapon == WT_BOW || (src_sd->status.weapon >= WT_HANDGUN && src_sd->status.weapon <= WT_GRENADE)) {	// 武器が弓矢の場合
 			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// 遠距離攻撃フラグを有効
 			if(src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
@@ -5060,7 +5062,7 @@ int battle_config_read(const char *cfgName)
 		{ "redemptio_penalty_type",             &battle_config.redemptio_penalty_type,             1        },
 		{ "allow_weaponrearch_to_weaponrefine", &battle_config.allow_weaponrearch_to_weaponrefine, 0        },
 		{ "boss_no_knockbacking",               &battle_config.boss_no_knockbacking,               1        },
-		{ "boss_no_element_change",             &battle_config.boss_no_element_change,             0        },
+		{ "boss_no_element_change",             &battle_config.boss_no_element_change,             1        },
 		{ "boss_teleport_on_landprotector",     &battle_config.boss_teleport_on_landprotector,     1        },
 		{ "scroll_produce_rate",                &battle_config.scroll_produce_rate,                100      },
 		{ "scroll_item_name_input",             &battle_config.scroll_item_name_input,             0        },
@@ -5166,6 +5168,7 @@ int battle_config_read(const char *cfgName)
 		{ "firepillar_splash_on",              	&battle_config.firepillar_splash_on,   	           0  	    },
 		{ "mob_nohitstop_rate",                 &battle_config.mob_nohitstop_rate,		   0	    },
 		{ "scdef_no_difflevel",                 &battle_config.scdef_no_difflevel,		   0	    },
+		{ "refinery_research_lv",               &battle_config.refinery_research_lv,		   0	    },
 		{ NULL,                                 NULL,                                              1        },
 
 	};

@@ -182,7 +182,8 @@ int status_percentrefinery(struct map_session_data *sd,struct item *item)
 
 	percent = refine_db[itemdb_wlv(item->nameid)].per[(int)item->refine];
 
-	percent += pc_checkskill(sd,BS_WEAPONRESEARCH);	// 武器研究スキル所持
+	if(battle_config.refinery_research_lv)
+		percent += pc_checkskill(sd,BS_WEAPONRESEARCH);	// 武器研究スキル所持
 
 	// 確率の有効範囲チェック
 	if(percent > 100) {
@@ -4205,10 +4206,10 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 	nullpo_retr(0, bl);
 
 	if(type < 0)	// typeが0未満の場合失敗
-		return 1;
+		return 0;
 
 	if(rate <= 0)	// 確率が0以下のものは失敗
-		return 1;
+		return 0;
 
 	sc = status_get_sc(bl);
 
@@ -5628,22 +5629,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	return 0;
 }
 
-int status_change_start_sub(struct block_list *bl,int type,va_list ap)
-{
-	int val1,val2,val3,val4,tick,flag;
-
-	val1 = va_arg(ap, int);
-	val2 = va_arg(ap, int);
-	val3 = va_arg(ap, int);
-	val4 = va_arg(ap, int);
-	tick = va_arg(ap, int);
-	flag = va_arg(ap, int);
-
-	status_change_start(bl,type,val1,val2,val3,val4,tick,flag);
-
-	return 0;
-}
-
 /*==========================================
  * ステータス異常終了
  *------------------------------------------
@@ -6405,24 +6390,6 @@ int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int 
 	linkdb_insert(&ud->statuspretimer, stpt, stpt);
 
 	return 0;
-}
-
-int status_change_pretimer_sub(struct block_list *bl,int type,va_list ap){
-
-	int val1,val2,val3,val4,tick,flag,pre_tick;
-
-	val1 = va_arg(ap, int);
-	val2 = va_arg(ap, int);
-	val3 = va_arg(ap, int);
-	val4 = va_arg(ap, int);
-	tick = va_arg(ap, int);
-	flag = va_arg(ap, int);
-	pre_tick = va_arg(ap, int);
-
-	status_change_pretimer(bl,type,val1,val2,val3,val4,tick,flag,pre_tick);
-
-	return 0;
-
 }
 
 /*==========================================

@@ -1,4 +1,32 @@
 ----------------------------------------
+//0637 [2009/07/21] by Salva
+
+・状態異常発生率計算(status_change_rate())の引数type,rateに
+	0未満、また以下を渡した場合0.01%の確率を返す問題を修正(status.c)
+	 Thanks to Toshiさん
+
+・Auriga-0628でAthenaProject Rev.444からマージした記述が
+	一部抜けていた問題を修正(mob.c)
+	 Thanks to nanashiさん、seikaiさん
+
+・Auriga-0634の修正で不要になった
+	status_change_start_sub(),status_change_pretimer_sub()を削除(status.c,status.h)
+
+・battle_auriga.confに関する修正
+	refinery_research_lv(武器研究の精錬成功率上昇効果を発動させるか)の追加
+	 (battle_auriga.conf,status.c,battle.c,battle.h)
+	boss_no_element_changeの初期値をyesに変更(battle_auriga.conf,battle.c)
+	 Thanks to crispさん
+
+・エレメンタルチェンジに関する修正(skill.c)
+	ターゲットがプレイヤーの場合失敗するよう修正
+	成否判定を追加
+	 Thanks to crispさん
+
+・武器研究の命中率 2% × Lv 増加を追加
+	Thanks to Toshiさん
+
+----------------------------------------
 //0636 [2009/07/20] by popori
 
 ・AthenaProject Rev.480のサクリファイスに関する修正をマージ (battle.c)
