@@ -3561,7 +3561,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SA_ELEMENTWIND:	/* ウィンドエレメンタルチェンジ */
 		if(dstmd) {
 			// ボス属性だった場合と暫定で40%の確率で使用失敗
-			if(battle_config.boss_no_element_change && dstmd && dstmd->mode&0x20 || atn_rand() % 100 < 40){
+			if((battle_config.boss_no_element_change && dstmd && dstmd->mode&0x20) || atn_rand() % 100 < 40){
 				if(sd)
 					clif_skill_fail(sd,skillid,0,0);
 				break;

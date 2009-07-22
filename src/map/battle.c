@@ -3999,7 +3999,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* ダメージ反射 */
-	if(attack_type&BF_WEAPON && damage > 0 && src != bl && src == dsrc && skillid != NPC_EARTHQUAKE) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆src=dsrc＆アースクエイクではない
+	if(attack_type&BF_WEAPON && damage > 0 && src != bl && (src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) && skillid != NPC_EARTHQUAKE) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆src=dsrc＆アースクエイクではない
 		if(dmg.flag&BF_SHORT) {	// 近距離攻撃時
 			if(tsd) {	// 対象がPCの時
 				if(tsd->short_weapon_damage_return > 0) {	// 近距離攻撃跳ね返し
