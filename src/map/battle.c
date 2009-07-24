@@ -1287,13 +1287,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case CR_SHIELDBOOMERANG:	// シールドブーメラン
 			if(sc && sc->data[SC_CRUSADER].timer != -1)
 				calc_flag.hitrate = 1000000;
-			calc_flag.dist = 1;
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case AM_ACIDTERROR:		// アシッドテラー
 		case CR_ACIDDEMONSTRATION:	// アシッドデモンストレーション
 			calc_flag.hitrate = 1000000;
-			calc_flag.dist = 1;
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case NPC_CRITICALSLASH:		// 防御無視攻撃
@@ -1316,11 +1314,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NPC_EXPULSION:		// エクスパルシオン
 			calc_flag.hitrate = 1000000;
-			calc_flag.dist = 1;
 			break;
 		case GS_TRACKING:		// トラッキング
 			calc_flag.hitrate = calc_flag.hitrate*4+5;
-			calc_flag.dist = 1;
 			break;
 		case MO_FINGEROFFENSIVE:	// 指弾
 			if(src_sd && battle_config.finger_offensive_type == 0) {
@@ -1328,42 +1324,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			} else {
 				wd.div_ = 1;
 			}
-			calc_flag.dist = 1;
-			break;
-		case AC_DOUBLE:			// ダブルストレイフィング
-		case HT_POWER:			// ビーストストレイフィング
-		case AC_SHOWER:			// アローシャワー
-		case AC_CHARGEARROW:		// チャージアロー
-		case HT_PHANTASMIC:		// ファンタスミックアロー
-		case KN_SPEARSTAB:		// スピアスタブ
-		case KN_SPEARBOOMERANG:		// スピアブーメラン
-		case AS_GRIMTOOTH:		// グリムトゥース
-		case LK_SPIRALPIERCE:		// スパイラルピアース
-		case HW_MAGICCRASHER:		// マジッククラッシャー
-		case ASC_BREAKER:		// ソウルブレイカー
-		case SN_SHARPSHOOTING:		// シャープシューティング
-		case ITM_TOMAHAWK:		// トマホーク投げ
-		case GS_FLING:			// フライング
-		case GS_TRIPLEACTION:		// トリプルアクション
-		case GS_BULLSEYE:		// ブルズアイ
-		case GS_MAGICALBULLET:		// マジカルバレット
-		case GS_DISARM:			// ディスアーム
-		case GS_PIERCINGSHOT:		// ピアーシングショット
-		case GS_RAPIDSHOWER:		// ラピッドシャワー
-		case GS_DUST:			// ダスト
-		case GS_FULLBUSTER:		// フルバスター
-		case GS_SPREADATTACK:		// スプレッドアタック
-		case NJ_HUUMA:			// 風魔手裏剣投げ
-		case NJ_TATAMIGAESHI:		// 畳返し
-		case MA_DOUBLE:
-		case MA_SHOWER:
-		case MA_CHARGEARROW:
-		case MA_SHARPSHOOTING:
-		case ML_SPIRALPIERCE:
-			calc_flag.dist = 1;
 			break;
 		case AS_VENOMKNIFE:		// ベナムナイフ
-			calc_flag.dist = 1;
 			if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
 				if(src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
 					s_ele = src_sd->arrow_ele;
@@ -1376,12 +1338,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NPC_RANGEATTACK:		// 遠距離攻撃
 		case NJ_ZENYNAGE:		// 銭投げ
 		case NPC_CRITICALWOUND:		// 致命傷攻撃
-			calc_flag.dist = 1;
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case PA_SHIELDCHAIN:		// シールドチェイン
 			calc_flag.hitrate += 20;
-			calc_flag.dist = 1;
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case NPC_PIERCINGATT:		// 突き刺し攻撃
@@ -1392,32 +1352,33 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case BA_MUSICALSTRIKE:		// ミュージカルストライク
 		case DC_THROWARROW:		// 矢撃ち
 		case CG_ARROWVULCAN:		// アローバルカン
-			calc_flag.dist = 1;
 			if(src_sd)
 				s_ele = src_sd->arrow_ele;
 			break;
 		case NJ_SYURIKEN:		// 手裏剣投げ
 		case NJ_KUNAI:			// 苦無投げ
-			calc_flag.dist = 1;
 			if(src_sd && src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
 				s_ele = src_sd->arrow_ele;
 			break;
 		}
 
 		// ここから距離による判定
-		if(calc_flag.dist) {				// 距離によってレンジが変化するスキルか
-			if(battle_config.calc_dist_flag&1 && src->type != BL_PC && target->type != BL_PC) {	// PC vs PCは強制無視
-				int target_dist = unit_distance2(src,target)-1;	// 距離を取得
-				if(target_dist >= battle_config.allow_sw_dist) {				// SWで防げる距離より多い＝遠距離からの攻撃
-					if(src->type == BL_PC && battle_config.sw_def_type & 1)		// 人間からのを判定するか　&1でする
-						wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;		// 遠距離に設定
-					else if(src->type == BL_MOB && battle_config.sw_def_type & 2)	// モンスターからのを判定するか　&2でする
-						wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;		// 遠距離に設定
+		calc_flag.dist = skill_get_range_type(skill_num);	// 距離タイプ読み込み
+		if(calc_flag.dist) {	// 遠距離判定スキルか
+			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// まず遠距離に設定
+			if(calc_flag.dist == 1){	// 1：通常遠距離　2：強制遠距離
+				if(battle_config.calc_dist_flag&1 && !(src->type == BL_PC && target->type == BL_PC)) {	// PC vs PCは強制無視
+					int target_dist = unit_distance2(src,target)-1;	// 距離を取得
+					if(target_dist <= battle_config.allow_sw_dist) {			// 設定した距離より小さい＝近距離からの攻撃
+						if(src->type == BL_PC && battle_config.sw_def_type & 1)		// 人間からのを判定するか　&1でする
+							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
+						if(src->type == BL_MOB && battle_config.sw_def_type & 2)	// モンスターからのを判定するか　&2でする
+							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
+					}
 				}
-			} else {	// 本来遠距離のスキルで使用者と許可フラグが全て一致しないから遠距離攻撃だ
-				wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// 遠距離に設定
 			}
-		}
+		} else if(skill_num)	// 近距離判定スキル
+			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
 	}
 
 	if(sc && sc->data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {	// サクリファイス
@@ -2125,6 +2086,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		}
 
+		if(skill_lv == -1)
+			calc_flag.nocardfix = 1;
+
 		/* 13．ファイティングの追加ダメージ */
 		wd.damage += tk_power_damage;
 		if(calc_flag.lh)
@@ -2407,6 +2371,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		    case NJ_ZENYNAGE:
 				break;
 			default:
+				if(skill_lv >= 0)
+					break;
 				wd.damage = battle_addmastery(src_sd,target,wd.damage,0);
 				if(calc_flag.lh)
 					wd.damage2 = battle_addmastery(src_sd,target,wd.damage2,1);
@@ -2716,7 +2682,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 31．スキル修正５（追加ダメージ２） */
-	if(src_sd && src_sd->status.weapon == WT_KATAR && skill_num != ASC_BREAKER) {
+	if(src_sd && src_sd->status.weapon == WT_KATAR && skill_num != ASC_BREAKER && skill_lv >= 0) {
 		// カタール研究
 		if((skill = pc_checkskill(src_sd,ASC_KATAR)) > 0) {
 			wd.damage += wd.damage*(10+(skill * 2))/100;
@@ -2865,6 +2831,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	int mdef1, mdef2, t_ele, t_race, t_enemy, t_mode;
 	int t_class, cardfix, i;
 	int normalmagic_flag = 1;
+	int calc_dist_on = 0;
 
 	// return前の処理があるので情報出力部のみ変更
 	if( bl == NULL || target == NULL || target->type == BL_PET ) {
@@ -2907,13 +2874,20 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	mgd.blewcount = skill_get_blewcount(skill_num,skill_lv);
 	mgd.flag      = BF_MAGIC|BF_LONG|BF_SKILL;
 
-	if(battle_config.calc_dist_flag & 2) {	// 魔法の時計算するか？ &2で計算する
-		int target_dist = unit_distance2(bl,target);	// 距離を取得
-		if(target_dist < battle_config.allow_sw_dist) {				// SWで防げる距離より小さい＝近距離からの攻撃
-			if(bl->type == BL_PC && battle_config.sw_def_type & 1)		// 人間からのを判定するか　&1でする
-				mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
-			else if(bl->type == BL_MOB && battle_config.sw_def_type & 2)	// モンスターからの魔法を判定するか　&2でする
-				mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
+	// ここから距離による判定
+	calc_dist_on = skill_get_range_type(skill_num);	// 距離タイプ読み込み
+	if(calc_dist_on){	// 遠距離判定スキルか
+		mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_LONG;	// まず遠距離に設定
+		if(calc_dist_on == 1){	// 1：通常遠距離　2：強制遠距離
+			if(battle_config.calc_dist_flag & 2) {	// 魔法の時計算するか？ &2で計算する
+				int target_dist = unit_distance2(bl,target);	// 距離を取得
+				if(target_dist < battle_config.allow_sw_dist) {				// SWで防げる距離より小さい＝近距離からの攻撃
+					if(bl->type == BL_PC && battle_config.sw_def_type & 1)	// 人間からのを判定するか　&1でする
+						mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
+					if(bl->type == BL_MOB && battle_config.sw_def_type & 2)	// モンスターからの魔法を判定するか　&2でする
+						mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
+				}
+			}
 		}
 	}
 
@@ -4151,7 +4125,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* ダメージがあるなら追加効果判定 */
 	if(bl->prev != NULL && !unit_isdead(bl)) {
-		if(damage > 0 || skillid == TF_POISON) {
+		if(skilllv >= 0 && (damage > 0 || skillid == TF_POISON)) {
 			// グラウンドドリフトはdsrcを引数として渡す
 			if(skillid == GS_GROUNDDRIFT)
 				skill_additional_effect(dsrc,bl,skillid,skilllv,attack_type,tick);

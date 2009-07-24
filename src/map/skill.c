@@ -544,7 +544,11 @@ int skill_get_damage_rate(int id,int type)
 	id = skill_get_skilldb_id(id);
 	return skill_db[id].damage_rate[type];
 }
-
+int skill_get_range_type(int id)
+{
+	id = skill_get_skilldb_id(id);
+	return skill_db[id].range_type;
+}
 /* 補正済み射程を返す */
 int skill_get_fixed_range(struct block_list *bl,int id,int lv)
 {
@@ -2832,6 +2836,12 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case CG_TAROTCARD:		/* 運命のタロットカード */
+		sc = status_get_sc(bl);
+		if(sc && sc->data[SC_TRICKDEAD].timer != -1) {
+			if(sd)
+				clif_skill_fail(sd,skillid,0,0);
+			break;
+		}
 		skill_tarot_card_of_fate(src,bl,skillid,skilllv,0);
 		break;
 	case MG_FROSTDIVER:		/* フロストダイバー */
@@ -12770,6 +12780,7 @@ static int skill_readdb(void)
 		skill_db[i].misfire   = atoi(split[2]);
 		skill_db[i].zone      = atoi(split[3]);
 		skill_split_atoi(split[4],skill_db[i].damage_rate,sizeof(skill_db[i].damage_rate)/sizeof(int));
+		skill_db[i].range_type = atoi(split[5]);
 		k++;
 	}
 	fclose(fp);

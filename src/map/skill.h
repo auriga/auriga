@@ -64,6 +64,7 @@ struct skill_db {
 	int misfire;
 	int zone;
 	int damage_rate[4];
+	int range_type;
 };
 
 #define MAX_SKILL_UNIT_LAYOUT	50
@@ -172,6 +173,7 @@ int skill_get_cloneable(int id);
 int skill_get_misfire(int id);
 int skill_get_zone(int id);
 int skill_get_damage_rate(int id,int type);
+int skill_get_range_type(int id);
 
 int skill_get_fixed_range(struct block_list *bl,int id,int lv);
 

@@ -1,4 +1,21 @@
 ----------------------------------------
+//0639 [2009/07/25] by popori
+
+・AthenaProject Rev.482をマージ (skill.* battle.c skill_db2.txt)
+ ->各攻撃スキルの遠・近距離設定をskill_db2.txtにて指定するように変更
+　nanashiさんに感謝
+
+・battle_auriga.confのsw_def_typeをデフォルトで2に変更、calc_dist_flagを1に変更 (battle_auriga.conf)
+
+・AthenaProject Rev.491のbSplashRangeに関する修正をマージ (battle.c)
+ ->修練・カタールの追撃・%UP・状態異常・カタール研究・EDPは乗らないように修正
+　nanashiさんに感謝
+
+・0631の修正漏れ (*.dsp)
+
+・死んだふり中の相手に運命のタロットカードの効果が出てしまうのを修正 (skill.c)
+
+----------------------------------------
 //0638 [2009/07/23] by popori
 
 ・温もり、デスペラードのダメージが反射されない問題を修正 (battle.c)
