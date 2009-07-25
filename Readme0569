@@ -1,4 +1,22 @@
 ----------------------------------------
+//0640 [2009/07/26] by popori
+
+・0639の修正漏れ (battle.c)
+
+・Yggdrasilさんのskill_cast_db.txtを取り込み (skill_cast_db.txt)
+　Yggdrasilさんに感謝
+
+・ダスト、グランドドリフトはディレイ短縮されないように修正 (unit.c)
+　Yggdrasilさんに感謝
+
+・noteleportの初期値を1に変更 (battle_auriga.conf battle.c)
+　yumさん、Cocoaさん、Lyeseさんに感謝
+
+・AthenaProject Rev.568をマージ (mob.c)
+ ->アンクル・蜘蛛の巣による拘束時のみMOBが強制待機(タゲ外し)するよう修正
+　nanashiさんに感謝
+
+----------------------------------------
 //0639 [2009/07/25] by popori
 
 ・AthenaProject Rev.482をマージ (skill.* battle.c skill_db2.txt)

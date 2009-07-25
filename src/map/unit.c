@@ -1024,6 +1024,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			delay = skill_get_delay(skill_num,skill_lv);
 		break;
 	case CG_ARROWVULCAN:
+	case GS_DUST:
+	case GS_GROUNDDRIFT:
 		delay = skill_get_delay(skill_num,skill_lv);
 		break;
 	case MO_EXTREMITYFIST:	/* 阿修羅覇鳳拳 */
