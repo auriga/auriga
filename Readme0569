@@ -1,4 +1,18 @@
 ----------------------------------------
+//0641 [2009/07/29] by popori
+
+・0640の修正漏れ (skill_cast_db.txt)
+　Yggdrasilさんに感謝
+
+・Yggdrasilさんのskill_cast_db.txtを取り込み (skill_cast_db.txt)
+　Yggdrasilさんに感謝
+
+・デスペラード、温もりで攻撃時HP/SPドレインが有効で無いのを修正 (battle.c)
+　hancho3さんに感謝
+
+・スキル「一閃」を強制遠距離扱いにする (skill_db2.txt)
+
+----------------------------------------
 //0640 [2009/07/26] by popori
 
 ・0639の修正漏れ (battle.c)

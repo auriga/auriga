@@ -4150,7 +4150,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* HP,SP吸収 */
-	if(sd && dmg.flag&BF_WEAPON && src != bl && src == dsrc && damage > 0) {
+	if(sd && dmg.flag&BF_WEAPON && src != bl && (src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) && damage > 0) {
 		// ％吸収のみ
 		battle_attack_drain(src, dmg.damage, dmg.damage2, 1);
 	}
