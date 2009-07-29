@@ -253,6 +253,29 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 						bonus4 bAutoSpell,19,3,2500,EAS_ATTACK|EAS_NOSP;
 
 
+・オートアクティブアイテム
+　※一定の確率でアイテムを活性状態にします。活性化したアイテムはcheckactiveitem()で状態が取得可能です。
+	bonus3 bAutoActiveWeapon,n,x,y:		物理攻撃時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+	bonus3 bAutoActiveMagic,n,x,y:		魔法攻撃時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+	bonus3 bRevAutoActiveWeapon,n,x,y:	物理ダメージを受けた時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+	bonus3 bRevAutoActiveMagic,n,x,y:	魔法ダメージを受けた時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+	bonus4 bAutoActiveItem,n,x,y,z:		zの条件でアイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+						条件zは下記を参照。
+						動作1：指定しない場合は攻撃
+						    EAS_ATTACK			攻撃（ダメージを与えたとき）
+						    EAS_REVENGE			反撃（ダメージを受けたとき）
+						動作2：指定しない場合は物理攻撃
+						    EAS_WEAPON			物理攻撃をしたとき/受けたとき
+						    EAS_SHORT			近距離物理攻撃をしたとき/受けたとき
+							EAS_LONG			遠距離物理攻撃をしたとき/受けたとき
+							EAS_MAGIC			魔法攻撃をしたとき/受けたとき
+							EAS_MISC			misc攻撃（罠・鷹・火炎瓶等）をしたとき/受けたとき
+						動作3：指定しない場合は通常攻撃
+							EAS_NORMAL			通常攻撃をしたとき/受けたとき
+							EAS_SKILL			スキル攻撃をしたとき/受けたとき
+							※EAS_MAGIC・EAS_MISCを指定している場合には無視されます
+
+
 ・装備関連
 	bonus bBreakWeaponRate,n;			プレイヤー対象攻撃の場合、n%の確率で対象の武器を破壊(nは万分率。確率は+される)
 	bonus bBreakArmorRate,n;			プレイヤー対象攻撃の場合、n%の確率で対象の鎧を破壊(nは万分率。確率は+される)

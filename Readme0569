@@ -1,4 +1,22 @@
 ----------------------------------------
+//0642 [2009/07/30] by Blaze
+
+・bonus命令に「AutoActiveItem」を実装（pc.*,map.h,status.c,battle.c,doc/item_bonus.txt）
+　	※一定時間、装備アイテムを活性状態にして追加効果を発揮させます。
+
+・アイテムの活性状態を取得する関数「checkactiveitem()」を追加（script.c,doc/script_ref.txt)
+
+・autospellの登録処理を改善（status.*,pc.c）
+	-> card_idの内容が装備箇所indexやアイテムIDなど、一貫性がなかったのをIDに統一
+
+・定義値登録DBを更新（db/const.txt）
+	-> bonusの定義値にAutoActiveItem関係を追加
+	-> 攻城戦の設定関係を削除
+	※攻城戦関係の設定はscript/npc/gvg/npc_gvg_global.txtで行ってください。
+
+・ヴァンベルクカードなどのアイテム効果を実装（db/item_db.txt）
+
+----------------------------------------
 //0641 [2009/07/29] by popori
 
 ・0640の修正漏れ (skill_cast_db.txt)

@@ -97,6 +97,9 @@ int pc_dropitem(struct map_session_data*, int, int);
 
 int pc_checkweighticon(struct map_session_data *sd);
 
+int pc_activeitem(struct map_session_data* sd,int id,short rate,short tick,long flag);
+int pc_activeitem_start(struct map_session_data* sd,long mode);
+
 int pc_bonus(struct map_session_data*,int,int);
 int pc_bonus2(struct map_session_data *sd,int,int,int);
 int pc_bonus3(struct map_session_data *sd,int,int,int,int);

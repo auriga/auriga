@@ -614,6 +614,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				asflag += EAS_MISC;
 		}
 		skill_bonus_autospell(&tsd->bl,src,asflag,tick,0);
+		pc_activeitem_start(tsd,asflag);
 	}
 
 	// PCの状態異常反撃
@@ -2763,6 +2764,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			asflag += EAS_SKILL;
 
 		skill_bonus_autospell(src,target,asflag,gettick(),0);
+		pc_activeitem_start((struct map_session_data *)src,asflag);
 	}
 
 	/* 36．太陽と月と星の融合 HP2%消費 */
@@ -3218,6 +3220,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			asflag += EAS_MAGIC;
 
 		skill_bonus_autospell(bl,target,asflag,gettick(),0);
+		pc_activeitem_start((struct map_session_data *)bl,EAS_MAGIC);
 	}
 
 	/* 14．魔法でもHP/SP回復(月光剣など) */
@@ -3426,6 +3429,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 			asflag += EAS_MISC;
 
 		skill_bonus_autospell(bl,target,asflag,gettick(),0);
+		pc_activeitem_start((struct map_session_data *)bl,asflag);
 	}
 
 	/* 11．miscでもHP/SP回復(月光剣など) */
@@ -3660,6 +3664,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			asflag += EAS_SHORT;
 
 		skill_bonus_autospell(src,target,asflag,gettick(),0);
+		pc_activeitem_start((struct map_session_data *)src,asflag);
 	}
 
 	if(sd && src != target && wd.flag&BF_WEAPON && (wd.damage > 0 || wd.damage2 > 0))

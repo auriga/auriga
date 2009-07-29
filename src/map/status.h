@@ -131,7 +131,7 @@ int status_get_overrefine_bonus(int lv);
 int status_percentrefinery(struct map_session_data *sd,struct item *item);
 int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item *item);
 extern int current_equip_item_index;
-extern int current_equip_card_id;
+extern int current_equip_name_id;
 
 // DB再読込用
 int status_readdb(void);

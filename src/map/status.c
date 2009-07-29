@@ -66,7 +66,7 @@ static struct refine_db {
 } refine_db[MAX_WEAPON_LEVEL+1];
 
 int current_equip_item_index;	// ステータス計算用
-int current_equip_card_id;
+int current_equip_name_id;
 static char race_name[11][5] = {{"無形"},{"不死"},{"動物"},{"植物"},{"昆虫"},{""},{"魚貝"},{"悪魔"},{"人間"},{"天使"},{"竜"}};
 
 #ifdef DYNAMIC_SC_DATA
@@ -561,6 +561,7 @@ L_RECALC:
 	memset(&sd->fix_status,0,sizeof(sd->fix_status));
 	memset(&sd->skill_fixcastrate,0,sizeof(sd->skill_fixcastrate));
 	memset(&sd->skill_healup,0,sizeof(sd->skill_healup));
+	memset(&sd->activeitem,0,sizeof(sd->activeitem));
 
 	for(i=0; i<10; i++) {
 		idx = sd->equip_index[i];
@@ -580,7 +581,7 @@ L_RECALC:
 					int j;
 					for(j=0; j<sd->inventory_data[idx]->slot; j++) {	// カード
 						int c = sd->status.inventory[idx].card[j];
-						current_equip_card_id = c;		// オートスペル(重複チェック用)
+						current_equip_name_id = c;		// オートスペル(重複チェック用)
 						if(c > 0) {
 							if(i == 8 && sd->status.inventory[idx].equip == 0x20)
 								sd->state.lr_flag = 1;
@@ -597,7 +598,7 @@ L_RECALC:
 					int j;
 					for(j=0; j<sd->inventory_data[idx]->slot; j++) {	// カード
 						int c = sd->status.inventory[idx].card[j];
-						current_equip_card_id = c;		// オートスペル(重複チェック用)
+						current_equip_name_id = c;		// オートスペル(重複チェック用)
 						if(c > 0) {
 							if(calclimit == 2)
 								run_script(itemdb_usescript(c),0,sd->bl.id,0);
@@ -626,7 +627,6 @@ L_RECALC:
 	for(i=0; i<10; i++) {
 		idx = sd->equip_index[i];
 		current_equip_item_index = i;	// 部位チェック用
-		current_equip_card_id = idx;	// オートスペル(重複チェック用)
 		if(idx < 0)
 			continue;
 		if(i == 9 && sd->equip_index[8] == idx)
@@ -636,6 +636,7 @@ L_RECALC:
 		if(i == 6 && (sd->equip_index[5] == idx || sd->equip_index[4] == idx))
 			continue;
 		if(sd->inventory_data[idx]) {
+			current_equip_name_id = sd->inventory_data[idx]->nameid;
 			sd->def += sd->inventory_data[idx]->def;
 			if(sd->inventory_data[idx]->type == 4) {
 				int r,wlv = sd->inventory_data[idx]->wlv;
@@ -695,6 +696,7 @@ L_RECALC:
 	if(sd->equip_index[10] >= 0) { // 矢
 		idx = sd->equip_index[10];
 		if(sd->inventory_data[idx]) {		// まだ属性が入っていない
+			current_equip_name_id = sd->inventory_data[idx]->nameid;
 			sd->state.lr_flag = 2;
 			if(calclimit == 2)
 				run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);

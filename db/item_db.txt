@@ -529,11 +529,11 @@
 1178,Schweizersabel_,シュバイチェルサーベル,4,20,,1600,160,,1,2,16514,2,34,4,48,3,1,{},{ bonus bAtkEle,4; bonus bDef,1; bonus3 bAutoSpell,20,3,1000; }
 1179,Executioner__,エクスキューショナー,4,20,,2200,155,,1,1,16514,2,34,4,48,3,1,{},{ bonus2 bIgnoreDefRace,7,100; bonus2 bAddRace,7,20; bonus2 bSubRace,7,-10; bonus2 bMagicSubRace,7,-10; bonus bAtkEle,7; }
 1180,Dragon_Slayer_,ドラゴンスレイヤー,4,20,,1300,150,,1,2,16514,2,34,4,48,3,1,{},{ bonus2 bIgnoreDefRace,9,100; bonus2 bAddRace,9,15; }
-1181,Tegron,テグリョン,4,20,,2000,250,,1,2,16514,2,34,4,90,3,1,{},{ bonus bFlee2,10; if(getequiprefinerycnt(3)>=9){ bonus bCastrate,-20; bonus bSkillDelayRate,-20; } }
-1182,Bloody_Eater,ブラッディイート,4,20,,1200,200,,1,2,16514,2,34,4,90,3,1,{},{ bonus bAtkEle,8; }
+1181,Tegron,テグリョン,4,20,,2000,250,,1,2,16514,2,34,4,90,3,1,{},{ bonus bFlee2,10; if(JobLevel>=70) bonus3 bAutoActiveWeapon,1181,100,10000; if(checkactiveitem()) { misceffect 9,""; bonus bBaseAtk,50; } if(getequiprefinerycnt(3)>=9) { bonus bCastrate,-20; bonus bSkillDelayRate,-20; } }
+1182,Bloody_Eater,ブラッディイート,4,20,,1200,200,,1,2,16514,2,34,4,90,3,1,{},{ bonus bAtkEle,8; bonus3 bAutoActiveWeapon,1182,100,5000; if(checkactiveitem()) { misceffect 9,""; bonus bCritical,100; bonus bBaseAtk,50; bonus bHPGainValue,100; } }
 1183,Assaulter's_Katzbalger,突撃隊長のカッツバルゲル,4,20,,0,200,,1,0,16514,2,34,3,80,3,1,{},{ bonus bStr,2; bonus2 bAddRace,7,55; bonus bUnbreakableWeapon,0; }
 1184,Assaulter's_Katzbalger,突撃隊長のカッツバルゲル,4,20,,0,200,,1,0,16514,2,34,3,80,3,1,{},{ bonus bCritical,20; bonus2 bAddRace,7,55; bonus bUnbreakableWeapon,0; }
-1185,Violet_Fear,バイオレットフィアー,4,20,,2200,275,,1,2,16514,2,34,4,80,3,1,{},{ bonus3 bAutoSpell,83,3,500; bonus3 bAutoSelfSpell,88,5,500; }
+1185,Violet_Fear,バイオレットフィアー,4,20,,2200,275,,1,2,16514,2,34,4,80,3,1,{},{ bonus3 bAutoActiveWeapon,1185,100,5000; if(checkactiveitem()) {  misceffect 9,""; bonus2 bIgnoreDefRace,11,100; } bonus3 bAutoSpell,83,3,500; bonus3 bAutoSelfSpell,88,5,500; }
 1186,Unknown_Item,死の引導者,4,20,,2000,200,,1,2,16514,2,34,4,70,3,1,{},{ bonus bStr,5; bonus bAgi,2; bonus bFlee2,20; if(getequiprefinerycnt(3)>=9) bonus3 bAutoSelfSpell,679,2,200; else bonus3 bAutoSelfSpell,679,1,200; /*暫定的に同じ挙動のASを発動、発動率は適当*/ }
 1187,Unknown_Item,グロリアスクレイモア,4,,,0,220,,1,0,16514,2,34,4,80,3,1,{},{}
 
@@ -770,7 +770,7 @@
 1538,Spike_,スパイク,4,20,,700,70,,1,2,33040,2,2,4,40,8,1,{},{ bonus bCritical,40; bonus bDefRate,-67; bonus bDef2Rate,-67; }
 1539,Golden_Mace_,ゴールデンメイス,4,20,,800,110,,1,2,33040,2,2,4,40,8,1,{},{ bonus2 bAddRace,1,10; bonus bUnbreakableWeapon,0; }
 1540,Grand_Cross_,グランドクロス,4,20,,1500,140,,1,1,33040,2,2,4,40,8,1,{},{ bonus bAtkEle,6; bonus3 bAutoSpell,77,3,1000; bonus3 bDefeatSPDrainValue,1,100,3; }
-1541,Nemesis,ネメシス,4,20,,900,120,,1,0,33040,2,2,4,60,8,1,{},{ bonus bAtkEle,6; bonus2 bAddRace,6,10; bonus2 bAddEle,7,10; if(getequiprefinerycnt(4)) bonus3 bAutoSpell,32,getequiprefinerycnt(4),500; }
+1541,Nemesis,ネメシス,4,20,,900,120,,1,0,33040,2,2,4,60,8,1,{},{ bonus bAtkEle,6; bonus2 bAddRace,6,10; bonus2 bAddEle,7,10; if(getequiprefinerycnt(4)) bonus3 bAutoSpell,32,getequiprefinerycnt(4),500; bonus3 bAutoActiveWeapon,1541,100,20000; if(checkactiveitem()) { misceffect 9,""; bonus bBaseAtk,50; } }
 1542,Millitant_Morning_Star_,闘士のモーニングスター,4,20,,0,105,,1,0,8701363,2,2,3,80,8,1,{},{ bonus bStr,1; bonus bDex,1; bonus2 bAddRace,7,75; bonus bUnbreakableWeapon,0; }
 1543,Millitant_Morning_Star_,闘士のモーニングスター,4,20,,0,105,,1,0,8701363,2,2,3,80,8,1,{},{ bonus bStr,1; bonus bDex,1; bonus2 bAddRace,7,75; bonus bUnbreakableWeapon,0; }
 1544,Unknown_Item,ルナカリート,4,20,,700,110,,1,3,33040,2,2,3,50,8,1,{},{ if(readparam(bStr)>=77){ bonus bAspdAddRate,4; bonus2 bAddEff,Eff_Stun,1500; } }
@@ -889,7 +889,7 @@
 1734,Orc_Archer's_Bow,オークアーチャーの弓,4,20,,1600,120,,5,0,1705992,2,34,3,65,11,1,{},{ bonus3 bAddMonsterDropItem,1753,11,1000; if(getequipid(11)==1753) bonus bAddLongWeaponDamage,50; }
 1735,Sakray_Test_Bow,カッ弓,4,20,,0,120,,5,0,1706056,2,34,1,0,11,1,{},{ bonus bAtkRate,50; }
 1736,Double_Bound,ダブルバウンド,4,20,,900,70,,5,3,2048,2,34,3,70,11,1,{},{ bonus3 bAutoSpell2,46,1,500; }
-1737,Ixion's_Wings,イクシオンの羽,4,20,,300,135,,5,1,2048,2,34,4,70,11,1,{},{}
+1737,Ixion's_Wings,イクシオンの羽,4,20,,300,135,,5,1,2048,2,34,4,70,11,1,{},{ bonus3 bAutoActiveWeapon,1737,50+getequiprefinerycnt(4)*10,7000; if(checkactiveitem()) { misceffect 43,""; bonus bAspdAddRate,7; } }
 1738,Battle_Crossbow,バトルクロスボウ,4,20,,0,100,,5,0,1710152,2,34,3,80,11,1,{},{ bonus bDex,2; bonus2 bAddRace,7,55; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; }
 1739,Battle_Crossbow_,バトルクロスボウ,4,20,,0,100,,5,0,1710152,2,34,3,80,11,1,{},{ bonus bDex,2; bonus bInt,10; bonus2 bAddRace,7,55; bonus bUnbreakableWeapon,0; }
 1740,Unknown_Item,ネペンテスボウ,4,20,,1000,105,,5,2,2048,2,34,4,60,11,1,{},{}
@@ -1939,9 +1939,9 @@
 4408,Gloomundernight_Card,グルームアンダーナイトカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddEle,6,40; bonus2 bAddEle,7,40; bonus2 bAddRace,8,40; bonus2 bAddRace,6,40; }
 4409,Agav_Card,アガヴカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMatkRate,5; bonus bDef,-10; if(callfunc("JobGroup", Grp_Magician)) bonus bMaxSP,100; }
 4410,Echio_Card,エキオカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bAtk,15; if(callfunc("JobGroup", Grp_Swordman)) bonus bMaxHP,500; }
-4411,Vanberk_Card,ヴァンベルクカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bStr,2; }
-4412,Isilla_Card,アイシラカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,2; }
-4413,Hodremlin_Card,ホドレムリンカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubSize,0,15; bonus2 bSubSize,1,15; bonus2 bSubSize,2,15; bonus2 bMagicSubSize,0,15; bonus2 bMagicSubSize,1,15; bonus2 bMagicSubSize,2,15; }
+4411,Vanberk_Card,ヴァンベルクカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bStr,2; bonus3 bAutoActiveWeapon,4411,100,5000; if(checkactiveitem()) { misceffect 9,""; bonus bCritical,100; } }
+4412,Isilla_Card,アイシラカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,2; bonus3 bAutoActiveMagic,4412,500,5000; if(checkactiveitem()) { misceffect 88,""; bonus bCastrate,-50; bonus bFlee,30; } }
+4413,Hodremlin_Card,ホドレムリンカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubSize,0,15; bonus2 bSubSize,1,15; bonus2 bSubSize,2,15; bonus3 bRevAutoActiveWeapon,4413,500,10000; if(checkactiveitem()) { misceffect 224,""; bonus bFlee2,30; } }
 4414,Seeker_Card,シーカーカード,6,20,,10,,,,,,,32,,,,,{},{ skill 16,1; bonus2 bResEff,Eff_Stone,30; bonus bMdef,10; }
 4415,Snowier_Card,スノウアーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,536,11,2500; bonus2 bItemHealRate,7,100; }
 4416,Siroma_Card,シロマカード,6,20,,10,,,,,,,136,,,,,{},{ bonus2 bAddSkillDamageRate,14,25; }
@@ -1953,7 +1953,7 @@
 4422,Roween_Card,ロウィーンカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bFlee,5; bonus bFlee2,3; bonus2 bAddEle,1,10; bonus2 bCriticalRace,5,15; }
 4423,Galion_Card,ガリオンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bHit,5; bonus2 bAddEle,1,5; }
 4424,Stapo_Card,スタポカード,6,20,,10,,,,,,,136,,,,,{},{ skill 151,1; skill 152,1; }
-4425,Atros_Card,アトロスカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAtk,25; }
+4425,Atros_Card,アトロスカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAtk,25; bonus3 bAutoActiveWeapon,4425,100,10000; if(checkactiveitem()) { misceffect 220,""; bonus bAspdAddRate,100; } }
 4426,Byorgue_Card,ビョルグカード,6,20,,10,,,,,,,16,,,,,{},{ if(Class == Job_Rogue) { bonus bAtkRate,10; bonus bMatkRate,10; } }
 4427,Sword_Guardian_Card,ソードガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(4),13)==11){bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,47,50;} }
 4428,Bow_Guardian_Card,ボウガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(3),13)==2 || getiteminfo(getequipid(4),13)==2 || getiteminfo(getequipid(4),13)==3){bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,62,25;} }
@@ -3952,7 +3952,7 @@
 13031,Sword_Breaker,ソードブレイカー,4,20,,1000,70,,1,3,673144558,2,2,4,36,1,1,{},{ bonus bBreakWeaponRate,100; }
 13032,Mail_Breaker_,メイルブレイカー,4,20,,1000,70,,1,3,673144558,2,2,4,36,1,1,{},{ bonus bBreakArmorRate,100; }
 13033,Assassin_Dagger_,アサシンダガー,4,20,,600,140,,1,1,4096,2,2,4,36,1,1,{},{ bonus bMaxHPrate,20; bonus bMaxSPrate,15; bonus bAspdAddRate,2; bonus bAtkEle,7; }
-13034,Unknown_Item,砂漠の夕暮れ,4,,,600,50,,1,2,4096,2,2,2,70,1,1,{},{ if((getequipid(3)==13035) || (getequipid(4)==13035)) { bonus bMaxSP,20; bonus bMaxHPrate,5; bonus bHit,10; bonus2 bAddSize,2,30; } }
+13034,Unknown_Item,砂漠の夕暮れ,4,,,600,50,,1,2,4096,2,2,2,70,1,1,{},{ if((getequipid(3)==13035) || (getequipid(4)==13035)) { bonus bMaxSP,20; bonus bMaxHPrate,5; bonus bHit,10; bonus2 bAddSize,2,30; bonus3 bAutoActiveWeapon,13034,100,7000; if(checkactiveitem()) { misceffect 220,""; bonus bFixAspd,190; } } }
 13035,Unknown_Item,砂漠の風,4,,,600,50,,1,4,4096,2,2,2,70,1,1,{},{}
 13036,Unknown_Item,暗殺者のダマスカス,4,,,0,120,,1,0,683638511,2,2,3,80,,,{},{}
 13037,Unknown_Item,暗殺者のダマスカス,4,,,0,120,,1,0,683638511,2,2,3,80,,,{},{}
@@ -4042,6 +4042,8 @@
 13409,Immaterial_Sword_,無形剣R,4,,-1,0,160,,1,0,414946,2,2,4,1,2,,{},{ bonus bAtkEle,8; bonus bUnbreakableWeapon,0; bonus2 bSPVanish,8,45; }
 13410,Unknown_Item,グラディエーターのブレイド,4,,,0,115,,1,0,614880483,2,2,3,80,,,{},{}
 13411,Unknown_Item,グラディエーターのブレイド,4,,,0,115,,1,0,547779811,2,2,3,80,,,{},{}
+13412,Naght_Seiger_Twin_Edge,蒼炎のツインエッジ,4,20,,1500,150,,1,3,414946,2,2,4,75,2,1,{},{ bonus bAtkEle,1; skill 15,5; bonus3 bAutoActiveWeapon,13412,100,5000; if(checkactiveitem()) { misceffect 9,""; bonus2 bIgnoreDefRace,11,100; } }
+13413,Naght_Seiger_Twin_Edge_,紅炎のツインエッジ,4,20,,1500,160,,1,3,414946,2,2,4,75,2,1,{},{ bonus bAtkEle,3; skill 83,3; bonus3 bAutoActiveWeapon,13413,100,5000; if(checkactiveitem()) { misceffect 9,""; bonus2 bIgnoreDefRace,11,100; } }
 13415,Unknown_Item,初心者用ファルシオン,4,,,0,59,,1,0,8803555,2,2,1,2,2,,{},{}
 13416,Unknown_Item,グロリアスフランベルジェ,4,,,0,130,,1,0,545674467,2,2,4,80,2,1,{},{}
 13417,Unknown_Item,グロリアスレイピア,4,,,0,130,,1,0,545674467,2,2,4,80,2,1,{},{}

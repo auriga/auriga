@@ -1621,7 +1621,7 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilll
 	if(!battle_config.allow_same_autospell) {
 		int i;
 		for(i=0; i<sd->autospell.count; i++) {
-			if(sd->autospell.card_id[i] == current_equip_card_id &&
+			if(sd->autospell.card_id[i] == current_equip_name_id &&
 			   sd->autospell.id[i] == skillid &&
 			   sd->autospell.lv[i] == skilllv &&
 			   sd->autospell.rate[i] == rate &&
@@ -1639,10 +1639,136 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilll
 	sd->autospell.lv[sd->autospell.count]      = skilllv;
 	sd->autospell.rate[sd->autospell.count]    = rate;
 	sd->autospell.flag[sd->autospell.count]    = flag;
-	sd->autospell.card_id[sd->autospell.count] = current_equip_card_id;
+	sd->autospell.card_id[sd->autospell.count] = current_equip_name_id;
 	sd->autospell.count++;
 
 	return 0;
+}
+
+/*==========================================
+ * アクティブアイテム登録
+ *------------------------------------------
+ */
+int pc_activeitem(struct map_session_data* sd,int id,short rate,short tick,long flag)
+{
+	int i;
+
+	nullpo_retr(0, sd);
+
+	if(sd->bl.type != BL_PC)
+		return 0;
+
+	//一杯
+	if(sd->activeitem.count >= MAX_ACTIVEITEM)
+		return 0;
+
+	//同じIDが登録されているか
+	for(i=0; i<sd->activeitem.count; i++) {
+		if(sd->activeitem.id[i] == id)
+			return 0;
+	}
+
+	//後ろに追加
+	sd->activeitem.id[sd->activeitem.count] = id;
+	sd->activeitem.rate[sd->activeitem.count] = rate;
+	sd->activeitem.tick[sd->activeitem.count] = tick;
+	sd->activeitem.flag[sd->activeitem.count] = flag;
+	if(sd->activeitem_timer[sd->activeitem.count] < 1)
+		sd->activeitem_timer[sd->activeitem.count] = -1;
+	sd->activeitem.count++;
+
+	return 1;
+}
+
+/*==========================================
+ * アクティブアイテムタイマー
+ *------------------------------------------
+ */
+static int pc_activeitem_timer(int tid,unsigned int tick,int id,void *data)
+{
+	struct map_session_data *sd = map_id2sd(id);
+	int i, flag = 0;
+
+	if(sd == NULL)
+		return 1;
+
+	for(i=0;i<sd->activeitem.count;i++)
+	{
+		if(sd->activeitem_timer[i] != tid)
+			continue;
+		sd->activeitem_timer[i] = -1;
+		sd->activeitem_timertick[i] = -1;
+		flag = 1;
+	}
+	if(flag)
+		status_calc_pc(sd,0);
+
+	return 1;
+}
+
+/*==========================================
+ * アクティブアイテム開始
+ *------------------------------------------
+ */
+int pc_activeitem_start(struct map_session_data* sd,long mode)
+{
+	int i, flag = 0;
+	static int lock = 0;
+
+	nullpo_retr(0, sd);
+
+	if(sd->bl.type != BL_PC || lock++)
+		return 0;
+
+	for(i=0;i<sd->activeitem.count;i++)
+	{
+		if(!(mode&EAS_SHORT) && !(mode&EAS_LONG) && !(mode&EAS_MAGIC) && !(mode&EAS_MISC))
+			mode |= EAS_SHORT|EAS_LONG;
+		if(!(sd->activeitem.flag[i]&EAS_SHORT) && !(sd->activeitem.flag[i]&EAS_LONG) &&
+		   !(sd->activeitem.flag[i]&EAS_MAGIC) && !(sd->activeitem.flag[i]&EAS_MISC))
+			sd->activeitem.flag[i] |= EAS_SHORT|EAS_LONG;
+		if(mode&EAS_SHORT && !(sd->activeitem.flag[i]&EAS_SHORT))
+			continue;
+		if(mode&EAS_LONG && !(sd->activeitem.flag[i]&EAS_LONG))
+			continue;
+		if(mode&EAS_MAGIC && !(sd->activeitem.flag[i]&EAS_MAGIC))
+			continue;
+		if(mode&EAS_MISC && !(sd->activeitem.flag[i]&EAS_MISC))
+			continue;
+
+		if(!(mode&EAS_ATTACK) && !(mode&EAS_REVENGE))
+			mode |= EAS_ATTACK;
+		if(!(sd->activeitem.flag[i]&EAS_ATTACK) && !(sd->activeitem.flag[i]&EAS_REVENGE))
+			sd->activeitem.flag[i] |= EAS_ATTACK;
+		if(mode&EAS_REVENGE && !(sd->activeitem.flag[i]&EAS_REVENGE))
+			continue;
+		if(mode&EAS_ATTACK && sd->activeitem.flag[i]&EAS_REVENGE)
+			continue;
+
+		if(!(mode&EAS_NORMAL) && !(mode&EAS_SKILL))
+			mode |= EAS_NORMAL;
+		if(!(sd->activeitem.flag[i]&EAS_NORMAL) && !(sd->activeitem.flag[i]&EAS_SKILL))
+			sd->activeitem.flag[i] |= EAS_NORMAL;
+		if(mode&EAS_NORMAL && !(sd->activeitem.flag[i]&EAS_NORMAL))
+			continue;
+		if(mode&EAS_SKILL && !(sd->activeitem.flag[i]&EAS_SKILL))
+			continue;
+
+		if(atn_rand()%10000 > sd->activeitem.rate[i])
+			continue;
+		if(sd->activeitem_timer[i] != -1)
+			continue;
+
+		//発動
+		sd->activeitem_timertick[i] = gettick()+sd->activeitem.tick[i];
+		sd->activeitem_timer[i] = add_timer(gettick()+sd->activeitem.tick[i],pc_activeitem_timer,sd->bl.id, NULL);
+		flag = 1;
+	}
+	if(flag)
+		status_calc_pc(sd,0);
+	lock = 0;
+
+	return 1;
 }
 
 /*==========================================
@@ -2721,6 +2847,22 @@ int pc_bonus3(struct map_session_data *sd,int type,int type2,int type3,int val)
 		if(sd->state.lr_flag != 2)
 			pc_bonus_autospell(sd,type2,type3,val,EAS_SELF|EAS_SHORT|EAS_LONG|EAS_REVENGE|EAS_USEMAX|EAS_NOSP);
 		break;
+	case SP_AUTOACTIVE_WEAPON:
+		if(sd->state.lr_flag != 2)
+			pc_activeitem(sd,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_ATTACK);
+		break;
+	case SP_AUTOACTIVE_MAGIC:
+		if(sd->state.lr_flag != 2)
+			pc_activeitem(sd,type2,type3,val,EAS_MAGIC);
+		break;
+	case SP_REVAUTOACTIVE_WEAPON:
+		if(sd->state.lr_flag != 2)
+			pc_activeitem(sd,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_REVENGE);
+		break;
+	case SP_REVAUTOACTIVE_MAGIC:
+		if(sd->state.lr_flag != 2)
+			pc_activeitem(sd,type2,type3,val,EAS_MAGIC|EAS_REVENGE);
+		break;
 	case SP_RAISE:
 		sd->autoraise.hp_per = type3;
 		sd->autoraise.sp_per = val;
@@ -2748,6 +2890,10 @@ int pc_bonus4(struct map_session_data *sd,int type,int type2,int type3,int type4
 	case SP_AUTOSPELL:
 		if(sd->state.lr_flag != 2)
 			pc_bonus_autospell(sd,type2,type3,type4,val);
+		break;
+	case SP_AUTOACTIVE_ITEM:
+		if(sd->state.lr_flag != 2)
+			pc_activeitem(sd,type2,type3,type4,val);
 		break;
 	default:
 		if(battle_config.error_log)
@@ -8869,6 +9015,7 @@ int do_init_pc(void)
 	add_timer_func_list(pc_coin_timer);
 	add_timer_func_list(pc_extra);
 	add_timer_func_list(pc_itemlimit_timer);
+	add_timer_func_list(pc_activeitem_timer);
 
 	natural_heal_prev_tick = gettick() + NATURAL_HEAL_INTERVAL;
 	add_timer_interval(natural_heal_prev_tick,pc_natural_heal,0,NULL,NATURAL_HEAL_INTERVAL);

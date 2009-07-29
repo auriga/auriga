@@ -3110,6 +3110,15 @@ AurigaNPCScript
 			見つからない場合は ""（空文字）を返します。
 			なお、モンスター名はmob_db.txtを参照します
 
+		checkactiveitem 関数
+			checkactiveitem(<itemid>)
+
+			<itemid>	数値、省略可
+
+			プレイヤーが装備しているアイテム<itemid>の活性状態を返します。
+			指定アイテムが活性状態だった場合は1を、そうでなければ0を返します。
+			アイテムを活性状態にするにはbonus命令のbAutoActiveItemなどを使用します。
+
 
 	＊csv アクセス命令 / 関数
 

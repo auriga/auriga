@@ -1,57 +1,3 @@
-//GVG設定
-//GvGの開催曜日 
-//無し = 0、日 = +1、月 = +2、火 = +4、水 = +8、木 = +16、金 = +32、土 = +64
-//GvGを行う曜日を加算（GvG無しなら0）
-//毎日行なう場合はGvGWeekDayを127にする
-//月曜と水曜なら10、土日なら65
-
-GvGWeekDay	1
-
-
-//--------------GvG時間 (0時〜23時59分)の設定-------------------
-//時間と分を指定する
-//	例）12時54分 -> 1254
-//	　　 9時3分  -> 903 （0903としない！）
-//24時に終わらせたい場合は2400と記載（0ではだめ）
-//翌日0時からGvGの場合は中断無しでGvGが続く
-
-//毎回同じ時間の場合（曜日ごとに変えたいときは両方0）
-GvGTimeST	2000
-GvGTimeED	2200
-
-//--------------GvG時間 (0時〜23時59分)の個別の設定-------------------
-//例は月〜金20〜22時、土日は土曜22時から日曜2時まで
-
-//日曜
-GvGTime0ST	0
-GvGTime0ED	200
-
-//月曜
-GvGTime1ST	2000
-GvGTime1ED	2200
-
-//火曜
-GvGTime2ST	2000
-GvGTime2ED	2200
-
-//水曜
-GvGTime3ST	2000
-GvGTime3ED	2200
-
-//木曜
-GvGTime4ST	2000
-GvGTime4ED	2200
-
-//金曜
-GvGTime5ST	2000
-GvGTime5ED	2200
-
-//土曜
-GvGTime6ST	2200
-GvGTime6ED	2400
-
-
-
 Job_Novice	0
 Job_Swordman	1
 Job_Magician	2
@@ -353,6 +299,11 @@ bFixSpeed		1155
 bAddFixCastRate		1156
 bAddSkillHealRate	1157
 bMatk2Rate		1158
+bAutoActiveWeapon	1159
+bAutoActiveMagic	1160
+bRevAutoActiveWeapon	1161
+bRevAutoActiveMagic	1162
+bAutoActiveItem		1163
 
 bRestartFullRecover	2000
 bNoCastCancel	2001
