@@ -1940,6 +1940,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 				case MER_LEXDIVINA:
 				case MO_EXTREMITYFIST:
 				case SA_DISPELL:
+				case TK_JUMPKICK:
 					fail_flag = 0;
 					break;
 				case SA_SPELLBREAKER:
@@ -2080,6 +2081,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		case MA_SHARPSHOOTING:
 		case ML_BRANDISH:
 		case MO_EXTREMITYFIST:
+		case TK_JUMPKICK:
 			// skill_castend_idで許可したスキルはここで敵チェック
 			if(skill_get_inf2(skillid) & 0x04 || skill_get_inf(skillid) & 0x01) {
 				if(battle_check_target(src,bl,BCT_ENEMY) <= 0)
@@ -2326,7 +2328,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				sd->ud.to_x = sd->bl.x + dx;
 				sd->ud.to_y = sd->bl.y + dy;
 				clif_skill_poseffect(&sd->bl,skillid,skilllv,sd->bl.x,sd->bl.y,tick);
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
+				if(skillid == TK_JUMPKICK)
+					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
+				else
+					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
 				clif_walkok(sd);
 				clif_move(&sd->bl);
 				if(dx < 0) dx = -dx;

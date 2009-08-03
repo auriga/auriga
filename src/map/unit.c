@@ -1023,7 +1023,9 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		else
 			delay = skill_get_delay(skill_num,skill_lv);
 		break;
+	case AC_SHOWER:
 	case CG_ARROWVULCAN:
+	case GS_GLITTERING:
 	case GS_DUST:
 	case GS_GROUNDDRIFT:
 		delay = skill_get_delay(skill_num,skill_lv);

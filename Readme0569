@@ -1,4 +1,15 @@
 ----------------------------------------
+//0643 [2009/08/04] by popori
+
+・ティオアプチャギをシフトクリック使用出来るように (skill.c)
+
+・アローシャワー、フリップザコインはディレイ短縮されないように修正 (unit.c)
+
+・packet_db.txtのクリーンアップ (packet_db.txt)
+
+・ドキュメントの追記 (server_build.txt)
+
+----------------------------------------
 //0642 [2009/07/30] by Blaze
 
 ・bonus命令に「AutoActiveItem」を実装（pc.*,map.h,status.c,battle.c,doc/item_bonus.txt）
