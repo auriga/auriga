@@ -708,7 +708,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case TF_POISON:			/* インベナム */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,400*skilllv+1000,status_get_lv(src)))
 			status_change_start(bl,SC_POISON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
-		else
+		else if(sd)
 			clif_skill_fail(sd,skillid,0,0);
 		break;
 
@@ -718,12 +718,12 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 
 	case AS_VENOMKNIFE:		/* ベナムナイフ */
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,6000,status_get_lv(src))) {
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,6000,status_get_lv(src)))
 			status_change_start(bl,SC_POISON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
-		} else {
-			if(sd) clif_skill_fail(sd,TF_POISON,0,0);
-		}
+		else if(sd)
+			clif_skill_fail(sd,TF_POISON,0,0);
 		break;
+
 	case AS_SONICBLOW:		/* ソニックブロー */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,200*skilllv+1000,status_get_lv(src)))
 			status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);

@@ -340,7 +340,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// セイフティウォール
-		if(sc->data[SC_SAFETYWALL].timer != -1 && flag&BF_SHORT && skill_num != NPC_GUIDEDATTACK && skill_num != NPC_EARTHQUAKE) {
+		if(sc->data[SC_SAFETYWALL].timer != -1 && flag&BF_SHORT) {
 			struct skill_unit *unit = map_id2su(sc->data[SC_SAFETYWALL].val2);
 			if(unit && unit->group) {
 				if((--unit->group->val2) <= 0)
@@ -1369,8 +1369,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// まず遠距離に設定
 			if(calc_flag.dist == 1){	// 1：通常遠距離　2：強制遠距離
 				if(battle_config.calc_dist_flag&1 && !(src->type == BL_PC && target->type == BL_PC)) {	// PC vs PCは強制無視
-					int target_dist = unit_distance2(src,target)-1;	// 距離を取得
-					if(target_dist <= battle_config.allow_sw_dist) {			// 設定した距離より小さい＝近距離からの攻撃
+					int target_dist = unit_distance2(src,target);	// 距離を取得
+					if(target_dist < battle_config.allow_sw_dist) {			// 設定した距離より小さい＝近距離からの攻撃
 						if(src->type == BL_PC && battle_config.sw_def_type & 1)		// 人間からのを判定するか　&1でする
 							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
 						if(src->type == BL_MOB && battle_config.sw_def_type & 2)	// モンスターからのを判定するか　&2でする
