@@ -1955,8 +1955,8 @@
 4424,Stapo_Card,スタポカード,6,20,,10,,,,,,,136,,,,,{},{ skill 151,1; skill 152,1; }
 4425,Atros_Card,アトロスカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAtk,25; bonus3 bAutoActiveWeapon,4425,100,10000; if(checkactiveitem()) { misceffect 220,""; bonus bAspdAddRate,100; } }
 4426,Byorgue_Card,ビョルグカード,6,20,,10,,,,,,,16,,,,,{},{ if(Class == Job_Rogue) { bonus bAtkRate,10; bonus bMatkRate,10; } }
-4427,Sword_Guardian_Card,ソードガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(4),13)==11){bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,47,50;} }
-4428,Bow_Guardian_Card,ボウガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(3),13)==2 || getiteminfo(getequipid(4),13)==2 || getiteminfo(getequipid(4),13)==3){bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,62,25;} }
+4427,Sword_Guardian_Card,ソードガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(3),13)==2 || getiteminfo(getequipid(4),13)==2 || getiteminfo(getequipid(4),13)==3){bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,62,25;} }
+4428,Bow_Guardian_Card,ボウガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(4),13)==11){bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,47,50;} }
 4429,Salamander_Card,サラマンダーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bAddSkillDamageRate,83,40; bonus2 bAddSkillDamageRate,80,40; }
 4430,Ifrit_Card,イフリートカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bAtk,JobLevel/10; bonus bCritical,JobLevel/10; bonus bHit,JobLevel/10; bonus3 bRevAutoSelfSpell,653,2,300; }
 4431,Kasa_Card,カーサカード,6,20,,10,,,,,,,4,,,,,{},{ bonus3 bAutoSpell,17,5,500; bonus3 bAutoSpell,19,5,500; }
@@ -3595,10 +3595,10 @@
 12123,Oil_and_Honey_Pastry,揚げ菓子,2,,,70,,,,,1000333311,2,,,,,,{ sc_start SC_MFLEE,180000,30; },{}
 12124,Rainbow_Colored_Rice_Cake,虹色のお餅,2,,,70,,,,,1000333311,2,,,,,,{ sc_start SC_MATK,60000,10; sc_start SC_MMATK,60000,10; },{}
 12125,Outdoor_Cooker,野外用調理器具,2,500,,20,,,,,1000333311,2,,,,,,{ making 1000,0; },{}
-12126,Home_Cooking_Set,家庭用調理器具,2,1000,,30,,,,,1000333311,2,,,,,,{ making 1000,500; },{}
-12127,Deluxe_Cooking_Set,高級調理器具,2,2000,,30,,,,,1000333311,2,,,,,,{ making 1000,1000; },{}
-12128,Court_Cooking_Set,宮廷用調理器具,2,5000,,70,,,,,1000333311,2,,,,,,{ making 1000,1500; },{}
-12129,Legendary_Cooking_Set,幻の調理器具,2,10000,,70,,,,,1000333311,2,,,,,,{ making 1000,2000; },{}
+12126,Home_Cooking_Set,家庭用調理器具,2,1000,,30,,,,,1000333311,2,,,,,,{ making 1000,1250; },{}
+12127,Deluxe_Cooking_Set,高級調理器具,2,2000,,30,,,,,1000333311,2,,,,,,{ making 1000,2500; },{}
+12128,Court_Cooking_Set,宮廷用調理器具,2,5000,,70,,,,,1000333311,2,,,,,,{ making 1000,4000; },{}
+12129,Legendary_Cooking_Set,幻の調理器具,2,10000,,70,,,,,1000333311,2,,,,,,{ making 1000,20000; },{}
 12130,Cookie_Bag,菓子包み,2,,,70,,,,,1000333311,2,,,,,,{ getitem RAND_COOKIE,3; },{}
 12131,Lucky_Potion,幸運のポーション,2,,,100,,,,,1000333311,2,,,,,,{ sc_start SC_MLUK,180000,15; },{}
 12132,Red_Package,真っ赤な袋,2,,,200,,,,,1000333311,2,,,,,,{ sc_start SC_Santa,600000,0; },{}

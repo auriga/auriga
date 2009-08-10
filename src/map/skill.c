@@ -2278,7 +2278,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case TK_TURNKICK:	/* トルリョチャギ */
 		if(flag&1){
 			/* 個別処理 */
-			if(bl->id != skill_area_temp[1]) {
+			if(bl->id != skill_area_temp[1] && md) {
 				struct block_list pos;
 				memset(&pos,0,sizeof(pos));
 				pos.m = bl->m;
@@ -4414,38 +4414,40 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sc && sc->data[SC_STONE].timer != -1) {
 			status_change_end(bl,SC_STONE,-1);
 		}
-		else if(!battle_check_undead(status_get_race(bl),status_get_elem_type(bl))) {
-			if(atn_rand() % 10000 < status_change_rate(bl,SC_STONE,skilllv*4+20,status_get_lv(src)))
-				status_change_start(bl,SC_STONE,skilllv,0,0,5000,skill_get_time2(skillid,skilllv),0);
-		} else {
-			if(sd)
-				clif_skill_fail(sd,skillid,0,0);
-			break;
-		}
+		else if(!battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) && atn_rand() % 10000 < status_change_rate(bl,SC_STONE,skilllv*4+20,status_get_lv(src))) {
+			status_change_start(bl,SC_STONE,skilllv,0,0,5000,skill_get_time2(skillid,skilllv),0);
 
-		// 成功なのでLv6以上はジェム消費処理
-		if(skilllv >= 6) {
-			struct map_session_data *msd = NULL;
-			if(sd)       msd = sd;
-			else if(hd)  msd = hd->msd;
-			else if(mcd) msd = mcd->msd;
+			// 成功なのでLv6以上はジェム消費処理
+			if(skilllv >= 6) {
+				int i, idx,val;
+				struct map_session_data *msd = NULL;
+				if(sd)       msd = sd;
+				else if(hd)  msd = hd->msd;
+				else if(mcd) msd = mcd->msd;
 
-			if(msd == NULL)
-				break;
-			if( !msd->special_state.no_gemstone &&
-			    msd->sc.data[SC_WIZARD].timer == -1 &&
-			    msd->sc.data[SC_INTOABYSS].timer == -1 )
-			{
-				int i, idx;
+				if(msd == NULL)
+					break;
 				for(i=0; i<10; i++) {
-					if(skill_db[skillid].itemid[i] < 715 || skill_db[skillid].itemid[i] > 717)
+					val = 0;
+					if(skill_db[skillid].itemid[i] < 715 || skill_db[skillid].itemid[i] > 717){
 						continue;
+					}
+					if( msd->special_state.no_gemstone ||
+					    msd->sc.data[SC_WIZARD].timer != -1 &&
+					    msd->sc.data[SC_INTOABYSS].timer != -1 ){
+						val++;
+						if(skill_db[skillid].amount[i]-val <= 0)
+							continue;
+					}
 					idx = pc_search_inventory(msd,skill_db[skillid].itemid[i]);
 					if(idx < 0)
 						continue;
-					pc_delitem(msd,idx,skill_db[skillid].amount[i],0);
+					pc_delitem(msd,idx,skill_db[skillid].amount[i]-val,0);
 				}
 			}
+		} else {
+			if(sd)
+				clif_skill_fail(sd,skillid,0,0);
 		}
 		break;
 
@@ -9475,7 +9477,7 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 {
 	struct map_session_data *sd = NULL;
 	struct status_change *sc;
-	int i, idx[10];
+	int i, val, idx[10];
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, cnd);
@@ -9496,17 +9498,19 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 		int x = (cnd->lv > 10)? 9: cnd->lv - 1;
 
 		idx[i] = -1;
+		val = 0;
 		if(itemid[i] <= 0)
 			continue;
 
-		if(cnd->id != HW_GANBANTEIN) {
+		if(cnd->id != HW_GANBANTEIN && cnd->id != RG_GRAFFITI) {
 			if(itemid[i] >= 715 && itemid[i] <= 717) {
-				if(sd->special_state.no_gemstone || (sc && sc->data[SC_WIZARD].timer != -1))
-					continue;
-			}
-			if((itemid[i] >= 715 && itemid[i] <= 717) || itemid[i] == 1065) {
-				if(sc && sc->data[SC_INTOABYSS].timer != -1)
-					continue;
+				if(sd->special_state.no_gemstone || (sc && (sc->data[SC_WIZARD].timer != -1 || sc->data[SC_INTOABYSS].timer != -1))){
+					val++;
+					if(amount[i]-val > 0)
+						amount[i] -= val;
+					else
+						continue;
+				}
 			}
 		}
 		if((cnd->id == AM_POTIONPITCHER || cnd->id == CR_SLIMPITCHER || cnd->id == CR_CULTIVATION) && i != x)
@@ -11421,7 +11425,7 @@ static int skill_calc_produce_rate(struct map_session_data *sd, int idx, int sc,
 		break;
 
 	case PRD_COOKING:	// 料理
-		make_per += sd->making_base_success_per + sd->status.job_level*10 + int_*10 + dex*10 + luk*10;
+		make_per += sd->making_base_success_per + sd->status.job_level*20 + dex*20 + luk*10;
 		if(battle_config.cooking_rate != 100)
 			make_per = make_per * battle_config.cooking_rate/100;
 		break;

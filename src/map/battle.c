@@ -2372,7 +2372,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		    case NJ_ZENYNAGE:
 				break;
 			default:
-				if(skill_lv >= 0)
+				if(skill_lv < 0)
 					break;
 				wd.damage = battle_addmastery(src_sd,target,wd.damage,0);
 				if(calc_flag.lh)
@@ -3577,9 +3577,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			wd.damage , 3 , MO_TRIPLEATTACK, pc_checkskill(sd,MO_TRIPLEATTACK) , -1 );
 
 		// クローンスキル
-		if(wd.damage> 0 && tsd && pc_checkskill(tsd,RG_PLAGIARISM) && sc && sc->data[SC_PRESERVE].timer == -1) {
+		if(wd.damage> 0 && tsd && pc_checkskill(tsd,RG_PLAGIARISM) && t_sc && t_sc->data[SC_PRESERVE].timer == -1)
 			skill_clone(tsd,MO_TRIPLEATTACK,pc_checkskill(sd, MO_TRIPLEATTACK));
-		}
 	} else {
 		clif_damage(src, target, tick, wd.amotion, wd.dmotion, wd.damage, wd.div_, wd.type, wd.damage2);
 
@@ -4130,7 +4129,9 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* ダメージがあるなら追加効果判定 */
 	if(bl->prev != NULL && !unit_isdead(bl)) {
-		if(skilllv >= 0 && (damage > 0 || skillid == TF_POISON)) {
+		if(skillid ==NPC_CRITICALWOUND)
+			printf("%d",damage);
+		if(skilllv >= 0 && (damage > 0 || skillid == TF_POISON || skillid == SL_STUN) && skillid != TK_TURNKICK) {
 			// グラウンドドリフトはdsrcを引数として渡す
 			if(skillid == GS_GROUNDDRIFT)
 				skill_additional_effect(dsrc,bl,skillid,skilllv,attack_type,tick);

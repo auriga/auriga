@@ -7100,12 +7100,13 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 
 	if(hp){
 		if(sd->status.hp > hp){
-			sd->status.hp -= hp;
-			clif_updatestatus(sd,SP_HP);
+			pc_heal(sd,-hp,0);
 		} else {
 			if(!battle_config.death_by_unrig_penalty){
+				/* 一旦HPが0になり、すぐに1に回復するようなのでとりあえず再現 */
 				sd->status.hp = 0;
 				clif_updatestatus(sd,SP_HP);
+				pc_heal(sd,1,0);
 			} else {
 				pc_heal(sd,-sd->status.hp,0);
 			}
@@ -8266,24 +8267,21 @@ static int pc_bleeding(struct map_session_data *sd)
 		}
 	}
 
-	if(sd->status.max_hp < sd->status.hp - hp)
-		hp = sd->status.max_hp - sd->status.hp;
-	if(sd->status.max_sp < sd->status.sp - sp)
-		hp = sd->status.max_sp - sd->status.sp;
-
 	if (hp){
-		if(sd->status.hp > hp)
-			sd->status.hp -= hp;
-		else
+		if(sd->status.hp > hp){
+			pc_heal(sd,-hp,0);
+		}else{
 			sd->status.hp = 0;
-		clif_updatestatus(sd,SP_HP);
+			clif_updatestatus(sd,SP_HP);
+		}
 	}
 	if (sp){
-		if(sd->status.sp > sp)
-			sd->status.sp -= sp;
-		else
+		if(sd->status.sp > sp){
+			pc_heal(sd,0,-sp);
+		}else{
 			sd->status.sp = 0;
-		clif_updatestatus(sd,SP_SP);
+			clif_updatestatus(sd,SP_SP);
+		}
 	}
 
 	return 0;
