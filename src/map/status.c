@@ -4259,7 +4259,7 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 		default:
 			break;
 	}
-	if(sc_flag) {
+	if(sc && sc_flag) {
 		if(sc->data[SC_STATUS_UNCHANGE].timer != -1 && status_is_disable(type,0x10))
 			return 0;	// ゴスペルの全状態異常耐性中なら無効
 	}

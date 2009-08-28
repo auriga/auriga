@@ -1,4 +1,19 @@
 ----------------------------------------
+//0646 [2009/08/29] by Salva
+
+・アイスウォール等のオブジェクトに状態異常の成功判定が発生したとき
+	MAPサーバーが落ちていた問題を修正 (status.c)
+　	　Thanks to dragontail789さん、Cocoaさん、Blazeさん、Lyeseさん
+
+・フルアドレナリンラッシュの記述が消えていたのを修正 (skill_cast_db.txt)
+　　Thanks to dragontail789さん、Blazeさん
+
+・ストーンカースの成功確率が誤っていたのを修正 (skill.c)
+　　Thanks to dragontail789さん
+
+・Auriga-0645で検証用のprintfが残ったままになっていたのを削除 (battle.c)
+
+----------------------------------------
 //0645 [2009/08/11] by Salva
 
 ・修練系がbSplashRangeの追加攻撃範囲のみに乗っていた問題を修正 (battle.c)

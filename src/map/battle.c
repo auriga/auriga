@@ -4129,8 +4129,6 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* ダメージがあるなら追加効果判定 */
 	if(bl->prev != NULL && !unit_isdead(bl)) {
-		if(skillid ==NPC_CRITICALWOUND)
-			printf("%d",damage);
 		if(skilllv >= 0 && (damage > 0 || skillid == TF_POISON || skillid == SL_STUN) && skillid != TK_TURNKICK) {
 			// グラウンドドリフトはdsrcを引数として渡す
 			if(skillid == GS_GROUNDDRIFT)

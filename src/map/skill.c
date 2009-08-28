@@ -4414,7 +4414,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sc && sc->data[SC_STONE].timer != -1) {
 			status_change_end(bl,SC_STONE,-1);
 		}
-		else if(!battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) && atn_rand() % 10000 < status_change_rate(bl,SC_STONE,skilllv*4+20,status_get_lv(src))) {
+		else if(!battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) && atn_rand() % 10000 < status_change_rate(bl,SC_STONE,skilllv*400+2000,status_get_lv(src))) {
 			status_change_start(bl,SC_STONE,skilllv,0,0,5000,skill_get_time2(skillid,skilllv),0);
 
 			// 成功なのでLv6以上はジェム消費処理
