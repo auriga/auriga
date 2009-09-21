@@ -50,7 +50,6 @@
 #define MAX_GUILDALLIANCE 16
 #define MAX_GUILDCASTLE 30
 #define MAX_GUILDLEVEL 50
-#define MAX_GUILDGUARDIAN 8
 #define MAX_FRIEND 20
 #define MAX_STATUSCHANGE 390
 #define MAX_PORTAL_MEMO 3
@@ -347,6 +346,7 @@ struct guild {
 };
 struct guild_castle {
 	int castle_id;
+	int m;
 	char map_name[24];
 	char area_name[24];
 	char castle_name[32];
@@ -363,7 +363,7 @@ struct guild_castle {
 	struct {
 		int visible;
 		int id;
-	} guardian[MAX_GUILDGUARDIAN];
+	} guardian[8];
 };
 struct square {
 	int val1[5];

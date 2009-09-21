@@ -2098,9 +2098,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	if(!md->state.rebirth) {
 		// ガーディアンだったらアジト情報から削除
 		if(md->guild_id) {
-			struct guild_castle *gc = guild_mapname2gc(map[md->bl.m].name);
+			struct guild_castle *gc = guild_mapid2gc(md->bl.m);
 			if(gc) {
-				for(i = 0; i < MAX_GUILDGUARDIAN; i++) {
+				for(i = 0; i < sizeof(gc->guardian) / sizeof(gc->guardian[0]); i++) {
 					if(gc->guardian[i].id == md->bl.id) {
 						gc->guardian[i].id = 0;
 						gc->guardian[i].visible = 0;
@@ -3560,19 +3560,20 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 
 	if(md->guild_id)
 	{
-		struct guild_castle *gc = guild_mapname2gc(map[sd->bl.m].name);
 		struct guild *g = guild_search(sd->status.guild_id);
 
 		if(g == NULL && md->class_ == 1288)
 			return 0;	// ギルド未加入ならダメージ無し
-		if(gc != NULL && !map[sd->bl.m].flag.gvg)
+		if(guild_mapid2gc(sd->bl.m) != NULL && !map[sd->bl.m].flag.gvg)
 			return 0;	// 砦内でGvじゃないときはダメージなし
-		if(g && g->guild_id == md->guild_id)
-			return 0;	// 自占領ギルドのエンペならダメージ無し
-		if(g && guild_checkskill(g,GD_APPROVAL) <= 0 && md->class_ == 1288)
-			return 0;	// 正規ギルド承認がないとダメージ無し
-		if(g && guild_check_alliance(md->guild_id, g->guild_id, 0) == 1)
-			return 0;	// 同盟ならダメージ無し
+		if(g) {
+			if(g->guild_id == md->guild_id)
+				return 0;	// 自占領ギルドのエンペならダメージ無し
+			if(guild_checkskill(g, GD_APPROVAL) <= 0 && md->class_ == 1288)
+				return 0;	// 正規ギルド承認がないとダメージ無し
+			if(guild_check_alliance(md->guild_id, g->guild_id, 0) == 1)
+				return 0;	// 同盟ならダメージ無し
+		}
 	}
 
 	return 1;

@@ -211,14 +211,31 @@ struct guild_castle *guild_castle_search(int gcid)
  * mapnameに対応したアジトのgcを返す
  *------------------------------------------
  */
-struct guild_castle *guild_mapname2gc(char *mapname)
+struct guild_castle *guild_mapname2gc(const char *mapname)
 {
 	int i;
-	struct guild_castle *gc=NULL;
 
-	for(i=0;i<MAX_GUILDCASTLE;i++){
-		gc=guild_castle_search(i);
-		if(gc && strcmp(gc->map_name,mapname)==0)
+	for(i = 0; i < MAX_GUILDCASTLE; i++) {
+		struct guild_castle *gc = guild_castle_search(i);
+		if(gc && strcmp(gc->map_name, mapname) == 0)
+			return gc;
+	}
+
+	return NULL;
+}
+
+/*==========================================
+ * MAP番号に対応したアジトのgcを返す
+ * 他サーバ管理のMAPの場合は取得不可
+ *------------------------------------------
+ */
+struct guild_castle *guild_mapid2gc(int m)
+{
+	int i;
+
+	for(i = 0; i < MAX_GUILDCASTLE; i++) {
+		struct guild_castle *gc = guild_castle_search(i);
+		if(gc && gc->m == m)
 			return gc;
 	}
 
@@ -2287,8 +2304,10 @@ static void guild_read_castledb(void)
 
 	// デフォルトデータを作成
 	memset(castle_db,0,sizeof(castle_db));
-	for(j=0; j<MAX_GUILDCASTLE; j++)
+	for(j=0; j<MAX_GUILDCASTLE; j++) {
 		castle_db[j].castle_id = j;
+		castle_db[j].m         = -1;
+	}
 
 	if ((fp=fopen("db/castle_db.txt","r"))==NULL){
 		printf("can't read db/castle_db.txt\n");
@@ -2327,6 +2346,8 @@ static void guild_read_castledb(void)
 		castle_db[id].area_name[23]    = '\0';
 		castle_db[id].castle_name[31]  = '\0';
 		castle_db[id].castle_event[23] = '\0';
+
+		castle_db[id].m = map_mapname2mapid(castle_db[id].map_name);
 		ln++;
 	}
 	fclose(fp);
