@@ -1,4 +1,12 @@
 ----------------------------------------
+//0652 [2009/09/22] by Rayce
+
+・battle_auriga.conf の「pvp_send_guild_xy」の判定は、clif_guild_xy() 内ではなく
+  呼び出し元の guild_send_xy_timer_sub() で行うように変更（clif.c, guild.c）
+
+・guild_castlealldataload() のリファクタリング（guild.c）
+
+----------------------------------------
 //0651 [2009/09/22] by Rayce
 
 ・砦で MobId: 1285〜1288 のモンスターを呼び出すと、常にギルド所属扱いになるのを撤廃（mob.c）

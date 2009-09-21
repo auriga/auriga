@@ -1018,7 +1018,9 @@ static int guild_send_xy_timer_sub(void *key,void *data,va_list ap)
 		struct map_session_data *sd;
 		if((sd = g->member[i].sd) != NULL) {
 			if(sd->guild_x != sd->bl.x || sd->guild_y != sd->bl.y) {
-				clif_guild_xy(sd);
+				if(battle_config.pvp_send_guild_xy || !map[sd->bl.m].flag.pvp) {	// PvPモードで送信するか
+					clif_guild_xy(sd);
+				}
 				sd->guild_x = sd->bl.x;
 				sd->guild_y = sd->bl.y;
 			}
@@ -2092,15 +2094,15 @@ void guild_castledatasaveack(int castle_id, int idx, int value)
 		return;
 	}
 	switch(idx) {
-		case  1: gc->guild_id    = value; break;
-		case  2: gc->economy     = value; break;
-		case  3: gc->defense     = value; break;
-		case  4: gc->triggerE    = value; break;
-		case  5: gc->triggerD    = value; break;
-		case  6: gc->nextTime    = value; break;
-		case  7: gc->payTime     = value; break;
-		case  8: gc->createTime  = value; break;
-		case  9: gc->visibleC    = value; break;
+		case  1: gc->guild_id            = value; break;
+		case  2: gc->economy             = value; break;
+		case  3: gc->defense             = value; break;
+		case  4: gc->triggerE            = value; break;
+		case  5: gc->triggerD            = value; break;
+		case  6: gc->nextTime            = value; break;
+		case  7: gc->payTime             = value; break;
+		case  8: gc->createTime          = value; break;
+		case  9: gc->visibleC            = value; break;
 		case 10: gc->guardian[0].visible = value; break;
 		case 11: gc->guardian[1].visible = value; break;
 		case 12: gc->guardian[2].visible = value; break;
@@ -2123,51 +2125,46 @@ void guild_castledatasaveack(int castle_id, int idx, int value)
  */
 void guild_castlealldataload(int len, struct guild_castle *gc)
 {
-	int i;
-	int n=(len-4)/sizeof(struct guild_castle),ev=-1;
+	int i, ev = -1;
+	int n = (len - 4) / sizeof(struct guild_castle);
 
 	nullpo_retv(gc);
 
 	// イベント付きで要求するデータ位置を探す(最後の占拠データ)
-	for(i=0;i<n;i++){
-		if( (gc+i)->guild_id )
-			ev=i;
+	for(i = n - 1; i >= 0; i--) {
+		if( (gc+i)->guild_id ) {
+			ev = i;
+			break;
+		}
 	}
 
 	// 城データ格納とギルド情報要求
-	for(i=0;i<n;i++,gc++){
-		struct guild_castle *c=guild_castle_search(gc->castle_id);
-		if(!c){
+	for(i = 0; i < n; i++, gc++) {
+		struct guild_castle *c = guild_castle_search(gc->castle_id);
+		if(!c) {
 			printf("guild_castlealldataload ??\n");
 			continue;
 		}
 
-		c->guild_id    = gc->guild_id;
-		c->economy     = gc->economy;
-		c->defense     = gc->defense;
-		c->triggerE    = gc->triggerE;
-		c->triggerD    = gc->triggerD;
-		c->nextTime    = gc->nextTime;
-		c->payTime     = gc->payTime;
-		c->createTime  = gc->createTime;
-		c->visibleC    = gc->visibleC;
-		c->guardian[0] = gc->guardian[0];
-		c->guardian[1] = gc->guardian[1];
-		c->guardian[2] = gc->guardian[2];
-		c->guardian[3] = gc->guardian[3];
-		c->guardian[4] = gc->guardian[4];
-		c->guardian[5] = gc->guardian[5];
-		c->guardian[6] = gc->guardian[6];
-		c->guardian[7] = gc->guardian[7];
+		c->guild_id   = gc->guild_id;
+		c->economy    = gc->economy;
+		c->defense    = gc->defense;
+		c->triggerE   = gc->triggerE;
+		c->triggerD   = gc->triggerD;
+		c->nextTime   = gc->nextTime;
+		c->payTime    = gc->payTime;
+		c->createTime = gc->createTime;
+		c->visibleC   = gc->visibleC;
+		memcpy(c->guardian, gc->guardian, sizeof(c->guardian));
 
-		if( c->guild_id ){
-			if(i!=ev)
+		if(c->guild_id) {
+			if(i != ev)
 				guild_request_info(c->guild_id);
 			else
-				guild_npc_request_info(c->guild_id,"::OnAgitInit");
+				guild_npc_request_info(c->guild_id, "::OnAgitInit");
 		}
 	}
-	if(ev==-1)
+	if(ev < 0)
 		npc_event_doall("OnAgitInit");
 
 	return;
