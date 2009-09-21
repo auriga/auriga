@@ -7525,7 +7525,7 @@ int buildin_sc_start(struct script_state *st)
 		if(sd && sd->state.potionpitcher_flag)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
-	if(bl && !unit_isdead(bl))
+	if(bl && !unit_isdead(bl) && status_change_rate(bl,type,10000,0) > 0)
 		status_change_start(bl,type,val1,0,0,0,tick,0);
 	return 0;
 }
@@ -7553,9 +7553,8 @@ int buildin_sc_start2(struct script_state *st)
 		if(sd && sd->state.potionpitcher_flag)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
-	if(bl && !unit_isdead(bl))
-		if(atn_rand() % 10000 < status_change_rate(bl,type,per,0))
-			status_change_start(bl,type,val1,0,0,0,tick,0);
+	if(bl && !unit_isdead(bl) && atn_rand() % 10000 < status_change_rate(bl,type,per,0))
+		status_change_start(bl,type,val1,0,0,0,tick,0);
 	return 0;
 }
 
@@ -7581,7 +7580,7 @@ int buildin_sc_starte(struct script_state *st)
 		if(sd && sd->state.potionpitcher_flag)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
-	if(bl && !unit_isdead(bl))
+	if(bl && !unit_isdead(bl) && status_change_rate(bl,type,10000,0) > 0)
 		status_change_start(bl,type,val1,0,0,0,tick,4);
 	return 0;
 }
@@ -7612,9 +7611,10 @@ int buildin_sc_start3(struct script_state *st)
 		if(sd && sd->state.potionpitcher_flag)
 			bl = map_id2bl(sd->ud.skilltarget);
 	}
-	if(bl && !unit_isdead(bl))
+	if(bl && !unit_isdead(bl)) {
 		if(flag&8 || status_change_rate(bl,type,10000,0) > 0)
 			status_change_start(bl,type,val1,val2,val3,val4,tick,flag);
+	}
 	return 0;
 }
 
@@ -7690,7 +7690,6 @@ int buildin_sc_ison(struct script_state *st)
 int buildin_getscrate(struct script_state *st)
 {
 	struct block_list *bl;
-	int sc_def=100;
 	int type,rate=0;
 
 	type=conv_num(st,& (st->stack->stack_data[st->start+2]));
@@ -7700,30 +7699,9 @@ int buildin_getscrate(struct script_state *st)
 	else
 		bl = map_id2bl(st->rid);
 
-	if(bl) {
-		int luk = status_get_luk(bl);
-		switch (type) {
-			case SC_STONE:
-			case SC_FREEZE:
-				sc_def = 100 - (3 + status_get_mdef(bl) + luk/3);
-				break;
-			case SC_STUN:
-			case SC_POISON:
-			case SC_SILENCE:
-			case SC_BLEED:
-				sc_def = 100 - (3 + status_get_vit(bl) + luk/3);
-				break;
-			case SC_SLEEP:
-			case SC_CONFUSION:
-			case SC_BLIND:
-				sc_def = 100 - (3 + status_get_int(bl) + luk/3);
-				break;
-			case SC_CURSE:
-				sc_def = 100 - (3 + luk);
-				break;
-		}
-	}
-	rate=rate*sc_def/100;
+	if(bl)
+		rate = status_change_rate(bl,type,rate,0);
+
 	push_val(st->stack,C_INT,rate);
 
 	return 0;
