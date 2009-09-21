@@ -1,4 +1,1117 @@
 ----------------------------------------
+//0646 [2009/08/29] by Salva
+
+・アイスウォール等のオブジェクトに状態異常の成功判定が発生したとき
+	MAPサーバーが落ちていた問題を修正 (status.c)
+　	　Thanks to dragontail789さん、Cocoaさん、Blazeさん、Lyeseさん
+
+・フルアドレナリンラッシュの記述が消えていたのを修正 (skill_cast_db.txt)
+　　Thanks to dragontail789さん、Blazeさん
+
+・ストーンカースの成功確率が誤っていたのを修正 (skill.c)
+　　Thanks to dragontail789さん
+
+・Auriga-0645で検証用のprintfが残ったままになっていたのを削除 (battle.c)
+
+----------------------------------------
+//0645 [2009/08/11] by Salva
+
+・修練系がbSplashRangeの追加攻撃範囲のみに乗っていた問題を修正 (battle.c)
+	Thanks to creaさん、NP3228さん、Toshiさん
+
+・エストンは当たらなくても状態異常付与できるよう修正 (battle.c)
+
+・トルリョチャギはターゲットへは状態異常を付与しないよう修正 (battle.c)
+
+・三段掌をクローンする際、攻撃側のプリザーブ状態を判定していた問題を修正 (battle.c)
+	Thanks to memoさん
+
+・Auriga-0634でのbHPPenaltyTime、bSPPenaltyTimeの修正が不完全だったのを修正 (pc.c)
+	Thanks to mitaranさん、Toshiさん
+
+・bHPPenaltyUnrigのHP0時の仕様を本鯖を再現(pc.c)
+
+・ストーンカーストに関する修正 (skill.c)
+	使用失敗時、相手が不死でなければ「スキル使用失敗」が出なかったのを修正
+	スキルレベルが6以上の場合でも失敗してもアイテムを消費したことを修正
+
+・ネリョチャギはステータスによるスタン耐性を無視するよう修正 (skill.c)
+
+・トルリョチャギの吹き飛ばし効果はモンスターのみに修正 (skill.c)
+
+・bNoGemStone、ウィザードの魂、深淵の中にの効果を
+	ジェムストーンの消費を1つ減らすように修正 (skill.c)
+
+・料理作成の計算式を修正 (skill.c)
+	※経験補正に関しては詳細不明のため未実装のまま
+	Thanks to Toshiさん
+
+・各料理器具の成功補正値を修正 (item_db.txt)
+	Thanks to Toshiさん
+
+・ソードガーディアンカードとボウガーディアンカードの効果が逆になっていたのを修正 (item_db.txt)
+	Thanks to creaさん
+
+----------------------------------------
+//0644 [2009/08/05] by popori
+
+・0643でパケット定義が一部重複していたのを修正 (packet_db.txt)
+
+・インベナムでnullpoエラーが出ないように修正 (skill.c)
+　NP3228さん、Salvaさんに感謝
+
+・CocoaさんのランドマインLv5の待機時間の修正を取り込み (skill_cast_db.txt)
+　Cocoaさんに感謝
+
+・セーフティウォールの距離判定を微修正 (battle.c)
+
+・不要になった処理を一部削除 (battle.c)
+
+・ソースの微修正 (skill.c)
+
+・必中攻撃を強制遠距離に (skill_db2.txt)
+
+----------------------------------------
+//0643 [2009/08/04] by popori
+
+・ティオアプチャギをシフトクリック使用出来るように (skill.c)
+
+・アローシャワー、フリップザコインはディレイ短縮されないように修正 (unit.c)
+
+・packet_db.txtのクリーンアップ (packet_db.txt)
+
+・ドキュメントの追記 (server_build.txt)
+
+----------------------------------------
+//0642 [2009/07/30] by Blaze
+
+・bonus命令に「AutoActiveItem」を実装（pc.*,map.h,status.c,battle.c,doc/item_bonus.txt）
+　	※一定時間、装備アイテムを活性状態にして追加効果を発揮させます。
+
+・アイテムの活性状態を取得する関数「checkactiveitem()」を追加（script.c,doc/script_ref.txt)
+
+・autospellの登録処理を改善（status.*,pc.c）
+	-> card_idの内容が装備箇所indexやアイテムIDなど、一貫性がなかったのをIDに統一
+
+・定義値登録DBを更新（db/const.txt）
+	-> bonusの定義値にAutoActiveItem関係を追加
+	-> 攻城戦の設定関係を削除
+	※攻城戦関係の設定はscript/npc/gvg/npc_gvg_global.txtで行ってください。
+
+・ヴァンベルクカードなどのアイテム効果を実装（db/item_db.txt）
+
+----------------------------------------
+//0641 [2009/07/29] by popori
+
+・0640の修正漏れ (skill_cast_db.txt)
+　Yggdrasilさんに感謝
+
+・Yggdrasilさんのskill_cast_db.txtを取り込み (skill_cast_db.txt)
+　Yggdrasilさんに感謝
+
+・デスペラード、温もりで攻撃時HP/SPドレインが有効で無いのを修正 (battle.c)
+　hancho3さんに感謝
+
+・スキル「一閃」を強制遠距離扱いにする (skill_db2.txt)
+
+----------------------------------------
+//0640 [2009/07/26] by popori
+
+・0639の修正漏れ (battle.c)
+
+・Yggdrasilさんのskill_cast_db.txtを取り込み (skill_cast_db.txt)
+　Yggdrasilさんに感謝
+
+・ダスト、グランドドリフトはディレイ短縮されないように修正 (unit.c)
+　Yggdrasilさんに感謝
+
+・noteleportの初期値を1に変更 (battle_auriga.conf battle.c)
+　yumさん、Cocoaさん、Lyeseさんに感謝
+
+・AthenaProject Rev.568をマージ (mob.c)
+ ->アンクル・蜘蛛の巣による拘束時のみMOBが強制待機(タゲ外し)するよう修正
+　nanashiさんに感謝
+
+----------------------------------------
+//0639 [2009/07/25] by popori
+
+・AthenaProject Rev.482をマージ (skill.* battle.c skill_db2.txt)
+ ->各攻撃スキルの遠・近距離設定をskill_db2.txtにて指定するように変更
+　nanashiさんに感謝
+
+・battle_auriga.confのsw_def_typeをデフォルトで2に変更、calc_dist_flagを1に変更 (battle_auriga.conf)
+
+・AthenaProject Rev.491のbSplashRangeに関する修正をマージ (battle.c)
+ ->修練・カタールの追撃・%UP・状態異常・カタール研究・EDPは乗らないように修正
+　nanashiさんに感謝
+
+・0631の修正漏れ (*.dsp)
+
+・死んだふり中の相手に運命のタロットカードの効果が出てしまうのを修正 (skill.c)
+
+----------------------------------------
+//0638 [2009/07/23] by popori
+
+・温もり、デスペラードのダメージが反射されない問題を修正 (battle.c)
+
+・0637のコンパイル警告の修正 (skill.c)
+
+----------------------------------------
+//0637 [2009/07/21] by Salva
+
+・状態異常発生率計算(status_change_rate())の引数type,rateに
+	0未満、また以下を渡した場合0.01%の確率を返す問題を修正(status.c)
+	 Thanks to Toshiさん
+
+・Auriga-0628でAthenaProject Rev.444からマージした記述が
+	一部抜けていた問題を修正(mob.c)
+	 Thanks to nanashiさん、seikaiさん
+
+・Auriga-0634の修正で不要になった
+	status_change_start_sub(),status_change_pretimer_sub()を削除(status.c,status.h)
+
+・battle_auriga.confに関する修正
+	refinery_research_lv(武器研究の精錬成功率上昇効果を発動させるか)の追加
+	 (battle_auriga.conf,status.c,battle.c,battle.h)
+	boss_no_element_changeの初期値をyesに変更(battle_auriga.conf,battle.c)
+	 Thanks to crispさん
+
+・エレメンタルチェンジに関する修正(skill.c)
+	ターゲットがプレイヤーの場合失敗するよう修正
+	成否判定を追加
+	 Thanks to crispさん
+
+・武器研究の命中率 2% × Lv 増加を追加
+	Thanks to Toshiさん
+
+----------------------------------------
+//0636 [2009/07/20] by popori
+
+・AthenaProject Rev.480のサクリファイスに関する修正をマージ (battle.c)
+ ->サクリファイス中はダブルアタック・範囲攻撃が発動しないように修正
+　nanashiさんに感謝
+
+・AthenaProject Rev.507のスパイダーウェブに関する修正を一部マージ (status.c)
+ ->FLEEのペナルティを-50に変更
+　nanashiさんに感謝
+
+----------------------------------------
+//0635 [2009/07/20] by popori
+
+・新クライアント対応の続き (clif.* skill.c status.*)
+ ->PACKETVERが15以上の時に新ステータスパケットをサポート
+ ->PACKETVERが15以上の時にスキルディレイ表示をサポート
+　Thanks to eA Dev Team
+
+・0634のコンパイル警告の修正 (skill.c)
+
+----------------------------------------
+//0634 [2009/07/20] by Salva
+
+・0630の微修正
+
+・Auriga-0628で抜けていたmvpitem_weight_limitの処理を追加(mob.c)
+	Thanks to NP3228さん
+
+・mvpitem_weight_limitの仕様を修正(battle_auriga.conf,mob.c)
+	設定値自体は以前のまま
+
+・bHPPenaltyTime、bSPPenaltyTimeで回復時、HPが最大HP以上になる問題を修正(pc.c)
+	Thanks to mitaranさん
+
+・bHPPenaltyUnrig、bSPPenaltyUnrigでdeath_by_unrig_penaltyがnoのときHPの最低値が1になる問題を修正(pc.c)
+
+・Auriga-0630で追加したstatus_change_judge()を削除し、状態異常発生率のみを関数で計算し、判定は各所で行うよう修正
+	(skill.c,status.c,status.h,battle.c,script.c)
+	 Thanks to Arocさん
+
+・状態異常「暗黒」の持続時間計算式を修正(status.c)
+
+----------------------------------------
+//0633 [2009/07/19] by popori
+
+・0632の微修正 (skill.c)
+
+・AthenaProject Rev.478をマージ (skill.c status.c)
+ ->スタン、睡眠、石化、凍結後にMOBがターゲットを失うように変更
+ ->それに伴い、スキル「リカバリー」も修正
+　nanashiさんに感謝
+
+----------------------------------------
+//0632 [2009/07/19] by popori
+
+・packet_db.txtの修正 (packet_db.txt)
+　mitaranさんに感謝
+
+・ギルドスキルディレイの処理の一部を0265以前の処理に巻き戻す (status.* skill.c scdata.txt)
+
+----------------------------------------
+//0631 [2009/07/19] by popori
+
+・新クライアントに対応(clif.* script.c chrif.c pc.c packet_db.txt Makefile vc_make.bat bcc32_make.bat)
+ ->PACKETVERを15に引き上げ
+ ->MAX_PACKET_DBを0x500に引き上げ
+ ->PACKETVERが15以上の時に新スキルウインドウをサポート
+ ->2009-02-25から2009-06-17までのサクライ蔵まで対応
+　Thanks to eA Dev Team
+　とりあえずログインと新スキルウインドウ対応まで
+
+・db/const.txtにmf_nojumpが無いので追加 (const.txt)
+
+・0630のバグ修正と未使用の変数をコメントアウト (mob.c skill.c status.c)
+
+----------------------------------------
+//0630 [2009/07/19] by Salva
+
+・HITSTOPの発生条件式を修正(pc.c,mob.c,merc.c)
+	shobonさんに感謝
+
+・阿修羅覇王拳を味方に使用した場合にSPを0にするときにプレイヤーかチェックするよう修正(battle.c)
+	Toshiさん、Cocoaさんに感謝
+
+・Auriga-0629で修正したブランディッシュスピアをシフトクリック使用したときの条件文を若干修正(skill.c)
+	poporiさんに感謝
+
+・天体の怒りのダメージ倍率を修正(battle.c)
+	shobonさんに感謝
+
+・天体の安楽状態のとき、安楽の効果を発揮する条件を修正(status.c)
+	shobonさんに感謝
+
+・bHPPenaltyTime、bHPPenaltyUnrigで死亡する問題を修正(pc.c)
+	 Toshiさんに感謝
+
+・bDefRatioATK効果がボス属性に適用されていなかった問題を修正(battle.c)
+	creaさんに感謝
+
+・ジークフリートをステータス耐性ではなく装備耐性として計算するよう修正(status.c)
+
+・速度減少の成否判定式修正(skill.c)
+
+・battle_confに以下2つを追加
+	mob_nohitstop_rate(モンスターが攻撃を受けた時にヒットストップしない確率)
+	 (battle_auriga.conf,mob.c,unit.c,battle.c,battle.h)
+		apacheさん、Toshiさん、mizukiさんに感謝
+	scdef_no_difflevel(状態異常の耐性としてベースレベルの差を計算しない)
+	 (status.c,battle.c,battle.h)
+
+・状態異常に関する修正
+   状態異常の耐性を一つの関数で行うように修正(skill.c,status.c,status.h,battle.c,script.c)
+   状態異常耐性式、状態異常時間算出式を騎士スレテンプレ、CrusaderTemplateを参考に修正(status.c)
+
+----------------------------------------
+//0629 [2009/07/05] by Salva
+
+・ファイヤピラー、クレイモアトラップ、ブラストマインを乗算計算するか設定できるように修正(battle_auriga.conf,battle.h,battle.c,skill.c)
+	Thanks to Toshiさん
+
+・左手にbDefRatioATK効果の武器を装備しているとき、ソウルブレイカーにbDefRatioATKの効果が乗っていなかった問題を修正(battle.c)
+	Thanks to 大和さん
+
+・bDefRatioATK効果のアイテムとbIgnoreDef効果のアイテムを同時に装備しているとき
+	bDefRatioATKは発動しないよう修正(battle.c)
+
+・ディスペル、阿修羅覇王拳をシフトクリック使用ができるように修正(skill.c,battle.c)
+
+・ブランディッシュスピアをシフトクリック使用したとき
+	攻撃可能な対象が範囲内にいないときにエフェクトが出なかった問題を修正(skill.c)
+
+・プレイヤーが使う一部の地面スキルをプレイヤーやモンスターの足元に置くのを禁止するかどうか(player_skill_nofootset)の
+	初期値をyesに修正(battle_auriga.conf,battle.c)
+
+----------------------------------------
+//0628 [2009/06/28] by Salva
+
+・ストームガストの処理を以下のAthenaからMarge
+	（skill.c , battle.c , mob.c）
+	Athena 428,Athena 429,Athena 444,Athena 522,Athena 581
+	nanashiさん、Toshiさん、かんなぎさんに感謝
+
+・battle_auriga.confに以下を追加
+	（battle.c , mob.c , clif.c , skill.c , battle.c）
+	ストームガストの挙動(sg_type)
+		nanashiさんに感謝
+	PvPモードでギルドメンバーの位置情報の送信する(pvp_send_guild_xy)
+		Lyeseさんに感謝
+	MVPアイテムを所得時、落としてしまう所持重量率(mvpitem_weight_limit)
+		Toshiさんに感謝
+	ロキの中でアイテム オートスペルの発動を許可する(roki_item_autospell)
+
+・デスペラードからキャスティング1秒を削除(skill_cast_db.txt)
+	Toshiさんに感謝
+
+・ジュピロスダンジョン最深部への通行クエストのNPC設置順番を入れ替え(npc_quest_juperos.txt)
+	※クエスト進行上は問題ないが未だbTigereye使用時表示上の問題あり
+	mitaranさんに感謝
+
+・アースクエイクがプレイヤーとモンスターのみを攻撃対象にするよう修正(skill.c)
+
+・0627のReadmeを若干修正
+
+----------------------------------------
+//0627 [2009/06/24] by Salva
+
+・ロキ内にいるときアイテム オートスペルを発動しないように修正（skill.c）
+	かんなぎさんに感謝
+
+----------------------------------------
+//0626 [2009/06/22] by Blaze
+
+・0625を一部巻き戻し（npc.c,map.h,script.c,doc/script_ref.txt）
+	-> 商品アイテム構造体の配列を動的確保に戻し
+	-> スクリプト命令「setshopitem,addshopitem,delshopitem」の廃止
+
+----------------------------------------
+//0625 [2009/06/22] by Blaze
+
+・ショップNPCの行解析を変更（npc.c,map.h）
+	-> 商品アイテム構造体のメモリ動的確保を廃止し、定数指定分確保するように変更
+	※メンバの追加が困難なため
+	-> ショップNPCの宣言時、値段を省略できるように変更
+
+・ショップNPCの書式を変更（script/npc/***.txt）
+
+・スクリプト命令に以下のショップNPC操作命令を追加（script.c,doc/script_ref.txt）
+	-> setshopitem : 指定したショップNPCの商品を再設定します
+	-> addshopitem : 指定したショップNPCの商品を追加します
+	-> delshopitem : 指定したショップNPCの指定した商品を削除します
+
+・攻城戦の開始時間の判定不具合を修正（script/npc/gvg/npc_gvg_global.txt）
+・0624のMob使用スキルDB変更で誤字があったのを修正（mob_skill_db.txt）
+	（thx NP3228 さん）
+
+----------------------------------------
+//0624 [2009/06/20] by Blaze
+
+・以下のスキルを実装（skill.*,battle.c,skill_db.txt,skill_db2.txt,skill_cast.txt）
+	-> ヴァンパイアリックタッチ（ヴァンパイアギフト）
+	-> マナバーン（ワイドソウルドレイン）
+	-> 所持限界量増加R
+	-> ヘルパワー
+	-> ヘルディグニティ
+	-> ライフストリーム
+
+・以下のMobオーバースキル仕様を実装（skill.*,battle.c）
+	-> 速度減少（AGI-50）
+	-> マグナムブレイク（攻撃力1000%、命中補正1000%、攻撃範囲9x9セル）
+	-> ユピテルサンダー（30HIT、14セルノックバック）
+	※ダークサンダーはオーバースキル対象ではありません
+
+・戦闘設定のオーバースキル判定の設定をLv11->Lv10に修正（battle_auriga.conf）
+	※本家に合わせての修正です。通常のLv10効果を実現したい場合はLv11以上などに変更し、
+	　mob_skill_db.txtを独自に書き換えてください
+
+・状態異常ヘルパワーを実装（status.*,scdata_db.txt）
+
+・Mob待機時スキルの使用判定間隔を調整（mob.c,map.h）
+
+・カアヒの回復エフェクトを修正（battle.c）
+
+・イービルランドのオブジェクト範囲・効果範囲を修正（skill_unit_db.txt）
+
+・Mob使用スキルDBの最適化（mob_skill_db.txt）
+
+・Mob使用スキルの最大登録数を40->64に引き上げ（map.h）
+
+・mob_skill_db.txtのemotionが1桁指定の場合、正常に反映できなかった不具合を修正（mob.c）
+
+----------------------------------------
+//0623 [2009/06/20] by popori
+
+・0620の変更を全て巻き戻し (battle.c)
+
+----------------------------------------
+//0622 [2009/06/19] by popori
+
+・巻き戻しが不完全だったので修正 (skill.c)
+　度々の連投パッチ誠に申し訳ございません
+
+----------------------------------------
+//0621 [2009/06/18] by popori
+
+・演奏スキルのノックバック処理の修正を巻き戻し (skill.c)
+　合奏スキルの挙動不明、合奏スキルのノックバックにバグがあるため
+　誠に申し訳ございません
+
+----------------------------------------
+//0620 [2009/06/18] by popori
+
+・バーサークに最終攻撃力2倍が無いのを修正 (battle.c)
+
+・演奏スキル中ノックバックを受けると演奏スキルのみ元の座標に取り残されてしまうのを修正 (skill.c)
+　Cocoaさんの報告に感謝
+
+・0619のカイトの修正を巻き戻し (battle.c)
+
+----------------------------------------
+//0619 [2009/06/14] by popori
+
+・ステータスポイントがmax_parameter以上になったら
+　必要ステータスポイントが0に表示されるように修正 (pc.c)
+
+・0611のバックステップのノックバック処理に関する修正を更に修正 (skill.*)
+
+・バックステップの処理を本家仕様に修正 (skill.c)
+　※モーションが出ないのは本家仕様です
+　Toshiさんの報告に感謝
+
+・カイトで魔法を反射時、自分はスキル名を叫ばないように修正 (battle.c)
+　ARIAさんの報告に感謝
+
+・ダメージ反射は絶対にお互いダメージをもらうように修正 (battle.c)
+
+・白刃取りの構え中は動けないように修正 (unit.c)
+
+・0611の修正で不要になった処理を削除 (battle.c)
+
+・初期Zenyを0に変更 (char_auriga.conf)
+
+・B4砦の執事の座標がおかしいのを修正 (npc_gvg_gefg04.txt)
+　yumさんの報告に感謝
+
+----------------------------------------
+//0618 [2009/06/07] by Cocoa
+
+・0617を若干修正
+
+----------------------------------------
+//0617 [2009/06/07] by Salva
+
+・アースクエイク、ヘルジャッジメントに関する修正
+	物理スキル扱いに(skill.c)
+	ターゲットがselfでないものをselfに変更(mob_skill_db.txt)
+
+・アースクエイクのスキル倍率と
+	bonus bNoMagicDamageなど影響を受るなど、魔法のように処理されるように修正(battle.c)
+
+・イフリートカードのオートスペルアースクエイクを自分に発動するよう修正
+	(item_db.txt)
+
+・0612のreadmeを微修正
+
+----------------------------------------
+//0616 [2009/06/07] by popori
+
+・bInfiniteEndureに関する修正
+	(pc.c、status.c)
+	->bInfiniteEndureはGvGでは効果が出ないように修正
+	->bInfiniteEndureの効果が付いた装備品を装備中、GvGではダメージモーションが出るように修正
+	->Aegisでの検証により、bInfiniteEndureの効果が付いた装備品を装備中
+	  SI_ENDUREが表示されるので、SI_ENDUREが表示されるように修正
+
+・ヘルジャッジメントを魔法スキル扱いに
+	(skill.c)
+
+・payg_cas01の執事の座標がおかしいのを修正
+	(npc_gvg_payg01.txt)
+
+----------------------------------------
+//0615 [2009/06/06] by Lyese
+
+・HP回復力向上の計算式を修正（status.c）
+
+	reported by mitaranさん
+
+----------------------------------------
+//0614 [2009/06/06] by popori
+
+・アースクエイクを魔法スキル扱いに (skill.c)
+
+・ステータスをリセットした際必要なステータスポイントが更新されない問題を修正 (pc.c)
+
+・前回のreadmeを微修正
+
+----------------------------------------
+//0613 [2009/06/06] by popori
+
+・0609のプロボックの成功判定修正がPC対PCしか考慮してないのでサーバークラッシュする問題を修正 (skill.c)
+	hancho3 yumさんの報告に感謝
+
+----------------------------------------
+//0612 [2009/06/06] by Salva
+
+・アイテムボーナスを1つ追加(const.txt、item_bounus.txt、map.h、pc.c、status.c)
+	bMatk2Rate
+
+・MATKの計算式を杖乗算補正とその他の乗算で別に計算するよう修正(status.c)
+	Thanks to かんなぎさん
+
+・MATK計算式の修正にともないMATKの乗算記述を修正
+	MATK乗算効果のあるアイテムで乗算効果が15%以上のものを
+	杖乗算補正(bMatk2Rate)とその他の乗算補正(bMatkRate)に分割
+	(item_db.txt)
+
+・アイテムボーナスbFixMatkが現状の処理を維持するように修正(status.c)
+
+----------------------------------------
+//0611 [2009/06/05] by popori
+
+・ノックバックしない効果が付いた装備を装備中バックステップの効果が出ないのを修正 (skill.c)
+	報告してくださったToshiさんに感謝
+
+・ソニックブロー、アローバルカンはブラギの詩の効果を受けないように修正 (unit.c)
+
+・温もりをデフォルトで新仕様の秒間10HITに修正する (skill_unit_db.txt)
+
+・AthenaProjectを参考に温もりは、対人ではSPダメージのみに変更 (skill.c)
+	ICOさんに感謝
+
+・PKMAPではハエの羽、テレポートを使用出来ないように修正 (item_db2.txt、skill.c、battle.*、battle_auriga.conf)
+	battle_auriga.confで切り替え可能
+	ハエの羽はitem_db2.txtのZoneの値を36に変更すれば従来の仕様になります
+
+----------------------------------------
+//0610 [2009/06/05] by Lyese
+
+・HP自動回復の計算式を修正（status.c）
+
+・阿修羅覇凰拳、残影の射程を修正（skill_db.txt）
+
+----------------------------------------
+//0609 [2009/06/04] by Salva
+
+・プロボックの効果を修正し、成功判定（skill.c、status.c）
+
+・ヒルトバインディングのATK上昇をコメントアウト（status.c）
+
+・口笛、イドゥンの林檎、夕陽のアサシンクロス、ハミング、私を忘れないで…
+　サービスフォーユー、幸運のキスの計算式を修正（skill.c、status.c）
+
+・口笛で完全回避が上昇しないように変更（battle.*、skill.c、status.c、battle_auriga.conf）
+	battle_auriga.confで切り替え可能
+
+・ランドプロテクター、ボルケーノ、デリュージ、バイオレントゲイルの効果時間を修正（skill_cast_db.txt）
+
+----------------------------------------
+//0608 [2009/06/02] by Blaze
+
+・名も無き島クエストの追加・修正（npc_quest_nameless.txt）
+	-> 大神官クエストの一部NPCの座標を修正
+	-> Z団クエスト、隠された秘宝クエストNPC実装
+
+・ローグ転職試験NPCで出現するモンスターを変更（npc_job_17rogue.txt）
+
+・ローグ転職試験に関連するモンスターデータを更新（mob_db.txt）
+
+・クエストアイテムの移動制御データを更新（item_db2.txt）
+
+・mapflag修正（mapflag.txt）
+
+----------------------------------------
+//0607 [2009/05/25] by Cocoa
+
+・VITによるダメージ減少量を0.8から1に修正（battle.c）
+
+・スタン、石化、凍結、睡眠状態の時はスキルダメージが発生しないように修正（battle.c）
+　eAとマジスレテンプレを参照していますが、睡眠に関しては仮です。
+	reported by dreamさん
+
+・落法状態が保存されないように修正（scdata_db.txt）
+	reported by hancho3さん
+
+----------------------------------------
+//0606 [2009/05/25] by Cocoa
+
+・ローグギルドではアイテムがドロップしないように修正
+	mapflag.txt
+
+・OnTouchイベントの不具合修正
+	npc.c
+
+----------------------------------------
+//0605 [2009/05/25] by Cocoa
+
+・0603より所有者のない砦のギルドフラッグにギルド未加入のプレイヤーが話しかけると
+　砦内に移動できる不具合修正（npc_gvg_global.txt）
+
+----------------------------------------
+//0604 [2009/04/19] by Cocoa
+
+・GXの反動ダメージ修正（battle.c）
+
+・左手にのみ武器を持っている際、右手の計算もするように修正（battle.c）
+
+・一次上位職業の魂の前提条件修正（skill_tree.txt）
+
+・歴史学者クエストが進行しなくなる不具合修正（npc_town_prontera.txt）
+	皮袋（ID:7432）を所持していてPRT_2QUEが36の場合は
+	PRT_2QUEを13に書き直せばクエストを再度進行させることが出来ます。
+
+・アンクルスネアがノックバックしないように変更（battle.*、skill.c、battle_auriga.conf）
+	battle_auriga.confで切り替え可能
+
+----------------------------------------
+//0603 [2009/04/11] by Blaze
+
+・攻城戦スクリプトの改正
+	（npc_gvg_global.txt, npc_gvg_aldeg0*.txt, npc_gvg_gefg0*.txt,
+		npc_gvg_payg0*.txt, npc_gvg_prtg0*.txt）
+	※攻城戦の開始時間/終了時間の設定はdb/const.txtから
+	　script/npc/gvg/npc_gvg_global.txtに変更しました
+	-> マップ単位でファイルを区分
+	-> ガーディアンのHP表示実装
+	-> 執事メニューのアジト放棄は廃止
+	-> マスタールームに入場制限を追加
+	-> ギルドスキル「永久的な発展」の効果を実装
+	-> 攻城戦開始と終了時にアナウンスを表示するように修正
+
+・新攻城戦NPC実装
+	（npc_gvg_schg0*.txt, npc_gvg_arug0*.txt）
+
+・スクリプト命令/関数に以下を追加
+	（script.c）
+	-> setcell : 指定したセルの種類を変更します
+	-> areasetcell : setcellの範囲版
+	-> callguardian : 砦モンスター召喚
+	-> getguardianinfo : ガーディアン情報の取得
+	-> getmobname : Classからモンスター名を取得
+
+・砦の固有名をDBで保持し、スクリプト関数「getcastle」で取得できるように変更
+	（castle_db.txt, guild.c, script.c）
+
+・「areamonster」など、範囲指定モンスター出現でランダム出現する条件を変更
+	（mob.c）
+	変更前 : 始点x,yが0のときにランダム出現
+	変更後 : 始点x,yと終点x,yが全て0のときにランダム出現
+
+・guild_castle構造体にガーディアンのIDを保持するように変更
+	（int_guild.c, guild.c, mmo.h, char-converter.c）
+
+・攻城戦モンスターの特別処理をclassで判別してるのをguild_idで判別するように修正
+	（mob.c）
+
+・砦の防衛値に比例してガーディアン/エンペリウムのMaxHPが上昇するように修正
+	（status.c）
+
+・mapflagにテコンキッドスキル「ノピティギ」を制限する「nojump」を追加
+	（map.h, skill.c, script.c, npc.c）
+
+・新攻城戦マップのmapflag定義を追加
+	（mapflag_gvg.txt）
+
+・新攻城戦マップのwarp定義を追加
+	（npc_warp_vs.txt）
+
+・map_auriga.confに定義追加
+	（map_auriga.conf）
+
+・カプラ職員NPCの転送サービス選択肢を追加
+	（npc_misc_kafra.txt）
+
+・mob_db.txt更新
+	（mob_db.txt）
+
+----------------------------------------
+//0602 [2009/03/28] by Blaze
+
+・モスコビアの「クジラ島をたずねて」クエストNPC実装
+	（npc_town_moscovia.txt）
+
+・モスコビアMobの使用スキルを修正
+	（mob_skill_db.txt）
+
+・map_auriga.confにモスコビア関連NPCの定義を追加
+	（map_auriga.conf）
+
+----------------------------------------
+//0601 [2009/03/26] by Cocoa
+
+・0599のエラーを修正
+
+----------------------------------------
+//0600 [2009/03/22] by Rayce
+
+・名声値、召喚回数のセーブ方式の変更（char.c, sql-files/Auriga-600_changetable.sql）
+	MAX_MERC_TYPE を変更してもデータが正しくセーブできることを保証します
+		-> TXTは、ホットキーの後ろへ移動
+		-> SQLは、mercenaryテーブルへ正規化
+
+・傭兵のステータス通知用にenumを追加（clif.c, map.h, merc.c）
+	-> SP_MERC_FLEE=165
+	-> SP_MERC_KILLCOUNT=189
+	-> SP_MERC_FAME=190
+
+・傭兵の種類を自由にグループ化できるように、db/merc_db.txtに ClassType 項目を追加（merc.*）
+	デフォルトでは以下のように設定されています
+		0: 弓傭兵、1: 槍傭兵、2: 剣傭兵
+	MAX_MERC_TYPE を増やしてmerc_db.txtのClassTypeを変更することで、別の種類の
+	傭兵を作成することも可能です。
+
+・0597で追加された関数の見直し（merc.*）
+	-> merc_data 構造体自体に傭兵の種類を保存しておくようにしたので、merc_get_type() は不要
+	-> merc_get_fame() は使用せずに直接参照するように変更
+	-> merc_get_call() は使用せずに直接参照するように変更
+	-> merc_set_fame() は引数を変更（データを保存しているPCを主体にする）
+	-> merc_set_call() は引数を変更（データを保存しているPCを主体にする）
+
+・mob_dead() を少し書き換え（mob.c）
+
+・TXT: JOURNAL_IDENTIFIER を 11 に引き上げ（journal.c）
+
+----------------------------------------
+//0599 [2009/03/19] by Cocoa
+
+・JobGroupを追加（function_jobgroup.txt、const.txt）
+	系列の職業かどうかを返します。
+	ソードマン系、シーフ系、マーチャント系という判定なら
+		callfunc("JobGroup", Grp_Swordman, Grp_Thief, Grp_Merchant)
+	という記述になります。
+
+・item_db.txtをJobGroupを使用した記述に変更
+
+----------------------------------------
+//0598 [2009/03/13] by Cocoa
+
+・タナトスタワー上層部07に拡張１次職が進入できる様に変更
+	npc_warp_dun.txt
+
+・スクリプト、item_dbでClassを数値で指定しているものをconstの定数に記述を統一
+
+----------------------------------------
+//0597 [2009/03/14] by Blaze
+
+・傭兵関連の改正その２
+	（merc.*, clif.*, status.c, pc.c, mob.c, skill.c）
+	-> 傭兵のステータスを通知するパケット0x2a2に対応
+	-> 傭兵ステータスの通知は0x29bではなく、なるべく0x2a2を使用するように修正
+	-> キルカウント実装　※キルカウントボーナスは未実装
+	-> 名声値、召喚回数の計測実装
+	-> 傭兵関連メッセージをmsgstringtable.txtから読み込むように修正
+
+・名声値、召喚回数をキャラセーブデータに保存するように修正
+	（char.c, mmo.h, sql-files/main.sql, sql-files/Auriga597_changetable.sql）
+
+・傭兵関連のDBを再読込みする「@reloadmercdb」を実装
+	（atcommand.c, atcommand.h, conf/atcommand_auriga.conf, conf/msg_auriga.conf, conf/help.txt）
+
+----------------------------------------
+//0596 [2009/03/12] by Rayce
+
+・TXT: 0594で、JOURNAL_IDENTIFIER を 10 に引き上げ忘れているので修正（journal.c）
+
+・SQL: ホムンクルスのステータス端数値をセーブ保存するように（int_homun.c, sql-files/Auriga596_changetable.sql）
+・SQL: ペット、ホム、傭兵の新規作成クエリの発行に失敗したとき、不正なポインタを
+       aFreeしていた問題を修正（int_pet.c, int_homun.c, int_merc.c）
+
+----------------------------------------
+//0595 [2009/03/11] by Cocoa
+
+・db/const.txtの修正
+・それに伴う一部スクリプトの修正
+
+----------------------------------------
+//0594 [2009/03/10] by Blaze
+
+・0592のホムンクルスのステータス端数値をセーブ保存するように修正
+	（int_homun.c）
+
+・ホムンクルスのステータスを再計算するとき、端数を初期化するように修正
+	（homun.c）
+
+----------------------------------------
+//0593 [2009/03/07] by Rayce
+
+・atcommand_homlevel() から使用しなくなった変数を削除（atcommand.c）
+・db/homun_db2.txt 読み込み時にアクセスバイオレーションが発生するのを修正（homun.c）
+・db/homun_db2.txt の最小値と最大値が同じ値の場合、乱数計算でサーバクラッシュが発生するのを修正（homun.c）
+
+----------------------------------------
+//0592 [2009/03/07] by Blaze
+
+・ホムンクルスのレベルアップ時と進化時のステータス上昇処理を修正
+	（mmo.h, homun.c, homun.h, atcommand.c）
+
+・ホムンクルスの成長DBを追加
+	（homun_db2.txt, db_ref.txt）
+
+
+　※既存のホムンクルスと比べてステータスが大きく異なる場合があります
+　　新方式に合わせる場合はrecalcで再計算してください
+
+
+----------------------------------------
+//0591 [2009/03/03] by Cocoa
+
+・ポーションピッチャーにディレイがなかったので追加
+
+----------------------------------------
+//0590 [2009/03/01] by Rayce
+
+・武器ダメージ計算において、ヒット回数計算はstep12ではなくstep7で行うように修正（battle.c）
+  ピアース、指弾がミスのときにヒット回数が正しくなかったのが修正されます
+	reported by mapleさん
+
+----------------------------------------
+//0589 [2009/02/25] by Cocoa
+
+・mob_db.txt　/　mob_skill_db.txtの更新
+
+----------------------------------------
+//0588 [2009/02/15] by Rayce
+
+・SQL: 0587で追加したUNIQUEキーにおいて、varcharの判定がcase insensitiveであるため
+       キーの重複が発生していた問題を修正
+       char, guild, login, party テーブルの該当フィールドに BINARY オプションを付与する
+       （main.sql, sql-files/Auriga587-changetable.sql）
+		reported by easeさん
+
+・SQL: 上記変更に伴い大文字/小文字判定が不要になったので、処理を簡略化する
+       （char.c, int_guild.c, int_party.c, login.c）
+
+・SQL: 0587でサポートしなかったワープポータルのメモ情報の移行をやっぱり
+       サポートできるように追加（sql-files/Auriga587-changetable.sql）
+
+  ※今回はAuriga587-changetable.sqlを直接修正しています。
+    既にクエリを流してしまっている人は、申し訳ありませんが手動での対応を
+    お願いします。
+
+  ※ワープポータルのメモ情報を移行できるのはMySQLのバージョンが4.1以上の
+    場合のみです。
+    4.0以下の方は該当箇所をコメントアウトしてください。
+    また、メモの順番は保持されない可能性があります。
+    順番まで厳密に移行する必要がある場合は、手動での対応をお願いします。
+
+----------------------------------------
+//0587 [2009/02/04] by Rayce
+
+・ワープポータルのメモの順番が不定になる可能性を修正（char.c）
+・不要なコメントを削除
+
+・TXT: JOURNAL_IDENTIFIER を 09 に引き上げ（journal.c）
+・SQL: memo テーブルに index フィールドを追加（sql-files/Auriga587-changetable.sql）
+
+・SQL: テーブル定義の見直し（sql-files/main.sql）
+	-> char テーブルを char_data に改名
+	-> friend テーブルのカラム名を変更
+	-> memo, feel_info テーブルから実質使われていない auto_increment を削除
+	-> 重複する不要なINDEXの削除
+	   複合インデックスの左端の部分はキーとして利用できる
+	-> データの堅牢性向上のため、UNIQUEキーを張るように改善
+	-> EXPLAIN の実行結果より、インデックスが利用できていないクエリに対して
+	   INDEXを張るように改善
+	-> global_reg_value テーブルの type はカーディナリティが低いので
+	   worldreg, accountreg, globalreg テーブルにそれぞれ正規化する
+	-> ipbanlist テーブルは参照されていないので削除
+
+・SQL: 不要な ORDER BY を削除（int_guild.c）
+・SQL: sql-files/drop_table.sql に IF EXISTS を付ける
+
+  ※SQLモードについて、テーブル定義を変更しています。
+    外部のアプリ等でDBを参照している方は、テーブル名・カラム名の変更に合わせて
+    修正してください。
+    また、INDEXはAuriga内部で使われる最低限のものだけにしています。
+    DBを頻繁に参照する方は、各自適宜INDEXを張ってください。
+
+  ※SQLモードについて、ワープポータルのメモの情報は移行されません。
+    PRIMARY KEYを作り直す必要がある関係上、移行のスクリプトが極めて複雑になるため
+    サポートしないことにしました。
+    もしデータを移行したい方は、Auriga587-changetable.sql を実行する前に
+    バックアップを取った上、手動でデータを入力し直して下さい。
+
+  ※converter未対応です。
+
+----------------------------------------
+//0586 [2009/01/12] by Rayce
+
+・太陽と月と星の怒りによるダメージボーナスは、基本武器ダメージ計算ではなく
+  eAベースで修練ダメージ計算後に加算するようにしてみる（battle.c）
+	reported by easeさん、Toshiさん
+
+・スーパーノービスの魂状態のとき、装備可能な武器の判定を汎用的な方法に修正（pc.c）
+	reported by shobonさん
+
+----------------------------------------
+//0585 [2009/01/12] by Rayce
+
+・サーバ起動時、接続サーバのIPアドレスは1回だけ表示されるように変更
+　（login.c, char.c, chrif.*, clif.*, map.c）
+	-> IPアドレスに変換後の文字列ではなく、confに記述されたホスト名を
+	   そのまま保持するように変更
+	-> chrif_sethost(), clif_sethost() を追加
+
+・gethostbyname() をラップした host2ip() を追加（socket.*）
+・不要になった #include を削除
+
+----------------------------------------
+//0584 [2009/01/12] by Rayce
+
+・0583以降、mapif_parse_GuildBasicInfoChange() で警告が発生していたので修正（int_guild.c）
+
+・[SQL] 0583でコンパイルエラーが発生するのを修正（int_guild.c）
+	reported by seionさん
+
+----------------------------------------
+//0583 [2009/01/10] by Rayce
+
+・0541以降、取得不可能なギルドスキルも一覧に表示されていた問題を修正（int_guild.c）
+	-> guild_calc_skilltree() を追加
+	   guild_check_skill_require() を削除
+	-> PCのスキルツリーと同様に、ギルドスキルについてもスキルツリーの計算を行います
+
+・ギルドスキルのポイント割り振りに失敗したとき、以後ポイント割り振りが
+  出来なくなる問題を修正（int_guild.c, clif.c, guild.*, intif.c）
+	-> 失敗時にも0x10eのパケットを送りつける
+	-> 0x383cのパケット長を14から15に拡張
+
+・ギルドスキルポイントを上げるためのコマンド @guildskpoint を追加（atommand.*, int_guild.c）
+	-> @guildlvup と同じくギルドマスターのみ使用可能
+	-> mapif_parse_GuildBasicInfoChange() に GBI_SKILLPOINT に対する処理を追加
+
+・clif_guild_skillinfo() のパケット定義を蔵の仕様に合わせる（clif.c）
+・mapif_parse_GuildMemberInfoChange() の細かい修正（int_guild.c）
+・mapif_parse_GuildAddMember() で mapif_guild_info() が2回呼び出される
+　可能性を修正（int_guild.c）
+
+----------------------------------------
+//0582 [2009/01/09] by Cocoa
+
+・ローグギルドでモンスターを出現させる際、フラグをチェックするように変更（npc_job_17rogue.txt）
+
+----------------------------------------
+//0581 [2009/01/06] by Cocoa
+
+・ガンスリンガーのSPが一部以上だった不具合修正（job_sp_db.txt）
+	reported by hancho3さん
+
+・マーチャントクエストで判定するスキルが異なっている不具合修正（npc_quest_tutorial.txt）
+	thanks to Toshiさん
+
+・スクリプトエラーが発生する不具合修正（npc_event_newyeaar.txt）
+	thanks to Toshiさん
+
+・NPC_REBIRTHで復活したモンスターを倒してもイベントが発生しないように修正（mob.c）
+
+----------------------------------------
+//0580 [2009/01/04] by Rayce
+
+・shopのアイテムの売り値が買い値を越える可能性がある場合、
+　警告を表示するように拡張（map.c, npc.c, pc.c）
+
+	※売り値および買い値は以下の4つの補正を受けますが、売り値の
+	　最高値と買い値の最安値を計算した上で判定を行っています
+		* ディスカウント
+		* コンパルションディスカウント
+		* オーバーチャージ
+		* マーダラーボーナス
+
+・DUPEの事故防止のため、shopの販売値は全て-1にする（script/npc/*）
+
+	※-1の場合はitem_db.txtで設定したPriceを参照します
+	　script/sample内のスクリプトについては、現状維持とします
+
+----------------------------------------
+//0579 [2009/01/04] by Rayce
+
+・conf/login_auriga.conf の detect_multiple_login が0のとき、
+  MAPサーバで二重loginを検出する際の条件判定が間違っていたのを修正（pc.c）
+
+・areamonster命令で "this" 指定が作動していなかったのを修正
+　それに伴い、monster命令の "this" 指定の仕様変更
+　（atcommand.c, mob.*, script.c, skill.c）
+
+	-> 今までは実行プレイヤーのMAPを参照していましたが、他のスクリプト命令/関数と同様に
+	   NPCのMAPを優先して参照し、NPCが居ないときにプレイヤーのMAPを参照します。
+	   monster命令で "this" 指定を使っている人は、挙動が変わっていないかどうか
+	   確認してください。
+
+----------------------------------------
+//0578 [2008/12/19] by Cocoa
+
+・MAX_ITEMGROUPを12に変更（map.h）
+	おいしい魚や化け物のエサの回復量の異常が修正されます。
+
+----------------------------------------
+//0577 [2008/12/19] by Cocoa
+
+・item_db2.txtを更新
+	thanks to Toshiさん
+
+・item_group_db.txt、item_db.txtを修正
+
+・各砦内に設置されていたギルドフラッグを撤去
+
+----------------------------------------
+//0576 [2008/11/30] by Blaze
+
+・monster出現情報のxs,ys範囲が半径指定ではなく直径になっていたのを修正
+	（monster.c）
+
+・上記修正に伴い、モンスター出現スクリプトの暫定処理を最適化
+	（script/monster/***）
+
+----------------------------------------
+//0575 [2008/11/25] by Rayce
+
+・timer.cを少し最適化（timer.c）
+
+・0567以降、*.dspを用いてコンパイルが出来なかったのを修正
+・doc/script_ref.txtを少し修正
+
+----------------------------------------
+//0574 [2008/11/23] by Blaze
+
+・スクリプト命令「announce」に、攻城戦メッセージ機能を追加
+　（clif.c, intif.c, doc/script_ref.txt）
+
+・上記機能をGvGスクリプトに適用
+　（npc_gvg_exe.txt, npc_gvg_steward.txt）
+
+----------------------------------------
+//0573 [2008/11/23] by Blaze
+
+・プレイヤーを指定方向にノックバックさせる「pushpc」命令を追加
+　（script.c, doc/script_ref.txt）
+
+・名もなき島の「借金返済クエスト」NPC実装
+　（npc_quest_nameless.txt）
+
+----------------------------------------
+//0572 [2008/11/22] by Rayce
+
+・0570を少し修正（npc.c, script.c, unit,c）
+・0571を少し修正（script.c）
+
+----------------------------------------
+//0571 [2008/11/21] by Cocoa
+
+・プレイヤーが詠唱中かどうか判定する関数「checkcasting」を追加
+	（script.c, script_ref.txt）
+
+・定数を追加
+	（const.txt）
+
+・支援系スキルスクロールの修正
+	（item_db.txt）
+
+----------------------------------------
+//0570 [2008/11/15] by Blaze
+
+・AthenaProject Rev.499, Rev.518よりmerge
+　（npc.*, map.h, unit.c, mob.c, doc/script_ref.txt）
+	-> NPC接触判定にMob対応のOnTouchNPCラベルを追加
+	-> モンスター出現時にOnTouchNPC判定をするように修正
+
+・AthenaProject Rev.502, Rev.504よりmerge
+　（script.c, npc_quest_kiel.txt）
+	-> スクリプト命令「warp」をMob対象でも対応化
+	-> 機械人形工場1FのクエストエリアにMob禁止NPCを実装
+
+・AthenaProject Rev.500よりmerge
+　（npc_town_rachel.txt）
+	-> ラヘルクエストの一部NPCにOnTouchNPC実装
+
+----------------------------------------
+//0569 [2008/11/13] by Rayce
+
+・サーバースナップショット（version.h）
+
+・不要なファイルを削除
+	db/random/*.txt
+	db/mob_branch.txt
+	db/mob_poring.txt
+	db/mob_boss.txt
+
+----------------------------------------
 //0568 [2008/11/07] by Cocoa
 
 ・item_dbを更新（item_db.txt, item_group_db.txt）
