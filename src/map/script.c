@@ -11644,7 +11644,7 @@ int buildin_getguardianinfo(struct script_state *st)
 		gc = guild_mapname2gc(mapname);
 	}
 
-	if(gc) {
+	if(gc && index > 0 && index <= sizeof(gc->guardian) / sizeof(gc->guardian[0])) {
 		struct mob_data *md = map_id2md(gc->guardian[index-1].id);
 		if(md != NULL) {
 			switch(type) {

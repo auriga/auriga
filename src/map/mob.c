@@ -375,12 +375,6 @@ int mob_spawn(int id)
 	md->state.noexp  = 0;
 	md->state.nomvp  = 0;
 
-	if(md->class_ == 1288 || md->class_ == 1287 || md->class_ == 1286 || md->class_ == 1285) {
-		struct guild_castle *gc = guild_mapname2gc(map[md->bl.m].name);
-		if(gc)
-			md->guild_id = gc->guild_id;
-	}
-
 	md->deletetimer = -1;
 
 	c = tick - 1000 * 3600 * 10;
