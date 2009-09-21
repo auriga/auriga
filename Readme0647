@@ -1,4 +1,18 @@
 ----------------------------------------
+//0653 [2009/09/22] by Rayce
+
+・GvGで城主が交代したとき、ワープ中でブロックリストから外れたPCが砦外に退去できない
+  問題に関する対処（battle.*, script.c）
+	based on eA, thanks a lot!!
+
+	-> buildin_maprespawnguildid() を書き換え
+	   PC用の検索ルーチン buildin_maprespawnguildid_sub_pc() と、
+	   MOB用の検索ルーチン buildin_maprespawnguildid_sub_mob() の2つに分離
+	-> battle_auriga.conf に「maprespawnguildid_all_players」を追加
+	   デフォルトは本鯖と同じ「no」
+	   「yes」にするとワープ中のPCも砦外に退去させる
+
+----------------------------------------
 //0652 [2009/09/22] by Rayce
 
 ・battle_auriga.conf の「pvp_send_guild_xy」の判定は、clif_guild_xy() 内ではなく

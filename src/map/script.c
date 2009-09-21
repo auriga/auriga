@@ -8490,28 +8490,38 @@ int buildin_emotion(struct script_state *st)
  * 特定対象を移動、攻城戦用
  *------------------------------------------
  */
-static int buildin_maprespawnguildid_sub(struct block_list *bl,va_list ap)
+static int buildin_maprespawnguildid_sub_pc(struct map_session_data *sd, va_list ap)
 {
-	int g_id = va_arg(ap,int);
-	int flag = va_arg(ap,int);
+	int m    = va_arg(ap, int);
+	int g_id = va_arg(ap, int);
+	int flag = va_arg(ap, int);
+
+	nullpo_retr(0, sd);
+
+	if(sd->bl.m == m) {
+		// ワープ中などでブロックリストから外れたPCも対象とするかどうか
+		if(battle_config.maprespawnguildid_all_players || sd->bl.prev) {
+			int match = (g_id > 0 && sd->status.guild_id == g_id);
+			if( (flag&1 && match) || (flag&2 && !match) )
+				pc_setpos(sd, sd->status.save_point.map, sd->status.save_point.x, sd->status.save_point.y, 3);
+		}
+	}
+
+	return 0;
+}
+
+static int buildin_maprespawnguildid_sub_mob(struct block_list *bl, va_list ap)
+{
+	struct mob_data *md = NULL;
 
 	nullpo_retr(0, bl);
 
-	if(bl->type == BL_PC && flag&3) {
-		struct map_session_data *sd = (struct map_session_data *)bl;
-		if(sd) {
-			int match = (g_id > 0 && sd->status.guild_id == g_id);
-			if( (flag&1 && match) || (flag&2 && !match) )
-				pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,3);
-		}
-	}
-	else if(bl->type == BL_MOB && flag&4) {
-		struct mob_data *md = (struct mob_data *)bl;
-		if(md) {
-			if(md->class_ < 1285 || md->class_ > 1288)
-				unit_remove_map(&md->bl,1,0);
-		}
-	}
+	if(bl->type != BL_MOB || (md = (struct mob_data *)bl) == NULL)
+		return 0;
+
+	if(!md->guild_id)
+		unit_remove_map(&md->bl, 1, 0);
+
 	return 0;
 }
 
@@ -8523,8 +8533,14 @@ int buildin_maprespawnguildid(struct script_state *st)
 	int m;
 
 	m = script_mapname2mapid(st,mapname);
-	if(m >= 0)
-		map_foreachinarea(buildin_maprespawnguildid_sub,m,0,0,map[m].xs,map[m].ys,BL_PC|BL_MOB,g_id,flag);
+	if(m >= 0) {
+		if(flag&3) {
+			clif_foreachclient(buildin_maprespawnguildid_sub_pc, m, g_id, flag);
+		}
+		if(flag&4) {
+			map_foreachinarea(buildin_maprespawnguildid_sub_mob, m, 0, 0, map[m].xs, map[m].ys, BL_MOB);
+		}
+	}
 	return 0;
 }
 
