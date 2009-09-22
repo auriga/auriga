@@ -1606,22 +1606,6 @@ static int skill_area_sub_count(struct block_list *src,struct block_list *target
 	return 0;
 }
 
-/* 特定のタイプの対象をカウントする(モンスター) */
-static int skill_area_sub_count_mob(struct block_list *src,struct block_list *target,int skillid,int skilllv,unsigned int tick,int flag)
-{
-	if(skill_area_temp[0] < 0xffff && target->type == BL_MOB)
-		skill_area_temp[0]++;
-	return 0;
-}
-
-/* 特定のタイプの対象をカウントする(プレイヤー) */
-static int skill_area_sub_count_pc(struct block_list *src,struct block_list *target,int skillid,int skilllv,unsigned int tick,int flag)
-{
-	if(skill_area_temp[0] < 0xffff && target->type == BL_PC)
-		skill_area_temp[0]++;
-	return 0;
-}
-
 /*==========================================
  * 水場の数を数える
  *------------------------------------------
@@ -2720,9 +2704,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case NPC_EARTHQUAKE:		/* アースクエイク */
 		if(flag&1) {
-			if(bl->id != skill_area_temp[1] && ( bl->type == BL_PC || bl->type == BL_MOB ) ) {
+			if(bl->id != skill_area_temp[1]) {
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
-                                battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
 			}
 		} else {
@@ -2730,15 +2714,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[0] = 0;
 			skill_area_temp[1] = bl->id;
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_PC|BL_MOB),
 				src,skillid,skilllv,tick,flag|BCT_ENEMY,
-				skill_area_sub_count_mob);
+				skill_area_sub_count);
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick,flag|BCT_ENEMY,
-				skill_area_sub_count_pc);
-			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_PC|BL_MOB),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -8548,9 +8528,6 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		{
 			int alive;
 			if(map[bl->m].flag.noteleport) {
-				alive = 0;
-			}
-			if(battle_config.pkmap_noteleport && map[bl->m].flag.pk) {
 				alive = 0;
 			} else {
 				alive = 1;

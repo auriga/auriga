@@ -462,7 +462,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// リジェクトソード
-		if(sc->data[SC_REJECTSWORD].timer != -1 && damage > 0 && flag&BF_WEAPON && atn_rand()%100 < 15*sc->data[SC_REJECTSWORD].val1 && skill_num != NPC_EARTHQUAKE) {
+		if(sc->data[SC_REJECTSWORD].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != NPC_EARTHQUAKE && atn_rand()%100 < 15*sc->data[SC_REJECTSWORD].val1) {
 			short weapon = -1;
 			if(src->type == BL_PC)
 				weapon = ((struct map_session_data *)src)->status.weapon;
@@ -2022,34 +2022,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case NPC_EARTHQUAKE:		// アースクエイク
-			//DMG_FIX( 500+500*skill_lv, 100 );
-			switch(skill_lv){
-				case 1:	DMG_FIX( 300, 100 );
-					break;
-				case 2:	DMG_FIX( 500, 100 );
-					break;
-				case 3:	DMG_FIX( 600, 100 );
-					break;
-				case 4:	DMG_FIX( 800, 100 );
-					break;
-				case 5:	DMG_FIX( 1000, 100 );
-					break;
-				case 6:	DMG_FIX( 1200, 100 );
-					break;
-				case 7:	DMG_FIX( 1300, 100 );
-					break;
-				case 8:	DMG_FIX( 1500, 100 );
-					break;
-				case 9:	DMG_FIX( 1600, 100 );
-					break;
-				case 10:
-					DMG_FIX( 1800, 100 );
-					break;
-				default:
-					DMG_FIX( 180*skill_lv, 100 );
-					break;
-
-			}
+			DMG_FIX( 2*skill_lv+(9-2*skill_lv)/4, 1 );
 			if(wflag > 1) {
 				DMG_FIX( 1, wflag );
 			}
@@ -2421,7 +2394,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 20．カードによるダメージ追加処理 */
-	if( src_sd && wd.damage > 0 && calc_flag.rh && !calc_flag.nocardfix  && skill_num != NPC_EARTHQUAKE) {
+	if( src_sd && wd.damage > 0 && calc_flag.rh && !calc_flag.nocardfix && skill_num != NPC_EARTHQUAKE ) {
 		cardfix = 100;
 		if(!src_sd->state.arrow_atk) {	// 弓矢以外
 			if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
@@ -2701,7 +2674,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 32．完全回避の判定 */
-	if(skill_num == 0 && skill_lv >= 0 && target_sd != NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target)  && skill_num != NPC_EARTHQUAKE) {
+	if(skill_num == 0 && skill_lv >= 0 && target_sd != NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) ) {
 		wd.damage  = 0;
 		wd.damage2 = 0;
 		wd.type    = 0x0b;
@@ -2800,7 +2773,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 38．太陽と月と星の奇跡 */
-	if(src_sd && wd.flag&BF_WEAPON && src_sd->s_class.job == 25 && atn_rand()%10000 < battle_config.sg_miracle_rate && skill_num != NPC_EARTHQUAKE)
+	if(src_sd && wd.flag&BF_WEAPON && src_sd->s_class.job == 25 && skill_num != NPC_EARTHQUAKE && atn_rand()%10000 < battle_config.sg_miracle_rate)
 		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
 
 	/* 39．計算結果の最終補正 */
@@ -4006,7 +3979,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		if(rdamage > 0)
 			clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0);
 	}
-	if((attack_type&BF_MAGIC || skillid == NPC_EARTHQUAKE) && damage > 0 && src != bl) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う、またはアースクエイクである＆ダメージあり＆使用者と対象者が違う
+	if((attack_type&BF_MAGIC || skillid == NPC_EARTHQUAKE) && damage > 0 && src != bl) {	// 魔法スキルまたはアースクェイク＆ダメージあり＆使用者と対象者が違う
 		if(tsd && src == dsrc) {	// 対象がPCの時
 			if(tsd->magic_damage_return > 0 && atn_rand()%100 < tsd->magic_damage_return) {	// 魔法攻撃跳ね返し？※
 				rdamage = damage;
