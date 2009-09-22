@@ -1,4 +1,24 @@
 ----------------------------------------
+//0672 [2009/09/23] by Rayce
+
+・msg_auriga.conf のimportが作動しなかった問題を修正（atcommand.c）
+	reported by dragontail789さん、thanks to Blazeさん
+
+・@giveitemコマンドで、「%sを%d個貰いました。」のメッセージはコマンド使用者ではなく
+  アイテムを配布されたユーザに表示されるように修正（atcommand.c）
+	thanks to dragontail789さん
+
+・atcommand_auriga.conf のsynonymコマンドにGMレベルを個別設定できるように拡張（atcommand.c）
+
+	例）reloaditemdb: 99
+	    ri1= reloaditemdb
+	    ri2= reloaditemdb: 50
+
+	@reloaditemdb のGMレベルは99に設定される
+	@ri1 は従来通りのsynonym書式なので、@reloaditemdb のGMレベルを引き継いで99に設定される
+	@ri2 は個別設定書式なので、GMレベルは50に設定される（@reloaditemdb は99のまま）
+
+----------------------------------------
 //0671 [2009/09/23] by Rayce
 
 ・全体的な細かい整形（battle.c, merc.c, mob.c, pc.c, skill.c, status.*）

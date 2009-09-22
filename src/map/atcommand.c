@@ -609,7 +609,7 @@ int msg_config_read(const char *cfgName)
 		if ((line[0] == '/' && line[1] == '/') || line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
 			continue;
 		if (sscanf(line,"%d: %[^\r\n]",&msg_number,w2) != 2) {
-			if (sscanf(line,"%s: %[^\r\n]",w1,w2) != 2)
+			if (sscanf(line,"%[^:]: %[^\r\n]",w1,w2) != 2)
 				continue;
 			if (strcmpi(w1,"import") == 0) {
 				msg_config_read(w2);
@@ -759,7 +759,57 @@ int atcommand_config_read(const char *cfgName)
 		if ((line[0] == '/' && line[1] == '/') || line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
 			continue;
 
-		if (sscanf(line, "%[^:]:%s", w1, w2) == 2) {
+		if (sscanf(line, "%[^=]= %[^\r\n]", w1, w2) == 2) { // synonym
+			char *c = NULL;
+
+			/* searching if synonym is not a gm command */
+			if ((p = get_atcommandinfo_byname(w1)) != NULL) {
+				printf("Error in %s file: GM synonym '%s' is not a synonym, but a GM command.\n", cfgName, w1);
+				continue;
+			}
+			if(battle_config.atc_gmonly > 0) {
+				c = strchr(w2, ':');
+				if (c)
+					*c = 0;
+			}
+
+			/* searching if gm command exists */
+			if ((p = get_atcommandinfo_byname(w2)) != NULL) {
+				// GM command found, create synonym
+				char *cmd;
+				int level;
+
+				if(c && c[1] == ' ') {
+					// set synonym GM level
+					level = atoi(c + 2);
+					if (level < 0)
+						level = 0;
+					else if (level > 100)
+						level = 100;
+				} else {
+					level = p->level;
+				}
+
+				if (synonym_count == 0) {
+					synonym_table = (AtCommandInfo *)aMalloc(sizeof(AtCommandInfo));
+				} else {
+					synonym_table = (AtCommandInfo *)aRealloc(synonym_table, (synonym_count + 1) * sizeof(AtCommandInfo));
+				}
+				synonym_table[synonym_count].type  = p->type;
+				synonym_table[synonym_count].level = level;
+				synonym_table[synonym_count].proc  = p->proc;
+				synonym_table[synonym_count].next  = NULL;
+
+				cmd = (char *)aMalloc(strlen(w1) + 2);	// symbol + \0 = 2
+				cmd[0] = '@';
+				memcpy(cmd + 1, w1, strlen(w1) + 1);
+
+				synonym_table[synonym_count].command = cmd;
+				synonym_count++;
+			} else {
+				printf("Error in %s file: GM command '%s' of synonym '%s' doesn't exist.\n", cfgName, w2, w1);
+			}
+		} else if (sscanf(line, "%[^:]:%s", w1, w2) == 2) {
 			if (strcmpi(w1, "import") == 0) {
 				atcommand_config_read(w2);
 			} else if (strcmpi(w1, "command_symbol") == 0) {
@@ -778,35 +828,6 @@ int atcommand_config_read(const char *cfgName)
 				} else {
 					printf("file [%s]: Unknown GM command: %c%s.\n", cfgName, command_symbol, w1);
 				}
-			}
-		} else if (sscanf(line, "%[^=]=%s", w1, w2) == 2) { // synonym
-			/* searching if synonym is not a gm command */
-			if ((p = get_atcommandinfo_byname(w1)) != NULL) {
-				printf("Error in %s file: GM synonym '%s' is not a synonym, but a GM command.\n", cfgName, w1);
-				continue;
-			}
-			/* searching if gm command exists */
-			if ((p = get_atcommandinfo_byname(w2)) != NULL) {
-				// GM command found, create synonym
-				char *cmd;
-				if (synonym_count == 0) {
-					synonym_table = (AtCommandInfo *)aMalloc(sizeof(AtCommandInfo));
-				} else {
-					synonym_table = (AtCommandInfo *)aRealloc(synonym_table, (synonym_count + 1) * sizeof(AtCommandInfo));
-				}
-				synonym_table[synonym_count].type  = p->type;
-				synonym_table[synonym_count].level = p->level;
-				synonym_table[synonym_count].proc  = p->proc;
-				synonym_table[synonym_count].next  = NULL;
-
-				cmd = (char *)aMalloc(strlen(w1) + 2);	// symbol + \0 = 2
-				cmd[0] = '@';
-				memcpy(cmd + 1, w1, strlen(w1) + 1);
-
-				synonym_table[synonym_count].command = cmd;
-				synonym_count++;
-			} else {
-				printf("Error in %s file: GM command '%s' of synonym '%s' doesn't exist.\n", cfgName, w2, w1);
 			}
 		}
 	}
@@ -4166,14 +4187,14 @@ int atcommand_giveitem(const int fd, struct map_session_data* sd, AtCommandType 
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) { // 該当名のキャラが存在する
 		atcommand_giveitem_sub(pl_sd,item_data,number);
-		msg_output(fd, msg_txt(97), item_data->jname, number);
+		msg_output(pl_sd->fd, msg_txt(97), item_data->jname, number);
 		msg_output(fd, msg_txt(98), pl_sd->status.name, item_data->jname, number);
 	} else if (strcmp(character,"ALL") == 0) {	// 名前がALLなら、接続者全員へ
 		int i;
 		for (i = 0; i < fd_max; i++) {
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data)) {
 				atcommand_giveitem_sub(pl_sd,item_data,number);
-				msg_output(fd, msg_txt(97), item_data->jname, number);
+				msg_output(pl_sd->fd, msg_txt(97), item_data->jname, number);
 			}
 		}
 		msg_output(fd, msg_txt(98), msg_txt(135), item_data->jname, number);
