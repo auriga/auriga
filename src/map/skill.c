@@ -5953,11 +5953,12 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 			printf("MOB skill castend skill=%d, class = %d\n",src_ud->skillid,src_md->class_);
 
 		unit_stop_walking(src,0);
-		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
 #if PACKETVER > 14
 		if(src_sd)
 			clif_status_change(&src_sd->bl,SI_ACTIONDELAY,1,skill_delayfix(&src_sd->bl,skill_get_delay(src_ud->skillid,src_ud->skilllv),skill_get_cast(src_ud->skillid,src_ud->skilllv)));
 #endif
+		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
+
 		if(src_md)
 			src_md->skillidx = -1;
 		return 0;
@@ -7308,15 +7309,15 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 					battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 					break;
 				case 1:		// 呪い効果付与
-					if(atn_rand() % 10000 < status_change_rate(bl,SC_CURSE,10000,status_get_lv(&src->bl)))
+					if(atn_rand() % 10000 < status_change_rate(bl,SC_CURSE,10000,status_get_lv(ss)))
 						status_change_start(bl,SC_CURSE,sg->skill_lv,0,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 					break;
 				case 2:		// 暗黒効果付与
-					if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,10000,status_get_lv(&src->bl)))
+					if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,10000,status_get_lv(ss)))
 						status_change_start(bl,SC_BLIND,sg->skill_lv,0,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 					break;
 				case 3:		// 毒効果付与
-					if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,10000,status_get_lv(&src->bl)))
+					if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,10000,status_get_lv(ss)))
 						status_change_start(bl,SC_POISON,sg->skill_lv,0,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 					break;
 				case 4:		// プロボックLv10効果付与

@@ -1121,6 +1121,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		// 霧のHIT補正
 		calc_flag.hitrate -= 50;
 	}
+	if(src_sd) {
+		// 武器研究
+		calc_flag.hitrate += calc_flag.hitrate * 2 * pc_checkskill(src_sd, BS_WEAPONRESEARCH) / 100;
+	}
 
 	/* ３．wd構造体の初期設定 */
 	wd.type      = 0;
@@ -1134,8 +1138,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.div_ = 1;
 
 	if(src_sd) {
-		calc_flag.hitrate *=1 + 2*pc_checkskill(src_sd,BS_WEAPONRESEARCH)/100;	//武器研究
-
 		if(src_sd->status.weapon == WT_BOW || (src_sd->status.weapon >= WT_HANDGUN && src_sd->status.weapon <= WT_GRENADE)) {	// 武器が弓矢の場合
 			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// 遠距離攻撃フラグを有効
 			if(src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
