@@ -3804,10 +3804,6 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	if(flag & 0x01000000) {	// エフェクトだけ出してダメージなしで終了
 		clif_skill_damage(dsrc, bl, tick, status_get_amotion(src), 0, -1, 1, skillid, lv, type);
-		if(sd && skillid == MO_EXTREMITYFIST){ // 阿修羅の場合SPを0にする
-			sd->status.sp = 0;
-			clif_updatestatus(sd,SP_SP);
-		}
 		return -1;
 	}
 

@@ -1365,9 +1365,7 @@ static int skill_area_sub( struct block_list *bl,va_list ap )
 	flag     = va_arg(ap,int);
 	func     = va_arg(ap,SkillFunc);
 
-	if(battle_check_target(src,bl,flag) > 0 ||	// 彼我敵対関係チェック
-	     // 彼我敵対関係を無視するスキル(通常はskill_castend_idとskill_castend_damage_idで指定)
-	     (skill_id == KN_BRANDISHSPEAR && src->type == BL_PC) )	// ブランディッシュスピアで使用者がプライヤーのとき無視
+	if(battle_check_target(src,bl,flag) > 0)
 		func(src,bl,skill_id,skill_lv,tick,flag);
 	return 0;
 }
@@ -2056,14 +2054,12 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				bl = src;
 			break;
 		case AS_GRIMTOOTH:
-		case KN_BRANDISHSPEAR:
 		case SN_SHARPSHOOTING:
 		case GS_SPREADATTACK:
 		case NJ_HUUMA:
 		case NJ_BAKUENRYU:
 		case NJ_KAMAITACHI:
 		case MA_SHARPSHOOTING:
-		case ML_BRANDISH:
 		case MO_EXTREMITYFIST:
 		case TK_JUMPKICK:
 			// skill_castend_idで許可したスキルはここで敵チェック
@@ -2167,13 +2163,14 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case MS_BASH:
 	case MA_CHARGEARROW:
 	case ML_PIERCE:
-	case ML_BRANDISH:
 	case ML_SPIRALPIERCE:
 	case MER_CRASH:			/* クラッシュ */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case KN_BRANDISHSPEAR:		/* ブランディッシュスピア */
-		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
+	case ML_BRANDISH:
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		skill_area_temp[1]++;
 		break;
 	case AC_DOUBLE:			/* ダブルストレイフィング */
 	case MA_DOUBLE:
@@ -2262,7 +2259,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case TK_TURNKICK:	/* トルリョチャギ */
 		if(flag&1){
 			/* 個別処理 */
-			if(bl->id != skill_area_temp[1] && md) {
+			if(bl->id != skill_area_temp[1]) {
 				struct block_list pos;
 				memset(&pos,0,sizeof(pos));
 				pos.m = bl->m;
@@ -2279,9 +2276,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* まずターゲットに攻撃を加える */
 			if(!battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0))
 				break;
-			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
+			/* その後ターゲット以外の範囲内のMOB全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,skill_area_temp[2]-1,skill_area_temp[3]-1,skill_area_temp[2]+1,skill_area_temp[3]+1,(BL_CHAR|BL_SKILL),
+				bl->m,skill_area_temp[2]-1,skill_area_temp[3]-1,skill_area_temp[2]+1,skill_area_temp[3]+1,BL_MOB,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2379,23 +2376,27 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			}
 			sd->ud.to_x = sd->bl.x + dx;
 			sd->ud.to_y = sd->bl.y + dy;
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag|(is_enemy ? 0 : 0x01000000));
+			if(!is_enemy && sd->status.sp > 0) {
+				sd->status.sp = 0;
+				clif_updatestatus(sd, SP_SP);
+			}
 			clif_walkok(sd);
 			clif_move(&sd->bl);
 			if(dx < 0) dx = -dx;
 			if(dy < 0) dy = -dy;
-			sd->ud.attackabletime = sd->ud.canmove_tick = tick + 100 + sd->speed * ((dx > dy)? dx:dy);
+			sd->ud.attackabletime = sd->ud.canmove_tick = tick + 100 + sd->speed * ((dx > dy)? dx: dy);
 			if(sd->ud.canact_tick < sd->ud.canmove_tick)
 				sd->ud.canact_tick = sd->ud.canmove_tick;
 			unit_movepos(&sd->bl,sd->ud.to_x,sd->ud.to_y,0);
 			status_change_end(&sd->bl,SC_COMBO,-1);
 		} else {
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(is_enemy ? 0 : 0x01000000));
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag|(is_enemy ? 0 : 0x01000000));
 		}
 		status_change_end(src, SC_EXPLOSIONSPIRITS, -1);
 		sc = status_get_sc(src);
 		if(sc && sc->data[SC_BLADESTOP].timer != -1) {
-				status_change_end(src,SC_BLADESTOP,-1);
+			status_change_end(src,SC_BLADESTOP,-1);
 		}
 		break;
 	case GS_BULLSEYE:		/* ブルズアイ */
@@ -3204,6 +3205,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	struct homun_data       *hd  = NULL, *dsthd  = NULL;
 	struct merc_data        *mcd = NULL, *dstmcd = NULL;
 	struct status_change    *sc  = NULL;
+	int is_enemy = 1;
 
 	nullpo_retr(1, src);
 	nullpo_retr(1, bl);
@@ -3225,9 +3227,19 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	dsthd  = BL_DOWNCAST( BL_HOM,  bl );
 	dstmcd = BL_DOWNCAST( BL_MERC, bl );
 
-
 	if(sd && unit_isdead(&sd->bl))
 		return 1;
+
+	switch(skillid) {
+		case KN_BRANDISHSPEAR:
+		case ML_BRANDISH:
+			// skill_castend_idで許可したスキルはここで敵チェック
+			if(skill_get_inf2(skillid) & 0x04 || skill_get_inf(skillid) & 0x01) {
+				if(battle_check_target(src,bl,BCT_ENEMY) <= 0)
+					is_enemy = 0;
+			}
+			break;
+	}
 
 	// エモ
 	if(md && md->skillidx != -1)
@@ -4113,6 +4125,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			skill_brandishspear_first(&tc,dir,bl->x,bl->y);
 			skill_brandishspear_dir(&tc,dir,4);
 
+			skill_area_temp[1] = 0;
+
 			/* 範囲4 */
 			if(skilllv > 9) {
 				for(c=1; c<4; c++) {
@@ -4151,6 +4165,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					bl->m,tc.val1[c%5],tc.val2[c%5],tc.val1[c%5],tc.val2[c%5],(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 					skill_castend_damage_id);
+			}
+
+			if(skill_area_temp[1] == 0) {
+				skill_castend_damage_id(src,bl,skillid,skilllv,tick,flag|(is_enemy ? 0 : 0x01000000));
 			}
 		}
 		break;
