@@ -5108,17 +5108,15 @@ int battle_config_read(const char *cfgName)
 		{ "equip_window_type",                  &battle_config.equip_window_type,                  1        },
 		{ "str_weight",                         &battle_config.str_weight,                         300      },
 		{ "summonslave_generation",             &battle_config.summonslave_generation,             2        },
-		{ "pvp_send_guild_xy",                  &battle_config.pvp_send_guild_xy,   	           1        },
-		{ "mvpitem_weight_limit",               &battle_config.mvpitem_weight_limit,   	           50       },
-		{ "roki_item_autospell",               	&battle_config.roki_item_autospell,   	           0  	    },
-		{ "trap_splash_on",               	&battle_config.trap_splash_on,   	           0  	    },
-		{ "firepillar_splash_on",              	&battle_config.firepillar_splash_on,   	           0  	    },
-		{ "mob_nohitstop_rate",                 &battle_config.mob_nohitstop_rate,		   0	    },
-		{ "scdef_no_difflevel",                 &battle_config.scdef_no_difflevel,		   0	    },
-		{ "refinery_research_lv",               &battle_config.refinery_research_lv,		   0	    },
+		{ "pvp_send_guild_xy",                  &battle_config.pvp_send_guild_xy,                  1        },
+		{ "mvpitem_weight_limit",               &battle_config.mvpitem_weight_limit,               50       },
+		{ "roki_item_autospell",                &battle_config.roki_item_autospell,                0        },
+		{ "trap_splash_on",                     &battle_config.trap_splash_on,                     0        },
+		{ "firepillar_splash_on",               &battle_config.firepillar_splash_on,               0        },
+		{ "mob_nohitstop_rate",                 &battle_config.mob_nohitstop_rate,                 0        },
+		{ "refinery_research_lv",               &battle_config.refinery_research_lv,               0        },
 		{ "maprespawnguildid_all_players",      &battle_config.maprespawnguildid_all_players,      0        },
 		{ NULL,                                 NULL,                                              0        },
-
 	};
 
 	if(count++ == 0) {

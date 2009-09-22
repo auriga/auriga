@@ -572,7 +572,6 @@ extern struct Battle_Config {
 	int trap_splash_on;
 	int firepillar_splash_on;
 	int mob_nohitstop_rate;
-	int scdef_no_difflevel;
 	int refinery_research_lv;
 	int maprespawnguildid_all_players;
 } battle_config;

@@ -1616,12 +1616,12 @@ L_RECALC:
 	// スキルやステータス異常による残りのパラメータ補正
 	if(sd->sc.count > 0) {
 		// 太陽の安楽 DEF増加
-		if(sd->sc.data[SC_SUN_COMFORT].timer != -1 )
+		if(sd->sc.data[SC_SUN_COMFORT].timer != -1)
 			sd->def2 += (sd->status.base_level + sd->status.dex + sd->status.luk)/2;
 			//sd->def += (sd->status.base_level + sd->status.dex + sd->status.luk + sd->paramb[4] + sd->paramb[5])/10;
 
 		// 月の安楽
-		if(sd->sc.data[SC_SUN_COMFORT].timer != -1 && (sd->bl.m == sd->feel_index[0] || sd->sc.data[SC_MIRACLE].timer != -1))
+		if(sd->sc.data[SC_MOON_COMFORT].timer != -1 && (sd->bl.m == sd->feel_index[1] || sd->sc.data[SC_MIRACLE].timer != -1))
 			sd->flee += (sd->status.base_level + sd->status.dex + sd->status.luk)/10;
 			//sd->flee += (sd->status.base_level + sd->status.dex + sd->status.luk + sd->paramb[4] + sd->paramb[5])/10;
 
@@ -4182,7 +4182,7 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 
 	struct status_change    *sc  = NULL;
 	int sc_flag = 0;
-	int diff_level;
+	int diff_level = 0;
 
 	nullpo_retr(0, bl);
 
@@ -4194,12 +4194,8 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 
 	sc = status_get_sc(bl);
 
-	if(src_level && !battle_config.scdef_no_difflevel){
+	if(src_level)
 		diff_level = src_level - status_get_lv(bl);
-	}else{
-		diff_level = 0;
-		src_level = 0;
-	}
 
 	switch(type) {	// 状態異常耐性ステータス rateは万分率
 		case SC_STONE:
@@ -4364,15 +4360,14 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		// フルアドレナリンラッシュの武器判定
 		if( type == SC_ADRENALINE2 && !(skill_get_weapontype(BS_ADRENALINE2)&(1<<sd->status.weapon)) )
 			return 0;
-		if( SC_STONE <= type && type <= SC_BLEED ) {	/* カードによる耐性 */
-			int scdef;
-			scdef = sd->reseff[type-SC_STONE];
-			if(sc->data[SC_SIEGFRIED].timer != -1) {		// ジークフリードの状態異常耐性
+		if( !(flag&8) && SC_STONE <= type && type <= SC_BLEED ) {	/* カードによる耐性 */
+			int scdef = sd->reseff[type-SC_STONE];
+			if(sc->data[SC_SIEGFRIED].timer != -1) {	// ジークフリードの状態異常耐性
 				scdef += 5000;
 			}
-			if( !(flag&8) && sd->reseff[type-SC_STONE] > 0 && atn_rand()%10000 < sd->reseff[type-SC_STONE] ) {
+			if(scdef > 0 && atn_rand()%10000 < scdef) {
 				if(battle_config.battle_log)
-					printf("PC %d skill_sc_start: cardによる異常耐性発動\n",sd->bl.id);
+					printf("PC %d skill_sc_start: cardによる異常耐性発動\n", sd->bl.id);
 				return 0;
 			}
 		}
