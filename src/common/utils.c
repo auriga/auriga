@@ -55,7 +55,7 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 		p += sprintf(p, "  ");
 		for(j = i; j < i + 16; j++) {
 			if(j < len)
-				p += sprintf(p, "%c", (buf[j] <= 0x20) ? '.' : buf[j]);
+				p += sprintf(p, "%c", (buf[j] < 0x20) ? '.' : buf[j]);
 			else
 				p += sprintf(p, " ");
 		}

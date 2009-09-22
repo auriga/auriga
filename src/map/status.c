@@ -2427,14 +2427,14 @@ int status_get_max_hp(struct block_list *bl)
 
 		if(bl->type == BL_MOB && ((struct mob_data*)bl)) {
 			atn_bignumber hp = mob_db[((struct mob_data*)bl)->class_].max_hp;
-			struct guild_castle *gc = guild_mapname2gc(map[bl->m].name);
+			struct guild_castle *gc = guild_mapid2gc(bl->m);
 			if(mob_db[((struct mob_data*)bl)->class_].mexp > 0) {
 				if(battle_config.mvp_hp_rate != 100) {
-					hp = (atn_bignumber)hp * battle_config.mvp_hp_rate / 100;
+					hp = hp * battle_config.mvp_hp_rate / 100;
 				}
 			} else {
 				if(battle_config.monster_hp_rate != 100)
-					hp = (atn_bignumber)hp * battle_config.monster_hp_rate / 100;
+					hp = hp * battle_config.monster_hp_rate / 100;
 			}
 			if(gc && ((struct mob_data*)bl)->guild_id == gc->guild_id) {
 				hp += gc->defense * 1000;

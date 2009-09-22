@@ -848,8 +848,10 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	mode = status_get_mode( &md->bl );
 
 	// 異常
-	if( (md->sc.opt1 > 0 && md->sc.opt1 != 6) || md->sc.data[SC_BLADESTOP].timer != -1 ){
-		if(!(md->sc.opt1==2 && md->ud.walktimer!=-1))    // 凍結中は移動が終わるまで処理を続ける(滑り)
+	if(md->sc.data[SC_BLADESTOP].timer != -1)
+		return 0;
+	if(md->sc.opt1 > 0 && md->sc.opt1 != 6) {
+		if(md->sc.opt1 != 2 || md->ud.walktimer == -1)    // 凍結中は移動が終わるまで処理を続ける(滑り)
 			return 0;
 	}
 

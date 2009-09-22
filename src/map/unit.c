@@ -753,18 +753,21 @@ int unit_stop_walking(struct block_list *bl,int type)
 	}
 	if( ud == NULL ) return 0;
 
-	if(!md || !(type&0x08)){
+	ud->to_x = bl->x;
+	ud->to_y = bl->y;
+
+	if(type&0x08 && md) {
+		if(ud->walktimer == -1)
+			return 0;
+	} else {
 		ud->walkpath.path_len = 0;
 		ud->walkpath.path_pos = 0;
-	}
-	ud->to_x              = bl->x;
-	ud->to_y              = bl->y;
 
-	if(ud->walktimer == -1) return 0;
+		if(ud->walktimer == -1)
+			return 0;
 
-	if(!md || !(type&0x08)){
 		delete_timer(ud->walktimer, unit_walktoxy_timer);
-		ud->walktimer         = -1;
+		ud->walktimer = -1;
 	}
 
 	if(type&0x01) { // 位置補正送信が必要
