@@ -1026,8 +1026,13 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->spiritball = 0;
 	sd->repair_target = 0;
 
-	for(i=0; i<MAX_SKILL_LEVEL; i++)
+	for(i=0; i<MAX_SKILL_LEVEL; i++) {
 		sd->spirit_timer[i] = -1;
+		sd->coin_timer[i]   = -1;
+	}
+
+	for(i=0; i<MAX_ACTIVEITEM; i++)
+		sd->activeitem_timer[i] = -1;
 
 	for(i=0; i<MAX_SKILL_DB; i++)
 		sd->skillstatictimer[i] = tick;
@@ -1649,7 +1654,7 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilll
  * アクティブアイテム登録
  *------------------------------------------
  */
-int pc_activeitem(struct map_session_data* sd,int id,short rate,short tick,unsigned long flag)
+int pc_activeitem(struct map_session_data* sd,int id,short rate,int tick,unsigned long flag)
 {
 	int i;
 
@@ -1670,8 +1675,6 @@ int pc_activeitem(struct map_session_data* sd,int id,short rate,short tick,unsig
 	sd->activeitem.rate[sd->activeitem.count] = rate;
 	sd->activeitem.tick[sd->activeitem.count] = tick;
 	sd->activeitem.flag[sd->activeitem.count] = flag;
-	if(sd->activeitem_timer[sd->activeitem.count] < 1)
-		sd->activeitem_timer[sd->activeitem.count] = -1;
 	sd->activeitem.count++;
 
 	return 1;

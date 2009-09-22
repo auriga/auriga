@@ -522,7 +522,7 @@ struct map_session_data {
 	struct {
 		int id[MAX_ACTIVEITEM];
 		short rate[MAX_ACTIVEITEM];
-		short tick[MAX_ACTIVEITEM];
+		int tick[MAX_ACTIVEITEM];
 		unsigned long flag[MAX_ACTIVEITEM];
 		short count;
 	} activeitem;
