@@ -1273,19 +1273,25 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 		c = strchr(w4, ',');
 		while(c && pos < max) {
 			struct item_data *id = NULL;
-			int ret,nameid, value = -1;
+			int ret, nameid, value = -1;
 			c++;
 			ret = sscanf(c, "%d:%d", &nameid, &value);
-			if(ret < 1 || ret > 2)
+			if(ret < 1 || (subtype == POINTSHOP && ret < 2)) {
+				char *np = strchr(c, ',');
+				if(np) {
+					np[1] = 0;
+				}
+				printf("bad %s item %s : %s line %d\a\n", w2, c, w3, lines);
+				pos = 0;
 				break;
+			}
 			id = itemdb_search(nameid);
 			nd->u.shop_item[pos].nameid = nameid;
-			if(value < 0) {
-				value = id->value_buy;
-			}
 			if(subtype == SHOP) {
 				int sell_max, buy_max;
-
+				if(value < 0) {
+					value = id->value_buy;
+				}
 				sell_max = pc_modifysellvalue(NULL, id->value_sell);
 				buy_max  = pc_modifybuyvalue(NULL, value);
 				if(sell_max > buy_max) {
