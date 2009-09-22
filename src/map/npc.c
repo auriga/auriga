@@ -107,8 +107,8 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 		return 1;
 	//if(sd->areanpc_id == nd->bl.id)
 	//	return 1;
-	if(!nd->flag&3) {
-		sd->areanpc_id=0;
+	if(!(nd->flag&3)) {
+		sd->areanpc_id = 0;
 		return 1;
 	}
 

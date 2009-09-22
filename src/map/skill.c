@@ -7927,7 +7927,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 	nullpo_retr(0, cnd);
 
 	target = map_id2bl( cnd->target );
-	if( target && target->type != BL_PC && target->type != BL_MOB && target->type != BL_HOM && target->type != BL_MERC ) {
+	if( target && !(target->type & BL_CHAR) ) {
 		// スキル対象はPC,MOB,HOM,MERCのみ
 		target = NULL;
 	}

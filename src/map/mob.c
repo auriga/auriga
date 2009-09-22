@@ -550,7 +550,7 @@ int mob_target(struct mob_data *md,struct block_list *bl,int dist)
 	}
 
 	if(mob_can_lock(md,bl)) {
-		if(bl->type == BL_PC || bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC)
+		if(bl->type & BL_CHAR)
 			md->target_id = bl->id;	// 妨害がなかったのでロック
 		md->min_chase = dist + 13;
 		if(md->min_chase > 26)
@@ -941,7 +941,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				unit_stop_walking(&md->bl,5);	// 歩行中なら停止
 			return search_flag;
 		}
-	} else if(tbl->type == BL_PC || tbl->type == BL_MOB || tbl->type == BL_HOM || tbl->type == BL_MERC) {
+	} else if(tbl->type & BL_CHAR) {
 		// 対象がPC、MOB、HOMもしくはMERC
 		if(!mob_can_lock(md,tbl)) {
 			// スキルなどによる策敵妨害判定
@@ -1206,7 +1206,7 @@ int mob_ai_hard_spawn( struct block_list *bl, int flag )
 {
 	nullpo_retr(0, bl);
 
-	if( bl->type == BL_PC || bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC ) {
+	if(bl->type & BL_CHAR) {
 		map_foreachinarea( mob_ai_hard_spawn_sub , bl->m,
 			bl->x - AREA_SIZE * 2, bl->y - AREA_SIZE * 2,
 			bl->x + AREA_SIZE * 2, bl->y + AREA_SIZE * 2,
@@ -3222,7 +3222,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 
 	// ターゲットとマスターの情報取得
 	target = map_id2bl(md->target_id);
-	if(target && target->type != BL_PC && target->type != BL_MOB && target->type != BL_HOM && target->type != BL_MERC)
+	if(target && !(target->type & BL_CHAR))
 		target = NULL;
 
 	master = map_id2bl(md->master_id);

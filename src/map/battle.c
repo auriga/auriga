@@ -491,7 +491,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		int noflag = 0;
 
 		// エンペリウム
-		if(status_get_class(bl) == 1288) {
+		if(tmd && tmd->guild_id && tmd->class_ == 1288) {
 			if(flag&BF_SKILL && skill_num != HW_GRAVITATION)
 				return 0;
 			if(src->type == BL_PC) {
@@ -501,7 +501,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 					return 0;		// ギルド未加入ならダメージ無し
 				if(guild_checkskill(g,GD_APPROVAL) <= 0)
 					return 0;		// 正規ギルド承認がないとダメージ無し
-				if((gc = guild_mapname2gc(map[bl->m].name)) != NULL) {
+				if((gc = guild_mapid2gc(tmd->bl.m)) != NULL) {
 					if(g->guild_id == gc->guild_id)
 						return 0;	// 自占領ギルドのエンペならダメージ無し
 					if(guild_check_alliance(gc->guild_id, g->guild_id, 0))
@@ -516,9 +516,9 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 
 		// GvG
 		if(map[bl->m].flag.gvg && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
-			if(bl->type == BL_MOB) {
+			if(tmd && tmd->guild_id) {
 				if(gc == NULL && !noflag)	// エンペリウムの項で既に検索してNULLなら再度検索しない
-					gc = guild_mapname2gc(map[bl->m].name);
+					gc = guild_mapid2gc(tmd->bl.m);
 				if(gc) {
 					// defenseがあればダメージが減るらしい？
 					damage -= damage * gc->defense / 100 * battle_config.castle_defense_rate / 100;
@@ -634,8 +634,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			else
 				rate = (tsd->addreveff[i-SC_STONE]);
 
-			if(src->type == BL_PC || src->type == BL_MOB || src->type == BL_HOM || src->type == BL_MERC)
-			{
+			if(src->type & BL_CHAR) {
 				if(atn_rand() % 10000 < status_change_rate(src,i,rate,status_get_lv(&tsd->bl))) {
 					if(battle_config.battle_log)
 						printf("PC %d skill_addreveff: cardによる異常発動 %d %d\n",tsd->bl.id,i,tsd->addreveff[i-SC_STONE]);
@@ -2380,7 +2379,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				break;
 			}
 
-			if(target->type == BL_PC || target->type == BL_MOB || target->type == BL_HOM || target->type == BL_MERC) {
+			if(target->type & BL_CHAR) {
 				int rate = 0;
 				int s_dex = status_get_dex(src);
 				int s_luk = status_get_luk(src);
