@@ -568,7 +568,6 @@ extern struct Battle_Config {
 	int str_weight;
 
 	int whistle_perfect_flee;
-	int sg_type;
 	int pvp_send_guild_xy;
 	int mvpitem_weight_limit;
 	int roki_item_autospell;

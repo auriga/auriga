@@ -6136,13 +6136,16 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 
 	case WZ_STORMGUST:          /* ストームガスト */
-		if(battle_config.sg_type){  // 3x3のユニットを南西→北東まで81個作る
+		{
 			int i, j;
-			for(i=0;i<9;i++)	// こちらのrangeはskill_unitsetting()内にて設定
-				for(j=0;j<9;j++)
+
+			// ユニットを南西→北東まで81個作る
+			for(i = 0; i < 9; i++) {
+				for(j = 0; j < 9; j++) {
 					skill_unitsetting(src,skillid,skilllv,x-4+i,y-4+j,0);
-		}else
-			skill_unitsetting(src,skillid,skilllv,x,y,0);
+				}
+			}
+		}
 		break;
 
 	case AL_WARP:				/* ワープポータル */
@@ -6447,10 +6450,6 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	case WZ_VERMILION:
 		if(skilllv>10)			/* ロードオブバーミリオン(広範囲) */
 		range = 25;
-		break;
-	case WZ_STORMGUST:			/* ストームガスト */
-		if(battle_config.sg_type)
-			range = 1;
 		break;
 	case MG_FIREWALL:			/* ファイヤーウォール */
 		val2 = 4+skilllv;
