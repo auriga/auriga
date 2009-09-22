@@ -1,4 +1,15 @@
 ----------------------------------------
+//0655 [2009/09/23] by Rayce
+
+・battle_auriga.conf の「pkmap_noteleport」を撤廃
+  代わりに map_auriga.conf の「map_pk_noteleport」で全てのPKマップに対して
+  一括でMAPフラグ noteleport を設定するようにする（battle.*, map.c）
+
+・battle_auriga.conf の初期値を変更（battle.c）
+	monster_skill_over = 10
+	NULL = 0
+
+----------------------------------------
 //0654 [2009/09/23] by Rayce
 
 ・出来る限り BL_CHAR マクロを利用するように置き換え（battle.c, mob.c, skill.c）

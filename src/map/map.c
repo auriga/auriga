@@ -92,6 +92,7 @@ int autosave_gvg_rate = 100;
 int agit_flag = 0;
 static int map_pk_server_flag = 0;
 static int map_pk_nightmaredrop_flag = 0;
+static int map_pk_noteleport_flag = 0;
 int sql_script_enable = 0;
 
 extern int packet_parse_time;
@@ -2621,7 +2622,29 @@ static int map_pk_nightmaredrop(int flag)
 		map[m].flag.pk_nightmaredrop = 1;
 		count++;
 	}
-	printf(" (count:%d/%d)\n",count,map_num);
+	printf(" (count: %d/%d)\n", count, map_num);
+	return 1;
+}
+
+/*==========================================
+ * PKフィールドのテレポート不可を一括変更
+ *------------------------------------------
+ */
+static int map_pk_noteleport(int flag)
+{
+	int m, count = 0;
+
+	if(!flag)
+		return 0;
+
+	printf("server setting: pk noteleport");
+	for(m = 0; m < map_num; m++) {
+		if(!map[m].flag.pk)
+			continue;
+		map[m].flag.noteleport = 1;
+		count++;
+	}
+	printf(" (count: %d/%d)\n", count, map_num);
 	return 1;
 }
 
@@ -2740,6 +2763,8 @@ static int map_config_read(const char *cfgName)
 			map_pk_server_flag = atoi(w2);
 		} else if (strcmpi(w1, "map_pk_nightmaredrop") == 0) {
 			map_pk_nightmaredrop_flag = atoi(w2);
+		} else if (strcmpi(w1, "map_pk_noteleport") == 0) {
+			map_pk_noteleport_flag = atoi(w2);
 		} else if (strcmpi(w1, "sql_script_enable") == 0) {
 			sql_script_enable = atoi(w2);
 		} else if (strcmpi(w1, "import") == 0) {
@@ -3007,6 +3032,7 @@ int do_init(int argc,char *argv[])
 
 	map_pk_server(map_pk_server_flag);
 	map_pk_nightmaredrop(map_pk_nightmaredrop_flag);
+	map_pk_noteleport(map_pk_noteleport_flag);
 	map_field_setting();
 	npc_event_do_oninit();	// npcのOnInitイベント実行
 

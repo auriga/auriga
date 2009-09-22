@@ -4880,7 +4880,7 @@ int battle_config_read(const char *cfgName)
 		{ "other_drop_rate",                    &battle_config.other_drop_rate,                    100      },
 		{ "item_res",                           &battle_config.item_res,                           1        },
 		{ "next_exp_limit",                     &battle_config.next_exp_limit,                     0        },
-		{ "monster_skill_over",                 &battle_config.monster_skill_over,                 11       },
+		{ "monster_skill_over",                 &battle_config.monster_skill_over,                 10       },
 		{ "finding_ore_drop_rate",              &battle_config.finding_ore_drop_rate,              100      },
 		{ "joint_struggle_exp_bonus",           &battle_config.joint_struggle_exp_bonus,           25       },
 		{ "joint_struggle_limit",               &battle_config.joint_struggle_limit,               600      },
@@ -5136,7 +5136,6 @@ int battle_config_read(const char *cfgName)
 		{ "str_weight",                         &battle_config.str_weight,                         300      },
 		{ "summonslave_generation",             &battle_config.summonslave_generation,             2        },
 		{ "whistle_perfect_flee",               &battle_config.whistle_perfect_flee,               0        },
-		{ "pkmap_noteleport",                   &battle_config.pkmap_noteleport,                   1        },
 		{ "sg_type",                  		&battle_config.sg_type,       		           1        },
 		{ "pvp_send_guild_xy",                  &battle_config.pvp_send_guild_xy,   	           1        },
 		{ "mvpitem_weight_limit",               &battle_config.mvpitem_weight_limit,   	           50       },
@@ -5147,7 +5146,7 @@ int battle_config_read(const char *cfgName)
 		{ "scdef_no_difflevel",                 &battle_config.scdef_no_difflevel,		   0	    },
 		{ "refinery_research_lv",               &battle_config.refinery_research_lv,		   0	    },
 		{ "maprespawnguildid_all_players",      &battle_config.maprespawnguildid_all_players,      0        },
-		{ NULL,                                 NULL,                                              1        },
+		{ NULL,                                 NULL,                                              0        },
 
 	};
 
