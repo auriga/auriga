@@ -3601,7 +3601,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			if(battle_config.skill_autospell_delay_enable) {
 				struct unit_data *ud = unit_bl2ud(src);
 				if(ud) {
-					int delay = skill_delayfix(src, skill_get_delay(spellid,spelllv), skill_get_cast(spellid,spelllv));
+					int delay = skill_delayfix(src, spellid, spelllv);
 					ud->canact_tick = tick + delay;
 				}
 			}
@@ -3831,7 +3831,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				tsd->status.sp += sp;
 			}
 			clif_heal(tsd->fd,SP_SP,sp);
-			tsd->ud.canact_tick = tick + skill_delayfix(&tsd->bl, skill_get_delay(SA_MAGICROD,sc->data[SC_MAGICROD].val1), skill_get_cast(SA_MAGICROD,sc->data[SC_MAGICROD].val1));
+			tsd->ud.canact_tick = tick + skill_delayfix(&tsd->bl, SA_MAGICROD, sc->data[SC_MAGICROD].val1);
 		}
 		clif_skill_nodamage(bl,bl,SA_MAGICROD,sc->data[SC_MAGICROD].val1,1);	// マジックロッドエフェクトを表示
 	}

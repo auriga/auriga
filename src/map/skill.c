@@ -1971,7 +1971,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		unit_stop_walking(src,0);
 #if PACKETVER > 14
 		if(src_sd)
-			clif_status_change(&src_sd->bl,SI_ACTIONDELAY,1,skill_delayfix(&src_sd->bl,skill_get_delay(src_ud->skillid,src_ud->skilllv),skill_get_cast(src_ud->skillid,src_ud->skilllv)));
+			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv));
 #endif
 		switch( skill_get_nk(src_ud->skillid)&3 )
 		{
@@ -5955,7 +5955,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 		unit_stop_walking(src,0);
 #if PACKETVER > 14
 		if(src_sd)
-			clif_status_change(&src_sd->bl,SI_ACTIONDELAY,1,skill_delayfix(&src_sd->bl,skill_get_delay(src_ud->skillid,src_ud->skilllv),skill_get_cast(src_ud->skillid,src_ud->skilllv)));
+			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv));
 #endif
 		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
 
@@ -9618,43 +9618,77 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
  * ディレイ計算
  *------------------------------------------
  */
-int skill_delayfix(struct block_list *bl, int delay, int cast)
+int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 {
 	struct status_change *sc;
+	int delay = skill_get_delay(skillid, skilllv);
 
 	nullpo_retr(0, bl);
 
-	if(delay <= 0 && cast <= 0)
-		return ( status_get_adelay(bl) / 2 );
+	if(skillid == SA_MAGICROD)
+		return 0;
 
 	sc = status_get_sc(bl);
 
-	if(bl->type == BL_PC) {
-		struct map_session_data *sd = (struct map_session_data *)bl;
-		if(battle_config.delay_dependon_dex) {	// dexの影響を計算する
-			if(battle_config.no_delay_dex > status_get_dex(bl)) {
-				delay = delay * (battle_config.no_delay_dex - status_get_dex(bl)) / battle_config.no_delay_dex;
-			} else {
-				delay = 0;
-			}
+	if(delay <= 0 && skill_get_cast(skillid, skilllv) <= 0) {
+		delay = status_get_adelay(bl) / 2;
+	} else {
+		switch(skillid) {
+			case AC_SHOWER:
+			case AS_SONICBLOW:
+			case SA_ABRACADABRA:
+			case CG_ARROWVULCAN:
+			case GS_GLITTERING:
+			case GS_DUST:
+			case GS_GROUNDDRIFT:
+				break;
+			default:
+				if(bl->type == BL_PC) {
+					struct map_session_data *sd = (struct map_session_data *)bl;
+					if(battle_config.delay_dependon_dex) {	// dexの影響を計算する
+						if(battle_config.no_delay_dex > status_get_dex(bl)) {
+							delay = delay * (battle_config.no_delay_dex - status_get_dex(bl)) / battle_config.no_delay_dex;
+						} else {
+							delay = 0;
+						}
+					}
+					delay = delay * battle_config.delay_rate / 100;
+					if(sd && sd->skill_delay_rate)
+						delay = delay * (100 + sd->skill_delay_rate) / 100;
+				}
+
+				/* ブラギの詩 */
+				if(sc) {
+					if(sc->data[SC_POEMBRAGI].timer != -1) {
+						delay = delay * (100 - (sc->data[SC_POEMBRAGI].val1 * 5 + sc->data[SC_POEMBRAGI].val2 * 2
+								+ (sc->data[SC_POEMBRAGI].val3 & 0xffff))) / 100;
+					} else if(sc->data[SC_POEMBRAGI_].timer != -1) {
+						delay = delay * (100 - (sc->data[SC_POEMBRAGI_].val1 * 5 + sc->data[SC_POEMBRAGI_].val2 * 2
+								+ (sc->data[SC_POEMBRAGI_].val3 & 0xffff))) / 100;
+					}
+				}
+				break;
 		}
-		delay = delay * battle_config.delay_rate / 100;
-		if(sd && sd->skill_delay_rate)
-			delay = delay * (100 + sd->skill_delay_rate) / 100;
 	}
 
-	/* ブラギの詩 */
 	if(sc) {
-		if(sc->data[SC_POEMBRAGI].timer != -1) {
-			delay = delay * (100 - (sc->data[SC_POEMBRAGI].val1 * 5 + sc->data[SC_POEMBRAGI].val2 * 2
-					+ (sc->data[SC_POEMBRAGI].val3 & 0xffff))) / 100;
-		} else if(sc->data[SC_POEMBRAGI_].timer != -1) {
-			delay = delay * (100 - (sc->data[SC_POEMBRAGI_].val1 * 5 + sc->data[SC_POEMBRAGI_].val2 * 2
-					+ (sc->data[SC_POEMBRAGI_].val3 & 0xffff))) / 100;
+		switch(skillid) {
+			case AS_SONICBLOW:
+				if(sc->data[SC_ASSASIN].timer != -1 && !map[bl->m].flag.gvg) {
+					delay /= 2;
+				}
+				break;
+			case CR_SHIELDBOOMERANG:
+				if(sc->data[SC_CRUSADER].timer != -1) {
+					delay /= 2;
+				}
+				break;
 		}
 	}
+	if(delay < status_get_amotion(bl))
+		delay = status_get_amotion(bl);
 
-	return (delay > 0) ? delay : 0;
+	return delay;
 }
 
 /*=========================================
@@ -11979,7 +12013,7 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 		return 0;
 
 	if(battle_config.bonus_autospell_delay_enable) {
-		int delay = skill_delayfix(&sd->bl, skill_get_delay(skillid,skilllv), skill_get_cast(skillid,skilllv));
+		int delay = skill_delayfix(&sd->bl, skillid, skilllv);
 		sd->ud.canact_tick = tick + delay;
 	}
 

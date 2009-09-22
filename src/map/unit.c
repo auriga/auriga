@@ -824,7 +824,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	struct merc_data        *src_mcd = NULL;
 	struct unit_data        *src_ud  = NULL;
 	unsigned int tick;
-	int delay = 0, range;
+	int range;
 	struct block_list       *target;
 	struct map_session_data *target_sd  = NULL;
 	struct mob_data         *target_md  = NULL;
@@ -995,8 +995,6 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			break;
 	}
 
-	if(skill_num != SA_MAGICROD)
-		delay = skill_delayfix(src, skill_get_delay(skill_num,skill_lv), skill_get_cast(skill_num,skill_lv));
 	src_ud->state.skillcastcancel = castcancel;
 
 	/* 何か特殊な処理が必要 */
@@ -1013,23 +1011,6 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		if(src_sd)
 			casttime += casttime * ((skill_lv > src_sd->spiritball)? src_sd->spiritball: skill_lv);
 		break;
-	case CR_SHIELDBOOMERANG:
-		if(sc && sc->data[SC_CRUSADER].timer != -1)
-			delay = delay/2;
-		break;
-	case AS_SONICBLOW:
-		if(sc && sc->data[SC_ASSASIN].timer != -1 && !map[src->m].flag.gvg)
-			delay = delay/2;
-		else
-			delay = skill_get_delay(skill_num,skill_lv);
-		break;
-	case AC_SHOWER:
-	case CG_ARROWVULCAN:
-	case GS_GLITTERING:
-	case GS_DUST:
-	case GS_GROUNDDRIFT:
-		delay = skill_get_delay(skill_num,skill_lv);
-		break;
 	case MO_EXTREMITYFIST:	/* 阿修羅覇鳳拳 */
 		if(sc && sc->data[SC_COMBO].timer != -1 && (sc->data[SC_COMBO].val1 == MO_COMBOFINISH || sc->data[SC_COMBO].val1 == CH_CHAINCRUSH)) {
 			casttime = 0;
@@ -1039,9 +1020,6 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	case SA_MAGICROD:
 	case SA_SPELLBREAKER:
 		forcecast = 1;
-		break;
-	case SA_ABRACADABRA:
-		delay = skill_get_delay(SA_ABRACADABRA,skill_lv);
 		break;
 	case HP_BASILICA:
 		if(sc && sc->data[SC_BASILICA].timer != -1)
@@ -1112,7 +1090,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	if( casttime <= 0 )	/* 詠唱の無いものはキャンセルされない */
 		src_ud->state.skillcastcancel = 0;
 
-	src_ud->canact_tick  = tick + casttime + delay;
+	src_ud->canact_tick  = tick + casttime + skill_delayfix(src, skill_num, skill_lv);
 	src_ud->canmove_tick = tick;
 	src_ud->skilltarget  = target_id;
 	src_ud->skillx       = 0;
@@ -1175,7 +1153,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	struct unit_data        *src_ud  = NULL;
 	int zone;
 	unsigned int tick = gettick();
-	int delay = 0, range;
+	int range;
 	struct status_change *sc;
 
 	nullpo_retr(0, src);
@@ -1225,7 +1203,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 		}
 	}
 
-	//チェイスウォークだと設置系失敗
+	// チェイスウォークだと設置系失敗
 	if(src_sd && pc_ischasewalk(src_sd))
 	 	return 0;
 
@@ -1267,7 +1245,6 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 
 	unit_stopattack(src);
 
-	delay = skill_delayfix(src, skill_get_delay(skill_num,skill_lv), skill_get_cast(skill_num,skill_lv));
 	src_ud->state.skillcastcancel = castcancel;
 
 	if(battle_config.pc_skill_log)
@@ -1290,7 +1267,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 		src_ud->state.skillcastcancel = 0;
 
 	tick = gettick();
-	src_ud->canact_tick  = tick + casttime + delay;
+	src_ud->canact_tick  = tick + casttime + skill_delayfix(src, skill_num, skill_lv);
 	src_ud->canmove_tick = tick;
 	src_ud->skillid      = skill_num;
 	src_ud->skilllv      = skill_lv;
