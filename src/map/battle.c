@@ -614,7 +614,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				asflag += EAS_MISC;
 		}
 		skill_bonus_autospell(&tsd->bl,src,asflag,tick,0);
-		pc_activeitem_start(tsd,asflag);
+		pc_activeitem_start(tsd,asflag,tick);
 	}
 
 	// PCの状態異常反撃
@@ -2721,9 +2721,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 35．物理攻撃スキルによるオートスペル発動(item_bonus) アースクエイクは例外 */
-	if(wd.flag&BF_SKILL && src && src->type == BL_PC && src != target && (wd.damage+wd.damage2) > 0 && skill_num != NPC_EARTHQUAKE)
+	if(wd.flag&BF_SKILL && src_sd && target != &src_sd->bl && (wd.damage + wd.damage2) > 0 && skill_num != NPC_EARTHQUAKE)
 	{
 		unsigned long asflag = EAS_ATTACK;
+		unsigned int tick = gettick();
+
 		if(skill_num == AM_DEMONSTRATION) {
 			asflag += EAS_MISC;
 		} else {
@@ -2737,8 +2739,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		else
 			asflag += EAS_SKILL;
 
-		skill_bonus_autospell(src,target,asflag,gettick(),0);
-		pc_activeitem_start((struct map_session_data *)src,asflag);
+		skill_bonus_autospell(&src_sd->bl,target,asflag,tick,0);
+		pc_activeitem_start(src_sd,asflag,tick);
 	}
 
 	/* 36．太陽と月と星の融合 HP2%消費 */
@@ -3185,16 +3187,18 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	mgd.damage = battle_calc_damage(bl,target,mgd.damage,mgd.div_,skill_num,skill_lv,mgd.flag);
 
 	/* 13．魔法でもオートスペル発動(item_bonus) */
-	if(bl && bl->type == BL_PC && bl != target && mgd.damage > 0)
+	if(sd && target != &sd->bl && mgd.damage > 0)
 	{
 		unsigned long asflag = EAS_ATTACK;
+		unsigned int tick = gettick();
+
 		if(battle_config.magic_attack_autospell)
 			asflag += EAS_SHORT|EAS_LONG;
 		else
 			asflag += EAS_MAGIC;
 
-		skill_bonus_autospell(bl,target,asflag,gettick(),0);
-		pc_activeitem_start((struct map_session_data *)bl,EAS_MAGIC);
+		skill_bonus_autospell(&sd->bl,target,asflag,tick,0);
+		pc_activeitem_start(sd,EAS_MAGIC,tick);
 	}
 
 	/* 14．魔法でもHP/SP回復(月光剣など) */
@@ -3394,16 +3398,18 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	mid.damage = battle_calc_damage(bl,target,mid.damage,mid.div_,skill_num,skill_lv,mid.flag);
 
 	/* 10．miscでもオートスペル発動(bonus) */
-	if(bl->type == BL_PC && bl != target && mid.damage > 0)
+	if(sd && target != &sd->bl && mid.damage > 0)
 	{
 		unsigned long asflag = EAS_ATTACK;
+		unsigned int tick = gettick();
+
 		if(battle_config.misc_attack_autospell)
 			asflag += EAS_SHORT|EAS_LONG;
 		else
 			asflag += EAS_MISC;
 
-		skill_bonus_autospell(bl,target,asflag,gettick(),0);
-		pc_activeitem_start((struct map_session_data *)bl,asflag);
+		skill_bonus_autospell(&sd->bl,target,asflag,tick,0);
+		pc_activeitem_start(sd,asflag,tick);
 	}
 
 	/* 11．miscでもHP/SP回復(月光剣など) */
@@ -3628,19 +3634,21 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	}
 
 	// カードによるオートスペル
-	if(sd && src != target && (wd.damage > 0 || wd.damage2 > 0))
+	if(sd && target != &sd->bl && (wd.damage > 0 || wd.damage2 > 0))
 	{
 		unsigned long asflag = EAS_ATTACK | EAS_NORMAL;
+		unsigned int tick = gettick();
+
 		if(wd.flag&BF_LONG)
 			asflag += EAS_LONG;
 		else
 			asflag += EAS_SHORT;
 
-		skill_bonus_autospell(src,target,asflag,gettick(),0);
-		pc_activeitem_start((struct map_session_data *)src,asflag);
+		skill_bonus_autospell(&sd->bl,target,asflag,tick,0);
+		pc_activeitem_start(sd,asflag,tick);
 	}
 
-	if(sd && src != target && wd.flag&BF_WEAPON && (wd.damage > 0 || wd.damage2 > 0))
+	if(sd && target != &sd->bl && wd.flag&BF_WEAPON && (wd.damage > 0 || wd.damage2 > 0))
 	{
 		// SP消失
 		if(tsd && atn_rand()%100 < sd->sp_vanish_rate)
@@ -3651,7 +3659,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		}
 	}
 
-	if(sd && src != target && wd.flag&BF_WEAPON && (wd.damage > 0 || wd.damage2 > 0)) {
+	if(sd && target != &sd->bl && wd.flag&BF_WEAPON && (wd.damage > 0 || wd.damage2 > 0)) {
 		// ％吸収、一定吸収ともに
 		battle_attack_drain(src, wd.damage, wd.damage2, 3);
 	}

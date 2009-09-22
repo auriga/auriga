@@ -11716,25 +11716,24 @@ int buildin_getmobname(struct script_state *st)
  */
 int buildin_checkactiveitem(struct script_state *st)
 {
-	int id,i,ret = 0;
 	struct map_session_data *sd = script_rid2sd(st);
+	int id;
+
+	if(st->end > st->start+2)
+		id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	else
+		id = current_equip_name_id;
 
 	if(sd) {
-		if(st->end>st->start+2)
-			id = conv_num(st,& (st->stack->stack_data[st->start+2]));
-		else
-			id = current_equip_name_id;
-
-		for(i=0; i < sd->activeitem.count; i++) {
-			if(sd->activeitem.id[i] == id) {
-				if(sd->activeitem_timer[i] != -1 && sd->activeitem_timertick[i] >= gettick()) {
-					ret = 1;
-					break;
-				}
+		int i;
+		for(i = 0; i < sd->activeitem.count; i++) {
+			if(sd->activeitem.id[i] == id && sd->activeitem_timer[i] != -1) {
+				push_val(st->stack,C_INT,1);
+				return 0;
 			}
 		}
 	}
-	push_val(st->stack,C_INT,ret);
+	push_val(st->stack,C_INT,0);
 
 	return 0;
 }

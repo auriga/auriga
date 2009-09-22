@@ -1,4 +1,13 @@
 ----------------------------------------
+//0666 [2009/09/23] by Rayce
+
+・pc_activeitem() の引数の flag をunsigned long型に変更（pc.h）
+・活性化発動タイミングを補正するため、pc_activeitem_start() の引数に tick を追加（battle.c, pc.*）
+・map_session_data構造体の activeitem_timertick メンバは不要なので撤去（map.h, pc.c, script.c）
+
+・アクティブアイテム関連処理のリファクタリング（pc.c, script.c）
+
+----------------------------------------
 //0665 [2009/09/23] by Rayce
 
 ・スキルディレイに関する処理は全て skill_delayfix() に集約する（battle.c, skill.*, unit.c）

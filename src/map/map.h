@@ -48,7 +48,7 @@
 #define MAX_SKILL_HEAL_UP	5	// スキルの回復量を強化できる数
 #define MAX_SKILL_FIXCASTRATE	10	// スキルの固定詠唱時間を減らせる数
 #define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
-#define MAX_ACTIVEITEM  10		//アクティブアイテムの容量
+#define MAX_ACTIVEITEM  10		// アクティブアイテムの容量
 #define MAX_DEAL_ITEMS 10
 #define MAX_VENDING 12
 #define MAX_WEAPON_LEVEL 4	// 最大武器Lv
@@ -523,11 +523,10 @@ struct map_session_data {
 		int id[MAX_ACTIVEITEM];
 		short rate[MAX_ACTIVEITEM];
 		short tick[MAX_ACTIVEITEM];
-		long flag[MAX_ACTIVEITEM];
+		unsigned long flag[MAX_ACTIVEITEM];
 		short count;
 	} activeitem;
 	int activeitem_timer[MAX_ACTIVEITEM];
-	unsigned int activeitem_timertick[MAX_ACTIVEITEM];
 
 	short hp_vanish_rate;
 	short hp_vanish_per;

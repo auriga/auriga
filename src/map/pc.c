@@ -1649,27 +1649,24 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilll
  * アクティブアイテム登録
  *------------------------------------------
  */
-int pc_activeitem(struct map_session_data* sd,int id,short rate,short tick,long flag)
+int pc_activeitem(struct map_session_data* sd,int id,short rate,short tick,unsigned long flag)
 {
 	int i;
 
 	nullpo_retr(0, sd);
 
-	if(sd->bl.type != BL_PC)
-		return 0;
-
-	//一杯
+	// 一杯
 	if(sd->activeitem.count >= MAX_ACTIVEITEM)
 		return 0;
 
-	//同じIDが登録されているか
-	for(i=0; i<sd->activeitem.count; i++) {
+	// 同じIDが登録されているか
+	for(i = 0; i < sd->activeitem.count; i++) {
 		if(sd->activeitem.id[i] == id)
 			return 0;
 	}
 
-	//後ろに追加
-	sd->activeitem.id[sd->activeitem.count] = id;
+	// 後ろに追加
+	sd->activeitem.id[sd->activeitem.count]   = id;
 	sd->activeitem.rate[sd->activeitem.count] = rate;
 	sd->activeitem.tick[sd->activeitem.count] = tick;
 	sd->activeitem.flag[sd->activeitem.count] = flag;
@@ -1687,41 +1684,41 @@ int pc_activeitem(struct map_session_data* sd,int id,short rate,short tick,long 
 static int pc_activeitem_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
-	int i, flag = 0;
+	int i;
 
 	if(sd == NULL)
-		return 1;
+		return 0;
 
-	for(i=0;i<sd->activeitem.count;i++)
-	{
-		if(sd->activeitem_timer[i] != tid)
-			continue;
-		sd->activeitem_timer[i] = -1;
-		sd->activeitem_timertick[i] = -1;
-		flag = 1;
+	for(i = 0; i < sd->activeitem.count; i++) {
+		if(sd->activeitem_timer[i] == tid) {
+			sd->activeitem_timer[i] = -1;
+			status_calc_pc(sd,0);
+			return 1;
+		}
 	}
-	if(flag)
-		status_calc_pc(sd,0);
 
-	return 1;
+	return 0;
 }
 
 /*==========================================
  * アクティブアイテム開始
  *------------------------------------------
  */
-int pc_activeitem_start(struct map_session_data* sd,long mode)
+int pc_activeitem_start(struct map_session_data* sd,unsigned long mode,unsigned int tick)
 {
 	int i, flag = 0;
 	static int lock = 0;
 
 	nullpo_retr(0, sd);
 
-	if(sd->bl.type != BL_PC || lock++)
+	if(lock++)
 		return 0;
 
 	for(i=0;i<sd->activeitem.count;i++)
 	{
+		if(sd->activeitem_timer[i] != -1)
+			continue;
+
 		if(!(mode&EAS_SHORT) && !(mode&EAS_LONG) && !(mode&EAS_MAGIC) && !(mode&EAS_MISC))
 			mode |= EAS_SHORT|EAS_LONG;
 		if(!(sd->activeitem.flag[i]&EAS_SHORT) && !(sd->activeitem.flag[i]&EAS_LONG) &&
@@ -1756,12 +1753,9 @@ int pc_activeitem_start(struct map_session_data* sd,long mode)
 
 		if(atn_rand()%10000 > sd->activeitem.rate[i])
 			continue;
-		if(sd->activeitem_timer[i] != -1)
-			continue;
 
-		//発動
-		sd->activeitem_timertick[i] = gettick()+sd->activeitem.tick[i];
-		sd->activeitem_timer[i] = add_timer(gettick()+sd->activeitem.tick[i],pc_activeitem_timer,sd->bl.id, NULL);
+		// 発動
+		sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], pc_activeitem_timer, sd->bl.id, NULL);
 		flag = 1;
 	}
 	if(flag)
