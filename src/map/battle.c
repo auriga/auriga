@@ -1010,6 +1010,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	int t_vit, t_race, t_ele, t_enemy, t_size, t_mode, t_group, t_class;
 	int t_flee, t_def1, t_def2;
 	int cardfix, skill, damage_sbr = 0;
+	int ignored_rate = 100, ignored_rate_ = 100;
 	int i;
 	struct {
 		int rh;			// 右手
@@ -2077,13 +2078,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		/* 14．防御無視判定および錐効果ダメージ計算 */
 		switch (skill_num) {
 		case KN_AUTOCOUNTER:
-		case CR_GRANDCROSS:
 		case MO_INVESTIGATE:
 		case MO_EXTREMITYFIST:
-		case AM_ACIDTERROR:
 		case CR_ACIDDEMONSTRATION:
 		case NJ_ZENYNAGE:
-		case NPC_EARTHQUAKE:
 			break;
 		default:
 			if( wd.type != 0 )	// クリティカル時は無効
@@ -2094,37 +2092,46 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				break;
 			if(src_sd && t_def1 < 1000000)
 			{
-				int mask = (1<<t_race) | ( (t_mode&0x20)? (1<<10): (1<<11) );
+				// bIgnoreDef系判定
+				ignored_rate  = ignored_rate  - src_sd->ignore_def_ele[t_ele]  - src_sd->ignore_def_race[t_race]  - src_sd->ignore_def_enemy[t_enemy];
+				ignored_rate_ = ignored_rate_ - src_sd->ignore_def_ele_[t_ele] - src_sd->ignore_def_race_[t_race] - src_sd->ignore_def_enemy_[t_enemy];
+				if(t_mode & 0x20) {
+					ignored_rate  -= src_sd->ignore_def_race[RCT_BOSS];
+					ignored_rate_ -= src_sd->ignore_def_race_[RCT_BOSS];
+				} else {
+					ignored_rate  -= src_sd->ignore_def_race[RCT_NONBOSS];
+					ignored_rate_ -= src_sd->ignore_def_race_[RCT_NONBOSS];
+				}
 
+				if(battle_config.left_cardfix_to_right) {
+					// 左手カード補正設定あり
+					ignored_rate -= 100 - ignored_rate_;
+					ignored_rate_ = 100;
+				}
 
-				/* bDefRatioATK系効果はbIgnoreDef系効果がある場合無視されるためここでも有無を判定 */
+				if(skill_num != CR_GRANDCROSS && skill_num != AM_ACIDTERROR && skill_num != NPC_EARTHQUAKE) {
+					int mask = (1<<t_race) | ( (t_mode&0x20)? (1<<10): (1<<11) );
 
-				// 右手にbIgnoreDef系の効果がない
-				if(src_sd->ignore_def_ele[t_ele] == 0 && src_sd->ignore_def_race[t_race] == 0 && src_sd->ignore_def_enemy[t_enemy] ==0 && (!(t_mode & 0x20) || src_sd->ignore_def_race[RCT_BOSS] == 0) &&
-				    // battle_config.left_cardfix_to_rightが有効かつ左手にbIgnoreDef系の効果がない
-				    (!battle_config.left_cardfix_to_right || (src_sd->ignore_def_ele_[t_ele] == 0 && src_sd->ignore_def_race_[t_race] == 0 && src_sd->ignore_def_enemy_[t_enemy] ==0 && (!(t_mode & 0x20) || src_sd->ignore_def_race_[RCT_BOSS] == 0) )))
-					// bDefRatioATK系
-					if( !calc_flag.idef && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy)) )
-						if( skill_num != ASC_BREAKER || !calc_flag.idef_){
-							wd.damage = (wd.damage * (t_def1 + t_def2))/100;
+					// bDefRatioATK系、bIgnoreDef系が無いときのみ効果有り
+					if( !calc_flag.idef && ignored_rate == 100 && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy)) ) {
+						if(skill_num != ASC_BREAKER || !calc_flag.idef_) {
+							wd.damage = (wd.damage * (t_def1 + t_def2)) / 100;
 							calc_flag.idef = 1;
 						}
-				// 左手にbIgnoreDef系の効果がない
-				if(src_sd->ignore_def_ele_[t_ele] == 0 && src_sd->ignore_def_race_[t_race] == 0 && src_sd->ignore_def_enemy_[t_enemy] ==0 && (!(t_mode & 0x20) || src_sd->ignore_def_race_[RCT_BOSS] == 0) &&
-				    // battle_config.left_cardfix_to_rightが有効かつ右手にbIgnoreDef系の効果がない
-				    (!battle_config.left_cardfix_to_right || (src_sd->ignore_def_ele[t_ele] == 0 && src_sd->ignore_def_race[t_race] == 0 && src_sd->ignore_def_enemy[t_enemy] ==0 && (!(t_mode & 0x20) || src_sd->ignore_def_race[RCT_BOSS] == 0) )))
-					// bDefRatioATK系を左手も適用する場合
-					if( calc_flag.lh || skill_num == ASC_BREAKER )
-						if( !calc_flag.idef_ && (src_sd->def_ratio_atk_ele_ & (1<<t_ele) || src_sd->def_ratio_atk_race_ & mask || src_sd->def_ratio_atk_enemy_ & (1<<t_enemy)) &&
-						     // 特定スキルでない
-						     (skill_num != ASC_BREAKER || (!calc_flag.idef && battle_config.left_cardfix_to_right)) ){
-							wd.damage2 = (wd.damage2 * (t_def1 + t_def2))/100;
-							calc_flag.idef_ = 1;
-							if(!calc_flag.idef && battle_config.left_cardfix_to_right) {
-								wd.damage = (wd.damage * (t_def1 + t_def2))/100;
-								calc_flag.idef = 1;
+					}
+					if( calc_flag.lh || skill_num == ASC_BREAKER ) {
+						if( !calc_flag.idef_ && ignored_rate_ == 100 && (src_sd->def_ratio_atk_ele_ & (1<<t_ele) || src_sd->def_ratio_atk_race_ & mask || src_sd->def_ratio_atk_enemy_ & (1<<t_enemy)) ) {
+							if(skill_num != ASC_BREAKER || (!calc_flag.idef && battle_config.left_cardfix_to_right)) {
+								wd.damage2 = (wd.damage2 * (t_def1 + t_def2)) / 100;
+								calc_flag.idef_ = 1;
+								if(!calc_flag.idef && battle_config.left_cardfix_to_right) {
+									wd.damage = (wd.damage * (t_def1 + t_def2)) / 100;
+									calc_flag.idef = 1;
+								}
 							}
 						}
+					}
+				}
 			}
 			break;
 		}
@@ -2149,7 +2156,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// DEF無視フラグがないとき
 			if( ((calc_flag.rh && !calc_flag.idef) || (calc_flag.lh && !calc_flag.idef_)) && t_def1 < 1000000 )
 			{
-				int ignored_rate = 100, ignored_rate_ = 100;
 				int vitbonusmax;
 
 				if(battle_config.vit_penalty_type > 0 && (!t_sc || t_sc->data[SC_STEELBODY].timer == -1)) {
@@ -2182,53 +2188,36 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					if(battle_check_undead(s_race,status_get_elem_type(src)) || s_race == RCT_DEMON)
 						t_def2 += ((300 + 4 * target_sd->status.base_level) * skill + 50) / 100;
 				}
-
-				if(src_sd) {
-					// bIgnoreDef系
-					ignored_rate  = ignored_rate  - src_sd->ignore_def_ele[t_ele]  - src_sd->ignore_def_race[t_race]  - src_sd->ignore_def_enemy[t_enemy];
-					ignored_rate_ = ignored_rate_ - src_sd->ignore_def_ele_[t_ele] - src_sd->ignore_def_race_[t_race] - src_sd->ignore_def_enemy_[t_enemy];
-					if(t_mode & 0x20) {
-						ignored_rate  -= src_sd->ignore_def_race[RCT_BOSS];
-						ignored_rate_ -= src_sd->ignore_def_race_[RCT_BOSS];
-					} else {
-						ignored_rate  -= src_sd->ignore_def_race[RCT_NONBOSS];
-						ignored_rate_ -= src_sd->ignore_def_race_[RCT_NONBOSS];
-					}
-
-					if(battle_config.left_cardfix_to_right) {
-						// 左手カード補正設定あり
-						ignored_rate -= 100 - ignored_rate_;
-						ignored_rate_ = 100;
-					}
-				}
-				vitbonusmax = (t_vit/20)*(t_vit/20)-1;
+				vitbonusmax = (t_vit / 20) * (t_vit / 20) - 1;
 
 				if(calc_flag.rh && !calc_flag.idef) {
 					if(ignored_rate > 0) {
+						// bIgnoreDef右手計算
 						int t_def1_fix   = t_def1 * ignored_rate / 100;
 						int t_def2_fix   = t_def2 * ignored_rate / 100;
 						int vitbonus_fix = vitbonusmax * ignored_rate / 100;
 
 						if(battle_config.player_defense_type) {
-							wd.damage = wd.damage - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
-							damage_ot = damage_ot - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+							wd.damage = wd.damage - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
+							damage_ot = damage_ot - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 						} else {
-							wd.damage = wd.damage * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+							wd.damage = wd.damage * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot = damage_ot * (100 - t_def1_fix) /100;
 						}
 					}
 				}
 				if(calc_flag.lh && !calc_flag.idef_) {
 					if(ignored_rate_ > 0) {
+						// bIgnoreDef左手計算
 						int t_def1_fix   = t_def1 * ignored_rate_ / 100;
 						int t_def2_fix   = t_def2 * ignored_rate_ / 100;
 						int vitbonus_fix = vitbonusmax * ignored_rate_ / 100;
 
 						if(battle_config.player_defense_type) {
-							wd.damage2 = wd.damage2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
-							damage_ot2 = damage_ot2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+							wd.damage2 = wd.damage2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
+							damage_ot2 = damage_ot2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 						} else {
-							wd.damage2 = wd.damage2 * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix+1) );
+							wd.damage2 = wd.damage2 * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot2 = damage_ot2 * (100 - t_def1_fix) /100;
 						}
 					}

@@ -1,4 +1,11 @@
 ----------------------------------------
+//0669 [2009/09/23] by Rayce
+
+・bDefRatioATK系とbIgnoreDefの戦闘ダメージ計算方法を最適化（battle.c）
+	-> bIgnoreDef系の判定をstep15からstep14に移動して先に計算する
+	-> bIgnoreDef系のrateが100ならbIgnoreDef系が無いものとみなし、bDefRatioATK系の計算を行う
+
+----------------------------------------
 //0668 [2009/09/23] by Rayce
 
 ・status_get_max_hp() MOBのギルド情報取得において、 guild_mapname2gc() の代わりに
