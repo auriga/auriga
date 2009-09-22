@@ -310,7 +310,7 @@ static int connect_client(int listen_fd)
 	// setsockopt(fd, SOL_SOCKET, SO_LINGER, (char*)&opt, sizeof(opt));
 #endif
 
-	if (!connect_check(*(unsigned long *)(&client_address.sin_addr))) {
+	if (!connect_check((unsigned long)client_address.sin_addr.s_addr)) {
 		socket_close(fd);
 		return -1;
 	}

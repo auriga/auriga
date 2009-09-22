@@ -3,7 +3,7 @@
 CC = gcc -pipe
 
 # Detecting gcc version
-GCC_VERSION = $(shell $(CC) -v 2>&1 | grep ' version ' | cut -d' ' -f3 | cut -d'.' -f1)
+GCC_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
 
 # 2009-02-25aSakexe: 15
 # 2008-01-02aSakexe: 14
@@ -178,7 +178,7 @@ CFLAGS += -DNO_HTTPD_CGI
 #CFLAGS +=-march=athlon-mp -m3dnow -msse -mfpmath=sse -mmmx -fomit-frame-pointer
 
 #Athlon XP XX00+
-#CFLAGS +=-march=athlon-xp -m3dnow -msse -mfpmath=sse -mmmx 
+#CFLAGS +=-march=athlon-xp -m3dnow -msse -mfpmath=sse -mmmx
 #-fforce-addr -fomit-frame-pointer -funroll-loops -frerun-cse-after-loop
 #-frerun-loop-opt -falign-functions=4 -maccumulate-outgoing-args -fprefetch-loop-arrays
 

@@ -1,4 +1,14 @@
 ----------------------------------------
+//0674 [2009/09/23] by Rayce
+
+・gcc4でコンパイル時の警告を修正
+	-> dereferencing type-punned pointer will break strict-aliasing rules（socket.c, httpd.c）
+	-> implicit declaration of function（login.c）
+
+・UNIX/Linuxにおいて、gccのバージョン表記が英語以外の場合を考慮して
+  バージョン番号を検出する部分を修正（Makefile）
+
+----------------------------------------
 //0673 [2009/09/23] by Rayce
 
 ・キャスティングペナルティ「casting_penalty_type」を有効化している場合、ログイン時に装備が

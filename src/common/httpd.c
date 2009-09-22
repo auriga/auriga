@@ -927,7 +927,7 @@ static int httpd_check_access_ip( struct httpd_access *a, struct httpd_session_d
 	int i;
 	int fa=0, fd=0;
 	int order = a->type & HTTPD_ACCESS_IP_MASK;
-	unsigned long ip = *(unsigned long *)(&session[sd->fd]->client_addr.sin_addr);
+	unsigned long ip = (unsigned long)session[sd->fd]->client_addr.sin_addr.s_addr;
 
 	for( i=0; i<a->aip_count; i+=2 )
 	{
@@ -1635,7 +1635,7 @@ int httpd_get_method(struct httpd_session_data* sd)
 // ------------------------------------------
 unsigned long httpd_get_ip(struct httpd_session_data *sd)
 {
-	return *(unsigned long *)(&session[sd->fd]->client_addr.sin_addr);
+	return (unsigned long)session[sd->fd]->client_addr.sin_addr.s_addr;
 }
 
 // ==========================================

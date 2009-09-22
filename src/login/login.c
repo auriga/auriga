@@ -27,6 +27,9 @@
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
+#ifndef WINDOWS
+#include <sys/time.h>
+#endif
 
 #include "core.h"
 #include "socket.h"
@@ -1004,7 +1007,6 @@ int mmo_auth(struct login_session_data* sd)
 
 #ifdef WINDOWS
 	{
-		size_t len;
 		time_t time_;
 		time(&time_);
 		len = strftime(tmpstr,sizeof(tmpstr),"%Y-%m-%d %H:%M:%S",localtime(&time_));
@@ -1012,7 +1014,6 @@ int mmo_auth(struct login_session_data* sd)
 	}
 #else
 	{
-		size_t len;
 		struct timeval tv;
 		gettimeofday(&tv,NULL);
 		len = strftime(tmpstr,sizeof(tmpstr),"%Y-%m-%d %H:%M:%S",localtime(&(tv.tv_sec)));
@@ -1938,7 +1939,7 @@ int parse_login(int fd)
 
 		case 0x7918:	// 管理モードログイン
 			if(ristrict_admin_local) {
-				unsigned long ip = *((unsigned long *)&session[fd]->client_addr.sin_addr);
+				unsigned long ip = (unsigned long)session[fd]->client_addr.sin_addr.s_addr;
 				if(ip != host2ip("127.0.0.1", NULL)) {
 					// ローカルホスト以外は失敗
 					printf("parse_admin failed: source ip address is not localhost: %lu\n", ip);
