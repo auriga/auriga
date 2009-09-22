@@ -1,4 +1,20 @@
 ----------------------------------------
+//0673 [2009/09/23] by Rayce
+
+・キャスティングペナルティ「casting_penalty_type」を有効化している場合、ログイン時に装備が
+  外れてしまう問題を修正（pc.c）
+	reported by dragontail789さん
+
+・上記のようにunit_dataの初期化が行われていないと様々な問題を引き起こす可能性があるため
+  unit_dataset() の呼び出し優先度を上げるように修正（homun.c, merc.c, mob.c, pet.c）
+
+・battle_auriga.conf の「hide_GM_session」の説明を修正（conf/battle_auriga.conf）
+	reported by ponyoさん
+
+・script_ref.txt のgetareadropitem関数の説明が間違っていたのを修正（doc/script_ref.txt）
+	reported by crisp.さん
+
+----------------------------------------
 //0672 [2009/09/23] by Rayce
 
 ・msg_auriga.conf のimportが作動しなかった問題を修正（atcommand.c）

@@ -377,6 +377,8 @@ int mob_spawn(int id)
 
 	md->deletetimer = -1;
 
+	unit_dataset( &md->bl );
+
 	c = tick - 1000 * 3600 * 10;
 	for(i=0; i<MAX_MOBSKILL; i++) {
 		md->skilldelay[i] = c;
@@ -410,7 +412,6 @@ int mob_spawn(int id)
 		mob_makedummymobdb(md->class_);
 		md->hp = status_get_max_hp(&md->bl);
 	}
-	unit_dataset( &md->bl );
 
 	if(mob_is_pcview(md->class_))
 		md->sc.option |= mob_db[md->class_].option;

@@ -1049,6 +1049,8 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->drop_delay_tick    = tick;
 	sd->drop_delay_count   = 0;
 
+	unit_dataset(&sd->bl);
+
 	// アカウント変数の送信要求
 	intif_request_accountreg(sd);
 
@@ -1149,8 +1151,6 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->pvp_rank  = 0;
 	sd->pvp_point = 0;
 	sd->pvp_timer = -1;
-
-	unit_dataset(&sd->bl);
 
 	// 通知
 	clif_authok(sd);

@@ -640,6 +640,8 @@ static int homun_data_init(struct map_session_data *sd)
 	for(i=0; i<MAX_HOMSKILL; i++)
 		hd->skillstatictimer[i] = tick;
 
+	unit_dataset(&hd->bl);
+
 	// 親密度
 	if(battle_config.save_homun_temporal_intimate) {
 		hd->intimate = pc_readglobalreg(sd,"HOM_TEMP_INTIMATE");
@@ -672,7 +674,6 @@ static int homun_data_init(struct map_session_data *sd)
 	hd->sc.option = hd->status.option;	// optionはscに移して使う
 
 	homun_calc_status(hd);			// ステータス計算
-	unit_dataset(&hd->bl);
 	map_addiddb(&hd->bl);
 
 	hd->natural_heal_hp = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,NULL);

@@ -561,7 +561,7 @@ AurigaNPCScript
 			if(@input == 0) goto HOGE;
 
 			// @input が0 の場合、ラベルHOGEに飛び、それ以外の場合FUGAに飛びます。
-			if(@input == 0) goto HOGE; else goto FUGA; 
+			if(@input == 0) goto HOGE; else goto FUGA;
 
 			if(@input == 0)
 				mes "zero";
@@ -2729,12 +2729,13 @@ AurigaNPCScript
 				gettimestr("%Y/%m/%D %p %I:%M.%s",100)=1999/12/15 PM 11:35.55
 
 		getareadropitem関数
-			getareadropitem(<map>,<x0>,<y0>,<x1>,<y1>)
+			getareadropitem(<map>,<x0>,<y0>,<x1>,<y1>,<itemid>)
 
 			<gatname>		マップ名
 			<x0>,<y0>,<x1>,<y1>	数値
+			<itemid>		数値または文字列
 
-			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内に落ちているアイテムの数を返します
+			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内に落ちているアイテム<itemid>の数を返します
 			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 
 		getscrate関数

@@ -485,6 +485,8 @@ static int merc_data_init(struct map_session_data *sd)
 	for(i=0; i<MAX_MERCSKILL; i++)
 		mcd->skillstatictimer[i] = tick;
 
+	unit_dataset(&mcd->bl);
+
 #ifdef DYNAMIC_SC_DATA
 	// ダミー挿入
 	mcd->sc.data = dummy_sc_data;
@@ -508,7 +510,6 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->sc.option = mcd->status.option;	// optionはscに移して使う
 
 	merc_calc_status(mcd);			// ステータス計算
-	unit_dataset(&mcd->bl);
 	map_addiddb(&mcd->bl);
 
 	mcd->natural_heal_hp = add_timer(tick+MERC_NATURAL_HEAL_HP_INTERVAL,merc_natural_heal_hp,mcd->bl.id,NULL);
