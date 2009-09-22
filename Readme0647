@@ -1,4 +1,11 @@
 ----------------------------------------
+//0656 [2009/09/23] by Rayce
+
+・MAX_MOBSKILLは 64 だと大きすぎるので 48 に引き下げ（map.h）
+・MOBが待機時のスキル使用を失敗したとき、return で終了せずに歩行処理を続行する（mob.c）
+・unit_data構造体に追加された idlecount メンバをmob_data構造体に変更（map.h, mob.c）
+
+----------------------------------------
 //0655 [2009/09/23] by Rayce
 
 ・battle_auriga.conf の「pkmap_noteleport」を撤廃

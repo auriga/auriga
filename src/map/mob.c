@@ -1065,13 +1065,15 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 
 	// 待機時スキル使用
 	if(md->state.skillstate == MSS_IDLE) {
-		if(++md->ud.idlecount%10 == 0) {		// 10回に1度使用判定
-			mobskill_use(md,tick,-1);
-			md->ud.idlecount = 0;
-			return search_flag;
+		if(++md->idlecount%10 == 0) {		// 10回に1度使用判定
+			md->idlecount = 0;
+			if( mobskill_use(md,tick,-1) ) {
+				return search_flag;
+			}
 		}
-	} else if( mobskill_use(md,tick,-1) )		// 歩行時スキル使用
+	} else if( mobskill_use(md,tick,-1) ) {		// 歩行時スキル使用
 		return search_flag;
+	}
 
 	// 歩行処理
 	if( mode&1 && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) &&		// 移動可能MOB&動ける状態にある
