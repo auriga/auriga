@@ -6217,43 +6217,51 @@ void clif_status_load(struct map_session_data *sd, int type, unsigned char flag)
  */
 void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick)
 {
-#if PACKETVER > 14
 	unsigned char buf[32];
-#else
-	unsigned char buf[16];
-#endif
 
 	nullpo_retv(bl);
 
-#if PACKETVER > 14
-	if(type == SI_BLANK || type == SI_MAXIMIZEPOWER || type == SI_RIDING ||
-		type == SI_FALCON || type == SI_TRICKDEAD || type == SI_BREAKARMOR ||
-		type == SI_BREAKWEAPON || type == SI_WEIGHT50 || type == SI_WEIGHT90 ||
-		type == SI_TENSIONRELAX || type == SI_ELEMENTFIELD || type == SI_AUTOBERSERK ||
-		type == SI_RUN_STOP || type == SI_READYSTORM || type == SI_READYDOWN ||
-		type == SI_READYTURN || type == SI_READYCOUNTER || type == SI_DODGE ||
-		type == SI_DEVIL || type == SI_MIRACLE || type == SI_TIGEREYE)
-		tick=0;
-#endif
+	switch(type) {
+		case SI_BLANK:
+		case SI_MAXIMIZEPOWER:
+		case SI_RIDING:
+		case SI_FALCON:
+		case SI_TRICKDEAD:
+		case SI_BREAKARMOR:
+		case SI_BREAKWEAPON:
+		case SI_WEIGHT50:
+		case SI_WEIGHT90:
+		case SI_TENSIONRELAX:
+		case SI_ELEMENTFIELD:
+		case SI_AUTOBERSERK:
+		case SI_RUN_STOP:
+		case SI_READYSTORM:
+		case SI_READYDOWN:
+		case SI_READYTURN:
+		case SI_READYCOUNTER:
+		case SI_DODGE:
+		case SI_DEVIL:
+		case SI_MIRACLE:
+		case SI_TIGEREYE:
+			tick = 0;
+			break;
+	}
 
 #if PACKETVER > 14
 	WBUFW(buf,0)=0x43f;
-#else
-	WBUFW(buf,0)=0x196;
-#endif
 	WBUFW(buf,2)=type;
 	WBUFL(buf,4)=bl->id;
 	WBUFB(buf,8)=flag;
-#if PACKETVER > 14
 	WBUFL(buf,9)=tick;
 	WBUFL(buf,13)=0;
 	WBUFL(buf,17)=0;
 	WBUFL(buf,21)=0;
-#endif
-
-#if PACKETVER > 14
 	clif_send(buf,packet_db[0x43f].len,bl,AREA);
 #else
+	WBUFW(buf,0)=0x196;
+	WBUFW(buf,2)=type;
+	WBUFL(buf,4)=bl->id;
+	WBUFB(buf,8)=flag;
 	clif_send(buf,packet_db[0x196].len,bl,AREA);
 #endif
 

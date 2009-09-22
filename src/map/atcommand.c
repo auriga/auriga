@@ -1822,7 +1822,7 @@ int atcommand_pvpoff(const int fd, struct map_session_data* sd, AtCommandType co
 	if (map[sd->bl.m].flag.pvp) {
 		map[sd->bl.m].flag.pvp = 0;
 		clif_send0199(sd->bl.m, 0);
-		for (i = 0; i < fd_max; i++) {	//人数分ループ
+		for (i = 0; i < fd_max; i++) {	// 人数分ループ
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 				if (sd->bl.m == pl_sd->bl.m) {
 					clif_pvpset(pl_sd, 0, 0, 2);
@@ -4798,15 +4798,16 @@ int atcommand_ecoff(const int fd, struct map_session_data* sd, AtCommandType com
 int atcommand_icon(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	int type = 0, on = 1;
+	unsigned int tick = 0;
 
 	nullpo_retr(-1, sd);
 
 	if (!message || !*message)
 		return -1;
-	if (sscanf(message, "%d %d", &type, &on) < 1)
+	if (sscanf(message, "%d %d %u", &type, &on, &tick) < 1)
 		return -1;
 
-	clif_status_change(&sd->bl,type,on,0);
+	clif_status_change(&sd->bl, type, on, tick);
 
 	return 0;
 }
@@ -5359,7 +5360,7 @@ int atcommand_mobinfo(const int fd, struct map_session_data* sd, AtCommandType c
 		m->def, m->mdef, m->str, m->agi, m->vit, m->int_, m->dex, m->luk);
 
 	if (m->element < 20) {
-		//Element - None, Level 0
+		// Element - None, Level 0
 		i = 0;
 		j = 0;
 	} else {

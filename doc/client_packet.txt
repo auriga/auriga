@@ -985,6 +985,7 @@ S 01a1 <param>.1B
 	0x03：卵に戻す
 	0x04：アクセサリ解除
 R 01a2 <pet name>.24B <name flag>.B <lv>.w <hungry>.w <friendly>.w <accessory>.w
+       <pet name>.24B <name flag>.B <lv>.w <hungry>.w <friendly>.w <accessory>.w <class>w（2009-02-25aSakexe以降）
 	ペットの状態
 	name flag:00=名前未設定 01=名前設定済み(変更不可)
 	lv=ペットのレベル、hungry=満腹度(0~100)、friendly=親密度(初期値250?)、accessory=アクセサリのItemID
@@ -1913,3 +1914,15 @@ R 02fc
 	未調査
 R 0301〜0303, 0307
 	未調査
+
+S 0436 <account ID>.l <charactor ID>.l <login ID1>.l <login ID2>.l <sex>.B
+	0072と同じ（2009-02-25aSakexe以降）
+S 0437 <target ID>.l <type>.B
+	0081と同じ（2009-02-25aSakexe以降）
+S 0438
+	0113と同じ（2009-02-25aSakexe以降）
+S 0439
+	0116と同じ（2009-02-25aSakexe以降）
+
+R 043f <type>.w <ID>.l <switch>.B <tick>.l <?>.l <?>.l <?>.l
+	増強系スキル使用時のメッセージ色々、0x196の上位版
