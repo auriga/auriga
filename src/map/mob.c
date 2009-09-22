@@ -1561,7 +1561,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 
 	max_hp = status_get_max_hp(&md->bl);
 
-	if(( md->sc.data[SC_ENDURE].timer == -1 && md->sc.data[SC_BERSERK].timer == -1 ) || map[md->bl.m].flag.gvg ) {
+	if((md->sc.data[SC_ENDURE].timer == -1 && md->sc.data[SC_BERSERK].timer == -1) || map[md->bl.m].flag.gvg) {
 		if(atn_rand()%100 >= battle_config.mob_nohitstop_rate)
 			unit_stop_walking(&md->bl,3);
 		else
@@ -2076,7 +2076,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				item.identify = !itemdb_isequip3(item.nameid);
 				if(battle_config.itemidentify)
 					item.identify = 1;
-				if(battle_config.mvpitem_weight_limit && mvpsd->weight * 100 <= mvpsd->max_weight * battle_config.mvpitem_weight_limit ){
+				if(battle_config.mvpitem_weight_limit && mvpsd->weight * 100 <= mvpsd->max_weight * battle_config.mvpitem_weight_limit) {
 					clif_mvp_item(mvpsd,item.nameid);
 					if((ret = pc_additem(mvpsd,&item,1))) {
 						clif_additem(mvpsd,0,0,ret);

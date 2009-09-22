@@ -620,7 +620,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 	// PCの状態異常反撃
 	if(tsd && src != &tsd->bl && tsd->addreveff_flag && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0 && flag&BF_WEAPON)
 	{
-		int i, rate;
+		int i;
 		const int sc2[] = {
 			MG_STONECURSE,MG_FROSTDIVER,NPC_STUNATTACK,
 			NPC_SLEEPATTACK,TF_POISON,NPC_CURSEATTACK,
@@ -628,14 +628,12 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		};
 
 		for(i = SC_STONE; i <= SC_BLEED; i++) {
-
+			int rate = tsd->addreveff[i-SC_STONE];
 			if(battle_config.reveff_plus_addeff)
-				rate = (tsd->addreveff[i-SC_STONE] + tsd->addeff[i-SC_STONE] + tsd->arrow_addeff[i-SC_STONE]);
-			else
-				rate = (tsd->addreveff[i-SC_STONE]);
+				rate += tsd->addeff[i-SC_STONE] + tsd->arrow_addeff[i-SC_STONE];
 
 			if(src->type & BL_CHAR) {
-				if(atn_rand() % 10000 < status_change_rate(src,i,rate,status_get_lv(&tsd->bl))) {
+				if(atn_rand() % 10000 < status_change_rate(src,i,rate,tsd->status.base_level)) {
 					if(battle_config.battle_log)
 						printf("PC %d skill_addreveff: cardによる異常発動 %d %d\n",tsd->bl.id,i,tsd->addreveff[i-SC_STONE]);
 					status_change_start(src,i,7,0,0,0,(i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7),0);
@@ -2068,8 +2066,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100+10*skill_lv, 100 );
 			break;
 		}
-
-		if(skill_lv == -1)
+		if(skill_lv < 0)
 			calc_flag.nocardfix = 1;
 
 		/* 13．ファイティングの追加ダメージ */
@@ -2559,10 +2556,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	if(skill_num == NPC_EARTHQUAKE && target_sd && target_sd->special_state.no_magic_damage) {	// アースクエイクの場合
 		wd.damage  = 0;	// 黄金蟲カード（魔法ダメージ０)
 		wd.damage2 = 0;
+	} else {
+		if(wd.damage  < 0) wd.damage  = 0;
+		if(wd.damage2 < 0) wd.damage2 = 0;
 	}
-
-	if(wd.damage  < 0) wd.damage  = 0;
-	if(wd.damage2 < 0) wd.damage2 = 0;
 
 	/* 26．属性の適用 */
 	wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
@@ -3150,7 +3147,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			if(bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC)
 				mgd.damage = 0;		// MOB,HOM,MERCが使う場合は反動無し
 			else
-			 mgd.damage /= 2;	// 反動は半分
+				mgd.damage /= 2;	// 反動は半分
 		}
 	}
 
@@ -3954,35 +3951,37 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* ダメージ反射 */
-	if(attack_type&BF_WEAPON && damage > 0 && src != bl && (src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) && skillid != NPC_EARTHQUAKE) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆src=dsrc＆アースクエイクではない
-		if(dmg.flag&BF_SHORT) {	// 近距離攻撃時
-			if(tsd) {	// 対象がPCの時
-				if(tsd->short_weapon_damage_return > 0) {	// 近距離攻撃跳ね返し
-					rdamage += damage * tsd->short_weapon_damage_return / 100;
-					if(rdamage < 1) rdamage = 1;
+	if(attack_type&BF_WEAPON && damage > 0 && src != bl && skillid != NPC_EARTHQUAKE) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆アースクエイクではない
+		if(src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) {
+			if(dmg.flag&BF_SHORT) {	// 近距離攻撃時
+				if(tsd) {	// 対象がPCの時
+					if(tsd->short_weapon_damage_return > 0) {	// 近距離攻撃跳ね返し
+						rdamage += damage * tsd->short_weapon_damage_return / 100;
+						if(rdamage < 1) rdamage = 1;
+					}
 				}
-			}
 
-			// リフレクトシールド時
-			if(sc &&
-			   sc->data[SC_REFLECTSHIELD].timer != -1 &&
-			   (sd || sc->data[SC_DEVOTION].timer == -1) &&	// 被ディボーション者ならPCから以外は反応しない
-			   skillid != WS_CARTTERMINATION &&
-			   skillid != CR_ACIDDEMONSTRATION)
-			{
-				rdamage += damage * sc->data[SC_REFLECTSHIELD].val2 / 100;	// 跳ね返し計算
-				if(rdamage < 1) rdamage = 1;
-			}
-		} else if(dmg.flag&BF_LONG) {	// 遠距離攻撃時
-			if(tsd) {		// 対象がPCの時
-				if(tsd->long_weapon_damage_return > 0) { // 遠距離攻撃跳ね返し
-					rdamage += damage * tsd->long_weapon_damage_return / 100;
+				// リフレクトシールド時
+				if(sc &&
+				   sc->data[SC_REFLECTSHIELD].timer != -1 &&
+				   (sd || sc->data[SC_DEVOTION].timer == -1) &&	// 被ディボーション者ならPCから以外は反応しない
+				   skillid != WS_CARTTERMINATION &&
+				   skillid != CR_ACIDDEMONSTRATION)
+				{
+					rdamage += damage * sc->data[SC_REFLECTSHIELD].val2 / 100;	// 跳ね返し計算
 					if(rdamage < 1) rdamage = 1;
 				}
+			} else if(dmg.flag&BF_LONG) {	// 遠距離攻撃時
+				if(tsd) {		// 対象がPCの時
+					if(tsd->long_weapon_damage_return > 0) { // 遠距離攻撃跳ね返し
+						rdamage += damage * tsd->long_weapon_damage_return / 100;
+						if(rdamage < 1) rdamage = 1;
+					}
+				}
 			}
+			if(rdamage > 0)
+				clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0);
 		}
-		if(rdamage > 0)
-			clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0);
 	}
 	if((attack_type&BF_MAGIC || skillid == NPC_EARTHQUAKE) && damage > 0 && src != bl) {	// 魔法スキルまたはアースクェイク＆ダメージあり＆使用者と対象者が違う
 		if(tsd && src == dsrc) {	// 対象がPCの時
@@ -4135,9 +4134,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* HP,SP吸収 */
-	if(sd && dmg.flag&BF_WEAPON && src != bl && (src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) && damage > 0) {
-		// ％吸収のみ
-		battle_attack_drain(src, dmg.damage, dmg.damage2, 1);
+	if(sd && dmg.flag&BF_WEAPON && src != bl && damage > 0) {
+		if(src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) {
+			// ％吸収のみ
+			battle_attack_drain(src, dmg.damage, dmg.damage2, 1);
+		}
 	}
 
 	/* 反射ダメージの実際の処理 */

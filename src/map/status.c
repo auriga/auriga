@@ -267,8 +267,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_speed,b_max_hp,b_max_sp,b_hp,b_sp,b_weight,b_max_weight,b_paramb[6],b_parame[6],b_hit,b_flee;
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
-	int b_tigereye;
-	int b_infinite_endure;
+	int b_tigereye, b_endure;
 	struct skill b_skill[MAX_SKILL];
 	int i,blv,calc_val,idx;
 	int skill,aspd_rate,wele,wele_,def_ele,refinedef;
@@ -320,7 +319,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_class       = sd->view_class;
 	b_base_atk    = sd->base_atk;
 	b_tigereye    = sd->special_state.infinite_tigereye;
-	b_infinite_endure = sd->special_state.infinite_endure;
+	b_endure      = sd->special_state.infinite_endure;
 
 L_RECALC:
 	// 本来の計算開始(元のパラメータを更新しないのは、計算中に計算処理が呼ばれたときの
@@ -337,7 +336,7 @@ L_RECALC:
 	sd->ranker_weapon_bonus  = 0;
 	sd->ranker_weapon_bonus_ = 0;
 	sd->special_state.infinite_tigereye = 0;
-	sd->special_state.infinite_endure = 0;
+	sd->special_state.infinite_endure   = 0;
 
 	pc_calc_skilltree(sd);	// スキルツリーの計算
 
@@ -753,7 +752,7 @@ L_RECALC:
 	}
 	if(pc_checkskill(sd,BS_HILTBINDING)) {	// ヒルトバインディング
 		sd->paramb[0] += 1;
-		//本鯖未実装のためコメントアウト
+		// 本鯖未実装のためコメントアウト
 		//sd->watk += 4;
 	}
 	if((skill = pc_checkskill(sd,SA_DRAGONOLOGY)) > 0) {	// ドラゴノロジー
@@ -1529,7 +1528,7 @@ L_RECALC:
 	// 自然回復HP
 	sd->nhealhp = 1 + (sd->paramc[2]/5) + (sd->status.max_hp/200);
 	if((skill = pc_checkskill(sd,SM_RECOVERY)) > 0) {	// HP回復力向上
-		sd->nshealhp = skill*5 + (sd->status.max_hp * 2 * skill /1000);
+		sd->nshealhp = skill * 5 + sd->status.max_hp * skill / 500;
 		if(sd->nshealhp > 0x7fff)
 			sd->nshealhp = 0x7fff;
 	}
@@ -1610,8 +1609,8 @@ L_RECALC:
 	}
 	// MATK乗算処理(杖補正以外)
 	if(sd->matk_rate != 100) {
-		sd->matk1 = sd->matk1*sd->matk_rate/100;
-		sd->matk2 = sd->matk2*sd->matk_rate/100;
+		sd->matk1 = sd->matk1 * sd->matk_rate / 100;
+		sd->matk2 = sd->matk2 * sd->matk_rate / 100;
 	}
 	// スキルやステータス異常による残りのパラメータ補正
 	if(sd->sc.count > 0) {
@@ -2039,10 +2038,10 @@ L_RECALC:
 	if(pc_isriding(sd))							// 騎兵修練
 		sd->aspd = sd->aspd*(100 + 10*(5 - pc_checkskill(sd,KN_CAVALIERMASTERY)))/ 100;
 
-	//MATK乗算処理(杖補正)
+	// MATK乗算処理(杖補正)
 	if(sd->matk2_rate != 100) {
-		sd->matk1 = sd->matk1*sd->matk2_rate/100;
-		sd->matk2 = sd->matk2*sd->matk2_rate/100;
+		sd->matk1 = sd->matk1 * sd->matk2_rate / 100;
+		sd->matk2 = sd->matk2 * sd->matk2_rate / 100;
 	}
 
 	// ステータス固定
@@ -2058,10 +2057,10 @@ L_RECALC:
 	}
 	if(sd->fix_status.matk > 0) {
 		sd->matk1 = sd->matk2 = sd->fix_status.matk;
-		//MATK乗算処理(固定値*(杖補正+杖補正以外))
+		// MATK乗算処理(固定値*(杖補正+杖補正以外))
 		if(sd->matk_rate != 100 || sd->matk2_rate != 100) {
-			sd->matk1 = sd->matk1*(sd->matk_rate+sd->matk2_rate-100)/100;
-			sd->matk2 = sd->matk2*(sd->matk_rate+sd->matk2_rate-100)/100;
+			sd->matk1 = sd->matk1 * (sd->matk_rate + sd->matk2_rate - 100) / 100;
+			sd->matk2 = sd->matk2 * (sd->matk_rate + sd->matk2_rate - 100) / 100;
 		}
 	}
 	if(sd->fix_status.def > 0 && sd->fix_status.def <= 100) {
@@ -2112,7 +2111,7 @@ L_RECALC:
 		sd->speed = sd->speed*(175 - skill*5)/100;
 	}
 
-	//MATK最低値保障
+	// MATK最低値保障
 	if(sd->matk1 < 1)
 	 	sd->matk1 = 1;
 	if(sd->matk2 < 1)
@@ -2137,7 +2136,8 @@ L_RECALC:
 	if(b_tigereye == 1 && sd->special_state.infinite_tigereye == 0 && sd->sc.data[SC_TIGEREYE].timer == -1)
 		clif_status_load(sd, SI_TIGEREYE, 0);
 
-	if(b_infinite_endure == 1 && sd->special_state.infinite_endure == 0)
+	// bInfiniteEndureがなくなっていたらパケットを送って元に戻す
+	if(b_endure == 1 && sd->special_state.infinite_endure == 0)
 		clif_status_load(sd, SI_ENDURE, 0);
 
 	// 計算処理ここまで
@@ -4176,11 +4176,8 @@ int status_check_no_magic_damage(struct block_list *bl)
  * 状態異常の耐性計算
  *------------------------------------------
  */
-
 int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 {
-
-	struct status_change    *sc  = NULL;
 	int sc_flag = 0;
 	int diff_level = 0;
 
@@ -4192,15 +4189,13 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 	if(rate <= 0)	// 確率が0以下のものは失敗
 		return 0;
 
-	sc = status_get_sc(bl);
-
 	if(src_level)
 		diff_level = src_level - status_get_lv(bl);
 
 	switch(type) {	// 状態異常耐性ステータス rateは万分率
 		case SC_STONE:
 		case SC_FREEZE:
-			rate = rate*(100-status_get_mdef(bl))/100 + (diff_level - status_get_luk(bl))*10;
+			rate = rate * (100 - status_get_mdef(bl)) / 100 + (diff_level - status_get_luk(bl)) * 10;
 			sc_flag = 1;
 			break;
 		case SC_STUN:
@@ -4208,24 +4203,24 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 		case SC_POISON:
 		case SC_DPOISON:
 		case SC_BLEED:	// 詳細不明なのでとりあえずここで
-			rate = rate*(100-status_get_vit(bl))/100 + (diff_level - status_get_luk(bl))*10;
+			rate = rate * (100 - status_get_vit(bl)) / 100 + (diff_level - status_get_luk(bl)) * 10;
 			sc_flag = 1;
 			break;
 		case SC_SLEEP:
 		case SC_BLIND:
-			rate = rate*(100-status_get_int(bl))/100 + (diff_level - status_get_luk(bl))*10;
+			rate = rate * (100 - status_get_int(bl)) / 100 + (diff_level - status_get_luk(bl)) * 10;
 			sc_flag = 1;
 			break;
 		case SC_CURSE:
 			if(src_level)	// 発動者レベルが0以外の場合
 				// 暫定で 基本確率×(1 + 術者BaseLv - 対象LUK)/術者BaseLv [%]
-				rate = rate*(1+src_level-status_get_luk(bl))/src_level;
+				rate = rate * (1 + src_level - status_get_luk(bl)) / src_level;
 			else
-				rate = rate*(100-status_get_luk(bl))/100;
+				rate = rate * (100 - status_get_luk(bl)) / 100;
 			sc_flag = 1;
 			break;
 		case SC_CONFUSION: // 詳細不明なので暫定式(AGIとINT影響らしい)
-			rate = rate*(100-status_get_int(bl))/100 + (diff_level - status_get_agi(bl))*10;
+			rate = rate * (100 - status_get_int(bl)) / 100 + (diff_level - status_get_agi(bl)) * 10;
 			sc_flag = 1;
 			break;
 		case SC_WINKCHARM: // 一応チャーム状態もこちらで計算、式不明のためそのまま
@@ -4234,9 +4229,11 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 		default:
 			break;
 	}
-	if(sc && sc_flag) {
-		if(sc->data[SC_STATUS_UNCHANGE].timer != -1 && status_is_disable(type,0x10))
-			return 0;	// ゴスペルの全状態異常耐性中なら無効
+	if(sc_flag) {
+		struct status_change *sc = status_get_sc(bl);
+		if(sc && sc->data[SC_STATUS_UNCHANGE].timer != -1 && status_is_disable(type,0x10)) {
+			rate = 0;	// ゴスペルの全状態異常耐性中なら無効
+		}
 	}
 
 	return rate;
@@ -4294,7 +4291,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	struct merc_data        *mcd = NULL;
 	struct status_change    *sc  = NULL;
 	int opt_flag = 0, calc_flag = 0, race, mode, elem;
-//	int sc_flag = 0;
 
 	nullpo_retr(0, bl);
 
@@ -5002,7 +4998,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		/* option1 */
 		case SC_STONE:				/* 石化 */
 			if(!(flag&2)) {
-				tick = tick - status_get_mdef(bl)*200;
+				tick = tick - status_get_mdef(bl) * 200;
 			}
 			val3 = tick / 1000;
 			if(val3 < 1)
@@ -5025,7 +5021,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_STUN:				/* スタン（val2にミリ秒セット） */
 			if(!(flag&2)) {
-				int sc_def = 100 - (4 + status_get_vit(bl) + status_get_luk(bl)/5);
+				int sc_def = 100 - (4 + status_get_vit(bl) + status_get_luk(bl) / 5);
 				tick = tick * sc_def / 100;
 			}
 			break;
@@ -5033,14 +5029,14 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_DPOISON:			/* 猛毒 */
 			{
 				int mhp = status_get_max_hp(bl);
-				int hp = status_get_hp(bl);
+				int hp  = status_get_hp(bl);
 				// MHPの1/4以下にはならない
 				if(hp > mhp>>2) {
 					int diff = 0;
 					if(sd)
-						diff = mhp*10/100;
+						diff = mhp * 10 / 100;
 					else if(md)
-						diff = mhp*15/100;
+						diff = mhp * 15 / 100;
 					if(hp - diff < mhp>>2)
 						diff = hp - (mhp>>2);
 					unit_heal(bl, -diff, 0);
@@ -5070,30 +5066,30 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_BLIND:				/* 暗黒 */
 			calc_flag = 1;
-			if(!(flag&2)) { /* 30 -　ＢaseLv÷10　 - INT÷15 [秒] */
-				tick = 30000 - status_get_lv(bl)*100 - status_get_int(bl)*150;
+			if(!(flag&2)) {	// 30 - BaseLv÷10 - INT÷15 [秒]
+				tick = 30000 - status_get_lv(bl) * 100 - status_get_int(bl) * 150;
 			}
 			break;
 		case SC_CURSE:				/* 呪い */
 			calc_flag = 1;
-			if(!(flag&2)) {	/* 30秒×(100-VIT)÷100 */
+			if(!(flag&2)) {	// 30秒×(100-VIT)÷100
 				int sc_def = 100 - status_get_vit(bl);
 				tick = tick * sc_def / 100;
 			}
 			break;
 		case SC_CONFUSION:			/* 混乱 */
 			if(!(flag&2)) {	// 効果時間詳細不明なので暫定式を使用
-				int sc_def = status_get_lv(bl)*15 + status_get_int(bl)*10;
-				tick = 20000 - sc_def/150;
+				int sc_def = status_get_lv(bl) * 15 + status_get_int(bl) * 10;
+				tick = 20000 - sc_def / 150;
 			}
 			break;
 		case SC_BLEED:				/* 出血 */
 			if(!(flag&2)) {
 				// 効果時間の詳細不明なので暫定式を使用
 				int sc_def = 100 - status_get_vit(bl);
-				tick = 120000 * sc_def/100;
+				tick = 120000 * sc_def / 100;
 			}
-			val3 = (tick < 10000)? 1: tick/10000;
+			val3 = (tick < 10000)? 1: tick / 10000;
 			tick = 10000;	// ダメージ発生は10sec毎
 			break;
 
@@ -5398,6 +5394,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				sc->opt1 = 6;
 			else
 				sc->opt1 = type - SC_STONE + 1;
+
 			if(md) {
 				mob_unlocktarget(md,gettick());
 				md->attacked_id = 0;
