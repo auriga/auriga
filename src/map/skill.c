@@ -2842,9 +2842,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				break;
 			}
 			damage = battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
-			if( status_get_hp(bl) > 0 && damage > 0 ) {
-				if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,skilllv*300+3500,status_get_lv(src)))
-					status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+			if(status_get_hp(bl) > 0 && damage > 0 && atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,skilllv*300+3500,status_get_lv(src))) {
+				status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			} else if(sd) {
 				clif_skill_fail(sd,skillid,0,0);
 			}
@@ -3611,28 +3610,27 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case BA_PANGVOICE:	/* パンボイス */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		sc = status_get_sc(bl);
-		if(sc && sc->data[SC_CONFUSION].timer != -1) {
+		if(sc && sc->data[SC_CONFUSION].timer != -1)
 			status_change_end(bl,SC_CONFUSION,-1);
-		} else if( !(status_get_mode(bl)&0x20) ) {
-			if(atn_rand() % 10000 < status_change_rate(bl,SC_CONFUSION,5000,status_get_lv(src)))
-				status_change_start(bl,SC_CONFUSION,7,0,0,0,10000+7000,0);
-		} else if(sd) {
+		else if( !(status_get_mode(bl)&0x20) && atn_rand() % 10000 < status_change_rate(bl,SC_CONFUSION,5000,status_get_lv(src)) )
+			status_change_start(bl,SC_CONFUSION,7,0,0,0,10000+7000,0);
+		else if(sd)
 			clif_skill_fail(sd,skillid,0,0);
-		}
 		break;
 	case DC_WINKCHARM:	/* 魅惑のウィンク */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstsd) {
-			if(atn_rand() % 10000 < status_change_rate(bl,SC_CONFUSION,7000,status_get_lv(src)))
-				status_change_start(bl,SC_CONFUSION,7,0,0,0,10000+7000,0);
-			break;
-		} else if(dstmd) {
-			int race = status_get_race(bl);
-			if( !(dstmd->mode&0x20) && (race == RCT_DEMON || race == RCT_HUMAN || race == RCT_ANGEL) )
-			{
-				if(atn_rand() % 10000 < status_change_rate(bl,SkillStatusChangeTable[skillid],7000,status_get_lv(src)))
-					status_change_start(bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,10000,0);
+			if(atn_rand() % 10000 < status_change_rate(&dstsd->bl,SC_CONFUSION,7000,status_get_lv(src))) {
+				status_change_start(&dstsd->bl,SC_CONFUSION,7,0,0,0,10000+7000,0);
 				break;
+			}
+		} else if(dstmd) {
+			int race = status_get_race(&dstmd->bl);
+			if( !(dstmd->mode&0x20) && (race == RCT_DEMON || race == RCT_HUMAN || race == RCT_ANGEL) ) {
+				if(atn_rand() % 10000 < status_change_rate(&dstmd->bl,SkillStatusChangeTable[skillid],7000,status_get_lv(src))) {
+					status_change_start(&dstmd->bl,SkillStatusChangeTable[skillid],skilllv,0,0,0,10000,0);
+					break;
+				}
 			}
 		}
 		if(sd)
@@ -5621,16 +5619,15 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case GS_CRACKER:			/* クラッカー */
 		{
-			int cost, dist;
-			cost = skill_get_arrow_cost(skillid,skilllv);
+			int cost = skill_get_arrow_cost(skillid,skilllv);
 			if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			dist = unit_distance2(src,bl);
-			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,6500 - dist * 500,status_get_lv(src)))
+			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,6500 - unit_distance2(src,bl) * 500,status_get_lv(src))) {
 				status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
-			else
+			} else if(sd) {
 				clif_skill_fail(sd,skillid,0,0);
+			}
 		}
 		break;
 	case NJ_BUNSINJYUTSU:		/* 影分身 */

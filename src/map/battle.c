@@ -1021,7 +1021,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		int idef;		// DEF無視
 		int idef_;		// DEf無視（左手）
 		int nocardfix;		// カード補正なし
-		int dist;		// 遠距離スキルの計算フラグ
 	} calc_flag;
 
 	memset(&calc_flag, 0, sizeof(calc_flag));
@@ -1366,22 +1365,30 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 
 		// ここから距離による判定
-		calc_flag.dist = skill_get_range_type(skill_num);	// 距離タイプ読み込み
-		if(calc_flag.dist) {	// 遠距離判定スキルか
-			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// まず遠距離に設定
-			if(calc_flag.dist == 1){	// 1：通常遠距離　2：強制遠距離
-				if(battle_config.calc_dist_flag&1 && !(src->type == BL_PC && target->type == BL_PC)) {	// PC vs PCは強制無視
+		switch(skill_get_range_type(skill_num)) {
+			case 0:	// 近距離
+				if(skill_num != 0)
+					wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
+				break;
+			case 1:	// 通常遠距離
+				if(battle_config.calc_dist_flag&1 && (src->type != BL_PC || target->type != BL_PC)) {	// PC vs PCは強制無視
 					int target_dist = unit_distance2(src,target);	// 距離を取得
-					if(target_dist < battle_config.allow_sw_dist) {			// 設定した距離より小さい＝近距離からの攻撃
-						if(src->type == BL_PC && battle_config.sw_def_type & 1)		// 人間からのを判定するか　&1でする
-							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
-						if(src->type == BL_MOB && battle_config.sw_def_type & 2)	// モンスターからのを判定するか　&2でする
-							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
+					if(target_dist < battle_config.allow_sw_dist) {	// 設定した距離より小さい＝近距離からの攻撃
+						if(src->type == BL_PC && battle_config.sw_def_type & 1) {	// 人間からのを判定するか +1でする
+							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
+							break;
+						} else if(src->type == BL_MOB && battle_config.sw_def_type & 2) {	// モンスターからのを判定するか +2でする
+							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
+							break;
+						}
 					}
 				}
-			}
-		} else if(skill_num)	// 近距離判定スキル
-			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
+				wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
+				break;
+			case 2:	// 強制遠距離
+				wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
+				break;
+		}
 	}
 
 	if(sc && sc->data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {	// サクリファイス
@@ -2798,7 +2805,6 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	int mdef1, mdef2, t_ele, t_race, t_enemy, t_mode;
 	int t_class, cardfix, i;
 	int normalmagic_flag = 1;
-	int calc_dist_on = 0;
 
 	// return前の処理があるので情報出力部のみ変更
 	if( bl == NULL || target == NULL || target->type == BL_PET ) {
@@ -2842,20 +2848,24 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	mgd.flag      = BF_MAGIC|BF_LONG|BF_SKILL;
 
 	// ここから距離による判定
-	calc_dist_on = skill_get_range_type(skill_num);	// 距離タイプ読み込み
-	if(calc_dist_on){	// 遠距離判定スキルか
-		mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_LONG;	// まず遠距離に設定
-		if(calc_dist_on == 1){	// 1：通常遠距離　2：強制遠距離
-			if(battle_config.calc_dist_flag & 2) {	// 魔法の時計算するか？ &2で計算する
+	switch(skill_get_range_type(skill_num)) {
+		case 0:	// 近距離
+		case 2: // 強制遠距離
+			break;
+		case 1:	// 通常遠距離
+			if(battle_config.calc_dist_flag & 2) {	// 魔法の時計算するか？ +2で計算する
 				int target_dist = unit_distance2(bl,target);	// 距離を取得
-				if(target_dist < battle_config.allow_sw_dist) {				// SWで防げる距離より小さい＝近距離からの攻撃
-					if(bl->type == BL_PC && battle_config.sw_def_type & 1)	// 人間からのを判定するか　&1でする
-						mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
-					if(bl->type == BL_MOB && battle_config.sw_def_type & 2)	// モンスターからの魔法を判定するか　&2でする
-						mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;		// 近距離に設定
+				if(target_dist < battle_config.allow_sw_dist) {	// SWで防げる距離より小さい＝近距離からの攻撃
+					if(bl->type == BL_PC && battle_config.sw_def_type & 1) {	// 人間からのを判定するか +1でする
+						mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;
+						break;
+					} else if(bl->type == BL_MOB && battle_config.sw_def_type & 2) {	// モンスターからの魔法を判定するか +2でする
+						mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;
+						break;
+					}
 				}
 			}
-		}
+			break;
 	}
 
 	/* ２．魔法力増幅によるMATK増加 */
@@ -4100,11 +4110,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* ダメージがあるなら追加効果判定 */
 	if(bl->prev != NULL && !unit_isdead(bl)) {
-		if(skilllv >= 0 && (damage > 0 || skillid == TF_POISON || skillid == SL_STUN) && skillid != TK_TURNKICK) {
+		if((damage > 0 || skillid == TF_POISON || skillid == SL_STUN) && skilllv >= 0) {
 			// グラウンドドリフトはdsrcを引数として渡す
 			if(skillid == GS_GROUNDDRIFT)
 				skill_additional_effect(dsrc,bl,skillid,skilllv,attack_type,tick);
-			else
+			else if(skillid != TK_TURNKICK)
 				skill_additional_effect(src,bl,skillid,skilllv,attack_type,tick);
 		}
 
