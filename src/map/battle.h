@@ -566,8 +566,6 @@ extern struct Battle_Config {
 	int equip_window_type;
 	int summonslave_generation;
 	int str_weight;
-
-	int whistle_perfect_flee;
 	int pvp_send_guild_xy;
 	int mvpitem_weight_limit;
 	int roki_item_autospell;

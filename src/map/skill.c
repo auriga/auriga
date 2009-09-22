@@ -6512,13 +6512,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	case BA_WHISTLE:			/* 口笛 */
 		if(sd)
 			val1 = pc_checkskill(sd,BA_MUSICALLESSON)>>1;
-
-		if(battle_config.whistle_perfect_flee) {	//完全回避上昇あり
-			val2 = ((status_get_agi(src)/10)&0xffff)<<16;
-			val2 |= (status_get_luk(src)/10)&0xffff;
-		} else {		//完全回避上昇なし
-			val2 = status_get_agi(src)/10;
-		}
+		val2 = status_get_agi(src)/10;
 		break;
 	case DC_HUMMING:			/* ハミング */
 		if(sd)

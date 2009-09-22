@@ -1,4 +1,14 @@
 ----------------------------------------
+//0662 [2009/09/23] by Rayce
+
+・スキル個別の仕様切り替え機能は蛇足なので、battle_auriga.conf の「whistle_perfect_flee」は撤廃
+  口笛は完全回避上昇効果が無い仕様で固定化
+  （battle.*, skill.c, status.c）
+
+・PC以外の場合においても口笛に完全回避上昇を乗せないように修正する（status.c）
+・SC_WHISTLE_ 状態における回避上昇計算が SC_WHISTLE を元に行われていた問題を修正（status.c）
+
+----------------------------------------
 //0661 [2009/09/23] by Rayce
 
 ・clif_status_change() を整理（clif.c）
