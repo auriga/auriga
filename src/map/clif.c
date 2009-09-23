@@ -11776,7 +11776,7 @@ static void clif_parse_SkillUp(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd)
 {
-	int skillnum, skilllv, lv, target_id, skilldb_id;
+	int skillnum, skilllv, lv, target_id, skilldb_id, inf, change_inf = 0;
 	unsigned int tick = gettick();
 	struct block_list *bl;
 	struct status_change *sc;
@@ -11810,6 +11810,12 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	if(bl == NULL)
 		return;
 
+	inf = skill_get_inf(skillnum);
+	if(inf == 0 || inf & 2) {
+		// anti hacker
+		return;
+	}
+
 	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
 		// ホムスキル
 		struct homun_data *hd = sd->hd;
@@ -11823,13 +11829,14 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, hd->skillstatictimer[skillnum-HOM_SKILLID]) < 0)
 				return;
 
-			if(skill_get_inf(skillnum) & 0x04)	// 自分が対象
+			if(inf & 0x04)	// 自分が対象
 				unit_skilluse_id(&hd->bl,hd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&hd->bl,target_id,skillnum,skilllv);
-			return;
 		}
-	} else if(skillnum >= MERC_SKILLID && skillnum < MAX_MERC_SKILLID) {
+		return;
+	}
+	if(skillnum >= MERC_SKILLID && skillnum < MAX_MERC_SKILLID) {
 		// 傭兵スキル
 		struct merc_data *mcd = sd->mcd;
 		if( mcd && (lv = merc_checkskill(mcd,skillnum)) ) {
@@ -11842,13 +11849,14 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, mcd->skillstatictimer[skillnum-MERC_SKILLID]) < 0)
 				return;
 
-			if(skill_get_inf(skillnum) & 0x04)	// 自分が対象
+			if(inf & 0x04)	// 自分が対象
 				unit_skilluse_id(&mcd->bl,mcd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&mcd->bl,target_id,skillnum,skilllv);
-			return;
 		}
-	} else if(skillnum >= GUILD_SKILLID) {
+		return;
+	}
+	if(skillnum >= GUILD_SKILLID) {
 		struct guild *g = guild_search(sd->status.guild_id);
 
 		// ギルドスキルはギルマスのみ
@@ -11856,6 +11864,20 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			return;
 		// skilllvは常に0なので現在のスキルLvで補正する
 		skilllv = guild_checkskill(g, skillnum);
+	}
+
+	// infの「即時発動」が「敵」に変わる場合
+	if(skillnum == MO_EXTREMITYFIST) {
+		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_CHAINCRUSH))
+			change_inf = 1;
+	} else if(skillnum == TK_JUMPKICK) {
+		if(sd->sc.data[SC_DODGE_DELAY].timer == -1)
+			change_inf = 1;
+	}
+
+	if(inf & 0x04 && !change_inf) {
+		// 即時発動ならターゲットを自分自身にする
+		target_id = sd->bl.id;
 	}
 
 	if(sd->ud.skilltimer != -1) {
@@ -11914,30 +11936,16 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		sd->skillitem      = -1;
 		sd->skillitemlv    = -1;
 		sd->skillitem_flag = 0;
-		if(skillnum == MO_EXTREMITYFIST) {
-			if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_CHAINCRUSH)) {
-				if(!sd->state.skill_flag) {
-					sd->state.skill_flag = 1;
-					clif_skillinfo(sd,MO_EXTREMITYFIST,1,-1);
-					return;
-				}
-				else if(sd->bl.id == target_id) {
-					clif_skillinfo(sd,MO_EXTREMITYFIST,1,-1);
-					return;
-				}
+
+		if(change_inf) {
+			if(!sd->state.skill_flag) {
+				sd->state.skill_flag = 1;
+				clif_skillinfo(sd,skillnum,1,-1);
+				return;
 			}
-		}
-		if(skillnum == TK_JUMPKICK) {
-			if(sd->sc.data[SC_DODGE_DELAY].timer == -1) {
-				if(!sd->state.skill_flag) {
-					sd->state.skill_flag = 1;
-					clif_skillinfo(sd,TK_JUMPKICK,1,-1);
-					return;
-				}
-				else if(sd->bl.id == target_id) {
-					clif_skillinfo(sd,TK_JUMPKICK,1,-1);
-					return;
-				}
+			if(sd->bl.id == target_id) {
+				clif_skillinfo(sd,skillnum,1,-1);
+				return;
 			}
 		}
 		if((lv = pc_checkskill(sd,skillnum)) > 0) {
@@ -11973,6 +11981,11 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	x        = RFIFOW(fd,GETPACKETPOS(cmd,2));
 	y        = RFIFOW(fd,GETPACKETPOS(cmd,3));
 
+	if(!(skill_get_inf(skillnum) & 2)) {
+		// anti hacker
+		return;
+	}
+
 	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
 		// ホムスキル
 		struct homun_data *hd = sd->hd;
@@ -11987,9 +12000,10 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 				return;
 
 			unit_skilluse_pos(&hd->bl,x,y,skillnum,skilllv);
-			return;
 		}
-	} else if(skillnum >= MERC_SKILLID && skillnum < MAX_MERC_SKILLID) {
+		return;
+	}
+	if(skillnum >= MERC_SKILLID && skillnum < MAX_MERC_SKILLID) {
 		// 傭兵スキル
 		struct merc_data *mcd = sd->mcd;
 		if( mcd && (lv = merc_checkskill(mcd,skillnum)) ) {
@@ -12003,8 +12017,8 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 				return;
 
 			unit_skilluse_pos(&mcd->bl,x,y,skillnum,skilllv);
-			return;
 		}
+		return;
 	}
 
 	if(sd->ud.skilltimer != -1)
