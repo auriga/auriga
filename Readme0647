@@ -1,4 +1,25 @@
 ----------------------------------------
+//0676 [2009/09/28] by popori
+
+・一部のクライアントがサポート出来ていなかったのでPACKETVERを分ける (clif.* skill.c Makefile bcc32_make.bat vc_make.bat *.dsp)
+ ->新スキルウインドウ対応をPACKETVER15に
+ ->skillstatictimerのディレイ表示サポートをPACKETVER16に
+　 ※ただし今のところこのパケットを使用するのは3次スキルのみ？らしいので、パケットの実装のみ。
+ ->0x1a2の拡張をPACKETVER17に
+ ->バフ時間表示、ディレイタイム表示をPACKETVER18に
+
+・packet_db.txtの追記、修正 (packet_db.txt)
+
+・ドキュメントの追記 (client_packet.txt)
+
+・一部のbattle_auriga.confの初期値を本鯖仕様に変更 (battle_auriga.conf battle.c)
+
+・Cocoaさんのランドマインの待機時間の修正を再度取り込み (skill_cast_db.txt)
+　Cocoaさんに感謝
+
+・影跳びはGvG中使用不可、失敗してもSPを消費するよう修正 (skill.c)
+
+----------------------------------------
 //0675 [2009/09/24] by Rayce
 
 ・即時発動スキル（skill_db.txtのinfが4）については、対象を自分自身に強制するように修正（clif.c）

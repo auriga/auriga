@@ -6247,7 +6247,7 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 			break;
 	}
 
-#if PACKETVER > 14
+#if PACKETVER > 17
 	WBUFW(buf,0)=0x43f;
 	WBUFW(buf,2)=type;
 	WBUFL(buf,4)=bl->id;
@@ -7962,7 +7962,7 @@ void clif_send_petstatus(struct map_session_data *sd)
 	WFIFOW(fd,29)=sd->pet.hungry;
 	WFIFOW(fd,31)=sd->pet.intimate;
 	WFIFOW(fd,33)=sd->pet.equip;
-#if PACKETVER > 14
+#if PACKETVER > 16
 	WFIFOW(fd,35)=sd->pet.class_;
 #endif
 	WFIFOSET(fd,packet_db[0x1a2].len);
@@ -10325,6 +10325,27 @@ void clif_send_equipopen(struct map_session_data *sd)
 	WFIFOW(fd,0) = 0x2da;
 	WFIFOB(fd,2) = sd->state.show_equip;
 	WFIFOSET(fd,packet_db[0x2da].len);
+#endif
+
+	return;
+}
+
+/*==========================================
+ * スキル固有ディレイ表示
+ *------------------------------------------
+ */
+void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int tick)
+{
+#if PACKETVER > 15
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x043d;
+	WFIFOW(fd,2) = skillid;
+	WFIFOL(fd,4) = tick;
+	WFIFOSET(fd,packet_db[0x43d].len);
 #endif
 
 	return;

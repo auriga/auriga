@@ -1974,7 +1974,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		if(battle_config.pc_skill_log)
 			printf("PC %d skill castend skill=%d\n",src->id,src_ud->skillid);
 		unit_stop_walking(src,0);
-#if PACKETVER > 14
+#if PACKETVER > 17
 		if(src_sd)
 			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv));
 #endif
@@ -5940,7 +5940,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 			printf("MOB skill castend skill=%d, class = %d\n",src_ud->skillid,src_md->class_);
 
 		unit_stop_walking(src,0);
-#if PACKETVER > 14
+#if PACKETVER > 17
 		if(src_sd)
 			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv));
 #endif
@@ -6301,7 +6301,9 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case NJ_SHADOWJUMP:	/* 影跳び */
 		{
 			struct status_change *sc = status_get_sc(src);
-			if(!sc || sc->data[SC_ANKLE].timer == -1) {
+			if(sd && map[src->m].flag.gvg) {
+				clif_skill_fail(sd,skillid,0,0);
+			} else if(!sc || sc->data[SC_ANKLE].timer == -1) {
 				// 崖打ち可能セルは無視して移動
 				if(map_getcellp(&map[sd->bl.m],x,y,CELL_CHKPASS)) {
 					unit_movepos(&sd->bl,x,y,0x21);

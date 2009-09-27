@@ -233,6 +233,7 @@ void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int 
 void clif_openbook(struct map_session_data *sd, int nameid, int page);
 void clif_msgstringtable(struct map_session_data *sd, int line);
 void clif_send_equipopen(struct map_session_data *sd);
+void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int tick);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);
