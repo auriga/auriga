@@ -5008,7 +5008,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(!map[src->m].flag.pvp && !map[src->m].flag.gvg && battle_check_target(src,bl,BCT_PARTY) <= 0)
 				break;
 			// 対象がバーサーク中でない場合のみ使用可
-			if(!dstsd->sc.data[SC_BERSERK].timer != -1)
+			if(dstsd->sc.data[SC_BERSERK].timer != -1)
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			sp = sd->status.sp - dstsd->status.sp;
