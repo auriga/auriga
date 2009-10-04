@@ -2767,7 +2767,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		} else {
 			skill_area_temp[1] = bl->id;
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-14,src->y-14,src->x+14,src->y+14,(BL_CHAR|BL_SKILL),
+				src->m,src->x-14,src->y-14,src->x+14,src->y+14,BL_CHAR,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -2783,7 +2783,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		} else {
 			int ar = (skilllv > 5)? 13: 3 + (skilllv * 2);
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_PC|BL_MOB|BL_HOM,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_CHAR,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -4531,7 +4531,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					} else {
 						clif_skill_warppoint(sd,sd->ud.skillid,"Random",sd->status.save_point.map,"","");
 					}
-				} else if(md) {
+				} else if(md && md->sc.data[SC_ANKLE].timer == -1) {
 					mob_warp(md,-1,-1,-1,3);
 				}
 			}
@@ -5006,6 +5006,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int sp;
 			// PVP,GVG以外ではPTメンバーにのみ使用可
 			if(!map[src->m].flag.pvp && !map[src->m].flag.gvg && battle_check_target(src,bl,BCT_PARTY) <= 0)
+				break;
+			// 対象がバーサーク中でない場合のみ使用可
+			if(!dstsd->sc.data[SC_BERSERK].timer != -1)
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			sp = sd->status.sp - dstsd->status.sp;

@@ -358,8 +358,9 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		}
 
 		// ニューマ
-		if( (sc->data[SC_PNEUMA].timer != -1 || sc->data[SC_TATAMIGAESHI].timer != -1) && damage > 0 &&
-		    flag&(BF_WEAPON|BF_MISC) && flag&BF_LONG && skill_num != NPC_GUIDEDATTACK && skill_num != NPC_EARTHQUAKE)
+		if( ((sc->data[SC_PNEUMA].timer != -1 || sc->data[SC_TATAMIGAESHI].timer != -1) && damage > 0 &&
+		    flag&(BF_WEAPON|BF_MISC) && flag&BF_LONG && skill_num != NPC_GUIDEDATTACK && skill_num != NPC_EARTHQUAKE) &&
+		    !(src->type == BL_MOB && (skill_num == AC_SHOWER || skill_num == SN_SHARPSHOOTING)) )
 		{
 			damage = 0;
 		}
@@ -1697,6 +1698,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case CR_GRANDCROSS:	// グランドクロス
 		case NPC_GRANDDARKNESS:	// グランドダークネス
+			DMG_FIX( 100+40*skill_lv, 100 );
 			if (!battle_config.gx_cardfix)
 				calc_flag.nocardfix = 1;
 			break;
@@ -2150,6 +2152,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NPC_CRITICALSLASH:
 		case GS_PIERCINGSHOT:
 			break;
+		// グランドクロス、グランドダークネスはDEF無視を強制解除
+		case CR_GRANDCROSS:
+		case NPC_GRANDDARKNESS:
+			calc_flag.idef = 0;
 		default:
 			if(wd.type != 0)	// クリティカル時は無効
 				break;
@@ -2519,7 +2525,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				break;
 			}
 		}
-		if(wd.flag&BF_LONG)
+		if(wd.flag&BF_LONG && !(src_md && (skill_num == AC_SHOWER || skill_num == SN_SHARPSHOOTING)) )
 			cardfix = cardfix*(100-target_sd->long_attack_def_rate)/100;	// 遠距離攻撃はダメージ減少(ホルンCとか)
 		if(wd.flag&BF_SHORT)
 			cardfix = cardfix*(100-target_sd->near_attack_def_rate)/100;	// 近距離攻撃はダメージ減少(該当無し？)

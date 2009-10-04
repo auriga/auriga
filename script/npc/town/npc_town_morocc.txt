@@ -2444,7 +2444,7 @@ OnTimer5400000:
 	end;
 OnTimer5410000:
 	announce "魔王モロク : 俺様は非常に忙しい！　お前らのような下等生物の相手をする暇などないのだ！",0x09;
-	killmonster "morocc.gat","闇の結晶体#morocc::OnMyMobDead";
+	killmonster "moc_fild21.gat","闇の結晶体#morocc::OnMyMobDead";
 	stopnpctimer;
 	end;
 OnMyMobDead:
