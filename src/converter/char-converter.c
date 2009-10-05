@@ -256,7 +256,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 		if(set!=2)
 			return 1;
 		n = tmp_int[0];
-		if(n >= 0 && n < MAX_SKILL) {
+		if(n >= 0 && n < MAX_PCSKILL) {
 			p->st.skill[n].id = tmp_int[0];
 			p->st.skill[n].lv = tmp_int[1];
 		}
@@ -401,7 +401,7 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 	p  = tmp_sql;
 	p += sprintf(p,"INSERT INTO `skill` (`char_id`, `id`, `lv`) VALUES");
 	sep = ' ';
-	for(i=0;i<MAX_SKILL;i++){
+	for(i=0;i<MAX_PCSKILL;i++){
 		int sk_lv = (st->skill[i].flag==0)? st->skill[i].lv: st->skill[i].flag-2;
 		if(st->skill[i].id && st->skill[i].flag!=1){
 			p += sprintf(p,"%c('%d','%d','%d')", sep, char_id, st->skill[i].id, sk_lv);

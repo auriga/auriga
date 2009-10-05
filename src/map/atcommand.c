@@ -4818,17 +4818,17 @@ int atcommand_ecoff(const int fd, struct map_session_data* sd, AtCommandType com
  */
 int atcommand_icon(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int type = 0, on = 1;
+	int type = 0, on = 1, val = 0;
 	unsigned int tick = 0;
 
 	nullpo_retr(-1, sd);
 
 	if (!message || !*message)
 		return -1;
-	if (sscanf(message, "%d %d %u", &type, &on, &tick) < 1)
+	if (sscanf(message, "%d %d %u %d", &type, &on, &tick, &val) < 1)
 		return -1;
 
-	clif_status_change(&sd->bl, type, on, tick);
+	clif_status_change(&sd->bl, type, on, tick, val);
 
 	return 0;
 }

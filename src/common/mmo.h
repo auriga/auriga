@@ -51,7 +51,7 @@
 #define MAX_GUILDCASTLE 30
 #define MAX_GUILDLEVEL 50
 #define MAX_FRIEND 20
-#define MAX_STATUSCHANGE 390
+#define MAX_STATUSCHANGE 460
 #define MAX_PORTAL_MEMO 3
 #define MAIL_STORE_MAX 30
 #define MAX_HOTKEYS 27
@@ -74,20 +74,27 @@
 #define MAX_MERC_TYPE 3			// 傭兵の種類
 
 // スキルID定義
+#define SECOND_SKILLID 1001		// 2次職クエストスキルIDの開始値
+#define THIRD_SKILLID  2001		// 3次職スキルIDの開始値
 #define HOM_SKILLID    8001		// ホムスキルIDの開始値
 #define MERC_SKILLID   8201		// 傭兵スキルIDの開始値
 #define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
 
-#define MAX_SKILL      1020
+#define MAX_SKILL       700
+#define MAX_SECONDSKILL  19
+#define MAX_THIRDSKILL  515
 #define MAX_HOMSKILL     16
 #define MAX_MERCSKILL    37
 #define MAX_GUILDSKILL   16
 
-#define MAX_HOM_SKILLID   (HOM_SKILLID+MAX_HOMSKILL)		// ホムスキルIDの最大値
-#define MAX_MERC_SKILLID  (MERC_SKILLID+MAX_MERCSKILL)		// 傭兵スキルIDの最大値
-#define MAX_GUILD_SKILLID (GUILD_SKILLID+MAX_GUILDSKILL)	// ギルドスキルIDの最大値
+#define MAX_SECOND_SKILLID (SECOND_SKILLID+MAX_SECONDSKILL)	// 2次職クエストスキルIDの最大値
+#define MAX_THIRD_SKILLID  (THIRD_SKILLID+MAX_THIRDSKILL)	// 3次職スキルIDの最大値
+#define MAX_HOM_SKILLID    (HOM_SKILLID+MAX_HOMSKILL)		// ホムスキルIDの最大値
+#define MAX_MERC_SKILLID   (MERC_SKILLID+MAX_MERCSKILL)		// 傭兵スキルIDの最大値
+#define MAX_GUILD_SKILLID  (GUILD_SKILLID+MAX_GUILDSKILL)	// ギルドスキルIDの最大値
 
-#define MAX_SKILL_DB (MAX_SKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_GUILDSKILL)
+#define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_GUILDSKILL)
+#define MAX_PCSKILL  MAX_THIRD_SKILLID		// PCが使用可能の最大のスキルID
 
 // ブロックID定義
 #define MIN_FLOORITEM            2
@@ -203,7 +210,7 @@ struct mmo_charstatus {
 	struct point last_point, save_point, memo_point[MAX_PORTAL_MEMO];
 	char feel_map[3][24];
 	struct item inventory[MAX_INVENTORY],cart[MAX_CART];
-	struct skill skill[MAX_SKILL];
+	struct skill skill[MAX_PCSKILL];
 	int friend_num;
 	struct friend_data friend_data[MAX_FRIEND];
 	struct hotkey hotkey[MAX_HOTKEYS];

@@ -1,4 +1,39 @@
 ----------------------------------------
+//0679 [2009/10/06] by Blaze
+
+・3-1次職スキル暫定実装（一部未実装）
+	 (skill.*, battle.c, status.*, unit.c, pc.*, db/produce_db.txt,
+	  db/skill_db.txt, db/skill_db2.txt, db/skill_cast_db.txt,
+	  db/skill_require_db.txt, db/skill_unit_db.txt, db/scdata_db.txt）
+
+・3次職関連アイテムを一部実装
+	（db/item_db.txt, db/const.txt）
+
+・スキルIDが肥大化してきたため、ID区分を3つに分割
+	（mmo.h, char.c, char-converter.c, skill.*, pc.*）
+
+・SkillStatusChangeTableを参照するとき、GetSkillStatusChangeTable()で参照させるように統一
+	-> SkillStatusChangeTableのextern宣言を撤廃
+	-> skill.c外部からステータス異常を参照するとき、Tableを使用しないように修正
+	（skill.*, pc.c, battle.c, status.c）
+
+・clif_status_change()を拡張
+	-> 拡張定義のvalを指定できるように
+	-> デバッグコマンド「@icon」に第4パラメータを指定できるように
+	（clif.*, atcommand.c, conf/help.txt）
+
+・status_change_start()からアイコン表示時、一部状態異常で
+　tickが書き換えられてタイマーが表示されてしまうのを修正
+	（status.c）
+
+・スキルの固有ディレイ（クールタイム）を暫定実装（3次職スキルのみ対応）
+	-> skill_cast_db.txtにクールタイムの設定項目を追加
+	（skill.c, clif.c, db/skill_cast_db.txt, db/db_ref.txt）
+
+・スクリプトにsetdragon命令とcheckdragon()を追加
+	（script.c, db/script_ref.txt）
+
+----------------------------------------
 //0678 [2009/10/05] by popori
 
 ・0677のソウルチェンジの判定文がおかしかったのを修正 (skill.c)

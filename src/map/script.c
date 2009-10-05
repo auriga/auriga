@@ -3793,6 +3793,7 @@ int buildin_setoption(struct script_state *st);
 int buildin_setcart(struct script_state *st);
 int buildin_setfalcon(struct script_state *st);
 int buildin_setriding(struct script_state *st);
+int buildin_setdragon(struct script_state *st);
 int buildin_savepoint(struct script_state *st);
 int buildin_gettimetick(struct script_state *st);
 int buildin_gettime(struct script_state *st);
@@ -3913,6 +3914,7 @@ int buildin_getmapxy(struct script_state *st);
 int buildin_checkcart(struct script_state *st);
 int buildin_checkfalcon(struct script_state *st);
 int buildin_checkriding(struct script_state *st);
+int buildin_checkdragon(struct script_state *st);
 int buildin_checksit(struct script_state *st);
 int buildin_checkdead(struct script_state *st);
 int buildin_checkcasting(struct script_state *st);
@@ -4057,6 +4059,7 @@ struct script_function buildin_func[] = {
 	{buildin_setcart,"setcart",""},
 	{buildin_setfalcon,"setfalcon",""},
 	{buildin_setriding,"setriding",""},
+	{buildin_setdragon,"setdragon",""},
 	{buildin_savepoint,"savepoint","sii"},
 	{buildin_gettimetick,"gettimetick","i"},
 	{buildin_gettime,"gettime","i"},
@@ -4177,6 +4180,7 @@ struct script_function buildin_func[] = {
 	{buildin_checkcart,"checkcart",""},
 	{buildin_checkfalcon,"checkfalcon",""},
 	{buildin_checkriding,"checkriding",""},
+	{buildin_checkdragon,"checkdragon",""},
 	{buildin_checksit,"checksit",""},
 	{buildin_checkdead,"checkdead",""},
 	{buildin_checkcasting,"checkcasting",""},
@@ -6531,6 +6535,16 @@ int buildin_setfalcon(struct script_state *st)
 int buildin_setriding(struct script_state *st)
 {
 	pc_setriding( script_rid2sd(st) );
+	return 0;
+}
+
+/*==========================================
+ * ドラゴン騎乗
+ *------------------------------------------
+ */
+int buildin_setdragon(struct script_state *st)
+{
+	pc_setdragon( script_rid2sd(st) );
 	return 0;
 }
 
@@ -9103,7 +9117,7 @@ int buildin_getskilllist(struct script_state *st)
 
 	if(!sd)
 		return 0;
-	for(i=0;i<MAX_SKILL;i++){
+	for(i=0;i<MAX_PCSKILL;i++){
 		if(sd->status.skill[i].id <= 0 || sd->status.skill[i].lv <= 0)
 			continue;
 		if(j >= 128) {
@@ -10066,6 +10080,19 @@ int buildin_checkriding(struct script_state *st)
 	struct map_session_data *sd = script_rid2sd(st);
 
 	push_val(st->stack,C_INT,(pc_isriding(sd)) ? 1 : 0);
+
+	return 0;
+}
+
+/*==========================================
+ * ドラゴンに騎乗しているかどうか
+ *------------------------------------------
+ */
+int buildin_checkdragon(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	push_val(st->stack,C_INT,(pc_isdragon(sd)) ? 1 : 0);
 
 	return 0;
 }

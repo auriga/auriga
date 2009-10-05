@@ -48,6 +48,7 @@ int status_get_group(struct block_list *bl);
 int status_get_hp(struct block_list *bl);
 int status_get_sp(struct block_list *bl);
 int status_get_max_hp(struct block_list *bl);
+int status_get_max_sp(struct block_list *bl);
 int status_get_str(struct block_list *bl);
 int status_get_agi(struct block_list *bl);
 int status_get_vit(struct block_list *bl);
@@ -526,6 +527,52 @@ enum {
 	SC_NATURAL_HEAL_STOP    = 385,
 	SC_REBIRTH              = 386,
 	SC_HELLPOWER			= 387,
+	SC_ENCHANTBLADE			= 388,
+	SC_BERKANA				= 389,
+	SC_NAUTHIZ				= 390,
+	SC_TURISUSS				= 391,
+	SC_HAGALAZ				= 392,
+	SC_ISHA					= 393,
+	SC_EISIR				= 394,
+	SC_URUZ					= 395,
+	SC_DEATHBOUND			= 396,
+	SC_FEAR					= 397,
+	SC_VENOMIMPRESS			= 398,
+	SC_POISONINGWEAPON		= 399,
+	SC_WEAPONBLOCKING		= 400,
+	SC_WEAPONBLOCKING2		= 401,
+	SC_CLOAKINGEXCEED		= 402,
+	SC_HALLUCINATIONWALK	= 403,
+	SC_HALLUCINATIONWALK2	= 404,
+	SC_ROLLINGCUTTER		= 405,
+	SC_TOXIN				= 406,
+	SC_PARALIZE				= 407,
+	SC_VENOMBLEED			= 408,
+	SC_MAGICMUSHROOM		= 409,
+	SC_DEATHHURT			= 410,
+	SC_PYREXIA				= 411,
+	SC_OBLIVIONCURSE		= 412,
+	SC_LEECHEND				= 413,
+	SC_EPICLESIS			= 414,
+	SC_ORATIO				= 415,
+	SC_LAUDAAGNUS			= 416,
+	SC_LAUDARAMUS			= 417,
+	SC_RENOVATIO			= 418,
+	SC_EXPIATIO				= 419,
+	SC_DUPLELIGHT			= 420,
+	SC_SACRAMENT			= 421,
+	SC_WHITEIMPRISON		= 422,
+	SC_FROSTMISTY			= 423,
+	SC_MARSHOFABYSS			= 424,
+	SC_RECOGNIZEDSPELL		= 425,
+	SC_STASIS				= 426,
+	SC_HELLINFERNO			= 427,
+	SC_SUMMONBALL1			= 428,
+	SC_SUMMONBALL2			= 429,
+	SC_SUMMONBALL3			= 430,
+	SC_SUMMONBALL4			= 431,
+	SC_SUMMONBALL5			= 432,
+	SC_SPELLBOOK			= 433,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
@@ -764,7 +811,7 @@ enum {
 	//SI_TARGET_BLOOD   = 301
 	//SI_ARMOR_PROPERTY = 302
 	//SI_REUSE_LIMIT_A  = 303
-	SI_HELLPOWER        = 304
+	SI_HELLPOWER        = 304,
 	//SI_STEAMPACK      = 305
 	//SI_REUSE_LIMIT_B  = 306
 	//SI_REUSE_LIMIT_C  = 307
@@ -775,6 +822,53 @@ enum {
 	//312：Job教範50
 	//313：肉マーク
 	//314：白い人のマーク
+	SI_ENCHANTBLADE		= 316,
+	//
+	SI_NAUTHIZ			= 318,
+	SI_THURISSUS		= 319,
+	SI_HAGALAZ			= 320,
+	SI_ISA				= 321,
+	SI_OTHILA			= 322,
+	SI_URUZ				= 323,
+	//
+	SI_VENOMIMPRESS		= 328,
+	//
+	SI_ORATIO			= 330,
+	//
+	SI_POISONINGWEAPON	= 333,
+	SI_HALLUCINATIONWALK= 334,
+	//
+	SI_RENOVATIO		= 336,
+	SI_WEAPONBLOCKING	= 337,
+	//
+	SI_ROLLINGCUTTER	= 339,
+	//
+	SI_TOXIN			= 342,
+	SI_PARALIZE			= 343,
+	SI_VENOMBLEED		= 344,
+	SI_MAGICMUSHROOM	= 345,
+	SI_DEATHHURT		= 346,
+	SI_PYREXIA			= 347,
+	SI_OBLIVIONCURSE	= 348,
+	SI_LEECHEND			= 349,
+	SI_DUPLELIGHT		= 350,
+	SI_FROSTMISTY		= 351,
+	SI_FEARBREEZE		= 352,
+	//
+	SI_MARSHOFABYSS		= 354,
+	SI_RECOGNIZEDSPELL	= 355,
+	//
+	SI_WOLFMOUNT		= 357,
+	//
+	SI_SUMMONBALL1		= 363,
+	SI_SUMMONBALL2		= 364,
+	SI_SUMMONBALL3		= 365,
+	SI_SUMMONBALL4		= 366,
+	SI_SUMMONBALL5		= 367,
+	//
+	SI_EXPIATIO			= 414,
+	//
+	SI_SACRAMENT		= 472
 };
 
 #endif

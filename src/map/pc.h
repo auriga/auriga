@@ -25,7 +25,7 @@
 #include "utils.h"
 #include "map.h"
 
-#define OPTION_MASK 0xd7b8UL
+#define OPTION_MASK 0x78d7b8UL
 #define CART_MASK   0x788UL
 
 #define MAX_SKILL_TREE 100
@@ -43,6 +43,7 @@
 #define pc_isfalcon(sd) ((sd)->sc.option&0x0010)
 #define pc_isriding(sd) ((sd)->sc.option&0x0020)
 #define pc_isinvisible(sd) ((sd)->sc.option&0x0040)
+#define pc_isdragon(sd) ((sd)->sc.option&0x80000)
 #define pc_is50overweight(sd) ((sd)->weight*2 >= (sd)->max_weight)
 #define pc_is90overweight(sd) ((sd)->weight*10 >= (sd)->max_weight*9)
 
@@ -140,6 +141,7 @@ void pc_setoption(struct map_session_data *sd, unsigned int type);
 void pc_setcart(struct map_session_data *sd, unsigned short type);
 int pc_setfalcon(struct map_session_data *sd);
 int pc_setriding(struct map_session_data *sd);
+int pc_setdragon(struct map_session_data *sd);
 int pc_changelook(struct map_session_data *,int,int);
 
 int pc_readparam(struct map_session_data*,int);

@@ -213,7 +213,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 	}
 	*(str_p++)='\t';
 
-	for(i=0;i<MAX_SKILL;i++) {
+	for(i=0;i<MAX_PCSKILL;i++) {
 		if(p->st.skill[i].id && p->st.skill[i].flag!=1){
 			sk_lv = (p->st.skill[i].flag==0)? p->st.skill[i].lv: p->st.skill[i].flag-2;
 			str_p += sprintf(str_p,"%d,%d ",p->st.skill[i].id,sk_lv);
@@ -500,7 +500,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 		if(set!=2)
 			return 0;
 		n = tmp_int[0];
-		if(n >= 0 && n < MAX_SKILL) {
+		if(n >= 0 && n < MAX_PCSKILL) {
 			p->st.skill[n].id = tmp_int[0];
 			p->st.skill[n].lv = tmp_int[1];
 		}
@@ -1385,7 +1385,7 @@ const struct mmo_chardata* char_sql_load(int char_id)
 	if (sql_res) {
 		for(i=0;(sql_row = sqldbs_fetch(sql_res));i++){
 			n = atoi(sql_row[0]);
-			if(n >= 0 && n < MAX_SKILL) {
+			if(n >= 0 && n < MAX_PCSKILL) {
 				p->st.skill[n].id = n;
 				p->st.skill[n].lv = atoi(sql_row[1]);
 			}
@@ -1641,7 +1641,7 @@ int char_sql_save(struct mmo_charstatus *st2)
 
 		sqldbs_query(&mysql_handle, "DELETE FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
-		for(i=0;i<MAX_SKILL;i++){
+		for(i=0;i<MAX_PCSKILL;i++){
 			sk_lv = (st2->skill[i].flag==0)? st2->skill[i].lv: st2->skill[i].flag-2;
 			if(st2->skill[i].id && st2->skill[i].flag!=1){
 				sqldbs_query(

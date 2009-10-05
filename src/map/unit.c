@@ -339,6 +339,10 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			if(sd->sc.data[SC_RUN].timer != -1) {
 				sd->sc.data[SC_RUN].val4++;
 			}
+			/* 回転カウントリセット */
+			if(sd->sc.data[SC_ROLLINGCUTTER].timer != -1) {
+				status_change_end(&sd->bl,SC_ROLLINGCUTTER,-1);
+			}
 		}
 		// ギルドスキル有効
 		pc_check_guild_skill_effective_range(sd);
@@ -385,7 +389,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			   map_count_oncell(sd->bl.m,x+dx,y+dy,BL_PC|BL_MOB|BL_NPC) > 0) {
 				skill_blown(&sd->bl,&sd->bl,skill_get_blewcount(TK_RUN,sd->sc.data[SC_RUN].val1)|SAB_NODAMAGE);
 				status_change_end(&sd->bl,SC_RUN,-1);
-				clif_status_change(&sd->bl,SI_RUN_STOP,1,0);
+				clif_status_change(&sd->bl,SI_RUN_STOP,1,0,0);
 				pc_setdir(sd, dir, dir);
 				return 0;
 			}
@@ -852,7 +856,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	if( src_ud == NULL ) return 0;
 
 	if( unit_isdead(src) )		 return 0;	// 死んでいないか
-	if( src_sd && src_sd->sc.opt1 > 0 ) return 0;	// 沈黙や異常（ただし、グリムなどの判定をする）
+	if( src_sd && src_sd->sc.opt1 > 0 && src_sd->sc.opt1 != 7 ) return 0;	// 沈黙や異常（ただし、グリムなどの判定をする）
 
 	// スキル制限
 	zone = skill_get_zone(skill_num);
@@ -916,6 +920,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			}
 			target_id = (p_sd)? p_sd->bl.id: 0;
 		}
+		break;
+	case GC_WEAPONCRUSH:	/* ウェポンクラッシュ */
+		if(sc && sc->data[SC_WEAPONBLOCKING2].timer != -1)
+			target_id = sc->data[SC_WEAPONBLOCKING2].val2;
 		break;
 	}
 
@@ -987,6 +995,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		case TK_DOWNKICK:
 		case TK_TURNKICK:
 		case TK_COUNTER:
+		case GC_WEAPONCRUSH:
 			break;
 		case MO_EXTREMITYFIST:
 		case TK_JUMPKICK:
@@ -1106,6 +1115,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	{
 		if(sc && sc->data[SC_CLOAKING].timer != -1 && skill_num != AS_CLOAKING)
 			status_change_end(src,SC_CLOAKING,-1);
+	}
+
+	if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1 && skill_num != GC_CLOAKINGEXCEED) {
+		status_change_end(src,SC_CLOAKINGEXCEED,-1);
 	}
 
 	if(casttime > 0) {
@@ -1285,6 +1298,9 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 			status_change_end(src,SC_CLOAKING,-1);
 	}
 
+	if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1)
+		status_change_end(src,SC_CLOAKINGEXCEED,-1);
+
 	if(casttime > 0) {
 		int skill;
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_pos, src->id, NULL);
@@ -1408,7 +1424,7 @@ int unit_can_move(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 
-	if( sc && sc->opt1 > 0 && sc->opt1 != 6 )
+	if( sc && sc->opt1 > 0 && sc->opt1 != 6 && sc->opt1 != 7 )
 		return 0;
 
 	if( bl->type == BL_PC )
@@ -1423,6 +1439,7 @@ int unit_can_move(struct block_list *bl)
 	{
 		if( sc->data[SC_ANKLE].timer != -1 ||		// アンクルスネア
 		    sc->data[SC_AUTOCOUNTER].timer != -1 ||	// オートカウンター
+		    sc->data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 		    sc->data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
 		    sc->data[SC_BLADESTOP_WAIT].timer != -1 ||		// 白刃取り
 		    sc->data[SC_BLADESTOP].timer != -1 ||	// 白刃取り
@@ -1432,7 +1449,10 @@ int unit_can_move(struct block_list *bl)
 		    sc->data[SC_MADNESSCANCEL].timer != -1 ||	// マッドネスキャンセラー
 		    sc->data[SC_CLOSECONFINE].timer != -1 ||	// クローズコンファイン
 		    (sc->data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2) ||	//グラビテーションフィールド使用者
-		    (battle_config.hermode_no_walking && sc->data[SC_DANCING].timer != -1 && sc->data[SC_DANCING].val1 == CG_HERMODE)
+		    (battle_config.hermode_no_walking && sc->data[SC_DANCING].timer != -1 && sc->data[SC_DANCING].val1 == CG_HERMODE) ||
+		    (sc->data[SC_FEAR].timer != -1 && sc->data[SC_FEAR].val3 > 0) ||	// 恐怖状態（2秒間）
+		    sc->data[SC_WEAPONBLOCKING2].timer != -1 ||	// ウェポンブロッキング（ブロック中）
+		    sc->data[SC_WHITEIMPRISON].timer != -1	// ホワイトインプリズン
 		)
 			return 0;
 
@@ -1519,10 +1539,12 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 
 	if( sc ) {
 		if(sc->data[SC_AUTOCOUNTER].timer != -1 ||
+		   sc->data[SC_DEATHBOUND].timer != -1 ||
 		   sc->data[SC_TRICKDEAD].timer != -1 ||
 		   sc->data[SC_BLADESTOP].timer != -1 ||
 		   sc->data[SC_FULLBUSTER].timer != -1 ||
-		   sc->data[SC_KEEPING].timer != -1)
+		   sc->data[SC_KEEPING].timer != -1 ||
+		   sc->data[SC_WHITEIMPRISON].timer != -1)
 			return 0;
 	}
 	if( tsc ) {
@@ -1543,7 +1565,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 
 	if( src_sd ) {
 		// 異常などで攻撃できない
-		if( src_sd->sc.opt1 > 0 || src_sd->sc.option&2 || pc_ischasewalk(src_sd) )
+		if( (src_sd->sc.opt1 > 0 && src_sd->sc.opt1 != 7) || src_sd->sc.option&2 || pc_ischasewalk(src_sd) )
 			return 0;
 		// 昆虫・悪魔状態でないならハイド中の敵に攻撃できない
 		if( tsc && tsc->option&0x46 && src_sd->race != RCT_INSECT && src_sd->race != RCT_DEMON )
@@ -1552,7 +1574,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 
 	if( src_md ) {
 		int mode, race;
-		if(src_md->sc.opt1 > 0 || src_md->sc.option&2)
+		if((src_md->sc.opt1 > 0 && src_md->sc.opt1 != 7) || src_md->sc.option&2)
 			return 0;
 		if(src_md->sc.data[SC_WINKCHARM].timer != -1)
 			return 0;
@@ -1639,6 +1661,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 				status_change_end(src,SC_CLOAKING,-1);
 			if(src_sd && !(battle_config.pc_cloak_check_type&2) && sc && sc->data[SC_CLOAKING].timer != -1)
 				status_change_end(src,SC_CLOAKING,-1);
+			if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1)
+				status_change_end(src,SC_CLOAKINGEXCEED,-1);
 			if(src_sd && src_sd->status.pet_id > 0 && src_sd->pd && src_sd->petDB)
 				pet_target_check(src_sd,target,0);
 			map_freeblock_unlock();

@@ -653,6 +653,9 @@ struct map_session_data {
 
 	short hotkey_set;
 	int shop_point;
+
+	short poisoning_lv;		// ポイズニングウェポンLv保存用（暫定）
+	unsigned int skillcooldown[MAX_THIRDSKILL];		// クールタイム（暫定的に3次職スキルのみ）
 };
 
 struct npc_timerevent_list {

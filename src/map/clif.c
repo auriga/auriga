@@ -4153,6 +4153,41 @@ void clif_arrow_create_list(struct map_session_data *sd)
 }
 
 /*==========================================
+ * ポイズニングウェポン選択
+ *------------------------------------------*/
+void clif_poison_list(struct map_session_data *sd, short lv)
+{
+	int i, c, j;
+	int fd;
+	const int poison_list[8] = {12717, 12718, 12719, 12720, 12721, 12722, 12723, 12724};
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x1ad;
+
+	for (i = 0, c = 0; i < 8; i++) {
+		if (poison_list[i] > 0 &&
+			(j = pc_search_inventory(sd, poison_list[i])) >= 0 &&
+			!sd->status.inventory[j].equip && sd->status.inventory[j].identify)
+		{
+			if ((j = itemdb_viewid(poison_list[i]) > 0))
+				WFIFOW(fd,c*2+4) = j;
+			else
+				WFIFOW(fd,c*2+4) = poison_list[i];
+			c++;
+		}
+	}
+	WFIFOW(fd,2) = c*2+4;
+	WFIFOSET(fd, WFIFOW(fd,2));
+
+	if(c > 0)
+		sd->poisoning_lv = lv;
+
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -5732,7 +5767,7 @@ void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int rang
  */
 void clif_skillinfoblock(struct map_session_data *sd)
 {
-	unsigned char buf[4+37*MAX_SKILL];
+	unsigned char buf[4+37*MAX_PCSKILL];
 	int fd;
 	int i,len=4,id,skill_lv,tk_ranker_bonus=0;
 
@@ -5744,7 +5779,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 
 	fd=sd->fd;
 	WBUFW(buf,0)=0x10f;
-	for (i=0; i < MAX_SKILL; i++){
+	for (i=0; i < MAX_PCSKILL; i++){
 		if( (i==sd->cloneskill_id && (id=sd->cloneskill_id)!=0) || (id=sd->status.skill[i].id)!=0 ){
 			WBUFW(buf,len  ) = id;
 			WBUFL(buf,len+2) = skill_get_inf(id);
@@ -6215,7 +6250,7 @@ void clif_status_load(struct map_session_data *sd, int type, unsigned char flag)
  * 状態異常アイコン/メッセージ表示（全体）
  *------------------------------------------
  */
-void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick)
+void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick, int val)
 {
 	unsigned char buf[32];
 
@@ -6253,7 +6288,7 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 	WBUFL(buf,4)=bl->id;
 	WBUFB(buf,8)=flag;
 	WBUFL(buf,9)=tick;
-	WBUFL(buf,13)=0;
+	WBUFL(buf,13)=val;
 	WBUFL(buf,17)=0;
 	WBUFL(buf,21)=0;
 	clif_send(buf,packet_db[0x43f].len,bl,AREA);
@@ -10352,6 +10387,25 @@ void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int 
 }
 
 /*==========================================
+ * ミレニアムシールド
+ *------------------------------------------
+ */
+void clif_mshield(struct map_session_data *sd, int num)
+{
+	unsigned char buf[8];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0)=0x440;
+	WBUFL(buf,2)=sd->bl.id;
+	WBUFW(buf,6)=num;
+	WBUFW(buf,8)=0;
+	clif_send(buf,packet_db[0x440].len,&sd->bl,AREA);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -10644,7 +10698,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if(sd->state.connect_new) {
 		sd->state.connect_new = 0;
 
-		if(pc_isriding(sd))
+		if(pc_isriding(sd) || pc_isdragon(sd))
 			clif_status_load(sd,SI_RIDING,1);
 		if(pc_isfalcon(sd))
 			clif_status_load(sd,SI_FALCON,1);
@@ -10992,6 +11046,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	if(sd->npc_id != 0 || sd->sc.opt1 > 0 || sd->sc.option&2)
 		return;
 	if(sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||	// オートカウンター
+	   sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 	   sd->sc.data[SC_BLADESTOP].timer != -1 ||	// 白刃取り
 	   sd->sc.data[SC_RUN].timer != -1 ||		// タイリギ
 	   sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
@@ -11189,9 +11244,11 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc.opt1 > 0 || sd->chatID || sd->state.mail_appending ||
 	    pc_iscloaking(sd) ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
+	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 	    sd->sc.data[SC_RUN].timer != -1 ||			// タイリギ
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中拾えない
-	    sd->sc.data[SC_BLADESTOP].timer != -1 )		// 白刃取り
+	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
+	    sd->sc.data[SC_WHITEIMPRISON].timer != -1 )		// ホワイトインプリズン
 	{
 		clif_additem(sd,0,0,6);
 		return;
@@ -11239,9 +11296,11 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc.opt1 > 0 || sd->state.mail_appending ||
 	    DIFF_TICK(tick, sd->drop_delay_tick) < 0 ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
+	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中
-	    sd->sc.data[SC_BERSERK].timer != -1 )		// バーサーク
+	    sd->sc.data[SC_BERSERK].timer != -1 ||		// バーサーク
+	    sd->sc.data[SC_WHITEIMPRISON].timer != -1 )		// ホワイトインプリズン
 	{
 		clif_delitem(sd, item_index, 0);
 		return;
@@ -11837,6 +11896,11 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 	}
 
+	if(skillnum >= THIRD_SKILLID && skillnum < MAX_THIRD_SKILLID) {
+		// 3次職スキル
+		if(DIFF_TICK(tick, sd->skillcooldown[skillnum - THIRD_SKILLID]) < 0)
+			return;
+	}
 	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
 		// ホムスキル
 		struct homun_data *hd = sd->hd;
@@ -12007,6 +12071,11 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 		return;
 	}
 
+	if(skillnum >= THIRD_SKILLID && skillnum < MAX_THIRD_SKILLID) {
+		// 3次職スキル
+		if(DIFF_TICK(tick, sd->skillcooldown[skillnum - THIRD_SKILLID]) < 0)
+			return;
+	}
 	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
 		// ホムスキル
 		struct homun_data *hd = sd->hd;
@@ -12297,7 +12366,13 @@ static void clif_parse_ItemIdentify(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_SelectArrow(int fd,struct map_session_data *sd, int cmd)
 {
-	skill_arrow_create(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+	nullpo_retv(sd);
+
+	if(sd->state.make_arrow_flag == 1)
+		skill_arrow_create(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+
+	if(sd->poisoning_lv > 0)
+		skill_poisoning_weapon(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
 
 	return;
 }

@@ -509,7 +509,7 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 		return 0;
 	if( md->sc.data[SC_WINKCHARM].timer != -1 )
 		return 0;
-	if( !(mode&0x20) && tsc && (tsc->option&0x4006) && race != RCT_INSECT && race != RCT_DEMON )
+	if( !(mode&0x20) && tsc && (tsc->option&0x4006) && ((race != RCT_INSECT && race != RCT_DEMON) || tsc->data[SC_CLOAKINGEXCEED].timer != -1)  )
 		return 0;
 
 	if(bl->type == BL_PC) {
@@ -849,9 +849,9 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	mode = status_get_mode( &md->bl );
 
 	// 異常
-	if(md->sc.data[SC_BLADESTOP].timer != -1)
+	if(md->sc.data[SC_BLADESTOP].timer != -1 || md->sc.data[SC_WHITEIMPRISON].timer != -1)
 		return 0;
-	if(md->sc.opt1 > 0 && md->sc.opt1 != 6) {
+	if(md->sc.opt1 > 0 && md->sc.opt1 != 6 && md->sc.opt1 != 7) {
 		if(md->sc.opt1 != 2 || md->ud.walktimer == -1)    // 凍結中は移動が終わるまで処理を続ける(滑り)
 			return 0;
 	}

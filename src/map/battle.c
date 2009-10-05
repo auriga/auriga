@@ -312,6 +312,12 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		if(damage_rate != 100)
 			damage = damage*damage_rate/100;
 	}
+	if(sc && sc->data[SC_WHITEIMPRISON].timer != -1) {
+		// ホワイトインプリズン状態は念属性以外はダメージを受けない
+		if( (flag&BF_SKILL && skill_get_pl(skill_num) != ELE_GHOST) ||
+			(!(flag&BF_SKILL) && status_get_attack_element(src) != ELE_GHOST) )
+		damage = 0;
+	}
 	if(sc && sc->count > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
 		// アスムプティオ
 		if(sc->data[SC_ASSUMPTIO].timer != -1 && damage > 0) {
@@ -484,6 +490,46 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				damage <<= 1;
 				status_change_end(bl, SC_SPIDERWEB, -1);
 			}
+		}
+
+		// ミレニアムシールド
+		if(sc->data[SC_BERKANA].timer != -1 && damage > 0) {
+			struct status_change_data *scd = &sc->data[SC_BERKANA];
+
+			if(damage >= scd->val3) {
+				scd->val3 = 1000;
+				scd->val2--;
+				if(tsd)
+					clif_mshield(tsd,scd->val2);
+			}
+			else {
+				scd->val3 -= damage;
+			}
+			damage = 0;
+			if(scd->val2 <= 0)
+				status_change_end(bl, SC_BERKANA, -1);
+		}
+
+		// ウェポンブロッキング
+		if(sc->data[SC_WEAPONBLOCKING].timer != -1 && flag&BF_WEAPON && flag&BF_SHORT && skill_num != WS_CARTTERMINATION && skill_num != NPC_EARTHQUAKE) {
+			if(atn_rand()%100 < sc->data[SC_WEAPONBLOCKING].val2) {
+				int lv = sc->data[SC_WEAPONBLOCKING].val1;
+				damage = 0;
+				clif_skill_nodamage(bl,bl,GC_WEAPONBLOCKING,lv,1);
+				status_change_start(bl,SC_WEAPONBLOCKING2,lv,src->id,0,0,skill_get_time2(GC_WEAPONBLOCKING,lv),0);
+			}
+		}
+
+		// クローキングエクシード
+		if(sc->data[SC_CLOAKINGEXCEED].timer != -1 && damage > 0) {
+			if((--sc->data[SC_CLOAKINGEXCEED].val2) <= 0)
+				status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+		}
+
+		// ハルシネーションウォーク
+		if(sc->data[SC_HALLUCINATIONWALK].timer != -1 && damage > 0 && flag&BF_MAGIC) {
+			if(atn_rand()%100 < sc->data[SC_HALLUCINATIONWALK].val1 * 10)
+				damage = 0;
 		}
 	}
 
@@ -787,7 +833,7 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 		case WT_1HSPEAR:
 			// 槍修練(+4 〜 +40,+5 〜 +50) 槍
 			if((skill = pc_checkskill(sd,KN_SPEARMASTERY)) > 0) {
-				if(!pc_isriding(sd))
+				if(!pc_isriding(sd) && !pc_isdragon(sd))
 					damage += (skill * 4);	// ペコに乗ってない
 				else
 					damage += (skill * 5);	// ペコに乗ってる
@@ -796,7 +842,7 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 		case WT_2HSPEAR:
 			// 槍修練(+4 〜 +40,+5 〜 +50) 槍
 			if((skill = pc_checkskill(sd,KN_SPEARMASTERY)) > 0) {
-				if(!pc_isriding(sd))
+				if(!pc_isriding(sd) && !pc_isdragon(sd))
 					damage += (skill * 4);	// ペコに乗ってない
 				else
 					damage += (skill * 5);	// ペコに乗ってる
@@ -897,6 +943,9 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		if(skill_num == HW_MAGICCRASHER || (skill_num == 0 && sc && sc->data[SC_CHANGE].timer != -1)) {
 			// マジッククラッシャーまたはメンタルチェンジ中の通常攻撃ならMATKで殴る
 			damage = status_get_matk1(src);
+		} else  if(sc && sc->data[SC_ENCHANTBLADE].timer != -1) {
+			// エンチャントブレイド
+			damage = status_get_baseatk(src) + status_get_matk1(src);
 		} else {
 			damage = status_get_baseatk(src);
 		}
@@ -914,6 +963,9 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			atkmax = watk;
 		} else if(pc_isriding(sd) && (sd->status.weapon == WT_1HSPEAR || sd->status.weapon == WT_2HSPEAR) && t_size == 1) {
 			// ペコ騎乗していて、槍で中型を攻撃した場合はサイズ修正を100にする
+			atkmax = watk;
+		} else if(pc_isdragon(sd) && (sd->status.weapon == WT_1HSPEAR || sd->status.weapon == WT_2HSPEAR)) {
+			// ドラゴン騎乗中の槍はサイズ修正を100にする
 			atkmax = watk;
 		} else {
 			int rate = (lh == 0)? sd->atkmods[t_size]: sd->atkmods_[t_size];
@@ -946,6 +998,10 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			// マジッククラッシャーまたはメンタルチェンジ中の通常攻撃ならMATKで殴る
 			atkmin = status_get_matk1(src);
 			atkmax = status_get_matk2(src);
+		} else  if(sc && sc->data[SC_ENCHANTBLADE].timer != -1) {
+			// エンチャントブレイド
+			atkmin = status_get_atk(src) + status_get_matk1(src);
+			atkmax = status_get_atk2(src) + status_get_matk2(src);
 		} else {
 			atkmin = status_get_atk(src);
 			atkmax = status_get_atk2(src);
@@ -1361,6 +1417,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd && src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
 				s_ele = src_sd->arrow_ele;
 			break;
+		case GC_VENOMPRESSURE:	// ベナムプレッシャー
+			calc_flag.hitrate += 10 + skill_lv * 4;
+			break;
+		case GC_PHANTOMMENACE:		// ファントムメナス
+			calc_flag.hitrate = 1000000;
+			break;
 		}
 
 		// ここから距離による判定
@@ -1569,7 +1631,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case SG_STAR_WARM:	// 星の温もり
 			if(src_sd) {
 				if(src_sd->status.sp < 2) {
-					status_change_end(src,SkillStatusChangeTable[skill_num],-1);
+					status_change_end(src,SC_WARM,-1);
 					break;
 				}
 				// 殴ったのでSP消費
@@ -2067,6 +2129,74 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case MER_CRASH:		// クラッシュ
 			DMG_FIX( 100+10*skill_lv, 100 );
 			break;
+		case RK_SONICWAVE:	// ソニックウェーブ
+			DMG_FIX( 500 + 100 * skill_lv + status_get_lv(src), 100 );
+			break;
+		case RK_HUNDREDSPEAR:	// ハンドレットスピア
+			if(src_sd) {
+				DMG_FIX( 600 + 40 * skill_lv + status_get_lv(src) + 20 * pc_checkskill(src_sd,LK_SPIRALPIERCE), 100 );
+			} else {
+				DMG_FIX( 600+40*skill_lv, 100 );
+			}
+			break;
+		case RK_WINDCUTTER:	// ウィンドカッター
+			DMG_FIX( 100 + 50 * skill_lv + status_get_lv(src), 100 );
+			break;
+		case RK_IGNITIONBREAK:	// イグニッションブレイク
+			{
+				int dmg = 200 + 200 * skill_lv;
+
+				if(wflag == 2)			// 遠距離
+					dmg /= 2;
+				else if(wflag == 1)		// 中距離
+					dmg -= 100;
+				if(s_ele == ELE_FIRE)	// 火属性武器装備時
+					dmg = dmg * 150 / 100;
+				DMG_FIX( dmg + status_get_lv(src), 100 );
+			}
+			break;
+		case RK_DRAGONBREATH:	// ドラゴンブレス
+			{
+				int lv = (src_sd)? pc_checkskill(src_sd,RK_DRAGONTRAINING): 0;
+				DMG_FIX( 50 + (50 * skill_lv) + (5 * lv) + (status_get_hp(src) / status_get_max_hp(src)) + (status_get_sp(src) / status_get_max_sp(src)), 100 );
+			}
+			break;
+		case RK_CRUSHSTRIKE:	// クラッシュストライク
+			DMG_FIX( 1000, 100 );
+			break;
+		case RK_STORMBLAST:		// ストームブラスト
+			DMG_FIX( 300 + status_get_lv(src), 100 );
+			break;
+		case RK_PHANTOMTHRUST:	// ファントムスラスト
+			DMG_FIX( 50 * skill_lv + status_get_lv(src), 100 );
+			break;
+		case GC_CROSSIMPACT:	// クロスインパクト
+			DMG_FIX( 1150 + 50 * skill_lv, 100 );
+			break;
+		case GC_DARKILLUSION:	// ダークイリュージョン
+			DMG_FIX( 100, 100 );
+			break;
+		case GC_COUNTERSLASH:	// カウンタースラッシュ
+			DMG_FIX( 300 + 100 * skill_lv + status_get_agi(src), 100 );
+			break;
+		case GC_VENOMPRESSURE:	// ベナムプレッシャー
+			DMG_FIX( 1000, 100 );
+			break;
+		case GC_PHANTOMMENACE:	// ファントムメナス
+			DMG_FIX( 300, 100 );
+			break;
+		case GC_ROLLINGCUTTER:	// ローリングカッター
+			DMG_FIX( 100 + 20 * skill_lv, 100 );
+			break;
+		case GC_CROSSRIPPERSLASHER:	// クロスリッパースラッシャー
+			if(sc && sc->data[SC_ROLLINGCUTTER].timer != -1) {
+				wd.div_ += sc->data[SC_ROLLINGCUTTER].val1 - 1;
+			}
+			DMG_FIX( 160 + 40 * skill_lv * wd.div_, 100 );
+			break;
+		case AB_DUPLELIGHT_MELEE:	// デュプルライト(物理)
+			DMG_FIX( 100 + 10 * skill_lv, 100 );
+			break;
 		}
 		if(skill_lv < 0)
 			calc_flag.nocardfix = 1;
@@ -2167,6 +2297,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if( ((calc_flag.rh && !calc_flag.idef) || (calc_flag.lh && !calc_flag.idef_)) && t_def1 < 1000000 )
 			{
 				int vitbonusmax;
+
+				// エクスピアシオ
+				if(sc && sc->data[SC_EXPIATIO].timer != -1) {
+					t_def1 -= t_def1 * sc->data[SC_EXPIATIO].val2 / 100;
+					t_def2 -= t_def2 * sc->data[SC_EXPIATIO].val2 / 100;
+				}
 
 				if(battle_config.vit_penalty_type > 0 && (!t_sc || t_sc->data[SC_STEELBODY].timer == -1)) {
 					int target_count = 1;
@@ -2284,6 +2420,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 				if((--sc->data[SC_SACRIFICE].val2) <= 0)
 					status_change_end(src, SC_SACRIFICE,-1);
+			}
+			// ジャイアントグロウス
+			if(sc->data[SC_TURISUSS].timer != -1 && wd.flag&BF_SHORT && !skill_num) {
+				if(atn_rand() % 10000 < 500) {
+					wd.damage *= 3;
+				}
+				if(src_sd && atn_rand() % 10000 < 100) {
+					pc_break_equip(src_sd, EQP_WEAPON);
+				}
 			}
 		}
 
@@ -2555,6 +2700,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			cardfix = cardfix*(100-t_sc->data[SC_DEFENDER].val2)/100;
 		if(t_sc->data[SC_ADJUSTMENT].timer != -1 && wd.flag&BF_LONG)	// アジャストメント状態で遠距離攻撃
 			cardfix -= 20;
+		if(t_sc->data[SC_VENOMIMPRESS].timer != -1 && s_ele == ELE_POISON)		// ベナムインプレス
+			cardfix += t_sc->data[SC_VENOMIMPRESS].val2;
+		if(t_sc->data[SC_ORATIO].timer != -1 && s_ele == ELE_HOLY)		// オラティオ
+			cardfix += t_sc->data[SC_ORATIO].val2;
 		if(cardfix != 100) {
 			DMG_FIX( cardfix, 100 );	// ステータス異常補正によるダメージ減少
 		}
@@ -3056,11 +3205,82 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			mgd.damage = (skill_lv > 6)? 666: skill_lv*100;
 			normalmagic_flag = 0;
 			break;
+		case AB_JUDEX:		// ジュデックス
+			MATK_FIX( ((skill_lv < 5)? 280 + 20 * skill_lv: 400) / mgd.div_, 100 );
+			break;
+		case AB_ADORAMUS:	// アドラムス
+			MATK_FIX( (200 + 100 * skill_lv) / mgd.div_, 100 );
+			break;
+		case AB_EPICLESIS:	// エピクレシス
+			ele = ELE_HOLY;
+			mgd.damage = (skill_lv > 6)? 388: 50*skill_lv;
+			normalmagic_flag = 0;
+			break;
+		case AB_DUPLELIGHT_MAGIC:	// デュプルライト(魔法)
+			MATK_FIX( 200 + 20 * skill_lv, 100 );
+			break;
+		case WL_SOULEXPANSION:		// ソウルエクスパンション
+			if(t_sc && t_sc->data[SC_WHITEIMPRISON].timer != -1) {
+				status_change_end(target,SC_WHITEIMPRISON,-1);
+				MATK_FIX( (200 + 50 * skill_lv) * 2, 100 );
+			} else {
+				MATK_FIX( 200 + 50 * skill_lv, 100 );
+			}
+			break;
+		case WL_FROSTMISTY:	// フロストミスティ
+			MATK_FIX( 100, 100 );
+			break;
+		case WL_JACKFROST:	// ジャックフロスト
+			MATK_FIX( 200 + 60 * skill_lv, 100 );
+			break;
+		case WL_DRAINLIFE:	// ドレインライフ
+			MATK_FIX( 500 + 100 * skill_lv, 100 );
+			break;
+		case WL_CRIMSONROCK:	// クリムゾンロック
+			MATK_FIX( (1300 + 300 * skill_lv) / mgd.div_, 100 );
+			break;
+		case WL_HELLINFERNO:	// ヘルインフェルノ
+			MATK_FIX( 240 + 60 * skill_lv, 100 );
+			break;
+		case WL_COMET:	// コメット
+			if(flag == 3) {			// 遠距離
+				MATK_FIX( (800 + 200 * skill_lv) / mgd.div_, 100 );
+			} else if(flag == 2) {		// 中距離
+				MATK_FIX( (1200 + 300 * skill_lv) / mgd.div_, 100 );
+			} else if(flag == 1) {		// 近距離
+				MATK_FIX( (1600 + 400 * skill_lv) / mgd.div_, 100 );
+			}else {		// 中心
+				MATK_FIX( (2500 + 500 * skill_lv) / mgd.div_, 100 );
+			}
+			break;
+		case WL_CHAINLIGHTNING:		// チェインライトニング
+		case WL_CHAINLIGHTNING_ATK:	// チェインライトニング(連鎖)
+			MATK_FIX( 400 + 100 * skill_lv, 100 );
+			break;
+		case WL_EARTHSTRAIN:	// アースストレイン
+			MATK_FIX( 200 + 10 * skill_lv, 100 );
+			break;
+		case WL_TETRAVORTEX_FIRE:		/* テトラボルテックス(火) */
+		case WL_TETRAVORTEX_WATER:		/* テトラボルテックス(水) */
+		case WL_TETRAVORTEX_WIND:		/* テトラボルテックス(風) */
+		case WL_TETRAVORTEX_GROUND:		/* テトラボルテックス(地) */
+			MATK_FIX( 500 + 500 * skill_lv, 100 );
+			break;
+		case WL_SUMMON_ATK_FIRE:		/* サモンファイアボール(攻撃) */
+		case WL_SUMMON_ATK_WIND:		/* サモンボールライトニング(攻撃) */
+		case WL_SUMMON_ATK_WATER:		/* サモンウォーターボール(攻撃) */
+		case WL_SUMMON_ATK_GROUND:		/* サモンストーン(攻撃) */
+			MATK_FIX( 50 + 50 * skill_lv, 100 );
+			break;
 	}
 
 	/* ４．一般魔法ダメージ計算 */
 	if(normalmagic_flag) {
 		int rate = 100;
+		if (sc && sc->data[SC_RECOGNIZEDSPELL].timer != -1) {	// リゴグナイズドスペル
+			matk1 = (matk1 > matk2)? matk1: matk2;
+			matk2 = (matk2 > matk1)? matk2: matk1;
+		}
 		if(matk1 > matk2)
 			mgd.damage = matk2+atn_rand()%(matk1-matk2+1);
 		else
@@ -3475,13 +3695,13 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	sc   = status_get_sc(src);
 	t_sc = status_get_sc(target);
 
-	if(sc && sc->opt1 > 0) {
+	if(sc && sc->opt1 > 0 && sc->opt1 != 7) {
 		unit_stopattack(src);
 		return 0;
 	}
 
-	// 自分が白羽・強制移動・魅惑のウィンク中はダメ
-	if(sc && (sc->data[SC_BLADESTOP].timer != -1 || sc->data[SC_FORCEWALKING].timer != -1 || sc->data[SC_WINKCHARM].timer != -1)) {
+	// 自分が白羽・強制移動・魅惑のウィンク・ホワイトインプリズン中はダメ
+	if(sc && (sc->data[SC_BLADESTOP].timer != -1 || sc->data[SC_FORCEWALKING].timer != -1 || sc->data[SC_WINKCHARM].timer != -1 || sc->data[SC_WHITEIMPRISON].timer != -1)) {
 		unit_stopattack(src);
 		return 0;
 	}
@@ -3529,6 +3749,15 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			{
 				rdamage += damage * t_sc->data[SC_REFLECTSHIELD].val2 / 100;
 				if(rdamage < 1) rdamage = 1;
+			}
+			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1)	// デスバウンド反射
+			{
+				rdamage += damage * t_sc->data[SC_DEATHBOUND].val2 / 100;
+				if(rdamage < 1) rdamage = 1;
+				wd.damage = rdamage / 2;	// 反射ダメージの半分使用者に返る
+				clif_skill_damage(target, src, tick, wd.amotion, wd.dmotion, rdamage, 0, RK_DEATHBOUND, t_sc->data[SC_DEATHBOUND].val1, 1);
+				clif_skill_nodamage(target, target, RK_DEATHBOUND, t_sc->data[SC_DEATHBOUND].val1, 1);
+				status_change_end(target,SC_DEATHBOUND,-1);
 			}
 		} else if(wd.flag&BF_LONG) {
 			if(tsd && tsd->long_weapon_damage_return > 0) {
@@ -3634,6 +3863,15 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				pc_heal(sd,0,-sp);
 		}
 	}
+	// デュプルライト
+	if(sc && sc->data[SC_DUPLELIGHT].timer != -1) {
+		if(atn_rand()%100 < sc->data[SC_DUPLELIGHT].val2) {
+			skill_addtimerskill(src,tick+status_get_adelay(src) / 2,target->id,0,0,AB_DUPLELIGHT_MELEE,sc->data[SC_DUPLELIGHT].val1,tick,flag);
+		}
+		else if(atn_rand()%100 < sc->data[SC_DUPLELIGHT].val3) {
+			skill_addtimerskill(src,tick+status_get_adelay(src) / 2,target->id,0,0,AB_DUPLELIGHT_MAGIC,sc->data[SC_DUPLELIGHT].val1,tick,flag);
+		}
+	}
 
 	// カードによるオートスペル
 	if(sd && target != &sd->bl && (wd.damage > 0 || wd.damage2 > 0))
@@ -3712,6 +3950,16 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			if(t_sc->data[SC_POISONREACT].val2 <= 0)
 				status_change_end(target,SC_POISONREACT,-1);
 		}
+		if(t_sc->data[SC_HAGALAZ].timer != -1 && wd.flag&BF_WEAPON) {	// ストーンハードスキン
+			t_sc->data[SC_HAGALAZ].val3 -= (wd.damage + wd.damage2);
+			if(t_sc->data[SC_HAGALAZ].val3 <= 0)
+				status_change_end(target,SC_HAGALAZ,-1);
+			if(sd && atn_rand() % 10000 < 500) {
+				pc_break_equip(sd, EQP_WEAPON);
+			} else {
+				status_change_start(src,SC_STRIPWEAPON,1,0,0,0,10000,0);
+			}
+		}
 	}
 
 	map_freeblock_unlock();
@@ -3756,7 +4004,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		return 0;
 
 	if(ssc) {		// 自分が強制移動、魅惑のウィンク中、スタン、石化、凍結、睡眠なら何もしない
-		if(ssc->data[SC_FORCEWALKING].timer != -1 || ssc->data[SC_WINKCHARM].timer != -1 || ssc->opt1 > 0)
+		if(ssc->data[SC_FORCEWALKING].timer != -1 || ssc->data[SC_WINKCHARM].timer != -1 || (ssc->opt1 > 0 && ssc->opt1 != 7))
 			return 0;
 	}
 	if(sc) {
@@ -3976,6 +4224,16 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				{
 					rdamage += damage * sc->data[SC_REFLECTSHIELD].val2 / 100;	// 跳ね返し計算
 					if(rdamage < 1) rdamage = 1;
+				}
+				// デスバウンド時
+				if(sc && sc->data[SC_DEATHBOUND].timer != -1)
+				{
+					rdamage += damage * sc->data[SC_DEATHBOUND].val2 / 100;
+					if(rdamage < 1) rdamage = 1;
+					damage = rdamage / 2;	// 反射ダメージの半分使用者に返る
+					clif_skill_damage(dsrc, src, tick, dmg.amotion, dmg.dmotion, rdamage, 0, RK_DEATHBOUND, sc->data[SC_DEATHBOUND].val1, 1);
+					clif_skill_nodamage(dsrc, dsrc, RK_DEATHBOUND, sc->data[SC_DEATHBOUND].val1, 1);
+					status_change_end(dsrc,SC_DEATHBOUND,-1);
 				}
 			} else if(dmg.flag&BF_LONG) {	// 遠距離攻撃時
 				if(tsd) {		// 対象がPCの時
@@ -4198,7 +4456,17 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			homun_heal(hd,damage/5,0);
 		}
 	}
-
+	/*ストーンハードスキン*/
+	if(attack_type&BF_WEAPON && sc && sc->data[SC_HAGALAZ].timer != -1) {
+		sc->data[SC_HAGALAZ].val3 -= (dmg.damage + dmg.damage2);
+		if(sc->data[SC_HAGALAZ].val3 <= 0)
+			status_change_end(bl,SC_HAGALAZ,-1);
+		if(sd && atn_rand() % 10000 < 500) {
+			pc_break_equip(sd, EQP_WEAPON);
+		} else {
+			status_change_start(src,SC_STRIPWEAPON,1,0,0,0,10000,0);
+		}
+	}
 	map_freeblock_unlock();
 
 	return dmg.damage+dmg.damage2;	/* 与ダメを返す */

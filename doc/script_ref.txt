@@ -997,6 +997,11 @@ AurigaNPCScript
 
 			ペコペコに乗ります。
 
+		setdragon命令
+			setdragon;
+
+			ドラゴンに騎乗します。
+
 		monster命令
 			monster <gatname>,<x>,<y>,<mobname>,<mobid>,<num>[,<event>[,<guild_id>]];
 
@@ -2839,6 +2844,11 @@ AurigaNPCScript
 			checkriding()
 
 			ペコペコに乗っていたいら１を、そうでなければ０を返します
+
+		checkdragon関数
+			checkdragon()
+
+			ドラゴンに乗っていたいら１を、そうでなければ０を返します
 
 		checksit関数
 			checksit()

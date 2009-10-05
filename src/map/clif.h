@@ -86,6 +86,7 @@ void clif_send_clothcolor(struct block_list *bl);
 void clif_arrowequip(struct map_session_data *sd, int idx);
 void clif_arrow_fail(struct map_session_data *sd, unsigned short type);
 void clif_arrow_create_list(struct map_session_data *sd);
+void clif_poison_list(struct map_session_data *sd, short lv);
 void clif_statusupack(struct map_session_data *sd, int type, int ok, int val);
 void clif_equipitemack(struct map_session_data *sd, int n, int pos, unsigned char ok);
 void clif_unequipitemack(struct map_session_data *sd, int n, int pos, unsigned char ok);
@@ -193,7 +194,7 @@ void clif_angel_message(struct map_session_data *sd);
 void clif_feel_display(struct map_session_data *sd, int skilllv);
 
 void clif_status_load(struct map_session_data *sd, int type, unsigned char flag);
-void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick);
+void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick, int val);
 
 void clif_wis_message(int fd,char *nick,char *mes, int mes_len);
 void clif_wis_end(int fd, unsigned short flag);
@@ -234,6 +235,7 @@ void clif_openbook(struct map_session_data *sd, int nameid, int page);
 void clif_msgstringtable(struct map_session_data *sd, int line);
 void clif_send_equipopen(struct map_session_data *sd);
 void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int tick);
+void clif_mshield(struct map_session_data *sd, int num);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

@@ -1264,7 +1264,7 @@ static int pc_calc_skillpoint(struct map_session_data* sd)
 
 	nullpo_retr(0, sd);
 
-	for(i=1; i<MAX_SKILL; i++) {
+	for(i=1; i<MAX_PCSKILL; i++) {
 		if((skill = pc_checkskill2(sd,i)) > 0) {
 			if(!(skill_get_inf2(i)&0x01) || battle_config.quest_skill_learn) {
 				if(!sd->status.skill[i].flag)
@@ -1345,7 +1345,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 		}
 	}
 
-	for(i=0; i<MAX_SKILL; i++) {
+	for(i=0; i<MAX_PCSKILL; i++) {
 		sd->status.skill[i].id = 0;
 		if(sd->status.skill[i].flag) {		// cardスキルなら
 			sd->status.skill[i].lv   = (sd->status.skill[i].flag == 1)? 0: sd->status.skill[i].flag-2;	// 本当のlvに
@@ -4295,7 +4295,7 @@ int pc_runtodir(struct map_session_data *sd)
 			if(sd->sc.data[SC_RUN].val4 > 0)
 				skill_blown(&sd->bl,&sd->bl,skill_get_blewcount(TK_RUN,sd->sc.data[SC_RUN].val1)|SAB_NODAMAGE);
 			status_change_end(&sd->bl,SC_RUN,-1);
-			clif_status_change(&sd->bl,SI_RUN_STOP,1,0);
+			clif_status_change(&sd->bl,SI_RUN_STOP,1,0,0);
 			pc_setdir(sd, dir, head_dir);
 		}
 	} else {
@@ -4321,7 +4321,7 @@ int pc_checkskill(struct map_session_data *sd,int skill_id)
 		return 0;
 	}
 
-	if(skill_id < 0 || skill_id >= MAX_SKILL)
+	if(skill_id < 0 || skill_id >= MAX_PCSKILL)
 		return 0;
 
 	if(sd->cloneskill_id > 0 && skill_id == sd->cloneskill_id)
@@ -4360,7 +4360,7 @@ int pc_checkskill2(struct map_session_data *sd,int skill_id)
 		return 0;
 	}
 
-	if(skill_id < 0 || skill_id >= MAX_SKILL)
+	if(skill_id < 0 || skill_id >= MAX_PCSKILL)
 		return 0;
 
 	if(sd->status.skill[skill_id].id == skill_id)
@@ -4386,6 +4386,9 @@ static int pc_checkallowskill(struct map_session_data *sd)
 		BS_ADRENALINE,
 		BS_ADRENALINE2,
 		GS_GATLINGFEVER,
+		RK_ENCHANTBLADE,
+		GC_POISONINGWEAPON,
+		AB_EXPIATIO,
 	};
 
 	nullpo_retr(0, sd);
@@ -4397,7 +4400,7 @@ static int pc_checkallowskill(struct map_session_data *sd)
 
 	// 武器が合わないならステータス異常を解除
 	for(i=0; i < sizeof(skill_list)/sizeof(skill_list[0]); i++) {
-		int type = SkillStatusChangeTable[skill_list[i]];
+		int type = GetSkillStatusChangeTable(skill_list[i]);
 		if( type >= 0 && sd->sc.data[type].timer != -1 ) {
 			if( !(skill_get_weapontype(skill_list[i]) & mask) )
 				status_change_end(&sd->bl, type, -1);
@@ -4563,16 +4566,16 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 
 		// スパノビはキリエ、イムポ、マニピ、グロ、サフラがかかる
 		if(sd->s_class.job == 23) {
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_KYRIE],10,0,0,0,120000,0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_IMPOSITIO],5,0,0,0,120000,0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_MAGNIFICAT],5,0,0,0,120000,0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_GLORIA],5,0,0,0,120000,0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[PR_SUFFRAGIUM],3,0,0,0,120000,0);
+			status_change_start(&sd->bl,SC_KYRIE,10,0,0,0,120000,0);
+			status_change_start(&sd->bl,SC_IMPOSITIO,5,0,0,0,120000,0);
+			status_change_start(&sd->bl,SC_MAGNIFICAT,5,0,0,0,120000,0);
+			status_change_start(&sd->bl,SC_GLORIA,5,0,0,0,120000,0);
+			status_change_start(&sd->bl,SC_SUFFRAGIUM,3,0,0,0,120000,0);
 			clif_misceffect(&sd->bl,7);	// スパノビ天使
 		}
 		else if(sd->s_class.job >= 24 && sd->s_class.job <= 27) {
-			status_change_start(&sd->bl,SkillStatusChangeTable[AL_BLESSING],10,0,0,0,600000,0);
-			status_change_start(&sd->bl,SkillStatusChangeTable[AL_INCAGI],10,0,0,0,600000,0);
+			status_change_start(&sd->bl,SC_BLESSING,10,0,0,0,600000,0);
+			status_change_start(&sd->bl,SC_INCREASEAGI,10,0,0,0,600000,0);
 			clif_misceffect(&sd->bl,9);	// テコン系天使
 		}
 		else {
@@ -5037,7 +5040,7 @@ void pc_skillup(struct map_session_data *sd, int skill_num)
 {
 	nullpo_retv(sd);
 
-	if(skill_num < 0 || skill_num >= MAX_SKILL)
+	if(skill_num < 0 || skill_num >= MAX_PCSKILL)
 		return;
 
 	if(battle_config.skillup_type && !pc_check_skillup(sd,skill_num))
@@ -5071,7 +5074,7 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 {
 	int i,id;
 
-	for(i=0; i<MAX_SKILL; i++) {
+	for(i=0; i<MAX_PCSKILL; i++) {
 		sd->status.skill[i].id = 0;
 		if(sd->status.skill[i].flag) {	// cardスキルなら、
 			sd->status.skill[i].lv   = (sd->status.skill[i].flag == 1)? 0: sd->status.skill[i].flag-2;	// 本当のlvに
@@ -5081,17 +5084,17 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 
 	if(battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) {
 		// 全てのスキル
-		for(i=1; i<158; i++)
+		for(i = 1; i <= MAX_PCSKILL; i++) {
+			// NPCスキルは除外
+			if(skill_get_inf2(i)&0x02)
+				continue;
+			// 太陽と月と星の悪魔は除外（ペナルティの永続暗闇がきついので）
+			if(i != SG_DEVIL)
+				continue;
+			// アブラカタブラ専用スキルは設定値により取得判定
+			if(i >= 291 && i <= 303 && !battle_config.gm_allskill_addabra)
+				continue;
 			sd->status.skill[i].lv = skill_get_max(i);
-		for(i=210; i<291; i++)
-			sd->status.skill[i].lv = skill_get_max(i);
-		if(battle_config.gm_allskill_addabra) {
-			for(i=291; i<304; i++)
-				sd->status.skill[i].lv = skill_get_max(i);
-		}
-		for(i=304; i<MAX_SKILL; i++) {
-			if(i != SG_DEVIL)	// 太陽と月と星の悪魔は除外（ペナルティの永続暗闇がきついので）
-				sd->status.skill[i].lv = skill_get_max(i);
 		}
 	} else {
 		for(i=0; (id = skill_tree[sd->s_class.upper][sd->s_class.job][i].id) > 0; i++) {
@@ -5173,7 +5176,7 @@ void pc_resetskill(struct map_session_data* sd, int flag)
 	if(flag < 0)
 		flag = battle_config.quest_skill_reset;
 
-	for(i=1; i<MAX_SKILL; i++) {
+	for(i=1; i<MAX_PCSKILL; i++) {
 		if((skill = pc_checkskill2(sd,i)) > 0) {
 			if(!(skill_get_inf2(i)&0x01) || battle_config.quest_skill_learn) {
 				if(!sd->status.skill[i].flag) {
@@ -5281,7 +5284,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 			sd->status.hp = sd->status.max_hp;
 			clif_updatestatus(sd,SP_HP);
 			clif_skill_nodamage(&sd->bl,&sd->bl,MO_STEELBODY,5,1);
-			status_change_start(&sd->bl,SkillStatusChangeTable[MO_STEELBODY],5,0,0,0,skill_get_time(MO_STEELBODY,5),0);
+			status_change_start(&sd->bl,SC_STEELBODY,5,0,0,0,skill_get_time(MO_STEELBODY,5),0);
 			sd->state.snovice_dead_flag = 1;
 			return 0;
 		}
@@ -6074,8 +6077,12 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			else
 				hp = hp * 150 / 100;
 		}
+		if(sd->sc.data[SC_ISHA].timer != -1)		// バイタリティアクティベーション
+			hp = hp * 150 / 100;
 		if(sd->sc.data[SC_CRITICALWOUND].timer != -1)
 			hp = hp * (100 - sd->sc.data[SC_CRITICALWOUND].val1 * 10) / 100;
+		if(sd->sc.data[SC_DEATHHURT].timer != -1)	// デスハート
+			hp = hp * (100 - sd->sc.data[SC_DEATHHURT].val2) / 100;
 	}
 	if(sp > 0) {
 		bonus = (sd->paramc[3]<<1) + 100 + pc_checkskill(sd,MG_SRECOVERY)*10;
@@ -6095,6 +6102,8 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			else
 				sp = sp * 150 / 100;
 		}
+		if(sd->sc.data[SC_ISHA].timer != -1)		// バイタリティアクティベーション
+			sp = sp * 15 / 100;
 	}
 	if(hp+sd->status.hp > sd->status.max_hp)
 		hp = sd->status.max_hp - sd->status.hp;
@@ -6360,10 +6369,13 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 		clif_status_load(sd,SI_FALCON,0);
 	}
 
-	if( (type&0x0020) && !pc_isriding(sd) ) {
+	if( ((type&0x0020) && !pc_isriding(sd)) || ((type&0x80000) && !pc_isdragon(sd)) ) {
 		clif_status_load(sd,SI_RIDING,1);
 	}
-	else if( !(type&0x0020) && pc_isriding(sd) ) {
+	else if( !(type&0x0020) && pc_isriding(sd) && !(type&0x80000) ) {
+		clif_status_load(sd,SI_RIDING,0);
+	}
+	else if( !(type&0x80000) && pc_isdragon(sd) && !(type&0x0020) ) {
 		clif_status_load(sd,SI_RIDING,0);
 	}
 
@@ -6443,6 +6455,20 @@ int pc_setriding(struct map_session_data *sd)
 
 	if(pc_checkskill(sd,KN_RIDING) > 0) { // ライディングスキル所持
 		pc_setoption(sd,0x0020);
+	}
+	return 0;
+}
+
+/*==========================================
+ * ドラゴン設定
+ *------------------------------------------
+ */
+int pc_setdragon(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	if(pc_checkskill(sd,RK_DRAGONTRAINING) > 0) { // ドラゴントレーニングスキル所持
+		pc_setoption(sd,0x80000);
 	}
 	return 0;
 }
@@ -8300,6 +8326,9 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	    sd->sc.data[SC_TRICKDEAD].timer == -1 &&	// 死んだふり状態ではHPが回復しない
 	    sd->sc.data[SC_GOSPEL].timer == -1 &&	// ゴスペル状態ではHPが回復しない
 	    sd->sc.data[SC_BERSERK].timer == -1 &&	// バーサーク状態ではHPが回復しない
+	    sd->sc.data[SC_MAGICMUSHROOM].timer == -1 &&	// マジックマッシュルーム状態ではHPが回復しない
+	    sd->sc.data[SC_PYREXIA].timer == -1 &&	// パイレックシア状態ではHPが回復しない
+	    sd->sc.data[SC_LEECHEND].timer == -1 &&	// リーチエンド状態ではHPが回復しない
 	    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 	{
 		pc_natural_heal_hp(sd);
@@ -8307,6 +8336,10 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		    sd->sc.data[SC_EXTREMITYFIST].timer == -1 &&	// 阿修羅状態ではSPが回復しない
 		    sd->sc.data[SC_DANCING].timer == -1 &&		// ダンス状態ではSPが回復しない
 		    sd->sc.data[SC_BERSERK].timer == -1 &&		// バーサーク状態ではSPが回復しない
+		    sd->sc.data[SC_ISHA].timer == -1 &&		// バイタリティアクティベーション状態ではSPが回復しない
+		    sd->sc.data[SC_WEAPONBLOCKING].timer == -1 &&		// ウェポンブロッキング状態ではSPが回復しない
+		    sd->sc.data[SC_TOXIN].timer == -1 &&	// トキシン状態ではSPが回復しない
+		    sd->sc.data[SC_OBLIVIONCURSE].timer == -1 &&		// オブリビオンカース状態ではSPが回復しない
 		    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 			pc_natural_heal_sp(sd);
 	} else {
@@ -8583,7 +8616,7 @@ int pc_readdb(void)
 			continue;
 
 		skillid = atoi(split[2]);
-		if(skillid < 0 || skillid >= MAX_SKILL)
+		if(skillid < 0 || skillid > MAX_PCSKILL)
 			continue;
 
 		st = skill_tree[upper][i];
