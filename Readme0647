@@ -1,4 +1,23 @@
 ----------------------------------------
+//0680 [2009/10/07] by popori
+
+・db系統の更新が全て巻き戻っているので、再度変更
+(skill_db.txt skill_db2.txt skill_unit_db.txt skill_cast_db.txt )
+　dragontail789さん、cornusさんに感謝
+
+・ヘルジャッジメントの範囲をLv10の時のみ27×27にする (skill_unit_db.txt)
+　Blazeさんに感謝
+
+・ドキュメントの追記 (client_packet.txt)
+
+・0679のコンパイル警告を修正 (skill.c)
+
+・0679以降@allskill、/allskillが正常に動作しなくなっていたのを修正 (pc.c)
+　NP3228さん、dragontail789さんに感謝
+
+・影斬りの移動効果をGvGMAPでは発動しないよう修正 (skill.c)
+
+----------------------------------------
 //0679 [2009/10/06] by Blaze
 
 ・3-1次職スキル暫定実装（一部未実装）

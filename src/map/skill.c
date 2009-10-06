@@ -2638,18 +2638,20 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 						break;
 					}
 				}
-				sd->ud.to_x = sd->bl.x + dx;
-				sd->ud.to_y = sd->bl.y + dy;
 				clif_skill_poseffect(&sd->bl,skillid,skilllv,sd->bl.x,sd->bl.y,tick);
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
-				clif_walkok(sd);
-				clif_move(&sd->bl);
-				if(dx < 0) dx = -dx;
-				if(dy < 0) dy = -dy;
-				sd->ud.attackabletime = sd->ud.canmove_tick = tick + sd->speed * ((dx > dy)? dx:dy);
-				if(sd->ud.canact_tick < sd->ud.canmove_tick)
-					sd->ud.canact_tick = sd->ud.canmove_tick;
-				unit_movepos(&sd->bl,sd->ud.to_x,sd->ud.to_y,0);
+				if(!map[src->m].flag.gvg) {
+					sd->ud.to_x = sd->bl.x + dx;
+					sd->ud.to_y = sd->bl.y + dy;
+					clif_walkok(sd);
+					clif_move(&sd->bl);
+					if(dx < 0) dx = -dx;
+					if(dy < 0) dy = -dy;
+					sd->ud.attackabletime = sd->ud.canmove_tick = tick + sd->speed * ((dx > dy)? dx:dy);
+					if(sd->ud.canact_tick < sd->ud.canmove_tick)
+						sd->ud.canact_tick = sd->ud.canmove_tick;
+					unit_movepos(&sd->bl,sd->ud.to_x,sd->ud.to_y,0);
+				}
 			} else {
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
 			}
@@ -6406,7 +6408,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sd == NULL)
 			break;
 		if(flag&1 || sd->status.party_id == 0) {
-			int lv;
+			int lv = 0;
 
 			if(dstsd && dstsd->special_state.no_magic_damage)
 				break;
@@ -6487,11 +6489,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(dstsd && dstsd->special_state.no_magic_damage)
 				break;
 			sc = status_get_sc(bl);
-			if(skillid == AB_LAUDAAGNUS && sc && sc->data[SC_FREEZE].timer != -1 || sc->data[SC_STONE].timer != -1 || sc->data[SC_BLIND].timer != -1) {
+			if(skillid == AB_LAUDAAGNUS && sc && (sc->data[SC_FREEZE].timer != -1 || sc->data[SC_STONE].timer != -1 || sc->data[SC_BLIND].timer != -1)) {
 				status_change_end(bl, SC_FREEZE, -1);
 				status_change_end(bl, SC_STONE, -1);
 				status_change_end(bl, SC_BLIND, -1);
-			} else if(skillid == AB_LAUDARAMUS && sc && sc->data[SC_SILENCE].timer != -1 || sc->data[SC_SLEEP].timer != -1 || sc->data[SC_STUN].timer != -1) {
+			} else if(skillid == AB_LAUDARAMUS && sc && (sc->data[SC_SILENCE].timer != -1 || sc->data[SC_SLEEP].timer != -1 || sc->data[SC_STUN].timer != -1)) {
 				status_change_end(bl, SC_SILENCE, -1);
 				status_change_end(bl, SC_SLEEP, -1);
 				status_change_end(bl, SC_STUN, -1);

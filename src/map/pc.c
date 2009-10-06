@@ -5089,7 +5089,7 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 			if(skill_get_inf2(i)&0x02)
 				continue;
 			// 太陽と月と星の悪魔は除外（ペナルティの永続暗闇がきついので）
-			if(i != SG_DEVIL)
+			if(i == SG_DEVIL)
 				continue;
 			// アブラカタブラ専用スキルは設定値により取得判定
 			if(i >= 291 && i <= 303 && !battle_config.gm_allskill_addabra)
