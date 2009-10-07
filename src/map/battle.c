@@ -2332,7 +2332,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(target_sd && (skill = pc_checkskill(target_sd,AL_DP)) > 0) {
 					int s_race = status_get_race(src);
 					if(battle_check_undead(s_race,status_get_elem_type(src)) || s_race == RCT_DEMON)
-						t_def2 += ((300 + 4 * target_sd->status.base_level) * skill + 50) / 100;
+						t_def2 += ((300 + 4 * target_sd->status.base_level) * skill) / 100;
 				}
 				vitbonusmax = (t_vit / 20) * (t_vit / 20) - 1;
 

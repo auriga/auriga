@@ -1285,7 +1285,7 @@ static int pc_calc_skillpoint(struct map_session_data* sd)
  */
 int pc_calc_skilltree(struct map_session_data *sd)
 {
-	int i, c, s;
+	int i, c, s, l;
 	int tk_ranker_bonus = 0;
 
 	nullpo_retr(0, sd);
@@ -1574,6 +1574,16 @@ int pc_calc_skilltree(struct map_session_data *sd)
 				sd->status.skill[BA_APPLEIDUN].lv   = lv;
 				sd->status.skill[BA_APPLEIDUN].flag = 1;
 			}
+		}
+	}
+
+	// テコンランカーボーナス
+	if(sd->status.class_ == PC_CLASS_TK && sd->status.base_level >= 90 && ranking_get_pc_rank(sd,RK_TAEKWON) > 0)
+	{
+		for(l = 411; l <= 426; l++) {
+			sd->status.skill[l].id = l;
+			sd->status.skill[l].lv = skill_get_max(l);
+			sd->status.skill[l].flag = 1;
 		}
 	}
 
@@ -5515,7 +5525,14 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		// 全ての処理が完了してからカイゼルによる復活
 		pc_setstand(sd);
 		clif_skill_nodamage(&sd->bl,&sd->bl,ALL_RESURRECTION,4,1);
-		sd->status.hp = sd->status.max_hp * kaizel_lv / 10;
+		// オシリスカード
+		if(sd->special_state.restart_full_recover) {
+			sd->status.hp = sd->status.max_hp;
+			sd->status.sp = sd->status.max_sp;
+			clif_updatestatus(sd,SP_SP);
+		} else {
+			sd->status.hp = sd->status.max_hp * kaizel_lv / 10;
+		}
 		clif_updatestatus(sd,SP_HP);
 		clif_resurrection(&sd->bl,1);
 		clif_skill_nodamage(&sd->bl,&sd->bl,PR_KYRIE,kaizel_lv,1);
