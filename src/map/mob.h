@@ -23,7 +23,7 @@
 #define _MOB_H_
 
 #define MOB_ID_MIN 1001
-#define MOB_ID_MAX 2500
+#define MOB_ID_MAX 2501
 #define MOB_ID_DEFAULT 1002
 #define MAX_RAND_MOB_TYPE	10
 #define MAX_RAND_MOB_ENTRY	1000

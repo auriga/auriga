@@ -1236,12 +1236,9 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 	case WL_EARTHSTRAIN:	/* アースストレイン */
 		{
-			int i, rate = 0, tmprate = 600;
-			for(i = 0; i < skilllv; i++) {
-				rate += tmprate;
-				tmprate += 200;
-			}
+			int rate = 100 * skilllv * skilllv + 700 * skilllv + 600;
 			if(dstsd) {
+				int i;
 				for(i=0; i<MAX_INVENTORY; i++) {
 					if( dstsd->status.inventory[i].equip & EQP_WEAPON &&
 						(!tsc || (tsc->data[SC_CP_WEAPON].timer == -1 && tsc->data[SC_STRIPWEAPON].timer == -1)) ) {
@@ -3419,11 +3416,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		if(flag&1) {
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1]) {
-				int x = skill_area_temp[2], y = skill_area_temp[3];
+				int dist = unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
 				int type;
-				if(unit_distance(bl->x,bl->y,x,y) > 2)
-					type = 2;	// 遠距離
-				else if(unit_distance(bl->x,bl->y,x,y) > 1)
+				if(dist > 2)
+					dist = 2;	// 遠距離
+				else if(dist > 1)
 					type = 1;	// 中距離
 				else
 					type = 0;	// 近距離
@@ -3605,13 +3602,13 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case WL_COMET:				/* コメット */
 		if(bl->id != skill_area_temp[1]) {
-			int x = skill_area_temp[2], y = skill_area_temp[3];
+			int dist = unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
 			int type;
-			if(unit_distance(bl->x,bl->y,x,y) > 5)
+			if(dist > 5)
 				type = 3;	// 遠距離
-			else if(unit_distance(bl->x,bl->y,x,y) > 3)
+			else if(dist > 3)
 				type = 2;	// 中距離
-			else if(unit_distance(bl->x,bl->y,x,y) > 1)
+			else if(dist > 1)
 				type = 1;	// 近距離
 			else
 				type = 0;	// 中心
@@ -7170,31 +7167,17 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case WL_EARTHSTRAIN:		/* アースストレイン */
 		{
-			int i, dir, tmpx, tmpy, addx = 0, addy = 0;
-
-			if(src->x == x && src->y == y)
-				dir = 6;
-			else
-				dir = map_calc_dir(src,x,y);
-
-			if(dir == 1 || dir == 2 || dir == 3)		// 西向き
-				addx = -1;
-			else if(dir == 5 || dir == 6 || dir == 7)	// 東向き
-				addx = 1;
-
-			if(dir == 3 || dir == 4 || dir == 5)		// 南向き
-				addy = -1;
-			else if(dir == 0 || dir == 1 || dir == 7)	// 北向き
-				addy = 1;
-
 			// 初期位置を指定
-			tmpx = src->x + addx * 2;
-			tmpy = src->y + addy * 2;
+			int dir = (src->x == x && src->y == y)? 6: map_calc_dir(src,x,y);
+			int tmpx = src->x + dirx[dir] * 2;
+			int tmpy = src->y + diry[dir] * 2;
+			int i;
+
 			clif_skill_poseffect(src,skillid,skilllv,tmpx,tmpy,tick);
 			for(i = 0; i < 4 + skilllv; i++) {
 				skill_addtimerskill(src,tick+i*100,0,tmpx,tmpy,skillid,skilllv,0,flag);
-				tmpx += addx;
-				tmpy += addy;
+				tmpx += dirx[dir];
+				tmpy += diry[dir];
 			}
 		}
 		break;

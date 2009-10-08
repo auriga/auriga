@@ -363,12 +363,22 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			damage = 0;
 		}
 
-		// ニューマ
-		if( ((sc->data[SC_PNEUMA].timer != -1 || sc->data[SC_TATAMIGAESHI].timer != -1) && damage > 0 &&
-		    flag&(BF_WEAPON|BF_MISC) && flag&BF_LONG && skill_num != NPC_GUIDEDATTACK && skill_num != NPC_EARTHQUAKE) &&
-		    !(src->type == BL_MOB && (skill_num == AC_SHOWER || skill_num == SN_SHARPSHOOTING)) )
-		{
-			damage = 0;
+		// ニューマ・畳返し
+		if((sc->data[SC_PNEUMA].timer != -1 || sc->data[SC_TATAMIGAESHI].timer != -1) && damage > 0 && flag&(BF_WEAPON|BF_MISC) && flag&BF_LONG) {
+			switch(skill_num) {
+				case NPC_GUIDEDATTACK:
+				case NPC_EARTHQUAKE:
+					break;
+				case AC_SHOWER:
+				case SN_SHARPSHOOTING:
+					if(src->type != BL_MOB) {
+						damage = 0;
+					}
+					break;
+				default:
+					damage = 0;
+					break;
+			}
 		}
 
 		// レックスエーテルナ
@@ -2270,6 +2280,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					}
 				}
 			}
+
+			// グランドクロス、グランドダークネスはDEF無視を強制解除
+			if(skill_num == CR_GRANDCROSS || skill_num == NPC_GRANDDARKNESS) {
+				calc_flag.idef  = 0;
+				calc_flag.idef_ = 0;
+			}
 			break;
 		}
 
@@ -2283,10 +2299,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NPC_CRITICALSLASH:
 		case GS_PIERCINGSHOT:
 			break;
-		// グランドクロス、グランドダークネスはDEF無視を強制解除
-		case CR_GRANDCROSS:
-		case NPC_GRANDDARKNESS:
-			calc_flag.idef = 0;
 		default:
 			if(wd.type != 0)	// クリティカル時は無効
 				break;
