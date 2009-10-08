@@ -2158,7 +2158,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case RK_DRAGONBREATH:	// ドラゴンブレス
 			{
 				int lv = (src_sd)? pc_checkskill(src_sd,RK_DRAGONTRAINING): 0;
-				DMG_FIX( 50 + (50 * skill_lv) + (5 * lv) + (status_get_hp(src) / status_get_max_hp(src)) + (status_get_sp(src) / status_get_max_sp(src)), 100 );
+				//DMG_FIX( 50 + (50 * skill_lv) + (5 * lv) + (status_get_hp(src) / status_get_max_hp(src)) + (status_get_sp(src) / status_get_max_sp(src)), 100 );
+				DMG_FIX( 50 + (50 * skill_lv) + (5 * lv), 100 );
 			}
 			break;
 		case RK_CRUSHSTRIKE:	// クラッシュストライク

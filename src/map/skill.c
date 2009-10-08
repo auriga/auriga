@@ -1242,7 +1242,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 				tmprate += 200;
 			}
 			if(dstsd) {
-				for(i=0; i<=MAX_INVENTORY; i++) {
+				for(i=0; i<MAX_INVENTORY; i++) {
 					if( dstsd->status.inventory[i].equip & EQP_WEAPON &&
 						(!tsc || (tsc->data[SC_CP_WEAPON].timer == -1 && tsc->data[SC_STRIPWEAPON].timer == -1)) ) {
 						if(atn_rand() % 10000 < rate) {
@@ -3522,7 +3522,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1]) {
 				sc = status_get_sc(bl);
-				if(sc->option & 0x46) {
+				if(sc && sc->option & 0x46) {
 					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 				}
 			}
@@ -6414,15 +6414,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				break;
 
 			switch(skillid) {
-				case AB_CLEMENTIA:
-					lv = pc_checkskill(sd,AL_BLESSING);
-					break;
-				case AB_CANTO:
-					lv = pc_checkskill(sd,AL_INCAGI);
-				case AB_CHEAL:
-					lv = pc_checkskill(sd,AL_HEAL);
-				default:
-					break;
+				case AB_CLEMENTIA: lv = pc_checkskill(sd,AL_BLESSING); break;
+				case AB_CANTO:     lv = pc_checkskill(sd,AL_INCAGI);   break;
+				case AB_CHEAL:     lv = pc_checkskill(sd,AL_HEAL);     break;
 			}
 			lv = (lv < 1)? 1: lv;
 
@@ -7124,14 +7118,14 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		}
 		break;
 	case NJ_SHADOWJUMP:	/* 影跳び */
-		{
+		if(sd && map[sd->bl.m].flag.gvg) {
+			clif_skill_fail(sd,skillid,0,0);
+		} else {
 			struct status_change *sc = status_get_sc(src);
-			if(sd && map[src->m].flag.gvg) {
-				clif_skill_fail(sd,skillid,0,0);
-			} else if(!sc || sc->data[SC_ANKLE].timer == -1) {
+			if(!sc || sc->data[SC_ANKLE].timer == -1) {
 				// 崖打ち可能セルは無視して移動
-				if(map_getcellp(&map[sd->bl.m],x,y,CELL_CHKPASS)) {
-					unit_movepos(&sd->bl,x,y,0x21);
+				if(map_getcellp(&map[src->m],x,y,CELL_CHKPASS)) {
+					unit_movepos(src,x,y,0x21);
 					status_change_end(src, SC_HIDING, -1);
 				}
 			}

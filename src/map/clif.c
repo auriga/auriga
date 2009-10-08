@@ -10392,7 +10392,7 @@ void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int 
  */
 void clif_mshield(struct map_session_data *sd, int num)
 {
-	unsigned char buf[8];
+	unsigned char buf[10];
 
 	nullpo_retv(sd);
 
