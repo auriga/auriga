@@ -4123,15 +4123,15 @@ void clif_arrow_fail(struct map_session_data *sd, unsigned short type)
  */
 void clif_arrow_create_list(struct map_session_data *sd)
 {
-	int i,c,view,idx;
+	int i, view, idx, c = 0;
 	int fd;
 
 	nullpo_retv(sd);
 
-	fd=sd->fd;
-	WFIFOW(fd,0)=0x1ad;
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x1ad;
 
-	for(i=0,c=0;i<MAX_SKILL_ARROW_DB;i++){
+	for(i = 0; i < MAX_SKILL_ARROW_DB; i++) {
 		if(skill_arrow_db[i].nameid > 0 &&
 		   (idx = pc_search_inventory(sd,skill_arrow_db[i].nameid)) >= 0 &&
 		   !sd->status.inventory[idx].equip)
@@ -4143,8 +4143,8 @@ void clif_arrow_create_list(struct map_session_data *sd)
 			c++;
 		}
 	}
-	WFIFOW(fd,2)=c*2+4;
-	WFIFOSET(fd,WFIFOW(fd,2));
+	WFIFOW(fd,2) = c * 2 + 4;
+	WFIFOSET(fd, WFIFOW(fd,2));
 
 	if(c > 0)
 		sd->state.make_arrow_flag = 1;
@@ -4157,28 +4157,28 @@ void clif_arrow_create_list(struct map_session_data *sd)
  *------------------------------------------*/
 void clif_poison_list(struct map_session_data *sd, short lv)
 {
-	int i, c, j;
+	int i, view, idx, c = 0;
 	int fd;
-	const int poison_list[8] = {12717, 12718, 12719, 12720, 12721, 12722, 12723, 12724};
+	const int poison_list[8] = { 12717, 12718, 12719, 12720, 12721, 12722, 12723, 12724 };
 
 	nullpo_retv(sd);
 
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x1ad;
 
-	for (i = 0, c = 0; i < 8; i++) {
-		if (poison_list[i] > 0 &&
-			(j = pc_search_inventory(sd, poison_list[i])) >= 0 &&
-			!sd->status.inventory[j].equip && sd->status.inventory[j].identify)
+	for(i = 0; i < 8; i++) {
+		if(poison_list[i] > 0 &&
+			(idx = pc_search_inventory(sd, poison_list[i])) >= 0 &&
+			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
 		{
-			if ((j = itemdb_viewid(poison_list[i]) > 0))
-				WFIFOW(fd,c*2+4) = j;
+			if((view = itemdb_viewid(poison_list[i]) > 0))
+				WFIFOW(fd,c*2+4) = view;
 			else
 				WFIFOW(fd,c*2+4) = poison_list[i];
 			c++;
 		}
 	}
-	WFIFOW(fd,2) = c*2+4;
+	WFIFOW(fd,2) = c * 2 + 4;
 	WFIFOSET(fd, WFIFOW(fd,2));
 
 	if(c > 0)
@@ -11896,11 +11896,6 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 	}
 
-	if(skillnum >= THIRD_SKILLID && skillnum < MAX_THIRD_SKILLID) {
-		// 3次職スキル
-		if(DIFF_TICK(tick, sd->skillcooldown[skillnum - THIRD_SKILLID]) < 0)
-			return;
-	}
 	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
 		// ホムスキル
 		struct homun_data *hd = sd->hd;
@@ -11980,6 +11975,11 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	if(DIFF_TICK(tick, sd->skillstatictimer[skilldb_id]) < 0) {
 		clif_skill_fail(sd,skillnum,4,0);
 		return;
+	}
+	if(skillnum >= THIRD_SKILLID && skillnum < MAX_THIRD_SKILLID) {
+		// 3次職スキル
+		if(DIFF_TICK(tick, sd->skillcooldown[skillnum - THIRD_SKILLID]) < 0)
+			return;
 	}
 
 	if(mob_gvmobcheck(sd,bl) == 0)
@@ -12071,11 +12071,6 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 		return;
 	}
 
-	if(skillnum >= THIRD_SKILLID && skillnum < MAX_THIRD_SKILLID) {
-		// 3次職スキル
-		if(DIFF_TICK(tick, sd->skillcooldown[skillnum - THIRD_SKILLID]) < 0)
-			return;
-	}
 	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
 		// ホムスキル
 		struct homun_data *hd = sd->hd;
@@ -12125,6 +12120,11 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	if(DIFF_TICK(tick, sd->skillstatictimer[skilldb_id]) < 0) {
 		clif_skill_fail(sd,skillnum,4,0);
 		return;
+	}
+	if(skillnum >= THIRD_SKILLID && skillnum < MAX_THIRD_SKILLID) {
+		// 3次職スキル
+		if(DIFF_TICK(tick, sd->skillcooldown[skillnum - THIRD_SKILLID]) < 0)
+			return;
 	}
 
 	if(GETPACKETPOS(cmd,4)) {

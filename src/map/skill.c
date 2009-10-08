@@ -2154,13 +2154,11 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		unit_stop_walking(src,0);
 
 		if(src_sd) {
-			if(src_ud->skillid >= THIRD_SKILLID && src_ud->skillid < MAX_THIRD_SKILLID) {	//クールタイムは3次職スキルのみ
+			if(src_ud->skillid >= THIRD_SKILLID && src_ud->skillid < MAX_THIRD_SKILLID) {	// クールタイムは3次職スキルのみ
 				int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 				if(cooldown > 0) {
 					src_sd->skillcooldown[src_ud->skillid - THIRD_SKILLID] = tick + cooldown;
-#if PACKETVER > 15
 					clif_skill_cooldown(src_sd, src_ud->skillid, cooldown);
-#endif
 				}
 			}
 #if PACKETVER > 17
@@ -3493,8 +3491,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* スキルエフェクト表示 */
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			skill_area_temp[1] = src->id;
-			skill_area_temp[2] = src->x;
-			skill_area_temp[3] = src->y;
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-1,src->y-1,src->x+1,src->y+1,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
@@ -3527,8 +3523,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* スキルエフェクト表示 */
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			skill_area_temp[1] = src->id;
-			skill_area_temp[2] = src->x;
-			skill_area_temp[3] = src->y;
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-3,src->y-3,src->x+3,src->y+3,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
@@ -3542,19 +3536,18 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		} else {
 			sc = status_get_sc(src);
-			if(sc && sc->data[SC_ROLLINGCUTTER].timer == -1) {
-				status_change_start(src,SC_ROLLINGCUTTER,1,0,0,0,skill_get_time(skillid,skilllv),0);
-			} else if(sc && sc->data[SC_ROLLINGCUTTER].timer != -1 && sc->data[SC_ROLLINGCUTTER].val1 < 10) {
-				int rolling = ++sc->data[SC_ROLLINGCUTTER].val1;
-				status_change_start(src,SC_ROLLINGCUTTER,rolling,0,0,0,skill_get_time(skillid,skilllv),0);
+			if(sc) {
+				if(sc->data[SC_ROLLINGCUTTER].timer == -1) {
+					status_change_start(src,SC_ROLLINGCUTTER,1,0,0,0,skill_get_time(skillid,skilllv),0);
+				} else if(sc->data[SC_ROLLINGCUTTER].val1 < 10) {
+					int rolling = ++sc->data[SC_ROLLINGCUTTER].val1;
+					status_change_start(src,SC_ROLLINGCUTTER,rolling,0,0,0,skill_get_time(skillid,skilllv),0);
+				}
 			}
 
 			/* スキルエフェクト表示 */
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-
 			skill_area_temp[1] = src->id;
-			skill_area_temp[2] = src->x;
-			skill_area_temp[3] = src->y;
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-1,src->y-1,src->x+1,src->y+1,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
@@ -3703,10 +3696,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		{
 			int heal;
 			int heal_get_jobexp;
-			int lv = skilllv;
+			int lv;
 			if(skillid == AB_HIGHNESSHEAL) {
 				lv = pc_checkskill(sd,AL_HEAL);
-				lv = (lv < 1)? 1: lv;
+				if(lv < 1)
+					lv = 1;
+			} else {
+				lv = skilllv;
 			}
 			heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, lv));
 			sc = status_get_sc(bl);
@@ -6564,8 +6560,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int ele_flag = 0, i;
 			for(i = 0; i < 5; i++) {
 				if(sc->data[SC_SUMMONBALL1 + i].timer != -1) {
-					if((ele_flag&(1 << sc->data[SC_SUMMONBALL1 + i].val2)) == 0) {	//未消費属性ならば
-						ele_flag |= 1 << sd->sc.data[SC_SUMMONBALL1 + i].val2;		//使用属性のフラグを格納
+					if((ele_flag&(1 << sc->data[SC_SUMMONBALL1 + i].val2)) == 0) {	// 未消費属性ならば
+						ele_flag |= 1 << sd->sc.data[SC_SUMMONBALL1 + i].val2;		// 使用属性のフラグを格納
 						status_change_end(src,SC_SUMMONBALL1 + i,-1);
 					}
 				}
@@ -6597,7 +6593,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 			if(i >= 5 && sd)
 				clif_skill_fail(sd,skillid,0,0);
-			break;
 		}
 		break;
 	case WL_RELEASE:	/* リリース */
@@ -6749,9 +6744,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 				int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 				if(cooldown > 0) {
 					src_sd->skillcooldown[src_ud->skillid - THIRD_SKILLID] = tick + cooldown;
-#if PACKETVER > 15
 					clif_skill_cooldown(src_sd, src_ud->skillid, cooldown);
-#endif
 				}
 			}
 #if PACKETVER > 17
@@ -7854,7 +7847,9 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	nullpo_retr(0, bl);
 	nullpo_retr(0, sg = src->group);
 
-	if(!src->alive || (unit_isdead(bl) && sg->skill_id != AB_EPICLESIS))
+	if(!src->alive)
+		return 0;
+	if(unit_isdead(bl) && sg->skill_id != AB_EPICLESIS)
 		return 0;
 
 	nullpo_retr(0, ss = map_id2bl(sg->src_id));
@@ -7954,14 +7949,17 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				if (status_get_hp(bl) >= status_get_max_hp(bl))
 					break;
 				heal = sg->val2;
-				if(sc && sc->data[SC_CRITICALWOUND].timer != -1)
-					heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
-				if(sc && sc->data[SC_DEATHHURT].timer != -1)	/* デスハート */
-					heal = heal * (100 - sc->data[SC_DEATHHURT].val2) / 100;
+				if(sc) {
+					if(sc->data[SC_CRITICALWOUND].timer != -1)
+						heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
+					if(sc->data[SC_DEATHHURT].timer != -1)	/* デスハート */
+						heal = heal * (100 - sc->data[SC_DEATHHURT].val2) / 100;
+					if(sc->data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
+						heal = 0;
+				}
 				if(bl->type == BL_PC && ((struct map_session_data *)bl)->special_state.no_magic_damage)
 					heal = 0;	/* 黄金蟲カード（ヒール量０） */
-				if(sc && sc->data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
-					heal = 0;
+
 				clif_skill_nodamage(&src->bl,bl,AL_HEAL,heal,1);
 				battle_heal(NULL,bl,heal,0,0);
 				if (diff >= 500)
@@ -8328,9 +8326,8 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		{
 			int race = status_get_race(bl);
 
-			sc = status_get_sc(bl);
-			if (battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON) {
-				if (bl->type == BL_PC) {
+			if(battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON) {
+				if(bl->type == BL_PC) {
 					if(!map[bl->m].flag.pvp && !map[bl->m].flag.gvg)
 						break;
 				}
@@ -9906,7 +9903,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			int ele_flag = 0, i;
 			for(i = 0; i < 5; i++) {
 				if(sd->sc.data[SC_SUMMONBALL1 + i].timer != -1) {
-					ele_flag |= 1 << sd->sc.data[SC_SUMMONBALL1 + i].val2;	//使用属性のフラグを格納
+					ele_flag |= 1 << sd->sc.data[SC_SUMMONBALL1 + i].val2;	// 使用属性のフラグを格納
 				}
 			}
 			if(ele_flag < 0x0F) {
@@ -9925,7 +9922,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 				if(sd->sc.data[SC_SUMMONBALL1 + i].timer == -1)
 					break;
 			}
-			if(i >= 5) {	//召喚数がいっぱい
+			if(i >= 5) {	// 召喚数がいっぱい
 				clif_skill_fail(sd,cnd->id,0,0);
 				return 0;
 			}
@@ -12997,7 +12994,7 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
  */
 void skill_poisoning_weapon(struct map_session_data *sd, int nameid)
 {
-	const int poison[8] = { 12717, 12718, 12719, 12720, 12721, 12722, 12723, 12724};
+	const int poison[8] = { 12717, 12718, 12719, 12720, 12721, 12722, 12723, 12724 };
 	const int type[8] = { SC_PARALIZE, SC_LEECHEND, SC_OBLIVIONCURSE, SC_DEATHHURT, SC_TOXIN, SC_PYREXIA, SC_MAGICMUSHROOM, SC_VENOMBLEED};
 	int i,j;
 

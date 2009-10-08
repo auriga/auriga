@@ -1,4 +1,16 @@
 ----------------------------------------
+//0684 [2009/10/09] by Rayce
+
+・skill_castend_id() および skill_castend_pos() において、PACKETVERが15以下の場合でも
+  clif_skill_cooldown() を呼び出すように簡略化（skill.c）
+
+・3次職スキルのクールタイム判定箇所をstatic timerの部分に移動（clif.c）
+・status_change_start() で、常に icon_tick を初期化するように簡素化（status.c）
+・status_get_max_sp() のデフォルト値を 1 → 0 に変更（status.c）
+
+・全体的な細かい整形（battle.c, clif.c, pc.c, skill.c, status.c）
+
+----------------------------------------
 //0683 [2009/10/09] by Rayce
 
 ・0677のグランドクロスおよびグランドダークネスのDEF無視強制解除処理タイミングを変更（battle.c）

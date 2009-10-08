@@ -2545,9 +2545,9 @@ int status_get_max_hp(struct block_list *bl)
  */
 int status_get_max_sp(struct block_list *bl)
 {
-	int max_sp = 1;
+	int max_sp = 0;
 
-	nullpo_retr(1, bl);
+	nullpo_retr(0, bl);
 
 	if(bl->type == BL_PC && ((struct map_session_data *)bl)) {
 		max_sp = ((struct map_session_data *)bl)->status.max_sp;
@@ -2555,9 +2555,8 @@ int status_get_max_sp(struct block_list *bl)
 		max_sp = ((struct homun_data *)bl)->max_sp;
 	} else if(bl->type == BL_MERC && ((struct merc_data *)bl)) {
 		max_sp = ((struct merc_data *)bl)->max_sp;
-	} else {
-		max_sp = 0;
 	}
+
 	return max_sp;
 }
 
@@ -4374,11 +4373,13 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 	}
 	if(sc_flag) {
 		struct status_change *sc = status_get_sc(bl);
-		if(sc && sc->data[SC_STATUS_UNCHANGE].timer != -1 && status_is_disable(type,0x10)) {
-			rate = 0;	// ゴスペルの全状態異常耐性中なら無効
-		}
-		if(sc && sc->data[SC_NAUTHIZ].timer != -1 && status_is_disable(type,0x10)) {
-			rate = 0;	// リフレッシュ効果中は無効
+		if(sc) {
+			if(sc->data[SC_STATUS_UNCHANGE].timer != -1 && status_is_disable(type,0x10)) {
+				rate = 0;	// ゴスペルの全状態異常耐性中なら無効
+			}
+			if(sc->data[SC_NAUTHIZ].timer != -1 && status_is_disable(type,0x10)) {
+				rate = 0;	// リフレッシュ効果中は無効
+			}
 		}
 	}
 
@@ -4436,7 +4437,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
 	struct status_change    *sc  = NULL;
-	int icon_tick = 0, icon_val = 0, opt_flag = 0, calc_flag = 0, race, mode, elem;
+	int icon_tick = tick, icon_val = 0, opt_flag = 0, calc_flag = 0, race, mode, elem;
 
 	nullpo_retr(0, bl);
 
@@ -4459,9 +4460,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 
 	if(type == SC_AETERNA && (sc->data[SC_STONE].timer != -1 || sc->data[SC_FREEZE].timer != -1))
 		return 0;
-
-	if(StatusIconChangeTable[type] != SI_BLANK)
-		icon_tick = tick;		// tickは変更されることがあるため、アイコン表示用に退避
 
 	// 特殊系
 	if(type >= MAX_STATUSCHANGE) {
@@ -5507,10 +5505,13 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = (100 + 20 * val1) + status_get_lv(bl) + status_get_int(bl);		// 追加魔法攻撃力
 			break;
 		case SC_HAGALAZ:			/* ストーンハードスキン */
-			val3 = status_get_max_hp(bl) * 25 / 100;
-			if(val3 >= status_get_hp(bl))
-				val3 = status_get_hp(bl) - 1;
-			unit_heal(bl, -val3, 0);
+			{
+				int hp = status_get_hp(bl);
+				val3 = status_get_max_hp(bl) * 25 / 100;
+				if(val3 >= hp)
+					val3 = hp - 1;
+				unit_heal(bl, -val3, 0);
+			}
 			break;
 		case SC_BERKANA:			/* ミレニアムシールド */
 			val2 = 2 + atn_rand()%3;
@@ -5530,7 +5531,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_FEAR:				/* 恐怖 */
 			calc_flag = 1;
 			clif_emotion(bl,79);
-			val3 = tick < 2000 ? 2000: tick - 2000;
+			val3 = (tick < 2000) ? 2000: tick - 2000;
 			tick = 2000;
 			break;
 		case SC_VENOMIMPRESS:		/* ベナムインプレス */
@@ -7138,12 +7139,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_WEAPONBLOCKING:		/* ウェポンブロッキング */
 		if((--sc->data[type].val3) > 0) {
 			if(sd) {
-				if(sd->status.sp >= 3) {
-					sd->status.sp -= 3;
-					clif_updatestatus(sd,SP_SP);
-				}
-				else
+				if(sd->status.sp < 3)
 					break;
+				sd->status.sp -= 3;
+				clif_updatestatus(sd,SP_SP);
 			}
 			timer = add_timer(5000+tick, status_change_timer, bl->id, data);
 		}

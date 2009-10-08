@@ -1285,7 +1285,7 @@ static int pc_calc_skillpoint(struct map_session_data* sd)
  */
 int pc_calc_skilltree(struct map_session_data *sd)
 {
-	int i, c, s, l;
+	int i, c, s;
 	int tk_ranker_bonus = 0;
 
 	nullpo_retr(0, sd);
@@ -1580,10 +1580,10 @@ int pc_calc_skilltree(struct map_session_data *sd)
 	// テコンランカーボーナス
 	if(sd->status.class_ == PC_CLASS_TK && sd->status.base_level >= 90 && ranking_get_pc_rank(sd,RK_TAEKWON) > 0)
 	{
-		for(l = 411; l <= 426; l++) {
-			sd->status.skill[l].id = l;
-			sd->status.skill[l].lv = skill_get_max(l);
-			sd->status.skill[l].flag = 1;
+		for(i = 411; i <= 426; i++) {
+			sd->status.skill[i].id = i;
+			sd->status.skill[i].lv = skill_get_max(i);
+			sd->status.skill[i].flag = 1;
 		}
 	}
 

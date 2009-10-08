@@ -312,12 +312,14 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		if(damage_rate != 100)
 			damage = damage*damage_rate/100;
 	}
+
 	if(sc && sc->data[SC_WHITEIMPRISON].timer != -1) {
 		// ホワイトインプリズン状態は念属性以外はダメージを受けない
 		if( (flag&BF_SKILL && skill_get_pl(skill_num) != ELE_GHOST) ||
 			(!(flag&BF_SKILL) && status_get_attack_element(src) != ELE_GHOST) )
 		damage = 0;
 	}
+
 	if(sc && sc->count > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
 		// アスムプティオ
 		if(sc->data[SC_ASSUMPTIO].timer != -1 && damage > 0) {
@@ -511,8 +513,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				scd->val2--;
 				if(tsd)
 					clif_mshield(tsd,scd->val2);
-			}
-			else {
+			} else {
 				scd->val3 -= damage;
 			}
 			damage = 0;
@@ -3235,7 +3236,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case WL_SOULEXPANSION:		// ソウルエクスパンション
 			if(t_sc && t_sc->data[SC_WHITEIMPRISON].timer != -1) {
 				status_change_end(target,SC_WHITEIMPRISON,-1);
-				MATK_FIX( (200 + 50 * skill_lv) * 2, 100 );
+				MATK_FIX( 400 + 100 * skill_lv, 100 );
 			} else {
 				MATK_FIX( 200 + 50 * skill_lv, 100 );
 			}
@@ -3262,7 +3263,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				MATK_FIX( (1200 + 300 * skill_lv) / mgd.div_, 100 );
 			} else if(flag == 1) {		// 近距離
 				MATK_FIX( (1600 + 400 * skill_lv) / mgd.div_, 100 );
-			}else {		// 中心
+			} else {		// 中心
 				MATK_FIX( (2500 + 500 * skill_lv) / mgd.div_, 100 );
 			}
 			break;
@@ -4469,7 +4470,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			homun_heal(hd,damage/5,0);
 		}
 	}
-	/*ストーンハードスキン*/
+	/* ストーンハードスキン */
 	if(attack_type&BF_WEAPON && sc && sc->data[SC_HAGALAZ].timer != -1) {
 		sc->data[SC_HAGALAZ].val3 -= (dmg.damage + dmg.damage2);
 		if(sc->data[SC_HAGALAZ].val3 <= 0)
