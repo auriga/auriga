@@ -80,10 +80,10 @@ struct dbt* numdb_init_(const char *file,int line);
 void* db_search(struct dbt *table,void* key);
 void* db_insert(struct dbt *table,void* key,void* data);
 void* db_erase(struct dbt *table,void* key);
-void db_foreach(struct dbt*,int(*)(void*,void*,va_list),...);
-void db_foreach_sub(struct dbt*,int(*)(void*,void*,va_list), va_list ap);
-void db_clear(struct dbt*,int(*)(void*,void*,va_list),...);
-void db_final(struct dbt*,int(*)(void*,void*,va_list),...);
+int db_foreach(struct dbt*,int(*)(void*,void*,va_list),...);
+int db_foreach_sub(struct dbt*,int(*)(void*,void*,va_list), va_list ap);
+int db_clear(struct dbt*,int(*)(void*,void*,va_list),...);
+int db_final(struct dbt*,int(*)(void*,void*,va_list),...);
 void exit_dbn(void);
 
 // リンクリストDB -- treedb よりも規模が小さいやつ向けのデータベース

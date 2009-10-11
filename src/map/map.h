@@ -1135,10 +1135,10 @@ int map_freeblock_unlock(void);
 
 int map_addblock(struct block_list *);
 int map_delblock(struct block_list *);
-void map_foreachinarea(int (*)(struct block_list*,va_list),int,int,int,int,int,int,...);
-void map_foreachinshootpath(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int dx,int dy,int range,int width,int type,...);
-void map_foreachinmovearea(int (*)(struct block_list*,va_list),int,int,int,int,int,int,int,int,...);
-void map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4],int y[4],int type,...);
+int map_foreachinarea(int (*)(struct block_list*,va_list),int,int,int,int,int,int,...);
+int map_foreachinshootpath(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int dx,int dy,int range,int width,int type,...);
+int map_foreachinmovearea(int (*)(struct block_list*,va_list),int,int,int,int,int,int,int,int,...);
+int map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4],int y[4],int type,...);
 
 //int map_countnearpc(int, int, int); // not use
 
@@ -1150,7 +1150,7 @@ struct skill_unit *map_find_skill_unit_oncell(struct block_list *,int x,int y,in
 int map_addobject(struct block_list *);
 int map_delobject(int);
 int map_delobjectnofree(int id);
-void map_foreachobject(int (*)(struct block_list*,va_list),int,...);
+int map_foreachobject(int (*)(struct block_list*,va_list),int,...);
 
 int map_quit(struct map_session_data *);
 

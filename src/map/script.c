@@ -7336,10 +7336,7 @@ int buildin_getmapusers(struct script_state *st)
  */
 static int buildin_getareausers_sub(struct block_list *bl,va_list ap)
 {
-	int *users=va_arg(ap,int *);
-
-	(*users)++;
-	return 0;
+	return 1;
 }
 
 int buildin_getareausers(struct script_state *st)
@@ -7358,7 +7355,7 @@ int buildin_getareausers(struct script_state *st)
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	map_foreachinarea(buildin_getareausers_sub,m,x0,y0,x1,y1,BL_PC,&users);
+	users = map_foreachinarea(buildin_getareausers_sub,m,x0,y0,x1,y1,BL_PC);
 	push_val(st->stack,C_INT,users);
 	return 0;
 }
@@ -7370,14 +7367,13 @@ int buildin_getareausers(struct script_state *st)
 static int buildin_getareadropitem_sub(struct block_list *bl,va_list ap)
 {
 	int item=va_arg(ap,int);
-	int *amount=va_arg(ap,int *);
 	struct flooritem_data *fitem;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, fitem = (struct flooritem_data *)bl);
 
 	if(fitem->item_data.nameid == item)
-		(*amount) += fitem->item_data.amount;
+		return fitem->item_data.amount;
 
 	return 0;
 }
@@ -7411,7 +7407,7 @@ int buildin_getareadropitem(struct script_state *st)
 		return 0;
 	}
 	if(item > 0) {
-		map_foreachinarea(buildin_getareadropitem_sub,m,x0,y0,x1,y1,BL_ITEM,item,&amount);
+		amount = map_foreachinarea(buildin_getareadropitem_sub,m,x0,y0,x1,y1,BL_ITEM,item);
 	}
 	push_val(st->stack,C_INT,amount);
 
@@ -9684,10 +9680,7 @@ int buildin_select(struct script_state *st)
  */
 static int buildin_getmapmobs_sub(struct block_list *bl,va_list ap)
 {
-	int *count=va_arg(ap,int *);
-
-	(*count)++;
-	return 0;
+	return 1;
 }
 
 int buildin_getmapmobs(struct script_state *st)
@@ -9702,7 +9695,7 @@ int buildin_getmapmobs(struct script_state *st)
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	map_foreachinarea(buildin_getmapmobs_sub,m,0,0,map[m].xs,map[m].ys,BL_MOB,&count);
+	count = map_foreachinarea(buildin_getmapmobs_sub,m,0,0,map[m].xs,map[m].ys,BL_MOB);
 	push_val(st->stack,C_INT,count);
 	return 0;
 }
@@ -9727,7 +9720,7 @@ int buildin_getareamobs(struct script_state *st)
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	map_foreachinarea(buildin_getmapmobs_sub,m,x0,y0,x1,y1,BL_MOB,&count);
+	count = map_foreachinarea(buildin_getmapmobs_sub,m,x0,y0,x1,y1,BL_MOB);
 	push_val(st->stack,C_INT,count);
 	return 0;
 }

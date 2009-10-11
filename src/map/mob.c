@@ -2524,18 +2524,18 @@ int mob_warp(struct mob_data *md,int m,int x,int y,int type)
  */
 static int mob_countslave_sub(struct block_list *bl,va_list ap)
 {
-	int id, *c;
+	int id;
 	struct mob_data *md;
 
 	id = va_arg(ap,int);
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, c  = va_arg(ap,int *));
 	nullpo_retr(0, md = (struct mob_data *)bl);
 
 	if(md->master_id == id)
-		(*c)++;
+		return 1;
+
 	return 0;
 }
 
@@ -2545,14 +2545,11 @@ static int mob_countslave_sub(struct block_list *bl,va_list ap)
  */
 int mob_countslave(struct mob_data *md)
 {
-	int c = 0;
-
 	nullpo_retr(0, md);
 
-	map_foreachinarea(mob_countslave_sub, md->bl.m,
+	return map_foreachinarea(mob_countslave_sub, md->bl.m,
 		0,0,map[md->bl.m].xs-1,map[md->bl.m].ys-1,
-		BL_MOB,md->bl.id,&c);
-	return c;
+		BL_MOB,md->bl.id);
 }
 
 /*==========================================
@@ -2561,14 +2558,11 @@ int mob_countslave(struct mob_data *md)
  */
 static int mob_countslave_area(struct mob_data *md,int range)
 {
-	int c = 0;
-
 	nullpo_retr(0, md);
 
-	map_foreachinarea(mob_countslave_sub, md->bl.m,
+	return map_foreachinarea(mob_countslave_sub, md->bl.m,
 		md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
-		BL_MOB,md->bl.id,&c);
-	return c;
+		BL_MOB,md->bl.id);
 }
 
 /*==========================================

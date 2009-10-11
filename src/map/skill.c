@@ -1502,7 +1502,8 @@ static int skill_area_sub( struct block_list *bl,va_list ap )
 	func     = va_arg(ap,SkillFunc);
 
 	if(battle_check_target(src,bl,flag) > 0)
-		func(src,bl,skill_id,skill_lv,tick,flag);
+		return func(src,bl,skill_id,skill_lv,tick,flag);
+
 	return 0;
 }
 
@@ -1548,8 +1549,7 @@ static int skill_area_trap_sub( struct block_list *bl,va_list ap )
 			return 0;
 	}
 
-	func(src,bl,skill_id,skill_lv,tick,flag);
-	return 0;
+	return func(src,bl,skill_id,skill_lv,tick,flag);
 }
 
 /*==========================================
@@ -1559,12 +1559,10 @@ static int skill_area_trap_sub( struct block_list *bl,va_list ap )
 static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 {
 	struct skill_unit *unit;
-	int *c;
 	int skillid,ug_id;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, c = va_arg(ap,int *));
 	nullpo_retr(0, unit = (struct skill_unit *)bl);
 
 	if (!unit->alive || !unit->group)
@@ -1578,7 +1576,7 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 		case MG_SAFETYWALL:
 		case AL_PNEUMA:
 			if(ug_id == MG_SAFETYWALL || ug_id == AL_PNEUMA) {
-				(*c)++;
+				return 1;
 			}
 			break;
 		case AL_WARP:
@@ -1600,7 +1598,7 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 			    (ug_id >= MA_SKIDTRAP && ug_id <= MA_FREEZINGTRAP) ||
 			    ug_id == HT_TALKIEBOX )
 			{
-				(*c)++;
+				return 1;
 			}
 			break;
 		case HP_BASILICA:
@@ -1609,12 +1607,12 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 			    ug_id == HT_TALKIEBOX ||
 			    ug_id == PR_SANCTUARY )
 			{
-				(*c)++;
+				return 1;
 			}
 			break;
 		default:	// 同じスキルユニットでなければ許可
 			if(ug_id == skillid) {
-				(*c)++;
+				return 1;
 			}
 			break;
 	}
@@ -1624,7 +1622,6 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 
 static int skill_check_unit_range(int m,int x,int y,int skillid,int skilllv)
 {
-	int c = 0;
 	int range = skill_get_unit_range(skillid,skilllv);
 	int layout_type = skill_get_unit_layout_type(skillid,skilllv);
 
@@ -1635,10 +1632,8 @@ static int skill_check_unit_range(int m,int x,int y,int skillid,int skilllv)
 
 	// とりあえず正方形のユニットレイアウトのみ対応
 	range += layout_type;
-	map_foreachinarea(skill_check_unit_range_sub,m,
-			x-range,y-range,x+range,y+range,BL_SKILL,&c,skillid);
-
-	return c;
+	return map_foreachinarea(skill_check_unit_range_sub,m,
+			x-range,y-range,x+range,y+range,BL_SKILL,skillid);
 }
 
 /*==========================================
@@ -1647,12 +1642,10 @@ static int skill_check_unit_range(int m,int x,int y,int skillid,int skilllv)
  */
 static int skill_check_unit_range2_sub( struct block_list *bl,va_list ap )
 {
-	int *c;
 	int skillid;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, c = va_arg(ap,int *));
 
 	if(!(bl->type & BL_CHAR))
 		return 0;
@@ -1664,14 +1657,11 @@ static int skill_check_unit_range2_sub( struct block_list *bl,va_list ap )
 	if(skillid == HP_BASILICA && bl->type == BL_PC)
 		return 0;
 
-	(*c)++;
-
-	return 0;
+	return 1;
 }
 
 static int skill_check_unit_range2(int m,int x,int y,int skillid, int skilllv)
 {
-	int c = 0;
 	int range = skill_get_unit_range(skillid,skilllv);
 	int layout_type = skill_get_unit_layout_type(skillid,skilllv);
 
@@ -1682,10 +1672,8 @@ static int skill_check_unit_range2(int m,int x,int y,int skillid, int skilllv)
 
 	// とりあえず正方形のユニットレイアウトのみ対応
 	range += layout_type;
-	map_foreachinarea(skill_check_unit_range2_sub,m,
-			x-range,y-range,x+range,y+range,BL_CHAR,&c,skillid);
-
-	return c;
+	return map_foreachinarea(skill_check_unit_range2_sub,m,
+			x-range,y-range,x+range,y+range,BL_CHAR,skillid);
 }
 
 /*==========================================
@@ -1737,7 +1725,7 @@ static int skill_area_sub_count(struct block_list *src,struct block_list *target
 {
 	if(skill_area_temp[0] < 0xffff)
 		skill_area_temp[0]++;
-	return 0;
+	return 1;
 }
 
 /*==========================================
@@ -8045,10 +8033,10 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			if(sg->unit_id == UNT_SANDMAN || sg->unit_id == UNT_CLAYMORETRAP) {
 				i++;
 			}
-			map_foreachinarea(skill_count_target,src->bl.m,
+			splash_count = map_foreachinarea(skill_count_target,src->bl.m,
 						src->bl.x-i,src->bl.y-i,
 						src->bl.x+i,src->bl.y+i,
-						(BL_CHAR|BL_SKILL),src,&splash_count);
+						(BL_CHAR|BL_SKILL),src);
 			map_foreachinarea(skill_trap_splash,src->bl.m,
 						src->bl.x-i,src->bl.y-i,
 						src->bl.x+i,src->bl.y+i,
@@ -8803,7 +8791,7 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
  */
 static int skill_check_condition_mob_master_sub(struct block_list *bl,va_list ap)
 {
-	int *c,src_id=0,mob_class=0;
+	int src_id=0,mob_class=0;
 	struct mob_data *md;
 
 	nullpo_retr(0, bl);
@@ -8811,10 +8799,10 @@ static int skill_check_condition_mob_master_sub(struct block_list *bl,va_list ap
 	nullpo_retr(0, md=(struct mob_data*)bl);
 	nullpo_retr(0, src_id=va_arg(ap,int));
 	nullpo_retr(0, mob_class=va_arg(ap,int));
-	nullpo_retr(0, c=va_arg(ap,int *));
 
 	if(md->class_ == mob_class && md->master_id == src_id)
-		(*c)++;
+		return 1;
+
 	return 0;
 }
 
@@ -9643,11 +9631,10 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 
 			if(battle_config.pc_land_skill_limit && maxcount>0) {
 				do{
-					c=0;
-					map_foreachinarea(
+					c = map_foreachinarea(
 						skill_check_condition_mob_master_sub, bl->m, 0, 0, map[bl->m].xs,
 						map[bl->m].ys, BL_MOB, bl->id,
-						(cnd->id==AM_CANNIBALIZE)? summons[n]: 1142, &c
+						(cnd->id==AM_CANNIBALIZE)? summons[n]: 1142
 					);
 					// 今回召喚するmobとは別の種類のmobを召喚していないかもチェック
 					if((cnd->id==AM_CANNIBALIZE && ((c > 0 && n != cnd->lv-1) || (n == cnd->lv-1 && c >= maxcount)))
@@ -11036,7 +11023,6 @@ void skill_autospell(struct map_session_data *sd, int skillid)
  */
 static int skill_sit_count(struct block_list *bl,va_list ap)
 {
-	int *c;
 	int flag;
 	struct map_session_data *sd;
 
@@ -11045,15 +11031,14 @@ static int skill_sit_count(struct block_list *bl,va_list ap)
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
 	flag = va_arg(ap,int);
-	c    = va_arg(ap,int *);
 
 	if(!pc_issit(sd))
 		return 0;
 
 	if(flag&1 && pc_checkskill(sd,RG_GANGSTER) > 0)
-		(*c)++;
+		return 1;
 	else if(flag&2 && sd->s_class.job >= 24 && sd->s_class.job <= 27)
-		(*c)++;
+		return 1;
 
 	return 0;
 }
@@ -11092,10 +11077,9 @@ static int skill_sit_out(struct block_list *bl,va_list ap)
 	flag = va_arg(ap,int);
 
 	if((flag&1 && sd->state.gangsterparadise) || (flag&2 && sd->state.taekwonrest)) {
-		int c = 0;
-		map_foreachinarea(skill_sit_count,bl->m,
+		int c = map_foreachinarea(skill_sit_count,bl->m,
 			bl->x-1,bl->y-1,
-			bl->x+1,bl->y+1,BL_PC,flag,&c);
+			bl->x+1,bl->y+1,BL_PC,flag);
 		if(c < 2) {
 			if(flag&1)
 				sd->state.gangsterparadise = 0;
@@ -11122,10 +11106,9 @@ int skill_sit(struct map_session_data *sd, int type)
 
 	if(type) {
 		// 座った時の処理
-		int c = 0;
-		map_foreachinarea(skill_sit_count,sd->bl.m,
+		int c = map_foreachinarea(skill_sit_count,sd->bl.m,
 			sd->bl.x-1,sd->bl.y-1,
-			sd->bl.x+1,sd->bl.y+1,BL_PC,flag,&c);
+			sd->bl.x+1,sd->bl.y+1,BL_PC,flag);
 		if(c > 1) {
 			// 成功したら効果付与
 			map_foreachinarea(skill_sit_in,sd->bl.m,
@@ -11548,18 +11531,16 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 static int skill_count_target(struct block_list *bl, va_list ap )
 {
 	struct skill_unit *unit;
-	int *c;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
 
 	if((unit = va_arg(ap,struct skill_unit *)) == NULL)
 		return 0;
-	if((c = va_arg(ap,int *)) == NULL)
+	if(battle_check_target(&unit->bl,bl,BCT_ENEMY) <= 0)
 		return 0;
-	if(battle_check_target(&unit->bl,bl,BCT_ENEMY) > 0)
-		(*c)++;
-	return 0;
+
+	return 1;
 }
 
 /*==========================================

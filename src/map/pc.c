@@ -8413,11 +8413,7 @@ static int last_save_fd, save_flag;
 
 static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 {
-	int *users = va_arg(ap,int *);
-
 	nullpo_retr(0, sd);
-
-	(*users)++;
 
 	if(save_flag == 0 && sd->fd > last_save_fd && !sd->state.waitingdisconnect) {
 		intif_save_scdata(sd);
@@ -8437,7 +8433,7 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 		last_save_fd = sd->fd;
 	}
 
-	return 0;
+	return 1;
 }
 
 /*==========================================
@@ -8446,10 +8442,10 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
  */
 static int pc_autosave(int tid,unsigned int tick,int id,void *data)
 {
-	int interval, users = 0;
+	int interval, users;
 
 	save_flag = 0;
-	clif_foreachclient(pc_autosave_sub, &users);
+	users = clif_foreachclient(pc_autosave_sub);
 	if(save_flag == 0)
 		last_save_fd = 0;
 

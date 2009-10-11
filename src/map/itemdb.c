@@ -81,11 +81,7 @@ struct item_data* itemdb_searchname(const char *str)
  */
 int itemdb_idsearch(const int fd, const char *str, int (*func)(void*, void*, va_list))
 {
-	int match = 0;
-
-	numdb_foreach(item_db, func, str, &match, fd);
-
-	return match;
+	return numdb_foreach(item_db, func, str, fd);
 }
 
 /*==========================================

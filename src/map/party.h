@@ -66,6 +66,6 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 int party_loot_share(struct party *p, struct map_session_data *sd, struct item *item_data, int first);
 void party_equip_window(struct map_session_data *sd, int account_id);
 
-void party_foreachsamemap(int (*func)(struct block_list *,va_list),struct map_session_data *sd,int range,...);
+int party_foreachsamemap(int (*func)(struct block_list *,va_list),struct map_session_data *sd,int range,...);
 
 #endif

@@ -537,11 +537,12 @@ struct skill_unit *map_find_skill_unit_oncell(struct block_list *target,int x,in
  * type!=0 ならその種類のみ
  *------------------------------------------
  */
-static void map_foreachinarea_sub(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,va_list ap)
+static int map_foreachinarea_sub(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,va_list ap)
 {
 	int bx, by;
 	struct block_list *bl;
 	int i, blockcount = bl_list_count;
+	int ret = 0;
 
 	if(x0 < 0) x0 = 0;
 	if(y0 < 0) y0 = 0;
@@ -586,26 +587,31 @@ static void map_foreachinarea_sub(int (*func)(struct block_list*,va_list),int m,
 
 	for(i = blockcount; i < bl_list_count; i++) {
 		if(bl_list[i]->prev)	// 有効かどうかチェック
-			func(bl_list[i],ap);
+			ret += func(bl_list[i],ap);
 	}
 
 	map_freeblock_unlock();	// 解放を許可する
 
 	bl_list_count = blockcount;
+
+	return ret;
 }
 
-void map_foreachinarea(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,...)
+int map_foreachinarea(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int type,...)
 {
+	int ret;
 	va_list ap;
 
 	if(m < 0) {
 		printf("map_foreachinarea: invalid map index!! func = 0x%p\n", func);
-		return;
+		return 0;
 	}
 
 	va_start(ap,type);
-	map_foreachinarea_sub(func, m, x0, y0, x1, y1, type, ap);
+	ret = map_foreachinarea_sub(func, m, x0, y0, x1, y1, type, ap);
 	va_end(ap);
+
+	return ret;
 }
 
 /*==========================================
@@ -617,11 +623,12 @@ void map_foreachinarea(int (*func)(struct block_list*,va_list),int m,int x0,int 
  */
 #define swap(x,y) { int t; t = x; x = y; y = t; }
 
-void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
+int map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 	int m,int x0,int y0,int dx,int dy,int range,int width,int type,...)
 {
 	int x1, y1, x2, y2, x3, y3, bx, by;
 	int i, blockcount = bl_list_count;
+	int ret = 0;
 	struct block_list *bl;
 	va_list ap;
 
@@ -786,13 +793,15 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 
 	for(i = blockcount; i < bl_list_count; i++) {
 		if(bl_list[i]->prev)	// 有効かどうかチェック
-			func(bl_list[i],ap);
+			ret += func(bl_list[i],ap);
 	}
 
 	map_freeblock_unlock();	// 解放を許可する
 	va_end(ap);
 
 	bl_list_count = blockcount;
+
+	return ret;
 }
 
 /*==========================================
@@ -801,12 +810,13 @@ void map_foreachinshootpath(int (*func)(struct block_list*,va_list),
  * 対してfuncを呼ぶ
  *------------------------------------------
  */
-void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int dx,int dy,int type,...)
+int map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,int y0,int x1,int y1,int dx,int dy,int type,...)
 {
 	int bx, by, x2, y2, x3, y3;
 	struct block_list *bl;
 	va_list ap;
 	int i, blockcount = bl_list_count;
+	int ret = 0;
 
 	if(dx == 0 || dy == 0) {
 		// 矩形領域の場合
@@ -935,13 +945,15 @@ void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,
 
 	for(i = blockcount; i < bl_list_count; i++) {
 		if(bl_list[i]->prev)	// 有効かどうかチェック
-			func(bl_list[i],ap);
+			ret += func(bl_list[i],ap);
 	}
 
 	map_freeblock_unlock();	// 解放を許可する
 
 	va_end(ap);
 	bl_list_count = blockcount;
+
+	return ret;
 }
 
 
@@ -955,9 +967,9 @@ void map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,
 // 正方形の中に点(x,y) が含まれているかを調べる
 #define map_square_in(p, _x, _y) (x[p+0] <= (_x) && x[p+1] >= (_x) && y[p+0] <= (_y) && y[p+1] >= (_y))
 
-void map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4],int y[4],int type,...)
+int map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4],int y[4],int type,...)
 {
-	int flag = 0, i, j;
+	int flag = 0, i, j, ret = 0;
 	int x0 = 0x7fffffff, x1 = -0x7fffffff;
 	int y0 = 0x7fffffff, y1 = -0x7fffffff;
 	va_list ap;
@@ -974,9 +986,11 @@ void map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4
 	}
 	if( flag ) {
 		va_start(ap,type);
-		map_foreachinarea_sub(func, m, x0, y0, x1, y1, type, ap);
+		ret = map_foreachinarea_sub(func, m, x0, y0, x1, y1, type, ap);
 		va_end(ap);
 	}
+
+	return ret;
 }
 
 /*==========================================
@@ -1058,9 +1072,10 @@ int map_delobject(int id)
  * 全一時obj相手にfuncを呼ぶ
  *------------------------------------------
  */
-void map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
+int map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
 {
 	int i, blockcount = bl_list_count;
+	int ret = 0;
 	va_list ap;
 
 	for(i = MIN_FLOORITEM; i <= last_object_id; i++) {
@@ -1081,13 +1096,15 @@ void map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
 
 	for(i = blockcount; i < bl_list_count; i++) {
 		if( bl_list[i]->prev || bl_list[i]->next )
-			func(bl_list[i],ap);
+			ret += func(bl_list[i],ap);
 	}
 
 	map_freeblock_unlock();
 
 	va_end(ap);
 	bl_list_count = blockcount;
+
+	return ret;
 }
 
 /*==========================================
@@ -1681,13 +1698,14 @@ struct map_session_data * map_nick2sd(char *nick)
  */
 int map_foreachiddb(int (*func)(void*,void*,va_list),...)
 {
+	int ret;
 	va_list ap;
 
 	va_start(ap,func);
-	db_foreach_sub(id_db,func,ap);
+	ret = db_foreach_sub(id_db,func,ap);
 	va_end(ap);
 
-	return 0;
+	return ret;
 }
 
 /*==========================================

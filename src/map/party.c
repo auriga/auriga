@@ -846,19 +846,17 @@ static int party_send_xyhp_timer(int tid, unsigned int tick, int id, void *data)
 int party_send_hp_check(struct block_list *bl,va_list ap)
 {
 	int party_id;
-	int *flag;
 	struct map_session_data *sd;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, sd=(struct map_session_data *)bl);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	party_id=va_arg(ap,int);
-	flag=va_arg(ap,int *);
+	party_id = va_arg(ap,int);
 
-	if(sd->status.party_id==party_id){
-		*flag=1;
-		sd->party_hp=-1;
+	if(sd->status.party_id == party_id){
+		sd->party_hp = -1;
+		return 1;
 	}
 
 	return 0;
@@ -979,18 +977,19 @@ void party_equip_window(struct map_session_data *sd, int account_id)
  * 同じマップのパーティメンバー全体に処理をかける
  *------------------------------------------
  */
-void party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_session_data *sd,int range,...)
+int party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_session_data *sd,int range,...)
 {
 	struct party *p;
 	va_list ap;
 	int i, x0, y0, x1, y1;
 	struct block_list *list[MAX_PARTY];
 	int blockcount = 0;
+	int ret = 0;
 
-	nullpo_retv(sd);
+	nullpo_retr(0, sd);
 
 	if((p = party_search(sd->status.party_id)) == NULL)
-		return;
+		return 0;
 
 	x0 = sd->bl.x - range;
 	y0 = sd->bl.y - range;
@@ -1015,13 +1014,13 @@ void party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_ses
 
 	for(i=0; i<blockcount; i++) {
 		if(list[i]->prev)	// 有効かどうかチェック
-			func(list[i],ap);
+			ret += func(list[i],ap);
 	}
 
 	map_freeblock_unlock();	// 解放を許可する
 	va_end(ap);
 
-	return;
+	return ret;
 }
 
 /*==========================================

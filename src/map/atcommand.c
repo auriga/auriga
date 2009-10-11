@@ -3509,7 +3509,6 @@ static int atcommand_idsearch_sub(void *key, void *data, va_list ap)
 {
 	struct item_data *item = (struct item_data *)data;
 	char *str  = va_arg(ap,char *);
-	int *match = va_arg(ap,int *);
 	int fd     = va_arg(ap,int);
 
 	if (strstr(item->jname, str)) {
@@ -3518,7 +3517,7 @@ static int atcommand_idsearch_sub(void *key, void *data, va_list ap)
 			sprintf(slot, " [%d]", item->slot);
 		}
 		msg_output(fd, msg_txt(78), item->jname, slot, item->nameid);	// "%s%s : %d"
-		(*match)++;
+		return 1;
 	}
 	return 0;
 }

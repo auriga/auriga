@@ -516,24 +516,26 @@ void* db_erase(struct dbt *table,void* key)
 	return old_data;
 }
 
-void db_foreach_sub(struct dbt* table,int(*func)(void*,void*,va_list), va_list ap)
+int db_foreach_sub(struct dbt* table,int(*func)(void*,void*,va_list), va_list ap)
 {
 	int i,sp;
-	int count;
+	int count, ret = 0;
 	struct dbn *p,*pn;
 	struct dbn *stack[64];	// red-black treeなので64個stackがあれば2^32個ノードまで大丈夫
 
-	if( table == NULL ) return;
-	count = table->item_count;
+	if( table == NULL )
+		return 0;
 
+	count = table->item_count;
 	db_free_lock(table);
+
 	for(i=0;i<HASH_SIZE;i++){
 		if((p=table->ht[i])==NULL)
 			continue;
 		sp=0;
 		while(1){
 			if(!p->deleted) {
-				func(p->key,p->data,ap);
+				ret += func(p->key,p->data,ap);
 			}
 			count--;
 			if((pn=p->left)!=NULL){
@@ -559,23 +561,28 @@ void db_foreach_sub(struct dbt* table,int(*func)(void*,void*,va_list), va_list a
 			count,table->alloc_file,table->alloc_line
 		);
 	}
+	return ret;
 }
 
-void db_foreach(struct dbt *table,int (*func)(void*,void*,va_list),...)
+int db_foreach(struct dbt *table,int (*func)(void*,void*,va_list),...)
 {
+	int ret;
 	va_list ap;
 
 	va_start(ap, func);
-	db_foreach_sub(table, func, ap);
+	ret = db_foreach_sub(table, func, ap);
 	va_end(ap);
+
+	return ret;
 }
 
-static void db_clear_sub(struct dbt *table,int (*func)(void*,void*,va_list), va_list ap)
+static int db_clear_sub(struct dbt *table,int (*func)(void*,void*,va_list), va_list ap)
 {
-	int i;
+	int i, ret = 0;
 	struct dbn *p;
 
-	if( table == NULL ) return;
+	if( table == NULL )
+		return 0;
 
 	for(i=0;i<HASH_SIZE;i++){
 		while( ( p = table->ht[i] ) ) {
@@ -590,37 +597,45 @@ static void db_clear_sub(struct dbt *table,int (*func)(void*,void*,va_list), va_
 				p->parent->right = NULL;
 			}
 			if( func )
-				func( p->key, p->data, ap );
+				ret += func( p->key, p->data, ap );
 			free_dbn(p);
 		}
 	}
+
+	return ret;
 }
 
-void db_clear(struct dbt *table,int (*func)(void*,void*,va_list),...)
+int db_clear(struct dbt *table,int (*func)(void*,void*,va_list),...)
 {
+	int ret;
 	va_list ap;
 
 	if(table == NULL)
-		return;
+		return 0;
 
 	va_start(ap,func);
-	db_clear_sub(table,func,ap);
+	ret = db_clear_sub(table,func,ap);
 	table->item_count = 0;
 	va_end(ap);
+
+	return ret;
 }
 
-void db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
+int db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
 {
+	int ret;
 	va_list ap;
 
 	if(table == NULL)
-		return;
+		return 0;
 
 	va_start(ap,func);
-	db_clear_sub(table,func,ap);
+	ret = db_clear_sub(table,func,ap);
 	aFree(table->free_list);
 	aFree(table);
 	va_end(ap);
+
+	return ret;
 }
 
 /*==========================================

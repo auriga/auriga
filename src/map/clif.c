@@ -207,7 +207,7 @@ int clif_countusers(void)
  */
 int clif_foreachclient(int (*func)(struct map_session_data*,va_list),...)
 {
-	int i;
+	int i, ret = 0;
 	va_list ap;
 	struct map_session_data *sd;
 
@@ -218,12 +218,12 @@ int clif_foreachclient(int (*func)(struct map_session_data*,va_list),...)
 			(sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth &&
 			!sd->state.waitingdisconnect
 		) {
-			func(sd,ap);
+			ret += func(sd,ap);
 		}
 	}
 	va_end(ap);
 
-	return 0;
+	return ret;
 }
 
 /*==========================================

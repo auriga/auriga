@@ -290,10 +290,9 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 
 	if(sd) {
 		if(sd->status.party_id > 0 && party_search(sd->status.party_id) != NULL) {	// パーティのＨＰ情報通知検査
-			int p_flag = 0;
-			map_foreachinmovearea(party_send_hp_check,sd->bl.m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id,&p_flag);
-			if(p_flag)
+			if(map_foreachinmovearea(party_send_hp_check,sd->bl.m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id)) {
 				sd->party_hp = -1;
+			}
 		}
 
 		/* ディボーション検査 */
@@ -681,10 +680,9 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 
 	if(sd) {
 		if(sd->status.party_id > 0 && party_search(sd->status.party_id) != NULL) {	// パーティのＨＰ情報通知検査
-			int p_flag = 0;
-			map_foreachinmovearea(party_send_hp_check,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id,&p_flag);
-			if(p_flag)
+			if(map_foreachinmovearea(party_send_hp_check,sd->bl.m,sd->bl.x-AREA_SIZE,sd->bl.y-AREA_SIZE,sd->bl.x+AREA_SIZE,sd->bl.y+AREA_SIZE,-dx,-dy,BL_PC,sd->status.party_id)) {
 				sd->party_hp = -1;
+			}
 		}
 
 		// クローキングの消滅検査
@@ -1830,36 +1828,43 @@ int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int
  */
 static int unit_counttargeted_sub(struct block_list *bl, va_list ap)
 {
-	int id, *c, target_lv;
+	int id, target_lv;
 
 	nullpo_retr(0, bl);
 
 	id        = va_arg(ap,int);
-	c         = va_arg(ap,int *);
 	target_lv = va_arg(ap,int);
 
 	if(bl->id == id) {
 		// 自分
-	} else if(bl->type == BL_PC) {
+		return 0;
+	}
+
+	if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)bl;
-		if( sd && sd->ud.attacktarget == id && sd->ud.attacktimer != -1 && sd->ud.attacktarget_lv >= target_lv )
-			(*c)++;
+		if( sd && sd->ud.attacktarget == id && sd->ud.attacktimer != -1 && sd->ud.attacktarget_lv >= target_lv ) {
+			return 1;
+		}
 	} else if(bl->type == BL_MOB) {
 		struct mob_data *md = (struct mob_data *)bl;
-		if( md && md->target_id == id && md->ud.attacktimer != -1 && md->ud.attacktarget_lv >= target_lv )
-			(*c)++;
+		if( md && md->target_id == id && md->ud.attacktimer != -1 && md->ud.attacktarget_lv >= target_lv ) {
+			return 1;
+		}
 	} else if(bl->type == BL_PET) {
 		struct pet_data *pd = (struct pet_data *)bl;
-		if( pd && pd->target_id == id && pd->ud.attacktimer != -1 && pd->ud.attacktarget_lv >= target_lv )
-			(*c)++;
+		if( pd && pd->target_id == id && pd->ud.attacktimer != -1 && pd->ud.attacktarget_lv >= target_lv ) {
+			return 1;
+		}
 	} else if(bl->type == BL_HOM) {
 		struct homun_data *hd = (struct homun_data *)bl;
-		if( hd && hd->target_id == id && hd->ud.attacktimer != -1 && hd->ud.attacktarget_lv >= target_lv )
-			(*c)++;
+		if( hd && hd->target_id == id && hd->ud.attacktimer != -1 && hd->ud.attacktarget_lv >= target_lv ) {
+			return 1;
+		}
 	} else if(bl->type == BL_MERC) {
 		struct merc_data *mcd = (struct merc_data *)bl;
-		if( mcd && mcd->target_id == id && mcd->ud.attacktimer != -1 && mcd->ud.attacktarget_lv >= target_lv )
-			(*c)++;
+		if( mcd && mcd->target_id == id && mcd->ud.attacktimer != -1 && mcd->ud.attacktarget_lv >= target_lv ) {
+			return 1;
+		}
 	}
 	return 0;
 }
@@ -1871,15 +1876,12 @@ static int unit_counttargeted_sub(struct block_list *bl, va_list ap)
  */
 int unit_counttargeted(struct block_list *bl,int target_lv)
 {
-	int c = 0;
-
 	nullpo_retr(0, bl);
 
-	map_foreachinarea(unit_counttargeted_sub, bl->m,
+	return map_foreachinarea(unit_counttargeted_sub, bl->m,
 		bl->x-AREA_SIZE,bl->y-AREA_SIZE,
-		bl->x+AREA_SIZE,bl->y+AREA_SIZE,(BL_CHAR|BL_PET),bl->id,&c,target_lv
+		bl->x+AREA_SIZE,bl->y+AREA_SIZE,(BL_CHAR|BL_PET),bl->id,target_lv
 	);
-	return c;
 }
 
 /*==========================================
