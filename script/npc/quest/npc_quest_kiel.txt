@@ -4629,7 +4629,7 @@ kh_kiehl01.gat,17,39,0	script	受信機#kiel	111,{
 		set KH_QUE,37;
 	}
 	close2;
-	set 'mob,2;
+	set 'mob,'mob+2;
 	monster "kh_kiehl01.gat",17,33,"エリセル",1739,1,"受信機#kiel::OnKilled";
 	monster "kh_kiehl01.gat",18,33,"エリオット",1740,1,"受信機#kiel::OnKilled";
 	end;
@@ -4791,7 +4791,7 @@ kh_kiehl01.gat,15,178,0	script	機械人形#kiel	111,{
 	mes "-試験管に触れると、";
 	mes "機械人形が飛び出してきた-";
 	close2;
-	set 'mob,4;
+	set 'mob,'mob+3;
 	monster "kh_kiehl01.gat",18,181,"エリオット",1740,1,"機械人形#kiel::OnKilled";
 	monster "kh_kiehl01.gat",18,180,"エリセル",1739,2,"機械人形#kiel::OnKilled";
 	monster "kh_kiehl01.gat",18,179,"エリオット",1740,1,"機械人形#kiel::OnKilled";
@@ -4862,7 +4862,7 @@ kh_kiehl01.gat,166,187,0	script	大きなドア#kiel5	111,{
 		mes "-何か装置でもあるのか？-";
 		set KH_QUE,KH_QUE+1;
 		close2;
-		set 'mob,2;
+		set 'mob,'mob+2;
 		monster "kh_kiehl01.gat",165,183,"エリオット",1740,1,"大きなドア#kiel5::OnKilled";
 		monster "kh_kiehl01.gat",163,183,"エリセル",1739,1,"大きなドア#kiel5::OnKilled";
 		end;

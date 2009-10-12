@@ -4522,6 +4522,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if((race == RCT_UNDEAD || elem == ELE_UNDEAD) && !(flag&1) && (type == SC_STONE || type == SC_FREEZE || type == SC_BLEED))
 		return 0;
 
+	// スタン中は凍結無効
+	if(sc->data[SC_STUN].timer != -1 && type == SC_FREEZE)
+		return 0;
+
 	if((type == SC_ADRENALINE || type == SC_ADRENALINE2 || type == SC_WEAPONPERFECTION || type == SC_OVERTHRUST) &&
 		sc->data[type].timer != -1 && sc->data[type].val2 && !val2)
 		return 0;
