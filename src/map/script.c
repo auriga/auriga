@@ -301,8 +301,9 @@ static int search_str(const unsigned char *p)
  */
 static int add_str(const unsigned char *p)
 {
-	static int str_pos=0,str_size=0;
-	int i,len;
+	static size_t str_pos=0,str_size=0;
+	size_t len;
+	int i;
 
 	i=calc_hash(p);
 	if(str_hash[i]==0){
@@ -324,20 +325,20 @@ static int add_str(const unsigned char *p)
 		str_data = (struct script_str_data *)aRealloc(str_data,sizeof(str_data[0])*str_data_size);
 		memset(str_data + (str_data_size - 512), '\0', 512);
 	}
-	len=(int)strlen(p);
-	while(str_pos+len+1 >= str_size){
+	len = strlen(p) + 1;
+	while(str_pos + len >= str_size) {
 		str_size += 4096;
 		str_buf = (char *)aRealloc(str_buf,str_size);
 		memset(str_buf + (str_size - 4096), '\0', 4096);
 	}
-	memcpy(str_buf+str_pos,p,len+1);
+	memcpy(str_buf + str_pos, p, len);
 	str_data[str_num].type      = C_NOP;
 	str_data[str_num].str       = str_pos;
 	str_data[str_num].next      = 0;
 	str_data[str_num].func      = NULL;
 	str_data[str_num].backpatch = -1;
 	str_data[str_num].label     = -1;
-	str_pos += len+1;
+	str_pos += len;
 
 	return str_num++;
 }

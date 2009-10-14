@@ -92,9 +92,7 @@ static struct skill_tree_entry {
 } skill_tree[3][MAX_PC_CLASS][MAX_SKILL_TREE];
 
 static int dummy_gm_account = 0;
-
-#define MOTD_LINE_SIZE 32
-static char motd_text[MOTD_LINE_SIZE][256];
+static char *motd = NULL;
 
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
@@ -954,6 +952,26 @@ static int pc_isequip(struct map_session_data *sd,int n)
 }
 
 /*==========================================
+ * Message of the Dayの送信
+ *------------------------------------------
+ */
+static void pc_send_motd(struct map_session_data *sd)
+{
+	char *p = motd;
+
+	nullpo_retv(sd);
+
+	if(p) {
+		do {
+			clif_displaymessage(sd->fd, p);
+			p += strlen(p) + 1;
+		} while(*p);
+	}
+
+	return;
+}
+
+/*==========================================
  * session idに問題無し
  * char鯖から送られてきたステータスを設定
  *------------------------------------------
@@ -1226,9 +1244,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->hotkey_set = 0;
 
 	// Message of the Dayの送信
-	for(i = 0; i < MOTD_LINE_SIZE && motd_text[i]; i++) {
-		clif_displaymessage(sd->fd, motd_text[i]);
-	}
+	pc_send_motd(sd);
 
 	return 0;
 }
@@ -8739,15 +8755,19 @@ int pc_readdb(void)
  */
 int pc_read_motd(void)
 {
-	int i, ln = 0;
+	int i;
+	size_t len, size = 0, pos = 0;
 	char buf[256];
 	FILE *fp;
 
-	memset(motd_text, 0, sizeof(motd_text));
+	if(motd) {
+		aFree(motd);
+		motd = NULL;
+	}
 
 	if((fp = fopen(motd_txt, "r")) != NULL) {
 		while(fgets(buf, sizeof(buf)-1, fp) != NULL) {
-			for(i=0; buf[i]; i++) {
+			for(i = 0; buf[i]; i++) {
 				if(buf[i] == '\r' || buf[i] == '\n') {
 					if(i == 0) {
 						buf[i++] = ' ';
@@ -8756,10 +8776,18 @@ int pc_read_motd(void)
 					break;
 				}
 			}
-			strncpy(motd_text[ln], buf, 256);
-			if(++ln >= MOTD_LINE_SIZE)
-				break;
+
+			len = strlen(buf) + 1;
+			if(pos + len >= size) {
+				size += sizeof(buf);
+				motd = (char *)aRealloc(motd, size);
+			}
+			memcpy(motd + pos, buf, len);
+			pos += len;
 		}
+		motd = (char *)aRealloc(motd, pos + 1);
+		motd[pos] = '\0';	// 末尾に \0 を2つ続ける
+
 		fclose(fp);
 	}
 
@@ -9036,6 +9064,11 @@ int do_final_pc(void)
 		aFree(extra_dat);
 		extra_dat = NULL;
 		extra_num = 0;
+	}
+
+	if (motd) {
+		aFree(motd);
+		motd = NULL;
 	}
 
 	return 0;
