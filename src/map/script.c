@@ -83,7 +83,7 @@ static int script_pos,script_size;
 
 static struct script_str_data {
 	int type;
-	int str;
+	size_t str;
 	int backpatch;
 	int label;
 	int (*func)(struct script_state *st);

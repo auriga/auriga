@@ -234,14 +234,12 @@ static int null_parse(int fd)
  *	CORE : Socket Function
  *--------------------------------------
  */
-static int socket_close(int fd)
-{
 #ifdef WINDOWS
-	return closesocket(fd); // not started, not use shutdown(fd, SD_BOTH);
+// not started, not use shutdown(fd, SD_BOTH);
+#define socket_close(fd) closesocket((fd))
 #else
-	return close(fd);
+#define socket_close(fd) close((fd))
 #endif
-}
 
 static int connect_client(int listen_fd)
 {
