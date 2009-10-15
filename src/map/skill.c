@@ -3409,7 +3409,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				int dist = unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
 				int type;
 				if(dist > 2)
-					dist = 2;	// 遠距離
+					type = 2;	// 遠距離
 				else if(dist > 1)
 					type = 1;	// 中距離
 				else
