@@ -11680,6 +11680,8 @@ static void clif_parse_TradeRequest(int fd,struct map_session_data *sd, int cmd)
 		return;
 	if(sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->state.mail_appending)
 		return;
+	if(battle_config.gm_can_drop_lv > pc_isGM(sd))
+		return;
 
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 1)
 		trade_traderequest(sd,RFIFOL(sd->fd,GETPACKETPOS(cmd,0)));
@@ -11698,6 +11700,8 @@ static void clif_parse_TradeAck(int fd,struct map_session_data *sd, int cmd)
 	nullpo_retv(sd);
 
 	if(map[sd->bl.m].flag.notrade)
+		return;
+	if(battle_config.gm_can_drop_lv > pc_isGM(sd))
 		return;
 
 	trade_tradeack(sd,RFIFOB(sd->fd,GETPACKETPOS(cmd,0)));

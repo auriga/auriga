@@ -2033,8 +2033,9 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		if(src->m != target->m || unit_isdead(src))
 			break;
 
-		// 霧の中 不発判定
-		if(tsc && tsc->data[SC_FOGWALL].timer != -1 && skill_get_misfire(src_ud->skillid) && atn_rand()%100 < 75)
+		// ウォールオブフォグ 不発判定　MOB専用スキルは不発しない
+		if(tsc && (tsc->data[SC_FOGWALL].timer != -1 || tsc->data[SC_FOGWALLPENALTY].timer != -1)
+			&& skill_get_misfire(src_ud->skillid) && !skill_mobskill(src_ud->skillid) && atn_rand()%100 < 75)
 			break;
 
 		if(src_ud->skillid == PR_LEXAETERNA) {
@@ -2286,7 +2287,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NPC_RANGEATTACK:
 	case NPC_CRITICALSLASH:
 	case NPC_COMBOATTACK:
-	case NPC_GUIDEDATTACK:
 	case NPC_POISON:
 	case NPC_BLINDATTACK:
 	case NPC_SILENCEATTACK:
@@ -2350,6 +2350,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case RK_WINDCUTTER:		/* ウィンドカッター */
 	case RK_DRAGONBREATH:	/* ドラゴンブレス */
 	case AB_DUPLELIGHT_MELEE:	/* デュプルライト(物理) */
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		break;
+	case NPC_GUIDEDATTACK:	/* ガイデッドアタック */
+		status_change_start(src,SC_INCHIT,status_get_dex(src)/2,0,0,0,skill_get_time(skillid,skilllv),0);
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case KN_BRANDISHSPEAR:		/* ブランディッシュスピア */
@@ -6866,7 +6870,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case AS_VENOMDUST:			/* ベノムダスト */
 	case AM_DEMONSTRATION:		/* デモンストレーション */
 	case PF_SPIDERWEB:			/* スパイダーウェッブ */
-	case PF_FOGWALL:			/* フォグウォール */
+	case PF_FOGWALL:			/* ウォールオブフォグ */
 	case HT_TALKIEBOX:			/* トーキーボックス */
 	case NJ_TATAMIGAESHI:		/* 畳返し */
 	case NJ_BAKUENRYU:			/* 龍炎陣 */
@@ -7742,24 +7746,24 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 		break;
 	case UNT_CALLFAMILY:				/* あなたに逢いたい or ママ、パパ、来て or 坊や、いらっしゃい */
 		break;
-	case UNT_FOGWALL:				/* フォグウォール */
+	case UNT_FOGWALL:				/* ウォールオブフォグ */
 		if(status_check_no_magic_damage(bl))
 			break;
 		// 霧の中
 		if(map[bl->m].flag.normal) {	// 通常マップ
-			if(bl->type==BL_PC) {
+			if(bl->type==BL_PC || status_get_mode(bl)&0x20) {
 				status_change_start(bl,SC_FOGWALL,sg->skill_id,sg->skill_lv,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 			} else {
 				status_change_start(bl,SC_FOGWALLPENALTY,sg->skill_id,sg->skill_lv,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 			}
 		} else if(status_get_party_id(&src->bl)>0) {	// それ以外でPT時
-			if(battle_check_target(bl,&src->bl,BCT_ENEMY)<=0) {
+			if(battle_check_target(bl,&src->bl,BCT_ENEMY)<=0 || status_get_mode(bl)&0x20) {
 				status_change_start(bl,SC_FOGWALL,sg->skill_id,sg->skill_lv,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 			} else {
 				status_change_start(bl,SC_FOGWALLPENALTY,sg->skill_id,sg->skill_lv,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 			}
 		} else {	// それ以外でソロ時
-			if(bl->id==sg->src_id) {
+			if(bl->id==sg->src_id || status_get_mode(bl)&0x20) {
 				status_change_start(bl,SC_FOGWALL,sg->skill_id,sg->skill_lv,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 			} else {
 				status_change_start(bl,SC_FOGWALLPENALTY,sg->skill_id,sg->skill_lv,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
@@ -8465,10 +8469,10 @@ static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigne
 			status_change_end(bl,type,-1);
 		}
 		break;
-	case UNT_FOGWALL:	/* フォグウォール */
+	case UNT_FOGWALL:	/* ウォールオブフォグ */
 		sc = status_get_sc(bl);
 		if(sc){
-			if(sc->data[SC_FOGWALL].timer!=-1)
+			if(sc->data[SC_FOGWALL].timer!=-1 && !(status_get_mode(bl)&0x20))	// ボス属性MOBは効果時間中持続
 				status_change_end(bl,SC_FOGWALL,-1);
 			// PCなら効果消える
 			if(bl->type==BL_PC && sc->data[SC_FOGWALLPENALTY].timer!=-1)
@@ -10612,7 +10616,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 	if(fixedtime > 0) {
 		/* サクラメント */
 		if(sc && sc->data[SC_SACRAMENT].timer != -1) {
-			fixedtime = fixedtime * sc->data[SC_SACRAMENT].val2 / 100;
+			fixedtime -= fixedtime * sc->data[SC_SACRAMENT].val2 / 100;
 		}
 		// カードによる固定詠唱時間減少効果
 		if(sd && sd->skill_fixcastrate.count > 0) {

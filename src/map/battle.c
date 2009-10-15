@@ -338,11 +338,12 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			damage = 0;
 
 		// ウォールオブフォグ
-		if(sc->data[SC_FOGWALL].timer != -1 && damage > 0 && flag&BF_WEAPON && flag&BF_LONG)
+		if((sc->data[SC_FOGWALL].timer != -1 || sc->data[SC_FOGWALLPENALTY].timer != -1)
+			&& damage > 0 && flag&BF_LONG && skill_num!=PA_PRESSURE)
 		{
-			if(skill_num == 0) {	// 通常攻撃75%OFF
+			if(skill_num == 0) {	// 遠距離通常攻撃75%OFF
 				damage = damage * 25 / 100;
-			} else {		// スキル25%OFF
+			} else {		// 遠距離スキル25%OFF
 				damage = damage * 75 / 100;
 			}
 		}
@@ -368,7 +369,6 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		// ニューマ・畳返し
 		if((sc->data[SC_PNEUMA].timer != -1 || sc->data[SC_TATAMIGAESHI].timer != -1) && damage > 0 && flag&(BF_WEAPON|BF_MISC) && flag&BF_LONG) {
 			switch(skill_num) {
-				case NPC_GUIDEDATTACK:
 				case NPC_EARTHQUAKE:
 					break;
 				case AC_SHOWER:
@@ -1183,7 +1183,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 	calc_flag.hitrate = status_get_hit(src) - t_flee + 80;	// 命中率計算
 
-	if(skill_num == 0 && t_sc && t_sc->data[SC_FOGWALL].timer != -1) {
+	if(t_sc && t_sc->data[SC_FOGWALL].timer != -1) {
 		// 霧のHIT補正
 		calc_flag.hitrate -= 50;
 	}
@@ -1363,7 +1363,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case NPC_CRITICALSLASH:		// 防御無視攻撃
-		case NPC_GUIDEDATTACK:		// 必中攻撃
+		case NPC_GUIDEDATTACK:		// ガイデッドアタック
 		case MO_INVESTIGATE:		// 発勁
 		case MO_EXTREMITYFIST:		// 阿修羅覇鳳拳
 		case NJ_ISSEN:			// 一閃
@@ -1517,6 +1517,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		clif_skill_nodamage(&target_sd->bl,&target_sd->bl,TK_DODGE,slv,1);
 		status_change_start(&target_sd->bl,SC_DODGE_DELAY,slv,src->id,0,0,skill_get_time(TK_DODGE,slv),0);
 	}
+	else if(t_sc && (t_sc->data[SC_FOGWALL].timer != -1 || t_sc->data[SC_FOGWALLPENALTY].timer != -1) && wd.flag&BF_LONG && !skill_num && atn_rand()%100 < 75) {	// ウォールオブフォグ　遠距離通常攻撃は75%の確率でミス
+		wd.dmg_lv = ATK_FLEE;	// 通常回避
+	}
+
 	else {
 		int damage_ot = 0, damage_ot2 = 0;
 		int tk_power_damage = 0, tk_power_damage2 = 0;
@@ -2390,9 +2394,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if (sc) {
 			// オーバートラスト
 			if(sc->data[SC_OVERTHRUST].timer != -1) {
-				wd.damage += damage_ot*(5*sc->data[SC_OVERTHRUST].val1)/100;
+				wd.damage += damage_ot*sc->data[SC_OVERTHRUST].val3/100;
 				if(calc_flag.lh)
-					wd.damage2 += damage_ot2*(5*sc->data[SC_OVERTHRUST].val1)/100;
+					wd.damage2 += damage_ot*sc->data[SC_OVERTHRUST].val3/100;
 			}
 			// オーバートラストマックス
 			if(sc->data[SC_OVERTHRUSTMAX].timer != -1) {

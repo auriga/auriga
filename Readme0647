@@ -1,4 +1,41 @@
 ----------------------------------------
+//0689 [2009/10/16] by popori
+
+・アクティブタイマーが永続してしまうバグを修正 (pc.c)
+　うに〜くさんに感謝
+
+・ヒールのディレイが消えているのを修正 (skill_cast_db.txt)
+　Cocoaさんに感謝
+
+・オーバートラストの攻撃力増加を使用者25%、パーティーメンバーを5%に修正 (battle.c status.c)
+　dragontail789さんに感謝
+
+・gm_can_drop_lvの取引禁止、倉庫出し入れが制限出来ていなかったので追加 (clif.c storage.c)
+　ponyoさん、cornusさんに感謝
+
+・バーサーク中、月光剣等でSP回復するよう修正 (pc.c)
+　hancho3さん、dreamさんに感謝
+
+・0686のdbを修正 (skill_cast_db.txt)
+　LunarPhantomさんに感謝
+
+・AthenaProject Rev.435をマージ (skill_db.txt skill_db2.txt skill_cast_db.txt abra_db.txt battle.c skill.c status.c)
+ ->NPCスキル「ガイデッドアタック」を本鯖仕様に修正(参考：アサテンプレ)
+ ->→一定時間DEX150%(効果時間が不明なので1Lvにつき5秒としました)
+ ->同時にソース内名称も「ガイデッドアタック」で統一
+　nanashiさんに感謝
+
+・AthenaProject Rev.432をマージ (skill_cast_db.txt skill_tree.txt battle.c skill.c)
+ ->スキル「ウォールオブフォグ」を本鯖仕様に修正(参考：sage wiki)
+ ->同時に、ソース内名称を「ウォールオブフォグ」に統一
+　nanashiさんに感謝
+
+・サクラメントのキャスティング減少率を修正 (skill.c)
+　dragontail789さんに感謝
+
+・イグニッションブレイクの条件式がおかしかったので警告が出ていたのを修正 (skill.c)
+
+----------------------------------------
 //0688 [2009/10/15] by Rayce
 
 ・x64のWindows環境下において、コンパイル時に「'SOCKET' から 'int' への変換です」の

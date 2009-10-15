@@ -2913,6 +2913,8 @@ int status_get_hit(struct block_list *bl)
 				hit -= 30;
 			if(sc->data[SC_INCREASING].timer != -1 && bl->type != BL_PC) // インクリーシングアキュアラシー
 				hit += 20;
+			if(sc->data[SC_INCHIT].timer!=-1 && bl->type != BL_PC)	// ガイデッドアタック
+				hit += sc->data[SC_INCHIT].val1;
 			if(sc->data[SC_FEAR].timer != -1 && bl->type != BL_PC)	// 恐怖
 				hit -= hit*20/100;
 		}
@@ -4848,6 +4850,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_OVERTHRUST:			/* オーバートラスト */
 			if(sc->data[SC_OVERTHRUSTMAX].timer != -1)
 				return 0;
+			val3 = (val2)? val1*5 : val1;
 			if(!(flag&2) && sd && pc_checkskill(sd,BS_HILTBINDING) > 0)
 				icon_tick = tick += tick / 10;
 			break;
