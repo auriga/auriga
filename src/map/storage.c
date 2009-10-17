@@ -178,13 +178,15 @@ void storage_delete(int account_id)
 int storage_storageopen(struct map_session_data *sd)
 {
 	struct storage *stor;
+	int gmlvl = 0;
 
 	nullpo_retr(0, sd);
 
 	if(sd->state.storage_flag == 1)
 		return 0;	// 既にカプラ倉庫を開いている
 
-	if(pc_isGM(sd) > 0 && battle_config.gm_can_drop_lv > pc_isGM(sd))
+	gmlvl = pc_isGM(sd);
+	if(gmlvl > 0 && battle_config.gm_can_drop_lv > gmlvl)
 		return 0;	// 設定しているGMレベルより低い
 
 	if((stor = (struct storage *)numdb_search(storage_db,sd->status.account_id)) != NULL) {
@@ -522,6 +524,7 @@ void storage_guild_delete(int guild_id)
 int storage_guild_storageopen(struct map_session_data *sd)
 {
 	struct guild_storage *gstor;
+	int gmlvl = 0;
 
 	nullpo_retr(0, sd);
 
@@ -529,7 +532,9 @@ int storage_guild_storageopen(struct map_session_data *sd)
 		return 2;
 	if(sd->state.storage_flag == 2)
 		return 3;	// 既にギルド倉庫を開いている
-	if(pc_isGM(sd) > 0 && battle_config.gm_can_drop_lv > pc_isGM(sd))
+
+	gmlvl = pc_isGM(sd);
+	if(gmlvl > 0 && battle_config.gm_can_drop_lv > gmlvl)
 		return 2;	// 設定しているGMレベルより低い
 
 	if(sd->state.storage_flag == 1)

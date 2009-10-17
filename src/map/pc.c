@@ -8783,8 +8783,11 @@ int pc_read_motd(void)
 			memcpy(motd + pos, buf, len);
 			pos += len;
 		}
-		motd = (char *)aRealloc(motd, pos + 1);
-		motd[pos] = '\0';	// 末尾に \0 を2つ続ける
+
+		if(size > 0) {
+			motd = (char *)aRealloc(motd, pos + 1);	// 縮小処理
+			motd[pos] = '\0';	// 末尾に \0 を2つ続ける
+		}
 
 		fclose(fp);
 	}

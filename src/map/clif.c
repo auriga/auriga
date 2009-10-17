@@ -11674,13 +11674,17 @@ static void clif_parse_ChatLeave(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_TradeRequest(int fd,struct map_session_data *sd, int cmd)
 {
+	int gmlvl = 0;
+
 	nullpo_retv(sd);
 
 	if(map[sd->bl.m].flag.notrade)
 		return;
 	if(sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->state.mail_appending)
 		return;
-	if(pc_isGM(sd) > 0 && battle_config.gm_can_drop_lv > pc_isGM(sd))
+
+	gmlvl = pc_isGM(sd);
+	if(gmlvl > 0 && battle_config.gm_can_drop_lv > gmlvl)
 		return;
 
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 1)
@@ -11697,11 +11701,15 @@ static void clif_parse_TradeRequest(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_TradeAck(int fd,struct map_session_data *sd, int cmd)
 {
+	int gmlvl = 0;
+
 	nullpo_retv(sd);
 
 	if(map[sd->bl.m].flag.notrade)
 		return;
-	if(pc_isGM(sd) > 0 && battle_config.gm_can_drop_lv > pc_isGM(sd))
+
+	gmlvl = pc_isGM(sd);
+	if(gmlvl > 0 && battle_config.gm_can_drop_lv > gmlvl)
 		return;
 
 	trade_tradeack(sd,RFIFOB(sd->fd,GETPACKETPOS(cmd,0)));
