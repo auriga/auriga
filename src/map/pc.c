@@ -7089,17 +7089,11 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 	if(battle_config.battle_log)
 		printf("unequip %d %x:%x\n",n,pc_equippoint(sd,n),sd->status.inventory[n].equip);
 	if(sd->status.inventory[n].equip) {
-		int i, l;
+		int i;
 		for(i=0; i<11; i++) {
 			if(sd->status.inventory[n].equip & equip_pos[i])
 			{
 				sd->equip_index[i] = -1;
-
-				// アクティブタイマーの削除
-				for(l = 0; l < sd->activeitem.count; l++) {
-					if(sd->activeitem.id[l] == current_equip_name_id && sd->activeitem_timer[l] != -1)
-						sd->activeitem_timer[l] = -1;
-				}
 
 				// 装備を外すとHP/SPのペナルティ処理
 				if(sd->hp_penalty_unrig_value[i] > 0) {

@@ -2033,9 +2033,8 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		if(src->m != target->m || unit_isdead(src))
 			break;
 
-		// ウォールオブフォグ 不発判定　MOB専用スキルは不発しない
-		if(tsc && (tsc->data[SC_FOGWALL].timer != -1 || tsc->data[SC_FOGWALLPENALTY].timer != -1)
-			&& skill_get_misfire(src_ud->skillid) && !skill_mobskill(src_ud->skillid) && atn_rand()%100 < 75)
+		// ウォールオブフォグ 不発判定
+		if(tsc && (tsc->data[SC_FOGWALL].timer != -1 || tsc->data[SC_FOGWALLPENALTY].timer != -1) && skill_get_misfire(src_ud->skillid) && atn_rand()%100 < 75)
 			break;
 
 		if(src_ud->skillid == PR_LEXAETERNA) {
@@ -11160,6 +11159,40 @@ static int skill_frostjoke_scream(struct block_list *bl,va_list ap)
 }
 
 /*==========================================
+ * 転生スキルか？
+ *------------------------------------------
+ */
+static int skill_upperskill(int skillid)
+{
+	if(LK_AURABLADE <= skillid && skillid <= ASC_CDP)
+		return 1;
+	if(ST_PRESERVE <= skillid && skillid <= CR_CULTIVATION)
+		return 1;
+	return 0;
+}
+
+/*==========================================
+ * 敵のスキルか？
+ *------------------------------------------
+ */
+static int skill_mobskill(int skillid)
+{
+	if(NPC_PIERCINGATT <= skillid && skillid <= NPC_SUMMONMONSTER)
+		return 1;
+
+	if(NPC_DARKCROSS <= skillid && skillid <= NPC_RUN)
+		return 1;
+
+	if(NPC_EARTHQUAKE <= skillid && skillid <= NPC_WIDESOULDRAIN)
+		return 1;
+
+	if(skillid == NPC_SELFDESTRUCTION2)
+		return 1;
+
+	return 0;
+}
+
+/*==========================================
  * アブラカダブラの使用スキル決定(決定スキルがダメなら0を返す)
  *------------------------------------------
  */
@@ -13373,60 +13406,6 @@ static int skill_castle_mob_changetarget(struct block_list *bl,va_list ap)
 
 	if(md->target_id == from_bl->id)
 		md->target_id = to_bl->id;
-	return 0;
-}
-
-/*==========================================
- * 盗作可能か？（転生スキル含む）
- *------------------------------------------
- */
-int skill_cloneable(int skillid)
-{
-	return skill_get_cloneable(skillid);
-}
-
-/*==========================================
- * 転生スキルか？
- *------------------------------------------
- */
-int skill_upperskill(int skillid)
-{
-	if(LK_AURABLADE <= skillid && skillid <= ASC_CDP)
-		return 1;
-	if(ST_PRESERVE <= skillid && skillid <= CR_CULTIVATION)
-		return 1;
-	return 0;
-}
-
-/*==========================================
- * 敵のスキルか？
- *------------------------------------------
- */
-int skill_mobskill(int skillid)
-{
-	if(NPC_PIERCINGATT <= skillid && skillid <= NPC_SUMMONMONSTER)
-		return 1;
-
-	if(NPC_DARKCROSS <= skillid && skillid <= NPC_RUN)
-		return 1;
-
-	if(NPC_EARTHQUAKE <= skillid && skillid <= NPC_WIDESOULDRAIN)
-		return 1;
-
-	if(skillid == NPC_SELFDESTRUCTION2)
-		return 1;
-
-	return 0;
-}
-
-/*==========================================
- * 油専用スキルか
- *------------------------------------------
- */
-int skill_abraskill(int skillid)
-{
-	if(SA_MONOCELL <= skillid && skillid <= SA_COMA)
-		return 1;
 	return 0;
 }
 

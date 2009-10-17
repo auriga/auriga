@@ -270,10 +270,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag );
 int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skilllv,unsigned int tick,int flag);
 
-int skill_cloneable(int skillid);
-int skill_upperskill(int skillid);
-int skill_mobskill(int skillid);
-int skill_abraskill(int skillid);
 int skill_clone(struct map_session_data* sd,int skillid,int skilllv);
 
 

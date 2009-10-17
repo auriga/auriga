@@ -1,4 +1,21 @@
 ----------------------------------------
+//0692 [2009/10/18] by Rayce
+
+・0689の修正
+	→ Mob専用スキルを不発にしない判定をskill.cにハードコーディングするのではなく
+	   db/skill_db2.txt のmisfireの設定値でのみ判定するように変更（skill_db2.txt, skill.c）
+
+	→ 右手のOTダメージが左手のダメージに加算されている間違いを修正（battle.c）
+
+	→ アクティブタイマーの永続問題の修正を巻き戻し（pc.c）
+	   変数 current_equip_name_id を参照しても良いのはitembonus内で呼び出される場合のみです！
+	   pc_unequipitem() は他の場所からも呼び出されるものなので、current_equip_name_id に
+	   格納されている変数の一貫性は保証できません。
+
+・skill_upperskill(), skill_mobskill() をstaticに変更（skill.*）
+・使われていない関数 skill_abraskill(), skill_cloneable() を削除（skill.*）
+
+----------------------------------------
 //0691 [2009/10/17] by popori
 
 ・0689のgm_can_drop_lvの修正を再度修正 (clif.c storage.c)

@@ -2396,7 +2396,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_OVERTHRUST].timer != -1) {
 				wd.damage += damage_ot*sc->data[SC_OVERTHRUST].val3/100;
 				if(calc_flag.lh)
-					wd.damage2 += damage_ot*sc->data[SC_OVERTHRUST].val3/100;
+					wd.damage2 += damage_ot2*sc->data[SC_OVERTHRUST].val3/100;
 			}
 			// オーバートラストマックス
 			if(sc->data[SC_OVERTHRUSTMAX].timer != -1) {
