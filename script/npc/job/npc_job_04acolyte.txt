@@ -97,6 +97,16 @@ prt_church.gat,184,41,4	script	聖堂神父	60,{
 	case 3:
 		close;
 	}
+
+	// 判定箇所未調査、仮判定
+	if(getskilllv(1) < 9 || SkillPoint) {
+		mes "[マルシス神父]";
+		mes "まだ基本的な修練も";
+		mes "できていないではありませんか！";
+		mes "まだまだです。もっと高い職業レベルが必要です！";
+		close;
+	}
+
 	//修練案内ここから
 	switch(CHANGE_AL) {
 	case 0:
@@ -128,13 +138,6 @@ prt_church.gat,184,41,4	script	聖堂神父	60,{
 		mes "神様の志を遂行できるだけの準備は";
 		mes "できていますか…？";
 		next;
-		if(getskilllv(1) < 9 || SkillPoint) {
-			mes "[マルシス神父]";
-			mes "なに？！まだ基本的な修練も";
-			mes "できていないではありませんか！";
-			mes "まだまだです。もっと高い職業レベルが必要です！";
-			close;
-		}
 		mes "[マルシス神父]";
 		mes "修行完了者名簿にはまだ貴方の";
 		mes "名前が載っておりませんが…。";
@@ -165,7 +168,7 @@ prt_church.gat,184,41,4	script	聖堂神父	60,{
 		mes "お祝いします。";
 		close;
 	}
-	//0〜3のとき続き
+	//1〜3のとき続き
 	switch(CHANGE_AL) {
 		case 1:
 			mes "^000077プロンテラ北東の聖カピトーリナ修道院前^000000で";

@@ -1691,9 +1691,9 @@ L_RECALC:
 			//	sd->watk_ += sd->sc.data[SC_IMPOSITIO].val1*5;
 		}
 		if(sd->sc.data[SC_PROVOKE].timer != -1) {	// プロボック
-			sd->def2 = sd->def2*( 100 + 5-5*sd->sc.data[SC_PROVOKE].val1 )/100;
-			sd->base_atk = sd->base_atk*(100+2+3*sd->sc.data[SC_PROVOKE].val1)/100;
-			sd->watk = sd->watk*( 100 + 2+3*sd->sc.data[SC_PROVOKE].val1 )/100;
+			sd->def2 = sd->def2*(100 - 5 - 5 * sd->sc.data[SC_PROVOKE].val1) / 100;
+			sd->base_atk = sd->base_atk*(100 + 2 + 3 * sd->sc.data[SC_PROVOKE].val1) / 100;
+			sd->watk = sd->watk*(100 + 2 + 3 * sd->sc.data[SC_PROVOKE].val1) / 100;
 			idx = sd->equip_index[8];
 			// 左手には適用しない
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)

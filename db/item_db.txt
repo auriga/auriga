@@ -839,7 +839,7 @@
 1627,Sakray_Test_Staff,スタンプ,4,20,,0,120,,1,0,134316820,2,2,1,0,10,1,{},{ bonus bMatk2Rate,15; bonus bAtkRate,50; }
 1628,Survival_Rod_C,サバイバルロッドR,4,,-1,0,71,,1,0,134283780,2,2,3,1,10,,{},{ bonus bDex,4; bonus bMatkRate,5; bonus bMatk2Rate,15; bonus bMaxHP,500; }
 1629,Gentleman's_Staff,ジェントルマンの杖,4,20,,500,40,,1,1,134316820,2,2,4,50,10,1,{},{ bonus bMatk2Rate,15; bonus bDex,1; if(getequipid(1)==5045){ bonus bDex,2; bonus bInt,2; bonus bSPrecovRate,5; bonus bMatkRate,getequiprefinerycnt(4); } }
-1630,Release_of_Wish,リリースオブウィッシュ,4,20,,500,30,,1,0,66052,2,2,3,50,10,1,{},{ bonus bMatk2Rate,15; bonus bInt,3; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; }
+1630,Release_of_Wish,リリースオブウィッシュ,4,20,,500,30,,1,0,66052,2,2,3,50,10,1,{},{ bonus bMatk2Rate,15; bonus bInt,3; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus3 bAutoActiveMagic,1630,100,8000; if(checkactiveitem()) { misceffect 312,""; bonus2 bHPPenaltyTime,2000,-100; bonus2 bSPPenaltyTime,2000,-50; } }
 1631,Holy_Stick,ホーリーステッキ,4,20,,500,50,,1,1,33024,2,2,4,70,10,1,{},{ bonus bMatk2Rate,15; }
 1632,Wolong's_Magic_Staff,ウォーロックの魔法杖,4,20,,0,70,,1,0,134316820,2,2,3,80,10,1,{},{ bonus bMatk2Rate,15; bonus bInt,4; bonus bDex,3; bonus2 bIgnoreMDefRace,7,25; bonus2 bAddEffMagic,Eff_Stun,500; bonus bUnbreakableWeapon,0; }
 1633,Wolong's_Battle_Staff,ウォーロックの戦闘杖,4,20,,0,70,,1,0,134316820,2,2,3,80,10,1,{},{ bonus bMatk2Rate,15; bonus bInt,3; bonus bDex,3; bonus2 bMagicAddRace,7,15; bonus2 bAddEffMagic,Eff_Stun,500; bonus bUnbreakableWeapon,0; }
@@ -2422,7 +2422,7 @@
 5462,Unknown_Item,竹釘が刺さったスカーフ,5,,,100,,1,,0,1000333311,2,1,,90,459,,{},{}
 5463,Unknown_Item,虹スカーフ,5,,,100,,1,,0,1000333311,2,1,,90,460,,{},{}
 5464,Unknown_Item,たれペクソジン人形,5,,,0,,1,,0,1000333311,2,256,,,461,,{},{ bonus bInt,2; skill 74,3; }
-
+5465,Unknown_Item,大空の帽子,5,,,500,,3,,1,1000333311,2,256,,40,462,1,{},{ bonus bLuk,2; bonus bMdef,5; if(getequiprefinerycnt(1)>=5) bonus bLuk,getequiprefinerycnt(1)-4; }
 5466,Unknown_Item,風の道標,5,,,100,,2,,1,1000333311,2,256,,30,463,1,{},{ bonus bAgi,2; skill 26,1; }
 5467,Unknown_Item,ドラグーンヘルム,5,,,2000,,5,,,1000333311,2,256,,50,464,1,{},{ bonus2 bAddRace,9,20; bonus2 bMagicAddRace,9,20; bonus3 bAutoSelfSpell,659,1,300; }
 5468,Unknown_Item,パレード帽,5,,,800,,3,,1,1000333311,2,256,,,465,1,{},{ bonus bSkillDelayRate,-5; bonus bMdef,2; if (getequiprefinerycnt(1)<6) end; bonus bSkillDelayRate,getequiprefinerycnt(1)*-1; bonus bSkillDelayRate,5; }
@@ -2430,6 +2430,7 @@
 5470,Unknown_Item,ダークネスアイズ,5,,,100,,1,,,1000333311,2,512,,50,467,,{},{ bonus bDex,1; bonus2 bResEff,Eff_Blind,10000; }
 5471,Unknown_Item,レギンレイヴの翼,5,,,800,,1,,,1000333311,2,512,,50,468,,{},{ bonus2 bSubEle,1,3; bonus2 bSubEle,3,3; bonus2 bSubEle,7,3; bonus2 bSubEle,9,3; }
 
+5476,Unknown_Item,グランペコのヘアバンド,5,,,800,,2,,,1000333311,2,768,,30,473,1,{},{ bonus bStr,2; bonus bMaxHPrate,-10; bonus2 bAddGroup,2,15; }
 5477,Unknown_Item,ブラジル国旗,5,,,100,,1,,1,991944702,2,256,,30,474,1,{},{ skill 5,1; }
 5478,Unknown_Item,クラシックハット,5,,,500,,3,,0,1000333311,2,256,,,475,1,{},{ bonus bStr,2; bonus bMaxHP,300; }
 
@@ -2446,6 +2447,8 @@
 5810,Unknown_Item,修了の帽子,5,,,100,,3,,,991944702,2,256,,,98,1,{},{ bonus bInt,5; bonus bDex,3; bonus bVit,3; }
 5811,Unknown_Item,サンタのひげ,5,,,100,,5,,,1000333311,2,1,,,25,,{},{ bonus2 bSubRace,2,5; bonus2 bMagicSubRace,2,5; }
 5812,Unknown_Item,物専門家の帽子,5,,,0,,1,,0,1000333311,2,256,,,,1,{},{}
+
+5816,Unknown_Item,ニューカウボーイハット,5,,,500,,0,,1,1000333311,2,256,,,411,1,{},{ bonus bBaseAtk,15; bonus bFlee,-5; }
 
 6000,Unknown_Item,闇の灰,3,,,0,,,,,,,,,,,,{},{}
 6001,Unknown_Item,火の聖水,3,,,10,,,,,,,,,,,,{},{}

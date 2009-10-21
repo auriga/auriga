@@ -2867,7 +2867,7 @@ prt_church.gat,185,106,3	script	バムプ神父	60,{
 		set PRT_2QUE,61;
 		close;
 	default:
-		if(PRT_2QUE == 61 && NAME_1QUE)
+		if((PRT_2QUE == 56 || PRT_2QUE == 61) && NAME_1QUE)
 			break;
 		mes "[バムプ神父]";
 		mes "申し訳ありませんが、";
