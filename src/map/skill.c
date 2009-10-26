@@ -369,22 +369,25 @@ static struct skill_unit_layout *skill_get_unit_layout(int skillid,int skilllv,s
 
 int GetSkillStatusChangeTable(int id)
 {
-	if(id < SECOND_SKILLID)
+	if(id >= 0 && id < MAX_SKILL)
 		return SkillStatusChangeTable[id];
 
-	if(id < THIRD_SKILLID)
+	if(id >= SECOND_SKILLID && id < MAX_SECOND_SKILLID)
 		return SkillStatusChangeTable2[id - SECOND_SKILLID];
 
-	if(id < HOM_SKILLID)
+	if(id >= THIRD_SKILLID && id < MAX_THIRD_SKILLID)
 		return SkillStatusChangeTable3[id - THIRD_SKILLID];
 
-	if(id < MERC_SKILLID)
+	if(id >= HOM_SKILLID && id < MAX_HOM_SKILLID)
 		return HomSkillStatusChangeTable[id - HOM_SKILLID];
 
-	if(id < GUILD_SKILLID)
+	if(id >= MERC_SKILLID && id < MAX_MERC_SKILLID)
 		return MercSkillStatusChangeTable[id - MERC_SKILLID];
 
-	return GuildSkillStatusChangeTable[id - GUILD_SKILLID];
+	if(id >= GUILD_SKILLID && id < MAX_GUILD_SKILLID)
+		return GuildSkillStatusChangeTable[id - GUILD_SKILLID];
+
+	return -1;
 }
 int skill_get_hit(int id)
 {

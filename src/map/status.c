@@ -282,7 +282,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
 	int b_tigereye, b_endure;
-	struct skill b_skill[MAX_SKILL];
+	struct skill b_skill[MAX_PCSKILL];
 	int i,blv,calc_val,idx;
 	int skill,aspd_rate,wele,wele_,def_ele,refinedef;
 	int pele,pdef_ele;
@@ -2253,7 +2253,7 @@ L_RECALC:
 
 	if( memcmp(b_skill,sd->status.skill,sizeof(sd->status.skill)) || b_attackrange != sd->attackrange ) {
 		int type;
-		for(i=0; i<MAX_SKILL; i++) {
+		for(i=0; i<MAX_PCSKILL; i++) {
 			// カードスキルをロストしたとき即時発動型なら状態異常を解除
 			if(b_skill[i].flag == 1 && b_skill[i].lv > 0 && sd->status.skill[i].lv <= 0 && skill_get_inf(i) & 0x04) {
 				type = GetSkillStatusChangeTable(i);
@@ -4524,8 +4524,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if((race == RCT_UNDEAD || elem == ELE_UNDEAD) && !(flag&1) && (type == SC_STONE || type == SC_FREEZE || type == SC_BLEED))
 		return 0;
 
-	//行動不能状態異常の優先順位
-	if(type >= SC_STONE && type <= SC_SLEEP) {
+	// 行動不能状態異常の優先順位
+	if(type >= SC_STONE && type < SC_SLEEP) {
 		int i;
 		for(i = type; i < SC_SLEEP; i++) {
 			if(sc->data[i+1].timer != -1)

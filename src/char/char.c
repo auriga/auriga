@@ -2724,7 +2724,7 @@ int parse_tologin(int fd)
 							if(st.inventory[j].equip) st.inventory[j].equip=0;
 						}
 						// 雷鳥スキルリセット
-						for(j=0;j<MAX_SKILL;j++) {
+						for(j=0;j<MAX_PCSKILL;j++) {
 							if(st.skill[j].id>0 && !st.skill[j].flag){
 								st.skill_point += st.skill[j].lv;
 								st.skill[j].lv = 0;
