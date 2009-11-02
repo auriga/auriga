@@ -805,8 +805,11 @@ static int guildcastle_txt_init(void)
 
 	// デフォルトデータを作成
 	memset(castle_db,0,sizeof(castle_db));
-	for(i=0; i<MAX_GUILDCASTLE; i++)
+	for(i=0; i<MAX_GUILDCASTLE; i++) {
 		castle_db[i].castle_id = i;
+		castle_db[i].economy   = 1;
+		castle_db[i].defense   = 1;
+	}
 
 	if( (fp=fopen(castle_txt,"r"))==NULL ){
 		return 1;
@@ -907,8 +910,11 @@ static int guildcastle_sql_init(void)
 
 	// デフォルトデータを作成
 	memset(castle_db,0,sizeof(castle_db));
-	for(i=0; i<MAX_GUILDCASTLE; i++)
+	for(i=0; i<MAX_GUILDCASTLE; i++) {
 		castle_db[i].castle_id = i;
+		castle_db[i].economy   = 1;
+		castle_db[i].defense   = 1;
+	}
 
 	sqldbs_query(&mysql_handle, "SELECT "
 		"`castle_id`, `guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`,"
@@ -955,28 +961,27 @@ static int guildcastle_tosql(int castle_id)
 	struct guild_castle *gc = &castle_db[castle_id];
 
 	rc = sqldbs_query(&mysql_handle,
-		"UPDATE `" GUILD_CASTLE_TABLE "` SET guild_id = %d,economy = %d,"
-		"defense = %d,triggerE = %d,"
-		"triggerD = %d,nextTime = %d,"
-		"payTime = %d,createTime = %d,"
-		"visibleC = %d,visibleG0 = %d,"
-		"visibleG1 = %d,visibleG2 = %d,"
-		"visibleG3 = %d,visibleG4 = %d,"
-		"visibleG5 = %d,visibleG6 = %d,"
-		"visibleG7 = %d WHERE castle_id = %d;",
-		gc->guild_id,
-		gc->economy,gc->defense,
-		gc->triggerE,gc->triggerD,
-		gc->nextTime,gc->payTime,
-		gc->createTime,gc->visibleC,
-		gc->guardian[0].visible,gc->guardian[1].visible,
-		gc->guardian[2].visible,gc->guardian[3].visible,
-		gc->guardian[4].visible,gc->guardian[5].visible,
-		gc->guardian[6].visible,gc->guardian[7].visible,
-		gc->castle_id
+		"INSERT INTO `" GUILD_CASTLE_TABLE "` "
+		"(`castle_id`, `guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`, "
+		"`visibleC`, `visibleG0`, `visibleG1`, `visibleG2`, `visibleG3`, `visibleG4`, "
+		"`visibleG5`, `visibleG6`, `visibleG7`) VALUES "
+		"('%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', "
+		"'%d', '%d', '%d', '%d', '%d', '%d', "
+		"'%d', '%d', '%d') ON DUPLICATE KEY UPDATE "
+		"`guild_id` = '%d', `economy` = '%d', `defense` = '%d', `triggerE` = '%d', `triggerD` = '%d', `nextTime` = '%d', "
+		"`payTime` = '%d', `createTime` = '%d', `visibleC` = '%d', "
+		"`visibleG0` = '%d', `visibleG1` = '%d', `visibleG2` = '%d', `visibleG3` = '%d', "
+		"`visibleG4` = '%d', `visibleG5` = '%d', `visibleG6` = '%d', `visibleG7` = '%d' ",
+		gc->castle_id, gc->guild_id, gc->economy, gc->defense, gc->triggerE, gc->triggerD, gc->nextTime, gc->payTime, gc->createTime,
+		gc->visibleC, gc->guardian[0].visible, gc->guardian[1].visible, gc->guardian[2].visible, gc->guardian[3].visible, gc->guardian[4].visible,
+		gc->guardian[5].visible, gc->guardian[6].visible, gc->guardian[7].visible,
+		gc->guild_id, gc->economy, gc->defense, gc->triggerE, gc->triggerD, gc->nextTime,
+		gc->payTime, gc->createTime, gc->visibleC,
+		gc->guardian[0].visible, gc->guardian[1].visible, gc->guardian[2].visible, gc->guardian[3].visible,
+		gc->guardian[4].visible, gc->guardian[5].visible, gc->guardian[6].visible, gc->guardian[7].visible
 	);
 
-	return (rc)? 1: 0;
+	return rc;
 }
 
 static int guild_guildcastle_save(void)

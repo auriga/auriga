@@ -82,7 +82,7 @@ CREATE TABLE `char_data` (
 # Table: 'charlog'
 # 
 CREATE TABLE `charlog` (
-  `time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `time` datetime NOT NULL default '2000-01-01 00:00:00',
   `log` TEXT NOT NULL
 ) TYPE = MyISAM;
 
@@ -156,8 +156,8 @@ CREATE TABLE `guild_alliance` (
 CREATE TABLE `guild_castle` (
   `castle_id` int(11) NOT NULL default '0',
   `guild_id` int(11) NOT NULL default '0',
-  `economy` int(11) NOT NULL default '0',
-  `defense` int(11) NOT NULL default '0',
+  `economy` int(11) NOT NULL default '1',
+  `defense` int(11) NOT NULL default '1',
   `triggerE` int(11) NOT NULL default '0',
   `triggerD` int(11) NOT NULL default '0',
   `nextTime` int(11) NOT NULL default '0',
@@ -182,28 +182,6 @@ CREATE TABLE `guild_castle` (
   `gHP7` int(11) NOT NULL default '0',
   PRIMARY KEY (`castle_id`)
 ) TYPE = MyISAM;
-
-INSERT INTO `guild_castle` (`castle_id`,`guild_id`,`economy`,`defense`,`triggerE`,`triggerD`,`nextTime`,`payTime`,`createTime`,`visibleC`,`visibleG0`,`visibleG1`,`visibleG2`,`visibleG3`,`visibleG4`,`visibleG5`,`visibleG6`,`visibleG7`)
-VALUES
-  ( '1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ( '2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ( '3','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ( '4','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ( '5','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ( '6','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ( '7','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ( '8','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ( '9','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('10','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('11','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('12','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('13','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('14','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('15','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('16','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('17','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('18','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-  ('19','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
 
 # Database: Ragnarok
 # Table: 'guild_expulsion'
@@ -282,7 +260,7 @@ CREATE TABLE `guild_storage` (
 # Table: 'interlog'
 # 
 CREATE TABLE `interlog` (
-  `time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `time` datetime NOT NULL default '2000-01-01 00:00:00',
   `log` varchar(255) NOT NULL default ''
 ) TYPE = MyISAM;
 
@@ -313,7 +291,7 @@ CREATE TABLE `login` (
   `account_id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` varchar(24) BINARY NOT NULL default '',
   `user_pass` varchar(24) NOT NULL default '',
-  `lastlogin` datetime NOT NULL default '0000-00-00 00:00:00',
+  `lastlogin` datetime NOT NULL default '2000-01-01 00:00:00',
   `sex` char(1) NOT NULL default 'M',
   `logincount` int(11) NOT NULL default '0',
   `email` varchar(40) NOT NULL default '',
@@ -339,7 +317,7 @@ VALUES
 # Table: 'loginlog'
 # 
 CREATE TABLE `loginlog` (
-  `time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `time` datetime NOT NULL default '2000-01-01 00:00:00',
   `log` varchar(255) NOT NULL default ''
 ) TYPE = MyISAM;
 
