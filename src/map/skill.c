@@ -5654,6 +5654,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sd && dstsd) {
 			int sp_rate = (skilllv <= 0)? 0: skill_db[skillid].sp_rate[skilllv-1];
 			int gain_sp;
+			// バーサーク中の対象には無効
+			if(dstsd->sc.data[SC_BERSERK].timer != -1)
+				break;
 			if(battle_config.new_marrige_skill)
 				gain_sp = dstsd->status.max_sp;
 			else
