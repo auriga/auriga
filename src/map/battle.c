@@ -1319,9 +1319,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(src_sd && src_sd->state.arrow_atk) {
 			calc_flag.hitrate += src_sd->arrow_hit;
 		}
+		// 武器属性を除く属性に変更
+		s_ele = s_ele_ = status_get_attack_element_nw(src);
 		if(skill_num > 0) {
 			wd.flag = (wd.flag&~BF_SKILLMASK)|BF_SKILL;
-			if( (i = skill_get_pl(skill_num)) > 0 && (!src_sd || !src_sd->arrow_ele) )
+			if( (i = skill_get_pl(skill_num) ) > 0)
 				s_ele = s_ele_ = i;
 		}
 		switch( skill_num ) {
@@ -1775,7 +1777,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case CR_GRANDCROSS:	// グランドクロス
 		case NPC_GRANDDARKNESS:	// グランドダークネス
-			DMG_FIX( 100+40*skill_lv, 100 );
 			if (!battle_config.gx_cardfix)
 				calc_flag.nocardfix = 1;
 			break;
@@ -4026,7 +4027,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			return 0;
 	}
 	if(sc) {
-		if(sc->data[SC_HIDING].timer != -1 && skill_get_pl(skillid) != ELE_EARTH)	// ハイディング状態でスキルの属性が地属性でないなら何もしない
+		if(sc->data[SC_HIDING].timer != -1 && skill_get_pl(skillid) != ELE_EARTH && skillid != NPC_EARTHQUAKE)	// ハイディング状態でスキルの属性が地属性でなくアースクエイクでないなら何もしない
 			return 0;
 		if(sc->data[SC_CHASEWALK].timer != -1 && skillid == AL_RUWACH)	// チェイスウォーク状態でルアフ無効
 			return 0;
@@ -5054,7 +5055,7 @@ int battle_config_read(const char *cfgName)
 		{ "etc_log",                            &battle_config.etc_log,                            1        },
 		{ "save_clothcolor",                    &battle_config.save_clothcolor,                    0        },
 		{ "undead_detect_type",                 &battle_config.undead_detect_type,                 0        },
-		{ "player_auto_counter_type",           &battle_config.pc_auto_counter_type,               1        },
+		{ "player_auto_counter_type",           &battle_config.pc_auto_counter_type,               0        },
 		{ "monster_auto_counter_type",          &battle_config.monster_auto_counter_type,          1        },
 		{ "min_hitrate",                        &battle_config.min_hitrate,                        5        },
 		{ "agi_penalty_type",                   &battle_config.agi_penalty_type,                   1        },

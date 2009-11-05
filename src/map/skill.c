@@ -5909,8 +5909,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					continue;
 				if(unit_distance(sd->bl.x,sd->bl.y,member->bl.x,member->bl.y) <= range) {
 					clif_skill_nodamage(src,&member->bl,skillid,skilllv,1);
-					if(skillid == GD_RESTORE)
+					if(skillid == GD_RESTORE) {
+						// バーサーク中のメンバーには使用不可
+						if(member->sc.data[SC_BERSERK].timer != -1)
+							continue;
 						pc_heal(member, member->status.max_hp * 90 / 100, member->status.max_sp * 90 / 100);
+					}
 					else
 						status_change_start(&member->bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0);
 				}
