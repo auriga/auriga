@@ -4806,14 +4806,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_DECREASEAGI:		/* 速度減少 */
 			calc_flag = 1;
-			if(sc->data[SC_INCREASEAGI].timer != -1)
-				status_change_end(bl,SC_INCREASEAGI,-1);
-			if(sc->data[SC_TWOHANDQUICKEN].timer != -1)
-				status_change_end(bl,SC_TWOHANDQUICKEN,-1);
-			if(sc->data[SC_SPEARQUICKEN].timer != -1)
-				status_change_end(bl,SC_SPEARQUICKEN,-1);
-			if(sc->data[SC_ADRENALINE].timer != -1)
-				status_change_end(bl,SC_ADRENALINE,-1);
 			break;
 		case SC_SIGNUMCRUCIS:		/* シグナムクルシス */
 			calc_flag = 1;

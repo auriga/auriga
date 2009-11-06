@@ -3825,6 +3825,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			else
 				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
+		status_change_release(bl,0x80); // 速度減少による状態異常解除
 		break;
 
 	case AL_CRUCIS:

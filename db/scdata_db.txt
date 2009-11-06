@@ -5,7 +5,7 @@
 
 0,SC_PROVOKE,1,7,1			// プロボック
 1,SC_ENDURE,1,7,0			// インデュア
-2,SC_TWOHANDQUICKEN,1,7,14		// ツーハンドクイッケン
+2,SC_TWOHANDQUICKEN,1,135,14		// ツーハンドクイッケン
 3,SC_CONCENTRATE,1,7,0			// 集中力向上
 4,SC_HIDING,0,5,0			// ハイディング
 5,SC_CLOAKING,0,5,0			// クローキング
@@ -15,7 +15,7 @@
 9,SC_ANGELUS,1,103,0			// エンジェラス
 10,SC_BLESSING,1,103,1			// ブレッシング
 11,SC_SIGNUMCRUCIS,0,15,0		// シグナムクルシス
-12,SC_INCREASEAGI,1,103,6		// 速度増加
+12,SC_INCREASEAGI,1,231,6		// 速度増加
 13,SC_DECREASEAGI,0,15,17		// 速度減少
 14,SC_SLOWPOISON,0,103,0		// スローポイズン
 15,SC_IMPOSITIO,1,103,0			// イムポシティオマヌス
@@ -26,7 +26,7 @@
 20,SC_MAGNIFICAT,1,103,0		// マグニフィカート
 21,SC_GLORIA,1,103,0			// グロリア
 22,SC_AETERNA,0,7,0			// レックスエーテルナ
-23,SC_ADRENALINE,1,7,14			// アドレナリンラッシュ
+23,SC_ADRENALINE,1,135,14		// アドレナリンラッシュ
 24,SC_WEAPONPERFECTION,1,7,0		// ウェポンパーフェクション
 25,SC_OVERTHRUST,1,7,0			// オーバートラスト
 26,SC_MAXIMIZEPOWER,1,7,0		// マキシマイズパワー
@@ -60,7 +60,7 @@
 64,SC_SUMMER,0,1,0			// 涼しい夏衣装
 65,SC_AUTOSPELL,0,7,0			// オートスペル
 //
-68,SC_SPEARSQUICKEN,1,7,14		// スピアクイッケン
+68,SC_SPEARQUICKEN,1,135,14		// スピアクイッケン
 //
 86,SC_EXPLOSIONSPIRITS,0,7,0		// 爆裂波動
 87,SC_STEELBODY,0,7,0			// 金剛
@@ -85,7 +85,7 @@
 115,SC_TRUESIGHT,1,5,0			// トゥルーサイト
 116,SC_WINDWALK,1,5,6			// ウインドウォーク
 117,SC_MELTDOWN,1,5,0			// メルトダウン
-118,SC_CARTBOOST,1,5,6			// カートブースト
+118,SC_CARTBOOST,1,133,6		// カートブースト
 119,SC_CHASEWALK,0,7,0			// チェイスウォーク
 120,SC_REJECTSWORD,0,4,0		// リジェクトソード
 121,SC_MARIONETTE,-1,7,0		// マリオネットコントロール（自分）
@@ -320,8 +320,8 @@
 352,SC_GATLINGFEVER,0,1,0		// ガトリングフィーバー
 353,SC_FULLBUSTER,0,1,0			// ブルバスター
 354,SC_TATAMIGAESHI,0,1,0		// 畳返し
-355,SC_UTSUSEMI,0,1,0			// 空蝉
-356,SC_BUNSINJYUTSU,0,1,0		// 分身の術
+355,SC_UTSUSEMI,0,67,0			// 空蝉
+356,SC_BUNSINJYUTSU,0,67,0		// 分身の術
 357,SC_SUITON,-1,1,0			// 水遁
 358,SC_NEN,0,1,0			// 念
 359,SC_AVOID,0,1,0			// 緊急回避

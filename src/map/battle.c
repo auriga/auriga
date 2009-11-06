@@ -1319,8 +1319,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(src_sd && src_sd->state.arrow_atk) {
 			calc_flag.hitrate += src_sd->arrow_hit;
 		}
-		// 武器属性を除く属性に変更
-		s_ele = s_ele_ = status_get_attack_element_nw(src);
+		// 武器に属性が付与されているなら、付与属性に変更
+		if(status_get_attack_element_nw(src) != ELE_NEUTRAL)
+			s_ele = s_ele_ = status_get_attack_element_nw(src);
 		if(skill_num > 0) {
 			wd.flag = (wd.flag&~BF_SKILLMASK)|BF_SKILL;
 			if( (i = skill_get_pl(skill_num) ) > 0)
