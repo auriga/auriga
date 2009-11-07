@@ -2323,28 +2323,35 @@ void clif_move(struct block_list *bl)
 
 	if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)bl;
-		int fd = sd->fd;
 		// 完全なインビジブルモードなら送信しない
 		if(battle_config.gm_perfect_hide) {
 			if(sd && pc_isinvisible(sd))
 				return;
 		}
-		len = clif_set007b(sd,WFIFOP(fd,0));
-		clif_send(WFIFOP(fd,0),len,&sd->bl,AREA_WOS);
-	} else if(bl->type == BL_MOB) {
+		if(ud->state.change_speed) {
+			int fd = sd->fd;
+			ud->state.change_speed = 0;
+			len = clif_set007b(sd,WFIFOP(fd,0));
+			clif_send(WFIFOP(fd,0),len,&sd->bl,AREA_WOS);
+		}
+	} else if(bl->type == BL_MOB && ud->state.change_speed) {
 		struct mob_data *md = (struct mob_data *)bl;
+		ud->state.change_speed = 0;
 		len = clif_mob007b(md,buf);
 		clif_send(buf,len,&md->bl,AREA_WOS);
-	} else if(bl->type == BL_PET) {
+	} else if(bl->type == BL_PET && ud->state.change_speed) {
 		struct pet_data *pd = (struct pet_data *)bl;
+		ud->state.change_speed = 0;
 		len = clif_pet007b(pd,buf);
 		clif_send(buf,len,&pd->bl,AREA_WOS);
-	} else if(bl->type == BL_HOM) {
+	} else if(bl->type == BL_HOM && ud->state.change_speed) {
 		struct homun_data *hd = (struct homun_data *)bl;
+		ud->state.change_speed = 0;
 		len = clif_hom007b(hd,buf);
 		clif_send(buf,len,&hd->bl,AREA_WOS);
-	} else if(bl->type == BL_MERC) {
+	} else if(bl->type == BL_MERC && ud->state.change_speed) {
 		struct merc_data *mcd = (struct merc_data *)bl;
+		ud->state.change_speed = 0;
 		len = clif_merc007b(mcd,buf);
 		clif_send(buf,len,&mcd->bl,AREA_WOS);
 	}

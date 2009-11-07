@@ -190,6 +190,7 @@ struct unit_data {
 		unsigned change_walk_target : 1;
 		unsigned skillcastcancel : 1;
 		unsigned attack_continue : 1;
+		unsigned change_speed : 1;
 	} state;
 	struct linkdb_node *statuspretimer;
 };
