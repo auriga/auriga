@@ -4443,13 +4443,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	int icon_tick = tick, icon_val = 0, opt_flag = 0, calc_flag = 0, race, mode, elem;
 
 	nullpo_retr(0, bl);
-	nullpo_retr(0, ud = unit_bl2ud(bl));
 
 	if(type < 0)
 		return 0;
 
 	sc = status_get_sc(bl);
 	if(sc == NULL)
+		return 0;
+	ud = unit_bl2ud(bl);
+	if(ud == NULL)
 		return 0;
 
 	if(bl->type == BL_HOM && !battle_config.allow_homun_status_change)
@@ -5933,9 +5935,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, sc = status_get_sc(bl));
-	nullpo_retr(0, ud = unit_bl2ud(bl));
 
 	if(type < 0)
+		return 0;
+	ud = unit_bl2ud(bl);
+	if(ud == NULL)
 		return 0;
 
 	if(type >= MAX_STATUSCHANGE) {

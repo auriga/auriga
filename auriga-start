@@ -66,12 +66,7 @@ check_account() {
 	fi
 
 	if [ ! -f ./save/castle.txt ]; then
-		i=0
-		while [ $i -le 19 ];
-		do
-			echo -e "$i,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0\r" >> save/castle.txt
-			i=`expr $i + 1`
-		done
+		echo -n > save/castle.txt
 	fi
 
 	if [ ! -f ./save/g_storage.txt ]; then
