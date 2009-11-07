@@ -5915,9 +5915,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						if(member->sc.data[SC_BERSERK].timer != -1)
 							continue;
 						pc_heal(member, member->status.max_hp * 90 / 100, member->status.max_sp * 90 / 100);
-					}
-					else
+					} else {
 						status_change_start(&member->bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0);
+					}
 				}
 			}
 			if(skillid == GD_BATTLEORDER)
@@ -8805,14 +8805,15 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
  */
 static int skill_check_condition_mob_master_sub(struct block_list *bl,va_list ap)
 {
-	int src_id=0,mob_class=0;
+	int src_id, mob_class;
 	struct mob_data *md;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, md=(struct mob_data*)bl);
-	nullpo_retr(0, src_id=va_arg(ap,int));
-	nullpo_retr(0, mob_class=va_arg(ap,int));
+	nullpo_retr(0, md = (struct mob_data*)bl);
+
+	src_id    = va_arg(ap,int);
+	mob_class = va_arg(ap,int);
 
 	if(md->class_ == mob_class && md->master_id == src_id)
 		return 1;

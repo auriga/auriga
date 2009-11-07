@@ -593,9 +593,10 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
-	nullpo_retr(0, smd  = va_arg(ap,struct mob_data *));
-	nullpo_retr(0, cnt  = va_arg(ap,int *));
-	nullpo_retr(0, flag = va_arg(ap,int));
+	nullpo_retr(0, smd = va_arg(ap,struct mob_data *));
+	nullpo_retr(0, cnt = va_arg(ap,int *));
+
+	flag = va_arg(ap,int);
 
 	cnt[3]++; // 範囲内のオブジェクト数
 

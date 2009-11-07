@@ -40,10 +40,11 @@
 							// ".debug0" は終了の過程で出るゴミ、".debug1" は終了時のジャーナル
 
 
-#define JOURNAL_IDENTIFIER	"AURIGA_JOURNAL11"	// 識別子（ファイル構造を変えたら、最後の数値を変えるべき）
+#define JOURNAL_IDENTIFIER	"AURIGA_JOURNAL12"	// 識別子（ファイル構造を変えたら、最後の数値を変えるべき）
 
 struct journal_header {
-	unsigned int crc32, tick;
+	unsigned long crc32;
+	unsigned int tick;
 	time_t timestamp;
 	int key, flag;
 };
@@ -404,11 +405,15 @@ int journal_load( struct journal* j, size_t datasize, const char* filename )
 
 	// ファイルが正しいかチェック
 	fread( &j->fhd, 1, sizeof(j->fhd), j->fp );
-	if( memcmp( j->fhd.identifier, JOURNAL_IDENTIFIER, sizeof(j->fhd.identifier) ) !=0 ||
-		j->fhd.datasize != (unsigned int)datasize )
+	if( memcmp( j->fhd.identifier, JOURNAL_IDENTIFIER, sizeof(j->fhd.identifier) ) != 0 )
 	{
-		printf("journal: file version or datasize mismatch ! [%s]\n", filename );
-		abort();
+		printf("journal: file version mismatch ! '%s' vs '%s' [%s]\n", j->fhd.identifier, JOURNAL_IDENTIFIER, filename);
+		return 0;
+	}
+	if( j->fhd.datasize != (unsigned int)datasize )
+	{
+		printf("journal: file datasize mismatch ! %u vs %u [%s]\n", j->fhd.datasize, (unsigned int)datasize, filename );
+		return 0;
 	}
 
 	// データの読み込みループ

@@ -367,7 +367,7 @@ int mail_txt_save(struct mail* m2)
 
 	if(m1 == NULL) {
 		m1 = (struct mail *)aCalloc(1,sizeof(struct mail));
-		numdb_insert(mail_db,m1,m2->char_id);
+		numdb_insert(mail_db,m2->char_id,m1);
 	}
 	memcpy(m1,m2,sizeof(struct mail));
 

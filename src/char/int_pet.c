@@ -289,7 +289,7 @@ int pet_txt_save(struct s_pet* p2)
 
 	if(p1 == NULL) {
 		p1 = (struct s_pet *)aMalloc(sizeof(struct s_pet));
-		numdb_insert(pet_db,p1,p2->pet_id);
+		numdb_insert(pet_db,p2->pet_id,p1);
 	}
 	memcpy(p1,p2,sizeof(struct s_pet));
 
