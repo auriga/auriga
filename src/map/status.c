@@ -999,7 +999,7 @@ L_RECALC:
 				subagi /= 2;
 				subdex /= 2;
 			}
-			sd->speed = sd->speed*4/3;
+			sd->speed = sd->speed*5/3;
 			sd->paramb[1] -= subagi;
 			sd->paramb[4] -= subdex;
 		}
@@ -3571,9 +3571,9 @@ int status_get_speed(struct block_list *bl)
 			// 速度減少時は33〜50%加算
 			if(sc->data[SC_DECREASEAGI].timer != -1 && sc->data[SC_DEFENDER].timer == -1)	// ディフェンダー時は加算無し
 				speed = speed*((sc->data[SC_DECREASEAGI].val1 > 5)? 150: 133)/100;
-			// クァグマイア時は1/3加算
+			// クァグマイア時は2/3加算
 			if(sc->data[SC_QUAGMIRE].timer != -1)
-				speed = speed*4/3;
+				speed = speed*5/3;
 			// マーシュオブアビス時は加算
 			if(sc->data[SC_MARSHOFABYSS].timer != -1)
 				speed = speed * (100 + sc->data[SC_MARSHOFABYSS].val2) / 100;

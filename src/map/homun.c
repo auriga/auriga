@@ -420,7 +420,7 @@ int homun_calc_status(struct homun_data *hd)
 					subagi /= 2;
 					subdex /= 2;
 				}
-				hd->speed = hd->speed*4/3;
+				hd->speed = hd->speed*5/3;
 				hd->agi -= subagi;
 				hd->dex -= subdex;
 			}

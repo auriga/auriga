@@ -295,7 +295,7 @@ int merc_calc_status(struct merc_data *mcd)
 				subagi /= 2;
 				subdex /= 2;
 			}
-			mcd->speed = mcd->speed*4/3;
+			mcd->speed = mcd->speed*5/3;
 			mcd->agi -= subagi;
 			mcd->dex -= subdex;
 		}
