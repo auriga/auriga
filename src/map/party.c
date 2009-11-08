@@ -980,7 +980,6 @@ void party_equip_window(struct map_session_data *sd, int account_id)
 int party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_session_data *sd,int range,...)
 {
 	struct party *p;
-	va_list ap;
 	int i, x0, y0, x1, y1;
 	struct block_list *list[MAX_PARTY];
 	int blockcount = 0;
@@ -995,8 +994,6 @@ int party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_sess
 	y0 = sd->bl.y - range;
 	x1 = sd->bl.x + range;
 	y1 = sd->bl.y + range;
-
-	va_start(ap,range);
 
 	for(i=0; i<MAX_PARTY; i++) {
 		struct party_member *m = &p->member[i];
@@ -1013,12 +1010,15 @@ int party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_sess
 	map_freeblock_lock();	// メモリからの解放を禁止する
 
 	for(i=0; i<blockcount; i++) {
-		if(list[i]->prev)	// 有効かどうかチェック
+		if(list[i]->prev) {	// 有効かどうかチェック
+			va_list ap;
+			va_start(ap, range);
 			ret += func(list[i],ap);
+			va_end(ap);
+		}
 	}
 
 	map_freeblock_unlock();	// 解放を許可する
-	va_end(ap);
 
 	return ret;
 }

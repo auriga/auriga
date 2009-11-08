@@ -208,20 +208,20 @@ int clif_countusers(void)
 int clif_foreachclient(int (*func)(struct map_session_data*,va_list),...)
 {
 	int i, ret = 0;
-	va_list ap;
 	struct map_session_data *sd;
 
-	va_start(ap,func);
 	for(i=0;i<fd_max;i++){
 		if(
 			session[i] && session[i]->func_parse == clif_parse &&
 			(sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth &&
 			!sd->state.waitingdisconnect
 		) {
+			va_list ap;
+			va_start(ap, func);
 			ret += func(sd,ap);
+			va_end(ap);
 		}
 	}
-	va_end(ap);
 
 	return ret;
 }

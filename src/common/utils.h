@@ -22,6 +22,8 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+#include <stdarg.h>
+
 
 // =====================
 // Platform
@@ -169,6 +171,18 @@ typedef int32  intptr;
 #	define vsnprintf _vsnprintf
 
 #endif	// if VC
+
+
+// =====================
+// va_copy
+// ---------------------
+#ifndef va_copy
+#	ifdef __va_copy
+#		define va_copy __va_copy
+#	else
+#		define va_copy(dst, src) memcpy(&(dst), &(src), sizeof(va_list))
+#	endif
+#endif
 
 
 // =====================

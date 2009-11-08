@@ -586,8 +586,12 @@ static int map_foreachinarea_sub(int (*func)(struct block_list*,va_list),int m,i
 	map_freeblock_lock();	// メモリからの解放を禁止する
 
 	for(i = blockcount; i < bl_list_count; i++) {
-		if(bl_list[i]->prev)	// 有効かどうかチェック
-			ret += func(bl_list[i],ap);
+		if(bl_list[i]->prev) {	// 有効かどうかチェック
+			va_list apcopy;
+			va_copy(apcopy, ap);
+			ret += func(bl_list[i],apcopy);
+			va_end(apcopy);
+		}
 	}
 
 	map_freeblock_unlock();	// 解放を許可する
@@ -630,7 +634,6 @@ int map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 	int i, blockcount = bl_list_count;
 	int ret = 0;
 	struct block_list *bl;
-	va_list ap;
 
 	x1 = x0;
 	y1 = y0;
@@ -788,16 +791,18 @@ int map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 			printf("map_foreachinpath: *WARNING* block count too many!\n");
 	}
 
-	va_start(ap,type);
 	map_freeblock_lock();	// メモリからの解放を禁止する
 
 	for(i = blockcount; i < bl_list_count; i++) {
-		if(bl_list[i]->prev)	// 有効かどうかチェック
+		if(bl_list[i]->prev) {	// 有効かどうかチェック
+			va_list ap;
+			va_start(ap, type);
 			ret += func(bl_list[i],ap);
+			va_end(ap);
+		}
 	}
 
 	map_freeblock_unlock();	// 解放を許可する
-	va_end(ap);
 
 	bl_list_count = blockcount;
 
@@ -814,7 +819,6 @@ int map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,i
 {
 	int bx, by, x2, y2, x3, y3;
 	struct block_list *bl;
-	va_list ap;
 	int i, blockcount = bl_list_count;
 	int ret = 0;
 
@@ -940,17 +944,19 @@ int map_foreachinmovearea(int (*func)(struct block_list*,va_list),int m,int x0,i
 			printf("map_foreachinmovearea: *WARNING* block count too many!\n");
 	}
 
-	va_start(ap,type);
 	map_freeblock_lock();	// メモリからの解放を禁止する
 
 	for(i = blockcount; i < bl_list_count; i++) {
-		if(bl_list[i]->prev)	// 有効かどうかチェック
+		if(bl_list[i]->prev) {	// 有効かどうかチェック
+			va_list ap;
+			va_start(ap, type);
 			ret += func(bl_list[i],ap);
+			va_end(ap);
+		}
 	}
 
 	map_freeblock_unlock();	// 解放を許可する
 
-	va_end(ap);
 	bl_list_count = blockcount;
 
 	return ret;
@@ -972,7 +978,6 @@ int map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4]
 	int flag = 0, i, j, ret = 0;
 	int x0 = 0x7fffffff, x1 = -0x7fffffff;
 	int y0 = 0x7fffffff, y1 = -0x7fffffff;
-	va_list ap;
 
 	for(i = 0; i < 4; i++) {
 		for(j = 0; j < 4; j++) {
@@ -985,6 +990,7 @@ int map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4]
 		}
 	}
 	if( flag ) {
+		va_list ap;
 		va_start(ap,type);
 		ret = map_foreachinarea_sub(func, m, x0, y0, x1, y1, type, ap);
 		va_end(ap);
@@ -1076,7 +1082,6 @@ int map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
 {
 	int i, blockcount = bl_list_count;
 	int ret = 0;
-	va_list ap;
 
 	for(i = MIN_FLOORITEM; i <= last_object_id; i++) {
 		if(object[i]) {
@@ -1091,17 +1096,19 @@ int map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
 		}
 	}
 
-	va_start(ap,type);
 	map_freeblock_lock();
 
 	for(i = blockcount; i < bl_list_count; i++) {
-		if( bl_list[i]->prev || bl_list[i]->next )
+		if( bl_list[i]->prev || bl_list[i]->next ) {
+			va_list ap;
+			va_start(ap, type);
 			ret += func(bl_list[i],ap);
+			va_end(ap);
+		}
 	}
 
 	map_freeblock_unlock();
 
-	va_end(ap);
 	bl_list_count = blockcount;
 
 	return ret;

@@ -535,7 +535,10 @@ int db_foreach_sub(struct dbt* table,int(*func)(void*,void*,va_list), va_list ap
 		sp=0;
 		while(1){
 			if(!p->deleted) {
-				ret += func(p->key,p->data,ap);
+				va_list apcopy;
+				va_copy(apcopy, ap);
+				ret += func(p->key,p->data,apcopy);
+				va_end(apcopy);
 			}
 			count--;
 			if((pn=p->left)!=NULL){
@@ -596,8 +599,12 @@ static int db_clear_sub(struct dbt *table,int (*func)(void*,void*,va_list), va_l
 			} else {
 				p->parent->right = NULL;
 			}
-			if( func )
-				ret += func( p->key, p->data, ap );
+			if( func ) {
+				va_list apcopy;
+				va_copy(apcopy, ap);
+				ret += func( p->key, p->data, apcopy );
+				va_end(apcopy);
+			}
 			free_dbn(p);
 		}
 	}

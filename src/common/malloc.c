@@ -574,8 +574,11 @@ static void memmgr_warning(const char* format,...)
 	va_start(ap,format);
 
 	if(fp) {
-		vfprintf(fp,format,ap);
+		va_list apcopy;
+		va_copy(apcopy, ap);
+		vfprintf(fp,format,apcopy);
 		fclose(fp);
+		va_end(apcopy);
 	}
 	vprintf(format,ap);
 	va_end(ap);
