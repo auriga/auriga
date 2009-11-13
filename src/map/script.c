@@ -11748,7 +11748,7 @@ int buildin_checkactiveitem(struct script_state *st)
 	if(sd) {
 		int i;
 		for(i = 0; i < sd->activeitem.count; i++) {
-			if(sd->activeitem.id[i] == id && sd->activeitem_timer[i] != -1) {
+			if(sd->activeitem_id2[i] == id && sd->activeitem_timer[i] != -1) {
 				push_val(st->stack,C_INT,1);
 				return 0;
 			}

@@ -1,4 +1,27 @@
 ----------------------------------------
+//0706 [2009/11/14] by popori
+
+・遠距離攻撃耐性で魔法ダメージも減らすよう修正 (battle.c)
+　Lyeseさんに感謝
+
+・eA、その他の情報を参考に以下のスキルを実装 (skill.* skill_cast_db.txt skill_db2.txt skill_db.txt)
+ ->キャッシュアイテム専用スキル「パーティーブレッシング」「パーティー速度増加」「パーティーアスムプティオ」
+ ->アイテム用スキル？「セルフプロボック」
+ ->定義のみ追加「GM_SANDMAN」「ALL_CATCRY」「ALL_PARTYFLEE」「ALL_ANGEL_PROTECT」「ALL_DREAM_SUMMERNIGHT」
+
+　※SM_SELFPROVOKEはアロエベラに使用する模様
+　　ALL_CATCRY ALL_PARTYFLEE ALL_ANGEL_PROTECT ALL_DREAM_SUMMERNIGHTはイベント専用スキルのようです。
+
+・温もりのskill_typeをweaponに変更しておく (skill_db.txt)
+
+・AthenaProject Rev.556をマージ (skill.c)
+　nanashiさんに感謝
+　->スキル「ブラギの詩」の効果を修正(参考：雷鳥テンプレ)
+
+・アクティブアイテムに関連するバグ修正を取り込み (pc.c script.c map.h)
+　dragontail789さんに感謝
+
+----------------------------------------
 //0705 [2009/11/09] by Rayce
 
 ・可変引数を使用する際、va_list型変数に対して複数回 va_arg() 実行する場合は

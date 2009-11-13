@@ -528,6 +528,7 @@ struct map_session_data {
 		short count;
 	} activeitem;
 	int activeitem_timer[MAX_ACTIVEITEM];
+	int activeitem_id2[MAX_ACTIVEITEM];
 
 	short hp_vanish_rate;
 	short hp_vanish_per;

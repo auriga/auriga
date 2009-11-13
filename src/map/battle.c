@@ -3372,6 +3372,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		cardfix = cardfix*(100-tsd->subenemy[status_get_enemy_type(bl)])/100;	// 敵タイプによるダメージ耐性
 		cardfix = cardfix*(100-tsd->magic_subsize[status_get_size(bl)])/100;		// サイズによるダメージ耐性
 		cardfix = cardfix*(100-tsd->magic_subrace[race])/100;
+		cardfix = cardfix*(100-tsd->long_attack_def_rate)/100;	// 遠距離耐性によるダメージ減少
 		if(status_get_mode(bl) & 0x20)
 			cardfix = cardfix*(100-tsd->magic_subrace[RCT_BOSS])/100;
 		else

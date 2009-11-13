@@ -1049,8 +1049,10 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->coin_timer[i]   = -1;
 	}
 
-	for(i=0; i<MAX_ACTIVEITEM; i++)
+	for(i=0; i<MAX_ACTIVEITEM; i++) {
 		sd->activeitem_timer[i] = -1;
+		sd->activeitem_id2[i] = 0;
+	}
 
 	for(i=0; i<MAX_SKILL_DB; i++)
 		sd->skillstatictimer[i] = tick;
@@ -1718,9 +1720,10 @@ static int pc_activeitem_timer(int tid,unsigned int tick,int id,void *data)
 	if(sd == NULL)
 		return 0;
 
-	for(i = 0; i < sd->activeitem.count; i++) {
+	for(i = 0; i < MAX_ACTIVEITEM; i++) {
 		if(sd->activeitem_timer[i] == tid) {
 			sd->activeitem_timer[i] = -1;
+			sd->activeitem_id2[i] = 0;
 			status_calc_pc(sd,0);
 			return 1;
 		}
@@ -1784,6 +1787,7 @@ int pc_activeitem_start(struct map_session_data* sd,unsigned long mode,unsigned 
 			continue;
 
 		// 発動
+		sd->activeitem_id2[i]   = sd->activeitem.id[i];
 		sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], pc_activeitem_timer, sd->bl.id, NULL);
 		flag = 1;
 	}
