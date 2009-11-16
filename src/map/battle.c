@@ -2570,60 +2570,69 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 20．カードによるダメージ追加処理 */
-	if( src_sd && wd.damage > 0 && calc_flag.rh && !calc_flag.nocardfix && skill_num != NPC_EARTHQUAKE ) {
+	if( src_sd && wd.damage > 0 && calc_flag.rh && skill_num != NPC_EARTHQUAKE ) {
 		cardfix = 100;
-		if(!src_sd->state.arrow_atk) {	// 弓矢以外
-			if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
-				cardfix = cardfix*(100+src_sd->addrace[t_race])/100;	// 種族によるダメージ修正
-				cardfix = cardfix*(100+src_sd->addele[t_ele])/100;	// 属性によるダメージ修正
-				cardfix = cardfix*(100+src_sd->addenemy[t_enemy])/100;	// 敵タイプによるダメージ修正
-				cardfix = cardfix*(100+src_sd->addsize[t_size])/100;	// サイズによるダメージ修正
-				cardfix = cardfix*(100+src_sd->addgroup[t_group])/100;	// グループによるダメージ修正
-			} else {
-				cardfix = cardfix*(100+src_sd->addrace[t_race]+src_sd->addrace_[t_race])/100;		// 種族によるダメージ修正(左手による追加あり)
-				cardfix = cardfix*(100+src_sd->addele[t_ele]+src_sd->addele_[t_ele])/100;		// 属性によるダメージ修正(左手による追加あり)
-				cardfix = cardfix*(100+src_sd->addenemy[t_enemy]+src_sd->addenemy_[t_enemy])/100;	// 敵タイプによるダメージ修正(左手による追加あり)
-				cardfix = cardfix*(100+src_sd->addsize[t_size]+src_sd->addsize_[t_size])/100;		// サイズによるダメージ修正(左手による追加あり)
-				cardfix = cardfix*(100+src_sd->addgroup[t_group]+src_sd->addgroup_[t_group])/100;	// グループによるダメージ修正(左手による追加あり)
-			}
-		} else { // 弓矢
-			cardfix = cardfix*(100+src_sd->addrace[t_race]+src_sd->arrow_addrace[t_race])/100;	// 種族によるダメージ修正(弓矢による追加あり)
-			cardfix = cardfix*(100+src_sd->addele[t_ele]+src_sd->arrow_addele[t_ele])/100;		// 属性によるダメージ修正(弓矢による追加あり)
-			cardfix = cardfix*(100+src_sd->addenemy[t_enemy]+src_sd->arrow_addenemy[t_enemy])/100;	// 敵タイプによるダメージ修正(弓矢による追加あり)
-			cardfix = cardfix*(100+src_sd->addsize[t_size]+src_sd->arrow_addsize[t_size])/100;	// サイズによるダメージ修正(弓矢による追加あり)
-			cardfix = cardfix*(100+src_sd->addgroup[t_group]+src_sd->arrow_addgroup[t_group])/100;	// グループによるダメージ修正(弓矢による追加あり)
-		}
-		if(t_mode & 0x20) {	// ボス
-			if(!src_sd->state.arrow_atk) {	// 弓矢攻撃以外なら
-				if(!battle_config.left_cardfix_to_right) {
-					// 左手カード補正設定無し
-					cardfix = cardfix*(100+src_sd->addrace[RCT_BOSS])/100;					// ボスモンスターに追加ダメージ
+		if(!calc_flag.nocardfix) {
+			if(!src_sd->state.arrow_atk) {	// 弓矢以外
+				if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
+					cardfix = cardfix*(100+src_sd->addrace[t_race])/100;	// 種族によるダメージ修正
+					cardfix = cardfix*(100+src_sd->addele[t_ele])/100;	// 属性によるダメージ修正
+					cardfix = cardfix*(100+src_sd->addenemy[t_enemy])/100;	// 敵タイプによるダメージ修正
+					cardfix = cardfix*(100+src_sd->addsize[t_size])/100;	// サイズによるダメージ修正
+					cardfix = cardfix*(100+src_sd->addgroup[t_group])/100;	// グループによるダメージ修正
 				} else {
-					// 左手カード補正設定あり
-					cardfix = cardfix*(100+src_sd->addrace[RCT_BOSS]+src_sd->addrace_[RCT_BOSS])/100;	// ボスモンスターに追加ダメージ(左手による追加あり)
+					cardfix = cardfix*(100+src_sd->addrace[t_race]+src_sd->addrace_[t_race])/100;		// 種族によるダメージ修正(左手による追加あり)
+					cardfix = cardfix*(100+src_sd->addele[t_ele]+src_sd->addele_[t_ele])/100;		// 属性によるダメージ修正(左手による追加あり)
+					cardfix = cardfix*(100+src_sd->addenemy[t_enemy]+src_sd->addenemy_[t_enemy])/100;	// 敵タイプによるダメージ修正(左手による追加あり)
+					cardfix = cardfix*(100+src_sd->addsize[t_size]+src_sd->addsize_[t_size])/100;		// サイズによるダメージ修正(左手による追加あり)
+					cardfix = cardfix*(100+src_sd->addgroup[t_group]+src_sd->addgroup_[t_group])/100;	// グループによるダメージ修正(左手による追加あり)
 				}
-			} else {	// 弓矢攻撃
-				cardfix = cardfix*(100+src_sd->addrace[RCT_BOSS]+src_sd->arrow_addrace[RCT_BOSS])/100;		// ボスモンスターに追加ダメージ(弓矢による追加あり)
+			} else { // 弓矢
+				cardfix = cardfix*(100+src_sd->addrace[t_race]+src_sd->arrow_addrace[t_race])/100;	// 種族によるダメージ修正(弓矢による追加あり)
+				cardfix = cardfix*(100+src_sd->addele[t_ele]+src_sd->arrow_addele[t_ele])/100;		// 属性によるダメージ修正(弓矢による追加あり)
+				cardfix = cardfix*(100+src_sd->addenemy[t_enemy]+src_sd->arrow_addenemy[t_enemy])/100;	// 敵タイプによるダメージ修正(弓矢による追加あり)
+				cardfix = cardfix*(100+src_sd->addsize[t_size]+src_sd->arrow_addsize[t_size])/100;	// サイズによるダメージ修正(弓矢による追加あり)
+				cardfix = cardfix*(100+src_sd->addgroup[t_group]+src_sd->arrow_addgroup[t_group])/100;	// グループによるダメージ修正(弓矢による追加あり)
 			}
-		} else {		// ボスじゃない
-			if(!src_sd->state.arrow_atk) {	// 弓矢攻撃以外
-				if(!battle_config.left_cardfix_to_right) {
-					// 左手カード補正設定無し
-					cardfix = cardfix*(100+src_sd->addrace[RCT_NONBOSS])/100;				// ボス以外モンスターに追加ダメージ
+			if(t_mode & 0x20) {	// ボス
+				if(!src_sd->state.arrow_atk) {	// 弓矢攻撃以外なら
+					if(!battle_config.left_cardfix_to_right) {
+						// 左手カード補正設定無し
+						cardfix = cardfix*(100+src_sd->addrace[RCT_BOSS])/100;					// ボスモンスターに追加ダメージ
+					} else {
+						// 左手カード補正設定あり
+						cardfix = cardfix*(100+src_sd->addrace[RCT_BOSS]+src_sd->addrace_[RCT_BOSS])/100;	// ボスモンスターに追加ダメージ(左手による追加あり)
+					}
+				} else {	// 弓矢攻撃
+					cardfix = cardfix*(100+src_sd->addrace[RCT_BOSS]+src_sd->arrow_addrace[RCT_BOSS])/100;		// ボスモンスターに追加ダメージ(弓矢による追加あり)
+				}
+			} else {		// ボスじゃない
+				if(!src_sd->state.arrow_atk) {	// 弓矢攻撃以外
+					if(!battle_config.left_cardfix_to_right) {
+						// 左手カード補正設定無し
+						cardfix = cardfix*(100+src_sd->addrace[RCT_NONBOSS])/100;				// ボス以外モンスターに追加ダメージ
+					} else {
+						// 左手カード補正設定あり
+						cardfix = cardfix*(100+src_sd->addrace[RCT_NONBOSS]+src_sd->addrace_[RCT_NONBOSS])/100;	// ボス以外モンスターに追加ダメージ(左手による追加あり)
+					}
 				} else {
-					// 左手カード補正設定あり
-					cardfix = cardfix*(100+src_sd->addrace[RCT_NONBOSS]+src_sd->addrace_[RCT_NONBOSS])/100;	// ボス以外モンスターに追加ダメージ(左手による追加あり)
+					cardfix = cardfix*(100+src_sd->addrace[RCT_NONBOSS]+src_sd->arrow_addrace[RCT_NONBOSS])/100;	// ボス以外モンスターに追加ダメージ(弓矢による追加あり)
 				}
-			} else {
-				cardfix = cardfix*(100+src_sd->addrace[RCT_NONBOSS]+src_sd->arrow_addrace[RCT_NONBOSS])/100;	// ボス以外モンスターに追加ダメージ(弓矢による追加あり)
 			}
-		}
-		// カード効果による特定レンジ攻撃のダメージ増幅
-		if(wd.flag&BF_SHORT) {
-			cardfix = cardfix * (100+src_sd->short_weapon_damege_rate) / 100;
-		}
-		if(wd.flag&BF_LONG) {
-			cardfix = cardfix * (100+src_sd->long_weapon_damege_rate) / 100;
+			// カード効果による特定レンジ攻撃のダメージ増幅
+			if(wd.flag&BF_SHORT) {
+				cardfix = cardfix * (100+src_sd->short_weapon_damege_rate) / 100;
+			}
+			if(wd.flag&BF_LONG) {
+				cardfix = cardfix * (100+src_sd->long_weapon_damege_rate) / 100;
+			}
+			// 特定Class用補正処理(少女の日記→ボンゴン用？)
+			for(i=0; i<src_sd->add_damage_class_count; i++) {
+				if(src_sd->add_damage_classid[i] == t_class) {
+					cardfix = cardfix*(100+src_sd->add_damage_classrate[i])/100;
+					break;
+				}
+			}
 		}
 		// カード効果による特定スキルのダメージ増幅（武器スキル）
 		if(src_sd->skill_dmgup.count > 0 && skill_num > 0 && wd.damage > 0) {
@@ -2632,13 +2641,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					cardfix = cardfix*(100+src_sd->skill_dmgup.rate[i])/100;
 					break;
 				}
-			}
-		}
-		// 特定Class用補正処理(少女の日記→ボンゴン用？)
-		for(i=0; i<src_sd->add_damage_class_count; i++) {
-			if(src_sd->add_damage_classid[i] == t_class) {
-				cardfix = cardfix*(100+src_sd->add_damage_classrate[i])/100;
-				break;
 			}
 		}
 		wd.damage = wd.damage*cardfix/100;	// カード補正によるダメージ増加
@@ -3709,7 +3711,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 {
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct status_change *sc, *t_sc;
-	int damage,rdamage = 0;
+	int damage,rsdamage = 0,ridamage = 0;
 	static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	nullpo_retr(0, src);
@@ -3771,33 +3773,32 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	if((damage = wd.damage + wd.damage2) > 0 && src != target) {
 		if(wd.flag&BF_SHORT) {
 			if(tsd && tsd->short_weapon_damage_return > 0) {
-				rdamage += damage * tsd->short_weapon_damage_return / 100;
-				if(rdamage < 1) rdamage = 1;
+				ridamage += damage * tsd->short_weapon_damage_return / 100;
 			}
 			if(t_sc &&
 			   t_sc->data[SC_REFLECTSHIELD].timer != -1 &&
 			   (sd || t_sc->data[SC_DEVOTION].timer == -1))	// 被ディボーション者ならPCから以外は反応しない
 			{
-				rdamage += damage * t_sc->data[SC_REFLECTSHIELD].val2 / 100;
-				if(rdamage < 1) rdamage = 1;
+				rsdamage += damage * t_sc->data[SC_REFLECTSHIELD].val2 / 100;
 			}
 			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1)	// デスバウンド反射
 			{
-				rdamage += damage * t_sc->data[SC_DEATHBOUND].val2 / 100;
-				if(rdamage < 1) rdamage = 1;
-				wd.damage = rdamage / 2;	// 反射ダメージの半分使用者に返る
-				clif_skill_damage(target, src, tick, wd.amotion, wd.dmotion, rdamage, 0, RK_DEATHBOUND, t_sc->data[SC_DEATHBOUND].val1, 1);
+				rsdamage += damage * t_sc->data[SC_DEATHBOUND].val2 / 100;
+				if(rsdamage < 1) rsdamage = 1;
+				wd.damage = rsdamage / 2;	// 反射ダメージの半分使用者に返る
+				clif_skill_damage(target, src, tick, wd.amotion, wd.dmotion, rsdamage, 0, RK_DEATHBOUND, t_sc->data[SC_DEATHBOUND].val1, 1);
 				clif_skill_nodamage(target, target, RK_DEATHBOUND, t_sc->data[SC_DEATHBOUND].val1, 1);
 				status_change_end(target,SC_DEATHBOUND,-1);
 			}
 		} else if(wd.flag&BF_LONG) {
 			if(tsd && tsd->long_weapon_damage_return > 0) {
-				rdamage += damage * tsd->long_weapon_damage_return / 100;
-				if(rdamage < 1) rdamage = 1;
+				ridamage += damage * tsd->long_weapon_damage_return / 100;
 			}
 		}
-		if(rdamage > 0)
-			clif_damage(src,src,tick,wd.amotion,wd.dmotion,rdamage,1,4,0);
+		if(rsdamage > 0)
+			clif_damage(src,src,tick,wd.amotion,wd.dmotion,rsdamage,1,4,0);
+		if(ridamage > 0)
+			clif_damage(src,src,tick,wd.amotion,wd.dmotion,ridamage,1,4,0);
 	}
 
 	if(wd.div_ == 255 && sd) {	// 三段掌
@@ -3935,15 +3936,25 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		battle_attack_drain(src, wd.damage, wd.damage2, 3);
 	}
 
-	if(rdamage > 0) {
-		battle_delay_damage(tick+wd.amotion,target,src,rdamage,0,0,0);
+	if(rsdamage > 0) {
+		battle_delay_damage(tick+wd.amotion,target,src,rsdamage,0,0,0);
 
-		// 反射ダメージのオートスペル
-		if(battle_config.weapon_reflect_autospell && target->type == BL_PC)
+		// スキルの反射ダメージのオートスペル
+		if(battle_config.weapon_reflect_autospell && target->type == BL_PC && atn_rand()%2)
 			skill_bonus_autospell(target,src,EAS_ATTACK,gettick(),0);
 
 		if(battle_config.weapon_reflect_drain && src != target)
-			battle_attack_drain(target,rdamage,0,battle_config.weapon_reflect_drain_enable_type);
+			battle_attack_drain(target,rsdamage,0,battle_config.weapon_reflect_drain_enable_type);
+	}
+	if(ridamage > 0) {
+		battle_delay_damage(tick+wd.amotion,target,src,ridamage,0,0,0);
+
+		// アイテムの反射ダメージのオートスペル
+		if(battle_config.weapon_reflect_autospell && target->type == BL_PC && atn_rand()%2)
+			skill_bonus_autospell(target,src,EAS_ATTACK,gettick(),0);
+
+		if(battle_config.weapon_reflect_drain && src != target)
+			battle_attack_drain(target,ridamage,0,battle_config.weapon_reflect_drain_enable_type);
 	}
 
 	// 対象にステータス異常がある場合
