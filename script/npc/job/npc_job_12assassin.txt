@@ -1350,7 +1350,7 @@ in_moc_16.gat,87,137,0	script	#AS_Warp	45,2,1,{
 in_moc_16.gat,68,158,0	script	#AS_Abyss	139,0,0,{
 	announce "監視者: " +$@as_tester$+ "様、落とし穴に落ちました。",9;
 	warp "in_moc_16.gat",19,161;
-	stopnpctimer "AS_Center";
+	stopnpctimer "AS_Test2nd";
 	killmonster "in_moc_16.gat","All";
 	enablewaitingroomevent "AS_ChatRoom";
 	end;
