@@ -203,6 +203,7 @@ int skill_add_blown( struct block_list *src, struct block_list *target,int skill
 
 // カード効果のオートスペル
 int skill_bonus_autospell(struct block_list * src,struct block_list * bl,unsigned long mode,unsigned int tick,int flag);
+int skill_bonus_skillautospell(struct block_list * src,struct block_list * bl,int skillid,unsigned int tick,int flag);
 
 // ユニットスキル
 int skill_delunit(struct skill_unit *unit);

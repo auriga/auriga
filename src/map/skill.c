@@ -1270,6 +1270,24 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 	}
 
+	// スキルの追加状態異常
+	if(sd && sd->skill_addeff.count > 0 && skillid > 0) {
+		int i;
+		for(i = 0; i < sd->skill_addeff.count; i++) {
+			if(sd->skill_addeff.id[i] == skillid) {
+				int j, rate;
+				for(j = SC_STONE; j <= SC_BLEED; j++) {
+					rate = sd->skill_addeff.addeff[i][j-SC_STONE];
+					if(atn_rand() % 10000 < status_change_rate(bl,j,rate,sd->status.base_level)){
+						if(battle_config.battle_log)
+							printf("PC %d skill_skilladdeff: cardによる状態異常発動 %d %d %d\n",sd->bl.id,skillid,j,rate);
+						status_change_start(bl,j,7,0,0,0,(j == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[j-SC_STONE],7),0);
+					}
+				}
+			}
+		}
+	}
+
 	if(attack_type&BF_WEAPON)
 	{
 		// 物理通常攻撃なら混乱終了
@@ -2145,6 +2163,10 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		unit_stop_walking(src,0);
 
 		if(src_sd) {
+			/* スキル使用で発動するオートスペル,アクティブアイテム */
+			skill_bonus_skillautospell(src,target,src_ud->skillid,tick,0);
+			pc_activeitemskill_start(src_sd,src_ud->skillid,tick);
+
 			if(src_ud->skillid >= THIRD_SKILLID && src_ud->skillid < MAX_THIRD_SKILLID) {	// クールタイムは3次職スキルのみ
 				int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 				if(cooldown > 0) {
@@ -6763,6 +6785,10 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 		unit_stop_walking(src,0);
 
 		if(src_sd) {
+			/* スキル使用で発動するオートスペル,アクティブアイテム */
+			skill_bonus_skillautospell(src,src,src_ud->skillid,tick,0);
+			pc_activeitemskill_start(src_sd,src_ud->skillid,tick);
+
 			if(src_ud->skillid >= THIRD_SKILLID && src_ud->skillid < MAX_THIRD_SKILLID) {	//クールタイムは3次職スキルのみ
 				int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 				if(cooldown > 0) {
@@ -13189,6 +13215,10 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 	if(!f)
 		pc_heal(sd,0,-sp);
 
+	/* スキル使用で発動するオートスペル,アクティブアイテム */
+	skill_bonus_skillautospell(&sd->bl,target,skillid,tick,0);
+	pc_activeitemskill_start(sd,skillid,tick);
+
 	return 1;	// 成功
 }
 
@@ -13208,6 +13238,10 @@ int skill_bonus_autospell(struct block_list *src,struct block_list *bl,unsigned 
 
 	for(i=0;i<sd->autospell.count;i++)
 	{
+		// スキル使用時に発動するオートスペルは弾く
+		if(sd->autospell.skill[i] != 0)
+			continue;
+
 		if(!(mode&EAS_SHORT) && !(mode&EAS_LONG) && !(mode&EAS_MAGIC) && !(mode&EAS_MISC))
 			mode += EAS_SHORT|EAS_LONG;
 		if(!(sd->autospell.flag[i]&EAS_SHORT) && !(sd->autospell.flag[i]&EAS_LONG) &&
@@ -13250,6 +13284,38 @@ int skill_bonus_autospell(struct block_list *src,struct block_list *bl,unsigned 
 		}
 	}
 	lock = 0;
+
+	return 1;
+}
+
+int skill_bonus_skillautospell(struct block_list *src,struct block_list *bl,int skillid,unsigned int tick,int flag)
+{
+	int i;
+	struct map_session_data *sd = NULL;
+
+	nullpo_retr(0, src);
+	nullpo_retr(0, bl);
+
+	if(src->type != BL_PC)
+		return 0;
+
+	nullpo_retr(0, sd = (struct map_session_data *)src);
+
+	for(i=0;i<sd->autospell.count;i++)
+	{
+		// スキルで発動するオートスペルのチェック
+		if(sd->autospell.skill[i] != skillid)
+			continue;
+
+		if(skill_use_bonus_autospell(
+			sd,bl,sd->autospell.id[i],sd->autospell.lv[i],
+			sd->autospell.rate[i],sd->autospell.flag[i],tick,flag) )
+		{
+			// オートスペルはどれか一度しか発動しない
+			if(battle_config.once_autospell)
+				break;
+		}
+	}
 
 	return 1;
 }

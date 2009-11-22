@@ -1,4 +1,26 @@
 ----------------------------------------
+//0710 [2009/11/23] by Blaze
+
+・アイテムボーナスに以下を追加(map.h, pc.*, skill.*, db/const.txt, doc/item_bonus.txt, )
+	bonus3 bAddEffSkill
+	-> 指定したスキル使用時に状態異常付与効果を追加します
+
+	bonus4 bSkillAutoSpell
+	bonus4 bSkillAutoSpell2
+	bonus4 bSkillAutoSelfSpell
+	bonus4 bSkillAutoSelfSpell2
+	-> 指定したスキル使用時、追加でオートスペルが発動します
+
+	bonus4 bAutoActiveSkill
+	-> 指定したスキル使用時、アイテムが活性化します
+
+	※詳しくはdoc/item_bonus.txtを参照
+
+・item_db.txtを更新(thx huge-cgiさん)
+	-> EP13.1で追加された装備品の効果を実装
+	-> アクティブアイテムの確率・効果を本鯖仕様に修正
+
+----------------------------------------
 //0709 [2009/11/23] by popori
 
 ・アイテムボーナスの一部の仕様を変更 (battle.c)

@@ -304,6 +304,12 @@ bAutoActiveMagic	1160
 bRevAutoActiveWeapon	1161
 bRevAutoActiveMagic	1162
 bAutoActiveItem		1163
+bAddEffSkill		1164
+bSkillAutoSpell		1165
+bSkillAutoSpell2	1166
+bSkillAutoSelfSpell	1167
+bSkillAutoSelfSpell2	1168
+bAutoActiveSkill	1169
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

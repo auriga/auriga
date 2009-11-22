@@ -47,6 +47,7 @@
 #define MAX_SKILL_BLOW  5		// スキルを吹き飛ばし化
 #define MAX_SKILL_HEAL_UP	5	// スキルの回復量を強化できる数
 #define MAX_SKILL_FIXCASTRATE	10	// スキルの固定詠唱時間を減らせる数
+#define MAX_SKILL_ADDEFF	10	// スキルで追加状態異常化できる数
 #define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
 #define MAX_ACTIVEITEM  10		// アクティブアイテムの容量
 #define MAX_DEAL_ITEMS 10
@@ -512,11 +513,18 @@ struct map_session_data {
 	} skill_blow;
 
 	struct {
+		short id[MAX_SKILL_ADDEFF];
+		short addeff[MAX_SKILL_ADDEFF][10];
+		short count;
+	} skill_addeff;
+
+	struct {
 		short lv[MAX_BONUS_AUTOSPELL];
 		short id[MAX_BONUS_AUTOSPELL];
 		short rate[MAX_BONUS_AUTOSPELL];
 		unsigned long flag[MAX_BONUS_AUTOSPELL];
 		short card_id[MAX_BONUS_AUTOSPELL];
+		short skill[MAX_BONUS_AUTOSPELL];	// スキルで発動するオートスペル用
 		short count;
 	} autospell;
 
@@ -525,6 +533,7 @@ struct map_session_data {
 		short rate[MAX_ACTIVEITEM];
 		int tick[MAX_ACTIVEITEM];
 		unsigned long flag[MAX_ACTIVEITEM];
+		short skill[MAX_ACTIVEITEM];	// スキルで発動するアクティブアイテム用
 		short count;
 	} activeitem;
 	int activeitem_timer[MAX_ACTIVEITEM];
@@ -1013,7 +1022,8 @@ enum {
 	SP_SKILL_DELAY_RATE,SP_FIX_MAXHP,SP_FIX_MAXSP,SP_FIX_BASEATK,SP_FIX_MATK,SP_FIX_DEF,	// 1144-1149
 	SP_FIX_MDEF,SP_FIX_HIT,SP_FIX_CRITICAL,SP_FIX_FLEE,SP_FIX_ASPD,SP_FIX_SPEED,	// 1150-1155
 	SP_ADD_FIX_CAST_RATE,SP_ADD_SKILL_HEAL_RATE,SP_MATK2_RATE,SP_AUTOACTIVE_WEAPON,SP_AUTOACTIVE_MAGIC,	// 1156-1160
-	SP_REVAUTOACTIVE_WEAPON,SP_REVAUTOACTIVE_MAGIC,SP_AUTOACTIVE_ITEM,	// 1161-1163
+	SP_REVAUTOACTIVE_WEAPON,SP_REVAUTOACTIVE_MAGIC,SP_AUTOACTIVE_ITEM,SP_ADDEFFSKILL,SP_SKILLAUTOSPELL,	// 1161-1165
+	SP_SKILLAUTOSPELL2,SP_SKILLAUTOSELFSPELL,SP_SKILLAUTOSELFSPELL2,SP_AUTOACTIVE_SKILL,	// 1166-1169
 
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005

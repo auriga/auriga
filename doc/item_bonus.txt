@@ -206,14 +206,18 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 
 
 ・オートスペル
-	bonus3 bAutoSpell,n,x,y:			オートスペルでスキルnをxレベルでy%確率(万分率)で使用。
-	bonus3 bAutoSpell2,n,x,y:			オートスペルでスキルnをxレベルでy%確率(万分率)で使用。高レベルを取得しているならばそちらを優先
-	bonus3 bAutoSelfSpell,n,x,y:		オートスペルでスキルnをxレベルでy%確率(万分率)で自分に使用。
-	bonus3 bAutoSelfSpell2,n,x,y:		オートスペルでスキルnをxレベルでy%確率(万分率)で自分に使用。高レベルを取得しているならばそちらを優先
-	bonus3 bRevAutoSpell,n,x,y:			物理ダメージを受けた時、オートスペルでスキルnをxレベルでy%確率(万分率)で使用。
-	bonus3 bRevAutoSpell2,n,x,y:		物理ダメージを受けた時、オートスペルでスキルnをxレベルでy%確率(万分率)で使用。高レベルを取得しているならばそちらを優先
-	bonus3 bRevAutoSelfSpell,n,x,y:		物理ダメージを受けた時、オートスペルでスキルnをxレベルでy%確率(万分率)で自分に使用。
-	bonus3 bRevAutoSelfSpell2,n,x,y:	物理ダメージを受けた時、オートスペルでスキルnをxレベルでy%確率(万分率)で自分に使用。高レベルを取得しているならばそちらを優先
+	bonus3 bAutoSpell,n,x,y;			オートスペルでスキルnをxレベルでy%確率(万分率)で使用。
+	bonus3 bAutoSpell2,n,x,y;			オートスペルでスキルnをxレベルでy%確率(万分率)で使用。高レベルを取得しているならばそちらを優先
+	bonus3 bAutoSelfSpell,n,x,y;		オートスペルでスキルnをxレベルでy%確率(万分率)で自分に使用。
+	bonus3 bAutoSelfSpell2,n,x,y;		オートスペルでスキルnをxレベルでy%確率(万分率)で自分に使用。高レベルを取得しているならばそちらを優先
+	bonus3 bRevAutoSpell,n,x,y;			物理ダメージを受けた時、オートスペルでスキルnをxレベルでy%確率(万分率)で使用。
+	bonus3 bRevAutoSpell2,n,x,y;		物理ダメージを受けた時、オートスペルでスキルnをxレベルでy%確率(万分率)で使用。高レベルを取得しているならばそちらを優先
+	bonus3 bRevAutoSelfSpell,n,x,y;		物理ダメージを受けた時、オートスペルでスキルnをxレベルでy%確率(万分率)で自分に使用。
+	bonus3 bRevAutoSelfSpell2,n,x,y;	物理ダメージを受けた時、オートスペルでスキルnをxレベルでy%確率(万分率)で自分に使用。高レベルを取得しているならばそちらを優先
+	bonus4 bSkillAutoSpell,n,x,y,z;			スキルn使用時、オートスペルでスキルxをyレベルでz%確率(万分率)で使用。
+	bonus4 bSkillAutoSpell2,n,x,y,z;			スキルn使用時、オートスペルでスキルxをyレベルでz%確率(万分率)で使用。高レベルを取得しているならばそちらを優先
+	bonus4 bSkillAutoSelfSpell,n,x,y,z;			スキルn使用時、オートスペルでスキルxをyレベルでz%確率(万分率)で自分に使用。
+	bonus4 bSkillAutoSelfSpell2,n,x,y,z;			スキルn使用時、オートスペルでスキルxをyレベルでz%確率(万分率)で自分に使用。高レベルを取得しているならばそちらを優先
 	bonus4 bAutoSpell,n,x,y,z;			zの条件でスキルnをxレベルで確率yで使用。(yは万分率)
 					条件を何も指定しなくてもとりあえず動作しますが、お勧めしません。
 					発動条件：複数可
@@ -255,11 +259,12 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 
 ・オートアクティブアイテム
 　※一定の確率でアイテムを活性状態にします。活性化したアイテムはcheckactiveitem()で状態が取得可能です。
-	bonus3 bAutoActiveWeapon,n,x,y:		物理攻撃時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
-	bonus3 bAutoActiveMagic,n,x,y:		魔法攻撃時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
-	bonus3 bRevAutoActiveWeapon,n,x,y:	物理ダメージを受けた時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
-	bonus3 bRevAutoActiveMagic,n,x,y:	魔法ダメージを受けた時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
-	bonus4 bAutoActiveItem,n,x,y,z:		zの条件でアイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+	bonus3 bAutoActiveWeapon,n,x,y;		物理攻撃時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+	bonus3 bAutoActiveMagic,n,x,y;		魔法攻撃時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+	bonus3 bRevAutoActiveWeapon,n,x,y;	物理ダメージを受けた時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+	bonus3 bRevAutoActiveMagic,n,x,y;	魔法ダメージを受けた時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
+	bonus4 bAutoActiveSkill,n,x,y,z;	スキルn使用時、アイテムxをy%確率(万分率)でz秒(ms)の間、活性化状態にします。
+	bonus4 bAutoActiveItem,n,x,y,z;		zの条件でアイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
 						条件zは下記を参照。
 						動作1：指定しない場合は攻撃
 						    EAS_ATTACK			攻撃（ダメージを与えたとき）
@@ -295,6 +300,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus2 bAddEff2,e,n;				n%の確率で自分に状態異常e付与(nは万分率)
 	bonus2 bAddEffShort,e,n;			近距離物理攻撃時、n%の確率で攻撃対象に状態異常e付与(nは万分率)
 	bonus2 bAddEffLong,e,n;				遠距離物理攻撃時、n%の確率で攻撃対象に状態異常e付与(nは万分率)
+	bonus3 bAddEffSkill,n,x,y;			スキルnで攻撃時、y%の確率で攻撃対象に状態異常x付与(yは万分率)
 	bonus2 bResEff,e,n;					状態異常eの耐性+n%(nは万分率)
 					Eff_Blind		暗黒			Eff_Sleep		睡眠
 					Eff_Poison		毒				Eff_Freeze		凍結

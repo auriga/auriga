@@ -1647,7 +1647,7 @@ int pc_checkweighticon(struct map_session_data *sd)
  * オートスペル
  *------------------------------------------
  */
-static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilllv,int rate, unsigned long flag)
+static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skillid2,int skilllv,int rate, unsigned long flag)
 {
 	nullpo_retr(0, sd);
 
@@ -1655,7 +1655,8 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilll
 		int i;
 		for(i=0; i<sd->autospell.count; i++) {
 			if(sd->autospell.card_id[i] == current_equip_name_id &&
-			   sd->autospell.id[i] == skillid &&
+			   sd->autospell.skill[i] == skillid &&
+			   sd->autospell.id[i] == skillid2 &&
 			   sd->autospell.lv[i] == skilllv &&
 			   sd->autospell.rate[i] == rate &&
 			   sd->autospell.flag[i] == flag)
@@ -1668,7 +1669,8 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilll
 		return 0;
 
 	// 後ろに追加
-	sd->autospell.id[sd->autospell.count]      = skillid;
+	sd->autospell.skill[sd->autospell.count]   = skillid;
+	sd->autospell.id[sd->autospell.count]      = skillid2;
 	sd->autospell.lv[sd->autospell.count]      = skilllv;
 	sd->autospell.rate[sd->autospell.count]    = rate;
 	sd->autospell.flag[sd->autospell.count]    = flag;
@@ -1682,7 +1684,7 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilll
  * アクティブアイテム登録
  *------------------------------------------
  */
-int pc_activeitem(struct map_session_data* sd,int id,short rate,int tick,unsigned long flag)
+int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,int tick,unsigned long flag)
 {
 	int i;
 
@@ -1694,15 +1696,16 @@ int pc_activeitem(struct map_session_data* sd,int id,short rate,int tick,unsigne
 
 	// 同じIDが登録されているか
 	for(i = 0; i < sd->activeitem.count; i++) {
-		if(sd->activeitem.id[i] == id)
+		if(sd->activeitem.id[i] == id && sd->activeitem.skill[i] == skillid)
 			return 0;
 	}
 
 	// 後ろに追加
-	sd->activeitem.id[sd->activeitem.count]   = id;
-	sd->activeitem.rate[sd->activeitem.count] = rate;
-	sd->activeitem.tick[sd->activeitem.count] = tick;
-	sd->activeitem.flag[sd->activeitem.count] = flag;
+	sd->activeitem.skill[sd->activeitem.count] = skillid;
+	sd->activeitem.id[sd->activeitem.count]    = id;
+	sd->activeitem.rate[sd->activeitem.count]  = rate;
+	sd->activeitem.tick[sd->activeitem.count]  = tick;
+	sd->activeitem.flag[sd->activeitem.count]  = flag;
 	sd->activeitem.count++;
 
 	return 1;
@@ -1751,6 +1754,10 @@ int pc_activeitem_start(struct map_session_data* sd,unsigned long mode,unsigned 
 		if(sd->activeitem_timer[i] != -1)
 			continue;
 
+		// スキル使用時に発動するアクティブアイテムは弾く
+		if(sd->activeitem.skill[i] != 0)
+			continue;
+
 		if(!(mode&EAS_SHORT) && !(mode&EAS_LONG) && !(mode&EAS_MAGIC) && !(mode&EAS_MISC))
 			mode |= EAS_SHORT|EAS_LONG;
 		if(!(sd->activeitem.flag[i]&EAS_SHORT) && !(sd->activeitem.flag[i]&EAS_LONG) &&
@@ -1781,6 +1788,44 @@ int pc_activeitem_start(struct map_session_data* sd,unsigned long mode,unsigned 
 		if(mode&EAS_NORMAL && !(sd->activeitem.flag[i]&EAS_NORMAL))
 			continue;
 		if(mode&EAS_SKILL && !(sd->activeitem.flag[i]&EAS_SKILL))
+			continue;
+
+		if(atn_rand()%10000 > sd->activeitem.rate[i])
+			continue;
+
+		// 発動
+		sd->activeitem_id2[i]   = sd->activeitem.id[i];
+		sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], pc_activeitem_timer, sd->bl.id, NULL);
+		flag = 1;
+	}
+	if(flag)
+		status_calc_pc(sd,0);
+	lock = 0;
+
+	return 1;
+}
+
+/*==========================================
+ * スキル使用で発動するアクティブアイテムの開始
+ *------------------------------------------
+ */
+int pc_activeitemskill_start(struct map_session_data* sd,int skillid,unsigned int tick)
+{
+	int i, flag = 0;
+	static int lock = 0;
+
+	nullpo_retr(0, sd);
+
+	if(lock++)
+		return 0;
+
+	for(i=0;i<sd->activeitem.count;i++)
+	{
+		if(sd->activeitem_timer[i] != -1)
+			continue;
+
+		// スキルで発動するオートスペルのチェック
+		if(sd->activeitem.skill[i] != skillid)
 			continue;
 
 		if(atn_rand()%10000 > sd->activeitem.rate[i])
@@ -2844,57 +2889,77 @@ int pc_bonus3(struct map_session_data *sd,int type,int type2,int type3,int val)
 		break;
 	case SP_AUTOSPELL:
 		if(sd->state.lr_flag != 2)
-			pc_bonus_autospell(sd,type2,type3,val,EAS_TARGET|EAS_SHORT|EAS_LONG|EAS_ATTACK|EAS_NOSP);
+			pc_bonus_autospell(sd,0,type2,type3,val,EAS_TARGET|EAS_SHORT|EAS_LONG|EAS_ATTACK|EAS_NOSP);
 		break;
 	case SP_AUTOSPELL2:
 		if(sd->state.lr_flag != 2)
-			pc_bonus_autospell(sd,type2,type3,val,EAS_TARGET|EAS_SHORT|EAS_LONG|EAS_ATTACK|EAS_USEMAX|EAS_NOSP);
+			pc_bonus_autospell(sd,0,type2,type3,val,EAS_TARGET|EAS_SHORT|EAS_LONG|EAS_ATTACK|EAS_USEMAX|EAS_NOSP);
 		break;
 	case SP_AUTOSELFSPELL:
 		if(sd->state.lr_flag != 2)
-			pc_bonus_autospell(sd,type2,type3,val,EAS_SELF|EAS_SHORT|EAS_LONG|EAS_ATTACK|EAS_NOSP);
+			pc_bonus_autospell(sd,0,type2,type3,val,EAS_SELF|EAS_SHORT|EAS_LONG|EAS_ATTACK|EAS_NOSP);
 		break;
 	case SP_AUTOSELFSPELL2:
 		if(sd->state.lr_flag != 2)
-			pc_bonus_autospell(sd,type2,type3,val,EAS_SELF|EAS_SHORT|EAS_LONG|EAS_ATTACK|EAS_USEMAX|EAS_NOSP);
+			pc_bonus_autospell(sd,0,type2,type3,val,EAS_SELF|EAS_SHORT|EAS_LONG|EAS_ATTACK|EAS_USEMAX|EAS_NOSP);
 		break;
 	case SP_REVAUTOSPELL:	// 反撃用オートスペル
 		if(sd->state.lr_flag != 2)
-			pc_bonus_autospell(sd,type2,type3,val,EAS_TARGET|EAS_SHORT|EAS_LONG|EAS_REVENGE|EAS_NOSP);
+			pc_bonus_autospell(sd,0,type2,type3,val,EAS_TARGET|EAS_SHORT|EAS_LONG|EAS_REVENGE|EAS_NOSP);
 		break;
 	case SP_REVAUTOSPELL2:
 		if(sd->state.lr_flag != 2)
-			pc_bonus_autospell(sd,type2,type3,val,EAS_TARGET|EAS_SHORT|EAS_LONG|EAS_REVENGE|EAS_USEMAX|EAS_NOSP);
+			pc_bonus_autospell(sd,0,type2,type3,val,EAS_TARGET|EAS_SHORT|EAS_LONG|EAS_REVENGE|EAS_USEMAX|EAS_NOSP);
 		break;
 	case SP_REVAUTOSELFSPELL:
 		if(sd->state.lr_flag != 2)
-			pc_bonus_autospell(sd,type2,type3,val,EAS_SELF|EAS_SHORT|EAS_LONG|EAS_REVENGE|EAS_NOSP);
+			pc_bonus_autospell(sd,0,type2,type3,val,EAS_SELF|EAS_SHORT|EAS_LONG|EAS_REVENGE|EAS_NOSP);
 		break;
 	case SP_REVAUTOSELFSPELL2:
 		if(sd->state.lr_flag != 2)
-			pc_bonus_autospell(sd,type2,type3,val,EAS_SELF|EAS_SHORT|EAS_LONG|EAS_REVENGE|EAS_USEMAX|EAS_NOSP);
+			pc_bonus_autospell(sd,0,type2,type3,val,EAS_SELF|EAS_SHORT|EAS_LONG|EAS_REVENGE|EAS_USEMAX|EAS_NOSP);
 		break;
 	case SP_AUTOACTIVE_WEAPON:
 		if(sd->state.lr_flag != 2)
-			pc_activeitem(sd,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_ATTACK);
+			pc_activeitem(sd,0,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_ATTACK);
 		break;
 	case SP_AUTOACTIVE_MAGIC:
 		if(sd->state.lr_flag != 2)
-			pc_activeitem(sd,type2,type3,val,EAS_MAGIC);
+			pc_activeitem(sd,0,type2,type3,val,EAS_MAGIC);
 		break;
 	case SP_REVAUTOACTIVE_WEAPON:
 		if(sd->state.lr_flag != 2)
-			pc_activeitem(sd,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_REVENGE);
+			pc_activeitem(sd,0,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_REVENGE);
 		break;
 	case SP_REVAUTOACTIVE_MAGIC:
 		if(sd->state.lr_flag != 2)
-			pc_activeitem(sd,type2,type3,val,EAS_MAGIC|EAS_REVENGE);
+			pc_activeitem(sd,0,type2,type3,val,EAS_MAGIC|EAS_REVENGE);
 		break;
 	case SP_RAISE:
 		sd->autoraise.hp_per = type3;
 		sd->autoraise.sp_per = val;
 		sd->autoraise.rate   = type2;
 		sd->autoraise.flag   = 1;
+		break;
+	case SP_ADDEFFSKILL:
+		if(sd->state.lr_flag != 2) {
+			// update
+			for(i=0; i<sd->skill_addeff.count; i++)
+			{
+				if(sd->skill_addeff.id[i] == type2)
+				{
+					sd->skill_addeff.addeff[i][type3] += val;
+					return 0;
+				}
+			}
+			// full
+			if(sd->skill_addeff.count == MAX_SKILL_ADDEFF)
+				break;
+			// add
+			sd->skill_addeff.id[sd->skill_addeff.count] = type2;
+			sd->skill_addeff.addeff[sd->skill_addeff.count][type3] = val;
+			sd->skill_addeff.count++;
+		}
 		break;
 	default:
 		if(battle_config.error_log)
@@ -2916,11 +2981,31 @@ int pc_bonus4(struct map_session_data *sd,int type,int type2,int type3,int type4
 	switch(type) {
 	case SP_AUTOSPELL:
 		if(sd->state.lr_flag != 2)
-			pc_bonus_autospell(sd,type2,type3,type4,val);
+			pc_bonus_autospell(sd,0,type2,type3,type4,val);
 		break;
 	case SP_AUTOACTIVE_ITEM:
 		if(sd->state.lr_flag != 2)
-			pc_activeitem(sd,type2,type3,type4,val);
+			pc_activeitem(sd,0,type2,type3,type4,val);
+		break;
+	case SP_SKILLAUTOSPELL:
+		if(sd->state.lr_flag != 2)
+			pc_bonus_autospell(sd,type2,type3,type4,val,EAS_TARGET|EAS_SKILL|EAS_NOSP);
+		break;
+	case SP_SKILLAUTOSPELL2:
+		if(sd->state.lr_flag != 2)
+			pc_bonus_autospell(sd,type2,type3,type4,val,EAS_TARGET|EAS_SKILL|EAS_USEMAX|EAS_NOSP);
+		break;
+	case SP_SKILLAUTOSELFSPELL:
+		if(sd->state.lr_flag != 2)
+			pc_bonus_autospell(sd,type2,type3,type4,val,EAS_SELF|EAS_SKILL|EAS_NOSP);
+		break;
+	case SP_SKILLAUTOSELFSPELL2:
+		if(sd->state.lr_flag != 2)
+			pc_bonus_autospell(sd,type2,type3,type4,val,EAS_SELF|EAS_SKILL|EAS_USEMAX|EAS_NOSP);
+		break;
+	case SP_AUTOACTIVE_SKILL:
+		if(sd->state.lr_flag != 2)
+			pc_activeitem(sd,type2,type3,type4,val,EAS_SKILL|EAS_ATTACK);
 		break;
 	default:
 		if(battle_config.error_log)
