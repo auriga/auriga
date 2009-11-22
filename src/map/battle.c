@@ -184,8 +184,8 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 		int ele  = status_get_elem_type(target);
 		int mode = status_get_mode(target);
 
-		if(atn_rand()%10000 < sd->weapon_coma_ele[ele] ||
-		   atn_rand()%10000 < sd->weapon_coma_race[race] ||
+		if((!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_ele[ele]) ||
+		   (!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race[race]) ||
 		   (mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race[RCT_BOSS]) ||
 		   (!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS]))
 		{
@@ -195,8 +195,8 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 			else if(thd)  homun_damage(bl,thd,hp);
 			else if(tmcd) merc_damage(bl,tmcd,hp);
 		}
-		else if(atn_rand()%10000 < sd->weapon_coma_ele2[ele] ||
-			atn_rand()%10000 < sd->weapon_coma_race2[race] ||
+		else if((!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_ele2[ele]) ||
+			(!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race2[race]) ||
 			(mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]) ||
 			(!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]))
 		{

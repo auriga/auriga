@@ -4469,17 +4469,18 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		{
 			int val = 0;
 			if(dstsd && dstsd->spiritball > 0) {
-				if( sd && sd != dstsd && !map[sd->bl.m].flag.pvp && !map[sd->bl.m].flag.gvg )
+				if( sd && sd != dstsd && !map[sd->bl.m].flag.pvp && !map[sd->bl.m].flag.gvg && !map[sd->bl.m].flag.pk )
 					break;
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 				val = dstsd->spiritball * 7;
 				pc_delspiritball(dstsd,dstsd->spiritball,0);
-			} else if(dstmd) { // 対象がモンスターの場合
+			} else if(dstmd && !(dstmd->mode&0x20)) { // 対象がモンスターでBOSS属性でない場合
 				// 20%の確率で対象のLv*2のSPを回復する。成功したときはターゲッティングする。
 				if(atn_rand()%100 < 20) {
 					val = 2 * mob_db[dstmd->class_].lv;
 					mob_target(dstmd,src,0);
 					battle_join_struggle(dstmd, src);
+					unit_skillcastcancel(bl,2);	// 詠唱妨害
 
 					// 凍結・石化・睡眠を解除
 					status_change_attacked_end(bl);
