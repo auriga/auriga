@@ -11851,6 +11851,14 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case SA_VOLCANO:
 		case SA_DELUGE:
 		case SA_VIOLENTGALE:
+		case BA_WHISTLE:
+		case BA_ASSASSINCROSS:
+		case BA_POEMBRAGI:
+		case BA_APPLEIDUN:
+		case DC_UGLYDANCE:
+		case DC_DONTFORGETME:
+		case DC_FORTUNEKISS:
+		case DC_SERVICEFORYOU:
 		case PF_FOGWALL:
 		case NJ_SUITON:
 			skill_delunit(unit);
