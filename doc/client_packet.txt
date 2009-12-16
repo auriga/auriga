@@ -1069,7 +1069,7 @@ R 01b5 <val>.l <tick>.l <?>.8B
 	それ以外
 		定額制課金は %dである %d時間 %d分が残っています。従量制課金は %d時間 %d分が残っています
 
-R 01b6 <guildID>.l <guildLv>.l <connum>.l <定員>.l <Avl.lvl>.l <now_exp>.l <next_exp>.l <上納ポイント>.l <性向F-V>.l <性向R-W>.l <members>.l <guild name>.24B <guild master>.24B <agit?>.20B
+R 01b6 <guildID>.l <guildLv>.l <connum>.l <定員>.l <Avl.lvl>.l <now_exp>.l <next_exp>.l <上納ポイント>.l <性向F-V>.l <性向R-W>.l <emblem ID>.l <guild name>.24B <guild master>.24B <agit?>.20B
 	ギルド情報、0x150の上位互換
 R 01b8 <type>.B
 	ギルド共用銀行システム？未実装？

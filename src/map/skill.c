@@ -2189,7 +2189,8 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 			if( (src_ud->skillid == AL_HEAL ||
 			     src_ud->skillid == PR_SANCTUARY ||
 			     src_ud->skillid == ALL_RESURRECTION ||
-			     src_ud->skillid == PR_ASPERSIO) &&
+			     src_ud->skillid == PR_ASPERSIO ||
+			     src_ud->skillid == AB_HIGHNESSHEAL) &&
 			    battle_check_undead(status_get_race(target),status_get_elem_type(target)) &&
 			    !(src_md && target->type == BL_MOB) )	// MOB→MOBならアンデッドでも回復
 			{
@@ -2197,7 +2198,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 				    (src_md && src_md->skillidx >= 0 && !mob_db[src_md->class_].skill[src_md->skillidx].val[0]) ) {
 					skill_castend_damage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
 				} else if( map[src->m].flag.pvp || map[src->m].flag.gvg ) {
-					if(src_ud->skillid == AL_HEAL && battle_check_target(src,target,BCT_PARTY))
+					if((src_ud->skillid == AL_HEAL || src_ud->skillid == AB_HIGHNESSHEAL) && battle_check_target(src,target,BCT_PARTY))
 						break;
 					skill_castend_damage_id(src,target,src_ud->skillid,src_ud->skilllv,tick,0);
 				} else {
@@ -4388,13 +4389,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SM_SELFPROVOKE:	/* セルフプロボック */
 	case MER_PROVOKE:
 		// MVPmobと不死には効かない・成功判定
-		if( status_get_mode(bl)&0x20 || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) ) {
-			if(skillid != SM_SELFPROVOKE && atn_rand()%100 > 70 + skilllv * 3 + status_get_lv(src) - status_get_lv(bl)) {
-				if(sd)
-					clif_skill_fail(sd,skillid,0,0);
-				map_freeblock_unlock();
-				return 1;
-			}
+		if( status_get_mode(bl)&0x20 || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) || (skillid != SM_SELFPROVOKE && atn_rand()%100 > 70 + skilllv * 3 + status_get_lv(src) - status_get_lv(bl)) ) {
+			if(sd)
+				clif_skill_fail(sd,skillid,0,0);
+			map_freeblock_unlock();
+			return 1;
 		}
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
@@ -8280,6 +8279,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			const int x = bl->x, y = bl->y;
 			int hit   = 0;
 			int count = skill_get_blewcount(sg->skill_id,sg->skill_lv);
+			int mode = (status_get_mode(bl)&0x20)? 5:1;
 
 			do {
 				if(bl->type != BL_PC) {
@@ -8295,7 +8295,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 						}
 					}
 			} while(sg->alive_count > 0 && !unit_isdead(bl) && x == bl->x && y == bl->y &&
-				sg->interval > 0 && ++hit < SKILLUNITTIMER_INVERVAL / sg->interval);
+				sg->interval > 0 && ++hit < SKILLUNITTIMER_INVERVAL / (sg->interval * mode));
 		}
 		break;
 	case UNT_SPIDERWEB:	/* スパイダーウェッブ */

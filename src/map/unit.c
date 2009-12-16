@@ -1430,7 +1430,7 @@ int unit_can_move(struct block_list *bl)
 	if( sc && sc->option&2 && (!sd || pc_checkskill(sd,RG_TUNNELDRIVE) <= 0) )
 		return 0;
 
-	if( ud->skilltimer != -1 && (!sc || sc->data[SC_SELFDESTRUCTION].timer == -1) && (!sd || (pc_checkskill(sd,SA_FREECAST) <= 0) || (ud->skillid >= 10010 && ud->skillid <= 10013)) )
+	if( ud->skilltimer != -1 && (!sc || sc->data[SC_SELFDESTRUCTION].timer == -1) && (!sd || (pc_checkskill(sd,SA_FREECAST) <= 0) || (ud->skillid >= GD_BATTLEORDER && ud->skillid <= GD_EMERGENCYCALL)) )
 		return 0;
 
 	if(sc && sc->count > 0)

@@ -5365,7 +5365,7 @@ int battle_config_read(const char *cfgName)
 		{ "pc_logout_script",                   &battle_config.pc_logout_script,                   0        },
 		{ "save_pckiller_type",                 &battle_config.save_pckiller_type,                 0        },
 		{ "def_ratio_atk_to_shieldchain",       &battle_config.def_ratio_atk_to_shieldchain,       0        },
-		{ "def_ratio_atk_to_carttermination",   &battle_config.def_ratio_atk_to_carttermination,   0        },
+		{ "def_ratio_atk_to_carttermination",   &battle_config.def_ratio_atk_to_carttermination,   1        },
 		{ "player_gravitation_type",            &battle_config.player_gravitation_type,            0        },
 		{ "enemy_gravitation_type",             &battle_config.enemy_gravitation_type,             0        },
 		{ "mob_attack_fixwalkpos",              &battle_config.mob_attack_fixwalkpos,              0        },

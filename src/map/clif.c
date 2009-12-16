@@ -8496,7 +8496,7 @@ void clif_guild_basicinfo(struct map_session_data *sd, struct guild *g)
 	WFIFOL(fd,30)=0;	// 上納
 	WFIFOL(fd,34)=0;	// VW（性格の悪さ？：性向グラフ左右）
 	WFIFOL(fd,38)=0;	// RF（正義の度合い？：性向グラフ上下）
-	WFIFOL(fd,42)=0;	// 人数？
+	WFIFOL(fd,42)=g->emblem_id;
 	memcpy(WFIFOP(fd,46),g->name,24);
 	memcpy(WFIFOP(fd,70),g->master,24);
 	strncpy(WFIFOP(fd,94),"",20);	// 本拠地

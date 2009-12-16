@@ -3653,7 +3653,10 @@ int status_get_adelay(struct block_list *bl)
 			if(guardup_lv > 0)
 				aspd_rate -= 5 + 5*guardup_lv;
 		} else if(bl->type == BL_PET && (struct pet_data *)bl) {
-			adelay = mob_db[((struct pet_data *)bl)->class_].adelay;
+			if(mob_db[((struct pet_data *)bl)->class_].adelay < mob_db[((struct pet_data *)bl)->class_].amotion)
+				adelay = mob_db[((struct pet_data *)bl)->class_].amotion;
+			else
+				adelay = mob_db[((struct pet_data *)bl)->class_].adelay;
 		} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 			adelay = (((struct homun_data *)bl)->aspd<<1);
 		} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
