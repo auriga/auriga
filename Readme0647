@@ -1,4 +1,46 @@
 ----------------------------------------
+//0713 [2009/12/21] by popori
+
+・battle_auriga.confのfirepillar_splash_onが無効時に巻き込み効果が無くなっていたのを修正 (skill.c)
+
+・BOSSからの攻撃の場合ハイド中に関係なく全ての攻撃が当たるよう修正 (battle.c)
+
+・EAS_USEMAXの判定が一部おかしいので修正 (skill.c)
+
+・battle_auriga.confのweapon_attack_autospell無効時でも融合状態であれば、温もりにオートスペルが発動するように修正 (battle.c)
+
+・属性場の効果が、攻撃対象が属性場にいる場合各ダメージ増加になっていたのを自身が属性場にいる場合各ダメージ増加に修正 (battle.c)
+　dragontail789さんに感謝
+
+・トーキーボックスに関する修正 (skill.c)
+ ->トーキーボックスはbattle_auriga.confのplayer_skill_nofootsetに関係なく重ね置き出来るように修正
+ ->HPを7万に変更
+　unsyuさんに感謝
+
+・スキル「マグナムブレイク」「サイトラッシャー」で罠がノックバックするよう修正 (battle.c skill.c)
+
+・eAを参考に新規ペットを追加(jROモバイルペット？含む)、同時にペット「餅」の餌を緑ハーブに変更 (pet_db.txt)
+　※eAのpet_db.txtからほぼそのまま持ってきただけですので、細かい数値に目を通していません。
+　　詳細な数値が分かる方いらっしゃいましたら、情報お願いします。
+　Thanks to eA Dev Team!
+
+・AthenaProjectを参考にスキル「イムポシティオマヌス」の効果を修正 (battle.c)
+
+・AthenaProject Rev.361をマージ (skill.c)
+ ->MOBの使うストリップ系スキルは、PCが該当箇所の装備をしていなくても発動し、脱衣状態になるように修正(アサWiki、殴り魔法職Wiki避難所)
+　nanashiさんに感謝
+
+・アサシン系の回避率増加による移動速度の増加は速度増加と重複しないよう修正 (status.c)
+　dragontail789さんに感謝
+
+・物理スキルでの攻撃時、HP/SP一定吸収、HP/SP%吸収両方乗るように変更 (battle.c)
+　unsyuさんに感謝
+
+・AthenaProject Rev.513のファイアーピラーに関する部分を一部マージ (battle.c skill.c)
+ ->ダメージ1固定のMOBには不発するように修正
+ ->設置制限5個、MB・AS・SiRでノックバック、HP3500に設定(ソース無し/暫定)
+
+----------------------------------------
 //0712 [2009/12/17] by popori
 
 ・0711の微修正 (battle.c unit.c)

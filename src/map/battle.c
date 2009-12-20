@@ -286,7 +286,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 	struct map_session_data *tsd = NULL;
 	struct mob_data         *tmd = NULL;
 	struct unit_data *ud;
-	struct status_change *sc;
+	struct status_change *sc, *src_sc;
 	unsigned int tick = gettick();
 
 	nullpo_retr(0, src);
@@ -297,6 +297,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 
 	ud = unit_bl2ud(bl);
 	sc = status_get_sc(bl);
+	src_sc = status_get_sc(src);
 
 	// スキルダメージ補正
 	if(damage > 0 && skill_num > 0) {
@@ -318,6 +319,30 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		if( (flag&BF_SKILL && skill_get_pl(skill_num) != ELE_GHOST) ||
 			(!(flag&BF_SKILL) && status_get_attack_element(src) != ELE_GHOST) )
 		damage = 0;
+	}
+
+	if(src_sc) {
+		// 属性場のダメージ増加
+		if(src_sc->data[SC_VOLCANO].timer != -1 && damage > 0) {	// ボルケーノ
+			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE ) {
+				damage += damage * src_sc->data[SC_VOLCANO].val4 / 100;
+			}
+			else if( !(flag&BF_SKILL) && status_get_attack_element(src) == ELE_FIRE ) {
+				damage += damage * src_sc->data[SC_VOLCANO].val4 / 100;
+			}
+		}
+		if(src_sc->data[SC_VIOLENTGALE].timer != -1 && damage > 0) {	// バイオレントゲイル
+			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_WIND )
+				damage += damage * src_sc->data[SC_VIOLENTGALE].val4 / 100;
+			else if( !(flag&BF_SKILL) && status_get_attack_element(src) == ELE_WIND )
+				damage += damage * src_sc->data[SC_VIOLENTGALE].val4 / 100;
+		}
+		if(src_sc->data[SC_DELUGE].timer != -1 && damage > 0) {	// デリュージ
+			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_WATER )
+				damage += damage * src_sc->data[SC_DELUGE].val4 / 100;
+			else if( !(flag&BF_SKILL) && status_get_attack_element(src) == ELE_WATER )
+				damage += damage * src_sc->data[SC_DELUGE].val4 / 100;
+		}
 	}
 
 	if(sc && sc->count > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
@@ -387,26 +412,6 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		if(sc->data[SC_AETERNA].timer != -1 && damage > 0) {
 			damage <<= 1;
 			status_change_end(bl,SC_AETERNA,-1);
-		}
-
-		// 属性場のダメージ増加
-		if(sc->data[SC_VOLCANO].timer != -1 && damage > 0) {	// ボルケーノ
-			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE )
-				damage += damage * sc->data[SC_VOLCANO].val4 / 100;
-			else if( !(flag&BF_SKILL) && status_get_attack_element(bl) == ELE_FIRE )
-				damage += damage * sc->data[SC_VOLCANO].val4 / 100;
-		}
-		if(sc->data[SC_VIOLENTGALE].timer != -1 && damage > 0) {	// バイオレントゲイル
-			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_WIND )
-				damage += damage * sc->data[SC_VIOLENTGALE].val4 / 100;
-			else if( !(flag&BF_SKILL) && status_get_attack_element(bl) == ELE_WIND )
-				damage += damage * sc->data[SC_VIOLENTGALE].val4 / 100;
-		}
-		if(sc->data[SC_DELUGE].timer != -1 && damage > 0) {	// デリュージ
-			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_WATER )
-				damage += damage * sc->data[SC_DELUGE].val4 / 100;
-			else if( !(flag&BF_SKILL) && status_get_attack_element(bl) == ELE_WATER )
-				damage += damage * sc->data[SC_DELUGE].val4 / 100;
 		}
 
 		// エナジーコート
@@ -967,6 +972,8 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			atkmin = atkmin * (80 + sd->inventory_data[idx]->wlv * 20) / 100;
 		if(sd->state.arrow_atk)						// 武器が弓矢の場合
 			atkmin = watk * ((atkmin < watk)? atkmin: watk) / 100;	// 弓用最低ATK計算
+		if(sc && sc->data[SC_IMPOSITIO].timer != -1)	// IMがかかっていたら最小加算攻撃力に加算
+			atkmin = sc->data[SC_IMPOSITIO].val1*5;
 
 		/* サイズ修正 */
 		if(skill_num == MO_EXTREMITYFIST) {
@@ -2914,7 +2921,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			else
 				asflag += EAS_SHORT;
 		}
-		if(battle_config.weapon_attack_autospell)
+		// weapon_attack_autospell無効時でも、融合状態であれば温もりにオートスペルが発動する
+		if(battle_config.weapon_attack_autospell || ((skill_num == SG_SUN_WARM || skill_num == SG_MOON_WARM || skill_num == SG_STAR_WARM) && sc && sc->data[SC_FUSION].timer != -1))
 			asflag += EAS_NORMAL;
 		else
 			asflag += EAS_SKILL;
@@ -3143,12 +3151,16 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			MATK_FIX( 200+20*skill_lv, 300 );
 			break;
 		case WZ_FIREPILLAR:	// ファイヤーピラー
-			if(mdef1 < 1000000)
-				mdef1 = mdef2 = 0;	// MDEF無視
-			if(bl->type != BL_MOB)
-				MATK_FIX( 1, 5 );
-			matk1 += 50;
-			matk2 += 50;
+			if(t_mode&0x40) { // ダメージ1固定MOBには不発
+				matk1 = matk2 = 0;
+			} else {
+				if(mdef1 < 1000000)
+					mdef1 = mdef2 = 0;	// MDEF無視
+				if(bl->type != BL_MOB)
+					MATK_FIX( 1, 5 );
+				matk1 += 50;
+				matk2 += 50;
+			}
 			break;
 		case WZ_SIGHTRASHER:
 			if(bl->type == BL_MOB && battle_config.monster_skill_over && skill_lv >= battle_config.monster_skill_over) {
@@ -4050,7 +4062,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			return 0;
 	}
 	if(sc) {
-		if(sc->data[SC_HIDING].timer != -1 && skill_get_pl(skillid) != ELE_EARTH && skillid != NPC_EARTHQUAKE)	// ハイディング状態でスキルの属性が地属性でなくアースクエイクでないなら何もしない
+		if(sc->data[SC_HIDING].timer != -1 && !(status_get_mode(src)&0x20) && skill_get_pl(skillid) != ELE_EARTH && skillid != NPC_EARTHQUAKE)	// ハイディング状態でBOSSでなくスキルの属性が地属性でなくアースクエイクでないなら何もしない
 			return 0;
 		if(sc->data[SC_CHASEWALK].timer != -1 && skillid == AL_RUWACH)	// チェイスウォーク状態でルアフ無効
 			return 0;
@@ -4361,7 +4373,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* 吹き飛ばし処理とそのパケット */
-	if(dmg.blewcount > 0 && bl->type != BL_SKILL && !map[src->m].flag.gvg) {
+	if(dmg.blewcount > 0 && !map[src->m].flag.gvg) {
 		skill_blown(dsrc,bl,dmg.blewcount);
 	}
 	/* 吹き飛ばし処理とそのパケット カード効果 */
@@ -4442,8 +4454,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	/* HP,SP吸収 */
 	if(sd && dmg.flag&BF_WEAPON && src != bl && damage > 0) {
 		if(src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) {
-			// ％吸収のみ
-			battle_attack_drain(src, dmg.damage, dmg.damage2, 1);
+			// ％吸収、一定吸収ともに
+			battle_attack_drain(src, dmg.damage, dmg.damage2, 3);
 		}
 	}
 

@@ -1403,8 +1403,10 @@ L_RECALC:
 	if(sd->sc.option&2 && (skill = pc_checkskill(sd,RG_TUNNELDRIVE)) > 0)	// トンネルドライブ
 		sd->speed += (12*DEFAULT_WALK_SPEED - skill*90) / 10;
 
-	if(sd->s_class.job == 12 && (skill = pc_checkskill(sd,TF_MISS)) > 0)	// アサシン系の回避率上昇による移動速度増加
-		sd->speed -= sd->speed * skill / 100;
+	if(sd->s_class.job == 12 && (skill = pc_checkskill(sd,TF_MISS)) > 0) {	// アサシン系の回避率上昇による移動速度増加
+		if(sd->sc.data[SC_INCREASEAGI].timer == -1)
+			sd->speed -= sd->speed * skill / 100;
+	}
 
 	if(pc_iscarton(sd) && (skill = pc_checkskill(sd,MC_PUSHCART)) > 0) {	// カートによる速度低下
 		sd->speed += (10-skill) * DEFAULT_WALK_SPEED / 10;

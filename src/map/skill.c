@@ -1552,6 +1552,7 @@ static int skill_area_trap_sub( struct block_list *bl,va_list ap )
 
 	// battle_check_targetで該当しない罠が攻撃対象
 	switch (unit->group->unit_id) {
+		case UNT_FIREPILLAR_WAITING:	/* ファイアーピラー(発動前) */
 		case UNT_SKIDTRAP:	/* スキッドトラップ */
 		case UNT_LANDMINE:	/* ランドマイン */
 		case UNT_SHOCKWAVE:	/* ショックウェーブトラップ */
@@ -1559,11 +1560,11 @@ static int skill_area_trap_sub( struct block_list *bl,va_list ap )
 		case UNT_FLASHER:	/* フラッシャー */
 		case UNT_FREEZINGTRAP:	/* フリージングトラップ */
 		case UNT_TALKIEBOX:	/* トーキーボックス */
-			if(skill_id == AC_SHOWER || skill_id == MA_SHOWER)
+			if(skill_id == AC_SHOWER || skill_id == MA_SHOWER || skill_id == WZ_SIGHTRASHER || skill_id == SM_MAGNUM || skill_id == MS_MAGNUM)
 				break;
 			return 0;
 		case UNT_ANKLESNARE:	/* アンクルスネア */
-			if(skill_id == AC_SHOWER || skill_id == MA_SHOWER || unit->group->val2 > 0)
+			if(skill_id == AC_SHOWER || skill_id == MA_SHOWER || skill_id == WZ_SIGHTRASHER || skill_id == SM_MAGNUM || skill_id == MS_MAGNUM || unit->group->val2 > 0)
 				break;
 			return 0;
 		default:
@@ -1610,7 +1611,6 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 		case HT_FREEZINGTRAP:
 		case HT_BLASTMINE:
 		case HT_CLAYMORETRAP:
-		case HT_TALKIEBOX:
 		case MA_SKIDTRAP:
 		case MA_LANDMINE:
 		case MA_SANDMAN:
@@ -1618,6 +1618,13 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 			if( (ug_id >= HT_SKIDTRAP && ug_id <= HT_CLAYMORETRAP) ||
 			    (ug_id >= MA_SKIDTRAP && ug_id <= MA_FREEZINGTRAP) ||
 			    ug_id == HT_TALKIEBOX )
+			{
+				return 1;
+			}
+			break;
+		case HT_TALKIEBOX:
+			if( (ug_id >= HT_SKIDTRAP && ug_id <= HT_CLAYMORETRAP) ||
+			    (ug_id >= MA_SKIDTRAP && ug_id <= MA_FREEZINGTRAP) )
 			{
 				return 1;
 			}
@@ -2715,6 +2722,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+			map_foreachinarea(skill_area_trap_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_SKILL,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
 		}
 		break;
 	case NPC_SPLASHATTACK:	/* スプラッシュアタック */
@@ -3211,6 +3222,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+			if(skillid == WZ_SIGHTRASHER)
+				map_foreachinarea(skill_area_trap_sub,
+					bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_SKILL,
+					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+					skill_castend_damage_id);
 		}
 		break;
 	case NJ_KAMAITACHI:			/* 朔風 */
@@ -5137,7 +5153,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						break;
 					}
 				}
-				if(i >= MAX_INVENTORY) {
+				if(i >= MAX_INVENTORY && !md) {	// MOB -> PC は装備をしていなくても発動
 					if(sd)
 						clif_skill_fail(sd,skillid,0,0);
 					break;
@@ -7387,7 +7403,6 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	case WZ_FIREPILLAR:			/* ファイアーピラー */
 		if (flag!=0)
 			limit = 150;
-		val1 = skilllv+2;
 		break;
 	case HT_SKIDTRAP:			/* スキッドトラップ */
 	case MA_SKIDTRAP:
@@ -7569,19 +7584,22 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 					on_flag = 1;
 				}
 				break;
+			case WZ_FIREPILLAR:		/* ファイアーピラー */
 			case HT_LANDMINE:		/* ランドマイン */
 			case HT_ANKLESNARE:		/* アンクルスネア */
 			case HT_SHOCKWAVE:		/* ショックウェーブトラップ */
 			case HT_SANDMAN:		/* サンドマン */
 			case HT_FLASHER:		/* フラッシャー */
 			case HT_FREEZINGTRAP:		/* フリージングトラップ */
-			case HT_TALKIEBOX:		/* トーキーボックス */
 			case HT_SKIDTRAP:		/* スキッドトラップ */
 			case MA_SKIDTRAP:
 			case MA_LANDMINE:
 			case MA_SANDMAN:
 			case MA_FREEZINGTRAP:
 				val1 = 3500;	// 罠の耐久HP
+				break;
+			case HT_TALKIEBOX:		/* トーキーボックス */
+				val1 = 70000;	// 罠の耐久HP
 				break;
 			case NJ_KAENSIN:		/* 火炎陣 */
 				val1 = 4+(skilllv+1)/2;
@@ -8044,14 +8062,19 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	case UNT_FIREPILLAR_ACTIVE:	/* ファイアーピラー(発動後) */
 		{
 			int i = src->range;
+			int splash_count = 0;
 			if(sg->skill_lv>5)
 				i += 2;
 			if(battle_config.firepillar_splash_on) {
-				map_foreachinarea(battle_skill_attack_area,src->bl.m,src->bl.x-i,src->bl.y-i,src->bl.x+i,src->bl.y+i,
-					(BL_CHAR|BL_SKILL),BF_MAGIC,ss,&src->bl,sg->skill_id,sg->skill_lv,tick,0,BCT_ENEMY);
-			} else {
-				battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
+				splash_count = map_foreachinarea(skill_count_target,src->bl.m,
+						src->bl.x-i,src->bl.y-i,
+						src->bl.x+i,src->bl.y+i,
+						(BL_CHAR|BL_SKILL),src);
 			}
+			map_foreachinarea(skill_trap_splash,src->bl.m,
+						src->bl.x-i,src->bl.y-i,
+						src->bl.x+i,src->bl.y+i,
+						(BL_CHAR|BL_SKILL),src,tick,splash_count);
 		}
 		break;
 	case UNT_SKIDTRAP:	/* スキッドトラップ */
@@ -8664,6 +8687,7 @@ int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage
 	nullpo_retr(0, sg = src->group);
 
 	switch(sg->unit_id) {
+	case UNT_FIREPILLAR_WAITING:	/* ファイアーピラー(発動前) */
 	case UNT_ICEWALL:		/* アイスウォール */
 	case UNT_SKIDTRAP:		/* スキッドトラップ */
 	case UNT_LANDMINE:		/* ランドマイン */
@@ -11665,6 +11689,15 @@ static int skill_trap_splash(struct block_list *bl, va_list ap )
 
 	if(battle_check_target(&unit->bl,bl,BCT_ENEMY) > 0){
 		switch(sg->unit_id){
+			case UNT_FIREPILLAR_ACTIVE:	/* ファイアーピラー(発動後) */
+				if(battle_config.firepillar_splash_on) {
+					int i;
+					for(i = 0; i < splash_count; i++)
+						battle_skill_attack(BF_MAGIC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
+				} else {
+					battle_skill_attack(BF_MAGIC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
+				}
+				break;
 			case UNT_SANDMAN:	/* サンドマン */
 			case UNT_FLASHER:	/* フラッシャー */
 			case UNT_SHOCKWAVE:	/* ショックウェーブトラップ */
@@ -12207,6 +12240,7 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 				if(unit->val1 <= 0 && unit->limit + group->tick > tick + 700)
 					unit->limit = DIFF_TICK(tick+700,group->tick);
 				break;
+			case UNT_FIREPILLAR_WAITING:	/* ファイアーピラー(発動前) */
 			case UNT_SKIDTRAP:	/* スキッドトラップ */
 			case UNT_ANKLESNARE:	/* アンクルスネア */
 			case UNT_LANDMINE:	/* ランドマイン */
@@ -12313,9 +12347,10 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 	if(group->unit == NULL)
 		return 0;
 
-	// 移動可能なスキルはダンス系と罠と温もりのみ
+	// 移動可能なスキルはダンス系と罠とファイアーピラーと温もりのみ
 	if( !(skill_get_unit_flag(group->skill_id,group->skill_lv)&UF_DANCE) &&
 	     !skill_unit_istrap(group->unit_id) &&
+	     group->unit_id != UNT_FIREPILLAR_WAITING &&
 	     group->unit_id != UNT_WARM )
 		return 0;
 	if( group->unit_id == UNT_ANKLESNARE && (battle_config.anklesnare_no_knockbacking || group->val2 > 0) )	// 補足中のアンクルは移動不可
@@ -13161,7 +13196,7 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 		else
 			lv = pc_checkskill2(sd,skillid);
 
-		if(asflag&EAS_USEMAX && lv == pc_get_skilltree_max(&sd->s_class,skillid)) {
+		if(asflag&EAS_USEMAX && lv && lv == pc_get_skilltree_max(&sd->s_class,skillid)) {
 			// Maxがある場合のみ
 			skilllv = lv;
 		} else if(asflag&EAS_USEBETTER && lv > skilllv) {
