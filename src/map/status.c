@@ -573,6 +573,7 @@ L_RECALC:
 	sd->skill_delay_rate = 0;
 	memset(&sd->fix_status,0,sizeof(sd->fix_status));
 	memset(&sd->skill_fixcastrate,0,sizeof(sd->skill_fixcastrate));
+	memset(&sd->skill_addcastrate,0,sizeof(sd->skill_addcastrate));
 	memset(&sd->skill_healup,0,sizeof(sd->skill_healup));
 	memset(&sd->activeitem,0,sizeof(sd->activeitem));
 

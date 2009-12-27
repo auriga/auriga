@@ -11484,7 +11484,7 @@ static void clif_parse_NpcClicked(int fd,struct map_session_data *sd, int cmd)
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->ud.skilltimer != -1 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 	npc_click(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
 

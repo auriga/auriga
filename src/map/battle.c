@@ -5248,7 +5248,7 @@ int battle_config_read(const char *cfgName)
 		{ "hallucianation_off",                 &battle_config.hallucianation_off,                 0        },
 		{ "weapon_reflect_autospell",           &battle_config.weapon_reflect_autospell,           1        },
 		{ "magic_reflect_autospell",            &battle_config.magic_reflect_autospell,            0        },
-		{ "weapon_reflect_drain",               &battle_config.weapon_reflect_drain,               0        },
+		{ "weapon_reflect_drain",               &battle_config.weapon_reflect_drain,               1        },
 		{ "weapon_reflect_drain_enable_type",   &battle_config.weapon_reflect_drain_enable_type,   2        },
 		{ "magic_reflect_drain",                &battle_config.magic_reflect_drain,                0        },
 		{ "magic_reflect_drain_enable_type",    &battle_config.magic_reflect_drain_enable_type,    2        },

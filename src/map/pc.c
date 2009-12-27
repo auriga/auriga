@@ -2770,6 +2770,24 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		sd->skill_fixcastrate.rate[sd->skill_fixcastrate.count] = val;
 		sd->skill_fixcastrate.count++;
 		break;
+	case SP_ADD_CAST_RATE:
+		//update
+		for(i=0; i<sd->skill_addcastrate.count; i++)
+		{
+			if(sd->skill_addcastrate.id[i] == type2)
+			{
+				sd->skill_addcastrate.rate[i] += val;
+				return 0;
+			}
+		}
+		//full
+		if(sd->skill_addcastrate.count == MAX_SKILL_ADDCASTRATE)
+			break;
+		//add
+		sd->skill_addcastrate.id[sd->skill_addcastrate.count] = type2;
+		sd->skill_addcastrate.rate[sd->skill_addcastrate.count] = val;
+		sd->skill_addcastrate.count++;
+		break;
 	case SP_ADD_SKILL_HEAL_RATE:
 		// update
 		for(i=0; i<sd->skill_healup.count; i++)

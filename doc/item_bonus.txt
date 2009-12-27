@@ -203,6 +203,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus2 bAddSkillBlow,n,x;			スキルnにxマスの吹き飛ばし効果追加
 	bonus2 bAddFixCastRate,n,x;			スキルnの固定詠唱時間をx%減少
 	bonus2 bAddSkillHealRate,n,x;			スキルnの回復量をx%増加
+	bonus2 bAddCastRate,n,x;			スキルnの詠唱時間をx%減少
 
 
 ・オートスペル

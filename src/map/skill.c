@@ -4405,11 +4405,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SM_SELFPROVOKE:	/* セルフプロボック */
 	case MER_PROVOKE:
 		// MVPmobと不死には効かない・成功判定
-		if( status_get_mode(bl)&0x20 || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) || (skillid != SM_SELFPROVOKE && atn_rand()%100 > 70 + skilllv * 3 + status_get_lv(src) - status_get_lv(bl)) ) {
-			if(sd)
-				clif_skill_fail(sd,skillid,0,0);
-			map_freeblock_unlock();
-			return 1;
+		if( status_get_mode(bl)&0x20 || battle_check_undead(status_get_race(bl),status_get_elem_type(bl)) || atn_rand()%100 > 70 + skilllv * 3 + status_get_lv(src) - status_get_lv(bl) ) {
+			if(skillid != SM_SELFPROVOKE) {
+				if(sd)
+					clif_skill_fail(sd,skillid,0,0);
+				map_freeblock_unlock();
+				return 1;
+			}
 		}
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0 );
@@ -8065,12 +8067,10 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			int splash_count = 0;
 			if(sg->skill_lv>5)
 				i += 2;
-			if(battle_config.firepillar_splash_on) {
-				splash_count = map_foreachinarea(skill_count_target,src->bl.m,
+			splash_count = map_foreachinarea(skill_count_target,src->bl.m,
 						src->bl.x-i,src->bl.y-i,
 						src->bl.x+i,src->bl.y+i,
 						(BL_CHAR|BL_SKILL),src);
-			}
 			map_foreachinarea(skill_trap_splash,src->bl.m,
 						src->bl.x-i,src->bl.y-i,
 						src->bl.x+i,src->bl.y+i,
@@ -10633,6 +10633,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 {
 	struct status_change *sc;
 	struct map_session_data *sd = NULL;
+	int reduce_time = 0;	// 削減時間
 
 	nullpo_retr(0, bl);
 
@@ -10655,7 +10656,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 	if(casttime > 0) {
 		/* サフラギウム */
 		if(sc && sc->data[SC_SUFFRAGIUM].timer != -1) {
-			casttime = casttime * (100 - sc->data[SC_SUFFRAGIUM].val1 * 15) / 100;
+			reduce_time += sc->data[SC_SUFFRAGIUM].val1 * 15;
 			status_change_end(bl, SC_SUFFRAGIUM, -1);
 		}
 
@@ -10664,8 +10665,10 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 			int dex = status_get_dex(bl);
 			if(battle_config.no_cast_dex > dex) {
 				casttime = casttime * (battle_config.no_cast_dex - dex) / battle_config.no_cast_dex;
-				if(sd)
-					casttime = casttime * sd->castrate * battle_config.cast_rate / 10000;
+				if(sd) {
+					casttime = casttime * battle_config.cast_rate / 100;
+					reduce_time += 100 - sd->castrate;
+				}
 			} else {
 				casttime = 0;
 			}
@@ -10681,34 +10684,48 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 				type = SC_POEMBRAGI_;
 
 			if(type >= 0) {
-				casttime = casttime * (100-(sc->data[type].val1*3+sc->data[type].val2+(sc->data[type].val3>>16))) / 100;
+				reduce_time += (sc->data[type].val1*3 + sc->data[type].val2 + (sc->data[type].val3>>16));
 			}
 
 			/* スロウキャスト */
 			if(sc->data[SC_SLOWCAST].timer != -1)
-				casttime = casttime * (100 + sc->data[SC_SLOWCAST].val1 * 20) / 100;
+				reduce_time -= sc->data[SC_SLOWCAST].val1 * 20;
 
 			/* フロストミスティ */
 			if(sc->data[SC_FROSTMISTY].timer != -1)
-				casttime = casttime * 115 / 100;
+				reduce_time += 15;
+		}
+
+		// カードによる詠唱時間減少効果
+		if(sd && sd->skill_addcastrate.count > 0) {
+			int i;
+			for(i=0; i<sd->skill_addcastrate.count; i++) {
+				if(skillid == sd->skill_addcastrate.id[i])
+					reduce_time += sd->skill_addcastrate.rate[i];
+			}
 		}
 	}
+
+	casttime = casttime * (100 - reduce_time)/100;
+
 	if(casttime < 0)
 		casttime = 0;
 
 	if(fixedtime > 0) {
+		int reduce_time2 = 0;	// 固定詠唱削減時間
 		/* サクラメント */
 		if(sc && sc->data[SC_SACRAMENT].timer != -1) {
-			fixedtime -= fixedtime * sc->data[SC_SACRAMENT].val2 / 100;
+			reduce_time2 = sc->data[SC_SACRAMENT].val2;
 		}
 		// カードによる固定詠唱時間減少効果
 		if(sd && sd->skill_fixcastrate.count > 0) {
 			int i;
 			for(i=0; i<sd->skill_fixcastrate.count; i++) {
 				if(skillid == sd->skill_fixcastrate.id[i])
-					fixedtime -= fixedtime * sd->skill_fixcastrate.rate[i] / 100;
+					reduce_time2 = sd->skill_fixcastrate.rate[i];
 			}
 		}
+		fixedtime -= fixedtime * reduce_time2 / 100;
 	}
 	if(fixedtime < 0)
 		fixedtime = 0;
@@ -10724,6 +10741,7 @@ int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 {
 	struct status_change *sc;
 	int delay = skill_get_delay(skillid, skilllv);
+	int reduce_time = 0;	// 削減時間
 
 	nullpo_retr(0, bl);
 
@@ -10756,19 +10774,19 @@ int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 					}
 					delay = delay * battle_config.delay_rate / 100;
 					if(sd && sd->skill_delay_rate)
-						delay = delay * (100 + sd->skill_delay_rate) / 100;
+						reduce_time -= sd->skill_delay_rate;
 				}
 
 				/* ブラギの詩 */
 				if(sc) {
 					if(sc->data[SC_POEMBRAGI].timer != -1) {
 						int rate = (sc->data[SC_POEMBRAGI].val1 < 10)? 3: 5;
-						delay = delay * (100 - (sc->data[SC_POEMBRAGI].val1 * rate + sc->data[SC_POEMBRAGI].val2 * 2
-							+ (sc->data[SC_POEMBRAGI].val3 & 0xffff))) / 100;
+						reduce_time += (sc->data[SC_POEMBRAGI].val1 * rate + sc->data[SC_POEMBRAGI].val2 * 2
+							+ (sc->data[SC_POEMBRAGI].val3 & 0xffff));
 					} else if(sc->data[SC_POEMBRAGI_].timer != -1) {
 						int rate = (sc->data[SC_POEMBRAGI_].val1 < 10)? 3: 5;
-						delay = delay * (100 - (sc->data[SC_POEMBRAGI_].val1 * rate + sc->data[SC_POEMBRAGI_].val2 * 2
-							+ (sc->data[SC_POEMBRAGI_].val3 & 0xffff))) / 100;
+						reduce_time += (sc->data[SC_POEMBRAGI_].val1 * rate + sc->data[SC_POEMBRAGI_].val2 * 2
+							+ (sc->data[SC_POEMBRAGI_].val3 & 0xffff));
 					}
 				}
 				break;
@@ -10779,16 +10797,19 @@ int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 		switch(skillid) {
 			case AS_SONICBLOW:
 				if(sc->data[SC_ASSASIN].timer != -1 && !map[bl->m].flag.gvg) {
-					delay /= 2;
+					reduce_time += 50;
 				}
 				break;
 			case CR_SHIELDBOOMERANG:
 				if(sc->data[SC_CRUSADER].timer != -1) {
-					delay /= 2;
+					reduce_time += 50;
 				}
 				break;
 		}
 	}
+
+	delay = delay * (100 - reduce_time)/100;
+
 	if(delay < status_get_amotion(bl))
 		delay = status_get_amotion(bl);
 

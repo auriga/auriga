@@ -1054,8 +1054,8 @@ R 01b3 <filename>.64B <type>.B
 		3:バーつき移動可能×ボタン付
 		4:バーなし移動可能×ボタン付(髪型カタログ)
 		255:非表示
-R 01b4 <?>.l <?>.l <?>.w
-	何もしない
+R 01b4 <ID>.l <guild_id>.l <emblem ID>.w
+	ギルドエンブレム更新
 R 01b5 <val>.l <tick>.l <?>.8B
 	ログイン時メッセージ
 	<tick>が0のとき
@@ -1262,8 +1262,8 @@ R 01f0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.
 	00a5から変更
 R 01f1
 	ログイン系？未調査
-R 01f2 <ID>.l <charactor ID>.l <online>.l <01固定?>.w <01固定?>.w <01固定?>.w
-	ギルドメンバがloginした抜けた等、0x16dの上位版？
+R 01f2 <ID>.l <charactor ID>.l <online>.l <sex?>.w <hair>.w <hair color>.w
+	ギルドメンバがloginした抜けた等、0x16dの上位版
 R 01f3 <ID>.l <type>.l
 	blから発生するエフェクト
 R 01f4 <name>.24B <trade id?>.l <LV>.w
@@ -1561,7 +1561,7 @@ S 0258
 R 0259
 	nPro関係。0228送信後の返答。
 R 025a <len>.w { <itemid>.l }*<len>
-	何かのアイテムリスト
+	料理リスト
 S 025b <len>.w <itemid>.w
 	アイテム選択、キャンセル時は<itemid>に0xffffが入る
 	<len>は0x25aのパケット長がそのまま返る
@@ -1933,3 +1933,6 @@ R 043d <skillid>.w <tick>.l
 
 R 043f <type>.w <ID>.l <switch>.B <tick>.l <val>.l <?>.l <?>.l
 	増強系スキル使用時のメッセージ色々、0x196の上位版
+
+R 0446 <ID>.l <x>.w <y>.w <state>.w <type>.w
+	NPCイベントの表示

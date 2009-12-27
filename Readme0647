@@ -1,4 +1,27 @@
 ----------------------------------------
+//0714 [2009/12/28] by popori
+
+・OpenKore、eAよりパケット情報を保管 (client_packet.txt)
+
+・サンドマンは巻き込み倍加(巻き込み数分睡眠判定)するよう変更 (skill.c)
+
+・weapon_reflect_drainをデフォルトで有効にするよう変更 (battle_auriga.conf battle.c)
+
+・詠唱中はNPCをクリックしても反応しないように修正 (clif.c)
+
+・0712、0713の整理 (skill.c)
+
+・AthenaProject Rev.257をマージ (item_bonus.txt const.txt map.h pc.c status.c skill.c)
+ ->アイテムボーナス「bAddCastRate」を追加
+　ico776さんに感謝
+
+・AthenaProject Rev.565を参考に以下を変更 (skill.c)
+ ->スキル及びアイテムによるキャスティング/ディレイ削減効果を乗算から加算に変更(参考：ROratorio計算機)
+　nanashiさんに感謝
+
+・0713のReadmeの名前を間違えてしまったので変更
+
+----------------------------------------
 //0713 [2009/12/21] by popori
 
 ・battle_auriga.confのfirepillar_splash_onが無効時に巻き込み効果が無くなっていたのを修正 (skill.c)
@@ -15,7 +38,7 @@
 ・トーキーボックスに関する修正 (skill.c)
  ->トーキーボックスはbattle_auriga.confのplayer_skill_nofootsetに関係なく重ね置き出来るように修正
  ->HPを7万に変更
-　unsyuさんに感謝
+　Azuriteさんに感謝
 
 ・スキル「マグナムブレイク」「サイトラッシャー」で罠がノックバックするよう修正 (battle.c skill.c)
 

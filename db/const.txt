@@ -310,6 +310,7 @@ bSkillAutoSpell2	1166
 bSkillAutoSelfSpell	1167
 bSkillAutoSelfSpell2	1168
 bAutoActiveSkill	1169
+bAddCastRate		1170
 
 bRestartFullRecover	2000
 bNoCastCancel	2001
