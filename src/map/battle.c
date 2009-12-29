@@ -1606,6 +1606,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;
+		case HT_FREEZINGTRAP:		// フリージングトラップ
+			calc_flag.nocardfix = 1;
+			break;
 		case HT_POWER:		// ビーストストレイフィング
 			if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
@@ -4062,7 +4065,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			return 0;
 	}
 	if(sc) {
-		if(sc->data[SC_HIDING].timer != -1 && !(status_get_mode(src)&0x20) && skill_get_pl(skillid) != ELE_EARTH && skillid != NPC_EARTHQUAKE)	// ハイディング状態でBOSSでなくスキルの属性が地属性でなくアースクエイクでないなら何もしない
+		if(sc->data[SC_HIDING].timer != -1 && !(status_get_mode(src)&0x20) && skill_get_pl(skillid) != ELE_EARTH)	// ハイディング状態でBOSSでなくスキルの属性が地属性でないなら何もしない
 			return 0;
 		if(sc->data[SC_CHASEWALK].timer != -1 && skillid == AL_RUWACH)	// チェイスウォーク状態でルアフ無効
 			return 0;
@@ -4390,7 +4393,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* 実際にダメージ処理を行う */
 	if(skillid || flag) {
-		if(attack_type&BF_WEAPON) {
+		if(attack_type&BF_WEAPON && skillid != HT_FREEZINGTRAP) {	// フリージングトラップはこの位置だと割れる
 			battle_delay_damage(tick+dmg.amotion,src,bl,damage,skillid,skilllv,dmg.flag);
 		} else {
 			battle_damage(src,bl,damage,skillid,skilllv,dmg.flag);

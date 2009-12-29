@@ -1371,6 +1371,18 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 				mob_class_change_randam(dstmd,sd->status.base_level);
 			}
 		}
+
+	// 魔法による追加状態異常
+	} else if(attack_type&BF_MAGIC) {
+		int i, rate;
+		for(i = SC_STONE; i <= SC_BLEED; i++) {
+			rate = sd->magic_addeff[i-SC_STONE];
+			if(atn_rand() % 10000 < status_change_rate(bl,i,rate,status_get_lv(src))) {
+				if(battle_config.battle_log)
+					printf("PC %d magic_addeff: cardによる状態異常発動 %d %d\n",sd->bl.id,i,rate);
+				status_change_pretimer(bl,i,7,0,0,0,((i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7)),0,tick+status_get_adelay(src)*2/3);
+			}
+		}
 	}
 
 	return 0;
@@ -1611,6 +1623,7 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 		case HT_FREEZINGTRAP:
 		case HT_BLASTMINE:
 		case HT_CLAYMORETRAP:
+		case HT_TALKIEBOX:
 		case MA_SKIDTRAP:
 		case MA_LANDMINE:
 		case MA_SANDMAN:
@@ -1618,13 +1631,6 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 			if( (ug_id >= HT_SKIDTRAP && ug_id <= HT_CLAYMORETRAP) ||
 			    (ug_id >= MA_SKIDTRAP && ug_id <= MA_FREEZINGTRAP) ||
 			    ug_id == HT_TALKIEBOX )
-			{
-				return 1;
-			}
-			break;
-		case HT_TALKIEBOX:
-			if( (ug_id >= HT_SKIDTRAP && ug_id <= HT_CLAYMORETRAP) ||
-			    (ug_id >= MA_SKIDTRAP && ug_id <= MA_FREEZINGTRAP) )
 			{
 				return 1;
 			}
@@ -11736,7 +11742,7 @@ static int skill_trap_splash(struct block_list *bl, va_list ap )
 				}
 				break;
 			case UNT_FREEZINGTRAP:	/* フリージングトラップ */
-				battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
+				battle_skill_attack(BF_WEAPON,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
 				break;
 			default:
 				break;

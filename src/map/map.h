@@ -428,7 +428,7 @@ struct map_session_data {
 	int ignore_def_ele[ELE_MAX],ignore_def_race[RCT_MAX],ignore_def_enemy[4];
 	int ignore_def_ele_[ELE_MAX],ignore_def_race_[RCT_MAX],ignore_def_enemy_[4];
 	int ignore_mdef_ele[ELE_MAX],ignore_mdef_race[RCT_MAX],ignore_mdef_enemy[4];
-	int magic_addele[ELE_MAX],magic_addrace[RCT_MAX],magic_addenemy[4];
+	int magic_addele[ELE_MAX],magic_addrace[RCT_MAX],magic_addenemy[4],magic_addeff[10];
 	int magic_subrace[RCT_MAX],magic_subsize[MAX_SIZE_FIX];
 	int perfect_hit,get_zeny_num,get_zeny_num2;
 	int critical_rate,hit_rate,flee_rate,flee2_rate,def_rate,def2_rate,mdef_rate,mdef2_rate;
@@ -1031,6 +1031,7 @@ enum {
 	SP_ADD_FIX_CAST_RATE,SP_ADD_SKILL_HEAL_RATE,SP_MATK2_RATE,SP_AUTOACTIVE_WEAPON,SP_AUTOACTIVE_MAGIC,	// 1156-1160
 	SP_REVAUTOACTIVE_WEAPON,SP_REVAUTOACTIVE_MAGIC,SP_AUTOACTIVE_ITEM,SP_ADDEFFSKILL,SP_SKILLAUTOSPELL,	// 1161-1165
 	SP_SKILLAUTOSPELL2,SP_SKILLAUTOSELFSPELL,SP_SKILLAUTOSELFSPELL2,SP_AUTOACTIVE_SKILL,SP_ADD_CAST_RATE,	// 1166-1170
+	SP_ADDEFFMAGIC,	// 1171
 
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005

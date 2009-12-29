@@ -492,6 +492,7 @@ L_RECALC:
 	memset(sd->magic_addele,0,sizeof(sd->magic_addele));
 	memset(sd->magic_addrace,0,sizeof(sd->magic_addrace));
 	memset(sd->magic_addenemy,0,sizeof(sd->magic_addenemy));
+	memset(sd->magic_addeff,0,sizeof(sd->magic_addeff));
 	memset(sd->magic_subrace,0,sizeof(sd->magic_subrace));
 	sd->perfect_hit = 0;
 	sd->critical_rate = sd->hit_rate = sd->flee_rate = sd->flee2_rate = 100;
@@ -6964,15 +6965,12 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		}
 		break;
 	case SC_TENSIONRELAX:	/* テンションリラックス */
-		if(sd) {		/* SPがあって、HPが満タンでなければ継続 */
-			if(sd->status.sp > 12 && sd->status.max_hp > sd->status.hp) {
-				if(sc->data[type].val2 % (sc->data[type].val1+3) == 0) {
-					sd->status.sp -= 12;
-					clif_updatestatus(sd,SP_SP);
-				}
-				timer = add_timer(	/* タイマー再設定 */
-					10000+tick, status_change_timer,
-					bl->id, data);
+		if(sd) {		/* HPが満タンでなければ継続 */
+			if(sd->status.max_hp > sd->status.hp) {
+				if(sc->data[type].val2 % (sc->data[type].val1+3) == 0)
+					timer = add_timer(	/* タイマー再設定 */
+						10000+tick, status_change_timer,
+						bl->id, data);
 			} else if(sd->status.max_hp <= sd->status.hp) {
 				status_change_end(&sd->bl,SC_TENSIONRELAX,-1);
 			}

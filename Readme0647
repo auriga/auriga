@@ -1,4 +1,30 @@
 ----------------------------------------
+//0715 [2009/12/30] by popori
+
+・本家では他の罠にトーキーを重ねることが出来るようなので、0713の修正を一部巻き戻しskill_unit_db.txtで変更することにする (skill.c skill_unit_db.txt)
+
+・かんなぎさんの指摘によりハイド状態でアースクエイクは被弾しないようにする (battle.c)
+　かんなぎさん、Lyeseさんに感謝
+
+・AthenaProject Rev.384をマージ (skill_db.txt battle.c skill.c)
+ ->ハンタースキル「フリージングトラップ」をMISC→物理攻撃へ変更
+ ->ATK、FLEE依存(参考：弓手テンプレ)
+　nanashiさんに感謝
+
+・AthenaProject Rev.327をマージ (status.c)
+ ->スキル「テンションリラックス」の仕様が転生スキル仕様変更前のままだったのを修正　（10秒毎に12SP消費 → 発動時のみSP消費）
+　sakiさんに感謝
+
+・docのrefの一部が更新されていないので、少し更新 (db_ref.txt)
+
+・AthenaProject Rev.258をマージ (const.txt item_bonus.txt map.h pc. status.c skill.c)
+ ->アイテムボーナス「bAddEffMagic」を追加
+　ico776さんに感謝
+
+・hymiwaさんの情報を元に一部のmapflagをAuroraを参考に変更 (mapflag_pvp.txt)
+　Thanks to Aurora Dev Team!
+
+----------------------------------------
 //0714 [2009/12/28] by popori
 
 ・OpenKore、eAよりパケット情報を保管 (client_packet.txt)

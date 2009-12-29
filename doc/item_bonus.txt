@@ -301,6 +301,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus2 bAddEff2,e,n;				n%の確率で自分に状態異常e付与(nは万分率)
 	bonus2 bAddEffShort,e,n;			近距離物理攻撃時、n%の確率で攻撃対象に状態異常e付与(nは万分率)
 	bonus2 bAddEffLong,e,n;				遠距離物理攻撃時、n%の確率で攻撃対象に状態異常e付与(nは万分率)
+	bonus2 bAddEffMagic,e,n;			魔法攻撃時、n%の確率で攻撃対象に状態異常e付与(nは万分率)
 	bonus3 bAddEffSkill,n,x,y;			スキルnで攻撃時、y%の確率で攻撃対象に状態異常x付与(yは万分率)
 	bonus2 bResEff,e,n;					状態異常eの耐性+n%(nは万分率)
 					Eff_Blind		暗黒			Eff_Sleep		睡眠
