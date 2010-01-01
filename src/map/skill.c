@@ -1374,13 +1374,15 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	// 魔法による追加状態異常
 	} else if(attack_type&BF_MAGIC) {
-		int i, rate;
-		for(i = SC_STONE; i <= SC_BLEED; i++) {
-			rate = sd->magic_addeff[i-SC_STONE];
-			if(atn_rand() % 10000 < status_change_rate(bl,i,rate,status_get_lv(src))) {
-				if(battle_config.battle_log)
-					printf("PC %d magic_addeff: cardによる状態異常発動 %d %d\n",sd->bl.id,i,rate);
-				status_change_pretimer(bl,i,7,0,0,0,((i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7)),0,tick+status_get_adelay(src)*2/3);
+		if(sd) {
+			int i, rate;
+			for(i = SC_STONE; i <= SC_BLEED; i++) {
+				rate = sd->magic_addeff[i-SC_STONE];
+				if(atn_rand() % 10000 < status_change_rate(bl,i,rate,status_get_lv(src))) {
+					if(battle_config.battle_log)
+						printf("PC %d magic_addeff: cardによる状態異常発動 %d %d\n",sd->bl.id,i,rate);
+					status_change_pretimer(bl,i,7,0,0,0,((i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7)),0,tick+status_get_adelay(src)*2/3);
+				}
 			}
 		}
 	}
