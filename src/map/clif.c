@@ -11388,9 +11388,6 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if(sd->invincible_timer != -1)
-		pc_delinvincibletimer(sd);
-
 	pc_useitem(sd, idx);
 
 	return;
