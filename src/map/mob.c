@@ -1815,6 +1815,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	{
 		int pnum = 0;
 		int base_exp_rate, job_exp_rate, per;
+		int tk_exp_rate = 0;
 
 		if(map[md->bl.m].flag.base_exp_rate)
 			base_exp_rate = (map[md->bl.m].flag.base_exp_rate < 0)? 0: map[md->bl.m].flag.base_exp_rate;
@@ -1828,6 +1829,20 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		per = 100 + (count-1) * battle_config.joint_struggle_exp_bonus;
 		if(battle_config.joint_struggle_limit && per > battle_config.joint_struggle_limit)
 			per = battle_config.joint_struggle_limit;
+
+		// 祝福
+		if(sd) {
+			if (sd->sc.data[SC_MIRACLE].timer != -1) { // 太陽と月と星の奇跡
+				tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
+			} else {                                  // 太陽の祝福、月の祝福、星の祝福
+				if ((battle_config.allow_skill_without_day || is_day_of_sun()) && md->class_ == sd->hate_mob[0])
+					tk_exp_rate = 10 * pc_checkskill(sd, SG_SUN_BLESS);
+				else if ((battle_config.allow_skill_without_day || is_day_of_moon()) && md->class_ == sd->hate_mob[1])
+					tk_exp_rate = 10 * pc_checkskill(sd, SG_MOON_BLESS);
+				else if ((battle_config.allow_skill_without_day || is_day_of_star()) && md->class_ == sd->hate_mob[2])
+					tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
+			}
+		}
 
 		node = md->dmglog;
 		for(i=0; node; node = node->next,i++) {
@@ -1844,7 +1859,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			if(base_exp_rate <= 0) {
 				base_exp = 0;
 			} else {
-				base_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class_].base_exp * rate/tdmg * base_exp_rate/100;
+				base_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class_].base_exp * rate/tdmg * base_exp_rate/100 * (100 + tk_exp_rate) / 100;
 				if(mob_db[md->class_].base_exp > 0 && base_exp < 1 && damage > 0)
 					base_exp = 1;
 				if(base_exp < 0)
@@ -1853,7 +1868,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			if(job_exp_rate <= 0) {
 				job_exp = 0;
 			} else {
-				job_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class_].job_exp * rate/tdmg * job_exp_rate/100;
+				job_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class_].job_exp * rate/tdmg * job_exp_rate/100 * (100 + tk_exp_rate) / 100;
 				if(mob_db[md->class_].job_exp > 0 && job_exp < 1 && damage > 0)
 					job_exp = 1;
 				if(job_exp < 0)

@@ -2156,7 +2156,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case HFLI_SBR44:	// S.B.R.44
 			if(src_hd) {
-				DMG_SET( src_hd->intimate*skill_lv );
+				atn_bignumber dmg = (atn_bignumber)( src_hd->intimate * skill_lv ) * ( 100-t_def1) / 100 + t_def2;
+				DMG_SET( (int)dmg );
 				src_hd->intimate = 200;
 				if(battle_config.homun_skill_intimate_type)
 					src_hd->status.intimate = 200;
@@ -4065,7 +4066,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			return 0;
 	}
 	if(sc) {
-		if(sc->data[SC_HIDING].timer != -1 && !(status_get_mode(src)&0x20) && skill_get_pl(skillid) != ELE_EARTH)	// ハイディング状態でBOSSでなくスキルの属性が地属性でないなら何もしない
+		if(sc->data[SC_HIDING].timer != -1 && !(status_get_mode(src)&0x20) && skill_get_pl(skillid) != ELE_EARTH && skillid != HW_GRAVITATION)	// ハイディング状態でBOSSでなくスキルの属性が地属性でなくグラビテーションフィールドでないなら何もしない
 			return 0;
 		if(sc->data[SC_CHASEWALK].timer != -1 && skillid == AL_RUWACH)	// チェイスウォーク状態でルアフ無効
 			return 0;
@@ -4080,8 +4081,6 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	if(skillid == WZ_FROSTNOVA && dsrc->x == bl->x && dsrc->y == bl->y)	// 使用スキルがフロストノヴァで、dsrcとblが同じ場所なら何もしない
 		return 0;
 	if(sd && sd->chatID)	// 発動元がPCでチャット中なら何もしない
-		return 0;
-	if(sd && mob_gvmobcheck(sd,bl) == 0)
 		return 0;
 
 	type = (flag >> 8) & 0xff;
@@ -5055,7 +5054,7 @@ int battle_config_read(const char *cfgName)
 		{ "pet_hungry_delay_rate",              &battle_config.pet_hungry_delay_rate,              100      },
 		{ "pet_hungry_friendly_decrease",       &battle_config.pet_hungry_friendly_decrease,       5        },
 		{ "pet_str",                            &battle_config.pet_str,                            1        },
-		{ "pet_status_support",                 &battle_config.pet_status_support,                 0        },
+		{ "pet_status_support",                 &battle_config.pet_status_support,                 1        },
 		{ "pet_attack_support",                 &battle_config.pet_attack_support,                 0        },
 		{ "pet_damage_support",                 &battle_config.pet_damage_support,                 0        },
 		{ "pet_support_rate",                   &battle_config.pet_support_rate,                   100      },

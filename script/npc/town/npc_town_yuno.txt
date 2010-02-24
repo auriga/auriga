@@ -494,6 +494,7 @@ yuno_in01.gat,103,157,3	script	バーン	98,{
 	mes "[バーン]";
 	mes "ホイッと。";
 	mes "合成は終わりました。";
+	set '@rand,rand(10);
 	switch('@rand) {
 	default:
 		mes "そしてなぜか^FF0000鉄鉱石^000000も";

@@ -3792,7 +3792,7 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		WFIFOL(fd,4)=sd->aspd;
 		break;
 	case SP_ATK1:
-		WFIFOL(fd,4)=sd->base_atk+sd->watk;
+		WFIFOL(fd,4)=sd->base_atk+sd->watk+sd->watk_;
 		break;
 	case SP_DEF1:
 		WFIFOL(fd,4)=sd->def;
@@ -3801,7 +3801,7 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		WFIFOL(fd,4)=sd->mdef;
 		break;
 	case SP_ATK2:
-		WFIFOL(fd,4)=sd->watk2;
+		WFIFOL(fd,4)=sd->watk2+sd->watk_2;
 		break;
 	case SP_DEF2:
 		WFIFOL(fd,4)=sd->def2;
@@ -4087,8 +4087,8 @@ static void clif_initialstatus(struct map_session_data *sd)
 	WFIFOB(fd,14)=(sd->status.luk > 255)? 255:sd->status.luk;
 	WFIFOB(fd,15)=pc_need_status_point(sd,SP_LUK);
 
-	WFIFOW(fd,16) = sd->base_atk + sd->watk;
-	WFIFOW(fd,18) = sd->watk2;	// atk bonus
+	WFIFOW(fd,16) = sd->base_atk + sd->watk + sd->watk_;
+	WFIFOW(fd,18) = sd->watk2 + sd->watk_2;	// atk bonus
 	WFIFOW(fd,20) = sd->matk1;
 	WFIFOW(fd,22) = sd->matk2;
 	WFIFOW(fd,24) = sd->def;	// def
@@ -11102,29 +11102,24 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	switch(action_type){
 	case 0x00:	// once attack
 	case 0x07:	// continuous attack
-		{
-			struct block_list *bl=map_id2bl(target_id);
-			if(sd->vender_id != 0) return;
-			if(bl && mob_gvmobcheck(sd,bl)==0)
-				return;
+		if(sd->vender_id != 0) return;
 
-			if(!battle_config.sdelay_attack_enable && pc_checkskill(sd,SA_FREECAST) <= 0 ) {
-				if(DIFF_TICK(tick , sd->ud.canact_tick) < 0) {
-					clif_skill_fail(sd,1,4,0);
-					return;
-				}
-			}
-			if(sd->sc.data[SC_WEDDING].timer != -1 ||
-			   sd->sc.data[SC_BASILICA].timer != -1 ||
-			   sd->sc.data[SC_GOSPEL].timer != -1 ||
-			   sd->sc.data[SC_SANTA].timer != -1 ||
-			   sd->sc.data[SC_SUMMER].timer != -1 ||
-			   (sd->sc.data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2))
+		if(!battle_config.sdelay_attack_enable && pc_checkskill(sd,SA_FREECAST) <= 0 ) {
+			if(DIFF_TICK(tick , sd->ud.canact_tick) < 0) {
+				clif_skill_fail(sd,1,4,0);
 				return;
-			if(sd->invincible_timer != -1)
-				pc_delinvincibletimer(sd);
-			unit_attack(&sd->bl,target_id,action_type!=0);
+			}
 		}
+		if(sd->sc.data[SC_WEDDING].timer != -1 ||
+		   sd->sc.data[SC_BASILICA].timer != -1 ||
+		   sd->sc.data[SC_GOSPEL].timer != -1 ||
+		   sd->sc.data[SC_SANTA].timer != -1 ||
+		   sd->sc.data[SC_SUMMER].timer != -1 ||
+		   (sd->sc.data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2))
+			return;
+		if(sd->invincible_timer != -1)
+			pc_delinvincibletimer(sd);
+		unit_attack(&sd->bl,target_id,action_type!=0);
 		break;
 	case 0x02:	// sitdown
 		if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 3) {
@@ -12019,9 +12014,6 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		if(DIFF_TICK(tick, sd->skillcooldown[skillnum - THIRD_SKILLID]) < 0)
 			return;
 	}
-
-	if(mob_gvmobcheck(sd,bl) == 0)
-		return;
 
 	if( (sd->sc.data[SC_TRICKDEAD].timer != -1 && skillnum != NV_TRICKDEAD) ||
 	    sd->sc.data[SC_BERSERK].timer != -1 ||

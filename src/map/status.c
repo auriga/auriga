@@ -281,6 +281,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_speed,b_max_hp,b_max_sp,b_hp,b_sp,b_weight,b_max_weight,b_paramb[6],b_parame[6],b_hit,b_flee;
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
+	int b_watk_,b_watk_2;
 	int b_tigereye, b_endure;
 	struct skill b_skill[MAX_PCSKILL];
 	int i,blv,calc_val,idx;
@@ -334,6 +335,8 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_base_atk    = sd->base_atk;
 	b_tigereye    = sd->special_state.infinite_tigereye;
 	b_endure      = sd->special_state.infinite_endure;
+	b_watk_       = sd->watk_;
+	b_watk_2      = sd->watk_2;
 
 L_RECALC:
 	// 本来の計算開始(元のパラメータを更新しないのは、計算中に計算処理が呼ばれたときの
@@ -2288,11 +2291,11 @@ L_RECALC:
 		clif_updatestatus(sd,SP_FLEE1);
 	if(b_aspd != sd->aspd)
 		clif_updatestatus(sd,SP_ASPD);
-	if(b_watk != sd->watk || b_base_atk != sd->base_atk)
+	if(b_watk != sd->watk || b_watk_ != sd->watk_ || b_base_atk != sd->base_atk)
 		clif_updatestatus(sd,SP_ATK1);
 	if(b_def != sd->def)
 		clif_updatestatus(sd,SP_DEF1);
-	if(b_watk2 != sd->watk2)
+	if(b_watk2 != sd->watk2 || b_watk_2 != sd->watk_2)
 		clif_updatestatus(sd,SP_ATK2);
 	if(b_def2 != sd->def2)
 		clif_updatestatus(sd,SP_DEF2);
@@ -4672,7 +4675,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_PK_PENALTY:
 		case SC_HERMODE:
 		case SC_TATAMIGAESHI:			/* 畳返し */
-		case SC_INVISIBLE:			/* インビジブル */
 		case SC_NPC_DEFENDER:
 		case SC_SLOWCAST:			/* スロウキャスト */
 		case SC_CRITICALWOUND:			/* 致命傷 */
@@ -5294,6 +5296,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_CHASEWALK:		/* チェイスウォーク */
 		case SC_CLOAKING:		/* クローキング */
+		case SC_INVISIBLE:		/* インビジブル */
 			if(sd) {
 				calc_flag = 1;
 				tick = val2;

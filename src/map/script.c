@@ -11396,10 +11396,10 @@ int buildin_getiteminfo(struct script_state *st)
 			case 10: val = item->slot;             break;
 			case 11: val = item->class_;           break;
 			case 12: val = item->sex;              break;
-			case 13: val = item->look;             break;
+			case 13: val = item->equip;            break;
 			case 14: val = item->wlv;              break;
 			case 15: val = item->elv;              break;
-			case 16: val = item->view_id;          break;
+			case 16: val = item->look;             break;
 			case 17: val = item->refine;           break;
 			case 18: val = item->upper;            break;
 			case 19: val = item->zone;             break;
@@ -11646,6 +11646,8 @@ int buildin_callguardian(struct script_state *st)
 				if(g) {
 					md->guild_id   = g->guild_id;
 					md->guardup_lv = guild_checkskill(g, GD_GUARDUP);
+				} else {
+					md->guild_id   = 1;	// ダミーのIDをセットしておく
 				}
 			}
 		}

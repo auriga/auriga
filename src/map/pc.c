@@ -4773,21 +4773,9 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 
 	if (md) {
 		int race_id = status_get_race(&md->bl);
-		int tk_exp_rate = 0;
 
-		if (sd->sc.data[SC_MIRACLE].timer != -1) { // 太陽と月と星の奇跡
-			tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
-		} else {                                  // 太陽の祝福、月の祝福、星の祝福
-			if ((battle_config.allow_skill_without_day || is_day_of_sun()) && md->class_ == sd->hate_mob[0])
-				tk_exp_rate = 10 * pc_checkskill(sd, SG_SUN_BLESS);
-			else if ((battle_config.allow_skill_without_day || is_day_of_moon()) && md->class_ == sd->hate_mob[1])
-				tk_exp_rate = 10 * pc_checkskill(sd, SG_MOON_BLESS);
-			else if ((battle_config.allow_skill_without_day || is_day_of_star()) && md->class_ == sd->hate_mob[2])
-				tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
-		}
-
-		base_exp = base_exp * (100 + sd->exp_rate[race_id] + tk_exp_rate) / 100;
-		job_exp  = job_exp  * (100 + sd->job_rate[race_id] + tk_exp_rate) / 100;
+		base_exp = base_exp * (100 + sd->exp_rate[race_id]) / 100;
+		job_exp  = job_exp  * (100 + sd->job_rate[race_id]) / 100;
 
 		if (md->sc.data[SC_RICHMANKIM].timer != -1) {
 			base_exp = base_exp * (125 + md->sc.data[SC_RICHMANKIM].val1 * 11) / 100;
@@ -4807,8 +4795,8 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 
 	// マーダラーボーナス
 	if(ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point) {
-		base_exp *= 2;
-		job_exp *= 2;
+		base_exp <<= 1;
+		job_exp <<= 1;
 	}
 
 	if (sd->status.guild_id > 0) {	// ギルドに上納
