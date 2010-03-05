@@ -57,6 +57,7 @@
 #define MAX_REFINE 10		// 最大精錬値
 #define MAX_ELE_LEVEL 4		// 最大属性Lv
 #define MAX_SIZE_FIX 3		// サイズの種類
+#define MAX_FREEZE_SPELL 3	// リーディングスペルブックで保持できるスキル数
 
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
@@ -345,6 +346,7 @@ struct map_session_data {
 		unsigned tk_doridori_hp : 1;
 		unsigned tk_doridori_sp : 1;
 		unsigned show_equip : 1;
+		unsigned reading_sb_flag : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -674,6 +676,9 @@ struct map_session_data {
 
 	short poisoning_lv;		// ポイズニングウェポンLv保存用（暫定）
 	unsigned int skillcooldown[MAX_THIRDSKILL];		// クールタイム（暫定的に3次職スキルのみ）
+	int freeze_sp_slot;
+	int freeze_sp_skill[MAX_FREEZE_SPELL];
+	int overheat;			// 魔導ギア加熱度（暫定）
 };
 
 struct npc_timerevent_list {

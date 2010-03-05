@@ -268,6 +268,10 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		}
 		if(sd->sc.data[SC_WARM].timer != -1)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_WARM].val4),sd->bl.m,dx,dy);
+		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1)
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_NEUTRALBARRIER_USER].val4),sd->bl.m,dx,dy);
+		if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1)
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_USER].val4),sd->bl.m,dx,dy);
 	}
 
 	ud->walktimer = 1;
@@ -392,6 +396,15 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 				pc_setdir(sd, dir, dir);
 				return 0;
 			}
+		} else if(sd && sd->sc.data[SC_WUGDASH].timer != -1) {
+			// ウルフダッシュ中に障害物に当たった
+			if(map_getcell(sd->bl.m,x+dx,y+dy,CELL_CHKNOPASS) ||
+			   map_getcell(sd->bl.m,x   ,y+dy,CELL_CHKNOPASS) ||
+			   map_getcell(sd->bl.m,x+dx,y   ,CELL_CHKNOPASS) ||
+			   map_count_oncell(sd->bl.m,x+dx,y+dy,BL_PC|BL_MOB|BL_NPC) > 0) {
+				status_change_end(&sd->bl,SC_WUGDASH,-1);
+				return 0;
+			}
 		} else if(map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {	// 障害物に当たった
 			if(!sc || sc->data[SC_FORCEWALKING].timer == -1) {
 				clif_fixwalkpos(bl);
@@ -401,7 +414,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,(void*)((int)ud->walkpath.path_pos));
 	} else {
 		// 目的地に着いた
-		if(sd && sd->sc.data[SC_RUN].timer != -1) {
+		if(sd && (sd->sc.data[SC_RUN].timer != -1 || sd->sc.data[SC_WUGDASH].timer != -1)) {
 			// 継続判定
 			pc_runtodir(sd);
 		}
@@ -693,6 +706,14 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		// 温もりの位置変更
 		if(sd->sc.data[SC_WARM].timer != -1) {
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_WARM].val4),sd->bl.m,dx,dy);
+		}
+		// ニュートラルバリアーの位置変更
+		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1) {
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_NEUTRALBARRIER_USER].val4),sd->bl.m,dx,dy);
+		}
+		// ステルスフィールドの位置変更
+		if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1) {
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_USER].val4),sd->bl.m,dx,dy);
 		}
 
 		if(map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
@@ -1119,6 +1140,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		status_change_end(src,SC_CLOAKINGEXCEED,-1);
 	}
 
+	if(sc && sc->data[SC_CAMOUFLAGE].timer != -1 && skill_num != RA_CAMOUFLAGE) {
+		status_change_end(src,SC_CAMOUFLAGE,-1);
+	}
+
 	if(casttime > 0) {
 		int skill;
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_id, src->id, NULL);
@@ -1299,6 +1324,9 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1)
 		status_change_end(src,SC_CLOAKINGEXCEED,-1);
 
+	if(sc && sc->data[SC_CAMOUFLAGE].timer != -1)
+		status_change_end(src,SC_CAMOUFLAGE,-1);
+
 	if(casttime > 0) {
 		int skill;
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_pos, src->id, NULL);
@@ -1450,7 +1478,11 @@ int unit_can_move(struct block_list *bl)
 		    (battle_config.hermode_no_walking && sc->data[SC_DANCING].timer != -1 && sc->data[SC_DANCING].val1 == CG_HERMODE) ||
 		    (sc->data[SC_FEAR].timer != -1 && sc->data[SC_FEAR].val3 > 0) ||	// 恐怖状態（2秒間）
 		    sc->data[SC_WEAPONBLOCKING2].timer != -1 ||	// ウェポンブロッキング（ブロック中）
-		    sc->data[SC_WHITEIMPRISON].timer != -1	// ホワイトインプリズン
+		    sc->data[SC_WHITEIMPRISON].timer != -1 ||	// ホワイトインプリズン
+		    sc->data[SC_ELECTRICSHOCKER].timer != -1 ||	// エレクトリックショッカー
+		    sc->data[SC_WUGBITE].timer != -1 ||		// ウルフバイト
+		    (sc->data[SC_CAMOUFLAGE].timer != -1 && sc->data[SC_CAMOUFLAGE].val1 < 3) ||	// カモフラージュ（Lv3未満）
+		    sc->data[SC_MAGNETICFIELD].timer != -1		// マグネティックフィールド
 		)
 			return 0;
 
@@ -1489,6 +1521,7 @@ int unit_isrunning(struct block_list *bl)
 	sc = status_get_sc(bl);
 	if(sc) {
 		if( sc->data[SC_RUN].timer != -1 ||		// 駆け足
+		    sc->data[SC_WUGDASH].timer != -1 ||	// ウルフダッシュ
 		    sc->data[SC_FORCEWALKING].timer != -1 ||	// 強制移動
 		    sc->data[SC_SELFDESTRUCTION].timer != -1 )	// 自爆2
 			return 1;
@@ -1583,7 +1616,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		if( !(mode&0x80) )
 			return 0;
 		if( !(mode&0x20) ) {
-			if( tsc && (tsc->data[SC_FORCEWALKING].timer != -1 || tsc->data[SC_WINKCHARM].timer != -1) )
+			if( tsc && (tsc->data[SC_FORCEWALKING].timer != -1 || tsc->data[SC_WINKCHARM].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1) )
 				return 0;
 			if( target_sd ) {
 				if( pc_ishiding(target_sd) && race != RCT_INSECT && race != RCT_DEMON )
@@ -1661,6 +1694,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 				status_change_end(src,SC_CLOAKING,-1);
 			if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1)
 				status_change_end(src,SC_CLOAKINGEXCEED,-1);
+			if(sc && sc->data[SC_CAMOUFLAGE].timer != -1)
+				status_change_end(src,SC_CAMOUFLAGE,-1);
 			if(src_sd && src_sd->status.pet_id > 0 && src_sd->pd && src_sd->petDB)
 				pet_target_check(src_sd,target,0);
 			map_freeblock_unlock();

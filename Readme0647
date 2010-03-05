@@ -1,4 +1,25 @@
 ----------------------------------------
+//0719 [2010/03/06] by Blaze
+
+・レンジャー、メカニックスキル実装 (skill.*, battle.c)
+
+・新状態異常実装 (status.*, pc.*, unit.c, mob.c)
+
+・ウォーロックスキル「リーディングスペルブック」実装 (map.h, skill.*, clif.*)
+
+・下記DBファイル更新 (db/*)
+	skill_db.txt
+	skill_db2.txt
+	skill_cast_db.txt
+	skill_require_db.txt
+	skill_require_db2.txt
+	skill_unit_db.txt
+	scdata_db.txt
+	item_arrowtype.txt
+
+・スクリプト命令にsetgear,checkgearを追加(script.c, doc/script_ref.txt)
+
+----------------------------------------
 //0718 [2010/02/25] by popori
 
 ・ギルド無所属のキャラクターがエンペリウムを攻撃出来るバグを修正 (script.c)

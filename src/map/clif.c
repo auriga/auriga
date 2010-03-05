@@ -4217,6 +4217,42 @@ void clif_poison_list(struct map_session_data *sd, short lv)
 }
 
 /*==========================================
+ * リーディングスペルブック選択
+ *------------------------------------------*/
+void clif_reading_sb_list(struct map_session_data *sd)
+{
+	int i, view, idx, c = 0;
+	int fd;
+	const int sb_list[17] = { 6189, 6190, 6191, 6192, 6193, 6194, 6195, 6196,
+							  6197, 6198, 6199, 6200, 6201, 6202, 6203, 6204, 6205 };
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x1ad;
+
+	for(i = 0; i < 17; i++) {
+		if(sb_list[i] > 0 &&
+			(idx = pc_search_inventory(sd, sb_list[i])) >= 0 &&
+			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
+		{
+			if((view = itemdb_viewid(sb_list[i]) > 0))
+				WFIFOW(fd,c*2+4) = view;
+			else
+				WFIFOW(fd,c*2+4) = sb_list[i];
+			c++;
+		}
+	}
+	WFIFOW(fd,2) = c * 2 + 4;
+	WFIFOSET(fd, WFIFOW(fd,2));
+
+	if(c > 0)
+		sd->state.reading_sb_flag = 1;
+
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -12403,6 +12439,9 @@ static void clif_parse_SelectArrow(int fd,struct map_session_data *sd, int cmd)
 
 	if(sd->poisoning_lv > 0)
 		skill_poisoning_weapon(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+
+	if(sd->state.reading_sb_flag > 0)
+		skill_reading_sb(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
 
 	return;
 }

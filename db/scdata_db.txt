@@ -22,7 +22,7 @@
 16,SC_SUFFRAGIUM,0,103,0		// サフラギウム
 17,SC_ASPERSIO,1,103,0			// アスペルシオ
 18,SC_BENEDICTIO,0,103,0		// 聖体降臨
-19,SC_KYRIE,1,103,0			// キリエエレイソン
+19,SC_KYRIE,1,359,0			// キリエエレイソン
 20,SC_MAGNIFICAT,1,103,0		// マグニフィカート
 21,SC_GLORIA,1,103,0			// グロリア
 22,SC_AETERNA,0,7,0			// レックスエーテルナ
@@ -51,7 +51,7 @@
 55,SC_CP_SHIELD,1,1,0			// ケミカルシールドチャージ
 56,SC_CP_ARMOR,1,1,0			// ケミカルアーマーチャージ
 57,SC_CP_HELM,1,1,0			// ケミカルヘルムチャージ
-58,SC_AUTOGUARD,0,7,0			// オートガード
+58,SC_AUTOGUARD,0,263,0			// オートガード
 59,SC_REFLECTSHIELD,0,7,0		// リフレクトシールド
 60,SC_DEVOTION,-1,7,0			// ディボーション
 61,SC_PROVIDENCE,0,7,0			// プロヴィデンス
@@ -63,7 +63,7 @@
 68,SC_SPEARQUICKEN,1,135,14		// スピアクイッケン
 //
 86,SC_EXPLOSIONSPIRITS,0,7,0		// 爆裂波動
-87,SC_STEELBODY,0,7,0			// 金剛
+87,SC_STEELBODY,0,263,0			// 金剛
 //
 89,SC_COMBO,0,1,0			// モンクコンボ
 90,SC_FLAMELAUNCHER,1,103,0		// フレイムランチャー
@@ -354,7 +354,7 @@
 386,SC_REBIRTH,0,0,0			// リバース
 387,SC_HELLPOWER,1,0,0			// ヘルパワー
 388,SC_ENCHANTBLADE,0,1,0		// エンチャントブレイド
-389,SC_BERKANA,0,1,0			// ミレニアムシールド
+389,SC_BERKANA,0,257,0			// ミレニアムシールド
 390,SC_NAUTHIZ,0,1,0			// リフレッシュ
 391,SC_TURISUSS,0,1,0			// ジャイアントグロウス
 392,SC_HAGALAZ,0,1,0			// ストーンハードスキン
@@ -399,6 +399,22 @@
 431,SC_SUMMONBALL4,0,1,0		// サモンボール(4個目)
 432,SC_SUMMONBALL5,0,1,0		// サモンボール(5個目)
 433,SC_SPELLBOOK,0,1,0			// スペルブック
+434,SC_FEARBREEZE,0,1,0			// フィアーブリーズ
+435,SC_ELECTRICSHOCKER,0,1,0		// エレクトリックショッカー
+436,SC_WUGDASH,0,1,0			// ウルフダッシュ
+437,SC_WUGBITE,0,1,0			// ウルフバイト
+438,SC_CAMOUFLAGE,0,1,0			// カモフラージュ
+439,SC_ACCELERATION,0,1,0		// アクセラレーション
+440,SC_HOVERING,0,1,0			// ホバリング
+441,SC_OVERHEAT,0,1,0			// オーバーヒート
+442,SC_SHAPESHIFT,0,1,0			// シェイプシフト
+443,SC_INFRAREDSCAN,0,1,0		// インフラレッドスキャン
+444,SC_ANALYZE,0,1,0			// アナライズ
+445,SC_MAGNETICFIELD,0,1,0		// マグネティックフィールド
+446,SC_NEUTRALBARRIER_USER,0,1,0	// ニュートラルバリアー(使用者)
+447,SC_NEUTRALBARRIER,0,1,0		// ニュートラルバリアー
+448,SC_STEALTHFIELD_USER,0,1,0		// ステルスフィールド(使用者)
+449,SC_STEALTHFIELD,0,1,0		// ステルスフィールド
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

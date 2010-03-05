@@ -4121,6 +4121,12 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 	// 温もりユニット削除
 	if(sd->sc.data[SC_WARM].timer != -1)
 		status_change_end(&sd->bl, SC_WARM, -1);
+	// ニュートラルバリアー削除
+	if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1)
+		status_change_end(&sd->bl, SC_NEUTRALBARRIER_USER, -1);
+	// ステルスフィールド削除
+	if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1)
+		status_change_end(&sd->bl, SC_STEALTHFIELD_USER, -1);
 
 	if(sd->bl.prev != NULL) {
 		if(m != sd->bl.m) {
@@ -4435,6 +4441,10 @@ int pc_runtodir(struct map_session_data *sd)
 			clif_status_change(&sd->bl,SI_RUN_STOP,1,0,0);
 			pc_setdir(sd, dir, head_dir);
 		}
+		if(sd->sc.data[SC_WUGDASH].timer != -1) {
+			status_change_end(&sd->bl,SC_WUGDASH,-1);
+			pc_setdir(sd, sd->dir, sd->head_dir);
+		}
 	} else {
 		unit_walktoxy( &sd->bl, to_x, to_y);
 	}
@@ -4526,6 +4536,7 @@ static int pc_checkallowskill(struct map_session_data *sd)
 		RK_ENCHANTBLADE,
 		GC_POISONINGWEAPON,
 		AB_EXPIATIO,
+		RA_FEARBREEZE,
 	};
 
 	nullpo_retr(0, sd);
@@ -6515,6 +6526,13 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 		clif_status_load(sd,SI_RIDING,0);
 	}
 
+	if( (type&0x200000) && !pc_iswolfmount(sd) ) {
+		clif_status_load(sd,SI_WUGRIDER,1);
+	}
+	else if( !(type&0x200000) && pc_iswolfmount(sd) ) {
+		clif_status_load(sd,SI_WUGRIDER,0);
+	}
+
 	if( (type&CART_MASK) && !pc_iscarton(sd) ) {
 		clif_cart_itemlist(sd);
 		clif_cart_equiplist(sd);
@@ -6606,6 +6624,20 @@ int pc_setdragon(struct map_session_data *sd)
 	if(pc_checkskill(sd,RK_DRAGONTRAINING) > 0) { // ドラゴントレーニングスキル所持
 		pc_setoption(sd,0x80000);
 	}
+	return 0;
+}
+
+/*==========================================
+ * 魔導ギア設定
+ *------------------------------------------
+ */
+int pc_setgear(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	//if(pc_checkskill(sd,NC_MADOLICENCE) > 0) { // 魔導ギアライセンススキル所持
+		pc_setoption(sd,0x400000);
+	//}
 	return 0;
 }
 
@@ -8476,6 +8508,11 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		    sd->sc.data[SC_WEAPONBLOCKING].timer == -1 &&		// ウェポンブロッキング状態ではSPが回復しない
 		    sd->sc.data[SC_TOXIN].timer == -1 &&	// トキシン状態ではSPが回復しない
 		    sd->sc.data[SC_OBLIVIONCURSE].timer == -1 &&		// オブリビオンカース状態ではSPが回復しない
+		    sd->sc.data[SC_SPELLBOOK].timer == -1 &&	// スペル保存状態ではSPが回復しない
+		    sd->sc.data[SC_ELECTRICSHOCKER].timer == -1 &&	// エレクトリックショッカー状態ではSPが回復しない
+		    sd->sc.data[SC_CAMOUFLAGE].timer == -1 &&		// カモフラージュ状態ではSPが回復しない
+		    sd->sc.data[SC_MAGNETICFIELD].timer == -1 &&	// マグネティックフィールド状態ではSPが回復しない
+		    sd->sc.data[SC_STEALTHFIELD_USER].timer == -1 &&	// ステルスフィールド(使用者)はSPが回復しない
 		    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 			pc_natural_heal_sp(sd);
 	} else {

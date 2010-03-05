@@ -265,6 +265,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 void skill_arrow_create(struct map_session_data *sd, int nameid);
 void skill_repair_weapon(struct map_session_data *sd, int idx);
 void skill_poisoning_weapon(struct map_session_data *sd, int nameid);
+void skill_reading_sb(struct map_session_data *sd, int nameid);
 
 // mobスキルのため
 int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag );
@@ -287,7 +288,7 @@ int skill_castend_delay(struct block_list* src, struct block_list *bl,int skilli
 void skill_basilica_cancel( struct block_list *bl );
 
 // 罠スキルかどうか
-#define skill_unit_istrap(id) (((id) >= UNT_BLASTMINE) && ((id) <= UNT_TALKIEBOX) && ((id) != UNT_VENOMDUST))
+#define skill_unit_istrap(id) ((((id) >= UNT_BLASTMINE) && ((id) <= UNT_TALKIEBOX) && ((id) != UNT_VENOMDUST)) || ((id) >= UNT_MAGENTATRAP && (id) <= UNT_CLUSTERBOMB))
 
 void skill_reload(void);
 
@@ -309,6 +310,8 @@ enum {
 	SST_MOVE_ENABLE,
 	SST_WATER,
 	SST_DRAGON,
+	SST_WOLF,
+	SST_GEAR,
 };
 
 enum {
@@ -1236,7 +1239,81 @@ enum {
 	SR_GENTLETOUCH_CHANGE,
 	SR_GENTLETOUCH_REVITALIZE,
 
+	WA_SWING_DANCE = 2350,
+	WA_SYMPHONY_OF_LOVE,
+	WA_MOONLIT_SERENADE,
+
+	MI_RUSH_WINDMILL = 2381,
+	MI_ECHOSONG,
+	MI_HARMONIZE,
+
+	WM_LESSON = 2412,
+	WM_METALICSOUND,
+	WM_REVERBERATION,
+	WM_REVERBERATION_MELEE,
+	WM_REVERBERATION_MAGIC,
+	WM_DOMINION_IMPULSE,
+	WM_SEVERE_RAINSTORM,
+	WM_POEMOFNETHERWORLD,
+	WM_VOICEOFSIREN,
+	WM_DEADHILLHERE,
+	WM_LULLABY_DEEPSLEEP,
+	WM_SIRCLEOFNATURE,
+	WM_RANDOMIZESPELL,
+	WM_GLOOMYDAY,
+	WM_GREAT_ECHO,
+	WM_SONG_OF_MANA,
+	WM_DANCE_WITH_WUG,
+	WM_SOUND_OF_DESTRUCTION,
+	WM_SATURDAY_NIGHT_FEVER,
+	WM_LERADS_DEW,
+	WM_MELODYOFSINK,
+	WM_BEYOND_OF_WARCRY,
+	WM_UNLIMITED_HUMMING_VOICE,
+
+	SO_FIREWALK = 2443,
+	SO_ELECTRICWALK,
+	SO_SPELLFIST,
+	SO_EARTHGRAVE,
+	SO_DIAMONDDUST,
+	SO_POISON_BUSTER,
+	SO_PSYCHIC_WAVE,
+	SO_CLOUD_KILL,
+	SO_STRIKING,
+	SO_WARMER,
+	SO_VACUUM_EXTREME,
+	SO_VARETYR_SPEAR,
+	SO_ARRULLO,
+
+	GN_TRAINING_SWORD = 2474,
+	GN_REMODELING_CART,
+	GN_CART_TORNADO,
+	GN_CARTCANNON,
+	GN_CARTBOOST,
+	GN_THORNS_TRAP,
+	GN_BLOOD_SUCKER,
+	GN_SPORE_EXPLOSION,
+	GN_WALLOFTHORN,
+	GN_CRAZYWEED,
+	GN_CRAZYWEED_ATK,
+	GN_DEMONIC_FIRE,
+	GN_FIRE_EXPANSION,
+	GN_FIRE_EXPANSION_SMOKE_POWDER,
+	GN_FIRE_EXPANSION_TEAR_GAS,
+	GN_FIRE_EXPANSION_ACID,
+	GN_HELLS_PLANT,
+	GN_HELLS_PLANT_ATK,
+	GN_MANDRAGORA,
+	GN_SLINGITEM,
+	GN_CHANGEMATERIAL,
+	GN_MIX_COOKING,
+	GN_MAKEBOMB,
+	GN_S_PHARMACY,
+
 	AB_SECRAMENT = 2515,
+
+	SR_HOWLINGOFLION = 2517,
+	SR_RIDEINLIGHTNING,
 
 	HLIF_HEAL = 8001,
 	HLIF_AVOID,
@@ -1371,9 +1448,34 @@ enum {
 	//0xc5
 	//0xc6
 	UNT_EVILLAND = 0xc7,
+	//0xc8
+	//0xc9
 	UNT_EPICLESIS = 0xca,
-	UNT_EARTHSTRAIN = 0xcb,
+	UNT_EARTHSTRAIN,
+	UNT_MANHOLE,
+	UNT_DIMENSIONDOOR,
+	UNT_CHAOSPANIC,
+	UNT_MAELSTROM,
+	UNT_BLOODYLUST,
+	//0xd1
+	UNT_MAGENTATRAP = 0xd2,
+	UNT_COBALTTRAP,
+	UNT_MAIZETRAP,
+	UNT_VERDURETRAP,
+	UNT_FIRINGTRAP,
+	UNT_ICEBOUNDTRAP,
+	UNT_ELECTRICSHOCKER,
+	UNT_CLUSTERBOMB,
+	UNT_REVERBERATION,
+	UNT_SEVERE_RAINSTORM,
+	//0xdc
+	//0xdd
+	UNT_POEMOFNETHERWORLD = 0xde,
+	//0xdf
+	//0xe0
 	UNT_POISONSMOKE = 0xe1,
+	UNT_NEUTRALBARRIER,
+	UNT_STEALTHFIELD,
 };
 
 #endif

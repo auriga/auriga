@@ -163,9 +163,9 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 420- */
 	SI_DUPLELIGHT,SI_SACRAMENT,SI_BLANK,SI_FROSTMISTY,SI_MARSHOFABYSS,SI_RECOGNIZEDSPELL,SI_BLANK,SI_BLANK,SI_SUMMONBALL1,SI_SUMMONBALL2,
 	/* 430- */
-	SI_SUMMONBALL3,SI_SUMMONBALL4,SI_SUMMONBALL5,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_SUMMONBALL3,SI_SUMMONBALL4,SI_SUMMONBALL5,SI_BLANK,SI_FEARBREEZE,SI_BLANK,SI_WUGDASH,SI_BLANK,SI_CAMOUFLAGE,SI_ACCELERATION,
 	/* 440- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_HOVERING,SI_OVERHEAT,SI_SHAPESHIFT,SI_INFRAREDSCAN,SI_ANALYZE,SI_BLANK,SI_BLANK,SI_NEUTRALBARRIER,SI_BLANK,SI_STEALTHFIELD,
 	/* 450- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 };
@@ -776,6 +776,9 @@ L_RECALC:
 	}
 	if((skill = pc_checkskill(sd,SA_DRAGONOLOGY)) > 0) {	// ドラゴノロジー
 		sd->paramb[3] += (skill+1)>>1;
+	}
+	if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0) {	// トラップ研究
+		sd->paramb[3] += skill;
 	}
 
 	// マーダラーボーナス
@@ -1404,6 +1407,8 @@ L_RECALC:
 	}
 	if((skill = pc_checkskill(sd,BS_WEAPONRESEARCH)) > 0)	// 武器研究の命中率増加
 		sd->hit += skill*2;
+	if((sd->status.weapon == WT_1HAXE || sd->status.weapon == WT_1HAXE) && ((skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0))	// 斧修練の命中率増加
+		sd->hit += skill*3;
 
 	if(sd->sc.option&2 && (skill = pc_checkskill(sd,RG_TUNNELDRIVE)) > 0)	// トンネルドライブ
 		sd->speed += (12*DEFAULT_WALK_SPEED - skill*90) / 10;
@@ -1423,6 +1428,12 @@ L_RECALC:
 		sd->max_weight += 500 + 200 * pc_checkskill(sd,RK_DRAGONTRAINING);
 		if(sd->sc.data[SC_DEFENDER].timer == -1)		// ディフェンダー時は速度増加しない
 			sd->speed -= DEFAULT_WALK_SPEED / 4;
+	} else if(pc_iswolfmount(sd)) {					// ウルフライダーによる速度増加
+		sd->speed -=  sd->speed * pc_checkskill(sd,RA_WUGRIDER) / 10;
+	}
+
+	if(pc_isgear(sd)) {	// 魔導ギア搭乗による速度低下
+		sd->speed += (5-pc_checkskill(sd,NC_MADOLICENCE)) * DEFAULT_WALK_SPEED / 10;
 	}
 
 	if(sd->sc.count > 0) {
@@ -1441,6 +1452,10 @@ L_RECALC:
 			sc_speed_rate = 75;
 		if(sd->sc.data[SC_WINDWALK].timer != -1 && sc_speed_rate > 100-(sd->sc.data[SC_WINDWALK].val1*2))	// ウィンドウォークによる移動速度増加
 			sc_speed_rate = 100-(sd->sc.data[SC_WINDWALK].val1*2);
+		if(sd->sc.data[SC_WUGDASH].timer != -1 && sc_speed_rate > 50)		// ウルフダッシュによる移動速度増加
+			sc_speed_rate = 50;
+		if(sd->sc.data[SC_ACCELERATION].timer != -1 && sc_speed_rate > 75)	// アクセラレーションによる移動速度増加
+			sc_speed_rate = 75;
 
 		sd->speed = sd->speed*sc_speed_rate/100;
 
@@ -1482,6 +1497,13 @@ L_RECALC:
 
 		if(sd->sc.data[SC_HALLUCINATIONWALK2].timer != -1)		// ハルシネーションウォーク(ペナルティ)
 			sd->speed *= 2;
+
+		if(sd->sc.data[SC_CAMOUFLAGE].timer != 1 && sd->sc.data[SC_CAMOUFLAGE].val1 > 2)	// カモフラージュによる速度低下
+			sd->speed += (6 - sd->sc.data[SC_CAMOUFLAGE].val1) * DEFAULT_WALK_SPEED / 4;
+
+		// ニュートラルバリアー・ステルスフィールド(使用者)の速度低下
+		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != 1 || sd->sc.data[SC_STEALTHFIELD_USER].timer != 1)
+			sd->speed += (sd->speed * 30) / 100;
 
 		if(sd->sc.data[SC_WEDDING].timer != -1)	// 結婚中は歩くのが遅い
 			sd->speed = 2*DEFAULT_WALK_SPEED;
@@ -1566,6 +1588,8 @@ L_RECALC:
 		sd->status.max_sp += sd->status.max_sp * 2 * skill / 100;
 	if((skill = pc_checkskill(sd,SL_KAINA)) > 0)	// カイナ
 		sd->status.max_sp += 30 * skill;
+	if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0)	// トラップ研究
+		sd->status.max_sp += 200 + (skill*20);
 
 	if(sd->sc.data[SC_INCMSP2].timer != -1) {
 		sd->status.max_sp = (int)((atn_bignumber)sd->status.max_sp * (100 + sd->sc.data[SC_INCMSP2].val1) / 100);
@@ -1660,6 +1684,13 @@ L_RECALC:
 			sd->flee += sd->sc.data[SC_INCFLEE].val1;
 		if(sd->sc.data[SC_INCFLEE2].timer != -1)
 			sd->flee += sd->sc.data[SC_INCFLEE2].val1;
+	}
+	// Def
+	if(pc_isgear(sd) && (skill = pc_checkskill(sd,NC_MAINFRAME)) > 0) {		// 魔導ギア＆メインフレーム改造
+		if(skill == 1)
+			sd->def += 4;
+		else
+			sd->def += (skill*4) - 1;
 	}
 	// MATK乗算処理(杖補正以外)
 	if(sd->matk_rate != 100) {
@@ -1798,7 +1829,14 @@ L_RECALC:
 		if(sd->sc.data[SC_ENDURE].timer != -1) {
 			sd->mdef += sd->sc.data[SC_ENDURE].val1;
 		}
-
+		if(sd->sc.data[SC_ANALYZE].timer != -1) {	// アナライズ
+			sd->def2  -= (sd->def2 * 14 * sd->sc.data[SC_ANALYZE].val1) / 100;
+			sd->mdef2 -= (sd->mdef2 * 14 * sd->sc.data[SC_ANALYZE].val1) / 100;
+		}
+		if(sd->sc.data[SC_NEUTRALBARRIER].timer != -1) {	// ニュートラルバリアー
+			sd->def2  += (sd->def2 * (10 + 5 * sd->sc.data[SC_NEUTRALBARRIER].val1)) / 100;
+			sd->mdef2 += (sd->mdef2 * (10 + 5 * sd->sc.data[SC_NEUTRALBARRIER].val1)) / 100;
+		}
 		// ASPD/移動速度変化系
 		if(sd->sc.data[SC_TWOHANDQUICKEN].timer != -1 && sd->sc.data[SC_QUAGMIRE].timer == -1 && sd->sc.data[SC_DONTFORGETME].timer == -1 && sd->sc.data[SC_DECREASEAGI].timer == -1)	// 2HQ
 			aspd_rate -= sd->sc.data[SC_TWOHANDQUICKEN].val2;
@@ -1903,6 +1941,8 @@ L_RECALC:
 			sd->flee += sd->flee*(sd->sc.data[SC_INCFLEE].val2)/100;
 		if(sd->sc.data[SC_HALLUCINATIONWALK].timer != -1)	// ハルシネーションウォーク
 			sd->flee += sd->sc.data[SC_HALLUCINATIONWALK].val1 * 50;
+		if(sd->sc.data[SC_INFRAREDSCAN].timer != -1)	// インフラレッドスキャン
+			sd->flee -= sd->flee*30/100;
 
 		// ガンスリンガースキル
 		if(sd->sc.data[SC_FLING].timer != -1) {		// フライング
@@ -3383,6 +3423,12 @@ int status_get_def(struct block_list *bl)
 			// フロストミスティ
 			if(sc->data[SC_FROSTMISTY].timer != -1 && bl->type != BL_PC)
 				def = def * 90 / 100;
+			// アナライズ
+			if(sc->data[SC_ANALYZE].timer != -1 && bl->type != BL_PC)
+				def = def * (100 - 14 * sc->data[SC_ANALYZE].val1) / 100;
+			// ニュートラルバリアー
+			if(sc->data[SC_NEUTRALBARRIER].timer != -1 && bl->type != BL_PC)
+				def = def * (110 + 5 * sc->data[SC_NEUTRALBARRIER].val1) / 100;
 		}
 		// 詠唱中は詠唱時減算率に基づいて減算
 		if(ud && ud->skilltimer != -1) {
@@ -3433,6 +3479,12 @@ int status_get_mdef(struct block_list *bl)
 			// アンチマジック
 			if(sc->data[SC_ANTIMAGIC].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (100 + 20 * sc->data[SC_ANTIMAGIC].val1) / 100;
+			// アナライズ
+			if(sc->data[SC_ANALYZE].timer != -1 && bl->type != BL_PC)
+				mdef = mdef * (100 - 14 * sc->data[SC_ANALYZE].val1) / 100;
+			// ニュートラルバリアー
+			if(sc->data[SC_NEUTRALBARRIER].timer != -1 && bl->type != BL_PC)
+				mdef = mdef * (110 + 5 * sc->data[SC_NEUTRALBARRIER].val1) / 100;
 		}
 	}
 	if(mdef < 0) mdef = 0;
@@ -3915,6 +3967,8 @@ int status_get_element(struct block_list *bl)
 			ret = 20 + ELE_WATER;
 		if(sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0)
 			ret = 20 + ELE_EARTH;
+		if(sc->data[SC_SHAPESHIFT].timer != -1)		// シェイプシフト
+			ret = 20 + sc->data[SC_SHAPESHIFT].val2;
 
 		if(ret != 20)
 			return ret;
@@ -4502,6 +4556,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_FUSION:
 		case SC_WEAPONBLOCKING:
 		case SC_CLOAKINGEXCEED:
+		case SC_CAMOUFLAGE:
 			if(sc->data[type].timer != -1) {
 				status_change_end(bl,type,-1);
 				return 0;
@@ -4584,11 +4639,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(sc->data[type].timer != -1) {	/* すでに同じ異常になっている場合タイマ解除 */
 		if(sc->data[type].val1 > val1 && type != SC_COMBO && type != SC_DANCING && type != SC_DEVOTION &&
 			type != SC_SPEEDPOTION0 && type != SC_SPEEDPOTION1 && type != SC_SPEEDPOTION2 && type != SC_SPEEDPOTION3 &&
-			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND)
+			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND && type != SC_SHAPESHIFT)
 			return 0;
 		if((type >= SC_STUN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING)
 			return 0;	/* 継ぎ足しができない状態異常である時は状態異常を行わない */
-		if(type == SC_GRAFFITI || type == SC_SEVENWIND) {
+		if(type == SC_GRAFFITI || type == SC_SEVENWIND || type == SC_SHAPESHIFT) {
 			// 異常中にもう一度状態異常になった時に解除してから再度かかる
 			status_change_end(bl,type,-1);
 		} else {
@@ -4690,6 +4745,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_WHITEIMPRISON:		/* ホワイトインプリズン */
 		case SC_RECOGNIZEDSPELL:	/* リゴグナイズドスペル */
 		case SC_STASIS:				/* ステイシス */
+		case SC_SPELLBOOK:			/* スペルブック */
+		case SC_WUGBITE:			/* ウルフバイト */
+		case SC_HOVERING:			/* ホバーリング */
+		case SC_STEALTHFIELD:		/* ステルスフィールド */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -4783,6 +4842,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_TURISUSS:			/* ジャイアントグロウス */
 		case SC_EISIR:				/* ファイティングスピリット */
 		case SC_HALLUCINATIONWALK2:	/* ハルシネーションウォーク(ペナルティ) */
+		case SC_INFRAREDSCAN:		/* インフラレッドスキャン */
+		case SC_ANALYZE:			/* アナライズ */
+		case SC_NEUTRALBARRIER:		/* ニュートラルバリアー */
 			calc_flag = 1;
 			break;
 
@@ -4794,6 +4856,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_HALLUCINATIONWALK:	/* ハルシネーションウォーク */
 		case SC_PARALIZE:			/* パラライズ */
 		case SC_FROSTMISTY:			/* フロストミスティ */
+		case SC_WUGDASH:			/* ウルフダッシュ */
+		case SC_ACCELERATION:		/* アクセラレーション */
+		case SC_NEUTRALBARRIER_USER:	/* ニュートラルバリアー(使用者) */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -5656,6 +5721,44 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val3 = 0;
 			tick = 1000;
 			break;
+		case SC_FEARBREEZE:			/* フィアーブリーズ */
+			val2 = 4 + (val1 > 2? 3: 0) + (val1 > 3? 2: 0) + (val1 > 4? 1: 0);		// 発動確率
+			val3 = (val1 > 1)? val1: 2;	// 最大攻撃回数
+			break;
+		case SC_ELECTRICSHOCKER:	/* エレクトリックショッカー */
+			val2 = tick / 1000;
+			tick = 1000;
+			break;
+		case SC_CAMOUFLAGE:			/* カモフラージュ */
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			val2 = tick / 1000;
+			tick = 1000;
+			break;
+		case SC_OVERHEAT:			/* 加熱 */
+			val2 = tick / 1000;
+			tick = 1000;
+			break;
+		case SC_SHAPESHIFT:			/* シェイプシフト */
+			switch(val1) {
+				case 1:  val2 = ELE_FIRE;  break;
+				case 2:  val2 = ELE_EARTH; break;
+				case 3:  val2 = ELE_WIND;  break;
+				default: val2 = ELE_WATER; break;
+			}
+			break;
+		case SC_MAGNETICFIELD:		/* マグネティックフィールド */
+			val2 = tick / 3000;
+			tick = 3000;
+			break;
+		case SC_STEALTHFIELD_USER:	/* ステルスフィールド(使用者) */
+			val3 = (6000 - 1000 * val1);
+			val3 = (val3 < 1000)? 1000: val3;
+			val2 = tick / val3;
+			tick = val3;
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -5915,8 +6018,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	// 計算後に走らせる
 	switch(type) {
 		case SC_RUN:
+		case SC_WUGDASH:
 			// clif_skill_nodamage() は必ず clif_status_change() と clif_walkok() の間に呼び出す
-			clif_skill_nodamage(bl,bl,TK_RUN,val1,1);
+			if(type == SC_RUN)
+				clif_skill_nodamage(bl,bl,TK_RUN,val1,1);
+			else if(type == SC_WUGDASH)
+				clif_skill_nodamage(bl,bl,RA_WUGDASH,val1,1);
 			if(sd) {
 				pc_runtodir(sd);
 			}
@@ -6109,6 +6216,9 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_CLOAKINGEXCEED:		/* クローキングエクシード */
 		case SC_HALLUCINATIONWALK2:	/* ハルシネーションウォーク(ペナルティ) */
 		case SC_VENOMBLEED:			/* ベナムブリード */
+		case SC_INFRAREDSCAN:		/* インフラレッドスキャン */
+		case SC_ANALYZE:			/* アナライズ */
+		case SC_NEUTRALBARRIER:		/* ニュートラルバリアー */
 			calc_flag = 1;
 			break;
 		case SC_STEELBODY:			/* 金剛 */
@@ -6124,6 +6234,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_GATLINGFEVER:			/* ガトリングフィーバー */
 		case SC_PARALIZE:			/* パラライズ */
 		case SC_FROSTMISTY:			/* フロストミスティ */
+		case SC_CAMOUFLAGE:			/* カモフラージュ */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -6153,6 +6264,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				clif_displaymessage(sd->fd,"種族が元に戻りました");
 			break;
 		case SC_RUN:			/* タイリギ */
+		case SC_WUGDASH:		/* ウルフダッシュ */
 			unit_stop_walking(bl,0);
 			calc_flag = 1;
 			break;
@@ -6380,6 +6492,24 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_WHITEIMPRISON:	/* ホワイトインプリズン */
 			clif_damage(bl,bl,gettick(),0,0,2000,0,9,0);
 			battle_damage(bl,bl,2000,0,0,0);
+			break;
+		case SC_SPELLBOOK:			/* スペルブック */
+			if(sd) {
+				// 保存スキル情報を初期化
+				memset(sd->freeze_sp_skill, 0, sizeof(sd->freeze_sp_skill[0])*MAX_FREEZE_SPELL);
+				sd->freeze_sp_slot = 0;		// スロット数を初期化
+			}
+			break;
+		case SC_NEUTRALBARRIER_USER:	/* ニュートラルバリアー(使用者) */
+		case SC_STEALTHFIELD_USER:		/* ステルスフィールド(使用者) */
+			{
+				struct skill_unit_group *sg = map_id2sg(sc->data[type].val4);	// val4がgroup_id
+				sc->data[type].val4 = 0;
+				if(sg)
+					skill_delunitgroup(sg);
+				calc_flag = 1;
+				ud->state.change_speed = 1;
+			}
 			break;
 		/* option1 */
 		case SC_FREEZE:
@@ -6999,6 +7129,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_REBIRTH:
 	case SC_BERKANA:
 	case SC_ROLLINGCUTTER:
+	case SC_WUGDASH:
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:
@@ -7258,6 +7389,64 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				battle_damage(bl,bl,1000 + damage,0,0,0);
 			}
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_SPELLBOOK:	/* スペルブック */
+		if(sd) {
+			int sp = sd->freeze_sp_slot;
+			if(sp > 0 && sd->status.sp >= sp) {
+				sd->status.sp -= sp;
+				clif_updatestatus(sd,SP_SP);
+				timer = add_timer(10000 + tick, status_change_timer, bl->id, data);
+			}
+		}
+		break;
+	case SC_ELECTRICSHOCKER:	/* エレクトリックショッカー */
+		if((--sc->data[type].val2) > 0) {
+			int damage = status_get_max_sp(bl) * sc->data[type].val1 / 100;
+			if(damage)
+				unit_heal(bl, 0, -damage);
+			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_CAMOUFLAGE:	/* カモフラージュ */
+		if((--sc->data[type].val2) > 0) {
+			if(sd) {
+				int sp = 7 - sc->data[type].val1;
+				if(sp > 0 && sd->status.sp >= sp) {
+					sd->status.sp -= sp;
+					clif_updatestatus(sd,SP_SP);
+					timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+				}
+			} else {
+				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+			}
+		}
+		break;
+	case SC_OVERHEAT:			/* 加熱 */
+		if(sd && pc_isgear(sd))	// 魔導ギア非搭乗ならば一応止める
+			break;
+		if((--sc->data[type].val2) > 0) {
+			int damage = status_get_max_hp(bl) / 100;
+			if(damage)
+				unit_heal(bl, -damage, 0);
+			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_MAGNETICFIELD:		/* マグネティックフィールド */
+		if((--sc->data[type].val2) > 0) {
+			int damage = 40 + sc->data[type].val1 * 10;
+			if(damage)
+				unit_heal(bl, 0, -damage);
+			timer = add_timer(3000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_STEALTHFIELD_USER:	/* ステルスフィールド(使用者) */
+		if((--sc->data[type].val2) > 0) {
+			int damage = status_get_max_sp(bl) * 3 / 100;
+			if(damage)
+				unit_heal(bl, 0, -damage);
+			timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	}
@@ -7743,13 +7932,17 @@ int status_change_hidden_end(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 
-	if(sc && sc->option > 0) {
+	if(sc) {
 		if(sc->option & 0x02)
 			status_change_end(bl,SC_HIDING,-1);
 		if((sc->option & 0x4004) == 4)
 			status_change_end(bl,SC_CLOAKING,-1);
 		if((sc->option & 0x4004) == 0x4004)
 			status_change_end(bl,SC_CHASEWALK,-1);
+		if(sc->data[SC_CAMOUFLAGE].timer != -1)
+			status_change_end(bl,SC_CAMOUFLAGE,-1);
+		if(sc->data[SC_STEALTHFIELD].timer != -1)
+			status_change_end(bl,SC_STEALTHFIELD,-1);
 	}
 	return 0;
 }
@@ -7792,6 +7985,8 @@ int status_change_removemap_end(struct block_list *bl)
 		skill_basilica_cancel(bl);
 		status_change_end(bl, SC_BASILICA, -1);
 	}
+	if(sc->data[SC_WUGDASH].timer != -1)
+		status_change_end(bl, SC_WUGDASH, -1);
 
 	if(battle_config.homun_statuschange_reset) {
 		if(sc->data[SC_AVOID].timer != -1)

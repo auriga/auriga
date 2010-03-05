@@ -87,6 +87,7 @@ void clif_arrowequip(struct map_session_data *sd, int idx);
 void clif_arrow_fail(struct map_session_data *sd, unsigned short type);
 void clif_arrow_create_list(struct map_session_data *sd);
 void clif_poison_list(struct map_session_data *sd, short lv);
+void clif_reading_sb_list(struct map_session_data *sd);
 void clif_statusupack(struct map_session_data *sd, int type, int ok, int val);
 void clif_equipitemack(struct map_session_data *sd, int n, int pos, unsigned char ok);
 void clif_unequipitemack(struct map_session_data *sd, int n, int pos, unsigned char ok);

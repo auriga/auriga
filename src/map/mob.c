@@ -509,7 +509,8 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 		return 0;
 	if( md->sc.data[SC_WINKCHARM].timer != -1 )
 		return 0;
-	if( !(mode&0x20) && tsc && (tsc->option&0x4006) && ((race != RCT_INSECT && race != RCT_DEMON) || tsc->data[SC_CLOAKINGEXCEED].timer != -1)  )
+	if( !(mode&0x20) && tsc && ((tsc->option&0x4006) || tsc->data[SC_CAMOUFLAGE].timer != -1) &&
+		((race != RCT_INSECT && race != RCT_DEMON) || tsc->data[SC_CLOAKINGEXCEED].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1)  )
 		return 0;
 
 	if(bl->type == BL_PC) {
@@ -959,7 +960,8 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			}
 			if( !unit_can_move(&md->bl) || unit_isrunning(&md->bl) ) {	// 動けない状態にある
 				// アンクル、蜘蛛の巣拘束中は強制待機
-				if(md->sc.data && (md->sc.data[SC_ANKLE].timer != -1 || md->sc.data[SC_SPIDERWEB].timer != -1))
+				if(md->sc.data && (md->sc.data[SC_ANKLE].timer != -1 || md->sc.data[SC_SPIDERWEB].timer != -1 ||
+				   md->sc.data[SC_ELECTRICSHOCKER].timer != -1 || md->sc.data[SC_MAGNETICFIELD].timer != -1))
 					mob_unlocktarget(md,tick);
 				if(DIFF_TICK(md->ud.canmove_tick,tick) <= 0)	// ダメージディレイ中でないならスキル使用
 					mobskill_use(md,tick,-1);

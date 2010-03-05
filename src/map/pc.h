@@ -44,6 +44,9 @@
 #define pc_isriding(sd) ((sd)->sc.option&0x0020)
 #define pc_isinvisible(sd) ((sd)->sc.option&0x0040)
 #define pc_isdragon(sd) ((sd)->sc.option&0x80000)
+#define pc_iswolf(sd) ((sd)->sc.option&0x100000)
+#define pc_iswolfmount(sd) ((sd)->sc.option&0x200000)
+#define pc_isgear(sd) ((sd)->sc.option&0x400000)
 #define pc_is50overweight(sd) ((sd)->weight*2 >= (sd)->max_weight)
 #define pc_is90overweight(sd) ((sd)->weight*10 >= (sd)->max_weight*9)
 
@@ -143,6 +146,7 @@ void pc_setcart(struct map_session_data *sd, unsigned short type);
 int pc_setfalcon(struct map_session_data *sd);
 int pc_setriding(struct map_session_data *sd);
 int pc_setdragon(struct map_session_data *sd);
+int pc_setgear(struct map_session_data *sd);
 int pc_changelook(struct map_session_data *,int,int);
 
 int pc_readparam(struct map_session_data*,int);

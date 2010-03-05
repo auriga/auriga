@@ -3795,6 +3795,7 @@ int buildin_setcart(struct script_state *st);
 int buildin_setfalcon(struct script_state *st);
 int buildin_setriding(struct script_state *st);
 int buildin_setdragon(struct script_state *st);
+int buildin_setgear(struct script_state *st);
 int buildin_savepoint(struct script_state *st);
 int buildin_gettimetick(struct script_state *st);
 int buildin_gettime(struct script_state *st);
@@ -3916,6 +3917,7 @@ int buildin_checkcart(struct script_state *st);
 int buildin_checkfalcon(struct script_state *st);
 int buildin_checkriding(struct script_state *st);
 int buildin_checkdragon(struct script_state *st);
+int buildin_checkgear(struct script_state *st);
 int buildin_checksit(struct script_state *st);
 int buildin_checkdead(struct script_state *st);
 int buildin_checkcasting(struct script_state *st);
@@ -4061,6 +4063,7 @@ struct script_function buildin_func[] = {
 	{buildin_setfalcon,"setfalcon",""},
 	{buildin_setriding,"setriding",""},
 	{buildin_setdragon,"setdragon",""},
+	{buildin_setgear,"setgear",""},
 	{buildin_savepoint,"savepoint","sii"},
 	{buildin_gettimetick,"gettimetick","i"},
 	{buildin_gettime,"gettime","i"},
@@ -4182,6 +4185,7 @@ struct script_function buildin_func[] = {
 	{buildin_checkfalcon,"checkfalcon",""},
 	{buildin_checkriding,"checkriding",""},
 	{buildin_checkdragon,"checkdragon",""},
+	{buildin_checkgear,"checkgear",""},
 	{buildin_checksit,"checksit",""},
 	{buildin_checkdead,"checkdead",""},
 	{buildin_checkcasting,"checkcasting",""},
@@ -6546,6 +6550,16 @@ int buildin_setriding(struct script_state *st)
 int buildin_setdragon(struct script_state *st)
 {
 	pc_setdragon( script_rid2sd(st) );
+	return 0;
+}
+
+/*==========================================
+ * 魔導ギア騎乗
+ *------------------------------------------
+ */
+int buildin_setgear(struct script_state *st)
+{
+	pc_setgear( script_rid2sd(st) );
 	return 0;
 }
 
@@ -10087,6 +10101,19 @@ int buildin_checkdragon(struct script_state *st)
 	struct map_session_data *sd = script_rid2sd(st);
 
 	push_val(st->stack,C_INT,(pc_isdragon(sd)) ? 1 : 0);
+
+	return 0;
+}
+
+/*==========================================
+ * 魔導ギアに騎乗しているかどうか
+ *------------------------------------------
+ */
+int buildin_checkgear(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	push_val(st->stack,C_INT,(pc_isgear(sd)) ? 1 : 0);
 
 	return 0;
 }
