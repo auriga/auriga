@@ -4046,6 +4046,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				heal = 0;	// 黄金蟲カード（ヒール量０）
 			if(sc && sc->data[SC_BERSERK].timer != -1)
 				heal = 0; 	// バーサーク中はヒール０
+			if(dstsd && pc_isgear(dstsd))
+				heal = 0; 	// 魔道ギア搭乗中はヒール０
 			if(sd) {
 				int skill = pc_checkskill(sd,HP_MEDITATIO);
 				if(skill > 0)	// メディタティオ
@@ -4094,6 +4096,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				heal = 0;	// 黄金蟲カード（ヒール量０）
 			if(sc && sc->data[SC_BERSERK].timer != -1)
 				heal = 0;	// バーサーク中はヒール０
+			if(dstsd && pc_isgear(dstsd))
+				heal = 0; 	// 魔道ギア搭乗中はヒール０
 			if(sc && sc->data[SC_KAITE].timer != -1) {	// カイト
 				clif_misceffect2(bl,438);
 				if(--sc->data[SC_KAITE].val2 <= 0)
@@ -6791,6 +6795,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if( dstsd && dstsd->sc.data[SC_BERSERK].timer != -1)
 					heal = 0; 	// バーサーク中はヒール０
 
+				if( dstsd && pc_isgear(dstsd))
+					heal = 0; 	// 魔道ギア搭乗中はヒール０
+
 				clif_skill_nodamage(&sd->bl,bl,skillid,heal,1);
 				battle_heal(&sd->bl,bl,heal,0,0);
 			} else {
@@ -8638,6 +8645,8 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				}
 				if(bl->type == BL_PC && ((struct map_session_data *)bl)->special_state.no_magic_damage)
 					heal = 0;	/* 黄金蟲カード（ヒール量０） */
+				if(bl->type == BL_PC && pc_isgear((struct map_session_data *)bl))
+					heal = 0; 	// 魔道ギア搭乗中はヒール０
 
 				clif_skill_nodamage(&src->bl,bl,AL_HEAL,heal,1);
 				battle_heal(NULL,bl,heal,0,0);
@@ -9025,6 +9034,8 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 					struct map_session_data *sd = (struct map_session_data *)bl;
 
 					if(sd->sc.data[SC_BERSERK].timer != -1)		// バーサーク中は効果なし
+						break;
+					if(pc_isgear(sd))		// 魔道ギア搭乗中は効果なし
 						break;
 
 					if(unit_isdead(bl) && sd->sc.data[SC_HELLPOWER].timer == -1) {
@@ -10844,7 +10855,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case SST_WOLF:
-		if(!pc_iswolf(sd)) {
+		if(!pc_iswolf(sd) && !pc_iswolfmount(sd)) {
 			clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
 		}
