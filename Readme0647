@@ -1,4 +1,26 @@
 ----------------------------------------
+//0721 [2010/03/09] by popori
+
+・RagnarokRenewalのクライアントに対応 (*.dsp Makefile vc_make.bat bcc32_make.bat msg_auriga.conf packet_db.txt char.c int_party.c inter.c mmo.h clif.* intif.*)
+　このパッチに伴い以下の点が変更されました。なお、現行最新のクライアントまでは対応していないので注意して下さい。
+ ->packet_db.txtにRagnarokRE用の項目を追加。
+ ->Makefile vc_make.bat bcc32_make.batにNEW_006b_REオプションを追加
+ ->PACKETVERの引き上げ
+
+　※従来のサクライクライアントを使用する場合は以下の点に注意して下さい。
+　packet_db.txt：以下は RagnarokREより下の部分を全て削除し、使用するクライアントの日付に合わせてpacket_db.txtを編集して下さい。
+　Makefile#line21：PACKETDEF = -DPACKETVER=20 -DNEW_006b -DNEW_006b_REの部分から-DNEW_006b_REを削除して下さい。
+　bcc32_make.bat#line25：set __PACKETDEF__=-DPACKETVER=20 -DNEW_006b -DNEW_006b_REの部分から-DNEW_006b_REを削除して下さい。
+　vc_make.bat#line34：set __PACKETDEF__=/D "PACKETVER=20" /D "NEW_006b" /D "NEW_006b_RE"の部分から/D "NEW_006b_RE"を削除して下さい。
+　各Makefile：使用するクライアントの日付に合わせてPACKETVERを編集して下さい。
+
+　※RagnarokRenewalのクライアントを使用する方
+　コンパイルオプションNEW_006b_REを有効にし(デフォルトは有効)
+　使用する日付に合わせてPACKETVER、packet_db.txtの編集を行って下さい。
+
+・gcc環境下でのコンパイル警告を修正 (battle.c skill.c)
+
+----------------------------------------
 //0720 [2010/03/07] by Blaze
 
 ・ウルフライダー中、専用スキルが使えなかった不具合修正(skill.c)

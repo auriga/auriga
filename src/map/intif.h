@@ -49,7 +49,7 @@ void intif_party_changemap(struct map_session_data *sd, unsigned char online);
 int intif_break_party(int party_id);
 int intif_party_message(int party_id,int account_id,char *mes,int len);
 int intif_party_checkconflict(int party_id,int account_id,int char_id);
-
+int intif_party_leaderchange(int party_id,int account_id,int char_id);
 
 void intif_guild_create(const char *name, const struct guild_member *master);
 void intif_guild_request_info(int guild_id);

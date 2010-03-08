@@ -1020,6 +1020,29 @@ int mapif_parse_PartyCheck(int fd,int party_id,int account_id,int char_id)
 	return 0;
 }
 
+// パーティーリーダー変更要求
+int mapif_parse_PartyLeaderChange(int fd,int party_id,int account_id,int char_id)
+{
+	const struct party *p1 = party_load_num(party_id);
+	struct party p2;
+	int i;
+
+	if(p1 == NULL)
+		return 0;
+
+	memcpy(&p2,p1,sizeof(struct party));
+
+	for(i = 0; i < MAX_PARTY; i++) {
+		if(p2.member[i].leader)
+			p2.member[i].leader = 0;
+		if(p2.member[i].account_id == account_id && p2.member[i].char_id == char_id)
+			p2.member[i].leader = 1;
+	}
+	party_save(&p2);
+
+	return 0;
+}
+
 // map server からの通信
 // ・１パケットのみ解析すること
 // ・パケット長データはinter.cにセットしておくこと
@@ -1037,6 +1060,7 @@ int inter_party_parse_frommap(int fd)
 	case 0x3026: mapif_parse_BreakParty(fd,RFIFOL(fd,2)); break;
 	case 0x3027: mapif_parse_PartyMessage(fd,RFIFOL(fd,4),RFIFOL(fd,8),RFIFOP(fd,12),RFIFOW(fd,2)-12); break;
 	case 0x3028: mapif_parse_PartyCheck(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10)); break;
+	case 0x3029: mapif_parse_PartyLeaderChange(fd, RFIFOL(fd,2), RFIFOL(fd,6), RFIFOL(fd,10)); break;
 	default:
 		return 0;
 	}

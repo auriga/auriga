@@ -54,7 +54,14 @@
 #define MAX_STATUSCHANGE 460
 #define MAX_PORTAL_MEMO 3
 #define MAIL_STORE_MAX 30
-#define MAX_HOTKEYS 27
+
+#if PACKETVER >= 20
+	#define MAX_HOTKEYS 38
+#elif PACKETVER >= 19
+	#define MAX_HOTKEYS 36
+#else
+	#define MAX_HOTKEYS 27
+#endif
 
 #define MAX_HAIR_STYLE 24
 #define MAX_HAIR_COLOR 9

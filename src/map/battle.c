@@ -2629,7 +2629,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				break;
 			case RA_WUGSTRIKE:	// ウルフストライク
 			case RA_WUGBITE:	// ウルフバイト
-				if(skill = pc_checkskill(src_sd,RA_TOOTHOFWUG) > 0) {	// トゥースオブウルフによるダメージ増加
+				if((skill = pc_checkskill(src_sd,RA_TOOTHOFWUG)) > 0) {	// トゥースオブウルフによるダメージ増加
 					wd.damage += 6 * skill;
 				}
 				break;

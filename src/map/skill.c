@@ -657,7 +657,7 @@ int skill_get_fixed_range(struct block_list *bl,int id,int lv)
 				case RA_VERDURETRAP:		/* ヴェルデュールトラップ */
 				case RA_FIRINGTRAP:			/* ファイアリングトラップ */
 				case RA_ICEBOUNDTRAP:		/* アイスバウンドトラップ */
-					if(skill = pc_checkskill(sd,RA_RESEARCHTRAP) > 0)	// トラップ研究
+					if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0)	// トラップ研究
 						range += (skill + 1) / 2;
 					break;
 				case WL_WHITEIMPRISON:		/* ホワイトインプリズン */
@@ -672,7 +672,7 @@ int skill_get_fixed_range(struct block_list *bl,int id,int lv)
 				case WL_EARTHSTRAIN:		/* アースストレイン */
 				case WL_TETRAVORTEX:		/* テトラボルテックス */
 				case WL_RELEASE:			/* リリース */
-					if(skill = pc_checkskill(sd,WL_RADIUS) > 0)		// ラディウス
+					if((skill = pc_checkskill(sd,WL_RADIUS)) > 0)		// ラディウス
 						range += skill;
 					break;
 				default:
@@ -9082,8 +9082,6 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		break;
 	case UNT_ELECTRICSHOCKER:	/* エレクトリックショッカー */
 		{
-			int i = src->range;
-
 			map_foreachinarea(skill_trap_splash,src->bl.m,
 						src->bl.x-2,src->bl.y-2,
 						src->bl.x+2,src->bl.y+2,

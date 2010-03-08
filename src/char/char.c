@@ -2196,6 +2196,7 @@ static int count_users(void)
 static int mmo_char_send006b(int fd,struct char_session_data *sd)
 {
 	int i,found_num;
+	int j = 0;
 	const struct mmo_charstatus *st;
 #ifdef NEW_006b
 	int offset=24;
@@ -2207,6 +2208,10 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 	int len = 108;
 #else
 	int len = 106;
+#endif
+
+#ifdef NEW_006b_RE
+	len += 4;
 #endif
 
 	session[fd]->auth = 1; // 認証終了を socket.c に伝える
@@ -2233,41 +2238,47 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 		WFIFOL(fd,offset+(i*len)+ 32) = st->karma;
 		WFIFOL(fd,offset+(i*len)+ 36) = st->manner;
 		WFIFOW(fd,offset+(i*len)+ 40) = st->status_point;
+#ifdef NEW_006b_RE
+		WFIFOL(fd,offset+(i*len)+ 42) = (st->hp     > 0x7fffffff) ? 0x7fffffff : st->hp;
+		WFIFOL(fd,offset+(i*len)+ 44) = (st->max_hp > 0x7fffffff) ? 0x7fffffff : st->max_hp;
+		j = 4;
+#else
 		WFIFOW(fd,offset+(i*len)+ 42) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
 		WFIFOW(fd,offset+(i*len)+ 44) = (st->max_hp > 0x7fff) ? 0x7fff : st->max_hp;
-		WFIFOW(fd,offset+(i*len)+ 46) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-		WFIFOW(fd,offset+(i*len)+ 48) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-		WFIFOW(fd,offset+(i*len)+ 50) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
+#endif
+		WFIFOW(fd,offset+(i*len)+ 46 + j) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+		WFIFOW(fd,offset+(i*len)+ 48 + j) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+		WFIFOW(fd,offset+(i*len)+ 50 + j) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
 		if(st->class_ == PC_CLASS_GS || st->class_ == PC_CLASS_NJ)
-			WFIFOW(fd,offset+(i*len)+ 52) = st->class_-4;
+			WFIFOW(fd,offset+(i*len)+ 52 + j) = st->class_-4;
 		else
-			WFIFOW(fd,offset+(i*len)+ 52) = st->class_;
-		WFIFOW(fd,offset+(i*len)+ 54) = st->hair;
-		WFIFOW(fd,offset+(i*len)+ 56) = st->weapon;
-		WFIFOW(fd,offset+(i*len)+ 58) = st->base_level;
-		WFIFOW(fd,offset+(i*len)+ 60) = st->skill_point;
-		WFIFOW(fd,offset+(i*len)+ 62) = st->head_bottom;
-		WFIFOW(fd,offset+(i*len)+ 64) = st->shield;
-		WFIFOW(fd,offset+(i*len)+ 66) = st->head_top;
-		WFIFOW(fd,offset+(i*len)+ 68) = st->head_mid;
-		WFIFOW(fd,offset+(i*len)+ 70) = st->hair_color;
-		WFIFOW(fd,offset+(i*len)+ 72) = st->clothes_color;
-		memcpy( WFIFOP(fd,offset+(i*len)+74), st->name, 24 );
-		WFIFOB(fd,offset+(i*len)+ 98) = (st->str > 255)  ? 255: st->str;
-		WFIFOB(fd,offset+(i*len)+ 99) = (st->agi > 255)  ? 255: st->agi;
-		WFIFOB(fd,offset+(i*len)+100) = (st->vit > 255)  ? 255: st->vit;
-		WFIFOB(fd,offset+(i*len)+101) = (st->int_ > 255) ? 255: st->int_;
-		WFIFOB(fd,offset+(i*len)+102) = (st->dex > 255)  ? 255: st->dex;
-		WFIFOB(fd,offset+(i*len)+103) = (st->luk > 255)  ? 255: st->luk;
-		WFIFOW(fd,offset+(i*len)+104) = st->char_num;
-		if(len >= 108)
-			WFIFOW(fd,offset+(i*len)+106) = 1;	// キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+			WFIFOW(fd,offset+(i*len)+ 52 + j) = st->class_;
+		WFIFOW(fd,offset+(i*len)+ 54 + j) = st->hair;
+		WFIFOW(fd,offset+(i*len)+ 56 + j) = st->weapon;
+		WFIFOW(fd,offset+(i*len)+ 58 + j) = st->base_level;
+		WFIFOW(fd,offset+(i*len)+ 60 + j) = st->skill_point;
+		WFIFOW(fd,offset+(i*len)+ 62 + j) = st->head_bottom;
+		WFIFOW(fd,offset+(i*len)+ 64 + j) = st->shield;
+		WFIFOW(fd,offset+(i*len)+ 66 + j) = st->head_top;
+		WFIFOW(fd,offset+(i*len)+ 68 + j) = st->head_mid;
+		WFIFOW(fd,offset+(i*len)+ 70 + j) = st->hair_color;
+		WFIFOW(fd,offset+(i*len)+ 72 + j) = st->clothes_color;
+		memcpy( WFIFOP(fd,offset+(i*len)+74 + j), st->name, 24 );
+		WFIFOB(fd,offset+(i*len)+ 98 + j) = (st->str > 255)  ? 255: st->str;
+		WFIFOB(fd,offset+(i*len)+ 99 + j) = (st->agi > 255)  ? 255: st->agi;
+		WFIFOB(fd,offset+(i*len)+100 + j) = (st->vit > 255)  ? 255: st->vit;
+		WFIFOB(fd,offset+(i*len)+101 + j) = (st->int_ > 255) ? 255: st->int_;
+		WFIFOB(fd,offset+(i*len)+102 + j) = (st->dex > 255)  ? 255: st->dex;
+		WFIFOB(fd,offset+(i*len)+103 + j) = (st->luk > 255)  ? 255: st->luk;
+		WFIFOW(fd,offset+(i*len)+104 + j) = st->char_num;
+		if((len+j) >= 108)
+			WFIFOW(fd,offset+(i*len)+106 + j) = 1;	// キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
 
 		// ロードナイト/パラディンのログイン時のエラー対策
 		if (st->option == 32)
-			WFIFOL(fd,offset+(i*len)+28) = 0;
+			WFIFOL(fd,offset+(i*len)+28 + j) = 0;
 		else
-			WFIFOL(fd,offset+(i*len)+28) = st->option;
+			WFIFOL(fd,offset+(i*len)+28 + j) = st->option;
 	}
 	WFIFOSET(fd,WFIFOW(fd,2));
 
@@ -3579,7 +3590,7 @@ int parse_char(int fd)
 
 		// 不正パケットの処理
 		if( sd == NULL && cmd != 0x65 && cmd != 0x20b && cmd != 0x187 && cmd != 0x258 && cmd != 0x228 &&
-		    cmd != 0x2af8 && cmd != 0x7530 && cmd != 0x7532 && cmd != 0x2b2a && cmd != 0x2b2c )
+		    cmd != 0x7e5 && cmd != 0x7e7 && cmd != 0x2af8 && cmd != 0x7530 && cmd != 0x7532 && cmd != 0x2b2a && cmd != 0x2b2c )
 			cmd = 0xffff;	// パケットダンプを表示させる
 
 		switch(cmd) {
@@ -3758,6 +3769,7 @@ int parse_char(int fd)
 				return 0;
 			{
 				int flag=0x04;
+				int i = 0;
 				const struct mmo_chardata *cd = char_make(sd->account_id,RFIFOP(fd,2),&flag);
 				const struct mmo_charstatus *st;
 				struct global_reg reg[ACCOUNT_REG2_NUM];
@@ -3765,6 +3777,10 @@ int parse_char(int fd)
 				int len = 108;
 #else
 				int len = 106;
+#endif
+
+#ifdef NEW_006b_RE
+				len += 4;
 #endif
 				if(cd == NULL){
 					WFIFOW(fd,0)=0x6e;
@@ -3785,29 +3801,35 @@ int parse_char(int fd)
 				WFIFOL(fd,2+ 28) = st->karma;
 				WFIFOL(fd,2+ 32) = st->manner;
 				WFIFOW(fd,2+ 40) = 0x30;
+#ifdef NEW_006b_RE
+				WFIFOL(fd,2+ 42) = (st->hp     > 0x7fffffff) ? 0x7fffffff : st->hp;
+				WFIFOL(fd,2+ 46) = (st->max_hp > 0x7fffffff) ? 0x7fffffff : st->max_hp;
+				i = 4;
+#else
 				WFIFOW(fd,2+ 42) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
 				WFIFOW(fd,2+ 44) = (st->max_hp > 0x7fff) ? 0x7fff : st->max_hp;
-				WFIFOW(fd,2+ 46) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,2+ 48) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,2+ 50) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,2+ 52) = st->class_;
-				WFIFOW(fd,2+ 54) = st->hair;
-				WFIFOW(fd,2+ 58) = st->base_level;
-				WFIFOW(fd,2+ 60) = st->skill_point;
-				WFIFOW(fd,2+ 64) = st->shield;
-				WFIFOW(fd,2+ 66) = st->head_top;
-				WFIFOW(fd,2+ 68) = st->head_mid;
-				WFIFOW(fd,2+ 70) = st->hair_color;
-				memcpy( WFIFOP(fd,2+74), st->name, 24 );
-				WFIFOB(fd,2+ 98) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,2+ 99) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,2+100) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,2+101) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,2+102) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,2+103) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,2+104) = st->char_num;
-				if(len >= 108)
-					WFIFOW(fd,2+106) = 1;
+#endif
+				WFIFOW(fd,2+ 46 + i) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+				WFIFOW(fd,2+ 48 + i) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+				WFIFOW(fd,2+ 50 + i) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+				WFIFOW(fd,2+ 52 + i) = st->class_;
+				WFIFOW(fd,2+ 54 + i) = st->hair;
+				WFIFOW(fd,2+ 58 + i) = st->base_level;
+				WFIFOW(fd,2+ 60 + i) = st->skill_point;
+				WFIFOW(fd,2+ 64 + i) = st->shield;
+				WFIFOW(fd,2+ 66 + i) = st->head_top;
+				WFIFOW(fd,2+ 68 + i) = st->head_mid;
+				WFIFOW(fd,2+ 70 + i) = st->hair_color;
+				memcpy( WFIFOP(fd,2+74 + i), st->name, 24 );
+				WFIFOB(fd,2+ 98 + i) = (st->str  > 255) ? 255 : st->str;
+				WFIFOB(fd,2+ 99 + i) = (st->agi  > 255) ? 255 : st->agi;
+				WFIFOB(fd,2+100 + i) = (st->vit  > 255) ? 255 : st->vit;
+				WFIFOB(fd,2+101 + i) = (st->int_ > 255) ? 255 : st->int_;
+				WFIFOB(fd,2+102 + i) = (st->dex  > 255) ? 255 : st->dex;
+				WFIFOB(fd,2+103 + i) = (st->luk  > 255) ? 255 : st->luk;
+				WFIFOW(fd,2+104 + i) = st->char_num;
+				if((len+i) >= 108)
+					WFIFOW(fd,2+106+i) = 1;
 				WFIFOSET(fd,len+2);
 				RFIFOSKIP(fd,37);
 
@@ -3933,6 +3955,22 @@ int parse_char(int fd)
 			WFIFOL(fd,2)=sd->account_id;
 			WFIFOSET(fd,6);
 			RFIFOSKIP(fd, 6);
+			break;
+
+		case 0x7e5:
+			RFIFOSKIP(fd,8);
+			WFIFOW(fd,0) = 0x7e9;
+			WFIFOW(fd,2) = 5;
+			WFIFOB(fd,4) = 1;
+			WFIFOSET(fd,5);
+			break;
+
+		case 0x7e7:
+			RFIFOSKIP(fd,32);
+			WFIFOW(fd,0) = 0x7e9;
+			WFIFOW(fd,2) = 5;
+			WFIFOB(fd,4) = 1;
+			WFIFOSET(fd,5);
 			break;
 
 		case 0x7530:	// Auriga情報取得

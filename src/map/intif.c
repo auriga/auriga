@@ -615,6 +615,21 @@ int intif_party_checkconflict(int party_id,int account_id,int char_id)
 	return 0;
 }
 
+//パーティーリーダー変更要求
+int intif_party_leaderchange(int party_id,int account_id,int char_id)
+{
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0)=0x3029;
+	WFIFOL(inter_fd,2)=party_id;
+	WFIFOL(inter_fd,6)=account_id;
+	WFIFOL(inter_fd,10)=char_id;
+	WFIFOSET(inter_fd,14);
+
+	return 0;
+}
+
 // ギルド作成要求
 void intif_guild_create(const char *name, const struct guild_member *master)
 {

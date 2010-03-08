@@ -7756,7 +7756,12 @@ void clif_party_inviteack(struct map_session_data *sd, const char *nick, unsigne
  */
 void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
 {
-	unsigned char buf[8];
+	unsigned char buf[16];
+#if PACKETVER >= 19
+	const int cmd = 0x7d8;
+#else
+	const int cmd = 0x101;
+#endif
 
 	nullpo_retv(p);
 
@@ -7769,13 +7774,18 @@ void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
 	if(sd==NULL)
 		return;
 
-	WBUFW(buf,0)=0x101;
+	WBUFW(buf,0)=cmd;
 	WBUFL(buf,2)=((flag&0x01)?2:p->exp);
+#if PACKETVER >= 19
+	WBUFW(buf,4)=0;
+	WBUFB(buf,6)=(p->item&1)?1:0;
+	WBUFB(buf,7)=(p->item&1)?1:0;
+#endif
 	if(flag == 0) {
-		clif_send(buf,packet_db[0x101].len,&sd->bl,PARTY);
+		clif_send(buf,packet_db[cmd].len,&sd->bl,PARTY);
 	} else {
-		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x101].len);
-		WFIFOSET(sd->fd,packet_db[0x101].len);
+		memcpy(WFIFOP(sd->fd,0),buf,packet_db[cmd].len);
+		WFIFOSET(sd->fd,packet_db[cmd].len);
 	}
 
 	return;
@@ -10093,19 +10103,20 @@ void clif_send_hotkey(struct map_session_data *sd)
 {
 #if PACKETVER >= 10
 	int i, j, fd;
+	const int cmd = (PACKETVER >= 19)? 0x7d9:0x2b9;
 
 	nullpo_retv(sd);
 
 	fd = sd->fd;
-	memset(WFIFOP(fd,0), 0, packet_db[0x2b9].len);
+	memset(WFIFOP(fd,0), 0, packet_db[cmd].len);
 
-	WFIFOW(fd,0) = 0x2b9;
-	for(i = 0, j = sd->hotkey_set * 27; i < 27 && j < MAX_HOTKEYS; i++, j++) {
+	WFIFOW(fd,0) = cmd;
+	for(i = 0, j = sd->hotkey_set * MAX_HOTKEYS; i < MAX_HOTKEYS && j < MAX_HOTKEYS; i++, j++) {
 		WFIFOB(fd,7*i+2) = sd->status.hotkey[j].type;
 		WFIFOL(fd,7*i+3) = sd->status.hotkey[j].id;
 		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
 	}
-	WFIFOSET(fd,packet_db[0x2b9].len);
+	WFIFOSET(fd,packet_db[cmd].len);
 #endif
 
 	return;
@@ -12821,7 +12832,12 @@ static void clif_parse_RemovePartyMember(int fd,struct map_session_data *sd, int
  */
 static void clif_parse_PartyChangeOption(int fd,struct map_session_data *sd, int cmd)
 {
+
+#if PACKETVER >= 19
+	party_changeoption(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),(RFIFOB(fd,GETPACKETPOS(cmd,1)))? 1:0 + (RFIFOB(fd,GETPACKETPOS(cmd,1)))? 2:0);
+#else
 	party_changeoption(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),-1);
+#endif
 
 	return;
 }
@@ -14138,7 +14154,7 @@ static void clif_parse_HotkeySave(int fd,struct map_session_data *sd, int cmd)
 
 	nullpo_retv(sd);
 
-	idx = sd->hotkey_set * 27 + RFIFOW(fd,GETPACKETPOS(cmd,0));
+	idx = sd->hotkey_set * MAX_HOTKEYS + RFIFOW(fd,GETPACKETPOS(cmd,0));
 	if(idx < 0 || idx >= MAX_HOTKEYS)
 		return;
 
@@ -14296,6 +14312,57 @@ static void clif_parse_BattleMessage(int fd,struct map_session_data *sd, int cmd
 */
 
 	return;
+}
+
+/*==========================================
+* パーティーリーダーチェンジ
+*------------------------------------------*/
+static void clif_parse_PartyChangeLeader(int fd,struct map_session_data *sd, int cmd)
+{
+	struct party *p;
+	struct map_session_data *t_sd;
+	int i, t_i;
+
+	nullpo_retv(sd);
+
+	if(sd->status.party_id == 0)
+		return;
+
+	p = party_search(sd->status.party_id);
+	if(p == NULL)
+		return;
+
+	for(i = 0; i < MAX_PARTY && p->member[i].sd != sd; i++);
+	if(i == MAX_PARTY)
+		return;
+
+	if(!p->member[i].leader)
+		return;
+
+	t_sd = map_id2sd(RFIFOL(fd,GETPACKETPOS(cmd,0)));
+
+	if(t_sd == NULL || t_sd->status.party_id != sd->status.party_id)
+		return;
+
+	for(t_i = 0; t_i < MAX_PARTY && p->member[t_i].sd != t_sd; t_i++);
+	if(t_i == MAX_PARTY)
+		return;
+
+	// PTリーダー変更
+	p->member[i].leader = 0;
+	if(p->member[i].sd->fd)
+		clif_displaymessage(p->member[i].sd->fd, msg_txt(194));
+
+	p->member[t_i].leader = 1;
+	if(p->member[t_i].sd->fd)
+		clif_displaymessage(p->member[t_i].sd->fd, msg_txt(195));
+
+	intif_party_leaderchange(p->party_id,p->member[t_i].account_id,p->member[t_i].char_id);
+
+	clif_party_info(p,-1);
+
+	return;
+
 }
 
 /*==========================================
@@ -14595,6 +14662,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyEquipOpen,            "partyequipopen"            },
 		{ clif_parse_HuntingList,               "huntinglist"               },
 		{ clif_parse_BattleMessage,             "battlemessage"             },
+		{ clif_parse_PartyChangeLeader,         "partychangeleader"         },
 		{ NULL,                                 NULL                        },
 	};
 
