@@ -4062,7 +4062,7 @@ struct script_function buildin_func[] = {
 	{buildin_setcart,"setcart",""},
 	{buildin_setfalcon,"setfalcon",""},
 	{buildin_setriding,"setriding",""},
-	{buildin_setdragon,"setdragon",""},
+	{buildin_setdragon,"setdragon","*"},
 	{buildin_setgear,"setgear",""},
 	{buildin_savepoint,"savepoint","sii"},
 	{buildin_gettimetick,"gettimetick","i"},
@@ -6549,7 +6549,12 @@ int buildin_setriding(struct script_state *st)
  */
 int buildin_setdragon(struct script_state *st)
 {
-	pc_setdragon( script_rid2sd(st) );
+	int type = 0;
+
+	if( st->end > st->start+2 )
+		type = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	pc_setdragon( script_rid2sd(st), type );
 	return 0;
 }
 

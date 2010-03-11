@@ -1,4 +1,13 @@
 ----------------------------------------
+//0722 [2010/03/12] by Blaze
+
+・0719で追加された状態異常のタイマー判定がおかしかったのを修正(status.c)
+	Thanks うに〜くさん
+
+・スクリプト命令「setdragon」を拡張(script.c, pc.*, doc/script_ref.txt)
+	->パラメータで色違いドラゴンに騎乗できるように(省略可)
+
+----------------------------------------
 //0721 [2010/03/09] by popori
 
 ・RagnarokRenewalのクライアントに対応 (*.dsp Makefile vc_make.bat bcc32_make.bat msg_auriga.conf packet_db.txt char.c int_party.c inter.c mmo.h clif.* intif.*)

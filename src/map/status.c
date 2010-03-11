@@ -1498,11 +1498,11 @@ L_RECALC:
 		if(sd->sc.data[SC_HALLUCINATIONWALK2].timer != -1)		// ハルシネーションウォーク(ペナルティ)
 			sd->speed *= 2;
 
-		if(sd->sc.data[SC_CAMOUFLAGE].timer != 1 && sd->sc.data[SC_CAMOUFLAGE].val1 > 2)	// カモフラージュによる速度低下
+		if(sd->sc.data[SC_CAMOUFLAGE].timer != -1 && sd->sc.data[SC_CAMOUFLAGE].val1 > 2)	// カモフラージュによる速度低下
 			sd->speed += (6 - sd->sc.data[SC_CAMOUFLAGE].val1) * DEFAULT_WALK_SPEED / 4;
 
 		// ニュートラルバリアー・ステルスフィールド(使用者)の速度低下
-		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != 1 || sd->sc.data[SC_STEALTHFIELD_USER].timer != 1)
+		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1 || sd->sc.data[SC_STEALTHFIELD_USER].timer != 1)
 			sd->speed += (sd->speed * 30) / 100;
 
 		if(sd->sc.data[SC_WEDDING].timer != -1)	// 結婚中は歩くのが遅い

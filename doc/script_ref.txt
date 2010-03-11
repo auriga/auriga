@@ -998,9 +998,12 @@ AurigaNPCScript
 			ペコペコに乗ります。
 
 		setdragon命令
-			setdragon;
+			setdragon [type];
 
-			ドラゴンに騎乗します。
+			type		数値
+
+			typeで指定した色のドラゴンに騎乗します。
+			type…1:黒、2:白、3:青、4:赤、0または省略時:緑
 
 		setgear命令
 			setgear;

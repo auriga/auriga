@@ -6617,12 +6617,15 @@ int pc_setriding(struct map_session_data *sd)
  * ドラゴン設定
  *------------------------------------------
  */
-int pc_setdragon(struct map_session_data *sd)
+int pc_setdragon(struct map_session_data *sd, int type)
 {
 	nullpo_retr(0, sd);
 
 	if(pc_checkskill(sd,RK_DRAGONTRAINING) > 0) { // ドラゴントレーニングスキル所持
-		pc_setoption(sd,0x80000);
+		if(type > 0 && type < 5)
+			pc_setoption(sd,0x800000 << (type-1));
+		else
+			pc_setoption(sd,0x80000);
 	}
 	return 0;
 }
