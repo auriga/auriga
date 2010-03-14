@@ -2240,7 +2240,7 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 		WFIFOW(fd,offset+(i*len)+ 40) = st->status_point;
 #ifdef NEW_006b_RE
 		WFIFOL(fd,offset+(i*len)+ 42) = (st->hp     > 0x7fffffff) ? 0x7fffffff : st->hp;
-		WFIFOL(fd,offset+(i*len)+ 44) = (st->max_hp > 0x7fffffff) ? 0x7fffffff : st->max_hp;
+		WFIFOL(fd,offset+(i*len)+ 46) = (st->max_hp > 0x7fffffff) ? 0x7fffffff : st->max_hp;
 		j = 4;
 #else
 		WFIFOW(fd,offset+(i*len)+ 42) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
@@ -2271,7 +2271,7 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 		WFIFOB(fd,offset+(i*len)+102 + j) = (st->dex > 255)  ? 255: st->dex;
 		WFIFOB(fd,offset+(i*len)+103 + j) = (st->luk > 255)  ? 255: st->luk;
 		WFIFOW(fd,offset+(i*len)+104 + j) = st->char_num;
-		if((len+j) >= 108)
+		if(len >= (108+j))
 			WFIFOW(fd,offset+(i*len)+106 + j) = 1;	// キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
 
 		// ロードナイト/パラディンのログイン時のエラー対策
@@ -3828,7 +3828,7 @@ int parse_char(int fd)
 				WFIFOB(fd,2+102 + i) = (st->dex  > 255) ? 255 : st->dex;
 				WFIFOB(fd,2+103 + i) = (st->luk  > 255) ? 255 : st->luk;
 				WFIFOW(fd,2+104 + i) = st->char_num;
-				if((len+i) >= 108)
+				if(len >= (108+i))
 					WFIFOW(fd,2+106+i) = 1;
 				WFIFOSET(fd,len+2);
 				RFIFOSKIP(fd,37);
