@@ -7779,7 +7779,7 @@ void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
 #if PACKETVER >= 19
 	WBUFW(buf,4)=0;
 	WBUFB(buf,6)=(p->item&1)?1:0;
-	WBUFB(buf,7)=(p->item&1)?1:0;
+	WBUFB(buf,7)=(p->item&2)?1:0;
 #endif
 	if(flag == 0) {
 		clif_send(buf,packet_db[cmd].len,&sd->bl,PARTY);
@@ -10482,6 +10482,30 @@ void clif_mshield(struct map_session_data *sd, int num)
 }
 
 /*==========================================
+ * NPCイベント表示
+ *------------------------------------------
+ */
+void clif_showevent(struct map_session_data *sd, struct block_list *bl, short state, short type)
+{
+#if PACKETVER > 18
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x446;
+	WFIFOL(fd,2) = bl->id;
+	WFIFOW(fd,6) = bl->x;
+	WFIFOW(fd,8) = bl->y;
+	WFIFOW(fd,10) = state;
+	WFIFOW(fd,12) = type;
+	WFIFOSET(fd,packet_db[0x446].len);
+#endif
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -12834,7 +12858,10 @@ static void clif_parse_PartyChangeOption(int fd,struct map_session_data *sd, int
 {
 
 #if PACKETVER >= 19
-	party_changeoption(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),(RFIFOB(fd,GETPACKETPOS(cmd,1)))? 1:0 + (RFIFOB(fd,GETPACKETPOS(cmd,1)))? 2:0);
+	int item = (int)RFIFOB(fd,GETPACKETPOS(cmd,1));
+	int item2 = (int)RFIFOB(fd,GETPACKETPOS(cmd,1)+1);
+
+	party_changeoption(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),(item ? 1 : 0) | (item2 ? 2 : 0));
 #else
 	party_changeoption(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),-1);
 #endif

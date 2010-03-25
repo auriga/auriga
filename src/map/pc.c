@@ -1603,6 +1603,12 @@ int pc_calc_skilltree(struct map_session_data *sd)
 			sd->status.skill[i].lv = skill_get_max(i);
 			sd->status.skill[i].flag = 1;
 		}
+
+		// テコンミッションも追加する
+		sd->status.skill[i].id = TK_MISSION;
+		sd->status.skill[i].lv = skill_get_max(TK_MISSION);
+		sd->status.skill[i].flag = 1;
+
 	}
 
 	return 0;
@@ -4806,8 +4812,13 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 
 	// マーダラーボーナス
 	if(ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point) {
+#ifdef __BORLANDC__
+		base_exp *= 2;
+		job_exp *= 2;
+#else
 		base_exp <<= 1;
 		job_exp <<= 1;
+#endif
 	}
 
 	if (sd->status.guild_id > 0) {	// ギルドに上納

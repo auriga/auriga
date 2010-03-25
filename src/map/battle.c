@@ -2970,8 +2970,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(sc && sc->data[SC_FEARBREEZE].timer != -1) {
 					int random_hit = 0;
 					int div_ = 2;
-					if((sc->data[SC_FEARBREEZE].val3 - 2) > 0)
-						random_hit = atn_rand()%(sc->data[SC_FEARBREEZE].val3 - 2);
+					if((sc->data[SC_FEARBREEZE].val3 - 1) > 0)
+						random_hit = atn_rand()%(sc->data[SC_FEARBREEZE].val3 - 1);
 					div_ += random_hit;
 					if(src_sd) {
 						if(!battle_delarrow(src_sd,div_ - 1,0))

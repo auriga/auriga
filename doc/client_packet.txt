@@ -1885,15 +1885,14 @@ R 02eb <server tick>.l <coordidate>.3B <05 05固定>.2B <flag?>.B <?>.B
 	<flag>が0以外のとき、発言が文字化けする
 	0x73の上位版？
 
-R 02ec <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w <?>.w
+R 02ec <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w <font>.w
 	表示範囲内キャラ移動情報(0x22cの上位バージョン)
-R 02ed <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <?>.w
+R 02ed <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <font>.w
 	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報?(0x22bの上位バージョン)
-R 02ee <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <?>.w
+R 02ee <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <font>.w
 	マップロード時&移動時用、向き付き用キャラ情報?(0x22aの上位バージョン)
 
-R 02ef <ID>.l <flag>.w
-	<flag>が0以外のとき、<ID>のキャラの発言が文字化けする
+R 02ef <ID>.l <type>.w
 	キャッシュフォント
 
 R 02f0 <0>.4B <time>.l
@@ -1927,12 +1926,21 @@ S 0439
 
 R 0440 <ID>.l <num>.w <0>.w
 	ミレニアムシールド表示
-
 R 043d <skillid>.w <tick>.l
 	スキル固有ディレイ表示
-
 R 043f <type>.w <ID>.l <switch>.B <tick>.l <val>.l <?>.l <?>.l
 	増強系スキル使用時のメッセージ色々、0x196の上位版
-
 R 0446 <ID>.l <x>.w <y>.w <state>.w <type>.w
 	NPCイベントの表示
+S 07d7 <exp>.l <item>.2B
+	0102の上位版
+R 07d8 <exp>.l <?>.w <item1>.B <item2>.B
+	0101の上位版
+R 07d9 { <type>.B <ID>.l <lv>.w }.7B*27
+	02b9と同じ（2009-06-03aRagexeRE以降）
+S 07da <account ID>.l
+	PTリーダー変更要求
+R 07e5 <?>.w <aid>.l
+	captchaコード要求
+R 07e7 <len>.w <aid>.l <code>.10B <?>.14B
+	captchaコードチェック

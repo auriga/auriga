@@ -8527,8 +8527,14 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 
 	if(!src->alive)
 		return 0;
-	if(unit_isdead(bl) && sg->skill_id != AB_EPICLESIS)
-		return 0;
+
+	if(unit_isdead(bl)) {
+		// エピクレシスは設置時のみ死亡ユニットにも効果を及ぼす
+		if(sg->skill_id == AB_EPICLESIS && sg->val1 == 0)
+			;
+		else
+			return 0;
+	}
 
 	nullpo_retr(0, ss = map_id2bl(sg->src_id));
 	nullpo_retr(0, ud = unit_bl2ud(bl));
@@ -8929,7 +8935,6 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			const int x = bl->x, y = bl->y;
 			int hit   = 0;
 			int count = skill_get_blewcount(sg->skill_id,sg->skill_lv);
-			int mode = (status_get_mode(bl)&0x20)? 5:1;
 
 			do {
 				if(bl->type != BL_PC) {
@@ -8945,7 +8950,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 						}
 					}
 			} while(sg->alive_count > 0 && !unit_isdead(bl) && x == bl->x && y == bl->y &&
-				sg->interval > 0 && ++hit < SKILLUNITTIMER_INVERVAL / (sg->interval * mode));
+				sg->interval > 0 && ++hit < SKILLUNITTIMER_INVERVAL / sg->interval);
 		}
 		break;
 	case UNT_SPIDERWEB:	/* スパイダーウェッブ */
@@ -9033,12 +9038,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				if(bl->type == BL_PC) {
 					struct map_session_data *sd = (struct map_session_data *)bl;
 
-					if(sd->sc.data[SC_BERSERK].timer != -1)		// バーサーク中は効果なし
-						break;
-					if(pc_isgear(sd))		// 魔道ギア搭乗中は効果なし
-						break;
-
-					if(unit_isdead(bl) && sd->sc.data[SC_HELLPOWER].timer == -1) {
+					if(sg->val1 == 0 && unit_isdead(bl) && sd->sc.data[SC_HELLPOWER].timer == -1) {
 						clif_skill_nodamage(&src->bl,bl,ALL_RESURRECTION,sg->skill_lv,1);
 						sd->status.hp = sd->status.max_hp * 10 / 100;
 						if(sd->status.hp <= 0)
@@ -12906,6 +12906,9 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 			skill_delunit(unit);
 			return 0;
 		}
+		// エピクリシスは設置時のみリザクレション効果を及ぼす
+		if(group->skill_id == AB_EPICLESIS && !group->val1)
+			group->val1 = 1;
 	}
 
 	// イドゥンの林檎による回復

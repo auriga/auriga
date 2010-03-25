@@ -3981,6 +3981,7 @@ int buildin_callguardian(struct script_state *st);
 int buildin_getguardianinfo(struct script_state *st);
 int buildin_getmobname(struct script_state *st);
 int buildin_checkactiveitem(struct script_state *st);
+int buildin_showevent(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4249,6 +4250,7 @@ struct script_function buildin_func[] = {
 	{buildin_getguardianinfo,"getguardianinfo","sii"},
 	{buildin_getmobname,"getmobname","i"},
 	{buildin_checkactiveitem,"checkactiveitem","*"},
+	{buildin_showevent,"showevent","i*"},
 	{NULL,NULL,NULL}
 };
 
@@ -11789,6 +11791,37 @@ int buildin_checkactiveitem(struct script_state *st)
 		}
 	}
 	push_val(st->stack,C_INT,0);
+
+	return 0;
+}
+
+/*==========================================
+ * NPCイベント表示
+ *------------------------------------------
+ */
+int buildin_showevent(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	struct npc_data *nd = map_id2nd(st->oid);
+	int state, type = 0;
+
+	nullpo_retr(0, sd);
+
+	if(nd == NULL) {
+		printf("buildin_showevent: npc not found\n");
+		return 0;
+	}
+
+	state = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end>st->start+3)
+		type = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	if(state < 0 || state > 2)
+		return 0;
+	if(type < 0 || type > 3)
+		return 0;
+
+	clif_showevent(sd,&nd->bl,state,type);
 
 	return 0;
 }

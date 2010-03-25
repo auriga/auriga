@@ -196,8 +196,9 @@ set __LINKZLIB__=../common/zlib/*.obj
 if "%__BITTYPE__%"=="x32" set __BITOPTION__=/D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS"
 if "%__BITTYPE__%"=="x64" set __BITOPTION__=/D "WIN64" /D "_WIN64"
 
-set __opt1__=/I "../common/zlib/" /I "../common/" /D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" %__BITOPTION__% %__PACKETDEF__% %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
+set __opt1__=/D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" %__BITOPTION__% %__PACKETDEF__% %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
 set __opt2__=/DEBUG %__FIXOPT2__% user32.lib %__LINKZLIB__% ../common/*.obj *.obj
+set __include__=/I "../common/zlib/" /I "../common/"
 
 rem ----------------------------------------------------------------
 rem 警告の抑制
@@ -205,38 +206,53 @@ rem   C4819 : 表示できない文字を含んでいます
 set __warning__=/wd4819
 
 rem ----------------------------------------------------------------
+rem コンパイルオプションの表示
+
+echo ■コンパイル情報表示■
+echo ◆───────────────────────────────◆
+echo [VCVER = %__VCVER__%]
+echo [BITTYPE = %__BITTYPE__%]
+echo [model = %_model_%]
+echo [CompileOption = %__opt1__%]
+echo ◆───────────────────────────────◆
+
 rem ビルド作業本体
 
 rem 共通コンポーネントのコンパイル
 cd src\common\zlib
 if "%__ZLIB__%"=="" goto NOZLIB2
-cl %__warning__% %__cpu__% %__opt1__% *.c
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 :NOZLIB2
 cd ..\
-cl %__warning__% %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 
 rem サーバー本体のビルド
+echo ログインサーバーコンパイル
 cd ..\login
-cl %__warning__% %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 link %__opt2__% /out:"../../login-server.exe"
+echo キャラクターサーバーコンパイル
 cd ..\char
-cl %__warning__% %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 link %__opt2__% /out:"../../char-server.exe"
+echo マップサーバーコンパイル
 cd ..\map
-cl %__warning__% %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 link %__opt2__% /out:"../../map-server.exe"
 
 rem 必要なら txt-converter をビルド
 if NOT "%__TXT_MODE__%"=="" goto NOCONVERTER1
 if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER1
+echo コンバーターコンパイル
 cd ..\converter
-cl %__warning__% %__cpu__% %__opt1__% *.c 
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 link %__opt2__% /out:"../../txt-converter.exe"
 :NOCONVERTER1
 
 cd ..\..\
 
 rem 不必要なファイルを削除
+echo オブジェクトファイル等のクリーンアップ
 if "%__ZLIB__%"=="" goto NOZLIB3
 del src\common\zlib\*.obj
 :NOZLIB3

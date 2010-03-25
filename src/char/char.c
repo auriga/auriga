@@ -2276,9 +2276,9 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 
 		// ロードナイト/パラディンのログイン時のエラー対策
 		if (st->option == 32)
-			WFIFOL(fd,offset+(i*len)+28 + j) = 0;
+			WFIFOL(fd,offset+(i*len)+28) = 0;
 		else
-			WFIFOL(fd,offset+(i*len)+28 + j) = st->option;
+			WFIFOL(fd,offset+(i*len)+28) = st->option;
 	}
 	WFIFOSET(fd,WFIFOW(fd,2));
 

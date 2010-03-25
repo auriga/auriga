@@ -1,4 +1,52 @@
 ----------------------------------------
+//0724 [2010/03/26] by popori
+
+・0722の修正漏れを修正 (status.c)
+　koyoriさんに感謝
+
+・0721の修正 (char.c)
+　dragontail789さんに感謝
+
+・0712の温もりのHIT数変更をBackout (skill_unit_db.txt skill.c)
+　※温もりのHIT数は秒間10HITに統一されます。
+　Heavenさんに感謝
+
+・0681のテコンランカーボーナスに関する修正 (pc.c)
+　ARIAさん、unsyuさん、koyoriさんに感謝
+
+・斧修練の効果が片手斧しか出ていないのを修正 (status.c)
+　dragontail789さんに感謝
+
+・スキル「エピクリシス」の効果を変更 (skill.c)
+ ->設置時のみリザクレションの効果を発動するように変更
+ ->バーサーク中、ギア搭乗中でも効果を発動するように変更
+　unsyuさんに感謝
+
+・魔王モロククエストの相違点の修正をマージ (npc_town_morocc.txt)
+　mapleさん、tomoさんに感謝
+
+・PACKETVER19よりスクリプト命令「showevent」をサポート (clif.* script.c script_ref.txt)
+
+・client_packet.txtの更新 (client_packet.txt)
+
+・0718以降BCCでコンパイル出来なかったのを修正 (pc.c)
+
+・スキル「フィアーブリーズ」のHIT数は最大5回のようなので変更 (battle.c)
+
+・vc_make.batの仕様を若干変更 (vc_make.bat)
+ ->opt1からインクルードパスを分離させる。
+ ->コンパイル時にVCVER、BITTYPE、CPU最適化スイッチ、コンパイルオプションを表示させるよう変更
+ ->bcc32_make.batのようにコンパイル過程が表示されるように変更
+
+・パーティー設定変更要求に関する修正 (clif.c)
+
+・boitataさんのブラジリス関連の一部をマージ (item_db2.txt pet_db.txt)
+　boitataさんに感謝
+
+・DB類の更新 (item_db.txt mob_skill_db.txt mob_db.txt)
+　huge cgiさん、多くのDB編集者の方々に感謝
+
+----------------------------------------
 //0723 [2010/03/15] by popori
 
 ・packet_db.txtの追加と微修正 (packet_db.txt)

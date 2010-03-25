@@ -1407,7 +1407,7 @@ L_RECALC:
 	}
 	if((skill = pc_checkskill(sd,BS_WEAPONRESEARCH)) > 0)	// 武器研究の命中率増加
 		sd->hit += skill*2;
-	if((sd->status.weapon == WT_1HAXE || sd->status.weapon == WT_1HAXE) && ((skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0))	// 斧修練の命中率増加
+	if((sd->status.weapon == WT_1HAXE || sd->status.weapon == WT_2HAXE) && ((skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0))	// 斧修練の命中率増加
 		sd->hit += skill*3;
 
 	if(sd->sc.option&2 && (skill = pc_checkskill(sd,RG_TUNNELDRIVE)) > 0)	// トンネルドライブ
@@ -1502,7 +1502,7 @@ L_RECALC:
 			sd->speed += (6 - sd->sc.data[SC_CAMOUFLAGE].val1) * DEFAULT_WALK_SPEED / 4;
 
 		// ニュートラルバリアー・ステルスフィールド(使用者)の速度低下
-		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1 || sd->sc.data[SC_STEALTHFIELD_USER].timer != 1)
+		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1 || sd->sc.data[SC_STEALTHFIELD_USER].timer != -1)
 			sd->speed += (sd->speed * 30) / 100;
 
 		if(sd->sc.data[SC_WEDDING].timer != -1)	// 結婚中は歩くのが遅い
