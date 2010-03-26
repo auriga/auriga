@@ -1239,6 +1239,10 @@ L_RECALC:
 		}
 		if(sd->sc.data[SC_TURISUSS].timer != -1)	// ジャイアントグロウス
 			sd->paramb[0] += 30;
+		if(sd->sc.data[SC_LAUDAAGNUS].timer != -1)	// ラウダアグヌス
+			sd->paramb[2] += sd->sc.data[SC_LAUDAAGNUS].val2;
+		if(sd->sc.data[SC_LAUDARAMUS].timer != -1)	// ラウダラムス
+			sd->paramb[5] += sd->sc.data[SC_LAUDARAMUS].val2;
 	}
 
 	sd->paramc[0] = sd->status.str  + sd->paramb[0] + sd->parame[0];
@@ -1566,7 +1570,7 @@ L_RECALC:
 		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_INCMHP2].val1) / 100);
 	}
 	if(sd->sc.data[SC_EPICLESIS].timer != -1) {		// エピクレシス
-		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * sd->sc.data[SC_EPICLESIS].val2 / 100);
+		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_EPICLESIS].val2) / 100);
 	}
 
 	// 最大SP計算
@@ -5723,7 +5727,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_FEARBREEZE:			/* フィアーブリーズ */
 			val2 = 4 + (val1 > 2? 3: 0) + (val1 > 3? 2: 0) + (val1 > 4? 1: 0);		// 発動確率
-			val3 = (val1 > 1)? val1: 2;	// 最大攻撃回数
 			break;
 		case SC_ELECTRICSHOCKER:	/* エレクトリックショッカー */
 			val2 = tick / 1000;
@@ -6212,6 +6215,9 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_TURISUSS:			/* ジャイアントグロウス */
 		case SC_EISIR:				/* ファイティングスピリット */
 		case SC_FEAR:				/* 恐怖 */
+		case SC_EPICLESIS:			/* エピクレシス */
+		case SC_LAUDAAGNUS:			/* ラウダアグヌス */
+		case SC_LAUDARAMUS:			/* ラウダラムス */
 		case SC_VENOMIMPRESS:		/* ベナムインプレス */
 		case SC_CLOAKINGEXCEED:		/* クローキングエクシード */
 		case SC_HALLUCINATIONWALK2:	/* ハルシネーションウォーク(ペナルティ) */

@@ -3295,7 +3295,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				} else {
 					count = skill_area_temp[0];
 				}
-				if(skillid != HW_NAPALMVULCAN && skillid != WL_FROSTMISTY && skillid != WL_CRIMSONROCK)
+				if(skillid != HW_NAPALMVULCAN && skillid != AB_JUDEX && skillid != WL_SOULEXPANSION && skillid != WL_FROSTMISTY && skillid != WL_CRIMSONROCK)
 					count |= 0x0500;
 				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,count);
 			}
@@ -7093,6 +7093,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 			unit_stop_walking(src,1);
 			skill_blown(src,bl,count|(dir<<20)|SAB_REVERSEBLOW|SAB_NODAMAGE|SAB_NOPATHSTOP|SAB_NOTKNOCK);
+			clif_blown(src,src->x,src->y);
 			clif_skill_nodamage(src,src,skillid,skilllv,1);
 
 			if(sd)
@@ -7470,7 +7471,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case NJ_BAKUENRYU:			/* 龍炎陣 */
 	case NPC_EVILLAND:			/* イビルランド */
 	case GC_POISONSMOKE:		/* ポイズンスモーク */
-	case AB_EPICLESIS:			/* エピクレシス */
 	case RA_ELECTRICSHOCKER:	/* エレクトリックショッカー */
 	case RA_CLUSTERBOMB:		/* クラスターボム */
 	case RA_MAGENTATRAP:		/* マゼンタトラップ */
@@ -7741,6 +7741,16 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				skill_castend_damage_id);
 		}
 		break;
+	case AB_EPICLESIS:			/* エピクレシス */
+		{
+			int ar = skill_get_unit_range(skillid,skilllv);
+			map_foreachinarea(skill_area_sub,
+				src->m,x-ar,y-ar,x+ar,y+ar,BL_PC,
+				src,ALL_RESURRECTION,3,tick,flag|BCT_NOENEMY|1,
+				skill_castend_nodamage_id);
+			skill_unitsetting(src,skillid,skilllv,x,y,0);
+		}
+		break;
 	case WL_COMET:				/* コメット */
 		{
 			int ar = 7;
@@ -7755,17 +7765,24 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case WL_EARTHSTRAIN:		/* アースストレイン */
 		{
-			// 初期位置を指定
 			int dir = (src->x == x && src->y == y)? 6: map_calc_dir(src,x,y);
-			int tmpx = src->x + dirx[dir] * 2;
-			int tmpy = src->y + diry[dir] * 2;
+			int tmpx, tmpy;
+			int addx = 0, addy = 0;
 			int i;
+
+			// 縦を優先
+			addy = diry[dir];
+			addx = (addy == 0)? dirx[dir]: 0;
+
+			// 初期位置を指定
+			tmpx = src->x + addx * 2;
+			tmpy = src->y + addy * 2;
 
 			clif_skill_poseffect(src,skillid,skilllv,tmpx,tmpy,tick);
 			for(i = 0; i < 4 + skilllv; i++) {
 				skill_addtimerskill(src,tick+i*100,0,tmpx,tmpy,skillid,skilllv,0,flag);
-				tmpx += dirx[dir];
-				tmpy += diry[dir];
+				tmpx += addx;
+				tmpy += addy;
 			}
 		}
 		break;
@@ -8470,13 +8487,6 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 					src->bl.id,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 		}
 		break;
-	case UNT_EPICLESIS:		/* エピクレシス */
-		if(battle_check_target(&src->bl,bl,BCT_NOENEMY) > 0) {
-			if(sc && sc->data[type].timer != -1)
-				break;
-			status_change_start(bl,type,sg->skill_lv,0,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
-		}
-		break;
 	case UNT_NEUTRALBARRIER:	/* ニュートラルバリアー */
 		if(sc && sc->data[type].timer != -1) {
 			unit2 = map_id2su(sc->data[type].val4);
@@ -8528,13 +8538,8 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	if(!src->alive)
 		return 0;
 
-	if(unit_isdead(bl)) {
-		// エピクレシスは設置時のみ死亡ユニットにも効果を及ぼす
-		if(sg->skill_id == AB_EPICLESIS && sg->val1 == 0)
-			;
-		else
-			return 0;
-	}
+	if(unit_isdead(bl))
+		return 0;
 
 	nullpo_retr(0, ss = map_id2bl(sg->src_id));
 	nullpo_retr(0, ud = unit_bl2ud(bl));
@@ -9035,25 +9040,10 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				}
 				battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 			} else if(battle_check_target(&src->bl,bl,BCT_NOENEMY)) {
+				if(sc && sc->data[SC_EPICLESIS].timer == -1)
+					status_change_start(bl,SC_EPICLESIS,sg->skill_lv,0,0,0,sg->limit,0);
 				if(bl->type == BL_PC) {
 					struct map_session_data *sd = (struct map_session_data *)bl;
-
-					if(sg->val1 == 0 && unit_isdead(bl) && sd->sc.data[SC_HELLPOWER].timer == -1) {
-						clif_skill_nodamage(&src->bl,bl,ALL_RESURRECTION,sg->skill_lv,1);
-						sd->status.hp = sd->status.max_hp * 10 / 100;
-						if(sd->status.hp <= 0)
-							sd->status.hp = 1;
-						if(sd->special_state.restart_full_recover) {	// オシリスカード
-							sd->status.hp = sd->status.max_hp;
-							sd->status.sp = sd->status.max_sp;
-							clif_updatestatus(sd,SP_SP);
-						}
-						clif_updatestatus(sd,SP_HP);
-						pc_setstand(sd);
-						if(battle_config.pc_invincible_time > 0)
-							pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
-						clif_resurrection(&sd->bl,1);
-					}
 
 					if(sd->status.hp < sd->status.max_hp) {
 						int hp = sd->status.max_hp * (((sg->skill_lv - 1) / 2) + 3) / 100;
@@ -12906,9 +12896,6 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 			skill_delunit(unit);
 			return 0;
 		}
-		// エピクリシスは設置時のみリザクレション効果を及ぼす
-		if(group->skill_id == AB_EPICLESIS && !group->val1)
-			group->val1 = 1;
 	}
 
 	// イドゥンの林檎による回復
@@ -14836,30 +14823,16 @@ static void skill_init_unit_layout(void)
 	earthstrain_unit_pos = pos;
 	for (i=0;i<8;i++) {
 		skill_unit_layout[pos].count = 15;
-		if (i&1) {	/* 斜め配置 */
-			if (i&0x2) {
-				int dx[] = {-7,-6,-5,-4,-3,-2,-1, 0, 1, 2, 3, 4, 5, 6, 7};
-				int dy[] = { 7, 6, 5, 4, 3, 2, 1, 0,-1,-2,-3,-4,-5,-6,-7};
-				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
-				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
-			} else {
-				int dx[] = { 7, 6, 5, 4, 3, 2, 1, 0,-1,-2,-3,-4,-5,-6,-7};
-				int dy[] = { 7, 6, 5, 4, 3, 2, 1, 0,-1,-2,-3,-4,-5,-6,-7};
-				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
-				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
-			}
-		} else {	/* 縦横配置 */
-			if (i%4==0) {	/* 上下 */
-				int dx[] = {-7,-6,-5,-4,-3,-2,-1, 0, 1, 2, 3, 4, 5, 6, 7};
-				int dy[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
-				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
-			} else {			/* 左右 */
-				int dx[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-				int dy[] = {-7,-6,-5,-4,-3,-2,-1, 0, 1, 2, 3, 4, 5, 6, 7};
-				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
-				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
-			}
+		if (i==2 || i==6) {		/* 	左右 */
+			int dx[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			int dy[] = {-7,-6,-5,-4,-3,-2,-1, 0, 1, 2, 3, 4, 5, 6, 7};
+			memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
+			memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
+		} else {			/* 上下 */
+			int dx[] = {-7,-6,-5,-4,-3,-2,-1, 0, 1, 2, 3, 4, 5, 6, 7};
+			int dy[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
+			memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
 		}
 		pos++;
 	}
