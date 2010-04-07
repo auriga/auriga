@@ -576,12 +576,28 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			} else {
 				return 0;
 			}
+		// その他のGv関連のMOB
+		} else if(tmd && tmd->guild_id) {
+			if(src->type == BL_PC) {
+				struct guild *g = guild_search(((struct map_session_data *)src)->status.guild_id);
+
+				if((gc = guild_mapid2gc(tmd->bl.m)) != NULL) {
+					if(g->guild_id == gc->guild_id)
+						return 0;	// 自占領ギルドならダメージ無し
+					if(guild_check_alliance(gc->guild_id, g->guild_id, 0))
+						return 0;	// 同盟ならダメージ無し
+				} else {
+					noflag = 1;
+				}
+			} else {
+				return 0;
+			}
 		}
 
 		// GvG
 		if(map[bl->m].flag.gvg && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
 			if(tmd && tmd->guild_id) {
-				if(gc == NULL && !noflag)	// エンペリウムの項で既に検索してNULLなら再度検索しない
+				if(gc == NULL && !noflag)	// エンペリウム、その他のGv関連のMOBの項で既に検索してNULLなら再度検索しない
 					gc = guild_mapid2gc(tmd->bl.m);
 				if(gc) {
 					// defenseがあればダメージが減るらしい？

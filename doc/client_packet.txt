@@ -521,9 +521,9 @@ R 0110 <skill ID>.w <basic type>.l <fail>.B <type>.B
 	     08: 青ジェム無し
 	     09: Weightが90%を越えている
 	     0a: スキル使用失敗
-R 0111 <skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B
-	010fの1つ分。β2だと未使用?
-	20040415転職時に観測
+R 0111 <skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B
+	skillidのスキルをリストに追加する。
+	一時取得スキルに使用
 S 0112 <skill ID>.w
 	スキルlvup要求
 S 0113 <level>.w <skill ID>.w <ID>.l
@@ -620,7 +620,7 @@ R 0131 <ID>.l <message>.80B
 	露店看板表示
 R 0132 <ID>.l
 	露店看板消去
-R 0133 <len>.w <ID>.l {<value>.l <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w}.22B
+R 0133 <len>.w <ID>.l {<value>.l <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
 	露店アイテムリスト
 S 0134 <len>.w <ID>.l {<amount>.w <index>.w}.4B*
 	露店アイテム購入
@@ -1105,7 +1105,7 @@ R 01c2 <type?>.l <?>.l
 	何もしないようにフラグが規定されている
 	type=100or200
 
-R 01c3 <len>.w <color>.l <font?>.w <size>.w <?>.l <message>.?B
+R 01c3 <len>.w <color>.l <type>.w <size>.w <align>.w <y>.w <message>.?B
 	GMからの天の声（0x9aのマルチカラー版）
 R 01c4 <index>.w <amount>.l <itemID>.w <type>.B <identify flag>.B <attribute>.B <refine>.B <card>.4w
 	カプラ倉庫アイテム、0xf4の上位版
@@ -1262,7 +1262,7 @@ R 01f0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.
 	00a5から変更
 R 01f1
 	ログイン系？未調査
-R 01f2 <ID>.l <charactor ID>.l <online>.l <sex?>.w <hair>.w <hair color>.w
+R 01f2 <ID>.l <charactor ID>.l <online>.l <sex>.w <hair>.w <hair color>.w
 	ギルドメンバがloginした抜けた等、0x16dの上位版
 R 01f3 <ID>.l <type>.l
 	blから発生するエフェクト
@@ -1343,9 +1343,11 @@ R 0210 <?>.8B <win>.l <lose>.l <point>.l
 S 0212 <charname>.24B
 	GMコマンド/rcにて発行。効果不明。
 S 0213 <charname>.24B
-	GMコマンド/checkにて発行。効果不明。
+	GMコマンド/checkにて発行。
+	charnameのステータスを取得。
 R 0214 { <Val>.w }*25
-	ステータス表示？
+	0213の応答。
+	0213で要求したcharnameのステータス表示
 			STR,AGI,VIT,INT,DEX,LUK,
 	standard	STR,AGI,VIT,INT,DEX,LUK,
 			attPower,refiningPower,MAXmatpow,Minmatpower,ASPD,
@@ -1854,12 +1856,11 @@ S 02db <len>.w <str>.?B
 	戦場チャット送信
 R 02dc <len>.w <ID>.l <name>.24B <str>.?B
 	戦場チャット受信
-R 02dd <ID>.l <?>.24B <?>.B <?>.B
-	NPCの頭上にレッドスリムポーションが表示される
-	未調査
-R 02de <?>.w <?>.w
-	PvPランク系？
-	未調査
+R 02dd <ID>.l <name>.24B <camp>.w
+	自軍のエンブレム送信
+R 02de <point>.w <point>.w
+	戦場ポイント
+	自軍、敵軍のポイント表示
 R 02df <ID>.l <?>.26B <?>.w <?>.w
 	未調査
 R 02e0 <ID>.l <?>.24B <hp>.w <max_hp>.w
@@ -1880,9 +1881,8 @@ R 02e9 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.
 R 02ea <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
 	カプラさんに預けてある消耗品&収集品リスト
 	0x1f0の上位版
-R 02eb <server tick>.l <coordidate>.3B <05 05固定>.2B <flag?>.B <?>.B
+R 02eb <server tick>.l <coordidate>.3B <05 05固定>.2B <font>.B <?>.B
 	ゲーム鯖接続成功&サーバ側1ms時計&出現位置
-	<flag>が0以外のとき、発言が文字化けする
 	0x73の上位版？
 
 R 02ec <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w <font>.w
@@ -1895,7 +1895,7 @@ R 02ee <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id
 R 02ef <ID>.l <type>.w
 	キャッシュフォント
 
-R 02f0 <0>.4B <time>.l
+R 02f0 <color>.l <time>.l
 	頭上のバーが増えて<time>秒後に消える
 R 02f2
 	未調査
@@ -1915,6 +1915,8 @@ R 02fc
 R 0301〜0303, 0307
 	未調査
 
+R 040c <len>.w <color>.l <type>.w <size>.w <align>.w <y>.w <message>.?B
+	01c3と同じ
 S 0436 <account ID>.l <charactor ID>.l <login ID1>.l <login ID2>.l <sex>.B
 	0072と同じ（2008-09-10aSakexe以降）
 S 0437 <target ID>.l <type>.B
@@ -1924,12 +1926,15 @@ S 0438
 S 0439
 	0116と同じ（2008-09-10aSakexe以降）
 
-R 0440 <ID>.l <num>.w <0>.w
-	ミレニアムシールド表示
 R 043d <skillid>.w <tick>.l
 	スキル固有ディレイ表示
 R 043f <type>.w <ID>.l <switch>.B <tick>.l <val>.l <?>.l <?>.l
 	増強系スキル使用時のメッセージ色々、0x196の上位版
+R 0440 <ID>.l <num>.w <state>.w
+	ミレニアムシールド表示
+R 0441 <skillid>.w
+	skillidで指定したスキルを取得スキル一覧から消す
+
 R 0446 <ID>.l <x>.w <y>.w <state>.w <type>.w
 	NPCイベントの表示
 S 07d7 <exp>.l <item>.2B
@@ -1940,7 +1945,40 @@ R 07d9 { <type>.B <ID>.l <lv>.w }.7B*27
 	02b9と同じ（2009-06-03aRagexeRE以降）
 S 07da <account ID>.l
 	PTリーダー変更要求
-R 07e5 <?>.w <aid>.l
+R 07db <type>.w <val>.l
+	ホムンクルス情報更新？
+	type=1 exp
+	type=5 HP
+	type=7 SP
+R 07e1 <skill ID>.w <type>.l <lv>.w <sp>.w <range>.w <up>.B
+	010eの上位版（2009-07-15aRagexeRE以降）
+
+S 07e5 <?>.w <account ID>.l
 	captchaコード要求
-R 07e7 <len>.w <aid>.l <code>.10B <?>.14B
-	captchaコードチェック
+S 07e7 <len>.w <account ID>.l <code>.10B <?>.14B
+	captchaコード応答
+R 07e8 <len>.w <image>.?B
+	captchaイメージ受信
+R 07e9 <code>.w <flag>.B
+	captchaコード認証応答
+
+S 07f5 <ID>.|
+	0x1dfの上位版（2009-10-27aRagexeRE以降）
+R 07f6 <charactor ID>.l <exp>.l <type>.w <quest>.w
+	獲得経験値取得メッセージ
+	type=1 Base_exp
+	type=2 Job_exp
+	quest=0 通常取得のexp（exp取得時文字が黄色になる）
+	quest=1 クエスト取得のexp（exp取得時文字が紫色になる）
+R 07fa <0?>.w <index>.w <amount>.w
+	00afの上位版（2009-11-17aRagexeRE以降）
+R 07fb <src ID>.l <dst ID>.l <X>.w <Y>.w <skillid>.w <pl>.l <casttime>.l <flag?>.B
+	0x13eの上位版（2009-11-17aRagexeRE以降）
+R 07fc <old account ID>.l <new account ID>.l
+	PTリーダー変更要求成功時に送信？
+R 07fe <name>.24B
+	nameのmp3ファイルを鳴らす
+R 0800 <len>.w <ID>.l <ID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
+	0133の上位版（2009-12-08aRagexeRE以降）
+S 0801 <len>.w <ID>.l {<amount>.w <index>.w}.4B*
+	0134の上位版（2009-12-08aRagexeRE以降）

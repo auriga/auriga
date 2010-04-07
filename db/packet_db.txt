@@ -1913,7 +1913,6 @@
 //0x0442,8
 //0x0443,8
 //0x07d7,8,partychangeoption,2:6
-//0x07da,6,partychangeleader,2
 
 //2009-06-17aRagexeRE
 //0x006d,114
@@ -1955,7 +1954,6 @@
 //0x0443,8
 //0x07d7,8,partychangeoption,2:6
 //0x07d9,268
-//0x07da,6,partychangeleader,2
 
 //2009-09-22aRagexeRE
 //0x006d,114
@@ -1997,7 +1995,6 @@
 //0x0443,8
 //0x07d7,8,partychangeoption,2:6
 //0x07d9,268
-//0x07da,6,partychangeleader,2
 //0x07e6,8
 //0x07e7,32
 
@@ -2041,7 +2038,6 @@
 //0x0443,8
 //0x07d7,8,partychangeoption,2:6
 //0x07d9,268
-//0x07da,6,partychangeleader,2
 //0x07e6,8
 //0x07e7,32
 //0x07ec,8
@@ -2092,7 +2088,6 @@
 0x0443,8
 0x07d7,8,partychangeoption,2:6
 0x07d9,268
-0x07da,6,partychangeleader,2
 0x07e6,8
 0x07e7,32
 0x07ec,8
