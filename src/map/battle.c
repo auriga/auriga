@@ -2702,8 +2702,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(sc) {
 			if(sc->data[SC_AURABLADE].timer != -1)		// オーラブレード
 				DMG_ADD( sc->data[SC_AURABLADE].val1*20 );
-			if(sc->data[SC_GATLINGFEVER].timer != -1)	// ガトリングフィーバー
-				DMG_ADD( 20+sc->data[SC_GATLINGFEVER].val1*10 );
 		}
 	}
 

@@ -1313,7 +1313,7 @@ L_RECALC:
 		sd->base_atk += 100;
 	}
 	if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ガトリングフィーバー
-		sd->base_atk += 30+(sd->sc.data[SC_GATLINGFEVER].val1*10);
+		sd->base_atk += 20+(sd->sc.data[SC_GATLINGFEVER].val1*10);
 	}
 	if(sd->sc.data[SC_VOLCANO].timer != -1 && sd->def_ele == ELE_FIRE) {	// ボルケーノ
 		sd->base_atk += sd->sc.data[SC_VOLCANO].val3;

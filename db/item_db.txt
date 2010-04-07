@@ -679,7 +679,7 @@
 1381,Novice_Battle_Axe,初心者用バトルアックス,4,,,0,100,,1,0,279714,2,34,1,3,7,,{},{}
 1382,Krieger_Twohand_Axe1,グロリアスツーハンドアックス,4,,,0,220,,1,0,279714,2,34,4,80,7,1,{},{ bonus2 bAddRace,7,70; bonus2 bIgnoreDefRace,7,20; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-3)*(getequiprefinerycnt(4)-3); bonus2 bIgnoreDefRace,7,5; bonus3 bAutoSpell,673,1,500; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoSpell,673,1,1000; bonus4 bSkillAutoSpell2,42,673,2,2000; bonus4 bSkillAutoSpell2,485,673,2,2000; /*発動率等暫定（eathenaより）*/}
 1383,Holy_Celestial_Axe,晴天斧,4,,,1500,200,,1,0,263200,2,34,4,60,7,1,{},{}
-1384,Veteran_Axe,達人の斧,4,,,3000,250,,1,2,263200,2,34,3,80,7,1,{},{ bonus bVit,2; bonus4 bSkillAutoSpell,110,7,3,500; bonus bAtk,((getskilllv(98)>2?1:0)+(getskilllv(99)>2?1:0)+(getskilllv(100)>2?1:0)+(getskilllv(101)>2?1:0)+(getskilllv(102)>2?1:0)+(getskilllv(103)>2?1:0)+(getskilllv(104)>2?1:0))*10; }
+1384,Veteran_Axe,達人の斧,4,,,3000,250,,1,2,263200,2,34,3,80,7,1,{},{ bonus bVit,2; bonus4 bSkillAutoSpell,110,7,3,500; bonus bBaseAtk,((getskilllv(98)>2?1:0)+(getskilllv(99)>2?1:0)+(getskilllv(100)>2?1:0)+(getskilllv(101)>2?1:0)+(getskilllv(102)>2?1:0)+(getskilllv(103)>2?1:0)+(getskilllv(104)>2?1:0))*10; }
 1385,Bradium_Stonehammer,ブラディウムハンマー,4,,,2700,210,,1,0,1024,2,34,4,75,7,1,{},{}
 1386,Doom_Slayer_I,ドゥームスレイヤー,4,,,0,20,,1,0,279714,2,34,4,0,7,,{},{ bonus bAspdAddRate,-25; if(readparam(bStr)<95) end; bonus bBaseAtk,400; bonus2 bAddEff,Eff_Stun,3000; bonus bBreakArmorRate,100; /* スキル使用時、SP + 2 */ }
 1387,Giant_Axe,ギガントアックス,4,,,4000,330,,1,1,279714,2,34,3,50,7,1,{},{ bonus2 bAddSkillDamageRate,485,15; if(readparam(bStr)>=95) bonus bHit,10; bonus bAspdAddRate,3; }
@@ -1472,7 +1472,7 @@
 2617,Mitten_Of_Presbyter,神官の手袋,5,2,,100,,1,,0,991944702,2,136,,35,0,,{},{ bonus bInt,1; }
 2618,Matyr's_Flea_Guard,マーターの首輪,5,2,,100,,1,,0,991944702,2,136,,35,0,,{},{ bonus bAgi,1; }
 2619,Thimble_Of_Archer,弓用の指貫,5,10000,,100,,0,,0,1574920,2,136,,65,0,,{},{ bonus bAddLongWeaponDamage,3; }
-2620,Ring_Of_Rogue,盗賊の指輪,5,10000,,100,,0,,0,537006144,2,136,,70,0,,{},{ if(readparam(bStr)>=90){ bonus bHit,10; bonus bFlee,10; } if(readparam(bAgi)>=90){ bonus bAtk,10; bonus bCritical,10; } }
+2620,Ring_Of_Rogue,盗賊の指輪,5,10000,,100,,0,,0,537006144,2,136,,70,0,,{},{ if(readparam(bStr)>=90){ bonus bHit,10; bonus bFlee,10; } if(readparam(bAgi)>=90){ bonus bBaseAtk,10; bonus bCritical,10; } }
 2621,Ring_,リング,5,30000,,100,,0,,1,991944702,2,136,,90,0,,{},{ bonus bStr,1; }
 2622,Earring_,イヤリング,5,30000,,100,,0,,1,991944702,2,136,,90,0,,{},{ bonus bInt,1; }
 2623,Necklace_,ネックレス,5,30000,,100,,0,,1,991944702,2,136,,90,0,,{},{ bonus bVit,1; }
