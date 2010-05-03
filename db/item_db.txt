@@ -830,7 +830,7 @@
 1573,Ancient_Magic,古代の魔法,4,20,,700,30,,1,2,33620224,2,2,3,70,15,1,{},{ bonus bMatkRate,15; if((getequipid(2) == 2334) || (getequipid(2) == 2372)) { bonus bMdef,8; bonus bMaxSPrate,10; bonus bInt,4; } }
 1574,Decendant_Strategy,孫子兵法(勇猛),4,20,,0,90,,1,0,33620224,2,2,3,80,15,1,{},{ bonus bStr,1; bonus bInt,2; bonus bMatkRate,15; bonus2 bAddRace,7,75; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; }
 1575,Decendant_Strategy_,孫子兵法(特攻),4,20,,0,90,,1,0,33620224,2,2,3,80,15,1,{},{ bonus bStr,1; bonus bInt,2; bonus bMatkRate,15; bonus2 bAddRace,7,75; bonus2 bIgnoreMdefRace,7,25; bonus bUnbreakableWeapon,0; }
-1576,Krieger_Book1,グロリアスタブレット,4,,,0,90,,1,0,33620224,2,2,4,80,15,1,{},{ bonus bMatk2Rate,15; bonus2 bAddRace,7,80; bonus2 bIgnoreDefRace,7,25; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1576,3000,3000; if(checkactiveitem()) { misceffect 9,""; bonus bAtk,200; } /*発動率等暫定（eathenaより）*/}
+1576,Krieger_Book1,グロリアスタブレット,4,,,0,90,,1,0,33620224,2,2,4,80,15,1,{},{ bonus bMatk2Rate,15; bonus2 bAddRace,7,80; bonus2 bIgnoreDefRace,7,25; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1576,3000,3000; if(checkactiveitem()) { misceffect 9,""; bonus bBaseAtk,200; } /*発動率等暫定（eathenaより）*/}
 1577,Krieger_Book2,グロリアス黙示録,4,,,0,90,,1,0,33620224,2,2,4,80,15,1,{},{ bonus bMatk2Rate,15; bonus2 bMagicAddRace,7,80; bonus2 bIgnoreMDefRace,7,25; if(getequiprefinerycnt(4)<6) end; bonus2 bIgnoreMDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus bMatkRate,5; bonus bCastrate,-5; bonus bSkillDelayRate,-5; /*発動率等暫定（eathenaより）*/}
 1578,Book_Of_Prayer,祈る者の書,4,,,0,140,,1,0,33620224,2,2,3,,15,,{},{}
 1579,Death_Note_M,死神の名簿,4,,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,7,100; bonus bAspdRate,getequiprefinerycnt(4); if(Class == Job_Sage) bonus3 bAutoSelfSpell,662,5,200; }
@@ -1632,7 +1632,7 @@
 2777,Shaman_Ring,シャーマンリング,5,,,100,,0,,0,1000333311,2,136,,30,,,{},{ bonus bMaxHP,50; bonus bSPrecovRate,3; }
 2778,Shaman_Earing,シャーマンイヤリング,5,,,100,,0,,0,1000333311,2,136,,30,,,{},{ bonus bInt,2; }
 2779,Dark_Knight_Belt,ダークナイトベルト,5,,,500,,1,,0,1000333311,2,136,,80,,,{},{ bonus bStr,2; }
-2780,Dark_Knight_Glove,ダークナイトグローブ,5,,,500,,1,,0,1000333311,2,136,,80,,,{},{ bonus bAtk,5; }
+2780,Dark_Knight_Glove,ダークナイトグローブ,5,,,500,,1,,0,1000333311,2,136,,80,,,{},{ bonus bBaseAtk,5; }
 2781,Aumdura's_Grace,アウドムラの恩恵,5,,,100,,0,,0,1000333311,2,136,,,,,{},{ bonus2 bExpRate,10,5; bonus2 bJobRate,10,5; bonus2 bSubRace,10,-5; bonus2 bMagicSubRace,10,-5; bonus2 bSubRace,11,-5; bonus2 bMagicSubRace,11,-5; }
 2782,Ring_Of_Wise_King,知恵の王の指輪,5,,,100,,0,,0,1000333311,2,136,,,,,{},{ bonus bMaxHP,50; bonus bMaxSP,20; }
 2783,Eyes_Stone_Ring,リングオブアイズ,5,,,100,,0,,1,1000333311,2,136,,70,,,{},{ bonus bCritical,2; bonus bMaxSP,25; }
@@ -2106,7 +2106,7 @@
 4422,Roween_Card,ロウィーンカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bFlee,5; bonus bFlee2,3; bonus2 bAddEle,1,10; bonus2 bCriticalRace,5,15; }
 4423,Galion_Card,ガリオンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bHit,5; bonus2 bAddEle,1,5; }
 4424,Stapo_Card,スタポカード,6,20,,10,,,,,,,136,,,,,{},{ skill 151,1; skill 152,1; }
-4425,Atroce_Card,アトロスカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAtk,25; bonus3 bAutoActiveWeapon,4425,100,10000; if(checkactiveitem()) { misceffect 220,""; bonus bAspdAddRate,100; } }
+4425,Atroce_Card,アトロスカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bBaseAtk,25; bonus3 bAutoActiveWeapon,4425,100,10000; if(checkactiveitem()) { misceffect 220,""; bonus bAspdAddRate,100; } }
 4426,Byorgue_Card,ビョルグカード,6,20,,10,,,,,,,16,,,,,{},{ if(Class == Job_Rogue) { bonus2 bAddRace,10,10; bonus2 bAddRace,11,10; bonus bMatkRate,10; } }
 4427,Sword_Guardian_Card,ソードガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(3),16)==2 || getiteminfo(getequipid(4),16)==2 || getiteminfo(getequipid(4),16)==3) { bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,62,25;} }
 4428,Bow_Guardian_Card,ボウガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(4),16)==11) {bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,47,50;} }
