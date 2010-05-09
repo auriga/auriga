@@ -577,7 +577,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				return 0;
 			}
 		// その他のGv関連のMOB
-		} else if(tmd && tmd->guild_id) {
+		} else if(tmd && tmd->guild_id && !tmd->master_id && !tmd->state.special_mob_ai) {
 			if(src->type == BL_PC) {
 				struct guild *g = guild_search(((struct map_session_data *)src)->status.guild_id);
 
@@ -4861,11 +4861,51 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 	if( src->prev == NULL || unit_isdead(src) ) // 死んでるならエラー
 		return -1;
 
+	// PCからMOB
 	if(ss->type == BL_PC && target->type == BL_MOB) {
-		struct mob_data *md = (struct mob_data*)target;
+		int i, guardian = 0;
+		struct mob_data *md         = (struct mob_data*)target;
 		struct map_session_data *sd = (struct map_session_data*)ss;
-		if(md->guild_id > 0 && sd->status.guild_id > 0 && md->guild_id == sd->status.guild_id)
-			return 1;
+		struct guild *g         = guild_search(sd->status.guild_id);
+		struct guild_castle *gc = guild_mapid2gc(target->m);
+
+		// 砦のガーディアンかどうか
+		if(md->guild_id) {
+			if(gc) {
+				for(i = 0; i < sizeof(gc->guardian) / sizeof(gc->guardian[0]); i++) {
+					if(gc->guardian[i].id == md->bl.id) {
+						guardian = 1;
+						break;
+					}
+				}
+			}
+		}
+
+		// GvG時間外
+		if(!map[ss->m].flag.gvg) {
+			// ガーディアンと念のためエンペは味方
+			if(md->class_ == 1288 || guardian)
+				return 1;
+			// それ以外は敵
+			return 0;
+		}
+
+		/* ここから flag.gvg がある処理 */
+
+		// ギルド無しPCは全部敵
+		if(g == NULL)
+			return 0;
+
+		// 自分のギルドか同盟ギルド砦
+		if(g->guild_id == gc->guild_id || guild_check_alliance(md->guild_id, sd->status.guild_id, 0)) {
+			// エンペとガーディアンは味方
+			if(md->class_ == 1288 || guardian)
+				return 1;
+			// それ以外のバイオプラント、スフィアマインなどは敵（攻撃可能）
+			return 0;
+		}
+
+		// 他人の砦なら全部敵
 		return 0;
 	}
 	if(ss->type == BL_MOB && target->type == BL_PC) {

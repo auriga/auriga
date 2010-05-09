@@ -3569,6 +3569,9 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 	if(bl->type != BL_MOB || (md = (struct mob_data *)bl) == NULL)
 		return 1;
 
+	if(md->master_id && md->state.special_mob_ai)
+		return 1;
+
 	if(md->guild_id)
 	{
 		struct guild *g = guild_search(sd->status.guild_id);
