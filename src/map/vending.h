@@ -27,6 +27,6 @@
 void vending_closevending(struct map_session_data *sd);
 void vending_openvending(struct map_session_data *sd, int len, char *shop_title, unsigned char flag, unsigned char *p);
 void vending_vendinglistreq(struct map_session_data *sd,int id);
-void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id, unsigned char *p);
+void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id, int char_id, unsigned char *p);
 
 #endif	// _VENDING_H_

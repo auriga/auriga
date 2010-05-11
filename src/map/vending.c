@@ -84,13 +84,18 @@ void vending_vendinglistreq(struct map_session_data *sd,int id)
  * 露店アイテム購入
  *------------------------------------------
  */
-void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id, unsigned char *p)
+void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id, int char_id, unsigned char *p)
 {
-	int i, j, w, new_, blank, vend_list[MAX_VENDING];
+	int i, j, w, new_, blank, offset, vend_list[MAX_VENDING];
 	double z;
 	short amount, idx;
 	struct map_session_data *vsd;
 	struct vending vending[MAX_VENDING]; // against duplicate packets/items
+#if PACKETVER >= 22
+	offset = 12;
+#else
+	offset = 8;
+#endif
 
 	nullpo_retv(sd);
 
@@ -103,13 +108,17 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 		return;
 	if (vsd->vender_id == sd->bl.id)
 		return;
+#if PACKETVER >= 22
+	if (vsd->status.char_id != char_id)
+		return;
+#endif
 	if (sd->bl.m != vsd->bl.m)
 		return;
 	if (unit_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE)
 		return;
 
 	// check number of buying items
-	if (len < 8 + 4 || len > 8 + 4 * MAX_VENDING) {
+	if (len < offset + 4 || len > offset + 4 * MAX_VENDING) {
 		clif_buyvending(sd, 0, 0x7fff, 4); // not enough quantity (index and amount are unknown)
 		return;
 	}
@@ -123,7 +132,7 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 	z = 0.;
 	w = 0;
 	new_ = 0;
-	for(i = 0; 8 + 4 * i < len; i++) {
+	for(i = 0; offset + 4 * i < len; i++) {
 		amount = *(short*)(p + 4 * i);
 		if (amount <= 0)
 			return;
@@ -185,7 +194,7 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 	// ゼニー受け取り
 	pc_getzeny(vsd, (int)z);
 	// vending items
-	for(i = 0; 8 + 4 * i < len; i++) {
+	for(i = 0; offset + 4 * i < len; i++) {
 		amount = *(short*)(p + 4 * i);
 		idx = *(short*)(p + 2 + 4 * i) - 2;
 		pc_additem(sd, &vsd->status.cart[idx], amount);

@@ -5654,7 +5654,14 @@ int atcommand_changemaptype(const int fd, struct map_session_data* sd, AtCommand
  */
 int atcommand_hotkeyset(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int num;
+	int num, hotkyes;
+#if PACKETVER >= 20
+	hotkyes = 38;
+#elif PACKETVER >= 19
+	hotkyes = 36;
+#else
+	hotkyes = 27;
+#endif
 
 	nullpo_retr(-1, sd);
 
@@ -5663,12 +5670,12 @@ int atcommand_hotkeyset(const int fd, struct map_session_data* sd, AtCommandType
 
 	num = atoi(message);
 
-	if (num >= 0 && num <= (MAX_HOTKEYS - 1) / 27) {
+	if (num >= 0 && num <= (MAX_HOTKEYS - 1) / hotkyes) {
 		sd->hotkey_set = num;
 		clif_send_hotkey(sd);
 		msg_output(fd, msg_txt(184), sd->hotkey_set);
 	} else {
-		msg_output(fd, msg_txt(185), (MAX_HOTKEYS - 1) / 27);
+		msg_output(fd, msg_txt(185), (MAX_HOTKEYS - 1) / hotkyes);
 	}
 
 	return 0;

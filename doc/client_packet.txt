@@ -1971,14 +1971,17 @@ R 07f6 <charactor ID>.l <exp>.l <type>.w <quest>.w
 	quest=0 通常取得のexp（exp取得時文字が黄色になる）
 	quest=1 クエスト取得のexp（exp取得時文字が紫色になる）
 R 07fa <0?>.w <index>.w <amount>.w
-	00afの上位版（2009-11-17aRagexeRE以降）
+	00afの上位版（2009-11-18cRagexeRE以降）
 R 07fb <src ID>.l <dst ID>.l <X>.w <Y>.w <skillid>.w <pl>.l <casttime>.l <flag?>.B
-	0x13eの上位版（2009-11-17aRagexeRE以降）
+	0x13eの上位版（2009-11-18cRagexeRE以降）
+	PCのみ使用するパケットらしい？
 R 07fc <old account ID>.l <new account ID>.l
 	PTリーダー変更要求成功時に送信？
 R 07fe <name>.24B
 	nameのmp3ファイルを鳴らす
-R 0800 <len>.w <ID>.l <ID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
+R 0800 <len>.w <ID>.l <charID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
 	0133の上位版（2009-12-08aRagexeRE以降）
-S 0801 <len>.w <ID>.l {<amount>.w <index>.w}.4B*
+S 0801 <len>.w <ID>.l <charID>.l {<amount>.w <index>.w}.4B*
 	0134の上位版（2009-12-08aRagexeRE以降）
+R 080f <type ID>.w <item type>.B <amount>.l <identify flag>.B <attribute>.B <refine>.B <card>.4w
+	0x0e9の上位版（2010-02-23aRagexeRE以降）
