@@ -2146,12 +2146,15 @@ AurigaNPCScript
 			<index>を指定すると、砦データのガーディアン1〜8の領域に情報を書き込みます。
 
 		showevent命令
-			showevent <state>[,<type>];
+			showevent <state>[,<type>[,<name>]];
 
 			state	数値
 			type	数値、省略可
+			name	文字列、省略可
 
-			ミニMAPに点を表示、削除します。更にNPC上にtypeのエモーションを表示させます。
+			<name>で指定されたNPCの存在する座標にミニMAPの点を表示、削除します。更にNPC上にtypeのエモーションを表示させます。
+			<name>を省略した場合、実行したNPCが対象
+
 			state	0:ミニMAPの表示、typeのエモーションを削除
 				1:重要なクエスト用？
 				2:サブクエスト用？
@@ -2160,6 +2163,22 @@ AurigaNPCScript
 				1:Jobのエモーション
 				2:イベントのエモーション
 				3:MVPのエモーション
+
+		musiceffect命令
+			musiceffect <name>;
+
+			name		文字列 (24文字まで)
+
+			<name>で指定した音楽を発生させます。
+
+		areamusiceffect命令
+			areamusiceffect <gatname>,<x0>,<y0>,<x1>,<y1>,<name>;
+
+			name		文字列 (24文字まで)
+
+			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内のプレイヤーに対し
+			<name>で指定した音楽を発生させます。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
 	＊関数
 		rand関数

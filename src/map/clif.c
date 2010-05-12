@@ -10584,6 +10584,26 @@ void clif_showevent(struct map_session_data *sd, struct block_list *bl, short st
 }
 
 /*==========================================
+ * 音楽ファイルを鳴らす
+ *------------------------------------------
+ */
+void clif_musiceffect(struct map_session_data *sd, const char *name)
+{
+#if PACKETVER > 21
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0x7fe;
+	strncpy(WFIFOP(fd,2),name,24);
+	WFIFOSET(fd,packet_db[0x7fe].len);
+#endif
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */

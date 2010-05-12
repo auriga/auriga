@@ -1,4 +1,14 @@
 ----------------------------------------
+//0734 [2010/05/13] by popori
+
+・スクリプト命令「showevent」をNPCの名前を指定出来る様に拡張 (script.c script_ref.txt)
+
+・PACKETVER21より、スクリプト命令「musiceffect」「areamusiceffect」を追加 (clif.* script.c script_ref.txt)
+　※クライアントのBGMフォルダにあるmp3ファイルを演奏させます。
+　　name(ファイル名)の指定には.mp3を省いたものを指定して下さい。
+　　例) musiceffect "120"; // クライアントのBGMフォルダにある120.mp3を演奏させる
+
+----------------------------------------
 //0733 [2010/05/12] by popori
 
 ・2010-04-06日のクライアントまで対応 (clif.c vending.* *.dsp packet_db.txt vc_make.bat bcc32_make.bat Makefile client_packet.txt)

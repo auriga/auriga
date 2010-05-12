@@ -238,6 +238,7 @@ void clif_send_equipopen(struct map_session_data *sd);
 void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int tick);
 void clif_mshield(struct map_session_data *sd, int num);
 void clif_showevent(struct map_session_data *sd, struct block_list *bl, short state, short type);
+void clif_musiceffect(struct map_session_data *sd, const char *name);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

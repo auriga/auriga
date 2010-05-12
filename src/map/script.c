@@ -3982,6 +3982,8 @@ int buildin_getguardianinfo(struct script_state *st);
 int buildin_getmobname(struct script_state *st);
 int buildin_checkactiveitem(struct script_state *st);
 int buildin_showevent(struct script_state *st);
+int buildin_musiceffect(struct script_state *st);
+int buildin_areamusiceffect(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4250,7 +4252,9 @@ struct script_function buildin_func[] = {
 	{buildin_getguardianinfo,"getguardianinfo","sii"},
 	{buildin_getmobname,"getmobname","i"},
 	{buildin_checkactiveitem,"checkactiveitem","*"},
-	{buildin_showevent,"showevent","i*"},
+	{buildin_showevent,"showevent","i**"},
+	{buildin_musiceffect,"musiceffect","s"},
+	{buildin_areamusiceffect,"areamusiceffect","siiiis"},
 	{NULL,NULL,NULL}
 };
 
@@ -11802,10 +11806,13 @@ int buildin_checkactiveitem(struct script_state *st)
 int buildin_showevent(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
-	struct npc_data *nd = map_id2nd(st->oid);
+	struct npc_data *nd;
 	int state, type = 0;
 
-	nullpo_retr(0, sd);
+	if(st->end>st->start+4)
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+4])));
+	else
+		nd = map_id2nd(st->oid);
 
 	if(nd == NULL) {
 		printf("buildin_showevent: npc not found\n");
@@ -11823,5 +11830,55 @@ int buildin_showevent(struct script_state *st)
 
 	clif_showevent(sd,&nd->bl,state,type);
 
+	return 0;
+}
+
+/*==========================================
+ * ミュージックエフェクト
+ *------------------------------------------
+ */
+int buildin_musiceffect(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	char *name = conv_str(st,& (st->stack->stack_data[st->start+2]));
+
+	if(sd)
+		clif_musiceffect(sd,name);
+
+	return 0;
+}
+
+/*==========================================
+ * 範囲指定ミュージックエフェクト
+ *------------------------------------------
+ */
+static int buildin_musiceffect_sub(struct block_list *bl,va_list ap)
+{
+	struct map_session_data *sd;
+	char *name   = va_arg(ap,char *);
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
+
+	clif_musiceffect(sd,name);
+
+	return 0;
+}
+
+int buildin_areamusiceffect(struct script_state *st)
+{
+	char *name,*str;
+	int m,x0,y0,x1,y1;
+
+	str  = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x0   = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y0   = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	x1   = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	y1   = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	name = conv_str(st,& (st->stack->stack_data[st->start+7]));
+
+	m = script_mapname2mapid(st,str);
+	if(m >= 0)
+		map_foreachinarea(buildin_musiceffect_sub,m,x0,y0,x1,y1,BL_PC,name);
 	return 0;
 }
