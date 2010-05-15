@@ -4897,15 +4897,17 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 			return 0;
 
 		// 自分のギルドか同盟ギルド砦
-		if(g->guild_id == gc->guild_id || guild_check_alliance(md->guild_id, sd->status.guild_id, 0)) {
-			// エンペとガーディアンは味方
-			if(md->class_ == 1288 || guardian)
-				return 1;
-			// それ以外のバイオプラント、スフィアマインなどは敵（攻撃可能）
-			return 0;
+		if(gc) {
+			if(g->guild_id == gc->guild_id || guild_check_alliance(md->guild_id, sd->status.guild_id, 0)) {
+				// エンペとガーディアンは味方
+				if(md->class_ == 1288 || guardian)
+					return 1;
+				// それ以外のバイオプラント、スフィアマインなどは敵（攻撃可能）
+				return 0;
+			}
 		}
 
-		// 他人の砦なら全部敵
+		// 他人の砦、砦以外のGvGモードなら全部敵
 		return 0;
 	}
 	if(ss->type == BL_MOB && target->type == BL_PC) {
