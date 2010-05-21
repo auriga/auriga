@@ -3832,7 +3832,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1]) {
 				sc = status_get_sc(bl);
-				if(sc->option & 0x46) {
+				if(sc && sc->option & 0x46) {
 					if(sc->option & 0x06) {
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);

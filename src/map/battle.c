@@ -1029,7 +1029,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		if(sd->state.arrow_atk)						// 武器が弓矢の場合
 			atkmin = watk * ((atkmin < watk)? atkmin: watk) / 100;	// 弓用最低ATK計算
 		if(sc && sc->data[SC_IMPOSITIO].timer != -1)	// IMがかかっていたら最小加算攻撃力に加算
-			atkmin = sc->data[SC_IMPOSITIO].val1*5;
+			atkmin += sc->data[SC_IMPOSITIO].val1*5;
 
 		/* サイズ修正 */
 		if(skill_num == MO_EXTREMITYFIST) {
@@ -2817,12 +2817,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage2 = wd.damage2*cardfix/100;	// カード補正による左手ダメージ増加
 	}
 
-	/* 22．ソウルブレイカーの魔法ダメージ計算 */
-	if(skill_num == ASC_BREAKER)
-		damage_sbr = status_get_int(src) * skill_lv * 5;
+	/* 22．ソウルブレイカーの魔法ダメージとランダムダメージ計算 */
+	if(skill_num == ASC_BREAKER) {
+		damage_sbr = status_get_int(src) * skill_lv * 5;	// 魔法ダメージ
+		damage_sbr += 500 + (atn_rand() % 500);	// ランダムダメージ
+	}
 
 	/* 23．カードによるダメージ減衰処理 */
-	if( target_sd && (wd.damage > 0 || wd.damage2 > 0) ) {	// 対象がPCの場合
+	if( target_sd && (wd.damage > 0 || wd.damage2 > 0 || damage_sbr > 0) ) {	// 対象がPCの場合
 		int s_race  = status_get_race(src);
 		int s_enemy = status_get_enemy_type(src);
 		int s_size  = status_get_size(src);
@@ -2908,8 +2910,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 	if(skill_num == ASC_BREAKER) {			// ソウルブレイカー
-		wd.damage += damage_sbr;		// 魔法ダメージ
-		wd.damage += 500 + (atn_rand() % 500);	// ランダムダメージ
+		wd.damage += damage_sbr;	// 魔法ダメージとランダムダメージを加算
 		if(t_def1 < 1000000) {
 			int vitbonusmax = (t_vit/20)*(t_vit/20)-1;
 			wd.damage -= (t_def1 + t_def2 + ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1)) + status_get_mdef(target) + status_get_mdef2(target))/2;

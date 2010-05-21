@@ -179,6 +179,7 @@ R 0095 <ID>.l <nick>.24B
 S 0096 <len>.w <nick>.24B <message>.?B
 	wis送信
 R 0097 <len>.w <nick>.24B <message>.?B
+       <len>.w <nick>.24B <flag?>.l <message>.?B(2009-11-04aRagexeRE以降)
 	wis受信
 R 0098 <type>.B
 	type=00 wis送信成功

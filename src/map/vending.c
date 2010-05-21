@@ -91,7 +91,7 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 	short amount, idx;
 	struct map_session_data *vsd;
 	struct vending vending[MAX_VENDING]; // against duplicate packets/items
-#if PACKETVER >= 22
+#if PACKETVER >= 23
 	offset = 12;
 #else
 	offset = 8;
@@ -108,7 +108,7 @@ void vending_purchasereq(struct map_session_data *sd, unsigned short len, int id
 		return;
 	if (vsd->vender_id == sd->bl.id)
 		return;
-#if PACKETVER >= 22
+#if PACKETVER >= 23
 	if (vsd->status.char_id != char_id)
 		return;
 #endif

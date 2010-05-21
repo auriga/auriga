@@ -5400,12 +5400,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			ud->state.change_speed = 1;
 			val2 = 5 + val1*15;
 			if(sd) {
-				// 被ディボーション者をディフェンダーLv1にする
+				// 被ディボーション者をディフェンダーにする
 				struct map_session_data *tsd;
 				int i;
 				for(i = 0; i < 5; i++) {
 					if(sd->dev.val1[i] && (tsd = map_id2sd(sd->dev.val1[i])) != NULL)
-						status_change_start(&tsd->bl,type,1,0,0,0,skill_get_time(CR_DEFENDER,1),0);
+						status_change_start(&tsd->bl,type,val1,0,0,0,skill_get_time(CR_DEFENDER,val1),0);
 				}
 			}
 			break;

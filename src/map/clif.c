@@ -3073,7 +3073,7 @@ void clif_delitem(struct map_session_data *sd, int n, int amount)
 
 	fd=sd->fd;
 
-#if PACKETVER < 21
+#if PACKETVER < 22
 	WFIFOW(fd,0)=0xaf;
 	WFIFOW(fd,2)=n+2;
 	WFIFOW(fd,4)=amount;
@@ -4744,7 +4744,7 @@ void clif_tradestart(struct map_session_data *sd, unsigned char type)
 void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd, int idx, int amount)
 {
 	int fd,j,offset=0;
-#if PACKETVER >= 23
+#if PACKETVER >= 24
 	const int cmd = 0x80f;
 #else
 	const int cmd = 0xe9;
@@ -4756,14 +4756,14 @@ void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd,
 	fd=tsd->fd;
 	WFIFOW(fd,0)=cmd;
 
-#if PACKETVER < 23
+#if PACKETVER < 24
 	WFIFOL(fd,2) = amount;
 	offset=4;
 #endif
 
 	if(idx==0){
 		WFIFOW(fd,2+offset) = 0; // type id
-#if PACKETVER >= 23
+#if PACKETVER >= 24
 		WFIFOB(fd, 4) = 0;	// type
 		WFIFOL(fd, 5) = amount;	// amount
 		offset=1;
@@ -4783,7 +4783,7 @@ void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd,
 			WFIFOW(fd,2+offset) = sd->inventory_data[idx]->view_id;
 		else
 			WFIFOW(fd,2+offset) = sd->status.inventory[idx].nameid;
-#if PACKETVER >= 23
+#if PACKETVER >= 24
 		WFIFOB(fd,4) = itemdb_type(sd->status.inventory[idx].nameid);
 		WFIFOL(fd,5) = amount;
 		offset=1;
@@ -5937,7 +5937,7 @@ void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int
 	unsigned char buf[25];
 	int cmd = 0x13e;
 
-#if PACKETVER >= 21
+#if PACKETVER >= 22
 	if(bl->type == BL_PC)	// キャラクターのみ使用するらしい？
 		cmd = 0x7fb;
 #endif
@@ -5950,7 +5950,7 @@ void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int
 	WBUFW(buf,14) = skill_num;
 	WBUFL(buf,16) = skill_get_pl(skill_num);	// 属性
 	WBUFL(buf,20) = casttime;
-#if PACKETVER >= 21
+#if PACKETVER >= 22
 	if(bl->type == BL_PC)
 		WBUFB(buf,24) = 0;
 #endif
@@ -6642,9 +6642,17 @@ void clif_refine(int fd, unsigned short fail, int idx, int val)
 void clif_wis_message(int fd,char *nick,char *mes, int mes_len)
 {
 	WFIFOW(fd,0)=0x97;
+
+#if PACKETVER < 21
 	WFIFOW(fd,2)=mes_len + 28;
 	memcpy(WFIFOP(fd,4),nick,24);
 	memcpy(WFIFOP(fd,28),mes,mes_len);
+	WFIFOSET(fd,WFIFOW(fd,2));
+#else
+	WFIFOW(fd,2)=mes_len + 32;
+	memcpy(WFIFOP(fd,4),nick,24);
+	WFIFOL(fd,28)=0;	// Unknown
+	memcpy(WFIFOP(fd,32),mes,mes_len);
 	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return;
@@ -7477,7 +7485,7 @@ void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
 
 	fd=sd->fd;
 
-#if PACKETVER >= 22
+#if PACKETVER >= 23
 	WFIFOW(fd,0)=0x800;
 	offset = 12;
 #else
@@ -7485,7 +7493,7 @@ void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
 	offset = 8;
 #endif
 	WFIFOL(fd,4)=vsd->status.account_id;
-#if PACKETVER >= 22
+#if PACKETVER >= 23
 	WFIFOL(fd,8)=vsd->status.char_id;
 #endif
 	n = 0;
@@ -13049,7 +13057,7 @@ static void clif_parse_VendingListReq(int fd,struct map_session_data *sd, int cm
  */
 static void clif_parse_PurchaseReq(int fd,struct map_session_data *sd, int cmd)
 {
-#if PACKETVER >= 22
+#if PACKETVER >= 23
 	vending_purchasereq(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)),RFIFOL(fd,GETPACKETPOS(cmd,2)),RFIFOP(fd,GETPACKETPOS(cmd,3)));
 #else
 	vending_purchasereq(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)),-1,RFIFOP(fd,GETPACKETPOS(cmd,2)));
