@@ -6654,6 +6654,7 @@ void clif_wis_message(int fd,char *nick,char *mes, int mes_len)
 	WFIFOL(fd,28)=0;	// Unknown
 	memcpy(WFIFOP(fd,32),mes,mes_len);
 	WFIFOSET(fd,WFIFOW(fd,2));
+#endif
 
 	return;
 }
