@@ -1,4 +1,11 @@
 ----------------------------------------
+//0739 [2010/05/28] by popori
+
+・0738の変更漏れを修正 (atcommand.c clif.c)
+
+・0733のtypoの修正 (atcommand.c clif.c)
+
+----------------------------------------
 //0738 [2010/05/28] by popori
 
 ・0x1c3の上位パケット0x40cに対応、0x10eの上位パケット0x7e1対応に伴いPACKETVERを更新 (mmo.h clif.c vending.c skill.c Makefile vc_make.bat bcc32_make.bat *.dsp)

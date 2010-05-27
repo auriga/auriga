@@ -10414,14 +10414,14 @@ void clif_update_temper(struct map_session_data *sd)
 void clif_send_hotkey(struct map_session_data *sd)
 {
 #if PACKETVER >= 10
-	int i, j, fd, hotkyes;
+	int i, j, fd, hotkeys;
 
-#if PACKETVER >= 20
-	hotkyes = 38;
-#elif PACKETVER > 19
-	hotkyes = 36;
+#if PACKETVER >= 21
+	hotkeys = 38;
+#elif PACKETVER > 20
+	hotkeys = 36;
 #else
-	hotkyes= 27;
+	hotkeys = 27;
 #endif
 
 	nullpo_retv(sd);
@@ -10432,7 +10432,7 @@ void clif_send_hotkey(struct map_session_data *sd)
 	memset(WFIFOP(fd,0), 0, packet_db[0x2b9].len);
 
 	WFIFOW(fd,0) = 0x2b9;
-	for(i = 0, j = sd->hotkey_set * hotkyes; i < hotkyes && j < MAX_HOTKEYS; i++, j++) {
+	for(i = 0, j = sd->hotkey_set * hotkeys; i < hotkeys && j < MAX_HOTKEYS; i++, j++) {
 		WFIFOB(fd,7*i+2) = sd->status.hotkey[j].type;
 		WFIFOL(fd,7*i+3) = sd->status.hotkey[j].id;
 		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
@@ -10442,7 +10442,7 @@ void clif_send_hotkey(struct map_session_data *sd)
 	memset(WFIFOP(fd,0), 0, packet_db[0x7d9].len);
 
 	WFIFOW(fd,0) = 0x7d9;
-	for(i = 0, j = sd->hotkey_set * hotkyes; i < hotkyes && j < MAX_HOTKEYS; i++, j++) {
+	for(i = 0, j = sd->hotkey_set * hotkeys; i < hotkeys && j < MAX_HOTKEYS; i++, j++) {
 		WFIFOB(fd,7*i+2) = sd->status.hotkey[j].type;
 		WFIFOL(fd,7*i+3) = sd->status.hotkey[j].id;
 		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
@@ -14533,18 +14533,18 @@ static void clif_parse_FeelSaveAck(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_HotkeySave(int fd,struct map_session_data *sd, int cmd)
 {
-	int idx, hotkyes;
-#if PACKETVER >= 20
-	hotkyes = 38;
-#elif PACKETVER >= 19
-	hotkyes = 36;
+	int idx, hotkeys;
+#if PACKETVER >= 21
+	hotkeys = 38;
+#elif PACKETVER >= 20
+	hotkeys = 36;
 #else
-	hotkyes = 27;
+	hotkeys = 27;
 #endif
 
 	nullpo_retv(sd);
 
-	idx = sd->hotkey_set * hotkyes + RFIFOW(fd,GETPACKETPOS(cmd,0));
+	idx = sd->hotkey_set * hotkeys + RFIFOW(fd,GETPACKETPOS(cmd,0));
 	if(idx < 0 || idx >= MAX_HOTKEYS)
 		return;
 
