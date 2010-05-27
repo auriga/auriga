@@ -1,4 +1,14 @@
 ----------------------------------------
+//0738 [2010/05/28] by popori
+
+・0x1c3の上位パケット0x40cに対応、0x10eの上位パケット0x7e1対応に伴いPACKETVERを更新 (mmo.h clif.c vending.c skill.c Makefile vc_make.bat bcc32_make.bat *.dsp)
+
+・PACKETVER23より歩行関連の上位パケット(0x7f7 0x7f8 0x7f9)に対応 (clif.c)
+
+・ダイヤモンド交換クエストのアイテムIDが間違っているのを修正 (npc_quest_diamond.txt)
+　tomoさんに感謝
+
+----------------------------------------
 //0737 [2010/05/24] by popori
 
 ・0736以降コンパイルエラーが出ていたのを修正 (clif.c)

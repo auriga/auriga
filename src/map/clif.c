@@ -588,6 +588,8 @@ static void clif_clearchar_id(int id, unsigned char type, int fd)
  */
 static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 {
+	size_t len = 61 + strlen(sd->status.name);
+
 	nullpo_retr(0, sd);
 
 #if PACKETVER < 4
@@ -728,7 +730,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,56)=(sd->status.base_level>99)?99:sd->status.base_level;
 
 	return packet_db[0x22a].len;
-#else
+#elif PACKETVER < 23
 	WBUFW(buf,0)=0x2ee;
 	WBUFL(buf,2)=sd->bl.id;
 	WBUFW(buf,6)=sd->speed;
@@ -782,6 +784,43 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,58)=0;
 
 	return packet_db[0x2ee].len;
+#else
+	WBUFW(buf,0)=0x7f9;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=0;
+	WBUFL(buf,5)=sd->bl.id;
+	WBUFW(buf,9)=sd->speed;
+	WBUFW(buf,11)=sd->sc.opt1;
+	WBUFW(buf,13)=sd->sc.opt2;
+	WBUFL(buf,15)=sd->sc.option;
+	WBUFW(buf,19)=sd->view_class;
+	WBUFW(buf,21)=sd->status.hair;
+	if(sd->view_class != 22 && sd->view_class != 26 && sd->view_class != 27)
+		WBUFW(buf,23)=sd->status.weapon;
+	else
+		WBUFW(buf,23)=0;
+	WBUFW(buf,25)=sd->status.shield;
+	WBUFW(buf,27)=sd->status.head_bottom;
+	WBUFW(buf,29)=sd->status.head_top;
+	WBUFW(buf,31)=sd->status.head_mid;
+	WBUFW(buf,33)=sd->status.hair_color;
+	WBUFW(buf,35)=sd->status.clothes_color;
+	WBUFW(buf,37)=sd->head_dir;
+	WBUFL(buf,39)=sd->status.guild_id;
+	WBUFW(buf,43)=sd->guild_emblem_id;
+	WBUFW(buf,45)=sd->status.manner;
+	WBUFL(buf,47)=sd->sc.opt3;
+	WBUFB(buf,51)=(unsigned char)sd->status.karma;
+	WBUFB(buf,52)=sd->sex;
+	WBUFPOS2(buf,53,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
+	WBUFB(buf,56)=5;
+	WBUFB(buf,57)=5;
+	WBUFB(buf,58)=sd->state.dead_sit;
+	WBUFW(buf,59)=(sd->status.base_level>99)?99:sd->status.base_level;
+	WBUFW(buf,61)=0;	// font
+	strncpy(WBUFP(buf,62),sd->status.name,24);
+
+	return (int)len;
 #endif
 }
 
@@ -791,6 +830,8 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
  */
 static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 {
+	size_t len = 69 + strlen(sd->status.name);
+
 	nullpo_retr(0, sd);
 
 #if PACKETVER < 4
@@ -985,7 +1026,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,63)=(sd->status.base_level>99)?99:sd->status.base_level;
 
 	return packet_db[0x22c].len;
-#else
+#elif PACKETVER < 23
 	WBUFW(buf,0)=0x2ec;
 	WBUFB(buf,2)=0;
 	WBUFL(buf,3)=sd->bl.id;
@@ -1040,6 +1081,43 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,65)=0;
 
 	return packet_db[0x2ec].len;
+#else
+	WBUFW(buf,0)=0x7f7;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=0;
+	WBUFL(buf,5)=sd->bl.id;
+	WBUFW(buf,9)=sd->speed;
+	WBUFW(buf,11)=sd->sc.opt1;
+	WBUFW(buf,13)=sd->sc.opt2;
+	WBUFL(buf,15)=sd->sc.option;
+	WBUFW(buf,19)=sd->view_class;
+	WBUFW(buf,21)=sd->status.hair;
+	if(sd->view_class != 22 && sd->view_class != 26 && sd->view_class != 27)
+		WBUFW(buf,23)=sd->status.weapon;
+	else
+		WBUFW(buf,23)=0;
+	WBUFW(buf,25)=sd->status.shield;
+	WBUFW(buf,27)=sd->status.head_bottom;
+	WBUFL(buf,29)=gettick();
+	WBUFW(buf,33)=sd->status.head_top;
+	WBUFW(buf,35)=sd->status.head_mid;
+	WBUFW(buf,37)=sd->status.hair_color;
+	WBUFW(buf,39)=sd->status.clothes_color;
+	WBUFW(buf,41)=sd->head_dir;
+	WBUFL(buf,43)=sd->status.guild_id;
+	WBUFW(buf,47)=sd->guild_emblem_id;
+	WBUFW(buf,49)=sd->status.manner;
+	WBUFL(buf,51)=sd->sc.opt3;
+	WBUFB(buf,55)=(unsigned char)sd->status.karma;
+	WBUFB(buf,56)=sd->sex;
+	WBUFPOS2(buf,57,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
+	WBUFB(buf,63)=0;
+	WBUFB(buf,64)=0;
+	WBUFW(buf,65)=(sd->status.base_level>99)?99:sd->status.base_level;
+	WBUFW(buf,67)=0;	// font
+	strncpy(WBUFP(buf,69),sd->status.name,24);
+
+	return (int)len;
 #endif
 }
 
@@ -1071,6 +1149,7 @@ void clif_class_change(struct block_list *bl,int class_,int type)
 static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 {
 	int level;
+	size_t len = 61 + strlen(md->name);
 
 	nullpo_retr(0, md);
 
@@ -1174,7 +1253,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,56)=((level = status_get_lv(&md->bl))>99)? 99:level;
 
 		return packet_db[0x22a].len;
-#else
+#elif PACKETVER < 23
 		memset(buf,0,packet_db[0x2ee].len);
 
 		WBUFW(buf,0)=0x2ee;
@@ -1208,6 +1287,43 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,58)=0;
 
 		return packet_db[0x2ee].len;
+#else
+		memset(buf,0,len);
+
+		WBUFW(buf,0)=0x7f9;
+		WBUFW(buf,2)=(unsigned short)len;
+		WBUFB(buf,4)=0;
+		WBUFL(buf,5)=md->bl.id;
+		WBUFW(buf,9)=status_get_speed(&md->bl);
+		WBUFW(buf,11)=md->sc.opt1;
+		WBUFW(buf,13)=md->sc.opt2;
+		WBUFL(buf,15)=md->sc.option;
+		WBUFW(buf,19)=mob_get_viewclass(md->class_);
+		WBUFW(buf,21)=mob_get_hair(md->class_);
+		WBUFW(buf,23)=mob_get_weapon(md->class_);
+		WBUFW(buf,25)=mob_get_shield(md->class_);
+		WBUFW(buf,27)=mob_get_head_bottom(md->class_);
+		WBUFW(buf,29)=mob_get_head_top(md->class_);
+		WBUFW(buf,31)=mob_get_head_mid(md->class_);
+		WBUFW(buf,33)=mob_get_hair_color(md->class_);
+		WBUFW(buf,35)=mob_get_clothes_color(md->class_);
+		if(md->guild_id){
+			struct guild *g=guild_search(md->guild_id);
+			if(g)
+				WBUFW(buf,43)=g->emblem_id;
+			WBUFL(buf,39)=md->guild_id;
+		}
+		WBUFL(buf,47)=md->sc.opt3;
+		WBUFB(buf,51)=1;
+		WBUFB(buf,52)=mob_get_sex(md->class_);
+		WBUFPOS(buf,53,md->bl.x,md->bl.y,md->dir);
+		WBUFB(buf,56)=5;
+		WBUFB(buf,57)=5;
+		WBUFW(buf,59)=((level = status_get_lv(&md->bl))>99)? 99:level;
+		WBUFW(buf,61)=0;
+		strncpy(WBUFP(buf,62),md->name,24);
+
+		return (int)len;
 #endif
 	}
 	memset(buf,0,packet_db[0x78].len);
@@ -1262,6 +1378,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 {
 	int level;
+	size_t len = 69 + strlen(md->name);
 
 	nullpo_retr(0, md);
 
@@ -1403,7 +1520,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,63)=((level = status_get_lv(&md->bl))>99)? 99:level;
 
 		return packet_db[0x22c].len;
-#else
+#elif PACKETVER < 23
 		memset(buf,0,packet_db[0x2ec].len);
 
 		WBUFW(buf,0)=0x2ec;
@@ -1439,6 +1556,42 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,65)=0;
 
 		return packet_db[0x2ec].len;
+#else
+		WBUFW(buf,0)=0x7f7;
+		WBUFW(buf,2)=(unsigned short)len;
+		WBUFB(buf,4)=0;
+		WBUFL(buf,5)=md->bl.id;
+		WBUFW(buf,9)=md->speed;
+		WBUFW(buf,11)=md->sc.opt1;
+		WBUFW(buf,13)=md->sc.opt2;
+		WBUFL(buf,15)=md->sc.option;
+		WBUFW(buf,19)=mob_get_viewclass(md->class_);
+		WBUFW(buf,21)=mob_get_hair(md->class_);
+		WBUFW(buf,23)=mob_get_weapon(md->class_);
+		WBUFW(buf,25)=mob_get_shield(md->class_);
+		WBUFW(buf,27)=mob_get_head_bottom(md->class_);
+		WBUFL(buf,29)=gettick();
+		WBUFW(buf,33)=mob_get_head_top(md->class_);
+		WBUFW(buf,35)=mob_get_head_mid(md->class_);
+		WBUFW(buf,37)=mob_get_hair_color(md->class_);
+		WBUFW(buf,39)=mob_get_clothes_color(md->class_);
+		if(md->guild_id){
+			struct guild *g=guild_search(md->guild_id);
+			if(g)
+				WBUFW(buf,47)=g->emblem_id;
+			WBUFL(buf,43)=md->guild_id;
+		}
+		WBUFL(buf,51)=md->sc.opt3;
+		WBUFB(buf,55)=1;
+		WBUFB(buf,56)=mob_get_sex(md->class_);
+		WBUFPOS2(buf,57,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
+		WBUFB(buf,63)=0;
+		WBUFB(buf,64)=0;
+		WBUFW(buf,65)=((level = status_get_lv(&md->bl))>99)? 99:level;
+		WBUFW(buf,67)=0;
+		strncpy(WBUFP(buf,69),md->name,24);
+
+		return (int)len;
 #endif
 	}
 	memset(buf,0,packet_db[0x7b].len);
@@ -1524,6 +1677,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 {
 	int view,level;
+	size_t len = 61 + strlen(pd->name);
 
 	nullpo_retr(0, pd);
 
@@ -1597,7 +1751,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,56)=((level = status_get_lv(&pd->bl))>99)? 99:level;
 
 		return packet_db[0x22a].len;
-#else
+#elif PACKETVER < 23
 		memset(buf,0,packet_db[0x2ee].len);
 
 		WBUFW(buf,0)=0x2ee;
@@ -1621,6 +1775,33 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,58)=0;
 
 		return packet_db[0x2ee].len;
+#else
+		memset(buf,0,len);
+
+		WBUFW(buf,0)=0x7f9;
+		WBUFW(buf,2)=(unsigned short)len;
+		WBUFB(buf,4)=0;
+		WBUFL(buf,5)=pd->bl.id;
+		WBUFW(buf,9)=pd->speed;
+		WBUFL(buf,15)=mob_db[pd->class_].option;
+		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
+		WBUFW(buf,21)=mob_get_hair(pd->class_);
+		WBUFW(buf,23)=mob_get_weapon(pd->class_);
+		WBUFW(buf,25)=mob_get_shield(pd->class_);
+		WBUFW(buf,27)=mob_get_head_bottom(pd->class_);
+		WBUFW(buf,29)=mob_get_head_top(pd->class_);
+		WBUFW(buf,31)=mob_get_head_mid(pd->class_);
+		WBUFW(buf,33)=mob_get_hair_color(pd->class_);
+		WBUFW(buf,35)=mob_get_clothes_color(pd->class_);
+		WBUFB(buf,52)=mob_get_sex(pd->class_);
+		WBUFPOS(buf,53,pd->bl.x,pd->bl.y,pd->dir);
+		WBUFB(buf,56)=0;
+		WBUFB(buf,57)=0;
+		WBUFW(buf,59)=((level = status_get_lv(&pd->bl))>99)? 99:level;
+		WBUFW(buf,61)=0;
+		strncpy(WBUFP(buf,62),pd->name,24);
+
+		return (int)len;
 #endif
 	}
 	memset(buf,0,packet_db[0x78].len);
@@ -1665,6 +1846,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 {
 	int view,level;
+	size_t len = 69 + strlen(pd->name);
 
 	nullpo_retr(0, pd);
 
@@ -1766,7 +1948,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,63)=((level = status_get_lv(&pd->bl))>99)? 99:level;
 
 		return packet_db[0x22c].len;
-#else
+#elif PACKETVER < 23
 		memset(buf,0,packet_db[0x2ec].len);
 
 		WBUFW(buf,0)=0x2ec;
@@ -1792,6 +1974,32 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,65)=0;
 
 		return packet_db[0x2ec].len;
+#else
+		WBUFW(buf,0)=0x7f7;
+		WBUFW(buf,2)=(unsigned short)len;
+		WBUFB(buf,4)=0;
+		WBUFL(buf,5)=pd->bl.id;
+		WBUFW(buf,9)=pd->speed;
+		WBUFL(buf,15)=mob_db[pd->class_].option;
+		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
+		WBUFW(buf,21)=mob_get_hair(pd->class_);
+		WBUFW(buf,23)=mob_get_weapon(pd->class_);
+		WBUFW(buf,25)=mob_get_shield(pd->class_);
+		WBUFW(buf,27)=mob_get_head_bottom(pd->class_);
+		WBUFL(buf,29)=gettick();
+		WBUFW(buf,33)=mob_get_head_top(pd->class_);
+		WBUFW(buf,35)=mob_get_head_mid(pd->class_);
+		WBUFW(buf,37)=mob_get_hair_color(pd->class_);
+		WBUFW(buf,39)=mob_get_clothes_color(pd->class_);
+		WBUFB(buf,56)=mob_get_sex(pd->class_);
+		WBUFPOS2(buf,57,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
+		WBUFB(buf,63)=0;
+		WBUFB(buf,64)=0;
+		WBUFW(buf,65)=((level = status_get_lv(&pd->bl))>99)? 99:level;
+		WBUFW(buf,67)=0;
+		strncpy(WBUFP(buf,69),pd->name,24);
+
+		return (int)len;
 #endif
 	}
 	memset(buf,0,packet_db[0x7b].len);
@@ -2010,6 +2218,8 @@ static void clif_set0192(int fd, int m, int x, int y, int type)
  */
 void clif_spawnpc(struct map_session_data *sd)
 {
+	size_t len = 62 + strlen(sd->status.name);
+
 	nullpo_retv(sd);
 
 	clif_set0078(sd,WFIFOP(sd->fd,0));
@@ -2025,10 +2235,17 @@ void clif_spawnpc(struct map_session_data *sd)
 	WFIFOW(sd->fd,0)=0x22b;
 	WFIFOW(sd->fd,55)=(sd->status.base_level>99)?99:sd->status.base_level;
 	clif_send(WFIFOP(sd->fd,0),packet_db[0x22b].len,&sd->bl,AREA_WOS);
-#else
+#elif PACKETVER < 23
 	WFIFOW(sd->fd,0)=0x2ed;
 	WFIFOW(sd->fd,55)=(sd->status.base_level>99)?99:sd->status.base_level;
 	clif_send(WFIFOP(sd->fd,0),packet_db[0x2ed].len,&sd->bl,AREA_WOS);
+#else
+	WFIFOW(sd->fd,0)=0x7f8;
+	WFIFOW(sd->fd,2)=(unsigned short)len;
+	WFIFOW(sd->fd,58)=(sd->status.base_level>99)?99:sd->status.base_level;
+	WFIFOB(sd->fd,61)=0;	// font
+	strncpy(WFIFOP(sd->fd,62),sd->status.name,24);
+	clif_send(WFIFOP(sd->fd,0),(int)len,&sd->bl,AREA_WOS);
 #endif
 
 	if(sd->spiritball > 0)
@@ -2113,7 +2330,7 @@ void clif_spawnnpc(struct npc_data *nd)
  */
 void clif_spawnmob(struct mob_data *md)
 {
-	unsigned char buf[64];
+	unsigned char buf[128];
 	int len;
 
 	nullpo_retv(md);
@@ -2160,7 +2377,7 @@ void clif_spawnmob(struct mob_data *md)
  */
 void clif_spawnpet(struct pet_data *pd)
 {
-	unsigned char buf[64];
+	unsigned char buf[128];
 	int len;
 
 	nullpo_retv(pd);
@@ -3073,7 +3290,7 @@ void clif_delitem(struct map_session_data *sd, int n, int amount)
 
 	fd=sd->fd;
 
-#if PACKETVER < 22
+#if PACKETVER < 24
 	WFIFOW(fd,0)=0xaf;
 	WFIFOW(fd,2)=n+2;
 	WFIFOW(fd,4)=amount;
@@ -4744,7 +4961,7 @@ void clif_tradestart(struct map_session_data *sd, unsigned char type)
 void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd, int idx, int amount)
 {
 	int fd,j,offset=0;
-#if PACKETVER >= 24
+#if PACKETVER >= 26
 	const int cmd = 0x80f;
 #else
 	const int cmd = 0xe9;
@@ -4756,14 +4973,14 @@ void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd,
 	fd=tsd->fd;
 	WFIFOW(fd,0)=cmd;
 
-#if PACKETVER < 24
+#if PACKETVER < 26
 	WFIFOL(fd,2) = amount;
 	offset=4;
 #endif
 
 	if(idx==0){
 		WFIFOW(fd,2+offset) = 0; // type id
-#if PACKETVER >= 24
+#if PACKETVER >= 26
 		WFIFOB(fd, 4) = 0;	// type
 		WFIFOL(fd, 5) = amount;	// amount
 		offset=1;
@@ -4783,7 +5000,7 @@ void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd,
 			WFIFOW(fd,2+offset) = sd->inventory_data[idx]->view_id;
 		else
 			WFIFOW(fd,2+offset) = sd->status.inventory[idx].nameid;
-#if PACKETVER >= 24
+#if PACKETVER >= 26
 		WFIFOB(fd,4) = itemdb_type(sd->status.inventory[idx].nameid);
 		WFIFOL(fd,5) = amount;
 		offset=1;
@@ -5917,6 +6134,8 @@ void clif_skillup(struct map_session_data *sd, int skill_num)
 	nullpo_retv(sd);
 
 	fd=sd->fd;
+
+#if PACKETVER < 22
 	WFIFOW(fd,0) = 0x10e;
 	WFIFOW(fd,2) = skill_num;
 	WFIFOW(fd,4) = sd->status.skill[skill_num].lv;
@@ -5924,6 +6143,16 @@ void clif_skillup(struct map_session_data *sd, int skill_num)
 	WFIFOW(fd,8) = skill_get_fixed_range(&sd->bl,skill_num,sd->status.skill[skill_num].lv);
 	WFIFOB(fd,10) = (sd->status.skill[skill_num].lv < pc_get_skilltree_max(&sd->s_class,sd->status.skill[skill_num].id))? 1: 0;
 	WFIFOSET(fd,packet_db[0x10e].len);
+#else
+	WFIFOW(fd,0) = 0x7e1;
+	WFIFOW(fd,2) = skill_num;
+	WFIFOL(fd,4) = 0;
+	WFIFOW(fd,8) = sd->status.skill[skill_num].lv;
+	WFIFOW(fd,10) = skill_get_sp(skill_num,sd->status.skill[skill_num].lv);
+	WFIFOW(fd,12) = skill_get_fixed_range(&sd->bl,skill_num,sd->status.skill[skill_num].lv);
+	WFIFOB(fd,14) = (sd->status.skill[skill_num].lv < pc_get_skilltree_max(&sd->s_class,sd->status.skill[skill_num].id))? 1: 0;
+	WFIFOSET(fd,packet_db[0x7e1].len);
+#endif
 
 	return;
 }
@@ -5937,7 +6166,7 @@ void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int
 	unsigned char buf[25];
 	int cmd = 0x13e;
 
-#if PACKETVER >= 22
+#if PACKETVER >= 24
 	if(bl->type == BL_PC)	// キャラクターのみ使用するらしい？
 		cmd = 0x7fb;
 #endif
@@ -5950,7 +6179,7 @@ void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int
 	WBUFW(buf,14) = skill_num;
 	WBUFL(buf,16) = skill_get_pl(skill_num);	// 属性
 	WBUFL(buf,20) = casttime;
-#if PACKETVER >= 22
+#if PACKETVER >= 24
 	if(bl->type == BL_PC)
 		WBUFB(buf,24) = 0;
 #endif
@@ -6505,7 +6734,11 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+16);
 
+#if PACKETVER < 16
 	WBUFW(buf,0) = 0x1c3;
+#else
+	WBUFW(buf,0) = 0x40c;
+#endif
 	WBUFW(buf,2) = (unsigned short)(len+16);
 	WBUFL(buf,4) = color;
 	WBUFW(buf,8) = 400;	// Font style? Type?
@@ -6643,7 +6876,7 @@ void clif_wis_message(int fd,char *nick,char *mes, int mes_len)
 {
 	WFIFOW(fd,0)=0x97;
 
-#if PACKETVER < 21
+#if PACKETVER < 23
 	WFIFOW(fd,2)=mes_len + 28;
 	memcpy(WFIFOP(fd,4),nick,24);
 	memcpy(WFIFOP(fd,28),mes,mes_len);
@@ -7486,7 +7719,7 @@ void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
 
 	fd=sd->fd;
 
-#if PACKETVER >= 23
+#if PACKETVER >= 25
 	WFIFOW(fd,0)=0x800;
 	offset = 12;
 #else
@@ -7494,7 +7727,7 @@ void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
 	offset = 8;
 #endif
 	WFIFOL(fd,4)=vsd->status.account_id;
-#if PACKETVER >= 23
+#if PACKETVER >= 25
 	WFIFOL(fd,8)=vsd->status.char_id;
 #endif
 	n = 0;
@@ -7832,7 +8065,7 @@ void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
 	if(sd==NULL)
 		return;
 
-#if PACKETVER < 19
+#if PACKETVER < 20
 	WBUFW(buf,0)=0x101;
 	WBUFL(buf,2)=((flag&0x01)?2:p->exp);
 	if(flag == 0) {
@@ -8139,7 +8372,7 @@ void clif_send_petstatus(struct map_session_data *sd)
 	WFIFOW(fd,29)=sd->pet.hungry;
 	WFIFOW(fd,31)=sd->pet.intimate;
 	WFIFOW(fd,33)=sd->pet.equip;
-#if PACKETVER > 16
+#if PACKETVER > 17
 	WFIFOW(fd,35)=sd->pet.class_;
 #endif
 	WFIFOSET(fd,packet_db[0x1a2].len);
@@ -9009,6 +9242,8 @@ void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv, int 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
+
+#if PACKETVER < 22
 	WFIFOW(fd,0) = 0x10e;
 	WFIFOW(fd,2) = skill_num;
 	WFIFOW(fd,4) = lv;
@@ -9016,6 +9251,16 @@ void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv, int 
 	WFIFOW(fd,8) = skill_get_range(skill_num,lv);
 	WFIFOB(fd,10) = flag;
 	WFIFOSET(fd,packet_db[0x10e].len);
+#else
+	WFIFOW(fd,0) = 0x7e1;
+	WFIFOW(fd,2) = skill_num;
+	WFIFOL(fd,4) = 0;
+	WFIFOW(fd,8) = lv;
+	WFIFOW(fd,10) = skill_get_sp(skill_num,lv);
+	WFIFOW(fd,12) = skill_get_range(skill_num,lv);
+	WFIFOB(fd,14) = flag;
+	WFIFOSET(fd,packet_db[0x7e1].len);
+#endif
 
 	return;
 }
@@ -10183,7 +10428,7 @@ void clif_send_hotkey(struct map_session_data *sd)
 
 	fd = sd->fd;
 
-#if PACKETVER < 19
+#if PACKETVER < 20
 	memset(WFIFOP(fd,0), 0, packet_db[0x2b9].len);
 
 	WFIFOW(fd,0) = 0x2b9;
@@ -10534,7 +10779,7 @@ void clif_send_equipopen(struct map_session_data *sd)
  */
 void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int tick)
 {
-#if PACKETVER > 15
+#if PACKETVER > 16
 	int fd;
 
 	nullpo_retv(sd);
@@ -10574,7 +10819,7 @@ void clif_mshield(struct map_session_data *sd, int num)
  */
 void clif_showevent(struct map_session_data *sd, struct block_list *bl, short state, short type)
 {
-#if PACKETVER > 18
+#if PACKETVER > 19
 	int fd;
 
 	nullpo_retv(sd);
@@ -12964,7 +13209,7 @@ static void clif_parse_RemovePartyMember(int fd,struct map_session_data *sd, int
 static void clif_parse_PartyChangeOption(int fd,struct map_session_data *sd, int cmd)
 {
 
-#if PACKETVER >= 19
+#if PACKETVER >= 20
 	int item = (int)RFIFOB(fd,GETPACKETPOS(cmd,1));
 	int item2 = (int)RFIFOB(fd,GETPACKETPOS(cmd,1)+1);
 
@@ -13058,7 +13303,7 @@ static void clif_parse_VendingListReq(int fd,struct map_session_data *sd, int cm
  */
 static void clif_parse_PurchaseReq(int fd,struct map_session_data *sd, int cmd)
 {
-#if PACKETVER >= 23
+#if PACKETVER >= 25
 	vending_purchasereq(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)),RFIFOL(fd,GETPACKETPOS(cmd,2)),RFIFOP(fd,GETPACKETPOS(cmd,3)));
 #else
 	vending_purchasereq(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)),-1,RFIFOP(fd,GETPACKETPOS(cmd,2)));

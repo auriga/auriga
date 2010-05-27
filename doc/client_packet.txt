@@ -1971,6 +1971,45 @@ R 07f6 <charactor ID>.l <exp>.l <type>.w <quest>.w
 	type=2 Job_exp
 	quest=0 通常取得のexp（exp取得時文字が黄色になる）
 	quest=1 クエスト取得のexp（exp取得時文字が紫色になる）
+R 07f7 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <weapon>.w <shield>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定?>.2B <Lv>.w <font>.w <name>.24B
+	表示範囲内キャラ移動情報(02ecの上位バージョン)
+	type=0 PC
+	type=1 ?
+	type=2 ITEM
+	type=3 SKILL
+	type=4 CHAT
+	type=5 MOB
+	type=6 NPC
+	type=7 PET
+	type=8 HOM
+	type=9 MER
+	type=10 ELEM(ソーサラーの妖精)
+R 07f8 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <weapon>.w <shield>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <font>.w <name>.24B
+	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報(02edの上位バージョン)
+	type=0 PC
+	type=1 ?
+	type=2 ITEM
+	type=3 SKILL
+	type=4 CHAT
+	type=5 MOB
+	type=6 NPC
+	type=7 PET
+	type=8 HOM
+	type=9 MER
+	type=10 ELEM(ソーサラーの妖精)
+R 07f9 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <weapon>.w <shield>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <font>.w <name>.24B
+	マップロード時&移動時用、向き付き用キャラ情報(02eeの上位バージョン)
+	type=0 PC
+	type=1 ?
+	type=2 ITEM
+	type=3 SKILL
+	type=4 CHAT
+	type=5 MOB
+	type=6 NPC
+	type=7 PET
+	type=8 HOM
+	type=9 MER
+	type=10 ELEM(ソーサラーの妖精)
 R 07fa <0?>.w <index>.w <amount>.w
 	00afの上位版（2009-11-18cRagexeRE以降）
 R 07fb <src ID>.l <dst ID>.l <X>.w <Y>.w <skillid>.w <pl>.l <casttime>.l <flag?>.B

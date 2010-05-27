@@ -451,7 +451,7 @@ comodo.gat,219,158,6	script	カチュア	91,{
 		else if('@gamble >= 0 && '@gamble < 200)
 			getitem 2401,1;		//サンダル
 		else if('@gamble >= 200 && '@gamble < 300)
-			getitem 2505,1;		//足鎖
+			getitem 2408,1;		//足鎖
 		else if('@gamble >= 303 && '@gamble < 350)
 			getitem 2411,1;		//グリーブ
 		else if('@gamble >= 350 && '@gamble < 400)

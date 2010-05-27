@@ -55,9 +55,9 @@
 #define MAX_PORTAL_MEMO 3
 #define MAIL_STORE_MAX 30
 
-#if PACKETVER >= 20
+#if PACKETVER >= 21
 	#define MAX_HOTKEYS 38
-#elif PACKETVER >= 19
+#elif PACKETVER >= 20
 	#define MAX_HOTKEYS 36
 #else
 	#define MAX_HOTKEYS 27
