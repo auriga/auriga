@@ -2214,6 +2214,10 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 	len += 4;
 #endif
 
+#if PACKETVER > 26
+	offset += 3;
+#endif
+
 	session[fd]->auth = 1; // 認証終了を socket.c に伝える
 
 	sd->state = CHAR_STATE_AUTHOK;
@@ -2222,6 +2226,11 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 	memset(WFIFOP(fd,0),0,offset+found_num*len);
 	WFIFOW(fd,0)=0x6b;
 	WFIFOW(fd,2)=offset+found_num*len;
+#if PACKETVER > 26
+	WFIFOB(fd,4) = max_char_slot;
+	WFIFOB(fd,5) = max_char_slot;
+	WFIFOB(fd,6) = max_char_slot;
+#endif
 
 	for( i = 0; i < max_char_slot ; i++ ) {
 		if(sd->found_char[i] == NULL)

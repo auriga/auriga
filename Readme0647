@@ -1,4 +1,13 @@
 ----------------------------------------
+//0740 [2010/05/29] by popori
+
+・現行最新のクライアントに対応に伴いPACKETVERの引き上げ (char.c *.dsp Makefile vc_make.bat bcc32_make.bat)
+
+・0738の修正 (clif.c)
+
+・vc_make.batのコンパイルメッセージを追加 (vc_make.bat)
+
+----------------------------------------
 //0739 [2010/05/28] by popori
 
 ・0738の変更漏れを修正 (atcommand.c clif.c)
