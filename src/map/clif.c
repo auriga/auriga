@@ -588,7 +588,7 @@ static void clif_clearchar_id(int id, unsigned char type, int fd)
  */
 static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 {
-	size_t len;
+	size_t len=0;
 
 	nullpo_retr(0, sd);
 
@@ -831,7 +831,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
  */
 static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 {
-	size_t len;
+	size_t len=0;
 
 	nullpo_retr(0, sd);
 
@@ -1151,7 +1151,7 @@ void clif_class_change(struct block_list *bl,int class_,int type)
 static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 {
 	int level;
-	size_t len;
+	size_t len=0;
 
 	nullpo_retr(0, md);
 
@@ -1381,7 +1381,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 {
 	int level;
-	size_t len;
+	size_t len=0;
 
 	nullpo_retr(0, md);
 
@@ -1681,7 +1681,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 {
 	int view,level;
-	size_t len;
+	size_t len=0;
 
 	nullpo_retr(0, pd);
 
@@ -1851,7 +1851,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 {
 	int view,level;
-	size_t len;
+	size_t len=0;
 
 	nullpo_retr(0, pd);
 
@@ -2224,7 +2224,7 @@ static void clif_set0192(int fd, int m, int x, int y, int type)
  */
 void clif_spawnpc(struct map_session_data *sd)
 {
-	size_t len;
+	size_t len=0;
 
 	nullpo_retv(sd);
 

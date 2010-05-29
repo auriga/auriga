@@ -1,4 +1,11 @@
 ----------------------------------------
+//0741 [2010/05/30] by popori
+
+・PACKETVERを23未満でコンパイルすると警告が発生するのを修正 (clif.c)
+
+・client_packet.txtの更新 (client_packet.txt)
+
+----------------------------------------
 //0740 [2010/05/29] by popori
 
 ・現行最新のクライアントに対応に伴いPACKETVERの引き上げ (char.c *.dsp Makefile vc_make.bat bcc32_make.bat)
