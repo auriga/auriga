@@ -1941,7 +1941,7 @@ R 0446 <ID>.l <x>.w <y>.w <state>.w <type>.w
 	NPCイベントの表示
 S 07d7 <exp>.l <item>.2B
 	0102の上位版
-R 07d8 <exp>.l <?>.w <item1>.B <item2>.B
+R 07d8 <exp>.l <item1>.B <item2>.B
 	0101の上位版
 R 07d9 { <type>.B <ID>.l <lv>.w }.7B*27
 	02b9と同じ（2009-06-03aRagexeRE以降）
@@ -2015,12 +2015,11 @@ R 07fa <0?>.w <index>.w <amount>.w
 	00afの上位版（2009-11-18cRagexeRE以降）
 R 07fb <src ID>.l <dst ID>.l <X>.w <Y>.w <skillid>.w <pl>.l <casttime>.l <flag?>.B
 	0x13eの上位版（2009-11-18cRagexeRE以降）
-	PCのみ使用するパケットらしい？
 R 07fc <old account ID>.l <new account ID>.l
 	PTリーダー変更要求成功時に送信？
 R 07fe <name>.24B
 	nameのmp3ファイルを鳴らす
-R 07ff <len>.w <?>.w <?>.w
+R 07ff <len>.w <?>.w <?>.?B
 	MAP鯖間移動時に観測。用途不明
 	0x72→0x7ff→0x283→0x7dの流れ
 R 0800 <len>.w <ID>.l <charID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
