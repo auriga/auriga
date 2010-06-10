@@ -2627,7 +2627,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	WBUFW(buf,0)=0x7f8;
 	WBUFW(buf,2)=(unsigned short)packet_len;
-	WBUFB(buf,4)=1;
+	WBUFB(buf,4)=6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=nd->option;
@@ -2753,6 +2753,7 @@ void clif_spawnpet(struct pet_data *pd)
 		WBUFW(buf,2)=(unsigned short)packet_len;
 		WBUFB(buf,4)=7;
 		WBUFL(buf,5)=pd->bl.id;
+		WBUFW(buf,9)=pd->speed;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFPOS(buf,53,pd->bl.x,pd->bl.y,pd->dir);
 		strncpy(WBUFP(buf,62),pd->name,24);
