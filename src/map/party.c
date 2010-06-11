@@ -925,9 +925,13 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 				c--;
 			} else {
 				if(battle_config.party_item_share_show && psd[i] != sd) {
+#if PACKETVER < 12
 					char output[128];
 					snprintf(output, sizeof(output), msg_txt(177), psd[i]->status.name);
 					clif_displaymessage(sd->fd,output);
+#else
+					clif_show_partyshareitem(sd,item_data);
+#endif
 				}
 				return 0;
 			}
@@ -969,6 +973,61 @@ void party_equip_window(struct map_session_data *sd, int account_id)
 	}
 
 	clif_party_equiplist(sd, tsd);
+
+	return;
+}
+
+/*==========================================
+ * パーティーリーダー変更
+ *------------------------------------------
+ */
+void party_changeleader(struct map_session_data *sd, int id)
+{
+	struct party *p;
+	struct map_session_data *tsd;
+	int i, t_i;
+
+	nullpo_retv(sd);
+
+	if(sd->status.party_id == 0)
+		return;
+
+	p = party_search(sd->status.party_id);
+	if(p == NULL)
+		return;
+
+	for(i = 0; i < MAX_PARTY && p->member[i].sd != sd; i++);
+	if(i == MAX_PARTY)
+		return;
+
+	if(!p->member[i].leader)
+		return;
+
+	tsd = map_id2sd(id);
+
+	if(tsd == NULL || tsd->status.party_id != sd->status.party_id)
+		return;
+
+	for(t_i = 0; t_i < MAX_PARTY && p->member[t_i].sd != tsd; t_i++);
+	if(t_i == MAX_PARTY)
+		return;
+
+	intif_party_leaderchange(p->party_id,p->member[t_i].account_id,p->member[t_i].char_id);
+
+	// PTリーダー変更
+#if PACKETVER < 25
+	p->member[i].leader = 0;
+	if(p->member[i].sd->fd)
+		clif_displaymessage(p->member[i].sd->fd, msg_txt(194));
+	p->member[t_i].leader = 1;
+	if(p->member[t_i].sd->fd)
+		clif_displaymessage(p->member[t_i].sd->fd, msg_txt(195));
+	clif_party_info(p,-1);
+#else
+	p->member[i].leader = 0;
+	p->member[t_i].leader = 1;
+	clif_partyleader_info(sd,tsd->status.account_id);
+#endif
 
 	return;
 }

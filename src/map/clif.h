@@ -234,11 +234,14 @@ void clif_send_hotkey(struct map_session_data *sd);
 void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int y, int tick, int type);
 void clif_openbook(struct map_session_data *sd, int nameid, int page);
 void clif_msgstringtable(struct map_session_data *sd, int line);
+void clif_show_partyshareitem(struct map_session_data *sd, struct item *item_data);
+void clif_break_equip(struct map_session_data *sd, int where);
 void clif_send_equipopen(struct map_session_data *sd);
 void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int tick);
 void clif_mshield(struct map_session_data *sd, int num);
 void clif_showevent(struct map_session_data *sd, struct block_list *bl, short state, short type);
 void clif_musiceffect(struct map_session_data *sd, const char *name);
+void clif_partyleader_info(struct map_session_data *sd, int account_id);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

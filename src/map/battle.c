@@ -5643,7 +5643,7 @@ int battle_config_read(const char *cfgName)
 		{ "gm_perfect_hide",                    &battle_config.gm_perfect_hide,                    0        },
 		{ "pcview_mob_clear_type",              &battle_config.pcview_mob_clear_type,              1        },
 		{ "party_item_share_type",              &battle_config.party_item_share_type,              1        },
-		{ "party_item_share_show",              &battle_config.party_item_share_show,              0        },
+		{ "party_item_share_show",              &battle_config.party_item_share_show,              1        },
 		{ "pk_murderer_point",                  &battle_config.pk_murderer_point,                  100      },
 		{ "sg_miracle_rate",                    &battle_config.sg_miracle_rate,                    1        },
 		{ "sg_angel_rate",                      &battle_config.sg_angel_rate,                      2        },

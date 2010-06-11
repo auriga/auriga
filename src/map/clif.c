@@ -8455,10 +8455,10 @@ void clif_party_main_info(struct party *p, int fd)
 	sd = p->member[i].sd;
 	WBUFW(buf,0)  = 0x1e9;
 	WBUFL(buf,2)  = p->member[i].account_id;
-	WBUFL(buf,6)  = 0;				// unknown
+	WBUFL(buf,6)  = (p->member[i].leader)? 0: 1;
 	WBUFW(buf,10) = (sd)? sd->bl.x: 0;
 	WBUFW(buf,12) = (sd)? sd->bl.y: 0;
-	WBUFB(buf,14) = (p->member[i].online)? 0: 1;	// unknown
+	WBUFB(buf,14) = (p->member[i].online)? 0: 1;
 	memcpy(WBUFP(buf,15), p->name, 24);
 	memcpy(WBUFP(buf,39), p->member[i].name, 24);
 	memcpy(WBUFP(buf,63), p->member[i].map, 24);
@@ -9302,8 +9302,8 @@ void clif_guild_belonginfo(struct map_session_data *sd, struct guild *g)
 	WFIFOL(fd,2)=g->guild_id;
 	WFIFOL(fd,6)=g->emblem_id;
 	WFIFOL(fd,10)=g->position[ps].mode;
-	WFIFOL(fd,14)=0;	// unknown
-	WFIFOB(fd,18)=0;	// unknown
+	WFIFOB(fd,14)=(strcmp(sd->status.name, g->master))? 0: 1;
+	WFIFOL(fd,15)=0;	// unknown
 	memcpy(WFIFOP(fd,19),g->name,24);
 	WFIFOSET(fd,packet_db[0x16c].len);
 
@@ -11216,6 +11216,56 @@ void clif_msgstringtable(struct map_session_data *sd, int line)
 }
 
 /*==========================================
+ * パーティーメンバーアイテム獲得メッセージ
+ *------------------------------------------
+ */
+void clif_show_partyshareitem(struct map_session_data *sd, struct item *item_data)
+{
+	unsigned char buf[22];
+	struct item_data *id;
+
+	id = itemdb_search(item_data->nameid);
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0)=0x2b8;
+	WBUFL(buf,2) = sd->status.account_id;
+	WBUFW(buf,6) = item_data->nameid;
+	WBUFB(buf,8) = item_data->identify;
+	WBUFB(buf,9) = item_data->attribute;
+	WBUFB(buf,10) = item_data->refine;
+	WBUFW(buf,11) = item_data->card[0];
+	WBUFW(buf,13) = item_data->card[1];
+	WBUFW(buf,15) = item_data->card[2];
+	WBUFW(buf,17) = item_data->card[3];
+	WBUFW(buf,19) = id->equip;
+	WBUFB(buf,21) = id->type;
+	clif_send(buf,packet_db[0x2b8].len,&sd->bl,PARTY_SAMEMAP_WOS);
+
+	return;
+}
+
+/*==========================================
+ * 装備破壊
+ *------------------------------------------
+ */
+void clif_break_equip(struct map_session_data *sd, int where)
+{
+#if PACKETVER >= 12
+	unsigned char buf[16];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0) = 0x2bb;
+	WBUFW(buf,2) = where;
+	WBUFL(buf,4) = sd->bl.id;
+	clif_send(buf,packet_db[0x2bb].len,&sd->bl,PARTY_SAMEMAP_WOS);
+#endif
+
+	return;
+}
+
+/*==========================================
  * 装備ウィンドウ情報
  *------------------------------------------
  */
@@ -11374,6 +11424,25 @@ void clif_showevent(struct map_session_data *sd, struct block_list *bl, short st
 
 	return;
 }
+
+/*==========================================
+ * パーティーリーダー変更情報
+ *------------------------------------------
+ */
+void clif_partyleader_info(struct map_session_data *sd, int account_id)
+{
+	unsigned char buf[16];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0) = 0x7fc;
+	WBUFL(buf,2) = sd->status.account_id;
+	WBUFL(buf,6) = account_id;
+	clif_send(buf,packet_db[0x7fc].len,&sd->bl,PARTY);
+
+	return;
+}
+
 
 /*==========================================
  * 音楽ファイルを鳴らす
@@ -15253,50 +15322,9 @@ static void clif_parse_BattleMessage(int fd,struct map_session_data *sd, int cmd
 *------------------------------------------*/
 static void clif_parse_PartyChangeLeader(int fd,struct map_session_data *sd, int cmd)
 {
-	struct party *p;
-	struct map_session_data *t_sd;
-	int i, t_i;
-
-	nullpo_retv(sd);
-
-	if(sd->status.party_id == 0)
-		return;
-
-	p = party_search(sd->status.party_id);
-	if(p == NULL)
-		return;
-
-	for(i = 0; i < MAX_PARTY && p->member[i].sd != sd; i++);
-	if(i == MAX_PARTY)
-		return;
-
-	if(!p->member[i].leader)
-		return;
-
-	t_sd = map_id2sd(RFIFOL(fd,GETPACKETPOS(cmd,0)));
-
-	if(t_sd == NULL || t_sd->status.party_id != sd->status.party_id)
-		return;
-
-	for(t_i = 0; t_i < MAX_PARTY && p->member[t_i].sd != t_sd; t_i++);
-	if(t_i == MAX_PARTY)
-		return;
-
-	// PTリーダー変更
-	p->member[i].leader = 0;
-	if(p->member[i].sd->fd)
-		clif_displaymessage(p->member[i].sd->fd, msg_txt(194));
-
-	p->member[t_i].leader = 1;
-	if(p->member[t_i].sd->fd)
-		clif_displaymessage(p->member[t_i].sd->fd, msg_txt(195));
-
-	intif_party_leaderchange(p->party_id,p->member[t_i].account_id,p->member[t_i].char_id);
-
-	clif_party_info(p,-1);
+	party_changeleader(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
 
 	return;
-
 }
 
 /*==========================================

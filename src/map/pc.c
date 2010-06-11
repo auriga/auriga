@@ -7939,6 +7939,7 @@ int pc_break_equip(struct map_session_data *sd, unsigned short where)
 			break;
 		}
 	}
+	clif_break_equip(sd,where);
 	clif_itemlist(sd);
 	clif_equiplist(sd);
 
@@ -8004,6 +8005,7 @@ int pc_break_equip2(struct map_session_data *sd,int where)
 		pc_unequipitem(sd,idx,0);
 	}
 
+	clif_break_equip(sd,where);
 	clif_itemlist(sd);
 	clif_equiplist(sd);
 

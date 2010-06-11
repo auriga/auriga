@@ -523,7 +523,7 @@ R 0110 <skill ID>.w <basic type>.l <fail>.B <type>.B
 	     08: 青ジェム無し
 	     09: Weightが90%を越えている
 	     0a: スキル使用失敗
-R 0111 <skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B
+R 0111 <skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B
 	skillidのスキルをリストに追加する。
 	一時取得スキルに使用
 S 0112 <skill ID>.w
@@ -549,7 +549,7 @@ R 0117 <skill ID>.w <src ID>.l <val>.w <X>.w <Y>.w <server tick>.l
 	場所相手のスキルエフェクト表示。valはレベルか、一部固さ?(氷壁)
 S 0118
 	攻撃キャンセル
-R 0119 <ID>.l <param1>.w <param2>.w <param3>.w <?>.B
+R 0119 <ID>.l <param1>.w <param2>.w <param3>.w <pk>.B
 	見た目変更
 	param1=02 フロストダイバで凍り漬け?
 	param2=01 毒?
@@ -1240,7 +1240,7 @@ S 01e8 <party name>.24B <item1>.B <item2>.B
 	<item1>アイテム収集方法。0で個人別、1でパーティ共有
 	<item2>アイテム分配方法。0で個人別、1でパーティに均等分配
 	(00f9の上位バーション)
-R 01e9 <ID>.l <?>.l <x>.w <y>.w <online?>.B <party_name>.24B <char_name>.24B <map_name>.24B <item>.B <item2>.B
+R 01e9 <ID>.l <leader>.l <x>.w <y>.w <online>.B <party_name>.24B <char_name>.24B <map_name>.24B <item>.B <item2>.B
 	パーティメイン情報
 R 01ea <ID>.l
 	結婚エフェクト(音楽、紙吹雪)
@@ -1756,8 +1756,6 @@ R 02b7 <questID>.l <active>.B
 	クエストのactive切り替え応答
 R 02b8 <ID>.l <itemid>.w <identify>.B <attribute>.B <refine>.B <card>.4w <equip_type>.w <type>.B
 	PTメンバーのアイテム獲得メッセージ
-	何故かメッセージが出力されない？
-	未調査
 R 02b9 { <type>.B <ID>.l <lv>.w }.7B*27
 	ホットキー情報受信
 S 02ba <index>.w <type>.B <ID>.l <lv>.w
@@ -1766,7 +1764,6 @@ S 02ba <index>.w <type>.B <ID>.l <lv>.w
 	type=1 : スキル
 R 02bb <index>.w <ID>.l
 	装備が損傷されました
-	帰属装備中のアイテムにのみ反応？
 R 02bf <?>.l <?>.l
 	ログイン系？未調査
 S 02c0
