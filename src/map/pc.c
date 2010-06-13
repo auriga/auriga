@@ -537,7 +537,7 @@ int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, in
 		// PK仕様、PKマップで攻撃が人間かつ自分でない(GXなどの対策)
 		if(map[sd->bl.m].flag.pk && sd->bl.id != ssd->bl.id && ranking_get_point(ssd,RK_PK) >= battle_config.pk_murderer_point) {
 			if(loss_base > 0 || loss_job > 0)
-				pc_gainexp(ssd,NULL,loss_base,loss_job);
+				pc_gainexp(ssd,NULL,loss_base,loss_job,0);
 		}
 	}
 	return 1;
@@ -4781,7 +4781,7 @@ static int pc_checkjoblevelup(struct map_session_data *sd)
  * 経験値取得
  *------------------------------------------
  */
-int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber base_exp, atn_bignumber job_exp)
+int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber base_exp, atn_bignumber job_exp, short quest)
 {
 	nullpo_retr(0, sd);
 
@@ -4828,11 +4828,22 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 	}
 
 	if (battle_config.disp_experience && (base_exp || job_exp)) {
+#if PACKETVER < 23
 		char output[128];
 		int bexp = (base_exp > 0x7fffffff)? 0x7fffffff: (int)base_exp;
 		int jexp = (job_exp  > 0x7fffffff)? 0x7fffffff: (int)job_exp;
 		snprintf(output, sizeof output, msg_txt(131), bexp, jexp);
 		clif_disp_onlyself(sd->fd, output);
+#else
+		if(base_exp) {
+			int bexp = (base_exp > 0x7fffffff)? 0x7fffffff: (int)base_exp;
+			clif_dispexp(sd,bexp,1,quest);
+		}
+		if(job_exp) {
+			int jexp = (job_exp  > 0x7fffffff)? 0x7fffffff: (int)job_exp;
+			clif_dispexp(sd,jexp,2,quest);
+		}
+#endif
 	}
 
 	//------------- Base ----------------

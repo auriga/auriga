@@ -5372,7 +5372,7 @@ int battle_config_read(const char *cfgName)
 		{ "gvg_trade_request_refused",          &battle_config.gvg_trade_request_refused,          1        },
 		{ "pvp_trade_request_refused",          &battle_config.pvp_trade_request_refused,          1        },
 		{ "skill_removetrap_type",              &battle_config.skill_removetrap_type,              0        },
-		{ "disp_experience",                    &battle_config.disp_experience,                    0        },
+		{ "disp_experience",                    &battle_config.disp_experience,                    1        },
 		{ "castle_defense_rate",                &battle_config.castle_defense_rate,                100      },
 		{ "riding_weight",                      &battle_config.riding_weight,                      10000    },
 		{ "hp_rate",                            &battle_config.hp_rate,                            100      },

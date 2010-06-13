@@ -1,4 +1,14 @@
 ----------------------------------------
+//0749 [2010/06/14] by popori
+
+・PACKETVER23より獲得経験値表示パケットの実装 (clif.* pc.* homun.c merc.c mob.c npc.c party.c script.c skill.c)
+
+・獲得経験値をデフォルトで有効に変更 (battle_auriga.conf battle.c)
+
+・PETの発言やMOBの名前等が化けるのを修正 (clif.c)
+　tomoさんに感謝
+
+----------------------------------------
 //0748 [2010/06/12] by popori
 
 ・装備破損時のメッセージを追加 (clif.* pc.c)

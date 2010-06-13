@@ -894,7 +894,7 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 		atn_bignumber bexp = base_exp * base_bonus / 100 / c + 1;
 		atn_bignumber jexp = job_exp  * job_bonus  / 100 / c + 1;
 
-		pc_gainexp(sdlist[i],md,bexp,jexp);
+		pc_gainexp(sdlist[i],md,bexp,jexp,0);
 	}
 
 	return;

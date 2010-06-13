@@ -1919,7 +1919,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			{
 				if( (tmpsd->sc.data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// 死んだふりしていない
 				    (tmpsd->sc.data[SC_HIDING].timer == -1    || !battle_config.noexp_hiding) )		// ハイドしていない
-					pc_gainexp(tmpsd, md, base_exp, job_exp);
+					pc_gainexp(tmpsd, md, base_exp, job_exp, 0);
 			}
 		}
 		// 公平分配
@@ -2079,7 +2079,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				if(mexp < 1)
 					mexp = 1;
 				clif_mvp_exp(mvpsd, ((mexp > 0x7fffffff)? 0x7fffffff: (int)mexp));
-				pc_gainexp(mvpsd,NULL,mexp,0);
+				pc_gainexp(mvpsd,NULL,mexp,0,0);
 			}
 			for(j=0; j<3; j++) {
 				i = atn_rand() % 3;

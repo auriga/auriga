@@ -785,7 +785,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 
 	return packet_db[0x2ee].len;
 #else
-	len = 61 + strlen(sd->status.name);
+	len = 63 + strlen(sd->status.name);
 	WBUFW(buf,0)=0x7f9;
 	WBUFW(buf,2)=(unsigned short)len;
 	WBUFB(buf,4)=0;
@@ -833,13 +833,13 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,47)=sd->sc.opt3;
 	WBUFB(buf,51)=(unsigned char)sd->status.karma;
 	WBUFB(buf,52)=sd->sex;
-	WBUFPOS2(buf,53,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
+	WBUFPOS(buf,53,sd->bl.x,sd->bl.y,sd->dir);
 	WBUFB(buf,56)=5;
 	WBUFB(buf,57)=5;
 	WBUFB(buf,58)=sd->state.dead_sit;
 	WBUFW(buf,59)=(sd->status.base_level>99)?99:sd->status.base_level;
 	WBUFW(buf,61)=0;	// font
-	strncpy(WBUFP(buf,62),sd->status.name,24);
+	strncpy(WBUFP(buf,63),sd->status.name,strlen(sd->status.name)+1);
 
 	return (int)len;
 #endif
@@ -1157,7 +1157,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,64)=5;
 	WBUFW(buf,65)=(sd->status.base_level>99)?99:sd->status.base_level;
 	WBUFW(buf,67)=0;	// font
-	strncpy(WBUFP(buf,69),sd->status.name,24);
+	strncpy(WBUFP(buf,69),sd->status.name,strlen(sd->status.name)+1);
 
 	return (int)len;
 #endif
@@ -1330,7 +1330,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 
 		return packet_db[0x2ee].len;
 #else
-		len = 61 + strlen(md->name);
+		len = 63 + strlen(md->name);
 		memset(buf,0,len);
 
 		WBUFW(buf,0)=0x7f9;
@@ -1363,8 +1363,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFB(buf,56)=5;
 		WBUFB(buf,57)=5;
 		WBUFW(buf,59)=((level = status_get_lv(&md->bl))>99)? 99:level;
-		WBUFW(buf,61)=0;
-		strncpy(WBUFP(buf,62),md->name,24);
+		strncpy(WBUFP(buf,63),md->name,strlen(md->name)+1);
 
 		return (int)len;
 #endif
@@ -1417,7 +1416,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 
 	return packet_db[0x78].len;
 #else
-	len = 61 + strlen(md->name);
+	len = 63 + strlen(md->name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0)=0x7f9;
@@ -1438,7 +1437,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 	WBUFL(buf,47)=md->sc.opt3;
 	WBUFPOS(buf,53,md->bl.x,md->bl.y,md->dir);
 	WBUFW(buf,59)=((level = status_get_lv(&md->bl))>99)? 99:level;
-	strncpy(WBUFP(buf,62),md->name,24);
+	strncpy(WBUFP(buf,63),md->name,strlen(md->name)+1);
 
 	return (int)len;
 #endif
@@ -1664,8 +1663,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFB(buf,63)=0;
 		WBUFB(buf,64)=0;
 		WBUFW(buf,65)=((level = status_get_lv(&md->bl))>99)? 99:level;
-		WBUFW(buf,67)=0;
-		strncpy(WBUFP(buf,69),md->name,24);
+		strncpy(WBUFP(buf,69),md->name,strlen(md->name)+1);
 
 		return (int)len;
 #endif
@@ -1721,7 +1719,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFB(buf,63)=0;
 	WBUFB(buf,64)=0;
 	WBUFW(buf,65)=((level = status_get_lv(&md->bl))>99)? 99:level;
-	strncpy(WBUFP(buf,69),md->name,24);
+	strncpy(WBUFP(buf,69),md->name,strlen(md->name)+1);
 
 	return (int)len;
 #endif
@@ -1782,7 +1780,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 
 	return packet_db[0x78].len;
 #else
-	len = 61 + strlen(nd->name);
+	len = 63 + strlen(nd->name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0)=0x7f9;
@@ -1801,7 +1799,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 			WBUFL(buf,39)=g->guild_id;
 	}
 	WBUFPOS(buf,53,nd->bl.x,nd->bl.y,nd->dir);
-	strncpy(WBUFP(buf,62),nd->name,24);
+	strncpy(WBUFP(buf,63),nd->name,strlen(nd->name)+1);
 
 	return (int)len;
 #endif
@@ -1913,7 +1911,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 
 		return packet_db[0x2ee].len;
 #else
-		len = 61 + strlen(pd->name);
+		len = 63 + strlen(pd->name);
 		memset(buf,0,len);
 
 		WBUFW(buf,0)=0x7f9;
@@ -1936,8 +1934,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,56)=0;
 		WBUFB(buf,57)=0;
 		WBUFW(buf,59)=((level = status_get_lv(&pd->bl))>99)? 99:level;
-		WBUFW(buf,61)=0;
-		strncpy(WBUFP(buf,62),pd->name,24);
+		strncpy(WBUFP(buf,63),pd->name,strlen(pd->name)+1);
 
 		return (int)len;
 #endif
@@ -1980,7 +1977,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 
 	return packet_db[0x78].len;
 #else
-	len = 61 + strlen(pd->name);
+	len = 63 + strlen(pd->name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0)=0x7f9;
@@ -1995,7 +1992,8 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 	else
 		WBUFW(buf,23)=pd->equip;
 	WBUFPOS(buf,53,pd->bl.x,pd->bl.y,pd->dir);
-	strncpy(WBUFP(buf,62),pd->name,24);
+	WBUFW(buf,59)=((level = status_get_lv(&pd->bl))>99)? 99:level;
+	strncpy(WBUFP(buf,63),pd->name,strlen(pd->name)+1);
 
 	return (int)len;
 #endif
@@ -2161,8 +2159,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,63)=0;
 		WBUFB(buf,64)=0;
 		WBUFW(buf,65)=((level = status_get_lv(&pd->bl))>99)? 99:level;
-		WBUFW(buf,67)=0;
-		strncpy(WBUFP(buf,69),pd->name,24);
+		strncpy(WBUFP(buf,69),pd->name,strlen(pd->name)+1);
 
 		return (int)len;
 #endif
@@ -2205,7 +2202,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 	WBUFB(buf,63)=0;
 	WBUFB(buf,64)=0;
 	WBUFW(buf,65)=((level = status_get_lv(&pd->bl))>99)? 99:level;
-	strncpy(WBUFP(buf,69),pd->name,24);
+	strncpy(WBUFP(buf,69),pd->name,strlen(pd->name)+1);
 
 	return (int)len;
 #endif
@@ -2262,7 +2259,7 @@ static int clif_hom0078(struct homun_data *hd,unsigned char *buf)
 
 	return packet_db[0x78].len;
 #else
-	len = 61 + strlen(hd->status.name);
+	len = 63 + strlen(hd->status.name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0)=0x7f9;
@@ -2279,7 +2276,7 @@ static int clif_hom0078(struct homun_data *hd,unsigned char *buf)
 	WBUFL(buf,47)=hd->sc.opt3;
 	WBUFPOS(buf,53,hd->bl.x,hd->bl.y,hd->dir);
 	WBUFW(buf,59)=((level = status_get_lv(&hd->bl))>99)? 99:level;
-	strncpy(WBUFP(buf,62),hd->status.name,24);
+	strncpy(WBUFP(buf,63),hd->status.name,strlen(hd->status.name)+1);
 
 	return (int)len;
 #endif
@@ -2344,7 +2341,7 @@ static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
 	WBUFB(buf,63)=0;
 	WBUFB(buf,64)=0;
 	WBUFW(buf,65)=((level = status_get_lv(&hd->bl))>99)? 99:level;
-	strncpy(WBUFP(buf,69),hd->status.name,24);
+	strncpy(WBUFP(buf,69),hd->status.name,strlen(hd->status.name)+1);
 
 	return (int)len;
 #endif
@@ -2401,7 +2398,7 @@ static int clif_merc0078(struct merc_data *mcd,unsigned char *buf)
 
 	return packet_db[0x78].len;
 #else
-	len = 61 + strlen(mcd->status.name);
+	len = 63 + strlen(mcd->status.name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0) =0x7f9;
@@ -2418,7 +2415,7 @@ static int clif_merc0078(struct merc_data *mcd,unsigned char *buf)
 	WBUFL(buf,47)=mcd->sc.opt3;
 	WBUFPOS(buf,53,mcd->bl.x,mcd->bl.y,mcd->dir);
 	WBUFW(buf,59)=((level = status_get_lv(&mcd->bl))>99)? 99:level;
-	strncpy(WBUFP(buf,62),mcd->status.name,24);
+	strncpy(WBUFP(buf,63),mcd->status.name,strlen(mcd->status.name)+1);
 
 	return (int)len;
 #endif
@@ -2476,7 +2473,7 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 	WBUFB(buf,63)=0;
 	WBUFB(buf,64)=0;
 	WBUFW(buf,65)=(mcd->status.base_level>99)?99:mcd->status.base_level;
-	strncpy(WBUFP(buf,69),mcd->status.name,24);
+	strncpy(WBUFP(buf,69),mcd->status.name,strlen(mcd->status.name)+1);
 
 	return (int)len;
 #endif
@@ -2547,8 +2544,8 @@ void clif_spawnpc(struct map_session_data *sd)
 	WFIFOW(sd->fd,2)=(unsigned short)len;
 	WFIFOB(sd->fd,4)=0;
 	WFIFOW(sd->fd,58)=(sd->status.base_level>99)?99:sd->status.base_level;
-	WFIFOB(sd->fd,61)=0;	// font
-	strncpy(WFIFOP(sd->fd,62),sd->status.name,24);
+	WFIFOW(sd->fd,60)=0;	// font
+	strncpy(WFIFOP(sd->fd,62),sd->status.name,strlen(sd->status.name)+1);
 	clif_send(WFIFOP(sd->fd,0),(int)len,&sd->bl,AREA_WOS);
 #endif
 
@@ -2633,7 +2630,7 @@ void clif_spawnnpc(struct npc_data *nd)
 	WBUFL(buf,15)=nd->option;
 	WBUFW(buf,19)=nd->class_;
 	WBUFPOS(buf,53,nd->bl.x,nd->bl.y,nd->dir);
-	strncpy(WBUFP(buf,62),nd->name,24);
+	strncpy(WBUFP(buf,62),nd->name,strlen(nd->name)+1);
 	clif_send(buf,(int)packet_len,&nd->bl,AREA);
 #endif
 
@@ -2698,7 +2695,7 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFL(buf,15)=md->sc.option;
 		WBUFW(buf,19)=mob_get_viewclass(md->class_);
 		WBUFPOS(buf,53,md->bl.x,md->bl.y,md->dir);
-		strncpy(WBUFP(buf,62),md->name,24);
+		strncpy(WBUFP(buf,62),md->name,strlen(md->name)+1);
 		clif_send(buf,(int)packet_len,&md->bl,AREA);
 #endif
 	}
@@ -2756,7 +2753,7 @@ void clif_spawnpet(struct pet_data *pd)
 		WBUFW(buf,9)=pd->speed;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFPOS(buf,53,pd->bl.x,pd->bl.y,pd->dir);
-		strncpy(WBUFP(buf,62),pd->name,24);
+		strncpy(WBUFP(buf,62),pd->name,strlen(pd->name)+1);
 		clif_send(buf,(int)packet_len,&pd->bl,AREA);
 #endif
 	}
@@ -2815,7 +2812,7 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFW(buf,9)=hd->speed;
 	WBUFW(buf,19)=hd->view_class;
 	WBUFPOS(buf,53,hd->bl.x,hd->bl.y,hd->dir);
-	strncpy(WBUFP(buf,62),hd->status.name,24);
+	strncpy(WBUFP(buf,62),hd->status.name,strlen(hd->status.name)+1);
 	clif_send(buf,(int)packet_len,&hd->bl,AREA);
 #endif
 
@@ -2872,7 +2869,7 @@ void clif_spawnmerc(struct merc_data *mcd)
 	WBUFW(buf,9)=mcd->speed;
 	WBUFW(buf,19)=mcd->view_class;
 	WBUFPOS(buf,53,mcd->bl.x,mcd->bl.y,mcd->dir);
-	strncpy(WBUFP(buf,62),mcd->status.name,24);
+	strncpy(WBUFP(buf,62),mcd->status.name,strlen(mcd->status.name)+1);
 	clif_send(buf,(int)len,&mcd->bl,AREA);
 #endif
 
@@ -11423,6 +11420,27 @@ void clif_showevent(struct map_session_data *sd, struct block_list *bl, short st
 #endif
 
 	return;
+}
+
+/*==========================================
+ * 経験値取得表示
+ *------------------------------------------
+ */
+void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x7f6;
+	WFIFOL(fd,2) = sd->bl.id;
+	WFIFOL(fd,6) = exp;
+	WFIFOW(fd,10) = type;
+	WFIFOW(fd,12) = quest;
+	WFIFOSET(fd,packet_db[0x7f6].len);
+
+    return;
 }
 
 /*==========================================

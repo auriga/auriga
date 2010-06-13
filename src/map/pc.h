@@ -120,7 +120,7 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md);
 int pc_modifybuyvalue(struct map_session_data*,int);
 int pc_modifysellvalue(struct map_session_data*,int);
 
-int pc_gainexp(struct map_session_data*,struct mob_data*,atn_bignumber,atn_bignumber);
+int pc_gainexp(struct map_session_data*,struct mob_data*,atn_bignumber,atn_bignumber, short quest);
 int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, int per, int type);
 int pc_nextbaseexp(struct map_session_data *);
 int pc_nextjobexp(struct map_session_data *);

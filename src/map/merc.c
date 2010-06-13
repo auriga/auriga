@@ -752,7 +752,7 @@ int merc_gainexp(struct merc_data *mcd,struct mob_data *md,atn_bignumber base_ex
 			mjexp = job_exp  * battle_config.master_get_merc_job_exp / 100;
 
 		if(mbexp || mjexp)
-			pc_gainexp(mcd->msd,md,mbexp,mjexp);
+			pc_gainexp(mcd->msd,md,mbexp,mjexp,0);
 	}
 
 	return 0;
