@@ -1799,6 +1799,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 			WBUFL(buf,39)=g->guild_id;
 	}
 	WBUFPOS(buf,53,nd->bl.x,nd->bl.y,nd->dir);
+	WBUFW(buf,59)=1;
 	strncpy(WBUFP(buf,63),nd->name,strlen(nd->name)+1);
 
 	return (int)len;
@@ -2630,6 +2631,7 @@ void clif_spawnnpc(struct npc_data *nd)
 	WBUFL(buf,15)=nd->option;
 	WBUFW(buf,19)=nd->class_;
 	WBUFPOS(buf,53,nd->bl.x,nd->bl.y,nd->dir);
+	WBUFW(buf,58)=1;
 	strncpy(WBUFP(buf,62),nd->name,strlen(nd->name)+1);
 	clif_send(buf,(int)packet_len,&nd->bl,AREA);
 #endif
@@ -2650,7 +2652,7 @@ void clif_spawnnpc(struct npc_data *nd)
 void clif_spawnmob(struct mob_data *md)
 {
 	unsigned char buf[128];
-	int len;
+	int len,level=0;
 	size_t packet_len=0;
 
 	nullpo_retv(md);
@@ -2695,6 +2697,7 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFL(buf,15)=md->sc.option;
 		WBUFW(buf,19)=mob_get_viewclass(md->class_);
 		WBUFPOS(buf,53,md->bl.x,md->bl.y,md->dir);
+		WBUFW(buf,58)=((level = status_get_lv(&md->bl))>99)? 99:level;
 		strncpy(WBUFP(buf,62),md->name,strlen(md->name)+1);
 		clif_send(buf,(int)packet_len,&md->bl,AREA);
 #endif
@@ -2717,7 +2720,7 @@ void clif_spawnmob(struct mob_data *md)
 void clif_spawnpet(struct pet_data *pd)
 {
 	unsigned char buf[128];
-	int len;
+	int len,level=0;
 	size_t packet_len=0;
 
 	nullpo_retv(pd);
@@ -2753,6 +2756,7 @@ void clif_spawnpet(struct pet_data *pd)
 		WBUFW(buf,9)=pd->speed;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFPOS(buf,53,pd->bl.x,pd->bl.y,pd->dir);
+		WBUFW(buf,58)=((level = status_get_lv(&pd->bl))>99)? 99:level;
 		strncpy(WBUFP(buf,62),pd->name,strlen(pd->name)+1);
 		clif_send(buf,(int)packet_len,&pd->bl,AREA);
 #endif
@@ -2776,6 +2780,7 @@ void clif_spawnhom(struct homun_data *hd)
 {
 	unsigned char buf[128];
 	size_t packet_len=0;
+	int level=0;
 //	int len;
 
 	nullpo_retv(hd);
@@ -2812,6 +2817,7 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFW(buf,9)=hd->speed;
 	WBUFW(buf,19)=hd->view_class;
 	WBUFPOS(buf,53,hd->bl.x,hd->bl.y,hd->dir);
+	WBUFW(buf,58)=((level = status_get_lv(&hd->bl))>99)? 99:level;
 	strncpy(WBUFP(buf,62),hd->status.name,strlen(hd->status.name)+1);
 	clif_send(buf,(int)packet_len,&hd->bl,AREA);
 #endif
@@ -2833,6 +2839,7 @@ void clif_spawnhom(struct homun_data *hd)
 void clif_spawnmerc(struct merc_data *mcd)
 {
 	unsigned char buf[128];
+	int level=0;
 	size_t len=0;
 
 	nullpo_retv(mcd);
@@ -2869,6 +2876,7 @@ void clif_spawnmerc(struct merc_data *mcd)
 	WBUFW(buf,9)=mcd->speed;
 	WBUFW(buf,19)=mcd->view_class;
 	WBUFPOS(buf,53,mcd->bl.x,mcd->bl.y,mcd->dir);
+	WBUFW(buf,58)=(mcd->status.base_level>99)?99:mcd->status.base_level;
 	strncpy(WBUFP(buf,62),mcd->status.name,strlen(mcd->status.name)+1);
 	clif_send(buf,(int)len,&mcd->bl,AREA);
 #endif
