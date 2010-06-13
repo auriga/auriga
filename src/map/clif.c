@@ -2155,7 +2155,6 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,35)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,37)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,39)=mob_get_clothes_color(pd->class_);
-		WBUFB(buf,55)=32;
 		WBUFB(buf,56)=mob_get_sex(pd->class_);
 		WBUFPOS2(buf,57,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 		WBUFB(buf,63)=0;
