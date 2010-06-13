@@ -1987,11 +1987,11 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 	WBUFL(buf,5)=pd->bl.id;
 	WBUFW(buf,9)=pd->speed;
 	WBUFW(buf,19)=mob_get_viewclass(pd->class_);
-	WBUFW(buf,21)=battle_config.pet0078_hair_id;
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,23)=view;
 	else
 		WBUFW(buf,23)=pd->equip;
+	WBUFW(buf,33)=7;
 	WBUFPOS(buf,53,pd->bl.x,pd->bl.y,pd->dir);
 	WBUFW(buf,59)=((level = status_get_lv(&pd->bl))>99)? 99:level;
 	strncpy(WBUFP(buf,63),pd->name,strlen(pd->name)+1);
@@ -2155,6 +2155,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,35)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,37)=mob_get_hair_color(pd->class_);
 		WBUFW(buf,39)=mob_get_clothes_color(pd->class_);
+		WBUFB(buf,55)=32;
 		WBUFB(buf,56)=mob_get_sex(pd->class_);
 		WBUFPOS2(buf,57,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 		WBUFB(buf,63)=0;
@@ -2199,6 +2200,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 	else
 		WBUFW(buf,23)=pd->equip;
 	WBUFL(buf,29)=gettick();
+	WBUFW(buf,37)=7;
 	WBUFPOS2(buf,57,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 	WBUFB(buf,63)=0;
 	WBUFB(buf,64)=0;
@@ -2272,8 +2274,8 @@ static int clif_hom0078(struct homun_data *hd,unsigned char *buf)
 	WBUFW(buf,13)=hd->sc.opt2;
 	WBUFL(buf,15)=hd->sc.option;
 	WBUFW(buf,19)=hd->view_class;
-	WBUFW(buf,21)=battle_config.pet0078_hair_id;
 	WBUFW(buf,27)=0;
+	WBUFW(buf,33)=8;
 	WBUFL(buf,47)=hd->sc.opt3;
 	WBUFPOS(buf,53,hd->bl.x,hd->bl.y,hd->dir);
 	WBUFW(buf,59)=((level = status_get_lv(&hd->bl))>99)? 99:level;
@@ -2331,12 +2333,12 @@ static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
 	WBUFW(buf,13)=hd->sc.opt2;
 	WBUFL(buf,15)=hd->sc.option;
 	WBUFW(buf,19)=hd->view_class;
-	WBUFW(buf,21)=battle_config.pet0078_hair_id;
 	if((view = itemdb_viewid(hd->status.equip)) > 0)
 		WBUFW(buf,23)=view;
 	else
 		WBUFW(buf,23)=hd->status.equip;
 	WBUFL(buf,29)=gettick();
+	WBUFW(buf,37)=8;
 	WBUFL(buf,51)=hd->sc.opt3;
 	WBUFPOS2(buf,57,hd->bl.x,hd->bl.y,hd->ud.to_x,hd->ud.to_y,8,8);
 	WBUFB(buf,63)=0;
@@ -2755,6 +2757,7 @@ void clif_spawnpet(struct pet_data *pd)
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFW(buf,9)=pd->speed;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
+		WBUFW(buf,33)=7;
 		WBUFPOS(buf,53,pd->bl.x,pd->bl.y,pd->dir);
 		WBUFW(buf,58)=((level = status_get_lv(&pd->bl))>99)? 99:level;
 		strncpy(WBUFP(buf,62),pd->name,strlen(pd->name)+1);
@@ -2816,6 +2819,7 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFL(buf,5)=hd->bl.id;
 	WBUFW(buf,9)=hd->speed;
 	WBUFW(buf,19)=hd->view_class;
+	WBUFW(buf,33)=8;
 	WBUFPOS(buf,53,hd->bl.x,hd->bl.y,hd->dir);
 	WBUFW(buf,58)=((level = status_get_lv(&hd->bl))>99)? 99:level;
 	strncpy(WBUFP(buf,62),hd->status.name,strlen(hd->status.name)+1);
