@@ -77,20 +77,20 @@ static int accreg_tosql(struct accreg *reg)
 	int j;
 	char temp_str[128];
 
-	sprintf(tmp_sql,"DELETE FROM `global_reg_value` WHERE `type`=2 AND `account_id`='%d'",reg->account_id);
+	sprintf(tmp_sql,"DELETE FROM `accountreg` WHERE `account_id`='%d'",reg->account_id);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `global_reg_value`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (delete `accountreg`)- %s\n", mysql_error(&mysql_handle) );
 	}
 
 	for(j=0; j<reg->reg_num; j++) {
 		if(reg->reg[j].str[0] && reg->reg[j].value != 0) {
 			sprintf(
 				tmp_sql,
-				"INSERT INTO `global_reg_value` (`type`, `account_id`, `str`, `value`) VALUES (2,'%d','%s','%d')",
+				"INSERT INTO `accountreg` (`account_id`, `reg`, `value`) VALUES ('%d','%s','%d')",
 				reg->account_id, strecpy(temp_str,reg->reg[j].str), reg->reg[j].value
 			);
 			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `global_reg_value`)- %s\n", mysql_error(&mysql_handle) );
+				printf("DB server Error (insert `accountreg`)- %s\n", mysql_error(&mysql_handle) );
 			}
 		}
 	}

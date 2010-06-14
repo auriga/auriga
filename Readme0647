@@ -1,4 +1,11 @@
 ----------------------------------------
+//0753 [2010/06/15] by Cocoa
+
+・txt-converterが正常にコンバート出来ない不具合を修正
+	（char-converter.c inter-converter.c login-converter.c）
+	※Auriga-0697SnapShotより古いAurigaでの動作は保障しません。
+
+----------------------------------------
 //0752 [2010/06/14] by popori
 
 ・0751を少し変更 (clif.c)

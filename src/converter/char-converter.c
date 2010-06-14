@@ -121,7 +121,6 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 		tmp_str[1],&tmp_int[38],&tmp_int[39],
 		tmp_str[2],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&tmp_int[45],&next
 	);
-
 	if(set != 49)
 		return 1;
 
@@ -183,8 +182,10 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 
 	if(str[next]=='\n' || str[next]=='\r')
 		return 0;	// 新規データ
+
 	next++;
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
+		next+=2;
 		set=sscanf(str+next,"%255[^,],%d,%d%n",tmp_str[0],&tmp_int[0],&tmp_int[1],&len);
 		if(set!=3)
 			return 1;
@@ -265,7 +266,6 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			next++;
 	}
 	next++;
-
 	for(i=0;str[next] && str[next]!='\t';i++){
 		set=sscanf(str+next,"%255[^,],%d%n",tmp_str[0],&tmp_int[0],&len);
 		if(set!=2)
@@ -283,7 +283,6 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	}
 	p->reg.global_num = (i < GLOBAL_REG_NUM)? i: GLOBAL_REG_NUM;
 	next++;
-
 	for(i=0;str[next] && str[next]!='\t';i++){
 		set=sscanf(str+next,"%d,%d%n",&tmp_int[0],&tmp_int[1],&len); // name は後で解決する
 		if(set!=2)
@@ -298,7 +297,6 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	}
 	p->st.friend_num = (i < MAX_FRIEND)? i: MAX_FRIEND;
 	next++;
-
 	for(i = 0; str[next] && str[next] != '\t' && str[next] != '\n' && str[next] != '\r'; i++) {
 		set=sscanf(str+next,"%255[^,],%d%n",tmp_str[0],&tmp_int[0],&len);
 		if(set!=2)
@@ -340,13 +338,13 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 	char *p;
 	int i;
 
-	sprintf(tmp_sql,"DELETE FROM `char` WHERE `char_id`='%d'",char_id);
+	sprintf(tmp_sql,"DELETE FROM `char_data` WHERE `char_id`='%d'",char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `char`)- %s\n",mysql_error(&mysql_handle));
+		printf("DB server Error (delete `char_data`)- %s\n",mysql_error(&mysql_handle));
 	}
 
 	sprintf(tmp_sql,
-		"INSERT INTO `char` SET `char_id` = '%d', `account_id` = '%d', `char_num` = '%d', `name` = '%s', `class` = '%d', `base_level` = '%d', `job_level` = '%d',"
+		"INSERT INTO `char_data` SET `char_id` = '%d', `account_id` = '%d', `char_num` = '%d', `name` = '%s', `class` = '%d', `base_level` = '%d', `job_level` = '%d',"
 		"`base_exp` = '%d', `job_exp` = '%d', `zeny` = '%d',"
 		"`max_hp` = '%d', `hp` = '%d', `max_sp` = '%d', `sp` = '%d', `status_point` = '%d', `skill_point` = '%d',"
 		"`str` = '%d', `agi` = '%d', `vit` = '%d', `int` = '%d', `dex` = '%d', `luk` = '%d',"
@@ -366,7 +364,7 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 		st->partner_id , st->parent_id[0] ,st->parent_id[1] , st->baby_id
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `char`)- %s\n", mysql_error(&mysql_handle) );
+		printf("DB server Error (insert `char_data`)- %s\n", mysql_error(&mysql_handle) );
 	}
 
 	// memo
@@ -378,8 +376,8 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 	for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 		if(st->memo_point[i].map[0]) {
 			sprintf(
-				tmp_sql,"INSERT INTO `memo`(`char_id`,`map`,`x`,`y`) VALUES ('%d', '%s', '%d', '%d')",
-				char_id, strecpy(buf,st->memo_point[i].map), st->memo_point[i].x, st->memo_point[i].y
+				tmp_sql,"INSERT INTO `memo`(`char_id`,`index`,`map`,`x`,`y`) VALUES ('%d', '%d', '%s', '%d', '%d')",
+				char_id, i, strecpy(buf,st->memo_point[i].map), st->memo_point[i].x, st->memo_point[i].y
 			);
 			if(mysql_query(&mysql_handle, tmp_sql))
 				printf("DB server Error (insert `memo`)- %s\n", mysql_error(&mysql_handle));
@@ -457,19 +455,19 @@ static int mmo_char_reg_tosql(int char_id, int num, struct global_reg *reg)
 	char buf[256];
 	int i;
 
-	sprintf(tmp_sql,"DELETE FROM `global_reg_value` WHERE `type`=3 AND `char_id`='%d'",char_id);
+	sprintf(tmp_sql,"DELETE FROM `globalreg` WHERE `char_id`='%d'",char_id);
 	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `global_reg_value`)- %s\n", mysql_error(&mysql_handle));
+		printf("DB server Error (delete `globalreg`)- %s\n", mysql_error(&mysql_handle));
 	}
 
 	for(i=0;i<num;i++){
 		if(reg[i].str[0] && reg[i].value != 0) {
 			sprintf(
-				tmp_sql,"INSERT INTO `global_reg_value` (`char_id`, `str`, `value`) VALUES ('%d', '%s', '%d')",
+				tmp_sql,"INSERT INTO `globalreg` (`char_id`, `reg`, `value`) VALUES ('%d', '%s', '%d')",
 				char_id, strecpy(buf,reg[i].str), reg[i].value
 			);
 			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (insert `global_reg_value`)- %s\n", mysql_error(&mysql_handle));
+				printf("DB server Error (insert `globalreg`)- %s\n", mysql_error(&mysql_handle));
 			}
 		}
 	}
@@ -489,7 +487,7 @@ static int mmo_friend_tosql(int char_id, struct mmo_charstatus *st)
 	}
 
 	for(i=0; i < st->friend_num; i++) {
-		sprintf(tmp_sql,"INSERT INTO `friend` (`char_id`, `id1`, `id2`, `name`) VALUES ('%d', '%d', '%d', '%s')",
+		sprintf(tmp_sql,"INSERT INTO `friend` (`char_id`, `friend_account`, `friend_id`, `name`) VALUES ('%d', '%d', '%d', '%s')",
 			st->char_id, st->friend_data[i].account_id, st->friend_data[i].char_id, strecpy(buf,st->friend_data[i].name) );
 		if(mysql_query(&mysql_handle, tmp_sql)) {
 			printf("DB server Error (insert `friend`)- %s\n", mysql_error(&mysql_handle));
@@ -1122,18 +1120,36 @@ static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 {
 	int i,s,next,set,len;
 	int tmp_int[23];
-	char tmp_str[256];
+	char tmp_str[256], buf[64];;
 
-	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
+	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],tmp_str,
 		&tmp_int[2],&tmp_int[3],
 		&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],
 		&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],&tmp_int[14],&tmp_int[15],
-		&tmp_int[16],&tmp_int[17],
-		&tmp_int[18],&tmp_int[19],&tmp_int[20],&tmp_int[21],&tmp_int[22],&next);
+		&tmp_int[16],&tmp_int[17],&tmp_int[18],&tmp_int[19],&tmp_int[20],&tmp_int[21],
+		&tmp_int[22],&tmp_int[23],
+		&tmp_int[24],&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&next);
 
-	if(s!=24)
-		return 1;
+	if(s!=30) {
+		tmp_int[16] = 0;	// f_str
+		tmp_int[17] = 0;	// f_agi
+		tmp_int[18] = 0;	// f_vit
+		tmp_int[19] = 0;	// f_int
+		tmp_int[20] = 0;	// f_dex
+		tmp_int[21] = 0;	// f_luk
+		s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
+			&tmp_int[0],&tmp_int[1],tmp_str,
+			&tmp_int[2],&tmp_int[3],
+			&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],
+			&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],&tmp_int[14],&tmp_int[15],
+			&tmp_int[22],&tmp_int[23],
+			&tmp_int[24],&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&next
+		);
+
+		if(s!=24)
+			return 1;
+	}
 
 	h->homun_id     = tmp_int[0];
 	h->class_       = tmp_int[1];
@@ -1153,15 +1169,21 @@ static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 	h->int_         = tmp_int[13];
 	h->dex          = tmp_int[14];
 	h->luk          = tmp_int[15];
-	h->status_point = tmp_int[16];
-	h->skill_point  = tmp_int[17];
-	h->equip        = tmp_int[18];
-	h->intimate     = tmp_int[19];
-	h->hungry       = tmp_int[20];
-	h->rename_flag  = tmp_int[21];
-	h->incubate     = tmp_int[22];
+	h->f_str        = tmp_int[16];
+	h->f_agi        = tmp_int[17];
+	h->f_vit        = tmp_int[18];
+	h->f_int        = tmp_int[19];
+	h->f_dex        = tmp_int[20];
+	h->f_luk        = tmp_int[21];
+	h->status_point = tmp_int[22];
+	h->skill_point  = tmp_int[23];
+	h->equip        = tmp_int[24];
+	h->intimate     = tmp_int[25];
+	h->hungry       = tmp_int[26];
+	h->rename_flag  = tmp_int[27];
+	h->incubate     = tmp_int[28];
 	h->option       = 0;
-
+	strecpy(buf,h->name);
 	if(h->hungry < 0)
 		h->hungry = 0;
 	else if(h->hungry > 100)
@@ -1206,9 +1228,11 @@ static int homun_tosql(int homun_id, struct mmo_homunstatus *h)
 
 	sprintf(tmp_sql ,"INSERT INTO `homunculus` SET `homun_id` = '%d', `class` = '%d', `name` = '%s', `account_id` = '%d', `char_id` = '%d', `base_level` = '%d', `base_exp` = '%d',"
 		"`max_hp` = '%d', `hp` = '%d', `max_sp` = '%d', `sp` = '%d', `str` = '%d', `agi` = '%d',`vit` = '%d',`int` = '%d',`dex` = '%d',`luk` = '%d',"
+		"`f_str` = '%d', `f_agi` = '%d',`f_vit` = '%d',`f_int` = '%d',`f_dex` = '%d',`f_luk` = '%d',"
 		"`status_point` = '%d', `skill_point` = '%d', `equip` = '%d', `intimate` = '%d', `hungry` = '%d', `rename_flag` = '%d', `incubate` = '%d'",
 		homun_id, h->class_, strecpy(buf,h->name), h->account_id , h->char_id, h->base_level, h->base_exp,
 		h->max_hp, h->hp, h->max_sp, h->sp, h->str, h->agi, h->vit, h->int_, h->dex, h->luk,
+		h->f_str, h->f_agi, h->f_vit, h->f_int, h->f_dex, h->f_luk,
 		h->status_point, h->skill_point, h->equip, h->intimate, h->hungry, h->rename_flag, h->incubate
 	);
 

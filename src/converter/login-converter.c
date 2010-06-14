@@ -218,18 +218,18 @@ int login_convert(void)
 				printf("DB server Error (insert `%s`)- %s\n", login_db, mysql_error(&mysql_handle) );
 			}
 
-			sprintf(tmp_sql,"DELETE FROM `global_reg_value` WHERE `type`='1' AND `account_id`='%d'",account_id);
+			sprintf(tmp_sql,"DELETE FROM `worldreg` WHERE `account_id`='%d'",account_id);
 			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (delete `global_reg_value`)- %s\n", mysql_error(&mysql_handle));
+				printf("DB server Error (delete `worldreg`)- %s\n", mysql_error(&mysql_handle));
 			}
 			for(i = 0; i < dat.reg_num; i++) {
 				sprintf(tmp_sql,
-					"INSERT INTO `global_reg_value` (`type`, `account_id`, `str`, `value`) "
-					"VALUES ( 1 , '%d' , '%s' , '%d')",
+					"INSERT INTO `worldreg` (`account_id`, `reg`, `value`) "
+					"VALUES ('%d' , '%s' , '%d')",
 					account_id, strecpy(buf[0],dat.reg[i].str), dat.reg[i].value
 				);
 				if(mysql_query(&mysql_handle, tmp_sql)) {
-					printf("DB server Error (insert `globa_reg_value`)- %s\n", mysql_error(&mysql_handle));
+					printf("DB server Error (insert `worldreg`)- %s\n", mysql_error(&mysql_handle));
 				}
 			}
 		}
