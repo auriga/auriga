@@ -1982,7 +1982,7 @@ R 07f7 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w 
 	type=8 HOM
 	type=9 MER
 	type=10 ELEM(ソーサラーの妖精)
-R 07f8 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <font>.w <name>.24B
+R 07f8 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <font>.w <name>.24B
 	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報(02edの上位バージョン)
 	type=0 PC
 	type=1 ?
@@ -1995,7 +1995,7 @@ R 07f8 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w 
 	type=8 HOM
 	type=9 MER
 	type=10 ELEM(ソーサラーの妖精)
-R 07f9 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <font>.w <name>.24B
+R 07f9 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <font>.w <name>.24B
 	マップロード時&移動時用、向き付き用キャラ情報(02eeの上位バージョン)
 	type=0 PC
 	type=1 ?
