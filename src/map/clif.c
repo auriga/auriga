@@ -423,12 +423,23 @@ void clif_authok(struct map_session_data *sd)
 	nullpo_retv(sd);
 
 	fd=sd->fd;
+
+#if PACKETVER < 14
 	WFIFOW(fd,0)=0x73;
 	WFIFOL(fd,2)=gettick();
 	WFIFOPOS(fd,6,sd->bl.x,sd->bl.y,sd->dir);
 	WFIFOB(fd,9)=5;
 	WFIFOB(fd,10)=5;
 	WFIFOSET(fd,packet_db[0x73].len);
+#else
+	WFIFOW(fd,0)=0x2eb;
+	WFIFOL(fd,2)=gettick();
+	WFIFOPOS(fd,6,sd->bl.x,sd->bl.y,sd->dir);
+	WFIFOB(fd,9)=5;
+	WFIFOB(fd,10)=5;
+	WFIFOW(fd,12)=0;	// font
+	WFIFOSET(fd,packet_db[0x2eb].len);
+#endif
 
 	return;
 }
@@ -9364,10 +9375,11 @@ void clif_guild_belonginfo(struct map_session_data *sd, struct guild *g)
  */
 void clif_guild_memberlogin_notice(struct guild *g, int idx, unsigned char flag)
 {
-	unsigned char buf[16];
+	unsigned char buf[32];
 
 	nullpo_retv(g);
 
+#if PACKETVER < 8
 	WBUFW(buf, 0)=0x16d;
 	WBUFL(buf, 2)=g->member[idx].account_id;
 	WBUFL(buf, 6)=g->member[idx].char_id;
@@ -9378,6 +9390,21 @@ void clif_guild_memberlogin_notice(struct guild *g, int idx, unsigned char flag)
 			clif_send(buf,packet_db[0x16d].len,&sd->bl,GUILD);
 	}else
 		clif_send(buf,packet_db[0x16d].len,&g->member[idx].sd->bl,GUILD_WOS);
+#else
+	WBUFW(buf, 0)=0x1f2;
+	WBUFL(buf, 2)=g->member[idx].account_id;
+	WBUFL(buf, 6)=g->member[idx].char_id;
+	WBUFL(buf,10)=flag;
+	WBUFW(buf,14)=g->member[idx].gender;
+	WBUFW(buf,16)=g->member[idx].hair;
+	WBUFW(buf,18)=g->member[idx].hair_color;
+	if(g->member[idx].sd==NULL){
+		struct map_session_data *sd=guild_getavailablesd(g);
+		if(sd!=NULL)
+			clif_send(buf,packet_db[0x1f2].len,&sd->bl,GUILD);
+	}else
+		clif_send(buf,packet_db[0x1f2].len,&g->member[idx].sd->bl,GUILD_WOS);
+#endif
 
 	return;
 }
