@@ -14012,11 +14012,18 @@ static void clif_parse_VendingListReq(int fd,struct map_session_data *sd, int cm
  */
 static void clif_parse_PurchaseReq(int fd,struct map_session_data *sd, int cmd)
 {
-#if PACKETVER >= 25
-	vending_purchasereq(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)),RFIFOL(fd,GETPACKETPOS(cmd,2)),RFIFOP(fd,GETPACKETPOS(cmd,3)));
-#else
 	vending_purchasereq(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)),-1,RFIFOP(fd,GETPACKETPOS(cmd,2)));
-#endif
+
+	return;
+}
+
+/*==========================================
+ * 露店アイテム購入2
+ *------------------------------------------
+ */
+static void clif_parse_PurchaseReq2(int fd,struct map_session_data *sd, int cmd)
+{
+	vending_purchasereq(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)),RFIFOL(fd,GETPACKETPOS(cmd,2)),RFIFOP(fd,GETPACKETPOS(cmd,3)));
 
 	return;
 }
@@ -15653,6 +15660,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_CloseVending,              "closevending"              },
 		{ clif_parse_VendingListReq,            "vendinglistreq"            },
 		{ clif_parse_PurchaseReq,               "purchasereq"               },
+		{ clif_parse_PurchaseReq2,              "purchasereq2"              },
 		{ clif_parse_OpenVending,               "openvending"               },
 		{ clif_parse_CreateGuild,               "createguild"               },
 		{ clif_parse_GuildCheckMaster,          "guildcheckmaster"          },

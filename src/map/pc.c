@@ -3961,7 +3961,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 	if(md->sc.data[SC_STONE].timer != -1 || md->sc.data[SC_FREEZE].timer != -1)
 		return 0;
 
-	skill = (sd->paramc[4] - mob_db[md->class_].dex)/2 + pc_checkskill(sd,TF_STEAL) * 6 + 10;
+	skill = (sd->paramc[4] - mob_db[md->class_].dex)/2 + pc_checkskill(sd,TF_STEAL) * 6 + 4;
 	if(skill > 0) {
 		for(i=0; i<ITEM_DROP_COUNT-1; i++) {
 			itemid = mob_db[md->class_].dropitem[i].nameid;
