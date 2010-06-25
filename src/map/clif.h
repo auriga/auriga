@@ -242,7 +242,7 @@ void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int 
 void clif_mshield(struct map_session_data *sd, int num);
 void clif_showevent(struct map_session_data *sd, struct block_list *bl, short state, short type);
 void clif_musiceffect(struct map_session_data *sd, const char *name);
-void clif_partyleader_info(struct map_session_data *sd, int account_id);
+void clif_partyleader_info(struct party *p, int old_account_id, int account_id);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

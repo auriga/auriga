@@ -11525,15 +11525,24 @@ void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest)
  * パーティーリーダー変更情報
  *------------------------------------------
  */
-void clif_partyleader_info(struct map_session_data *sd, int account_id)
+void clif_partyleader_info(struct party *p, int old_account_id, int account_id)
 {
 	unsigned char buf[16];
+	int i;
+	struct map_session_data *sd = map_id2sd(old_account_id);
 
-	nullpo_retv(sd);
+	nullpo_retv(p);
 
 	WBUFW(buf,0) = 0x7fc;
-	WBUFL(buf,2) = sd->status.account_id;
+	WBUFL(buf,2) = old_account_id;
 	WBUFL(buf,6) = account_id;
+
+	if(!sd) {	// リーダーがオフラインなのでログイン中のメンバーを探す
+		for(i=0; i<MAX_PARTY && !p->member[i].sd; i++);
+		if(i >= MAX_PARTY)
+			return;
+		sd = p->member[i].sd;
+	}
 	clif_send(buf,packet_db[0x7fc].len,&sd->bl,PARTY);
 
 	return;

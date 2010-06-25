@@ -997,7 +997,7 @@ void party_changeleader(struct map_session_data *sd, int id)
 		return;
 
 	for(i = 0; i < MAX_PARTY && p->member[i].sd != sd; i++);
-	if(i == MAX_PARTY)
+	if(i >= MAX_PARTY)
 		return;
 
 	if(!p->member[i].leader)
@@ -1009,7 +1009,7 @@ void party_changeleader(struct map_session_data *sd, int id)
 		return;
 
 	for(t_i = 0; t_i < MAX_PARTY && p->member[t_i].sd != tsd; t_i++);
-	if(t_i == MAX_PARTY)
+	if(t_i >= MAX_PARTY)
 		return;
 
 	intif_party_leaderchange(p->party_id,p->member[t_i].account_id,p->member[t_i].char_id);
@@ -1021,17 +1021,20 @@ void party_changeleader(struct map_session_data *sd, int id)
  * パーティーリーダー変更通知
  *------------------------------------------
  */
-void party_leaderchanged(int party_id, int old_accont_id, int account_id)
+void party_leaderchanged(int party_id, int old_account_id, int account_id)
 {
 	struct party *p = party_search(party_id);
-	struct map_session_data *sd = map_id2sd(old_accont_id);
+	struct map_session_data *sd = map_id2sd(old_account_id);
 	int i,j;
 
 	if(p == NULL)
 		return;
 
-	for(i=0; i<MAX_PARTY && p->member[i].account_id!=old_accont_id; i++);
+	for(i=0; i<MAX_PARTY && p->member[i].account_id!=old_account_id; i++);
 	for(j=0; j<MAX_PARTY && p->member[j].account_id!=account_id; j++);
+
+	if(i >= MAX_PARTY || j >= MAX_PARTY)
+		return;
 
 	p->member[i].leader = 0;
 	p->member[j].leader = 1;
@@ -1043,7 +1046,7 @@ void party_leaderchanged(int party_id, int old_accont_id, int account_id)
 		clif_displaymessage(p->member[j].sd->fd, msg_txt(195));
 	clif_party_info(p,-1);
 #else
-	clif_partyleader_info(sd,account_id);
+	clif_partyleader_info(p,old_account_id,account_id);
 #endif
 
 	return;
