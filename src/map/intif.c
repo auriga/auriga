@@ -60,7 +60,7 @@
 static const int packet_len_table[]={
 	-1,-1,27, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  6, 0,  0, 0,	// 3810-
-	35,-1,39,13, 38,33, 7,-1,  0, 0, 0, 0,  0, 0,  0, 0,	// 3820-
+	35,-1,39,13, 38,33, 7,-1, 14, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 15,67,186,-1,	// 3830-
 	 9, 9,-1,-1,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
@@ -1435,6 +1435,13 @@ static int intif_parse_PartyMessage(int fd)
 	return 0;
 }
 
+// パーティーリーダー変更通知
+static int intif_parse_PartyLeaderChanged(int fd)
+{
+	party_leaderchanged(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10));
+	return 0;
+}
+
 // ギルド作成可否
 static int intif_parse_GuildCreated(int fd)
 {
@@ -2012,6 +2019,7 @@ int intif_parse(int fd)
 	case 0x3825: intif_parse_PartyMove(fd); break;
 	case 0x3826: intif_parse_PartyBroken(fd); break;
 	case 0x3827: intif_parse_PartyMessage(fd); break;
+	case 0x3828: intif_parse_PartyLeaderChanged(fd); break;
 	case 0x3830: intif_parse_GuildCreated(fd); break;
 	case 0x3831: intif_parse_GuildInfo(fd); break;
 	case 0x3832: intif_parse_GuildMemberAdded(fd); break;

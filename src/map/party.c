@@ -978,7 +978,7 @@ void party_equip_window(struct map_session_data *sd, int account_id)
 }
 
 /*==========================================
- * パーティーリーダー変更
+ * パーティーリーダー変更要求
  *------------------------------------------
  */
 void party_changeleader(struct map_session_data *sd, int id)
@@ -1014,19 +1014,36 @@ void party_changeleader(struct map_session_data *sd, int id)
 
 	intif_party_leaderchange(p->party_id,p->member[t_i].account_id,p->member[t_i].char_id);
 
-	// PTリーダー変更
-#if PACKETVER < 25
+	return;
+}
+
+/*==========================================
+ * パーティーリーダー変更通知
+ *------------------------------------------
+ */
+void party_leaderchanged(int party_id, int old_accont_id, int account_id)
+{
+	struct party *p = party_search(party_id);
+	struct map_session_data *sd = map_id2sd(old_accont_id);
+	int i,j;
+
+	if(p == NULL)
+		return;
+
+	for(i=0; i<MAX_PARTY && p->member[i].account_id!=old_accont_id; i++);
+	for(j=0; j<MAX_PARTY && p->member[j].account_id!=account_id; j++);
+
 	p->member[i].leader = 0;
+	p->member[j].leader = 1;
+
+#if PACKETVER < 25
 	if(p->member[i].sd->fd)
 		clif_displaymessage(p->member[i].sd->fd, msg_txt(194));
-	p->member[t_i].leader = 1;
-	if(p->member[t_i].sd->fd)
-		clif_displaymessage(p->member[t_i].sd->fd, msg_txt(195));
+	if(p->member[j].sd->fd)
+		clif_displaymessage(p->member[j].sd->fd, msg_txt(195));
 	clif_party_info(p,-1);
 #else
-	p->member[i].leader = 0;
-	p->member[t_i].leader = 1;
-	clif_partyleader_info(sd,tsd->status.account_id);
+	clif_partyleader_info(sd,account_id);
 #endif
 
 	return;

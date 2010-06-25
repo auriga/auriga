@@ -788,6 +788,19 @@ int mapif_party_message(int party_id,int account_id,char *mes,int len)
 	return 0;
 }
 
+// リーダー変更通知
+int mapif_party_leader_changed(int party_id,int old_account_id,int account_id)
+{
+	unsigned char buf[16];
+
+	WBUFW(buf,0)=0x3828;
+	WBUFL(buf,2)=party_id;
+	WBUFL(buf,6)=old_account_id;
+	WBUFL(buf,10)=account_id;
+	mapif_sendall(buf,14);
+	return 0;
+}
+
 //-------------------------------------------------------------------
 // map serverからの通信
 
@@ -1025,7 +1038,7 @@ int mapif_parse_PartyLeaderChange(int fd,int party_id,int account_id,int char_id
 {
 	const struct party *p1 = party_load_num(party_id);
 	struct party p2;
-	int i;
+	int i,old_account_id;
 
 	if(p1 == NULL)
 		return 0;
@@ -1033,11 +1046,15 @@ int mapif_parse_PartyLeaderChange(int fd,int party_id,int account_id,int char_id
 	memcpy(&p2,p1,sizeof(struct party));
 
 	for(i = 0; i < MAX_PARTY; i++) {
-		if(p2.member[i].leader)
+		if(p2.member[i].leader) {
 			p2.member[i].leader = 0;
+			old_account_id = p2.member[i].account_id;
+		}
 		if(p2.member[i].account_id == account_id && p2.member[i].char_id == char_id)
 			p2.member[i].leader = 1;
 	}
+
+	mapif_party_leader_changed(party_id,old_account_id,account_id);
 	party_save(&p2);
 
 	return 0;
