@@ -437,7 +437,7 @@ void clif_authok(struct map_session_data *sd)
 	WFIFOPOS(fd,6,sd->bl.x,sd->bl.y,sd->dir);
 	WFIFOB(fd,9)=5;
 	WFIFOB(fd,10)=5;
-	WFIFOW(fd,12)=0;	// font
+	WFIFOW(fd,11)=0;	// font
 	WFIFOSET(fd,packet_db[0x2eb].len);
 #endif
 
