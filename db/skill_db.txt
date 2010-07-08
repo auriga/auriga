@@ -366,7 +366,7 @@
 363,0,0,0,0,0,10,0,no,0,0,0,magic,0	//HP_MEDITATIO#メディタティオ#
 364,0,0,0,0,0,10,1,no,0,0,0,magic,0	//HW_SOULDRAIN#ソウルドレイン#
 365,9,8,1,0,6,1,1,yes,0,0,0,magic,0	//HW_MAGICCRASHER#マジッククラッシャー#
-366,0,6,4,0,1,10,1,no,0,0,0,magic,0	//HW_MAGICPOWER#魔法力増幅#
+366,0,6,4,0,1,10,1,yes,0,0,0,magic,0	//HW_MAGICPOWER#魔法力増幅#
 367,9,8,1,0,2,5,1,no,0,0,0,magic,0	//PA_PRESSURE#プレッシャー#
 368,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//PA_SACRIFICE#サクリファイス#
 369,0,6,4,0,1,10,1,yes,0,0,0,magic,0	//PA_GOSPEL#ゴスペル#

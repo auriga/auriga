@@ -985,18 +985,18 @@ void party_changeleader(struct map_session_data *sd, int id)
 {
 	struct party *p;
 	struct map_session_data *tsd;
-	int i, t_i;
+	int i,j;
 
 	nullpo_retv(sd);
 
 	if(sd->status.party_id == 0)
 		return;
 
-	p = party_search(sd->status.party_id);
-	if(p == NULL)
+	if((p = party_search(sd->status.party_id)) == NULL)
 		return;
 
-	for(i = 0; i < MAX_PARTY && p->member[i].sd != sd; i++);
+	for(i=0; i<MAX_PARTY && p->member[i].sd!=sd; i++);
+
 	if(i >= MAX_PARTY)
 		return;
 
@@ -1008,11 +1008,12 @@ void party_changeleader(struct map_session_data *sd, int id)
 	if(tsd == NULL || tsd->status.party_id != sd->status.party_id)
 		return;
 
-	for(t_i = 0; t_i < MAX_PARTY && p->member[t_i].sd != tsd; t_i++);
-	if(t_i >= MAX_PARTY)
+	for(j=0; j<MAX_PARTY && p->member[j].sd!=tsd; j++);
+
+	if(j >= MAX_PARTY)
 		return;
 
-	intif_party_leaderchange(p->party_id,p->member[t_i].account_id,p->member[t_i].char_id);
+	intif_party_leaderchange(p->party_id,p->member[j].account_id,p->member[j].char_id);
 
 	return;
 }
@@ -1024,26 +1025,30 @@ void party_changeleader(struct map_session_data *sd, int id)
 void party_leaderchanged(int party_id, int old_account_id, int account_id)
 {
 	struct party *p = party_search(party_id);
-	struct map_session_data *sd = map_id2sd(old_account_id);
 	int i,j;
 
 	if(p == NULL)
 		return;
 
 	for(i=0; i<MAX_PARTY && p->member[i].account_id!=old_account_id; i++);
+
+	if(i >= MAX_PARTY)
+		return;
+
 	for(j=0; j<MAX_PARTY && p->member[j].account_id!=account_id; j++);
 
-	if(i >= MAX_PARTY || j >= MAX_PARTY)
+	if(j >= MAX_PARTY)
 		return;
 
 	p->member[i].leader = 0;
 	p->member[j].leader = 1;
 
 #if PACKETVER < 25
-	if(p->member[i].sd->fd)
-		clif_displaymessage(p->member[i].sd->fd, msg_txt(194));
-	if(p->member[j].sd->fd)
-		clif_displaymessage(p->member[j].sd->fd, msg_txt(195));
+	for(i=0; i<MAX_PARTY; i++) {
+		struct map_session_data *sd = p->member[i].sd;
+		if(sd)
+			clif_displaymessage(sd->fd,msg_txt(194));
+	}
 	clif_party_info(p,-1);
 #else
 	clif_partyleader_info(p,old_account_id,account_id);

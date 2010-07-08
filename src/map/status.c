@@ -7129,7 +7129,6 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	/* 時間切れ無し？？ */
 	case SC_AETERNA:
 	case SC_TRICKDEAD:
-	case SC_MAGICPOWER:		/* 魔法力増幅 */
 	case SC_REJECTSWORD:		/* リジェクトソード */
 	case SC_MEMORIZE:		/* メモライズ */
 	case SC_SACRIFICE:		/* サクリファイス */

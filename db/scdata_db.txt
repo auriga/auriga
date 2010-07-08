@@ -184,7 +184,7 @@
 216,SC_REGENERATION_DELAY,1,0,0		// 激励ディレイ
 217,SC_RESTORE_DELAY,1,0,0		// 治療ディレイ
 218,SC_EMERGENCYCALL_DELAY,1,0,0	// 緊急召集ディレイ
-219,SC_POISONPOTION,0,1,0		// 毒薬の瓶
+219,SC_POISONPOTION,1,7,0		// 毒薬の瓶
 220,SC_THE_MAGICIAN,0,1,0		// 魔法師（タロットカード用）
 221,SC_STRENGTH,0,1,0			// 力（タロットカード用）
 222,SC_THE_DEVIL,0,1,0			// 悪魔（タロットカード用）
