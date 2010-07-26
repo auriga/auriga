@@ -1057,6 +1057,11 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			pc_break_equip(dstsd, EQP_SHIELD);
 		break;
 
+	case LK_SPIRALPIERCE:		/* スパイラルピアース */
+		if( !(status_get_mode(bl)&0x20)) { // ボスには無効
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,1000,0);
+		}
+		break;
 	case LK_HEADCRUSH:		/* ヘッドクラッシュ */
 		{
 			int race = status_get_race(bl);
@@ -1426,7 +1431,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_end(bl,SC_CONFUSION,-1);
 
 		// カードによる追加効果
-		if(sd && skillid != WS_CARTTERMINATION && skillid != CR_ACIDDEMONSTRATION) {
+		if(sd && skillid != WS_CARTTERMINATION && skillid != CR_ACIDDEMONSTRATION && skillid != ASC_BREAKER && skillid != AS_VENOMKNIFE) {
 			int i, rate;
 
 			for(i = SC_STONE; i <= SC_BLEED; i++) {
@@ -12597,29 +12602,66 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 
 	switch(unit->group->skill_id)
 	{
-		case SA_LANDPROTECTOR:
 		case MG_SAFETYWALL:
+		case MG_FIREWALL:
+		case MG_THUNDERSTORM:
 		case AL_PNEUMA:
 		case AL_WARP:
 		case PR_SANCTUARY:
 		case PR_MAGNUS:
 		case WZ_FIREPILLAR:
+		case WZ_METEOR:
+		case WZ_VERMILION:
 		case WZ_ICEWALL:
+		case WZ_STORMGUST:
+		case WZ_HEAVENDRIVE:
 		case WZ_QUAGMIRE:
+		case HT_SKIDTRAP:
+		case HT_LANDMINE:
+		case HT_ANKLESNARE:
+		case HT_SHOCKWAVE:
+		case HT_SANDMAN:
+		case HT_FLASHER:
+		case HT_FREEZINGTRAP:
+		case HT_BLASTMINE:
+		case HT_CLAYMORETRAP:
+		case HT_TALKIEBOX:
 		case AS_VENOMDUST:
+		case RG_GRAFFITI:
+		case AM_DEMONSTRATION:
+		case CR_GRANDCROSS:
 		case SA_VOLCANO:
 		case SA_DELUGE:
 		case SA_VIOLENTGALE:
+		case SA_LANDPROTECTOR:
+		case BA_DISSONANCE:
 		case BA_WHISTLE:
 		case BA_ASSASSINCROSS:
 		case BA_POEMBRAGI:
 		case BA_APPLEIDUN:
 		case DC_UGLYDANCE:
+		case DC_HUMMING:
 		case DC_DONTFORGETME:
 		case DC_FORTUNEKISS:
 		case DC_SERVICEFORYOU:
+		case WE_CALLPARTNER:
+		case NPC_GRANDDARKNESS:
+		case HP_BASILICA:
+		case PA_GOSPEL:
 		case PF_FOGWALL:
+		case PF_SPIDERWEB:
+		case WE_CALLPARENT:
+		case WE_CALLBABY:
+		case SG_SUN_WARM:
+		case SG_MOON_WARM:
+		case SG_STAR_WARM:
+		case HW_GRAVITATION:
+		case GS_DESPERADO:
+		case GS_GROUNDDRIFT:
+		case NJ_KAENSIN:
+		case NJ_BAKUENRYU:
 		case NJ_SUITON:
+		case NPC_EVILLAND:
 			skill_delunit(unit);
 			break;
 	}
