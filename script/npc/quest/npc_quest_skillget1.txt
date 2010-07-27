@@ -26,7 +26,7 @@ prt_in.gat,234,133,4	script	ナミ	66,{
 		mes "ふふふ…";
 		close;
 	}
-	if(Class==0 && JobLevel<3) {
+	if(Class==Job_Novice && JobLevel<3) {
 		mes "[ナミ]";
 		mes "… z ｚ Z";
 		mes "間違えました！先生！";
@@ -163,7 +163,7 @@ L_Routine:	//arg(0) -> 0or1
 //==== 死んだふり - NV_TRICKDEAD(応急処置なしは不可)
 //-----------------------------------------------
 prt_in.gat,73,87,4	script	プロンテラ騎士団員	65,{
-	if(Class != 0 || JobLevel < 7 || getskilllv(142) < 1 || getskilllv(143)) {
+	if(Class != Job_Novice || JobLevel < 7 || getskilllv(142) < 1 || getskilllv(143)) {
 		mes "[ブルーマー]";
 		mes "いやぁ本当に昔を思い出すな…";
 		mes "特にノービスだった頃の。";
@@ -465,7 +465,7 @@ izlude_in.gat,175,130,2	script	騎士デトマソ	98,{
 		mes "気をつけて行け！また寄りな。";
 		close;
 	}
-	if(Class != 1 && Class != 7 && Class != 14) {
+	if(Class != Job_Swordman && Class != Job_Knight && Class != Job_Crusader) {
 		mes "[デトマソ]";
 		mes "私の名はデトマソカルロス。";
 		mes "プロンテラ第3騎士団所属の騎士だ。";
@@ -474,7 +474,7 @@ izlude_in.gat,175,130,2	script	騎士デトマソ	98,{
 		mes "ゴホン！フッフッフ……";
 		close;
 	}
-	if(Class==1 && JobLevel<35) {
+	if(Class==Job_Swordman && JobLevel<35) {
 		mes "[デトマソ]";
 		mes "うん…君も剣を持つ者か…";
 		mes "私は、デトマスカルロスという。";
@@ -598,7 +598,7 @@ prt_in.gat,75,88,5	script	レオ=フォン=フリッシュ	85,{
 		mes "気をつけてな。";
 		close;
 	}
-	if((Class != 1 && Class != 7 && Class != 14) || (Class==1 && JobLevel<25)) {
+	if((Class != Job_Swordman && Class != Job_Knight && Class != Job_Crusader) || (Class==Job_Swordman && JobLevel<25)) {
 		mes "[レオ]";
 		mes "ん？君には用が無いところだ。";
 		mes "私は一人前の剣士以外には";
@@ -752,7 +752,7 @@ prt_in.gat,94,57,3	script	ファン	85,{
 		mes "がんばってくださいね。";
 		close;
 	}
-	if(Class != 1 && Class != 7 && Class != 14) {
+	if(Class != Job_Swordman && Class != Job_Knight && Class != Job_Crusader) {
 		mes "[ファン]";
 		mes "楽しい旅をしていますか？";
 		mes "明るい毎日を送れるようお祈りします。";
@@ -760,7 +760,7 @@ prt_in.gat,94,57,3	script	ファン	85,{
 		mes "あまり気を使わずに…ハハハ";
 		close;
 	}
-	if(Class==1 && JobLevel<10) {
+	if(Class==Job_Swordman && JobLevel<10) {
 		mes "[ファン]";
 		mes "なんですか？";
 		mes "まだまだひよっこですね。";
@@ -768,7 +768,7 @@ prt_in.gat,94,57,3	script	ファン	85,{
 		mes "積んでから来なさい。";
 		close;
 	}
-	if(Class==1 && JobLevel<30) {
+	if(Class==Job_Swordman && JobLevel<30) {
 		mes "[ファン]";
 		mes "若者よ、";
 		mes "よく来ましたね。";
@@ -963,7 +963,7 @@ geffen_in.gat,151,119,4	script	大魔道師	64,{
 			mes "君にはもう教えることは無い…";
 			close;
 		}
-		if((Class != 2 && Class != 9 && Class != 16) || (Class==2 && JobLevel<35) ||
+		if((Class != Job_Magician && Class != Job_Wizard && Class != Job_Sage) || (Class==Job_Magician && JobLevel<35) ||
 						countitem(746)<3 || countitem(730)<1 || countitem(935)<5 || countitem(943)<1) {
 			mes "[ブリザードリス]";
 			mes "私の説明をしっかりと";
@@ -1050,7 +1050,7 @@ morocc.gat,121,109,5	script	ギョルナリ	88,{
 		mes "それではさようなら〜";
 		close;
 	}
-	if(Class != 3 && Class != 11 && Class != 19 && Class != 20) {
+	if(Class != Job_Archer && Class != Job_Hunter && Class != Job_Bard && Class != Job_Dancer) {
 		mes "[ギョルナリ]";
 		mes "弓手はめずらしいですか？";
 		mes "道中で見かけると思いますが。";
@@ -1058,7 +1058,7 @@ morocc.gat,121,109,5	script	ギョルナリ	88,{
 		mes "技術を教えている者です。";
 		close;
 	}
-	if(Class==3 && JobLevel<30) {
+	if(Class==Job_Archer && JobLevel<30) {
 		mes "[ギョルナリ]";
 		mes "うん？何かお話ですか？";
 		mes "んー私からは特にお話は…";
@@ -1165,7 +1165,7 @@ morocc.gat,121,109,5	script	ギョルナリ	88,{
 //---------------------------
 payon.gat,103,63,4	script	カイゴ	88,3,3,{
 	//クローンスキルを考慮して職業判定を先にする
-	if(Class != 3 && Class != 11 && Class != 19 && Class != 20) {
+	if(Class != Job_Archer && Class != Job_Hunter && Class != Job_Bard && Class != Job_Dancer) {
 		mes "[???]";
 		mes "寂しい一人身の俺を見て";
 		mes "何かおもしろいのか…？";
@@ -1179,7 +1179,7 @@ payon.gat,103,63,4	script	カイゴ	88,3,3,{
 		mes "まぁ、とにかく嬉しいぜ。";
 		close;
 	}
-	if(Class==3 && JobLevel<35) {
+	if(Class==Job_Archer && JobLevel<35) {
 		mes "[カイゴ]";
 		mes "ふむ、お前弓手だな？";
 		mes "もう少しがんばれば";
@@ -1331,7 +1331,7 @@ prt_church.gat,173,23,4	script	主任アコライト	79,{
 		close;
 	case 2:
 		//クローンスキルのHLは除外
-		if((Class == 4 || Class == 8 || Class == 15) && getskilllv(156)) {
+		if((Class == Job_Acolyte || Class == Job_Priest || Class == Job_Monk) && getskilllv(156)) {
 			mes "[アコライト・クリプト]";
 			mes "兄弟よ…あなたは";
 			mes "「ホーリーライト」を";
@@ -1340,7 +1340,7 @@ prt_church.gat,173,23,4	script	主任アコライト	79,{
 			mes "明るい光が射しますように…";
 			close;
 		}
-		if((Class != 4 && Class != 8 && Class != 15) || (Class==4 && JobLevel<30) ||
+		if((Class != Job_Acolyte && Class != Job_Priest && Class != Job_Monk) || (Class==Job_Acolyte && JobLevel<30) ||
 						countitem(727)<1 || countitem(991)<1 || countitem(2608)<1) {
 			mes "[アコライト・クリプト]";
 			mes "ああ…迷える子羊よ…";
@@ -1412,13 +1412,13 @@ alberta.gat,83,96,5	script	ネコ	98,7,7,{
 		mes "だはははは！";
 		close;
 	}
-	if(Class != 5 && Class != 10 && Class != 18) {
+	if(Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchemist) {
 		mes "[ネコ]";
 		mes "ネコの店はただいま休業中です。";
 		mes "後ほどご来店ください。";
 		close;
 	}
-	if(Class==5 && JobLevel<15) {
+	if(Class==Job_Merchant && JobLevel<15) {
 		mes "[ネコ]";
 		mes "ん？私の声に釣られて来たか。";
 		mes "やはり私の声は大きいでしょう！";
@@ -1564,7 +1564,7 @@ alberta.gat,119,221,6	script	シャイロン	107,{
 		mes "それではまた会いましょう。お元気で〜";
 		close;
 	}
-	if(Class != 5 && Class != 10 && Class != 18) {
+	if(Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchemist) {
 		mes "[シャイロン]";
 		mes "私は多様な商品を扱う";
 		mes "シャイロンです。";
@@ -1573,7 +1573,7 @@ alberta.gat,119,221,6	script	シャイロン	107,{
 		mes "お持ちかけください。";
 		close;
 	}
-	if(Class==5 && JobLevel<30) {
+	if(Class==Job_Merchant && JobLevel<30) {
 		mes "[シャイロン]";
 		mes "いらっしゃい。";
 		mes "商売は面白いですね。";
@@ -1700,7 +1700,7 @@ alberta.gat,119,221,6	script	シャイロン	107,{
 //==== カートレボリューション Cart Revolution ===
 //-----------------------------------------------
 alberta.gat,232,106,6	script	コサンス	57,{
-	if(Class != 5 && Class != 10 && Class != 18) {
+	if(Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchemist) {
 		mes "[コサンス]";
 		mes "なるようにしかならない。";
 		mes "どうにもならないときは";
@@ -1720,7 +1720,7 @@ alberta.gat,232,106,6	script	コサンス	57,{
 		mes "嬉しいね！";
 		close;
 	}
-	if(Class==5 && JobLevel<35) {
+	if(Class==Job_Merchant && JobLevel<35) {
 		mes "[コサンス]";
 		mes "ふむ、君はまだ半人前だね。";
 		mes "確かにカートは引いている。";
@@ -1937,7 +1937,7 @@ alberta.gat,232,106,6	script	コサンス	57,{
 //   ■ SKILL_SAND -> 0〜2
 
 moc_prydb1.gat,154,128,4	script	アルコスク	118,{
-	if(Class != 6 && Class != 12 && Class != 17) {
+	if(Class != Job_Thief && Class != Job_Assassin && Class != Job_Rogue) {
 		mes "[アルコスク]";
 		mes "僕達シーフ系職業にはいくつか";
 		mes "必要なスキルがあるんだ。";
@@ -1977,7 +1977,7 @@ moc_prydb1.gat,154,128,4	script	アルコスク	118,{
 	switch(@menu) {
 	case 1:
 		if(SKILL_SAND == 0) {
-			if((Class==6 && JobLevel<25) || countitem(7041)<5) {
+			if((Class==Job_Thief && JobLevel<25) || countitem(7041)<5) {
 				mes "[アルコスク]";
 				mes "シーフってのはさ、手段を問わず";
 				mes "自分を守る技術を一つは";
@@ -2100,7 +2100,7 @@ moc_prydb1.gat,154,128,4	script	アルコスク	118,{
 			close;
 		}
 	case 2:
-		if((Class==6 && JobLevel<35) || countitem(940)<20) {
+		if((Class==Job_Thief && JobLevel<35) || countitem(940)<20) {
 			mes "[アルコスク]";
 			mes "戦闘ではもちろん攻撃をするけど";
 			mes "少ない被害で相手を倒すことも";
@@ -2176,7 +2176,7 @@ moc_prydb1.gat,154,128,4	script	アルコスク	118,{
 		skill 150,1,0;
 		close;
 	case 3:
-		if((Class==6 && JobLevel<20) || countitem(912)<1 || countitem(948)<1 || countitem(908)<5) {
+		if((Class==Job_Thief && JobLevel<20) || countitem(912)<1 || countitem(948)<1 || countitem(908)<5) {
 			mes "[アルコスク]";
 			mes "私達ギルド員の優秀な";
 			mes "メンバー達は、大抵手先が器用なの。";
@@ -2263,7 +2263,7 @@ moc_prydb1.gat,154,128,4	script	アルコスク	118,{
 		skill 151,1,0;
 		close;
 	case 4:
-		if((Class==6 && JobLevel<15) || countitem(910)<2 || countitem(911)<2) {
+		if((Class==Job_Thief && JobLevel<15) || countitem(910)<2 || countitem(911)<2) {
 			mes "[アルコスク]";
 			mes "私達ギルド員の優秀な";
 			mes "メンバー達は、大抵手先が器用なの。";

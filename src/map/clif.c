@@ -4416,8 +4416,8 @@ static void clif_hpmeter(struct map_session_data *sd)
 #else
 	WBUFW(buf2,0)=0x80e;
 	WBUFL(buf2,2)=sd->status.account_id;
-	WBUFL(buf2,6)=(sd->status.max_hp > 0x7fffffff)? (int)((atn_bignumber)sd->status.hp * 0x7fffffff / sd->status.max_hp): sd->status.hp;
-	WBUFL(buf2,10)=(sd->status.max_hp > 0x7fffffff)? 0x7fffffff: sd->status.max_hp;
+	WBUFL(buf2,6)=sd->status.hp;
+	WBUFL(buf2,10)=sd->status.max_hp;
 	for(i=0;i<fd_max;i++){
 		if(session[i] && (dstsd = (struct map_session_data *)session[i]->session_data) && dstsd->state.auth &&
 		   sd->bl.m == dstsd->bl.m && pc_isGM(dstsd) && sd != dstsd){
@@ -8811,8 +8811,8 @@ void clif_party_hp(struct map_session_data *sd)
 #else
 	WBUFW(buf,0)=0x80e;
 	WBUFL(buf,2)=sd->status.account_id;
-	WBUFL(buf,6)=(sd->status.max_hp > 0x7fffffff)? (short)((atn_bignumber)sd->status.hp * 0x7fffffff / sd->status.max_hp): sd->status.hp;
-	WBUFL(buf,10)=(sd->status.max_hp > 0x7fffffff)? 0x7fffffff: sd->status.max_hp;
+	WBUFL(buf,6)=sd->status.hp;
+	WBUFL(buf,10)=sd->status.max_hp;
 	clif_send(buf,packet_db[0x80e].len,&sd->bl,PARTY_AREA_WOS);
 #endif
 

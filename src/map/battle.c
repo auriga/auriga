@@ -3970,7 +3970,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			{
 				rsdamage += damage * t_sc->data[SC_REFLECTSHIELD].val2 / 100;
 			}
-			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(target)&0x20))	// デスバウンド反射
+			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&0x20) && map_check_dir(map_calc_dir(src,target->x,target->y),status_get_dir(target)))	// デスバウンド反射
 			{
 				rsdamage += damage * t_sc->data[SC_DEATHBOUND].val2 / 100;
 				if(rsdamage < 1) rsdamage = 1;
@@ -4223,6 +4223,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct status_change *sc;
 	struct status_change *ssc;
+	struct unit_data *ud = NULL;
 	int type, lv, damage, rdamage = 0;
 
 	nullpo_retr(0, src);
@@ -4234,6 +4235,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	sd  = BL_DOWNCAST( BL_PC, src );
 	tsd = BL_DOWNCAST( BL_PC, bl );
+
+	ud = unit_bl2ud(bl);
 
 	if(dsrc->m != bl->m)	// 対象が同じマップにいなければ何もしない
 		return 0;
@@ -4464,7 +4467,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					if(rdamage < 1) rdamage = 1;
 				}
 				// デスバウンド時
-				if(sc && sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(bl)&0x20))
+				if(sc && sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&0x20) && map_check_dir(map_calc_dir(src,bl->x,bl->y),status_get_dir(bl)))
 				{
 					rdamage += damage * sc->data[SC_DEATHBOUND].val2 / 100;
 					if(rdamage < 1) rdamage = 1;
@@ -4542,6 +4545,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			break;
 		default:
 			clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skillid, lv, type);
+			if(ud && dmg.div_ > 1)
+				ud->canmove_tick = tick + 200*(dmg.div_-1);
 			break;
 		}
 	} else {	// ダメージ消失時はパケット送信しない

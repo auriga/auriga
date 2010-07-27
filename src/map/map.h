@@ -57,7 +57,7 @@
 #define MAX_REFINE 10		// 最大精錬値
 #define MAX_ELE_LEVEL 4		// 最大属性Lv
 #define MAX_SIZE_FIX 3		// サイズの種類
-#define MAX_FREEZE_SPELL 6	// リーディングスペルブックで保持できるスキル数
+#define MAX_FREEZE_SPELL 7	// リーディングスペルブックで保持できるスキル数
 
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL

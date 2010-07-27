@@ -2248,8 +2248,8 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 		WFIFOL(fd,offset+(i*len)+ 36) = st->manner;
 		WFIFOW(fd,offset+(i*len)+ 40) = st->status_point;
 #ifdef NEW_006b_RE
-		WFIFOL(fd,offset+(i*len)+ 42) = (st->hp     > 0x7fffffff) ? 0x7fffffff : st->hp;
-		WFIFOL(fd,offset+(i*len)+ 46) = (st->max_hp > 0x7fffffff) ? 0x7fffffff : st->max_hp;
+		WFIFOL(fd,offset+(i*len)+ 42) = st->hp;
+		WFIFOL(fd,offset+(i*len)+ 46) = st->max_hp;
 		j = 4;
 #else
 		WFIFOW(fd,offset+(i*len)+ 42) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
@@ -3811,8 +3811,8 @@ int parse_char(int fd)
 				WFIFOL(fd,2+ 32) = st->manner;
 				WFIFOW(fd,2+ 40) = 0x30;
 #ifdef NEW_006b_RE
-				WFIFOL(fd,2+ 42) = (st->hp     > 0x7fffffff) ? 0x7fffffff : st->hp;
-				WFIFOL(fd,2+ 46) = (st->max_hp > 0x7fffffff) ? 0x7fffffff : st->max_hp;
+				WFIFOL(fd,2+ 42) = st->hp;
+				WFIFOL(fd,2+ 46) = st->max_hp;
 				i = 4;
 #else
 				WFIFOW(fd,2+ 42) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
