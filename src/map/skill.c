@@ -1057,11 +1057,6 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			pc_break_equip(dstsd, EQP_SHIELD);
 		break;
 
-	case LK_SPIRALPIERCE:		/* スパイラルピアース */
-		if( !(status_get_mode(bl)&0x20)) { // ボスには無効
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,1000,0);
-		}
-		break;
 	case LK_HEADCRUSH:		/* ヘッドクラッシュ */
 		{
 			int race = status_get_race(bl);
@@ -13958,7 +13953,7 @@ void skill_reading_sb(struct map_session_data *sd, int nameid)
 					slot = skill_get_spellslot(spell[i]);
 
 					/* スロットの上限チェック */
-					if(sd->freeze_sp_slot + slot > 4 + pc_checkskill(sd,WL_FREEZE_SP) * 4) {
+					if(sd->freeze_sp_slot + slot > 4 + pc_checkskill(sd,WL_FREEZE_SP) * 4 + sd->status.base_level/10 + sd->status.int_/10) {
 						clif_skill_fail(sd,WL_READING_SB,0,0);
 						break;
 					}

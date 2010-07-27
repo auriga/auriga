@@ -220,6 +220,7 @@ extern struct Battle_Config {
 	int monster_cloak_check_type;
 	int gvg_short_damage_rate;
 	int gvg_long_damage_rate;
+	int gvg_normalskill_damage_rate;
 	int gvg_magic_damage_rate;
 	int gvg_misc_damage_rate;
 	int gvg_eliminate_time;
@@ -449,6 +450,7 @@ extern struct Battle_Config {
 	int pet_leave;
 	int pk_short_damage_rate;
 	int pk_long_damage_rate;
+	int pk_normalskill_damage_rate;
 	int pk_magic_damage_rate;
 	int pk_misc_damage_rate;
 	int cooking_rate;

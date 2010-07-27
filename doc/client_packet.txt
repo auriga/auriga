@@ -282,7 +282,7 @@ R 00bc <type>.w <fail>.B <val>.B
 	ステータスup応答。fail=01なら成功。typeは00bbと同じ。valは上った後の数字
 	失敗例は見た事無いので謎。ステータスポイントが足りない状態で
 	00bbを発行できるクライアントが有れば、fail=00になるのではないかと予想
-R 00bd <status point>.w <STR>.B <STRupP>.B <AGI>.B <AGIupP>.B <VIT>.B <VITupP>.B <INT>.B <INTupP>.B <DEX>.B <DEXupP>.B <LUK>.B <LUKupP>.B <ATK>.w <ATKbonus>.w <MATKmax>.w <MATKmin>.w <DEF>.w <DEFbonus>.w <MDEF>.w <MDEFbonus>.w <HIT>.w <FLEE>.w <FLEEbonus>.w <critical>.w <karma?>.w <manner?>.w
+R 00bd <status point>.w <STR>.B <STRupP>.B <AGI>.B <AGIupP>.B <VIT>.B <VITupP>.B <INT>.B <INTupP>.B <DEX>.B <DEXupP>.B <LUK>.B <LUKupP>.B <ATK>.w <ATKbonus>.w <MATKmax>.w <MATKmin>.w <DEF>.w <DEFbonus>.w <MDEF>.w <MDEFbonus>.w <HIT>.w <FLEE>.w <FLEEbonus>.w <critical>.w <ASPD>.w <plusASPD>.w
 	まとめてステータス情報を送るパケット
 R 00be <type>.w <val>.B
 	必要ステータスポイント更新パケット。typeは0020〜0025が順にSTR〜LUKに対応
@@ -1058,7 +1058,7 @@ R 01b3 <filename>.64B <type>.B
 		255:非表示
 R 01b4 <ID>.l <guild_id>.l <emblem ID>.w
 	ギルドエンブレム更新
-R 01b5 <val>.l <tick>.l <?>.8B
+R 01b5 <val>.l <tick>.l <?>.l <?>.l
 	ログイン時メッセージ
 	<tick>が0のとき
 		あなたは従量制サイト利用者です (タイ)このアカウントでサクライに接続することができません
@@ -1177,15 +1177,25 @@ R 01d4 <ID>.l
 S 01d5 <len>.w <ID>.l <input>.?B 00
 	文字列入力内容送信(IDはNPCのIDが入る)
 R 01d6 <type>.w
-	0x199の拡張版？
+	0x199の拡張版
 	type=0x00 街
 	type=0x01 室内
 	type=0x02 メモ可能フィールド
 	type=0x03 メモ不可フィールド
-	type=0x06 pvp
-	type=0x08 gvg
+	type=0x04 クエストマップ
+	type=0x05 PvPナイトメア
+	type=0x06 PvPヨーヨー
+	type=0x08 GvG
+	type=0x09 ギルドダンジョン
+	type=0x0a ダンジョン(テレポ不可)
+	type=0x0b PK
 	type=0x0c ターボトラック
-	type=0x12 エフェクト強制簡略化
+	type=0x0d スキル使用不可MAP
+	type=0x0e ターボトラック(PK)
+	type=0x0f GMに飛ばされる監獄MAP
+	type=0x12 GvGSE
+	type=0x13 戦場フィールド
+	type=0x14 エンドレスタワー
 R 01d7 <ID>.l <equip point>.B <item id1>.w <item id2>.w
 	装備グラフィック <equip point> は 02手と09足のみ確認。id2は左手
 R 01d8 <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <?>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <?>.B <?>.B <sit>.B <Lv>.B <?>.B
@@ -1247,7 +1257,7 @@ R 01ea <ID>.l
 	IDは新婦のものが入る？
 R 01eb <ID>.l <X>.w <Y>.w
 	ギルドメンバ位置更新
-R 01ec <?>.4B <?>.l <string>.16B
+R 01ec <guildID>.l <acountID>.l <mapname>.16B
 	内部で何故か "izlude" と文字列比較が行われる
 	未調査
 S 01ed
@@ -1387,9 +1397,8 @@ R 021c <point>.l <total>.l
 	アルケミランキングポイントが<point>上昇して、<total>になりました。
 S 021d <off>.l
 	/effectしてるかどうか
-R 021f <ID?>.l <ID?>.l <kill_nick>.24B <killed_nick>.24B <?>.l <?>.l
+R 021f <winpoint>.l <losepoint>.l <kill_nick>.24B <killed_nick>.24B <time>.l <time>.l
 	temperタブへ情報送信
-	未調査
 R 0220 <target_id>.l <flag>.l
 	マーダラーとしてキャラ名を赤文字にするかのON/OFF
 	flag=0でOFF、1でON
@@ -1472,7 +1481,7 @@ R 023c <type>.w <val>.w
 	4 passwd set ok
 	5 passwd miss
 	6 ok
-R 023d <?>.4B
+R 023d <?>.l
 	イベントに当たりました。ゲーム内でアイテムを受け取ってください
 	ログインサーバ用
 R 023e <type>.w <?>.4B
@@ -1487,7 +1496,7 @@ R 0240 <len>.w <num>.l { <mail_num>.l <title>.40B <read>.B <nick>.24B <time>.l }
 	0x23fの応答
 S 0241 <num>.l
 	メールの受信要求
-R 0242 <len>.w <num>.l <title>.40B <nick>.24B <0x22固定>.l <zeny>.l <amount>.l <itemid>.w <0固定>.w <identify>.B <attribute>.B <?>.B <card>.4w <mail_body>.?B
+R 0242 <len>.w <num>.l <title>.40B <nick>.24B <0x22固定>.l <zeny>.l <amount>.l <itemid>.w <0固定>.w <identify>.B <attribute>.B <refine>.B <card>.4w <mail_body>.?B
 	メールを選択受信
 S 0243 <num>.l
 	メール削除
@@ -1520,10 +1529,10 @@ S 024c <index>.w <flag>.l
 	乗せたら<flag>は1？
 S 024d <start_zeny>.l <end_zeny>.l <time>.w
 	競売にアイテム登録
-S 024e <?>.l
-	未調査
-S 024f <?>.l <?>.l
-	未調査
+S 024e <auctionID>.l
+	オークション出品キャンセル
+S 024f <auctionID>.l <value>.l
+	IDのオークション入札要求
 R 0250 <type>.B
 	type=0 : 競売登録が失敗しました。
 	type=1 : 競売登録が成功しました。
@@ -1536,7 +1545,7 @@ R 0250 <type>.B
 	type=8 : ゼニーが十分ではありません。
 	type=9 : これ以上競売アイテムに入札することはできません。
 	他は全て無視
-S 0251 <type>.w <num>.l <name>.24B <flag?>.w
+S 0251 <type>.w <num>.l <name>.24B <page>.w
 	競売ウィンドウのアイテム検索
 	type=0 : 防具
 	type=1 : 武器
@@ -1544,8 +1553,8 @@ S 0251 <type>.w <num>.l <name>.24B <flag?>.w
 	type=3 : その他
 	type=4 : アイテム名<name>で検索
 	type=5 : 競売番号<num>で検索
-R 0252 <len>.w <?>.l <loop?>.l { <?>.80B <?>.w <?>.B }*
-	未調査
+R 0252 <len>.w <page_count>.l <loop>.l { <auctionID>.l <name>.24B <item id1>.w <type>.w <?>.w <amount>.w <identify>.B <attribute>.B <refine>.B <card>.4w <value>.l <flag>.l <name>.24B <time>.l }.83B*
+	競売ウィンドウのアイテム検索。0251の応答
 R 0253 <skilllv>.B
 	skilllvが0〜2なら太陽と月と星の感情セーブ用メッセージ「一度指定すると変更は不可能です！」
 	skilllvが10なら「ブラックジェムストーン 1個と百万ゼニーを消費する魔法の実行に同意しますか？」
@@ -1564,7 +1573,7 @@ S 0258
 	ログイン要求に付加されるパケット。nPro関係。
 R 0259
 	nPro関係。0228送信後の返答。
-R 025a <len>.w { <itemid>.l }*<len>
+R 025a <len>.w { <item ID>.w }.2B*
 	料理リスト
 S 025b <len>.w <itemid>.w
 	アイテム選択、キャンセル時は<itemid>に0xffffが入る
@@ -1573,10 +1582,13 @@ S 025c <type>.w
 	競売ウィンドウ
 	type=0 : 自分の出品アイテムを表示
 	type=1 : 入札中のアイテムを表示
-R 025d <type>.w <?>.2B
+R 025d <flag>.l
+	オークション終了
 	type=0 : 該当の競売を終了しました。
 	type=1 : 該当の競売を終了できません。
 	type=2 : 競売番号が正確ではありません。
+S 025e <?>.w
+	未調査
 R 025f <0固定>.4B
 	競売ウィンドウを開く
 	すぐにサーバに0x251が送信される
@@ -1588,7 +1600,7 @@ S 0273 <mail_num>.l <nick>.24B
 R 0274 <mail_num>.l <fail>.w
 	fail=0 : メールが返送されました
 	fail=1 : メールが存在しません
-S 0277 <version>.l <account name>.24B <password>.24B <version2>.B <?>.37B
+S 0277 <version>.l <account name>.24B <password>.24B <version2>.B <ip>.16B <MacAddress>.13B
 	アカウントID&パスワード送信
 S 0279
 	/hunting
@@ -1598,10 +1610,14 @@ R 027a <len>.w <message>.*B
 R 027b <val1>.l <val2>.l <val3>.l
 	PC部屋イベント : 経験値増加 <val1>%, 死亡時経験値 <val2>%, ドロップ率増加 <val3>%
 
-S 027c <version>.l <account name>.24B <md5 binary>.16B <version2>.B <?>.13B
+S 027c <version>.l <account name>.24B <md5 binary>.16B <version2>.B <MacAddress>.13B
 	id&暗号化済みpass送信
-R 027d <?>.24B <?>.w*15 <?>.4B?
-	ログイン系？未調査
+R 027d <name>.24B <level>.w <name_value>.w <?>.w <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <flee>.w <aspd>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <attackable>.w <exp>.l
+	傭兵ステータス情報？
+R 027e <?>.w <?>.w
+	未調査
+S 027f <?>.w <?>.l
+	未調査
 R 0280 <point>.l <total>.l <type>.w
 	テイミングミッションランキングポイントが<point>上昇して<total>になりました。
 	type=0xfd2 or 0xfd3固定
@@ -1709,6 +1725,8 @@ R 029a <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine
 R 029b <ID>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <limit>.l <name_value>.w <call_count>.l <kill_count>.l <attackable>.w
        <ID>.l <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.l <max_hp>.l <sp>.l <max_sp>.l <limit>.l <name_value>.w <call_count>.l <kill_count>.l <attackable>.w (2007-11-06aSakexe以降)
 	傭兵のステータス情報まとめて送り付け、0x22eの傭兵版
+R 029c <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <name>.24B <level>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <limit>.l <name_value>.w <call_count>.l <kill_count>.l
+	傭兵ステータス情報
 R 029d <len>.w {<skill ID>.w <target type>.l <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	傭兵用スキル情報の塊、0x10fと同じ
 R 029e <skill ID>.w <lv>.w <sp>.w <range>.w <up>.B
@@ -1717,8 +1735,8 @@ S 029f <menu>.B
 	傭兵のメニュー要求
 	menu=1 : 傭兵情報の通知
 	menu=2 : 傭兵解雇
-R 02a2 <type>.w <?>.l
-	未調査
+R 02a2 <type>.w <val>.l
+	傭兵ステータス更新
 	type=05 : WM_SIZE
 	type=06 : WM_ACTIVATE
 	type=07 : WM_SETFOCUS
@@ -1732,19 +1750,25 @@ R 02a2 <type>.w <?>.l
 S 02a5 <?>.w <?>.l
 	マウスのスクロールを高速で動かすと飛んでくる
 	未調査
+R 02aa <?>.w
+	不明
+S 02ab <type>.w <password>.16B <password>.16B
+	0x2aaの応答？
+R 02ac <?>.w <?>.w
+	不明
 R 02ad <?>.w <?>.l
 	mRO Pin code check?
 R 02ae
 	ログイン系？未調査
-S 02b0 <version>.l <account name>.24B <password>.24B <version2>.B <ip>.16B <?>.14B
+S 02b0 <version>.l <account name>.24B <password>.24B <version2>.B <ip>.16B <MacAddress>.13B <flag>.B
 	アカウントID&パスワード送信
 	0x277の上位版？
 	langtypeが0のときのみ有効
-R 02b1 <len>.w <?>.l { <questID>.l <active>.B }.5B*
+R 02b1 <len>.w <quest_num>.l { <questID>.l <active>.B }.5B*
 	基本クエストウィンドウ
-R 02b2 <len>.w <?>.l { <questID>.l <?>.l <limited>.l <loop>.B <0?>.B { <mobID>.l <kill>.w <mob name>.24B }.30B*3 }.104B*
+R 02b2 <len>.w <quest_num>.l { <questID>.l <quest_starttime>.l <quest_endtime>.l <mob_num>.w { <mobID>.l <kill>.w <mob name>.24B }.30B*3 }.104B*
 	詳細クエストウィンドウ
-R 02b3 <questID>.l <active>.B <questID>.l <?>.l <loop>.w { <mobID>.l <kill>.w <mob name>.24B }.30B*3
+R 02b3 <questID>.l <active>.B <quest_starttime>.l <quest_endtime>.l <loop>.w { <mobID>.l <kill>.w <mob name>.24B }.30B*3
 	クエスト追加
 R 02b4 <questID>.l
 	クエスト削除
@@ -1764,6 +1788,8 @@ S 02ba <index>.w <type>.B <ID>.l <lv>.w
 	type=1 : スキル
 R 02bb <index>.w <ID>.l
 	装備が損傷されました
+R 02bc <time>.l
+	ネカフェ部屋残り時間？
 R 02bf <?>.l <?>.l
 	ログイン系？未調査
 S 02c0
@@ -1860,15 +1886,19 @@ R 02dd <ID>.l <name>.24B <camp>.w
 R 02de <point>.w <point>.w
 	戦場ポイント
 	自軍、敵軍のポイント表示
-R 02df <ID>.l <?>.26B <?>.w <?>.w
-	未調査
-R 02e0 <ID>.l <?>.24B <hp>.w <max_hp>.w
-	NPCにHPゲージが出る
+R 02df <ID>.l <name>.24B <class>.w <x>.w <y>.w
+	戦場メンバー位置更新
+R 02e0 <ID>.l <name>.24B <hp>.w <max_hp>.w
+	戦場メンバーHPバー更新
 R 02e1 <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1>.l <param2>.w <type>.B <param3>.l
 	通常攻撃エフェクト＆ダメージ、0x8aの上位版
-R 02e7 <len>.w <?>.w <str?>.?B
+S 02e6 <flag>.l
+	BOTチェック？
+R 02e7 <len>.w <type>.w <str?>.?B
+	01d6の上位版?
 	<str?>には -, + のチェックあり
 	数値を文字列として入れる？
+	typeは0x1d6のものを使用
 	未調査
 R 02e8 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
 	所有消耗品&収集品リスト
@@ -1896,15 +1926,14 @@ R 02ef <ID>.l <type>.w
 
 R 02f0 <color>.l <time>.l
 	頭上のバーが増えて<time>秒後に消える
+S 02f1
+	02f0受信後、移動した場合等に送られてくる
 R 02f2
-	未調査
-R 02f3 <len>.w <?>.B <?>.B <?>.B <?>.B
-	未調査
-
-R 02f4〜02f8
-	未調査
-R 02f9, 03B4〜03BB
-	未調査
+	02f1の応答。頭上のバーを消す
+R 02f3 <len>.w <ID>.l <item ID>.w <identify flag>.B <X>.w <Y>.w <subX>.B <subY>.B <amount>.w
+	09eの上位版?
+R 02f4〜02f9
+	02f3と同じ？使用用途不明
 R 02fa, 02fb, 02fe〜0300
 	act, spr不足エラー
 	未調査
@@ -1913,9 +1942,22 @@ R 02fc
 	未調査
 R 0301〜0303, 0307
 	未調査
-
+S 035c
+	簡易課金ショップアイテムリスト要求？
+S 035e
+	不明
+R 03b3 <len>.w <ID>.l <item ID>.w <identify flag>.B <X>.w <Y>.w <subX>.B <subY>.B <amount>.w
+	02f3の上位版？
+R 03b4〜03dc
+	03b3と同じ？使用用途不明
+R 03e2 <len>.w <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1>.l <param2>.w <type>.B <param3>.l
+	02e1の上位版?
+R 03e3〜040b
+	03e2と同じ？使用用途不明
 R 040c <len>.w <color>.l <type>.w <size>.w <align>.w <y>.w <message>.?B
 	01c3と同じ
+R 040d〜0435
+	040cと同じ？使用用途不明
 S 0436 <account ID>.l <charactor ID>.l <login ID1>.l <login ID2>.l <sex>.B
 	0072と同じ（2008-09-10aSakexe以降）
 S 0437 <target ID>.l <type>.B
@@ -1927,15 +1969,22 @@ S 0439
 
 R 043d <skillid>.w <tick>.l
 	スキル固有ディレイ表示
+R 043e <len>.w { <skillid>.w <tick>.l }.6B*
+	スキル固有ディレイリスト？
 R 043f <type>.w <ID>.l <switch>.B <tick>.l <val>.l <?>.l <?>.l
 	増強系スキル使用時のメッセージ色々、0x196の上位版
 R 0440 <ID>.l <num>.w <state>.w
 	ミレニアムシールド表示
 R 0441 <skillid>.w
 	skillidで指定したスキルを取得スキル一覧から消す
-
+R 0444 <len>.w <point>.l { <value>.l <value>.l <type>.B <item ID>.w }.11B*
+	簡易課金ショップアイテムリスト
+S 0445 <item ID>.w <amount>.w
+	簡易課金ショップアイテム購入
 R 0446 <ID>.l <x>.w <y>.w <state>.w <type>.w
 	NPCイベントの表示
+S 044b
+	簡易課金ショップクローズ
 S 07d7 <exp>.l <item>.2B
 	0102の上位版
 R 07d8 <exp>.l <item1>.B <item2>.B
@@ -2008,8 +2057,15 @@ R 07f9 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w 
 	type=8 HOM
 	type=9 MER
 	type=10 ELEM(ソーサラーの妖精)
-R 07fa <0?>.w <index>.w <amount>.w
+R 07fa <type>.w <index>.w <amount>.w
 	00afの上位版（2009-11-18cRagexeRE以降）
+	type=0 通常時?
+	type=1 スキル使用時
+	type=2 ?
+	type=3 ?
+	type=4 倉庫へ移動時
+	type=5 カートへ移動時
+	type=6 売却時
 R 07fb <src ID>.l <dst ID>.l <X>.w <Y>.w <skillid>.w <pl>.l <casttime>.l <flag?>.B
 	0x13eの上位版（2009-11-18cRagexeRE以降）
 R 07fc <old account ID>.l <new account ID>.l

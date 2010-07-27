@@ -606,16 +606,19 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				}
 			}
 			if(skill_num != NPC_SELFDESTRUCTION && skill_num != NPC_SELFDESTRUCTION2) {
-				if(flag&BF_WEAPON) {
+				if(flag&BF_SKILL) {	// スキル攻撃
+					if(flag&BF_WEAPON)
+						damage = damage * battle_config.gvg_normalskill_damage_rate / 100;
+					if(flag&BF_MAGIC)
+						damage = damage * battle_config.gvg_magic_damage_rate / 100;
+					if(flag&BF_MISC)
+						damage = damage * battle_config.gvg_misc_damage_rate / 100;
+				} else {	// 通常攻撃
 					if(flag&BF_SHORT)
 						damage = damage * battle_config.gvg_short_damage_rate / 100;
 					if(flag&BF_LONG)
 						damage = damage * battle_config.gvg_long_damage_rate / 100;
 				}
-				if(flag&BF_MAGIC)
-					damage = damage * battle_config.gvg_magic_damage_rate / 100;
-				if(flag&BF_MISC)
-					damage = damage * battle_config.gvg_misc_damage_rate / 100;
 			}
 			if(damage < 1)
 				damage = (!battle_config.skill_min_damage && flag&BF_MAGIC && src->type == BL_PC)? 0: 1;
@@ -623,16 +626,19 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 
 		// PK
 		if(map[bl->m].flag.pk && bl->type == BL_PC && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
-			if(flag&BF_WEAPON) {
+			if(flag&BF_SKILL) {	// スキル攻撃
+				if(flag&BF_WEAPON)
+					damage = damage * battle_config.pk_normalskill_damage_rate / 100;
+				if(flag&BF_MAGIC)
+					damage = damage * battle_config.pk_magic_damage_rate / 100;
+				if(flag&BF_MISC)
+					damage = damage * battle_config.pk_misc_damage_rate / 100;
+			} else {	// 通常攻撃
 				if(flag&BF_SHORT)
 					damage = damage * battle_config.pk_short_damage_rate / 100;
 				if(flag&BF_LONG)
 					damage = damage * battle_config.pk_long_damage_rate / 100;
 			}
-			if(flag&BF_MAGIC)
-				damage = damage * battle_config.pk_magic_damage_rate / 100;
-			if(flag&BF_MISC)
-				damage = damage * battle_config.pk_misc_damage_rate / 100;
 			if(damage < 1)
 				damage = (!battle_config.skill_min_damage && flag&BF_MAGIC && src->type == BL_PC)? 0: 1;
 		}
@@ -3964,7 +3970,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			{
 				rsdamage += damage * t_sc->data[SC_REFLECTSHIELD].val2 / 100;
 			}
-			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1)	// デスバウンド反射
+			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(target)&0x20))	// デスバウンド反射
 			{
 				rsdamage += damage * t_sc->data[SC_DEATHBOUND].val2 / 100;
 				if(rsdamage < 1) rsdamage = 1;
@@ -4458,7 +4464,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					if(rdamage < 1) rdamage = 1;
 				}
 				// デスバウンド時
-				if(sc && sc->data[SC_DEATHBOUND].timer != -1)
+				if(sc && sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(bl)&0x20))
 				{
 					rdamage += damage * sc->data[SC_DEATHBOUND].val2 / 100;
 					if(rdamage < 1) rdamage = 1;
@@ -5348,8 +5354,9 @@ int battle_config_read(const char *cfgName)
 		{ "monster_skill_nofootset",            &battle_config.monster_skill_nofootset,            0        },
 		{ "player_cloak_check_type",            &battle_config.pc_cloak_check_type,                0        },
 		{ "monster_cloak_check_type",           &battle_config.monster_cloak_check_type,           1        },
-		{ "gvg_short_attack_damage_rate",       &battle_config.gvg_short_damage_rate,              60       },
+		{ "gvg_short_attack_damage_rate",       &battle_config.gvg_short_damage_rate,              100      },
 		{ "gvg_long_attack_damage_rate",        &battle_config.gvg_long_damage_rate,               60       },
+		{ "gvg_normal_attack_damage_rate",      &battle_config.gvg_normalskill_damage_rate,        60       },
 		{ "gvg_magic_attack_damage_rate",       &battle_config.gvg_magic_damage_rate,              60       },
 		{ "gvg_misc_attack_damage_rate",        &battle_config.gvg_misc_damage_rate,               60       },
 		{ "gvg_eliminate_time",                 &battle_config.gvg_eliminate_time,                 7000     },
@@ -5592,10 +5599,11 @@ int battle_config_read(const char *cfgName)
 		{ "scroll_produce_rate",                &battle_config.scroll_produce_rate,                100      },
 		{ "scroll_item_name_input",             &battle_config.scroll_item_name_input,             0        },
 		{ "pet_leave",                          &battle_config.pet_leave,                          1        },
-		{ "pk_short_attack_damage_rate",        &battle_config.pk_short_damage_rate,               80       },
-		{ "pk_long_attack_damage_rate",         &battle_config.pk_long_damage_rate,                70       },
+		{ "pk_short_attack_damage_rate",        &battle_config.pk_short_damage_rate,               100      },
+		{ "pk_long_attack_damage_rate",         &battle_config.pk_long_damage_rate,                60       },
+		{ "pk_normal_attack_damage_rate",       &battle_config.pk_normalskill_damage_rate,         60       },
 		{ "pk_magic_attack_damage_rate",        &battle_config.pk_magic_damage_rate,               60       },
-		{ "pk_misc_attack_damage_rate",         &battle_config.pk_misc_damage_rate,                100      },
+		{ "pk_misc_attack_damage_rate",         &battle_config.pk_misc_damage_rate,                60       },
 		{ "cooking_rate",                       &battle_config.cooking_rate,                       100      },
 		{ "making_rate",                        &battle_config.making_rate,                        100      },
 		{ "extended_abracadabra",               &battle_config.extended_abracadabra,               0        },

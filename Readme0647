@@ -1,4 +1,53 @@
 ----------------------------------------
+//0762 [2010/07/28] by popori
+
+・alucardさんの情報を元にシーズモードのダメージ補正を本家と同様に修正する。 (battle.* battle_auriga.conf)
+　alucardさんに感謝
+　※この変更により、一部battle_auriga.confの仕様が変更されます。
+
+	gvg_short_attack_damage_rate
+	gvg_long_attack_damage_rate
+	-> これら2つは通常攻撃のみの倍率に適用されます。
+
+	新規追加フラグ
+	gvg_normal_attack_damage_rate
+	-> このフラグはシーズモードMAPの物理攻撃スキルの倍率に適用されます。
+
+・PKMAPも同様のシーズダメージ補正のようなので、上記の変更を加える。 (battle.* battle_auriga.conf)
+　※上記と同様に、一部battle_auriga.confの仕様が変更されます。
+
+	pk_short_attack_damage_rate
+	pk_long_attack_damage_rate
+	-> これら2つは通常攻撃のみの倍率に適用されます。
+
+	新規追加フラグ
+	pk_normal_attack_damage_rate
+	-> このフラグはPKモードMAPの物理攻撃スキルの倍率に適用されます。
+
+・リーディングスペルブックのスロット数計算式をマージ (map.h skill.c)
+　pneumaさんに感謝
+
+・トワイライトファーマシー３が使用不能なのを修正、フリップザコインも修正 (skill_require_db.txt)
+　hanasakiさんに感謝
+
+・0761のスパイラルピアースの移動不可効果が機能しないので、とりあえず削除 (skill.c)
+　※騎士スレテンプレによると、SC_ANKLEの効果が短時間にかかってる模様？
+
+・client_packet.txtの更新 (client_packet.txt)
+
+・clif_initialstatus()の修正 (clif.c)
+
+・clif_changeoption()のパケット仕様を本家に合わせる (clif.c)
+
+・新歩行パケットは最後にintにキャストするのではなく、最初からintにキャストして受け取るように変更 (clif.c)
+
+・battle_auriga.confのpk_noshiftの仕様を若干変更する。 (clif.c)
+　※pk_noshiftが有効時はPKMAPにもPvPのランクが表示される仕様でしたが、本家の仕様と離れてしまうため変更を加えました。
+　　今後はpk_noshift有効時でもPvPのランクは表示させない仕様に変更します。
+
+・デスバウンドの反射はBOSS属性には無効に変更 (battle.c)
+
+----------------------------------------
 //0761 [2010/07/27] by Lyese
 
 ・スパイラルピアースに1秒間の移動不可能効果を追加
