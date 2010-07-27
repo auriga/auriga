@@ -1573,7 +1573,7 @@ S 0258
 	ログイン要求に付加されるパケット。nPro関係。
 R 0259
 	nPro関係。0228送信後の返答。
-R 025a <len>.w { <item ID>.w }.2B*
+R 025a <len>.w <type?>.w { <item ID>.w }.2B*
 	料理リスト
 S 025b <len>.w <itemid>.w
 	アイテム選択、キャンセル時は<itemid>に0xffffが入る

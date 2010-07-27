@@ -10266,7 +10266,7 @@ int buildin_making(struct script_state *st)
 
 	sd=script_rid2sd(st);
 	if(sd){
-		clif_skill_produce_mix_list(sd,makeid);
+		clif_making_list(sd,makeid);
 		sd->making_base_success_per = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	}
 	return 0;

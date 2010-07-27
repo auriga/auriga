@@ -7111,6 +7111,38 @@ void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger)
 }
 
 /*==========================================
+ * 料理リスト
+ *------------------------------------------
+ */
+void clif_making_list(struct map_session_data *sd, int trigger)
+{
+	int i,c,view,fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0)=0x25a;
+	WFIFOW(fd, 4)=1;
+
+	for(i=0,c=0;i<MAX_SKILL_PRODUCE_DB;i++){
+		if( skill_can_produce_mix(sd,i,trigger) ){
+			if((view = itemdb_viewid(skill_produce_db[i].nameid)) > 0)
+				WFIFOW(fd,c*2+ 6)= view;
+			else
+				WFIFOW(fd,c*2+ 6)= skill_produce_db[i].nameid;
+			c++;
+		}
+	}
+	WFIFOW(fd, 2)=c*2+6;
+	WFIFOSET(fd,WFIFOW(fd,2));
+
+	if(c > 0)
+		sd->state.produce_flag = 1;
+
+	return;
+}
+
+/*==========================================
  * 状態異常アイコン/メッセージ表示
  *------------------------------------------
  */
@@ -10608,7 +10640,7 @@ void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
 	WFIFOW(fd,86)=0;
 	WFIFOB(fd,88)=md->item.identify;
 	WFIFOB(fd,89)=md->item.attribute;
-	WFIFOB(fd,90)=0;	// 謎
+	WFIFOB(fd,90)=md->item.refine;
 	WFIFOW(fd,91)=md->item.card[0];
 	WFIFOW(fd,93)=md->item.card[1];
 	WFIFOW(fd,95)=md->item.card[2];
@@ -15252,6 +15284,24 @@ static void clif_parse_FeelSaveAck(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * 料理要求応答
+ *------------------------------------------
+ */
+static void clif_parse_Making(int fd,struct map_session_data *sd, int cmd)
+{
+	int nameid;
+
+	nullpo_retv(sd);
+
+	sd->state.produce_flag = 0;
+
+	nameid = RFIFOW(fd,GETPACKETPOS(cmd,0));
+	skill_produce_mix(sd,nameid,0,0,0);
+
+	return;
+}
+
+/*==========================================
  * ホットキーのセーブ
  *------------------------------------------
  */
@@ -15738,6 +15788,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_DeleteMail,                "deletemail"                },
 		{ clif_parse_ReturnMail,                "returnmail"                },
 		{ clif_parse_FeelSaveAck,               "feelsaveack"               },
+		{ clif_parse_Making,                    "making"                    },
 		{ clif_parse_HotkeySave,                "hotkeysave"                },
 		{ clif_parse_Revive,                    "revive"                    },
 		{ clif_parse_MercMenu,                  "mercmenu"                  },

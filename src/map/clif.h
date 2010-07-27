@@ -169,6 +169,7 @@ void clif_skill_warppoint(struct map_session_data *sd,int skill_num,
 void clif_skill_memo(struct map_session_data *sd, unsigned char flag);
 void clif_skill_teleportmessage(struct map_session_data *sd, unsigned short flag);
 void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger);
+void clif_making_list(struct map_session_data *sd, int trigger);
 
 void clif_produceeffect(struct map_session_data *sd, unsigned short flag, int nameid);
 

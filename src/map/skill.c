@@ -3010,7 +3010,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case MO_BALKYOUNG:
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
-		map_foreachinarea(skill_balkyoung,bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),src,bl);
+		map_foreachinarea(skill_balkyoung,bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),src,bl);
 		break;
 	case KN_SPEARSTAB:		/* スピアスタブ */
 		if(flag&1) {
@@ -14407,7 +14407,7 @@ static int skill_balkyoung( struct block_list *bl,va_list ap )
 	if(battle_check_target(src,bl,BCT_ENEMY) <= 0)
 		return 0;
 
-	skill_blown(src,bl,2);	// 吹き飛ばしてみる
+	skill_blown(src,bl,4);	// 吹き飛ばしてみる
 	if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,7000,status_get_lv(src)))
 		status_change_start(bl,SC_STUN,1,0,0,0,2000,0);
 
