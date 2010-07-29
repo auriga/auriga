@@ -7315,9 +7315,6 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 
 #if PACKETVER < 16
 	WBUFW(buf,0) = 0x1c3;
-#else
-	WBUFW(buf,0) = 0x40c;
-#endif
 	WBUFW(buf,2) = (unsigned short)(len+16);
 	WBUFL(buf,4) = color;
 	WBUFW(buf,8) = 400;	// Font style? Type?
@@ -7331,6 +7328,22 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 	          (flag == 2) ? AREA:
 	          (flag == 3) ? SELF:
 	          ALL_CLIENT);
+#else
+	WBUFW(buf,0) = 0x40c;
+	WBUFW(buf,2) = (unsigned short)(len+16);
+	WBUFL(buf,4) = color;
+	WBUFW(buf,8) = 400;	// Font style? Type?
+	WBUFW(buf,10) = 12;	// Font size
+	WBUFL(buf,12) = 0;	// Unknown!
+	memcpy(WBUFP(buf,16), mes, len);
+
+	flag &= 0x07;
+	clif_send(buf, WBUFW(buf,2), bl,
+	          (flag == 1) ? ALL_SAMEMAP:
+	          (flag == 2) ? AREA:
+	          (flag == 3) ? SELF:
+	          ALL_CLIENT);
+#endif
 	aFree(buf);
 
 	return;
@@ -11808,7 +11821,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if(map[sd->bl.m].flag.gvg)
 		clif_set0199(sd->fd,3);
 
-	if(!map[sd->bl.m].flag.pk)
+	if(battle_config.pk_noshift && !map[sd->bl.m].flag.pk)
 		sd->status.karma = 0;
 
 	// ペット
