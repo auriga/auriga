@@ -1057,6 +1057,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	for(i=0; i<MAX_SKILL_DB; i++)
 		sd->skillstatictimer[i] = tick;
 
+	for(i=0; i<MAX_THIRDSKILL; i++)
+		sd->skillcooldown[i] = tick;
+
 	sd->state.autoloot = (battle_config.item_auto_get)? 1: 0;
 
 	for(i=0; i<5; i++) {

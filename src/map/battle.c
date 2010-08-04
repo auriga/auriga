@@ -3086,8 +3086,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		// アクティブアイテムは物理攻撃スキルでも発動する
 		pc_activeitem_start(src_sd,asflag+EAS_NORMAL,tick);
 
-		// weapon_attack_autospell無効時でも、融合状態であれば温もりにオートスペルが発動する
-		if(battle_config.weapon_attack_autospell || ((skill_num == SG_SUN_WARM || skill_num == SG_MOON_WARM || skill_num == SG_STAR_WARM) && sc && sc->data[SC_FUSION].timer != -1))
+		// weapon_attack_autospell無効時でも、融合状態であればオートスペルが発動する
+		if(battle_config.weapon_attack_autospell || (sc && sc->data[SC_FUSION].timer != -1))
 			asflag += EAS_NORMAL;
 		else
 			asflag += EAS_SKILL;

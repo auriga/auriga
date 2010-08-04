@@ -279,15 +279,19 @@ void intif_GMmessage(char* mes, size_t len, int flag)
 }
 
 // GMメッセージ（マルチカラー）を送信
-int intif_announce(char* mes,size_t len,unsigned long color)
+int intif_announce(char* mes,size_t len,unsigned long color,short type,short size,short align,short pos_y)
 {
 	if (inter_fd < 0)
 		return -1;
 
 	WFIFOW(inter_fd,0) = 0x3000;
-	WFIFOW(inter_fd,2) = (unsigned short)(8+len);
+	WFIFOW(inter_fd,2) = (unsigned short)(16+len);
 	WFIFOL(inter_fd,4) = color;
-	memcpy(WFIFOP(inter_fd,8), mes, len);
+	WFIFOW(inter_fd,8) = type;
+	WFIFOW(inter_fd,10) = size;
+	WFIFOW(inter_fd,12) = align;
+	WFIFOW(inter_fd,14) = pos_y;
+	memcpy(WFIFOP(inter_fd,16), mes, len);
 	WFIFOSET(inter_fd, WFIFOW(inter_fd,2));
 
 	return 0;
@@ -1999,7 +2003,7 @@ int intif_parse(int fd)
 		if(RFIFOL(fd,4) == 0xFF000000)
 			clif_GMmessage(NULL,(char*)RFIFOP(fd,8),packet_len-8,0);	// non color
 		else
-			clif_announce(NULL,(char*)RFIFOP(fd,8),packet_len-8,RFIFOL(fd,4),0);	// multi-color
+			clif_announce(NULL,(char*)RFIFOP(fd,16),packet_len-16,RFIFOL(fd,4),RFIFOW(fd,8),RFIFOW(fd,10),RFIFOW(fd,12),RFIFOW(fd,14),0);	// multi-color
 		break;
 	case 0x3801: intif_parse_WisMessage(fd); break;
 	case 0x3802: intif_parse_WisEnd(fd); break;

@@ -2083,3 +2083,7 @@ R 080e <ID>,l <HP>.l <MaxHP>.l
 	0x106の上位版（2010-02-23aRagexeRE以降）
 R 080f <type ID>.w <item type>.B <amount>.l <identify flag>.B <attribute>.B <refine>.B <card>.4w
 	0x0e9の上位版（2010-02-23aRagexeRE以降）
+R 081d <ID>.l <hp>.l <max_hp>.l <sp>.l <max_sp>.l
+	0x29bの妖精版?
+R 081e <type>.w <val>.l
+	0x7dbの妖精版?

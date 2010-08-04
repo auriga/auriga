@@ -1025,11 +1025,15 @@ AurigaNPCScript
 			そのモンスターを倒したとき<event>を開始します。
 
 		announce命令
-			announce <string>,<flag>[,<color>];
+			announce <string>,<flag>[,<color>[,<type>,<size>,<align>,<y>]];
 
 			string		文字列
 			flag		数値
 			color		数値
+			type		数値
+			size		数値
+			align		数値
+			y			数値
 
 			<string>をＧＭアナウンスで表示します。
 			<flag>は以下に示す通りです。
@@ -1050,6 +1054,9 @@ AurigaNPCScript
 			エリアフラグと色フラグと特殊フラグの合計を指定してください。
 			<color>を指定した場合、その色でＧＭアナウンスします。
 			このとき色フラグは無視されます。
+			<color>指定時にメッセージの<type>と<size>と<align>と<y>を指定することが出来ます。
+			<type>は400か700を指定して下さい。デフォルトは400。
+			<size>はメッセージの大きさです。デフォルトは12。
 
 		killmonster命令
 			killmonster <gatname>[,<event>];
@@ -1173,30 +1180,44 @@ AurigaNPCScript
 			<npcname>を省略すると、命令を実行したNPCが対象になります。
 
 		mapannounce命令
-			mapannounce <gatname>,<string>,<flag>[,<color>];
+			mapannounce <gatname>,<string>,<flag>[,<color>[,<type>,<size>,<align>,<y>]];
 
 			gatname,string	文字列
 			flag		数値
 			color		数値
+			type		数値
+			size		数値
+			align		数値
+			y			数値
 
 			<gatname>全体に<string>をＧＭアナウンスで表示します。
 			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			flag:0,黄色文字、16,青文字
 			<color>指定時はその色でＧＭアナウンスします。
 			このとき<flag>の値は無視されます。
+			<color>指定時にメッセージの<type>と<size>と<align>と<y>を指定することが出来ます。
+			<type>は400か700を指定して下さい。デフォルトは400。
+			<size>はメッセージの大きさです。デフォルトは12。
 
 		areaannounce命令
-			areannounce <gatname>,<x0>,<y0>,<x1>,<y1>,<string>,<flag>[,<color>];
+			areannounce <gatname>,<x0>,<y0>,<x1>,<y1>,<string>,<flag>[,<color>[,<type>,<size>,<align>,<y>]];
 
 			gatname,string		文字列
 			x0,y0,x1,y1,flag	数値
 			color			数値
+			type		数値
+			size		数値
+			align		数値
+			y			数値
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内に対し<string>をＧＭアナウンスで表示します。
 			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 			flag:0,黄色文字、16,青文字
 			<color>指定時はその色でＧＭアナウンスします。
 			このとき<flag>の値は無視されます。
+			<color>指定時にメッセージの<type>と<size>と<align>と<y>を指定することが出来ます。
+			<type>は400か700を指定して下さい。デフォルトは400。
+			<size>はメッセージの大きさです。デフォルトは12。
 
 		mapwarp命令
 			mapwarp <gatname>,<gatname2>,<x>,<y>;

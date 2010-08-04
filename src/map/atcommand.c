@@ -1266,7 +1266,7 @@ int atcommand_kami(const int fd, struct map_session_data* sd, AtCommandType comm
 		unsigned long color;
 		if (sscanf(message, "%lx %199[^\n]", &color, output) < 2)
 			return -1;
-		intif_announce(output, strlen(output) + 1, color&0x00ffffff);
+		intif_announce(output, strlen(output) + 1, color&0x00ffffff, 400, 12, 0, 0);
 	} else {
 		if (sscanf(message, "%199[^\n]", output) < 1)
 			return -1;

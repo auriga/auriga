@@ -314,11 +314,13 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,V
                         6 : カード
                         7 : ペットの卵
                         8 : ペット専用装備品
-                        9 : 不明
+                        9 : 武器？
                        10 : 矢
+                       15 : 銃
                        16 : 弾丸
                        17 : 苦無
                        18 : 強化装備アイテムの箱
+                       19 : キャノンボール
 
       PRICE        = 販売価格
       SELL         = 売値    省略時は自動的にPRICEの半分の値が売値として設定されます

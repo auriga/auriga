@@ -25,7 +25,7 @@
 int intif_parse(int fd);
 
 void intif_GMmessage(char* mes, size_t len, int flag);
-int intif_announce(char* mes,size_t len,unsigned long color);
+int intif_announce(char* mes,size_t len,unsigned long color,short type,short size,short align,short pos_y);
 
 void intif_wis_message(struct map_session_data *sd, char *nick, char *mes, int mes_len);
 

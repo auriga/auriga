@@ -4091,9 +4091,9 @@ struct script_function buildin_func[] = {
 	{buildin_startnpctimer,"startnpctimer","*"},
 	{buildin_setnpctimer,"setnpctimer","*"},
 	{buildin_getnpctimer,"getnpctimer","i*"},
-	{buildin_announce,"announce","si*"},
-	{buildin_mapannounce,"mapannounce","ssi*"},
-	{buildin_areaannounce,"areaannounce","siiiisi*"},
+	{buildin_announce,"announce","si*****"},
+	{buildin_mapannounce,"mapannounce","ssi*****"},
+	{buildin_areaannounce,"areaannounce","siiiisi*****"},
 	{buildin_getusers,"getusers","i"},
 	{buildin_getmapusers,"getmapusers","s"},
 	{buildin_getareausers,"getareausers","siiii"},
@@ -7191,9 +7191,22 @@ int buildin_announce(struct script_state *st)
 	int flag  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	size_t len;
 	char *color = NULL;
+	short type = 400;
+	short size = 12;
+	short align = 0;
+	short pos_y = 0;
 
 	if(st->end > st->start+4)
 		color = conv_str(st,& (st->stack->stack_data[st->start+4]));
+	if(st->end > st->start+5)
+		type = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	if(st->end > st->start+6)
+		size = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	if(st->end > st->start+7)
+		align = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	if(st->end > st->start+8)
+		pos_y = conv_num(st,& (st->stack->stack_data[st->start+8]));
+
 	len = strlen(str)+1;
 
 	if(flag&0x07) {
@@ -7209,12 +7222,12 @@ int buildin_announce(struct script_state *st)
 			return 0;
 
 		if(color)
-			clif_announce(bl,str,len,strtoul(color,NULL,0),flag);
+			clif_announce(bl,str,len,strtoul(color,NULL,0),type,size,align,pos_y,flag);
 		else
 			clif_GMmessage(bl,str,len,flag);
 	} else {
 		if(color)
-			intif_announce(str,len,strtoul(color,NULL,0));
+			intif_announce(str,len,strtoul(color,NULL,0),type,size,align,pos_y);
 		else
 			intif_GMmessage(str,len,flag);
 	}
@@ -7230,6 +7243,7 @@ static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 	char *str,*color;
 	size_t len;
 	int flag;
+	short type,size,align,pos_y;
 
 	nullpo_retr(0, bl);
 
@@ -7237,9 +7251,13 @@ static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 	len   = va_arg(ap,size_t);
 	flag  = va_arg(ap,int);
 	color = va_arg(ap,char *);
+	type  = va_arg(ap,short);
+	size  = va_arg(ap,short);
+	align = va_arg(ap,short);
+	pos_y = va_arg(ap,short);
 
 	if(color)
-		clif_announce(bl,str,len,strtoul(color,NULL,0),flag|3);
+		clif_announce(bl,str,len,strtoul(color,NULL,0),type,size,align,pos_y,flag|3);
 	else
 		clif_GMmessage(bl,str,len,flag|3);
 	return 0;
@@ -7249,16 +7267,28 @@ int buildin_mapannounce(struct script_state *st)
 {
 	char *mapname,*str,*color=NULL;
 	int flag,m;
+	short type = 400;
+	short size = 12;
+	short align = 0;
+	short pos_y = 0;
 
 	mapname=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	str=conv_str(st,& (st->stack->stack_data[st->start+3]));
 	flag=conv_num(st,& (st->stack->stack_data[st->start+4]));
 	if (st->end>st->start+5)
 		color=conv_str(st,& (st->stack->stack_data[st->start+5]));
+	if (st->end>st->start+6)
+		type=conv_num(st,& (st->stack->stack_data[st->start+6]));
+	if (st->end>st->start+7)
+		size=conv_num(st,& (st->stack->stack_data[st->start+7]));
+	if (st->end>st->start+8)
+		align=conv_num(st,& (st->stack->stack_data[st->start+8]));
+	if (st->end>st->start+9)
+		pos_y=conv_num(st,& (st->stack->stack_data[st->start+9]));
 
 	m = script_mapname2mapid(st,mapname);
 	if(m >= 0)
-		map_foreachinarea(buildin_mapannounce_sub,m,0,0,map[m].xs,map[m].ys,BL_PC,str,strlen(str)+1,flag&0x10,color);
+		map_foreachinarea(buildin_mapannounce_sub,m,0,0,map[m].xs,map[m].ys,BL_PC,str,strlen(str)+1,flag&0x10,color,type,size,align,pos_y);
 	return 0;
 }
 
@@ -7271,6 +7301,10 @@ int buildin_areaannounce(struct script_state *st)
 	char *mapname,*str,*color = NULL;
 	int flag,m;
 	int x0,y0,x1,y1;
+	short type = 400;
+	short size = 12;
+	short align = 0;
+	short pos_y = 0;
 
 	mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	x0      = conv_num(st,& (st->stack->stack_data[st->start+3]));
@@ -7281,10 +7315,18 @@ int buildin_areaannounce(struct script_state *st)
 	flag    = conv_num(st,& (st->stack->stack_data[st->start+8]));
 	if (st->end>st->start+9)
 		color = conv_str(st,& (st->stack->stack_data[st->start+9]));
+	if (st->end>st->start+10)
+		type = conv_num(st,& (st->stack->stack_data[st->start+10]));
+	if (st->end>st->start+11)
+		size = conv_num(st,& (st->stack->stack_data[st->start+11]));
+	if (st->end>st->start+12)
+		align = conv_num(st,& (st->stack->stack_data[st->start+12]));
+	if (st->end>st->start+13)
+		pos_y = conv_num(st,& (st->stack->stack_data[st->start+13]));
 
 	m = script_mapname2mapid(st,mapname);
 	if(m >= 0)
-		map_foreachinarea(buildin_mapannounce_sub,m,x0,y0,x1,y1,BL_PC,str,strlen(str)+1,flag&0x10,color);
+		map_foreachinarea(buildin_mapannounce_sub,m,x0,y0,x1,y1,BL_PC,str,strlen(str)+1,flag&0x10,color,type,size,align,pos_y);
 	return 0;
 }
 

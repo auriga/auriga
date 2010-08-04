@@ -4810,7 +4810,7 @@ static void clif_initialstatus(struct map_session_data *sd)
 	WFIFOW(fd,36) = sd->flee2/10;
 	WFIFOW(fd,38) = sd->critical/10;
 	WFIFOW(fd,40) = sd->aspd;
-	WFIFOW(fd,42) = sd->status.manner;
+	WFIFOW(fd,42) = 0;
 
 	WFIFOSET(fd,packet_db[0xbd].len);
 
@@ -7309,7 +7309,7 @@ void clif_GlobalMessage(struct block_list *bl,const char *message)
  * 天の声（マルチカラー）を送信
  *------------------------------------------
  */
-void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned long color, int flag)
+void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned long color, short type, short size, short align, short pos_y, int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+16);
 
@@ -7317,9 +7317,10 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 	WBUFW(buf,0) = 0x1c3;
 	WBUFW(buf,2) = (unsigned short)(len+16);
 	WBUFL(buf,4) = color;
-	WBUFW(buf,8) = 400;	// Font style? Type?
-	WBUFW(buf,10) = 12;	// Font size
-	WBUFL(buf,12) = 0;	// Unknown!
+	WBUFW(buf,8) = type;	// Font style? Type?
+	WBUFW(buf,10) = size;	// Font size
+	WBUFW(buf,12) = align;
+	WBUFW(buf,14) = pos_y;
 	memcpy(WBUFP(buf,16), mes, len);
 
 	flag &= 0x07;
@@ -7332,9 +7333,13 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 	WBUFW(buf,0) = 0x40c;
 	WBUFW(buf,2) = (unsigned short)(len+16);
 	WBUFL(buf,4) = color;
-	WBUFW(buf,8) = 400;	// Font style? Type?
-	WBUFW(buf,10) = 12;	// Font size
-	WBUFL(buf,12) = 0;	// Unknown!
+//	WBUFW(buf,8) = 400;	// Font style? Type?
+//	WBUFW(buf,10) = 12;	// Font size
+//	WBUFL(buf,12) = 0;	// Unknown!
+	WBUFW(buf,8) = type;
+	WBUFW(buf,10) = size;
+	WBUFW(buf,12) = align;
+	WBUFW(buf,14) = pos_y;
 	memcpy(WBUFP(buf,16), mes, len);
 
 	flag &= 0x07;

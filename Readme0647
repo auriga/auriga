@@ -1,4 +1,18 @@
 ----------------------------------------
+//0766 [2010/08/05] by popori
+
+・アナウンスパケットを本家仕様に修正 (inter.c atcommad.c clif.* intif.* script.c script_ref.txt)
+　※この変更に伴いスクリプト命令「announce」「mapannounce」「areaannounce」の仕様が若干変わりましたので、script_ref.txtをお読みください。
+
+・拳聖の融合状態のスキル攻撃によるオートスペル発動は温もりに限らず発動するよう変更 (battle.c)
+
+・一定時間が経つと3次職スキルが使用不能になるバグを修正 (pc.c)
+
+・item_typeの更新 (db_ref.txt)
+
+・client_packet.txtの更新 (client_packet.txt)
+
+----------------------------------------
 //0765 [2010/07/30] by popori
 
 ・0762のpk_noshiftの仕様変更を少し修正 (clif.c)
