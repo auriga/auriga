@@ -7317,8 +7317,8 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 	WBUFW(buf,0) = 0x1c3;
 	WBUFW(buf,2) = (unsigned short)(len+16);
 	WBUFL(buf,4) = color;
-	WBUFW(buf,8) = type;	// Font style? Type?
-	WBUFW(buf,10) = size;	// Font size
+	WBUFW(buf,8) = type;
+	WBUFW(buf,10) = size;
 	WBUFW(buf,12) = align;
 	WBUFW(buf,14) = pos_y;
 	memcpy(WBUFP(buf,16), mes, len);
@@ -7333,9 +7333,6 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 	WBUFW(buf,0) = 0x40c;
 	WBUFW(buf,2) = (unsigned short)(len+16);
 	WBUFL(buf,4) = color;
-//	WBUFW(buf,8) = 400;	// Font style? Type?
-//	WBUFW(buf,10) = 12;	// Font size
-//	WBUFL(buf,12) = 0;	// Unknown!
 	WBUFW(buf,8) = type;
 	WBUFW(buf,10) = size;
 	WBUFW(buf,12) = align;
