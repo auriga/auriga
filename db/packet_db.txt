@@ -1696,7 +1696,6 @@
 //0x0190,19,actionrequest,5:18
 //0x0193,2,closekafra,0
 //0x01a2,37
-//0x01df,6,gmreqnochatcount,2
 //0x01fd,15,repairitem,2
 //0x022c,65
 //0x0288,10,npcpointshopbuy,2:4:6
@@ -2103,7 +2102,7 @@
 //0x07f2,6
 //0x07f3,4
 //0x07f4,3
-//0x07f5,6,gmreqnochatcount,2
+//0x07f5,6,gmfullstrip,2
 
 //2009-12-15aRagexeRE
 //0x006d,114
@@ -2153,7 +2152,7 @@
 //0x07f2,6
 //0x07f3,4
 //0x07f4,3
-//0x07f5,6,gmreqnochatcount,2
+//0x07f5,6,gmfullstrip,2
 
 //2009-12-29aRagexeRE
 0x006d,114
@@ -2203,5 +2202,5 @@
 0x07f2,6
 0x07f3,4
 0x07f4,3
-0x07f5,6,gmreqnochatcount,2
+0x07f5,6,gmfullstrip,2
 0x0804,14,partybooking,0

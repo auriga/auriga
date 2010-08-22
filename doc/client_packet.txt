@@ -1109,6 +1109,16 @@ R 01c2 <type?>.l <?>.l
 
 R 01c3 <len>.w <color>.l <type>.w <size>.w <align>.w <y>.w <message>.?B
 	GMからの天の声（0x9aのマルチカラー版）
+	type=00:FW_DONTCARE
+	type=100:FW_THIN
+	type=200:FW_EXTRALIGHT
+	type=300:FW_LIGHT
+	type=400:FW_NORMAL
+	type=500:FW_MEDIUM
+	type=600:FW_SEMIBOLD
+	type=700:FW_BOLD
+	type=800:FW_EXTRABOLD
+	type=900:FW_HEAVY
 R 01c4 <index>.w <amount>.l <itemID>.w <type>.B <identify flag>.B <attribute>.B <refine>.B <card>.4w
 	カプラ倉庫アイテム、0xf4の上位版
 R 01c5 <index>.w <amount>.l <item ID>.w <type>.B <identify flag>.B <attribute>.B <refine>.B <card>.4w
@@ -1187,12 +1197,13 @@ R 01d6 <type>.w
 	type=0x06 PvPヨーヨー
 	type=0x08 GvG
 	type=0x09 ギルドダンジョン
-	type=0x0a ダンジョン(テレポ不可)
+	type=0x0a テレポ不可MAP
 	type=0x0b PK
-	type=0x0c ターボトラック
 	type=0x0d スキル使用不可MAP
-	type=0x0e ターボトラック(PK)
+	type=0x0e ターボトラック
 	type=0x0f GMに飛ばされる監獄MAP
+	type=0x10 モンスタートラック
+	type=0x11 ポリン対戦場
 	type=0x12 GvGSE
 	type=0x13 戦場フィールド
 	type=0x14 エンドレスタワー
@@ -1429,7 +1440,7 @@ R 022a <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id
 R 022b <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w
 	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報?(01d9の上位バージョン)
 R 022c <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w
-       <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w (2007-11-06aSakexe以降)
+       <ID>.l <type>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w (2007-11-06aSakexe以降)
 	表示範囲内キャラ移動情報(01daの上位バージョン)
 
 S 022d <0固定>.w <menu>.B
@@ -1914,7 +1925,7 @@ R 02eb <server tick>.l <coordidate>.3B <05 05固定>.2B <font>.w
 	ゲーム鯖接続成功&サーバ側1ms時計&出現位置
 	0x73の上位版
 
-R 02ec <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w <font>.w
+R 02ec <ID>.l <type>.B <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w <font>.w
 	表示範囲内キャラ移動情報(0x22cの上位バージョン)
 R 02ed <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <font>.w
 	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報?(0x22bの上位バージョン)
@@ -2011,7 +2022,7 @@ R 07e9 <code>.w <flag>.B
 	captchaコード認証応答
 
 S 07f5 <ID>.|
-	0x1dfの上位版（2009-10-27aRagexeRE以降）
+	IDの装備を全解除する
 R 07f6 <charactor ID>.l <exp>.l <type>.w <quest>.w
 	獲得経験値取得メッセージ
 	type=1 Base_exp

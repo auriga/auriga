@@ -5544,6 +5544,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		vending_closevending(sd);
 
 	pc_delspiritball(sd,sd->spiritball,0);
+	pc_delcoin(sd,sd->coin,0);
 
 	if(sd->status.pet_id > 0 && sd->pd && sd->petDB) {
 		sd->pet.intimate -= sd->petDB->die;

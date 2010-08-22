@@ -2843,7 +2843,6 @@ void clif_spawnhom(struct homun_data *hd)
 void clif_spawnmerc(struct merc_data *mcd)
 {
 	unsigned char buf[128];
-	int level=0;
 	int len=0;
 
 	nullpo_retv(mcd);
@@ -7309,7 +7308,7 @@ void clif_GlobalMessage(struct block_list *bl,const char *message)
  * 天の声（マルチカラー）を送信
  *------------------------------------------
  */
-void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned long color, short type, short size, short align, short pos_y, int flag)
+void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned long color, int type, int size, int align, int pos_y, int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+16);
 
@@ -12612,7 +12611,8 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 			case 10:
 			case 16:
 			case 17:
-				// 矢・弾丸・苦無
+			case 19:
+				// 矢・弾丸・苦無・手裏剣・キャノンボール
 				pc_equipitem(sd, idx, 0x8000);
 				break;
 			default:
@@ -14575,7 +14575,7 @@ static void clif_parse_GMReqNoChat(int fd,struct map_session_data *sd, int cmd)
 	if(dstsd == NULL)
 		return;
 
-	if( (type == 2 && !pc_isGM(sd)) ||
+	if( (type == 2 && !pc_isGM(sd) && sd->bl.id == tid) ||
 	    (pc_isGM(sd) > pc_isGM(dstsd) && pc_isGM(sd) >= battle_config.gm_nomanner_lv) )
 	{
 		int dstfd = dstsd->fd;
@@ -15512,6 +15512,34 @@ static void clif_parse_PartyBooking(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+* GMによる装備解除
+*------------------------------------------*/
+static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
+{
+	int id,lv,i;
+	struct map_session_data *tsd = NULL;
+
+	nullpo_retv(sd);
+
+	id = RFIFOL(fd, GETPACKETPOS(cmd,0));
+	lv = pc_isGM(sd);
+	tsd = map_id2sd(id);
+	if(tsd == NULL)
+		return;
+
+	if(lv <= 0 || lv < pc_isGM(tsd))
+		return;
+
+	for(i=0; i<MAX_INVENTORY; i++) {
+		if(tsd->status.inventory[i].equip) {
+			pc_unequipitem(tsd,i,0);
+		}
+	}
+
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -15813,6 +15841,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_BattleMessage,             "battlemessage"             },
 		{ clif_parse_PartyChangeLeader,         "partychangeleader"         },
 		{ clif_parse_PartyBooking,              "partybooking"              },
+		{ clif_parse_GmFullstrip,               "gmfullstrip"               },
 		{ NULL,                                 NULL                        },
 	};
 

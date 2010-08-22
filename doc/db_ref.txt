@@ -314,11 +314,11 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,V
                         6 : カード
                         7 : ペットの卵
                         8 : ペット専用装備品
-                        9 : 武器？
+                        9 : 風魔手裏剣
                        10 : 矢
                        15 : 銃
                        16 : 弾丸
-                       17 : 苦無
+                       17 : 苦無、手裏剣
                        18 : 強化装備アイテムの箱
                        19 : キャノンボール
 

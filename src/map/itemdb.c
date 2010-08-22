@@ -169,7 +169,7 @@ int itemdb_isequip(int nameid)
 {
 	int type = itemdb_type(nameid);
 
-	if(type == 0 || type == 2 || type == 3 || type == 6 || type == 10 || type == 16 || type == 17 || type == 18)
+	if(type == 0 || type == 2 || type == 3 || type == 6 || type == 10 || type == 16 || type == 17 || type == 18 || type == 19)
 		return 0;
 	return 1;
 }
@@ -182,7 +182,7 @@ int itemdb_isequip2(struct item_data *data)
 {
 	if(data) {
 		int type = data->type;
-		if(type == 0 || type == 2 || type == 3 || type == 6 || type == 10 || type == 16 || type == 17 || type == 18)
+		if(type == 0 || type == 2 || type == 3 || type == 6 || type == 10 || type == 16 || type == 17 || type == 18 || type == 19)
 			return 0;
 		return 1;
 	}
@@ -197,7 +197,7 @@ int itemdb_isequip3(int nameid)
 {
 	int type = itemdb_type(nameid);
 
-	if(type == 4 || type == 5 || type == 8)
+	if(type == 4 || type == 5 || type == 8 || type == 9 || type == 15)
 		return 1;
 	return 0;
 }

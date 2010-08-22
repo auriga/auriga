@@ -3918,6 +3918,8 @@ int buildin_checkfalcon(struct script_state *st);
 int buildin_checkriding(struct script_state *st);
 int buildin_checkdragon(struct script_state *st);
 int buildin_checkgear(struct script_state *st);
+int buildin_checkwolf(struct script_state *st);
+int buildin_checkwolfmount(struct script_state *st);
 int buildin_checksit(struct script_state *st);
 int buildin_checkdead(struct script_state *st);
 int buildin_checkcasting(struct script_state *st);
@@ -4189,6 +4191,8 @@ struct script_function buildin_func[] = {
 	{buildin_checkriding,"checkriding",""},
 	{buildin_checkdragon,"checkdragon",""},
 	{buildin_checkgear,"checkgear",""},
+	{buildin_checkwolf,"checkwolf",""},
+	{buildin_checkwolfmount,"checkwolfmount",""},
 	{buildin_checksit,"checksit",""},
 	{buildin_checkdead,"checkdead",""},
 	{buildin_checkcasting,"checkcasting",""},
@@ -7191,10 +7195,10 @@ int buildin_announce(struct script_state *st)
 	int flag  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	size_t len;
 	char *color = NULL;
-	short type = 400;
-	short size = 12;
-	short align = 0;
-	short pos_y = 0;
+	int type = 400;
+	int size = 12;
+	int align = 0;
+	int pos_y = 0;
 
 	if(st->end > st->start+4)
 		color = conv_str(st,& (st->stack->stack_data[st->start+4]));
@@ -7243,7 +7247,7 @@ static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 	char *str,*color;
 	size_t len;
 	int flag;
-	short type,size,align,pos_y;
+	int type,size,align,pos_y;
 
 	nullpo_retr(0, bl);
 
@@ -7251,10 +7255,10 @@ static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 	len   = va_arg(ap,size_t);
 	flag  = va_arg(ap,int);
 	color = va_arg(ap,char *);
-	type  = va_arg(ap,short);
-	size  = va_arg(ap,short);
-	align = va_arg(ap,short);
-	pos_y = va_arg(ap,short);
+	type  = va_arg(ap,int);
+	size  = va_arg(ap,int);
+	align = va_arg(ap,int);
+	pos_y = va_arg(ap,int);
 
 	if(color)
 		clif_announce(bl,str,len,strtoul(color,NULL,0),type,size,align,pos_y,flag|3);
@@ -7267,10 +7271,10 @@ int buildin_mapannounce(struct script_state *st)
 {
 	char *mapname,*str,*color=NULL;
 	int flag,m;
-	short type = 400;
-	short size = 12;
-	short align = 0;
-	short pos_y = 0;
+	int type = 400;
+	int size = 12;
+	int align = 0;
+	int pos_y = 0;
 
 	mapname=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	str=conv_str(st,& (st->stack->stack_data[st->start+3]));
@@ -7301,10 +7305,10 @@ int buildin_areaannounce(struct script_state *st)
 	char *mapname,*str,*color = NULL;
 	int flag,m;
 	int x0,y0,x1,y1;
-	short type = 400;
-	short size = 12;
-	short align = 0;
-	short pos_y = 0;
+	int type = 400;
+	int size = 12;
+	int align = 0;
+	int pos_y = 0;
 
 	mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	x0      = conv_num(st,& (st->stack->stack_data[st->start+3]));
@@ -10167,6 +10171,32 @@ int buildin_checkgear(struct script_state *st)
 	struct map_session_data *sd = script_rid2sd(st);
 
 	push_val(st->stack,C_INT,(pc_isgear(sd)) ? 1 : 0);
+
+	return 0;
+}
+
+/*==========================================
+ * ウォーグを呼び出しているかどうか
+ *------------------------------------------
+ */
+int buildin_checkwolf(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	push_val(st->stack,C_INT,(pc_iswolf(sd)) ? 1 : 0);
+
+	return 0;
+}
+
+/*==========================================
+ * ウォーグに騎乗しているかどうか
+ *------------------------------------------
+ */
+int buildin_checkwolfmount(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	push_val(st->stack,C_INT,(pc_iswolfmount(sd)) ? 1 : 0);
 
 	return 0;
 }

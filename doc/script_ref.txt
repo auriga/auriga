@@ -1055,7 +1055,6 @@ AurigaNPCScript
 			<color>を指定した場合、その色でＧＭアナウンスします。
 			このとき色フラグは無視されます。
 			<color>指定時にメッセージの<type>と<size>と<align>と<y>を指定することが出来ます。
-			<type>は400か700を指定して下さい。デフォルトは400。
 			<size>はメッセージの大きさです。デフォルトは12。
 
 		killmonster命令
@@ -1196,7 +1195,6 @@ AurigaNPCScript
 			<color>指定時はその色でＧＭアナウンスします。
 			このとき<flag>の値は無視されます。
 			<color>指定時にメッセージの<type>と<size>と<align>と<y>を指定することが出来ます。
-			<type>は400か700を指定して下さい。デフォルトは400。
 			<size>はメッセージの大きさです。デフォルトは12。
 
 		areaannounce命令
@@ -1216,7 +1214,6 @@ AurigaNPCScript
 			<color>指定時はその色でＧＭアナウンスします。
 			このとき<flag>の値は無視されます。
 			<color>指定時にメッセージの<type>と<size>と<align>と<y>を指定することが出来ます。
-			<type>は400か700を指定して下さい。デフォルトは400。
 			<size>はメッセージの大きさです。デフォルトは12。
 
 		mapwarp命令
@@ -2918,6 +2915,16 @@ AurigaNPCScript
 			checkgear()
 
 			魔道ギアに乗っていたら１を、そうでなければ０を返します
+
+		checkwolf関数
+			checkwolf()
+
+			ウォーグといっしょにいたら１を、そうでなければ０を返します
+
+		checkwolfmount関数
+			checkwolfmount()
+
+			ウォーグに乗っていたら１を、そうでなければ０を返します
 
 		checksit関数
 			checksit()

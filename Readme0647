@@ -1,4 +1,24 @@
 ----------------------------------------
+//0768 [2010/08/23] by popori
+
+・gcc4.3.4環境下でのコンパイル警告を一部修正 (inter.c clif.* intif.* script.c)
+
+・anti hackerのコードを更新 (clif.c)
+ ->GMでないキャラが他人に赤エモを付与出来るexploitの修正
+
+・docの修正と追加 (client_packet.txt script_ref.txt db_ref.txt)
+
+・packet_db.txtの修正ついでにGM右クリックメニューの全ての装備を解除機能を実装 (packet_db.txt clif.c)
+
+・item_db.txtのtypeを本家仕様に修正 (clif.c item_db.c)
+　※追加されたtypeに合わせてソースを変更しただけなので、item_db.txtの変更はまだ未着手・・・。
+
+・PCが死亡時にコインも削除するよう変更 (pc.c)
+
+・スクリプト関数「checkwolf()」「checkwolfmount()」を追加 (script.c script_ref.txt)
+　tomoさんに感謝
+
+----------------------------------------
 //0767 [2010/08/06] by popori
 
 ・0766の不要なコメントアウトが入ってしまったので削除 (clif.c)
