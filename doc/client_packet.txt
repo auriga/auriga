@@ -191,7 +191,7 @@ S 0099 <len>.w <message>.?B
 R 009a <len>.w <message>.?B
 	GMからの天の声
 	<message>の先頭4byteに "blue" があると青文字に、"ssss"があると攻城戦用になる。
-	"tool" というのもあるみたい？
+	"tool" "micc"というのも存在。
 S 009b <head dir>.w <dir>.B
 	体&頭の方向変更要求。クライアントへの応答は無い模様
 	dirは00〜07で体の向き。00で北から反時計回りに45°単位で07まで
@@ -232,6 +232,7 @@ R 00a8 <index>.w <amount>.w <type>.B
 S 00a9 <index>.w <equip type>.w
 	アイテム装備
 R 00aa <index>.w <equip point>.w <type>.B
+       <index>.w <equip point>.w <flag>.w <type>.B (2010-06-29aRagexeRE以降)
 	アイテム装備応答。type=00の場合装備失敗? equip pointもゴミの模様
 S 00ab <index>.w
 	装備解除
@@ -1862,10 +1863,13 @@ S 02cf <flag?>.l
 	flag=00 0x2cbへの返信
 	flag=01 0x2cdへの返信
 R 02d0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
+       <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w <?>.w}.28B* (2010-06-29aRagexeRE以降)
 	所有装備リスト、0x295の上位版
 R 02d1 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
+       <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w <?>.w}.28B* (2010-06-29aRagexeRE以降)
 	カプラさんに預けてある装備リスト、0x296の上位版
 R 02d2 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
+       <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute?>.B <refine>.B <card>.4w <time>.l <flag>.w <?>.w}.28B* (2010-06-29aRagexeRE以降)
 	カート内装備リスト、0x297の上位版
 R 02d3 <index>.w
 	アイテムの帰属？
@@ -1988,14 +1992,39 @@ R 0440 <ID>.l <num>.w <state>.w
 	ミレニアムシールド表示
 R 0441 <skillid>.w
 	skillidで指定したスキルを取得スキル一覧から消す
+R 0442 <len>.w <loop>.l { <skillid>.w }.2B*
+	オートシャドウスペルのスキルリスト
+S 0443 <flag?>.l <skillid>.w
+	オートシャドウスペルのスキル選択
 R 0444 <len>.w <point>.l { <value>.l <value>.l <type>.B <item ID>.w }.11B*
 	簡易課金ショップアイテムリスト
 S 0445 <item ID>.w <amount>.w
 	簡易課金ショップアイテム購入
 R 0446 <ID>.l <x>.w <y>.w <state>.w <type>.w
 	NPCイベントの表示
+S 0447
+	未調査
 S 044b
 	簡易課金ショップクローズ
+	現在無効？
+R 07d0 <?>.w <?>.w
+	未調査
+	現在無効？
+S 07d1
+	未調査
+	現在無効？
+S 07d3 <?>.w
+	未調査
+	現在無効？
+S 07d4 <?>.w
+	未調査
+	現在無効？
+R 07d5 <?>.w
+	未調査
+	現在無効？
+R 07d6 <?>.w
+	未調査
+	現在無効？
 S 07d7 <exp>.l <item>.2B
 	0102の上位版
 R 07d8 <exp>.l <item1>.B <item2>.B
@@ -2005,22 +2034,53 @@ R 07d9 { <type>.B <ID>.l <lv>.w }.7B*27
 S 07da <account ID>.l
 	PTリーダー変更要求
 R 07db <type>.w <val>.l
-	ホムンクルス情報更新？
+	ホムンクルス情報更新
 	type=1 exp
 	type=5 HP
 	type=7 SP
+	それ以外の値は無視
+S 07dc <option>.l
+	seekパーティー関連？
+	未調査
+R 07dd <name>.24B <job>.l <level>.w <mapName>.16B <option>.l
+	seekパーティー関連？現在未使用？
+	未調査
+S 07de <job>.l <level>.l <mapName>.24B <option>.l
+	seekパーティー関連？現在未使用？
+	未調査
+R 07df <name>.24B <job>.l <level>.l <mapName>.16B <option>.l
+	seekパーティー関連？現在未使用？
+	未調査
+R 07e0 <?>.w <name>.24B
+	未調査
 R 07e1 <skill ID>.w <type>.l <lv>.w <sp>.w <range>.w <up>.B
 	010eの上位版（2009-07-15aRagexeRE以降）
-
+R 07e2 <?>.w <?>.l
+	未調査
+R 07e3 <?>.l
+	未調査
 S 07e5 <?>.w <account ID>.l
 	captchaコード要求
+R 07e6 <?>.w <?>.l
+	未調査
 S 07e7 <len>.w <account ID>.l <code>.10B <?>.14B
 	captchaコード応答
 R 07e8 <len>.w <image>.?B
 	captchaイメージ受信
 R 07e9 <code>.w <flag>.B
 	captchaコード認証応答
-
+S 07ea
+	未調査
+S 07ec <?>.l <?>.w
+	未調査
+R 07ed <?>.l <?>.w <?>.w
+	未調査
+S 07ee <?>.l
+	未調査
+R 07ef <?>.l <?>.w
+	未調査
+S 07f4 <?>.B
+	未調査
 S 07f5 <ID>.|
 	IDの装備を全解除する
 R 07f6 <charactor ID>.l <exp>.l <type>.w <quest>.w
@@ -2081,20 +2141,91 @@ R 07fb <src ID>.l <dst ID>.l <X>.w <Y>.w <skillid>.w <pl>.l <casttime>.l <flag?>
 	0x13eの上位版（2009-11-18cRagexeRE以降）
 R 07fc <old account ID>.l <new account ID>.l
 	PTリーダー変更要求成功時に送信？
+R 07fd <len>.w <type>.B <identify>.B <itemID>.w <name_len>.w <name>.?B <name_len2>.w <name2>.?B
+	未調査
 R 07fe <name>.24B
 	nameのmp3ファイルを鳴らす
-R 07ff <len>.w <?>.w <?>.?B
+R 07ff <len>.w <type>.l
 	MAP鯖間移動時に観測。用途不明
 	0x72→0x7ff→0x283→0x7dの流れ
 R 0800 <len>.w <ID>.l <charID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
 	0133の上位版（2009-12-08aRagexeRE以降）
 S 0801 <len>.w <ID>.l <charID>.l {<amount>.w <index>.w}.4B*
 	0134の上位版（2009-12-08aRagexeRE以降）
+S 0802 <level>.w <MapID>.w <job>.6w
+	パーティーブッキング登録要求
+R 0803 <result>.w
+	パーティーブッキング登録要求応答
+S 0804 <level>.w <MapID>.w <job>.w <?>.l <?>.w
+	パーティーブッキング検索要求
+R 0805 <len>.w <count?>.B { <index>.l <name>.24B <time>.l <level>.w <MapID>.w <job>.6w }.48B*
+	パーティーブッキング検索要求応答
+S 0806
+	パーティーブッキングリスト削除要求
+R 0807 <result>.w
+	パーティーブッキングリスト削除要求応答
+S 0808 <job>.6w
+	パーティーブッキング更新要求
+R 0809 <index>.l <name>.24B <time>.l <level>.w <MapID>.w <job>.6w
+	パーティーブッキングリスト更新
+R 080a <index>.l <job>.6w
+	パーティーブッキング更新要求応答
+R 080b <index>.l
+	パーティーブッキングリスト削除
+S 080c
+	未調査
+S 080d <?>.B
+	未調査
 R 080e <ID>,l <HP>.l <MaxHP>.l
 	0x106の上位版（2010-02-23aRagexeRE以降）
 R 080f <type ID>.w <item type>.B <amount>.l <identify flag>.B <attribute>.B <refine>.B <card>.4w
 	0x0e9の上位版（2010-02-23aRagexeRE以降）
+R 0810 <?>.B
+	未調査
+R 0812 <type>.w <?>.l
+	type=1 1の時は<?>.lの値は無視
+	type=2
+	それ以外の値は無視
+	未調査
+R 0814 <?>.l <?>.80B
+	未調査
+S 0815
+	未調査
+R 0816 <?>.l
+	未調査
+R 0818 <len>.w { <?>.l <?>.l <?>.B }.9B*
+	未調査
+R 081a <type>.w
+	type=3 ?
+	type=4 ?
+	それ以外の値は無視
+	未調査
+R 081b <?>.w <?>.w <?>.l
+	未調査
+R 081c <?>.w <?>.w <?>.l
+	未調査
 R 081d <ID>.l <hp>.l <max_hp>.l <sp>.l <max_sp>.l
-	0x29bの妖精版?
+	0x29bの妖精版
 R 081e <type>.w <val>.l
-	0x7dbの妖精版?
+	0x7dbの妖精版
+	type=5 HP
+	tyoe=6 MAX_HP
+	type=7 SP
+	type=8 MAX_SP
+	それ以外の値は無視
+S 0821
+	未調査
+R 0824 <?>.w <?>.w
+	未調査
+R 0837 <?>.B
+	未調査
+S 0838
+	未調査
+R 0839 <?>.l <?>.l <?>.l <?>.l <?>.l <?>.l <?>.40B
+	未調査
+R 083a <?>.w <?>.B
+	未調査
+S 083b
+	未調査
+R 083d <?>.w <?>.w
+	未調査

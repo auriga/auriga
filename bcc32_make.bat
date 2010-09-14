@@ -9,6 +9,9 @@ set PATH=C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib;%PAT
 :set __sqllib__=-L"C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt" libmysql.lib
 
 @rem パケット定義
+@rem 2010-07-28aRagexeRE: 30
+@rem 2010-07-21aRagexeRE: 29
+@rem 2010-06-29aRagexeRE: 28
 @rem 2010-04-14aRagexeRE: 27
 @rem 2010-02-23aRagexeRE: 26
 @rem 2009-12-08aRagexeRE: 25
@@ -29,7 +32,7 @@ set PATH=C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib;%PAT
 @rem 2007-07-11aSakexe: 10
 @rem 2007-05-21aSakexe:  9
 @rem 2007-02-12aSakexe:  8
-set __PACKETDEF__=-DPACKETVER=27 -DNEW_006b -DNEW_006b_RE
+set __PACKETDEF__=-DPACKETVER=30 -DNEW_006b -DNEW_006b_RE
 
 @rem コンパイルオプション
 @rem SQL⇔TEXTの切り替え、SQL版にする場合は以下のコンパイルオプションをコメントアウトしてください

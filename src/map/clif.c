@@ -3983,7 +3983,7 @@ void clif_equiplist(struct map_session_data *sd)
 		WFIFOW(fd,2)=4+n*24;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
-#else
+#elif PACKETVER < 28
 	WFIFOW(fd,0)=0x2d0;
 	for(i=0,n=0;i<MAX_INVENTORY;i++){
 		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL || !itemdb_isequip2(sd->inventory_data[i]))
@@ -4028,6 +4028,54 @@ void clif_equiplist(struct map_session_data *sd)
 	}
 	if(n){
 		WFIFOW(fd,2)=4+n*26;
+		WFIFOSET(fd,WFIFOW(fd,2));
+	}
+#else
+	WFIFOW(fd,0)=0x2d0;
+	for(i=0,n=0;i<MAX_INVENTORY;i++){
+		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL || !itemdb_isequip2(sd->inventory_data[i]))
+			continue;
+		WFIFOW(fd,n*28+4)=i+2;
+		if(sd->inventory_data[i]->view_id > 0)
+			WFIFOW(fd,n*28+6)=sd->inventory_data[i]->view_id;
+		else
+			WFIFOW(fd,n*28+6)=sd->status.inventory[i].nameid;
+		WFIFOB(fd,n*28+8)=(sd->inventory_data[i]->type == 7)? 4: sd->inventory_data[i]->type;
+		WFIFOB(fd,n*28+9)=sd->status.inventory[i].identify;
+		WFIFOW(fd,n*28+10)=pc_equippoint(sd,i);
+		WFIFOW(fd,n*28+12)=sd->status.inventory[i].equip;
+		WFIFOB(fd,n*28+14)=sd->status.inventory[i].attribute;
+		WFIFOB(fd,n*28+15)=sd->status.inventory[i].refine;
+		if(itemdb_isspecial(sd->status.inventory[n].card[0])) {
+			WFIFOW(fd,n*28+16)=(sd->inventory_data[i]->type == 7)? 0:sd->status.inventory[i].card[0];
+			WFIFOW(fd,n*28+18)=(sd->inventory_data[i]->type == 7)? 0:sd->status.inventory[i].card[1];
+			WFIFOW(fd,n*28+20)=(sd->inventory_data[i]->type == 7)? 0:sd->status.inventory[i].card[2];
+			WFIFOW(fd,n*28+22)=sd->status.inventory[i].card[3];
+		} else {
+			if(sd->status.inventory[i].card[0] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[0])) > 0)
+				WFIFOW(fd,n*28+16)=j;
+			else
+				WFIFOW(fd,n*28+16)=sd->status.inventory[i].card[0];
+			if(sd->status.inventory[i].card[1] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[1])) > 0)
+				WFIFOW(fd,n*28+18)=j;
+			else
+				WFIFOW(fd,n*28+18)=sd->status.inventory[i].card[1];
+			if(sd->status.inventory[i].card[2] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[2])) > 0)
+				WFIFOW(fd,n*28+20)=j;
+			else
+				WFIFOW(fd,n*28+20)=sd->status.inventory[i].card[2];
+			if(sd->status.inventory[i].card[3] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[3])) > 0)
+				WFIFOW(fd,n*28+22)=j;
+			else
+				WFIFOW(fd,n*28+22)=sd->status.inventory[i].card[3];
+		}
+		WFIFOL(fd,n*28+24)=sd->status.inventory[i].limit;
+		WFIFOW(fd,n*28+28)=0;
+		WFIFOW(fd,n*28+30)=0;
+		n++;
+	}
+	if(n){
+		WFIFOW(fd,2)=4+n*28;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
 #endif
@@ -4240,7 +4288,7 @@ static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, 
 		WFIFOL(fd,len+20)=item[i].limit;
 		len += 24;
 	}
-#else
+#elif PACKETVER < 27
 	WFIFOW(fd,0)=0x2d1;
 	for(i = idx; i < max; i++) {
 		if(item[i].nameid <= 0)
@@ -4305,6 +4353,73 @@ static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, 
 		WFIFOL(fd,len+20)=item[i].limit;
 		WFIFOW(fd,len+24)=0;
 		len += 26;
+	}
+#else
+	WFIFOW(fd,0)=0x2d1;
+	for(i = idx; i < max; i++) {
+		if(item[i].nameid <= 0)
+			continue;
+		nullpo_retv(id = itemdb_search(item[i].nameid));
+		if(!itemdb_isequip2(id))
+			continue;
+		if(len + 28 > SOCKET_EMPTY_SIZE)
+			break;
+
+		WFIFOW(fd,len)=i+1;
+		if(id->view_id > 0)
+			WFIFOW(fd,len+2)=id->view_id;
+		else
+			WFIFOW(fd,len+2)=item[i].nameid;
+#if PACKETVER >= 20
+		switch(id->type) {
+			case 4:
+				WFIFOB(fd,len+4)=5;
+				break;
+			case 5:
+				WFIFOB(fd,len+4)=4;
+				break;
+			case 7:
+				WFIFOB(fd,len+4)=5;
+				break;
+			default:
+				WFIFOB(fd,len+4)=id->type;
+				break;
+		}
+#else
+		WFIFOB(fd,len+4)=(id->type == 7)? 4: id->type;
+#endif
+		WFIFOB(fd,len+5)=item[i].identify;
+		WFIFOW(fd,len+6)=id->equip;
+		WFIFOW(fd,len+8)=item[i].equip;
+		WFIFOB(fd,len+10)=item[i].attribute;
+		WFIFOB(fd,len+11)=item[i].refine;
+		if(itemdb_isspecial(item[i].card[0])) {
+			WFIFOW(fd,len+12)=(id->type == 7)? 0:item[i].card[0];
+			WFIFOW(fd,len+14)=(id->type == 7)? 0:item[i].card[1];
+			WFIFOW(fd,len+16)=(id->type == 7)? 0:item[i].card[2];
+			WFIFOW(fd,len+18)=item[i].card[3];
+		} else {
+			if(item[i].card[0] > 0 && (j=itemdb_viewid(item[i].card[0])) > 0)
+				WFIFOW(fd,len+12)=j;
+			else
+				WFIFOW(fd,len+12)=item[i].card[0];
+			if(item[i].card[1] > 0 && (j=itemdb_viewid(item[i].card[1])) > 0)
+				WFIFOW(fd,len+14)=j;
+			else
+				WFIFOW(fd,len+14)=item[i].card[1];
+			if(item[i].card[2] > 0 && (j=itemdb_viewid(item[i].card[2])) > 0)
+				WFIFOW(fd,len+16)=j;
+			else
+				WFIFOW(fd,len+16)=item[i].card[2];
+			if(item[i].card[3] > 0 && (j=itemdb_viewid(item[i].card[3])) > 0)
+				WFIFOW(fd,len+18)=j;
+			else
+				WFIFOW(fd,len+18)=item[i].card[3];
+		}
+		WFIFOL(fd,len+20)=item[i].limit;
+		WFIFOW(fd,len+24)=0;
+		WFIFOW(fd,len+26)=0;
+		len += 28;
 	}
 #endif
 	if(len > 4) {
@@ -4991,11 +5106,23 @@ void clif_equipitemack(struct map_session_data *sd, int n, int pos, unsigned cha
 	nullpo_retv(sd);
 
 	fd=sd->fd;
+#if PACKETVER < 27
 	WFIFOW(fd,0)=0xaa;
 	WFIFOW(fd,2)=n+2;
 	WFIFOW(fd,4)=pos;
 	WFIFOB(fd,6)=ok;
 	WFIFOSET(fd,packet_db[0xaa].len);
+#else
+	WFIFOW(fd,0)=0xaa;
+	WFIFOW(fd,2)=n+2;
+	WFIFOW(fd,4)=pos;
+	if(ok && sd->inventory_data[n]->equip&0x301)
+		WFIFOW(fd,6)=sd->inventory_data[n]->look;
+	else
+		WFIFOW(fd,6)=0;
+	WFIFOB(fd,8)=ok;
+	WFIFOSET(fd,packet_db[0xaa].len);
+#endif
 
 	return;
 }
@@ -8161,7 +8288,7 @@ void clif_cart_equiplist(struct map_session_data *sd)
 		WFIFOW(fd,2)=4+n*24;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
-#else
+#elif PACKETVER < 27
 	WFIFOW(fd,0)=0x2d2;
 	for(i=0,n=0;i<MAX_CART;i++){
 		if(sd->status.cart[i].nameid<=0)
@@ -8209,6 +8336,57 @@ void clif_cart_equiplist(struct map_session_data *sd)
 	}
 	if(n){
 		WFIFOW(fd,2)=4+n*26;
+		WFIFOSET(fd,WFIFOW(fd,2));
+	}
+#else
+	WFIFOW(fd,0)=0x2d2;
+	for(i=0,n=0;i<MAX_CART;i++){
+		if(sd->status.cart[i].nameid<=0)
+			continue;
+		id = itemdb_search(sd->status.cart[i].nameid);
+		if(!itemdb_isequip2(id))
+			continue;
+		WFIFOW(fd,n*28+4)=i+2;
+		if(id->view_id > 0)
+			WFIFOW(fd,n*28+6)=id->view_id;
+		else
+			WFIFOW(fd,n*28+6)=sd->status.cart[i].nameid;
+		WFIFOB(fd,n*28+8)=id->type;
+		WFIFOB(fd,n*28+9)=sd->status.cart[i].identify;
+		WFIFOW(fd,n*28+10)=id->equip;
+		WFIFOW(fd,n*28+12)=sd->status.cart[i].equip;
+		WFIFOB(fd,n*28+14)=sd->status.cart[i].attribute;
+		WFIFOB(fd,n*28+15)=sd->status.cart[i].refine;
+		if(itemdb_isspecial(sd->status.cart[i].card[0])) {
+			WFIFOW(fd,n*28+16)=(id->type == 7)? 0:sd->status.cart[i].card[0];
+			WFIFOW(fd,n*28+18)=(id->type == 7)? 0:sd->status.cart[i].card[1];
+			WFIFOW(fd,n*28+20)=(id->type == 7)? 0:sd->status.cart[i].card[2];
+			WFIFOW(fd,n*28+22)=sd->status.cart[i].card[3];
+		} else {
+			if(sd->status.cart[i].card[0] > 0 && (j=itemdb_viewid(sd->status.cart[i].card[0])) > 0)
+				WFIFOW(fd,n*28+16)= j;
+			else
+				WFIFOW(fd,n*28+16)= sd->status.cart[i].card[0];
+			if(sd->status.cart[i].card[1] > 0 && (j=itemdb_viewid(sd->status.cart[i].card[1])) > 0)
+				WFIFOW(fd,n*28+18)= j;
+			else
+				WFIFOW(fd,n*28+18)= sd->status.cart[i].card[1];
+			if(sd->status.cart[i].card[2] > 0 && (j=itemdb_viewid(sd->status.cart[i].card[2])) > 0)
+				WFIFOW(fd,n*28+20)= j;
+			else
+				WFIFOW(fd,n*28+20)= sd->status.cart[i].card[2];
+			if(sd->status.cart[i].card[3] > 0 && (j=itemdb_viewid(sd->status.cart[i].card[3])) > 0)
+				WFIFOW(fd,n*28+22)= j;
+			else
+				WFIFOW(fd,n*28+22)= sd->status.cart[i].card[3];
+		}
+		WFIFOL(fd,n*28+24)=sd->status.cart[i].limit;
+		WFIFOW(fd,n*28+28)=0;
+		WFIFOW(fd,n*28+30)=0;
+		n++;
+	}
+	if(n){
+		WFIFOW(fd,2)=4+n*28;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
 #endif
@@ -12009,6 +12187,8 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 	bl=map_id2bl(account_id);
 	if(bl==NULL)
 		return;
+	if(sd->bl.m != bl->m || unit_distance2(&sd->bl,bl) > AREA_SIZE)
+		return;
 
 	memset(WFIFOP(fd,0), 0, packet_db[0x195].len);
 	WFIFOW(fd,0) = 0x95;
@@ -12255,7 +12435,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || sd->sc.opt1 > 0 || sd->sc.option&2)
+	if(sd->npc_id != 0 || sd->sc.opt1 > 0 || sd->sc.option&2 || sd->state.storage_flag || sd->state.deal_mode != 0 || sd->chatID || sd->state.mail_appending)
 		return;
 	if(sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||	// オートカウンター
 	   sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
@@ -12449,7 +12629,7 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 	}
 
 	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc.opt1 > 0 || sd->chatID || sd->state.mail_appending ||
-	    pc_iscloaking(sd) ||
+	    sd->state.storage_flag || pc_iscloaking(sd) ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 	    sd->sc.data[SC_RUN].timer != -1 ||			// タイリギ
@@ -12500,7 +12680,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 		printf("%s\n", output);
 	}
 
-	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc.opt1 > 0 || sd->state.mail_appending ||
+	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc.opt1 > 0 || sd->state.mail_appending || sd->state.storage_flag || sd->chatID ||
 	    DIFF_TICK(tick, sd->drop_delay_tick) < 0 ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
@@ -12552,7 +12732,7 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	}
 	if( (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
 	    sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 6) ||
-	    sd->state.storage_flag || sd->state.mail_appending ||
+	    sd->state.storage_flag || sd->chatID || sd->state.mail_appending ||
 	    DIFF_TICK(gettick(), sd->item_delay_tick) < 0 || 	// アイテムディレイ
 	    sd->sc.data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
@@ -13082,7 +13262,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->chatID || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
 		return;
 	if(pc_issit(sd))
 		return;
@@ -13271,7 +13451,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->chatID || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
 		return;
 
 	skilllv  = RFIFOW(fd,GETPACKETPOS(cmd,0));
@@ -13398,7 +13578,7 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->chatID || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
 		return;
 
 	if(sd->sc.data[SC_TRICKDEAD].timer != -1 ||
@@ -13629,7 +13809,7 @@ static void clif_parse_InsertCard(int fd,struct map_session_data *sd, int cmd)
 
 	if (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid)
 		return;
-	if (sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 6) || sd->state.mail_appending)
+	if (sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 6) || sd->state.storage_flag || sd->chatID || sd->state.mail_appending)
 		return;
 	if (unit_isdead(&sd->bl))
 		return;

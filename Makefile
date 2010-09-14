@@ -5,6 +5,9 @@ CC = gcc -pipe
 # Detecting gcc version
 GCC_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
 
+# 2010-07-28aRagexeRE: 30
+# 2010-07-21aRagexeRE: 29
+# 2010-06-29aRagexeRE: 28
 # 2010-04-14aRagexeRE: 27
 # 2010-02-23aRagexeRE: 26
 # 2009-12-08aRagexeRE: 25
@@ -25,7 +28,7 @@ GCC_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f
 # 2007-07-11aSakexe: 10
 # 2007-05-21aSakexe:  9
 # 2007-02-12aSakexe:  8
-PACKETDEF = -DPACKETVER=27 -DNEW_006b -DNEW_006b_RE
+PACKETDEF = -DPACKETVER=30 -DNEW_006b -DNEW_006b_RE
 
 PLATFORM = $(shell uname)
 

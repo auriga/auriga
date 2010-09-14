@@ -266,13 +266,17 @@ void intif_GMmessage(char* mes, size_t len, int flag)
 
 	lp = (flag&0x30)? 4: 0;
 	WFIFOW(inter_fd,0) = 0x3000;
-	WFIFOW(inter_fd,2) = (unsigned short)(lp + len + 8);
+	WFIFOW(inter_fd,2) = (unsigned short)(lp + len + 16);
 	WFIFOL(inter_fd,4) = 0xFF000000;	// non color用ダミーコード
 	if(flag&0x20)
-		strncpy(WFIFOP(inter_fd,8), "ssss", 4);
+		strncpy(WFIFOP(inter_fd,16), "ssss", 4);
 	else if(flag&0x10)
-		strncpy(WFIFOP(inter_fd,8), "blue", 4);
-	memcpy(WFIFOP(inter_fd,8+lp), mes, len);
+		strncpy(WFIFOP(inter_fd,16), "blue", 4);
+	WFIFOW(inter_fd,8) = 0;
+	WFIFOW(inter_fd,10) = 0;
+	WFIFOW(inter_fd,12) = 0;
+	WFIFOW(inter_fd,14) = 0;
+	memcpy(WFIFOP(inter_fd,16+lp), mes, len);
 	WFIFOSET(inter_fd, WFIFOW(inter_fd,2));
 
 	return;
@@ -2001,7 +2005,7 @@ int intif_parse(int fd)
 	switch(cmd) {
 	case 0x3800:
 		if(RFIFOL(fd,4) == 0xFF000000)
-			clif_GMmessage(NULL,(char*)RFIFOP(fd,8),packet_len-8,0);	// non color
+			clif_GMmessage(NULL,(char*)RFIFOP(fd,16),packet_len-16,0);	// non color
 		else
 			clif_announce(NULL,(char*)RFIFOP(fd,16),packet_len-16,RFIFOL(fd,4),RFIFOW(fd,8),RFIFOW(fd,10),RFIFOW(fd,12),RFIFOW(fd,14),0);	// multi-color
 		break;

@@ -2218,6 +2218,15 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 	offset += 3;
 #endif
 
+#if PACKETVER > 28
+	len += 16;
+#endif
+
+#if PACKETVER > 29
+	len -= 16;
+#endif
+
+
 	session[fd]->auth = 1; // 認証終了を socket.c に伝える
 
 	sd->state = CHAR_STATE_AUTHOK;
@@ -2282,6 +2291,8 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 		WFIFOW(fd,offset+(i*len)+104 + j) = st->char_num;
 		if(len >= (108+j))
 			WFIFOW(fd,offset+(i*len)+106 + j) = 1;	// キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+		if(len >= (124+j))	// 最後に在籍していたMAP名
+			memcpy(WFIFOP(fd,offset+(i*len)+108 + j),st->last_point.map,16);
 
 		// ロードナイト/パラディンのログイン時のエラー対策
 		if (st->option == 32)
@@ -3791,6 +3802,14 @@ int parse_char(int fd)
 #ifdef NEW_006b_RE
 				len += 4;
 #endif
+
+#if PACKETVER > 28
+				len += 16;
+#endif
+
+#if PACKETVER > 29
+				len -= 16;
+#endif
 				if(cd == NULL){
 					WFIFOW(fd,0)=0x6e;
 					WFIFOB(fd,2)=flag;
@@ -3839,6 +3858,8 @@ int parse_char(int fd)
 				WFIFOW(fd,2+104 + i) = st->char_num;
 				if(len >= (108+i))
 					WFIFOW(fd,2+106+i) = 1;
+				if(len >= (124+i))
+					memcpy(WFIFOP(fd,2+108+i),st->last_point.map,16);
 				WFIFOSET(fd,len+2);
 				RFIFOSKIP(fd,37);
 
