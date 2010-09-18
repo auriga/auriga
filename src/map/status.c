@@ -5736,7 +5736,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 1000;
 			break;
 		case SC_FEARBREEZE:			/* フィアーブリーズ */
-			val2 = 4 + (val1 > 2? 3: 0) + (val1 > 3? 2: 0) + (val1 > 4? 1: 0);		// 発動確率
+			val2 = (val1 > 1)? val1 * 2 + (val1 - 1) / 2 % 2 : 4;	// 発動確率
+			val3 = (val1 > 1)? val1: 2;	// 最大攻撃回数
 			break;
 		case SC_ELECTRICSHOCKER:	/* エレクトリックショッカー */
 			val2 = tick / 1000;

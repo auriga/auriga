@@ -4815,13 +4815,8 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 
 	// マーダラーボーナス
 	if(ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point) {
-#ifdef __BORLANDC__
 		base_exp *= 2;
-		job_exp *= 2;
-#else
-		base_exp <<= 1;
-		job_exp <<= 1;
-#endif
+		job_exp  *= 2;
 	}
 
 	if (sd->status.guild_id > 0) {	// ギルドに上納

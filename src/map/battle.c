@@ -4674,7 +4674,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			}
 			if(tsd) {
 				// 反射ダメージのアクティブアイテム
-				if(battle_config.weapon_reflect_autospell)
+				if(battle_config.magic_reflect_autospell)
 					pc_activeitem_start(tsd,asflag,gettick());
 			}
 		}
