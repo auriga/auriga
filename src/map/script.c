@@ -2839,12 +2839,12 @@ static int run_func(struct script_state *st)
 
 	func=st->stack->stack_data[st->start].u.num;
 	if(str_data[func].type!=C_FUNC ){
-		printf("run_func: not function and command! \n");
+		printf("run_func: not function and command! (func_no : %d, func_type : %d)\n", func, str_data[func].type);
 		st->state=END;
 		return 0;
 	}
 #ifdef DEBUG_RUN
-	printf("run_func : %s (func_no : %d , func_type : %d pos : 0x%x)\n",
+	printf("run_func : %s (func_no : %d, func_type : %d, pos : 0x%x)\n",
 		str_buf+str_data[func].str,func,str_data[func].type,st->pos-1
 	);
 #endif

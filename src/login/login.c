@@ -162,6 +162,7 @@ int login_journal_rollforward( int key, void* buf, int flag )
 			// メモリが足りないなら拡張
 			auth_max+=256;
 			auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
+			memset(auth_dat + (auth_max - 256), '\0', 256 * sizeof(auth_dat[0]));
 		}
 
 		memcpy( &auth_dat[auth_num], buf, sizeof(struct mmo_account) );
@@ -216,6 +217,7 @@ int login_txt_init(void)
 		if(auth_num>=auth_max){
 			auth_max += 256;
 			auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
+			memset(auth_dat + (auth_max - 256), '\0', 256 * sizeof(auth_dat[0]));
 		}
 		auth_dat[auth_num].account_id=account_id;
 		strncpy(auth_dat[auth_num].userid,userid,24);
@@ -445,9 +447,11 @@ int login_txt_account_new(struct mmo_account* account,const char *tmpstr)
 	if(auth_num>=auth_max){
 		auth_max += 256;
 		auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
+		memset(auth_dat + (auth_max - 256), '\0', 256 * sizeof(auth_dat[0]));
 	}
-	while(isGM(account_id_count) > 0)
+	while(isGM(account_id_count) > 0) {
 		account_id_count++;
+	}
 	if(account_id_count > END_ACCOUNT_NUM) {
 		// 利用可能なID上限を超えた
 		printf("account_new : ID is over END_ACCOUNT_NUM %d\n",END_ACCOUNT_NUM);

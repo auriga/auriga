@@ -10,7 +10,7 @@
 	// -------------------
 	// ---- Options (please modify desired values):
 	$Language = 'Japanese'; // possible: 'Japanese' (default), 'English', 'French', 'Russian'
-	$css_style = '<your style.css url>'; // Set here the link to add a style (used in <link rel="stylesheet" href="<your style.css url>" type="text/css">)
+	//$css_style = '<your style.css url>'; // Set here the link to add a style (used in <link rel="stylesheet" href="<your style.css url>" type="text/css">)
 	$AddEmail = 1; // 0: doesn't create account with email, 1: Create account with email (default)
 	$serverip = '127.0.0.1'; // Set here ip of the login server (default: 127.0.0.1)
 	$serverport = 6900; // Set here port of your login-server (default: 6900)
@@ -413,7 +413,7 @@ printf('
 			$error_message = $lang[$Language]['Maintenance'];
 		} else {
 			// Create the account and get result
-			$result = $ladmin_conect->make_account($account, $pass, $sex, ($AddEmail) ? $email : "");
+			$result = $ladmin_conect->make_account2($account, $pass, $sex, ($AddEmail) ? $email : "");
 			if ($result == false) {
 				$error_message = $lang[$Language]['Failed'];
 			} else {
@@ -425,9 +425,7 @@ printf('
 
 	if ($result != false) {
 		$success = sprintf($lang[$Language]['Success'], $account);
-printf('
-			<h3>'.htmlspecialchars($success, ENT_QUOTES).'</h3>
-');
+		printf('<h3>'.htmlspecialchars($success, ENT_QUOTES).'</h3>');
 
 	} else {
 ?>

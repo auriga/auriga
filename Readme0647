@@ -1,4 +1,16 @@
 ----------------------------------------
+//0774 [2010/09/19] by Rayce
+
+・NPCスクリプト実行過程で「run_func: not function and command!」が発生したとき、
+  デバッグのためのヒントとして func_no と func_type を出力するように拡張（script.c）
+
+・createaccount.php でユーザアカウントを作成するとき、入力したメールアドレスが
+  無視される不具合を修正（tool/php/createaccount.php）
+
+・TXT: アカウント情報 auth_dat をreallocで伸張するときは、memsetで初期化する（login.c）
+		reported by 辻にゅまさん
+
+----------------------------------------
 //0773 [2010/09/19] by Rayce
 
 ・ポイズニングウェポンとリーディングスペルブックのアイテムIDを後々容易に
