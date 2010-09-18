@@ -259,23 +259,22 @@ void intif_delete_mercdata(int account_id, int char_id, int merc_id)
 // GMメッセージを送信
 void intif_GMmessage(char* mes, size_t len, int flag)
 {
-	int lp;
+	int lp = (flag&0x30)? 4: 0;
 
 	if (inter_fd < 0)
 		return;
 
-	lp = (flag&0x30)? 4: 0;
 	WFIFOW(inter_fd,0) = 0x3000;
 	WFIFOW(inter_fd,2) = (unsigned short)(lp + len + 16);
 	WFIFOL(inter_fd,4) = 0xFF000000;	// non color用ダミーコード
-	if(flag&0x20)
-		strncpy(WFIFOP(inter_fd,16), "ssss", 4);
-	else if(flag&0x10)
-		strncpy(WFIFOP(inter_fd,16), "blue", 4);
 	WFIFOW(inter_fd,8) = 0;
 	WFIFOW(inter_fd,10) = 0;
 	WFIFOW(inter_fd,12) = 0;
 	WFIFOW(inter_fd,14) = 0;
+	if(flag&0x20)
+		memcpy(WFIFOP(inter_fd,16), "ssss", 4);
+	else if(flag&0x10)
+		memcpy(WFIFOP(inter_fd,16), "blue", 4);
 	memcpy(WFIFOP(inter_fd,16+lp), mes, len);
 	WFIFOSET(inter_fd, WFIFOW(inter_fd,2));
 

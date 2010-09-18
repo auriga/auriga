@@ -3916,7 +3916,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			if(bl->id != skill_area_temp[1])
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		} else {
-			int ar = skilllv > 2? 3: 2;
+			int ar = (skilllv > 2) ? 3: 2;
 			/* スキルエフェクト表示 */
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 
@@ -7006,7 +7006,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						}
 					}
 				}
-				if(sd && j < 1) {	// サモンボールが無かった
+				if(j <= 0 && sd) {	// サモンボールが無かった
 					clif_skill_fail(sd,skillid,0,0);
 				}
 			}
@@ -7730,8 +7730,8 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case RK_DRAGONBREATH:	/* ドラゴンブレス */
 		{
-			int ar = ((skilllv + 1) / 2) - 1;
-			ar = ar < 1? 1: ar;
+			int ar = (skilllv < 5) ? 1 : (skilllv + 1) / 2 - 1;
+
 			skill_area_temp[1] = src->id;
 			skill_area_temp[2] = x;
 			skill_area_temp[3] = y;
@@ -9071,15 +9071,13 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		}
 		break;
 	case UNT_ELECTRICSHOCKER:	/* エレクトリックショッカー */
-		{
-			map_foreachinarea(skill_trap_splash,src->bl.m,
-						src->bl.x-2,src->bl.y-2,
-						src->bl.x+2,src->bl.y+2,
-						(BL_CHAR|BL_SKILL),src,tick,1);
-			sg->unit_id = UNT_USED_TRAPS;
-			//clif_changelook(&src->bl,LOOK_BASE,sg->unit_id);
-			sg->limit=DIFF_TICK(tick,sg->tick)+1500;
-		}
+		map_foreachinarea(skill_trap_splash,src->bl.m,
+					src->bl.x-2,src->bl.y-2,
+					src->bl.x+2,src->bl.y+2,
+					(BL_CHAR|BL_SKILL),src,tick,1);
+		sg->unit_id = UNT_USED_TRAPS;
+		//clif_changelook(&src->bl,LOOK_BASE,sg->unit_id);
+		sg->limit=DIFF_TICK(tick,sg->tick)+1500;
 		break;
 	}
 
@@ -13901,14 +13899,18 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
  */
 void skill_poisoning_weapon(struct map_session_data *sd, int nameid)
 {
-	const int poison[8] = { 12717, 12718, 12719, 12720, 12721, 12722, 12723, 12724 };
-	const int type[8] = { SC_PARALIZE, SC_LEECHEND, SC_OBLIVIONCURSE, SC_DEATHHURT, SC_TOXIN, SC_PYREXIA, SC_MAGICMUSHROOM, SC_VENOMBLEED};
+	static const int poison[] = {
+		12717, 12718, 12719, 12720, 12721, 12722, 12723, 12724
+	};
+	static const int type[] = {
+		SC_PARALIZE, SC_LEECHEND, SC_OBLIVIONCURSE, SC_DEATHHURT, SC_TOXIN, SC_PYREXIA, SC_MAGICMUSHROOM, SC_VENOMBLEED
+	};
 	int i,j;
 
 	nullpo_retv(sd);
 
 	if(nameid > 0) {
-		for(i = 0; i < 8; i++) {
+		for(i = 0; i < sizeof(poison)/sizeof(poison[0]); i++) {
 			if(poison[i] == nameid) {
 				if ((j = pc_search_inventory(sd, nameid)) >= 0) {
 					pc_delitem(sd,j,1,0);
@@ -13931,17 +13933,22 @@ void skill_poisoning_weapon(struct map_session_data *sd, int nameid)
  */
 void skill_reading_sb(struct map_session_data *sd, int nameid)
 {
-	const int book[17] = { 6189, 6190, 6191, 6192, 6193, 6194, 6195, 6196,
-							6197, 6198, 6199, 6200, 6201, 6202, 6203, 6204, 6205 };
-	const int spell[17] = { MG_FIREBOLT, MG_COLDBOLT, MG_LIGHTNINGBOLT, WZ_STORMGUST, WZ_VERMILION, WZ_METEOR,
-							WL_COMET, WL_TETRAVORTEX, MG_THUNDERSTORM, WZ_JUPITEL, WZ_WATERBALL, WZ_HEAVENDRIVE,
-							WZ_EARTHSPIKE, WL_EARTHSTRAIN, WL_CHAINLIGHTNING, WL_CRIMSONROCK, WL_DRAINLIFE };
+	static const int book[] = {
+		6189, 6190, 6191, 6192, 6193, 6194,
+		6195, 6196,	6197, 6198,	6199, 6200,
+		6201, 6202, 6203, 6204, 6205
+	};
+	static const int spell[] = {
+		MG_FIREBOLT, MG_COLDBOLT, MG_LIGHTNINGBOLT, WZ_STORMGUST, WZ_VERMILION, WZ_METEOR,
+		WL_COMET, WL_TETRAVORTEX, MG_THUNDERSTORM, WZ_JUPITEL, WZ_WATERBALL, WZ_HEAVENDRIVE,
+		WZ_EARTHSPIKE, WL_EARTHSTRAIN, WL_CHAINLIGHTNING, WL_CRIMSONROCK, WL_DRAINLIFE
+	};
 	int i,j,lv,slot;
 
 	nullpo_retv(sd);
 
 	if(nameid > 0) {
-		for(i = 0; i < 17; i++) {
+		for(i = 0; i < sizeof(book)/sizeof(book[0]); i++) {
 			if(book[i] == nameid) {
 				if(pc_search_inventory(sd, nameid) >= 0) {
 					/* スキルの習得チェック */
@@ -14447,12 +14454,12 @@ static int skill_detonator( struct block_list *bl, va_list ap )
 
 			// サンドマンとクレイモアは効果範囲を1セル広げる
 			if(sg->unit_id == UNT_SANDMAN || sg->unit_id == UNT_CLAYMORETRAP || sg->unit_id == UNT_FIRINGTRAP || sg->unit_id == UNT_ICEBOUNDTRAP){
-				ar = ar + 1;
+				ar += 1;
 			}
 
 			// クラスターボムは効果範囲を3セル広げる
 			if(sg->unit_id == UNT_CLUSTERBOMB) {
-				ar = ar + 3;
+				ar += 3;
 			}
 
 			// 罠を発動させる

@@ -7949,12 +7949,14 @@ int status_change_hidden_end(struct block_list *bl)
 	sc = status_get_sc(bl);
 
 	if(sc) {
-		if(sc->option & 0x02)
-			status_change_end(bl,SC_HIDING,-1);
-		if((sc->option & 0x4004) == 4)
-			status_change_end(bl,SC_CLOAKING,-1);
-		if((sc->option & 0x4004) == 0x4004)
-			status_change_end(bl,SC_CHASEWALK,-1);
+		if(sc->option > 0) {
+			if(sc->option & 0x02)
+				status_change_end(bl,SC_HIDING,-1);
+			if((sc->option & 0x4004) == 4)
+				status_change_end(bl,SC_CLOAKING,-1);
+			if((sc->option & 0x4004) == 0x4004)
+				status_change_end(bl,SC_CHASEWALK,-1);
+		}
 		if(sc->data[SC_CAMOUFLAGE].timer != -1)
 			status_change_end(bl,SC_CAMOUFLAGE,-1);
 		if(sc->data[SC_STEALTHFIELD].timer != -1)

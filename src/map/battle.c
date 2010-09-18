@@ -321,7 +321,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		damage = 0;
 	}
 
-	if(src_sc) {
+	if(src_sc && src_sc->count > 0) {
 		// 属性場のダメージ増加
 		if(src_sc->data[SC_VOLCANO].timer != -1 && damage > 0) {	// ボルケーノ
 			if( flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE ) {
@@ -554,44 +554,46 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		struct guild_castle *gc = NULL;
 		int noflag = 0;
 
-		// エンペリウム
-		if(tmd && tmd->guild_id && tmd->class_ == 1288) {
-			if(flag&BF_SKILL && skill_num != HW_GRAVITATION)
-				return 0;
-			if(src->type == BL_PC) {
-				struct guild *g = guild_search(((struct map_session_data *)src)->status.guild_id);
+		if(tmd && tmd->guild_id) {
+			if(tmd->class_ == 1288) {
+				// エンペリウム
+				if(flag&BF_SKILL && skill_num != HW_GRAVITATION)
+					return 0;
+				if(src->type == BL_PC) {
+					struct guild *g = guild_search(((struct map_session_data *)src)->status.guild_id);
 
-				if(g == NULL)
-					return 0;		// ギルド未加入ならダメージ無し
-				if(guild_checkskill(g,GD_APPROVAL) <= 0)
-					return 0;		// 正規ギルド承認がないとダメージ無し
-				if((gc = guild_mapid2gc(tmd->bl.m)) != NULL) {
-					if(g->guild_id == gc->guild_id)
-						return 0;	// 自占領ギルドのエンペならダメージ無し
-					if(guild_check_alliance(gc->guild_id, g->guild_id, 0))
-						return 0;	// 同盟ならダメージ無し
-				} else {
-					noflag = 1;
-				}
-			} else {
-				return 0;
-			}
-		// その他のGv関連のMOB
-		} else if(tmd && tmd->guild_id && !tmd->master_id && !tmd->state.special_mob_ai) {
-			if(src->type == BL_PC) {
-				struct guild *g = guild_search(((struct map_session_data *)src)->status.guild_id);
-				if(g) {
+					if(g == NULL)
+						return 0;		// ギルド未加入ならダメージ無し
+					if(guild_checkskill(g,GD_APPROVAL) <= 0)
+						return 0;		// 正規ギルド承認がないとダメージ無し
 					if((gc = guild_mapid2gc(tmd->bl.m)) != NULL) {
 						if(g->guild_id == gc->guild_id)
-							return 0;	// 自占領ギルドならダメージ無し
+							return 0;	// 自占領ギルドのエンペならダメージ無し
 						if(guild_check_alliance(gc->guild_id, g->guild_id, 0))
 							return 0;	// 同盟ならダメージ無し
 					} else {
 						noflag = 1;
 					}
+				} else {
+					return 0;
 				}
-			} else {
-				return 0;
+			} else if(!tmd->master_id && !tmd->state.special_mob_ai) {
+				// その他のGv関連のMOB
+				if(src->type == BL_PC) {
+					struct guild *g = guild_search(((struct map_session_data *)src)->status.guild_id);
+					if(g) {
+						if((gc = guild_mapid2gc(tmd->bl.m)) != NULL) {
+							if(g->guild_id == gc->guild_id)
+								return 0;	// 自占領ギルドならダメージ無し
+							if(guild_check_alliance(gc->guild_id, g->guild_id, 0))
+								return 0;	// 同盟ならダメージ無し
+						} else {
+							noflag = 1;
+						}
+					}
+				} else {
+					return 0;
+				}
 			}
 		}
 

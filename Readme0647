@@ -1,4 +1,19 @@
 ----------------------------------------
+//0773 [2010/09/19] by Rayce
+
+・ポイズニングウェポンとリーディングスペルブックのアイテムIDを後々容易に
+  拡張できるようにリファクタリング（clif.c, skill.c）
+
+・clif_hpmeter() の内部処理を一括集約（clif.c）
+
+・skill.cの全体的な細かい整形（skill.c）
+
+・細かいリファクタリング
+	battle_calc_damage()
+	intif_GMmessage()
+	status_change_hidden_end()
+
+----------------------------------------
 //0772 [2010/09/19] by Rayce
 
 ・clif_move() の歩行パケット送信部分を clif_move_sub() として分離して見通しを良くする（clif.c）

@@ -2531,7 +2531,6 @@ void clif_spawnnpc(struct npc_data *nd)
 {
 	unsigned char buf[128];
 	int len;
-	int packet_len=0;
 
 	nullpo_retv(nd);
 
@@ -4482,7 +4481,7 @@ static void clif_hpmeter(struct map_session_data *sd)
 {
 	struct map_session_data *dstsd;
 	unsigned char buf[16], buf2[16];
-	int i;
+	int i, len;
 
 	nullpo_retv(sd);
 
@@ -4491,39 +4490,29 @@ static void clif_hpmeter(struct map_session_data *sd)
 	WBUFW(buf,6)=sd->bl.x;
 	WBUFW(buf,8)=sd->bl.y;
 
-	for(i=0;i<fd_max;i++){
-		if(session[i] && (dstsd = (struct map_session_data *)session[i]->session_data) && dstsd->state.auth &&
-		   dstsd->bl.m == sd->bl.m && pc_isGM(dstsd) && sd != dstsd){
-			memcpy(WFIFOP(i,0),buf,packet_db[0x107].len);
-			WFIFOSET(i,packet_db[0x107].len);
-		}
-	}
-
 #if PACKETVER < 26
 	WBUFW(buf2,0)=0x106;
 	WBUFL(buf2,2)=sd->status.account_id;
 	WBUFW(buf2,6)=(sd->status.max_hp > 0x7fff)? (short)((atn_bignumber)sd->status.hp * 0x7fff / sd->status.max_hp): sd->status.hp;
 	WBUFW(buf2,8)=(sd->status.max_hp > 0x7fff)? 0x7fff: sd->status.max_hp;
-	for(i=0;i<fd_max;i++){
-		if(session[i] && (dstsd = (struct map_session_data *)session[i]->session_data) && dstsd->state.auth &&
-		   sd->bl.m == dstsd->bl.m && pc_isGM(dstsd) && sd != dstsd){
-			memcpy(WFIFOP(i,0),buf2,packet_db[0x106].len);
-			WFIFOSET(i,packet_db[0x106].len);
-		}
-	}
+	len = packet_db[0x106].len;
 #else
 	WBUFW(buf2,0)=0x80e;
 	WBUFL(buf2,2)=sd->status.account_id;
 	WBUFL(buf2,6)=sd->status.hp;
 	WBUFL(buf2,10)=sd->status.max_hp;
+	len = packet_db[0x80e].len;
+#endif
+
 	for(i=0;i<fd_max;i++){
 		if(session[i] && (dstsd = (struct map_session_data *)session[i]->session_data) && dstsd->state.auth &&
-		   sd->bl.m == dstsd->bl.m && pc_isGM(dstsd) && sd != dstsd){
-			memcpy(WFIFOP(i,0),buf2,packet_db[0x80e].len);
-			WFIFOSET(i,packet_db[0x80e].len);
+		   dstsd->bl.m == sd->bl.m && pc_isGM(dstsd) && sd != dstsd){
+			memcpy(WFIFOP(i,0),buf,packet_db[0x107].len);
+			WFIFOSET(i,packet_db[0x107].len);
+			memcpy(WFIFOP(i,0),buf2,len);
+			WFIFOSET(i,len);
 		}
 	}
-#endif
 
 	return;
 }
@@ -4995,14 +4984,16 @@ void clif_poison_list(struct map_session_data *sd, short lv)
 {
 	int i, view, idx, c = 0;
 	int fd;
-	const int poison_list[8] = { 12717, 12718, 12719, 12720, 12721, 12722, 12723, 12724 };
+	static const int poison_list[] = {
+		12717, 12718, 12719, 12720, 12721, 12722, 12723, 12724
+	};
 
 	nullpo_retv(sd);
 
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x1ad;
 
-	for(i = 0; i < 8; i++) {
+	for(i = 0; i < sizeof(poison_list)/sizeof(poison_list[0]); i++) {
 		if(poison_list[i] > 0 &&
 			(idx = pc_search_inventory(sd, poison_list[i])) >= 0 &&
 			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
@@ -5030,15 +5021,18 @@ void clif_reading_sb_list(struct map_session_data *sd)
 {
 	int i, view, idx, c = 0;
 	int fd;
-	const int sb_list[17] = { 6189, 6190, 6191, 6192, 6193, 6194, 6195, 6196,
-							  6197, 6198, 6199, 6200, 6201, 6202, 6203, 6204, 6205 };
+	static const int sb_list[] = {
+		6189, 6190, 6191, 6192, 6193, 6194,
+		6195, 6196,	6197, 6198,	6199, 6200,
+		6201, 6202, 6203, 6204, 6205
+	};
 
 	nullpo_retv(sd);
 
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x1ad;
 
-	for(i = 0; i < 17; i++) {
+	for(i = 0; i < sizeof(sb_list)/sizeof(sb_list[0]); i++) {
 		if(sb_list[i] > 0 &&
 			(idx = pc_search_inventory(sd, sb_list[i])) >= 0 &&
 			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
