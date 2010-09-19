@@ -201,7 +201,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	ud->walktimer = -1;
 	if( bl->prev == NULL ) return 0; // block_list から抜けているので移動停止する
 
-	if(ud->walkpath.path_pos >= ud->walkpath.path_len || ud->walkpath.path_pos != (int)data)
+	if(ud->walkpath.path_pos >= ud->walkpath.path_len || ud->walkpath.path_pos != PTR2INT(data))
 		return 0;
 
 	// 歩いたので息吹のタイマーを初期化
@@ -411,7 +411,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 				return 0;
 			}
 		}
-		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,(void*)((int)ud->walkpath.path_pos));
+		ud->walktimer = add_timer(tick+i,unit_walktoxy_timer,id,INT2PTR(ud->walkpath.path_pos));
 	} else {
 		// 目的地に着いた
 		if(sd && (sd->sc.data[SC_RUN].timer != -1 || sd->sc.data[SC_WUGDASH].timer != -1)) {
@@ -1743,7 +1743,7 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 	struct mob_data         *md = NULL;
 	struct unit_data        *ud = NULL;
 	struct status_change    *sc = NULL;
-	unsigned long tick = gettick();
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, bl);
 
@@ -2160,7 +2160,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			int i;
 			for(i=0; i<md->lootitem_count; i++) {
 				if(md->lootitem[i].card[0] == (short)0xff00)
-					intif_delete_petdata(*((long *)(&md->lootitem[i].card[1])));
+					intif_delete_petdata(*((int *)(&md->lootitem[i].card[1])));
 			}
 			md->lootitem_count = 0;
 		}

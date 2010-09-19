@@ -697,7 +697,7 @@ int mapif_load_merc(int fd,int account_id,int char_id,int merc_id)
 int mapif_save_merc(int fd,int account_id,struct mmo_mercstatus *data)
 {
 	if(!data || sizeof(struct mmo_mercstatus) != RFIFOW(fd,2) - 8) {
-		printf("inter merc: data size error %d %d\n",sizeof(struct mmo_mercstatus),RFIFOW(fd,2)-8);
+		printf("inter merc: data size error %lu %d\n",(unsigned long)sizeof(struct mmo_mercstatus),RFIFOW(fd,2)-8);
 		return 0;
 	}
 

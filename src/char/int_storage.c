@@ -217,7 +217,7 @@ int storage_txt_delete(int account_id)
 		int i;
 		for(i=0;i<s->storage_amount;i++){
 			if(s->store_item[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&s->store_item[i].card[1])));
+				pet_delete(*((int *)(&s->store_item[i].card[1])));
 		}
 		numdb_erase(storage_db,account_id);
 		aFree(s);
@@ -415,7 +415,7 @@ int gstorage_txt_delete(int guild_id)
 		int i;
 		for(i=0;i<gs->storage_amount;i++){
 			if(gs->store_item[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&gs->store_item[i].card[1])));
+				pet_delete(*((int *)(&gs->store_item[i].card[1])));
 		}
 		numdb_erase(gstorage_db,guild_id);
 		aFree(gs);
@@ -725,7 +725,7 @@ int storage_sql_delete(int account_id)
 		int i;
 		for(i=0;i<s->storage_amount;i++){
 			if(s->store_item[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&s->store_item[i].card[1])));
+				pet_delete(*((int *)(&s->store_item[i].card[1])));
 		}
 	}
 
@@ -800,7 +800,7 @@ int gstorage_sql_delete(int guild_id)
 		int i;
 		for(i=0;i<s->storage_amount;i++){
 			if(s->store_item[i].card[0] == (short)0xff00)
-				pet_delete(*((long *)(&s->store_item[i].card[1])));
+				pet_delete(*((int *)(&s->store_item[i].card[1])));
 		}
 	}
 
@@ -953,7 +953,7 @@ int mapif_parse_SaveStorage(int fd)
 	int len=RFIFOW(fd,2);
 
 	if(sizeof(struct storage)!=len-8){
-		printf("inter storage: data size error %d %d\n",sizeof(struct storage),len-8);
+		printf("inter storage: data size error %lu %d\n",(unsigned long)sizeof(struct storage),len-8);
 	} else {
 		storage_save((struct storage *)RFIFOP(fd,8));
 		mapif_save_storage_ack(fd,account_id);
@@ -975,7 +975,7 @@ int mapif_parse_SaveGuildStorage(int fd)
 	int len=RFIFOW(fd,2);
 
 	if(sizeof(struct guild_storage)!=len-12) {
-		printf("inter guild_storage: data size error %d %d\n",sizeof(struct guild_storage),len-12);
+		printf("inter guild_storage: data size error %lu %d\n",(unsigned long)sizeof(struct guild_storage),len-12);
 	} else {
 		int ret = gstorage_save((struct guild_storage *)RFIFOP(fd,12), 0);
 		mapif_save_guild_storage_ack(fd,RFIFOL(fd,4),guild_id,!ret);

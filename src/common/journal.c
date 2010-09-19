@@ -303,7 +303,7 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 	}
 
 	// ジャーナル書き込み用のヘッダ設定
-	jhd.key = (int)key;
+	jhd.key = PTR2INT(key);
 	jhd.timestamp = timestamp;
 	jhd.tick = tick;
 	jhd.flag = dat->flag;
@@ -314,7 +314,7 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 	if( fwrite( &jhd, sizeof(jhd), 1, j->fp )==0 ||
 		fwrite( dat->buf, j->datasize, 1, j->fp )==0 )
 	{
-		printf("journal: file write error! key=%d\n", (int)key );
+		printf("journal: file write error! key=%d\n", jhd.key );
 		return 0;
 	}
 
@@ -479,7 +479,7 @@ static int journal_rollforward_sub( void* key, void* data, va_list ap )
 	struct journal_data* dat = (struct journal_data*)data;
 	int* c = va_arg( ap, int* );
 
-	*c += func( (int)key, dat->buf, dat->flag );
+	*c += func( PTR2INT(key), dat->buf, dat->flag );
 
 	return 0;
 }

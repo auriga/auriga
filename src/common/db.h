@@ -65,9 +65,9 @@ struct dbt {
 #define strdb_foreach       db_foreach
 #define strdb_clear         db_clear
 #define strdb_final         db_final
-#define numdb_search(t,k)   db_search((t),(void*)(k))
-#define numdb_insert(t,k,d) db_insert((t),(void*)(k),(void*)(d))
-#define numdb_erase(t,k)    db_erase ((t),(void*)(k))
+#define numdb_search(t,k)   db_search((t),(void*)(intptr)(k))
+#define numdb_insert(t,k,d) db_insert((t),(void*)(intptr)(k),(void*)(d))
+#define numdb_erase(t,k)    db_erase ((t),(void*)(intptr)(k))
 #define numdb_foreach       db_foreach
 #define numdb_clear         db_clear
 #define numdb_final         db_final

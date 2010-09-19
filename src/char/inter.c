@@ -568,7 +568,7 @@ int inter_mapif_init(int fd)
 //--------------------------------------------------------
 
 // GMメッセージ送信
-int mapif_GMmessage(char *mes,int len,unsigned long color,int type,int size,int align,int pos_y)
+int mapif_GMmessage(char *mes,int len,unsigned int color,int type,int size,int align,int pos_y)
 {
 	unsigned char *buf = (unsigned char*)aMalloc(len);
 

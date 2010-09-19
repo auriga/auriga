@@ -7457,7 +7457,7 @@ void clif_GlobalMessage(struct block_list *bl,const char *message)
  * 天の声（マルチカラー）を送信
  *------------------------------------------
  */
-void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned long color, int type, int size, int align, int pos_y, int flag)
+void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned int color, int type, int size, int align, int pos_y, int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+16);
 
@@ -14496,7 +14496,8 @@ static void clif_parse_GuildRequestEmblem(int fd,struct map_session_data *sd, in
  */
 static void clif_parse_GuildChangeEmblem(int fd,struct map_session_data *sd, int cmd)
 {
-	int offset, len;
+	int offset;
+	unsigned int len;
 	struct guild *g;
 
 	// only guild master can change emblem.

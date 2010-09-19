@@ -684,11 +684,11 @@ void WFIFORESERVE(int fd, size_t len)
 	struct socket_data *s = session[fd];
 
 	while(len + SOCKET_EMPTY_SIZE > (size_t)(s->max_wdata - s->wdata)) {
-		size_t new_size = (s->max_wdata - s->wdata) << 1;
+		size_t new_size = (size_t)(s->max_wdata - s->wdata) << 1;
 
 		// 送信バッファの制限サイズ超過チェック
 		if (s->auth >= 0 && new_size > (size_t)send_limit_buffer_size) {
-			printf("socket: %d wdata (%d) exceed limited size.\n", fd, new_size);
+			printf("socket: %d wdata (%lu) exceed limited size.\n", fd, (unsigned long)new_size);
 			s->wdata_pos  = s->wdata;	// データを消してとりあえず空きを作る
 			s->wdata_size = s->wdata;
 			// 空きスペースが足りないかもしれないので、再確保
@@ -698,7 +698,7 @@ void WFIFORESERVE(int fd, size_t len)
 		}
 
 		realloc_fifo(fd, 0, new_size);
-		printf("socket: %d wdata expanded to %d bytes.\n", fd, s->max_wdata - s->wdata);
+		printf("socket: %d wdata expanded to %lu bytes.\n", fd, (unsigned long)(s->max_wdata - s->wdata));
 	}
 
 	return;
@@ -714,7 +714,10 @@ void WFIFOSET(int fd, size_t len)
 	if (s->wdata_size + len <= s->max_wdata) {
 		s->wdata_size += len;
 	} else {
-		printf("socket: %d wdata lost !! packet 0x%x length %d is over %d\n", fd, *((unsigned short*)s->wdata_size), len, (s->max_wdata - s->wdata_size));
+		printf(
+			"socket: %d wdata lost !! packet 0x%x length %ld is over %ld\n",
+			fd, *((unsigned short*)s->wdata_size), (long)len, (long)(s->max_wdata - s->wdata_size)
+		);
 		s->wdata_pos  = s->wdata;
 		s->wdata_size = s->wdata;
 		s->eof = 1;
@@ -893,18 +896,22 @@ inline unsigned long socket_log2(unsigned long v)
 {
 	register unsigned long c = 0;
 
-	if (v & 0xFFFF0000) { v >>= 0x10; c |= 0x10; }
-	if (v & 0x0000FF00) { v >>= 0x08; c |= 0x08; }
-	if (v & 0x000000F0) { v >>= 0x04; c |= 0x04; }
-	if (v & 0x0000000C) { v >>= 0x02; c |= 0x02; }
-	if (v & 0x00000002) { v >>= 0x01; c |= 0x01; }
+#ifdef __64BIT__
+	// unsigned long is 64bit
+	if (v & 0xFFFFFFFF00000000UL) { v >>= 0x20; c |= 0x20; }
+#endif
+	if (v & 0xFFFF0000UL) { v >>= 0x10; c |= 0x10; }
+	if (v & 0x0000FF00UL) { v >>= 0x08; c |= 0x08; }
+	if (v & 0x000000F0UL) { v >>= 0x04; c |= 0x04; }
+	if (v & 0x0000000CUL) { v >>= 0x02; c |= 0x02; }
+	if (v & 0x00000002UL) { v >>= 0x01; c |= 0x01; }
 
 	return c;
 }
 
 static void process_fdset(fd_set* rfd, fd_set* wfd)
 {
-	unsigned int  sock;
+	unsigned long sock;
 	unsigned long val;
 	unsigned long bits;
 	unsigned long nfd = 0;
@@ -921,7 +928,7 @@ static void process_fdset(fd_set* rfd, fd_set* wfd)
 			// when only a few bits are set in the field
 			// which usually happens on read events
 			val = socket_log2(bits);
-			bits ^= (1 << val);
+			bits ^= (1UL << val);
 			// build the socket number
 			sock = nfd * NFDBITS + val;
 
@@ -945,7 +952,7 @@ static void process_fdset(fd_set* rfd, fd_set* wfd)
 			// when only a few bits are set in the field
 			// which usually happens on read events
 			val = socket_log2(bits);
-			bits ^= (1 << val);
+			bits ^= (1UL << val);
 			// build the socket number
 			sock = nfd * NFDBITS + val;
 

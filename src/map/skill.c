@@ -5378,7 +5378,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(battle_config.holywater_name_input) {
 				item_tmp.card[0] = 0xfe;
 				item_tmp.card[1] = 0;
-				*((unsigned long *)(&item_tmp.card[2]))=sd->status.char_id;	// キャラID
+				*((int *)(&item_tmp.card[2]))=sd->status.char_id;	// キャラID
 			}
 			eflag = pc_additem(sd,&item_tmp,1);
 			if(eflag) {
@@ -8566,7 +8566,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		tickset_id = bl->id;
 		node       = &sg->tickset;
 	}
-	tickset_tick = (unsigned int)linkdb_search( node, (void*)tickset_id );
+	tickset_tick = PTR2UINT(linkdb_search( node, INT2PTR(tickset_id) ));
 	if(tickset_tick == 0)
 		tickset_tick = tick;
 
@@ -8593,7 +8593,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		if(count > 0)
 			tickset_tick += sg->interval * (count-1);
 	}
-	linkdb_replace( node, (void*)tickset_id, (void*)tickset_tick );
+	linkdb_replace( node, INT2PTR(tickset_id), UINT2PTR(tickset_tick) );
 
 	switch (sg->unit_id) {
 	case UNT_WARP_ACTIVE:	/* ワープポータル(発動後) */
@@ -12514,8 +12514,8 @@ void skill_stop_dancing(struct block_list *src, int flag)
 		if(flag) { // ログアウトなど片方が落ちても演奏が継続される
 			if(dsd && src->id == group->src_id) { // グループを持ってるPCが落ちる
 				group->src_id = dsd->bl.id; // 相方にグループを任せる
-				linkdb_insert( &dsd->ud.skillunit, (void*)group->bl.id, group );
-				linkdb_erase( &sd->ud.skillunit, (void*)group->bl.id );
+				linkdb_insert( &dsd->ud.skillunit, INT2PTR(group->bl.id), group );
+				linkdb_erase( &sd->ud.skillunit, INT2PTR(group->bl.id) );
 				if(flag&1) // ログアウト
 					dsd->sc.data[SC_DANCING].val4 = 0; // 相方の相方を0にして合奏終了→通常のダンス状態
 				if(flag&2) // ハエ飛びなど
@@ -12762,7 +12762,7 @@ static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int c
 	group->interval   = 1000;
 	group->tick       = tick;
 	group->valstr     = NULL;
-	linkdb_insert( &ud->skillunit, (void*)group->bl.id, group );
+	linkdb_insert( &ud->skillunit, INT2PTR(group->bl.id), group );
 
 	return group;
 }
@@ -12810,7 +12810,7 @@ int skill_delunitgroup(struct skill_unit_group *group)
 	}
 
 	if(ud) {
-		if( linkdb_erase( &ud->skillunit, (void*)group->bl.id ) == NULL ) {
+		if( linkdb_erase( &ud->skillunit, INT2PTR(group->bl.id) ) == NULL ) {
 			// 見つからなかった
 			return 0;
 		}
@@ -13586,7 +13586,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 		{
 			tmp_item.card[0] = 0x00ff;					// 製造武器フラグ
 			tmp_item.card[1] = ((sc * 5) << 8) + ele;			// 属性石と星
-			*((unsigned long *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
+			*((int *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
 		}
 		else {
 			int flag = 0;
@@ -13600,7 +13600,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 			if(flag) {
 				tmp_item.card[0] = 0x00fe;
 				tmp_item.card[1] = 0;
-				*((unsigned long *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
+				*((int *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
 			}
 		}
 
@@ -13753,7 +13753,7 @@ static int skill_am_twilight_sub(struct map_session_data* sd,int nameid,int coun
 		{
 			tmp_item.card[0] = 0x00fe;
 			tmp_item.card[1] = 0;
-			*((unsigned long *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
+			*((int *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
 		}
 		pc_additem(sd, &tmp_item, amount);	// 重量オーバーなら消滅
 	} else {
@@ -13826,7 +13826,7 @@ void skill_arrow_create(struct map_session_data *sd, int nameid)
 		if(battle_config.making_arrow_name_input) {
 			tmp_item.card[0]=0x00fe;
 			tmp_item.card[1]=0;
-			*((unsigned long *)(&tmp_item.card[2]))=sd->status.char_id;	/* キャラID */
+			*((int *)(&tmp_item.card[2]))=sd->status.char_id;	/* キャラID */
 		}
 		if((flag = pc_additem(sd,&tmp_item,tmp_item.amount))) {
 			clif_additem(sd,0,0,flag);
@@ -14033,7 +14033,7 @@ static int skill_get_spellslot(int skillid)
  *  mode : 攻撃時1 反撃2
  *------------------------------------------
  */
-static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_list *bl,int skillid,int skilllv,int rate,unsigned long asflag,unsigned int tick,int flag)
+static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_list *bl,int skillid,int skilllv,int rate,unsigned int asflag,unsigned int tick,int flag)
 {
 	struct block_list *target;
 	int f=0,sp=0;
@@ -14152,7 +14152,7 @@ static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_li
 	return 1;	// 成功
 }
 
-int skill_bonus_autospell(struct block_list *src,struct block_list *bl,unsigned long mode,unsigned int tick,int flag)
+int skill_bonus_autospell(struct block_list *src,struct block_list *bl,unsigned int mode,unsigned int tick,int flag)
 {
 	int i;
 	static int lock = 0;
@@ -14324,7 +14324,7 @@ int skill_success_weaponrefine(struct map_session_data *sd,int idx)
 	clif_misceffect(&sd->bl,3);
 
 	// ブラックスミス 名声値
-	if(sd->status.inventory[idx].refine==MAX_REFINE && (*((unsigned long *)(&sd->status.inventory[idx].card[2]))) == sd->status.char_id)
+	if(sd->status.inventory[idx].refine==MAX_REFINE && (*((int *)(&sd->status.inventory[idx].card[2]))) == sd->status.char_id)
 	{
 		switch(itemdb_wlv(sd->status.inventory[idx].nameid))
 		{

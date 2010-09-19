@@ -691,7 +691,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 	// PCの反撃オートスペル
 	if(tsd && src != &tsd->bl && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0)
 	{
-		unsigned long asflag = EAS_REVENGE;
+		unsigned int asflag = EAS_REVENGE;
 
 		if(skill_num == AM_DEMONSTRATION)
 			flag = (flag&~BF_WEAPONMASK)|BF_MISC;
@@ -3073,7 +3073,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	/* 35．物理攻撃スキルによるオートスペル発動(item_bonus) アースクエイクは例外 */
 	if(wd.flag&BF_SKILL && src_sd && target != &src_sd->bl && (wd.damage + wd.damage2) > 0 && skill_num != NPC_EARTHQUAKE)
 	{
-		unsigned long asflag = EAS_ATTACK;
+		unsigned int asflag = EAS_ATTACK;
 		unsigned int tick = gettick();
 
 		if(skill_num == AM_DEMONSTRATION) {
@@ -3622,7 +3622,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	/* 13．魔法でもオートスペル発動(item_bonus) */
 	if(sd && target != &sd->bl && mgd.damage > 0)
 	{
-		unsigned long asflag = EAS_ATTACK;
+		unsigned int asflag = EAS_ATTACK;
 		unsigned int tick = gettick();
 
 		if(battle_config.magic_attack_autospell)
@@ -3840,7 +3840,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	/* 10．miscでもオートスペル発動(bonus) */
 	if(sd && target != &sd->bl && mid.damage > 0)
 	{
-		unsigned long asflag = EAS_ATTACK;
+		unsigned int asflag = EAS_ATTACK;
 		unsigned int tick = gettick();
 
 		if(battle_config.misc_attack_autospell)
@@ -4099,7 +4099,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	// カードによるオートスペル
 	if(sd && target != &sd->bl && (wd.damage > 0 || wd.damage2 > 0))
 	{
-		unsigned long asflag = EAS_ATTACK | EAS_NORMAL;
+		unsigned int asflag = EAS_ATTACK | EAS_NORMAL;
 		unsigned int tick = gettick();
 
 		if(wd.flag&BF_LONG)
@@ -4647,7 +4647,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* 反射ダメージの実際の処理 */
 	if((skillid || flag) && rdamage > 0) {
-		unsigned long asflag = EAS_WEAPON | EAS_ATTACK | EAS_NORMAL;
+		unsigned int asflag = EAS_WEAPON | EAS_ATTACK | EAS_NORMAL;
 
 		if(attack_type&BF_WEAPON && skillid != NPC_EARTHQUAKE) {
 			battle_delay_damage(tick+dmg.amotion,src,src,rdamage,skillid,skilllv,0);
@@ -5192,9 +5192,9 @@ void battle_join_struggle(struct mob_data *md,struct block_list *src)
 	if(src->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)src;
 		if(sd) {
-			if(linkdb_search( &md->dmglog, (void*)sd->status.char_id ) == NULL) {
+			if(linkdb_search( &md->dmglog, INT2PTR(sd->status.char_id) ) == NULL) {
 				// ダメージ-1で戦闘参加者入り(0にするとリスト未登録のNULLとかぶって困る)
-				linkdb_insert( &md->dmglog, (void*)sd->status.char_id, (void*)-1 );
+				linkdb_insert( &md->dmglog, INT2PTR(sd->status.char_id), INT2PTR(-1) );
 			}
 		}
 	}

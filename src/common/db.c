@@ -148,7 +148,7 @@ static int numdb_cmp(struct dbt* table,void* a,void* b)
 
 static unsigned int numdb_hash(struct dbt* table,void* a)
 {
-	return (unsigned int)a;
+	return PTR2UINT(a);
 }
 
 struct dbt* numdb_init_(const char *file,int line)

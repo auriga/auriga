@@ -1683,9 +1683,9 @@ int parse_login(int fd)
 	while(RFIFOREST(fd)>=2){
 		int cmd = RFIFOW(fd,0);
 		if(cmd == 0x64 || cmd == 0x01dd || cmd == 0x01fa || cmd == 0x027c || cmd == 0x0277 || cmd == 0x02b0) {
-			printf("parse_login : %d %3d 0x%04x %-24s\n",fd,RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
+			printf("parse_login : %d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
 		} else if(cmd < 0x7530) {
-			printf("parse_login : %d %3d 0x%04x\n",fd,RFIFOREST(fd),cmd);
+			printf("parse_login : %d %3ld 0x%04x\n",fd,(long)RFIFOREST(fd),cmd);
 		}
 
 		switch(cmd) {

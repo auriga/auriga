@@ -282,7 +282,7 @@ void intif_GMmessage(char* mes, size_t len, int flag)
 }
 
 // GMメッセージ（マルチカラー）を送信
-int intif_announce(char* mes,size_t len,unsigned long color,int type,int size,int align,int pos_y)
+int intif_announce(char* mes,size_t len,unsigned int color,int type,int size,int align,int pos_y)
 {
 	if (inter_fd < 0)
 		return -1;
@@ -1278,7 +1278,7 @@ static int intif_parse_LoadStorage(int fd)
 {
 	if(RFIFOW(fd,2)-8 != sizeof(struct storage)) {
 		if(battle_config.error_log)
-			printf("intif_parse_LoadStorage: data size error %d %d\n", RFIFOW(fd,2)-8, sizeof(struct storage));
+			printf("intif_parse_LoadStorage: data size error %d %lu\n", RFIFOW(fd,2)-8, (unsigned long)sizeof(struct storage));
 		return 1;
 	}
 
@@ -1298,7 +1298,7 @@ static int intif_parse_LoadGuildStorage(int fd)
 {
 	if(RFIFOW(fd,2)-12 != sizeof(struct guild_storage)) {
 		if(battle_config.error_log)
-			printf("intif_parse_LoadGuildStorage: data size error %d %d\n", RFIFOW(fd,2)-12, sizeof(struct guild_storage));
+			printf("intif_parse_LoadGuildStorage: data size error %d %lu\n", RFIFOW(fd,2)-12, (unsigned long)sizeof(struct guild_storage));
 		return 1;
 	}
 
@@ -1388,7 +1388,7 @@ static int intif_parse_PartyInfo(int fd)
 
 	if( RFIFOW(fd,2)!=sizeof(struct party)+4 ){
 		if(battle_config.error_log)
-			printf("intif: party info : data size error %d %d %d\n",RFIFOL(fd,4),RFIFOW(fd,2),sizeof(struct party)+4);
+			printf("intif: party info : data size error %d %d %lu\n",RFIFOL(fd,4),RFIFOW(fd,2),(unsigned long)(sizeof(struct party)+4));
 	}
 	party_recv_info((struct party *)RFIFOP(fd,4));
 	return 0;
@@ -1468,7 +1468,7 @@ static int intif_parse_GuildInfo(int fd)
 
 	if( RFIFOW(fd,2)!=sizeof(struct guild)+4 ){
 		if(battle_config.error_log)
-			printf("intif: guild info : data size error\n %d %d %d",RFIFOL(fd,4),RFIFOW(fd,2),sizeof(struct guild)+4);
+			printf("intif: guild info : data size error %d %d %lu\n",RFIFOL(fd,4),RFIFOW(fd,2),(unsigned long)(sizeof(struct guild)+4));
 	}
 	guild_recv_info((struct guild *)RFIFOP(fd,4));
 	return 0;
@@ -1556,7 +1556,7 @@ static int intif_parse_GuildPosition(int fd)
 {
 	if( RFIFOW(fd,2)!=sizeof(struct guild_position)+12 ){
 		if(battle_config.error_log)
-			printf("intif: guild info : data size error\n %d %d %d",RFIFOL(fd,4),RFIFOW(fd,2),sizeof(struct guild_position)+12);
+			printf("intif: guild info : data size error %d %d %lu\n",RFIFOL(fd,4),RFIFOW(fd,2),(unsigned long)(sizeof(struct guild_position)+12));
 	}
 	guild_position_changed(RFIFOL(fd,4),RFIFOL(fd,8),(struct guild_position *)RFIFOP(fd,12));
 	return 0;
@@ -1644,7 +1644,7 @@ static int intif_parse_RecvPetData(int fd)
 
 	if(sizeof(struct s_pet)!=len-9) {
 		if(battle_config.etc_log)
-			printf("intif: pet data: data size error %d %d\n",sizeof(struct s_pet),len-9);
+			printf("intif: pet data: data size error %lu %d\n",(unsigned long)sizeof(struct s_pet),len-9);
 	} else {
 		memcpy(&p,RFIFOP(fd,9),sizeof(struct s_pet));
 		pet_recv_petdata(RFIFOL(fd,4),&p,RFIFOB(fd,8));
@@ -1684,7 +1684,7 @@ static int intif_parse_RecvHomData(int fd)
 
 	if(sizeof(struct mmo_homunstatus)!=len-13) {
 		if(battle_config.etc_log)
-			printf("intif: hom data: data size error %d %d\n",sizeof(struct mmo_homunstatus),len-13);
+			printf("intif: hom data: data size error %lu %d\n",(unsigned long)sizeof(struct mmo_homunstatus),len-13);
 	} else {
 		memcpy(&p,RFIFOP(fd,13),sizeof(struct mmo_homunstatus));
 		homun_recv_homdata(RFIFOL(fd,4),RFIFOL(fd,8),&p,RFIFOB(fd,12));
@@ -1724,7 +1724,7 @@ static int intif_parse_RecvMercData(int fd)
 
 	if(sizeof(struct mmo_mercstatus)!=len-13) {
 		if(battle_config.etc_log)
-			printf("intif: merc data: data size error %d %d\n",sizeof(struct mmo_mercstatus),len-13);
+			printf("intif: merc data: data size error %lu %d\n",(unsigned long)sizeof(struct mmo_mercstatus),len-13);
 	} else {
 		memcpy(&p,RFIFOP(fd,13),sizeof(struct mmo_mercstatus));
 		merc_recv_mercdata(RFIFOL(fd,4),RFIFOL(fd,8),&p,RFIFOB(fd,12));

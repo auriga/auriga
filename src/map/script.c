@@ -1130,10 +1130,10 @@ static unsigned char* parse_syntax(unsigned char *p)
 			}
 
 			// caseラベルが重複してないかチェック
-			if(linkdb_search(&syntax.curly[pos].case_label, (void*)v) != NULL) {
+			if(linkdb_search(&syntax.curly[pos].case_label, INT2PTR(v)) != NULL) {
 				disp_error_message("dup 'case'",p);
 			}
-			linkdb_insert(&syntax.curly[pos].case_label, (void*)v, (void*)1);
+			linkdb_insert(&syntax.curly[pos].case_label, INT2PTR(v), INT2PTR(1));
 
 			sprintf(label,"if(%d != $@__SW%x_VAL) goto __SW%x_%x;",
 				v,syntax.curly[pos].index,syntax.curly[pos].index,syntax.curly[pos].count+1);
@@ -1884,7 +1884,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 						disp_error_message("invalid label name",p);
 					}
 				}
-				linkdb_insert(&scriptlabel_db,p,(void*)script_pos);	// 外部用label db登録
+				linkdb_insert(&scriptlabel_db,p,INT2PTR(script_pos));	// 外部用label db登録
 			}
 			*p2 = c;
 			p=tmpp+1;
@@ -2083,7 +2083,7 @@ static void get_val(struct script_state *st,struct script_data *data)
 					} else {
 						n = &st->script->script_vars;
 					}
-					data->u.str = (char *)linkdb_search(n, (void*)data->u.num);
+					data->u.str = (char *)linkdb_search(n, INT2PTR(data->u.num));
 				}
 				break;
 			default:
@@ -2118,7 +2118,7 @@ static void get_val(struct script_state *st,struct script_data *data)
 				}
 				break;
 			case '$':
-				data->u.num = (int)numdb_search(mapreg_db,data->u.num);
+				data->u.num = PTR2INT(numdb_search(mapreg_db,data->u.num));
 				break;
 			case '#':
 				if((sd = script_rid2sd(st)) == NULL) {
@@ -2141,7 +2141,7 @@ static void get_val(struct script_state *st,struct script_data *data)
 					} else {
 						n = &st->script->script_vars;
 					}
-					data->u.num = (int)linkdb_search(n, (void*)data->u.num);
+					data->u.num = PTR2INT(linkdb_search(n, INT2PTR(data->u.num)));
 				}
 				break;
 			default:
@@ -2172,7 +2172,7 @@ static void* get_val2(struct script_state *st,int num,struct linkdb_node **ref)
 	dat.ref   = ref;
 	get_val(st,&dat);
 
-	return (dat.type == C_INT)? (void*)dat.u.num: (void*)dat.u.str;
+	return (dat.type == C_INT)? INT2PTR(dat.u.num): (void*)dat.u.str;
 }
 
 /*==========================================
@@ -2206,9 +2206,9 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 					n = &st->script->script_vars;
 				}
 				if( str[0] ) {
-					old_str = (char *)linkdb_replace(n, (void*)num, aStrdup(str));
+					old_str = (char *)linkdb_replace(n, INT2PTR(num), aStrdup(str));
 				} else {
-					old_str = (char *)linkdb_erase(n, (void*)num);
+					old_str = (char *)linkdb_erase(n, INT2PTR(num));
 				}
 				if(old_str)
 					aFree(old_str);
@@ -2220,7 +2220,7 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 		}
 	} else {
 		// 数値型
-		int val = (int)v;
+		int val = PTR2INT(v);
 		if(str_data[num&0x00ffffff].type == C_PARAM) {
 			pc_setparam(sd,str_data[num&0x00ffffff].u.val,val);
 		} else {
@@ -2248,9 +2248,9 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 						n = &st->script->script_vars;
 					}
 					if( val != 0 ) {
-						linkdb_replace(n, (void*)num, (void*)val);
+						linkdb_replace(n, INT2PTR(num), INT2PTR(val));
 					} else {
-						linkdb_erase(n, (void*)num);
+						linkdb_erase(n, INT2PTR(num));
 					}
 				}
 				break;
@@ -2432,7 +2432,7 @@ static void script_free_vars(struct linkdb_node **node)
 	struct linkdb_node *n = *node;
 
 	while(n) {
-		char *name   = str_buf + str_data[(int)(n->key)&0x00ffffff].str;
+		char *name   = str_buf + str_data[PTR2INT(n->key)&0x00ffffff].str;
 		char postfix = name[strlen(name)-1];
 		if( postfix == '$' ) {
 			// 文字型変数なので、データ削除
@@ -2969,7 +2969,7 @@ static int run_script_timer(int tid, unsigned int tick, int id, void *data)
 		st->rid = 0;
 	}
 	while( node && st->sleep.timer != -1 ) {
-		if( (int)node->key == st->oid && ((struct script_state *)node->data)->sleep.timer == st->sleep.timer ) {
+		if( PTR2INT(node->key) == st->oid && ((struct script_state *)node->data)->sleep.timer == st->sleep.timer ) {
 			script_erase_sleepdb(node);
 			st->sleep.timer = -1;
 			break;
@@ -3084,7 +3084,7 @@ static void run_script_main(struct script_state *st)
 		// スタック情報をsleep_dbに保存
 		st->sleep.charid = (sd) ? sd->status.char_id : 0;
 		st->sleep.timer  = add_timer(gettick()+st->sleep.tick, run_script_timer, st->sleep.charid, st);
-		linkdb_insert(&sleep_db, (void*)st->oid, st);
+		linkdb_insert(&sleep_db, INT2PTR(st->oid), st);
 		return;
 	}
 
@@ -3123,7 +3123,7 @@ static void run_script_main(struct script_state *st)
 static int mapreg_setreg(int num,int val,int eternal)
 {
 	if(val != 0)
-		numdb_insert(mapreg_db,num,val);
+		numdb_insert(mapreg_db,num,INT2PTR(val));
 	else
 		numdb_erase(mapreg_db,num);
 
@@ -3195,7 +3195,7 @@ static int script_txt_load_mapreg(void)
 				continue;
 			}
 			s=add_str(buf);
-			numdb_insert(mapreg_db,(i<<24)|s,v);
+			numdb_insert(mapreg_db,(i<<24)|s,INT2PTR(v));
 		}
 	}
 	fclose(fp);
@@ -3209,14 +3209,14 @@ static int script_txt_load_mapreg(void)
 static int script_txt_save_mapreg_intsub(void *key,void *data,va_list ap)
 {
 	FILE *fp=va_arg(ap,FILE*);
-	int num=((int)key)&0x00ffffff, i=((int)key)>>24;
+	int num=PTR2INT(key)&0x00ffffff, i=PTR2INT(key)>>24;
 	char *name=str_buf+str_data[num].str;
 
 	if( name[1]!='@' ){
 		if(i==0)
-			fprintf(fp,"%s\t%d" RETCODE, name, (int)data);
+			fprintf(fp,"%s\t%d" RETCODE, name, PTR2INT(data));
 		else
-			fprintf(fp,"%s,%d\t%d" RETCODE, name, i, (int)data);
+			fprintf(fp,"%s,%d\t%d" RETCODE, name, i, PTR2INT(data));
 	}
 	return 0;
 }
@@ -3224,7 +3224,7 @@ static int script_txt_save_mapreg_intsub(void *key,void *data,va_list ap)
 static int script_txt_save_mapreg_strsub(void *key,void *data,va_list ap)
 {
 	FILE *fp=va_arg(ap,FILE*);
-	int num=((int)key)&0x00ffffff, i=((int)key)>>24;
+	int num=PTR2INT(key)&0x00ffffff, i=PTR2INT(key)>>24;
 	char *name=str_buf+str_data[num].str;
 
 	if( name[1]!='@' ){
@@ -3285,7 +3285,7 @@ static int script_sql_load_mapreg(void)
 			if(name[strlen(name)-1] == '$') {
 				numdb_insert(mapregstr_db,(i<<24)|s,aStrdup(sql_row[2]));
 			} else {
-				numdb_insert(mapreg_db,(i<<24)|s,atoi(sql_row[2]));
+				numdb_insert(mapreg_db,(i<<24)|s,INT2PTR(atoi(sql_row[2])));
 			}
 		}
 		sqldbs_free_result(sql_res);
@@ -3299,7 +3299,7 @@ static int script_sql_load_mapreg(void)
  */
 static int script_sql_save_mapreg_intsub(void *key,void *data,va_list ap)
 {
-	int num=((int)key)&0x00ffffff, i=((int)key)>>24;
+	int num=PTR2INT(key)&0x00ffffff, i=PTR2INT(key)>>24;
 	char *name=str_buf+str_data[num].str;
 
 	if( name[1]!='@' ){
@@ -3307,7 +3307,7 @@ static int script_sql_save_mapreg_intsub(void *key,void *data,va_list ap)
 		sqldbs_query(
 			&mysql_handle,
 			"INSERT INTO `" MAPREG_TABLE "` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%d')",
-			strecpy(buf1,map_server_tag), strecpy(buf2,name), i, (int)data
+			strecpy(buf1,map_server_tag), strecpy(buf2,name), i, PTR2INT(data)
 		);
 	}
 	return 0;
@@ -3315,7 +3315,7 @@ static int script_sql_save_mapreg_intsub(void *key,void *data,va_list ap)
 
 static int script_sql_save_mapreg_strsub(void *key,void *data,va_list ap)
 {
-	int num=((int)key)&0x00ffffff, i=((int)key)>>24;
+	int num=PTR2INT(key)&0x00ffffff, i=PTR2INT(key)>>24;
 	char *name=str_buf+str_data[num].str;
 
 	if( name[1]!='@' ){
@@ -3517,7 +3517,7 @@ static int varlist_sort1(void *key,void *data,va_list ap)
 	int *count  = va_arg(ap, int*);
 	int *v      = va_arg(ap, int*);
 
-	v[(*count)++] = (int)key;
+	v[(*count)++] = PTR2INT(key);
 	return 0;
 }
 
@@ -3552,7 +3552,7 @@ static int varsdb_output(void)
 			printf("do_final_script: enum used variables\n");
 			for(i = 0; i < count; i++) {
 				char *name = str_buf + str_data[ vlist[i] ].str;
-				struct vars_info *v = (struct vars_info *)numdb_search( vars_db, (void*)vlist[i] );
+				struct vars_info *v = (struct vars_info *)numdb_search( vars_db, INT2PTR(vlist[i]) );
 				if( strncmp(name, "$@__", 4) != 0 ) {
 					// switch の内部変数は除外
 					fprintf(fp, "%-20s % 4d %s line %d" RETCODE, name, v->use_count, v->file, v->line);
@@ -4835,7 +4835,7 @@ int buildin_input(struct script_state *st)
 		if(postfix == '$')
 			set_reg(st,sd,num,name,(void*)sd->npc_str,st->stack->stack_data[st->start+2].ref);
 		else
-			set_reg(st,sd,num,name,(void*)sd->npc_amount,st->stack->stack_data[st->start+2].ref);
+			set_reg(st,sd,num,name,INT2PTR(sd->npc_amount),st->stack->stack_data[st->start+2].ref);
 	} else {
 		st->state=RERUNLINE;
 		if(postfix == '$')
@@ -4877,7 +4877,7 @@ int buildin_set(struct script_state *st)
 	} else {
 		// 数値
 		int val = conv_num(st,& (st->stack->stack_data[st->start+3]));
-		set_reg(st,sd,num,name,(void*)val,st->stack->stack_data[st->start+2].ref);
+		set_reg(st,sd,num,name,INT2PTR(val),st->stack->stack_data[st->start+2].ref);
 	}
 
 	return 0;
@@ -4917,7 +4917,7 @@ int buildin_setarray(struct script_state *st)
 		if( postfix == '$' )
 			v = (void*)conv_str(st,& (st->stack->stack_data[i]));
 		else
-			v = (void*)conv_num(st,& (st->stack->stack_data[i]));
+			v = INT2PTR(conv_num(st,& (st->stack->stack_data[i])));
 		set_reg( st, sd, num+(j<<24), name, v, st->stack->stack_data[st->start+2].ref);
 	}
 	return 0;
@@ -4959,7 +4959,7 @@ int buildin_cleararray(struct script_state *st)
 	if( postfix == '$' )
 		v = (void*)conv_str(st,& (st->stack->stack_data[st->start+3]));
 	else
-		v = (void*)conv_num(st,& (st->stack->stack_data[st->start+3]));
+		v = INT2PTR(conv_num(st,& (st->stack->stack_data[st->start+3])));
 
 	for(i=0;i<sz;i++)
 		set_reg(st,sd,num+(i<<24),name,v,st->stack->stack_data[st->start+2].ref);
@@ -5053,7 +5053,7 @@ static int getarraysize(struct script_state *st,int num,char postfix,struct link
 		void *v = get_val2(st,(num & 0x00FFFFFF)+(i<<24),ref);
 		if( postfix == '$' && *((char*)v) )
 			c = i;
-		if( postfix != '$' && (int)v )
+		if( postfix != '$' && PTR2INT(v) )
 			c = i;
 	}
 	return c+1;
@@ -5175,7 +5175,7 @@ int buildin_printarray(struct script_state *st)
 			len += strlen((char*)v);
 			count = i + 1;
 		}
-		if( postfix != '$' && (int)v ) {
+		if( postfix != '$' && PTR2INT(v) ) {
 			len += 16;
 			count = i + 1;
 		}
@@ -5194,7 +5194,7 @@ int buildin_printarray(struct script_state *st)
 			strcat(buf, (char*)list[i]);
 		} else {
 			char val[16];
-			sprintf(val, "%d", (int)list[i]);
+			sprintf(val, "%d", PTR2INT(list[i]));
 			strcat(buf, val);
 		}
 	}
@@ -5660,7 +5660,7 @@ int buildin_delitem(struct script_state *st)
 			   sd->status.inventory[i].card[0] == (short)0xff00 &&
 			   search_petDB_index(nameid, PET_EGG) >= 0)
 			{
-				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
+				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			}
 
 			if(sd->status.inventory[i].amount >= amount) {
@@ -5714,7 +5714,7 @@ int buildin_delcartitem(struct script_state *st)
 			   sd->status.cart[i].card[0] == (short)0xff00 &&
 			   search_petDB_index(nameid, PET_EGG) >= 0)
 			{
-				intif_delete_petdata(*((long *)(&sd->status.cart[i].card[1])));
+				intif_delete_petdata(*((int *)(&sd->status.cart[i].card[1])));
 			}
 
 			if(sd->status.cart[i].amount >= amount) {
@@ -5757,7 +5757,7 @@ int buildin_delitem2(struct script_state *st)
 	   sd->status.inventory[idx].card[0] == (short)0xff00 &&
 	   search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
 	{
-		intif_delete_petdata(*((long *)(&sd->status.inventory[idx].card[1])));
+		intif_delete_petdata(*((int *)(&sd->status.inventory[idx].card[1])));
 	}
 
 	if(sd->status.inventory[idx].amount >= amount)
@@ -5795,7 +5795,7 @@ int buildin_delcartitem2(struct script_state *st)
 	   sd->status.cart[idx].card[0] == (short)0xff00 &&
 	   search_petDB_index(sd->status.cart[idx].nameid, PET_EGG) >= 0)
 	{
-		intif_delete_petdata(*((long *)(&sd->status.cart[idx].card[1])));
+		intif_delete_petdata(*((int *)(&sd->status.cart[idx].card[1])));
 	}
 
 	if(sd->status.cart[idx].amount >= amount)
@@ -6382,13 +6382,13 @@ int buildin_bonus3(struct script_state *st)
 int buildin_bonus4(struct script_state *st)
 {
 	int type,type2,type3,type4;
-	unsigned long val;
+	unsigned int val;
 
 	type  = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	type3 = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	type4 = conv_num(st,& (st->stack->stack_data[st->start+5]));
-	val   = (unsigned long)conv_num(st,& (st->stack->stack_data[st->start+6]));
+	val   = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+6]));
 
 	pc_bonus4(script_rid2sd(st),type,type2,type3,type4,val);
 	return 0;
@@ -7226,12 +7226,12 @@ int buildin_announce(struct script_state *st)
 			return 0;
 
 		if(color)
-			clif_announce(bl,str,len,strtoul(color,NULL,0),type,size,align,pos_y,flag);
+			clif_announce(bl,str,len,(unsigned int)strtoul(color,NULL,0),type,size,align,pos_y,flag);
 		else
 			clif_GMmessage(bl,str,len,flag);
 	} else {
 		if(color)
-			intif_announce(str,len,strtoul(color,NULL,0),type,size,align,pos_y);
+			intif_announce(str,len,(unsigned int)strtoul(color,NULL,0),type,size,align,pos_y);
 		else
 			intif_GMmessage(str,len,flag);
 	}
@@ -7261,7 +7261,7 @@ static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 	pos_y = va_arg(ap,int);
 
 	if(color)
-		clif_announce(bl,str,len,strtoul(color,NULL,0),type,size,align,pos_y,flag|3);
+		clif_announce(bl,str,len,(unsigned int)strtoul(color,NULL,0),type,size,align,pos_y,flag|3);
 	else
 		clif_GMmessage(bl,str,len,flag|3);
 	return 0;
@@ -8200,7 +8200,7 @@ int buildin_getwaitingpcid(struct script_state *st)
 				sprintf(str,"%d",pl_sd->bl.id);
 				v = (void*)str;
 			} else {
-				v = (void*)pl_sd->bl.id;
+				v = INT2PTR(pl_sd->bl.id);
 			}
 			set_reg(st,sd,num+(j<<24),name,v,st->stack->stack_data[st->start+2].ref);
 			j++;
@@ -9225,7 +9225,7 @@ int buildin_clearitem(struct script_state *st)
 	for (i=0; i<MAX_INVENTORY; i++) {
 		if (sd->status.inventory[i].amount) {
 			if (sd->status.inventory[i].card[0] == (short)0xff00)
-				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
+				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0);
 		}
 	}
@@ -9246,7 +9246,7 @@ int buildin_clearcartitem(struct script_state *st)
 	for (i=0; i<MAX_CART; i++) {
 		if (sd->status.cart[i].amount) {
 			if (sd->status.cart[i].card[0] == (short)0xff00)
-				intif_delete_petdata(*((long *)(&sd->status.cart[i].card[1])));
+				intif_delete_petdata(*((int *)(&sd->status.cart[i].card[1])));
 			pc_cart_delitem(sd, i, sd->status.cart[i].amount, !pc_iscarton(sd));
 		}
 	}
@@ -10069,7 +10069,7 @@ int buildin_getmapxy(struct script_state *st)
 	if(postfix == '$') {
 		v = (void*)mapname;
 	} else {
-		v = (void*)atoi(mapname);
+		v = INT2PTR(atoi(mapname));
 	}
 	set_reg(st,sd,num,name,v,st->stack->stack_data[st->start+2].ref);
 
@@ -10085,7 +10085,7 @@ int buildin_getmapxy(struct script_state *st)
 		sprintf(str, "%d", x);
 		v = (void*)str;
 	} else {
-		v = (void*)x;
+		v = INT2PTR(x);
 	}
 	set_reg(st,sd,num,name,v,st->stack->stack_data[st->start+3].ref);
 
@@ -10101,7 +10101,7 @@ int buildin_getmapxy(struct script_state *st)
 		sprintf(str, "%d", y);
 		v = (void*)str;
 	} else {
-		v = (void*)y;
+		v = INT2PTR(y);
 	}
 	set_reg(st,sd,num,name,v,st->stack->stack_data[st->start+4].ref);
 
@@ -10587,7 +10587,7 @@ int buildin_csvreadarray(struct script_state *st)
 			if( postfix == '$' )
 				v = (const void *)csvdb_get_str(csv, row, i);
 			else
-				v = (const void *)csvdb_get_num(csv, row, i);
+				v = INT2PTR(csvdb_get_num(csv, row, i));
 			set_reg(st,sd,num+(i<<24),name,v,st->stack->stack_data[st->start+4].ref);
 		}
 	}
@@ -10672,7 +10672,7 @@ int buildin_csvwritearray(struct script_state *st)
 			if( postfix == '$' ) {
 				csvdb_set_str(csv, row, i, (char*)get_val2(st, num+(i<<24),st->stack->stack_data[st->start+4].ref));
 			} else {
-				csvdb_set_num(csv, row, i, (int)get_val2(st, num+(i<<24),st->stack->stack_data[st->start+4].ref));
+				csvdb_set_num(csv, row, i, PTR2INT(get_val2(st, num+(i<<24),st->stack->stack_data[st->start+4].ref)));
 			}
 		}
 	}
@@ -10823,7 +10823,7 @@ int buildin_awake(struct script_state *st)
 		return 0;
 
 	while( node ) {
-		if( (int)node->key == nd->bl.id) {
+		if( PTR2INT(node->key) == nd->bl.id) {
 			struct script_state *tst    = (struct script_state *)node->data;
 			struct map_session_data *sd = map_id2sd(tst->rid);
 
@@ -11352,7 +11352,7 @@ int buildin_sqlquery(struct script_state *st)
 				tmp_num = num;
 			}
 			for(i=0; i<max; i++) {
-				void *v = (postfix == '$')? sql_row[i]: (void*)atoi(sql_row[i]);
+				void *v = (postfix == '$')? sql_row[i]: INT2PTR(atoi(sql_row[i]));
 				set_reg(st,sd,tmp_num+(i<<24),var,v,st->stack->stack_data[st->start+3].ref);
 			}
 			elem++;

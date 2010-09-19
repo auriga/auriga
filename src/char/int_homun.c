@@ -782,7 +782,7 @@ int mapif_load_hom(int fd,int account_id,int char_id,int homun_id)
 int mapif_save_hom(int fd,int account_id,struct mmo_homunstatus *data)
 {
 	if(!data || sizeof(struct mmo_homunstatus) != RFIFOW(fd,2) - 8) {
-		printf("inter hom: data size error %d %d\n",sizeof(struct mmo_homunstatus),RFIFOW(fd,2)-8);
+		printf("inter hom: data size error %lu %d\n",(unsigned long)sizeof(struct mmo_homunstatus),RFIFOW(fd,2)-8);
 		return 0;
 	}
 

@@ -1,4 +1,22 @@
 ----------------------------------------
+//0776 [2010/09/20] by Rayce
+
+・LP64（64bit UNIX/Linux）正式対応
+	→ long型は64bitになる可能性があるので、32bitのサイズが必要な場所ではlong型ではなく
+	   int型を使うよう全面的に変更
+
+	→ 8bit/16bit/32bitの明確な固定長の型が必要な場合は、int8/int16/int32型もしくは
+	   uint8/uint16/uint32型を利用する
+
+	→ "warning: cast to pointer from integer of different size" という警告が発生するので
+	   数値をポインタにキャストする場合は INT2PTR マクロを利用する
+	   unsignedな数値をポインタにキャストする場合は UINT2PTR マクロを利用する
+
+	→ "warning: cast from pointer to integer of different size" という警告が発生するので
+	   ポインタをint型にキャストする場合は PTR2INT マクロを利用する
+	   ポインタをunsigned int型にキャストする場合は PTR2UINT マクロを利用する
+
+----------------------------------------
 //0775 [2010/09/20] by Rayce
 
 ・gccの警告 "may be used uninitialized in this function" を修正（int_party.c, battle.c）

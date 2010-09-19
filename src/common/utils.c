@@ -44,7 +44,7 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 	p += sprintf(p, "----  -----------------------------------------------   ----------------");
 
 	for(i = 0; i < len; i += 16) {
-		p += sprintf(p, RETCODE "%04X  ", i);
+		p += sprintf(p, RETCODE "%04lX  ", (unsigned long)i);
 		for(j = i; j < i + 16; j++) {
 			if(j < len)
 				p += sprintf(p, "%02x ", buf[j]);
@@ -176,9 +176,9 @@ static unsigned long atn_int32_randommt(void)
 	return y;
 }
 
-long atn_int31_randommt(void)
+int atn_int31_randommt(void)
 {
-	return (long)(atn_int32_randommt()>>1);
+	return (int)(atn_int32_randommt()>>1);
 }
 
 #endif	// ifdef RANDOMMT

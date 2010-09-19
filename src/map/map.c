@@ -1129,7 +1129,7 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct block_list *bl = object[id];
 	struct flooritem_data *fitem = NULL;
-	int flag = (int)data;
+	int flag = PTR2INT(data);
 
 	if(bl && bl->type == BL_ITEM)
 		fitem = (struct flooritem_data *)bl;
@@ -1142,7 +1142,7 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,void *data)
 	if(flag == 1)
 		delete_timer(fitem->cleartimer,map_clearflooritem_timer);
 	else if(fitem->item_data.card[0] == (short)0xff00)
-		intif_delete_petdata(*((long *)(&fitem->item_data.card[1])));
+		intif_delete_petdata(*((int *)(&fitem->item_data.card[1])));
 	clif_clearflooritem(fitem,-1);
 	map_delobject(fitem->bl.id);
 
@@ -1245,7 +1245,7 @@ int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,int fir
 	}
 
 	if(item_data->card[0] == (short)0xff00)
-		intif_delete_petdata(*((long *)(&item_data->card[1])));
+		intif_delete_petdata(*((int *)(&item_data->card[1])));
 
 	return 0;
 }
@@ -1304,7 +1304,7 @@ void map_clear_delayitem_que(void)
 	node = delayitem_head;
 	while(node) {
 		node2 = node->next;
-		intif_delete_petdata(*((long *)(&node->item_data.card[1])));
+		intif_delete_petdata(*((int *)(&node->item_data.card[1])));
 		aFree(node);
 		node = node2;
 	}
@@ -1359,9 +1359,9 @@ void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, u
 	if(head) {	// 返信待ちがあれば全員に返信
 		struct linkdb_node *node = head;
 		while(node) {
-			struct map_session_data *sd = map_id2sd((int)node->key);
+			struct map_session_data *sd = map_id2sd(PTR2INT(node->key));
 			if(sd) {
-				int type = (int)node->data;
+				int type = PTR2INT(node->data);
 				if(type&1)
 					clif_solved_charname(sd,charid);
 				if(type&2)
@@ -1407,14 +1407,14 @@ int map_reqchariddb(struct map_session_data *sd, int charid, int type)
 	if(p != NULL) {	// データベースにすでにある
 		if(p->req) {
 			// 返信待ち状態なのでリスト更新
-			int data = (int)linkdb_search(&p->req, (void*)sd->bl.id);
-			linkdb_replace(&p->req, (void*)sd->bl.id, (void*)(data | type));
+			int data = PTR2INT(linkdb_search(&p->req, INT2PTR(sd->bl.id)));
+			linkdb_replace(&p->req, INT2PTR(sd->bl.id), INT2PTR(data | type));
 		}
 		return 0;
 	}
 
 	p = (struct charid2nick *)aCalloc(1,sizeof(struct charid2nick));
-	linkdb_insert(&p->req, (void*)sd->bl.id, (void*)type);
+	linkdb_insert(&p->req, INT2PTR(sd->bl.id), INT2PTR(type));
 	numdb_insert(charid_db,charid,p);
 
 	return 1;
@@ -2134,12 +2134,12 @@ struct map_cache_info {
 	int water_height;
 	int pos;  		// データが入れてある場所
 	int compressed;		// zilb通せるようにする為の予約
-	int compressed_len;	// zilb通せるようにする為の予約
+	unsigned int compressed_len;	// zilb通せるようにする為の予約
 }; // 56 byte
 
 struct map_cache_head {
-	int sizeof_header;
-	int sizeof_map;
+	unsigned int sizeof_header;
+	unsigned int sizeof_map;
 	// 上の２つ改変不可
 	int nmaps; // マップの個数
 	int filesize;
@@ -2199,9 +2199,7 @@ static int map_cache_open(const char *fn)
 		map_cache.head.nmaps         = MAX_MAP_CACHE;
 		map_cache.head.sizeof_header = sizeof(struct map_cache_head);
 		map_cache.head.sizeof_map    = sizeof(struct map_cache_info);
-
-		map_cache.head.filesize  = sizeof(struct map_cache_head);
-		map_cache.head.filesize += sizeof(struct map_cache_info) * map_cache.head.nmaps;
+		map_cache.head.filesize      = sizeof(struct map_cache_head) + sizeof(struct map_cache_info) * map_cache.head.nmaps;
 
 		map_cache.dirty = 1;
 		return 1;
@@ -2245,7 +2243,7 @@ static int map_cache_read(struct map_data *m)
 				// 圧縮フラグ=1 : zlib
 				unsigned char *buf;
 				unsigned long dest_len;
-				int size_compress = map_cache.map[i].compressed_len;
+				unsigned int size_compress = map_cache.map[i].compressed_len;
 				m->xs = map_cache.map[i].xs;
 				m->ys = map_cache.map[i].ys;
 				m->gat = (unsigned char *)aMalloc(m->xs * m->ys * sizeof(unsigned char));
@@ -2283,7 +2281,7 @@ static int map_cache_read(struct map_data *m)
 static int map_cache_write(struct map_data *m)
 {
 	int i;
-	unsigned long len_new , len_old;
+	unsigned long len_new, len_old;
 	char *write_buf;
 
 	if(!map_cache.fp)
@@ -2307,7 +2305,7 @@ static int map_cache_write(struct map_data *m)
 				len_new = m->xs * m->ys * 2;
 				encode_zip(write_buf,&len_new,m->gat,m->xs * m->ys);
 				map_cache.map[i].compressed     = 1;
-				map_cache.map[i].compressed_len = len_new;
+				map_cache.map[i].compressed_len = (unsigned int)len_new;
 			} else {
 				len_new = m->xs * m->ys;
 				write_buf = m->gat;
@@ -2344,7 +2342,7 @@ static int map_cache_write(struct map_data *m)
 				len_new = m->xs * m->ys * 2;
 				encode_zip(write_buf,&len_new,m->gat,m->xs * m->ys);
 				map_cache.map[i].compressed     = 1;
-				map_cache.map[i].compressed_len = len_new;
+				map_cache.map[i].compressed_len = (unsigned int)len_new;
 			} else {
 				len_new = m->xs * m->ys;
 				write_buf = m->gat;

@@ -341,11 +341,11 @@ static int npc_timerevent(int tid,unsigned int tick,int id,void *data)
 	te = nd->u.scr.timer_event + nd->u.scr.nexttimer;
 	nd->u.scr.timerid = -1;
 
-	nd->u.scr.timer += (int)data;
+	nd->u.scr.timer += PTR2INT(data);
 	nd->u.scr.nexttimer++;
 	if( nd->u.scr.timeramount > nd->u.scr.nexttimer ) {
 		int next = nd->u.scr.timer_event[nd->u.scr.nexttimer].timer - nd->u.scr.timer;
-		nd->u.scr.timerid = add_timer(tick+next,npc_timerevent,id,(void*)next);
+		nd->u.scr.timerid = add_timer(tick+next,npc_timerevent,id,INT2PTR(next));
 	}
 
 	run_script(nd->u.scr.script,te->pos,0,nd->bl.id);
@@ -377,7 +377,7 @@ int npc_timerevent_start(struct npc_data *nd)
 		return 0;
 
 	next = nd->u.scr.timer_event[j].timer - nd->u.scr.timer;
-	nd->u.scr.timerid = add_timer(gettick()+next,npc_timerevent,nd->bl.id,(void*)next);
+	nd->u.scr.timerid = add_timer(gettick()+next,npc_timerevent,nd->bl.id,INT2PTR(next));
 	return 0;
 }
 
@@ -932,7 +932,7 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 		    sd->inventory_data[idx]->type == 7 &&
 		    sd->status.inventory[idx].card[0] == (short)0xff00 &&
 		    search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
-			intif_delete_petdata((*(long *)(&sd->status.inventory[idx].card[1])));
+			intif_delete_petdata((*(int *)(&sd->status.inventory[idx].card[1])));
 		pc_delitem(sd, idx, item_list[i * 2 + 1], 0);
 	}
 	pc_getzeny(sd, (int)z);
@@ -1415,7 +1415,7 @@ static int npc_convertlabel_db(struct npc_data *nd)
 		strncpy(lst[i].name, (char *)node->key, 24);
 		lst[i].name[23] = '\0';	// force \0 terminal
 		*p = c;
-		lst[i].pos = (int)node->data;
+		lst[i].pos = PTR2INT(node->data);
 		i++;
 		node = node->next;
 	}

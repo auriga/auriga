@@ -525,7 +525,7 @@ struct map_session_data {
 		short lv[MAX_BONUS_AUTOSPELL];
 		short id[MAX_BONUS_AUTOSPELL];
 		short rate[MAX_BONUS_AUTOSPELL];
-		unsigned long flag[MAX_BONUS_AUTOSPELL];
+		unsigned int flag[MAX_BONUS_AUTOSPELL];
 		short card_id[MAX_BONUS_AUTOSPELL];
 		short skill[MAX_BONUS_AUTOSPELL];	// スキルで発動するオートスペル用
 		short count;
@@ -535,7 +535,7 @@ struct map_session_data {
 		int id[MAX_ACTIVEITEM];
 		short rate[MAX_ACTIVEITEM];
 		int tick[MAX_ACTIVEITEM];
-		unsigned long flag[MAX_ACTIVEITEM];
+		unsigned int flag[MAX_ACTIVEITEM];
 		short skill[MAX_ACTIVEITEM];	// スキルで発動するアクティブアイテム用
 		short count;
 	} activeitem;

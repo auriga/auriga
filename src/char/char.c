@@ -2531,11 +2531,11 @@ static int char_delete(const struct mmo_chardata *cd)
 		pet_delete(cd->st.pet_id);
 	for(j=0;j<MAX_INVENTORY;j++) {
 		if(cd->st.inventory[j].card[0] == (short)0xff00)
-			pet_delete(*((long *)(&cd->st.inventory[j].card[1])));
+			pet_delete(*((int *)(&cd->st.inventory[j].card[1])));
 	}
 	for(j=0;j<MAX_CART;j++) {
 		if(cd->st.cart[j].card[0] == (short)0xff00)
-			pet_delete(*((long *)(&cd->st.cart[j].card[1])));
+			pet_delete(*((int *)(&cd->st.cart[j].card[1])));
 	}
 	// ホムンクルス削除
 	if(cd->st.homun_id)

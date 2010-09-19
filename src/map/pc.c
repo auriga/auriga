@@ -1656,7 +1656,7 @@ int pc_checkweighticon(struct map_session_data *sd)
  * オートスペル
  *------------------------------------------
  */
-static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skillid2,int skilllv,int rate, unsigned long flag)
+static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skillid2,int skilllv,int rate, unsigned int flag)
 {
 	nullpo_retr(0, sd);
 
@@ -1693,7 +1693,7 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilli
  * アクティブアイテム登録
  *------------------------------------------
  */
-int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,int tick,unsigned long flag)
+int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,int tick,unsigned int flag)
 {
 	int i;
 
@@ -1748,7 +1748,7 @@ static int pc_activeitem_timer(int tid,unsigned int tick,int id,void *data)
  * アクティブアイテム開始
  *------------------------------------------
  */
-int pc_activeitem_start(struct map_session_data* sd,unsigned long mode,unsigned int tick)
+int pc_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigned int tick)
 {
 	int i, flag = 0;
 	static int lock = 0;
@@ -3005,7 +3005,7 @@ int pc_bonus3(struct map_session_data *sd,int type,int type2,int type3,int val)
  * 装備品による能力等のボーナス設定４
  *------------------------------------------
  */
-int pc_bonus4(struct map_session_data *sd,int type,int type2,int type3,int type4,unsigned long val)
+int pc_bonus4(struct map_session_data *sd,int type,int type2,int type3,int type4,unsigned int val)
 {
 	nullpo_retr(0, sd);
 
@@ -3040,7 +3040,7 @@ int pc_bonus4(struct map_session_data *sd,int type,int type2,int type3,int type4
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("pc_bonus4: unknown type %d %d %d %d %lu!\n",type,type2,type3,type4,val);
+			printf("pc_bonus4: unknown type %d %d %d %d %u!\n",type,type2,type3,type4,val);
 		break;
 	}
 
@@ -3298,10 +3298,10 @@ static int pc_itemlimit_timer(int tid, unsigned int tick, int id, void *data)
 	node = sd->inventory_timer;
 
 	while(node) {
-		if(tid == (int)node->data - 1) {
-			tid = pc_checkitemlimit(sd, (int)node->key, tick, now, 0);
+		if(tid == PTR2INT(node->data) - 1) {
+			tid = pc_checkitemlimit(sd, PTR2INT(node->key), tick, now, 0);
 			if(tid > 0) {
-				node->data = (void*)tid;
+				node->data = INT2PTR(tid);
 			}
 			return 0;
 		}
@@ -3333,7 +3333,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 
 	// 時間切れにより削除
 	if(sd->status.inventory[idx].card[0] == (short)0xff00) {
-		intif_delete_petdata(*((long *)(&sd->status.inventory[idx].card[1])));
+		intif_delete_petdata(*((int *)(&sd->status.inventory[idx].card[1])));
 	}
 	if(first) {
 		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 3);
@@ -3374,7 +3374,7 @@ static int pc_setitemlimit(struct map_session_data *sd)
 		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].limit > 0) {
 			int tid = pc_checkitemlimit(sd, i, tick, now, 1);
 			if(tid > 0)
-				linkdb_insert(&sd->inventory_timer, (void*)i, (void*)tid);
+				linkdb_insert(&sd->inventory_timer, INT2PTR(i), INT2PTR(tid));
 		}
 	}
 
@@ -3393,7 +3393,7 @@ int pc_clearitemlimit(struct map_session_data *sd)
 
 	node = sd->inventory_timer;
 	while(node) {
-		delete_timer((int)node->data - 1, pc_itemlimit_timer);
+		delete_timer(PTR2INT(node->data) - 1, pc_itemlimit_timer);
 		node = node->next;
 	}
 	linkdb_final(&sd->inventory_timer);
@@ -3463,7 +3463,7 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 	if(sd->status.inventory[i].limit > 0) {
 		int tid = pc_checkitemlimit(sd, i, gettick(), (unsigned int)time(NULL), 0);
 		if(tid > 0)
-			linkdb_insert(&sd->inventory_timer, (void*)i, (void*)tid);
+			linkdb_insert(&sd->inventory_timer, INT2PTR(i), INT2PTR(tid));
 	}
 
 	return 0;
@@ -3503,7 +3503,7 @@ void pc_delitem(struct map_session_data *sd, int n, int amount, int type)
 			pc_unequipitem(sd,n,0);
 		}
 		if(sd->status.inventory[n].limit > 0) {
-			int tid = (int)linkdb_erase(&sd->inventory_timer, (void*)n);
+			int tid = PTR2INT(linkdb_erase(&sd->inventory_timer, INT2PTR(n)));
 			if(tid > 0)
 				delete_timer(tid - 1, pc_itemlimit_timer);
 		}
@@ -3690,7 +3690,7 @@ void pc_useitem(struct map_session_data *sd, int n)
 	}
 	sd->use_itemid = nameid;
 	if(sd->status.inventory[n].card[0] == 0x00fe)
-		sd->use_nameditem = *((unsigned long *)(&sd->status.inventory[n].card[2]));
+		sd->use_nameditem = *((int *)(&sd->status.inventory[n].card[2]));
 	else
 		sd->use_nameditem = 0;
 
@@ -5591,7 +5591,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		item_tmp.identify = 1;
 		item_tmp.card[0]  = 0x00fe;
 		item_tmp.card[1]  = 0;
-		*((unsigned long *)(&item_tmp.card[2])) = sd->status.char_id;	// キャラID
+		*((int *)(&item_tmp.card[2])) = sd->status.char_id;	// キャラID
 		map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 	}
 
@@ -7460,7 +7460,7 @@ int pc_checkitem(struct map_session_data *sd)
 			if( battle_config.error_log )
 				printf("illegal item id %d in %d[%s] inventory.\n",itemid,sd->bl.id,sd->status.name);
 			if( sd->status.inventory[i].card[0] == (short)0xff00 )
-				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
+				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd,i,sd->status.inventory[i].amount,3);
 		}
 		// カート内の不正チェック
@@ -7472,7 +7472,7 @@ int pc_checkitem(struct map_session_data *sd)
 			if( battle_config.error_log )
 				printf("illegal item id %d in %d[%s] cart.\n",itemid,sd->bl.id,sd->status.name);
 			if( sd->status.cart[i].card[0] == (short)0xff00 )
-				intif_delete_petdata(*((long *)(&sd->status.cart[i].card[1])));
+				intif_delete_petdata(*((int *)(&sd->status.cart[i].card[1])));
 			pc_cart_delitem(sd,i,sd->status.cart[i].amount,1);
 		}
 	}
@@ -7483,7 +7483,7 @@ int pc_checkitem(struct map_session_data *sd)
 			// 使用期限のあるアイテムなら一時的にkeyをidに変えておく
 			struct linkdb_node *node = sd->inventory_timer;
 			while(node) {
-				node->key = (void*)sd->status.inventory[(int)node->key].id;
+				node->key = UINT2PTR(sd->status.inventory[PTR2INT(node->key)].id);
 				node = node->next;
 			}
 		}
@@ -7496,15 +7496,15 @@ int pc_checkitem(struct map_session_data *sd)
 			struct linkdb_node *node = sd->inventory_timer;
 			while(node) {
 				for(i = 0; i < MAX_INVENTORY; i++) {
-					if(sd->status.inventory[i].id == (unsigned int)node->key) {
-						node->key = (void*)i;
+					if(sd->status.inventory[i].id == PTR2UINT(node->key)) {
+						node->key = INT2PTR(i);
 						break;
 					}
 				}
 				if(i >= MAX_INVENTORY) {
 					// 何故かインデックスを復元できなかったのでソケット切断する
 					if(battle_config.error_log)
-						printf("pc_checkitem: broken limit data %u\n", (unsigned int)node->data);
+						printf("pc_checkitem: broken limit data %d\n", PTR2INT(node->data));
 					close(sd->fd);
 					return 0;
 				}
@@ -8966,7 +8966,7 @@ int pc_read_motd(void)
 static char extra_file_txt[1024] = "save/map_extra.txt"; // managed by software - must not be modified manually
 static struct extra {
 	int item_id; // -1: zeny, other: id item
-	long quantity; // quantity of items or zeny
+	int quantity; // quantity of items or zeny
 	char name[24]; // player name
 } *extra_dat = NULL;
 static int extra_num = 0;
@@ -8978,8 +8978,7 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 	int change_flag = 0; // must we rewrite extra file? (0: no, 1: yes)
 	int lock, i;
 	char line[1024], name[1024];
-	int item_id;
-	long quantity;
+	int item_id, quantity;
 	struct map_session_data *pl_sd;
 	struct item_data *item_data;
 	char output[200];
@@ -8996,29 +8995,29 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 				if ((line[0] == '/' && line[1] == '/') || line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
 					continue;
 				// if line is valid
-				if ((sscanf(line, "%d,%ld,%[^\r\n]", &item_id, &quantity, name) == 3 ||
-				    sscanf(line, "%d\t%ld\t%[^\r\n]", &item_id, &quantity, name) == 3) &&
+				if ((sscanf(line, "%d,%d,%[^\r\n]", &item_id, &quantity, name) == 3 ||
+				    sscanf(line, "%d\t%d\t%[^\r\n]", &item_id, &quantity, name) == 3) &&
 				    (item_id == -1 || (itemdb_exists(item_id) && (!battle_config.item_check || itemdb_available(item_id)))) && // zeny or valid items
 				    quantity != 0 && // quantity
 				    strlen(name) >= 4 && strlen(name) < 24) { // name
 					// manage max quantity
 					if (item_id == -1) {
-						if (quantity > (long)MAX_ZENY) {
-							quantity = (long)MAX_ZENY;
+						if (quantity > MAX_ZENY) {
+							quantity = MAX_ZENY;
 							// Invalid quantity -> file must be rewriten
 							change_flag = 1;
-						} else if (quantity < -((long)MAX_ZENY)) {
-							quantity = -((long)MAX_ZENY);
+						} else if (quantity < -(MAX_ZENY)) {
+							quantity = -(MAX_ZENY);
 							// Invalid quantity -> file must be rewriten
 							change_flag = 1;
 						}
 					} else {
-						if (quantity > (long)MAX_AMOUNT) {
-							quantity = (long)MAX_AMOUNT;
+						if (quantity > MAX_AMOUNT) {
+							quantity = MAX_AMOUNT;
 							// Invalid quantity -> file must be rewriten
 							change_flag = 1;
-						} else if (quantity < -((long)MAX_AMOUNT)) {
-							quantity = -((long)MAX_AMOUNT);
+						} else if (quantity < -(MAX_AMOUNT)) {
+							quantity = -(MAX_AMOUNT);
 							// Invalid quantity -> file must be rewriten
 							change_flag = 1;
 						}
@@ -9051,22 +9050,22 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 			if ((line[0] == '/' && line[1] == '/') || line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
 				continue;
 			// if line is valid
-			if ((sscanf(line, "%d,%ld,%[^\r\n]", &item_id, &quantity, name) == 3 ||
-			    sscanf(line, "%d\t%ld\t%[^\r\n]", &item_id, &quantity, name) == 3) &&
+			if ((sscanf(line, "%d,%d,%[^\r\n]", &item_id, &quantity, name) == 3 ||
+			    sscanf(line, "%d\t%d\t%[^\r\n]", &item_id, &quantity, name) == 3) &&
 			    (item_id == -1 || (itemdb_exists(item_id) && (!battle_config.item_check || itemdb_available(item_id)))) && // zeny or valid items
 			    quantity != 0 && // quantity
 			    strlen(name) >= 4 && strlen(name) < 24) { // name
 				// manage max quantity
 				if (item_id == -1) {
-					if (quantity > (long)MAX_ZENY)
-						quantity = (long)MAX_ZENY;
-					else if (quantity < -((long)MAX_ZENY))
-						quantity = -((long)MAX_ZENY);
+					if (quantity > MAX_ZENY)
+						quantity = MAX_ZENY;
+					else if (quantity < -(MAX_ZENY))
+						quantity = -(MAX_ZENY);
 				} else {
-					if (quantity > (long)MAX_AMOUNT)
-						quantity = (long)MAX_AMOUNT;
-					else if (quantity < -((long)MAX_AMOUNT))
-						quantity = -((long)MAX_AMOUNT);
+					if (quantity > MAX_AMOUNT)
+						quantity = MAX_AMOUNT;
+					else if (quantity < -(MAX_AMOUNT))
+						quantity = -(MAX_AMOUNT);
 				}
 				// add an index
 				if (extra_num == 0) {
@@ -9098,8 +9097,8 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 			if (item_id == -1) {
 				// substract
 				if (quantity < 0) {
-					if ((long)pl_sd->status.zeny < -quantity)
-						quantity = -((long)pl_sd->status.zeny);
+					if (pl_sd->status.zeny < -quantity)
+						quantity = -pl_sd->status.zeny;
 					if (quantity < 0) {
 						snprintf(output, sizeof output, msg_txt(149), -quantity); // Server (special action): you lost %ld zenys.
 						clif_displaymessage(pl_sd->fd, output);
@@ -9111,8 +9110,8 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 					}
 				// add
 				} else {
-					if (quantity > (long)(MAX_ZENY - pl_sd->status.zeny))
-						quantity = (long)(MAX_ZENY - pl_sd->status.zeny);
+					if (quantity > MAX_ZENY - pl_sd->status.zeny)
+						quantity = MAX_ZENY - pl_sd->status.zeny;
 					if (quantity > 0) {
 						snprintf(output, sizeof output, msg_txt(150), quantity); // Server (special action): you gain %ld zenys.
 						clif_displaymessage(pl_sd->fd, output);
@@ -9130,11 +9129,11 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 				if (quantity < 0) { // remove items
 					for (j = 0; j < MAX_INVENTORY; j++) {
 						if (pl_sd->status.inventory[j].nameid == item_id && pl_sd->status.inventory[j].equip == 0) {
-							if ((long)pl_sd->status.inventory[j].amount < -quantity)
-								quantity = -((long)pl_sd->status.inventory[j].amount);
+							if (pl_sd->status.inventory[j].amount < -quantity)
+								quantity = -pl_sd->status.inventory[j].amount;
 							if (quantity < 0) {
 								if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
-					 				intif_delete_petdata(*((long *)(&pl_sd->status.inventory[i].card[1])));
+									intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
 								pc_delitem(pl_sd, j, -quantity, 0);
 								snprintf(output, sizeof output, msg_txt(151), -quantity, item_data->jname); // Server (special action): you lost %ld %s.
 								clif_displaymessage(pl_sd->fd, output);
@@ -9148,15 +9147,15 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 				} else { // add items
 					int loop;
 					struct item item_tmp;
-					if ((long)item_data->weight * quantity > (long)(pl_sd->max_weight - pl_sd->weight)) {
-						quantity = (long)((pl_sd->max_weight - pl_sd->weight) / item_data->weight);
+					if (item_data->weight * quantity > pl_sd->max_weight - pl_sd->weight) {
+						quantity = (pl_sd->max_weight - pl_sd->weight) / item_data->weight;
 						if (quantity <= 0)
 							continue;
 					}
 					loop = 1;
 					if (item_data->type == 4 || item_data->type == 5 ||
 					    item_data->type == 7 || item_data->type == 8) {
-						loop = (int)quantity;
+						loop = quantity;
 						quantity = 1;
 					}
 					for(j = 0; j < loop; j++) {
@@ -9206,7 +9205,7 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 			            "// 追加したい場合は「%s」を利用してください" RETCODE
 			            "//" RETCODE, extra_add_file_txt);
 			for (i = 0; i < extra_num; i++)
-				fprintf(fp,"%d,%ld,%s" RETCODE, extra_dat[i].item_id, extra_dat[i].quantity, extra_dat[i].name);
+				fprintf(fp,"%d,%d,%s" RETCODE, extra_dat[i].item_id, extra_dat[i].quantity, extra_dat[i].name);
 			lock_fclose(fp, extra_file_txt, &lock);
 		}
 	}

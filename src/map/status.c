@@ -671,7 +671,7 @@ L_RECALC:
 							sd->star_ = 40;
 						wele_= sd->status.inventory[idx].card[1] & 0x0f;	// 属 性
 						// ランキングボーナス
-						if(ranking_get_id2rank(*((unsigned long *)(&sd->status.inventory[idx].card[2])), RK_BLACKSMITH))
+						if(ranking_get_id2rank(*((int *)(&sd->status.inventory[idx].card[2])), RK_BLACKSMITH))
 							sd->ranker_weapon_bonus_ = 10;
 					}
 					sd->attackrange_ += sd->inventory_data[idx]->range;
@@ -693,7 +693,7 @@ L_RECALC:
 							sd->star = 40;
 						wele = sd->status.inventory[idx].card[1] & 0x0f;	// 属 性
 						// ランキングボーナス
-						if(ranking_get_id2rank(*((unsigned long *)(&sd->status.inventory[idx].card[2])),RK_BLACKSMITH))
+						if(ranking_get_id2rank(*((int *)(&sd->status.inventory[idx].card[2])),RK_BLACKSMITH))
 							sd->ranker_weapon_bonus = 10;
 					}
 					sd->attackrange += sd->inventory_data[idx]->range;
@@ -6013,7 +6013,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	sc->data[type].val3 = val3;
 	sc->data[type].val4 = val4;
 	/* タイマー設定 */
-	sc->data[type].timer = add_timer(gettick() + tick, status_change_timer, bl->id, (void*)type);
+	sc->data[type].timer = add_timer(gettick() + tick, status_change_timer, bl->id, INT2PTR(type));
 
 	if(calc_flag) {
 		// ステータス再計算
@@ -6890,7 +6890,7 @@ int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int 
  */
 int status_change_timer(int tid, unsigned int tick, int id, void *data)
 {
-	int type  = (int)data;
+	int type  = PTR2INT(data);
 	int timer = -1;
 	struct block_list *bl;
 	struct map_session_data *sd  = NULL;

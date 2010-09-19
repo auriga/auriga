@@ -342,7 +342,7 @@ int mail_txt_delete(int char_id)
 
 		for(i = 0; i < m->store; i++) {
 			if(md[i].item.card[0] == (short)0xff00)
-				pet_delete(*((long *)(&md[i].item.card[1])));
+				pet_delete(*((int *)(&md[i].item.card[1])));
 		}
 
 		if(m->char_id == char_id) {
@@ -624,7 +624,7 @@ int mail_sql_delete(int char_id)
 
 		for(i = 0; i < m->store; i++) {
 			if(md[i].item.card[0] == (short)0xff00)
-				pet_delete(*((long *)(&md[i].item.card[1])));
+				pet_delete(*((int *)(&md[i].item.card[1])));
 		}
 		if(m->char_id == char_id) {
 			numdb_erase(mail_db,char_id);

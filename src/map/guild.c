@@ -108,7 +108,7 @@ void guild_skillmax_load(int len, int *maxlv)
 {
 	if( maxlv == NULL || sizeof(guild_skill_max) != len - 4) {
 		if(battle_config.etc_log)
-			printf("guild_skillmax_load: data size error %d %d\n", sizeof(guild_skill_max), len - 4);
+			printf("guild_skillmax_load: data size error %lu %d\n", (unsigned long)sizeof(guild_skill_max), len - 4);
 		memset(guild_skill_max, 0, sizeof(guild_skill_max));
 	} else {
 		memcpy(guild_skill_max, maxlv, sizeof(guild_skill_max));
@@ -1319,14 +1319,14 @@ void guild_notice_changed(int guild_id, const char *mes1, const char *mes2)
  * ギルドエンブレム変更
  *------------------------------------------
  */
-void guild_change_emblem(int guild_id, int zipbitmap_len, const char *data)
+void guild_change_emblem(int guild_id, unsigned int zipbitmap_len, const char *data)
 {
 	char dest_bitmap[4100]; // max possible (16/24 bits): 4086 (windows)-> (header1)14 + (header2)40 + (576 colors)2304 + (bitmap:24x24)1728 (no compression with palette)
 	unsigned long dest_bitmap_len;
 	unsigned int ncol;
 
 	// length of zipbitmap (client doesn't send bmp structure, but a zipped BMP)
-	if (zipbitmap_len < 0 || zipbitmap_len > 2000)
+	if (zipbitmap_len > 2000)
 		return;
 
 	// analyse of bmp

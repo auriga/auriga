@@ -101,14 +101,14 @@ int pc_dropitem(struct map_session_data*, int, int);
 
 int pc_checkweighticon(struct map_session_data *sd);
 
-int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,int tick,unsigned long flag);
-int pc_activeitem_start(struct map_session_data* sd,unsigned long mode,unsigned int tick);
+int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,int tick,unsigned int flag);
+int pc_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigned int tick);
 int pc_activeitemskill_start(struct map_session_data* sd,int skillid,unsigned int tick);
 
 int pc_bonus(struct map_session_data*,int,int);
 int pc_bonus2(struct map_session_data *sd,int,int,int);
 int pc_bonus3(struct map_session_data *sd,int,int,int,int);
-int pc_bonus4(struct map_session_data *sd,int,int,int,int,unsigned long);
+int pc_bonus4(struct map_session_data *sd,int,int,int,int,unsigned int);
 int pc_skill(struct map_session_data*,int,int,int);
 
 void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip);

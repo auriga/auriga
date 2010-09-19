@@ -187,7 +187,7 @@ struct unit_head {
 #ifdef DEBUG_MEMMGR
 	time_t time_stamp;
 #endif
-	long checksum;
+	uint32 checksum;
 };
 
 /* ブロックのアライメント */
@@ -271,6 +271,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 	struct block *block;
 	unsigned short size_hash = size2hash( size );
 	struct unit_head *head;
+	char *ret = NULL;
 
 	if(size == 0) {
 		return NULL;
@@ -305,9 +306,10 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 			p->next = unit_head_large_first;
 			unit_head_large_first = p;
 		}
-		*(long*)((char*)p + sizeof(struct unit_head_large) - sizeof(long) + size) = 0xdeadbeaf;
+		ret = (char *)p + sizeof(struct unit_head_large) - sizeof(uint32);
+		*(uint32*)(ret + size) = 0xdeadbeaf;
 
-		return (char *)p + sizeof(struct unit_head_large) - sizeof(long);
+		return ret;
 	}
 
 	/* 同一サイズのブロックが確保されていない時、新たに確保する */
@@ -347,7 +349,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 		size_t i, sz = hash2size( size_hash );
 		for(i = 0; i < sz; i++)
 		{
-			if( ((unsigned char*)head)[ sizeof(struct unit_head) - sizeof(long) + i] != 0xfd )
+			if( ((unsigned char*)head)[ sizeof(struct unit_head) - sizeof(uint32) + i] != 0xfd )
 			{
 				if( head->line != 0xfdfd )
 					memmgr_warning("memmgr: freed-data is changed. (freed in %s line %d)\n", head->file, head->line);
@@ -356,7 +358,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 				break;
 			}
 		}
-		memset( (char *)head + sizeof(struct unit_head) - sizeof(long), 0xcd, sz );
+		memset( (char *)head + sizeof(struct unit_head) - sizeof(uint32), 0xcd, sz );
 		// タイムスタンプの記録
 		head->time_stamp = time(NULL);
 	}
@@ -366,9 +368,11 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 	head->file  = file;
 	head->line  = line;
 	head->size  = (unsigned short)size;
-	*(long*)((char*)head + sizeof(struct unit_head) - sizeof(long) + size) = 0xdeadbeaf;
 
-	return (char *)head + sizeof(struct unit_head) - sizeof(long);
+	ret = (char*)head + sizeof(struct unit_head) - sizeof(uint32);
+	*(uint32*)(ret + size) = 0xdeadbeaf;
+
+	return ret;
 }
 
 void* aCalloc_(size_t num, size_t size, const char *file, int line, const char *func)
@@ -392,9 +396,9 @@ void* aRealloc_(void *memblock, size_t size, const char *file, int line, const c
 		return NULL;
 	}
 
-	old_size = ((struct unit_head *)((char *)memblock - sizeof(struct unit_head) + sizeof(long)))->size;
+	old_size = ((struct unit_head *)((char *)memblock - sizeof(struct unit_head) + sizeof(uint32)))->size;
 	if( old_size == 0 ) {
-		old_size = ((struct unit_head_large *)((char *)memblock - sizeof(struct unit_head_large) + sizeof(long)))->size;
+		old_size = ((struct unit_head_large *)((char *)memblock - sizeof(struct unit_head_large) + sizeof(uint32)))->size;
 	}
 
 	p = aMalloc_(size,file,line,func);
@@ -427,12 +431,12 @@ void aFree_(void *ptr, const char *file, int line, const char *func)
 	if(ptr == NULL)
 		return;
 
-	head = (struct unit_head *)((char *)ptr - sizeof(struct unit_head) + sizeof(long));
+	head = (struct unit_head *)((char *)ptr - sizeof(struct unit_head) + sizeof(uint32));
 	if(head->size == 0) {
 		/* malloc() で直に確保された領域 */
-		struct unit_head_large *head_large = (struct unit_head_large *)((char *)ptr - sizeof(struct unit_head_large) + sizeof(long));
+		struct unit_head_large *head_large = (struct unit_head_large *)((char *)ptr - sizeof(struct unit_head_large) + sizeof(uint32));
 
-		if(*(long*)((char*)head_large + sizeof(struct unit_head_large) - sizeof(long) + head_large->size) != 0xdeadbeaf)
+		if(*(uint32*)((char*)head_large + sizeof(struct unit_head_large) - sizeof(uint32) + head_large->size) != 0xdeadbeaf)
 		{
 			memmgr_warning("memmgr: args of aFree is overflowed pointer %s line %d\n",file,line);
 		} else {
@@ -456,13 +460,13 @@ void aFree_(void *ptr, const char *file, int line, const char *func)
 			memmgr_warning("memmgr: args of aFree is invalid pointer %s line %d\n",file,line);
 		} else if(head->block == NULL) {
 			memmgr_warning("memmgr: args of aFree is freed pointer %s line %d\n",file,line);
-		} else if(*(long*)((char*)head + sizeof(struct unit_head) - sizeof(long) + head->size) != 0xdeadbeaf) {
+		} else if(*(uint32*)((char*)head + sizeof(struct unit_head) - sizeof(uint32) + head->size) != 0xdeadbeaf) {
 			memmgr_warning("memmgr: args of aFree is overflowed pointer %s line %d\n",file,line);
 		} else {
 			memmgr_usage_bytes -= head->size;
 			head->block         = NULL;
 #ifdef DEBUG_MEMMGR
-			memset( ptr, 0xfd, block->unit_size - sizeof(struct unit_head) + sizeof(long) );
+			memset( ptr, 0xfd, block->unit_size - sizeof(struct unit_head) + sizeof(uint32) );
 			head->file = file;
 			head->line = line;
 #endif

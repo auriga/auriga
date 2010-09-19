@@ -1041,7 +1041,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				return search_flag;
 			} else {
 				if(md->lootitem[0].card[0] == (short)0xff00)
-					intif_delete_petdata(*((long *)(&md->lootitem[0].card[1])));
+					intif_delete_petdata(*((int *)(&md->lootitem[0].card[1])));
 				memmove(&md->lootitem[0],&md->lootitem[1],sizeof(md->lootitem[0])*(LOOTITEM_SIZE-1));
 				memcpy(&md->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(md->lootitem[0]));
 			}
@@ -1592,11 +1592,11 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			struct map_session_data *src_sd = (struct map_session_data *)src;
 			if(src_sd)
 			{
-				damage2 = (int)linkdb_search( &md->dmglog, (void*)src_sd->status.char_id );
+				damage2 = PTR2INT(linkdb_search( &md->dmglog, INT2PTR(src_sd->status.char_id) ));
 				damage2 += (damage2 == -1)? damage + 1: damage; // 先制を受けていた場合-1で戦闘参加者に登録されている
 				if(damage2 <= 0)
 					damage2 = -1;
-				linkdb_replace( &md->dmglog, (void*)src_sd->status.char_id, (void*)damage2 );
+				linkdb_replace( &md->dmglog, INT2PTR(src_sd->status.char_id), INT2PTR(damage2) );
 				id = src_sd->bl.id;
 			}
 		} else if(src->type == BL_PET) {
@@ -1604,8 +1604,8 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			if(src_pd && src_pd->msd && battle_config.pet_attack_exp_to_master)
 			{
 				damage2 = damage * battle_config.pet_attack_exp_rate/100;
-				damage2 += (int)linkdb_search( &md->dmglog, (void*)src_pd->msd->status.char_id );
-				linkdb_replace( &md->dmglog, (void*)src_pd->msd->status.char_id, (void*)damage2 );
+				damage2 += PTR2INT(linkdb_search( &md->dmglog, INT2PTR(src_pd->msd->status.char_id) ));
+				linkdb_replace( &md->dmglog, INT2PTR(src_pd->msd->status.char_id), INT2PTR(damage2) );
 				id = 0;
 			}
 		} else if(src->type == BL_MOB) {
@@ -1615,16 +1615,16 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 				struct map_session_data *msd = map_id2sd(src_md->master_id);
 				// msdがNULLのときはダメージログに記録しない
 				if(msd) {
-					damage2 = damage + (int)linkdb_search( &md->dmglog, (void*)msd->status.char_id );
-					linkdb_replace( &md->dmglog, (void*)msd->status.char_id, (void*)damage2 );
+					damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(msd->status.char_id) ));
+					linkdb_replace( &md->dmglog, INT2PTR(msd->status.char_id), INT2PTR(damage2) );
 					id = src_md->master_id;
 				}
 			}
 		} else if(src->type == BL_HOM || src->type == BL_MERC) {
 			// ホム・傭兵の場合はIDを負に反転する
 			damage2 = damage;
-			damage2 += (int)linkdb_search( &md->dmglog, (void*)-src->id );
-			linkdb_replace( &md->dmglog, (void*)-src->id, (void*)damage2 );
+			damage2 += PTR2INT(linkdb_search( &md->dmglog, INT2PTR(-src->id) ));
+			linkdb_replace( &md->dmglog, INT2PTR(-src->id), INT2PTR(damage2) );
 			id = src->id;
 		}
 
@@ -1770,7 +1770,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 	for(i=0; node; node = node->next,i++) {
 		int damage;
-		int id = (int)node->key;
+		int id = PTR2INT(node->key);
 		if(id > 0) {
 			struct map_session_data *tmpsd = map_charid2sd(id);
 			if(tmpsd)
@@ -1786,7 +1786,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		if(tmpbl[i]->m != md->bl.m || unit_isdead(tmpbl[i]))
 			continue;
 
-		damage = (int)node->data;
+		damage = PTR2INT(node->data);
 		if(damage > 0)
 			tdmg += damage;	// トータルダメージ
 		if(mvp_damage < damage) {
@@ -1855,7 +1855,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			if(tmpbl[i] == NULL || tmpbl[i]->m != md->bl.m || unit_isdead(tmpbl[i]))
 				continue;
 
-			damage = (int)node->data;
+			damage = PTR2INT(node->data);
 			rate = (damage <= 0)? 0: per * damage / 100;
 
 			if(base_exp_rate <= 0) {

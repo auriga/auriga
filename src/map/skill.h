@@ -202,7 +202,7 @@ enum {	// 吹き飛ばしフラグ
 int skill_add_blown( struct block_list *src, struct block_list *target,int skillid,int flag);
 
 // カード効果のオートスペル
-int skill_bonus_autospell(struct block_list * src,struct block_list * bl,unsigned long mode,unsigned int tick,int flag);
+int skill_bonus_autospell(struct block_list * src,struct block_list * bl,unsigned int mode,unsigned int tick,int flag);
 int skill_bonus_skillautospell(struct block_list * src,struct block_list * bl,int skillid,unsigned int tick,int flag);
 
 // ユニットスキル

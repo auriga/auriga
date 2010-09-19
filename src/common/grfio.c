@@ -93,18 +93,6 @@
 	#define zlib_crc32       crc32
 #endif
 
-#ifndef BYTE
-	typedef unsigned char BYTE;
-#endif
-
-#ifndef WORD
-	typedef unsigned short WORD;
-#endif
-
-#ifndef DWORD
-	typedef unsigned long DWORD;
-#endif
-
 //----------------------------
 //	file entry table struct
 //----------------------------
@@ -200,7 +188,7 @@ static unsigned int getlong(unsigned char *p)
  *	Grf data decode : Subs
  *------------------------------------------
  */
-static void NibbleSwap(BYTE *Src, int len)
+static void NibbleSwap(uint8 *Src, int len)
 {
 	for(;0<len;len--,Src++) {
 		*Src = (*Src>>4) | (*Src<<4);
@@ -209,28 +197,28 @@ static void NibbleSwap(BYTE *Src, int len)
 	return;
 }
 
-static void BitConvert(BYTE *Src,char *BitSwapTable)
+static void BitConvert(uint8 *Src,char *BitSwapTable)
 {
 	int lop,prm;
-	BYTE tmp[8];
+	uint8 tmp[8];
 
-	*(DWORD*)tmp=*(DWORD*)(tmp+4)=0;
+	*(uint32*)tmp=*(uint32*)(tmp+4)=0;
 	for(lop=0;lop!=64;lop++) {
 		prm = BitSwapTable[lop]-1;
 		if (Src[(prm >> 3) & 7] & BitMaskTable[prm & 7]) {
 			tmp[(lop >> 3) & 7] |= BitMaskTable[lop & 7];
 		}
 	}
-	*(DWORD*)Src     = *(DWORD*)tmp;
-	*(DWORD*)(Src+4) = *(DWORD*)(tmp+4);
+	*(uint32*)Src     = *(uint32*)tmp;
+	*(uint32*)(Src+4) = *(uint32*)(tmp+4);
 
 	return;
 }
 
-static void BitConvert4(BYTE *Src)
+static void BitConvert4(uint8 *Src)
 {
 	int lop,prm;
-	BYTE tmp[8];
+	uint8 tmp[8];
 
 	tmp[0] = ((Src[7]<<5) | (Src[4]>>3)) & 0x3f;	// ..0 vutsr
 	tmp[1] = ((Src[4]<<1) | (Src[5]>>7)) & 0x3f;	// ..srqpo n
@@ -246,19 +234,19 @@ static void BitConvert4(BYTE *Src)
 		         | (NibbleData[lop][tmp[lop*2+1]] & 0x0f);
 	}
 
-	*(DWORD*)(tmp+4)=0;
+	*(uint32*)(tmp+4)=0;
 	for(lop=0;lop!=32;lop++) {
 		prm = BitSwapTable3[lop]-1;
 		if (tmp[prm >> 3] & BitMaskTable[prm & 7]) {
 			tmp[(lop >> 3) + 4] |= BitMaskTable[lop & 7];
 		}
 	}
-	*(DWORD*)Src ^= *(DWORD*)(tmp+4);
+	*(uint32*)Src ^= *(uint32*)(tmp+4);
 
 	return;
 }
 
-static void decode_des_etc(BYTE *buf,int len,int type,int cycle)
+static void decode_des_etc(uint8 *buf,int len,int type,int cycle)
 {
 	int lop,cnt=0;
 
@@ -275,9 +263,9 @@ static void decode_des_etc(BYTE *buf,int len,int type,int cycle)
 		} else {
 			if(cnt==7 && type==0){
 				int a;
-				BYTE tmp[8];
-				*(DWORD*)tmp     = *(DWORD*)buf;
-				*(DWORD*)(tmp+4) = *(DWORD*)(buf+4);
+				uint8 tmp[8];
+				*(uint32*)tmp     = *(uint32*)buf;
+				*(uint32*)(tmp+4) = *(uint32*)(buf+4);
 				cnt=0;
 				buf[0]=tmp[3];
 				buf[1]=tmp[4];
@@ -314,7 +302,7 @@ static void decode_des_etc(BYTE *buf,int len,int type,int cycle)
  *	Grf data decode sub : zip
  *------------------------------------------
  */
-int decode_zip(char *dest, unsigned long* destLen, const char* source, unsigned long sourceLen)
+int decode_zip(char *dest, unsigned long* destLen, const char* source, unsigned int sourceLen)
 {
 	z_stream stream;
 	int err;
@@ -346,7 +334,7 @@ int decode_zip(char *dest, unsigned long* destLen, const char* source, unsigned 
 	return err;
 }
 
-int encode_zip(char *dest, unsigned long* destLen, const char* source, unsigned long sourceLen)
+int encode_zip(char *dest, unsigned long* destLen, const char* source, unsigned int sourceLen)
 {
 	z_stream stream;
 	int err;
@@ -589,13 +577,13 @@ void* grfio_reads(const char *fname, int *size)
 		fclose(in);
 		buf2 = (unsigned char *)aCalloc(entry->declen + 1024, sizeof(char));
 		if(entry->type==1 || entry->type==3 || entry->type==5) {
-			uLongf len;
+			unsigned long len;
 			if (entry->cycle>=0) {
-				decode_des_etc((BYTE *)buf, entry->srclen_aligned, entry->cycle == 0, entry->cycle);
+				decode_des_etc((uint8 *)buf, entry->srclen_aligned, entry->cycle == 0, entry->cycle);
 			}
 			len=entry->declen;
 			decode_zip(buf2,&len,buf,entry->srclen);
-			if((int)len!=entry->declen) {
+			if(len!=entry->declen) {
 				printf("decode_zip size miss match err: %d != %d\n",(int)len,entry->declen);
 				goto errret;
 			}
@@ -661,9 +649,10 @@ static int grfio_entryread(const char *gfname,int gentry)
 	    uint32 version;                    // 42 (0x2a)
 	};*/
 	FILE *fp;
-	int grf_size,list_size;
+	long grf_size,list_size;
 	unsigned char grf_header[0x2e];
-	int lop,entry,entrys,grf_version;
+	int lop,entry,entrys;
+	unsigned int grf_version;
 	size_t ofs,ofs2;
 	unsigned char *fname;
 	unsigned char *grf_filelist;
@@ -678,7 +667,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 	fseek(fp,0,2);	// SEEK_END
 	grf_size = ftell(fp);
 	fseek(fp,0,0);	// SEEK_SET
-	fread(grf_header, 1, 0x2e, fp);
+	fread(grf_header, 1, sizeof(grf_header), fp);
 	if (strcmp((char*)grf_header, GRF_HEADER) || fseek(fp, getlong(grf_header + 0x1e), 1)) { // SEEK_CUR
 		fclose(fp);
 		printf("GRF Data File read error.\n");
@@ -718,7 +707,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 				srclen=getlong(grf_filelist+ofs2)-getlong(grf_filelist+ofs2+8)-715;
 
 				// gat,txt,rsw以外は不要なので読み込まない
-				ext_ptr = fname + strlen(fname) -4;
+				ext_ptr = fname + strlen(fname) - 4;
 				if(strcasecmp(ext_ptr,".gat") == 0) {	// もし必要ならばgnd,act,sprもsrccount=0
 					srccount = 0;
 				} else if(strcasecmp(ext_ptr,".txt") == 0 || strcasecmp(ext_ptr,".rsw") == 0) {
@@ -753,7 +742,8 @@ static int grfio_entryread(const char *gfname,int gentry)
 	  {
 		unsigned char eheader[8];
 		unsigned char *rBuf;
-		uLongf rSize,eSize;
+		unsigned int rSize;
+		unsigned long eSize;
 
 		/* Size: 8 + compressedLength
 		struct GRF2_FileTableHeader {              // Offset
@@ -761,11 +751,11 @@ static int grfio_entryread(const char *gfname,int gentry)
 		    uint32 uncompressedLength;             // 4
 		    unsigned char body[compressedLength];  // 8
 		};*/
-		fread(eheader,1,8,fp);
+		fread(eheader,1,sizeof(eheader),fp);
 		rSize = getlong(eheader);	// Read Size
 		eSize = getlong(eheader+4);	// Extend Size
 
-		if ((int)rSize > grf_size-ftell(fp)) {
+		if ((long)rSize > grf_size-ftell(fp)) {
 			fclose(fp);
 			printf("\nIllegal data format : grf compress entry size.\n");
 			return 8;	// 8:compress format error

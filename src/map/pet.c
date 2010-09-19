@@ -466,7 +466,7 @@ int pet_select_egg(struct map_session_data *sd,short egg_index)
 		return 0;
 
 	if(sd->status.inventory[egg_index].card[0] == (short)0xff00) {
-		intif_request_petdata(sd->status.account_id,sd->status.char_id,*((long *)&sd->status.inventory[egg_index].card[1]));
+		intif_request_petdata(sd->status.account_id,sd->status.char_id,*((int *)&sd->status.inventory[egg_index].card[1]));
 	} else {
 		if(battle_config.error_log)
 			printf("wrong egg item inventory %d\n",egg_index);
@@ -557,7 +557,7 @@ int pet_get_egg(int account_id,int pet_id,int flag)
 		tmp_item.nameid   = pet_db[i].EggID;
 		tmp_item.identify = 1;
 		tmp_item.card[0]  = (short)0xff00;
-		*((long *)(&tmp_item.card[1])) = pet_id;
+		*((int *)(&tmp_item.card[1])) = pet_id;
 		tmp_item.card[3]  = sd->pet.rename_flag;
 
 		if((ret = pc_additem(sd,&tmp_item,1))) {
@@ -679,7 +679,7 @@ static int pet_return_egg(struct map_session_data *sd)
 	tmp_item.nameid   = sd->petDB->EggID;
 	tmp_item.identify = 1;
 	tmp_item.card[0]  = (short)0xff00;
-	*((long *)(&tmp_item.card[1])) = sd->pet.pet_id;
+	*((int *)(&tmp_item.card[1])) = sd->pet.pet_id;
 	tmp_item.card[3]  = sd->pet.rename_flag;
 
 	if((flag = pc_additem(sd,&tmp_item,1))) {
@@ -1115,7 +1115,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 				}
 				else {
 					if(pd->lootitem[0].card[0] == (short)0xff00)
-						intif_delete_petdata(*((long *)(&pd->lootitem[0].card[1])));
+						intif_delete_petdata(*((int *)(&pd->lootitem[0].card[1])));
 					pd->lootitem_weight -= itemdb_weight(pd->lootitem[LOOTITEM_SIZE-1].nameid) * pd->lootitem[LOOTITEM_SIZE-1].amount;
 					pd->lootitem_weight += itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount;
 					memmove(&pd->lootitem[0],&pd->lootitem[1],sizeof(pd->lootitem[0])*(LOOTITEM_SIZE-1));
@@ -1285,7 +1285,7 @@ int pet_lootitem_free(struct pet_data *pd)
 	if(pd->lootitem) {
 		for(i=0; i<pd->lootitem_count; i++) {
 			if(pd->lootitem[i].card[0] == (short)0xff00)
-				intif_delete_petdata(*((long *)(&pd->lootitem[i].card[1])));
+				intif_delete_petdata(*((int *)(&pd->lootitem[i].card[1])));
 		}
 		aFree(pd->lootitem);
 	}

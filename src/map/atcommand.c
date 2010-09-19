@@ -1263,8 +1263,8 @@ int atcommand_kami(const int fd, struct map_session_data* sd, AtCommandType comm
 		return -1;
 
 	if (command == AtCommand_KamiC) {
-		unsigned long color;
-		if (sscanf(message, "%lx %199[^\n]", &color, output) < 2)
+		unsigned int color;
+		if (sscanf(message, "%x %199[^\n]", &color, output) < 2)
 			return -1;
 		intif_announce(output, strlen(output) + 1, color&0x00ffffff, 400, 12, 0, 0);
 	} else {
@@ -1567,7 +1567,7 @@ int atcommand_item3(const int fd, struct map_session_data* sd, AtCommandType com
 			item_tmp.attribute = 0;
 			item_tmp.card[0]   = (equip_item) ? 0x00ff : 0x00fe;
 			item_tmp.card[1]   = 0;
-			*((unsigned long *)(&item_tmp.card[2])) = pl_sd->status.char_id;
+			*((int *)(&item_tmp.card[2])) = pl_sd->status.char_id;
 			if ((flag = pc_additem(sd, &item_tmp, get_count)))
 				clif_additem(sd, 0, 0, flag);
 		}
@@ -1592,7 +1592,7 @@ int atcommand_itemreset(const int fd, struct map_session_data* sd, AtCommandType
 	for (i = 0; i < MAX_INVENTORY; i++) {
 		if (sd->status.inventory[i].amount && sd->status.inventory[i].equip == 0) {
 			if (sd->status.inventory[i].card[0] == (short)0xff00)
-				intif_delete_petdata(*((long *)(&sd->status.inventory[i].card[1])));
+				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0);
 		}
 	}
@@ -1622,7 +1622,7 @@ int atcommand_charitemreset(const int fd, struct map_session_data* sd, AtCommand
 		for (i = 0; i < MAX_INVENTORY; i++) {
 			if (pl_sd->status.inventory[i].amount && pl_sd->status.inventory[i].equip == 0) {
 				if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
-					intif_delete_petdata(*((long *)(&pl_sd->status.inventory[i].card[1])));
+					intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
 				pc_delitem(pl_sd, i, pl_sd->status.inventory[i].amount, 0);
 			}
 		}
@@ -2241,7 +2241,7 @@ int atcommand_produce(const int fd, struct map_session_data* sd, AtCommandType c
 		tmp_item.identify = 1;
 		tmp_item.card[0] = 0x00ff;
 		tmp_item.card[1] = ((star * 5) << 8) + attribute;
-		*((unsigned long *)(&tmp_item.card[2])) = sd->status.char_id;
+		*((int *)(&tmp_item.card[2])) = sd->status.char_id;
 		clif_produceeffect(sd, 0, item_id); // 製造エフェクトパケット
 		clif_misceffect(&sd->bl, 3); // 他人にも成功を通知
 		if ((flag = pc_additem(sd, &tmp_item, 1)))
@@ -4084,7 +4084,7 @@ static int atcommand_cleanmap_sub(struct block_list *bl,va_list ap)
 
 	delete_timer(fitem->cleartimer,map_clearflooritem_timer);
 	if (fitem->item_data.card[0] == (short)0xff00)
-		intif_delete_petdata(*((long *)(&fitem->item_data.card[1])));
+		intif_delete_petdata(*((int *)(&fitem->item_data.card[1])));
 	clif_clearflooritem(fitem,-1);
 	map_delobject(fitem->bl.id);
 
@@ -5193,7 +5193,7 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,ch
 			sprintf(output, "%s : %s", src_var, (char*)ret);
 		} else {
 			output = (char *)aMalloc(strlen(src_var) + 16 + 4);
-			sprintf(output, "%s : %d", src_var, (int)ret);
+			sprintf(output, "%s : %d", src_var, PTR2INT(ret));
 		}
 	} else {
 		const char *format = msg_txt(67);

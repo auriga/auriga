@@ -96,7 +96,7 @@ static struct graph* graph_create(unsigned int x, unsigned int y)
 	);
 	graph_write_dword(g->png_data + 0x10,x);
 	graph_write_dword(g->png_data + 0x14,y);
-	graph_write_dword(g->png_data + 0x1D,grfio_crc32(g->png_data+0x0C,0x11));
+	graph_write_dword(g->png_data + 0x1D,(unsigned int)grfio_crc32(g->png_data+0x0C,0x11));
 	g->pallet_count = 1;
 	g->width        = x;
 	g->height       = y;
@@ -111,7 +111,7 @@ static struct graph* graph_create(unsigned int x, unsigned int y)
 }
 
 // パレットの設定
-static void graph_pallet(struct graph* g, int idx, unsigned long c)
+static void graph_pallet(struct graph* g, int idx, unsigned int c)
 {
 	if (g == NULL || c >= 256)
 		return;
@@ -178,7 +178,7 @@ static const unsigned char* graph_output(struct graph* g,int *len)
 	inflate_len = (g->width + 1) * g->height;
 	memcpy(p + 4,"IDAT",4);
 	encode_zip(p + 8,&inflate_len,g->raw_data,(g->width + 1) * g->height);
-	graph_write_dword(p,inflate_len);
+	graph_write_dword(p, (unsigned int)inflate_len);
 	graph_write_dword(p + 8 + inflate_len,grfio_crc32(p + 4, (unsigned int)(inflate_len + 4)));
 
 	p += 0x0C + inflate_len;

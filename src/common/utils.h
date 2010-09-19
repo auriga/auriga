@@ -239,7 +239,7 @@ typedef int32  intptr;
 
 #elif defined(RANDOMMT)		// メルセンヌツイスター
 	void atn_srandommt( unsigned long seed );
-	long atn_int31_randommt(void);
+	int atn_int31_randommt(void);
 #	define atn_rand()	atn_int31_randommt()
 #	define atn_srand(x)	atn_srandommt(x)
 #	define ATN_RAND_MAX	0x7fffffff
@@ -264,6 +264,17 @@ typedef int32  intptr;
 #	define atn_srand(x)	srand(x)
 #	define ATN_RAND_MAX	RAND_MAX
 #endif
+
+
+// =====================
+// ポインタ・数値キャスト
+// ---------------------
+
+// x64 gcc の警告 "warning: cast to/from pointer from/to integer of different size" の抑制のため
+#define INT2PTR(x)  ((void *)(intptr)(x))
+#define UINT2PTR(x) ((void *)(uintptr)(x))
+#define PTR2INT(x)  ((int)(intptr)(x))
+#define PTR2UINT(x) ((unsigned int)(uintptr)(x))
 
 
 // =====================

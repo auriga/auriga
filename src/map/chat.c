@@ -126,7 +126,7 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 		clif_joinchatfail(sd,1);
 		return;
 	}
-	if(linkdb_search(&cd->ban_list, (void*)sd->status.char_id)) {
+	if(linkdb_search(&cd->ban_list, INT2PTR(sd->status.char_id))) {
 		clif_joinchatfail(sd,2);
 		return;
 	}
@@ -318,7 +318,7 @@ void chat_kickchat(struct map_session_data *sd, char *kickusername)
 
 	for(i = 0; i < cd->users; i++) {
 		if(strncmp(cd->usersd[i]->status.name, kickusername, 24) == 0) {
-			linkdb_insert(&cd->ban_list, (void*)cd->usersd[i]->status.char_id, (void*)1);
+			linkdb_insert(&cd->ban_list, INT2PTR(cd->usersd[i]->status.char_id), INT2PTR(1));
 			chat_leavechat(cd->usersd[i], 1);
 			break;
 		}
