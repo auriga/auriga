@@ -1,4 +1,10 @@
 ----------------------------------------
+//0775 [2010/09/20] by Rayce
+
+・gccの警告 "may be used uninitialized in this function" を修正（int_party.c, battle.c）
+・gccの警告 "unused variable" を修正（clif.c）
+
+----------------------------------------
 //0774 [2010/09/19] by Rayce
 
 ・NPCスクリプト実行過程で「run_func: not function and command!」が発生したとき、

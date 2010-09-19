@@ -1038,7 +1038,7 @@ int mapif_parse_PartyLeaderChange(int fd,int party_id,int account_id,int char_id
 {
 	const struct party *p1 = party_load_num(party_id);
 	struct party p2;
-	int i,old_account_id;
+	int i, old_account_id = 0;
 
 	if(p1 == NULL)
 		return 0;

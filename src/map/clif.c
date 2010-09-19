@@ -2591,7 +2591,7 @@ void clif_spawnnpc(struct npc_data *nd)
 void clif_spawnmob(struct mob_data *md)
 {
 	unsigned char buf[128];
-	int len, level = 0;
+	int len;
 
 	nullpo_retv(md);
 
@@ -2636,7 +2636,10 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFW(buf,19)=mob_get_viewclass(md->class_);
 		WBUFW(buf,33)=5;
 		WBUFPOS(buf,53,md->bl.x,md->bl.y,md->dir);
-		WBUFW(buf,58)=((level = status_get_lv(&md->bl))>99)? 99:level;
+		{
+			int level;
+			WBUFW(buf,58)=((level = status_get_lv(&md->bl))>99)? 99:level;
+		}
 		strncpy(WBUFP(buf,62),md->name,24);
 #endif
 		clif_send(buf,len,&md->bl,AREA);
@@ -2659,7 +2662,7 @@ void clif_spawnmob(struct mob_data *md)
 void clif_spawnpet(struct pet_data *pd)
 {
 	unsigned char buf[128];
-	int len, level = 0;
+	int len;
 
 	nullpo_retv(pd);
 
@@ -2695,7 +2698,10 @@ void clif_spawnpet(struct pet_data *pd)
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,33)=7;
 		WBUFPOS(buf,53,pd->bl.x,pd->bl.y,pd->dir);
-		WBUFW(buf,58)=((level = status_get_lv(&pd->bl))>99)? 99:level;
+		{
+			int level;
+			WBUFW(buf,58)=((level = status_get_lv(&pd->bl))>99)? 99:level;
+		}
 		strncpy(WBUFP(buf,62),pd->name,24);
 #endif
 		clif_send(buf,len,&pd->bl,AREA);
@@ -2718,7 +2724,7 @@ void clif_spawnpet(struct pet_data *pd)
 void clif_spawnhom(struct homun_data *hd)
 {
 	unsigned char buf[128];
-	int len, level = 0;
+	int len;
 
 	nullpo_retv(hd);
 
@@ -2755,7 +2761,10 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFW(buf,19)=hd->view_class;
 	WBUFW(buf,33)=8;
 	WBUFPOS(buf,53,hd->bl.x,hd->bl.y,hd->dir);
-	WBUFW(buf,58)=((level = status_get_lv(&hd->bl))>99)? 99:level;
+	{
+		int level;
+		WBUFW(buf,58)=((level = status_get_lv(&hd->bl))>99)? 99:level;
+	}
 	strncpy(WBUFP(buf,62),hd->status.name,24);
 #endif
 	clif_send(buf,len,&hd->bl,AREA);
@@ -2814,7 +2823,10 @@ void clif_spawnmerc(struct merc_data *mcd)
 	WBUFW(buf,19)=mcd->view_class;
 	WBUFW(buf,33)=9;
 	WBUFPOS(buf,53,mcd->bl.x,mcd->bl.y,mcd->dir);
-	WBUFW(buf,58)=(mcd->status.base_level>99)?99:mcd->status.base_level;
+	{
+		int level;
+		WBUFW(buf,58)=((level = status_get_lv(&mcd->bl))>99)? 99:level;
+	}
 	strncpy(WBUFP(buf,62),mcd->status.name,24);
 #endif
 	clif_send(buf,len,&mcd->bl,AREA);

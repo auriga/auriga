@@ -4897,7 +4897,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		int i, guardian = 0;
 		struct mob_data *md         = (struct mob_data*)target;
 		struct map_session_data *sd = (struct map_session_data*)ss;
-		struct guild_castle *gc;
+		struct guild_castle *gc = NULL;
 
 		// 砦のガーディアンかどうか
 		if(md->guild_id > 0) {
