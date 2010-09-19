@@ -60,12 +60,14 @@ struct dbt {
 };
 
 #define strdb_search(t,k)   db_search((t),(void*)(k))
+#define strdb_exists(t,k)   db_exists((t),(void*)(k))
 #define strdb_insert(t,k,d) db_insert((t),(void*)(k),(void*)(d))
 #define strdb_erase(t,k)    db_erase ((t),(void*)(k))
 #define strdb_foreach       db_foreach
 #define strdb_clear         db_clear
 #define strdb_final         db_final
 #define numdb_search(t,k)   db_search((t),(void*)(intptr)(k))
+#define numdb_exists(t,k)   db_exists((t),(void*)(intptr)(k))
 #define numdb_insert(t,k,d) db_insert((t),(void*)(intptr)(k),(void*)(d))
 #define numdb_erase(t,k)    db_erase ((t),(void*)(intptr)(k))
 #define numdb_foreach       db_foreach
@@ -78,6 +80,7 @@ struct dbt {
 struct dbt* strdb_init_(int maxlen,const char *file,int line);
 struct dbt* numdb_init_(const char *file,int line);
 void* db_search(struct dbt *table,void* key);
+int   db_exists(struct dbt *table,void* key);
 void* db_insert(struct dbt *table,void* key,void* data);
 void* db_erase(struct dbt *table,void* key);
 int db_foreach(struct dbt*,int(*)(void*,void*,va_list),...);
@@ -101,6 +104,7 @@ struct linkdb_node {
 void  linkdb_insert(struct linkdb_node** head, void *key, void* data); // 重複を考慮しない
 void* linkdb_replace(struct linkdb_node** head, void *key, void* data); // 重複を考慮する
 void* linkdb_search(struct linkdb_node** head, void *key);
+int   linkdb_exists(struct linkdb_node** head, void *key);
 void* linkdb_erase(struct linkdb_node** head, void *key);
 void  linkdb_final(struct linkdb_node** head);
 

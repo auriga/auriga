@@ -1592,10 +1592,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			struct map_session_data *src_sd = (struct map_session_data *)src;
 			if(src_sd)
 			{
-				damage2 = PTR2INT(linkdb_search( &md->dmglog, INT2PTR(src_sd->status.char_id) ));
-				damage2 += (damage2 == -1)? damage + 1: damage; // 先制を受けていた場合-1で戦闘参加者に登録されている
-				if(damage2 <= 0)
-					damage2 = -1;
+				damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(src_sd->status.char_id) ));
 				linkdb_replace( &md->dmglog, INT2PTR(src_sd->status.char_id), INT2PTR(damage2) );
 				id = src_sd->bl.id;
 			}
@@ -1622,8 +1619,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			}
 		} else if(src->type == BL_HOM || src->type == BL_MERC) {
 			// ホム・傭兵の場合はIDを負に反転する
-			damage2 = damage;
-			damage2 += PTR2INT(linkdb_search( &md->dmglog, INT2PTR(-src->id) ));
+			damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(-src->id) ));
 			linkdb_replace( &md->dmglog, INT2PTR(-src->id), INT2PTR(damage2) );
 			id = src->id;
 		}
@@ -1787,8 +1783,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			continue;
 
 		damage = PTR2INT(node->data);
-		if(damage > 0)
-			tdmg += damage;	// トータルダメージ
+		tdmg += damage;	// トータルダメージ
+
 		if(mvp_damage < damage) {
 			if( mvp[0].bl == NULL || damage > mvp[0].dmg ) {
 				// 一番大きいダメージ
@@ -1856,25 +1852,27 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				continue;
 
 			damage = PTR2INT(node->data);
-			rate = (damage <= 0)? 0: per * damage / 100;
+			rate = per * damage / 100;
 
 			if(base_exp_rate <= 0) {
 				base_exp = 0;
 			} else {
 				base_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class_].base_exp * rate/tdmg * base_exp_rate/100 * (100 + tk_exp_rate) / 100;
-				if(mob_db[md->class_].base_exp > 0 && base_exp < 1 && damage > 0)
+				if(mob_db[md->class_].base_exp > 0 && base_exp < 1 && damage > 0) {
 					base_exp = 1;
-				if(base_exp < 0)
+				} else if(base_exp < 0) {
 					base_exp = 0;
+				}
 			}
 			if(job_exp_rate <= 0) {
 				job_exp = 0;
 			} else {
 				job_exp = (rate <= 0)? 0: (atn_bignumber)mob_db[md->class_].job_exp * rate/tdmg * job_exp_rate/100 * (100 + tk_exp_rate) / 100;
-				if(mob_db[md->class_].job_exp > 0 && job_exp < 1 && damage > 0)
+				if(mob_db[md->class_].job_exp > 0 && job_exp < 1 && damage > 0) {
 					job_exp = 1;
-				if(job_exp < 0)
+				} else if(job_exp < 0) {
 					job_exp = 0;
+				}
 			}
 
 			if( tmpbl[i]->type == BL_HOM ) {

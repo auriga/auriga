@@ -1130,7 +1130,7 @@ static unsigned char* parse_syntax(unsigned char *p)
 			}
 
 			// caseラベルが重複してないかチェック
-			if(linkdb_search(&syntax.curly[pos].case_label, INT2PTR(v)) != NULL) {
+			if(linkdb_exists(&syntax.curly[pos].case_label, INT2PTR(v))) {
 				disp_error_message("dup 'case'",p);
 			}
 			linkdb_insert(&syntax.curly[pos].case_label, INT2PTR(v), INT2PTR(1));

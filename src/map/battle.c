@@ -5192,9 +5192,9 @@ void battle_join_struggle(struct mob_data *md,struct block_list *src)
 	if(src->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)src;
 		if(sd) {
-			if(linkdb_search( &md->dmglog, INT2PTR(sd->status.char_id) ) == NULL) {
-				// ダメージ-1で戦闘参加者入り(0にするとリスト未登録のNULLとかぶって困る)
-				linkdb_insert( &md->dmglog, INT2PTR(sd->status.char_id), INT2PTR(-1) );
+			if(!linkdb_exists( &md->dmglog, INT2PTR(sd->status.char_id) )) {
+				// ダメージなしで戦闘参加者入り
+				linkdb_insert( &md->dmglog, INT2PTR(sd->status.char_id), INT2PTR(0) );
 			}
 		}
 	}

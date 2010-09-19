@@ -183,6 +183,24 @@ void* db_search(struct dbt *table,void* key)
 	return NULL;
 }
 
+int db_exists(struct dbt *table,void* key)
+{
+	struct dbn *p;
+
+	if( table == NULL ) return 0;
+
+	for(p=table->ht[table->hash(table,key) % HASH_SIZE];p;){
+		int c=table->cmp(table,key,p->key);
+		if(c==0)
+			return 1;
+		if(c<0)
+			p=p->left;
+		else
+			p=p->right;
+	}
+	return 0;
+}
+
 static void db_rotate_left(struct dbn *p,struct dbn **root)
 {
 	struct dbn * y = p->right;
@@ -695,6 +713,32 @@ void* linkdb_search( struct linkdb_node** head, void *key)
 		n++;
 	}
 	return NULL;
+}
+
+int linkdb_exists( struct linkdb_node** head, void *key)
+{
+	int n = 0;
+	struct linkdb_node *node;
+
+	if( head == NULL ) return 0;
+	node = *head;
+	while( node ) {
+		if( node->key == key ) {
+			if( node->prev && n > 5 ) {
+				// 処理効率改善の為にheadに移動させる
+				if(node->prev) node->prev->next = node->next;
+				if(node->next) node->next->prev = node->prev;
+				node->next = *head;
+				node->prev = (*head)->prev;
+				(*head)->prev = node;
+				(*head)       = node;
+			}
+			return 1;
+		}
+		node = node->next;
+		n++;
+	}
+	return 0;
 }
 
 void* linkdb_erase( struct linkdb_node** head, void *key)

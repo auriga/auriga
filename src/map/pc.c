@@ -3298,9 +3298,9 @@ static int pc_itemlimit_timer(int tid, unsigned int tick, int id, void *data)
 	node = sd->inventory_timer;
 
 	while(node) {
-		if(tid == PTR2INT(node->data) - 1) {
+		if(tid == PTR2INT(node->data)) {
 			tid = pc_checkitemlimit(sd, PTR2INT(node->key), tick, now, 0);
-			if(tid > 0) {
+			if(tid >= 0) {
 				node->data = INT2PTR(tid);
 			}
 			return 0;
@@ -3321,14 +3321,14 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 	nullpo_retr(0, sd);
 
 	if(idx < 0 || idx >= MAX_INVENTORY)
-		return 0;
+		return -1;
 
 	if(sd->status.inventory[idx].limit > now) {
 		// まだ時間になってないのでタイマーを継続する
 		unsigned int diff = sd->status.inventory[idx].limit - now;
 		if(diff > 3600)
 			diff = 3600;
-		return add_timer(tick + diff * 1000, pc_itemlimit_timer, sd->bl.id, NULL) + 1;	// 0とNULLが被るので+1しておく
+		return add_timer(tick + diff * 1000, pc_itemlimit_timer, sd->bl.id, NULL);
 	}
 
 	// 時間切れにより削除
@@ -3346,7 +3346,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 			// 強化装備アイテムの削除
 			pc_delitem(sd, idx, sd->status.inventory[idx].amount, 1);
 			clif_delitem_timeout(sd, idx, ((data->view_id > 0)? data->view_id: data->nameid));
-			return 0;
+			return -1;
 		}
 #endif
 		// 通常アイテムの使用期限切れ削除
@@ -3355,7 +3355,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 		clif_disp_onlyself(sd->fd, output);
 	}
 
-	return 0;
+	return -1;
 }
 
 /*==========================================
@@ -3373,7 +3373,7 @@ static int pc_setitemlimit(struct map_session_data *sd)
 	for(i = 0; i < MAX_INVENTORY; i++) {
 		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].limit > 0) {
 			int tid = pc_checkitemlimit(sd, i, tick, now, 1);
-			if(tid > 0)
+			if(tid >= 0)
 				linkdb_insert(&sd->inventory_timer, INT2PTR(i), INT2PTR(tid));
 		}
 	}
@@ -3393,7 +3393,7 @@ int pc_clearitemlimit(struct map_session_data *sd)
 
 	node = sd->inventory_timer;
 	while(node) {
-		delete_timer(PTR2INT(node->data) - 1, pc_itemlimit_timer);
+		delete_timer(PTR2INT(node->data), pc_itemlimit_timer);
 		node = node->next;
 	}
 	linkdb_final(&sd->inventory_timer);
@@ -3462,7 +3462,7 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 
 	if(sd->status.inventory[i].limit > 0) {
 		int tid = pc_checkitemlimit(sd, i, gettick(), (unsigned int)time(NULL), 0);
-		if(tid > 0)
+		if(tid >= 0)
 			linkdb_insert(&sd->inventory_timer, INT2PTR(i), INT2PTR(tid));
 	}
 

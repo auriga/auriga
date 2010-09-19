@@ -1,4 +1,15 @@
 ----------------------------------------
+//0777 [2010/09/20] by Rayce
+
+・numdb_exists(), strdb_exists(), linkdb_exists() を追加（db.*）
+	→ キーが含まれているかどうかだけを判定します。
+	   内部処理は search と同じ。
+       値にNULLが格納されている場合でも存在可否をチェックしたいときに利用します。
+
+・db_search の代わりに db_exists を使うように変更
+  （battle.c, chat.c, friend.c, mob.c, pc.c, script.c）
+
+----------------------------------------
 //0776 [2010/09/20] by Rayce
 
 ・LP64（64bit UNIX/Linux）正式対応

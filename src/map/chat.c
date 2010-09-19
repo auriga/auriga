@@ -126,7 +126,7 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 		clif_joinchatfail(sd,1);
 		return;
 	}
-	if(linkdb_search(&cd->ban_list, INT2PTR(sd->status.char_id))) {
+	if(linkdb_exists(&cd->ban_list, INT2PTR(sd->status.char_id))) {
 		clif_joinchatfail(sd,2);
 		return;
 	}

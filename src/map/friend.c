@@ -236,7 +236,7 @@ int friend_send_info( struct map_session_data *sd )
 	// 全員のオンライン情報を送信
 	for( i=0; i<sd->status.friend_num; i++ )
 	{
-		if( numdb_search( online_db, sd->status.friend_data[i].char_id ) )
+		if( numdb_exists( online_db, sd->status.friend_data[i].char_id ) )
 		{
 			clif_friend_send_online( sd->fd, sd->status.friend_data[i].account_id, sd->status.friend_data[i].char_id, 0 );
 		}
@@ -264,7 +264,7 @@ int friend_send_online( struct map_session_data *sd, int flag )
 
 	// オンライン情報を保存
 	if( flag==0 ) {
-		numdb_insert( online_db, sd->status.char_id, 1 );
+		numdb_insert( online_db, sd->status.char_id, INT2PTR(1) );
 	} else {
 		numdb_erase( online_db, sd->status.char_id );
 	}
@@ -300,8 +300,7 @@ int friend_send_online_from_otherserver( int account_id, int char_id, int flag, 
 
 	// オンライン情報を保存
 	if( flag==0 ) {
-		if( numdb_search( online_db, char_id )==0 )
-			numdb_insert( online_db, char_id, 1 );
+		numdb_insert( online_db, char_id, INT2PTR(1) );
 	} else {
 		numdb_erase( online_db, char_id );
 	}
