@@ -81,6 +81,7 @@ extern char tmp_sql[65535];
 #define MAPREG_TABLE "mapreg"
 
 char* strecpy(char* pt, const char* spt);
+char* strecpy_(MYSQL *handle, char* pt, const char* spt);
 
 int sqldbs_query(MYSQL *handle, const char *query, ...);
 MYSQL_RES* sqldbs_store_result(MYSQL *handle);
@@ -92,7 +93,7 @@ int sqldbs_insert_id(MYSQL *handle);
 int sqldbs_affected_rows(MYSQL *handle);
 void sqldbs_close(MYSQL *handle);
 int sqldbs_connect(MYSQL *handle, const char *host, const char *user, const char *passwd,
-	const char *db, unsigned short port, const char *charset);
+	const char *db, unsigned short port, const char *charset, int keepalive);
 
 #endif	// if TXT
 

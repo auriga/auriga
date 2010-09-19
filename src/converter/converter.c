@@ -45,6 +45,7 @@ char db_server_id[32] = "ragnarok";
 char db_server_pw[32] = "ragnarok";
 char db_server_logindb[32] = "ragnarok";
 char db_server_charset[32] = "";
+int  db_server_keepalive   = 0;
 
 char login_db[1024]            = "login";
 char login_db_account_id[1024] = "account_id";
@@ -164,6 +165,10 @@ static int config_read(const char *cfgName)
 			strncpy(db_server_charset, w2, sizeof(db_server_charset));
 			printf("set db_server_charset : %s\n",w2);
 		}
+		else if(strcmpi(w1,"db_server_keepalive")==0){
+			db_server_keepalive = atoi(w2);
+			printf("set db_server_keepalive : %d\n",db_server_keepalive);
+		}
 
 		// login SQL DB configuration
 		else if(strcmpi(w1,"login_db")==0){
@@ -232,7 +237,7 @@ int do_init(int argc,char **argv)
 
 	// DB connection initialized
 	rc = sqldbs_connect(&mysql_handle,
-		db_server_ip, db_server_id, db_server_pw, db_server_logindb, db_server_port, db_server_charset
+		db_server_ip, db_server_id, db_server_pw, db_server_logindb, db_server_port, db_server_charset, db_server_keepalive
 	);
 	if(rc)
 		exit(1);

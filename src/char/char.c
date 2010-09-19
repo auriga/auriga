@@ -1120,6 +1120,7 @@ static char char_server_id[32]      = "ragnarok";
 static char char_server_pw[32]      = "ragnarok";
 static char char_server_db[32]      = "ragnarok";
 static char char_server_charset[32] = "";
+static int  char_server_keepalive   = 0;
 
 int char_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 {
@@ -1243,7 +1244,7 @@ static int char_sql_init(void)
 {
 	// DB connection initialized
 	int rc = sqldbs_connect(&mysql_handle,
-		char_server_ip, char_server_id, char_server_pw, char_server_db, char_server_port, char_server_charset
+		char_server_ip, char_server_id, char_server_pw, char_server_db, char_server_port, char_server_charset, char_server_keepalive
 	);
 	if(rc)
 		exit(1);
@@ -1967,6 +1968,9 @@ int char_sql_config_read_sub(const char* w1,const char* w2)
 	}
 	else if(strcmpi(w1,"char_server_charset")==0){
 		strncpy(char_server_charset, w2, sizeof(char_server_charset) - 1);
+	}
+	else if(strcmpi(w1,"char_server_keepalive")==0){
+		char_server_keepalive = atoi(w2);
 	}
 
 	return 0;

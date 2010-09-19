@@ -521,12 +521,13 @@ int login_txt_config_read_sub(const char* w1,const char* w2)
 
 #else /* TXT_ONLY */
 
-unsigned short login_server_port = 3306;
-char login_server_ip[32]      = "127.0.0.1";
-char login_server_id[32]      = "ragnarok";
-char login_server_pw[32]      = "ragnarok";
-char login_server_db[32]      = "ragnarok";
-char login_server_charset[32] = "";
+static unsigned short login_server_port = 3306;
+static char login_server_ip[32]      = "127.0.0.1";
+static char login_server_id[32]      = "ragnarok";
+static char login_server_pw[32]      = "ragnarok";
+static char login_server_db[32]      = "ragnarok";
+static char login_server_charset[32] = "";
+static int  login_server_keepalive   = 0;
 
 static struct dbt *account_db;
 
@@ -534,7 +535,7 @@ int login_sql_init(void)
 {
 	// DB connection start
 	int rc = sqldbs_connect(&mysql_handle,
-		login_server_ip, login_server_id, login_server_pw, login_server_db, login_server_port, login_server_charset
+		login_server_ip, login_server_id, login_server_pw, login_server_db, login_server_port, login_server_charset, login_server_keepalive
 	);
 	if(rc)
 		exit(1);
@@ -599,6 +600,9 @@ int login_sql_config_read_sub(const char* w1,const char* w2)
 	}
 	else if(strcmpi(w1,"login_server_charset")==0){
 		strncpy(login_server_charset, w2, sizeof(login_server_charset) - 1);
+	}
+	else if(strcmpi(w1,"login_server_keepalive")==0){
+		login_server_keepalive = atoi(w2);
 	}
 
 	return 0;

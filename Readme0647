@@ -1,4 +1,23 @@
 ----------------------------------------
+//0778 [2010/09/20] by Rayce
+
+・SQL: MySQLの wait_timeout による接続のタイムアウトを抑制するため、
+       定期的に mysql_ping() を発行する仕組みを実装
+		based on eA, thx a lot!!
+
+	→ login_auriga.conf, char_auriga.conf, map_auriga.conf にそれぞれ
+	   keepalive （単位は秒）の項目を追加。
+	   この指定時間間隔でMySQLに対してpingを発行する。
+
+	→ MySQL自体で設定されている wait_timeout よりも短い時間にすること。
+	   デフォルトは「8時間から10分引いた」値で 28200 としている。
+
+	→ keepalive を 0 にした場合は、定期的な mysql_ping() の発行は行わない
+
+・SQL: NPCスクリプト関数 strescape が、Databaseの文字セットを考慮した上で
+       文字列のエスケープ処理が出来るように改善（sqldbs.*, script.c）
+
+----------------------------------------
 //0777 [2010/09/20] by Rayce
 
 ・numdb_exists(), strdb_exists(), linkdb_exists() を追加（db.*）

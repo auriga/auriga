@@ -11380,7 +11380,7 @@ int buildin_strescape(struct script_state *st)
 #ifndef TXT_ONLY
 	char *buf = (char *)aCalloc(strlen(str)*2+1,sizeof(char));
 
-	strecpy(buf,str);
+	strecpy_(&mysql_handle_script,buf,str);
 	push_str(st->stack,C_STR,buf);
 #else
 	// TXTは何もしない

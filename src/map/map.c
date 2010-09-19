@@ -157,6 +157,7 @@ static char map_server_id[32]      = "ragnarok";
 static char map_server_pw[32]      = "ragnarok";
 static char map_server_db[32]      = "ragnarok";
 static char map_server_charset[32] = "";
+static int  map_server_keepalive   = 0;
 
 static unsigned short script_server_port = 3306;
 static char script_server_ip[32]      = "127.0.0.1";
@@ -164,19 +165,20 @@ static char script_server_id[32]      = "ragnarok";
 static char script_server_pw[32]      = "ragnarok";
 static char script_server_db[32]      = "ragnarok";
 static char script_server_charset[32] = "";
+static int  script_server_keepalive   = 0;
 
 static int do_sql_init_map(void)
 {
 	// DB connection initialized
 	int rc = sqldbs_connect(&mysql_handle,
-		map_server_ip, map_server_id, map_server_pw, map_server_db, map_server_port, map_server_charset
+		map_server_ip, map_server_id, map_server_pw, map_server_db, map_server_port, map_server_charset, map_server_keepalive
 	);
 	if(rc)
 		exit(1);
 
 	if(sql_script_enable) {
 		rc = sqldbs_connect(&mysql_handle_script,
-			script_server_ip, script_server_id, script_server_pw, script_server_db, script_server_port, script_server_charset
+			script_server_ip, script_server_id, script_server_pw, script_server_db, script_server_port, script_server_charset, script_server_keepalive
 		);
 		if(rc)
 			exit(1);
@@ -213,6 +215,9 @@ static int map_sql_config_read_sub(const char* w1,const char* w2)
 	else if(strcmpi(w1,"map_server_charset") == 0) {
 		strncpy(map_server_charset, w2, sizeof(map_server_charset) - 1);
 	}
+	else if(strcmpi(w1,"map_server_keepalive") == 0) {
+		map_server_keepalive = atoi(w2);
+	}
 	else if(strcmpi(w1,"script_server_ip") == 0) {
 		strncpy(script_server_ip, w2, sizeof(script_server_ip) - 1);
 	}
@@ -230,6 +235,9 @@ static int map_sql_config_read_sub(const char* w1,const char* w2)
 	}
 	else if(strcmpi(w1,"script_server_charset") == 0) {
 		strncpy(script_server_charset, w2, sizeof(script_server_charset) - 1);
+	}
+	else if(strcmpi(w1,"script_server_keepalive") == 0) {
+		script_server_keepalive = atoi(w2);
 	}
 
 	return 0;

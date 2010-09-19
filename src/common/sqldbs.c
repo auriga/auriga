@@ -26,6 +26,7 @@
 #include <stdarg.h>
 
 #include "utils.h"
+#include "timer.h"
 #include "sqldbs.h"
 
 MYSQL mysql_handle;
@@ -38,6 +39,13 @@ char tmp_sql[65535];
 char* strecpy(char* pt, const char* spt)
 {
 	mysql_real_escape_string(&mysql_handle, pt, spt, (unsigned long)strlen(spt));
+
+	return pt;
+}
+
+char* strecpy_(MYSQL *handle, char* pt, const char* spt)
+{
+	mysql_real_escape_string(handle, pt, spt, (unsigned long)strlen(spt));
 
 	return pt;
 }
@@ -129,6 +137,18 @@ int sqldbs_affected_rows(MYSQL *handle)
 }
 
 /*==========================================
+ * Keepaliveタイマー
+ * 定期的にpingを発行してタイムアウトを抑制
+ *------------------------------------------
+ */
+static int sqldbs_keepalive_timer(int tid, unsigned int tick, int id, void *data)
+{
+	mysql_ping((MYSQL *)data);
+
+	return 0;
+}
+
+/*==========================================
  * 切断
  *------------------------------------------
  */
@@ -143,7 +163,7 @@ void sqldbs_close(MYSQL *handle)
  *------------------------------------------
  */
 int sqldbs_connect(MYSQL *handle, const char *host, const char *user, const char *passwd,
-	const char *db, unsigned short port, const char *charset)
+	const char *db, unsigned short port, const char *charset, int keepalive)
 {
 	if(handle == NULL)
 		return 1;
@@ -164,7 +184,14 @@ int sqldbs_connect(MYSQL *handle, const char *host, const char *user, const char
 		printf("%s\n", mysql_error(handle));
 		return 1;
 	}
-	printf("connect success! MySQL Server version %s\n", mysql_get_server_info(handle));
+	printf("connect success!\n");
+	printf("MySQL Server version %s\n", mysql_get_server_info(handle));
+
+	if(keepalive > 0) {
+		add_timer_func_list(sqldbs_keepalive_timer);
+		add_timer_interval(gettick() + keepalive * 1000, sqldbs_keepalive_timer, 0, handle, keepalive * 1000);
+		printf("MySQL keepalive timer set: interval = %d (sec)\n", keepalive);
+	}
 
 	return 0;
 }
