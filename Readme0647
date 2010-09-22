@@ -1,4 +1,18 @@
 ----------------------------------------
+//0779 [2010/09/23] by Rayce
+
+・/common/zlib のバージョンを1.2.2から1.2.5にアップグレード
+
+・Windows環境において、grfio_final() の後に再度 grfio_load_zlib() を
+  呼び出したときに zlib.dll を再ロードできるように修正（grfio.c）
+
+・Windows環境下において、zlibのバージョン番号は zlib.h からではなく
+  zlib.dll内部で定義されている番号を zlibVersion() から取得するように修正（grfio.c）
+
+・grfio_load_zlib() の初回呼び出し時に、現在ロードしているzlibの
+  バージョンを表示するように追加（grfio.c）
+
+----------------------------------------
 //0778 [2010/09/20] by Rayce
 
 ・SQL: MySQLの wait_timeout による接続のタイムアウトを抑制するため、

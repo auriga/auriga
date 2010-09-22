@@ -59,16 +59,16 @@
 #if defined(WINDOWS) && !defined(LOCALZLIB)
 	#include <windows.h>
 	#include "zlib\zlib.h"
-	HINSTANCE zlib_dll;
-	#define zlib_inflateInit(strm) zlib_inflateInit_((strm),ZLIB_VERSION, sizeof(z_stream))
-	#define zlib_deflateInit(strm, level) zlib_deflateInit_((strm),(level),ZLIB_VERSION,sizeof(z_stream))
+	HINSTANCE zlib_dll = NULL;
 
+	typedef const char* (WINAPI* API_ZVER)   (void);
 	typedef int (WINAPI* API_ZINIT1)         (z_streamp strm, const char *version, int stream_size);
 	typedef int (WINAPI* API_ZINIT2)         (z_streamp strm, int level, const char *version, int stream_size);
 	typedef int (WINAPI* API_ZFUNC)          (z_streamp strm, int flush);
 	typedef int (WINAPI* API_ZEND)           (z_streamp strm);
 	typedef unsigned long (WINAPI* API_ZCRC) (unsigned long crc, const char *buf, unsigned int len);
 
+	API_ZVER   zlib_ver;
 	API_ZINIT1 zlib_inflateInit_;
 	API_ZFUNC  zlib_inflate;
 	API_ZEND   zlib_inflateEnd;
@@ -77,6 +77,9 @@
 	API_ZEND   zlib_deflateEnd;
 	API_ZCRC   zlib_crc32;
 
+	#define zlib_inflateInit(strm) zlib_inflateInit_((strm), zlib_ver(), sizeof(z_stream))
+	#define zlib_deflateInit(strm, level) zlib_deflateInit_((strm), (level), zlib_ver(), sizeof(z_stream))
+
 #else
 	#ifdef LOCALZLIB
 		#include "zlib/zlib.h"
@@ -84,6 +87,7 @@
 		#include <zlib.h>
 	#endif
 
+	#define zlib_ver         zlibVersion
 	#define zlib_inflateInit inflateInit
 	#define zlib_inflate     inflate
 	#define zlib_inflateEnd  inflateEnd
@@ -92,6 +96,8 @@
 	#define zlib_deflateEnd  deflateEnd
 	#define zlib_crc32       crc32
 #endif
+
+static int initialized = 0;
 
 //----------------------------
 //	file entry table struct
@@ -953,7 +959,10 @@ static void grfio_final(void)
 	zlib_inflateInit_ = NULL;
 	zlib_inflate      = NULL;
 	zlib_inflateEnd   = NULL;
+	zlib_dll          = NULL;
 #endif
+
+	initialized = 0;
 
 	return;
 }
@@ -971,6 +980,7 @@ void grfio_load_zlib(void)
 			MessageBox(NULL,"Can't load zlib.dll","grfio.c",MB_OK);
 			exit(1);
 		}
+		zlib_ver          = (API_ZVER)   GetProcAddress(zlib_dll,"zlibVersion");
 		zlib_inflateInit_ = (API_ZINIT1) GetProcAddress(zlib_dll,"inflateInit_");
 		zlib_inflate      = (API_ZFUNC)  GetProcAddress(zlib_dll,"inflate");
 		zlib_inflateEnd   = (API_ZEND)   GetProcAddress(zlib_dll,"inflateEnd");
@@ -980,6 +990,11 @@ void grfio_load_zlib(void)
 		zlib_crc32        = (API_ZCRC)   GetProcAddress(zlib_dll,"crc32");
 	}
 #endif
+
+	if(!initialized) {
+		initialized = 1;
+		printf("Loaded zlib version: %s\n", zlib_ver());
+	}
 
 	return;
 }
