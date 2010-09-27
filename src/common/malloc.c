@@ -196,9 +196,9 @@ struct unit_head {
 
 /* ブロックに入るデータ量 */
 #define BLOCK_DATA_COUNT1	128
-#define BLOCK_DATA_COUNT2	608
+#define BLOCK_DATA_COUNT2	736
 
-/* ブロックの大きさ: 16*128 + 64*608 = 40KB */
+/* ブロックの大きさ: 16*128 + 64*736 = 48KB */
 #define BLOCK_DATA_SIZE1	( BLOCK_ALIGNMENT1 * BLOCK_DATA_COUNT1 )
 #define BLOCK_DATA_SIZE2	( BLOCK_ALIGNMENT2 * BLOCK_DATA_COUNT2 )
 #define BLOCK_DATA_SIZE		( BLOCK_DATA_SIZE1 + BLOCK_DATA_SIZE2 + sizeof(struct unit_head) )
