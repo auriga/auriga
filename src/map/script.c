@@ -2894,6 +2894,7 @@ static int run_func(struct script_state *st)
  *------------------------------------------
  */
 static void run_script_main(struct script_state *st);
+static void run_script_awake(struct script_state *st);
 
 void run_script(struct script_code *rootscript,int pos,int rid,int oid)
 {
@@ -2961,23 +2962,42 @@ static struct linkdb_node* script_erase_sleepdb(struct linkdb_node *n)
  */
 static int run_script_timer(int tid, unsigned int tick, int id, void *data)
 {
-	struct script_state *st     = (struct script_state *)data;
-	struct linkdb_node *node    = sleep_db;
+	struct script_state *st = (struct script_state *)data;
+
+	if(st->sleep.timer != -1) {
+		struct linkdb_node *node = sleep_db;
+		while( node ) {
+			if( PTR2INT(node->key) == st->oid && ((struct script_state *)node->data)->sleep.timer == st->sleep.timer ) {
+				script_erase_sleepdb(node);
+				break;
+			}
+			node = node->next;
+		}
+	}
+	run_script_awake(st);
+	return 0;
+}
+
+/*==========================================
+ * sleep復帰処理
+ *------------------------------------------
+ */
+static void run_script_awake(struct script_state *st)
+{
 	struct map_session_data *sd = map_id2sd(st->rid);
 
-	if( sd && sd->status.char_id != id ) {
+	if( (sd && sd->npc_sleep != &st->sleep) || (st->rid != 0 && !sd) ) {
 		st->rid = 0;
 	}
-	while( node && st->sleep.timer != -1 ) {
-		if( PTR2INT(node->key) == st->oid && ((struct script_state *)node->data)->sleep.timer == st->sleep.timer ) {
-			script_erase_sleepdb(node);
-			st->sleep.timer = -1;
-			break;
-		}
-		node = node->next;
+
+	if(st->state != RERUNLINE) {
+		st->state = END;
+		st->sleep.tick = 0;
 	}
+	st->sleep.timer = -1;
+
 	run_script_main(st);
-	return 0;
+	return;
 }
 
 /*==========================================
@@ -2994,12 +3014,13 @@ static void run_script_main(struct script_state *st)
 	if(st->state == RERUNLINE) {
 		st->state = RUN;
 		run_func(st);
-		if(st->state == GOTO){
+		if(st->state == GOTO) {
 			st->state = RUN;
 		}
-	} else {
+	} else if(st->state != END) {
 		st->state = RUN;
 	}
+
 	while(st->state == RUN) {
 		switch(c = get_com(st->script->script_buf,&st->pos)) {
 		case C_EOL:
@@ -3082,8 +3103,11 @@ static void run_script_main(struct script_state *st)
 	sd = map_id2sd(st->rid);
 	if(st->sleep.tick > 0) {
 		// スタック情報をsleep_dbに保存
-		st->sleep.charid = (sd) ? sd->status.char_id : 0;
-		st->sleep.timer  = add_timer(gettick()+st->sleep.tick, run_script_timer, st->sleep.charid, st);
+		if(sd) {
+			// デタッチされたかどうかの判定用
+			sd->npc_sleep = &st->sleep;
+		}
+		st->sleep.timer = add_timer(gettick() + st->sleep.tick, run_script_timer, 0, st);
 		linkdb_insert(&sleep_db, INT2PTR(st->oid), st);
 		return;
 	}
@@ -3104,8 +3128,6 @@ static void run_script_main(struct script_state *st)
 	} else {
 		// 実行が終わった or 続行不可能なのでスタッククリア
 		if(sd && st->oid == sd->npc_id) {
-			sd->npc_pos = -1;
-			sd->npc_id  = 0;
 			npc_event_dequeue(sd);
 		}
 		st->pos = -1;
@@ -10822,25 +10844,19 @@ int buildin_awake(struct script_state *st)
 	if(nd == NULL)
 		return 0;
 
-	while( node ) {
-		if( PTR2INT(node->key) == nd->bl.id) {
-			struct script_state *tst    = (struct script_state *)node->data;
-			struct map_session_data *sd = map_id2sd(tst->rid);
+	while(node) {
+		if(PTR2INT(node->key) == nd->bl.id) {
+			struct script_state *tst = (struct script_state *)node->data;
 
-			if( tst->sleep.timer == -1 ) {
-				node = node->next;
+			if(tst->sleep.timer != -1) {
+				delete_timer(tst->sleep.timer, run_script_timer);
+				node = script_erase_sleepdb(node);
+
+				run_script_awake(tst);
 				continue;
 			}
-			if( sd && sd->status.char_id != tst->sleep.charid )
-				tst->rid = 0;
-
-			delete_timer(tst->sleep.timer, run_script_timer);
-			node = script_erase_sleepdb(node);
-			tst->sleep.timer = -1;
-			run_script_main(tst);
-		} else {
-			node = node->next;
 		}
+		node = node->next;
 	}
 	return 0;
 }

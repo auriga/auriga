@@ -46,15 +46,18 @@ struct script_stack {
 	struct linkdb_node **var_function;	// 関数依存変数
 };
 
+struct script_sleep {
+	int tick;
+	int timer;
+};
+
 struct script_state {
 	struct script_stack *stack;
 	int start,end;
 	int pos,state;
 	int rid,oid;
 	struct script_code *script, *scriptroot;
-	struct {
-		int tick,timer,charid;
-	} sleep;
+	struct script_sleep sleep;
 };
 
 struct script_code* parse_script(unsigned char *,const char*,int);

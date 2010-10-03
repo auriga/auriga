@@ -12012,12 +12012,6 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	}
 
 	if(sd->npc_id) {
-		if(sd->stack) {
-			// 元のスタック情報を破棄
-			script_free_stack(sd->stack);
-			sd->stack = NULL;
-		}
-		sd->state.menu_or_input = 0;
 		npc_event_dequeue(sd);
 	}
 

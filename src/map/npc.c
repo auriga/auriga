@@ -184,7 +184,17 @@ int npc_event_dequeue(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
 
+	if(sd->stack) {
+		// 元のスタック情報を破棄
+		script_free_stack(sd->stack);
+		sd->stack = NULL;
+	}
+
+	sd->npc_sleep = NULL;
+	sd->npc_pos = -1;
 	sd->npc_id = 0;
+	sd->state.menu_or_input = 0;
+
 	if(sd->eventqueue[0][0]) {	// キューのイベント処理
 		char *name = (char *)aCalloc(50,sizeof(char));
 		int i;

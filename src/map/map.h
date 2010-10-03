@@ -385,6 +385,7 @@ struct map_session_data {
 	struct script_stack *stack;
 	struct script_code *npc_script,*npc_scriptroot;
 	int npc_scriptstate;
+	struct script_sleep *npc_sleep;
 	char npc_str[256];
 	int chatID;
 	short race;

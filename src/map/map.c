@@ -1489,6 +1489,7 @@ int map_quit(struct map_session_data *sd)
 
 	if(sd->stack) {
 		script_free_stack( sd->stack );
+		sd->stack = NULL;
 	}
 
 #ifdef DYNAMIC_SC_DATA

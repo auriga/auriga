@@ -1,4 +1,39 @@
 ----------------------------------------
+//0781 [2010/10/04] by Rayce
+
+・ユーザ定義関数 callfunc 内のnextやselectにて待機中のプレイヤーに対し取引要請を
+  行うと、取引終了後に再度NPCをクリックしたときに直接ユーザ定義関数が実行できて
+  しまう致命的な問題を修正（clif.c, map.c, npc.c, script.c）
+		reported by dragontail789さん
+
+	-> NPCからデタッチ（npc_event_dequeue）された時点でプレイヤーが持っている
+	   スタック情報を破棄する
+	-> npc_pos や menu_or_input も同時に初期化することにより、一度デタッチされた
+	   プレイヤーが不正にパケットを送りつけてスクリプトを再開するのを予防する
+
+・sleep2待機中のキャラがデタッチされたにも関わらず、sleep2復帰後に再度アタッチ
+  された状態で処理を継続できてしまう問題を修正（npc.c, map.h, script.＊）
+
+	-> sleep情報をscript_state構造体から分離してscript_sleep構造体を追加　
+	   charidメンバは使用しなくなったので削除
+	-> map_session_data構造体に npc_sleep メンバを追加
+	   sleep開始時に現在のscript_stateのsleep構造体のアドレスを保存しておく
+	-> 取引要請、強制移動、ログアウト/ログインなどによって1度でもデタッチされた場合
+	   npc_event_dequeue() で npc_sleep メンバをNULLで初期化しておく
+	-> sleep復帰時に npc_sleep のアドレスと比較照合することで、デタッチされているか
+	   どうかを判定できる
+	   1度でもデタッチされていた場合、デタッチ状態のままsleep2処理は続行可能
+
+・sleep復帰処理とawake復帰処理を run_script_awake() に集約（script.c）
+
+・sleep2待機中にキャラがログアウトされたとき、sleep2の復帰後に st->rid を 0 に
+  初期化してデタッチするように修正（script.c）
+		based on eA, thx a lot!!
+
+・sleep復帰後、RERUNLINEでない場合は即座にスクリプトを終了するように強化（script.c）
+		based on eA, thx a lot!!
+
+----------------------------------------
 //0780 [2010/09/28] by Rayce
 
 ・メモリマネージャのブロックサイズを40KB→48KBに拡張（malloc.c）
