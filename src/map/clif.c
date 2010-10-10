@@ -9421,8 +9421,7 @@ void clif_devotion(struct map_session_data *sd)
 	WBUFL(buf,2)=sd->bl.id;
 	for(n=0;n<5;n++)
 		WBUFL(buf,6+4*n)=sd->dev.val2[n];
-	WBUFB(buf,26)=8;
-	WBUFB(buf,27)=0;
+	WBUFW(buf,26)=8;
 	clif_send(buf,packet_db[0x1cf].len,&sd->bl,AREA);
 
 	return;
@@ -10950,7 +10949,7 @@ void clif_changedir(struct block_list *bl, int headdir, int dir)
  *
  *------------------------------------------
  */
-void clif_send_homdata(struct map_session_data *sd, int type, int param)
+void clif_send_homdata(struct map_session_data *sd, int state, int param)
 {
 	int fd;
 
@@ -10960,7 +10959,7 @@ void clif_send_homdata(struct map_session_data *sd, int type, int param)
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x230;
 	WFIFOB(fd,2)=0;
-	WFIFOB(fd,3)=type;
+	WFIFOB(fd,3)=state;
 	WFIFOL(fd,4)=sd->hd->bl.id;
 	WFIFOL(fd,8)=param;
 	WFIFOSET(fd,packet_db[0x230].len);
@@ -15210,8 +15209,8 @@ static void clif_parse_PvPInfo(int fd,struct map_session_data *sd, int cmd)
 		return;
 
 	WFIFOW(fd,0)  = 0x210;
-	WFIFOL(fd,2)  = 0;	// unknown
-	WFIFOL(fd,6)  = 0;	// unknown
+	WFIFOL(fd,2)  = sd->status.account_id;
+	WFIFOL(fd,6)  = sd->status.char_id;
 	WFIFOL(fd,10) = 0;	// times won
 	WFIFOL(fd,14) = 0;	// times lost
 	WFIFOL(fd,18) = ranking_get_point(sd, RK_PK);

@@ -6349,7 +6349,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SG_FEEL:
 		if(sd) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			if(sd->feel_index[skilllv-1] == -1)
+			if(!sd->status.feel_map[skilllv-1][0])
 				clif_feel_display(sd,skilllv);
 			else
 				clif_feel_info(sd,skilllv);

@@ -8,7 +8,7 @@ l ロングワード=4B
 
 S 0064 <version>.l <account name>.24B <password>.24B <version2>.B
 	アカウントID&パスワード送信
-S 0065 <account ID>.l <login ID1>.l <login ID2>.l <?>.2B <sex>.B
+S 0065 <account ID>.l <login ID1>.l <login ID2>.l <client type>.w <sex>.B
 	キャラセレ鯖接続要求
 S 0066 <charactor number>.B
 	キャラクタ選択要求
@@ -16,7 +16,7 @@ S 0067 <charactor name>.24B <param etc>.11B
 	キャラクタ作成要求
 S 0068 <charactor ID>.l <mail address>.40B
 	キャラクタ削除要求
-R 0069 <len>.w <login ID1>.l <account ID>.l <login ID2>.l <?>.32B <sex>.B {<IP>.l <port>.w <server name>.20B <login users>.w <maintenance>.w <new>.w}.32B*
+R 0069 <len>.w <login ID1>.l <account ID>.l <login ID2>.l <?>.l <?>.26B <sex>.B {<IP>.l <port>.w <server name>.20B <login users>.w <maintenance>.w <new>.w}.32B*
 	login成功&鯖情報
 R 006a <error No>.B <message>.20B
 	login失敗 その１
@@ -388,7 +388,7 @@ S 00de <len>.w <limit>.w <pub>.B <passwd>.8B <title>.?B
 	チャットステータス変更
 R 00df <len>.w <owner ID>.l <chat ID>.l <limit>.w <users>.w <pub>.B <title>.?B
 	チャットステータス変更成功
-S 00e0 <?>.l <nick>.24B
+S 00e0 <index>.l <nick>.24B
 	チャットルーム所有者変更要求?
 R 00e1 <index>.l <nick>.24B
 	チャット参加者番号付け直し?
@@ -476,7 +476,7 @@ S 0102 <exp>.w <item?>.w
 	パーティ設定変更
 S 0103 <ID>.l <nick>.24B
 	パーティ除名要求
-R 0104 <ID>.l <?>.l <X>.w <Y>.w <offline>.B <party name>.24B <nick>.24B <map name>.16B
+R 0104 <ID>.l <leader>.l <X>.w <Y>.w <offline>.B <party name>.24B <nick>.24B <map name>.16B
 	パーティ1人分情報更新
 R 0105 <ID>.l <nick>.24B <fail>.B
 	nickさんがパーティから離脱
@@ -779,9 +779,10 @@ S 016b <guild ID>.l <type>.l
 	ギルド勧誘返信
 	type=0 拒否する
 	type=1 許諾する
-R 016c <guild ID>.l <emblem ID>.l <mode>.l <?>.5B <guild name>.24B
+R 016c <guild ID>.l <emblem ID>.l <mode>.l <master>.B <?>.l <guild name>.24B
 	login時ギルド情報
 	mode=自分の所属職位のmode
+	master=0 or 1
 R 016d <ID>.l <charactor ID>.l <online>.l
 	ギルドメンバがloginした抜けた等
 S 016e <guildID>.l <mess1>.60B <mess2>.120B
@@ -1167,7 +1168,7 @@ R 01cd (<sid>.l)x7
 	まだ選択できないスキルの部分は <sid> = 0x00000000 が入る
 S 01ce <sid>.l
 	オートスペル選択肢送信
-R 01cf <crusader id>.l { <target id>.l }*5 <8固定?>.B <?>.B
+R 01cf <crusader id>.l { <target id>.l }*5 <range>.w
 	献身状態ターゲットON/OFF。献身が切れると <target id> が 0x00000000 になる
 
 R 01d0 <ID>.l <num>.w
@@ -1239,7 +1240,7 @@ R 01de <skill ID>.w <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst spe
 	type=09 ダメージモーションなしにダメージだけ表示される物(インデュア)と思ったのだがダメージモーションが出る物。(機能は謎)
 S 01df <ID>.|
 	GM右クリックによるIDのチャット禁止回数参照？
-R 01e0 <ID>.l <?>.24B
+R 01e0 <ID>.l <name>.24B
 	GMによるチャット禁止時間参照？
 	0x1dfに対する応答
 R 01e1 <ID>.l <num>.w
@@ -1248,7 +1249,7 @@ R 01e1 <ID>.l <num>.w
 
 R 01e2 <dst_id>.l <src_id>.l <nick>.24B
 	プロポーズされましたBOX表示、未使用？
-S 01e3 <dst_id>.l <src_id>.l <?>.l
+S 01e3 <dst_id>.l <src_id>.l <answer>.l
 	01e2のプロポーズ返答
 R 01e4
 	プロポーズターゲット表示
@@ -1362,7 +1363,7 @@ R 020e <name>.24B <id>.l <val>.B <type>.B
 	type=40: Target HP <id>
 S 020f <account_id>.l <char_id>.l
 	/pvpinfoにて発行
-R 0210 <?>.8B <win>.l <lose>.l <point>.l
+R 0210 <account_id>.l <char_id>.l <win>.l <lose>.l <point>.l
 	現在<win>勝、<lose>敗、PVPポイントは<point>です。
 S 0212 <charname>.24B
 	GMコマンド/rcにて発行。効果不明。
@@ -1456,13 +1457,13 @@ R 022f <fail>.B <itemID>.w
 	<fail>
 	0x00：餌やり失敗
 	0x01：餌やり成功
-R 0230 <?>.B <type>.B <ID>.l <param>.l
+R 0230 <?>.B <state>.B <ID>.l <param>.l
 	ホム関連通知、0x1a4のホム版
 	<?>を0x0a以上にすると何も起こらない
-	type=00, param=00 : ホム生成時に送られる
-	type=01 : 親密度
-	type=02 : 腹減り
-	type=03 : アイテム？リソースエラーになる
+	state=00, param=00 : ホム生成時に送られる
+	state=01 : 親密度
+	state=02 : 腹減り
+	state=03 : アイテム？リソースエラーになる
 S 0231 <name>.24B
 	ホムの名前変更要求
 S 0232 <ID>.l <X_Y>.3B
@@ -1496,7 +1497,7 @@ R 023c <type>.w <val>.w
 R 023d <?>.l
 	イベントに当たりました。ゲーム内でアイテムを受け取ってください
 	ログインサーバ用
-R 023e <type>.w <?>.4B
+R 023e <type>.w <dummy>.l
 	サクライでは無効
 	type=0 : キャラクターロックパスワードの変更応答
 	type=1 : キャラクターロックパスワードの送信要求
@@ -1624,7 +1625,7 @@ R 027b <val1>.l <val2>.l <val3>.l
 
 S 027c <version>.l <account name>.24B <md5 binary>.16B <version2>.B <MacAddress>.13B
 	id&暗号化済みpass送信
-R 027d <name>.24B <level>.w <name_value>.w <?>.w <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <flee>.w <aspd>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <attackable>.w <exp>.l
+R 027d <name>.24B <level>.w <name_value>.w <summon count>.w <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <flee>.w <aspd>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <attackable>.w <exp>.l
 	傭兵ステータス情報？
 R 027e <?>.w <?>.w
 	未調査
@@ -1712,12 +1713,12 @@ R 0291 <line>.w
 S 0292
 	ジークフリードの証を所持した状態で死亡した後、復活ボタンを選択した
 
-R 0293 <type>.B <x>.l <y>.l <hour>.w <minute>.w <?>.4B <boss_name>.51B
+R 0293 <type>.B <x>.l <y>.l <min hour>.w <min minute>.w <max hour>.w <max minute> <boss_name>.51B
 	凸面鏡使用
 	type=0 : この地域ではボスモンスターの出現確認ができません。
 	type=1 : ミニMAPに位置を表示する
 	type=2 : ボスモンスター<boss_name>の位置がミニマップに表示されます。
-	type=3 : ボスモンスター<boss_name>が<hour>時間<minute>後に出現します。
+	type=3 : ボスモンスター<boss_name>が<min hour>時間<min minute>後に出現します。
 
 R 0294 <book_id>.l <page_num>.l
 	読書システム
