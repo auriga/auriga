@@ -1106,8 +1106,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon])) / 100;
 
 			// クリティカル時ダメージ増加
-			if(sd->critical_damage != 100)
-				damage += damage * sd->critical_damage / 100;
+			damage += damage * sd->critical_damage / 100;
 
 			if(sd->state.arrow_atk)
 				damage += sd->arrow_atk;
@@ -1118,8 +1117,10 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			damage += atkmin + atn_rand() % (atkmax - atkmin + 1);
 		else
 			damage += atkmin;
-		if(sd && (sd->atk_rate != 100 || sd->weapon_atk_rate[sd->status.weapon] != 0)) {
-			damage  = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon])) / 100;
+		if(sd) {
+			if(sd->atk_rate != 100 || sd->weapon_atk_rate[sd->status.weapon] != 0) {
+				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon])) / 100;
+			}
 		}
 	}
 

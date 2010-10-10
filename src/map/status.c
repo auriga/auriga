@@ -7096,7 +7096,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				unit_heal(bl, -hp, 0);
 			}
 		}
-		if(sc->data[type].val3 > 0) {
+		if(sc->data[type].val3 > 0 && !unit_isdead(bl) && sc->data[type].timer != -1) {
+			// 生きていて解除済みでないなら継続
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -7109,7 +7110,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			} else {
 				unit_heal(bl, -dmg, 0);
 			}
-			if(!unit_isdead(bl)) {
+			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
+				// 生きていて解除済みでないなら継続
 				timer = add_timer(10000+tick, status_change_timer, bl->id, data);
 			}
 		}
@@ -7371,7 +7373,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_PYREXIA:	/* パイレックシア */
 		if((--sc->data[type].val2) > 0) {
 			unit_heal(bl, -100, 0);
-			timer = add_timer(3000+tick, status_change_timer, bl->id, data);
+			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
+				// 生きていて解除済みでないなら継続
+				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
+			}
 		}
 		break;
 	case SC_OBLIVIONCURSE:	/* オブリビオンカース */
@@ -7404,7 +7409,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				clif_damage(bl,bl,tick,0,0,1000 + damage,0,9,0);
 				battle_damage(bl,bl,1000 + damage,0,0,0);
 			}
-			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
+				// 生きていて解除済みでないなら継続
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
 		}
 		break;
 	case SC_SPELLBOOK:	/* スペルブック */
