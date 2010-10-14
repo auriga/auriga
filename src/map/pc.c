@@ -2039,11 +2039,11 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 			sd->long_attack_def_rate += val;
 		break;
 	case SP_DOUBLE_RATE:
-		if(sd->state.lr_flag == 0 && sd->double_rate < val)
+		if(sd->state.lr_flag != 2 && sd->double_rate < val)
 			sd->double_rate = val;
 		break;
 	case SP_DOUBLE_ADD_RATE:
-		if(sd->state.lr_flag == 0)
+		if(sd->state.lr_flag != 2)
 			sd->double_add_rate += val;
 		break;
 	case SP_MATK_RATE:

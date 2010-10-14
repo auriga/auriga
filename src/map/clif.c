@@ -5096,7 +5096,7 @@ void clif_equipitemack(struct map_session_data *sd, int n, int pos, unsigned cha
 	nullpo_retv(sd);
 
 	fd=sd->fd;
-#if PACKETVER < 27
+#if PACKETVER < 28
 	WFIFOW(fd,0)=0xaa;
 	WFIFOW(fd,2)=n+2;
 	WFIFOW(fd,4)=pos;

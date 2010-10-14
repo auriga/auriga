@@ -868,7 +868,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case HT_FREEZINGTRAP:		/* フリージングトラップ */
 	case MA_FREEZINGTRAP:
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,skilllv*300+3500,status_get_lv(src)))
-			status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+			status_change_pretimer(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_adelay(src)*2/3);
 		break;
 
 	case HT_FLASHER:		/* フラッシャー */
@@ -1242,7 +1242,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case NPC_ICEBREATH:		/* アイスブレス */
 		if(!tsc || tsc->data[SC_FREEZE].timer == -1) {
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,7000,status_get_lv(src)))
-				status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+				status_change_pretimer(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_adelay(src)*2/3);
 		}
 		break;
 	case NPC_ACIDBREATH:		/* アシッドブレス */
@@ -1394,7 +1394,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case NC_COLDSLOWER:		/* コールドスローワー */
 		if((!tsc || tsc->data[SC_FREEZE].timer == -1) &&
 			(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,2000 + skilllv * 1000,status_get_lv(src)))) {
-			status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+			status_change_pretimer(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_adelay(src)*2/3);
 		} else if(atn_rand() % 10000 < skilllv * 1000) {
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
@@ -12435,6 +12435,9 @@ static int skill_trap_splash(struct block_list *bl, va_list ap )
 				skill_additional_effect(ss,bl,sg->skill_id,sg->skill_lv,BF_MISC,tick);
 				break;
 			case UNT_FREEZINGTRAP:	/* フリージングトラップ */
+				clif_skill_damage(ss, bl, tick, 0, 0, 0, 0, sg->skill_id, sg->skill_lv, 1);
+				battle_skill_attack(BF_WEAPON,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
+				break;
 			case UNT_FIRINGTRAP:	/* ファイアリングトラップ */
 			case UNT_ICEBOUNDTRAP:	/* アイスバウンドトラップ */
 			case UNT_CLUSTERBOMB:	/* クラスターボム */

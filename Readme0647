@@ -1,4 +1,23 @@
 ----------------------------------------
+//0784 [2010/10/15] by popori
+
+・clif_equipitemack()のPACKETVERの分岐を間違えていたので修正 (clif.c)
+
+・凍結効果を付与する物理スキルが凍結を成功させても即座に割れてしまう問題を修正 (battle.c skill.c)
+　ばるすさんに感謝
+
+・スキル「フリージングトラップ」をBF_MISCからBF_WEAPONに変更 (skill.c skill_db.txt)
+
+・client_packet.txtの更新 (client_packet.txt)
+
+・現行最新のクライアントまでのパケット長を追記 (packet_db.txt)
+
+・0769で追記したmerc_db.txtの定義はホムンクルスSの定義だったのでhomun_db.txtに移動させる (merc_db.txt homun_db.txt)
+
+・アイテムボーナス「bDoubleAddRate」「bAddStealRate」の仕様を右手のみ適用から両手に適用に変更 (battle.c pc.c)
+　kleinさんに感謝
+
+----------------------------------------
 //0783 [2010/10/11] by Rayce
 
 ・MAPサーバが複数ある場合、異なるMAPサーバに移動すると

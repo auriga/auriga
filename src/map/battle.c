@@ -2981,7 +2981,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage2 = 0;	// 念のため0を明示しておく
 	}
 
-	if(calc_flag.da > 0) {	// 右手,短剣のみ
+	if(calc_flag.da > 0) {
 		wd.type = 0x08;
 		switch (calc_flag.da) {
 			case 1:		// ダブルアタック
@@ -4577,7 +4577,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* 実際にダメージ処理を行う */
 	if(skillid || flag) {
-		if(attack_type&BF_WEAPON && skillid != HT_FREEZINGTRAP) {	// フリージングトラップはこの位置だと割れる
+		if(attack_type&BF_WEAPON) {
 			battle_delay_damage(tick+dmg.amotion,src,bl,damage,skillid,skilllv,dmg.flag);
 		} else {
 			battle_damage(src,bl,damage,skillid,skilllv,dmg.flag);

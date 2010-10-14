@@ -81,14 +81,14 @@ R 0073 <server tick>.l <coordidate>.3B <05 05固定>.2B
 R 0074 <?>.B
 	サーバとの接続が失敗しました。
 R 0078 <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <clothes color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <05固定>.B <05固定>.B <sit>.B <Lv>.B
-       <ID>.l <0?>.B <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <clothes color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <05固定>.B <05固定>.B <sit>.B <Lv>.B (2007-11-06aSakexe以降)
+       <ID>.l <type>.B <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <clothes color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <05固定>.B <05固定>.B <sit>.B <Lv>.B (2007-11-06aSakexe以降)
 	マップロード時&移動時用、向き付き用キャラ情報?
 R 0079 <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <clothes color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <05固定>.B <05固定>.B <Lv>.B
 	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報?
 R 007b <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <server tick>.l <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <?>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_X_Y>.5B <?>.B <?>.B <?>.B <Lv>.B
 	表示範囲内キャラ移動情報
 R 007c <ID>.l <speed>.w <?>.6w <class>.w <?>.7w <X_Y>.3B <?>.2B
-       <ID>.l <0?>.B <speed>.w <?>.6w <class>.w <?>.7w <X_Y>.3B <?>.2B (2007-11-06aSakexe以降)
+       <ID>.l <type>.B <speed>.w <?>.6w <class>.w <?>.7w <X_Y>.3B <?>.2B (2007-11-06aSakexe以降)
 	NPC用表示範囲内キャラ情報
 S 007d
 	mapロード終り
@@ -1950,18 +1950,37 @@ R 02f3 <len>.w <ID>.l <item ID>.w <identify flag>.B <X>.w <Y>.w <subX>.B <subY>.
 	09eの上位版?
 R 02f4〜02f9
 	02f3と同じ？使用用途不明
-R 02fa, 02fb, 02fe〜0300
-	act, spr不足エラー
+R 02fa <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w
+	0x2ecの上位版？
 	未調査
-R 02fc
-	act, spr不足エラー
+R 02fb〜0300
+	0x2faの同じ？
 	未調査
-R 0301〜0303, 0307
+R 0301 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <font>.w
+	0x2eeのNPC版？
+	未調査
+R 0302〜0307
+	0x2eeと同じ？
+	未調査
+R 0308 <len>.w
+	未調査
+R 0309〜0331
+	0x308と一緒？
+	未調査
+S 0332 <len>.w <Winsock>.B <GDI32>.B <Debugging>.B <ClientCheckSumError>.B <Unused>.B
+	未調査
+S 0333〜035b
+	0x332と一緒？
 	未調査
 S 035c
 	簡易課金ショップアイテムリスト要求？
+	未調査
+R 035d <len>.w <point>.l <mditem_count>.w <mditem_size>.w <bestitem_count>.w <bestitem_size>.w
+	簡易課金ショップアイテム関連？
+	未調査
 S 035e
-	不明
+	簡易課金ショップアイテム関連？
+	未調査
 R 03b3 <len>.w <ID>.l <item ID>.w <identify flag>.B <X>.w <Y>.w <subX>.B <subY>.B <amount>.w
 	02f3の上位版？
 R 03b4〜03dc
@@ -2008,22 +2027,25 @@ S 0447
 S 044b
 	簡易課金ショップクローズ
 	現在無効？
-R 07d0 <?>.w <?>.w
+R 07d0 <erNo>.w <esMsg>.w
 	未調査
 	現在無効？
 S 07d1
 	未調査
 	現在無効？
-S 07d3 <?>.w
+R 07d2 <len>.w <count>.w
 	未調査
 	現在無効？
-S 07d4 <?>.w
+S 07d3 <esNo>.w
 	未調査
 	現在無効？
-R 07d5 <?>.w
+S 07d4 <esNo>.w
 	未調査
 	現在無効？
-R 07d6 <?>.w
+R 07d5 <esNo>.w
+	未調査
+	現在無効？
+R 07d6 <esNo>.w
 	未調査
 	現在無効？
 S 07d7 <exp>.l <item>.2B
@@ -2052,18 +2074,25 @@ S 07de <job>.l <level>.l <mapName>.24B <option>.l
 R 07df <name>.24B <job>.l <level>.l <mapName>.16B <option>.l
 	seekパーティー関連？現在未使用？
 	未調査
-R 07e0 <?>.w <name>.24B
+R 07e0 <esNo>.w <esName>.24B
 	未調査
 R 07e1 <skill ID>.w <type>.l <lv>.w <sp>.w <range>.w <up>.B
 	010eの上位版（2009-07-15aRagexeRE以降）
-R 07e2 <?>.w <?>.l
+R 07e2 <line>.w <val>.l
+	0x291にvalも送れる上位版
+R 07e3 <type>.l
+	アイテムリスト関連？
+	typeは0のみ？
 	未調査
-R 07e3 <?>.l
+S 07e4 <len>.w <type>.l <action>.l
+	アイテムリスト関連？
+	typeは0x7e3と同じ
+	actionは0〜1
 	未調査
 S 07e5 <?>.w <account ID>.l
 	captchaコード要求
-R 07e6 <?>.w <?>.l
-	未調査
+R 07e6 <skillid>.w <type>.l
+	スキルメッセージ表示関連
 S 07e7 <len>.w <account ID>.l <code>.10B <?>.14B
 	captchaコード応答
 R 07e8 <len>.w <image>.?B
@@ -2071,17 +2100,50 @@ R 07e8 <len>.w <image>.?B
 R 07e9 <code>.w <flag>.B
 	captchaコード認証応答
 S 07ea
+	戦場リスト？
 	未調査
-S 07ec <?>.l <?>.w
+	現在無効？
+S 07ec <BFNo>.l <team>.w
+	戦場チーム加入？
 	未調査
-R 07ed <?>.l <?>.w <?>.w
+	現在無効？
+R 07ed <BFNo>.l <team>.w <result>.w
+	0x7ecの応答
+	resultは0〜5まで
 	未調査
-S 07ee <?>.l
+	現在無効？
+S 07ee <BFNO>.l
+	戦場キャンセル？
 	未調査
-R 07ef <?>.l <?>.w
+	現在無効？
+R 07ef <BFNO>.l <result>.w
+	0x7efの応答
+	resultは0〜3まで
 	未調査
-S 07f4 <?>.B
+	現在無効？
+S 07f0 <BFNO>.l <flag>.w
+	戦場stateモニター？
+	flag 0:on
+	flag 1:off
 	未調査
+	現在無効？
+R 07f1 <BFNO>.B <PlayCount>.w <BattleState>.w <TeamCount_A>.w <TeamCount_B>.w <MyCount>.w <joinTeam>.w
+	0x7f0の応答
+	未調査
+	現在無効？
+R 07f2 <BFNO>.w <result>.w
+	戦場stateモニター？
+	resultは0〜3まで
+	未調査
+	現在無効？
+R 07f3 <BFNO>.w
+	戦場stateモニター？
+	未調査
+	現在無効？
+R 07f4 <Enable>.B
+	戦場関連？
+	未調査
+	現在無効？
 S 07f5 <ID>.|
 	IDの装備を全解除する
 R 07f6 <charactor ID>.l <exp>.l <type>.w <quest>.w
@@ -2131,14 +2193,14 @@ R 07f9 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w 
 	type=10 ELEM(ソーサラーの妖精)
 R 07fa <type>.w <index>.w <amount>.w
 	00afの上位版（2009-11-18cRagexeRE以降）
-	type=0 通常時?
+	type=0 通常時
 	type=1 スキル使用時
-	type=2 ?
-	type=3 ?
+	type=2 精錬失敗時
+	type=3 精錬成功時
 	type=4 倉庫へ移動時
 	type=5 カートへ移動時
 	type=6 売却時
-R 07fb <src ID>.l <dst ID>.l <X>.w <Y>.w <skillid>.w <pl>.l <casttime>.l <flag?>.B
+R 07fb <src ID>.l <dst ID>.l <X>.w <Y>.w <skillid>.w <pl>.l <casttime>.l <isDisposable>.B
 	0x13eの上位版（2009-11-18cRagexeRE以降）
 R 07fc <old account ID>.l <new account ID>.l
 	PTリーダー変更要求成功時に送信？
@@ -2146,9 +2208,12 @@ R 07fd <len>.w <type>.B <identify>.B <itemID>.w <name_len>.w <name>.?B <name_len
 	未調査
 R 07fe <name>.24B
 	nameのmp3ファイルを鳴らす
-R 07ff <len>.w <type>.l
-	MAP鯖間移動時に観測。用途不明
-	0x72→0x7ff→0x283→0x7dの流れ
+R 07ff <len>.w <result>.l
+	サーバーのDEFINEチェック？
+	BROADCASTING_SPECIAL_ITEM_OBTAIN  = 1
+	RENEWAL_ADD_2  = 2
+	CHANNELING_SERVICE  = 4
+	詳細不明
 R 0800 <len>.w <ID>.l <charID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
 	0133の上位版（2009-12-08aRagexeRE以降）
 S 0801 <len>.w <ID>.l <charID>.l {<amount>.w <index>.w}.4B*
@@ -2174,36 +2239,57 @@ R 080a <index>.l <job>.6w
 R 080b <index>.l
 	パーティーブッキングリスト削除
 S 080c
+	簡易課金ショップ関連
 	未調査
-S 080d <?>.B
+S 080d <show>.B
+	簡易課金ショップ関連
 	未調査
 R 080e <ID>,l <HP>.l <MaxHP>.l
 	0x106の上位版（2010-02-23aRagexeRE以降）
 R 080f <type ID>.w <item type>.B <amount>.l <identify flag>.B <attribute>.B <refine>.B <card>.4w
 	0x0e9の上位版（2010-02-23aRagexeRE以降）
-R 0810 <?>.B
+R 0810 <count>.B
+	購買露天関連
 	未調査
-R 0812 <type>.w <?>.l
-	type=1 1の時は<?>.lの値は無視
-	type=2
-	それ以外の値は無視
+S 0811 <len>.w <limit_zeny>.l <result>.B <storeName>.80B { <index>.w <itemID>.w <count>.w }.?B
+	購買露天関連
 	未調査
-R 0814 <?>.l <?>.80B
+R 0812 <result>.w <total_weight>.l
+	購買露天関連
+	resultは1と2と8のみ
+	未調査
+R 0813 <len>.w <ID>.l <limitZeny>.l { <price>.l <count>.w <type>.B <itemID>.w }.?B
+	購買露天関連
+	未調査
+R 0814 <makerID>.l <storeName>.80B
+	購買露天関連
 	未調査
 S 0815
+	購買露天関連
 	未調査
-R 0816 <?>.l
+R 0816 <makerID>.l
+	購買露天関連
 	未調査
-R 0818 <len>.w { <?>.l <?>.l <?>.B }.9B*
+S 0817 <makerID>.l
+	購買露天関連
 	未調査
-R 081a <type>.w
+R 0818 <len>.w <makerID>.l <StoreID>.l <limitZeny>.l { <price>.l <count>.w <type>.B <itemID>.w }.?B
+	購買露天関連
+	未調査
+S 0819 <len>.w <makerID>.l <StoreID>.l { <index>.w <itemID>.w <count>.w }.?B
+	購買露天関連
+	未調査
+R 081a <result>.w
+	購買露天関連
 	type=3 ?
 	type=4 ?
 	それ以外の値は無視
 	未調査
-R 081b <?>.w <?>.w <?>.l
+R 081b <itemID>.w <count>.w <limitZeny>.l
+	購買露天関連
 	未調査
-R 081c <?>.w <?>.w <?>.l
+R 081c <index>.w <count>.w <zeny>.l
+	購買露天関連
 	未調査
 R 081d <ID>.l <hp>.l <max_hp>.l <sp>.l <max_sp>.l
 	0x29bの妖精版
@@ -2214,19 +2300,44 @@ R 081e <type>.w <val>.l
 	type=7 SP
 	type=8 MAX_SP
 	それ以外の値は無視
-S 0821
+R 081f <len>.w <MsgType>.B <color>.l <mes>.?B
+	0x40cの上位版
+R 0820 <ID>.l <type>.w <val>.l
+	コスチュームシステム関連？
+R 0821
+	ログイン系
+	ワンタイムパスワード関連
 	未調査
-R 0824 <?>.w <?>.w
+S 0822 <code>.7B
+	ログイン系
+	ワンタイムパスワード関連
 	未調査
-R 0837 <?>.B
+R 0823 <len>.w <result>.w
+	ログイン系
+	ワンタイムパスワード関連
+	未調査
+R 0824 <result>.w <itemID>.w
+	購買露天関連
+	result=5 ?
+	result=6 ?
+	result=7 ?
+	それ以外の値は無視
+	未調査
+R 0837 <result>.B
+	露天検索システム関連
 	未調査
 S 0838
+	露天検索システム関連
 	未調査
 R 0839 <?>.l <?>.l <?>.l <?>.l <?>.l <?>.l <?>.40B
+	SSOシステム？ギルドBAN関連
 	未調査
 R 083a <?>.w <?>.B
+	露天検索システム関連
 	未調査
 S 083b
+	露天検索システム関連
 	未調査
 R 083d <?>.w <?>.w
+	SSILIST？アイテム関連
 	未調査
