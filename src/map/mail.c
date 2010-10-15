@@ -117,7 +117,7 @@ static int mail_checkappend(struct map_session_data *sd,struct mail_data *md)
 
 		memcpy(&md->item, &sd->status.inventory[idx], sizeof(struct item));
 		md->item.amount = sd->mail_append.amount;
-		pc_delitem(sd, idx, md->item.amount, 1);
+		pc_delitem(sd, idx, md->item.amount, 1, 0);
 	}
 	sd->status.zeny -= md->zeny;
 	clif_updatestatus(sd,SP_ZENY);

@@ -1,4 +1,27 @@
 ----------------------------------------
+//0785 [2010/10/16] by popori
+
+・ディレイに関する仕様変更
+ ->ディレイ、詠唱が共に0以下のスキルに対してadelay/2分の値をディレイとして付与するオプションを追加 (battle.* skill.c)
+　※従来の仕様ですとディレイ、詠唱が共に0以下のスキルは常にadelay/2分の値をディレイを付与していましたが、デフォルトでは無効にします。
+
+ ->スキルディレイがamotionより小さい場合、amotionを最低値として保証していたのを、skill_db2.txtでスキルごとにスイッチさせるよう変更 (skill.* skill_db2.txt db_ref.txt)
+　※0665以降は全てのスキルに対してスキルディレイがamotionより低いとamotionを最低値として設定していました。
+　　これをskill_db2.txtで該当スキルのみスキルディレイがamotionより低いとamotionを最低値として保証するように変更します。
+　　本来は無効化すべきスキルがあるはずなのですが、情報が集まらずほぼ全てのスキルに対して有効化しています。
+　　詳しい情報をお持ちの方は情報提供お願いします。
+
+・client_packet.txtの更新 (client_packet.txt)
+
+・特定属性の敵からのダメージ軽減ボーナス「bonus2 bDefEleEnemy」の追加 (map.h pc.c battle.c const.txt item_bonus.txt)
+　ばるすさんに感謝
+
+・0x7faのtypeに合わせてアイテム消去時のtypeを合わせる (atcommand.c battle.c chrif.c clif.* guild.c homun.c mail.c npc.c pc.* pet.c script.c skill.c storage.c trade.c)
+
+・スクリプト命令「announce」に機能不明の"tool"と"micc"を指定出来るように拡張 (clif.c intif.c script_ref.txt)
+　※クライアントに定義されているものの、機能が不明。とりあえず指定出来るように拡張しました。
+
+----------------------------------------
 //0784 [2010/10/15] by popori
 
 ・clif_equipitemack()のPACKETVERの分岐を間違えていたので修正 (clif.c)

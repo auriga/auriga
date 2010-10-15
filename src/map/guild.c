@@ -504,7 +504,7 @@ void guild_created(int account_id, int guild_id)
 		if(battle_config.guild_emperium_check) {
 			int idx = pc_search_inventory(sd,714);
 			if(idx >= 0)
-				pc_delitem(sd,idx,1,0);	// エンペリウム消耗
+				pc_delitem(sd,idx,1,0,0);	// エンペリウム消耗
 		}
 	} else {
 		clif_guild_created(sd,2);	// 作成失敗（同名ギルド存在）

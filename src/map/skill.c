@@ -622,6 +622,11 @@ int skill_get_range_type(int id)
 	id = skill_get_skilldb_id(id);
 	return skill_db[id].range_type;
 }
+int skill_get_amotion_delay(int id)
+{
+	id = skill_get_skilldb_id(id);
+	return skill_db[id].amotion_delay;
+}
 
 /* 補正済み射程を返す */
 int skill_get_fixed_range(struct block_list *bl,int id,int lv)
@@ -1155,7 +1160,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			for(i=0; i<MAX_INVENTORY; i++) {
 				if(sd->status.inventory[i].nameid == 7517) {
 					y = (sd->status.inventory[i].amount > 4)? 4: sd->status.inventory[i].amount;
-					pc_delitem(sd,i,y,0);
+					pc_delitem(sd,i,y,0,1);
 				}
 			}
 			status_change_start(bl,SC_FLING,skilllv+y,0,0,0,skill_get_time2(skillid,skilllv),0);
@@ -5258,7 +5263,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						int idx = pc_search_inventory(msd,skill_db[skillid].itemid[i]);
 						if(idx < 0)
 							continue;
-						pc_delitem(msd,idx,val,0);
+						pc_delitem(msd,idx,val,0,1);
 					}
 				}
 			}
@@ -5570,7 +5575,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(sd->inventory_data[i]->use_script) {
 					run_script(sd->inventory_data[i]->use_script,0,sd->bl.id,0);
 				}
-				pc_delitem(sd,i,skill_db[skillid].amount[x],0);
+				pc_delitem(sd,i,skill_db[skillid].amount[x],0,1);
 				sd->state.potionpitcher_flag = 0;
 				if(sd->potion_per_hp > 0 || sd->potion_per_sp > 0) {
 					hp = status_get_max_hp(bl) * sd->potion_per_hp / 100;
@@ -7690,7 +7695,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			if(sd->inventory_data[j]->use_script) {
 				run_script(sd->inventory_data[j]->use_script,0,sd->bl.id,0);
 			}
-			pc_delitem(sd,j,skill_db[skillid].amount[i],0);
+			pc_delitem(sd,j,skill_db[skillid].amount[i],0,1);
 			sd->state.potionpitcher_flag = 0;
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 			if(sd->potion_hp > 0) {
@@ -11297,7 +11302,7 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 		if(cnd->id != AM_POTIONPITCHER && cnd->id != CR_SLIMPITCHER) {
 			for(i=0; i<10; i++) {
 				if(idx[i] >= 0)
-					pc_delitem(sd,idx[i],amount[i],0);	// アイテム消費
+					pc_delitem(sd,idx[i],amount[i],0,1);	// アイテム消費
 			}
 		}
 	}
@@ -11441,7 +11446,7 @@ int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 
 	sc = status_get_sc(bl);
 
-	if(delay <= 0 && skill_get_cast(skillid, skilllv) <= 0) {
+	if(battle_config.enable_half_adelay && delay <= 0 && skill_get_cast(skillid, skilllv) <= 0) {
 		delay = status_get_adelay(bl) / 2;
 	} else {
 		switch(skillid) {
@@ -11501,10 +11506,10 @@ int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 
 	delay = delay * (100 - reduce_time)/100;
 
-	if(delay < status_get_amotion(bl))
-		delay = status_get_amotion(bl);
-
-	return delay;
+	if(skill_get_amotion_delay(skillid) && delay < status_get_amotion(bl))
+		return status_get_amotion(bl);
+	else
+		return (delay > 0) ? delay : 0;
 }
 
 /*=========================================
@@ -13527,13 +13532,13 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 		if(j < 0)	/* 不正パケット(アイテム存在)チェック */
 			continue;
 		if(slot[i] == 1000) {	/* 星のかけら */
-			pc_delitem(sd,j,1,1);
+			pc_delitem(sd,j,1,1,1);
 			sc++;
 			cnt++;
 		}
 		if(slot[i] >= 994 && slot[i] <= 997 && ele == 0) {	/* 属性石 */
 			static const int ele_table[4] = { ELE_FIRE, ELE_WATER, ELE_WIND, ELE_EARTH };
-			pc_delitem(sd,j,1,1);
+			pc_delitem(sd,j,1,1,1);
 			ele = ele_table[slot[i]-994];
 			cnt++;
 		}
@@ -13566,7 +13571,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 				c = sd->status.inventory[j].amount;
 				if(c > amount)
 					c = amount;	/* 足りている */
-				pc_delitem(sd,j,c,0);
+				pc_delitem(sd,j,c,0,1);
 			} else {
 				if(battle_config.error_log)
 					printf("skill_produce_mix: material item error\n");
@@ -13816,7 +13821,7 @@ void skill_arrow_create(struct map_session_data *sd, int nameid)
 	if ((j = pc_search_inventory(sd, nameid)) < 0 || sd->status.inventory[j].equip)
 		return;
 
-	pc_delitem(sd,j,1,0);
+	pc_delitem(sd,j,1,0,1);
 	for(i=0;i<5;i++) {
 		memset(&tmp_item,0,sizeof(tmp_item));
 		tmp_item.nameid = skill_arrow_db[idx].cre_id[i];
@@ -13886,9 +13891,9 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 		clif_item_repaireffect(sd, 1, dstsd->status.inventory[idx].nameid);
 	} else {
 		clif_skill_nodamage(&sd->bl,&dstsd->bl,skillid,1,1);
-		pc_delitem(sd,n,1,0);
+		pc_delitem(sd,n,1,0,1);
 		dstsd->status.inventory[idx].attribute = 0;
-		clif_delitem(dstsd, idx, 1);
+		clif_delitem(dstsd, 1, idx, 1);
 		clif_additem(dstsd, idx, 1, 0);
 		clif_item_repaireffect(sd, 0, dstsd->status.inventory[idx].nameid);
 	}
@@ -13916,7 +13921,7 @@ void skill_poisoning_weapon(struct map_session_data *sd, int nameid)
 		for(i = 0; i < sizeof(poison)/sizeof(poison[0]); i++) {
 			if(poison[i] == nameid) {
 				if ((j = pc_search_inventory(sd, nameid)) >= 0) {
-					pc_delitem(sd,j,1,0);
+					pc_delitem(sd,j,1,0,1);
 					if(sd->sc.data[SC_POISONINGWEAPON].timer != -1)
 						status_change_end(&sd->bl,SC_POISONINGWEAPON,-1);
 					status_change_start(&sd->bl,SC_POISONINGWEAPON,sd->poisoning_lv,type[i],0,0,skill_get_time(GC_POISONINGWEAPON,sd->poisoning_lv),0);
@@ -14303,7 +14308,7 @@ void skill_weapon_refine(struct map_session_data *sd, int idx)
 	}
 
 	// アイテム消費
-	pc_delitem(sd,n,1,0);
+	pc_delitem(sd,n,1,0,1);
 
 	return;
 }
@@ -14366,7 +14371,7 @@ int skill_fail_weaponrefine(struct map_session_data *sd,int idx)
 		return 0;
 
 	sd->status.inventory[idx].refine = 0;
-	pc_delitem(sd,idx,1,0);
+	pc_delitem(sd,idx,1,0,2);
 	// 精錬失敗エフェクトのパケット
 	clif_refine(sd->fd,1,idx,sd->status.inventory[idx].refine);
 	// 他の人にも失敗を通知
@@ -14993,6 +14998,7 @@ static int skill_readdb(void)
 		skill_db[i].zone      = atoi(split[3]);
 		skill_split_atoi(split[4],skill_db[i].damage_rate,sizeof(skill_db[i].damage_rate)/sizeof(int));
 		skill_db[i].range_type = atoi(split[5]);
+		skill_db[i].amotion_delay = atoi(split[6]);
 		k++;
 	}
 	fclose(fp);

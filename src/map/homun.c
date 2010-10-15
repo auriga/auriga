@@ -729,7 +729,7 @@ int homun_callhom(struct map_session_data *sd)
 			clif_skill_fail(sd,AM_CALLHOMUN,0,0);
 			return 0;
 		}
-		pc_delitem(sd,idx,1,0);	// エンブリオ消去
+		pc_delitem(sd,idx,1,0,1);	// エンブリオ消去
 		//if(atn_rand()%100<80)		// 成功率不明〜
 		homun_create_hom(sd,homun_get_create_homunid());
 	}
@@ -851,7 +851,7 @@ static int homun_food(struct map_session_data *sd)
 		clif_hom_food(sd,food,0);
 		return 1;
 	}
-	pc_delitem(sd,i,1,0);
+	pc_delitem(sd,i,1,0,0);
 	t = sd->hd->status.hungry;
 	if(t > 90) {
 		sd->hd->status.intimate -= 50*battle_config.homun_intimate_rate/100;

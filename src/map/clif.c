@@ -3685,7 +3685,7 @@ void clif_additem(struct map_session_data *sd, int n, int amount, unsigned char 
  *
  *------------------------------------------
  */
-void clif_delitem(struct map_session_data *sd, int n, int amount)
+void clif_delitem(struct map_session_data *sd, short type, int n, int amount)
 {
 	int fd;
 
@@ -3700,7 +3700,7 @@ void clif_delitem(struct map_session_data *sd, int n, int amount)
 	WFIFOSET(fd,packet_db[0xaf].len);
 #else
 	WFIFOW(fd,0)=0x7fa;
-	WFIFOW(fd,2)=0;
+	WFIFOW(fd,2)=type;
 	WFIFOW(fd,4)=n+2;
 	WFIFOW(fd,6)=amount;
 	WFIFOSET(fd,packet_db[0x7fa].len);
@@ -7410,7 +7410,11 @@ void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, int flag
 
 	WBUFW(buf,0) = 0x9a;
 	WBUFW(buf,2) = (unsigned short)(len+lp);
-	if(flag&0x20)
+	if(flag&0x80)
+		memcpy(WBUFP(buf,4), "micc", 4);
+	else if(flag&0x40)
+		memcpy(WBUFP(buf,4), "tool", 4);
+	else if(flag&0x20)
 		memcpy(WBUFP(buf,4), "ssss", 4);
 	else if(flag&0x10)
 		memcpy(WBUFP(buf,4), "blue", 4);
@@ -12740,7 +12744,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 
 	if(unit_isdead(&sd->bl)) {
 		clif_clearchar_area(&sd->bl,1);
-		clif_delitem(sd, item_index, 0);	// クライアントに失敗パケットを送信する必要がある
+		clif_delitem(sd, 0, item_index, 0);	// クライアントに失敗パケットを送信する必要がある
 		return;
 	}
 
@@ -12760,7 +12764,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_BERSERK].timer != -1 ||		// バーサーク
 	    sd->sc.data[SC_WHITEIMPRISON].timer != -1 )		// ホワイトインプリズン
 	{
-		clif_delitem(sd, item_index, 0);
+		clif_delitem(sd, 0, item_index, 0);
 		return;
 	}
 	sd->drop_delay_tick  = tick + 300;
@@ -12776,7 +12780,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 				storage_storage_save(sd);
 		}
 	} else {
-		clif_delitem(sd, item_index, 0);
+		clif_delitem(sd, 0, item_index, 0);
 	}
 
 	return;
@@ -15613,7 +15617,7 @@ static void clif_parse_Revive(int fd,struct map_session_data *sd, int cmd)
 	if((idx = pc_search_inventory(sd,7621)) < 0)	// ジークフリードの証を所持していない
 		return;
 
-	pc_delitem(sd,idx,1,0);
+	pc_delitem(sd,idx,1,0,1);
 	sd->status.hp = sd->status.max_hp;
 	sd->status.sp = sd->status.max_sp;
 	clif_updatestatus(sd,SP_HP);

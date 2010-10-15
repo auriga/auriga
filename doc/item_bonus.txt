@@ -177,6 +177,8 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 					0,無　1,水　2,土　3,火　4,風　5,毒　6,聖　7,闇　8,念　9,不死
 	bonus2 bSubEnemy,n,x;				敵タイプnからのダメージx%軽減(魔法も軽減)
 					0,その他　1,プレイヤー　2,ボス以外のモンスター　3,ホムンクルス
+	bonus2 bDefEleEnemy,n,x;				n属性の敵からのダメージx%軽減(魔法も軽減)
+					0,無　1,水　2,土　3,火　4,風　5,毒　6,聖　7,闇　8,念　9,不死
 	bonus2 bAddDefClass,n,x;			クラスnのモンスターからのダメージx%軽減(物理攻撃のみ)。プレイヤーの場合はn職業にx%のダメージ軽減
 	bonus2 bAddMDefClass,n,x;			クラスnのモンスターからのダメージx%軽減(魔法攻撃のみ)。プレイヤーの場合はn職業にx%の魔法ダメージ軽減
 	bonus2 bSubGroup,n,x;				グループnからのダメージx%軽減

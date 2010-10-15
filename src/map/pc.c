@@ -2849,6 +2849,12 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		if(sd->state.lr_flag != 2)
 			sd->ignore_mdef_enemy[type2] += val;
 		break;
+	case SP_DEF_ELEENEMY:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
+		if(sd->state.lr_flag != 2)
+			sd->def_eleenemy[type2] += val;
+		break;
 	default:
 		if(battle_config.error_log)
 			printf("pc_bonus2: unknown type %d %d %d!\n",type,type2,val);
@@ -3114,7 +3120,7 @@ void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip)
 
 				// カードは減らす
 				clif_insert_card(sd, idx_equip, idx_card, 0);	// flag: 1=fail, 0:success
-				pc_delitem(sd,idx_card,1,1);
+				pc_delitem(sd,idx_card,1,1,0);
 				return;
 			}
 		}
@@ -3336,7 +3342,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 		intif_delete_petdata(*((int *)(&sd->status.inventory[idx].card[1])));
 	}
 	if(first) {
-		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 3);
+		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 3, 0);
 	} else {
 		char output[256];
 		struct item_data *data = sd->inventory_data[idx];
@@ -3344,13 +3350,13 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 #if PACKETVER >= 10
 		if(itemdb_isequip2(data)) {
 			// 強化装備アイテムの削除
-			pc_delitem(sd, idx, sd->status.inventory[idx].amount, 1);
+			pc_delitem(sd, idx, sd->status.inventory[idx].amount, 1, 0);
 			clif_delitem_timeout(sd, idx, ((data->view_id > 0)? data->view_id: data->nameid));
 			return -1;
 		}
 #endif
 		// 通常アイテムの使用期限切れ削除
-		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 0);
+		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 0, 0);
 		snprintf(output, sizeof(output), msg_txt(187), ((data->view_id > 0)? itemdb_jname(data->view_id): data->jname));
 		clif_disp_onlyself(sd->fd, output);
 	}
@@ -3481,7 +3487,7 @@ int pc_lossequipitem(struct map_session_data *sd,int pos,int type)
 
 	n = sd->equip_index[pos];
 	pc_unequipitem(sd,n,type);
-	pc_delitem(sd,n,1,type);
+	pc_delitem(sd,n,1,type,0);
 	return 0;
 }
 
@@ -3489,7 +3495,7 @@ int pc_lossequipitem(struct map_session_data *sd,int pos,int type)
  * アイテムを減らす
  *------------------------------------------
  */
-void pc_delitem(struct map_session_data *sd, int n, int amount, int type)
+void pc_delitem(struct map_session_data *sd, int n, int amount, int type, short dtype)
 {
 	nullpo_retv(sd);
 
@@ -3511,7 +3517,7 @@ void pc_delitem(struct map_session_data *sd, int n, int amount, int type)
 		sd->inventory_data[n] = NULL;
 	}
 	if(!(type&1))
-		clif_delitem(sd,n,amount);
+		clif_delitem(sd,dtype,n,amount);
 	if(!(type&2))
 		clif_updatestatus(sd,SP_WEIGHT);
 
@@ -3540,7 +3546,7 @@ int pc_dropitem(struct map_session_data *sd, int n, int amount)
 		return 0;
 
 	if(map_addflooritem(&sd->status.inventory[n],amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0)) {
-		pc_delitem(sd,n,amount,0);
+		pc_delitem(sd,n,amount,0,0);
 		return 1;
 	}
 	return 0;
@@ -3705,7 +3711,7 @@ void pc_useitem(struct map_session_data *sd, int n)
 			clif_useitemack(sd,n,amount,1);
 		} else {
 			clif_useitemack(sd,n,amount-1,1);
-			pc_delitem(sd,n,1,1);
+			pc_delitem(sd,n,1,1,0);
 		}
 	} else {
 		clif_useitemack(sd,n,amount,1);
@@ -3836,7 +3842,7 @@ void pc_putitemtocart(struct map_session_data *sd, int idx, int amount)
 		return;
 
 	if(pc_cart_additem(sd, item_data, amount) == 0)
-		pc_delitem(sd, idx, amount, 0);
+		pc_delitem(sd, idx, amount, 0, 5);
 
 	return;
 }
@@ -7461,7 +7467,7 @@ int pc_checkitem(struct map_session_data *sd)
 				printf("illegal item id %d in %d[%s] inventory.\n",itemid,sd->bl.id,sd->status.name);
 			if( sd->status.inventory[i].card[0] == (short)0xff00 )
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
-			pc_delitem(sd,i,sd->status.inventory[i].amount,3);
+			pc_delitem(sd,i,sd->status.inventory[i].amount,3,0);
 		}
 		// カート内の不正チェック
 		for(i=0; i<MAX_CART; i++) {
@@ -7864,7 +7870,7 @@ int pc_divorce(struct map_session_data *sd)
 		p_sd->status.partner_id = 0;
 		for(i=0; i<MAX_INVENTORY; i++) {
 			if(p_sd->status.inventory[i].nameid == WEDDING_RING_M || p_sd->status.inventory[i].nameid == WEDDING_RING_F) {
-				pc_delitem(p_sd,i,1,0);
+				pc_delitem(p_sd,i,1,0,0);
 				break;
 			}
 		}
@@ -7879,7 +7885,7 @@ int pc_divorce(struct map_session_data *sd)
 	sd->status.partner_id = 0;
 	for(i=0; i<MAX_INVENTORY; i++) {
 		if(sd->status.inventory[i].nameid == WEDDING_RING_M || sd->status.inventory[i].nameid == WEDDING_RING_F) {
-			pc_delitem(sd,i,1,0);
+			pc_delitem(sd,i,1,0,0);
 		}
 	}
 	if(p_sd && p_sd->status.name[0])
@@ -9134,7 +9140,7 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 							if (quantity < 0) {
 								if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
 									intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
-								pc_delitem(pl_sd, j, -quantity, 0);
+								pc_delitem(pl_sd, j, -quantity, 0, 0);
 								snprintf(output, sizeof output, msg_txt(151), -quantity, item_data->jname); // Server (special action): you lost %ld %s.
 								clif_displaymessage(pl_sd->fd, output);
 								// line changed -> file must be rewriten

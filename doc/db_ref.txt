@@ -87,7 +87,7 @@ blow_count: スキルよるノックバック距離です。レベル別に設�
 ==========================================================================
 3. db/skill_db2.txt
 --------------------------------------------------------------------------
-id,cloable,misfire,zone,damage_rate,range_type,reserve1,reserve2,reserve3
+id,cloable,misfire,zone,damage_rate,range_type,amotion_delay,reserve1,reserve2
 
 id: スキルのIDです。
 cloable: クローンスキルで盗作可能か設定します。
@@ -100,9 +100,10 @@ damage_rate: 場所によるダメージ補正を設定します。場所別に�
 	Normal:PVP:GVG:PK->100:100:60:100
 range_type: スキルの距離タイプを設定します。
 	0-近距離 1-遠距離 2-強制遠距離
+amotion_delay: 最低スキルディレイとしてamotionの値を保証するか
+	0-保証しない 1-保証する
 reserve1: 予約1。現在未使用。
 reserve2: 予約2。現在未使用。
-reserve3: 予約3。現在未使用。
 
 
 ==========================================================================

@@ -86,7 +86,7 @@ int pc_payzeny(struct map_session_data*,int);
 int pc_additem(struct map_session_data*,struct item*,int);
 int pc_getzeny(struct map_session_data*,int);
 int pc_lossequipitem(struct map_session_data *sd,int pos,int type);
-void pc_delitem(struct map_session_data*, int n, int amount, int type);
+void pc_delitem(struct map_session_data*, int n, int amount, int type, short dtype);
 int pc_checkitem(struct map_session_data*);
 
 int pc_cart_additem(struct map_session_data *sd,struct item *item_data,int amount);

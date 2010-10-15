@@ -2839,12 +2839,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		int s_enemy = status_get_enemy_type(src);
 		int s_size  = status_get_size(src);
 		int s_group = status_get_group(src);
+		int ele_type= status_get_elem_type(src);
 		cardfix = 100;
 		cardfix = cardfix*(100-target_sd->subrace[s_race])/100;			// 種族によるダメージ耐性
 		if (s_ele == ELE_NONE)
 			cardfix = cardfix*(100-target_sd->subele[ELE_NEUTRAL])/100;	// 属性無しの耐性は無属性
 		else
 			cardfix = cardfix*(100-target_sd->subele[s_ele])/100;		// 属性によるダメージ耐性
+		if (ele_type == ELE_NONE)
+			cardfix = cardfix*(100-target_sd->def_eleenemy[ELE_NEUTRAL])/100;	// 属性無しの耐性は無属性
+		else
+			cardfix = cardfix*(100-target_sd->def_eleenemy[ele_type])/100;		// 敵属性によるダメージ耐性
 		cardfix = cardfix*(100-target_sd->subenemy[s_enemy])/100;		// 敵タイプによるダメージ耐性
 		cardfix = cardfix*(100-target_sd->subsize[s_size])/100;			// サイズによるダメージ耐性
 		cardfix = cardfix*(100-target_sd->subgroup[s_group])/100;		// グループによるダメージ耐性
@@ -3550,6 +3555,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		int s_class = status_get_class(bl);
 		cardfix = 100;
 		cardfix = cardfix*(100-tsd->subele[ele])/100;				// 属性によるダメージ耐性
+		cardfix = cardfix*(100-tsd->def_eleenemy[status_get_elem_type(bl)])/100;				// 敵属性によるダメージ耐性
 		cardfix = cardfix*(100-tsd->subenemy[status_get_enemy_type(bl)])/100;	// 敵タイプによるダメージ耐性
 		cardfix = cardfix*(100-tsd->magic_subsize[status_get_size(bl)])/100;		// サイズによるダメージ耐性
 		cardfix = cardfix*(100-tsd->magic_subrace[race])/100;
@@ -3793,6 +3799,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		if(tsd && mid.damage > 0) {
 			int cardfix = 100;
 			cardfix = cardfix*(100-tsd->subele[ele])/100;	// 属性によるダメージ耐性
+			cardfix = cardfix*(100-tsd->def_eleenemy[status_get_elem_type(bl)])/100;	// 敵属性によるダメージ耐性
 			cardfix = cardfix*(100-tsd->subrace[race])/100;	// 種族によるダメージ耐性
 			cardfix = cardfix*(100-tsd->subenemy[status_get_enemy_type(bl)])/100;	// 敵タイプによるダメージ耐性
 			cardfix = cardfix*(100-tsd->subsize[status_get_size(bl)])/100;	// サイズによるダメージ耐性
@@ -4508,7 +4515,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 				if( sd && ssc && ssc->data[SC_WIZARD].timer != -1 &&
 				    (idx = pc_search_inventory(sd,7321)) >= 0 ) {
-					pc_delitem(sd,idx,1,0);
+					pc_delitem(sd,idx,1,0,1);
 				} else {
 					rdamage += damage;
 				}
@@ -5173,7 +5180,7 @@ int battle_delarrow(struct map_session_data* sd,int num,int skillid)
 	idx = sd->equip_index[10];
 	if(idx >= 0 && sd->status.inventory[idx].amount >= num && sd->inventory_data[idx]->arrow_type & mask) {
 		if(battle_config.arrow_decrement)
-			pc_delitem(sd,idx,num,0);
+			pc_delitem(sd,idx,num,0,0);
 	} else {
 		clif_arrow_fail(sd,0);
 		return 0;
@@ -5710,6 +5717,7 @@ int battle_config_read(const char *cfgName)
 		{ "mob_nohitstop_rate",                 &battle_config.mob_nohitstop_rate,                 0        },
 		{ "refinery_research_lv",               &battle_config.refinery_research_lv,               0        },
 		{ "maprespawnguildid_all_players",      &battle_config.maprespawnguildid_all_players,      0        },
+		{ "enable_half_adelay",                 &battle_config.enable_half_adelay,                 0        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

@@ -943,7 +943,7 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 		    sd->status.inventory[idx].card[0] == (short)0xff00 &&
 		    search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
 			intif_delete_petdata((*(int *)(&sd->status.inventory[idx].card[1])));
-		pc_delitem(sd, idx, item_list[i * 2 + 1], 0);
+		pc_delitem(sd, idx, item_list[i * 2 + 1], 0, 6);
 	}
 	pc_getzeny(sd, (int)z);
 

@@ -353,7 +353,7 @@ void storage_storageadd(struct map_session_data *sd, int idx, int amount)
 		return;
 
 	if(storage_additem(sd, stor, &sd->status.inventory[idx], amount) == 0)
-		pc_delitem(sd, idx, amount, 0);
+		pc_delitem(sd, idx, amount, 0, 4);
 
 	return;
 }
@@ -706,7 +706,7 @@ void storage_guild_storageadd(struct map_session_data *sd, int idx, int amount)
 		return;
 
 	if(storage_guild_additem(sd, stor, &sd->status.inventory[idx], amount) == 0)
-		pc_delitem(sd, idx, amount, 0);
+		pc_delitem(sd, idx, amount, 0, 4);
 
 	return;
 }

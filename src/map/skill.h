@@ -65,6 +65,7 @@ struct skill_db {
 	int zone;
 	int damage_rate[4];
 	int range_type;
+	int amotion_delay;
 };
 
 #define MAX_SKILL_UNIT_LAYOUT	50

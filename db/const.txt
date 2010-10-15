@@ -312,6 +312,7 @@ bSkillAutoSelfSpell2	1168
 bAutoActiveSkill	1169
 bAddCastRate		1170
 bAddEffMagic		1171
+bDefEleEnemy		1172
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

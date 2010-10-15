@@ -75,7 +75,7 @@ void clif_scriptinputstr(struct map_session_data *sd, int npcid);
 void clif_viewpoint(struct map_session_data *sd, int npc_id, int type, int x, int y, int id, int color);
 void clif_cutin(struct map_session_data *sd, char *image, int type);
 void clif_additem(struct map_session_data *sd, int n, int amount, unsigned char fail);
-void clif_delitem(struct map_session_data *sd, int n, int amount);
+void clif_delitem(struct map_session_data *sd, short type, int n, int amount);
 void clif_delitem_timeout(struct map_session_data *sd, int n, int itemid);
 void clif_updatestatus(struct map_session_data *sd, int type);
 void clif_changestatus(struct block_list *bl, int type, int val);

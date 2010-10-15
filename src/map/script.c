@@ -5686,11 +5686,11 @@ int buildin_delitem(struct script_state *st)
 			}
 
 			if(sd->status.inventory[i].amount >= amount) {
-				pc_delitem(sd,i,amount,0);
+				pc_delitem(sd,i,amount,0,0);
 				break;
 			} else {
 				amount -= sd->status.inventory[i].amount;
-				pc_delitem(sd,i,sd->status.inventory[i].amount,0);
+				pc_delitem(sd,i,sd->status.inventory[i].amount,0,0);
 			}
 		}
 	}
@@ -5783,9 +5783,9 @@ int buildin_delitem2(struct script_state *st)
 	}
 
 	if(sd->status.inventory[idx].amount >= amount)
-		pc_delitem(sd,idx,amount,0);
+		pc_delitem(sd,idx,amount,0,0);
 	else
-		pc_delitem(sd,idx,sd->status.inventory[idx].amount,0);
+		pc_delitem(sd,idx,sd->status.inventory[idx].amount,0,0);
 
 	return 0;
 }
@@ -8931,7 +8931,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 
 	if(removed_flag) {
 		if(typefail == 0 || typefail == 2) {		// 武具損失して終了
-			pc_delitem(sd,i,1,0);
+			pc_delitem(sd,i,1,0,2);
 		}
 		else if(typefail == 1 || typefail == 4) {	// 指定カードを取り除いたアイテム取得
 			flag = 0;
@@ -8941,7 +8941,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 			item_tmp.refine    = sd->status.inventory[i].refine;
 			item_tmp.attribute = sd->status.inventory[i].attribute;
 			memcpy(&item_tmp.card, &card_set, sizeof(card_set));
-			pc_delitem(sd,i,1,0);
+			pc_delitem(sd,i,1,0,0);
 			if( (flag=pc_additem(sd,&item_tmp,1)) ) {	// 持てないならドロップ
 				clif_additem(sd,0,0,flag);
 				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
@@ -9248,7 +9248,7 @@ int buildin_clearitem(struct script_state *st)
 		if (sd->status.inventory[i].amount) {
 			if (sd->status.inventory[i].card[0] == (short)0xff00)
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
-			pc_delitem(sd, i, sd->status.inventory[i].amount, 0);
+			pc_delitem(sd, i, sd->status.inventory[i].amount, 0, 0);
 		}
 	}
 	return 0;

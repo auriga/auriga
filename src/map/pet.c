@@ -471,7 +471,7 @@ int pet_select_egg(struct map_session_data *sd,short egg_index)
 		if(battle_config.error_log)
 			printf("wrong egg item inventory %d\n",egg_index);
 	}
-	pc_delitem(sd,egg_index,1,0);
+	pc_delitem(sd,egg_index,1,0,0);
 
 	return 0;
 }
@@ -589,7 +589,7 @@ static int pet_food(struct map_session_data *sd)
 		clif_pet_food(sd,sd->petDB->FoodID,0);
 		return 1;
 	}
-	pc_delitem(sd,i,1,0);
+	pc_delitem(sd,i,1,0,0);
 	t = sd->pet.intimate;
 
 	if(sd->pet.hungry > 90) {
@@ -783,7 +783,7 @@ void pet_equipitem(struct map_session_data *sd, int idx)
 	if(sd->petDB == NULL || sd->petDB->AcceID == 0 || nameid != sd->petDB->AcceID || sd->pet.equip != 0) {
 		clif_equipitemack(sd,0,0,0);
 	} else {
-		pc_delitem(sd, idx, 1, 0);
+		pc_delitem(sd, idx, 1, 0, 0);
 		sd->pet.equip = sd->pd->equip = nameid;
 		clif_pet_equip(sd->pd,nameid);
 	}

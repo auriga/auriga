@@ -404,7 +404,7 @@ void trade_tradecommit(struct map_session_data *sd)
 						if (itemdb_isdropable(sd->status.inventory[idx].nameid)) {
 							flag = pc_additem(target_sd, &sd->status.inventory[idx], sd->deal_item_amount[trade_i]);
 							if(flag==0)
-								pc_delitem(sd, idx, sd->deal_item_amount[trade_i], 1);
+								pc_delitem(sd, idx, sd->deal_item_amount[trade_i], 1, 0);
 							else
 								clif_additem(sd, idx, sd->deal_item_amount[trade_i], 0);
 						}
@@ -416,7 +416,7 @@ void trade_tradecommit(struct map_session_data *sd)
 						if (itemdb_isdropable(target_sd->status.inventory[idx].nameid)) {
 							flag = pc_additem(sd, &target_sd->status.inventory[idx], target_sd->deal_item_amount[trade_i]);
 							if(flag==0)
-								pc_delitem(target_sd, idx, target_sd->deal_item_amount[trade_i], 1);
+								pc_delitem(target_sd, idx, target_sd->deal_item_amount[trade_i], 1, 0);
 							else
 								clif_additem(target_sd, idx, target_sd->deal_item_amount[trade_i], 0);
 						}

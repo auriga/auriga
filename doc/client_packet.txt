@@ -2222,7 +2222,7 @@ S 0802 <level>.w <MapID>.w <job>.6w
 	パーティーブッキング登録要求
 R 0803 <result>.w
 	パーティーブッキング登録要求応答
-S 0804 <level>.w <MapID>.w <job>.w <?>.l <?>.w
+S 0804 <level>.w <MapID>.w <job>.w <last_index>.l <result_count>.w
 	パーティーブッキング検索要求
 R 0805 <len>.w <count?>.B { <index>.l <name>.24B <time>.l <level>.w <MapID>.w <job>.6w }.48B*
 	パーティーブッキング検索要求応答

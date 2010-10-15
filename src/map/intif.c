@@ -271,7 +271,11 @@ void intif_GMmessage(char* mes, size_t len, int flag)
 	WFIFOW(inter_fd,10) = 0;
 	WFIFOW(inter_fd,12) = 0;
 	WFIFOW(inter_fd,14) = 0;
-	if(flag&0x20)
+	if(flag&0x80)
+		memcpy(WFIFOP(inter_fd,16), "micc", 4);
+	else if(flag&0x40)
+		memcpy(WFIFOP(inter_fd,16), "tool", 4);
+	else if(flag&0x20)
 		memcpy(WFIFOP(inter_fd,16), "ssss", 4);
 	else if(flag&0x10)
 		memcpy(WFIFOP(inter_fd,16), "blue", 4);

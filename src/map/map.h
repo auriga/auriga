@@ -418,6 +418,7 @@ struct map_session_data {
 	int castrate,hprate,sprate,dsprate;
 	int addele[ELE_MAX],addrace[RCT_MAX],addenemy[4],addsize[MAX_SIZE_FIX];
 	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[4],subsize[MAX_SIZE_FIX];
+	int def_eleenemy[ELE_MAX];
 	int addeff[10],addeff2[10],reseff[10],addeff_range_flag[10];
 	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[4],addsize_[MAX_SIZE_FIX];	// 二刀流のために追加
 	int atk_ele_,star_,overrefine_;				// 二刀流のために追加
@@ -1037,7 +1038,7 @@ enum {
 	SP_ADD_FIX_CAST_RATE,SP_ADD_SKILL_HEAL_RATE,SP_MATK2_RATE,SP_AUTOACTIVE_WEAPON,SP_AUTOACTIVE_MAGIC,	// 1156-1160
 	SP_REVAUTOACTIVE_WEAPON,SP_REVAUTOACTIVE_MAGIC,SP_AUTOACTIVE_ITEM,SP_ADDEFFSKILL,SP_SKILLAUTOSPELL,	// 1161-1165
 	SP_SKILLAUTOSPELL2,SP_SKILLAUTOSELFSPELL,SP_SKILLAUTOSELFSPELL2,SP_AUTOACTIVE_SKILL,SP_ADD_CAST_RATE,	// 1166-1170
-	SP_ADDEFFMAGIC,	// 1171
+	SP_ADDEFFMAGIC,SP_DEF_ELEENEMY,	// 1172
 
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005

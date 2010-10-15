@@ -1593,7 +1593,7 @@ int atcommand_itemreset(const int fd, struct map_session_data* sd, AtCommandType
 		if (sd->status.inventory[i].amount && sd->status.inventory[i].equip == 0) {
 			if (sd->status.inventory[i].card[0] == (short)0xff00)
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
-			pc_delitem(sd, i, sd->status.inventory[i].amount, 0);
+			pc_delitem(sd, i, sd->status.inventory[i].amount, 0, 0);
 		}
 	}
 	clif_displaymessage(fd, msg_txt(20));
@@ -1623,7 +1623,7 @@ int atcommand_charitemreset(const int fd, struct map_session_data* sd, AtCommand
 			if (pl_sd->status.inventory[i].amount && pl_sd->status.inventory[i].equip == 0) {
 				if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
 					intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
-				pc_delitem(pl_sd, i, pl_sd->status.inventory[i].amount, 0);
+				pc_delitem(pl_sd, i, pl_sd->status.inventory[i].amount, 0, 0);
 			}
 		}
 		clif_displaymessage(fd, msg_txt(20));
@@ -2192,7 +2192,7 @@ int atcommand_refine(const int fd, struct map_session_data* sd, AtCommandType co
 		current_position = data->equip;
 		pc_unequipitem(sd, i, 0);
 		clif_refine(fd, 0, i, data->refine);
-		clif_delitem(sd, i, 1);
+		clif_delitem(sd, 3, i, 1);
 		clif_additem(sd, i, 1, 0);
 		pc_equipitem(sd, i, current_position);
 		clif_misceffect(&sd->bl, 3);
