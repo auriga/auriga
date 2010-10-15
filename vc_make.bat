@@ -9,6 +9,7 @@ rem  - Visual C++ Toolkit 2003
 rem  - Visual C++ 2005 (Express Edition 含む)
 rem  - Visual C++ 2008 Express Edition
 rem  - Visual C++ 2008 64bitコンパイル
+rem  - Visual C++ 2010 Express Edition
 
 rem ----------------------------------------------------------------
 rem 共通設定
@@ -79,6 +80,13 @@ rem set __VCVER__=9
 rem set __BITTYPE__=x64
 rem ---- VC++ 2008 64bitコンパイル (Express以外) の設定ここまで
 
+rem ---- VC++ 2010 Express Edition の設定 / 必要ならコメントアウトをはずす
+rem set PATH=C:\Program Files\Microsoft Visual Studio 10.0\VC\bin;C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
+rem set INCLUDE=C:\Program Files\Microsoft Visual Studio 10.0\VC\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
+rem set LIB=C:\Program Files\Microsoft Visual Studio 10.0\VC\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
+rem set __VCVER__=10
+rem ---- VC++ 2010 Express Edition の設定ここまで
+
 rem ---- VC++ .NET 2003 の設定 / 必要ならコメントアウトをはずす
 rem call "C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin\vcvars32.bat"
 rem ---- VC++ .NET 2003 の設定ここまで
@@ -101,6 +109,7 @@ rem ----------------------------------------------------------------
 rem VC8以上 で指定できないオプションの回避処理
 if "%__VCVER__%"=="8" goto SKIPVC8
 if "%__VCVER__%"=="9" goto SKIPVC8
+if "%__VCVER__%"=="10" goto SKIPVC8
 set __OPT_OP__=/Op
 :SKIPVC8
 

@@ -4448,8 +4448,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case TK_HIGHJUMP:	/* ノピティギ */
 		{
 			int dir = status_get_dir(src);
-			int x = src->x + dirx[dir]*skilllv*2;
-			int y = src->y + diry[dir]*skilllv*2;
+			int x,y;
+			if(dir & 1) {	// 斜め移動の場合
+				x = src->x + dirx[dir] * (skilllv+skilllv/3);
+				y = src->y + diry[dir] * (skilllv+skilllv/3);
+			} else {
+				x = src->x + dirx[dir] * skilllv*2;
+				y = src->y + diry[dir] * skilllv*2;
+			}
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			// 着地地点とその一歩先が移動可能セルでPC,MOB,NPCいずれも居ないなら
 			if( !map[src->m].flag.pvp && (!map[src->m].flag.noteleport || map[src->m].flag.gvg) && !map[src->m].flag.nojump &&
