@@ -576,7 +576,6 @@ extern struct Battle_Config {
 	int mob_nohitstop_rate;
 	int refinery_research_lv;
 	int maprespawnguildid_all_players;
-	int enable_half_adelay;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

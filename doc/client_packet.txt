@@ -2302,7 +2302,7 @@ R 081e <type>.w <val>.l
 	それ以外の値は無視
 R 081f <len>.w <MsgType>.B <color>.l <mes>.?B
 	0x40cの上位版
-R 0820 <ID>.l <type>.w <val>.l
+R 0820 <ID>.l <type>.B <val>.l
 	コスチュームシステム関連？
 R 0821
 	ログイン系

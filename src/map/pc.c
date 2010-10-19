@@ -2819,6 +2819,24 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		sd->skill_healup.rate[sd->skill_healup.count] = val;
 		sd->skill_healup.count++;
 		break;
+	case SP_ADD_SP_COST:
+		//update
+		for(i=0; i<sd->skill_addspcost.count; i++)
+		{
+			if(sd->skill_addspcost.id[i] == type2)
+			{
+				sd->skill_addspcost.rate[i] += val;
+				return 0;
+			}
+		}
+		//full
+		if(sd->skill_addspcost.count == MAX_SKILL_ADDSPCOST)
+			break;
+		//add
+		sd->skill_addspcost.id[sd->skill_addspcost.count] = type2;
+		sd->skill_addspcost.rate[sd->skill_addspcost.count] = val;
+		sd->skill_addspcost.count++;
+		break;
 	case SP_IGNORE_DEF_ELE:
 		if(!sd->state.lr_flag)
 			sd->ignore_def_ele[type2] += val;

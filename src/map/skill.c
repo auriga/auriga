@@ -10053,6 +10053,13 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		sp -= sp * mana / 25;
 	if(sd->sc.data[SC_RECOGNIZEDSPELL].timer!=-1)		// リゴグナイズドスペル時は消費SP25%増加
 		sp = sp * 125 / 100;
+	if(sd->skill_addspcost.count > 0) {		// カードによるSP使用量増加
+		int i;
+		for(i=0; i<sd->skill_addspcost.count; i++) {
+			if(cnd->id == sd->skill_addspcost.id[i])
+				sp += sd->skill_addspcost.rate[i];
+		}
+	}
 
 	switch( cnd->id ) {
 	case SL_SMA:	/* エスマ */
@@ -11452,7 +11459,7 @@ int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 
 	sc = status_get_sc(bl);
 
-	if(battle_config.enable_half_adelay && delay <= 0 && skill_get_cast(skillid, skilllv) <= 0) {
+	if(delay <= 0 && skill_get_cast(skillid, skilllv) <= 0) {
 		delay = status_get_adelay(bl) / 2;
 	} else {
 		switch(skillid) {

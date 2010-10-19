@@ -5717,7 +5717,6 @@ int battle_config_read(const char *cfgName)
 		{ "mob_nohitstop_rate",                 &battle_config.mob_nohitstop_rate,                 0        },
 		{ "refinery_research_lv",               &battle_config.refinery_research_lv,               0        },
 		{ "maprespawnguildid_all_players",      &battle_config.maprespawnguildid_all_players,      0        },
-		{ "enable_half_adelay",                 &battle_config.enable_half_adelay,                 0        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

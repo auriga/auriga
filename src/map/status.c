@@ -581,6 +581,7 @@ L_RECALC:
 	memset(&sd->skill_healup,0,sizeof(sd->skill_healup));
 	memset(&sd->activeitem,0,sizeof(sd->activeitem));
 	memset(sd->def_eleenemy,0,sizeof(sd->def_eleenemy));
+	memset(&sd->skill_addspcost,0,sizeof(sd->skill_addspcost));
 
 	for(i=0; i<10; i++) {
 		idx = sd->equip_index[i];

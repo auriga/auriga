@@ -313,6 +313,7 @@ bAutoActiveSkill	1169
 bAddCastRate		1170
 bAddEffMagic		1171
 bDefEleEnemy		1172
+bAddSpCost		1173
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

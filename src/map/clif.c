@@ -11650,6 +11650,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 
 	fd = sd->fd;
 
+#if PACKETVER < 28
 	WFIFOW(fd,0) = 0x2d7;
 	memcpy(WFIFOP(fd,4), tsd->status.name, 24);
 	if(tsd->status.class_ == PC_CLASS_GS || tsd->status.class_ == PC_CLASS_NJ)
@@ -11715,6 +11716,77 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 		WFIFOW(fd,2) = 43 + n*26;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
+#else
+	WFIFOW(fd,0) = 0x2d7;
+	memcpy(WFIFOP(fd,4), tsd->status.name, 24);
+	if(tsd->status.class_ == PC_CLASS_GS || tsd->status.class_ == PC_CLASS_NJ)
+		WFIFOW(fd,28) = tsd->status.class_-4;
+	else
+		WFIFOW(fd,28) = tsd->status.class_;
+	WFIFOW(fd,30) = tsd->status.hair;
+	WFIFOW(fd,32) = tsd->status.head_bottom;
+	WFIFOW(fd,34) = tsd->status.head_mid;
+	WFIFOW(fd,36) = tsd->status.head_top;
+	WFIFOW(fd,38) = tsd->status.hair_color;
+	WFIFOW(fd,40) = tsd->status.clothes_color;
+	WFIFOB(fd,42) = tsd->sex;
+
+	for(i = 0, n = 0; i < MAX_INVENTORY; i++) {
+		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL || !itemdb_isequip2(tsd->inventory_data[i]))
+			continue;
+		WFIFOW(fd,n*28+43) = i + 2;
+		if(tsd->inventory_data[i]->view_id > 0)
+			WFIFOW(fd,n*28+45) = tsd->inventory_data[i]->view_id;
+		else
+			WFIFOW(fd,n*28+45) = tsd->status.inventory[i].nameid;
+		WFIFOB(fd,n*28+47) = (tsd->inventory_data[i]->type == 7)? 4: tsd->inventory_data[i]->type;
+		WFIFOB(fd,n*28+48) = tsd->status.inventory[i].identify;
+		WFIFOW(fd,n*28+49) = pc_equippoint(tsd,i);
+		WFIFOW(fd,n*28+51) = tsd->status.inventory[i].equip;
+		WFIFOB(fd,n*28+53) = tsd->status.inventory[i].attribute;
+		WFIFOB(fd,n*28+54) = tsd->status.inventory[i].refine;
+		if(itemdb_isspecial(tsd->status.inventory[n].card[0])) {
+			if(tsd->inventory_data[i]->type == 7) {
+				WFIFOW(fd,n*28+55) = 0;
+				WFIFOW(fd,n*28+57) = 0;
+				WFIFOW(fd,n*28+59) = 0;
+			} else {
+				WFIFOW(fd,n*28+55) = tsd->status.inventory[i].card[0];
+				WFIFOW(fd,n*28+57) = tsd->status.inventory[i].card[1];
+				WFIFOW(fd,n*28+59) = tsd->status.inventory[i].card[2];
+			}
+			WFIFOW(fd,n*28+61) = tsd->status.inventory[i].card[3];
+		} else {
+			if(tsd->status.inventory[i].card[0] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[0])) > 0)
+				WFIFOW(fd,n*28+55) = j;
+			else
+				WFIFOW(fd,n*28+55) = tsd->status.inventory[i].card[0];
+			if(tsd->status.inventory[i].card[1] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[1])) > 0)
+				WFIFOW(fd,n*28+57) = j;
+			else
+				WFIFOW(fd,n*28+57) = tsd->status.inventory[i].card[1];
+			if(tsd->status.inventory[i].card[2] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[2])) > 0)
+				WFIFOW(fd,n*28+59) = j;
+			else
+				WFIFOW(fd,n*28+59) = tsd->status.inventory[i].card[2];
+			if(tsd->status.inventory[i].card[3] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[3])) > 0)
+				WFIFOW(fd,n*28+61) = j;
+			else
+				WFIFOW(fd,n*28+61) = tsd->status.inventory[i].card[3];
+		}
+		WFIFOL(fd,n*28+63) = tsd->status.inventory[i].limit;
+		WFIFOW(fd,n*28+67) = 0;
+		if(tsd->inventory_data[n]->equip&0x301)
+			WFIFOW(fd,n*28+69)=tsd->inventory_data[n]->look;
+		else
+			WFIFOW(fd,n*28+69)=0;
+		n++;
+	}
+	if(n) {
+		WFIFOW(fd,2) = 43 + n*28;
+		WFIFOSET(fd,WFIFOW(fd,2));
+	}
+#endif
 
 	return;
 }
