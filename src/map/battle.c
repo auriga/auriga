@@ -3771,9 +3771,9 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 				ele = sd->arrow_ele;
 			else if((e = status_get_attack_element(&sd->bl)) != ELE_NEUTRAL) // 武器属性
 				ele = e;
+			if(battle_config.allow_falconassault_elemet)
+				ele = sd->atk_ele;
 		}
-		if(battle_config.allow_falconassault_elemet)
-			ele = sd->atk_ele;
 		flag &= ~(BF_WEAPONMASK|BF_RANGEMASK|BF_WEAPONMASK);
 		mid.flag = flag|(mid.flag&~BF_RANGEMASK)|BF_LONG;
 		break;

@@ -2222,14 +2222,9 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 	offset += 3;
 #endif
 
-#if PACKETVER > 28
+#if PACKETVER > 28 && PACKETVER < 30
 	len += 16;
 #endif
-
-#if PACKETVER > 29
-	len -= 16;
-#endif
-
 
 	session[fd]->auth = 1; // 認証終了を socket.c に伝える
 
@@ -3807,13 +3802,10 @@ int parse_char(int fd)
 				len += 4;
 #endif
 
-#if PACKETVER > 28
+#if PACKETVER > 28 && PACKETVER < 30
 				len += 16;
 #endif
 
-#if PACKETVER > 29
-				len -= 16;
-#endif
 				if(cd == NULL){
 					WFIFOW(fd,0)=0x6e;
 					WFIFOB(fd,2)=flag;
