@@ -1981,10 +1981,28 @@ R 035d <len>.w <point>.l <mditem_count>.w <mditem_size>.w <bestitem_count>.w <be
 S 035e
 	簡易課金ショップアイテム関連？
 	未調査
+R 035f <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0x88固定>.B <0固定>.2B <Lv>.w <font>.w
+	0x2faの上位版？
+	未調査
+R 0360〜0388
+	0x35fと同じ？
+	未調査
+R 0389 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <font>.w
+	0x2eeの上位版？
+	未調査
+R 038a〜03b2
+	0x389と同じ？
+	未調査
 R 03b3 <len>.w <ID>.l <item ID>.w <identify flag>.B <X>.w <Y>.w <subX>.B <subY>.B <amount>.w
 	02f3の上位版？
 R 03b4〜03dc
 	03b3と同じ？使用用途不明
+R 03dd <AuthData1>.l <AuthData2>.l <AuthData3>.l <AuthData4>.l
+	GameGuard関連
+	未調査
+S 03de <AuthData1>.l <AuthData2>.l <AuthData3>.l <AuthData4>.l
+	GameGuard関連
+	未調査
 R 03e2 <len>.w <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1>.l <param2>.w <type>.B <param3>.l
 	02e1の上位版?
 R 03e3〜040b
@@ -2006,7 +2024,7 @@ R 043d <skillid>.w <tick>.l
 	スキル固有ディレイ表示
 R 043e <len>.w { <skillid>.w <tick>.l }.6B*
 	スキル固有ディレイリスト？
-R 043f <type>.w <ID>.l <switch>.B <tick>.l <val>.l <?>.l <?>.l
+R 043f <type>.w <ID>.l <switch>.B <tick>.l <val1>.l <val2>.l <val3>.l
 	増強系スキル使用時のメッセージ色々、0x196の上位版
 R 0440 <ID>.l <num>.w <state>.w
 	ミレニアムシールド表示
@@ -2340,4 +2358,10 @@ S 083b
 	未調査
 R 083d <?>.w <?>.w
 	SSILIST？アイテム関連
+	未調査
+S 0844
+	未調査
+S 084a
+	未調査
+R 084b <?>.l <?>.w <?>.w <?>.B <?>.w <?>.w <?>.B <?>.B <?>.w
 	未調査

@@ -4062,7 +4062,7 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
  */
 int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int clrtype)
 {
-	int m, move_flag = 0;
+	int m, i, move_flag = 0;
 
 	nullpo_retr(1, sd);
 
@@ -4160,6 +4160,16 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 	// ステルスフィールド削除
 	if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1)
 		status_change_end(&sd->bl, SC_STEALTHFIELD_USER, -1);
+	// ディボーション削除(献身対象者)
+	if(sd->sc.data[SC_DEVOTION].timer != -1)
+		status_change_end(&sd->bl, SC_DEVOTION, -1);
+	// ディボーション削除(献身者)
+	for(i=0; i<5; i++) {
+		if(sd->dev.val1[i]) {
+			status_change_end(map_id2bl(sd->dev.val1[i]),SC_DEVOTION,-1);
+			sd->dev.val1[i] = sd->dev.val2[i] = 0;
+		}
+	}
 
 	if(sd->bl.prev != NULL) {
 		if(m != sd->bl.m) {

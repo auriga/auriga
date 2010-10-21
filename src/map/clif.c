@@ -12775,7 +12775,7 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc.opt1 > 0 || sd->chatID || sd->state.mail_appending ||
+	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 7) || sd->chatID || sd->state.mail_appending ||
 	    sd->state.storage_flag || pc_iscloaking(sd) ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
@@ -12827,7 +12827,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 		printf("%s\n", output);
 	}
 
-	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || sd->sc.opt1 > 0 || sd->state.mail_appending || sd->state.storage_flag || sd->chatID ||
+	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 7) || sd->state.mail_appending || sd->state.storage_flag || sd->chatID ||
 	    DIFF_TICK(tick, sd->drop_delay_tick) < 0 ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
@@ -12878,7 +12878,7 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 	if( (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
-	    sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 6) ||
+	    sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 < 6) ||
 	    sd->state.storage_flag || sd->chatID || sd->state.mail_appending ||
 	    DIFF_TICK(gettick(), sd->item_delay_tick) < 0 || 	// アイテムディレイ
 	    sd->sc.data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
@@ -12966,7 +12966,7 @@ static void clif_parse_UnequipItem(int fd,struct map_session_data *sd, int cmd)
 
 	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1)
 		return;
-	if (sd->npc_id != 0 || sd->vender_id != 0 || sd->sc.opt1 > 0 || sd->state.mail_appending)
+	if (sd->npc_id != 0 || sd->vender_id != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 7) || sd->state.mail_appending)
 		return;
 
 	pc_unequipitem(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)) - 2, 0);
@@ -13956,7 +13956,7 @@ static void clif_parse_InsertCard(int fd,struct map_session_data *sd, int cmd)
 
 	if (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid)
 		return;
-	if (sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 6) || sd->state.storage_flag || sd->chatID || sd->state.mail_appending)
+	if (sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 < 6) || sd->state.storage_flag || sd->chatID || sd->state.mail_appending)
 		return;
 	if (unit_isdead(&sd->bl))
 		return;

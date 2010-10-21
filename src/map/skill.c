@@ -4245,14 +4245,17 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SA_FULLRECOVERY:
 	case NPC_ALLHEAL:		/* ライフストリーム */
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if( dstsd ) {
-			if( dstsd->special_state.no_magic_damage )
-				break;
-			pc_heal(dstsd,dstsd->status.max_hp,dstsd->status.max_sp);
-		}
-		else if(dstmd) {
-			dstmd->hp = status_get_max_hp(&dstmd->bl);
+		{
+			int heal = status_get_max_hp(bl);
+			clif_skill_nodamage(src,bl,AL_HEAL,heal,1);
+			if( dstsd ) {
+				if( dstsd->special_state.no_magic_damage )
+					break;
+				pc_heal(dstsd,heal,dstsd->status.max_sp);
+			}
+			else if(dstmd) {
+				dstmd->hp = heal;
+			}
 		}
 		break;
 	case SA_SUMMONMONSTER:
@@ -11404,7 +11407,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 			int i;
 			for(i=0; i<sd->skill_addcastrate.count; i++) {
 				if(skillid == sd->skill_addcastrate.id[i])
-					reduce_time += sd->skill_addcastrate.rate[i];
+					casttime = casttime * (100 - sd->skill_addcastrate.rate[i])/100;
 			}
 		}
 	}
