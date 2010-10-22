@@ -652,10 +652,9 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		int skill = pc_checkskill(tsd,NC_MAINFRAME);
 
 		// メインフレーム改造によるリミット上昇
-		if(skill == 1) {
+		if(skill <= 1) {
 			limit += 10;
-		}
-		else if(skill > 1) {
+		} else {
 			limit += (skill - 1) * 18;
 		}
 
@@ -3763,16 +3762,19 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		if(sd == NULL || (skill = pc_checkskill(sd,HT_STEELCROW)) <= 0)
 			skill = 0;
 		mid.damage = ((dex/10+int_/2+skill*3+40)*2*(150+skill_lv*70)/100)*5;
-		if(sd) {	// 一時的にファルコンアサルトの属性を付与属性に変更する
-			int e;
-			if((e = status_get_attack_element_nw(&sd->bl)) != ELE_NEUTRAL)	// 属性付与
-				ele = e;
-			else if(sd->arrow_ele > 0)	// 矢の属性
-				ele = sd->arrow_ele;
-			else if((e = status_get_attack_element(&sd->bl)) != ELE_NEUTRAL) // 武器属性
-				ele = e;
-			if(battle_config.allow_falconassault_elemet)
+		if(sd) {
+			if(battle_config.allow_falconassault_elemet) {
 				ele = sd->atk_ele;
+			} else {
+				// 一時的にファルコンアサルトの属性を付与属性に変更する
+				int e;
+				if((e = status_get_attack_element_nw(&sd->bl)) != ELE_NEUTRAL)	// 属性付与
+					ele = e;
+				else if(sd->arrow_ele > 0)	// 矢の属性
+					ele = sd->arrow_ele;
+				else if((e = status_get_attack_element(&sd->bl)) != ELE_NEUTRAL) // 武器属性
+					ele = e;
+			}
 		}
 		flag &= ~(BF_WEAPONMASK|BF_RANGEMASK|BF_WEAPONMASK);
 		mid.flag = flag|(mid.flag&~BF_RANGEMASK)|BF_LONG;
@@ -3818,8 +3820,12 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		if(mid.damage < 0)
 			mid.damage = 0;
 
-		if(skill_num == SN_FALCONASSAULT && !battle_config.allow_falconassault_elemet)	// ファルコンアサルトの属性を元に戻す
-			ele = skill_get_pl(skill_num);
+		if(skill_num == SN_FALCONASSAULT) {
+			if(sd && !battle_config.allow_falconassault_elemet) {
+				// ファルコンアサルトの属性を元に戻す
+				ele = skill_get_pl(skill_num);
+			}
+		}
 
 		/* ４．属性の適用 */
 		mid.damage = battle_attr_fix(mid.damage, ele, status_get_element(target));

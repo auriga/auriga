@@ -408,12 +408,12 @@ int journal_load( struct journal* j, size_t datasize, const char* filename )
 	if( memcmp( j->fhd.identifier, JOURNAL_IDENTIFIER, sizeof(j->fhd.identifier) ) != 0 )
 	{
 		printf("journal: file version mismatch ! '%s' vs '%s' [%s]\n", j->fhd.identifier, JOURNAL_IDENTIFIER, filename);
-		return 0;
+		abort();
 	}
 	if( j->fhd.datasize != (unsigned int)datasize )
 	{
 		printf("journal: file datasize mismatch ! %u vs %u [%s]\n", j->fhd.datasize, (unsigned int)datasize, filename );
-		return 0;
+		abort();
 	}
 
 	// データの読み込みループ
