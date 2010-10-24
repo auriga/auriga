@@ -1,4 +1,11 @@
 ----------------------------------------
+//0793 [2010/10/25] by popori
+
+・item_typeの説明を追加 (db_ref.txt)
+
+・item_db.txtの修正 (item_db.txt)
+
+----------------------------------------
 //0792 [2010/10/25] by popori
 
 ・client_packet.txtの更新 (client_packet.txt)

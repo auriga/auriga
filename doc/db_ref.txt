@@ -317,6 +317,10 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,V
                         8 : ペット専用装備品
                         9 : 風魔手裏剣
                        10 : 矢
+                       11 : 頭装備上中段
+                       12 : 頭装備上下段
+                       13 : 頭装備中下段
+                       14 : 頭装備上中下段
                        15 : 銃
                        16 : 弾丸
                        17 : 苦無、手裏剣
