@@ -16,7 +16,7 @@ S 0067 <charactor name>.24B <param etc>.11B
 	キャラクタ作成要求
 S 0068 <charactor ID>.l <mail address>.40B
 	キャラクタ削除要求
-R 0069 <len>.w <login ID1>.l <account ID>.l <login ID2>.l <?>.l <?>.26B <sex>.B {<IP>.l <port>.w <server name>.20B <login users>.w <maintenance>.w <new>.w}.32B*
+R 0069 <len>.w <login ID1>.l <account ID>.l <login ID2>.l <lastLoginIP>.l <lastLoginTime>.26B <sex>.B {<IP>.l <port>.w <server name>.20B <login users>.w <maintenance>.w <new>.w}.32B*
 	login成功&鯖情報
 R 006a <error No>.B <message>.20B
 	login失敗 その１
@@ -50,7 +50,7 @@ R 006a <error No>.B <message>.20B
 R 006b <len>.w <charactor select data>.106B*
 	   <len>.w <charactor select data>.106B* <max_slot>.B <available_slot>.B <premium_slot>.B (2010-04-14aRagexeRE以降)
 	キャラセレ鯖接続成功&キャラクタデータ
-	<charactor select data> = <charactor ID>.l <base exp>.l <zeny>.l <job exp>.l <job level>.l <?>.8B <option>.l <karma>.l <manner>.l <status point>.w <HP>.w <MaxHP>.w <SP>.w <MaxSP>.w <speed>.w <class>.w <hair>.w <weapon>.2w <base level>.w <skill point>.w <head_bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <?>.w <name>.24B <STR>.B <AGI>.B <VIT>.B <INT>.B <DEX>.B <LUK>.B <charactor number>.B <?>.B
+	<charactor select data> = <charactor ID>.l <base exp>.l <zeny>.l <job exp>.l <job level>.l <bodystate>.l <healthstate>.l <option>.l <karma>.l <manner>.l <status point>.w <HP>.w <MaxHP>.w <SP>.w <MaxSP>.w <speed>.w <class>.w <hair>.w <weapon>.2w <base level>.w <skill point>.w <head_bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <bodypalette>.w <name>.24B <STR>.B <AGI>.B <VIT>.B <INT>.B <DEX>.B <LUK>.B <charactor number>.B <haircolor>.B
 R 006c <error No>.B
 	キャラクタ選択失敗
 		err No=00 サーバへの接続が失敗しました。
@@ -78,7 +78,7 @@ S 0072 <account ID>.l <charactor ID>.l <login ID1>.l <login ID2>.l <sex>.B
 	ゲーム鯖接続要求
 R 0073 <server tick>.l <coordidate>.3B <05 05固定>.2B
 	ゲーム鯖接続成功&サーバ側1ms時計&出現位置
-R 0074 <?>.B
+R 0074 <ErrorCode>.B
 	サーバとの接続が失敗しました。
 R 0078 <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <clothes color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <05固定>.B <05固定>.B <sit>.B <Lv>.B
        <ID>.l <type>.B <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <clothes color>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_dir>.3B <05固定>.B <05固定>.B <sit>.B <Lv>.B (2007-11-06aSakexe以降)
@@ -88,7 +88,7 @@ R 0079 <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>
 R 007b <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.w <class>.w <hair>.w <weapon>.w <head option bottom>.w <server tick>.l <sheild>.w <head option top>.w <head option mid>.w <hair color>.w <?>.w <head dir>.w <guild>.l <emblem>.l <manner>.w <karma>.B <sex>.B <X_Y_X_Y>.5B <?>.B <?>.B <?>.B <Lv>.B
 	表示範囲内キャラ移動情報
 R 007c <ID>.l <speed>.w <?>.6w <class>.w <?>.7w <X_Y>.3B <?>.2B
-       <ID>.l <type>.B <speed>.w <?>.6w <class>.w <?>.7w <X_Y>.3B <?>.2B (2007-11-06aSakexe以降)
+       <ID>.l <type>.B <speed>.w <bodyState>.w <healthState>.w <effectState>.w <class>.w <?>.7w <sex>.B <X_Y>.3B <xSize>.B <ySize>.B (2007-11-06aSakexe以降)
 	NPC用表示範囲内キャラ情報
 S 007d
 	mapロード終り
@@ -718,7 +718,7 @@ R 0152 <len>.w <guild ID>.l <emblem ID(変更回数？)>.l <emblem data>.?B
 	エンブレムイメージ送付
 S 0153 <len>.w <emblem data>.?B
 	エンブレムイメージ変更
-R 0154 <len>.w {<accID>.l <charactorID>.l <髪型>.w <髪の色>.w <性別？>.w <job>.w <lvl?>.w <上納経験値>.l <online>.l <Position>.l <メモ？>.50B <nick>.24B}*
+R 0154 <len>.w {<accID>.l <charactorID>.l <髪型>.w <髪の色>.w <性別？>.w <job>.w <lvl?>.w <上納経験値>.l <online>.l <Position>.l <intro>.50B <nick>.24B}*
 	ギルドメンバリスト
 S 0155 <len>.w {<accID>.l <charaID>.l <index>.l}.12B*
 	役職変更
@@ -805,7 +805,7 @@ R 0173 <type>.B
 	type = 4 自分のギルドの同盟ギルド数が超過
 R 0174 <len>.w {<index>.l <mode>.l <index>.l <exp_mode>.l <nickname>.24B}.40B*
 	職位変更通知
-S 0175 <?>.l
+S 0175 <ID>.l
 	未調査
 S 0176
 	未調査
@@ -834,8 +834,8 @@ R 0181 <flag>.B
 	flag=0 敵対成功
 	flag=1 敵対ギルド数が多すぎる
 	flag=2 すでに敵対関係
-R 0182 <accID>.l <charactorID>.l <髪型>.w <髪の色>.w <性別？>.w <job>.w <lvl?>.w <上納経験値>.l <online>.l <Position>.l <?>.50B <nick>.24B
-	未使用？
+R 0182 <accID>.l <charactorID>.l <髪型>.w <髪の色>.w <性別>.w <job>.w <lvl>.w <上納経験値>.l <online>.l <Position>.l <intro>.50B <nick>.24B
+	0x154の上位版
 S 0183 <guild_id>.l <type>.l
 	ギルド関係解消
 R 0184 <guild_id>.l <type>.l
@@ -1012,7 +1012,7 @@ R 01a6 <len>.w <index>.w*
 	ペットの卵リスト
 S 01a7 <index>.w
 	ペットの卵リストが選択された
-S 01a8 <?>.w
+S 01a8 <index>.w
 	未調査
 S 01a9 <emotion>.l
 	ペットエモーション送信
@@ -1034,7 +1034,7 @@ S 01ae <itemID>.w
 S 01af <type>.w
 	チェンジカート（カート選択）
 	type=1	ノーマルカート
-R 01b0 <monster id>.l <?>.B <new monster code>.l
+R 01b0 <monster id>.l <type>.B <new monster code>.l
 	油のクラスチェンジ
 	<new monster code>はチェンジ後のコード(1001〜)をdwordで
 
@@ -1457,9 +1457,9 @@ R 022f <fail>.B <itemID>.w
 	<fail>
 	0x00：餌やり失敗
 	0x01：餌やり成功
-R 0230 <?>.B <state>.B <ID>.l <param>.l
+R 0230 <type>.B <state>.B <ID>.l <param>.l
 	ホム関連通知、0x1a4のホム版
-	<?>を0x0a以上にすると何も起こらない
+	<type>を0x0a以上にすると何も起こらない
 	state=00, param=00 : ホム生成時に送られる
 	state=01 : 親密度
 	state=02 : 腹減り
@@ -1494,7 +1494,7 @@ R 023c <type>.w <val>.w
 	4 passwd set ok
 	5 passwd miss
 	6 ok
-R 023d <?>.l
+R 023d <EventItemCount>.l
 	イベントに当たりました。ゲーム内でアイテムを受け取ってください
 	ログインサーバ用
 R 023e <type>.w <dummy>.l
@@ -1509,7 +1509,7 @@ R 0240 <len>.w <num>.l { <mail_num>.l <title>.40B <read>.B <nick>.24B <time>.l }
 	0x23fの応答
 S 0241 <num>.l
 	メールの受信要求
-R 0242 <len>.w <num>.l <title>.40B <nick>.24B <0x22固定>.l <zeny>.l <amount>.l <itemid>.w <0固定>.w <identify>.B <attribute>.B <refine>.B <card>.4w <mail_body>.?B
+R 0242 <len>.w <num>.l <title>.40B <nick>.24B <0x22固定>.l <zeny>.l <amount>.l <itemid>.w <type>.w <identify>.B <attribute>.B <refine>.B <card>.4w <mail_body>.?B
 	メールを選択受信
 S 0243 <num>.l
 	メール削除
@@ -1600,7 +1600,7 @@ R 025d <flag>.l
 	type=0 : 該当の競売を終了しました。
 	type=1 : 該当の競売を終了できません。
 	type=2 : 競売番号が正確ではありません。
-S 025e <?>.w
+S 025e <result>.w
 	未調査
 R 025f <0固定>.4B
 	競売ウィンドウを開く
@@ -1627,9 +1627,9 @@ S 027c <version>.l <account name>.24B <md5 binary>.16B <version2>.B <MacAddress>
 	id&暗号化済みpass送信
 R 027d <name>.24B <level>.w <name_value>.w <summon count>.w <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <flee>.w <aspd>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <attackable>.w <exp>.l
 	傭兵ステータス情報？
-R 027e <?>.w <?>.w
+R 027e <len>.w <codelen>.w
 	未調査
-S 027f <?>.w <?>.l
+S 027f <clienttype>.w <nVer>.l
 	未調査
 R 0280 <point>.l <total>.l <type>.w
 	テイミングミッションランキングポイントが<point>上昇して<total>になりました。
@@ -1760,14 +1760,14 @@ R 02a2 <type>.w <val>.l
 	type=a5 : WM_NCRBUTTONUP
 	type=bd : EM_GETHANDLE
 	type=be : EM_GETTHUMB
-S 02a5 <?>.w <?>.l
+S 02a5 <index>.w <count>.l
 	マウスのスクロールを高速で動かすと飛んでくる
 	未調査
-R 02aa <?>.w
+R 02aa <info>.w
 	不明
 S 02ab <type>.w <password>.16B <password>.16B
 	0x2aaの応答？
-R 02ac <?>.w <?>.w
+R 02ac <result>.w <ErrorCount>.w
 	不明
 R 02ad <?>.w <?>.l
 	mRO Pin code check?
@@ -1803,8 +1803,8 @@ R 02bb <index>.w <ID>.l
 	装備が損傷されました
 R 02bc <time>.l
 	ネカフェ部屋残り時間？
-R 02bf <?>.l <?>.l
-	ログイン系？未調査
+R 02bf <ProtectFactor>.w <DeformSeedFactor>.l <DeformAddFactor>.l
+	未調査
 S 02c0
 	0x2bfに対する応答
 R 02c1 <len>.w <ID>.l <color>.l <str>.?B
@@ -1910,11 +1910,8 @@ R 02e1 <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1
 	通常攻撃エフェクト＆ダメージ、0x8aの上位版
 S 02e6 <flag>.l
 	BOTチェック？
-R 02e7 <len>.w <type>.w <str?>.?B
+R 02e7 <len>.w <type>.w <mapInfoTable>.?B
 	01d6の上位版?
-	<str?>には -, + のチェックあり
-	数値を文字列として入れる？
-	typeは0x1d6のものを使用
 	未調査
 R 02e8 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
 	所有消耗品&収集品リスト
@@ -2228,9 +2225,9 @@ R 07fe <name>.24B
 	nameのmp3ファイルを鳴らす
 R 07ff <len>.w <result>.l
 	サーバーのDEFINEチェック？
-	BROADCASTING_SPECIAL_ITEM_OBTAIN  = 1
-	RENEWAL_ADD_2  = 2
-	CHANNELING_SERVICE  = 4
+	result:1 = 0x7fcが有効
+	result:2 = R化している
+	result:4 = チャネリングサービスが有効
 	詳細不明
 R 0800 <len>.w <ID>.l <charID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
 	0133の上位版（2009-12-08aRagexeRE以降）
@@ -2341,6 +2338,15 @@ R 0824 <result>.w <itemID>.w
 	result=7 ?
 	それ以外の値は無視
 	未調査
+S 0825 <len>.w <Version>.l <clienttype>.B <ID>.24B <dummy>.27B <MacAdress>.17B <IP>.15 <t1>.?B
+	ログイン系
+	SSOシステム関連？
+	<t1>.?Bはトークン
+	未調査
+R 0826 <result>.w
+	ログイン系
+	SSOシステム関連？
+	未調査
 R 0837 <result>.B
 	露天検索システム関連
 	未調査
@@ -2358,6 +2364,9 @@ S 083b
 	未調査
 R 083d <?>.w <?>.w
 	SSILIST？アイテム関連
+	未調査
+R 083e <ErrorCode>.l <blockDate>.20B
+	ログイン系
 	未調査
 S 0844
 	未調査

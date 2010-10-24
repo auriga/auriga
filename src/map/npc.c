@@ -939,7 +939,7 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 	for(i=0; i<n; i++) {
 		idx = item_list[i * 2] - 2;
 		if (sd->inventory_data[idx] != NULL &&
-		    sd->inventory_data[idx]->type == 7 &&
+		    sd->inventory_data[idx]->type == TYPE_QUEST &&
 		    sd->status.inventory[idx].card[0] == (short)0xff00 &&
 		    search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
 			intif_delete_petdata((*(int *)(&sd->status.inventory[idx].card[1])));

@@ -140,23 +140,23 @@ struct item_data* itemdb_search(int nameid)
 	id->class_     = 0xffffffff;
 
 	if(nameid > 500 && nameid < 600)
-		id->type = 0;   // heal item
+		id->type = TYPE_HEAL;   // heal item
 	else if(nameid > 600 && nameid < 700)
-		id->type = 2;   // use item
+		id->type = TYPE_SPECIAL;   // use item
 	else if((nameid > 700 && nameid < 1100) || (nameid > 7000 && nameid < 8000))
-		id->type = 3;   // correction
+		id->type = TYPE_EVENT;   // correction
 	else if((nameid >= 1750 && nameid < 1771) || (nameid >= 13200 && nameid < 13300))
-		id->type = 10;  // arrow
+		id->type = TYPE_ARROW;  // arrow
 	else if((nameid > 1100 && nameid < 2000) || (nameid >= 13000 && nameid < 13350))
-		id->type = 4;   // weapon
+		id->type = TYPE_WEAPON;   // weapon
 	else if((nameid > 2100 && nameid < 3000) || (nameid > 5000 && nameid < 6000))
-		id->type = 5;   // armor
+		id->type = TYPE_ARMOR;   // armor
 	else if(nameid > 4000 && nameid < 5000)
-		id->type = 6;   // card
+		id->type = TYPE_CARD;   // card
 	else if(nameid > 9000 && nameid < 10000)
-		id->type = 7;   // egg
+		id->type = TYPE_QUEST;   // egg
 	else if(nameid > 10000)
-		id->type = 8;   // petequip
+		id->type = TYPE_BOW;   // petequip
 
 	return id;
 }
@@ -169,7 +169,8 @@ int itemdb_isequip(int nameid)
 {
 	int type = itemdb_type(nameid);
 
-	if(type == 0 || type == 2 || type == 3 || type == 6 || type == 10 || type == 16 || type == 17 || type == 18 || type == 19)
+	if(type == TYPE_HEAL || type == TYPE_SPECIAL || type == TYPE_EVENT || type == TYPE_CARD || type == TYPE_ARROW ||
+		type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CASH_POINT_ITEM || type == TYPE_CANNONBALL)
 		return 0;
 	return 1;
 }
@@ -182,7 +183,8 @@ int itemdb_isequip2(struct item_data *data)
 {
 	if(data) {
 		int type = data->type;
-		if(type == 0 || type == 2 || type == 3 || type == 6 || type == 10 || type == 16 || type == 17 || type == 18 || type == 19)
+		if(type == TYPE_HEAL || type == TYPE_SPECIAL || type == TYPE_EVENT || type == TYPE_CARD || type == TYPE_ARROW ||
+			type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CASH_POINT_ITEM || type == TYPE_CANNONBALL)
 			return 0;
 		return 1;
 	}
@@ -197,7 +199,8 @@ int itemdb_isequip3(int nameid)
 {
 	int type = itemdb_type(nameid);
 
-	if(type == 4 || type == 5 || type == 8 || type == 9 || type == 15)
+	if(type == TYPE_ARMOR || type == TYPE_WEAPON || type == TYPE_BOW || type == TYPE_BOTHHAND || TYPE_ARMORTM ||
+		type == TYPE_ARMORTB || type == TYPE_ARMORMB || type == TYPE_ARMORTMB || type == TYPE_GUN)
 		return 1;
 	return 0;
 }

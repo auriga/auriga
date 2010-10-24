@@ -2289,31 +2289,37 @@ int mob_droprate_fix(struct block_list *bl,int item,int drop)
 	}
 	else if(battle_config.item_rate_details == 3) {
 		switch(itemdb_type(item)) {
-			case 0:
+			case TYPE_HEAL:
 				drop_fix = drop * battle_config.potion_drop_rate / 100;
 				break;
-			case 2:
+			case TYPE_SPECIAL:
 				drop_fix = drop * battle_config.consume_drop_rate / 100;
 				break;
-			case 3:
+			case TYPE_EVENT:
 				if(item == 756 || item == 757 || item == 984 || item == 985 || item == 1010 || item == 1011)
 					drop_fix = drop * battle_config.refine_drop_rate / 100;
 				else
 					drop_fix = drop * battle_config.etc_drop_rate / 100;
 				break;
-			case 4:
-				drop_fix = drop * battle_config.weapon_drop_rate / 100;
-				break;
-			case 5:
+			case TYPE_ARMOR:
+			case TYPE_ARMORTM:
+			case TYPE_ARMORTB:
+			case TYPE_ARMORMB:
+			case TYPE_ARMORTMB:
 				drop_fix = drop * battle_config.equip_drop_rate / 100;
 				break;
-			case 6:
+			case TYPE_WEAPON:
+			case TYPE_BOTHHAND:
+			case TYPE_GUN:
+				drop_fix = drop * battle_config.weapon_drop_rate / 100;
+				break;
+			case TYPE_CARD:
 				drop_fix = drop * battle_config.card_drop_rate / 100;
 				break;
-			case 8:
+			case TYPE_BOW:
 				drop_fix = drop * battle_config.petequip_drop_rate / 100;
 				break;
-			case 10:
+			case TYPE_ARROW:
 				drop_fix = drop * battle_config.arrow_drop_rate / 100;
 				break;
 			default:

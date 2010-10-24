@@ -310,8 +310,8 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,V
                         1 : 不明
                         2 : 消費アイテム
                         3 : 収集品アイテム
-                        4 : 武器アイテム
-                        5 : 防具アイテム
+                        4 : 防具アイテム
+                        5 : 武器アイテム
                         6 : カード
                         7 : ペットの卵
                         8 : ペット専用装備品

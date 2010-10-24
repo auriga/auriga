@@ -1,4 +1,16 @@
 ----------------------------------------
+//0792 [2010/10/25] by popori
+
+・client_packet.txtの更新 (client_packet.txt)
+
+・item_typeを本家仕様に修正、ついでにitem_typeのenumを追加する (db_ref.txt item_db.txt atcommand.c battle.c clif.c itemdb.c map.h mob.c npc.c pc.c script.c skill.c status.c storage.c)
+　※この変更で武器と防具のitem_typeが従来の仕様と逆になります。
+　　旧)武器:4 防具:5
+　　新)防具:4 武器:5
+　　オリジナル装備品を実装しているサーバーは各自新しいitem_typeに沿って変更して下さい。
+　　詳細はdb_ref.txtのitem_db.txtの項を参照のこと。
+
+----------------------------------------
 //0791 [2010/10/23] by Rayce
 
 ・battle.cを少しリファクタリング（battle.c）
