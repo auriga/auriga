@@ -1,4 +1,25 @@
 ----------------------------------------
+//0794 [2010/10/26] by popori
+
+・0792で追加したitem_typeのenumをmap.hからitemdb.hへ移動 (map.h itemdb.h)
+
+・script.cのenumと衝突してしまうので、item_typeのenumをTYPE_****からITEMTYPE_*****へリネーム (atcommand.c battle.c clif.c itemdb.* map.h mob.c npc.c pc.c script.c skill.c status.c storage.c)
+　Arocさんに感謝
+
+・ペットの卵とペットアクセサリーの判定をtypeで行わずflagで判定するように変更する (atcommand.c clif.c item_db.* pet.c mob.c npc.c script.c)
+　※従来のペットの卵とペットアクセサリーの判定方法はitem_db.txtのtype項に7、8を設定していましたが
+　　今回からはpet_db.txtのEggID、AcceIDから自動で該当アイテムに対してフラグを設定するように変更しました。
+　　サーバー独自のペット、ペットアクセサリーを定義している方は該当アイテムに対してitem_db.txtのtypeを7、8→4へ変更して下さい。
+　　今後typeの7、typeの8はペットの卵、ペットアクセサリーとして使用しません。　
+
+・ペットの卵とペットアクセサリーのtypeを4に変更する (item_db.txt db_ref.txt)
+
+・item_typeの8を弓として使うように変更する (item_db.txt)
+
+・0792以降itemdb_isequip3()が常に真を返すバグを修正 (itemdb.c)
+　NP3228さん、mucheyさんに感謝
+
+----------------------------------------
 //0793 [2010/10/25] by popori
 
 ・item_typeの説明を追加 (db_ref.txt)

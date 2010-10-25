@@ -1403,8 +1403,8 @@ int atcommand_item(const int fd, struct map_session_data* sd, AtCommandType comm
 		int loop = 1, get_count = number;
 		struct item item_tmp;
 
-		if (item_data->type == TYPE_ARMOR || item_data->type == TYPE_WEAPON ||
-		    item_data->type == TYPE_QUEST || item_data->type == TYPE_BOW) {
+		if (item_data->type == ITEMTYPE_ARMOR || item_data->type == ITEMTYPE_WEAPON ||
+		    item_data->flag.pet_egg || item_data->flag.pet_acce) {
 			loop = number;
 			get_count = 1;
 		}
@@ -1468,15 +1468,15 @@ int atcommand_item2(const int fd, struct map_session_data* sd, AtCommandType com
 		int loop = 1, get_count = number;
 		struct item item_tmp;
 
-		if (item_data->type == TYPE_ARMOR || item_data->type == TYPE_WEAPON ||
-		    item_data->type == TYPE_QUEST || item_data->type == TYPE_BOW) {
+		if (item_data->type == ITEMTYPE_ARMOR || item_data->type == ITEMTYPE_WEAPON ||
+		    item_data->flag.pet_egg || item_data->flag.pet_acce) {
 			loop = number;
 			get_count = 1;
-			if (item_data->type == TYPE_QUEST) {
+			if (item_data->flag.pet_egg) {
 				identify = 1;
 				refine = 0;
 			}
-			if (item_data->type == TYPE_BOW)
+			if (item_data->flag.pet_acce)
 				refine = 0;
 			if (refine > MAX_REFINE)
 				refine = MAX_REFINE;
@@ -1553,8 +1553,8 @@ int atcommand_item3(const int fd, struct map_session_data* sd, AtCommandType com
 		int loop = 1, get_count = number, equip_item = 0;
 		struct item item_tmp;
 
-		if (item_data->type == TYPE_ARMOR || item_data->type == TYPE_WEAPON ||
-		    item_data->type == TYPE_QUEST || item_data->type == TYPE_BOW) {
+		if (item_data->type == ITEMTYPE_ARMOR || item_data->type == ITEMTYPE_WEAPON ||
+		    item_data->flag.pet_egg || item_data->flag.pet_acce) {
 			loop = number;
 			get_count = 1;
 			equip_item = 1;
@@ -2227,7 +2227,7 @@ int atcommand_produce(const int fd, struct map_session_data* sd, AtCommandType c
 		item_data = itemdb_exists(item_id);
 	}
 
-	if (item_data && (item_data->type == TYPE_ARMOR || item_data->type == TYPE_WEAPON)) {
+	if (item_data && (item_data->type == ITEMTYPE_ARMOR || item_data->type == ITEMTYPE_WEAPON)) {
 		struct item tmp_item;
 		int flag;
 
@@ -4652,8 +4652,8 @@ int atcommand_itemmonster(const int fd, struct map_session_data* sd, AtCommandTy
 
 		memset(&item_tmp, 0, sizeof(item_tmp));
 		item_tmp.nameid = item_id;
-		if (item_data->type == TYPE_ARMOR || item_data->type == TYPE_WEAPON ||
-		    item_data->type == TYPE_QUEST || item_data->type == TYPE_BOW) {
+		if (item_data->type == ITEMTYPE_ARMOR || item_data->type == ITEMTYPE_WEAPON ||
+		    item_data->flag.pet_egg || item_data->flag.pet_acce) {
 			get_count = 1;
 			item_tmp.identify = 0;
 		} else {

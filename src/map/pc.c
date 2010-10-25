@@ -844,7 +844,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 		{
 			if(sd->sc.data[SC_STRIPWEAPON].timer != -1)
 				return 0;
-			if(item->wlv >= 4 && item->type == TYPE_WEAPON)
+			if(item->wlv >= 4 && item->type == ITEMTYPE_WEAPON)
 			{
 				// Lv4の武器を許可
 				switch(item->look) {
@@ -941,7 +941,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 
 	if(sd->sc.data[SC_STRIPWEAPON].timer != -1 && item->equip & 0x0002)
 		return 0;
-	if(sd->sc.data[SC_STRIPSHIELD].timer != -1 && item->equip & 0x0020 && item->type != TYPE_WEAPON)
+	if(sd->sc.data[SC_STRIPSHIELD].timer != -1 && item->equip & 0x0020 && item->type != ITEMTYPE_WEAPON)
 		return 0;
 	if(sd->sc.data[SC_STRIPARMOR].timer != -1 && item->equip & 0x0010)
 		return 0;
@@ -3120,12 +3120,12 @@ void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip)
 		if( nameid <= 0 ||
 		    cardid <= 0 ||
 		    sd->inventory_data[idx_equip] == NULL ||
-		    (sd->inventory_data[idx_equip]->type != TYPE_ARMOR && sd->inventory_data[idx_equip]->type != TYPE_WEAPON) ||	// 装備じゃない
+		    (sd->inventory_data[idx_equip]->type != ITEMTYPE_ARMOR && sd->inventory_data[idx_equip]->type != ITEMTYPE_WEAPON) ||	// 装備じゃない
 		    sd->status.inventory[idx_equip].identify == 0 ||						// 未鑑定
 		    itemdb_isspecial(sd->status.inventory[idx_equip].card[0]) ||				// 製造武器・名前入り・ペット
 		    (sd->inventory_data[idx_equip]->equip & ep) == 0 ||						// 装備個所違い
-		    (sd->inventory_data[idx_equip]->type == TYPE_WEAPON && ep == 32) ||					// 両手武器と盾カード
-		    (sd->inventory_data[idx_card]->type != TYPE_CARD) ||						// Prevent Hack [Ancyker]
+		    (sd->inventory_data[idx_equip]->type == ITEMTYPE_WEAPON && ep == 32) ||					// 両手武器と盾カード
+		    (sd->inventory_data[idx_card]->type != ITEMTYPE_CARD) ||						// Prevent Hack [Ancyker]
 		    sd->status.inventory[idx_equip].equip )
 		{
 			clif_insert_card(sd, idx_equip, idx_card, 1);	// flag: 1=fail, 0:success
@@ -3669,7 +3669,7 @@ static int pc_isUseitem(struct map_session_data *sd,int n)
 
 	if(item == NULL)
 		return 0;
-	if(item->type != TYPE_HEAL && item->type != TYPE_SPECIAL && item->type != TYPE_CASH_POINT_ITEM)
+	if(item->type != ITEMTYPE_HEAL && item->type != ITEMTYPE_SPECIAL && item->type != ITEMTYPE_CASH_POINT_ITEM)
 		return 0;
 
 	if(item->sex != 2 && sd->sex != item->sex)
@@ -3992,7 +3992,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 	if(skill > 0) {
 		for(i=0; i<ITEM_DROP_COUNT-1; i++) {
 			itemid = mob_db[md->class_].dropitem[i].nameid;
-			if(itemid > 0 && itemdb_type(itemid) != TYPE_CARD) {
+			if(itemid > 0 && itemdb_type(itemid) != ITEMTYPE_CARD) {
 				if(mob_db[md->class_].dropitem[i].p <= 0)
 					continue;
 				rate = mob_db[md->class_].dropitem[i].p * skill * battle_config.steal_rate / 10000 + 1;
@@ -7208,14 +7208,14 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	}
 	if(sd->status.inventory[n].equip & 0x0020) {
 		if(sd->inventory_data[n]) {
-			if(sd->inventory_data[n]->type == TYPE_WEAPON) {
+			if(sd->inventory_data[n]->type == ITEMTYPE_WEAPON) {
 				sd->status.shield = 0;
 				if(sd->status.inventory[n].equip == 0x0020)
 					sd->weapontype2 = sd->inventory_data[n]->look;
 				else
 					sd->weapontype2 = WT_FIST;
 			}
-			else if(sd->inventory_data[n]->type == TYPE_ARMOR) {
+			else if(sd->inventory_data[n]->type == ITEMTYPE_ARMOR) {
 				sd->status.shield = sd->inventory_data[n]->look;
 				sd->weapontype2 = WT_FIST;
 			}
@@ -7462,7 +7462,7 @@ static int pc_setequipindex(struct map_session_data *sd)
 				sd->weapontype1 = 0;
 		}
 		if(sd->status.inventory[i].equip & 0x0020) {
-			if(sd->inventory_data[i] && sd->inventory_data[i]->type == TYPE_WEAPON && sd->status.inventory[i].equip == 0x0020)
+			if(sd->inventory_data[i] && sd->inventory_data[i]->type == ITEMTYPE_WEAPON && sd->status.inventory[i].equip == 0x0020)
 				sd->weapontype2 = sd->inventory_data[i]->look;
 			else
 				sd->weapontype2 = 0;
@@ -7965,7 +7965,7 @@ int pc_break_equip(struct map_session_data *sd, unsigned short where)
 				return 0;
 			break;
 		case EQP_SHIELD:
-			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == TYPE_WEAPON)	// 左手が武器なら
+			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == ITEMTYPE_WEAPON)	// 左手が武器なら
 				return 0;
 			if(sd->sc.data[SC_CP_SHIELD].timer != -1)
 				return 0;
@@ -8023,7 +8023,7 @@ int pc_break_equip2(struct map_session_data *sd,int where)
 				return 0;
 			break;
 		case 8:	// 左手
-			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == TYPE_WEAPON) {	// 武器
+			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == ITEMTYPE_WEAPON) {	// 武器
 				if(sd->unbreakable_equip & EQP_WEAPON)
 					return 0;
 				if(sd->sc.data[SC_CP_WEAPON].timer != -1)
@@ -9187,8 +9187,8 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 							continue;
 					}
 					loop = 1;
-					if (item_data->type == TYPE_ARMOR || item_data->type == TYPE_WEAPON ||
-					    item_data->type == TYPE_QUEST || item_data->type == TYPE_BOW) {
+					if (item_data->type == ITEMTYPE_ARMOR || item_data->type == ITEMTYPE_WEAPON ||
+					    item_data->flag.pet_egg || item_data->flag.pet_acce) {
 						loop = quantity;
 						quantity = 1;
 					}

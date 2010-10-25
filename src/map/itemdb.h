@@ -57,6 +57,8 @@ struct item_data {
 		unsigned dropable : 1;
 		unsigned storageable : 1;
 		unsigned cartable : 1;
+		unsigned pet_egg : 1;
+		unsigned pet_acce : 1;
 	} flag;
 	int view_id;
 	int group;
@@ -115,5 +117,31 @@ int itemdb_idsearch(const int fd, const char *str, int (*func)(void*, void*, va_
 void itemdb_reload(void);
 void do_final_itemdb(void);
 int do_init_itemdb(void);
+
+// item_type
+enum {
+	ITEMTYPE_HEAL = 0,
+	ITEMTYPE_SCHANGE,
+	ITEMTYPE_SPECIAL,
+	ITEMTYPE_EVENT,
+	ITEMTYPE_ARMOR,
+	ITEMTYPE_WEAPON,
+	ITEMTYPE_CARD,
+	ITEMTYPE_QUEST,
+	ITEMTYPE_BOW,
+	ITEMTYPE_BOTHHAND,
+	ITEMTYPE_ARROW,
+	ITEMTYPE_ARMORTM,
+	ITEMTYPE_ARMORTB,
+	ITEMTYPE_ARMORMB,
+	ITEMTYPE_ARMORTMB,
+	ITEMTYPE_GUN,
+	ITEMTYPE_AMMO,
+	ITEMTYPE_THROWWEAPON,
+	ITEMTYPE_CASH_POINT_ITEM,
+	ITEMTYPE_CANNONBALL,
+	ITEMTYPE_COSTUME,
+	ITEMTYPE_LAST = 21,
+};
 
 #endif

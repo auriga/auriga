@@ -1427,6 +1427,13 @@ int read_petdb(void)
 			script = parse_script(np,filename[i],lines);
 
 			pet_db[j].script = (script != &error_code)? script: NULL;
+
+			// ペットの卵のアイテムIDにpet_eggフラグをセットする
+			itemdb_search(pet_db[j].EggID)->flag.pet_egg = 1;
+
+			// ペットのアクセサリーのアイテムIDにpet_acceフラグをセットする
+			itemdb_search(pet_db[j].AcceID)->flag.pet_acce = 1;
+
 			if(k < 0)
 				pet_count++;
 			count++;

@@ -2289,41 +2289,42 @@ int mob_droprate_fix(struct block_list *bl,int item,int drop)
 	}
 	else if(battle_config.item_rate_details == 3) {
 		switch(itemdb_type(item)) {
-			case TYPE_HEAL:
+			case ITEMTYPE_HEAL:
 				drop_fix = drop * battle_config.potion_drop_rate / 100;
 				break;
-			case TYPE_SPECIAL:
+			case ITEMTYPE_SPECIAL:
 				drop_fix = drop * battle_config.consume_drop_rate / 100;
 				break;
-			case TYPE_EVENT:
+			case ITEMTYPE_EVENT:
 				if(item == 756 || item == 757 || item == 984 || item == 985 || item == 1010 || item == 1011)
 					drop_fix = drop * battle_config.refine_drop_rate / 100;
 				else
 					drop_fix = drop * battle_config.etc_drop_rate / 100;
 				break;
-			case TYPE_ARMOR:
-			case TYPE_ARMORTM:
-			case TYPE_ARMORTB:
-			case TYPE_ARMORMB:
-			case TYPE_ARMORTMB:
+			case ITEMTYPE_ARMOR:
+			case ITEMTYPE_ARMORTM:
+			case ITEMTYPE_ARMORTB:
+			case ITEMTYPE_ARMORMB:
+			case ITEMTYPE_ARMORTMB:
 				drop_fix = drop * battle_config.equip_drop_rate / 100;
 				break;
-			case TYPE_WEAPON:
-			case TYPE_BOTHHAND:
-			case TYPE_GUN:
+			case ITEMTYPE_WEAPON:
+			case ITEMTYPE_BOW:
+			case ITEMTYPE_BOTHHAND:
+			case ITEMTYPE_GUN:
 				drop_fix = drop * battle_config.weapon_drop_rate / 100;
 				break;
-			case TYPE_CARD:
+			case ITEMTYPE_CARD:
 				drop_fix = drop * battle_config.card_drop_rate / 100;
 				break;
-			case TYPE_BOW:
-				drop_fix = drop * battle_config.petequip_drop_rate / 100;
-				break;
-			case TYPE_ARROW:
+			case ITEMTYPE_ARROW:
 				drop_fix = drop * battle_config.arrow_drop_rate / 100;
 				break;
 			default:
-				drop_fix = drop * battle_config.other_drop_rate / 100;
+				if(itemdb_search(item)->flag.pet_acce)	// ペット用装備品
+					drop_fix = drop * battle_config.petequip_drop_rate / 100;
+				else
+					drop_fix = drop * battle_config.other_drop_rate / 100;
 				break;
 		}
 	}

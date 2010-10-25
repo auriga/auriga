@@ -596,7 +596,7 @@ L_RECALC:
 			continue;
 
 		if(sd->inventory_data[idx]) {
-			if(sd->inventory_data[idx]->type == TYPE_WEAPON) {
+			if(sd->inventory_data[idx]->type == ITEMTYPE_WEAPON) {
 				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
 					int j;
 					for(j=0; j<sd->inventory_data[idx]->slot; j++) {	// カード
@@ -613,7 +613,7 @@ L_RECALC:
 					}
 				}
 			}
-			else if(sd->inventory_data[idx]->type == TYPE_ARMOR) { // 防具
+			else if(sd->inventory_data[idx]->type == ITEMTYPE_ARMOR) { // 防具
 				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
 					int j;
 					for(j=0; j<sd->inventory_data[idx]->slot; j++) {	// カード
@@ -658,7 +658,7 @@ L_RECALC:
 		if(sd->inventory_data[idx]) {
 			current_equip_name_id = sd->inventory_data[idx]->nameid;
 			sd->def += sd->inventory_data[idx]->def;
-			if(sd->inventory_data[idx]->type == TYPE_WEAPON) {
+			if(sd->inventory_data[idx]->type == ITEMTYPE_WEAPON) {
 				int r,wlv = sd->inventory_data[idx]->wlv;
 				if(i == 8 && sd->status.inventory[idx].equip == 0x20) {
 					// 二刀流用データ入力
@@ -703,7 +703,7 @@ L_RECALC:
 						run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);
 					run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
 				}
-			} else if(sd->inventory_data[idx]->type == TYPE_ARMOR) {
+			} else if(sd->inventory_data[idx]->type == ITEMTYPE_ARMOR) {
 				sd->watk  += sd->inventory_data[idx]->atk;
 				refinedef += sd->status.inventory[idx].refine*refine_db[0].safety_bonus;
 				if(calclimit == 2)
@@ -1752,7 +1752,7 @@ L_RECALC:
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
 			idx = sd->equip_index[8];
-			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == TYPE_WEAPON)
+			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_WEAPON)
 				sd->watk_ = sd->watk_ * 50/100;
 		}
 		if(sd->sc.data[SC_STRENGTH].timer != -1) {
@@ -1765,7 +1765,7 @@ L_RECALC:
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
 			idx = sd->equip_index[8];
-			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == TYPE_WEAPON) {
+			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_WEAPON) {
 				sd->watk_ = sd->watk_ * 50/100;
 			}
 			sd->matk1 = sd->matk1*50/100;
@@ -1776,7 +1776,7 @@ L_RECALC:
 			sd->base_atk = sd->base_atk * 80/100;
 			sd->watk = sd->watk * 80/100;
 			idx = sd->equip_index[8];
-			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == TYPE_WEAPON) {
+			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_WEAPON) {
 				sd->watk_ = sd->watk_ * 80/100;
 			}
 			sd->matk1 = sd->matk1*80/100;
@@ -1814,7 +1814,7 @@ L_RECALC:
 			sd->base_atk = sd->base_atk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->watk = sd->watk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			idx = sd->equip_index[8];
-			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == TYPE_WEAPON)
+			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_WEAPON)
 				sd->watk_ = sd->watk_ * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->def = sd->def * (100 - 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->def2 = sd->def2 * (100 - 5*sd->sc.data[SC_CONCENTRATION].val1)/100;

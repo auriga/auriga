@@ -5468,7 +5468,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(equip == EQP_SHIELD) {
 					// ストリップシールドは弓以外の両手武器には失敗
 					if( dstsd->equip_index[8] >= 0 &&
-					    dstsd->inventory_data[dstsd->equip_index[8]]->type == TYPE_WEAPON &&
+					    dstsd->inventory_data[dstsd->equip_index[8]]->type == ITEMTYPE_WEAPON &&
 					    dstsd->status.weapon != WT_BOW )
 						break;
 				}
@@ -5514,7 +5514,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					if( dstsd->status.inventory[i].equip & EQP_SHIELD ) {
 						// ストリップシールドは弓以外の両手武器には失敗
 						if( dstsd->equip_index[8] >= 0 &&
-						    dstsd->inventory_data[dstsd->equip_index[8]]->type == TYPE_WEAPON &&
+						    dstsd->inventory_data[dstsd->equip_index[8]]->type == ITEMTYPE_WEAPON &&
 						    dstsd->status.weapon != WT_BOW ) {
 							;
 						}
@@ -13894,7 +13894,7 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 
 	data = dstsd->inventory_data[idx];
 
-	if(data && data->type == TYPE_WEAPON) {	// 武器
+	if(data && data->type == ITEMTYPE_WEAPON) {	// 武器
 		if(data->wlv >= 1 && data->wlv <= 4)
 			itemid = material[data->wlv];
 		else

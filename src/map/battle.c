@@ -2049,7 +2049,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				int s_luk = status_get_luk(src);
 				int idx   = src_sd->equip_index[8];
 				DMG_SET( s_str+(s_str/10)*(s_str/10)+(s_dex/5)+(s_luk/5) );
-				if(idx >= 0 && src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == TYPE_ARMOR)
+				if(idx >= 0 && src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == ITEMTYPE_ARMOR)
 					DMG_ADD( src_sd->status.inventory[idx].refine*4 + src_sd->inventory_data[idx]->weight/10 );
 			} else {
 				DMG_FIX( 100+30*skill_lv, 100 );
@@ -2625,7 +2625,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			case CR_SHIELDBOOMERANG:	// シールドブーメラン
 				if(src_sd->equip_index[8] >= 0) {
 					int idx = src_sd->equip_index[8];
-					if(src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == TYPE_ARMOR) {
+					if(src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == ITEMTYPE_ARMOR) {
 						wd.damage += src_sd->inventory_data[idx]->weight/10;
 						wd.damage += src_sd->status.inventory[idx].refine * status_get_overrefine_bonus(0);
 					}
@@ -2634,7 +2634,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			case LK_SPIRALPIERCE:		// スパイラルピアース
 				if(src_sd->equip_index[9] >= 0) {	// {((STR/10)^2 ＋ 武器重量×スキル倍率×0.8) × サイズ補正 ＋ 精錬}×カード倍率×属性倍率×5の模様
 					int idx = src_sd->equip_index[9];
-					if(src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == TYPE_WEAPON) {
+					if(src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == ITEMTYPE_WEAPON) {
 						wd.damage = ( ( (s_str/10)*(s_str/10) + src_sd->inventory_data[idx]->weight * (skill_lv * 4 + 8 ) / 100 )
 									* (5 - t_size) / 4 + status_get_atk2(src) ) * 5;
 					}
@@ -2643,7 +2643,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			case PA_SHIELDCHAIN:		// シールドチェイン
 				if(src_sd->equip_index[8] >= 0) {
 					int idx = src_sd->equip_index[8];
-					if(src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == TYPE_ARMOR) {
+					if(src_sd->inventory_data[idx] && src_sd->inventory_data[idx]->type == ITEMTYPE_ARMOR) {
 						int refinedamage = 2*(src_sd->status.inventory[idx].refine-4) + src_sd->status.inventory[idx].refine * src_sd->status.inventory[idx].refine;
 						wd.damage = wd.damage * (100+30*skill_lv)/100;
 						if(refinedamage > 0)
