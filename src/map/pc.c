@@ -75,7 +75,7 @@ int max_job_table[3][32] = {
 	{ 10,50,50,50,50,50,50,50,50,50,50,50,50, 50,50,50,50,50,50,50,50, 50, 1, 99,50,50, 50,50,70,70,70,70 }, // 養子
 };
 
-static unsigned int equip_pos[11] = { 0x0080,0x0008,0x0040,0x0004,0x0001,0x0200,0x0100,0x0010,0x0020,0x0002,0x8000 };
+static unsigned int equip_pos[11] = { LOC_LACCESSORY,LOC_RACCESSORY,LOC_SHOES,LOC_ROBE,LOC_HEAD,LOC_HEAD3,LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ARROW };
 
 static char GM_account_filename[1024] = "conf/GM_account.txt";
 static struct dbt *gm_account_db = NULL;
@@ -726,7 +726,7 @@ int pc_equippoint(struct map_session_data *sd,int n)
 		int look = sd->inventory_data[n]->look;
 		ep = sd->inventory_data[n]->equip;
 		if(look == 1 || look == 2 || look == 6) {
-			if(ep == 2 && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == 12))
+			if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == 12))
 				return 34;
 		}
 	}
@@ -840,7 +840,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 
 	// スパノビの魂
 	if(sd->sc.data[SC_SUPERNOVICE].timer != -1) {
-		if(item->equip & 0x0002 && sd->status.base_level >= 96)
+		if(item->equip & LOC_RARM && sd->status.base_level >= 96)
 		{
 			if(sd->sc.data[SC_STRIPWEAPON].timer != -1)
 				return 0;
@@ -864,17 +864,17 @@ static int pc_isequip(struct map_session_data *sd,int n)
 			if(item->elv > 0 && sd->status.base_level < item->elv)
 				return 0;
 			// 頭でストリップなら失敗
-			if(item->equip & 0x0100 && sd->sc.data[SC_STRIPHELM].timer != -1)
+			if(item->equip & LOC_HEAD2 && sd->sc.data[SC_STRIPHELM].timer != -1)
 				return 0;
 			// 頭なら成功
 			// 頭上段
-			if(item->equip & 0x0100)
+			if(item->equip & LOC_HEAD2)
 				return 1;
 			// 頭中段
-			if(item->equip & 0x0200)
+			if(item->equip & LOC_HEAD3)
 				return 1;
 			// 頭下段
-			if(item->equip & 0x0001)
+			if(item->equip & LOC_HEAD)
 				return 1;
 		}
 	}
@@ -912,26 +912,26 @@ static int pc_isequip(struct map_session_data *sd,int n)
 	if(unit_iscasting(&sd->bl) && battle_config.casting_penalty_type)
 	{
 		if(battle_config.casting_penalty_type == 1) {		// 武器と矢
-			if(item->equip & 0x0002)
+			if(item->equip & LOC_RARM)
 				return 0;
-			if(item->equip & 0x8000)
+			if(item->equip & LOC_ARROW)
 				return 0;
 		} else if(battle_config.casting_penalty_type == 2) {	// 個別
-			if(item->equip & 0x0002 && battle_config.casting_penalty_weapon)
+			if(item->equip & LOC_RARM && battle_config.casting_penalty_weapon)
 				return 0;
-			if(item->equip & 0x0020 && battle_config.casting_penalty_shield)
+			if(item->equip & LOC_LARM && battle_config.casting_penalty_shield)
 				return 0;
-			if(item->equip & 0x0010 && battle_config.casting_penalty_armor)
+			if(item->equip & LOC_BODY && battle_config.casting_penalty_armor)
 				return 0;
-			if(item->equip & 0x0301 && battle_config.casting_penalty_helm)
+			if(item->equip & LOC_HEAD_TMB && battle_config.casting_penalty_helm)
 				return 0;
-			if(item->equip & 0x0004 && battle_config.casting_penalty_robe)
+			if(item->equip & LOC_ROBE && battle_config.casting_penalty_robe)
 				return 0;
-			if(item->equip & 0x0040 && battle_config.casting_penalty_shoes)
+			if(item->equip & LOC_SHOES && battle_config.casting_penalty_shoes)
 				return 0;
-			if(item->equip & 0x0088 && battle_config.casting_penalty_acce)
+			if(item->equip & LOC_RLACCESSORY && battle_config.casting_penalty_acce)
 				return 0;
-			if(item->equip & 0x8000 && battle_config.casting_penalty_arrow)
+			if(item->equip & LOC_ARROW && battle_config.casting_penalty_arrow)
 				return 0;
 			return 0;
 		} else if(battle_config.casting_penalty_type == 3) {	// 全て
@@ -939,13 +939,13 @@ static int pc_isequip(struct map_session_data *sd,int n)
 		}
 	}
 
-	if(sd->sc.data[SC_STRIPWEAPON].timer != -1 && item->equip & 0x0002)
+	if(sd->sc.data[SC_STRIPWEAPON].timer != -1 && item->equip & LOC_RARM)
 		return 0;
-	if(sd->sc.data[SC_STRIPSHIELD].timer != -1 && item->equip & 0x0020 && item->type != ITEMTYPE_WEAPON)
+	if(sd->sc.data[SC_STRIPSHIELD].timer != -1 && item->equip & LOC_LARM && item->type != ITEMTYPE_WEAPON)
 		return 0;
-	if(sd->sc.data[SC_STRIPARMOR].timer != -1 && item->equip & 0x0010)
+	if(sd->sc.data[SC_STRIPARMOR].timer != -1 && item->equip & LOC_BODY)
 		return 0;
-	if(sd->sc.data[SC_STRIPHELM].timer != -1 && item->equip & 0x0100)
+	if(sd->sc.data[SC_STRIPHELM].timer != -1 && item->equip & LOC_HEAD2)
 		return 0;
 
 	return 1;
@@ -2172,19 +2172,19 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_UNBREAKABLE_WEAPON:
 		if(sd->state.lr_flag != 2)
-			sd->unbreakable_equip |= EQP_WEAPON;
+			sd->unbreakable_equip |= LOC_RARM;
 		break;
 	case SP_UNBREAKABLE_ARMOR:
 		if(sd->state.lr_flag != 2)
-			sd->unbreakable_equip |= EQP_ARMOR;
+			sd->unbreakable_equip |= LOC_BODY;
 		break;
 	case SP_UNBREAKABLE_HELM:
 		if(sd->state.lr_flag != 2)
-			sd->unbreakable_equip |= EQP_HELM;
+			sd->unbreakable_equip |= LOC_HEAD2;
 		break;
 	case SP_UNBREAKABLE_SHIELD:
 		if(sd->state.lr_flag != 2)
-			sd->unbreakable_equip |= EQP_SHIELD;
+			sd->unbreakable_equip |= LOC_LARM;
 		break;
 	case SP_SP_GAIN_VALUE:
 		if(!sd->state.lr_flag)
@@ -3124,7 +3124,7 @@ void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip)
 		    sd->status.inventory[idx_equip].identify == 0 ||						// 未鑑定
 		    itemdb_isspecial(sd->status.inventory[idx_equip].card[0]) ||				// 製造武器・名前入り・ペット
 		    (sd->inventory_data[idx_equip]->equip & ep) == 0 ||						// 装備個所違い
-		    (sd->inventory_data[idx_equip]->type == ITEMTYPE_WEAPON && ep == 32) ||					// 両手武器と盾カード
+		    (sd->inventory_data[idx_equip]->type == ITEMTYPE_WEAPON && ep == LOC_LARM) ||					// 両手武器と盾カード
 		    (sd->inventory_data[idx_card]->type != ITEMTYPE_CARD) ||						// Prevent Hack [Ancyker]
 		    sd->status.inventory[idx_equip].equip )
 		{
@@ -7155,19 +7155,19 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 		clif_equipitemack(sd,n,0,0);	// fail
 		return;
 	}
-	if(pos == 0x88) {	// アクセサリ用例外処理
+	if(pos == LOC_RLACCESSORY) {	// アクセサリ用例外処理
 		int epor = 0;
 		if(sd->equip_index[0] >= 0)
 			epor |= sd->status.inventory[sd->equip_index[0]].equip;
 		if(sd->equip_index[1] >= 0)
 			epor |= sd->status.inventory[sd->equip_index[1]].equip;
-		epor &= 0x88;
-		pos = (epor == 0x08) ? 0x80 : 0x08;
+		epor &= LOC_RLACCESSORY;
+		pos = (epor == LOC_RACCESSORY) ? LOC_LACCESSORY : LOC_RACCESSORY;
 	}
 
 	// 二刀流処理
-	if( pos == 0x22 && 	// 一応、装備要求箇所が二刀流武器かチェックする
-	    id->equip == 2 &&	// 単手武器
+	if( pos == LOC_RLARM && 	// 一応、装備要求箇所が二刀流武器かチェックする
+	    id->equip == LOC_RARM &&	// 単手武器
 	    (pc_checkskill(sd, AS_LEFT) > 0 || sd->s_class.job == 12) ) // 左手修錬有
 	{
 		int tpos = 0;
@@ -7175,8 +7175,8 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 			tpos |= sd->status.inventory[sd->equip_index[8]].equip;
 		if(sd->equip_index[9] >= 0)
 			tpos |= sd->status.inventory[sd->equip_index[9]].equip;
-		tpos &= 0x02;
-		pos = (tpos == 0x02) ? 0x20 : 0x02;
+		tpos &= LOC_RARM;
+		pos = (tpos == LOC_RARM) ? LOC_LARM : LOC_RARM;
 	}
 
 	for(i=0; i<11; i++) {
@@ -7185,7 +7185,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 		}
 	}
 	// 弓矢装備
-	if(pos == 0x8000) {
+	if(pos == LOC_ARROW) {
 		clif_arrowequip(sd,n);
 		clif_arrow_fail(sd,3);	// 装備できました
 	} else {
@@ -7198,7 +7198,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	}
 	sd->status.inventory[n].equip = pos;
 
-	if(sd->status.inventory[n].equip & 0x0002) {
+	if(sd->status.inventory[n].equip & LOC_RARM) {
 		if(sd->inventory_data[n])
 			sd->weapontype1 = sd->inventory_data[n]->look;
 		else
@@ -7206,11 +7206,11 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 		pc_calcweapontype(sd);
 		clif_changelook(&sd->bl,LOOK_WEAPON,sd->status.weapon);
 	}
-	if(sd->status.inventory[n].equip & 0x0020) {
+	if(sd->status.inventory[n].equip & LOC_LARM) {
 		if(sd->inventory_data[n]) {
 			if(sd->inventory_data[n]->type == ITEMTYPE_WEAPON) {
 				sd->status.shield = 0;
-				if(sd->status.inventory[n].equip == 0x0020)
+				if(sd->status.inventory[n].equip == LOC_LARM)
 					sd->weapontype2 = sd->inventory_data[n]->look;
 				else
 					sd->weapontype2 = WT_FIST;
@@ -7226,28 +7226,28 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 		pc_calcweapontype(sd);
 		clif_changelook(&sd->bl,LOOK_SHIELD,sd->status.shield);
 	}
-	if(sd->status.inventory[n].equip & 0x0001) {
+	if(sd->status.inventory[n].equip & LOC_HEAD) {
 		if(sd->inventory_data[n])
 			sd->status.head_bottom = sd->inventory_data[n]->look;
 		else
 			sd->status.head_bottom = 0;
 		clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
 	}
-	if(sd->status.inventory[n].equip & 0x0100) {
+	if(sd->status.inventory[n].equip & LOC_HEAD2) {
 		if(sd->inventory_data[n])
 			sd->status.head_top = sd->inventory_data[n]->look;
 		else
 			sd->status.head_top = 0;
 		clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
 	}
-	if(sd->status.inventory[n].equip & 0x0200) {
+	if(sd->status.inventory[n].equip & LOC_HEAD3) {
 		if(sd->inventory_data[n])
 			sd->status.head_mid = sd->inventory_data[n]->look;
 		else
 			sd->status.head_mid = 0;
 		clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
 	}
-	if(sd->status.inventory[n].equip & 0x0040)
+	if(sd->status.inventory[n].equip & LOC_SHOES)
 		clif_changelook(&sd->bl,LOOK_SHOES,0);
 
 	pc_checkallowskill(sd);	// 装備品でスキルか解除されるかチェック
@@ -7305,31 +7305,31 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 				}
 			}
 		}
-		if(sd->status.inventory[n].equip & 0x0002) {
+		if(sd->status.inventory[n].equip & LOC_RARM) {
 			sd->weapontype1 = WT_FIST;
 			sd->status.weapon = sd->weapontype2;
 			pc_calcweapontype(sd);
 			clif_changelook(&sd->bl,LOOK_WEAPON,sd->status.weapon);
 		}
-		if(sd->status.inventory[n].equip & 0x0020) {
+		if(sd->status.inventory[n].equip & LOC_LARM) {
 			sd->weapontype2 = WT_FIST;
 			sd->status.shield = 0;
 			pc_calcweapontype(sd);
 			clif_changelook(&sd->bl,LOOK_SHIELD,sd->status.shield);
 		}
-		if(sd->status.inventory[n].equip & 0x0001) {
+		if(sd->status.inventory[n].equip & LOC_HEAD) {
 			sd->status.head_bottom = 0;
 			clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
 		}
-		if(sd->status.inventory[n].equip & 0x0100) {
+		if(sd->status.inventory[n].equip & LOC_HEAD2) {
 			sd->status.head_top = 0;
 			clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
 		}
-		if(sd->status.inventory[n].equip & 0x0200) {
+		if(sd->status.inventory[n].equip & LOC_HEAD3) {
 			sd->status.head_mid = 0;
 			clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
 		}
-		if(sd->status.inventory[n].equip & 0x0040)
+		if(sd->status.inventory[n].equip & LOC_SHOES)
 			clif_changelook(&sd->bl,LOOK_SHOES,0);
 
 		clif_unequipitemack(sd,n,sd->status.inventory[n].equip,1);
@@ -7455,14 +7455,14 @@ static int pc_setequipindex(struct map_session_data *sd)
 			if(sd->status.inventory[i].equip & equip_pos[j])
 				sd->equip_index[j] = i;
 		}
-		if(sd->status.inventory[i].equip & 0x0002) {
+		if(sd->status.inventory[i].equip & LOC_RARM) {
 			if(sd->inventory_data[i])
 				sd->weapontype1 = sd->inventory_data[i]->look;
 			else
 				sd->weapontype1 = 0;
 		}
-		if(sd->status.inventory[i].equip & 0x0020) {
-			if(sd->inventory_data[i] && sd->inventory_data[i]->type == ITEMTYPE_WEAPON && sd->status.inventory[i].equip == 0x0020)
+		if(sd->status.inventory[i].equip & LOC_LARM) {
+			if(sd->inventory_data[i] && sd->inventory_data[i]->type == ITEMTYPE_WEAPON && sd->status.inventory[i].equip == LOC_LARM)
 				sd->weapontype2 = sd->inventory_data[i]->look;
 			else
 				sd->weapontype2 = 0;
@@ -7954,23 +7954,23 @@ int pc_break_equip(struct map_session_data *sd, unsigned short where)
 		return 0;
 
 	switch(where) {
-		case EQP_WEAPON:
+		case LOC_RARM:
 			if((sd->weapontype1 >= WT_1HAXE && sd->weapontype1 <= WT_STAFF) || sd->weapontype1 == WT_BOOK)
 				return 0;
 			if(sd->sc.data[SC_CP_WEAPON].timer != -1)
 				return 0;
 			break;
-		case EQP_ARMOR:
+		case LOC_BODY:
 			if(sd->sc.data[SC_CP_ARMOR].timer != -1)
 				return 0;
 			break;
-		case EQP_SHIELD:
+		case LOC_LARM:
 			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == ITEMTYPE_WEAPON)	// 左手が武器なら
 				return 0;
 			if(sd->sc.data[SC_CP_SHIELD].timer != -1)
 				return 0;
 			break;
-		case EQP_HELM:
+		case LOC_HEAD2:
 			if(sd->sc.data[SC_CP_HELM].timer != -1)
 				return 0;
 			break;
@@ -8011,32 +8011,32 @@ int pc_break_equip2(struct map_session_data *sd,int where)
 		case 4:	// 頭下段
 		case 5:	// 頭中段
 		case 6:	// 頭上段
-			if(sd->unbreakable_equip & EQP_HELM)
+			if(sd->unbreakable_equip & LOC_HEAD2)
 				return 0;
 			if(sd->sc.data[SC_CP_HELM].timer != -1)
 				return 0;
 			break;
 		case 7:	// 体
-			if(sd->unbreakable_equip & EQP_ARMOR)
+			if(sd->unbreakable_equip & LOC_BODY)
 				return 0;
 			if(sd->sc.data[SC_CP_ARMOR].timer != -1)
 				return 0;
 			break;
 		case 8:	// 左手
 			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == ITEMTYPE_WEAPON) {	// 武器
-				if(sd->unbreakable_equip & EQP_WEAPON)
+				if(sd->unbreakable_equip & LOC_RARM)
 					return 0;
 				if(sd->sc.data[SC_CP_WEAPON].timer != -1)
 					return 0;
 			} else {	// 盾
-				if(sd->unbreakable_equip & EQP_SHIELD)
+				if(sd->unbreakable_equip & LOC_LARM)
 					return 0;
 				if(sd->sc.data[SC_CP_SHIELD].timer != -1)
 					return 0;
 			}
 			break;
 		case 9:	// 右手
-			if(sd->unbreakable_equip & EQP_WEAPON)
+			if(sd->unbreakable_equip & LOC_RARM)
 				return 0;
 			if(sd->sc.data[SC_CP_WEAPON].timer != -1)
 				return 0;

@@ -817,7 +817,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			if(atn_rand() % 100 < sd->sc.data[SC_MELTDOWN].val1) {
 				// 武器破壊
 				if(dstsd) {
-					pc_break_equip(dstsd, EQP_WEAPON);
+					pc_break_equip(dstsd, LOC_RARM);
 				} else {
 					status_change_start(bl,SC_STRIPWEAPON,1,0,0,0,skill_get_time2(WS_MELTDOWN,sd->sc.data[SC_MELTDOWN].val1),0);
 				}
@@ -825,7 +825,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			if(atn_rand() % 1000 < sd->sc.data[SC_MELTDOWN].val1*7) {
 				// 鎧破壊
 				if(dstsd) {
-					pc_break_equip(dstsd, EQP_ARMOR);
+					pc_break_equip(dstsd, LOC_BODY);
 				} else {
 					status_change_start(bl,SC_STRIPARMOR,1,0,0,0,skill_get_time2(WS_MELTDOWN,sd->sc.data[SC_MELTDOWN].val1),0);
 				}
@@ -1019,7 +1019,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	case AM_ACIDTERROR:		/* アシッドテラー */
 		if(bl->type == BL_PC && atn_rand()%100 < skill_get_time(skillid,skilllv)) {
-			pc_break_equip((struct map_session_data *)bl, EQP_ARMOR);
+			pc_break_equip((struct map_session_data *)bl, LOC_BODY);
 			clif_emotion(bl,23);
 		}
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,300*skilllv,status_get_lv(src)))
@@ -1047,19 +1047,19 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 	case NPC_WEAPONBRAKER:
 		if(dstsd && atn_rand()%100 < skilllv*10)
-			pc_break_equip(dstsd, EQP_WEAPON);
+			pc_break_equip(dstsd, LOC_RARM);
 		break;
 	case NPC_ARMORBRAKE:
 		if(dstsd && atn_rand()%100 < skilllv*10)
-			pc_break_equip(dstsd, EQP_ARMOR);
+			pc_break_equip(dstsd, LOC_BODY);
 		break;
 	case NPC_HELMBRAKE:
 		if(dstsd && atn_rand()%100 < skilllv*10)
-			pc_break_equip(dstsd, EQP_HELM);
+			pc_break_equip(dstsd, LOC_HEAD2);
 		break;
 	case NPC_SHIELDBRAKE:
 		if(dstsd && atn_rand()%100 < skilllv*10)
-			pc_break_equip(dstsd, EQP_SHIELD);
+			pc_break_equip(dstsd, LOC_LARM);
 		break;
 
 	case LK_HEADCRUSH:		/* ヘッドクラッシュ */
@@ -1120,13 +1120,13 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case CR_ACIDDEMONSTRATION:	/* アシッドデモンストレーション */
 		if(atn_rand()%100 <= skilllv) {
 			if(dstsd)
-				pc_break_equip(dstsd, EQP_WEAPON);
+				pc_break_equip(dstsd, LOC_RARM);
 			else
 				status_change_start(bl,SC_STRIPWEAPON,1,0,0,0,skill_get_time(RG_STRIPWEAPON,1),0);
 		}
 		if(atn_rand()%100 <= skilllv) {
 			if(dstsd)
-				pc_break_equip(dstsd, EQP_ARMOR);
+				pc_break_equip(dstsd, LOC_BODY);
 			else
 				status_change_start(bl,SC_STRIPARMOR,1,0,0,0,skill_get_time(RG_STRIPARMOR,1),0);
 		}
@@ -1181,7 +1181,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			if(dstsd) {
 				int i;
 				for(i=0; i<MAX_INVENTORY; i++) {
-					if(dstsd->status.inventory[i].equip && (dstsd->status.inventory[i].equip & EQP_WEAPON)) {
+					if(dstsd->status.inventory[i].equip && (dstsd->status.inventory[i].equip & LOC_RARM)) {
 						pc_unequipitem(dstsd,i,0);
 						break;
 					}
@@ -1309,14 +1309,14 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			if(dstsd) {
 				int i;
 				for(i=0; i<MAX_INVENTORY; i++) {
-					if( dstsd->status.inventory[i].equip & EQP_WEAPON &&
+					if( dstsd->status.inventory[i].equip & LOC_RARM &&
 						(!tsc || (tsc->data[SC_CP_WEAPON].timer == -1 && tsc->data[SC_STRIPWEAPON].timer == -1)) ) {
 						if(atn_rand() % 10000 < rate) {
 							pc_unequipitem(dstsd,i,0);
 							status_change_start(bl,SC_STRIPWEAPON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 						}
 					}
-					if( dstsd->status.inventory[i].equip & EQP_HELM &&
+					if( dstsd->status.inventory[i].equip & LOC_HEAD2 &&
 						(!tsc || (tsc->data[SC_CP_HELM].timer == -1 && tsc->data[SC_STRIPHELM].timer == -1)) ) {
 						if(atn_rand() % 10000 < rate) {
 							pc_unequipitem(dstsd,i,0);
@@ -3634,7 +3634,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case RK_CRUSHSTRIKE:	/* クラッシュストライク */
 		if(sd && battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag))
-			pc_break_equip(sd, EQP_WEAPON);
+			pc_break_equip(sd, LOC_RARM);
 		break;
 	case RK_STORMBLAST:		/* ストームブラスト */
 		if(flag&1) {
@@ -5431,19 +5431,19 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				break;
 			switch (skillid) {
 				case RG_STRIPWEAPON:
-					equip   = EQP_WEAPON;
+					equip   = LOC_RARM;
 					cp_scid = SC_CP_WEAPON;
 					break;
 				case RG_STRIPSHIELD:
-					equip   = EQP_SHIELD;
+					equip   = LOC_LARM;
 					cp_scid = SC_CP_SHIELD;
 					break;
 				case RG_STRIPARMOR:
-					equip   = EQP_ARMOR;
+					equip   = LOC_BODY;
 					cp_scid = SC_CP_ARMOR;
 					break;
 				case RG_STRIPHELM:
-					equip   = EQP_HELM;
+					equip   = LOC_HEAD2;
 					cp_scid = SC_CP_HELM;
 					break;
 				default:
@@ -5465,7 +5465,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 			if(dstsd) {
 				int i;
-				if(equip == EQP_SHIELD) {
+				if(equip == LOC_LARM) {
 					// ストリップシールドは弓以外の両手武器には失敗
 					if( dstsd->equip_index[8] >= 0 &&
 					    dstsd->inventory_data[dstsd->equip_index[8]]->type == ITEMTYPE_WEAPON &&
@@ -5505,13 +5505,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(dstsd) {
 				int i;
 				for(i=0; i<=MAX_INVENTORY; i++) {
-					if( dstsd->status.inventory[i].equip & EQP_WEAPON &&
+					if( dstsd->status.inventory[i].equip & LOC_RARM &&
 					    (!sc || (sc->data[SC_CP_WEAPON].timer == -1 && sc->data[SC_STRIPWEAPON].timer == -1)) ) {
 						pc_unequipitem(dstsd,i,0);
 						status_change_start(bl,SC_STRIPWEAPON,skilllv,0,0,0,strip_time,0);
 						fail = 0;
 					}
-					if( dstsd->status.inventory[i].equip & EQP_SHIELD ) {
+					if( dstsd->status.inventory[i].equip & LOC_LARM ) {
 						// ストリップシールドは弓以外の両手武器には失敗
 						if( dstsd->equip_index[8] >= 0 &&
 						    dstsd->inventory_data[dstsd->equip_index[8]]->type == ITEMTYPE_WEAPON &&
@@ -5524,13 +5524,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 							fail = 0;
 						}
 					}
-					if( dstsd->status.inventory[i].equip & EQP_ARMOR &&
+					if( dstsd->status.inventory[i].equip & LOC_BODY &&
 					    (!sc || (sc->data[SC_CP_ARMOR].timer == -1 && sc->data[SC_STRIPARMOR].timer == -1)) ) {
 						pc_unequipitem(dstsd,i,0);
 						status_change_start(bl,SC_STRIPARMOR,skilllv,0,0,0,strip_time,0);
 						fail = 0;
 					}
-					if( dstsd->status.inventory[i].equip & EQP_HELM &&
+					if( dstsd->status.inventory[i].equip & LOC_HEAD2 &&
 					    (!sc || (sc->data[SC_CP_HELM].timer == -1 && sc->data[SC_STRIPHELM].timer == -1)) ) {
 						pc_unequipitem(dstsd,i,0);
 						status_change_start(bl,SC_STRIPHELM,skilllv,0,0,0,strip_time,0);
@@ -6728,7 +6728,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(dstsd) {
 					int i;
 					for(i=0; i<MAX_INVENTORY; i++) {
-						if(dstsd->status.inventory[i].equip && (dstsd->status.inventory[i].equip&EQP_WEAPON)) {
+						if(dstsd->status.inventory[i].equip && (dstsd->status.inventory[i].equip&LOC_RARM)) {
 							pc_unequipitem(dstsd,i,0);
 							break;
 						}
@@ -8815,7 +8815,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	case UNT_DEMONSTRATION:	/* デモンストレーション */
 		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 		if(bl->type == BL_PC && atn_rand()%100 < sg->skill_lv)
-			pc_break_equip((struct map_session_data *)bl, EQP_WEAPON);
+			pc_break_equip((struct map_session_data *)bl, LOC_RARM);
 		break;
 	case UNT_TALKIEBOX:				/* トーキーボックス */
 		if(sg->src_id == bl->id) // 自分が踏んでも発動しない
@@ -12279,10 +12279,10 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 			/* 戦車(The Chariot) - 防御力無視の1000ダメージ 防具がランダムに一つ破壊される */
 			if(tsd){
 				switch(atn_rand()%4) {
-					case 0: pc_break_equip(tsd,EQP_WEAPON); break;
-					case 1: pc_break_equip(tsd,EQP_ARMOR);  break;
-					case 2: pc_break_equip(tsd,EQP_SHIELD); break;
-					case 3: pc_break_equip(tsd,EQP_HELM);   break;
+					case 0: pc_break_equip(tsd,LOC_RARM); break;
+					case 1: pc_break_equip(tsd,LOC_BODY);  break;
+					case 2: pc_break_equip(tsd,LOC_LARM); break;
+					case 3: pc_break_equip(tsd,LOC_HEAD2);   break;
 				}
 			}
 			unit_fixdamage(src,target,0, 0, 0,1000,1, 4, 0);

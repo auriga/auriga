@@ -315,7 +315,7 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,V
                         6 : カード
                         7 : 未使用
                         8 : 弓
-                        9 : 風魔手裏剣
+                        9 : 両手武器
                        10 : 矢
                        11 : 頭装備上中段
                        12 : 頭装備上下段

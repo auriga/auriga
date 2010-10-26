@@ -6980,7 +6980,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(type == SC_RUWACH)
 				range = 2;
 			else if(type == SC_SIGHTBLASTER)
-				range = 2;
+				range = 1;
 			else
 				range = (sc->data[type].val4 == NPC_WIDESIGHT)? 5: 3;
 

@@ -144,4 +144,26 @@ enum {
 	ITEMTYPE_LAST = 21,
 };
 
+// 装備箇所
+enum {
+	LOC_NOTHING		= 0x0,
+	LOC_HEAD		= 0x1,	// 頭下段
+	LOC_RARM		= 0x2,	// 右手
+	LOC_ROBE		= 0x4,	// 肩
+	LOC_RACCESSORY	= 0x8,	// アクセサリ右
+	LOC_BODY		= 0x10,	// 体
+	LOC_LARM		= 0x20,	// 左手
+	LOC_RLARM		= 0x22,	// 両手
+	LOC_SHOES		= 0x40,	// 靴
+	LOC_LACCESSORY	= 0x80,	// アクセサリ左
+	LOC_RLACCESSORY	= 0x88,	// アクセサリ右左
+	LOC_HEAD2		= 0x100,	// 頭上段
+	LOC_HEAD_TB		= 0x101,	// 頭上下段
+	LOC_HEAD3		= 0x200,	// 頭中段
+	LOC_HEAD_MB		= 0x201,	// 頭中下段
+	LOC_HEAD_TM		= 0x300,	// 頭上中段
+	LOC_HEAD_TMB	= 0x301,	// 頭上中下段
+	LOC_ARROW		= 0x8000,	// 矢・弾丸・苦無・手裏剣・キャノンボール
+};
+
 #endif

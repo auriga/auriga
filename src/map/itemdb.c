@@ -168,11 +168,26 @@ struct item_data* itemdb_search(int nameid)
 int itemdb_isequip(int nameid)
 {
 	int type = itemdb_type(nameid);
+	int result;
 
-	if(type == ITEMTYPE_HEAL || type == ITEMTYPE_SPECIAL || type == ITEMTYPE_EVENT || type == ITEMTYPE_CARD || type == ITEMTYPE_ARROW ||
-		type == ITEMTYPE_AMMO || type == ITEMTYPE_THROWWEAPON || type == ITEMTYPE_CASH_POINT_ITEM || type == ITEMTYPE_CANNONBALL)
-		return 0;
-	return 1;
+	switch(type) {
+		case ITEMTYPE_HEAL:
+		case ITEMTYPE_SPECIAL:
+		case ITEMTYPE_EVENT:
+		case ITEMTYPE_CARD:
+		case ITEMTYPE_ARROW:
+		case ITEMTYPE_AMMO:
+		case ITEMTYPE_THROWWEAPON:
+		case ITEMTYPE_CASH_POINT_ITEM:
+		case ITEMTYPE_CANNONBALL:
+			result = 0;
+			break;
+		default:
+			result = 1;
+			break;
+	}
+
+	return result;
 }
 
 /*==========================================
@@ -181,14 +196,29 @@ int itemdb_isequip(int nameid)
  */
 int itemdb_isequip2(struct item_data *data)
 {
+	int result=0;
+
 	if(data) {
 		int type = data->type;
-		if(type == ITEMTYPE_HEAL || type == ITEMTYPE_SPECIAL || type == ITEMTYPE_EVENT || type == ITEMTYPE_CARD || type == ITEMTYPE_ARROW ||
-			type == ITEMTYPE_AMMO || type == ITEMTYPE_THROWWEAPON || type == ITEMTYPE_CASH_POINT_ITEM || type == ITEMTYPE_CANNONBALL)
-			return 0;
-		return 1;
+		switch(type) {
+			case ITEMTYPE_HEAL:
+			case ITEMTYPE_SPECIAL:
+			case ITEMTYPE_EVENT:
+			case ITEMTYPE_CARD:
+			case ITEMTYPE_ARROW:
+			case ITEMTYPE_AMMO:
+			case ITEMTYPE_THROWWEAPON:
+			case ITEMTYPE_CASH_POINT_ITEM:
+			case ITEMTYPE_CANNONBALL:
+				result = 0;
+				break;
+			default:
+				result = 1;
+				break;
+		}
 	}
-	return 0;
+
+	return result;
 }
 
 /*==========================================
@@ -198,11 +228,26 @@ int itemdb_isequip2(struct item_data *data)
 int itemdb_isequip3(int nameid)
 {
 	int type = itemdb_type(nameid);
+	int result;
 
-	if(type == ITEMTYPE_ARMOR || type == ITEMTYPE_WEAPON || type == ITEMTYPE_BOW || type == ITEMTYPE_BOTHHAND || type == ITEMTYPE_ARMORTM ||
-		type == ITEMTYPE_ARMORTB || type == ITEMTYPE_ARMORMB || type == ITEMTYPE_ARMORTMB || type == ITEMTYPE_GUN)
-		return 1;
-	return 0;
+	switch(type) {
+		case ITEMTYPE_ARMOR:
+		case ITEMTYPE_WEAPON:
+		case ITEMTYPE_BOW:
+		case ITEMTYPE_BOTHHAND:
+		case ITEMTYPE_ARMORTM:
+		case ITEMTYPE_ARMORTB:
+		case ITEMTYPE_ARMORMB:
+		case ITEMTYPE_ARMORTMB:
+		case ITEMTYPE_GUN:
+			result = 1;
+			break;
+		default:
+			result = 0;
+			break;
+	}
+
+	return result;
 }
 
 /*==========================================

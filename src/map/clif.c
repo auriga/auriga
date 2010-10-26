@@ -3753,8 +3753,8 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOB(fd,n*10+8)=sd->inventory_data[i]->type;
 		WFIFOB(fd,n*10+9)=sd->status.inventory[i].identify;
 		WFIFOW(fd,n*10+10)=sd->status.inventory[i].amount;
-		if(sd->inventory_data[i]->equip == 0x8000){
-			WFIFOW(fd,n*10+12)=0x8000;
+		if(sd->inventory_data[i]->equip == LOC_ARROW){
+			WFIFOW(fd,n*10+12)=LOC_ARROW;
 			if(sd->status.inventory[i].equip) arrow=i;	// ついでに矢装備チェック
 		}
 		else
@@ -3778,8 +3778,8 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOB(fd,n*18+8)=sd->inventory_data[i]->type;
 		WFIFOB(fd,n*18+9)=sd->status.inventory[i].identify;
 		WFIFOW(fd,n*18+10)=sd->status.inventory[i].amount;
-		if(sd->inventory_data[i]->equip == 0x8000){
-			WFIFOW(fd,n*18+12)=0x8000;
+		if(sd->inventory_data[i]->equip == LOC_ARROW){
+			WFIFOW(fd,n*18+12)=LOC_ARROW;
 			if(sd->status.inventory[i].equip) arrow=i;	// ついでに矢装備チェック
 		}
 		else
@@ -3807,8 +3807,8 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOB(fd,n*22+8)=sd->inventory_data[i]->type;
 		WFIFOB(fd,n*22+9)=sd->status.inventory[i].identify;
 		WFIFOW(fd,n*22+10)=sd->status.inventory[i].amount;
-		if(sd->inventory_data[i]->equip == 0x8000){
-			WFIFOW(fd,n*22+12)=0x8000;
+		if(sd->inventory_data[i]->equip == LOC_ARROW){
+			WFIFOW(fd,n*22+12)=LOC_ARROW;
 			if(sd->status.inventory[i].equip) arrow=i;	// ついでに矢装備チェック
 		}
 		else
@@ -4088,7 +4088,10 @@ static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, i
 		WFIFOB(fd,len+4)=id->type;
 		WFIFOB(fd,len+5)=item[i].identify;
 		WFIFOW(fd,len+6)=item[i].amount;
-		WFIFOW(fd,len+8)=0;
+		if(item[i].equip == LOC_ARROW)
+			WFIFOW(fd,len+8)=LOC_ARROW;
+		else
+			WFIFOW(fd,len+8)=0;
 		len += 10;
 	}
 #elif PACKETVER < 14
@@ -4110,7 +4113,10 @@ static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, i
 		WFIFOB(fd,len+4)=id->type;
 		WFIFOB(fd,len+5)=item[i].identify;
 		WFIFOW(fd,len+6)=item[i].amount;
-		WFIFOW(fd,len+8)=0;
+		if(item[i].equip == LOC_ARROW)
+			WFIFOW(fd,len+8)=LOC_ARROW;
+		else
+			WFIFOW(fd,len+8)=0;
 		WFIFOW(fd,len+10)=item[i].card[0];
 		WFIFOW(fd,len+12)=item[i].card[1];
 		WFIFOW(fd,len+14)=item[i].card[2];
@@ -4136,7 +4142,10 @@ static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, i
 		WFIFOB(fd,len+4)=id->type;
 		WFIFOB(fd,len+5)=item[i].identify;
 		WFIFOW(fd,len+6)=item[i].amount;
-		WFIFOW(fd,len+8)=0;
+		if(item[i].equip == LOC_ARROW)
+			WFIFOW(fd,len+8)=LOC_ARROW;
+		else
+			WFIFOW(fd,len+8)=0;
 		WFIFOW(fd,len+10)=item[i].card[0];
 		WFIFOW(fd,len+12)=item[i].card[1];
 		WFIFOW(fd,len+14)=item[i].card[2];
@@ -5076,7 +5085,7 @@ void clif_equipitemack(struct map_session_data *sd, int n, int pos, unsigned cha
 	WFIFOW(fd,0)=0xaa;
 	WFIFOW(fd,2)=n+2;
 	WFIFOW(fd,4)=pos;
-	if(ok && sd->inventory_data[n]->equip&0x301)
+	if(ok && sd->inventory_data[n]->equip&LOC_HEAD_TMB)
 		WFIFOW(fd,6)=sd->inventory_data[n]->look;
 	else
 		WFIFOW(fd,6)=0;
@@ -7648,7 +7657,7 @@ static void clif_use_card(struct map_session_data *sd, int idx)
 			continue;
 		if((sd->inventory_data[i]->equip&ep) == 0)	// 装備個所が違う
 			continue;
-		if(sd->inventory_data[i]->type == ITEMTYPE_WEAPON && ep == 32)	// 盾カードと両手武器
+		if(sd->inventory_data[i]->type == ITEMTYPE_WEAPON && ep == LOC_LARM)	// 盾カードと両手武器
 			continue;
 
 		for(j=0; j<sd->inventory_data[i]->slot; j++) {
@@ -8089,7 +8098,10 @@ void clif_cart_itemlist(struct map_session_data *sd)
 		WFIFOB(fd,n*10+8)=id->type;
 		WFIFOB(fd,n*10+9)=sd->status.cart[i].identify;
 		WFIFOW(fd,n*10+10)=sd->status.cart[i].amount;
-		WFIFOW(fd,n*10+12)=0;
+		if(sd->status.cart[i].equip == LOC_ARROW)
+			WFIFOW(fd,n*10+12)=LOC_ARROW;
+		else
+			WFIFOW(fd,n*10+12)=0;
 		n++;
 	}
 	if(n){
@@ -8112,7 +8124,10 @@ void clif_cart_itemlist(struct map_session_data *sd)
 		WFIFOB(fd,n*18+8)=id->type;
 		WFIFOB(fd,n*18+9)=sd->status.cart[i].identify;
 		WFIFOW(fd,n*18+10)=sd->status.cart[i].amount;
-		WFIFOW(fd,n*18+12)=0;
+		if(sd->status.cart[i].equip == LOC_ARROW)
+			WFIFOW(fd,n*18+12)=LOC_ARROW;
+		else
+			WFIFOW(fd,n*18+12)=0;
 		WFIFOW(fd,n*18+14)=sd->status.cart[i].card[0];
 		WFIFOW(fd,n*18+16)=sd->status.cart[i].card[1];
 		WFIFOW(fd,n*18+18)=sd->status.cart[i].card[2];
@@ -8139,7 +8154,10 @@ void clif_cart_itemlist(struct map_session_data *sd)
 		WFIFOB(fd,n*22+8)=id->type;
 		WFIFOB(fd,n*22+9)=sd->status.cart[i].identify;
 		WFIFOW(fd,n*22+10)=sd->status.cart[i].amount;
-		WFIFOW(fd,n*22+12)=0;
+		if(sd->status.cart[i].equip == LOC_ARROW)
+			WFIFOW(fd,n*22+12)=LOC_ARROW;
+		else
+			WFIFOW(fd,n*22+12)=0;
 		WFIFOW(fd,n*22+14)=sd->status.cart[i].card[0];
 		WFIFOW(fd,n*22+16)=sd->status.cart[i].card[1];
 		WFIFOW(fd,n*22+18)=sd->status.cart[i].card[2];
@@ -8662,9 +8680,15 @@ int clif_openvending(struct map_session_data *sd)
 		WFIFOB(fd,20+n*22)=sd->status.cart[idx].attribute;
 		WFIFOB(fd,21+n*22)=sd->status.cart[idx].refine;
 		if(itemdb_isspecial(sd->status.cart[idx].card[0])) {
-			WFIFOW(fd,22+n*22)=(data->flag.pet_egg)?0:sd->status.cart[idx].card[0];
-			WFIFOW(fd,24+n*22)=(data->flag.pet_egg)?0:sd->status.cart[idx].card[1];
-			WFIFOW(fd,26+n*22)=(data->flag.pet_egg)?0:sd->status.cart[idx].card[2];
+			if(data->flag.pet_egg) {
+				WFIFOW(fd,22+n*22)=0;
+				WFIFOW(fd,24+n*22)=0;
+				WFIFOW(fd,26+n*22)=0;
+			} else {
+				WFIFOW(fd,22+n*22)=sd->status.cart[idx].card[0];
+				WFIFOW(fd,24+n*22)=sd->status.cart[idx].card[1];
+				WFIFOW(fd,26+n*22)=sd->status.cart[idx].card[2];
+			}
 			WFIFOW(fd,28+n*22)=sd->status.cart[idx].card[3];
 		} else {
 			if(sd->status.cart[idx].card[0] > 0 && (j=itemdb_viewid(sd->status.cart[idx].card[0])) > 0)
@@ -11716,7 +11740,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 		}
 		WFIFOL(fd,n*28+63) = tsd->status.inventory[i].limit;
 		WFIFOW(fd,n*28+67) = 0;
-		if(tsd->inventory_data[n]->equip&0x301)
+		if(tsd->inventory_data[n]->equip&LOC_HEAD_TMB)
 			WFIFOW(fd,n*28+69)=tsd->inventory_data[n]->look;
 		else
 			WFIFOW(fd,n*28+69)=0;
@@ -12876,7 +12900,7 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 			case ITEMTYPE_THROWWEAPON:
 			case ITEMTYPE_CANNONBALL:
 				// 矢・弾丸・苦無・手裏剣・キャノンボール
-				pc_equipitem(sd, idx, 0x8000);
+				pc_equipitem(sd, idx, LOC_ARROW);
 				break;
 			default:
 				if(sd->inventory_data[idx]->flag.pet_acce)	// ペット用装備品

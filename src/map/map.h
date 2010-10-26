@@ -881,14 +881,6 @@ struct merc_data {
 	struct map_session_data *msd;
 };
 
-// 装備コード
-enum {
-	EQP_WEAPON		= 0x0002,		// 右手
-	EQP_ARMOR		= 0x0010,		// 体
-	EQP_SHIELD		= 0x0020,		// 左手
-	EQP_HELM		= 0x0100,		// 頭上段
-};
-
 struct map_data {
 	char name[24];
 	unsigned char *gat;	// NULLなら下のmap_data_other_serverとして扱う

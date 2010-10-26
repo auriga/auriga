@@ -1,4 +1,26 @@
 ----------------------------------------
+//0795 [2010/10/27] by popori
+
+・装備箇所のコードをenumにする (battle.c clif.c itemdb.h pc.c script.c skill.c)
+
+・上記の変更に伴いEQP_****は廃止してLOC_****に統一する (map.h battle.c skill.c)
+
+・clif_storageitemlist_sub()、clif_cart_itemlist()内で矢・弾丸・苦無・手裏剣・キャノンボールのチェックを行い該当した場合0x8000を送るように変更 (clif.c)
+
+・頭装備のtypeをdb_ref.txtに従って変更する (item_db.txt)
+
+・item_typeの9を風魔手裏剣→両手武器へ変更 (item_db.txt db_ref.txt)
+
+・スキル「サイトブラスター」の修正 (status.c)
+　めろでぃさんに感謝
+
+・細かい修正 (clif.c itemdb.c)
+
+・2010-10-27aRagexeREの解析結果を基にパケット長の追記 (packet_db.txt)
+
+・スキル「石投げ」「砂まき」の最低ディレイにamotionを保証するよう変更 (skill_db2.txt)
+
+----------------------------------------
 //0794 [2010/10/26] by popori
 
 ・0792で追加したitem_typeのenumをmap.hからitemdb.hへ移動 (map.h itemdb.h)

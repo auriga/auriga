@@ -2609,7 +2609,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					wd.damage *= 3;
 				}
 				if(src_sd && atn_rand() % 10000 < 100) {
-					pc_break_equip(src_sd, EQP_WEAPON);
+					pc_break_equip(src_sd, LOC_RARM);
 				}
 			}
 		}
@@ -4057,9 +4057,9 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			skill_additional_effect(src,target,0,0,BF_WEAPON,tick);
 			if(sd && tsd) {
 				if(sd->break_weapon_rate > 0 && atn_rand()%10000 < sd->break_weapon_rate)
-					pc_break_equip(tsd, EQP_WEAPON);
+					pc_break_equip(tsd, LOC_RARM);
 				if(sd->break_armor_rate > 0 && atn_rand()%10000 < sd->break_armor_rate)
-					pc_break_equip(tsd, EQP_ARMOR);
+					pc_break_equip(tsd, LOC_BODY);
 			}
 		}
 	}
@@ -4222,7 +4222,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			if(t_sc->data[SC_HAGALAZ].val3 <= 0)
 				status_change_end(target,SC_HAGALAZ,-1);
 			if(sd && atn_rand() % 10000 < 500) {
-				pc_break_equip(sd, EQP_WEAPON);
+				pc_break_equip(sd, LOC_RARM);
 			} else {
 				status_change_start(src,SC_STRIPWEAPON,1,0,0,0,10000,0);
 			}
@@ -4738,7 +4738,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		if(sc->data[SC_HAGALAZ].val3 <= 0)
 			status_change_end(bl,SC_HAGALAZ,-1);
 		if(sd && atn_rand() % 10000 < 500) {
-			pc_break_equip(sd, EQP_WEAPON);
+			pc_break_equip(sd, LOC_RARM);
 		} else {
 			status_change_start(src,SC_STRIPWEAPON,1,0,0,0,10000,0);
 		}
