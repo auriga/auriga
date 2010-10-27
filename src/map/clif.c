@@ -7649,7 +7649,7 @@ static void clif_use_card(struct map_session_data *sd, int idx)
 	for(i = 0; i < MAX_INVENTORY; i++) {
 		if(sd->inventory_data[i] == NULL)
 			continue;
-		if(sd->inventory_data[i]->type != ITEMTYPE_ARMOR && sd->inventory_data[i]->type != ITEMTYPE_WEAPON)	// 武器防具じゃない
+		if(!itemdb_isarmor(sd->inventory_data[i]->nameid) && !itemdb_isweapon(sd->inventory_data[i]->nameid))	// 武器防具じゃない
 			continue;
 		if(itemdb_isspecial(sd->status.inventory[i].card[0]))
 			continue;
@@ -7657,7 +7657,7 @@ static void clif_use_card(struct map_session_data *sd, int idx)
 			continue;
 		if((sd->inventory_data[i]->equip&ep) == 0)	// 装備個所が違う
 			continue;
-		if(sd->inventory_data[i]->type == ITEMTYPE_WEAPON && ep == LOC_LARM)	// 盾カードと両手武器
+		if(itemdb_isweapon(sd->inventory_data[i]->nameid) && ep == LOC_LARM)	// 盾カードと両手武器
 			continue;
 
 		for(j=0; j<sd->inventory_data[i]->slot; j++) {

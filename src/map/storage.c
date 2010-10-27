@@ -95,7 +95,7 @@ static int storage_comp_item_by_type(const void *_i1, const void *_i2)
 		return -1;
 
 	// 武器・防具ならLOCでソート
-	if(data1->type == ITEMTYPE_ARMOR || data1->type == ITEMTYPE_WEAPON) {
+	if(itemdb_isarmor(data1->nameid) || itemdb_isweapon(data1->nameid)) {
 		if(data1->equip > data2->equip)
 			return 1;
 		if(data1->equip < data2->equip)

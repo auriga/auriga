@@ -844,7 +844,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 		{
 			if(sd->sc.data[SC_STRIPWEAPON].timer != -1)
 				return 0;
-			if(item->wlv >= 4 && item->type == ITEMTYPE_WEAPON)
+			if(item->wlv >= 4 && itemdb_isweapon(item->nameid))
 			{
 				// Lv4の武器を許可
 				switch(item->look) {
@@ -941,7 +941,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 
 	if(sd->sc.data[SC_STRIPWEAPON].timer != -1 && item->equip & LOC_RARM)
 		return 0;
-	if(sd->sc.data[SC_STRIPSHIELD].timer != -1 && item->equip & LOC_LARM && item->type != ITEMTYPE_WEAPON)
+	if(sd->sc.data[SC_STRIPSHIELD].timer != -1 && item->equip & LOC_LARM && !itemdb_isweapon(item->nameid))
 		return 0;
 	if(sd->sc.data[SC_STRIPARMOR].timer != -1 && item->equip & LOC_BODY)
 		return 0;
@@ -3120,11 +3120,11 @@ void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip)
 		if( nameid <= 0 ||
 		    cardid <= 0 ||
 		    sd->inventory_data[idx_equip] == NULL ||
-		    (sd->inventory_data[idx_equip]->type != ITEMTYPE_ARMOR && sd->inventory_data[idx_equip]->type != ITEMTYPE_WEAPON) ||	// 装備じゃない
+		    (!itemdb_isarmor(sd->inventory_data[idx_equip]->nameid) && !itemdb_isweapon(sd->inventory_data[idx_equip]->nameid)) ||	// 装備じゃない
 		    sd->status.inventory[idx_equip].identify == 0 ||						// 未鑑定
 		    itemdb_isspecial(sd->status.inventory[idx_equip].card[0]) ||				// 製造武器・名前入り・ペット
 		    (sd->inventory_data[idx_equip]->equip & ep) == 0 ||						// 装備個所違い
-		    (sd->inventory_data[idx_equip]->type == ITEMTYPE_WEAPON && ep == LOC_LARM) ||					// 両手武器と盾カード
+		    (itemdb_isweapon(sd->inventory_data[idx_equip]->nameid) && ep == LOC_LARM) ||					// 両手武器と盾カード
 		    (sd->inventory_data[idx_card]->type != ITEMTYPE_CARD) ||						// Prevent Hack [Ancyker]
 		    sd->status.inventory[idx_equip].equip )
 		{
@@ -7208,14 +7208,14 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	}
 	if(sd->status.inventory[n].equip & LOC_LARM) {
 		if(sd->inventory_data[n]) {
-			if(sd->inventory_data[n]->type == ITEMTYPE_WEAPON) {
+			if(itemdb_isweapon(sd->inventory_data[n]->nameid)) {
 				sd->status.shield = 0;
 				if(sd->status.inventory[n].equip == LOC_LARM)
 					sd->weapontype2 = sd->inventory_data[n]->look;
 				else
 					sd->weapontype2 = WT_FIST;
 			}
-			else if(sd->inventory_data[n]->type == ITEMTYPE_ARMOR) {
+			else if(itemdb_isarmor(sd->inventory_data[n]->nameid)) {
 				sd->status.shield = sd->inventory_data[n]->look;
 				sd->weapontype2 = WT_FIST;
 			}
@@ -7462,7 +7462,7 @@ static int pc_setequipindex(struct map_session_data *sd)
 				sd->weapontype1 = 0;
 		}
 		if(sd->status.inventory[i].equip & LOC_LARM) {
-			if(sd->inventory_data[i] && sd->inventory_data[i]->type == ITEMTYPE_WEAPON && sd->status.inventory[i].equip == LOC_LARM)
+			if(sd->inventory_data[i] && itemdb_isweapon(sd->inventory_data[i]->nameid) && sd->status.inventory[i].equip == LOC_LARM)
 				sd->weapontype2 = sd->inventory_data[i]->look;
 			else
 				sd->weapontype2 = 0;
@@ -7965,7 +7965,7 @@ int pc_break_equip(struct map_session_data *sd, unsigned short where)
 				return 0;
 			break;
 		case LOC_LARM:
-			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == ITEMTYPE_WEAPON)	// 左手が武器なら
+			if(sd->equip_index[8] >= 0 && itemdb_isweapon(sd->inventory_data[sd->equip_index[8]]->nameid))	// 左手が武器なら
 				return 0;
 			if(sd->sc.data[SC_CP_SHIELD].timer != -1)
 				return 0;
@@ -8023,7 +8023,7 @@ int pc_break_equip2(struct map_session_data *sd,int where)
 				return 0;
 			break;
 		case 8:	// 左手
-			if(sd->equip_index[8] >= 0 && sd->inventory_data[sd->equip_index[8]]->type == ITEMTYPE_WEAPON) {	// 武器
+			if(sd->equip_index[8] >= 0 && itemdb_isweapon(sd->inventory_data[sd->equip_index[8]]->nameid)) {	// 武器
 				if(sd->unbreakable_equip & LOC_RARM)
 					return 0;
 				if(sd->sc.data[SC_CP_WEAPON].timer != -1)
@@ -9187,7 +9187,7 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 							continue;
 					}
 					loop = 1;
-					if (item_data->type == ITEMTYPE_ARMOR || item_data->type == ITEMTYPE_WEAPON ||
+					if (itemdb_isarmor(item_data->nameid) || itemdb_isweapon(item_data->nameid) ||
 					    item_data->flag.pet_egg || item_data->flag.pet_acce) {
 						loop = quantity;
 						quantity = 1;

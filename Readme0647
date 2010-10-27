@@ -1,4 +1,15 @@
 ----------------------------------------
+//0796 [2010/10/28] by popori
+
+・script.cの装備箇所をenum化 (script.c)
+　NP3228さんに感謝
+
+・武器かどうかの判定はitemdb_isweapon()で判定するようにする (atcommand.c battle.c clif.c itemdb.* pc.c script.c skill.c status.c storage.c)
+　NP3228さんに感謝
+
+・防具かどうかの判定はitemdb_isarmor()で判定するようにする (atcommand.c battle.c clif.c itemdb.* pc.c script.c status.c storage.c)
+
+----------------------------------------
 //0795 [2010/10/27] by popori
 
 ・装備箇所のコードをenumにする (battle.c clif.c itemdb.h pc.c script.c skill.c)

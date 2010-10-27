@@ -108,6 +108,8 @@ int itemdb_searchrandomid(int type);
 int itemdb_isequip(int);
 int itemdb_isequip2(struct item_data *);
 int itemdb_isequip3(int);
+int itemdb_isweapon(int nameid);
+int itemdb_isarmor(int nameid);
 int itemdb_iscartable(int nameid);
 int itemdb_isstorageable(int nameid);
 int itemdb_isdropable(int nameid);

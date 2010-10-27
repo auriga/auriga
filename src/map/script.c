@@ -5610,7 +5610,7 @@ int buildin_getitem2(struct script_state *st)
 
 		item_data = itemdb_search(item_tmp.nameid);
 
-		if(item_data->type == ITEMTYPE_ARMOR || item_data->type == ITEMTYPE_WEAPON) {
+		if(itemdb_isarmor(item_data->nameid) || itemdb_isweapon(item_data->nameid)) {
 			if(ref > MAX_REFINE)
 				ref = MAX_REFINE;
 		} else if(item_data->flag.pet_egg) {
@@ -6095,7 +6095,7 @@ int buildin_strcharinfo(struct script_state *st)
 }
 
 // pc.cのequip_posと順番が異なることに注意
-static const unsigned int equip_pos[11]={0x0100,0x0010,0x0020,0x0002,0x0004,0x0040,0x0008,0x0080,0x0200,0x0001,0x8000};
+static const unsigned int equip_pos[11]={LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ROBE,LOC_SHOES,LOC_RACCESSORY,LOC_LACCESSORY,LOC_HEAD3,LOC_HEAD,LOC_ARROW};
 
 /*==========================================
  * 指定位置の装備品のIDを取得

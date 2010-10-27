@@ -210,7 +210,6 @@ int itemdb_isequip2(struct item_data *data)
 			case ITEMTYPE_THROWWEAPON:
 			case ITEMTYPE_CASH_POINT_ITEM:
 			case ITEMTYPE_CANNONBALL:
-				result = 0;
 				break;
 			default:
 				result = 1;
@@ -240,6 +239,55 @@ int itemdb_isequip3(int nameid)
 		case ITEMTYPE_ARMORMB:
 		case ITEMTYPE_ARMORTMB:
 		case ITEMTYPE_GUN:
+			result = 1;
+			break;
+		default:
+			result = 0;
+			break;
+	}
+
+	return result;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int itemdb_isweapon(int nameid)
+{
+	int type = itemdb_type(nameid);
+	int result;
+
+	switch(type) {
+		case ITEMTYPE_WEAPON:
+		case ITEMTYPE_BOW:
+		case ITEMTYPE_BOTHHAND:
+		case ITEMTYPE_GUN:
+			result = 1;
+			break;
+		default:
+			result = 0;
+			break;
+	}
+
+	return result;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int itemdb_isarmor(int nameid)
+{
+	int type = itemdb_type(nameid);
+	int result;
+
+	switch(type) {
+		case ITEMTYPE_ARMOR:
+		case ITEMTYPE_ARMORTM:
+		case ITEMTYPE_ARMORTB:
+		case ITEMTYPE_ARMORMB:
+		case ITEMTYPE_ARMORTMB:
 			result = 1;
 			break;
 		default:
