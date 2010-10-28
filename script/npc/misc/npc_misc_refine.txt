@@ -502,6 +502,217 @@ function	script	Refine3	{
 	//closeで終了
 }
 
+//=====================================================================
+//武具精錬NPCセリフパターン4
+//	（プロンテラ）
+//  callfunc "Refine4","NPCName",SuccessEmotion,FalureEmotion;
+//--------------------------------------------------------------------
+
+function	script	Refine4	{
+	mes "["+getarg(0)+"]";
+	mes "俺は武器と防具を精錬する鍛冶屋だ！";
+	mes "お前が装備しているアイテムを";
+	mes "精錬できるってわけだ。";
+	mes "ただし、濃縮オリデオコンか";
+	mes "濃縮エルニウムが必要だぞ。";
+	mes "どの装備アイテムを精錬したい？";
+	next;
+	set '@i,select(getequipname(1),getequipname(2),getequipname(3),getequipname(4),getequipname(5),
+				getequipname(6),getequipname(7),getequipname(8),getequipname(9),getequipname(10));
+	mes "["+getarg(0)+"]";
+	if(getequipisequiped('@i)==0) {
+		switch('@i) {
+		case 1:
+			mes "お前の悪い頭を精錬してあげようか？";
+			break;
+		case 2:
+			mes "俺の熱い体でお前の体を";
+			mes "精錬してあげるぜ。";
+			break;
+		case 3:
+			mes "残念ながら、お前の左手を";
+			mes "ロケットパンチにする能力はないね。";
+			break;
+		case 4:
+			mes "現代科学技術でもお前の右手を";
+			mes "ロケットパンチにする事はできないぜ。";
+			break;
+		case 5:
+			mes "持っているローブがないじゃないか？";
+			break;
+		case 6:
+			mes "お前、足のにおいがすごいね。";
+			break;
+		case 7:
+		case 8:
+			mes "どのアクセサリーを言ってるんだろ？";
+			break;
+		case 9:
+			mes "何を精錬してほしいんだ？";
+			mes "もしかして、頭の他の所？";
+			break;
+		case 10:
+			mes "お前の頭蓋骨を精錬してやろうか？";
+			break;
+		}
+		return;
+	}
+	if(getequipisenableref('@i)==0) {
+		mes "ふむ、これは精錬できる";
+		mes "アイテムじゃないんだぜ……";
+		return;
+	}
+	if(getequipisidentify('@i)==0) {
+		mes "未鑑定だから精錬できないな。";
+		return;
+	}
+	if(getequiprefinerycnt('@i)>=10) {
+		mes "これ以上は精錬できないな。";
+		return;
+	}
+	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
+	if('price[0]==0) {
+		setarray 'price,5000,100,500,5000,10000;
+		setarray 'itemid,7619,7620,7620,7620,7620;
+	}
+	set '@wlv,getequipweaponlv('@i);
+	switch('@wlv) {
+	case 0:
+		mes "お前が選んだ装備を";
+		mes "精錬するためには";
+		mes "^FF9C9C濃縮エルニウム^000000と";
+		mes "手数料5000Zenyが必要だぜ？";
+		mes "精錬するか？";
+		break;
+	case 1:
+		mes "レベル1の武器を";
+		mes "精錬しようとしてるんだね。";
+		mes "精錬のためには";
+		mes "^FF9C9C濃縮オリデオコン^000000と";
+		mes "手数料100Zenyが必要だぜ？";
+		mes "精錬するか？";
+		break;
+	case 2:
+		mes "レベル2の武器を";
+		mes "精錬しようとしてるんだね。";
+		mes "精錬のためには";
+		mes "^FF9C9C濃縮オリデオコン^000000と";
+		mes "手数料500Zenyが必要だぜ？";
+		mes "精錬するか？";
+		break;
+	case 3:
+		mes "レベル3の武器を";
+		mes "精錬しようとしてるんだね。";
+		mes "精錬のためには";
+		mes "^FF9C9C濃縮オリデオコン^000000と";
+		mes "手数料5000Zenyが必要だぜ？";
+		mes "精錬するか？";
+		break;
+	case 4:
+		mes "レベル4の武器を";
+		mes "精錬しようとしてるんだね。";
+		mes "精錬のためには";
+		mes "^FF9C9C濃縮オリデオコン^000000と";
+		mes "手数料10000Zenyが必要だぜ？";
+		mes "精錬するか？";
+		break;
+	}
+	next;
+	if(select("はい","いいえ")==2) {
+		mes "["+getarg(0)+"]";
+		mes "お前がいやだったら仕方ないしな。";
+		return;
+	}
+	// 濃縮課金アイテム精錬テーブル
+	switch('@wlv) {
+	case 0: setarray '@parcent,100,100,100,100, 90, 60, 60, 30, 30, 10; break;
+	case 1: setarray '@parcent,100,100,100,100,100,100,100, 90, 60, 20; break;
+	case 2: setarray '@parcent,100,100,100,100,100,100, 90, 60, 30, 20; break;
+	case 3: setarray '@parcent,100,100,100,100,100, 90, 75, 30, 30, 20; break;
+	case 4: setarray '@parcent,100,100,100,100, 90, 60, 60, 30, 30, 10; break;
+	}
+	if('@parcent[getequiprefinerycnt('@i)] < 100) {
+		mes "["+getarg(0)+"]";
+		if('@wlv==0) {	//防具のとき
+			mes "あらら！";
+			mes "この防具はもう";
+			mes "何回も精錬されちゃったね。";
+			mes "これ以上精錬すると";
+			mes "防具が壊れちゃう";
+			mes "恐れがある……";
+			next;
+			mes "["+getarg(0)+"]";
+			mes "防具が壊れちゃうと";
+			mes "二度と使えないんだぜ?!";
+			mes "中に打ち込まれたカードも特性も";
+			mes "^FF0000すべてが消えちゃう^000000んだからね。";
+			mes "^FF0000防具自体が消えちゃう^000000ってわけだ。";
+			mes "それでも精錬するつもりか？";
+		} else {		//武器のとき
+			mes "あらら！";
+			mes "この武器はもう";
+			mes "何回も精錬されちゃったね。";
+			mes "これ以上精錬すると";
+			mes "武器が壊れちゃう";
+			mes "恐れがある……";
+			next;
+			mes "["+getarg(0)+"]";
+			mes "武器が壊れちゃうと";
+			mes "二度と使えないんだぜ?!";
+			mes "中に打ち込まれたカードも特性も";
+			mes "^FF0000すべてが消えちゃう^000000んだからね。";
+			mes "^FF0000武器自体が消えちゃう^000000ってわけだ。";
+			mes "それでも精錬するつもりか？";
+		}
+		next;
+		if(select("はい","いいえ")==2) {
+			mes "["+getarg(0)+"]";
+			mes "そうだな、物は大切に扱うべきだからな。";
+			return;
+		}
+	}
+	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
+		mes "["+getarg(0)+"]";
+		mes "これがお前が持ってるすべてか？";
+		mes "残念だけど、材料が足りないと";
+		mes "精錬してあげられないぜ。";
+		mes "俺も仕事をした代価くらい";
+		mes "貰わないとな……。";
+		return;
+	}
+	delitem 'itemid['@wlv],1;
+	set Zeny,Zeny-'price['@wlv];
+	mes "["+getarg(0)+"]";
+	mes "カン！ カン！ カン！";
+	if('@parcent[getequiprefinerycnt('@i)] > rand(100)) {
+		successrefitem '@i;
+		next;
+		emotion getarg(1);
+		mes "["+getarg(0)+"]";
+		mes "さ！ 無事に精錬が終わったぜ。";
+		mes "俺の腕はまだ使えるぜ！";
+		mes "自分で言うのもなんだが、";
+		mes "なかなか良い出来じゃないか！";
+	}
+	else {
+		failedrefitem '@i;
+		next;
+		emotion getarg(2);
+		mes "["+getarg(0)+"]";
+		mes "ウアアアアアアアアアアッ!!!!";
+		next;
+		mes "["+getarg(0)+"]";
+		mes "あ、あら……";
+		mes "失敗しちゃった。ご、ごめん……";
+		mes "装備が壊れちゃったな……";
+		mes "だ、だからさ……";
+		mes "危ないって言ったじゃないか……";
+		mes "俺を恨まないでくれ……";
+	}
+	return;
+	//closeで終了
+}
+
 // ----- アルベルタ -----
 alberta_in.gat,28,58,4	script	フレドリック	85,{
 	callfunc "Refine1","フレドリックヘルマンソン",18,4;
@@ -532,7 +743,11 @@ ein_in01.gat,24,87,5	script	マンダスマン	826,{
 	callfunc "Refine1","マンダスマン",18,4;
 	close;
 }
-
+// ----- プロンテラ -----
+prontera.gat,123,65,1	script	フランツ	85,{
+	callfunc "Refine4","フランツ",21,23;
+	close;
+}
 
 //====================================================================
 //精錬石販売NPC
