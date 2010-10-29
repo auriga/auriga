@@ -60,6 +60,9 @@ struct mob_db *mob_db = &mob_db_real[-MOB_ID_MIN];
 
 static struct random_mob_data random_mob[MAX_RAND_MOB_TYPE];
 
+manuk_mob[8] = {1986,1987,1988,1989,1990,1997,1998,1999};
+splendide_mob[5] = {1991,1992,1993,1994,1995};
+
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
  *------------------------------------------

@@ -1534,10 +1534,10 @@
 2679,Ring_Of_Resonance,リングオブレゾナンス,4,20,,100,,2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus bMdef,2; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
 2680,Lesser_Elemental_Ring,下級精霊の指輪,4,20,,100,,,,0,1000333311,2,136,,0,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; bonus3 bAutoSpell,93,1,800; bonus3 bAutoSelfSpell,40,1,500; bonus3 bAutoSelfSpell,151,1,1000; bonus3 bAutoSelfSpell,1013,1,100; bonus3 bRevAutoSelfSpell,411,5,200; bonus3 bRevAutoSelfSpell,426,3,300; bonus3 bRevAutoSelfSpell,142,1,1000; bonus3 bRevAutoSelfSpell,150,1,500; }
 2681,Republic_Ring,共和国記念日指輪,4,20,,1000,,0,,0,1000333311,2,136,,0,,,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; }
-2682,Ring_Of_Water,水の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bSubEle,1,5; }
-2683,Ring_Of_Fire,火の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bSubEle,3,5; }
-2684,Ring_Of_Wind,風の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bSubEle,4,5; }
-2685,Ring_Of_Earth,大地の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bSubEle,2,5; }
+2682,Ring_Of_Water,水の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bDefEleEnemy,1,5; }
+2683,Ring_Of_Fire,火の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bDefEleEnemy,3,5; }
+2684,Ring_Of_Wind,風の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bDefEleEnemy,4,5; }
+2685,Ring_Of_Earth,大地の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bDefEleEnemy,2,5; }
 2686,Elven_Ears_C,妖精の耳R,4,,-1,100,,2,,0,991944702,2,512,,1,73,,{},{ bonus bInt,1; }
 2687,Steel_Flower_C,鋼鉄の花びらR,4,,-1,100,,1,,0,991944702,2,1,,1,56,,{},{ bonus3 bRevAutoSelfSpell,72,1,3; }
 2688,Critical_Ring_C,クリティカルリングR,4,,-1,100,,0,,0,991944702,2,136,,1,40,,{},{ bonus bCritical,7; }
@@ -4541,14 +4541,14 @@
 12339,Cherish_Box_Ori,愛蔵版箱,2,,,10,,,,,1000333311,2,,,,,,{},{}
 12340,Unknown_Item,神秘的なもち米粉,2,,,10,,,,,1000333311,2,,,,,,{},{}
 12341,Unknown_Item,特殊合金トラップの箱,2,,,100,,,,,1000333311,2,,,,,,{ getitem 7940,100; },{}
-12342,Unknown_Item,マヌクの豪気,2,,,50,,,,,1000333311,2,,,,,,{},{}
-12343,Unknown_Item,マヌクの意思,2,,,50,,,,,1000333311,2,,,,,,{},{}
-12344,Unknown_Item,ピンギキュラの果実ジャム,2,,,50,,,,,1000333311,2,,,,,,{},{}
-12345,Unknown_Item,ルシオラヴェスパのハチ蜜,2,,,50,,,,,1000333311,2,,,,,,{},{}
+12342,Manuk's_Opportunity,マヌクの豪気,2,,,50,,,,,1000333311,2,,,,,,{ misceffect 220,""; sc_start 450,600000,110; },{}
+12343,Manuk's_Courage,マヌクの意思,2,,,50,,,,,1000333311,2,,,,,,{ misceffect 336,""; sc_start 451,600000,90; },{}
+12344,Pinguicula's_fruit_Jam,ピンギキュラの果実ジャム,2,,,50,,,,,1000333311,2,,,,,,{ misceffect 220,""; sc_start 453,600000,110; },{}
+12345,Luciola's_Honey_Jam,ルシオラヴェスパのハチ蜜,2,,,50,,,,,1000333311,2,,,,,,{ misceffect 336,""; sc_start 454,600000,90; },{}
 12346,Unknown_Item,まだ青いどんぐり,3,,,0,,,,,,,,,,,,{},{}
 12347,Unknown_Item,どんぐりゼリー,3,,,50,,,,,,,,,,,,{},{}
-12348,Unknown_Item,マヌクの信念,2,,,50,,,,,1000333311,2,,,,,,{},{}
-12349,Unknown_Item,コルヌスの涙,2,,,50,,,,,1000333311,2,,,,,,{},{}
+12348,Manuk's_Faith,マヌクの信念,2,,,50,,,,,1000333311,2,,,,,,{ misceffect 220,""; sc_start 452,600000,110; },{}
+12349,Cornus's_Tears,コルヌスの涙,2,,,50,,,,,1000333311,2,,,,,,{ misceffect 220,""; sc_start 455,600000,110; },{}
 12350,Unknown_Item,エンジェルリングポーション,2,,,100,,,,,1000333311,2,,,,,,{ sc_end SC_SC_BLESSING; sc_start SC_BLESSING,140000,5; itemskill 33,5,""; },{}
 12351,Unknown_Item,叫びメガホン,2,,,50,,,,,1000333311,2,,,,,,{ itemskill 155,1,""; },{}
 12352,Unknown_Item,ダンジョン移動スクロール3,2,,,10,,,,,1000333311,2,,,,,,{},{}

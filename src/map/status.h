@@ -589,6 +589,12 @@ enum {
 	SC_NEUTRALBARRIER		= 447,
 	SC_STEALTHFIELD_USER	= 448,
 	SC_STEALTHFIELD			= 449,
+	SC_MANU_ATK				= 450,
+	SC_MANU_DEF				= 451,
+	SC_MANU_MATK			= 452,
+	SC_SPL_ATK				= 453,
+	SC_SPL_DEF				= 454,
+	SC_SPL_MATK				= 455,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
@@ -972,6 +978,14 @@ enum {
 	SI_NEUTRALBARRIER	= 377,
 	//
 	SI_STEALTHFIELD		= 379,
+	//
+	SI_MANU_ATK			= 381,
+	SI_MANU_DEF			= 382,
+	SI_SPL_ATK			= 383,
+	SI_SPL_DEF			= 384,
+	//
+	SI_MANU_MATK		= 386,
+	SI_SPL_MATK			= 387,
 	//
 	SI_EXPIATIO			= 414,
 	//

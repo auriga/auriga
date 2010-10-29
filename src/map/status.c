@@ -167,7 +167,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 440- */
 	SI_HOVERING,SI_OVERHEAT,SI_SHAPESHIFT,SI_INFRAREDSCAN,SI_ANALYZE,SI_BLANK,SI_BLANK,SI_NEUTRALBARRIER,SI_BLANK,SI_STEALTHFIELD,
 	/* 450- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_MANU_ATK,SI_MANU_DEF,SI_MANU_MATK,SI_SPL_ATK,SI_SPL_DEF,SI_SPL_MATK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 };
 
 /*==========================================
@@ -4745,6 +4745,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_NATURAL_HEAL_STOP:		/* 自然回復停止 */
 		case SC_REBIRTH:			/* リバース */
 		case SC_HELLPOWER:			/* ヘルパワー */
+		case SC_MANU_ATK:			/* マヌクフィールドMOB(物理ダメージ上昇) */
+		case SC_MANU_DEF:			/* マヌクフィールドMOB(ダメージ減少) */
+		case SC_MANU_MATK:			/* マヌクフィールドMOB(魔法ダメージ上昇) */
+		case SC_SPL_ATK:			/* スプレンティッドフィールドMOB(物理ダメージ上昇) */
+		case SC_SPL_DEF:			/* スプレンティッドフィールドMOB(ダメージ減少) */
+		case SC_SPL_MATK:			/* スプレンティッドフィールドMOB(魔法ダメージ減少) */
 		case SC_NAUTHIZ:			/* リフレッシュ */
 		case SC_ISHA:				/* バイタリティアクティベーション */
 		case SC_WEAPONBLOCKING2:	/* ウェポンブロッキング（ブロック） */

@@ -86,6 +86,9 @@ struct random_mob_data {
 	int entry;
 };
 
+extern int manuk_mob[8];
+extern int splendide_mob[5];
+
 enum {
 	MST_TARGET = 0,
 	MST_SELF,

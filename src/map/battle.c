@@ -343,6 +343,42 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			else if( !(flag&BF_SKILL) && status_get_attack_element(src) == ELE_WATER )
 				damage += damage * src_sc->data[SC_DELUGE].val4 / 100;
 		}
+		if(src_sc->data[SC_MANU_ATK].timer != -1 && damage > 0 && flag&BF_WEAPON && tmd) {	// マヌクフィールドMOB物理ダメージ増加
+			int i;
+			for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
+				if(manuk_mob[i] == tmd->class_) {
+					damage = damage * src_sc->data[SC_MANU_ATK].val1 / 100;
+					break;
+				}
+			}
+		}
+		if(src_sc->data[SC_SPL_ATK].timer != -1 && damage > 0 && flag&BF_WEAPON && tmd) {	// スプレンティッドフィールドMOB物理ダメージ増加
+			int i;
+			for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
+				if(splendide_mob[i] == tmd->class_) {
+					damage = damage * src_sc->data[SC_SPL_ATK].val1 / 100;
+					break;
+				}
+			}
+		}
+		if(src_sc->data[SC_MANU_MATK].timer != -1 && damage > 0 && flag&BF_MAGIC && tmd) {	// マヌクフィールドMOB魔法ダメージ増加
+			int i;
+			for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
+				if(manuk_mob[i] == tmd->class_) {
+					damage = damage * src_sc->data[SC_MANU_MATK].val1 / 100;
+					break;
+				}
+			}
+		}
+		if(src_sc->data[SC_SPL_MATK].timer != -1 && damage > 0 && flag&BF_MAGIC && tmd) {	// スプレンティッドフィールドMOB魔法ダメージ増加
+			int i;
+			for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
+				if(splendide_mob[i] == tmd->class_) {
+					damage = damage * src_sc->data[SC_SPL_MATK].val1 / 100;
+					break;
+				}
+			}
+		}
 	}
 
 	if(sc && sc->count > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
@@ -547,6 +583,28 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		if(sc->data[SC_HALLUCINATIONWALK].timer != -1 && damage > 0 && flag&BF_MAGIC) {
 			if(atn_rand()%100 < sc->data[SC_HALLUCINATIONWALK].val1 * 10)
 				damage = 0;
+		}
+
+		// マヌクフィールドMOBダメージ減少
+		if(sc->data[SC_MANU_DEF].timer != -1 && damage > 0 && src->type == BL_MOB) {
+			int i;
+			for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
+				if(manuk_mob[i] == ((struct mob_data *)src)->class_) {
+					damage = damage * sc->data[SC_MANU_DEF].val1 / 100;
+					break;
+				}
+			}
+		}
+
+		// スプレンティッドフィールドMOBダメージ減少
+		if(sc->data[SC_SPL_DEF].timer != -1 && damage > 0 && src->type == BL_MOB) {
+			int i;
+			for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
+				if(splendide_mob[i] == ((struct mob_data *)src)->class_) {
+					damage = damage * sc->data[SC_SPL_DEF].val1 / 100;
+					break;
+				}
+			}
 		}
 	}
 
