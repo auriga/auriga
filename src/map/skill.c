@@ -2236,7 +2236,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 				break;
 			if(!(mob_db[src_md->class_].mode & 0x20) && src_md->sc.data[SC_HERMODE].timer != -1)
 				break;
-			if((src_md->sc.opt1 > 0 && src_md->sc.opt1 != 7) || src_md->sc.data[SC_SILENCE].timer != -1 || src_md->sc.data[SC_STEELBODY].timer != -1)
+			if((src_md->sc.opt1 > OPT1_NORMAL && src_md->sc.opt1 != OPT1_BURNNING) || src_md->sc.data[SC_SILENCE].timer != -1 || src_md->sc.data[SC_STEELBODY].timer != -1)
 				break;
 			if(src_md->sc.data[SC_AUTOCOUNTER].timer != -1 && src_md->ud.skillid != KN_AUTOCOUNTER)
 				break;
@@ -2245,8 +2245,6 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 			if(src_md->sc.data[SC_BERSERK].timer != -1)
 				break;
 			if(src_md->sc.data[SC_DEATHBOUND].timer != -1 && src_md->ud.skillid != RK_DEATHBOUND)
-				break;
-			if(src_md->sc.data[SC_WHITEIMPRISON].timer != -1)
 				break;
 			if(src_md->sc.data[SC_STASIS].timer != -1 && skill_get_skill_type(src_md->ud.skillid) == BF_MAGIC)
 				break;
@@ -3711,13 +3709,13 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1]) {
 				sc = status_get_sc(bl);
-				if(sc && sc->option & 0x46) {
-					if(sc->option & 0x06) {
+				if(sc && sc->option & (OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING)) {
+					if(sc->option & (OPTION_HIDE | OPTION_CLOAKING)) {
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
 					}
-					if(sc->option & 0x40) {
+					if(sc->option & OPTION_SPECIALHIDING) {
 						status_change_end(bl, SC_INVISIBLE, -1);
 					}
 					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
@@ -3837,13 +3835,13 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1]) {
 				sc = status_get_sc(bl);
-				if(sc && sc->option & 0x46) {
-					if(sc->option & 0x06) {
+				if(sc && sc->option & (OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING)) {
+					if(sc->option & (OPTION_HIDE | OPTION_CLOAKING)) {
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
 					}
-					if(sc->option & 0x40) {
+					if(sc->option & OPTION_SPECIALHIDING) {
 						status_change_end(bl, SC_INVISIBLE, -1);
 					}
 					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
@@ -3900,7 +3898,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					break;
 				}
 				/* 魔導ギアを解除 */
-				pc_setoption(sd, (sd->sc.option & ~0x400000));
+				pc_setoption(sd, (sd->sc.option & ~OPTION_MADOGEAR));
 			}
 
 			/* スキルエフェクト表示 */
@@ -7036,9 +7034,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(sd) {
 			if(pc_iswolf(sd)) {
-				pc_setoption(sd,0);
+				pc_setoption(sd,OPTION_NOTHING);
 			} else {
-				pc_setoption(sd,0x100000);
+				pc_setoption(sd,OPTION_WUG);
 			}
 		}
 		break;
@@ -7047,9 +7045,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sd) {
 			unit_stop_walking(src,1);
 			if(pc_iswolfmount(sd)) {
-				pc_setoption(sd,0x100000);
+				pc_setoption(sd,OPTION_WUG);
 			} else {
-				pc_setoption(sd,0x200000);
+				pc_setoption(sd,OPTION_WUGRIDER);
 			}
 		}
 		break;
@@ -7127,13 +7125,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NC_INFRAREDSCAN:	/* インフラレッドスキャン */
 		if(flag&1) {
 			sc = status_get_sc(bl);
-			if(sc && sc->option & 0x46) {
-				if(sc->option & 0x06) {
+			if(sc && sc->option & (OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING)) {
+				if(sc->option & (OPTION_HIDE | OPTION_CLOAKING)) {
 					status_change_end(bl, SC_HIDING, -1);
 					status_change_end(bl, SC_CLOAKING, -1);
 					status_change_end(bl, SC_CLOAKINGEXCEED, -1);
 				}
-				if(sc->option & 0x40) {
+				if(sc->option & OPTION_SPECIALHIDING) {
 					status_change_end(bl, SC_INVISIBLE, -1);
 				}
 			}
@@ -7266,7 +7264,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 				break;
 			if(!(mob_db[src_md->class_].mode & 0x20) && src_md->sc.data[SC_HERMODE].timer != -1)
 				break;
-			if((src_md->sc.opt1 > 0  && src_md->sc.opt1 != 7) || src_md->sc.data[SC_SILENCE].timer != -1 || src_md->sc.data[SC_STEELBODY].timer != -1)
+			if((src_md->sc.opt1 > OPT1_NORMAL  && src_md->sc.opt1 != OPT1_BURNNING) || src_md->sc.data[SC_SILENCE].timer != -1 || src_md->sc.data[SC_STEELBODY].timer != -1)
 				break;
 			if(src_md->sc.data[SC_AUTOCOUNTER].timer != -1 && src_md->ud.skillid != KN_AUTOCOUNTER)
 				break;
@@ -7275,8 +7273,6 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 			if(src_md->sc.data[SC_BERSERK].timer != -1)
 				break;
 			if(src_md->sc.data[SC_DEATHBOUND].timer != -1 && src_md->ud.skillid != RK_DEATHBOUND)
-				break;
-			if(src_md->sc.data[SC_WHITEIMPRISON].timer != -1)
 				break;
 			if(src_md->sc.data[SC_STASIS].timer != -1 && skill_get_skill_type(src_md->ud.skillid) == BF_MAGIC)
 				break;
@@ -7871,7 +7867,7 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 	if(skill_num != sd->ud.skillid)
 		return;
 
-	if( (sd->sc.opt1 > 0 && sd->sc.opt1 != 7) || sd->sc.option&2 )
+	if( (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->sc.option&OPTION_HIDE )
 		return;
 
 	// スキルが使えない状態異常中
@@ -9612,7 +9608,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 		    sc->data[SC_BERSERK].timer != -1 ||
 		    (sc->data[SC_MARIONETTE].timer !=-1 && cnd->id != CG_MARIONETTE) ||
 		    sc->data[SC_OBLIVIONCURSE].timer != -1 ||
-		    sc->data[SC_WHITEIMPRISON].timer != -1 ||
+			sc->data[SC_WHITEIMPRISON].timer != -1 ||
 		    (sc->data[SC_STASIS].timer != -1 && skill_get_skill_type(cnd->id) == BF_MAGIC))
 			return 0;
 
@@ -9925,7 +9921,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	target = map_id2bl( cnd->target );
 
 	// チェイス、ハイド、クローキング時のスキル
-	if(sd->sc.option&0x02) {
+	if(sd->sc.option&OPTION_HIDE) {
 		if(cnd->id != TF_HIDING &&
 		   cnd->id != AS_GRIMTOOTH &&
 		   cnd->id != RG_BACKSTAP &&
@@ -9981,13 +9977,13 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		return 0;
 
 	// GMハイド中で、コンフィグでハイド中攻撃不可 GMレベルが指定より大きい場合
-	if(sd->sc.option&0x40 && battle_config.hide_attack == 0 && pc_isGM(sd) < battle_config.gm_hide_attack_lv)
+	if(sd->sc.option&OPTION_SPECIALHIDING && battle_config.hide_attack == 0 && pc_isGM(sd) < battle_config.gm_hide_attack_lv)
 		return 0;	// 隠れてスキル使うなんて卑怯なGMデスネ
 
 	if(battle_config.gm_skilluncond > 0 && pc_isGM(sd) >= battle_config.gm_skilluncond)
 		return 1;
 
-	if(sd->sc.opt1 > 0 && sd->sc.opt1 != 7) {
+	if(sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) {
 		clif_skill_fail(sd,cnd->id,0,0);
 		return 0;
 	}
@@ -10760,7 +10756,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 
 	switch(state) {
 	case SST_HIDING:
-		if(!(sd->sc.option&2)) {
+		if(!(sd->sc.option&OPTION_HIDE)) {
 			clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
 		}
@@ -10973,10 +10969,10 @@ static int skill_check_condition2_mob(struct mob_data *md, struct skill_conditio
 	nullpo_retr(0, md);
 	nullpo_retr(0, cnd);
 
-	if(md->sc.option&4 && cnd->id == TF_HIDING)
+	if(md->sc.option&OPTION_CLOAKING && cnd->id == TF_HIDING)
 		return 0;
 
-	if(md->sc.option&0x02) {
+	if(md->sc.option&OPTION_HIDE) {
 		if(cnd->id != TF_HIDING &&
 		   cnd->id != AS_GRIMTOOTH &&
 		   cnd->id != RG_BACKSTAP &&
@@ -10985,7 +10981,7 @@ static int skill_check_condition2_mob(struct mob_data *md, struct skill_conditio
 		   cnd->id != NJ_SHADOWJUMP)
 			return 0;
 	}
-	if(md->sc.opt1 > 0 && md->sc.opt1 != 7)
+	if(md->sc.opt1 > OPT1_NORMAL && md->sc.opt1 != OPT1_BURNNING)
 		return 0;
 
 	switch(cnd->id)
@@ -12498,7 +12494,7 @@ int skill_check_cloaking(struct block_list *bl)
 	status_change_end(bl, SC_CLOAKING, -1);
 	sc = status_get_sc(bl);
 	if(sc)
-		sc->option &= ~4;	/* 念のための処理 */
+		sc->option &= ~OPTION_CLOAKING;	/* 念のための処理 */
 
 	return 1;
 }

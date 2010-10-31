@@ -666,9 +666,9 @@ static int homun_data_init(struct map_session_data *sd)
 #endif
 
 	hd->sc.count = 0;
-	hd->sc.opt1  = 0;
-	hd->sc.opt2  = 0;
-	hd->sc.opt3  = 0;
+	hd->sc.opt1  = OPT1_NORMAL;
+	hd->sc.opt2  = OPT2_NORMAL;
+	hd->sc.opt3  = OPT3_NORMAL;
 
 	hd->status.option &= OPTION_MASK;
 	hd->sc.option = hd->status.option;	// optionはscに移して使う

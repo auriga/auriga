@@ -1104,9 +1104,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 #endif
 
 	sd->sc.count = 0;
-	sd->sc.opt1  = 0;
-	sd->sc.opt2  = 0;
-	sd->sc.opt3  = 0;
+	sd->sc.opt1  = OPT1_NORMAL;
+	sd->sc.opt2  = OPT2_NORMAL;
+	sd->sc.opt3  = OPT3_NORMAL;
 
 	sd->status.option &= OPTION_MASK;
 	sd->sc.option = sd->status.option;	// optionはscに移して使う
@@ -5859,7 +5859,7 @@ int pc_readparam(struct map_session_data *sd,int type)
 		val = sd->status.partner_id;
 		break;
 	case SP_CART:
-		val = sd->sc.option&CART_MASK;
+		val = sd->sc.option&OPTION_CARTMASK;
 		break;
 	case SP_STR:
 		val = sd->status.str;
@@ -6566,36 +6566,36 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 {
 	nullpo_retv(sd);
 
-	if( (type&0x0010) && !pc_isfalcon(sd) ) {
+	if( (type&OPTION_BIRD) && !pc_isfalcon(sd) ) {
 		clif_status_load(sd,SI_FALCON,1);
 	}
-	else if( !(type&0x0010) && pc_isfalcon(sd) ) {
+	else if( !(type&OPTION_BIRD) && pc_isfalcon(sd) ) {
 		clif_status_load(sd,SI_FALCON,0);
 	}
 
-	if( ((type&0x0020) && !pc_isriding(sd)) || ((type&0x80000) && !pc_isdragon(sd)) ) {
+	if( ((type&OPTION_CHICKEN) && !pc_isriding(sd)) || ((type&OPTION_DRAGONMASK) && !pc_isdragon(sd)) ) {
 		clif_status_load(sd,SI_RIDING,1);
 	}
-	else if( !(type&0x0020) && pc_isriding(sd) && !(type&0x80000) ) {
+	else if( !(type&OPTION_CHICKEN) && pc_isriding(sd) && !(type&OPTION_DRAGONMASK) ) {
 		clif_status_load(sd,SI_RIDING,0);
 	}
-	else if( !(type&0x80000) && pc_isdragon(sd) && !(type&0x0020) ) {
+	else if( !(type&OPTION_DRAGONMASK) && pc_isdragon(sd) && !(type&OPTION_CHICKEN) ) {
 		clif_status_load(sd,SI_RIDING,0);
 	}
 
-	if( (type&0x200000) && !pc_iswolfmount(sd) ) {
+	if( (type&OPTION_WUGRIDER) && !pc_iswolfmount(sd) ) {
 		clif_status_load(sd,SI_WUGRIDER,1);
 	}
-	else if( !(type&0x200000) && pc_iswolfmount(sd) ) {
+	else if( !(type&OPTION_WUGRIDER) && pc_iswolfmount(sd) ) {
 		clif_status_load(sd,SI_WUGRIDER,0);
 	}
 
-	if( (type&CART_MASK) && !pc_iscarton(sd) ) {
+	if( (type&OPTION_CARTMASK) && !pc_iscarton(sd) ) {
 		clif_cart_itemlist(sd);
 		clif_cart_equiplist(sd);
 		clif_updatestatus(sd,SP_CARTINFO);
 	}
-	else if( !(type&CART_MASK) && pc_iscarton(sd) ) {
+	else if( !(type&OPTION_CARTMASK) && pc_iscarton(sd) ) {
 		clif_cart_clear(sd);
 	}
 
@@ -6619,12 +6619,12 @@ void pc_setcart(struct map_session_data *sd, unsigned short type)
 		const unsigned int opt;
 		const unsigned short level;
 	} cart[] = {
-		{ 0x0000,  0 },
-		{ 0x0008,  0 },
-		{ 0x0080, 40 },
-		{ 0x0100, 65 },
-		{ 0x0200, 80 },
-		{ 0x0400, 90 },
+		{ OPTION_NOTHING,  0 },
+		{ OPTION_PUSHCART,  0 },
+		{ OPTION_PUSHCART2, 40 },
+		{ OPTION_PUSHCART3, 65 },
+		{ OPTION_PUSHCART4, 80 },
+		{ OPTION_PUSHCART5, 90 },
 	};
 
 	nullpo_retv(sd);
@@ -6635,7 +6635,7 @@ void pc_setcart(struct map_session_data *sd, unsigned short type)
 	if(pc_checkskill(sd,MC_PUSHCART) > 0) {	// プッシュカートスキル所持
 		if(sd->status.base_level > cart[type].level) {
 			// suppress actual cart; conserv other options
-			pc_setoption(sd, (sd->sc.option & ~CART_MASK) | cart[type].opt);
+			pc_setoption(sd, (sd->sc.option & ~OPTION_CARTMASK) | cart[type].opt);
 		}
 	}
 
@@ -6651,7 +6651,7 @@ int pc_setfalcon(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(pc_checkskill(sd,HT_FALCON) > 0) {	// ファルコンマスタリースキル所持
-		pc_setoption(sd,0x0010);
+		pc_setoption(sd,OPTION_BIRD);
 	}
 	return 0;
 }
@@ -6665,7 +6665,7 @@ int pc_setriding(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(pc_checkskill(sd,KN_RIDING) > 0) { // ライディングスキル所持
-		pc_setoption(sd,0x0020);
+		pc_setoption(sd,OPTION_CHICKEN);
 	}
 	return 0;
 }
@@ -6680,9 +6680,9 @@ int pc_setdragon(struct map_session_data *sd, int type)
 
 	if(pc_checkskill(sd,RK_DRAGONTRAINING) > 0) { // ドラゴントレーニングスキル所持
 		if(type > 0 && type < 5)
-			pc_setoption(sd,0x800000 << (type-1));
+			pc_setoption(sd,OPTION_DRAGON2 << (type-1));
 		else
-			pc_setoption(sd,0x80000);
+			pc_setoption(sd,OPTION_DRAGON);
 	}
 	return 0;
 }
@@ -6696,7 +6696,7 @@ int pc_setgear(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	//if(pc_checkskill(sd,NC_MADOLICENCE) > 0) { // 魔導ギアライセンススキル所持
-		pc_setoption(sd,0x400000);
+		pc_setoption(sd,OPTION_MADOGEAR);
 	//}
 	return 0;
 }

@@ -3997,7 +3997,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	sc   = status_get_sc(src);
 	t_sc = status_get_sc(target);
 
-	if(sc && sc->opt1 > 0 && sc->opt1 != 7) {
+	if(sc && sc->opt1 > OPT1_NORMAL && sc->opt1 != OPT1_BURNNING) {
 		unit_stopattack(src);
 		return 0;
 	}
@@ -4008,8 +4008,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		return 0;
 	}
 
-	// 自分が白羽・強制移動・魅惑のウィンク・ホワイトインプリズン中はダメ
-	if(sc && (sc->data[SC_BLADESTOP].timer != -1 || sc->data[SC_FORCEWALKING].timer != -1 || sc->data[SC_WINKCHARM].timer != -1 || sc->data[SC_WHITEIMPRISON].timer != -1)) {
+	// 自分が白羽・強制移動・魅惑のウィンク中はダメ
+	if(sc && (sc->data[SC_BLADESTOP].timer != -1 || sc->data[SC_FORCEWALKING].timer != -1 || sc->data[SC_WINKCHARM].timer != -1)) {
 		unit_stopattack(src);
 		return 0;
 	}
@@ -4023,7 +4023,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		return 0;	// 攻撃対象外
 
 	// ターゲットがMOB GMハイド中で、コンフィグでハイド中攻撃不可 GMレベルが指定より大きい場合
-	if(battle_config.hide_attack == 0 && target->type == BL_MOB && sd && sd->sc.option&0x40 && pc_isGM(sd) < battle_config.gm_hide_attack_lv)
+	if(battle_config.hide_attack == 0 && target->type == BL_MOB && sd && sd->sc.option&OPTION_SPECIALHIDING && pc_isGM(sd) < battle_config.gm_hide_attack_lv)
 		return 0;
 
 	if(sd) {
@@ -4329,7 +4329,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		return 0;
 
 	if(ssc) {		// 自分が強制移動、魅惑のウィンク中、スタン、石化、凍結、睡眠なら何もしない
-		if(ssc->data[SC_FORCEWALKING].timer != -1 || ssc->data[SC_WINKCHARM].timer != -1 || (ssc->opt1 > 0 && ssc->opt1 != 7))
+		if(ssc->data[SC_FORCEWALKING].timer != -1 || ssc->data[SC_WINKCHARM].timer != -1 || (ssc->opt1 > OPT1_NORMAL && ssc->opt1 != OPT1_BURNNING))
 			return 0;
 	}
 	if(sc) {
@@ -5042,7 +5042,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		struct mob_data *md = (struct mob_data*)target;
 		int mode = mob_db[pd->class_].mode;
 		int race = mob_db[pd->class_].race;
-		if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->sc.option & 0x06 && race != RCT_INSECT && race != RCT_DEMON) ) {
+		if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON) ) {
 			return 1; // 失敗
 		} else {
 			return 0; // 成功

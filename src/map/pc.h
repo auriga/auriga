@@ -25,9 +25,6 @@
 #include "utils.h"
 #include "map.h"
 
-#define OPTION_MASK 0x7f8d7b8UL
-#define CART_MASK   0x788UL
-
 #define MAX_SKILL_TREE 100
 
 #define pc_setdead(sd) ((sd)->state.dead_sit = 1)
@@ -35,18 +32,18 @@
 #define pc_issit(sd) ((sd)->state.dead_sit == 2)
 #define pc_setdir(sd,b,h) ((sd)->dir = (char)(b) ,(sd)->head_dir = (char)(h) )
 
-#define pc_ishiding(sd) ((sd)->sc.option&0x4006)
-#define pc_iscloaking(sd)   (!((sd)->sc.option&0x4000) && ((sd)->sc.option&0x0004))
-#define pc_ischasewalk(sd)  (((sd)->sc.option&0x4000) && ((sd)->sc.option&0x0004))
+#define pc_ishiding(sd) ((sd)->sc.option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT))
+#define pc_iscloaking(sd)   (!((sd)->sc.option&OPTION_FOOTPRINT) && ((sd)->sc.option&OPTION_CLOAKING))
+#define pc_ischasewalk(sd)  (((sd)->sc.option&OPTION_FOOTPRINT) && ((sd)->sc.option&OPTION_CLOAKING))
 
-#define pc_iscarton(sd) ((sd)->sc.option&CART_MASK)
-#define pc_isfalcon(sd) ((sd)->sc.option&0x0010)
-#define pc_isriding(sd) ((sd)->sc.option&0x0020)
-#define pc_isinvisible(sd) ((sd)->sc.option&0x0040)
-#define pc_isdragon(sd) ((sd)->sc.option&0x7880000)
-#define pc_iswolf(sd) ((sd)->sc.option&0x100000)
-#define pc_iswolfmount(sd) ((sd)->sc.option&0x200000)
-#define pc_isgear(sd) ((sd)->sc.option&0x400000)
+#define pc_iscarton(sd) ((sd)->sc.option&OPTION_CARTMASK)
+#define pc_isfalcon(sd) ((sd)->sc.option&OPTION_BIRD)
+#define pc_isriding(sd) ((sd)->sc.option&OPTION_CHICKEN)
+#define pc_isinvisible(sd) ((sd)->sc.option&OPTION_SPECIALHIDING)
+#define pc_isdragon(sd) ((sd)->sc.option&OPTION_DRAGONMASK)
+#define pc_iswolf(sd) ((sd)->sc.option&OPTION_WUG)
+#define pc_iswolfmount(sd) ((sd)->sc.option&OPTION_WUGRIDER)
+#define pc_isgear(sd) ((sd)->sc.option&OPTION_MADOGEAR)
 #define pc_is50overweight(sd) ((sd)->weight*2 >= (sd)->max_weight)
 #define pc_is90overweight(sd) ((sd)->weight*10 >= (sd)->max_weight*9)
 

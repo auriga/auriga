@@ -131,11 +131,11 @@ int npc_enable(const char *name,int flag)
 		clif_spawnnpc(nd);
 	} else if (flag&2) {
 		nd->flag &= ~1;
-		nd->option = 0x0000;
+		nd->option = OPTION_NOTHING;
 		clif_changeoption(&nd->bl);
 	} else if (flag&4) {
 		nd->flag |= 1;
-		nd->option = 0x0002;
+		nd->option = OPTION_HIDE;
 		clif_changeoption(&nd->bl);
 	} else {	// 無効化
 		nd->flag |= 1;
@@ -1208,7 +1208,7 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4,int lines)
 	else
 		nd->class_ = WARP_DEBUG_CLASS;
 	nd->speed  = 200;
-	nd->option = 0;
+	nd->option = OPTION_NOTHING;
 	memcpy(nd->u.warp.name,to_mapname,16);
 	nd->u.warp.name[15] = '\0';	// force \0 terminal
 	xs += 2;
@@ -1373,7 +1373,7 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 	nd->class_  = atoi(w4);
 	nd->speed   = 200;
 	nd->chat_id = 0;
-	nd->option  = 0;
+	nd->option  = OPTION_NOTHING;
 	npc_shop++;
 	nd->bl.type = BL_NPC;
 	nd->subtype = subtype;
@@ -1759,7 +1759,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 	nd->u.scr.script = script;
 	nd->u.scr.src_id = src_id;
 	nd->chat_id = 0;
-	nd->option  = 0;
+	nd->option  = OPTION_NOTHING;
 
 	npc_script++;
 	nd->bl.type = BL_NPC;

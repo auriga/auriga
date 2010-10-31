@@ -2534,7 +2534,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	nullpo_retv(nd);
 
-	if(nd->class_ < 0 || (nd->flag&1 && nd->option != 0x0002) || nd->class_ == INVISIBLE_CLASS)
+	if(nd->class_ < 0 || (nd->flag&1 && nd->option != OPTION_HIDE) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
 #if PACKETVER < 12
@@ -5188,17 +5188,17 @@ void clif_changeoption(struct block_list* bl)
 #if PACKETVER < 7
 	WBUFW(buf, 0) = 0x119;
 	WBUFL(buf, 2) = bl->id;
-	WBUFW(buf, 6) = (sc) ? sc->opt1 : 0;
-	WBUFW(buf, 8) = (sc) ? sc->opt2 : 0;
-	WBUFW(buf,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : 0;
+	WBUFW(buf, 6) = (sc) ? sc->opt1 : OPT1_NORMAL;
+	WBUFW(buf, 8) = (sc) ? sc->opt2 : OPT2_NORMAL;
+	WBUFW(buf,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : OPTION_NOTHING;
 	WBUFB(buf,12) = (sd) ? (unsigned char)sd->status.karma : 0;
 	clif_send(buf,packet_db[0x119].len,bl,AREA);
 #else
 	WBUFW(buf, 0) = 0x229;
 	WBUFL(buf, 2) = bl->id;
-	WBUFW(buf, 6) = (sc) ? sc->opt1 : 0;
-	WBUFW(buf, 8) = (sc) ? sc->opt2 : 0;
-	WBUFL(buf,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : 0;
+	WBUFW(buf, 6) = (sc) ? sc->opt1 : OPT1_NORMAL;
+	WBUFW(buf, 8) = (sc) ? sc->opt2 : OPT2_NORMAL;
+	WBUFL(buf,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : OPTION_NOTHING;
 	WBUFB(buf,14) = (sd) ? (unsigned char)sd->status.karma : 0;
 	clif_send(buf,packet_db[0x229].len,bl,AREA);
 #endif
@@ -5222,9 +5222,9 @@ void clif_changeoption2(struct block_list *bl)
 
 	WBUFW(buf,0)  = 0x28a;
 	WBUFL(buf,2)  = bl->id;
-	WBUFL(buf,6)  = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : 0;
+	WBUFL(buf,6)  = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : OPTION_NOTHING;
 	WBUFL(buf,10) = ((level = status_get_lv(bl)) > 99)? 99: level;
-	WBUFL(buf,14) = (sc) ? sc->opt3 : 0;
+	WBUFL(buf,14) = (sc) ? sc->opt3 : OPT3_NORMAL;
 	clif_send(buf,packet_db[0x28a].len,bl,AREA);
 
 	return;
@@ -6138,7 +6138,7 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 	nullpo_retv(sd);
 	nullpo_retv(nd);
 
-	if(nd->class_ < 0 ||(nd->flag&1 && nd->option != 0x0002) || nd->class_ == INVISIBLE_CLASS)
+	if(nd->class_ < 0 ||(nd->flag&1 && nd->option != OPTION_HIDE) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
 	len = clif_npc0078(nd,WFIFOP(sd->fd,0));
@@ -7537,7 +7537,7 @@ void clif_pvpset(struct map_session_data *sd, int pvprank, int pvpnum, char type
 
 		WBUFW(buf,0) = 0x19a;
 		WBUFL(buf,2) = sd->bl.id;
-		if(sd->sc.option&0x46)
+		if(sd->sc.option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING))
 			WBUFL(buf,6) = 0xffffffff;
 		else
 			WBUFL(buf,6) = pvprank;
@@ -12546,7 +12546,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || sd->sc.opt1 > 0 || sd->sc.option&2 || sd->state.storage_flag || sd->state.deal_mode != 0 || sd->chatID || sd->state.mail_appending)
+	if(sd->npc_id != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->sc.option&OPTION_HIDE || sd->state.storage_flag || sd->state.deal_mode != 0 || sd->chatID || sd->state.mail_appending)
 		return;
 	if(sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||	// オートカウンター
 	   sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
@@ -12739,14 +12739,13 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 7) || sd->chatID || sd->state.mail_appending ||
+	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->chatID || sd->state.mail_appending ||
 	    sd->state.storage_flag || pc_iscloaking(sd) ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 	    sd->sc.data[SC_RUN].timer != -1 ||			// タイリギ
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中拾えない
-	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
-	    sd->sc.data[SC_WHITEIMPRISON].timer != -1 )		// ホワイトインプリズン
+	    sd->sc.data[SC_BLADESTOP].timer != -1)		// 白刃取り
 	{
 		clif_additem(sd,0,0,6);
 		return;
@@ -12791,14 +12790,13 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 		printf("%s\n", output);
 	}
 
-	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 7) || sd->state.mail_appending || sd->state.storage_flag || sd->chatID ||
+	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending || sd->state.storage_flag || sd->chatID ||
 	    DIFF_TICK(tick, sd->drop_delay_tick) < 0 ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中
-	    sd->sc.data[SC_BERSERK].timer != -1 ||		// バーサーク
-	    sd->sc.data[SC_WHITEIMPRISON].timer != -1 )		// ホワイトインプリズン
+	    sd->sc.data[SC_BERSERK].timer != -1)			// バーサーク
 	{
 		clif_delitem(sd, 0, item_index, 0);
 		return;
@@ -12842,7 +12840,8 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 	if( (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
-	    sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 < 6) ||
+	    sd->special_state.item_no_use != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 ||
+		(sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_STONECURSE_ING && sd->sc.opt1 != OPT1_BURNNING) ||
 	    sd->state.storage_flag || sd->chatID || sd->state.mail_appending ||
 	    DIFF_TICK(gettick(), sd->item_delay_tick) < 0 || 	// アイテムディレイ
 	    sd->sc.data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
@@ -12929,7 +12928,7 @@ static void clif_parse_UnequipItem(int fd,struct map_session_data *sd, int cmd)
 
 	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1)
 		return;
-	if (sd->npc_id != 0 || sd->vender_id != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 != 7) || sd->state.mail_appending)
+	if (sd->npc_id != 0 || sd->vender_id != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending)
 		return;
 
 	pc_unequipitem(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)) - 2, 0);
@@ -13502,7 +13501,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 
 	sc = status_get_sc(bl);
-	if(sc && sc->option & 0x4006 && ((&sd->bl) != bl))
+	if(sc && sc->option & (OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT) && ((&sd->bl) != bl))
 	{
 		// 昆虫と悪魔は攻撃可能？
 		if(sd->race != RCT_INSECT && sd->race != RCT_DEMON)
@@ -13919,7 +13918,7 @@ static void clif_parse_InsertCard(int fd,struct map_session_data *sd, int cmd)
 
 	if (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid)
 		return;
-	if (sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > 0 && sd->sc.opt1 < 6) || sd->state.storage_flag || sd->chatID || sd->state.mail_appending)
+	if (sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 < OPT1_STONECURSE_ING) || sd->state.storage_flag || sd->chatID || sd->state.mail_appending)
 		return;
 	if (unit_isdead(&sd->bl))
 		return;
@@ -14827,11 +14826,11 @@ static void clif_parse_GMHide(int fd,struct map_session_data *sd, int cmd)
 	nullpo_retv(sd);
 
 	if(pc_isGM(sd) >= get_atcommand_level(AtCommand_Hide)) {
-		if(sd->sc.option&0x40) {
-			sd->sc.option &= ~0x40;
+		if(sd->sc.option&OPTION_SPECIALHIDING) {
+			sd->sc.option &= ~OPTION_SPECIALHIDING;
 			clif_displaymessage(fd, msg_txt(10)); // invisible off!
 		} else {
-			sd->sc.option |= 0x40;
+			sd->sc.option |= OPTION_SPECIALHIDING;
 			clif_displaymessage(fd, msg_txt(11)); // invisible!
 		}
 		clif_changeoption(&sd->bl);
@@ -15508,7 +15507,7 @@ static void clif_parse_HomMercActionRequest(int fd,struct map_session_data *sd, 
 	}
 
 	sc = status_get_sc(src);
-	if(sc && sc->option&2)
+	if(sc && sc->option&OPTION_HIDE)
 		return;
 
 	unit_stop_walking(src,1);

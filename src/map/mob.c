@@ -60,8 +60,8 @@ struct mob_db *mob_db = &mob_db_real[-MOB_ID_MIN];
 
 static struct random_mob_data random_mob[MAX_RAND_MOB_TYPE];
 
-manuk_mob[8] = {1986,1987,1988,1989,1990,1997,1998,1999};
-splendide_mob[5] = {1991,1992,1993,1994,1995};
+int manuk_mob[8] = {1986,1987,1988,1989,1990,1997,1998,1999};
+int splendide_mob[5] = {1991,1992,1993,1994,1995};
 
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
@@ -405,10 +405,10 @@ int mob_spawn(int id)
 #endif
 
 	md->sc.count  = 0;
-	md->sc.opt1   = 0;
-	md->sc.opt2   = 0;
-	md->sc.opt3   = 0;
-	md->sc.option = 0;
+	md->sc.opt1   = OPT1_NORMAL;
+	md->sc.opt2   = OPT2_NORMAL;
+	md->sc.opt3   = OPT3_NORMAL;
+	md->sc.option = OPTION_NOTHING;
 
 	md->hp = status_get_max_hp(&md->bl);
 	if(md->hp <= 0) {
@@ -512,7 +512,7 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 		return 0;
 	if( md->sc.data[SC_WINKCHARM].timer != -1 )
 		return 0;
-	if( !(mode&0x20) && tsc && ((tsc->option&0x4006) || tsc->data[SC_CAMOUFLAGE].timer != -1) &&
+	if( !(mode&0x20) && tsc && ((tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || tsc->data[SC_CAMOUFLAGE].timer != -1) &&
 		((race != RCT_INSECT && race != RCT_DEMON) || tsc->data[SC_CLOAKINGEXCEED].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1)  )
 		return 0;
 
@@ -854,10 +854,10 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	mode = status_get_mode( &md->bl );
 
 	// 異常
-	if(md->sc.data[SC_BLADESTOP].timer != -1 || md->sc.data[SC_WHITEIMPRISON].timer != -1)
+	if(md->sc.data[SC_BLADESTOP].timer != -1)
 		return 0;
-	if(md->sc.opt1 > 0 && md->sc.opt1 != 6 && md->sc.opt1 != 7) {
-		if(md->sc.opt1 != 2 || md->ud.walktimer == -1)    // 凍結中は移動が終わるまで処理を続ける(滑り)
+	if(md->sc.opt1 > OPT1_NORMAL && md->sc.opt1 != OPT1_STONECURSE_ING && md->sc.opt1 != OPT1_BURNNING) {
+		if(md->sc.opt1 != OPT1_FREEZING || md->ud.walktimer == -1)    // 凍結中は移動が終わるまで処理を続ける(滑り)
 			return 0;
 	}
 
@@ -3902,7 +3902,7 @@ static int mob_readdb_mobavail(void)
 			mob_db[class_].head_top      = atoi(str[9]);
 			mob_db[class_].head_mid      = atoi(str[10]);
 			mob_db[class_].head_bottom   = atoi(str[11]);
-			mob_db[class_].option        = ((unsigned int)atoi(str[12])) & ~0x46UL;
+			mob_db[class_].option        = ((unsigned int)atoi(str[12])) & ~(OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING);
 
 			mob_db[class_].view_class = pc_calc_class_job(mob_db[class_].view_class, atoi(str[13]));
 		}

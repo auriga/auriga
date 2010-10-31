@@ -502,9 +502,9 @@ static int merc_data_init(struct map_session_data *sd)
 #endif
 
 	mcd->sc.count = 0;
-	mcd->sc.opt1  = 0;
-	mcd->sc.opt2  = 0;
-	mcd->sc.opt3  = 0;
+	mcd->sc.opt1  = OPT1_NORMAL;
+	mcd->sc.opt2  = OPT2_NORMAL;
+	mcd->sc.opt3  = OPT3_NORMAL;
 
 	mcd->status.option &= OPTION_MASK;
 	mcd->sc.option = mcd->status.option;	// optionはscに移して使う

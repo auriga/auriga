@@ -1416,7 +1416,7 @@ L_RECALC:
 	if((sd->status.weapon == WT_1HAXE || sd->status.weapon == WT_2HAXE) && ((skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0))	// 斧修練の命中率増加
 		sd->hit += skill*3;
 
-	if(sd->sc.option&2 && (skill = pc_checkskill(sd,RG_TUNNELDRIVE)) > 0)	// トンネルドライブ
+	if(sd->sc.option&OPTION_HIDE && (skill = pc_checkskill(sd,RG_TUNNELDRIVE)) > 0)	// トンネルドライブ
 		sd->speed += (12*DEFAULT_WALK_SPEED - skill*90) / 10;
 
 	if(sd->s_class.job == 12 && (skill = pc_checkskill(sd,TF_MISS)) > 0) {	// アサシン系の回避率上昇による移動速度増加
@@ -5020,9 +5020,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_ELEMENTUNDEAD:		// 不死
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTUNDEAD);
-			//if(sd) {
-			//	clif_displaymessage(sd->fd,"防具に不死属性が付与されました。");
-			//}
 			break;
 		case SC_RACEUNKNOWN:
 		case SC_RACEUNDEAD:
@@ -5838,7 +5835,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				}
 			}
 			if(type == SC_STONE)
-				sc->opt1 = 6;
+				sc->opt1 = OPT1_STONECURSE_ING;
 			else
 				sc->opt1 = type - SC_STONE + 1;
 
@@ -5850,7 +5847,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			opt_flag = 1;
 			break;
 		case SC_HELLINFERNO:		/* ヘルインフェルノ */
-			sc->opt1 = 7;
+			sc->opt1 = OPT1_BURNNING;
+			opt_flag = 1;
+			break;
+		case SC_WHITEIMPRISON:		/* ホワイトインプリズン */
+			sc->opt1 = OPT1_IMPRISON;
 			opt_flag = 1;
 			break;
 		// opt2
@@ -5858,24 +5859,28 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_CURSE:
 		case SC_SILENCE:
 		case SC_CONFUSION:
-			sc->opt2 |= 1<<(type-SC_POISON);
+			sc->opt2 |= OPT2_POISON<<(type-SC_POISON);
 			opt_flag = 1;
 			break;
 		case SC_FOGWALLPENALTY:
 		case SC_BLIND:
 			if(sc->data[SC_FOGWALLPENALTY].timer == -1) {
-				sc->opt2 |= 0x00010;
+				sc->opt2 |= OPT2_BLIND;
 				opt_flag = 1;
 				if(md && !(flag&2))
 					md->target_id = 0;
 			}
 			break;
 		case SC_DPOISON:
-			sc->opt2 |= 0x00080;
+			sc->opt2 |= OPT2_HEAVYPOISON;
 			opt_flag = 1;
 			break;
 		case SC_SIGNUMCRUCIS:
-			sc->opt2 |= 0x00040;
+			sc->opt2 |= OPT2_BLOODING;
+			opt_flag = 1;
+			break;
+		case SC_FEAR:
+			sc->opt2 |= OPT2_FEAR;
 			opt_flag = 1;
 			break;
 		// opt3
@@ -5884,52 +5889,66 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SPEARQUICKEN:		/* スピアクイッケン */
 		case SC_CONCENTRATION:		/* コンセントレーション */
 		case SC_WEAPONQUICKEN:		/* ウェポンクイッケン */
-			sc->opt3 |= 0x00001;
+			sc->opt3 |= OPT3_QUICKEN;
 			opt_flag = 2;
 			break;
 		case SC_OVERTHRUST:		/* オーバートラスト */
 		case SC_SWOO:			/* エスウ */
-			sc->opt3 |= 0x00002;
+			sc->opt3 |= OPT3_OVERTHRUST;
 			opt_flag = 2;
 			break;
 		case SC_ENERGYCOAT:		/* エナジーコート */
 		case SC_SKE:			/* エスク */
-			sc->opt3 |= 0x00004;
+			sc->opt3 |= OPT3_ENERGYCOAT;
 			opt_flag = 2;
 			break;
 		case SC_EXPLOSIONSPIRITS:	/* 爆裂波動 */
-			sc->opt3 |= 0x00008;
+			sc->opt3 |= OPT3_EXPLOSIONSPIRITS;
 			opt_flag = 2;
 			break;
 		case SC_STEELBODY:		/* 金剛 */
 		case SC_SKA:			/* エスカ */
-			sc->opt3 |= 0x00010;
+			sc->opt3 |= OPT3_STEELBODY;
 			opt_flag = 2;
 			break;
 		case SC_BLADESTOP:		/* 白刃取り */
-			sc->opt3 |= 0x00020;
+			sc->opt3 |= OPT3_BLADESTOP;
+			opt_flag = 2;
+			break;
+		case SC_AURABLADE:			/* オーラブレード */
+			sc->opt3 |= OPT3_AURABLADE;
 			opt_flag = 2;
 			break;
 		case SC_BERSERK:		/* バーサーク */
-			sc->opt3 |= 0x00080;
+			sc->opt3 |= OPT3_REDBODY;
+			opt_flag = 2;
+			break;
+		case SC_DANCING:			/* ダンス/演奏中 */
+			if(sc->data[SC_DANCING].val1 != CG_MOONLIT)
+				break;
+			sc->opt3 |= OPT3_MOON;
 			opt_flag = 2;
 			break;
 		case SC_MARIONETTE:		/* マリオネットコントロール */
 		case SC_MARIONETTE2:		/* マリオネットコントロール */
-			sc->opt3 |= 0x00400;
+			sc->opt3 |= OPT3_PINKBODY;
 			opt_flag = 2;
 			break;
 		case SC_ASSUMPTIO:		/* アスムプティオ */
-			sc->opt3 |= 0x00800;
+			sc->opt3 |= OPT3_ASSUMPTIO;
 			clif_misceffect2(bl,375);
 			opt_flag = 2;
 			break;
 		case SC_WARM:			/* 温もり */
-			sc->opt3 |= 0x01000;
+			sc->opt3 |= OPT3_SUN_WARM;
 			opt_flag = 2;
 			break;
 		case SC_KAITE:
-			sc->opt3 |= 0x02000;
+			sc->opt3 |= OPT3_REFLECT;
+			opt_flag = 2;
+			break;
+		case SC_BUNSINJYUTSU:		/* 分身の術 */
+			sc->opt3 |= OPT3_BUNSIN;
 			opt_flag = 2;
 			break;
 		case SC_MONK:			/* モンクの魂 */
@@ -5952,52 +5971,56 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_NINJA:			/* 忍者の魂 */
 		case SC_DEATHKINGHT:		/* デスナイトの魂 */
 		case SC_COLLECTOR:		/* コレクターの魂 */
-			sc->opt3 |= 0x08000;
+			sc->opt3 |= OPT3_SOULLINK;
 			clif_misceffect2(bl,424);
+			opt_flag = 2;
+			break;
+		case SC_ELEMENTUNDEAD:		// 不死
+			sc->opt3 |= OPT3_UNDEAD;
 			opt_flag = 2;
 			break;
 		// option
 		case SC_SIGHT:
-			sc->option |= 0x00001;
+			sc->option |= OPTION_SIGHT;
 			opt_flag = 1;
 			break;
 		case SC_HIDING:
 			if(sd && val3 == 0)	// 霞斬りでない通常のハイドならアイコン表示
 				clif_status_change(bl,SI_HIDING,1,icon_tick,0);
 			unit_stopattack(bl);
-			sc->option |= 0x00002;
+			sc->option |= OPTION_HIDE;
 			opt_flag = 1;
 			break;
 		case SC_CLOAKING:
 		case SC_CLOAKINGEXCEED:		/* クローキングエクシード */
 			unit_stopattack(bl);
-			sc->option |= 0x00004;
+			sc->option |= OPTION_CLOAKING;
 			opt_flag = 1;
 			break;
 		case SC_INVISIBLE:
 			unit_stopattack(bl);
-			sc->option |= 0x00040;
+			sc->option |= OPTION_SPECIALHIDING;
 			opt_flag = 1;
 			break;
 		case SC_REVERSEORCISH:
-			sc->option |= 0x00800;
+			sc->option |= OPTION_ORCFACE;
 			opt_flag = 1;
 			break;
 		case SC_WEDDING:
-			sc->option |= 0x01000;
+			sc->option |= OPTION_MARRIED;
 			opt_flag = 1;
 			break;
 		case SC_RUWACH:
-			sc->option |= 0x02000;
+			sc->option |= OPTION_RUWACH;
 			opt_flag = 1;
 			break;
 		case SC_CHASEWALK:
 			unit_stopattack(bl);
-			sc->option |= 0x04004;
+			sc->option |= (OPTION_CLOAKING | OPTION_FOOTPRINT);
 			opt_flag = 1;
 			break;
 		case SC_FUSION:
-			sc->option |= 0x08000;
+			sc->option |= OPTION_STAR2;
 			opt_flag = 1;
 			break;
 	}
@@ -6559,40 +6582,45 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_STUN:
 		case SC_SLEEP:
 		case SC_HELLINFERNO:
-			sc->opt1 = 0;
+		case SC_WHITEIMPRISON:
+			sc->opt1 = OPT1_NORMAL;
 			opt_flag = 1;
 			break;
 		// opt2
 		case SC_POISON:
-			sc->opt2 &= ~0x00001;
+			sc->opt2 &= ~OPT2_POISON;
 			opt_flag = 1;
 			break;
 		case SC_CURSE:
 		case SC_SILENCE:
 		case SC_CONFUSION:
-			sc->opt2 &= ~(1<<(type-SC_POISON));
+			sc->opt2 &= ~(OPT2_POISON<<(type-SC_POISON));
 			opt_flag = 1;
 			if(type == SC_CURSE)
 				ud->state.change_speed = 1;
 			break;
 		case SC_FOGWALLPENALTY:
 			if(sc->data[SC_BLIND].timer == -1) {
-				sc->opt2 &= ~0x00010;
+				sc->opt2 &= ~OPT2_BLIND;
 				opt_flag = 1;
 			}
 			break;
 		case SC_BLIND:
 			if(sc->data[SC_FOGWALLPENALTY].timer == -1) {
-				sc->opt2 &= ~0x00010;
+				sc->opt2 &= ~OPT2_BLIND;
 				opt_flag = 1;
 			}
 			break;
 		case SC_DPOISON:
-			sc->opt2 &= ~0x00080;
+			sc->opt2 &= ~OPT2_HEAVYPOISON;
 			opt_flag = 1;
 			break;
 		case SC_SIGNUMCRUCIS:
-			sc->opt2 &= ~0x00040;
+			sc->opt2 &= ~OPT2_BLOODING;
+			opt_flag = 1;
+			break;
+		case SC_FEAR:
+			sc->opt2 &= ~OPT2_FEAR;
 			opt_flag = 1;
 			break;
 		// opt3
@@ -6601,53 +6629,67 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_SPEARQUICKEN:		/* スピアクイッケン */
 		case SC_CONCENTRATION:		/* コンセントレーション */
 		case SC_WEAPONQUICKEN:		/* ウェポンクイッケン */
-			sc->opt3 &= ~0x00001;
+			sc->opt3 &= ~OPT3_QUICKEN;
 			opt_flag = 2;
 			break;
 		case SC_OVERTHRUST:		/* オーバートラスト */
 		case SC_SWOO:			/* エスウ */
-			sc->opt3 &= ~0x00002;
+			sc->opt3 &= ~OPT3_OVERTHRUST;
 			opt_flag = 2;
 			if(type == SC_SWOO)
 				ud->state.change_speed = 1;
 			break;
 		case SC_ENERGYCOAT:		/* エナジーコート */
 		case SC_SKE:			/* エスク */
-			sc->opt3 &= ~0x00004;
+			sc->opt3 &= ~OPT3_ENERGYCOAT;
 			opt_flag = 2;
 			break;
 		case SC_EXPLOSIONSPIRITS:	/* 爆裂波動 */
-			sc->opt3 &= ~0x00008;
+			sc->opt3 &= ~OPT3_EXPLOSIONSPIRITS;
 			opt_flag = 2;
 			break;
 		case SC_STEELBODY:		/* 金剛 */
 		case SC_SKA:			/* エスカ */
-			sc->opt3 &= ~0x00010;
+			sc->opt3 &= ~OPT3_STEELBODY;
 			opt_flag = 2;
 			break;
 		case SC_BLADESTOP:		/* 白刃取り */
-			sc->opt3 &= ~0x00020;
+			sc->opt3 &= ~OPT3_BLADESTOP;
+			opt_flag = 2;
+			break;
+		case SC_AURABLADE:			/* オーラブレード */
+			sc->opt3 &= ~OPT3_AURABLADE;
 			opt_flag = 2;
 			break;
 		case SC_BERSERK:		/* バーサーク */
-			sc->opt3 &= ~0x00080;
+			sc->opt3 &= ~OPT3_REDBODY;
+			opt_flag = 2;
+			break;
+		case SC_DANCING:			/* ダンス/演奏中 */
+			if(sc->data[SC_DANCING].val1 != CG_MOONLIT)
+				break;
+			sc->opt3 &= ~OPT3_MOON;
 			opt_flag = 2;
 			break;
 		case SC_MARIONETTE:		/* マリオネットコントロール */
 		case SC_MARIONETTE2:		/* マリオネットコントロール */
-			sc->opt3 &= ~0x00400;
+			sc->opt3 &= ~OPT3_PINKBODY;
 			opt_flag = 2;
 			break;
 		case SC_ASSUMPTIO:		/* アスムプティオ */
-			sc->opt3 &= ~0x00800;
+			sc->opt3 &= ~OPT3_ASSUMPTIO;
 			opt_flag = 2;
 			break;
 		case SC_WARM:			/* 温もり */
-			sc->opt3 &= ~0x01000;
+			sc->opt3 &= ~OPT3_SUN_WARM;
 			opt_flag = 2;
 			break;
 		case SC_KAITE:			/* カイト */
-			sc->opt3 &= ~0x02000;
+			sc->opt3 &= ~OPT3_REFLECT;
+			opt_flag = 2;
+			break;
+		case SC_BUNSINJYUTSU:		/* 分身の術 */
+			sc->opt3 &= ~OPT3_BUNSIN;
 			opt_flag = 2;
 			break;
 		case SC_MONK:			/* モンクの魂 */
@@ -6670,48 +6712,52 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_NINJA:			/* 忍者の魂 */
 		case SC_DEATHKINGHT:		/* デスナイトの魂 */
 		case SC_COLLECTOR:		/* コレクターの魂 */
-			sc->opt3 &= ~0x08000;
+			sc->opt3 &= ~OPT3_SOULLINK;
+			opt_flag = 2;
+			break;
+		case SC_ELEMENTUNDEAD:		// 不死
+			sc->opt3 &= ~OPT3_UNDEAD;
 			opt_flag = 2;
 			break;
 		// option
 		case SC_SIGHT:
-			sc->option &= ~0x00001;
+			sc->option &= ~OPTION_SIGHT;
 			opt_flag = 1;
 			break;
 		case SC_HIDING:
 			// 霞斬りでない通常のハイドならアイコン消去
 			if(sd && sc->data[type].val3 == 0)
 				clif_status_change(bl,SI_HIDING,0,0,0);
-			sc->option &= ~0x00002;
+			sc->option &= ~OPTION_HIDE;
 			opt_flag = 1;
 			break;
 		case SC_CLOAKING:
 		case SC_CLOAKINGEXCEED:		/* クローキングエクシード */
-			sc->option &= ~0x00004;
+			sc->option &= ~OPTION_CLOAKING;
 			opt_flag = 1;
 			break;
 		case SC_INVISIBLE:
-			sc->option &= ~0x00040;
+			sc->option &= ~OPTION_SPECIALHIDING;
 			opt_flag = 1;
 			break;
 		case SC_REVERSEORCISH:
-			sc->option &= ~0x00800;
+			sc->option &= ~OPTION_ORCFACE;
 			opt_flag = 1;
 			break;
 		case SC_WEDDING:		/* ウェディング */
-			sc->option &= ~0x01000;
+			sc->option &= ~OPTION_MARRIED;
 			opt_flag = 1;
 			break;
 		case SC_RUWACH:
-			sc->option &= ~0x02000;
+			sc->option &= ~OPTION_RUWACH;
 			opt_flag = 1;
 			break;
 		case SC_CHASEWALK:		/* チェイスウォーク */
-			sc->option &= ~0x04004;
+			sc->option &= ~(OPTION_CLOAKING | OPTION_FOOTPRINT);
 			opt_flag = 1;
 			break;
 		case SC_FUSION:
-			sc->option &= ~0x08000;
+			sc->option &= ~OPTION_STAR2;
 			opt_flag = 1;
 			break;
 	}
@@ -7067,7 +7113,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			sc->data[type].val2 = 0;
 			sc->data[type].val4 = 0;
 			unit_stop_walking(bl,1);
-			sc->opt1 = 1;
+			sc->opt1 = OPT1_STONECURSE;
 			clif_changeoption(bl);
 			clif_send_clothcolor(bl);
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
@@ -7528,23 +7574,23 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 	switch( type ) {
 	case SC_SIGHT:	/* サイト */
 	case SC_CONCENTRATE:
-		if(sc->option & 0x06) {
+		if(sc->option & (OPTION_HIDE | OPTION_CLOAKING)) {
 			status_change_end(bl, SC_HIDING, -1);
 			status_change_end(bl, SC_CLOAKING, -1);
 			status_change_end(bl, SC_CLOAKINGEXCEED, -1);
 		}
-		if(sc->option & 0x40) {
+		if(sc->option & OPTION_SPECIALHIDING) {
 			status_change_end(bl, SC_INVISIBLE, -1);
 		}
 		break;
 	case SC_RUWACH:	/* ルアフ */
-		if(sc->option & 0x46) {
-			if(sc->option & 0x06) {
+		if(sc->option & (OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING)) {
+			if(sc->option & (OPTION_HIDE | OPTION_CLOAKING)) {
 				status_change_end(bl, SC_HIDING, -1);
 				status_change_end(bl, SC_CLOAKING, -1);
 				status_change_end(bl, SC_CLOAKINGEXCEED, -1);
 			}
-			if(sc->option & 0x40) {
+			if(sc->option & OPTION_SPECIALHIDING) {
 				status_change_end(bl, SC_INVISIBLE, -1);
 			}
 			if(battle_check_target(src, bl, BCT_ENEMY) > 0)
@@ -7602,9 +7648,9 @@ int status_change_clear(struct block_list *bl,int type)
 	}
 	status_calc_pc_stop_end(bl);
 
-	sc->opt1 = 0;
-	sc->opt2 = 0;
-	sc->opt3 = 0;
+	sc->opt1 = OPT1_NORMAL;
+	sc->opt2 = OPT2_NORMAL;
+	sc->opt3 = OPT3_NORMAL;
 	sc->option &= OPTION_MASK;
 
 	if(type != 1) {
@@ -7966,11 +8012,11 @@ int status_change_hidden_end(struct block_list *bl)
 
 	if(sc) {
 		if(sc->option > 0) {
-			if(sc->option & 0x02)
+			if(sc->option & OPTION_HIDE)
 				status_change_end(bl,SC_HIDING,-1);
-			if((sc->option & 0x4004) == 4)
+			if((sc->option & (OPTION_CLOAKING | OPTION_FOOTPRINT)) == OPTION_CLOAKING)
 				status_change_end(bl,SC_CLOAKING,-1);
-			if((sc->option & 0x4004) == 0x4004)
+			if((sc->option & (OPTION_CLOAKING | OPTION_FOOTPRINT)) == (OPTION_CLOAKING | OPTION_FOOTPRINT))
 				status_change_end(bl,SC_CHASEWALK,-1);
 		}
 		if(sc->data[SC_CAMOUFLAGE].timer != -1)

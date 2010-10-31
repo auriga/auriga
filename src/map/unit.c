@@ -356,7 +356,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			sd->areanpc_id = 0;
 	}
 	else if(md) {
-		if(md->sc.option&4)
+		if(md->sc.option&OPTION_CLOAKING)
 			skill_check_cloaking(&md->bl);
 
 		if(map_getcell(md->bl.m,x,y,CELL_CHKNPC))
@@ -875,7 +875,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	if( src_ud == NULL ) return 0;
 
 	if( unit_isdead(src) )		 return 0;	// 死んでいないか
-	if( src_sd && src_sd->sc.opt1 > 0 && src_sd->sc.opt1 != 7 ) return 0;	// 沈黙や異常（ただし、グリムなどの判定をする）
+	if( src_sd && src_sd->sc.opt1 > OPT1_NORMAL && src_sd->sc.opt1 != OPT1_BURNNING ) return 0;	// 沈黙や異常（ただし、グリムなどの判定をする）
 
 	// スキル制限
 	zone = skill_get_zone(skill_num);
@@ -1450,12 +1450,12 @@ int unit_can_move(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 
-	if( sc && sc->opt1 > 0 && sc->opt1 != 6 && sc->opt1 != 7 )
+	if( sc && sc->opt1 > OPT1_NORMAL && sc->opt1 != OPT1_STONECURSE_ING && sc->opt1 != OPT1_BURNNING )
 		return 0;
 
 	if( bl->type == BL_PC )
 		sd = (struct map_session_data *)bl;
-	if( sc && sc->option&2 && (!sd || pc_checkskill(sd,RG_TUNNELDRIVE) <= 0) )
+	if( sc && sc->option&OPTION_HIDE && (!sd || pc_checkskill(sd,RG_TUNNELDRIVE) <= 0) )
 		return 0;
 
 	if( ud->skilltimer != -1 && (!sc || sc->data[SC_SELFDESTRUCTION].timer == -1) && (!sd || (pc_checkskill(sd,SA_FREECAST) <= 0) || (ud->skillid >= GD_BATTLEORDER && ud->skillid <= GD_EMERGENCYCALL)) )
@@ -1478,7 +1478,6 @@ int unit_can_move(struct block_list *bl)
 		    (battle_config.hermode_no_walking && sc->data[SC_DANCING].timer != -1 && sc->data[SC_DANCING].val1 == CG_HERMODE) ||
 		    (sc->data[SC_FEAR].timer != -1 && sc->data[SC_FEAR].val3 > 0) ||	// 恐怖状態（2秒間）
 		    sc->data[SC_WEAPONBLOCKING2].timer != -1 ||	// ウェポンブロッキング（ブロック中）
-		    sc->data[SC_WHITEIMPRISON].timer != -1 ||	// ホワイトインプリズン
 		    sc->data[SC_ELECTRICSHOCKER].timer != -1 ||	// エレクトリックショッカー
 		    sc->data[SC_WUGBITE].timer != -1 ||		// ウルフバイト
 		    (sc->data[SC_CAMOUFLAGE].timer != -1 && sc->data[SC_CAMOUFLAGE].val1 < 3) ||	// カモフラージュ（Lv3未満）
@@ -1574,8 +1573,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		   sc->data[SC_TRICKDEAD].timer != -1 ||
 		   sc->data[SC_BLADESTOP].timer != -1 ||
 		   sc->data[SC_FULLBUSTER].timer != -1 ||
-		   sc->data[SC_KEEPING].timer != -1 ||
-		   sc->data[SC_WHITEIMPRISON].timer != -1)
+		   sc->data[SC_KEEPING].timer != -1)
 			return 0;
 	}
 	if( tsc ) {
@@ -1596,16 +1594,16 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 
 	if( src_sd ) {
 		// 異常などで攻撃できない
-		if( (src_sd->sc.opt1 > 0 && src_sd->sc.opt1 != 7) || src_sd->sc.option&2 || pc_ischasewalk(src_sd) )
+		if( (src_sd->sc.opt1 > OPT1_NORMAL && src_sd->sc.opt1 != OPT1_BURNNING) || src_sd->sc.option&OPTION_HIDE || pc_ischasewalk(src_sd) )
 			return 0;
 		// 昆虫・悪魔状態でないならハイド中の敵に攻撃できない
-		if( tsc && tsc->option&0x46 && src_sd->race != RCT_INSECT && src_sd->race != RCT_DEMON )
+		if( tsc && tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING) && src_sd->race != RCT_INSECT && src_sd->race != RCT_DEMON )
 			return 0;
 	}
 
 	if( src_md ) {
 		int mode, race;
-		if((src_md->sc.opt1 > 0 && src_md->sc.opt1 != 7) || src_md->sc.option&2)
+		if((src_md->sc.opt1 > OPT1_NORMAL && src_md->sc.opt1 != OPT1_BURNNING) || src_md->sc.option&OPTION_HIDE)
 			return 0;
 		if(src_md->sc.data[SC_WINKCHARM].timer != -1)
 			return 0;

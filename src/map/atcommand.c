@@ -1144,12 +1144,12 @@ int atcommand_hide(const int fd, struct map_session_data* sd, AtCommandType comm
 	nullpo_retr(-1, sd);
 
 	if (pc_isinvisible(sd)) {
-		sd->sc.option &= ~0x40;
+		sd->sc.option &= ~OPTION_SPECIALHIDING;
 		clif_displaymessage(fd, msg_txt(10));
 		if (battle_config.gm_perfect_hide)	// 完全なインビジブルモードなら出現させる
 			clif_spawnpc(sd);
 	} else {
-		sd->sc.option |= 0x40;
+		sd->sc.option |= OPTION_SPECIALHIDING;
 		clif_displaymessage(fd, msg_txt(11));
 		if (battle_config.gm_perfect_hide)	// 完全なインビジブルモードなら消滅させる
 			clif_clearchar(&sd->bl,0);

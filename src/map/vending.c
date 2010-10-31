@@ -36,6 +36,7 @@
 #include "chrif.h"
 #include "atcommand.h"
 #include "unit.h"
+#include "status.h"
 
 /*==========================================
  * 露店閉鎖
