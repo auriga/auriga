@@ -588,10 +588,13 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		// マヌクフィールドMOBダメージ減少
 		if(sc->data[SC_MANU_DEF].timer != -1 && damage > 0 && src->type == BL_MOB) {
 			int i;
-			for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
-				if(manuk_mob[i] == ((struct mob_data *)src)->class_) {
-					damage = damage * sc->data[SC_MANU_DEF].val1 / 100;
-					break;
+			struct mob_data *md = (struct mob_data *)src;
+			if(md) {
+				for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
+					if(manuk_mob[i] == md->class_) {
+						damage = damage * sc->data[SC_MANU_DEF].val1 / 100;
+						break;
+					}
 				}
 			}
 		}
@@ -599,10 +602,13 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		// スプレンティッドフィールドMOBダメージ減少
 		if(sc->data[SC_SPL_DEF].timer != -1 && damage > 0 && src->type == BL_MOB) {
 			int i;
-			for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
-				if(splendide_mob[i] == ((struct mob_data *)src)->class_) {
-					damage = damage * sc->data[SC_SPL_DEF].val1 / 100;
-					break;
+			struct mob_data *md = (struct mob_data *)src;
+			if(md) {
+				for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
+					if(splendide_mob[i] == md->class_) {
+						damage = damage * sc->data[SC_SPL_DEF].val1 / 100;
+						break;
+					}
 				}
 			}
 		}

@@ -1,4 +1,17 @@
 ----------------------------------------
+//0800 [2010/11/02] by popori
+
+・0799の続き (status.c)
+ ->OPT2_BLOODINGをセットするのはSC_SIGNUMCRUCISではなくSC_BLEEDに変更
+ ->SC_SANTA中はOPTION_SANTAをセットするように変更
+ ->SC_SUMMER中はOPTION_SUMMERをセットするように変更
+ ->SC_WEDDING中はview_classに22をセットするように変更
+
+・キャノンボールのtypeを10→19へ変更 (item_db.txt)
+
+・0798の処理を少し変更 (battle.c)
+
+----------------------------------------
 //0799 [2010/11/01] by popori
 
 ・オプション系列の整理と本家の仕様に近づける (atcommand.c battle.c clif.c homun.c merc.c mob.c npc.c pc.* pet.c skill.c status.* unit.c vending.c)

@@ -1393,7 +1393,9 @@ L_RECALC:
 	}
 
 	if(sd) {
-		if(sd->sc.data[SC_SANTA].timer != -1)
+		if(sd->sc.data[SC_WEDDING].timer != -1)
+			sd->view_class = 22;
+		else if(sd->sc.data[SC_SANTA].timer != -1)
 			sd->view_class = 26;
 		else if(sd->sc.data[SC_SUMMER].timer != -1)
 			sd->view_class = 27;
@@ -5875,7 +5877,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			sc->opt2 |= OPT2_HEAVYPOISON;
 			opt_flag = 1;
 			break;
-		case SC_SIGNUMCRUCIS:
+		case SC_BLEED:
 			sc->opt2 |= OPT2_BLOODING;
 			opt_flag = 1;
 			break;
@@ -6021,6 +6023,14 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_FUSION:
 			sc->option |= OPTION_STAR2;
+			opt_flag = 1;
+			break;
+		case SC_SANTA:
+			sc->option |= OPTION_SANTA;
+			opt_flag = 1;
+			break;
+		case SC_SUMMER:
+			sc->option |= OPTION_SUMMER;
 			opt_flag = 1;
 			break;
 	}
@@ -6615,7 +6625,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			sc->opt2 &= ~OPT2_HEAVYPOISON;
 			opt_flag = 1;
 			break;
-		case SC_SIGNUMCRUCIS:
+		case SC_BLEED:
 			sc->opt2 &= ~OPT2_BLOODING;
 			opt_flag = 1;
 			break;
@@ -6758,6 +6768,14 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 		case SC_FUSION:
 			sc->option &= ~OPTION_STAR2;
+			opt_flag = 1;
+			break;
+		case SC_SANTA:
+			sc->option &= ~OPTION_SANTA;
+			opt_flag = 1;
+			break;
+		case SC_SUMMER:
+			sc->option &= ~OPTION_SUMMER;
 			opt_flag = 1;
 			break;
 	}
