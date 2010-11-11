@@ -246,7 +246,7 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 
 	if (sd->npc_id)
 		npc_event_dequeue(sd);
-	if (sd->trade_partner)
+	if (sd->trade.partner)
 		trade_tradecancel(sd);
 	if (sd->chatID)
 		chat_leavechat(sd, 0);

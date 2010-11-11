@@ -6798,9 +6798,9 @@ int buildin_itemskill(struct script_state *st)
 	if(sd->ud.skilltimer != -1)
 		return 0;
 
-	sd->skillitem   = id;
-	sd->skillitemlv = lv;
-	sd->skillitem_flag = (flag)? 1: 0;
+	sd->skill_item.id   = id;
+	sd->skill_item.lv   = lv;
+	sd->skill_item.flag = (flag)? 1: 0;
 	clif_item_skill(sd,id,lv,str);
 
 	return 0;

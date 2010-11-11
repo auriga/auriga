@@ -206,8 +206,8 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 
 	// 歩いたので息吹のタイマーを初期化
 	if(sd) {
-		sd->inchealspirithptick = 0;
-		sd->inchealspiritsptick = 0;
+		sd->regen.spirithptick = 0;
+		sd->regen.spiritsptick = 0;
 		sd->state.warp_waiting  = 0;
 	}
 
@@ -968,17 +968,17 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		switch(skill_num) {
 		case SA_CASTCANCEL:
 			if(src_ud->skillid != skill_num) { // キャストキャンセル自体は覚えない
-				src_sd->skillid_old = src_ud->skillid;
-				src_sd->skilllv_old = src_ud->skilllv;
+				src_sd->skill_used.id = src_ud->skillid;
+				src_sd->skill_used.lv = src_ud->skilllv;
 				break;
 			}
 		case BD_ENCORE:					/* アンコール */
 			 // 前回使用した踊りがないとだめ
-			if(!src_sd->skillid_dance || pc_checkskill(src_sd,src_sd->skillid_dance) <= 0) {
+			if(!src_sd->skill_dance.id || pc_checkskill(src_sd,src_sd->skill_dance.id) <= 0) {
 				clif_skill_fail(src_sd,skill_num,0,0);
 				return 0;
 			}
-			src_sd->skillid_old = skill_num;
+			src_sd->skill_used.id = skill_num;
 			break;
 		}
 	}
@@ -1040,7 +1040,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		break;
 	case MO_FINGEROFFENSIVE:	/* 指弾 */
 		if(src_sd)
-			casttime += casttime * ((skill_lv > src_sd->spiritball)? src_sd->spiritball: skill_lv);
+			casttime += casttime * ((skill_lv > src_sd->spiritball.num)? src_sd->spiritball.num: skill_lv);
 		break;
 	case MO_EXTREMITYFIST:	/* 阿修羅覇鳳拳 */
 		if(sc && sc->data[SC_COMBO].timer != -1 && (sc->data[SC_COMBO].val1 == MO_COMBOFINISH || sc->data[SC_COMBO].val1 == CH_CHAINCRUSH)) {
@@ -1770,9 +1770,9 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 		clif_updatestatus(sd,SP_SPEED);
 	}
 
-	skillid = (type&1 && sd)? sd->skillid_old: ud->skillid;
+	skillid = (type&1 && sd)? sd->skill_used.id: ud->skillid;
 
-	if(skill_get_inf(skillid) & 0x02)
+	if(skill_get_inf(skillid) & INF_TOGROUND)
 		ret = delete_timer(ud->skilltimer, skill_castend_pos);
 	else
 		ret = delete_timer(ud->skilltimer, skill_castend_id);
@@ -2066,7 +2066,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			chat_leavechat(sd,0);
 
 		// 取引を中断する
-		if(sd->trade_partner)
+		if(sd->trade.partner)
 			trade_tradecancel(sd);
 
 		// 露天を閉じる
@@ -2249,8 +2249,8 @@ int unit_free(struct block_list *bl, int clrtype)
 		intif_save_scdata(sd);				// ステータス異常データの保存
 		status_change_clear(&sd->bl,1);			// ステータス異常を解除する
 		pc_cleareventtimer(sd);					// イベントタイマを破棄する
-		pc_delspiritball(sd,sd->spiritball,1);	// 気功削除
-		pc_delcoin(sd,sd->coin,1);				// コイン削除
+		pc_delspiritball(sd,sd->spiritball.num,1);	// 気功削除
+		pc_delcoin(sd,sd->coin.num,1);				// コイン削除
 		//storage_storage_save(sd);
 		storage_delete(sd->status.account_id);
 		pc_clearitemlimit(sd);

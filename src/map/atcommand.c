@@ -3382,9 +3382,9 @@ int atcommand_spiritball(const int fd, struct map_session_data* sd, AtCommandTyp
 
 	number = atoi(message);
 	if (number >= 0 && number <= 0x7FFF) {
-		if (sd->spiritball > 0)
-			pc_delspiritball(sd, sd->spiritball, 1);
-		sd->spiritball = number;
+		if (sd->spiritball.num > 0)
+			pc_delspiritball(sd, sd->spiritball.num, 1);
+		sd->spiritball.num = number;
 		clif_spiritball(sd);
 	}
 
@@ -5333,8 +5333,8 @@ int atcommand_cloneskill2(const int fd, struct map_session_data* sd, AtCommandTy
 		skilllv = 0;
 
 	cloneskilllv      = pc_checkskill(sd,RG_PLAGIARISM);
-	sd->cloneskill_id = skillid;
-	sd->cloneskill_lv = (skilllv > cloneskilllv) ? cloneskilllv : skilllv;
+	sd->skill_clone.id = skillid;
+	sd->skill_clone.lv = (skilllv > cloneskilllv) ? cloneskilllv : skilllv;
 	clif_skillinfoblock(sd);
 
 	return 0;

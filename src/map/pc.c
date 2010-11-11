@@ -280,19 +280,19 @@ static int pc_spiritball_timer(int tid,unsigned int tick,int id,void *data)
 	if(sd == NULL)
 		return 1;
 
-	if(sd->spirit_timer[0] != tid) {
+	if(sd->spiritball.timer[0] != tid) {
 		if(battle_config.error_log)
-			printf("spirit_timer %d != %d\n",sd->spirit_timer[0],tid);
+			printf("spirit_timer %d != %d\n",sd->spiritball.timer[0],tid);
 		return 0;
 	}
-	sd->spirit_timer[0] = -1;
-	for(i=1; i<sd->spiritball; i++) {
-		sd->spirit_timer[i-1] = sd->spirit_timer[i];
-		sd->spirit_timer[i] = -1;
+	sd->spiritball.timer[0] = -1;
+	for(i=1; i<sd->spiritball.num; i++) {
+		sd->spiritball.timer[i-1] = sd->spiritball.timer[i];
+		sd->spiritball.timer[i] = -1;
 	}
-	sd->spiritball--;
-	if(sd->spiritball < 0)
-		sd->spiritball = 0;
+	sd->spiritball.num--;
+	if(sd->spiritball.num < 0)
+		sd->spiritball.num = 0;
 	clif_spiritball(sd);
 
 	return 0;
@@ -308,24 +308,24 @@ int pc_addspiritball(struct map_session_data *sd,int interval,int max)
 
 	if(max > MAX_SKILL_LEVEL)
 		max = MAX_SKILL_LEVEL;
-	if(sd->spiritball < 0)
-		sd->spiritball = 0;
+	if(sd->spiritball.num < 0)
+		sd->spiritball.num = 0;
 
-	if(sd->spiritball >= max) {
+	if(sd->spiritball.num >= max) {
 		int i;
-		if(sd->spirit_timer[0] != -1) {
-			delete_timer(sd->spirit_timer[0],pc_spiritball_timer);
-			sd->spirit_timer[0] = -1;
+		if(sd->spiritball.timer[0] != -1) {
+			delete_timer(sd->spiritball.timer[0],pc_spiritball_timer);
+			sd->spiritball.timer[0] = -1;
 		}
 		for(i=1; i<max; i++) {
-			sd->spirit_timer[i-1] = sd->spirit_timer[i];
-			sd->spirit_timer[i] = -1;
+			sd->spiritball.timer[i-1] = sd->spiritball.timer[i];
+			sd->spiritball.timer[i] = -1;
 		}
 	} else {
-		sd->spiritball++;
+		sd->spiritball.num++;
 	}
 
-	sd->spirit_timer[sd->spiritball-1] = add_timer(gettick()+interval+sd->spiritball,pc_spiritball_timer,sd->bl.id,NULL);
+	sd->spiritball.timer[sd->spiritball.num-1] = add_timer(gettick()+interval+sd->spiritball.num,pc_spiritball_timer,sd->bl.id,NULL);
 	clif_spiritball(sd);
 
 	return 0;
@@ -341,26 +341,26 @@ int pc_delspiritball(struct map_session_data *sd,int count,int type)
 
 	nullpo_retr(0, sd);
 
-	if(sd->spiritball <= 0) {
-		sd->spiritball = 0;
+	if(sd->spiritball.num <= 0) {
+		sd->spiritball.num = 0;
 		return 0;
 	}
 
-	if(count > sd->spiritball)
-		count = sd->spiritball;
-	sd->spiritball -= count;
+	if(count > sd->spiritball.num)
+		count = sd->spiritball.num;
+	sd->spiritball.num -= count;
 	if(count > MAX_SKILL_LEVEL)
 		count = MAX_SKILL_LEVEL;
 
 	for(i=0; i<count; i++) {
-		if(sd->spirit_timer[i] != -1) {
-			delete_timer(sd->spirit_timer[i],pc_spiritball_timer);
-			sd->spirit_timer[i] = -1;
+		if(sd->spiritball.timer[i] != -1) {
+			delete_timer(sd->spiritball.timer[i],pc_spiritball_timer);
+			sd->spiritball.timer[i] = -1;
 		}
 	}
 	for(i=count; i<MAX_SKILL_LEVEL; i++) {
-		sd->spirit_timer[i-count] = sd->spirit_timer[i];
-		sd->spirit_timer[i] = -1;
+		sd->spiritball.timer[i-count] = sd->spiritball.timer[i];
+		sd->spiritball.timer[i] = -1;
 	}
 
 	if(!type)
@@ -381,19 +381,19 @@ static int pc_coin_timer(int tid,unsigned int tick,int id,void *data)
 	if(sd == NULL)
 		return 1;
 
-	if(sd->coin_timer[0] != tid) {
+	if(sd->coin.timer[0] != tid) {
 		if(battle_config.error_log)
-			printf("coin_timer %d != %d\n",sd->coin_timer[0],tid);
+			printf("coin_timer %d != %d\n",sd->coin.timer[0],tid);
 		return 0;
 	}
-	sd->coin_timer[0] = -1;
-	for(i=1; i<sd->coin; i++) {
-		sd->coin_timer[i-1] = sd->coin_timer[i];
-		sd->coin_timer[i] = -1;
+	sd->coin.timer[0] = -1;
+	for(i=1; i<sd->coin.num; i++) {
+		sd->coin.timer[i-1] = sd->coin.timer[i];
+		sd->coin.timer[i] = -1;
 	}
-	sd->coin--;
-	if(sd->coin < 0)
-		sd->coin = 0;
+	sd->coin.num--;
+	if(sd->coin.num < 0)
+		sd->coin.num = 0;
 	clif_coin(sd);
 
 	return 0;
@@ -409,24 +409,24 @@ int pc_addcoin(struct map_session_data *sd,int interval,int max)
 
 	if(max > MAX_SKILL_LEVEL)
 		max = MAX_SKILL_LEVEL;
-	if(sd->coin < 0)
-		sd->coin = 0;
+	if(sd->coin.num < 0)
+		sd->coin.num = 0;
 
-	if(sd->coin >= max) {
+	if(sd->coin.num >= max) {
 		int i;
-		if(sd->coin_timer[0] != -1) {
-			delete_timer(sd->coin_timer[0],pc_coin_timer);
-			sd->coin_timer[0] = -1;
+		if(sd->coin.timer[0] != -1) {
+			delete_timer(sd->coin.timer[0],pc_coin_timer);
+			sd->coin.timer[0] = -1;
 		}
 		for(i=1; i<max; i++) {
-			sd->coin_timer[i-1] = sd->coin_timer[i];
-			sd->coin_timer[i] = -1;
+			sd->coin.timer[i-1] = sd->coin.timer[i];
+			sd->coin.timer[i] = -1;
 		}
 	} else {
-		sd->coin++;
+		sd->coin.num++;
 	}
 
-	sd->coin_timer[sd->coin-1] = add_timer(gettick()+interval+sd->coin,pc_coin_timer,sd->bl.id,NULL);
+	sd->coin.timer[sd->coin.num-1] = add_timer(gettick()+interval+sd->coin.num,pc_coin_timer,sd->bl.id,NULL);
 	clif_coin(sd);
 
 	return 0;
@@ -442,26 +442,26 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 
 	nullpo_retr(0, sd);
 
-	if(sd->coin <= 0) {
-		sd->coin = 0;
+	if(sd->coin.num <= 0) {
+		sd->coin.num = 0;
 		return 0;
 	}
 
-	if(count > sd->coin)
-		count = sd->coin;
-	sd->coin -= count;
+	if(count > sd->coin.num)
+		count = sd->coin.num;
+	sd->coin.num -= count;
 	if(count > MAX_SKILL_LEVEL)
 		count = MAX_SKILL_LEVEL;
 
 	for(i=0; i<count; i++) {
-		if(sd->coin_timer[i] != -1) {
-			delete_timer(sd->coin_timer[i],pc_coin_timer);
-			sd->coin_timer[i] = -1;
+		if(sd->coin.timer[i] != -1) {
+			delete_timer(sd->coin.timer[i],pc_coin_timer);
+			sd->coin.timer[i] = -1;
 		}
 	}
 	for(i=count; i<MAX_SKILL_LEVEL; i++) {
-		sd->coin_timer[i-count] = sd->coin_timer[i];
-		sd->coin_timer[i] = -1;
+		sd->coin.timer[i-count] = sd->coin.timer[i];
+		sd->coin.timer[i] = -1;
 	}
 
 	if(!type)
@@ -637,15 +637,15 @@ int pc_makesavestatus(struct map_session_data *sd)
 		ranking_setglobalreg_all(sd);
 
 	// クローンスキル保存
-	if(sd->cloneskill_id || sd->cloneskill_lv) {
-		pc_setglobalreg(sd,"PC_CLONESKILL_ID",sd->cloneskill_id);
-		pc_setglobalreg(sd,"PC_CLONESKILL_LV",sd->cloneskill_lv);
+	if(sd->skill_clone.id || sd->skill_clone.lv) {
+		pc_setglobalreg(sd,"PC_CLONESKILL_ID",sd->skill_clone.id);
+		pc_setglobalreg(sd,"PC_CLONESKILL_LV",sd->skill_clone.lv);
 	}
 
 	// キラー情報保存
 	if(battle_config.save_pckiller_type) {
-		pc_setglobalreg(sd,"PC_KILL_CHAR",sd->kill_charid);
-		pc_setglobalreg(sd,"PC_KILLED_CHAR",sd->killed_charid);
+		pc_setglobalreg(sd,"PC_KILL_CHAR",sd->kill.char_id);
+		pc_setglobalreg(sd,"PC_KILLED_CHAR",sd->kill.merderer_char_id);
 	}
 
 	// ショップポイント保存
@@ -1023,30 +1023,22 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->dir = 0;
 	sd->head_dir = 0;
 	sd->state.auth = 1;
-	sd->skillitem = -1;
-	sd->skillitemlv = -1;
-	sd->skillitem_flag = 0;
+	sd->skill_item.id = -1;
+	sd->skill_item.lv = -1;
+	sd->skill_item.flag = 0;
 	sd->invincible_timer = -1;
 	sd->view_size = 0;
 
-	sd->trade_partner = 0;
+	sd->trade.partner = 0;
 
-	sd->inchealhptick = 0;
-	sd->inchealsptick = 0;
-	sd->hp_sub = 0;
-	sd->sp_sub = 0;
-	sd->inchealspirithptick = 0;
-	sd->inchealspiritsptick = 0;
+	memset(&sd->regen,0,sizeof(sd->regen));
 
-	sd->inchealresthptick = 0;
-	sd->inchealrestsptick = 0;
-
-	sd->spiritball = 0;
+	sd->spiritball.num = 0;
 	sd->repair_target = 0;
 
 	for(i=0; i<MAX_SKILL_LEVEL; i++) {
-		sd->spirit_timer[i] = -1;
-		sd->coin_timer[i]   = -1;
+		sd->spiritball.timer[i] = -1;
+		sd->coin.timer[i]   = -1;
 	}
 
 	for(i=0; i<MAX_ACTIVEITEM; i++) {
@@ -1067,10 +1059,10 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->dev.val2[i] = 0;
 	}
 
-	sd->emotion_delay_tick = tick;
-	sd->item_delay_tick    = tick;
-	sd->drop_delay_tick    = tick;
-	sd->drop_delay_count   = 0;
+	sd->item_delay_tick                = tick;
+	sd->anti_hacker.emotion_delay_tick = tick;
+	sd->anti_hacker.drop_delay_tick    = tick;
+	sd->anti_hacker.drop_delay_count   = 0;
 
 	unit_dataset(&sd->bl);
 
@@ -1216,11 +1208,10 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 
 	// キラー
 	if(battle_config.save_pckiller_type) {
-		sd->kill_charid   = pc_readglobalreg(sd,"PC_KILL_CHAR");
-		sd->killed_charid = pc_readglobalreg(sd,"PC_KILLED_CHAR");
+		sd->kill.char_id   = pc_readglobalreg(sd,"PC_KILL_CHAR");
+		sd->kill.merderer_char_id = pc_readglobalreg(sd,"PC_KILLED_CHAR");
 	} else {
-		sd->kill_charid   = 0;
-		sd->killed_charid = 0;
+		memset(&sd->kill,0,sizeof(sd->kill));
 	}
 
 	// ショップポイント
@@ -1231,13 +1222,12 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 
 	// クローンスキルの初期化
 	if((lv = pc_checkskill2(sd,RG_PLAGIARISM)) > 0) {
-		sd->cloneskill_id = pc_readglobalreg(sd,"PC_CLONESKILL_ID");
-		sd->cloneskill_lv = pc_readglobalreg(sd,"PC_CLONESKILL_LV");
-		if(sd->cloneskill_id > 0 && sd->cloneskill_lv > lv)	// 念のためレベルチェック
-			sd->cloneskill_lv = lv;
+		sd->skill_clone.id = pc_readglobalreg(sd,"PC_CLONESKILL_ID");
+		sd->skill_clone.lv = pc_readglobalreg(sd,"PC_CLONESKILL_LV");
+		if(sd->skill_clone.id > 0 && sd->skill_clone.lv > lv)	// 念のためレベルチェック
+			sd->skill_clone.lv = lv;
 	} else {
-		sd->cloneskill_id = 0;
-		sd->cloneskill_lv = 0;
+		memset(&sd->skill_clone,0,sizeof(sd->skill_clone));
 	}
 
 	// MailData
@@ -1970,25 +1960,25 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_ATTACKRANGE:
 		if(!sd->state.lr_flag)
-			sd->attackrange += val;
+			sd->range.attackrange += val;
 		else if(sd->state.lr_flag == 1)
-			sd->attackrange_ += val;
+			sd->range.attackrange_ += val;
 		else if(sd->state.lr_flag == 2)
 			sd->arrow_range += val;
 		break;
 	case SP_ATTACKRANGE_RATE:
 		if(!sd->state.lr_flag)
-			sd->attackrange = sd->attackrange * val / 100;
+			sd->range.attackrange = sd->range.attackrange * val / 100;
 		else if(sd->state.lr_flag == 1)
-			sd->attackrange_ = sd->attackrange_ * val / 100;
+			sd->range.attackrange_ = sd->range.attackrange_ * val / 100;
 		else if(sd->state.lr_flag == 2)
 			sd->arrow_range = sd->arrow_range * val / 100;
 		break;
 	case SP_ATTACKRANGE2:
-		sd->add_attackrange += val;
+		sd->range.add_attackrange += val;
 		break;
 	case SP_ATTACKRANGE_RATE2:
-		sd->add_attackrange_rate = (sd->add_attackrange_rate * val)/100;
+		sd->range.add_attackrange_rate = (sd->range.add_attackrange_rate * val)/100;
 		break;
 	case SP_ADD_SPEED:
 		if(sd->state.lr_flag != 2)
@@ -2736,12 +2726,12 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		sd->itemheal_rate[type2] += val;
 		break;
 	case SP_HPVANISH:
-		sd->hp_vanish_rate += type2;
-		sd->hp_vanish_per  += val;
+		sd->hp_vanish.rate += type2;
+		sd->hp_vanish.per  += val;
 		break;
 	case SP_SPVANISH:
-		sd->sp_vanish_rate += type2;
-		sd->sp_vanish_per  += val;
+		sd->sp_vanish.rate += type2;
+		sd->sp_vanish.per  += val;
 		break;
 	case SP_RAISE:
 		sd->autoraise.hp_per = val;
@@ -4514,8 +4504,8 @@ int pc_checkskill(struct map_session_data *sd,int skill_id)
 	if(skill_id < 0 || skill_id >= MAX_PCSKILL)
 		return 0;
 
-	if(sd->cloneskill_id > 0 && skill_id == sd->cloneskill_id)
-		return (sd->cloneskill_lv > sd->status.skill[skill_id].lv ? sd->cloneskill_lv : sd->status.skill[skill_id].lv);
+	if(sd->skill_clone.id > 0 && skill_id == sd->skill_clone.id)
+		return (sd->skill_clone.lv > sd->status.skill[skill_id].lv ? sd->skill_clone.lv : sd->status.skill[skill_id].lv);
 
 	if(sd->status.skill[skill_id].id == skill_id)
 	{
@@ -5256,7 +5246,9 @@ void pc_skillup(struct map_session_data *sd, int skill_num)
 		status_calc_pc(sd,0);
 		clif_skillup(sd,skill_num);
 		clif_updatestatus(sd,SP_SKILLPOINT);
+#if PACKETVER < 13
 		clif_skillinfoblock(sd);
+#endif
 	}
 
 	return;
@@ -5391,8 +5383,8 @@ void pc_resetskill(struct map_session_data* sd, int flag)
 			sd->status.skill[i].lv = 0;
 		}
 	}
-	sd->cloneskill_id = 0;
-	sd->cloneskill_lv = 0;
+	sd->skill_clone.id = 0;
+	sd->skill_clone.lv = 0;
 	clif_updatestatus(sd,SP_SKILLPOINT);
 	clif_skillinfoblock(sd);
 	status_calc_pc(sd,0);
@@ -5517,8 +5509,8 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 			    (battle_config.save_pckiller_type & 2 && map[sd->bl.m].flag.gvg) ||
 			    (battle_config.save_pckiller_type & 4 && map[sd->bl.m].flag.pk) )
 			{
-				ssd->kill_charid  = sd->status.char_id;		// 自分が殺した相手のキャラID
-				sd->killed_charid = ssd->status.char_id;	// 自分を殺した相手のキャラID
+				ssd->kill.char_id  = sd->status.char_id;		// 自分が殺した相手のキャラID
+				sd->kill.merderer_char_id = ssd->status.char_id;	// 自分を殺した相手のキャラID
 				clif_update_temper(ssd);
 				clif_update_temper(sd);
 			}
@@ -5572,8 +5564,8 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 	if(sd->vender_id)
 		vending_closevending(sd);
 
-	pc_delspiritball(sd,sd->spiritball,0);
-	pc_delcoin(sd,sd->coin,0);
+	pc_delspiritball(sd,sd->spiritball.num,0);
+	pc_delcoin(sd,sd->coin.num,0);
 
 	if(sd->status.pet_id > 0 && sd->pd && sd->petDB) {
 		sd->pet.intimate -= sd->petDB->die;
@@ -5926,10 +5918,10 @@ int pc_readparam(struct map_session_data *sd,int type)
 		break;
 	// グローバル変数保存タイプ
 	case SP_CLONESKILL_ID:
-		val = sd->cloneskill_id;
+		val = sd->skill_clone.id;
 		break;
 	case SP_CLONESKILL_LV:
-		val = sd->cloneskill_lv;
+		val = sd->skill_clone.lv;
 		break;
 	case SP_BS_POINT:
 		val = sd->ranking_point[RK_BLACKSMITH];
@@ -5963,10 +5955,10 @@ int pc_readparam(struct map_session_data *sd,int type)
 		val = sd->am_pharmacy_success;
 		break;
 	case SP_KILL_CHAR:
-		val = sd->kill_charid;
+		val = sd->kill.char_id;
 		break;
 	case SP_KILLED_CHAR:
-		val = sd->killed_charid;
+		val = sd->kill.merderer_char_id;
 		break;
 	case SP_SHOP_POINT:
 		val = sd->shop_point;
@@ -6076,12 +6068,12 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 
 	// グローバル変数保存タイプ
 	case SP_CLONESKILL_ID:
-		sd->cloneskill_id = val;
+		sd->skill_clone.id = val;
 		pc_setglobalreg(sd,"PC_CLONESKILL_ID",val);
 		clif_skillinfoblock(sd);
 		return 0;
 	case SP_CLONESKILL_LV:
-		sd->cloneskill_lv = val;
+		sd->skill_clone.lv = val;
 		pc_setglobalreg(sd,"PC_CLONESKILL_LV",val);
 		clif_skillinfoblock(sd);
 		return 0;
@@ -6139,12 +6131,12 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 		pc_setglobalreg(sd,"PC_PHARMACY_SUCCESS_COUNT",val);
 		return 0;
 	case SP_KILL_CHAR:
-		sd->kill_charid = val;
+		sd->kill.char_id = val;
 		pc_setglobalreg(sd,"PC_KILL_CHAR",val);
 		clif_update_temper(sd);
 		return 0;
 	case SP_KILLED_CHAR:
-		sd->killed_charid = val;
+		sd->kill.merderer_char_id = val;
 		pc_setglobalreg(sd,"PC_KILLED_CHAR",val);
 		clif_update_temper(sd);
 		return 0;
@@ -6252,8 +6244,8 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 	nullpo_retr(0, sd);
 
 	if(sd->state.potionpitcher_flag) {
-		sd->potion_hp = hp;
-		sd->potion_sp = sp;
+		sd->potion.hp = hp;
+		sd->potion.sp = sp;
 		return 0;
 	}
 
@@ -6339,8 +6331,8 @@ int pc_percentheal(struct map_session_data *sd,int hp,int sp)
 	nullpo_retr(0, sd);
 
 	if(sd->state.potionpitcher_flag) {
-		sd->potion_per_hp = hp;
-		sd->potion_per_sp = sp;
+		sd->potion.hp_per = hp;
+		sd->potion.sp_per = sp;
 		return 0;
 	}
 
@@ -8144,7 +8136,7 @@ static int pc_natural_heal_hp(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(pc_checkoverhp(sd)) {
-		sd->hp_sub = sd->inchealhptick = 0;
+		sd->regen.hp = sd->regen.hptick = 0;
 		return 0;
 	}
 
@@ -8154,35 +8146,35 @@ static int pc_natural_heal_hp(struct map_session_data *sd)
 	if(sd->ud.walktimer == -1) {
 		inc_num = pc_hpheal(sd);
 		if(sd->sc.data[SC_TENSIONRELAX].timer != -1) {	// テンションリラックス
-			sd->hp_sub += 2*inc_num;
-			sd->inchealhptick += 3*natural_heal_diff_tick;
+			sd->regen.hp += 2*inc_num;
+			sd->regen.hptick += 3*natural_heal_diff_tick;
 		} else {
-			sd->hp_sub += inc_num;
-			sd->inchealhptick += natural_heal_diff_tick;
+			sd->regen.hp += inc_num;
+			sd->regen.hptick += natural_heal_diff_tick;
 		}
 	} else if(hp_flag) {
 		inc_num = pc_hpheal(sd);
-		sd->hp_sub += inc_num;
-		sd->inchealhptick = 0;
+		sd->regen.hp += inc_num;
+		sd->regen.hptick = 0;
 	} else {
-		sd->hp_sub = sd->inchealhptick = 0;
+		sd->regen.hp = sd->regen.hptick = 0;
 		return 0;
 	}
 
-	if(sd->hp_sub >= battle_config.natural_healhp_interval) {
+	if(sd->regen.hp >= battle_config.natural_healhp_interval) {
 		bonus = sd->nhealhp;
 		if(hp_flag) {
 			bonus >>= 2;
 			if(bonus <= 0)
 				bonus = 1;
 		}
-		while(sd->hp_sub >= battle_config.natural_healhp_interval) {
-			sd->hp_sub -= battle_config.natural_healhp_interval;
+		while(sd->regen.hp >= battle_config.natural_healhp_interval) {
+			sd->regen.hp -= battle_config.natural_healhp_interval;
 			if(sd->status.hp + bonus <= sd->status.max_hp) {
 				sd->status.hp += bonus;
 			} else {
 				sd->status.hp = sd->status.max_hp;
-				sd->hp_sub = sd->inchealhptick = 0;
+				sd->regen.hp = sd->regen.hptick = 0;
 			}
 		}
 	}
@@ -8190,22 +8182,22 @@ static int pc_natural_heal_hp(struct map_session_data *sd)
 		clif_updatestatus(sd,SP_HP);
 
 	if(sd->nshealhp > 0) {
-		if(sd->inchealhptick >= battle_config.natural_heal_skill_interval && sd->status.hp < sd->status.max_hp) {
+		if(sd->regen.hptick >= battle_config.natural_heal_skill_interval && sd->status.hp < sd->status.max_hp) {
 			bonus = sd->nshealhp;
-			while(sd->inchealhptick >= battle_config.natural_heal_skill_interval) {
-				sd->inchealhptick -= battle_config.natural_heal_skill_interval;
+			while(sd->regen.hptick >= battle_config.natural_heal_skill_interval) {
+				sd->regen.hptick -= battle_config.natural_heal_skill_interval;
 				if(sd->status.hp + bonus <= sd->status.max_hp) {
 					sd->status.hp += bonus;
 				} else {
 					bonus = sd->status.max_hp - sd->status.hp;
 					sd->status.hp = sd->status.max_hp;
-					sd->hp_sub = sd->inchealhptick = 0;
+					sd->regen.hp = sd->regen.hptick = 0;
 				}
 				clif_heal(sd->fd,SP_HP,bonus);
 			}
 		}
 	} else {
-		sd->inchealhptick = 0;
+		sd->regen.hptick = 0;
 	}
 
 	return 0;
@@ -8223,7 +8215,7 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(pc_checkoversp(sd)) {
-		sd->sp_sub = sd->inchealsptick = 0;
+		sd->regen.sp = sd->regen.sptick = 0;
 		return 0;
 	}
 
@@ -8231,21 +8223,21 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 
 	inc_num = pc_spheal(sd);
 	if(sd->s_class.job == 23 || sd->sc.data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc.data[SC_MONK].timer != -1)
-		sd->sp_sub += inc_num;
+		sd->regen.sp += inc_num;
 	if(sd->ud.walktimer == -1)
-		sd->inchealsptick += natural_heal_diff_tick;
+		sd->regen.sptick += natural_heal_diff_tick;
 	else
-		sd->inchealsptick = 0;
+		sd->regen.sptick = 0;
 
-	if(sd->sp_sub >= battle_config.natural_healsp_interval) {
+	if(sd->regen.sp >= battle_config.natural_healsp_interval) {
 		bonus = sd->nhealsp;
-		while(sd->sp_sub >= battle_config.natural_healsp_interval) {
-			sd->sp_sub -= battle_config.natural_healsp_interval;
+		while(sd->regen.sp >= battle_config.natural_healsp_interval) {
+			sd->regen.sp -= battle_config.natural_healsp_interval;
 			if(sd->status.sp + bonus <= sd->status.max_sp) {
 				sd->status.sp += bonus;
 			} else {
 				sd->status.sp = sd->status.max_sp;
-				sd->sp_sub = sd->inchealsptick = 0;
+				sd->regen.sp = sd->regen.sptick = 0;
 			}
 		}
 	}
@@ -8254,26 +8246,26 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 		clif_updatestatus(sd,SP_SP);
 
 	if(sd->nshealsp > 0) {
-		if(sd->inchealsptick >= battle_config.natural_heal_skill_interval && sd->status.sp < sd->status.max_sp) {
+		if(sd->regen.sptick >= battle_config.natural_heal_skill_interval && sd->status.sp < sd->status.max_sp) {
 			bonus = sd->nshealsp;
 			if(sd->state.sn_doridori && sd->s_class.job == 23) {
 				bonus *= 2;
 			}
 			sd->state.sn_doridori = 0;
-			while(sd->inchealsptick >= battle_config.natural_heal_skill_interval) {
-				sd->inchealsptick -= battle_config.natural_heal_skill_interval;
+			while(sd->regen.sptick >= battle_config.natural_heal_skill_interval) {
+				sd->regen.sptick -= battle_config.natural_heal_skill_interval;
 				if(sd->status.sp + bonus <= sd->status.max_sp) {
 					sd->status.sp += bonus;
 				} else {
 					bonus = sd->status.max_sp - sd->status.sp;
 					sd->status.sp = sd->status.max_sp;
-					sd->sp_sub = sd->inchealsptick = 0;
+					sd->regen.sp = sd->regen.sptick = 0;
 				}
 				clif_heal(sd->fd,SP_SP,bonus);
 			}
 		}
 	} else {
-		sd->inchealsptick = 0;
+		sd->regen.sptick = 0;
 	}
 
 	return 0;
@@ -8290,20 +8282,20 @@ static int pc_spirit_heal_hp(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(pc_checkoverhp(sd)) {
-		sd->inchealspirithptick = 0;
+		sd->regen.spirithptick = 0;
 		return 0;
 	}
 
-	sd->inchealspirithptick += natural_heal_diff_tick;
+	sd->regen.spirithptick += natural_heal_diff_tick;
 
 	if(sd->weight*100/sd->max_weight >= battle_config.natural_heal_weight_rate)
 		interval += interval;
 
-	if(sd->inchealspirithptick >= interval) {
+	if(sd->regen.spirithptick >= interval) {
 		int bonus_hp = sd->nsshealhp;
-		while(sd->inchealspirithptick >= interval) {
+		while(sd->regen.spirithptick >= interval) {
 			if(pc_issit(sd)) {
-				sd->inchealspirithptick -= interval;
+				sd->regen.spirithptick -= interval;
 				if(sd->status.hp < sd->status.max_hp) {
 					if(sd->status.hp + bonus_hp <= sd->status.max_hp) {
 						sd->status.hp += bonus_hp;
@@ -8312,10 +8304,10 @@ static int pc_spirit_heal_hp(struct map_session_data *sd)
 						sd->status.hp = sd->status.max_hp;
 					}
 					clif_heal(sd->fd,SP_HP,bonus_hp);
-					sd->inchealspirithptick = 0;
+					sd->regen.spirithptick = 0;
 				}
 			} else {
-				sd->inchealspirithptick -= natural_heal_diff_tick;
+				sd->regen.spirithptick -= natural_heal_diff_tick;
 				break;
 			}
 		}
@@ -8335,20 +8327,20 @@ static int pc_spirit_heal_sp(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(pc_checkoversp(sd)) {
-		sd->inchealspiritsptick = 0;
+		sd->regen.spiritsptick = 0;
 		return 0;
 	}
 
-	sd->inchealspiritsptick += natural_heal_diff_tick;
+	sd->regen.spiritsptick += natural_heal_diff_tick;
 
 	if(sd->weight*100/sd->max_weight >= battle_config.natural_heal_weight_rate)
 		interval += interval;
 
-	if(sd->inchealspiritsptick >= interval) {
+	if(sd->regen.spiritsptick >= interval) {
 		int bonus_sp = sd->nsshealsp;
-		while(sd->inchealspiritsptick >= interval) {
+		while(sd->regen.spiritsptick >= interval) {
 			if(pc_issit(sd)) {
-				sd->inchealspiritsptick -= interval;
+				sd->regen.spiritsptick -= interval;
 				if(sd->status.sp < sd->status.max_sp) {
 					if(sd->status.sp + bonus_sp <= sd->status.max_sp) {
 						sd->status.sp += bonus_sp;
@@ -8357,10 +8349,10 @@ static int pc_spirit_heal_sp(struct map_session_data *sd)
 						sd->status.sp = sd->status.max_sp;
 					}
 					clif_heal(sd->fd,SP_SP,bonus_sp);
-					sd->inchealspiritsptick = 0;
+					sd->regen.spiritsptick = 0;
 				}
 			} else {
-				sd->inchealspiritsptick -= natural_heal_diff_tick;
+				sd->regen.spiritsptick -= natural_heal_diff_tick;
 				break;
 			}
 		}
@@ -8380,26 +8372,26 @@ static int pc_rest_heal_hp(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(pc_checkoverhp(sd)) {
-		sd->inchealresthptick = 0;
+		sd->regen.resthptick = 0;
 		return 0;
 	}
 
-	sd->inchealresthptick += natural_heal_diff_tick;
+	sd->regen.resthptick += natural_heal_diff_tick;
 
 	//if(sd->weight*100/sd->max_weight >= battle_config.natural_heal_weight_rate)
 	//	interval += interval;
 
-	if(sd->inchealresthptick >= interval) {
-		int bonus_hp = sd->tk_nhealhp;
+	if(sd->regen.resthptick >= interval) {
+		int bonus_hp = sd->regen.tk_hp;
 
 		if(sd->state.tk_doridori_hp) {
 			bonus_hp += 30;
 		}
 		sd->state.tk_doridori_hp = 0;
 
-		while(sd->inchealresthptick >= interval) {
+		while(sd->regen.resthptick >= interval) {
 			if(pc_issit(sd)) {
-				sd->inchealresthptick -= interval;
+				sd->regen.resthptick -= interval;
 				if(sd->status.hp < sd->status.max_hp) {
 					if(sd->status.hp + bonus_hp <= sd->status.max_hp) {
 						sd->status.hp += bonus_hp;
@@ -8408,10 +8400,10 @@ static int pc_rest_heal_hp(struct map_session_data *sd)
 						sd->status.hp = sd->status.max_hp;
 					}
 					clif_heal(sd->fd,SP_HP,bonus_hp);
-					sd->inchealresthptick = 0;
+					sd->regen.resthptick = 0;
 				}
 			} else {
-				sd->inchealresthptick -= natural_heal_diff_tick;
+				sd->regen.resthptick -= natural_heal_diff_tick;
 				break;
 			}
 		}
@@ -8431,17 +8423,17 @@ static int pc_rest_heal_sp(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(pc_checkoversp(sd)) {
-		sd->inchealrestsptick = 0;
+		sd->regen.restsptick = 0;
 		return 0;
 	}
 
-	sd->inchealrestsptick += natural_heal_diff_tick;
+	sd->regen.restsptick += natural_heal_diff_tick;
 
 	//if(sd->weight*100/sd->max_weight >= battle_config.natural_heal_weight_rate)
 	//	interval += interval;
 
-	if(sd->inchealrestsptick >= interval) {
-		int bonus_sp = sd->tk_nhealsp;
+	if(sd->regen.restsptick >= interval) {
+		int bonus_sp = sd->regen.tk_sp;
 		int skilllv;
 
 		if(sd->state.tk_doridori_sp) {
@@ -8465,9 +8457,9 @@ static int pc_rest_heal_sp(struct map_session_data *sd)
 		if((skilllv = pc_checkskill(sd,SL_KAINA)) > 0)
 			bonus_sp += bonus_sp*(30+10*skilllv)/100;
 
-		while(sd->inchealrestsptick >= interval) {
+		while(sd->regen.restsptick >= interval) {
 			if(pc_issit(sd)) {
-				sd->inchealrestsptick -= interval;
+				sd->regen.restsptick -= interval;
 				if(sd->status.sp < sd->status.max_sp) {
 					if(sd->status.sp + bonus_sp <= sd->status.max_sp) {
 						sd->status.sp += bonus_sp;
@@ -8476,10 +8468,10 @@ static int pc_rest_heal_sp(struct map_session_data *sd)
 						sd->status.sp = sd->status.max_sp;
 					}
 					clif_heal(sd->fd,SP_SP,bonus_sp);
-					sd->inchealrestsptick = 0;
+					sd->regen.restsptick = 0;
 				}
 			} else {
-				sd->inchealrestsptick -= natural_heal_diff_tick;
+				sd->regen.restsptick -= natural_heal_diff_tick;
 				break;
 			}
 		}
@@ -8578,28 +8570,28 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 			pc_natural_heal_sp(sd);
 	} else {
-		sd->hp_sub = sd->inchealhptick = 0;
-		sd->sp_sub = sd->inchealsptick = 0;
+		sd->regen.hp = sd->regen.hptick = 0;
+		sd->regen.sp = sd->regen.sptick = 0;
 	}
 	if(pc_checkskill(sd,MO_SPIRITSRECOVERY) > 0 && !pc_ishiding(sd) && sd->sc.data[SC_POISON].timer == -1) {
 		pc_spirit_heal_hp(sd);
 		pc_spirit_heal_sp(sd);
 	} else {
-		sd->inchealspirithptick = 0;
-		sd->inchealspiritsptick = 0;
+		sd->regen.spirithptick = 0;
+		sd->regen.spiritsptick = 0;
 	}
 
 	// 安らかな休息
 	if(pc_checkskill(sd,TK_HPTIME) > 0 && sd->state.taekwonrest && sd->sc.data[SC_POISON].timer == -1)
 		pc_rest_heal_hp(sd);
 	else
-		sd->inchealresthptick = 0;
+		sd->regen.resthptick = 0;
 
 	// 楽しい休息
 	if(pc_checkskill(sd,TK_SPTIME) > 0 && sd->state.taekwonrest && sd->sc.data[SC_POISON].timer == -1)
 		pc_rest_heal_sp(sd);
 	else
-		sd->inchealrestsptick = 0;
+		sd->regen.restsptick = 0;
 
 	if (sd->hp_penalty_value != 0 || sd->sp_penalty_value != 0)
 		pc_bleeding(sd);

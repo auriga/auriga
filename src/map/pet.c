@@ -1063,7 +1063,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			if(pd->ud.attacktimer != -1)
 				return 0;
 			if(pd->a_skill && atn_rand()%100 < pd->a_skill->rate + pd->msd->pet.intimate * pd->a_skill->bonusrate / 1000) {
-				if(skill_get_inf(pd->a_skill->id) & 2) {
+				if(skill_get_inf(pd->a_skill->id) & INF_TOGROUND) {
 					// 場所指定
 					unit_skilluse_pos( &pd->bl, md->bl.x, md->bl.y, pd->a_skill->id, pd->a_skill->lv);
 				} else {
@@ -1326,7 +1326,7 @@ int pet_skill_support_timer(int tid,unsigned int tick,int id,void *data)
 		return 0;
 	}
 
-	if(skill_get_inf(pd->s_skill->id) & 2) {
+	if(skill_get_inf(pd->s_skill->id) & INF_TOGROUND) {
 		// 場所指定
 		unit_skilluse_pos( &pd->bl, sd->bl.x, sd->bl.y, pd->s_skill->id, pd->s_skill->lv);
 	} else {

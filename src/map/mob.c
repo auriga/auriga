@@ -3511,7 +3511,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		if(tbl == NULL)
 			continue;
 
-		if( skill_get_inf(ms[i].skill_id)&2 ) {
+		if( skill_get_inf(ms[i].skill_id)&INF_TOGROUND ) {
 			// 場所指定
 			int x = tbl->x;
 			int y = tbl->y;

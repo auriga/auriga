@@ -2423,13 +2423,13 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
  *
  *------------------------------------------
  */
-static void clif_set01e1(const int fd, struct map_session_data *dstsd)
+static void clif_set01e1(const int fd, struct map_session_data *dstsd, short num)
 {
 	nullpo_retv(dstsd);
 
 	WFIFOW(fd,0)=0x1e1;
 	WFIFOL(fd,2)=dstsd->bl.id;
-	WFIFOW(fd,6)=dstsd->spiritball;
+	WFIFOW(fd,6)=num;
 	WFIFOSET(fd,packet_db[0x1e1].len);
 
 	return;
@@ -2490,9 +2490,9 @@ void clif_spawnpc(struct map_session_data *sd)
 #endif
 	clif_send(WFIFOP(sd->fd,0),len,&sd->bl,AREA_WOS);
 
-	if(sd->spiritball > 0)
+	if(sd->spiritball.num > 0)
 		clif_spiritball(sd);
-	if(sd->coin > 0)
+	if(sd->coin.num > 0)
 		clif_coin(sd);
 	if(sd->view_size!=0)
 		clif_misceffect2(&sd->bl,422+sd->view_size);
@@ -4644,7 +4644,7 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		// 013a
 	case SP_ATTACKRANGE:
 		WFIFOW(fd,0)=0x13a;
-		WFIFOW(fd,2)=sd->attackrange;
+		WFIFOW(fd,2)=sd->range.attackrange;
 		len=4;
 		break;
 
@@ -5490,7 +5490,7 @@ void clif_traderequest(struct map_session_data *sd, char *name)
 	strncpy(WFIFOP(fd,2),name,24);
 	WFIFOSET(fd,packet_db[0xe5].len);
 #else
-	nullpo_retv((target_sd = map_id2sd(sd->trade_partner)));
+	nullpo_retv((target_sd = map_id2sd(sd->trade.partner)));
 
 	WFIFOW(fd,0)=0x1f4;
 	strncpy(WFIFOP(fd,2),name,24);
@@ -5521,7 +5521,7 @@ void clif_tradestart(struct map_session_data *sd, unsigned char type)
 	WFIFOB(fd,2)=type;
 	WFIFOSET(fd,packet_db[0xe7].len);
 #else
-	target_sd = map_id2sd(sd->trade_partner);
+	target_sd = map_id2sd(sd->trade.partner);
 	WFIFOW(fd,0)=0x1f5;
 	WFIFOB(fd,2)=type;
 	WFIFOL(fd,3)=(target_sd!=NULL)?target_sd->status.char_id:0;	// 良く分からないからとりあえずchar_id
@@ -6115,8 +6115,12 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 		clif_showvendingboard(&dstsd->bl,dstsd->message,sd->fd);
 	}
 
-	if(dstsd->spiritball > 0) {
-		clif_set01e1(sd->fd,dstsd);
+	if(dstsd->spiritball.num > 0) {
+		clif_set01e1(sd->fd,dstsd,dstsd->spiritball.num);
+	}
+
+	if(dstsd->coin.num > 0) {
+		clif_set01e1(sd->fd,dstsd,dstsd->coin.num);
 	}
 
 	if(sd->status.manner < 0)
@@ -6677,7 +6681,7 @@ void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int rang
 
 	nullpo_retv(sd);
 
-	if( skillid!=sd->cloneskill_id && (id=sd->status.skill[skillid].id) <= 0 )
+	if( skillid!=sd->skill_clone.id && (id=sd->status.skill[skillid].id) <= 0 )
 		return;
 
 	if(sd->status.class_==PC_CLASS_TK && pc_checkskill2(sd,TK_MISSION)>0 && sd->status.base_level>=90 &&
@@ -6686,9 +6690,9 @@ void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int rang
 
 	if(tk_ranker_bonus && sd->status.skill[skillid].flag == 0)
 		skill_lv = pc_get_skilltree_max(&sd->s_class,id);
-	else if(skillid==sd->cloneskill_id){
+	else if(skillid==sd->skill_clone.id){
 		id = skillid;
-		skill_lv = sd->status.skill[skillid].lv>sd->cloneskill_lv?sd->status.skill[skillid].lv:sd->cloneskill_lv;
+		skill_lv = sd->status.skill[skillid].lv>sd->skill_clone.lv?sd->status.skill[skillid].lv:sd->skill_clone.lv;
 	}else
 		skill_lv = sd->status.skill[skillid].lv;
 
@@ -6708,7 +6712,7 @@ void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int rang
 		WFIFOW(fd,12)= range;
 	memset(WFIFOP(fd,14),0,24);
 	if(!(skill_get_inf2(id)&0x01) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
-		WFIFOB(fd,38) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && skillid!=sd->cloneskill_id && sd->status.skill[skillid].flag == 0)? 1: 0;
+		WFIFOB(fd,38) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && skillid!=sd->skill_clone.id && sd->status.skill[skillid].flag == 0)? 1: 0;
 	else
 		WFIFOB(fd,38) = 0;
 	WFIFOSET(fd,packet_db[0x147].len);
@@ -6736,13 +6740,13 @@ void clif_skillinfoblock(struct map_session_data *sd)
 	fd=sd->fd;
 	WBUFW(buf,0)=0x10f;
 	for (i=0; i < MAX_PCSKILL; i++){
-		if( (i==sd->cloneskill_id && (id=sd->cloneskill_id)!=0) || (id=sd->status.skill[i].id)!=0 ){
+		if( (i==sd->skill_clone.id && (id=sd->skill_clone.id)!=0) || (id=sd->status.skill[i].id)!=0 ){
 			WBUFW(buf,len  ) = id;
 			WBUFL(buf,len+2) = skill_get_inf(id);
 			if(tk_ranker_bonus && sd->status.skill[i].flag==0)
 				skill_lv = pc_get_skilltree_max(&sd->s_class,id);
-			else if(i==sd->cloneskill_id)
-				skill_lv = (sd->status.skill[i].lv > sd->cloneskill_lv)? sd->status.skill[i].lv: sd->cloneskill_lv;
+			else if(i==sd->skill_clone.id)
+				skill_lv = (sd->status.skill[i].lv > sd->skill_clone.lv)? sd->status.skill[i].lv: sd->skill_clone.lv;
 			else
 				skill_lv = sd->status.skill[i].lv;
 			WBUFW(buf,len+6) = skill_lv;
@@ -6750,7 +6754,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 			WBUFW(buf,len+10)= skill_get_fixed_range(&sd->bl,id,skill_lv);
 			memset(WBUFP(buf,len+12),0,24);
 			if(!(skill_get_inf2(id)&0x01) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
-				WBUFB(buf,len+36) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && i!=sd->cloneskill_id && sd->status.skill[i].flag == 0)? 1: 0;
+				WBUFB(buf,len+36) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && i!=sd->skill_clone.id && sd->status.skill[i].flag == 0)? 1: 0;
 			else
 				WBUFB(buf,len+36) = 0;
 			len+=37;
@@ -9092,7 +9096,7 @@ void clif_movetoattack(struct map_session_data *sd, struct block_list *bl)
 	WFIFOW(fd, 8)=bl->y;
 	WFIFOW(fd,10)=sd->bl.x;
 	WFIFOW(fd,12)=sd->bl.y;
-	WFIFOW(fd,14)=sd->attackrange;
+	WFIFOW(fd,14)=sd->range.attackrange;
 	WFIFOSET(fd,packet_db[0x139].len);
 
 	return;
@@ -9407,7 +9411,7 @@ void clif_spiritball(struct map_session_data *sd)
 
 	WBUFW(buf,0)=0x1d0;
 	WBUFL(buf,2)=sd->bl.id;
-	WBUFW(buf,6)=sd->spiritball;
+	WBUFW(buf,6)=sd->spiritball.num;
 	clif_send(buf,packet_db[0x1d0].len,&sd->bl,AREA);
 
 	return;
@@ -9425,7 +9429,7 @@ void clif_coin(struct map_session_data *sd)
 
 	WBUFW(buf,0)=0x1d0;
 	WBUFL(buf,2)=sd->bl.id;
-	WBUFW(buf,6)=sd->coin;
+	WBUFW(buf,6)=sd->coin.num;
 	clif_send(buf,packet_db[0x1d0].len,&sd->bl,AREA);
 
 	return;
@@ -11252,18 +11256,18 @@ void clif_update_temper(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	if(sd->kill_charid > 0) {
-		nick1 = map_charid2nick(sd->kill_charid);
+	if(sd->kill.char_id > 0) {
+		nick1 = map_charid2nick(sd->kill.char_id);
 		if(nick1 == NULL) {
-			if(map_reqchariddb(sd,sd->kill_charid,2))
-				chrif_searchcharid(sd->kill_charid);
+			if(map_reqchariddb(sd,sd->kill.char_id,2))
+				chrif_searchcharid(sd->kill.char_id);
 		}
 	}
-	if(sd->killed_charid > 0) {
-		nick2 = map_charid2nick(sd->killed_charid);
+	if(sd->kill.merderer_char_id > 0) {
+		nick2 = map_charid2nick(sd->kill.merderer_char_id);
 		if(nick2 == NULL) {
-			if(map_reqchariddb(sd,sd->killed_charid,2))
-				chrif_searchcharid(sd->killed_charid);
+			if(map_reqchariddb(sd,sd->kill.merderer_char_id,2))
+				chrif_searchcharid(sd->kill.merderer_char_id);
 		}
 	}
 
@@ -12503,8 +12507,8 @@ static void clif_parse_Emotion(int fd,struct map_session_data *sd, int cmd)
 		unsigned int tick = gettick();
 
 		// anti hacker
-		if(DIFF_TICK(tick, sd->emotion_delay_tick) > 0) {
-			sd->emotion_delay_tick = tick + 1000;
+		if(DIFF_TICK(tick, sd->anti_hacker.emotion_delay_tick) > 0) {
+			sd->anti_hacker.emotion_delay_tick = tick + 1000;
 
 			WFIFOW(fd,0)=0xc0;
 			WFIFOL(fd,2)=sd->bl.id;
@@ -12783,7 +12787,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if(++sd->drop_delay_count == 6) {
+	if(++sd->anti_hacker.drop_delay_count == 6) {
 		char output[128];
 		// %s (ID:%d) のアイテムドロップ間隔が異常です！
 		snprintf(output, sizeof(output), msg_txt(47), sd->status.name, sd->status.char_id);
@@ -12791,7 +12795,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 	}
 
 	if( sd->npc_id != 0 || sd->vender_id != 0 || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending || sd->state.storage_flag || sd->chatID ||
-	    DIFF_TICK(tick, sd->drop_delay_tick) < 0 ||
+	    DIFF_TICK(tick, sd->anti_hacker.drop_delay_tick) < 0 ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
@@ -12801,8 +12805,8 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 		clif_delitem(sd, 0, item_index, 0);
 		return;
 	}
-	sd->drop_delay_tick  = tick + 300;
-	sd->drop_delay_count = 0;
+	sd->anti_hacker.drop_delay_tick  = tick + 300;
+	sd->anti_hacker.drop_delay_count = 0;
 
 	if( pc_dropitem(sd, item_index, item_amount) ) {
 		if (battle_config.save_player_when_drop_item) {
@@ -13397,7 +13401,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 
 	inf = skill_get_inf(skillnum);
-	if(inf == 0 || inf & 2) {
+	if(inf == INF_PASSIVE || inf & INF_TOGROUND) {
 		// anti hacker
 		return;
 	}
@@ -13415,7 +13419,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, hd->skillstatictimer[skillnum-HOM_SKILLID]) < 0)
 				return;
 
-			if(inf & 0x04)	// 自分が対象
+			if(inf & INF_TOME)	// 自分が対象
 				unit_skilluse_id(&hd->bl,hd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&hd->bl,target_id,skillnum,skilllv);
@@ -13435,7 +13439,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, mcd->skillstatictimer[skillnum-MERC_SKILLID]) < 0)
 				return;
 
-			if(inf & 0x04)	// 自分が対象
+			if(inf & INF_TOME)	// 自分が対象
 				unit_skilluse_id(&mcd->bl,mcd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&mcd->bl,target_id,skillnum,skilllv);
@@ -13455,13 +13459,13 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	// infの「即時発動」が「敵」に変わる場合
 	if(skillnum == MO_EXTREMITYFIST) {
 		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_CHAINCRUSH))
-			change_inf = 1;
+			change_inf = INF_TOCHARACTER;
 	} else if(skillnum == TK_JUMPKICK) {
 		if(sd->sc.data[SC_DODGE_DELAY].timer == -1)
-			change_inf = 1;
+			change_inf = INF_TOCHARACTER;
 	}
 
-	if(inf & 0x04 && !change_inf) {
+	if(inf & INF_TOME && !change_inf) {
 		// 即時発動ならターゲットを自分自身にする
 		target_id = sd->bl.id;
 	}
@@ -13511,18 +13515,18 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	if(sd->invincible_timer != -1)
 		pc_delinvincibletimer(sd);
 
-	if(sd->skillitem >= 0 && sd->skillitem == skillnum) {
-		if(skilllv != sd->skillitemlv)
-			skilllv = sd->skillitemlv;
+	if(sd->skill_item.id >= 0 && sd->skill_item.id == skillnum) {
+		if(skilllv != sd->skill_item.lv)
+			skilllv = sd->skill_item.lv;
 		if( !unit_skilluse_id(&sd->bl,target_id,skillnum,skilllv) ) {
-			sd->skillitem      = -1;
-			sd->skillitemlv    = -1;
-			sd->skillitem_flag = 0;
+			sd->skill_item.id      = -1;
+			sd->skill_item.lv      = -1;
+			sd->skill_item.flag    = 0;
 		}
 	} else {
-		sd->skillitem      = -1;
-		sd->skillitemlv    = -1;
-		sd->skillitem_flag = 0;
+		sd->skill_item.id      = -1;
+		sd->skill_item.lv      = -1;
+		sd->skill_item.flag    = 0;
 
 		if(change_inf) {
 			if(!sd->state.skill_flag) {
@@ -13568,7 +13572,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	x        = RFIFOW(fd,GETPACKETPOS(cmd,2));
 	y        = RFIFOW(fd,GETPACKETPOS(cmd,3));
 
-	if(!(skill_get_inf(skillnum) & 2)) {
+	if(!(skill_get_inf(skillnum) & INF_TOGROUND)) {
 		// anti hacker
 		return;
 	}
@@ -13655,18 +13659,18 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	if(sd->invincible_timer != -1)
 		pc_delinvincibletimer(sd);
 
-	if(sd->skillitem >= 0 && sd->skillitem == skillnum) {
-		if(skilllv != sd->skillitemlv)
-			skilllv = sd->skillitemlv;
+	if(sd->skill_item.id >= 0 && sd->skill_item.id == skillnum) {
+		if(skilllv != sd->skill_item.lv)
+			skilllv = sd->skill_item.lv;
 		if( !unit_skilluse_pos(&sd->bl,x,y,skillnum,skilllv) ) {
-			sd->skillitem      = -1;
-			sd->skillitemlv    = -1;
-			sd->skillitem_flag = 0;
+			sd->skill_item.id      = -1;
+			sd->skill_item.lv      = -1;
+			sd->skill_item.flag    = 0;
 		}
 	} else {
-		sd->skillitem      = -1;
-		sd->skillitemlv    = -1;
-		sd->skillitem_flag = 0;
+		sd->skill_item.id      = -1;
+		sd->skill_item.lv      = -1;
+		sd->skill_item.flag    = 0;
 		if((lv = pc_checkskill(sd,skillnum)) > 0) {
 			if(skilllv > lv)
 				skilllv = lv;

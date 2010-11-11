@@ -394,17 +394,51 @@ struct map_session_data {
 
 	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wis拒否リスト
 
-	short attackrange,attackrange_;
+	struct {
+		short attackrange;
+		short attackrange_;
+		short add_attackrange;	// bAtkRange2用
+		short add_attackrange_rate;	// bAtkRangeRate2 用
+	} range;
+
 	unsigned int skillstatictimer[MAX_SKILL_DB];
-	short skillitem,skillitemlv,skillitem_flag;
-	short skillid_old,skilllv_old;
-	short skillid_dance,skilllv_dance;
-	int cloneskill_id,cloneskill_lv;
-	int potion_hp,potion_sp,potion_per_hp,potion_per_sp;
+
+	struct {
+		short id;
+		short lv;
+		unsigned flag : 1;
+	} skill_item;
+
+	struct {
+		short id;
+		short lv;
+	} skill_used;
+
+	struct {
+		short id;
+		short lv;
+	} skill_dance;
+
+	struct {
+		short id;
+		short lv;
+	} skill_clone;
+
+	struct {
+		int hp;
+		int sp;
+		int hp_per;
+		int sp_per;
+	} potion;
 
 	int invincible_timer;
-	int hp_sub,sp_sub;
-	int inchealhptick,inchealsptick,inchealspirithptick,inchealspiritsptick;
+
+	struct {
+		int hp,sp;
+		unsigned int hptick,sptick,spirithptick,spiritsptick;
+		int tk_hp,tk_sp;	// 安らかな休息,楽しい休息
+		unsigned int resthptick,restsptick;
+	} regen;
 
 	short view_class;
 	struct pc_base_job s_class;
@@ -545,10 +579,10 @@ struct map_session_data {
 	int activeitem_timer[MAX_ACTIVEITEM];
 	int activeitem_id2[MAX_ACTIVEITEM];
 
-	short hp_vanish_rate;
-	short hp_vanish_per;
-	short sp_vanish_rate;
-	short sp_vanish_per;
+	struct {
+		short rate;
+		short per;
+	} hp_vanish, sp_vanish;
 
 	short short_weapon_damege_rate,long_weapon_damege_rate;
 
@@ -556,10 +590,17 @@ struct map_session_data {
 	short use_itemid;
 	int   use_nameditem;
 	int   bonus_damage;	// 必中ダメージ
-	short spiritball, spiritball_old;
-	int spirit_timer[MAX_SKILL_LEVEL];
-	short coin, coin_old;
-	int coin_timer[MAX_SKILL_LEVEL];
+
+	struct {
+		short num;
+		short old;
+		unsigned int timer[MAX_SKILL_LEVEL];
+	} spiritball;
+
+	struct {
+		short num;
+		unsigned int timer[MAX_SKILL_LEVEL];
+	} coin;
 
 	int reg_num;
 	struct script_reg *reg;
@@ -568,10 +609,12 @@ struct map_session_data {
 
 	struct square dev;
 
-	int trade_partner;
-	int deal_item_index[MAX_DEAL_ITEMS];
-	int deal_item_amount[MAX_DEAL_ITEMS];
-	int deal_zeny;
+	struct {
+		int partner;
+		int item_index[MAX_DEAL_ITEMS];
+		int item_amount[MAX_DEAL_ITEMS];
+		int zeny;
+	} trade;
 
 	int party_invite,party_invite_account;
 	int party_hp,party_x,party_y;
@@ -608,9 +651,6 @@ struct map_session_data {
 	int feel_index[3];
 	short hate_mob[3];
 
-	int tk_nhealhp,tk_nhealsp;	// 安らかな休息,楽しい休息
-	int inchealresthptick,inchealrestsptick;
-
 	int ranking_point[MAX_RANKING];
 	short am_pharmacy_success;
 	short making_base_success_per;
@@ -630,15 +670,20 @@ struct map_session_data {
 	int zenynage_damage;
 	int repair_target;
 
-	int add_attackrange, add_attackrange_rate;	// bAtkRange2,bAtkRangeRate2 用
 	int skill_delay_rate;
 
-	unsigned int emotion_delay_tick;
 	unsigned int item_delay_tick;
-	unsigned int drop_delay_tick;
-	short drop_delay_count;
 
-	int kill_charid, killed_charid;
+	struct {
+		unsigned int emotion_delay_tick;
+		unsigned int drop_delay_tick;
+		short drop_delay_count;
+	} anti_hacker;
+
+	struct {
+		int char_id;
+		int merderer_char_id;
+	} kill;
 
 	// メール添付情報
 	struct {

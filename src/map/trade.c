@@ -60,7 +60,7 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 				return;
 			}
 		}
-		if(target_sd->trade_partner != 0) {
+		if(target_sd->trade.partner != 0) {
 			clif_tradestart(sd, 2);
 		} else if(sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
 			clif_tradestart(sd, 0);
@@ -72,8 +72,8 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 			// Same on PVP map
 			clif_tradestart(sd, 4);
 		} else {
-			target_sd->trade_partner = sd->status.account_id;
-			sd->trade_partner = target_sd->status.account_id;
+			target_sd->trade.partner = sd->status.account_id;
+			sd->trade.partner = target_sd->status.account_id;
 			clif_traderequest(target_sd,sd->status.name);
 		}
 	} else {
@@ -100,7 +100,7 @@ void trade_tradeack(struct map_session_data *sd, unsigned char type)
 	if(sd->npc_id != 0)
 		npc_event_dequeue(sd);
 
-	target_sd = map_id2sd(sd->trade_partner);
+	target_sd = map_id2sd(sd->trade.partner);
 	if(target_sd && target_sd->bl.prev) {
 		if(sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
 			trade_tradecancel(sd);
@@ -111,10 +111,10 @@ void trade_tradeack(struct map_session_data *sd, unsigned char type)
 		if(type == 4) {	// Cancel
 			sd->state.deal_locked = 0;
 			sd->state.deal_mode   = 0;
-			sd->trade_partner     = 0;
+			sd->trade.partner     = 0;
 			target_sd->state.deal_locked = 0;
 			target_sd->state.deal_mode   = 0;
-			target_sd->trade_partner     = 0;
+			target_sd->trade.partner     = 0;
 		} else {
 			sd->state.deal_mode        = 1;
 			target_sd->state.deal_mode = 1;
@@ -137,15 +137,15 @@ void trade_tradeadditem(struct map_session_data *sd, int idx, int amount)
 
 	nullpo_retv(sd);
 
-	target_sd = map_id2sd(sd->trade_partner);
+	target_sd = map_id2sd(sd->trade.partner);
 	if (target_sd && target_sd->bl.prev && sd->state.deal_locked < 1) {
 		if (idx < 2 || idx >= MAX_INVENTORY + 2) {
 			if (idx == 0 && amount > 0 && amount <= sd->status.zeny) {
 				if(
-					target_sd->status.zeny - target_sd->deal_zeny + amount <= MAX_ZENY &&
-					target_sd->status.zeny - target_sd->deal_zeny + amount >= 0 // overflow 対策
+					target_sd->status.zeny - target_sd->trade.zeny + amount <= MAX_ZENY &&
+					target_sd->status.zeny - target_sd->trade.zeny + amount >= 0 // overflow 対策
 				) {
-					sd->deal_zeny=amount;
+					sd->trade.zeny=amount;
 					clif_tradeadditem(sd,target_sd,0,amount);
 				} else {
 					clif_tradeitemok(sd, idx, 1); //fail to add item
@@ -153,20 +153,20 @@ void trade_tradeadditem(struct map_session_data *sd, int idx, int amount)
 			}
 		} else if (amount <= sd->status.inventory[idx-2].amount && amount > 0 && itemdb_isdropable(sd->status.inventory[idx-2].nameid)) {
 			for(trade_i = 0; trade_i < MAX_DEAL_ITEMS; trade_i++) {
-				if(sd->deal_item_amount[trade_i] == 0){
+				if(sd->trade.item_amount[trade_i] == 0){
 					trade_weight += sd->inventory_data[idx-2]->weight * amount;
 					if(target_sd->weight + trade_weight > target_sd->max_weight){
 						clif_tradeitemok(sd, idx, 1); //fail to add item -- the player was over weighted.
 					}else{
 						// re-deal is check when trade is commited.
-						sd->deal_item_index[trade_i]  = idx;
-						sd->deal_item_amount[trade_i] = amount;
+						sd->trade.item_index[trade_i]  = idx;
+						sd->trade.item_amount[trade_i] = amount;
 						clif_tradeitemok(sd, idx, 0); //success to add item
 						clif_tradeadditem(sd, target_sd, idx, amount);
 					}
 					break;
 				}else{
-					trade_weight+=sd->inventory_data[sd->deal_item_index[trade_i]-2]->weight*sd->deal_item_amount[trade_i];
+					trade_weight+=sd->inventory_data[sd->trade.item_index[trade_i]-2]->weight*sd->trade.item_amount[trade_i];
 				}
 			}
 		} else {
@@ -187,7 +187,7 @@ void trade_tradeok(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	target_sd = map_id2sd(sd->trade_partner);
+	target_sd = map_id2sd(sd->trade.partner);
 	if(target_sd && target_sd->bl.prev) {
 		if (sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
 			trade_tradecancel(sd);
@@ -215,39 +215,39 @@ void trade_tradecancel(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	target_sd = map_id2sd(sd->trade_partner);
+	target_sd = map_id2sd(sd->trade.partner);
 	if(target_sd && target_sd->bl.prev) {
 		for(trade_i = 0; trade_i < MAX_DEAL_ITEMS; trade_i++) { //give items back (only virtual)
-			if(target_sd->deal_item_amount[trade_i] != 0) {
-				clif_additem(target_sd,target_sd->deal_item_index[trade_i]-2,target_sd->deal_item_amount[trade_i],0);
-				target_sd->deal_item_index[trade_i]  = 0;
-				target_sd->deal_item_amount[trade_i] = 0;
+			if(target_sd->trade.item_amount[trade_i] != 0) {
+				clif_additem(target_sd,target_sd->trade.item_index[trade_i]-2,target_sd->trade.item_amount[trade_i],0);
+				target_sd->trade.item_index[trade_i]  = 0;
+				target_sd->trade.item_amount[trade_i] = 0;
 			}
 		}
-		if(target_sd->deal_zeny) {
+		if(target_sd->trade.zeny) {
 			clif_updatestatus(target_sd,SP_ZENY);
-			target_sd->deal_zeny = 0;
+			target_sd->trade.zeny = 0;
 		}
 		target_sd->state.deal_locked = 0;
 		target_sd->state.deal_mode   = 0;
-		target_sd->trade_partner     = 0;
+		target_sd->trade.partner     = 0;
 		clif_tradecancelled(target_sd);
 	}
 
 	for(trade_i = 0; trade_i < MAX_DEAL_ITEMS; trade_i++) { //give items back (only virtual)
-		if (sd->deal_item_amount[trade_i] != 0) {
-			clif_additem(sd, sd->deal_item_index[trade_i]-2, sd->deal_item_amount[trade_i], 0);
-			sd->deal_item_index[trade_i]  = 0;
-			sd->deal_item_amount[trade_i] = 0;
+		if (sd->trade.item_amount[trade_i] != 0) {
+			clif_additem(sd, sd->trade.item_index[trade_i]-2, sd->trade.item_amount[trade_i], 0);
+			sd->trade.item_index[trade_i]  = 0;
+			sd->trade.item_amount[trade_i] = 0;
 		}
 	}
-	if (sd->deal_zeny) {
+	if (sd->trade.zeny) {
 		clif_updatestatus(sd, SP_ZENY);
-		sd->deal_zeny = 0;
+		sd->trade.zeny = 0;
 	}
 	sd->state.deal_locked = 0;
 	sd->state.deal_mode   = 0;
-	sd->trade_partner     = 0;
+	sd->trade.partner     = 0;
 	clif_tradecancelled(sd);
 
 	return;
@@ -273,9 +273,9 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 
 	// check free slots in both inventories
 	for(trade_i = 0; trade_i < MAX_DEAL_ITEMS; trade_i++) {
-		amount = sd->deal_item_amount[trade_i];
+		amount = sd->trade.item_amount[trade_i];
 		if (amount > 0) {
-			idx = sd->deal_item_index[trade_i] - 2;
+			idx = sd->trade.item_index[trade_i] - 2;
 			if (itemdb_isdropable(inventory[idx].nameid)) {
 				// check quantity
 				if (amount > inventory[idx].amount) // player changes its inventory before to commit
@@ -317,9 +317,9 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 				}
 			}
 		}
-		amount = target_sd->deal_item_amount[trade_i];
+		amount = target_sd->trade.item_amount[trade_i];
 		if (amount > 0) {
-			idx = target_sd->deal_item_index[trade_i] - 2;
+			idx = target_sd->trade.item_index[trade_i] - 2;
 			if (itemdb_isdropable(inventory2[idx].nameid)) {
 				// check quantity
 				if (amount > inventory2[idx].amount) // player changes its inventory before to commit
@@ -377,7 +377,7 @@ void trade_tradecommit(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	target_sd = map_id2sd(sd->trade_partner);
+	target_sd = map_id2sd(sd->trade.partner);
 	if(target_sd && target_sd->bl.prev) {
 		if (sd->state.deal_locked >= 1 && target_sd->state.deal_locked >= 1) { // both have pressed 'ok'
 			if (sd->state.deal_locked < 2) // set locked to 2
@@ -389,57 +389,57 @@ void trade_tradecommit(struct map_session_data *sd)
 					return;
 				}
 				// check zenys
-				if (sd->deal_zeny > sd->status.zeny ||
-				    target_sd->deal_zeny > target_sd->status.zeny ||
-				    sd->status.zeny - sd->deal_zeny + target_sd->deal_zeny > MAX_ZENY ||
-				    target_sd->status.zeny - target_sd->deal_zeny + sd->deal_zeny > MAX_ZENY) {
+				if (sd->trade.zeny > sd->status.zeny ||
+				    target_sd->trade.zeny > target_sd->status.zeny ||
+				    sd->status.zeny - sd->trade.zeny + target_sd->trade.zeny > MAX_ZENY ||
+				    target_sd->status.zeny - target_sd->trade.zeny + sd->trade.zeny > MAX_ZENY) {
 					trade_tradecancel(sd);
 					return;
 				}
 				// do trade
 				// ---- of items
 				for(trade_i = 0; trade_i < MAX_DEAL_ITEMS; trade_i++) {
-					if(sd->deal_item_amount[trade_i] != 0) {
-						idx = sd->deal_item_index[trade_i] - 2;
+					if(sd->trade.item_amount[trade_i] != 0) {
+						idx = sd->trade.item_index[trade_i] - 2;
 						if (itemdb_isdropable(sd->status.inventory[idx].nameid)) {
-							flag = pc_additem(target_sd, &sd->status.inventory[idx], sd->deal_item_amount[trade_i]);
+							flag = pc_additem(target_sd, &sd->status.inventory[idx], sd->trade.item_amount[trade_i]);
 							if(flag==0)
-								pc_delitem(sd, idx, sd->deal_item_amount[trade_i], 1, 0);
+								pc_delitem(sd, idx, sd->trade.item_amount[trade_i], 1, 0);
 							else
-								clif_additem(sd, idx, sd->deal_item_amount[trade_i], 0);
+								clif_additem(sd, idx, sd->trade.item_amount[trade_i], 0);
 						}
-						sd->deal_item_amount[trade_i] = 0;
+						sd->trade.item_amount[trade_i] = 0;
 					}
-					sd->deal_item_index[trade_i] = 0;
-					if(target_sd->deal_item_amount[trade_i] != 0) {
-						idx = target_sd->deal_item_index[trade_i] - 2;
+					sd->trade.item_index[trade_i] = 0;
+					if(target_sd->trade.item_amount[trade_i] != 0) {
+						idx = target_sd->trade.item_index[trade_i] - 2;
 						if (itemdb_isdropable(target_sd->status.inventory[idx].nameid)) {
-							flag = pc_additem(sd, &target_sd->status.inventory[idx], target_sd->deal_item_amount[trade_i]);
+							flag = pc_additem(sd, &target_sd->status.inventory[idx], target_sd->trade.item_amount[trade_i]);
 							if(flag==0)
-								pc_delitem(target_sd, idx, target_sd->deal_item_amount[trade_i], 1, 0);
+								pc_delitem(target_sd, idx, target_sd->trade.item_amount[trade_i], 1, 0);
 							else
-								clif_additem(target_sd, idx, target_sd->deal_item_amount[trade_i], 0);
+								clif_additem(target_sd, idx, target_sd->trade.item_amount[trade_i], 0);
 						}
-						target_sd->deal_item_amount[trade_i] = 0;
+						target_sd->trade.item_amount[trade_i] = 0;
 					}
-					target_sd->deal_item_index[trade_i] = 0;
+					target_sd->trade.item_index[trade_i] = 0;
 				}
 				// ---- of zenys
-				if(sd->deal_zeny || target_sd->deal_zeny) {
-					sd->status.zeny = sd->status.zeny - sd->deal_zeny + target_sd->deal_zeny;
-					target_sd->status.zeny = target_sd->status.zeny - target_sd->deal_zeny + sd->deal_zeny;
+				if(sd->trade.zeny || target_sd->trade.zeny) {
+					sd->status.zeny = sd->status.zeny - sd->trade.zeny + target_sd->trade.zeny;
+					target_sd->status.zeny = target_sd->status.zeny - target_sd->trade.zeny + sd->trade.zeny;
 					clif_updatestatus(sd, SP_ZENY);
 					clif_updatestatus(target_sd, SP_ZENY);
 				}
-				sd->deal_zeny = 0;
-				target_sd->deal_zeny = 0;
+				sd->trade.zeny = 0;
+				target_sd->trade.zeny = 0;
 				// clean up variables
 				sd->state.deal_locked = 0;
 				sd->state.deal_mode   = 0;
-				sd->trade_partner     = 0;
+				sd->trade.partner     = 0;
 				target_sd->state.deal_locked = 0;
 				target_sd->state.deal_mode   = 0;
-				target_sd->trade_partner     = 0;
+				target_sd->trade.partner     = 0;
 				clif_tradecompleted(sd,0);
 				clif_tradecompleted(target_sd,0);
 				// save both player to avoid crash: they always have no advantage/disadvantage between the 2 players

@@ -589,12 +589,10 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		if(sc->data[SC_MANU_DEF].timer != -1 && damage > 0 && src->type == BL_MOB) {
 			int i;
 			struct mob_data *md = (struct mob_data *)src;
-			if(md) {
-				for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
-					if(manuk_mob[i] == md->class_) {
-						damage = damage * sc->data[SC_MANU_DEF].val1 / 100;
-						break;
-					}
+			for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
+				if(manuk_mob[i] == md->class_) {
+					damage = damage * sc->data[SC_MANU_DEF].val1 / 100;
+					break;
 				}
 			}
 		}
@@ -603,12 +601,10 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		if(sc->data[SC_SPL_DEF].timer != -1 && damage > 0 && src->type == BL_MOB) {
 			int i;
 			struct mob_data *md = (struct mob_data *)src;
-			if(md) {
-				for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
-					if(splendide_mob[i] == md->class_) {
-						damage = damage * sc->data[SC_SPL_DEF].val1 / 100;
-						break;
-					}
+			for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
+				if(splendide_mob[i] == md->class_) {
+					damage = damage * sc->data[SC_SPL_DEF].val1 / 100;
+					break;
 				}
 			}
 		}
@@ -1544,7 +1540,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case MO_FINGEROFFENSIVE:	// 指弾
 			if(src_sd && battle_config.finger_offensive_type == 0) {
-				wd.div_ = src_sd->spiritball_old;
+				wd.div_ = src_sd->spiritball.old;
 			} else {
 				wd.div_ = 1;
 			}
@@ -3009,7 +3005,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 	if(src_sd) {
 		// 星のかけら、気球の適用
-		int hit_bonus  = src_sd->spiritball * 3 + src_sd->coin * 3 + src_sd->bonus_damage;
+		int hit_bonus  = src_sd->spiritball.num * 3 + src_sd->coin.num * 3 + src_sd->bonus_damage;
 		int hit_damage = hit_bonus + src_sd->star + src_sd->ranker_weapon_bonus;
 
 		if(skill_num == NJ_KUNAI) {	// 苦無投げ
@@ -4155,7 +4151,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 					ud->canact_tick = tick + delay;
 				}
 			}
-			if(skill_get_inf(spellid) & 0x02) {
+			if(skill_get_inf(spellid) & INF_TOGROUND) {
 				fail = skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
 			} else {
 				switch(skill_get_nk(spellid) & 3) {
@@ -4204,9 +4200,9 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	if(sd && target != &sd->bl && wd.flag&BF_WEAPON && (wd.damage > 0 || wd.damage2 > 0))
 	{
 		// SP消失
-		if(tsd && atn_rand()%100 < sd->sp_vanish_rate)
+		if(tsd && atn_rand()%100 < sd->sp_vanish.rate)
 		{
-			int sp = status_get_sp(target) * sd->sp_vanish_per/100;
+			int sp = status_get_sp(target) * sd->sp_vanish.per/100;
 			if(sp > 0)
 				pc_heal(tsd, 0, -sp);
 		}
@@ -4351,8 +4347,6 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		if(sc->data[SC_FREEZE].timer != -1 && (skillid == WZ_STORMGUST || skillid == WZ_FROSTNOVA || skillid == NJ_HYOUSYOURAKU))
 			return 0;
 	}
-	if(skillid == WZ_FROSTNOVA && dsrc->x == bl->x && dsrc->y == bl->y)	// 使用スキルがフロストノヴァで、dsrcとblが同じ場所なら何もしない
-		return 0;
 	if(sd && sd->chatID)	// 発動元がPCでチャット中なら何もしない
 		return 0;
 
@@ -4444,7 +4438,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		case MO_CHAINCOMBO:	// 連打掌
 			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
 			if(damage < status_get_hp(bl)) {
-				if(pc_checkskill(sd, MO_COMBOFINISH) > 0 && sd->spiritball > 0) { // 猛龍拳取得＆気球保持時は+300ms
+				if(pc_checkskill(sd, MO_COMBOFINISH) > 0 && sd->spiritball.num > 0) { // 猛龍拳取得＆気球保持時は+300ms
 					delay += 300 * battle_config.combo_delay_rate /100;
 					// コンボ入力時間の最低保障追加
 					if(delay < battle_config.combo_delay_lower_limits)
@@ -4462,9 +4456,9 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			if(damage < status_get_hp(bl)) {
 				// 阿修羅覇凰拳取得＆気球4個保持＆爆裂波動状態時は+300ms
 				// 伏虎拳取得時も+300ms
-				if((pc_checkskill(sd, MO_EXTREMITYFIST) > 0 && sd->spiritball >= 4 && sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1) ||
-				   (pc_checkskill(sd, CH_TIGERFIST) > 0 && sd->spiritball > 0) ||
-				   (pc_checkskill(sd, CH_CHAINCRUSH) > 0 && sd->spiritball > 1))
+				if((pc_checkskill(sd, MO_EXTREMITYFIST) > 0 && sd->spiritball.num >= 4 && sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1) ||
+				   (pc_checkskill(sd, CH_TIGERFIST) > 0 && sd->spiritball.num > 0) ||
+				   (pc_checkskill(sd, CH_CHAINCRUSH) > 0 && sd->spiritball.num > 1))
 				{
 					delay += 300 * battle_config.combo_delay_rate /100;
 					// コンボ入力時間最低保障追加
@@ -4498,7 +4492,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
 			if(damage < status_get_hp(bl)) {
 				// 伏虎拳習得または阿修羅習得＆気球1個保持＆爆裂波動時ディレイ
-				if(pc_checkskill(sd, CH_TIGERFIST) > 0 || (pc_checkskill(sd, MO_EXTREMITYFIST) > 0 && sd->spiritball >= 1 && sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1))
+				if(pc_checkskill(sd, CH_TIGERFIST) > 0 || (pc_checkskill(sd, MO_EXTREMITYFIST) > 0 && sd->spiritball.num >= 1 && sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1))
 				{
 					delay += (600+(skilllv/5)*200) * battle_config.combo_delay_rate /100;
 					// コンボ入力時間最低保障追加
@@ -4675,7 +4669,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			if(sd && bl->type == BL_MOB && unit_isdead(bl) && attack_type&BF_MAGIC)
 			{
 				int level = pc_checkskill(sd,HW_SOULDRAIN);
-				if(level > 0 && skill_get_inf(skillid) & 0x01 && sd && sd->ud.skilltarget == bl->id) {
+				if(level > 0 && skill_get_inf(skillid) & INF_TOCHARACTER && sd && sd->ud.skilltarget == bl->id) {
 					int sp = 0;
 					clif_skill_nodamage(src,bl,HW_SOULDRAIN,level,1);
 					sp = (status_get_lv(bl))*(95+15*level)/100;

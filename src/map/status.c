@@ -326,7 +326,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_def2        = sd->def2;
 	b_flee2       = sd->flee2;
 	b_critical    = sd->critical;
-	b_attackrange = sd->attackrange;
+	b_attackrange = sd->range.attackrange;
 	b_matk1       = sd->matk1;
 	b_matk2       = sd->matk2;
 	b_mdef        = sd->mdef;
@@ -404,37 +404,37 @@ L_RECALC:
 
 	memset(sd->paramb,0,sizeof(sd->paramb));
 	memset(sd->parame,0,sizeof(sd->parame));
-	sd->hit           = 0;
-	sd->flee          = 0;
-	sd->flee2         = 0;
-	sd->critical      = 0;
-	sd->aspd          = 0;
-	sd->watk          = 0;
-	sd->def           = 0;
-	sd->mdef          = 0;
-	sd->watk2         = 0;
-	sd->def2          = 0;
-	sd->mdef2         = 0;
-	sd->status.max_hp = 0;
-	sd->status.max_sp = 0;
-	sd->attackrange   = 0;
-	sd->attackrange_  = 0;
-	sd->atk_ele       = 0;
-	sd->def_ele       = 0;
-	sd->star          = 0;
-	sd->overrefine    = 0;
-	sd->matk1         = 0;
-	sd->matk2         = 0;
-	sd->speed         = DEFAULT_WALK_SPEED;
-	sd->hprate        = battle_config.hp_rate;
-	sd->sprate        = battle_config.sp_rate;
-	sd->castrate      = 100;
-	sd->dsprate       = 100;
-	sd->base_atk      = 0;
-	sd->arrow_atk     = 0;
-	sd->arrow_ele     = 0;
-	sd->arrow_hit     = 0;
-	sd->arrow_range   = 0;
+	sd->hit                 = 0;
+	sd->flee                = 0;
+	sd->flee2               = 0;
+	sd->critical            = 0;
+	sd->aspd                = 0;
+	sd->watk                = 0;
+	sd->def                 = 0;
+	sd->mdef                = 0;
+	sd->watk2               = 0;
+	sd->def2                = 0;
+	sd->mdef2               = 0;
+	sd->status.max_hp       = 0;
+	sd->status.max_sp       = 0;
+	sd->range.attackrange   = 0;
+	sd->range.attackrange_  = 0;
+	sd->atk_ele             = 0;
+	sd->def_ele             = 0;
+	sd->star                = 0;
+	sd->overrefine          = 0;
+	sd->matk1               = 0;
+	sd->matk2               = 0;
+	sd->speed               = DEFAULT_WALK_SPEED;
+	sd->hprate              = battle_config.hp_rate;
+	sd->sprate              = battle_config.sp_rate;
+	sd->castrate            = 100;
+	sd->dsprate             = 100;
+	sd->base_atk            = 0;
+	sd->arrow_atk           = 0;
+	sd->arrow_ele           = 0;
+	sd->arrow_hit           = 0;
+	sd->arrow_range         = 0;
 	sd->nhealhp = sd->nhealsp = sd->nshealhp = sd->nshealsp = sd->nsshealhp = sd->nsshealsp = 0;
 	memset(sd->addele,0,sizeof(sd->addele));
 	memset(sd->addrace,0,sizeof(sd->addrace));
@@ -558,10 +558,8 @@ L_RECALC:
 	memset(&sd->autospell,0,sizeof(sd->autospell));
 	memset(&sd->itemheal_rate,0,sizeof(sd->itemheal_rate));
 	memset(&sd->autoraise,0,sizeof(sd->autoraise));
-	sd->hp_vanish_rate    = 0;
-	sd->hp_vanish_per     = 0;
-	sd->sp_vanish_rate    = 0;
-	sd->sp_vanish_per     = 0;
+	memset(&sd->hp_vanish,0,sizeof(sd->hp_vanish));
+	memset(&sd->sp_vanish,0,sizeof(sd->sp_vanish));
 	sd->bonus_damage      = 0;
 	sd->curse_by_muramasa = 0;
 	memset(sd->loss_equip_rate_when_die,0,sizeof(sd->loss_equip_rate_when_die));
@@ -571,8 +569,8 @@ L_RECALC:
 	memset(sd->break_myequip_rate_when_hit,0,sizeof(sd->break_myequip_rate_when_hit));
 	sd->loss_equip_flag = 0;
 	sd->short_weapon_damege_rate = sd->long_weapon_damege_rate = 0;
-	sd->add_attackrange = 0;
-	sd->add_attackrange_rate = 100;
+	sd->range.add_attackrange = 0;
+	sd->range.add_attackrange_rate = 100;
 	sd->special_state.item_no_use = 0;
 	sd->skill_delay_rate = 0;
 	memset(&sd->fix_status,0,sizeof(sd->fix_status));
@@ -676,7 +674,7 @@ L_RECALC:
 						if(ranking_get_id2rank(*((int *)(&sd->status.inventory[idx].card[2])), RK_BLACKSMITH))
 							sd->ranker_weapon_bonus_ = 10;
 					}
-					sd->attackrange_ += sd->inventory_data[idx]->range;
+					sd->range.attackrange_ += sd->inventory_data[idx]->range;
 					sd->state.lr_flag = 1;
 					if(calclimit == 2)
 						run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);
@@ -698,7 +696,7 @@ L_RECALC:
 						if(ranking_get_id2rank(*((int *)(&sd->status.inventory[idx].card[2])),RK_BLACKSMITH))
 							sd->ranker_weapon_bonus = 10;
 					}
-					sd->attackrange += sd->inventory_data[idx]->range;
+					sd->range.attackrange += sd->inventory_data[idx]->range;
 					if(calclimit == 2)
 						run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);
 					run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
@@ -728,12 +726,12 @@ L_RECALC:
 
 	sd->def += (refinedef+50)/100;
 
-	if(sd->attackrange < 1)  sd->attackrange  = 1;
-	if(sd->attackrange_ < 1) sd->attackrange_ = 1;
-	if(sd->attackrange < sd->attackrange_)
-		sd->attackrange = sd->attackrange_;
+	if(sd->range.attackrange < 1)  sd->range.attackrange  = 1;
+	if(sd->range.attackrange_ < 1) sd->range.attackrange_ = 1;
+	if(sd->range.attackrange < sd->range.attackrange_)
+		sd->range.attackrange = sd->range.attackrange_;
 	if(sd->status.weapon == WT_BOW)
-		sd->attackrange += sd->arrow_range;
+		sd->range.attackrange += sd->arrow_range;
 	if(wele > 0)
 		sd->atk_ele = wele;
 	if(wele_ > 0)
@@ -1404,12 +1402,12 @@ L_RECALC:
 	if((skill = pc_checkskill(sd,AC_VULTURE)) > 0) {	// ワシの目
 		sd->hit += skill;
 		if(sd->status.weapon == WT_BOW)
-			sd->attackrange += skill;
+			sd->range.attackrange += skill;
 	}
 	if((skill = pc_checkskill(sd,GS_SNAKEEYE)) > 0) {	// スネークアイ
 		if(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE)
 		{
-			sd->attackrange += skill;
+			sd->range.attackrange += skill;
 			sd->hit += skill;
 		}
 	}
@@ -1538,14 +1536,14 @@ L_RECALC:
 	}
 
 	// bAtkRange2,bAtkRangeRate2の射程計算
-	sd->attackrange  += sd->add_attackrange;
-	sd->attackrange_ += sd->add_attackrange;
-	sd->attackrange  = sd->attackrange  * sd->add_attackrange_rate / 100;
-	sd->attackrange_ = sd->attackrange_ * sd->add_attackrange_rate / 100;
-	if(sd->attackrange < 1)  sd->attackrange  = 1;
-	if(sd->attackrange_ < 1) sd->attackrange_ = 1;
-	if(sd->attackrange < sd->attackrange_)
-		sd->attackrange = sd->attackrange_;
+	sd->range.attackrange  += sd->range.add_attackrange;
+	sd->range.attackrange_ += sd->range.add_attackrange;
+	sd->range.attackrange  = sd->range.attackrange  * sd->range.add_attackrange_rate / 100;
+	sd->range.attackrange_ = sd->range.attackrange_ * sd->range.add_attackrange_rate / 100;
+	if(sd->range.attackrange < 1)  sd->range.attackrange  = 1;
+	if(sd->range.attackrange_ < 1) sd->range.attackrange_ = 1;
+	if(sd->range.attackrange < sd->range.attackrange_)
+		sd->range.attackrange = sd->range.attackrange_;
 
 	blv = (sd->status.base_level > 0)? sd->status.base_level - 1: 0;
 
@@ -1611,9 +1609,9 @@ L_RECALC:
 			sd->nshealhp = 0x7fff;
 	}
 	if((skill = pc_checkskill(sd,TK_HPTIME)) > 0) {	// 安らかな休息
-		sd->tk_nhealhp = skill*30 + (sd->status.max_hp*skill/500);
-		if(sd->tk_nhealhp > 0x7fff)
-			sd->tk_nhealhp = 0x7fff;
+		sd->regen.tk_hp = skill*30 + (sd->status.max_hp*skill/500);
+		if(sd->regen.tk_hp > 0x7fff)
+			sd->regen.tk_hp = 0x7fff;
 	}
 	if(sd->sc.data[SC_BERSERK].timer != -1) {
 		sd->nhealhp = 0;
@@ -1642,9 +1640,9 @@ L_RECALC:
 			sd->nsshealsp = 0x7fff;
 	}
 	if((skill = pc_checkskill(sd,TK_SPTIME)) > 0) { // 楽しい休息
-		sd->tk_nhealsp = skill*3 + (sd->status.max_sp*skill/500);
-		if(sd->tk_nhealsp > 0x7fff)
-			sd->tk_nhealsp = 0x7fff;
+		sd->regen.tk_sp = skill*3 + (sd->status.max_sp*skill/500);
+		if(sd->regen.tk_sp > 0x7fff)
+			sd->regen.tk_sp = 0x7fff;
 	}
 	if(sd->hprecov_rate != 100) {
 		sd->nhealhp = sd->nhealhp*sd->hprecov_rate/100;
@@ -2306,11 +2304,11 @@ L_RECALC:
 #endif
 	}
 
-	if( memcmp(b_skill,sd->status.skill,sizeof(sd->status.skill)) || b_attackrange != sd->attackrange ) {
+	if( memcmp(b_skill,sd->status.skill,sizeof(sd->status.skill)) || b_attackrange != sd->range.attackrange ) {
 		int type;
 		for(i=0; i<MAX_PCSKILL; i++) {
 			// カードスキルをロストしたとき即時発動型なら状態異常を解除
-			if(b_skill[i].flag == 1 && b_skill[i].lv > 0 && sd->status.skill[i].lv <= 0 && skill_get_inf(i) & 0x04) {
+			if(b_skill[i].flag == 1 && b_skill[i].lv > 0 && sd->status.skill[i].lv <= 0 && skill_get_inf(i) & INF_TOME) {
 				type = GetSkillStatusChangeTable(i);
 				if(type >= 0 && sd->sc.data[type].timer != -1)
 					status_change_end(&sd->bl, type, -1);
@@ -2359,7 +2357,7 @@ L_RECALC:
 		clif_updatestatus(sd,SP_MDEF1);
 	if(b_mdef2 != sd->mdef2)
 		clif_updatestatus(sd,SP_MDEF2);
-	if(b_attackrange != sd->attackrange)
+	if(b_attackrange != sd->range.attackrange)
 		clif_updatestatus(sd,SP_ATTACKRANGE);
 	if(b_max_hp != sd->status.max_hp)
 		clif_updatestatus(sd,SP_MAXHP);
@@ -2484,7 +2482,7 @@ int status_get_range(struct block_list *bl)
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
 		return mob_db[((struct mob_data *)bl)->class_].range;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
-		return ((struct map_session_data *)bl)->attackrange;
+		return ((struct map_session_data *)bl)->range.attackrange;
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
 		return mob_db[((struct pet_data *)bl)->class_].range;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
@@ -5873,6 +5871,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 					md->target_id = 0;
 			}
 			break;
+		case SC_ANGELUS:			/* アンゼルス */
+			sc->opt2 |= OPT2_ANGELUS;
+			opt_flag = 1;
+			break;
 		case SC_DPOISON:
 			sc->opt2 |= OPT2_HEAVYPOISON;
 			opt_flag = 1;
@@ -6620,6 +6622,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				sc->opt2 &= ~OPT2_BLIND;
 				opt_flag = 1;
 			}
+			break;
+		case SC_ANGELUS:			/* アンゼルス */
+			sc->opt2 &= ~OPT2_ANGELUS;
+			opt_flag = 1;
 			break;
 		case SC_DPOISON:
 			sc->opt2 &= ~OPT2_HEAVYPOISON;
