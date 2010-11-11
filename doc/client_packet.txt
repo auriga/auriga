@@ -2338,10 +2338,9 @@ R 0824 <result>.w <itemID>.w
 	result=7 ?
 	それ以外の値は無視
 	未調査
-S 0825 <len>.w <Version>.l <clienttype>.B <ID>.24B <dummy>.27B <MacAdress>.17B <IP>.15 <t1>.?B
+S 0825 <len>.w <Version>.l <clienttype>.B <ID>.24B <dummy>.27B <MacAdress>.17B <IP>.15 <token>.?B
 	ログイン系
 	SSOシステム関連？
-	<t1>.?Bはトークン
 	未調査
 R 0826 <result>.w
 	ログイン系
@@ -2373,4 +2372,6 @@ S 0844
 S 084a
 	未調査
 R 084b <?>.l <?>.w <?>.w <?>.B <?>.w <?>.w <?>.B <?>.B <?>.w
+	未調査
+S 0852
 	未調査

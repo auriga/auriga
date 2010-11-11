@@ -435,9 +435,9 @@ struct map_session_data {
 
 	struct {
 		int hp,sp;
-		unsigned int hptick,sptick,spirithptick,spiritsptick;
+		int hptick,sptick,spirithptick,spiritsptick;
 		int tk_hp,tk_sp;	// 安らかな休息,楽しい休息
-		unsigned int resthptick,restsptick;
+		int resthptick,restsptick;
 	} regen;
 
 	short view_class;

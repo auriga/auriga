@@ -11182,6 +11182,7 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 		if(!map[bl->m].flag.rain) {
 			// 水場判定
 			if( !map_getcell(bl->m,bl->x,bl->y,CELL_CHKWATER) &&
+				map_find_skill_unit_oncell(bl,bl->x,bl->y,SA_LANDPROTECTOR,NULL) &&
 			    hd->sc.data[SC_DELUGE].timer == -1 &&
 			    hd->sc.data[SC_SUITON].timer == -1 )
 				return 0;
@@ -11281,6 +11282,7 @@ static int skill_check_condition2_merc(struct merc_data *mcd, struct skill_condi
 		if(!map[bl->m].flag.rain) {
 			// 水場判定
 			if( !map_getcell(bl->m,bl->x,bl->y,CELL_CHKWATER) &&
+				map_find_skill_unit_oncell(bl,bl->x,bl->y,SA_LANDPROTECTOR,NULL) &&
 			    mcd->sc.data[SC_DELUGE].timer == -1 &&
 			    mcd->sc.data[SC_SUITON].timer == -1 )
 				return 0;
@@ -12201,6 +12203,8 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 	if(skillid == SA_LANDPROTECTOR) {
 		if(alive && unit->group->skill_id == SA_LANDPROTECTOR)
 			(*alive)=0;
+		if(alive && unit->group->skill_id == WZ_ICEWALL)	// アイスウォールがあるセルにはランドプロテクターが出ない
+			(*alive)=0;
 		switch(unit->group->skill_id) {
 		case HT_SKIDTRAP:	// スキッドトラップ
 		case HT_LANDMINE:	// ランドマイン
@@ -12238,6 +12242,10 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 	} else {
 		if(alive && unit->group->skill_id == SA_LANDPROTECTOR)
 			(*alive)=0;
+		if(alive && unit->group->skill_id == WZ_ICEWALL) {	// アイスウォールがあるセルはオブジェクトスキルが出ない
+			if(skillid != AL_TELEPORT)
+				(*alive)=0;
+		}
 	}
 	return 0;
 }
@@ -12709,6 +12717,7 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case WZ_METEOR:
 		case WZ_VERMILION:
 		case WZ_ICEWALL:
+		case WZ_FROSTNOVA:
 		case WZ_STORMGUST:
 		case WZ_HEAVENDRIVE:
 		case WZ_QUAGMIRE:
@@ -12754,10 +12763,30 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case HW_GRAVITATION:
 		case GS_DESPERADO:
 		case GS_GROUNDDRIFT:
+		case NJ_TATAMIGAESHI:
 		case NJ_KAENSIN:
 		case NJ_BAKUENRYU:
 		case NJ_SUITON:
+		case NJ_HYOUSYOURAKU:
+		case NJ_RAIGEKISAI:
 		case NPC_EVILLAND:
+		case GC_POISONSMOKE:
+		case AB_EPICLESIS:
+		case WL_EARTHSTRAIN:
+		case RA_ELECTRICSHOCKER:
+		case RA_CLUSTERBOMB:
+		case RA_MAGENTATRAP:
+		case RA_COBALTTRAP:
+		case RA_MAIZETRAP:
+		case RA_VERDURETRAP:
+		case RA_FIRINGTRAP:
+		case RA_ICEBOUNDTRAP:
+		case NC_NEUTRALBARRIER:
+		case NC_STEALTHFIELD:
+		case MA_SKIDTRAP:
+		case MA_LANDMINE:
+		case MA_SANDMAN:
+		case MA_FREEZINGTRAP:
 			skill_delunit(unit);
 			break;
 	}
