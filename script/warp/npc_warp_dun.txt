@@ -1159,7 +1159,7 @@ abbey03.gat,119,6,0	warp	namelesswarp4006	1,1,abbey02.gat,149,285
 // mosk_in.gat		モスコビア 内部
 //==============================================================
 //深い森⇒ババヤガの家
-mosk_dun02.gat,53,220,0	warp	moscoviawarp0101	1,1,mosk_in.gat,215,41
+//mosk_dun02.gat,53,220,0	warp	moscoviawarp0101	1,1,mosk_in.gat,215,41
 
 //森⇒モスコビアフィールド
 mosk_dun01.gat,189,42,0	warp	moscoviawarp0501	1,1,mosk_fild02.gat,190,254
