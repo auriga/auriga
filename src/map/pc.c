@@ -7947,7 +7947,7 @@ int pc_break_equip(struct map_session_data *sd, unsigned short where)
 
 	switch(where) {
 		case LOC_RARM:
-			if((sd->weapontype1 >= WT_1HAXE && sd->weapontype1 <= WT_STAFF) || sd->weapontype1 == WT_BOOK)
+			if((sd->weapontype1 >= WT_1HAXE && sd->weapontype1 <= WT_STAFF) || sd->weapontype1 == WT_BOOK || sd->weapontype1 == WT_2HSTAFF)
 				return 0;
 			if(sd->sc.data[SC_CP_WEAPON].timer != -1)
 				return 0;

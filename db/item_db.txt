@@ -737,8 +737,8 @@
 1469,Longinus's_Spear,ロンギヌスの槍,9,20,,2500,180,,3,0,16514,2,34,4,48,5,1,{},{ bonus bAtkEle,7; bonus2 bAddRace,7,10; bonus2 bAddRace,8,10; }
 1470,Brionac,ブリューナク,9,20,,3000,190,,3,0,16514,2,34,4,48,5,1,{},{ bonus bAtkEle,6; skill 28,5; bonus3 bAutoSpell,13,3,1000; }
 1471,Hell_Fire,ヘルファイア,9,20,,3500,200,,3,0,16514,2,34,4,48,5,1,{},{ bonus bStr,3; bonus bAtkEle,3; bonus3 bAutoSpell,17,3,1000; }
-1472,Staff_Of_Soul,スタッフオブソウル,9,20,,1400,25,,1,0,134283780,2,34,3,73,10,1,{},{ bonus bInt,5; bonus bAgi,2; bonus bMatkRate,15; if(equippeditem(2677)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastrate,-getequiprefinerycnt(4); } }
-1473,Wizardy_Staff,ウィザードスタッフ,9,20,,2400,120,,1,0,134283780,2,34,4,90,10,1,{},{ bonus bInt,6; bonus bDex,2; bonus bMatkRate,15; if(equippeditem(2677)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastrate,-getequiprefinerycnt(4); } }
+1472,Staff_Of_Soul,スタッフオブソウル,9,20,,1400,25,,1,0,134283780,2,34,3,73,23,1,{},{ bonus bInt,5; bonus bAgi,2; bonus bMatkRate,15; if(equippeditem(2677)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastrate,-getequiprefinerycnt(4); } }
+1473,Wizardy_Staff,ウィザードスタッフ,9,20,,2400,120,,1,0,134283780,2,34,4,90,23,1,{},{ bonus bInt,6; bonus bDex,2; bonus bMatkRate,15; if(equippeditem(2677)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastrate,-getequiprefinerycnt(4); } }
 1474,Gae_Bolg,ゲイボルグ,9,20,,2000,160,,3,0,16514,2,34,4,60,5,1,{},{ bonus2 bIgnoreDefRace,9,100; bonus2 bAddRace,10,10; }
 1475,Horseback_Lance,馬上槍,9,,,,,,3,0,16514,2,34,4,1,5,1,{},{}
 1476,Crescent_Scythe_,クレセントサイダー,9,20,,2500,180,,3,1,16514,2,34,4,48,5,1,{},{ bonus bCritical,30; bonus bHit,10; }
@@ -1060,13 +1060,13 @@
 1982,Phenomena_Whip,かわった者の鞭,5,,,,160,,2,0,1048576,2,2,4,,14,,{},{}
 1983,Rante_C,ランテ,5,,,0,170,,2,0,1048576,2,2,,1,14,,{},{ bonus2 bAddSize,0,40; bonus2 bAddSize,1,40; bonus2 bAddSize,2,40; }
 
-2000,Destruction_Rod,スタッフオブディストラクション,5,20,,2500,130,,1,1,512,2,34,4,80,10,1,{},{ bonus bMatk2Rate,15; bonus bMatkRate,10+getequiprefinerycnt(4)/2; bonus bInt,3; bonus bAgi,10; bonus2 bAddFixCastRate,366,50; bonus3 bRevAutoSpell,84,5,100*getequiprefinerycnt(4); }
-2001,Divine_Cross,ディバインクロス,5,20,,1500,120,,1,0,33024,2,34,4,70,10,1,{},{ bonus bMatk2Rate,15; bonus bDex,4; bonus2 bSubRace,1,15; bonus2 bMagicSubRace,1,15; bonus2 bSubRace,6,15; bonus2 bMagicSubRace,6,15; bonus bAtkEle,6; if(getequipid(7)==2677 || getequipid(8)==2677) { bonus bMatkRate,10; bonus bDex,2; bonus2 bSubRace,1,10; bonus2 bMagicSubRace,1,10; bonus2 bSubRace,6,10; bonus2 bMagicSubRace,6,10; } }
-2002,Krieger_Twohand_Staff1,グロリアスウィザードスタッフ,5,,,0,70,,1,0,134316820,2,34,4,80,10,1,{},{}
-2003,Destruction_Rod_M,スタッフオブディストラックション,5,,,2500,130,,1,1,512,2,34,4,80,10,,{},{ bonus bMatk2Rate,15; bonus bMatkRate,10+getequiprefinerycnt(4)/2; bonus bInt,3; bonus bAgi,10; bonus2 bAddFixCastRate,366,50; bonus3 bRevAutoSpell,84,5,100*getequiprefinerycnt(4); }
-2004,Unknown_Item,クロノス,5,,,1000,30,,1,0,66052,2,34,4,50,10,1,{},{ bonus bMatk2Rate,15; bonus bMatkRate,5; bonus bInt,3; bonus bMaxHP,300; bonus bInt,getequiprefinerycnt(3)/2; bonus bMaxHP,50*getequiprefinerycnt(3)/2; bonus3 bAutoActiveMagic,2004,1000,5000; if(checkactiveitem()) { misceffect 9,""; bonus bMatkRate,12; bonus bUseSPrate,20; } /*暫定発動率10%*/ }
-2005,Unknown_Item,スタッフオブティアー,5,,,1000,30,,1,1,33040,2,34,3,50,10,1,{},{ bonus bMatk2Rate,15; bonus bInt,6; bonus bVit,2; bonus bAtkEle,6; bonus bMatkRate,getequiprefinerycnt(3)/2; /*ヒール使用時低確率でMSPを 200回復*/ }
-2006,Unknown_Item,光の守護の杖,5,,,1900,80,,1,0,66052,2,34,,90,10,1,{},{ bonus bInt,6; bonus bMaxSP,150; bonus bMatk2Rate,15; bonus bMatkRate,3; }
+2000,Destruction_Rod,スタッフオブディストラクション,5,20,,2500,130,,1,1,512,2,34,4,80,23,1,{},{ bonus bMatk2Rate,15; bonus bMatkRate,10+getequiprefinerycnt(4)/2; bonus bInt,3; bonus bAgi,10; bonus2 bAddFixCastRate,366,50; bonus3 bRevAutoSpell,84,5,100*getequiprefinerycnt(4); }
+2001,Divine_Cross,ディバインクロス,5,20,,1500,120,,1,0,33024,2,34,4,70,23,1,{},{ bonus bMatk2Rate,15; bonus bDex,4; bonus2 bSubRace,1,15; bonus2 bMagicSubRace,1,15; bonus2 bSubRace,6,15; bonus2 bMagicSubRace,6,15; bonus bAtkEle,6; if(getequipid(7)==2677 || getequipid(8)==2677) { bonus bMatkRate,10; bonus bDex,2; bonus2 bSubRace,1,10; bonus2 bMagicSubRace,1,10; bonus2 bSubRace,6,10; bonus2 bMagicSubRace,6,10; } }
+2002,Krieger_Twohand_Staff1,グロリアスウィザードスタッフ,5,,,0,70,,1,0,134316820,2,34,4,80,23,1,{},{}
+2003,Destruction_Rod_M,スタッフオブディストラックション,5,,,2500,130,,1,1,512,2,34,4,80,23,,{},{ bonus bMatk2Rate,15; bonus bMatkRate,10+getequiprefinerycnt(4)/2; bonus bInt,3; bonus bAgi,10; bonus2 bAddFixCastRate,366,50; bonus3 bRevAutoSpell,84,5,100*getequiprefinerycnt(4); }
+2004,Unknown_Item,クロノス,5,,,1000,30,,1,0,66052,2,34,4,50,23,1,{},{ bonus bMatk2Rate,15; bonus bMatkRate,5; bonus bInt,3; bonus bMaxHP,300; bonus bInt,getequiprefinerycnt(3)/2; bonus bMaxHP,50*getequiprefinerycnt(3)/2; bonus3 bAutoActiveMagic,2004,1000,5000; if(checkactiveitem()) { misceffect 9,""; bonus bMatkRate,12; bonus bUseSPrate,20; } /*暫定発動率10%*/ }
+2005,Unknown_Item,スタッフオブティアー,5,,,1000,30,,1,1,33040,2,34,3,50,23,1,{},{ bonus bMatk2Rate,15; bonus bInt,6; bonus bVit,2; bonus bAtkEle,6; bonus bMatkRate,getequiprefinerycnt(3)/2; /*ヒール使用時低確率でMSPを 200回復*/ }
+2006,Unknown_Item,光の守護の杖,5,,,1900,80,,1,0,66052,2,34,,90,23,1,{},{ bonus bInt,6; bonus bMaxSP,150; bonus bMatk2Rate,15; bonus bMatkRate,3; }
 
 2101,Guard,ガード,4,500,,300,,3,,0,1000333311,2,32,,0,1,1,{},{}
 2102,Guard_,ガード,4,500,,300,,3,,1,1000333311,2,32,,0,1,1,{},{}
@@ -4840,12 +4840,12 @@
 13151,The_Cyclone,サイクロン,15,17500,,700,130,,9,1,268435456,2,34,2,24,18,1,{},{ bonus bHit,10; bonus bCritical,10; }
 13152,The_Cyclone_,サイクロン,15,17500,,700,130,,9,2,268435456,2,34,2,24,18,1,{},{ bonus bHit,10; bonus bCritical,10; }
 13153,Dusk,ダスク,15,23500,,750,160,,9,1,268435456,2,34,2,56,18,1,{},{ bonus bHit,10; bonus bCritical,10; }
-13154,Rolling_Stone,ローリングストーン,15,12000,,900,135,,9,1,268435456,2,34,1,14,19,1,{},{ bonus bSplashRange,1; }
-13155,Black_Rose,ブラックローズ,15,32000,,900,180,,9,1,268435456,2,34,2,35,19,1,{},{ bonus bSplashRange,1; }
-13156,Gate_Keeper,ゲートキーパー,15,56000,,1000,210,,9,0,268435456,2,34,2,55,19,1,{},{ bonus bSplashRange,1; bonus3 bAutoSpell,520,6,500; }
-13157,Drifter,ドリフター,15,80000,,2300,50,,9,1,268435456,2,34,2,55,20,1,{},{}
-13158,Butcher,ブッチャー,15,130000,,2500,75,,9,0,268435456,2,34,3,68,20,1,{},{ bonus2 bCriticalRace,2,10; }
-13159,Butcher_,ブッチャー,15,130000,,2500,75,,9,1,268435456,2,34,3,68,20,1,{},{ bonus2 bCriticalRace,2,10; }
+13154,Rolling_Stone,ローリングストーン,15,12000,,900,135,,9,1,268435456,2,34,1,14,20,1,{},{ bonus bSplashRange,1; }
+13155,Black_Rose,ブラックローズ,15,32000,,900,180,,9,1,268435456,2,34,2,35,20,1,{},{ bonus bSplashRange,1; }
+13156,Gate_Keeper,ゲートキーパー,15,56000,,1000,210,,9,0,268435456,2,34,2,55,20,1,{},{ bonus bSplashRange,1; bonus3 bAutoSpell,520,6,500; }
+13157,Drifter,ドリフター,15,80000,,2300,50,,9,1,268435456,2,34,2,55,19,1,{},{}
+13158,Butcher,ブッチャー,15,130000,,2500,75,,9,0,268435456,2,34,3,68,19,1,{},{ bonus2 bCriticalRace,2,10; }
+13159,Butcher_,ブッチャー,15,130000,,2500,75,,9,1,268435456,2,34,3,68,19,1,{},{ bonus2 bCriticalRace,2,10; }
 13160,Destroyer,デストロイヤー,15,110000,,1200,220,,9,0,268435456,2,34,2,52,21,1,{},{ bonus bBreakArmorRate,300; }
 13161,Destroyer_,デストロイヤー,15,110000,,1200,220,,9,1,268435456,2,34,2,52,21,1,{},{ bonus bBreakArmorRate,300; }
 13162,Inferno,インフェルノ,15,230000,,1250,280,,9,1,268435456,2,34,2,65,21,1,{},{}
@@ -4853,18 +4853,18 @@
 13164,Long_Barrel_,ロングバレル,15,40000,,1000,150,,9,1,268435456,2,34,3,70,18,1,{},{ bonus bHit,10; bonus bCritical,20; bonus bAspdAddRate,-3; bonus3 bAutoSpell,512,5,100; }
 13165,Jungle_Carbine,ジャングルカービン,15,56000,,700,170,,9,0,268435456,2,34,3,70,18,1,{},{ bonus bCritical,4; bonus bAspdAddRate,10; bonus bHit,-readparam(bDex)/3; }
 13166,Jungle_Carbine_,ジャングルカービン,15,56000,,700,170,,9,1,268435456,2,34,3,70,18,1,{},{ bonus bCritical,4; bonus bAspdAddRate,10; bonus bHit,-readparam(bDex)/3; }
-13167,Gate_KeeperDD,ゲートキーパーDD,15,20,,1300,200,,9,0,268435456,2,34,4,70,19,1,{},{ bonus bSplashRange,1; bonus bDex,1; bonus3 bAutoSpell,520,6,300; bonus bDef,getequiprefinerycnt(4); }
-13168,Thunder_P,THUNDER-P,15,76000,,700,80,,9,1,268435456,2,34,3,3,19,1,{},{ bonus bSplashRange,1; bonus bHit,-5; bonus bAspdAddRate,20; }
-13169,Thunder_P_,THUNDER-P,15,76000,,700,80,,9,2,268435456,2,34,3,3,19,1,{},{ bonus bSplashRange,1; bonus bHit,-5; bonus bAspdAddRate,20; }
+13167,Gate_KeeperDD,ゲートキーパーDD,15,20,,1300,200,,9,0,268435456,2,34,4,70,20,1,{},{ bonus bSplashRange,1; bonus bDex,1; bonus3 bAutoSpell,520,6,300; bonus bDef,getequiprefinerycnt(4); }
+13168,Thunder_P,THUNDER-P,15,76000,,700,80,,9,1,268435456,2,34,3,3,20,1,{},{ bonus bSplashRange,1; bonus bHit,-5; bonus bAspdAddRate,20; }
+13169,Thunder_P_,THUNDER-P,15,76000,,700,80,,9,2,268435456,2,34,3,3,20,1,{},{ bonus bSplashRange,1; bonus bHit,-5; bonus bAspdAddRate,20; }
 13170,Lever_Action_Rifle,レバーアクションライフル,15,20,,770,138,,9,2,268435456,2,34,3,70,18,1,{},{ bonus bHit,20; bonus bCritical,50; bonus bAspdAddRate,-5; }
 13171,Soldier_Rifle,ソルジャーライフル,15,20,,0,50,,9,0,268435456,2,34,3,80,18,1,{},{ bonus bDex,2; bonus bHit,10; bonus bCritical,10; bonus2 bAddRace,7,75; bonus2 bIgnoreDefRace,7,20; bonus2 bCastRate,512,25; bonus bUnbreakableWeapon,0; }
-13172,Soldier_Gatling_Gun,ソルジャーガトリングガン,15,20,,0,80,,9,0,268435456,2,34,3,80,20,1,{},{bonus bDex,2; bonus2 bAddRace,7,35; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; bonus4 bAutoActiveItem,13172,500,6000,EAS_ATTACK; if(checkactiveitem()){ misceffect 220,""; bonus bBaseAtk,80; bonus2 bHPPenaltyTime,1000,120; /*発動率暫定*/ }}
-13173,Soldier_Shotgun,ソルジャーショットガン,15,20,,0,100,,9,0,268435456,2,34,3,80,19,1,{},{ bonus bDex,2; bonus bSplashRange,1; bonus2 bAddRace,7,55; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; bonus4 bAutoActiveItem,13173,500,6000,EAS_ATTACK; if(checkactiveitem()){ misceffect 220,""; bonus bBaseAtk,100; bonus2 bHPPenaltyTime,1000,100; /*発動率暫定*/ }}
+13172,Soldier_Gatling_Gun,ソルジャーガトリングガン,15,20,,0,80,,9,0,268435456,2,34,3,80,19,1,{},{bonus bDex,2; bonus2 bAddRace,7,35; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; bonus4 bAutoActiveItem,13172,500,6000,EAS_ATTACK; if(checkactiveitem()){ misceffect 220,""; bonus bBaseAtk,80; bonus2 bHPPenaltyTime,1000,120; /*発動率暫定*/ }}
+13173,Soldier_Shotgun,ソルジャーショットガン,15,20,,0,100,,9,0,268435456,2,34,3,80,20,1,{},{ bonus bDex,2; bonus bSplashRange,1; bonus2 bAddRace,7,55; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; bonus4 bAutoActiveItem,13173,500,6000,EAS_ATTACK; if(checkactiveitem()){ misceffect 220,""; bonus bBaseAtk,100; bonus2 bHPPenaltyTime,1000,100; /*発動率暫定*/ }}
 13174,Soldier_Grenade_Launcher,ソルジャーグレネードガン,15,20,,0,300,,9,0,268435456,2,34,3,80,21,1,{},{ bonus bDex,2; bonus2 bAddRace,7,35; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; }
 13175,Lever_Action_Rifle_C,レバーアクションライフルR,15,,,0,170,,9,0,268435456,2,34,3,,18,,{},{}
 13176,Krieger_Rifle1,グロリアスライフル,15,,,0,90,,9,0,268435456,2,34,4,80,18,1,{},{ bonus2 bAddRace,7,75; bonus2 bIgnoreDefRace,7,20; bonus2 bAddSkillDamageRate,502,30; bonus bUnbreakableWeapon,0; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus2 bAddCastRate,512,-25; bonus2 bAddSkillDamageRate,512,getequiprefinerycnt(4)*3; }
-13177,Krieger_Gatling1,グロリアスガトリングガン,15,,,0,90,,9,0,268435456,2,34,4,80,20,1,{},{ bonus2 bAddRace,7,35; bonus2 bIgnoreDefRace,7,20; bonus2 bAddSkillDamageRate,502,30; bonus bUnbreakableWeapon,0; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus bAtkRate,getequiprefinerycnt(4); }
-13178,Krieger_Shotgun1,グロリアスショットガン,15,,,0,110,,9,0,268435456,2,34,4,80,19,1,{},{ bonus2 bAddRace,7,55; bonus2 bIgnoreDefRace,7,20; bonus2 bAddSkillDamageRate,502,30; bonus bUnbreakableWeapon,0; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus2 bAddSkillDamageRate,520,getequiprefinerycnt(4)*2; bonus3 bAddEffSkill,520,Eff_Stun,2000; }
+13177,Krieger_Gatling1,グロリアスガトリングガン,15,,,0,90,,9,0,268435456,2,34,4,80,19,1,{},{ bonus2 bAddRace,7,35; bonus2 bIgnoreDefRace,7,20; bonus2 bAddSkillDamageRate,502,30; bonus bUnbreakableWeapon,0; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus bAtkRate,getequiprefinerycnt(4); }
+13178,Krieger_Shotgun1,グロリアスショットガン,15,,,0,110,,9,0,268435456,2,34,4,80,20,1,{},{ bonus2 bAddRace,7,55; bonus2 bIgnoreDefRace,7,20; bonus2 bAddSkillDamageRate,502,30; bonus bUnbreakableWeapon,0; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus2 bAddSkillDamageRate,520,getequiprefinerycnt(4)*2; bonus3 bAddEffSkill,520,Eff_Stun,2000; }
 13179,Krieger_Launcher1,グロリアスグレネードガン,15,,,0,330,,9,0,268435456,2,34,4,80,21,1,{},{ bonus2 bAddRace,7,35; bonus2 bIgnoreDefRace,7,20; bonus2 bAddSkillDamageRate,502,30; bonus bUnbreakableWeapon,0; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus2 bAddSkillDamageRate,521,getequiprefinerycnt(4)*2; bonus3 bAutoActiveWeapon,13179,300,20000; if(checkactiveitem()) { misceffect 9,""; bonus bAspdAddRate,20; } }
 
 13200,Bullet,バレット,16,1,,2,10,,,,268435456,2,32768,,,,,{},{}

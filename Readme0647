@@ -1,4 +1,15 @@
 ----------------------------------------
+//0805 [2010/11/23] by Blaze
+
+・武器種の定義値を変更(map.h, pc.c, status.c, battle.c)
+　-> ガトリングガンとショットガンの定義値を入れ替え
+　-> 両手杖の武器種を新規追加
+
+・上記の武器種変更によるDB修正(job_db1.txt, size_fix.txt, item_db.txt, skill_require_db.txt)
+
+・DB仕様変更によるdoc修正 (db_ref.txt)
+
+----------------------------------------
 //0804 [2010/11/16] by Blaze
 
 ・モロクNPC追加 (npc_town_morocc.txt)

@@ -1006,6 +1006,7 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 			break;
 		case WT_2HMACE:
 		case WT_STAFF:
+		case WT_2HSTAFF:
 		case WT_BOW:
 			break;
 		case WT_FIST:
@@ -1063,7 +1064,7 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 static int battle_calc_base_damage(struct block_list *src,struct block_list *target,int skill_num,int type,int lh)
 {
 	int damage = 0;
-	int atkmin, atkmax;
+	int atkmin, atkmax, weapon;
 	struct map_session_data *sd   = NULL;
 	struct status_change *sc = NULL;
 
@@ -1161,8 +1162,9 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		/* クリティカル攻撃 */
 		damage += atkmax;
 		if(sd) {
-			if(sd->atk_rate != 100 || sd->weapon_atk_rate[sd->status.weapon] != 0)
-				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon])) / 100;
+			weapon = (lh == 0)? sd->weapontype1: sd->weapontype2;
+			if(sd->atk_rate != 100 || sd->weapon_atk_rate[weapon] != 0)
+				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon])) / 100;
 
 			// クリティカル時ダメージ増加
 			damage += damage * sd->critical_damage / 100;
@@ -1177,8 +1179,9 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		else
 			damage += atkmin;
 		if(sd) {
-			if(sd->atk_rate != 100 || sd->weapon_atk_rate[sd->status.weapon] != 0) {
-				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[sd->status.weapon])) / 100;
+			weapon = (lh == 0)? sd->weapontype1: sd->weapontype2;
+			if(sd->atk_rate != 100 || sd->weapon_atk_rate[weapon] != 0) {
+				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon])) / 100;
 			}
 		}
 	}
@@ -1352,7 +1355,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	/* ４．右手・左手判定 */
 	calc_flag.rh = 1;		// 基本は右手のみ
 	if(src_sd && skill_num == 0) {	// スキル攻撃は常に右手を参照
-		if((src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 > WT_FIST) || (src_sd->status.weapon > WT_HUUMA || src_sd->status.weapon == WT_KATAR))
+		if((src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 > WT_FIST) || (src_sd->status.weapon >= WT_DOUBLE_DD || src_sd->status.weapon == WT_KATAR))
 			calc_flag.lh = 1;	// 左手も計算
 	}
 
@@ -1367,7 +1370,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 			}
 			// 三段掌
-			if((skill = pc_checkskill(src_sd,MO_TRIPLEATTACK)) > 0 && src_sd->status.weapon <= WT_HUUMA)
+			if((skill = pc_checkskill(src_sd,MO_TRIPLEATTACK)) > 0 && src_sd->status.weapon < WT_MAX)
 			{
 				int triple_rate = 30 - skill;
 				if(sc && sc->data[SC_TRIPLEATTACK_RATE_UP].timer != -1) {
@@ -4103,7 +4106,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		clif_damage(src, target, tick, wd.amotion, wd.dmotion, wd.damage, wd.div_, wd.type, wd.damage2);
 
 		// 二刀流左手とカタール追撃のミス表示(無理やり〜)
-		if(sd && (sd->status.weapon > WT_HUUMA || sd->status.weapon == WT_KATAR) && wd.damage2 == 0)
+		if(sd && (sd->status.weapon >= WT_DOUBLE_DD || sd->status.weapon == WT_KATAR) && wd.damage2 == 0)
 			clif_damage(src, target, tick+10, wd.amotion, wd.dmotion, 0, 1, 0, 0);
 	}
 	if(sd && sd->splash_range > 0 && (wd.damage > 0 || wd.damage2 > 0) && (!sc || sc->data[SC_SACRIFICE].timer == -1))

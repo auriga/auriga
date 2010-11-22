@@ -141,17 +141,19 @@ enum {
 	WT_KATAR,
 	WT_HANDGUN,
 	WT_RIFLE,
-	WT_SHOTGUN,
 	WT_GATLING,
+	WT_SHOTGUN,
 	WT_GRENADE,
 	WT_HUUMA,
-	WT_DOUBLE_DD = 23,	// 短剣+短剣
-	WT_DOUBLE_SS,		// 片手剣+片手剣
-	WT_DOUBLE_AA,		// 片手斧+片手斧
-	WT_DOUBLE_DS,		// 短剣+片手剣
-	WT_DOUBLE_DA,		// 短剣+片手斧
-	WT_DOUBLE_SA,		// 片手剣+片手斧
-	WT_MAX,			// 最大値
+	WT_2HSTAFF,
+	WT_MAX,				// 基本武器最大値
+	WT_DOUBLE_DD = 93,	// 二刀流 短剣+短剣
+	WT_DOUBLE_SS,		// 二刀流 片手剣+片手剣
+	WT_DOUBLE_AA,		// 二刀流 片手斧+片手斧
+	WT_DOUBLE_DS,		// 二刀流 短剣+片手剣
+	WT_DOUBLE_DA,		// 二刀流 短剣+片手斧
+	WT_DOUBLE_SA,		// 二刀流 片手剣+片手斧
+	WT_DOUBLE_MAX		// 二刀流最大値
 };
 
 struct block_list {

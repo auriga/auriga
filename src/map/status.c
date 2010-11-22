@@ -1353,7 +1353,7 @@ L_RECALC:
 	if(sd->mdef2 < 1) sd->mdef2 = 1;
 
 	// 二刀流 ASPD 修正
-	if(sd->status.weapon <= WT_HUUMA)
+	if(sd->status.weapon < WT_MAX)
 		sd->aspd += job_db[sd->s_class.job].aspd_base[sd->status.weapon]-(sd->paramc[1]*4+sd->paramc[4])*job_db[sd->s_class.job].aspd_base[sd->status.weapon]/1000;
 	else
 		sd->aspd += (
