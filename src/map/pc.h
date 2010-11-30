@@ -37,8 +37,8 @@
 #define pc_ischasewalk(sd)  (((sd)->sc.option&OPTION_FOOTPRINT) && ((sd)->sc.option&OPTION_CLOAKING))
 
 #define pc_iscarton(sd) ((sd)->sc.option&OPTION_CARTMASK)
-#define pc_isfalcon(sd) ((sd)->sc.option&OPTION_BIRD)
-#define pc_isriding(sd) ((sd)->sc.option&OPTION_CHICKEN)
+#define pc_isfalcon(sd) ((sd)->sc.option&OPTION_FALCON)
+#define pc_isriding(sd) ((sd)->sc.option&OPTION_PECO)
 #define pc_isinvisible(sd) ((sd)->sc.option&OPTION_SPECIALHIDING)
 #define pc_isdragon(sd) ((sd)->sc.option&OPTION_DRAGONMASK)
 #define pc_iswolf(sd) ((sd)->sc.option&OPTION_WUG)

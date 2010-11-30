@@ -375,7 +375,7 @@ L_RECALC:
 
 	if((skill = pc_checkskill(sd,SG_KNOWLEDGE)) > 0)	// 太陽と月と星の知識
 	{
-		if(battle_config.check_knowlege_map) {	// 場所チェックを行なう
+	 	if(battle_config.check_knowlege_map) {	// 場所チェックを行なう
 			if(sd->bl.m == sd->feel_index[0] || sd->bl.m == sd->feel_index[1] || sd->bl.m == sd->feel_index[2])
 				sd->max_weight += sd->max_weight*skill/10;
 		} else {
@@ -2770,7 +2770,7 @@ int status_get_int(struct block_list *bl)
 				int_ += sc->data[SC_BLESSING].val1;	// その他
 		}
 		if(sc->data[SC_STRIPHELM].timer != -1 && bl->type != BL_PC)
-			int_ = int_*90/100;
+			int_ = int_*60/100;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
 			int_ += 5;
 	}
@@ -4382,7 +4382,6 @@ int status_check_no_magic_damage(struct block_list *bl)
 int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 {
 	int sc_flag = 0;
-	int diff_level = 0;
 
 	nullpo_retr(0, bl);
 
@@ -4392,38 +4391,34 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 	if(rate <= 0)	// 確率が0以下のものは失敗
 		return 0;
 
-	if(src_level)
-		diff_level = src_level - status_get_lv(bl);
-
 	switch(type) {	// 状態異常耐性ステータス rateは万分率
-		case SC_STONE:
-		case SC_FREEZE:
-			rate = rate * (100 - status_get_mdef(bl)) / 100 + (diff_level - status_get_luk(bl)) * 10;
+		case SC_STONE:	// 石化
+		case SC_FREEZE:	// 凍結
+			rate += src_level*10 - rate * status_get_mdef(bl)*10 / 1000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_STUN:
-		case SC_SILENCE:
-		case SC_POISON:
-		case SC_DPOISON:
-		case SC_BLEED:	// 詳細不明なのでとりあえずここで
-			rate = rate * (100 - status_get_vit(bl)) / 100 + (diff_level - status_get_luk(bl)) * 10;
+		case SC_STUN:	// スタン
+		case SC_SILENCE:	// 沈黙
+		case SC_POISON:	// 毒
+		case SC_DPOISON:	// 猛毒
+		case SC_BLEED:	// 出血
+			rate += src_level*10 - rate * status_get_vit(bl)*10 / 1000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_SLEEP:
-		case SC_BLIND:
-			rate = rate * (100 - status_get_int(bl)) / 100 + (diff_level - status_get_luk(bl)) * 10;
+		case SC_SLEEP:	// 睡眠
+			rate += src_level*10 - rate * status_get_int(bl)*10 / 1000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_CURSE:
-			if(src_level)	// 発動者レベルが0以外の場合
-				// 暫定で 基本確率×(1 + 術者BaseLv - 対象LUK)/術者BaseLv [%]
-				rate = rate * (1 + src_level - status_get_luk(bl)) / src_level;
-			else
-				rate = rate * (100 - status_get_luk(bl)) / 100;
+		case SC_BLIND:	// 暗黒
+			rate += src_level*10 - rate * (status_get_vit(bl)*10 + status_get_int(bl)*10) / 2000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_CONFUSION: // 詳細不明なので暫定式(AGIとINT影響らしい)
-			rate = rate * (100 - status_get_int(bl)) / 100 + (diff_level - status_get_agi(bl)) * 10;
+		case SC_CURSE:	// 呪い
+			rate += src_level*10 - rate * status_get_luk(bl)*10 / 1000 - status_get_luk(bl)*10;
+			sc_flag = 1;
+			break;
+		case SC_CONFUSION:	// 混乱
+			rate += status_get_luk(bl)*10 + -(rate * (status_get_str(bl)*10 + status_get_int(bl)*10) / 2000) - src_level*10 + status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
 		case SC_WINKCHARM: // 一応チャーム状態もこちらで計算、式不明のためそのまま
@@ -4454,10 +4449,9 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 			}
 		}
 	}
-
+	
 	return rate;
 }
-
 /*==========================================
  * ステータス異常データの動的確保
  *------------------------------------------
@@ -5880,7 +5874,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			opt_flag = 1;
 			break;
 		case SC_BLEED:
-			sc->opt2 |= OPT2_BLOODING;
+			sc->opt2 |= OPT2_BLEEDING;
 			opt_flag = 1;
 			break;
 		case SC_FEAR:
@@ -5924,7 +5918,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			opt_flag = 2;
 			break;
 		case SC_BERSERK:		/* バーサーク */
-			sc->opt3 |= OPT3_REDBODY;
+			sc->opt3 |= OPT3_BERSERK;
 			opt_flag = 2;
 			break;
 		case SC_DANCING:			/* ダンス/演奏中 */
@@ -5935,7 +5929,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_MARIONETTE:		/* マリオネットコントロール */
 		case SC_MARIONETTE2:		/* マリオネットコントロール */
-			sc->opt3 |= OPT3_PINKBODY;
+			sc->opt3 |= OPT3_MARIONETTE;
 			opt_flag = 2;
 			break;
 		case SC_ASSUMPTIO:		/* アスムプティオ */
@@ -5948,7 +5942,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			opt_flag = 2;
 			break;
 		case SC_KAITE:
-			sc->opt3 |= OPT3_REFLECT;
+			sc->opt3 |= OPT3_KAITE;
 			opt_flag = 2;
 			break;
 		case SC_BUNSINJYUTSU:		/* 分身の術 */
@@ -6632,7 +6626,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			opt_flag = 1;
 			break;
 		case SC_BLEED:
-			sc->opt2 &= ~OPT2_BLOODING;
+			sc->opt2 &= ~OPT2_BLEEDING;
 			opt_flag = 1;
 			break;
 		case SC_FEAR:
@@ -6678,7 +6672,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			opt_flag = 2;
 			break;
 		case SC_BERSERK:		/* バーサーク */
-			sc->opt3 &= ~OPT3_REDBODY;
+			sc->opt3 &= ~OPT3_BERSERK;
 			opt_flag = 2;
 			break;
 		case SC_DANCING:			/* ダンス/演奏中 */
@@ -6689,7 +6683,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 		case SC_MARIONETTE:		/* マリオネットコントロール */
 		case SC_MARIONETTE2:		/* マリオネットコントロール */
-			sc->opt3 &= ~OPT3_PINKBODY;
+			sc->opt3 &= ~OPT3_MARIONETTE;
 			opt_flag = 2;
 			break;
 		case SC_ASSUMPTIO:		/* アスムプティオ */
@@ -6701,7 +6695,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			opt_flag = 2;
 			break;
 		case SC_KAITE:			/* カイト */
-			sc->opt3 &= ~OPT3_REFLECT;
+			sc->opt3 &= ~OPT3_KAITE;
 			opt_flag = 2;
 			break;
 		case SC_BUNSINJYUTSU:		/* 分身の術 */
@@ -8043,9 +8037,9 @@ int status_change_hidden_end(struct block_list *bl)
 			if((sc->option & (OPTION_CLOAKING | OPTION_FOOTPRINT)) == (OPTION_CLOAKING | OPTION_FOOTPRINT))
 				status_change_end(bl,SC_CHASEWALK,-1);
 		}
-		if(sc->data[SC_CAMOUFLAGE].timer != -1)
+	 	if(sc->data[SC_CAMOUFLAGE].timer != -1)
 			status_change_end(bl,SC_CAMOUFLAGE,-1);
-		if(sc->data[SC_STEALTHFIELD].timer != -1)
+	 	if(sc->data[SC_STEALTHFIELD].timer != -1)
 			status_change_end(bl,SC_STEALTHFIELD,-1);
 	}
 	return 0;

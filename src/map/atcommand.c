@@ -1622,7 +1622,7 @@ int atcommand_charitemreset(const int fd, struct map_session_data* sd, AtCommand
 		for (i = 0; i < MAX_INVENTORY; i++) {
 			if (pl_sd->status.inventory[i].amount && pl_sd->status.inventory[i].equip == 0) {
 				if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
-					intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
+	 				intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
 				pc_delitem(pl_sd, i, pl_sd->status.inventory[i].amount, 0, 0);
 			}
 		}
@@ -4529,6 +4529,7 @@ int atcommand_reloadhomundb(const int fd, struct map_session_data* sd, AtCommand
 int atcommand_reloaditemdb(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	itemdb_reload();
+	read_petdb();
 	clif_displaymessage(fd, msg_txt(89));
 
 	return 0;

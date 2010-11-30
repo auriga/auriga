@@ -681,7 +681,7 @@ R 0145 <file name>.16B <type>.B
 	type=0xff 消去
 S 0146 <ID>.l
 	IDのNPCとの会話。CLOSEボタンを押した。ack無しにNPCメッセージウィンドを同時に閉じる
-R 0147 <skill ID>.w <target type>.w <?>.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B
+R 0147 <skill ID>.w <target type>.l <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B
 	アイテム利用の結果一時的に得られたスキル情報
 R 0148 <ID>.l
 	リザレクションの相手決め? @ β1
@@ -1112,7 +1112,7 @@ R 01c2 <type?>.l <?>.l
 R 01c3 <len>.w <color>.l <type>.w <size>.w <align>.w <y>.w <message>.?B
 	GMからの天の声（0x9aのマルチカラー版）
 	type=00:FW_DONTCARE
-	type=100:FW_THIN
+	type=100:FW_THIN	
 	type=200:FW_EXTRALIGHT
 	type=300:FW_LIGHT
 	type=400:FW_NORMAL
@@ -2092,7 +2092,7 @@ R 07df <name>.24B <job>.l <level>.l <mapName>.16B <option>.l
 R 07e0 <esNo>.w <esName>.24B
 	未調査
 R 07e1 <skill ID>.w <type>.l <lv>.w <sp>.w <range>.w <up>.B
-	010eの上位版（2009-07-15aRagexeRE以降）
+	0147の上位版（2009-07-15aRagexeRE以降）
 R 07e2 <line>.w <val>.l
 	0x291にvalも送れる上位版
 R 07e3 <type>.l
@@ -2374,4 +2374,172 @@ S 084a
 R 084b <?>.l <?>.w <?>.w <?>.B <?>.w <?>.w <?>.B <?>.B <?>.w
 	未調査
 S 0852
+	未調査
+R 085a
+	未調査
+R 085b
+	未調査
+R 085c
+	未調査
+R 085d
+	未調査
+R 085e
+	未調査
+R 085f
+	未調査
+R 0860
+	未調査
+R 0861
+	未調査
+R 0862
+	未調査
+R 0863
+	未調査
+R 0864
+	未調査
+R 0865
+	未調査
+R 0866
+	未調査
+R 0867
+	未調査
+R 0868
+	未調査
+R 0869
+	未調査
+R 086a
+	未調査
+R 086b
+	未調査
+R 086c
+	未調査
+R 086d
+	未調査
+R 086e
+	未調査
+R 086f
+	未調査
+R 0870
+	未調査
+R 0871
+	未調査
+R 0872
+	未調査
+R 0873
+	未調査
+R 0874
+	未調査
+R 0875
+	未調査
+R 0876
+	未調査
+R 0877
+	未調査
+R 0878
+	未調査
+R 0879
+	未調査
+R 087a
+	未調査
+R 087b
+	未調査
+R 087c
+	未調査
+R 087d
+	未調査
+R 087e
+	未調査
+R 087f
+	未調査
+R 0880
+	未調査
+R 0881
+	未調査
+R 0882
+	未調査
+R 0883
+	未調査
+S 0884
+	未調査
+S 0885
+	未調査
+S 0886
+	未調査
+S 0887
+	未調査
+S 0888
+	未調査
+S 0889
+	未調査
+S 088a
+	未調査
+S 088b
+	未調査
+S 088c
+	未調査
+S 088d
+	未調査
+S 088e
+	未調査
+S 088f
+	未調査
+S 0890
+	未調査
+S 0891
+	未調査
+S 0892
+	未調査
+S 0893
+	未調査
+S 0894
+	未調査
+S 0895
+	未調査
+S 0896
+	未調査
+S 0897
+	未調査
+S 0898
+	未調査
+S 0899
+	未調査
+S 089a
+	未調査
+S 089b
+	未調査
+S 089c
+	未調査
+S 089d
+	未調査
+S 089e
+	未調査
+S 089f
+	未調査
+S 08a0
+	未調査
+S 08a1
+	未調査
+S 08a2
+	未調査
+S 08a3
+	未調査
+S 08a4
+	未調査
+S 08a5
+	未調査
+S 08a6
+	未調査
+S 08a7
+	未調査
+S 08a8
+	未調査
+S 08a9
+	未調査
+S 08aa
+	未調査
+S 08ab
+	未調査
+S 08ac
+	未調査
+S 08ad
 	未調査

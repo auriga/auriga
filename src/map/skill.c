@@ -662,7 +662,7 @@ int skill_get_fixed_range(struct block_list *bl,int id,int lv)
 				case RA_VERDURETRAP:		/* ヴェルデュールトラップ */
 				case RA_FIRINGTRAP:			/* ファイアリングトラップ */
 				case RA_ICEBOUNDTRAP:		/* アイスバウンドトラップ */
-					if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0)	// トラップ研究
+					if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0)	// トラップ研究 
 						range += (skill + 1) / 2;
 					break;
 				case WL_WHITEIMPRISON:		/* ホワイトインプリズン */
@@ -912,9 +912,9 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 				tsc->data[SC_FREEZE].val3++;	// 重複ダメージのタイミングに使用(skill_unit_onplace_timer()内にて使用)
 			} else {
 				// 非ボス属性
-				if(++tsc->data[SC_FREEZE].val3 >= 3) {	// 通常通り凍結タイミングに使用
+				if(++tsc->data[SC_FREEZE].val3 >= 3) {	// 通常通り凍結タイミングに使用 
 					tsc->data[SC_FREEZE].val3 = 0;
-					if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,30000,status_get_lv(src)))
+					if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,20000,status_get_lv(src)))
 						status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 				}
 			}
@@ -3179,7 +3179,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
-
+	
 	/* 魔法系スキル */
 	case MG_SOULSTRIKE:			/* ソウルストライク */
 	case NPC_DARKSTRIKE:		/* ダークストライク */
@@ -4432,7 +4432,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				// 5セル以内でLv7以上で素手ならスパート開始
 				if(sd->sc.data[SC_RUN].val4 >= 2) {
 					int lv = sd->sc.data[SC_RUN].val1;
-					if(lv >= 7 && sd->sc.data[SC_RUN].val4 <= 6 && sd->weapontype1 == WT_FIST && sd->weapontype2 == WT_FIST)
+			   		if(lv >= 7 && sd->sc.data[SC_RUN].val4 <= 6 && sd->weapontype1 == WT_FIST && sd->weapontype2 == WT_FIST)
 						status_change_start(bl,SC_SPURT,lv,0,0,0,skill_get_time2(TK_RUN,lv),0);
 					status_change_end(bl,SC_RUN,-1);
 					clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -5250,18 +5250,18 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(sd)       msd = sd;
 				else if(hd)  msd = hd->msd;
 				else if(mcd) msd = mcd->msd;
-
+	
 				if(msd == NULL)
 					break;
-
+	
 				for(i=0; i<10; i++) {
 					if(skill_db[skillid].itemid[i] < 715 || skill_db[skillid].itemid[i] > 717)
 						continue;
-
+	
 					val = skill_db[skillid].amount[i];
 					if(msd->special_state.no_gemstone || msd->sc.data[SC_WIZARD].timer != -1 || msd->sc.data[SC_INTOABYSS].timer != -1)
 						val--;
-
+	
 					if(val > 0) {
 						int idx = pc_search_inventory(msd,skill_db[skillid].itemid[i]);
 						if(idx < 0)
@@ -5736,7 +5736,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sc && sc->data[SC_MAGICROD].timer != -1) {
 			int sp;
 			if(dstsd) {
-				sp = skill_get_sp(skillid,skilllv) * sc->data[SC_MAGICROD].val2 / 100;
+				sp = skill_get_sp(skillid,skilllv) * sc->data[SC_MAGICROD].val2 / 100; 
 				if(sp > 0x7fff) sp = 0x7fff;
 				else if(sp < 1) sp = 1;
 				if(dstsd->status.sp + sp > dstsd->status.max_sp) {
@@ -7379,7 +7379,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 
 	sd = BL_DOWNCAST( BL_PC,  src );
 	md = BL_DOWNCAST( BL_MOB, src );
-
+		
 	switch(skillid) {
 	case WZ_METEOR:
 	case WZ_ICEWALL:
@@ -7457,7 +7457,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case AL_PNEUMA:				/* ニューマ */
 	case WZ_FIREPILLAR:			/* ファイアピラー */
 	case WZ_VERMILION:			/* ロードオブヴァーミリオン */
-	case WZ_FROSTNOVA:          /* フロストノヴァ */
+	case WZ_FROSTNOVA:          /* フロストノヴァ */ 
 	case WZ_HEAVENDRIVE:		/* ヘヴンズドライブ */
 	case WZ_QUAGMIRE:			/* クァグマイア */
 	case PR_SANCTUARY:			/* サンクチュアリ */
@@ -7557,7 +7557,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		}
 		break;
 
-	case WZ_STORMGUST:          /* ストームガスト */
+	case WZ_STORMGUST:          /* ストームガスト */ 
 		{
 			int i, j;
 
@@ -8665,7 +8665,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 						pc_setpos(sd,mapname,x,y,3);
 					}
 				} else {
-					sd->state.warp_waiting = 1;
+				 	sd->state.warp_waiting = 1;
 				}
 			}
 		} else if(bl->type == BL_MOB && battle_config.mob_warpportal) {
@@ -9002,7 +9002,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	case UNT_BASILICA:	/* バジリカ */
 		if (sg->src_id == bl->id)
 			break;
-		if ( battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 && !(status_get_mode(bl)&0x20) )
+	   	if ( battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 && !(status_get_mode(bl)&0x20) )
 			skill_blown(&src->bl,bl,SAB_NODAMAGE|1);
 		if (battle_check_target(&src->bl,bl,BCT_NOENEMY)>0) {
 			int type = GetSkillStatusChangeTable(sg->skill_id);
@@ -12234,7 +12234,7 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 			break;
 		default:
 			skill_delunit(unit);
-		}
+		}			
 	} else if(skillid == PF_FOGWALL) {
 		if(alive && (unit->group->skill_id == SA_LANDPROTECTOR ||
 			unit->group->skill_id == SA_VIOLENTGALE || unit->group->skill_id == SA_VOLCANO))

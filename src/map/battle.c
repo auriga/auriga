@@ -2643,13 +2643,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_EDP].timer != -1 && !calc_flag.nocardfix) {
 				// 右手のみに効果がのる。カード効果無効のスキルには乗らない
 				if(map[src->m].flag.pk && target->type == BL_PC) {
-					wd.damage += wd.damage * (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pk_edp_down_rate / 10000;
+					wd.damage *= (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pk_edp_down_rate / 10000;
 				} else if(map[src->m].flag.gvg) {
-					wd.damage += wd.damage * (150 + sc->data[SC_EDP].val1 * 50) * battle_config.gvg_edp_down_rate / 10000;
+					wd.damage *= (150 + sc->data[SC_EDP].val1 * 50) * battle_config.gvg_edp_down_rate / 10000;
 				} else if(map[src->m].flag.pvp) {
-					wd.damage += wd.damage * (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pvp_edp_down_rate / 10000;
+					wd.damage *= (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pvp_edp_down_rate / 10000;
 				} else {
-					wd.damage += wd.damage * (150 + sc->data[SC_EDP].val1 * 50) / 100;
+					wd.damage *= (150 + sc->data[SC_EDP].val1 * 50) / 100;
 				}
 				// calc_flag.nocardfix = 1;
 			}
@@ -2737,7 +2737,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		    case CR_GRANDCROSS:
 		    case NPC_GRANDDARKNESS:
 		    case LK_SPIRALPIERCE:
-			case CR_ACIDDEMONSTRATION:
+		   	case CR_ACIDDEMONSTRATION:
 		    case NJ_ZENYNAGE:
 				break;
 			default:

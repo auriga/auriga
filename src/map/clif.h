@@ -152,7 +152,6 @@ int clif_mercoutsight(struct block_list *bl, va_list ap);
 
 void clif_class_change(struct block_list *bl, int class_, int type);
 
-void clif_skillinfo(struct map_session_data *sd, int skillid, int type, int range);
 void clif_skillinfoblock(struct map_session_data *sd);
 void clif_skillup(struct map_session_data *sd, int skill_num);
 
