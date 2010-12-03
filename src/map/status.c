@@ -5258,7 +5258,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		/* option1 */
 		case SC_STONE:				/* 石化 */
 			if(!(flag&2)) {
-				tick = tick - status_get_mdef(bl) * 200;
+				tick += 100 * status_get_luk(bl) - status_get_mdef(bl) * tick / 100;
 			}
 			val3 = tick / 1000;
 			if(val3 < 1)
@@ -5270,19 +5270,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_SLEEP:				/* 睡眠 */
 			if(!(flag&2)) {
-				tick = 30000;	// 睡眠はステータス耐性に関わらず30秒
+				tick += -10 * status_get_luk(bl) - tick * status_get_int(bl) / 100;
 			}
 			break;
 		case SC_FREEZE:				/* 凍結 */
 			if(!(flag&2)) {
-				int sc_def = 100 - status_get_mdef(bl);
-				tick = tick * sc_def / 100;
+				tick += 10 * status_get_luk(bl) - tick * status_get_mdef(bl) / 100;
 			}
 			break;
 		case SC_STUN:				/* スタン（val2にミリ秒セット） */
 			if(!(flag&2)) {
-				int sc_def = 100 - (4 + status_get_vit(bl) + status_get_luk(bl) / 5);
-				tick = tick * sc_def / 100;
+				tick += -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100;
 			}
 			break;
 		/* option2 */
@@ -5290,6 +5288,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			{
 				int mhp = status_get_max_hp(bl);
 				int hp  = status_get_hp(bl);
+				if(!(flag&2)) {
+					if(bl->type == BL_PC)	// PCの場合のみ計算式が違う
+						tick = 5000 + -10000 * status_get_luk(bl) / 100 - 45000 * status_get_vit(bl) / 100 + 55000;
+					else
+						tick = 30000 - 20000 * status_get_vit(bl) / 100;
+				}
 				// MHPの1/4以下にはならない
 				if(hp > mhp>>2) {
 					int diff = 0;
@@ -5306,8 +5310,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_POISON:				/* 毒 */
 			calc_flag = 1;
 			if(!(flag&2)) {
-				int sc_def = 100 - (status_get_vit(bl) + status_get_luk(bl)/5);
-				tick = tick * sc_def / 100;
+				if(bl->type == BL_PC)	// PCの場合のみ計算式が違う
+					tick = 5000 + -10000 * status_get_luk(bl) / 100 - 45000 * status_get_vit(bl) / 100 + 55000;
+				else
+					tick = 30000 - 20000 * status_get_vit(bl) / 100;
 			}
 			val3 = tick/1000;
 			if(val3 < 1) val3 = 1;
@@ -5320,35 +5326,30 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				break;
 			}
 			if(!(flag&2)) {
-				int sc_def = 100 - status_get_vit(bl);
-				tick = tick * sc_def / 100;
+				tick += -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100;
 			}
 			break;
 		case SC_BLIND:				/* 暗黒 */
 			calc_flag = 1;
-			if(!(flag&2)) {	// 30 - BaseLv÷10 - INT÷15 [秒]
-				tick = 30000 - status_get_lv(bl) * 100 - status_get_int(bl) * 150;
+			if(!(flag&2)) {
+				tick += -10 * status_get_luk(bl) - tick * (status_get_vit(bl) + status_get_int(bl)) / 200;
 			}
 			break;
 		case SC_CURSE:				/* 呪い */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
-			if(!(flag&2)) {	// 30秒×(100-VIT)÷100
-				int sc_def = 100 - status_get_vit(bl);
-				tick = tick * sc_def / 100;
+			if(!(flag&2)) {
+				tick += -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100;
 			}
 			break;
 		case SC_CONFUSION:			/* 混乱 */
-			if(!(flag&2)) {	// 効果時間詳細不明なので暫定式を使用
-				int sc_def = status_get_lv(bl) * 15 + status_get_int(bl) * 10;
-				tick = 20000 - sc_def / 150;
+			if(!(flag&2)) {
+				tick += -10 * status_get_luk(bl) - tick * (status_get_str(bl) + status_get_int(bl)) / 200;
 			}
 			break;
 		case SC_BLEED:				/* 出血 */
 			if(!(flag&2)) {
-				// 効果時間の詳細不明なので暫定式を使用
-				int sc_def = 100 - status_get_vit(bl);
-				icon_tick = tick = 120000 * sc_def / 100;
+				icon_tick = tick = -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100 + tick;
 			}
 			val3 = (tick < 10000)? 1: tick / 10000;
 			tick = 10000;	// ダメージ発生は10sec毎

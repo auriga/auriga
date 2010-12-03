@@ -2092,7 +2092,7 @@ R 07df <name>.24B <job>.l <level>.l <mapName>.16B <option>.l
 R 07e0 <esNo>.w <esName>.24B
 	未調査
 R 07e1 <skill ID>.w <type>.l <lv>.w <sp>.w <range>.w <up>.B
-	0147の上位版（2009-07-15aRagexeRE以降）
+	010eの上位版（2009-07-15aRagexeRE以降）
 R 07e2 <line>.w <val>.l
 	0x291にvalも送れる上位版
 R 07e3 <type>.l

@@ -700,7 +700,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		SC_STONE, SC_CURSE, SC_SLEEP
 	};
 	static const int sc2[] = {
-		MG_STONECURSE,MG_FROSTDIVER,NPC_STUNATTACK,
+		MG_STONECURSE,WZ_STORMGUST,NPC_STUNATTACK,
 		NPC_SLEEPATTACK,TF_POISON,NPC_CURSEATTACK,
 		NPC_SILENCEATTACK,0,NPC_BLINDATTACK,LK_HEADCRUSH
 	};
@@ -947,7 +947,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	case TF_THROWSTONE:		/* 石投げ */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,300,status_get_lv(src)))
-			status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+			status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,300,status_get_lv(src)))
 			status_change_start(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
@@ -1133,7 +1133,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 	case TK_DOWNKICK:		/* ネリョチャギ */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,10000,status_get_lv(src)))
-			status_change_start(bl,SC_STUN,7,0,0,0,3000,0);
+			status_change_start(bl,SC_STUN,7,0,0,0,5000,0);
 		break;
 	case TK_TURNKICK:		/* トルリョチャギ */
 		// 確率不明なのでとりあえず100%
@@ -1212,18 +1212,23 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(unit && unit->group)
 		{
 			int type = 0;
+			int timeid;
 			switch(unit->group->unit_id) {
 				case UNT_GROUNDDRIFT_WIND:
 					type = SC_STUN;
+					timeid = NPC_STUNATTACK;
 					break;
 				case UNT_GROUNDDRIFT_DARK:
 					type = SC_BLIND;
+					timeid = NPC_BLINDATTACK;
 					break;
 				case UNT_GROUNDDRIFT_POISON:
 					type = SC_POISON;
+					timeid = NPC_POISON;
 					break;
 				case UNT_GROUNDDRIFT_WATER:
 					type = SC_FREEZE;
+					timeid = WZ_STORMGUST;
 					break;
 				case UNT_GROUNDDRIFT_FIRE:
 					skill_blown(&unit->bl,bl,3|SAB_NODAMAGE);
@@ -1232,7 +1237,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 			// 確率は適当、暫定で基本50%
 			if(type > 0 && atn_rand() % 10000 < status_change_rate(bl,type,5000,status_get_lv(src)))
-				status_change_start(bl,type,7,0,0,0,skill_get_time2(NPC_STUNATTACK,7),0);
+				status_change_start(bl,type,7,0,0,0,skill_get_time2(timeid,7),0);
 		}
 		break;
 	case NJ_KASUMIKIRI:		/* 霞斬り */
@@ -4403,7 +4408,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sc && sc->data[SC_CONFUSION].timer != -1)
 			status_change_end(bl,SC_CONFUSION,-1);
 		else if( !(status_get_mode(bl)&0x20) && atn_rand() % 10000 < status_change_rate(bl,SC_CONFUSION,5000,status_get_lv(src)) )
-			status_change_start(bl,SC_CONFUSION,7,0,0,0,10000+7000,0);
+			status_change_start(bl,SC_CONFUSION,7,0,0,0,30000,0);
 		else if(sd)
 			clif_skill_fail(sd,skillid,0,0);
 		break;
@@ -4411,7 +4416,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstsd) {
 			if(atn_rand() % 10000 < status_change_rate(&dstsd->bl,SC_CONFUSION,7000,status_get_lv(src))) {
-				status_change_start(&dstsd->bl,SC_CONFUSION,7,0,0,0,10000+7000,0);
+				status_change_start(&dstsd->bl,SC_CONFUSION,7,0,0,0,30000,0);
 				break;
 			}
 		} else if(dstmd) {
@@ -4516,7 +4521,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SL_SWOO:			/* エスウ */
 		if(sd && !dstmd && !battle_config.allow_es_magic_all) {
 			if(atn_rand() % 10000 < status_change_rate(&sd->bl,SC_STUN,10000,sd->status.base_level))
-				status_change_start(&sd->bl,SC_STUN,7,0,0,0,500,0);
+				status_change_start(&sd->bl,SC_STUN,7,0,0,0,10000,0);
 			clif_skill_fail(sd,skillid,0,0);
 			break;
 		}
@@ -4524,7 +4529,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		sc = status_get_sc(bl);
 		if(sc && sc->data[SC_SWOO].timer != -1) {
 			status_change_end(bl,SC_SWOO,-1);
-			status_change_start(src,SC_STUN,7,0,0,0,500,0);
+			status_change_start(src,SC_STUN,7,0,0,0,10000,0);
 		} else {
 			status_change_start(bl,SC_SWOO,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
@@ -4534,7 +4539,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SL_SKE:			/* エスク */
 		if( sd && !dstmd && !battle_config.allow_es_magic_all ) {
 			if(atn_rand() % 10000 < status_change_rate(&sd->bl,SC_STUN,10000,sd->status.base_level))
-				status_change_start(&sd->bl,SC_STUN,7,0,0,0,500,0);
+				status_change_start(&sd->bl,SC_STUN,7,0,0,0,1000,0);
 			clif_skill_fail(sd,skillid,0,0);
 			break;
 		}
@@ -12206,6 +12211,7 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 		if(alive && unit->group->skill_id == WZ_ICEWALL)	// アイスウォールがあるセルにはランドプロテクターが出ない
 			(*alive)=0;
 		switch(unit->group->skill_id) {
+		case WZ_ICEWALL:	// アイスウォール
 		case HT_SKIDTRAP:	// スキッドトラップ
 		case HT_LANDMINE:	// ランドマイン
 		case HT_ANKLESNARE:	// アンクルスネア
@@ -14565,7 +14571,7 @@ static int skill_balkyoung( struct block_list *bl,va_list ap )
 
 	skill_blown(src,bl,4);	// 吹き飛ばしてみる
 	if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,7000,status_get_lv(src)))
-		status_change_start(bl,SC_STUN,1,0,0,0,2000,0);
+		status_change_start(bl,SC_STUN,1,0,0,0,5000,0);
 
 	return 0;
 }
