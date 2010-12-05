@@ -4035,7 +4035,7 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
 		return 0;
 
 	skill = pc_checkskill(sd,RG_STEALCOIN)*10;
-	rate  = skill + (sd->status.base_level - mob_db[md->class_].lv)*3 + sd->paramc[4]*2 + sd->paramc[5]*2;
+	rate  = skill + (sd->status.base_level - mob_db[md->class_].lv)*2 + (sd->paramc[4] + sd->paramc[5])/2;
 
 	if(atn_rand()%1000 < rate) {
 		pc_getzeny(sd,mob_db[md->class_].lv*10 + atn_rand()%100);

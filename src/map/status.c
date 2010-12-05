@@ -1392,11 +1392,11 @@ L_RECALC:
 
 	if(sd) {
 		if(sd->sc.data[SC_WEDDING].timer != -1)
-			sd->view_class = 22;
+			b_class = 22;
 		else if(sd->sc.data[SC_SANTA].timer != -1)
-			sd->view_class = 26;
+			b_class = 26;
 		else if(sd->sc.data[SC_SUMMER].timer != -1)
-			sd->view_class = 27;
+			b_class = 27;
 	}
 
 	if((skill = pc_checkskill(sd,AC_VULTURE)) > 0) {	// ワシの目
@@ -4421,9 +4421,6 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 			rate += status_get_luk(bl)*10 + -(rate * (status_get_str(bl)*10 + status_get_int(bl)*10) / 2000) - src_level*10 + status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_WINKCHARM: // 一応チャーム状態もこちらで計算、式不明のためそのまま
-			sc_flag = 1;
-			break;
 		case SC_TOXIN:
 		case SC_PARALIZE:
 		case SC_VENOMBLEED:
@@ -4953,7 +4950,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			status_enchant_elemental_end(bl,SC_ENCPOISON);
 			break;
 		case SC_EDP:			/* エンチャントデッドリーポイズン */
-			val2 = val1 + 2;	// 猛毒付与確率(%)
+			val2 = 250 + val1 * 50;	// 猛毒付与確率(%)
 			break;
 		case SC_POISONREACT:	/* ポイズンリアクト */
 			val2 = (val1 + 1) / 2;

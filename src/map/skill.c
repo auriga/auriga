@@ -859,7 +859,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 
 	case AS_VENOMKNIFE:		/* ベナムナイフ */
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,6000,status_get_lv(src)))
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,10000,status_get_lv(src)))
 			status_change_start(bl,SC_POISON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		else if(sd)
 			clif_skill_fail(sd,TF_POISON,0,0);
@@ -872,13 +872,13 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	case HT_FREEZINGTRAP:		/* フリージングトラップ */
 	case MA_FREEZINGTRAP:
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,skilllv*300+3500,status_get_lv(src)))
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,10000,status_get_lv(src)))
 			status_change_pretimer(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_adelay(src)*2/3);
 		break;
 
 	case HT_FLASHER:		/* フラッシャー */
 		if( !(status_get_mode(bl)&0x20) && status_get_race(bl) != RCT_PLANT ) { // ボスと植物無効
-			if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,1000*skilllv+3000,status_get_lv(src)))
+			if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,10000,status_get_lv(src)))
 				status_change_start(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		}
 		break;
@@ -923,7 +923,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	case HT_LANDMINE:		/* ランドマイン */
 	case MA_LANDMINE:
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,500*skilllv+3000,status_get_lv(src)))
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,1000,status_get_lv(src)))
 			status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 
@@ -937,7 +937,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 	case HT_SANDMAN:		/* サンドマン */
 	case MA_SANDMAN:
-		if(!(status_get_mode(bl)&0x20) && atn_rand() % 10000 < status_change_rate(bl,SC_SLEEP,500*skilllv+3000,status_get_lv(src)))
+		if(!(status_get_mode(bl)&0x20) && atn_rand() % 10000 < status_change_rate(bl,SC_SLEEP,1000*skilllv+4000,status_get_lv(src)))
 			status_change_start(bl,SC_SLEEP,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case TF_SPRINKLESAND:		/* 砂まき */
@@ -984,8 +984,16 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			int rate = 0;
 			if(battle_check_target(src,bl,BCT_ENEMY) > 0)
 				rate = 1500 + 500 * skilllv;
-			else if(battle_check_target(src,bl,BCT_PARTY) > 0)	// PTメンバにも低確率でかかる(とりあえず10%)
-				rate = 1000;
+			else if(battle_check_target(src,bl,BCT_PARTY) > 0) {	// PTメンバにも低確率でかかる
+				switch(skilllv) {
+				case 1: rate = 500; break;
+				case 2: rate = 620; break;
+				case 3: rate = 750; break;
+				case 4: rate = 870; break;
+				case 5: rate = 1000; break;
+				default: rate = 1000; break;
+				}
+			}
 
 			if(rate > 0 && atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,rate,status_get_lv(src)))
 				status_change_start(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
@@ -997,8 +1005,16 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			int rate = 0;
 			if(battle_check_target(src,bl,BCT_ENEMY) > 0)
 				rate = 2500 + 500 * skilllv;
-			else if(battle_check_target(src,bl,BCT_PARTY) > 0)	// PTメンバにも低確率でかかる(とりあえず通常の1/5)
-				rate = 500 + 100 * skilllv;
+			else if(battle_check_target(src,bl,BCT_PARTY) > 0) {	// PTメンバにも低確率でかかる
+				switch(skilllv) {
+				case 1: rate = 750; break;
+				case 2: rate = 870; break;
+				case 3: rate = 1000; break;
+				case 4: rate = 1120; break;
+				case 5: rate = 1250; break;
+				default: rate = 1250; break;
+				}
+			}
 
 			if(rate > 0 && atn_rand() % 10000 < status_change_rate(bl,SC_STUN,rate,status_get_lv(src)))
 				status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
@@ -1013,7 +1029,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 
 	case BD_LULLABY:	/* 子守唄 */
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_SLEEP,1500,status_get_lv(src)))
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_SLEEP,2550,status_get_lv(src)))
 			status_change_start(bl,SC_SLEEP,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 
@@ -1101,9 +1117,11 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0 );
 		break;
 	case HW_NAPALMVULCAN:			/* ナパームバルカン */
-		// skilllv*5%の確率で呪い
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_CURSE,500*skilllv,status_get_lv(src)))
-			status_change_start(bl,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0);
+		// skilllv*5%の確率で状態異常判定を行い、その後100%の確率で呪い判定を行う
+		if(atn_rand() % 10000 < skilllv*500) {
+			if(atn_rand() % 10000 < status_change_rate(bl,SC_CURSE,10000,status_get_lv(src)))
+				status_change_start(bl,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0);
+		}
 		break;
 	case PA_PRESSURE:		/* プレッシャー */
 		if(dstsd) {
@@ -1132,12 +1150,11 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case TK_DOWNKICK:		/* ネリョチャギ */
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,10000,status_get_lv(src)))
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,33330,status_get_lv(src)))
 			status_change_start(bl,SC_STUN,7,0,0,0,5000,0);
 		break;
 	case TK_TURNKICK:		/* トルリョチャギ */
-		// 確率不明なのでとりあえず100%
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,10000,status_get_lv(src)))
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,20000,status_get_lv(src)))
 			status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case CH_TIGERFIST:		/* 伏虎拳 */
@@ -1235,7 +1252,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 					break;
 			}
 
-			// 確率は適当、暫定で基本50%
+			// 確率は50%
 			if(type > 0 && atn_rand() % 10000 < status_change_rate(bl,type,5000,status_get_lv(src)))
 				status_change_start(bl,type,7,0,0,0,skill_get_time2(timeid,7),0);
 		}
@@ -1260,7 +1277,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_start(bl,SC_POISON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case NPC_BLEEDING:		/* 出血攻撃 */
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,10000,status_get_lv(src)))
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,(skilllv < 5)? skilllv*2000:10000,status_get_lv(src)))
 			status_change_start(bl,SC_BLEED,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case NPC_HELLJUDGEMENT:		/* ヘルジャッジメント */
@@ -4407,7 +4424,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		sc = status_get_sc(bl);
 		if(sc && sc->data[SC_CONFUSION].timer != -1)
 			status_change_end(bl,SC_CONFUSION,-1);
-		else if( !(status_get_mode(bl)&0x20) && atn_rand() % 10000 < status_change_rate(bl,SC_CONFUSION,5000,status_get_lv(src)) )
+		else if( !(status_get_mode(bl)&0x20) && atn_rand() % 10000 < status_change_rate(bl,SC_CONFUSION,7000,status_get_lv(src)) )
 			status_change_start(bl,SC_CONFUSION,7,0,0,0,30000,0);
 		else if(sd)
 			clif_skill_fail(sd,skillid,0,0);
@@ -4415,14 +4432,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case DC_WINKCHARM:	/* 魅惑のウィンク */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstsd) {
-			if(atn_rand() % 10000 < status_change_rate(&dstsd->bl,SC_CONFUSION,7000,status_get_lv(src))) {
+			if(atn_rand() % 10000 < status_change_rate(&dstsd->bl,SC_CONFUSION,1000,status_get_lv(src))) {
 				status_change_start(&dstsd->bl,SC_CONFUSION,7,0,0,0,30000,0);
 				break;
 			}
 		} else if(dstmd) {
 			int race = status_get_race(&dstmd->bl);
 			if( !(dstmd->mode&0x20) && (race == RCT_DEMON || race == RCT_HUMAN || race == RCT_ANGEL) ) {
-				if(atn_rand() % 10000 < status_change_rate(&dstmd->bl,GetSkillStatusChangeTable(skillid),7000,status_get_lv(src))) {
+				if(atn_rand() % 100 < 40 + status_get_lv(src) - status_get_lv(bl)) {
 					status_change_start(&dstmd->bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,10000,0);
 					break;
 				}
@@ -5456,10 +5473,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				break;
 			}
 
-			strip_fix = status_get_dex(src) - status_get_dex(bl);
-			if(strip_fix < 0)
-				strip_fix = 0;
-			if(atn_rand()%100 >= 5 + 5 * skilllv + strip_fix / 5)
+			strip_fix = 2 * (status_get_dex(src) - status_get_dex(bl));
+
+			if(atn_rand()%1000 > skilllv*50 + strip_fix)
 				break;
 
 			if(dstsd) {
@@ -5490,13 +5506,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case ST_FULLSTRIP:		/* フルストリップ */
 		{
-			int strip_fix, strip_time;
+			int strip_fix, rate, strip_time;
 			int fail = 1;
+			int skill_fix = 50 + 20 * skilllv;
 
 			strip_fix = status_get_dex(src) - status_get_dex(bl);
-			if(strip_fix < 0)
-				strip_fix = 0;
-			if(atn_rand()%100 >= 5 + 2 * skilllv + strip_fix / 5)
+			rate = skill_fix + 2 * strip_fix;
+
+			if(rate < skill_fix)
+				rate = skill_fix;
+			if(atn_rand()%1000 >= rate)
 				break;
 			strip_time = skill_get_time(skillid,skilllv) + strip_fix / 2;
 
@@ -6473,10 +6492,20 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case GS_CRACKER:			/* クラッカー */
 		{
 			int cost = skill_get_arrow_cost(skillid,skilllv);
+			int dist = unit_distance2(src,bl);
+			int rate;
 			if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,6500 - unit_distance2(src,bl) * 500,status_get_lv(src))) {
+			if(dist < 3)
+				rate = 5000;
+			else if(dist < 6)
+				rate = 4000;
+			else if(dist < 9)
+				rate = 3000;
+			else
+				rate = 2000;
+			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,rate,status_get_lv(src))) {
 				status_change_start(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			} else if(sd) {
 				clif_skill_fail(sd,skillid,0,0);
@@ -8876,7 +8905,8 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				break;
 			if (sc && sc->data[type].timer != -1)
 				break;
-			status_change_start(bl,type,sg->skill_lv,src->bl.id,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
+			if(atn_rand() % 10000 < status_change_rate(bl,type,10000,status_get_lv(ss)))
+				status_change_start(bl,type,sg->skill_lv,src->bl.id,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 		}
 		break;
 	case UNT_DEMONSTRATION:	/* デモンストレーション */
@@ -12315,21 +12345,20 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 
 	rate = atn_rand()%10000;
 
-	// 統計サイトを参考に適当に確率設定
-	if(rate < 1022)      card_num =  0;	// 10.22%
-	else if(rate < 1911) card_num =  1;	//  8.89%
-	else if(rate < 3068) card_num =  2;	// 11.57%
-	else if(rate < 3839) card_num =  3;	//  7.71%
-	else if(rate < 4954) card_num =  4;	// 11.15%
-	else if(rate < 6454) card_num =  5;	// 15.00%
-	else if(rate < 6513) card_num =  6;	//  0.59%
-	else if(rate < 7150) card_num =  7;	//  6.37%
-	else if(rate < 7636) card_num =  8;	//  4.86%
-	else if(rate < 8374) card_num =  9;	//  7.38%
-	else if(rate < 8458) card_num = 10;	//  0.84%
-	else if(rate < 8642) card_num = 11;	//  1.84%
-	else if(rate < 9036) card_num = 12;	//  3.94%
-	else                 card_num = 13;	//  9.64%
+	if(rate < 1000)      card_num =  0;	// 10%
+	else if(rate < 2000) card_num =  1;	// 10%
+	else if(rate < 3000) card_num =  2;	// 10%
+	else if(rate < 3700) card_num =  3;	//  7%
+	else if(rate < 4700) card_num =  4;	// 10%
+	else if(rate < 6200) card_num =  5;	// 15%
+	else if(rate < 6300) card_num =  6;	//  1%
+	else if(rate < 6900) card_num =  7;	//  6%
+	else if(rate < 7400) card_num =  8;	//  5%
+	else if(rate < 8200) card_num =  9;	//  8%
+	else if(rate < 8300) card_num = 10;	//  1%
+	else if(rate < 8500) card_num = 11;	//  2%
+	else if(rate < 9000) card_num = 12;	//  5%
+	else                 card_num = 13;	// 10%
 
 	if(wheel == 0)	// 運命の輪だとエフェクトなし？
 	{
