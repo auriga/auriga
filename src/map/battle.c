@@ -4688,14 +4688,14 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	if(skillid == RG_INTIMIDATE) {
 		/* インティミデイト */
 		if(damage > 0 && !(status_get_mode(bl)&0x20) && !map[src->m].flag.gvg) {
-			int rate = 50 + skilllv * 5 + status_get_lv(src) - status_get_lv(bl);
+			int rate = 90 + status_get_lv(src) - status_get_lv(bl);
 			if(atn_rand()%100 < rate)
-				skill_addtimerskill(src,tick + 800,bl->id,0,0,skillid,skilllv,0,flag);
+				skill_addtimerskill(src,tick + status_get_amotion(src) + 500,bl->id,0,0,skillid,skilllv,0,flag);
 		}
 	} else if(skillid == NPC_EXPULSION) {
 		/* エクスパルシオン */
 		if(damage > 0 && !map[src->m].flag.gvg)
-			skill_addtimerskill(src,tick + 800,bl->id,0,0,skillid,skilllv,0,flag);
+			skill_addtimerskill(src,tick + status_get_amotion(src) + 500,bl->id,0,0,skillid,skilllv,0,flag);
 	}
 
 	/* ダメージがあるなら追加効果判定 */

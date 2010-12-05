@@ -5475,7 +5475,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 			strip_fix = 2 * (status_get_dex(src) - status_get_dex(bl));
 
-			if(atn_rand()%1000 > skilllv*50 + strip_fix)
+			if(atn_rand()%1000 > 50 + skilllv*50 + strip_fix)
 				break;
 
 			if(dstsd) {
@@ -5499,7 +5499,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					break;
 				}
 			}
-			strip_time = skill_get_time(skillid,skilllv) + strip_fix / 2;
+			if(bl->type == BL_PC)	// PCの場合のみ計算式が違う
+				strip_time = 1000 * (30 * (skilllv+2) - status_get_dex(src) + status_get_dex(bl));
+			else
+				strip_time = 500 * (30 * (skilllv+4) - status_get_dex(src) + status_get_dex(bl));
 			status_change_start(bl,scid,skilllv,0,0,0,strip_time,0);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
@@ -5517,7 +5520,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				rate = skill_fix;
 			if(atn_rand()%1000 >= rate)
 				break;
-			strip_time = skill_get_time(skillid,skilllv) + strip_fix / 2;
+			if(bl->type == BL_PC)	// PCの場合のみ計算式が違う
+				strip_time = 1000 * (30 * (skilllv+2) - status_get_dex(src) + status_get_dex(bl));
+			else
+				strip_time = 500 * (30 * (skilllv+4) - status_get_dex(src) + status_get_dex(bl));
 
 			sc = status_get_sc(bl);
 			if(dstsd) {
@@ -14473,7 +14479,7 @@ void skill_weapon_refine(struct map_session_data *sd, int idx)
 		return;
 	}
 
-	if(atn_rand()%10000 < status_percentrefinery_weaponrefine(sd,&sd->status.inventory[idx])) {
+	if(atn_rand()%1000 < status_percentrefinery_weaponrefine(sd,&sd->status.inventory[idx])) {
 		// 成功
 		clif_weapon_refine_res(sd,0,sd->status.inventory[idx].nameid);
 		skill_success_weaponrefine(sd,idx);

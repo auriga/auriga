@@ -4024,7 +4024,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
  */
 int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
 {
-	int rate,skill;
+	int rate,skilllv;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, md);
@@ -4034,11 +4034,16 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
 	if(md->sc.data[SC_STONE].timer != -1 || md->sc.data[SC_FREEZE].timer != -1)
 		return 0;
 
-	skill = pc_checkskill(sd,RG_STEALCOIN)*10;
-	rate  = skill + (sd->status.base_level - mob_db[md->class_].lv)*2 + (sd->paramc[4] + sd->paramc[5])/2;
+	skilllv = pc_checkskill(sd,RG_STEALCOIN);
+	rate  = skilllv*10 + (sd->status.base_level - mob_db[md->class_].lv)*2 + (sd->paramc[4] + sd->paramc[5])/2;
 
 	if(atn_rand()%1000 < rate) {
-		pc_getzeny(sd,mob_db[md->class_].lv*10 + atn_rand()%100);
+		int max = 10 * mob_db[md->class_].lv;
+		int min = 8 * mob_db[md->class_].lv;
+		int range = max - min + 1;
+		int rnd = atn_rand()%range+min;
+		int zeny = mob_db[md->class_].lv * skilllv / 10 + rnd;
+		pc_getzeny(sd,zeny);
 		md->state.steal_coin_flag = 1;
 		return 1;
 	}

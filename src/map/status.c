@@ -211,13 +211,14 @@ int status_percentrefinery(struct map_session_data *sd,struct item *item)
 }
 
 /*==========================================
- * 精錬成功率 万分率
+ * 精錬成功率 千分率
  *------------------------------------------
  */
 int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item *item)
 {
 	int percent;
 	int joblv;
+	int diff;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, item);
@@ -226,14 +227,15 @@ int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item 
 		return 0;
 
 	joblv = sd->status.job_level > 70? 70 : sd->status.job_level;
-	percent = refine_db[itemdb_wlv(item->nameid)].per[(int)item->refine]*100 + (joblv - 50)*50;
+	diff = joblv - 50;
+	percent = refine_db[itemdb_wlv(item->nameid)].per[(int)item->refine]*10 + diff + 4 * diff;
 
 	if(battle_config.allow_weaponrearch_to_weaponrefine)
-		percent += pc_checkskill(sd,BS_WEAPONRESEARCH)*100;	// 武器研究スキル所持
+		percent += pc_checkskill(sd,BS_WEAPONRESEARCH)*10;	// 武器研究スキル所持
 
 	// 確率の有効範囲チェック
-	if(percent > 10000) {
-		percent = 10000;
+	if(percent > 1000) {
+		percent = 1000;
 	}
 	if(percent < 0) {
 		percent = 0;
@@ -2317,8 +2319,10 @@ L_RECALC:
 		clif_skillinfoblock(sd);	// スキル送信
 	}
 
-	if(b_speed != sd->speed)
+	if(b_speed != sd->speed) {
+		sd->ud.state.change_speed = 1;
 		clif_updatestatus(sd,SP_SPEED);
+	}
 	if(b_weight != sd->weight)
 		clif_updatestatus(sd,SP_WEIGHT);
 	if(b_max_weight != sd->max_weight) {
