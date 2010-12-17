@@ -66,6 +66,7 @@
 #include "homun.h"
 #include "ranking.h"
 #include "merc.h"
+#include "booking.h"
 
 /* パケットデータベース */
 struct packet_db packet_db[MAX_PACKET_DB];
@@ -11890,7 +11891,6 @@ void clif_partyleader_info(struct party *p, int old_account_id, int account_id)
 	return;
 }
 
-
 /*==========================================
  * 音楽ファイルを鳴らす
  *------------------------------------------
@@ -11907,6 +11907,133 @@ void clif_musiceffect(struct map_session_data *sd, const char *name)
 	strncpy(WFIFOP(fd,2),name,24);
 	WFIFOSET(fd,packet_db[0x7fe].len);
 #endif
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキング登録要求応答
+ *------------------------------------------
+ */
+void clif_bookingregack(struct map_session_data *sd, int flag)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0x803;
+	WFIFOW(fd,2) = flag;
+	WFIFOSET(fd,packet_db[0x803].len);
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキング検索要求応答
+ *------------------------------------------*/
+void clif_searchbookingack(struct map_session_data *sd, struct booking_data **list, int count, int flag)
+{
+	int i,j,fd;
+	int n=0;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0x805;
+	if(list) {
+		for(i=0; i<count; i++) {
+			struct booking_data *bd = list[i];
+			WFIFOL(fd,n*48+5)=bd->id;
+			memcpy(WFIFOP(fd,n*48+9),bd->name,24);
+			WFIFOL(fd,n*48+33)=bd->time;
+			WFIFOW(fd,n*48+37)=bd->lv;
+			WFIFOW(fd,n*48+39)=bd->map;
+			for(j=0; j<6; j++)
+				WFIFOW(fd,n*48+41+j*2) = bd->job[j];
+			n++;
+		}
+	}
+	WFIFOW(fd,2)=5+n*48;
+	WFIFOB(fd,4)=flag;
+	WFIFOSET(fd,WFIFOW(fd,2));
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキング登録削除要求応答
+ *------------------------------------------*/
+void clif_deletebookingack(struct map_session_data* sd, int flag)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x807;
+	WFIFOW(fd,2) = flag;
+	WFIFOSET(fd,packet_db[0x807].len);
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキングリスト追加
+ *------------------------------------------*/
+void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd)
+{
+	int i;
+	unsigned char buf[50];
+
+	nullpo_retv(sd);
+	nullpo_retv(bd);
+
+	WBUFW(buf,0) = 0x809;
+	WBUFL(buf,2) = bd->id;
+	memcpy(WBUFP(buf,6),bd->name,24);
+	WBUFL(buf,30) = bd->time;
+	WBUFW(buf,34) = bd->lv;
+	WBUFW(buf,36) = bd->map;
+	for(i=0; i<6; i++)
+		WBUFW(buf,38+i*2) = bd->job[i];
+	clif_send(buf,packet_db[0x809].len,&sd->bl,ALL_CLIENT);
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキングリスト追加
+ *------------------------------------------*/
+void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd)
+{
+	int i;
+	unsigned char buf[18];
+
+	nullpo_retv(sd);
+	nullpo_retv(bd);
+
+	WBUFW(buf,0) = 0x80a;
+	WBUFL(buf,2) = bd->id;
+	for(i=0; i<6; i++)
+		WBUFW(buf,6+i*2) = bd->job[i];
+	clif_send(buf,packet_db[0x80a].len,&sd->bl,ALL_CLIENT);
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキング登録削除
+ *------------------------------------------*/
+void clif_deletebooking(struct map_session_data* sd, int id)
+{
+	unsigned char buf[6];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0) = 0x80b;
+	WBUFL(buf,2) = id;
+	clif_send(buf,packet_db[0x80b].len,&sd->bl,ALL_CLIENT);
 
 	return;
 }
@@ -15796,14 +15923,6 @@ static void clif_parse_PartyChangeLeader(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
-* パーティーBooking
-*------------------------------------------*/
-static void clif_parse_PartyBooking(int fd,struct map_session_data *sd, int cmd)
-{
-	return;
-}
-
-/*==========================================
 * GMによる装備解除
 *------------------------------------------*/
 static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
@@ -15827,6 +15946,60 @@ static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
 			pc_unequipitem(tsd,i,0);
 		}
 	}
+
+	return;
+}
+
+/*==========================================
+* パーティーブッキング登録
+*------------------------------------------*/
+static void clif_parse_PartyBookingRegisterReq(int fd,struct map_session_data *sd, int cmd)
+{
+	int i,lv,map;
+	int job[6];
+
+	lv = RFIFOW(fd,GETPACKETPOS(cmd,0));
+	map = RFIFOW(fd,GETPACKETPOS(cmd,1));
+	for(i=0; i<6; i++)
+		job[i] = RFIFOW(fd,GETPACKETPOS(cmd,2+i));
+
+	booking_register(sd,lv,map,job);
+
+	return;
+}
+
+/*==========================================
+* パーティーブッキング検索要求
+*------------------------------------------*/
+static void clif_parse_PartyBookingSearchReq(int fd,struct map_session_data *sd, int cmd)
+{
+	booking_searchcond(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOW(fd,GETPACKETPOS(cmd,1)),RFIFOW(fd,GETPACKETPOS(cmd,2)),RFIFOL(fd,GETPACKETPOS(cmd,3)),RFIFOW(fd,GETPACKETPOS(cmd,4)));
+
+	return;
+}
+
+/*==========================================
+* パーティーブッキング削除要求
+*------------------------------------------*/
+static void clif_parse_PartyBookingDeleteReq(int fd,struct map_session_data *sd, int cmd)
+{
+	booking_delete(sd);
+
+	return;
+}
+
+/*==========================================
+* パーティーブッキングアップデート要求
+*------------------------------------------*/
+static void clif_parse_PartyBookingUpdateReq(int fd,struct map_session_data *sd, int cmd)
+{
+	int i;
+	int job[6];
+
+	for(i=0; i<6; i++)
+		job[i] = RFIFOW(fd,GETPACKETPOS(cmd,0+i));
+
+	booking_update(sd,job);
 
 	return;
 }
@@ -16132,8 +16305,11 @@ static void packetdb_readdb(void)
 		{ clif_parse_HuntingList,               "huntinglist"               },
 		{ clif_parse_BattleMessage,             "battlemessage"             },
 		{ clif_parse_PartyChangeLeader,         "partychangeleader"         },
-		{ clif_parse_PartyBooking,              "partybooking"              },
 		{ clif_parse_GmFullstrip,               "gmfullstrip"               },
+		{ clif_parse_PartyBookingRegisterReq,   "bookingregreq"             },
+		{ clif_parse_PartyBookingSearchReq,     "bookingsearchreq"          },
+		{ clif_parse_PartyBookingUpdateReq,     "bookingupdatereq"          },
+		{ clif_parse_PartyBookingDeleteReq,     "bookingdelreq"             },
 		{ NULL,                                 NULL                        },
 	};
 

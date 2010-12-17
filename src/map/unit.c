@@ -50,6 +50,7 @@
 #include "intif.h"
 #include "mail.h"
 #include "merc.h"
+#include "booking.h"
 
 static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data);
 static int unit_attack_timer(int tid,unsigned int tick,int id,void *data);
@@ -2251,6 +2252,7 @@ int unit_free(struct block_list *bl, int clrtype)
 		pc_cleareventtimer(sd);					// イベントタイマを破棄する
 		pc_delspiritball(sd,sd->spiritball.num,1);	// 気功削除
 		pc_delcoin(sd,sd->coin.num,1);				// コイン削除
+		booking_delete(sd);
 		//storage_storage_save(sd);
 		storage_delete(sd->status.account_id);
 		pc_clearitemlimit(sd);

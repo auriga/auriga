@@ -359,6 +359,14 @@ void clif_send_mercstatus(struct map_session_data *sd);
 void clif_mercskillinfoblock(struct map_session_data *sd);
 void clif_mercupdatestatus(struct map_session_data *sd, int type);
 
+// party_booking
+void clif_bookingregack(struct map_session_data *sd, int flag);
+void clif_searchbookingack(struct map_session_data *sd, struct booking_data **list, int count, int flag);
+void clif_deletebookingack(struct map_session_data* sd, int flag);
+void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd);
+void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd);
+void clif_deletebooking(struct map_session_data* sd, int id);
+
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);
 

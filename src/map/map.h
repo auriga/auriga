@@ -393,6 +393,7 @@ struct map_session_data {
 	int chatID;
 	short race;
 	short view_size;
+	unsigned int booking_id;
 
 	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wis拒否リスト
 
@@ -926,6 +927,15 @@ struct merc_data {
 	int natural_heal_hp,natural_heal_sp;
 	int limit_timer;
 	struct map_session_data *msd;
+};
+
+struct booking_data {
+	unsigned int id;
+	char name[24];
+	unsigned int time;
+	int lv;
+	int map;
+	int job[6];
 };
 
 struct map_data {

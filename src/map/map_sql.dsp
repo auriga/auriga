@@ -241,6 +241,10 @@ SOURCE=..\..\src\map\merc.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\map\booking.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\common\version.c
 # End Source File
 # Begin Source File
@@ -406,6 +410,10 @@ SOURCE=..\..\src\map\mail.h
 # Begin Source File
 
 SOURCE=..\..\src\map\merc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\booking.h
 # End Source File
 # Begin Source File
 

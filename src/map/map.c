@@ -63,6 +63,7 @@
 #include "homun.h"
 #include "ranking.h"
 #include "merc.h"
+#include "booking.h"
 
 // 極力 staticでローカルに収める
 static struct dbt *id_db        = NULL;
@@ -2908,6 +2909,7 @@ void do_final(void)
 	do_final_clif();
 	do_final_pc();
 	do_final_party();
+	do_final_booking();
 	do_final_pet();
 	do_final_homun();
 	do_final_merc();
@@ -3052,6 +3054,7 @@ int do_init(int argc,char *argv[])
 	do_init_npc();
 	do_init_pc();
 	do_init_party();
+	do_init_booking();
 	do_init_guild();
 	do_init_storage();
 	do_init_pet();
