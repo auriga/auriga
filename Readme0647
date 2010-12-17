@@ -1,4 +1,12 @@
 ----------------------------------------
+//0811 [2010/12/18] by popori
+
+・signedとunsignedの比較のwarningを修正 (booking.c map.h)
+　NP3228さんに感謝
+
+・ドキュメントの一部を更新 (client_packet.txt inter_server_packet.txt)
+
+----------------------------------------
 //0810 [2010/12/18] by popori
 
 ・パーティーブッキングシステムの実装

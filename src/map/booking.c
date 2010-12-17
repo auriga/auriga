@@ -35,7 +35,7 @@
 static struct dbt* booking_db = NULL;
 static int booking_mapid[MAX_BOOKING_MAPID];
 static int booking_jobid[MAX_BOOKING_JOBID];
-static unsigned int booking_id = 0;
+static int booking_id = 0;
 
 /*==========================================
  * MAPIDが有効かチェック
@@ -90,7 +90,7 @@ static int booking_search_jobid(int job)
  * 該当IDのブッキングリスト検索
  *------------------------------------------
  */
-static struct booking_data *booking_search(unsigned int booking_id)
+static struct booking_data *booking_search(int booking_id)
 {
 	return (struct booking_data *)numdb_search(booking_db,booking_id);
 }
