@@ -179,7 +179,7 @@ enum {
 	SC_SPEEDPOTION0         = 37,
 	SC_SPEEDPOTION1         = 38,
 	SC_SPEEDPOTION2         = 39,
-	SC_SPEEDPOTION3         = 40,
+	//
 	//
 	//
 	//
@@ -359,7 +359,7 @@ enum {
 	SC_REGENERATION_DELAY	= 216,
 	SC_RESTORE_DELAY		= 217,
 	SC_EMERGENCYCALL_DELAY	= 218,
-	SC_POISONPOTION         = 219,
+	//
 	SC_THE_MAGICIAN         = 220,
 	SC_STRENGTH             = 221,
 	SC_THE_DEVIL            = 222,

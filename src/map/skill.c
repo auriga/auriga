@@ -5679,7 +5679,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	case AM_BERSERKPITCHER:		/* バーサークピッチャー */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		status_change_start(bl,SC_SPEEDPOTION3,1,0,0,0,900000,0);
+		status_change_start(bl,SC_SPEEDPOTION2,1,0,0,0,900000,0);
 		break;
 	case AM_CP_WEAPON:
 	case AM_CP_SHIELD:
@@ -8090,10 +8090,12 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		val2 = status_get_dex(src)/10;
 		break;
 	case DC_DONTFORGETME:		/* 私を忘れないで… */
-		if(sd)
-			val1 = pc_checkskill(sd,DC_DANCINGLESSON)>>1;
-		val2 = ((status_get_str(src)/20)&0xffff)<<16;
-		val2 |= (status_get_agi(src)/10)&0xffff;
+		val1 = status_get_dex(src)/10 + 3*skilllv + 5;
+		val2 = status_get_agi(src)/10 + 3*skilllv + 5;
+		if(sd){
+			val1 += pc_checkskill(sd,DC_DANCINGLESSON);
+			val2 += pc_checkskill(sd,DC_DANCINGLESSON);
+		}
 		break;
 	case BA_POEMBRAGI:			/* ブラギの詩 */
 		if(sd)
@@ -8114,8 +8116,8 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		break;
 	case BA_ASSASSINCROSS:		/* 夕陽のアサシンクロス */
 		if(sd)
-			val1 = pc_checkskill(sd,BA_MUSICALLESSON)>>1;
-		val2 = status_get_agi(src)/20;
+			val1 = pc_checkskill(sd,BA_MUSICALLESSON);
+		val2 = (val1/2 + status_get_agi(src)/20) + skilllv;
 		break;
 	case DC_FORTUNEKISS:		/* 幸運のキス */
 		if(sd)

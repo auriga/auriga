@@ -41,7 +41,7 @@
 37,SC_SPEEDPOTION0,1,7,0		// スピードアップポーション
 38,SC_SPEEDPOTION1,1,7,0		// ハイスピードアップポーション
 39,SC_SPEEDPOTION2,1,7,0		// バーサークポーション
-40,SC_SPEEDPOTION3,0,23,0		// バーサークピッチャー
+//
 //
 50,SC_STRIPWEAPON,0,13,0		// ストリップウェポン
 51,SC_STRIPSHIELD,0,13,0		// ストリップシールド
@@ -184,7 +184,7 @@
 216,SC_REGENERATION_DELAY,1,0,0		// 激励ディレイ
 217,SC_RESTORE_DELAY,1,0,0		// 治療ディレイ
 218,SC_EMERGENCYCALL_DELAY,1,0,0	// 緊急召集ディレイ
-219,SC_POISONPOTION,1,7,0		// 毒薬の瓶
+//
 220,SC_THE_MAGICIAN,0,1,0		// 魔法師（タロットカード用）
 221,SC_STRENGTH,0,1,0			// 力（タロットカード用）
 222,SC_THE_DEVIL,0,1,0			// 悪魔（タロットカード用）

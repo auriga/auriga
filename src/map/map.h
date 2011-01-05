@@ -465,7 +465,7 @@ struct map_session_data {
 	int arrow_atk,arrow_ele,arrow_cri,arrow_hit,arrow_range;
 	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[4],arrow_addsize[MAX_SIZE_FIX],arrow_addeff[10],arrow_addeff2[10];
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
-	int aspd_rate,speed_rate,hprecov_rate,sprecov_rate,critical_def,double_rate;
+	int aspd_add,aspd_rate,speed_rate,hprecov_rate,sprecov_rate,critical_def,double_rate;
 	int near_attack_def_rate,long_attack_def_rate,magic_def_rate,misc_def_rate,matk_rate,matk2_rate;
 	int ignore_def_ele[ELE_MAX],ignore_def_race[RCT_MAX],ignore_def_enemy[4];
 	int ignore_def_ele_[ELE_MAX],ignore_def_race_[RCT_MAX],ignore_def_enemy_[4];

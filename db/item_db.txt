@@ -144,10 +144,10 @@
 642,Book_of_the_Devil,悪魔召喚書,2,1800,,50,,,,,1000333311,2,,,,,,{ pet 1101; },{}
 643,Pet_Incubator,携帯卵孵化機,2,3000,,30,,,,,1000333311,2,,,,,,{ bpet; },{}
 644,Gift_Box,プレゼントボックス,2,1000,,200,,,,,1000333311,2,,,,,,{ getitem RAND_GIFT_BOX,1,0; },{}
-645,Concentration_Potion,スピードアップポーション,2,800,,100,,,,,1000333311,2,,,,,,{ sc_end SC_POISONPOTION; sc_start SC_SpeedPot0,1800000,0; },{}
+645,Concentration_Potion,スピードアップポーション,2,800,,100,,,,,1000333311,2,,,,,,{ sc_start SC_SpeedPot0,1800000,0; },{}
 
-656,Awakening_Potion,ハイスピードポーション,2,1500,,150,,,,,998760175,2,,,40,,,{ sc_end SC_POISONPOTION; sc_start SC_SpeedPot1,1800000,0; },{}
-657,Berserk_Potion,バーサークポーション,2,3000,,200,,,,,453396134,2,,,85,,,{ sc_end SC_POISONPOTION; sc_start SC_SpeedPot2,1800000,0; },{}
+656,Awakening_Potion,ハイスピードポーション,2,1500,,150,,,,,998760175,2,,,40,,,{ sc_start SC_SpeedPot1,1800000,0; },{}
+657,Berserk_Potion,バーサークポーション,2,3000,,200,,,,,453396134,2,,,85,,,{ sc_start SC_SpeedPot2,1800000,0; },{}
 658,Tribal_Solidarity,組織の団結力,2,1000,,500,,,,,1000333311,2,,,,,,{ guildgetexp rand(600000,1200000); },{}
 659,Her_Heart,彼女の想い,2,500,,50,,,,,1000333311,2,,,,,,{ pet 1188; },{}
 660,Prohibition_Red_Candle,赤いろうそく,2,20000,,50,,,,,1000333311,2,,,,,,{ pet 1200; },{}
@@ -168,7 +168,7 @@
 675,Silver_Coin,銀貨,2,,,40,,,,,1000333311,2,,,,,,{},{}
 676,Bag_of_Silver_Coins,銀貨の袋,2,,,400,,,,,1000333311,2,,,,,,{},{}
 677,Platinum_Coin,白金貨,2,,,40,,,,,,,,,,,,{},{}
-678,Poison_Bottle,毒薬の瓶,2,5000,,100,,,,,1000333311,2,,,,,,{ if((Class == Job_Assassin) && (Upper == 1)){ sc_end SC_SpeedPot0; sc_end SC_SpeedPot1; sc_end SC_SpeedPot2; sc_start SC_POISONPOTION,60000,0; }else{ percentheal -100,0; } },{}
+678,Poison_Bottle,毒薬の瓶,2,5000,,100,,,,,1000333311,2,,,,,,{ if((Class == Job_Assassin) && (Upper == 1)){ sc_start SC_SpeedPot2,60000,0; }else{ percentheal -100,0; } },{}
 679,Pilule,神仙丹,2,5000,,300,,,,,1000333311,2,,,,,,{ percentheal 50,50; },{}
 680,Magic_Carnation,魔力のカーネーション,2,,,1000,,,,,,,,,,,,{},{}
 681,Sweet_Memory_of_Marriage,新婚時代の思い出,2,50000,,10,,,,,1000333311,2,,,,,,{ sc_start SC_WEDDING,3600000,0; },{}
@@ -609,7 +609,7 @@
 1264,Various_Jur,バリアスジュル,9,20,,800,90,,1,4,4096,2,34,1,0,16,1,{},{ bonus2 bAddEff2,Eff_Bleed,10; }
 1265,Bloody_Roar,ブラッディロア,9,20,,1000,120,,1,0,4096,2,34,4,75,16,1,{},{ bonus2 bIgnoreDefRace,7,100; bonus bFlee,-Baselevel-readparam(bAgi); bonus bHPrecovStop,0; bonus bSPrecovStop,0; }
 1266,Infiltrator_,裏切り者,9,57000,,1500,140,,1,1,4096,2,34,4,75,16,1,{},{ bonus2 bAddRace,7,50; bonus bDef,3; bonus bFlee,5; bonus bFlee2,2; }
-1267,Infiltrator_C,裏切り者R,9,,-1,0,189,,1,0,4096,2,34,4,1,16,,{},{ bonus2 bAddRace,7,70; bonus bDef,3; bonus bFlee,5; bonus bFlee2,2; bonus bAspdRate,5; }
+1267,Infiltrator_C,裏切り者R,9,,-1,0,189,,1,0,4096,2,34,4,1,16,,{},{ bonus2 bAddRace,7,70; bonus bDef,3; bonus bFlee,5; bonus bFlee2,2; bonus bAspdAddRate,5; }
 1268,Wild_Beast_Claw,野獣の爪,9,20,,1450,160,,1,1,4096,2,34,4,55,16,1,{},{ if(getequiprefinerycnt(3)>=9) bonus3 bAutoSpell,673,2,1000; else bonus3 bAutoSpell,673,1,1000; }
 1269,Inverse_Scale,インバーススケイル,9,20,,1500,140,,1,0,4096,2,34,4,55,16,1,{},{ bonus bAtkEle,6; bonus3 bAutoSelfSpell,659,1,300; }
 1270,Drill_Katar,ドリルカタール,9,20,,1400,110,,1,1,4096,2,34,4,55,16,1,{},{ bonus bHit,30; bonus3 bAutoSpell,476,5,1500; }
@@ -622,7 +622,7 @@
 1277,Katar_Of_Raging_Blaze_,爆炎のカタール,9,45000,,1200,105,,1,3,4096,2,34,3,55,16,1,{},{ bonus bAtkEle,3; bonus2 bAddEff,Eff_Silence,500; }
 1278,Katar_Of_Piercing_Wind_,疾風のカタール,9,45000,,1200,105,,1,3,4096,2,34,3,55,16,1,{},{ bonus bAtkEle,4; bonus2 bAddEff,Eff_Sleep,500; }
 1279,Mass_Murder_Katar,虐殺のカタール(勇猛),9,20,,0,130,,1,0,4096,2,34,3,80,16,1,{},{ bonus bStr,1; bonus bDex,1; bonus bLuk,1; bonus2 bAddRace,7,70; bonus bUnbreakableWeapon,0; }
-1280,Mass_Murder_Katar_,虐殺のカタール(特攻),9,20,,0,130,,1,0,4096,2,34,3,80,16,1,{},{ bonus bStr,1; bonus bDex,1; bonus bLuk,1; bonus2 bAddRace,7,70; bonus bCritAtkRate,20; bonus bAspdRate,5; bonus bUnbreakableWeapon,0; }
+1280,Mass_Murder_Katar_,虐殺のカタール(特攻),9,20,,0,130,,1,0,4096,2,34,3,80,16,1,{},{ bonus bStr,1; bonus bDex,1; bonus bLuk,1; bonus2 bAddRace,7,70; bonus bCritAtkRate,20; bonus bAspdAddRate,5; bonus bUnbreakableWeapon,0; }
 1281,Krieger_Katar1,グロリアスブラッディロア,9,,,0,140,,1,0,4096,2,34,4,80,16,1,{},{ bonus2 bAddRace,7,70; bonus2 bIgnoreDefRace,7,20; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1281,700,3000; if(checkactiveitem()) { misceffect 9,""; bonus bAspdAddRate,100; } /*発動率等暫定（eathenaより）*/}
 1282,Krieger_Katar2,グロリアスジャマダハル,9,,,0,140,,1,0,4096,2,34,4,80,16,1,{},{ bonus2 bAddRace,7,70; bonus2 bIgnoreDefRace,7,20; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1282,700,3000; if(checkactiveitem()) { misceffect 9,""; bonus bAspdAddRate,100; } /*発動率等暫定（eathenaより）*/}
 1283,Katar_Of_Speed,素早いカタール,9,,,0,175,,1,0,4096,2,34,4,,16,,{},{}
@@ -638,7 +638,7 @@
 1304,Orcish_Axe,オーキッシュアックス,5,20,,1500,75,,1,0,8672419,2,2,3,3,6,1,{},{}
 1305,Cleaver,クリーヴァー,5,20,,1200,140,,1,0,8668323,2,2,4,44,6,1,{},{ bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; bonus3 bAddMonsterDropItem,517,2,3000;}
 1306,War_Axe,ウォーアクス,5,20,,4200,145,,1,1,263168,2,2,3,76,6,1,{},{ bonus bDex,2; bonus bLuk,2; }
-1307,Windhawk,ウィンドホーク,5,18000,,1500,115,,1,0,414946,2,2,2,14,6,1,{},{ bonus bAtkEle,4; bonus bAspdRate,5; }
+1307,Windhawk,ウィンドホーク,5,18000,,1500,115,,1,0,414946,2,2,2,14,6,1,{},{ bonus bAtkEle,4; bonus bAspdAddRate,5; }
 1308,Golden_Axe,金斧,5,,,,,,1,0,279714,2,2,4,,6,1,{},{}
 1309,Orcish_Axe_,オーキッシュアックス,5,20,,1500,75,,1,4,8672419,2,2,3,3,6,1,{},{}
 1310,Krieger_Onehand_Axe1,グロリアスクリーヴァー,5,,,0,130,,1,,279714,2,2,4,80,6,1,{},{ bonus2 bAddRace,7,75; bonus2 bIgnoreDefRace,7,20; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoSpell,673,1,500; bonus bAspdAddRate,5; bonus4 bSkillAutoSpell2,42,673,2,2000; /*発動率等暫定（eathenaより）*/}
@@ -672,7 +672,7 @@
 1374,Tomahawk_C,トマホークR,9,,-1,0,200,,1,0,279714,2,34,4,1,7,,{},{ bonus bAtkEle,4; skill 337,1; }
 1375,Berdysz,バルディッシュ,9,20,,2500,200,,1,2,279714,2,34,3,70,7,1,{},{ bonus2 bSubSize,1,13; bonus2 bSubSize,2,15; }
 1376,Heart_Breaker,ハートブレイカー,9,20,,2000,175,,1,1,279714,2,34,4,70,7,1,{},{ bonus bCritical,20+getequiprefinerycnt(4); bonus bAspdAddRate,5; if(Class== Job_Blacksmith || Class== Job_Alchemist) bonus3 bAutoSpell,110,3,300; }
-1377,Hurricane_Fury,ハリケーンフューリー,9,20,,3500,332,,1,1,279714,2,34,4,80,7,1,{},{ bonus2 bSubSize,1,10+getequiprefinerycnt(4); bonus bAspdRate,getequiprefinerycnt(4); bonus3 bAutoSelfSpell,661,5,200; }
+1377,Hurricane_Fury,ハリケーンフューリー,9,20,,3500,332,,1,1,279714,2,34,4,80,7,1,{},{ bonus2 bSubSize,1,10+getequiprefinerycnt(4); bonus bAspdAddRate,getequiprefinerycnt(4); bonus3 bAutoSelfSpell,661,5,200; }
 1378,Great_Axe_C,グレイトアックス,9,,-1,0,215,,1,0,279714,2,34,4,1,7,,{},{ bonus bStr,5; bonus bHit,20; bonus2 bAddSkillDamageRate,42,20; bonus2 bAddEff,Eff_Stun,1500; }
 1379,Elite_Soldier's_Battle_Axe,狂戦士のバトルアックス(特攻),9,20,,0,200,,1,0,279714,2,34,3,80,7,1,{},{ bonus bStr,3; bonus2 bAddRace,7,55; bonus bUnbreakableWeapon,0; }
 1380,Elite_Soldier's_Battle_Axe,狂戦士のバトルアックス(勇猛),9,20,,0,200,,1,0,279714,2,34,3,80,7,1,{},{ bonus bStr,3; bonus2 bAddRace,7,55; bonus bUnbreakableWeapon,0; }
@@ -784,7 +784,7 @@
 1527,Quadrille,カドリール,5,20,,900,165,,1,0,33040,2,2,4,40,8,1,{},{ bonus2 bAddRace,7,10; bonus2 bAddEle,2,10; bonus2 bAddEle,9,10; }
 1528,Grand_Cross,グランドクロス,5,20,,1500,140,,1,0,33040,2,2,4,40,8,1,{},{ bonus bAtkEle,6; bonus3 bAutoSpell,77,3,1000; bonus3 bDefeatSPDrainValue,1,100,3; bonus2 bSPDrainValue,100,1; }
 1529,Iron_Driver,アイアンドライバー,5,20,,3000,155,,1,0,33024,2,2,3,78,8,1,{},{}
-1530,Mjolnir,ミョルニール,5,20,,6000,250,,1,0,279714,2,2,4,95,8,,{},{ bonus bAtkEle,4; bonus bDex,40; bonus bStr,15; bonus bAspdRate,30;}
+1530,Mjolnir,ミョルニール,5,20,,6000,250,,1,0,279714,2,2,4,95,8,,{},{ bonus bAtkEle,4; bonus bDex,40; bonus bStr,15; bonus bAspdAddRate,30;}
 1531,Spanner,スパナ,5,20,,2500,115,,1,0,33040,2,2,3,55,8,1,{},{ bonus2 bAddEff,Eff_Freeze,500; bonus2 bAddEff,Eff_Stun,500; bonus2 bAddEff,Eff_Blind,500; bonus2 bAddEff,Eff_Poison,500; }
 1532,Stunner_,スタナー,5,60000,,2000,140,,1,2,33040,2,2,3,27,8,1,{},{ bonus2 bAddEff,Eff_Stun,1000; }
 1533,Warrior_Balmung,勇者のバルムン,9,20,,1000,200,,1,0,1000333311,2,34,4,48,3,1,{},{ bonus bStr,5; bonus bAgi,5; bonus bVit,5; bonus bInt,5; bonus bDex,5; bonus bLuk,5; }
@@ -814,12 +814,12 @@
 1557,Book_Of_The_Apocalypse,黙示録,5,70000,,800,120,,1,0,33620224,2,2,4,40,15,1,{},{ bonus bAtkEle,7; bonus2 bSubEle,6,-5; bonus2 bAddEle,1,7; bonus2 bAddEle,2,7; bonus2 bAddEle,3,7; bonus2 bAddEle,4,7; }
 1558,Girl's_Diary,少女の日記,5,1500,,300,60,,1,1,33620224,2,2,4,40,15,1,{},{ bonus2 bAddDamageClass,1188,150; }
 1559,Legacy_Of_Dragon,ドラゴンの遺産,5,20,,700,130,,1,0,33620224,2,2,4,70,15,1,{},{ bonus bInt,3; bonus2 bIgnoreDefRace,9,100; bonus3 bDefeatSPDrainValue,9,100,10; }
-1560,Diary_Of_Great_Sage,賢者の日記,5,20,,1100,100,,1,2,33620224,2,2,3,60,15,1,{},{ bonus bMatkRate,15; if(readparam(bStr)>=50) bonus bAspdRate,5; if(readparam(bInt)>=70) bonus bMatkRate,5; }
+1560,Diary_Of_Great_Sage,賢者の日記,5,20,,1100,100,,1,2,33620224,2,2,3,60,15,1,{},{ bonus bMatkRate,15; if(readparam(bStr)>=50) bonus bAspdAddRate,5; if(readparam(bInt)>=70) bonus bMatkRate,5; }
 1561,Hardback,分厚い本,5,20,,1500,140,,1,1,33620224,2,2,4,55,15,1,{},{ bonus bStr,3; bonus bDex,2; }
 1562,Bible_Of_Battlefield,戦場の書,5,20,,700,110,,,1,33620224,2,2,4,80,15,1,{},{ bonus bInt,3; bonus3 bAutoSelfSpell2,34,3,200; }
-1563,Diary_Of_Great_Sage_C,賢者の日記R,5,,-1,1100,135,,1,0,33620224,2,2,3,1,15,,{},{ bonus bMatkRate,20; bonus bAspdRate,5; }
+1563,Diary_Of_Great_Sage_C,賢者の日記R,5,,-1,1100,135,,1,0,33620224,2,2,3,1,15,,{},{ bonus bMatkRate,20; bonus bAspdAddRate,5; }
 1564,Encyclopedia,大百科事典,5,20,,2000,110,,1,2,33620224,2,2,3,70,15,1,{},{ bonus bMatkRate,15; bonus bInt,3; bonus bDex,2; bonus bCritical,20+readparam(bLuk)/5; }
-1565,Death_Note,死神の名簿,5,20,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,7,100; bonus bAspdRate,getequiprefinerycnt(4); if(Class == Job_Sage) bonus3 bAutoSelfSpell,662,5,200; }
+1565,Death_Note,死神の名簿,5,20,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,7,100; bonus bAspdAddRate,getequiprefinerycnt(4); if(Class == Job_Sage) bonus3 bAutoSelfSpell,662,5,200; }
 1566,Diary_Of_Great_Basil,堅二の日記,5,20,,0,120,,1,0,33620224,2,2,1,0,15,1,{},{ bonus bMatkRate,15; bonus bAtkRate,50; }
 1567,Hardback_C,分厚い本,5,,-1,0,168,,1,0,33620224,2,2,4,1,15,,{},{ bonus bStr,5; bonus bDex,2; bonus bMatkRate,20; }
 1568,Book_Of_Billows_,荒れ狂う波の書,5,20,,750,90,,1,3,33620224,2,2,3,27,15,1,{},{ bonus bAtkEle,1; }
@@ -833,7 +833,7 @@
 1576,Krieger_Book1,グロリアスタブレット,5,,,0,90,,1,0,33620224,2,2,4,80,15,1,{},{ bonus bMatk2Rate,15; bonus2 bAddRace,7,80; bonus2 bIgnoreDefRace,7,25; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1576,3000,3000; if(checkactiveitem()) { misceffect 9,""; bonus bBaseAtk,200; } /*発動率等暫定（eathenaより）*/}
 1577,Krieger_Book2,グロリアス黙示録,5,,,0,90,,1,0,33620224,2,2,4,80,15,1,{},{ bonus bMatk2Rate,15; bonus2 bMagicAddRace,7,80; bonus2 bIgnoreMDefRace,7,25; if(getequiprefinerycnt(4)<6) end; bonus2 bIgnoreMDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus bMatkRate,5; bonus bCastrate,-5; bonus bSkillDelayRate,-5; /*発動率等暫定（eathenaより）*/}
 1578,Book_Of_Prayer,祈る者の書,5,,,0,140,,1,0,33620224,2,2,3,,15,,{},{}
-1579,Death_Note_M,死神の名簿,5,,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,7,100; bonus bAspdRate,getequiprefinerycnt(4); if(Class == Job_Sage) bonus3 bAutoSelfSpell,662,5,200; }
+1579,Death_Note_M,死神の名簿,5,,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,7,100; bonus bAspdAddRate,getequiprefinerycnt(4); if(Class == Job_Sage) bonus3 bAutoSelfSpell,662,5,200; }
 1580,Encyclopedia_C,大百科事典,5,,,0,145,,1,0,33620224,2,2,,1,15,,{},{ bonus bMatkRate,15; bonus bInt,3; bonus bDex,2; bonus bCritical,20+readparam(bLuk)/5; bonus2 bAddSize,0,40; bonus2 bAddSize,1,40; bonus2 bAddSize,2,40; }
 
 1599,Angra_Manyu,アーリマン,5,,,,,,,,,0,,,,,,{},{}
@@ -978,10 +978,10 @@
 1811,Finger,フィンガー,5,58000,,500,97,,1,1,33024,2,2,3,24,12,1,{},{}
 1812,Finger_,フィンガー,5,58000,,500,97,,1,2,33024,2,2,3,24,12,1,{},{}
 1813,Kaiser_Knuckle,カイザーナックル,5,20,,450,110,,1,0,33024,2,2,4,36,12,1,{},{ bonus bAtkEle,4; bonus2 bAddRace,1,5; bonus2 bAddEle,1,10; bonus2 bAddEle,2,10; bonus2 bAddEle,3,10; bonus2 bAddEle,4,10; }
-1814,Berserk,ベルセルク,5,20,,500,120,,1,0,33024,2,2,4,36,12,1,{},{ bonus bAspdRate,12; }
+1814,Berserk,ベルセルク,5,20,,500,120,,1,0,33024,2,2,4,36,12,1,{},{ bonus bAspdAddRate,12; }
 1815,Claw_Of_Garm,ガルムの爪,5,20,,550,152,,1,1,33024,2,2,4,70,12,1,{},{ bonus bMaxHPrate,-2; bonus2 bAddEff,Eff_Bleed,200; bonus bAtkEle,7; }
-1816,Berserk_,ベルセルク,5,20,,500,120,,1,1,33024,2,2,4,36,12,1,{},{ bonus bAspdRate,12; }
-1817,Kaiser_Knuckle_C,カイザーナックルR,5,,-1,0,159,,1,0,16810240,2,2,4,1,12,,{},{ bonus2 bAddEle,1,10; bonus2 bAddEle,2,10; bonus2 bAddEle,3,10; bonus2 bAddEle,4,10; bonus2 bAddRace,1,5; bonus bAspdRate,5; }
+1816,Berserk_,ベルセルク,5,20,,500,120,,1,1,33024,2,2,4,36,12,1,{},{ bonus bAspdAddRate,12; }
+1817,Kaiser_Knuckle_C,カイザーナックルR,5,,-1,0,159,,1,0,16810240,2,2,4,1,12,,{},{ bonus2 bAddEle,1,10; bonus2 bAddEle,2,10; bonus2 bAddEle,3,10; bonus2 bAddEle,4,10; bonus2 bAddRace,1,5; bonus bAspdAddRate,5; }
 1818,Magma_Fist,マグマフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,280,5,100,EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; }
 1819,Icicle_Fist,アイシクルフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,281,5,100,EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; }
 1820,Electric_Fist,エレクトリックフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,282,5,100,EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; }
@@ -1014,7 +1014,7 @@
 1917,Guitar_Of_Gentle_Breeze,柔らかなそよ風のギター,5,20,,900,110,,1,0,524288,2,2,3,27,13,1,{},{ bonus bAtkEle,4; }
 1918,Oriental_Lute,琵琶,5,20,,1200,150,,1,0,524288,2,2,4,65,13,1,{},{ bonus2 bAddSkillDamageRate,394,10; bonus2 bAddSkillDamageRate,316,10; }
 1919,Base_Guitar,ベースギター,5,20,,1500,130,,1,1,524288,2,2,3,70,13,1,{},{ bonus bSPGainValue,3; bonus3 bRevAutoSpell,91,3,300; bonus3 bAutoSelfSpell,667,1,1000; }
-1920,Berserk_Guitar,憑神のギター,5,20,,1800,10,,1,0,524288,2,2,4,70,13,1,{},{ bonus bDex,-readparam(bDex); bonus bFixAspd,190; bonus bHPrecovRate,-100; bonus2 bHPPenaltyTime,5000,50; }
+1920,Berserk_Guitar,憑神のギター,5,20,,1800,10,,1,0,524288,2,2,4,70,13,1,{},{ bonus bDex,-readparam(bDex); bonus bAspdAddRate,100; bonus bHPrecovRate,-100; bonus2 bHPPenaltyTime,5000,50; }
 1921,Sakray_Test_Instrument,ゴムンゴム,5,20,,0,120,,1,0,524288,2,2,1,0,13,1,{},{ bonus bAtkRate,50; }
 1922,Oriental_Lute_,琵琶,5,20,,1200,150,,1,2,524288,2,2,4,65,13,1,{},{ bonus2 bAddSkillDamageRate,394,10; bonus2 bAddSkillDamageRate,316,10; }
 1923,Battleground_Guitar,戦場のギター(特攻),5,20,,0,50,,1,0,524288,2,2,3,80,13,1,{},{ bonus bDex,2; bonus2 bAddRace,7,95; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; }
@@ -1022,7 +1022,7 @@
 1925,Cello,チェロ,5,20,,700,110,,1,3,524288,2,2,3,70,13,1,{},{ bonus bAgi,2; bonus bDex,3; bonus2 bAddSkillBlow,316,2; bonus2 bAddSkillBlow,394,3; }
 1926,Harp_Of_Nepenthes,ハープオブネペンテス,5,20,,1000,120,,1,2,524288,2,2,4,60,13,1,{},{ bonus bInt,2; if(getequiprefinerycnt(4)>=9) bonus3 bAddEffSkill,316,Eff_Stun,2000; else bonus3 bAddEffSkill,316,Eff_Stun,1000; }
 1927,Krieger_Instrument1,グロリアスギター,5,,,0,50,,1,0,524288,2,2,4,80,13,1,{},{ bonus2 bAddRace,7,95; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,1; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus4 bSkillAutoSpell,394,489,5,1000; /*発動率等暫定（eathenaより）*/}
-1928,Berserk_Guitar_I,憑神のギター,5,,,0,40,,1,0,524288,2,2,4,0,13,,{},{ bonus bDex,-readparam(bDex); bonus bFixAspd,190; bonus bHPrecovRate,-100; bonus2 bHPPenaltyTime,5000,50; }
+1928,Berserk_Guitar_I,憑神のギター,5,,,0,40,,1,0,524288,2,2,4,0,13,,{},{ bonus bDex,-readparam(bDex); bonus bAspdAddRate,100; bonus bHPrecovRate,-100; bonus2 bHPPenaltyTime,5000,50; }
 1929,Guitar_C,ギター,5,,,0,177,,1,0,524288,2,2,,1,13,,{},{ bonus2 bAddSize,0,40; bonus2 bAddSize,1,40; bonus2 bAddSize,2,40; }
 
 1950,Rope,ロープ,5,2500,,400,45,,2,3,1048576,2,2,1,3,14,1,{},{}
@@ -1568,7 +1568,7 @@
 2713,Certificate_TW,遂行証明書,4,,,,,,,,,,,,,,,{},{}
 2714,Miraculous_Paendeonteu,スモールブックペンダント,4,0,,100,,0,,1,1000333311,2,136,,0,,,{},{ bonus2 bSubRace,1,2; bonus2 bSubRace,6,2; bonus2 bSubRace,7,1; bonus2 bSubRace,5,1; bonus2 bSubRace,2,1; bonus2 bMagicSubRace,1,2; bonus2 bMagicSubRace,6,2; bonus2 bMagicSubRace,7,1; bonus2 bMagicSubRace,5,1; bonus2 bMagicSubRace,2,1; }
 2715,Skul_Ring_,骸骨の指輪,4,20,,100,,0,,1,1000333311,2,136,,0,0,,{},{ bonus2 bSubRace,1,1; bonus2 bMagicSubRace,1,1; }
-2716,Librarian_Gloves,司書の手袋,4,20,,100,,0,,1,134283776,2,136,,80,,,{},{ bonus bMaxSP,20; if((getequipid(7)==2717 || getequipid(8)==2717) && (getequipid(4)==1572 || getequipid(4)==1573)) { bonus bInt,5; bonus bMaxHP,700; bonus bAspdRate,5; } }
+2716,Librarian_Gloves,司書の手袋,4,20,,100,,0,,1,134283776,2,136,,80,,,{},{ bonus bMaxSP,20; if((getequipid(7)==2717 || getequipid(8)==2717) && (getequipid(4)==1572 || getequipid(4)==1573)) { bonus bInt,5; bonus bMaxHP,700; bonus bAspdAddRate,5; } }
 2717,Pocket_Watch,銀の懐中時計,4,20,,200,,1,,0,134283780,2,136,,80,,,{},{ if((getequipid(9) == 2239) && ((getequipid(3) == 2109) || (getequipid(3) == 2121))) { bonus bHPrecovRate,15; bonus bSPrecovRate,15; bonus bMatkRate,7; } }
 2718,Lunatic_Brooch,ルナティックブローチ,4,20,,200,,0,,1,1574920,2,136,,65,,,{},{ if(getequipid(4) != 1723) end; bonus bDex,1; bonus bMaxSP,50; bonus bSPrecovRate,10; }
 2719,Iron_Wrist,アイアンリスト,4,20,,700,,1,,0,279714,2,136,,50,,,{},{ bonus2 bAddSkillDamageRate,5,6; bonus2 bAddSkillDamageRate,42,6; }
@@ -1582,7 +1582,7 @@
 2727,Renown_Archer's_Scarf,名射手のスカーフ,4,20,,200,,0,,0,2048,2,136,,70,,,{},{ bonus bMaxSP,50; bonus bDex,3; if((getequipid(7)==2726) || (getequipid(8)==2726)) bonus bUseSPrate,-25; }
 2728,Morroc_Skin1,呪われた手,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bHit,10; bonus bHPrecovRate,20; bonus3 bAutoSpell,673,1,300; }
 2729,Lucifer_Ring,ディアボロスリング,4,20,,50,,0,,1,2088832,2,136,,0,,,{},{ bonus bMaxHP,100; bonus bMaxSP,100; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddDamageClass,1916,10; bonus2 bAddDamageClass,1917,10; }
-2730,Morroc_Seal,コンチネンタルガードの印章,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bMaxHP,50; bonus bAspdRate,3; }
+2730,Morroc_Seal,コンチネンタルガードの印章,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bMaxHP,50; bonus bAspdAddRate,3; }
 2731,Morroc_Charm_Stone,ルーン文字の呪文石,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bMaxSP,50; bonus bCastrate,-1; }
 2732,Morroc_Ring,死のブローチ,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bCritical,5; }
 2733,Officer's_Medalion,保安官バッジ,4,20,,0,,1,,0,268435456,2,136,,80,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bCritical,10; bonus bMaxHP,300; bonus bMaxSP,80; bonus2 bAddEffLong,Eff_Blind,500; }

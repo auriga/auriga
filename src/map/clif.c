@@ -4578,7 +4578,7 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		WFIFOL(fd,4)=sd->status.sp;
 		break;
 	case SP_ASPD:
-		WFIFOL(fd,4)=sd->aspd;
+		WFIFOL(fd,4)=sd->amotion;
 		break;
 	case SP_ATK1:
 		WFIFOL(fd,4)=sd->base_atk+sd->watk+sd->watk_;
@@ -4888,7 +4888,7 @@ static void clif_initialstatus(struct map_session_data *sd)
 	WFIFOW(fd,34) = sd->flee;
 	WFIFOW(fd,36) = sd->flee2/10;
 	WFIFOW(fd,38) = sd->critical/10;
-	WFIFOW(fd,40) = sd->aspd;
+	WFIFOW(fd,40) = sd->amotion;
 	WFIFOW(fd,42) = 0;
 
 	WFIFOSET(fd,packet_db[0xbd].len);
@@ -10965,7 +10965,7 @@ void clif_send_homstatus(struct map_session_data *sd, int flag)
 	WFIFOW(fd,43)=hd->def;					// Def
 	WFIFOW(fd,45)=hd->mdef;					// Mdef
 	WFIFOW(fd,47)=hd->flee;					// Flee
-	WFIFOW(fd,49)=(flag)?0:status_get_amotion(&hd->bl)+200;	// Aspd
+	WFIFOW(fd,49)=(flag)?0:status_get_amotion(&hd->bl);	// Aspd
 	WFIFOW(fd,51)=hd->status.hp;			// HP
 	WFIFOW(fd,53)=hd->max_hp;		// MHp
 	WFIFOW(fd,55)=hd->status.sp;			// SP

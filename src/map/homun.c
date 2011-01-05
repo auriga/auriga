@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "db.h"
 #include "timer.h"
@@ -312,6 +313,7 @@ int homun_upstatus(struct mmo_homunstatus *hd)
 int homun_calc_status(struct homun_data *hd)
 {
 	int dstr,blv,aspd_k,lv;
+	double aspd;
 	int aspd_rate=100,speed_rate=100,atk_rate=100,matk_rate=100,hp_rate=100,sp_rate=100;
 	int flee_rate=100,def_rate=100,mdef_rate=100,critical_rate=100,hit_rate=100;
 
@@ -439,7 +441,7 @@ int homun_calc_status(struct homun_data *hd)
 	hd->mdef     += hd->int_/ 5 + blv / 10;
 	hd->critical += hd->luk / 3 + 1;
 
-	hd->aspd = aspd_k - (aspd_k * hd->agi / 250 + aspd_k * hd->dex / 1000) - 200;
+	aspd = aspd_k - aspd_k * hd->dex / 1000 - (aspd_k * hd->agi / 250);
 
 	// ディフェンス
 	if(hd->sc.data[SC_DEFENCE].timer != -1)
@@ -467,7 +469,7 @@ int homun_calc_status(struct homun_data *hd)
 	if(sp_rate != 100)
 		hd->max_sp = hd->max_sp*sp_rate/100;
 	if(aspd_rate != 100)
-		hd->aspd = hd->aspd*aspd_rate/100;
+		aspd = hd->aspd*aspd_rate/100;
 	if(speed_rate != 100)
 		hd->speed = hd->speed*speed_rate/100;
 
@@ -475,6 +477,9 @@ int homun_calc_status(struct homun_data *hd)
 		hd->max_hp = 1;	// mhp 0 だとクライアントエラー
 	if(hd->max_sp <= 0)
 		hd->max_sp = 1;
+
+	// ASPD
+	hd->aspd = (int)ceil(aspd);
 
 	// 自然回復
 	hd->nhealhp = hd->max_hp/100 + hd->vit/5 + 2;
