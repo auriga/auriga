@@ -74,6 +74,8 @@ struct status_change_data dummy_sc_data[MAX_STATUSCHANGE];
 #endif
 
 static int status_calc_amotion_pc(struct map_session_data *sd);	// PC用amotion計算
+static int status_calc_speed_pc(struct map_session_data *sd,int speed);	// PC用speed計算
+
 static struct scdata_db scdata_db[MAX_STATUSCHANGE];	// ステータス異常データベース
 
 static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
@@ -86,7 +88,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 30- */
 	SI_LOUD,SI_ENERGYCOAT,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_SPEEDPOTION0,SI_SPEEDPOTION1,SI_SPEEDPOTION2,
 	/* 40- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_MOVHASTE_HORSE,SI_MOVHASTE_POT,SI_BLANK,SI_MOVESLOW_POTION,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 	/* 50- */
 	SI_STRIPWEAPON,SI_STRIPSHIELD,SI_STRIPARMOR,SI_STRIPHELM,SI_CP_WEAPON,SI_CP_SHIELD,SI_CP_ARMOR,SI_CP_HELM,SI_AUTOGUARD,SI_REFLECTSHIELD,
 	/* 60- */
@@ -285,7 +287,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
 	int b_watk_,b_watk_2;
-	int b_tigereye, b_endure;
+	int b_tigereye, b_endure, b_speedrate;
 	struct skill b_skill[MAX_PCSKILL];
 	int i,blv,calc_val,idx;
 	int skill,wele,wele_,def_ele,refinedef;
@@ -338,6 +340,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_base_atk    = sd->base_atk;
 	b_tigereye    = sd->special_state.infinite_tigereye;
 	b_endure      = sd->special_state.infinite_endure;
+	b_speedrate   = sd->speed_rate;
 	b_watk_       = sd->watk_;
 	b_watk_2      = sd->watk_2;
 
@@ -470,14 +473,15 @@ L_RECALC:
 	sd->star_       = 0;
 	sd->overrefine_ = 0;
 
-	sd->aspd_add     = 0;
-	sd->aspd_rate    = 0;
-	sd->aspd_add_rate= 0;
-	sd->speed_rate   = 100;
-	sd->hprecov_rate = 100;
-	sd->sprecov_rate = 100;
-	sd->critical_def = 0;
-	sd->double_rate  = 0;
+	sd->aspd_add       = 0;
+	sd->aspd_rate      = 0;
+	sd->aspd_add_rate  = 0;
+	sd->speed_rate     = 0;
+	sd->speed_add_rate = 0;
+	sd->hprecov_rate   = 100;
+	sd->sprecov_rate   = 100;
+	sd->critical_def   = 0;
+	sd->double_rate    = 0;
 	sd->near_attack_def_rate = sd->long_attack_def_rate = 0;
 	sd->atk_rate = sd->matk_rate = sd->matk2_rate = 100;
 	memset(sd->ignore_def_ele,0,sizeof(sd->ignore_def_ele));
@@ -520,7 +524,6 @@ L_RECALC:
 	memset(sd->monster_drop_itemrate,0,sizeof(sd->monster_drop_itemrate));
 	sd->sp_gain_value = 0;
 	sd->hp_gain_value = 0;
-	sd->speed_add_rate = 0;
 	sd->double_add_rate = sd->perfect_hit_add = sd->get_zeny_add_num = sd->get_zeny_add_num2 = 0;
 	sd->splash_range = sd->splash_add_range = 0;
 	memset(&sd->hp_drain,0,sizeof(sd->hp_drain));
@@ -754,8 +757,6 @@ L_RECALC:
 	sd->get_zeny_num = (sd->get_zeny_num + sd->get_zeny_add_num > 100) ? 100 : (sd->get_zeny_num + sd->get_zeny_add_num);
 	sd->get_zeny_num2 = (sd->get_zeny_num2 + sd->get_zeny_add_num2 > 100) ? 100 : (sd->get_zeny_num2 + sd->get_zeny_add_num2);
 	sd->splash_range += sd->splash_add_range;
-	if(sd->speed_add_rate != 0)
-		sd->speed_rate += sd->speed_add_rate;
 
 	// 武器ATKサイズ補正
 	for(i=0; i<MAX_SIZE_FIX; i++) {
@@ -974,8 +975,6 @@ L_RECALC:
 		if(sd->sc.data[SC_SUITON].timer != -1) {	// 水遁
 			if(sd->sc.data[SC_SUITON].val3)
 				sd->paramb[1] += sd->sc.data[SC_SUITON].val3;
-			if(sd->sc.data[SC_SUITON].val4)
-				sd->speed = sd->speed*2;
 		}
 
 		if(sd->sc.data[SC_GLORIA].timer != -1)	// グロリア
@@ -1010,14 +1009,12 @@ L_RECALC:
 				subagi /= 2;
 				subdex /= 2;
 			}
-			sd->speed = sd->speed*5/3;
 			sd->paramb[1] -= subagi;
 			sd->paramb[4] -= subdex;
 		}
 
 		// マーシュオブアビス
 		if(sd->sc.data[SC_MARSHOFABYSS].timer != -1) {
-			sd->speed = sd->speed * (100 + sd->sc.data[SC_MARSHOFABYSS].val2) / 100;
 			sd->paramb[1] -= sd->status.agi * (sd->sc.data[SC_MARSHOFABYSS].val3 / 2) / 100;
 			sd->paramb[4] -= sd->status.dex * (sd->sc.data[SC_MARSHOFABYSS].val3 / 2) / 100;
 		}
@@ -1398,105 +1395,6 @@ L_RECALC:
 	if((sd->status.weapon == WT_1HAXE || sd->status.weapon == WT_2HAXE) && ((skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0))	// 斧修練の命中率増加
 		sd->hit += skill*3;
 
-	if(sd->sc.option&OPTION_HIDE && (skill = pc_checkskill(sd,RG_TUNNELDRIVE)) > 0)	// トンネルドライブ
-		sd->speed += (12*DEFAULT_WALK_SPEED - skill*90) / 10;
-
-	if(sd->s_class.job == 12 && (skill = pc_checkskill(sd,TF_MISS)) > 0) {	// アサシン系の回避率上昇による移動速度増加
-		if(sd->sc.data[SC_INCREASEAGI].timer == -1)
-			sd->speed -= sd->speed * skill / 100;
-	}
-
-	if(pc_iscarton(sd) && (skill = pc_checkskill(sd,MC_PUSHCART)) > 0) {	// カートによる速度低下
-		sd->speed += (10-skill) * DEFAULT_WALK_SPEED / 10;
-	} else if(pc_isriding(sd)) {					// ペコペコ乗りによる速度増加
-		sd->max_weight += battle_config.riding_weight;		// Weight+α(初期設定は0)10000で本鯖;
-		if(sd->sc.data[SC_DEFENDER].timer == -1)		// ディフェンダー時は速度増加しない
-			sd->speed -= DEFAULT_WALK_SPEED / 4;
-	} else if(pc_isdragon(sd)) {					// ドラゴン騎乗による速度増加
-		sd->max_weight += 500 + 200 * pc_checkskill(sd,RK_DRAGONTRAINING);
-		if(sd->sc.data[SC_DEFENDER].timer == -1)		// ディフェンダー時は速度増加しない
-			sd->speed -= DEFAULT_WALK_SPEED / 4;
-	} else if(pc_iswolfmount(sd)) {					// ウルフライダーによる速度増加
-		sd->speed -=  sd->speed * pc_checkskill(sd,RA_WUGRIDER) / 10;
-	}
-
-	if(pc_isgear(sd)) {	// 魔導ギア搭乗による速度低下
-		sd->speed += (5-pc_checkskill(sd,NC_MADOLICENCE)) * DEFAULT_WALK_SPEED / 10;
-	}
-
-	if(sd->sc.count > 0) {
-		int sc_speed_rate = 100;
-		if(sd->sc.data[SC_AVOID].timer != -1)				// 緊急回避
-			sc_speed_rate -= sd->sc.data[SC_AVOID].val1*10;
-		if(sd->sc.data[SC_INCREASEAGI].timer != -1 && sc_speed_rate > 75)	// 速度増加による移動速度増加
-			sc_speed_rate = 75;
-		if(sd->sc.data[SC_RUN].timer != -1 && sc_speed_rate > 50)		// 駆け足による移動速度増加
-			sc_speed_rate = 50;
-		if(sd->sc.data[SC_BERSERK].timer != -1 && sc_speed_rate > 75)	// バーサークによる移動速度増加
-			sc_speed_rate = 75;
-		if(sd->sc.data[SC_CARTBOOST].timer != -1 && sc_speed_rate > 80)	// カートブーストによる移動速度増加
-			sc_speed_rate = 80;
-		if(sd->sc.data[SC_FUSION].timer != -1 && sc_speed_rate > 75)	// 太陽と月と星の融合による移動速度増加
-			sc_speed_rate = 75;
-		if(sd->sc.data[SC_WINDWALK].timer != -1 && sc_speed_rate > 100-(sd->sc.data[SC_WINDWALK].val1*2))	// ウィンドウォークによる移動速度増加
-			sc_speed_rate = 100-(sd->sc.data[SC_WINDWALK].val1*2);
-		if(sd->sc.data[SC_WUGDASH].timer != -1 && sc_speed_rate > 50)		// ウルフダッシュによる移動速度増加
-			sc_speed_rate = 50;
-		if(sd->sc.data[SC_ACCELERATION].timer != -1 && sc_speed_rate > 75)	// アクセラレーションによる移動速度増加
-			sc_speed_rate = 75;
-
-		sd->speed = sd->speed*sc_speed_rate/100;
-
-		if(sd->sc.data[SC_CLOAKING].timer != -1)	// クローキングによる速度変化
-		{
-			int check = 1;
-			for(i=0; i<8; i++) {
-				if(map_getcell(sd->bl.m,sd->bl.x+dirx[i],sd->bl.y+diry[i],CELL_CHKNOPASS)) {
-					check = 0;
-					break;
-				}
-			}
-			if(check) {
-				// 平地移動速度
-				sd->speed += sd->speed * (30-sd->sc.data[SC_CLOAKING].val1*3) / 100;
-			} else {
-				// 壁沿い移動速度
-				int rate = (sd->sc.data[SC_CLOAKING].val1 -1)*3;
-				if(rate > 25)
-					rate = 25;
-				sd->speed -= sd->speed * rate / 100;
-			}
-		}
-
-		if(sd->sc.data[SC_CLOAKINGEXCEED].timer != -1)	// クローキングエクシードによる速度変化
-			sd->speed -= sd->speed * sd->sc.data[SC_CLOAKINGEXCEED].val1 * 10 / 100;
-
-		if(sd->sc.data[SC_CHASEWALK].timer != -1)	// チェイスウォークによる速度変化
-		{
-			if(sd->sc.data[SC_ROGUE].timer == -1)
-				sd->speed += sd->speed*(35 - (5*sd->sc.data[SC_CHASEWALK].val1))/100;
-		}
-
-		if(sd->sc.data[SC_DECREASEAGI].timer != -1) {		// 速度減少(agiはbattle.cで)
-			if(sd->sc.data[SC_DEFENDER].timer == -1) {	// ディフェンダー時は速度低下しない
-				sd->speed = sd->speed *((sd->sc.data[SC_DECREASEAGI].val1 > 5)? 150: 133)/100;
-			}
-		}
-
-		if(sd->sc.data[SC_HALLUCINATIONWALK2].timer != -1)		// ハルシネーションウォーク(ペナルティ)
-			sd->speed *= 2;
-
-		if(sd->sc.data[SC_CAMOUFLAGE].timer != -1 && sd->sc.data[SC_CAMOUFLAGE].val1 > 2)	// カモフラージュによる速度低下
-			sd->speed += (6 - sd->sc.data[SC_CAMOUFLAGE].val1) * DEFAULT_WALK_SPEED / 4;
-
-		// ニュートラルバリアー・ステルスフィールド(使用者)の速度低下
-		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1 || sd->sc.data[SC_STEALTHFIELD_USER].timer != -1)
-			sd->speed += (sd->speed * 30) / 100;
-
-		if(sd->sc.data[SC_WEDDING].timer != -1)	// 結婚中は歩くのが遅い
-			sd->speed = 2*DEFAULT_WALK_SPEED;
-	}
-
 	if(sd->s_class.job == 23 && sd->status.base_level >= 99)
 	{
 		if(pc_isupper(sd))
@@ -1688,6 +1586,8 @@ L_RECALC:
 	// amotionの計算
 	sd->amotion = status_calc_amotion_pc(sd);
 	sd->aspd = sd->amotion<<1;
+	// speedの計算
+	sd->speed = status_calc_speed_pc(sd,sd->speed);
 
 	// スキルやステータス異常による残りのパラメータ補正
 	if(sd->sc.count > 0) {
@@ -1825,19 +1725,6 @@ L_RECALC:
 			sd->mdef2 += (sd->mdef2 * (10 + 5 * sd->sc.data[SC_NEUTRALBARRIER].val1)) / 100;
 		}
 
-		// 移動速度変化系
-		if(sd->sc.data[SC_DONTFORGETME].timer != -1) {		// 私を忘れないで
-			sd->speed = sd->speed*(100+sd->sc.data[SC_DONTFORGETME].val1*2 + sd->sc.data[SC_DONTFORGETME].val2 + (sd->sc.data[SC_DONTFORGETME].val3&0xffff))/100;
-		} else if(sd->sc.data[SC_DONTFORGETME_].timer != -1) {		// 私を忘れないで
-			sd->speed = sd->speed*(100+sd->sc.data[SC_DONTFORGETME_].val1*2 + sd->sc.data[SC_DONTFORGETME_].val2 + (sd->sc.data[SC_DONTFORGETME_].val3&0xffff))/100;
-		}
-
-		if(sd->sc.data[SC_GRAVITATION].timer != -1)
-		{
-			if(battle_config.player_gravitation_type)
-				sd->speed = sd->speed*(100+sd->sc.data[SC_GRAVITATION].val1*5)/100;
-		}
-
 		// HIT/FLEE変化系
 		if(sd->sc.data[SC_WHISTLE].timer != -1) {  // 口笛
 			sd->flee += sd->sc.data[SC_WHISTLE].val1 + sd->sc.data[SC_WHISTLE].val2 + sd->sc.data[SC_WHISTLE].val3;
@@ -1892,7 +1779,6 @@ L_RECALC:
 		}
 		if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ガトリングフィーバー
 			sd->flee     -= sd->sc.data[SC_GATLINGFEVER].val1*5;
-			sd->speed    = (sd->speed * 135) / 100;
 		}
 
 		// ストーンスキン
@@ -1952,12 +1838,10 @@ L_RECALC:
 		if(sd->sc.data[SC_JOINTBEAT].timer != -1) {	// ジョイントビート
 			switch (sd->sc.data[SC_JOINTBEAT].val4) {
 				case 0:		// 足首
-					sd->speed += (sd->speed * 50)/100;
 					break;
 				case 1:		// 手首
 					break;
 				case 2:		// 膝
-					sd->speed += (sd->speed * 30)/100;
 					break;
 				case 3:		// 肩
 					sd->def2 -= (sd->def2 * 50)/100;
@@ -2013,31 +1897,9 @@ L_RECALC:
 		if(sd->sc.data[SC_STEELBODY].timer != -1) {	// 金剛
 			sd->def = 90;
 			sd->mdef = 90;
-			sd->speed = (sd->speed * 135) / 100;
-		}
-		if(sd->sc.data[SC_DEFENDER].timer != -1) {	// ディフェンダー
-			sd->speed = (sd->speed * (155 - sd->sc.data[SC_DEFENDER].val1*5)) / 100;
 		}
 		if(sd->sc.data[SC_ENCPOISON].timer != -1)
 			sd->addeff[4] += sd->sc.data[SC_ENCPOISON].val2;
-
-		if(sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_BARDDANCER].timer == -1) // 踊り/演奏
-		{
-			if(sd->sc.data[SC_LONGINGFREEDOM].timer != -1) {
-				if(sd->sc.data[SC_LONGINGFREEDOM].val1 < 5) {
-					sd->speed = sd->speed * (200-20*sd->sc.data[SC_LONGINGFREEDOM].val1)/100;
-				}
-			} else {
-				int lesson_ba = pc_checkskill(sd,BA_MUSICALLESSON);
-				int lesson_dc = pc_checkskill(sd,DC_DANCINGLESSON);
-				sd->speed = sd->speed * (400-20*((lesson_ba > lesson_dc)? lesson_ba: lesson_dc))/100;
-			}
-		}
-
-		if(sd->sc.data[SC_CURSE].timer != -1) {
-			if(sd->sc.data[SC_DEFENDER].timer == -1)	// ディフェンダー時は呪いで速度低下しない
-				sd->speed += 450;
-		}
 		if(sd->sc.data[SC_TRUESIGHT].timer != -1)	// トゥルーサイト
 			sd->critical += 10*(sd->sc.data[SC_TRUESIGHT].val1);
 
@@ -2060,9 +1922,6 @@ L_RECALC:
 		sd->status.max_hp *= 3;
 		sd->status.max_sp *= 3;
 	}
-
-	if(sd->speed_rate != 100)
-		sd->speed = sd->speed*sd->speed_rate/100;
 
 	// MATK乗算処理(杖補正)
 	if(sd->matk2_rate != 100) {
@@ -2104,9 +1963,6 @@ L_RECALC:
 	if(sd->fix_status.flee > 0) {
 		sd->flee = sd->fix_status.flee;
 	}
-	if(sd->fix_status.speed > MIN_WALK_SPEED && sd->fix_status.speed <= MAX_WALK_SPEED) {
-		sd->speed = sd->fix_status.speed;
-	}
 
 	if(sd->aspd < battle_config.max_aspd)
 		sd->aspd = battle_config.max_aspd;
@@ -2123,15 +1979,9 @@ L_RECALC:
 		if(sd->aspd < battle_config.pvp_max_aspd)
 			sd->aspd = battle_config.pvp_max_aspd;
 	}
-	if(sd->speed < 1)
-		sd->speed = 1;
 	sd->dmotion = 800-sd->paramc[1]*4;
 	if(sd->dmotion < 400)
 		sd->dmotion = 400;
-	if(sd->ud.skilltimer != -1 && (skill = pc_checkskill(sd,SA_FREECAST)) > 0) {
-		sd->prev_speed = sd->speed;
-		sd->speed = sd->speed*(175 - skill*5)/100;
-	}
 
 	// MATK最低値保障
 	if(sd->matk1 < 1)
@@ -2161,6 +2011,9 @@ L_RECALC:
 	// bInfiniteEndureがなくなっていたらパケットを送って元に戻す
 	if(b_endure == 1 && sd->special_state.infinite_endure == 0)
 		clif_status_load(sd, SI_ENDURE, 0);
+	// bSpeedRateがなくなっていたらパケットを送って元に戻す
+	if(b_speedrate == 1 && sd->speed_rate == 0)
+		clif_status_load(sd, SI_MOVHASTE_INFINITY, 0);
 
 	// 計算処理ここまで
 	if( sd->status_calc_pc_process > 1 ) {
@@ -2360,7 +2213,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 				slow_val = penalty;
 		}
 
-		// 踊り/演奏
+		// 私を縛らないで
 		if(sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_BARDDANCER].timer == -1) {
 			if(sd->sc.data[SC_LONGINGFREEDOM].timer != -1) {
 				if(sd->sc.data[SC_LONGINGFREEDOM].val1 < 5) {
@@ -2469,7 +2322,6 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		int bonus = skilllv*3 + comfort_bonus;
 		if(haste_val2 < bonus)
 			haste_val2 = bonus;
-		clif_status_load(sd,SI_DEVIL,1);
 	}
 
 	/* slow_valとhaste_val1とhaste_val2を加算する */
@@ -2505,6 +2357,331 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	amotion = ceil(amotion);
 
 	return (amotion < 1)? 1:(int)amotion;
+}
+
+/*==========================================
+ * PCのspeedを計算して返す
+ * 戻りは整数で1以上
+ *------------------------------------------
+ */
+static int status_calc_speed_pc(struct map_session_data *sd, int speed)
+{
+	int bonus_rate;
+	int speed_rate;
+	int haste_val1 = 0;
+	int haste_val2 = 0;
+	int slow_val   = 0;
+	int skilllv    = 0;
+
+	nullpo_retr(0, sd);
+
+	if(sd->fix_status.speed > MIN_WALK_SPEED && sd->fix_status.speed <= MAX_WALK_SPEED)	// SPEED固定
+		return sd->fix_status.speed;
+	if(sd->ud.skilltimer != -1 && pc_checkskill(sd,SA_FREECAST) > 0)	// フリーキャスト状態なら移動速度固定
+		return (175 - 5 * pc_checkskill(sd,SA_FREECAST));
+	if(sd->sc.data[SC_STEELBODY].timer != -1)	// 金剛は移動速度固定
+		return 200;
+
+	/* speedが変化するステータスの計算 */
+	if(sd->sc.count > 0) {
+		/* speedが増加するステータスの計算 */
+
+		// トンネルドライブ
+		if(sd->sc.data[SC_HIDING].timer != -1 && pc_checkskill(sd,RG_TUNNELDRIVE) > 0) {
+			slow_val = 120 - 6 * pc_checkskill(sd,RG_TUNNELDRIVE);
+		} else {
+			// 速度減少
+			if(sd->sc.data[SC_DECREASEAGI].timer != -1)
+				slow_val = 25;
+
+			// 私を縛らないで
+			if(sd->sc.data[SC_LONGINGFREEDOM].timer != -1) {
+				int penalty = 50 - 10 * sd->sc.data[SC_LONGINGFREEDOM].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			// 踊り/演奏
+			} else if(sd->sc.data[SC_DANCING].timer != -1) {
+				int penalty = 500 - (40 + 10 * (sd->sc.data[SC_BARDDANCER].timer != -1)) * pc_checkskill(sd,(sd->sex?BA_MUSICALLESSON:DC_DANCINGLESSON));
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			// クァグマイア
+			if(sd->sc.data[SC_QUAGMIRE].timer != -1) {
+				if(slow_val < 50)
+					slow_val = 50;
+			}
+
+			// 私を忘れないで
+			if(sd->sc.data[SC_DONTFORGETME].timer != -1) {
+				if(slow_val < sd->sc.data[SC_DONTFORGETME].val2)
+					slow_val = sd->sc.data[SC_DONTFORGETME].val2;
+			}
+
+			// 呪い
+			if(sd->sc.data[SC_CURSE].timer != -1) {
+				if(slow_val < 300)
+					slow_val = 300;
+			}
+
+			// マーシュオブアビス
+			if(sd->sc.data[SC_MARSHOFABYSS].timer != -1) {
+				if(slow_val < sd->sc.data[SC_MARSHOFABYSS].val2)
+					slow_val = sd->sc.data[SC_MARSHOFABYSS].val2;
+			}
+
+			// ハルシネーションウォーク(ペナルティ)
+			if(sd->sc.data[SC_HALLUCINATIONWALK2].timer != -1) {
+				if(slow_val < 100)
+					slow_val = 100;
+			}
+
+			// カモフラージュ
+			if(sd->sc.data[SC_CAMOUFLAGE].timer != -1 && sd->sc.data[SC_CAMOUFLAGE].val1 > 2) {
+				int penalty = 25 * (6 - sd->sc.data[SC_CAMOUFLAGE].val1);
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			// ニュートラルバリアー(使用者)
+			if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1) {
+				if(slow_val < 30)
+					slow_val = 30;
+			}
+
+			// ステルスフィールド(使用者)
+			if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1) {
+				if(slow_val < 30)
+					slow_val = 30;
+			}
+
+			// グラビテーションフィールド
+			if(battle_config.player_gravitation_type && sd->sc.data[SC_GRAVITATION].timer != -1) {
+				int penalty = sd->sc.data[SC_GRAVITATION].val1 * 5;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			// チェイスウォーク
+			if(sd->sc.data[SC_CHASEWALK].timer != -1 && sd->sc.data[SC_ROGUE].timer == -1) {
+				int penalty = 35 - 5 * sd->sc.data[SC_CHASEWALK].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			} else if(sd->sc.data[SC_CHASEWALK].timer != -1 && sd->sc.data[SC_ROGUE].timer != -1) {
+				slow_val = -40;
+			}
+
+			// チェイスウォーク状態で魂をもらっている時は下記のペナルティは無視する
+			if(sd->sc.data[SC_CHASEWALK].timer == -1 && sd->sc.data[SC_ROGUE].timer == -1) {
+				// 結婚衣装
+				if(sd->sc.data[SC_WEDDING].timer != -1) {
+					if(slow_val < 100)
+						slow_val = 100;
+				}
+
+				// ジョイントビート
+				if(sd->sc.data[SC_JOINTBEAT].timer != -1) {
+					int penalty = 0;
+					switch (sd->sc.data[SC_JOINTBEAT].val4) {
+					case 0:	// 足首
+						penalty = 50;
+						break;
+					case 2:	// 膝
+						penalty = 30;
+						break;
+					}
+					if(slow_val < penalty)
+						slow_val = penalty;
+				}
+
+				// クローキング(平地移動)
+				if(sd->sc.data[SC_CLOAKING].timer != -1) {
+					int i;
+					int check = 1;
+					for(i=0; i<8; i++) {
+						if(map_getcell(sd->bl.m,sd->bl.x+dirx[i],sd->bl.y+diry[i],CELL_CHKNOPASS)) {
+							check = 0;
+							break;
+						}
+					}
+					if(check) {
+						int penalty = (sd->sc.data[SC_CLOAKING].val1 < 3)? 300:30 - 3 * sd->sc.data[SC_CLOAKING].val1;
+						if(slow_val < penalty)
+							slow_val = penalty;
+					}
+				}
+
+				// 移動速度低下(アイテム)
+				if(sd->sc.data[SC_SLOWPOTION].timer != -1) {
+					if(slow_val < 100)
+						slow_val = 100;
+				}
+
+				// ガトリングフィーバー
+				if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {
+					if(slow_val < 100)
+						slow_val = 100;
+				}
+
+				// 水遁
+				if(sd->sc.data[SC_SUITON].timer != -1) {
+					if(sd->sc.data[SC_SUITON].val4) {
+						if(slow_val < 50)
+							slow_val = 50;
+					}
+				}
+			}
+		}
+
+		/* speedが減少するステータス計算1 */
+
+		// スピードポーション
+		if(sd->sc.data[SC_SPEEDUP1].timer != -1)
+			haste_val1 = 50;
+
+		// 速度増加
+		if(sd->sc.data[SC_INCREASEAGI].timer != -1) {
+			if(haste_val1 < 25)
+				haste_val1 = 25;
+		}
+
+		// ウインドウォーク
+		if(sd->sc.data[SC_WINDWALK].timer != -1) {
+			int bonus = 2 * sd->sc.data[SC_WINDWALK].val1;
+			if(haste_val1 < bonus)
+				haste_val1 = bonus;
+		}
+
+		// カートブースト
+		if(sd->sc.data[SC_CARTBOOST].timer != -1) {
+			if(haste_val1 < 20)
+				haste_val1 = 20;
+		}
+
+		// 回避率増加
+		if(sd->s_class.job == 12 && (skilllv = pc_checkskill(sd,TF_MISS)) > 0) {
+			if(haste_val1 < skilllv)
+				haste_val1 = skilllv;
+		}
+
+		// クローキング(壁沿い移動)
+		if(sd->sc.data[SC_CLOAKING].timer != -1 && (sd->sc.data[SC_CLOAKING].val4&1) == 1) {
+			int i;
+			int check = 1;
+			for(i=0; i<8; i++) {
+				if(map_getcell(sd->bl.m,sd->bl.x+dirx[i],sd->bl.y+diry[i],CELL_CHKNOPASS)) {
+					check = 0;
+					break;
+				}
+			}
+			if(!check) {
+				int bonus = (sd->sc.data[SC_CLOAKING].val1 >= 10)? 25 : 3 * sd->sc.data[SC_CLOAKING].val1 - 3;
+				if(haste_val1 < bonus)
+					haste_val1 = bonus;
+			}
+		}
+
+		// クローキングエクシード
+		if(sd->sc.data[SC_CLOAKINGEXCEED].timer != -1) {
+			int bonus = sd->sc.data[SC_CLOAKINGEXCEED].val1 * 10;
+			if(haste_val1 < bonus)
+				haste_val1 = bonus;
+		}
+
+		// バーサーク
+		if(sd->sc.data[SC_BERSERK].timer != -1) {
+			if(haste_val1 < 25)
+				haste_val1 = 25;
+		}
+
+		// タイリギ
+		if(sd->sc.data[SC_RUN].timer != -1) {
+			if(haste_val1 < 55)
+				haste_val1 = 55;
+		}
+
+		// 緊急回避
+		if(sd->sc.data[SC_AVOID].timer != -1) {
+			int bonus = 10 * sd->sc.data[SC_AVOID].val1;
+			if(haste_val1 < bonus)
+				haste_val1 = bonus;
+		}
+
+		// ウルフダッシュ
+		if(sd->sc.data[SC_WUGDASH].timer != -1) {
+			if(haste_val2 < 50)
+				haste_val2 = 50;
+		}
+
+		// アクセラレーション
+		if(sd->sc.data[SC_ACCELERATION].timer != -1) {
+			if(haste_val2 < 25)
+				haste_val2 = 25;
+		}
+
+		// 移動速度増加(アイテム)
+		if(sd->sc.data[SC_SPEEDUP0].timer != -1) {
+			if(haste_val1 < 25)
+				haste_val1 = 25;
+		}
+
+		// アイテムボーナス
+		speed_rate = sd->speed_rate + sd->speed_add_rate;
+		if(speed_rate != 0) {
+			if(haste_val1 < speed_rate)
+				haste_val1 = speed_rate;
+		}
+
+		/* speedが減少するステータス計算2 */
+
+		// 融合
+		if(sd->sc.data[SC_FUSION].timer != -1)
+			haste_val2 = 25;
+
+		// ペコ
+		if(pc_isriding(sd)) {
+			if(haste_val2 < 25)
+				haste_val2 = 25;
+		}
+
+		// ドラゴン
+		if(pc_isdragon(sd)) {
+			if(haste_val2 < 25)
+				haste_val2 = 25;
+		}
+
+		// ウルフ
+		if(pc_iswolfmount(sd)) {
+			int bonus = 15 + 5 * pc_checkskill(sd,RA_WUGRIDER);
+			if(haste_val2 < bonus)
+				haste_val2 = bonus;
+		}
+	}
+
+	/* bonus_rateの最低値を設定 */
+	bonus_rate = slow_val - haste_val1 - haste_val2;
+	if(bonus_rate < -60)
+		bonus_rate = -60;
+
+	/* speedの最終計算 */
+	if(pc_iscarton(sd))	// カート
+		speed += speed * (50 - 5 * pc_checkskill(sd,MC_PUSHCART)) / 100;
+	if(pc_isgear(sd))	// 魔導ギア搭乗
+		speed += speed * (5 - pc_checkskill(sd,NC_MADOLICENCE)) / 10;
+	if(bonus_rate != 0)	// bonus_rate
+		speed = speed * (bonus_rate+100) / 100;
+	if(sd->sc.data[SC_DEFENDER].timer != -1 && speed < 200)	// ディフェンダー
+		speed = 200;
+	if(sd->sc.data[SC_WALKSPEED].timer != -1 && sd->sc.data[SC_WALKSPEED].val1 > 0)	// スクリプト用ステータス
+		speed = speed * 100 / sd->sc.data[SC_WALKSPEED].val1;
+
+	/* 最低値、最大値を設定する */
+	if(speed < MIN_WALK_SPEED)
+		speed = MIN_WALK_SPEED;
+	if(speed > MAX_WALK_SPEED)
+		speed = MAX_WALK_SPEED;
+
+	return speed;
 }
 
 /*==========================================
@@ -3735,6 +3912,9 @@ int status_get_speed(struct block_list *bl)
 		else
 			speed = ((struct merc_data *)bl)->speed;
 	} else {
+		int bonus_rate;
+		int haste_val  = 0;
+		int slow_val   = 0;
 		struct status_change *sc = status_get_sc(bl);
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl)
@@ -3742,72 +3922,132 @@ int status_get_speed(struct block_list *bl)
 		else if(bl->type == BL_PET && (struct pet_data *)bl)
 			speed = ((struct pet_data *)bl)->speed;
 
+		/* speedが変化するステータスの計算 */
 		if(sc) {
-			// 金剛時は35%加算
-			if(sc->data[SC_STEELBODY].timer != -1)
-				speed = speed*135/100;
-			// 速度増加時は25%減算(金剛時は無効)
-			else if(sc->data[SC_INCREASEAGI].timer != -1)
-				speed -= speed*25/100;
-			// ウィンドウォーク時はLv*2%減算(速度増加時は無効)
-			else if(sc->data[SC_WINDWALK].timer != -1)
-				speed -= (speed*(sc->data[SC_WINDWALK].val1*2))/100;
-			// 速度強化時は50%減算
-			if(sc->data[SC_INCFLEE].timer != -1 && bl->type != BL_PC)
-				speed -= speed*50/100;
-			// 速度減少時は33〜50%加算
-			if(sc->data[SC_DECREASEAGI].timer != -1 && sc->data[SC_DEFENDER].timer == -1)	// ディフェンダー時は加算無し
-				speed = speed*((sc->data[SC_DECREASEAGI].val1 > 5)? 150: 133)/100;
-			// クァグマイア時は2/3加算
-			if(sc->data[SC_QUAGMIRE].timer != -1)
-				speed = speed*5/3;
-			// マーシュオブアビス時は加算
-			if(sc->data[SC_MARSHOFABYSS].timer != -1)
-				speed = speed * (100 + sc->data[SC_MARSHOFABYSS].val2) / 100;
-			// 私を忘れないで…時は加算
-			if(sc->data[SC_DONTFORGETME].timer != -1)
-				speed = speed*(100+sc->data[SC_DONTFORGETME].val2)/100;
-			// ディフェンダー時は加算
-			if(sc->data[SC_DEFENDER].timer != -1)
-				speed = (speed * (155 - sc->data[SC_DEFENDER].val1*5)) / 100;
-			// 踊り中は4倍遅い
-			if(sc->data[SC_DANCING].timer != -1)
-				speed *= 4;
-			// ジョイントビート時なら加算
-			if(sc->data[SC_JOINTBEAT].timer != -1) {
-				if(sc->data[SC_JOINTBEAT].val4 == 0)	// 足首
-					speed += speed*50/100;
-				if(sc->data[SC_JOINTBEAT].val4 == 2)	// 膝
-					speed += speed*30/100;
-			}
-			// エスウは4倍遅い
-			if(sc->data[SC_SWOO].timer != -1)
-				speed *= 4;
-			// グラビテーションフィールド
-			if(sc->data[SC_GRAVITATION].timer != -1 && battle_config.enemy_gravitation_type)
-				speed = speed*(100+sc->data[SC_GRAVITATION].val1*5)/100;
-			// 呪い時は450加算（ディフェンダー時は速度低下無し）
-			if(sc->data[SC_CURSE].timer != -1) {
-				if(sc->data[SC_DEFENDER].timer == -1)
-					speed += 450;
-			}
-			if(sc->data[SC_SUITON].timer != -1 && sc->data[SC_SUITON].val4 == 1)	// 水遁
-				speed *= 2;
-			// ガトリングフィーバー
-			if(sc->data[SC_GATLINGFEVER].timer != -1 )
-				speed = speed*135/100;
-			// ハルシネーションウォーク(ペナルティ)は2倍遅い
-			if(sc->data[SC_HALLUCINATIONWALK].timer != -1)
-				speed *= 2;
-			// パラライズは2倍遅い
-			if(sc->data[SC_PARALIZE].timer != -1)
-				speed *= 2;
-			// フロストミスティ
-			if(sc->data[SC_FROSTMISTY].timer != -1)
-				speed = speed * 150 / 100;
+			/* speedが増加するステータスの計算 */
 
+			// 金剛は移動速度固定
+			if(sc->data[SC_STEELBODY].timer != -1)
+				return 200;
+
+			// 速度減少
+			if(sc->data[SC_DECREASEAGI].timer != -1)
+				slow_val = 25;
+
+			// クァグマイア
+			if(sc->data[SC_QUAGMIRE].timer != -1) {
+				if(slow_val < 50)
+					slow_val = 50;
+			}
+
+			// 私を忘れないで
+			if(sc->data[SC_DONTFORGETME].timer != -1) {
+				if(slow_val < sc->data[SC_DONTFORGETME].val2)
+					slow_val = sc->data[SC_DONTFORGETME].val2;
+			}
+
+			// 呪い
+			if(sc->data[SC_CURSE].timer != -1) {
+				if(slow_val < 300)
+					slow_val = 300;
+			}
+
+			// マーシュオブアビス
+			if(sc->data[SC_MARSHOFABYSS].timer != -1) {
+				if(slow_val < sc->data[SC_MARSHOFABYSS].val2)
+					slow_val = sc->data[SC_MARSHOFABYSS].val2;
+			}
+
+			// ハルシネーションウォーク(ペナルティ)
+			if(sc->data[SC_HALLUCINATIONWALK2].timer != -1) {
+				if(slow_val < 100)
+					slow_val = 100;
+			}
+
+			// ジョイントビート
+			if(sc->data[SC_JOINTBEAT].timer != -1) {
+				int penalty = 0;
+				switch (sc->data[SC_JOINTBEAT].val4) {
+				case 0:	// 足首
+					penalty = 50;
+					break;
+				case 2:	// 膝
+					penalty = 30;
+					break;
+				}
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			// ガトリングフィーバー
+			if(sc->data[SC_GATLINGFEVER].timer != -1) {
+				if(slow_val < 100)
+					slow_val = 100;
+			}
+
+			// エスウ
+			if(sc->data[SC_SWOO].timer != -1) {
+				if(slow_val < 300)
+					slow_val = 300;
+			}
+
+			// パラライズ
+			if(sc->data[SC_PARALIZE].timer != -1) {
+				if(slow_val < 100)
+					slow_val = 100;
+			}
+
+			// フロストミスティ
+			if(sc->data[SC_FROSTMISTY].timer != -1) {
+				if(slow_val < 50)
+					slow_val = 50;
+			}
+
+			// グラビテーションフィールド
+			if(battle_config.enemy_gravitation_type && sc->data[SC_GRAVITATION].timer != -1) {
+				int penalty = sc->data[SC_GRAVITATION].val1 * 5;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			/* speedが減少するステータス計算 */
+
+			// 速度強化
+			if(sc->data[SC_INCFLEE].timer != -1)
+				haste_val = 50;
+
+			// 速度増加
+			if(sc->data[SC_INCREASEAGI].timer != -1) {
+				if(haste_val < 25)
+					haste_val = 25;
+			}
+
+			// ウインドウォーク
+			if(sc->data[SC_WINDWALK].timer != -1) {
+				int bonus = 2 * sc->data[SC_WINDWALK].val1;
+				if(haste_val < bonus)
+					haste_val = bonus;
+			}
 		}
-		if(speed < 1) speed = 1;
+
+		/* bonus_rateの最低値を設定 */
+		bonus_rate = slow_val - haste_val;
+		if(bonus_rate < -60)
+			bonus_rate = -60;
+
+		/* speedの最終計算 */
+		if(bonus_rate != 0)	// bonus_rate
+			speed = speed * (bonus_rate+100) / 100;
+		if(sc->data[SC_DEFENDER].timer != -1 && speed < 200)	// ディフェンダー
+			speed = 200;
+		if(sc->data[SC_WALKSPEED].timer != -1 && sc->data[SC_WALKSPEED].val1 > 0)	// スクリプト用ステータス
+			speed = speed * 100 / sc->data[SC_WALKSPEED].val1;
+
+		/* 最低値、最大値を設定する */
+		if(speed < MIN_WALK_SPEED)
+			speed = MIN_WALK_SPEED;
+		if(speed > MAX_WALK_SPEED)
+			speed = MAX_WALK_SPEED;
 	}
 
 	return speed;
@@ -5119,6 +5359,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			break;
 
+		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
+		case SC_SPEEDUP1:			/* スピードポーション */
+		case SC_WALKSPEED:			/* 移動速度増加(スクリプト) */
+		case SC_SLOWPOTION:			/* 移動速度低下(アイテム) */
 		case SC_STEELBODY:			/* 金剛 */
 		case SC_INCFLEE:			/* FLEE上昇 */
 		case SC_GRAVITATION:			/* グラビテーションフィールド */
@@ -6524,6 +6768,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_NEUTRALBARRIER:		/* ニュートラルバリアー */
 			calc_flag = 1;
 			break;
+		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
+		case SC_SPEEDUP1:			/* スピードポーション */
+		case SC_WALKSPEED:			/* 移動速度増加(スクリプト) */
+		case SC_SLOWPOTION:			/* 移動速度低下(アイテム) */
 		case SC_STEELBODY:			/* 金剛 */
 		case SC_INCREASEAGI:			/* 速度上昇 */
 		case SC_WINDWALK:			/* ウインドウォーク */

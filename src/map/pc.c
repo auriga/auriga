@@ -1983,12 +1983,14 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_ADD_SPEED:
 		if(sd->state.lr_flag != 2)
-			sd->speed -= val;
+			sd->speed -= val*10;
 		break;
 	case SP_SPEED_RATE:
 		if(sd->state.lr_flag != 2) {
-			if(sd->speed_rate > 100-val)
-				sd->speed_rate = 100-val;
+			if(sd->speed_rate > val) {
+				sd->speed_rate -= val;
+				clif_status_load(sd,SI_MOVHASTE_INFINITY,1);
+			}
 		}
 		break;
 	case SP_SPEED_ADDRATE:

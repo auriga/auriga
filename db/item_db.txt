@@ -1526,7 +1526,7 @@
 2671,Thimble_Of_Archer_,弓用の指貫,4,10000,,100,,0,,1,1574920,2,136,,65,0,,{},{ bonus bAddLongWeaponDamage,3; }
 2672,Anniversary_Ring,3周年記念指輪,4,20,,100,,0,,0,991944702,2,136,,20,,,{},{ bonus bStr,5; bonus bAgi,5; bonus bVit,5; bonus bInt,5; bonus bDex,5; bonus bLuk,5; }
 2673,Shining_Ring,勇者の輝く指輪,4,20,,100,,0,,0,991944702,2,136,,48,,,{},{ bonus bBaseAtk,10; bonus bHPrecovRate,3; }
-2674,Honor_Ring,名誉の指輪,4,20,,0,,0,,0,1000333311,2,136,,0,,,{},{ bonus bSpeedRate,10; }
+2674,Honor_Ring,名誉の指輪,4,20,,0,,0,,0,1000333311,2,136,,0,,,{},{ bonus bSpeedRate,25; }
 2675,Lord_Ring,ロードリング,4,20,,10,,0,,0,1000333311,2,136,,0,,,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; }
 2676,Hunter_Earring,ハンターイヤリング,4,20,,300,,0,,0,1000333311,2,136,,0,,,{},{ bonus3 bAddMonsterDropItem,7618,11,1000; }
 2677,Spiritual_Ring,スピリチュアルリング,4,20,,100,,0,,0,1000333311,2,136,,0,,,{},{ bonus bInt,2; bonus bDex,1; if(equippeditem(2607) || equippeditem(2608) || equippeditem(2626)){ bonus2 bAddSkillDamageRate,28,50; bonus2 bAddSkillDamageRate,70,50; bonus2 bAddSkillDamageRate,79,30; bonus bSPrecovRate,9; } }
@@ -1624,7 +1624,7 @@
 2769,Archer_Figure,アーチャーフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bDex,1; if(Class == Job_Archer || Class == Job_Hunter || Class == Job_Bard || Class == Job_Dancer) bonus bBaseAtk,10; }
 2770,Thief_Figure,シーフフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bAgi,1; if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) bonus bAspdAddRate,3; /*ASPD増加の重複可否は暫定仕様*/ }
 2771,Merchant_Figure,マーチャントフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bStr,1; if(Class == Job_Merchant || Class == Job_Blacksmith || Class == Job_Alchemist) bonus bCritical,5; }
-2772,Krieger_Ring1,グロリアスリング,4,,,0,,0,,0,991944702,2,136,,81,,,{},{ bonus2 bSubEle,1,10; bonus2 bSubEle,2,10; bonus2 bSubEle,3,10; bonus2 bSubEle,4,10; bonus bMaxHP,300; bonus bSpeedAddRate,5; bonus bCastrate,-3; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddSkillHealRate,231,5; if((getequipid(7)==2720) || (getequipid(8)==2720) || (getequipid(7)==2721) || (getequipid(8)==2721) || (getequipid(7)==2722) || (getequipid(8)==2722) || (getequipid(7)==2723) || (getequipid(8)==2723) || (getequipid(7)==2724) || (getequipid(8)==2724) || (getequipid(7)==2725) || (getequipid(8)==2725)){ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus2 bMagicAddRace,10,5; bonus2 bMagicAddRace,11,5; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddSkillHealRate,231,5; } }
+2772,Krieger_Ring1,グロリアスリング,4,,,0,,0,,0,991944702,2,136,,81,,,{},{ bonus2 bSubEle,1,10; bonus2 bSubEle,2,10; bonus2 bSubEle,3,10; bonus2 bSubEle,4,10; bonus bMaxHP,300; bonus bCastrate,-3; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddSkillHealRate,231,5; if((getequipid(7)==2720) || (getequipid(8)==2720) || (getequipid(7)==2721) || (getequipid(8)==2721) || (getequipid(7)==2722) || (getequipid(8)==2722) || (getequipid(7)==2723) || (getequipid(8)==2723) || (getequipid(7)==2724) || (getequipid(8)==2724) || (getequipid(7)==2725) || (getequipid(8)==2725)){ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus2 bMagicAddRace,10,5; bonus2 bMagicAddRace,11,5; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddSkillHealRate,231,5; } }
 2773,Krieger_Ring2,グロリアス量産型リング,4,,,0,,0,,0,991944702,2,136,,61,,,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; }
 2774,Krieger_Ring3,グロリアス普及用リング,4,,,0,,0,,0,991944702,2,136,,,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1;}
 2775,Lure,釣り餌,4,,,100,,0,,0,1000333311,2,136,,,,,{},{}
@@ -1891,7 +1891,7 @@
 4207,Mysteltainn_Card,ミステルテインカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bDef,1; bonus2 bSubSize,0,25; bonus2 bMagicSubSize,0,25; }
 4208,Miyabi_Ningyo_Card,雅人形カード,6,20,,10,,,,,,,64,,,,,{},{ bonus bMaxSPrate,10; bonus2 bAddSkillDamageRate,15,5; }
 4209,Violy_Card,ヴァイオリーカード,6,20,,10,,,,,,,136,,,,,{},{ if(getskilllv(318)<5){ bonus3 bAutoSpell,318,1,200; end; } bonus3 bAutoSpell,318,5,200; }
-4210,Wander_Man_Card,彷徨う者カード,6,20,,10,,,,,,,4,,,,,{},{if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) bonus bFlee,20; if(equippeditem(4172)==0 || equippeditem(4230)==0 || equippeditem(4257)==0 || equippeditem(4272)==0){ bonus3 bAutoSpell,219,1,200; end; } bonus bAgi,5; bonus bStr,5; bonus2 bSPDrainValue,100,1; bonus bSpeedRate,5; bonus bAspdAddRate,5; if((class == Job_Thief || class == Job_Assassin || class == Job_Rogue)==0) end; bonus bNoGemStone,0;}
+4210,Wander_Man_Card,彷徨う者カード,6,20,,10,,,,,,,4,,,,,{},{if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) bonus bFlee,20; if(equippeditem(4172)==0 || equippeditem(4230)==0 || equippeditem(4257)==0 || equippeditem(4272)==0){ bonus3 bAutoSpell,219,1,200; end; } bonus bAgi,5; bonus bStr,5; bonus2 bSPDrainValue,100,1; bonus bSpeedRate,25; bonus bAspdAddRate,5; if((class == Job_Thief || class == Job_Assassin || class == Job_Rogue)==0) end; bonus bNoGemStone,0;}
 4211,Vocal_Card,ボーカルカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bMdef,3; if(equippeditem(4021)==0) end; bonus bFlee,18; }
 4212,Bon_Gun_Card,ボンゴンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAutoSpell,5,1,200; bonus2 bAddSkillBlow,5,5; bonus2 bSubGroup,9,-100; }
 4213,Brilight_Card,ブリライトカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Silence,2000; }
@@ -4217,8 +4217,8 @@
 12013,Shadow_Arrow_Quiver,影の矢筒,2,2,,250,,,,,1000333311,2,,,,,,{ getitem 1767,500; },{}
 12014,Immaterial_Arrow_Quiver,無形の矢筒,2,2,,250,,,,,1000333311,2,,,,,,{ getitem 1757,500; },{}
 12015,Rusty_Arrow_Quiver,錆びた矢筒,2,2,,250,,,,,1000333311,2,,,,,,{ getitem 1762,500; },{}
-12016,Speed_Up_Potion,速度変化ポーション,2,2,,100,,,,,1000333311,2,,,,,,{ sc_start SC_INCREASEAGI,10000,-2; },{}
-12017,Speed_Decreasing_Potion,速度変化ポーション,2,2,,100,,,,,1000333311,2,,,,,,{ sc_start SC_DECREASEAGI,10000,-2; },{}
+12016,Speed_Up_Potion,速度変化ポーション,2,2,,100,,,,,1000333311,2,,,,,,{ sc_start SC_SpeedUp1,5000,0; },{}
+12017,Speed_Decreasing_Potion,速度変化ポーション,2,2,,100,,,,,1000333311,2,,,,,,{ sc_start SC_SlowPot,5000,0; },{}
 12018,Fire_Cracker,花火,2,2,,20,,,,,1000333311,2,,,,,,{},{}
 12019,Holy_Egg,神聖な卵,2,,,150,,,,,1000333311,2,,,,,,{ itemskill 54,2,""; },{}
 12020,Water_Of_Darkness,呪われた水,2,2,,30,,,,,1000333311,2,,,,,,{ sc_start SC_DarkWeapon,180000,1; },{}
@@ -4229,7 +4229,7 @@
 12025,Five_Paragraphs_Egg,端午節たまご,2,,,200,,,,,1000333311,2,,,,,,{},{}
 12026,Five_Paragraphs_Egg_,端午節たまご,2,,,200,,,,,1000333311,2,,,,,,{},{}
 12027,Giggling_Box,クスクス笑う箱,2,1000,,200,,,,,1000333311,2,,,,,,{ sc_start2 SC_Curse,30000,0,getscrate(SC_Curse,3000); percentheal 9,0; },{}
-12028,Box_Of_Thunder,雷の箱,2,1000,,200,,,,,1000333311,2,,,,,,{ sc_start SC_INCREASEAGI,20000,-2; },{}
+12028,Box_Of_Thunder,雷の箱,2,1000,,200,,,,,1000333311,2,,,,,,{ sc_start SC_SpeedUp0,20000,0; },{}
 12029,Gloomy_Box,憂鬱な箱,2,1000,,200,,,,,1000333311,2,,,,,,{ itemskill 45,1,"集中力向上 Lv1"; },{}
 12030,Box_Of_Grudge,恨みの箱,2,1000,,200,,,,,1000333311,2,,,,,,{ sc_start SC_INCATK,60000,20; },{}
 12031,Sleepy_Box,眠い箱,2,1000,,200,,,,,1000333311,2,,,,,,{ sc_start SC_INCMATK,60000,20; },{}
@@ -4333,7 +4333,7 @@
 12129,Legendary_Cooking_Set,幻の調理器具,2,10000,,70,,,,,1000333311,2,,,,,,{ making 1000,20000; },{}
 12130,Cookie_Bag,菓子包み,2,,,70,,,,,1000333311,2,,,,,,{ getitem RAND_COOKIE,3; },{}
 12131,Lucky_Potion,幸運のポーション,2,,,100,,,,,1000333311,2,,,,,,{ sc_start SC_MLUK,180000,15; },{}
-12132,Red_Bag,真っ赤な袋,2,,,200,,,,,1000333311,2,,,,,,{ sc_start SC_Santa,600000,0; },{}
+12132,Red_Bag,真っ赤な袋,2,,,200,,,,,1000333311,2,,,,,,{ sc_start SC_Santa,600000,0; sc_start SC_SpeedUp0,600000,0; },{}
 12133,McDonald's_Ice_Corn,マクドナルドアイスコーン,2,,,80,,,,,1000333311,2,,,,,,{ percentheal 50,50; },{}
 12134,Red_Envelope_,赤い封筒,2,,,10,,,,,1000333311,2,,,,,,{ set Zeny,Zeny+rand(1000,10000); },{}
 12135,Green_Ale,グリーンエール,2,,,30,,,,,1000333311,2,,,,,,{ percentheal 50,50; if(rand(100) >= 90)sc_start SC_Confusion,10000,0; },{}
@@ -4425,12 +4425,12 @@
 12221,Megaphone_,拡声器,2,,,10,,,,,1000333311,2,,,,,,{},{}
 
 12225,Sweet_Candy_Striper,甘いスティックキャンディ,2,,,50,,,,,1000333311,2,,,,,,{ pet 1245; },{}
-12226,Examination1,,0,,,,,,,,,,,,,,,{},{}
-12227,Examination2,,0,,,,,,,,,,,,,,,{},{}
-12228,Examination3,,0,,,,,,,,,,,,,,,{},{}
-12229,Examination4,,0,,,,,,,,,,,,,,,{},{}
-12230,Examination5,,0,,,,,,,,,,,,,,,{},{}
-12231,Examination6,,0,,,,,,,,,,,,,,,{},{}
+12226,Examination1,,0,,,,,,,,,,,,,,,{ sc_start SC_SpeedUp0,5400000,0; },{}
+12227,Examination2,,0,,,,,,,,,,,,,,,{ sc_start SC_SpeedUp0,5400000,0; },{}
+12228,Examination3,,0,,,,,,,,,,,,,,,{ sc_start SC_SpeedUp0,5400000,0; },{}
+12229,Examination4,,0,,,,,,,,,,,,,,,{ sc_start SC_SpeedUp0,5400000,0; },{}
+12230,Examination5,,0,,,,,,,,,,,,,,,{ sc_start SC_SpeedUp0,5400000,0; },{}
+12231,Examination6,,0,,,,,,,,,,,,,,,{ sc_start SC_SpeedUp0,5400000,0; },{}
 12232,Gingerbread,生姜パン,2,,,150,,,,,1000333311,2,,,,,,{ sc_start SC_INCREASEAGI,900000,-2; },{}
 12233,Kvass,クワス,2,,,200,,,,,1000333311,2,,,,,,{ percentheal 100,100; },{}
 12234,Cacao99,ビターチョコ,2,20,,100,,,,,1000333311,2,,,,,,{ percentheal 25,0; },{}
@@ -4461,7 +4461,7 @@
 12259,Miracle_Medicine,幻想の霊薬,3,,,0,,,,,,,,,,,,{},{}
 12260,Cool_Summer_Outfit,コモドバカンスセット,2,,,0,,,,,1000333311,2,,,,,,{ sc_start SC_Summer,600000,0; },{}
 12261,Secret_Medicine,幻想の秘薬,2,,,,,,,,1000333311,2,,,,,,{},{}
-12262,Inspector_Certificate_,馬牌,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_INCREASEAGI,240000,-2; },{}
+12262,Inspector_Certificate_,馬牌,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_SpeedUp0,240000,0; },{}
 12263,Comp_Battle_Manual,戦闘教範50,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_COMBATHAN,1800000,150; },{}
 12264,Comp_Bubble_Gum,バブルガム,2,,,10,,,,,1000333311,2,,,,,,{},{}
 12265,Comp_Insurance,生命保険証30,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_LIFEINSURANCE,1800000,0; },{}
