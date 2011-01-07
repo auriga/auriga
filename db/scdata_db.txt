@@ -11,7 +11,7 @@
 5,SC_CLOAKING,0,5,0			// クローキング
 6,SC_ENCPOISON,0,103,0			// エンチャントポイズン
 7,SC_POISONREACT,0,7,0			// ポイズンリアクト
-8,SC_QUAGMIRE,0,15,0			// クァグマイア
+8,SC_QUAGMIRE,0,15,1			// クァグマイア
 9,SC_ANGELUS,1,103,0			// エンジェラス
 10,SC_BLESSING,1,103,1			// ブレッシング
 11,SC_SIGNUMCRUCIS,0,15,0		// シグナムクルシス
@@ -42,7 +42,7 @@
 38,SC_SPEEDPOTION1,1,7,0		// ハイスピードアップポーション
 39,SC_SPEEDPOTION2,1,7,0		// バーサークポーション
 40,SC_SPEEDUP0,0,0,0			// 移動速度増加(アイテム)
-41,SC_SPEEDUP1,0,7,0			// スピードポーション
+41,SC_SPEEDUP1,0,135,10			// スピードポーション
 42,SC_WALKSPEED,0,0,0			// 移動速度増加(スクリプト)
 43,SC_SLOWPOTION,0,7,0			// 移動速度低下(アイテム)
 //

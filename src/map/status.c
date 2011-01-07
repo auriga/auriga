@@ -2988,7 +2988,7 @@ int status_get_agi(struct block_list *bl)
 		agi = ((struct merc_data *)bl)->agi;
 
 	if(sc && bl->type != BL_HOM) {
-		if(sc->data[SC_INCFLEE].timer != -1 && bl->type != BL_PC)	// 速度強化
+		if(sc->data[SC_SPEEDUP1].timer != -1 && bl->type != BL_PC)	// 速度強化
 			agi *= 3;
 		if(sc->data[SC_INCREASEAGI].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1 && bl->type != BL_PC)	// 速度増加(PCはpc.cで)
 			agi += 2+sc->data[SC_INCREASEAGI].val1;
@@ -4021,7 +4021,7 @@ int status_get_speed(struct block_list *bl)
 			/* speedが減少するステータス計算 */
 
 			// 速度強化
-			if(sc->data[SC_INCFLEE].timer != -1)
+			if(sc->data[SC_SPEEDUP1].timer != -1)
 				haste_val = 50;
 
 			// 速度増加
@@ -4226,17 +4226,12 @@ int status_get_adelay(struct block_list *bl)
 		if(sc->data[SC_DEFENDER].timer != -1)
 			calc_adelay += sc->data[SC_DEFENDER].val3;
 
-		/* 最低値の設定 */
-		if(bl->type == BL_HOM) {
-			if(calc_adelay < battle_config.monster_max_aspd)
-				calc_adelay = battle_config.monster_max_aspd;
-		} else {
-			if(calc_adelay < battle_config.monster_max_aspd*2)
-				calc_adelay = battle_config.monster_max_aspd*2;
-		}
-
 		/* 小数切り上げ */
 		adelay = (int)ceil(calc_adelay);
+
+		/* 最低値の設定 */
+		if(adelay < battle_config.monster_max_aspd)
+			adelay = battle_config.monster_max_aspd;
 	}
 
 	return adelay;
@@ -4403,7 +4398,7 @@ int status_get_amotion(struct block_list *bl)
 		amotion = (int)ceil(calc_amotion);
 
 		/* 最低値の設定 */
-		if(amotion < battle_config.monster_max_aspd)
+		if(amotion < (battle_config.monster_max_aspd>>1))
 			amotion = battle_config.monster_max_aspd;
 	}
 
@@ -5588,6 +5583,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				status_change_end(bl,SC_CARTBOOST,-1);
 			if(sc->data[SC_ONEHAND].timer != -1)
 				status_change_end(bl,SC_ONEHAND,-1);
+			if(sc->data[SC_SPEEDUP1].timer != -1)
+				status_change_end(bl,SC_SPEEDUP1,-1);
 			break;
 		case SC_MAGICPOWER:			/* 魔法力増幅 */
 			val2 = 1;	// 一度だけ増幅
