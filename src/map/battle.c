@@ -4116,7 +4116,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	battle_delay_damage(tick+wd.amotion,src,target,(wd.damage+wd.damage2),0,0,wd.flag);
 
 	if(target->prev != NULL && !unit_isdead(target)) {
-		if(wd.damage > 0 || wd.damage2 > 0) {
+		if(wd.damage > 0 || wd.damage2 > 0 || wd.dmg_lv != ATK_LUCKY || wd.dmg_lv != ATK_FLEE) {
 			skill_additional_effect(src,target,0,0,BF_WEAPON,tick);
 			if(sd && tsd) {
 				if(sd->break_weapon_rate > 0 && atn_rand()%10000 < sd->break_weapon_rate)
@@ -4700,7 +4700,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* ダメージがあるなら追加効果判定 */
 	if(bl->prev != NULL && !unit_isdead(bl)) {
-		if((damage > 0 || skillid == TF_POISON || skillid == SL_STUN) && skilllv >= 0) {
+		if((damage > 0 || dmg.dmg_lv != ATK_LUCKY || dmg.dmg_lv != ATK_FLEE || skillid == TF_POISON || skillid == SL_STUN) && skilllv >= 0) {
 			// グラウンドドリフトはdsrcを引数として渡す
 			if(skillid == GS_GROUNDDRIFT)
 				skill_additional_effect(dsrc,bl,skillid,skilllv,attack_type,tick);

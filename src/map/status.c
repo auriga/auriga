@@ -2397,6 +2397,9 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		// トンネルドライブ
 		if(sd->sc.data[SC_HIDING].timer != -1 && pc_checkskill(sd,RG_TUNNELDRIVE) > 0) {
 			slow_val = 120 - 6 * pc_checkskill(sd,RG_TUNNELDRIVE);
+		// チェイスウォーク(魂状態)
+		} else if(sd->sc.data[SC_CHASEWALK].timer != -1 && sd->sc.data[SC_ROGUE].timer != -1) {
+			slow_val = -40;
 		} else {
 			// 速度減少
 			if(sd->sc.data[SC_DECREASEAGI].timer != -1)
@@ -2430,6 +2433,13 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 			if(sd->sc.data[SC_CURSE].timer != -1) {
 				if(slow_val < 300)
 					slow_val = 300;
+			}
+
+			// チェイスウォーク(通常)
+			if(sd->sc.data[SC_CHASEWALK].timer != -1 && sd->sc.data[SC_ROGUE].timer == -1) {
+				int penalty = 35 - 5 * sd->sc.data[SC_CHASEWALK].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
 			}
 
 			// マーシュオブアビス
@@ -2470,73 +2480,61 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 					slow_val = penalty;
 			}
 
-			// チェイスウォーク
-			if(sd->sc.data[SC_CHASEWALK].timer != -1 && sd->sc.data[SC_ROGUE].timer == -1) {
-				int penalty = 35 - 5 * sd->sc.data[SC_CHASEWALK].val1;
-				if(slow_val < penalty)
-					slow_val = penalty;
-			} else if(sd->sc.data[SC_CHASEWALK].timer != -1 && sd->sc.data[SC_ROGUE].timer != -1) {
-				slow_val = -40;
+			// 結婚衣装
+			if(sd->sc.data[SC_WEDDING].timer != -1) {
+				if(slow_val < 100)
+					slow_val = 100;
 			}
 
-			// チェイスウォーク状態で魂をもらっている時は下記のペナルティは無視する
-			if(sd->sc.data[SC_CHASEWALK].timer == -1 && sd->sc.data[SC_ROGUE].timer == -1) {
-				// 結婚衣装
-				if(sd->sc.data[SC_WEDDING].timer != -1) {
-					if(slow_val < 100)
-						slow_val = 100;
+			// ジョイントビート
+			if(sd->sc.data[SC_JOINTBEAT].timer != -1) {
+				int penalty = 0;
+				switch (sd->sc.data[SC_JOINTBEAT].val4) {
+				case 0:	// 足首
+					penalty = 50;
+					break;
+				case 2:	// 膝
+					penalty = 30;
+					break;
 				}
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
 
-				// ジョイントビート
-				if(sd->sc.data[SC_JOINTBEAT].timer != -1) {
-					int penalty = 0;
-					switch (sd->sc.data[SC_JOINTBEAT].val4) {
-					case 0:	// 足首
-						penalty = 50;
-						break;
-					case 2:	// 膝
-						penalty = 30;
+			// クローキング(平地移動)
+			if(sd->sc.data[SC_CLOAKING].timer != -1) {
+				int i;
+				int check = 1;
+				for(i=0; i<8; i++) {
+					if(map_getcell(sd->bl.m,sd->bl.x+dirx[i],sd->bl.y+diry[i],CELL_CHKNOPASS)) {
+						check = 0;
 						break;
 					}
+				}
+				if(check) {
+					int penalty = (sd->sc.data[SC_CLOAKING].val1 < 3)? 300:30 - 3 * sd->sc.data[SC_CLOAKING].val1;
 					if(slow_val < penalty)
 						slow_val = penalty;
 				}
+			}
 
-				// クローキング(平地移動)
-				if(sd->sc.data[SC_CLOAKING].timer != -1) {
-					int i;
-					int check = 1;
-					for(i=0; i<8; i++) {
-						if(map_getcell(sd->bl.m,sd->bl.x+dirx[i],sd->bl.y+diry[i],CELL_CHKNOPASS)) {
-							check = 0;
-							break;
-						}
-					}
-					if(check) {
-						int penalty = (sd->sc.data[SC_CLOAKING].val1 < 3)? 300:30 - 3 * sd->sc.data[SC_CLOAKING].val1;
-						if(slow_val < penalty)
-							slow_val = penalty;
-					}
-				}
+			// 移動速度低下(アイテム)
+			if(sd->sc.data[SC_SLOWPOTION].timer != -1) {
+				if(slow_val < 100)
+					slow_val = 100;
+			}
 
-				// 移動速度低下(アイテム)
-				if(sd->sc.data[SC_SLOWPOTION].timer != -1) {
-					if(slow_val < 100)
-						slow_val = 100;
-				}
+			// ガトリングフィーバー
+			if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {
+				if(slow_val < 100)
+					slow_val = 100;
+			}
 
-				// ガトリングフィーバー
-				if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {
-					if(slow_val < 100)
-						slow_val = 100;
-				}
-
-				// 水遁
-				if(sd->sc.data[SC_SUITON].timer != -1) {
-					if(sd->sc.data[SC_SUITON].val4) {
-						if(slow_val < 50)
-							slow_val = 50;
-					}
+			// 水遁
+			if(sd->sc.data[SC_SUITON].timer != -1) {
+				if(sd->sc.data[SC_SUITON].val4) {
+					if(slow_val < 50)
+						slow_val = 50;
 				}
 			}
 		}
