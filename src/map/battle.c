@@ -5360,7 +5360,7 @@ int battle_config_read(const char *cfgName)
 		{ "mvp_item_rate",                      &battle_config.mvp_item_rate,                      100      },
 		{ "mvp_exp_rate",                       &battle_config.mvp_exp_rate,                       100      },
 		{ "monster_hp_rate",                    &battle_config.monster_hp_rate,                    100      },
-		{ "monster_max_aspd",                   &battle_config.monster_max_aspd,                   190      },
+		{ "monster_max_aspd",                   &battle_config.monster_max_aspd,                   200      },
 		{ "atcommand_gm_only",                  &battle_config.atc_gmonly,                         1        },
 		{ "gm_all_skill",                       &battle_config.gm_allskill,                        1        },
 		{ "gm_all_skill_add_abra",              &battle_config.gm_allskill_addabra,                0        },
@@ -5414,10 +5414,10 @@ int battle_config_read(const char *cfgName)
 		{ "item_name_override_grffile",         &battle_config.item_name_override_grffile,         0        },
 		{ "arrow_decrement",                    &battle_config.arrow_decrement,                    1        },
 		{ "allow_any_weapon_autoblitz",         &battle_config.allow_any_weapon_autoblitz,         0        },
-		{ "max_aspd",                           &battle_config.max_aspd,                           190      },
-		{ "pk_max_aspd",                        &battle_config.pk_max_aspd,                        190      },
-		{ "gvg_max_aspd",                       &battle_config.gvg_max_aspd,                       190      },
-		{ "pvp_max_aspd",                       &battle_config.pvp_max_aspd,                       190      },
+		{ "max_aspd",                           &battle_config.max_aspd,                           200      },
+		{ "pk_max_aspd",                        &battle_config.pk_max_aspd,                        200      },
+		{ "gvg_max_aspd",                       &battle_config.gvg_max_aspd,                       200      },
+		{ "pvp_max_aspd",                       &battle_config.pvp_max_aspd,                       200      },
 		{ "max_hp",                             &battle_config.max_hp,                             999999   },
 		{ "max_sp",                             &battle_config.max_sp,                             999999   },
 		{ "max_parameter",                      &battle_config.max_parameter,                      99       },
@@ -5859,31 +5859,6 @@ int battle_config_read(const char *cfgName)
 			battle_config.natural_heal_weight_rate = 50;
 		else if(battle_config.natural_heal_weight_rate > 101)
 			battle_config.natural_heal_weight_rate = 101;
-		battle_config.monster_max_aspd = 2000 - battle_config.monster_max_aspd*10;
-		if(battle_config.monster_max_aspd < 10)
-			battle_config.monster_max_aspd = 10;
-		else if(battle_config.monster_max_aspd > 1000)
-			battle_config.monster_max_aspd = 1000;
-		battle_config.max_aspd = 2000 - battle_config.max_aspd*10;
-		if(battle_config.max_aspd < 10)
-			battle_config.max_aspd = 10;
-		else if(battle_config.max_aspd > 1000)
-			battle_config.max_aspd = 1000;
-		battle_config.pk_max_aspd = 2000 - battle_config.pk_max_aspd*10;
-		if(battle_config.pk_max_aspd < 10)
-			battle_config.pk_max_aspd = 10;
-		else if(battle_config.pk_max_aspd > 1000)
-			battle_config.pk_max_aspd = 1000;
-		battle_config.gvg_max_aspd = 2000 - battle_config.gvg_max_aspd*10;
-		if(battle_config.gvg_max_aspd < 10)
-			battle_config.gvg_max_aspd = 10;
-		else if(battle_config.gvg_max_aspd > 1000)
-			battle_config.gvg_max_aspd = 1000;
-		battle_config.pvp_max_aspd = 2000 - battle_config.pvp_max_aspd*10;
-		if(battle_config.pvp_max_aspd < 10)
-			battle_config.pvp_max_aspd = 10;
-		else if(battle_config.pvp_max_aspd > 1000)
-			battle_config.pvp_max_aspd = 1000;
 		if(battle_config.hp_rate < 0)
 			battle_config.hp_rate = 1;
 		if(battle_config.sp_rate < 0)

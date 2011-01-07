@@ -1964,20 +1964,28 @@ L_RECALC:
 		sd->flee = sd->fix_status.flee;
 	}
 
-	if(sd->aspd < battle_config.max_aspd)
+	if(sd->aspd < battle_config.max_aspd) {
 		sd->aspd = battle_config.max_aspd;
+		sd->amotion = sd->aspd>>1;
+	}
 
 	if(map[sd->bl.m].flag.pk) {
-		if(sd->aspd < battle_config.pk_max_aspd)
+		if(sd->aspd < battle_config.pk_max_aspd) {
 			sd->aspd = battle_config.pk_max_aspd;
+			sd->amotion = sd->aspd>>1;
+		}
 	}
 	if(map[sd->bl.m].flag.gvg) {
-		if(sd->aspd < battle_config.gvg_max_aspd)
+		if(sd->aspd < battle_config.gvg_max_aspd) {
 			sd->aspd = battle_config.gvg_max_aspd;
+			sd->amotion = sd->aspd>>1;
+		}
 	}
 	if(map[sd->bl.m].flag.pvp) {
-		if(sd->aspd < battle_config.pvp_max_aspd)
+		if(sd->aspd < battle_config.pvp_max_aspd) {
 			sd->aspd = battle_config.pvp_max_aspd;
+			sd->amotion = sd->aspd>>1;
+		}
 	}
 	sd->dmotion = 800-sd->paramc[1]*4;
 	if(sd->dmotion < 400)
@@ -5725,12 +5733,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SPEEDPOTION0:		/* 増速ポーション */
 		case SC_SPEEDPOTION1:
 		case SC_SPEEDPOTION2:
-			if(type != SC_SPEEDPOTION0 && sc->data[SC_SPEEDPOTION0].timer != -1)
-				status_change_end(bl,SC_SPEEDPOTION0,-1);
-			if(type != SC_SPEEDPOTION1 && sc->data[SC_SPEEDPOTION1].timer != -1)
-				status_change_end(bl,SC_SPEEDPOTION1,-1);
-			if(type != SC_SPEEDPOTION2 && sc->data[SC_SPEEDPOTION2].timer != -1)
-				status_change_end(bl,SC_SPEEDPOTION2,-1);
 			calc_flag = 1;
 			val2 = 5*(2+type-SC_SPEEDPOTION0);
 			break;
