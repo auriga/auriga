@@ -2346,6 +2346,18 @@ R 0826 <result>.w
 	ログイン系
 	SSOシステム関連？
 	未調査
+S 0827 <charID>.l
+	IDのcharの削除タイマー要求
+R 0828 <charID>.l <message_type>.l <time>.l
+	0828の応答
+S 0829 <charID>.l <date>.6B
+	IDのcharの削除要求
+R 082a <charID>.l <msg>.l
+	0829の応答
+S 082b <charID>.l
+	IDのcharの削除要求キャンセル
+R 082c <charID>.l <msg>.l
+	082bの応答
 R 0837 <result>.B
 	露天検索システム関連
 	未調査
@@ -2360,10 +2372,10 @@ R 083a <?>.w <?>.B
 	未調査
 S 083b
 	露天検索システム関連
-	未調査
-R 083d <?>.w <?>.w
-	SSILIST？アイテム関連
-	未調査
+	検索結果の露天をクリックすると飛んでくる
+R 083d <x>.w <y>.w
+	露天検索システム
+	該当露天の座標をミニマップに表示
 R 083e <ErrorCode>.l <blockDate>.20B
 	ログイン系
 	未調査

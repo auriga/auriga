@@ -2342,7 +2342,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	}
 
 	/* バーサーク */
-	if(sd->sc.data[SC_BERSERK].timer != -1)
+	if(sd->sc.count > 0 && sd->sc.data[SC_BERSERK].timer != -1)
 		bonus_rate -= 30;
 
 	/* bonus_rateの計算 */
@@ -2354,7 +2354,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		amotion += (skilllv+1) / 2 * 10;
 
 	/* ディフェンダー */
-	if(sd->sc.data[SC_DEFENDER].timer != -1)
+	if(sd->sc.count > 0 && sd->sc.data[SC_DEFENDER].timer != -1)
 		amotion += sd->sc.data[SC_DEFENDER].val3;
 
 	/* アドバンスドブック */
@@ -2676,9 +2676,9 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		speed += speed * (5 - pc_checkskill(sd,NC_MADOLICENCE)) / 10;
 	if(bonus_rate != 0)	// bonus_rate
 		speed = speed * (bonus_rate+100) / 100;
-	if(sd->sc.data[SC_DEFENDER].timer != -1 && speed < 200)	// ディフェンダー
+	if(sd->sc.count > 0 && sd->sc.data[SC_DEFENDER].timer != -1 && speed < 200)	// ディフェンダー
 		speed = 200;
-	if(sd->sc.data[SC_WALKSPEED].timer != -1 && sd->sc.data[SC_WALKSPEED].val1 > 0)	// スクリプト用ステータス
+	if(sd->sc.count > 0 && sd->sc.data[SC_WALKSPEED].timer != -1 && sd->sc.data[SC_WALKSPEED].val1 > 0)	// スクリプト用ステータス
 		speed = speed * 100 / sd->sc.data[SC_WALKSPEED].val1;
 
 	/* 最低値、最大値を設定する */
@@ -4044,9 +4044,9 @@ int status_get_speed(struct block_list *bl)
 		/* speedの最終計算 */
 		if(bonus_rate != 0)	// bonus_rate
 			speed = speed * (bonus_rate+100) / 100;
-		if(sc->data[SC_DEFENDER].timer != -1 && speed < 200)	// ディフェンダー
+		if(sc && sc->data[SC_DEFENDER].timer != -1 && speed < 200)	// ディフェンダー
 			speed = 200;
-		if(sc->data[SC_WALKSPEED].timer != -1 && sc->data[SC_WALKSPEED].val1 > 0)	// スクリプト用ステータス
+		if(sc && sc->data[SC_WALKSPEED].timer != -1 && sc->data[SC_WALKSPEED].val1 > 0)	// スクリプト用ステータス
 			speed = speed * 100 / sc->data[SC_WALKSPEED].val1;
 
 		/* 最低値、最大値を設定する */
@@ -4221,7 +4221,7 @@ int status_get_adelay(struct block_list *bl)
 			calc_adelay = calc_adelay * (bonus_rate+100) / 100;
 
 		/* ディフェンダー */
-		if(sc->data[SC_DEFENDER].timer != -1)
+		if(sc && sc->data[SC_DEFENDER].timer != -1)
 			calc_adelay += sc->data[SC_DEFENDER].val3;
 
 		/* 小数切り上げ */
@@ -4389,7 +4389,7 @@ int status_get_amotion(struct block_list *bl)
 			calc_amotion = calc_amotion * (bonus_rate+100) / 100;
 
 		/* ディフェンダー */
-		if(sc->data[SC_DEFENDER].timer != -1)
+		if(sc && sc->data[SC_DEFENDER].timer != -1)
 			calc_amotion += sc->data[SC_DEFENDER].val3;
 
 		/* 小数切り上げ */

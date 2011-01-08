@@ -469,7 +469,7 @@ int homun_calc_status(struct homun_data *hd)
 	if(sp_rate != 100)
 		hd->max_sp = hd->max_sp*sp_rate/100;
 	if(aspd_rate != 100)
-		aspd = hd->aspd*aspd_rate/100;
+		aspd = aspd*aspd_rate/100;
 	if(speed_rate != 100)
 		hd->speed = hd->speed*speed_rate/100;
 
