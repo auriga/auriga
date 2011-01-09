@@ -4663,24 +4663,27 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* 実際にダメージ処理を行う */
 	if(skillid || flag) {
-		if(attack_type&BF_WEAPON) {
-			battle_delay_damage(tick+dmg.amotion,src,bl,damage,skillid,skilllv,dmg.flag);
-		} else {
+		switch(skillid) {
+		case WZ_METEOR:
+		case WZ_VERMILION:
+		case WZ_STORMGUST:
 			battle_damage(src,bl,damage,skillid,skilllv,dmg.flag);
-
-			/* ソウルドレイン */
-			if(sd && bl->type == BL_MOB && unit_isdead(bl) && attack_type&BF_MAGIC)
-			{
-				int level = pc_checkskill(sd,HW_SOULDRAIN);
-				if(level > 0 && skill_get_inf(skillid) & INF_TOCHARACTER && sd && sd->ud.skilltarget == bl->id) {
-					int sp = 0;
-					clif_skill_nodamage(src,bl,HW_SOULDRAIN,level,1);
-					sp = (status_get_lv(bl))*(95+15*level)/100;
-					if(sd->status.sp + sp > sd->status.max_sp)
-						sp = sd->status.max_sp - sd->status.sp;
-					sd->status.sp += sp;
-					clif_heal(sd->fd,SP_SP,sp);
-				}
+			break;
+		default:
+			battle_delay_damage(tick+dmg.amotion+500,src,bl,damage,skillid,skilllv,dmg.flag);
+		}
+		/* ソウルドレイン */
+		if(sd && bl->type == BL_MOB && unit_isdead(bl) && attack_type&BF_MAGIC)
+		{
+			int level = pc_checkskill(sd,HW_SOULDRAIN);
+			if(level > 0 && skill_get_inf(skillid) & INF_TOCHARACTER && sd && sd->ud.skilltarget == bl->id) {
+				int sp = 0;
+				clif_skill_nodamage(src,bl,HW_SOULDRAIN,level,1);
+				sp = (status_get_lv(bl))*(95+15*level)/100;
+				if(sd->status.sp + sp > sd->status.max_sp)
+					sp = sd->status.max_sp - sd->status.sp;
+				sd->status.sp += sp;
+				clif_heal(sd->fd,SP_SP,sp);
 			}
 		}
 	}
