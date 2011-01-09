@@ -1428,6 +1428,60 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 	}
 
+	// 追加状態異常
+	switch(skillid) {
+	case HT_FREEZINGTRAP:	// カード効果無視のスキル
+	case AS_VENOMKNIFE:
+	case CR_GRANDCROSS:
+	case NPC_GRANDDARKNESS:
+	case AM_DEMONSTRATION:
+	case AM_ACIDTERROR:
+	case ASC_METEORASSAULT:
+	case ASC_BREAKER:
+	case AS_SPLASHER:
+	case WS_CARTTERMINATION:
+	case CR_ACIDDEMONSTRATION:
+	case GS_BULLSEYE:
+	case NJ_ZENYNAGE:
+		return 0;
+	default:
+		if(sd && attack_type&BF_WEAPON && skillid > 0) {	// 物理攻撃スキル
+			/* エンチャントデットリーポイズン(猛毒効果) */
+			if(sd->sc.data[SC_EDP].timer != -1 && !(status_get_mode(bl)&0x20)) {
+				if(atn_rand() % 10000 < status_change_rate(bl,SC_DPOISON,sd->sc.data[SC_EDP].val2,sd->status.base_level)) {
+					int lv = sd->sc.data[SC_EDP].val1;
+					status_change_pretimer(bl,SC_DPOISON,lv,0,0,0,skill_get_time2(ASC_EDP,lv),0,tick+status_get_amotion(src));
+				}
+			}
+			/* メルトダウン */
+			if(sd->sc.data[SC_MELTDOWN].timer != -1) {
+				if(atn_rand() % 100 < sd->sc.data[SC_MELTDOWN].val1) {
+					// 武器破壊
+					if(dstsd) {
+						pc_break_equip(dstsd, LOC_RARM);
+					} else {
+						status_change_start(bl,SC_STRIPWEAPON,1,0,0,0,skill_get_time2(WS_MELTDOWN,sd->sc.data[SC_MELTDOWN].val1),0);
+					}
+				}
+				if(atn_rand() % 1000 < sd->sc.data[SC_MELTDOWN].val1*7) {
+					// 鎧破壊
+					if(dstsd) {
+						pc_break_equip(dstsd, LOC_BODY);
+					} else {
+						status_change_start(bl,SC_STRIPARMOR,1,0,0,0,skill_get_time2(WS_MELTDOWN,sd->sc.data[SC_MELTDOWN].val1),0);
+					}
+				}
+			}
+			/* ポイズニングウェポン */
+			if(sd->sc.data[SC_POISONINGWEAPON].timer != -1 && !(status_get_mode(bl)&0x20)) {
+				int lv   = sd->sc.data[SC_POISONINGWEAPON].val1;
+				int type = sd->sc.data[SC_POISONINGWEAPON].val2;
+				if(atn_rand() % 10000 < status_change_rate(bl,type,sd->sc.data[SC_POISONINGWEAPON].val3,status_get_lv(src)))
+					status_change_start(bl,type,lv,0,0,0,skill_get_time2(GC_POISONINGWEAPON,lv),0);
+			}
+		}
+	}
+
 	// スキルの追加状態異常
 	if(sd && sd->skill_addeff.count > 0 && skillid > 0) {
 		int i;
@@ -1453,7 +1507,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_end(bl,SC_CONFUSION,-1);
 
 		// カードによる追加効果
-		if(sd && skillid != WS_CARTTERMINATION && skillid != CR_ACIDDEMONSTRATION && skillid != ASC_BREAKER && skillid != AS_VENOMKNIFE) {
+		if(sd) {
 			int i, rate;
 
 			for(i = SC_STONE; i <= SC_BLEED; i++) {
