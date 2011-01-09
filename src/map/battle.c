@@ -1200,7 +1200,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
  */
 static struct Damage battle_calc_weapon_attack(struct block_list *src,struct block_list *target,int skill_num,int skill_lv,int wflag)
 {
-	struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	struct map_session_data *src_sd  = NULL, *target_sd  = NULL;
 	struct mob_data         *src_md  = NULL, *target_md  = NULL;
 	struct pet_data         *src_pd  = NULL;
@@ -1290,11 +1290,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					if( target_sd &&
 						(target_sd->status.weapon != WT_BOW && !(target_sd->status.weapon >= WT_HANDGUN && target_sd->status.weapon <= WT_GRENADE))
 						&& dist <= range+1)
+					{
 						// 対象がPCで武器が弓矢でなく射程内
 						t_sc->data[SC_AUTOCOUNTER].val3 = src->id;
-					if( target_md && range <= 3 && dist <= range+1)
+						wd.avoid_flag = 1;
+					}
+					if( target_md && range <= 3 && dist <= range+1 ) {
 						// または対象がMobで射程が3以下で射程内
 						t_sc->data[SC_AUTOCOUNTER].val3 = src->id;
+						wd.avoid_flag = 1;
+					}
 				}
 				return wd; // ダメージ構造体を返して終了
 			}
@@ -1654,6 +1659,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	/* ８．回避判定 */
 	if(wd.type == 0 && atn_rand()%100 >= calc_flag.hitrate) {
 		wd.dmg_lv = ATK_FLEE;
+		wd.avoid_flag = 1;
 	}
 	else if(wd.type == 0 && t_sc && t_sc->data[SC_UTSUSEMI].timer != -1) {	// 空蝉
 		wd.dmg_lv = ATK_FLEE;
@@ -3098,6 +3104,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage  = 0;
 		wd.damage2 = 0;
 		wd.type    = 0x0b;
+		wd.avoid_flag = 1;
 		wd.dmg_lv  = ATK_LUCKY;
 	}
 
@@ -3106,6 +3113,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage  = 0;
 			wd.damage2 = 0;
 			wd.type    = 0x0b;
+			wd.avoid_flag = 1;
 			wd.dmg_lv  = ATK_LUCKY;
 		}
 	}
@@ -3221,7 +3229,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
  */
 static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag)
 {
-	struct Damage mgd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	struct Damage mgd = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	struct map_session_data *sd   = NULL, *tsd = NULL;
 	struct mob_data         *tmd  = NULL;
 	struct homun_data       *thd  = NULL;
@@ -3644,7 +3652,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 
 	/* ８．スキル修正１ */
 	if(skill_num == CR_GRANDCROSS || skill_num == NPC_GRANDDARKNESS) {	// グランドクロス
-		static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		wd = battle_calc_weapon_attack(bl,target,skill_num,skill_lv,flag);
 		mgd.damage = (mgd.damage + wd.damage) * (100 + 40*skill_lv)/100;
 		if(battle_config.gx_dupele)
@@ -3722,7 +3730,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
  */
 static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag)
 {
-	struct Damage mid = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	struct Damage mid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct skill_unit       *unit = NULL;
 	int int_, dex, race, ele;
@@ -3960,7 +3968,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
  */
 static struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag)
 {
-	static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	switch(attack_type) {
 		case BF_WEAPON:
@@ -3986,7 +3994,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct status_change *sc, *t_sc;
 	int damage,rsdamage = 0,ridamage = 0;
-	static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	nullpo_retr(0, src);
 	nullpo_retr(0, target);
@@ -4116,7 +4124,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	battle_delay_damage(tick+wd.amotion,src,target,(wd.damage+wd.damage2),0,0,wd.flag);
 
 	if(target->prev != NULL && !unit_isdead(target)) {
-		if(wd.damage > 0 || wd.damage2 > 0 || wd.dmg_lv == ATK_DEF) {
+		if(wd.damage > 0 || wd.damage2 > 0 || !wd.avoid_flag) {
 			skill_additional_effect(src,target,0,0,BF_WEAPON,tick);
 			if(sd && tsd) {
 				if(sd->break_weapon_rate > 0 && atn_rand()%10000 < sd->break_weapon_rate)
@@ -4644,6 +4652,9 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			dmg.blewcount = 0;
 		}
 	}
+	if(skillid == CH_PALMSTRIKE && !dmg.avoid_flag) {
+		dmg.blewcount = skill_get_blewcount(CH_PALMSTRIKE,skilllv);
+	}
 
 	/* 吹き飛ばし処理とそのパケット */
 	if(dmg.blewcount > 0 && !map[src->m].flag.gvg) {
@@ -4670,7 +4681,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			battle_damage(src,bl,damage,skillid,skilllv,dmg.flag);
 			break;
 		default:
-			battle_delay_damage(tick+dmg.amotion+500,src,bl,damage,skillid,skilllv,dmg.flag);
+			battle_delay_damage(tick+dmg.amotion,src,bl,damage,skillid,skilllv,dmg.flag);
 		}
 		/* ソウルドレイン */
 		if(sd && bl->type == BL_MOB && unit_isdead(bl) && attack_type&BF_MAGIC)
@@ -4703,7 +4714,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* ダメージがあるなら追加効果判定 */
 	if(bl->prev != NULL && !unit_isdead(bl)) {
-		if((damage > 0 || dmg.dmg_lv == ATK_DEF || skillid == SL_STUN) && skilllv >= 0) {
+		if((damage > 0 || !dmg.avoid_flag || skillid == SL_STUN) && skilllv >= 0) {
 			// グラウンドドリフトはdsrcを引数として渡す
 			if(skillid == GS_GROUNDDRIFT)
 				skill_additional_effect(dsrc,bl,skillid,skilllv,attack_type,tick);

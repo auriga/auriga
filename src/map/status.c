@@ -2159,6 +2159,8 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	int bonus_rate   = 0;
 	int skilllv;
 	int tmp;
+	char berserk_flag  = 0;
+	char defender_flag = 0;
 
 	nullpo_retr(0, sd);
 
@@ -2323,6 +2325,16 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
+
+		/* その他 */
+
+		// バーサーク
+		if(sd->sc.data[SC_BERSERK].timer != -1)
+			berserk_flag = 1;
+
+		// ディフェンダー
+		if(sd->sc.data[SC_DEFENDER].timer != -1)
+			defender_flag = 1;
 	}
 
 	/* 太陽と月と星の悪魔 */
@@ -2342,7 +2354,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	}
 
 	/* バーサーク */
-	if(sd->sc.count > 0 && sd->sc.data[SC_BERSERK].timer != -1)
+	if(berserk_flag)
 		bonus_rate -= 30;
 
 	/* bonus_rateの計算 */
@@ -2354,7 +2366,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		amotion += (skilllv+1) / 2 * 10;
 
 	/* ディフェンダー */
-	if(sd->sc.count > 0 && sd->sc.data[SC_DEFENDER].timer != -1)
+	if(defender_flag)
 		amotion += sd->sc.data[SC_DEFENDER].val3;
 
 	/* アドバンスドブック */
@@ -2380,6 +2392,8 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 	int haste_val2 = 0;
 	int slow_val   = 0;
 	int skilllv    = 0;
+	char defender_flag = 0;
+	char walkspeed_flag = 0;
 
 	nullpo_retr(0, sd);
 
@@ -2662,6 +2676,16 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
+
+		/* その他 */
+
+		// ディフェンダー
+		if(sd->sc.data[SC_DEFENDER].timer != -1)
+			defender_flag = 1;
+
+		// WALKSPEED
+		if(sd->sc.data[SC_WALKSPEED].timer != -1 && sd->sc.data[SC_WALKSPEED].val1 > 0)
+			walkspeed_flag = 1;
 	}
 
 	/* bonus_rateの最低値を設定 */
@@ -2676,9 +2700,9 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		speed += speed * (5 - pc_checkskill(sd,NC_MADOLICENCE)) / 10;
 	if(bonus_rate != 0)	// bonus_rate
 		speed = speed * (bonus_rate+100) / 100;
-	if(sd->sc.count > 0 && sd->sc.data[SC_DEFENDER].timer != -1 && speed < 200)	// ディフェンダー
+	if(defender_flag && speed < 200)	// ディフェンダー
 		speed = 200;
-	if(sd->sc.count > 0 && sd->sc.data[SC_WALKSPEED].timer != -1 && sd->sc.data[SC_WALKSPEED].val1 > 0)	// スクリプト用ステータス
+	if(walkspeed_flag)	// スクリプト用ステータス
 		speed = speed * 100 / sd->sc.data[SC_WALKSPEED].val1;
 
 	/* 最低値、最大値を設定する */
@@ -3921,6 +3945,8 @@ int status_get_speed(struct block_list *bl)
 		int bonus_rate;
 		int haste_val  = 0;
 		int slow_val   = 0;
+		char defender_flag = 0;
+		char walkspeed_flag = 0;
 		struct status_change *sc = status_get_sc(bl);
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl)
@@ -4034,6 +4060,16 @@ int status_get_speed(struct block_list *bl)
 				if(haste_val < bonus)
 					haste_val = bonus;
 			}
+
+			/* その他 */
+
+			// ディフェンダー
+			if(sc->data[SC_DEFENDER].timer != -1)
+				defender_flag = 1;
+
+			// WALKSPEED
+			if(sc->data[SC_WALKSPEED].timer != -1 && sc->data[SC_WALKSPEED].val1 > 0)
+				walkspeed_flag = 1;
 		}
 
 		/* bonus_rateの最低値を設定 */
@@ -4044,9 +4080,9 @@ int status_get_speed(struct block_list *bl)
 		/* speedの最終計算 */
 		if(bonus_rate != 0)	// bonus_rate
 			speed = speed * (bonus_rate+100) / 100;
-		if(sc && sc->data[SC_DEFENDER].timer != -1 && speed < 200)	// ディフェンダー
+		if(defender_flag && speed < 200)	// ディフェンダー
 			speed = 200;
-		if(sc && sc->data[SC_WALKSPEED].timer != -1 && sc->data[SC_WALKSPEED].val1 > 0)	// スクリプト用ステータス
+		if(walkspeed_flag)	// スクリプト用ステータス
 			speed = speed * 100 / sc->data[SC_WALKSPEED].val1;
 
 		/* 最低値、最大値を設定する */
@@ -4080,6 +4116,7 @@ int status_get_adelay(struct block_list *bl)
 		int bonus_rate     = 0;
 		int ferver_bonus   = 0;
 		int tmp            = 0;
+		char defender_flag = 0;
 		struct status_change *sc = status_get_sc(bl);
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl) {
@@ -4211,6 +4248,12 @@ int status_get_adelay(struct block_list *bl)
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
+
+			/* その他 */
+
+			// ディフェンダー
+			if(sc->data[SC_DEFENDER].timer != -1)
+				defender_flag = 1;
 		}
 
 		/* slow_valとhaste_val1とhaste_val2を加算する */
@@ -4221,7 +4264,7 @@ int status_get_adelay(struct block_list *bl)
 			calc_adelay = calc_adelay * (bonus_rate+100) / 100;
 
 		/* ディフェンダー */
-		if(sc && sc->data[SC_DEFENDER].timer != -1)
+		if(defender_flag)
 			calc_adelay += sc->data[SC_DEFENDER].val3;
 
 		/* 小数切り上げ */
@@ -4255,6 +4298,7 @@ int status_get_amotion(struct block_list *bl)
 		int bonus_rate      = 0;
 		int ferver_bonus    = 0;
 		int tmp             = 0;
+		char defender_flag  = 0;
 		struct status_change *sc = status_get_sc(bl);
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl) {
@@ -4379,6 +4423,12 @@ int status_get_amotion(struct block_list *bl)
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
+
+			/* その他 */
+
+			// ディフェンダー
+			if(sc->data[SC_DEFENDER].timer != -1)
+				defender_flag = 1;
 		}
 
 		/* slow_valとhaste_val1とhaste_val2を加算する */
@@ -4389,7 +4439,7 @@ int status_get_amotion(struct block_list *bl)
 			calc_amotion = calc_amotion * (bonus_rate+100) / 100;
 
 		/* ディフェンダー */
-		if(sc && sc->data[SC_DEFENDER].timer != -1)
+		if(defender_flag)
 			calc_amotion += sc->data[SC_DEFENDER].val3;
 
 		/* 小数切り上げ */

@@ -30,6 +30,7 @@ struct Damage {
 	int blewcount;
 	int flag;
 	int dmg_lv;	//囲まれ減算計算用　0:スキル攻撃 ATK_LUCKY,ATK_FLEE,ATK_DEF
+	char avoid_flag;
 };
 
 // 属性修正計算
