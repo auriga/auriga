@@ -1334,7 +1334,7 @@
 2407,Chrystal_Pumps,ガラスの靴,4,20,,100,,0,,0,991944702,2,64,,0,0,1,{},{ bonus bMdef,10; bonus bLuk,5; }
 2408,Cuffs,足鎖,4,5000,,3000,,3,,0,1000333311,2,64,,0,0,1,{},{ if(getequipid(7)==2655 || getequipid(8)==2655) { bonus bBaseAtk,50; bonus2 bSubGroup,10,20; } }
 2409,Spiky_Heel,ハイヒール,4,8500,,600,,2,,0,991944702,2,64,,0,0,1,{},{ bonus bMdef,5; }
-2410,Sleipnir,スレイプニール,4,20,,3500,,5,,0,1000333311,2,64,,94,0,,{},{ bonus bMdef,10; bonus bMaxHPrate,20; bonus bMaxSPrate,20; bonus bSPrecovRate,15; if(checkriding() == 0 ) bonus bSpeedRate,25; }
+2410,Sleipnir,スレイプニール,4,20,,3500,,5,,0,1000333311,2,64,,94,0,,{},{ bonus bMdef,10; bonus bMaxHPrate,20; bonus bMaxSPrate,20; bonus bSPrecovRate,15; bonus bSpeedRate,25; }
 2411,Grave,グリーブ,4,48000,,750,,5,,0,16512,2,64,,65,0,1,{},{}
 2412,Grave_,グリーブ,4,48000,,750,,5,,1,16512,2,64,,65,0,1,{},{}
 2413,Safty_Boots,安全靴,4,20,,350,,6,,0,16514,2,64,,30,0,,{},{}
@@ -1812,7 +1812,7 @@
 4128,Golden_Bug_Card,黄金蟲カード,6,20,,10,,,,,,,32,,,,,{},{ bonus bNoMagicDamage,0; bonus bUseSPrate,100; }
 4129,Baphomet__Card,バフォメットジュニアカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bAgi,3; bonus bCritical,1; }
 4130,Scorpion_King_Card,スコーピオンキングカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEle,9,20; }
-4131,Moonlight_Flower_Card,月夜花カード,6,20,,10,,,,,,,64,,,,,{},{ if(checkriding() == 0 ) bonus bSpeedRate,25; }
+4131,Moonlight_Flower_Card,月夜花カード,6,20,,10,,,,,,,64,,,,,{},{ bonus bSpeedRate,25; }
 4132,Mistress_Card,ミストレスカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bNoGemStone,0; bonus bUseSPrate,25; }
 4133,Daydric_Card,レイドリックカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bSubEle,0,20; }
 4134,Dracula_Card,ドラキュラカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bSPDrainRate,10,5; }

@@ -1987,15 +1987,15 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_SPEED_RATE:
 		if(sd->state.lr_flag != 2) {
-			if(sd->speed_rate > val) {
-				sd->speed_rate -= val;
+			if(sd->speed_rate < val) {
+				sd->speed_rate = val;
 				clif_status_load(sd,SI_MOVHASTE_INFINITY,1);
 			}
 		}
 		break;
 	case SP_SPEED_ADDRATE:
 		if(sd->state.lr_flag != 2)
-			sd->speed_add_rate -= val;
+			sd->speed_add_rate += val;
 		break;
 	case SP_ASPD:
 		if(sd->state.lr_flag != 2)
@@ -2003,13 +2003,13 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_ASPD_RATE:
 		if(sd->state.lr_flag != 2) {
-			if(sd->aspd_rate > val)
-				sd->aspd_rate -= val;
+			if(sd->aspd_rate < val)
+				sd->aspd_rate = val;
 		}
 		break;
 	case SP_ASPD_ADDRATE:
 		if(sd->state.lr_flag != 2)
-			sd->aspd_add_rate -= val;
+			sd->aspd_add_rate += val;
 		break;
 	case SP_HP_RECOV_RATE:
 		if(sd->state.lr_flag != 2)

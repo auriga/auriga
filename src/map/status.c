@@ -2020,7 +2020,7 @@ L_RECALC:
 	if(b_endure == 1 && sd->special_state.infinite_endure == 0)
 		clif_status_load(sd, SI_ENDURE, 0);
 	// bSpeedRateがなくなっていたらパケットを送って元に戻す
-	if(b_speedrate == 1 && sd->speed_rate == 0)
+	if(b_speedrate != 0 && sd->speed_rate == 0)
 		clif_status_load(sd, SI_MOVHASTE_INFINITY, 0);
 
 	// 計算処理ここまで
@@ -2348,9 +2348,9 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	bonus_rate = slow_val - haste_val1 - haste_val2;
 
 	/* bonus_rateにアイテムのボーナスを加算する */
-	if(sd->aspd_add_rate != 0) {
+	if(sd->aspd_add_rate != 0 || sd->aspd_rate != 0) {
 		sd->aspd_rate += sd->aspd_add_rate;
-		bonus_rate += sd->aspd_rate;
+		bonus_rate -= sd->aspd_rate;
 	}
 
 	/* バーサーク */
@@ -2578,12 +2578,6 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 				haste_val1 = 20;
 		}
 
-		// 回避率増加
-		if(sd->s_class.job == 12 && (skilllv = pc_checkskill(sd,TF_MISS)) > 0) {
-			if(haste_val1 < skilllv)
-				haste_val1 = skilllv;
-		}
-
 		// クローキング(壁沿い移動)
 		if(sd->sc.data[SC_CLOAKING].timer != -1 && (sd->sc.data[SC_CLOAKING].val4&1) == 1) {
 			int i;
@@ -2645,37 +2639,11 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 				haste_val1 = 25;
 		}
 
-		// アイテムボーナス
-		speed_rate = sd->speed_rate + sd->speed_add_rate;
-		if(speed_rate != 0) {
-			if(haste_val1 < speed_rate)
-				haste_val1 = speed_rate;
-		}
-
 		/* speedが減少するステータス計算2 */
 
 		// 融合
 		if(sd->sc.data[SC_FUSION].timer != -1)
 			haste_val2 = 25;
-
-		// ペコ
-		if(pc_isriding(sd)) {
-			if(haste_val2 < 25)
-				haste_val2 = 25;
-		}
-
-		// ドラゴン
-		if(pc_isdragon(sd)) {
-			if(haste_val2 < 25)
-				haste_val2 = 25;
-		}
-
-		// ウルフ
-		if(pc_iswolfmount(sd)) {
-			int bonus = 15 + 5 * pc_checkskill(sd,RA_WUGRIDER);
-			if(haste_val2 < bonus)
-				haste_val2 = bonus;
-		}
 
 		/* その他 */
 
@@ -2686,6 +2654,40 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		// WALKSPEED
 		if(sd->sc.data[SC_WALKSPEED].timer != -1 && sd->sc.data[SC_WALKSPEED].val1 > 0)
 			walkspeed_flag = 1;
+	}
+
+	// 回避率増加
+	if(sd->s_class.job == 12 && (skilllv = pc_checkskill(sd,TF_MISS)) > 0) {
+		if(haste_val1 < skilllv)
+			haste_val1 = skilllv;
+	}
+
+	// アイテムボーナス
+	speed_rate = sd->speed_rate + sd->speed_add_rate;
+	if(speed_rate != 0) {
+		if(haste_val1 < speed_rate)
+			haste_val1 = speed_rate;
+	}
+
+	/* 騎乗 */
+
+	// ペコ
+	if(pc_isriding(sd)) {
+		if(haste_val2 < 25)
+			haste_val2 = 25;
+	}
+
+	// ドラゴン
+	if(pc_isdragon(sd)) {
+		if(haste_val2 < 25)
+			haste_val2 = 25;
+	}
+
+	// ウルフ
+	if(pc_iswolfmount(sd)) {
+		int bonus = 15 + 5 * pc_checkskill(sd,RA_WUGRIDER);
+		if(haste_val2 < bonus)
+			haste_val2 = bonus;
 	}
 
 	/* bonus_rateの最低値を設定 */

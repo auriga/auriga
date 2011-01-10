@@ -1443,6 +1443,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case CR_ACIDDEMONSTRATION:
 	case GS_BULLSEYE:
 	case NJ_ZENYNAGE:
+	case ITM_TOMAHAWK:
 		return 0;
 	default:
 		if(sd && attack_type&BF_WEAPON && skillid > 0) {	// 物理攻撃スキル
