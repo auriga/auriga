@@ -101,8 +101,8 @@ CFLAGS += -DNO_HTTPD_CGI
 # disable csvdb via script
 #CFLAGS += -DNO_CSVDB_SCRIPT
 
-# usable DKDC
-#CFLAGS += -DCLASS_DKDC
+# usable MB
+#CFLAGS += -DCLASS_MB
 
 # enable dynamic memory allocation of status change data
 #CFLAGS += -DDYNAMIC_SC_DATA

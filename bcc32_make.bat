@@ -61,8 +61,8 @@ set __NO_HTTPD_CGI__=-DNO_HTTPD_CGI
 @rem csvdb のスクリプトからの利用を無効にする場合コメントアウトをはずす
 :set __NO_CSVDB_SCRIPT__=-DNO_CSVDB_SCRIPT
 
-@rem DKDCでごにょごにょ (通常はコメントアウト)
-:set __EXCLASS__=-DCLASS_DKDC
+@rem MBでごにょごにょ (通常はコメントアウト)
+:set __EXCLASS__=-DCLASS_MB
 
 @rem 動的にMOBのsc_dataを確保したい人はコメントアウトをはずす
 :set __DYNAMIC_STATUS_CHANGE__=-DDYNAMIC_SC_DATA

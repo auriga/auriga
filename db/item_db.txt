@@ -168,7 +168,7 @@
 675,Silver_Coin,銀貨,2,,,40,,,,,1000333311,2,,,,,,{},{}
 676,Bag_of_Silver_Coins,銀貨の袋,2,,,400,,,,,1000333311,2,,,,,,{},{}
 677,Platinum_Coin,白金貨,2,,,40,,,,,,,,,,,,{},{}
-678,Poison_Bottle,毒薬の瓶,2,5000,,100,,,,,1000333311,2,,,,,,{ if((Class == Job_Assassin) && (Upper == 1)){ sc_start SC_SpeedPot2,60000,0; }else{ percentheal -100,0; } },{}
+678,Poison_Bottle,毒薬の瓶,2,5000,,100,,,,,1000333311,2,,,,,,{ if((Class == Job_Assassin) && (Upper == UPPER_HIGH) || (Class == Job_Guillotine)){ sc_start SC_SpeedPot2,60000,0; }else{ percentheal -100,0; } },{}
 679,Pilule,神仙丹,2,5000,,300,,,,,1000333311,2,,,,,,{ percentheal 50,50; },{}
 680,Magic_Carnation,魔力のカーネーション,2,,,1000,,,,,,,,,,,,{},{}
 681,Sweet_Memory_of_Marriage,新婚時代の思い出,2,50000,,10,,,,,1000333311,2,,,,,,{ sc_start SC_WEDDING,3600000,0; },{}
@@ -642,7 +642,7 @@
 1308,Golden_Axe,金斧,5,,,,,,1,0,279714,2,2,4,,6,1,{},{}
 1309,Orcish_Axe_,オーキッシュアックス,5,20,,1500,75,,1,4,8672419,2,2,3,3,6,1,{},{}
 1310,Krieger_Onehand_Axe1,グロリアスクリーヴァー,5,,,0,130,,1,,279714,2,2,4,80,6,1,{},{ bonus2 bAddRace,7,75; bonus2 bIgnoreDefRace,7,20; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoSpell,673,1,500; bonus bAspdAddRate,5; bonus4 bSkillAutoSpell2,42,673,2,2000; /*発動率等暫定（eathenaより）*/}
-1311,Vecer_Axe,ベチェルアックス,5,,,1500,140,,1,2,279714,2,2,3,50,6,1,{},{ if(Class == Job_Merchant || Class == Job_Blacksmith || Class== Job_Alchemist){ if(readparam(bLuk)>=90){ bonus bBaseAtk,20; } if(readparam(bDex)>=90){ bonus bCritical,5; } if((readparam(bLuk)>=90) && (readparam(bDex)>=90)){ bonus2 bAddSkillDamageRate,42,15;} } }
+1311,Vecer_Axe,ベチェルアックス,5,,,1500,140,,1,2,279714,2,2,3,50,6,1,{},{ if(getbaseclass(Class) == CLASS_MC){ if(readparam(bLuk)>=90){ bonus bBaseAtk,20; } if(readparam(bDex)>=90){ bonus bCritical,5; } if((readparam(bLuk)>=90) && (readparam(bDex)>=90)){ bonus2 bAddSkillDamageRate,42,15;} } }
 1312,Orcish_Axe_C,オーキッシュアックス,5,,,0,110,,1,0,8672419,2,2,,1,6,,{},{ bonus2 bAddSize,0,70; bonus2 bAddSize,1,70; bonus2 bAddSize,2,70; }
 1313,Unknown_Item,旅行者の斧,5,,,500,77,,1,0,283811,2,2,1,1,6,,{},{ bonus bStr,2; }
 
@@ -671,7 +671,7 @@
 1373,Brood_Axe_C,ブラッドアックスR,9,,-1,0,205,,1,0,279714,2,2,4,1,7,,{},{ bonus bMatkRate,20; bonus bAspdAddRate,5; }
 1374,Tomahawk_C,トマホークR,9,,-1,0,200,,1,0,279714,2,34,4,1,7,,{},{ bonus bAtkEle,4; skill 337,1; }
 1375,Berdysz,バルディッシュ,9,20,,2500,200,,1,2,279714,2,34,3,70,7,1,{},{ bonus2 bSubSize,1,13; bonus2 bSubSize,2,15; }
-1376,Heart_Breaker,ハートブレイカー,9,20,,2000,175,,1,1,279714,2,34,4,70,7,1,{},{ bonus bCritical,20+getequiprefinerycnt(4); bonus bAspdAddRate,5; if(Class== Job_Blacksmith || Class== Job_Alchemist) bonus3 bAutoSpell,110,3,300; }
+1376,Heart_Breaker,ハートブレイカー,9,20,,2000,175,,1,1,279714,2,34,4,70,7,1,{},{ bonus bCritical,20+getequiprefinerycnt(4); bonus bAspdAddRate,5; if(getbaseclass(Class,2) == CLASS_BS || getbaseclass(Class,2) == CLASS_AM) bonus3 bAutoSpell,110,3,300; }
 1377,Hurricane_Fury,ハリケーンフューリー,9,20,,3500,332,,1,1,279714,2,34,4,80,7,1,{},{ bonus2 bSubSize,1,10+getequiprefinerycnt(4); bonus bAspdAddRate,getequiprefinerycnt(4); bonus3 bAutoSelfSpell,661,5,200; }
 1378,Great_Axe_C,グレイトアックス,9,,-1,0,215,,1,0,279714,2,34,4,1,7,,{},{ bonus bStr,5; bonus bHit,20; bonus2 bAddSkillDamageRate,42,20; bonus2 bAddEff,Eff_Stun,1500; }
 1379,Elite_Soldier's_Battle_Axe,狂戦士のバトルアックス(特攻),9,20,,0,200,,1,0,279714,2,34,3,80,7,1,{},{ bonus bStr,3; bonus2 bAddRace,7,55; bonus bUnbreakableWeapon,0; }
@@ -709,8 +709,8 @@
 1422,Hunting_Spear,ハンティングスピア,5,20,,4200,180,,3,1,16514,2,2,4,60,4,1,{},{ bonus2 bIgnoreDefRace,2,100; bonus3 bAddMonsterDropItem,517,2,1000; bonus3 bAutoSpell,399,3,1000; }
 1423,Pole_XO,ポールXO,5,20,,0,120,,3,0,16514,2,2,1,0,4,1,{},{ bonus bAtkRate,50; }
 1424,Skewer_C,串,5,,-1,0,149,,3,0,16514,2,2,4,1,4,,{},{ bonus2 bIgnoreDefRace,11,100; bonus2 bAddSize,1,20; bonus2 bAddSize,2,20; }
-1425,Assaulter's_Spear,突撃隊長のスピア(勇猛),5,20,,0,60,,3,0,16514,2,2,3,80,4,1,{},{bonus bStr,2; bonus2 bAddRace,7,95; bonus bUnbreakableWeapon,0; if(Class != Job_Crusader) end; bonus bAspdAddRate,20; }
-1426,Krieger_Onehand_Spear1,グロリアススピア,5,,,0,130,,3,0,16514,2,2,4,80,4,1,{},{},{ bonus2 bAddRace,7,95; bonus2 bIgnoreDefRace,7,20; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; bonus bAspdAddRate,5; if(getequiprefinerycnt(4)<9) end; if(Class == Job_Knight) bonus4 bSkillAutoSpell2,397,673,2,2000; bonus bAspdAddRate,5; } else bonus3 bAutoSpell,367,5,1000; bonus bAspdAddRate,5; /*発動率等暫定（eathenaより）*/}
+1425,Assaulter's_Spear,突撃隊長のスピア(勇猛),5,20,,0,60,,3,0,16514,2,2,3,80,4,1,{},{bonus bStr,2; bonus2 bAddRace,7,95; bonus bUnbreakableWeapon,0; if(getbaseclass(Class,2) == CLASS_CR) bonus bAspdAddRate,20; }
+1426,Krieger_Onehand_Spear1,グロリアススピア,5,,,0,130,,3,0,16514,2,2,4,80,4,1,{},{},{ bonus2 bAddRace,7,95; bonus2 bIgnoreDefRace,7,20; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; bonus bAspdAddRate,5; if(getequiprefinerycnt(4)<9) end; if(getbaseclass(Class,2) == CLASS_KN) bonus4 bSkillAutoSpell2,397,673,2,2000; bonus bAspdAddRate,5; } else bonus3 bAutoSpell,367,5,1000; bonus bAspdAddRate,5; /*発動率等暫定（eathenaより）*/}
 1427,Spear_Of_Excellent,立派な長槍,9,,,0,160,,3,0,16514,2,34,3,,5,,{},{}
 1428,Long_Horn_M,ロングホーン,5,,,1000,150,,3,1,16514,2,2,4,65,4,1,{},{ bonus bAtkEle,6; bonus2 bAddEff,Eff_Bleed,500; skill 53,1; bonus bUnbreakableWeapon,0; if(getequipid(3)==2115) bonus3 bRevAutoSelfSpell,361,2,50; }
 1429,Hunting_Spear_M,ハンティングスピア,5,,,4200,180,,3,1,16514,2,2,4,60,4,1,{},{ bonus2 bIgnoreDefRace,2,100; bonus3 bAddMonsterDropItem,517,2,1000; bonus3 bAutoSpell,399,3,1000; }
@@ -751,7 +751,7 @@
 1483,Ivory_Lance,アイボリーランス,9,20,,1000,160,,3,1,16514,2,34,3,50,5,1,{},{ bonus bAgi,2; bonus bAspdAddRate,3; skill 58,5; bonus3 bAutoSpell,673,1,300; bonus2 bAddEff,Eff_Bleed,300; }
 1484,Cardo,カルド,9,20,,5600,150,,3,1,128,2,34,4,70,5,1,{},{ bonus bAspdAddRate,-10; bonus bDef,getequiprefinerycnt(4)/2;}
 1485,Battle_Fork,バトルフォーク,9,20,,700,112,,3,4,16514,2,34,2,50,5,1,{},{}
-1486,Krieger_Twohand_Spear1,グロリアスランス,9,,,0,220,,3,0,16514,2,34,4,80,5,1,{},{ bonus2 bAddRace,7,70; bonus2 bIgnoreDefRace,7,25; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; if(Class == Job_Knight) bonus4 bSkillAutoSpell2,397,673,2,2000; } else bonus3 bAutoSpell,367,5,2000; /*発動率等暫定（eathenaより）*/}
+1486,Krieger_Twohand_Spear1,グロリアスランス,9,,,0,220,,3,0,16514,2,34,4,80,5,1,{},{ bonus2 bAddRace,7,70; bonus2 bIgnoreDefRace,7,25; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; if(getbaseclass(Class,2) == CLASS_KN) bonus4 bSkillAutoSpell2,397,673,2,2000; } else bonus3 bAutoSpell,367,5,2000; /*発動率等暫定（eathenaより）*/}
 1487,Lance_C,ランス,9,,,0,220,,3,0,16514,2,34,,1,5,,{},{ bonus2 bAddSize,0,50; bonus2 bAddSize,1,50; bonus2 bAddSize,2,50; }
 1488,Unknown_Item,アルシェピース,9,,,1000,135,,3,0,16512,2,34,4,1,5,,{},{}
 
@@ -819,7 +819,7 @@
 1562,Bible_Of_Battlefield,戦場の書,5,20,,700,110,,,1,33620224,2,2,4,80,15,1,{},{ bonus bInt,3; bonus3 bAutoSelfSpell2,34,3,200; }
 1563,Diary_Of_Great_Sage_C,賢者の日記R,5,,-1,1100,135,,1,0,33620224,2,2,3,1,15,,{},{ bonus bMatkRate,20; bonus bAspdAddRate,5; }
 1564,Encyclopedia,大百科事典,5,20,,2000,110,,1,2,33620224,2,2,3,70,15,1,{},{ bonus bMatkRate,15; bonus bInt,3; bonus bDex,2; bonus bCritical,20+readparam(bLuk)/5; }
-1565,Death_Note,死神の名簿,5,20,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,7,100; bonus bAspdAddRate,getequiprefinerycnt(4); if(Class == Job_Sage) bonus3 bAutoSelfSpell,662,5,200; }
+1565,Death_Note,死神の名簿,5,20,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,7,100; bonus bAspdAddRate,getequiprefinerycnt(4); if(getbaseclass(Class,2) == CLASS_SA) bonus3 bAutoSelfSpell,662,5,200; }
 1566,Diary_Of_Great_Basil,堅二の日記,5,20,,0,120,,1,0,33620224,2,2,1,0,15,1,{},{ bonus bMatkRate,15; bonus bAtkRate,50; }
 1567,Hardback_C,分厚い本,5,,-1,0,168,,1,0,33620224,2,2,4,1,15,,{},{ bonus bStr,5; bonus bDex,2; bonus bMatkRate,20; }
 1568,Book_Of_Billows_,荒れ狂う波の書,5,20,,750,90,,1,3,33620224,2,2,3,27,15,1,{},{ bonus bAtkEle,1; }
@@ -833,7 +833,7 @@
 1576,Krieger_Book1,グロリアスタブレット,5,,,0,90,,1,0,33620224,2,2,4,80,15,1,{},{ bonus bMatk2Rate,15; bonus2 bAddRace,7,80; bonus2 bIgnoreDefRace,7,25; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,7,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1576,3000,3000; if(checkactiveitem()) { misceffect 9,""; bonus bBaseAtk,200; } /*発動率等暫定（eathenaより）*/}
 1577,Krieger_Book2,グロリアス黙示録,5,,,0,90,,1,0,33620224,2,2,4,80,15,1,{},{ bonus bMatk2Rate,15; bonus2 bMagicAddRace,7,80; bonus2 bIgnoreMDefRace,7,25; if(getequiprefinerycnt(4)<6) end; bonus2 bIgnoreMDefRace,7,5; if(getequiprefinerycnt(4)<9) end; bonus bMatkRate,5; bonus bCastrate,-5; bonus bSkillDelayRate,-5; /*発動率等暫定（eathenaより）*/}
 1578,Book_Of_Prayer,祈る者の書,5,,,0,140,,1,0,33620224,2,2,3,,15,,{},{}
-1579,Death_Note_M,死神の名簿,5,,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,7,100; bonus bAspdAddRate,getequiprefinerycnt(4); if(Class == Job_Sage) bonus3 bAutoSelfSpell,662,5,200; }
+1579,Death_Note_M,死神の名簿,5,,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,7,100; bonus bAspdAddRate,getequiprefinerycnt(4); if(getbaseclass(Class,2) == CLASS_SA) bonus3 bAutoSelfSpell,662,5,200; }
 1580,Encyclopedia_C,大百科事典,5,,,0,145,,1,0,33620224,2,2,,1,15,,{},{ bonus bMatkRate,15; bonus bInt,3; bonus bDex,2; bonus bCritical,20+readparam(bLuk)/5; bonus2 bAddSize,0,40; bonus2 bAddSize,1,40; bonus2 bAddSize,2,40; }
 
 1599,Angra_Manyu,アーリマン,5,,,,,,,,,0,,,,,,{},{}
@@ -1081,7 +1081,7 @@
 2111,Herald_Of_GOD,神の使者,4,20,,1600,,6,,0,16384,2,32,,83,3,1,{},{ bonus bVit,3; bonus bInt,2; bonus bMdef,3; bonus bUnbreakableShield,0; }
 2112,Novice_Guard,初心者用ガード,4,,,1,,3,,0,8388609,2,32,,0,1,,{},{}
 2113,Novice_Shield,ノービスシールド,4,5000,,1000,,3,,1,8388609,2,32,,40,3,1,{},{ bonus2 bSubEle,1,20; bonus2 bSubEle,2,20; bonus2 bSubEle,3,20; bonus2 bSubEle,4,20; bonus2 bSubEle,5,20; bonus2 bSubEle,6,20; bonus2 bSubEle,7,20; bonus2 bSubEle,8,20; bonus2 bSubEle,9,20; }
-2114,Stone_Buckler,ストーンバックラー,4,30000,,1500,,3,,1,991944702,2,32,,65,2,1,{},{ bonus2 bSubSize,2,5; if((getequipid(2)==2353 && getequipid(1)==5122)==0) end; bonus bStr,2; bonus bDef,5; bonus bMdef,5; if(Class == Job_Swordman || Class == Job_Knight || Class == Job_Crusader) bonus bDef,6; }
+2114,Stone_Buckler,ストーンバックラー,4,30000,,1500,,3,,1,991944702,2,32,,65,2,1,{},{ bonus2 bSubSize,2,5; if((getequipid(2)==2353 && getequipid(1)==5122)==0) end; bonus bStr,2; bonus bDef,5; bonus bMdef,5; if(getbaseclass(Class) == CLASS_SM) bonus bDef,6; }
 2115,Valkyrja's_Shield,ヴァルキリーシールド,4,30000,,500,,3,,1,991944702,2,32,,65,3,1,{},{ bonus2 bSubEle,1,20; bonus2 bSubEle,3,20; bonus2 bSubEle,7,20; bonus2 bSubEle,9,20; bonus bMdef,5; if(equippeditem(2353)==0 || equippeditem(5124)==0) end; bonus bDef,2; bonus bMdef,5; bonus bMdef,getequiprefinerycnt(1)+getequiprefinerycnt(3); }
 2116,Angel's_Safeguard,天使の守護,4,10000,,400,,3,,1,8388609,2,32,,20,2,1,{},{ bonus2 bSubRace,6,5; bonus2 bMagicSubRace,6,5; }
 2117,Arm_Guard,手甲,4,10000,,150,,5,,0,536870912,2,32,,20,,1,{},{}
@@ -1100,7 +1100,7 @@
 2130,Cross_Shield,クロスシールド,4,20,,2000,,6,,1,16384,2,32,,80,3,1,{},{ bonus bStr,1; bonus2 bAddSkillDamageRate,480,30; bonus2 bAddSkillDamageRate,251,30; bonus bUseSPrate,10; }
 2131,Magic_Study_Vol1,魔力の書 第一巻,4,20,,1000,,2,,1,134283780,2,32,,70,,1,{},{ bonus bMdef,3; bonus bInt,2; bonus2 bAddRevEff,Eff_Stun,300; }
 2132,Shelter_Resistance,シェルターオブレジスタンス,4,,,0,,9,,0,1000333311,2,32,,,1,,{},{ bonus2 bSubRace,10,20; bonus2 bMagicSubRace,10,20; bonus2 bSubRace,11,20; bonus2 bMagicSubRace,11,20; bonus bShortWeaponDamageReturn,1; }
-2133,Tournament_Shield,トーナメントシールド,4,,10,1000,,5,,1,16514,2,32,,50,1,1,{},{ bonus2 bAddRace,10,1; bonus2 bAddRace,11,1; if(equippeditem(1420) || equippeditem(1421) || equippeditem(1422)) { bonus bDef,2; bonus2 bAddRace,10,4; bonus2 bAddRace,11,4; if(Class == Job_Knight) bonus bAspdAddRate,5; } }
+2133,Tournament_Shield,トーナメントシールド,4,,10,1000,,5,,1,16514,2,32,,50,1,1,{},{ bonus2 bAddRace,10,1; bonus2 bAddRace,11,1; if(equippeditem(1420) || equippeditem(1421) || equippeditem(1422)) { bonus bDef,2; bonus2 bAddRace,10,4; bonus2 bAddRace,11,4; if(getbaseclass(Class,2) == CLASS_KN) bonus bAspdAddRate,5; } }
 2134,Shield_Of_Naga,ナーガの鱗盾,4,,10,500,,3,,1,2088832,2,32,,1,1,1,{},{ bonus bMdef,3; bonus3 bRevAutoActiveWeapon,2134,100,5000; if(checkactiveitem()) { misceffect 336,""; bonus bShortWeaponDamageReturn,getequiprefinerycnt(3)*3; } }
 2135,Shadow_Guard,シャドウガード,4,,,800,,4,,1,131072,2,32,,70,,1,{},{ if(equippeditem(2426)==0) end; bonus2 bAddEff,Eff_Blind,200; bonus3 bRevAutoActiveWeapon,2135,2000,10000; if(checkactiveitem()) { misceffect 37,""; bonus bFlee,20; } }
 2136,Cracked_Buckler,傷ついたバックラー,4,,,0,,5,,0,1000333311,2,32,,,,,{},{ bonus bAgi,2; bonus2 bSubEle,0,10; bonus3 bRevAutoSelfSpell,73,1,500; bonus bMdef,1; /*AS発動率は暫定*/ }
@@ -1281,7 +1281,7 @@
 2354,Goibne's_Armor,ゴヴニュの鎧,4,50000,,3500,,7,,0,991944702,2,16,,54,,1,{},{ bonus bVit,2; bonus bMaxHPrate,10; }
 2355,Angel's_Protection,天使の加護,4,10000,,600,,4,,1,8388609,2,16,,40,,1,{},{ bonus bMdef,20; if((getequipid(6)==2420 && getequipid(3)==2116 && getequipid(5)==2521 && getequipid(1)==5125)==0) end; bonus bMaxHP,900; bonus bMaxSP,100; bonus3 bRevAutoSelfSpell,361,1,500; }
 2356,Lamp_Of_Hope,恩寵の法衣,4,20,,2500,,5,,1,33024,2,16,,70,,1,{},{ bonus2 bResEff,Eff_Blind,8000; bonus bMdef,5; }
-2357,Valkyrie_Armor,ヴァルキリーアーマー,4,20,,2800,,6,,1,2088958,2,16,,0,,1,{},{ bonus bStr,1; bonus bVit,1; bonus bAgi,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; bonus bUnbreakableArmor,0; if(Class == Job_Swordman || Class == Job_Merchant || Class == Job_Thief || Class == Job_Knight || Class == Job_Blacksmith || Class == Job_Assassin || Class == Job_Crusader || Class == Job_Rogue || Class == Job_Alchemist) bonus2 bResEff,Eff_Stun,5000; else bonus2 bResEff,Eff_Silence,5000; }
+2357,Valkyrie_Armor,ヴァルキリーアーマー,4,20,,2800,,6,,1,2088958,2,16,,0,,1,{},{ bonus bStr,1; bonus bVit,1; bonus bAgi,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; bonus bUnbreakableArmor,0; if(getbaseclass(Class) == CLASS_SM || getbaseclass(Class) == CLASS_MC || getbaseclass(Class) == CLASS_TF) bonus2 bResEff,Eff_Stun,5000; else if(getbaseclass(Class) == CLASS_MG || getbaseclass(Class) == CLASS_AC || getbaseclass(Class) == CLASS_AL) bonus2 bResEff,Eff_Silence,5000; }
 2358,Dress_Of_Angel,天使のドレス,4,20,,1000,,5,,0,1000333311,2,16,,0,,,{},{ bonus bLuk,4; }
 2359,Ninja_Suit_,忍者スーツ,4,20,,1500,,7,,1,537006144,2,16,,50,0,1,{},{ bonus bAgi,1; bonus bMdef,3; }
 2360,Robe_Of_Casting_,キャスティングローブ,4,20,,1100,,5,,1,134283776,2,16,,75,0,1,{},{ bonus bCastrate,-3; bonus bMdef,4; }
@@ -1310,7 +1310,7 @@
 2383,Brynhild,ブリュンヒルデ,4,20,,400,,10,,0,1000333311,2,16,,94,0,,{},{ bonus bMaxHP,BaseLevel*20; bonus bMaxSP,BaseLevel*5; bonus2 bAddRace,10,10; bonus2 bAddRace,11,10; bonus bMatkRate,10; bonus bMdef,10; bonus bNoKnockback,0; bonus bUnbreakableArmor,0; }
 2384,Spritual_Tunic,スピリチュアルチューニック,4,,,0,,10,,0,1000333311,2,16,,,,,{},{ bonus bMaxHP,800; bonus2 bResEff,Eff_Freeze,10000; bonus bMdef,5; bonus2 bSubEle,2,20; bonus2 bSubEle,3,20; bonus2 bSubEle,4,20; bonus2 bSubEle,5,20; bonus2 bSubEle,6,20; bonus2 bSubEle,7,20; bonus2 bSubEle,8,20; bonus2 bSubEle,9,20; }
 2385,Recuperative_Armor,リキュパレーティブアーマー,4,,,0,,12,,0,1000333311,2,16,,,,,{},{ bonus bHPrecovStop,0; bonus bSPrecovStop,0; bonus bSPPenaltyUnrig,100; bonus bHPGainValue,60; bonus bSPGainValue,6; }
-2386,Chameleon_Armor,カメレオンアーマー,4,,,1700,,5,,0,2088832,2,16,,70,,1,{},{ bonus bMaxHP,BaseLevel*7; bonus bMaxSP,BaseLevel/2; bonus3 bRevAutoActiveMagic,2386,100,2000; if(checkactiveitem()) { misceffect 169,""; bonus bNoMagicDamage,0; } if(Class == Job_Swordman || Class == Job_Merchant || Class == Job_Thief || Class == Job_Knight || Class == Job_Blacksmith || Class == Job_Assassin || Class == Job_Crusader || Class == Job_Rogue || Class == Job_Alchemist) bonus bDef,3; if(Class == Job_Magician || Class == Job_Archer || Class == Job_Acolyte || Class == Job_Wizard || Class == Job_Hunter || Class == Job_Priest || Class == Job_Sage || Class == Job_Bard || Class == Job_Dancer || Class == Job_Monk) bonus bMdef,5; }
+2386,Chameleon_Armor,カメレオンアーマー,4,,,1700,,5,,0,2088832,2,16,,70,,1,{},{ bonus bMaxHP,BaseLevel*7; bonus bMaxSP,BaseLevel/2; bonus3 bRevAutoActiveMagic,2386,100,2000; if(checkactiveitem()) { misceffect 169,""; bonus bNoMagicDamage,0; } if(getbaseclass(Class) == CLASS_SM || getbaseclass(Class) == CLASS_MC || getbaseclass(Class) == CLASS_TF) bonus bDef,3; else if(getbaseclass(Class) == CLASS_MG || getbaseclass(Class) == CLASS_AC || getbaseclass(Class) == CLASS_AL) bonus bMdef,5; }
 2387,Sprint_Mail,スプリントメイル,4,,,1000,,3,,1,2088832,2,16,,,,1,{},{ bonus bVit,1; bonus bHPrecovRate,5; bonus2 bItemHealRate,1,3; bonus2 bItemHealRate,2,3; bonus2 bItemHealRate,3,3; bonus2 bItemHealRate,4,3; bonus2 bItemHealRate,5,3; bonus2 bItemHealRate,6,3; bonus2 bItemHealRate,7,3; bonus2 bItemHealRate,8,3; bonus2 bItemHealRate,9,3; bonus2 bItemHealRate,10,3; bonus2 bItemHealRate,11,3; }
 2388,Kandura,カンドゥラ,4,,,300,,4,,1,4096,2,16,,70,,1,{},{ bonus bAgi,1; bonus bFlee,5; bonus bAspdAddRate,2; }
 2389,Armor_Of_Naga,ナーガの鱗鎧,4,,,1000,,5,,1,2088832,2,16,,,,1,{},{ bonus bMdef,2; bonus3 bAutoActiveWeapon,2389,50,10000; if(checkactiveitem()) { misceffect 9,""; bonus bBaseAtk,20; } }
@@ -1345,7 +1345,7 @@
 2418,Vidar's_Boots,ヴィダルのブーツ,4,30000,,650,,4,,0,991944702,2,64,,65,,1,{},{ bonus bMaxHPrate,9; bonus bMaxSPrate,9; }
 2419,Goibne's_Combat_Boots,ゴヴニュの軍靴,4,30000,,700,,4,,0,991944702,2,64,,54,,1,{},{ bonus bMdef,3; bonus bMaxHPrate,5; bonus bMaxSPrate,5; }
 2420,Angel's_Arrival,天使の再来,4,10000,,300,,2,,1,8388609,2,64,,25,,1,{},{ bonus bMaxHP,100; }
-2421,Valkyrie_Shoes,ヴァルキリーシューズ,4,20,,500,,4,,1,2088958,2,64,,0,,1,{},{ if(Class == Job_Swordman || Class == Job_Merchant || Class == Job_Thief || Class == Job_Knight || Class == Job_Blacksmith || Class == Job_Assassin || Class == Job_Crusader || Class == Job_Rogue || Class == Job_Alchemist) bonus bMaxSP,Joblevel*2; else bonus bMaxHP,Baselevel*5; }
+2421,Valkyrie_Shoes,ヴァルキリーシューズ,4,20,,500,,4,,1,2088958,2,64,,0,,1,{},{ if(getbaseclass(Class) == CLASS_SM || getbaseclass(Class) == CLASS_MC || getbaseclass(Class) == CLASS_TF) bonus bMaxSP,Joblevel*2; else if(getbaseclass(Class) == CLASS_MG || getbaseclass(Class) == CLASS_AC || getbaseclass(Class) == CLASS_AL) bonus bMaxHP,Baselevel*5; }
 2422,High_Fashion_Sandals,高級サンダル,4,24000,,200,,2,,1,134316820,2,64,,40,,1,{},{ bonus bMdef,10; }
 2423,Variant_Shoes,バリアントシューズ,4,20,,500,,3,,0,2088958,2,64,,85,0,1,{},{ bonus bMaxHPrate,20-getequiprefinerycnt(6); bonus bMaxSPrate,20-getequiprefinerycnt(6); bonus bDef,getequiprefinerycnt(6)/2; }
 2424,Tidal_Shoes,タイダルシューズ,4,20,,300,,3,,1,2088958,2,64,,55,0,1,{},{ bonus2 bSubEle,1,5; if(getequipid(5)==2528){ bonus bHPrecovRate,5; bonus bMaxHPrate,10; } }
@@ -1412,7 +1412,7 @@
 2521,Angel's_Warmth,天使の温もり,4,10000,,400,,2,,1,8388609,2,4,,20,,1,{},{ bonus bHPrecovRate,5; }
 2522,Undershirt,ランニングシャツ,4,20000,,150,,2,,0,1000333311,2,4,,0,,1,{},{ bonus bMdef,1; if((getequipid(2)==2339) || (getequipid(2)==2371)) { bonus bAgi,5; bonus bFlee,10; } }
 2523,Undershirt_,ランニングシャツ,4,20000,,150,,2,,1,1000333311,2,4,,0,,1,{},{ bonus bMdef,1; if((getequipid(2)==2339) || (getequipid(2)==2371)) { bonus bAgi,5; bonus bFlee,10; } }
-2524,Valkyrie_Manteau,ヴァルキリーマント,4,20,,500,,3,,1,2088958,2,4,,0,,1,{},{ if(Class == Job_Swordman || Class == Job_Merchant || Class == Job_Thief || Class == Job_Knight || Class == Job_Blacksmith || Class == Job_Assassin || Class == Job_Crusader || Class == Job_Rogue || Class == Job_Alchemist) bonus bShortWeaponDamageReturn,getequiprefinerycnt(5)*2+5; else bonus bFlee2,getequiprefinerycnt(5)*2+5; }
+2524,Valkyrie_Manteau,ヴァルキリーマント,4,20,,500,,3,,1,2088958,2,4,,0,,1,{},{ if(getbaseclass(Class) == CLASS_SM || getbaseclass(Class) == CLASS_MC || getbaseclass(Class) == CLASS_TF) bonus bShortWeaponDamageReturn,getequiprefinerycnt(5)*2+5; else if(getbaseclass(Class) == CLASS_MG || getbaseclass(Class) == CLASS_AC || getbaseclass(Class) == CLASS_AL) bonus bFlee2,getequiprefinerycnt(5)*2+5; }
 2525,Cape_Of_Ancient_Lord_,昔の領主のマント,4,20,,600,,2,,1,991944702,2,4,,40,0,1,{},{ bonus bAgi,1; }
 2526,Dragon_Scale_Coat,龍の鱗のコート,4,20,,10,,4,,0,1000333311,2,4,50,50,,1,{},{}
 2527,Dragon_Breath,ドラゴンブレス,4,20,,600,,4,,1,2088958,2,4,,48,0,1,{},{ bonus2 bSubRace,9,15; bonus2 bMagicSubRace,9,15; if(getequipid(3)==1166 || getequipid(3)==13001 || getequipid(3)==1474) bonus2 bAddRace,9,5; }
@@ -1617,13 +1617,13 @@
 2762,Dragoon_Ring,ドラグーンリング,4,,,0,,0,,0,1000333311,2,136,,1,,,{},{ bonus2 bExpRate,9,15; }
 2763,Skul_Ring_C,骸骨の指輪R,4,,,0,,0,,0,991944702,2,136,,95,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bMaxHPrate,5; bonus bSkillDelayRate,-5; skill 10,1; }
 2764,Small_Fishing_Rod,小さな釣り竿,4,,,250,,,,,1000333311,,,,,,,{},{}
-2765,Novice_Figure,ノービスフィギュア,4,,,100,,0,,0,1000333311,2,136,,,,,{},{ bonus bMaxHP,70; if(Class == Job_Novice || Class == Job_SuperNovice) bonus bMaxHP,30; }
-2766,Swordman_Figure,ソードマンフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bVit,1; if(Class == Job_Swordman || Class == Job_Knight || Class == Job_Crusader) bonus bDef,2; }
-2767,Acolyte_Figure,アコライトフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bInt,1; if(Class == Job_Acolyte || Class == Job_Priest || Class == Job_Monk) bonus bMaxSP,50; }
-2768,Mage_Figure,マジシャンフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bInt,1; if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) bonus bSPrecovRate,5; }
-2769,Archer_Figure,アーチャーフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bDex,1; if(Class == Job_Archer || Class == Job_Hunter || Class == Job_Bard || Class == Job_Dancer) bonus bBaseAtk,10; }
-2770,Thief_Figure,シーフフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bAgi,1; if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) bonus bAspdAddRate,3; /*ASPD増加の重複可否は暫定仕様*/ }
-2771,Merchant_Figure,マーチャントフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bStr,1; if(Class == Job_Merchant || Class == Job_Blacksmith || Class == Job_Alchemist) bonus bCritical,5; }
+2765,Novice_Figure,ノービスフィギュア,4,,,100,,0,,0,1000333311,2,136,,,,,{},{ bonus bMaxHP,70; if(getbaseclass(Class) == CLASS_NV || getbaseclass(Class) == CLASS_SNV) bonus bMaxHP,30; }
+2766,Swordman_Figure,ソードマンフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bVit,1; if(getbaseclass(Class) == CLASS_SM) bonus bDef,2; }
+2767,Acolyte_Figure,アコライトフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bInt,1; if(getbaseclass(Class) == CLASS_AL) bonus bMaxSP,50; }
+2768,Mage_Figure,マジシャンフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bInt,1; if(getbaseclass(Class) == CLASS_MG) bonus bSPrecovRate,5; }
+2769,Archer_Figure,アーチャーフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bDex,1; if(getbaseclass(Class) == CLASS_AC) bonus bBaseAtk,10; }
+2770,Thief_Figure,シーフフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bAgi,1; if(getbaseclass(Class) == CLASS_TF) bonus bAspdAddRate,3; /*ASPD増加の重複可否は暫定仕様*/ }
+2771,Merchant_Figure,マーチャントフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bStr,1; if(getbaseclass(Class) == CLASS_MC) bonus bCritical,5; }
 2772,Krieger_Ring1,グロリアスリング,4,,,0,,0,,0,991944702,2,136,,81,,,{},{ bonus2 bSubEle,1,10; bonus2 bSubEle,2,10; bonus2 bSubEle,3,10; bonus2 bSubEle,4,10; bonus bMaxHP,300; bonus bCastrate,-3; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddSkillHealRate,231,5; if((getequipid(7)==2720) || (getequipid(8)==2720) || (getequipid(7)==2721) || (getequipid(8)==2721) || (getequipid(7)==2722) || (getequipid(8)==2722) || (getequipid(7)==2723) || (getequipid(8)==2723) || (getequipid(7)==2724) || (getequipid(8)==2724) || (getequipid(7)==2725) || (getequipid(8)==2725)){ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus2 bMagicAddRace,10,5; bonus2 bMagicAddRace,11,5; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddSkillHealRate,231,5; } }
 2773,Krieger_Ring2,グロリアス量産型リング,4,,,0,,0,,0,991944702,2,136,,61,,,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; }
 2774,Krieger_Ring3,グロリアス普及用リング,4,,,0,,0,,0,991944702,2,136,,,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1;}
@@ -1844,7 +1844,7 @@
 4160,Antique_Firelock_Card,銃奇兵カード,6,20,,10,,,,,,,64,,,,,{},{ bonus bStr,2; if(getequiprefinerycnt(6)<9) end; bonus bMaxHPrate,10; bonus bMaxSPrate,10; }
 4161,Grand_Peco_Card,グランペコカード,6,20,,10,,,,,,,769,,,,,{},{ bonus3 bRevAutoSelfSpell,75,1,500; }
 4162,Grizzly_Card,グリズリーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Blind,1000; if(equippeditem(4074)) bonus2 bAddRevEff,Eff_Blind,3000; }
-4163,Gryphon_Card,グリフォンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bFlee,2; bonus bCritical,7; if(Class == Job_Swordman || Class == Job_Knight || Class == Job_Knight || Class == Job_Crusader || Class == Job_Crusader) bonus3 bAutoSpell,62,5,100; }
+4163,Gryphon_Card,グリフォンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bFlee,2; bonus bCritical,7; if(getbaseclass(Class) == CLASS_SM) bonus3 bAutoSpell,62,5,100; }
 4164,Gullinbursti_Card,グリンブルスティカード,6,20,,10,,,,,,,64,,,,,{},{ bonus2 bExpRate,5,10; bonus2 bJobRate,5,10; bonus2 bAddRace,5,-20; }
 4165,Gig_Card,ギグカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bDefeatSPDrainValue,4,100,5; bonus bSPPenaltyUnrig,5; }
 4166,Nightmare_Terror_Card,ナイトメアテラーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Curse,1000; if(equippeditem(4127)==0) end; bonus2 bAddRevEff,Eff_Curse,3000; }
@@ -1852,7 +1852,7 @@
 4168,Dark_Lord_Card,ダークロードカード,6,20,,10,,,,,,,64,,,,,{},{ bonus3 bRevAutoSpell,83,5,1000; if(equippeditem(4169)==0) end; bonus bMaxHPrate,20; bonus bMaxSPrate,20; bonus bCastrate,-10; }
 4169,Dark_Illusion_Card,ダークイリュージョンカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bMaxHPrate,-10; bonus bMaxSPrate,-10; bonus bCastrate,-10; }
 4170,Dark_Frame_Card,ダークフレームカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Stone,2000; }
-4171,Dark_Priest_Card,ダークプリーストカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bSPVanish,5,3; if(Class == Job_Sage) bonus2 bSPDrainValue,100,1; }
+4171,Dark_Priest_Card,ダークプリーストカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bSPVanish,5,3; if(getbaseclass(Class,2) == CLASS_SA) bonus2 bSPDrainValue,100,1; }
 4172,The_Paper_Card,一反木綿カード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAddCriticalDamage,20; bonus2 bSPDrainValue,100,-1; }
 4173,Demon_Pungus_Card,デーモンパンクカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Sleep,2000; }
 4174,Deviling_Card,デビルリングカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bSubEle,0,50; bonus2 bSubEle,1,-50; bonus2 bSubEle,2,-50; bonus2 bSubEle,3,-50; bonus2 bSubEle,4,-50; bonus2 bSubEle,5,-50; bonus2 bSubEle,6,-50; bonus2 bSubEle,7,-50; bonus2 bSubEle,8,-50; bonus2 bSubEle,9,-50; }
@@ -1866,21 +1866,21 @@
 4182,Diabolic_Card,ディアボリックカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bDefeatSPDrainValue,6,100,5; bonus bSPPenaltyUnrig,5; }
 4183,Vagabond_Wolf_Card,さすらい狼カード,6,20,,10,,,,,,,4,,,,,{},{ bonus bStr,1; if(equippeditem(4029)) bonus bFlee,18; }
 4184,Lava_Golem_Card,ラーヴァゴーレムカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddGroup,4,30; }
-4185,Rideword_Card,ライドワードカード,6,20,,10,,,,,,,769,,,,,{},{bonus bInt,1; if((class == Job_Acolyte || class == Job_Priest || class == Job_Monk) == 0) end; bonus bInt,1; bonus bMdef,1;}
-4186,Raggler_Card,レグルロカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bStr,1; bonus bVit,1; if(equippeditem(4206)==0 || equippeditem(4233)==0 || equippeditem(4281)==0 || equippeditem(4321)==0) end; bonus bLuk,10; bonus2 bSPDrainValue,100,2; bonus2 bAddSkillDamageRate,42,20; if((Class == Job_Merchant || Class == Job_Blacksmith || Class == Job_Alchemist)==0) end; bonus bMagicDamageReturn,20; bonus3 bAddMonsterDropItem,617,11,5; }
+4185,Rideword_Card,ライドワードカード,6,20,,10,,,,,,,769,,,,,{},{bonus bInt,1; if(getbaseclass(Class) == CLASS_AC) { bonus bInt,1; bonus bMdef,1; } }
+4186,Raggler_Card,レグルロカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bStr,1; bonus bVit,1; if(equippeditem(4206)==0 || equippeditem(4233)==0 || equippeditem(4281)==0 || equippeditem(4321)==0) end; bonus bLuk,10; bonus2 bSPDrainValue,100,2; bonus2 bAddSkillDamageRate,42,20; if(getbaseclass(Class) == CLASS_MC) { bonus bMagicDamageReturn,20; bonus3 bAddMonsterDropItem,617,11,5; } }
 4187,Raydric_Archer_Card,レイドリックアーチャーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12030,6,100; }
 4188,Leib_Olmai_Card,レイブオルマイカード,6,20,,10,,,,,,,769,,,,,{},{ bonus3 bAddMonsterDropItem,990,2,100; bonus2 bSubEle,3,10; }
 4189,Wraith_Dead_Card,デッドリーレイスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Curse,2000; }
 4190,Wraith_Card,レイスカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12027,1,100; }
-4191,Loli_Ruri_Card,ロリルリカード,6,20,,10,,,,,,,16,,,,,{},{ bonus3 bRevAutoSelfSpell,28,3,500; if(equippeditem(4208)==0 || equippeditem(4258)==0 || equippeditem(4309)==0 || equippeditem(4325)==0 || equippeditem(4327)==0) end; bonus bMaxHP,500; bonus bDef,5; bonus bMdef,5; bonus2 bAddSkillDamageRate,14,10; bonus2 bAddSkillDamageRate,19,10; bonus2 bAddSkillDamageRate,20,10; if((Class==2 || Class==9 || Class==16)==0) end; bonus bMatkRate,3; bonus bCastrate,-15; }
+4191,Loli_Ruri_Card,ロリルリカード,6,20,,10,,,,,,,16,,,,,{},{ bonus3 bRevAutoSelfSpell,28,3,500; if(equippeditem(4208)==0 || equippeditem(4258)==0 || equippeditem(4309)==0 || equippeditem(4325)==0 || equippeditem(4327)==0) end; bonus bMaxHP,500; bonus bDef,5; bonus bMdef,5; bonus2 bAddSkillDamageRate,14,10; bonus2 bAddSkillDamageRate,19,10; bonus2 bAddSkillDamageRate,20,10; if(getbaseclass(Class) == CLASS_MG) { bonus bMatkRate,3; bonus bCastrate,-15; } }
 4192,Rotar_Zairo_Card,ロータージャイロカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bCriticalRace,5,7; bonus bAddCriticalDamage,10; }
-4193,Lude_Card,ルードカード,6,20,,10,,,,,,,136,,,,,{},{if(class == Job_Novice || class == Job_SuperNovice) bonus3 bRevAutoSelfSpell,8,1,2000; if(equippeditem(4294)==0) end; bonus bMaxHP,300; bonus bMaxSP,60;}
+4193,Lude_Card,ルードカード,6,20,,10,,,,,,,136,,,,,{},{if(getbaseclass(Class) == CLASS_NV || getbaseclass(Class) == CLASS_SNV) bonus3 bRevAutoSelfSpell,8,1,2000; if(equippeditem(4294)==0) end; bonus bMaxHP,300; bonus bMaxSP,60;}
 4194,Rybio_Card,リビオカード,6,20,,10,,,,,,,16,,,,,{},{ if(readparam(bDex)<77){ bonus2 bAddRevEff,Eff_Stun,1000; }else{ bonus2 bAddRevEff,Eff_Stun,3000; }}
 4195,Leaf_Cat_Card,リーフキャットカード,6,20,,10,,,,,,,769,,,,,{},{ bonus3 bAddMonsterDropItem,991,5,100; bonus2 bSubEle,1,10; }
 4196,Marin_Card,マーリンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,909,11,2000; bonus3 bAddMonsterDropItem,7126,11,10; }
 4197,Mastering_Card,マスターリングカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bLuk,1; if(equippeditem(4001)==0) end; bonus bFlee,18; }
 4198,Maya_Puple_Card,マヤパープルカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bTigereye,0; }
-4199,Merman_Card,半漁人カード,6,20,,10,,,,,,,64,,,,,{},{ bonus bHPrecovRate,10; bonus bSPrecovRate,10; if(equippeditem(4297)==0 || equippeditem(4252)==0 || equippeditem(4234)==0 || equippeditem(4178)==0) end; bonus bAddLongWeaponDamage,20; bonus bAgi,5; bonus bDex,3; bonus bPerfectHitAddRate,20; if((Class==3 || Class==11 || Class==19 || Class==20)==0) end; bonus2 bExpRate,2,5; bonus2 bJobRate,2,5; bonus2 bWeaponComaRace2,2,2; }
+4199,Merman_Card,半漁人カード,6,20,,10,,,,,,,64,,,,,{},{ bonus bHPrecovRate,10; bonus bSPrecovRate,10; if(equippeditem(4297)==0 || equippeditem(4252)==0 || equippeditem(4234)==0 || equippeditem(4178)==0) end; bonus bAddLongWeaponDamage,20; bonus bAgi,5; bonus bDex,3; bonus bPerfectHitAddRate,20; if(getbaseclass(Class) == CLASS_AC) { bonus2 bExpRate,2,5; bonus2 bJobRate,2,5; bonus2 bWeaponComaRace2,2,2; } }
 4200,Megalith_Card,メガリスカード,6,20,,10,,,,,,,64,,,,,{},{ if(getequiprefinerycnt(6)<6) bonus bMdef,7; }
 4201,Majoruros_Card,ごっついミノタウロスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Stun,2000; }
 4202,Civil_Servant_Card,ミョグェカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEle,8,20; }
@@ -1891,7 +1891,7 @@
 4207,Mysteltainn_Card,ミステルテインカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bDef,1; bonus2 bSubSize,0,25; bonus2 bMagicSubSize,0,25; }
 4208,Miyabi_Ningyo_Card,雅人形カード,6,20,,10,,,,,,,64,,,,,{},{ bonus bMaxSPrate,10; bonus2 bAddSkillDamageRate,15,5; }
 4209,Violy_Card,ヴァイオリーカード,6,20,,10,,,,,,,136,,,,,{},{ if(getskilllv(318)<5){ bonus3 bAutoSpell,318,1,200; end; } bonus3 bAutoSpell,318,5,200; }
-4210,Wander_Man_Card,彷徨う者カード,6,20,,10,,,,,,,4,,,,,{},{if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) bonus bFlee,20; if(equippeditem(4172)==0 || equippeditem(4230)==0 || equippeditem(4257)==0 || equippeditem(4272)==0){ bonus3 bAutoSpell,219,1,200; end; } bonus bAgi,5; bonus bStr,5; bonus2 bSPDrainValue,100,1; bonus bSpeedRate,25; bonus bAspdAddRate,5; if((class == Job_Thief || class == Job_Assassin || class == Job_Rogue)==0) end; bonus bNoGemStone,0;}
+4210,Wander_Man_Card,彷徨う者カード,6,20,,10,,,,,,,4,,,,,{},{if(getbaseclass(Class) == CLASS_TF) bonus bFlee,20; if(equippeditem(4172)==0 || equippeditem(4230)==0 || equippeditem(4257)==0 || equippeditem(4272)==0){ bonus3 bAutoSpell,219,1,200; end; } bonus bAgi,5; bonus bStr,5; bonus2 bSPDrainValue,100,1; bonus bSpeedRate,25; bonus bAspdAddRate,5; if(getbaseclass(Class) == CLASS_TF) bonus bNoGemStone,0; }
 4211,Vocal_Card,ボーカルカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bMdef,3; if(equippeditem(4021)==0) end; bonus bFlee,18; }
 4212,Bon_Gun_Card,ボンゴンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAutoSpell,5,1,200; bonus2 bAddSkillBlow,5,5; bonus2 bSubGroup,9,-100; }
 4213,Brilight_Card,ブリライトカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Silence,2000; }
@@ -1901,7 +1901,7 @@
 4217,Live_Peach_Tree_Card,人面桃樹カード,6,20,,10,,,,,,,32,,,,,{},{ if(getskilllv(28)<10){ bonus3 bAutoSelfSpell,28,1,200; end; } bonus3 bAutoSelfSpell,28,10,200; }
 4218,Succubus_Card,サキュバスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bVit,-3; bonus bMaxHP,1000; bonus bHPrecovRate,-20; if(equippeditem(4269)==0) end; bonus bVit,4; bonus bHPrecovRate,30; bonus bInt,4; bonus bSPrecovRate,30; }
 4219,Sageworm_Card,セージワームカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,715,11,30; bonus3 bAddMonsterDropItem,716,11,30; bonus3 bAddMonsterDropItem,717,11,30; }
-4220,Solider_Card,ソリッドタートルカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bDef,2; bonus bMdef,2; if(equippeditem(4246)==0 || equippeditem(4311)==0 || equippeditem(4319)==0 || equippeditem(4331)==0) end; bonus bStr,10; bonus bMaxHPrate,20; bonus bHPrecovRate,50; bonus3 bAutoSelfSpell,112,1,30; bonus3 bAddMonsterDropItem,501,11,500; if((Class==1 || Class==7 || Class==14)==0) end; bonus2 bItemHealRate,1,50; }
+4220,Solider_Card,ソリッドタートルカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bDef,2; bonus bMdef,2; if(equippeditem(4246)==0 || equippeditem(4311)==0 || equippeditem(4319)==0 || equippeditem(4331)==0) end; bonus bStr,10; bonus bMaxHPrate,20; bonus bHPrecovRate,50; bonus3 bAutoSelfSpell,112,1,30; bonus3 bAddMonsterDropItem,501,11,500; if(getbaseclass(Class) == CLASS_SM) bonus2 bItemHealRate,1,50; }
 4221,Skeleton_General_Card,ジェネラルスケルトンカード,6,20,,10,,,,,,,64,,,,,{},{ bonus2 bExpRate,4,10; bonus2 bJobRate,4,10; bonus2 bSubRace,4,-20; bonus2 bMagicSubRace,4,-20; }
 4222,Skel_Prisoner_Card,スケルプリズナーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Sleep,1000; if(equippeditem(4025)==0) end; bonus2 bAddRevEff,Eff_Sleep,3000; }
 4223,Stalactic_Golem_Card,スタラクタイトゴーレムカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bDef,1; bonus2 bResEff,Eff_Stun,2000; }
@@ -1914,7 +1914,7 @@
 4230,Shinobi_Card,カブキ忍者カード,6,20,,10,,,,,,,136,,,,,{},{ bonus bAgi,1; if(getskilllv(135)>0) bonus3 bRevAutoSelfSpell,135,5,1000; }
 4231,Increase_Soil_Card,土精カード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubGroup,5,50; }
 4232,Wild_Ginseng_Card,老人参カード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,507,3,300; bonus3 bAddMonsterDropItem,508,3,200; bonus3 bAddMonsterDropItem,509,3,100; bonus2 bItemHealRate,2,50; }
-4233,Baby_Leopard_Card,コウカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bLuk,3; if(Class == Job_Merchant || Class == Job_Blacksmith || Class == Job_Alchemist) bonus bUnbreakableArmor,0; if(equippeditem(4281)==0 || equippeditem(4343)==0 || equippeditem(4186)==0 || equippeditem(4036)==0) end; bonus bStr,4; bonus bMaxHPrate,7; bonus bMaxSPrate,7; bonus2 bAddSkillDamageRate,42,20; bonus2 bSPDrainValue,100,2; if(Class != Job_Alchemist) end; bonus3 bAutoSelfSpell,111,1,100; bonus3 bAddMonsterDropItem,905,11,500; bonus3 bAddMonsterDropItem,7139,11,100; }
+4233,Baby_Leopard_Card,コウカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bLuk,3; if(getbaseclass(Class) == CLASS_MC) bonus bUnbreakableArmor,0; if(equippeditem(4281)==0 || equippeditem(4343)==0 || equippeditem(4186)==0 || equippeditem(4036)==0) end; bonus bStr,4; bonus bMaxHPrate,7; bonus bMaxSPrate,7; bonus2 bAddSkillDamageRate,42,20; bonus2 bSPDrainValue,100,2; if(getbaseclass(Class,2) == CLASS_AM) { bonus3 bAutoSelfSpell,111,1,100; bonus3 bAddMonsterDropItem,905,11,500; bonus3 bAddMonsterDropItem,7139,11,100; } }
 4234,Anolian_Card,アノリアンカード,6,20,,10,,,,,,,16,,,,,{},{ if(getskilllv(45)<10){ bonus3 bRevAutoSelfSpell,45,1,300; end; } bonus3 bRevAutoSelfSpell,45,10,300; }
 4235,Cookie_XMAS_Card,クリスマスクッキーカード,6,20,,10,,,,,,,64,,,,,{},{ bonus2 bExpRate,8,10; bonus2 bJobRate,8,10; bonus2 bSubRace,8,-20; bonus2 bMagicSubRace,8,-20; }
 4236,Amon_Ra_Card,アモンラーカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; if(readparam(bInt)<99){ bonus3 bRevAutoSelfSpell,73,10,300; }else{ bonus3 bRevAutoSelfSpell,73,10,1000; }}
@@ -1938,7 +1938,7 @@
 4254,Tirfing_Card,オーガトゥースカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bDef,1; bonus2 bSubSize,1,25; bonus2 bMagicSubSize,1,25; }
 4255,Orc_Lady_Card,オークレディカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddGroup,2,30; }
 4256,Orc_Archer_Card,オークアーチャーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12034,7,100; }
-4257,Wild_Rose_Card,ワイルドローズカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bAgi,1; if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) bonus bFlee2,5;}
+4257,Wild_Rose_Card,ワイルドローズカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bAgi,1; if(getbaseclass(Class) == CLASS_TF) bonus bFlee2,5;}
 4258,Wicked_Nymph_Card,天仙娘々カード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,1; bonus bMaxSP,50; }
 4259,Wooden_Golem_Card,ウドゥンゴーレムカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bHPrecovRate,30; bonus bDef,1; }
 4260,Wootan_Shooter_Card,ウータンシューターカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bDef,1; bonus2 bResEff,Eff_Confusion,2000; }
@@ -1961,10 +1961,10 @@
 4277,Zherlthsh_Card,ジルタスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bLuk,2; bonus2 bAddSkillDamageRate,324,10; bonus2 bAddSkillDamageRate,316,10; if(equippeditem(4268)==0) end; bonus bBaseAtk,20; bonus bLuk,3; }
 4278,Gibbet_Card,ジビットカード,6,20,,10,,,,,,,769,,,,,{},{ if(getequiprefinerycnt(1)<=5) bonus bMdef,5; }
 4279,Deleter_Card,グラウンドデリーターカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bSPRecovStop,0; bonus3 bDefeatSPDrainValue,10,100,10; bonus bSPPenaltyUnrig,100; }
-4280,Geographer_Card,ジオグラファーカード,6,20,,10,,,,,,,16,,,,,{},{ if(getskilllv(34)<10){ bonus3 bRevAutoSelfSpell,34,2,300; }else{ bonus3 bRevAutoSelfSpell,34,10,300; } if(equippeditem(4185)==0 || equippeditem(4217)==0 || equippeditem(4293)==0 || equippeditem(4312)==0) end; bonus bVit,10; bonus bCastrate,-10; bonus bUseSPrate,-10; if((Class==4 || Class==8 || Class==15)==0) end; bonus2 bSubRace,1,30; bonus2 bMagicSubRace,1,30; bonus2 bSubRace,6,30; bonus2 bMagicSubRace,6,30; bonus2 bExpRate,1,5; bonus2 bExpRate,6,5; bonus2 bJobRate,1,5; bonus2 bJobRate,6,5; }
-4281,Zipper_Bear_Card,チャッキーカード,6,20,,10,,,,,,,2,,,,,{},{bonus bBaseAtk,30; bonus2 bSPDrainValue,100,-1; if((class == Job_Merchant || class == Job_Blacksmith || class == Job_Alchemist)==0) end; bonus bUnbreakableWeapon,0;}
+4280,Geographer_Card,ジオグラファーカード,6,20,,10,,,,,,,16,,,,,{},{ if(getskilllv(34)<10){ bonus3 bRevAutoSelfSpell,34,2,300; }else{ bonus3 bRevAutoSelfSpell,34,10,300; } if(equippeditem(4185)==0 || equippeditem(4217)==0 || equippeditem(4293)==0 || equippeditem(4312)==0) end; bonus bVit,10; bonus bCastrate,-10; bonus bUseSPrate,-10; if(getbaseclass(Class) == CLASS_AL) { bonus2 bSubRace,1,30; bonus2 bMagicSubRace,1,30; bonus2 bSubRace,6,30; bonus2 bMagicSubRace,6,30; bonus2 bExpRate,1,5; bonus2 bExpRate,6,5; bonus2 bJobRate,1,5; bonus2 bJobRate,6,5; } }
+4281,Zipper_Bear_Card,チャッキーカード,6,20,,10,,,,,,,2,,,,,{},{bonus bBaseAtk,30; bonus2 bSPDrainValue,100,-1; if(getbaseclass(Class) == CLASS_MC) bonus bUnbreakableWeapon,0; }
 4282,Tengu_Card,酒天狗カード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,522,11,5; bonus3 bAddMonsterDropItem,521,11,5; bonus3 bAddMonsterDropItem,520,11,10; bonus3 bAddMonsterDropItem,545,11,10; bonus3 bAddMonsterDropItem,508,11,20; bonus3 bAddMonsterDropItem,511,11,30; bonus3 bAddMonsterDropItem,507,11,30; bonus3 bAddMonsterDropItem,569,11,50; bonus3 bAddMonsterDropItem,549,11,50; bonus3 bAddMonsterDropItem,550,11,600; }
-4283,Greatest_General_Card,天下大将軍カード,6,20,,10,,,,,,,136,,,,,{},{ if((class == Job_Acolyte || class == Job_Priest || class == Job_Monk ) == 0){ if(class == Job_Gunslinger){ bonus3 bAutoSpell,500,5,200; end; }{ bonus3 bAutoSpell,261,5,20; end; }} bonus3 bAutoSpell,261,5,200;}
+4283,Greatest_General_Card,天下大将軍カード,6,20,,10,,,,,,,136,,,,,{},{ if(getbaseclass(Class) == CLASS_GS) bonus3 bAutoSpell,500,5,200; else if(getbaseclass(Class) == CLASS_AC) bonus3 bAutoSpell,261,5,200; else bonus3 bAutoSpell,261,5,20; }
 4284,Chepet_Card,チェペットカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bAutoSpell,28,5,500; }
 4285,Choco_Card,チョコカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bFlee2,5; bonus bFlee,10; }
 4286,Karakasa_Card,カラ傘カード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_ConFusion,300; if(readparam(bStr)<77) end; bonus2 bAddRevEff,Eff_ConFusion,600; }
@@ -1975,13 +1975,13 @@
 4291,Kobold_Leader_Card,コボルドリーダーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddGroup,3,40; }
 4292,Kobold_Archer_Card,コボルドアーチャーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bCriticalRace,3,7; bonus bAddCriticalDamage,10; }
 4293,Cookie_Card,クッキーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bLuk,2; bonus2 bAddSkillDamageRate,156,10; }
-4294,Quve_Card,キューブカード,6,20,,10,,,,,,,136,,,,,{},{ if(class == Job_Novice || class == Job_SuperNovice) bonus3 bRevAutoSelfSpell,29,1,1000; }
+4294,Quve_Card,キューブカード,6,20,,10,,,,,,,136,,,,,{},{ if(getbaseclass(Class) == CLASS_NV || getbaseclass(Class) == CLASS_SNV) bonus3 bRevAutoSelfSpell,29,1,1000; }
 4295,Kraben_Card,クラベンカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Blind,600; }
 4296,Cramp_Card,クランプカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bGetZenyNum2,5; if(equippeditem(4028)==0) end; bonus bStr,3; }
 4297,Cruiser_Card,クルーザーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bCriticalRace,2,7; bonus bAddCriticalDamage,10; }
 4298,Cremy_Fear_Card,クリーミーフィアーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Confusion,600; }
 4299,Clock_Card,クロックカード,6,20,,10,,,,,,,16,,,,,{},{ if(getskilllv(249)<10){ bonus3 bRevAutoSelfSpell,249,3,300; end; } bonus3 bRevAutoSelfSpell,249,10,300; }
-4300,Chimera_Card,キメラカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Poison,100; if(Class != Job_Assassin) end; bonus2 bAddRevEff,Eff_Poison,300; }
+4300,Chimera_Card,キメラカード,6,20,,10,,,,,,,16,,,,,{},{ if(getbaseclass(Class,2) == CLASS_AS) bonus2 bAddRevEff,Eff_Poison,600; else bonus2 bAddRevEff,Eff_Poison,300; }
 4301,Killer_Mantis_Card,キラーマンティスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Bleed,600; }
 4302,Tao_Gunka_Card,タオグンカカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMaxHPrate,100; bonus bDef,-50; bonus bMdef,-50; }
 4303,Whisper_Boss_Card,巨大ウィスパーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bFlee,10; if(readparam(bStr)>=80) bonus bBaseAtk,20; if(readparam(bVit)>=80) bonus bMaxHPrate,3; if(readparam(bLuk)>=80) bonus bCritical,3; }
@@ -1993,12 +1993,12 @@
 4309,Parasite_Card,フェアリーフカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bDef,1; bonus2 bSubRace,0,5; bonus2 bMagicSubRace,0,5; }
 4310,Panzer_Goblin_Card,パンツァーゴブリンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAddCriticalDamage,10; bonus2 bCriticalRace,6,7; }
 4311,Permeter_Card,パーメットタートルカード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bSubEle,7,15; bonus2 bSubEle,9,15; }
-4312,Fur_Seal_Card,オットーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bHit,10; bonus bFlee,3; if((class == Job_Acolyte || class == Job_Priest || class == Job_Monk) == 0) end; bonus2 bCriticalRace,1,9; bonus2 bCriticalRace,6,9; }
+4312,Fur_Seal_Card,オットーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bHit,10; bonus bFlee,3; if(getbaseclass(Class) == CLASS_AM) { bonus2 bCriticalRace,1,9; bonus2 bCriticalRace,6,9; } }
 4313,Punk_Card,パンクカード,6,20,,10,,,,,,,4,,,,,{},{ if(getskilllv(92)<5){ bonus3 bRevAutoSpell,92,1,500; end; } bonus3 bRevAutoSpell,92,5,500; }
 4314,Penomena_Card,ペノメナカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,0,30; bonus2 bMagicSubRace,0,30; }
 4315,Pest_Card,ペストカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Stone,300; if(readparam(bInt)<77) end; bonus2 bAddRevEff,Eff_Stone,600; }
 4316,Fake_Angel_Card,フェイクエンジェルカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bDefeatSPDrainValue,8,100,5; bonus bSPPenaltyUnrig,5; }
-4317,Mobster_Card,チンピラカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAddCriticalDamage,15; if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) bonus bCritical,4; }
+4317,Mobster_Card,チンピラカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAddCriticalDamage,15; if(getbaseclass(Class) == CLASS_TF) bonus bCritical,4; }
 4318,Knight_Windstorm_Card,ストームナイトカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bAutoSpell,89,1,200; bonus2 bAddEff,Eff_Freeze,2000; }
 4319,Freezer_Card,フリーズタートルカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bMaxHP,300; if(getequiprefinerycnt(6)<9) end; bonus2 bAddSkillDamageRate,5,10; }
 4320,Bloody_Knight_Card,ブラッディナイトカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bAutoSpell,83,1,200; }
@@ -2012,8 +2012,8 @@
 4328,Hyegun_Card,ヒェグンカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bFlee,15; bonus bCritical,1; }
 4329,Phendark_Card,フェンダークカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bDefeatSPDrainValue,7,100,5; bonus bSPPenaltyUnrig,5; }
 4330,Dark_Snake_Lord_Card,黒蛇王カード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,3; bonus2 bResEff,Eff_Blind,10000; bonus2 bResEff,Eff_Curse,10000; }
-4331,Heater_Card,ヒートタートルカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bCritical,3; if(Class == Job_Swordman || Class == Job_Knight || Class == Job_Knight2 || Class == Job_Crusader || Class == Job_Crusader2) bonus bFlee2,3;}
-4332,Waste_Stove_Card,ジャンクポットカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bBaseAtk,5; bonus bInt,1; if(equippeditem(4312)==0 || equippeditem(4185)==0 || equippeditem(4293)==0) end; bonus bBaseAtk,25; bonus bStr,3; bonus bMaxSP,80; bonus3 bAutoSpell,32,5,100; bonus2 bAddSkillDamageRate,271,10; if(class != Job_Monk) end; bonus bUseSPrate,-10; bonus bNoCastCancel,0; }
+4331,Heater_Card,ヒートタートルカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bCritical,3; if(getbaseclass(Class) == CLASS_SM) bonus bFlee2,3; }
+4332,Waste_Stove_Card,ジャンクポットカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bBaseAtk,5; bonus bInt,1; if(equippeditem(4312)==0 || equippeditem(4185)==0 || equippeditem(4293)==0) end; bonus bBaseAtk,25; bonus bStr,3; bonus bMaxSP,80; bonus3 bAutoSpell,32,5,100; bonus2 bAddSkillDamageRate,271,10; if(getbaseclass(Class,2) == CLASS_MO) { bonus bUseSPrate,-10; bonus bNoCastCancel,0; } }
 4333,Venomous_Card,ベノマスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Poison,3000; bonus2 bAddEff2,Eff_Poison,3000; }
 4334,Noxious_Card,ノクシャスカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bLongAtkDef,10; bonus2 bSubEle,0,10; }
 4335,Pitman_Card,ピットマンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddSkillDamageRate,90,5; bonus2 bAddSkillDamageRate,91,5; bonus bSPPenaltyUnrig,50; }
@@ -2029,7 +2029,7 @@
 4345,Hill_Wind_Card,ヒルウィンドカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddSkillDamageRate,21,5; bonus2 bAddSkillDamageRate,84,5; bonus2 bAddSkillDamageRate,85,5; bonus bSPPenaltyUnrig,50; }
 4346,Ygnizem_Card,イグニゼム=セニアカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bStr,readparam(bInt)/18; }
 4347,Armaia_Card,アルマイア=デュンゼカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12053,5,50; }
-4348,Whikebain_Card,ヒュッケバイン=トリスカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAutoSpell,217,1,500; if(equippeditem(4039)==0 || equippeditem(4210)==0 || equippeditem(4257)==0 || equippeditem(4230)==0) end; bonus bStr,6; bonus bAgi,4; bonus2 bAddSkillDamageRate,212,10; bonus3 bAutoSpell2,217,1,500; if(class != Job_Rogue) end; bonus bUseSPrate,-20; }
+4348,Whikebain_Card,ヒュッケバイン=トリスカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAutoSpell,217,1,500; if(equippeditem(4039)==0 || equippeditem(4210)==0 || equippeditem(4257)==0 || equippeditem(4230)==0) end; bonus bStr,6; bonus bAgi,4; bonus2 bAddSkillDamageRate,212,10; bonus3 bAutoSpell2,217,1,500; if(getbaseclass(Class,2) == CLASS_RG) bonus bUseSPrate,-20; }
 4349,Erend_Card,イレンド=エベシカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bRevAutoSelfSpell,25,1,500; }
 4350,Rawrel_Card,ラウレル=ヴィンダーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddSkillDamageRate,88,3; bonus2 bAddSkillDamageRate,89,3; bonus bSPPenaltyUnrig,50; }
 4351,Kavac_Card,カヴァク=イカルスカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bFlee,10; if(getequiprefinerycnt(5)>4)end; bonus bFlee,10; bonus bFlee2,1; }
@@ -2052,7 +2052,7 @@
 4368,Shecil_Card,セシル=ディモンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bHit,-30; bonus bAspdAddRate,5; }
 4369,Venatu_Card,ヴェナートカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bLuk,readparam(bAgi)/18; }
 4370,Dimik_Card,ディミックカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bVit,getequiprefinerycnt(2)-5; }
-4371,Archdam_Card,アークダムカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bBaseAtk,10; bonus bCastrate,20; if(equippeditem(4311)==0 || equippeditem(4319)==0 || equippeditem(4331)==0) end; bonus bStr,1; bonus bInt,1; bonus bDef,2; bonus bSPrecovRate,10; bonus2 bAddSkillDamageRate,368,10; bonus2 bAddSkillDamageRate,480,10; bonus bCastrate,-10; if(class != Job_Crusader) end; bonus bDefEle,6;}
+4371,Archdam_Card,アークダムカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bBaseAtk,10; bonus bCastrate,20; if(equippeditem(4311)==0 || equippeditem(4319)==0 || equippeditem(4331)==0) end; bonus bStr,1; bonus bInt,1; bonus bDef,2; bonus bSPrecovRate,10; bonus2 bAddSkillDamageRate,368,10; bonus2 bAddSkillDamageRate,480,10; bonus bCastrate,-10; if(getbaseclass(Class,2) == CLASS_CR) bonus bDefEle,6; }
 4372,Bacsojin_Card,ペクソジンカード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bAddSkillHealRate,28,30; bonus2 bAddSkillHealRate,70,30; bonus2 bAddSkillHealRate,231,30; bonus bUseSPrate,15; }
 4373,Chung_E_Card,チュンイーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bLuk,getequiprefinerycnt(5)-5; bonus bCritical,getequiprefinerycnt(5); }
 4374,Apocalips_H_Card,ヴェスパーカード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bIgnoreMDefRace,10,30; bonus bDex,2; }
@@ -2062,8 +2062,8 @@
 4378,Acidus_Card,ゴールドオシドスカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bMaxHPrate,4; bonus bMaxSPrate,4; if(getequiprefinerycnt(6)>4)end; bonus bMaxHPrate,4; bonus bMaxSPrate,4; bonus bHPrecovRate,5; bonus bSPrecovRate,5; }
 4379,Acidus__Card,ブルーオシドスカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bMaxSP,40; if(getequiprefinerycnt(1)>4)end; bonus bMaxSP,40; bonus bSPrecovRate,5; }
 4380,Ferus_Card,レッドペロスカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddSkillDamageRate,83,5; bonus2 bAddSkillDamageRate,80,5; bonus bSPPenaltyUnrig,50; }
-4381,Ferus__Card,グリーンペロスカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bVit,1; bonus bMaxHPrate,10; if(equippeditem(4234)==0 || equippeditem(4178)==0 || equippeditem(4297)==0 || equippeditem(4252)==0) end; bonus bDex,5; bonus2 bAddSkillDamageRate,394,5; bonus2 bAddSkillDamageRate,316,10; bonus2 bAddSkillDamageRate,324,10; if(class != Job_Dancer && class != Job_Bard) end; bonus3 bRevAutoSpell,489,2,500; }
-4382,Novus__Card,イエローノーバスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMaxHP,500; bonus bHPrecovRate,10; if(equippeditem(4258)==0 || equippeditem(4325)==0 || equippeditem(4208)==0 || equippeditem(4327)==0) end; bonus bInt,3; bonus2 bAddSkillDamageRate,21,10; bonus2 bAddSkillDamageRate,91,10; if(class != Job_Sage) end; bonus bMagicDamageReturn,20; bonus bCastrate,-20; bonus3 bAddMonsterDropItem,715,11,100; bonus3 bAddMonsterDropItem,716,11,100; }
+4381,Ferus__Card,グリーンペロスカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bVit,1; bonus bMaxHPrate,10; if(equippeditem(4234)==0 || equippeditem(4178)==0 || equippeditem(4297)==0 || equippeditem(4252)==0) end; bonus bDex,5; bonus2 bAddSkillDamageRate,394,5; bonus2 bAddSkillDamageRate,316,10; bonus2 bAddSkillDamageRate,324,10; if(getbaseclass(Class,2) == CLASS_BA || getbaseclass(Class,2) == CLASS_DC) bonus3 bRevAutoSpell,489,2,500; }
+4382,Novus__Card,イエローノーバスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMaxHP,500; bonus bHPrecovRate,10; if(equippeditem(4258)==0 || equippeditem(4325)==0 || equippeditem(4208)==0 || equippeditem(4327)==0) end; bonus bInt,3; bonus2 bAddSkillDamageRate,21,10; bonus2 bAddSkillDamageRate,91,10; if(getbaseclass(Class,2) == CLASS_SA) { bonus bMagicDamageReturn,20; bonus bCastrate,-20; bonus3 bAddMonsterDropItem,715,11,100; bonus3 bAddMonsterDropItem,716,11,100; } }
 4383,Novus_Card,レッドノーバスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Confusion,3000; bonus2 bAddEff2,Eff_Confusion,3000; }
 4384,Hydro_Card,ハイドラランサーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAutoSpell,277,1,1000; }
 4385,Dragon_Egg_Card,ドラゴンの卵カード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12048,9,50; }
@@ -2075,23 +2075,23 @@
 4391,Retribution_Card,執行する者カード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12068,8,50; }
 4392,Observation_Card,監視する者カード,6,20,,10,,,,,,,16,,,,,{},{ bonus bDex,readparam(bVit)/18; }
 4393,Shelter_Card,保護する者カード,6,20,,10,,,,,,,16,,,,,{},{ bonus bInt,readparam(bStr)/18; }
-4394,Solace_Card,慰める者カード,6,20,,10,,,,,,,2,,,,,{},{ if(class == Job_Priest) bonus3 bAutoSpell,254,5,100;}
+4394,Solace_Card,慰める者カード,6,20,,10,,,,,,,2,,,,,{},{ if(getbaseclass(Class,2) == CLASS_PR) bonus3 bAutoSpell,254,5,100;}
 4395,Tha_Maero_Card,タナトスの悲しみカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bBaseAtk,5; bonus3 bAutoSpell,30,3,500; }
 4396,Tha_Odium_Card,タナトスの憎悪カード,6,20,,10,,,,,,,64,,,,,{},{ bonus bAgi,getequiprefinerycnt(6)-5; }
 4397,Tha_Despero_Card,タナトスの絶望カード,6,20,,10,,,,,,,32,,,,,{},{ bonus bInt,getequiprefinerycnt(3)-6; }
 4398,Tha_Dolor_Card,タナトスの苦悩カード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bMagicAddRace,8,10; }
 4399,Thanatos_Card,魔剣士タナトスの思念体カード,6,20,,10,,,,,,,2,,,,,{},{ bonus bDef,-30; bonus bFlee,-30; bonus bDefRatioAtkRace,10; bonus bDefRatioAtkRace,11; bonus2 bSPDrainValue,100,-1; }
-4400,Aliza_Card,エリザカード,6,20,,10,,,,,,,16,,,,,{},{ bonus3 bRevAutoSpell2,1011,1,500; if(class == Job_Dancer) bonus3 bRevAutoSpell2,1011,1,1000; }
+4400,Aliza_Card,エリザカード,6,20,,10,,,,,,,16,,,,,{},{ bonus3 bRevAutoSpell2,1011,1,500; if(getbaseclass(Class,2) == CLASS_DC) bonus3 bRevAutoSpell2,1011,1,1000; }
 4401,Alicel_Card,エリセルカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bFlee,10; bonus bDef,-5; }
-4402,Aliot_Card,エリオットカード,6,20,,10,,,,,,,4,,,,,{},{ if(class == Job_Swordman || class == Job_Merchant || class == Job_Thief || class == Job_Knight || class == Job_Blacksmith || class == Job_Assassin || class == Job_Crusader || class == Job_Rogue || class == Job_Alchemist){ bonus bMaxHPrate,5; bonus bStr,2; }else if(class == Job_Magician || class == Job_Archer || class == Job_Acolyte || class == Job_Priest || class == Job_Wizard || class == Job_Hunter || class == Job_Monk || class == Job_Sage || class == Job_Bard || class == Job_Dancer){ bonus bMaxSPrate,5; bonus bInt,2; }
+4402,Aliot_Card,エリオットカード,6,20,,10,,,,,,,4,,,,,{},{ if(getbaseclass(Class) == CLASS_SM || getbaseclass(Class) == CLASS_MC || getbaseclass(Class) == CLASS_TF) { bonus bMaxHPrate,5; bonus bStr,2; } else if(getbaseclass(Class) == CLASS_MG || getbaseclass(Class) == CLASS_AC || getbaseclass(Class) == CLASS_AL) { bonus bMaxSPrate,5; bonus bInt,2; } }
 4403,Kiel_Card,キエル-D-01カード,6,20,,10,,,,,,,769,,,,,{},{ bonus bSkillDelayRate,-30; }
 4404,Skogul_Card,スコグルカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Bleed,3000; bonus2 bAddEff2,Eff_Bleed,3000; }
-4405,Frus_Card,プルスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMagicDamageReturn,getequiprefinerycnt(4)*2; if(class == Job_Magician || class == Job_Wizard || class == Job_Sage) bonus bMdef,3; }
+4405,Frus_Card,プルスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMagicDamageReturn,getequiprefinerycnt(4)*2; if(getbaseclass(Class) == CLASS_MG) bonus bMdef,3; }
 4406,Skeggiold_Card,スケゴルトカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bMagicAddRace,6,2; }
 4407,Randgris_Card,ランドグリスカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bUnbreakableWeapon,0; bonus2 bAddRace,10,10; bonus2 bAddRace,11,10; bonus3 bAutoSpell,289,1,1000; }
 4408,Gloom_Under_Night_Card,グルームアンダーナイトカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddEle,6,40; bonus2 bAddEle,7,40; bonus2 bAddRace,8,40; bonus2 bAddRace,6,40; }
-4409,Agav_Card,アガヴカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMatkRate,5; bonus bDef,-10; if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) bonus bMaxSP,100; }
-4410,Echio_Card,エキオカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bBaseAtk,15; if(Class == Job_Swordman || Class == Job_Knight || Class == Job_Crusader) bonus bMaxHP,500; }
+4409,Agav_Card,アガヴカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMatkRate,5; bonus bDef,-10; if(getbaseclass(Class) == CLASS_MG) bonus bMaxSP,100; }
+4410,Echio_Card,エキオカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bBaseAtk,15; if(getbaseclass(Class) == CLASS_SM) bonus bMaxHP,500; }
 4411,Vanberk_Card,ヴァンベルクカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bStr,2; bonus3 bAutoActiveWeapon,4411,50,5000; if(checkactiveitem()) { misceffect 9,""; bonus bCritical,100; } }
 4412,Isilla_Card,アイシラカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,2; bonus3 bAutoActiveMagic,4412,500,5000; if(checkactiveitem()) { misceffect 88,""; bonus bCastrate,-50; bonus bFlee,30; } }
 4413,Hodremlin_Card,ホドレムリンカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubSize,0,15; bonus2 bSubSize,1,15; bonus2 bSubSize,2,15; bonus3 bRevAutoActiveWeapon,4413,30,10000; bonus3 bRevAutoActiveMagic,4413,30,10000; if(checkactiveitem()) { misceffect 224,""; bonus bFlee2,30; } }
@@ -2107,7 +2107,7 @@
 4423,Galion_Card,ガリオンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bHit,5; bonus2 bAddEle,1,5; }
 4424,Stapo_Card,スタポカード,6,20,,10,,,,,,,136,,,,,{},{ skill 151,1; skill 152,1; }
 4425,Atroce_Card,アトロスカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bBaseAtk,25; bonus3 bAutoActiveWeapon,4425,100,10000; if(checkactiveitem()) { misceffect 220,""; bonus bAspdAddRate,100; } }
-4426,Byorgue_Card,ビョルグカード,6,20,,10,,,,,,,16,,,,,{},{ if(Class == Job_Rogue) { bonus2 bAddRace,10,10; bonus2 bAddRace,11,10; bonus bMatkRate,10; } }
+4426,Byorgue_Card,ビョルグカード,6,20,,10,,,,,,,16,,,,,{},{ if(getbaseclass(Class,2) == CLASS_RG) { bonus2 bAddRace,10,10; bonus2 bAddRace,11,10; bonus bMatkRate,10; } }
 4427,Sword_Guardian_Card,ソードガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(3),16)==2 || getiteminfo(getequipid(4),16)==2 || getiteminfo(getequipid(4),16)==3) { bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,62,25;} }
 4428,Bow_Guardian_Card,ボウガーディアンカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(4),16)==11) {bonus bCritical,5; bonus bHit,5; bonus2 bAddSkillDamageRate,47,50;} }
 4429,Salamander_Card,サラマンダーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bAddSkillDamageRate,83,40; bonus2 bAddSkillDamageRate,80,40; }
@@ -2119,7 +2119,7 @@
 4435,Zombie_Slaughter_Card,ゾンビスローターカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bHPGainValue,50; bonus2 bAddRace,7,1; bonus2 bMagicAddRace,7,1; if(equippeditem(4436)) bonus bSPGainValue,2; }
 4436,Ragged_Zombie_Card,ラギッドゾンビカード,6,20,,10,,,,,,,136,,,,,{},{ bonus2 bCriticalRace,7,5; bonus2 bAddRace,7,1; bonus2 bMagicAddRace,7,1; bonus2 bAddEff2,Eff_Bleed,20; }
 4437,Hell_Poodle_Card,ヘルプードルカード,6,20,,10,,,,,,,136,,,,,{},{ bonus2 bItemHealRate,5,100; bonus bHit,1; bonus2 bAddEff,Eff_Bleed,100; }
-4438,Banshee_Card,バンシーカード,6,20,,10,,,,,,,769,,,,,{},{ if(Class != Job_Magician && Class != Job_Wizard && Class != Job_Sage) end; bonus bMaxSP,100; bonus bMaxHP,-100; bonus2 bAddSkillDamageRate,13,20; bonus2 bAddSkillDamageRate,11,20; bonus2 bAddSkillDamageRate,400,20; }
+4438,Banshee_Card,バンシーカード,6,20,,10,,,,,,,769,,,,,{},{ if(getbaseclass(Class) == CLASS_MG) { bonus bMaxSP,100; bonus bMaxHP,-100; bonus2 bAddSkillDamageRate,13,20; bonus2 bAddSkillDamageRate,11,20; bonus2 bAddSkillDamageRate,400,20; } }
 4439,Flame_Skull_Card,フレームスカルカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bResEff,Eff_Stun,3000; bonus2 bResEff,Eff_Curse,3000; bonus2 bResEff,Eff_Blind,3000; bonus2 bResEff,Eff_Stone,3000; bonus2 bAddRevEff,Eff_Stun,3000; bonus2 bAddRevEff,Eff_Curse,3000; bonus2 bAddRevEff,Eff_Blind,3000; bonus2 bAddRevEff,Eff_Stone,3000; }
 4440,Necromancer_Card,ネクロマンサーカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(4),16)==10) { bonus bInt,1; bonus2 bIgnoreMDefRace,10,2; bonus2 bIgnoreMDefRace,11,2;} }
 4441,Fallen_Bishop_Card,堕ちた大神官ヒバムカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bMatkRate,10; bonus bMaxSPrate,-50; bonus2 bMagicAddRace,7,50; bonus2 bMagicAddRace,8,50; }
@@ -2391,15 +2391,15 @@
 5166,Spinx_Helm_,スフィンクス帽,12,20,,3000,,5,,1,16514,2,257,,65,137,,{},{ bonus bStr,2; }
 5167,Munak_Turban_,ムナック帽,14,20,,300,,5,,1,1000333311,2,769,,0,51,,{},{ bonus2 bSubRace,1,10; bonus2 bMagicSubRace,1,10; }
 5168,Bongun_Hat_,ボンゴン帽,14,20,,300,,5,,1,1000333311,2,769,,0,139,,{},{}
-5169,Bride_Mask,花嫁の仮面,11,30000,,500,,4,,1,1000333311,2,768,,40,223,1,{},{ if((class == Job_TaeKwon || class == Job_StarGladiator || class == Job_StarGladiator2 || class == Job_SoulLinker) == 0) end; bonus bLuk,2; bonus bCritical,5; }
+5169,Bride_Mask,花嫁の仮面,11,30000,,500,,4,,1,1000333311,2,768,,40,223,1,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bLuk,2; bonus bCritical,5; } }
 5170,Feather_Beret,羽のベレー,4,30000,,600,,1,,0,991944702,2,256,,0,224,1,{},{ bonus bMdef,1; bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; }
 5171,Valkyrie_Helm,ヴァルキリーヘルム,4,100000,,1000,,5,,1,991944702,2,256,,0,225,1,{},{ bonus bMdef,5; if((getequipid(2)==2357 && getequipid(6)==2421 && getequipid(5)==2524)==0) end; bonus bStr,1; bonus bVit,1; bonus bAgi,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 5172,Beret,ベレー,4,30000,,700,,0,,0,1000333311,2,256,,0,226,,{},{ bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; }
-5173,Satto_Hat,使道の帽子,4,30000,,400,,3,,1,1000333311,2,256,,60,227,1,{},{ if((class == Job_TaeKwon || class == Job_StarGladiator || class == Job_StarGladiator2 || class == Job_SoulLinker) == 0) end; bonus bAgi,1; bonus bHPrecovRate,3; }
-5174,Ayam,アヤム,4,30000,,400,,3,,1,1000333311,2,256,,60,228,1,{},{ if((class == Job_TaeKwon || class == Job_StarGladiator || class == Job_StarGladiator2 || class == Job_SoulLinker) == 0) end; bonus bInt,1; bonus bSPrecovRate,3; }
+5173,Satto_Hat,使道の帽子,4,30000,,400,,3,,1,1000333311,2,256,,60,227,1,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bAgi,1; bonus bHPrecovRate,3; } }
+5174,Ayam,アヤム,4,30000,,400,,3,,1,1000333311,2,256,,60,228,1,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bInt,1; bonus bSPrecovRate,3; } }
 5175,Censor_Bar,モザイク,4,30000,,100,,0,,0,1000333311,2,512,,0,229,,{},{ bonus bMdef,1; bonus bHit,-5; bonus2 bResEff,Eff_Curse,500; }
-5176,Hahoe_Mask,老人の仮面,13,30000,,100,,2,,0,1000333311,2,513,,30,230,,{},{ if((class == Job_TaeKwon || class == Job_StarGladiator || class == Job_StarGladiator2 || class == Job_SoulLinker) == 0) end; bonus bLuk,1; bonus bFlee2,2; }
-5177,Guardian_Lion_Mask,獅子の仮面,11,30000,,500,,5,,1,1000333311,2,768,,40,231,1,{},{ if((class == Job_TaeKwon || class == Job_StarGladiator || class == Job_StarGladiator2 || class == Job_SoulLinker) == 0) end; bonus bDex,2; bonus bBaseAtk,getequiprefinerycnt(1)*2; bonus2 bAddEffShort,Eff_Stun,100; }
+5176,Hahoe_Mask,老人の仮面,13,30000,,100,,2,,0,1000333311,2,513,,30,230,,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bLuk,1; bonus bFlee2,2; } }
+5177,Guardian_Lion_Mask,獅子の仮面,11,30000,,500,,5,,1,1000333311,2,768,,40,231,1,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bDex,2; bonus bBaseAtk,getequiprefinerycnt(1)*2; bonus2 bAddEffShort,Eff_Stun,100; } }
 5178,Candle_,ろうそく,4,,,150,,0,,0,1000333311,2,256,,0,113,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 5179,Gold_Tiara,ゴールドティアラ,4,,,100,,0,,0,1000333311,2,256,,0,232,1,{},{ bonus bInt,2; }
 5180,Phrygian_Cap_,祝日帽子,4,,,100,,1,,0,1000333311,2,256,,0,217,1,{},{ bonus bVit,1; }
@@ -2484,7 +2484,7 @@
 5259,Elephant_Hat_,象帽子,4,,,500,,3,,0,1000333311,2,256,,0,215,1,{},{ bonus bVit,1; bonus3 bAutoSpell,86,3,300; skill 31,1; }
 5260,Cookie_Hat,クッキー帽子,4,,,500,,2,,0,1000333311,2,256,,0,217,1,{},{ bonus bAgi,1; bonus bFlee2,5; bonus bAddCriticalDamage,5; }
 5261,Silver_Tiara_,シルバーティアラ,4,,,500,,2,,0,1000333311,2,256,,0,218,1,{},{ bonus bInt,2; }
-5262,Gold_Tiara_,ゴールドティアラ,4,,,500,,2,,0,1000333311,2,256,,0,232,1,{},{ bonus bStr,2; bonus bUnbreakableHelm,1; if(readparam(bDex)<56) { if(Class == Job_Swordman || Class == Job_Merchant || Class == Job_Thief || Class == Job_Knight || Class == Job_Blacksmith || Class == Job_Assassin || Class == Job_Crusader || Class == Job_Rogue || Class == Job_Alchemist) bonus bDex,Joblevel/7;}; }
+5262,Gold_Tiara_,ゴールドティアラ,4,,,500,,2,,0,1000333311,2,256,,0,232,1,{},{ bonus bStr,2; bonus bUnbreakableHelm,1; if(readparam(bDex)<56) { if(getbaseclass(Class) == CLASS_SM || getbaseclass(Class) == CLASS_MC || getbaseclass(Class) == CLASS_TF) bonus bDex,Joblevel/7; } }
 5263,Ati_Atihan_Hat,パグダヤ,14,20,,100,,1,,0,991944702,2,769,,20,303,1,{},{ bonus bDex,2; bonus bMatkRate,3; if (getequiprefinerycnt(1)>=6) bonus bMatkRate,getequiprefinerycnt(1)-5; }
 5264,Aussie_Flag_Hat,オーストラリア国旗帽子,4,,,500,,4,,0,1000333311,2,256,,0,304,,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; }
 5265,Apple_Of_Archer_C,名射手のりんごR,4,,-1,200,,7,,0,991944702,2,256,,1,72,1,{},{ bonus bDex,4; }
@@ -2583,7 +2583,7 @@
 5358,Pecopeco_Ears,ペコペコの羽耳,4,20,,100,,1,,0,1000333311,2,512,,70,366,,{},{ bonus bAgi,1; bonus bMdef,2; }
 5359,Ship_Captain's_Hat,船長の帽子,4,20,,500,,3,,0,1000333311,2,256,,30,367,1,{},{ bonus bAddLongWeaponDamage,3; }
 5360,Hukke's_Blackcat_Ears,ヒュッケの黒い猫耳,4,20,,200,,2,,0,1000333311,2,256,,45,368,1,{},{ bonus bDefRate,-50; bonus bDef2Rate,-50; bonus bFlee,10; bonus bCritical,3; bonus bAddCriticalDamage,10; }
-5361,Gang_Scarf,ギャングスカーフ,4,20,,100,,0,,0,1000333311,2,1,,60,369,,{},{ bonus bBaseAtk,5; if(class != Job_Rogue) end; skill 223,1; }
+5361,Gang_Scarf,ギャングスカーフ,4,20,,100,,0,,0,1000333311,2,1,,60,369,,{},{ bonus bBaseAtk,5; if(getbaseclass(Class) == CLASS_RG) skill 223,1; }
 5362,Ninja_Scroll,忍の巻物,4,20,,200,,0,,0,1000333311,2,1,,60,370,,{},{ bonus bMatkRate,1; }
 5363,Helm_Of_Abyss,深淵の兜,4,20,,1000,,4,,1,1000333311,2,256,,70,371,1,{},{ bonus2 bSubRace,10,10; bonus2 bMagicSubRace,10,10; bonus2 bSubRace,11,-10; bonus2 bMagicSubRace,11,-10; }
 5364,Evil_Snake_Lord_Hat,黒蛇王の帽子,4,20,,500,,2,,1,1000333311,2,256,,60,372,1,{},{ bonus bStr,1; bonus bAgi,2; bonus bInt,1; }
@@ -2842,7 +2842,7 @@
 
 5743,Unknown_Item,だいだい帽,4,,,100,,,,,1000333311,2,256,,,621,,{},{ bonus bLuk,3; bonus bUnbreakableHelm,1; bonus3 bAddMonsterDropItem,582,11,500; /* ドロップ率暫定 */ }
 
-5759,Unknown_Item,ノアの帽子,4,,,500,,1,,,1000333311,2,256,,,,1,{},{ bonus bMdef,3; bonus bSPrecovRate,3; if((Class == Job_Acolyte || Class == Job_Priest || Class == Job_Monk)==0) end; bonus2 bAddSkillDamageRate,156,5; if(getequiprefinerycnt(1)>=7) bonus2 bAddSkillDamageRate,156,5; }
+5759,Unknown_Item,ノアの帽子,4,,,500,,1,,,1000333311,2,256,,,,1,{},{ bonus bMdef,3; bonus bSPrecovRate,3; if(getbaseclass(Class) == CLASS_AL) { bonus2 bAddSkillDamageRate,156,5; if(getequiprefinerycnt(1)>=7) bonus2 bAddSkillDamageRate,156,5; } }
 
 5764,Unknown_Item,ラブラビットフード,14,,,300,,1,,1,1000333311,2,769,,10,,,{},{}
 
@@ -4804,8 +4804,8 @@
 13033,Assasin_Dagger_,アサシンダガー,5,20,,600,140,,1,1,4096,2,2,4,36,1,1,{},{ bonus bMaxHPrate,20; bonus bMaxSPrate,15; bonus bAspdAddRate,2; bonus bAtkEle,7; }
 13034,Twilight_Desert,砂漠の夕暮れ,5,20,,600,130,,1,2,4096,2,2,2,70,1,1,{},{ if((getequipid(3)==13035) || (getequipid(4)==13035)) { bonus bMaxSP,20; bonus bMaxHPrate,5; bonus bHit,10; bonus2 bAddSize,2,30; bonus3 bAutoActiveWeapon,13034,10,7000; if(checkactiveitem()) { misceffect 220,""; bonus bAspdAddRate,100; } } }
 13035,Sandstorm,砂漠の風,5,20,,600,50,,1,4,4096,2,2,2,70,1,1,{},{}
-13036,Assassin_Dagger,暗殺者のダマスカス,5,20,,0,120,,1,0,750747375,2,2,3,80,1,1,{},{ bonus bStr,1; bonus bAgi,1; bonus2 bAddRace,7,75; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; if(class == Job_Ninja) bonus bMatkRate,15; }
-13037,Assassin_Dagger_,暗殺者のダマスカス,5,20,,0,120,,1,0,750747375,2,2,3,80,1,1,{},{ bonus bStr,1; bonus bAgi,1; bonus2 bAddRace,7,95; bonus bUnbreakableWeapon,0; if(class == Job_Ninja) bonus bMatkRate,15; }
+13036,Assassin_Dagger,暗殺者のダマスカス,5,20,,0,120,,1,0,750747375,2,2,3,80,1,1,{},{ bonus bStr,1; bonus bAgi,1; bonus2 bAddRace,7,75; bonus2 bIgnoreDefRace,7,20; bonus bUnbreakableWeapon,0; if(getbaseclass(Class) == CLASS_NJ) bonus bMatkRate,15; }
+13037,Assassin_Dagger_,暗殺者のダマスカス,5,20,,0,120,,1,0,750747375,2,2,3,80,1,1,{},{ bonus bStr,1; bonus bAgi,1; bonus2 bAddRace,7,95; bonus bUnbreakableWeapon,0; if(getbaseclass(Class) == CLASS_NJ) bonus bMatkRate,15; }
 13038,Dagger_Of_Hunter,追跡者の短剣,5,20,,700,120,,1,3,131072,2,2,3,70,1,1,{},{ bonus bStr,1; bonus bAgi,2; bonus bDex,1; bonus2 bAddSkillDamageRate,212,20; bonus4 bSkillAutoSpell,212,5,10,1000; }
 13039,Ivory_Knife,アイボリーナイフ,5,20,,700,130,,1,2,2055918,2,2,3,50,1,1,{},{ bonus bAgi,2; bonus bAspdAddRate,3; bonus2 bAddEff,Eff_Bleed,300; }
 13040,Novice_Cutter,初心者用カッター,5,,,0,50,,1,0,685727471,2,2,1,,1,1,{},{}

@@ -9,7 +9,7 @@
 //------------------------------------------
 
 prt_castle.gat,45,169,4	script	マスタークルセイダー	752,{
-	if(Class == Job_Crusader) {
+	if(Job == Job_Crusader) {
 		mes "[ミケル=レカント=ニキータ]";
 		mes "貴公は聖戦に拠り為す者か。";
 		mes "ここに留まらず己を鍛えるがよい。";
@@ -29,7 +29,7 @@ prt_castle.gat,45,169,4	script	マスタークルセイダー	752,{
 		mes "私たちはクルセイダー。";
 		mes "オーディンの意志によって";
 		mes "聖戦に備える者だ。";
-		if(Upper == 1) {
+		if(Upper == UPPER_HIGH) {
 			next;
 			mes "[ミケル=レカント=ニキータ]";
 			mes "千年前のように、またいつか";
@@ -40,7 +40,7 @@ prt_castle.gat,45,169,4	script	マスタークルセイダー	752,{
 			mes "怠らず己を鍛えなさい。";
 			close;
 		}
-		if(Class == Job_Novice) {
+		if(Job == Job_Novice) {
 			next;
 			mes "[ミケル=レカント=ニキータ]";
 			mes "君も我らに賛同したくば、";
@@ -48,7 +48,7 @@ prt_castle.gat,45,169,4	script	マスタークルセイダー	752,{
 			mes "積んで来るように……";
 			close;
 		}
-		if(Class != Job_Swordman) {
+		if(Job != Job_Swordman) {
 			next;
 			mes "[ミケル=レカント=ニキータ]";
 			mes "千年前のように、またいつか";
@@ -268,7 +268,7 @@ prt_castle.gat,45,169,4	script	マスタークルセイダー	752,{
 		mes "生まれ変わったのだ。";
 		set '@amount,(JobLevel >= 50)? 12: 6;
 		unequip;
-		jobchange 14;
+		jobchange Job_Crusader;
 		set CHANGE_CRU,0;
 		next;
 		mes "[ミケル=レカント=ニキータ]";
@@ -314,7 +314,7 @@ prt_castle.gat,45,169,4	script	マスタークルセイダー	752,{
 //------------------------------------------
 
 prt_castle.gat,164,32,0	script	苦しむ者	733,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[ムルナク=ミヨオ]";
 		mes "ノービスですか……";
 		mes "私は悪者ではありません。";
@@ -324,7 +324,7 @@ prt_castle.gat,164,32,0	script	苦しむ者	733,{
 		mes "入っているのです。";
 		close;
 	}
-	if(Class == Job_Crusader) {
+	if(Job == Job_Crusader) {
 		mes "[ムルナク=ミヨオ]";
 		mes "こんな所で立ち止まらず";
 		mes "前に進みなさい。";
@@ -332,7 +332,7 @@ prt_castle.gat,164,32,0	script	苦しむ者	733,{
 		mes "戦うその日まで……";
 		close;
 	}
-	if(Class != Job_Swordman) {
+	if(Job != Job_Swordman) {
 		mes "[ムルナク=ミヨオ]";
 		mes "気が散ります。";
 		next;
@@ -598,7 +598,7 @@ prt_church.gat,95,127,4	script	聖堂騎士	745,{
 		mes "いつか訪れるという聖戦に";
 		mes "備える者です。";
 		next;
-		if(Class == Job_Novice) {
+		if(Job == Job_Novice) {
 			mes "[ケイナ=バレンタイン]";
 			mes "もしクルセイダーに関心があれば、";
 			mes "剣士として修練を積んでください。";
@@ -613,7 +613,7 @@ prt_church.gat,95,127,4	script	聖堂騎士	745,{
 			mes "いかがでしょうか。";
 			close;
 		}
-		if(Class == Job_Crusader) {
+		if(Job == Job_Crusader) {
 			mes "[ケイナ=バレンタイン]";
 			mes "いらっしゃいませ、クルセイダー様。";
 			mes "しっかりと修練を積み重ねて";
@@ -624,7 +624,7 @@ prt_church.gat,95,127,4	script	聖堂騎士	745,{
 			mes "備えは万端に……";
 			close;
 		}
-		if(Class != Job_Swordman) {
+		if(Job != Job_Swordman) {
 			mes "[ケイナ=バレンタイン]";
 			mes "あなたも常に自分を鍛え";
 			mes "未来に備えてくださいね。";
@@ -966,7 +966,7 @@ prt_castle.gat,35,151,4	script	守備兵	751,{
 	case 0:
 		mes "[ブリッテン=ヒルド]";
 		mes "よく来ました。";
-		if(Class == Job_Crusader) {
+		if(Job == Job_Crusader) {
 			next;
 			mes "[ブリッテン=ヒルド]";
 			mes "毎日修練を積み重ね、";
@@ -977,7 +977,7 @@ prt_castle.gat,35,151,4	script	守備兵	751,{
 		mes "我々はクルセイダーです。";
 		mes "未来に訪れる聖戦へ備える者達です。";
 		next;
-		if(Class == Job_Novice) {
+		if(Job == Job_Novice) {
 			mes "[ブリッテン=ヒルド]";
 			mes "もしクルセイダーに関心が";
 			mes "おありなら、いつでも入団を歓迎";
@@ -989,7 +989,7 @@ prt_castle.gat,35,151,4	script	守備兵	751,{
 			mes "方ならばより歓迎します。";
 			close;
 		}
-		if(Class != Job_Swordman) {
+		if(Job != Job_Swordman) {
 			mes "[ブリッテン=ヒルド]";
 			mes "平和な日常の中にあっても、";
 			mes "絶えず備えを怠りません。";
@@ -1227,7 +1227,7 @@ job_cru.gat,168,180,0	script	#CRU_3rdWarp	45,1,1,{
 //------------------------------------------
 
 prontera.gat,232,318,3	script	ペコペコ管理兵	105,{
-	if(Class != Job_Crusader) {
+	if(Job == Job_Crusader) {
 		mes "[ペコペコ管理兵]";
 		mes "何の用事でいらっしゃったんですか";
 		mes "私どものペコペコは、";
@@ -1237,7 +1237,7 @@ prontera.gat,232,318,3	script	ペコペコ管理兵	105,{
 	}
 	mes "[ペコペコ管理兵]";
 	mes "いらっしゃいませ、";
-	mes (Upper == 1)? "パラディン様。": "クルセイダー様。";
+	mes (Upper == UPPER_HIGH)? "パラディン様。": "クルセイダー様。";
 	mes "特別なペコペコをご用意して";
 	mes "おります。";
 	mes "一匹3500Zenyで貸与します。";

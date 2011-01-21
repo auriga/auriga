@@ -147,8 +147,8 @@ set __NO_HTTPD_CGI__=/D "NO_HTTPD_CGI"
 rem csvdb のスクリプトからの利用を無効にする場合コメントアウトをはずす
 rem set __NO_CSVDB_SCRIPT__=/D "NO_CSVDB_SCRIPT"
 
-rem DK DC を使う場合はコメントアウトをはずす
-rem set __EXCLASS__=/D "CLASS_DKDC"
+rem MB を使う場合はコメントアウトをはずす
+rem set __EXCLASS__=/D "CLASS_MB"
 
 rem 動的にMOBの sc_data を確保する場合はコメントアウトをはずす
 rem set __DYNAMIC_STATUS_CHANGE__=/D "DYNAMIC_SC_DATA"

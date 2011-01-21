@@ -523,7 +523,7 @@ comodo.gat,204,148,7	script	ダビリン	90,{
 }
 
 comodo.gat,210,154,2	script	怪しい男	118,{
-	if(Class == 6 || Class == 12 || Class == 17) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		mes "[ケイム]";
 		mes "ほ〜、同業者か。こんな所で会ったのも";
 		mes "何かの縁だ。耳寄りの情報を教えて";

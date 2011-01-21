@@ -2392,7 +2392,7 @@ lou_in02.gat,123,39,4	script	毒薬王	824,{
 			mes "お前は外を自由に歩くことができるし、";
 			mes "若い。私はお前が羨ましい……";
 			next;
-			if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+			if(getbaseclass(Class) == CLASS_TF) {
 				mes "[アルゼス]";
 				mes "うん……？";
 				mes "お前もいくらか毒を扱った";

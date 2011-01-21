@@ -48,7 +48,7 @@
 #define pc_is90overweight(sd) ((sd)->weight*10 >= (sd)->max_weight*9)
 
 extern int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
-extern int max_job_table[3][32];
+extern int max_job_table[PC_UPPER_MAX][PC_JOB_MAX];
 
 int pc_get_skilltree_max(struct pc_base_job *bj,int skillid);
 
@@ -188,8 +188,27 @@ void pc_setstand(struct map_session_data *sd);
 int pc_calc_skilltree(struct map_session_data *sd);
 int pc_check_guild_skill_effective_range(struct map_session_data *sd);
 
-#define pc_isupper(sd) (((sd)->status.class_ >= PC_CLASS_NV2) && ((sd)->status.class_ < PC_CLASS_NV3))
-#define pc_isbaby(sd)  (((sd)->status.class_ >= PC_CLASS_NV3) && ((sd)->status.class_ <= PC_CLASS_SNV3))
+#define pc_isupper(sd) (((sd)->status.class_ >= PC_CLASS_NV_H && (sd)->status.class_ <= PC_CLASS_CR2_H) ||	\
+						((sd)->status.class_ >= PC_CLASS_RK_H && (sd)->status.class_ <= PC_CLASS_GC_H) ||	\
+						((sd)->status.class_ >= PC_CLASS_LG_H && (sd)->status.class_ <= PC_CLASS_SC_H) ||	\
+						(sd)->status.class_ == PC_CLASS_RK2_H || (sd)->status.class_ == PC_CLASS_LG2_H ||	\
+						(sd)->status.class_ == PC_CLASS_RA2_H || (sd)->status.class_ == PC_CLASS_NC2_H ||	\
+						(sd)->status.class_ == PC_CLASS_RK3_H || (sd)->status.class_ >= PC_CLASS_RK4_H ||	\
+						(sd)->status.class_ == PC_CLASS_RK5_H || (sd)->status.class_ >= PC_CLASS_RK6_H)
+
+#define pc_isbaby(sd)  (((sd)->status.class_ >= PC_CLASS_NV_B && (sd)->status.class_ <= PC_CLASS_SNV_B) ||	\
+						((sd)->status.class_ >= PC_CLASS_RK_B && (sd)->status.class_ <= PC_CLASS_NC2_B))
+
+#define pc_is1stclass(sd) (((sd)->s_class.job >= PC_JOB_SM && (sd)->s_class.job <= PC_JOB_TF) ||	\
+						   (sd)->s_class.job == PC_JOB_SNV || (sd)->s_class.job <= PC_JOB_TK ||	\
+						   (sd)->s_class.job == PC_JOB_GS || (sd)->s_class.job <= PC_JOB_NJ ||		\
+						   (sd)->s_class.job == PC_JOB_MB)
+
+#define pc_is2ndclass(sd) (((sd)->s_class.job >= PC_JOB_KN && (sd)->s_class.job <= PC_JOB_DC) ||	\
+						   (sd)->s_class.job == PC_JOB_SG || (sd)->s_class.job <= PC_JOB_SL ||		\
+						   (sd)->s_class.job == PC_JOB_DK || (sd)->s_class.job <= PC_JOB_DA)
+
+#define pc_is3rdclass(sd) ((sd)->s_class.job >= PC_JOB_RK && (sd)->s_class.job <= PC_JOB_SC)
 
 struct pc_base_job pc_calc_base_job(int b_class);
 int pc_calc_class_job(int job,int upper);

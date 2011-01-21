@@ -11,7 +11,7 @@ prt_in.gat,85,99,2	script	騎士団員	734,{
 		mes "決して悪い事じゃない。";
 		close;
 	}
-	if(Class != Job_Knight) {
+	if(getbaseclass(Class,2) != CLASS_KN) {
 		mes "[エソペ]";
 		mes "私は誇り高きプロンテラ第7騎士団の";
 		mes "エソペ・ラゼヤだ。";
@@ -394,7 +394,7 @@ geffen.gat,110,117,3	script	フォード	752,{
 		mes "それじゃ、またな。";
 		close;
 	}
-	if(Class != Job_Crusader) {
+	if(getbaseclass(Class,2) != CLASS_CR) {
 		mes "[フォード]";
 		mes "私は今重要な考え事を";
 		mes "していて忙しいから";
@@ -447,7 +447,7 @@ geffen.gat,110,117,3	script	フォード	752,{
 		next;
 		mes "[フォード]";
 		mes "ああ、失礼！";
-		mes (Upper == 1? "パラディン": "クルセイダー")+ "の姿をしていたので";
+		mes (Upper == UPPER_HIGH? "パラディン": "クルセイダー")+ "の姿をしていたので";
 		mes "つい私が待っていた";
 		mes "人だと思い込んじゃったよ。";
 		next;
@@ -499,7 +499,7 @@ geffen.gat,110,117,3	script	フォード	752,{
 		next;
 		mes "[フォード]";
 		mes "そういえば、お前も";
-		mes (Upper == 1? "パラディン": "クルセイダー")+ "のようだが、";
+		mes (Upper == UPPER_HIGH? "パラディン": "クルセイダー")+ "のようだが、";
 		mes "良ければ私の頼みを一つだけ";
 		mes "聞いてくれないかな？";
 		next;
@@ -540,7 +540,7 @@ geffen.gat,110,117,3	script	フォード	752,{
 		mes "[フォード]";
 		mes "おお！";
 		mes "本当にありがとう。";
-		mes "やはりお前も" +(Upper == 1? "パラディン": "クルセイダー")+ "の";
+		mes "やはりお前も" +(Upper == UPPER_HIGH? "パラディン": "クルセイダー")+ "の";
 		mes "矜持を持っているのだな。";
 		next;
 		mes "[フォード]";
@@ -1231,7 +1231,7 @@ prt_church.gat,87,127,3	script	司祭	755,{
 //	■ SKILL_SONICACCEL   -> 0〜4
 //-----------------------------------------------
 in_moc_16.gat,23,27,5	script	アサシン	885,{
-	if(Class != Job_Assassin) {
+	if(getbaseclass(Class,2) != CLASS_AS) {
 		mes "[アサシン]";
 		mes "…………";
 		close;
@@ -1660,7 +1660,7 @@ in_sphinx2.gat,13,146,0	duplicate(石像#1)	石像#2	139,7,7
 //==== ベナムナイフ - AS_VENOMKNIFE
 //-----------------------------------------------
 in_moc_16.gat,14,27,5	script	アサシン	884,{
-	if(Class != Job_Assassin) {
+	if(getbaseclass(Class,2) != CLASS_AS) {
 		mes "[アサシン]";
 		mes "……………………";
 		close;
@@ -1894,7 +1894,7 @@ in_rogue.gat,355,179,0	script	ハイジャラ・グレグ	46,{
 		mes "お前にも転生の限界を超越してほしい。";
 		close;
 	}
-	if(Class != Job_Rogue) {
+	if(getbaseclass(Class,2) != CLASS_RG) {
 		mes "[ハイジャラ・グレグ]";
 		mes "誰か……俺を……";
 		mes "ローグを呼んでくれ……";
@@ -2186,7 +2186,7 @@ in_rogue.gat,152,29,0	script	ルイ・グレグ	84,{
 		mes "だそうです……。";
 		close;
 	}
-	if(Class != Job_Rogue) {
+	if(getbaseclass(Class,2) != CLASS_RG) {
 		mes "[ルイ・グレグ]";
 		mes "トンネルドライブが好きです。";
 		mes "そ〜っと敵に向かって近づく……";
@@ -2288,7 +2288,7 @@ in_rogue.gat,268,125,2	script	トール・グレグ	84,{
 		mes "こう聞いたと同時に攻撃したらしい。";
 		close;
 	}
-	if(Class != Job_Rogue) {
+	if(getbaseclass(Class,2) != CLASS_RG) {
 		mes "[トール・グレグ]";
 		mes "スナッチャーを覚えて";
 		mes "誰かを攻撃すればがっぽりと";
@@ -2444,7 +2444,7 @@ in_rogue.gat,181,114,3	script	ジェイ・グレグ	85,{
 		mes "うんうん。";
 		close;
 	}
-	if(Class != Job_Rogue) {
+	if(getbaseclass(Class,2) != CLASS_RG) {
 		mes "[ジェイ・グレグ]";
 		mes "クローンスキルは僕達ローグにとって";
 		mes "最高のスキルだ！";
@@ -2836,7 +2836,7 @@ gef_tower.gat,115,36,4	script	ニャオ	876,{
 		mes "眠いのになぜ私に声を掛けるの？";
 		mes "私もゆっくり眠ろうとしてるんだから、";
 		mes "邪魔しないで家へ帰って寝なさい！";
-		if(Class != Job_Wizard)
+		if(getbaseclass(Class,2) != CLASS_WZ)
 			close;
 		next;
 		mes "[ニャオ]";
@@ -3164,7 +3164,7 @@ yuno_in03.gat,176,24,3	script	ミシュナ	755,{
 		mes "覚えていただきたいのです。";
 		close;
 	}
-	if(Class != Job_Sage) {
+	if(getbaseclass(Class,2) != CLASS_SA) {
 		mes "[ミシュナ]";
 		mes "こんにちは。";
 		mes "私はシュバイチェル魔法アカデミー";
@@ -3544,7 +3544,7 @@ pay_arche.gat,109,169,3	script	アルペスト	712,{
 		mes "何か言ったか！";
 		close;
 	}
-	if(Class != Job_Hunter) {
+	if(getbaseclass(Class,2) != CLASS_HT) {
 		mes "[アルペスト]";
 		mes "最近、この大陸に吹いている風は";
 		mes "あまり爽やかじゃないね……";
@@ -3851,7 +3851,7 @@ pay_arche.gat,109,169,3	script	アルペスト	712,{
 //	■ SKILL_PANGVOICE   -> 0〜
 //-----------------------------------------------
 prontera.gat,169,72,7	script	青年#bard	89,3,3,{
-	if(Class != Job_Bard) {
+	if(getbaseclass(Class,2) != CLASS_BA) {
 		mes "[肝が小さい青年]";
 		mes "世界は本当に素晴らしい。";
 		mes "そうは思わないか？　…………。";
@@ -3864,7 +3864,7 @@ prontera.gat,169,72,7	script	青年#bard	89,3,3,{
 	emotion 23;
 	mes "[肝が小さい青年]";
 	mes "ヒイイッー！";
-	if(Upper == 1) mes "ク……ク……クラウンだ!!";
+	if(Upper == UPPER_HIGH) mes "ク……ク……クラウンだ!!";
 	else mes "バ……バ……バードだ!!";
 	mes "ち……近寄るな！";
 	mes "私はお前たちが";
@@ -4067,7 +4067,7 @@ prontera.gat,169,72,7	script	青年#bard	89,3,3,{
 	set SKILL_PANGVOICE,1;
 	close;
 OnTouch:
-	if(Class == Job_Bard)
+	if(getbaseclass(Class,2) == CLASS_BA)
 		emotion 23;
 	end;
 }
@@ -4088,7 +4088,7 @@ morocc_in.gat,169,72,7	script	陰気なバード#bard	741,3,3,{
 		mes "クックックックックックッ。";
 		close;
 	}
-	if(Class != Job_Bard) {
+	if(getbaseclass(Class,2) != CLASS_BA) {
 		emotion 29;
 		mes "[ライオト]";
 		mes "……クックックッ。";
@@ -4555,7 +4555,7 @@ comodo.gat,204,172,5	script	サネル	724,{
 		mes "-もう何も驚かない-";
 		close;
 	}
-	if(Class != Job_Dancer) {
+	if(getbaseclass(Class,2) != CLASS_DC) {
 		if(Sex) {
 			mes "[サネル]";
 			mes "ちょっとお兄さん。";
@@ -5184,7 +5184,7 @@ geffen.gat,178,72,3	script	アキ	726,{
 		mes "ずっとここにいる予定ですから！";
 		close;
 	}
-	if(Class != Job_Blacksmith) {
+	if(getbaseclass(Class,2) != CLASS_BS) {
 		mes "[アキ]";
 		mes "いい天気ですね！";
 		mes "今日みたいな日は本当に";
@@ -5610,7 +5610,7 @@ geffen.gat,172,52,1	script	グッドデー	826,{
 		mes "色々な所を眺めながら冒険しなさい。";
 		close;
 	}
-	if(Class != Job_Blacksmith) {
+	if(getbaseclass(Class,2) != CLASS_BS) {
 		mes "[グッドデー]";
 		mes "今日みたいな日はカバンを背負って、";
 		mes "険しい山にでも登って面白い物や";
@@ -5800,7 +5800,7 @@ prt_church.gat,111,112,2	script	ライナース修道女	79,{
 		mes "彼らが願う永遠の安息を……。";
 		mes "あなたの神々しく輝く永遠の光で";
 		mes "彼らを照らして下さい……。";
-		if(Class != Job_Priest)
+		if(getbaseclass(Class,2) != CLASS_PR)
 			close;
 		next;
 		menu "どなたの為に祈っているのですか？",-;
@@ -6099,7 +6099,7 @@ monk_test.gat,316,69,5	script	修行僧	823,{
 		mes "力なき正義は何もできないだろう。";
 		mes "力即ち正義ではない。";
 		mes "正義とは即ち力だ！";
-		if(Class != Job_Monk || SKILL_BALKYOUNG == 2)
+		if(getbaseclass(Class,2) != CLASS_MO || SKILL_BALKYOUNG == 2)
 			close;
 		next;
 	}
@@ -6547,7 +6547,7 @@ prt_monk.gat,270,198,3	script	修行中のモンク	753,{
 //	■ SKILL_BIOETHICS   -> 0〜13
 //-----------------------------------------------
 lhz_in01.gat,224,140,2	script	ケルラソス	57,{
-	if(Class != Job_Alchemist) {
+	if(getbaseclass(Class,2) != CLASS_AM) {
 		mes "[ケルラソス]";
 		mes "……";
 		mes "神の領域に挑戦する……";
@@ -7605,7 +7605,7 @@ lhz_in03.gat,109,31,4	script	ベニーネ	90,{
 //	■ SKILL_RESISTPOTION   -> 0〜11
 //-----------------------------------------------
 yuno_in04.gat,33,108,4	script	ピースリーク	883,{
-	if(Class != Job_Alchemist) {
+	if(getbaseclass(Class,2) != CLASS_AM) {
 		mes "[ピースリーク]";
 		mes "そこで何をしてる！";
 		mes "外に出てくれないか？";

@@ -4841,8 +4841,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			    sd->status.party_id <= 0 ||				// 自分がPT未所属だとダメ
 			    dstsd->status.party_id <= 0 ||			// 相手がPT未所属だとダメ
 			    sd->status.party_id != dstsd->status.party_id ||	// 同じパーティじゃないとダメ
-			    dstsd->s_class.job == 14 ||				// 相手がクルセだとダメ
-			    dstsd->s_class.job == 21 ||				// 相手がクルセだとダメ
+			    dstsd->s_class.job == PC_JOB_CR ||		// 相手がクルセイダーだとダメ
+			    dstsd->s_class.job == PC_JOB_LG ||		// 相手がロイヤルガードだとダメ
 			    (type >= 0 && dstsd->sc.data[type].timer != -1 && dstsd->sc.data[type].val1 != sd->bl.id) )	// 違うクルセからディボーション済みならダメ
 			{
 				clif_skill_fail(sd,skillid,0,0);
@@ -6129,7 +6129,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			battle_heal(NULL,bl,0,gain_sp,0);
 
 			// スパノビの嫁が旦那に使用すると10%の確率でステータス付与
-			if(sd->s_class.job == 23 && sd->sex == 0 && atn_rand()%100 < 10) {
+			if(sd->s_class.job == PC_JOB_SNV && sd->sex == 0 && atn_rand()%100 < 10) {
 				int sec = skill_get_time2(skillid,skilllv);
 				status_change_start(&sd->bl,GetSkillStatusChangeTable(skillid),skilllv,1,0,0,sec,0);
 				status_change_start(&dstsd->bl,GetSkillStatusChangeTable(skillid),skilllv,2,0,0,sec,0);
@@ -9534,7 +9534,8 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 	switch(cnd->id){
 	case PR_BENEDICTIO:		/* 聖体降福 */
 		if( (*c) < 2 &&
-		    (sd->s_class.job == 4 || sd->s_class.job == 8 || sd->s_class.job == 15) &&
+		    (sd->s_class.job == PC_JOB_AL || sd->s_class.job == PC_JOB_PR || sd->s_class.job == PC_JOB_MO ||
+		     sd->s_class.job == PC_JOB_AB || sd->s_class.job == PC_JOB_SR) &&
 		    (sd->bl.y == ssd->bl.y && (sd->bl.x == ssd->bl.x-1 || sd->bl.x == ssd->bl.x+1)) &&
 		    sd->status.sp >= sp/2 )
 			(*c)++;
@@ -9550,7 +9551,8 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 	case BD_RAGNAROK:		/* 神々の黄昏 */
 	case CG_MOONLIT:		/* 月明りの下で */
 		if( (*c) < 1 &&
-		    ((ssd->s_class.job == 19 && sd->s_class.job == 20) || (ssd->s_class.job == 20 && sd->s_class.job == 19)) &&
+		    (((ssd->s_class.job == PC_JOB_BA || ssd->s_class.job == PC_JOB_MI) && (sd->s_class.job == PC_JOB_DA || sd->s_class.job == PC_JOB_WA)) ||
+		    ((ssd->s_class.job == PC_JOB_DA || ssd->s_class.job == PC_JOB_WA) && (sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI))) &&
 		    sd->status.party_id > 0 &&
 		    ssd->status.party_id > 0 &&
 		    sd->status.party_id == ssd->status.party_id &&
@@ -9604,7 +9606,8 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 	switch(skillid){
 	case PR_BENEDICTIO:		/* 聖体降福 */
 		if( (*c) < 2 &&
-		    (sd->s_class.job == 4 || sd->s_class.job == 8 || sd->s_class.job == 15) &&
+		    (sd->s_class.job == PC_JOB_AL || sd->s_class.job == PC_JOB_PR || sd->s_class.job == PC_JOB_MO ||
+		     sd->s_class.job == PC_JOB_AB || sd->s_class.job == PC_JOB_SR) &&
 		    (sd->bl.y == ssd->bl.y && (sd->bl.x == ssd->bl.x-1 || sd->bl.x == ssd->bl.x+1)) &&
 		    sd->status.sp >= sp/2 )
 		{
@@ -9624,7 +9627,8 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 	case BD_RAGNAROK:		/* 神々の黄昏 */
 	case CG_MOONLIT:		/* 月明りの下で */
 		if( (*c) < 1 &&
-		    ((ssd->s_class.job == 19 && sd->s_class.job == 20) || (ssd->s_class.job == 20 && sd->s_class.job == 19)) &&
+		    (((ssd->s_class.job == PC_JOB_BA || ssd->s_class.job == PC_JOB_MI) && (sd->s_class.job == PC_JOB_DA || sd->s_class.job == PC_JOB_WA)) ||
+		    ((ssd->s_class.job == PC_JOB_DA || ssd->s_class.job == PC_JOB_WA) && (sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI))) &&
 		    pc_checkskill(sd,skillid) > 0 &&
 		    sd->status.party_id > 0 &&
 		    ssd->status.party_id > 0 &&
@@ -9805,22 +9809,22 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 
 		switch(cnd->id)
 		{
-			case SL_ALCHEMIST:   if(job != 18) fail = 1; break; // アルケミストの魂
-			case SL_MONK:        if(job != 15) fail = 1; break; // モンクの魂
-			case SL_STAR:        if(job != 25 && job != 26) fail = 1; break; // ケンセイの魂
-			case SL_SAGE:        if(job != 16) fail = 1; break; // セージの魂
-			case SL_CRUSADER:    if(job != 14) fail = 1; break; // クルセイダーの魂
-			case SL_SUPERNOVICE: if(job != 23) fail = 1; break; // スーパーノービスの魂
-			case SL_KNIGHT:      if(job !=  7) fail = 1; break; // ナイトの魂
-			case SL_WIZARD:      if(job !=  9) fail = 1; break; // ウィザードの魂
-			case SL_PRIEST:      if(job !=  8) fail = 1; break; // プリーストの魂
-			case SL_BARDDANCER:  if(job != 19 && job !=20) fail = 1; break; // バードとダンサーの魂
-			case SL_ROGUE:       if(job != 17) fail = 1; break; // ローグの魂
-			case SL_ASSASIN:     if(job != 12) fail = 1; break; // アサシンの魂
-			case SL_BLACKSMITH:  if(job != 10) fail = 1; break; // ブラックスミスの魂
-			case SL_HUNTER:      if(job != 11) fail = 1; break; // ハンターの魂
-			case SL_SOULLINKER:  if(job != 27) fail = 1; break; // ソウルリンカーの魂
-			case SL_HIGH:        if(job < 1 || job > 6 || target_sd->s_class.upper != 1) fail = 1; break; // 一次上位職業の魂
+			case SL_ALCHEMIST:   if(job != PC_JOB_AM && job != PC_JOB_GN) fail = 1; break; // アルケミストの魂
+			case SL_MONK:        if(job != PC_JOB_MO && job != PC_JOB_SR) fail = 1; break; // モンクの魂
+			case SL_STAR:        if(job != PC_JOB_SG) fail = 1; break; // ケンセイの魂
+			case SL_SAGE:        if(job != PC_JOB_SA && job != PC_JOB_SO) fail = 1; break; // セージの魂
+			case SL_CRUSADER:    if(job != PC_JOB_CR && job != PC_JOB_LG) fail = 1; break; // クルセイダーの魂
+			case SL_SUPERNOVICE: if(job != PC_JOB_SNV) fail = 1; break; // スーパーノービスの魂
+			case SL_KNIGHT:      if(job != PC_JOB_KN && job != PC_JOB_RK) fail = 1; break; // ナイトの魂
+			case SL_WIZARD:      if(job != PC_JOB_WZ && job != PC_JOB_WL) fail = 1; break; // ウィザードの魂
+			case SL_PRIEST:      if(job != PC_JOB_PR && job != PC_JOB_AB) fail = 1; break; // プリーストの魂
+			case SL_BARDDANCER:  if(job != PC_JOB_BA && job != PC_JOB_DC && job != PC_JOB_MI && job != PC_JOB_WA) fail = 1; break; // バードとダンサーの魂
+			case SL_ROGUE:       if(job != PC_JOB_RG && job != PC_JOB_SC) fail = 1; break; // ローグの魂
+			case SL_ASSASIN:     if(job != PC_JOB_AS && job != PC_JOB_GC) fail = 1; break; // アサシンの魂
+			case SL_BLACKSMITH:  if(job != PC_JOB_BS && job != PC_JOB_NC) fail = 1; break; // ブラックスミスの魂
+			case SL_HUNTER:      if(job != PC_JOB_HT && job != PC_JOB_RA) fail = 1; break; // ハンターの魂
+			case SL_SOULLINKER:  if(job != PC_JOB_SL) fail = 1; break; // ソウルリンカーの魂
+			case SL_HIGH:        if(job < PC_JOB_SM || job > PC_JOB_TF || target_sd->s_class.upper != PC_UPPER_HIGH) fail = 1; break; // 一次上位職業の魂
 			default: fail = 1;
 		}
 		if(battle_config.job_soul_check && fail) {
@@ -9931,7 +9935,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 					int i;
 					for(i=0; i<MAX_PARTY; i++) {
 						psd = pt->member[i].sd;
-						if(psd && (psd->status.class_ == PC_CLASS_SNV || psd->status.class_ == PC_CLASS_SNV3)) {
+						if(psd && (psd->status.class_ == PC_CLASS_SNV || psd->status.class_ == PC_CLASS_SNV_B)) {
 							f = 1;
 							break;
 						}
@@ -9995,7 +9999,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 	case CR_PROVIDENCE:	// プロヴィデンス
 		if(!target_sd)
 			return 0;
-		if(target_sd->s_class.job == 14 || target_sd->s_class.job == 21) {
+		if(target_sd->s_class.job == PC_JOB_CR || target_sd->s_class.job == PC_JOB_LG) {
 			if(sd)
 				clif_skill_fail(sd,cnd->id,0,0);
 			return 0;
@@ -12019,7 +12023,7 @@ static int skill_sit_count(struct block_list *bl,va_list ap)
 
 	if(flag&1 && pc_checkskill(sd,RG_GANGSTER) > 0)
 		return 1;
-	else if(flag&2 && sd->s_class.job >= 24 && sd->s_class.job <= 27)
+	else if(flag&2 && sd->s_class.job >= PC_JOB_TK && sd->s_class.job <= PC_JOB_SL)
 		return 1;
 
 	return 0;
@@ -12041,7 +12045,7 @@ static int skill_sit_in(struct block_list *bl,va_list ap)
 
 	if(flag&1 && pc_checkskill(sd,RG_GANGSTER) > 0)
 		sd->state.gangsterparadise = 1;
-	else if(flag&2 && sd->s_class.job >= 24 && sd->s_class.job <= 27)
+	else if(flag&2 && sd->s_class.job >= PC_JOB_TK && sd->s_class.job <= PC_JOB_SL)
 		sd->state.taekwonrest = 1;
 
 	return 0;
@@ -12183,7 +12187,7 @@ static int skill_abra_dataset(struct map_session_data *sd, int skilllv)
 
 	// セージの転生スキル使用を許可しない
 	if( battle_config.extended_abracadabra == 0 &&
-	    sd->s_class.upper == 0 &&
+	    sd->s_class.upper == PC_UPPER_NORMAL &&
 	    skill_upperskill(skill_abra_db[skill].nameid) )
 		return 0;
 

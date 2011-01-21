@@ -25,7 +25,7 @@
 //------------------------------------------
 
 in_rogue.gat,363,122,4	script	ローグギルド員	747,{
-	if(Upper == 1) {
+	if(Upper == UPPER_HIGH) {
 		mes "[マキ]";
 		mes "あら？あんた、";
 		mes "昔に私と会ったこと無いかい？";
@@ -41,7 +41,7 @@ in_rogue.gat,363,122,4	script	ローグギルド員	747,{
 		mes "ま、気をつけて帰りな。";
 		close;
 	}
-	if(Class == Job_Rogue) {
+	if(Job == Job_Rogue) {
 		mes "[マキ]";
 		mes "おや、久しぶり〜";
 		mes "ギルドからの仕事は今は無いよ。";
@@ -56,7 +56,7 @@ in_rogue.gat,363,122,4	script	ローグギルド員	747,{
 		mes "ふふっ";
 		close;
 	}
-	if(Class != Job_Thief) {
+	if(Job != Job_Thief) {
 		mes "[マキ]";
 		mes "ん？";
 		mes "何の用？";
@@ -155,7 +155,7 @@ in_rogue.gat,363,122,4	script	ローグギルド員	747,{
 		mes "じゃ転職させてやるよ。";
 		next;
 		unequip;
-		jobchange 17;
+		jobchange Job_Rogue;
 		set CHANGE_RG,0;
 		mes "[マキ]";
 		mes "おめでとう！";
@@ -885,7 +885,7 @@ in_rogue.gat,270,130,0		script	roguewarp6001	45,1,1,{
 
 //==============================================================
 in_rogue.gat,177,109,2	script	アントニオ Jr	88,{
-	if(Class == Job_Rogue) {
+	if(Job == Job_Rogue) {
 		mes "[アントニオJr.]";
 		mes "ここまで何しに？";
 		mes "せっかくだから休んでいきな。";
@@ -976,7 +976,7 @@ in_rogue.gat,177,109,2	script	アントニオ Jr	88,{
 
 //==============================================================
 in_rogue.gat,272,135,2	script	ヘルマンソン Jr	85,{
-	if(Class == Job_Rogue) {
+	if(Job == Job_Rogue) {
 		//未調査
 		close;
 	}
@@ -1007,7 +1007,7 @@ in_rogue.gat,272,135,2	script	ヘルマンソン Jr	85,{
 
 //==============================================================
 in_rogue.gat,244,39,5	script	アラガム Jr	99,{
-	if(Class == Job_Rogue) {
+	if(Job == Job_Rogue) {
 		mes "[アラガムJr.]";
 		mes "うん？何の用か？";
 		mes "せっかくだから休んでいきなさい。";
@@ -1040,7 +1040,7 @@ in_rogue.gat,244,39,5	script	アラガム Jr	99,{
 
 //==============================================================
 in_rogue.gat,160,34,2	script	ホルグレン Jr	85,{
-	if(Class == Job_Rogue) {
+	if(Job == Job_Rogue) {
 		mes "[アントニオJr.]";
 		mes "よう、何の用だい？";
 		mes "せっかくだから休んでいきなよ。";

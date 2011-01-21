@@ -15,7 +15,7 @@ geffen_in.gat,164,124,4	script	ギルド関係者	123,{
 	next;
 	switch (select("マジシャンに転職","マジシャンの転職条件を聞く","やめる")) {
 	case 1:
-		if(Class == Job_Magician) {
+		if(Job == Job_Magician) {
 			mes "[魔術師ギルド関係者]";
 			mes "えー。あなたはもうマジシャンでしょ？";
 			mes "自分の事もわからないの？";
@@ -25,14 +25,14 @@ geffen_in.gat,164,124,4	script	ギルド関係者	123,{
 			mes "わかってくるんじゃないの？";
 			close;
 		}
-		if(Class != Job_Novice) {
+		if(Job != Job_Novice) {
 			mes "[魔術師ギルド関係者]";
 			mes "えー。あなたは、";
 			mes "マジシャンに転職できないよ。";
 			mes "既に他の職業に就いているでしょ？";
 			close;
 		}
-		if(Upper == 1 && OLD_CLASS != Job_Wizard && OLD_CLASS != Job_Sage) {
+		if(Upper == UPPER_HIGH && OLD_CLASS != Job_Wizard && OLD_CLASS != Job_Sage) {
 			//転生前が魔術師系でないとき、未調査？
 			close;
 		}
@@ -92,7 +92,7 @@ geffen_in.gat,164,124,4	script	ギルド関係者	123,{
 			mes "ぷんぷん！";
 			close;
 		}
-		if(Upper == 1) {
+		if(Upper == UPPER_HIGH) {
 			if(getskilllv(1) < 9 || SkillPoint) {
 				mes "[魔術師ギルド関係者]";
 				mes "……そうなの？準備は全部終わった？";
@@ -107,7 +107,7 @@ geffen_in.gat,164,124,4	script	ギルド関係者	123,{
 			mes "転職試験はいりませんね";
 			next;
 			unequip;
-			jobchange 2,1;
+			jobchange Job_Magician,UPPER_HIGH;
 			skill 157,1,0;
 			mes "[魔術師ギルド関係者]";
 			mes "転職おめでとうございます！";
@@ -203,7 +203,7 @@ geffen_in.gat,164,124,4	script	ギルド関係者	123,{
 	mes "あなたが望んだマジシャンになれー！";
 	next;
 	unequip;
-	jobchange 2;
+	jobchange Job_Magician;
 	set CHANGE_MG,0;
 	mes "[魔術師ギルド関係者]";
 	mes "魔術師ギルドへようこそ！";

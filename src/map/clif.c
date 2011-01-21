@@ -1179,7 +1179,7 @@ void clif_class_change(struct block_list *bl,int class_,int type)
 
 	nullpo_retv(bl);
 
-	if(class_ >= MAX_VALID_PC_CLASS) {
+	if(class_ >= PC_JOB_MAX) {
 		WBUFW(buf,0)=0x1b0;
 		WBUFL(buf,2)=bl->id;
 		WBUFB(buf,6)=type;
@@ -9779,10 +9779,7 @@ void clif_guild_memberlist(struct map_session_data *sd, struct guild *g)
 		WFIFOW(fd,c*104+12)=m->hair;
 		WFIFOW(fd,c*104+14)=m->hair_color;
 		WFIFOW(fd,c*104+16)=m->gender;
-		if(m->class_ == PC_CLASS_GS || m->class_ == PC_CLASS_NJ)
-			WFIFOW(fd,c*104+18)=m->class_-4;
-		else
-			WFIFOW(fd,c*104+18)=m->class_;
+		WFIFOW(fd,c*104+18)=m->class_;
 		WFIFOW(fd,c*104+20)=m->lv;
 		WFIFOL(fd,c*104+22)=m->exp;
 		WFIFOL(fd,c*104+26)=(int)m->online;
@@ -15041,10 +15038,10 @@ static void clif_parse_doridori(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-	if(sd->s_class.job == 23) {
+	if(sd->s_class.job == PC_JOB_SNV) {
 		sd->state.sn_doridori = 1;
 	}
-	else if(sd->state.taekwonrest && sd->s_class.job >= 24 && sd->s_class.job <= 27) {
+	else if(sd->state.taekwonrest && sd->s_class.job >= PC_JOB_TK && sd->s_class.job <= PC_JOB_SL) {
 		sd->state.tk_doridori_hp = 1;
 		sd->state.tk_doridori_sp = 1;
 	}
@@ -15062,7 +15059,7 @@ static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, i
 
 	nullpo_retv(sd);
 
-	if(sd->s_class.job != 23)
+	if(sd->s_class.job != PC_JOB_SNV)
 		return;
 
 	next = pc_nextbaseexp(sd);

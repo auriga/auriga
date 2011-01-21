@@ -578,6 +578,10 @@ extern struct Battle_Config {
 	int refinery_research_lv;
 	int maprespawnguildid_all_players;
 	int party_booking_lv;
+	int new_statusup_calc;
+	int third_status_max;
+	int third_baby_status_max;
+	int third_max_aspd;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

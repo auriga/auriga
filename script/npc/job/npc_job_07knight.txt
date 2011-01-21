@@ -8,7 +8,7 @@
 // 試験申請および転職
 //------------------------------------------------------------
 prt_in.gat,88,101,4	script	プロンテラ騎士団長	56,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[騎士団長ヘルマン]";
 		mes "こちらはプロンテラ騎士団です。";
 		mes "何の用事かな？";
@@ -49,7 +49,7 @@ prt_in.gat,88,101,4	script	プロンテラ騎士団長	56,{
 		mes "訪ねて来なさい。";
 		close;
 	}
-	if(Class == Job_Knight) {
+	if(Job == Job_Knight) {
 		mes "[騎士団長ヘルマン]";
 		mes "おお、騎士団員よ…私の言った言葉を";
 		mes "覚えているかな？";
@@ -57,7 +57,7 @@ prt_in.gat,88,101,4	script	プロンテラ騎士団長	56,{
 		mes "堂々としていること。";
 		close;
 	}
-	if(Class != Job_Swordman) {
+	if(Job != Job_Swordman) {
 		mes "[騎士団長ヘルマン]";
 		mes "プロンテラ騎士団に訪ねてきた";
 		mes "ことを歓迎する。";
@@ -86,7 +86,7 @@ prt_in.gat,88,101,4	script	プロンテラ騎士団長	56,{
 			mes "それではゆっくり見ていきなさい。";
 			close;
 		}
-		if(Upper == 1) {
+		if(Upper == UPPER_HIGH) {
 			mes "[騎士団長ヘルマン]";
 			mes "なんだ……？";
 			mes "何かただならぬ気配が感じられるな。";
@@ -467,7 +467,7 @@ prt_in.gat,88,101,4	script	プロンテラ騎士団長	56,{
 		mes "十分に具えていると判断した。";
 		next;
 		unequip;
-		jobchange 7;
+		jobchange Job_Knight;
 		set CHANGE_KN,0;
 		mes "[騎士団長ヘルマン]";
 		mes "これで貴公も私達プロンテラ騎士団の";
@@ -492,7 +492,7 @@ prt_in.gat,88,101,4	script	プロンテラ騎士団長	56,{
 // 一次試験（アイテム収集）
 //------------------------------------------------------------
 prt_in.gat,75,107,4	script	騎士アンドリュー	65,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[騎士アンドリュー]";
 		mes "ノービスですね。";
 		mes "プロンテラ騎士団にようこそ。";
@@ -506,7 +506,7 @@ prt_in.gat,75,107,4	script	騎士アンドリュー	65,{
 		mes "黙々と歩いて行きなさい。";
 		close;
 	}
-	if(Class == Job_Knight) {
+	if(Job == Job_Knight) {
 		mes "[騎士アンドリュー]";
 		mes "騎士団員ですね。最近どうですか？";
 		next;
@@ -666,7 +666,7 @@ prt_in.gat,75,107,4	script	騎士アンドリュー	65,{
 // 二次試験（口頭試問）
 //------------------------------------------------------------
 prt_in.gat,71,91,0	script	騎士ジェームズ	65,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[騎士ジェームズ]";
 		mes "おう、ノービスがこんな所に";
 		mes "どんな用かな？";
@@ -681,7 +681,7 @@ prt_in.gat,71,91,0	script	騎士ジェームズ	65,{
 		mes "またいらっしゃい";
 		close;
 	}
-	if(Class == Job_Knight) {
+	if(Job == Job_Knight) {
 		mes "[騎士ジェームズ]";
 		mes "よう元気か！騎士団も昔のままだよ。";
 		next;
@@ -1036,17 +1036,17 @@ prt_in.gat,79,94,4	script	騎士ウインザー	733,{
 	mes "[騎士ウインザー]";
 	mes "……";
 	next;
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[騎士ウインザー]";
 		mes "外で遊びなさい…";
 		close;
 	}
-	if(Class == Job_Knight) {
+	if(Job == Job_Knight) {
 		mes "[騎士ウインザー]";
 		mes "話しかけるな…";
 		close;
 	}
-	if(Class != Job_Swordman) {
+	if(Job != Job_Swordman) {
 		mes "[騎士ウインザー]";
 		mes "何の用だ…";
 		close;
@@ -1288,7 +1288,7 @@ OnTimer180000:
 // 四次試験（性格試験）
 //------------------------------------------------------------
 prt_in.gat,69,107,6	script	騎士エイミー	728,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[騎士エイミー]";
 		mes "あら、かわいいノービスさん。";
 		mes "とってもかわいいわ〜。";
@@ -1304,7 +1304,7 @@ prt_in.gat,69,107,6	script	騎士エイミー	728,{
 		mes "約束よ！";
 		close;
 	}
-	if(Class == Job_Knight) {
+	if(Job == Job_Knight) {
 		mes "[騎士エイミー]";
 		mes "あら？私を訪ねてくるなんて";
 		mes "何の用かしら？";
@@ -1320,7 +1320,7 @@ prt_in.gat,69,107,6	script	騎士エイミー	728,{
 		mes "我がプロンテラ騎士団員様！";
 		close;
 	}
-	if(Class != Job_Swordman) {
+	if(Job != Job_Swordman) {
 		mes "[騎士エイミー]";
 		mes "プロンテラ騎士団へようこそ！";
 		next;
@@ -1591,7 +1591,7 @@ prt_in.gat,69,107,6	script	騎士エイミー	728,{
 // 五次試験（忍耐力試験）
 //------------------------------------------------------------
 prt_in.gat,70,99,6	script	騎士エドモンド	734,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[騎士エドモンド]";
 		mes "根深い木は風に負けない…";
 		next;
@@ -1603,7 +1603,7 @@ prt_in.gat,70,99,6	script	騎士エドモンド	734,{
 		mes "君の未来は今から決まると言える…";
 		close;
 	}
-	if(Class == Job_Knight) {
+	if(Job == Job_Knight) {
 		mes "[騎士エドモンド]";
 		mes "心を流れる水の如く…";
 		next;
@@ -1616,7 +1616,7 @@ prt_in.gat,70,99,6	script	騎士エドモンド	734,{
 		mes "静かに流れなければならない。";
 		close;
 	}
-	if(Class != Job_Swordman) {
+	if(Job != Job_Swordman) {
 		mes "[騎士エドモンド]";
 		mes "世の全ての物は…皆調和して";
 		mes "成り立っている。";
@@ -1764,7 +1764,7 @@ OnClear:
 // 最終試験 及び クレイモア作成
 //------------------------------------------------------------
 prt_in.gat,87,92,4	script	騎士グレー	119,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[騎士グレー]";
 		mes "こう見えても、俺にだって";
 		mes "ノービス時代があったんだ。";
@@ -1778,7 +1778,7 @@ prt_in.gat,87,92,4	script	騎士グレー	119,{
 		mes "騎士になってたということさ。ははは。";
 		close;
 	}
-	if(Class == Job_Knight) {	//クレイモア販売
+	if(Job == Job_Knight) {	//クレイモア販売
 		mes "[騎士グレー]";
 		mes "何とも形容しがたい美しい色の刃…";
 		mes "騎士が持つべき武器と言えばこれだ！";
@@ -2190,7 +2190,7 @@ prt_in.gat,87,92,4	script	騎士グレー	119,{
 // ペコペコレンタル
 //------------------------------------------------------------
 prontera.gat,55,350,5	script	ペコペコ管理兵	105,{
-	if(Class != Job_Knight) {
+	if(Job != Job_Knight) {
 		mes "[ペコペコ管理兵]";
 		mes "何の御用ですか？";
 		mes "ペコペコは、ナイト様と";

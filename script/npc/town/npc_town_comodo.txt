@@ -1545,7 +1545,7 @@ cmd_in02.gat,189,99,4	script	カジノ師	85,{
 		mes "洞窟熟成チーズ話を聞き出すんだ！";
 		close;
 	default:
-		if(Class==Job_Novice) {
+		if(Job == Job_Novice) {
 			mes "[マンジ]";
 			mes "なんだなんだ？初心者用？";
 			mes "ここは大人たちの遊ぶ場所だぜ！";

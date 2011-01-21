@@ -1175,9 +1175,7 @@ int atcommand_jobchange(const int fd, struct map_session_data* sd, AtCommandType
 	if (sscanf(message, "%d %d", &job, &upper) < 1)
 		return -1;
 
-	if (job >= 0 && job < MAX_VALID_PC_CLASS) {
-		if (job >= 24)
-			upper = 0;
+	if (job >= 0 && job < PC_JOB_MAX) {
 		if (pc_jobchange(sd, job, upper) == 0)
 			clif_displaymessage(fd, msg_txt(12));
 	}
@@ -2425,7 +2423,7 @@ int atcommand_zeny(const int fd, struct map_session_data* sd, AtCommandType comm
  */
 int atcommand_param(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int max = 0, value, new_value;
+	int max, value, new_value;
 	short *status = NULL;
 
 	nullpo_retr(-1, sd);
@@ -2437,33 +2435,36 @@ int atcommand_param(const int fd, struct map_session_data* sd, AtCommandType com
 	switch (command) {
 		case AtCommand_Strength:
 			status = &sd->status.str;
-			max    = battle_config.max_parameter_str;
 			break;
 		case AtCommand_Agility:
 			status = &sd->status.agi;
-			max    = battle_config.max_parameter_agi;
 			break;
 		case AtCommand_Vitality:
 			status = &sd->status.vit;
-			max    = battle_config.max_parameter_vit;
 			break;
 		case AtCommand_Intelligence:
 			status = &sd->status.int_;
-			max    = battle_config.max_parameter_int;
 			break;
 		case AtCommand_Dexterity:
 			status = &sd->status.dex;
-			max    = battle_config.max_parameter_dex;
 			break;
 		case AtCommand_Luck:
 			status = &sd->status.luk;
-			max    = battle_config.max_parameter_luk;
 			break;
 		default:
 			break;
 	}
 	if (status == NULL)
 		return -1;
+
+	if(pc_is3rdclass(sd) && pc_isbaby(sd))
+		max = battle_config.third_baby_status_max;
+	else if(pc_is3rdclass(sd))
+		max = battle_config.third_status_max;
+	else if(pc_isbaby(sd))
+		max = battle_config.baby_status_max;
+	else
+		max = battle_config.max_parameter;
 
 	new_value = *status + value;
 	if (new_value < 1)
@@ -2843,9 +2844,7 @@ int atcommand_character_job(const int fd, struct map_session_data* sd, AtCommand
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
-			if ((job >= 0 && job < MAX_VALID_PC_CLASS)) {
-				if (job >= 24)
-					upper = 0;
+			if ((job >= 0 && job < PC_JOB_MAX)) {
 				pc_jobchange(pl_sd, job, upper);
 				clif_displaymessage(fd, msg_txt(48));
 			} else {
@@ -5027,7 +5026,7 @@ int atcommand_statall(const int fd, struct map_session_data* sd, AtCommandType c
 {
 	int idx;
 	short* status[6];
-	int max_parameter[6];
+	int max;
 
 	nullpo_retr(-1, sd);
 
@@ -5038,16 +5037,18 @@ int atcommand_statall(const int fd, struct map_session_data* sd, AtCommandType c
 	status[4] = &sd->status.dex;
 	status[5] = &sd->status.luk;
 
-	max_parameter[0] = battle_config.max_parameter_str;
-	max_parameter[1] = battle_config.max_parameter_agi;
-	max_parameter[2] = battle_config.max_parameter_vit;
-	max_parameter[3] = battle_config.max_parameter_int;
-	max_parameter[4] = battle_config.max_parameter_dex;
-	max_parameter[5] = battle_config.max_parameter_luk;
+	if(pc_is3rdclass(sd) && pc_isbaby(sd))
+		max = battle_config.third_baby_status_max;
+	else if(pc_is3rdclass(sd))
+		max = battle_config.third_status_max;
+	else if(pc_isbaby(sd))
+		max = battle_config.baby_status_max;
+	else
+		max = battle_config.max_parameter;
 
 	if (!message || !*message) {
 		for (idx = 0; idx < 6; idx++)
-			*status[idx] = (short)max_parameter[idx];
+			*status[idx] = (short)max;
 	} else {
 		int value, new_value;
 		value = atoi(message);
@@ -5055,8 +5056,8 @@ int atcommand_statall(const int fd, struct map_session_data* sd, AtCommandType c
 			new_value = *status[idx] + value;
 			if (new_value < 1)
 				new_value = 1;
-			else if (new_value > max_parameter[idx])
-				new_value = max_parameter[idx];
+			else if (new_value > max)
+				new_value = max;
 			*status[idx] = (short)new_value;
 		}
 	}

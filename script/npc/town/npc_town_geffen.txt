@@ -2030,10 +2030,12 @@ morocc.gat,134,111,3	script	吟遊詩人	741,{
 			mes "[歌う男]";
 			mes "あぁ、マイレディー。";
 			mes "どうか泣かないで。";
-			switch(Class) {
+			switch(Job) {
 			case Job_Swordman:
 			case Job_Knight:
 			case Job_Crusader:
+			case Job_RuneKnight:
+			case Job_RoyalGuard:
 				mes "剣を振ることしか知らない";
 				mes "あんな男を相手にする必要は";
 				mes "ありませんね。";
@@ -2041,6 +2043,8 @@ morocc.gat,134,111,3	script	吟遊詩人	741,{
 			case Job_Acolyte:
 			case Job_Priest:
 			case Job_Monk:
+			case Job_ArchBishop:
+			case Job_Shura:
 				mes "主神の従僕というのに、";
 				mes "正しき構図の道を歩かない";
 				mes "あんな者を相手にする必要は";
@@ -2048,16 +2052,19 @@ morocc.gat,134,111,3	script	吟遊詩人	741,{
 				close;
 			case Job_Thief:
 			case Job_Rogue:
+			case Job_ShadowChaser:
 				mes "裏通りのずるい猫みたいな";
 				mes "あんな男を見たところで";
 				mes "あまり役には立ちませんね。";
 				close;
 			case Job_Assassin:
+			case Job_Guillotine:
 				mes "自分の両手に武器を持ち";
 				mes "義理人情を感じない";
 				mes "あんな者は相手にしないで。";
 				close;
 			case Job_Blacksmith:
+			case Job_Mechanic:
 				mes "お金と鉄のことしか知らない";
 				mes "あんな男を相手にする必要は";
 				mes "ありませんね。";

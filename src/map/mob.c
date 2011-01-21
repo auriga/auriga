@@ -3885,7 +3885,7 @@ static int mob_readdb_mobavail(void)
 		k = atoi(str[1]);
 		if(k >= 0) {
 			mob_db[class_].view_class = k;
-			if(k < MAX_VALID_PC_CLASS)
+			if(k < PC_JOB_MAX)
 				mob_db[class_].pcview_flag = 1;
 			else
 				mob_db[class_].pcview_flag = 0;

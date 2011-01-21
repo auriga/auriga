@@ -10,7 +10,7 @@
 //------------------------------------------
 
 gef_tower.gat,111,37,4	script	ギルド関係者	70,{
-	if(Upper == 1) {
+	if(Upper == UPPER_HIGH) {
 		mes "[カトリーヌ]";
 		mes "うん？";
 		mes "こんな所まで何かご用かしら？";
@@ -21,7 +21,7 @@ gef_tower.gat,111,37,4	script	ギルド関係者	70,{
 		mes "その調子で頑張ってね。";
 		close;
 	}
-	if(Class == Job_Wizard) {
+	if(Job == Job_Wizard) {
 		mes "[カトリーヌ]";
 		mes "もうウィザードであるあなたには";
 		mes "こちらへの用は無いはず。";
@@ -35,7 +35,7 @@ gef_tower.gat,111,37,4	script	ギルド関係者	70,{
 			mes "デートの申し込みなら嬉しいけど。";
 		close;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[魔術師ギルド関係者]";
 		mes "あら、こんな高いところまで何の用？";
 		mes "特に用が無ければ降りてくださいね。";
@@ -303,7 +303,7 @@ gef_tower.gat,111,37,4	script	ギルド関係者	70,{
 		mes "すぐに転職させてあげなければ。";
 		next;
 		unequip;
-		jobchange 9;
+		jobchange Job_Wizard;
 		set CHANGE_WZ,0;
 		mes "[カトリーヌ]";
 		mes "もうあなたもウィザード。";
@@ -346,7 +346,7 @@ gef_tower.gat,111,37,4	script	ギルド関係者	70,{
 
 //==============================================================
 gef_tower.gat,107,36,4	script	白い毛の犬	81,{
-	if(Class == Job_Wizard) {
+	if(Job == Job_Wizard) {
 		mes "[マリア]";
 		mes "ここに居るより外に出て、君が";
 		mes "どれくらい強くなったか試して";
@@ -358,7 +358,7 @@ gef_tower.gat,107,36,4	script	白い毛の犬	81,{
 		mes "忘れずに。";
 		close;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[犬]";
 		mes "ふん…魔法も使うことができない";
 		mes "人が何しに来たのよ？";
@@ -647,7 +647,7 @@ gef_tower.gat,102,24,8	script	陰気なウィザード	735,{
 		return;
 	}
 
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[ラウレル]";
 		mes "ひよっこがなぜこんな場所に来た？";
 		mes "すぐに立ち去りなさい。";
@@ -655,7 +655,7 @@ gef_tower.gat,102,24,8	script	陰気なウィザード	735,{
 		warp "geffen.gat",120,110;
 		end;
 	}
-	if(Class == Job_Priest) {
+	if(Job == Job_Priest) {
 		mes "[ラウレル]";
 		mes "帰るんだ。神の仕いに用はない。";
 		mes "魔力と神力は相容れないからな。";
@@ -665,7 +665,7 @@ gef_tower.gat,102,24,8	script	陰気なウィザード	735,{
 		mes "近づかずあちらへ行きなさい。";
 		close;
 	}
-	if(Class == Job_Wizard) {
+	if(Job == Job_Wizard) {
 		mes "[ラウレル]";
 		mes "…私に何の用だ？";
 		mes "お前も魔法を使う者なら魔法について";
@@ -683,7 +683,7 @@ gef_tower.gat,102,24,8	script	陰気なウィザード	735,{
 		mes "終わらせたくなければな…。";
 		close;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[ラウレル]";
 		mes "うう…苦しい…。";
 		mes "全身がまるで冷たい氷に";

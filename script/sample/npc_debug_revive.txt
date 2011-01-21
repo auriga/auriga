@@ -28,7 +28,7 @@ izlude.gat,125,65,4	script	バグりましたか？	825,{
 	mes "9P+Job49P+現在のJoblv-1P";
 	mes "という風に配布されます。";
 	next;
-	switch(Class) {
+	switch(Job) {
 	case Job_Novice:
 		mes "[バグりましたか？]";
 		mes "ノビさんの初期化しますね。";
@@ -42,7 +42,7 @@ izlude.gat,125,65,4	script	バグりましたか？	825,{
 	case Job_Acolyte:
 	case Job_Merchant:
 	case Job_Thief:
-	case Job_TaeKwon:
+	case Job_Taekwon:
 	case Job_Gunslinger:
 	case Job_Ninja:
 	case Job_DeathKnight:

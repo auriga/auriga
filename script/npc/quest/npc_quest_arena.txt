@@ -3008,7 +3008,7 @@ arena_room.gat,94,82,2	script	アリーナ記録担当	79,{
 }
 
 arena_room.gat,114,102,0	script	#ArenaAcoMode	45,1,1,{
-	if(Class == 4 || Class == 8 || Class == 15) {
+	if(getbaseclass(Class) == CLASS_AL) {
 		warp "area_room.gat",135,129;
 		end;
 	}

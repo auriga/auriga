@@ -62,17 +62,17 @@
 
 #define PVP_CALCRANK_INTERVAL 1000	// PVP順位計算の間隔
 
-static int exp_table[16][MAX_LEVEL];
+static int exp_table[20][MAX_LEVEL];
 
 // 属性テーブル
 int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
 
 // JOB TABLE
-//        NV,SW,MG,AC,AL,MC,TF,KN,PR,WZ,BS,HT,AS,KNp,CR,MO,SA,RG,AM,BA,DC,CRp,  ,SNV,TK,SG,SG2,SL,GS,NJ,DK,DC
-int max_job_table[3][32] = {
-	{ 10,50,50,50,50,50,50,50,50,50,50,50,50, 50,50,50,50,50,50,50,50, 50, 1, 99,50,50, 50,50,70,70,70,70 }, // 通常
-	{ 10,50,50,50,50,50,50,70,70,70,70,70,70, 70,70,70,70,70,70,70,70, 70, 1, 99,50,50, 50,50,70,70,70,70 }, // 転生
-	{ 10,50,50,50,50,50,50,50,50,50,50,50,50, 50,50,50,50,50,50,50,50, 50, 1, 99,50,50, 50,50,70,70,70,70 }, // 養子
+//    NV,SM,MG,AC,AL,MC,TF,KN,PR,WZ,BS,HT,AS,CR,MO,SA,RG,AM,BA,DC,SNV,TK,SG,SL,GS,NJ,MB,DK,DA,RK,WL,RA,AB,NC,GC,LG,SO,MI,WA,SR,GN,SC
+int max_job_table[PC_UPPER_MAX][PC_JOB_MAX] = {
+	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 通常
+	{ 10,50,50,50,50,50,50,70,70,70,70,70,70,70,70,70,70,70,70,70,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 転生
+	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 養子
 };
 
 static unsigned int equip_pos[11] = { LOC_LACCESSORY,LOC_RACCESSORY,LOC_SHOES,LOC_ROBE,LOC_HEAD,LOC_HEAD3,LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ARROW };
@@ -88,8 +88,8 @@ static struct skill_tree_entry {
 	} need[5];
 	unsigned short base_level;
 	unsigned short job_level;
-	short class_level;	// 再振り時の不正防止　ノビ:0 一次:1 二次:2
-} skill_tree[3][MAX_PC_CLASS][MAX_SKILL_TREE];
+	short class_level;	// 再振り時の不正防止　ノビ:0 一次:1 二次:2 三次:3
+} skill_tree[PC_UPPER_MAX][PC_JOB_MAX][MAX_SKILL_TREE];
 
 static int dummy_gm_account = 0;
 static char *motd = NULL;
@@ -493,7 +493,7 @@ int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, in
 			return 0;
 		}
 	}
-	if(sd->s_class.job == 0 || map[sd->bl.m].flag.gvg)
+	if(sd->s_class.job == PC_JOB_NV || map[sd->bl.m].flag.gvg)
 		return 0;
 
 	// レディムプティオのペナルティの場合、オーラならば現在の取得経験値から差し引く
@@ -555,7 +555,7 @@ int pc_setrestartvalue(struct map_session_data *sd,int type)
 		sd->status.hp = sd->status.max_hp;
 		sd->status.sp = sd->status.max_sp;
 	} else {
-		if(sd->s_class.job != 0) {	// ノビは既に死亡直後でHP補正済み
+		if(sd->s_class.job != PC_JOB_NV) {	// ノビは既に死亡直後でHP補正済み
 			if(battle_config.restart_hp_rate <= 0) {
 				sd->status.hp = 1;
 			} else {
@@ -726,7 +726,7 @@ int pc_equippoint(struct map_session_data *sd,int n)
 		int look = sd->inventory_data[n]->look;
 		ep = sd->inventory_data[n]->equip;
 		if(look == 1 || look == 2 || look == 6) {
-			if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == 12))
+			if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC))
 				return 34;
 		}
 	}
@@ -767,6 +767,171 @@ static int pc_calcweapontype(struct map_session_data *sd)
 		sd->status.weapon = right;
 
 	return 0;
+}
+
+/*==========================================
+ * 職業によって使用可能なアイテムかどうか
+ *------------------------------------------
+ */
+static int pc_check_useclass(struct map_session_data *sd, unsigned int class_)
+{
+	unsigned int job_bit = 0;
+
+	nullpo_retr(0, sd);
+
+	//職業値をdbの職業値に合わせて設定
+	switch(sd->s_class.job) {
+		case PC_JOB_NV:		// ノービス
+			job_bit = 0x00000001;
+			break;
+		case PC_JOB_SM:		// ソードマン
+			job_bit = 0x00000002;
+			break;
+		case PC_JOB_MG:		// マジシャン
+			job_bit = 0x00000004;
+			break;
+		case PC_JOB_AC:		// アーチャー
+			job_bit = 0x00000008;
+			break;
+		case PC_JOB_AL:		// アコライト
+			job_bit = 0x00000010;
+			break;
+		case PC_JOB_MC:		// マーチャント
+			job_bit = 0x00000020;
+			break;
+		case PC_JOB_TF:		// シーフ
+			job_bit = 0x00000040;
+			break;
+		case PC_JOB_KN:		// ナイト
+			job_bit = 0x00000080;
+			break;
+		case PC_JOB_PR:		// プリースト
+			job_bit = 0x00000100;
+			break;
+		case PC_JOB_WZ:		// ウィザード
+			job_bit = 0x00000200;
+			break;
+		case PC_JOB_BS:		// ブラックスミス
+			job_bit = 0x00000400;
+			break;
+		case PC_JOB_HT:		// ハンター
+			job_bit = 0x00000800;
+			break;
+		case PC_JOB_AS:		// アサシン
+			job_bit = 0x00001000;
+			break;
+		case PC_JOB_CR:		// クルセイダー
+			job_bit = 0x00004000;
+			break;
+		case PC_JOB_MO:		// モンク
+			job_bit = 0x00008000;
+			break;
+		case PC_JOB_SA:		// セージ
+			job_bit = 0x00010000;
+			break;
+		case PC_JOB_RG:		// ローグ
+			job_bit = 0x00020000;
+			break;
+		case PC_JOB_AM:		// アルケミスト
+			job_bit = 0x00040000;
+			break;
+		case PC_JOB_BA:		// バード
+			job_bit = 0x00080000;
+			break;
+		case PC_JOB_DC:		// ダンサー
+			job_bit = 0x00100000;
+			break;
+		case PC_JOB_SNV:	// スーパーノービス
+			job_bit = 0x00800000;
+			break;
+		case PC_JOB_TK:		// テコンキッド
+			job_bit = 0x01000000;
+			break;
+		case PC_JOB_SG:		// 拳聖
+			job_bit = 0x02000000;
+			break;
+		case PC_JOB_SL:		// ソウルリンカー
+			job_bit = 0x08000000;
+			break;
+		case PC_JOB_GS:		// ガンスリンガー
+			job_bit = 0x10000000;
+			break;
+		case PC_JOB_NJ:		// 忍者
+			job_bit = 0x20000000;
+			break;
+		case PC_JOB_MB:		// キョンシー
+			// 暫定アコライトと同等
+			job_bit = 0x00000010;
+			break;
+		case PC_JOB_DK:		// デスナイト
+			// 暫定ナイトと同等
+			job_bit = 0x00000080;
+			break;
+		case PC_JOB_DA:		// ダークコレクター
+			// 暫定アルケミストと同等
+			job_bit = 0x00040000;
+			break;
+		case PC_JOB_RK:		// ルーンナイト
+			// 暫定ナイトと同等
+			job_bit = 0x00000080;
+			break;
+		case PC_JOB_WL:		// ウォーロック
+			// 暫定ウィザードと同等
+			job_bit = 0x00000200;
+			break;
+		case PC_JOB_RA:		// レンジャー
+			// 暫定ハンターと同等
+			job_bit = 0x00000800;
+			break;
+		case PC_JOB_AB:		// アークビショップ
+			// 暫定プリーストと同等
+			job_bit = 0x00000100;
+			break;
+		case PC_JOB_NC:		// メカニック
+			// 暫定ブラックスミスと同等
+			job_bit = 0x00000400;
+			break;
+		case PC_JOB_GC:		// ギロチンクロス
+			// 暫定アサシンと同等
+			job_bit = 0x00001000;
+			break;
+		case PC_JOB_LG:		// ロイヤルガード
+			// 暫定クルセイダーと同等
+			job_bit = 0x00004000;
+			break;
+		case PC_JOB_SO:		// ソーサラー
+			// 暫定セージと同等
+			job_bit = 0x00010000;
+			break;
+		case PC_JOB_MI:		// ミンストレル
+			// 暫定バードと同等
+			job_bit = 0x00080000;
+			break;
+		case PC_JOB_WA:		// ワンダラー
+			// 暫定ダンサーと同等
+			job_bit = 0x00100000;
+			break;
+		case PC_JOB_SR:		// 修羅
+			// 暫定モンクと同等
+			job_bit = 0x00008000;
+			break;
+		case PC_JOB_GN:		// ジェネティック
+			// 暫定アルケミストと同等
+			job_bit = 0x00040000;
+			break;
+		case PC_JOB_SC:		// シャドウチェイサー
+			// 暫定ローグと同等
+			job_bit = 0x00020000;
+			break;
+		default:
+			return 0;
+	}
+
+	// 職業判定
+	if((job_bit & class_) == 0)
+		return 0;
+
+	return 1;
 }
 
 /*==========================================
@@ -884,7 +1049,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 	}
 	if(item->elv > 0 && sd->status.base_level < item->elv)
 		return 0;
-	if(((1<<sd->s_class.job)&item->class_) == 0)
+	if(pc_check_useclass(sd,item->class_) == 0)
 		return 0;
 
 	if(item->upper) {
@@ -1011,12 +1176,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->state.connect_new = 1;
 	sd->bl.prev = sd->bl.next = NULL;
 	sd->weapontype1 = sd->weapontype2 = 0;
-
-	if(sd->status.class_ == PC_CLASS_GS || sd->status.class_ == PC_CLASS_NJ)
-		sd->view_class = sd->status.class_ - 4;
-	else
-		sd->view_class = sd->status.class_;
-
+	sd->view_class = sd->status.class_;
 	sd->s_class = pc_calc_base_job(sd->status.class_);
 
 	sd->speed = DEFAULT_WALK_SPEED;
@@ -1318,40 +1478,51 @@ int pc_calc_skilltree(struct map_session_data *sd)
 		int skill_point = pc_calc_skillpoint(sd);
 		if(skill_point < 9) {
 			c = 0;
-		} else if(sd->status.skill_point >= sd->status.job_level && skill_point < 58 && c > 6) {
+		} else if(sd->status.skill_point >= sd->status.job_level && skill_point < 58 && c > PC_JOB_TF) {
 			switch(c) {
-				case 7:
-				case 14:
-					c = 1;
+				case PC_JOB_KN:
+				case PC_JOB_CR:
+				case PC_JOB_RK:
+				case PC_JOB_LG:
+					c = PC_JOB_SM;
 					break;
-				case 8:
-				case 15:
-					c = 4;
+				case PC_JOB_PR:
+				case PC_JOB_MO:
+				case PC_JOB_AB:
+				case PC_JOB_SR:
+					c = PC_JOB_AL;
 					break;
-				case 9:
-				case 16:
-					c = 2;
+				case PC_JOB_WZ:
+				case PC_JOB_SA:
+				case PC_JOB_WL:
+				case PC_JOB_SO:
+					c = PC_JOB_MG;
 					break;
-				case 10:
-				case 18:
-					c = 5;
+				case PC_JOB_BS:
+				case PC_JOB_AM:
+				case PC_JOB_NC:
+				case PC_JOB_GN:
+					c = PC_JOB_MC;
 					break;
-				case 11:
-				case 19:
-				case 20:
-					c = 3;
+				case PC_JOB_HT:
+				case PC_JOB_BA:
+				case PC_JOB_DC:
+				case PC_JOB_RA:
+				case PC_JOB_MI:
+				case PC_JOB_WA:
+					c = PC_JOB_AC;
 					break;
-				case 12:
-				case 17:
-					c = 6;
+				case PC_JOB_AS:
+				case PC_JOB_RG:
+				case PC_JOB_GC:
+				case PC_JOB_SC:
+					c = PC_JOB_TF;
 					break;
-				case 25:
-				case 26:
-				case 27:
-					c = 24;
+				case PC_JOB_SG:
+				case PC_JOB_SL:
+					c = PC_JOB_TK;
 					break;
-				case 28:
-				case 29:
+				default:
 					break;
 			}
 		}
@@ -1384,8 +1555,8 @@ int pc_calc_skilltree(struct map_session_data *sd)
 			sd->status.skill[i].id = i;
 		for(i=475; i<545; i++)
 			sd->status.skill[i].id = i;
-#ifdef CLASS_DKDC
-		for(i=545; i<619; i++)
+#ifdef CLASS_MB
+		for(i=545; i<653; i++)
 			sd->status.skill[i].id = i;
 #endif
 		for(i=1001; i<1020; i++)
@@ -1460,7 +1631,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 				sd->status.skill[AM_TWILIGHT3].lv   = 1;
 				sd->status.skill[AM_TWILIGHT3].flag = 1;
 			}
-#ifdef CLASS_DKDC
+#ifdef CLASS_MB
 			if(pc_checkskill(sd,AM_TWILIGHT4) == 0)	// カードスキル扱い
 			{
 				sd->status.skill[AM_TWILIGHT4].id   = AM_TWILIGHT4;
@@ -3669,7 +3840,7 @@ static int pc_isUseitem(struct map_session_data *sd,int n)
 		return 0;
 	if(item->elv > 0 && sd->status.base_level < item->elv)
 		return 0;
-	if(((1<<sd->s_class.job)&item->class_) == 0)
+	if(pc_check_useclass(sd,item->class_) == 0)
 		return 0;
 
 	if(item->upper) {
@@ -4646,42 +4817,268 @@ struct pc_base_job pc_calc_base_job(int b_class)
 
 	memset(&bj, 0, sizeof(bj));
 
-	if(b_class <= PC_CLASS_SNV || b_class == PC_CLASS_GS || b_class == PC_CLASS_NJ) {
-		bj.job   = b_class;
-		bj.upper = 0;
+	switch(b_class) {
+		case PC_CLASS_NV:
+		case PC_CLASS_SM:
+		case PC_CLASS_MG:
+		case PC_CLASS_AC:
+		case PC_CLASS_AL:
+		case PC_CLASS_MC:
+		case PC_CLASS_TF:
+		case PC_CLASS_KN:
+		case PC_CLASS_PR:
+		case PC_CLASS_WZ:
+		case PC_CLASS_BS:
+		case PC_CLASS_HT:
+		case PC_CLASS_AS:
+			bj.job   = b_class;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_KN2:
+			bj.job   = PC_JOB_KN;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_CR:
+		case PC_CLASS_MO:
+		case PC_CLASS_SA:
+		case PC_CLASS_RG:
+		case PC_CLASS_AM:
+		case PC_CLASS_BA:
+		case PC_CLASS_DC:
+			bj.job   = b_class - PC_CLASS_CR + PC_JOB_CR;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_CR2:
+			bj.job   = PC_JOB_CR;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_SNV:
+			bj.job   = PC_JOB_SNV;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_GS:
+			bj.job   = PC_JOB_GS;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_NJ:
+			bj.job   = PC_JOB_NJ;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_NV_H:
+		case PC_CLASS_SM_H:
+		case PC_CLASS_MG_H:
+		case PC_CLASS_AC_H:
+		case PC_CLASS_AL_H:
+		case PC_CLASS_MC_H:
+		case PC_CLASS_TF_H:
+		case PC_CLASS_KN_H:
+		case PC_CLASS_PR_H:
+		case PC_CLASS_WZ_H:
+		case PC_CLASS_BS_H:
+		case PC_CLASS_HT_H:
+		case PC_CLASS_AS_H:
+			bj.job   = b_class - PC_CLASS_NV_H;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_KN2_H:
+			bj.job   = PC_JOB_KN;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_CR_H:
+		case PC_CLASS_MO_H:
+		case PC_CLASS_SA_H:
+		case PC_CLASS_RG_H:
+		case PC_CLASS_AM_H:
+		case PC_CLASS_BA_H:
+		case PC_CLASS_DC_H:
+			bj.job   = b_class - PC_CLASS_CR_H + PC_JOB_CR;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_CR2_H:
+			bj.job   = PC_JOB_CR;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_NV_B:
+		case PC_CLASS_SM_B:
+		case PC_CLASS_MG_B:
+		case PC_CLASS_AC_B:
+		case PC_CLASS_AL_B:
+		case PC_CLASS_MC_B:
+		case PC_CLASS_TF_B:
+		case PC_CLASS_KN_B:
+		case PC_CLASS_PR_B:
+		case PC_CLASS_WZ_B:
+		case PC_CLASS_BS_B:
+		case PC_CLASS_HT_B:
+		case PC_CLASS_AS_B:
+			bj.job   = b_class - PC_CLASS_NV_B;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_KN2_B:
+			bj.job   = PC_JOB_KN;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_CR_B:
+		case PC_CLASS_MO_B:
+		case PC_CLASS_SA_B:
+		case PC_CLASS_RG_B:
+		case PC_CLASS_AM_B:
+		case PC_CLASS_BA_B:
+		case PC_CLASS_DC_B:
+			bj.job   = b_class - PC_CLASS_CR_B + PC_JOB_CR;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_CR2_B:
+			bj.job   = PC_JOB_CR;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_SNV_B:
+			bj.job   = PC_JOB_SNV;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_TK:
+			bj.job   = PC_JOB_TK;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_SG:
+		case PC_CLASS_SG2:
+			bj.job   = PC_JOB_SG;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_SL:
+			bj.job   = PC_JOB_SL;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_MB:
+			bj.job   = PC_JOB_MB;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_DK:
+			bj.job   = PC_JOB_DK;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_DA:
+			bj.job   = PC_JOB_DA;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_RK:
+		case PC_CLASS_WL:
+		case PC_CLASS_RA:
+		case PC_CLASS_AB:
+		case PC_CLASS_NC:
+		case PC_CLASS_GC:
+			bj.job   = b_class - PC_CLASS_RK + PC_JOB_RK;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_RK_H:
+		case PC_CLASS_WL_H:
+		case PC_CLASS_RA_H:
+		case PC_CLASS_AB_H:
+		case PC_CLASS_NC_H:
+		case PC_CLASS_GC_H:
+			bj.job   = b_class - PC_CLASS_RK_H + PC_JOB_RK;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_RK_B:
+		case PC_CLASS_WL_B:
+		case PC_CLASS_RA_B:
+		case PC_CLASS_AB_B:
+		case PC_CLASS_NC_B:
+		case PC_CLASS_GC_B:
+			bj.job   = b_class - PC_CLASS_RK_B + PC_JOB_RK;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_LG:
+		case PC_CLASS_SO:
+		case PC_CLASS_MI:
+		case PC_CLASS_WA:
+		case PC_CLASS_SR:
+		case PC_CLASS_GN:
+		case PC_CLASS_SC:
+			bj.job   = b_class - PC_CLASS_LG + PC_JOB_LG;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_LG_H:
+		case PC_CLASS_SO_H:
+		case PC_CLASS_MI_H:
+		case PC_CLASS_WA_H:
+		case PC_CLASS_SR_H:
+		case PC_CLASS_GN_H:
+		case PC_CLASS_SC_H:
+			bj.job   = b_class - PC_CLASS_LG_H + PC_JOB_LG;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_LG_B:
+		case PC_CLASS_SO_B:
+		case PC_CLASS_MI_B:
+		case PC_CLASS_WA_B:
+		case PC_CLASS_SR_B:
+		case PC_CLASS_GN_B:
+		case PC_CLASS_SC_B:
+			bj.job   = b_class - PC_CLASS_LG_B + PC_JOB_LG;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_RK2:
+		case PC_CLASS_RK3:
+		case PC_CLASS_RK4:
+		case PC_CLASS_RK5:
+		case PC_CLASS_RK6:
+			bj.job   = PC_JOB_RK;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_RK2_H:
+		case PC_CLASS_RK3_H:
+		case PC_CLASS_RK4_H:
+		case PC_CLASS_RK5_H:
+		case PC_CLASS_RK6_H:
+			bj.job   = PC_JOB_RK;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_RK2_B:
+			bj.job   = PC_JOB_RK;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_LG2:
+			bj.job   = PC_JOB_LG;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_LG2_H:
+			bj.job   = PC_JOB_LG;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_LG2_B:
+			bj.job   = PC_JOB_LG;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_RA2:
+			bj.job   = PC_JOB_RA;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_RA2_H:
+			bj.job   = PC_JOB_RA;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_RA2_B:
+			bj.job   = PC_JOB_RA;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_NC2:
+			bj.job   = PC_JOB_NC;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_NC2_H:
+			bj.job   = PC_JOB_NC;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_NC2_B:
+			bj.job   = PC_JOB_NC;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		default:
+			bj.job   = PC_JOB_NV;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
 	}
-	else if(b_class >= PC_CLASS_BASE2 && b_class < PC_CLASS_BASE3) {
-		bj.job   = b_class - PC_CLASS_BASE2;
-		bj.upper = 1;
-	}
-	else if(b_class >= PC_CLASS_BASE3 && b_class < PC_CLASS_SNV3) {
-		bj.job   = b_class - PC_CLASS_BASE3;
-		bj.upper = 2;
-	}
-	else if(b_class == PC_CLASS_SNV3) {
-		bj.job   = 23;
-		bj.upper = 2;
-	}
-	else if(b_class >= PC_CLASS_TK && b_class <= PC_CLASS_SL) {	// テコン〜
-		bj.job   = 24 + b_class - PC_CLASS_TK;
-		bj.upper = 0;
-	}
-	else if(b_class == PC_CLASS_DK || b_class == PC_CLASS_DC) {
-		bj.job   = 30 + b_class - PC_CLASS_DK;
-		bj.upper = 0;
-	}
-
-	if(battle_config.enable_upper_class == 0)	// confで無効になっていたらupper=0
-		bj.upper = 0;
-
-	if(bj.job == 0)
-		bj.type = 0;
-	else if(bj.job < 7 || bj.job == 24 || bj.job >= 28)
-		bj.type = 1;
-	else if(bj.job == 23)
-		bj.type = 3;
-	else
-		bj.type = 2;
 
 	return bj;
 }
@@ -4690,41 +5087,105 @@ struct pc_base_job pc_calc_base_job(int b_class)
  * 元の職業からクラスIDを返す
  *------------------------------------------
  */
-int pc_calc_class_job(int job,int upper)
+int pc_calc_class_job(int job, int upper)
 {
-	if(job < 0 || job >= MAX_VALID_PC_CLASS)
-		return 0;
+	int class_ = 0;
 
-	// upperに無関係な職
-	if(job == 22 || job == 26)
-		return job;
-	if(job >= 24 && job <= 27)
-		return job - 24 + PC_CLASS_TK;
-	if(job == PC_CLASS_GS)
-		return 24;
-	if(job == PC_CLASS_NJ)
-		return 25;
-	if(job == 30)
-		return PC_CLASS_DK;
-	if(job == 31)
-		return PC_CLASS_DC;
-
-	// スパノビは養子か通常の2択
-	if(job == PC_CLASS_SNV) {
-		if(upper == 2)
-			return PC_CLASS_SNV3;
-		else
-			return PC_CLASS_SNV;
+	switch(job) {
+		case PC_JOB_NV:
+		case PC_JOB_SM:
+		case PC_JOB_MG:
+		case PC_JOB_AC:
+		case PC_JOB_AL:
+		case PC_JOB_MC:
+		case PC_JOB_TF:
+		case PC_JOB_KN:
+		case PC_JOB_PR:
+		case PC_JOB_WZ:
+		case PC_JOB_BS:
+		case PC_JOB_HT:
+		case PC_JOB_AS:
+			if(upper == PC_UPPER_HIGH)
+				class_ = job + PC_CLASS_NV_H;
+			else if(upper == PC_UPPER_BABY)
+				class_ = job + PC_CLASS_NV_B;
+			else
+				class_ = job;
+			break;
+		case PC_JOB_CR:
+		case PC_JOB_MO:
+		case PC_JOB_SA:
+		case PC_JOB_RG:
+		case PC_JOB_AM:
+		case PC_JOB_BA:
+		case PC_JOB_DC:
+			if(upper == PC_UPPER_HIGH)
+				class_ = job - PC_JOB_CR + PC_CLASS_CR_H;
+			else if(upper == PC_UPPER_BABY)
+				class_ = job - PC_JOB_CR + PC_CLASS_CR_B;
+			else
+				class_ = job - PC_JOB_CR + PC_CLASS_CR;
+			break;
+		case PC_JOB_SNV:
+			if(upper == PC_UPPER_BABY)
+				class_ = PC_CLASS_SNV_B;
+			else
+				class_ = PC_CLASS_SNV;
+			break;
+		case PC_JOB_TK:
+			class_ = PC_CLASS_TK;
+			break;
+		case PC_JOB_SG:
+			class_ = PC_CLASS_SG;
+			break;
+		case PC_JOB_SL:
+			class_ = PC_CLASS_SL;
+			break;
+		case PC_JOB_GS:
+			class_ = PC_CLASS_GS;
+			break;
+		case PC_JOB_NJ:
+			class_ = PC_CLASS_NJ;
+			break;
+		case PC_JOB_MB:
+			class_ = PC_CLASS_MB;
+			break;
+		case PC_JOB_DK:
+			class_ = PC_CLASS_DK;
+			break;
+		case PC_JOB_DA:
+			class_ = PC_CLASS_DA;
+			break;
+		case PC_JOB_RK:
+		case PC_JOB_WL:
+		case PC_JOB_RA:
+		case PC_JOB_AB:
+		case PC_JOB_NC:
+		case PC_JOB_GC:
+			if(upper == PC_UPPER_HIGH)
+				class_ = job - PC_JOB_RK + PC_CLASS_RK_H;
+			else if(upper == PC_UPPER_BABY)
+				class_ = job - PC_JOB_RK + PC_CLASS_RK_B;
+			else
+				class_ = job - PC_JOB_RK + PC_CLASS_RK;
+			break;
+		case PC_JOB_LG:
+		case PC_JOB_SO:
+		case PC_JOB_MI:
+		case PC_JOB_WA:
+		case PC_JOB_SR:
+		case PC_JOB_GN:
+		case PC_JOB_SC:
+			if(upper == PC_UPPER_HIGH)
+				class_ = job - PC_JOB_LG + PC_CLASS_LG_H;
+			else if(upper == PC_UPPER_BABY)
+				class_ = job - PC_JOB_LG + PC_CLASS_LG_B;
+			else
+				class_ = job - PC_JOB_LG + PC_CLASS_LG;
+			break;
 	}
 
-	if(upper == 0)
-		return job;
-	if(upper == 1)
-		return job + PC_CLASS_BASE2;
-	if(upper == 2)
-		return job + PC_CLASS_BASE3;
-
-	return 0;
+	return class_;
 }
 
 /*==========================================
@@ -4754,7 +5215,7 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		pc_heal(sd,sd->status.max_hp,sd->status.max_sp);
 
 		// スパノビはキリエ、イムポ、マニピ、グロ、サフラがかかる
-		if(sd->s_class.job == 23) {
+		if(sd->s_class.job == PC_JOB_SNV) {
 			status_change_start(&sd->bl,SC_KYRIE,10,0,0,0,120000,0);
 			status_change_start(&sd->bl,SC_IMPOSITIO,5,0,0,0,120000,0);
 			status_change_start(&sd->bl,SC_MAGNIFICAT,5,0,0,0,120000,0);
@@ -4762,7 +5223,7 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 			status_change_start(&sd->bl,SC_SUFFRAGIUM,3,0,0,0,120000,0);
 			clif_misceffect(&sd->bl,7);	// スパノビ天使
 		}
-		else if(sd->s_class.job >= 24 && sd->s_class.job <= 27) {
+		else if(sd->s_class.job >= PC_JOB_TK && sd->s_class.job <= PC_JOB_SL) {
 			status_change_start(&sd->bl,SC_BLESSING,10,0,0,0,600000,0);
 			status_change_start(&sd->bl,SC_INCREASEAGI,10,0,0,0,600000,0);
 			clif_misceffect(&sd->bl,9);	// テコン系天使
@@ -4802,7 +5263,7 @@ static int pc_checkjoblevelup(struct map_session_data *sd)
 		sd->status.skill_point++;
 		clif_updatestatus(sd,SP_SKILLPOINT);
 		status_calc_pc(sd,0);
-		if(sd->status.class_ == 23)
+		if(sd->status.class_ == PC_CLASS_SNV || sd->status.class_ == PC_CLASS_SNV_B)
 			clif_misceffect(&sd->bl,8);
 		else
 			clif_misceffect(&sd->bl,1);
@@ -4968,23 +5429,31 @@ int pc_nextbaseexp(struct map_session_data *sd)
 	if(sd->status.base_level >= MAX_LEVEL || sd->status.base_level <= 0)
 		return 0;
 
-	if(sd->status.class_ == 0)                         i = 0;	// ノービス
-	else if(sd->status.class_ <= 6)                    i = 1;	// 一次職
-	else if(sd->status.class_ <= 22)                   i = 2;	// 二次職
-	else if(sd->status.class_ == 23)                   i = 3;	// スーパーノービス
-	else if(sd->status.class_ == PC_CLASS_GS)          i = 3;	// ガンスリンガー
-	else if(sd->status.class_ == PC_CLASS_NJ)          i = 3;	// 忍者
-	else if(sd->status.class_ == PC_CLASS_DK)          i = 3;	// デスナイト
-	else if(sd->status.class_ == PC_CLASS_DC)          i = 3;	// ダークコレクター
-	else if(sd->status.class_ == PC_CLASS_BASE2)       i = 4;	// 転生ノービス
-	else if(sd->status.class_ <= PC_CLASS_BASE2 + 6)   i = 5;	// 転生一次職
-	else if(sd->status.class_ <= PC_CLASS_BASE2 + 21)  i = 6;	// 転生二次職
-	else if(sd->status.class_ == PC_CLASS_BASE3)       i = 0;	// 養子ノビ
-	else if(sd->status.class_ <= PC_CLASS_BASE3 + 6)   i = 1;	// 養子一次
-	else if(sd->status.class_ <= PC_CLASS_BASE3 + 21)  i = 2;	// 養子二次
-	else if(sd->status.class_ == PC_CLASS_SNV3)        i = 3;	// 養子スパノビ
-	else if(sd->status.class_ <= PC_CLASS_SL)          i = 1;	// 追加職 転生前の値
-	else                                               i = 1;	// それ以外なら転生前
+	if(sd->status.class_ == PC_CLASS_NV)				i = 0;	// ノービス
+	else if(sd->status.class_ <= PC_CLASS_TF)			i = 1;	// 1次職
+	else if(sd->status.class_ <= PC_CLASS_CR2)			i = 2;	// 2次職
+	else if(sd->status.class_ == PC_CLASS_SNV)			i = 3;	// スーパーノービス
+	else if(sd->status.class_ == PC_CLASS_GS)			i = 3;	// ガンスリンガー
+	else if(sd->status.class_ == PC_CLASS_NJ)			i = 3;	// 忍者
+	else if(sd->status.class_ == PC_CLASS_NV_H)			i = 4;	// 転生ノービス
+	else if(sd->status.class_ <= PC_CLASS_TF_H)			i = 5;	// 転生1次職
+	else if(sd->status.class_ <= PC_CLASS_CR2_H)		i = 6;	// 転生2次職
+	else if(sd->status.class_ == PC_CLASS_NV_B)			i = 0;	// 養子ノービス
+	else if(sd->status.class_ <= PC_CLASS_TF_B)			i = 1;	// 養子1次職
+	else if(sd->status.class_ <= PC_CLASS_CR2_B)		i = 2;	// 養子2次職
+	else if(sd->status.class_ == PC_CLASS_SNV_B) 		i = 3;	// 養子スーパーノービス
+	else if(sd->status.class_ == PC_CLASS_TK)			i = 1;	// テコンキッド
+	else if(sd->status.class_ <= PC_CLASS_SG2)			i = 2;	// 拳聖
+	else if(sd->status.class_ == PC_CLASS_SL)			i = 2;	// ソウルリンカー
+	else if(sd->status.class_ == PC_CLASS_MB)			i = 1;	// キョンシー
+	else if(sd->status.class_ == PC_CLASS_DK)			i = 2;	// デスナイト
+	else if(sd->status.class_ == PC_CLASS_DA)			i = 2;	// ダークコレクター
+	else if(sd->status.class_ <= PC_CLASS_GC)			i = 7;	// 3-1次職
+	else if(sd->status.class_ <= PC_CLASS_GC_H)			i = 8;	// 転生3-1次職
+	else if(sd->status.class_ <= PC_CLASS_SC)			i = 7;	// 3-2次職
+	else if(sd->status.class_ <= PC_CLASS_SC_H)			i = 8;	// 転生3-2次職
+	else if(sd->status.class_ <= PC_CLASS_SC_B)			i = 7;	// 養子3次職
+	else												i = 1;	// それ以外なら転生前
 
 	return exp_table[i][sd->status.base_level-1];
 }
@@ -5002,25 +5471,31 @@ int pc_nextjobexp(struct map_session_data *sd)
 	if(sd->status.job_level >= MAX_LEVEL || sd->status.job_level <= 0)
 		return 0;
 
-	if(sd->status.class_ == 0)                        i = 7;	// ノービス
-	else if(sd->status.class_ <= 6)                   i = 8;	// 一次職
-	else if(sd->status.class_ <= 22)                  i = 9;	// 二次職
-	else if(sd->status.class_ == 23)                  i = 10;	// スーパーノービス
-	else if(sd->status.class_ == PC_CLASS_GS)         i = 15;	// ガンスリンガー
-	else if(sd->status.class_ == PC_CLASS_NJ)         i = 15;	// 忍者
-	else if(sd->status.class_ == PC_CLASS_DK)         i = 15;	// デスナイト
-	else if(sd->status.class_ == PC_CLASS_DC)         i = 15;	// ダークコレクター
-	else if(sd->status.class_ == PC_CLASS_BASE2)      i = 11;	// 転生ノービス
-	else if(sd->status.class_ <= PC_CLASS_BASE2 + 6)  i = 12;	// 転生一次職
-	else if(sd->status.class_ <= PC_CLASS_BASE2 + 21) i = 13;	// 転生二次職
-	else if(sd->status.class_ == PC_CLASS_BASE3)      i = 7;	// 養子ノビ
-	else if(sd->status.class_ <= PC_CLASS_BASE3 + 6)  i = 8;	// 養子一次
-	else if(sd->status.class_ <= PC_CLASS_BASE3 + 21) i = 9;	// 養子二次
-	else if(sd->status.class_ == PC_CLASS_SNV3)       i = 10;	// 養子スパノビ
-	else if(sd->status.class_ == PC_CLASS_TK)         i = 8;	// テコンキッド
-	else if(sd->status.class_ <= PC_CLASS_SG2)        i = 14;	// 拳聖
-	else if(sd->status.class_ == PC_CLASS_SL)         i = 9;	// ソウルリンカー
-	else                                              i = 9;	// それ以外なら二次テーブル
+	if(sd->status.class_ == PC_CLASS_NV)				i = 9;	// ノービス
+	else if(sd->status.class_ <= PC_CLASS_TF)			i = 10;	// 1次職
+	else if(sd->status.class_ <= PC_CLASS_CR2)			i = 11;	// 2次職
+	else if(sd->status.class_ == PC_CLASS_SNV)			i = 12;	// スーパーノービス
+	else if(sd->status.class_ == PC_CLASS_GS)			i = 17;	// ガンスリンガー
+	else if(sd->status.class_ == PC_CLASS_NJ)			i = 17;	// 忍者
+	else if(sd->status.class_ == PC_CLASS_NV_H)			i = 13;	// 転生ノービス
+	else if(sd->status.class_ <= PC_CLASS_TF_H)			i = 14;	// 転生1次職
+	else if(sd->status.class_ <= PC_CLASS_CR2_H)		i = 15;	// 転生2次職
+	else if(sd->status.class_ == PC_CLASS_NV_B)			i = 9;	// 養子ノービス
+	else if(sd->status.class_ <= PC_CLASS_TF_H)			i = 10;	// 養子1次
+	else if(sd->status.class_ <= PC_CLASS_CR2_B)		i = 11;	// 養子2次
+	else if(sd->status.class_ == PC_CLASS_SNV_B)		i = 12;	// 養子スーパーノービス
+	else if(sd->status.class_ == PC_CLASS_TK)			i = 10;	// テコンキッド
+	else if(sd->status.class_ <= PC_CLASS_SG2)			i = 16;	// 拳聖
+	else if(sd->status.class_ == PC_CLASS_SL)			i = 11;	// ソウルリンカー
+	else if(sd->status.class_ == PC_CLASS_MB)			i = 10;	// キョンシー
+	else if(sd->status.class_ == PC_CLASS_DK)			i = 11;	// デスナイト
+	else if(sd->status.class_ == PC_CLASS_DA)			i = 11;	// ダークコレクター
+	else if(sd->status.class_ <= PC_CLASS_GC)			i = 18;	// 3-1次職
+	else if(sd->status.class_ <= PC_CLASS_GC_H)			i = 19;	// 転生3-1次職
+	else if(sd->status.class_ <= PC_CLASS_SC)			i = 18;	// 3-2次職
+	else if(sd->status.class_ <= PC_CLASS_SC_H)			i = 19;	// 転生3-2次職
+	else if(sd->status.class_ <= PC_CLASS_SC_B)			i = 18;	// 養子3次職
+	else												i = 11;	// それ以外なら2次テーブル
 
 	return exp_table[i][sd->status.job_level-1];
 }
@@ -5044,10 +5519,23 @@ int pc_need_status_point(struct map_session_data *sd,int type)
 		case SP_LUK: val = sd->status.luk;  break;
 	}
 
-	if(val >= battle_config.max_parameter || (pc_isbaby(sd) && val >= battle_config.baby_status_max))
+	if(pc_is3rdclass(sd) && pc_isbaby(sd) && val >= battle_config.third_baby_status_max)
+		return 0;
+	else if(pc_is3rdclass(sd) && val >= battle_config.third_status_max)
+		return 0;
+	else if(!pc_is3rdclass(sd) && val >= battle_config.max_parameter)
+		return 0;
+	else if(pc_isbaby(sd) && val >= battle_config.baby_status_max)
 		return 0;
 
-	return ((val < 0)? -1: (val+9)/10+1);
+	if(val < 0)
+		val = -1;
+	else if(val < 100)
+		val = (val + 9) / 10 + 1;
+	else
+		val = 16 + (val / 5 - 20) * 4;
+
+	return val;
 }
 
 /*==========================================
@@ -5072,31 +5560,37 @@ void pc_statusup(struct map_session_data *sd, unsigned short type)
 	switch(type) {
 		case SP_STR:
 			param = &sd->status.str;
-			max   = battle_config.max_parameter_str;
 			break;
 		case SP_AGI:
 			param = &sd->status.agi;
-			max   = battle_config.max_parameter_agi;
 			break;
 		case SP_VIT:
 			param = &sd->status.vit;
-			max   = battle_config.max_parameter_vit;
 			break;
 		case SP_INT:
 			param = &sd->status.int_;
-			max   = battle_config.max_parameter_int;
 			break;
 		case SP_DEX:
 			param = &sd->status.dex;
-			max   = battle_config.max_parameter_dex;
 			break;
 		case SP_LUK:
 			param = &sd->status.luk;
-			max   = battle_config.max_parameter_luk;
 			break;
+		default:
+			clif_statusupack(sd,type,0,0);
+			return;
 	}
 
-	if(param == NULL || (*param) >= max || (is_baby && (*param) >= battle_config.baby_status_max)) {
+	if(pc_is3rdclass(sd) && pc_isbaby(sd))
+		max = battle_config.third_baby_status_max;
+	else if(pc_is3rdclass(sd))
+		max = battle_config.third_status_max;
+	else if(pc_isbaby(sd))
+		max = battle_config.baby_status_max;
+	else
+		max = battle_config.max_parameter;
+
+	if((*param) >= max) {
 		clif_statusupack(sd,type,0,0);
 		return;
 	}
@@ -5106,15 +5600,6 @@ void pc_statusup(struct map_session_data *sd, unsigned short type)
 	if(need != pc_need_status_point(sd,type)) {
 		clif_updatestatus(sd,type-SP_STR+SP_USTR);
 	}
-
-	// if player have max in all stats, don't give status_point
-	if ((sd->status.str  >= battle_config.max_parameter_str || (is_baby && sd->status.str  >= battle_config.baby_status_max)) &&
-	    (sd->status.agi  >= battle_config.max_parameter_agi || (is_baby && sd->status.agi  >= battle_config.baby_status_max)) &&
-	    (sd->status.vit  >= battle_config.max_parameter_vit || (is_baby && sd->status.vit  >= battle_config.baby_status_max)) &&
-	    (sd->status.int_ >= battle_config.max_parameter_int || (is_baby && sd->status.int_ >= battle_config.baby_status_max)) &&
-	    (sd->status.dex  >= battle_config.max_parameter_dex || (is_baby && sd->status.dex  >= battle_config.baby_status_max)) &&
-	    (sd->status.luk  >= battle_config.max_parameter_luk || (is_baby && sd->status.luk  >= battle_config.baby_status_max)))
-		sd->status.status_point = 0;
 
 	clif_updatestatus(sd,SP_STATUSPOINT);
 	clif_updatestatus(sd,type);
@@ -5218,10 +5703,12 @@ static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 
 	if(skill_point < 9)
 		up_level = 0;
-	else if(sd->status.skill_point >= sd->status.job_level && skill_point < 58 && sd->s_class.job > 6)
+	else if(sd->status.skill_point >= sd->status.job_level && skill_point < 58 && (pc_is2ndclass(sd) || pc_is3rdclass(sd)))
 		up_level = 1;
-	else
+	else if(pc_is2ndclass(sd))
 		up_level = 2;
+	else
+		up_level = 3;
 
 	return (st->class_level <= up_level);
 }
@@ -5315,20 +5802,33 @@ int pc_allskillup(struct map_session_data *sd,int flag)
  * /resetstate
  *------------------------------------------
  */
-#define sumsp(a) ((a)*((a-2)/10+2) - 5*((a-2)/10)*((a-2)/10) - 6*((a-2)/10) -2)
+#define roundsp(a)	((a-96)/5)
+#define sumsp(a)	((a)*((a-2)/10+2) - 5*((a-2)/10)*((a-2)/10) - 6*((a-2)/10) -2)
+#define newsumsp(a)	((roundsp(a)*4+12)*(a-100)-((roundsp(a)-2)*(roundsp(a)-1)*10+(roundsp(a)-1)*20))
 
 void pc_resetstate(struct map_session_data* sd)
 {
 	int add = 0;
+	int param[6];
+	int i;
 
 	nullpo_retv(sd);
 
-	add += sumsp(sd->status.str);
-	add += sumsp(sd->status.agi);
-	add += sumsp(sd->status.vit);
-	add += sumsp(sd->status.int_);
-	add += sumsp(sd->status.dex);
-	add += sumsp(sd->status.luk);
+	param[0] = sd->status.str;
+	param[1] = sd->status.agi;
+	param[2] = sd->status.vit;
+	param[3] = sd->status.int_;
+	param[4] = sd->status.dex;
+	param[5] = sd->status.luk;
+
+	for(i = 0; i < 6; i++) {
+		if(battle_config.new_statusup_calc && param[i] > 100) {
+			add += newsumsp(param[i]);
+			param[i] = 100;
+		}
+		add += sumsp(param[i]);
+	}
+
 	sd->status.status_point += add;
 
 	clif_updatestatus(sd,SP_STATUSPOINT);
@@ -5472,7 +5972,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	}
 
 	// スパノビがHP0になったとき、Exp99.0%以上かLv100状態ならばHPが全回復して金剛状態になる
-	if(sd->s_class.job == 23 && !sd->state.snovice_dead_flag) {
+	if(sd->s_class.job == PC_JOB_SNV && !sd->state.snovice_dead_flag) {
 		int next = pc_nextbaseexp(sd);
 		if( (next > 0 && (atn_bignumber)sd->status.base_exp * 1000 / next >= 990) ||
 		    (next <= 0 && sd->status.base_exp >= battle_config.snovice_maxexp_border) )
@@ -5603,7 +6103,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 
 	pc_setdead(sd);
 
-	if(sd->s_class.job == 0) {
+	if(sd->s_class.job == PC_JOB_NV) {
 		if(battle_config.restart_hp_rate <= 50)		// ノビでレート50以下は半分回復
 			sd->status.hp = sd->status.max_hp / 2;
 		else
@@ -5817,6 +6317,9 @@ int pc_readparam(struct map_session_data *sd,int type)
 		val = sd->status.job_level;
 		break;
 	case SP_CLASS:
+		val = sd->status.class_;
+		break;
+	case SP_JOB:
 		val = sd->s_class.job;
 		break;
 	case SP_UPPER:
@@ -6403,53 +6906,39 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 
 	nullpo_retr(0, sd);
 
-	if(job >= MAX_VALID_PC_CLASS)
+	if(job >= PC_JOB_MAX)
 		return 1;
 
-	// テコン、ガンスリンガー、忍者
-	if(job >= 24)
-		upper = 0;
+	// 転生・養子なしの職業
+	if(job >= PC_JOB_TK && job <= PC_JOB_DA)
+		upper = PC_UPPER_NORMAL;
+
+	// スパノビで転生指定の場合
+	if(job == PC_JOB_SNV && upper == PC_UPPER_HIGH)
+		upper = PC_UPPER_NORMAL;
 
 	// 養子<->転生前の場合JOB1にしない
-	if(sd->s_class.upper != 1 && upper != 1 && sd->s_class.job == job)
+	if(sd->s_class.job == job &&
+	  ((sd->s_class.upper == PC_UPPER_NORMAL && upper == PC_UPPER_BABY) ||
+	  (sd->s_class.upper == PC_UPPER_BABY && upper == PC_UPPER_NORMAL))) {
 		joblv_nochange = 1;
+	}
 
 	if(battle_config.enable_upper_class == 0) {	// confで無効になっていたらupper=0
-		upper = 0;
+		upper = PC_UPPER_NORMAL;
 	}
 
 	if(upper < 0)		// 現在転生かどうかを判断する
 		upper = sd->s_class.upper;
 
-	if(upper == 0) {	// 通常職ならjobそのまんま
-		if(job >= 24 && job <= 27)
-			b_class = job + PC_CLASS_BASE3 - 1;
-		else if(job == 30)
-			b_class = PC_CLASS_DK;
-		else if(job == 31)
-			b_class = PC_CLASS_DC;
-		else
-			b_class = job;
-	} else if(upper == 1) {
-		if(job >= PC_CLASS_SNV) {	// 転生にスパノビ以降は存在しないのでお断り
-			return 1;
-		} else {
-			b_class = job + PC_CLASS_BASE2;
-		}
-	} else if(upper == 2) {		// 養子に結婚はないけどどうせ次で蹴られるからいいや
-		b_class = (job >= 23)? (job + PC_CLASS_BASE3 - 1): (job + PC_CLASS_BASE3);
-	} else {
-		return 1;
-	}
+	b_class = pc_calc_class_job(job, upper);
 
-	if((sd->sex == 0 && job == 19) || (sd->sex == 1 && job == 20) ||
-	   job == 13 || job == 21 || job == 22 || job == 26 ||
-	   sd->status.class_ == b_class)	// ♀はバードになれない、♂はダンサーになれない、結婚衣裳もお断り
+	if((sd->sex == 0 && job == PC_JOB_BA) || (sd->sex == 1 && job == PC_JOB_DC) ||
+	   (sd->sex == 0 && job == PC_JOB_MI) || (sd->sex == 1 && job == PC_JOB_WA) ||
+	   sd->status.class_ == b_class)	// はバードになれない、♂はダンサーになれない
 		return 1;
 
 	sd->status.class_ = sd->view_class = b_class;
-	if(sd->status.class_ == PC_CLASS_GS || sd->status.class_ == PC_CLASS_NJ)
-		sd->view_class = sd->status.class_ - 4;
 
 	// 元職業を再設定
 	sd->s_class = pc_calc_base_job(sd->status.class_);
@@ -7168,7 +7657,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	// 二刀流処理
 	if( pos == LOC_RLARM && 	// 一応、装備要求箇所が二刀流武器かチェックする
 	    id->equip == LOC_RARM &&	// 単手武器
-	    (pc_checkskill(sd, AS_LEFT) > 0 || sd->s_class.job == 12) ) // 左手修錬有
+	    (pc_checkskill(sd, AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC) ) // 左手修錬有
 	{
 		int tpos = 0;
 		if(sd->equip_index[8] >= 0)
@@ -7756,7 +8245,7 @@ int pc_check_adopt_condition(struct map_session_data *dstsd, struct map_session_
 		return 0;
 
 	// 養子チェック
-	if(dstsd->s_class.upper != 0 || dstsd->s_class.job == 22 || dstsd->s_class.job >= 24)
+	if(dstsd->s_class.upper != 0 || dstsd->s_class.job >= PC_JOB_TK || dstsd->s_class.job <= PC_JOB_DA)
 		return 0;
 	// パーティー同じマップに３人
 	if(party_check_same_map_member_count(dstsd) != 2)
@@ -8230,7 +8719,7 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 	bsp = sd->status.sp;
 
 	inc_num = pc_spheal(sd);
-	if(sd->s_class.job == 23 || sd->sc.data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc.data[SC_MONK].timer != -1)
+	if(sd->s_class.job == PC_JOB_SNV || sd->sc.data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc.data[SC_MONK].timer != -1)
 		sd->regen.sp += inc_num;
 	if(sd->ud.walktimer == -1)
 		sd->regen.sptick += natural_heal_diff_tick;
@@ -8783,12 +9272,12 @@ int pc_readdb(void)
 	}
 	i = 0;
 	while(fgets(line,1020,fp)) {
-		int bn,b1,b2,b3,b4,b5,b6,jn,j1,j2,j3,j4,j5,j6,j7,j8;
+		int bn,b1,b2,b3,b4,b5,b6,b7,b8,jn,j1,j2,j3,j4,j5,j6,j7,j8,j9,j10;
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		if(sscanf(line,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",&bn,&b1,&b2,&b3,&b4,&b5,&b6,&jn,&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8) != 16)
+		if(sscanf(line,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",&bn,&b1,&b2,&b3,&b4,&b5,&b6,&b7,&b8,&jn,&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8,&j9,&j10) != 20)
 			continue;
 		exp_table[0][i]  = bn;
 		exp_table[1][i]  = b1;
@@ -8797,15 +9286,19 @@ int pc_readdb(void)
 		exp_table[4][i]  = b4;
 		exp_table[5][i]  = b5;
 		exp_table[6][i]  = b6;
-		exp_table[7][i]  = jn;
-		exp_table[8][i]  = j1;
-		exp_table[9][i]  = j2;
-		exp_table[10][i] = j3;
-		exp_table[11][i] = j4;
-		exp_table[12][i] = j5;
-		exp_table[13][i] = j6;
-		exp_table[14][i] = j7;
-		exp_table[15][i] = j8;
+		exp_table[7][i]  = b7;
+		exp_table[8][i]  = b8;
+		exp_table[9][i]  = jn;
+		exp_table[10][i] = j1;
+		exp_table[11][i] = j2;
+		exp_table[12][i] = j3;
+		exp_table[13][i] = j4;
+		exp_table[14][i] = j5;
+		exp_table[15][i] = j6;
+		exp_table[16][i] = j7;
+		exp_table[17][i] = j8;
+		exp_table[18][i] = j9;
+		exp_table[19][i] = j10;
 		i++;
 		if(i >= MAX_LEVEL)
 			break;
@@ -8843,7 +9336,7 @@ int pc_readdb(void)
 			continue;
 
 		i = atoi(split[1]);
-		if(i < 0 || i >= MAX_PC_CLASS)
+		if(i < 0 || i >= PC_JOB_MAX)
 			continue;
 
 		skillid = atoi(split[2]);
@@ -8885,7 +9378,7 @@ int pc_readdb(void)
 
 	if(battle_config.baby_copy_skilltree) {
 		// 養子のスキルツリーを通常職と同一にする場合
-		memcpy(&skill_tree[2], &skill_tree[0], sizeof(skill_tree[0]));
+		memcpy(&skill_tree[PC_UPPER_BABY], &skill_tree[PC_UPPER_NORMAL], sizeof(skill_tree[PC_UPPER_NORMAL]));
 	}
 	printf("read db/skill_tree.txt done\n");
 
@@ -9278,7 +9771,7 @@ int do_final_pc(void)
  */
 int do_init_pc(void)
 {
-	printf("MAX_VALID_PC_CLASS:%d\n",MAX_VALID_PC_CLASS);
+	printf("PC_JOB_MAX:%d\n",PC_JOB_MAX);
 
 	pc_readdb();
 	pc_read_motd();

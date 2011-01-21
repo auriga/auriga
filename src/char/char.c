@@ -2266,10 +2266,7 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 		WFIFOW(fd,offset+(i*len)+ 46 + j) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
 		WFIFOW(fd,offset+(i*len)+ 48 + j) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
 		WFIFOW(fd,offset+(i*len)+ 50 + j) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
-		if(st->class_ == PC_CLASS_GS || st->class_ == PC_CLASS_NJ)
-			WFIFOW(fd,offset+(i*len)+ 52 + j) = st->class_-4;
-		else
-			WFIFOW(fd,offset+(i*len)+ 52 + j) = st->class_;
+		WFIFOW(fd,offset+(i*len)+ 52 + j) = st->class_;
 		WFIFOW(fd,offset+(i*len)+ 54 + j) = st->hair;
 		WFIFOW(fd,offset+(i*len)+ 56 + j) = st->weapon;
 		WFIFOW(fd,offset+(i*len)+ 58 + j) = st->base_level;
@@ -2380,11 +2377,17 @@ static int char_break_adoption(const struct mmo_charstatus *st)
 		struct mmo_charstatus s1;
 		memcpy(&s1,st,sizeof(struct mmo_charstatus));
 		// 養子であれば元の職に戻す
-		if(s1.class_ >= PC_CLASS_NV3 && s1.class_ <= PC_CLASS_SNV3) {
-			if(s1.class_ == PC_CLASS_SNV3)
+		if(s1.class_ >= PC_CLASS_NV_B && s1.class_ <= PC_CLASS_SNV_B) {
+			if(s1.class_ == PC_CLASS_SNV_B)
 				s1.class_ = PC_CLASS_SNV;
 			else
-				s1.class_ -= PC_CLASS_BASE3;
+				s1.class_ -= PC_CLASS_NV_B;
+		}
+		else if(s1.class_ >= PC_CLASS_RK_B && s1.class_ <= PC_CLASS_LG_B) {
+			s1.class_ -= PC_CLASS_RK_B;
+		}
+		else if(s1.class_ >= PC_CLASS_LG_B && s1.class_ <= PC_CLASS_SC_B) {
+			s1.class_ -= PC_CLASS_LG_B;
 		}
 		s1.baby_id = 0;
 		s1.parent_id[0] = 0;
@@ -2740,12 +2743,12 @@ int parse_tologin(int fd)
 					int flag = 0;
 					memcpy(&st,&csd.found_char[i]->st,sizeof(struct mmo_charstatus));
 					// 雷鳥は職も変更
-					if(st.class_ == 19 || st.class_ == 20){
-						flag = 1; st.class_ = (sex ? 19 : 20);
-					} else if(st.class_ == 19 + PC_CLASS_BASE2 || st.class_ == 20 + PC_CLASS_BASE2) {
-						flag = 1; st.class_ = (sex ? 19 : 20) + PC_CLASS_BASE2;
-					} else if(st.class_ == 19 + PC_CLASS_BASE3 || st.class_ == 20 + PC_CLASS_BASE3) {
-						flag = 1; st.class_ = (sex ? 19 : 20) + PC_CLASS_BASE3;
+					if(st.class_ == PC_CLASS_BA || st.class_ == PC_CLASS_DC) {
+						flag = 1; st.class_ = (sex ? PC_CLASS_BA : PC_CLASS_DC);
+					} else if(st.class_ == PC_CLASS_BA_H || st.class_ == PC_CLASS_DC_H) {
+						flag = 1; st.class_ = (sex ? PC_CLASS_BA_H : PC_CLASS_DC_H);
+					} else if(st.class_ == PC_CLASS_BA_B || st.class_ == PC_CLASS_DC_B) {
+						flag = 1; st.class_ = (sex ? PC_CLASS_BA_B : PC_CLASS_DC_B);
 					}
 					if(flag) {
 						// 雷鳥装備外し

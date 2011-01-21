@@ -10,7 +10,7 @@
 //------------------------------------------
 
 payon.gat,157,141,5	script	鳳凰	753,{
-	if(Class == Job_TaeKwon) {
+	if(Job == Job_Taekwon) {
 		mes "[鳳凰]";
 		mes "修練を怠っていないか？";
 		mes "常に精進し、更なる上を";
@@ -18,7 +18,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 		mes "忘れぬようにな。";
 		close;
 	}
-	if(Class == Job_Novice && Upper == 0 && CHANGE_TK == 3) {
+	if(Job == Job_Novice && Upper == UPPER_NORMAL && CHANGE_TK == 3) {
 		mes "[鳳凰]";
 		mes "心の準備はできたか？";
 		mes "それでは最後の質問だ。";
@@ -74,7 +74,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 		mes "修練を続けることに意義はある。";
 		next;
 		unequip;
-		jobchange 24;
+		jobchange Job_Taekwon;
 		set CHANGE_TK,0;
 		mes "[鳳凰]";
 		mes "お前……ふむ、そうだな……";
@@ -107,7 +107,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 		mes "それは忘れずにな。";
 		close;
 	}
-	if(Class == Job_Novice && Upper == 0 && CHANGE_TK == 2) {
+	if(Job == Job_Novice && Upper == UPPER_NORMAL && CHANGE_TK == 2) {
 		mes "[鳳凰]";
 		mes "よし、準備ができたようだな。";
 		mes "では、講義に入ろう。";
@@ -397,7 +397,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 			close;
 		}
 	}
-	if(Class == Job_Novice && Upper == 0 && CHANGE_TK == 1) {
+	if(Job == Job_Novice && Upper == UPPER_NORMAL && CHANGE_TK == 1) {
 		if(BaseLevel > CHANGE_TK_LV) {
 			mes "[鳳凰]";
 			mes "うん？";
@@ -487,7 +487,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 	mes "世に広めることを決心した。";
 	mes "恐らく、それこそが、";
 	mes "俺にできる最善の事である。";
-	if(Class != Job_Novice || Upper != 0)
+	if(Job != Job_Novice || Upper != UPPER_NORMAL)
 		close;
 	next;
 	mes "[鳳凰]";

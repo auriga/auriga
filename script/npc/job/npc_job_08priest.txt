@@ -10,7 +10,7 @@
 //------------------------------------------
 
 prt_church.gat,16,41,4	script	司教	60,{
-	if(Upper == 1) {
+	if(Upper == UPPER_HIGH) {
 		mes "[トーマス司教]";
 		mes "生まれ変わり、新たな人生を";
 		mes "歩む方ですね？";
@@ -24,7 +24,7 @@ prt_church.gat,16,41,4	script	司教	60,{
 		mes "貴方に神のご加護あらんことを……";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[トーマス司教]";
 		mes "あなたに神のご加護があらんことを…";
 		mes "こちらはプロンテラ大聖堂です。";
@@ -57,7 +57,7 @@ prt_church.gat,16,41,4	script	司教	60,{
 		mes "あなたに神のご加護があらんことを。";
 		close;
 	}
-	if(Class == Job_Priest) {
+	if(Job == Job_Priest) {
 		mes "[トーマス司教]";
 		mes "信仰厚き兄弟に";
 		mes "神のご加護あらんことを…";
@@ -154,7 +154,7 @@ prt_church.gat,16,41,4	script	司教	60,{
 			close;
 		}
 	}
-	if(Class != Job_Acolyte) {
+	if(Job != Job_Acolyte) {
 		mes "[トーマス司教]";
 		mes "あなたに神のご加護があらんことを。";
 		mes "こちらはプロンテラ大聖堂です。";
@@ -570,7 +570,7 @@ prt_church.gat,16,41,4	script	司教	60,{
 		mes "今ここに生まれる…";
 		next;
 		unequip;
-		jobchange 8;
+		jobchange Job_Priest;
 		set CHANGE_PR,0;
 		mes "[トーマス司教]";
 		mes "これであなたも一人のプリースト";
@@ -638,7 +638,7 @@ job_prist.gat,24,187,4	script	タフな神父::PR_Timer	110,{
 		mes "終わっていたら送ってあげるから。";
 		close;
 	}
-	if(Class != Job_Acolyte) {
+	if(Job != Job_Acolyte) {
 		mes "[ピーター神父]";
 		mes "君に神のご加護あらんことを。";
 		next;
@@ -833,7 +833,7 @@ OnTimer350000:
 
 //==============================================================
 job_prist.gat,24,109,4	script	#PR_Warp1	45,2,2,{
-	if(Class != Job_Acolyte || getvariableofnpc('count,"PR_Summon") >= 13)
+	if(Job != Job_Acolyte || getvariableofnpc('count,"PR_Summon") >= 13)
 		warp "job_prist.gat",168,17;
 	end;
 }
@@ -844,7 +844,7 @@ job_prist.gat,168,180,4	script	#PR_Warp2	45,2,2,{
 }
 
 job_prist.gat,98,105,0	script	#PR_Warp3	45,2,2,{
-	if(Class == Job_Acolyte) {
+	if(Job == Job_Acolyte) {
 		if(@priest_check < 8)	//念のためチェックする
 			end;
 		set CHANGE_PR,7;
@@ -861,7 +861,7 @@ job_prist.gat,98,105,0	script	#PR_Warp3	45,2,2,{
 job_prist.gat,168,45,4	script	デビルチ	1109,5,0,{
 	end;
 OnTouch:
-	if(Class != Job_Acolyte) {
+	if(Job != Job_Acolyte) {
 		mes "[デビルチ]";
 		mes "ふん…プリーストがこんなところに";
 		mes "なぜ来た？街で祈祷でもしている";
@@ -957,7 +957,7 @@ OnTouch:
 job_prist.gat,168,75,4	script	ドッペルゲンガー	1046,5,0,{
 	end;
 OnTouch:
-	if(Class != Job_Acolyte) {
+	if(Job != Job_Acolyte) {
 		mes "[ドッペルゲンガー]";
 		mes "愚かな人間よ…我は貴様に用はない。";
 		mes "面倒ではないか？己の試練でここに";
@@ -1025,7 +1025,7 @@ OnTouch:
 job_prist.gat,168,115,4	script	ダークロード	1272,5,0,{
 	end;
 OnTouch:
-	if(Class != Job_Acolyte) {
+	if(Job != Job_Acolyte) {
 		mes "[ダークロード]";
 		mes "感じよ！苦痛と絶望を！";
 		mes "一番大切な者から裏切られる";
@@ -1084,7 +1084,7 @@ OnTouch:
 job_prist.gat,168,150,4	script	バフォメット	736,5,0,{
 	end;
 OnTouch:
-	if(Class != Job_Acolyte) {
+	if(Job != Job_Acolyte) {
 		mes "[バフォメット]";
 		mes "人間か…そしてプリースト…";
 		next;
@@ -1188,7 +1188,7 @@ OnKilled:
 //==============================================================
 job_prist.gat,24,51,0	script	PR_Test#0	139,16,0,{
 	set '@num,strnpcinfo(2);
-	if(Class == Job_Acolyte && @priest_check == '@num) {
+	if(Job == Job_Acolyte && @priest_check == '@num) {
 		donpcevent "PR_Summon::OnEvent"+'@num;
 		set @priest_check,'@num+1;
 	}
@@ -1209,13 +1209,13 @@ job_prist.gat,98,84,0	duplicate(PR_Test#0)	PR_Test#7	139,8,0
 //------------------------------------------
 
 prt_church.gat,27,24,4	script	修道女	79,{
-	if(Upper == 1) {
+	if(Upper == UPPER_HIGH) {
 		mes "[セシル修道女]";
 		mes "あなたは転生されていますので";
 		mes "ここでは転職案内できません。";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[セシル修道女]";
 		mes "あなたに神のご加護がありますように…";
 		mes "プロンテラ大聖堂はあなたを歓迎します。";
@@ -1244,13 +1244,13 @@ prt_church.gat,27,24,4	script	修道女	79,{
 		mes "あなたに神のご加護がありますように…";
 		close;
 	}
-	if(Class == Job_Priest) {
+	if(Job == Job_Priest) {
 		mes "[セシル修道女]";
 		mes "あなたに神のご加護がありますように…";
 		mes "今日も良い一日になってほしいですね。";
 		close;
 	}
-	if(Class != Job_Acolyte) {
+	if(Job != Job_Acolyte) {
 		mes "[セシル修道女]";
 		mes "こちらはプロンテラ大聖堂です。";
 		mes "どのような用でお訪ねになりましたか？";

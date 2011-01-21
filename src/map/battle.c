@@ -3207,7 +3207,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 38．太陽と月と星の奇跡 */
-	if(src_sd && wd.flag&BF_WEAPON && src_sd->s_class.job == 25 && skill_num != NPC_EARTHQUAKE && atn_rand()%10000 < battle_config.sg_miracle_rate)
+	if(src_sd && wd.flag&BF_WEAPON && src_sd->s_class.job == PC_JOB_SG && skill_num != NPC_EARTHQUAKE && atn_rand()%10000 < battle_config.sg_miracle_rate)
 		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
 
 	/* 39．計算結果の最終補正 */
@@ -5095,9 +5095,9 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 			// battle_config.no_pk_level以下　1次は味方　転生は駄目
 			if(ssd->sc.data[SC_PK_PENALTY].timer != -1)
 				return 1;
-			if(ssd->status.base_level <= battle_config.no_pk_level && (ssd->s_class.job <= 6 || ssd->s_class.job == 24) && ssd->s_class.upper != 1)
+			if(ssd->status.base_level <= battle_config.no_pk_level && (ssd->s_class.job <= PC_JOB_MC || ssd->s_class.job == PC_JOB_TK) && ssd->s_class.upper != 1)
 				return 1;
-			if(tsd->status.base_level <= battle_config.no_pk_level && (tsd->s_class.job <= 6 || tsd->s_class.job == 24) && tsd->s_class.upper != 1)
+			if(tsd->status.base_level <= battle_config.no_pk_level && (tsd->s_class.job <= PC_JOB_MC || tsd->s_class.job == PC_JOB_TK) && tsd->s_class.upper != 1)
 				return 1;
 			if(su && su->group && su->group->target_flag == BCT_NOENEMY)
 				return 1;
@@ -5811,6 +5811,10 @@ int battle_config_read(const char *cfgName)
 		{ "refinery_research_lv",               &battle_config.refinery_research_lv,               0        },
 		{ "maprespawnguildid_all_players",      &battle_config.maprespawnguildid_all_players,      0        },
 		{ "party_booking_lv",                   &battle_config.party_booking_lv,                   15       },
+		{ "new_statusup_calc",                  &battle_config.new_statusup_calc,                  1        },
+		{ "third_status_max",                   &battle_config.third_status_max,                   120      },
+		{ "third_baby_status_max",              &battle_config.third_baby_status_max,              108      },
+		{ "third_max_aspd",                     &battle_config.third_max_aspd,                     140      },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

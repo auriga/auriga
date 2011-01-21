@@ -9,7 +9,7 @@
 //------------------------------------------------------------
 yuno_in02.gat,38,61,5	script	魔法アカデミー学長	743,{
 	cutin "job_sage_kayron",2;
-	if(Upper == 1) {
+	if(Upper == UPPER_HIGH) {
 		mes "[ケイロン=グリック]";
 		mes "ふむ……";
 		mes "長く人を見てきたが、あなたは";
@@ -24,7 +24,7 @@ yuno_in02.gat,38,61,5	script	魔法アカデミー学長	743,{
 		cutin "job_sage_kayron",255;
 		end;
 	}
-	if(Class == Job_Sage) {
+	if(Job == Job_Sage) {
 		mes "[ケイロン=グリック]";
 		mes "ふむ、何の用かね？";
 		mes "セージになったからといって";
@@ -39,7 +39,7 @@ yuno_in02.gat,38,61,5	script	魔法アカデミー学長	743,{
 		cutin "job_sage_kayron",255;
 		end;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[ケイロン=グリック]";
 		mes "ん？ここへは何の用で来たのかな？";
 		mes "ここまで来るのは大変だったろうに";
@@ -55,7 +55,7 @@ yuno_in02.gat,38,61,5	script	魔法アカデミー学長	743,{
 		cutin "job_sage_kayron",255;
 		end;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[ケイロン=グリック]";
 		mes "ふむう……私達はこの世界について";
 		mes "日々研究をしているが、足りないものが";
@@ -226,7 +226,7 @@ yuno_in02.gat,38,61,5	script	魔法アカデミー学長	743,{
 // 試験申請
 //------------------------------------------------------------
 yuno_in03.gat,154,35,4	script	アカデミー関係者	742,{
-	if(Class == Job_Sage) {
+	if(Job == Job_Sage) {
 		mes "[メテウス=シルプ]";
 		mes "いらっしゃいませ。";
 		mes "ひさしぶりですね。";
@@ -246,7 +246,7 @@ yuno_in03.gat,154,35,4	script	アカデミー関係者	742,{
 		mes "よろしくお伝えください。";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[メテウス=シルプ]";
 		mes "ようこそ。";
 		mes "こちらは";
@@ -271,7 +271,7 @@ yuno_in03.gat,154,35,4	script	アカデミー関係者	742,{
 		mes "それでは、良い一日を。";
 		close;
 	}
-	if(Class != Job_Magician || Upper == 1) {
+	if(Job != Job_Magician || Upper == UPPER_HIGH) {
 		mes "[メテウス=シルプ]";
 		mes "ようこそ。";
 		mes "こちらは";
@@ -758,7 +758,7 @@ yuno_in03.gat,154,35,4	script	アカデミー関係者	742,{
 // 一次試験（筆記）
 //------------------------------------------
 yuno_in03.gat,105,177,5	script	筆記試験教授	754,{
-	if(Class == Job_Sage) {
+	if(Job == Job_Sage) {
 		mes "[クレイトス=ベルモ]";
 		mes "うん？卒業した者が何の用かな？";
 		mes "またまた入学をご希望かね？";
@@ -778,7 +778,7 @@ yuno_in03.gat,105,177,5	script	筆記試験教授	754,{
 		mes "あげるように。";
 		close;
 	}
-	if(Class == Job_Wizard) {
+	if(Job == Job_Wizard) {
 		mes "[クレイトス=ベルモ]";
 		mes "ん……すっかり魔力に";
 		mes "魅入ってしまった者だな。";
@@ -791,7 +791,7 @@ yuno_in03.gat,105,177,5	script	筆記試験教授	754,{
 		mes "真価を発揮するのだ。";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[クレイトス=ベルモ]";
 		mes "何の用かね？";
 		mes "ここは遊び場ではない。";
@@ -801,7 +801,7 @@ yuno_in03.gat,105,177,5	script	筆記試験教授	754,{
 		mes "ほら、出ていきなさい。";
 		close;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[クレイトス=ベルモ]";
 		mes "ん……入学を希望しても、";
 		mes "君の今の職業からセージになることは";
@@ -1324,7 +1324,7 @@ yuno_in03.gat,105,177,5	script	筆記試験教授	754,{
 // 二次試験（実技）
 //------------------------------------------
 yuno_in03.gat,169,180,3	script	実技試験教授	755,{
-	if(Class == Job_Sage) {
+	if(Job == Job_Sage) {
 		mes "[ヘルメス=トリス]";
 		mes "やぁ、元気かい？";
 		mes "顔を見たところ、それなりに";
@@ -1342,7 +1342,7 @@ yuno_in03.gat,169,180,3	script	実技試験教授	755,{
 		mes "いい。";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[ヘルメス=トリス]";
 		mes "はは、かわいいノービス";
 		mes "じゃないか。";
@@ -1364,7 +1364,7 @@ yuno_in03.gat,169,180,3	script	実技試験教授	755,{
 		mes "それでは気をつけて帰ってくれ。";
 		close;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[ヘルメス=トリス]";
 		mes "ここは";
 		mes "シュバイチェル魔法アカデミーだ。";
@@ -1762,7 +1762,7 @@ OnTouch:
 // 三次試験（イグドラシル研究）
 //------------------------------------------
 yuno_in03.gat,62,176,2	script	史学教授	109,{
-	if(Class == Job_Sage) {
+	if(Job == Job_Sage) {
 		mes "[シピエン=ライルリース]";
 		mes "誰かな……？";
 		mes "ああ、私が教えた学生ですね。";
@@ -1780,7 +1780,7 @@ yuno_in03.gat,62,176,2	script	史学教授	109,{
 		mes "来るでしょう。";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[シピエン=ライルリース]";
 		mes "ノービスさんが何の用かな？";
 		next;
@@ -1794,7 +1794,7 @@ yuno_in03.gat,62,176,2	script	史学教授	109,{
 		mes "間違った道を進まないように。";
 		close;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[シピエン=ライルリース]";
 		mes "はい、私は史学を教えています。";
 		next;
@@ -2167,7 +2167,7 @@ yuno_in03.gat,62,176,2	script	史学教授	109,{
 // 三次試験（モンスター研究）
 //------------------------------------------
 yuno_in03.gat,32,102,1	script	生物学教授	755,{
-	if(Class == Job_Sage) {
+	if(Job == Job_Sage) {
 		mes "[ルシウス=ケルソス]";
 		mes "何か、不明な点でもあるのかね？";
 		mes "質問があったら一週間前に";
@@ -2185,7 +2185,7 @@ yuno_in03.gat,32,102,1	script	生物学教授	755,{
 		mes "何か勉強になることがあるぞ。";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[ルシウス=ケルソス]";
 		mes "なんだ？";
 		next;
@@ -2194,7 +2194,7 @@ yuno_in03.gat,32,102,1	script	生物学教授	755,{
 		mes "友達と外で遊んできなさい。";
 		close;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[ルシウス=ケルソス]";
 		mes "ん？モンスター見物でも";
 		mes "しに来たのかな？";
@@ -2606,7 +2606,7 @@ yuno_in03.gat,32,102,1	script	生物学教授	755,{
 // 三次試験（魔法研究）
 //------------------------------------------
 yuno_in03.gat,244,31,3	script	物理学教授	120,{
-	if(Class == Job_Sage) {
+	if(Job == Job_Sage) {
 		mes "[エベシ=ジョルダ]";
 		mes "ヒョホホ、こんにちは。";
 		mes "何の用かな？";
@@ -2626,7 +2626,7 @@ yuno_in03.gat,244,31,3	script	物理学教授	120,{
 		mes "ほらほら外に出ようよ、ヒョホホ……";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[エベシ=ジョルダ]";
 		mes "ナニナニ、かわいいノービスくん";
 		mes "じゃないの〜";
@@ -2642,7 +2642,7 @@ yuno_in03.gat,244,31,3	script	物理学教授	120,{
 		mes "ヒョホホ……";
 		close;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[エベシ=ジョルダ]";
 		mes "ん？ん？ナニナニ？";
 		next;

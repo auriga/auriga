@@ -1,176 +1,525 @@
 //-----------------------------------------------------------------------------
-// 転職カプラ
-// 追加職対応修正版
-// 追加職に対応していなくても大丈夫なはず	by ＡＡＡ
+// 転職カプラ	<3次職対応版>
 //-----------------------------------------------------------------------------
 prontera.gat,161,192,5	script	転職カプラ	114,{
-	function Check_Condition;
 	cutin "kafra_04",2;
 	mes "[転職カプラ]";
 	mes "いらっしゃいませ。";
 	mes "こちらでは、転職する事が出来ます。";
-	mes "転職しますか?";
+	mes "転職をご希望ですか？";
 	next;
-	set '@job,-1;
-	switch(select("1次職への転職希望","拡張1次職への転職希望","2-1次職への転職希望","2-2次職への転職希望","やめる")) {
-	case 1:
-	case 2:
-		if(Class != Job_Novice) {
-			mes "[転職カプラ]";
-			mes "あなたはそのジョブに転職出来ません。";
-			close2;
-			cutin "kafra_04",255;
-			end;
-		}
-		if(getskilllv(1) < 9) {
-			mes "[転職カプラ]";
-			mes "基本スキルを9にしてきてください。";
-			close2;
-			cutin "kafra_04",255;
-			end;
-		}
-		if(SkillPoint) {
-			mes "[転職カプラ]";
-			mes "スキルポイントを全て使い切らないと";
-			mes "転職出来ません。";
-			close2;
-			cutin "kafra_04",255;
-			end;
-		}
+	if(select("はい","いいえ") == 2) {
 		mes "[転職カプラ]";
-		mes "どの職業に転職しますか?";
-		next;
-		if(@menu == 1) {
-			switch(select("剣士","マジシャン","アーチャー","アコライト","商人","シーフ","テコン少年/少女","やめる")) {
-				case 1: set '@job,Job_Swordman;   break;
-				case 2: set '@job,Job_Magician;   break;
-				case 3: set '@job,Job_Archer;     break;
-				case 4: set '@job,Job_Acolyte;    break;
-				case 5: set '@job,Job_Merchant;   break;
-				case 6: set '@job,Job_Thief;      break;
-				case 7: set '@job,Job_TaekwonBoy; break;
-				case 8: break;
-			}
-		}
-		else {
-			switch(select("スーパーノービス","ガンスリンガー","忍者","デスナイト","ダークコレクター","やめる")) {
-				case 1: set '@job,Job_SuperNovice;   break;
-				case 2: set '@job,Job_Gunslinger;    break;
-				case 3: set '@job,Job_Ninja;         break;
-				case 4: set '@job,Job_DeathKnight;   break;
-				case 5: set '@job,Job_DarkCollector; break;
-				case 6: break;
-			}
-		}
-		break;
-	case 3:
-	case 4:
-		if(JobLevel < 40) {
-			mes "[転職カプラ]";
-			mes "ジョブレベルが40以下だと転職出来ません。";
-			close2;
-			cutin "kafra_04",255;
-			end;
-		}
+		mes "またご利用ください。";
+		close2;
+		cutin "kafra_04",255;
+		end;
+	}
+	if(getskilllv(1) < 9) {
 		mes "[転職カプラ]";
-		mes "どの職業に転職しますか?";
-		next;
-		if(@menu == 3) {
-			switch(select("ナイト","プリースト","ウィザード","鍛冶屋","ハンター","アサシン","拳聖","やめる")) {
-				case 1: set '@job,Job_Knight;        break;
-				case 2: set '@job,Job_Priest;        break;
-				case 3: set '@job,Job_Wizard;        break;
-				case 4: set '@job,Job_BlackSmith;    break;
-				case 5: set '@job,Job_Hunter;        break;
-				case 6: set '@job,Job_Assassin;      break;
-				case 7: set '@job,Job_StarGladiator; break;
-				case 8: break;
-			}
-		}
-		else {
-			switch(select("クルセイダー","モンク","セージ","ローグ","アルケミスト","バード/ダンサー","ソウルリンカー","やめる")) {
-				case 1: set '@job,Job_Crusader;                break;
-				case 2: set '@job,Job_Monk;                    break;
-				case 3: set '@job,Job_Sage;                    break;
-				case 4: set '@job,Job_Rogue;                   break;
-				case 5: set '@job,Job_Alchemist;               break;
-				case 6: set '@job,(Sex? Job_Bard: Job_Dancer); break;
-				case 7: set '@job,Job_SoulLinker;              break;
-				case 8: break;
-			}
-		}
-		break;
-	case 5:
-		break;
+		mes "基本スキルが足りません。";
+		mes "基本スキルレベルを上げてから";
+		mes "またお越しください。";
+		close2;
+		cutin "kafra_04",255;
+		end;
 	}
-	// 判定および転職処理
-	if('@job < 0) {
+	if(SkillPoint) {
 		mes "[転職カプラ]";
-		mes "またのご利用を、お待ちしております。";
+		mes "スキルポイントが残っています。";
+		mes "全て消費してきてから";
+		mes "またお越しください。";
+		close2;
+		cutin "kafra_04",255;
+		end;
 	}
-	else {
-		set '@ret,Check_Condition('@job);
-		if('@ret == 0) {
-			mes "[転職カプラ]";
-			mes "あなたはそのジョブに転職出来ません。";
-		}
-		else if('@ret == 1) {
-			jobchange '@job;
+	// 職業IDセット
+	set '@job_id,0;
+	switch(Job) {
+		case Job_Novice:
+			setarray '@job_id,Job_Swordman,Job_Magician,Job_Archer,Job_Acolyte,Job_Merchant,Job_Thief;
+			if(Upper != UPPER_HIGH) {
+				set '@job_id[getarraysize('@job_id)],Job_SuperNovice;
+			}
+			if(Upper == UPPER_NORMAL) {
+				setarray '@job_id[getarraysize('@job_id)],Job_Taekwon,Job_Gunslinger,Job_Ninja,Job_Gyangsy;
+			}
+			break;
+		case Job_Swordman:
+			if(Upper == UPPER_HIGH) {
+				set '@job_id,OLD_CLASS;
+			}
+			else {
+				setarray '@job_id,Job_Knight,Job_Crusader;
+			}
+			break;
+		case Job_Magician:
+			if(Upper == UPPER_HIGH) {
+				set '@job_id,OLD_CLASS;
+			}
+			setarray '@job_id,Job_Wizard,Job_Sage;
+			break;
+		case Job_Archer:
+			if(Upper == UPPER_HIGH) {
+				set '@job_id,OLD_CLASS;
+			}
+			else if(Sex) {
+				setarray '@job_id,Job_Hunter,Job_Bard;
+			}
+			else {
+				setarray '@job_id,Job_Hunter,Job_Dancer;
+			}
+			break;
+		case Job_Acolyte:
+			if(Upper == UPPER_HIGH) {
+				set '@job_id,OLD_CLASS;
+			}
+			setarray '@job_id,Job_Priest,Job_Monk;
+			break;
+		case Job_Merchant:
+			if(Upper == UPPER_HIGH) {
+				set '@job_id,OLD_CLASS;
+			}
+			setarray '@job_id,Job_Blacksmith,Job_Alchemist;
+			break;
+		case Job_Thief:
+			if(Upper == UPPER_HIGH) {
+				set '@job_id,OLD_CLASS;
+			}
+			setarray '@job_id,Job_Assassin,Job_Rogue;
+			break;
+		case Job_Taekwon:
+			setarray '@job_id,Job_Star,Job_Linker;
+			break;
+		case Job_Gyangsy:
+			setarray '@job_id,Job_DeathKnight,Job_DarkCollector;
+			break;
+		case Job_Knight:
+			set '@job_id,Job_RuneKnight;
+			break;
+		case Job_Priest:
+			set '@job_id,Job_ArchBishop;
+			break;
+		case Job_Wizard:
+			set '@job_id,Job_Warlock;
+			break;
+		case Job_Blacksmith:
+			set '@job_id,Job_Mechanic;
+			break;
+		case Job_Hunter:
+			set '@job_id,Job_Ranger;
+			break;
+		case Job_Assassin:
+			set '@job_id,Job_Guillotine;
+			break;
+		case Job_Crusader:
+			set '@job_id,Job_RoyalGuard;
+			break;
+		case Job_Monk:
+			set '@job_id,Job_Shura;
+			break;
+		case Job_Sage:
+			set '@job_id,Job_Sorcerer;
+			break;
+		case Job_Rogue:
+			set '@job_id,Job_ShadowChaser;
+			break;
+		case Job_Alchemist:
+			set '@job_id,Job_Genetic;
+			break;
+		case Job_Bard:
+			set '@job_id,Job_Minstrel;
+			break;
+		case Job_Dancer:
+			set '@job_id,Job_Wanderer;
+			break;
+	}
+	if('@job_id[0] == 0) {
+		mes "[転職カプラ]";
+		mes "残念ながら、あなたに";
+		mes "ご案内できる職業がありません。";
+		mes "またお越しください。";
+		close2;
+		cutin "kafra_04",255;
+		end;
+	}
+	mes "[転職カプラ]";
+	mes "あなたにご案内できる職業は";
+	mes "次の通りです。";
+	mes "どの職業に転職されますか？";
+	next;
+	// 職業名セット
+	set '@job_name$,"";
+	set '@max,getarraysize('@job_id);
+	for(set '@i,0; '@i < '@max; set '@i,'@i + 1) {
+		switch('@job_id['@i]) {
+			case Job_Swordman:
+				set '@job_name$['@i],"ソードマン";
+				break;
+			case Job_Magician:
+				set '@job_name$['@i],"マジシャン";
+				break;
+			case Job_Archer:
+				set '@job_name$['@i],"アーチャー";
+				break;
+			case Job_Acolyte:
+				set '@job_name$['@i],"アコライト";
+				break;
+			case Job_Merchant:
+				set '@job_name$['@i],"マーチャント";
+				break;
+			case Job_Thief:
+				set '@job_name$['@i],"シーフ";
+				break;
+			case Job_Knight:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"ロードナイト";
+				}
+				else {
+					set '@job_name$['@i],"ナイト";
+				}
+				break;
+			case Job_Priest:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"ハイプリースト";
+				}
+				else {
+					set '@job_name$['@i],"プリースト";
+				}
+				break;
+			case Job_Wizard:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"ハイウィザード";
+				}
+				else {
+					set '@job_name$['@i],"ウィザード";
+				}
+				break;
+			case Job_Blacksmith:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"ホワイトスミス";
+				}
+				else {
+					set '@job_name$['@i],"ブラックスミス";
+				}
+				break;
+			case Job_Hunter:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"スナイパー";
+				}
+				else {
+					set '@job_name$['@i],"ハンター";
+				}
+				break;
+			case Job_Assassin:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"アサシンクロス";
+				}
+				else {
+					set '@job_name$['@i],"アサシン";
+				}
+				break;
+			case Job_Crusader:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"パラディン";
+				}
+				else {
+					set '@job_name$['@i],"クルセイダー";
+				}
+				break;
+			case Job_Monk:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"チャンピオン";
+				}
+				else {
+					set '@job_name$['@i],"モンク";
+				}
+				break;
+			case Job_Sage:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"プロフェッサー";
+				}
+				else {
+					set '@job_name$['@i],"セージ";
+				}
+				break;
+			case Job_Rogue:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"チェイサー";
+				}
+				else {
+					set '@job_name$['@i],"ローグ";
+				}
+				break;
+			case Job_Alchemist:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"クリエイター";
+				}
+				else {
+					set '@job_name$['@i],"アルケミスト";
+				}
+				break;
+			case Job_Bard:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"クラウン";
+				}
+				else {
+					set '@job_name$['@i],"バード";
+				}
+				break;
+			case Job_Dancer:
+				if(Upper == UPPER_HIGH) {
+					set '@job_name$['@i],"ジプシー";
+				}
+				else {
+					set '@job_name$['@i],"ダンサー";
+				}
+				break;
+			case Job_SuperNovice:
+				set '@job_name$['@i],"スーパーノービス";
+				break;
+			case Job_Taekwon:
+				set '@job_name$['@i],"テコンキッド";
+				break;
+			case job_Star:
+				set '@job_name$['@i],"拳聖";
+				break;
+			case Job_Linker:
+				set '@job_name$['@i],"ソウルリンカー";
+				break;
+			case Job_Gunslinger:
+				set '@job_name$['@i],"ガンスリンガー";
+				break;
+			case Job_Ninja:
+				set '@job_name$['@i],"忍者";
+				break;
+			case Job_Gyangsy:
+				if(Sex) {
+					set '@job_name$['@i],"ボンゴン";
+				}
+				else {
+					set '@job_name$['@i],"ムナック";
+				}
+				break;
+			case Job_DeathKnight:
+				set '@job_name$['@i],"デスナイト";
+				break;
+			case Job_DarkCollector:
+				set '@job_name$['@i],"ダークコレクター";
+				break;
+			case Job_RuneKnight:
+				set '@job_name$['@i],"ルーンナイト";
+				break;
+			case Job_Warlock:
+				set '@job_name$['@i],"ウォーロック";
+				break;
+			case Job_Ranger:
+				set '@job_name$['@i],"レンジャー";
+				break;
+			case Job_ArchBishop:
+				set '@job_name$['@i],"アークビショップ";
+				break;
+			case Job_Mechanic:
+				set '@job_name$['@i],"メカニック";
+				break;
+			case Job_Guillotine:
+				set '@job_name$['@i],"ギロチンクロス";
+				break;
+			case Job_RoyalGuard:
+				set '@job_name$['@i],"ロイヤルガード";
+				break;
+			case Job_Sorcerer:
+				set '@job_name$['@i],"ソーサラー";
+				break;
+			case Job_Minstrel:
+				set '@job_name$['@i],"ミンストレル";
+				break;
+			case Job_Wanderer:
+				set '@job_name$['@i],"ワンダラー";
+				break;
+			case Job_Shura:
+				set '@job_name$['@i],"修羅";
+				break;
+			case Job_Genetic:
+				set '@job_name$['@i],"ジェネティック";
+				break;
+			case Job_ShadowChaser:
+				set '@job_name$['@i],"シャドウチェイサー";
+				break;
 		}
 	}
+	set '@job_name$['@max],"やめる";
+	set @menu,select(printarray('@job_name$));
+	if('@job_id[@menu - 1] == 0) {
+		mes "[転職カプラ]";
+		mes "またご利用ください。";
+		close2;
+		cutin "kafra_04",255;
+		end;
+	}
+	mes "[転職カプラ]";
+	mes "^FF0000" +'@job_name$[@menu - 1]+ "^000000に";
+	mes "転職されますか？";
+	next;
+	if(select("はい","いいえ") == 2) {
+		mes "[転職カプラ]";
+		mes "またご利用ください。";
+		close2;
+		cutin "kafra_04",255;
+		end;
+	}
+	// 転職チェック（直前）
+	switch('@job_id[@menu - 1]) {
+		case Job_Swordman:
+		case Job_Magician:
+		case Job_Archer:
+		case Job_Acolyte:
+		case Job_Merchant:
+		case Job_Thief:
+		case Job_Taekwon:
+		case Job_Gunslinger:
+		case Job_Ninja:
+		case Job_Gyangsy:
+			if(getskilllv(1) < 9) {
+				mes "[転職カプラ]";
+				mes "基本スキルが足りません。";
+				mes "基本スキルレベルを上げてから";
+				mes "またお越しください。";
+				close2;
+				cutin "kafra_04",255;
+				end;
+			}
+			if(JobLevel < 10) {
+				mes "[転職カプラ]";
+				mes "一次職に転職するには";
+				mes "Jobレベルが10必要です。";
+				mes "Jobレベルを上げてきてから";
+				mes "またお越しください。";
+				close2;
+				cutin "kafra_04",255;
+				end;
+			}
+			break;
+		case Job_SuperNovice:
+			if(getskilllv(1) < 9) {
+				mes "[転職カプラ]";
+				mes "基本スキルが足りません。";
+				mes "基本スキルレベルを上げてから";
+				mes "またお越しください。";
+				close2;
+				cutin "kafra_04",255;
+				end;
+			}
+			if(JobLevel < 10) {
+				mes "[転職カプラ]";
+				mes "スーパーノービスに転職するには";
+				mes "Jobレベルが40必要です。";
+				mes "Jobレベルを上げてきてから";
+				mes "またお越しください。";
+				close2;
+				cutin "kafra_04",255;
+				end;
+			}
+			if(BaseLevel < 45) {
+				mes "[転職カプラ]";
+				mes "スーパーノービスに転職するには";
+				mes "Baseレベルが45以上必要です。";
+				mes "Baseレベルを上げてきてから";
+				mes "またお越しください。";
+				close2;
+				cutin "kafra_04",255;
+				end;
+			}
+			break;
+		case Job_Knight:
+		case Job_Priest:
+		case Job_Wizard:
+		case Job_Blacksmith:
+		case Job_Hunter:
+		case Job_Assassin:
+		case Job_Crusader:
+		case Job_Monk:
+		case Job_Sage:
+		case Job_Rogue:
+		case Job_Alchemist:
+		case Job_Bard:
+		case Job_Dancer:
+		case job_Star:
+		case Job_Linker:
+		case Job_DeathKnight:
+		case Job_DarkCollector:
+			if(JobLevel < 40) {
+				mes "[転職カプラ]";
+				mes "二次職に転職するには";
+				mes "Jobレベルが40以上必要です。";
+				mes "Jobレベルを上げてきてから";
+				mes "またお越しください。";
+				close2;
+				cutin "kafra_04",255;
+				end;
+			}
+			break;
+		case Job_RuneKnight:
+		case Job_Warlock:
+		case Job_Ranger:
+		case Job_ArchBishop:
+		case Job_Mechanic:
+		case Job_Guillotine:
+		case Job_RoyalGuard:
+		case Job_Sorcerer:
+		case Job_Minstrel:
+		case Job_Wanderer:
+		case Job_Shura:
+		case Job_Genetic:
+		case Job_ShadowChaser:
+// 国内仕様
+//			if(Upper != UPPER_HIGH) {
+//				mes "[転職カプラ]";
+//				mes "三次職に転職するには";
+//				mes "転生されている必要があります。";
+//				mes "またお越しください。";
+//				close2;
+//				cutin "kafra_04",255;
+//				end;
+//			}
+//			if(BaseLevel < 90) {
+//				mes "[転職カプラ]";
+//				mes "三次職に転職するには";
+//				mes "Baseレベルが90以上必要です。";
+//				mes "Baseレベルを上げてきてから";
+//				mes "またお越しください。";
+//				close2;
+//				cutin "kafra_04",255;
+//				end;
+//			}
+// 海外仕様
+			if(BaseLevel < 99) {
+				mes "[転職カプラ]";
+				mes "三次職に転職するには";
+				mes "Baseレベルが99必要です。";
+				mes "Baseレベルを上げてきてから";
+				mes "またお越しください。";
+				close2;
+				cutin "kafra_04",255;
+				end;
+			}
+			break;
+	}
+	if(SkillPoint) {
+		mes "[転職カプラ]";
+		mes "スキルポイントが残っています。";
+		mes "全て消費してきてから";
+		mes "またお越しください。";
+		close2;
+		cutin "kafra_04",255;
+		end;
+	}
+	unequip;
+	jobchange '@job_id[@menu - 1];
+	mes "[転職カプラ]";
+	mes "転職おめでとうございます！";
+	mes "貴方のご活躍に期待しています。";
 	close2;
 	cutin "kafra_04",255;
 	end;
-
-	// Check_Condition(<class>) : 転職可能かどうかチェック
-	//   1: 許可, 0: 転職不可, -1: レベル不足
-	function Check_Condition {
-		switch(getarg(0)) {
-			case Job_Swordman:
-			case Job_Magician:
-			case Job_Archer:
-			case Job_Acolyte:
-			case Job_Merchant:
-			case Job_Thief:
-			case Job_TaekwonBoy:
-				return 1;
-			case Job_Knight:
-			case Job_Crusader:
-				return (Class == Job_Swordman);
-			case Job_Priest:
-			case Job_Monk:
-				return (Class == Job_Acolyte);
-			case Job_Wizard:
-			case Job_Sage:
-				return (Class == Job_Magician);
-			case Job_BlackSmith:
-			case Job_Alchemist:
-				return (Class == Job_Merchant);
-			case Job_Hunter:
-			case Job_Bard:
-			case Job_Dancer:
-				return (Class == Job_Archer);
-			case Job_Assassin:
-			case Job_Rogue:
-				return (Class == Job_Thief);
-			case Job_SuperNovice:
-				if(Upper == 1)
-					return 0;
-				if(BaseLevel < 45) {
-					mes "[転職カプラ]";
-					mes "ベースレベルを45以上にしてきてください。";
-					return -1;
-				}
-				return 1;
-			case Job_StarGladiator:
-			case Job_SoulLinker:
-				return (Class == Job_TaekwonBoy);
-			case Job_Gunslinger:
-			case Job_Ninja:
-			case Job_DeathKnight:
-			case Job_DarkCollector:
-				return (Upper == 0);
-		}
-		return -1;
-	}
 }

@@ -65,7 +65,7 @@ pay_fild10.gat,148,252,3	script	案内板	837,{
 //==============================================================
 //in_hunter.gat,99,99,4	script	ハンターギルド員	727,{
 hu_in01.gat,386,373,4	script	ハンターギルド員	727,{
-	if(Upper == 1) {
+	if(Upper == UPPER_HIGH) {
 		mes "[ハンター・シェリン]";
 		mes "あら、こんにちは！";
 		mes "元気でしたか？";
@@ -88,13 +88,13 @@ hu_in01.gat,386,373,4	script	ハンターギルド員	727,{
 		mes "くださいね。";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[ハンターギルド員]";
 		mes "あら、ノービスさん…";
 		mes "この辺ではあまり見かけませんねぇ…。";
 		close;
 	}
-	if(Class == Job_Hunter) {
+	if(Job == Job_Hunter) {
 		mes "[ハンターギルド員]";
 		mes "あ、" +strcharinfo(0)+ "さん！";
 		mes "お久しぶりです〜。";
@@ -104,7 +104,7 @@ hu_in01.gat,386,373,4	script	ハンターギルド員	727,{
 		mes "なさっていってください。";
 		close;
 	}
-	if(Class != Job_Archer) {
+	if(Job != Job_Archer) {
 		mes "[ハンターギルド員]";
 		mes "あら、いらっしゃいませ！";
 		mes "嬉しいですね〜。";
@@ -287,7 +287,7 @@ hu_in01.gat,386,373,4	script	ハンターギルド員	727,{
 		next;
 		delitem 1007,1;
 		unequip;
-		jobchange 11;
+		jobchange Job_Hunter;
 		set CHANGE_HT,0;
 		mes "[ハンター・シェリン]";
 		mes "改めてお祝いいたします。";	
@@ -1549,7 +1549,7 @@ job_hunte.gat,102,109,0		duplicate(#HT_Abyss)	落とし穴	139,4,0
 
 //in_hunter.gat,146,99,2	script	ファルコン管理兵	105,{
 hu_in01.gat,381,304,5	script	ファルコン管理兵	105,{
-	if(Class != Job_Hunter) {
+	if(Job == Job_Hunter) {
 		mes "バカやろ〜！ファルコンは";
 		mes "ハンターとスナイパー専用だ！";
 		close;

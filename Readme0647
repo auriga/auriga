@@ -1,4 +1,30 @@
 ----------------------------------------
+//0822 [2011/01/22] by Blaze
+
+・3次職実装(mmo.h, char.c, map.h, pc.*, skill.c, status.c, clif.c, atcommand.c, mob.c)
+
+・職業定義関連のDBを修正(db/exp.txt, db/job_db1.txt, db/job_db2.txt, db/job_db2-2.txt, db/job_hp_db.txt, db/job_sp_db.txt, db/skill_tree.txt)
+
+・スクリプト定義値「Class」の仕様変更(db/const.txt, map.h, pc.*)
+　-> Auriga内部定義の職業値からClass値を返すように変更
+　（これにより、ガンスリンガーや忍者のClass値暫定処理が修正されます）
+　-> 既存の職業値を取得する定義値「Job」を新規に追加
+
+・スクリプト関数「getbaseclass()」追加(script.c, doc/script_ref.txt, conf/map_auriga.conf)
+　-> 現在の職業Class値から前職のClass値を取得します
+　-> function_jobgroup.txtでの職業グループ取得は非推奨となります
+
+・Classを使用しているスクリプトやDBを修正 (db/item_db.txt, script/***.txt)
+
+・3次職関連の戦闘設定を追加 (battle.*, battle_auriga.conf)
+　-> new_statusup_calc : ステータス100以上のポイント計算式を変更できます
+　-> third_status_max : 3次職のステータス限界値を設定できます
+　-> third_baby_status_max : 養子3次職のステータス限界値を設定できます
+　-> third_max_aspd : 3次職の攻撃速度の上限を設定できます
+
+・DK/DC関連職業のキョンシーの定義追加 (mmo.h, pc.*, bcc32_make.bat, vc_make.bat, Makefile)
+
+----------------------------------------
 //0821 [2011/01/11] by popori
 
 ・歩行速度に関するバグを修正 (status.c pc.c)

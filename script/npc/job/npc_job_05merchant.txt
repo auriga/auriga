@@ -50,7 +50,7 @@ alberta_in.gat,53,43,6	script	商人組合員	86,{
 		next;
 		switch (select("商人になりたいんです","商人って何？","商人転職条件は？","何でもない")) {
 			case 1:
-				if(Class == Job_Merchant) {
+				if(Job == Job_Merchant) {
 		   			mes "[組合員マンス]";
 		   			mes "…？うん？なにを言ってる？";
 					mes "君はもう商人じゃない…まったく。";
@@ -104,7 +104,7 @@ alberta_in.gat,53,43,6	script	商人組合員	86,{
 		mes "[組合員マンス]";
 		mes "商人になりたいって？ふ…";
 		next;
-		if(Class != Job_Novice) {
+		if(Job != Job_Novice) {
 			mes "[組合員マンス]";
 			mes "我ら商人ギルドの人間は、";
 			mes "コウモリみたいな奴が一番嫌いだ。";
@@ -127,20 +127,20 @@ alberta_in.gat,53,43,6	script	商人組合員	86,{
 			mes "最低限、基本がなってないとね。";
 			close;
 		}
-		if(Upper == 1 && OLD_CLASS != Job_Blacksmith && OLD_CLASS != Job_Alchemist) {
+		if(Upper == UPPER_HIGH && OLD_CLASS != Job_Blacksmith && OLD_CLASS != Job_Alchemist) {
 			mes "[組合員マンス]";
 			mes "あなたはこの職に転職できません。";
 			mes "転生前の系列一次職にのみ";
 			mes "転職可能です。";
 			close;
 		}
-		if(Upper == 1) {
+		if(Upper == UPPER_HIGH) {
 			mes "[組合員マンス]";
 			mes "あなたは、既に転生した身";
 			mes "転職試験はいりませんね";
 			next;
 			unequip;
-			jobchange 5,1;
+			jobchange Job_Merchant,UPPER_HIGH;
 			skill 153,1,0;
 			skill 154,1,0;
 			skill 155,1,0;
@@ -261,7 +261,7 @@ alberta_in.gat,53,43,6	script	商人組合員	86,{
 		mes "じゃ、話を進めようか！";
 		next;
 		unequip;
-		jobchange 5;
+		jobchange Job_Merchant;
 		set CHANGE_MC,0;
 		set '@flag,TEMPVAL_MC;	//途中でログアウトされてもいいようにコピー
 		set TEMPVAL_MC,0;

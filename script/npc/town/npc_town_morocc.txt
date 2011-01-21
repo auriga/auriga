@@ -751,7 +751,7 @@ morocc.gat,43,108,5	script	鋭い印象の少年	82,{
 		mes "会ってみな。";
 		close;
 	}
-	if(Class == Job_Assassin) {
+	if(getbaseclass(Class,2) == CLASS_AS) {
 		mes "[ジャック]";
 		mes "街の半分が破壊されたと言うのに";
 		mes "未だにここを訪れる人がいるんだよな。";
@@ -767,7 +767,7 @@ morocc.gat,43,108,5	script	鋭い印象の少年	82,{
 }
 
 morocc.gat,45,110,0	script	#mocbar1	45,2,2,{
-	if(MOC_1QUE || Class == Job_Assassin) {
+	if(MOC_1QUE || getbaseclass(Class,2) == CLASS_AS) {
 		warp "que_job01.gat",9,94;
 		end;
 	}
@@ -876,7 +876,7 @@ que_job01.gat,81,79,5	script	遊んでいる騎士	733,{
 	mes "[リテルン]";
 	mes "ナイトがここで何をしてるかって？";
 	mes "ナイトはここにいちゃいけないのか？";
-	if(Class == Job_Knight) mes "お前だってナイトだろうが……";
+	if(getbaseclass(Class,2) == CLASS_KN) mes "お前だってナイトだろうが……";
 	next;
 	mes "[リテルン]";
 	mes "復旧作業に疲れてしまって、";
@@ -887,12 +887,12 @@ que_job01.gat,81,79,5	script	遊んでいる騎士	733,{
 }
 
 que_job01.gat,82,95,3	script	バーマスター	46,{
-	if(Class == Job_Assassin) {
+	if(getbaseclass(Class,2) == CLASS_AS) {
 		mes "[マスター]";
 		mes "いらっしゃい。";
 		mes "何か飲むかい？";
 	}
-	else if(Class == Job_Thief || Class == Job_Rogue) {
+	else if(getbaseclass(Class) == CLASS_TF) {
 		mes "[マスター]";
 		mes "……お前みたいなよそ者が";
 		mes "入ってくるってことは、ジャックの奴";
@@ -930,7 +930,7 @@ que_job01.gat,82,95,3	script	バーマスター	46,{
 			mes "金が無いなら出て行きな。";
 			close;
 		}
-		if(Class == Job_Assassin) {
+		if(getbaseclass(Class,2) == CLASS_AS) {
 			mes "[マスター]";
 			mes "お前には特別に安くしよう。";
 			if(Zeny < 800) {
@@ -965,7 +965,7 @@ que_job01.gat,82,95,3	script	バーマスター	46,{
 		close;
 	case 2:
 		if(MOC_1QUE == 1) {
-			if(Class == Job_Assassin) {
+			if(getbaseclass(Class,2) == CLASS_AS) {
 				mes "[マスター]";
 				mes "……残念だが遅すぎたようだな。";
 				mes "依頼をしたのは確かだが、";
@@ -1002,7 +1002,7 @@ que_job01.gat,82,95,3	script	バーマスター	46,{
 			mes "せっかく来て貰ったのにすまんな。";
 			close;
 		}
-		if(Class == Job_Assassin) {
+		if(getbaseclass(Class,2) == CLASS_AS) {
 			mes "[マスター]";
 			mes "お前は……まだ任務を受けたことが";
 			mes "ないようだな。";
@@ -1027,7 +1027,7 @@ que_job01.gat,82,95,3	script	バーマスター	46,{
 }
 
 que_job01.gat,49,49,4	script	タオ	877,{
-	if(Class == Job_Assassin) {
+	if(getbaseclass(Class,2) == CLASS_AS) {
 		mes "[タオ]";
 		mes "いらっしゃいにゃん。";
 		mes "何の用にゃん？";
@@ -1089,7 +1089,7 @@ que_job01.gat,49,49,4	script	タオ	877,{
 		mes "にゃるるるるるるる!!";
 		mes "お前は何者にゃ！";
 		next;
-		if(Class != Job_Assassin) {
+		if(getbaseclass(Class,2) != CLASS_AS) {
 			mes "[タオ]";
 			mes "今すぐ出て行くにゃ！";
 			close;
@@ -1166,7 +1166,7 @@ que_job01.gat,16,21,5	script	バルデス#moc1	55,{
 	if(countitem(7416)) delitem 7416,countitem(7416);
 	if(countitem(7417)) delitem 7417,countitem(7417);
 	if(countitem(7418)) delitem 7418,countitem(7418);
-	if(Class == Job_Assassin) {
+	if(getbaseclass(Class,2) == CLASS_AS) {
 		mes "[バルデス]";
 		mes "今はお前に依頼したい任務はない。";
 		mes "魔王の復活で一杯一杯でな。";

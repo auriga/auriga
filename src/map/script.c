@@ -4008,6 +4008,7 @@ int buildin_checkactiveitem(struct script_state *st);
 int buildin_showevent(struct script_state *st);
 int buildin_musiceffect(struct script_state *st);
 int buildin_areamusiceffect(struct script_state *st);
+int buildin_getbaseclass(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4281,6 +4282,7 @@ struct script_function buildin_func[] = {
 	{buildin_showevent,"showevent","i**"},
 	{buildin_musiceffect,"musiceffect","s"},
 	{buildin_areamusiceffect,"areamusiceffect","siiiis"},
+	{buildin_getbaseclass,"getbaseclass","i*"},
 	{NULL,NULL,NULL}
 };
 
@@ -4821,7 +4823,7 @@ int buildin_jobchange(struct script_state *st)
 	if( st->end>st->start+3 )
 		upper=conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	if(job >= 0 && job < MAX_VALID_PC_CLASS)
+	if(job >= 0 && job < PC_JOB_MAX)
 		pc_jobchange(script_rid2sd(st),job, upper);
 
 	return 0;
@@ -7923,11 +7925,11 @@ int buildin_changesex(struct script_state *st)
 
 	if(sd->sex==0){
 		sd->sex=1;
-		if(sd->s_class.job == 20)
+		if(sd->s_class.job == PC_JOB_DC || sd->s_class.job == PC_JOB_WA)
 			sd->status.class_ -= 1;
 	} else {
 		sd->sex=0;
-		if(sd->s_class.job == 19)
+		if(sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI)
 			sd->status.class_ += 1;
 	}
 	chrif_changesex(sd->status.account_id,sd->sex);
@@ -11968,5 +11970,309 @@ int buildin_areamusiceffect(struct script_state *st)
 	m = script_mapname2mapid(st,str);
 	if(m >= 0)
 		map_foreachinarea(buildin_musiceffect_sub,m,x0,y0,x1,y1,BL_PC,name);
+	return 0;
+}
+
+/*==========================================
+ * 前職業Class取得
+ *------------------------------------------
+ */
+static int buildin_getbaseclass(struct script_state *st)
+{
+	int class_, type = 0;
+
+	class_ = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end>st->start+3)
+		type = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	/* 転生・養子から元の職業へ変換 */
+	switch(class_){
+		case PC_CLASS_NV:
+		case PC_CLASS_NV_H:
+		case PC_CLASS_NV_B:
+			class_ = PC_CLASS_NV;
+			break;
+		case PC_CLASS_SM:
+		case PC_CLASS_SM_H:
+		case PC_CLASS_SM_B:
+			class_ = PC_CLASS_SM;
+			break;
+		case PC_CLASS_MG:
+		case PC_CLASS_MG_H:
+		case PC_CLASS_MG_B:
+			class_ = PC_CLASS_MG;
+			break;
+		case PC_CLASS_AC:
+		case PC_CLASS_AC_H:
+		case PC_CLASS_AC_B:
+			class_ = PC_CLASS_AC;
+			break;
+		case PC_CLASS_AL:
+		case PC_CLASS_AL_H:
+		case PC_CLASS_AL_B:
+			class_ = PC_CLASS_AL;
+			break;
+		case PC_CLASS_MC:
+		case PC_CLASS_MC_H:
+		case PC_CLASS_MC_B:
+			class_ = PC_CLASS_MC;
+			break;
+		case PC_CLASS_TF:
+		case PC_CLASS_TF_H:
+		case PC_CLASS_TF_B:
+			class_ = PC_CLASS_TF;
+			break;
+		case PC_CLASS_KN:
+		case PC_CLASS_KN2:
+		case PC_CLASS_KN_H:
+		case PC_CLASS_KN2_H:
+		case PC_CLASS_KN_B:
+		case PC_CLASS_KN2_B:
+			class_ = PC_CLASS_KN;
+			break;
+		case PC_CLASS_PR:
+		case PC_CLASS_PR_H:
+		case PC_CLASS_PR_B:
+			class_ = PC_CLASS_PR;
+			break;
+		case PC_CLASS_WZ:
+		case PC_CLASS_WZ_H:
+		case PC_CLASS_WZ_B:
+			class_ = PC_CLASS_WZ;
+			break;
+		case PC_CLASS_BS:
+		case PC_CLASS_BS_H:
+		case PC_CLASS_BS_B:
+			class_ = PC_CLASS_BS;
+			break;
+		case PC_CLASS_HT:
+		case PC_CLASS_HT_H:
+		case PC_CLASS_HT_B:
+			class_ = PC_CLASS_HT;
+			break;
+		case PC_CLASS_AS:
+		case PC_CLASS_AS_H:
+		case PC_CLASS_AS_B:
+			class_ = PC_CLASS_AS;
+			break;
+		case PC_CLASS_CR:
+		case PC_CLASS_CR2:
+		case PC_CLASS_CR_H:
+		case PC_CLASS_CR2_H:
+		case PC_CLASS_CR_B:
+		case PC_CLASS_CR2_B:
+			class_ = PC_CLASS_CR;
+			break;
+		case PC_CLASS_MO:
+		case PC_CLASS_MO_H:
+		case PC_CLASS_MO_B:
+			class_ = PC_CLASS_MO;
+			break;
+		case PC_CLASS_SA:
+		case PC_CLASS_SA_H:
+		case PC_CLASS_SA_B:
+			class_ = PC_CLASS_SA;
+			break;
+		case PC_CLASS_RG:
+		case PC_CLASS_RG_H:
+		case PC_CLASS_RG_B:
+			class_ = PC_CLASS_RG;
+			break;
+		case PC_CLASS_AM:
+		case PC_CLASS_AM_H:
+		case PC_CLASS_AM_B:
+			class_ = PC_CLASS_AM;
+			break;
+		case PC_CLASS_BA:
+		case PC_CLASS_BA_H:
+		case PC_CLASS_BA_B:
+			class_ = PC_CLASS_BA;
+			break;
+		case PC_CLASS_DC:
+		case PC_CLASS_DC_H:
+		case PC_CLASS_DC_B:
+			class_ = PC_CLASS_DC;
+			break;
+		case PC_CLASS_SNV:
+		case PC_CLASS_SNV_B:
+			class_ = PC_CLASS_SNV;
+			break;
+		case PC_CLASS_SG:
+		case PC_CLASS_SG2:
+			class_ = PC_CLASS_SG;
+			break;
+		case PC_CLASS_RK:
+		case PC_CLASS_RK2:
+		case PC_CLASS_RK3:
+		case PC_CLASS_RK4:
+		case PC_CLASS_RK5:
+		case PC_CLASS_RK6:
+		case PC_CLASS_RK_H:
+		case PC_CLASS_RK2_H:
+		case PC_CLASS_RK3_H:
+		case PC_CLASS_RK4_H:
+		case PC_CLASS_RK5_H:
+		case PC_CLASS_RK6_H:
+		case PC_CLASS_RK_B:
+		case PC_CLASS_RK2_B:
+			class_ = PC_CLASS_RK;
+			break;
+		case PC_CLASS_WL:
+		case PC_CLASS_WL_H:
+		case PC_CLASS_WL_B:
+			class_ = PC_CLASS_WL;
+			break;
+		case PC_CLASS_RA:
+		case PC_CLASS_RA2:
+		case PC_CLASS_RA_H:
+		case PC_CLASS_RA2_H:
+		case PC_CLASS_RA_B:
+		case PC_CLASS_RA2_B:
+			class_ = PC_CLASS_RA;
+			break;
+		case PC_CLASS_AB:
+		case PC_CLASS_AB_H:
+		case PC_CLASS_AB_B:
+			class_ = PC_CLASS_AB;
+			break;
+		case PC_CLASS_NC:
+		case PC_CLASS_NC2:
+		case PC_CLASS_NC_H:
+		case PC_CLASS_NC2_H:
+		case PC_CLASS_NC_B:
+		case PC_CLASS_NC2_B:
+			class_ = PC_CLASS_NC;
+			break;
+		case PC_CLASS_GC:
+		case PC_CLASS_GC_H:
+		case PC_CLASS_GC_B:
+			class_ = PC_CLASS_GC;
+			break;
+		case PC_CLASS_LG:
+		case PC_CLASS_LG2:
+		case PC_CLASS_LG_H:
+		case PC_CLASS_LG2_H:
+		case PC_CLASS_LG_B:
+		case PC_CLASS_LG2_B:
+			class_ = PC_CLASS_LG;
+			break;
+		case PC_CLASS_SO:
+		case PC_CLASS_SO_H:
+		case PC_CLASS_SO_B:
+			class_ = PC_CLASS_SO;
+			break;
+		case PC_CLASS_MI:
+		case PC_CLASS_MI_H:
+		case PC_CLASS_MI_B:
+			class_ = PC_CLASS_MI;
+			break;
+		case PC_CLASS_WA:
+		case PC_CLASS_WA_H:
+		case PC_CLASS_WA_B:
+			class_ = PC_CLASS_WA;
+			break;
+		case PC_CLASS_SR:
+		case PC_CLASS_SR_H:
+		case PC_CLASS_SR_B:
+			class_ = PC_CLASS_SR;
+			break;
+		case PC_CLASS_GN:
+		case PC_CLASS_GN_H:
+		case PC_CLASS_GN_B:
+			class_ = PC_CLASS_GN;
+			break;
+		case PC_CLASS_SC:
+		case PC_CLASS_SC_H:
+		case PC_CLASS_SC_B:
+			class_ = PC_CLASS_SC;
+			break;
+	}
+
+	if(type < 3){
+		/* 3次職から2次職に変換 */
+		switch(class_){
+			case PC_CLASS_RK:
+				class_ = PC_CLASS_KN;
+				break;
+			case PC_CLASS_WL:
+				class_ = PC_CLASS_WZ;
+				break;
+			case PC_CLASS_RA:
+				class_ = PC_CLASS_HT;
+				break;
+			case PC_CLASS_AB:
+				class_ = PC_CLASS_PR;
+				break;
+			case PC_CLASS_NC:
+				class_ = PC_CLASS_BS;
+				break;
+			case PC_CLASS_GC:
+				class_ = PC_CLASS_AS;
+				break;
+			case PC_CLASS_LG:
+				class_ = PC_CLASS_CR;
+				break;
+			case PC_CLASS_SO:
+				class_ = PC_CLASS_SA;
+				break;
+			case PC_CLASS_MI:
+				class_ = PC_CLASS_BA;
+				break;
+			case PC_CLASS_WA:
+				class_ = PC_CLASS_DC;
+				break;
+			case PC_CLASS_SR:
+				class_ = PC_CLASS_MO;
+				break;
+			case PC_CLASS_GN:
+				class_ = PC_CLASS_AM;
+				break;
+			case PC_CLASS_SC:
+				class_ = PC_CLASS_RG;
+				break;
+		}
+	}
+
+	if(type < 2){
+		/* 2次職から1次職に変換 */
+		switch(class_){
+		case PC_CLASS_KN:
+		case PC_CLASS_CR:
+			class_ = PC_CLASS_SM;
+			break;
+		case PC_CLASS_PR:
+		case PC_CLASS_MO:
+			class_ = PC_CLASS_AL;
+			break;
+		case PC_CLASS_WZ:
+		case PC_CLASS_SA:
+			class_ = PC_CLASS_MG;
+			break;
+		case PC_CLASS_BS:
+		case PC_CLASS_AM:
+			class_ = PC_CLASS_MC;
+			break;
+		case PC_CLASS_HT:
+		case PC_CLASS_BA:
+		case PC_CLASS_DC:
+			class_ = PC_CLASS_AC;
+			break;
+		case PC_CLASS_AS:
+		case PC_CLASS_RG:
+			class_ = PC_CLASS_TF;
+			break;
+		case PC_CLASS_SG:
+		case PC_CLASS_SL:
+			class_ = PC_CLASS_TK;
+			break;
+		case PC_CLASS_DK:
+		case PC_CLASS_DA:
+			class_ = PC_CLASS_MB;
+			break;
+		}
+	}
+
+	push_val(st->stack,C_INT,class_);
+
 	return 0;
 }

@@ -1391,7 +1391,7 @@ lhz_in01.gat,139,48,2	script	リミ	73,3,1,{
 	next;
 	mes "[リミ]";
 	mes "な、何かご用ですか？";
-	if(Class != Job_Assassin) close;
+	if(getbaseclass(Class,2) != CLASS_AS) close;
 	next;
 	mes "[リミ]";
 	mes "あ、あなたアサシンですね。";
@@ -1400,7 +1400,7 @@ lhz_in01.gat,139,48,2	script	リミ	73,3,1,{
 	mes "私の憧れです……フフ。";
 	close;
 OnTouch:
-	if(Class != Job_Assassin) end;
+	if(getbaseclass(Class,2) != CLASS_AS) end;
 	mes "（カシャッ）";
 	next;
 	mes "["+strcharinfo(0)+"]";

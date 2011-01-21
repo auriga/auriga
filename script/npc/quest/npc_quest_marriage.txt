@@ -213,7 +213,7 @@ prt_church.gat,94,100,4	script	結婚コンパニオン	71,{
 			cutin "wedding_marry02",255;
 			end;
 		}
-		if(Upper == 2) {
+		if(Upper == UPPER_BABY) {
 			//養子のときは？未調査
 			close2;
 			cutin "wedding_marry02",255;
@@ -400,7 +400,7 @@ prt_church.gat,99,125,4	script	国王陛下	108,{
 			mes "パーティーを結成しなさい。";
 			close;
 		}
-		if(readparam(Upper,'@another$) == 2) {
+		if(readparam(Upper,'@another$) == UPPER_BABY) {
 			//相手が養子なら？未調査
 			close;
 		}

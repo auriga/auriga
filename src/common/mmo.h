@@ -111,31 +111,202 @@
 #define START_NPC_NUM      5100000
 #define END_NPC_NUM       16777215	// SL_SMAのエフェクト表現可能上限 = 0x00ffffff
 
+// クラスID定義
+enum {
+	PC_CLASS_NV = 0,		// ノービス
+	PC_CLASS_SM,			// ソードマン
+	PC_CLASS_MG,			// マジシャン
+	PC_CLASS_AC,			// アーチャー
+	PC_CLASS_AL,			// アコライト
+	PC_CLASS_MC,			// マーチャント
+	PC_CLASS_TF,			// シーフ
+	PC_CLASS_KN,			// ナイト
+	PC_CLASS_PR,			// プリースト
+	PC_CLASS_WZ,			// ウィザード
+	PC_CLASS_BS,			// ブラックスミス
+	PC_CLASS_HT,			// ハンター
+	PC_CLASS_AS,			// アサシン
+	PC_CLASS_KN2,			// ナイト(騎乗)
+	PC_CLASS_CR,			// クルセイダー
+	PC_CLASS_MO,			// モンク
+	PC_CLASS_SA,			// セージ
+	PC_CLASS_RG,			// ローグ
+	PC_CLASS_AM,			// アルケミスト
+	PC_CLASS_BA,			// バード
+	PC_CLASS_DC,			// ダンサー
+	PC_CLASS_CR2,			// クルセイダー(騎乗)
+	PC_CLASS_WE,			// ウェディング
+	PC_CLASS_SNV,			// スーパーノービス
+	PC_CLASS_GS,			// ガンスリンガー
+	PC_CLASS_NJ,			// 忍者
+	PC_CLASS_NV_H = 4001,	// 転生ノービス
+	PC_CLASS_SM_H,			// 転生ソードマン
+	PC_CLASS_MG_H,			// 転生マジシャン
+	PC_CLASS_AC_H,			// 転生アーチャー
+	PC_CLASS_AL_H,			// 転生アコライト
+	PC_CLASS_MC_H,			// 転生マーチャント
+	PC_CLASS_TF_H,			// 転生シーフ
+	PC_CLASS_KN_H,			// ロードナイト
+	PC_CLASS_PR_H,			// ハイプリースト
+	PC_CLASS_WZ_H,			// ハイウィザード
+	PC_CLASS_BS_H,			// ホワイトスミス
+	PC_CLASS_HT_H,			// スナイパー
+	PC_CLASS_AS_H,			// アサシンクロス
+	PC_CLASS_KN2_H,			// ロードナイト(騎乗)
+	PC_CLASS_CR_H,			// パラディン
+	PC_CLASS_MO_H,			// チャンピオン
+	PC_CLASS_SA_H,			// プロフェッサー
+	PC_CLASS_RG_H,			// チェイサー
+	PC_CLASS_AM_H,			// クリエイター
+	PC_CLASS_BA_H,			// クラウン
+	PC_CLASS_DC_H,			// ジプシー
+	PC_CLASS_CR2_H,			// パラディン(騎乗)
+	PC_CLASS_NV_B,			// 養子ノービス
+	PC_CLASS_SM_B,			// 養子ソードマン
+	PC_CLASS_MG_B,			// 養子マジシャン
+	PC_CLASS_AC_B,			// 養子アーチャー
+	PC_CLASS_AL_B,			// 養子アコライト
+	PC_CLASS_MC_B,			// 養子マーチャント
+	PC_CLASS_TF_B,			// 養子シーフ
+	PC_CLASS_KN_B,			// 養子ナイト
+	PC_CLASS_PR_B,			// 養子プリースト
+	PC_CLASS_WZ_B,			// 養子ウィザード
+	PC_CLASS_BS_B,			// 養子ブラックスミス
+	PC_CLASS_HT_B,			// 養子ハンター
+	PC_CLASS_AS_B,			// 養子アサシン
+	PC_CLASS_KN2_B,			// 養子ナイト(騎乗)
+	PC_CLASS_CR_B,			// 養子クルセイダー
+	PC_CLASS_MO_B,			// 養子モンク
+	PC_CLASS_SA_B,			// 養子セージ
+	PC_CLASS_RG_B,			// 養子ローグ
+	PC_CLASS_AM_B,			// 養子アルケミスト
+	PC_CLASS_BA_B,			// 養子バード
+	PC_CLASS_DC_B,			// 養子ダンサー
+	PC_CLASS_CR2_B,			// 養子クルセイダー(騎乗)
+	PC_CLASS_SNV_B,			// 養子スーパーノービス
+	PC_CLASS_TK,			// テコンキッド
+	PC_CLASS_SG,			// 拳聖
+	PC_CLASS_SG2,			// 拳聖(融合)
+	PC_CLASS_SL,			// ソウルリンカー
+	PC_CLASS_MB,			// キョンシー
+	PC_CLASS_DK,			// デスナイト
+	PC_CLASS_DA,			// ダークコレクター
+	// 4053
+	PC_CLASS_RK = 4054,		// ルーンナイト
+	PC_CLASS_WL,			// ウォーロック
+	PC_CLASS_RA,			// レンジャー
+	PC_CLASS_AB,			// アークビショップ
+	PC_CLASS_NC,			// メカニック
+	PC_CLASS_GC,			// ギロチンクロス
+	PC_CLASS_RK_H,			// 転生ルーンナイト
+	PC_CLASS_WL_H,			// 転生ウォーロック
+	PC_CLASS_RA_H,			// 転生レンジャー
+	PC_CLASS_AB_H,			// 転生アークビショップ
+	PC_CLASS_NC_H,			// 転生メカニック
+	PC_CLASS_GC_H,			// 転生ギロチンクロス
+	PC_CLASS_LG,			// ロイヤルガード
+	PC_CLASS_SO,			// ソーサラー
+	PC_CLASS_MI,			// ミンストレル
+	PC_CLASS_WA,			// ワンダラー
+	PC_CLASS_SR,			// 修羅
+	PC_CLASS_GN,			// ジェネティック
+	PC_CLASS_SC,			// シャドウチェイサー
+	PC_CLASS_LG_H,			// 転生ロイヤルガード
+	PC_CLASS_SO_H,			// 転生ソーサラー
+	PC_CLASS_MI_H,			// 転生ミンストレル
+	PC_CLASS_WA_H,			// 転生ワンダラー
+	PC_CLASS_SR_H,			// 転生修羅
+	PC_CLASS_GN_H,			// 転生ジェネティック
+	PC_CLASS_SC_H,			// 転生シャドウチェイサー
+	PC_CLASS_RK2,			// ルーンナイト(騎乗)
+	PC_CLASS_RK2_H,			// 転生ルーンナイト(騎乗)
+	PC_CLASS_LG2,			// ロイヤルガード(騎乗)
+	PC_CLASS_LG2_H,			// 転生ロイヤルガード(騎乗)
+	PC_CLASS_RA2,			// レンジャー(騎乗)
+	PC_CLASS_RA2_H,			// 転生レンジャー(騎乗)
+	PC_CLASS_NC2,			// メカニック(騎乗)
+	PC_CLASS_NC2_H,			// 転生メカニック(騎乗)
+	PC_CLASS_RK3,			// ルーンナイト(騎乗)
+	PC_CLASS_RK3_H,			// 転生ルーンナイト(騎乗)
+	PC_CLASS_RK4,			// ルーンナイト(騎乗)
+	PC_CLASS_RK4_H,			// 転生ルーンナイト(騎乗)
+	PC_CLASS_RK5,			// ルーンナイト(騎乗)
+	PC_CLASS_RK5_H,			// 転生ルーンナイト(騎乗)
+	PC_CLASS_RK6,			// ルーンナイト(騎乗)
+	PC_CLASS_RK6_H,			// 転生ルーンナイト(騎乗)
+	PC_CLASS_RK_B,			// 養子ルーンナイト
+	PC_CLASS_WL_B,			// 養子ウォーロック
+	PC_CLASS_RA_B,			// 養子レンジャー
+	PC_CLASS_AB_B,			// 養子アークビショップ
+	PC_CLASS_NC_B,			// 養子メカニック
+	PC_CLASS_GC_B,			// 養子ギロチンクロス
+	PC_CLASS_LG_B,			// 養子ロイヤルガード
+	PC_CLASS_SO_B,			// 養子ソーサラー
+	PC_CLASS_MI_B,			// 養子ミンストレル
+	PC_CLASS_WA_B,			// 養子ワンダラー
+	PC_CLASS_SR_B,			// 養子修羅
+	PC_CLASS_GN_B,			// 養子ジェネティック
+	PC_CLASS_SC_B,			// 養子シャドウチェイサー
+	PC_CLASS_RK2_B,			// 養子ルーンナイト(騎乗)
+	PC_CLASS_LG2_B,			// 養子ロイヤルガード(騎乗)
+	PC_CLASS_RA2_B,			// 養子レンジャー(騎乗)
+	PC_CLASS_NC2_B,			// 養子メカニック(騎乗)
+	PC_CLASS_MAX
+};
+
 // 職業定義
-#ifdef CLASS_DKDC
-	#define MAX_VALID_PC_CLASS 32
-#else
-	#define MAX_VALID_PC_CLASS 30
-#endif
+enum {
+	PC_JOB_NV = 0,	// ノービス
+	PC_JOB_SM,		// ソードマン
+	PC_JOB_MG,		// マジシャン
+	PC_JOB_AC,		// アーチャー
+	PC_JOB_AL,		// アコライト
+	PC_JOB_MC,		// マーチャント
+	PC_JOB_TF,		// シーフ
+	PC_JOB_KN,		// ナイト
+	PC_JOB_PR,		// プリースト
+	PC_JOB_WZ,		// ウィザード
+	PC_JOB_BS,		// ブラックスミス
+	PC_JOB_HT,		// ハンター
+	PC_JOB_AS,		// アサシン
+	PC_JOB_CR,		// クルセイダー
+	PC_JOB_MO,		// モンク
+	PC_JOB_SA,		// セージ
+	PC_JOB_RG,		// ローグ
+	PC_JOB_AM,		// アルケミスト
+	PC_JOB_BA,		// バード
+	PC_JOB_DC,		// ダンサー
+	PC_JOB_SNV,		// スーパーノービス
+	PC_JOB_TK,		// テコンキッド
+	PC_JOB_SG,		// 拳聖
+	PC_JOB_SL,		// ソウルリンカー
+	PC_JOB_GS,		// ガンスリンガー
+	PC_JOB_NJ,		// 忍者
+	PC_JOB_MB,		// キョンシー
+	PC_JOB_DK,		// デスナイト
+	PC_JOB_DA,		// ダークコレクター
+	PC_JOB_RK,		// ルーンナイト
+	PC_JOB_WL,		// ウォーロック
+	PC_JOB_RA,		// レンジャー
+	PC_JOB_AB,		// アークビショップ
+	PC_JOB_NC,		// メカニック
+	PC_JOB_GC,		// ギロチンクロス
+	PC_JOB_LG,		// ロイヤルガード
+	PC_JOB_SO,		// ソーサラー
+	PC_JOB_MI,		// ミンストレル
+	PC_JOB_WA,		// ワンダラー
+	PC_JOB_SR,		// 修羅
+	PC_JOB_GN,		// ジェネティック
+	PC_JOB_SC,		// シャドウチェイサー
+	PC_JOB_MAX
+};
 
-#define PC_CLASS_NV      0  	// ノビ
-#define PC_CLASS_NV2  4001  	// 転生ノビ
-#define PC_CLASS_NV3  4023  	// 養子ノビ
-#define PC_CLASS_SNV    23  	// スパノビ
-#define PC_CLASS_SNV3 4045  	// 養子スパノビ
-#define PC_CLASS_TK   4046	// テコン
-#define PC_CLASS_SG   4047	// 拳聖
-#define PC_CLASS_SG2  4048	// 拳聖2
-#define PC_CLASS_SL   4049	// ソウルリンカー
-#define PC_CLASS_GS     28	// ガンスリンガー
-#define PC_CLASS_NJ     29	// 忍者
-#define PC_CLASS_DK   4051	// デスナイト
-#define PC_CLASS_DC   4052	// ダークコレクター
-
-#define MAX_PC_CLASS (1+6+6+1+6+1+1+1+1+4+2+2)
-#define PC_CLASS_BASE 0
-#define PC_CLASS_BASE2 (PC_CLASS_BASE + 4001)
-#define PC_CLASS_BASE3 (PC_CLASS_BASE2 + 22)
+enum {
+	PC_UPPER_NORMAL = 0,	// 未転生
+	PC_UPPER_HIGH,			// 転生
+	PC_UPPER_BABY,			// 養子
+	PC_UPPER_MAX
+};
 
 struct item {
 	unsigned int id;

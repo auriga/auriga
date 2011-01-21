@@ -11,7 +11,7 @@
 
 yuno_in02.gat,88,164,5	script	メテウスシルプ	742,{
 	if(TRANSMIGRATE == 0) {
-		if(BaseLevel < 99 || JobLevel < 50 || Class < Job_Knight || Class > Job_Dancer || Upper != 0) {
+		if(BaseLevel < 99 || JobLevel < 50 || Class < CLASS_KN || Class > CLASS_CR2) {
 			mes "[メテウスシルプ]";
 			mes "いらっしゃいませ。";
 			mes "こちらはシュバイチェル";
@@ -76,7 +76,7 @@ yuno_in02.gat,88,164,5	script	メテウスシルプ	742,{
 
 //==============================================================
 yuno_in02.gat,93,207,0	script	ユミルの書	111,{
-	if(Upper == 1) {
+	if(Upper == UPPER_HIGH) {
 		mes "[ユミルの書]";
 		mes "……栄光の神殿への入り口は";
 		mes "生まれ変わりし者全てに開かれている。";
@@ -174,7 +174,7 @@ yuno_in05.gat,49,43,0	script	ユミルの心臓	111,{
 //------------------------------------------
 
 valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
-	if(Upper != 0) {
+	if(Upper != UPPER_NORMAL) {
 		mes "[ヴァルキリー]";
 		mes "栄光のヴァルハラへよくぞ";
 		mes "お越しくださいました。";
@@ -239,8 +239,8 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	next;
 	mes "[ヴァルキリー]";
 	mes "三つ……";
-	set OLD_CLASS,Class;
-	jobchange 0,1;
+	set OLD_CLASS,Job;
+	jobchange Job_Novice,UPPER_HIGH;
 	set BaseLevel,1;
 	resetstatus;
 	resetskill;
@@ -304,7 +304,7 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 
 //==============================================================
 valkyrie.gat,44,33,5	script	テレポーター	124,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[テレポーター]";
 			mes "転生おめでとう！";
@@ -336,7 +336,7 @@ valkyrie.gat,44,33,5	script	テレポーター	124,{
 
 //==============================================================
 valkyrie.gat,44,39,5	script	ロードナイト	56,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[ロードナイト]";
 			mes "転生おめでとう！";
@@ -354,7 +354,7 @@ valkyrie.gat,44,39,5	script	ロードナイト	56,{
 		}
 		close;
 	}
-	callfunc "JobChanger","ロードナイト",1,7;
+	callfunc "JobChanger","ロードナイト",Job_Swordman,Job_Knight;
 	mes "[ロードナイト]";
 	mes "栄光のヴァルハラへよく来たな。";
 	mes "しばし休息をとりたまえ。";
@@ -364,7 +364,7 @@ valkyrie.gat,44,39,5	script	ロードナイト	56,{
 
 //==============================================================
 valkyrie.gat,44,42,5	script	ハイプリースト	60,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[ハイプリースト]";
 			mes "転生のお祝いを申し上げます。";
@@ -380,7 +380,7 @@ valkyrie.gat,44,42,5	script	ハイプリースト	60,{
 		}
 		close;
 	}
-	callfunc "JobChanger","ハイプリースト",4,8;
+	callfunc "JobChanger","ハイプリースト",Job_Acolyte,Job_Priest;
 	mes "[ハイプリースト]";
 	mes "栄光のヴァルハラへよくぞ";
 	mes "お越しくださいました。";
@@ -391,7 +391,7 @@ valkyrie.gat,44,42,5	script	ハイプリースト	60,{
 
 //==============================================================
 valkyrie.gat,44,47,5	script	ハイウィザード	735,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[ハイウィザード]";
 			mes "転生おめでとうございます。";
@@ -408,7 +408,7 @@ valkyrie.gat,44,47,5	script	ハイウィザード	735,{
 		}
 		close;
 	}
-	callfunc "JobChanger","ハイウィザード",2,9;
+	callfunc "JobChanger","ハイウィザード",Job_Magician,Job_Wizard;
 	mes "[ハイウィザード]";
 	mes "栄光のヴァルハラへようこそ。";
 	mes "しばし休息をおとりください。";
@@ -418,7 +418,7 @@ valkyrie.gat,44,47,5	script	ハイウィザード	735,{
 
 //==============================================================
 valkyrie.gat,44,50,5	script	ホワイトスミス	731,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[ホワイトスミス]";
 			mes "転生おめでとう！";
@@ -432,7 +432,7 @@ valkyrie.gat,44,50,5	script	ホワイトスミス	731,{
 		}
 		close;
 	}
-	callfunc "JobChanger","ホワイトスミス",5,10;
+	callfunc "JobChanger","ホワイトスミス",Job_Merchant,Job_Blacksmith;
 	mes "[ホワイトスミス]";
 	mes "栄光のヴァルハラによく来たな。";
 	mes "まあ、少し休んでいけよ。";
@@ -442,7 +442,7 @@ valkyrie.gat,44,50,5	script	ホワイトスミス	731,{
 
 //==============================================================
 valkyrie.gat,44,55,5	script	スナイパー	727,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[スナイパー]";
 			mes "転生お祝い申し上げます。";
@@ -459,7 +459,7 @@ valkyrie.gat,44,55,5	script	スナイパー	727,{
 		}
 		close;
 	}
-	callfunc "JobChanger","スナイパー",3,11;
+	callfunc "JobChanger","スナイパー",Job_Archer,Job_Hunter;
 	mes "[スナイパー]";
 	mes "栄光のヴァルハラへようこそ。";
 	mes "是非おくつろぎください。";
@@ -469,7 +469,7 @@ valkyrie.gat,44,55,5	script	スナイパー	727,{
 
 //==============================================================
 valkyrie.gat,44,58,5	script	アサシンクロス	725,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[アサシンクロス]";
 			mes "転生お祝い申し上げる。";
@@ -483,7 +483,7 @@ valkyrie.gat,44,58,5	script	アサシンクロス	725,{
 		}
 		close;
 	}
-	callfunc "JobChanger","アサシンクロス",6,12;
+	callfunc "JobChanger","アサシンクロス",Job_Thief,Job_Assassin;
 	mes "[アサシンクロス]";
 	mes "ヴァルハラへよく来たな。";
 	mes "少し休んでいけ。";
@@ -493,7 +493,7 @@ valkyrie.gat,44,58,5	script	アサシンクロス	725,{
 
 //==============================================================
 valkyrie.gat,53,39,3	script	パラディン	752,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[パラディン]";
 			mes "転生の祝いを申し上げよう。";
@@ -508,7 +508,7 @@ valkyrie.gat,53,39,3	script	パラディン	752,{
 		}
 		close;
 	}
-	callfunc "JobChanger","パラディン",1,14;
+	callfunc "JobChanger","パラディン",Job_Swordman,Job_Crusader;
 	mes "[パラディン]";
 	mes "栄光のヴァルハラへよくぞ来た。";
 	mes "少し休んでいきなさい。";
@@ -518,7 +518,7 @@ valkyrie.gat,53,39,3	script	パラディン	752,{
 
 //==============================================================
 valkyrie.gat,53,42,3	script	チャンピオン	52,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[チャンピオン]";
 			mes "転生おめでとう！";
@@ -534,7 +534,7 @@ valkyrie.gat,53,42,3	script	チャンピオン	52,{
 		}
 		close;
 	}
-	callfunc "JobChanger","チャンピオン",4,15;
+	callfunc "JobChanger","チャンピオン",Job_Acolyte,Job_Monk;
 	mes "[チャンピオン]";
 	mes "栄光のヴァルハラへよく来た。";
 	mes "少し休んでいきな。";
@@ -544,7 +544,7 @@ valkyrie.gat,53,42,3	script	チャンピオン	52,{
 
 //==============================================================
 valkyrie.gat,53,47,3	script	プロフェッサー	743,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[プロフェッサー]";
 			mes "転生おめでとう。";
@@ -560,7 +560,7 @@ valkyrie.gat,53,47,3	script	プロフェッサー	743,{
 		}
 		close;
 	}
-	callfunc "JobChanger","プロフェッサー",2,16;
+	callfunc "JobChanger","プロフェッサー",Job_Magician,Job_Sage;
 	mes "[プロフェッサー]";
 	mes "栄光のヴァルハラによくぞ来ました。";
 	mes "しばしの休息を得なさい。";
@@ -570,7 +570,7 @@ valkyrie.gat,53,47,3	script	プロフェッサー	743,{
 
 //==============================================================
 valkyrie.gat,53,58,3	script	チェイサー	747,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[チェイサー]";
 			mes "転生おめでと〜！";
@@ -585,7 +585,7 @@ valkyrie.gat,53,58,3	script	チェイサー	747,{
 		}
 		close;
 	}
-	callfunc "JobChanger","チェイサー",6,17;
+	callfunc "JobChanger","チェイサー",Job_Thief,Job_Rogue;
 	mes "[チェイサー]";
 	mes "ヴァルハラへよく来たな〜！";
 	mes "ちょいと休みなよ。";
@@ -595,7 +595,7 @@ valkyrie.gat,53,58,3	script	チェイサー	747,{
 
 //==============================================================
 valkyrie.gat,53,50,3	script	クリエイター	122,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[クリエイター]";
 			mes "転生おめでとう。";
@@ -612,7 +612,7 @@ valkyrie.gat,53,50,3	script	クリエイター	122,{
 		}
 		close;
 	}
-	callfunc "JobChanger","クリエイター",5,18;
+	callfunc "JobChanger","クリエイター",Job_Merchant,Job_Alchemist;
 	mes "[クリエイター]";
 	mes "栄光のヴァルハラへようこそ！";
 	mes "少しここで休んでいきな。";
@@ -622,7 +622,7 @@ valkyrie.gat,53,50,3	script	クリエイター	122,{
 
 //==============================================================
 valkyrie.gat,53,54,3	script	クラウン	741,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[クラウン]";
 			mes "転生お祝い申し上げます。";
@@ -635,7 +635,7 @@ valkyrie.gat,53,54,3	script	クラウン	741,{
 		}
 		close;
 	}
-	callfunc "JobChanger","クラウン",3,19;
+	callfunc "JobChanger","クラウン",Job_Archer,Job_Bard;
 	mes "[クラウン]";
 	mes "栄光のヴァルハラへようこそ。";
 	mes "少しここで休息をとるとよいでしょう。";
@@ -645,7 +645,7 @@ valkyrie.gat,53,54,3	script	クラウン	741,{
 
 //==============================================================
 valkyrie.gat,53,56,3	script	ジプシー	101,{
-	if(Upper != 1) {
+	if(Upper != UPPER_HIGH) {
 		if(rand(3)) {
 			mes "[ジプシー]";
 			mes "転生おめでとう！";
@@ -658,7 +658,7 @@ valkyrie.gat,53,56,3	script	ジプシー	101,{
 		}
 		close;
 	}
-	callfunc "JobChanger","ジプシー",3,20;
+	callfunc "JobChanger","ジプシー",Job_Archer,Job_Dancer;
 	mes "[ジプシー]";
 	mes "栄光のヴァルハラへようこそ！";
 	mes "少し休んでから帰りなさいな。";
@@ -673,7 +673,7 @@ valkyrie.gat,53,56,3	script	ジプシー	101,{
 //------------------------------------------
 
 function	script	JobChanger	{
-	if(JobLevel < 40 || Class != getarg(1) || OLD_CLASS != getarg(2))
+	if(JobLevel < 40 || Job != getarg(1) || OLD_CLASS != getarg(2))
 		return;
 	mes "["+getarg(0)+"]";
 	mes "本来の姿を取り戻し、";
@@ -702,8 +702,8 @@ function	script	JobChanger	{
 		close;
 	}
 	unequip;
-	jobchange getarg(2),1;
-	if(Class == Job_Alchemist && SKILL_BIOETHICS == 13) {
+	jobchange getarg(2),UPPER_HIGH;
+	if(getbaseclass(Class,2) == CLASS_AM && SKILL_BIOETHICS == 13) {
 		skill 238,1,0;
 		set SKILL_BIOETHICS,0;
 	}

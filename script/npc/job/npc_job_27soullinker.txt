@@ -8,7 +8,7 @@
 //------------------------------------------
 
 morocc_in.gat,174,30,6	script	子供	716,{
-	if(Class == Job_SoulLinker) {
+	if(Job == Job_Linker) {
 		mes "[子供]";
 		mes "これから進む道において、";
 		mes "君に、そして共に歩む魂たちに";
@@ -16,7 +16,7 @@ morocc_in.gat,174,30,6	script	子供	716,{
 		mes "……えへへっ！";
 		close;
 	}
-	if(Class != Job_TaeKwon) {
+	if(Job != Job_Taekwon) {
 		mes "[子供]";
 		mes "……";
 		mes "お前に用はない！";
@@ -326,7 +326,7 @@ OnTouch:
 		mes "お前の代わりに戦ってくれるだろう。";
 		next;
 		unequip;
-		jobchange 27;
+		jobchange Job_Linker;
 		set CHANGE_SL,0;
 		mes "[マイア]";
 		mes "一人の立派なソウルリンカーとして、";

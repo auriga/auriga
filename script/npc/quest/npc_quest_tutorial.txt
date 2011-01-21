@@ -8,7 +8,7 @@
 // QUE_SWORDMAN -> 0〜22
 //------------------------------------------------------------
 izlude_in.gat,82,163,3	script	シューレン	733,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[シューレン]";
 		mes "君、自分の将来の事を考えて";
 		mes "いるかな？";
@@ -24,7 +24,7 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 		mes "剣士ギルドを訪ねるといい。";
 		close;
 	}
-	if(Class == Job_Knight || Class == Job_Crusader) {
+	if(getbaseclass(Class,2) == CLASS_KN || getbaseclass(Class,2) == CLASS_CR) {
 		mes "[シューレン]";
 		mes "ほう、ソードマンから転職したのか。";
 		mes "君が熱き日々を送ってきたことの";
@@ -34,7 +34,7 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 		mes "生き生きしたソードマンが好きだ。";
 		close;
 	}
-	if(Class != Job_Swordman) {
+	if(Job != Job_Swordman) {
 		mes "[シューレン]";
 		mes "私が相手をできるのはソードマンのみ。";
 		mes "残念だが、私が君に教えてあげられる";
@@ -793,7 +793,7 @@ L_Endure:
 }
 
 geffen.gat,154,143,3	script	ディキュイ	734,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[ディキュイ]";
 		mes "ソードマンは知っているな？";
 		mes "ソードマンになれば、鉄のように強靭な";
@@ -812,7 +812,7 @@ geffen.gat,154,143,3	script	ディキュイ	734,{
 		mes "ソードマンを志していたらどうだ？";
 		close;
 	}
-	if(Class != Job_Swordman) {
+	if(Job != Job_Swordman) {
 		mes "[ディキュイ]";
 		mes "ソードマンじゃないな。";
 		mes "あっちいけ！";
@@ -1356,7 +1356,7 @@ prt_church.gat,179,15,1	script	プラ神父	110,{
 		mes "マギンス司教をお訪ねなさい。";
 		close;
 	}
-	if(Class != Job_Acolyte) {
+	if(Job != Job_Acolyte) {
 		mes "[プラ神父]";
 		mes "神の祝福がいつもあなたと共に";
 		mes "ありますよう。";
@@ -1732,7 +1732,7 @@ prt_monk.gat,230,106,3	script	アステ	79,{
 		}
 		set QUE_ACOLYTE,5;
 		delitem 1504,1;
-		if(Class == Job_Acolyte && Upper == 1)
+		if(Job == Job_Acolyte && Upper == UPPER_HIGH)
 			getexp 2000,1000;
 		else
 			getexp 1000,500;
@@ -2705,13 +2705,13 @@ monk_in.gat,103,176,7	script	カルヴィン	60,{
 }
 
 prt_monk.gat,219,164,3	script	グロリア	95,{
-	if(Class == Job_Acolyte && QUE_ACOLYTE == 25) {
+	if(Job == Job_Acolyte && QUE_ACOLYTE == 25) {
 		mes "[グロリア]";
 		mes "ウワ〜、アステ様の授業を全部";
 		mes "終えたんですか……すごい……";
 		close;
 	}
-	if(Class != Job_Acolyte || QUE_ACOLYTE == 0) {
+	if(Job != Job_Acolyte || QUE_ACOLYTE == 0) {
 		mes "[グロリア]";
 		mes "こんにちは。";
 		mes "私はグロリア・ラブ。";
@@ -2778,7 +2778,7 @@ prt_monk.gat,219,164,3	script	グロリア	95,{
 }
 
 prt_monk.gat,153,210,3	script	クルーレ・ベルチェ	95,{
-	if(Class != Job_Acolyte) {
+	if(Job != Job_Acolyte) {
 		mes "[クルーレ・ベルチェ]";
 		mes "よう、こんにちは。";
 		mes "今日の陽射しは気持ちいいね〜。";
@@ -2949,7 +2949,7 @@ prt_monk.gat,153,210,3	script	クルーレ・ベルチェ	95,{
 }
 
 prt_monk.gat,217,123,0	script	　#tu_monk	139,10,10,{
-	if(Class != Job_Acolyte || (QUE_ACOLYTE != 4 && QUE_ACOLYTE != 10 && QUE_ACOLYTE != 25))
+	if(Job != Job_Acolyte || (QUE_ACOLYTE != 4 && QUE_ACOLYTE != 10 && QUE_ACOLYTE != 25))
 		end;
 	mes "[どこからか聞こえてくる声]";
 	mes "……………………";
@@ -2960,7 +2960,7 @@ prt_monk.gat,217,123,0	script	　#tu_monk	139,10,10,{
 }
 
 prt_monk.gat,223,123,0	script	窓の向こうの声	111,{
-	if(Class == Job_Acolyte && QUE_ACOLYTE >= 4 && QUE_ACOLYTE <= 9) {
+	if(Job == Job_Acolyte && QUE_ACOLYTE >= 4 && QUE_ACOLYTE <= 9) {
 		mes "[窓の向こうの声]";
 		mes "……様、王宮内の雰囲気が尋常では";
 		mes "ありません。";
@@ -2987,7 +2987,7 @@ prt_monk.gat,223,123,0	script	窓の向こうの声	111,{
 		mes "悪い予感がしてなりません。";
 		close;
 	}
-	if(Class == Job_Acolyte && QUE_ACOLYTE >= 10 && QUE_ACOLYTE <= 24) {
+	if(Job == Job_Acolyte && QUE_ACOLYTE >= 10 && QUE_ACOLYTE <= 24) {
 		mes "[窓の向こうの声]";
 		mes "王宮から連絡が来ました。";
 		mes "強力な退魔師を派遣して欲しいと";
@@ -3012,7 +3012,7 @@ prt_monk.gat,223,123,0	script	窓の向こうの声	111,{
 		mes "お願いします。";
 		close;
 	}
-	if(Class == Job_Acolyte && QUE_ACOLYTE >= 25) {
+	if(Job == Job_Acolyte && QUE_ACOLYTE >= 25) {
 		mes "[窓の向こうの声]";
 		mes "……様、^3131FFゲオルグの呪い^000000について";
 		mes "何かご存知ではありませんか？";
@@ -3142,12 +3142,13 @@ payon_in02.gat,67,65,3	script	吟遊詩人ゼティ	51,{
 	mes "彼女の籠いっぱいに盛られた林檎〜♪";
 	mes "その甘〜い林檎のおかげで〜";
 	mes "神々は永遠に老いることがない〜♪";
-	switch(Class) {
+	switch(Job) {
 	case Job_Novice:
 		close;
 	case Job_Archer:
 		break;
 	case Job_Bard:
+	case Job_Minstrel:
 		next;
 		mes "[ゼティ]";
 		mes "おお、あなたは！";
@@ -3160,6 +3161,7 @@ payon_in02.gat,67,65,3	script	吟遊詩人ゼティ	51,{
 		mes "ウフッ！";
 		close;
 	case Job_Dancer:
+	case Job_Wanderer:
 		next;
 		mes "[ゼティ]";
 		mes "おお、美しいダンサーのお嬢さん、";
@@ -3276,7 +3278,7 @@ payon_in02.gat,54,13,2	script	マスター・カバック	55,{
 		mes "そして、この町もアーチャーや、";
 		mes "それを目指す者であふれている。";
 		next;
-		switch(Class) {
+		switch(Job) {
 		case Job_Novice:
 			mes "[マスター・カバック]";
 			mes "君もアーチャーになりたいなら、";
@@ -3293,6 +3295,7 @@ payon_in02.gat,54,13,2	script	マスター・カバック	55,{
 			mes "教えてくれると思うよ。";
 			close;
 		case Job_Hunter:
+		case Job_Ranger:
 			mes "[マスター・カバック]";
 			mes "彼らの中には、君と同じように";
 			mes "弓を扱う者もいる。";
@@ -3305,6 +3308,7 @@ payon_in02.gat,54,13,2	script	マスター・カバック	55,{
 			mes "欲しいものだ。";
 			close;
 		case Job_Bard:
+		case Job_Minstrel:
 			mes "[マスター・カバック]";
 			mes "彼らの中には、";
 			mes "君のように楽器を手に";
@@ -3318,6 +3322,7 @@ payon_in02.gat,54,13,2	script	マスター・カバック	55,{
 			mes "欲しいものだ。";
 			close;
 		case Job_Dancer:
+		case Job_Wanderer:
 			mes "[マスター・カバック]";
 			mes "彼らの中には、";
 			mes "軽い身を活かし、美しい踊りで、";
@@ -3341,7 +3346,7 @@ payon_in02.gat,54,13,2	script	マスター・カバック	55,{
 			close;
 		}
 	case 2:
-		if(Class != Job_Archer) {
+		if(Job != Job_Archer) {
 			mes "[マスター・カバック]";
 			mes "そうだな……";
 			mes "最近、特にこれと言った話題はないな。";
@@ -3462,18 +3467,18 @@ payon_in02.gat,54,13,2	script	マスター・カバック	55,{
 	case 3:
 		switch(QUE_1ARCHER) {
 		case 0:
-			if(Class == Job_Novice) {
+			if(Job == Job_Novice) {
 				mes "[マスター・カバック]";
 				mes "ん、アーチャーになりたいのか？";
 			}
-			else if(Class == Job_Archer && Upper != 1) {
+			else if(Job == Job_Archer && Upper != UPPER_HIGH) {
 				mes "[マスター・カバック]";
 				mes "君は私達と同じ道を";
 				mes "目指している者だね。";
 				mes "そうか、アーチャーについて";
 				mes "勉強したいのか。";
 			}
-			else if((Class == Job_Archer && Upper == 1) || Class == Job_Hunter || Class == Job_Bard || Class == Job_Dancer) {
+			else if((Job == Job_Archer && Upper == UPPER_HIGH) || getbaseclass(Class,2) == CLASS_HT || getbaseclass(Class,2) == CLASS_BA || getbaseclass(Class,2) == CLASS_DC) {
 				mes "[マスター・カバック]";
 				mes "君は既にアーチャーとして";
 				mes "充分に経験を積んだはずだが、";
@@ -3481,7 +3486,7 @@ payon_in02.gat,54,13,2	script	マスター・カバック	55,{
 				mes "ふむ、基本を忘れないのは";
 				mes "良い心がけだ。";
 			}
-			else if(Class != Job_Archer) {
+			else if(Job != Job_Archer) {
 				mes "[マスター・カバック]";
 				mes "君は私達と異なる道を";
 				mes "目指している者だな。";
@@ -3533,7 +3538,7 @@ payon_in02.gat,54,13,2	script	マスター・カバック	55,{
 			mes "しかし、それでも知識は蓄えておけば、";
 			mes "いつかきっと大きな力となるだろう。";
 			next;
-			if(Class != Job_Archer) {
+			if(Job != Job_Archer) {
 				mes "[マスター・カバック]";
 				mes "理論の次は実技だが、";
 				mes "こちらはアーチャーのみとなっている。";
@@ -5205,14 +5210,14 @@ geffen.gat,61,174,0	script	立て札	111,{
 }
 
 geffen.gat,67,180,4	script	初級マジシャン担当官	102,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[マナ]";
 		mes "まだ時ではありません。";
 		mes "もう少し成長してから";
 		mes "いらしてください。";
 		close;
 	}
-	if(Class != Job_Magician) {
+	if(Job != Job_Magician) {
 		mes "[マナ]";
 		mes "すでに職業についていても、他の";
 		mes "職業が羨ましくなる時があるのは";
@@ -5936,14 +5941,14 @@ geffen.gat,67,180,4	script	初級マジシャン担当官	102,{
 // QUE_THIEF -> 0〜27
 //------------------------------------------------------------
 moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[イルヒ]";
 		mes "おう、なんだ。";
 		mes "ノービスじゃねぇか。";
 		mes "せいぜい頑張りな。";
 		close;
 	}
-	if((Class == Job_Thief && Upper == 1) || Class == Job_Assassin || Class == Job_Rogue) {
+	if((Job == Job_Thief && Upper == UPPER_HIGH) || getbaseclass(Class,2) == CLASS_AS || getbaseclass(Class,2) == CLASS_RG) {
 		if(QUE_THIEF < 8) {
 			mes "[イルヒ]";
 			mes "おまえは、もうシーフを";
@@ -5955,7 +5960,7 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 			close;
 		}
 	}
-	else if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	else if(getbaseclass(Class) == CLASS_MG) {
 		switch(QUE_MAGICIAN) {
 		case 0:
 		case 1:
@@ -6073,7 +6078,7 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 			close;
 		}
 	}
-	else if(Class != Job_Thief) {
+	else if(Job != Job_Thief) {
 		mes "[イルヒ]";
 		mes "砂嵐は砂漠の浪漫だ！";
 		mes "がーっはっはっは！";
@@ -6665,7 +6670,7 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 }
 
 moc_fild12.gat,166,369,0	script	争った跡#1	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 5 || QUE_THIEF == 7) {
 			mes "-争った跡がある-";
 			mes "-毒を使った形跡もある-";
@@ -6693,7 +6698,7 @@ moc_fild12.gat,166,369,0	script	争った跡#1	844,{
 		mes "-どうやら毒が使われたようだ-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 8) {
 			mes "-争った跡がある-";
 			mes "-毒を使った形跡もある-";
@@ -6719,7 +6724,7 @@ moc_fild12.gat,166,369,0	script	争った跡#1	844,{
 }
 
 moc_fild12.gat,173,215,0	script	争った跡#2	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 9) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6734,7 +6739,7 @@ moc_fild12.gat,173,215,0	script	争った跡#2	844,{
 		mes "-東へ向かった跡がある-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 9) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6755,7 +6760,7 @@ moc_fild12.gat,173,215,0	script	争った跡#2	844,{
 }
 
 moc_fild12.gat,276,165,0	script	争った跡#3	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 10) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6771,7 +6776,7 @@ moc_fild12.gat,276,165,0	script	争った跡#3	844,{
 		mes "やたら目立っている-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 10) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6793,7 +6798,7 @@ moc_fild12.gat,276,165,0	script	争った跡#3	844,{
 }
 
 moc_fild11.gat,39,163,0	script	争った跡#4	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 11) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6810,7 +6815,7 @@ moc_fild11.gat,39,163,0	script	争った跡#4	844,{
 		mes "-新しい足跡がある-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 11) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6833,7 +6838,7 @@ moc_fild11.gat,39,163,0	script	争った跡#4	844,{
 }
 
 moc_fild11.gat,205,52,0	script	争った跡#5	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		 if(QUE_THIEF < 12) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6872,7 +6877,7 @@ moc_fild11.gat,205,52,0	script	争った跡#5	844,{
 		mes "-足跡は二手に分かれている-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		 if(QUE_MAGICIAN < 12) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6917,7 +6922,7 @@ moc_fild11.gat,205,52,0	script	争った跡#5	844,{
 }
 
 moc_fild11.gat,226,235,0	script	争った跡#6	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		 if(QUE_THIEF < 13) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6927,7 +6932,7 @@ moc_fild11.gat,226,235,0	script	争った跡#6	844,{
 		mes "追跡は難しそうだ-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		 if(QUE_MAGICIAN < 13) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6943,7 +6948,7 @@ moc_fild11.gat,226,235,0	script	争った跡#6	844,{
 }
 
 moc_fild11.gat,184,342,0	script	争った跡#7	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		 if(QUE_THIEF < 13) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6954,7 +6959,7 @@ moc_fild11.gat,184,342,0	script	争った跡#7	844,{
 		mes "北へ向かっている-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		 if(QUE_MAGICIAN < 13) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -6971,7 +6976,7 @@ moc_fild11.gat,184,342,0	script	争った跡#7	844,{
 }
 
 moc_fild17.gat,213,358,0	script	争った跡#8	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		 if(QUE_THIEF < 13) {
 			mes "-足跡が二人分ある-";
 			close;
@@ -6986,7 +6991,7 @@ moc_fild17.gat,213,358,0	script	争った跡#8	844,{
 		mes "-数人の足跡がある-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		 if(QUE_MAGICIAN < 13) {
 			mes "-足跡が二人分ある-";
 			close;
@@ -7007,7 +7012,7 @@ moc_fild17.gat,213,358,0	script	争った跡#8	844,{
 }
 
 moc_fild17.gat,228,274,0	script	争った跡#9	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		 if(QUE_THIEF < 14) {
 			mes "-少し争った跡がある-";
 			close;
@@ -7041,7 +7046,7 @@ moc_fild17.gat,228,274,0	script	争った跡#9	844,{
 		mes "-足跡は西へと向かっている-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		 if(QUE_MAGICIAN < 14) {
 			mes "-少し争った跡がある-";
 			close;
@@ -7081,7 +7086,7 @@ moc_fild17.gat,228,274,0	script	争った跡#9	844,{
 }
 
 moc_fild17.gat,34,292,0	script	争った跡#10	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 16) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7097,7 +7102,7 @@ moc_fild17.gat,34,292,0	script	争った跡#10	844,{
 		mes "-西に向かった跡がある-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 16) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7119,7 +7124,7 @@ moc_fild17.gat,34,292,0	script	争った跡#10	844,{
 }
 
 moc_fild18.gat,346,296,0	script	争った跡#11	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 17) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7134,7 +7139,7 @@ moc_fild18.gat,346,296,0	script	争った跡#11	844,{
 		mes "-血痕の跡を追ってみよう-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 17) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7155,7 +7160,7 @@ moc_fild18.gat,346,296,0	script	争った跡#11	844,{
 }
 
 moc_fild18.gat,309,257,0	script	争った跡#12	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 18) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7170,7 +7175,7 @@ moc_fild18.gat,309,257,0	script	争った跡#12	844,{
 		mes "-北へ向かった跡がある-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 18) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7191,7 +7196,7 @@ moc_fild18.gat,309,257,0	script	争った跡#12	844,{
 }
 
 moc_fild18.gat,177,333,0	script	争った跡#13	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 19) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7208,7 +7213,7 @@ moc_fild18.gat,177,333,0	script	争った跡#13	844,{
 		mes "-南西へ向かった跡がある-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 19) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7231,7 +7236,7 @@ moc_fild18.gat,177,333,0	script	争った跡#13	844,{
 }
 
 moc_fild18.gat,111,303,0	script	争った跡#14	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 20) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7245,7 +7250,7 @@ moc_fild18.gat,111,303,0	script	争った跡#14	844,{
 		mes "-南へ向かった跡がある-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 20) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7265,7 +7270,7 @@ moc_fild18.gat,111,303,0	script	争った跡#14	844,{
 }
 
 moc_fild18.gat,109,197,0	script	争った跡#15	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 21) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7358,7 +7363,7 @@ moc_fild18.gat,109,197,0	script	争った跡#15	844,{
 		mes "-足跡は南へ向かっている-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 21) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7457,7 +7462,7 @@ moc_fild18.gat,109,197,0	script	争った跡#15	844,{
 }
 
 moc_fild18.gat,156,96,0	script	争った跡#16	844,{
-	if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+	if(getbaseclass(Class) == CLASS_TF) {
 		if(QUE_THIEF < 25) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7480,7 +7485,7 @@ moc_fild18.gat,156,96,0	script	争った跡#16	844,{
 		mes "-絶壁へと向かった跡がある……-";
 		close;
 	}
-	if(Class == Job_Magician || Class == Job_Wizard || Class == Job_Sage) {
+	if(getbaseclass(Class) == CLASS_MG) {
 		if(QUE_MAGICIAN < 25) {
 			mes "-大勢の人が通った跡がある-";
 			close;
@@ -7514,7 +7519,7 @@ moc_fild18.gat,156,96,0	script	争った跡#16	844,{
 // QUE_MERCHANT -> 0〜17
 //------------------------------------------------------------
 alberta_in.gat,70,51,5	script	ガーニン	98,{
-	if(Class != Job_Merchant) {
+	if(Job != Job_Merchant) {
 		mes "[ガーニン]";
 		mes "マーチャントでもない奴が、";
 		mes "ここに何の用だ？";

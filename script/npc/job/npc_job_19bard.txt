@@ -7,7 +7,7 @@
 
 comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 	cutin "job_bard_aiolo01",2;
-	if(Upper == 1) {
+	if(Upper == UPPER_HIGH) {
 		mes "[アイオルデ]";
 		mes "英雄たる素質を持つ人間は";
 		mes "その時代に数えきれず生まれ";
@@ -23,7 +23,7 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[アイオルデ]";
 		mes "胸の中に一つ一つ刻まれる痛みを";
 		mes "全て数える事はできないさ。";
@@ -44,7 +44,7 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
-	if(Class == Job_Bard) {
+	if(Job == Job_Bard) {
 		mes "[アイオルデ]";
 		mes "やぁ、今日も元気に歌ってるかい？";
 		mes "たくさん歌えるようになったかい？";
@@ -61,7 +61,7 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
-	if(Class != Job_Archer) {
+	if(Job != Job_Archer) {
 		mes "[アイオルデ]";
 		mes "ラララ〜、ラララ〜、美しいコモド〜";
 		mes "いつも楽しいことで一杯なの〜";
@@ -602,7 +602,7 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		delitem '@trunkid,60;
 		getitem '@itemid,1;
 		unequip;
-		jobchange 19;
+		jobchange Job_Bard;
 		set CHANGE_BA,0;
 		mes "[アイオルデ]";
 		mes "さあ、記念品だ。";
@@ -614,7 +614,7 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		end;
 	}
 	unequip;
-	jobchange 19;
+	jobchange Job_Bard;
 	set CHANGE_BA,0;
 	mes "[アイオルデ]";
 	mes "そう！楽しく歌っていこうか。";

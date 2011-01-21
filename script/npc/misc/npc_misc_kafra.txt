@@ -173,7 +173,7 @@ function	script	KafraMain	{
 
 	//カートサービス
 	function KafraCart {
-		if(Class != Job_Merchant && Class != Job_Blacksmith && Class != Job_Alchemist) {
+		if(getbaseclass(Class) == CLASS_MC) {
 			mes "[カプラ職員]";
 			mes "申し訳ございません。";
 			mes "カートは商人とその上位職専用の";

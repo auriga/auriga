@@ -52,9 +52,9 @@ static struct job_db {
 	int max_weight_base;
 	int hp_base[MAX_LEVEL];
 	int sp_base[MAX_LEVEL];
-	int bonus[3][MAX_LEVEL];
+	int bonus[PC_UPPER_MAX][MAX_LEVEL];
 	int aspd_base[WT_MAX];
-} job_db[MAX_PC_CLASS];
+} job_db[PC_JOB_MAX];
 
 static int atkmods[MAX_SIZE_FIX][WT_MAX];	// 武器ATKサイズ修正(size_fix.txt)
 
@@ -352,9 +352,6 @@ L_RECALC:
 	pdef_ele  = 0;
 	refinedef = 0;
 	sd->view_class = sd->status.class_;
-	if(sd->view_class == PC_CLASS_GS || sd->view_class == PC_CLASS_NJ)
-		sd->view_class -= 4;
-
 	sd->race = RCT_HUMAN;
 	sd->ranker_weapon_bonus  = 0;
 	sd->ranker_weapon_bonus_ = 0;
@@ -809,7 +806,7 @@ L_RECALC:
 		}
 	}
 	// 1度も死んでないJob70スパノビに+10
-	if(sd->s_class.job == 23 && sd->status.die_counter == 0 && sd->status.job_level >= 70) {
+	if(sd->s_class.job == PC_JOB_SNV && sd->status.die_counter == 0 && sd->status.job_level >= 70) {
 		sd->paramb[0] += 10;
 		sd->paramb[1] += 10;
 		sd->paramb[2] += 10;
@@ -1395,7 +1392,7 @@ L_RECALC:
 	if((sd->status.weapon == WT_1HAXE || sd->status.weapon == WT_2HAXE) && ((skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0))	// 斧修練の命中率増加
 		sd->hit += skill*3;
 
-	if(sd->s_class.job == 23 && sd->status.base_level >= 99)
+	if(sd->s_class.job == PC_JOB_SNV && sd->status.base_level >= 99)
 	{
 		if(pc_isupper(sd))
 			sd->status.max_hp += 2000*(100 + sd->paramc[2])/100 * battle_config.upper_hp_rate/100;
@@ -1558,7 +1555,7 @@ L_RECALC:
 	}
 	// Flee上昇
 	if((skill = pc_checkskill(sd,TF_MISS)) > 0) {	// 回避率増加
-		if(sd->s_class.job == 12 || sd->s_class.job == 17)
+		if(sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_RG || sd->s_class.job == PC_JOB_GC || sd->s_class.job == PC_JOB_SC)
 			sd->flee += skill*4;
 		else
 			sd->flee += skill*3;
@@ -1888,7 +1885,7 @@ L_RECALC:
 		}
 
 		if(sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1) {	// 爆裂波動
-			if(sd->s_class.job == 23)
+			if(sd->s_class.job == PC_JOB_SNV)
 				sd->critical += sd->sc.data[SC_EXPLOSIONSPIRITS].val1*100;
 			else
 				sd->critical += sd->sc.data[SC_EXPLOSIONSPIRITS].val2;
@@ -1964,7 +1961,11 @@ L_RECALC:
 		sd->flee = sd->fix_status.flee;
 	}
 
-	if(sd->aspd < battle_config.max_aspd) {
+	if(pc_is3rdclass(sd) && sd->aspd < battle_config.third_max_aspd) {
+		sd->aspd = battle_config.third_max_aspd;
+		sd->amotion = sd->aspd>>1;
+	}
+	else if(!pc_is3rdclass(sd) && sd->aspd < battle_config.max_aspd) {
 		sd->aspd = battle_config.max_aspd;
 		sd->amotion = sd->aspd>>1;
 	}
@@ -2657,7 +2658,7 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 	}
 
 	// 回避率増加
-	if(sd->s_class.job == 12 && (skilllv = pc_checkskill(sd,TF_MISS)) > 0) {
+	if((sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC) && (skilllv = pc_checkskill(sd,TF_MISS)) > 0) {
 		if(haste_val1 < skilllv)
 			haste_val1 = skilllv;
 	}
@@ -8418,66 +8419,79 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 		return 0;
 
 	switch(sd->s_class.job) {
-		case 15:
+		case PC_JOB_MO:
+		case PC_JOB_SR:
 			type = SC_MONK;
 			break;
-		case 25:
+		case PC_JOB_SG:
 			type = SC_STAR;
 			break;
-		case 16:
+		case PC_JOB_SA:
+		case PC_JOB_SO:
 			type = SC_SAGE;
 		 	break;
-		case 14:
+		case PC_JOB_CR:
+		case PC_JOB_LG:
 			type = SC_CRUSADER;
 			break;
-		case 9:
+		case PC_JOB_WZ:
+		case PC_JOB_WL:
 			type = SC_WIZARD;
 			break;
-		case 8:
+		case PC_JOB_PR:
+		case PC_JOB_AB:
 			type = SC_PRIEST;
 			break;
-		case 17:
+		case PC_JOB_RG:
+		case PC_JOB_SC:
 			type = SC_ROGUE;
 			break;
-		case 12:
+		case PC_JOB_AS:
+		case PC_JOB_GC:
 			type = SC_ASSASIN;
 			break;
-		case 27:
+		case PC_JOB_SL:
 			type = SC_SOULLINKER;
 			break;
-		case 7:
+		case PC_JOB_KN:
+		case PC_JOB_RK:
 			type = SC_KNIGHT;
 			break;
-		case 18:
+		case PC_JOB_AM:
+		case PC_JOB_GN:
 			type = SC_ALCHEMIST;
 			break;
-		case 19:
-		case 20:
+		case PC_JOB_BA:
+		case PC_JOB_DC:
+		case PC_JOB_MI:
+		case PC_JOB_WA:
 			type = SC_BARDDANCER;
 			break;
-		case 10:
+		case PC_JOB_BS:
+		case PC_JOB_NC:
 			type = SC_BLACKSMITH;
 			break;
-		case 11:
+		case PC_JOB_HT:
+		case PC_JOB_RA:
 			type = SC_HUNTER;
 			break;
-		case 23:
+		case PC_JOB_SNV:
 			type = SC_SUPERNOVICE;
 			break;
-		case 28:
+		case PC_JOB_GS:
 			type = SC_GUNNER;
 			break;
-		case 29:
+		case PC_JOB_NJ:
 			type = SC_NINJA;
 			break;
-		case 30:
+		case PC_JOB_DK:
 			type = SC_DEATHKINGHT;
 			break;
-		case 31:
+		case PC_JOB_DA:
 			type = SC_COLLECTOR;
 			break;
 		default:
-			if(sd->s_class.upper == 1 && sd->s_class.job >= 1 && sd->s_class.job <= 6)
+			if(sd->s_class.upper == PC_UPPER_HIGH && sd->s_class.job >= PC_JOB_SM && sd->s_class.job <= PC_JOB_MC)
 				type = SC_HIGH;
 			break;
 	}
@@ -8710,7 +8724,7 @@ int status_readdb(void) {
 		for(j=0; j<WT_MAX && split[j+4]; j++) {
 			job_db[i].aspd_base[j] = atoi(split[j+4]);
 		}
-		if(++i >= MAX_VALID_PC_CLASS)
+		if(++i >= PC_JOB_MAX)
 			break;
 	}
 	fclose(fp);
@@ -8728,7 +8742,7 @@ int status_readdb(void) {
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
-		for(j=0,p=line;j<MAX_VALID_PC_CLASS && p;j++){
+		for(j=0,p=line;j<PC_JOB_MAX && p;j++){
 			if(sscanf(p,"%d",&k) == 0)
 				break;
 			if(job_db[j].hp_base[i] == 0) {
@@ -8756,7 +8770,7 @@ int status_readdb(void) {
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
-		for(j=0,p=line;j<MAX_VALID_PC_CLASS && p;j++){
+		for(j=0,p=line;j<PC_JOB_MAX && p;j++){
 			if(sscanf(p,"%d",&k) == 0)
 				break;
 			if(job_db[j].sp_base[i] == 0) {
@@ -8787,12 +8801,12 @@ int status_readdb(void) {
 		for(j=0,p=line;j<MAX_LEVEL && p;j++){
 			if(sscanf(p,"%d",&k)==0)
 				break;
-			job_db[i].bonus[0][j] = k;
-			job_db[i].bonus[2][j] = k;	// 養子職のボーナスは分からないので仮
+			job_db[i].bonus[PC_UPPER_NORMAL][j] = k;
+			job_db[i].bonus[PC_UPPER_BABY][j] = k;
 			p=strchr(p,',');
 			if(p) p++;
 		}
-		if(++i >= MAX_VALID_PC_CLASS)
+		if(++i >= PC_JOB_MAX)
 			break;
 	}
 	fclose(fp);
@@ -8813,11 +8827,11 @@ int status_readdb(void) {
 		for(j=0,p=line;j<MAX_LEVEL && p;j++){
 			if(sscanf(p,"%d",&k)==0)
 				break;
-			job_db[i].bonus[1][j] = k;
+			job_db[i].bonus[PC_UPPER_HIGH][j] = k;
 			p=strchr(p,',');
 			if(p) p++;
 		}
-		if(++i >= MAX_VALID_PC_CLASS)
+		if(++i >= PC_JOB_MAX)
 			break;
 	}
 	fclose(fp);

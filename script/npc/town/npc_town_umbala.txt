@@ -1551,7 +1551,7 @@ um_in.gat,139,48,5	script	プレネタン	783,{
 		mes "あんた!!わかってるの!?";
 		close;
 	}
-	if(Class == Job_Novice) {
+	if(Job == Job_Novice) {
 		mes "[プレネタン]";
 		mes "ウムバ〜ウムバウムバ！";
 		mes "ウムバウムウムウムウム！";

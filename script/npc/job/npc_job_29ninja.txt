@@ -13,7 +13,7 @@ que_ng.gat,72,31,3	shop	ブンジ		83,13250,13251,13252,13253,13254
 // 案内員
 //------------------------------------------
 alberta.gat,30,65,3	script	アカギ	730,{
-	if(Class == Job_Ninja) {
+	if(Job == Job_Ninja) {
 		mes "[アカギ]";
 		mes "元気にしているか？";
 		mes "任務はいつ、どこで";
@@ -21,7 +21,7 @@ alberta.gat,30,65,3	script	アカギ	730,{
 		mes "修練を怠るな。";
 		close;
 	}
-	if(Class != Job_Novice || Upper != 0) {
+	if(Job != Job_Novice || Upper != UPPER_NORMAL) {
 		mes "[アカギ]";
 		mes "私は貴様に興味がない。";
 		mes "去れ。";
@@ -61,7 +61,7 @@ alberta.gat,30,65,3	script	アカギ	730,{
 // 試験申請
 //------------------------------------------
 que_ng.gat,30,65,3	script	クウガ・カイ	730,{
-	if(Class != Job_Novice || Upper != 0) {
+	if(Job != Job_Novice || Upper != Upper_NORMAL) {
 		mes "[クウガ・カイ]";
 		mes "何だ貴様！";
 		mes "どこから来たか知らんが、";
@@ -461,7 +461,7 @@ que_ng.gat,30,65,3	script	クウガ・カイ	730,{
 		delitem 1010,1;
 		delitem 7053,5;
 		unequip;
-		jobchange 29;
+		jobchange Job_Ninja;
 		set CHANGE_NJ,0;
 		getitem 13010,1;
 		close;
@@ -472,7 +472,7 @@ que_ng.gat,30,65,3	script	クウガ・カイ	730,{
 // 転職試験
 //------------------------------------------
 einbroch.gat,184,194,3	script	青年	881,{
-	if(Class == Job_Ninja) {
+	if(Job == Job_Ninja) {
 		mes "[ヒョウ]";
 		mes "忍者になれましたね。";
 		mes "これから、多くの困難が";
@@ -760,7 +760,7 @@ einbroch.gat,184,194,3	script	青年	881,{
 // 苦無製作
 //------------------------------------------
 que_ng.gat,72,29,3	script	カシン	83,{
-	if(Class != Job_Ninja) {
+	if(Job != Job_Ninja) {
 		mes "[カシン]";
 		mes "私はカシン。";
 		mes "忍者の方々と";
@@ -849,7 +849,7 @@ que_ng.gat,72,29,3	script	カシン	83,{
 // 忍者刀製作
 //------------------------------------------
 que_ng.gat,72,34,3	script	カイバラ	847,{
-	if(Class != Job_Ninja) {
+	if(Job != Job_Ninja) {
 		mes "[カイバラ]";
 		mes "ワシは忍者の武器を";
 		mes "作る事ができる。";
@@ -1034,7 +1034,7 @@ que_ng.gat,22,62,3	script	テツ	709,{
 	mes "辞めていた武器製造を";
 	mes "再開したんだ。";
 	next;
-	if(Class != Job_Ninja) {
+	if(Job != Job_Ninja) {
 		mes "[テツ]";
 		mes "どうやら、お前は忍者では";
 		mes "ないみたいだな。";
@@ -1187,7 +1187,7 @@ que_ng.gat,22,62,3	script	テツ	709,{
 // 手甲[1]製作
 //------------------------------------------
 que_ng.gat,28,50,3	script	ボシュ	709,{
-	if(Class != Job_Ninja) {
+	if(Job != Job_Ninja) {
 		mes "[ボシュ]";
 		mes "私はボシュ。";
 		mes "忍者の防具職人として";
@@ -1461,7 +1461,7 @@ L_Routine:
 // 手甲改製作
 //------------------------------------------
 que_ng.gat,28,45,3	script	バッシュ	86,{
-	if(Class != Job_Ninja) {
+	if(Job != Job_Ninja) {
 		mes "[バッシュ]";
 		mes "私は3人の忍者用防具職人の一人、";
 		mes "バッシュといいます。";
@@ -1739,7 +1739,7 @@ L_Routine:
 // 手甲改[1]製作
 //------------------------------------------
 que_ng.gat,27,18,3	script	トシュ	709,{
-	if(Class != Job_Ninja) {
+	if(Job != Job_Ninja) {
 		mes "[トシュ]";
 		mes "私は忍者用防具";
 		mes "を作っている3兄弟の一人。";

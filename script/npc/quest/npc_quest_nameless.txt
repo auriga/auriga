@@ -5208,7 +5208,7 @@ in_rogue.gat,359,116,3	script	マリーベル	747,{
 		mes "またね！";
 		close;
 	default:
-		if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+		if(getbaseclass(Class) == CLASS_TF) {
 			mes "[マリーベル]";
 			mes "最近、 Z団という奴らのせいで、";
 			mes "私達も忙しくなったわ。";

@@ -11,7 +11,7 @@
 //------------------------------------------
 
 moc_prydb1.gat,39,129,2	script	ギルド関係者	69,{
-	if(Class == Job_Thief) {
+	if(Job == Job_Thief) {
 		mes "[シーフギルド関係者]";
 		mes "よー。";
 		mes "悩みがあったらいつでも";
@@ -19,19 +19,19 @@ moc_prydb1.gat,39,129,2	script	ギルド関係者	69,{
 		mes "うん？";
 		close;
 	}
-	if(Class != Job_Novice) {
+	if(Job != Job_Novice) {
 		mes "[シーフギルド関係者]";
 		mes "お前はなんだ……？";
 		next;
 		mes "[シーフギルド関係者]";
-		switch(Class) {
+		switch(Job) {
 			case Job_Swordman: mes "馬鹿な剣士か！"; 		break;
 			case Job_Magician: mes "サーカス団の魔術師か！"; 	break;
 			case Job_Archer:   mes "アホウのアーチャーだな！"; 	break;
 			case Job_Acolyte:  mes "世界最強芸能人崇拝者アコか！"; 	break;
 			case Job_Merchant: mes "悪質な商人か！"; 		break;
 		}
-		if(Class < Job_Thief) {
+		if(Job < Job_Thief) {
 			next;
 			mes "[シーフギルド関係者]";
 		}
@@ -39,7 +39,7 @@ moc_prydb1.gat,39,129,2	script	ギルド関係者	69,{
 	   	mes "何しに来た？帰れ、帰れ！";
 		close;
 	}
-	if(Upper == 1 && OLD_CLASS != Job_Assassin && OLD_CLASS != Job_Rogue) {
+	if(Upper == UPPER_HIGH && OLD_CLASS != Job_Assassin && OLD_CLASS != Job_Rogue) {
 		//転生前が盗賊系でないとき、未調査？
 		close;
 	}
@@ -185,7 +185,7 @@ moc_prydb1.gat,39,129,2	script	ギルド関係者	69,{
 		mes "うん？なに？";
 		mes strcharinfo(0)+ "." +strcharinfo(0)+ " って…？";
 		next;
-		if(Upper == 1) {
+		if(Upper == UPPER_HIGH) {
 			if(getskilllv(1) < 9 || SkillPoint) {
 				mes "[シーフギルド関係者]";
 				mes "シーフになりたいという";
@@ -200,7 +200,7 @@ moc_prydb1.gat,39,129,2	script	ギルド関係者	69,{
 			mes "転職試験はいりませんね";
 			next;
 			unequip;
-			jobchange 6,1;
+			jobchange Job_Thief,UPPER_HIGH;
 			skill 149,1,0;
 			skill 150,1,0;
 			skill 151,1,0;
@@ -330,7 +330,7 @@ moc_prydb1.gat,39,129,2	script	ギルド関係者	69,{
 //------------------------------------------
 
 moc_ruins.gat,141,125,3	script	怪しい奴	83,{
-	if(Class == Job_Thief) {
+	if(Job == Job_Thief) {
 		mes "[シーフギルド関係者]";
 		mes "へえ、立派なシーフになったな。";
 		mes "でも、ここはもう入れないよ。";
@@ -340,7 +340,7 @@ moc_ruins.gat,141,125,3	script	怪しい奴	83,{
 		mes "美味しい物を拾いに行ってくれ。";
 		close;
 	}
-	if(Class != Job_Novice) {
+	if(Job != Job_Novice) {
 		switch(@doubt_npc) {
 		case 0:
 			mes "[怪しい奴]";
@@ -418,13 +418,13 @@ moc_ruins.gat,141,125,3	script	怪しい奴	83,{
 //------------------------------------------
 
 moc_prydb1.gat,42,133,2	script	ギルド関係者	118,{
-	if(Class == Job_Thief) {
+	if(Job == Job_Thief) {
 		mes "[ブレード]";
 		mes "今は特にイベントがないんだ。";
 		mes "連絡したら集合することだ。";
 		close;
 	}
-	if(Class != Job_Novice) {
+	if(Job != Job_Novice) {
 		mes "[シーフギルド関係者]";
 		mes "おーい、おーい、そこの奴！";
 		mes "ここで何してる？";
@@ -473,7 +473,7 @@ moc_prydb1.gat,42,133,2	script	ギルド関係者	118,{
 		delitem 1069,'@amount[0];
 		delitem 1070,'@amount[1];
 		unequip;
-		jobchange 6;
+		jobchange Job_Thief;
 		set CHANGE_TF,0;
 		mes "[シーフギルド総帥 'E']";
 		mes "「姓名 " +strcharinfo(0)+ " " +(Sex? "殿": "嬢")+ "。」";

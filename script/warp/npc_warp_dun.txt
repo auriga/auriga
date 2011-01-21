@@ -937,7 +937,7 @@ lhz_dun01.gat,281,150,0		warp	lighthalzenwarp4007	1,1,lhz_dun02.gat,282,153
 lhz_dun02.gat,282,161,0		warp	lighthalzenwarp4008	1,1,lhz_dun01.gat,281,154
 //生体工学研究所２⇔生体工学研究所３
 lhz_dun02.gat,149,149,0		script	lighthalzenwarp4009	45,1,1,{
-	if((Upper != 1 && BaseLevel >= 95) || (Upper == 1 && BaseLevel >= 90))
+	if((Upper != UPPER_HIGH && BaseLevel >= 95) || (Upper == UPPER_HIGH && BaseLevel >= 90))
 		warp "lhz_dun03.gat",140,133;
 	else
 		warp "lhz_dun02.gat",145,149;
@@ -991,7 +991,7 @@ tha_t05.gat,208,97,0		warp	thanatoswarp4009	1,1,tha_t05.gat,62,162
 tha_t05.gat,185,235,0		warp	thanatoswarp4010	1,1,tha_t06.gat,206,11
 //タナトスタワー6F⇒タナトスタワー7F
 tha_t06.gat,119,120,0		script	thanatoswarp4011	45,1,1,{
-	if( (Upper == 1 && Class >= Job_Knight && Class <= Job_Dancer) || (BaseLevel >= 95 && (Class ==  Job_SuperNovice || Class >= Job_Gunslinger)) )
+	if( (Class >= CLASS_KN_H && Class <= CLASS_CR2_H) || (Class >= CLASS_RK && Class <= CLASS_NC2_B) || (BaseLevel >= 95 && (Job >=  Job_SuperNovice && Job <= Job_DarkCollector)) )
 		warp "thana_step.gat",69,369;
 	else {
 		mes "-何か巨大な力に阻まれている……-";

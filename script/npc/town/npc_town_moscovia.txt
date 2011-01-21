@@ -2040,7 +2040,7 @@ mosk_fild01.gat,86,104,3	script	奇妙な老人	963,{
 		mes "わしの演奏を聞いて、一つずつ";
 		mes "やってみなさい。";
 		next;
-		if(Class == Bard) {
+		if(getbaseclass(Class,2) == CLASS_BA) {
 			emotion 21;
 			mes "[奇妙な老人]";
 			mes "ほう……";
@@ -2094,7 +2094,7 @@ mosk_fild01.gat,86,104,3	script	奇妙な老人	963,{
 		mes "[奇妙な老人]";
 		mes "ふむ……準備はいいようじゃの！";
 		next;
-		if(Class == Job_Bard) {
+		if(getbaseclass(Class,2) == CLASS_BA) {
 			mes "[奇妙な老人]";
 			mes "君の才能なら、今度は";
 			mes "うまく行くはずだ！頑張れ!!";
@@ -6911,7 +6911,7 @@ OnTouch:
 			mes "またの機会にしよう。";
 			close;
 		}
-		if(Class == Job_Thief || Class == Job_Assassin || Class == Job_Rogue) {
+		if(getbaseclass(Class) == CLASS_TF) {
 			mes "[" +strcharinfo(0)+ "]";
 			mes "ま、職業柄こんなの";
 			mes "見つけ出すのは簡単だね。";
