@@ -360,7 +360,7 @@
 388,SC_ENCHANTBLADE,0,1,0		// エンチャントブレイド
 389,SC_BERKANA,0,257,0			// ミレニアムシールド
 390,SC_NAUTHIZ,0,1,0			// リフレッシュ
-391,SC_TURISUSS,0,1,0			// ジャイアントグロウス
+391,SC_TURISUSS,0,1,0			// ジャイアントグロース
 392,SC_HAGALAZ,0,1,0			// ストーンハードスキン
 393,SC_ISHA,0,1,0			// バイタリティアクティベーション
 394,SC_EISIR,0,1,0			// ファイティングスピリット
@@ -388,8 +388,8 @@
 416,SC_LAUDAAGNUS,0,1,0			// ラウダアグヌス
 417,SC_LAUDARAMUS,0,1,0			// ラウダラムス
 418,SC_RENOVATIO,0,1,0			// レノヴァティオ
-419,SC_EXPIATIO,0,1,0			// エクスピアシオ
-420,SC_DUPLELIGHT,0,1,0			// デュプルライト
+419,SC_EXPIATIO,0,1,0			// エクスピアティオ
+420,SC_DUPLELIGHT,0,1,0			// デュプレライト
 421,SC_SACRAMENT,0,1,0			// サクラメント
 422,SC_WHITEIMPRISON,0,1,1		// ホワイトインプリズン
 423,SC_FROSTMISTY,0,1,0			// フロストミスティ
@@ -405,11 +405,11 @@
 433,SC_SPELLBOOK,0,1,0			// スペルブック
 434,SC_FEARBREEZE,0,1,0			// フィアーブリーズ
 435,SC_ELECTRICSHOCKER,0,1,0		// エレクトリックショッカー
-436,SC_WUGDASH,0,1,0			// ウルフダッシュ
-437,SC_WUGBITE,0,1,0			// ウルフバイト
+436,SC_WUGDASH,0,1,0			// ウォーグダッシュ
+437,SC_WUGBITE,0,1,0			// ウォーグバイト
 438,SC_CAMOUFLAGE,0,1,0			// カモフラージュ
 439,SC_ACCELERATION,0,1,0		// アクセラレーション
-440,SC_HOVERING,0,1,0			// ホバリング
+440,SC_HOVERING,0,1,0			// ホバーリング
 441,SC_OVERHEAT,0,1,0			// オーバーヒート
 442,SC_SHAPESHIFT,0,1,0			// シェイプシフト
 443,SC_INFRAREDSCAN,0,1,0		// インフラレッドスキャン
@@ -425,6 +425,21 @@
 453,SC_SPL_ATK,0,1,0			// スプレンティッドフィールドMOB(物理ダメージ上昇)
 454,SC_SPL_DEF,0,1,0			// スプレンティッドフィールドMOB(ダメージ減少)
 455,SC_SPL_MATK,0,1,0			// スプレンティッドフィールドMOB(魔法ダメージ上昇)
+456,SC__REPRODUCE,0,1,0			// リプロデュース
+457,SC__AUTOSHADOWSPELL,0,1,0		// オートシャドウスペル
+458,SC__SHADOWFORM,0,1,0		// シャドウフォーム
+459,SC__BODYPAINT,0,1,0			// ボディペイント
+460,SC__INVISIBILITY,0,1,0		// インビシビリティ
+461,SC__DEADLYINFECT,0,1,0		// デッドリーインフェクト
+462,SC__ENERVATION,0,1,0		// マスカレード ： エナーベーション
+463,SC__GROOMY,0,1,0			// マスカレード ： グルーミー
+464,SC__IGNORANCE,0,1,0			// マスカレード ： イグノアランス
+465,SC__LAZINESS,0,1,0			// マスカレード ： レイジーネス
+466,SC__UNLUCKY,0,1,0			// マスカレード ： アンラッキー
+467,SC__WEAKNESS,0,1,0			// マスカレード ： ウィークネス
+468,SC__STRIPACCESSARY,0,13,0		// ストリップアクセサリー
+469,SC__MANHOLE,0,1,0			// マンホール
+470,SC__BLOODYLUST,0,1,0		// ブラッディラスト
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

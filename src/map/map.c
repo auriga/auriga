@@ -1923,6 +1923,29 @@ void map_setcell(int m,int x,int y,int cell)
 }
 
 /*==========================================
+ * ランダムにマップの有効セル位置を返す
+ *------------------------------------------
+ */
+int map_random_freecell(int m,int *x,int *y)
+{
+	int posx, posy;
+	int i = 0;
+
+	do {
+		posx = atn_rand()%(map[m].xs-2)+1;
+		posy = atn_rand()%(map[m].ys-2)+1;
+	} while( map_getcell(m,posx,posy,CELL_CHKNOPASS) && (i++) < 1000 );
+
+	if(i < 1000) {
+		*x = posx;
+		*y = posy;
+		return 1;
+	}
+
+	return 0;
+}
+
+/*==========================================
  * 他鯖管理のマップをdbに追加
  *------------------------------------------
  */

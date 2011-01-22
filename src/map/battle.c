@@ -167,6 +167,23 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 				}
 			}
 		}
+		// シャドウフォームをかけられている
+		if( tsd && tsd->sc.data[SC__SHADOWFORM].timer != -1 && tsd->sc.data[SC__SHADOWFORM].val2 && (bl == NULL || bl != target) )
+		{
+			struct map_session_data *msd = map_id2sd(tsd->sc.data[SC__SHADOWFORM].val2);
+
+			if(msd && bl && skill_shadowform(msd,tsd->bl.id) == 0) {
+				// ダメージモーション付きでダメージ表示
+				clif_damage(&msd->bl,&msd->bl,gettick(),0,status_get_dmotion(&msd->bl),damage,0,0,0);
+				battle_damage(bl,&msd->bl,damage,skillid,skilllv,flag);
+				// 回数を超えたらシャドウフォーム解除
+				if(--tsd->sc.data[SC__SHADOWFORM].val3 <= 0) {
+					status_change_end(&tsd->bl,SC__SHADOWFORM,-1);
+				}
+				map_freeblock_unlock();
+				return 0;
+			}
+		}
 	}
 
 	status_change_attacked_end(target);	// 凍結・石化・睡眠を消去
@@ -1608,6 +1625,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NC_SELFDESTRUCTION:	// セルフディストラクション
 			calc_flag.hitrate = 1000000;
 			break;
+		case SC_FATALMENACE:	// フェイタルメナス
+			calc_flag.hitrate -= 5 + (6 - skill_lv) * 5;
+			break;
 		}
 
 		// ここから距離による判定
@@ -2387,7 +2407,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			DMG_FIX( (160 + 40 * skill_lv) * wd.div_, 100 );
 			break;
-		case AB_DUPLELIGHT_MELEE:	// デュプルライト(物理)
+		case AB_DUPLELIGHT_MELEE:	// デュプレライト(物理)
 			DMG_FIX( 100 + 10 * skill_lv, 100 );
 			break;
 		case RA_ARROWSTORM:		// アローストーム
@@ -2396,10 +2416,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case RA_AIMEDBOLT:		// エイムドボルト
 			DMG_FIX( (200 + 20 * skill_lv) * wd.div_, 100 );
 			break;
-		case RA_WUGSTRIKE:		// ウルフストライク
+		case RA_WUGSTRIKE:		// ウォーグストライク
 			DMG_FIX( 120 * skill_lv, 100 );
 			break;
-		case RA_WUGBITE:		// ウルフバイト
+		case RA_WUGBITE:		// ウォーグバイト
 			DMG_FIX( 100 + 50 * skill_lv, 100 );
 			break;
 		case RA_SENSITIVEKEEN:	// 鋭敏な嗅覚
@@ -2414,7 +2434,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NC_VULCANARM:	// バルカンアーム
 			DMG_FIX( 70 * skill_lv + status_get_dex(src) + status_get_lv(src), 100 );
 			break;
-		case NC_FLAMELAUNCHER:	// フレイムランチャー
+		case NC_FLAMELAUNCHER:	// フレイムスローワー
 		case NC_COLDSLOWER:		// コールドスローワー
 			DMG_FIX( 300 + 300 * skill_lv + status_get_lv(src), 100 );
 			break;
@@ -2439,6 +2459,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NC_AXETORNADO:	// アックストルネード
 			DMG_FIX( 200 + 100 * skill_lv + status_get_vit(src) + status_get_lv(src), 100 );
+			break;
+		case SC_FATALMENACE:	// フェイタルメナス
+			DMG_FIX( 100 + 100 * skill_lv, 100 );
+			break;
+		case SC_TRIANGLESHOT:	// トライアングルショット
+			DMG_FIX( 270 + 30 * skill_lv, 100 );
+			break;
+		case SC_FEINTBOMB:	// フェイントボム
+			DMG_FIX( 200 + 100 * skill_lv, 100 );
 			break;
 		}
 		if(skill_lv < 0)
@@ -2543,7 +2572,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			{
 				int vitbonusmax;
 
-				// エクスピアシオ
+				// エクスピアティオ
 				if(sc && sc->data[SC_EXPIATIO].timer != -1) {
 					t_def1 -= t_def1 * sc->data[SC_EXPIATIO].val2 / 100;
 					t_def2 -= t_def2 * sc->data[SC_EXPIATIO].val2 / 100;
@@ -2672,7 +2701,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if((--sc->data[SC_SACRIFICE].val2) <= 0)
 					status_change_end(src, SC_SACRIFICE,-1);
 			}
-			// ジャイアントグロウス
+			// ジャイアントグロース
 			if(sc->data[SC_TURISUSS].timer != -1 && wd.flag&BF_SHORT && !skill_num) {
 				if(atn_rand() % 10000 < 500) {
 					wd.damage *= 3;
@@ -2721,9 +2750,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					}
 				}
 				break;
-			case RA_WUGSTRIKE:	// ウルフストライク
-			case RA_WUGBITE:	// ウルフバイト
-				if((skill = pc_checkskill(src_sd,RA_TOOTHOFWUG)) > 0) {	// トゥースオブウルフによるダメージ増加
+			case RA_WUGSTRIKE:	// ウォーグストライク
+			case RA_WUGBITE:	// ウォーグバイト
+				if((skill = pc_checkskill(src_sd,RA_TOOTHOFWUG)) > 0) {	// トゥースオブウォーグによるダメージ増加
 					wd.damage += 6 * skill;
 				}
 				break;
@@ -3502,7 +3531,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			mgd.damage = (skill_lv > 6)? 388: 50*skill_lv;
 			normalmagic_flag = 0;
 			break;
-		case AB_DUPLELIGHT_MAGIC:	// デュプルライト(魔法)
+		case AB_DUPLELIGHT_MAGIC:	// デュプレライト(魔法)
 			MATK_FIX( 200 + 20 * skill_lv, 100 );
 			break;
 		case WL_SOULEXPANSION:		// ソウルエクスパンション
@@ -3539,8 +3568,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				MATK_FIX( (2500 + 500 * skill_lv) / mgd.div_, 100 );
 			}
 			break;
-		case WL_CHAINLIGHTNING:		// チェインライトニング
-		case WL_CHAINLIGHTNING_ATK:	// チェインライトニング(連鎖)
+		case WL_CHAINLIGHTNING:		// チェーンライトニング
+		case WL_CHAINLIGHTNING_ATK:	// チェーンライトニング(連鎖)
 			MATK_FIX( 400 + 100 * skill_lv, 100 );
 			break;
 		case WL_EARTHSTRAIN:	// アースストレイン
@@ -4015,19 +4044,29 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		return 0;
 	}
 
-	// ウルフライダー中
+	// ウォーグライダー中
 	if(sd && pc_iswolfmount(sd)) {
 		unit_stopattack(src);
 		return 0;
 	}
 
-	// 自分が白羽・強制移動・魅惑のウィンク中はダメ
-	if(sc && (sc->data[SC_BLADESTOP].timer != -1 || sc->data[SC_FORCEWALKING].timer != -1 || sc->data[SC_WINKCHARM].timer != -1)) {
+	// 自分の状態異常
+	if(sc && (
+		sc->data[SC_BLADESTOP].timer != -1 ||		// 白羽取り
+		sc->data[SC_FORCEWALKING].timer != -1 ||	// 強制移動
+		sc->data[SC_WINKCHARM].timer != -1 ||		// 魅惑のウィンク
+		sc->data[SC__SHADOWFORM].timer != -1 ||		// シャドウフォーム
+		sc->data[SC__MANHOLE].timer != -1			// マンホール
+	)) {
 		unit_stopattack(src);
 		return 0;
 	}
-	// 相手が強制移動中
-	if(t_sc && t_sc->data[SC_FORCEWALKING].timer != -1) {
+
+	// 相手の状態異常
+	if(t_sc && (
+		t_sc->data[SC_FORCEWALKING].timer != -1 ||	// 強制移動
+		t_sc->data[SC__MANHOLE].timer != -1			// マンホール
+	)) {
 		unit_stopattack(src);
 		return 0;
 	}
@@ -4183,7 +4222,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				pc_heal(sd,0,-sp);
 		}
 	}
-	// デュプルライト
+	// デュプレライト
 	if(sc && sc->data[SC_DUPLELIGHT].timer != -1) {
 		if(atn_rand()%100 < sc->data[SC_DUPLELIGHT].val2) {
 			skill_addtimerskill(src,tick+status_get_adelay(src) / 2,target->id,0,0,AB_DUPLELIGHT_MELEE,sc->data[SC_DUPLELIGHT].val1,tick,flag);
@@ -4191,6 +4230,33 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		else if(atn_rand()%100 < sc->data[SC_DUPLELIGHT].val3) {
 			skill_addtimerskill(src,tick+status_get_adelay(src) / 2,target->id,0,0,AB_DUPLELIGHT_MAGIC,sc->data[SC_DUPLELIGHT].val1,tick,flag);
 		}
+	}
+	// シャドウオートスペル
+	if(sc && sc->data[SC__AUTOSHADOWSPELL].timer != -1 && atn_rand()%100 < sc->data[SC__AUTOSHADOWSPELL].val4) {
+		int spellid = sc->data[SC__AUTOSHADOWSPELL].val2;
+		int spelllv = sc->data[SC__AUTOSHADOWSPELL].val3;
+
+		if(skill_get_inf(spellid) & 0x02) {
+			skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
+		} else {
+			switch(skill_get_nk(spellid) & 3) {
+			case 0:
+			case 2:	/* 攻撃系 */
+				skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
+				break;
+			case 1:	/* 支援系 */
+				if( (spellid == AL_HEAL || (spellid == ALL_RESURRECTION && target->type != BL_PC)) &&
+				    battle_check_undead(status_get_race(target),status_get_elem_type(target)) )
+					skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
+				else
+					skill_castend_nodamage_id(src,target,spellid,spelllv,tick,flag);
+				break;
+			}
+		}
+	}
+	// デッドリーインフェクト
+	if(sc && sc->data[SC__DEADLYINFECT].timer != -1 && (wd.damage > 0 || wd.damage2 > 0)) {
+		status_change_copy(src,target);
 	}
 
 	// カードによるオートスペル
@@ -4298,6 +4364,9 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				status_change_start(src,SC_STRIPWEAPON,1,0,0,0,10000,0);
 			}
 		}
+		if(t_sc->data[SC__DEADLYINFECT].timer != -1 && wd.flag&BF_SHORT && (wd.damage > 0 || wd.damage2 > 0)) {	// デッドリーインフェクト
+			status_change_copy(target,src);
+		}
 	}
 
 	map_freeblock_unlock();
@@ -4341,8 +4410,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	if(unit_isdead(src) || unit_isdead(dsrc) || unit_isdead(bl))	// すでに死んでいたら何もしない
 		return 0;
 
-	if(ssc) {		// 自分が強制移動、魅惑のウィンク中、スタン、石化、凍結、睡眠なら何もしない
-		if(ssc->data[SC_FORCEWALKING].timer != -1 || ssc->data[SC_WINKCHARM].timer != -1 || (ssc->opt1 > OPT1_NORMAL && ssc->opt1 != OPT1_BURNNING))
+	if(ssc) {		// 自分の状態異常
+		if( ssc->data[SC_FORCEWALKING].timer != -1 ||
+			ssc->data[SC_WINKCHARM].timer != -1 ||
+			ssc->data[SC__MANHOLE].timer != -1 ||
+			(ssc->opt1 > OPT1_NORMAL && ssc->opt1 != OPT1_BURNNING))
 			return 0;
 	}
 	if(sc) {
@@ -4356,6 +4428,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			return 0;
 		// 凍結状態でストームガスト、フロストノヴァ、氷衝落は無効
 		if(sc->data[SC_FREEZE].timer != -1 && (skillid == WZ_STORMGUST || skillid == WZ_FROSTNOVA || skillid == NJ_HYOUSYOURAKU))
+			return 0;
+		if(sc->data[SC__MANHOLE].timer != -1) 			// マンホール中は何もしない
 			return 0;
 	}
 	if(sd && sd->chatID)	// 発動元がPCでチャット中なら何もしない
@@ -4667,9 +4741,16 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	map_freeblock_lock();
 
-	/* クローンスキル */
-	if(damage > 0 && dmg.flag&BF_SKILL && tsd && pc_checkskill(tsd,RG_PLAGIARISM) && sc && sc->data[SC_PRESERVE].timer == -1) {
-		skill_clone(tsd,skillid,skilllv);
+	/* リプロデュース & クローンスキル */
+	if(damage > 0 && dmg.flag&BF_SKILL && tsd && sc) {
+		/* リプロデュース判定 */
+		if(pc_checkskill(tsd,SC_REPRODUCE) && sc->data[SC__REPRODUCE].timer != -1) {
+			skill_reproduce(tsd,skillid,skilllv);
+		}
+		/* クローンスキル判定 */
+		else if(pc_checkskill(tsd,RG_PLAGIARISM) && sc->data[SC_PRESERVE].timer == -1) {
+			skill_clone(tsd,skillid,skilllv);
+		}
 	}
 
 	/* 実際にダメージ処理を行う */
@@ -4817,6 +4898,13 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		} else {
 			status_change_start(src,SC_STRIPWEAPON,1,0,0,0,10000,0);
 		}
+	}
+	/* デッドリーインフェクト */
+	if(ssc && ssc->data[SC__DEADLYINFECT].timer != -1 && damage > 0) {
+		status_change_copy(src,bl);
+	}
+	if(dmg.flag&BF_SHORT && sc && sc->data[SC__DEADLYINFECT].timer != -1 && damage > 0) {
+		status_change_copy(bl,src);
 	}
 	map_freeblock_unlock();
 

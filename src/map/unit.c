@@ -306,6 +306,10 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 				skill_devotion3(sd,sd->dev.val1[i]);
 			}
 		}
+		/* 被シャドウフォーム検査 */
+		if(sd->shadowform_id != 0) {
+			skill_shadowform2(sd);
+		}
 
 		if(sd->sc.count > 0)
 		{
@@ -346,6 +350,10 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			/* 回転カウントリセット */
 			if(sd->sc.data[SC_ROLLINGCUTTER].timer != -1) {
 				status_change_end(&sd->bl,SC_ROLLINGCUTTER,-1);
+			}
+			/* シャドウフォーム検査 */
+			if(sd->sc.data[SC__SHADOWFORM].timer != -1) {
+				skill_shadowform(sd,sd->sc.data[SC__SHADOWFORM].val2);
 			}
 		}
 		// ギルドスキル有効
@@ -398,7 +406,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 				return 0;
 			}
 		} else if(sd && sd->sc.data[SC_WUGDASH].timer != -1) {
-			// ウルフダッシュ中に障害物に当たった
+			// ウォーグダッシュ中に障害物に当たった
 			if(map_getcell(sd->bl.m,x+dx,y+dy,CELL_CHKNOPASS) ||
 			   map_getcell(sd->bl.m,x   ,y+dy,CELL_CHKNOPASS) ||
 			   map_getcell(sd->bl.m,x+dx,y   ,CELL_CHKNOPASS) ||
@@ -1145,6 +1153,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		status_change_end(src,SC_CAMOUFLAGE,-1);
 	}
 
+	if(sc && sc->data[SC__INVISIBILITY].timer != -1 && skill_num != SC_INVISIBILITY) {
+		status_change_end(src,SC__INVISIBILITY,-1);
+	}
+
 	if(casttime > 0) {
 		int skill;
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_id, src->id, NULL);
@@ -1480,9 +1492,10 @@ int unit_can_move(struct block_list *bl)
 		    (sc->data[SC_FEAR].timer != -1 && sc->data[SC_FEAR].val3 > 0) ||	// 恐怖状態（2秒間）
 		    sc->data[SC_WEAPONBLOCKING2].timer != -1 ||	// ウェポンブロッキング（ブロック中）
 		    sc->data[SC_ELECTRICSHOCKER].timer != -1 ||	// エレクトリックショッカー
-		    sc->data[SC_WUGBITE].timer != -1 ||		// ウルフバイト
+		    sc->data[SC_WUGBITE].timer != -1 ||		// ウォーグバイト
 		    (sc->data[SC_CAMOUFLAGE].timer != -1 && sc->data[SC_CAMOUFLAGE].val1 < 3) ||	// カモフラージュ（Lv3未満）
-		    sc->data[SC_MAGNETICFIELD].timer != -1		// マグネティックフィールド
+		    sc->data[SC_MAGNETICFIELD].timer != -1 ||		// マグネティックフィールド
+		    sc->data[SC__MANHOLE].timer != -1	// マンホール
 		)
 			return 0;
 
@@ -1521,7 +1534,7 @@ int unit_isrunning(struct block_list *bl)
 	sc = status_get_sc(bl);
 	if(sc) {
 		if( sc->data[SC_RUN].timer != -1 ||		// 駆け足
-		    sc->data[SC_WUGDASH].timer != -1 ||	// ウルフダッシュ
+		    sc->data[SC_WUGDASH].timer != -1 ||	// ウォーグダッシュ
 		    sc->data[SC_FORCEWALKING].timer != -1 ||	// 強制移動
 		    sc->data[SC_SELFDESTRUCTION].timer != -1 )	// 自爆2
 			return 1;
@@ -1574,11 +1587,15 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		   sc->data[SC_TRICKDEAD].timer != -1 ||
 		   sc->data[SC_BLADESTOP].timer != -1 ||
 		   sc->data[SC_FULLBUSTER].timer != -1 ||
-		   sc->data[SC_KEEPING].timer != -1)
+		   sc->data[SC_KEEPING].timer != -1 ||
+		   sc->data[SC_WHITEIMPRISON].timer != -1 ||
+		   sc->data[SC__SHADOWFORM].timer != -1 ||
+		   sc->data[SC__MANHOLE].timer != -1)
 			return 0;
 	}
 	if( tsc ) {
-		if(tsc->data[SC_TRICKDEAD].timer != -1)
+		if(tsc->data[SC_TRICKDEAD].timer != -1 ||
+		   tsc->data[SC__MANHOLE].timer != -1)
 			return 0;
 	}
 

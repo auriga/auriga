@@ -3941,7 +3941,6 @@ int buildin_checkriding(struct script_state *st);
 int buildin_checkdragon(struct script_state *st);
 int buildin_checkgear(struct script_state *st);
 int buildin_checkwolf(struct script_state *st);
-int buildin_checkwolfmount(struct script_state *st);
 int buildin_checksit(struct script_state *st);
 int buildin_checkdead(struct script_state *st);
 int buildin_checkcasting(struct script_state *st);
@@ -4214,8 +4213,7 @@ struct script_function buildin_func[] = {
 	{buildin_checkriding,"checkriding",""},
 	{buildin_checkdragon,"checkdragon",""},
 	{buildin_checkgear,"checkgear",""},
-	{buildin_checkwolf,"checkwolf",""},
-	{buildin_checkwolfmount,"checkwolfmount",""},
+	{buildin_checkwolf,"checkwolf","*"},
 	{buildin_checksit,"checksit",""},
 	{buildin_checkdead,"checkdead",""},
 	{buildin_checkcasting,"checkcasting",""},
@@ -10200,27 +10198,30 @@ int buildin_checkgear(struct script_state *st)
 }
 
 /*==========================================
- * ウォーグを呼び出しているかどうか
+ * ウォーグを召喚または騎乗しているかどうか
  *------------------------------------------
  */
 int buildin_checkwolf(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
+	int type = 0, val = 0;
 
-	push_val(st->stack,C_INT,(pc_iswolf(sd)) ? 1 : 0);
+	if(st->end > st->start+2)
+		type = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	return 0;
-}
+	switch(type) {
+	case 1:		// 召喚のみチェック
+		val = pc_iswolf(sd)? 1 : 0;
+		break;
+	case 2:		// 騎乗のみチェック
+		val = pc_iswolfmount(sd)? 1 : 0;
+		break;
+	default:	// 両方チェック
+		val = (pc_iswolf(sd) || pc_iswolfmount(sd))? 1 : 0;
+		break;
+	}
 
-/*==========================================
- * ウォーグに騎乗しているかどうか
- *------------------------------------------
- */
-int buildin_checkwolfmount(struct script_state *st)
-{
-	struct map_session_data *sd = script_rid2sd(st);
-
-	push_val(st->stack,C_INT,(pc_iswolfmount(sd)) ? 1 : 0);
+	push_val(st->stack,C_INT,val);
 
 	return 0;
 }
@@ -11977,7 +11978,7 @@ int buildin_areamusiceffect(struct script_state *st)
  * 前職業Class取得
  *------------------------------------------
  */
-static int buildin_getbaseclass(struct script_state *st)
+int buildin_getbaseclass(struct script_state *st)
 {
 	int class_, type = 0;
 

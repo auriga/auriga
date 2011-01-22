@@ -4963,8 +4963,10 @@ void clif_arrow_create_list(struct map_session_data *sd)
 	WFIFOW(fd,2) = c * 2 + 4;
 	WFIFOSET(fd, WFIFOW(fd,2));
 
-	if(c > 0)
-		sd->state.make_arrow_flag = 1;
+	if(c > 0) {
+		sd->skill_menu.id = AC_MAKINGARROW;
+		sd->skill_menu.lv = 1;
+	}
 
 	return;
 }
@@ -5000,8 +5002,10 @@ void clif_poison_list(struct map_session_data *sd, short lv)
 	WFIFOW(fd,2) = c * 2 + 4;
 	WFIFOSET(fd, WFIFOW(fd,2));
 
-	if(c > 0)
-		sd->poisoning_lv = lv;
+	if(c > 0) {
+		sd->skill_menu.id = GC_POISONINGWEAPON;
+		sd->skill_menu.lv = lv;
+	}
 
 	return;
 }
@@ -5039,8 +5043,10 @@ void clif_reading_sb_list(struct map_session_data *sd)
 	WFIFOW(fd,2) = c * 2 + 4;
 	WFIFOSET(fd, WFIFOW(fd,2));
 
-	if(c > 0)
-		sd->state.reading_sb_flag = 1;
+	if(c > 0) {
+		sd->skill_menu.id = WL_READING_SB;
+		sd->skill_menu.lv = 1;
+	}
 
 	return;
 }
@@ -6740,13 +6746,15 @@ void clif_skillinfoblock(struct map_session_data *sd)
 	fd=sd->fd;
 	WBUFW(buf,0)=0x10f;
 	for (i=0; i < MAX_PCSKILL; i++){
-		if( (i==sd->skill_clone.id && (id=sd->skill_clone.id)!=0) || (id=sd->status.skill[i].id)!=0 ){
+		if( (i==sd->skill_clone.id && (id=sd->skill_clone.id)!=0) || (i==sd->skill_reproduce.id && (id=sd->skill_reproduce.id)!=0) || (id=sd->status.skill[i].id)!=0 ){
 			WBUFW(buf,len  ) = id;
 			WBUFL(buf,len+2) = skill_get_inf(id);
 			if(tk_ranker_bonus && sd->status.skill[i].flag==0)
 				skill_lv = pc_get_skilltree_max(&sd->s_class,id);
 			else if(i==sd->skill_clone.id)
 				skill_lv = (sd->status.skill[i].lv > sd->skill_clone.lv)? sd->status.skill[i].lv: sd->skill_clone.lv;
+			else if(i==sd->skill_reproduce.id)
+				skill_lv = (sd->status.skill[i].lv > sd->skill_reproduce.lv)? sd->status.skill[i].lv: sd->skill_reproduce.lv;
 			else
 				skill_lv = sd->status.skill[i].lv;
 			WBUFW(buf,len+6) = skill_lv;
@@ -6754,7 +6762,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 			WBUFW(buf,len+10)= skill_get_fixed_range(&sd->bl,id,skill_lv);
 			memset(WBUFP(buf,len+12),0,24);
 			if(!(skill_get_inf2(id)&0x01) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
-				WBUFB(buf,len+36) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && i!=sd->skill_clone.id && sd->status.skill[i].flag == 0)? 1: 0;
+				WBUFB(buf,len+36) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && i!=sd->skill_clone.id && i!=sd->skill_reproduce.id && sd->status.skill[i].flag == 0)? 1: 0;
 			else
 				WBUFB(buf,len+36) = 0;
 			len+=37;
@@ -11816,6 +11824,40 @@ void clif_mshield(struct map_session_data *sd, int num)
 }
 
 /*==========================================
+ * オートシャドウスペル
+ *------------------------------------------
+ */
+void clif_autoshadowspell(struct map_session_data *sd, short lv)
+{
+	int fd, c = 0;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0)=0x442;
+
+	if(skill_get_skill_type(sd->skill_clone.id) == BF_MAGIC) {
+		WFIFOW(fd,8+c*2) = sd->skill_clone.id;
+		c++;
+	}
+
+	if(skill_get_skill_type(sd->skill_reproduce.id) == BF_MAGIC) {
+		WFIFOW(fd,8+c*2) = sd->skill_reproduce.id;
+		c++;
+	}
+
+	WFIFOW(fd,2) = c * 2 + 8;
+	WFIFOSET(fd, WFIFOW(fd,2));
+
+	if(c > 0) {
+		sd->skill_menu.id = SC_AUTOSHADOWSPELL;
+		sd->skill_menu.lv = lv;
+	}
+
+	return;
+}
+
+/*==========================================
  * NPCイベント表示
  *------------------------------------------
  */
@@ -12871,7 +12913,8 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 	    sd->sc.data[SC_RUN].timer != -1 ||			// タイリギ
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中拾えない
-	    sd->sc.data[SC_BLADESTOP].timer != -1)		// 白刃取り
+	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
+	    sd->sc.data[SC__MANHOLE].timer != -1 )		// マンホール
 	{
 		clif_additem(sd,0,0,6);
 		return;
@@ -12922,7 +12965,8 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
 	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中
-	    sd->sc.data[SC_BERSERK].timer != -1)			// バーサーク
+	    sd->sc.data[SC_BERSERK].timer != -1 ||		// バーサーク
+	    sd->sc.data[SC__MANHOLE].timer != -1)		// マンホール
 	{
 		clif_delitem(sd, 0, item_index, 0);
 		return;
@@ -12976,7 +13020,10 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_FULLBUSTER].timer != -1 ||	// フルバスター
 	    sd->sc.data[SC_WEDDING].timer != -1 ||	// 結婚衣装
 	    sd->sc.data[SC_NOCHAT].timer != -1 ||	// 会話禁止
-	    sd->sc.data[SC_GRAVITATION_USER].timer != -1 )	// グラビテーションフィールド使用者
+	    sd->sc.data[SC_GRAVITATION_USER].timer != -1  ||	// グラビテーションフィールド使用者
+	    sd->sc.data[SC__SHADOWFORM].timer != -1 ||	// シャドウフォーム
+	    sd->sc.data[SC__INVISIBILITY].timer != -1 ||	// インビジビリティ
+	    sd->sc.data[SC__MANHOLE].timer != -1)	// マンホール
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;
@@ -13987,21 +14034,30 @@ static void clif_parse_ItemIdentify(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * 矢作成
+ * アイテムリスト選択受信
  *------------------------------------------
  */
-static void clif_parse_SelectArrow(int fd,struct map_session_data *sd, int cmd)
+static void clif_parse_SelectItem(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-	if(sd->state.make_arrow_flag == 1)
-		skill_arrow_create(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+	switch(sd->skill_menu.id)
+	{
+		case AC_MAKINGARROW:		/* 矢作成 */
+			skill_arrow_create(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+			break;
 
-	if(sd->poisoning_lv > 0)
-		skill_poisoning_weapon(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+		case GC_POISONINGWEAPON:	/* ポイズニングウェポン */
+			skill_poisoning_weapon(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+			break;
 
-	if(sd->state.reading_sb_flag > 0)
-		skill_reading_sb(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+		case WL_READING_SB:			/* リーディングスペルブック */
+			skill_reading_sb(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+			break;
+	}
+
+	sd->skill_menu.id = 0;
+	sd->skill_menu.lv = 0;
 
 	return;
 }
@@ -16002,6 +16058,27 @@ static void clif_parse_PartyBookingUpdateReq(int fd,struct map_session_data *sd,
 }
 
 /*==========================================
+ * スキルリスト選択受信
+ *------------------------------------------
+ */
+static void clif_parse_SelectSkill(int fd,struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+
+	switch(sd->skill_menu.id)
+	{
+		case SC_AUTOSHADOWSPELL:		/* シャドウオートスペル */
+			skill_autoshadowspell(sd,RFIFOW(fd,GETPACKETPOS(cmd,1)));
+			break;
+	}
+
+	sd->skill_menu.id = 0;
+	sd->skill_menu.lv = 0;
+
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -16196,7 +16273,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_NpcStringInput,            "npcstringinput"            },
 		{ clif_parse_NpcCloseClicked,           "npccloseclicked"           },
 		{ clif_parse_ItemIdentify,              "itemidentify"              },
-		{ clif_parse_SelectArrow,               "selectarrow"               },
+		{ clif_parse_SelectItem,                "selectitem"                },
 		{ clif_parse_AutoSpell,                 "autospell"                 },
 		{ clif_parse_UseCard,                   "usecard"                   },
 		{ clif_parse_InsertCard,                "insertcard"                },
@@ -16307,6 +16384,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyBookingSearchReq,     "bookingsearchreq"          },
 		{ clif_parse_PartyBookingUpdateReq,     "bookingupdatereq"          },
 		{ clif_parse_PartyBookingDeleteReq,     "bookingdelreq"             },
+		{ clif_parse_SelectSkill,               "selectskill"               },
 		{ NULL,                                 NULL                        },
 	};
 

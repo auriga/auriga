@@ -642,6 +642,12 @@ int pc_makesavestatus(struct map_session_data *sd)
 		pc_setglobalreg(sd,"PC_CLONESKILL_LV",sd->skill_clone.lv);
 	}
 
+	// リプロデュース保存
+	if(sd->skill_reproduce.id || sd->skill_reproduce.lv) {
+		pc_setglobalreg(sd,"PC_REPRODUCE_ID",sd->skill_reproduce.id);
+		pc_setglobalreg(sd,"PC_REPRODUCE_LV",sd->skill_reproduce.lv);
+	}
+
 	// キラー情報保存
 	if(battle_config.save_pckiller_type) {
 		pc_setglobalreg(sd,"PC_KILL_CHAR",sd->kill.char_id);
@@ -1112,6 +1118,10 @@ static int pc_isequip(struct map_session_data *sd,int n)
 		return 0;
 	if(sd->sc.data[SC_STRIPHELM].timer != -1 && item->equip & LOC_HEAD2)
 		return 0;
+	if(sd->sc.data[SC__STRIPACCESSARY].timer != -1 && item->equip & LOC_RLACCESSORY)
+		return 0;
+	if(sd->sc.data[SC__WEAKNESS].timer != -1 && item->equip & LOC_RLARM)
+		return 0;
 
 	return 1;
 }
@@ -1389,6 +1399,17 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 			sd->skill_clone.lv = lv;
 	} else {
 		memset(&sd->skill_clone,0,sizeof(sd->skill_clone));
+	}
+
+	// リプロデュースの初期化
+	if((lv = pc_checkskill2(sd,SC_REPRODUCE)) > 0) {
+		sd->skill_reproduce.id = pc_readglobalreg(sd,"PC_REPRODUCE_ID");
+		sd->skill_reproduce.lv = pc_readglobalreg(sd,"PC_REPRODUCE_LV");
+		if(sd->skill_reproduce.id > 0 && sd->skill_reproduce.lv > lv)	// 念のためレベルチェック
+			sd->skill_reproduce.lv = lv;
+	} else {
+		sd->skill_reproduce.id = 0;
+		sd->skill_reproduce.lv = 0;
 	}
 
 	// MailData
@@ -4686,6 +4707,9 @@ int pc_checkskill(struct map_session_data *sd,int skill_id)
 	if(sd->skill_clone.id > 0 && skill_id == sd->skill_clone.id)
 		return (sd->skill_clone.lv > sd->status.skill[skill_id].lv ? sd->skill_clone.lv : sd->status.skill[skill_id].lv);
 
+	if(sd->skill_reproduce.id > 0 && skill_id == sd->skill_reproduce.id)
+		return (sd->skill_reproduce.lv > sd->status.skill[skill_id].lv ? sd->skill_reproduce.lv : sd->status.skill[skill_id].lv);
+
 	if(sd->status.skill[skill_id].id == skill_id)
 	{
 		if(sd->status.class_ == PC_CLASS_TK &&
@@ -5893,6 +5917,8 @@ void pc_resetskill(struct map_session_data* sd, int flag)
 	}
 	sd->skill_clone.id = 0;
 	sd->skill_clone.lv = 0;
+	sd->skill_reproduce.id = 0;
+	sd->skill_reproduce.lv = 0;
 	clif_updatestatus(sd,SP_SKILLPOINT);
 	clif_skillinfoblock(sd);
 	status_calc_pc(sd,0);
@@ -6134,6 +6160,12 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 			status_change_end(map_id2bl(sd->dev.val1[i]),SC_DEVOTION,-1);
 			sd->dev.val1[i] = sd->dev.val2[i] = 0;
 		}
+	}
+
+	// シャドウフォーム終了
+	if(sd->shadowform_id) {
+		status_change_end(map_id2bl(sd->shadowform_id),SC__SHADOWFORM,-1);
+		sd->shadowform_id = 0;
 	}
 
 	// 死亡直後にデスペナルティを発生させる場合
@@ -9064,6 +9096,8 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		    sd->sc.data[SC_CAMOUFLAGE].timer == -1 &&		// カモフラージュ状態ではSPが回復しない
 		    sd->sc.data[SC_MAGNETICFIELD].timer == -1 &&	// マグネティックフィールド状態ではSPが回復しない
 		    sd->sc.data[SC_STEALTHFIELD_USER].timer == -1 &&	// ステルスフィールド(使用者)はSPが回復しない
+		    sd->sc.data[SC__SHADOWFORM].timer == -1 &&	// シャドウフォーム状態はSPが回復しない
+		    sd->sc.data[SC__INVISIBILITY].timer == -1 &&	// インビジビリティ状態はSPが回復しない
 		    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 			pc_natural_heal_sp(sd);
 	} else {

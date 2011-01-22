@@ -1,4 +1,21 @@
 ----------------------------------------
+//0823 [2011/01/23] by Blaze
+
+・シャドウチェイサースキル実装
+	(skill.*, battle.c, map.*, clif.*, db/skill_db.txt, db/skill_db2.txt,
+	 db/skill_cast_db.txt, db/skill_require_db.txt, db/skill_require_db2.txt, db/skill_unit_db.txt)
+　-> メイルストームは動作不安定のため、未実装です
+
+・シャドウチェイサー関連の状態異常実装(status.*, unit.c, mmo.h, pc.c, mob.c, pet.*, db/scdata_db.txt)
+
+・スクリプト関数「checkwolf()」の仕様変更(script.c)
+　-> パラメータ指定により、ウォーグ召喚またはウォーグ騎乗の両方がチェックできるようになります
+　-> 「checkwolfmount()」は廃止されます
+
+・0822以降、一部コンパイラにてエラーが出る不具合を修正 (script.c)
+	Thanks eucalyptus さん
+
+----------------------------------------
 //0822 [2011/01/22] by Blaze
 
 ・3次職実装(mmo.h, char.c, map.h, pc.*, skill.c, status.c, clif.c, atcommand.c, mob.c)

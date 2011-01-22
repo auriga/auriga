@@ -320,7 +320,6 @@ struct map_session_data {
 		unsigned gangsterparadise : 1;
 		unsigned taekwonrest : 1;
 		unsigned produce_flag : 1;
-		unsigned make_arrow_flag : 1;
 		unsigned potionpitcher_flag : 1;
 		unsigned storage_flag : 2;	// 0:倉庫未使用, 1:個人倉庫使用中, 2:ギルド倉庫使用中
 		unsigned autoloot : 1;
@@ -349,7 +348,6 @@ struct map_session_data {
 		unsigned tk_doridori_hp : 1;
 		unsigned tk_doridori_sp : 1;
 		unsigned show_equip : 1;
-		unsigned reading_sb_flag : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -426,6 +424,16 @@ struct map_session_data {
 		short id;
 		short lv;
 	} skill_clone;
+
+	struct {
+		short id;
+		short lv;
+	} skill_reproduce;
+
+	struct {
+		short id;
+		short lv;
+	} skill_menu;
 
 	struct {
 		int hp;
@@ -731,11 +739,12 @@ struct map_session_data {
 	short hotkey_set;
 	int shop_point;
 
-	short poisoning_lv;		// ポイズニングウェポンLv保存用（暫定）
+
 	unsigned int skillcooldown[MAX_THIRDSKILL];		// クールタイム（暫定的に3次職スキルのみ）
 	int freeze_sp_slot;
 	int freeze_sp_skill[MAX_FREEZE_SPELL];
 	int overheat;			// 魔導ギア加熱度（暫定）
+	int shadowform_id;		// シャドウフォーム
 };
 
 struct npc_timerevent_list {
@@ -1202,6 +1211,7 @@ extern char extra_add_file_txt[]; // to add items from external software (use ap
 int map_getcell(int,int,int,cell_t);
 int map_getcellp(struct map_data*,int,int,cell_t);
 void map_setcell(int,int,int,int);
+int map_random_freecell(int,int*,int*);
 
 // 鯖全体情報
 void map_setusers(int);

@@ -234,6 +234,8 @@ void skill_devotion2(struct block_list *bl,int crusader);
 int skill_devotion3(struct map_session_data *sd,int target_id);
 int skill_marionette(struct map_session_data *sd,int target_id);
 void skill_marionette2(struct map_session_data *dstsd,int src_id);
+int skill_shadowform(struct map_session_data *sd,int target_id);
+void skill_shadowform2(struct map_session_data *dstsd);
 
 #define skill_calc_heal(bl,skill_lv) ( (status_get_lv(bl) + status_get_int(bl)) / 8 * (4 + (skill_lv) * 8) )
 int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, int heal);
@@ -267,6 +269,7 @@ void skill_arrow_create(struct map_session_data *sd, int nameid);
 void skill_repair_weapon(struct map_session_data *sd, int idx);
 void skill_poisoning_weapon(struct map_session_data *sd, int nameid);
 void skill_reading_sb(struct map_session_data *sd, int nameid);
+void skill_autoshadowspell(struct map_session_data *sd, int skillid);
 
 // mobスキルのため
 int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag );
@@ -274,7 +277,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skilllv,unsigned int tick,int flag);
 
 int skill_clone(struct map_session_data* sd,int skillid,int skilllv);
-
+int skill_reproduce(struct map_session_data* sd,int skillid,int skilllv);
 
 void skill_weapon_refine(struct map_session_data *sd, int idx);
 int skill_success_weaponrefine(struct map_session_data *sd,int idx);
@@ -932,7 +935,9 @@ enum {
 	SL_GUNNER,
 	AM_TWILIGHT4,
 
-	DE_PASSIVE = 577,
+	DE_BERSERKAIZER = 578,
+	DA_DARKPOWER,
+	DE_PASSIVE,
 	DE_PATTACK,
 	DE_PSPEED,
 	DE_PDEFENSE,
@@ -970,7 +975,42 @@ enum {
 	DE_DANGERATTACK,
 	DE_TWINATTACK,
 	DE_WINDATTACK,
-	DE_WATERATTACK = 615,
+	DE_WATERATTACK,
+
+	DA_ENERGY = 619,
+	DA_CLOUD,
+	DA_FIRSTSLOT,
+	DA_HEADDEF,
+	DA_SPACE,
+	DA_TRANSFORM,
+	DA_EXPLOSION,
+	DA_REWARD,
+	DA_CRUSH,
+	DA_ITEMREBUILD,
+	DA_ILLUSION,
+	DA_NUETRALIZE,
+	DA_RUNNER,
+	DA_TRANSFER,
+	DA_WALL,
+
+	DA_REVENGE = 635,
+	DA_EARPLUG,
+	DA_CONTRACT,
+	DA_BLACK,
+	DA_DREAM,
+	DA_MAGICCART,
+	DA_COPY,
+	DA_CRYSTAL,
+	DA_EXP,
+	DA_CARTSWING,
+	DA_REBUILD,
+	DA_JOBCHANGE,
+	DA_EDARKNESS,
+	DA_EGUARDIAN,
+	DA_TIMEOUT,
+	ALL_TIMEIN,
+	DA_ZENYRANK,
+	DA_ACCESSORYMIX,
 
 	NPC_EARTHQUAKE = 653,
 	NPC_FIREBREATH,
@@ -1204,10 +1244,7 @@ enum {
 	SC_BLOODYLUST,
 	SC_FEINTBOMB,
 
-	ALL_REVERSEORCISH,
-	ALL_WEWISH,
-
-	LG_CANNONSPEAR,
+	LG_CANNONSPEAR = 2307,
 	LG_BANISHINGPOINT,
 	LG_TRAMPLE,
 	LG_SHIELDPRESS,
@@ -1296,6 +1333,19 @@ enum {
 	SO_VACUUM_EXTREME,
 	SO_VARETYR_SPEAR,
 	SO_ARRULLO,
+	SO_EL_CONTROL,
+	SO_SUMMON_AGNI,
+	SO_SUMMON_AQUA,
+	SO_SUMMON_VENTUS,
+	SO_SUMMON_TERA,
+	SO_EL_ACTION,
+	SO_EL_ANALYSIS,
+	SO_EL_SYMPATHY,
+	SO_EL_CURE,
+	SO_FIRE_INSIGNIA,
+	SO_WATER_INSIGNIA,
+	SO_WIND_INSIGNIA,
+	SO_EARTH_INSIGNIA,
 
 	GN_TRAINING_SWORD = 2474,
 	GN_REMODELING_CART,
@@ -1321,10 +1371,11 @@ enum {
 	GN_MIX_COOKING,
 	GN_MAKEBOMB,
 	GN_S_PHARMACY,
+	GN_SLINGITEM_RANGEMELEEATK,
 
 	AB_SECRAMENT = 2515,
-
-	SR_HOWLINGOFLION = 2517,
+	WM_SEVERE_RAINSTORM_MELEE,
+	SR_HOWLINGOFLION,
 	SR_RIDEINLIGHTNING,
 
 	HLIF_HEAL = 8001,
