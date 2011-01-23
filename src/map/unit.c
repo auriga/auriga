@@ -355,6 +355,13 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			if(sd->sc.data[SC__SHADOWFORM].timer != -1) {
 				skill_shadowform(sd,sd->sc.data[SC__SHADOWFORM].val2);
 			}
+			// ファイアー/エレクトリックウォーク配置
+			if(sd->sc.data[SC_PROPERTYWALK].timer != -1) {
+				skill_unitsetting(&sd->bl,sd->sc.data[SC_PROPERTYWALK].val2,sd->sc.data[SC_PROPERTYWALK].val1,sd->bl.x,sd->bl.y,0);
+				if(--sd->sc.data[SC_PROPERTYWALK].val3 <= 0) {
+					status_change_end(&sd->bl, SC_PROPERTYWALK, -1);
+				}
+			}
 		}
 		// ギルドスキル有効
 		pc_check_guild_skill_effective_range(sd);
@@ -976,6 +983,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	if(src_sd) {
 		switch(skill_num) {
 		case SA_CASTCANCEL:
+		case SO_SPELLFIST:				/* スペルフィスト */
 			if(src_ud->skillid != skill_num) { // キャストキャンセル自体は覚えない
 				src_sd->skill_used.id = src_ud->skillid;
 				src_sd->skill_used.lv = src_ud->skilllv;
@@ -1168,7 +1176,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			unit_stop_walking(src,1);
 		}
 	} else {
-		if(skill_num != SA_CASTCANCEL)
+		if(skill_num != SA_CASTCANCEL && skill_num != SO_SPELLFIST)
 			src_ud->skilltimer = -1;
 		skill_castend_id(src_ud->skilltimer,tick,src->id,NULL);
 	}
@@ -1495,7 +1503,9 @@ int unit_can_move(struct block_list *bl)
 		    sc->data[SC_WUGBITE].timer != -1 ||		// ウォーグバイト
 		    (sc->data[SC_CAMOUFLAGE].timer != -1 && sc->data[SC_CAMOUFLAGE].val1 < 3) ||	// カモフラージュ（Lv3未満）
 		    sc->data[SC_MAGNETICFIELD].timer != -1 ||		// マグネティックフィールド
-		    sc->data[SC__MANHOLE].timer != -1	// マンホール
+		    sc->data[SC__MANHOLE].timer != -1 ||	// マンホール
+		    sc->data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
+		    sc->data[SC_VACUUM_EXTREME].timer != -1	// バキュームエクストリーム
 		)
 			return 0;
 
@@ -1590,7 +1600,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		   sc->data[SC_KEEPING].timer != -1 ||
 		   sc->data[SC_WHITEIMPRISON].timer != -1 ||
 		   sc->data[SC__SHADOWFORM].timer != -1 ||
-		   sc->data[SC__MANHOLE].timer != -1)
+		   sc->data[SC__MANHOLE].timer != -1 ||
+		   sc->data[SC_DEEP_SLEEP].timer != -1)
 			return 0;
 	}
 	if( tsc ) {

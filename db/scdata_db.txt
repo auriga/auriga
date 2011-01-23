@@ -440,6 +440,58 @@
 468,SC__STRIPACCESSARY,0,13,0		// ストリップアクセサリー
 469,SC__MANHOLE,0,1,0			// マンホール
 470,SC__BLOODYLUST,0,1,0		// ブラッディラスト
+471,SC_REFLECTDAMAGE,0,1,0		// リフレクトダメージ
+472,SC_FORCEOFVANGUARD,0,1,0		// フォースオブバンガード
+473,SC_SHIELDSPELL_DEF,0,1,0		// シールドスペル(DEF)
+474,SC_SHIELDSPELL_MDEF,0,1,0		// シールドスペル(MDEF)
+475,SC_SHIELDSPELL_REF,0,1,0		// シールドスペル(精錬)
+476,SC_EXEEDBREAK,0,1,0			// イクシードブレイク
+477,SC_PRESTIGE,0,1,0			// プレスティージ
+478,SC_BANDING,0,1,0			// バンディング
+479,SC_SITDOWN_FORCE,0,1,1		// 強制座り状態
+480,SC_EARTHDRIVE,0,1,0			// アースドライブ
+481,SC_INSPIRATION,0,1,0		// インスピレーション
+482,SC_FALLENEMPIRE,0,1,0		// 大纏崩捶
+483,SC_CRESCENTELBOW,0,1,0		// 破碎柱
+484,SC_CURSEDCIRCLE_USER,0,1,0		// 呪縛陣(使用者)
+485,SC_CURSEDCIRCLE,0,1,0		// 呪縛陣
+486,SC_LIGHTNINGWALK,0,1,0		// 閃電歩
+487,SC_RAISINGDRAGON,0,1,0		// 潜竜昇天
+488,SR_GENTLETOUCH_ENERGYGAIN,0,1,0	// 点穴 -球-
+489,SR_GENTLETOUCH_CHANGE,0,1,0		// 点穴 -反-
+490,SR_GENTLETOUCH_REVITALIZE,0,1,0	// 点穴 -活-
+491,SC_SWING,0,1,0			// スイングダンス
+492,SC_SYMPHONY_LOVE,0,1,0		// 恋人たちの為のシンフォニー
+493,SC_MOONLIT_SERENADE,0,1,0		// 月明かりのセレナーデ
+494,SC_RUSH_WINDMILL,0,1,0		// 風車に向かって突撃
+495,SC_ECHOSONG,0,1,0			// エコーの歌
+496,SC_HARMONIZE,0,1,0			// ハーモナイズ
+497,SC_NETHERWORLD,0,1,0		// 地獄の歌
+498,SC_SIREN,0,1,0			// セイレーンの声
+499,SC_DEEP_SLEEP,0,1,0			// 安らぎの子守唄
+500,SC_SIRCLEOFNATURE,0,1,0		// 循環する自然の音
+501,SC_GLOOMYDAY,0,1,0			// メランコリー
+502,SC_SONG_OF_MANA,0,1,0		// マナの歌
+503,SC_DANCE_WITH_WUG,0,1,0		// ダンスウィズウォーグ
+504,SC_SATURDAY_NIGHT_FEVER,0,1,0	// フライデーナイトフィーバー
+505,SC_LERADS_DEW,0,1,0			// レーラズの霧
+506,SC_MELODYOFSINK,0,1,0		// メロディーオブシンク
+507,SC_BEYOND_OF_WARCRY,0,1,0		// ビヨンドオブウォークライ
+508,SC_UNLIMITED_HUMMING_VOICE,0,1,0	// エンドレスハミングボイス
+509,SC_PROPERTYWALK,0,1,0		// ファイアー/エレクトリックウォーク
+510,SC_SPELLFIST,0,1,0			// スペルフィスト
+511,SC_DIAMONDDUST,0,1,0		// ダイヤモンドダスト
+512,SC_CLOUD_KILL,0,1,0			// クラウドキル
+513,SC_STRIKING,0,1,0			// ストライキング
+514,SC_WARMER,0,1,0			// ウォーマー
+515,SC_VACUUM_EXTREME,0,1,0		// バキュームエクストリーム
+516,SC_GN_CARTBOOST,0,1,0		// カートブースト
+517,SC_THORNS_TRAP,0,1,0		// ソーントラップ
+518,SC_BLOOD_SUCKER,0,1,0		// ブラッドサッカー
+519,SC_SPORE_EXPLOSION,0,1,0		// スポアエクスプロージョン
+520,SC_FIRE_EXPANSION_SMOKE_POWDER,0,1,0	// ファイアーエクスパンション(煙幕)
+521,SC_FIRE_EXPANSION_TEAR_GAS,0,1,0	// ファイアーエクスパンション(催涙)
+522,SC_MANDRAGORA,0,1,0			// ハウリングマンドラゴラ
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

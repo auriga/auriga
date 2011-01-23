@@ -357,6 +357,7 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 		cutin "kafra_04",255;
 		end;
 	}
+	set '@sel_job,'@job_id[@menu - 1];
 	mes "[転職カプラ]";
 	mes "^FF0000" +'@job_name$[@menu - 1]+ "^000000に";
 	mes "転職されますか？";
@@ -369,7 +370,7 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 		end;
 	}
 	// 転職チェック（直前）
-	switch('@job_id[@menu - 1]) {
+	switch('@sel_job) {
 		case Job_Swordman:
 		case Job_Magician:
 		case Job_Archer:
@@ -515,7 +516,7 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 		end;
 	}
 	unequip;
-	jobchange '@job_id[@menu - 1];
+	jobchange '@sel_job;
 	mes "[転職カプラ]";
 	mes "転職おめでとうございます！";
 	mes "貴方のご活躍に期待しています。";

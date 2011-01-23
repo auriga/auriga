@@ -1,4 +1,14 @@
 ----------------------------------------
+//0824 [2011/01/24] by Blaze
+
+・ソーサラースキル実装
+	(skill.*, status.*, battle.c, clif.c, unit.c, db/skill_db.txt, db/skill_db2.txt,
+	 db/skill_cast_db.txt, db/skill_require_db.txt, db/skill_unit_db.txt)
+　-> 精霊関係のスキルは未実装です
+
+・サンプルの転職NPCの不具合を修正(npc_custom_jobchange.txt)
+
+----------------------------------------
 //0823 [2011/01/23] by Blaze
 
 ・シャドウチェイサースキル実装

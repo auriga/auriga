@@ -58,6 +58,8 @@ struct battle_delay_damage_ {
 	int dist;
 };
 
+static struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag);
+
 /*==========================================
  * ダメージの遅延
  *------------------------------------------
@@ -1669,7 +1671,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if( t_sc->data[SC_SLEEP].timer != -1 ||
 		    t_sc->data[SC_STUN].timer != -1 ||
 		    t_sc->data[SC_FREEZE].timer != -1 ||
-		    (t_sc->data[SC_STONE].timer != -1 && t_sc->data[SC_STONE].val2 == 0) ) {
+		    (t_sc->data[SC_STONE].timer != -1 && t_sc->data[SC_STONE].val2 == 0) ||
+		    t_sc->data[SC_DEEP_SLEEP].timer != -1 ) {
 			calc_flag.hitrate = 1000000;
 		}
 	}
@@ -2710,6 +2713,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					pc_break_equip(src_sd, LOC_RARM);
 				}
 			}
+			// スペルフィスト
+			if(sc->data[SC_SPELLFIST].timer != -1 && !skill_num) {
+				wd = battle_calc_attack(BF_MAGIC,src,target,sc->data[SC_SPELLFIST].val2,1,wd.flag);
+				wd.damage = wd.damage * (sc->data[SC_SPELLFIST].val1 + sc->data[SC_SPELLFIST].val3);
+				if((--sc->data[SC_SPELLFIST].val4) <= 0)
+					status_change_end(src, SC_SPELLFIST,-1);
+			}
 		}
 
 		/* 17．精錬ダメージの追加 */
@@ -2997,6 +3007,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			cardfix += t_sc->data[SC_VENOMIMPRESS].val2;
 		if(t_sc->data[SC_ORATIO].timer != -1 && s_ele == ELE_HOLY)		// オラティオ
 			cardfix += t_sc->data[SC_ORATIO].val2;
+		if(t_sc->data[SC_DEEP_SLEEP].timer != -1)		// 安息の子守唄
+			cardfix += 50;
 		if(cardfix != 100) {
 			DMG_FIX( cardfix, 100 );	// ステータス異常補正によるダメージ減少
 		}
@@ -3587,6 +3599,28 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case WL_SUMMON_ATK_GROUND:		/* サモンストーン(攻撃) */
 			MATK_FIX( 50 + 50 * skill_lv, 100 );
 			break;
+		case SO_FIREWALK:		/* ファイアーウォーク */
+		case SO_ELECTRICWALK:	/* エレクトリックウォーク */
+			MATK_FIX( 90 * skill_lv, 100 );
+			break;
+		case SO_EARTHGRAVE:		/* アースグレイブ */
+			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_SEISMICWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100 / mgd.div_, 100 );
+			break;
+		case SO_DIAMONDDUST:	/* ダイヤモンドダスト */
+			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_FROSTWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100 / mgd.div_, 100 );
+			break;
+		case SO_POISON_BUSTER:	/* ポイズンバスター */
+			MATK_FIX( 1200 + 300 * skill_lv, 100 );
+			break;
+		case SO_PSYCHIC_WAVE:	/* サイキックウェーブ */
+			MATK_FIX( ( 70 * skill_lv + status_get_int(bl) * 3 ) * status_get_lv(bl) / 100, 100 );
+			break;
+		case SO_CLOUD_KILL:		/* クラウドキル */
+			MATK_FIX( ( 40 * skill_lv ) * status_get_lv(bl) / 100, 100 );
+			break;
+		case SO_VARETYR_SPEAR:	/* ヴェラチュールスピア */
+			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_LIGHTNINGLOADER): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100, 100 );
+			break;
 	}
 
 	/* ４．一般魔法ダメージ計算 */
@@ -4056,7 +4090,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		sc->data[SC_FORCEWALKING].timer != -1 ||	// 強制移動
 		sc->data[SC_WINKCHARM].timer != -1 ||		// 魅惑のウィンク
 		sc->data[SC__SHADOWFORM].timer != -1 ||		// シャドウフォーム
-		sc->data[SC__MANHOLE].timer != -1			// マンホール
+		sc->data[SC__MANHOLE].timer != -1 ||			// マンホール
+		sc->data[SC_DEEP_SLEEP].timer != -1			// 安らぎの子守唄
 	)) {
 		unit_stopattack(src);
 		return 0;
@@ -4414,6 +4449,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		if( ssc->data[SC_FORCEWALKING].timer != -1 ||
 			ssc->data[SC_WINKCHARM].timer != -1 ||
 			ssc->data[SC__MANHOLE].timer != -1 ||
+			ssc->data[SC_DEEP_SLEEP].timer != -1 ||
 			(ssc->opt1 > OPT1_NORMAL && ssc->opt1 != OPT1_BURNNING))
 			return 0;
 	}

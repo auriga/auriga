@@ -174,7 +174,17 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 460- */
 	SI_INVISIBILITY,SI_DEADLYINFECT,SI_ENERVATION,SI_GROOMY,SI_IGNORANCE,SI_LAZINESS,SI_UNLUCKY,SI_WEAKNESS,SI_STRIPACCESSARY,SI_MANHOLE,
 	/* 470- */
-	SI_BLOODYLUST,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_BLOODYLUST,SI_REFLECTDAMAGE,SI_FORCEOFVANGUARD,SI_SHIELDSPELL_DEF,SI_SHIELDSPELL_MDEF,SI_SHIELDSPELL_REF,SI_EXEEDBREAK,SI_PRESTIGE,SI_BANDING,SI_SITDOWN_FORCE,
+	/* 480- */
+	SI_EARTHDRIVE,SI_INSPIRATION,SI_FALLENEMPIRE,SI_CRESCENTELBOW,SI_CURSEDCIRCLE_ATKER,SI_CURSEDCIRCLE_TARGET,SI_LIGHTNINGWALK,SI_RAISINGDRAGON,SI_GENTLETOUCH_ENERGYGAIN,SI_GENTLETOUCH_CHANGE,
+	/* 490- */
+	SI_GENTLETOUCH_REVITALIZE,SI_SWING,SI_SYMPHONY_LOVE,SI_MOONLIT_SERENADE,SI_RUSH_WINDMILL,SI_ECHOSONG,SI_HARMONIZE,SI_NETHERWORLD,SI_SIREN,SI_DEEP_SLEEP,
+	/* 500- */
+	SI_SIRCLEOFNATURE,SI_GLOOMYDAY,SI_SONG_OF_MANA,SI_DANCE_WITH_WUG,SI_SATURDAY_NIGHT_FEVER,SI_LERADS_DEW,SI_MELODYOFSINK,SI_BEYOND_OF_WARCRY,SI_UNLIMITED_HUMMING_VOICE,SI_PROPERTYWALK,
+	/* 510- */
+	SI_SPELLFIST,SI_BLANK,SI_BLANK,SI_STRIKING,SI_WARMER,SI_VACUUM_EXTREME,SI_GN_CARTBOOST,SI_THORNS_TRAP,SI_BLOOD_SUCKER,SI_SPORE_EXPLOSION,
+	/* 520- */
+	SI_FIRE_EXPANSION_SMOKE_POWDER,SI_FIRE_EXPANSION_TEAR_GAS,SI_MANDRAGORA,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 };
 
 /*==========================================
@@ -1945,6 +1955,11 @@ L_RECALC:
 			sd->critical -= sd->critical * (sd->sc.data[SC__UNLUCKY].val1 * 10) / 100;
 			sd->flee2 -= sd->sc.data[SC__UNLUCKY].val1 * 10;
 		}
+		// ストライキング
+		if(sd->sc.data[SC_STRIKING].timer != -1) {
+			sd->watk += sd->sc.data[SC_STRIKING].val3;
+			sd->critical += 10 * sd->sc.data[SC_STRIKING].val1;
+		}
 	}
 	// テコンランカーボーナス
 	if(sd->status.class_ == PC_CLASS_TK && sd->status.base_level >= 90 && ranking_get_pc_rank(sd,RK_TAEKWON) > 0)
@@ -3151,6 +3166,8 @@ int status_get_int(struct block_list *bl)
 			int_ = int_*60/100;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
 			int_ += 5;
+		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ストリップアクセサリー
+			int_ = int_ * 80 / 100;
 	}
 	if(int_ < 0) int_ = 0;
 	return int_;
@@ -3199,6 +3216,8 @@ int status_get_dex(struct block_list *bl)
 			dex -= dex * sc->data[SC_MARSHOFABYSS].val3 / 100;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
 			dex += 5;
+		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ストリップアクセサリー
+			dex = dex * 80 / 100;
 	}
 	if(dex < 0) dex = 0;
 	return dex;
@@ -3235,6 +3254,8 @@ int status_get_luk(struct block_list *bl)
 			luk = 0;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
 			luk += 5;
+		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ストリップアクセサリー
+			luk = luk * 80 / 100;
 	}
 	if(luk < 0) luk = 0;
 	return luk;
@@ -3422,6 +3443,8 @@ int status_get_critical(struct block_list *bl)
 			critical += 10*sc->data[SC_TRUESIGHT].val1;
 		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// マスカレード ： アンラッキー
 			critical -= critical * (sc->data[SC__UNLUCKY].val1 * 10) / 100;
+		if(sc->data[SC_STRIKING].timer != -1 && bl->type != BL_PC)	// ストライキング
+			critical += 10 * sc->data[SC_STRIKING].val1;
 	}
 	if(critical < 1) critical = 1;
 	return critical;
@@ -3480,6 +3503,8 @@ int status_get_baseatk(struct block_list *bl)
 			batk *= 4;
 		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 			batk -= batk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
+		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
+			batk += sc->data[SC_STRIKING].val3;
 	}
 	if(batk < 1) batk = 1;	// base_atkは最低でも1
 	return batk;
@@ -3543,6 +3568,8 @@ int status_get_atk(struct block_list *bl)
 			atk *= 4;
 		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 			atk -= atk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
+		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
+			atk += sc->data[SC_STRIKING].val3;
 	}
 	if(atk < 0) atk = 0;
 	return atk;
@@ -3633,6 +3660,8 @@ int status_get_atk2(struct block_list *bl)
 				atk2 *= 4;
 			if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 				atk2 -= atk2 * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
+			if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
+				atk2 += sc->data[SC_STRIKING].val3;
 		}
 		if(atk2 < 0) atk2 = 0;
 	}
@@ -5086,6 +5115,7 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 			sc_flag = 1;
 			break;
 		case SC_SLEEP:	// 睡眠
+		case SC_DEEP_SLEEP:	// 安息の子守唄
 			rate += src_level*10 - rate * status_get_int(bl)*10 / 1000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
@@ -5205,6 +5235,12 @@ int status_change_copy(struct block_list *src,struct block_list *bl)
 			case SC__UNLUCKY:
 			case SC__WEAKNESS:
 			case SC__STRIPACCESSARY:
+			case SC_GLOOMYDAY:
+			case SC_SITDOWN_FORCE:
+			//case SC_DEEP_SLEEP:
+			case SC_DIAMONDDUST:
+			case SC_CLOUD_KILL:
+			case SC_MANDRAGORA:
 				if(sc->data[type].timer != -1)
 				{
 					td = get_timer(sc->data[type].timer);
@@ -5363,6 +5399,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if((race == RCT_UNDEAD || elem == ELE_UNDEAD) && !(flag&1) && (type == SC_STONE || type == SC_FREEZE || type == SC_BLEED))
 		return 0;
 
+	// ウォーマー状態中は凍結、氷結、冷凍無効
+	if(sc->data[SC_WARMER].timer != -1 && (type == SC_FREEZE || type == SC_FROSTMISTY || type == SC_DIAMONDDUST))
+		return 0;
+
 	// 行動不能状態異常の優先順位
 	if(type >= SC_STONE && type < SC_SLEEP) {
 		int i;
@@ -5413,7 +5453,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			return 0;
 		if((type >= SC_STUN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING)
 			return 0;	/* 継ぎ足しができない状態異常である時は状態異常を行わない */
-		if(type == SC_GRAFFITI || type == SC_SEVENWIND || type == SC_SHAPESHIFT || type == SC__AUTOSHADOWSPELL) {
+		if(type == SC_GRAFFITI || type == SC_SEVENWIND || type == SC_SHAPESHIFT || type == SC__AUTOSHADOWSPELL || type == SC_PROPERTYWALK) {
 			// 異常中にもう一度状態異常になった時に解除してから再度かかる
 			status_change_end(bl,type,-1);
 		} else {
@@ -5528,6 +5568,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC__DEADLYINFECT:		/* デッドリーインフェクト */
 		case SC__IGNORANCE:			/* マスカレード ： イグノアランス */
 		case SC__MANHOLE:			/* マンホール */
+		case SC_WARMER:				/* ウォーマー */
+		case SC_VACUUM_EXTREME:		/* バキュームエクストリーム */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -6559,6 +6601,21 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick = 5000*val1;
 			}
 			break;
+		case SC_DEEP_SLEEP:		/* 安らぎの子守唄 */
+			val2 = tick / 2000;
+			tick = 2000;
+			break;
+		case SC_PROPERTYWALK:		/* ファイアー/エレクトリックウォーク */
+			val3 = val1 * 2 + 6;	// 発生個数
+			break;
+		case SC_SPELLFIST:		/* スペルフィスト */
+			val4 = val1 + 1;	// 回数
+			break;
+		case SC_STRIKING:			/* ストライキング */
+			val2 = tick / 1000;
+			tick = 1000;
+			calc_flag = 1;
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -7064,6 +7121,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC__UNLUCKY:			/* マスカレード ： アンラッキー */
 		case SC__STRIPACCESSARY:	/* ストリップアクセサリー */
 		case SC__BLOODYLUST:		/* ブラッディラスト */
+		case SC_STRIKING:			/* ストライキング */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -8375,6 +8433,31 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
+	case SC_DEEP_SLEEP:		/* 安らぎの子守唄 */
+		if((--sc->data[type].val2) > 0) {
+			int hp, sp = 0;
+			hp = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
+			if(sd)
+				sp = (int)((atn_bignumber)status_get_max_sp(bl) * 3 / 100);
+			if(hp || sp)
+				unit_heal(bl, hp, sp);
+			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_STRIKING:		/* ストライキング */
+		if((--sc->data[type].val2) > 0) {
+			if(sd) {
+				int sp = 6 - sc->data[type].val1;
+				if(sp > 0 && sd->status.sp >= sp) {
+					sd->status.sp -= sp;
+					clif_updatestatus(sd,SP_SP);
+					timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+				}
+			} else {
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
+		}
+		break;
 	}
 
 	if(timer == -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
@@ -8855,6 +8938,8 @@ int status_change_attacked_end(struct block_list *bl)
 		status_change_end(bl,SC_STONE,-1);
 	if(sc->data[SC_SLEEP].timer != -1)
 		status_change_end(bl,SC_SLEEP,-1);
+	if(sc->data[SC_DEEP_SLEEP].timer != -1)
+		status_change_end(bl,SC_DEEP_SLEEP,-1);
 
 	return 0;
 }

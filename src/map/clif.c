@@ -12599,7 +12599,7 @@ static void clif_parse_GlobalMessage(int fd,struct map_session_data *sd, int cmd
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可
-	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1)
+	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
 	WFIFOW(fd,0) = 0x8d;
@@ -12857,7 +12857,7 @@ static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可
-	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1)
+	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
 	intif_wis_message(sd, name, message, message_size);
@@ -12966,7 +12966,8 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中
 	    sd->sc.data[SC_BERSERK].timer != -1 ||		// バーサーク
-	    sd->sc.data[SC__MANHOLE].timer != -1)		// マンホール
+	    sd->sc.data[SC__MANHOLE].timer != -1 ||		// マンホール
+	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 )	// 安らぎの子守唄
 	{
 		clif_delitem(sd, 0, item_index, 0);
 		return;
@@ -13020,10 +13021,11 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_FULLBUSTER].timer != -1 ||	// フルバスター
 	    sd->sc.data[SC_WEDDING].timer != -1 ||	// 結婚衣装
 	    sd->sc.data[SC_NOCHAT].timer != -1 ||	// 会話禁止
-	    sd->sc.data[SC_GRAVITATION_USER].timer != -1  ||	// グラビテーションフィールド使用者
+	    sd->sc.data[SC_GRAVITATION_USER].timer != -1 ||	// グラビテーションフィールド使用者
 	    sd->sc.data[SC__SHADOWFORM].timer != -1 ||	// シャドウフォーム
 	    sd->sc.data[SC__INVISIBILITY].timer != -1 ||	// インビジビリティ
-	    sd->sc.data[SC__MANHOLE].timer != -1)	// マンホール
+	    sd->sc.data[SC__MANHOLE].timer != -1 ||	// マンホール
+	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 )	// 安らぎの子守唄
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;
@@ -13640,7 +13642,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	}
 
 	if(sd->ud.skilltimer != -1) {
-		if(skillnum != SA_CASTCANCEL)
+		if(skillnum != SA_CASTCANCEL && !(skillnum == SO_SPELLFIST && (sd->ud.skillid == MG_FIREBOLT || sd->ud.skillid == MG_COLDBOLT || sd->ud.skillid == MG_LIGHTNINGBOLT)))
 			return;
 	} else if(DIFF_TICK(tick, sd->ud.canact_tick) < 0) {
 		clif_skill_fail(sd,skillnum,4,0);
@@ -14498,7 +14500,7 @@ static void clif_parse_PartyMessage(int fd,struct map_session_data *sd, int cmd)
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可
-	if(sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1)
+	if(sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
 	party_send_message(sd, message, message_size);
@@ -14855,7 +14857,7 @@ static void clif_parse_GuildMessage(int fd,struct map_session_data *sd, int cmd)
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可
-	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1)
+	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
 	guild_send_message(sd, message, message_size);
@@ -15950,7 +15952,7 @@ static void clif_parse_BattleMessage(int fd,struct map_session_data *sd, int cmd
 		return;
 
 	// バーサーク、チャット禁止状態なら会話不可
-	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1)
+	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
 /*
