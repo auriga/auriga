@@ -510,8 +510,6 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 
 	if( tsc && (tsc->data[SC_TRICKDEAD].timer != -1 || tsc->data[SC_FORCEWALKING].timer != -1) )
 		return 0;
-	if( md->sc.data[SC_WINKCHARM].timer != -1 )
-		return 0;
 	if( !(mode&0x20) && tsc && ((tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || tsc->data[SC_CAMOUFLAGE].timer != -1) &&
 		((race != RCT_INSECT && race != RCT_DEMON) || tsc->data[SC_CLOAKINGEXCEED].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1)  )
 		return 0;

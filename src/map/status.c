@@ -1254,6 +1254,20 @@ L_RECALC:
 			sd->paramb[2] += sd->sc.data[SC_LAUDAAGNUS].val2;
 		if(sd->sc.data[SC_LAUDARAMUS].timer != -1)	// ラウダラムス
 			sd->paramb[5] += sd->sc.data[SC_LAUDARAMUS].val2;
+		if(sd->sc.data[SC_HARMONIZE].timer != -1) {	// ハーモナイズ
+			sd->parame[0] = 0;
+			sd->parame[1] = 0;
+			sd->parame[2] = 0;
+			sd->parame[3] = 0;
+			sd->parame[4] = 0;
+			sd->parame[5] = 0;
+			sd->paramb[0] = sd->sc.data[SC_HARMONIZE].val2;
+			sd->paramb[1] = sd->sc.data[SC_HARMONIZE].val2;
+			sd->paramb[2] = sd->sc.data[SC_HARMONIZE].val2;
+			sd->paramb[3] = sd->sc.data[SC_HARMONIZE].val2;
+			sd->paramb[4] = sd->sc.data[SC_HARMONIZE].val2;
+			sd->paramb[5] = sd->sc.data[SC_HARMONIZE].val2;
+		}
 	}
 
 	sd->paramc[0] = sd->status.str  + sd->paramb[0] + sd->parame[0];
@@ -1490,6 +1504,8 @@ L_RECALC:
 		sd->status.max_sp += 30 * skill;
 	if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0)	// トラップ研究
 		sd->status.max_sp += 200 + (skill*20);
+	if((skill = pc_checkskill(sd,WM_LESSON)) > 0)	// レッスン
+		sd->status.max_sp += skill * 30;
 
 	if(sd->sc.data[SC_INCMSP2].timer != -1) {
 		sd->status.max_sp = (int)((atn_bignumber)sd->status.max_sp * (100 + sd->sc.data[SC_INCMSP2].val1) / 100);
@@ -1521,6 +1537,11 @@ L_RECALC:
 	}
 	if((skill = pc_checkskill(sd,NJ_NINPOU)) > 0) {	// 忍法修練
 		sd->nshealsp = skill*3 + (sd->status.max_sp*skill/500);
+		if(sd->nshealsp > 0x7fff)
+			sd->nshealsp = 0x7fff;
+	}
+	if((skill = pc_checkskill(sd,WM_LESSON)) > 0) {	// レッスン
+		sd->nshealsp = 3 + skill * 3;
 		if(sd->nshealsp > 0x7fff)
 			sd->nshealsp = 0x7fff;
 	}
@@ -1955,6 +1976,30 @@ L_RECALC:
 			sd->critical -= sd->critical * (sd->sc.data[SC__UNLUCKY].val1 * 10) / 100;
 			sd->flee2 -= sd->sc.data[SC__UNLUCKY].val1 * 10;
 		}
+		// 恋人たちの為のシンフォニー
+		if(sd->sc.data[SC_SYMPHONY_LOVE].timer != -1) {
+			// 実際には除算MDEF増加だが、暫定で減算MDEF
+			sd->mdef2 += sd->mdef2 * sd->sc.data[SC_SYMPHONY_LOVE].val4 / 100;
+		}
+		// エコーの歌
+		if(sd->sc.data[SC_ECHOSONG].timer != -1) {
+			// 実際には除算DEF増加だが、暫定で減算DEF
+			sd->def2 += sd->def2 * sd->sc.data[SC_ECHOSONG].val4 / 100;
+		}
+		// メランコリー
+		if(sd->sc.data[SC_GLOOMYDAY].timer != -1) {
+			sd->flee -= sd->sc.data[SC_GLOOMYDAY].val1 * 5;
+		}
+		// レーラズの露
+		if(sd->sc.data[SC_LERADS_DEW].timer != -1) {
+			sd->status.max_hp += sd->sc.data[SC_LERADS_DEW].val1 * 200 + sd->sc.data[SC_LERADS_DEW].val4 * 300;
+		}
+		// フライデーナイトフィーバー
+		if(sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer != -1) {
+			sd->watk += 100 * sd->sc.data[SC_SATURDAY_NIGHT_FEVER].val1;
+			sd->def -= sd->def * (10 + 10 * sd->sc.data[SC_SATURDAY_NIGHT_FEVER].val1) / 100;
+			sd->flee -= sd->flee * (40 + 10 * sd->sc.data[SC_SATURDAY_NIGHT_FEVER].val1) / 100;
+		}
 		// ストライキング
 		if(sd->sc.data[SC_STRIKING].timer != -1) {
 			sd->watk += sd->sc.data[SC_STRIKING].val3;
@@ -2314,6 +2359,13 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 				slow_val = penalty;
 		}
 
+		// メランコリー
+		if(sd->sc.data[SC_GLOOMYDAY].timer != -1) {
+			int penalty = 3 * sd->sc.data[SC_GLOOMYDAY].val1;
+			if(slow_val < penalty)
+				slow_val = penalty;
+		}
+
 		/* amotionが減少するステータスの計算1 */
 
 		// 増速ポーション
@@ -2384,6 +2436,20 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		// マッドネスキャンセラー
 		if(sd->sc.data[SC_MADNESSCANCEL].timer != -1) {
 			int bonus = 20+ferver_bonus;
+			if(haste_val2 < bonus)
+				haste_val2 = bonus;
+		}
+
+		// スイングダンス
+		if(sd->sc.data[SC_SWING].timer != -1) {
+			int bonus = sd->sc.data[SC_SWING].val4;
+			if(haste_val2 < bonus)
+				haste_val2 = bonus;
+		}
+
+		// ダンスウィズウォーグ
+		if(sd->sc.data[SC_DANCE_WITH_WUG].timer != -1) {
+			int bonus = 2 + sd->sc.data[SC_DANCE_WITH_WUG].val4;
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
@@ -2693,6 +2759,12 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		if(sd->sc.data[SC_ACCELERATION].timer != -1) {
 			if(haste_val2 < 25)
 				haste_val2 = 25;
+		}
+
+		// スイングダンス
+		if(sd->sc.data[SC_SWING].timer != -1) {
+			if(haste_val1 < 25)
+				haste_val1 = 25;
 		}
 
 		// 移動速度増加(アイテム)
@@ -3306,6 +3378,10 @@ int status_get_flee(struct block_list *bl)
 			flee  -= flee*30/100;
 		if(sc->data[SC__LAZINESS].timer != -1 && bl->type != BL_PC)		// マスカレード ： レイジーネス
 			flee  -= flee*10/100;
+		if(sc->data[SC_GLOOMYDAY].timer != -1 && bl->type != BL_PC)		// メランコリー
+			flee -= sc->data[SC_GLOOMYDAY].val1 * 5;
+		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type != BL_PC)		// フライデーナイトフィーバー
+			flee -= flee * (40 + sc->data[SC_SATURDAY_NIGHT_FEVER].val1 * 10) / 100;
 	}
 
 	// 回避率補正
@@ -3503,6 +3579,8 @@ int status_get_baseatk(struct block_list *bl)
 			batk *= 4;
 		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 			batk -= batk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
+		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// フライデーナイトフィーバー
+			batk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
 			batk += sc->data[SC_STRIKING].val3;
 	}
@@ -3568,6 +3646,8 @@ int status_get_atk(struct block_list *bl)
 			atk *= 4;
 		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 			atk -= atk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
+		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// フライデーナイトフィーバー
+			atk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
 			atk += sc->data[SC_STRIKING].val3;
 	}
@@ -3660,6 +3740,8 @@ int status_get_atk2(struct block_list *bl)
 				atk2 *= 4;
 			if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 				atk2 -= atk2 * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
+			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// フライデーナイトフィーバー
+				atk2 += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 			if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
 				atk2 += sc->data[SC_STRIKING].val3;
 		}
@@ -3871,6 +3953,9 @@ int status_get_def(struct block_list *bl)
 			// ニュートラルバリアー
 			if(sc->data[SC_NEUTRALBARRIER].timer != -1 && bl->type != BL_PC)
 				def = def * (110 + 5 * sc->data[SC_NEUTRALBARRIER].val1) / 100;
+			// フライデーナイトフィーバー
+			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type != BL_PC)
+				def = def * (90 - 10 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1) / 100;
 		}
 		// 詠唱中は詠唱時減算率に基づいて減算
 		if(ud && ud->skilltimer != -1) {
@@ -4317,6 +4402,13 @@ int status_get_adelay(struct block_list *bl)
 					slow_val = penalty;
 			}
 
+			// メランコリー
+			if(sc->data[SC_GLOOMYDAY].timer != -1) {
+				int penalty = 3 * sc->data[SC_GLOOMYDAY].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
 			/* amotionが減少するステータスの計算1 */
 
 			// 増速ポーション
@@ -4501,6 +4593,13 @@ int status_get_amotion(struct block_list *bl)
 			// マスカレード ： グルーミー
 			if(sc->data[SC__GROOMY].timer != -1) {
 				int penalty = 20 + 10 * sc->data[SC__GROOMY].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			// メランコリー
+			if(sc->data[SC_GLOOMYDAY].timer != -1) {
+				int penalty = 3 * sc->data[SC_GLOOMYDAY].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
@@ -5368,6 +5467,61 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				return 0;
 			}
 			break;
+		// 3次歌スキル
+		case SC_SWING:
+		case SC_SYMPHONY_LOVE:
+		case SC_MOONLIT_SERENADE:
+		case SC_RUSH_WINDMILL:
+		case SC_ECHOSONG:
+		case SC_HARMONIZE:
+		case SC_SIREN:
+		case SC_SIRCLEOFNATURE:
+		case SC_SONG_OF_MANA:
+		case SC_DANCE_WITH_WUG:
+		case SC_SATURDAY_NIGHT_FEVER:
+		case SC_LERADS_DEW:
+		case SC_MELODYOFSINK:
+		case SC_BEYOND_OF_WARCRY:
+		case SC_UNLIMITED_HUMMING_VOICE:
+			if(battle_config.third_song_overlap) {	// 戦闘設定で歌スキル重複可能の場合
+				// メロディーオブシンクとビヨンドオブウォークライは重複させない
+				if(type == SC_MELODYOFSINK && sc->data[SC_BEYOND_OF_WARCRY].timer != -1)
+					status_change_end(bl,SC_BEYOND_OF_WARCRY,-1);
+				if(type == SC_BEYOND_OF_WARCRY && sc->data[SC_MELODYOFSINK].timer != -1)
+					status_change_end(bl,SC_MELODYOFSINK,-1);
+				break;
+			}
+			if(sc->data[SC_SWING].timer != -1)
+				status_change_end(bl,SC_SWING,-1);
+			if(sc->data[SC_SYMPHONY_LOVE].timer != -1)
+				status_change_end(bl,SC_SYMPHONY_LOVE,-1);
+			if(sc->data[SC_MOONLIT_SERENADE].timer != -1)
+				status_change_end(bl,SC_MOONLIT_SERENADE,-1);
+			if(sc->data[SC_RUSH_WINDMILL].timer != -1)
+				status_change_end(bl,SC_RUSH_WINDMILL,-1);
+			if(sc->data[SC_ECHOSONG].timer != -1)
+				status_change_end(bl,SC_ECHOSONG,-1);
+			if(sc->data[SC_HARMONIZE].timer != -1)
+				status_change_end(bl,SC_HARMONIZE,-1);
+			if(sc->data[SC_SIREN].timer != -1)
+				status_change_end(bl,SC_SIREN,-1);
+			if(sc->data[SC_SIRCLEOFNATURE].timer != -1)
+				status_change_end(bl,SC_SIRCLEOFNATURE,-1);
+			if(sc->data[SC_SONG_OF_MANA].timer != -1)
+				status_change_end(bl,SC_SONG_OF_MANA,-1);
+			if(sc->data[SC_DANCE_WITH_WUG].timer != -1)
+				status_change_end(bl,SC_DANCE_WITH_WUG,-1);
+			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1)
+				status_change_end(bl,SC_SATURDAY_NIGHT_FEVER,-1);
+			if(sc->data[SC_LERADS_DEW].timer != -1)
+				status_change_end(bl,SC_LERADS_DEW,-1);
+			if(sc->data[SC_MELODYOFSINK].timer != -1)
+				status_change_end(bl,SC_MELODYOFSINK,-1);
+			if(sc->data[SC_BEYOND_OF_WARCRY].timer != -1)
+				status_change_end(bl,SC_BEYOND_OF_WARCRY,-1);
+			if(sc->data[SC_UNLIMITED_HUMMING_VOICE].timer != -1)
+				status_change_end(bl,SC_UNLIMITED_HUMMING_VOICE,-1);
+			break;
 	}
 
 	sd  = BL_DOWNCAST( BL_PC,   bl );
@@ -5535,7 +5689,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_DODGE_DELAY:
 		case SC_DOUBLECASTING:			/* ダブルキャスティング */
 		case SC_SHRINK:				/* シュリンク */
-		case SC_WINKCHARM:			/* 魅惑のウィンク */
 		case SC_TIGEREYE:
 		case SC_PK_PENALTY:
 		case SC_HERMODE:
@@ -5568,6 +5721,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC__DEADLYINFECT:		/* デッドリーインフェクト */
 		case SC__IGNORANCE:			/* マスカレード ： イグノアランス */
 		case SC__MANHOLE:			/* マンホール */
+		case SC_NETHERWORLD:		/* 地獄の歌 */
+		case SC_MELODYOFSINK:		/* メロディーオブシンク */
+		case SC_BEYOND_OF_WARCRY:	/* ビヨンドオブウォークライ */
+		case SC_UNLIMITED_HUMMING_VOICE:	/* エンドレスハミングボイス */
 		case SC_WARMER:				/* ウォーマー */
 		case SC_VACUUM_EXTREME:		/* バキュームエクストリーム */
 			break;
@@ -5672,6 +5829,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC__WEAKNESS:			/* マスカレード ： ウィークネス */
 		case SC__STRIPACCESSARY:	/* ストリップアクセサリー */
 		case SC__BLOODYLUST:		/* ブラッディラスト */
+		case SC_HARMONIZE:			/* ハーモナイズ */
+		case SC_GLOOMYDAY:			/* メランコリー */
+		case SC_LERADS_DEW:			/* レーラズの露 */
+		case SC_DANCE_WITH_WUG:		/* ダンスウィズウォーグ */
 			calc_flag = 1;
 			break;
 
@@ -6601,9 +6762,45 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick = 5000*val1;
 			}
 			break;
+		case SC_SITDOWN_FORCE:		/* 転倒 */
+			if(sd){
+				pc_setsit(sd);
+				clif_sitting(&sd->bl, 1);
+			}
+			break;
+		case SC_SWING:				/* スイングダンス */
+			val4 = (val1 * 4) + (val2 * 2 / 10);
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+		case SC_SYMPHONY_LOVE:		/* 恋人たちの為のシンフォニー */
+		case SC_ECHOSONG:			/* エコーの歌 */
+			calc_flag = 1;
+		case SC_MOONLIT_SERENADE:	/* 月明かりのセレナーデ */
+		case SC_RUSH_WINDMILL:		/* 風車に向かって突撃 */
+			val4 = (val1 * 6) + (val2 * 2 / 10) + val3;
+			break;
+		case SC_WINKCHARM:	/* 魅惑のウィンク */
+		case SC_SIREN:		/* セイレーンの声 */
+			val3 = tick / 3000;
+			tick = 3000;
+			break;
 		case SC_DEEP_SLEEP:		/* 安らぎの子守唄 */
 			val2 = tick / 2000;
 			tick = 2000;
+			break;
+		case SC_SIRCLEOFNATURE:		/* 循環する自然の音 */
+			val2 = tick / 1000;
+			tick = 1000;
+			break;
+		case SC_SONG_OF_MANA:		/* マナの歌 */
+			val2 = tick / 5000;
+			tick = 5000;
+			break;
+		case SC_SATURDAY_NIGHT_FEVER:	/* フライデーナイトフィーバー */
+			val2 = tick / 3000;
+			tick = 3000;
+			calc_flag = 1;
 			break;
 		case SC_PROPERTYWALK:		/* ファイアー/エレクトリックウォーク */
 			val3 = val1 * 2 + 6;	// 発生個数
@@ -7121,6 +7318,12 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC__UNLUCKY:			/* マスカレード ： アンラッキー */
 		case SC__STRIPACCESSARY:	/* ストリップアクセサリー */
 		case SC__BLOODYLUST:		/* ブラッディラスト */
+		case SC_SYMPHONY_LOVE:		/* 恋人たちの為のシンフォニー */
+		case SC_ECHOSONG:			/* エコーの歌 */
+		case SC_HARMONIZE:			/* ハーモナイズ */
+		case SC_GLOOMYDAY:			/* メランコリー */
+		case SC_LERADS_DEW:			/* レーラズの露 */
+		case SC_DANCE_WITH_WUG:		/* ダンスウィズウォーグ */
 		case SC_STRIKING:			/* ストライキング */
 			calc_flag = 1;
 			break;
@@ -7144,6 +7347,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_CAMOUFLAGE:			/* カモフラージュ */
 		case SC__GROOMY:			/* マスカレード ： グルーミー */
 		case SC__LAZINESS:			/* マスカレード ： レイジーネス */
+		case SC_SWING:				/* スイングダンス */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -7426,6 +7630,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				if(dsd = map_id2sd(sc->data[type].val2))
 					dsd->shadowform_id = 0;
 			}
+			break;
+		case SC_SATURDAY_NIGHT_FEVER:	/* フライデーナイトフィーバー */
+			status_change_start(bl,SC_SITDOWN_FORCE,0,0,0,0,3000,0);
+			calc_flag = 1;
 			break;
 		/* option1 */
 		case SC_FREEZE:
@@ -8433,6 +8641,13 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
+	case SC_WINKCHARM:	/* 魅惑のウィンク */
+	case SC_SIREN:		/* セイレーンの声 */
+		if((--sc->data[type].val3) > 0) {
+			clif_emotion(bl,3);
+			timer = add_timer(3000+tick, status_change_timer, bl->id, data);
+		}
+		break;
 	case SC_DEEP_SLEEP:		/* 安らぎの子守唄 */
 		if((--sc->data[type].val2) > 0) {
 			int hp, sp = 0;
@@ -8442,6 +8657,47 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(hp || sp)
 				unit_heal(bl, hp, sp);
 			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_SIRCLEOFNATURE:		/* 循環する自然の音 */
+		if((--sc->data[type].val2) > 0) {
+			int hp = 40 * sc->data[type].val1;
+			if(sd) {
+				int sp = 4 * sc->data[type].val1;
+				if(sd && sd->status.sp >= sp) {
+					unit_heal(bl, hp, -sp);
+					timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+				}
+			} else {
+				unit_heal(bl, hp, 0);
+				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+			}
+		}
+		break;
+	case SC_SONG_OF_MANA:		/* マナの歌 */
+		if((--sc->data[type].val2) > 0) {
+			if(sd) {
+				int sp = 10 + 2 * sc->data[type].val4;
+				if(sd->status.sp + sp > sd->status.max_sp) {
+					sp = sd->status.max_sp - sd->status.sp;
+					sd->status.sp = sd->status.max_sp;
+				} else {
+					sd->status.sp += sp;
+				}
+				clif_updatestatus(sd,SP_SP);
+			}
+			timer = add_timer(5000+tick, status_change_timer,bl->id, data);
+		}
+		break;
+	case SC_SATURDAY_NIGHT_FEVER:		/* フライデーナイトフィーバー */
+		if(--sc->data[type].val2 > 0) {
+			int hp = 0,sp = 0;
+			hp = (int)((atn_bignumber)status_get_max_hp(bl) * (1 + sc->data[type].val1) / 100);
+			if(sd)
+				sp = (int)((atn_bignumber)status_get_max_sp(bl) * (1 + sc->data[type].val1) / 100);
+			unit_heal(bl, -hp, -sp);
+			if(!unit_isdead(bl) && sc->data[type].timer != -1)
+				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	case SC_STRIKING:		/* ストライキング */
@@ -8938,8 +9194,12 @@ int status_change_attacked_end(struct block_list *bl)
 		status_change_end(bl,SC_STONE,-1);
 	if(sc->data[SC_SLEEP].timer != -1)
 		status_change_end(bl,SC_SLEEP,-1);
+	if(sc->data[SC_WINKCHARM].timer != -1)
+		status_change_end(bl,SC_WINKCHARM,-1);
 	if(sc->data[SC_DEEP_SLEEP].timer != -1)
 		status_change_end(bl,SC_DEEP_SLEEP,-1);
+	if(sc->data[SC_SIREN].timer != -1)
+		status_change_end(bl,SC_SIREN,-1);
 
 	return 0;
 }

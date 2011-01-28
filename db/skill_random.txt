@@ -1,0 +1,55 @@
+//skill_random.txt
+// ランダム使用系のスキルを設定
+// RandomID,SkillID,Rate
+
+//マジックマッシュルーム
+1,7,1		//SM_MAGNUM#マグナムブレイク#
+1,8,1		//SM_ENDURE#インデュア#
+1,10,1		//MG_SIGHT#サイト#
+1,24,1		//AL_RUWACH#ルアフ#
+1,32,1		//AL_CRUCIS#シグナムクルシス#
+1,33,1		//AL_ANGELUS#エンジェラス#
+1,45,1		//AC_CONCENTRATION#集中力向上#
+1,61,1		//KN_AUTOCOUNTER#オートカウンター#
+1,74,1		//PR_MAGNIFICAT#マグニフィカート#
+1,110,1		//BS_HAMMERFALL#ハンマーフォール#
+1,114,1		//BS_MAXIMIZE#マキシマイズパワー#
+1,142,1		//NV_FIRSTAID#応急手当#
+1,150,1		//TF_BACKSLIDING#バックステップ#
+1,151,1		//TF_PICKSTONE#石拾い#
+1,157,1		//MG_ENERGYCOAT#エナジーコート#
+1,249,1		//CR_AUTOGUARD#オートガード#
+1,256,1		//CR_PROVIDENCE#プロヴィデンス#
+1,261,1		//MO_CALLSPIRITS#気功#
+1,318,1		//BA_FROSTJOKE#寒いジョーク#
+1,326,1		//DC_SCREAM#スクリーム#
+1,500,1		//GS_GLITTERING#フリップザコイン#
+1,527,1		//NJ_TATAMIGAESHI#畳返し#
+1,531,1		//NJ_UTSUSEMI#空蝉#
+
+//不確定要素の言語
+2,10,3	//MG_SIGHT#サイト#
+2,11,3	//MG_NAPALMBEAT#ナパームビート#
+2,12,3	//MG_SAFETYWALL#セイフティウォール#
+2,13,3	//MG_SOULSTRIKE#ソウルストライク#
+2,14,4	//MG_COLDBOLT#コールドボルト#
+2,15,3	//MG_FROSTDIVER#フロストダイバー#
+2,16,3	//MG_STONECURSE#ストーンカース#
+2,17,3	//MG_FIREBALL#ファイアーボール#
+2,18,3	//MG_FIREWALL#ファイアーウォール#
+2,19,4	//MG_FIREBOLT#ファイアーボルト#
+2,20,4	//MG_LIGHTNINGBOLT#ライトニングボルト#
+2,21,3	//MG_THUNDERSTORM#サンダーストーム#
+2,80,2	//WZ_FIREPILLAR#ファイアーピラー#
+2,81,2	//WZ_SIGHTRASHER#サイトラッシャー#
+2,83,1	//WZ_METEOR#メテオストーム#
+2,84,2	//WZ_JUPITEL#ユピテルサンダー#
+2,85,1	//WZ_VERMILION#ロードオブヴァーミリオン#
+2,86,2	//WZ_WATERBALL#ウォーターボール#
+2,87,2	//WZ_ICEWALL#アイスウォール#
+2,88,2	//WZ_FROSTNOVA#フロストノヴァ#
+2,89,1	//WZ_STORMGUST#ストームガスト#
+2,90,2	//WZ_EARTHSPIKE#アーススパイク#
+2,91,2	//WZ_HEAVENDRIVE#ヘヴンズドライブ#
+2,92,2	//WZ_QUAGMIRE#クァグマイア#
+2,93,2	//WZ_ESTIMATION#モンスター情報#

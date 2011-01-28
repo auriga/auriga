@@ -582,6 +582,7 @@ extern struct Battle_Config {
 	int third_status_max;
 	int third_baby_status_max;
 	int third_max_aspd;
+	int third_song_overlap;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

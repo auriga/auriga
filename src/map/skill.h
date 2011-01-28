@@ -29,6 +29,9 @@
 #define MAX_PRODUCE_RESOURCE	10
 #define MAX_SKILL_ARROW_DB	150
 #define MAX_SKILL_ABRA_DB	350
+#define MAX_SKILL_RAND_DB		5
+#define MAX_SKILL_RAND_ENTRY	100
+#define MAX_SKILL_RAND_RATE		1000
 
 struct skill_timerskill {
 	int timer;
@@ -132,6 +135,16 @@ struct skill_abra_db {
 };
 extern struct skill_abra_db skill_abra_db[MAX_SKILL_ABRA_DB];
 
+// ランダム発動スキルデータベース
+struct skill_rand_db {
+	struct {
+		int nameid;
+		int qty;
+	} data[MAX_SKILL_RAND_ENTRY];
+	int entry;
+};
+extern struct skill_rand_db skill_rand_db[MAX_SKILL_RAND_DB];
+
 int do_init_skill(void);
 
 int GetSkillStatusChangeTable(int id);
@@ -182,6 +195,8 @@ int skill_get_damage_rate(int id,int type);
 int skill_get_range_type(int id);
 
 int skill_get_fixed_range(struct block_list *bl,int id,int lv);
+
+int skill_searchrandomid(int type);
 
 // スキルの使用
 void skill_castend_map(struct map_session_data *sd, int skill_num, const char *map);

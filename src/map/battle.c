@@ -1209,7 +1209,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 }
 
 // 左手判定があるときだけdamage2を計算する
-#define DMG_FIX( a,b ) { wd.damage = wd.damage*(a)/(b); if(calc_flag.lh) wd.damage2 = wd.damage2*(a)/(b); }
+#define DMG_FIX( a,b ) { wd.damage = wd.damage*(a+(add_rate*b/100))/(b); if(calc_flag.lh) wd.damage2 = wd.damage2*(a+(add_rate*b/100))/(b); }
 #define DMG_ADD( a )   { wd.damage += (a); if(calc_flag.lh) wd.damage2 += (a); }
 #define DMG_SET( a )   { wd.damage = (a); if(calc_flag.lh) wd.damage2 = (a); }
 
@@ -1232,6 +1232,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	int cardfix, skill, damage_sbr = 0;
 	int ignored_rate = 100, ignored_rate_ = 100;
 	int i;
+	int add_rate = 0;
 	struct {
 		int rh;			// 右手
 		int lh;			// 左手
@@ -1752,6 +1753,19 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		damage_ot += wd.damage;
 		if(calc_flag.lh)
 			damage_ot2 += wd.damage2;
+
+		/* スキル倍率計算に加算 */
+		if(sc) {
+			if(sc->data[SC_RUSH_WINDMILL].timer != -1) {	// 風車に向かって突撃
+				add_rate += sc->data[SC_RUSH_WINDMILL].val4;
+			}
+			if(sc->data[SC_BEYOND_OF_WARCRY].timer != -1) {	// ビヨンドオブウォークライ
+				add_rate += sc->data[SC_BEYOND_OF_WARCRY].val1 * 5 + sc->data[SC_BEYOND_OF_WARCRY].val4 * 3;
+			}
+			if(sc->data[SC_MELODYOFSINK].timer != -1) {	// メロディーオブシンク
+				add_rate -= sc->data[SC_MELODYOFSINK].val1 * 5;
+			}
+		}
 
 		/* 12．スキル修正１（攻撃力倍加系）*/
 		switch( skill_num ) {
@@ -2472,6 +2486,25 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case SC_FEINTBOMB:	// フェイントボム
 			DMG_FIX( 200 + 100 * skill_lv, 100 );
 			break;
+		case WM_REVERBERATION_MELEE:	// 振動残響(物理)
+			DMG_FIX( 300 + 100 * skill_lv, 100 );
+			if(wflag > 1) {
+				DMG_FIX( 1, wflag );
+			}
+			break;
+		case WM_SEVERE_RAINSTORM:		// シビアレインストーム
+		case WM_SEVERE_RAINSTORM_MELEE:	// シビアレインストーム(攻撃)
+			DMG_FIX( ( 40 * skill_lv + status_get_dex(src) ) * status_get_lv(src) / 100 + status_get_agi(src) / 4, 100 );
+			break;
+		case WM_GREAT_ECHO:		// グレートエコー
+			DMG_FIX( 900 + 100 * skill_lv + 100 * wflag, 100 );
+			break;
+		case WM_SOUND_OF_DESTRUCTION:	// サウンドオブディストラクション
+			DMG_FIX( 250, 100 );
+			break;
+		case 0:			// 通常攻撃
+			DMG_FIX( 100, 100 );
+			break;
 		}
 		if(skill_lv < 0)
 			calc_flag.nocardfix = 1;
@@ -2708,6 +2741,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_TURISUSS].timer != -1 && wd.flag&BF_SHORT && !skill_num) {
 				if(atn_rand() % 10000 < 500) {
 					wd.damage *= 3;
+					if(calc_flag.lh)
+						wd.damage2 *= 3;
 				}
 				if(src_sd && atn_rand() % 10000 < 100) {
 					pc_break_equip(src_sd, LOC_RARM);
@@ -2766,6 +2801,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					wd.damage += 6 * skill;
 				}
 				break;
+			}
+		}
+
+		if(sc) {
+			// メランコリー
+			if(sc->data[SC_GLOOMYDAY].timer != -1 && (skill_num == KN_BRANDISHSPEAR || skill_num == LK_SPIRALPIERCE || skill_num == CR_SHIELDCHARGE ||
+			   skill_num == CR_SHIELDBOOMERANG || skill_num == PA_SHIELDCHAIN || skill_num == LG_SHIELDPRESS)) {
+				wd.damage = wd.damage * (175 + sc->data[SC_GLOOMYDAY].val1 * 25) / 100;
+				if(calc_flag.lh)
+					wd.damage2 = wd.damage2 * (175 + sc->data[SC_GLOOMYDAY].val1 * 25) / 100;
 			}
 		}
 
@@ -3262,7 +3307,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	return wd;
 }
 
-#define MATK_FIX( a,b ) { matk1 = matk1*(a)/(b); matk2 = matk2*(a)/(b); }
+#define MATK_FIX( a,b ) { matk1 = matk1*(a+(add_rate*b/100))/(b); matk2 = matk2*(a+(add_rate*b/100))/(b); }
 
 /*==========================================
  * 魔法ダメージ計算
@@ -3280,6 +3325,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	int mdef1, mdef2, t_ele, t_race, t_enemy, t_mode;
 	int t_class, cardfix, i;
 	int normalmagic_flag = 1;
+	int add_rate = 0;
 
 	// return前の処理があるので情報出力部のみ変更
 	if( bl == NULL || target == NULL || target->type == BL_PET ) {
@@ -3347,6 +3393,19 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	if (sc && sc->data[SC_MAGICPOWER].timer != -1) {
 		matk1 += (matk1 * sc->data[SC_MAGICPOWER].val1 * 5)/100;
 		matk2 += (matk2 * sc->data[SC_MAGICPOWER].val1 * 5)/100;
+	}
+
+	/* スキル倍率計算に加算 */
+	if(sc) {
+		if(sc->data[SC_MOONLIT_SERENADE].timer != -1) {	// 月明かりのセレナーデ
+			add_rate += sc->data[SC_MOONLIT_SERENADE].val4;
+		}
+		if(sc->data[SC_MELODYOFSINK].timer != -1) {	// メロディーオブシンク
+			add_rate += sc->data[SC_MELODYOFSINK].val1 * 5 + sc->data[SC_MELODYOFSINK].val4 * 3;
+		}
+		if(sc->data[SC_BEYOND_OF_WARCRY].timer != -1) {	// ビヨンドオブウォークライ
+			add_rate -= sc->data[SC_BEYOND_OF_WARCRY].val1 * 5;
+		}
 	}
 
 	/* ３．基本ダメージ計算(スキルごとに処理) */
@@ -3533,10 +3592,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			normalmagic_flag = 0;
 			break;
 		case AB_JUDEX:		// ジュデックス
-			MATK_FIX( ((skill_lv < 5)? 280 + 20 * skill_lv: 400) / mgd.div_, 100 );
+			MATK_FIX( (skill_lv < 5)? 280 + 20 * skill_lv: 400, 100 );
 			break;
 		case AB_ADORAMUS:	// アドラムス
-			MATK_FIX( (200 + 100 * skill_lv) / mgd.div_, 100 );
+			MATK_FIX( 200 + 100 * skill_lv, 100 );
 			break;
 		case AB_EPICLESIS:	// エピクレシス
 			ele = ELE_HOLY;
@@ -3564,20 +3623,20 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			MATK_FIX( 500 + 100 * skill_lv, 100 );
 			break;
 		case WL_CRIMSONROCK:	// クリムゾンロック
-			MATK_FIX( (1300 + 300 * skill_lv) / mgd.div_, 100 );
+			MATK_FIX( 1300 + 300 * skill_lv, 100 );
 			break;
 		case WL_HELLINFERNO:	// ヘルインフェルノ
 			MATK_FIX( 240 + 60 * skill_lv, 100 );
 			break;
 		case WL_COMET:	// コメット
 			if(flag == 3) {			// 遠距離
-				MATK_FIX( (800 + 200 * skill_lv) / mgd.div_, 100 );
+				MATK_FIX( 800 + 200 * skill_lv, 100 );
 			} else if(flag == 2) {		// 中距離
-				MATK_FIX( (1200 + 300 * skill_lv) / mgd.div_, 100 );
+				MATK_FIX( 1200 + 300 * skill_lv, 100 );
 			} else if(flag == 1) {		// 近距離
-				MATK_FIX( (1600 + 400 * skill_lv) / mgd.div_, 100 );
+				MATK_FIX( 1600 + 400 * skill_lv, 100 );
 			} else {		// 中心
-				MATK_FIX( (2500 + 500 * skill_lv) / mgd.div_, 100 );
+				MATK_FIX( 2500 + 500 * skill_lv, 100 );
 			}
 			break;
 		case WL_CHAINLIGHTNING:		// チェーンライトニング
@@ -3599,15 +3658,29 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case WL_SUMMON_ATK_GROUND:		/* サモンストーン(攻撃) */
 			MATK_FIX( 50 + 50 * skill_lv, 100 );
 			break;
+		case WM_METALICSOUND:	/* メタリックサウンド */
+			if(t_sc && (t_sc->data[SC_SLEEP].timer != -1 || t_sc->data[SC_DEEP_SLEEP].timer != -1)) {
+				MATK_FIX( ( ( 120 * skill_lv ) + ( (sd)? pc_checkskill(sd,WM_LESSON): 0 ) * 55 ) * 2, 100 );
+			}
+			else {
+				MATK_FIX( ( 120 * skill_lv ) + ( (sd)? pc_checkskill(sd,WM_LESSON): 0 ) * 55, 100 );
+			}
+			break;
+		case WM_REVERBERATION_MAGIC:	/* 振動残響(魔法) */
+			MATK_FIX( 100 + 100 * skill_lv, 100 );
+			if(flag > 1) {
+				MATK_FIX( 1, flag );
+			}
+			break;
 		case SO_FIREWALK:		/* ファイアーウォーク */
 		case SO_ELECTRICWALK:	/* エレクトリックウォーク */
 			MATK_FIX( 90 * skill_lv, 100 );
 			break;
 		case SO_EARTHGRAVE:		/* アースグレイブ */
-			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_SEISMICWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100 / mgd.div_, 100 );
+			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_SEISMICWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100, 100 );
 			break;
 		case SO_DIAMONDDUST:	/* ダイヤモンドダスト */
-			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_FROSTWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100 / mgd.div_, 100 );
+			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_FROSTWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100, 100 );
 			break;
 		case SO_POISON_BUSTER:	/* ポイズンバスター */
 			MATK_FIX( 1200 + 300 * skill_lv, 100 );
@@ -3751,7 +3824,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			else
 				mgd.damage = (mgd.div_ == 255)? 3: mgd.div_;
 		}
-		else if(mgd.div_ > 1 && skill_num != WZ_VERMILION) {
+		else if(mgd.div_ > 1 &&
+				skill_num != WZ_VERMILION && skill_num != AB_JUDEX && skill_num != AB_ADORAMUS &&
+				skill_num != WL_CRIMSONROCK && skill_num != WL_COMET && skill_num != WM_METALICSOUND &&
+				skill_num != SO_EARTHGRAVE && skill_num != SO_DIAMONDDUST) {
 			mgd.damage *= mgd.div_;
 		}
 	}
@@ -4088,9 +4164,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	if(sc && (
 		sc->data[SC_BLADESTOP].timer != -1 ||		// 白羽取り
 		sc->data[SC_FORCEWALKING].timer != -1 ||	// 強制移動
-		sc->data[SC_WINKCHARM].timer != -1 ||		// 魅惑のウィンク
+		(sc->data[SC_WINKCHARM].timer != -1 && sc->data[SC_WINKCHARM].val2 == target->id) ||	// 魅惑のウィンク
 		sc->data[SC__SHADOWFORM].timer != -1 ||		// シャドウフォーム
-		sc->data[SC__MANHOLE].timer != -1 ||			// マンホール
+		sc->data[SC__MANHOLE].timer != -1 ||		// マンホール
+		(sc->data[SC_SIREN].timer != -1 && sc->data[SC_SIREN].val2 == target->id) ||		// セイレーンの声
 		sc->data[SC_DEEP_SLEEP].timer != -1			// 安らぎの子守唄
 	)) {
 		unit_stopattack(src);
@@ -4267,7 +4344,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		}
 	}
 	// シャドウオートスペル
-	if(sc && sc->data[SC__AUTOSHADOWSPELL].timer != -1 && atn_rand()%100 < sc->data[SC__AUTOSHADOWSPELL].val4) {
+	if(sc && sc->data[SC__AUTOSHADOWSPELL].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%100 < sc->data[SC__AUTOSHADOWSPELL].val4) {
 		int spellid = sc->data[SC__AUTOSHADOWSPELL].val2;
 		int spelllv = sc->data[SC__AUTOSHADOWSPELL].val3;
 
@@ -4449,6 +4526,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		if( ssc->data[SC_FORCEWALKING].timer != -1 ||
 			ssc->data[SC_WINKCHARM].timer != -1 ||
 			ssc->data[SC__MANHOLE].timer != -1 ||
+			ssc->data[SC_SIREN].timer != -1 ||
 			ssc->data[SC_DEEP_SLEEP].timer != -1 ||
 			(ssc->opt1 > OPT1_NORMAL && ssc->opt1 != OPT1_BURNNING))
 			return 0;
@@ -4837,6 +4915,15 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				skill_additional_effect(dsrc,bl,skillid,skilllv,attack_type,tick);
 			else if(skillid != TK_TURNKICK)
 				skill_additional_effect(src,bl,skillid,skilllv,attack_type,tick);
+
+			// メタリックサウンドのSP消費
+			if(tsd && skillid == WM_METALICSOUND) {
+				int sp = damage;
+				int lesson_lv = (sd)? pc_checkskill(sd,WM_LESSON): 0;
+				lesson_lv = (lesson_lv > 10)? 10: lesson_lv;
+				sp = sp / (110 - 10 * lesson_lv);
+				pc_heal(tsd,0,-sp);
+			}
 		}
 
 		if(bl->type == BL_MOB && src != bl)	// スキル使用条件のMOBスキル
@@ -5939,6 +6026,7 @@ int battle_config_read(const char *cfgName)
 		{ "third_status_max",                   &battle_config.third_status_max,                   120      },
 		{ "third_baby_status_max",              &battle_config.third_baby_status_max,              108      },
 		{ "third_max_aspd",                     &battle_config.third_max_aspd,                     140      },
+		{ "third_song_overlap",                 &battle_config.third_song_overlap,                 0        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

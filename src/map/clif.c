@@ -11836,12 +11836,12 @@ void clif_autoshadowspell(struct map_session_data *sd, short lv)
 	fd=sd->fd;
 	WFIFOW(fd, 0)=0x442;
 
-	if(skill_get_skill_type(sd->skill_clone.id) == BF_MAGIC) {
+	if(skill_get_skill_type(sd->skill_clone.id) == BF_MAGIC && sd->skill_clone.id < THIRD_SKILLID) {
 		WFIFOW(fd,8+c*2) = sd->skill_clone.id;
 		c++;
 	}
 
-	if(skill_get_skill_type(sd->skill_reproduce.id) == BF_MAGIC) {
+	if(skill_get_skill_type(sd->skill_reproduce.id) == BF_MAGIC && sd->skill_reproduce.id < THIRD_SKILLID) {
 		WFIFOW(fd,8+c*2) = sd->skill_reproduce.id;
 		c++;
 	}
@@ -12773,9 +12773,11 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		}
 		break;
 	case 0x03:	// standup
-		pc_setstand(sd);
-		clif_sitting(&sd->bl, 0);
-		skill_sit(sd,0);	// ギャングスターパラダイスおよびテコン休息解除
+		if(sd->sc.data[SC_SITDOWN_FORCE].timer == -1) {
+			pc_setstand(sd);
+			clif_sitting(&sd->bl, 0);
+			skill_sit(sd,0);	// ギャングスターパラダイスおよびテコン休息解除
+		}
 		break;
 	}
 
@@ -13025,7 +13027,8 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC__SHADOWFORM].timer != -1 ||	// シャドウフォーム
 	    sd->sc.data[SC__INVISIBILITY].timer != -1 ||	// インビジビリティ
 	    sd->sc.data[SC__MANHOLE].timer != -1 ||	// マンホール
-	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 )	// 安らぎの子守唄
+	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
+	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer != -1 )	// フライデーナイトフィーバー
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;

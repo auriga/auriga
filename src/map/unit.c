@@ -1504,6 +1504,8 @@ int unit_can_move(struct block_list *bl)
 		    (sc->data[SC_CAMOUFLAGE].timer != -1 && sc->data[SC_CAMOUFLAGE].val1 < 3) ||	// カモフラージュ（Lv3未満）
 		    sc->data[SC_MAGNETICFIELD].timer != -1 ||		// マグネティックフィールド
 		    sc->data[SC__MANHOLE].timer != -1 ||	// マンホール
+		    sc->data[SC_SITDOWN_FORCE].timer != -1 ||	// 転倒
+		    sc->data[SC_NETHERWORLD].timer != -1 ||	// 地獄の歌
 		    sc->data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
 		    sc->data[SC_VACUUM_EXTREME].timer != -1	// バキュームエクストリーム
 		)
@@ -1634,7 +1636,9 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		int mode, race;
 		if((src_md->sc.opt1 > OPT1_NORMAL && src_md->sc.opt1 != OPT1_BURNNING) || src_md->sc.option&OPTION_HIDE)
 			return 0;
-		if(src_md->sc.data[SC_WINKCHARM].timer != -1)
+		if(src_md->sc.data[SC_WINKCHARM].timer != -1 && src_md->sc.data[SC_WINKCHARM].val2 == target->id)
+			return 0;
+		if(src_md->sc.data[SC_SIREN].timer != -1 && src_md->sc.data[SC_SIREN].val2 == target->id)
 			return 0;
 
 		mode = status_get_mode(src);
@@ -1643,7 +1647,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		if( !(mode&0x80) )
 			return 0;
 		if( !(mode&0x20) ) {
-			if( tsc && (tsc->data[SC_FORCEWALKING].timer != -1 || tsc->data[SC_WINKCHARM].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1) )
+			if( tsc && (tsc->data[SC_FORCEWALKING].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1) )
 				return 0;
 			if( target_sd ) {
 				if( pc_ishiding(target_sd) && race != RCT_INSECT && race != RCT_DEMON )
@@ -1787,6 +1791,8 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 			if(sd->special_state.no_castcancel && !map[bl->m].flag.gvg)
 				return 0;
 			if(sd->special_state.no_castcancel2)
+				return 0;
+			if(sd->sc.data[SC_UNLIMITED_HUMMING_VOICE].timer != -1 && !map[bl->m].flag.gvg)
 				return 0;
 		}
 	}

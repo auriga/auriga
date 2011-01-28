@@ -94,7 +94,7 @@
 			warp "rachel.gat",115,125;
 		end;
 	case 4:
-		if(getbaseclass(Class) == CLASS_MC) {
+		if(getbaseclass(Class) != CLASS_MC) {
 			mes "[ジョンダ職員]";
 			mes "お客様、大変申し訳ございませんが、";
 			mes "カートサービスは、商人とその上位職";

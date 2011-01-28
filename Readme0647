@@ -1,4 +1,42 @@
 ----------------------------------------
+//0825 [2011/01/29] by Blaze
+
+・ミンストレル・ワンダラースキル実装
+	(skill.*, status.*, battle.c, clif.c, unit.c, db/skill_db.txt, db/skill_db2.txt,
+	 db/skill_cast_db.txt, db/skill_require_db.txt, db/skill_require_db2.txt, db/skill_unit_db.txt)
+　-> 合唱人数による効果上昇および消費SP減少は調整中のため未実装です
+
+・戦闘設定に3次歌スキルが重複して効果を得られるか設定を追加(battle.*, conf/battle_auriga.conf)
+
+・複数ヒットする魔法系スキルの威力の計算式修正(battle.c)
+
+・ダンサースキル「魅惑のウィンク」の効果を修正(status.c, battle.c, skill.c, unit.c)
+　-> 一律攻撃不可状態から使用者のみ攻撃不可になります
+
+・ランダム発動スキルDBを追加(skill.*, db/skill_random.txt)
+　-> 試作段階のため、現状ソース内の処理専用となります
+　　（今後、スクリプトからのランダム発動を検討中）
+
+・マジシャンスキル「フロストダイバー」の凍結効果がすぐに解除されてしまう不具合修正(skill.c)
+	Thanks ばるす さん
+
+・戦闘設定の新ステータス計算形式の設定が必要ポイント計算式に反映されない不具合修正(pc.c)
+	Thanks kanashi さん
+
+・カプラ職員とジョンダ職員からカートを正常にレンタルできない不具合修正(npc_misc_kafra.txt, npc_misc_zonda.txt)
+	Thanks p-studio さん、NP3228 さん
+
+・シャドウチェイサースキル「フェイタルメナス」使用時、
+　相手が死亡後に対象の情報を参照していた不具合修正(skill.c)
+	Thanks unsyu さん、refis さん
+
+・シャドウチェイサースキル「オートシャドウスペル」の仕様を変更(battle.c, clif.c)
+　-> 近距離攻撃でダメージを与えた場合に発動するように修正
+　-> 3次職スキルは発動スキルメニューで選択できないように修正
+	Thanks unsyu さん、refis さん
+
+
+----------------------------------------
 //0824 [2011/01/24] by Blaze
 
 ・ソーサラースキル実装

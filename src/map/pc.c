@@ -5556,8 +5556,10 @@ int pc_need_status_point(struct map_session_data *sd,int type)
 		val = -1;
 	else if(val < 100)
 		val = (val + 9) / 10 + 1;
-	else
+	else if(battle_config.new_statusup_calc)
 		val = 16 + (val / 5 - 20) * 4;
+	else
+		val = (val + 9) / 10 + 1;
 
 	return val;
 }
@@ -9080,6 +9082,7 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	    sd->sc.data[SC_MAGICMUSHROOM].timer == -1 &&	// マジックマッシュルーム状態ではHPが回復しない
 	    sd->sc.data[SC_PYREXIA].timer == -1 &&	// パイレックシア状態ではHPが回復しない
 	    sd->sc.data[SC_LEECHEND].timer == -1 &&	// リーチエンド状態ではHPが回復しない
+	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer == -1 &&	// フライデーナイトフィーバー状態ではHPが回復しない
 	    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 	{
 		pc_natural_heal_hp(sd);
@@ -9098,6 +9101,9 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		    sd->sc.data[SC_STEALTHFIELD_USER].timer == -1 &&	// ステルスフィールド(使用者)はSPが回復しない
 		    sd->sc.data[SC__SHADOWFORM].timer == -1 &&	// シャドウフォーム状態はSPが回復しない
 		    sd->sc.data[SC__INVISIBILITY].timer == -1 &&	// インビジビリティ状態はSPが回復しない
+		    sd->sc.data[SC_SIRCLEOFNATURE].timer == -1 &&	// 循環する自然の音状態はSPが回復しない
+		    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer == -1 &&	// フライデーナイトフィーバー状態ではSPが回復しない
+		    sd->sc.data[SC_STRIKING].timer == -1 &&	// ストライキング状態はSPが回復しない
 		    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 			pc_natural_heal_sp(sd);
 	} else {
