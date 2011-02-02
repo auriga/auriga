@@ -7942,7 +7942,7 @@ void clif_item_skill(struct map_session_data *sd, int skillid, int skilllv, cons
 	fd=sd->fd;
 	WFIFOW(fd, 0)=0x147;
 	WFIFOW(fd, 2)=skillid;
-	if(skillid == MO_EXTREMITYFIST || skillid == TK_JUMPKICK)
+	if(skillid == MO_EXTREMITYFIST || skillid == TK_JUMPKICK || skillid == SR_TIGERCANNON || skillid == SR_GATEOFHELL)
 		WFIFOL(fd, 4)=1;
 	else
 		WFIFOL(fd, 4)=skill_get_inf(skillid);
@@ -12721,7 +12721,10 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	   sd->sc.data[SC_BLADESTOP].timer != -1 ||	// 白刃取り
 	   sd->sc.data[SC_RUN].timer != -1 ||		// タイリギ
 	   sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
-	   (sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_LONGINGFREEDOM].timer == -1))	// ダンス中
+	   (sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_LONGINGFREEDOM].timer == -1) ||	// ダンス中
+	   sd->sc.data[SC__MANHOLE].timer != -1 ||		// マンホール
+	   sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
+	   sd->sc.data[SC_CURSEDCIRCLE].timer != -1)		// 呪縛陣
 		return;
 
 	tick=gettick();
@@ -12916,7 +12919,9 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_RUN].timer != -1 ||			// タイリギ
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中拾えない
 	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
-	    sd->sc.data[SC__MANHOLE].timer != -1 )		// マンホール
+	    sd->sc.data[SC__MANHOLE].timer != -1 ||		// マンホール
+	    sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
+	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1)		// 呪縛陣
 	{
 		clif_additem(sd,0,0,6);
 		return;
@@ -12969,6 +12974,8 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// 強制移動中
 	    sd->sc.data[SC_BERSERK].timer != -1 ||		// バーサーク
 	    sd->sc.data[SC__MANHOLE].timer != -1 ||		// マンホール
+	    sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
+	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1 ||	// 呪縛陣
 	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 )	// 安らぎの子守唄
 	{
 		clif_delitem(sd, 0, item_index, 0);
@@ -13636,6 +13643,9 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			change_inf = INF_TOCHARACTER;
 	} else if(skillnum == TK_JUMPKICK) {
 		if(sd->sc.data[SC_DODGE_DELAY].timer == -1)
+			change_inf = INF_TOCHARACTER;
+	} else if(skillnum == SR_TIGERCANNON || skillnum == SR_GATEOFHELL) {
+		if(sd->sc.data[SC_COMBO].timer == -1 || sd->sc.data[SC_COMBO].val1 != SR_FALLENEMPIRE)
 			change_inf = INF_TOCHARACTER;
 	}
 

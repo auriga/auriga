@@ -1523,6 +1523,11 @@ L_RECALC:
 		if(sd->regen.tk_hp > 0x7fff)
 			sd->regen.tk_hp = 0x7fff;
 	}
+	if(sd->sc.data[SC_GENTLETOUCH_REVITALIZE].timer != -1) {
+		sd->nhealhp += sd->nhealhp * (50 + sd->sc.data[SC_GENTLETOUCH_REVITALIZE].val1 * 30) / 100;
+		if(sd->nshealhp > 0x7fff)
+			sd->nshealhp = 0x7fff;
+	}
 	if(sd->sc.data[SC_BERSERK].timer != -1) {
 		sd->nhealhp = 0;
 	}
@@ -1975,6 +1980,21 @@ L_RECALC:
 		if(sd->sc.data[SC__UNLUCKY].timer != -1) {
 			sd->critical -= sd->critical * (sd->sc.data[SC__UNLUCKY].val1 * 10) / 100;
 			sd->flee2 -= sd->sc.data[SC__UNLUCKY].val1 * 10;
+		}
+		// 潜竜昇天
+		if(sd->sc.data[SC_RAISINGDRAGON].timer != -1) {
+			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_RAISINGDRAGON].val3 / 100;
+			sd->status.max_sp += sd->status.max_sp * sd->sc.data[SC_RAISINGDRAGON].val3 / 100;
+		}
+		// 点穴 -反-
+		if(sd->sc.data[SC_GENTLETOUCH_CHANGE].timer != -1) {
+			sd->watk += sd->sc.data[SC_GENTLETOUCH_CHANGE].val2;
+			sd->status.max_hp -= sd->status.max_hp * (sd->sc.data[SC_GENTLETOUCH_CHANGE].val1 * 2) / 100;
+		}
+		// 点穴 -活-
+		if(sd->sc.data[SC_GENTLETOUCH_REVITALIZE].timer != -1) {
+			sd->status.max_hp += sd->status.max_hp * (sd->sc.data[SC_GENTLETOUCH_REVITALIZE].val1 * 3) / 100;
+			sd->def2 += sd->sc.data[SC_GENTLETOUCH_REVITALIZE].val2;
 		}
 		// 恋人たちの為のシンフォニー
 		if(sd->sc.data[SC_SYMPHONY_LOVE].timer != -1) {
@@ -2436,6 +2456,13 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		// マッドネスキャンセラー
 		if(sd->sc.data[SC_MADNESSCANCEL].timer != -1) {
 			int bonus = 20+ferver_bonus;
+			if(haste_val2 < bonus)
+				haste_val2 = bonus;
+		}
+
+		// 点穴 -反-
+		if(sd->sc.data[SC_GENTLETOUCH_CHANGE].timer != -1) {
+			int bonus = sd->sc.data[SC_GENTLETOUCH_CHANGE].val3;
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
@@ -4070,6 +4097,9 @@ int status_get_def2(struct block_list *bl)
 		// エスカ
 		if(sc->data[SC_SKA].timer != -1 && bl->type == BL_MOB)
 			def2 += 90;
+		// 点穴 -活-
+		if(sc->data[SC_GENTLETOUCH_REVITALIZE].timer != -1 && bl->type == BL_MOB)
+			def2 += sc->data[SC_GENTLETOUCH_REVITALIZE].val2;
 	}
 	if(def2 < 1) def2 = 1;
 	return def2;
@@ -4476,6 +4506,13 @@ int status_get_adelay(struct block_list *bl)
 					haste_val2 = bonus;
 			}
 
+			// 点穴 -反-
+			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
+				int bonus = sc->data[SC_GENTLETOUCH_CHANGE].val3;
+				if(haste_val2 < bonus)
+					haste_val2 = bonus;
+			}
+
 			/* その他 */
 
 			// ディフェンダー
@@ -4667,6 +4704,13 @@ int status_get_amotion(struct block_list *bl)
 			// マッドネスキャンセラー
 			if(sc->data[SC_MADNESSCANCEL].timer != -1) {
 				int bonus = 20+ferver_bonus;
+				if(haste_val2 < bonus)
+					haste_val2 = bonus;
+			}
+
+			// 点穴 -反-
+			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
+				int bonus = sc->data[SC_GENTLETOUCH_CHANGE].val3;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
@@ -5721,6 +5765,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC__DEADLYINFECT:		/* デッドリーインフェクト */
 		case SC__IGNORANCE:			/* マスカレード ： イグノアランス */
 		case SC__MANHOLE:			/* マンホール */
+		case SC_FALLENEMPIRE:		/* 大纏崩捶 */
+		case SC_CRESCENTELBOW:		/* 破碎柱 */
+		case SC_CURSEDCIRCLE_USER:	/* 呪縛陣(使用者) */
+		case SC_CURSEDCIRCLE:		/* 呪縛陣 */
+		case SC_LIGHTNINGWALK:		/* 閃電歩 */
 		case SC_NETHERWORLD:		/* 地獄の歌 */
 		case SC_MELODYOFSINK:		/* メロディーオブシンク */
 		case SC_BEYOND_OF_WARCRY:	/* ビヨンドオブウォークライ */
@@ -6768,6 +6817,40 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				clif_sitting(&sd->bl, 1);
 			}
 			break;
+		case SC_RAISINGDRAGON:	/* 潜龍昇天 */
+			val2 = tick / 5000;
+			val3 = val1 + 2;	// MaxHP,MaxSP増加率
+			tick = 5000;
+			calc_flag = 1;
+			break;
+		case SC_GENTLETOUCH_ENERGYGAIN:	/* 点穴 -球- */
+			// 点穴 -反-が掛かっていたら解除
+			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1)
+				status_change_end(bl,SC_GENTLETOUCH_CHANGE,-1);
+			// 点穴 -活-が掛かっていたら解除
+			if(sc->data[SC_GENTLETOUCH_REVITALIZE].timer != -1)
+				status_change_end(bl,SC_GENTLETOUCH_REVITALIZE,-1);
+			val2 = val1 * 5 + 10;	// 気弾生成率
+			break;
+		case SC_GENTLETOUCH_CHANGE:	/* 点穴 -反- */
+			// 点穴 -球-が掛かっていたら解除
+			if(sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1)
+				status_change_end(bl,SC_GENTLETOUCH_ENERGYGAIN,-1);
+			// 点穴 -活-が掛かっていたら解除
+			if(sc->data[SC_GENTLETOUCH_REVITALIZE].timer != -1)
+				status_change_end(bl,SC_GENTLETOUCH_REVITALIZE,-1);
+			val3 = status_get_agi(bl) / 15;		// ASPD上昇値
+			calc_flag = 1;
+			break;
+		case SC_GENTLETOUCH_REVITALIZE:	/* 点穴 -活- */
+			// 点穴 -球-が掛かっていたら解除
+			if(sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1)
+				status_change_end(bl,SC_GENTLETOUCH_ENERGYGAIN,-1);
+			// 点穴 -反-が掛かっていたら解除
+			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1)
+				status_change_end(bl,SC_GENTLETOUCH_CHANGE,-1);
+			calc_flag = 1;
+			break;
 		case SC_SWING:				/* スイングダンス */
 			val4 = (val1 * 4) + (val2 * 2 / 10);
 			calc_flag = 1;
@@ -7318,6 +7401,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC__UNLUCKY:			/* マスカレード ： アンラッキー */
 		case SC__STRIPACCESSARY:	/* ストリップアクセサリー */
 		case SC__BLOODYLUST:		/* ブラッディラスト */
+		case SC_GENTLETOUCH_CHANGE:	/* 点穴 -反- */
+		case SC_GENTLETOUCH_REVITALIZE:	/* 点穴 -活- */
 		case SC_SYMPHONY_LOVE:		/* 恋人たちの為のシンフォニー */
 		case SC_ECHOSONG:			/* エコーの歌 */
 		case SC_HARMONIZE:			/* ハーモナイズ */
@@ -7630,6 +7715,14 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				if(dsd = map_id2sd(sc->data[type].val2))
 					dsd->shadowform_id = 0;
 			}
+			break;
+		case SC_RAISINGDRAGON:		/* 潜龍昇天 */
+			if(sd) {
+				int max = pc_checkskill(sd,MO_CALLSPIRITS);
+				if(sd->spiritball.num > max)
+					pc_delspiritball(sd,sd->spiritball.num-max,0);
+			}
+			calc_flag = 1;
 			break;
 		case SC_SATURDAY_NIGHT_FEVER:	/* フライデーナイトフィーバー */
 			status_change_start(bl,SC_SITDOWN_FORCE,0,0,0,0,3000,0);
@@ -8638,6 +8731,22 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				sd->status.sp -= sp;
 				clif_updatestatus(sd,SP_SP);
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
+		}
+		break;
+	case SC_RAISINGDRAGON:		/* 潜龍昇天 */
+		if((--sc->data[type].val2) > 0) {
+			if(sd) {
+				int hp = sd->status.max_hp / 100;
+				if(hp > 0 && sd->status.hp >= hp) {
+					sd->status.hp -= hp;
+					clif_updatestatus(sd,SP_HP);
+					if(sd->status.max_hp * 15 / 100 < sd->status.hp) {
+						timer = add_timer(5000+tick, status_change_timer, bl->id, data);
+					}
+				}
+			} else {
+				timer = add_timer(5000+tick, status_change_timer, bl->id, data);
 			}
 		}
 		break;

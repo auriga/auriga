@@ -852,7 +852,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	mode = status_get_mode( &md->bl );
 
 	// 異常
-	if(md->sc.data[SC_BLADESTOP].timer != -1 || md->sc.data[SC__MANHOLE].timer != -1)
+	if(md->sc.data[SC_BLADESTOP].timer != -1 || md->sc.data[SC__MANHOLE].timer != -1 || md->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 || md->sc.data[SC_CURSEDCIRCLE].timer != -1)
 		return 0;
 	if(md->sc.opt1 > OPT1_NORMAL && md->sc.opt1 != OPT1_STONECURSE_ING && md->sc.opt1 != OPT1_BURNNING) {
 		if(md->sc.opt1 != OPT1_FREEZING || md->ud.walktimer == -1)    // 凍結中は移動が終わるまで処理を続ける(滑り)

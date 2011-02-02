@@ -101,6 +101,34 @@ int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_li
 }
 
 /*==========================================
+ * 周辺にダメージ
+ *------------------------------------------
+ */
+int battle_damage_area(struct block_list *bl,va_list ap)
+{
+	struct block_list *src;
+	int damage,skillid,skilllv,flag;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+
+	if((src = va_arg(ap,struct block_list*)) == NULL)
+		return 0;
+
+	damage  = va_arg(ap,int);
+	skillid = va_arg(ap,int);
+	skilllv = va_arg(ap,int);
+	flag    = va_arg(ap,int);
+
+	if(battle_check_target(src,bl,flag) > 0) {
+		clif_damage(bl,bl,gettick(),status_get_amotion(bl),status_get_dmotion(bl),damage,0,9,0);
+		battle_damage(src,bl,damage,skillid,skilllv,flag);
+	}
+
+	return 0;
+}
+
+/*==========================================
  * 実際にHPを操作
  *------------------------------------------
  */
@@ -602,6 +630,26 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		if(sc->data[SC_HALLUCINATIONWALK].timer != -1 && damage > 0 && flag&BF_MAGIC) {
 			if(atn_rand()%100 < sc->data[SC_HALLUCINATIONWALK].val1 * 10)
 				damage = 0;
+		}
+
+		// 閃電歩
+		if(sc->data[SC_LIGHTNINGWALK].timer != -1 && damage > 0 && flag&(BF_LONG|BF_MAGIC) && skill_get_inf(skill_num)&INF_TOCHARACTER) {
+			if(atn_rand()%100 < 88 + sc->data[SC_LIGHTNINGWALK].val1 * 2) {
+				damage = 0;
+				clif_skill_poseffect(bl,SR_LIGHTNINGWALK,sc->data[SC_LIGHTNINGWALK].val1,src->x,src->y,tick);
+				clif_move(bl);
+				status_change_end(bl, SC_LIGHTNINGWALK, -1);
+				unit_movepos(bl,src->x,src->y,0);
+			}
+		}
+
+		// 点穴 -球-
+		if(tsd && sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1 && atn_rand()%100 < sc->data[SC_GENTLETOUCH_ENERGYGAIN].val2 && flag&BF_SHORT && damage > 0) {
+			int skill = pc_checkskill(tsd,MO_CALLSPIRITS);
+			int max = skill;
+			if(sc->data[SC_RAISINGDRAGON].timer != -1)
+				max += sc->data[SC_RAISINGDRAGON].val1;
+			pc_addspiritball(tsd,skill_get_time(MO_CALLSPIRITS,skill),max);
 		}
 
 		// マヌクフィールドMOBダメージ減少
@@ -2486,6 +2534,84 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case SC_FEINTBOMB:	// フェイントボム
 			DMG_FIX( 200 + 100 * skill_lv, 100 );
 			break;
+		case SR_DRAGONCOMBO:	// 双竜脚
+			DMG_FIX( ( 100 + 40 * skill_lv ) * status_get_lv(src) / 100, 100 );
+			break;
+		case SR_SKYNETBLOW:	// 天羅地網
+			DMG_FIX( 80 * skill_lv + status_get_agi(src), 100 );
+			break;
+		case SR_EARTHSHAKER:	// 地雷震
+			if(!wflag) {	// 通常
+				DMG_FIX( 50 + 50 * skill_lv, 100 );
+			} else {	// ハイド相手
+				DMG_FIX( 150 + 150 * skill_lv, 100 );
+			}
+			break;
+		case SR_FALLENEMPIRE:	// 大纏崩墜
+			DMG_FIX( 100 + 150 * skill_lv, 100 );
+			break;
+		case SR_TIGERCANNON:	// 號砲
+			if(src_sd) {
+				int hp = status_get_max_hp(src) * (10 + skill_lv * 2) / 100;
+				int sp = status_get_max_sp(src) * (5 + skill_lv) / 100 - 1;
+				if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
+					DMG_FIX( (hp + sp + 1) / 4 * 2 * status_get_lv(src) / 150 , 100 );		// コンボ発動時
+				} else {
+					DMG_FIX( (hp + sp + 1) / 4 * status_get_lv(src) / 150 , 100 );			// 通常時
+				}
+				// HP,SP消費
+				if(src_sd->status.hp > hp) {
+					src_sd->status.hp -= hp;
+				} else {
+					src_sd->status.hp = 1;
+				}
+				clif_updatestatus(src_sd,SP_HP);
+
+				if(src_sd->status.sp > sp) {
+					src_sd->status.sp -= sp;
+				} else {
+					src_sd->status.sp = 0;
+				}
+				clif_updatestatus(src_sd,SP_SP);
+			}
+			break;
+		case SR_RAMPAGEBLASTER:	// 爆気散弾
+			if(src_sd && src_sd->spiritball.old) {
+				if(sc && sc->data[SC_EXPLOSIONSPIRITS].timer != -1) {
+					DMG_FIX( (100 + 20 * skill_lv) * src_sd->spiritball.old * status_get_lv(src) / 150  * 125 / 100, 100 );
+				} else {
+					DMG_FIX( 20 * skill_lv * src_sd->spiritball.old, 100 );
+				}
+			} else if(sc && sc->data[SC_EXPLOSIONSPIRITS].timer != -1) {
+				DMG_FIX( (100 + 20 * skill_lv) * status_get_lv(src) / 150 * 125 / 100, 100 );
+			} else {
+				DMG_FIX( 20 * skill_lv * status_get_lv(src) / 150, 100 );
+			}
+			break;
+		case SR_KNUCKLEARROW:	// 修羅身弾
+			if(!wflag) {
+				DMG_FIX( (500 + 100 * skill_lv) * status_get_lv(src) / 100, 100 );
+			} else if(target_sd) {		// 衝突ダメージ
+				DMG_FIX( (150 * skill_lv) + (status_get_lv(target) / 3 * 10) * status_get_lv(src) / 100 + (target_sd->weight / target_sd->max_weight * 10), 100 );
+			} else {
+				DMG_FIX( (150 * skill_lv) + (status_get_lv(target) / 3 * 10) * status_get_lv(src) / 100, 100 );
+			}
+			break;
+		case SR_WINDMILL:	// 旋風腿
+			DMG_FIX( 200, 100 );
+			break;
+		case SR_GATEOFHELL:	// 羅刹破凰撃
+			DMG_FIX( 500 * skill_lv * status_get_lv(src) / 100, 100 );
+			break;
+		case SR_GENTLETOUCH_QUIET:	// 点穴 -默-
+			DMG_FIX( ( 100 * skill_lv + status_get_dex(src) ) * status_get_lv(src) / 100, 100 );
+			break;
+		case SR_HOWLINGOFLION:	// 獅子吼
+			DMG_FIX( 180 * skill_lv, 100 );
+			break;
+		case SR_RIDEINLIGHTNING:	// 雷光弾
+			DMG_FIX( ( 200 * skill_lv + ((s_ele == ELE_WIND)? 50 * skill_lv: 0) ) * status_get_lv(src) / 100, 100 );
+			break;
 		case WM_REVERBERATION_MELEE:	// 振動残響(物理)
 			DMG_FIX( 300 + 100 * skill_lv, 100 );
 			if(wflag > 1) {
@@ -2876,6 +3002,39 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		    src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 == WT_FIST ) {
 			DMG_ADD( skill*10 );
 		}
+	}
+	if( skill_num == SR_FALLENEMPIRE ) {	// 大纏崩捶
+		if(target_sd) {
+			DMG_ADD( status_get_str(src) * 4 + target_sd->weight * 65 / 10 );
+		} else {
+			DMG_ADD( status_get_str(src) * 4 + status_get_lv(target) * 30 );
+		}
+	}
+	if( skill_num == SR_TIGERCANNON ) {	// 號砲
+		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
+			DMG_ADD( status_get_lv(target) * 40 + skill_lv * 500 );			// コンボ発動時
+		} else {
+			DMG_ADD( status_get_lv(target) * 40 + skill_lv * 240 );			// 通常時
+		}
+	}
+	if( src_sd && skill_num == SR_GATEOFHELL ) {	// 羅刹破凰撃
+		int sp = 0;
+		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
+			// コンボ発動時
+			sp = status_get_max_sp(src) * skill_lv / 100;
+			DMG_ADD( status_get_max_sp(src) * ( 100 + 20 * skill_lv ) / 100 + status_get_lv(src) * 20 + status_get_max_hp(src) - status_get_hp(src) );
+		} else {
+			// 通常時
+			sp = status_get_max_sp(src) * (10 + skill_lv) / 100;
+			DMG_ADD( ( status_get_sp(src) - sp ) * ( 100 + 20 * skill_lv ) / 100 + status_get_lv(src) * 10 + status_get_max_hp(src) - status_get_hp(src) );
+		}
+		// SP消費
+		if(src_sd->status.sp > sp) {
+			src_sd->status.sp -= sp;
+		} else {
+			src_sd->status.sp = 0;
+		}
+		clif_updatestatus(src_sd,SP_SP);
 	}
 
 	/* 20．カードによるダメージ追加処理 */
@@ -4167,6 +4326,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		(sc->data[SC_WINKCHARM].timer != -1 && sc->data[SC_WINKCHARM].val2 == target->id) ||	// 魅惑のウィンク
 		sc->data[SC__SHADOWFORM].timer != -1 ||		// シャドウフォーム
 		sc->data[SC__MANHOLE].timer != -1 ||		// マンホール
+		sc->data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
+		sc->data[SC_CURSEDCIRCLE].timer != -1 ||		// 呪縛陣
 		(sc->data[SC_SIREN].timer != -1 && sc->data[SC_SIREN].val2 == target->id) ||		// セイレーンの声
 		sc->data[SC_DEEP_SLEEP].timer != -1			// 安らぎの子守唄
 	)) {
@@ -4220,7 +4381,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			{
 				rsdamage += damage * t_sc->data[SC_REFLECTSHIELD].val2 / 100;
 			}
-			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&0x20) && map_check_dir(map_calc_dir(src,target->x,target->y),status_get_dir(target)))	// デスバウンド反射
+			// デスバウンド反射
+			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&0x20) && map_check_dir(map_calc_dir(src,target->x,target->y),status_get_dir(target)))
 			{
 				rsdamage += damage * t_sc->data[SC_DEATHBOUND].val2 / 100;
 				if(rsdamage < 1) rsdamage = 1;
@@ -4228,6 +4390,19 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				clif_skill_damage(target, src, tick, wd.amotion, wd.dmotion, rsdamage, 0, RK_DEATHBOUND, t_sc->data[SC_DEATHBOUND].val1, 1);
 				clif_skill_nodamage(target, target, RK_DEATHBOUND, t_sc->data[SC_DEATHBOUND].val1, 1);
 				status_change_end(target,SC_DEATHBOUND,-1);
+			}
+			// 破砕柱反射
+			if(t_sc && t_sc->data[SC_CRESCENTELBOW].timer != -1 && !(status_get_mode(src)&0x20) && atn_rand()%100 < 94 + t_sc->data[SC_CRESCENTELBOW].val1)
+			{
+				rsdamage += damage * (50 * t_sc->data[SC_CRESCENTELBOW].val1) / 100;
+				if(rsdamage < 1) rsdamage = 1;
+				wd.damage = rsdamage / 10;
+				clif_skill_damage(target, src, tick, wd.amotion, wd.dmotion, rsdamage, 0, SR_CRESCENTELBOW_AUTOSPELL, t_sc->data[SC_CRESCENTELBOW].val1, 1);
+				clif_skill_nodamage(target, target, SR_CRESCENTELBOW, t_sc->data[SC_CRESCENTELBOW].val1, 1);
+				skill_blown(target,src,skill_get_blewcount(SR_CRESCENTELBOW_AUTOSPELL,t_sc->data[SC_CRESCENTELBOW].val1)|SAB_NODAMAGE);
+				status_change_end(target,SC_CRESCENTELBOW,-1);
+				if(tsd)
+					pc_delspiritball(tsd,2,0);
 			}
 		} else if(wd.flag&BF_LONG) {
 			if(tsd && tsd->long_weapon_damage_return > 0) {
@@ -4369,6 +4544,14 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	// デッドリーインフェクト
 	if(sc && sc->data[SC__DEADLYINFECT].timer != -1 && (wd.damage > 0 || wd.damage2 > 0)) {
 		status_change_copy(src,target);
+	}
+	// 点穴 -球-
+	if(sd && sc && sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1 && atn_rand()%100 < sc->data[SC_GENTLETOUCH_ENERGYGAIN].val2 && wd.flag&BF_SHORT && (wd.damage > 0 || wd.damage2 > 0)) {
+		int skill = pc_checkskill(sd,MO_CALLSPIRITS);
+		int max = skill;
+		if(sc->data[SC_RAISINGDRAGON].timer != -1)
+			max += sc->data[SC_RAISINGDRAGON].val1;
+		pc_addspiritball(sd,skill_get_time(MO_CALLSPIRITS,skill),max);
 	}
 
 	// カードによるオートスペル
@@ -4724,6 +4907,45 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				status_change_end(src,SC_TKCOMBO,-1);
 			}
 			break;
+		case SR_DRAGONCOMBO:	// 双龍脚
+			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
+			if(damage < status_get_hp(bl)) {
+				 // 大纏崩捶取得＆気球2個保持時ディレイ
+				if(pc_checkskill(sd, SR_FALLENEMPIRE) > 0 && sd->spiritball.num >= 2)
+				{
+					delay += 300 * battle_config.combo_delay_rate /100;
+					// コンボ入力時間の最低保障追加
+					if(delay < battle_config.combo_delay_lower_limits)
+						delay = battle_config.combo_delay_lower_limits;
+				}
+				status_change_start(src,SC_COMBO,SR_DRAGONCOMBO,skilllv,0,0,delay,0);
+			}
+			if(delay > 0) {
+				sd->ud.attacktarget = bl->id;
+				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
+				clif_combo_delay(src,delay);
+			}
+			break;
+		case SR_FALLENEMPIRE:	// 大纏崩捶
+			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
+			if(damage < status_get_hp(bl)) {
+				 // 號砲取得＆気球2個保持時または羅刹破凰撃取得＆気球5個保持かつ＆爆裂波動時ディレイ
+				if((pc_checkskill(sd, SR_TIGERCANNON) > 0 && sd->spiritball.num >= 2) ||
+				   (pc_checkskill(sd, SR_GATEOFHELL) > 0 && sd->spiritball.num >= 5) &&
+				   sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1)
+				{
+					delay += 300 * battle_config.combo_delay_rate /100;
+					// コンボ入力時間の最低保障追加
+					if(delay < battle_config.combo_delay_lower_limits)
+						delay = battle_config.combo_delay_lower_limits;
+				}
+				status_change_start(src,SC_COMBO,SR_FALLENEMPIRE,skilllv,0,0,delay,0);
+			}
+			if(delay > 0) {
+				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
+				clif_combo_delay(src,delay);
+			}
+			break;
 		}
 	}
 
@@ -4757,6 +4979,19 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					clif_skill_damage(dsrc, src, tick, dmg.amotion, dmg.dmotion, rdamage, 0, RK_DEATHBOUND, sc->data[SC_DEATHBOUND].val1, 1);
 					clif_skill_nodamage(dsrc, dsrc, RK_DEATHBOUND, sc->data[SC_DEATHBOUND].val1, 1);
 					status_change_end(dsrc,SC_DEATHBOUND,-1);
+				}
+				// 破砕柱反射
+				if(sc && sc->data[SC_CRESCENTELBOW].timer != -1 && !(status_get_mode(src)&0x20) && atn_rand()%100 < 94 + sc->data[SC_CRESCENTELBOW].val1)
+				{
+					rdamage += damage * (50 * sc->data[SC_CRESCENTELBOW].val1) / 100;
+					if(rdamage < 1) rdamage = 1;
+					damage = rdamage / 10;
+					clif_skill_damage(dsrc, src, tick, dmg.amotion, dmg.dmotion, rdamage, 0, SR_CRESCENTELBOW_AUTOSPELL, sc->data[SC_CRESCENTELBOW].val1, 1);
+					clif_skill_nodamage(dsrc, dsrc, SR_CRESCENTELBOW, sc->data[SC_CRESCENTELBOW].val1, 1);
+					skill_blown(dsrc,src,skill_get_blewcount(SR_CRESCENTELBOW_AUTOSPELL,sc->data[SC_CRESCENTELBOW].val1)|SAB_NODAMAGE);
+					status_change_end(dsrc,SC_CRESCENTELBOW,-1);
+					if(tsd)
+						pc_delspiritball(tsd,2,0);
 				}
 			} else if(dmg.flag&BF_LONG) {	// 遠距離攻撃時
 				if(tsd) {		// 対象がPCの時
@@ -4875,6 +5110,15 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		case WZ_STORMGUST:
 			battle_damage(src,bl,damage,skillid,skilllv,dmg.flag);
 			break;
+		case SR_TIGERCANNON:
+			{
+				int ar = (skilllv < 5)? 1: 2;
+				/* 対象周辺にも同ダメージ */
+				map_foreachinarea(battle_damage_area,bl->m,
+					bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
+					src,damage,skillid,skilllv,flag|BCT_ENEMY|1);
+			}
+			break;
 		default:
 			battle_delay_damage(tick+dmg.amotion,src,bl,damage,skillid,skilllv,dmg.flag);
 		}
@@ -4916,6 +5160,10 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			else if(skillid != TK_TURNKICK)
 				skill_additional_effect(src,bl,skillid,skilllv,attack_type,tick);
 
+			// 號砲のSP消費
+			if(tsd && skillid == SR_TIGERCANNON) {
+				pc_heal(tsd,0,-(damage / 10));
+			}
 			// メタリックサウンドのSP消費
 			if(tsd && skillid == WM_METALICSOUND) {
 				int sp = damage;

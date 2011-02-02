@@ -59,7 +59,7 @@
 #define MAX_ELE_LEVEL 4		// 最大属性Lv
 #define MAX_SIZE_FIX 3		// サイズの種類
 #define MAX_FREEZE_SPELL 7	// リーディングスペルブックで保持できるスキル数
-
+#define MAX_SPIRITBALL 15	// 気功・コインの最大数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -605,12 +605,12 @@ struct map_session_data {
 	struct {
 		short num;
 		short old;
-		unsigned int timer[MAX_SKILL_LEVEL];
+		unsigned int timer[MAX_SPIRITBALL];
 	} spiritball;
 
 	struct {
 		short num;
-		unsigned int timer[MAX_SKILL_LEVEL];
+		unsigned int timer[MAX_SPIRITBALL];
 	} coin;
 
 	int reg_num;

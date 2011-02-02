@@ -306,8 +306,8 @@ int pc_addspiritball(struct map_session_data *sd,int interval,int max)
 {
 	nullpo_retr(0, sd);
 
-	if(max > MAX_SKILL_LEVEL)
-		max = MAX_SKILL_LEVEL;
+	if(max > MAX_SPIRITBALL)
+		max = MAX_SPIRITBALL;
 	if(sd->spiritball.num < 0)
 		sd->spiritball.num = 0;
 
@@ -349,8 +349,8 @@ int pc_delspiritball(struct map_session_data *sd,int count,int type)
 	if(count > sd->spiritball.num)
 		count = sd->spiritball.num;
 	sd->spiritball.num -= count;
-	if(count > MAX_SKILL_LEVEL)
-		count = MAX_SKILL_LEVEL;
+	if(count > MAX_SPIRITBALL)
+		count = MAX_SPIRITBALL;
 
 	for(i=0; i<count; i++) {
 		if(sd->spiritball.timer[i] != -1) {
@@ -358,7 +358,7 @@ int pc_delspiritball(struct map_session_data *sd,int count,int type)
 			sd->spiritball.timer[i] = -1;
 		}
 	}
-	for(i=count; i<MAX_SKILL_LEVEL; i++) {
+	for(i=count; i<MAX_SPIRITBALL; i++) {
 		sd->spiritball.timer[i-count] = sd->spiritball.timer[i];
 		sd->spiritball.timer[i] = -1;
 	}
@@ -407,8 +407,8 @@ int pc_addcoin(struct map_session_data *sd,int interval,int max)
 {
 	nullpo_retr(0, sd);
 
-	if(max > MAX_SKILL_LEVEL)
-		max = MAX_SKILL_LEVEL;
+	if(max > MAX_SPIRITBALL)
+		max = MAX_SPIRITBALL;
 	if(sd->coin.num < 0)
 		sd->coin.num = 0;
 
@@ -450,8 +450,8 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 	if(count > sd->coin.num)
 		count = sd->coin.num;
 	sd->coin.num -= count;
-	if(count > MAX_SKILL_LEVEL)
-		count = MAX_SKILL_LEVEL;
+	if(count > MAX_SPIRITBALL)
+		count = MAX_SPIRITBALL;
 
 	for(i=0; i<count; i++) {
 		if(sd->coin.timer[i] != -1) {
@@ -459,7 +459,7 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 			sd->coin.timer[i] = -1;
 		}
 	}
-	for(i=count; i<MAX_SKILL_LEVEL; i++) {
+	for(i=count; i<MAX_SPIRITBALL; i++) {
 		sd->coin.timer[i-count] = sd->coin.timer[i];
 		sd->coin.timer[i] = -1;
 	}
@@ -1207,7 +1207,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->spiritball.num = 0;
 	sd->repair_target = 0;
 
-	for(i=0; i<MAX_SKILL_LEVEL; i++) {
+	for(i=0; i<MAX_SPIRITBALL; i++) {
 		sd->spiritball.timer[i] = -1;
 		sd->coin.timer[i]   = -1;
 	}
@@ -6126,6 +6126,10 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		status_change_end(&sd->bl,SC_CLOSECONFINE,-1);
 	if(sd->sc.data[SC_STOP].timer != -1)
 		status_change_end(&sd->bl,SC_STOP,-1);
+	if(sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1)
+		status_change_end(&sd->bl,SC_CURSEDCIRCLE_USER,-1);
+	if(sd->sc.data[SC_CURSEDCIRCLE].timer != -1)
+		status_change_end(&sd->bl,SC_CURSEDCIRCLE,-1);
 	sd->status.die_counter++;	// 死にカウンター書き込み
 	status_change_release(&sd->bl,0x01);	// ステータス異常を解除する
 
@@ -8672,7 +8676,7 @@ static int pc_natural_heal_hp(struct map_session_data *sd)
 	}
 
 	bhp = sd->status.hp;
-	hp_flag = (pc_checkskill(sd,SM_MOVINGRECOVERY) > 0 && sd->ud.walktimer != -1);
+	hp_flag = ((pc_checkskill(sd,SM_MOVINGRECOVERY) > 0 || sd->sc.data[SC_GENTLETOUCH_REVITALIZE].timer != -1) && sd->ud.walktimer != -1);
 
 	if(sd->ud.walktimer == -1) {
 		inc_num = pc_hpheal(sd);
@@ -9082,6 +9086,7 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	    sd->sc.data[SC_MAGICMUSHROOM].timer == -1 &&	// マジックマッシュルーム状態ではHPが回復しない
 	    sd->sc.data[SC_PYREXIA].timer == -1 &&	// パイレックシア状態ではHPが回復しない
 	    sd->sc.data[SC_LEECHEND].timer == -1 &&	// リーチエンド状態ではHPが回復しない
+	    sd->sc.data[SC_RAISINGDRAGON].timer == -1 &&	// 潜竜昇天状態はHPが回復しない
 	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer == -1 &&	// フライデーナイトフィーバー状態ではHPが回復しない
 	    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 	{

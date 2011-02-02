@@ -880,6 +880,30 @@
 2303,7,6,2,0,1,3,1,yes,0,0,0,weapon,0	//SC_BLOODYLUST#ブラッディラスト#
 2304,0,6,4,0,1,3,1,yes,0,0,0,weapon,6	//SC_FEINTBOMB#フェイントボム#
 
+2326,1,8,1,0,0,10,2,yes,0,0,0,weapon,0	//SR_DRAGONCOMBO#双龍脚#
+2327,0,8,4,0,0,5,3,yes,0,0,0,weapon,3	//SR_SKYNETBLOW#天羅地網#
+2328,0,6,4,0,0,5,1,yes,0,0,0,weapon,0	//SR_EARTHSHAKER#地雷震#
+2329,-2,8,4,0,0,5,2,yes,0,0,0,weapon,0	//SR_FALLENEMPIRE#大纏崩捶#
+2330,1,6,4,0,0,10,1,yes,0,0,0,weapon,0	//SR_TIGERCANNON#號砲#
+//2331,3,8,1,0,0,10,7,yes,0,0,0,weapon,0	//SR_HELLGATE#羅刹破凰撃#
+2332,0,6,4,0,0,5,1,yes,0,0,0,weapon,0	//SR_RAMPAGEBLASTER#爆気散弾#
+2333,0,6,4,0,1,5,1,yes,0,0,0,weapon,0	//SR_CRESCENTELBOW#破碎柱#
+2334,0,6,4,0,1,5,1,yes,0,0,0,weapon,0	//SR_CURSEDCIRCLE#呪縛陣#
+2335,0,6,4,0,1,5,1,yes,0,0,0,weapon,0	//SR_LIGHTNINGWALK#閃電歩#
+2336,8:9:10:11:12,6,1,0,2,5,1,yes,0,0,0,weapon,2:3:4:5:6	//SR_KNUCKLEARROW#修羅身弾#
+2337,0,6,4,0,0,5,1,yes,0,0,0,weapon,0	//SR_WINDMILL#旋風腿#
+2338,0,6,4,0,1,10,1,yes,0,0,0,weapon,0	//SR_RAISINGDRAGON#潜龍昇天#
+//2339,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//SR_GENTLETOUCH#点穴#
+2340,0,6,4,0,1,1,1,yes,0,0,0,weapon,0	//SR_ASSIMILATEPOWER#吸気功#
+2341,9,6,16,0,1,1,1,yes,0,0,0,weapon,0	//SR_POWERVELOCITY#全気注入#
+2342,9,6,1,0,2,5,1,yes,0,0,0,weapon,7	//SR_CRESCENTELBOW_AUTOSPELL#破碎柱(反撃)#
+2343,1:2:3:3:4:4:5:5:6:7,8,4,0,0,10,7,yes,0,0,0,weapon,0	//SR_GATEOFHELL#羅刹破凰撃#
+2344,2,6,1,0,0,5,1,yes,0,0,0,weapon,0	//SR_GENTLETOUCH_QUIET#点穴 -默-#
+2345,2,6,16,0,1,5,1,yes,0,0,0,magic,0	//SR_GENTLETOUCH_CURE#点穴 -快-#
+2346,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//SR_GENTLETOUCH_ENERGYGAIN#点穴 -球-#
+2347,2,6,16,0,1,5,1,yes,0,0,0,magic,0	//SR_GENTLETOUCH_CHANGE#点穴 -反-#
+2348,2,6,16,0,1,5,1,yes,0,0,0,magic,0	//SR_GENTLETOUCH_REVITALIZE#点穴 -活-#
+
 2350,0,6,4,0,1,5,1,yes,0,0,0,misc,0	//WA_SWING_DANCE#スイングダンス#
 2351,0,6,4,0,1,5,1,yes,0,0,0,misc,0	//WA_SYMPHONY_OF_LOVE#恋人たちの為のシンフォニー#
 2352,0,6,4,0,1,5,1,yes,0,0,0,misc,0	//WA_MOONLIT_SERENADE#月明かりのセレナーデ#
@@ -928,6 +952,8 @@
 
 2515,9,6,16,0,1,5,1,yes,0,0,0,magic,0	//AB_SECRAMENT#サクラメント#
 2516,0,6,1,0,0,5,1,yes,0,0,0,weapon,0	//WM_SEVERE_RAINSTORM_MELEE#シビアレインストーム(攻撃)#
+2517,0,6,4,0,0,5,1,yes,0,0,0,weapon,0	//SR_HOWLINGOFLION#獅子吼#
+2518,11,6,2,0,0,5,1,yes,0,0,0,weapon,0	//SR_RIDEINLIGHTNING#雷光弾#
 
 8001,9,6,16,0,1,5,0,no,0,0,0,magic,0	//HLIF_HEAL#治癒の手助け(ヒール)#
 8002,0,6,4,0,1,5,0,no,0,0,0,none,0	//HLIF_AVOID#緊急回避#

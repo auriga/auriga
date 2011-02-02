@@ -931,6 +931,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	case MO_COMBOFINISH:		/* 猛龍拳 */
 	case CH_TIGERFIST:		/* 伏虎拳 */
 	case CH_CHAINCRUSH:		/* 連柱崩撃 */
+	case SR_FALLENEMPIRE:	/* 大纏崩捶 */
 		target_id = src_ud->attacktarget;
 		break;
 	case MO_CHAINCOMBO:		/* 連打掌 */
@@ -944,6 +945,11 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		break;
 	case MO_EXTREMITYFIST:		/* 阿修羅覇鳳拳 */
 		if(sc && sc->data[SC_COMBO].timer != -1 && (sc->data[SC_COMBO].val1 == MO_COMBOFINISH || sc->data[SC_COMBO].val1 == CH_CHAINCRUSH) )
+			target_id = src_ud->attacktarget;
+		break;
+	case SR_TIGERCANNON:	/* 號砲 */
+	case SR_GATEOFHELL:		/* 羅刹破凰撃 */
+		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE)
 			target_id = src_ud->attacktarget;
 		break;
 	case WE_MALE:
@@ -1032,6 +1038,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		case TK_TURNKICK:
 		case TK_COUNTER:
 		case GC_WEAPONCRUSH:
+		case SR_FALLENEMPIRE:
 			break;
 		case MO_EXTREMITYFIST:
 		case TK_JUMPKICK:
@@ -1100,6 +1107,13 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	case ST_CHASEWALK:	/* チェイスウォーク */
 		if(sc && sc->data[SC_CHASEWALK].timer != -1)
 			casttime = 0;
+		break;
+	case SR_TIGERCANNON:	/* 號砲 */
+	case SR_GATEOFHELL:		/* 羅刹破凰撃 */
+		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
+			casttime = 0;
+		}
+		forcecast = 1;
 		break;
 	}
 
@@ -1505,6 +1519,9 @@ int unit_can_move(struct block_list *bl)
 		    sc->data[SC_MAGNETICFIELD].timer != -1 ||		// マグネティックフィールド
 		    sc->data[SC__MANHOLE].timer != -1 ||	// マンホール
 		    sc->data[SC_SITDOWN_FORCE].timer != -1 ||	// 転倒
+		    sc->data[SC_FALLENEMPIRE].timer != -1 ||	// 大纏崩捶
+		    sc->data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
+		    sc->data[SC_CURSEDCIRCLE].timer != -1 ||	// 呪縛陣
 		    sc->data[SC_NETHERWORLD].timer != -1 ||	// 地獄の歌
 		    sc->data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
 		    sc->data[SC_VACUUM_EXTREME].timer != -1	// バキュームエクストリーム
@@ -1603,6 +1620,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		   sc->data[SC_WHITEIMPRISON].timer != -1 ||
 		   sc->data[SC__SHADOWFORM].timer != -1 ||
 		   sc->data[SC__MANHOLE].timer != -1 ||
+		   sc->data[SC_CURSEDCIRCLE_USER].timer != -1 ||
+		   sc->data[SC_CURSEDCIRCLE].timer != -1 ||
 		   sc->data[SC_DEEP_SLEEP].timer != -1)
 			return 0;
 	}

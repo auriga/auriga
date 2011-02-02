@@ -64,6 +64,7 @@ struct block_list;
 // 実際にHPを増減
 int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,int damage,int skillid,int skilllv,int flag);
 int battle_damage(struct block_list *bl,struct block_list *target,int damage,int skillid,int skilllv,int flag);
+int battle_damage_area(struct block_list *bl,va_list ap);
 int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,int flag);
 
 // 攻撃処理まとめ
