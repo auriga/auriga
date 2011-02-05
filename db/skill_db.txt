@@ -812,8 +812,8 @@
 2235,0,0,0,0,0,10,0,no,0,0,0,none,0	//RA_RANGERMAIN#レンジャーメイン#
 2236,-5,8,1,0,0,10,1,no,0,0,0,weapon,0	//RA_AIMEDBOLT#エイムドボルト#
 2237,9,6,2,0,1,1,1,no,0,0,0,weapon,0	//RA_DETONATOR#デトネイター#
-2238,3,6,2,0,1,5,1,no,0,0,3,misc,0	//RA_ELECTRICSHOCKER#エレクトリックショッカー#
-2239,3,6,2,0,1,5,1,no,0,0,3,misc,0	//RA_CLUSTERBOMB#クラスターボム#
+2238,3,6,2,0,1,5,1,no,0,64,3,misc,0	//RA_ELECTRICSHOCKER#エレクトリックショッカー#
+2239,3,6,2,0,1,5,1,no,0,64,3,misc,0	//RA_CLUSTERBOMB#クラスターボム#
 2240,0,6,4,0,1,1,1,no,0,0,0,misc,0	//RA_WUGMASTERY#ウォーグマスタリー#
 2241,0,6,4,0,1,3,1,no,0,0,0,misc,0	//RA_WUGRIDER#ウォーグライダー#
 2242,9,6,4,0,1,1,1,no,0,0,0,weapon,0	//RA_WUGDASH#ウォーグダッシュ#
@@ -823,12 +823,12 @@
 2246,0,6,4,0,0,5,1,no,0,0,0,weapon,0	//RA_SENSITIVEKEEN#鋭敏な嗅覚#
 2247,0,6,4,0,1,5,1,no,0,0,0,weapon,0	//RA_CAMOUFLAGE#カモフラージュ#
 2248,0,0,0,0,0,5,0,no,0,0,0,none,0	//RA_RESEARCHTRAP#トラップ研究#
-2249,3,6,2,0,1,1,1,no,0,0,1,misc,0	//RA_MAGENTATRAP#マゼンタトラップ#
-2250,3,6,2,0,1,1,1,no,0,0,1,misc,0	//RA_COBALTTRAP#コバルトトラップ#
-2251,3,6,2,0,1,1,1,no,0,0,1,misc,0	//RA_MAIZETRAP#メイズトラップ#
-2252,3,6,2,0,1,1,1,no,0,0,1,misc,0	//RA_VERDURETRAP#ヴェルデュールトラップ#
-2253,3,6,2,0,1,5,1,no,0,0,1,misc,0	//RA_FIRINGTRAP#ファイアリングトラップ#
-2254,3,6,2,0,1,5,1,no,0,0,1,misc,0	//RA_ICEBOUNDTRAP#アイスバウンドトラップ#
+2249,3,6,2,0,1,1,1,no,0,64,1,misc,0	//RA_MAGENTATRAP#マゼンタトラップ#
+2250,3,6,2,0,1,1,1,no,0,64,1,misc,0	//RA_COBALTTRAP#コバルトトラップ#
+2251,3,6,2,0,1,1,1,no,0,64,1,misc,0	//RA_MAIZETRAP#メイズトラップ#
+2252,3,6,2,0,1,1,1,no,0,64,1,misc,0	//RA_VERDURETRAP#ヴェルデュールトラップ#
+2253,3,6,2,0,1,5,1,no,0,64,1,misc,0	//RA_FIRINGTRAP#ファイアリングトラップ#
+2254,3,6,2,0,1,5,1,no,0,64,1,misc,0	//RA_ICEBOUNDTRAP#アイスバウンドトラップ#
 2255,0,0,0,0,0,5,0,no,0,0,0,none,0	//NC_MADOLICENCE#魔導ギアライセンス#
 2256,11,6,1,0,4,5,1,no,0,0,0,weapon,0	//NC_BOOSTKNUCKLE#ブーストナックル#
 2257,3,6,1,0,0,3,1,no,0,0,0,weapon,0	//NC_PILEBUNKER#パイルバンカー#
@@ -872,7 +872,7 @@
 2295,9,6,1,0,1,3,1,yes,0,0,0,weapon,0	//SC_LAZINESS#マスカレード ： レイジーネス#
 2296,9,6,1,0,1,3,1,yes,0,0,0,weapon,0	//SC_UNLUCKY#マスカレード ： アンラッキー#
 2297,9,6,1,0,1,3,1,yes,0,0,0,weapon,0	//SC_WEAKNESS#マスカレード ： ウィークネス#
-2298,3,6,1,0,1,3,1,yes,0,0,0,weapon,0	//SC_STRIPACCESSARY#ストリップアクセサリー#
+2298,3,6,1,0,1,5,1,yes,0,0,0,weapon,0	//SC_STRIPACCESSARY#ストリップアクセサリー#
 2299,7,6,2,0,1,3,1,yes,0,0,3,weapon,0	//SC_MANHOLE#マンホール#
 2300,7,6,2,0,1,3,1,yes,0,0,0,weapon,0	//SC_DIMENSIONDOOR#ディメンションドア#
 2301,7,6,2,0,1,3,1,yes,0,0,0,weapon,0	//SC_CHAOSPANIC#カオスパニック#
@@ -880,11 +880,30 @@
 2303,7,6,2,0,1,3,1,yes,0,0,0,weapon,0	//SC_BLOODYLUST#ブラッディラスト#
 2304,0,6,4,0,1,3,1,yes,0,0,0,weapon,6	//SC_FEINTBOMB#フェイントボム#
 
+2307,11,6,1,0,0,5,1,yes,0,0,0,weapon,0	//LG_CANNONSPEAR#キャノンスピア#
+2308,7,6,1,0,0,10,1,yes,0,0,0,weapon,0	//LG_BANISHINGPOINT#バニシングポイント#
+2309,0,6,4,0,1,3,1,yes,0,0,0,weapon,0	//LG_TRAMPLE#トランプル#
+2310,2,6,1,0,2,5,1,yes,0,0,0,weapon,0	//LG_SHIELDPRESS#シールドプレス#
+2311,0,6,4,0,1,5,1,yes,0,0,0,weapon,0	//LG_REFLECTDAMAGE#リフレクトダメージ#
+2312,6,6,1,0,0,5,1,yes,0,0,0,weapon,0	//LG_PINPOINTATTACK#ピンポイントアタック#
+2313,0,6,4,0,1,5,1,yes,0,0,0,weapon,0	//LG_FORCEOFVANGUARD#フォースオブバンガード#
+2314,2,6,1,0,0,1,1,yes,0,0,0,weapon,0	//LG_RAGEBURST#レイジバーストアタック#
+2315,0,6,4,0,1,3,1,yes,0,0,0,magic,0	//LG_SHIELDSPELL#シールドスペル#
+2316,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//LG_EXEEDBREAK#イクシードブレイク#
+2317,1,6,2,0,0,5,1,yes,0,0,0,weapon,0	//LG_OVERBRAND#オーバーブランド#
+2318,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//LG_PRESTIGE#プレスティージ#
+2319,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//LG_BANDING#バンディング#
+2320,0,6,4,0,0,5,1,yes,0,0,0,weapon,0	//LG_MOONSLASHER#ムーンスラッシャー#
+2321,1,8,2,6,0,5,7,yes,0,0,0,magic,0	//LG_RAYOFGENESIS#レイオブジェネシス#
+2322,9,6,16,0,1,5,1,yes,0,3072,0,magic,0	//LG_PIETY#パイエティ#
+2323,0,8,4,2,0,5,5,yes,0,0,0,weapon,0	//LG_EARTHDRIVE#アースドライブ#
+2324,9,8,1,0,0,5,3,yes,0,0,0,weapon,0	//LG_HESPERUSLIT#ヘスペルスリット#
+2325,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//LG_INSPIRATION#インスピレーション#
 2326,1,8,1,0,0,10,2,yes,0,0,0,weapon,0	//SR_DRAGONCOMBO#双龍脚#
 2327,0,8,4,0,0,5,3,yes,0,0,0,weapon,3	//SR_SKYNETBLOW#天羅地網#
 2328,0,6,4,0,0,5,1,yes,0,0,0,weapon,0	//SR_EARTHSHAKER#地雷震#
 2329,-2,8,4,0,0,5,2,yes,0,0,0,weapon,0	//SR_FALLENEMPIRE#大纏崩捶#
-2330,1,6,4,0,0,10,1,yes,0,0,0,weapon,0	//SR_TIGERCANNON#號砲#
+2330,1,6,4,0,0,10,1,yes,0,4,0,weapon,0	//SR_TIGERCANNON#號砲#
 //2331,3,8,1,0,0,10,7,yes,0,0,0,weapon,0	//SR_HELLGATE#羅刹破凰撃#
 2332,0,6,4,0,0,5,1,yes,0,0,0,weapon,0	//SR_RAMPAGEBLASTER#爆気散弾#
 2333,0,6,4,0,1,5,1,yes,0,0,0,weapon,0	//SR_CRESCENTELBOW#破碎柱#
@@ -897,7 +916,7 @@
 2340,0,6,4,0,1,1,1,yes,0,0,0,weapon,0	//SR_ASSIMILATEPOWER#吸気功#
 2341,9,6,16,0,1,1,1,yes,0,0,0,weapon,0	//SR_POWERVELOCITY#全気注入#
 2342,9,6,1,0,2,5,1,yes,0,0,0,weapon,7	//SR_CRESCENTELBOW_AUTOSPELL#破碎柱(反撃)#
-2343,1:2:3:3:4:4:5:5:6:7,8,4,0,0,10,7,yes,0,0,0,weapon,0	//SR_GATEOFHELL#羅刹破凰撃#
+2343,1:2:3:3:4:4:5:5:6:7,8,4,0,0,10,7,yes,0,4,0,weapon,0	//SR_GATEOFHELL#羅刹破凰撃#
 2344,2,6,1,0,0,5,1,yes,0,0,0,weapon,0	//SR_GENTLETOUCH_QUIET#点穴 -默-#
 2345,2,6,16,0,1,5,1,yes,0,0,0,magic,0	//SR_GENTLETOUCH_CURE#点穴 -快-#
 2346,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//SR_GENTLETOUCH_ENERGYGAIN#点穴 -球-#
@@ -954,6 +973,8 @@
 2516,0,6,1,0,0,5,1,yes,0,0,0,weapon,0	//WM_SEVERE_RAINSTORM_MELEE#シビアレインストーム(攻撃)#
 2517,0,6,4,0,0,5,1,yes,0,0,0,weapon,0	//SR_HOWLINGOFLION#獅子吼#
 2518,11,6,2,0,0,5,1,yes,0,0,0,weapon,0	//SR_RIDEINLIGHTNING#雷光弾#
+2519,0,6,1,0,0,5,1,yes,0,0,0,weapon,3:4:5:6:7	//LG_OVERBRAND_BRANDISH#オーバーブランド(薙ぎ)#
+2520,0,6,1,0,0,5,1,yes,0,0,0,weapon,0	//LG_OVERBRAND_PLUSATK#オーバーブランド(追撃)#
 
 8001,9,6,16,0,1,5,0,no,0,0,0,magic,0	//HLIF_HEAL#治癒の手助け(ヒール)#
 8002,0,6,4,0,1,5,0,no,0,0,0,none,0	//HLIF_AVOID#緊急回避#

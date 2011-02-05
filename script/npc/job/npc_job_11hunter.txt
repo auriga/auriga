@@ -1549,7 +1549,7 @@ job_hunte.gat,102,109,0		duplicate(#HT_Abyss)	落とし穴	139,4,0
 
 //in_hunter.gat,146,99,2	script	ファルコン管理兵	105,{
 hu_in01.gat,381,304,5	script	ファルコン管理兵	105,{
-	if(Job == Job_Hunter) {
+	if(Job != Job_Hunter) {
 		mes "バカやろ〜！ファルコンは";
 		mes "ハンターとスナイパー専用だ！";
 		close;

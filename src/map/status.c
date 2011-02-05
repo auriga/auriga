@@ -1254,6 +1254,15 @@ L_RECALC:
 			sd->paramb[2] += sd->sc.data[SC_LAUDAAGNUS].val2;
 		if(sd->sc.data[SC_LAUDARAMUS].timer != -1)	// ラウダラムス
 			sd->paramb[5] += sd->sc.data[SC_LAUDARAMUS].val2;
+		if(sd->sc.data[SC_INSPIRATION].timer != -1) {	// インスピレーション
+			int param = sd->status.base_level / 10 + sd->status.job_level / 5;
+			sd->paramb[0] = param;
+			sd->paramb[1] = param;
+			sd->paramb[2] = param;
+			sd->paramb[3] = param;
+			sd->paramb[4] = param;
+			sd->paramb[5] = param;
+		}
 		if(sd->sc.data[SC_HARMONIZE].timer != -1) {	// ハーモナイズ
 			sd->parame[0] = 0;
 			sd->parame[1] = 0;
@@ -1981,6 +1990,38 @@ L_RECALC:
 			sd->critical -= sd->critical * (sd->sc.data[SC__UNLUCKY].val1 * 10) / 100;
 			sd->flee2 -= sd->sc.data[SC__UNLUCKY].val1 * 10;
 		}
+		// シールドスペル(DEF)
+		if(sd->sc.data[SC_SHIELDSPELL_DEF].timer != -1 && sd->sc.data[SC_SHIELDSPELL_DEF].val2 == 2) {
+			sd->watk += sd->sc.data[SC_SHIELDSPELL_DEF].val3;
+		}
+		// シールドスペル(精錬)
+		if(sd->sc.data[SC_SHIELDSPELL_REF].timer != -1 && sd->sc.data[SC_SHIELDSPELL_REF].val2 == 2) {
+			sd->def2 += sd->sc.data[SC_SHIELDSPELL_REF].val3;
+		}
+		// フォースオブバンガード
+		if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1) {
+			sd->status.max_hp += (sd->status.max_hp * sd->sc.data[SC_FORCEOFVANGUARD].val1 * 3) / 100;
+			sd->def += (sd->def * sd->sc.data[SC_FORCEOFVANGUARD].val1 * 2) / 100;
+		}
+		// プレスティージ
+		if(sd->sc.data[SC_PRESTIGE].timer != -1) {
+			sd->def2 += sd->sc.data[SC_PRESTIGE].val2;
+		}
+		// バンディング
+		if(sd->sc.data[SC_BANDING].timer != -1 && sd->sc.data[SC_BANDING].val2 > 0) {
+			sd->watk += (10 + sd->sc.data[SC_BANDING].val1 * 10) * sd->sc.data[SC_BANDING].val2;
+			sd->def2 += (5 + sd->sc.data[SC_BANDING].val1) * sd->sc.data[SC_BANDING].val2;
+		}
+		// アースドライブ
+		if(sd->sc.data[SC_EARTHDRIVE].timer != -1) {
+			sd->def -= sd->def * 25 / 100;
+		}
+		// インスピレーション
+		if(sd->sc.data[SC_INSPIRATION].timer != -1) {
+			sd->status.max_hp += (600 + sd->status.max_hp / 20) * sd->sc.data[SC_INSPIRATION].val1;
+			sd->watk += sd->sc.data[SC_INSPIRATION].val1 * 40 + sd->status.job_level * 3;
+			sd->hit += 25 + sd->sc.data[SC_INSPIRATION].val1 * 5;
+		}
 		// 潜竜昇天
 		if(sd->sc.data[SC_RAISINGDRAGON].timer != -1) {
 			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_RAISINGDRAGON].val3 / 100;
@@ -2438,6 +2479,11 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
+		else if(sd->sc.data[SC_ASSNCROS_].timer != -1) {
+			int bonus = sd->sc.data[SC_ASSNCROS_].val2;
+			if(haste_val2 < bonus)
+				haste_val2 = bonus;
+		}
 
 		// 星の安楽
 		if(sd->sc.data[SC_STAR_COMFORT].timer != -1) {
@@ -2458,6 +2504,12 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 			int bonus = 20+ferver_bonus;
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
+		}
+
+		// アースドライブ
+		if(sd->sc.data[SC_EARTHDRIVE].timer != -1) {
+			if(haste_val2 < 25)
+				haste_val2 = 25;
 		}
 
 		// 点穴 -反-
@@ -2516,17 +2568,17 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	if(bonus_rate != 0)
 		amotion = amotion * (bonus_rate+100) / 100;
 
+	/* アドバンスドブック */
+	if(sd->weapontype1 == WT_BOOK && (skilllv = pc_checkskill(sd,SA_ADVANCEDBOOK)) > 0)
+		amotion -= skilllv * 10 / 2;
+
 	/* シングルアクション */
 	if(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE && (skilllv = pc_checkskill(sd,GS_SINGLEACTION)) > 0)
-		amotion += (skilllv+1) / 2 * 10;
+		amotion -= (skilllv+1) / 2 * 10;
 
 	/* ディフェンダー */
 	if(defender_flag)
 		amotion += sd->sc.data[SC_DEFENDER].val3;
-
-	/* アドバンスドブック */
-	if(sd->weapontype1 == WT_BOOK && (skilllv = pc_checkskill(sd,SA_ADVANCEDBOOK)) > 0)
-		amotion += skilllv*10/2;
 
 	/* 小数切り上げ */
 	amotion = ceil(amotion);
@@ -2558,6 +2610,8 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		return (175 - 5 * pc_checkskill(sd,SA_FREECAST));
 	if(sd->sc.data[SC_STEELBODY].timer != -1)	// 金剛は移動速度固定
 		return 200;
+	if(sd->ud.skilltimer != -1 && sd->ud.skillid == LG_EXEEDBREAK)		// イクシードブレイクの詠唱中
+		return (150 - 10 * sd->ud.skilllv);
 
 	/* speedが変化するステータスの計算 */
 	if(sd->sc.count > 0) {
@@ -2596,6 +2650,10 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 			if(sd->sc.data[SC_DONTFORGETME].timer != -1) {
 				if(slow_val < sd->sc.data[SC_DONTFORGETME].val2)
 					slow_val = sd->sc.data[SC_DONTFORGETME].val2;
+			}
+			else if(sd->sc.data[SC_DONTFORGETME_].timer != -1) {
+				if(slow_val < sd->sc.data[SC_DONTFORGETME_].val2)
+					slow_val = sd->sc.data[SC_DONTFORGETME_].val2;
 			}
 
 			// 呪い
@@ -3606,6 +3664,8 @@ int status_get_baseatk(struct block_list *bl)
 			batk *= 4;
 		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 			batk -= batk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
+		if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// シールドスペル(DEF)
+			batk += sc->data[SC_SHIELDSPELL_DEF].val3;
 		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// フライデーナイトフィーバー
 			batk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
@@ -3673,6 +3733,8 @@ int status_get_atk(struct block_list *bl)
 			atk *= 4;
 		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 			atk -= atk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
+		if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// シールドスペル(DEF)
+			atk += sc->data[SC_SHIELDSPELL_DEF].val3;
 		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// フライデーナイトフィーバー
 			atk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
@@ -3767,6 +3829,8 @@ int status_get_atk2(struct block_list *bl)
 				atk2 *= 4;
 			if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 				atk2 -= atk2 * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
+			if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// シールドスペル(DEF)
+				atk2 += sc->data[SC_SHIELDSPELL_DEF].val3;
 			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// フライデーナイトフィーバー
 				atk2 += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 			if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
@@ -3980,6 +4044,12 @@ int status_get_def(struct block_list *bl)
 			// ニュートラルバリアー
 			if(sc->data[SC_NEUTRALBARRIER].timer != -1 && bl->type != BL_PC)
 				def = def * (110 + 5 * sc->data[SC_NEUTRALBARRIER].val1) / 100;
+			// フォースオブバンガード
+			if(sc->data[SC_FORCEOFVANGUARD].timer != -1 && bl->type != BL_PC)
+				def = def * (100 + 2 * sc->data[SC_FORCEOFVANGUARD].val1) / 100;
+			// アースドライブ
+			if(sc->data[SC_EARTHDRIVE].timer != -1 && bl->type != BL_PC)
+				def = def * 85 / 100;
 			// フライデーナイトフィーバー
 			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type != BL_PC)
 				def = def * (90 - 10 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1) / 100;
@@ -4097,6 +4167,12 @@ int status_get_def2(struct block_list *bl)
 		// エスカ
 		if(sc->data[SC_SKA].timer != -1 && bl->type == BL_MOB)
 			def2 += 90;
+		// シールドスペル
+		if(sc->data[SC_SHIELDSPELL_REF].timer != -1 && sc->data[SC_SHIELDSPELL_REF].val2 == 2 && bl->type == BL_MOB)
+			def2 += sc->data[SC_SHIELDSPELL_REF].val2;
+		// プレスティージ
+		if(sc->data[SC_PRESTIGE].timer != -1 && bl->type == BL_MOB)
+			def2 += sc->data[SC_PRESTIGE].val2;
 		// 点穴 -活-
 		if(sc->data[SC_GENTLETOUCH_REVITALIZE].timer != -1 && bl->type == BL_MOB)
 			def2 += sc->data[SC_GENTLETOUCH_REVITALIZE].val2;
@@ -4506,6 +4582,12 @@ int status_get_adelay(struct block_list *bl)
 					haste_val2 = bonus;
 			}
 
+			// アースドライブ
+			if(sc->data[SC_EARTHDRIVE].timer != -1) {
+				if(haste_val2 < 25)
+					haste_val2 = 25;
+			}
+
 			// 点穴 -反-
 			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
 				int bonus = sc->data[SC_GENTLETOUCH_CHANGE].val3;
@@ -4706,6 +4788,12 @@ int status_get_amotion(struct block_list *bl)
 				int bonus = 20+ferver_bonus;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
+			}
+
+			// アースドライブ
+			if(sc->data[SC_EARTHDRIVE].timer != -1) {
+				if(haste_val2 < 25)
+					haste_val2 = 25;
 			}
 
 			// 点穴 -反-
@@ -5297,6 +5385,9 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 			if(sc->data[SC_NAUTHIZ].timer != -1 && status_is_disable(type,0x10)) {
 				rate = 0;	// リフレッシュ効果中は無効
 			}
+			if(sc->data[SC_INSPIRATION].timer != -1 && status_is_disable(type,0x10)) {
+				rate = 0;	// インスピレーション効果中なら無効
+			}
 		}
 	}
 	
@@ -5506,6 +5597,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_CAMOUFLAGE:
 		case SC__REPRODUCE:
 		case SC__INVISIBILITY:
+		case SC_REFLECTDAMAGE:
+		case SC_FORCEOFVANGUARD:
 			if(sc->data[type].timer != -1) {
 				status_change_end(bl,type,-1);
 				return 0;
@@ -5878,6 +5971,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC__WEAKNESS:			/* マスカレード ： ウィークネス */
 		case SC__STRIPACCESSARY:	/* ストリップアクセサリー */
 		case SC__BLOODYLUST:		/* ブラッディラスト */
+		case SC_EARTHDRIVE:			/* アースドライブ */
 		case SC_HARMONIZE:			/* ハーモナイズ */
 		case SC_GLOOMYDAY:			/* メランコリー */
 		case SC_LERADS_DEW:			/* レーラズの露 */
@@ -6145,14 +6239,18 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = val1*5;
 			break;
 		case SC_REFLECTSHIELD:
+			// リフレクトダメージが掛かっていたら解除
+			if(sc->data[SC_REFLECTDAMAGE].timer != -1)
+				status_change_end(bl,SC_REFLECTDAMAGE,-1);
 			val2 = 10+val1*3;
 			if(sd) {
 				// 被ディボーション者もリフレクトシールドにする
 				struct map_session_data *tsd;
 				int i;
 				for(i = 0; i < 5; i++) {
-					if(sd->dev.val1[i] && (tsd = map_id2sd(sd->dev.val1[i])) != NULL)
+					if(sd->dev.val1[i] && (tsd = map_id2sd(sd->dev.val1[i])) != NULL) {
 						status_change_start(&tsd->bl,type,val1,0,0,0,skill_get_time(CR_REFLECTSHIELD,val1),0);
+					}
 				}
 			}
 			break;
@@ -6811,11 +6909,66 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick = 5000*val1;
 			}
 			break;
+		case SC_REFLECTDAMAGE:		/* リフレクトダメージ */
+			// リフレクトシールドが掛かっていたら解除
+			if(sc->data[SC_REFLECTSHIELD].timer != -1)
+				status_change_end(bl,SC_REFLECTSHIELD,-1);
+			val2 = tick / 10000;
+			val3 = val1 * 5 + 15;	// 反射率
+			tick = 10000;
+			break;
+		case SC_FORCEOFVANGUARD:	/* フォースオブバンガード */
+			val2 = tick / 10000;
+			val3 = val1 * 12 + 8;	// 怒りカウンター発動率
+			tick = 10000;
+			icon_tick = 0;
+			calc_flag = 1;
+			break;
+		case SC_SHIELDSPELL_DEF:	/* シールドスペル(DEF) */
+		case SC_SHIELDSPELL_MDEF:	/* シールドスペル(MDEF) */
+		case SC_SHIELDSPELL_REF:	/* シールドスペル(精錬) */
+			if(sc->data[SC_SHIELDSPELL_DEF].timer != -1)
+				status_change_end(bl,SC_SHIELDSPELL_DEF,-1);
+			if(sc->data[SC_SHIELDSPELL_MDEF].timer != -1)
+				status_change_end(bl,SC_SHIELDSPELL_MDEF,-1);
+			if(sc->data[SC_SHIELDSPELL_REF].timer != -1)
+				status_change_end(bl,SC_SHIELDSPELL_REF,-1);
+			calc_flag = 1;
+			break;
+		case SC_EXEEDBREAK:			/* イクシードブレイク */
+			if(sd) {
+				int idx = sd->equip_index[9];
+				val2 = val1 * 150 + sd->status.job_level * 15;
+				if(idx >= 0 && sd->inventory_data[idx] && itemdb_isweapon(sd->inventory_data[sd->equip_index[idx]]->nameid))
+					val2 += sd->inventory_data[idx]->weight/10 * sd->inventory_data[idx]->wlv * sd->status.base_level / 100;
+			}
+			else {
+				val2 = val1 * 150;
+			}
+			tick = 600*1000;
+			break;
+		case SC_PRESTIGE:	/* プレスティージ */
+			val2 = val1 * 15 * status_get_lv(bl) / 100;		// Def増加値
+			if(sd) {
+				val2 += pc_checkskill(sd,CR_DEFENDER) / 5 * status_get_lv(bl) / 2;
+			}
+			val3 = (1 + status_get_agi(bl) / 20 + status_get_luk(bl) / 40) * val1 / 2;		// 魔法回避率
+			calc_flag = 1;
+			break;
+		case SC_BANDING:	/* バンディング */
+			tick = 5000;
+			calc_flag = 1;
+			break;
 		case SC_SITDOWN_FORCE:		/* 転倒 */
 			if(sd){
 				pc_setsit(sd);
 				clif_sitting(&sd->bl, 1);
 			}
+			break;
+		case SC_INSPIRATION:	/* インスピレーション */
+			val2 = tick / 6000;
+			tick = 6000;
+			calc_flag = 1;
 			break;
 		case SC_RAISINGDRAGON:	/* 潜龍昇天 */
 			val2 = tick / 5000;
@@ -7401,6 +7554,12 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC__UNLUCKY:			/* マスカレード ： アンラッキー */
 		case SC__STRIPACCESSARY:	/* ストリップアクセサリー */
 		case SC__BLOODYLUST:		/* ブラッディラスト */
+		case SC_SHIELDSPELL_DEF:	/* シールドスペル(DEF) */
+		case SC_SHIELDSPELL_MDEF:	/* シールドスペル(MDEF) */
+		case SC_SHIELDSPELL_REF:	/* シールドスペル(精錬) */
+		case SC_PRESTIGE:			/* プレスティージ */
+		case SC_EARTHDRIVE:			/* アースドライブ */
+		case SC_INSPIRATION:		/* インスピレーション */
 		case SC_GENTLETOUCH_CHANGE:	/* 点穴 -反- */
 		case SC_GENTLETOUCH_REVITALIZE:	/* 点穴 -活- */
 		case SC_SYMPHONY_LOVE:		/* 恋人たちの為のシンフォニー */
@@ -7714,6 +7873,19 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				struct map_session_data *dsd;
 				if(dsd = map_id2sd(sc->data[type].val2))
 					dsd->shadowform_id = 0;
+			}
+			break;
+		case SC_FORCEOFVANGUARD:	/* フォースオブバンガード */
+			clif_mshield(sd, 0);
+			calc_flag = 1;
+			break;
+		case SC_BANDING:		/* バンディング */
+			{
+				struct skill_unit_group *sg = map_id2sg(sc->data[type].val4);
+				sc->data[type].val4 = 0;
+				if(sg)
+					skill_delunitgroup(sg);
+				calc_flag = 1;
 			}
 			break;
 		case SC_RAISINGDRAGON:		/* 潜龍昇天 */
@@ -8385,6 +8557,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_ROLLINGCUTTER:
 	case SC_WUGDASH:
 	case SC__REPRODUCE:
+	case LG_EXEEDBREAK:
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:
@@ -8604,7 +8777,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				if(damage)
 					unit_heal(bl, -damage, 0);
 			}
-			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
+			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
+			// 生きていて解除済みでないなら継続
+				timer = add_timer(2000+tick, status_change_timer, bl->id, data);
+			}
 		}
 		break;
 	case SC_PYREXIA:	/* パイレックシア */
@@ -8627,7 +8803,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			int damage = status_get_max_hp(bl) / 100;
 			if(damage)
 				unit_heal(bl, -damage, 0);
-			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
+				// 生きていて解除済みでないなら継続
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
 		}
 		break;
 	case SC_RENOVATIO:		/* レノヴァティオ */
@@ -8731,6 +8910,55 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				sd->status.sp -= sp;
 				clif_updatestatus(sd,SP_SP);
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
+		}
+		break;
+	case SC_REFLECTDAMAGE:		/* リフレクトダメージ */
+		if((--sc->data[type].val2) > 0) {
+			if(sd) {
+				int sp = 10 + sc->data[type].val1 * 2;
+				if(sd->status.sp >= sp) {
+					sd->status.sp -= sp;
+					clif_updatestatus(sd,SP_SP);
+					timer = add_timer(10000+tick, status_change_timer,bl->id, data);
+				}
+			} else {
+				timer = add_timer(10000+tick, status_change_timer,bl->id, data);
+			}
+		}
+		break;
+	case SC_FORCEOFVANGUARD:	/* フォースオブバンガード */
+		if(sd) {
+			int sp = 24 - sc->data[type].val1 * 4;
+			if(sd->status.sp >= sp) {
+				sd->status.sp -= sp;
+				clif_updatestatus(sd,SP_SP);
+				timer = add_timer(10000+tick, status_change_timer,bl->id, data);
+			}
+		}
+		break;
+	case SC_BANDING:		/* バンディング */
+		if(sd) {
+			int sp = 7 - sc->data[type].val1;
+			if(sd->status.sp >= sp) {
+				sd->status.sp -= sp;
+				clif_updatestatus(sd,SP_SP);
+				timer = add_timer(5000+tick, status_change_timer,bl->id, data);
+			}
+		}
+		break;
+	case SC_INSPIRATION:	/* インスピレーション */
+		if((--sc->data[type].val2) > 0) {
+			if(sd) {
+				int hp = sd->status.max_hp / 100;
+				int sp = sd->status.max_sp / 100;
+				unit_heal(bl, -hp, -sp);
+				if(sd->status.sp > 0 && !unit_isdead(bl) && sc->data[type].timer != -1) {
+					// 生きていて解除済みでないなら継続
+					timer = add_timer(6000+tick, status_change_timer,bl->id, data);
+				}
+			} else {
+				timer = add_timer(6000+tick, status_change_timer,bl->id, data);
 			}
 		}
 		break;

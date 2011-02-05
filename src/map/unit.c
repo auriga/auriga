@@ -273,6 +273,8 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_NEUTRALBARRIER_USER].val4),sd->bl.m,dx,dy);
 		if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_USER].val4),sd->bl.m,dx,dy);
+		if(sd->sc.data[SC_BANDING].timer != -1)
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_BANDING].val4),sd->bl.m,dx,dy);
 	}
 
 	ud->walktimer = 1;
@@ -731,6 +733,10 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1) {
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_USER].val4),sd->bl.m,dx,dy);
 		}
+		// バンディングの位置変更
+		if(sd->sc.data[SC_BANDING].timer != -1) {
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_BANDING].val4),sd->bl.m,dx,dy);
+		}
 
 		if(map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
 			npc_touch_areanpc(sd,sd->bl.m,sd->bl.x,sd->bl.y);
@@ -1186,6 +1192,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			src_sd->prev_speed = src_sd->speed;
 			src_sd->speed = src_sd->speed*(175 - skill*5)/100;
 			clif_updatestatus(src_sd,SP_SPEED);
+		} else if(src_sd && skill_num == LG_EXEEDBREAK) {
+			src_sd->prev_speed = src_sd->speed;
+			src_sd->speed = src_sd->speed * (150 - skill * 10) / 100;
+			clif_updatestatus(src_sd,SP_SPEED);
 		} else {
 			unit_stop_walking(src,1);
 		}
@@ -1493,7 +1503,11 @@ int unit_can_move(struct block_list *bl)
 	if( sc && sc->option&OPTION_HIDE && (!sd || pc_checkskill(sd,RG_TUNNELDRIVE) <= 0) )
 		return 0;
 
-	if( ud->skilltimer != -1 && (!sc || sc->data[SC_SELFDESTRUCTION].timer == -1) && (!sd || (pc_checkskill(sd,SA_FREECAST) <= 0) || (ud->skillid >= GD_BATTLEORDER && ud->skillid <= GD_EMERGENCYCALL)) )
+	if( ud->skilltimer != -1 &&
+		(!sc || sc->data[SC_SELFDESTRUCTION].timer == -1) &&
+		(ud->skillid != LG_EXEEDBREAK) &&
+		(!sd || (pc_checkskill(sd,SA_FREECAST) <= 0) ||
+		(ud->skillid >= GD_BATTLEORDER && ud->skillid <= GD_EMERGENCYCALL)) )
 		return 0;
 
 	if(sc && sc->count > 0)
@@ -1819,12 +1833,13 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 	ud->canact_tick  = tick;
 	ud->canmove_tick = tick;
 
-	if(sd && pc_checkskill(sd,SA_FREECAST) > 0) {
+	skillid = (type&1 && sd)? sd->skill_used.id: ud->skillid;
+
+	if(sd && (pc_checkskill(sd,SA_FREECAST) > 0 || skillid == LG_EXEEDBREAK)) {
 		sd->speed = sd->prev_speed;
 		clif_updatestatus(sd,SP_SPEED);
 	}
 
-	skillid = (type&1 && sd)? sd->skill_used.id: ud->skillid;
 
 	if(skill_get_inf(skillid) & INF_TOGROUND)
 		ret = delete_timer(ud->skilltimer, skill_castend_pos);

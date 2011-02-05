@@ -727,8 +727,6 @@ int map_foreachinshootpath(int (*func)(struct block_list*,va_list),
 
 		int xu, yu;
 
-		range /= 2;	// 距離は半分にする
-
 		// 射線上に壁があるかチェック、壁のセルは射程に含む
 		for(i = 0; i < range; i++) {
 			if(map_getcell(m,x1,y1,CELL_CHKWALL))

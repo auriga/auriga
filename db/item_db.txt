@@ -168,7 +168,7 @@
 675,Silver_Coin,銀貨,2,,,40,,,,,1000333311,2,,,,,,{},{}
 676,Bag_of_Silver_Coins,銀貨の袋,2,,,400,,,,,1000333311,2,,,,,,{},{}
 677,Platinum_Coin,白金貨,2,,,40,,,,,,,,,,,,{},{}
-678,Poison_Bottle,毒薬の瓶,2,5000,,100,,,,,1000333311,2,,,,,,{ if((Class == Job_Assassin) && (Upper == UPPER_HIGH) || (Class == Job_Guillotine)){ sc_start SC_SpeedPot2,60000,0; }else{ percentheal -100,0; } },{}
+678,Poison_Bottle,毒薬の瓶,2,5000,,100,,,,,1000333311,2,,,,,,{ if((Job == Job_Assassin) && (Upper == UPPER_HIGH) || (Job == Job_Guillotine)){ sc_start SC_SpeedPot2,60000,0; }else{ percentheal -100,0; } },{}
 679,Pilule,神仙丹,2,5000,,300,,,,,1000333311,2,,,,,,{ percentheal 50,50; },{}
 680,Magic_Carnation,魔力のカーネーション,2,,,1000,,,,,,,,,,,,{},{}
 681,Sweet_Memory_of_Marriage,新婚時代の思い出,2,50000,,10,,,,,1000333311,2,,,,,,{ sc_start SC_WEDDING,3600000,0; },{}

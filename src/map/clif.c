@@ -2495,6 +2495,10 @@ void clif_spawnpc(struct map_session_data *sd)
 		clif_spiritball(sd);
 	if(sd->coin.num > 0)
 		clif_coin(sd);
+	if(sd->sc.data[SC_BERKANA].timer != -1)
+		clif_mshield(sd,sd->sc.data[SC_BERKANA].val2);
+	if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1)
+		clif_mshield(sd,sd->sc.data[SC_FORCEOFVANGUARD].val4);
 	if(sd->view_size!=0)
 		clif_misceffect2(&sd->bl,422+sd->view_size);
 

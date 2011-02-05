@@ -1227,7 +1227,7 @@ job_cru.gat,168,180,0	script	#CRU_3rdWarp	45,1,1,{
 //------------------------------------------
 
 prontera.gat,232,318,3	script	ペコペコ管理兵	105,{
-	if(Job == Job_Crusader) {
+	if(Job != Job_Crusader) {
 		mes "[ペコペコ管理兵]";
 		mes "何の用事でいらっしゃったんですか";
 		mes "私どものペコペコは、";

@@ -4350,6 +4350,9 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 	// ステルスフィールド削除
 	if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1)
 		status_change_end(&sd->bl, SC_STEALTHFIELD_USER, -1);
+	// バンディング削除
+	if(sd->sc.data[SC_BANDING].timer != -1)
+		status_change_end(&sd->bl, SC_BANDING, -1);
 	// ディボーション削除(献身対象者)
 	if(sd->sc.data[SC_DEVOTION].timer != -1)
 		status_change_end(&sd->bl, SC_DEVOTION, -1);
@@ -4808,6 +4811,18 @@ static int pc_checkallowskill(struct map_session_data *sd)
 		}
 		if(sd->sc.data[SC_REFLECTSHIELD].timer != -1) {		// リフレクトシールド
 			status_change_end(&sd->bl,SC_REFLECTSHIELD,-1);
+		}
+		if(sd->sc.data[SC_REFLECTDAMAGE].timer != -1) {		// リフレクトダメージ
+			status_change_end(&sd->bl,SC_REFLECTDAMAGE,-1);
+		}
+		if(sd->sc.data[SC_SHIELDSPELL_DEF].timer != -1) {		// シールドスペル(DEF)
+			status_change_end(&sd->bl,SC_SHIELDSPELL_DEF,-1);
+		}
+		if(sd->sc.data[SC_SHIELDSPELL_MDEF].timer != -1) {		// シールドスペル(MDEF)
+			status_change_end(&sd->bl,SC_SHIELDSPELL_MDEF,-1);
+		}
+		if(sd->sc.data[SC_SHIELDSPELL_REF].timer != -1) {		// シールドスペル(精錬)
+			status_change_end(&sd->bl,SC_SHIELDSPELL_REF,-1);
 		}
 	}
 	return 0;
@@ -8644,6 +8659,8 @@ static int pc_spheal(struct map_session_data *sd)
 		a += a;
 	if(sd->sc.data[SC_MAGNIFICAT].timer != -1)	// マグニフィカート
 		a += a;
+	else if(sd->sc.data[SC_SHIELDSPELL_MDEF].timer != -1)	// シールドスペル
+		a += a;
 	if(sd->sc.data[SC_REGENERATION].timer != -1) {
 		switch(sd->sc.data[SC_REGENERATION].val1)
 		{
@@ -9086,6 +9103,7 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	    sd->sc.data[SC_MAGICMUSHROOM].timer == -1 &&	// マジックマッシュルーム状態ではHPが回復しない
 	    sd->sc.data[SC_PYREXIA].timer == -1 &&	// パイレックシア状態ではHPが回復しない
 	    sd->sc.data[SC_LEECHEND].timer == -1 &&	// リーチエンド状態ではHPが回復しない
+	    sd->sc.data[SC_INSPIRATION].timer == -1 &&	// インスピレーション状態はHPが回復しない
 	    sd->sc.data[SC_RAISINGDRAGON].timer == -1 &&	// 潜竜昇天状態はHPが回復しない
 	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer == -1 &&	// フライデーナイトフィーバー状態ではHPが回復しない
 	    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
@@ -9106,6 +9124,9 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		    sd->sc.data[SC_STEALTHFIELD_USER].timer == -1 &&	// ステルスフィールド(使用者)はSPが回復しない
 		    sd->sc.data[SC__SHADOWFORM].timer == -1 &&	// シャドウフォーム状態はSPが回復しない
 		    sd->sc.data[SC__INVISIBILITY].timer == -1 &&	// インビジビリティ状態はSPが回復しない
+		    sd->sc.data[SC_REFLECTDAMAGE].timer == -1 &&	// リフレクトダメージ状態はSPが回復しない
+		    sd->sc.data[SC_FORCEOFVANGUARD].timer == -1 &&	// フォースオブバンガード状態はSPが回復しない
+		    sd->sc.data[SC_BANDING].timer == -1 &&	// バンディング状態はSPが回復しない
 		    sd->sc.data[SC_SIRCLEOFNATURE].timer == -1 &&	// 循環する自然の音状態はSPが回復しない
 		    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer == -1 &&	// フライデーナイトフィーバー状態ではSPが回復しない
 		    sd->sc.data[SC_STRIKING].timer == -1 &&	// ストライキング状態はSPが回復しない
