@@ -2096,14 +2096,15 @@ R 07e1 <skill ID>.w <type>.l <lv>.w <sp>.w <range>.w <up>.B
 R 07e2 <line>.w <val>.l
 	0x291にvalも送れる上位版
 R 07e3 <type>.l
-	アイテムリスト関連？
-	typeは0のみ？
-	未調査
-S 07e4 <len>.w <type>.l <action>.l
-	アイテムリスト関連？
+	アイテム変換ウィンドウ表示
+	type=00 チェンジマテリアル（所持しているアイテムがリスト表示される）
+	type=01 四元素分析Lv1（所持している属性石がリスト表示される）
+	type=02 四元素分析Lv2（所持している属性原石がリスト表示される）
+S 07e4 <len>.w <type>.l <fail>.l {<index>.w <amount>.w}.4B*
+	アイテム変換ウィンドウ応答
 	typeは0x7e3と同じ
-	actionは0〜1
-	未調査
+	fail=00 キャンセル押下
+	fail=01 OK押下
 S 07e5 <?>.w <account ID>.l
 	captchaコード要求
 R 07e6 <skillid>.w <type>.l

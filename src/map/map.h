@@ -319,7 +319,6 @@ struct map_session_data {
 		unsigned skill_flag : 1;
 		unsigned gangsterparadise : 1;
 		unsigned taekwonrest : 1;
-		unsigned produce_flag : 1;
 		unsigned potionpitcher_flag : 1;
 		unsigned storage_flag : 2;	// 0:倉庫未使用, 1:個人倉庫使用中, 2:ギルド倉庫使用中
 		unsigned autoloot : 1;
@@ -433,6 +432,7 @@ struct map_session_data {
 	struct {
 		short id;
 		short lv;
+		int val;
 	} skill_menu;
 
 	struct {
@@ -664,7 +664,6 @@ struct map_session_data {
 
 	int ranking_point[MAX_RANKING];
 	short am_pharmacy_success;
-	short making_base_success_per;
 	int tk_mission_target;		// テコン
 	short ranker_weapon_bonus;
 	short ranker_weapon_bonus_;
@@ -679,7 +678,6 @@ struct map_session_data {
 
 	int pvp_point,pvp_rank,pvp_timer,pvp_lastusers;
 	int zenynage_damage;
-	int repair_target;
 
 	int skill_delay_rate;
 

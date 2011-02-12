@@ -6816,9 +6816,9 @@ int buildin_produce(struct script_state *st)
 
 	nullpo_retr(0, sd);
 
-	if(sd->state.produce_flag != 1) {
-		int trigger=conv_num(st,& (st->stack->stack_data[st->start+2]));
-		clif_skill_produce_mix_list(sd,trigger);
+	if(sd->skill_menu.id == 0) {
+		int trigger= conv_num(st,& (st->stack->stack_data[st->start+2]));
+		clif_skill_produce_mix_list(sd,trigger,1,1);
 	}
 	return 0;
 }
@@ -10361,10 +10361,10 @@ int buildin_making(struct script_state *st)
 	struct map_session_data *sd;
 	int makeid=conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	sd=script_rid2sd(st);
-	if(sd){
-		clif_making_list(sd,makeid);
-		sd->making_base_success_per = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	sd = script_rid2sd(st);
+	if(sd && sd->skill_menu.id == 0){
+		int rate = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		clif_making_list(sd,makeid,1,rate);
 	}
 	return 0;
 }

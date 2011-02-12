@@ -1,4 +1,38 @@
 ----------------------------------------
+//0828 [2011/02/13] by Blaze
+
+・ジェネティックスキル実装
+	(skill.*, status.*, battle.c, clif.c, unit.c, pc.c,
+	 db/skill_db.txt, db/skill_db2.txt,db/skill_cast_db.txt,
+	 db/skill_require_db.txt, db/skill_require_db2.txt, db/skill_unit_db.txt,
+	 db/skill_tree.txt, db/scdata_db.txt, db/produce_db.txt)
+
+・3次職関連のアイテムDBを更新(item_db.txt, const.txt)
+　※暫定処理中のため、3次職専用装備が2次職も装備可能で定義されています
+
+・ジェネティックスキル「チェンジマテリアル」のDBを追加(db/changematerial_db.txt, db/packet_db.txt, doc/client_packet.txt)
+
+・ブラックスミススキル「武器修理」や料理システム、各製造系スキルの処理を最適化(map.h, clif.c, skill.c, script.c)
+
+・ロイヤルガードスキル「イクシードブレイク」使用時にサーバークラッシュする不具合を修正(status.c)
+	Thanks rapis さん、unsyu さん、Azurite さん
+
+・状態異常「アースドライブ」の効果でASPDが増加していた不具合を修正(status.c)
+	Thanks rapis さん、unsyu さん
+
+・ミンストレル・ワンダラースキル「地獄の歌」の判定誤りを修正(skill.c)
+	Thanks rapis さん
+
+・セージスキル「アドバンスドブック」の効果が異常だった不具合を修正(status.c)
+	Thanks ねぎぽん さん
+
+・シャドウチェイサースキル「シャドウフォーム」の仕様を変更(skill.c, db/skill_db.txt)
+　-> 自分自身には使用できないように修正
+　-> 一般MAPにはパーティメンバーに対してのみ発動するように修正
+	Thanks ばるす さん、ARIA さん
+
+
+----------------------------------------
 //0827 [2011/02/06] by Blaze
 
 ・ロイヤルガードスキル実装

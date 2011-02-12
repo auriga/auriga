@@ -115,6 +115,8 @@ void clif_callpartner(struct map_session_data *sd);
 void clif_divorced(struct map_session_data *sd, const char *name);
 void clif_baby_req_fail(struct map_session_data *sd, int type);
 void clif_sitting(struct block_list *bl, int sit);
+void clif_changematerial_list(struct map_session_data *sd);
+void clif_skill_message(struct map_session_data *sd, int skillid, int type);
 void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest);
 void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type,int interval);
 
@@ -167,8 +169,8 @@ void clif_skill_warppoint(struct map_session_data *sd,int skill_num,
 	const char *map1,const char *map2,const char *map3,const char *map4);
 void clif_skill_memo(struct map_session_data *sd, unsigned char flag);
 void clif_skill_teleportmessage(struct map_session_data *sd, unsigned short flag);
-void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger);
-void clif_making_list(struct map_session_data *sd, int trigger);
+void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger, int skillid, int skilllv);
+void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int skilllv);
 
 void clif_produceeffect(struct map_session_data *sd, unsigned short flag, int nameid);
 

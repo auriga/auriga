@@ -92,21 +92,24 @@ enum {
 };
 
 enum {
-	PRD_WEAPON_L1  =    1,
-	PRD_WEAPON_L2  =    2,
-	PRD_WEAPON_L3  =    3,
-	PRD_ORE        =   16,
-	PRD_PHARMACY   =   32,
-	PRD_COIN       =   64,
-	PRD_NUGGET     =  128,
-	PRD_CDP        =  256,
-	PRD_CONVERTER  =  512,
-	PRD_COOKING    = 1000,
-	PRD_SCROLL     = 1001,
-	PRD_SYN_POTION = 1002,
-	PRD_ORIDEOCON  = 1003,
-	PRD_RUNE       = 1004,
-	PRD_NEWPOISON  = 1005,
+	PRD_WEAPON_L1    =    1,
+	PRD_WEAPON_L2    =    2,
+	PRD_WEAPON_L3    =    3,
+	PRD_ORE          =   16,
+	PRD_PHARMACY     =   32,
+	PRD_COIN         =   64,
+	PRD_NUGGET       =  128,
+	PRD_CDP          =  256,
+	PRD_CONVERTER    =  512,
+	PRD_COOKING      = 1000,
+	PRD_SCROLL       = 1001,
+	PRD_SYN_POTION   = 1002,
+	PRD_ORIDEOCON    = 1003,
+	PRD_RUNE         = 1004,
+	PRD_NEWPOISON    = 1005,
+	PRD_S_PHARMACY   = 1006,
+	PRD_MIX_COOKING  = 1007,
+	PRD_MAKEBOMB     = 1008,
 };
 
 extern struct skill_db skill_db[MAX_SKILL_DB];
@@ -144,6 +147,14 @@ struct skill_rand_db {
 	int entry;
 };
 extern struct skill_rand_db skill_rand_db[MAX_SKILL_RAND_DB];
+
+// チェンジマテリアル合成データベース
+struct skill_material_db {
+	int nameid;
+	int amount[2];
+	int mat_id[MAX_PRODUCE_RESOURCE],mat_amount[MAX_PRODUCE_RESOURCE];
+};
+extern struct skill_material_db skill_material_db[MAX_SKILL_PRODUCE_DB];
 
 int do_init_skill(void);
 
@@ -285,6 +296,7 @@ void skill_repair_weapon(struct map_session_data *sd, int idx);
 void skill_poisoning_weapon(struct map_session_data *sd, int nameid);
 void skill_reading_sb(struct map_session_data *sd, int nameid);
 void skill_autoshadowspell(struct map_session_data *sd, int skillid);
+void skill_changematerial(struct map_session_data *sd, int num, unsigned short *item_list);
 
 // mobスキルのため
 int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag );

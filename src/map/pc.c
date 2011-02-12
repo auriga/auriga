@@ -1205,7 +1205,6 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	memset(&sd->regen,0,sizeof(sd->regen));
 
 	sd->spiritball.num = 0;
-	sd->repair_target = 0;
 
 	for(i=0; i<MAX_SPIRITBALL; i++) {
 		sd->spiritball.timer[i] = -1;
@@ -5957,7 +5956,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	if(unit_isdead(&sd->bl))
 		return 0;
 	// 座ってたら立ち上がる
-	if(pc_issit(sd)) {
+	if(pc_issit(sd) && sd->sc.data[SC_SITDOWN_FORCE].timer == -1 && sd->sc.data[SC_BANANA_BOMB].timer == -1) {
 		pc_setstand(sd);
 		skill_sit(sd,0);
 	}

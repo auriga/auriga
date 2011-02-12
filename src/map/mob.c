@@ -962,7 +962,10 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			if( !unit_can_move(&md->bl) || unit_isrunning(&md->bl) ) {	// 動けない状態にある
 				// アンクル、蜘蛛の巣拘束中は強制待機
 				if(md->sc.data && (md->sc.data[SC_ANKLE].timer != -1 || md->sc.data[SC_SPIDERWEB].timer != -1 ||
-				   md->sc.data[SC_ELECTRICSHOCKER].timer != -1 || md->sc.data[SC_MAGNETICFIELD].timer != -1))
+				   md->sc.data[SC_ELECTRICSHOCKER].timer != -1 || md->sc.data[SC_MAGNETICFIELD].timer != -1 ||
+				   md->sc.data[SC_SITDOWN_FORCE].timer != -1 || md->sc.data[SC_FALLENEMPIRE].timer != -1 ||
+				   md->sc.data[SC_NETHERWORLD].timer != -1 || md->sc.data[SC_VACUUM_EXTREME].timer != -1 ||
+				   md->sc.data[SC_THORNS_TRAP].timer != -1 || md->sc.data[SC_BANANA_BOMB].timer != -1))
 					mob_unlocktarget(md,tick);
 				if(DIFF_TICK(md->ud.canmove_tick,tick) <= 0)	// ダメージディレイ中でないならスキル使用
 					mobskill_use(md,tick,-1);

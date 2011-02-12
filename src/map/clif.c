@@ -7194,7 +7194,7 @@ void clif_skill_estimation(struct map_session_data *sd, struct block_list *bl)
  * アイテム合成可能リスト
  *------------------------------------------
  */
-void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger)
+void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger, int skillid, int skilllv)
 {
 	int i,c,view,fd;
 
@@ -7217,8 +7217,10 @@ void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger)
 	WFIFOW(fd, 2)=c*8+8;
 	WFIFOSET(fd,WFIFOW(fd,2));
 
-	if(c > 0)
-		sd->state.produce_flag = 1;
+	if(c > 0) {
+		sd->skill_menu.id = skillid;
+		sd->skill_menu.lv = skilllv;
+	}
 
 	return;
 }
@@ -7227,7 +7229,7 @@ void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger)
  * 料理リスト
  *------------------------------------------
  */
-void clif_making_list(struct map_session_data *sd, int trigger)
+void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int skilllv)
 {
 	int i,c,view,fd;
 
@@ -7247,10 +7249,16 @@ void clif_making_list(struct map_session_data *sd, int trigger)
 		}
 	}
 	WFIFOW(fd, 2)=c*2+6;
-	WFIFOSET(fd,WFIFOW(fd,2));
 
-	if(c > 0)
-		sd->state.produce_flag = 1;
+	if(c > 0) {
+		WFIFOSET(fd,WFIFOW(fd,2));
+
+		sd->skill_menu.id = skillid;
+		sd->skill_menu.lv = skilllv;
+	}
+	else if(skillid != 1) {
+		clif_skill_message(sd, skillid, 1573);	// 材料が存在しません。
+	}
 
 	return;
 }
@@ -7838,8 +7846,9 @@ void clif_item_repair_list(struct map_session_data *sd, struct map_session_data 
 	if(c > 0) {
 		WFIFOW(fd,2)=c*13+4;
 		WFIFOSET(fd,WFIFOW(fd,2));
-		sd->state.produce_flag = 1;
-		sd->repair_target=dstsd->bl.id;
+		sd->skill_menu.id = BS_REPAIRWEAPON;
+		sd->skill_menu.lv = 1;
+		sd->skill_menu.val = dstsd->bl.id;
 	}else
 		clif_skill_fail(sd,sd->ud.skillid,0,0);
 
@@ -7865,12 +7874,13 @@ void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int
 	WFIFOB(fd, 4)=flag;
 	WFIFOSET(fd,packet_db[0x1fe].len);
 
-	if(sd->repair_target && sd->bl.id != sd->repair_target && flag==0) {	// 成功したら相手にも通知
-		struct map_session_data *dstsd = map_id2sd(sd->repair_target);
-		sd->repair_target=0;
+	if(sd->skill_menu.val && sd->bl.id != sd->skill_menu.val && flag == 0) {	// 成功したら相手にも通知
+		struct map_session_data *dstsd = map_id2sd(sd->skill_menu.val);
 		if(dstsd)
 			clif_item_repaireffect(dstsd,flag,nameid);
 	}
+
+	memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
 
 	return;
 }
@@ -11887,6 +11897,46 @@ void clif_showevent(struct map_session_data *sd, struct block_list *bl, short st
 }
 
 /*==========================================
+ * チェンジマテリアル合成リスト
+ *------------------------------------------*/
+void clif_changematerial_list(struct map_session_data *sd)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0)=0x7e3;
+	WFIFOL(fd,2) = 0;
+	WFIFOSET(fd, packet_db[0x7e3].len);
+
+	sd->skill_menu.id = GN_CHANGEMATERIAL;
+	sd->skill_menu.lv = 1;
+
+	return;
+}
+
+/*==========================================
+ * スキルメッセージ
+ *------------------------------------------*/
+void clif_skill_message(struct map_session_data *sd, int skillid, int type)
+{
+#if PACKETVER > 23
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0)=0x7e6;
+	WFIFOW(fd,2) = skillid;
+	WFIFOL(fd,4) = type;
+	WFIFOSET(fd, packet_db[0x7e6].len);
+#endif
+
+	return;
+}
+
+/*==========================================
  * 経験値取得表示
  *------------------------------------------
  */
@@ -12780,7 +12830,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		}
 		break;
 	case 0x03:	// standup
-		if(sd->sc.data[SC_SITDOWN_FORCE].timer == -1) {
+		if(sd->sc.data[SC_SITDOWN_FORCE].timer == -1 || sd->sc.data[SC_BANANA_BOMB].timer == -1) {
 			pc_setstand(sd);
 			clif_sitting(&sd->bl, 0);
 			skill_sit(sd,0);	// ギャングスターパラダイスおよびテコン休息解除
@@ -13922,14 +13972,14 @@ static void clif_parse_ProduceMix(int fd,struct map_session_data *sd, int cmd)
 
 	nullpo_retv(sd);
 
-	sd->state.produce_flag = 0;
-
 	nameid = RFIFOW(fd,GETPACKETPOS(cmd,0));
 	slot1  = RFIFOW(fd,GETPACKETPOS(cmd,1));
 	slot2  = RFIFOW(fd,GETPACKETPOS(cmd,2));
 	slot3  = RFIFOW(fd,GETPACKETPOS(cmd,3));
 
 	skill_produce_mix(sd,nameid,slot1,slot2,slot3);
+
+	memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
 
 	return;
 }
@@ -13942,8 +13992,9 @@ static void clif_parse_RepairItem(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-	sd->state.produce_flag = 0;
 	skill_repair_weapon(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+
+	memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
 
 	return;
 }
@@ -14075,8 +14126,7 @@ static void clif_parse_SelectItem(int fd,struct map_session_data *sd, int cmd)
 			break;
 	}
 
-	sd->skill_menu.id = 0;
-	sd->skill_menu.lv = 0;
+	memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
 
 	return;
 }
@@ -15799,10 +15849,10 @@ static void clif_parse_Making(int fd,struct map_session_data *sd, int cmd)
 
 	nullpo_retv(sd);
 
-	sd->state.produce_flag = 0;
-
 	nameid = RFIFOW(fd,GETPACKETPOS(cmd,0));
 	skill_produce_mix(sd,nameid,0,0,0);
+
+	memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
 
 	return;
 }
@@ -16091,8 +16141,49 @@ static void clif_parse_SelectSkill(int fd,struct map_session_data *sd, int cmd)
 			break;
 	}
 
-	sd->skill_menu.id = 0;
-	sd->skill_menu.lv = 0;
+	memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
+
+	return;
+}
+
+/*==========================================
+ * アイテム変換リスト受信
+ *------------------------------------------
+ */
+static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
+{
+	int num, type, flag;
+	nullpo_retv(sd);
+
+	num = ((RFIFOW(fd,GETPACKETPOS(cmd,0))) - 12) / 4;
+	type = RFIFOL(fd,GETPACKETPOS(cmd,1));
+	flag = RFIFOL(fd,GETPACKETPOS(cmd,2));
+
+	// OK時かつアイテム個数1以上の場合
+	if(flag == 1 && num > 0) {
+		switch(type) {
+			case 0:
+				/* チェンジマテリアル */
+				if(sd->skill_menu.id == GN_CHANGEMATERIAL) {
+					skill_changematerial(sd, num, (unsigned short*)RFIFOP(fd,GETPACKETPOS(cmd,3)));
+				}
+				break;
+			case 1:
+				/* 四元素分析Lv1 */
+				if(sd->skill_menu.id == SO_EL_ANALYSIS && sd->skill_menu.lv == 1) {
+
+				}
+				break;
+			case 2:
+				/* 四元素分析Lv2 */
+				if(sd->skill_menu.id == SO_EL_ANALYSIS && sd->skill_menu.lv == 2) {
+
+				}
+				break;
+		}
+	}
+
+	memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
 
 	return;
 }
@@ -16404,6 +16495,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyBookingUpdateReq,     "bookingupdatereq"          },
 		{ clif_parse_PartyBookingDeleteReq,     "bookingdelreq"             },
 		{ clif_parse_SelectSkill,               "selectskill"               },
+		{ clif_parse_ConvertItem,               "convertitem"               },
 		{ NULL,                                 NULL                        },
 	};
 

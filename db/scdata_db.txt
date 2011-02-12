@@ -492,6 +492,26 @@
 520,SC_FIRE_EXPANSION_SMOKE_POWDER,0,1,0	// ファイアーエクスパンション(煙幕)
 521,SC_FIRE_EXPANSION_TEAR_GAS,0,1,0	// ファイアーエクスパンション(催涙)
 522,SC_MANDRAGORA,0,1,0			// ハウリングマンドラゴラ
+523,SC_MELON_BOMB,0,1,0			// メロン爆弾
+524,SC_BANANA_BOMB,0,1,0		// バナナ爆弾
+525,SC_MYSTERIOUS_POWDER,0,1,0		// 不思議な粉
+526,SC_BOOST500,0,1,0			// ブースト500
+527,SC_FULL_SWING_K,0,1,0		// フルスイングK
+528,SC_MANA_PLUS,0,1,0			// マナプラス
+529,SC_MUSTLE_M,0,1,0			// マッスルM
+530,SC_LIFE_FORCE_F,0,1,0		// ライフフォースF
+531,SC_PROMOTE_HEALTH_RESERCH,0,1,0	// HP増加ポーション
+532,SC_ENERGY_DRINK_RESERCH,0,1,0	// SP増加ポーション
+533,SC_EXTRACT_WHITE_POTION_Z,0,1,0	// 濃縮ホワイトポーションZ
+534,SC_VITATA_500,0,1,0			// ビタタ500
+535,SC_EXTRACT_SALAMINE_JUICE,0,1,0	// 濃縮サラマインジュース
+536,SC_SAVAGE_STEAK,0,1,0		// サベージの丸焼き
+537,SC_COCKTAIL_WARG_BLOOD,0,1,0	// カクテルウォーグブラッド
+538,SC_MINOR_BBQ,0,1,0			// ミノタウロスのカルビ
+539,SC_SIROMA_ICE_TEA,0,1,0		// シロマアイスティー
+540,SC_DROCERA_HERB_STEAMED,0,1,0	// ドロセラのハーブ煮
+541,SC_PUTTI_TAILS_NOODLES,0,1,0	// プティットのしっぽ麺
+542,SC_STOMACHACHE,0,1,0		// 腹痛
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

@@ -285,13 +285,16 @@ int SkillStatusChangeTable3[MAX_THIRDSKILL] = {	/* status.hのenumのSC_***と�
 	SC_STRIKING,SC_WARMER,SC_VACUUM_EXTREME,-1,SC_DEEP_SLEEP,-1,-1,-1,-1,-1,
 	/* 2461- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 2471- */
+	-1,-1,-1,-1,-1,-1,-1,SC_GN_CARTBOOST,SC_THORNS_TRAP,SC_BLOOD_SUCKER,
+	/* 2481- */
+	SC_SPORE_EXPLOSION,-1,-1,-1,SC_HELLINFERNO,-1,-1,-1,-1,-1,
+	/* 2491- */
+	-1,SC_MANDRAGORA,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 2501- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 2511- */
-	-1,-1,-1,-1,SC_SACRAMENT,-1,SC_FEAR,-1,
+	-1,-1,-1,-1,SC_SACRAMENT,-1,SC_FEAR,-1,-1,
 };
 
 /* (スキル番号 - HOM_SKILLID)＝＞ステータス異常番号変換テーブル */
@@ -337,6 +340,9 @@ struct skill_abra_db skill_abra_db[MAX_SKILL_ABRA_DB];
 /* ランダム発動スキルデータ */
 static struct skill_rand_db skill_rand_db[MAX_SKILL_RAND_DB];
 
+/* チェンジマテリアル合成データベース */
+static struct skill_material_db skill_material_db[MAX_SKILL_PRODUCE_DB];
+
 /* プロトタイプ */
 static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,int x,int y);
 static struct skill_unit_group *skill_initunitgroup(struct block_list *src,int count,int skillid,int skilllv,int unit_id,unsigned int tick);
@@ -365,6 +371,7 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap);
 static int skill_detonator(struct block_list *bl,va_list ap);
 static int skill_trample(struct block_list *bl,va_list ap);
 static int skill_dominion_impulse(struct block_list *bl,va_list ap);
+static int skill_fire_expansion(struct block_list *bl,va_list ap);
 
 /* スキルユニットの配置情報を返す */
 static struct skill_unit_layout skill_unit_layout[MAX_SKILL_UNIT_LAYOUT];
@@ -1609,6 +1616,32 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,10000,status_get_lv(src)))
 			status_change_pretimer(bl,SC_POISON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
+	case GN_HELLS_PLANT_ATK:	/* ヘルズプラント(攻撃) */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,500 + skilllv * 500,status_get_lv(src)))
+			status_change_pretimer(bl,SC_BLEED,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,2000 + skilllv * 1000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case GN_DEMONIC_FIRE:	/* デモニックファイアー */
+		if(atn_rand() % 10000 < 400 + skilllv * 400)
+			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case GN_SLINGITEM_RANGEMELEEATK:	/* スリングアイテム(遠距離攻撃) */
+		switch(skilllv) {
+		case 1:		// ココナッツ爆弾
+			if(atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,5000,status_get_lv(src)))
+				status_change_pretimer(bl,SC_BLEED,1,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,5000,status_get_lv(src)))
+				status_change_pretimer(bl,SC_STUN,1,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+			break;
+		case 2:		// メロン爆弾
+			status_change_pretimer(bl,SC_MELON_BOMB,15,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+			break;
+		case 4:		// バナナ爆弾
+			status_change_pretimer(bl,SC_BANANA_BOMB,15,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+			break;
+		}
+		break;
 	}
 
 	// 追加状態異常
@@ -2398,6 +2431,13 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 					);
 				}
 				break;
+			case GN_CRAZYWEED:		/* クレイジーウィード */
+				if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS)) {
+					map_foreachinarea(skill_delunit_by_ganbantein,
+						src->m,skl->x-2,skl->y-2,skl->x+2,skl->y+2,BL_SKILL);
+					skill_unitsetting(src,GN_CRAZYWEED_ATK,skl->skill_lv,skl->x,skl->y,0);
+				}
+				break;
 			}
 		}
 	} while(0);
@@ -2866,6 +2906,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case SR_GENTLETOUCH_QUIET:	/* 点穴 -默- */
 	case SR_RIDEINLIGHTNING:	/* 雷光弾 */
 	case WM_GREAT_ECHO:		/* グレートエコー */
+	case GN_DEMONIC_FIRE:	/* デモニックファイアー */
+	case GN_FIRE_EXPANSION_ACID:	/* ファイアーエクスパンション(塩酸) */
+	case GN_SLINGITEM_RANGEMELEEATK:	/* スリングアイテム(遠距離攻撃) */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case NPC_GUIDEDATTACK:	/* ガイデッドアタック */
@@ -3743,6 +3786,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case TF_THROWSTONE:			/* 石投げ */
 	case PA_PRESSURE:			/* プレッシャー */
 	case SN_FALCONASSAULT:			/* ファルコンアサルト */
+	case GN_HELLS_PLANT_ATK:	/* ヘルズプラント */
 	case NPC_DARKBREATH:
 		battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,flag);
 		break;
@@ -4588,6 +4632,70 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
+	case GN_CART_TORNADO:	/* カートトルネード */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = 2;
+			/* スキルエフェクト表示 */
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = src->x;
+			skill_area_temp[3] = src->y;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case GN_CARTCANNON:		/* カートキャノン */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = (skilllv + 1) / 2;
+			skill_area_temp[1] = bl->id;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			/* まずターゲットに攻撃を加える */
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case GN_BLOOD_SUCKER:	/* ブラッドサッカー */
+		if(unit_distance2(src,bl) < 12){
+			int heal = battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|0x500);
+			heal = heal * (5 + skilllv * 5) / 100;
+			if(status_get_hp(src) + heal > status_get_max_hp(src))
+				heal = status_get_max_hp(src) - status_get_hp(src);
+			if(heal > 0) {
+				battle_heal(NULL,src,heal,0,0);
+				if(sd)
+					clif_heal(sd->fd,SP_HP,heal);
+			}
+		}
+		break;
+	case GN_SPORE_EXPLOSION:	/* スポアエクスプロージョン */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|0x0500);
+		} else {
+			int ar = skilllv;
+			skill_area_temp[1] = bl->id;
+			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|0x0500);
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
 	case 0:
 		if(sd) {
 			if(flag&3) {
@@ -5290,6 +5398,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SR_LIGHTNINGWALK:		/* 閃電歩 */
 	case SR_GENTLETOUCH_ENERGYGAIN:	/* 点穴 -球- */
 	case WM_GLOOMYDAY:			/* メランコリー */
+	case GN_CARTBOOST:			/* カートブースト */
 	case MS_REFLECTSHIELD:
 	case MER_QUICKEN:			/* ウェポンクイッケン */
 	case MER_AUTOBERSERK:
@@ -5528,7 +5637,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case AM_PHARMACY:			/* ポーション作成 */
 		if(sd) {
-			clif_skill_produce_mix_list(sd,PRD_PHARMACY);
+			clif_skill_produce_mix_list(sd,PRD_PHARMACY,skillid,skilllv);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
@@ -5560,25 +5669,25 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case ASC_CDP:				/* デッドリーポイズン作成 */
 		if(sd) {
-			clif_skill_produce_mix_list(sd,PRD_CDP);
+			clif_skill_produce_mix_list(sd,PRD_CDP,skillid,skilllv);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case WS_CREATECOIN:			/* クリエイトコイン */
 		if(sd) {
-			clif_skill_produce_mix_list(sd,PRD_COIN);
+			clif_skill_produce_mix_list(sd,PRD_COIN,skillid,skilllv);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case WS_CREATENUGGET:			/* 塊製造 */
 		if(sd) {
-			clif_skill_produce_mix_list(sd,PRD_NUGGET);
+			clif_skill_produce_mix_list(sd,PRD_NUGGET,skillid,skilllv);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case SA_CREATECON:
 		if(sd) {
-			clif_skill_produce_mix_list(sd,PRD_CONVERTER);
+			clif_skill_produce_mix_list(sd,PRD_CONVERTER,skillid,skilllv);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
@@ -7426,7 +7535,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case GC_CREATENEWPOISON:	/* 新毒製造 */
 		if(sd) {
-			clif_skill_produce_mix_list(sd,PRD_NEWPOISON);
+			clif_skill_produce_mix_list(sd,PRD_NEWPOISON,skillid,skilllv);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
@@ -7900,6 +8009,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SC_SHADOWFORM:			/* シャドウフォーム */
 		if(sd && dstsd && dstsd->shadowform_id == 0) {
+			if(sd->bl.id == dstsd->bl.id ||
+			   ((!map[src->m].flag.pvp && !map[src->m].flag.gvg) &&
+			    (sd->status.party_id <= 0 || dstsd->status.party_id <= 0 ||
+			    sd->status.party_id != dstsd->status.party_id)))
+			{
+				clif_skill_fail(sd,skillid,0,0);
+				break;
+			}
 			clif_skill_nodamage(&sd->bl,&dstsd->bl,skillid,skilllv,1);
 			status_change_start(&sd->bl,GetSkillStatusChangeTable(skillid),skilllv,dstsd->bl.id,0,0,skill_get_time(skillid,skilllv),0 );
 			dstsd->shadowform_id = sd->bl.id;
@@ -8522,6 +8639,95 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				skill_castend_nodamage_id);
 		}
 		break;
+	case GN_BLOOD_SUCKER:		/* ブラッドサッカー */
+	case GN_SPORE_EXPLOSION:	/* スポアエクスプロージョン */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,src->id,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case GN_WALLOFTHORN:	/* ソーンウォール */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		skill_unitsetting(src,skillid,skilllv,bl->x,bl->y,0);
+		break;
+	case GN_MANDRAGORA:		/* ハウリングオブマンドラゴラ */
+		if(flag&1) {
+			if(atn_rand() % 10000 < 3500 + 1000 * skilllv) {
+				if(dstsd) {
+					int sp = dstsd->status.max_sp * (25 + skilllv * 5) / 100;
+					if(dstsd->status.sp < sp)
+						sp = dstsd->status.sp;
+					dstsd->status.sp -= sp;
+					clif_updatestatus(dstsd,SP_SP);
+				}
+				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			}
+		} else {
+			int ar = 5 + skilllv;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
+				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
+	case GN_SLINGITEM:		/* スリングアイテム */
+		if(sd) {
+			int nameid = sd->inventory_data[sd->equip_index[10]]->nameid;
+			int cost = skill_get_arrow_cost(skillid,skilllv);
+			if(!nameid || cost > 0 && !battle_delarrow(sd, cost, skillid))
+				break;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+
+			// 投擲物によって効果決定
+			switch(nameid) {
+			case 13260:		// リンゴ爆弾
+			case 13261:		// ココナッツ爆弾
+			case 13262:		// メロン爆弾
+			case 13264:		// バナナ爆弾
+			case 13265:		// 黒い塊
+			case 13266:		// 硬くて黒い塊
+			case 13267:		// とても硬い塊
+				battle_skill_attack(BF_WEAPON,src,src,bl,GN_SLINGITEM_RANGEMELEEATK,nameid - 13260,tick,flag|(0x0f<<20));
+				break;
+			case 13263:		// パイナップル爆弾
+				map_foreachinarea(skill_area_sub,
+					bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),
+					src,GN_SLINGITEM_RANGEMELEEATK,3,tick,flag|BCT_ENEMY|(0x0f<<20),
+					skill_castend_damage_id);
+				break;
+			default:
+				if(dstsd) {
+					struct item_data *item = itemdb_search(nameid);
+					if(item->use_script)
+						run_script(item->use_script,0,dstsd->bl.id,0);
+				}
+				break;
+			}
+		}
+		break;
+	case GN_CHANGEMATERIAL:	/* チェンジマテリアル */
+		if(sd) {
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			clif_changematerial_list(sd);
+		}
+		break;
+	case GN_MIX_COOKING:	/* ミックスクッキング */
+		if(sd) {
+			clif_making_list(sd,PRD_MIX_COOKING,skillid,skilllv);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		break;
+	case GN_MAKEBOMB:		/* 爆弾製造 */
+		if(sd) {
+			clif_making_list(sd,PRD_MAKEBOMB,skillid,skilllv);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		break;
+	case GN_S_PHARMACY:		/* スペシャルファーマシー */
+		if(sd) {
+			clif_making_list(sd,PRD_S_PHARMACY,skillid,skilllv);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		break;
 	default:
 		printf("skill_castend_nodamage_id: Unknown skill used:%d\n",skillid);
 		map_freeblock_unlock();
@@ -8827,6 +9033,9 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case SO_CLOUD_KILL:			/* クラウドキル */
 	case SO_WARMER:				/* ウォーマー */
 	case SO_VACUUM_EXTREME:		/* バキュームエクストリーム */
+	case GN_THORNS_TRAP:		/* ソーントラップ */
+	case GN_DEMONIC_FIRE:		/* デモニックファイアー */
+	case GN_HELLS_PLANT:		/* ヘルズプラント */
 	case MA_SKIDTRAP:
 	case MA_LANDMINE:
 	case MA_SANDMAN:
@@ -9249,6 +9458,34 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				skill_castend_damage_id);
 		}
 		break;
+	case GN_CRAZYWEED:		/* クレイジーウィード */
+		{
+			int tmpx, tmpy, i, num;
+			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
+			num = skill_get_num(skillid,skilllv);
+			for(i=0; i<num; i++) {
+				tmpx = x + (atn_rand()%5 - 2);
+				tmpy = y + (atn_rand()%5 - 2);
+				skill_addtimerskill(src,tick+i*200,0,tmpx,tmpy,skillid,skilllv,0,0);
+			}
+		}
+		break;
+	case GN_FIRE_EXPANSION:		/* ファイアーエクスパンション */
+		if(sd) {
+			int id = skill_get_skilldb_id(skillid);
+			int i = (skilllv > skill_get_max(skillid))? skill_get_max(skillid) - 1: skilllv - 1;
+			int j = pc_search_inventory(sd,skill_db[id].itemid[i]);
+
+			if(j < 0 || sd->inventory_data[j] == NULL ||
+			   sd->status.inventory[j].amount < skill_db[id].amount[i]) {
+				clif_skill_fail(sd,skillid,0,0);
+				break;
+			}
+			pc_delitem(sd,j,skill_db[id].amount[i],0,1);
+		}
+		clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
+		map_foreachinarea(skill_fire_expansion,src->m,x-2,y-2,x+2,y+2,BL_SKILL,src,skilllv,tick);
+		break;
 	}
 	return 0;
 }
@@ -9623,6 +9860,9 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				break;
 			case WM_REVERBERATION:	/* 振動残響 */
 				val1 = 1+skilllv;
+				break;
+			case GN_WALLOFTHORN:	/* ソーンウォール */
+				val1 = 1000*skilllv;
 				break;
 		}
 
@@ -10137,6 +10377,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	case UNT_ATTACK_SKILLS:	/* 攻撃系スキル全般 */
 		switch(sg->skill_id) {
 		case GS_DESPERADO:	/* デスペラード */
+		case GN_CRAZYWEED_ATK:	/* クレイジーウィード */
 			battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0x0500);
 			break;
 		case SG_SUN_WARM:	/* 温もり */
@@ -10589,7 +10830,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		}
 		break;
 	case UNT_POEMOFNETHERWORLD:	/* 地獄の歌 */
-		if(sg->val2 == 0 && !status_get_mode(bl)&0x20) {
+		if(sg->val2 == 0 && !(status_get_mode(bl)&0x20)) {
 			int sec = skill_get_time2(sg->skill_id,sg->skill_lv) - status_get_agi(bl)*100;
 			if(sec < 3000 + 30 * sg->skill_lv)
 				sec = 3000 + 30 * sg->skill_lv;
@@ -10638,6 +10879,38 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				unit_movepos(bl, src->bl.x, src->bl.y, 0);
 			//sg->limit=DIFF_TICK(tick,sg->tick)+sec;
 		}
+		break;
+	case UNT_THORNS_TRAP:		/* ソーントラップ */
+		if(sg->val2 == 0 && (!sc || sc->data[GetSkillStatusChangeTable(sg->skill_id)].timer == -1)) {
+			int sec = skill_get_time2(sg->skill_id,sg->skill_lv);
+			if(status_get_mode(bl)&0x1)
+				unit_movepos(bl, src->bl.x, src->bl.y, 0);
+			status_change_start(bl,GetSkillStatusChangeTable(sg->skill_id),sg->skill_lv,sg->bl.id,0,0,sec,0);
+			sg->limit    = DIFF_TICK(tick,sg->tick) + sec;
+			sg->val2     = bl->id;
+		}
+		else if(sc && sc->data[SC_THORNS_TRAP].timer != -1 && bl->id == sg->val2) {
+			battle_skill_attack(BF_MISC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
+		}
+		break;
+	case UNT_WALLOFTHORN:	/* ソーンウォール */
+		if(!(status_get_mode(bl)&0x20))
+			battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
+		break;
+	case UNT_DEMONIC_FIRE:	/* デモニックファイアー */
+		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,sg->val2);
+		break;
+	case UNT_FIRE_EXPANSION_SMOKE_POWDER:	/* ファイアーエクスパンション(煙幕) */
+		if(sc && sc->data[SC_FIRE_EXPANSION_SMOKE_POWDER].timer == -1)
+			status_change_start(bl,SC_FIRE_EXPANSION_SMOKE_POWDER,sg->skill_lv,0,0,0,skill_get_time(GN_FIRE_EXPANSION_SMOKE_POWDER,sg->skill_lv),0);
+		break;
+	case UNT_FIRE_EXPANSION_TEAR_GAS:		/* ファイアーエクスパンション(催涙ガス) */
+		if(sc && sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer == -1)
+			status_change_start(bl,SC_FIRE_EXPANSION_TEAR_GAS,sg->skill_lv,0,0,0,skill_get_time(GN_FIRE_EXPANSION_TEAR_GAS,sg->skill_lv),0);
+		break;
+	case UNT_HELLS_PLANT:	/* ヘルズプラント */
+		battle_skill_attack(BF_MISC,ss,&src->bl,bl,GN_HELLS_PLANT_ATK,sg->skill_lv,tick,0);
+		skill_delunit(src);
 		break;
 	}
 
@@ -10781,6 +11054,19 @@ static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigne
 		if (sc && sc->data[SC_STEALTHFIELD].timer != -1)
 			status_change_end(bl,SC_STEALTHFIELD,-1);
 		break;
+	case UNT_WARMER:		/* ウォーマー */
+		sc = status_get_sc(bl);
+		if (sc && sc->data[SC_WARMER].timer != -1)
+			status_change_end(bl,SC_WARMER,-1);
+		break;
+	case UNT_THORNS_TRAP:	/* ソーントラップ */
+		{
+			struct block_list *target = map_id2bl(sg->val2);
+			if (target && target == bl)
+				status_change_end(bl,SC_THORNS_TRAP,-1);
+			sg->limit = DIFF_TICK(tick,sg->tick)+1000;
+		}
+		break;
 /*	default:
 		if(battle_config.error_log)
 			printf("skill_unit_onout: Unknown skill unit id=%d block=%d\n",sg->unit_id,bl->id);
@@ -10893,7 +11179,7 @@ int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage
 	case UNT_FREEZINGTRAP:		/* フリージングトラップ */
 	case UNT_TALKIEBOX:		/* トーキーボックス */
 	case UNT_ANKLESNARE:		/* アンクルスネア */
-	case UNT_REVERBERATION:	/* 振動残響 */
+	case UNT_WALLOFTHORN:	/* ソーンウォール */
 		src->val1 -= damage;
 		break;
 	case UNT_BLASTMINE:		/* ブラストマイン */
@@ -10902,6 +11188,9 @@ int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage
 			break;
 		}
 		skill_blown(bl,&src->bl,2);	// 吹き飛ばしてみる
+		break;
+	case UNT_REVERBERATION:	/* 振動残響 */
+		src->val1 -= 1;
 		break;
 	default:
 		damage = 0;
@@ -11638,16 +11927,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		return 0;
 	}
 
-	if(cnd->id == AC_MAKINGARROW && sd->skill_menu.id == AC_MAKINGARROW)
-		return 0;
-
-	if(cnd->id == GC_POISONINGWEAPON && sd->skill_menu.id == GC_POISONINGWEAPON)
-		return 0;
-
-	if(cnd->id == WL_READING_SB && sd->skill_menu.id == WL_READING_SB)
-		return 0;
-
-	if((cnd->id == AM_PHARMACY || cnd->id == ASC_CDP) && sd->state.produce_flag == 1)
+	if(cnd->id == sd->skill_menu.id)
 		return 0;
 
 	// 駆け足時にスキルを使った場合終了
@@ -12111,6 +12391,8 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		// fall through
 	case PF_SPIDERWEB:		/* スパイダーウェッブ */
 	case MG_FIREWALL:		/* ファイアーウォール */
+	case GN_THORNS_TRAP:	/* ソーントラップ */
+	case GN_WALLOFTHORN:	/* ソーンウォール */
 		/* 数制限 */
 		if(battle_config.pc_land_skill_limit) {
 			int maxcount = skill_get_maxcount(cnd->id,cnd->lv);
@@ -13099,7 +13381,7 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 				}
 			}
 		}
-		if((cnd->id == AM_POTIONPITCHER || cnd->id == CR_SLIMPITCHER || cnd->id == CR_CULTIVATION) && i != x)
+		if((cnd->id == AM_POTIONPITCHER || cnd->id == CR_SLIMPITCHER || cnd->id == CR_CULTIVATION || cnd->id == GN_FIRE_EXPANSION) && i != x)
 			continue;
 
 		idx[i] = pc_search_inventory(sd,itemid[i]);
@@ -13117,7 +13399,7 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 	}
 
 	if(type&1 && (cnd->id != AL_WARP || type&2)) {
-		if(cnd->id != AM_POTIONPITCHER && cnd->id != CR_SLIMPITCHER) {
+		if(cnd->id != AM_POTIONPITCHER && cnd->id != CR_SLIMPITCHER && cnd->id != GN_FIRE_EXPANSION) {
 			for(i=0; i<10; i++) {
 				if(idx[i] >= 0)
 					pc_delitem(sd,idx[i],amount[i],0,1);	// アイテム消費
@@ -13249,6 +13531,10 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 			}
 		}
 		fixedtime -= fixedtime * reduce_time2 / 100;
+	}
+	/* ハウリングオブマンドラゴラ */
+	if(sc && sc->data[SC_MANDRAGORA].timer != -1) {
+		fixedtime += sc->data[SC_MANDRAGORA].val3;		// 強制固定詠唱増加
 	}
 	if(fixedtime < 0)
 		fixedtime = 0;
@@ -15013,6 +15299,11 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 					}
 				}
 				break;
+			case UNT_REVERBERATION:	/* 振動残響 */
+			case UNT_WALLOFTHORN:	/* ソーンウォール */
+				if(unit->val1 <= 0)
+					skill_delunit(unit);
+				break;
 		}
 	}
 
@@ -15258,6 +15549,8 @@ int skill_can_produce_mix( struct map_session_data *sd, int idx, int trigger)
 		if(id <= 0)	// これ以上は材料要らない
 			break;
 		amount = skill_produce_db[idx].mat_amount[i];
+		if((sd->skill_menu.id == GN_MIX_COOKING || sd->skill_menu.id == GN_MAKEBOMB) && sd->skill_menu.lv > 1)
+			amount = amount * 10;
 		if(amount <= 0)
 			amount = 1;	// 消耗されないが作る時必要なアイテム
 
@@ -15360,20 +15653,20 @@ static int skill_calc_produce_rate(struct map_session_data *sd, int idx, int sc,
 		break;
 
 	case PRD_COOKING:	// 料理
-		make_per += sd->making_base_success_per + sd->status.job_level*20 + dex*20 + luk*10;
+		make_per += sd->skill_menu.lv + sd->status.job_level*20 + dex*20 + luk*10;
 		if(battle_config.cooking_rate != 100)
 			make_per = make_per * battle_config.cooking_rate/100;
 		break;
 
 	/* 以下未実装製造 */
 	case PRD_SCROLL:	// スクロール
-		make_per += sd->making_base_success_per + sd->status.job_level*10 + int_*10 + dex*10;
+		make_per += sd->skill_menu.lv + sd->status.job_level*10 + int_*10 + dex*10;
 		if(battle_config.scroll_produce_rate != 100)
 			make_per = make_per * battle_config.scroll_produce_rate/100;
 		break;
 
 	case PRD_SYN_POTION:	// ポーション合成
-		make_per += sd->making_base_success_per + sd->status.job_level*10 + int_*10 + dex*10 - skill_lv*200;
+		make_per += sd->skill_menu.lv + sd->status.job_level*10 + int_*10 + dex*10 - skill_lv*200;
 		if(battle_config.making_rate != 100)
 			make_per = make_per * battle_config.making_rate/100;
 		break;
@@ -15390,6 +15683,17 @@ static int skill_calc_produce_rate(struct map_session_data *sd, int idx, int sc,
 		break;
 	case PRD_NEWPOISON:	// 新毒製造
 		make_per += pc_checkskill(sd,GC_RESEARCHNEWPOISON)*100 + skill_lv*300 + sd->status.job_level*20 + dex*10 + luk*10 + int_*5;
+		break;
+	case PRD_MIX_COOKING:	// ミックスクッキング
+		make_per += 3000 + sd->status.job_level*20 + dex*20 + luk*10;
+		break;
+	case PRD_MAKEBOMB:	// 爆弾製造
+		make_per += 5000 + sd->status.job_level*20 + dex*20 + luk*10;
+		break;
+	case PRD_S_PHARMACY:	// スペシャルファーマシー
+		make_per += pc_checkskill(sd,AM_LEARNINGPOTION)*100 + skill_lv*300 + sd->status.job_level*20 + dex*10 + luk*10 + int_*5;
+		if(battle_config.pp_rate != 100)
+			make_per = make_per * battle_config.pp_rate/100;
 		break;
 	}
 
@@ -15485,8 +15789,11 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 	if(idx < 0)
 		return;
 
-	if(!skill_can_produce_mix(sd,idx,-1))	/* 条件不足 */
+	if(!skill_can_produce_mix(sd,idx,-1)) {	/* 条件不足 */
+		if(sd->skill_menu.id == GN_MIX_COOKING || sd->skill_menu.id == GN_MAKEBOMB)
+			clif_skill_message(sd, sd->skill_menu.id, 808);	// 材料が足りません。
 		return;
+	}
 
 	slot[0] = slot1;
 	slot[1] = slot2;
@@ -15532,6 +15839,8 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 		if(id <= 0)	// これ以上は材料要らない
 			break;
 		amount = skill_produce_db[idx].mat_amount[i];	/* 必要な個数 */
+		if((sd->skill_menu.id == GN_MIX_COOKING || sd->skill_menu.id == GN_MAKEBOMB) && sd->skill_menu.lv > 1)
+			amount = amount * 10;
 		do {	/* ２つ以上のインデックスにまたがっているかもしれない */
 			int c = 0;
 
@@ -15550,7 +15859,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 		} while(amount > 0);	/* 材料を消費するまで繰り返す */
 	}
 
-	if(atn_rand()%10000 < skill_calc_produce_rate(sd, idx, sc, ele)) {	// 確率判定
+	if(atn_rand()%10000 < skill_calc_produce_rate(sd, idx, sc, ele) || type == PRD_S_PHARMACY) {	// 確率判定
 		/* 成功 */
 		struct item tmp_item;
 		int amount = 1;
@@ -15641,6 +15950,27 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 				clif_produceeffect(sd,2,nameid);
 				clif_misceffect(&sd->bl,5);
 				break;
+			case PRD_S_PHARMACY:
+				if(sd->skill_menu.lv >= 10)
+					amount = 4 + atn_rand()%3;
+				else if(sd->skill_menu.lv >= 9)
+					amount = 3 + atn_rand()%3;
+				else if(sd->skill_menu.lv >= 6)
+					amount = 3;
+				else
+					amount = 2;
+				clif_skill_message(sd, sd->skill_menu.id, 1574);	// 成功しました。
+				break;
+			case PRD_MIX_COOKING:
+				if(sd->skill_menu.lv > 1)
+					amount = 1 + atn_rand()%15;
+				clif_skill_message(sd, sd->skill_menu.id, 1574);	// 成功しました。
+				break;
+			case PRD_MAKEBOMB:
+				if(sd->skill_menu.lv > 1)
+					amount = 5 + atn_rand()%11;
+				clif_skill_message(sd, sd->skill_menu.id, 1574);	// 成功しました。
+				break;
 		}
 		pc_additem(sd,&tmp_item,amount);	// 重量オーバーなら消滅
 	} else {
@@ -15685,6 +16015,34 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 				break;
 			case PRD_SCROLL:
 				clif_misceffect2(&sd->bl,611);
+				break;
+			case PRD_S_PHARMACY:
+				clif_skill_message(sd, sd->skill_menu.id, 1575);	// 失敗しました。
+				break;
+			case PRD_MIX_COOKING:
+				{
+					static const int failitem[] = { 12435, 13265, 13266, 13267, 13268 };
+					struct item tmp_item;
+					int amount = 1;
+					memset(&tmp_item, 0, sizeof(tmp_item));
+					tmp_item.nameid   = failitem[atn_rand()%(sizeof(failitem)/sizeof(failitem[0]))];
+					tmp_item.amount   = 1;
+					tmp_item.identify = 1;
+					if(sd->skill_menu.lv > 1) {
+						amount += atn_rand()%15;
+						clif_skill_message(sd, sd->skill_menu.id, 1576);	// 失敗し、全ての材料がなくなりました。
+					}
+					else {
+						clif_skill_message(sd, sd->skill_menu.id, 1575);	// 失敗しました。
+					}
+					pc_additem(sd,&tmp_item,amount);
+				}
+				break;
+			case PRD_MAKEBOMB:
+				if(sd->skill_menu.lv > 1)
+					clif_skill_message(sd, sd->skill_menu.id, 1576);	// 失敗し、全ての材料がなくなりました。
+				else
+					clif_skill_message(sd, sd->skill_menu.id, 1575);	// 失敗しました。
 				break;
 		}
 	}
@@ -15829,7 +16187,7 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 	if(idx == 0xffff || idx < 0 || idx >= MAX_INVENTORY)	// cencel or invalid range
 		return;
 
-	dstsd = map_id2sd(sd->repair_target);
+	dstsd = map_id2sd(sd->skill_menu.val);
 	if(!dstsd || dstsd->status.inventory[idx].nameid <= 0 || dstsd->status.inventory[idx].attribute == 0) {
 		clif_skill_fail(sd,skillid,0,0);
 		return;
@@ -15974,6 +16332,76 @@ void skill_autoshadowspell(struct map_session_data *sd, int skillid)
 
 		status_change_start(&sd->bl,SC__AUTOSHADOWSPELL,sd->skill_menu.lv,skillid,skilllv,0,skill_get_time(SC__AUTOSHADOWSPELL,sd->skill_menu.lv),0);
 	}
+
+	return;
+}
+
+/*==========================================
+ * チェンジマテリアル
+ *------------------------------------------
+ */
+void skill_changematerial(struct map_session_data *sd, int num, unsigned short *item_list)
+{
+	int i, j, k, c, m;
+	int nameid, amount, flag;
+	struct item tmp_item;
+	struct skill_material_db *mdb;
+
+	nullpo_retv(sd);
+	nullpo_retv(item_list);
+
+	if(num <= 0)
+		return;
+
+	for(i = 0; i < MAX_SKILL_PRODUCE_DB; i++) {
+		mdb = &skill_material_db[i];
+		c = 0;
+		m = 0;
+
+		if(mdb->nameid == 0)
+			break;
+
+		for(j = 0; j < MAX_PRODUCE_RESOURCE; j++) {
+			if(mdb->mat_id[j] == 0)
+				break;
+
+			for(k = 0; k < num; k++) {
+				nameid = sd->status.inventory[item_list[k * 2] - 2].nameid;
+				amount = item_list[k * 2 + 1];
+
+				if(nameid == mdb->mat_id[j] && amount % mdb->mat_amount[j] == 0) {
+					if(m != 0) {
+						if(amount / mdb->mat_amount[j] != m)
+							break;
+					} else {
+						m = amount / mdb->mat_amount[j];
+					}
+					c++;
+				}
+			}
+		}
+
+		if(j == num && c == num) {
+			for(k = 0; k < num; k++) {
+				pc_delitem(sd, item_list[k * 2] - 2, item_list[k * 2 + 1], 0, 1);	// アイテム消費
+			}
+			memset(&tmp_item, 0, sizeof(tmp_item));
+			tmp_item.nameid = mdb->nameid;
+			tmp_item.amount = mdb->amount[0] * m;
+			if(mdb->amount[1] > mdb->amount[0]) {
+				tmp_item.amount += atn_rand() % (mdb->amount[1] * m - mdb->amount[0] * m + 1);
+			}
+			tmp_item.identify = 1;
+			if((flag = pc_additem(sd, &tmp_item, tmp_item.amount))) {
+				clif_additem(sd, 0, 0, flag);
+				map_addflooritem(&tmp_item, tmp_item.amount, sd->bl.m, sd->bl.x, sd->bl.y, 0, 0, 0, 0);
+			}
+			clif_skill_message(sd, GN_CHANGEMATERIAL, 1574);	// 成功しました。
+			return;
+		}
+	}
+
+	clif_skill_message(sd, GN_CHANGEMATERIAL, 1575);	// 失敗しました。
 
 	return;
 }
@@ -16585,6 +17013,72 @@ static int skill_dominion_impulse( struct block_list *bl, va_list ap )
 }
 
 /*==========================================
+ * ファイアーエクスパンション
+ *------------------------------------------
+ */
+static int skill_fire_expansion( struct block_list *bl, va_list ap )
+{
+	int skilllv;
+	unsigned int tick;
+	struct block_list *src;
+	struct skill_unit *unit;
+	struct skill_unit_group *sg;
+
+	nullpo_retr(0, src = va_arg(ap,struct block_list *));
+	nullpo_retr(0, bl);
+	nullpo_retr(0, unit = (struct skill_unit *)bl);
+	nullpo_retr(0, sg = unit->group);
+
+	skilllv = va_arg(ap,int);
+	tick = va_arg(ap,unsigned int);
+
+	if(sg->src_id != src->id)
+		return 0;
+
+	if(sg->unit_id == UNT_DEMONIC_FIRE && sg->val2 == 0) {
+		switch(skilllv) {
+		case 1:		// 油
+			sg->val2 = 1;
+			sg->limit = unit->limit += 10000;
+			break;
+		case 2:		// 爆発
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),
+				src,sg->skill_id,sg->skill_lv,tick,(0x0f<<20)|BCT_ENEMY|2,
+				skill_castend_damage_id);
+			skill_delunitgroup(sg);
+			break;
+		case 3:		// 煙幕
+			sg->unit_id = UNT_FIRE_EXPANSION_SMOKE_POWDER;
+			sg->target_flag = skill_get_unit_target(GN_FIRE_EXPANSION_SMOKE_POWDER);
+			clif_changelook(bl,LOOK_BASE,sg->unit_id);
+			break;
+		case 4:		// 催涙ガス
+			sg->unit_id = UNT_FIRE_EXPANSION_TEAR_GAS;
+			clif_changelook(bl,LOOK_BASE,sg->unit_id);
+			break;
+		case 5:		// 塩酸
+			{
+				int acidlv = 1;
+				if(src->type == BL_PC) {
+					struct map_session_data *sd = (struct map_session_data *)src;
+					acidlv = pc_checkskill(sd,CR_ACIDDEMONSTRATION);
+					acidlv = (acidlv < 1)? 1: acidlv;
+				}
+				map_foreachinarea(skill_area_sub,
+					bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),
+					src,GN_FIRE_EXPANSION_ACID,acidlv,tick,(0x0f<<20)|BCT_ENEMY|0x0800,
+					skill_castend_damage_id);
+			}
+			skill_delunitgroup(sg);
+			break;
+		}
+	}
+
+	return 0;
+}
+
+/*==========================================
  * キャスリングのターゲット変更
  *------------------------------------------
  */
@@ -16931,6 +17425,21 @@ static void skill_init_unit_layout(void)
 					skill_db[i].unit_layout_type[j] = pos;
 				pos++;
 				continue;	// 既にLv毎にposを設定したので以下の処理は飛ばす
+			}
+			case GN_WALLOFTHORN:		/* ソーンウォール */
+			{
+				static const int dx[] = {
+					-2,-1, 0, 1, 2,-2, 2,-2,
+					 2,-2, 2,-2,-1, 0, 1, 2,
+				};
+				static const int dy[] = {
+					-2,-2,-2,-2,-2,-1,-1, 0,
+					 0, 1, 1, 2, 2, 2, 2, 2
+				};
+				skill_unit_layout[pos].count = 16;
+				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
+				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
+				break;
 			}
 			default:
 				printf("unknown unit layout at skill %d\n",i);
@@ -17514,6 +18023,48 @@ static int skill_readdb(void)
 	}
 	fclose(fp);
 	printf("read db/skill_random.txt done (count=%d)\n",k);
+
+	/* チェンジマテリアルデータベース */
+	memset(skill_material_db,0,sizeof(skill_material_db));
+	fp=fopen("db/changematerial_db.txt","r");
+	if(fp==NULL){
+		printf("can't read db/changematerial_db.txt\n");
+		return 1;
+	}
+	k=0;
+	while(fgets(line,1020,fp)){
+		char *split[3 + MAX_PRODUCE_RESOURCE * 2];
+		int x,y;
+
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0] == '/' && line[1] == '/')
+			continue;
+		memset(split,0,sizeof(split));
+		for(j = 0, p = line; j < 3 + MAX_PRODUCE_RESOURCE * 2 && p; j++){
+			split[j] = p;
+			p = strchr(p,',');
+			if(p) *p++ = 0;
+		}
+		if(split[0] == NULL)
+			continue;
+		i = atoi(split[0]);
+		if(i <= 0)
+			continue;
+
+		skill_material_db[k].nameid = i;
+		skill_split_atoi(split[1],skill_material_db[k].amount,2);
+		for(x = 2, y = 0; split[x] && split[x + 1] && y < MAX_PRODUCE_RESOURCE; x += 2, y++){
+			skill_material_db[k].mat_id[y]     = atoi(split[x]);
+			skill_material_db[k].mat_amount[y] = atoi(split[x + 1]);
+		}
+
+		k++;
+		if(k >= MAX_SKILL_PRODUCE_DB)
+			break;
+	}
+	fclose(fp);
+	printf("read db/changematerial_db.txt done (count=%d)\n",k);
 
 	return 0;
 }

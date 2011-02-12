@@ -184,7 +184,12 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 510- */
 	SI_SPELLFIST,SI_BLANK,SI_BLANK,SI_STRIKING,SI_WARMER,SI_VACUUM_EXTREME,SI_GN_CARTBOOST,SI_THORNS_TRAP,SI_BLOOD_SUCKER,SI_SPORE_EXPLOSION,
 	/* 520- */
-	SI_FIRE_EXPANSION_SMOKE_POWDER,SI_FIRE_EXPANSION_TEAR_GAS,SI_MANDRAGORA,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_FIRE_EXPANSION_SMOKE_POWDER,SI_FIRE_EXPANSION_TEAR_GAS,SI_MANDRAGORA,SI_MELON_BOMB,SI_BANANA_BOMB,SI_MYSTERIOUS_POWDER,SI_BOOST500,SI_FULL_SWING_K,SI_MANA_PLUS,SI_MUSTLE_M,
+	/* 530- */
+	SI_LIFE_FORCE_F,SI_PROMOTE_HEALTH_RESERCH,SI_ENERGY_DRINK_RESERCH,SI_EXTRACT_WHITE_POTION_Z,SI_VITATA_500,SI_EXTRACT_SALAMINE_JUICE,SI_SAVAGE_STEAK,SI_COCKTAIL_WARG_BLOOD,SI_MINOR_BBQ,SI_SIROMA_ICE_TEA,
+	/* 540- */
+	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+
 };
 
 /*==========================================
@@ -408,6 +413,8 @@ L_RECALC:
 			sd->weight += sd->inventory_data[i]->weight*sd->status.inventory[i].amount;
 		}
 		sd->cart_max_weight = battle_config.max_cart_weight;
+		if((skill = pc_checkskill(sd,GN_REMODELING_CART)) > 0)	// カート改造
+			sd->cart_max_weight += skill*5000;
 		sd->cart_weight     = 0;
 		sd->cart_max_num    = MAX_CART;
 		sd->cart_num        = 0;
@@ -735,8 +742,6 @@ L_RECALC:
 		if(sd->inventory_data[idx]) {		// まだ属性が入っていない
 			current_equip_name_id = sd->inventory_data[idx]->nameid;
 			sd->state.lr_flag = 2;
-			if(calclimit == 2)
-				run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);
 			run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
 			sd->state.lr_flag = 0;
 			sd->arrow_atk += sd->inventory_data[idx]->atk;
@@ -1256,12 +1261,36 @@ L_RECALC:
 			sd->paramb[5] += sd->sc.data[SC_LAUDARAMUS].val2;
 		if(sd->sc.data[SC_INSPIRATION].timer != -1) {	// インスピレーション
 			int param = sd->status.base_level / 10 + sd->status.job_level / 5;
-			sd->paramb[0] = param;
-			sd->paramb[1] = param;
-			sd->paramb[2] = param;
-			sd->paramb[3] = param;
-			sd->paramb[4] = param;
-			sd->paramb[5] = param;
+			sd->paramb[0] += param;
+			sd->paramb[1] += param;
+			sd->paramb[2] += param;
+			sd->paramb[3] += param;
+			sd->paramb[4] += param;
+			sd->paramb[5] += param;
+		}
+		if(sd->sc.data[SC_MANDRAGORA].timer != -1)	// ハウリングオブマンドラゴラ
+			sd->paramb[3] -= sd->sc.data[SC_MANDRAGORA].val2;
+		if(sd->sc.data[SC_BANANA_BOMB].timer != -1)		// バナナ爆弾
+			sd->paramb[5] -= sd->paramb[5] * sd->sc.data[SC_BANANA_BOMB].val1 / 100;
+		if(sd->sc.data[SC_SAVAGE_STEAK].timer != -1)			// サベージの丸焼き
+			sd->paramb[0] += sd->sc.data[SC_SAVAGE_STEAK].val1;
+		if(sd->sc.data[SC_DROCERA_HERB_STEAMED].timer != -1)	// ドロセラのハーブ煮
+			sd->paramb[1] += sd->sc.data[SC_DROCERA_HERB_STEAMED].val1;
+		if(sd->sc.data[SC_MINOR_BBQ].timer != -1)				// ミノタウロスの牛カルビ
+			sd->paramb[2] += sd->sc.data[SC_MINOR_BBQ].val1;
+		if(sd->sc.data[SC_COCKTAIL_WARG_BLOOD].timer != -1)		// カクテルウォーグブラッド
+			sd->paramb[3] += sd->sc.data[SC_COCKTAIL_WARG_BLOOD].val1;
+		if(sd->sc.data[SC_SIROMA_ICE_TEA].timer != -1)			// シロマアイスティー
+			sd->paramb[4] += sd->sc.data[SC_SIROMA_ICE_TEA].val1;
+		if(sd->sc.data[SC_PUTTI_TAILS_NOODLES].timer != -1)		// プティットのしっぽ麺
+			sd->paramb[5] += sd->sc.data[SC_PUTTI_TAILS_NOODLES].val1;
+		if(sd->sc.data[SC_STOMACHACHE].timer != -1) {		// 腹痛
+			sd->paramb[0] -= sd->sc.data[SC_STOMACHACHE].val1;
+			sd->paramb[1] -= sd->sc.data[SC_STOMACHACHE].val1;
+			sd->paramb[2] -= sd->sc.data[SC_STOMACHACHE].val1;
+			sd->paramb[3] -= sd->sc.data[SC_STOMACHACHE].val1;
+			sd->paramb[4] -= sd->sc.data[SC_STOMACHACHE].val1;
+			sd->paramb[5] -= sd->sc.data[SC_STOMACHACHE].val1;
 		}
 		if(sd->sc.data[SC_HARMONIZE].timer != -1) {	// ハーモナイズ
 			sd->parame[0] = 0;
@@ -1532,10 +1561,15 @@ L_RECALC:
 		if(sd->regen.tk_hp > 0x7fff)
 			sd->regen.tk_hp = 0x7fff;
 	}
-	if(sd->sc.data[SC_GENTLETOUCH_REVITALIZE].timer != -1) {
+	if(sd->sc.data[SC_GENTLETOUCH_REVITALIZE].timer != -1) {	// 点穴 -活-
 		sd->nhealhp += sd->nhealhp * (50 + sd->sc.data[SC_GENTLETOUCH_REVITALIZE].val1 * 30) / 100;
-		if(sd->nshealhp > 0x7fff)
-			sd->nshealhp = 0x7fff;
+		if(sd->nhealhp > 0x7fff)
+			sd->nhealhp = 0x7fff;
+	}
+	if(sd->sc.data[SC_EXTRACT_WHITE_POTION_Z].timer != -1) {	// 濃縮ホワイトポーションZ
+		sd->nhealhp += sd->nhealhp * sd->sc.data[SC_EXTRACT_WHITE_POTION_Z].val1 / 100;
+		if(sd->nhealhp > 0x7fff)
+			sd->nhealhp = 0x7fff;
 	}
 	if(sd->sc.data[SC_BERSERK].timer != -1) {
 		sd->nhealhp = 0;
@@ -1586,6 +1620,11 @@ L_RECALC:
 	if((skill = pc_checkskill(sd,HP_MEDITATIO)) > 0) {
 		// メディタティオはSPRではなく自然回復にかかる
 		sd->nhealsp += (sd->nhealsp)*3*skill/100;
+		if(sd->nhealsp > 0x7fff)
+			sd->nhealsp = 0x7fff;
+	}
+	if(sd->sc.data[SC_VITATA_500].timer != -1) {	// ビタタ500
+		sd->nhealsp += sd->nhealsp * sd->sc.data[SC_VITATA_500].val1 / 100;
 		if(sd->nhealsp > 0x7fff)
 			sd->nhealsp = 0x7fff;
 	}
@@ -2066,6 +2105,31 @@ L_RECALC:
 			sd->watk += sd->sc.data[SC_STRIKING].val3;
 			sd->critical += 10 * sd->sc.data[SC_STRIKING].val1;
 		}
+		// カートブースト
+		if(sd->sc.data[SC_GN_CARTBOOST].timer != -1) {
+			sd->watk += sd->sc.data[SC_GN_CARTBOOST].val1 * 10;
+		}
+		// ファイアーエクスパンション(煙幕)
+		if(sd->sc.data[SC_FIRE_EXPANSION_SMOKE_POWDER].timer != -1) {
+			sd->flee += sd->flee * sd->sc.data[SC_FIRE_EXPANSION_SMOKE_POWDER].val3 / 100;
+		}
+		// ファイアーエクスパンション(催涙)
+		if(sd->sc.data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1) {
+			sd->hit -= sd->hit * sd->sc.data[SC_FIRE_EXPANSION_TEAR_GAS].val2 / 100;
+			sd->flee -= sd->flee * sd->sc.data[SC_FIRE_EXPANSION_TEAR_GAS].val2 / 100;
+		}
+		// HP増加ポーション
+		if(sd->sc.data[SC_PROMOTE_HEALTH_RESERCH].timer != -1) {
+			sd->status.max_hp += 500 + sd->sc.data[SC_PROMOTE_HEALTH_RESERCH].val1 * 1000 + 4 / 3 * sd->status.base_level;
+		}
+		// SP増加ポーション
+		if(sd->sc.data[SC_ENERGY_DRINK_RESERCH].timer != -1) {
+			sd->status.max_sp += sd->status.max_sp * ((sd->sc.data[SC_ENERGY_DRINK_RESERCH].val1 * 5) - 5 + sd->status.base_level / 10) / 100;
+		}
+		// ビタタ500
+		if(sd->sc.data[SC_VITATA_500].timer != -1) {
+			sd->status.max_sp += sd->status.max_sp * sd->sc.data[SC_VITATA_500].val2 / 100;
+		}
 	}
 	// テコンランカーボーナス
 	if(sd->status.class_ == PC_CLASS_TK && sd->status.base_level >= 90 && ranking_get_pc_rank(sd,RK_TAEKWON) > 0)
@@ -2420,9 +2484,22 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 				slow_val = penalty;
 		}
 
+		// アースドライブ
+		if(sd->sc.data[SC_EARTHDRIVE].timer != -1) {
+			if(slow_val < 25)
+				slow_val = 25;
+		}
+
 		// メランコリー
 		if(sd->sc.data[SC_GLOOMYDAY].timer != -1) {
 			int penalty = 3 * sd->sc.data[SC_GLOOMYDAY].val1;
+			if(slow_val < penalty)
+				slow_val = penalty;
+		}
+
+		// メロン爆弾
+		if(sd->sc.data[SC_MELON_BOMB].timer != -1) {
+			int penalty = sd->sc.data[SC_MELON_BOMB].val1;
 			if(slow_val < penalty)
 				slow_val = penalty;
 		}
@@ -2432,6 +2509,10 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		// 増速ポーション
 		if(sd->sc.data[tmp = SC_SPEEDPOTION2].timer != -1 || sd->sc.data[tmp = SC_SPEEDPOTION1].timer != -1 || sd->sc.data[tmp = SC_SPEEDPOTION0].timer != -1)
 			haste_val1 = sd->sc.data[tmp].val2;
+
+		// 濃縮サラマインジュース
+		if(sd->sc.data[SC_EXTRACT_SALAMINE_JUICE].timer != -1)
+			haste_val1 += sd->sc.data[SC_EXTRACT_SALAMINE_JUICE].val1;
 
 		/* amotionが減少するステータスの計算2 */
 
@@ -2506,12 +2587,6 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 				haste_val2 = bonus;
 		}
 
-		// アースドライブ
-		if(sd->sc.data[SC_EARTHDRIVE].timer != -1) {
-			if(haste_val2 < 25)
-				haste_val2 = 25;
-		}
-
 		// 点穴 -反-
 		if(sd->sc.data[SC_GENTLETOUCH_CHANGE].timer != -1) {
 			int bonus = sd->sc.data[SC_GENTLETOUCH_CHANGE].val3;
@@ -2570,7 +2645,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 
 	/* アドバンスドブック */
 	if(sd->weapontype1 == WT_BOOK && (skilllv = pc_checkskill(sd,SA_ADVANCEDBOOK)) > 0)
-		amotion -= skilllv * 10 / 2;
+		amotion -= skilllv / 2;
 
 	/* シングルアクション */
 	if(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE && (skilllv = pc_checkskill(sd,GS_SINGLEACTION)) > 0)
@@ -2764,6 +2839,32 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 						slow_val = 50;
 				}
 			}
+
+			// フロストミスティ
+			if(sd->sc.data[SC_FROSTMISTY].timer != -1) {
+				if(slow_val < 50)
+					slow_val = 50;
+			}
+
+			// マスカレード ： レイジーネス
+			if(sd->sc.data[SC__LAZINESS].timer != -1) {
+				if(slow_val < 10)
+					slow_val = 10;
+			}
+
+			// マスカレード ： グルーミー
+			if(sd->sc.data[SC__GROOMY].timer != -1) {
+				int penalty = 5 + 5 * sd->sc.data[SC__GROOMY].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			// メロン爆弾
+			if(sd->sc.data[SC_MELON_BOMB].timer != -1) {
+				int penalty = sd->sc.data[SC_MELON_BOMB].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
 		}
 
 		/* speedが減少するステータス計算1 */
@@ -2850,6 +2951,13 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		if(sd->sc.data[SC_SWING].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
+		}
+
+		// カートブースト
+		if(sd->sc.data[SC_GN_CARTBOOST].timer != -1) {
+			int bonus = 25 + ((sd->sc.data[SC_GN_CARTBOOST].val1 + 1) / 2) * 25;
+			if(haste_val1 < bonus)
+				haste_val1 = bonus;
 		}
 
 		// 移動速度増加(アイテム)
@@ -3413,6 +3521,8 @@ int status_get_luk(struct block_list *bl)
 			luk += 5;
 		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ストリップアクセサリー
 			luk = luk * 80 / 100;
+		if(sc->data[SC_BANANA_BOMB].timer != -1 && bl->type != BL_PC)	// バナナ爆弾
+			luk -= luk * sc->data[SC_BANANA_BOMB].val1 / 100;
 	}
 	if(luk < 0) luk = 0;
 	return luk;
@@ -3467,6 +3577,10 @@ int status_get_flee(struct block_list *bl)
 			flee -= sc->data[SC_GLOOMYDAY].val1 * 5;
 		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type != BL_PC)		// フライデーナイトフィーバー
 			flee -= flee * (40 + sc->data[SC_SATURDAY_NIGHT_FEVER].val1 * 10) / 100;
+		if(sc->data[SC_FIRE_EXPANSION_SMOKE_POWDER].timer != -1 && bl->type != BL_PC)	// ファイアーエクスパンション(煙幕)
+			flee += flee * sc->data[SC_FIRE_EXPANSION_SMOKE_POWDER].val2 / 100;
+		if(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1 && bl->type != BL_PC)	// ファイアーエクスパンション(催涙)
+			flee -= flee * sc->data[SC_FIRE_EXPANSION_TEAR_GAS].val2 / 100;
 	}
 
 	// 回避率補正
@@ -3536,6 +3650,8 @@ int status_get_hit(struct block_list *bl)
 				hit -= hit*20/100;
 			if(sc->data[SC__GROOMY].timer != -1 && bl->type != BL_PC)	// マスカレード ： グルーミー
 				hit -= hit*(20*sc->data[SC__GROOMY].val1)/100;
+			if(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1 && bl->type != BL_PC)	// ファイアーエクスパンション(催涙)
+				hit -= hit*(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].val2)/100;
 		}
 		if(hit < 1) hit = 1;
 	}
@@ -4348,6 +4464,13 @@ int status_get_speed(struct block_list *bl)
 					slow_val = penalty;
 			}
 
+			// メロン爆弾
+			if(sc->data[SC_MELON_BOMB].timer != -1) {
+				int penalty = sc->data[SC_MELON_BOMB].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
 			// グラビテーションフィールド
 			if(battle_config.enemy_gravitation_type && sc->data[SC_GRAVITATION].timer != -1) {
 				int penalty = sc->data[SC_GRAVITATION].val1 * 5;
@@ -4508,9 +4631,22 @@ int status_get_adelay(struct block_list *bl)
 					slow_val = penalty;
 			}
 
+			// アースドライブ
+			if(sc->data[SC_EARTHDRIVE].timer != -1) {
+				if(slow_val < 25)
+					slow_val = 25;
+			}
+
 			// メランコリー
 			if(sc->data[SC_GLOOMYDAY].timer != -1) {
 				int penalty = 3 * sc->data[SC_GLOOMYDAY].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			// メロン爆弾
+			if(sc->data[SC_MELON_BOMB].timer != -1) {
+				int penalty = sc->data[SC_MELON_BOMB].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
@@ -4580,12 +4716,6 @@ int status_get_adelay(struct block_list *bl)
 				int bonus = 20+ferver_bonus;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
-			}
-
-			// アースドライブ
-			if(sc->data[SC_EARTHDRIVE].timer != -1) {
-				if(haste_val2 < 25)
-					haste_val2 = 25;
 			}
 
 			// 点穴 -反-
@@ -4716,9 +4846,22 @@ int status_get_amotion(struct block_list *bl)
 					slow_val = penalty;
 			}
 
+			// アースドライブ
+			if(sc->data[SC_EARTHDRIVE].timer != -1) {
+				if(slow_val < 25)
+					slow_val = 25;
+			}
+
 			// メランコリー
 			if(sc->data[SC_GLOOMYDAY].timer != -1) {
 				int penalty = 3 * sc->data[SC_GLOOMYDAY].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			// メロン爆弾
+			if(sc->data[SC_MELON_BOMB].timer != -1) {
+				int penalty = sc->data[SC_MELON_BOMB].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
@@ -4788,12 +4931,6 @@ int status_get_amotion(struct block_list *bl)
 				int bonus = 20+ferver_bonus;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
-			}
-
-			// アースドライブ
-			if(sc->data[SC_EARTHDRIVE].timer != -1) {
-				if(haste_val2 < 25)
-					haste_val2 = 25;
 			}
 
 			// 点穴 -反-
@@ -5869,6 +6006,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_UNLIMITED_HUMMING_VOICE:	/* エンドレスハミングボイス */
 		case SC_WARMER:				/* ウォーマー */
 		case SC_VACUUM_EXTREME:		/* バキュームエクストリーム */
+		case SC_THORNS_TRAP:		/* ソーントラップ */
+		case SC_SPORE_EXPLOSION:	/* スポアエクスプロージョン */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -5976,6 +6115,24 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_GLOOMYDAY:			/* メランコリー */
 		case SC_LERADS_DEW:			/* レーラズの露 */
 		case SC_DANCE_WITH_WUG:		/* ダンスウィズウォーグ */
+		case SC_MYSTERIOUS_POWDER:	/* 不思議な粉 */
+		case SC_BOOST500:			/* ブースト500 */
+		case SC_FULL_SWING_K:		/* フルスイングK */
+		case SC_MANA_PLUS:			/* マナプラス */
+		case SC_MUSTLE_M:			/* マッスルM */
+		case SC_LIFE_FORCE_F:		/* ライフフォースF */
+		case SC_PROMOTE_HEALTH_RESERCH:	/* HP増加ポーション */
+		case SC_ENERGY_DRINK_RESERCH:	/* SP増加ポーション */
+		case SC_EXTRACT_WHITE_POTION_Z:	/* 濃縮ホワイトポーションZ */
+		case SC_VITATA_500:			/* ビタタ500 */
+		case SC_EXTRACT_SALAMINE_JUICE:	/* 濃縮サラマインジュース */
+		case SC_SAVAGE_STEAK:		/* サベージの丸焼き */
+		case SC_COCKTAIL_WARG_BLOOD:	/* カクテルウォーグブラッド */
+		case SC_MINOR_BBQ:			/* ミノタウロスの牛カルビ */
+		case SC_SIROMA_ICE_TEA:		/* シロマアイスティー */
+		case SC_DROCERA_HERB_STEAMED:	/* ドロセラのハーブ煮 */
+		case SC_PUTTI_TAILS_NOODLES:	/* プティットのしっぽ麺 */
+		case SC_STOMACHACHE:		/* 腹痛 */
 			calc_flag = 1;
 			break;
 
@@ -5996,6 +6153,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_NEUTRALBARRIER_USER:	/* ニュートラルバリアー(使用者) */
 		case SC__GROOMY:			/* マスカレード ： グルーミー */
 		case SC__LAZINESS:			/* マスカレード ： レイジーネス */
+		case SC_GN_CARTBOOST:		/* カートブースト */
+		case SC_MELON_BOMB:			/* メロン爆弾 */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -6921,7 +7080,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = tick / 10000;
 			val3 = val1 * 12 + 8;	// 怒りカウンター発動率
 			tick = 10000;
-			icon_tick = 0;
+			icon_tick = -1;
 			calc_flag = 1;
 			break;
 		case SC_SHIELDSPELL_DEF:	/* シールドスペル(DEF) */
@@ -6939,7 +7098,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sd) {
 				int idx = sd->equip_index[9];
 				val2 = val1 * 150 + sd->status.job_level * 15;
-				if(idx >= 0 && sd->inventory_data[idx] && itemdb_isweapon(sd->inventory_data[sd->equip_index[idx]]->nameid))
+				if(idx >= 0 && sd->inventory_data[idx])
 					val2 += sd->inventory_data[idx]->weight/10 * sd->inventory_data[idx]->wlv * sd->status.base_level / 100;
 			}
 			else {
@@ -7047,6 +7206,33 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_STRIKING:			/* ストライキング */
 			val2 = tick / 1000;
 			tick = 1000;
+			calc_flag = 1;
+			break;
+		case SC_BLOOD_SUCKER:		/* ブラッドサッカー */
+			val4 = tick / 1000;
+			tick = 1000;	// ダメージ発生間隔
+			break;
+		case SC_FIRE_EXPANSION_SMOKE_POWDER:	/* ファイアーエクスパンション(煙幕) */
+			val2 = 25;		// 近距離・遠距離ダメージ減少率
+			val3 = 25;		// Flee上昇率
+			calc_flag = 1;
+			break;
+		case SC_FIRE_EXPANSION_TEAR_GAS:	/* ファイアーエクスパンション(催涙ガス) */
+			val2 = 25;		// Hit,Flee減少率
+			val3 = tick / 3000;
+			tick = 3000;
+			calc_flag = 1;
+			break;
+		case SC_MANDRAGORA:			/* ハウリングオブマンドラゴラ */
+			val2 = val1 * 5 + 5;		// Int減少値
+			val3 = 3000;		// 固定詠唱増加値
+			calc_flag = 1;
+			break;
+		case SC_BANANA_BOMB:		/* バナナ爆弾 */
+			if(sd){
+				pc_setsit(sd);
+				clif_sitting(&sd->bl, 1);
+			}
 			calc_flag = 1;
 			break;
 		default:
@@ -7569,6 +7755,28 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_LERADS_DEW:			/* レーラズの露 */
 		case SC_DANCE_WITH_WUG:		/* ダンスウィズウォーグ */
 		case SC_STRIKING:			/* ストライキング */
+		case SC_FIRE_EXPANSION_SMOKE_POWDER:	/* ファイアーエクスパンション(煙幕) */
+		case SC_FIRE_EXPANSION_TEAR_GAS:	/* ファイアーエクスパンション(催涙ガス) */
+		case SC_MANDRAGORA:			/* ハウリングオブマンドラゴラ */
+		case SC_BANANA_BOMB:		/* バナナ爆弾 */
+		case SC_MYSTERIOUS_POWDER:	/* 不思議な粉 */
+		case SC_BOOST500:			/* ブースト500 */
+		case SC_FULL_SWING_K:		/* フルスイングK */
+		case SC_MANA_PLUS:			/* マナプラス */
+		case SC_MUSTLE_M:			/* マッスルM */
+		case SC_LIFE_FORCE_F:		/* ライフフォースF */
+		case SC_PROMOTE_HEALTH_RESERCH:	/* HP増加ポーション */
+		case SC_ENERGY_DRINK_RESERCH:	/* SP増加ポーション */
+		case SC_EXTRACT_WHITE_POTION_Z:	/* 濃縮ホワイトポーションZ */
+		case SC_VITATA_500:			/* ビタタ500 */
+		case SC_EXTRACT_SALAMINE_JUICE:	/* 濃縮サラマインジュース */
+		case SC_SAVAGE_STEAK:		/* サベージの丸焼き */
+		case SC_COCKTAIL_WARG_BLOOD:	/* カクテルウォーグブラッド */
+		case SC_MINOR_BBQ:			/* ミノタウロスの牛カルビ */
+		case SC_SIROMA_ICE_TEA:		/* シロマアイスティー */
+		case SC_DROCERA_HERB_STEAMED:	/* ドロセラのハーブ煮 */
+		case SC_PUTTI_TAILS_NOODLES:	/* プティットのしっぽ麺 */
+		case SC_STOMACHACHE:		/* 腹痛 */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -7592,6 +7800,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC__GROOMY:			/* マスカレード ： グルーミー */
 		case SC__LAZINESS:			/* マスカレード ： レイジーネス */
 		case SC_SWING:				/* スイングダンス */
+		case SC_GN_CARTBOOST:		/* カートブースト */
+		case SC_MELON_BOMB:			/* メロン爆弾 */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -7807,8 +8017,9 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			}
 			break;
 		case SC_ANKLE:
+		case SC_THORNS_TRAP:	/* ソーントラップ */
 			{
-				struct skill_unit_group *sg = map_id2sg(sc->data[SC_ANKLE].val2);
+				struct skill_unit_group *sg = map_id2sg(sc->data[type].val2);
 				// skill_delunitgroupからstatus_change_end が呼ばれない為に、
 				// 一端発動していない事にしてからグループ削除する。
 				if(sg) {
@@ -7899,6 +8110,14 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_SATURDAY_NIGHT_FEVER:	/* フライデーナイトフィーバー */
 			status_change_start(bl,SC_SITDOWN_FORCE,0,0,0,0,3000,0);
 			calc_flag = 1;
+			break;
+		case SC_SPORE_EXPLOSION:	/* スポアエクスプロージョン */
+			{
+				struct block_list *src = map_id2bl(sc->data[type].val3);
+				if(src && tid != -1) {
+					skill_castend_damage_id(src,bl,sc->data[type].val2,sc->data[type].val1,gettick(),0);
+				}
+			}
 			break;
 		/* option1 */
 		case SC_FREEZE:
@@ -9049,6 +9268,27 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			} else {
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 			}
+		}
+		break;
+	case SC_BLOOD_SUCKER:		/* ブラッドサッカー */
+		if((--sc->data[type].val4) > 0) {
+			struct block_list *src = map_id2bl(sc->data[type].val3);
+			if(src && tid != -1) {
+				skill_castend_damage_id(src,bl,sc->data[type].val2,sc->data[type].val1,gettick(),0);
+			}
+			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
+				// 生きていて解除済みでないなら継続
+				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+			}
+		}
+		break;
+	case SC_FIRE_EXPANSION_TEAR_GAS:		/* ファイアーエクスパンション(催涙) */
+		if((--sc->data[type].val3) > 0) {
+			int hp = (int)((atn_bignumber)status_get_max_hp(bl) / 100);
+			clif_emotion(bl,28);
+			unit_heal(bl, -hp, 0);
+			if(!unit_isdead(bl) && sc->data[type].timer != -1)
+				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	}
