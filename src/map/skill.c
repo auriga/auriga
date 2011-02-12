@@ -201,7 +201,7 @@ int SkillStatusChangeTable2[MAX_SECONDSKILL] = {	/* status.hのenumのSC_***と�
 /* (スキル番号 - THIRD_SKILLID)＝＞ステータス異常番号変換テーブル */
 int SkillStatusChangeTable3[MAX_THIRDSKILL] = {	/* status.hのenumのSC_***とあわせること */
 	/* 2001- */
-	SC_ENCHANTBLADE,-1,SC_DEATHBOUND,-1,SC_FEAR,SC_SIGHTBLASTER,-1,-1,SC_FEAR,-1,
+	SC_ENCHANTBLADE,-1,SC_DEATHBOUND,-1,SC_FEAR,-1,-1,SC_HELLINFERNO,SC_FEAR,-1,
 	/* 2011- */
 	SC_BERKANA,-1,SC_NAUTHIZ,SC_TURISUSS,SC_HAGALAZ,SC_ISHA,-1,SC_EISIR,SC_URUZ,-1,
 	/* 2021- */
@@ -1351,6 +1351,10 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(atn_rand() % 10000 < 300 + skilllv * 200)
 			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
+	case RK_DRAGONBREATH:	/* ドラゴンブレス */
+		if(atn_rand() % 10000 < 500 + skilllv * 200)
+			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
 	case AB_ADORAMUS:		/* アドラムス */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,10000,status_get_lv(src)))
 			status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
@@ -2310,7 +2314,7 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 				}
 				battle_skill_attack(BF_MAGIC,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
 				break;
-			case RK_HUNDREDSPEAR:		/* ハンドレットスピアのスピアブーメラン追撃 */
+			case RK_HUNDREDSPEAR:		/* ハンドレッドスピアのスピアブーメラン追撃 */
 				if(src->type == BL_PC) {
 					int lv = pc_checkskill((struct map_session_data *)src,KN_SPEARBOOMERANG);
 					if(lv > 0)
@@ -3975,24 +3979,18 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			}
 		}
 		break;
-	case RK_HUNDREDSPEAR:	/* ハンドレットスピア */
+	case RK_HUNDREDSPEAR:	/* ハンドレッドスピア */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
-		if(atn_rand()%100 < (10 + 3*skilllv))
+		if(atn_rand()%100 < (10 + 3*skilllv)) {
+			skill_blown(src,bl,6|SAB_NOPATHSTOP);
 			skill_addtimerskill(src,tick+800,bl->id,0,0,skillid,skilllv,BF_WEAPON,flag);
+		}
 		break;
 	case RK_IGNITIONBREAK:	/* イグニッションブレイク */
 		if(flag&1) {
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1]) {
-				int dist = unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
-				int type;
-				if(dist > 3)
-					type = 2;	// 遠距離
-				else if(dist > 1)
-					type = 1;	// 中距離
-				else
-					type = 0;	// 近距離
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500|type);
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
 			}
 		} else {
 			/* スキルエフェクト表示 */
@@ -4031,21 +4029,22 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case RK_PHANTOMTHRUST:	/* ファントムスラスト */
 		if(battle_check_target(src,bl,BCT_ENEMY) > 0 || battle_check_target(src,bl,BCT_PARTY) > 0) {
-			int posx = 0, posy = 0;
+			if(!map[bl->m].flag.gvg && !(status_get_mode(bl)&0x20)) {
+				int posx = 0, posy = 0;
 
-			if(bl->x > src->x) {
-				posx = 1;
-			} else if(bl->x < src->x) {
-				posx = -1;
+				if(bl->x > src->x) {
+					posx = 1;
+				} else if(bl->x < src->x) {
+					posx = -1;
+				}
+
+				if(bl->y > src->y) {
+					posy = 1;
+				} else if(bl->y < src->y) {
+					posy = -1;
+				}
+				unit_movepos(bl, src->x+posx, src->y+posy, 0);
 			}
-
-			if(bl->y > src->y) {
-				posy = 1;
-			} else if(bl->y < src->y) {
-				posy = -1;
-			}
-
-			unit_movepos(bl, src->x+posx, src->y+posy, 0);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			if (battle_check_target(src,bl,BCT_ENEMY) > 0 ){
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
@@ -5367,7 +5366,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_DEFENDER:
 	case NPC_MAGICMIRROR:		/* マジックミラー */
 	case NPC_HELLPOWER:			/* ヘルパワー */
-	case RK_ENCHANTBLADE:		/* エンチャントブレイド */
 	case RK_DEATHBOUND:			/* デスバウンド */
 	case RK_MILLENNIUMSHIELD:	/* ミレニアムシールド */
 	case RK_GIANTGROWTH:		/* ジャイアントグロース */
@@ -7473,6 +7471,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			pc_heal(mcd->msd,hp,0);
 			battle_damage(NULL,&mcd->bl,hp,skillid,skilllv,flag);
 		}
+		break;
+	case RK_ENCHANTBLADE:		/* エンチャントブレイド */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,status_get_int(src)+status_get_lv(src)/10,0,0,skill_get_time(skillid,skilllv),0);
 		break;
 	case RK_DRAGONHOWLING:	/* ドラゴンハウリング */
 		if(flag&1) {
@@ -15679,7 +15681,7 @@ static int skill_calc_produce_rate(struct map_session_data *sd, int idx, int sc,
 			make_per = make_per * battle_config.wp_rate/100;
 		break;
 	case PRD_RUNE:		// ルーンストーン製造
-		make_per += pc_checkskill(sd,RK_RUNEMASTERY)*100 + skill_lv*300 + sd->status.job_level*20 + dex*10 + luk*10 + int_*5;
+		make_per += skill_lv*200 + sd->status.job_level*20 + (dex + luk)*5;
 		break;
 	case PRD_NEWPOISON:	// 新毒製造
 		make_per += pc_checkskill(sd,GC_RESEARCHNEWPOISON)*100 + skill_lv*300 + sd->status.job_level*20 + dex*10 + luk*10 + int_*5;
@@ -15825,8 +15827,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 	if(type == PRD_RUNE) {
 		i = pc_search_inventory(sd,nameid);
 		if(i >= 0 && sd->status.inventory[i].amount >= 20 ) {	/* 作成前に所持限界数を超えている */
-			clif_produceeffect(sd,3,nameid);	/* 暫定で製薬エフェクト */
-			clif_misceffect(&sd->bl,6);		/* 他人にも失敗を通知 */
+			clif_msgstringtable(sd, 0x61b);	// 最大所持量より多いルーンストーンを作成することはできません。
 			return;
 		}
 	}
@@ -16325,7 +16326,7 @@ void skill_autoshadowspell(struct map_session_data *sd, int skillid)
 
 	nullpo_retv(sd);
 
-	if(skillid > THIRD_SKILLID)	// 不正対策
+	if(skillid >= THIRD_SKILLID)	// 不正対策
 		return;
 
 	if((skilllv = pc_checkskill(sd,skillid)) > 0) {

@@ -1207,9 +1207,6 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		if(skill_num == HW_MAGICCRASHER || (skill_num == 0 && sc && sc->data[SC_CHANGE].timer != -1)) {
 			// マジッククラッシャーまたはメンタルチェンジ中の通常攻撃ならMATKで殴る
 			damage = status_get_matk1(src);
-		} else  if(sc && sc->data[SC_ENCHANTBLADE].timer != -1) {
-			// エンチャントブレイド
-			damage = status_get_baseatk(src) + status_get_matk1(src);
 		} else {
 			damage = status_get_baseatk(src);
 		}
@@ -1264,10 +1261,6 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			// マジッククラッシャーまたはメンタルチェンジ中の通常攻撃ならMATKで殴る
 			atkmin = status_get_matk1(src);
 			atkmax = status_get_matk2(src);
-		} else  if(sc && sc->data[SC_ENCHANTBLADE].timer != -1) {
-			// エンチャントブレイド
-			atkmin = status_get_atk(src) + status_get_matk1(src);
-			atkmax = status_get_atk2(src) + status_get_matk2(src);
 		} else {
 			atkmin = status_get_atk(src);
 			atkmax = status_get_atk2(src);
@@ -1666,6 +1659,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_DEMONSTRATION:		// デモンストレーション
 		case TK_COUNTER:		// アプチャオルリギ
 		case AS_SPLASHER:		// ベナムスプラッシャー
+		case RK_DRAGONBREATH:	// ドラゴンブレス
+		case GC_PHANTOMMENACE:		// ファントムメナス
+		case RA_SENSITIVEKEEN:		// 鋭敏な嗅覚
+		case NC_SELFDESTRUCTION:	// セルフディストラクション
 			calc_flag.hitrate = 1000000;
 			break;
 		case NPC_EXPULSION:		// エクスパルシオン
@@ -1719,9 +1716,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case GC_VENOMPRESSURE:	// ベナムプレッシャー
 			calc_flag.hitrate += 10 + skill_lv * 4;
 			break;
-		case GC_PHANTOMMENACE:		// ファントムメナス
-			calc_flag.hitrate = 1000000;
-			break;
 		case RA_AIMEDBOLT:		// エイムドボルト
 			if(t_sc && (t_sc->data[SC_ANKLE].timer != -1 || t_sc->data[SC_ELECTRICSHOCKER].timer != -1 || t_sc->data[SC_WUGBITE].timer != -1)) {
 				status_change_end(target,SC_ANKLE,-1);
@@ -1729,12 +1723,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				status_change_end(target,SC_WUGBITE,-1);
 				wd.div_ = t_size + 2;
 			}
-			break;
-		case RA_SENSITIVEKEEN:		// 鋭敏な嗅覚
-			calc_flag.hitrate = 1000000;
-			break;
-		case NC_SELFDESTRUCTION:	// セルフディストラクション
-			calc_flag.hitrate = 1000000;
 			break;
 		case SC_FATALMENACE:	// フェイタルメナス
 			calc_flag.hitrate -= 5 + (6 - skill_lv) * 5;
@@ -2478,45 +2466,49 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100+10*skill_lv, 100 );
 			break;
 		case RK_SONICWAVE:	// ソニックウェーブ
-			DMG_FIX( 500 + 100 * skill_lv + status_get_lv(src), 100 );
+			DMG_FIX( (500 + 100 * skill_lv) * status_get_lv(src) / 100, 100 );
 			break;
-		case RK_HUNDREDSPEAR:	// ハンドレットスピア
-			if(src_sd) {
-				DMG_FIX( 600 + 40 * skill_lv + status_get_lv(src) + 20 * pc_checkskill(src_sd,LK_SPIRALPIERCE), 100 );
-			} else {
-				DMG_FIX( 600+40*skill_lv, 100 );
-			}
+		case RK_HUNDREDSPEAR:	// ハンドレッドスピア
+			DMG_FIX( (600 + 40 * skill_lv + ((src_sd)? pc_checkskill(src_sd,LK_SPIRALPIERCE): 0) * 20) * status_get_lv(src) / 100, 100 );
 			break;
 		case RK_WINDCUTTER:	// ウィンドカッター
-			DMG_FIX( 100 + 50 * skill_lv + status_get_lv(src), 100 );
+			DMG_FIX( (100 + 50 * skill_lv) * status_get_lv(src) / 100, 100 );
 			break;
 		case RK_IGNITIONBREAK:	// イグニッションブレイク
 			{
 				int dmg = 200 + 200 * skill_lv;
-
-				if(wflag == 2)			// 遠距離
+				int dist = unit_distance2(src,target);
+				if(dist > 3)			// 遠距離
 					dmg /= 2;
-				else if(wflag == 1)		// 中距離
+				else if(dist > 1)		// 中距離
 					dmg -= 100;
 				if(s_ele == ELE_FIRE)	// 火属性武器装備時
 					dmg = dmg * 150 / 100;
-				DMG_FIX( dmg + status_get_lv(src), 100 );
+				DMG_FIX( dmg * status_get_lv(src) / 200, 100 );
 			}
 			break;
 		case RK_DRAGONBREATH:	// ドラゴンブレス
 			{
 				int lv = (src_sd)? pc_checkskill(src_sd,RK_DRAGONTRAINING): 0;
-				DMG_SET( (10 + (status_get_hp(src) / 50) + (status_get_max_sp(src) / 10)) * skill_lv * (100 + 5 * lv) / 100 );
+				DMG_SET( ((status_get_hp(src) / 50) + (status_get_max_sp(src) / 4)) * skill_lv * status_get_lv(src) / 100 * (100 + 5 * lv) / 100 );
 			}
 			break;
 		case RK_CRUSHSTRIKE:	// クラッシュストライク
-			DMG_FIX( 1000, 100 );
+			{
+				int dmg = 100;
+				if(src_sd) {
+					int idx = src_sd->equip_index[9];
+					if(idx >= 0 && src_sd->inventory_data[idx])
+						dmg += 100 * src_sd->inventory_data[idx]->refine * src_sd->inventory_data[idx]->wlv;
+				}
+				DMG_FIX( dmg, 100 );
+			}
 			break;
 		case RK_STORMBLAST:		// ストームブラスト
-			DMG_FIX( 300 + status_get_lv(src), 100 );
+			DMG_FIX( ((src_sd)? pc_checkskill(src_sd,RK_RUNEMASTERY): 1) * 100 + (status_get_int(src) / 4) * 100, 100 );
 			break;
 		case RK_PHANTOMTHRUST:	// ファントムスラスト
-			DMG_FIX( 50 * skill_lv + status_get_lv(src), 100 );
+			DMG_FIX( (50 * skill_lv + ((src_sd)? pc_checkskill(src_sd,KN_SPEARMASTERY): 0) * 10) * status_get_lv(src) / 100, 100 );
 			break;
 		case GC_CROSSIMPACT:	// クロスインパクト
 			DMG_FIX( 1150 + 50 * skill_lv, 100 );
@@ -3053,6 +3045,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage  = wd.damage * sc->data[SC_EXEEDBREAK].val2 / 100;
 				wd.damage2 = 0;
 				status_change_end(src, SC_EXEEDBREAK,-1);
+			}
+			// エンチャントブレイド
+			if(sc->data[SC_ENCHANTBLADE].timer != -1 && !skill_num) {
+				static struct Damage ebd = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+				ebd = battle_calc_attack(BF_MAGIC,src,target,RK_ENCHANTBLADE,sc->data[SC_ENCHANTBLADE].val1,wd.flag);
+				wd.damage += ebd.damage + 100 + sc->data[SC_ENCHANTBLADE].val1 * 20;
 			}
 			// ジャイアントグロース
 			if(sc->data[SC_TURISUSS].timer != -1 && wd.flag&BF_SHORT && !skill_num) {
@@ -3957,6 +3955,12 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case NPC_EVILLAND:	// イビルランド
 			mgd.damage = (skill_lv > 6)? 666: skill_lv*100;
 			normalmagic_flag = 0;
+			break;
+		case RK_ENCHANTBLADE:	// エンチャントブレイド
+			if(sc && sc->data[SC_ENCHANTBLADE].timer != -1) {
+				matk1 += sc->data[SC_ENCHANTBLADE].val2;
+				matk2 += sc->data[SC_ENCHANTBLADE].val2;
+			}
 			break;
 		case AB_JUDEX:		// ジュデックス
 			MATK_FIX( (skill_lv < 5)? 280 + 20 * skill_lv: 400, 100 );

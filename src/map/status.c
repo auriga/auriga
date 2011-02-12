@@ -248,7 +248,7 @@ int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item 
 	if(item->refine < 0 || item->refine >= MAX_REFINE)	// 値がエラーもしくは既に最大値なら0%
 		return 0;
 
-	if(sd->status.class_ == PC_CLASS_NC || PC_CLASS_NC_H || PC_CLASS_NC_B)
+	if(sd->status.class_ == PC_CLASS_NC || sd->status.class_ == PC_CLASS_NC_H || sd->status.class_ == PC_CLASS_NC_B)
 		joblv = 70;
 	else if(sd->status.job_level > 70)
 		joblv = 70;
@@ -4024,8 +4024,6 @@ int status_get_matk1(struct block_list *bl)
 		}
 
 		if(sc) {
-			if(sc->data[SC_ENCHANTBLADE].timer != -1)
-				matk1 += sc->data[SC_ENCHANTBLADE].val2;
 			if(sc->data[SC_MINDBREAKER].timer != -1)
 				matk1 += (matk1*20*sc->data[SC_MINDBREAKER].val1)/100;
 			if(sc->data[SC_STRENGTH].timer != -1)
@@ -4075,8 +4073,6 @@ int status_get_matk2(struct block_list *bl)
 		}
 
 		if(sc) {
-			if(sc->data[SC_ENCHANTBLADE].timer != -1)
-				matk2 += sc->data[SC_ENCHANTBLADE].val2;
 			if(sc->data[SC_MINDBREAKER].timer != -1)
 				matk2 += (matk2*20*sc->data[SC_MINDBREAKER].val1)/100;
 			if(sc->data[SC_STRENGTH].timer != -1)
@@ -5998,6 +5994,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SPL_ATK:			/* スプレンティッドフィールドMOB(物理ダメージ上昇) */
 		case SC_SPL_DEF:			/* スプレンティッドフィールドMOB(ダメージ減少) */
 		case SC_SPL_MATK:			/* スプレンティッドフィールドMOB(魔法ダメージ減少) */
+		case SC_ENCHANTBLADE:		/* エンチャントブレイド */
 		case SC_NAUTHIZ:			/* リフレッシュ */
 		case SC_ISHA:				/* バイタリティアクティベーション */
 		case SC_WEAPONBLOCKING2:	/* ウェポンブロッキング（ブロック） */
@@ -6902,10 +6899,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick = 0;
 			}
 			break;
-		case SC_ENCHANTBLADE:		/* エンチャントブレイド */
-			calc_flag = 1;
-			val2 = (100 + 20 * val1) + status_get_lv(bl) + status_get_int(bl);		// 追加魔法攻撃力
-			break;
 		case SC_HAGALAZ:			/* ストーンハードスキン */
 			{
 				int hp = status_get_hp(bl);
@@ -7737,7 +7730,6 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_ANTIMAGIC:			/* アンチマジック */
 		case SC_WEAPONQUICKEN:			/* ウェポンクイッケン */
 		case SC_WE_FEMALE:			/* あなたに尽くします */
-		case SC_ENCHANTBLADE:		/* エンチャントブレイド */
 		case SC_TURISUSS:			/* ジャイアントグロース */
 		case SC_EISIR:				/* ファイティングスピリット */
 		case SC_FEAR:				/* 恐怖 */
