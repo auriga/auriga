@@ -159,7 +159,7 @@ void clif_skillup(struct map_session_data *sd, int skill_num);
 
 void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int dst_y,int skill_num,int casttime);
 void clif_skillcastcancel(struct block_list* bl);
-void clif_skill_fail(struct map_session_data *sd, int skill_id, unsigned char type, unsigned short btype);
+void clif_skill_fail(struct map_session_data *sd, int skill_id, int type, int btype, int val);
 void clif_skill_damage(struct block_list *src,struct block_list *dst,
 	unsigned int tick,int sdelay,int ddelay,int damage,int div_,int skill_id,int skill_lv,int type);
 void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill_id,int heal,int fail);

@@ -399,7 +399,7 @@ L_RECALC:
 		sd->max_weight += battle_config.riding_weight;
 
 	if(pc_isdragon(sd))	// ドラゴン
-		sd->max_weight += 500 + 200 * pc_checkskill(sd,RK_DRAGONTRAINING);
+		sd->max_weight += 5000 + 2000 * pc_checkskill(sd,RK_DRAGONTRAINING);
 
 	if((skill = pc_checkskill(sd,MC_INCCARRY)) > 0)	// 所持量増加
 		sd->max_weight += skill*2000;
@@ -9698,7 +9698,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 			type = SC_COLLECTOR;
 			break;
 		default:
-			if(sd->s_class.upper == PC_UPPER_HIGH && sd->s_class.job >= PC_JOB_SM && sd->s_class.job <= PC_JOB_MC)
+			if(sd->s_class.upper == PC_UPPER_HIGH && sd->s_class.job >= PC_JOB_SM && sd->s_class.job <= PC_JOB_TF)
 				type = SC_HIGH;
 			break;
 	}

@@ -229,7 +229,7 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 	// has vender ability to open a shop?
 	vending_skill_lvl = pc_checkskill(sd, MC_VENDING);
 	if (vending_skill_lvl < 1 || !pc_iscarton(sd)) {
-		clif_skill_fail(sd, MC_VENDING, 0, 0);
+		clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
 		return;
 	}
 
@@ -258,7 +258,7 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 		len -= 85;
 		// check if at least 1 item, and not more than possible
 		if (len < 8 || len > 8 * MAX_VENDING || len > 8 * (2 + vending_skill_lvl)) {
-			clif_skill_fail(sd, MC_VENDING, 0, 0);
+			clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
 			return;
 		}
 
@@ -271,7 +271,7 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 			amount = *(short*)(p + 2 + 8 * i);
 			if (idx < 0 || idx >= MAX_CART || amount <= 0) {
 				memset(&sd->vending[0], 0, sizeof(struct vending) * MAX_VENDING);
-				clif_skill_fail(sd, MC_VENDING, 0, 0);
+				clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
 				return;
 			}
 
@@ -283,7 +283,7 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 			// ついでに−値の値段や−値の個数チェックもいれてます
 			if (pc_cartitem_amount(sd, idx, amount) < 0) {
 				memset(&sd->vending[0], 0, sizeof(struct vending) * MAX_VENDING);
-				clif_skill_fail(sd, MC_VENDING, 0, 0);
+				clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
 				return;
 			}
 
@@ -291,7 +291,7 @@ void vending_openvending(struct map_session_data *sd, int len, char *shop_title,
 				sd->vending[i].value = battle_config.vending_max_value;
 			} else if (sd->vending[i].value < 0) { // hack
 				memset(&sd->vending[0], 0, sizeof(struct vending) * MAX_VENDING);
-				clif_skill_fail(sd, MC_VENDING, 0, 0);
+				clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
 				return;
 			}
 		}

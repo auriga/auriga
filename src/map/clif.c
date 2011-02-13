@@ -5009,6 +5009,8 @@ void clif_poison_list(struct map_session_data *sd, short lv)
 	if(c > 0) {
 		sd->skill_menu.id = GC_POISONINGWEAPON;
 		sd->skill_menu.lv = lv;
+	} else {
+		clif_skill_fail(sd,GC_POISONINGWEAPON,0x2b,0,0);
 	}
 
 	return;
@@ -5050,6 +5052,8 @@ void clif_reading_sb_list(struct map_session_data *sd)
 	if(c > 0) {
 		sd->skill_menu.id = WL_READING_SB;
 		sd->skill_menu.lv = 1;
+	} else {
+		clif_skill_fail(sd,WL_READING_SB,0x33,0,0);
 	}
 
 	return;
@@ -6866,10 +6870,10 @@ void clif_skillcastcancel(struct block_list* bl)
 }
 
 /*==========================================
- * スキル詠唱失敗
+ * スキル使用失敗
  *------------------------------------------
  */
-void clif_skill_fail(struct map_session_data *sd, int skill_id, unsigned char type, unsigned short btype)
+void clif_skill_fail(struct map_session_data *sd, int skill_id, int type, int btype, int val)
 {
 	int fd;
 
@@ -6881,7 +6885,8 @@ void clif_skill_fail(struct map_session_data *sd, int skill_id, unsigned char ty
 	fd=sd->fd;
 	WFIFOW(fd,0) = 0x110;
 	WFIFOW(fd,2) = skill_id;
-	WFIFOL(fd,4) = btype;
+	WFIFOW(fd,4) = btype;
+	WFIFOW(fd,6) = val;
 	WFIFOB(fd,8) = 0;
 	WFIFOB(fd,9) = type;
 	WFIFOSET(fd,packet_db[0x110].len);
@@ -7850,7 +7855,7 @@ void clif_item_repair_list(struct map_session_data *sd, struct map_session_data 
 		sd->skill_menu.lv = 1;
 		sd->skill_menu.val = dstsd->bl.id;
 	}else
-		clif_skill_fail(sd,sd->ud.skillid,0,0);
+		clif_skill_fail(sd,sd->ud.skillid,0,0,0);
 
 	return;
 }
@@ -11860,6 +11865,8 @@ void clif_autoshadowspell(struct map_session_data *sd, short lv)
 	if(c > 0) {
 		sd->skill_menu.id = SC_AUTOSHADOWSPELL;
 		sd->skill_menu.lv = lv;
+	} else {
+		clif_skill_fail(sd,SC_AUTOSHADOWSPELL,0x15,0,0);
 	}
 
 	return;
@@ -12728,7 +12735,7 @@ static void clif_parse_Emotion(int fd,struct map_session_data *sd, int cmd)
 			clif_send(WFIFOP(fd,0),packet_db[0xc0].len,&sd->bl,AREA);
 		}
 	} else {
-		clif_skill_fail(sd,1,0,1);
+		clif_skill_fail(sd,1,0,1,0);
 	}
 
 	return;
@@ -12799,7 +12806,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 
 		if(!battle_config.sdelay_attack_enable && pc_checkskill(sd,SA_FREECAST) <= 0 ) {
 			if(DIFF_TICK(tick , sd->ud.canact_tick) < 0) {
-				clif_skill_fail(sd,1,4,0);
+				clif_skill_fail(sd,1,4,0,0);
 				return;
 			}
 		}
@@ -12820,7 +12827,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 			clif_sitting(&sd->bl, 1);
 			skill_sit(sd,1);	// ギャングスターパラダイスおよびテコン休息設定
 		} else {
-			clif_skill_fail(sd,1,0,2);
+			clif_skill_fail(sd,1,0,2,0);
 		}
 		break;
 	case 0x03:	// standup
@@ -13316,7 +13323,7 @@ static void clif_parse_CreateChatRoom(int fd,struct map_session_data *sd, int cm
 	nullpo_retv(sd);
 
 	if(sd->status.manner < 0 || (battle_config.basic_skill_check && pc_checkskill(sd,NV_BASIC) < 4)) {
-		clif_skill_fail(sd,1,0,3);
+		clif_skill_fail(sd,1,0,3,0);
 		return;
 	}
 
@@ -13417,7 +13424,7 @@ static void clif_parse_TradeRequest(int fd,struct map_session_data *sd, int cmd)
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 1)
 		trade_traderequest(sd,RFIFOL(sd->fd,GETPACKETPOS(cmd,0)));
 	else
-		clif_skill_fail(sd,1,0,0);
+		clif_skill_fail(sd,1,0,0,0);
 
 	return;
 }
@@ -13706,7 +13713,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		if(skillnum != SA_CASTCANCEL && !(skillnum == SO_SPELLFIST && (sd->ud.skillid == MG_FIREBOLT || sd->ud.skillid == MG_COLDBOLT || sd->ud.skillid == MG_LIGHTNINGBOLT)))
 			return;
 	} else if(DIFF_TICK(tick, sd->ud.canact_tick) < 0) {
-		clif_skill_fail(sd,skillnum,4,0);
+		clif_skill_fail(sd,skillnum,4,0,0);
 		return;
 	}
 
@@ -13715,7 +13722,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	if(skilldb_id <= 0)
 		return;
 	if(DIFF_TICK(tick, sd->skillstatictimer[skilldb_id]) < 0) {
-		clif_skill_fail(sd,skillnum,4,0);
+		clif_skill_fail(sd,skillnum,4,0,0);
 		return;
 	}
 	if(skillnum >= THIRD_SKILLID && skillnum < MAX_THIRD_SKILLID) {
@@ -13847,7 +13854,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	if(sd->ud.skilltimer != -1)
 		return;
 	if(DIFF_TICK(tick, sd->ud.canact_tick) < 0) {
-		clif_skill_fail(sd,skillnum,4,0);
+		clif_skill_fail(sd,skillnum,4,0,0);
 		return;
 	}
 
@@ -13856,7 +13863,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	if(skilldb_id <= 0)
 		return;
 	if(DIFF_TICK(tick, sd->skillstatictimer[skilldb_id]) < 0) {
-		clif_skill_fail(sd,skillnum,4,0);
+		clif_skill_fail(sd,skillnum,4,0,0);
 		return;
 	}
 	if(skillnum >= THIRD_SKILLID && skillnum < MAX_THIRD_SKILLID) {
@@ -13867,7 +13874,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 
 	if(GETPACKETPOS(cmd,4)) {
 		if(pc_issit(sd)) {
-			clif_skill_fail(sd,skillnum,0,0);
+			clif_skill_fail(sd,skillnum,0,0,0);
 			return;
 		}
 		memcpy(sd->message,RFIFOP(fd,GETPACKETPOS(cmd,4)),80);
@@ -14374,7 +14381,7 @@ static void clif_parse_CreateParty(int fd,struct map_session_data *sd, int cmd)
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 7)
 		party_create(sd,RFIFOP(fd,GETPACKETPOS(cmd,0)),0,0);
 	else
-		clif_skill_fail(sd,1,0,4);
+		clif_skill_fail(sd,1,0,4,0);
 
 	return;
 }
@@ -14391,7 +14398,7 @@ static void clif_parse_CreateParty2(int fd,struct map_session_data *sd, int cmd)
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 7)
 		party_create(sd,RFIFOP(fd,GETPACKETPOS(cmd,0)),item1,item2);
 	else
-		clif_skill_fail(sd,1,0,4);
+		clif_skill_fail(sd,1,0,4,0);
 
 	return;
 }
@@ -14433,7 +14440,7 @@ static void clif_parse_ReplyPartyInvite(int fd,struct map_session_data *sd, int 
 		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),RFIFOL(fd,GETPACKETPOS(cmd,1)));
 	} else {
 		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),-1);
-		clif_skill_fail(sd,1,0,4);
+		clif_skill_fail(sd,1,0,4,0);
 	}
 
 	return;
@@ -14449,7 +14456,7 @@ static void clif_parse_ReplyPartyInvite2(int fd,struct map_session_data *sd, int
 		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),RFIFOB(fd,GETPACKETPOS(cmd,1)));
 	} else {
 		party_reply_invite(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),-1);
-		clif_skill_fail(sd,1,0,8);
+		clif_skill_fail(sd,1,0,8,0);
 	}
 
 	return;
