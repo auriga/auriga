@@ -5460,40 +5460,174 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
  */
 int pc_nextbaseexp(struct map_session_data *sd)
 {
-	int i;
+	int table;
 
 	nullpo_retr(0, sd);
 
 	if(sd->status.base_level >= MAX_LEVEL || sd->status.base_level <= 0)
 		return 0;
 
-	if(sd->status.class_ == PC_CLASS_NV)				i = 0;	// ノービス
-	else if(sd->status.class_ <= PC_CLASS_TF)			i = 1;	// 1次職
-	else if(sd->status.class_ <= PC_CLASS_CR2)			i = 2;	// 2次職
-	else if(sd->status.class_ == PC_CLASS_SNV)			i = 3;	// スーパーノービス
-	else if(sd->status.class_ == PC_CLASS_GS)			i = 3;	// ガンスリンガー
-	else if(sd->status.class_ == PC_CLASS_NJ)			i = 3;	// 忍者
-	else if(sd->status.class_ == PC_CLASS_NV_H)			i = 4;	// 転生ノービス
-	else if(sd->status.class_ <= PC_CLASS_TF_H)			i = 5;	// 転生1次職
-	else if(sd->status.class_ <= PC_CLASS_CR2_H)		i = 6;	// 転生2次職
-	else if(sd->status.class_ == PC_CLASS_NV_B)			i = 0;	// 養子ノービス
-	else if(sd->status.class_ <= PC_CLASS_TF_B)			i = 1;	// 養子1次職
-	else if(sd->status.class_ <= PC_CLASS_CR2_B)		i = 2;	// 養子2次職
-	else if(sd->status.class_ == PC_CLASS_SNV_B) 		i = 3;	// 養子スーパーノービス
-	else if(sd->status.class_ == PC_CLASS_TK)			i = 1;	// テコンキッド
-	else if(sd->status.class_ <= PC_CLASS_SG2)			i = 2;	// 拳聖
-	else if(sd->status.class_ == PC_CLASS_SL)			i = 2;	// ソウルリンカー
-	else if(sd->status.class_ == PC_CLASS_MB)			i = 1;	// キョンシー
-	else if(sd->status.class_ == PC_CLASS_DK)			i = 2;	// デスナイト
-	else if(sd->status.class_ == PC_CLASS_DA)			i = 2;	// ダークコレクター
-	else if(sd->status.class_ <= PC_CLASS_GC)			i = 7;	// 3-1次職
-	else if(sd->status.class_ <= PC_CLASS_GC_H)			i = 8;	// 転生3-1次職
-	else if(sd->status.class_ <= PC_CLASS_SC)			i = 7;	// 3-2次職
-	else if(sd->status.class_ <= PC_CLASS_SC_H)			i = 8;	// 転生3-2次職
-	else if(sd->status.class_ <= PC_CLASS_SC_B)			i = 7;	// 養子3次職
-	else												i = 1;	// それ以外なら転生前
+	switch(sd->status.class_) {
+		case PC_CLASS_NV:	// ノービス
+		case PC_CLASS_NV_B:	// 養子ノービス
+			table = 0;
+			break;
+		case PC_CLASS_SM:	// ソードマン
+		case PC_CLASS_MG:	// マジシャン
+		case PC_CLASS_AC:	// アーチャー
+		case PC_CLASS_AL:	// アコライト
+		case PC_CLASS_MC:	// マーチャント
+		case PC_CLASS_TF:	// シーフ
+		case PC_CLASS_SM_B:	// 養子ソードマン
+		case PC_CLASS_MG_B:	// 養子マジシャン
+		case PC_CLASS_AC_B:	// 養子アーチャー
+		case PC_CLASS_AL_B:	// 養子アコライト
+		case PC_CLASS_MC_B:	// 養子マーチャント
+		case PC_CLASS_TF_B:	// 養子シーフ
+		case PC_CLASS_TK:	// テコンキッド
+		case PC_CLASS_MB:	// キョンシー
+			table = 1;
+			break;
+		case PC_CLASS_KN:	// ナイト
+		case PC_CLASS_PR:	// プリースト
+		case PC_CLASS_WZ:	// ウィザード
+		case PC_CLASS_BS:	// ブラックスミス
+		case PC_CLASS_HT:	// ハンター
+		case PC_CLASS_AS:	// アサシン
+		case PC_CLASS_KN2:	// ナイト(騎乗)
+		case PC_CLASS_CR:	// クルセイダー
+		case PC_CLASS_MO:	// モンク
+		case PC_CLASS_SA:	// セージ
+		case PC_CLASS_RG:	// ローグ
+		case PC_CLASS_AM:	// アルケミスト
+		case PC_CLASS_BA:	// バード
+		case PC_CLASS_DC:	// ダンサー
+		case PC_CLASS_CR2:	// クルセイダー(騎乗)
+		case PC_CLASS_KN_B:	// 養子ナイト
+		case PC_CLASS_PR_B:	// 養子プリースト
+		case PC_CLASS_WZ_B:	// 養子ウィザード
+		case PC_CLASS_BS_B:	// 養子ブラックスミス
+		case PC_CLASS_HT_B:	// 養子ハンター
+		case PC_CLASS_AS_B:	// 養子アサシン
+		case PC_CLASS_KN2_B:	// 養子ナイト(騎乗)
+		case PC_CLASS_CR_B:	// 養子クルセイダー
+		case PC_CLASS_MO_B:	// 養子モンク
+		case PC_CLASS_SA_B:	// 養子セージ
+		case PC_CLASS_RG_B:	// 養子ローグ
+		case PC_CLASS_AM_B:	// 養子アルケミスト
+		case PC_CLASS_BA_B:	// 養子バード
+		case PC_CLASS_DC_B:	// 養子ダンサー
+		case PC_CLASS_CR2_B:	// 養子クルセイダー(騎乗)
+		case PC_CLASS_SG:	// 拳聖
+		case PC_CLASS_SG2:	// 拳聖(融合)
+		case PC_CLASS_SL:	// ソウルリンカー
+		case PC_CLASS_DK:	// デスナイト
+		case PC_CLASS_DA:	// ダークコレクター
+			table = 2;
+			break;
+		case PC_CLASS_SNV:	// スーパーノービス
+		case PC_CLASS_GS:	// ガンスリンガー
+		case PC_CLASS_NJ:	// 忍者
+		case PC_CLASS_SNV_B:	// 養子スーパーノービス
+			table = 3;
+			break;
+		case PC_CLASS_NV_H:	// 転生ノービス
+			table = 4;
+			break;
+		case PC_CLASS_SM_H:	// 転生ソードマン
+		case PC_CLASS_MG_H:	// 転生マジシャン
+		case PC_CLASS_AC_H:	// 転生アーチャー
+		case PC_CLASS_AL_H:	// 転生アコライト
+		case PC_CLASS_MC_H:	// 転生マーチャント
+		case PC_CLASS_TF_H:	// 転生シーフ
+			table = 5;
+			break;
+		case PC_CLASS_KN_H:	// ロードナイト
+		case PC_CLASS_PR_H:	// ハイプリースト
+		case PC_CLASS_WZ_H:	// ハイウィザード
+		case PC_CLASS_BS_H:	// ホワイトスミス
+		case PC_CLASS_HT_H:	// スナイパー
+		case PC_CLASS_AS_H:	// アサシンクロス
+		case PC_CLASS_KN2_H:	// ロードナイト(騎乗)
+		case PC_CLASS_CR_H:	// パラディン
+		case PC_CLASS_MO_H:	// チャンピオン
+		case PC_CLASS_SA_H:	// プロフェッサー
+		case PC_CLASS_RG_H:	// チェイサー
+		case PC_CLASS_AM_H:	// クリエイター
+		case PC_CLASS_BA_H:	// クラウン
+		case PC_CLASS_DC_H:	// ジプシー
+		case PC_CLASS_CR2_H:	// パラディン(騎乗)
+			table = 6;
+			break;
+		case PC_CLASS_RK:	// ルーンナイト
+		case PC_CLASS_WL:	// ウォーロック
+		case PC_CLASS_RA:	// レンジャー
+		case PC_CLASS_AB:	// アークビショップ
+		case PC_CLASS_NC:	// メカニック
+		case PC_CLASS_GC:	// ギロチンクロス
+		case PC_CLASS_LG:	// ロイヤルガード
+		case PC_CLASS_SO:	// ソーサラー
+		case PC_CLASS_MI:	// ミンストレル
+		case PC_CLASS_WA:	// ワンダラー
+		case PC_CLASS_SR:	// 修羅
+		case PC_CLASS_GN:	// ジェネティック
+		case PC_CLASS_SC:	// シャドウチェイサー
+		case PC_CLASS_RK2:	// ルーンナイト(騎乗)
+		case PC_CLASS_LG2:	// ロイヤルガード(騎乗)
+		case PC_CLASS_RA2:	// レンジャー(騎乗)
+		case PC_CLASS_NC2:	// メカニック(騎乗)
+		case PC_CLASS_RK3:	// ルーンナイト(騎乗)
+		case PC_CLASS_RK4:	// ルーンナイト(騎乗)
+		case PC_CLASS_RK5:	// ルーンナイト(騎乗)
+		case PC_CLASS_RK6:	// ルーンナイト(騎乗)
+		case PC_CLASS_RK_B:	// 養子ルーンナイト
+		case PC_CLASS_WL_B:	// 養子ウォーロック
+		case PC_CLASS_RA_B:	// 養子レンジャー
+		case PC_CLASS_AB_B:	// 養子アークビショップ
+		case PC_CLASS_NC_B:	// 養子メカニック
+		case PC_CLASS_GC_B:	// 養子ギロチンクロス
+		case PC_CLASS_LG_B:	// 養子ロイヤルガード
+		case PC_CLASS_SO_B:	// 養子ソーサラー
+		case PC_CLASS_MI_B:	// 養子ミンストレル
+		case PC_CLASS_WA_B:	// 養子ワンダラー
+		case PC_CLASS_SR_B:	// 養子修羅
+		case PC_CLASS_GN_B:	// 養子ジェネティック
+		case PC_CLASS_SC_B:	// 養子シャドウチェイサー
+		case PC_CLASS_RK2_B:	// 養子ルーンナイト(騎乗)
+		case PC_CLASS_LG2_B:	// 養子ロイヤルガード(騎乗)
+		case PC_CLASS_RA2_B:	// 養子レンジャー(騎乗)
+		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
+			table = 7;
+			break;
+		case PC_CLASS_RK_H:	// 転生ルーンナイト
+		case PC_CLASS_WL_H:	// 転生ウォーロック
+		case PC_CLASS_RA_H:	// 転生レンジャー
+		case PC_CLASS_AB_H:	// 転生アークビショップ
+		case PC_CLASS_NC_H:	// 転生メカニック
+		case PC_CLASS_GC_H:	// 転生ギロチンクロス
+		case PC_CLASS_LG_H:	// 転生ロイヤルガード
+		case PC_CLASS_SO_H:	// 転生ソーサラー
+		case PC_CLASS_MI_H:	// 転生ミンストレル
+		case PC_CLASS_WA_H:	// 転生ワンダラー
+		case PC_CLASS_SR_H:	// 転生修羅
+		case PC_CLASS_GN_H:	// 転生ジェネティック
+		case PC_CLASS_SC_H:	// 転生シャドウチェイサー
+		case PC_CLASS_RK2_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_LG2_H:	// 転生ロイヤルガード(騎乗)
+		case PC_CLASS_RA2_H:	// 転生レンジャー(騎乗)
+		case PC_CLASS_NC2_H:	// 転生メカニック(騎乗)
+		case PC_CLASS_RK3_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_RK4_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_RK5_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_RK6_H:	// 転生ルーンナイト(騎乗)
+			table = 8;
+			break;
+		default:	// それ以外
+			table = 1;
+			break;
+	}
 
-	return exp_table[i][sd->status.base_level-1];
+	return exp_table[table][sd->status.base_level-1];
 }
 
 /*==========================================
@@ -5502,40 +5636,178 @@ int pc_nextbaseexp(struct map_session_data *sd)
  */
 int pc_nextjobexp(struct map_session_data *sd)
 {
-	int i;
+	int table;
 
 	nullpo_retr(0, sd);
 
 	if(sd->status.job_level >= MAX_LEVEL || sd->status.job_level <= 0)
 		return 0;
 
-	if(sd->status.class_ == PC_CLASS_NV)				i = 9;	// ノービス
-	else if(sd->status.class_ <= PC_CLASS_TF)			i = 10;	// 1次職
-	else if(sd->status.class_ <= PC_CLASS_CR2)			i = 11;	// 2次職
-	else if(sd->status.class_ == PC_CLASS_SNV)			i = 12;	// スーパーノービス
-	else if(sd->status.class_ == PC_CLASS_GS)			i = 17;	// ガンスリンガー
-	else if(sd->status.class_ == PC_CLASS_NJ)			i = 17;	// 忍者
-	else if(sd->status.class_ == PC_CLASS_NV_H)			i = 13;	// 転生ノービス
-	else if(sd->status.class_ <= PC_CLASS_TF_H)			i = 14;	// 転生1次職
-	else if(sd->status.class_ <= PC_CLASS_CR2_H)		i = 15;	// 転生2次職
-	else if(sd->status.class_ == PC_CLASS_NV_B)			i = 9;	// 養子ノービス
-	else if(sd->status.class_ <= PC_CLASS_TF_H)			i = 10;	// 養子1次
-	else if(sd->status.class_ <= PC_CLASS_CR2_B)		i = 11;	// 養子2次
-	else if(sd->status.class_ == PC_CLASS_SNV_B)		i = 12;	// 養子スーパーノービス
-	else if(sd->status.class_ == PC_CLASS_TK)			i = 10;	// テコンキッド
-	else if(sd->status.class_ <= PC_CLASS_SG2)			i = 16;	// 拳聖
-	else if(sd->status.class_ == PC_CLASS_SL)			i = 11;	// ソウルリンカー
-	else if(sd->status.class_ == PC_CLASS_MB)			i = 10;	// キョンシー
-	else if(sd->status.class_ == PC_CLASS_DK)			i = 11;	// デスナイト
-	else if(sd->status.class_ == PC_CLASS_DA)			i = 11;	// ダークコレクター
-	else if(sd->status.class_ <= PC_CLASS_GC)			i = 18;	// 3-1次職
-	else if(sd->status.class_ <= PC_CLASS_GC_H)			i = 19;	// 転生3-1次職
-	else if(sd->status.class_ <= PC_CLASS_SC)			i = 18;	// 3-2次職
-	else if(sd->status.class_ <= PC_CLASS_SC_H)			i = 19;	// 転生3-2次職
-	else if(sd->status.class_ <= PC_CLASS_SC_B)			i = 18;	// 養子3次職
-	else												i = 11;	// それ以外なら2次テーブル
+	switch(sd->status.class_) {
+		case PC_CLASS_NV:	// ノービス
+		case PC_CLASS_NV_B:	// 養子ノービス
+			table = 9;
+			break;
+		case PC_CLASS_SM:	// ソードマン
+		case PC_CLASS_MG:	// マジシャン
+		case PC_CLASS_AC:	// アーチャー
+		case PC_CLASS_AL:	// アコライト
+		case PC_CLASS_MC:	// マーチャント
+		case PC_CLASS_TF:	// シーフ
+		case PC_CLASS_SM_B:	// 養子ソードマン
+		case PC_CLASS_MG_B:	// 養子マジシャン
+		case PC_CLASS_AC_B:	// 養子アーチャー
+		case PC_CLASS_AL_B:	// 養子アコライト
+		case PC_CLASS_MC_B:	// 養子マーチャント
+		case PC_CLASS_TF_B:	// 養子シーフ
+		case PC_CLASS_TK:	// テコンキッド
+		case PC_CLASS_MB:	// キョンシー
+			table = 10;
+			break;
+		case PC_CLASS_KN:	// ナイト
+		case PC_CLASS_PR:	// プリースト
+		case PC_CLASS_WZ:	// ウィザード
+		case PC_CLASS_BS:	// ブラックスミス
+		case PC_CLASS_HT:	// ハンター
+		case PC_CLASS_AS:	// アサシン
+		case PC_CLASS_KN2:	// ナイト(騎乗)
+		case PC_CLASS_CR:	// クルセイダー
+		case PC_CLASS_MO:	// モンク
+		case PC_CLASS_SA:	// セージ
+		case PC_CLASS_RG:	// ローグ
+		case PC_CLASS_AM:	// アルケミスト
+		case PC_CLASS_BA:	// バード
+		case PC_CLASS_DC:	// ダンサー
+		case PC_CLASS_CR2:	// クルセイダー(騎乗)
+		case PC_CLASS_KN_B:	// 養子ナイト
+		case PC_CLASS_PR_B:	// 養子プリースト
+		case PC_CLASS_WZ_B:	// 養子ウィザード
+		case PC_CLASS_BS_B:	// 養子ブラックスミス
+		case PC_CLASS_HT_B:	// 養子ハンター
+		case PC_CLASS_AS_B:	// 養子アサシン
+		case PC_CLASS_KN2_B:	// 養子ナイト(騎乗)
+		case PC_CLASS_CR_B:	// 養子クルセイダー
+		case PC_CLASS_MO_B:	// 養子モンク
+		case PC_CLASS_SA_B:	// 養子セージ
+		case PC_CLASS_RG_B:	// 養子ローグ
+		case PC_CLASS_AM_B:	// 養子アルケミスト
+		case PC_CLASS_BA_B:	// 養子バード
+		case PC_CLASS_DC_B:	// 養子ダンサー
+		case PC_CLASS_CR2_B:	// 養子クルセイダー(騎乗)
+		case PC_CLASS_SL:	// ソウルリンカー
+		case PC_CLASS_DK:	// デスナイト
+		case PC_CLASS_DA:	// ダークコレクター
+			table = 11;
+			break;
+		case PC_CLASS_SNV:	// スーパーノービス
+		case PC_CLASS_SNV_B:	// 養子スーパーノービス
+			table = 12;
+			break;
+		case PC_CLASS_NV_H:	// 転生ノービス
+			table = 13;
+			break;
+		case PC_CLASS_SM_H:	// 転生ソードマン
+		case PC_CLASS_MG_H:	// 転生マジシャン
+		case PC_CLASS_AC_H:	// 転生アーチャー
+		case PC_CLASS_AL_H:	// 転生アコライト
+		case PC_CLASS_MC_H:	// 転生マーチャント
+		case PC_CLASS_TF_H:	// 転生シーフ
+			table = 14;
+			break;
+		case PC_CLASS_KN_H:	// ロードナイト
+		case PC_CLASS_PR_H:	// ハイプリースト
+		case PC_CLASS_WZ_H:	// ハイウィザード
+		case PC_CLASS_BS_H:	// ホワイトスミス
+		case PC_CLASS_HT_H:	// スナイパー
+		case PC_CLASS_AS_H:	// アサシンクロス
+		case PC_CLASS_KN2_H:	// ロードナイト(騎乗)
+		case PC_CLASS_CR_H:	// パラディン
+		case PC_CLASS_MO_H:	// チャンピオン
+		case PC_CLASS_SA_H:	// プロフェッサー
+		case PC_CLASS_RG_H:	// チェイサー
+		case PC_CLASS_AM_H:	// クリエイター
+		case PC_CLASS_BA_H:	// クラウン
+		case PC_CLASS_DC_H:	// ジプシー
+		case PC_CLASS_CR2_H:	// パラディン(騎乗)
+			table = 15;
+			break;
+		case PC_CLASS_SG:	// 拳聖
+		case PC_CLASS_SG2:	// 拳聖(融合)
+			table = 16;
+			break;
+		case PC_CLASS_GS:	// ガンスリンガー
+		case PC_CLASS_NJ:	// 忍者
+			table = 17;
+			break;
+		case PC_CLASS_RK:	// ルーンナイト
+		case PC_CLASS_WL:	// ウォーロック
+		case PC_CLASS_RA:	// レンジャー
+		case PC_CLASS_AB:	// アークビショップ
+		case PC_CLASS_NC:	// メカニック
+		case PC_CLASS_GC:	// ギロチンクロス
+		case PC_CLASS_LG:	// ロイヤルガード
+		case PC_CLASS_SO:	// ソーサラー
+		case PC_CLASS_MI:	// ミンストレル
+		case PC_CLASS_WA:	// ワンダラー
+		case PC_CLASS_SR:	// 修羅
+		case PC_CLASS_GN:	// ジェネティック
+		case PC_CLASS_SC:	// シャドウチェイサー
+		case PC_CLASS_RK2:	// ルーンナイト(騎乗)
+		case PC_CLASS_LG2:	// ロイヤルガード(騎乗)
+		case PC_CLASS_RA2:	// レンジャー(騎乗)
+		case PC_CLASS_NC2:	// メカニック(騎乗)
+		case PC_CLASS_RK3:	// ルーンナイト(騎乗)
+		case PC_CLASS_RK4:	// ルーンナイト(騎乗)
+		case PC_CLASS_RK5:	// ルーンナイト(騎乗)
+		case PC_CLASS_RK6:	// ルーンナイト(騎乗)
+		case PC_CLASS_RK_B:	// 養子ルーンナイト
+		case PC_CLASS_WL_B:	// 養子ウォーロック
+		case PC_CLASS_RA_B:	// 養子レンジャー
+		case PC_CLASS_AB_B:	// 養子アークビショップ
+		case PC_CLASS_NC_B:	// 養子メカニック
+		case PC_CLASS_GC_B:	// 養子ギロチンクロス
+		case PC_CLASS_LG_B:	// 養子ロイヤルガード
+		case PC_CLASS_SO_B:	// 養子ソーサラー
+		case PC_CLASS_MI_B:	// 養子ミンストレル
+		case PC_CLASS_WA_B:	// 養子ワンダラー
+		case PC_CLASS_SR_B:	// 養子修羅
+		case PC_CLASS_GN_B:	// 養子ジェネティック
+		case PC_CLASS_SC_B:	// 養子シャドウチェイサー
+		case PC_CLASS_RK2_B:	// 養子ルーンナイト(騎乗)
+		case PC_CLASS_LG2_B:	// 養子ロイヤルガード(騎乗)
+		case PC_CLASS_RA2_B:	// 養子レンジャー(騎乗)
+		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
+			table = 18;
+			break;
+		case PC_CLASS_RK_H:	// 転生ルーンナイト
+		case PC_CLASS_WL_H:	// 転生ウォーロック
+		case PC_CLASS_RA_H:	// 転生レンジャー
+		case PC_CLASS_AB_H:	// 転生アークビショップ
+		case PC_CLASS_NC_H:	// 転生メカニック
+		case PC_CLASS_GC_H:	// 転生ギロチンクロス
+		case PC_CLASS_LG_H:	// 転生ロイヤルガード
+		case PC_CLASS_SO_H:	// 転生ソーサラー
+		case PC_CLASS_MI_H:	// 転生ミンストレル
+		case PC_CLASS_WA_H:	// 転生ワンダラー
+		case PC_CLASS_SR_H:	// 転生修羅
+		case PC_CLASS_GN_H:	// 転生ジェネティック
+		case PC_CLASS_SC_H:	// 転生シャドウチェイサー
+		case PC_CLASS_RK2_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_LG2_H:	// 転生ロイヤルガード(騎乗)
+		case PC_CLASS_RA2_H:	// 転生レンジャー(騎乗)
+		case PC_CLASS_NC2_H:	// 転生メカニック(騎乗)
+		case PC_CLASS_RK3_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_RK4_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_RK5_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_RK6_H:	// 転生ルーンナイト(騎乗)
+			table = 19;
+			break;
+		default:
+			table = 11;
+			break;
+	}
 
-	return exp_table[i][sd->status.job_level-1];
+	return exp_table[table][sd->status.job_level-1];
 }
 
 /*==========================================
@@ -7088,7 +7360,6 @@ int pc_changelook(struct map_session_data *sd,int type,int val)
 		sd->status.shield = val;
 		break;
 	case LOOK_SHOES:
-	case LOOK_MOB:
 		break;
 	}
 	clif_changelook(&sd->bl,type,val);

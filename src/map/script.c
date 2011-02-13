@@ -5344,8 +5344,6 @@ int buildin_getlook(struct script_state *st)
 			break;
 		case LOOK_SHOES:
 			break;
-		case LOOK_MOB:
-			break;
 	}
 	push_val(st->stack,C_INT,val);
 	return 0;

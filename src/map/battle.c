@@ -256,6 +256,22 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 			else if(tmcd) merc_damage(bl,tmcd,hp);
 		}
 	}
+
+	/* ソウルドレイン */
+	if(sd && tmd && unit_isdead(&tmd->bl) && flag&BF_MAGIC)
+	{
+		int level = pc_checkskill(sd,HW_SOULDRAIN);
+		if(level > 0 && skill_get_inf(skillid) & INF_TOCHARACTER && sd->ud.skilltarget == target->id) {
+			int sp = 0;
+			clif_skill_nodamage(bl,target,HW_SOULDRAIN,level,1);
+			sp = (status_get_lv(target))*(95+15*level)/100;
+			if(sd->status.sp + sp > sd->status.max_sp)
+				sp = sd->status.max_sp - sd->status.sp;
+			sd->status.sp += sp;
+			clif_heal(sd->fd,SP_SP,sp);
+		}
+	}
+
 	map_freeblock_unlock();
 
 	return 0;
@@ -3066,11 +3082,19 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 		/* 17．精錬ダメージの追加 */
 		if( src_sd ) {
-			if(skill_num != MO_INVESTIGATE && skill_num != MO_EXTREMITYFIST && skill_num != PA_SHIELDCHAIN &&
-			   skill_num != CR_ACIDDEMONSTRATION && skill_num != NJ_ZENYNAGE && skill_num != GN_FIRE_EXPANSION_ACID) {
+			switch(skill_num) {
+			case MO_INVESTIGATE:
+			case MO_EXTREMITYFIST:
+			case PA_SHIELDCHAIN:
+			case CR_ACIDDEMONSTRATION:
+			case NJ_ZENYNAGE:
+			case GN_FIRE_EXPANSION_ACID:
+				break;
+			default:
 				wd.damage += status_get_atk2(src);
 				if(calc_flag.lh)
 					wd.damage2 += status_get_atk_2(src);
+				break;
 			}
 			switch (skill_num) {
 			case CR_SHIELDBOOMERANG:	// シールドブーメラン
@@ -4770,7 +4794,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		int spellid = sc->data[SC__AUTOSHADOWSPELL].val2;
 		int spelllv = sc->data[SC__AUTOSHADOWSPELL].val3;
 
-		if(skill_get_inf(spellid) & 0x02) {
+		if(skill_get_inf(spellid) & INF_TOGROUND) {
 			skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
 		} else {
 			switch(skill_get_nk(spellid) & 3) {
@@ -5381,20 +5405,6 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			break;
 		default:
 			battle_delay_damage(tick+dmg.amotion,src,bl,damage,skillid,skilllv,dmg.flag);
-		}
-		/* ソウルドレイン */
-		if(sd && bl->type == BL_MOB && status_get_hp(bl) < damage && attack_type&BF_MAGIC)
-		{
-			int level = pc_checkskill(sd,HW_SOULDRAIN);
-			if(level > 0 && skill_get_inf(skillid) & INF_TOCHARACTER && sd && sd->ud.skilltarget == bl->id) {
-				int sp = 0;
-				clif_skill_nodamage(src,bl,HW_SOULDRAIN,level,1);
-				sp = (status_get_lv(bl))*(95+15*level)/100;
-				if(sd->status.sp + sp > sd->status.max_sp)
-					sp = sd->status.max_sp - sd->status.sp;
-				sd->status.sp += sp;
-				clif_heal(sd->fd,SP_SP,sp);
-			}
 		}
 	}
 

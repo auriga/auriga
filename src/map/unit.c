@@ -1190,7 +1190,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_id, src->id, NULL);
 		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
 			src_sd->prev_speed = src_sd->speed;
-			src_sd->speed = src_sd->speed*(175 - skill*5)/100;
+			src_sd->speed = 175 - 5 * pc_checkskill(src_sd,SA_FREECAST);
 			clif_updatestatus(src_sd,SP_SPEED);
 		} else if(src_sd && skill_num == LG_EXEEDBREAK) {
 			src_sd->prev_speed = src_sd->speed;
@@ -1595,7 +1595,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 {
 	struct block_list *src, *target;
 	struct status_change *sc, *tsc;
-	int dist,skill,range;
+	int dist,range;
 	struct unit_data *src_ud;
 	struct map_session_data *src_sd  = NULL, *target_sd  = NULL;
 	struct pet_data         *src_pd  = NULL;
@@ -1765,16 +1765,10 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 			if(src_sd && src_sd->status.pet_id > 0 && src_sd->pd && src_sd->petDB)
 				pet_target_check(src_sd,target,0);
 			map_freeblock_unlock();
-			if(src_ud->skilltimer != -1 && src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0)	// フリーキャスト
-				src_ud->attackabletime = tick + (status_get_adelay(src)*(150 - skill*5)/100);
-			else
-				src_ud->attackabletime = tick + status_get_adelay(src);
+			src_ud->attackabletime = tick + status_get_adelay(src);
 		}
 		else if(src_ud->attackabletime <= tick) {
-			if(src_ud->skilltimer != -1 && src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0)	// フリーキャスト
-				src_ud->attackabletime = tick + (status_get_adelay(src)*(150 - skill*5)/100);
-			else
-				src_ud->attackabletime = tick + status_get_adelay(src);
+			src_ud->attackabletime = tick + status_get_adelay(src);
 		}
 		if(src_ud->attackabletime <= tick)
 			src_ud->attackabletime = tick + (battle_config.max_aspd<<1);

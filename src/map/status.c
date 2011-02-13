@@ -248,7 +248,13 @@ int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item 
 	if(item->refine < 0 || item->refine >= MAX_REFINE)	// 値がエラーもしくは既に最大値なら0%
 		return 0;
 
-	joblv = sd->status.job_level > 70? 70 : sd->status.job_level;
+	if(sd->status.class_ == PC_CLASS_NC || PC_CLASS_NC_H || PC_CLASS_NC_B)
+		joblv = 70;
+	else if(sd->status.job_level > 70)
+		joblv = 70;
+	else
+		joblv = sd->status.job_level;
+
 	diff = joblv - 50;
 	percent = refine_db[itemdb_wlv(item->nameid)].per[(int)item->refine]*10 + diff + 4 * diff;
 
@@ -389,6 +395,12 @@ L_RECALC:
 		sd->max_weight = sd->max_weight*battle_config.normal_weight_rate/100;
 
 	// ペコ騎乗時増えるよう移動
+	if(pc_isriding(sd))	// ペコペコ・グリフォン
+		sd->max_weight += battle_config.riding_weight;
+
+	if(pc_isdragon(sd))	// ドラゴン
+		sd->max_weight += 500 + 200 * pc_checkskill(sd,RK_DRAGONTRAINING);
+
 	if((skill = pc_checkskill(sd,MC_INCCARRY)) > 0)	// 所持量増加
 		sd->max_weight += skill*2000;
 
@@ -2638,6 +2650,10 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	/* バーサーク */
 	if(berserk_flag)
 		bonus_rate -= 30;
+
+	/* フリーキャスト */
+	if(sd->ud.skilltimer != -1 && pc_checkskill(sd,SA_FREECAST) > 0)
+		amotion += 5 * amotion * (10 - skilllv) / 100;
 
 	/* bonus_rateの計算 */
 	if(bonus_rate != 0)

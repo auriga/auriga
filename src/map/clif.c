@@ -1844,7 +1844,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,50)=0;
 		WBUFW(buf,52)=((level = status_get_lv(&pd->bl))>99)? 99:level;
 #elif PACKETVER < 14
-		len = packet_db[0x22a].len);
+		len = packet_db[0x22a].len;
 		memset(buf,0,len);
 
 		WBUFW(buf,0)=0x22a;
@@ -3864,7 +3864,7 @@ void clif_equiplist(struct map_session_data *sd)
 		WFIFOW(fd,n*20+12)=sd->status.inventory[i].equip;
 		WFIFOB(fd,n*20+14)=sd->status.inventory[i].attribute;
 		WFIFOB(fd,n*20+15)=sd->status.inventory[i].refine;
-		if(itemdb_isspecial(sd->status.inventory[n].card[0])) {
+		if(itemdb_isspecial(sd->status.inventory[i].card[0])) {
 			if(sd->inventory_data[i]->flag.pet_egg) {
 				WFIFOW(fd,n*20+16) = 0;
 				WFIFOW(fd,n*20+18) = 0;
@@ -3915,7 +3915,7 @@ void clif_equiplist(struct map_session_data *sd)
 		WFIFOW(fd,n*24+12)=sd->status.inventory[i].equip;
 		WFIFOB(fd,n*24+14)=sd->status.inventory[i].attribute;
 		WFIFOB(fd,n*24+15)=sd->status.inventory[i].refine;
-		if(itemdb_isspecial(sd->status.inventory[n].card[0])) {
+		if(itemdb_isspecial(sd->status.inventory[i].card[0])) {
 			if(sd->inventory_data[i]->flag.pet_egg) {
 				WFIFOW(fd,n*24+16) = 0;
 				WFIFOW(fd,n*24+18) = 0;
@@ -3967,7 +3967,7 @@ void clif_equiplist(struct map_session_data *sd)
 		WFIFOW(fd,n*26+12)=sd->status.inventory[i].equip;
 		WFIFOB(fd,n*26+14)=sd->status.inventory[i].attribute;
 		WFIFOB(fd,n*26+15)=sd->status.inventory[i].refine;
-		if(itemdb_isspecial(sd->status.inventory[n].card[0])) {
+		if(itemdb_isspecial(sd->status.inventory[i].card[0])) {
 			if(sd->inventory_data[i]->flag.pet_egg) {
 				WFIFOW(fd,n*26+16) = 0;
 				WFIFOW(fd,n*26+18) = 0;
@@ -4020,7 +4020,7 @@ void clif_equiplist(struct map_session_data *sd)
 		WFIFOW(fd,n*28+12)=sd->status.inventory[i].equip;
 		WFIFOB(fd,n*28+14)=sd->status.inventory[i].attribute;
 		WFIFOB(fd,n*28+15)=sd->status.inventory[i].refine;
-		if(itemdb_isspecial(sd->status.inventory[n].card[0])) {
+		if(itemdb_isspecial(sd->status.inventory[i].card[0])) {
 			if(sd->inventory_data[i]->flag.pet_egg) {
 				WFIFOW(fd,n*28+16) = 0;
 				WFIFOW(fd,n*28+18) = 0;
@@ -11639,10 +11639,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 #if PACKETVER < 28
 	WFIFOW(fd,0) = 0x2d7;
 	memcpy(WFIFOP(fd,4), tsd->status.name, 24);
-	if(tsd->status.class_ == PC_CLASS_GS || tsd->status.class_ == PC_CLASS_NJ)
-		WFIFOW(fd,28) = tsd->status.class_-4;
-	else
-		WFIFOW(fd,28) = tsd->status.class_;
+	WFIFOW(fd,28) = tsd->status.class_;
 	WFIFOW(fd,30) = tsd->status.hair;
 	WFIFOW(fd,32) = tsd->status.head_top;
 	WFIFOW(fd,34) = tsd->status.head_mid;
@@ -11665,7 +11662,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 		WFIFOW(fd,n*26+51) = tsd->status.inventory[i].equip;
 		WFIFOB(fd,n*26+53) = tsd->status.inventory[i].attribute;
 		WFIFOB(fd,n*26+54) = tsd->status.inventory[i].refine;
-		if(itemdb_isspecial(tsd->status.inventory[n].card[0])) {
+		if(itemdb_isspecial(tsd->status.inventory[i].card[0])) {
 			if(tsd->inventory_data[i]->flag.pet_egg) {
 				WFIFOW(fd,n*26+55) = 0;
 				WFIFOW(fd,n*26+57) = 0;
@@ -11705,10 +11702,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 #else
 	WFIFOW(fd,0) = 0x2d7;
 	memcpy(WFIFOP(fd,4), tsd->status.name, 24);
-	if(tsd->status.class_ == PC_CLASS_GS || tsd->status.class_ == PC_CLASS_NJ)
-		WFIFOW(fd,28) = tsd->status.class_-4;
-	else
-		WFIFOW(fd,28) = tsd->status.class_;
+	WFIFOW(fd,28) = tsd->status.class_;
 	WFIFOW(fd,30) = tsd->status.hair;
 	WFIFOW(fd,32) = tsd->status.head_bottom;
 	WFIFOW(fd,34) = tsd->status.head_mid;
@@ -11731,7 +11725,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 		WFIFOW(fd,n*28+51) = tsd->status.inventory[i].equip;
 		WFIFOB(fd,n*28+53) = tsd->status.inventory[i].attribute;
 		WFIFOB(fd,n*28+54) = tsd->status.inventory[i].refine;
-		if(itemdb_isspecial(tsd->status.inventory[n].card[0])) {
+		if(itemdb_isspecial(tsd->status.inventory[i].card[0])) {
 			if(tsd->inventory_data[i]->flag.pet_egg) {
 				WFIFOW(fd,n*28+55) = 0;
 				WFIFOW(fd,n*28+57) = 0;
@@ -16068,6 +16062,13 @@ static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
 			pc_unequipitem(tsd,i,0);
 		}
 	}
+
+	/* 1分間脱衣系の状態異常にかかる */
+	status_change_start(&tsd->bl,SC_STRIPWEAPON,1,0,0,0,60000,0);
+	status_change_start(&tsd->bl,SC_STRIPSHIELD,1,0,0,0,60000,0);
+	status_change_start(&tsd->bl,SC_STRIPARMOR,1,0,0,0,60000,0);
+	status_change_start(&tsd->bl,SC_STRIPHELM,1,0,0,0,60000,0);
+	status_change_start(&tsd->bl,SC__STRIPACCESSARY,1,0,0,0,60000,0);
 
 	return;
 }
