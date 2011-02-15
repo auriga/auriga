@@ -8066,8 +8066,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			ud->state.change_speed = 1;
 			break;
 		case SC_WHITEIMPRISON:	/* ホワイトインプリズン */
-			clif_damage(bl,bl,gettick(),0,0,2000,0,9,0);
-			battle_damage(bl,bl,2000,0,0,0);
+			{
+				int dmg = 400 * sc->data[type].val1;
+				clif_damage(bl,bl,gettick(),0,0,dmg,0,9,0);
+				battle_damage(bl,bl,dmg,0,0,0);
+			}
 			break;
 		case SC_SPELLBOOK:			/* スペルブック */
 			if(sd) {

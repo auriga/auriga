@@ -3979,25 +3979,34 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case WL_SOULEXPANSION:		// ソウルエクスパンション
 			if(t_sc && t_sc->data[SC_WHITEIMPRISON].timer != -1) {
 				status_change_end(target,SC_WHITEIMPRISON,-1);
-				MATK_FIX( 400 + 100 * skill_lv, 100 );
+				MATK_FIX( (800 + 200 * skill_lv) * status_get_lv(bl) / 100, 100 );
 			} else {
-				MATK_FIX( 200 + 50 * skill_lv, 100 );
+				MATK_FIX( (400 + 100 * skill_lv) * status_get_lv(bl) / 100, 100 );
 			}
 			break;
 		case WL_FROSTMISTY:	// フロストミスティ
-			MATK_FIX( 100, 100 );
+			MATK_FIX( 100 * status_get_lv(bl) / 100, 100 );
 			break;
 		case WL_JACKFROST:	// ジャックフロスト
-			MATK_FIX( 200 + 60 * skill_lv, 100 );
+			if(t_sc && t_sc->data[SC_FROSTMISTY].timer != -1) {
+				MATK_FIX( (200 + 60 * skill_lv) * status_get_lv(bl) / 100, 100 );
+			} else {
+				MATK_FIX( (67 + 13 * skill_lv) * status_get_lv(bl) / 100, 100 );
+			}
 			break;
 		case WL_DRAINLIFE:	// ドレインライフ
-			MATK_FIX( 500 + 100 * skill_lv, 100 );
+			MATK_FIX( (status_get_int(bl) + 200 * skill_lv) * status_get_lv(bl) / 100, 100 );
 			break;
 		case WL_CRIMSONROCK:	// クリムゾンロック
-			MATK_FIX( 1300 + 300 * skill_lv, 100 );
+			MATK_FIX( (1300 + 300 * skill_lv) * status_get_lv(bl) / 100, 100 );
 			break;
 		case WL_HELLINFERNO:	// ヘルインフェルノ
-			MATK_FIX( 240 + 60 * skill_lv, 100 );
+			if(flag) {	// 闇属性
+				ele = ELE_DARK;
+				MATK_FIX( 240 * skill_lv * status_get_lv(bl) / 100, 100 );
+			} else {	// 火属性
+				MATK_FIX( 60 * skill_lv * status_get_lv(bl) / 100, 100 );
+			}
 			break;
 		case WL_COMET:	// コメット
 			if(flag == 3) {			// 遠距離
@@ -4012,10 +4021,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case WL_CHAINLIGHTNING:		// チェーンライトニング
 		case WL_CHAINLIGHTNING_ATK:	// チェーンライトニング(連鎖)
-			MATK_FIX( 400 + 100 * skill_lv, 100 );
+			MATK_FIX( (200 + 300 * skill_lv) * status_get_lv(bl) / 100, 100 );
 			break;
 		case WL_EARTHSTRAIN:	// アースストレイン
-			MATK_FIX( 200 + 10 * skill_lv, 100 );
+			MATK_FIX( (2000 + 100 * skill_lv) * status_get_lv(bl) / 100, 100 );
 			break;
 		case WL_TETRAVORTEX_FIRE:		/* テトラボルテックス(火) */
 		case WL_TETRAVORTEX_WATER:		/* テトラボルテックス(水) */
@@ -4027,7 +4036,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case WL_SUMMON_ATK_WIND:		/* サモンボールライトニング(攻撃) */
 		case WL_SUMMON_ATK_WATER:		/* サモンウォーターボール(攻撃) */
 		case WL_SUMMON_ATK_GROUND:		/* サモンストーン(攻撃) */
-			MATK_FIX( 50 + 50 * skill_lv, 100 );
+			MATK_FIX( (50 + 50 * skill_lv) * status_get_lv(bl) / 100 * (100 + ((sd)? sd->status.job_level: 0)) / 100, 100 );
 			break;
 		case LG_SHIELDSPELL:	// シールドスペル
 			if(sd) {
@@ -4219,11 +4228,23 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			else
 				mgd.damage = (mgd.div_ == 255)? 3: mgd.div_;
 		}
-		else if(mgd.div_ > 1 &&
-				skill_num != WZ_VERMILION && skill_num != AB_JUDEX && skill_num != AB_ADORAMUS &&
-				skill_num != WL_CRIMSONROCK && skill_num != WL_COMET && skill_num != LG_RAYOFGENESIS &&
-				skill_num != WM_METALICSOUND && skill_num != SO_EARTHGRAVE && skill_num != SO_DIAMONDDUST) {
-			mgd.damage *= mgd.div_;
+		else if(mgd.div_ > 1) {
+			switch(skill_num) {
+				case WZ_VERMILION:
+				case AB_JUDEX:
+				case AB_ADORAMUS:
+				case WL_SOULEXPANSION:
+				case WL_CRIMSONROCK:
+				case WL_COMET:
+				case WL_EARTHSTRAIN:
+				case LG_RAYOFGENESIS:
+				case WM_METALICSOUND:
+				case SO_EARTHGRAVE:
+				case SO_DIAMONDDUST:
+					break;
+				default:
+					mgd.damage *= mgd.div_;
+			}
 		}
 	}
 
