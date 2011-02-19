@@ -295,6 +295,7 @@ void skill_arrow_create(struct map_session_data *sd, int nameid);
 void skill_repair_weapon(struct map_session_data *sd, int idx);
 void skill_poisoning_weapon(struct map_session_data *sd, int nameid);
 void skill_reading_sb(struct map_session_data *sd, int nameid);
+void skill_magicdecoy(struct map_session_data *sd, int nameid);
 void skill_autoshadowspell(struct map_session_data *sd, int skillid);
 void skill_changematerial(struct map_session_data *sd, int num, unsigned short *item_list);
 

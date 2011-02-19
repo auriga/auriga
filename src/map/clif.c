@@ -5003,10 +5003,11 @@ void clif_poison_list(struct map_session_data *sd, short lv)
 			c++;
 		}
 	}
-	WFIFOW(fd,2) = c * 2 + 4;
-	WFIFOSET(fd, WFIFOW(fd,2));
 
 	if(c > 0) {
+		WFIFOW(fd,2) = c * 2 + 4;
+		WFIFOSET(fd, WFIFOW(fd,2));
+
 		sd->skill_menu.id = GC_POISONINGWEAPON;
 		sd->skill_menu.lv = lv;
 	} else {
@@ -5046,14 +5047,58 @@ void clif_reading_sb_list(struct map_session_data *sd)
 			c++;
 		}
 	}
-	WFIFOW(fd,2) = c * 2 + 4;
-	WFIFOSET(fd, WFIFOW(fd,2));
 
 	if(c > 0) {
+		WFIFOW(fd,2) = c * 2 + 4;
+		WFIFOSET(fd, WFIFOW(fd,2));
+
 		sd->skill_menu.id = WL_READING_SB;
 		sd->skill_menu.lv = 1;
 	} else {
 		clif_skill_fail(sd,WL_READING_SB,0x33,0,0);
+	}
+
+	return;
+}
+
+/*==========================================
+ * FAW マジックデコイ選択
+ *------------------------------------------*/
+void clif_magicdecoy_list(struct map_session_data *sd, short lv, short x, short y)
+{
+	int i, view, idx, c = 0;
+	int fd;
+	static const int ele_list[] = {
+		990, 991, 992, 993
+	};
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x1ad;
+
+	for(i = 0; i < sizeof(ele_list)/sizeof(ele_list[0]); i++) {
+		if(ele_list[i] > 0 &&
+			(idx = pc_search_inventory(sd, ele_list[i])) >= 0 &&
+			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
+		{
+			if((view = itemdb_viewid(ele_list[i]) > 0))
+				WFIFOW(fd,c*2+4) = view;
+			else
+				WFIFOW(fd,c*2+4) = ele_list[i];
+			c++;
+		}
+	}
+
+	if(c > 0) {
+		WFIFOW(fd,2) = c * 2 + 4;
+		WFIFOSET(fd, WFIFOW(fd,2));
+
+		sd->skill_menu.id = NC_MAGICDECOY;
+		sd->skill_menu.lv = lv;
+		sd->skill_menu.val = (x<<16)|y;
+	} else {
+		clif_skill_fail(sd,NC_MAGICDECOY,3,0,0);
 	}
 
 	return;
@@ -7253,9 +7298,9 @@ void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int
 			c++;
 		}
 	}
-	WFIFOW(fd, 2)=c*2+6;
 
 	if(c > 0) {
+		WFIFOW(fd, 2)=c*2+6;
 		WFIFOSET(fd,WFIFOW(fd,2));
 
 		sd->skill_menu.id = skillid;
@@ -11859,10 +11904,10 @@ void clif_autoshadowspell(struct map_session_data *sd, short lv)
 		c++;
 	}
 
-	WFIFOW(fd,2) = c * 2 + 8;
-	WFIFOSET(fd, WFIFOW(fd,2));
-
 	if(c > 0) {
+		WFIFOW(fd,2) = c * 2 + 8;
+		WFIFOSET(fd, WFIFOW(fd,2));
+
 		sd->skill_menu.id = SC_AUTOSHADOWSPELL;
 		sd->skill_menu.lv = lv;
 	} else {
@@ -14124,6 +14169,10 @@ static void clif_parse_SelectItem(int fd,struct map_session_data *sd, int cmd)
 
 		case WL_READING_SB:			/* リーディングスペルブック */
 			skill_reading_sb(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
+			break;
+
+		case NC_MAGICDECOY:			/* FAW マジックデコイ */
+			skill_magicdecoy(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
 			break;
 	}
 

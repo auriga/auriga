@@ -2352,6 +2352,7 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 					}
 				}
 				break;
+			case NPC_EARTHQUAKE:			/* アースクエイク */
 			case WL_HELLINFERNO:			/* ヘルインフェルノ */
 			case WL_TETRAVORTEX_FIRE:		/* テトラボルテックス(火) */
 			case WL_TETRAVORTEX_WATER:		/* テトラボルテックス(水) */
@@ -3477,14 +3478,15 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NPC_EARTHQUAKE:		/* アースクエイク */
 		if(flag&1) {
 			if(bl->id != skill_area_temp[1]) {
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
+				skill_addtimerskill(src,tick+200,bl->id,0,0,skillid,skilllv,0,(0x0f<<20)|0x0500|skill_area_temp[0]);
+				skill_addtimerskill(src,tick+400,bl->id,0,0,skillid,skilllv,0,(0x0f<<20)|0x0500|skill_area_temp[0]);
+				skill_addtimerskill(src,tick+600,bl->id,0,0,skillid,skilllv,0,(0x0f<<20)|0x0500|skill_area_temp[0]);
 			}
 		} else {
 			int ar = 5+(skilllv-1)%5*2;
 			skill_area_temp[0] = 0;
 			skill_area_temp[1] = bl->id;
+			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_PC|BL_MOB),
 				src,skillid,skilllv,tick,flag|BCT_ENEMY,
@@ -8709,36 +8711,39 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case GN_SLINGITEM:		/* スリングアイテム */
 		if(sd) {
-			int nameid = sd->inventory_data[sd->equip_index[10]]->nameid;
-			int cost = skill_get_arrow_cost(skillid,skilllv);
-			if(!nameid || cost > 0 && !battle_delarrow(sd, cost, skillid))
-				break;
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			int idx = sd->equip_index[10];
+			if(idx >= 0 && sd->inventory_data[idx]) {
+				int nameid = sd->inventory_data[idx]->nameid;
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(!nameid || cost > 0 && !battle_delarrow(sd, cost, skillid))
+					break;
+				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 
-			// 投擲物によって効果決定
-			switch(nameid) {
-			case 13260:		// リンゴ爆弾
-			case 13261:		// ココナッツ爆弾
-			case 13262:		// メロン爆弾
-			case 13264:		// バナナ爆弾
-			case 13265:		// 黒い塊
-			case 13266:		// 硬くて黒い塊
-			case 13267:		// とても硬い塊
-				battle_skill_attack(BF_WEAPON,src,src,bl,GN_SLINGITEM_RANGEMELEEATK,nameid - 13260,tick,flag|(0x0f<<20));
-				break;
-			case 13263:		// パイナップル爆弾
-				map_foreachinarea(skill_area_sub,
-					bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),
-					src,GN_SLINGITEM_RANGEMELEEATK,3,tick,flag|BCT_ENEMY|(0x0f<<20),
-					skill_castend_damage_id);
-				break;
-			default:
-				if(dstsd) {
-					struct item_data *item = itemdb_search(nameid);
-					if(item->use_script)
-						run_script(item->use_script,0,dstsd->bl.id,0);
+				// 投擲物によって効果決定
+				switch(nameid) {
+				case 13260:		// リンゴ爆弾
+				case 13261:		// ココナッツ爆弾
+				case 13262:		// メロン爆弾
+				case 13264:		// バナナ爆弾
+				case 13265:		// 黒い塊
+				case 13266:		// 硬くて黒い塊
+				case 13267:		// とても硬い塊
+					battle_skill_attack(BF_WEAPON,src,src,bl,GN_SLINGITEM_RANGEMELEEATK,nameid - 13260,tick,flag|(0x0f<<20));
+					break;
+				case 13263:		// パイナップル爆弾
+					map_foreachinarea(skill_area_sub,
+						bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),
+						src,GN_SLINGITEM_RANGEMELEEATK,3,tick,flag|BCT_ENEMY|(0x0f<<20),
+						skill_castend_damage_id);
+					break;
+				default:
+					if(dstsd) {
+						struct item_data *item = itemdb_search(nameid);
+						if(item->use_script)
+							run_script(item->use_script,0,dstsd->bl.id,0);
+					}
+					break;
 				}
-				break;
 			}
 		}
 		break;
@@ -9409,7 +9414,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				skill_castend_damage_id);
 		}
 		break;
-	case NC_SILVERSNIPER:	/* FAWシルバースナイパー */
+	case NC_SILVERSNIPER:	/* FAW シルバースナイパー */
 		if(sd) {
 			int id;
 			struct mob_data *tmpmd = NULL;
@@ -9417,13 +9422,8 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			id = mob_once_spawn(sd, sd->bl.m, x, y, sd->status.name, 2042, 1, "");
 
 			if((tmpmd = map_id2md(id)) != NULL) {
-				tmpmd->master_id = sd->bl.id;
-				tmpmd->guild_id  = status_get_guild_id(src);
-				tmpmd->hp        = 1500 + skilllv * 200 + sd->status.base_level * 10;
-
-				// 非移動でアクティブで反撃する[0x0:非移動 0x1:移動 0x4:ACT 0x8:非ACT 0x40:反撃無 0x80:反撃有]
-				tmpmd->mode = 0x0 + 0x4 + 0x80;
-
+				tmpmd->master_id    = sd->bl.id;
+				tmpmd->guild_id     = status_get_guild_id(src);
 				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
 				tmpmd->state.nodrop = battle_config.cannibalize_no_drop;
 				tmpmd->state.noexp  = battle_config.cannibalize_no_exp;
@@ -9431,6 +9431,12 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				tmpmd->state.special_mob_ai = 1;
 			}
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
+		}
+		break;
+	case NC_MAGICDECOY:		/* FAW マジックデコイ */
+		if(sd) {
+			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
+			clif_magicdecoy_list(sd,skilllv,x,y);
 		}
 		break;
 	case LG_OVERBRAND:		/* オーバーブランド */
@@ -12284,13 +12290,13 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		break;
 	case CH_TIGERFIST:		/* 伏虎拳 */
-		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_CHAINCRUSH))
+		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_TRIPLEATTACK &&
+		   sd->sc.data[SC_COMBO].val1 != MO_CHAINCOMBO && sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH))
 			return 0;
 		break;
 	case CH_CHAINCRUSH:		/* 連柱崩撃 */
-		if(sd->sc.data[SC_COMBO].timer == -1)
-			return 0;
-		if(sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_TIGERFIST)
+		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_TRIPLEATTACK && sd->sc.data[SC_COMBO].val1 != MO_CHAINCOMBO &&
+		   sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_TIGERFIST))
 			return 0;
 		break;
 	case MO_EXTREMITYFIST:		/* 阿修羅覇鳳拳 */
@@ -12673,7 +12679,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			}
 		}
 		break;
-	case NC_SILVERSNIPER:		/* FAWシルバースナイパー */
+	case NC_SILVERSNIPER:		/* FAW シルバースナイパー */
 		if(type&1){
 			int c;
 			int maxcount = skill_get_maxcount(cnd->id,cnd->lv);
@@ -16362,6 +16368,51 @@ void skill_reading_sb(struct map_session_data *sd, int nameid)
 					}
 				}
 				break;
+			}
+		}
+	}
+
+	return;
+}
+
+/*==========================================
+ * FAW マジックデコイ
+ *------------------------------------------
+ */
+void skill_magicdecoy(struct map_session_data *sd, int nameid)
+{
+	static const int element[] = {
+		990, 991, 992, 993,
+	};
+	static const int mob_id[] = {
+		2043, 2044, 2046, 2045,
+	};
+	struct mob_data *md = NULL;
+	int id, x, y, i, j;
+
+	nullpo_retv(sd);
+
+	if(nameid > 0) {
+		for(i = 0; i < sizeof(element)/sizeof(element[0]); i++) {
+			if(element[i] == nameid) {
+				if ((j = pc_search_inventory(sd, nameid)) >= 0) {
+					pc_delitem(sd,j,1,0,1);
+					x = sd->skill_menu.val>>16;		// X座標は上位バイト
+					y = sd->skill_menu.val&0xffff;	// Y座標は下位バイト
+
+					id = mob_once_spawn(sd, sd->bl.m, x, y, sd->status.name, mob_id[i], 1, "");
+
+					if((md = map_id2md(id)) != NULL) {
+						md->master_id = sd->bl.id;
+						md->guild_id  = status_get_guild_id(&sd->bl);
+						md->deletetimer  = add_timer(gettick()+skill_get_time(NC_MAGICDECOY,sd->skill_menu.lv),mob_timer_delete,id,NULL);
+						md->state.nodrop = battle_config.cannibalize_no_drop;
+						md->state.noexp  = battle_config.cannibalize_no_exp;
+						md->state.nomvp  = battle_config.cannibalize_no_mvp;
+						md->state.special_mob_ai = 1;
+					}
+					break;
+				}
 			}
 		}
 	}

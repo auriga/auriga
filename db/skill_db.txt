@@ -653,7 +653,7 @@
 //650,0,0,0,0,0,10,0,no,0,0,0,none,0	//ALL_TIMEIN#タイムイン#
 //651,0,0,0,0,0,10,0,no,0,0,0,none,0	//DA_ZENYRANK#ゼニーランク#
 //652,0,0,0,0,0,10,0,no,0,0,0,none,0	//DA_ACCESSORYMIX#アクセサリーミックス#
-653,0,8,4,0,0,10,3,no,0,2,0,weapon,0	//NPC_EARTHQUAKE#アースクエイク#
+653,0,6,4,0,0,10,1,no,0,2,0,magic,0	//NPC_EARTHQUAKE#アースクエイク#
 654,-6,6,1,3,0,10,1,no,0,2,0,weapon,0	//NPC_FIREBREATH#ファイアブレス#
 655,-6,6,1,1,0,10,1,no,0,2,0,weapon,0	//NPC_ICEBREATH#アイスブレス#
 656,-6,6,1,4,0,10,1,no,0,2,0,weapon,0	//NPC_THUNDERBREATH#サンダーブレス#
