@@ -3944,6 +3944,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				const int dmg[10] = { 300, 500, 600, 800, 1000, 1200, 1300, 1500, 1600, 1800 };
 				matk1 = status_get_atk(bl);
 				matk2 = status_get_atk2(bl);
+				if(mdef1 < 1000000)
+					mdef1 = mdef2 = 0;	// MDEF無視
 				if(skill_lv <= 10) {
 					MATK_FIX( dmg[skill_lv-1], 100 );
 				} else {

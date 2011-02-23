@@ -370,6 +370,7 @@ static int skill_am_twilight(struct map_session_data* sd, int skillid);
 static int skill_check_condition_use_sub(struct block_list *bl,va_list ap);
 static int skill_chainlightning(struct block_list *bl,va_list ap);
 static int skill_detonator(struct block_list *bl,va_list ap);
+static int skill_maelstrom(struct block_list *bl,va_list ap);
 static int skill_trample(struct block_list *bl,va_list ap);
 static int skill_dominion_impulse(struct block_list *bl,va_list ap);
 static int skill_fire_expansion(struct block_list *bl,va_list ap);
@@ -675,21 +676,11 @@ int skill_get_fixed_range(struct block_list *bl,int id,int lv)
 		if(sd) {
 			int skill;
 			switch(id) {
-				//case HT_SKIDTRAP:			/* スキッドトラップ */
 				case HT_LANDMINE:			/* ランドマイン */
-				//case HT_ANKLESNARE:		/* アンクルスネア */
-				//case HT_SHOCKWAVE:		/* ショックウェーブトラップ */
-				//case HT_SANDMAN:			/* サンドマン */
-				//case HT_FLASHER:			/* フラッシャー */
 				case HT_FREEZINGTRAP:		/* フリージングトラップ */
 				case HT_BLASTMINE:			/* ブラストマイン */
 				case HT_CLAYMORETRAP:		/* クレイモアトラップ */
-				case RA_ELECTRICSHOCKER:	/* エレクトリックショッカー */
 				case RA_CLUSTERBOMB:		/* クラスターボム */
-				case RA_MAGENTATRAP:		/* マゼンタトラップ */
-				case RA_COBALTTRAP:			/* コバルトトラップ */
-				case RA_MAIZETRAP:			/* メイズトラップ */
-				case RA_VERDURETRAP:		/* ヴェルデュールトラップ */
 				case RA_FIRINGTRAP:			/* ファイアリングトラップ */
 				case RA_ICEBOUNDTRAP:		/* アイスバウンドトラップ */
 					if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0)	// トラップ研究 
@@ -2004,11 +1995,22 @@ static int skill_area_trap_sub( struct block_list *bl,va_list ap )
 		case UNT_FLASHER:	/* フラッシャー */
 		case UNT_FREEZINGTRAP:	/* フリージングトラップ */
 		case UNT_TALKIEBOX:	/* トーキーボックス */
-			if(skill_id == AC_SHOWER || skill_id == MA_SHOWER || skill_id == WZ_SIGHTRASHER || skill_id == SM_MAGNUM || skill_id == MS_MAGNUM)
+			if(skill_id == AC_SHOWER || skill_id == MA_SHOWER || skill_id == WZ_SIGHTRASHER || skill_id == SM_MAGNUM || skill_id == MS_MAGNUM || skill_id == RA_SENSITIVEKEEN)
 				break;
 			return 0;
 		case UNT_ANKLESNARE:	/* アンクルスネア */
-			if(skill_id == AC_SHOWER || skill_id == MA_SHOWER || skill_id == WZ_SIGHTRASHER || skill_id == SM_MAGNUM || skill_id == MS_MAGNUM || unit->group->val2 > 0)
+			if(skill_id == AC_SHOWER || skill_id == MA_SHOWER || skill_id == WZ_SIGHTRASHER || skill_id == SM_MAGNUM || skill_id == MS_MAGNUM || skill_id == RA_SENSITIVEKEEN || unit->group->val2 > 0)
+				break;
+			return 0;
+		case UNT_MAGENTATRAP:	/* マゼンタトラップ */
+		case UNT_COBALTTRAP:	/* コバルトトラップ */
+		case UNT_MAIZETRAP:		/* メイズトラップ */
+		case UNT_VERDURETRAP:	/* ヴェルデュールトラップ */
+		case UNT_FIRINGTRAP:	/* ファイアリングトラップ */
+		case UNT_ICEBOUNDTRAP:	/* アイスバウンドトラップ */
+		case UNT_ELECTRICSHOCKER:	/* エレクトリックショッカー */
+		case UNT_CLUSTERBOMB:	/* クラスターボム */
+			if(skill_id == RA_SENSITIVEKEEN)
 				break;
 			return 0;
 		default:
@@ -4246,18 +4248,35 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					}
 				}
 			}
+		} else if(flag&2) {
+			if(bl->type == BL_SKILL) {
+				struct skill_unit *su = (struct skill_unit *)bl;
+				if(!su || !su->group || !skill_unit_istrap(su->group->unit_id))
+					break;
+				if(su->group->unit_id == UNT_ANKLESNARE && su->group->val2)		// 補足中のアンクルスネアは除外
+					break;
+				if(itemdb_exists(su->group->val3)) {
+					struct item item_tmp;
+					memset(&item_tmp,0,sizeof(item_tmp));
+					item_tmp.nameid = su->group->val3;
+					item_tmp.identify = 1;
+					map_addflooritem(&item_tmp,1,bl->m,bl->x,bl->y,0,0,0,0);
+				}
+				skill_delunit(su);
+			}
 		} else {
 			int ar = skilllv + 2;
-
 			/* スキルエフェクト表示 */
-			//clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			skill_area_temp[1] = src->id;
-			skill_area_temp[2] = src->x;
-			skill_area_temp[3] = src->y;
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			map_foreachinarea(skill_area_trap_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_SKILL,
+				src,skillid,skilllv,tick, flag|BCT_ALL|2,
 				skill_castend_damage_id);
 		}
 		break;
@@ -6926,7 +6945,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				struct block_list *target = map_id2bl(su->group->val2);
 				if(target && target->type == BL_PC)
 					status_change_end(target,SC_ANKLE,-1);
-			} else if(sd) {
+			} else if(sd && itemdb_exists(su->group->val3)) {
 				// 罠を取り返す
 				struct item item_tmp;
 				int eflag;
@@ -6936,8 +6955,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						if(skill_db[su->group->skill_id].itemid[i] <= 0)
 							continue;
 						memset(&item_tmp,0,sizeof(item_tmp));
-						item_tmp.nameid = skill_db[su->group->skill_id].itemid[i];
-						item_tmp.amount = skill_db[su->group->skill_id].amount[i];
+						// 設置用トラップの代わりに改良型設置用トラップを消費していた場合
+						if(skill_db[su->group->skill_id].itemid[i] == 1065 && su->group->val3 == 7940) {
+							item_tmp.nameid = 7940;
+							item_tmp.amount = 1;
+						} else {
+							item_tmp.nameid = skill_db[su->group->skill_id].itemid[i];
+							item_tmp.amount = skill_db[su->group->skill_id].amount[i];
+						}
 						item_tmp.identify = 1;
 						if((eflag = pc_additem(sd,&item_tmp,item_tmp.amount))) {
 							clif_additem(sd,0,0,eflag);
@@ -6946,7 +6971,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					}
 				} else {
 					memset(&item_tmp,0,sizeof(item_tmp));
-					item_tmp.nameid   = 1065;
+					item_tmp.nameid   = su->group->val3;
 					item_tmp.identify = 1;
 					if((eflag = pc_additem(sd,&item_tmp,1))) {
 						clif_additem(sd,0,0,eflag);
@@ -9035,34 +9060,16 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case PR_MAGNUS:				/* マグヌスエクソシズム */
 	case CR_GRANDCROSS:			/* グランドクロス */
 	case NPC_GRANDDARKNESS:			/* グランドダークネス */
-	case HT_SKIDTRAP:			/* スキッドトラップ */
-	case HT_LANDMINE:			/* ランドマイン */
-	case HT_ANKLESNARE:			/* アンクルスネア */
-	case HT_SHOCKWAVE:			/* ショックウェーブトラップ */
-	case HT_SANDMAN:			/* サンドマン */
-	case HT_FLASHER:			/* フラッシャー */
-	case HT_FREEZINGTRAP:		/* フリージングトラップ */
-	case HT_BLASTMINE:			/* ブラストマイン */
-	case HT_CLAYMORETRAP:		/* クレイモアートラップ */
 	case AS_VENOMDUST:			/* ベノムダスト */
 	case AM_DEMONSTRATION:		/* デモンストレーション */
 	case PF_SPIDERWEB:			/* スパイダーウェッブ */
 	case PF_FOGWALL:			/* ウォールオブフォグ */
-	case HT_TALKIEBOX:			/* トーキーボックス */
 	case NJ_TATAMIGAESHI:		/* 畳返し */
 	case NJ_BAKUENRYU:			/* 龍炎陣 */
 	case NJ_HYOUSYOURAKU:		/* 氷柱落し */
 	case NJ_RAIGEKISAI:			/* 雷撃砕 */
 	case NPC_EVILLAND:			/* イビルランド */
 	case GC_POISONSMOKE:		/* ポイズンスモーク */
-	case RA_ELECTRICSHOCKER:	/* エレクトリックショッカー */
-	case RA_CLUSTERBOMB:		/* クラスターボム */
-	case RA_MAGENTATRAP:		/* マゼンタトラップ */
-	case RA_COBALTTRAP:			/* コバルトトラップ */
-	case RA_MAIZETRAP:			/* メイズトラップ */
-	case RA_VERDURETRAP:		/* ヴェルデュールトラップ */
-	case RA_FIRINGTRAP:			/* ファイアリングトラップ */
-	case RA_ICEBOUNDTRAP:		/* アイスバウンドトラップ */
 	case SC_MANHOLE:			/* マンホール */
 	case SC_DIMENSIONDOOR:		/* ディメンションドア */
 	case SC_CHAOSPANIC:			/* カオスパニック */
@@ -9085,6 +9092,47 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case MA_FREEZINGTRAP:
 		skill_unitsetting(src,skillid,skilllv,x,y,0);
 		break;
+	case HT_SKIDTRAP:			/* スキッドトラップ */
+	case HT_LANDMINE:			/* ランドマイン */
+	case HT_ANKLESNARE:			/* アンクルスネア */
+	case HT_SHOCKWAVE:			/* ショックウェーブトラップ */
+	case HT_SANDMAN:			/* サンドマン */
+	case HT_FLASHER:			/* フラッシャー */
+	case HT_FREEZINGTRAP:		/* フリージングトラップ */
+	case HT_BLASTMINE:			/* ブラストマイン */
+	case HT_CLAYMORETRAP:		/* クレイモアトラップ */
+	case HT_TALKIEBOX:			/* トーキーボックス */
+		if(sd) {
+			int i, nameid, amount, idx, trapid = 0;
+			for(i = 0; i < 10; i++) {
+				nameid = skill_db[skill_get_skilldb_id(skillid)].itemid[i];
+				amount = skill_db[skill_get_skilldb_id(skillid)].amount[i];
+				if(nameid <= 0 || amount <= 0)
+					continue;
+				idx = pc_search_inventory(sd,nameid);
+
+				// トラップ研究を習得中で設置用トラップが足りなかった場合
+				if((idx < 0 || sd->status.inventory[idx].amount < amount) &&
+					pc_checkskill(sd,RA_RESEARCHTRAP) && nameid == 1065)
+				{
+					// 改良型設置用トラップを検索
+					nameid = 7940;
+					amount = 1;
+					idx = pc_search_inventory(sd,nameid);
+				}
+
+				if(idx > 0 && sd->status.inventory[idx].amount >= amount) {
+					pc_delitem(sd,idx,amount,0,1);
+					// 消費したのがトラップ系アイテムの場合
+					if(nameid == 1065 || nameid == 7940)
+						trapid = nameid;
+				}
+			}
+			skill_unitsetting(src,skillid,skilllv,x,y,trapid);
+		} else {
+			skill_unitsetting(src,skillid,skilllv,x,y,0);
+		}
+		break;
 	case HW_GRAVITATION:		/* グラビテーションフィールド */
 		{
 			struct skill_unit_group *sg = skill_unitsetting(src,skillid,skilllv,x,y,0);
@@ -9103,11 +9151,18 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case GS_GROUNDDRIFT:			/* グラウンドドリフト*/
 		if(sd) {
-			int cost = skill_get_arrow_cost(skillid,skilllv);
-			if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
-				break;
+			int idx = sd->equip_index[10];
+			if(idx >= 0 && sd->inventory_data[idx]) {
+				int nameid = sd->inventory_data[idx]->nameid;
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(!nameid || cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
+					break;
+				skill_unitsetting(src,skillid,skilllv,x,y,nameid);
+			}
+		} else {
+			skill_unitsetting(src,skillid,skilllv,x,y,0);
 		}
-		skill_unitsetting(src,skillid,skilllv,x,y,0);
+
 		break;
 
 	case SA_VOLCANO:		/* ボルケーノ */
@@ -9390,6 +9445,19 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 		map_foreachinarea(skill_detonator,src->m,x-3,y-3,x+3,y+3,BL_SKILL,src);
 		break;
+	case RA_ELECTRICSHOCKER:	/* エレクトリックショッカー */
+	case RA_CLUSTERBOMB:		/* クラスターボム */
+	case RA_MAGENTATRAP:		/* マゼンタトラップ */
+	case RA_COBALTTRAP:			/* コバルトトラップ */
+	case RA_MAIZETRAP:			/* メイズトラップ */
+	case RA_VERDURETRAP:		/* ヴェルデュールトラップ */
+	case RA_FIRINGTRAP:			/* ファイアリングトラップ */
+	case RA_ICEBOUNDTRAP:		/* アイスバウンドトラップ */
+		if(sd)
+			skill_unitsetting(src,skillid,skilllv,x,y,7940);
+		else
+			skill_unitsetting(src,skillid,skilllv,x,y,0);
+		break;
 	case NC_COLDSLOWER:	/* コールドスローワー */
 		{
 			int ar = 1 + skilllv;
@@ -9647,7 +9715,7 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,int skilllv,int x,int y,int flag)
 {
 	struct skill_unit_group *group;
-	int i,limit,val1=0,val2=0,val3=0,on_flag=0;
+	int i,limit,val1=0,val2=0,val3=0,on_flag=0,mael_flag=1;
 	int target,interval,range,unit_flag,unit_id;
 	struct skill_unit_layout *layout;
 	struct map_session_data *sd = NULL;
@@ -9663,7 +9731,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	target    = skill_get_unit_target(skillid);
 	unit_flag = skill_get_unit_flag(skillid,skilllv);
 	layout    = skill_get_unit_layout(skillid,skilllv,src,x,y);
-	unit_id   = skill_get_unit_id(skillid,flag&1);
+	unit_id   = skill_get_unit_id(skillid,0);
 
 	if(unit_flag&UF_DEFNOTENEMY && battle_config.defnotenemy)
 		target = BCT_NOENEMY;
@@ -9673,19 +9741,23 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		val2 = skilllv+1;
 		break;
 	case WZ_METEOR:
-		if(skilllv>10)			/* メテオ(広範囲) */
-		range = 10;
+		/* メテオストーム(オーバーレベル) */
+		if(src->type == BL_MOB && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over)
+			range = 10;
 		break;
 	case WZ_VERMILION:
-		if(skilllv>10)			/* ロードオブバーミリオン(広範囲) */
-		range = 20;
+		/* ロードオブヴァーミリオン(オーバーレベル) */
+		if(src->type == BL_MOB && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over)
+			range = 20;
 		break;
 	case MG_FIREWALL:			/* ファイヤーウォール */
 		val2 = 4+skilllv;
 		break;
 	case AL_WARP:				/* ワープポータル */
 		val1 = skilllv+6;
-		if(flag==0)
+		if(flag)
+			unit_id = skill_get_unit_id(skillid,1);
+		else
 			limit=2000;
 		break;
 	case PR_SANCTUARY:			/* サンクチュアリ */
@@ -9694,13 +9766,16 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		interval = interval + 500;
 		break;
 	case WZ_FIREPILLAR:			/* ファイアーピラー */
-		if (flag!=0)
+		if(flag) {
+			unit_id = skill_get_unit_id(skillid,1);
 			limit = 150;
+		}
 		break;
 	case HT_SKIDTRAP:			/* スキッドトラップ */
 	case MA_SKIDTRAP:
 		val1 = src->x;
 		val2 = src->y;
+		val3 = flag;		// 罠アイテムID
 		if(map[src->m].flag.gvg)
 			limit <<= 2;
 		break;
@@ -9709,13 +9784,14 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	case HT_SHOCKWAVE:		/* ショックウェーブトラップ */
 	case HT_SANDMAN:		/* サンドマン */
 	case HT_FLASHER:		/* フラッシャー */
-	case HT_FREEZINGTRAP:		/* フリージングトラップ */
+	case HT_FREEZINGTRAP:	/* フリージングトラップ */
 	case HT_BLASTMINE:		/* ブラストマイン */
-	case HT_CLAYMORETRAP:		/* クレイモアトラップ */
+	case HT_CLAYMORETRAP:	/* クレイモアトラップ */
 	case HT_TALKIEBOX:		/* トーキーボックス */
 	case MA_LANDMINE:
 	case MA_SANDMAN:
 	case MA_FREEZINGTRAP:
+		val3 = flag;		// 罠アイテムID
 		if(map[src->m].flag.gvg)
 			limit <<= 2;
 		break;
@@ -9790,21 +9866,11 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				UNT_GROUNDDRIFT_DARK,
 				UNT_GROUNDDRIFT_WATER
 			};
-			if(sd) {
-				short idx = sd->equip_index[10];
-				if(idx >= 0) {
-					int n;
-					for(n = 0; n < 5; n++) {
-						// スフィアのタイプでスキルユニットを決める
-						if(sd->inventory_data[idx]->arrow_type & (512 << n)) {
-							unit_id = drift_id[n];
-							break;
-						}
-					}
-				}
-			} else {
+
+			if(flag >= 13203 && flag <= 13207)	// スフィアのアイテムID
+				unit_id = drift_id[flag - 13203];
+			else
 				unit_id = drift_id[atn_rand()%5];
-			}
 		}
 		break;
 	case NPC_EVILLAND:		/* イビルランド */
@@ -9818,6 +9884,16 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				status_change_end(&sd->bl,SC_POISONINGWEAPON,-1);
 			}
 		}
+		break;
+	case RA_ELECTRICSHOCKER:	/* エレクトリックショッカー */
+	case RA_CLUSTERBOMB:		/* クラスターボム */
+	case RA_MAGENTATRAP:		/* マゼンタトラップ */
+	case RA_COBALTTRAP:			/* コバルトトラップ */
+	case RA_MAIZETRAP:			/* メイズトラップ */
+	case RA_VERDURETRAP:		/* ヴェルデュールトラップ */
+	case RA_FIRINGTRAP:			/* ファイアリングトラップ */
+	case RA_ICEBOUNDTRAP:		/* アイスバウンドトラップ */
+		val3 = flag;		// 罠アイテムID
 		break;
 	case LG_BANDING:	/* バンディング */
 		limit = 600000;		// 時間切れ無し
@@ -9941,6 +10017,9 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				break;
 			default:
 				map_foreachinarea(skill_landprotector,src->m,ux,uy,ux,uy,BL_SKILL,skillid,&alive);
+				if(alive)
+					map_foreachinarea(skill_maelstrom,src->m,ux-2,uy-2,ux+2,uy+2,BL_SKILL,skillid,skilllv,&alive,&mael_flag);
+				break;
 		}
 
 		if(unit_flag&UF_PATHCHECK && alive) { // 射線チェック
@@ -13439,7 +13518,17 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 
 		idx[i] = pc_search_inventory(sd,itemid[i]);
 		if(idx[i] < 0 || sd->status.inventory[idx[i]].amount < amount[i]) {
-			if(itemid[i] == 716)
+			// トラップ研究を習得中で設置用トラップが足りなかった場合
+			if(pc_checkskill(sd,RA_RESEARCHTRAP) && itemid[i] ==1065) {
+				// 改良型設置用トラップに置き換えて再検索
+				itemid[i] = 7940;
+				amount[i] = 1;
+				i--;
+				continue;
+			}
+			if(itemdb_isequip3(itemid[i]))
+				clif_skill_fail(sd,cnd->id,0x48,amount[i],itemid[i]);
+			else if(itemid[i] == 716)
 				clif_skill_fail(sd,cnd->id,0x07,amount[i],0);
 			else if(itemid[i] == 717)
 				clif_skill_fail(sd,cnd->id,0x08,amount[i],0);
@@ -13456,6 +13545,10 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 		if(cnd->id == MG_STONECURSE && cnd->lv >= 6 && itemid[i] >= 715 && itemid[i] <= 717) {
 			// ストーンカースLv6以上はジェム消費なしにしておく
 			idx[i] = -1;
+		}
+		// ハンターのトラップスキルはユニット設置時にアイテム消費
+		if(cnd->id >= HT_SKIDTRAP && cnd->id <= HT_CLAYMORETRAP || cnd->id == HT_TALKIEBOX) {
+			return 1;
 		}
 	}
 
@@ -15277,18 +15370,7 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 					break;
 				}
 				// fall through
-			case UNT_CLAYMORETRAP:	/* クレイモアートラップ */
-				{
-					struct block_list *src = map_id2bl(group->src_id);
-					if(src && src->type == BL_PC) {
-						struct item item_tmp;
-						memset(&item_tmp,0,sizeof(item_tmp));
-						item_tmp.nameid   = 1065;
-						item_tmp.identify = 1;
-						map_addflooritem(&item_tmp,1,bl->m,bl->x,bl->y,0,0,0,0);	// 罠返還
-					}
-				}
-				break;
+			case UNT_CLAYMORETRAP:		/* クレイモアートラップ */
 			case UNT_MAGENTATRAP:		/* マゼンタトラップ */
 			case UNT_COBALTTRAP:		/* コバルトトラップ */
 			case UNT_MAIZETRAP:			/* メイズトラップ */
@@ -15297,12 +15379,12 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 			case UNT_ICEBOUNDTRAP:		/* アイスバウンドトラップ */
 			case UNT_ELECTRICSHOCKER:	/* エレクトリックショッカー */
 			case UNT_CLUSTERBOMB:		/* クラスターボム */
-				{
+				if(itemdb_exists(unit->group->val3)) {
 					struct block_list *src = map_id2bl(group->src_id);
 					if(src && src->type == BL_PC) {
 						struct item item_tmp;
 						memset(&item_tmp,0,sizeof(item_tmp));
-						item_tmp.nameid   = 7940;
+						item_tmp.nameid   = unit->group->val3;
 						item_tmp.identify = 1;
 						map_addflooritem(&item_tmp,1,bl->m,bl->x,bl->y,0,0,0,0);	// 罠返還
 					}
@@ -17043,6 +17125,43 @@ static int skill_detonator( struct block_list *bl, va_list ap )
 			}
 			break;
 	}
+	return 0;
+}
+
+/*==========================================
+ * メイルストーム
+ *------------------------------------------
+ */
+static int skill_maelstrom( struct block_list *bl, va_list ap )
+{
+	int skillid, skilllv, sp;
+	int *alive, *flag;
+	struct skill_unit *unit;
+	struct map_session_data *sd;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, unit = (struct skill_unit *)bl);
+
+	skillid = va_arg(ap,int);
+	skilllv = va_arg(ap,int);
+	alive   = va_arg(ap,int *);
+	flag    = va_arg(ap,int *);
+
+	/* 範囲内にメイルストームが存在するか？ */
+	if(unit->group->skill_id == SC_MAELSTROM) {
+		if((*flag) && (sd = map_id2sd(unit->group->src_id)) != NULL) {
+			sp = unit->group->skill_lv * skilllv + (sd->status.job_level / 5);
+			if(sd->status.sp + sp > sd->status.max_sp)
+				sp = sd->status.max_sp - sd->status.sp;
+			if(sp) {
+				clif_heal(sd->fd,SP_SP,sp);
+				pc_heal(sd,0,sp);
+			}
+			(*flag)=0;
+		}
+		(*alive)=0;
+	}
+
 	return 0;
 }
 
