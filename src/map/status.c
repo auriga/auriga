@@ -9004,6 +9004,12 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			clif_emotion(bl,18);
 			if(sc->data[type].val2 % 2 == 0) {
 				int damage = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
+				if(sd) {
+					sd->skill_item.id = skill_searchrandomid(1);
+					sd->skill_item.lv = 1;
+					sd->skill_item.flag = 1;
+					clif_item_skill(sd, sd->skill_item.id, sd->skill_item.lv, "");
+				}
 				if(damage)
 					unit_heal(bl, -damage, 0);
 			}

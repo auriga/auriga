@@ -420,6 +420,8 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			   map_getcell(sd->bl.m,x   ,y+dy,CELL_CHKNOPASS) ||
 			   map_getcell(sd->bl.m,x+dx,y   ,CELL_CHKNOPASS) ||
 			   map_count_oncell(sd->bl.m,x+dx,y+dy,BL_PC|BL_MOB|BL_NPC) > 0) {
+				if(pc_checkskill(sd,RA_WUGSTRIKE))
+					skill_castend_damage_id(&sd->bl,&sd->bl,RA_WUGDASH,sd->sc.data[SC_WUGDASH].val1,tick,0);
 				status_change_end(&sd->bl,SC_WUGDASH,-1);
 				return 0;
 			}

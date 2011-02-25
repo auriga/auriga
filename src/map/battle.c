@@ -687,11 +687,11 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 
 		// 点穴 -球-
 		if(tsd && sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1 && atn_rand()%100 < sc->data[SC_GENTLETOUCH_ENERGYGAIN].val2 && flag&BF_SHORT && damage > 0) {
-			int skill = pc_checkskill(tsd,MO_CALLSPIRITS);
-			int max = skill;
+			int max = (tsd->s_class.job == PC_JOB_MO || tsd->s_class.job == PC_JOB_SR)? pc_checkskill(tsd,MO_CALLSPIRITS): skill_get_max(MO_CALLSPIRITS);
 			if(sc->data[SC_RAISINGDRAGON].timer != -1)
 				max += sc->data[SC_RAISINGDRAGON].val1;
-			pc_addspiritball(tsd,skill_get_time(MO_CALLSPIRITS,skill),max);
+			if(tsd->spiritball.num < max)
+				pc_addspiritball(tsd,skill_get_time2(SR_GENTLETOUCH_ENERGYGAIN,sc->data[SC_GENTLETOUCH_ENERGYGAIN].val1),1);
 		}
 
 		// ソーントラップ
@@ -2533,6 +2533,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case RA_AIMEDBOLT:		// エイムドボルト
 			DMG_FIX( (200 + 20 * skill_lv) * wd.div_, 100 );
+			break;
+		case RA_WUGDASH:		// ウォーグダッシュ
+			DMG_FIX( 300, 100 );
+			if(src_sd) {
+				DMG_ADD( (5 / 4 * src_sd->weight / 10 + pc_checkskill(src_sd,RA_TOOTHOFWUG) * 6) * 3 );
+			}
 			break;
 		case RA_WUGSTRIKE:		// ウォーグストライク
 			DMG_FIX( 120 * skill_lv, 100 );
@@ -4848,11 +4854,11 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	}
 	// 点穴 -球-
 	if(sd && sc && sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1 && atn_rand()%100 < sc->data[SC_GENTLETOUCH_ENERGYGAIN].val2 && wd.flag&BF_SHORT && (wd.damage > 0 || wd.damage2 > 0)) {
-		int skill = pc_checkskill(sd,MO_CALLSPIRITS);
-		int max = skill;
+		int max = (sd->s_class.job == PC_JOB_MO || sd->s_class.job == PC_JOB_SR)? pc_checkskill(sd,MO_CALLSPIRITS): skill_get_max(MO_CALLSPIRITS);
 		if(sc->data[SC_RAISINGDRAGON].timer != -1)
 			max += sc->data[SC_RAISINGDRAGON].val1;
-		pc_addspiritball(sd,skill_get_time(MO_CALLSPIRITS,skill),max);
+		if(sd->spiritball.num < max)
+			pc_addspiritball(sd,skill_get_time2(SR_GENTLETOUCH_ENERGYGAIN,sc->data[SC_GENTLETOUCH_ENERGYGAIN].val1),1);
 	}
 
 	// カードによるオートスペル

@@ -392,11 +392,11 @@
 420,SC_DUPLELIGHT,0,1,0			// デュプレライト
 421,SC_SACRAMENT,0,1,0			// サクラメント
 422,SC_WHITEIMPRISON,0,1,1		// ホワイトインプリズン
-423,SC_FROSTMISTY,0,1,0			// フロストミスティ
+423,SC_FROSTMISTY,0,1,1			// フロストミスティ
 424,SC_MARSHOFABYSS,0,1,1		// マーシュオブアビス
 425,SC_RECOGNIZEDSPELL,0,1,0		// リコグナイズドスペル
 426,SC_STASIS,0,1,1			// ステイシス
-427,SC_HELLINFERNO,0,1,0		// ヘルインフェルノ
+427,SC_HELLINFERNO,0,1,1		// ヘルインフェルノ
 428,SC_SUMMONBALL1,0,1,0		// サモンボール(1個目)
 429,SC_SUMMONBALL2,0,1,0		// サモンボール(2個目)
 430,SC_SUMMONBALL3,0,1,0		// サモンボール(3個目)

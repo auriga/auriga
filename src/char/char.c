@@ -2290,8 +2290,8 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 		if(len >= (124+j))	// 最後に在籍していたMAP名
 			memcpy(WFIFOP(fd,offset+(i*len)+108 + j),st->last_point.map,16);
 
-		// ペコペコ、ドラゴン騎乗のログイン時のエラー対策
-		if (st->option&0x7880020)
+		// 騎乗中のログイン時エラー対策
+		if (st->option&0x7e80020)
 			WFIFOL(fd,offset+(i*len)+28) = 0;
 		else
 			WFIFOL(fd,offset+(i*len)+28) = st->option;

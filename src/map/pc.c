@@ -302,30 +302,41 @@ static int pc_spiritball_timer(int tid,unsigned int tick,int id,void *data)
  * 気球タイマーセット
  *------------------------------------------
  */
-int pc_addspiritball(struct map_session_data *sd,int interval,int max)
+int pc_addspiritball(struct map_session_data *sd,int interval,int num)
 {
+	int i, j, max = skill_get_max(MO_CALLSPIRITS);
+
 	nullpo_retr(0, sd);
+
+	/* 職業がモンクと修羅の場合 */
+	if(sd->s_class.job == PC_JOB_MO || sd->s_class.job == PC_JOB_SR)
+		max = pc_checkskill(sd,MO_CALLSPIRITS);		// 気功の習得レベルが最大数
+
+	/* 潜龍昇天 */
+	if(sd->sc.data[SC_RAISINGDRAGON].timer != -1)
+		max += sd->sc.data[SC_RAISINGDRAGON].val1;
 
 	if(max > MAX_SPIRITBALL)
 		max = MAX_SPIRITBALL;
+
 	if(sd->spiritball.num < 0)
 		sd->spiritball.num = 0;
 
-	if(sd->spiritball.num >= max) {
-		int i;
-		if(sd->spiritball.timer[0] != -1) {
-			delete_timer(sd->spiritball.timer[0],pc_spiritball_timer);
-			sd->spiritball.timer[0] = -1;
+	for(i = num; i > 0; i--) {
+		if(sd->spiritball.num >= max) {
+			if(sd->spiritball.timer[0] != -1) {
+				delete_timer(sd->spiritball.timer[0],pc_spiritball_timer);
+				sd->spiritball.timer[0] = -1;
+			}
+			for(j = 1; j < max; j++) {
+				sd->spiritball.timer[j-1] = sd->spiritball.timer[j];
+				sd->spiritball.timer[j] = -1;
+			}
+		} else {
+			sd->spiritball.num++;
 		}
-		for(i=1; i<max; i++) {
-			sd->spiritball.timer[i-1] = sd->spiritball.timer[i];
-			sd->spiritball.timer[i] = -1;
-		}
-	} else {
-		sd->spiritball.num++;
+		sd->spiritball.timer[sd->spiritball.num-1] = add_timer(gettick()+interval+sd->spiritball.num,pc_spiritball_timer,sd->bl.id,NULL);
 	}
-
-	sd->spiritball.timer[sd->spiritball.num-1] = add_timer(gettick()+interval+sd->spiritball.num,pc_spiritball_timer,sd->bl.id,NULL);
 	clif_spiritball(sd);
 
 	return 0;
@@ -4677,6 +4688,8 @@ int pc_runtodir(struct map_session_data *sd)
 			pc_setdir(sd, dir, head_dir);
 		}
 		if(sd->sc.data[SC_WUGDASH].timer != -1) {
+			if(pc_checkskill(sd,RA_WUGSTRIKE))
+				skill_castend_damage_id(&sd->bl,&sd->bl,RA_WUGDASH,sd->sc.data[SC_WUGDASH].val1,gettick(),0);
 			status_change_end(&sd->bl,SC_WUGDASH,-1);
 			pc_setdir(sd, sd->dir, sd->head_dir);
 		}
