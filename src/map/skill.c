@@ -7779,40 +7779,38 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case WL_TETRAVORTEX:		/* テトラボルテックス */
-		sc = status_get_sc(src);
-		if(sc) {
-			int summon_id[4];
+		{
+			int summon_id[4] = { WL_TETRAVORTEX_FIRE, WL_TETRAVORTEX_WATER, WL_TETRAVORTEX_WIND, WL_TETRAVORTEX_GROUND };
 			int c = 0, i;
-			for(i = 0; i < 5; i++) {
-				if(sc->data[SC_SUMMONBALL1 + i].timer != -1) {
-					if(c < 4) {
-						switch(sc->data[SC_SUMMONBALL1 + i].val2) {
-							case 1:		// サモンボールライトニング
-								summon_id[c] = WL_TETRAVORTEX_WIND;
-								break;
-							case 2:		// サモンウォーターボール
-								summon_id[c] = WL_TETRAVORTEX_WATER;
-								break;
-							case 3:		// サモンストーン
-								summon_id[c] = WL_TETRAVORTEX_GROUND;
-								break;
-							default:	// サモンファイアーボール
-								summon_id[c] = WL_TETRAVORTEX_FIRE;
-								break;
+			sc = status_get_sc(src);
+			if(sc) {
+				for(i = 0; i < 5; i++) {
+					if(sc->data[SC_SUMMONBALL1 + i].timer != -1) {
+						if(c < 4) {
+							switch(sc->data[SC_SUMMONBALL1 + i].val2) {
+								case 1:		// サモンボールライトニング
+									summon_id[c] = WL_TETRAVORTEX_WIND;
+									break;
+								case 2:		// サモンウォーターボール
+									summon_id[c] = WL_TETRAVORTEX_WATER;
+									break;
+								case 3:		// サモンストーン
+									summon_id[c] = WL_TETRAVORTEX_GROUND;
+									break;
+								default:	// サモンファイアーボール
+									summon_id[c] = WL_TETRAVORTEX_FIRE;
+									break;
+							}
+							c++;
 						}
-						c++;
+						status_change_end(src,SC_SUMMONBALL1 + i,-1);
 					}
-					status_change_end(src,SC_SUMMONBALL1 + i,-1);
 				}
-			}
-			if(sd && c < 4) {
-				clif_skill_fail(sd,skillid,0,0,0);
-				break;
 			}
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			clif_skill_damage(src, bl, tick, 0, 0, -1, 1, WL_TETRAVORTEX_FIRE, -1, 0);	// エフェクトを出すための暫定処置
 			for(i = 0; i < 4; i++) {
-				skill_addtimerskill(src,tick + 200 * i,bl->id,0,0,summon_id[i],skilllv,0,(0x0f<<20)|0x0500|flag);
+				skill_addtimerskill(src,tick + 200 * i,bl->id,0,0,summon_id[i],skilllv,0,(0x0f<<20)|0x0500);
 			}
 			status_change_pretimer(bl,GetSkillStatusChangeTable(summon_id[atn_rand()%4]),skilllv,0,0,0,skill_get_time(summon_id[atn_rand()%4],skilllv),0,tick+status_get_amotion(src));
 		}
@@ -7847,6 +7845,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 				if(skill_get_inf(freeze_skillid)&INF_TOGROUND) {	// 場所指定のスキル
 					skill_castend_pos2(src,bl->x,bl->y,freeze_skillid,freeze_skilliv,tick,0);
+				} else if(skill_get_nk(freeze_skillid)&1){
+					skill_castend_nodamage_id(src,bl,freeze_skillid,freeze_skilliv,tick,0);
 				} else {
 					skill_castend_damage_id(src,bl,freeze_skillid,freeze_skilliv,tick,0);
 				}
@@ -8746,13 +8746,15 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				case 13265:		// 黒い塊
 				case 13266:		// 硬くて黒い塊
 				case 13267:		// とても硬い塊
-					battle_skill_attack(BF_WEAPON,src,src,bl,GN_SLINGITEM_RANGEMELEEATK,nameid - 13260,tick,flag|(0x0f<<20));
+					if(battle_check_target(src,bl,BCT_ENEMY) > 0)
+						battle_skill_attack(BF_WEAPON,src,src,bl,GN_SLINGITEM_RANGEMELEEATK,nameid - 13260,tick,flag|(0x0f<<20));
 					break;
 				case 13263:		// パイナップル爆弾
-					map_foreachinarea(skill_area_sub,
-						bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),
-						src,GN_SLINGITEM_RANGEMELEEATK,3,tick,flag|BCT_ENEMY|(0x0f<<20),
-						skill_castend_damage_id);
+					if(battle_check_target(src,bl,BCT_ENEMY) > 0)
+						map_foreachinarea(skill_area_sub,
+							bl->m,bl->x-2,bl->y-2,bl->x+2,bl->y+2,(BL_CHAR|BL_SKILL),
+							src,GN_SLINGITEM_RANGEMELEEATK,3,tick,flag|BCT_ENEMY|(0x0f<<20),
+							skill_castend_damage_id);
 					break;
 				default:
 					if(dstsd) {
@@ -12772,6 +12774,20 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			}
 		}
 		break;
+	case NC_PILEBUNKER:			/* パイルバンカー */
+	case NC_HOVERING:			/* ホバーリング */
+		{
+			int i, itemid;
+			for(i = 0; i < 10; i++) {
+				itemid = skill_db[skill_get_skilldb_id(cnd->id)].itemid[i];
+				// 装備品を装備しているか判定
+				if(itemdb_isequip3(itemid) && !pc_equippeditem(sd,itemid)) {
+					clif_skill_fail(sd,cnd->id,0x48,0,itemid);
+					return 0;
+				}
+			}
+		}
+		break;
 	case NC_SILVERSNIPER:		/* FAW シルバースナイパー */
 		if(type&1){
 			int c;
@@ -13557,11 +13573,6 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 			return 0;
 		}
 
-		// 装備品の場合は装備しているかを判定
-		if(itemdb_isequip3(itemid[i]) && !pc_equippeditem(sd,itemid[i])) {
-			clif_skill_fail(sd,cnd->id,0x48,amount[i],itemid[i]);
-			return 0;
-		}
 		// ストーンカースLv6以上はジェム消費なしにしておく
 		if(cnd->id == MG_STONECURSE && cnd->lv >= 6 && itemid[i] >= 715 && itemid[i] <= 717) {
 			idx[i] = -1;
@@ -17427,6 +17438,60 @@ int skill_reproduce(struct map_session_data* sd,int skillid,int skilllv)
 
 	if(skillid <= 0 || skilllv <= 0)
 		return 0;
+
+	// サブスキルの場合はメインに置き換え
+	switch(skillid) {
+		case AB_DUPLELIGHT_MELEE:	// デュプレライト(物理)
+		case AB_DUPLELIGHT_MAGIC:	// デュプレライト(魔法)
+			skillid = AB_DUPLELIGHT;
+			break;
+		case WL_CHAINLIGHTNING_ATK:	// チェーンライトニング(連鎖)
+			skillid = WL_CHAINLIGHTNING;
+			break;
+		case WL_TETRAVORTEX_FIRE:	// テトラボルテックス(火)
+		case WL_TETRAVORTEX_WATER:	// テトラボルテックス(水)
+		case WL_TETRAVORTEX_WIND:	// テトラボルテックス(風)
+		case WL_TETRAVORTEX_GROUND:	// テトラボルテックス(地)
+			skillid = WL_TETRAVORTEX;
+			break;
+		case WL_SUMMON_ATK_FIRE:	// サモンファイアボール(攻撃)
+			skillid = WL_SUMMONFB;
+			break;
+		case WL_SUMMON_ATK_WIND:	// サモンボールライトニング(攻撃)
+			skillid = WL_SUMMONBL;
+			break;
+		case WL_SUMMON_ATK_WATER:	// サモンウォーターボール(攻撃)
+			skillid = WL_SUMMONWB;
+			break;
+		case WL_SUMMON_ATK_GROUND:	// サモンストーン(攻撃)
+			skillid = WL_SUMMONSTONE;
+			break;
+		case LG_OVERBRAND_BRANDISH:	// オーバーブランド(薙ぎ)
+		case LG_OVERBRAND_PLUSATK:	// オーバーブランド(追撃)
+			skillid = LG_OVERBRAND;
+			break;
+		case WM_REVERBERATION_MELEE:	// 振動残響(物理)
+		case WM_REVERBERATION_MAGIC:	// 振動残響(魔法)
+			skillid = WM_REVERBERATION;
+			break;
+		case WM_SEVERE_RAINSTORM_MELEE:	// シビアレインストーム(攻撃)
+			skillid = WM_SEVERE_RAINSTORM;
+			break;
+		case GN_CRAZYWEED_ATK:	// クレイジーウィード(攻撃)
+			skillid = GN_CRAZYWEED;
+			break;
+		case GN_FIRE_EXPANSION_SMOKE_POWDER:	// ファイアーエクスパンション(煙幕)
+		case GN_FIRE_EXPANSION_TEAR_GAS:		// ファイアーエクスパンション(催涙ガス)
+		case GN_FIRE_EXPANSION_ACID:			// ファイアーエクスパンション(塩酸)
+			skillid = GN_FIRE_EXPANSION;
+			break;
+		case GN_HELLS_PLANT_ATK:	// ヘルズプラント(攻撃)
+			skillid = GN_HELLS_PLANT;
+			break;
+		case GN_SLINGITEM_RANGEMELEEATK:	// スリングアイテム(遠距離攻撃)
+			skillid = GN_SLINGITEM;
+			break;
+	}
 
 	// 高レベルを取得している
 	if(pc_checkskill(sd,skillid) >= skilllv)
