@@ -4453,7 +4453,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 			damage += (skill_lv > 3)? 45: 0;
 			damage += (skill_lv > 4)? 55: 0;
 
-			mid.damage = (int_ / 2) * damage;
+			mid.damage = (int)((int)(int_ / 2) * damage * (1 + (sd ? pc_checkskill(sd,AM_CANNIBALIZE) : 0) * 0.2));
 			damagefix = 0;
 		}
 		break;
