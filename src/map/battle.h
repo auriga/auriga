@@ -585,6 +585,7 @@ extern struct Battle_Config {
 	int third_max_aspd;
 	int third_song_overlap;
 	int clif_fix_level;
+	int get_status_point_over_lv100;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

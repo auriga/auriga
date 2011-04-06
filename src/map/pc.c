@@ -5255,7 +5255,12 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		// base側レベルアップ処理
 		sd->status.base_exp -= next;
 		sd->status.base_level++;
-		sd->status.status_point += (sd->status.base_level+14) / 5;
+		if(sd->status.base_level < 100 || (sd->status.base_level >= 100 && !battle_config.pk_murderer_point)) {
+			sd->status.status_point += (sd->status.base_level+14) / 5;
+		}
+		else {
+			sd->status.status_point += (sd->status.base_level+129 ) / 10;
+		}
 		clif_updatestatus(sd,SP_STATUSPOINT);
 		clif_updatestatus(sd,SP_BASELEVEL);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
@@ -5848,7 +5853,7 @@ int pc_need_status_point(struct map_session_data *sd,int type)
 		return 0;
 	else if(!pc_is3rdclass(sd) && val >= battle_config.max_parameter)
 		return 0;
-	else if(pc_isbaby(sd) && val >= battle_config.baby_status_max)
+	else if(!pc_is3rdclass(sd) && pc_isbaby(sd) && val >= battle_config.baby_status_max)
 		return 0;
 
 	if(val < 0)
