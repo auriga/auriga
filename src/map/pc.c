@@ -5255,10 +5255,10 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		// base側レベルアップ処理
 		sd->status.base_exp -= next;
 		sd->status.base_level++;
-		if(sd->status.base_level < 100 || (sd->status.base_level >= 100 && !battle_config.get_status_point_over_lv100))
-			sd->status.status_point += (sd->status.base_level+14) / 5;
-		else
+		if(sd->status.base_level >= 100 && battle_config.get_status_point_over_lv100)
 			sd->status.status_point += (sd->status.base_level+129 ) / 10;
+		else
+			sd->status.status_point += (sd->status.base_level+14) / 5;
 		clif_updatestatus(sd,SP_STATUSPOINT);
 		clif_updatestatus(sd,SP_BASELEVEL);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
@@ -5845,14 +5845,17 @@ int pc_need_status_point(struct map_session_data *sd,int type)
 		case SP_LUK: val = sd->status.luk;  break;
 	}
 
-	if(pc_is3rdclass(sd) && pc_isbaby(sd) && val >= battle_config.third_baby_status_max)
-		return 0;
-	else if(pc_is3rdclass(sd) && val >= battle_config.third_status_max)
-		return 0;
-	else if(!pc_is3rdclass(sd) && pc_isbaby(sd) && val >= battle_config.baby_status_max)
-		return 0;
-	else if(!pc_is3rdclass(sd) && val >= battle_config.max_parameter)
-		return 0;
+	if(pc_is3rdclass(sd)) {
+		if(pc_isbaby(sd) && val >= battle_config.third_baby_status_max)
+			return 0;
+		else if(val >= battle_config.third_status_max)
+			return 0;
+	} else {
+		if(pc_isbaby(sd) && val >= battle_config.baby_status_max)
+			return 0;
+		else if(val >= battle_config.max_parameter)
+			return 0;
+	}
 
 	if(val < 0)
 		val = -1;
@@ -8585,7 +8588,7 @@ int pc_check_adopt_condition(struct map_session_data *dstsd, struct map_session_
 		return 0;
 
 	// 養子チェック
-	if(dstsd->s_class.upper != 0 || dstsd->s_class.job >= PC_JOB_TK || dstsd->s_class.job <= PC_JOB_DA)
+	if(dstsd->s_class.upper != 0 || (dstsd->s_class.job >= PC_JOB_TK && dstsd->s_class.job <= PC_JOB_DA))
 		return 0;
 	// パーティー同じマップに３人
 	if(party_check_same_map_member_count(dstsd) != 2)

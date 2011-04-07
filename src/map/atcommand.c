@@ -1658,8 +1658,12 @@ int atcommand_baselevelup(const int fd, struct map_session_data* sd, AtCommandTy
 			level = MAX_LEVEL - (int)sd->status.base_level;
 		if (level <= 0)
 			return -1;
-		for (i = 1; i <= level; i++)
-			sd->status.status_point += (sd->status.base_level + i + 14) / 5;
+		for (i = 1; i <= level; i++) {
+			if(sd->status.base_level + i >= 100 && battle_config.get_status_point_over_lv100)
+				sd->status.status_point += (sd->status.base_level + i + 129 ) / 10;
+			else
+				sd->status.status_point += (sd->status.base_level + i + 14) / 5;
+		}
 		sd->status.base_level += level;
 		clif_updatestatus(sd, SP_BASELEVEL);
 		clif_updatestatus(sd, SP_NEXTBASEEXP);
