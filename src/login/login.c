@@ -984,7 +984,6 @@ int parse_login(int fd)
 		case 0x027c:	// 暗号化ログイン要求
 		case 0x02b0:	// クライアントログイン要求（langtype=0）
 		{
-			int length = RFIFOREST(fd);
 			int result = -1;
 			bool enc_flag;
 			struct auth_node *node;
@@ -992,27 +991,27 @@ int parse_login(int fd)
 			switch(cmd)
 			{
 				case 0x0064:
-					if(length < 55)
+					if(RFIFOREST(fd) < 55)
 						return 0;
 					break;
 				case 0x01dd:
-					if(length < 47)
+					if(RFIFOREST(fd) < 47)
 						return 0;
 					break;
 				case 0x01fa:
-					if(length < 48)
+					if(RFIFOREST(fd) < 48)
 						return 0;
 					break;
 				case 0x0277:
-					if(length < 84)
+					if(RFIFOREST(fd) < 84)
 						return 0;
 					break;
 				case 0x027c:
-					if(length < 60)
+					if(RFIFOREST(fd) < 60)
 						return 0;
 					break;
 				case 0x02b0:
-					if(length < 85)
+					if(RFIFOREST(fd) < 85)
 						return 0;
 					break;
 			}
@@ -1072,7 +1071,7 @@ int parse_login(int fd)
 						WFIFOW(fd,0) = 0x81;
 						WFIFOB(fd,2) = 8;
 						WFIFOSET(fd,3);
-						RFIFOSKIP(fd,length);
+						RFIFOSKIP(fd,RFIFOREST(fd));
 						break;
 					}
 				}
@@ -1118,7 +1117,7 @@ int parse_login(int fd)
 				WFIFOB(fd,2) = result;
 				WFIFOSET(fd,23);
 			}
-			RFIFOSKIP(fd,length);
+			RFIFOSKIP(fd,RFIFOREST(fd));
 		}
 			break;
 
