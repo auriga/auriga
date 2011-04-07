@@ -16,7 +16,7 @@ CREATE TABLE `cart_inventory` (
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`, `id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'char_data'
@@ -61,6 +61,9 @@ CREATE TABLE `char_data` (
   `head_top` smallint(6) NOT NULL default '0',
   `head_mid` smallint(6) NOT NULL default '0',
   `head_bottom` smallint(6) NOT NULL default '0',
+  `costume_head_top` smallint(6) NOT NULL default '0',
+  `costume_head_mid` smallint(6) NOT NULL default '0',
+  `costume_head_bottom` smallint(6) NOT NULL default '0',
   `last_map` varchar(24) NOT NULL default 'new_5-1.gat',
   `last_x` smallint(6) NOT NULL default '53',
   `last_y` smallint(6) NOT NULL default '111',
@@ -71,12 +74,13 @@ CREATE TABLE `char_data` (
   `parent_id` int(11) NOT NULL default '0',
   `parent_id2` int(11) NOT NULL default '0',
   `baby_id` int(11) NOT NULL default '0',
+  `delete_date` int(11) unsigned NOT NULL default '0',
   `online` tinyint(4) NOT NULL default '0',
   PRIMARY KEY (`char_id`),
   UNIQUE `account_slot` (`account_id`, `char_num`),
   KEY `party_id` (`party_id`),
   UNIQUE `name` (`name`)
-) TYPE = MyISAM AUTO_INCREMENT=15000;
+) ENGINE = MyISAM AUTO_INCREMENT=15000;
 
 # Database: Ragnarok
 # Table: 'charlog'
@@ -84,17 +88,17 @@ CREATE TABLE `char_data` (
 CREATE TABLE `charlog` (
   `time` datetime NOT NULL default '2000-01-01 00:00:00',
   `log` TEXT NOT NULL
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'worldreg'
 # 
 CREATE TABLE `worldreg` (
   `account_id` int(11) NOT NULL default '0',
-  `reg` varchar(32) NOT NULL default '',
+  `reg` varchar(31) NOT NULL default '',
   `value` int(11) NOT NULL default '0',
   PRIMARY KEY (`account_id`, `reg`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'accountreg'
@@ -104,7 +108,7 @@ CREATE TABLE `accountreg` (
   `reg` varchar(32) NOT NULL default '',
   `value` int(11) NOT NULL default '0',
   PRIMARY KEY (`account_id`, `reg`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'globalreg'
@@ -114,7 +118,7 @@ CREATE TABLE `globalreg` (
   `reg` varchar(32) NOT NULL default '',
   `value` int(11) NOT NULL default '0',
   PRIMARY KEY (`char_id`, `reg`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild'
@@ -137,7 +141,7 @@ CREATE TABLE `guild` (
   `emblem_data` blob NOT NULL,
   PRIMARY KEY (`guild_id`),
   UNIQUE `name` (`name`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_alliance'
@@ -148,7 +152,7 @@ CREATE TABLE `guild_alliance` (
   `alliance_id` int(11) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
   PRIMARY KEY (`guild_id`, `alliance_id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_castle'
@@ -181,7 +185,7 @@ CREATE TABLE `guild_castle` (
   `gHP6` int(11) NOT NULL default '0',
   `gHP7` int(11) NOT NULL default '0',
   PRIMARY KEY (`castle_id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_expulsion'
@@ -192,7 +196,7 @@ CREATE TABLE `guild_expulsion` (
   `mes` varchar(40) NOT NULL default '',
   `account_id` int(11) NOT NULL default '0',
   KEY `guild_id` (`guild_id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_member'
@@ -212,7 +216,7 @@ CREATE TABLE `guild_member` (
   `position` smallint(6) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
   PRIMARY KEY (`guild_id`, `char_id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_position'
@@ -224,7 +228,7 @@ CREATE TABLE `guild_position` (
   `mode` int(11) NOT NULL default '0',
   `exp_mode` int(11) NOT NULL default '0',
   PRIMARY KEY (`guild_id`, `position`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_skill'
@@ -234,7 +238,7 @@ CREATE TABLE `guild_skill` (
   `id` int(11) NOT NULL default '0',
   `lv` int(11) NOT NULL default '0',
   PRIMARY KEY (`guild_id`, `id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'guild_storage'
@@ -254,7 +258,7 @@ CREATE TABLE `guild_storage` (
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY (`guild_id`, `id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'interlog'
@@ -262,7 +266,7 @@ CREATE TABLE `guild_storage` (
 CREATE TABLE `interlog` (
   `time` datetime NOT NULL default '2000-01-01 00:00:00',
   `log` varchar(255) NOT NULL default ''
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'inventory'
@@ -282,25 +286,26 @@ CREATE TABLE `inventory` (
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`, `id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'login'
 # 
 CREATE TABLE `login` (
   `account_id` int(11) NOT NULL AUTO_INCREMENT,
-  `userid` varchar(24) BINARY NOT NULL default '',
-  `user_pass` varchar(24) NOT NULL default '',
+  `userid` varchar(23) BINARY NOT NULL default '',
+  `user_pass` varchar(23) NOT NULL default '',
   `lastlogin` datetime NOT NULL default '2000-01-01 00:00:00',
-  `sex` char(1) NOT NULL default 'M',
+  `sex` ENUM('M', 'F', 'S') NOT NULL default 'M',
   `logincount` int(11) NOT NULL default '0',
-  `email` varchar(40) NOT NULL default '',
+  `email` varchar(39) NOT NULL default '',
+  `birthdate` char(6) NOT NULL default '000000',
   `level` smallint(3) NOT NULL default '0',
   `last_ip` varchar(16) NOT NULL default '',
   `state` int(11) NOT NULL default '0',
   PRIMARY KEY (`account_id`),
   UNIQUE `name` (`userid`)
-) TYPE = MyISAM AUTO_INCREMENT=2000000;
+) ENGINE = MyISAM AUTO_INCREMENT=2000000;
 
 # added standard accounts for servers, VERY INSECURE!!!
 # inserted into the table called login which is above
@@ -319,7 +324,7 @@ VALUES
 CREATE TABLE `loginlog` (
   `time` datetime NOT NULL default '2000-01-01 00:00:00',
   `log` varchar(255) NOT NULL default ''
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'memo'
@@ -331,7 +336,7 @@ CREATE TABLE `memo` (
   `x` smallint(6) NOT NULL default '0',
   `y` smallint(6) NOT NULL default '0',
   PRIMARY KEY (`char_id`, `index`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'party'
@@ -344,7 +349,7 @@ CREATE TABLE `party` (
   `leader_id` int(11) NOT NULL default '0',
   PRIMARY KEY (`party_id`),
   UNIQUE `name` (`name`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'pet'
@@ -363,7 +368,7 @@ CREATE TABLE `pet` (
   `rename_flag` tinyint(4) NOT NULL default '0',
   `incubate` tinyint(4) NOT NULL default '0',
   PRIMARY KEY (`pet_id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'skill'
@@ -373,7 +378,7 @@ CREATE TABLE `skill` (
   `id` smallint(6) unsigned NOT NULL default '0',
   `lv` smallint(6) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`,`id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'storage'
@@ -393,7 +398,7 @@ CREATE TABLE `storage` (
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY (`account_id`, `id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'friend'
@@ -404,7 +409,7 @@ CREATE TABLE `friend` (
   `friend_id` int(11) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
   PRIMARY KEY (`char_id`, `friend_id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'homunculus'
@@ -441,7 +446,7 @@ CREATE TABLE `homunculus` (
   `rename_flag` tinyint(4) NOT NULL default '0',
   `incubate` tinyint(4) NOT NULL default '0',
   PRIMARY KEY (`homun_id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'homunculus_skill'
@@ -451,7 +456,7 @@ CREATE TABLE `homunculus_skill` (
   `id` smallint(6) unsigned NOT NULL default '0',
   `lv` smallint(6) unsigned NOT NULL default '0',
   PRIMARY KEY (`homun_id`, `id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'status_change'
@@ -466,7 +471,7 @@ CREATE TABLE `status_change` (
   `val4` int(11) NOT NULL default '0',
   `tick` int(11) NOT NULL default '0',
   PRIMARY KEY (`char_id`, `type`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'mail'
@@ -477,7 +482,7 @@ CREATE TABLE `mail` (
   `rates` int(11) unsigned NOT NULL default '0',
   `store` int(11) NOT NULL default '0',
   PRIMARY KEY (`char_id`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'mail_data'
@@ -506,7 +511,7 @@ CREATE TABLE `mail_data` (
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`, `number`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'mapreg'
@@ -517,7 +522,7 @@ CREATE TABLE `mapreg` (
   `index` smallint(6) NOT NULL default '0',
   `value` text NOT NULL,
   PRIMARY KEY (`server_tag`, `reg`, `index`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'feel_info'
@@ -527,7 +532,7 @@ CREATE TABLE `feel_info` (
   `map` varchar(24) NOT NULL default '',
   `lv` smallint(6) NOT NULL default '-1',
   PRIMARY KEY (`char_id`, `lv`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'hotkey'
@@ -539,7 +544,7 @@ CREATE TABLE `hotkey` (
   `id` int(11) NOT NULL default '0',
   `lv` smallint(6) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`, `key`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;
 
 # Database: Ragnarok
 # Table: 'mercenary'
@@ -550,4 +555,4 @@ CREATE TABLE `mercenary` (
   `fame` int(11) NOT NULL DEFAULT '0',
   `call` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`char_id`, `type`)
-) TYPE = MyISAM;
+) ENGINE = MyISAM;

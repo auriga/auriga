@@ -9,6 +9,7 @@ set PATH=C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib;%PAT
 :set __sqllib__=-L"C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt" libmysql.lib
 
 @rem パケット定義
+@rem 2010-08-03aRagexeRE: 31
 @rem 2010-07-28aRagexeRE: 30
 @rem 2010-07-21aRagexeRE: 29
 @rem 2010-06-29aRagexeRE: 28
@@ -32,7 +33,7 @@ set PATH=C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib;%PAT
 @rem 2007-07-11aSakexe: 10
 @rem 2007-05-21aSakexe:  9
 @rem 2007-02-12aSakexe:  8
-set __PACKETDEF__=-DPACKETVER=30 -DNEW_006b -DNEW_006b_RE
+set __PACKETDEF__=-DPACKETVER=31 -DNEW_006b -DNEW_006b_RE
 
 @rem コンパイルオプション
 @rem SQL⇔TEXTの切り替え、SQL版にする場合は以下のコンパイルオプションをコメントアウトしてください
@@ -69,6 +70,9 @@ set __NO_HTTPD_CGI__=-DNO_HTTPD_CGI
 
 @rem キャラの削除にメールアドレスを使う場合はコメントアウトをはずす
 :set __AC_MAIL__=-DAC_MAIL
+
+@rem キャラの削除に誕生日を使う場合はコメントアウトをはずす
+:set __AC_BIRTHDATE__=-DAC_BIRTHDATE
 
 @rem ステータス異常データの保存を無効にする場合コメントアウトをはずす
 :set __NO_SCDATA_SAVING__=-DNO_SCDATA_SAVING
@@ -115,7 +119,7 @@ if "%_model_%"=="AMD32" set __cpu__=-5 -Oc -Ov -f -ff
 if "%_model_%"=="AMD64" set __cpu__=-6 -Oc -Ov -f -ff -tWM
 if "%_model_%"=="DCORE" set __cpu__=-6 -a16 -C -d -f -ff -Hc -i133 -Jgd -k- -Oc -Oxt -Ve -VF -xf -xp
 
-set __define__=%__cpu__% %__PACKETDEF__% -DFD_SETSIZE=4096 -D_WIN32 -DWINDOWS %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
+set __define__=%__cpu__% %__PACKETDEF__% -DFD_SETSIZE=4096 -D_WIN32 -DWINDOWS %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__AC_BIRTHDATE__% %__NO_SCDATA_SAVING__%
 set __include__=-I../common/ -I../common/zlib/ %__sqlinclude__%
 
 if "%__ZLIB__%"=="" goto NOZLIB

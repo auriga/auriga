@@ -410,7 +410,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			   map_count_oncell(sd->bl.m,x+dx,y+dy,BL_PC|BL_MOB|BL_NPC) > 0) {
 				skill_blown(&sd->bl,&sd->bl,skill_get_blewcount(TK_RUN,sd->sc.data[SC_RUN].val1)|SAB_NODAMAGE);
 				status_change_end(&sd->bl,SC_RUN,-1);
-				clif_status_change(&sd->bl,SI_RUN_STOP,1,0,0);
+				clif_status_change(&sd->bl,SI_RUN_STOP,1,0,0,0,0);
 				pc_setdir(sd, dir, dir);
 				return 0;
 			}
@@ -1192,7 +1192,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_id, src->id, NULL);
 		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
 			src_sd->prev_speed = src_sd->speed;
-			src_sd->speed = 175 - 5 * pc_checkskill(src_sd,SA_FREECAST);
+			src_sd->speed = src_sd->speed * (175 - 5 * pc_checkskill(src_sd,SA_FREECAST)) / 100;
 			clif_updatestatus(src_sd,SP_SPEED);
 		} else if(src_sd && skill_num == LG_EXEEDBREAK) {
 			src_sd->prev_speed = src_sd->speed;
@@ -1379,7 +1379,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_pos, src->id, NULL);
 		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
 			src_sd->prev_speed = src_sd->speed;
-			src_sd->speed = src_sd->speed*(175 - skill*5)/100;
+			src_sd->speed = src_sd->speed * (175 - 5 * pc_checkskill(src_sd,SA_FREECAST)) / 100;
 			clif_updatestatus(src_sd,SP_SPEED);
 		} else {
 			unit_stop_walking(src,1);

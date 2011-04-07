@@ -2698,7 +2698,7 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 	if(sd->fix_status.speed > MIN_WALK_SPEED && sd->fix_status.speed <= MAX_WALK_SPEED)	// SPEED固定
 		return sd->fix_status.speed;
 	if(sd->ud.skilltimer != -1 && pc_checkskill(sd,SA_FREECAST) > 0)	// フリーキャスト状態なら移動速度固定
-		return (175 - 5 * pc_checkskill(sd,SA_FREECAST));
+		return sd->speed * (175 - 5 * pc_checkskill(sd,SA_FREECAST)) / 100;
 	if(sd->sc.data[SC_STEELBODY].timer != -1)	// 金剛は移動速度固定
 		return 200;
 	if(sd->ud.skilltimer != -1 && sd->ud.skillid == LG_EXEEDBREAK)		// イクシードブレイクの詠唱中
@@ -5691,7 +5691,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	struct merc_data        *mcd = NULL;
 	struct status_change    *sc  = NULL;
 	struct unit_data        *ud  = NULL;
-	int icon_tick = tick, icon_val = 0, opt_flag = 0, calc_flag = 0, race, mode, elem;
+	int icon_tick = tick, icon_val1 = 0, icon_val2 = 0, icon_val3 = 0, opt_flag = 0, calc_flag = 0, race, mode, elem;
 
 	nullpo_retr(0, bl);
 
@@ -6403,7 +6403,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				default: val2 = SI_DARKELEMENT;     val3 = ELE_DARK;  break;
 			}
 			if(sd) {
-				clif_status_change(bl,val2,1,icon_tick,0);
+				clif_status_change(bl,val2,1,icon_tick,0,0,0);
 			}
 			break;
 		case SC_PROVIDENCE:			/* プロヴィデンス */
@@ -6700,7 +6700,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_HALLUCINATION:
 			if(sd && !battle_config.hallucianation_off) {
 				// onなのでアイコン表示
-				clif_status_change(bl, SI_HALLUCINATION, 1, icon_tick, 0);
+				clif_status_change(bl, SI_HALLUCINATION, 1, icon_tick, 0, 0, 0);
 			}
 			break;
 		case SC_TENSIONRELAX:	/* テンションリラックス */
@@ -6732,7 +6732,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_BERSERK:		/* バーサーク */
 			unit_heal(bl,0,-status_get_sp(bl));
 			if(sd) {
-				clif_status_change(bl,SI_INCREASEAGI,1,icon_tick, 0);	// アイコン表示
+				clif_status_change(bl,SI_INCREASEAGI,1,icon_tick, 0, 0, 0);	// アイコン表示
 			}
 			tick = 1000;
 			calc_flag = 1;
@@ -6947,7 +6947,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_ROLLINGCUTTER:		/* ローリングカッター */
 			tick = 600*1000;
-			icon_val = val1;	// val2(回転数)を渡してアイコン表示する
+			icon_val1 = val1;	// val2(回転数)を渡してアイコン表示する
 			break;
 		case SC_TOXIN:				/* トキシン */
 			val2 = tick / 10000;
@@ -7011,7 +7011,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SUMMONBALL3:		/* サモンボール(3個目) */
 		case SC_SUMMONBALL4:		/* サモンボール(4個目) */
 		case SC_SUMMONBALL5:		/* サモンボール(5個目) */
-			icon_val = val2;	// val2(属性の種類)を渡してアイコン表示する
+			icon_val1 = val2;	// val2(属性の種類)を渡してアイコン表示する
 			break;
 		case SC_HELLINFERNO:		/* ヘルインフェルノ */
 			calc_flag = 1;
@@ -7254,7 +7254,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		return 0;
 
 	if(StatusIconChangeTable[type] != SI_BLANK)
-		clif_status_change(bl,StatusIconChangeTable[type],1,icon_tick,icon_val);	// アイコン表示
+		clif_status_change(bl,StatusIconChangeTable[type],1,icon_tick,icon_val1,icon_val2,icon_val3);	// アイコン表示
 
 	/* 凸面鏡はアイコン送信後に処理する */
 	if(type == SC_BOSSMAPINFO) {
@@ -7456,7 +7456,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_HIDING:
 			if(sd && val3 == 0)	// 霞斬りでない通常のハイドならアイコン表示
-				clif_status_change(bl,SI_HIDING,1,icon_tick,0);
+				clif_status_change(bl,SI_HIDING,1,icon_tick,0,0,0);
 			unit_stopattack(bl);
 			sc->option |= OPTION_HIDE;
 			opt_flag = 1;
@@ -7912,13 +7912,13 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_BERSERK:			/* バーサーク */
 			calc_flag = 1;
 			if(sd) {
-				clif_status_change(bl,SI_INCREASEAGI,0,0,0);	// アイコン消去
+				clif_status_change(bl,SI_INCREASEAGI,0,0,0,0,0);	// アイコン消去
 				status_change_start(bl,SC_NATURAL_HEAL_STOP,0,0,0,0,skill_get_time2(LK_BERSERK,sc->data[type].val1),0);
 			}
 			break;
 		case SC_HALLUCINATION:
 			if(sd)
-				clif_status_change(bl,SI_HALLUCINATION,0,0,0);	// アイコン消去
+				clif_status_change(bl,SI_HALLUCINATION,0,0,0,0,0);	// アイコン消去
 			break;
 
 		case SC_ENDURE:				/* インデュア */
@@ -7987,7 +7987,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				struct map_session_data *dsd;
 				// 月明りだけここでアイコン消去
 				if(sc->data[type].val1 == CG_MOONLIT)
-					clif_status_change(bl,SI_MOONLIT,0,0,0);	// アイコン消去
+					clif_status_change(bl,SI_MOONLIT,0,0,0,0,0);	// アイコン消去
 
 				if(sc->data[type].val4 && (dsd = map_id2sd(sc->data[type].val4))) {
 					// 合奏で相手がいる場合相手のval4を0にする
@@ -8052,7 +8052,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 		case SC_SEVENWIND:	/* 暖かい風 */
 			if(sd)
-				clif_status_change(bl,sc->data[type].val2,0,0,0);
+				clif_status_change(bl,sc->data[type].val2,0,0,0,0,0);
 			break;
 		case SC_AUTOBERSERK:
 			if(sc->data[SC_PROVOKE].timer != -1 && sc->data[SC_PROVOKE].val2 == 1) {
@@ -8093,7 +8093,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC__SHADOWFORM:		/* シャドウフォーム */
 			{
 				struct map_session_data *dsd;
-				if(dsd = map_id2sd(sc->data[type].val2))
+				if((dsd = map_id2sd(sc->data[type].val2)) != NULL)
 					dsd->shadowform_id = 0;
 			}
 			break;
@@ -8144,7 +8144,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 	}
 
 	if(StatusIconChangeTable[type] != SI_BLANK)
-		clif_status_change(bl,StatusIconChangeTable[type],0,0,0);	// アイコン消去
+		clif_status_change(bl,StatusIconChangeTable[type],0,0,0,0,0);	// アイコン消去
 
 	switch(type) {	/* 正常に戻るときなにか処理が必要 */
 		// opt1
@@ -8302,7 +8302,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_HIDING:
 			// 霞斬りでない通常のハイドならアイコン消去
 			if(sd && sc->data[type].val3 == 0)
-				clif_status_change(bl,SI_HIDING,0,0,0);
+				clif_status_change(bl,SI_HIDING,0,0,0,0,0);
 			sc->option &= ~OPTION_HIDE;
 			opt_flag = 1;
 			break;

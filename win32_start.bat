@@ -43,11 +43,11 @@ IF NOT EXIST .\conf\import\map_conf.txt type nul > .\conf\import\map_conf.txt
 
 IF NOT EXIST .\save\account.txt echo creating .\save\account.txt
 IF NOT EXIST .\save\account.txt set _aurigatmp_=1
-if "%_aurigatmp_%" == "1" echo 0	s1	p1	-	S	0	0 >.\save\account.txt
-if "%_aurigatmp_%" == "1" echo 1	s2	p2	-	S	0	0 >>.\save\account.txt
-if "%_aurigatmp_%" == "1" echo 2	s3	p3	-	S	0	0 >>.\save\account.txt
-if "%_aurigatmp_%" == "1" echo 3	s4	p4	-	S	0	0 >>.\save\account.txt
-if "%_aurigatmp_%" == "1" echo 4	s5	p5	-	S	0	0 >>.\save\account.txt
+if "%_aurigatmp_%" == "1" echo 0	s1	p1	-	S	0	0	@	000000 >.\save\account.txt
+if "%_aurigatmp_%" == "1" echo 1	s2	p2	-	S	0	0	@	000000 >>.\save\account.txt
+if "%_aurigatmp_%" == "1" echo 2	s3	p3	-	S	0	0	@	000000 >>.\save\account.txt
+if "%_aurigatmp_%" == "1" echo 3	s4	p4	-	S	0	0	@	000000 >>.\save\account.txt
+if "%_aurigatmp_%" == "1" echo 4	s5	p5	-	S	0	0	@	000000 >>.\save\account.txt
 if "%_aurigatmp_%" == "1" set _aurigatmp_=
 
 IF NOT EXIST .\save\castle.txt echo creating .\save\castle.txt

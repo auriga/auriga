@@ -1,4 +1,125 @@
 ----------------------------------------
+//0839 [2011/04/08] by popori
+
+・sqldbs.*に関する変更 (src/common/sqldbs.*)
+ ->プリペアドステートメントに関するAPIを追加
+
+ ->sqldbs_simplequery()を追加して単純な文字列を流す場合はこちらを使用するよう変更する
+
+・ログインサーバーに関する変更 (src/login/* sql-files/Auriga837_changetable.sql sql-files/main.sql conf/login_auriga.conf)
+
+ ->ログインサーバーの処理が全てlogin.cに集約しているので、各機能ごとに分割する
+   今のところ大雑把にファイルを分割しただけです。
+   少々強引ですが、1ファイルに全ての処理が集約しているのは形式として良くないと考えたためです。
+
+ ->SQL: 該当のセーブデータを縮小しコーディングを簡略化する(0229の変更の補完)
+   login table userid varchar(24) → login table userid varchar(23)
+   login table user_pass varchar(24) → login table user_pass varchar(23)
+   login table email varchar(40) → login table email varchar(39)
+   worldreg table reg varchar(32) → worldreg table reg varchar(31)
+
+ ->SQL: loginテーブルのsexをENUM型に変更する
+
+ ->安全のためデフォルトでconf/login_auriga.confのristrict_admin_localオプションを有効に変更
+
+ ->login_auriga.confのnew_accountをデフォルトで0に変更
+
+ ->auth_fifo形式を廃止してauth_nodeを新たに追加する
+
+ ->SQL: ログインサーバーのプリペアドステートメント、トランザクションに対応。一部のSQLインジェクション対策はプリペアドステートメントを使用するよう変更
+        トランザクションに対応するにはMySQLのストレージエンジンをInnoDBに変更して下さい。
+        今回のパッチからMySQL4.xをサポートを打ち切ります。
+        各自5.xに移行して下さい。
+        また、MyISAMの場合START TRANSACTIONを送っても無視されるだけなので、エンジンに関わらずSTART TRANSACTIONを送っています。
+
+ ->その他細かい変更
+
+・キャラクターサーバーに関する変更 (src/char/*)
+
+ ->各機能ごとにソースファイルを分離
+   現在はログインサーバーと同じくある程度大雑把に分割しただけです。
+   interサーバーとしてのparse部分は従来通りint_****.*にして保存処理を別ファイルに置き換えました。
+   同時にキャラクターサーバーとしての動作も1ファイルに集約しているので分割。
+   やはり少々強引ですが、1ファイルに処理が集約しすぎていると考えたためです。
+   現在暫定的にグローバルに設置しているオブジェクトがありますが、徐々に見直す予定。
+
+ ->SQL: キャラサーバーの一部の処理をトランザクション・プリペアドステートメントに対応させる
+        現在一部は未対応なので、追々全て対応させます。
+
+ ->auth_fifo形式を廃止してauth_nodeを新たに追加する
+
+ ->その他細かい変更
+
+・上記の変更に伴いエンジンコンバート用スクリプトを追加 (sql-files/convert_engine_innodb.sql sql-files/convert_engine_myisam.sql)
+
+・MySQLの簡易的なメンテナンス用にdb_maintenance.sqlを追加 (sql-files/db_maintenance.sql)
+　ANALYZE TABLE、OPTIMIZE TABLEを実行するだけのものです。
+　定期的に実行することによって、Aurigaで使用するテーブルのパフォーマンス低下を防げるかもしれません。
+
+・AUTH_FIFO_SIZEをコードから削除 (src/common/mmo.h)
+
+・MySQL5.2以降に対応(エンジンの指定をTYPEからENGINEに変更しただけです) (sql-files/main.sql)
+　crisp.さんに感謝
+
+・utils.hにbool型を追加(charのシノニム) (src/common/utils.h)
+
+・上記の変更に伴い一部関数の仕様を変更 (src/common/sqldbs.* src/char/* src/map/map.c src/map/intif.c)
+
+・性別の定義をenumで用意する (src/common/mmo.h src/login/login.* src/login/account_*.c src/map/atcommand.c src/map/clif.c src/map/itemdb.c src/map/pc.c src/map/script.c src/map/skill.c)
+
+・管理者用パケットのサイズの一部の無駄を省く (src/login/login.c tool/ladmin doc/admin_packet.txt)
+  今回の変更でtool/php以下のものは現在対応していません。
+  後日tool/php以下も対応させます。
+
+・2010-08-03aRagexeRE以降のクライアントの誕生日認証キャラ削除パケットに対応 (tool/ladmin src/char/char.c src/login/login.* src/common/mmo.h sql-files/main.sql sql-files/Auriga837_changetable.sql conf/char_auriga.conf doc/serverlink_packet.txt win32_start.bat)
+  誕生日のデータは初期値は000000です。
+  char_auriga.confのdelete_delay_timeはキャラを削除可能までの待機時間です、各自設定して下さい。デフォルトは24時間。
+  今回の変更でtool/php以下のものは現在対応していません。
+  後日tool/php以下も対応させます。
+
+・上記の変更に伴いPACKETVERを31に引き上げ (vc_make.bat bcc32_make.bat Makefile *.dsp)
+
+・ビルドオプションにAC_BIRTHDATEを追加 (vc_make.bat bcc32_make.bat Makefile src/login/login.c)
+　誕生日認証でキャラを削除する場合はONにして下さい。
+　2010-08-03aRagexeRE以降のクライアントのみ対応です。
+　誕生日データはYYMMDDの形式で半角数値6バイト強制です。
+
+・コスチュームシステム用にセーブデータだけ拡張しておく (src/common/mmo.h src/char/char.c src/map/itemdb.h sql-files/Auriga837_changetable.sql sql-files/main.sql)
+
+・装備閲覧でMAPサーバーがクラッシュするバグを修正 (src/map/clif.c)
+　Akayumiさんに感謝
+
+・MAX_PACKET_DBとpacket_db構造体の定義をclif.hからclif.cに移動 (clif.*)
+
+・本家の設定に合わせてペットの髪型情報の送信はAREA指定で送るよう変更 (src/map/clif.* src/map/pet.c)
+
+・フリーキャストで移動速度が増加するバグを修正 (src/map/status.c src/map/unit.c)
+　うに〜くさんに感謝
+
+・攻撃による状態異常付与の仕様を一部巻き戻す (src/map/battle.*)
+ ->スキル「猛虎硬派山」のノックバック効果はダメージが発生しないとノックバックしないよう変更
+ ->ダメージが1以上の場合のみ攻撃による状態異常を付与させるよう変更
+
+・gcc4.3.4環境下でのコンパイルワーニングの修正 (src/map/battle.c src/map/skill.c src/map/status.c)
+
+・最大所持金を本家仕様に合わせて拡大 (src/map/mmo.h)
+
+・0x43fのパラメータをパケットの構造に合わせて拡張だけしておく (src/map/atcommand.c src/map/clif.* src/map/pc.c src/map/skill.c src/map/unit.c)
+　基本的にval1,val2,val3に入る値は確率であったり、適用%だったりします。
+
+・クラスIDの定義にJT_SANTA、JT_SUMMERが抜けているので追加 (src/common/mmo.h)
+
+・職業のenum定義を使用していない箇所を使用するよう変更 (src/map/clif.c)
+
+・battle_auriga.confのclif_fix_levelを少し拡張 (conf/battle_auriga.conf src/map/clif.c)
+　3次職でレベルが150以上の場合でもオーラを表示出来るように
+
+・0838を少し修正 (src/map/pc.c)
+
+・スキルを一時的に覚えた状態でポイントを振るとポイントだけ消費されるのを修正 (src/map/pc.c)
+　Cocoaさんに感謝
+
+----------------------------------------
 //0838 [2011/04/07] by Cocoa
 ・3次職の養子がbaby_status_max以上にステータスが振れなかった不具合修正（pc.c）
 

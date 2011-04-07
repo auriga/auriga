@@ -19,6 +19,7 @@ set __BITTYPE__=x32
 
 rem ----------------------------------------------------------------
 rem パケット定義
+rem 2010-08-03aRagexeRE: 31
 rem 2010-07-28aRagexeRE: 30
 rem 2010-07-21aRagexeRE: 29
 rem 2010-06-29aRagexeRE: 28
@@ -42,7 +43,7 @@ rem 2007-09-04aSakexe: 11
 rem 2007-07-11aSakexe: 10
 rem 2007-05-21aSakexe:  9
 rem 2007-02-12aSakexe:  8
-set __PACKETDEF__=/D "PACKETVER=30" /D "NEW_006b" /D "NEW_006b_RE"
+set __PACKETDEF__=/D "PACKETVER=31" /D "NEW_006b" /D "NEW_006b_RE"
 
 rem ----------------------------------------------------------------
 rem コンパイラごとの設定（自分の環境にあうもののコメントアウトをはずす）
@@ -156,6 +157,9 @@ rem set __DYNAMIC_STATUS_CHANGE__=/D "DYNAMIC_SC_DATA"
 rem キャラの削除にメールアドレスを使う場合はコメントアウトをはずす
 rem set __AC_MAIL__=/D "AC_MAIL"
 
+rem キャラの削除に誕生日を使う場合はコメントアウトをはずす
+rem set __AC_BIRTHDATE__=/D "AC_BIRTHDATE"
+
 rem ステータス異常データの保存を無効にする場合はコメントアウトをはずす
 rem set __NO_SCDATA_SAVING__=/D "NO_SCDATA_SAVING"
 
@@ -215,7 +219,7 @@ set __LINKZLIB__=../common/zlib/*.obj
 if "%__BITTYPE__%"=="x32" set __BITOPTION__=/D "WIN32" /D "_WIN32" /D "_WIN32_WINDOWS"
 if "%__BITTYPE__%"=="x64" set __BITOPTION__=/D "WIN64" /D "_WIN64"
 
-set __opt1__=/D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" %__BITOPTION__% %__PACKETDEF__% %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__NO_SCDATA_SAVING__%
+set __opt1__=/D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" %__BITOPTION__% %__PACKETDEF__% %__TXT_MODE__% %__ZLIB__% %__CMP_AFL2__% %__CMP_AFIP__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__AC_BIRTHDATE__% %__NO_SCDATA_SAVING__%
 set __opt2__=/DEBUG %__FIXOPT2__% user32.lib %__LINKZLIB__% ../common/*.obj *.obj
 set __include__=/I "../common/zlib/" /I "../common/"
 

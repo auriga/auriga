@@ -29,11 +29,9 @@
 
 #pragma pack(4)
 
-#define AUTH_FIFO_SIZE 256
-
 #define MAX_INVENTORY 100
 #define MAX_AMOUNT 30000
-#define MAX_ZENY 1000000000	// 1G zeny
+#define MAX_ZENY 2147483647
 #define MAX_CART 100
 #define GLOBAL_REG_NUM 96
 #define ACCOUNT_REG_NUM 16
@@ -139,6 +137,8 @@ enum {
 	PC_CLASS_SNV,			// スーパーノービス
 	PC_CLASS_GS,			// ガンスリンガー
 	PC_CLASS_NJ,			// 忍者
+	PC_CLASS_ST,			// サンタ
+	PC_CLASS_SU,			// 水着
 	PC_CLASS_NV_H = 4001,	// 転生ノービス
 	PC_CLASS_SM_H,			// 転生ソードマン
 	PC_CLASS_MG_H,			// 転生マジシャン
@@ -308,6 +308,13 @@ enum {
 	PC_UPPER_MAX
 };
 
+// 性別テーブル
+enum {
+	SEX_FEMALE = 0,
+	SEX_MALE,
+	SEX_SERVER
+};
+
 struct item {
 	unsigned int id;
 	short nameid;
@@ -379,6 +386,7 @@ struct mmo_charstatus {
 
 	short weapon,shield;
 	short head_top,head_mid,head_bottom;
+	short costume_head_top,costume_head_mid,costume_head_bottom;
 
 	char name[24];
 	unsigned short base_level,job_level;
@@ -392,6 +400,7 @@ struct mmo_charstatus {
 	int friend_num;
 	struct friend_data friend_data[MAX_FRIEND];
 	struct hotkey hotkey[MAX_HOTKEYS];
+	unsigned int delete_date;
 };
 
 struct registry {

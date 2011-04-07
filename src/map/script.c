@@ -7919,12 +7919,12 @@ int buildin_changesex(struct script_state *st)
 
 	nullpo_retr(0, sd);
 
-	if(sd->sex==0){
-		sd->sex=1;
+	if(sd->sex==SEX_FEMALE){
+		sd->sex=SEX_MALE;
 		if(sd->s_class.job == PC_JOB_DC || sd->s_class.job == PC_JOB_WA)
 			sd->status.class_ -= 1;
 	} else {
-		sd->sex=0;
+		sd->sex=SEX_FEMALE;
 		if(sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI)
 			sd->status.class_ += 1;
 	}
@@ -11292,7 +11292,8 @@ int buildin_recalcstatus(struct script_state *st)
 int buildin_sqlquery(struct script_state *st)
 {
 #ifndef TXT_ONLY
-	int count = -1, rc;
+	int count = -1;
+	bool is_success;
 	MYSQL_RES* sql_res;
 	char *query = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
@@ -11301,8 +11302,8 @@ int buildin_sqlquery(struct script_state *st)
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	rc = sqldbs_query(&mysql_handle_script, query);
-	if(rc) {
+	is_success = sqldbs_query(&mysql_handle_script, query);
+	if(is_success == false) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}

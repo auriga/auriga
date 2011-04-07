@@ -42,20 +42,19 @@ S 7920 <start_id>.l <end_id>.l <flag>.B
 	flag=0固定
 R 7921 <len>.w { <account_id>.l <account_name>.24B <sex>.B <dummy>.24B <count>.l state.l }.61B*
 	アカウントリスト送信
-S 7930 <len>.w <account_name>.24B <password>.24B <sex>.B [<mail>.40B]
+S 7930 <account_name>.24B <password>.24B <sex>.B <mail>.40B <birth>.7B
 	アカウント作成
-	mail は省略可能
 R 7931 <flag>.w <account_name>.24B
 	アカウント作成成否 flag= 0 成功/ 1 同じアカウントがある
-S 7932 <len>.w <account_name>.24B
+S 7932 <account_name>.24B
 	アカウントの削除
 R 7933 <flag>.w <account_name>.24B
 	アカウントの削除可否 flag= 0 成功 / 1 存在しない
-S 7934 <len>.w <account_name>.24B <password>.24B
+S 7934 <account_name>.24B <password>.24B
 	アカウントのパスワード変更
 R 7935 <flag>.w <account_name>.24B
 	アカウントのパスワード変更可否 flag=0成功/1存在しない
-S 7936 <len>.w <account_name>.24B <state>.l
+S 7936 <account_name>.24B <state>.l
 	アカウントのバン状態変更
 R 7937 <flag>.w <account_name>.24B <state>.l
 	アカウントのバン状態変更可否 flag=0成功/1=存在しない

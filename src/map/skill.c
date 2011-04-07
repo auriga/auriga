@@ -2546,7 +2546,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 	src_hd  = BL_DOWNCAST( BL_HOM,  src );
 	src_mcd = BL_DOWNCAST( BL_MERC, src );
 
-	if(src_ud->skillid != SA_CASTCANCEL && !(src_ud->skillid == SO_SPELLFIST && (src_sd && src_sd->skill_used.id == MG_FIREBOLT || src_sd->skill_used.id == MG_COLDBOLT || src_sd->skill_used.id == MG_LIGHTNINGBOLT))) {
+	if(src_ud->skillid != SA_CASTCANCEL && !(src_ud->skillid == SO_SPELLFIST && (src_sd && (src_sd->skill_used.id == MG_FIREBOLT || src_sd->skill_used.id == MG_COLDBOLT || src_sd->skill_used.id == MG_LIGHTNINGBOLT)))) {
 		if( src_ud->skilltimer != tid )	// タイマIDの確認
 			return 0;
 		if( src_sd && src_ud->skilltimer != -1 &&
@@ -2701,7 +2701,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 				}
 			}
 #if PACKETVER > 18
-			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv), 0);
+			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv), 0, 0, 0);
 #endif
 		}
 
@@ -4663,7 +4663,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			skill_area_temp[2] = src->x;
 			skill_area_temp[3] = src->y;
 			map_foreachinarea(skill_area_sub,
-				src->m,src->x-2,src->y-2,src->x+2,src->y+2,(BL_CHAR|BL_SKILL),
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -4858,7 +4858,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				int skill = pc_checkskill(sd,HP_MEDITATIO);
 				if(skill > 0)	// メディタティオ
 					heal += heal * (skill * 2) / 100;
-				if(dstsd && sd->status.partner_id == dstsd->status.char_id && sd->s_class.job == 23 && sd->sex == 0)
+				if(dstsd && sd->status.partner_id == dstsd->status.char_id && sd->s_class.job == PC_CLASS_SNV && sd->sex == SEX_FEMALE)
 					heal *= 2;	// スパノビの嫁が旦那にヒールすると2倍になる
 			}
 			if(skillid == AB_HIGHNESSHEAL)
@@ -6867,7 +6867,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			battle_heal(NULL,bl,0,gain_sp,0);
 
 			// スパノビの嫁が旦那に使用すると10%の確率でステータス付与
-			if(sd->s_class.job == PC_JOB_SNV && sd->sex == 0 && atn_rand()%100 < 10) {
+			if(sd->s_class.job == PC_JOB_SNV && sd->sex == SEX_FEMALE && atn_rand()%100 < 10) {
 				int sec = skill_get_time2(skillid,skilllv);
 				status_change_start(&sd->bl,GetSkillStatusChangeTable(skillid),skilllv,1,0,0,sec,0);
 				status_change_start(&dstsd->bl,GetSkillStatusChangeTable(skillid),skilllv,2,0,0,sec,0);
@@ -8733,7 +8733,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(idx >= 0 && sd->inventory_data[idx]) {
 				int nameid = sd->inventory_data[idx]->nameid;
 				int cost = skill_get_arrow_cost(skillid,skilllv);
-				if(!nameid || cost > 0 && !battle_delarrow(sd, cost, skillid))
+				if((!nameid || cost) > 0 && !battle_delarrow(sd, cost, skillid))
 					break;
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 
@@ -8932,7 +8932,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 				}
 			}
 #if PACKETVER > 18
-			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv), 0);
+			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv), 0, 0, 0);
 #endif
 		}
 		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
@@ -9150,7 +9150,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			if(idx >= 0 && sd->inventory_data[idx]) {
 				int nameid = sd->inventory_data[idx]->nameid;
 				int cost = skill_get_arrow_cost(skillid,skilllv);
-				if(!nameid || cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
+				if((!nameid || cost) > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
 					break;
 				skill_unitsetting(src,skillid,skilllv,x,y,nameid);
 			}
@@ -13578,7 +13578,7 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 			idx[i] = -1;
 		}
 		// ハンターのトラップスキルはユニット設置時にアイテム消費
-		if(cnd->id >= HT_SKIDTRAP && cnd->id <= HT_CLAYMORETRAP || cnd->id == HT_TALKIEBOX) {
+		if(cnd->id >= HT_SKIDTRAP && (cnd->id <= HT_CLAYMORETRAP || cnd->id == HT_TALKIEBOX)) {
 			idx[i] = -1;
 		}
 	}
@@ -13617,7 +13617,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 		if(sc->data[SC_MAGICPOWER].val2 > 0) {
 			/* 最初に通った時にはアイコン消去だけ */
 			sc->data[SC_MAGICPOWER].val2--;
-			clif_status_change(bl, SI_MAGICPOWER, 0, 0, 0);
+			clif_status_change(bl, SI_MAGICPOWER, 0, 0, 0, 0, 0);
 		} else {
 			status_change_end(bl, SC_MAGICPOWER, -1);
 		}

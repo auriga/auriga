@@ -1061,7 +1061,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 		}
 	}
 	if(battle_config.equip_sex) {
-		if(item->sex != 2 && sd->sex != item->sex)
+		if(item->sex != SEX_SERVER && sd->sex != item->sex)
 			return 0;
 	}
 	if(item->elv > 0 && sd->status.base_level < item->elv)
@@ -3867,7 +3867,7 @@ static int pc_isUseitem(struct map_session_data *sd,int n)
 	if(item->type != ITEMTYPE_HEAL && item->type != ITEMTYPE_SPECIAL && item->type != ITEMTYPE_CASH_POINT_ITEM)
 		return 0;
 
-	if(item->sex != 2 && sd->sex != item->sex)
+	if(item->sex != SEX_SERVER && sd->sex != item->sex)
 		return 0;
 	if(item->elv > 0 && sd->status.base_level < item->elv)
 		return 0;
@@ -4684,7 +4684,7 @@ int pc_runtodir(struct map_session_data *sd)
 			if(sd->sc.data[SC_RUN].val4 > 0)
 				skill_blown(&sd->bl,&sd->bl,skill_get_blewcount(TK_RUN,sd->sc.data[SC_RUN].val1)|SAB_NODAMAGE);
 			status_change_end(&sd->bl,SC_RUN,-1);
-			clif_status_change(&sd->bl,SI_RUN_STOP,1,0,0);
+			clif_status_change(&sd->bl,SI_RUN_STOP,1,0,0,0,0);
 			pc_setdir(sd, dir, head_dir);
 		}
 		if(sd->sc.data[SC_WUGDASH].timer != -1) {
@@ -5255,12 +5255,10 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		// base側レベルアップ処理
 		sd->status.base_exp -= next;
 		sd->status.base_level++;
-		if(sd->status.base_level < 100 || (sd->status.base_level >= 100 && !battle_config.pk_murderer_point)) {
+		if(sd->status.base_level < 100 || (sd->status.base_level >= 100 && !battle_config.pk_murderer_point))
 			sd->status.status_point += (sd->status.base_level+14) / 5;
-		}
-		else {
+		else
 			sd->status.status_point += (sd->status.base_level+129 ) / 10;
-		}
 		clif_updatestatus(sd,SP_STATUSPOINT);
 		clif_updatestatus(sd,SP_BASELEVEL);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
@@ -5851,9 +5849,9 @@ int pc_need_status_point(struct map_session_data *sd,int type)
 		return 0;
 	else if(pc_is3rdclass(sd) && val >= battle_config.third_status_max)
 		return 0;
-	else if(!pc_is3rdclass(sd) && val >= battle_config.max_parameter)
-		return 0;
 	else if(!pc_is3rdclass(sd) && pc_isbaby(sd) && val >= battle_config.baby_status_max)
+		return 0;
+	else if(!pc_is3rdclass(sd) && val >= battle_config.max_parameter)
 		return 0;
 
 	if(val < 0)
@@ -6064,6 +6062,7 @@ void pc_skillup(struct map_session_data *sd, int skill_num)
 
 	if( sd->status.skill_point > 0 &&
 	    sd->status.skill[skill_num].id != 0 &&
+		sd->status.skill[skill_num].flag == 0 &&
 	    sd->status.skill[skill_num].lv < pc_get_skilltree_max(&sd->s_class,skill_num) )
 	{
 		sd->status.skill[skill_num].lv++;
@@ -7275,8 +7274,8 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 
 	b_class = pc_calc_class_job(job, upper);
 
-	if((sd->sex == 0 && job == PC_JOB_BA) || (sd->sex == 1 && job == PC_JOB_DC) ||
-	   (sd->sex == 0 && job == PC_JOB_MI) || (sd->sex == 1 && job == PC_JOB_WA) ||
+	if((sd->sex == SEX_FEMALE && job == PC_JOB_BA) || (sd->sex == SEX_MALE && job == PC_JOB_DC) ||
+	   (sd->sex == SEX_FEMALE && job == PC_JOB_MI) || (sd->sex == SEX_MALE && job == PC_JOB_WA) ||
 	   sd->status.class_ == b_class)	// はバードになれない、♂はダンサーになれない
 		return 1;
 
@@ -8601,10 +8600,10 @@ int pc_check_adopt_condition(struct map_session_data *dstsd, struct map_session_
 			return 0;
 		}
 
-		itemid = (sd->sex == 0)? WEDDING_RING_F: WEDDING_RING_M;
+		itemid = (sd->sex == SEX_FEMALE)? WEDDING_RING_F: WEDDING_RING_M;
 		if(pc_equippeditem(sd,itemid) < 1)
 			return 0;
-		itemid = (psd->sex == 0)? WEDDING_RING_F: WEDDING_RING_M;
+		itemid = (psd->sex == SEX_FEMALE)? WEDDING_RING_F: WEDDING_RING_M;
 		if(pc_equippeditem(psd,itemid) < 1)
 			return 0;
 	}

@@ -32,6 +32,7 @@
 #endif
 
 #include <mysql.h>
+#include "utils.h"
 
 #ifdef _MSC_VER
 #pragma comment(lib,"libmysql.lib")
@@ -80,10 +81,39 @@ extern char tmp_sql[65535];
 // map
 #define MAPREG_TABLE "mapreg"
 
+// プリペアドステートメント型サイズ変換用テーブル
+enum {
+	SQL_DATA_TYPE_NULL,
+	SQL_DATA_TYPE_INT8,
+	SQL_DATA_TYPE_INT16,
+	SQL_DATA_TYPE_INT32,
+	SQL_DATA_TYPE_INT64,
+	SQL_DATA_TYPE_UINT8,
+	SQL_DATA_TYPE_UINT16,
+	SQL_DATA_TYPE_UINT32,
+	SQL_DATA_TYPE_UINT64,
+	SQL_DATA_TYPE_CHAR,
+	SQL_DATA_TYPE_SHORT,
+	SQL_DATA_TYPE_INT,
+	SQL_DATA_TYPE_LONG,
+	SQL_DATA_TYPE_LONGLONG,
+	SQL_DATA_TYPE_UCHAR,
+	SQL_DATA_TYPE_USHORT,
+	SQL_DATA_TYPE_UINT,
+	SQL_DATA_TYPE_ULONG,
+	SQL_DATA_TYPE_ULONGLONG,
+	SQL_DATA_TYPE_FLOAT,
+	SQL_DATA_TYPE_DOUBLE,
+	SQL_DATA_TYPE_STRING,
+	SQL_DATA_TYPE_VAR_STRING,
+	SQL_DATA_TYPE_ENUM
+};
+
 char* strecpy(char* pt, const char* spt);
 char* strecpy_(MYSQL *handle, char* pt, const char* spt);
 
-int sqldbs_query(MYSQL *handle, const char *query, ...);
+bool sqldbs_query(MYSQL *handle, const char *query, ...);
+bool sqldbs_simplequery(MYSQL *handle, const char *query);
 MYSQL_RES* sqldbs_store_result(MYSQL *handle);
 MYSQL_ROW sqldbs_fetch(MYSQL_RES *res);
 int sqldbs_num_rows(MYSQL_RES *res);
@@ -91,8 +121,16 @@ int sqldbs_num_fields(MYSQL_RES *res);
 void sqldbs_free_result(MYSQL_RES *res);
 int sqldbs_insert_id(MYSQL *handle);
 int sqldbs_affected_rows(MYSQL *handle);
+MYSQL_STMT* sqldbs_stmt_init(MYSQL *handle);
+bool sqldbs_stmt_prepare(MYSQL_STMT *stmt, const char *query, ...);
+void sqldbs_stmt_bind_param(MYSQL_BIND *bind, int buffer_type, void *buffer, size_t buffer_length, unsigned long *length, char *is_null);
+bool sqldbs_stmt_execute(MYSQL_STMT *stmt, MYSQL_BIND *bind);
+MYSQL_RES* sqldbs_stmt_result_metadata(MYSQL_STMT *stmt);
+bool sqldbs_stmt_store_result(MYSQL_STMT *stmt);
+bool sqldbs_stmt_fetch(MYSQL_STMT *stmt);
+void sqldbs_stmt_close(MYSQL_STMT *stmt);
 void sqldbs_close(MYSQL *handle);
-int sqldbs_connect(MYSQL *handle, const char *host, const char *user, const char *passwd,
+bool sqldbs_connect(MYSQL *handle, const char *host, const char *user, const char *passwd,
 	const char *db, unsigned short port, const char *charset, int keepalive);
 
 #endif	// if TXT

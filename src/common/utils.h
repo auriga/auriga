@@ -276,6 +276,14 @@ typedef int32  intptr;
 #define PTR2INT(x)  ((int)(intptr)(x))
 #define PTR2UINT(x) ((unsigned int)(uintptr)(x))
 
+// =====================
+// 論理型
+// ---------------------
+#ifndef __cplusplus
+	typedef char bool;
+	#define false	(1 == 0)
+	#define true	(1 == 1)
+#endif
 
 // =====================
 // utils.c

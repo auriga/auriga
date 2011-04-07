@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release_sql"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WINDOWS" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D PACKETVER=30 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FD /c /wd4819
+# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D PACKETVER=31 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FD /c /wd4819
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
 # ADD RSC /l 0x411 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug_sql"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WINDOWS" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D PACKETVER=30 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FR /FD /GZ /c /wd4819
+# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D PACKETVER=31 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FR /FD /GZ /c /wd4819
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
 # ADD RSC /l 0x411 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -110,6 +110,26 @@ SOURCE=..\..\src\common\lock.c
 # Begin Source File
 
 SOURCE=..\..\src\login\login.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\login\account_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\login\account_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\login\login_httpd.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\login\loginlog_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\login\loginlog_txt.c
 # End Source File
 # Begin Source File
 
@@ -170,6 +190,18 @@ SOURCE=..\..\src\common\lock.h
 # Begin Source File
 
 SOURCE=..\..\src\login\login.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\login\account.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\login\login_httpd.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\login\loginlog.h
 # End Source File
 # Begin Source File
 

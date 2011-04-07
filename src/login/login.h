@@ -36,7 +36,7 @@ struct login_session_data {
 	int login_id1;
 	int login_id2;
 	int char_id;
-	int sex;
+	char sex;
 	int passwdenc;
 	int md5keylen;
 	char md5key[64];
@@ -54,8 +54,9 @@ struct mmo_char_server {
 };
 
 struct mmo_account {
-	int account_id,sex;
-	char userid[24],pass[24],lastlogin[24],mail[40];
+	int account_id;
+	char sex;
+	char userid[24],pass[24],lastlogin[24],mail[40],birth[7];
 	int logincount;
 	int state;
 	int account_reg2_num;
@@ -63,6 +64,12 @@ struct mmo_account {
 	char lastip[16];
 };
 
-extern char login_conf_filename[];
+extern struct mmo_char_server server[MAX_CHAR_SERVERS];
+extern int server_fd[MAX_CHAR_SERVERS];
+
+int isGM(int account_id);
+int parse_admin(int fd);
+int parse_login(int fd);
+int parse_fromchar(int fd);
 
 #endif /* _LOGIN_H_ */

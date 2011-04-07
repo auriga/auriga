@@ -5,6 +5,7 @@ CC = gcc -pipe
 # Detecting gcc version
 GCC_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
 
+# 2010-08-03aRagexeRE: 31
 # 2010-07-28aRagexeRE: 30
 # 2010-07-21aRagexeRE: 29
 # 2010-06-29aRagexeRE: 28
@@ -28,7 +29,7 @@ GCC_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f
 # 2007-07-11aSakexe: 10
 # 2007-05-21aSakexe:  9
 # 2007-02-12aSakexe:  8
-PACKETDEF = -DPACKETVER=30 -DNEW_006b -DNEW_006b_RE
+PACKETDEF = -DPACKETVER=31 -DNEW_006b -DNEW_006b_RE
 
 PLATFORM = $(shell uname)
 
@@ -112,6 +113,9 @@ CFLAGS += -DNO_HTTPD_CGI
 
 # account regist MailAddress
 #CFLAGS += -DAC_MAIL
+
+# account regist Birth Date
+#CFLAGS += -DAC_BIRTHDATE
 
 # disable save of status change data
 #CFLAGS += -DNO_SCDATA_SAVING

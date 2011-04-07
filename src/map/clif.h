@@ -24,14 +24,6 @@
 
 #include "map.h"
 
-#define MAX_PACKET_DB 0x850
-
-struct packet_db {
-	short len;
-	void (*func)(int fd,struct map_session_data *sd, int cmd);
-	short pos[8];
-};
-
 void clif_sethost(const char*);
 void clif_setip(void);
 void clif_setport(unsigned short);
@@ -199,7 +191,7 @@ void clif_angel_message(struct map_session_data *sd);
 void clif_feel_display(struct map_session_data *sd, int skilllv);
 
 void clif_status_load(struct map_session_data *sd, int type, unsigned char flag);
-void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick, int val);
+void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3);
 
 void clif_wis_message(int fd,char *nick,char *mes, int mes_len);
 void clif_wis_end(int fd, unsigned short flag);
@@ -317,6 +309,7 @@ void clif_catch_process(struct map_session_data *sd);
 void clif_pet_rulet(struct map_session_data *sd, unsigned char data);
 void clif_sendegg(struct map_session_data *sd);
 void clif_send_petdata(struct map_session_data *sd, unsigned char type, int param);
+void clif_send_pethair(struct map_session_data *sd);
 void clif_send_petstatus(struct map_session_data *sd);
 void clif_pet_performance(struct block_list *bl, int param);
 void clif_pet_equip(struct pet_data *pd, int nameid);

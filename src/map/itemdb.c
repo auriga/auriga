@@ -135,7 +135,7 @@ struct item_data* itemdb_search(int nameid)
 	id->value_buy  = 10;
 	id->value_sell = id->value_buy/2;
 	id->weight     = 10;
-	id->sex        = 2;
+	id->sex        = SEX_SERVER;
 	id->elv        = 0;
 	id->class_     = 0xffffffff;
 

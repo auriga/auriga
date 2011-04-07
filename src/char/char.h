@@ -23,10 +23,11 @@
 #define _CHAR_H_
 
 #include "mmo.h"
+#include "utils.h"
 
 #define MAX_MAP_SERVERS 8
-
 #define DEFAULT_AUTOSAVE_INTERVAL_CS 300*1000
+#define MAX_CHAR_SLOT 12
 
 struct mmo_map_server {
 	unsigned long ip;
@@ -42,72 +43,31 @@ struct mmo_chardata {
 	struct registry reg;
 };
 
-#define MAX_CHAR_SLOT 12
-
 struct char_session_data {
 	int state;
 	int account_id,login_id1,login_id2,sex;
 	const struct mmo_chardata *found_char[MAX_CHAR_SLOT];
 };
 
-struct cram_session_data {
-	int md5keylen;
-	char md5key[128];
-};
-
-int mapif_sendall(unsigned char *buf,unsigned int len);
-int mapif_sendallwos(int fd,unsigned char *buf,unsigned int len);
-int mapif_send(int fd,unsigned char *buf,unsigned int len);
+int compare_ranking_data(const void *a,const void *b);
+int mapif_sendall(unsigned char *buf, unsigned int len);
+int mapif_sendallwos(int fd, unsigned char *buf, unsigned int len);
+int mapif_send(int fd, unsigned char *buf, unsigned int len);
 void mapif_parse_CharConnectLimit(int fd);
+int char_log(const char *fmt, ...);
+int parse_char(int fd);
 
-extern int autosave_interval;
-
-struct char_online {
-	int account_id;
-	int char_id;
-	unsigned long ip;
-	unsigned short port;
-	char name[24];
-};
-
-extern char char_conf_filename[];
-extern char inter_conf_filename[];
-
-
-#ifdef TXT_ONLY
-
-int char_txt_save(struct mmo_charstatus *st);
-const struct mmo_chardata* char_txt_load(int char_id);
-const struct mmo_chardata* char_txt_nick2chardata(const char *char_name);
-
-#ifndef _CHAR_C_
-#define char_save          char_txt_save
-#define char_load          char_txt_load
-#define char_nick2chardata char_txt_nick2chardata
-#endif /* _CHAR_C_ */
-
-#else
-
-int char_sql_save(struct mmo_charstatus *st);
-const struct mmo_chardata* char_sql_load(int char_id);
-const struct mmo_chardata* char_sql_nick2chardata(const char *char_name);
-
-#ifndef _CHAR_C_
-#define char_save          char_sql_save
-#define char_load          char_sql_load
-#define char_nick2chardata char_sql_nick2chardata
-#endif /* _CHAR_C_ */
-
-// for sql
-enum {
-	TABLE_NUM_INVENTORY,
-	TABLE_NUM_CART,
-	TABLE_NUM_STORAGE,
-	TABLE_NUM_GUILD_STORAGE,
-};
-int char_sql_saveitem(struct item *item, int max, int id, int tableswitch);
-int char_sql_loaditem(struct item *item, int max, int id, int tableswitch);
-
-#endif /* TXT_ONLY */
+extern struct Ranking_Data ranking_data[MAX_RANKING][MAX_RANKER];
+extern const char ranking_reg[MAX_RANKING][32];
+extern int start_zeny;
+extern int start_weapon;
+extern int start_armor;
+extern int check_status_polygon;
+extern int max_char_slot;
+extern struct point start_point;
+extern char unknown_char_name[24];
+extern char GM_account_filename[1024];
+extern char char_conf_filename[256];
+extern char inter_conf_filename[256];
 
 #endif /* _CHAR_H_ */

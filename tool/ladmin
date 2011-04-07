@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 ##########################################################################
-# Aurigaのログインサーバー保守ツール Ver.1.06  by 胡蝶蘭
+# Aurigaのログインサーバー保守ツール Ver.1.07  by 胡蝶蘭
 #
 # 　起動中のAurigaのlogin.exeに接続してアカウントの保守を行うツール.
 # 　アカウントの追加、削除、パスワードの変更、リスト表示ができます.
@@ -69,7 +69,7 @@ my($passenc)=2;					# パスワード暗号化タイプ
 # シェルの単一コマンドとしての作業
 #	./ladmin --mode param1 ...
 #
-#	--add <account_name> <gender> <password> [<email>] アカウントの追加(-aでも可)
+#	--add <account_name> <gender> <password> [<email>] [<birth>] アカウントの追加(-aでも可)
 #	--check <account_name> <password>                  アカウントパスワードの有効性をチェック(-check)
 #	--del <account_name>                               アカウントの削除(-d)
 #	--getcount                                         オンラインプレイヤーの人数を取得(-g)
@@ -89,7 +89,7 @@ my($passenc)=2;					# パスワード暗号化タイプ
 #	作成しておき、そのファイルで起動します。
 #	古いVerのaddaccountは削除して置いてください。
 #	
-#	addaccount <account_name> <gender> <password> アカウントの追加
+#	addaccount <account_name> <gender> <password> [<email>] [<birth>] アカウントの追加
 #	checkaccount <account_name> <password>        アカウントパスワードの有効性をチェック
 #	delaccount <account_name>                     アカウントの削除
 #	getcount                                      オンラインプレイヤーの人数を取得
@@ -232,7 +232,7 @@ print "Logged on.\n";
 
 if ($0 =~ /addaccount$/ ||
     (($ARGV[0] eq "-a" || $ARGV[0] eq "--add") && ((shift @ARGV),1))){
-	my($r)=addaccount($ARGV[0],$ARGV[1],$ARGV[2],$ARGV[3]);
+	my($r)=addaccount($ARGV[0],$ARGV[1],$ARGV[2],$ARGV[3],$ARGV[4]);
 	quit();
 	exit($r);
 }elsif($0 =~ /checkaccount$/ ||
@@ -309,7 +309,7 @@ while(1){
 	eval{
 		if("help" =~ /^\Q$cmdlist[0]/){
 			print << "EOD";
-  add <account_name> <gender> <password> -- Add account
+  add <account_name> <gender> <password> [<mail>] [<birth>] -- Add account
   check <account_name> <password>     -- Check the validity of a password
   del <account_name>                  -- Delete account
   getcount                            -- Give the number of players online
@@ -325,7 +325,7 @@ while(1){
   who <account_name>                  -- Display all information of an account
 EOD
 		}elsif("add" =~ /^\Q$cmdlist[0]/){
-			addaccount($cmdlist[1],$cmdlist[2],$cmdlist[3],$cmdlist[4]);
+			addaccount($cmdlist[1],$cmdlist[2],$cmdlist[3],$cmdlist[4],$cmdlist[5]);
 		}elsif("check" =~ /^\Q$cmdlist[0]/){
 			checkaccount($cmdlist[1],$cmdlist[2]);
 		}elsif("del" =~ /^\Q$cmdlist[0]/){
@@ -417,7 +417,7 @@ sub listaccount(){
 }
 # アカウント追加
 sub addaccount(){
-	my($userid,$sex,$passwd,$mail)= @_;
+	my($userid,$sex,$passwd,$mail,$birth)= @_;
 	if($userid=~/[^A-Za-z0-9\@-_-]/){
 		print "Illegal charactor found in user_id ".$`."[${&}]${'}\n";
 		return 101;
@@ -451,7 +451,15 @@ sub addaccount(){
 		print "Mail Address too long. please input under 39 bytes.!\n";
 		return 110;
 	}
-	print $so pack("v2a24a24a1a40", 0x7930,93, $userid,$passwd,$sex,$mail );
+	if(length($birth)>0 and $birth !~ /[0-9]+$/){
+		print "Illegal birth date [$birth] only numbers.!\n";
+		return 111;
+	}
+	if(length($birth)>0 and length($birth) != 6){
+		print "Birth date is not 6 bytes. please input 6 bytes.!\n";
+		return 112;
+	}
+	print $so pack("va24a24a1a40a7", 0x7930, $userid,$passwd,$sex,$mail,$birth );
 	$so->flush();
 	$buf=readso(2);
 	if(unpack("v",$buf)!=0x7931){
@@ -476,7 +484,7 @@ sub delaccount(){
 	if(lc(substr(<STDIN>,0,1)) ne "y"){
 		return 121;
 	}
-	print $so pack("v2a24", 0x7932,28, $userid);
+	print $so pack("va24", 0x7932, $userid);
 	$so->flush();
 	$buf=readso(2);
 	if(unpack("v",$buf)!=0x7933){
@@ -513,7 +521,7 @@ sub changepasswd(){
 		print "Illegal charactor found in password (".makeordinal($c)." charactor).\n";
 		return 135;
 	}
-	print $so pack("v2a24a24", 0x7934,52, $userid,$passwd);
+	print $so pack("va24a24", 0x7934, $userid,$passwd);
 	$so->flush();
 	$buf=readso(2);
 	if(unpack("v",$buf)!=0x7935){
@@ -773,7 +781,7 @@ sub changestate {
 	$s=lc(substr($s,0,1));
 	if(exists $p{$s}){ $s=$p{$s}; }
 	else{ $s=int($s); }
-	print $so pack("vva24V",0x7936,32,$userid,$s);
+	print $so pack("va24V",0x7936,$userid,$s);
 	$so->flush();
 	$buf=readso(2);
 	if(unpack("v",$buf)!=0x7937){

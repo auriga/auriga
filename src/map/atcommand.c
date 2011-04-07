@@ -1946,7 +1946,7 @@ int atcommand_model(const int fd, struct map_session_data* sd, AtCommandType com
 	    cloth_color >= -1 && cloth_color < MAX_CLOTH_COLOR)
 	{
 		if (MAX_CLOTH_COLOR <= 5 && cloth_color > 0) {
-			if ( (sd->sex == 1 && (sd->status.class_ == 12 ||  sd->status.class_ == 17)) ||
+			if ( (sd->sex == SEX_MALE && (sd->status.class_ == PC_CLASS_AS ||  sd->status.class_ == PC_CLASS_RG)) ||
 			     (sd->status.class_ >= PC_CLASS_TK && sd->status.class_ <= PC_CLASS_SL) )
 			{
 				// 服の色未実装職の判定
@@ -4817,17 +4817,17 @@ int atcommand_ecoff(const int fd, struct map_session_data* sd, AtCommandType com
  */
 int atcommand_icon(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int type = 0, on = 1, val = 0;
+	int type = 0, on = 1, val1 = 0, val2 = 0, val3 = 0;
 	unsigned int tick = 0;
 
 	nullpo_retr(-1, sd);
 
 	if (!message || !*message)
 		return -1;
-	if (sscanf(message, "%d %d %u %d", &type, &on, &tick, &val) < 1)
+	if (sscanf(message, "%d %d %u %d %d %d", &type, &on, &tick, &val1, &val2, &val3) < 1)
 		return -1;
 
-	clif_status_change(&sd->bl, type, on, tick, val);
+	clif_status_change(&sd->bl, type, on, tick, val1, val2, val3);
 
 	return 0;
 }

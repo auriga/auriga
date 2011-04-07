@@ -22,38 +22,34 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "mmo.h"
 #include "socket.h"
 #include "timer.h"
 #include "db.h"
-#include "lock.h"
 #include "malloc.h"
-#include "journal.h"
 #include "utils.h"
 #include "sqldbs.h"
 
 #include "char.h"
 #include "inter.h"
+#include "accregdb.h"
+#include "storagedb.h"
+#include "statusdb.h"
+#include "petdb.h"
+#include "partydb.h"
+#include "mercdb.h"
+#include "maildb.h"
+#include "homundb.h"
+#include "guilddb.h"
 #include "int_party.h"
-#include "int_guild.h"
 #include "int_storage.h"
 #include "int_pet.h"
-#include "int_homun.h"
 #include "int_mail.h"
-#include "int_status.h"
 #include "int_merc.h"
 
 #define WISDATA_TTL    (60*1000)	// Wisデータの生存時間(60秒)
 #define WISDELLIST_MAX 128		// Wisデータ削除リストの要素数
 
 static char inter_log_filename[1024] = "log/inter.log";
-
-struct accreg {
-	int account_id,reg_num;
-	struct global_reg reg[ACCOUNT_REG_NUM];
-};
-
-static struct dbt *accreg_db = NULL;
 
 // 受信パケット長リスト
 int inter_recv_packet_length[] = {
@@ -100,351 +96,6 @@ static int check_ttl_wisdata(void)
 	return 0;
 }
 
-//--------------------------------------------------------
-
-#ifdef TXT_ONLY
-
-char accreg_txt[1024] = "save/accreg.txt";
-
-#ifdef TXT_JOURNAL
-static int accreg_journal_enable = 1;
-static struct journal accreg_journal;
-static char accreg_journal_file[1024] = "./save/accreg.journal";
-static int accreg_journal_cache = 1000;
-#endif
-
-// アカウント変数を文字列へ変換
-static int accreg_tostr(char *str,struct accreg *reg)
-{
-	int j;
-	char *p = str;
-
-	p += sprintf(p, "%d\t", reg->account_id);
-	for(j=0; j<reg->reg_num; j++) {
-		if(reg->reg[j].str[0] && reg->reg[j].value != 0)
-			p += sprintf(p, "%s,%d ", reg->reg[j].str, reg->reg[j].value);
-	}
-	return 0;
-}
-
-// アカウント変数を文字列から変換
-static int accreg_fromstr(const char *str,struct accreg *reg)
-{
-	int j,v,n;
-	char buf[256];
-	const char *p = str;
-
-	if( sscanf(p,"%d\t%n",&reg->account_id,&n) != 1 || reg->account_id <= 0 )
-		return 1;
-
-	for(j=0,p+=n; j<ACCOUNT_REG_NUM; j++,p+=n) {
-		if( sscanf(p,"%255[^,],%d%n",buf,&v,&n) != 2 )
-			break;
-		strncpy(reg->reg[j].str,buf,32);
-		reg->reg[j].str[31] = '\0';	// force \0 terminal
-		reg->reg[j].value   = v;
-		if(p[n] != ' ')
-			break;
-		n++;
-	}
-	reg->reg_num = j;
-	return 0;
-}
-
-#ifdef TXT_JOURNAL
-// ==========================================
-// アカウント変数のジャーナルのロールフォワード用コールバック関数
-// ------------------------------------------
-int accreg_journal_rollforward( int key, void* buf, int flag )
-{
-	struct accreg* reg = (struct accreg *)numdb_search( accreg_db, key );
-
-	// 念のためチェック
-	if( flag == JOURNAL_FLAG_WRITE && key != ((struct accreg*)buf)->account_id )
-	{
-		printf("inter: accreg_journal: key != account_id !\n");
-		return 0;
-	}
-
-	// データの置き換え
-	if( reg )
-	{
-		if( flag == JOURNAL_FLAG_DELETE ) {
-			numdb_erase( accreg_db, key );
-			aFree( reg );
-		} else {
-			memcpy( reg, buf, sizeof(struct accreg) );
-		}
-		return 1;
-	}
-
-	// 追加
-	if( flag != JOURNAL_FLAG_DELETE )
-	{
-		reg = (struct accreg*) aCalloc( 1, sizeof( struct accreg ) );
-		memcpy( reg, buf, sizeof(struct accreg) );
-		numdb_insert( accreg_db, key, reg );
-		return 1;
-	}
-
-	return 0;
-}
-int accreg_txt_sync(void);
-#endif
-
-// アカウント変数の読み込み
-int accreg_txt_init(void)
-{
-	char line[8192];
-	FILE *fp;
-	int c=0;
-
-	accreg_db = numdb_init();
-
-	if( (fp=fopen(accreg_txt,"r"))==NULL )
-		return 1;
-	while(fgets(line,sizeof(line),fp)) {
-		struct accreg *reg = (struct accreg *)aCalloc(1,sizeof(struct accreg));
-
-		if(accreg_fromstr(line,reg) == 0 && reg->account_id > 0) {
-			numdb_insert(accreg_db,reg->account_id,reg);
-		} else {
-			printf("inter: accreg: broken data [%s] line %d\n",accreg_txt,c);
-			aFree(reg);
-		}
-		c++;
-	}
-	fclose(fp);
-
-#ifdef TXT_JOURNAL
-	if( accreg_journal_enable )
-	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &accreg_journal, sizeof(struct accreg), accreg_journal_file ) )
-		{
-			int c = journal_rollforward( &accreg_journal, accreg_journal_rollforward );
-
-			printf("inter: accreg_journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			accreg_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &accreg_journal );
-			journal_create( &accreg_journal, sizeof(struct accreg), accreg_journal_cache, accreg_journal_file );
-		}
-	}
-#endif
-
-	return 0;
-}
-
-// アカウント変数のセーブ用
-static int accreg_txt_sync_sub(void *key,void *data,va_list ap)
-{
-	char line[8192];
-	FILE *fp;
-	struct accreg *reg = (struct accreg *)data;
-
-	if(reg->reg_num > 0) {
-		accreg_tostr(line,reg);
-		fp=va_arg(ap,FILE *);
-		fprintf(fp,"%s" RETCODE,line);
-	}
-	return 0;
-}
-
-// アカウント変数のセーブ
-int accreg_txt_sync(void)
-{
-	FILE *fp;
-	int  lock;
-
-	if( !accreg_db )
-		return 1;
-
-	if( (fp = lock_fopen(accreg_txt,&lock)) == NULL ) {
-		printf("int_accreg: cant write [%s] !!! data is lost !!!\n",accreg_txt);
-		return 1;
-	}
-	numdb_foreach(accreg_db,accreg_txt_sync_sub,fp);
-	lock_fclose(fp,accreg_txt,&lock);
-
-#ifdef TXT_JOURNAL
-	if( accreg_journal_enable )
-	{
-		// コミットしたのでジャーナルを新規作成する
-		journal_final( &accreg_journal );
-		journal_create( &accreg_journal, sizeof(struct accreg), accreg_journal_cache, accreg_journal_file );
-	}
-#endif
-
-	return 0;
-}
-
-void accreg_txt_config_read_sub(const char *w1,const char *w2)
-{
-	if(strcmpi(w1,"accreg_txt")==0){
-		strncpy(accreg_txt, w2, sizeof(accreg_txt) - 1);
-	}
-#ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"accreg_journal_enable")==0){
-		accreg_journal_enable = atoi( w2 );
-	}
-	else if(strcmpi(w1,"accreg_journal_file")==0){
-		strncpy( accreg_journal_file, w2, sizeof(accreg_journal_file) - 1 );
-	}
-	else if(strcmpi(w1,"accreg_journal_cache_interval")==0){
-		accreg_journal_cache = atoi( w2 );
-	}
-#endif
-}
-
-const struct accreg* accreg_txt_load(int account_id)
-{
-	return (const struct accreg* )numdb_search(accreg_db,account_id);
-}
-
-void accreg_txt_save(struct accreg* reg2)
-{
-	struct accreg* reg1 = (struct accreg *)numdb_search(accreg_db,reg2->account_id);
-
-	if(reg1 == NULL) {
-		reg1 = (struct accreg *)aMalloc(sizeof(struct accreg));
-		numdb_insert(accreg_db,reg2->account_id,reg1);
-	}
-	memcpy(reg1,reg2,sizeof(struct accreg));
-
-#ifdef TXT_JOURNAL
-	if( accreg_journal_enable )
-		journal_write( &accreg_journal, reg2->account_id, reg2 );
-#endif
-}
-
-static int accreg_txt_final_sub(void *key,void *data,va_list ap)
-{
-	struct accreg *reg = (struct accreg *)data;
-
-	aFree(reg);
-
-	return 0;
-}
-
-void accreg_txt_final(void)
-{
-	if(accreg_db)
-		numdb_final(accreg_db,accreg_txt_final_sub);
-
-#ifdef TXT_JOURNAL
-	if( accreg_journal_enable )
-	{
-		journal_final( &accreg_journal );
-	}
-#endif
-}
-
-#define accreg_load  accreg_txt_load
-#define accreg_save  accreg_txt_save
-#define accreg_init  accreg_txt_init
-#define accreg_sync  accreg_txt_sync
-#define accreg_final accreg_txt_final
-#define accreg_config_read_sub accreg_txt_config_read_sub
-
-#else /* TXT_ONLY */
-
-int accreg_sql_init(void)
-{
-	accreg_db = numdb_init();
-	return 0;
-}
-
-int accreg_sql_sync(void)
-{
-	// nothing to do
-	return 0;
-}
-
-void accreg_sql_config_read_sub(const char *w1,const char *w2)
-{
-	// nothing to do
-}
-
-void accreg_sql_save(struct accreg *reg)
-{
-	int j;
-	char temp_str[128];
-
-	sqldbs_query(&mysql_handle, "DELETE FROM `" ACCOUNTREG_TABLE "` WHERE `account_id`='%d'", reg->account_id);
-
-	for(j=0; j<reg->reg_num; j++) {
-		if(reg->reg[j].str[0] && reg->reg[j].value != 0) {
-			sqldbs_query(
-				&mysql_handle,
-				"INSERT INTO `" ACCOUNTREG_TABLE "` (`account_id`, `reg`, `value`) VALUES ('%d','%s','%d')",
-				reg->account_id, strecpy(temp_str,reg->reg[j].str), reg->reg[j].value
-			);
-		}
-	}
-}
-
-const struct accreg* accreg_sql_load(int account_id)
-{
-	int j=0;
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
-	struct accreg *reg = (struct accreg *)numdb_search(accreg_db,account_id);
-
-	if(reg == NULL) {
-		reg = (struct accreg *)aMalloc(sizeof(struct accreg));
-		numdb_insert(accreg_db,account_id,reg);
-	}
-	memset(reg, 0, sizeof(struct accreg));
-	reg->account_id = account_id;
-
-	sqldbs_query(&mysql_handle, "SELECT `reg`, `value` FROM `" ACCOUNTREG_TABLE "` WHERE `account_id`='%d'", reg->account_id);
-
-	sql_res = sqldbs_store_result(&mysql_handle);
-
-	if (sql_res) {
-		for(j=0; (sql_row = sqldbs_fetch(sql_res)); j++) {
-			strncpy(reg->reg[j].str, sql_row[0],32);
-			reg->reg[j].str[31] = '\0';	// force \0 terminal
-			reg->reg[j].value   = atoi(sql_row[1]);
-		}
-		sqldbs_free_result(sql_res);
-	}
-	reg->reg_num = j;
-	return reg;
-}
-
-static int accreg_sql_final_sub(void *key,void *data,va_list ap)
-{
-	struct accreg *reg = (struct accreg *)data;
-
-	aFree(reg);
-
-	return 0;
-}
-
-void accreg_sql_final(void)
-{
-	if(accreg_db)
-		numdb_final(accreg_db,accreg_sql_final_sub);
-}
-
-#define accreg_load  accreg_sql_load
-#define accreg_save  accreg_sql_save
-#define accreg_init  accreg_sql_init
-#define accreg_sync  accreg_sql_sync
-#define accreg_final accreg_sql_final
-#define accreg_config_read_sub accreg_sql_config_read_sub
-
-#endif /* TXT_ONLY */
-
-//--------------------------------------------------------
-
 /*==========================================
  * 設定ファイルを読み込む
  *------------------------------------------
@@ -472,15 +123,15 @@ int inter_config_read(const char *cfgName)
 			inter_config_read(w2);
 		}
 		else {
-			accreg_config_read_sub(w1,w2);
-			pet_config_read_sub(w1,w2);
-			storage_config_read_sub(w1,w2);
+			accregdb_config_read_sub(w1,w2);
+			petdb_config_read_sub(w1,w2);
+			storagedb_config_read_sub(w1,w2);
 			party_config_read(w1,w2);
 			guild_config_read(w1,w2);
-			mail_config_read_sub(w1,w2);
-			homun_config_read_sub(w1,w2);
-			status_config_read_sub(w1,w2);
-			merc_config_read_sub(w1,w2);
+			maildb_config_read_sub(w1,w2);
+			homundb_config_read_sub(w1,w2);
+			statusdb_config_read_sub(w1,w2);
+			mercdb_config_read_sub(w1,w2);
 		}
 	}
 	fclose(fp);
@@ -524,16 +175,16 @@ int inter_log(const char *fmt, ...)
 // セーブ
 int inter_sync(void)
 {
-	status_sync();
-	pet_sync();
-	homun_sync();
-	merc_sync();
-	party_sync();
-	guild_sync();
-	accreg_sync();
-	storage_sync();
-	gstorage_sync();
-	mail_sync();
+	statusdb_sync();
+	petdb_sync();
+	homundb_sync();
+	mercdb_sync();
+	partydb_sync();
+	guilddb_sync();
+	accregdb_sync();
+	storagedb_sync();
+	gstoragedb_sync();
+	maildb_sync();
 
 	return 0;
 }
@@ -545,15 +196,15 @@ int inter_init(const char *file)
 
 	wis_db = numdb_init();
 
-	status_init();
-	pet_init();
-	homun_init();
-	merc_init();
-	party_init();
-	guild_init();
-	accreg_init();
-	storage_init();
-	mail_init();
+	statusdb_init();
+	petdb_init();
+	homundb_init();
+	mercdb_init();
+	partydb_init();
+	guilddb_init();
+	accregdb_init();
+	storagedb_init();
+	maildb_init();
 
 	return 0;
 }
@@ -631,7 +282,7 @@ int mapif_account_reg(int fd,unsigned char *src)
 // アカウント変数要求返信
 int mapif_account_reg_reply(int fd,int account_id)
 {
-	const struct accreg *reg = accreg_load(account_id);
+	const struct accreg *reg = accregdb_load(account_id);
 
 	WFIFOW(fd,0)=0x3804;
 	WFIFOL(fd,4)=account_id;
@@ -719,7 +370,7 @@ int mapif_parse_AccReg(int fd)
 	}
 	reg.reg_num = j;
 
-	accreg_save(&reg);
+	accregdb_save(&reg);
 	mapif_account_reg(fd,RFIFOP(fd,0));	// 他のMAPサーバーに送信
 	return 0;
 }
@@ -874,5 +525,5 @@ void do_final_inter(void)
 	if(wis_db)
 		numdb_final(wis_db,wis_db_final);
 
-	accreg_final();
+	accregdb_final();
 }

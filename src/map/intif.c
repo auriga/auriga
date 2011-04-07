@@ -1669,7 +1669,7 @@ static int intif_parse_SavePetOk(int fd)
 
 static int intif_parse_DeletePetOk(int fd)
 {
-	if(RFIFOB(fd,2) == 1) {
+	if(RFIFOB(fd,2) == false) {
 		if(battle_config.error_log)
 			printf("pet data delete failure\n");
 	}
@@ -1709,7 +1709,7 @@ static int intif_parse_SaveHomOk(int fd)
 
 static int intif_parse_DeleteHomOk(int fd)
 {
-	if(RFIFOB(fd,2) == 1) {
+	if(RFIFOB(fd,2) == false) {
 		if(battle_config.error_log)
 			printf("hom data delete failure\n");
 	}
@@ -1749,7 +1749,7 @@ static int intif_parse_SaveMercOk(int fd)
 
 static int intif_parse_DeleteMercOk(int fd)
 {
-	if(RFIFOB(fd,2) == 1) {
+	if(RFIFOB(fd,2) == false) {
 		if(battle_config.error_log)
 			printf("merc data delete failure\n");
 	}

@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release_sql"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WINDOWS" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D PACKETVER=30 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FD /c /wd4819
+# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D PACKETVER=31 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FD /c /wd4819
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
 # ADD RSC /l 0x411 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug_sql"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WINDOWS" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D PACKETVER=30 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FR /FD /GZ /c /wd4819
+# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D PACKETVER=31 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FR /FD /GZ /c /wd4819
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
 # ADD RSC /l 0x411 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -86,6 +86,14 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=..\..\src\char\char.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\charlog_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\charlog_txt.c
 # End Source File
 # Begin Source File
 
@@ -141,6 +149,86 @@ SOURCE=..\..\src\char\int_status.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\char\accregdb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\accregdb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\chardb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\chardb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\guilddb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\guilddb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\homundb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\homundb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\maildb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\maildb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\mercdb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\mercdb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\partydb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\partydb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\petdb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\petdb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\statusdb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\statusdb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\storagedb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\storagedb_txt.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\char\inter.c
 # End Source File
 # Begin Source File
@@ -182,6 +270,10 @@ SOURCE=..\..\src\common\utils.c
 # Begin Source File
 
 SOURCE=..\..\src\char\char.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\charlog.h
 # End Source File
 # Begin Source File
 
@@ -234,6 +326,46 @@ SOURCE=..\..\src\char\int_homun.h
 # Begin Source File
 
 SOURCE=..\..\src\char\int_status.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\accregdb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\chardb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\guilddb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\homundb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\maildb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\mercdb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\partydb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\petdb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\statusdb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\storagedb.h
 # End Source File
 # Begin Source File
 

@@ -39,9 +39,8 @@ Windows 64bit-CPU+OS なら
  -- -- Without installer (AMD64 / Intel EM64T)をダウンロードする。
  -- -- Windows Server 2003 (AMD64 / Intel EM64T)をダウンロードする。
 
-※旧バージョンである 4.0.x, 4.1.x も利用可能です。
-　MySQL のバージョンによって操作が異なる箇所が幾つかあります。
-　4.0.x以前を使用するときは[-v4.0] 、4.1.xは[v4.1]、5.0.x以降は[v5.0-]に従って操作をしてください。
+※MySQL のバージョンによって操作が異なる箇所が幾つかあります。
+　5.0.x以降は[v5.0-]に従って操作をしてください。
 
 
 【Windows版　MySQLのインストール方法】
@@ -110,11 +109,6 @@ Windows 64bit-CPU+OS なら
 　　　　dlltool --input-def libmysql.def --dllname libmysql.dll --output-lib mysql.a
 　　　　mv liblibmysql.a libmysql.a
 
-※[-v4.0]
-	文字コードをsjisに統一しないと、正しく検索できない、日本語が使えないなど
-　　　　の問題が生じる恐れがあります。他の用途に使用することが無い時は、sjisにす
-　　　　ることをお勧めします。
-
 
 
 【AurigaのDB設定方法】
@@ -122,9 +116,7 @@ Windows 64bit-CPU+OS なら
 　　mysql -u root
 		
 ２．次にデータベースの大元の器を設定。下記のコマンドを実行する。
-	[-v4.0]
-		CREATE DATABASE `ragnarok`;
-	[v4.1] [v5.0-]
+	[v5.0-]
 		CREATE DATABASE `ragnarok` DEFAULT CHARACTER SET sjis;
 
 		（ここでは　ragnarok がデータベース名。任意に変更可能）
@@ -214,12 +206,7 @@ Windows 64bit-CPU+OS なら
 
 【特記事項】
 
-[-v4.0]
-	MySQL v4.0では、文字コード指定はサポートされていないので、設定ファイルの
-　　　　文字コードの欄(confファイル中に記述されているcharsetの項目)
-　　　　をコメントアウトしてください。
-
-[v4.1-] [v5.0-]
+[v5.0-]
 	テーブルの文字コードと設定ファイルの文字コードが違う場合、データベースに
 　　　　正常にアクセス出来ない可能性があります。
 	MySQLのサーバサイドの文字コードを確認してください。
