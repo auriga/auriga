@@ -116,13 +116,13 @@ $lang = array (
 	'French' => array (
 		// Language definition
 		'Lang' => 'fr',
-		'Display' => 'Pour afficher en Français, cliquez ici.',
+		'Display' => 'Pour afficher en Francais, cliquez ici.',
 		// Title
 		'Title' => 'CREATION D\'UN COMPTE',
 		// Maintenance
-		'Maintenance' => 'Impossible de communiquer avec le serveur. Désolé, vous ne pouvez pas créer votre compte maintenant.',
+		'Maintenance' => 'Impossible de communiquer avec le serveur. Desole, vous ne pouvez pas creer votre compte maintenant.',
 		// Form fields
-		'text' => 'Merci d\'entrer les différentes valeurs pour créer votre compte:',
+		'text' => 'Merci d\'entrer les differentes valeurs pour creer votre compte:',
 		'account' => 'Nom du compte',
 		'sex' => 'Sexe',
 		'sex1' => 'Homme',
@@ -132,26 +132,26 @@ $lang = array (
 		'conf_pass' => 'Confirmation du mot de passe',
 		// Form buttons
 		'Submit' => 'Envoyer',
-		'Reset' => 'Réinitialiser',
+		'Reset' => 'Reinitialiser',
 		// Errors
-		'bad_account' => 'Nom de compte incorrect (Il doit avoir entre 4 et 23 caractères).',
-		'bad_sex' => 'Sexe incorrect (Votre sexe doit être Homme ou Femme).',
-		'bad_email' => 'Email incorrect (Il doit avoir entre 3 et 39 caractères).',
+		'bad_account' => 'Nom de compte incorrect (Il doit avoir entre 4 et 23 caracteres).',
+		'bad_sex' => 'Sexe incorrect (Votre sexe doit etre Homme ou Femme).',
+		'bad_email' => 'Email incorrect (Il doit avoir entre 3 et 39 caracteres).',
 		'bad_email2' => 'Email incorrect (Il doit avoir un @).',
-		'bad_email3' => 'Email incorrect (Le \'@\' ne peut pas être le dernier caractère).',
+		'bad_email3' => 'Email incorrect (Le \'@\' ne peut pas etre le dernier caractere).',
 		'bad_email4' => 'Email incorrect (L\'email ne peut pas se terminer par un \'.\').',
-		'bad_email5' => 'Email incorrect (Le dernier \'@\' ne peut pas être suivi par un \'.\').',
-		'bad_email6' => 'Email incorrect (Après le dernier \'@\' vous ne pouvez pas avoir \'..\').',
-		'bad_email7' => 'Email incorrect (Après le dernier \'@\' vous ne pouvez pas avoir un \' (espace)\').',
-		'bad_email8' => 'Email incorrect (Après le dernier \'@\' vous ne pouvez pas avoir un \';\').',
-		'bad_pass' => 'Mot de passe incorrect (Il doit avoir entre 4 et 23 caractères).',
-		'bad_conf_pass' => 'Confirmation du mot de passe incorrect (Il doit avoir entre 4 et 23 caractères).',
+		'bad_email5' => 'Email incorrect (Le dernier \'@\' ne peut pas etre suivi par un \'.\').',
+		'bad_email6' => 'Email incorrect (Apres le dernier \'@\' vous ne pouvez pas avoir \'..\').',
+		'bad_email7' => 'Email incorrect (Apres le dernier \'@\' vous ne pouvez pas avoir un \' (espace)\').',
+		'bad_email8' => 'Email incorrect (Apres le dernier \'@\' vous ne pouvez pas avoir un \';\').',
+		'bad_pass' => 'Mot de passe incorrect (Il doit avoir entre 4 et 23 caracteres).',
+		'bad_conf_pass' => 'Confirmation du mot de passe incorrect (Il doit avoir entre 4 et 23 caracteres).',
 		'bad_conf_pass2' => 'Confirmation du mot de passe incorrect (Il doit identique au mot de passe).',
 		// Result
-		'Success' => 'Compte \'%s\' créé avec succès.',
-		'Failed' => 'Votre compte ne peut pas être créé. (Raisons possibles: Le nom du compte existe déjà, ou vous utilisez des caractères incorrects dans le nom du compte).',
+		'Success' => 'Compte \'%s\' cree avec succes.',
+		'Failed' => 'Votre compte ne peut pas etre cree. (Raisons possibles: Le nom du compte existe deja, ou vous utilisez des caracteres incorrects dans le nom du compte).',
 		// Copyright
-		'Copyright' => 'Créé par Yor pour le Projet Athéna et a Modifié pour Auriga.',
+		'Copyright' => 'Cree par Yor pour le Projet Athena et a Modifie pour Auriga.',
 	),
 	'Russian' => array (
 		// Language definition
@@ -413,7 +413,7 @@ printf('
 			$error_message = $lang[$Language]['Maintenance'];
 		} else {
 			// Create the account and get result
-			$result = $ladmin_conect->make_account2($account, $pass, $sex, ($AddEmail) ? $email : "");
+			$result = $ladmin_conect->make_account($account, $pass, $sex, ($AddEmail) ? $email : "", "");
 			if ($result == false) {
 				$error_message = $lang[$Language]['Failed'];
 			} else {

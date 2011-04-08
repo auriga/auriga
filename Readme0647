@@ -1,4 +1,11 @@
 ----------------------------------------
+//0843 [2011/04/09] by popori
+
+・ログインサーバーのソースを整理 (src/login/login.c)
+
+・tool/phpでアカウントを作成出来るように対応 (tool/php/auriga.php tool/php/createaccount.php)
+
+----------------------------------------
 //0842 [2011/04/08] by Blaze
 
 ・0839でJOURNAL_IDENTIFIERを上げていないので12->13にアップ (journal.c)
@@ -52,7 +59,7 @@
 
  ->auth_fifo形式を廃止してauth_nodeを新たに追加する
 
- ->SQL: ログインサーバーのプリペアドステートメント、トランザクションに対応。一部のSQLインジェクション対策はプリペアドステートメントを使用するよう変更
+ ->SQL: ログインサーバーのプリペアドステートメント、トランザクションに対応。一部のSQLインジェクション対策はプリペアドステートメントを使用するよう変更 
         トランザクションに対応するにはMySQLのストレージエンジンをInnoDBに変更して下さい。
         今回のパッチからMySQL4.xをサポートを打ち切ります。
         各自5.xに移行して下さい。
@@ -406,7 +413,7 @@
 //0827 [2011/02/06] by Blaze
 
 ・ロイヤルガードスキル実装
-	(skill.*, status.c, battle.c, clif.c, unit.c, pc.c, common/mmo.h,
+	(skill.*, status.c, battle.c, clif.c, unit.c, pc.c, common/mmo.h, 
 	 db/skill_db.txt, db/skill_db2.txt,db/skill_cast_db.txt, db/skill_require_db.txt, db/skill_unit_db.txt)
 　-> バンディングの一部効果は未実装です
 　-> シールドスペルのレベル2使用時、盾のMdefを参照する箇所を
@@ -612,7 +619,7 @@
 
 ・攻撃時に追加状態異常判定を行う際、ダメージが0になっても回避判定が無ければ状態異常判定を行うように変更 (battle.c)
 
-・スキル「SM_SELFPROVOKE」を少し修正、ついでにitem_db.txtを少し修正 (skill.c item_db.txt)
+・スキル「SM_SELFPROVOKE」を少し修正、ついでにitem_db.txtを少し修正 (skill.c item_db.txt) 
 
 ・スキル「クァグマイア」BOSS無効の変更を有効に変更し、状態異常「SC_SPEEDUP1」のflagを調整 (scdata_db.txt)
 　めろでぃさんに感謝

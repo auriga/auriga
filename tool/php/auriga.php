@@ -2,8 +2,7 @@
 // ladmin class by Yor (inspired from a work of MagicalTux for Nezumi)
 // functions:
 //   ladmin->connect(ip, password, [port]);
-//   ladmin->make_account($accname,$pass,$sex);
-//   ladmin->make_account2($accname,$pass,$sex,$email);
+//   ladmin->make_account($accname,$pass,$sex,$email,$birth);
 //   ladmin->delete_account($accname);
 //   ladmin->close();
 //   ladmin->get_version();
@@ -96,7 +95,7 @@ class ladmin {
 		return true;
 	}
 
-	function make_account($accname,$pass,$sex) {
+	function make_account($accname,$pass,$sex,$email,$birth) {
 		// do we have connection?
 		if (!$this->sock) return false;
 		// check values
@@ -104,41 +103,10 @@ class ladmin {
 		if ( ($sex!='F') and ($sex!='M') ) return false;
 		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
 		if ((strlen($pass)<4) or (strlen($pass)>23)) return false;
+		if ((strlen($email)>0) and (strlen($pass)>39)) return false;
+		if ((strlen($birth)>0) and (strlen($birth)!=6)) return false;
 		// send creation packet
-		$packet=pack('v2a24a24a1',0x7930,53,$accname,$pass,$sex);
-		if (fwrite($this->sock,$packet)==false) {
-			fclose($this->sock);
-			$this->sock=false;
-			return false;
-		}
-		// get answer
-		$res=fread($this->sock,2);
-		if ($res!="\x31\x79") {
-			fclose($this->sock);
-			$this->sock=false;
-			return false;
-		}
-		$dat=fread($this->sock,26);
-		$buf=unpack("vval/a24name",$dat);
-		if ($buf['val']!=0) return false;
-		return true;
-	}
-
-	function make_account2($accname,$pass,$sex,$email) {
-		// do we have connection?
-		if (!$this->sock) return false;
-		// check values
-		$sex=strtoupper($sex);
-		if ( ($sex!='F') and ($sex!='M') ) return false;
-		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
-		if ((strlen($pass)<4) or (strlen($pass)>23)) return false;
-		// send creation packet
-		if(strlen($email)>0){
-			if (strlen($pass)>39) return false;
-			$packet=pack('v2a24a24a1a40',0x7930,93,$accname,$pass,$sex,$email);
-		}else{
-			$packet=pack('v2a24a24a1',0x7930,53,$accname,$pass,$sex);
-		}
+		$packet=pack('va24a24a1a40a7',0x7930,$accname,$pass,$sex,($email)? $email:"",($birth)? $birth:"");
 		if (fwrite($this->sock,$packet)==false) {
 			fclose($this->sock);
 			$this->sock=false;
@@ -163,7 +131,7 @@ class ladmin {
 		// check values
 		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
 		// send deletion packet
-		$packet = pack('vva24', 0x7932, 28, $accname);
+		$packet = pack('va24', 0x7932, $accname);
 		if (fwrite($this->sock, $packet)==false) {
 			fclose($this->sock);
 			$this->sock=false;
@@ -310,7 +278,7 @@ class ladmin {
 		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
 		if ((strlen($newpass)<4) or (strlen($newpass)>23)) return false;
 		// send password change packet
-		$packet = pack('vva24a24', 0x7934, 52, $accname, $newpass);
+		$packet = pack('va24a24', 0x7934, $accname, $newpass);
 		if (fwrite($this->sock, $packet)==false) {
 			fclose($this->sock);
 			$this->sock=false;
@@ -334,7 +302,7 @@ class ladmin {
 		// check values
 		if ((strlen($accname)<4) or (strlen($accname)>23)) return false;
 		// send password change packet
-		$packet = pack('vva24V', 0x7936, 32, $accname, $newstate);
+		$packet = pack('va24V', 0x7936, $accname, $newstate);
 		if (fwrite($this->sock, $packet)==false) {
 			fclose($this->sock);
 			$this->sock=false;

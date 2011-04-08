@@ -53,7 +53,6 @@
 #define sex_num2str(num) ((num == SEX_FEMALE)? 'F' : (num == SEX_MALE) ? 'M' : 'S')
 #define sex_str2num(str) ((str == 'F')? SEX_FEMALE : (str == 'M')? SEX_MALE : SEX_SERVER)
 
-static int server_num = 0;
 static int login_fd;
 static int login_sfd;
 struct mmo_char_server server[MAX_CHAR_SERVERS];
@@ -211,6 +210,25 @@ static bool cmp_authnode(struct auth_node *node, int account_id, int login_id1, 
 	return false;
 }
 
+// 自分以外の全てのcharサーバーにデータ送信（送信したchar鯖の数を返す）
+static int charif_sendallwos(int sfd, unsigned char *buf, unsigned int len)
+{
+	int i,c;
+
+	for( i = 0, c = 0; i < MAX_CHAR_SERVERS; i++ )
+	{
+		int fd;
+		if( ( fd = server_fd[i] ) > 0 && fd != sfd )
+		{
+			memcpy(WFIFOP(fd,0),buf,len);
+			WFIFOSET(fd,len);
+			c++;
+		}
+	}
+
+	return c;
+}
+
 // 認証
 static int mmo_auth(struct login_session_data *sd)
 {
@@ -220,7 +238,7 @@ static int mmo_auth(struct login_session_data *sd)
 	bool encpasswdok = false;
 	const struct mmo_account *ac;
 
-	if(!sd)
+	if( sd == NULL )
 		return 1;
 
 #ifdef WINDOWS
@@ -242,7 +260,7 @@ static int mmo_auth(struct login_session_data *sd)
 	len = strlen(sd->userid) - 2;
 
 	// to avoid invalid length (min 4 char for account name, max 23 including _F/_M)
-	if(len >= 4 && len <= 21 && sd->passwdenc == 0 && sd->userid[len] == '_' && (sd->userid[len+1] == 'F' || sd->userid[len+1] == 'M') && config.new_account_flag == true)
+	if( config.new_account_flag == true && len >= 4 && len <= 21 && sd->passwdenc == 0 && sd->userid[len] == '_' && (sd->userid[len+1] == 'F' || sd->userid[len+1] == 'M') )
 	{
 		// 新規アカウント作成
 		char *adm_pass = strchr(sd->pass,'@');
@@ -258,21 +276,14 @@ static int mmo_auth(struct login_session_data *sd)
 			sd->userid[len] = 0;
 		}
 		else
-		{
 			sd->userid[0] = 0;
-		}
 	}
 
-	ac = account_load_str(sd->userid);
-
-	if(!ac)
+	// アカウントが見つからない
+	if( (ac = account_load_str(sd->userid)) == NULL )
 	{
-		// アカウントが見つからない
-		if( newaccount == false )
-		{
-			// 新規作成以外
+		if( newaccount == false )	// 新規作成以外
 			loginlog_log("auth failed no account %s %s %d %s", tmpstr, sd->userid, newaccount, (sd->passwdenc == 0)? sd->pass:"");
-		}
 		else
 		{
 			// 新規作成
@@ -287,30 +298,33 @@ static int mmo_auth(struct login_session_data *sd)
 		return 0;
 	}
 
-	if(sd->passwdenc > 0)
+	// パスワードチェック(MD5)
+	if( sd->passwdenc > 0 )
 	{
 		int enc = sd->passwdenc;
 		char md5str[192],md5bin[32];
 
-		if(!sd->md5keylen)
+		if( !sd->md5keylen )
 		{
 			loginlog_log("md5key not created %s %s",tmpstr,sd->userid);
 			return 1;
 		}
 
-		if(enc == 4)
+		if( enc == 4 )
 		{
 			HMAC_MD5_Binary( ac->pass, (int)strlen(ac->pass), sd->md5key, sd->md5keylen, md5bin );
 			encpasswdok = ( memcmp( sd->pass, md5bin, 16) == 0);
 		}
 
-		else if(enc <= 3)
+		else if( enc <= 3 )
 		{
-			if(enc > 2) enc = 1;
-			do {
-				if(enc == 1)
+			if( enc > 2 )
+				enc = 1;
+			do
+			{
+				if( enc == 1 )
 					snprintf(md5str, sizeof(md5str), "%s%s", sd->md5key, ac->pass);
-				else if(enc == 2)
+				else if( enc == 2 )
 					snprintf(md5str, sizeof(md5str), "%s%s", ac->pass, sd->md5key);
 				else
 					md5str[0] = 0;
@@ -319,7 +333,7 @@ static int mmo_auth(struct login_session_data *sd)
 			} while(enc < 2 && !encpasswdok && (enc++) != sd->passwdenc);
 		}
 
-		if(!encpasswdok)
+		if( encpasswdok == false )
 		{
 			// 認証失敗
 			char logbuf[1024],*p=logbuf;
@@ -336,13 +350,15 @@ static int mmo_auth(struct login_session_data *sd)
 			return 1;
 		}
 	}
-	else if(strcmp(sd->pass,ac->pass) || newaccount)
+	else if( strcmp(sd->pass,ac->pass) || newaccount == true )
 	{
 		// 認証失敗
 		loginlog_log("auth failed pass error %s %s %s %d", tmpstr, sd->userid, sd->pass, newaccount);
 		return 1;
 	}
-	if(ac->state)
+
+	// BAN
+	if( ac->state )
 	{
 		loginlog_log("auth banned account %s %s %s %d", tmpstr, sd->userid, ac->pass, ac->state);
 		switch(ac->state)
@@ -353,6 +369,7 @@ static int mmo_auth(struct login_session_data *sd)
 		}
 		return 2;
 	}
+
 	// 認証成功
 	loginlog_log("auth ok %s %s new=%d", tmpstr, ac->userid, newaccount);
 	{
@@ -374,23 +391,69 @@ static int mmo_auth(struct login_session_data *sd)
 	return -1;	// 認証OK
 }
 
-// 自分以外の全てのcharサーバーにデータ送信（送信したchar鯖の数を返す）
-static int charif_sendallwos(int sfd, unsigned char *buf, unsigned int len)
+// 認証後の設定
+static void login_authok(struct login_session_data *sd, int fd)
 {
-	int i,c;
+	int server_num = 0;
+	int i;
+	struct auth_node *node;
 
-	for( i = 0, c = 0; i < MAX_CHAR_SERVERS; i++ )
+	if( config.detect_multiple_login == true )
 	{
-		int fd;
-		if( ( fd = server_fd[i] ) > 0 && fd != sfd )
+		unsigned char buf[8];
+
+		// 全charサーバへ同一アカウントの切断要求
+		WBUFW(buf,0) = 0x2730;
+		WBUFL(buf,2) = sd->account_id;
+		charif_sendallwos(-1,buf,6);
+
+		if( auth_search(sd->account_id) != NULL )
 		{
-			memcpy(WFIFOP(fd,0),buf,len);
-			WFIFOSET(fd,len);
-			c++;
+			// 二重ログインの可能性があるので認証失敗にする
+			WFIFOW(fd,0) = 0x81;
+			WFIFOB(fd,2) = 8;
+			WFIFOSET(fd,3);
+			return;
 		}
 	}
 
-	return c;
+	for( i = 0; i < MAX_CHAR_SERVERS; i++ )
+	{
+		if( server_fd[i] >= 0 )
+		{
+			WFIFOL(fd,47+server_num*32)   = server[i].ip;
+			WFIFOW(fd,47+server_num*32+4) = server[i].port;
+			memcpy(WFIFOP(fd,47+server_num*32+6), server[i].name, 20);
+			WFIFOW(fd,47+server_num*32+26) = server[i].users;
+			WFIFOW(fd,47+server_num*32+28) = server[i].maintenance;
+			WFIFOW(fd,47+server_num*32+30) = server[i].new_;
+			server_num++;
+		}
+	}
+
+	WFIFOW(fd, 0) = 0x69;
+	WFIFOW(fd, 2) = 47+32*server_num;
+	WFIFOL(fd, 4) = sd->login_id1;
+	WFIFOL(fd, 8) = sd->account_id;
+	WFIFOL(fd,12) = sd->login_id2;
+	WFIFOL(fd,16) = 0;
+	memcpy(WFIFOP(fd,20),sd->lastlogin,24);
+	WFIFOB(fd,46) = sex_str2num(sd->sex);
+	WFIFOSET(fd,47+32*server_num);
+
+	// ノードを登録
+	node = (struct auth_node *)aCalloc(1, sizeof(struct auth_node));
+	numdb_insert(auth_db, sd->account_id, node);
+	node->account_id = sd->account_id;
+	node->login_id1  = sd->login_id1;
+	node->login_id2  = sd->login_id2;
+	node->sex        = sd->sex;
+	node->ip         = session[fd]->client_addr.sin_addr.s_addr;
+
+	// 認証終了を socket.c に伝える
+	session[fd]->auth = 1;
+
+	return;
 }
 
 static int parse_char_disconnect(int fd)
@@ -695,7 +758,7 @@ int parse_admin(int fd)
 				break;
 
 			case 0x7930:	// アカウント作成要求
-				if(RFIFOREST(fd)< 98)
+				if( RFIFOREST(fd) < 98 )
 					return 0;
 				{
 					// アカウント作成
@@ -805,25 +868,26 @@ int parse_admin(int fd)
 
 			case 0x7938:
 				// information about servers
-				server_num = 0;
-				for( i = 0; i < MAX_CHAR_SERVERS; i++ ) // max number of char-servers (and account_id values: 0 to max-1)
 				{
-					if( server_fd[i] >= 0 )
+					int server_num = 0;
+					for( i = 0; i < MAX_CHAR_SERVERS; i++ ) // max number of char-servers (and account_id values: 0 to max-1)
 					{
-						WFIFOL(fd,4 + server_num * 32     ) = server[i].ip;
-						WFIFOW(fd,4 + server_num * 32 +  4) = server[i].port;
-						strncpy(WFIFOP(fd,4 + server_num * 32 + 6), server[i].name, 20);
-						WFIFOW(fd,4 + server_num * 32 + 26) = server[i].users;
-						WFIFOW(fd,4 + server_num * 32 + 28) = server[i].maintenance;
-						WFIFOW(fd,4 + server_num * 32 + 30) = server[i].new_;
-						server_num++;
+						if( server_fd[i] >= 0 )
+						{
+							WFIFOL(fd,4 + server_num * 32     ) = server[i].ip;
+							WFIFOW(fd,4 + server_num * 32 +  4) = server[i].port;
+							strncpy(WFIFOP(fd,4 + server_num * 32 + 6), server[i].name, 20);
+							WFIFOW(fd,4 + server_num * 32 + 26) = server[i].users;
+							WFIFOW(fd,4 + server_num * 32 + 28) = server[i].maintenance;
+							WFIFOW(fd,4 + server_num * 32 + 30) = server[i].new_;
+							server_num++;
+						}
 					}
+					WFIFOW(fd,0) = 0x7939;
+					WFIFOW(fd,2) = 4 + 32 * server_num;
+					WFIFOSET(fd, 4 + 32 * server_num);
+					RFIFOSKIP(fd,2);
 				}
-				WFIFOW(fd,0) = 0x7939;
-				WFIFOW(fd,2) = 4 + 32 * server_num;
-				WFIFOSET(fd, 4 + 32 * server_num);
-
-				RFIFOSKIP(fd,2);
 				break;
 
 			case 0x793a:
@@ -938,27 +1002,38 @@ int parse_login(int fd)
 {
 	struct login_session_data *sd;
 
-	if(session[fd]->session_data == NULL)
+	if( session[fd]->session_data == NULL )
 		session[fd]->session_data = aCalloc(1,sizeof(struct login_session_data));
 	sd = (struct login_session_data *)session[fd]->session_data;
 
 	while( RFIFOREST(fd) >= 2 )
 	{
 		int cmd = RFIFOW(fd,0);
-		if(cmd == 0x64 || cmd == 0x01dd || cmd == 0x01fa || cmd == 0x027c || cmd == 0x0277 || cmd == 0x02b0)
-			printf("parse_login : %d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
-		else if(cmd < 0x7530)
-			printf("parse_login : %d %3ld 0x%04x\n",fd,(long)RFIFOREST(fd),cmd);
+		switch(cmd)
+		{
+			case 0x64:
+			case 0x01dd:
+			case 0x01fa:
+			case 0x027c:
+			case 0x0277:
+			case 0x02b0:
+				printf("parse_login : %d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
+				break;
+			default:
+				if( cmd < 0x7530 )
+					printf("parse_login : %d %3ld 0x%04x\n",fd,(long)RFIFOREST(fd),cmd);
+				break;
+		}
 
 		switch(cmd)
 		{
 		case 0x200:		// クライアントでaccountオプション使用時の謎パケットへの対応
-			if(RFIFOREST(fd)<26)
+			if( RFIFOREST(fd) < 26 )
 				return 0;
 			RFIFOSKIP(fd,26);
 			break;
 		case 0x204:		// 2004-06-22暗号化ragexe対応
-			if(RFIFOREST(fd)<18)
+			if( RFIFOREST(fd) < 18 )
 				return 0;
 			RFIFOSKIP(fd,18);
 			break;
@@ -969,7 +1044,7 @@ int parse_login(int fd)
 			RFIFOSKIP(fd,2);
 			break;
 		case 0x228:		// 2005-12-14 nProtect関係 Part 2
-			if(RFIFOREST(fd)<18)
+			if( RFIFOREST(fd) < 18 )
 				return 0;
 			WFIFOW(fd,0)=0x0259;
 			WFIFOB(fd,2)=1;
@@ -986,7 +1061,6 @@ int parse_login(int fd)
 		{
 			int result = -1;
 			bool enc_flag;
-			struct auth_node *node;
 
 			switch(cmd)
 			{
@@ -1051,65 +1125,10 @@ int parse_login(int fd)
 #else
 			sd->passwdenc = 0;
 #endif
-			if(result == -1)
+			if( result == -1 )
 				result = mmo_auth(sd);
-			if(result == -1)
-			{
-				int i;
-				if( config.detect_multiple_login == true )
-				{
-					unsigned char buf[8];
-
-					// 全charサーバへ同一アカウントの切断要求
-					WBUFW(buf,0) = 0x2730;
-					WBUFL(buf,2) = sd->account_id;
-					charif_sendallwos(-1,buf,6);
-
-					if( auth_search(sd->account_id) != NULL )
-					{
-						// 二重ログインの可能性があるので認証失敗にする
-						WFIFOW(fd,0) = 0x81;
-						WFIFOB(fd,2) = 8;
-						WFIFOSET(fd,3);
-						RFIFOSKIP(fd,RFIFOREST(fd));
-						break;
-					}
-				}
-				server_num = 0;
-				for( i = 0; i < MAX_CHAR_SERVERS; i++ )
-				{
-					if(server_fd[i] >= 0)
-					{
-						WFIFOL(fd,47+server_num*32)   = server[i].ip;
-						WFIFOW(fd,47+server_num*32+4) = server[i].port;
-						memcpy(WFIFOP(fd,47+server_num*32+6), server[i].name, 20);
-						WFIFOW(fd,47+server_num*32+26) = server[i].users;
-						WFIFOW(fd,47+server_num*32+28) = server[i].maintenance;
-						WFIFOW(fd,47+server_num*32+30) = server[i].new_;
-						server_num++;
-					}
-				}
-				WFIFOW(fd, 0) = 0x69;
-				WFIFOW(fd, 2) = 47+32*server_num;
-				WFIFOL(fd, 4) = sd->login_id1;
-				WFIFOL(fd, 8) = sd->account_id;
-				WFIFOL(fd,12) = sd->login_id2;
-				WFIFOL(fd,16) = 0;
-				memcpy(WFIFOP(fd,20),sd->lastlogin,24);
-				WFIFOB(fd,46) = sex_str2num(sd->sex);
-				WFIFOSET(fd,47+32*server_num);
-
-				// ノードを登録
-				node = (struct auth_node *)aCalloc(1, sizeof(struct auth_node));
-				numdb_insert(auth_db, sd->account_id, node);
-				node->account_id = sd->account_id;
-				node->login_id1  = sd->login_id1;
-				node->login_id2  = sd->login_id2;
-				node->sex        = sd->sex;
-				node->ip         = session[fd]->client_addr.sin_addr.s_addr;
-
-				session[fd]->auth = 1; // 認証終了を socket.c に伝える
-			}
+			if( result == -1 )
+				login_authok(sd,fd);
 			else
 			{
 				memset(WFIFOP(fd,0),0,23);
@@ -1119,7 +1138,7 @@ int parse_login(int fd)
 			}
 			RFIFOSKIP(fd,RFIFOREST(fd));
 		}
-			break;
+		break;
 
 		case 0x01db:	// 暗号化Key送信要求
 		case 0x272d:	// Charの暗号化ログイン要求
@@ -1150,7 +1169,7 @@ int parse_login(int fd)
 
 		case 0x2710:	// Charサーバー接続要求
 		case 0x272f:	// Charサーバー接続要求(暗号化ログイン)
-			if(RFIFOREST(fd)<84)
+			if( RFIFOREST(fd) < 84 )
 				break;
 			if( config.login_sport != 0 && config.login_port != config.login_sport && session[fd]->server_port != config.login_sport )
 			{
@@ -1217,6 +1236,8 @@ int parse_login(int fd)
 			return 0;
 
 		case 0x7918:	// 管理モードログイン
+			if( RFIFOREST(fd) < 4 )
+				break;
 			if( config.ristrict_admin_local == true )
 			{
 				unsigned long ip = (unsigned long)session[fd]->client_addr.sin_addr.s_addr;
