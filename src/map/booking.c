@@ -32,10 +32,10 @@
 #include "clif.h"
 #include "map.h"
 
-static struct dbt* booking_db = NULL;
+static struct dbt *booking_db = NULL;
 static int booking_mapid[MAX_BOOKING_MAPID];
 static int booking_jobid[MAX_BOOKING_JOBID];
-static int booking_id = 0;
+static unsigned int booking_id = 0;
 
 /*==========================================
  * MAPIDが有効かチェック
@@ -50,14 +50,14 @@ static int booking_search_mapid(int map)
 	while(max - min > 1) {
 		int mid = (min + max) / 2;
 		if(booking_mapid[mid] == map)
-			return 0;
+			return 1;
 
 		if(booking_mapid[mid] > map)
 			max = mid;
 		else
 			min = mid;
 	}
-	return 1;
+	return 0;
 }
 
 /*==========================================
@@ -70,27 +70,27 @@ static int booking_search_jobid(int job)
 	int max = MAX_BOOKING_JOBID;
 
 	if(job == 0)
-		return 1;
+		return 0;
 
 	// binary search
 	while(max - min > 1) {
 		int mid = (min + max) / 2;
 		if(booking_jobid[mid] == job)
-			return 0;
+			return 1;
 
 		if(booking_jobid[mid] > job)
 			max = mid;
 		else
 			min = mid;
 	}
-	return 1;
+	return 0;
 }
 
 /*==========================================
  * 該当IDのブッキングリスト検索
  *------------------------------------------
  */
-static struct booking_data *booking_search(int booking_id)
+static struct booking_data *booking_search(unsigned int booking_id)
 {
 	return (struct booking_data *)numdb_search(booking_db,booking_id);
 }
@@ -101,15 +101,14 @@ static struct booking_data *booking_search(int booking_id)
  */
 static int booking_searchcond_sub(void *key,void *data,va_list ap)
 {
-	struct booking_data *bd=(struct booking_data *)data;
-	int lv           = va_arg(ap,int);
-	int map          = va_arg(ap,int);
-	int job          = va_arg(ap,int);
-	int last_index   = va_arg(ap,int);
+	struct booking_data *bd = (struct booking_data *)data;
+	int lv  = va_arg(ap,int);
+	int map = va_arg(ap,int);
+	int job = va_arg(ap,int);
+	unsigned int last_index = va_arg(ap,unsigned int);
 	int result_count = va_arg(ap,int);
 	int *count       = va_arg(ap,int *);
 	struct booking_data **list = va_arg(ap,struct booking_data **);
-	int i;
 
 	if(lv > 0 && (bd->lv < lv - battle_config.party_booking_lv || bd->lv > lv))	// Lvが条件と合わない
 		return 0;
@@ -124,6 +123,7 @@ static int booking_searchcond_sub(void *key,void *data,va_list ap)
 		if(job == 0xffff) {
 			list[(*count)++] = bd;
 		} else {
+			int i;
 			for(i=0; i<6; i++) {
 				if(bd->job[i] == job) {
 					list[(*count)++] = bd;
@@ -139,7 +139,7 @@ static int booking_searchcond_sub(void *key,void *data,va_list ap)
 	return 0;
 }
 
-void booking_searchcond(struct map_session_data *sd, int lv, int map, int job, int last_index, int result_count)
+void booking_searchcond(struct map_session_data *sd, int lv, int map, int job, unsigned int last_index, int result_count)
 {
 	int flag;
 	int count=0;
@@ -149,9 +149,9 @@ void booking_searchcond(struct map_session_data *sd, int lv, int map, int job, i
 
 	if(lv > MAX_LEVEL || lv < 0)	// レベルが不正
 		return;
-	if(booking_search_mapid(map))	// 有効なMAPIDではない
+	if(!booking_search_mapid(map))	// 有効なMAPIDではない
 		return;
-	if(booking_search_jobid(job))	// 有効なJOBIDではない
+	if(!booking_search_jobid(job))	// 有効なJOBIDではない
 		return;
 
 	memset(list,0,sizeof(list));
@@ -173,14 +173,14 @@ void booking_register(struct map_session_data *sd, int lv, int map, int *job)
 
 	nullpo_retv(sd);
 
-	if(sd->booking_id)	// 既に登録中
+	if(sd->booking_id > 0)	// 既に登録中
 		return;
 	if(lv > MAX_LEVEL || lv < 0)	// レベルが不正
 		return;
-	if(booking_search_mapid(map))	// 有効なMAPIDではない
+	if(!booking_search_mapid(map))	// 有効なMAPIDではない
 		return;
 	for(i=0; i<6; i++) {
-		if(booking_search_jobid(job[i]))	// 有効なJOBIDではない
+		if(!booking_search_jobid(job[i]))	// 有効なJOBIDではない
 			return;
 	}
 
@@ -224,7 +224,7 @@ void booking_update(struct map_session_data *sd, int *job)
 		return;
 
 	for(i=0; i<6; i++) {
-		if(booking_search_jobid(job[i]))	// 有効なJOBIDではない
+		if(!booking_search_jobid(job[i]))	// 有効なJOBIDではない
 			return;
 		if(job[i] != 0xffff)
 			bd->job[i] = job[i];
@@ -248,15 +248,13 @@ void booking_delete(struct map_session_data *sd)
 
 	nullpo_retv(sd);
 
-	bd = booking_search(sd->booking_id);
-	if(bd == NULL)
-		return;
-
-	clif_deletebookingack(sd,0);
-	clif_deletebooking(sd,bd->id);
-	numdb_erase(booking_db,sd->booking_id);
-	aFree(bd);
-	sd->booking_id = 0;
+	bd = (struct booking_data *)numdb_erase(booking_db,sd->booking_id);
+	if(bd) {
+		clif_deletebookingack(sd,0);
+		clif_deletebooking(sd,bd->id);
+		aFree(bd);
+		sd->booking_id = 0;
+	}
 
 	return;
 }
@@ -270,9 +268,9 @@ static int read_booking_db(void)
 	FILE *fp;
 	char line[1024];
 	char *str=NULL;
-	int i=0,j=0;
+	int count = 0;
 
-	memset(booking_mapid,0,sizeof(booking_mapid));
+	memset(booking_mapid, -1, sizeof(booking_mapid));
 
 	fp=fopen("db/booking_map_db.txt","r");
 	if(fp==NULL) {
@@ -280,7 +278,8 @@ static int read_booking_db(void)
 		return -1;
 	}
 
-	while(fgets(line,sizeof(line),fp) && i < MAX_BOOKING_MAPID) {
+	while(fgets(line,sizeof(line),fp)) {
+		int i, id;
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
@@ -289,14 +288,33 @@ static int read_booking_db(void)
 		str=line;
 		if(str == NULL)
 			continue;
-		booking_mapid[i] = atoi(str);
-		i++;
+
+		id = atoi(str);
+		for(i = 0; i < MAX_BOOKING_MAPID && booking_mapid[i] >= 0 && booking_mapid[i] != id; i++);
+		if(i >= MAX_BOOKING_MAPID) {
+			printf("read_booking_db: MAP ID %d is over max %d!!\n", id, MAX_BOOKING_MAPID);
+			continue;
+		}
+
+		if(booking_mapid[i] != id)
+			count++;
+
+		if(i > 0 && id < booking_mapid[i-1]) {
+			// MAPIDの昇順に並んでない場合
+			int max = i;
+			while(i > 0 && id < booking_mapid[i-1]) {
+				i--;
+			}
+			memmove(&booking_mapid[i+1], &booking_mapid[i], (max-i)*sizeof(booking_mapid[0]));
+		}
+		booking_mapid[i] = id;
 	}
 
 	fclose(fp);
-	printf("read db/booking_map_db.txt done (count=%d)\n",i);
+	printf("read db/booking_map_db.txt done (count=%d)\n", count);
 
-	memset(booking_jobid,0,sizeof(booking_jobid));
+	count = 0;
+	memset(booking_jobid, 0, sizeof(booking_jobid));
 
 	fp=fopen("db/booking_job_db.txt","r");
 	if(fp==NULL) {
@@ -304,7 +322,8 @@ static int read_booking_db(void)
 		return -1;
 	}
 
-	while(fgets(line,sizeof(line),fp) && j < MAX_BOOKING_JOBID) {
+	while(fgets(line,sizeof(line),fp)) {
+		int i, id;
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
@@ -313,12 +332,30 @@ static int read_booking_db(void)
 		str=line;
 		if(str == NULL)
 			continue;
-		booking_jobid[j] = atoi(str);
-		j++;
+
+		id = atoi(str);
+		for(i = 0; i < MAX_BOOKING_JOBID && booking_jobid[i] > 0 && booking_jobid[i] != id; i++);
+		if(i >= MAX_BOOKING_JOBID) {
+			printf("read_booking_db: JOB ID %d is over max %d!!\n", id, MAX_BOOKING_JOBID);
+			continue;
+		}
+
+		if(booking_jobid[i] != id)
+			count++;
+
+		if(i > 0 && id < booking_jobid[i-1]) {
+			// JOBIDの昇順に並んでない場合
+			int max = i;
+			while(i > 0 && id < booking_jobid[i-1]) {
+				i--;
+			}
+			memmove(&booking_jobid[i+1], &booking_jobid[i], (max-i)*sizeof(booking_jobid[0]));
+		}
+		booking_jobid[i] = id;
 	}
 
 	fclose(fp);
-	printf("read db/booking_job_db.txt done (count=%d)\n",j);
+	printf("read db/booking_job_db.txt done (count=%d)\n", count);
 
 	return 0;
 }

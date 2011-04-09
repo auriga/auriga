@@ -1,4 +1,25 @@
 ----------------------------------------
+//0846 [2011/04/10] by Rayce
+
+・booking_map_db.txt および booking_job_db.txt において、IDの昇順に
+  並んでない場合にbinary searchが正常動作しなくなるので、読込時に
+  補正を行うように修正（booking.c）
+
+・booking_map_db.txtではID「0」は有効な値なので、memsetでの初期化は
+  「-1」で詰めるように修正（booking.c）
+
+・booking_idをunsigned int型に統一（booking.*, clif.*, map.h）
+
+・混乱を避けるため、booking_search_mapid() と booking_search_jobid() の
+  結果を反転させる（booking.c）
+
+・パケット0x805の<more>に相当する部分において、変数flagの値が非常に大きい
+  場合に桁溢れが発生する可能性があるので修正（clif.c）
+
+・booking_map_db.txt の「ピラミッドダンジョン 2F」のMAPIDが恐らく
+  間違っているので修正（db/booking_map_db.txt）
+
+----------------------------------------
 //0845 [2011/04/10] by Rayce
 
 ・計算式を一般式に展開し簡素化（battle.c, skill.c）

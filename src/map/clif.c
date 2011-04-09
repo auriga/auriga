@@ -8723,7 +8723,7 @@ void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
 /*==========================================
  * 露店アイテム購入失敗
  *------------------------------------------
-*/
+ */
 void clif_buyvending(struct map_session_data *sd, int idx, int amount, unsigned char fail)
 {
 	int fd;
@@ -8743,7 +8743,7 @@ void clif_buyvending(struct map_session_data *sd, int idx, int amount, unsigned 
 /*==========================================
  * 露店開設成功
  *------------------------------------------
-*/
+ */
 int clif_openvending(struct map_session_data *sd)
 {
 	struct item_data *data;
@@ -8814,7 +8814,7 @@ int clif_openvending(struct map_session_data *sd)
 /*==========================================
  * 露店アイテム販売報告
  *------------------------------------------
-*/
+ */
 void clif_vendingreport(struct map_session_data *sd, int idx, int amount)
 {
 	int fd;
@@ -12134,7 +12134,7 @@ void clif_searchbookingack(struct map_session_data *sd, struct booking_data **li
 		}
 	}
 	WFIFOW(fd,2)=5+n*48;
-	WFIFOB(fd,4)=flag;
+	WFIFOB(fd,4)=(flag > 0) ? 1 : 0;
 	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return;
@@ -12204,7 +12204,7 @@ void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd
 /*==========================================
  * パーティーブッキング登録削除
  *------------------------------------------*/
-void clif_deletebooking(struct map_session_data* sd, int id)
+void clif_deletebooking(struct map_session_data* sd, unsigned int id)
 {
 	unsigned char buf[6];
 
@@ -12308,7 +12308,7 @@ static void clif_parse_WantToConnection(int fd,struct map_session_data *sd, int 
 		return;
 	}
 	// Sexのチェック
-	if(sex < SEX_FEMALE || sex > SEX_MALE) {
+	if(sex != SEX_FEMALE && sex != SEX_MALE) {
 		printf("clif_parse_WantToConnection : invalid Sex !!\n");
 		return;
 	}
@@ -16125,8 +16125,9 @@ static void clif_parse_BattleMessage(int fd,struct map_session_data *sd, int cmd
 }
 
 /*==========================================
-* パーティーリーダーチェンジ
-*------------------------------------------*/
+ * パーティーリーダーチェンジ
+ *------------------------------------------
+ */
 static void clif_parse_PartyChangeLeader(int fd,struct map_session_data *sd, int cmd)
 {
 	party_changeleader(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
@@ -16135,8 +16136,9 @@ static void clif_parse_PartyChangeLeader(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
-* GMによる装備解除
-*------------------------------------------*/
+ * GMによる装備解除
+ *------------------------------------------
+ */
 static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
 {
 	int id,lv,i;
@@ -16170,8 +16172,9 @@ static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
-* パーティーブッキング登録
-*------------------------------------------*/
+ * パーティーブッキング登録
+ *------------------------------------------
+ */
 static void clif_parse_PartyBookingRegisterReq(int fd,struct map_session_data *sd, int cmd)
 {
 	int i,lv,map;
@@ -16188,8 +16191,9 @@ static void clif_parse_PartyBookingRegisterReq(int fd,struct map_session_data *s
 }
 
 /*==========================================
-* パーティーブッキング検索要求
-*------------------------------------------*/
+ * パーティーブッキング検索要求
+ *------------------------------------------
+ */
 static void clif_parse_PartyBookingSearchReq(int fd,struct map_session_data *sd, int cmd)
 {
 	booking_searchcond(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOW(fd,GETPACKETPOS(cmd,1)),RFIFOW(fd,GETPACKETPOS(cmd,2)),RFIFOL(fd,GETPACKETPOS(cmd,3)),RFIFOW(fd,GETPACKETPOS(cmd,4)));
@@ -16198,8 +16202,9 @@ static void clif_parse_PartyBookingSearchReq(int fd,struct map_session_data *sd,
 }
 
 /*==========================================
-* パーティーブッキング削除要求
-*------------------------------------------*/
+ * パーティーブッキング削除要求
+ *------------------------------------------
+ */
 static void clif_parse_PartyBookingDeleteReq(int fd,struct map_session_data *sd, int cmd)
 {
 	booking_delete(sd);
@@ -16208,15 +16213,16 @@ static void clif_parse_PartyBookingDeleteReq(int fd,struct map_session_data *sd,
 }
 
 /*==========================================
-* パーティーブッキングアップデート要求
-*------------------------------------------*/
+ * パーティーブッキングアップデート要求
+ *------------------------------------------
+ */
 static void clif_parse_PartyBookingUpdateReq(int fd,struct map_session_data *sd, int cmd)
 {
 	int i;
 	int job[6];
 
 	for(i=0; i<6; i++)
-		job[i] = RFIFOW(fd,GETPACKETPOS(cmd,0+i));
+		job[i] = RFIFOW(fd,GETPACKETPOS(cmd,i));
 
 	booking_update(sd,job);
 

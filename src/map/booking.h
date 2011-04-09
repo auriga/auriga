@@ -28,7 +28,7 @@
 #define MAX_BOOKING_MAPID 193
 #define MAX_BOOKING_JOBID 64
 
-void booking_searchcond(struct map_session_data *sd, int lv, int map, int job, int last_index, int result_count);
+void booking_searchcond(struct map_session_data *sd, int lv, int map, int job, unsigned int last_index, int result_count);
 void booking_register(struct map_session_data *sd, int lv, int map, int *job);
 void booking_update(struct map_session_data *sd, int *job);
 void booking_delete(struct map_session_data *sd);

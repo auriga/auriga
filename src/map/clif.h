@@ -362,7 +362,7 @@ void clif_searchbookingack(struct map_session_data *sd, struct booking_data **li
 void clif_deletebookingack(struct map_session_data* sd, int flag);
 void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd);
 void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd);
-void clif_deletebooking(struct map_session_data* sd, int id);
+void clif_deletebooking(struct map_session_data* sd, unsigned int id);
 
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);

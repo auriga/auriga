@@ -937,7 +937,7 @@ struct merc_data {
 };
 
 struct booking_data {
-	int id;
+	unsigned int id;
 	char name[24];
 	unsigned int time;
 	int lv;
