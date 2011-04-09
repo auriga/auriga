@@ -107,7 +107,7 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 			memset(&ma,0,sizeof(ma));
 			strncpy(ma.userid,userid,24);
 			strncpy(ma.pass  ,passwd,24);
-			ma.sex = (gender[0] == 'm')? 1: 0;
+			ma.sex = gender[0];
 			strncpy(ma.mail  ,"@"     ,40); // 暫定
 			strncpy(ma.birth ,"000000", 7);
 			sprintf(buf,"( httpd %08lx )",httpd_get_ip(sd));
