@@ -3942,12 +3942,12 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case NPC_EARTHQUAKE:	// アースクエイク
 			{
-				const int dmg[10] = { 300, 500, 600, 800, 1000, 1200, 1300, 1500, 1600, 1800 };
+				static const int dmg[10] = { 300, 500, 600, 800, 1000, 1200, 1300, 1500, 1600, 1800 };
 				matk1 = status_get_atk(bl);
 				matk2 = status_get_atk2(bl);
 				if(mdef1 < 1000000)
 					mdef1 = mdef2 = 0;	// MDEF無視
-				if(skill_lv <= 10) {
+				if(skill_lv <= sizeof(dmg)/sizeof(dmg[0])) {
 					MATK_FIX( dmg[skill_lv-1], 100 );
 				} else {
 					MATK_FIX( 100 + 200 * skill_lv, 100 );
@@ -4442,12 +4442,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		break;
 	case GN_HELLS_PLANT_ATK:	// ヘルズプラント
 		{
-			int damage = 15;
-			damage += (skill_lv > 1)? 25: 0;
-			damage += (skill_lv > 2)? 35: 0;
-			damage += (skill_lv > 3)? 45: 0;
-			damage += (skill_lv > 4)? 55: 0;
-
+			int damage = 5 * skill_lv * (skill_lv + 2);
 			mid.damage = (int_ / 2) * damage * (100 + ((sd)? pc_checkskill(sd,AM_CANNIBALIZE) : 0) * 20) / 100;
 			damagefix = 0;
 		}

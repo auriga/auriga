@@ -1028,16 +1028,8 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			int rate = 0;
 			if(battle_check_target(src,bl,BCT_ENEMY) > 0)
 				rate = 1500 + 500 * skilllv;
-			else if(battle_check_target(src,bl,BCT_PARTY) > 0) {	// PTメンバにも低確率でかかる
-				switch(skilllv) {
-				case 1: rate = 500; break;
-				case 2: rate = 620; break;
-				case 3: rate = 750; break;
-				case 4: rate = 870; break;
-				case 5: rate = 1000; break;
-				default: rate = 1000; break;
-				}
-			}
+			else if(battle_check_target(src,bl,BCT_PARTY) > 0)	// PTメンバにも低確率でかかる
+				rate = (skilllv > 5) ? 1000 : (375 + 125 * skilllv) / 10 * 10;
 
 			if(rate > 0 && atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,rate,status_get_lv(src)))
 				status_change_pretimer(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
@@ -1049,16 +1041,8 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			int rate = 0;
 			if(battle_check_target(src,bl,BCT_ENEMY) > 0)
 				rate = 2500 + 500 * skilllv;
-			else if(battle_check_target(src,bl,BCT_PARTY) > 0) {	// PTメンバにも低確率でかかる
-				switch(skilllv) {
-				case 1: rate = 750; break;
-				case 2: rate = 870; break;
-				case 3: rate = 1000; break;
-				case 4: rate = 1120; break;
-				case 5: rate = 1250; break;
-				default: rate = 1250; break;
-				}
-			}
+			else if(battle_check_target(src,bl,BCT_PARTY) > 0)	// PTメンバにも低確率でかかる
+				rate = (skilllv > 5) ? 1250 : (625 + 125 * skilllv) / 10 * 10;
 
 			if(rate > 0 && atn_rand() % 10000 < status_change_rate(bl,SC_STUN,rate,status_get_lv(src)))
 				status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
@@ -7296,19 +7280,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case GS_CRACKER:			/* クラッカー */
 		{
 			int cost = skill_get_arrow_cost(skillid,skilllv);
-			int dist = unit_distance2(src,bl);
 			int rate;
 			if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			if(dist < 3)
-				rate = 5000;
-			else if(dist < 6)
-				rate = 4000;
-			else if(dist < 9)
-				rate = 3000;
-			else
+			rate = 5000 - (unit_distance2(src,bl) / 3) * 1000;
+			if(rate < 2000)
 				rate = 2000;
+
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,rate,status_get_lv(src))) {
 				status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 			} else if(sd) {
@@ -8383,9 +8362,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case LG_INSPIRATION:		/* インスピレーション */
 		if(sd) {
-			atn_bignumber loss_exp = pc_nextbaseexp(sd) / 1000;
+			int loss_exp = pc_nextbaseexp(sd) / 1000;
 			if(loss_exp > 0) {
-				sd->status.base_exp -= (int)loss_exp;
+				sd->status.base_exp -= loss_exp;
 				if(sd->status.base_exp < 0)
 					sd->status.base_exp = 0;
 				clif_updatestatus(sd,SP_BASEEXP);
@@ -8592,11 +8571,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case WM_RANDOMIZESPELL:		/* 不確定要素の言語 */
 		if(sd) {
-			int rand_skillid = 0;
-			int rand_skilllv;
+			int rand_skillid = skill_searchrandomid(2);
+			int rand_skilllv = skill_get_max(rand_skillid);
 
-			rand_skillid = skill_searchrandomid(2);
-			rand_skilllv = skill_get_max(rand_skillid);
 			if(rand_skilllv > skilllv + 4)
 				rand_skilllv = skilllv + 4;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -8733,7 +8710,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(idx >= 0 && sd->inventory_data[idx]) {
 				int nameid = sd->inventory_data[idx]->nameid;
 				int cost = skill_get_arrow_cost(skillid,skilllv);
-				if((!nameid || cost) > 0 && !battle_delarrow(sd, cost, skillid))
+				if(nameid <= 0)
+					break;
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))
 					break;
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 
@@ -9144,13 +9123,15 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case RG_GRAFFITI:			/* グラフィティ */
 		status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,x,y,0,skill_get_time(skillid,skilllv),0);
 		break;
-	case GS_GROUNDDRIFT:			/* グラウンドドリフト*/
+	case GS_GROUNDDRIFT:			/* グラウンドドリフト */
 		if(sd) {
 			int idx = sd->equip_index[10];
 			if(idx >= 0 && sd->inventory_data[idx]) {
 				int nameid = sd->inventory_data[idx]->nameid;
 				int cost = skill_get_arrow_cost(skillid,skilllv);
-				if((!nameid || cost) > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
+				if(nameid <= 0)
+					break;
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
 					break;
 				skill_unitsetting(src,skillid,skilllv,x,y,nameid);
 			}
@@ -9174,7 +9155,8 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		{
 			int i, tmpx = 0, tmpy = 0, x1 = 0, y1 = 0;
 			int interval = (skilllv > 10)? 2500: 1000;
-			for(i=0; i<2+(skilllv>>1); i++) {
+			int loop = skilllv / 2 + 2;
+			for(i=0; i < loop; i++) {
 				if(skilllv > 10) {
 					tmpx = x + (atn_rand()%29 - 14);
 					tmpy = y + (atn_rand()%29 - 14);
@@ -9249,7 +9231,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case AM_CANNIBALIZE:	/* バイオプラント */
 		if(sd) {
 			int n, id = 0;
-			int summons[5] = { 1589, 1579, 1575, 1555, 1590 };
+			const int summons[5] = { 1589, 1579, 1575, 1555, 1590 };
 			struct mob_data *tmpmd = NULL;
 
 			n  = (skilllv > 5)? 4: skilllv - 1;
@@ -9275,7 +9257,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case CR_CULTIVATION:	/* 植物栽培 */
 		if(sd) {
 			int id, n = (skilllv >= 2)? 1: 0;
-			int summons[2][6] = {
+			const int summons[2][6] = {
 				{ 1084, 1085, 1084, 1085, 1084, 1085 },
 				{ 1078, 1079, 1080, 1081, 1082, 1083 }
 			};
@@ -9418,7 +9400,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			int dir = (src->x == x && src->y == y)? 6: map_calc_dir(src,x,y);
 			int tmpx, tmpy;
 			int addx = 0, addy = 0;
-			int i;
+			int i, loop = skilllv + 4;
 
 			// 縦を優先
 			addy = diry[dir];
@@ -9429,7 +9411,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			tmpy = src->y + addy * 2;
 
 			clif_skill_poseffect(src,skillid,skilllv,tmpx,tmpy,tick);
-			for(i = 1; i < 4 + skilllv; i++) {
+			for(i = 1; i < loop; i++) {
 				skill_addtimerskill(src,tick+i*100,0,tmpx,tmpy,skillid,skilllv,0,flag);
 				tmpx += addx;
 				tmpy += addy;
@@ -9579,9 +9561,14 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case GN_FIRE_EXPANSION:		/* ファイアーエクスパンション */
 		if(sd) {
-			int id = skill_get_skilldb_id(skillid);
 			int i = (skilllv > skill_get_max(skillid))? skill_get_max(skillid) - 1: skilllv - 1;
-			int j = pc_search_inventory(sd,skill_db[id].itemid[i]);
+			int id, j;
+
+			if(i >= 10) {
+				i = 9;
+			}
+			id = skill_get_skilldb_id(skillid);
+			j  = pc_search_inventory(sd,skill_db[id].itemid[i]);
 
 			if(j < 0 || sd->inventory_data[j] == NULL ||
 			   sd->status.inventory[j].amount < skill_db[id].amount[i]) {

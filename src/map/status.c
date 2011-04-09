@@ -1446,11 +1446,11 @@ L_RECALC:
 
 	if(sd) {
 		if(sd->sc.data[SC_WEDDING].timer != -1)
-			b_class = 22;
+			b_class = PC_CLASS_WE;
 		else if(sd->sc.data[SC_SANTA].timer != -1)
-			b_class = 26;
+			b_class = PC_CLASS_ST;
 		else if(sd->sc.data[SC_SUMMER].timer != -1)
-			b_class = 27;
+			b_class = PC_CLASS_SU;
 	}
 
 	if((skill = pc_checkskill(sd,AC_VULTURE)) > 0) {	// ワシの目
@@ -9014,7 +9014,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					unit_heal(bl, -damage, 0);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-			// 生きていて解除済みでないなら継続
+				// 生きていて解除済みでないなら継続
 				timer = add_timer(2000+tick, status_change_timer, bl->id, data);
 			}
 		}
@@ -9141,7 +9141,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	case SC__INVISIBILITY:		/* インビジビリティ */
 		if(sd) {
-			int sp = sd->status.max_sp * (10 - 5) / 100;
+			int sp = sd->status.max_sp * 5 / 100;
 			if(sp > 0 && sd->status.sp >= sp) {
 				sd->status.sp -= sp;
 				clif_updatestatus(sd,SP_SP);
