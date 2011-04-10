@@ -5539,7 +5539,7 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 			}
 		}
 	}
-	
+
 	return rate;
 }
 
@@ -5564,74 +5564,14 @@ int status_change_copy(struct block_list *src,struct block_list *bl)
 	tick = gettick();
 
 	for(type = 0; type < MAX_STATUSCHANGE; type++) {
-		switch(type) {
-			case SC_PROVOKE:
-			case SC_QUAGMIRE:
-			case SC_SIGNUMCRUCIS:
-			case SC_DECREASEAGI:
-			case SC_AETERNA:
-			case SC_REVERSEORCISH:
-			case SC_HALLUCINATION:
-			case SC_STRIPWEAPON:
-			case SC_STRIPSHIELD:
-			case SC_STRIPARMOR:
-			case SC_STRIPHELM:
-			case SC_HEADCRUSH:
-			case SC_JOINTBEAT:
-			//case SC_STONE:
-			//case SC_FREEZE:
-			case SC_STUN:
-			//case SC_SLEEP:
-			case SC_POISON:
-			case SC_CURSE:
-			case SC_SILENCE:
-			case SC_CONFUSION:
-			case SC_BLIND:
-			case SC_BLEED:
-			case SC_MINDBREAKER:
-			case SC_DPOISON:
-			case SC_SLOWCAST:
-			case SC_CRITICALWOUND:
-			case SC_HELLPOWER:
-			case SC_FEAR:
-			case SC_VENOMIMPRESS:
-			case SC_TOXIN:
-			case SC_PARALIZE:
-			case SC_VENOMBLEED:
-			case SC_MAGICMUSHROOM:
-			case SC_DEATHHURT:
-			case SC_PYREXIA:
-			//case SC_OBLIVIONCURSE:
-			case SC_LEECHEND:
-			case SC_ORATIO:
-			case SC_FROSTMISTY:
-			case SC_MARSHOFABYSS:
-			case SC_STASIS:
-			case SC_HELLINFERNO:
-			case SC_WUGBITE:
-			case SC_ANALYZE:
-			case SC__BODYPAINT:
-			case SC__ENERVATION:
-			case SC__GROOMY:
-			case SC__IGNORANCE:
-			case SC__LAZINESS:
-			case SC__UNLUCKY:
-			case SC__WEAKNESS:
-			case SC__STRIPACCESSARY:
-			case SC_GLOOMYDAY:
-			case SC_SITDOWN_FORCE:
-			//case SC_DEEP_SLEEP:
-			case SC_DIAMONDDUST:
-			case SC_CLOUD_KILL:
-			case SC_MANDRAGORA:
-				if(sc->data[type].timer != -1)
-				{
-					td = get_timer(sc->data[type].timer);
-					if (td == NULL || td->func != status_change_timer || DIFF_TICK(td->tick,tick) < 0)
-						continue;
-					status_change_start(bl,type,sc->data[type].val1,sc->data[type].val2,sc->data[type].val3,sc->data[type].val4,DIFF_TICK(td->tick,tick),0);
-				}
-				break;
+		if(scdata_db[type].copyable) {
+			if(sc->data[type].timer != -1)
+			{
+				td = get_timer(sc->data[type].timer);
+				if (td == NULL || td->func != status_change_timer || DIFF_TICK(td->tick,tick) < 0)
+					continue;
+				status_change_start(bl,type,sc->data[type].val1,sc->data[type].val2,sc->data[type].val3,sc->data[type].val4,DIFF_TICK(td->tick,tick),0);
+			}
 		}
 	}
 
@@ -10142,13 +10082,13 @@ int status_readdb(void) {
 	}
 	i=0;
 	while(fgets(line,1020,fp)){
-		char *split[5];
+		char *split[6];
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
 		memset(split,0,sizeof(split));
-		for(j=0,p=line;j<5 && p;j++){
+		for(j=0,p=line;j<6 && p;j++){
 			split[j]=p;
 			p=strchr(p,',');
 			if(p) *p++=0;
@@ -10159,6 +10099,7 @@ int status_readdb(void) {
 		scdata_db[j].save       = (short)atoi(split[2]);
 		scdata_db[j].releasable = atoi(split[3]);
 		scdata_db[j].disable    = atoi(split[4]);
+		scdata_db[j].copyable   = atoi(split[5]);
 		i++;
 	}
 	fclose(fp);

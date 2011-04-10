@@ -86,8 +86,8 @@ struct random_mob_data {
 	int entry;
 };
 
-extern int manuk_mob[8];
-extern int splendide_mob[5];
+extern const int manuk_mob[8];
+extern const int splendide_mob[5];
 
 enum {
 	MST_TARGET = 0,
@@ -203,7 +203,7 @@ int mob_timer_delete(int tid, unsigned int tick, int id, void *data);
 int mob_deleteslave(struct mob_data *md);
 
 int mob_class_change_randam(struct mob_data *md,unsigned short lv);
-int mob_class_change(struct mob_data *md,int *value,int value_count);
+int mob_class_change(struct mob_data *md,const int *value,int value_count);
 int mob_warp(struct mob_data *md,int m,int x,int y,int type);
 
 

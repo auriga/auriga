@@ -75,7 +75,7 @@ int max_job_table[PC_UPPER_MAX][PC_JOB_MAX] = {
 	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 養子
 };
 
-static unsigned int equip_pos[11] = { LOC_LACCESSORY,LOC_RACCESSORY,LOC_SHOES,LOC_ROBE,LOC_HEAD,LOC_HEAD3,LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ARROW };
+static const unsigned int equip_pos[11] = { LOC_LACCESSORY,LOC_RACCESSORY,LOC_SHOES,LOC_ROBE,LOC_HEAD,LOC_HEAD3,LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ARROW };
 
 static char GM_account_filename[1024] = "conf/GM_account.txt";
 static struct dbt *gm_account_db = NULL;
@@ -9353,7 +9353,7 @@ static int pc_bleeding(struct map_session_data *sd)
 			sd->sp_penalty_tick = 0;
 		}
 	}
-	
+
 	if(hp) {
 		if(sd->status.hp > hp) {
 			pc_heal(sd,-hp,0);

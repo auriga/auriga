@@ -37,6 +37,7 @@ struct scdata_db {
 	short save;
 	int releasable;
 	int disable;
+	int copyable;
 };
 
 // パラメータ取得系

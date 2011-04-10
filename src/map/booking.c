@@ -46,6 +46,9 @@ static int booking_search_mapid(int map)
 	int min = -1;
 	int max = MAX_BOOKING_MAPID;
 
+	if(map < 0)
+		return 0;
+
 	// binary search
 	while(max - min > 1) {
 		int mid = (min + max) / 2;
@@ -69,7 +72,7 @@ static int booking_search_jobid(int job)
 	int min = -1;
 	int max = MAX_BOOKING_JOBID;
 
-	if(job == 0)
+	if(job <= 0)
 		return 0;
 
 	// binary search

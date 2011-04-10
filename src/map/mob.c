@@ -60,8 +60,8 @@ struct mob_db *mob_db = &mob_db_real[-MOB_ID_MIN];
 
 static struct random_mob_data random_mob[MAX_RAND_MOB_TYPE];
 
-int manuk_mob[8] = {1986,1987,1988,1989,1990,1997,1998,1999};
-int splendide_mob[5] = {1991,1992,1993,1994,1995};
+const int manuk_mob[8] = {1986,1987,1988,1989,1990,1997,1998,1999};
+const int splendide_mob[5] = {1991,1992,1993,1994,1995};
 
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
@@ -2442,7 +2442,7 @@ int mob_class_change_randam(struct mob_data *md,unsigned short lv)
  * クラスチェンジ（リスト選択）
  *------------------------------------------
  */
-int mob_class_change(struct mob_data *md,int *value,int value_count)
+int mob_class_change(struct mob_data *md,const int *value,int value_count)
 {
 	int count = 0;
 

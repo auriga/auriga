@@ -3538,7 +3538,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
-	
+
 	/* 魔法系スキル */
 	case MG_SOULSTRIKE:			/* ソウルストライク */
 	case NPC_DARKSTRIKE:		/* ダークストライク */
@@ -3572,7 +3572,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case HVAN_CAPRICE:		/* カプリス */
 		{
-			static int caprice[4] = { MG_COLDBOLT,MG_FIREBOLT,MG_LIGHTNINGBOLT,WZ_EARTHSPIKE};
+			static const int caprice[4] = { MG_COLDBOLT,MG_FIREBOLT,MG_LIGHTNINGBOLT,WZ_EARTHSPIKE};
 			battle_skill_attack(BF_MAGIC,src,src,bl,caprice[atn_rand()%4],skilllv,tick,flag);
 			clif_skill_nodamage(src,src,skillid,skilllv,1);
 		}
@@ -5071,20 +5071,20 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstmd) {
 			// クラスチェンジ用ボスモンスターID
-			static int changeclass[] = {
+			static const int changeclass[] = {
 				1038,1039,1046,1059,1086,1087,1112,1115,1147,1150,
 				1157,1159,1190,1251,1252,1272,1312,1373,1389,1418,
 				1492,1511
 			};
-			mob_class_change(dstmd,changeclass,sizeof(changeclass)/sizeof(int));
+			mob_class_change(dstmd,changeclass,sizeof(changeclass)/sizeof(changeclass[0]));
 		}
 		break;
 	case SA_MONOCELL:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstmd) {
 			// チェンジポリン用モンスターID
-			static int poringclass[] = { 1002,1002 };
-			mob_class_change(dstmd,poringclass,sizeof(poringclass)/sizeof(int));
+			static const int poringclass[] = { 1002,1002 };
+			mob_class_change(dstmd,poringclass,sizeof(poringclass)/sizeof(poringclass[0]));
 		}
 		break;
 	case SA_DEATH:
@@ -6049,18 +6049,18 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(sd)       msd = sd;
 				else if(hd)  msd = hd->msd;
 				else if(mcd) msd = mcd->msd;
-	
+
 				if(msd == NULL)
 					break;
-	
+
 				for(i=0; i<10; i++) {
 					if(skill_db[skillid].itemid[i] < 715 || skill_db[skillid].itemid[i] > 717)
 						continue;
-	
+
 					val = skill_db[skillid].amount[i];
 					if(msd->special_state.no_gemstone || msd->sc.data[SC_WIZARD].timer != -1 || msd->sc.data[SC_INTOABYSS].timer != -1)
 						val--;
-	
+
 					if(val > 0) {
 						int idx = pc_search_inventory(msd,skill_db[skillid].itemid[i]);
 						if(idx < 0)
@@ -8949,7 +8949,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 
 	sd = BL_DOWNCAST( BL_PC,  src );
 	md = BL_DOWNCAST( BL_MOB, src );
-		
+
 	switch(skillid) {
 	case WZ_METEOR:
 	case WZ_ICEWALL:
@@ -9857,7 +9857,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		break;
 	case NPC_EVILLAND:		/* イビルランド */
 		val1 = (skilllv > 6)? 666: skilllv*100;
-		interval = interval + 500;
+		interval += 500;
 		break;
 	case GC_POISONSMOKE:	/* ポイズンスモーク */
 		if(sd) {
@@ -12461,7 +12461,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case AM_SPHEREMINE:		/* スフィアーマイン */
 		if(type&1){
 			int c,n=0;
-			int summons[5] = { 1589, 1579, 1575, 1555, 1590 };
+			const int summons[5] = { 1589, 1579, 1575, 1555, 1590 };
 			int maxcount = skill_get_maxcount(cnd->id,cnd->lv);
 
 			if(battle_config.pc_land_skill_limit && maxcount>0) {
@@ -16094,16 +16094,19 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 				clif_misceffect2(&sd->bl,610);
 				break;
 			case PRD_RUNE:
-				if(pc_checkskill(sd,RK_RUNEMASTERY) >= 10)
-					amount += atn_rand()%3;
-				else if(pc_checkskill(sd,RK_RUNEMASTERY) >= 5)
-					amount += atn_rand()%2;
-				i = pc_search_inventory(sd,nameid);
-				if(i >= 0 && sd->status.inventory[i].amount + amount >= 20 ) {
-					amount = 20 - sd->status.inventory[i].amount;
+				{
+					int lv = pc_checkskill(sd,RK_RUNEMASTERY);
+					if(lv >= 10)
+						amount += atn_rand()%3;
+					else if(lv >= 5)
+						amount += atn_rand()%2;
+					i = pc_search_inventory(sd,nameid);
+					if(i >= 0 && sd->status.inventory[i].amount + amount >= 20 ) {
+						amount = 20 - sd->status.inventory[i].amount;
+					}
+					clif_produceeffect(sd,2,nameid);
+					clif_misceffect(&sd->bl,5);
 				}
-				clif_produceeffect(sd,2,nameid);
-				clif_misceffect(&sd->bl,5);
 				break;
 			case PRD_NEWPOISON:
 				amount += 5 + atn_rand()%4;
@@ -16137,17 +16140,17 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 		/* 失敗 */
 		switch (type) {
 			case PRD_PHARMACY:
-			{
-				int point = skill_am_ranking_point(sd, nameid, 0);
-				if(point > 0) {
-					ranking_gain_point(sd,RK_ALCHEMIST,point);
-					ranking_setglobalreg(sd,RK_ALCHEMIST);
-					ranking_update(sd,RK_ALCHEMIST);
+				{
+					int point = skill_am_ranking_point(sd, nameid, 0);
+					if(point > 0) {
+						ranking_gain_point(sd,RK_ALCHEMIST,point);
+						ranking_setglobalreg(sd,RK_ALCHEMIST);
+						ranking_update(sd,RK_ALCHEMIST);
+					}
+					clif_produceeffect(sd,3,nameid);	/* 製薬失敗エフェクト */
+					clif_misceffect(&sd->bl,6);		/* 他人にも失敗を通知 */
 				}
-				clif_produceeffect(sd,3,nameid);	/* 製薬失敗エフェクト */
-				clif_misceffect(&sd->bl,6);		/* 他人にも失敗を通知 */
 				break;
-			}
 			case PRD_CDP:
 				clif_produceeffect(sd,3,nameid);	/* 暫定で製薬エフェクト */
 				clif_misceffect(&sd->bl,6);		/* 他人にも失敗を通知 */
@@ -16191,8 +16194,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 					if(sd->skill_menu.lv > 1) {
 						amount += atn_rand()%15;
 						clif_skill_message(sd, sd->skill_menu.id, 1576);	// 失敗し、全ての材料がなくなりました。
-					}
-					else {
+					} else {
 						clif_skill_message(sd, sd->skill_menu.id, 1575);	// 失敗しました。
 					}
 					pc_additem(sd,&tmp_item,amount);
@@ -16574,8 +16576,15 @@ void skill_changematerial(struct map_session_data *sd, int num, unsigned short *
 				break;
 
 			for(k = 0; k < num; k++) {
-				nameid = sd->status.inventory[item_list[k * 2] - 2].nameid;
+				int idx = item_list[k * 2] - 2;
+				if(idx < 0 || idx >= MAX_INVENTORY) {
+					// anti hacker
+					continue;
+				}
+				nameid = sd->status.inventory[idx].nameid;
 				amount = item_list[k * 2 + 1];
+				if(amount <= 0)
+					continue;
 
 				if(nameid == mdb->mat_id[j] && amount % mdb->mat_amount[j] == 0) {
 					if(m != 0) {
@@ -16591,7 +16600,12 @@ void skill_changematerial(struct map_session_data *sd, int num, unsigned short *
 
 		if(j == num && c == num) {
 			for(k = 0; k < num; k++) {
-				pc_delitem(sd, item_list[k * 2] - 2, item_list[k * 2 + 1], 0, 1);	// アイテム消費
+				int idx = item_list[k * 2] - 2;
+				if(idx < 0 || idx >= MAX_INVENTORY) {
+					// anti hacker
+					continue;
+				}
+				pc_delitem(sd, idx, item_list[k * 2 + 1], 0, 1);	// アイテム消費
 			}
 			memset(&tmp_item, 0, sizeof(tmp_item));
 			tmp_item.nameid = mdb->nameid;
@@ -16885,7 +16899,7 @@ int skill_bonus_skillautospell(struct block_list *src,struct block_list *bl,int 
  */
 void skill_weapon_refine(struct map_session_data *sd, int idx)
 {
-	int refine_item[5] = { 0, 1010, 1011, 984, 984 };
+	const int refine_item[5] = { 0, 1010, 1011, 984, 984 };
 	int skilllv,wlv,n;
 
 	nullpo_retv(sd);

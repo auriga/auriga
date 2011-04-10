@@ -128,13 +128,13 @@ enum {
 
 #define WBUFLV(p,pos,lv,class_) \
 	if(battle_config.clif_fix_level) { \
-		if(class_ >= PC_CLASS_RK && class_ <= PC_CLASS_NC2_B) { \
-			WBUFW(p,pos) = (lv > 150)? 150: lv; \
+		if((class_) >= PC_CLASS_RK && (class_) <= PC_CLASS_NC2_B) { \
+			WBUFW((p),(pos)) = ((lv) > 150)? 150: (lv); \
 		} else { \
-			WBUFW(p,pos) = (lv > 99)? 99: lv; \
+			WBUFW((p),(pos)) = ((lv) > 99)? 99: (lv); \
 		} \
 	} else { \
-		WBUFW(p,pos) = lv; \
+		WBUFW((p),(pos)) = (lv); \
 	}
 
 #define WFIFOLV(fd,pos,lv,class_) { WBUFLV(WFIFOP(fd,pos),0,lv,class_); }
@@ -4986,7 +4986,8 @@ void clif_arrow_create_list(struct map_session_data *sd)
 
 /*==========================================
  * ポイズニングウェポン選択
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_poison_list(struct map_session_data *sd, short lv)
 {
 	int i, view, idx, c = 0;
@@ -5028,7 +5029,8 @@ void clif_poison_list(struct map_session_data *sd, short lv)
 
 /*==========================================
  * リーディングスペルブック選択
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_reading_sb_list(struct map_session_data *sd)
 {
 	int i, view, idx, c = 0;
@@ -5072,7 +5074,8 @@ void clif_reading_sb_list(struct map_session_data *sd)
 
 /*==========================================
  * FAW マジックデコイ選択
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_magicdecoy_list(struct map_session_data *sd, short lv, short x, short y)
 {
 	int i, view, idx, c = 0;
@@ -11984,7 +11987,8 @@ void clif_showevent(struct map_session_data *sd, struct block_list *bl, short st
 
 /*==========================================
  * チェンジマテリアル合成リスト
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_changematerial_list(struct map_session_data *sd)
 {
 	int fd;
@@ -11992,7 +11996,7 @@ void clif_changematerial_list(struct map_session_data *sd)
 	nullpo_retv(sd);
 
 	fd=sd->fd;
-	WFIFOW(fd, 0)=0x7e3;
+	WFIFOW(fd,0) = 0x7e3;
 	WFIFOL(fd,2) = 0;
 	WFIFOSET(fd, packet_db[0x7e3].len);
 
@@ -12004,7 +12008,8 @@ void clif_changematerial_list(struct map_session_data *sd)
 
 /*==========================================
  * スキルメッセージ
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_skill_message(struct map_session_data *sd, int skillid, int type)
 {
 #if PACKETVER > 23
@@ -12013,7 +12018,7 @@ void clif_skill_message(struct map_session_data *sd, int skillid, int type)
 	nullpo_retv(sd);
 
 	fd=sd->fd;
-	WFIFOW(fd, 0)=0x7e6;
+	WFIFOW(fd,0) = 0x7e6;
 	WFIFOW(fd,2) = skillid;
 	WFIFOL(fd,4) = type;
 	WFIFOSET(fd, packet_db[0x7e6].len);
@@ -12110,7 +12115,8 @@ void clif_bookingregack(struct map_session_data *sd, int flag)
 
 /*==========================================
  * パーティーブッキング検索要求応答
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_searchbookingack(struct map_session_data *sd, struct booking_data **list, int count, int flag)
 {
 	int i,j,fd;
@@ -12142,7 +12148,8 @@ void clif_searchbookingack(struct map_session_data *sd, struct booking_data **li
 
 /*==========================================
  * パーティーブッキング登録削除要求応答
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_deletebookingack(struct map_session_data* sd, int flag)
 {
 	int fd;
@@ -12159,7 +12166,8 @@ void clif_deletebookingack(struct map_session_data* sd, int flag)
 
 /*==========================================
  * パーティーブッキングリスト追加
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd)
 {
 	int i;
@@ -12183,7 +12191,8 @@ void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd
 
 /*==========================================
  * パーティーブッキングリスト追加
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd)
 {
 	int i;
@@ -12203,7 +12212,8 @@ void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd
 
 /*==========================================
  * パーティーブッキング登録削除
- *------------------------------------------*/
+ *------------------------------------------
+ */
 void clif_deletebooking(struct map_session_data* sd, unsigned int id)
 {
 	unsigned char buf[6];
