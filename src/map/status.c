@@ -794,8 +794,18 @@ L_RECALC:
 
 	// jobボーナス分
 	for(i=0; i<sd->status.job_level && i<MAX_LEVEL; i++) {
-		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i])
-			sd->paramb[job_db[sd->s_class.job].bonus[sd->s_class.upper][i]-1]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x01)
+			sd->paramb[0]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x02)
+			sd->paramb[1]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x04)
+			sd->paramb[2]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x08)
+			sd->paramb[3]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x10)
+			sd->paramb[4]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x20)
+			sd->paramb[5]++;
 	}
 
 	if((skill = pc_checkskill(sd,AC_OWL)) > 0) {	// ふくろうの目
