@@ -81,7 +81,9 @@ Windows 64bit-CPU+OS なら
 
 ９．サーバータイプを選択。ここではServer Machineにチェックして　[Next>]
 
-１０．Non-Transactional Database Onlyにチェックして　[Next>]
+１０．Multifunctional Database
+　　　Transactional Database Only
+　　　Non-Transactional Database Only使用するケースの用途に合わせていずれかをチェックし　[Next>]
 
 １１．Manual Setting にチェックして、Concurrent connectionsは１５を設定し　[Next>]
 
@@ -210,7 +212,7 @@ Windows 64bit-CPU+OS なら
 	テーブルの文字コードと設定ファイルの文字コードが違う場合、データベースに
 　　　　正常にアクセス出来ない可能性があります。
 	MySQLのサーバサイドの文字コードを確認してください。
-	4.1.15以降、および5.0.13以降であれば skip-character-set-client-handshake キーワードを利用できます。
+	5.0.13以降であれば skip-character-set-client-handshake キーワードを利用できます。
 
 ・アカウントはhttp://127.0.0.1:6900/　等で作成。
 　またはmail.sqlを実行した時点でs1 ... s5までのアカウントが作成されているので、

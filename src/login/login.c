@@ -407,12 +407,16 @@ static void login_authok(struct login_session_data *sd, int fd)
 		WBUFL(buf,2) = sd->account_id;
 		charif_sendallwos(-1,buf,6);
 
-		if( auth_search(sd->account_id) != NULL )
+		if( (node = auth_search(sd->account_id)) != NULL )
 		{
 			// 二重ログインの可能性があるので認証失敗にする
 			WFIFOW(fd,0) = 0x81;
 			WFIFOB(fd,2) = 8;
 			WFIFOSET(fd,3);
+
+			// ノードの削除
+			numdb_erase(auth_db,sd->account_id);
+			aFree(node);
 			return;
 		}
 	}
