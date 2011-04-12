@@ -126,6 +126,14 @@ R 0081 <type>.B
 		type=67 グラビティ会員情報に同意すると使うことができます
 		type=68 利用約款に同意すると本サービスを利用することができます
 		type=69 存在しないゲームID、または誤ったIDです
+S 0082
+	終了要求
+R 0083
+	0082の応答
+	クライアントを終了
+R 0084
+	0082の応答
+	クライアント終了失敗
 S 0085 <X_Y>.3B
 	移動要求
 R 0086 <ID>.l <X_Y_X_Y>.5B <?>.B <server_tick>.l
@@ -1275,14 +1283,14 @@ R 01ec <guildID>.l <acountID>.l <mapname>.16B
 	未調査
 S 01ed
 	スパノビが爆裂波動になるフラグを立てるパケット
-R 01ee <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w}.18B*
+R 01ee <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <wear>.w <card>.4w}.18B*
 	所有消耗品&収集品リスト
 	矢の場合は<?>.2Bが0x8000になる
 	00a3から変更
-R 01ef <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w}.18B*
+R 01ef <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <wear>.w <card>.4w}.18B*
 	カート内アイテム。消耗品/収集品
 	0123から変更
-R 01f0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w}.18B*
+R 01f0 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <wear>.w <card>.4w}.18B*
 	カプラさんに預けてある消耗品&収集品リスト
 	00a5から変更
 R 01f1
@@ -1311,9 +1319,11 @@ S 01f9 <ID>.l
 S 01fa <version>.l <account name>.24B <md5 binary>.16B <version2>.B <?>.B
 	id&暗号化済みpass送信
 	langtypeが5のときのみ有効
-R 01fc <length>.w { <?1>.w <RepairItemID>.w <?2>.9B }.13B*
+S 01fb <char_id>.l <key>.50B
+	キャラ削除要求
+R 01fc <length>.w { <index>.w <RepairItemID>.w <refine_level>.B <card>.4w }.13B*
 	修理可能アイテムリスト表示
-S 01fd <?1>.w
+S 01fd <index>.w <item_id>.w <refine_level>.B <card>.4w
 	修理アイテムの選択
 R 01fe <RepairItemID>.w <flag>.B
 	修理結果(flag = 00なら成功 01なら失敗)
@@ -1509,7 +1519,7 @@ R 0240 <len>.w <num>.l { <mail_num>.l <title>.40B <read>.B <nick>.24B <time>.l }
 	0x23fの応答
 S 0241 <num>.l
 	メールの受信要求
-R 0242 <len>.w <num>.l <title>.40B <nick>.24B <0x22固定>.l <zeny>.l <amount>.l <itemid>.w <type>.w <identify>.B <attribute>.B <refine>.B <card>.4w <mail_body>.?B
+R 0242 <len>.w <num>.l <title>.40B <nick>.24B <delete_date>.l <zeny>.l <amount>.l <itemid>.w <type>.w <identify>.B <attribute>.B <refine>.B <card>.4w <mail_body>.?B
 	メールを選択受信
 S 0243 <num>.l
 	メール削除
@@ -1531,7 +1541,7 @@ R 0249 <fail>.B
 	メール送信可否
 	fail=0 : メール送信に成功しました。
 	fail=1 : メール送信に失敗しました。受け取る人が存在しません。
-R 024a <num>.l <nick>.24B <title>.40B
+R 024a <mailID>.l <nick>.24B <title>.40B
 	新着メールが届きました
 S 024b <flag>.w
 	競売ウィンドウのアイテム登録画面
@@ -1566,7 +1576,7 @@ S 0251 <type>.w <num>.l <name>.24B <page>.w
 	type=3 : その他
 	type=4 : アイテム名<name>で検索
 	type=5 : 競売番号<num>で検索
-R 0252 <len>.w <page_count>.l <loop>.l { <auctionID>.l <name>.24B <item id1>.w <type>.w <?>.w <amount>.w <identify>.B <attribute>.B <refine>.B <card>.4w <value>.l <flag>.l <name>.24B <time>.l }.83B*
+R 0252 <len>.w <page_count>.l <loop>.l { <auctionID>.l <seller_name>.24B <item id1>.w <tyoe>.l <amount>.w <identify>.B <attribute>.B <refine>.B <card>.4w <now_price>.l <max_price>.l <flag>.l <buyer_name>.24B <delete_time>.l }.83B*
 	競売ウィンドウのアイテム検索。0251の応答
 R 0253 <skilllv>.B
 	skilllvが0〜2なら太陽と月と星の感情セーブ用メッセージ「一度指定すると変更は不可能です！」
@@ -1595,18 +1605,20 @@ S 025c <type>.w
 	競売ウィンドウ
 	type=0 : 自分の出品アイテムを表示
 	type=1 : 入札中のアイテムを表示
-R 025d <flag>.l
-	オークション終了
-	type=0 : 該当の競売を終了しました。
-	type=1 : 該当の競売を終了できません。
-	type=2 : 競売番号が正確ではありません。
-S 025e <result>.w
-	未調査
-R 025f <0固定>.4B
-	競売ウィンドウを開く
+S 025d <auctionID>.l
+	オークション終了要求
+R 025e <result>.w
+	025dの応答
+	result=0 : 該当の競売を終了しました。
+	result=1 : 該当の競売を終了できません。
+	result=2 : 競売番号が正確ではありません。
+R 025f <type>.l
+	type=0 競売ウィンドウを開く
+	type=1 競売ウィンドウを閉じる
 	すぐにサーバに0x251が送信される
-R 0260 <0固定>.4B
-	メールBOXの表示
+R 0260 <type>.l
+	type=0 メールBOXを開く
+	type=1 メールBOXを閉じる
 S 0273 <mail_num>.l <nick>.24B
 	ROメールの着信メールウィンドウで一番左のボタンを押した
 	<nick>の相手に<mail_num>のメールを返送する
@@ -1627,10 +1639,10 @@ S 027c <version>.l <account name>.24B <md5 binary>.16B <version2>.B <MacAddress>
 	id&暗号化済みpass送信
 R 027d <name>.24B <level>.w <name_value>.w <summon count>.w <atk>.w <matk>.w <hit>.w <critical>.w <def>.w <mdef>.w <flee>.w <aspd>.w <hp>.w <max_hp>.w <sp>.w <max_sp>.w <attackable>.w <exp>.l
 	傭兵ステータス情報？
-R 027e <len>.w <codelen>.w
-	未調査
+R 027e <len>.w <codelen>.w <code>.?B
+	SHANDA_PROTECT?
 S 027f <clienttype>.w <nVer>.l
-	未調査
+	clienttypeをログイン鯖に送信
 R 0280 <point>.l <total>.l <type>.w
 	テイミングミッションランキングポイントが<point>上昇して<total>になりました。
 	type=0xfd2 or 0xfd3固定
@@ -1764,15 +1776,19 @@ S 02a5 <index>.w <count>.l
 	マウスのスクロールを高速で動かすと飛んでくる
 	未調査
 R 02aa <info>.w
-	不明
-S 02ab <type>.w <password>.16B <password>.16B
-	0x2aaの応答？
+	キャッシュパスワード要求
+S 02ab <type>.w <password>.16B <new_password>.16B
+	0x2aaの応答
 R 02ac <result>.w <ErrorCount>.w
-	不明
-R 02ad <?>.w <?>.l
-	mRO Pin code check?
-R 02ae
-	ログイン系？未調査
+	キャッシュパスワード
+R 02ad <result>.w <seed>.l
+	2ndパスワード要求
+R 02ae <key1>.l <key2>.l
+	MAP鯖管轄のパケット
+	未使用
+R 02af
+	2aeの応答
+	未使用
 S 02b0 <version>.l <account name>.24B <password>.24B <version2>.B <ip>.16B <MacAddress>.13B <flag>.B
 	アカウントID&パスワード送信
 	0x277の上位版？
@@ -1996,10 +2012,8 @@ R 03b4〜03dc
 	03b3と同じ？使用用途不明
 R 03dd <AuthData1>.l <AuthData2>.l <AuthData3>.l <AuthData4>.l
 	GameGuard関連
-	未調査
 S 03de <AuthData1>.l <AuthData2>.l <AuthData3>.l <AuthData4>.l
 	GameGuard関連
-	未調査
 R 03e2 <len>.w <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1>.l <param2>.w <type>.B <param3>.l
 	02e1の上位版?
 R 03e3〜040b
@@ -2078,18 +2092,18 @@ R 07db <type>.w <val>.l
 	type=7 SP
 	それ以外の値は無視
 S 07dc <option>.l
-	seekパーティー関連？
-	未調査
+	seekパーティー関連
+	未使用
 R 07dd <name>.24B <job>.l <level>.w <mapName>.16B <option>.l
-	seekパーティー関連？現在未使用？
-	未調査
+	seekパーティー関連
+	未使用
 S 07de <job>.l <level>.l <mapName>.24B <option>.l
-	seekパーティー関連？現在未使用？
-	未調査
+	seekパーティー関連
+	未使用
 R 07df <name>.24B <job>.l <level>.l <mapName>.16B <option>.l
-	seekパーティー関連？現在未使用？
-	未調査
-R 07e0 <esNo>.w <esName>.24B
+	seekパーティー関連
+	未使用
+R 07e0 <esNo>.w <esName>.54B
 	未調査
 R 07e1 <skill ID>.w <type>.l <lv>.w <sp>.w <range>.w <up>.B
 	010eの上位版（2009-07-15aRagexeRE以降）
@@ -2105,16 +2119,19 @@ S 07e4 <len>.w <type>.l <fail>.l {<index>.w <amount>.w}.4B*
 	typeは0x7e3と同じ
 	fail=00 キャンセル押下
 	fail=01 OK押下
-S 07e5 <?>.w <account ID>.l
+S 07e5 <len>.w <account ID>.l <StringInfo>.?B
 	captchaコード要求
 R 07e6 <skillid>.w <type>.l
 	スキルメッセージ表示関連
-S 07e7 <len>.w <account ID>.l <code>.10B <?>.14B
+S 07e7 <len>.w <account ID>.l <StringInfo>.24B
 	captchaコード応答
 R 07e8 <len>.w <image>.?B
 	captchaイメージ受信
-R 07e9 <code>.w <flag>.B
+R 07e9 <len>.w <result>.B
 	captchaコード認証応答
+	result=0 認証失敗
+	result=1 成功
+	result=2 SUCCESS_EVERYTIME?
 S 07ea
 	戦場リスト？
 	未調査
@@ -2221,15 +2238,16 @@ R 07fb <src ID>.l <dst ID>.l <X>.w <Y>.w <skillid>.w <pl>.l <casttime>.l <isDisp
 R 07fc <old account ID>.l <new account ID>.l
 	PTリーダー変更要求成功時に送信？
 R 07fd <len>.w <type>.B <identify>.B <itemID>.w <name_len>.w <name>.?B <name_len2>.w <name2>.?B
-	未調査
+	レアアイテムゲットアナウンス
+	type=0 箱系アイテム
+	type=1 モンスタードロップ
 R 07fe <name>.24B
 	nameのmp3ファイルを鳴らす
 R 07ff <len>.w <result>.l
-	サーバーのDEFINEチェック？
+	サーバーのDEFINEチェック
 	result:1 = 0x7fcが有効
 	result:2 = R化している
 	result:4 = チャネリングサービスが有効
-	詳細不明
 R 0800 <len>.w <ID>.l <charID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
 	0133の上位版（2009-12-08aRagexeRE以降）
 S 0801 <len>.w <ID>.l <charID>.l {<amount>.w <index>.w}.4B*
@@ -2349,16 +2367,31 @@ R 0826 <result>.w
 	未調査
 S 0827 <charID>.l
 	IDのcharの削除タイマー要求
-R 0828 <charID>.l <message_type>.l <time>.l
+R 0828 <charID>.l <message_type>.l <result>.l
 	0828の応答
+	result=0 Unknownエラー
+	result=1 成功
+	result=2 timeの設定エラー
+	result=3 データベースエラー
+	result=4 ギルドを脱退して下さい
+	result=5 パーティーを脱退して下さい
 S 0829 <charID>.l <date>.6B
 	IDのcharの削除要求
-R 082a <charID>.l <msg>.l
+R 082a <charID>.l <result>.l
 	0829の応答
+	result=0 Unknownエラー
+	result=1 成功
+	result=2 設定エラー
+	result=3 データベースエラー
+	result=4 削除待機時間を過ぎていない
+	result=5 誕生日が違います
 S 082b <charID>.l
 	IDのcharの削除要求キャンセル
-R 082c <charID>.l <msg>.l
+R 082c <charID>.l <result>.l
 	082bの応答
+	result=0 Unknownエラー
+	result=1 成功
+	result=2 データベースエラー
 R 0837 <result>.B
 	露天検索システム関連
 	未調査

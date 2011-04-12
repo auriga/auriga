@@ -75,32 +75,19 @@ struct login_config {
 	int login_type;
 };
 
-struct auth_node {
+static struct {
 	int account_id;
 	int login_id1;
 	int login_id2;
 	unsigned long ip;
+	bool delflag;
 	char sex;
-};
+} auth_fifo[AUTH_FIFO_SIZE];
+static int auth_fifo_pos = 0;
 
 static struct login_config config;
 
-static struct dbt *auth_db = NULL;
 static struct dbt *gm_account_db = NULL;
-
-static struct auth_node *auth_search(int account_id)
-{
-	return (struct auth_node *)numdb_search(auth_db,account_id);
-}
-
-static int auth_db_final(void *key, void *data, va_list ap)
-{
-	struct auth_node *node = (struct auth_node *)data;
-
-	aFree(node);
-
-	return 0;
-}
 
 static int gm_account_db_final(void *key, void *data, va_list ap);
 
@@ -189,21 +176,18 @@ static int gm_account_db_final(void *key, void *data, va_list ap)
 }
 
 // authfifoの比較
-static bool cmp_authnode(struct auth_node *node, int account_id, int login_id1, int login_id2, unsigned long ip, char sex)
+static bool cmp_authfifo(int i, int account_id, int login_id1, int login_id2, unsigned long ip)
 {
-	if( node == NULL )
-		return false;
-
-	if( node->account_id == account_id && node->login_id1 == login_id1 && node->sex == sex )
+	if( auth_fifo[i].account_id == account_id && auth_fifo[i].login_id1 == login_id1 )
 		return true;
 
 #ifdef CMP_AUTHFIFO_LOGIN2
-	if( node->login_id2 == login_id2 && login_id2 != 0 && node->sex == sex )
+	if( auth_fifo[i].login_id2 == login_id2 && login_id2 != 0 )
 		return true;
 #endif
 
 #ifdef CMP_AUTHFIFO_IP
-	if( node->ip == ip && ip != 0 && ip != 0xffffffff && node->sex == sex )
+	if( auth_fifo[i].ip == ip && ip != 0 && ip != 0xffffffff )
 		return true;
 #endif
 
@@ -396,27 +380,31 @@ static void login_authok(struct login_session_data *sd, int fd)
 {
 	int server_num = 0;
 	int i;
-	struct auth_node *node;
 
 	if( config.detect_multiple_login == true )
 	{
 		unsigned char buf[8];
+		int c = 0;
 
 		// 全charサーバへ同一アカウントの切断要求
 		WBUFW(buf,0) = 0x2730;
 		WBUFL(buf,2) = sd->account_id;
 		charif_sendallwos(-1,buf,6);
 
-		if( (node = auth_search(sd->account_id)) != NULL )
+		for( i = 0; i < AUTH_FIFO_SIZE; i++ )
+		{
+			if( auth_fifo[i].account_id == sd->account_id && auth_fifo[i].delflag == false )
+			{
+				auth_fifo[i].delflag = true;
+				c++;
+			}
+		}
+		if( c > 0 )
 		{
 			// 二重ログインの可能性があるので認証失敗にする
 			WFIFOW(fd,0) = 0x81;
 			WFIFOB(fd,2) = 8;
 			WFIFOSET(fd,3);
-
-			// ノードの削除
-			numdb_erase(auth_db,sd->account_id);
-			aFree(node);
 			return;
 		}
 	}
@@ -445,14 +433,27 @@ static void login_authok(struct login_session_data *sd, int fd)
 	WFIFOB(fd,46) = sex_str2num(sd->sex);
 	WFIFOSET(fd,47+32*server_num);
 
-	// ノードを登録
-	node = (struct auth_node *)aCalloc(1, sizeof(struct auth_node));
-	numdb_insert(auth_db, sd->account_id, node);
-	node->account_id = sd->account_id;
-	node->login_id1  = sd->login_id1;
-	node->login_id2  = sd->login_id2;
-	node->sex        = sd->sex;
-	node->ip         = session[fd]->client_addr.sin_addr.s_addr;
+	for( i = 0; i < AUTH_FIFO_SIZE; i++ )
+	{
+		if( cmp_authfifo(i,sd->account_id,sd->login_id1,sd->login_id2,session[fd]->client_addr.sin_addr.s_addr) == true &&
+		    auth_fifo[i].sex == sd->sex &&
+		    auth_fifo[i].delflag == false )
+		{
+			auth_fifo[i].delflag = true;
+			break;
+		}
+	}
+
+	if( auth_fifo_pos >= AUTH_FIFO_SIZE )
+		auth_fifo_pos = 0;
+
+	auth_fifo[auth_fifo_pos].account_id = sd->account_id;
+	auth_fifo[auth_fifo_pos].login_id1  = sd->login_id1;
+	auth_fifo[auth_fifo_pos].login_id2  = sd->login_id2;
+	auth_fifo[auth_fifo_pos].sex        = sd->sex;
+	auth_fifo[auth_fifo_pos].delflag    = false;
+	auth_fifo[auth_fifo_pos].ip         = session[fd]->client_addr.sin_addr.s_addr;
+	auth_fifo_pos++;
 
 	// 認証終了を socket.c に伝える
 	session[fd]->auth = 1;
@@ -497,18 +498,27 @@ int parse_fromchar(int fd)
 			if( RFIFOREST(fd) < 19 )
 				return 0;
 			{
-				struct auth_node *node;
+				int i;
 				int account_id   = RFIFOL(fd,2);
 				int login_id1    = RFIFOL(fd,6);
 				int login_id2    = RFIFOL(fd,10);
 				char sex         = sex_num2str(RFIFOB(fd,14));
 				unsigned long ip = RFIFOL(fd,15);
 
-				node = auth_search(account_id);
-				if( cmp_authnode(node,account_id,login_id1,login_id2,ip,sex) == true )
+				for( i = 0; i < AUTH_FIFO_SIZE; i++ )
+				{
+					if( cmp_authfifo(i,account_id,login_id1,login_id2,ip) == true &&
+					    auth_fifo[i].sex == sex &&
+					    auth_fifo[i].delflag == false )
+					{
+						auth_fifo[i].delflag = true;
+						break;
+					}
+				}
+				if( i <= AUTH_FIFO_SIZE )
 				{
 					int p,j;
-					const struct mmo_account *ac = account_load_num(node->account_id);
+					const struct mmo_account *ac = account_load_num(auth_fifo[i].account_id);
 
 					// account_reg送信
 					if(ac)
@@ -527,13 +537,9 @@ int parse_fromchar(int fd)
 					WFIFOW(fd,0)=0x2713;
 					WFIFOL(fd,2)=account_id;
 					WFIFOB(fd,6)=0;
-					WFIFOL(fd,7)=node->account_id;
-					WFIFOL(fd,11)=node->login_id1;
+					WFIFOL(fd,7)=auth_fifo[i].account_id;
+					WFIFOL(fd,11)=auth_fifo[i].login_id1;
 					WFIFOSET(fd,15);
-
-					// ノードの削除
-					numdb_erase(auth_db,account_id);
-					aFree(node);
 				}
 				else
 				{
@@ -1497,7 +1503,6 @@ void do_final(void)
 	login_sync();
 	login_final();
 
-	numdb_final(auth_db,auth_db_final);
 	if(gm_account_db)
 		numdb_final(gm_account_db,gm_account_db_final);
 	exit_dbn();
@@ -1553,6 +1558,9 @@ int do_init(int argc,char **argv)
 	if(config.login_shost[0])
 		config.login_sip = host2ip(config.login_shost, "Login server sIP address");
 
+	for( i = 0 ; i < AUTH_FIFO_SIZE; i++ )
+		auth_fifo[i].delflag = true;
+
 	for( i = 0; i < MAX_CHAR_SERVERS; i++ )
 		server_fd[i] = -1;
 
@@ -1562,7 +1570,6 @@ int do_init(int argc,char **argv)
 	if(login_init() == false)
 		exit(1);
 
-	auth_db=numdb_init();
 	read_gm_account();
 	set_defaultparse(parse_login);
 	set_sock_destruct(parse_login_disconnect);

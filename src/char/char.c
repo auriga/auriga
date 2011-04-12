@@ -108,22 +108,22 @@ struct cram_session_data {
 	char md5key[128];
 };
 
+static struct {
+	int account_id;
+	int char_id;
+	int login_id1;
+	int login_id2;
+	unsigned long ip;
+	int delflag;
+	int sex;
+} auth_fifo[AUTH_FIFO_SIZE];
+static int auth_fifo_pos = 0;
+
 // online DB
 static struct dbt *char_online_db;
 
 #define CHAR_STATE_WAITAUTH 0
 #define CHAR_STATE_AUTHOK 1
-
-struct auth_node {
-	int account_id;
-	int char_id;
-	int login_id1;
-	int login_id2;
-	int sex;
-	unsigned long ip;
-};
-
-static struct dbt *auth_db;
 
 static int max_connect_user = 0;
 static int autosave_interval = DEFAULT_AUTOSAVE_INTERVAL_CS;
@@ -140,20 +140,6 @@ const char ranking_reg[MAX_RANKING][32] = {
 struct point start_point = { "new_1-1.gat", 53, 111 };
 
 static struct dbt *gm_account_db;
-
-static struct auth_node *auth_search(int account_id)
-{
-	return (struct auth_node *)numdb_search(auth_db,account_id);
-}
-
-static int auth_db_final(void *key, void *data, va_list ap)
-{
-	struct auth_node *node = (struct auth_node *)data;
-
-	aFree(node);
-
-	return 0;
-}
 
 int isGM(int account_id)
 {
@@ -631,25 +617,21 @@ static int char_delete(const struct mmo_chardata *cd)
 	return 0;
 }
 
-// authnodeの比較
-static bool cmp_authnode(struct auth_node *node, int account_id, int login_id1, int login_id2, unsigned long ip)
+// authfifoの比較
+static bool cmp_authfifo(int i,int account_id,int login_id1,int login_id2,unsigned long ip)
 {
-	if( node == NULL )
-		return false;
-
-	if( node->account_id == account_id && node->login_id1 == login_id1 )
+	if( auth_fifo[i].account_id == account_id && auth_fifo[i].login_id1 == login_id1 )
 		return true;
 
 #ifdef CMP_AUTHFIFO_LOGIN2
-	if( node->login_id2 == login_id2 && login_id2 != 0 )
+	if( auth_fifo[i].login_id2 == login_id2 && login_id2 != 0 )
 		return true;
 #endif
 
 #ifdef CMP_AUTHFIFO_IP
-	if( node->ip == ip && ip != 0 && ip != 0xffffffff )
+	if( auth_fifo[i].ip == ip && ip != 0 && ip != 0xffffffff )
 		return true;
 #endif
-
 	return false;
 }
 
@@ -994,7 +976,6 @@ int parse_tologin(int fd)
 				return 0;
 			{
 				int account_id = RFIFOL(fd,2);
-				struct auth_node *node;
 				for(i=0; i<fd_max; i++) {
 					if(session[i] && (sd = (struct char_session_data *)session[i]->session_data) && sd->account_id == account_id) {
 						WFIFOW(i,0) = 0x81;
@@ -1005,11 +986,10 @@ int parse_tologin(int fd)
 				}
 
 				// 同一アカウントの未認証データを全て破棄しておく
-				node = auth_search(account_id);
-				if( node )
+				for( i = 0; i < AUTH_FIFO_SIZE; i++ )
 				{
-					numdb_erase(auth_db,account_id);
-					aFree(node);
+					if( auth_fifo[i].account_id == account_id && !auth_fifo[i].delflag )
+						auth_fifo[i].delflag = 1;
 				}
 
 				// 全mapサーバに切断要求
@@ -1252,12 +1232,20 @@ int parse_frommap(int fd)
 				int login_id1    = RFIFOL(fd,10);
 				int login_id2    = RFIFOL(fd,14);
 				unsigned long ip = RFIFOL(fd,18);
-				//int sex          = RFIFOB(fd,22);
-				struct auth_node *node;
+				int sex          = RFIFOB(fd,22);
 				const struct mmo_chardata *cd = chardb_load(char_id);
 
-				node = auth_search(account_id);
-				if( cd != NULL && cmp_authnode(node,account_id,login_id1,login_id2,ip) == true && node->char_id == char_id )
+				for( i = 0; i < AUTH_FIFO_SIZE; i++ )
+				{
+					if( cmp_authfifo(i,account_id,login_id1,login_id2,ip) == true &&
+					    auth_fifo[i].char_id == char_id &&
+					    !auth_fifo[i].delflag )
+					{
+						auth_fifo[i].delflag = 1;
+						break;
+					}
+				}
+				if( cd != NULL && i <= AUTH_FIFO_SIZE && auth_fifo[i].sex == sex )
 				{
 					unsigned char buf[48];
 					struct char_online *c;
@@ -1266,9 +1254,8 @@ int parse_frommap(int fd)
 
 					WFIFOW(fd,0) = 0x2afd;
 					WFIFOW(fd,2) = (unsigned short)(12 + s1 + s2);
-					WFIFOL(fd,4) = RFIFOL(fd,2); // account id
-					//WFIFOL(fd,8) = RFIFOL(fd,6);
-					WFIFOL(fd,8) = node->login_id2;
+					WFIFOL(fd,4) = account_id; // account id
+					WFIFOL(fd,8) = auth_fifo[i].login_id2;
 					memcpy(WFIFOP(fd,12   ), &cd->st , s1);
 					memcpy(WFIFOP(fd,12+s1), &cd->reg, s2);
 					WFIFOSET(fd,WFIFOW(fd,2));
@@ -1294,10 +1281,6 @@ int parse_frommap(int fd)
 					WBUFL(buf,34) = server[id].ip;
 					WBUFW(buf,38) = server[id].port;
 					mapif_sendallwos(fd,buf,40);
-
-					// ノードの削除
-					numdb_erase(auth_db,account_id);
-					aFree(node);
 				}
 				else
 				{
@@ -1305,7 +1288,7 @@ int parse_frommap(int fd)
 					WFIFOW(fd,2)=account_id;
 					WFIFOB(fd,6)=0;
 					WFIFOSET(fd,7);
-					printf("auth_node search error! %d\n", char_id);
+					printf("auth_fifo search error! %d\n", char_id);
 				}
 			}
 			RFIFOSKIP(fd,23);
@@ -1345,17 +1328,18 @@ int parse_frommap(int fd)
 				int login_id2    = RFIFOL(fd,10);
 				unsigned long ip = RFIFOL(fd,14);
 				int sex          = WFIFOB(fd,18);
-				struct auth_node *node;
 
-				// ノードを登録
-				node = (struct auth_node *)aCalloc(1, sizeof(struct auth_node));
-				numdb_insert(auth_db, account_id, node);
-				node->account_id = account_id;
-				node->char_id    = 0;
-				node->login_id1  = login_id1;
-				node->login_id2  = login_id2;
-				node->ip         = ip;
-				node->sex        = sex;
+				if( auth_fifo_pos >= AUTH_FIFO_SIZE )
+					auth_fifo_pos = 0;
+
+				auth_fifo[auth_fifo_pos].account_id = account_id;
+				auth_fifo[auth_fifo_pos].char_id    = 0;
+				auth_fifo[auth_fifo_pos].login_id1  = login_id1;
+				auth_fifo[auth_fifo_pos].login_id2  = login_id2;
+				auth_fifo[auth_fifo_pos].delflag    = 2;
+				auth_fifo[auth_fifo_pos].ip         = ip;
+				auth_fifo[auth_fifo_pos].sex        = sex;
+				auth_fifo_pos++;
 
 				WFIFOW(fd,0) = 0x2b03;
 				WFIFOL(fd,2) = account_id;
@@ -1374,16 +1358,17 @@ int parse_frommap(int fd)
 				int login_id1  = RFIFOL(fd,6);
 				int char_id    = RFIFOL(fd,10);
 				int sex        = RFIFOB(fd,40);
-				struct auth_node *node;
 
-				// ノードを登録
-				node = (struct auth_node *)aCalloc(1, sizeof(struct auth_node));
-				numdb_insert(auth_db, account_id, node);
-				node->account_id = account_id;
-				node->char_id    = char_id;
-				node->login_id1  = login_id1;
-				node->ip         = session[fd]->client_addr.sin_addr.s_addr;
-				node->sex        = sex;
+				if( auth_fifo_pos >= AUTH_FIFO_SIZE )
+					auth_fifo_pos = 0;
+
+				auth_fifo[auth_fifo_pos].account_id = account_id;
+				auth_fifo[auth_fifo_pos].char_id    = 0;
+				auth_fifo[auth_fifo_pos].login_id1  = login_id1;
+				auth_fifo[auth_fifo_pos].delflag    = 2;
+				auth_fifo[auth_fifo_pos].ip         = session[fd]->client_addr.sin_addr.s_addr;
+				auth_fifo[auth_fifo_pos].sex        = sex;
+				auth_fifo_pos++;
 
 				WFIFOW(fd,0)=0x2b06;
 				memcpy(WFIFOP(fd,2),RFIFOP(fd,2),38);
@@ -1776,7 +1761,7 @@ int parse_char(int fd)
 			break;
 
 		case 0x65:	// 接続要求
-			if(RFIFOREST(fd)<17)
+			if( RFIFOREST(fd) < 17 )
 				return 0;
 			{
 				int account_id  = RFIFOL(fd,2);
@@ -1784,9 +1769,8 @@ int parse_char(int fd)
 				int login_id2   = RFIFOL(fd,10);
 				//int client_type = RFIFOW(fd,14);
 				int sex         = RFIFOB(fd,16);
-				struct auth_node *node;
 
-				if(sd == NULL)
+				if( sd == NULL )
 				{
 					session[fd]->session_data = aCalloc(1,sizeof(*sd));
 					sd = (struct char_session_data *)session[fd]->session_data;
@@ -1799,24 +1783,33 @@ int parse_char(int fd)
 				WFIFOL(fd,0) = account_id;
 				WFIFOSET(fd,4);
 
-				node = auth_search(account_id);
-				if( cmp_authnode(node,account_id,login_id1,login_id2,session[fd]->client_addr.sin_addr.s_addr) == true )
+				for( i = 0; i < AUTH_FIFO_SIZE; i++ )
 				{
-					sd->account_id       = node->account_id;
-					sd->login_id1        = node->login_id1;
-					sd->login_id2        = node->login_id2;
+					if( cmp_authfifo(i,sd->account_id,sd->login_id1,sd->login_id2,session[fd]->client_addr.sin_addr.s_addr) == true &&
+					    auth_fifo[i].delflag == 2 )
+					{
+						auth_fifo[i].delflag = 1;
+						sd->account_id       = auth_fifo[i].account_id;
+						sd->login_id1        = auth_fifo[i].login_id1;
+						sd->login_id2        = auth_fifo[i].login_id2;
+						break;
+					}
+				}
+				if( i <= AUTH_FIFO_SIZE )
+				{
+					// メンテナンス中
 					if( char_maintenance && isGM(sd->account_id) == 0 )
 					{
 						close(fd);
 						session[fd]->eof = 1;
 						return 0;
 					}
+
+					// 接続人数制限中
 					if( max_connect_user > 0 )
 					{
 						if( count_users() < max_connect_user || isGM(sd->account_id) > 0 )
-						{
 							mmo_char_send006b(fd,sd);
-						}
 						else
 						{
 							WFIFOW(fd,0)=0x6c;
@@ -1824,14 +1817,10 @@ int parse_char(int fd)
 							WFIFOSET(fd,3);
 						}
 					}
-					else
-					{
-						mmo_char_send006b(fd,sd);
-					}
 
-					// ノードの削除
-					numdb_erase(auth_db,account_id);
-					aFree(node);
+					// 0x6b送信
+					else
+						mmo_char_send006b(fd,sd);
 				}
 				else
 				{
@@ -1851,43 +1840,47 @@ int parse_char(int fd)
 			break;
 
 		case 0x66:	// キャラ選択
-			if(RFIFOREST(fd)<3)
+			if( RFIFOREST(fd) < 3 )
 				return 0;
 			{
 				struct char_online *c;
 				struct mmo_charstatus st;
-				struct auth_node *node;
 
-				for(ch=0; ch<max_char_slot; ch++) {
-					if(sd->found_char[ch] && sd->found_char[ch]->st.char_num == RFIFOB(fd,2))
+				for( ch = 0; ch < max_char_slot; ch++ )
+				{
+					if( sd->found_char[ch] && sd->found_char[ch]->st.char_num == RFIFOB(fd,2) )
 						break;
 				}
 				RFIFOSKIP(fd,3);
-				if(ch >= max_char_slot)
+				if( ch >= max_char_slot )
 					break;
 
 				charlog_log("char select %d - %d %s",sd->account_id,sd->found_char[ch]->st.char_num,sd->found_char[ch]->st.name);
 				memcpy(&st,&sd->found_char[ch]->st,sizeof(struct mmo_charstatus));
 
 				i = search_mapserver_char(st.last_point.map, NULL);
-				if(i < 0) {
-					if(default_map_type & 1) {
+				if( i < 0 )
+				{
+					if( default_map_type & 1 )
+					{
 						memcpy(st.last_point.map,default_map_name,16);
 						i = search_mapserver_char(st.last_point.map,NULL);
 					}
-					if(default_map_type & 2 && i < 0) {
+					if( default_map_type & 2 && i < 0 )
 						i = search_mapserver_char(st.last_point.map,&st);
-					}
-					if(i >= 0) {
+					if( i >= 0 )
+					{
 						// 現在地が書き換わったので上書き
 						chardb_save(&st);
 					}
 				}
-				if(strstr(st.last_point.map,".gat") == NULL && strlen(st.last_point.map) < 20) {
+				if( strstr(st.last_point.map,".gat") == NULL && strlen(st.last_point.map) < 20 )
+				{
 					strcat(st.last_point.map,".gat");
 					chardb_save(&st);
 				}
-				if(i < 0 || server[i].active == 0) {
+				if( i < 0 || server[i].active == 0 )
+				{
 					WFIFOW(fd,0)=0x6c;
 					WFIFOW(fd,2)=0;
 					WFIFOSET(fd,3);
@@ -1896,7 +1889,8 @@ int parse_char(int fd)
 				// ２重ログイン撃退（違うマップサーバの場合）
 				// 同じマップサーバの場合は、マップサーバー内で処理される
 				c = (struct char_online *)numdb_search(char_online_db,sd->found_char[ch]->st.account_id);
-				if( c && (c->ip != server[i].ip || c->port != server[i].port) ) {
+				if( c && (c->ip != server[i].ip || c->port != server[i].port) )
+				{
 					// ２重ログイン検出
 					// mapに切断要求
 					unsigned char buf[8];
@@ -1919,21 +1913,20 @@ int parse_char(int fd)
 				WFIFOSET(fd,28);
 
 				// 同一アカウントの未認証データを全て破棄しておく
-				node = auth_search(sd->account_id);
-				if( node != NULL )
+				for( i = 0; i < AUTH_FIFO_SIZE; i++ )
 				{
-					numdb_erase(auth_db,sd->account_id);
-					aFree(node);
+					if( auth_fifo[i].account_id == sd->account_id && !auth_fifo[i].delflag )
+						auth_fifo[i].delflag = 1;
 				}
-
-				// ノードを登録
-				node = (struct auth_node *)aCalloc(1, sizeof(struct auth_node));
-				numdb_insert(auth_db, sd->account_id, node);
-				node->account_id = sd->account_id;
-				node->char_id    = st.char_id;
-				node->login_id1  = sd->login_id1;
-				node->login_id2  = sd->login_id2;
-				node->sex        = sd->sex;
+				if( auth_fifo_pos >= AUTH_FIFO_SIZE )
+					auth_fifo_pos = 0;
+				auth_fifo[auth_fifo_pos].account_id = sd->account_id;
+				auth_fifo[auth_fifo_pos].char_id    = st.char_id;
+				auth_fifo[auth_fifo_pos].login_id1  = sd->login_id1;
+				auth_fifo[auth_fifo_pos].login_id2  = sd->login_id2;
+				auth_fifo[auth_fifo_pos].delflag    = 0;
+				auth_fifo[auth_fifo_pos].sex        = sd->sex;
+				auth_fifo_pos++;
 			}
 			break;
 
@@ -2635,7 +2628,6 @@ void do_final(void)
 			delete_session(server_fd[i]);
 	}
 	numdb_final(char_online_db,char_online_db_final);
-	numdb_final(auth_db,auth_db_final);
 	chardb_final();
 	exit_dbn();
 	do_final_timer();
@@ -2684,7 +2676,6 @@ int do_init(int argc,char **argv)
 		memset(&server[i], 0, sizeof(struct mmo_map_server));
 	}
 	char_online_db = numdb_init();
-	auth_db = numdb_init();
 	if(chardb_init() == false)
 		exit(1);
 	inter_storage_init();
