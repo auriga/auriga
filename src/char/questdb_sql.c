@@ -73,7 +73,8 @@ int questdb_sql_delete(int char_id)
 // ----------------------------------------------------------
 const struct quest *questdb_sql_load(int char_id)
 {
-	int i=0, rc;
+	int i=0;
+	bool is_success;
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 	struct quest *q = (struct quest *)numdb_search(quest_db,char_id);
@@ -90,16 +91,16 @@ const struct quest *questdb_sql_load(int char_id)
 
 	q->char_id = char_id;
 
-	rc = sqldbs_query(
+	is_success = sqldbs_query(
 		&mysql_handle,
-		"SELECT `account_id`, `nameid`, `state`, `limit`,
-				`mobid1`, `mobmax1`, `mobcnt1`,
-				`mobid2`, `mobmax2`, `mobcnt2`,
-				`mobid3`, `mobmax3`, `mobcnt3` "
+		"SELECT `account_id`, `nameid`, `state`, `limit`, "
+				"`mobid1`, `mobmax1`, `mobcnt1`, "
+				"`mobid2`, `mobmax2`, `mobcnt2`, "
+				"`mobid3`, `mobmax3`, `mobcnt3` "
 		"FROM `" QUEST_TABLE "` WHERE `char_id`='%d'",
 		char_id
 	);
-	if(rc) {
+	if(!is_success) {
 		q->char_id = -1;
 		return NULL;
 	}
@@ -141,7 +142,7 @@ const struct quest *questdb_sql_load(int char_id)
 // ----------------------------------------------------------
 int questdb_sql_save(struct quest *q2)
 {
-	struct quest *q1 = questdb_sql_load(q2->char_id);
+	const struct quest *q1 = questdb_sql_load(q2->char_id);
 	int i;
 
 	if(q1 != NULL && q1->count <= 0) {
@@ -155,14 +156,14 @@ int questdb_sql_save(struct quest *q2)
 	for(i=0; i<q2->count; i++) {
 		sqldbs_query(
 			&mysql_handle,
-			"INSERT INTO `" QUEST_TABLE "` (`char_id`, `account_id`, `nameid`, `state`, `limit`,
-											`mobid1`, `mobmax1`, `mobcnt1`,
-											`mobid2`, `mobmax2`, `mobcnt2`,
-											`mobid3`, `mobmax3`, `mobcnt3`) "
-			"VALUES ('%d','%d','%d','%d','%u',
-					 '%d','%d','%d',
-					 '%d','%d','%d',
-					 '%d','%d','%d')",
+			"INSERT INTO `" QUEST_TABLE "` (`char_id`, `account_id`, `nameid`, `state`, `limit`, "
+											"`mobid1`, `mobmax1`, `mobcnt1`, "
+											"`mobid2`, `mobmax2`, `mobcnt2`, "
+											"`mobid3`, `mobmax3`, `mobcnt3`) "
+			"VALUES ('%d','%d','%d','%d','%u', "
+					 "'%d','%d','%d', "
+					 "'%d','%d','%d', "
+					 "'%d','%d','%d')",
 			q2->char_id, q2->account_id, q2->data[i].nameid, q2->data[i].state, q2->data[i].limit,
 			q2->data[i].mob[0].id, q2->data[i].mob[0].max, q2->data[i].mob[0].cnt,
 			q2->data[i].mob[1].id, q2->data[i].mob[1].max, q2->data[i].mob[1].cnt,

@@ -1,4 +1,11 @@
 ----------------------------------------
+//0852 [2011/04/13] by Blaze
+
+・SQL：0851にてコンパイルエラーが発生するのを修正（char/questdb_sql.c）
+	-> queryの戻り値をbool型に修正
+	-> SQL文の文字列範囲がおかしかったのを修正
+
+----------------------------------------
 //0851 [2011/04/13] by Blaze
 
 ・クエストリスト実装 (map.*, quest.*, clif.*, pc.c, mob.c, common/mmo.h, db/quest_db.txt)
@@ -37,8 +44,6 @@
 	転生クエスト（npc_job_transmigration.txt）
 	魔王モロク討伐クエスト（npc_town_morocc.txt）
 	運命のカラスクエスト（npc_town_morocc.txt）
-
-・0849のドキュメント誤記を修正（doc/server_build.txt）
 
 ----------------------------------------
 //0850 [2011/04/13] by popori
