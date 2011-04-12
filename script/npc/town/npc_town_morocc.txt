@@ -1478,6 +1478,7 @@ morocc.gat,176,103,3	script	コンチネンタルガード	754,{
 			mes "バーロック様にお会いください。";
 			mes "それでは、ご武運を！";
 			set MOC_2QUE,1;
+			setquest 3050;
 			close;
 		case 3:
 			mes "[コンチネンタルガード事務官]";
@@ -1789,6 +1790,7 @@ morocc.gat,159,113,3	script	バーロック隊長	752,{
 			mes " ^0000FF火種 30個^000000 を";
 			mes "集めてこよう。）";
 			set MOC_2QUE,2;
+			chgquest 3050,3051;
 			close;
 		case 3:
 			mes "[バーロック隊長]";
@@ -1915,6 +1917,7 @@ morocc.gat,159,113,3	script	バーロック隊長	752,{
 		mes "持ってきてくれ！";
 		delitem 7098,30;
 		set MOC_2QUE,3;
+		chgquest 3051,3052;
 		close;
 	case 3:
 		mes "[バーロック隊長]";
@@ -1950,6 +1953,7 @@ morocc.gat,159,113,3	script	バーロック隊長	752,{
 		mes "では、これを受け取りたまえ。";
 		delitem 7561,50;
 		set MOC_2QUE,4;
+		chgquest 3052,3053;
 		getitem 7826,1;
 		next;
 		mes "[" +strcharinfo(0)+ "]";
@@ -2090,6 +2094,7 @@ morocc.gat,159,113,3	script	バーロック隊長	752,{
 		next;
 		delitem 7820,1;
 		set MOC_2QUE,6;
+		chgquest 3055,3056;
 		getexp 2000000,0;
 		mes "[バーロック隊長]";
 		mes "あと、君に渡す報酬を";
@@ -2193,6 +2198,7 @@ morocc.gat,159,113,3	script	バーロック隊長	752,{
 	mes "君に授与しよう！";
 	next;
 	set MOC_2QUE,7;
+	chgquest 3056,59345;
 	getitem '@itemid,1;
 	mes "[バーロック隊長]";
 	mes "おめでとう！";
@@ -2476,6 +2482,7 @@ moc_fild21.gat,177,239,0	script	次元の狭間#morocc	844,{
 	mes "手を伸ばし、光を失ったカケラを";
 	mes "1つ取ってみる-";
 	set MOC_2QUE,5;
+	chgquest 3053,3055;
 	getitem 7820,1;
 	close;
 OnInit:
@@ -2811,6 +2818,7 @@ moc_ruins.gat,137,70,3	script	本を持った男	48,{
 		mes "まずは、プロンテラの図書館に、";
 		mes "向かおう）";
 		set MOC_3QUE,1;
+		setquest 2063;
 		close;
 	case 1:
 		mes "[ベンジャミン]";
@@ -3014,6 +3022,7 @@ moc_ruins.gat,137,70,3	script	本を持った男	48,{
 		mes "^3131FF<運命の跡>^000000も";
 		mes "読んでみるといい。";
 		set MOC_3QUE,11;
+		chgquest 2067,2068;
 		getitem 7795,1;
 		next;
 		mes "[ベンジャミン]";
@@ -3107,6 +3116,7 @@ moc_ruins.gat,137,70,3	script	本を持った男	48,{
 		delitem 7797,1;
 		delitem 7796,1;
 		set MOC_3QUE,16;
+		chgquest 59455,59460;
 		getexp 900000,900000;
 		close;
 	default:
@@ -3359,6 +3369,7 @@ prt_in.gat,179,92,3	script	図書館管理人	57,{
 		mes "^660000（ジュノーの図書館へ向かおう！";
 		mes "本が見つかるといいのだけれど……）^000000";
 		set MOC_3QUE,2;
+		chgquest 2063,2064;
 		close;
 	case 2:
 		mes "[管理人ギース]";
@@ -4214,6 +4225,7 @@ yuno_in04.gat,100,3,0	script	#garas_path	139,1,1,{
 		mes "（記事のことが、本当にあった事なら";
 		mes "何かわかるはず……）";
 		set MOC_3QUE,7;
+		chgquest 2064,2065;
 		close;
 	case 7:
 		mes "[" +strcharinfo(0)+ "]";
@@ -4424,6 +4436,7 @@ yuno_in04.gat,117,102,0	script	過去記事のブック	844,{
 			mes "アインブロックフィールド01。";
 			mes "^FF0000洞窟^000000探しか……）";
 			set MOC_3QUE,8;
+			chgquest 2065,2066;
 			close;
 		case 5:
 		case 6:
@@ -4810,6 +4823,7 @@ cave.gat,22,186,3	script	怪物の姿をした男	999,{
 				mes "渡しに行ったほうが";
 				mes "いいかもしれない……）^000000";
 				set MOC_3QUE,10;
+				chgquest 2066,2067;
 				close;
 			}
 		}
@@ -5278,6 +5292,7 @@ yuno_in04.gat,169,123,3	script	怪しい男	407,{
 		misceffect 9,"";
 		delitem 7795,1;
 		set MOC_3QUE,14;
+		chgquest 2068,59455;
 		getitem 7796,1;
 		getitem 7797,1;
 		getitem 617,1;
@@ -5412,6 +5427,8 @@ yuno_in04.gat,169,123,3	script	怪しい男	407,{
 		mes "たしか……";
 		mes "憧れの人も本を読んでるって";
 		mes "言ってたような……）";
+		set MOC_3QUE,15;
+		chgquest 2068,59455;
 		close;
 	case 15:
 	case 16:

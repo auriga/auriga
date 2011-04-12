@@ -76,6 +76,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 		unequip;
 		jobchange Job_Taekwon;
 		set CHANGE_TK,0;
+		chgquest 6002,50220;
 		mes "[鳳凰]";
 		mes "お前……ふむ、そうだな……";
 		mes "きちんとした呼び名をつけてあげよう。";
@@ -394,6 +395,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 			mes "疲れただろう。";
 			mes "少し休憩したら、また声をかけろ。";
 			set CHANGE_TK,3;
+			chgquest 6001,6002;
 			close;
 		}
 	}
@@ -408,6 +410,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 			mes "声をかけてくれ。";
 			set CHANGE_TK_LV,0;
 			set CHANGE_TK,2;
+			chgquest 6000,6001;
 			close;
 		}
 		mes "[鳳凰]";
@@ -554,6 +557,7 @@ payon.gat,157,141,5	script	鳳凰	753,{
 		mes "少し深呼吸をして、心の準備が";
 		mes "整ったら声をかけてくれ。";
 		set CHANGE_TK,2;
+		setquest 6001;
 		close;
 	}
 	mes "[鳳凰]";
@@ -588,5 +592,6 @@ payon.gat,157,141,5	script	鳳凰	753,{
 	mes "十分にやり遂げられると信じているぞ。";
 	set CHANGE_TK_LV,BaseLevel;
 	set CHANGE_TK,1;
+	setquest 6000;
 	close;
 }

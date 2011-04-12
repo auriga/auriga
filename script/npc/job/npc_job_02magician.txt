@@ -122,6 +122,7 @@ geffen_in.gat,164,124,4	script	ギルド関係者	123,{
 		mes "名前は……" +strcharinfo(0)+ "ね。";
 		next;
 		set CHANGE_MG,rand(1,4);
+		setquest 1004 + CHANGE_MG;
 		mes "[魔術師ギルド関係者]";
 		mes "マジシャン転職試験として……";
 		mes "マジシャン転職試験用の";
@@ -205,6 +206,10 @@ geffen_in.gat,164,124,4	script	ギルド関係者	123,{
 	unequip;
 	jobchange Job_Magician;
 	set CHANGE_MG,0;
+	chgquest 1005,50385;
+	chgquest 1006,50385;
+	chgquest 1007,50385;
+	chgquest 1008,50385;
 	mes "[魔術師ギルド関係者]";
 	mes "魔術師ギルドへようこそ！";
 	mes "まあ、改めて挨拶しただけだから、";

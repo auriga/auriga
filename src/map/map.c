@@ -63,6 +63,7 @@
 #include "homun.h"
 #include "ranking.h"
 #include "merc.h"
+#include "quest.h"
 #include "booking.h"
 
 // 極力 staticでローカルに収める
@@ -3070,6 +3071,7 @@ int do_init(int argc,char *argv[])
 	do_init_script();	// parse_script を呼び出す前にこれを呼ぶ
 	do_init_skill();	// skill_dbを参照するのでpc,homun,merc,guild,npcより先
 	do_init_itemdb();
+	do_init_quest();
 	do_init_mob();		// npcの初期化時内でmob_spawnして、mob_dbを参照するのでinit_npcより先
 	do_init_npc();
 	do_init_pc();

@@ -66,6 +66,7 @@
 #include "homun.h"
 #include "ranking.h"
 #include "merc.h"
+#include "quest.h"
 #include "booking.h"
 
 /* パケットデータベース */
@@ -11666,6 +11667,173 @@ void clif_msgstringtable(struct map_session_data *sd, int line)
 }
 
 /*==========================================
+ * クエストリスト
+ *------------------------------------------
+ */
+void clif_questlist(struct map_session_data *sd)
+{
+	int fd, i, len=8;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x2b1;
+	WFIFOL(fd,4) = sd->questlist;
+	for(i = 0; i < sd->questlist; i++) {
+		struct quest_data *qd = &sd->quest[i];
+		if(qd->nameid != 0) {
+			WFIFOL(fd,len)   = qd->nameid;
+			WFIFOB(fd,len+4) = qd->state;
+			len += 5;
+		}
+	}
+	WFIFOW(fd,2) = len;
+	WFIFOSET(fd,len);
+
+	return;
+}
+
+/*==========================================
+ * クエストリスト詳細
+ *------------------------------------------
+ */
+void clif_questlist_info(struct map_session_data *sd)
+{
+	int fd, i, j, n, id, len=8;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x2b2;
+	WFIFOL(fd,4) = sd->questlist;
+	for(i = 0; i < sd->questlist; i++) {
+		struct quest_data *qd = &sd->quest[i];
+		if(qd->nameid != 0) {
+			WFIFOL(fd,len)   = qd->nameid;
+			WFIFOL(fd,len+4) = 1;
+			WFIFOL(fd,len+8) = qd->limit;
+			for(j = 0, n = 0; j < 3; j++) {
+				if((id = (int)qd->mob[j].id) != 0) {
+					WFIFOL(fd,len+14+n*30) = id;
+					WFIFOW(fd,len+18+n*30) = qd->mob[j].count;
+					if(mobdb_checkid(id) > 0) {
+						strncpy(WFIFOP(fd,len+20+n*30),mob_db[id].jname,24);
+					} else {
+						memset(WFIFOP(fd,len+20+n*30), 0, 24);
+					}
+					n++;
+				}
+			}
+			WFIFOW(fd,len+12) = n;
+			len += 104;
+		}
+	}
+	WFIFOW(fd,2) = len;
+	WFIFOSET(fd,len);
+
+	return;
+}
+
+/*==========================================
+ * クエストリスト追加
+ *------------------------------------------
+ */
+void clif_add_questlist(struct map_session_data *sd, int quest_id)
+{
+	int fd, idx, i, n, id;
+	struct quest_data *qd;
+
+	nullpo_retv(sd);
+
+	idx = quest_search_index(sd,quest_id);
+	idx = 0;
+	if(idx < 0 || idx > MAX_QUESTLIST)
+		return;
+
+	qd = &sd->quest[idx];
+	fd = sd->fd;
+	n = 0;
+
+	WFIFOW(fd,0) = 0x2b3;
+	WFIFOL(fd,2) = qd->nameid;
+	WFIFOB(fd,6) = qd->state;
+	WFIFOL(fd,7) = 0;
+	WFIFOL(fd,11) = qd->limit;
+	for(i = 0; i < 3; i++) {
+		if((id = (int)qd->mob[i].id) != 0) {
+			WFIFOL(fd,17+n*30) = id;
+			WFIFOW(fd,21+n*30) = qd->mob[i].count;
+			if(mobdb_checkid(id) > 0) {
+				strncpy(WFIFOP(fd,23+n*30),mob_db[id].jname,24);
+			} else {
+				memset(WFIFOP(fd,23+n*30), 0, 24);
+			}
+			n++;
+		}
+	}
+	WFIFOW(fd,15) = n;
+	WFIFOSET(fd,packet_db[0x2b3].len);
+
+	return;
+}
+
+/*==========================================
+ * クエストリスト削除
+ *------------------------------------------
+ */
+void clif_del_questlist(struct map_session_data *sd, int quest_id)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x2b4;
+	WFIFOL(fd,2) = quest_id;
+	WFIFOSET(fd,packet_db[0x2b4].len);
+
+	return;
+}
+
+/*==========================================
+ * クエストリスト討伐数更新
+ *------------------------------------------
+ */
+void clif_update_questcount(struct map_session_data *sd, int quest_id)
+{
+	int fd, idx, i, n, id, len=6;
+	struct quest_data *qd;
+
+	nullpo_retv(sd);
+
+	idx = quest_search_index(sd,quest_id);
+	idx = 0;
+	if(idx < 0 || idx > MAX_QUESTLIST)
+		return;
+
+	qd = &sd->quest[idx];
+	fd = sd->fd;
+	n = 0;
+
+	WFIFOW(fd,0) = 0x2b5;
+	for(i = 0; i < 3; i++) {
+		if((id = (int)qd->mob[i].id) != 0) {
+			WFIFOL(fd, 6+n*12) = qd->nameid;
+			WFIFOL(fd,10+n*12) = qd->mob[i].id;
+			WFIFOW(fd,14+n*12) = qd->mob[i].max;
+			WFIFOW(fd,16+n*12) = qd->mob[i].count;
+			len += 12;
+			n++;
+		}
+	}
+	WFIFOW(fd,2) = len;
+	WFIFOW(fd,4) = n;
+	WFIFOSET(fd,len);
+
+	return;
+}
+
+/*==========================================
  * パーティーメンバーアイテム獲得メッセージ
  *------------------------------------------
  */
@@ -16302,6 +16470,30 @@ static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * クエストリスト状態変更
+ *------------------------------------------
+ */
+static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
+{
+	int idx;
+
+	nullpo_retv(sd);
+
+	idx = quest_search_index(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
+	if(idx < 0 || idx > sd->questlist)
+		return;
+
+	sd->quest[idx].state = RFIFOL(fd,GETPACKETPOS(cmd,1));
+
+	WFIFOW(fd,0) = 0x2b7;
+	WFIFOL(fd,2) = sd->quest[idx].nameid;
+	WFIFOL(fd,6) = sd->quest[idx].state;
+	WFIFOSET(fd,packet_db[0x2b7].len);
+
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -16609,6 +16801,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyBookingDeleteReq,     "bookingdelreq"             },
 		{ clif_parse_SelectSkill,               "selectskill"               },
 		{ clif_parse_ConvertItem,               "convertitem"               },
+		{ clif_parse_QuestState,                "queststate"                },
 		{ NULL,                                 NULL                        },
 	};
 

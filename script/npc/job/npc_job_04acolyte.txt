@@ -129,6 +129,7 @@ prt_church.gat,184,41,4	script	聖堂神父	60,{
 		mes "[マルシス神父]";
 		mes "貴方は……";
 		set CHANGE_AL,rand(1,3);
+		setquest 1000 + CHANGE_AL;
 		break;
 	case 1:
 	case 2:
@@ -154,6 +155,9 @@ prt_church.gat,184,41,4	script	聖堂神父	60,{
 		unequip;
 		jobchange Job_Acolyte;
 		set CHANGE_AL,0;
+		chgquest 50330,50345;
+		chgquest 50335,50345;
+		chgquest 50340,50345;
 		next;
 		mes "[マルシス神父]";
 		mes "いつも我々を見守ってくださる神様に";
@@ -239,6 +243,7 @@ prt_fild03.gat,365,255,1	script	修行中の神父	89,{
 			mes "[ルバルカバラ神父]";
 			mes "くれぐれも気をつけて。";
 			set CHANGE_AL,4;
+			chgquest 1001,50330;
 			savepoint "prt_fild03.gat",360,256;
 			close;
 		case 4:
@@ -326,6 +331,7 @@ moc_fild07.gat,41,355,4	script	修行中のシスター	95,{
 			mes "ここまでお疲れ様でした。";
 			next;
 			set CHANGE_AL,5;
+			chgquest 1002,50335;
 			savepoint "moc_fild07.gat",36,355;
 			mes "[マチルダ]";
 			mes "お名前は何ですか？えっと…";
@@ -439,6 +445,7 @@ prt_fild00.gat,208,218,4	script	修行中の神父	98,{
 				close;
 			}
 			set CHANGE_AL,6;
+			chgquest 1003,50340;
 			savepoint "prt_fild00.gat",206,231;
 			mes "[洋介神父]";
 			mes "いいだろう。 " +strcharinfo(0)+ "。";

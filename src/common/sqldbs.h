@@ -71,6 +71,7 @@ extern char tmp_sql[65535];
 #define MERC_SKILL_TABLE      "mercenary_skill"
 #define PARTY_TABLE           "party"
 #define PET_TABLE             "pet"
+#define QUEST_TABLE           "quest"
 #define SCDATA_TABLE          "status_change"
 #define STORAGE_TABLE         "storage"
 #define GUILD_STORAGE_TABLE   "guild_storage"

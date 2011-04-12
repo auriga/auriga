@@ -1250,6 +1250,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// アカウント変数の送信要求
 	intif_request_accountreg(sd);
 
+	// クエストリストの送信要求
+	intif_request_quest(sd->status.account_id,sd->status.char_id);
+
 	// ペット初期化
 	sd->petDB = NULL;
 	sd->pd = NULL;
@@ -9481,6 +9484,8 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 	if(save_flag == 0 && sd->fd > last_save_fd && !sd->state.waitingdisconnect) {
 		intif_save_scdata(sd);
 
+		if(sd->questlist)
+			intif_save_quest(sd);
 		if(sd->status.pet_id > 0 && sd->pd)
 			intif_save_petdata(sd->status.account_id,&sd->pet);
 		if(sd->status.homun_id > 0 && sd->hd)

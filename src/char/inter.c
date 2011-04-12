@@ -40,6 +40,7 @@
 #include "maildb.h"
 #include "homundb.h"
 #include "guilddb.h"
+#include "questdb.h"
 #include "int_party.h"
 #include "int_storage.h"
 #include "int_pet.h"
@@ -59,7 +60,7 @@ int inter_recv_packet_length[] = {
 	-1, 6,-1, 0, 55,19, 6,-1, 14,-1,-1,-1, 19,22,186,-1,	// 3030-
 	 5, 9, 0, 0,  0, 0, 0, 0,  0, 6,-1,10, 10,10, -1, 0,	// 3040-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3050-
-	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-
+	10,-1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-
 	-1,14,-1,14,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3070-
 	48,14,-1, 6,  0, 0, 0, 0, -1,14,-1,14,  0, 0,  0, 0,	// 3080-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3090-
@@ -132,6 +133,7 @@ int inter_config_read(const char *cfgName)
 			homundb_config_read_sub(w1,w2);
 			statusdb_config_read_sub(w1,w2);
 			mercdb_config_read_sub(w1,w2);
+			questdb_config_read_sub(w1,w2);
 		}
 	}
 	fclose(fp);
@@ -176,6 +178,7 @@ int inter_log(const char *fmt, ...)
 int inter_sync(void)
 {
 	statusdb_sync();
+	questdb_sync();
 	petdb_sync();
 	homundb_sync();
 	mercdb_sync();
@@ -197,6 +200,7 @@ int inter_init(const char *file)
 	wis_db = numdb_init();
 
 	statusdb_init();
+	questdb_init();
 	petdb_init();
 	homundb_init();
 	mercdb_init();
@@ -504,6 +508,8 @@ int inter_parse_frommap(int fd)
 		if( inter_mail_parse_frommap(fd) )
 			break;
 		if( inter_status_parse_frommap(fd) )
+			break;
+		if( inter_quest_parse_frommap(fd) )
 			break;
 		return 0;
 	}

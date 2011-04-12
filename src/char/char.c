@@ -47,6 +47,7 @@
 #include "chardb.h"
 #include "storagedb.h"
 #include "statusdb.h"
+#include "questdb.h"
 #include "petdb.h"
 #include "partydb.h"
 #include "mercdb.h"
@@ -565,6 +566,9 @@ static int char_delete(const struct mmo_chardata *cd)
 
 	// ステータス異常削除
 	statusdb_delete(cd->st.char_id);
+
+	// クエストリスト削除
+	questdb_delete(cd->st.char_id);
 
 	// ROメール削除
 	maildb_delete(cd->st.char_id);
@@ -2617,6 +2621,7 @@ void do_final(void)
 	gstoragedb_final();
 	maildb_final();
 	statusdb_final();
+	questdb_final();
 	if(gm_account_db)
 		numdb_final(gm_account_db,gm_account_db_final);
 	delete_session(login_fd);

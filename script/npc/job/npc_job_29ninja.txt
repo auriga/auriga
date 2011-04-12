@@ -287,6 +287,7 @@ que_ng.gat,30,65,3	script	クウガ・カイ	730,{
 		mes "了解です。";
 		mes "では、行ってきます！";
 		set CHANGE_NJ,1;
+		setquest 6015;
 		close;
 	case 1:
 		mes "[クウガ・カイ]";
@@ -381,6 +382,7 @@ que_ng.gat,30,65,3	script	クウガ・カイ	730,{
 		mes "-プラコン1個とサイファー5個を";
 		mes "探してこよう-";
 		set CHANGE_NJ,4;
+		chgquest 6017,6018;
 		close;
 	case 4:
 		if(getskilllv(1) < 9) {
@@ -463,6 +465,7 @@ que_ng.gat,30,65,3	script	クウガ・カイ	730,{
 		unequip;
 		jobchange Job_Ninja;
 		set CHANGE_NJ,0;
+		chgquest 6018,50495;
 		getitem 13010,1;
 		close;
 	}
@@ -589,6 +592,7 @@ einbroch.gat,184,194,3	script	青年	881,{
 		mes "-プラコン1個と";
 		mes "サイファー5個を探してこよう-";
 		set CHANGE_NJ,2;
+		chgquest 6015,6016;
 		close;
 	case 2:
 		if(countitem(1010) < 1 || countitem(7053) < 5) {
@@ -721,6 +725,7 @@ einbroch.gat,184,194,3	script	青年	881,{
 		mes "送ってあげますよ。";
 		mes "では、行ってらっしゃい。";
 		set CHANGE_NJ,3;
+		chgquest 6016,6017;
 		delitem 1010,1;
 		delitem 7053,5;
 		close2;

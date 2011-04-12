@@ -65,6 +65,7 @@ yuno_in02.gat,88,164,5	script	メテウスシルプ	742,{
 		}
 		set Zeny,Zeny-1285000;
 		set TRANSMIGRATE,1;
+		setquest 1000;
 	}
 	mes "[メテウスシルプ]";
 	mes "ありがとうございます。";
@@ -250,6 +251,7 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	set SkillPoint,0;
 	set StatusPoint,100;
 	set TRANSMIGRATE,0;
+	chgquest 1000,50000;
 	next;
 	getitem 1202,1;
 	getitem 2302,1;

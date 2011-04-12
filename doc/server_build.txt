@@ -118,7 +118,7 @@ DYNAMIC_SC_DATA
 AC_MAIL
 　　定義すると、キャラクターの削除にメールアドレスの入力が必要になります。
 
-AC_MAIL
+AC_BIRTHDATE
 　　定義すると、キャラクターの削除に誕生日の入力が必要になります。
 
 NO_SCDATA_SAVING

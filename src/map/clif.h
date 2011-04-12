@@ -356,6 +356,13 @@ void clif_send_mercstatus(struct map_session_data *sd);
 void clif_mercskillinfoblock(struct map_session_data *sd);
 void clif_mercupdatestatus(struct map_session_data *sd, int type);
 
+// quest
+void clif_questlist(struct map_session_data *sd);
+void clif_questlist_info(struct map_session_data *sd);
+void clif_add_questlist(struct map_session_data *sd, int quest_id);
+void clif_del_questlist(struct map_session_data *sd, int quest_id);
+void clif_update_questcount(struct map_session_data *sd, int quest_id);
+
 // party_booking
 void clif_bookingregack(struct map_session_data *sd, int flag);
 void clif_searchbookingack(struct map_session_data *sd, struct booking_data **list, int count, int flag);

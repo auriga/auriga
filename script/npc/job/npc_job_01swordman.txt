@@ -199,6 +199,7 @@ izlude_in.gat,74,172,4	script	剣士ギルド員	119,{
 		mes "入り口で、剣士ギルド員に";
 		mes "話をすれば、通してくれるだろう。";
 		set CHANGE_SM,1;
+		setquest 1014;
 		close;
 	default:
 		mes "[剣士ギルド員]";
@@ -224,6 +225,7 @@ izlude_in.gat,74,172,4	script	剣士ギルド員	119,{
 		unequip;
 		jobchange Job_Swordman;
 		set CHANGE_SM,0;
+		chgquest 1014,50165;
 		mes "[剣士ギルド員]";
 		mes "剣士になったのをもう一度";
 		mes "お祝いする。これから";

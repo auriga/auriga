@@ -136,6 +136,7 @@ aldeba_in.gat,223,167,3	script	トゼーレ	709,{
 			mes "[トゼーレ]";
 			mes "では、お帰りをお待ちしておりま〜す。";
 			set CHANGE_SNV,1;
+			setquest 6010;
 			close;
 		case 2:
 			mes "[トゼーレ]";
@@ -215,6 +216,7 @@ aldeba_in.gat,223,167,3	script	トゼーレ	709,{
 	unequip;
 	jobchange Job_SuperNovice;
 	set CHANGE_SNV,0;
+	chgquest 6010,50275;
 	mes "[トゼーレ]";
 	mes "あはははは！驚きました？";
 	mes "普通で平凡な日常に、ちょっとした";

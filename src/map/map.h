@@ -233,6 +233,17 @@ struct vending {
 	int value;
 };
 
+struct quest_data {
+	int nameid;
+	char state;
+	unsigned int limit;
+	struct {
+		short id;
+		short max;
+		short count;
+	} mob[3];
+};
+
 struct skill_unit_group;
 
 struct skill_unit {
@@ -391,6 +402,8 @@ struct map_session_data {
 	short race;
 	short view_size;
 	unsigned int booking_id;
+	struct quest_data quest[MAX_QUESTLIST];
+	int questlist;
 
 	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wis拒否リスト
 

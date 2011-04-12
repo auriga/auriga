@@ -73,6 +73,7 @@
 #include "unit.h"
 #include "homun.h"
 #include "merc.h"
+#include "quest.h"
 
 #define SCRIPT_BLOCK_SIZE 512
 
@@ -4008,6 +4009,14 @@ int buildin_showevent(struct script_state *st);
 int buildin_musiceffect(struct script_state *st);
 int buildin_areamusiceffect(struct script_state *st);
 int buildin_getbaseclass(struct script_state *st);
+int buildin_setquest(struct script_state *st);
+int buildin_chgquest(struct script_state *st);
+int buildin_delquest(struct script_state *st);
+int buildin_compquest(struct script_state *st);
+int buildin_checkquest(struct script_state *st);
+int buildin_getquestlimit(struct script_state *st);
+int buildin_getquestcount(struct script_state *st);
+int buildin_getquestmaxcount(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4281,6 +4290,13 @@ struct script_function buildin_func[] = {
 	{buildin_musiceffect,"musiceffect","s"},
 	{buildin_areamusiceffect,"areamusiceffect","siiiis"},
 	{buildin_getbaseclass,"getbaseclass","i*"},
+	{buildin_setquest,"setquest","i"},
+	{buildin_chgquest,"chgquest","ii"},
+	{buildin_delquest,"delquest","i"},
+	{buildin_checkquest,"checkquest","i"},
+	{buildin_getquestlimit,"getquestlimit","i"},
+	{buildin_getquestcount,"getquestcount","i*"},
+	{buildin_getquestmaxcount,"getquestmaxcount","i*"},
 	{NULL,NULL,NULL}
 };
 
@@ -12273,6 +12289,136 @@ int buildin_getbaseclass(struct script_state *st)
 	}
 
 	push_val(st->stack,C_INT,class_);
+
+	return 0;
+}
+/*==========================================
+ * クエストリスト追加
+ *------------------------------------------
+ */
+int buildin_setquest(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+
+	quest_addlist(sd, conv_num(st,& (st->stack->stack_data[st->start+2])));
+
+	return 0;
+}
+
+/*==========================================
+ * クエストリスト更新
+ *------------------------------------------
+ */
+int buildin_chgquest(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+
+	quest_updatelist(sd, conv_num(st,& (st->stack->stack_data[st->start+2])), conv_num(st,& (st->stack->stack_data[st->start+3])));
+
+	return 0;
+}
+
+/*==========================================
+ * クエストリスト削除
+ *------------------------------------------
+ */
+int buildin_delquest(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+
+	quest_dellist(sd, conv_num(st,& (st->stack->stack_data[st->start+2])));
+
+	return 0;
+}
+
+/*==========================================
+ * クエストリスト情報取得
+ *------------------------------------------
+ */
+int buildin_checkquest(struct script_state *st)
+{
+	struct quest_data *qd;
+	int i, ret = 0;
+
+	qd = quest_get_data(script_rid2sd(st), conv_num(st,& (st->stack->stack_data[st->start+2])));
+	if(qd) {
+		ret |= 0x05;	// クエスト受注済み+討伐数クリア
+		if(qd->limit < (unsigned int)time(NULL))
+			ret |= 0x02;	// 時間制限クリア
+
+		for(i = 0; i < 3; i++) {
+			if(qd->mob[i].count < qd->mob[i].max) {
+				ret &= ~0x04;	// 討伐数未クリア
+				break;
+			}
+		}
+	}
+	push_val(st->stack,C_INT, ret);
+
+	return 0;
+}
+
+/*==========================================
+ * クエストリスト制限時間取得
+ *------------------------------------------
+ */
+int buildin_getquestlimit(struct script_state *st)
+{
+	struct quest_data *qd;
+
+	qd = quest_get_data(script_rid2sd(st), conv_num(st,& (st->stack->stack_data[st->start+2])));
+
+	push_val(st->stack,C_INT,(qd)? qd->limit: 0);
+
+	return 0;
+}
+
+/*==========================================
+ * クエストリスト討伐数取得
+ *------------------------------------------
+ */
+int buildin_getquestcount(struct script_state *st)
+{
+	struct quest_data *qd;
+	int idx = 0, ret = 0;
+
+	qd = quest_get_data(script_rid2sd(st), conv_num(st,& (st->stack->stack_data[st->start+2])));
+	if(qd) {
+		if(st->end>st->start+3)
+			idx = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		if(idx < 0 || idx >= 3)
+			idx = 0;
+		ret = qd->mob[idx].count;
+	}
+	push_val(st->stack,C_INT, ret);
+
+	return 0;
+}
+
+/*==========================================
+ * クエストリスト討伐最大数取得
+ *------------------------------------------
+ */
+int buildin_getquestmaxcount(struct script_state *st)
+{
+	struct quest_data *qd;
+	int idx = 0, ret = 0;
+
+	qd = quest_get_data(script_rid2sd(st), conv_num(st,& (st->stack->stack_data[st->start+2])));
+	if(qd) {
+		if(st->end>st->start+3)
+			idx = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		if(idx < 0 || idx >= 3)
+			idx = 0;
+		ret = qd->mob[idx].max;
+	}
+	push_val(st->stack,C_INT, ret);
 
 	return 0;
 }

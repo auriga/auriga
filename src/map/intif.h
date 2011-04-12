@@ -101,6 +101,9 @@ int intif_mail_checkmail(int accound_id,struct mail_data *md);
 int intif_request_scdata(int account_id,int char_id);
 int intif_save_scdata(struct map_session_data *sd);
 
+int intif_request_quest(int account_id,int char_id);
+int intif_save_quest(struct map_session_data *sd);
+
 int intif_char_connect_limit(int limit);
 
 #endif

@@ -94,6 +94,7 @@ que_ng.gat,152,167,3	script	マスターミラー	901,{
 		mes "[" +strcharinfo(0)+ "]";
 		mes "はい！　わかりました。";
 		set CHANGE_GS,1;
+		setquest 6020;
 		close;
 	case 1:
 		mes "[マスターミラー]";
@@ -173,6 +174,7 @@ que_ng.gat,152,167,3	script	マスターミラー	901,{
 		unequip;
 		jobchange Job_Gunslinger;
 		set CHANGE_GS,0;
+		chgquest 6024,50550;
 		getitem 13100,1;
 		close;
 	}
@@ -260,6 +262,7 @@ payon.gat,184,65,3	script	ファンソプル	866,{
 		mes "ジャルゴン3個、緑ハーブ3個";
 		mes "を取りに行こう-";
 		set CHANGE_GS,2;
+		chgquest 6020,6021;
 		close;
 	case 2:
 		if(countitem(1013) < 3 || countitem(1019) < 1 || countitem(935) < 10 || countitem(949) < 3 || countitem(912) < 3 || countitem(511) < 3) {
@@ -276,6 +279,7 @@ payon.gat,184,65,3	script	ファンソプル	866,{
 		mes "必要じゃ。";
 		mes "しばらく待っておれ。";
 		set CHANGE_GS,3;
+		chgquest 6021,6022;
 		delitem 1013,3;
 		delitem 1019,1;
 		delitem 935,10;
@@ -334,6 +338,7 @@ payon.gat,184,65,3	script	ファンソプル	866,{
 		mes "-お爺さんのために";
 		mes "ミルクを一本買ってこよう-";
 		set CHANGE_GS,4;
+		chgquest 6022,6023;
 		close;
 	case 4:
 		if(countitem(519) < 1) {
@@ -343,6 +348,7 @@ payon.gat,184,65,3	script	ファンソプル	866,{
 			close;
 		}
 		set CHANGE_GS,5;
+		chgquest 6023,6024;
 		delitem 519,1;
 		mes "[ファンソプル]";
 		mes "ありがとう。";

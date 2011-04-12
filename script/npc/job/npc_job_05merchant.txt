@@ -206,6 +206,7 @@ alberta_in.gat,53,43,6	script	商人組合員	86,{
 				close;
 		}
 		set CHANGE_MC,rand(1,8);	//このタイミングでフラグが立つ
+		setquest 1008 + (CHANGE_MC + 1) / 2;
 		next;
 		mes "[組合員マンス]";
 		mes "よし、ギルド加入申請書を出す。";
@@ -265,6 +266,7 @@ alberta_in.gat,53,43,6	script	商人組合員	86,{
 		set CHANGE_MC,0;
 		set '@flag,TEMPVAL_MC;	//途中でログアウトされてもいいようにコピー
 		set TEMPVAL_MC,0;
+		chgquest 50460,50465;
 		mes "[組合員マンス]";
 		mes "おめでとう！";
 		mes "組合一同、君が商人ギルドの一員に";
@@ -300,6 +302,15 @@ alberta_in.gat,53,43,6	script	商人組合員	86,{
 		mes "以上。";
 		set CHANGE_MC,0;	//最初からやり直し
 		set TEMPVAL_MC,0;
+		delquest 1009;
+		delquest 1010;
+		delquest 1011;
+		delquest 1012;
+		delquest 50440;
+		delquest 50445;
+		delquest 50450;
+		delquest 50455;
+		delquest 50460;
 		close;
 	}
 	//16以下のときの続き
@@ -537,8 +548,12 @@ alberta_in.gat,28,29,2	script	商人組合員	83,{
 			mes "…よし！完璧だ！";
 			mes "君の記録は転職課に送る。";
 			mes "中央の<組合員マンス>に話しな！";
-			set CHANGE_MC,25;	//試験合格フラグ
 			delitem '@itemid,1;
+			set CHANGE_MC,25;	//試験合格フラグ
+			chgquest 50440,50460;
+			chgquest 50445,50460;
+			chgquest 50450,50460;
+			chgquest 50455,50460;
 		}
 		else {
 			mes "うん？何？領収証がない？";
@@ -725,6 +740,7 @@ prontera.gat,248,42,0	script	カプラ職員::MC_DeliverPro	116,{
 			mes "何かの間違いではないでしょうか？";
 			break;
 		}
+		chgquest 1009,50440;
 		mes "確かに注文した品物です。";
 		mes "配達領収書が必要ですね？";
 		mes "すぐ発行致します。";
@@ -790,6 +806,7 @@ geffen_in.gat,155,122,4	script	ギルド関係者	47,{
 			mes "受け取る時に間違えちゃいましたか？";
 			close;
 		}
+		chgquest 1010,50445;
 		mes "さあ、領収証を。";
 		next;
 		mes "[魔法ギルド関係者]";
@@ -851,6 +868,7 @@ morocc_in.gat,140,102,4	script	見習生	86,{
 			mes "です…。";
 			close;
 		}
+		chgquest 1011,50450;
 		mes "間違いありません。はい、領収証です。";
 		next;
 		mes "[染料製作の見習い]";
@@ -914,6 +932,7 @@ izlu2dun.gat,106,58,4	script	カプラ職員::MC_DeliverBya	116,{
 			mes "伝票番号は3318702又は3543625ですが…";
 			break;
 		}
+		chgquest 1012,50455;
 		mes "確かに注文した品物ですね。";
 		mes "では、こちらが領収書です。";
 		next;

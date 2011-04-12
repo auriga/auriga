@@ -25,6 +25,7 @@ ALTER TABLE `mail_data` ENGINE = InnoDB;
 ALTER TABLE `mercenary` ENGINE = InnoDB;
 ALTER TABLE `party` ENGINE = InnoDB;
 ALTER TABLE `pet` ENGINE = InnoDB;
+ALTER TABLE `quest` ENGINE = InnoDB;
 ALTER TABLE `status_change` ENGINE = InnoDB;
 ALTER TABLE `storage` ENGINE = InnoDB;
 ALTER TABLE `guild_storage` ENGINE = InnoDB;

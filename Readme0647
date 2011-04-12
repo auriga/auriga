@@ -1,4 +1,46 @@
 ----------------------------------------
+//0851 [2011/04/13] by Blaze
+
+・クエストリスト実装 (map.*, quest.*, clif.*, pc.c, mob.c, common/mmo.h, db/quest_db.txt)
+
+・セーブデータ対象にクエスト情報を追加 (char/inter.c, char/char.c, char/int_quest.*, char/questdb.*)
+
+・SQL：DBにクエストテーブル追加 (common/sqldbs.h, sql-files/main.sql, sql-files/drop_table.sql, sql-files/db_maintenance.sql,
+								 sql-files/convert_engine_myisam.sql, sql-files/convert_engine_innodb.sql, sql-files/Auriga851_changetable.sql)
+
+・TXT：JOURNAL_IDENTIFIERを13->14に引き上げ (journal.c)
+
+・パケットDBにクエストリスト関連のパケット定義を追加 (db/packet_db.txt)
+
+・スクリプト命令・関数に以下を追加（script.c, doc/script_ref.txt）
+	setquest : クエストを追加します
+	chgquest : クエストを更新します
+	delquest : クエストを削除します
+	checkquest : クエストの情報を返します
+	getquestlimit : クエストの制限時間を取得します
+	getquestcount : クエストの討伐数を取得します
+	getquestmaxcount : クエストの討伐最大数を取得します
+	※詳しくはscript_ref.txtを参照
+
+・クエストリストのメンテナンスNPC実装（npc_misc_questlist.txt, conf/map_auriga.conf）
+
+・以下のクエストをクエストリストに対応化（script/*）
+	ソードマン転職クエスト（npc_job_01swordman.txt）
+	マジシャン転職クエスト（npc_job_02magician.txt）
+	アーチャー転職クエスト（npc_job_03archer.txt）
+	アコライト転職クエスト（npc_job_04acolyte.txt）
+	マーチャント転職クエスト（npc_job_05merchant.txt）
+	スーパーノービス転職クエスト（npc_job_23supernovice.txt）
+	テコンキッド転職クエスト（npc_job_24taekwonkid.txt）
+	ガンスリンガー転職クエスト（npc_job_28gunslinger.txt）
+	忍者転職クエスト（npc_job_29ninja.txt）
+	転生クエスト（npc_job_transmigration.txt）
+	魔王モロク討伐クエスト（npc_town_morocc.txt）
+	運命のカラスクエスト（npc_town_morocc.txt）
+
+・0849のドキュメント誤記を修正（doc/server_build.txt）
+
+----------------------------------------
 //0850 [2011/04/13] by popori
 
 ・auth_node形式を一旦auth_fifo形式にする (login.c char.c mmo.h)

@@ -64,7 +64,7 @@ static const int packet_len_table[]={
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 15,67,186,-1,	// 3830-
 	 9, 9,-1,-1,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
-	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3860-
+	-1, 7, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3860-
 	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3870-
 	11,-1, 7, 3,  0, 0, 0, 0, -1, 7, 3, 0,  0, 0,  0, 0,	// 3880-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3890-
@@ -1202,6 +1202,64 @@ int intif_save_scdata(struct map_session_data *sd)
 }
 
 /*==========================================
+ * クエストデータ要求
+ *------------------------------------------
+ */
+int intif_request_quest(int account_id,int char_id)
+{
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0) = 0x3060;
+	WFIFOL(inter_fd,2) = account_id;
+	WFIFOL(inter_fd,6) = char_id;
+	WFIFOSET(inter_fd, 10);
+
+	return 0;
+}
+
+/*==========================================
+ * クエストデータ保存
+ *------------------------------------------
+ */
+int intif_save_quest(struct map_session_data *sd)
+{
+	int i,p;
+
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0) = 0x3061;
+	WFIFOL(inter_fd,4) = sd->status.account_id;
+	WFIFOL(inter_fd,8) = sd->status.char_id;
+
+	p=12;
+	if(sd->questlist > 0) {
+		for(i=0; i<sd->questlist; i++) {
+			if(sd->quest[i].nameid > 0) {
+				WFIFOL(inter_fd,p)    = sd->quest[i].nameid;
+				WFIFOB(inter_fd,p+4)  = sd->quest[i].state;
+				WFIFOL(inter_fd,p+5)  = (unsigned int)sd->quest[i].limit;
+				WFIFOW(inter_fd,p+9)  = (short)sd->quest[i].mob[0].id;
+				WFIFOW(inter_fd,p+11) = (short)sd->quest[i].mob[0].max;
+				WFIFOW(inter_fd,p+13) = (short)sd->quest[i].mob[0].count;
+				WFIFOW(inter_fd,p+15) = (short)sd->quest[i].mob[1].id;
+				WFIFOW(inter_fd,p+17) = (short)sd->quest[i].mob[1].max;
+				WFIFOW(inter_fd,p+19) = (short)sd->quest[i].mob[1].count;
+				WFIFOW(inter_fd,p+21) = (short)sd->quest[i].mob[2].id;
+				WFIFOW(inter_fd,p+23) = (short)sd->quest[i].mob[2].max;
+				WFIFOW(inter_fd,p+25) = (short)sd->quest[i].mob[2].count;
+				p+=27;
+			}
+		}
+	}
+	WFIFOW(inter_fd,2) = p;
+	WFIFOSET(inter_fd,p);
+
+	return 0;
+}
+
+/*==========================================
  * キャラ鯖の制限人数の変更送信
  *------------------------------------------
  */
@@ -1877,6 +1935,53 @@ static int intif_parse_SaveStatusChange(int fd)
 }
 
 /*==========================================
+ * クエストデータ関連
+ *------------------------------------------
+ */
+static int intif_parse_LoadQuestList(int fd)
+{
+	short len = RFIFOW(fd,2);
+	struct map_session_data *sd = map_id2sd(RFIFOL(fd,4));
+	int i,p;
+
+	if(sd == NULL)
+		return 0;
+
+	for(i=0,p=8; p<len; i++,p+=27) {
+		sd->quest[i].nameid       = RFIFOL(fd,p);
+		sd->quest[i].state        = RFIFOB(fd,p+4);
+		sd->quest[i].limit        = (unsigned int)RFIFOL(fd,p+5);
+		sd->quest[i].mob[0].id    = RFIFOW(fd,p+9);
+		sd->quest[i].mob[0].max   = RFIFOW(fd,p+11);
+		sd->quest[i].mob[0].count = RFIFOW(fd,p+13);
+		sd->quest[i].mob[1].id    = RFIFOW(fd,p+15);
+		sd->quest[i].mob[1].max   = RFIFOW(fd,p+17);
+		sd->quest[i].mob[1].count = RFIFOW(fd,p+19);
+		sd->quest[i].mob[2].id    = RFIFOW(fd,p+21);
+		sd->quest[i].mob[2].max   = RFIFOW(fd,p+23);
+		sd->quest[i].mob[2].count = RFIFOW(fd,p+25);
+	}
+	sd->questlist = i;
+
+	if(i) {
+		clif_questlist(sd);
+		clif_questlist_info(sd);
+	}
+
+	return 0;
+}
+
+static int intif_parse_SaveQuestList(int fd)
+{
+	if(RFIFOB(fd,6) == 1) {
+		if(battle_config.error_log)
+			printf("quest data save failure\n");
+	}
+
+	return 0;
+}
+
+/*==========================================
  * キャラが存在したらInterへその位置を返信
  *------------------------------------------
  */
@@ -2056,6 +2161,8 @@ int intif_parse(int fd)
 	case 0x384c: intif_parse_MailDeleteRes(fd); break;
 	case 0x384d: intif_parse_MailGetAppend(fd); break;
 	case 0x384e: intif_parse_MailCheckOK(fd); break;
+	case 0x3860: intif_parse_LoadQuestList(fd); break;
+	case 0x3861: intif_parse_SaveQuestList(fd); break;
 	case 0x3870: intif_parse_RecvMercData(fd); break;
 	case 0x3871: intif_parse_SaveMercOk(fd); break;
 	case 0x3872: intif_parse_DeleteMercOk(fd); break;

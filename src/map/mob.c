@@ -50,6 +50,7 @@
 #include "unit.h"
 #include "ranking.h"
 #include "merc.h"
+#include "quest.h"
 
 #define MOB_LAZYMOVEPERC     50		// 手抜きモードMOBの移動確率（千分率）
 #define MOB_LAZYWARPPERC     20		// 手抜きモードMOBのワープ確率（千分率）
@@ -1727,6 +1728,10 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		// 傭兵のキルカウント増加
 		if(sd->mcd)
 			merc_killcount(sd->mcd, mob_db[md->class_].lv);
+
+		// クエストリスト討伐ターゲット
+		if(sd->questlist)
+			quest_killcount(sd, md->class_);
 
 		// テコンミッションターゲット
 		if(sd->status.class_ == PC_CLASS_TK && md->class_ == sd->tk_mission_target) {

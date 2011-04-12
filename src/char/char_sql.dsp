@@ -149,6 +149,10 @@ SOURCE=..\..\src\char\int_status.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\char\int_quest.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\char\accregdb_sql.c
 # End Source File
 # Begin Source File
@@ -210,6 +214,14 @@ SOURCE=..\..\src\char\petdb_sql.c
 # Begin Source File
 
 SOURCE=..\..\src\char\petdb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\questdb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\questdb_txt.c
 # End Source File
 # Begin Source File
 
@@ -329,6 +341,10 @@ SOURCE=..\..\src\char\int_status.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\char\int_quest.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\char\accregdb.h
 # End Source File
 # Begin Source File
@@ -358,6 +374,10 @@ SOURCE=..\..\src\char\partydb.h
 # Begin Source File
 
 SOURCE=..\..\src\char\petdb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\questdb.h
 # End Source File
 # Begin Source File
 

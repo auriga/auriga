@@ -321,6 +321,7 @@ moc_prydb1.gat,39,129,2	script	ギルド関係者	69,{
 	mes "この以上あたしが言う事はない。";
 	mes "そろそろ出発して！";
 	set CHANGE_TF,2;
+	setquest 1013;
 	close;
 }
 
@@ -389,6 +390,7 @@ moc_ruins.gat,141,125,3	script	怪しい奴	83,{
 		close;
 	case 2:
 		set CHANGE_TF,3;
+		chgquest 1013,50110;
 		mes "[シーフギルド関係者]";
 		mes "君…妙な匂いがする…";
 		mes "転職の試験を受けに来たな。";
@@ -475,6 +477,7 @@ moc_prydb1.gat,42,133,2	script	ギルド関係者	118,{
 		unequip;
 		jobchange Job_Thief;
 		set CHANGE_TF,0;
+		chgquest 50110,50115;
 		mes "[シーフギルド総帥 'E']";
 		mes "「姓名 " +strcharinfo(0)+ " " +(Sex? "殿": "嬢")+ "。」";
 		mes "全ての試験をパスしたので、";

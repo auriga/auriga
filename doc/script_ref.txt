@@ -2200,6 +2200,31 @@ AurigaNPCScript
 			<name>で指定した音楽を発生させます。
 			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
 
+		setquest命令
+			setquest <id>;
+
+			id		数値
+
+			<id>で指定したクエストをクエストリストに追加します。
+
+		chgquest命令
+			chgquest <old_id>,<new_id>;
+
+			old_id	数値
+			new_id	数値
+
+			<old_id>のクエストを<new_id>のクエストに更新します。
+			※<old_id>のクエストはリストから削除されます。
+			※<old_id>のクエストを受注していなくても<new_id>がクエストリストに追加されます。
+
+		delquest命令
+			delquest <id>;
+
+			id		数値
+
+			<id>で指定したクエストをクエストリストから削除します。
+
+
 	＊関数
 		rand関数
 			rand(<n1>[,<n2>])
@@ -3225,6 +3250,42 @@ AurigaNPCScript
 			type=3		現在の職業の3次職
 			※<class>で指定された職業より<type>で上位職を指定した場合、<class>の値を返します。
 			例）<class>に1（ソードマン）、<type>に3（3次職）を指定した場合、返す値は「1（ソードマン）」
+
+		checkquest 関数
+			checkquest(<id>)
+
+			<id>		数値
+
+			<id>で指定したクエストの情報を返します。
+			クエストが受注済みであれば戻り値に+1
+			クエストの制限時間を超えていれば戻り値に+2
+			クエストの討伐対象を討伐済みであれば戻り値に+4
+			クエストが未受注であれば戻り値に0を返します。
+
+		getquestlimit 関数
+			getquestlimit(<id>)
+
+			<id>		数値
+
+			<id>で指定したクエストの制限時間を返します。
+
+		getquestcount 関数
+			getquestcount(<id>[,<idx>])
+
+			<id>		数値
+			<idx>		数値（1〜3）、省略可
+
+			<id>で指定したクエストの討伐対象<idx>番目の討伐数を返します。
+			<idx>を省略すると討伐対象1番目の討伐数を返します。
+
+		getquestmaxcount 関数
+			getquestmaxcount(<id>[,<idx>])
+
+			<id>		数値
+			<idx>		数値（1〜3）、省略可
+
+			<id>で指定したクエストの討伐対象<idx>番目の討伐最大数を返します。
+			<idx>を省略すると討伐対象1番目の討伐最大数を返します。
 
 
 	＊csv アクセス命令 / 関数
