@@ -205,7 +205,7 @@ static int sqldbs_num2datatype(size_t size)
 	case 8:
 		return MYSQL_TYPE_LONGLONG;
 	default:
-		printf("Unsupported integer size %d\n",size);
+		printf("Unsupported integer size %zd\n",size);
 		return MYSQL_TYPE_NULL;
 	}
 }

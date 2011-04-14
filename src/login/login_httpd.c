@@ -97,7 +97,7 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 		if(i != passwd_len) {
 			msg = "Illegal character found in Password."; break;
 		}
-		if(gender[0] != 'm' && gender[0] != 'f') {
+		if(gender[0] != 'M' && gender[0] != 'F') {
 			msg = "Gender error."; break;
 		}
 

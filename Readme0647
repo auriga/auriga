@@ -1,4 +1,18 @@
 ----------------------------------------
+//0853 [2011/04/15] by popori
+
+・httpdのアカウント作成経由で性別が小文字だったのを修正 (src/login/login_httpd.c httpd/index.html)
+
+・TXTで新規アカウント作成時渡されたbirth情報が保存されていなかったのを修正 (src/login/account_txt.c)
+
+・不正対策の強化 (src/map/clif.c)
+
+・いくつかのwarningを修正 (src/common/sqldbs.c src/char/char.c src/char/accregdb_sql.c src/char/chardb_sql.c src/char/guilddb_sql.c src/char/homundb_sql.c)
+　Cocoaさんに感謝
+
+・SQL:0851のquestテーブルのエンジン指定がTYPEになっているのでENGINEに変更 (sql-files/Auriga851_changetable.sql sql-files/main.sql)
+
+----------------------------------------
 //0852 [2011/04/13] by Blaze
 
 ・SQL：0851にてコンパイルエラーが発生するのを修正（char/questdb_sql.c）

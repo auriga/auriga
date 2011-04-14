@@ -21,6 +21,7 @@
 
 #ifndef TXT_ONLY
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "mmo.h"

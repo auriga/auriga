@@ -1360,7 +1360,6 @@ int parse_frommap(int fd)
 			{
 				int account_id = RFIFOL(fd,2);
 				int login_id1  = RFIFOL(fd,6);
-				int char_id    = RFIFOL(fd,10);
 				int sex        = RFIFOB(fd,40);
 
 				if( auth_fifo_pos >= AUTH_FIFO_SIZE )

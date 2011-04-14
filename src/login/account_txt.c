@@ -393,6 +393,7 @@ bool account_txt_account_new(struct mmo_account* account,const char *tmpstr)
 	account->userid[23] = '\0';
 	account->pass[23]   = '\0';
 	account->mail[39]   = '\0';
+	account->birth[6]   = '\0';
 
 	if(account_txt_account_load_str(account->userid)) {
 		// 同じアカウントが既に存在
@@ -418,6 +419,7 @@ bool account_txt_account_new(struct mmo_account* account,const char *tmpstr)
 	strncpy(auth_dat[i].userid,account->userid,24);
 	strncpy(auth_dat[i].pass  ,account->pass  ,24);
 	strncpy(auth_dat[i].mail  ,account->mail  ,40);
+	strncpy(auth_dat[i].birth ,account->birth  ,7);
 	strcpy(auth_dat[i].lastlogin,"-");
 	auth_dat[i].account_reg2_num = 0;
 	auth_num++;

@@ -576,4 +576,4 @@ CREATE TABLE `quest` (
   `mobmax3` smallint(6) NOT NULL default '0',
   `mobcnt3` smallint(6) NOT NULL default '0',
   PRIMARY KEY (`char_id`, `nameid`)
-) TYPE=MyISAM;
+) ENGINE = MyISAM;

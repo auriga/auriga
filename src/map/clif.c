@@ -16483,7 +16483,7 @@ static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
 	if(idx < 0 || idx > sd->questlist)
 		return;
 
-	sd->quest[idx].state = RFIFOL(fd,GETPACKETPOS(cmd,1));
+	sd->quest[idx].state = ( RFIFOL(fd,GETPACKETPOS(cmd,1)) )? 1 : 0;
 
 	WFIFOW(fd,0) = 0x2b7;
 	WFIFOL(fd,2) = sd->quest[idx].nameid;
