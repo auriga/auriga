@@ -1,2 +1,2 @@
 //merc_db.txtへオーバーライド
-//Class,ViewClass,Name,JName,Lv,HP,SP,Range,Atk1,Atk2,Def,Mdef,Str,Agi,Vit,Int,Dex,Luk,Size,Race,Element,Speed,ADelay,aMotion,dMotion,{merc_script}
+//Class,ViewClass,Name,JName,ClassType,Lv,HP,SP,Range,Atk1,Atk2,Def,Mdef,Str,Agi,Vit,Int,Dex,Luk,Size,Race,Element,Speed,ADelay,aMotion,dMotion,{merc_script}

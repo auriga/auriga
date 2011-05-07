@@ -1,4 +1,12 @@
 ----------------------------------------
+//0856 [2011/05/08] by Rayce
+
+・script/function/function_jobgroup.txt は未使用なので、map_auriga.conf から削除
+
+・db/addon以下のdbファイルを現在のdbファイルの定義と同期
+  （merc_db_add.txt, skill_cast_db_add.txt）
+
+----------------------------------------
 //0855 [2011/05/08] by Cocoa
 
 ・呪い、石化状態でブレッシングを受けると状態異常解除のみ行うように修正（src/status.c）
