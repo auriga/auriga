@@ -7431,6 +7431,10 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 		clif_updatestatus(sd,SP_CARTINFO);
 	}
 	else if( !(type&OPTION_CARTMASK) && pc_iscarton(sd) ) {
+		if(sd->sc.data[SC_CARTBOOST].timer != -1)
+			status_change_end(&sd->bl,SC_CARTBOOST,-1);
+		if(sd->sc.data[SC_GN_CARTBOOST].timer != -1)
+			status_change_end(&sd->bl,SC_GN_CARTBOOST,-1);
 		clif_cart_clear(sd);
 	}
 
