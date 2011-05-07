@@ -5829,11 +5829,21 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(type == SC_STUN || type == SC_SLEEP)
 		unit_stop_walking(bl,1);
 
+	// ブレッシングによる呪い、石化の解除
 	if(type == SC_BLESSING && (sd || (!battle_check_undead(race,elem) && race != RCT_DEMON))) {
-		if(sc->data[SC_CURSE].timer != -1)
+		bool flag = false;
+		if(sc->data[SC_CURSE].timer != -1) {
 			status_change_end(bl,SC_CURSE,-1);
-		if(sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0)
+			flag = true;
+		}
+		if(sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0) {
 			status_change_end(bl,SC_STONE,-1);
+			flag = true;
+		}
+
+		// 呪い、石化解除時はブレッシング状態にならないので終わる
+		if(flag)
+			return 0;
 	}
 
 	if(sc->data[type].timer != -1) {	/* すでに同じ異常になっている場合タイマ解除 */

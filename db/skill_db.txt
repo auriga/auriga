@@ -768,7 +768,7 @@
 2049,0,0,0,0,0,10,0,no,0,0,0,none,0	//AB_EUCHARISTICA#エウカリスティカ#
 2050,9,6,16,6,1,1,1,yes,0,0,0,magic,0	//AB_RENOVATIO#レノヴァティオ#
 2051,9,6,16,6,1,5,1,yes,0,0,0,magic,0	//AB_HIGHNESSHEAL#ハイネスヒール#
-2052,9,6,16,0,1,5,1,yes,0,0,0,magic,0	//AB_CLEARANCE#クリアランス#
+2052,9,6,16,0,1,5,1,yes,0,512,0,magic,0	//AB_CLEARANCE#クリアランス#
 2053,0,6,4,0,1,5,1,yes,0,0,0,none,0	//AB_EXPIATIO#エクスピアティオ#
 2054,0,6,4,0,1,10,1,yes,0,0,0,none,0	//AB_DUPLELIGHT#デュプレライト#
 2055,9,6,1,0,0,10,1,yes,0,0,0,weapon,0	//AB_DUPLELIGHT_MELEE#デュプレライト(物理)#
