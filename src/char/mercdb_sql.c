@@ -303,10 +303,9 @@ void mercdb_sql_final(void)
 		numdb_final(merc_db,mercdb_sql_final_sub);
 }
 
-void mercdb_sql_config_read_sub(const char* w1,const char *w2)
+int mercdb_sql_config_read_sub(const char* w1,const char *w2)
 {
-	// nothing to do
-	return;
+	return 0;
 }
 
 #endif

@@ -34,7 +34,8 @@
 	struct scdata *status_dummy_load(int char_id);
 	bool status_dummy_save(struct scdata *sc2);
 	void status_dummy_final(void);
-	void status_dummy_config_read_sub(const char *w1,const char *w2);
+	int status_dummy_config_read_sub(const char *w1,const char *w2);
+
 	// エイリアス
 	#define statusdb_init   status_dummy_init
 	#define statusdb_sync   status_dummy_sync
@@ -51,7 +52,8 @@
 	struct scdata *statusdb_txt_load(int char_id);
 	bool statusdb_txt_save(struct scdata *sc2);
 	void statusdb_txt_final(void);
-	void statusdb_txt_config_read_sub(const char *w1, const char *w2);
+	int statusdb_txt_config_read_sub(const char *w1, const char *w2);
+
 	// エイリアス
 	#define statusdb_init   statusdb_txt_init
 	#define statusdb_sync   statusdb_txt_sync
@@ -68,7 +70,8 @@
 	struct scdata *statusdb_sql_load(int char_id);
 	bool statusdb_sql_save(struct scdata *sc2);
 	void statusdb_sql_final(void);
-	void statusdb_sql_config_read_sub(const char *w1, const char *w2);
+	int statusdb_sql_config_read_sub(const char *w1, const char *w2);
+
 	// エイリアス
 	#define statusdb_init   statusdb_sql_init
 	#define statusdb_sync   statusdb_sql_sync

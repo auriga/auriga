@@ -649,9 +649,9 @@ bool guilddb_sql_new(struct guild *g)
 	return true;
 }
 
-void guilddb_sql_config_read_sub(const char *w1,const char* w2)
+int guilddb_sql_config_read_sub(const char *w1,const char* w2)
 {
-	// nothing to do
+	return 0;
 }
 
 static int guild_sql_db_final(void *key,void *data,va_list ap)

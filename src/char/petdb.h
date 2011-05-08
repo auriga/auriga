@@ -33,7 +33,8 @@
 	bool petdb_txt_save(struct s_pet* p2);
 	bool petdb_txt_new(struct s_pet *p);
 	void petdb_txt_final(void);
-	void petdb_txt_config_read_sub(const char* w1,const char *w2);
+	int petdb_txt_config_read_sub(const char* w1,const char *w2);
+
 	// エイリアス
 	#define petdb_init   petdb_txt_init
 	#define petdb_sync   petdb_txt_sync
@@ -52,7 +53,8 @@
 	bool petdb_sql_save(struct s_pet* p2);
 	bool petdb_sql_new(struct s_pet *p);
 	void petdb_sql_final(void);
-	void petdb_sql_config_read_sub(const char* w1,const char *w2);
+	int petdb_sql_config_read_sub(const char* w1,const char *w2);
+
 	// エイリアス
 	#define petdb_init   petdb_sql_init
 	#define petdb_sync   petdb_sql_sync

@@ -215,7 +215,7 @@ int accregdb_txt_sync(void)
 	return 0;
 }
 
-void accregdb_txt_config_read_sub(const char *w1,const char *w2)
+int accregdb_txt_config_read_sub(const char *w1,const char *w2)
 {
 	if(strcmpi(w1,"accreg_txt")==0){
 		strncpy(accreg_txt, w2, sizeof(accreg_txt) - 1);
@@ -231,6 +231,11 @@ void accregdb_txt_config_read_sub(const char *w1,const char *w2)
 		accreg_journal_cache = atoi( w2 );
 	}
 #endif
+	else {
+		return 0;
+	}
+
+	return 1;
 }
 
 const struct accreg* accregdb_txt_load(int account_id)

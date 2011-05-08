@@ -318,7 +318,7 @@ bool partydb_txt_delete(int party_id)
 	return true;
 }
 
-bool partydb_txt_config_read_sub(const char *w1,const char *w2)
+int partydb_txt_config_read_sub(const char *w1,const char *w2)
 {
 	if( strcmpi(w1,"party_txt") == 0 )
 		strncpy(party_txt, w2, sizeof(party_txt) - 1);
@@ -330,7 +330,10 @@ bool partydb_txt_config_read_sub(const char *w1,const char *w2)
 	else if( strcmpi(w1,"party_journal_cache_interval") == 0 )
 		party_journal_cache = atoi( w2 );
 #endif
-	return true;
+	else
+		return 0;
+
+	return 1;
 }
 
 bool partydb_txt_new(struct party *p)

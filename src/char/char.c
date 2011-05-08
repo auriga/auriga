@@ -2547,8 +2547,10 @@ static void char_config_read(const char *cfgName)
 		} else if (strcmpi(w1, "import") == 0) {
 			char_config_read(w2);
 		} else {
-			charlog_config_read(w1, w2);
-			chardb_config_read_sub(w1, w2);
+			if(charlog_config_read(w1, w2))
+				continue;
+			if(chardb_config_read_sub(w1, w2))
+				continue;
 		}
 	}
 	fclose(fp);

@@ -1435,9 +1435,12 @@ static void login_config_read(const char *cfgName)
 			login_config_read(w2);
 		else
 		{
-			login_config_read_sub(w1, w2);
-			loginlog_config_read(w1, w2);
-			login_httpd_config_read(w1, w2);
+			if(loginlog_config_read(w1, w2))
+				continue;
+			if(login_config_read_sub(w1, w2))
+				continue;
+			if(login_httpd_config_read(w1, w2))
+				continue;
 		}
 	}
 	fclose(fp);

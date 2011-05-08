@@ -245,6 +245,14 @@ SOURCE=..\..\src\char\inter.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\char\interlog_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\interlog_txt.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\common\journal.c
 # End Source File
 # Begin Source File
@@ -390,6 +398,10 @@ SOURCE=..\..\src\char\storagedb.h
 # Begin Source File
 
 SOURCE=..\..\src\char\inter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\interlog.h
 # End Source File
 # Begin Source File
 

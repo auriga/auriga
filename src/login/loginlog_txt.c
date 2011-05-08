@@ -51,15 +51,16 @@ int loginlog_log_txt(const char *fmt, ...)
 	return 0;
 }
 
-void loginlog_config_read_txt(const char *w1, const char *w2)
+int loginlog_config_read_txt(const char *w1, const char *w2)
 {
-	if( strcmpi(w1, "login_log_filename") == 0 )
-	{
+	if( strcmpi(w1, "login_log_filename") == 0 ) {
 		strncpy(loginlog_filename, w2, sizeof(loginlog_filename) - 1);
 		loginlog_filename[sizeof(loginlog_filename) - 1] = '\0';
+	} else {
+		return 0;
 	}
 
-	return;
+	return 1;
 }
 
 #endif

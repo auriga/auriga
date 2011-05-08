@@ -33,12 +33,13 @@
 	int storagedb_txt_sync(void);
 	bool storagedb_txt_delete(int account_id);
 	void storagedb_txt_final(void);
-	void storagedb_txt_config_read_sub(const char* w1,const char* w2);
+	int storagedb_txt_config_read_sub(const char* w1,const char* w2);
 	const struct guild_storage *gstoragedb_txt_load(int guild_id);
 	bool gstoragedb_txt_save(struct guild_storage *gs2, int easy);
 	int gstoragedb_txt_sync(void);
 	bool gstoragedb_txt_delete(int guild_id);
 	void gstoragedb_txt_final(void);
+
 	// エイリアス
 	#define storagedb_init   storagedb_txt_init
 	#define storagedb_load   storagedb_txt_load
@@ -61,12 +62,13 @@
 	int storagedb_sql_sync(void);
 	bool storagedb_sql_delete(int account_id);
 	void storagedb_sql_final(void);
-	void storagedb_sql_config_read_sub(const char* w1,const char* w2);
+	int storagedb_sql_config_read_sub(const char* w1,const char* w2);
 	const struct guild_storage *gstoragedb_sql_load(int guild_id);
 	bool gstoragedb_sql_save(struct guild_storage *gs2, int easy);
 	int gstoragedb_sql_sync(void);
 	bool gstoragedb_sql_delete(int guild_id);
 	void gstoragedb_sql_final(void);
+
 	// エイリアス
 	#define storagedb_init   storagedb_sql_init
 	#define storagedb_load   storagedb_sql_load

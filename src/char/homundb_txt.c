@@ -46,7 +46,7 @@ static char homun_journal_file[1024]="./save/homun.journal";
 static int homun_journal_cache = 1000;
 #endif
 
-void homundb_txt_config_read_sub(const char* w1,const char *w2)
+int homundb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"homun_txt")==0){
 		strncpy(homun_txt, w2, sizeof(homun_txt) - 1);
@@ -62,6 +62,11 @@ void homundb_txt_config_read_sub(const char* w1,const char *w2)
 		homun_journal_cache = atoi( w2 );
 	}
 #endif
+	else {
+		return 0;
+	}
+
+	return 1;
 }
 
 static int homun_tostr(char *str,struct mmo_homunstatus *h)

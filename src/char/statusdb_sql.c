@@ -161,10 +161,9 @@ void statusdb_sql_final(void)
 		numdb_final(scdata_db,statusdb_sql_final_sub);
 }
 
-void statusdb_sql_config_read_sub(const char *w1, const char *w2)
+int statusdb_sql_config_read_sub(const char *w1, const char *w2)
 {
-	// nothing to do
-	return;
+	return 0;
 }
 
 #endif

@@ -37,8 +37,9 @@
 	bool account_txt_account_new(struct mmo_account* account,const char *tmpstr);
 	void account_txt_final(void);
 	void account_txt_set_default_configvalue(void);
-	bool account_txt_config_read_sub(const char *w1,const char *w2);
+	int account_txt_config_read_sub(const char *w1,const char *w2);
 	void display_conf_warnings_txt(void);
+
 	// エイリアス
 	#define login_init             account_txt_init
 	#define login_sync             account_txt_sync
@@ -58,7 +59,7 @@
 	void account_sql_final(void);
 	void account_sql_sync(void);
 	void account_sql_set_default_configvalue(void);
-	bool account_sql_config_read_sub(const char *w1,const char *w2);
+	int account_sql_config_read_sub(const char *w1,const char *w2);
 	bool account_sql_account_delete(int account_id);
 	const struct mmo_account* account_sql_account_load_num(int account_id);
 	const struct mmo_account* account_sql_account_load_str(const char *account_id);
@@ -66,6 +67,7 @@
 	bool account_sql_account_save(struct mmo_account *ac2);
 	bool account_sql_account_new(struct mmo_account* account,const char *tmpstr);
 	void display_conf_warnings_sql(void);
+
 	// エイリアス
 	#define login_init            account_sql_init
 	#define login_sync            account_sql_sync

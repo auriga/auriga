@@ -40,8 +40,9 @@
 	bool chardb_txt_delete_sub(int char_id);
 	const struct mmo_chardata* chardb_txt_nick2chardata(const char *char_name);
 	bool chardb_txt_build_ranking(void);
-	bool chardb_txt_config_read_sub(const char* w1,const char* w2);
+	int chardb_txt_config_read_sub(const char* w1,const char* w2);
 	bool chardb_txt_set_online(int char_id, bool is_online);
+
 	// エイリアス
 	#define chardb_make            chardb_txt_make
 	#define chardb_init            chardb_txt_init
@@ -66,6 +67,7 @@
 		TABLE_NUM_STORAGE,
 		TABLE_NUM_GUILD_STORAGE,
 	};
+
 	// プロトタイプ宣言
 	int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch);
 	bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch);
@@ -80,8 +82,9 @@
 	bool chardb_sql_delete_sub(int char_id);
 	bool chardb_sql_build_ranking(void);
 	const struct mmo_chardata* chardb_sql_nick2chardata(const char *char_name);
-	bool chardb_sql_config_read_sub(const char* w1,const char* w2);
+	int chardb_sql_config_read_sub(const char* w1,const char* w2);
 	bool chardb_sql_set_online(int char_id, bool is_online);
+
 	// エイリアス
 	#define chardb_make            chardb_sql_make
 	#define chardb_init            chardb_sql_init

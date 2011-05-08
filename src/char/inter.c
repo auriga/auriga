@@ -31,6 +31,7 @@
 
 #include "char.h"
 #include "inter.h"
+#include "interlog.h"
 #include "accregdb.h"
 #include "storagedb.h"
 #include "statusdb.h"
@@ -49,8 +50,6 @@
 
 #define WISDATA_TTL    (60*1000)	// Wisデータの生存時間(60秒)
 #define WISDELLIST_MAX 128		// Wisデータ削除リストの要素数
-
-static char inter_log_filename[1024] = "log/inter.log";
 
 // 受信パケット長リスト
 int inter_recv_packet_length[] = {
@@ -117,58 +116,36 @@ int inter_config_read(const char *cfgName)
 		if(i != 2)
 			continue;
 
-		if(strcmpi(w1,"inter_log_filename") == 0) {
-			strncpy(inter_log_filename,w2,1024);
-		}
-		else if(strcmpi(w1,"import") == 0) {
+		if(strcmpi(w1,"import") == 0) {
 			inter_config_read(w2);
 		}
 		else {
-			accregdb_config_read_sub(w1,w2);
-			petdb_config_read_sub(w1,w2);
-			storagedb_config_read_sub(w1,w2);
-			party_config_read(w1,w2);
-			guild_config_read(w1,w2);
-			maildb_config_read_sub(w1,w2);
-			homundb_config_read_sub(w1,w2);
-			statusdb_config_read_sub(w1,w2);
-			mercdb_config_read_sub(w1,w2);
-			questdb_config_read_sub(w1,w2);
+			if(interlog_config_read(w1, w2))
+				continue;
+			if(accregdb_config_read_sub(w1,w2))
+				continue;
+			if(petdb_config_read_sub(w1,w2))
+				continue;
+			if(storagedb_config_read_sub(w1,w2))
+				continue;
+			if(party_config_read(w1,w2))
+				continue;
+			if(guild_config_read(w1,w2))
+				continue;
+			if(maildb_config_read_sub(w1,w2))
+				continue;
+			if(homundb_config_read_sub(w1,w2))
+				continue;
+			if(statusdb_config_read_sub(w1,w2))
+				continue;
+			if(mercdb_config_read_sub(w1,w2))
+				continue;
+			if(questdb_config_read_sub(w1,w2))
+				continue;
 		}
 	}
 	fclose(fp);
 
-	return 0;
-}
-
-//--------------------------------------------------------
-// ログ書き出し
-
-int inter_log(const char *fmt, ...)
-{
-#ifdef TXT_ONLY
-	FILE *logfp;
-	va_list ap;
-
-	va_start(ap, fmt);
-
-	logfp = fopen(inter_log_filename, "a");
-	if(logfp) {
-		vfprintf(logfp, fmt, ap);
-		fprintf(logfp, RETCODE);
-		fclose(logfp);
-	}
-	va_end(ap);
-#else
-	char msg[256], buf[512];
-	va_list ap;
-
-	va_start(ap, fmt);
-	vsnprintf(msg, sizeof(msg), fmt, ap);
-	va_end(ap);
-
-	sqldbs_query(&mysql_handle, "INSERT INTO `" INTERLOG_TABLE "` (`time`,`log`) VALUES (NOW(),'%s')", strecpy(buf,msg));
-#endif
 	return 0;
 }
 

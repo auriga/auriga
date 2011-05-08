@@ -545,7 +545,7 @@ bool guilddb_txt_new(struct guild *g2)
 	return true;
 }
 
-void guilddb_txt_config_read_sub(const char* w1,const char *w2)
+int guilddb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"guild_txt")==0){
 		strncpy(guild_txt,w2,sizeof(guild_txt) - 1);
@@ -573,6 +573,11 @@ void guilddb_txt_config_read_sub(const char* w1,const char *w2)
 		guildcastle_journal_cache = atoi( w2 );
 	}
 #endif
+	else {
+		return 0;
+	}
+
+	return 1;
 }
 
 static int guild_txt_db_final(void *key,void *data,va_list ap)

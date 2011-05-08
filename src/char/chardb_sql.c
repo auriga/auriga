@@ -1041,7 +1041,7 @@ void chardb_sql_final(void)
 	return;
 }
 
-bool chardb_sql_config_read_sub(const char* w1,const char* w2)
+int chardb_sql_config_read_sub(const char* w1,const char* w2)
 {
 	if( strcmpi(w1,"char_server_ip") == 0 )
 		strncpy(char_server_ip, w2, sizeof(char_server_ip) - 1);
@@ -1057,8 +1057,10 @@ bool chardb_sql_config_read_sub(const char* w1,const char* w2)
 		strncpy(char_server_charset, w2, sizeof(char_server_charset) - 1);
 	else if( strcmpi(w1,"char_server_keepalive") ==0 )
 		char_server_keepalive = atoi(w2);
+	else
+		return 0;
 
-	return true;
+	return 1;
 }
 
 const struct mmo_chardata* chardb_sql_nick2chardata(const char *char_name)

@@ -625,7 +625,7 @@ bool storagedb_txt_init(void)
 	return true;
 }
 
-void storagedb_txt_config_read_sub(const char* w1,const char* w2)
+int storagedb_txt_config_read_sub(const char* w1,const char* w2)
 {
 	if(strcmpi(w1,"storage_txt")==0){
 		strncpy(storage_txt, w2, sizeof(storage_txt) - 1);
@@ -653,6 +653,11 @@ void storagedb_txt_config_read_sub(const char* w1,const char* w2)
 		guild_storage_journal_cache = atoi( w2 );
 	}
 #endif
+	else {
+		return 0;
+	}
+
+	return 1;
 }
 
 #endif

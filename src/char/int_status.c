@@ -39,7 +39,7 @@ bool status_dummy_delete(int char_id) { return true; }
 struct scdata *status_dummy_load(int char_id) { return NULL; }
 bool status_dummy_save(struct scdata *sc2) { return true; }
 void status_dummy_final(void) { return; }
-void status_dummy_config_read_sub(const char *w1,const char *w2) { return; }
+int status_dummy_config_read_sub(const char *w1,const char *w2) { return 0; }
 
 #endif
 

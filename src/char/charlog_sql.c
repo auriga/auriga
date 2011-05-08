@@ -43,9 +43,9 @@ int charlog_log_sql(const char *fmt, ...)
 	return 0;
 }
 
-void charlog_config_read_sql(const char *w1, const char *w2)
+int charlog_config_read_sql(const char *w1, const char *w2)
 {
-	// nothing to do
+	return 0;
 }
 
 #endif

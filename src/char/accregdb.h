@@ -37,7 +37,8 @@ struct accreg {
 	bool accregdb_txt_init(void);
 	int accregdb_txt_sync(void);
 	void accregdb_txt_final(void);
-	void accregdb_txt_config_read_sub(const char *w1,const char *w2);
+	int accregdb_txt_config_read_sub(const char *w1,const char *w2);
+
 	// エイリアス
 	#define accregdb_load  accregdb_txt_load
 	#define accregdb_save  accregdb_txt_save
@@ -52,7 +53,8 @@ struct accreg {
 	bool accregdb_sql_init(void);
 	int accregdb_sql_sync(void);
 	void accregdb_sql_final(void);
-	void accregdb_sql_config_read_sub(const char *w1,const char *w2);
+	int accregdb_sql_config_read_sub(const char *w1,const char *w2);
+
 	// エイリアス
 	#define accregdb_load  accregdb_sql_load
 	#define accregdb_save  accregdb_sql_save

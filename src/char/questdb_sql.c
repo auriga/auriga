@@ -201,10 +201,9 @@ void questdb_sql_final(void)
 // ----------------------------------------------------------
 // クエストデータ設定読み込み
 // ----------------------------------------------------------
-void questdb_sql_config_read_sub(const char *w1, const char *w2)
+int questdb_sql_config_read_sub(const char *w1, const char *w2)
 {
-	// nothing to do
-	return;
+	return 0;
 }
 
 #endif

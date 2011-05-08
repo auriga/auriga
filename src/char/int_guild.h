@@ -23,7 +23,7 @@
 #define _INT_GUILD_H_
 
 int guild_readdb(void);
-void guild_config_read(const char *w1,const char* w2);
+int guild_config_read(const char *w1,const char* w2);
 void guild_calc_skilltree(struct guild *g);
 int guild_calcinfo(struct guild *g);
 

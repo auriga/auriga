@@ -33,7 +33,8 @@
 	bool mercdb_txt_save(struct mmo_mercstatus* p2);
 	bool mercdb_txt_new(struct mmo_mercstatus *p);
 	void mercdb_txt_final(void);
-	void mercdb_txt_config_read_sub(const char* w1,const char *w2);
+	int mercdb_txt_config_read_sub(const char* w1,const char *w2);
+
 	// エイリアス
 	#define mercdb_init   mercdb_txt_init
 	#define mercdb_sync   mercdb_txt_sync
@@ -52,7 +53,8 @@
 	bool mercdb_sql_save(struct mmo_mercstatus* p2);
 	bool mercdb_sql_new(struct mmo_mercstatus *p2);
 	void mercdb_sql_final(void);
-	void mercdb_sql_config_read_sub(const char* w1,const char *w2);
+	int mercdb_sql_config_read_sub(const char* w1,const char *w2);
+
 	// エイリアス
 	#define mercdb_init   mercdb_sql_init
 	#define mercdb_sync   mercdb_sql_sync

@@ -953,7 +953,7 @@ bool chardb_txt_delete_sub(int char_id)
 	return true;
 }
 
-bool chardb_txt_config_read_sub(const char* w1,const char* w2)
+int chardb_txt_config_read_sub(const char* w1,const char* w2)
 {
 	if( strcmpi(w1,"char_txt") == 0 )
 		strncpy(char_txt,w2,sizeof(char_txt) - 1);
@@ -967,8 +967,10 @@ bool chardb_txt_config_read_sub(const char* w1,const char* w2)
 	else if(strcmpi( w1,"char_journal_cache_interval") == 0 )
 		char_journal_cache = atoi( w2 );
 #endif
+	else
+		return 0;
 
-	return true;
+	return 1;
 }
 
 const struct mmo_chardata* chardb_txt_nick2chardata(const char *char_name)

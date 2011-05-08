@@ -25,14 +25,16 @@
 #ifdef TXT_ONLY
 	// プロトタイプ宣言
 	int loginlog_log_txt(const char *fmt, ...);
-	void loginlog_config_read_txt(const char *str, const char *str2);
+	int loginlog_config_read_txt(const char *str, const char *str2);
+
 	// エイリアス
 	#define loginlog_log loginlog_log_txt
 	#define loginlog_config_read loginlog_config_read_txt
 #else
 	// プロトタイプ宣言
 	int loginlog_log_sql(const char *fmt, ...);
-	void loginlog_config_read_sql(const char *str, const char *str2);
+	int loginlog_config_read_sql(const char *str, const char *str2);
+
 	// エイリアス
 	#define loginlog_log loginlog_log_sql
 	#define loginlog_config_read loginlog_config_read_sql

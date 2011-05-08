@@ -337,7 +337,7 @@ void questdb_txt_final(void)
 // ----------------------------------------------------------
 // クエストデータ設定読み込み
 // ----------------------------------------------------------
-void questdb_txt_config_read_sub(const char *w1, const char *w2)
+int questdb_txt_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"quest_txt")==0) {
 		strncpy(quest_txt, w2, sizeof(quest_txt) - 1);
@@ -353,6 +353,11 @@ void questdb_txt_config_read_sub(const char *w1, const char *w2)
 		quest_journal_cache = atoi(w2);
 	}
 #endif
+	else {
+		return 0;
+	}
+
+	return 1;
 }
 
 #endif

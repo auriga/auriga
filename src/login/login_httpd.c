@@ -174,11 +174,12 @@ static int login_httpd_auth_func( struct httpd_access* a, struct httpd_session_d
 	return 1;
 }
 
-bool login_httpd_config_read(const char *w1, const char *w2)
+int login_httpd_config_read(const char *w1, const char *w2)
 {
 	char w3[1026];
 
 	memcpy(w3, w2, sizeof(w3));
+
 	if( strcmpi(w1, "httpd_enable") == 0 )
 		socket_enable_httpd(atoi(w3));
 	else if ( strcmpi(w1, "httpd_document_root") == 0 )
@@ -190,9 +191,9 @@ bool login_httpd_config_read(const char *w1, const char *w2)
 	else if (strcmpi(w1, "httpd_config") == 0 )
 		httpd_config_read(w3);
 	else
-		return false;
+		return 0;
 
-	return true;
+	return 1;
 }
 
 void login_httpd_init(void)

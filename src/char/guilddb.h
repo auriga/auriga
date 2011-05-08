@@ -38,7 +38,8 @@
 	const struct guild* guilddb_txt_load_num(int guild_id);
 	const struct guild* guilddb_txt_load_str(char *str);
 	void guilddb_txt_delete(int guild_id);
-	void guilddb_txt_config_read_sub(const char* w1,const char *w2);
+	int guilddb_txt_config_read_sub(const char* w1,const char *w2);
+
 	// エイリアス
 	#define guilddb_new      guilddb_txt_new
 	#define guilddb_init     guilddb_txt_init
@@ -59,7 +60,8 @@
 	const struct guild *guilddb_sql_load_num(int guild_id);
 	const struct guild* guilddb_sql_load_str(char *str);
 	void guilddb_sql_delete(int guild_id);
-	void guilddb_sql_config_read_sub(const char* w1,const char *w2);
+	int guilddb_sql_config_read_sub(const char* w1,const char *w2);
+
 	// エイリアス
 	#define guilddb_new      guilddb_sql_new
 	#define guilddb_init     guilddb_sql_init

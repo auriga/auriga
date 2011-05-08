@@ -42,9 +42,9 @@ int loginlog_log_sql(const char *fmt, ...)
 	return 0;
 }
 
-void loginlog_config_read_sql(const char *str, const char *str2)
+int loginlog_config_read_sql(const char *str, const char *str2)
 {
-	// nothing to do
+	return 0;
 }
 
 #endif

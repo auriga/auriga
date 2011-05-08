@@ -32,6 +32,7 @@
 #include "utils.h"
 
 #include "inter.h"
+#include "interlog.h"
 #include "chardb.h"
 #include "guilddb.h"
 #include "int_guild.h"
@@ -564,7 +565,7 @@ int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member
 	mapif_guild_created(fd,account_id,&g);
 	mapif_guild_info(-1,&g);
 
-	inter_log("guild %s (id=%d) created by master %s (id=%d)",
+	interlog_log("guild %s (id=%d) created by master %s (id=%d)",
 		name, g.guild_id, master->name, master->account_id);
 
 	return 0;
@@ -716,7 +717,7 @@ static int mapif_parse_GuildChangeMemberInfoShort(int fd,int guild_id,int accoun
 int mapif_parse_BreakGuild(int fd,int guild_id)
 {
 	guilddb_delete(guild_id);
-	inter_log("guild (id=%d) broken",guild_id);
+	interlog_log("guild (id=%d) broken",guild_id);
 	return 0;
 }
 
@@ -1026,7 +1027,7 @@ int mapif_parse_GuildCastleDataSave(int fd,int castle_id,int idx,int value)
 	switch(idx){
 		case 1:
 			if( gc->guild_id != value ) {
-				inter_log(
+				interlog_log(
 					"guild id=%d %s castle id=%d",
 					((value)? value: gc->guild_id), ((value)? "occupy": "abandon"), idx
 				);
@@ -1114,20 +1115,22 @@ int inter_guild_leave(int guild_id,int account_id,int char_id)
 }
 
 // ギルド設定読み込み
-void guild_config_read(const char *w1,const char* w2)
+int guild_config_read(const char *w1,const char* w2)
 {
 	if(strcmpi(w1,"guild_extension_increment")==0)
 	{
 		guild_extension_increment = atoi(w2);
-		if( guild_extension_increment<0 ) guild_extension_increment=0;
-		if( guild_extension_increment>6 ) guild_extension_increment=6;
+		if(guild_extension_increment < 0)
+			guild_extension_increment = 0;
+		if(guild_extension_increment > 6)
+			guild_extension_increment = 6;
+		return 1;
 	}
-	else if(strcmpi(w1,"guild_join_limit")==0)
+	if(strcmpi(w1,"guild_join_limit")==0)
 	{
 		guild_join_limit = atoi(w2);
+		return 1;
 	}
-	else
-	{
-		guilddb_config_read_sub(w1,w2);
-	}
+
+	return guilddb_config_read_sub(w1,w2);
 }

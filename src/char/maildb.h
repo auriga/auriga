@@ -37,7 +37,8 @@
 	bool maildb_txt_save(struct mail* m2);
 	bool maildb_txt_new(int account_id,int char_id);
 	void maildb_txt_final(void);
-	void maildb_txt_config_read_sub(const char *w1,const char *w2);
+	int maildb_txt_config_read_sub(const char *w1,const char *w2);
+
 	// エイリアス
 	#define maildb_store_mail      maildb_txt_store_mail
 	#define maildb_save_mail       maildb_txt_save_mail
@@ -64,7 +65,8 @@
 	bool maildb_sql_save(struct mail* m2);
 	bool maildb_sql_new(int account_id,int char_id);
 	void maildb_sql_final(void);
-	void maildb_sql_config_read_sub(const char *w1,const char *w2);
+	int maildb_sql_config_read_sub(const char *w1,const char *w2);
+
 	// エイリアス
 	#define maildb_store_mail      maildb_sql_store_mail
 	#define maildb_save_mail       maildb_sql_save_mail

@@ -335,10 +335,9 @@ void homundb_sql_final(void)
 		numdb_final(homun_db,homundb_sql_final_sub);
 }
 
-void homundb_sql_config_read_sub(const char* w1,const char *w2)
+int homundb_sql_config_read_sub(const char* w1,const char *w2)
 {
-	// nothing to do
-	return;
+	return 0;
 }
 
 #endif

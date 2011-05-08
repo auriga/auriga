@@ -46,7 +46,7 @@ static char merc_journal_file[1024]="./save/mercenary.journal";
 static int merc_journal_cache = 1000;
 #endif
 
-void mercdb_txt_config_read_sub(const char* w1,const char *w2)
+int mercdb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"merc_txt")==0){
 		strncpy(merc_txt, w2, sizeof(merc_txt) - 1);
@@ -62,6 +62,11 @@ void mercdb_txt_config_read_sub(const char* w1,const char *w2)
 		merc_journal_cache = atoi( w2 );
 	}
 #endif
+	else {
+		return 0;
+	}
+
+	return 1;
 }
 
 static int merc_tostr(char *str,struct mmo_mercstatus *m)

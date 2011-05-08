@@ -33,7 +33,8 @@
 	bool homundb_txt_save(struct mmo_homunstatus* p2);
 	bool homundb_txt_new(struct mmo_homunstatus *p);
 	void homundb_txt_final(void);
-	void homundb_txt_config_read_sub(const char* w1,const char *w2);
+	int homundb_txt_config_read_sub(const char* w1,const char *w2);
+
 	// エイリアス
 	#define homundb_init   homundb_txt_init
 	#define homundb_sync   homundb_txt_sync
@@ -52,7 +53,8 @@
 	bool homundb_sql_save(struct mmo_homunstatus* p2);
 	bool homundb_sql_new(struct mmo_homunstatus *p2);
 	void homundb_sql_final(void);
-	void homundb_sql_config_read_sub(const char* w1,const char *w2);
+	int homundb_sql_config_read_sub(const char* w1,const char *w2);
+
 	// エイリアス
 	#define homundb_init   homundb_sql_init
 	#define homundb_sync   homundb_sql_sync

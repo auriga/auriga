@@ -417,10 +417,9 @@ void maildb_sql_final(void)
 		numdb_final(mail_db,maildb_sql_final_sub);
 }
 
-void maildb_sql_config_read_sub(const char *w1, const char *w2)
+int maildb_sql_config_read_sub(const char *w1, const char *w2)
 {
-	// nothing to do
-	return;
+	return 0;
 }
 
 #endif

@@ -298,7 +298,7 @@ void statusdb_txt_final(void)
 #endif
 }
 
-void statusdb_txt_config_read_sub(const char *w1, const char *w2)
+int statusdb_txt_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"status_txt")==0) {
 		strncpy(scdata_txt, w2, sizeof(scdata_txt) - 1);
@@ -314,6 +314,11 @@ void statusdb_txt_config_read_sub(const char *w1, const char *w2)
 		status_journal_cache = atoi(w2);
 	}
 #endif
+	else {
+		return 0;
+	}
+
+	return 1;
 }
 
 #endif

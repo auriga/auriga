@@ -25,14 +25,16 @@
 #ifdef TXT_ONLY
 	// プロトタイプ宣言
 	int charlog_log_txt(const char *fmt, ...);
-	void charlog_config_read_txt(const char *str, const char *str2);
+	int charlog_config_read_txt(const char *str, const char *str2);
+
 	// エイリアス
 	#define charlog_log charlog_log_txt
 	#define charlog_config_read charlog_config_read_txt
 #else
 	// プロトタイプ宣言
 	int charlog_log_sql(const char *fmt, ...);
-	void charlog_config_read_sql(const char *str, const char *str2);
+	int charlog_config_read_sql(const char *str, const char *str2);
+
 	// エイリアス
 	#define charlog_log charlog_log_sql
 	#define charlog_config_read charlog_config_read_sql

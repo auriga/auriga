@@ -33,8 +33,9 @@
 	bool partydb_txt_save(struct party* p2);
 	bool partydb_txt_delete(int party_id);
 	bool partydb_txt_new(struct party *p);
-	bool partydb_txt_config_read_sub(const char *w1,const char *w2);
+	int partydb_txt_config_read_sub(const char *w1,const char *w2);
 	void partydb_txt_final(void);
+
 	// エイリアス
 	#define partydb_init     partydb_txt_init
 	#define partydb_sync     partydb_txt_sync
@@ -54,8 +55,9 @@
 	bool partydb_sql_save(struct party* p2);
 	bool partydb_sql_delete(int party_id);
 	bool partydb_sql_new(struct party *p);
-	bool partydb_sql_config_read_sub(const char *w1,const char *w2);
+	int partydb_sql_config_read_sub(const char *w1,const char *w2);
 	void partydb_sql_final(void);
+
 	// エイリアス
 	#define partydb_init     partydb_sql_init
 	#define partydb_sync     partydb_sql_sync

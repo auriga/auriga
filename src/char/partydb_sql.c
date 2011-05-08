@@ -170,10 +170,9 @@ bool partydb_sql_delete(int party_id)
 	return true;
 }
 
-bool partydb_sql_config_read_sub(const char *w1,const char *w2)
+int partydb_sql_config_read_sub(const char *w1,const char *w2)
 {
-	// nothing to do
-	return true;
+	return 0;
 }
 
 bool partydb_sql_new(struct party *p)

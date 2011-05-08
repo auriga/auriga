@@ -49,15 +49,16 @@ int charlog_log_txt(const char *fmt, ...)
 	return 0;
 }
 
-void charlog_config_read_txt(const char *w1, const char *w2)
+int charlog_config_read_txt(const char *w1, const char *w2)
 {
-	if( strcmpi(w1, "char_log_filename") == 0 )
-	{
+	if( strcmpi(w1, "char_log_filename") == 0 ) {
 		strncpy(char_log_filename, w2, sizeof(char_log_filename) - 1);
 		char_log_filename[sizeof(char_log_filename) - 1] = '\0';
+	} else {
+		return 0;
 	}
 
-	return;
+	return 1;
 }
 
 #endif

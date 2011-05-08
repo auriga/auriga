@@ -196,10 +196,9 @@ void petdb_sql_final(void)
 		numdb_final(pet_db,petdb_sql_final_sub);
 }
 
-void petdb_sql_config_read_sub(const char* w1,const char *w2)
+int petdb_sql_config_read_sub(const char* w1,const char *w2)
 {
-	// nothing to do
-	return;
+	return 0;
 }
 
 #endif

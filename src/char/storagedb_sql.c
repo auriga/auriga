@@ -252,9 +252,9 @@ void gstoragedb_sql_final(void)
 		numdb_final(gstorage_db,gstorage_db_final);
 }
 
-void storagedb_sql_config_read_sub(const char* w1,const char* w2)
+int storagedb_sql_config_read_sub(const char* w1,const char* w2)
 {
-	// nothing to do
+	return 0;
 }
 
 #endif

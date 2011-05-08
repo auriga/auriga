@@ -46,9 +46,9 @@ int accregdb_sql_sync(void)
 	return 0;
 }
 
-void accregdb_sql_config_read_sub(const char *w1,const char *w2)
+int accregdb_sql_config_read_sub(const char *w1,const char *w2)
 {
-	// nothing to do
+	return 0;
 }
 
 void accregdb_sql_save(struct accreg *reg)

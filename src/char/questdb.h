@@ -34,7 +34,8 @@
 	const struct quest *questdb_txt_load(int char_id);
 	int  questdb_txt_save(struct quest *q2);
 	void questdb_txt_final(void);
-	void questdb_txt_config_read_sub(const char *w1,const char *w2);
+	int questdb_txt_config_read_sub(const char *w1,const char *w2);
+
 	// エイリアス
 	#define questdb_init   questdb_txt_init
 	#define questdb_sync   questdb_txt_sync
@@ -51,7 +52,8 @@
 	const struct quest *questdb_sql_load(int char_id);
 	int  questdb_sql_save(struct quest *q2);
 	void questdb_sql_final(void);
-	void questdb_sql_config_read_sub(const char *w1,const char *w2);
+	int questdb_sql_config_read_sub(const char *w1,const char *w2);
+
 	// エイリアス
 	#define questdb_init   questdb_sql_init
 	#define questdb_sync   questdb_sql_sync

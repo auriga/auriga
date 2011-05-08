@@ -448,7 +448,7 @@ void account_txt_set_default_configvalue(void)
 	// nothing to do
 }
 
-bool account_txt_config_read_sub(const char* w1,const char* w2)
+int account_txt_config_read_sub(const char* w1,const char* w2)
 {
 	if( strcmpi(w1, "account_filename") == 0 )
 		strncpy(account_filename, w2, sizeof(account_filename) - 1);
@@ -461,9 +461,9 @@ bool account_txt_config_read_sub(const char* w1,const char* w2)
 		login_journal_cache = atoi(w2);
 #endif
 	else
-		return false;
+		return 0;
 
-	return true;
+	return 1;
 }
 
 void display_conf_warnings_txt(void)

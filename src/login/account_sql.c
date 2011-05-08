@@ -140,7 +140,7 @@ void account_sql_set_default_configvalue(void)
 	return;
 }
 
-bool account_sql_config_read_sub(const char *w1, const char *w2)
+int account_sql_config_read_sub(const char *w1, const char *w2)
 {
 	if( strcmpi(w1,"login_server_ip") == 0 )
 		strncpy(config.login_server_ip, w2, sizeof(config.login_server_ip) - 1);
@@ -168,9 +168,9 @@ bool account_sql_config_read_sub(const char *w1, const char *w2)
 	else if( strcmpi(w1, "login_server_keepalive") == 0 )
 		config.login_server_keepalive = atoi(w2);
 	else
-		return false;
+		return 0;
 
-	return true;
+	return 1;
 }
 
 bool account_sql_account_delete(int account_id)
