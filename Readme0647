@@ -1,4 +1,13 @@
 ----------------------------------------
+//0859 [2011/05/09] by Cocoa
+
+・bDefEleEnemyがbSubEleになっていたアイテム修正（db/item_db.txt）
+	thanks Akayumi さん
+
+・傭兵召喚書の剣と槍が入れ違いになっていた点を修正（db/item_db.txt）
+	thanks gokunan さん
+
+----------------------------------------
 //0858 [2011/05/09] by Rayce
 
 ・db_search() と db_exists() の処理を db_search_dbn() で共通化（db.c）

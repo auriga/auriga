@@ -2123,14 +2123,14 @@
 4439,Flame_Skull_Card,フレームスカルカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bResEff,Eff_Stun,3000; bonus2 bResEff,Eff_Curse,3000; bonus2 bResEff,Eff_Blind,3000; bonus2 bResEff,Eff_Stone,3000; bonus2 bAddRevEff,Eff_Stun,3000; bonus2 bAddRevEff,Eff_Curse,3000; bonus2 bAddRevEff,Eff_Blind,3000; bonus2 bAddRevEff,Eff_Stone,3000; }
 4440,Necromancer_Card,ネクロマンサーカード,6,20,,10,,,,,,,2,,,,,{},{ if(getiteminfo(getequipid(4),16)==10) { bonus bInt,1; bonus2 bIgnoreMDefRace,10,2; bonus2 bIgnoreMDefRace,11,2;} }
 4441,Fallen_Bishop_Card,堕ちた大神官ヒバムカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bMatkRate,10; bonus bMaxSPrate,-50; bonus2 bMagicAddRace,7,50; bonus2 bMagicAddRace,8,50; }
-4442,Tatacho_Card,タタチョカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubEle,0,20; bonus2 bAddEle,0,5; }
-4443,Aqua_Elemental_Card,アクアエレメンタルカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubEle,1,20; bonus2 bAddEle,1,5; }
-4444,Draco_Card,ドラコカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubEle,2,20; bonus2 bAddEle,2,5; }
-4445,Luciola_Vespa_Card,ルシオラヴェスパカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubEle,4,20; bonus2 bAddEle,4,5; }
+4442,Tatacho_Card,タタチョカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bDefEleEnemy,0,20; bonus2 bAddEle,0,5; }
+4443,Aqua_Elemental_Card,アクアエレメンタルカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bDefEleEnemy,1,20; bonus2 bAddEle,1,5; }
+4444,Draco_Card,ドラコカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bDefEleEnemy,2,20; bonus2 bAddEle,2,5; }
+4445,Luciola_Vespa_Card,ルシオラヴェスパカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bDefEleEnemy,4,20; bonus2 bAddEle,4,5; }
 
-4447,Centipede_Card,センチピードカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubEle,5,20; bonus2 bAddEle,5,5; }
-4448,Cornus_Card,コルヌスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubEle,6,20; bonus2 bAddEle,6,5; }
-4449,Dark_Shadow_Card,ダークシャドーカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubEle,7,20; bonus2 bAddEle,7,5; }
+4447,Centipede_Card,センチピードカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bDefEleEnemy,5,20; bonus2 bAddEle,5,5; }
+4448,Cornus_Card,コルヌスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bDefEleEnemy,6,20; bonus2 bAddEle,6,5; }
+4449,Dark_Shadow_Card,ダークシャドーカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bDefEleEnemy,7,20; bonus2 bAddEle,7,5; }
 4450,Banshee_Master_Card,バンシーマスターカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bInt,1; bonus bMatk,10; }
 4451,Entweihen_Card,エントヴァイエンカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMatk,100; }
 4452,Centipede_Larva_Card,センチピード幼虫カード,6,20,,10,,,,,,,2,,,,,{},{ bonus bInt,1; bonus bMatk,3; }
@@ -4372,26 +4372,26 @@
 12160,Merc_Archer_Scroll_Lv8,8級弓傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6024,1800; },{}
 12161,Merc_Archer_Scroll_Lv9,9級弓傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6025,1800; },{}
 12162,Merc_Archer_Scroll_Lv10,最高級弓傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6026,1800; },{}
-12163,Merc_Sword_Scroll_Lv1,1級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6027,1800; },{}
-12164,Merc_Sword_Scroll_Lv2,2級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6028,1800; },{}
-12165,Merc_Sword_Scroll_Lv3,3級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6029,1800; },{}
-12166,Merc_Sword_Scroll_Lv4,4級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6030,1800; },{}
-12167,Merc_Sword_Scroll_Lv5,5級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6031,1800; },{}
-12168,Merc_Sword_Scroll_Lv6,6級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6032,1800; },{}
-12169,Merc_Sword_Scroll_Lv7,7級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6033,1800; },{}
-12170,Merc_Sword_Scroll_Lv8,8級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6034,1800; },{}
-12171,Merc_Sword_Scroll_Lv9,9級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6035,1800; },{}
-12172,Merc_Sword_Scroll_Lv10,最高級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6036,1800; },{}
-12173,Merc_Spear_Scroll_Lv1,1級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6037,1800; },{}
-12174,Merc_Spear_Scroll_Lv2,2級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6038,1800; },{}
-12175,Merc_Spear_Scroll_Lv3,3級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6039,1800; },{}
-12176,Merc_Spear_Scroll_Lv4,4級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6040,1800; },{}
-12177,Merc_Spear_Scroll_Lv5,5級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6041,1800; },{}
-12178,Merc_Spear_Scroll_Lv6,6級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6042,1800; },{}
-12179,Merc_Spear_Scroll_Lv7,7級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6043,1800; },{}
-12180,Merc_Spear_Scroll_Lv8,8級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6044,1800; },{}
-12181,Merc_Spear_Scroll_Lv9,9級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6045,1800; },{}
-12182,Merc_Spear_Scroll_Lv10,最高級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6046,1800; },{}
+12163,Merc_Sword_Scroll_Lv1,1級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6037,1800; },{}
+12164,Merc_Sword_Scroll_Lv2,2級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6038,1800; },{}
+12165,Merc_Sword_Scroll_Lv3,3級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6039,1800; },{}
+12166,Merc_Sword_Scroll_Lv4,4級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6040,1800; },{}
+12167,Merc_Sword_Scroll_Lv5,5級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6041,1800; },{}
+12168,Merc_Sword_Scroll_Lv6,6級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6042,1800; },{}
+12169,Merc_Sword_Scroll_Lv7,7級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6043,1800; },{}
+12170,Merc_Sword_Scroll_Lv8,8級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6044,1800; },{}
+12171,Merc_Sword_Scroll_Lv9,9級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6045,1800; },{}
+12172,Merc_Sword_Scroll_Lv10,最高級剣傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6046,1800; },{}
+12173,Merc_Spear_Scroll_Lv1,1級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6027,1800; },{}
+12174,Merc_Spear_Scroll_Lv2,2級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6028,1800; },{}
+12175,Merc_Spear_Scroll_Lv3,3級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6029,1800; },{}
+12176,Merc_Spear_Scroll_Lv4,4級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6030,1800; },{}
+12177,Merc_Spear_Scroll_Lv5,5級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6031,1800; },{}
+12178,Merc_Spear_Scroll_Lv6,6級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6032,1800; },{}
+12179,Merc_Spear_Scroll_Lv7,7級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6033,1800; },{}
+12180,Merc_Spear_Scroll_Lv8,8級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6034,1800; },{}
+12181,Merc_Spear_Scroll_Lv9,9級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6035,1800; },{}
+12182,Merc_Spear_Scroll_Lv10,最高級槍傭兵召喚書,2,,,100,,,,,1000333311,2,,,,,,{ makemerc 6036,1800; },{}
 12183,Holy_Arrow_Container,聖なる矢筒,2,,,250,,,,,1000333311,2,,,,,,{ getitem 1772,500; },{}
 12184,Red_Mercenary_Potion,傭兵専用赤ポーション,2,,,100,,,,,,2,,,,,,{ itemheal 1000,0; },{}
 12185,Blue_Mercenary_Potion,傭兵専用青ポーション,2,,,100,,,,,,2,,,,,,{ itemheal 0,100; },{}
