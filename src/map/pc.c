@@ -2194,7 +2194,7 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		if(sd->state.lr_flag != 2) {
 			if(sd->speed_rate < val) {
 				sd->speed_rate = val;
-				clif_status_load(sd,SI_MOVHASTE_INFINITY,1);
+				//clif_status_load(sd,SI_MOVHASTE_INFINITY,1);
 			}
 		}
 		break;

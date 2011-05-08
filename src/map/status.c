@@ -2263,6 +2263,8 @@ L_RECALC:
 	// bSpeedRateがなくなっていたらパケットを送って元に戻す
 	if(b_speedrate != 0 && sd->speed_rate == 0)
 		clif_status_load(sd, SI_MOVHASTE_INFINITY, 0);
+	else if(b_speedrate < sd->speed_rate)
+		clif_status_load(sd,SI_MOVHASTE_INFINITY,1);
 
 	// 計算処理ここまで
 	if( sd->status_calc_pc_process > 1 ) {
