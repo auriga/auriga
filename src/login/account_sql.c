@@ -50,7 +50,9 @@ static struct dbt *account_db;
 
 bool account_sql_init(void)
 {
+	MYSQL_RES* sql_res;
 	bool is_connect;
+	const char *delayed = "";
 
 	// DB connection start
 	is_connect = sqldbs_connect(&mysql_handle,config.login_server_ip, config.login_server_id, config.login_server_pw, config.login_server_db, config.login_server_port, config.login_server_charset, config.login_server_keepalive);
@@ -59,8 +61,22 @@ bool account_sql_init(void)
 	if( is_connect == false )
 		return false;
 
+	// support DELAYED ?
+	sqldbs_query(&mysql_handle,
+		"SELECT 1 FROM information_schema.tables WHERE table_schema = (SELECT database()) AND table_name = '" LOGINLOG_TABLE "' "
+		"AND engine IN ('MyISAM', 'MEMORY', 'ARCHIVE', 'BLACKHOLE')"
+	);
+
+	sql_res = sqldbs_store_result(&mysql_handle);
+	if(sql_res) {
+		if(sqldbs_num_rows(sql_res) > 0) {
+			delayed = "DELAYED";
+		}
+		sqldbs_free_result(sql_res);
+	}
+
 	// log write
-	sqldbs_query(&mysql_handle, "INSERT DELAYED INTO `" LOGINLOG_TABLE "` (`time`,`log`) VALUES (NOW(), 'lserver 100 login server started')");
+	sqldbs_query(&mysql_handle, "INSERT %s INTO `" LOGINLOG_TABLE "` (`time`,`log`) VALUES (NOW(), 'lserver 100 login server started')", delayed);
 
 	// create account_db
 	account_db = numdb_init();
@@ -79,8 +95,25 @@ static int account_db_final(void *key, void *data, va_list ap)
 
 void account_sql_final(void)
 {
+	MYSQL_RES* sql_res;
+	const char *delayed = "";
+
+	// support DELAYED ?
+	sqldbs_query(&mysql_handle,
+		"SELECT 1 FROM information_schema.tables WHERE table_schema = (SELECT database()) AND table_name = '" LOGINLOG_TABLE "' "
+		"AND engine IN ('MyISAM', 'MEMORY', 'ARCHIVE', 'BLACKHOLE')"
+	);
+
+	sql_res = sqldbs_store_result(&mysql_handle);
+	if(sql_res) {
+		if(sqldbs_num_rows(sql_res) > 0) {
+			delayed = "DELAYED";
+		}
+		sqldbs_free_result(sql_res);
+	}
+
 	// set log
-	sqldbs_query(&mysql_handle, "INSERT DELAYED INTO `" LOGINLOG_TABLE "` (`time`,`log`) VALUES (NOW(), 'lserver 100 login server shutdown')");
+	sqldbs_query(&mysql_handle, "INSERT %s INTO `" LOGINLOG_TABLE "` (`time`,`log`) VALUES (NOW(), 'lserver 100 login server shutdown')", delayed);
 
 	// close Connection
 	sqldbs_close(&mysql_handle);

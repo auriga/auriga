@@ -171,8 +171,10 @@ int questdb_sql_save(struct quest *q2)
 		);
 	}
 
-	if(q1) {
-		memcpy(q1,q2,sizeof(struct quest));
+	{
+		struct quest *q3 = (struct quest *)numdb_search(quest_db,q2->char_id);
+		if(q3)
+			memcpy(q3,q2,sizeof(struct quest));
 	}
 
 	return 0;

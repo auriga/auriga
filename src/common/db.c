@@ -165,7 +165,7 @@ struct dbt* numdb_init_(const char *file,int line)
 	return table;
 }
 
-void* db_search(struct dbt *table,void* key)
+static struct dbn* db_search_dbn(struct dbt *table,void *key)
 {
 	struct dbn *p;
 
@@ -174,7 +174,7 @@ void* db_search(struct dbt *table,void* key)
 	for(p=table->ht[table->hash(table,key) % HASH_SIZE];p;){
 		int c=table->cmp(table,key,p->key);
 		if(c==0)
-			return p->data;
+			return p;
 		if(c<0)
 			p=p->left;
 		else
@@ -183,22 +183,18 @@ void* db_search(struct dbt *table,void* key)
 	return NULL;
 }
 
-int db_exists(struct dbt *table,void* key)
+void* db_search(struct dbt *table,void *key)
 {
-	struct dbn *p;
+	struct dbn *p = db_search_dbn(table, key);
 
-	if( table == NULL ) return 0;
+	return (p == NULL)? NULL: p->data;
+}
 
-	for(p=table->ht[table->hash(table,key) % HASH_SIZE];p;){
-		int c=table->cmp(table,key,p->key);
-		if(c==0)
-			return 1;
-		if(c<0)
-			p=p->left;
-		else
-			p=p->right;
-	}
-	return 0;
+int db_exists(struct dbt *table,void *key)
+{
+	struct dbn *p = db_search_dbn(table, key);
+
+	return (p == NULL)? 0: 1;
 }
 
 static void db_rotate_left(struct dbn *p,struct dbn **root)

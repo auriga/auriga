@@ -1,4 +1,18 @@
 ----------------------------------------
+//0858 [2011/05/09] by Rayce
+
+・db_search() と db_exists() の処理を db_search_dbn() で共通化（db.c）
+
+・SQL: constの付いた構造体にmemcpyしているため、コンパイル時に警告が発生していたのを修正
+       （questdb_sql.c）
+
+・SQL: innoDBでは「INSERT DELAYED」が非サポートなため、login鯖の起動/停止時に
+       「DELAYED option not supported for table 'loginlog'」が発生していたのを修正
+       information_schemaからengine情報を取得し、DELAYEDがサポートされている
+       エンジンの場合のみDELAYEDを付ける（account_sql.c）
+         ※http://dev.mysql.com/doc/refman/5.1/en/insert-delayed.html
+
+----------------------------------------
 //0857 [2011/05/09] by Cocoa
 
 ・SpeedRateが変化している状態の時、ステータスの再計算が入る毎に「速度が増加しました」と出ていた不具合を修正（src/pc.c, src/status.c）
