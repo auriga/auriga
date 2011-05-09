@@ -143,6 +143,10 @@ SOURCE=..\common\version.c
 
 SOURCE=..\common\utils.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\common\sqldbs.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -202,6 +206,10 @@ SOURCE="..\common\timer.h"
 # Begin Source File
 
 SOURCE="..\common\utils.h"
+# End Source File
+# Begin Source File
+
+SOURCE="..\common\sqldbs.h"
 # End Source File
 # End Group
 # End Target

@@ -159,6 +159,10 @@ SOURCE=..\..\src\common\version.c
 
 SOURCE=..\..\src\common\utils.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\common\sqldbs.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -234,6 +238,10 @@ SOURCE=..\..\src\common\version.h
 # Begin Source File
 
 SOURCE=..\..\src\common\utils.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\common\sqldbs.h
 # End Source File
 # End Group
 # End Target
