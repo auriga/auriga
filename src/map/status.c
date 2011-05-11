@@ -9265,6 +9265,9 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if((--sc->data[type].val3) > 0) {
 			int hp = (int)((atn_bignumber)status_get_max_hp(bl) / 100);
 			clif_emotion(bl,28);
+			// ファイアーエクスパンション(催涙)では死なないことにする（仮）
+			if(hp >= status_get_hp(bl))
+				hp = status_get_hp(bl) - 1;
 			unit_heal(bl, -hp, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
