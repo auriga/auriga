@@ -1757,6 +1757,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		calc_flag.hitrate = 1000000;
 		s_ele = s_ele_ = ELE_NEUTRAL;
 	}
+	if(sc && sc->data[SC_FUSION].timer != -1) {	// 太陽と月と星の融合
+		calc_flag.hitrate = 1000000;
+	}
 	if(src_sd && src_sd->perfect_hit > 0) {	// カード効果による必中ボーナス
 		if(atn_rand()%100 < src_sd->perfect_hit)
 			calc_flag.hitrate = 1000000;
