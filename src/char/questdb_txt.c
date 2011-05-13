@@ -120,7 +120,7 @@ static int questdb_fromstr(char *str, struct quest *q)
 // ----------------------------------------------------------
 // クエストデータ用ジャーナルのロールフォワード用コールバック関数
 // ----------------------------------------------------------
-int questdb_journal_rollforward( int key, void* buf, int flag )
+int quest_journal_rollforward( int key, void* buf, int flag )
 {
 	struct quest *q = (struct quest *)numdb_search( quest_db, key );
 
@@ -196,7 +196,7 @@ int questdb_txt_init(void)
 			printf("int_quest: journal: roll-forward (%d)\n", c );
 
 			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			quest_txt_sync();
+			questdb_txt_sync();
 		}
 		else
 		{
