@@ -95,9 +95,6 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 
 	nullpo_retr(1, sd);
 
-	if(sd->questlist >= MAX_QUESTLIST)
-		return 1;
-
 	qid = quest_search_db(quest_id);
 	if(qid < 0)
 		return 1;
@@ -106,7 +103,7 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 	qd.nameid = quest_db[qid].nameid;
 	if(quest_db[qid].limit)
 		qd.limit = (unsigned int)time(NULL) + quest_db[qid].limit;
-	for(i = 0; i < 3; i++) {
+	for(i = 0; i < sizeof(qd.mob)/sizeof(qd.mob[0]); i++) {
 		qd.mob[i].id  = quest_db[qid].mob[i].id;
 		qd.mob[i].max = quest_db[qid].mob[i].count;
 	}
@@ -116,8 +113,11 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 	if((idx = quest_search_index(sd, quest_id)) >= 0) {
 		// 既にクエストリストにある場合は更新する
 		memcpy(&sd->quest[idx], &qd, sizeof(struct quest_data));
-	}
-	else {
+	} else {
+		if(sd->questlist >= MAX_QUESTLIST) {
+			// 容量オーバー
+			return 1;
+		}
 		memcpy(&sd->quest[sd->questlist], &qd, sizeof(struct quest_data));
 		sd->questlist++;
 	}
@@ -137,31 +137,48 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 int quest_updatelist(struct map_session_data *sd, int old_id, int new_id)
 {
 	struct quest_data qd;
-	int i, qid, idx;
+	int i, qid, old_idx, new_idx;
 
 	nullpo_retr(1, sd);
-
-	if(sd->questlist >= MAX_QUESTLIST)
-		return 1;
 
 	qid = quest_search_db(new_id);
 	if(qid < 0)
 		return 1;
 
+	// クエストを取得してるか検索
+	old_idx = quest_search_index(sd, old_id);
+	new_idx = quest_search_index(sd, new_id);
+
+	if(old_idx >= 0) {
+		if(new_idx >= 0) {
+			// 新クエストが既にクエストリストにある場合は旧クエストを削除するだけ
+			quest_dellist(sd, old_id);
+			return 0;
+		}
+	} else {
+		if(new_idx >= 0) {
+			// 新クエストが既にクエストリストにある場合は何もしない
+			return 0;
+		}
+		if(sd->questlist >= MAX_QUESTLIST) {
+			// 容量オーバー
+			return 1;
+		}
+	}
+
 	memset(&qd, 0, sizeof(struct quest_data));
 	qd.nameid = quest_db[qid].nameid;
 	if(quest_db[qid].limit)
 		qd.limit = (unsigned int)time(NULL) + quest_db[qid].limit;
-	for(i = 0; i < 3; i++) {
+	for(i = 0; i < sizeof(qd.mob)/sizeof(qd.mob[0]); i++) {
 		qd.mob[i].id  = quest_db[qid].mob[i].id;
 		qd.mob[i].max = quest_db[qid].mob[i].count;
 	}
 	qd.state = 1;
 
-	// 旧クエストを取得してるか検索
-	if((idx = quest_search_index(sd, old_id)) >= 0) {
-		// 上書きで更新する
-		memcpy(&sd->quest[idx], &qd, sizeof(struct quest_data));
+	if(old_idx >= 0) {
+		// 旧クエストを取得してる場合は上書きで更新する
+		memcpy(&sd->quest[old_idx], &qd, sizeof(struct quest_data));
 	} else {
 		memcpy(&sd->quest[sd->questlist], &qd, sizeof(struct quest_data));
 		sd->questlist++;
@@ -215,7 +232,7 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
 	for(i = 0; i < sd->questlist; i++) {
 		qd = &sd->quest[i];
 		if(qd->nameid > 0) {
-			for(j = 0; j < 3; j++) {
+			for(j = 0; j < sizeof(qd->mob)/sizeof(qd->mob[0]); j++) {
 				if(qd->mob[j].id == mob_id && qd->mob[j].count < qd->mob[j].max) {
 					qd->mob[j].count++;
 					clif_update_questcount(sd, qd->nameid);
@@ -265,7 +282,7 @@ static int quest_readdb(void)
 
 		quest_db[i].nameid = atoi(split[0]);
 		quest_db[i].limit  = atoi(split[2]);
-		for(j = 0; j < 3; j++) {
+		for(j = 0; j < sizeof(quest_db[0].mob)/sizeof(quest_db[0].mob[0]); j++) {
 			quest_db[i].mob[j].id    = (short)atoi(split[3+j*2]);
 			quest_db[i].mob[j].count = (short)atoi(split[4+j*2]);
 		}

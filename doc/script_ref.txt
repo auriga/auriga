@@ -2206,6 +2206,7 @@ AurigaNPCScript
 			id		数値
 
 			<id>で指定したクエストをクエストリストに追加します。
+			※<id>のクエストを既に受注していた場合は初期化されます。
 
 		chgquest命令
 			chgquest <old_id>,<new_id>;
@@ -2215,7 +2216,8 @@ AurigaNPCScript
 
 			<old_id>のクエストを<new_id>のクエストに更新します。
 			※<old_id>のクエストはリストから削除されます。
-			※<old_id>のクエストを受注していなくても<new_id>がクエストリストに追加されます。
+			※<old_id>のクエストを受注していなくても<new_id>がリストに存在しなければ
+			  クエストリストに追加されます。
 
 		delquest命令
 			delquest <id>;
