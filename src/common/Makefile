@@ -1,4 +1,6 @@
-all: core.o socket.o timer.o grfio.o db.o lock.o nullpo.o malloc.o md5calc.o httpd.o graph.o journal.o utils.o sqldbs.o
+COMMON_SRC = $(shell ls *.c)
+
+all: $(COMMON_SRC:.c=.o)
 
 clean:
 	rm -f *.o

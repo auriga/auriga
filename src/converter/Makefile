@@ -4,13 +4,15 @@ else
 all: 
 endif
 
-COMMON_OBJ = ../common/core.o ../common/socket.o ../common/timer.o ../common/db.o ../common/lock.o ../common/nullpo.o ../common/malloc.o ../common/grfio.o ../common/httpd.o ../common/graph.o ../common/md5calc.o ../common/journal.o ../common/utils.o ../common/version.o ../common/sqldbs.o
+COMMON_SRC = $(shell ls ../common/*.c)
 
 ifeq ($(findstring LOCALZLIB,$(CFLAGS)), LOCALZLIB)
-COMMON_OBJ += ../common/zlib/inflate.o ../common/zlib/deflate.o ../common/zlib/crc32.o ../common/zlib/trees.o ../common/zlib/zutil.o ../common/zlib/inftrees.o ../common/zlib/adler32.o ../common/zlib/inffast.o ../common/zlib/compress.o
+COMMON_SRC += $(shell ls ../common/zlib/*.c)
 endif
 
-txt-converter: converter.o login-converter.o char-converter.o inter-converter.o map-converter.o $(COMMON_OBJ)
+CONVERTER_SRC = $(shell ls *.c)
+
+txt-converter: $(CONVERTER_SRC:.c=.o) $(COMMON_SRC:.c=.o)
 	$(CC) -o ../../$@ $> $(LIBS)
 
 clean:
