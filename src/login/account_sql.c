@@ -19,8 +19,6 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,9 +29,8 @@
 #include "utils.h"
 #include "sqldbs.h"
 
-#include "loginlog.h"
-#include "account.h"
 #include "login.h"
+#include "account_sql.h"
 
 struct sql_config {
 	unsigned short login_server_port;
@@ -462,5 +459,3 @@ void display_conf_warnings_sql(void)
 
 	return;
 }
-
-#endif

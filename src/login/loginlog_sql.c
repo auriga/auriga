@@ -19,14 +19,12 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 
 #include "utils.h"
 #include "sqldbs.h"
 
-#include "loginlog.h"
+#include "loginlog_sql.h"
 
 int loginlog_log_sql(const char *fmt, ...)
 {
@@ -46,5 +44,3 @@ int loginlog_config_read_sql(const char *str, const char *str2)
 {
 	return 0;
 }
-
-#endif

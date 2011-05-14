@@ -19,15 +19,13 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 #include <string.h>
 
 #include "utils.h"
 #include "sqldbs.h"
 
-#include "charlog.h"
+#include "charlog_sql.h"
 
 int charlog_log_sql(const char *fmt, ...)
 {
@@ -47,5 +45,3 @@ int charlog_config_read_sql(const char *w1, const char *w2)
 {
 	return 0;
 }
-
-#endif

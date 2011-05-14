@@ -19,8 +19,6 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,8 +28,7 @@
 #include "sqldbs.h"
 #include "utils.h"
 
-#include "char.h"
-#include "homundb.h"
+#include "homundb_sql.h"
 
 static struct dbt *homun_db = NULL;
 
@@ -339,5 +336,3 @@ int homundb_sql_config_read_sub(const char* w1,const char *w2)
 {
 	return 0;
 }
-
-#endif

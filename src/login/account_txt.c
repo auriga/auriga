@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,9 +29,8 @@
 #include "journal.h"
 #include "utils.h"
 
-#include "loginlog.h"
-#include "account.h"
 #include "login.h"
+#include "account_txt.h"
 
 #ifdef TXT_JOURNAL
 static int login_journal_enable = 1;
@@ -470,5 +467,3 @@ void display_conf_warnings_txt(void)
 {
 	// nothing to do
 }
-
-#endif

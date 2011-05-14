@@ -19,8 +19,6 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -30,7 +28,8 @@
 #include "utils.h"
 #include "sqldbs.h"
 
-#include "accregdb.h"
+#include "inter.h"
+#include "accregdb_sql.h"
 
 static struct dbt *accreg_db = NULL;
 
@@ -160,5 +159,3 @@ void accregdb_sql_final(void)
 	if(accreg_db)
 		numdb_final(accreg_db,accregdb_sql_final_sub);
 }
-
-#endif

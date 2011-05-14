@@ -19,8 +19,6 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -30,8 +28,7 @@
 #include "sqldbs.h"
 #include "utils.h"
 
-#include "mercdb.h"
-#include "int_merc.h"
+#include "mercdb_sql.h"
 
 static struct dbt *merc_db = NULL;
 
@@ -307,5 +304,3 @@ int mercdb_sql_config_read_sub(const char* w1,const char *w2)
 {
 	return 0;
 }
-
-#endif

@@ -70,4 +70,12 @@ extern char GM_account_filename[1024];
 extern char char_conf_filename[256];
 extern char inter_conf_filename[256];
 
+#ifdef TXT_ONLY
+	#include "chardb_txt.h"
+	#include "charlog_txt.h"
+#else
+	#include "chardb_sql.h"
+	#include "charlog_sql.h"
+#endif
+
 #endif /* _CHAR_H_ */

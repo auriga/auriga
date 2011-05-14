@@ -19,15 +19,13 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <string.h>
 
 #include "lock.h"
 #include "utils.h"
 
-#include "interlog.h"
+#include "interlog_txt.h"
 
 static char inter_log_filename[1024] = "log/inter.log";
 
@@ -60,5 +58,3 @@ int interlog_config_read_txt(const char *w1, const char *w2)
 
 	return 1;
 }
-
-#endif

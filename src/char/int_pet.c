@@ -29,7 +29,6 @@
 #include "malloc.h"
 #include "utils.h"
 
-#include "petdb.h"
 #include "int_pet.h"
 
 int mapif_pet_created(int fd,int account_id,struct s_pet *p)

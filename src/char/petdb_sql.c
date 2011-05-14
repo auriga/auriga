@@ -19,8 +19,6 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +29,7 @@
 #include "sqldbs.h"
 #include "utils.h"
 
-#include "petdb.h"
+#include "petdb_sql.h"
 
 static struct dbt *pet_db = NULL;
 
@@ -200,5 +198,3 @@ int petdb_sql_config_read_sub(const char* w1,const char *w2)
 {
 	return 0;
 }
-
-#endif

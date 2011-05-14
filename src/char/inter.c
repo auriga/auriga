@@ -31,22 +31,15 @@
 
 #include "char.h"
 #include "inter.h"
-#include "interlog.h"
-#include "accregdb.h"
-#include "storagedb.h"
-#include "statusdb.h"
-#include "petdb.h"
-#include "partydb.h"
-#include "mercdb.h"
-#include "maildb.h"
-#include "homundb.h"
-#include "guilddb.h"
-#include "questdb.h"
 #include "int_party.h"
+#include "int_guild.h"
 #include "int_storage.h"
 #include "int_pet.h"
+#include "int_homun.h"
 #include "int_mail.h"
+#include "int_status.h"
 #include "int_merc.h"
+#include "int_quest.h"
 
 #define WISDATA_TTL    (60*1000)	// Wisデータの生存時間(60秒)
 #define WISDELLIST_MAX 128		// Wisデータ削除リストの要素数

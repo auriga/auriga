@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,9 +30,9 @@
 #include "journal.h"
 #include "utils.h"
 
-#include "chardb.h"
-#include "partydb.h"
 #include "int_party.h"
+#include "chardb_txt.h"
+#include "partydb_txt.h"
 
 static struct dbt *party_db = NULL;
 
@@ -368,5 +366,3 @@ void partydb_txt_final(void)
 	}
 #endif
 }
-
-#endif

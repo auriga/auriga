@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,8 +33,8 @@
 #include "md5calc.h"
 #include "utils.h"
 
-#include "charlog.h"
-#include "chardb.h"
+#include "char.h"
+#include "chardb_txt.h"
 
 #ifdef TXT_JOURNAL
 static int char_journal_enable = 1;
@@ -1031,5 +1029,3 @@ bool chardb_txt_build_ranking(void)
 
 	return true;
 }
-
-#endif

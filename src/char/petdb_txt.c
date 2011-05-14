@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,7 +30,7 @@
 #include "journal.h"
 #include "utils.h"
 
-#include "petdb.h"
+#include "petdb_txt.h"
 
 static struct dbt *pet_db = NULL;
 
@@ -327,5 +325,3 @@ void petdb_txt_final(void)
 	}
 #endif
 }
-
-#endif

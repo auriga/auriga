@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,8 +29,7 @@
 #include "journal.h"
 #include "utils.h"
 
-#include "mercdb.h"
-#include "int_merc.h"
+#include "mercdb_txt.h"
 
 static struct dbt *merc_db = NULL;
 
@@ -366,5 +363,3 @@ void mercdb_txt_final(void)
 	}
 #endif
 }
-
-#endif

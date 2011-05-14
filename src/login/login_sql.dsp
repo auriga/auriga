@@ -117,19 +117,11 @@ SOURCE=..\..\src\login\account_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\login\account_txt.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\login\login_httpd.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\login\loginlog_sql.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\login\loginlog_txt.c
 # End Source File
 # Begin Source File
 
@@ -197,7 +189,7 @@ SOURCE=..\..\src\login\login.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\login\account.h
+SOURCE=..\..\src\login\account_sql.h
 # End Source File
 # Begin Source File
 
@@ -205,7 +197,7 @@ SOURCE=..\..\src\login\login_httpd.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\login\loginlog.h
+SOURCE=..\..\src\login\loginlog_sql.h
 # End Source File
 # Begin Source File
 

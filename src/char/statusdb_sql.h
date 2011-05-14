@@ -19,25 +19,29 @@
  *
  */
 
-#ifndef _CHARLOG_H_
-#define _CHARLOG_H_
+#ifndef _STATUSDB_SQL_H_
+#define _STATUSDB_SQL_H_
 
-#ifdef TXT_ONLY
-	// プロトタイプ宣言
-	int charlog_log_txt(const char *fmt, ...);
-	int charlog_config_read_txt(const char *str, const char *str2);
+#include "utils.h"
 
-	// エイリアス
-	#define charlog_log charlog_log_txt
-	#define charlog_config_read charlog_config_read_txt
-#else
-	// プロトタイプ宣言
-	int charlog_log_sql(const char *fmt, ...);
-	int charlog_config_read_sql(const char *str, const char *str2);
+#include "int_status.h"
 
-	// エイリアス
-	#define charlog_log charlog_log_sql
-	#define charlog_config_read charlog_config_read_sql
-#endif
+// プロトタイプ宣言
+bool statusdb_sql_init(void);
+int statusdb_sql_sync(void);
+bool statusdb_sql_delete(int char_id);
+struct scdata *statusdb_sql_load(int char_id);
+bool statusdb_sql_save(struct scdata *sc2);
+void statusdb_sql_final(void);
+int statusdb_sql_config_read_sub(const char *w1, const char *w2);
 
-#endif /* _CHARLOG_H_ */
+// エイリアス
+#define statusdb_init   statusdb_sql_init
+#define statusdb_sync   statusdb_sql_sync
+#define statusdb_delete statusdb_sql_delete
+#define statusdb_load   statusdb_sql_load
+#define statusdb_save   statusdb_sql_save
+#define statusdb_final  statusdb_sql_final
+#define statusdb_config_read_sub statusdb_sql_config_read_sub
+
+#endif /* _STATUSDB_SQL_H_ */

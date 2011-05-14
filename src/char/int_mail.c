@@ -26,8 +26,7 @@
 
 #include "socket.h"
 
-#include "chardb.h"
-#include "maildb.h"
+#include "char.h"
 #include "int_mail.h"
 
 //------------------------------------------------------------------------

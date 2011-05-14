@@ -18,7 +18,6 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef TXT_ONLY
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,8 +28,9 @@
 #include "utils.h"
 #include "sqldbs.h"
 
-#include "guilddb.h"
-#include "storagedb.h"
+#include "int_guild.h"
+#include "storagedb_sql.h"
+#include "guilddb_sql.h"
 
 static int guildcastle_sql_init(void);
 
@@ -667,5 +667,3 @@ void guilddb_sql_final(void)
 	if(guild_db)
 		numdb_final(guild_db,guild_sql_db_final);
 }
-
-#endif

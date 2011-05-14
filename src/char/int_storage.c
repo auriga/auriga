@@ -30,7 +30,6 @@
 #include "timer.h"
 
 #include "char.h"
-#include "storagedb.h"
 #include "int_storage.h"
 
 struct dbt *gstorage_db = NULL;

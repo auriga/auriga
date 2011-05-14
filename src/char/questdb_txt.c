@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +29,7 @@
 #include "malloc.h"
 #include "journal.h"
 
-#include "questdb.h"
+#include "questdb_txt.h"
 
 static char quest_txt[1024]="save/quest.txt";
 static struct dbt *quest_db = NULL;
@@ -359,5 +357,3 @@ int questdb_txt_config_read_sub(const char *w1, const char *w2)
 
 	return 1;
 }
-
-#endif

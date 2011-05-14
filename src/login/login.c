@@ -40,10 +40,8 @@
 #include "timer.h"
 #include "utils.h"
 
-#include "login_httpd.h"
-#include "loginlog.h"
-#include "account.h"
 #include "login.h"
+#include "login_httpd.h"
 
 #ifdef PASSWORDENC
 #include "md5calc.h"

@@ -19,15 +19,13 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <string.h>
 
 #include "lock.h"
 #include "utils.h"
 
-#include "charlog.h"
+#include "charlog_txt.h"
 
 static char char_log_filename[1024] = "log/char.log";
 
@@ -60,5 +58,3 @@ int charlog_config_read_txt(const char *w1, const char *w2)
 
 	return 1;
 }
-
-#endif

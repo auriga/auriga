@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,8 +29,8 @@
 #include "malloc.h"
 #include "utils.h"
 
-#include "petdb.h"
-#include "maildb.h"
+#include "petdb_txt.h"
+#include "maildb_txt.h"
 
 static struct dbt *mail_db = NULL;
 
@@ -416,5 +414,3 @@ int maildb_txt_config_read_sub(const char *w1, const char *w2)
 
 	return 1;
 }
-
-#endif

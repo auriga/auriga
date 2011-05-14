@@ -93,10 +93,6 @@ SOURCE=..\..\src\char\charlog_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\charlog_txt.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\common\core.c
 # End Source File
 # Begin Source File
@@ -157,15 +153,7 @@ SOURCE=..\..\src\char\accregdb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\accregdb_txt.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\char\chardb_sql.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\char\chardb_txt.c
 # End Source File
 # Begin Source File
 
@@ -173,15 +161,7 @@ SOURCE=..\..\src\char\guilddb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\guilddb_txt.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\char\homundb_sql.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\char\homundb_txt.c
 # End Source File
 # Begin Source File
 
@@ -189,15 +169,7 @@ SOURCE=..\..\src\char\maildb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\maildb_txt.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\char\mercdb_sql.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\char\mercdb_txt.c
 # End Source File
 # Begin Source File
 
@@ -205,15 +177,7 @@ SOURCE=..\..\src\char\partydb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\partydb_txt.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\char\petdb_sql.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\char\petdb_txt.c
 # End Source File
 # Begin Source File
 
@@ -221,23 +185,11 @@ SOURCE=..\..\src\char\questdb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\questdb_txt.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\char\statusdb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\statusdb_txt.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\char\storagedb_sql.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\char\storagedb_txt.c
 # End Source File
 # Begin Source File
 
@@ -246,10 +198,6 @@ SOURCE=..\..\src\char\inter.c
 # Begin Source File
 
 SOURCE=..\..\src\char\interlog_sql.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\char\interlog_txt.c
 # End Source File
 # Begin Source File
 
@@ -294,10 +242,6 @@ SOURCE=..\..\src\common\sqldbs.c
 # Begin Source File
 
 SOURCE=..\..\src\char\char.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\char\charlog.h
 # End Source File
 # Begin Source File
 
@@ -357,55 +301,51 @@ SOURCE=..\..\src\char\int_quest.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\accregdb.h
+SOURCE=..\..\src\char\accregdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\chardb.h
+SOURCE=..\..\src\char\chardb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\guilddb.h
+SOURCE=..\..\src\char\guilddb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\homundb.h
+SOURCE=..\..\src\char\homundb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\maildb.h
+SOURCE=..\..\src\char\maildb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\mercdb.h
+SOURCE=..\..\src\char\mercdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\partydb.h
+SOURCE=..\..\src\char\partydb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\petdb.h
+SOURCE=..\..\src\char\petdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\questdb.h
+SOURCE=..\..\src\char\questdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\statusdb.h
+SOURCE=..\..\src\char\statusdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\storagedb.h
+SOURCE=..\..\src\char\storagedb_sql.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\char\inter.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\char\interlog.h
 # End Source File
 # Begin Source File
 

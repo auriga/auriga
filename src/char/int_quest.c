@@ -27,7 +27,6 @@
 #include "socket.h"
 #include "utils.h"
 
-#include "questdb.h"
 #include "int_quest.h"
 
 // ----------------------------------------------------------

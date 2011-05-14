@@ -19,8 +19,6 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdlib.h>
 
 #include "mmo.h"
@@ -29,9 +27,10 @@
 #include "sqldbs.h"
 #include "utils.h"
 
-#include "chardb.h"
-#include "storagedb.h"
-#include "petdb.h"
+#include "int_storage.h"
+#include "chardb_sql.h"
+#include "petdb_sql.h"
+#include "storagedb_sql.h"
 
 static struct dbt *storage_db  = NULL;
 
@@ -256,5 +255,3 @@ int storagedb_sql_config_read_sub(const char* w1,const char* w2)
 {
 	return 0;
 }
-
-#endif

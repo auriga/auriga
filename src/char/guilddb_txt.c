@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,9 +29,9 @@
 #include "journal.h"
 #include "utils.h"
 
-#include "char.h"
-#include "guilddb.h"
-#include "storagedb.h"
+#include "int_guild.h"
+#include "storagedb_txt.h"
+#include "guilddb_txt.h"
 
 static int guildcastle_txt_init(void);
 static int guildcastle_txt_sync(void);
@@ -785,5 +783,3 @@ static int guildcastle_txt_sync(void)
 
 	return 0;
 }
-
-#endif

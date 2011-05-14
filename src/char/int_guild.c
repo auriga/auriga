@@ -31,10 +31,8 @@
 #include "journal.h"
 #include "utils.h"
 
+#include "char.h"
 #include "inter.h"
-#include "interlog.h"
-#include "chardb.h"
-#include "guilddb.h"
 #include "int_guild.h"
 
 int guild_exp[MAX_GUILDLEVEL];

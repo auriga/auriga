@@ -42,20 +42,16 @@
 #include "utils.h"
 
 #include "char.h"
-#include "charlog.h"
 #include "inter.h"
-#include "chardb.h"
-#include "storagedb.h"
-#include "statusdb.h"
-#include "questdb.h"
-#include "petdb.h"
-#include "partydb.h"
-#include "mercdb.h"
-#include "maildb.h"
-#include "homundb.h"
-#include "guilddb.h"
+#include "int_pet.h"
+#include "int_homun.h"
+#include "int_guild.h"
 #include "int_party.h"
 #include "int_storage.h"
+#include "int_mail.h"
+#include "int_status.h"
+#include "int_merc.h"
+#include "int_quest.h"
 
 static struct mmo_map_server server[MAX_MAP_SERVERS];
 static int server_fd[MAX_MAP_SERVERS];

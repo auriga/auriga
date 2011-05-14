@@ -24,4 +24,10 @@
 
 int inter_pet_parse_frommap(int fd);
 
+#ifdef TXT_ONLY
+	#include "petdb_txt.h"
+#else
+	#include "petdb_sql.h"
+#endif
+
 #endif

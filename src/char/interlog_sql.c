@@ -19,15 +19,13 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 #include <string.h>
 
 #include "utils.h"
 #include "sqldbs.h"
 
-#include "interlog.h"
+#include "interlog_sql.h"
 
 int interlog_log_sql(const char *fmt, ...)
 {
@@ -47,5 +45,3 @@ int interlog_config_read_sql(const char *w1, const char *w2)
 {
 	return 0;
 }
-
-#endif

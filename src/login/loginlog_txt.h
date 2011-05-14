@@ -19,25 +19,15 @@
  *
  */
 
-#ifndef _LOGINLOG_H_
-#define _LOGINLOG_H_
+#ifndef _LOGINLOG_TXT_H_
+#define _LOGINLOG_TXT_H_
 
-#ifdef TXT_ONLY
-	// プロトタイプ宣言
-	int loginlog_log_txt(const char *fmt, ...);
-	int loginlog_config_read_txt(const char *str, const char *str2);
+// プロトタイプ宣言
+int loginlog_log_txt(const char *fmt, ...);
+int loginlog_config_read_txt(const char *str, const char *str2);
 
-	// エイリアス
-	#define loginlog_log loginlog_log_txt
-	#define loginlog_config_read loginlog_config_read_txt
-#else
-	// プロトタイプ宣言
-	int loginlog_log_sql(const char *fmt, ...);
-	int loginlog_config_read_sql(const char *str, const char *str2);
+// エイリアス
+#define loginlog_log loginlog_log_txt
+#define loginlog_config_read loginlog_config_read_txt
 
-	// エイリアス
-	#define loginlog_log loginlog_log_sql
-	#define loginlog_config_read loginlog_config_read_sql
-#endif
-
-#endif /* _LOGINLOG_H_ */
+#endif /* _LOGINLOG_TXT_H_ */

@@ -19,8 +19,6 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,8 +29,7 @@
 #include "sqldbs.h"
 #include "utils.h"
 
-#include "partydb.h"
-#include "int_party.h"
+#include "partydb_sql.h"
 
 static struct dbt *party_db = NULL;
 
@@ -233,5 +230,3 @@ void partydb_sql_final(void)
 {
 	numdb_final(party_db,partydb_sql_final_sub);
 }
-
-#endif

@@ -27,7 +27,6 @@
 #include "socket.h"
 #include "utils.h"
 
-#include "statusdb.h"
 #include "int_status.h"
 
 // ダミー関数群

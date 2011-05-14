@@ -19,8 +19,6 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -30,7 +28,7 @@
 #include "sqldbs.h"
 #include "utils.h"
 
-#include "questdb.h"
+#include "questdb_sql.h"
 
 static struct dbt *quest_db = NULL;
 
@@ -205,5 +203,3 @@ int questdb_sql_config_read_sub(const char *w1, const char *w2)
 {
 	return 0;
 }
-
-#endif

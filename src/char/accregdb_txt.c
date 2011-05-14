@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -31,7 +29,8 @@
 #include "journal.h"
 #include "utils.h"
 
-#include "accregdb.h"
+#include "inter.h"
+#include "accregdb_txt.h"
 
 static struct dbt *accreg_db = NULL;
 
@@ -278,5 +277,3 @@ void accregdb_txt_final(void)
 		journal_final( &accreg_journal );
 #endif
 }
-
-#endif

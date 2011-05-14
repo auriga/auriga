@@ -40,4 +40,10 @@ struct quest {
 
 int inter_quest_parse_frommap(int fd);
 
+#ifdef TXT_ONLY
+	#include "questdb_txt.h"
+#else
+	#include "questdb_sql.h"
+#endif
+
 #endif /* _INT_QUEST_H_ */

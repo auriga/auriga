@@ -27,7 +27,6 @@
 #include "mmo.h"
 #include "socket.h"
 
-#include "mercdb.h"
 #include "int_merc.h"
 
 int mapif_merc_info(int fd,int account_id,int char_id,const struct mmo_mercstatus *m,unsigned char flag)

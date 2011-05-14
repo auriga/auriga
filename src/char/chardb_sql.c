@@ -19,8 +19,6 @@
  *
  */
 
-#ifndef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,8 +28,8 @@
 #include "utils.h"
 #include "sqldbs.h"
 
-#include "charlog.h"
-#include "chardb.h"
+#include "char.h"
+#include "chardb_sql.h"
 
 static struct dbt *char_db_;
 static unsigned short char_server_port = 3306;
@@ -1143,5 +1141,3 @@ bool chardb_sql_build_ranking(void)
 
 	return true;
 }
-
-#endif

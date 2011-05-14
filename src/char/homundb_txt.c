@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,8 +29,7 @@
 #include "journal.h"
 #include "utils.h"
 
-#include "char.h"
-#include "homundb.h"
+#include "homundb_txt.h"
 
 static struct dbt *homun_db = NULL;
 
@@ -419,5 +416,3 @@ void homundb_txt_final(void)
 	}
 #endif
 }
-
-#endif

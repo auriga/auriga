@@ -27,7 +27,6 @@
 #include "mmo.h"
 #include "socket.h"
 
-#include "homundb.h"
 #include "int_homun.h"
 
 int mapif_hom_info(int fd,int account_id,int char_id,const struct mmo_homunstatus *h,unsigned char flag)

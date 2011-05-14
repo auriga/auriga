@@ -27,4 +27,10 @@ int inter_party_parse_frommap(int fd);
 void inter_party_leave(int party_id, int account_id, int char_id);
 int party_config_read(const char *w1,const char* w2);
 
+#ifdef TXT_ONLY
+	#include "partydb_txt.h"
+#else
+	#include "partydb_sql.h"
 #endif
+
+#endif /* _INT_PARTY_H_ */

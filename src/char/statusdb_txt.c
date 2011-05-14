@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,7 +30,7 @@
 #include "journal.h"
 #include "utils.h"
 
-#include "statusdb.h"
+#include "statusdb_txt.h"
 
 static char scdata_txt[1024]="save/scdata.txt";
 static struct dbt *scdata_db = NULL;
@@ -320,5 +318,3 @@ int statusdb_txt_config_read_sub(const char *w1, const char *w2)
 
 	return 1;
 }
-
-#endif

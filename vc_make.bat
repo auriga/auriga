@@ -223,6 +223,8 @@ set __opt1__=/D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "_CRT_SECURE_NO_D
 set __opt2__=/DEBUG %__FIXOPT2__% user32.lib %__LINKZLIB__% ../common/*.obj *.obj
 set __include__=/I "../common/zlib/" /I "../common/"
 
+if "%__TXT_MODE__%"=="" (set __filter__=txt) else (set __filter__=sql)
+
 rem ----------------------------------------------------------------
 rem 警告の抑制
 rem   C4819 : 表示できない文字を含んでいます
@@ -254,11 +256,15 @@ cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 rem サーバー本体のビルド
 echo ログインサーバーコンパイル
 cd ..\login
-cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
+set __filelist__=
+for %%a in (*.c) do call :FILEFILTER %%a
+cl %__warning__% %__cpu__% %__opt1__% %__include__% %__filelist__%
 link %__opt2__% /out:"../../login-server.exe"
 echo キャラクターサーバーコンパイル
 cd ..\char
-cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
+set __filelist__=
+for %%a in (*.c) do call :FILEFILTER %%a
+cl %__warning__% %__cpu__% %__opt1__% %__include__% %__filelist__%
 link %__opt2__% /out:"../../char-server.exe"
 echo マップサーバーコンパイル
 cd ..\map
@@ -292,3 +298,11 @@ del src\converter\*.obj
 
 rem 結果確認用の一時停止
 pause
+
+goto :EOF
+
+:FILEFILTER
+set ARG=%1
+if not "%ARG:~-6%" == "_%__filter__%.c" (
+	set __filelist__=%__filelist__% %1
+)

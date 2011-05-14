@@ -19,25 +19,15 @@
  *
  */
 
-#ifndef _INTERLOG_H_
-#define _INTERLOG_H_
+#ifndef _INTERLOG_TXT_H_
+#define _INTERLOG_TXT_H_
 
-#ifdef TXT_ONLY
-	// プロトタイプ宣言
-	int interlog_log_txt(const char *fmt, ...);
-	int interlog_config_read_txt(const char *str, const char *str2);
+// プロトタイプ宣言
+int interlog_log_txt(const char *fmt, ...);
+int interlog_config_read_txt(const char *str, const char *str2);
 
-	// エイリアス
-	#define interlog_log interlog_log_txt
-	#define interlog_config_read interlog_config_read_txt
-#else
-	// プロトタイプ宣言
-	int interlog_log_sql(const char *fmt, ...);
-	int interlog_config_read_sql(const char *str, const char *str2);
+// エイリアス
+#define interlog_log interlog_log_txt
+#define interlog_config_read interlog_config_read_txt
 
-	// エイリアス
-	#define interlog_log interlog_log_sql
-	#define interlog_config_read interlog_config_read_sql
-#endif
-
-#endif /* _INTERLOG_H_ */
+#endif /* _INTERLOG_TXT_H_ */

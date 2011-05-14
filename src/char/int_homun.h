@@ -24,4 +24,10 @@
 
 int inter_hom_parse_frommap(int fd);
 
+#ifdef TXT_ONLY
+	#include "homundb_txt.h"
+#else
+	#include "homundb_sql.h"
 #endif
+
+#endif /* _INT_HOMUN_H_ */

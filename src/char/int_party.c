@@ -30,8 +30,6 @@
 #include "utils.h"
 
 #include "char.h"
-#include "chardb.h"
-#include "partydb.h"
 #include "int_party.h"
 
 static int party_share_level = 10;

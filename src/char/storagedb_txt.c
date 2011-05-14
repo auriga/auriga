@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef TXT_ONLY
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,9 +29,10 @@
 #include "journal.h"
 #include "utils.h"
 
-#include "storagedb.h"
-#include "petdb.h"
-#include "guilddb.h"
+#include "int_storage.h"
+#include "petdb_txt.h"
+#include "guilddb_txt.h"
+#include "storagedb_txt.h"
 
 static struct dbt *storage_db  = NULL;
 
@@ -659,5 +658,3 @@ int storagedb_txt_config_read_sub(const char* w1,const char* w2)
 
 	return 1;
 }
-
-#endif
