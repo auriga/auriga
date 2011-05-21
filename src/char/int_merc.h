@@ -25,9 +25,9 @@
 int inter_merc_parse_frommap(int fd);
 
 #ifdef TXT_ONLY
-	#include "mercdb_txt.h"
+	#include "txt/mercdb_txt.h"
 #else
-	#include "mercdb_sql.h"
+	#include "sql/mercdb_sql.h"
 #endif
 
 #endif /* _INT_MERC_H_ */

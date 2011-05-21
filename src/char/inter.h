@@ -35,11 +35,11 @@ int inter_mapif_init(int fd);
 void do_final_inter(void);
 
 #ifdef TXT_ONLY
-	#include "accregdb_txt.h"
-	#include "interlog_txt.h"
+	#include "txt/accregdb_txt.h"
+	#include "txt/interlog_txt.h"
 #else
-	#include "accregdb_sql.h"
-	#include "interlog_sql.h"
+	#include "sql/accregdb_sql.h"
+	#include "sql/interlog_sql.h"
 #endif
 
 #endif /* _INTER_H_ */

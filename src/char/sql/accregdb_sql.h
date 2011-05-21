@@ -19,31 +19,25 @@
  *
  */
 
-#ifndef _INT_QUEST_H_
-#define _INT_QUEST_H_
+#ifndef _ACCREGDB_SQL_H_
+#define _ACCREGDB_SQL_H_
 
-struct quest {
-	int account_id;
-	int char_id;
-	short count;
-	struct {
-		int nameid;
-		char state;
-		unsigned int limit;
-		struct {
-			short id;
-			short max;
-			short cnt;
-		} mob[3];
-	} data[MAX_QUESTLIST];
-};
+#include "../inter.h"
 
-int inter_quest_parse_frommap(int fd);
+// プロトタイプ宣言
+const struct accreg* accregdb_sql_load(int account_id);
+void accregdb_sql_save(struct accreg *reg);
+bool accregdb_sql_init(void);
+int accregdb_sql_sync(void);
+void accregdb_sql_final(void);
+int accregdb_sql_config_read_sub(const char *w1,const char *w2);
 
-#ifdef TXT_ONLY
-	#include "txt/questdb_txt.h"
-#else
-	#include "sql/questdb_sql.h"
-#endif
+// エイリアス
+#define accregdb_load  accregdb_sql_load
+#define accregdb_save  accregdb_sql_save
+#define accregdb_init  accregdb_sql_init
+#define accregdb_sync  accregdb_sql_sync
+#define accregdb_final accregdb_sql_final
+#define accregdb_config_read_sub accregdb_sql_config_read_sub
 
-#endif /* _INT_QUEST_H_ */
+#endif /* _ACCREGDB_SQL_H_ */

@@ -1,0 +1,19 @@
+----------------------------------------
+//0870 [2011/05/22] by Rayce
+
+・サーバースナップショット（version.h）
+
+・*db_txt.c, *db_txt.h をそれぞれ login/txt, char/txt フォルダに分離
+・*db_sql.c, *db_sql.h をそれぞれ login/sql, char/sql フォルダに分離
+
+・移動や分離に伴って不要となった *.c, *.h ファイルを削除
+
+・sql-filesフォルダの内、通常使用しないSQLスクリプトはutilsフォルダに
+  まとめて置く
+	-> convert_engine_innodb.sql
+	-> convert_engine_myisam.sql
+	-> db_maintenance.sql
+	-> drop_table.sql
+
+・sql-filesフォルダの内、パッチに付随するSQLスクリプトは使用される
+  ことはないので削除

@@ -19,31 +19,29 @@
  *
  */
 
-#ifndef _INT_QUEST_H_
-#define _INT_QUEST_H_
+#ifndef _STATUSDB_SQL_H_
+#define _STATUSDB_SQL_H_
 
-struct quest {
-	int account_id;
-	int char_id;
-	short count;
-	struct {
-		int nameid;
-		char state;
-		unsigned int limit;
-		struct {
-			short id;
-			short max;
-			short cnt;
-		} mob[3];
-	} data[MAX_QUESTLIST];
-};
+#include "utils.h"
 
-int inter_quest_parse_frommap(int fd);
+#include "../int_status.h"
 
-#ifdef TXT_ONLY
-	#include "txt/questdb_txt.h"
-#else
-	#include "sql/questdb_sql.h"
-#endif
+// プロトタイプ宣言
+bool statusdb_sql_init(void);
+int statusdb_sql_sync(void);
+bool statusdb_sql_delete(int char_id);
+struct scdata *statusdb_sql_load(int char_id);
+bool statusdb_sql_save(struct scdata *sc2);
+void statusdb_sql_final(void);
+int statusdb_sql_config_read_sub(const char *w1, const char *w2);
 
-#endif /* _INT_QUEST_H_ */
+// エイリアス
+#define statusdb_init   statusdb_sql_init
+#define statusdb_sync   statusdb_sql_sync
+#define statusdb_delete statusdb_sql_delete
+#define statusdb_load   statusdb_sql_load
+#define statusdb_save   statusdb_sql_save
+#define statusdb_final  statusdb_sql_final
+#define statusdb_config_read_sub statusdb_sql_config_read_sub
+
+#endif /* _STATUSDB_SQL_H_ */

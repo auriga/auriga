@@ -223,7 +223,7 @@ set __opt1__=/D "FD_SETSIZE=4096" /D "NDEBUG" /D "_CONSOLE" /D "_CRT_SECURE_NO_D
 set __opt2__=/DEBUG %__FIXOPT2__% user32.lib %__LINKZLIB__% ../common/*.obj *.obj
 set __include__=/I "../common/zlib/" /I "../common/"
 
-if "%__TXT_MODE__%"=="" (set __filter__=txt) else (set __filter__=sql)
+if "%__TXT_MODE__%"=="" (set __dbmode__=sql) else (set __dbmode__=txt)
 
 rem ----------------------------------------------------------------
 rem 警告の抑制
@@ -248,6 +248,7 @@ cd src\common\zlib
 if "%__ZLIB__%"=="" goto NOZLIB2
 echo zlibのコンパイル
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
+
 :NOZLIB2
 echo 共通コンポーネントのコンパイル
 cd ..\
@@ -256,16 +257,14 @@ cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 rem サーバー本体のビルド
 echo ログインサーバーコンパイル
 cd ..\login
-set __filelist__=
-for %%a in (*.c) do call :FILEFILTER %%a
-cl %__warning__% %__cpu__% %__opt1__% %__include__% %__filelist__%
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
 link %__opt2__% /out:"../../login-server.exe"
+
 echo キャラクターサーバーコンパイル
 cd ..\char
-set __filelist__=
-for %%a in (*.c) do call :FILEFILTER %%a
-cl %__warning__% %__cpu__% %__opt1__% %__include__% %__filelist__%
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
 link %__opt2__% /out:"../../char-server.exe"
+
 echo マップサーバーコンパイル
 cd ..\map
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
@@ -274,6 +273,7 @@ link %__opt2__% /out:"../../map-server.exe"
 rem 必要なら txt-converter をビルド
 if NOT "%__TXT_MODE__%"=="" goto NOCONVERTER1
 if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER1
+
 echo コンバーターコンパイル
 cd ..\converter
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
@@ -298,11 +298,3 @@ del src\converter\*.obj
 
 rem 結果確認用の一時停止
 pause
-
-goto :EOF
-
-:FILEFILTER
-set ARG=%1
-if not "%ARG:~-6%" == "_%__filter__%.c" (
-	set __filelist__=%__filelist__% %1
-)

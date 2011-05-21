@@ -53,9 +53,9 @@ int inter_status_parse_frommap(int fd);
 	#define statusdb_final  status_dummy_final
 	#define statusdb_config_read_sub status_dummy_config_read_sub
 #elif defined TXT_ONLY
-	#include "statusdb_txt.h"
+	#include "txt/statusdb_txt.h"
 #else
-	#include "statusdb_sql.h"
+	#include "sql/statusdb_sql.h"
 #endif
 
 #endif /* _INT_STATUS_H_ */

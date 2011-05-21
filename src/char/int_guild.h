@@ -39,9 +39,9 @@ int inter_guild_mapif_init(int fd);
 int inter_guild_leave(int guild_id,int account_id,int char_id);
 
 #ifdef TXT_ONLY
-	#include "guilddb_txt.h"
+	#include "txt/guilddb_txt.h"
 #else
-	#include "guilddb_sql.h"
+	#include "sql/guilddb_sql.h"
 #endif
 
 #endif /* _INT_GUILD_H_ */

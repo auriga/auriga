@@ -1,25 +1,25 @@
-# Microsoft Developer Studio Project File - Name="char" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="char_sql" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** 編集しないでください **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=char - Win32 Debug
+CFG=char_sql - Win32 Debug
 !MESSAGE これは有効なメイクファイルではありません。 このプロジェクトをビルドするためには NMAKE を使用してください。
 !MESSAGE [メイクファイルのエクスポート] コマンドを使用して実行してください
-!MESSAGE 
-!MESSAGE NMAKE /f "char.mak".
-!MESSAGE 
+!MESSAGE
+!MESSAGE NMAKE /f "char_sql.mak".
+!MESSAGE
 !MESSAGE NMAKE の実行時に構成を指定できます
 !MESSAGE コマンド ライン上でマクロの設定を定義します。例:
-!MESSAGE 
-!MESSAGE NMAKE /f "char.mak" CFG="char - Win32 Debug"
-!MESSAGE 
+!MESSAGE
+!MESSAGE NMAKE /f "char_sql.mak" CFG="char_sql - Win32 Debug"
+!MESSAGE
 !MESSAGE 選択可能なビルド モード:
-!MESSAGE 
-!MESSAGE "char - Win32 Release" ("Win32 (x86) Console Application" 用)
-!MESSAGE "char - Win32 Debug" ("Win32 (x86) Console Application" 用)
-!MESSAGE 
+!MESSAGE
+!MESSAGE "char_sql - Win32 Release" ("Win32 (x86) Console Application" 用)
+!MESSAGE "char_sql - Win32 Debug" ("Win32 (x86) Console Application" 用)
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -28,7 +28,7 @@ CFG=char - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "char - Win32 Release"
+!IF  "$(CFG)" == "char_sql - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -37,11 +37,11 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
+# PROP Output_Dir "Release_sql"
+# PROP Intermediate_Dir "Release_sql"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WINDOWS" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D "TXT_ONLY" /D PACKETVER=31 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FD /c /wd4819
+# ADD CPP /nologo /W3 /Gi /GX /O2 /I "../common/" /D PACKETVER=31 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FD /c /wd4819
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
 # ADD RSC /l 0x411 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -51,7 +51,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib /nologo /subsystem:console /incremental:yes /map:"../../char-server.map" /machine:I386 /out:"../../char-server.exe"
 
-!ELSEIF  "$(CFG)" == "char - Win32 Debug"
+!ELSEIF  "$(CFG)" == "char_sql - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -60,11 +60,11 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
+# PROP Output_Dir "Debug_sql"
+# PROP Intermediate_Dir "Debug_sql"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WINDOWS" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D "TXT_ONLY" /D PACKETVER=31 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FR /FD /GZ /c /wd4819
+# ADD CPP /nologo /W3 /Gm /Gi /GX /ZI /Od /I "../common/" /D PACKETVER=31 /D "NEW_006b" /D FD_SETSIZE=4096 /D "_CRT_SECURE_NO_DEPRECATE" /D "WINDOWS" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "NO_HTTPD_CGI" /D "NEW_006b_RE" /FR /FD /GZ /c /wd4819
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
 # ADD RSC /l 0x411 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,12 +74,12 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib /nologo /subsystem:console /map:"../../char-server.map" /debug /machine:I386 /out:"../../char-server.exe" /pdbtype:sept
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
-# Name "char - Win32 Release"
-# Name "char - Win32 Debug"
+# Name "char_sql - Win32 Release"
+# Name "char_sql - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -89,7 +89,7 @@ SOURCE=..\..\src\char\char.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\charlog_txt.c
+SOURCE=..\..\src\char\charlog_sql.c
 # End Source File
 # Begin Source File
 
@@ -149,47 +149,47 @@ SOURCE=..\..\src\char\int_quest.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\accregdb_txt.c
+SOURCE=..\..\src\char\accregdb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\chardb_txt.c
+SOURCE=..\..\src\char\chardb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\guilddb_txt.c
+SOURCE=..\..\src\char\guilddb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\homundb_txt.c
+SOURCE=..\..\src\char\homundb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\maildb_txt.c
+SOURCE=..\..\src\char\maildb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\mercdb_txt.c
+SOURCE=..\..\src\char\mercdb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\partydb_txt.c
+SOURCE=..\..\src\char\partydb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\petdb_txt.c
+SOURCE=..\..\src\char\petdb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\questdb_txt.c
+SOURCE=..\..\src\char\questdb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\statusdb_txt.c
+SOURCE=..\..\src\char\statusdb_sql.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\storagedb_txt.c
+SOURCE=..\..\src\char\storagedb_sql.c
 # End Source File
 # Begin Source File
 
@@ -197,11 +197,7 @@ SOURCE=..\..\src\char\inter.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\interlog_txt.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\journal.c
+SOURCE=..\..\src\char\interlog_sql.c
 # End Source File
 # Begin Source File
 
@@ -234,6 +230,10 @@ SOURCE=..\..\src\common\version.c
 # Begin Source File
 
 SOURCE=..\..\src\common\utils.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\common\sqldbs.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -301,55 +301,51 @@ SOURCE=..\..\src\char\int_quest.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\accregdb_txt.h
+SOURCE=..\..\src\char\accregdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\chardb_txt.h
+SOURCE=..\..\src\char\chardb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\guilddb_txt.h
+SOURCE=..\..\src\char\guilddb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\homundb_txt.h
+SOURCE=..\..\src\char\homundb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\maildb_txt.h
+SOURCE=..\..\src\char\maildb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\mercdb_txt.h
+SOURCE=..\..\src\char\mercdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\partydb_txt.h
+SOURCE=..\..\src\char\partydb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\petdb_txt.h
+SOURCE=..\..\src\char\petdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\questdb_txt.h
+SOURCE=..\..\src\char\questdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\statusdb_txt.h
+SOURCE=..\..\src\char\statusdb_sql.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\char\txt\storagedb_txt.h
+SOURCE=..\..\src\char\storagedb_sql.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\char\inter.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\journal.h
 # End Source File
 # Begin Source File
 
@@ -386,6 +382,10 @@ SOURCE=..\..\src\common\version.h
 # Begin Source File
 
 SOURCE=..\..\src\common\utils.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\common\sqldbs.h
 # End Source File
 # End Group
 # End Target

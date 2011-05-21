@@ -73,11 +73,11 @@ int parse_login(int fd);
 int parse_fromchar(int fd);
 
 #ifdef TXT_ONLY
-	#include "account_txt.h"
-	#include "loginlog_txt.h"
+	#include "txt/account_txt.h"
+	#include "txt/loginlog_txt.h"
 #else
-	#include "account_sql.h"
-	#include "loginlog_sql.h"
+	#include "sql/account_sql.h"
+	#include "sql/loginlog_sql.h"
 #endif
 
 #endif /* _LOGIN_H_ */

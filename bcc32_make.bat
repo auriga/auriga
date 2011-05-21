@@ -127,7 +127,7 @@ set __common__=..\common\zlib\*.c
 :NOZLIB
 set __common__=..\common\*.c %__common__%
 
-if "%__base__%"=="" (set __filter__=txt) else (set __filter__=sql)
+if "%__base__%"=="" (set __dbmode__=sql) else (set __dbmode__=txt)
 
 
 @echo ■コンパイルオプション表示■
@@ -149,15 +149,11 @@ set __warning__=-w-8004 -w-8008 -w-8012 -w-8057 -w-8060 -w-8066
 
 @echo ログインサーバーコンパイル
 cd src\login
-set __filelist__=
-for %%a in (*.c) do call :FILEFILTER %%a
-bcc32 -j255 -M -e..\..\login-server.exe %__warning__% %__define__% %__include__% %__filelist__% %__common__% %__sqllib__%
+bcc32 -j255 -M -e..\..\login-server.exe %__warning__% %__define__% %__include__% *.c .\%__dbmode__%\*.c %__common__% %__sqllib__%
 
 @echo キャラクターサーバーコンパイル
 cd ..\char
-set __filelist__=
-for %%a in (*.c) do call :FILEFILTER %%a
-bcc32 -j255 -M -e..\..\char-server.exe %__warning__% %__define__% %__include__% %__filelist__% %__common__% %__sqllib__%
+bcc32 -j255 -M -e..\..\char-server.exe %__warning__% %__define__% %__include__% *.c .\%__dbmode__%\*.c %__common__% %__sqllib__%
 
 @echo マップサーバーコンパイル
 cd ..\map
@@ -182,11 +178,3 @@ del src\converter\*.obj > NUL
 :NOCONVERTER2
 
 pause
-
-goto :EOF
-
-:FILEFILTER
-set ARG=%1
-if not "%ARG:~-6%" == "_%__filter__%.c" (
-	set __filelist__=%__filelist__% %1
-)
