@@ -75,7 +75,6 @@ static struct dbt *freeblock_db = NULL;
 
 static int users;
 static struct block_list *object[MAX_FLOORITEM];
-static int first_free_object_id, last_object_id;
 
 static int block_free_lock = 0;
 
@@ -1013,25 +1012,24 @@ int map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4]
  */
 int map_addobject(struct block_list *bl)
 {
+	static int last_object_id = MIN_FLOORITEM - 1;
 	int i;
 
 	nullpo_retr(0, bl);
 
-	if(first_free_object_id < MIN_FLOORITEM || first_free_object_id >= MAX_FLOORITEM)
-		first_free_object_id = MIN_FLOORITEM;
+	for(i = last_object_id + 1; i != last_object_id; i++) {
+		if(i == MAX_FLOORITEM)
+			i = MIN_FLOORITEM;
 
-	for(i = first_free_object_id; i < MAX_FLOORITEM; i++) {
 		if(object[i] == NULL)
 			break;
 	}
-	if(i >= MAX_FLOORITEM) {
+	if(i == last_object_id) {
 		if(battle_config.error_log)
 			printf("no free object id\n");
 		return 0;
 	}
-	first_free_object_id = i;
-	if(last_object_id < i)
-		last_object_id = i;
+	last_object_id = i;
 	object[i] = bl;
 
 	return i;
@@ -1049,13 +1047,6 @@ int map_delobjectnofree(int id)
 
 	map_delblock(object[id]);
 	object[id] = NULL;
-
-	if(first_free_object_id > id)
-		first_free_object_id = id;
-
-	while(last_object_id > MIN_FLOORITEM && object[last_object_id] == NULL) {
-		last_object_id--;
-	}
 
 	return 0;
 }
@@ -1090,7 +1081,7 @@ int map_foreachobject(int (*func)(struct block_list*,va_list),int type,...)
 	int i, blockcount = bl_list_count;
 	int ret = 0;
 
-	for(i = MIN_FLOORITEM; i <= last_object_id; i++) {
+	for(i = MIN_FLOORITEM; i < MAX_FLOORITEM; i++) {
 		if(object[i]) {
 			if(!(object[i]->type & type))
 				continue;
