@@ -304,7 +304,7 @@ static int pc_spiritball_timer(int tid,unsigned int tick,int id,void *data)
  */
 int pc_addspiritball(struct map_session_data *sd,int interval,int num)
 {
-	int i, j, max = skill_get_max(MO_CALLSPIRITS);
+	int max = skill_get_max(MO_CALLSPIRITS);
 
 	nullpo_retr(0, sd);
 
@@ -322,20 +322,23 @@ int pc_addspiritball(struct map_session_data *sd,int interval,int num)
 	if(sd->spiritball.num < 0)
 		sd->spiritball.num = 0;
 
-	for(i = num; i > 0; i--) {
-		if(sd->spiritball.num >= max) {
-			if(sd->spiritball.timer[0] != -1) {
-				delete_timer(sd->spiritball.timer[0],pc_spiritball_timer);
-				sd->spiritball.timer[0] = -1;
+	if(max > 0) {
+		int i, j;
+		for(i = num; i > 0; i--) {
+			if(sd->spiritball.num >= max) {
+				if(sd->spiritball.timer[0] != -1) {
+					delete_timer(sd->spiritball.timer[0],pc_spiritball_timer);
+					sd->spiritball.timer[0] = -1;
+				}
+				for(j = 1; j < max; j++) {
+					sd->spiritball.timer[j-1] = sd->spiritball.timer[j];
+					sd->spiritball.timer[j] = -1;
+				}
+			} else {
+				sd->spiritball.num++;
 			}
-			for(j = 1; j < max; j++) {
-				sd->spiritball.timer[j-1] = sd->spiritball.timer[j];
-				sd->spiritball.timer[j] = -1;
-			}
-		} else {
-			sd->spiritball.num++;
+			sd->spiritball.timer[sd->spiritball.num-1] = add_timer(gettick()+interval+sd->spiritball.num,pc_spiritball_timer,sd->bl.id,NULL);
 		}
-		sd->spiritball.timer[sd->spiritball.num-1] = add_timer(gettick()+interval+sd->spiritball.num,pc_spiritball_timer,sd->bl.id,NULL);
 	}
 	clif_spiritball(sd);
 
@@ -423,21 +426,22 @@ int pc_addcoin(struct map_session_data *sd,int interval,int max)
 	if(sd->coin.num < 0)
 		sd->coin.num = 0;
 
-	if(sd->coin.num >= max) {
-		int i;
-		if(sd->coin.timer[0] != -1) {
-			delete_timer(sd->coin.timer[0],pc_coin_timer);
-			sd->coin.timer[0] = -1;
+	if(max > 0) {
+		if(sd->coin.num >= max) {
+			int i;
+			if(sd->coin.timer[0] != -1) {
+				delete_timer(sd->coin.timer[0],pc_coin_timer);
+				sd->coin.timer[0] = -1;
+			}
+			for(i=1; i<max; i++) {
+				sd->coin.timer[i-1] = sd->coin.timer[i];
+				sd->coin.timer[i] = -1;
+			}
+		} else {
+			sd->coin.num++;
 		}
-		for(i=1; i<max; i++) {
-			sd->coin.timer[i-1] = sd->coin.timer[i];
-			sd->coin.timer[i] = -1;
-		}
-	} else {
-		sd->coin.num++;
+		sd->coin.timer[sd->coin.num-1] = add_timer(gettick()+interval+sd->coin.num,pc_coin_timer,sd->bl.id,NULL);
 	}
-
-	sd->coin.timer[sd->coin.num-1] = add_timer(gettick()+interval+sd->coin.num,pc_coin_timer,sd->bl.id,NULL);
 	clif_coin(sd);
 
 	return 0;
