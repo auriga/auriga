@@ -4021,7 +4021,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					posx = -1;
 				}
 
-				if(bl->y > src->y) {
+				if(bl->y >= src->y) {
 					posy = 1;
 				} else if(bl->y < src->y) {
 					posy = -1;
@@ -7891,7 +7891,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				status_change_end(bl,SC_WUGDASH,-1);
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			} else {
-				status_change_start(bl,SC_WUGDASH,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+				int dir = status_get_dir(bl);
+				if(map_count_oncell(sd->bl.m,sd->bl.x+dirx[dir],sd->bl.y+diry[dir],BL_PC|BL_MOB|BL_NPC) == 0)
+					status_change_start(bl,SC_WUGDASH,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			}
 		}
 		break;
@@ -10980,7 +10982,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			if(sec < 3000 + 30 * sg->skill_lv)
 				sec = 3000 + 30 * sg->skill_lv;
 			status_change_start(bl,GetSkillStatusChangeTable(sg->skill_id),sg->skill_lv,sg->bl.id,0,0,sec,0);
-			if(status_get_mode(bl)&0x1)
+			if(!(status_get_mode(bl)&0x20) && !map[bl->m].flag.gvg && bl->x != src->bl.x && bl->y != src->bl.y)
 				unit_movepos(bl, src->bl.x, src->bl.y, 0);
 			//sg->limit=DIFF_TICK(tick,sg->tick)+sec;
 		}
