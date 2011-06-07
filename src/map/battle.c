@@ -1753,18 +1753,26 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	if(sc && sc->data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {	// サクリファイス
+	// サクリファイス
+	if(sc && sc->data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {
 		calc_flag.hitrate = 1000000;
 		s_ele = s_ele_ = ELE_NEUTRAL;
 	}
-	if(sc && sc->data[SC_FUSION].timer != -1) {	// 太陽と月と星の融合
+	// 太陽と月と星の融合
+	if(sc && sc->data[SC_FUSION].timer != -1) {
 		calc_flag.hitrate = 1000000;
 	}
-	if(src_sd && src_sd->perfect_hit > 0) {	// カード効果による必中ボーナス
+	// スペルフィスト
+	if(sc && sc->data[SC_SPELLFIST].timer != -1 && !skill_num && t_class != 1288) {
+		calc_flag.hitrate = 1000000;
+	}
+	// カード効果による必中ボーナス
+	if(src_sd && src_sd->perfect_hit > 0) {
 		if(atn_rand()%100 < src_sd->perfect_hit)
 			calc_flag.hitrate = 1000000;
 	}
-	if(calc_flag.hitrate < 1000000 && t_sc) {	// 対象が状態異常中の場合の必中ボーナス
+	// 対象が状態異常中の場合の必中ボーナス
+	if(calc_flag.hitrate < 1000000 && t_sc) {
 		if( t_sc->data[SC_SLEEP].timer != -1 ||
 		    t_sc->data[SC_STUN].timer != -1 ||
 		    t_sc->data[SC_FREEZE].timer != -1 ||

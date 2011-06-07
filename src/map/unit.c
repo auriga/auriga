@@ -899,7 +899,13 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	if( src_ud == NULL ) return 0;
 
 	if( unit_isdead(src) )		 return 0;	// 死んでいないか
-	if( src_sd && src_sd->sc.opt1 > OPT1_NORMAL && src_sd->sc.opt1 != OPT1_BURNNING ) return 0;	// 沈黙や異常（ただし、グリムなどの判定をする）
+	if( skill_num == SR_GENTLETOUCH_CURE ) {
+		if( src_sd->sc.opt1 == OPT1_SLEEP )
+			return 0;	// 点穴-快-は睡眠状態では使えない
+	} else {
+		if( src_sd && src_sd->sc.opt1 > OPT1_NORMAL && src_sd->sc.opt1 != OPT1_BURNNING )
+			return 0;	// 沈黙や異常（ただし、グリムなどの判定をする）
+	}
 
 	// スキル制限
 	zone = skill_get_zone(skill_num);
@@ -1185,6 +1191,11 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 
 	if(sc && sc->data[SC__INVISIBILITY].timer != -1 && skill_num != SC_INVISIBILITY) {
 		status_change_end(src,SC__INVISIBILITY,-1);
+	}
+
+	if(sc && sc->data[SC_SPELLFIST].timer != -1 && skill_num) {
+		sc->data[SC_SPELLFIST].val4 = 0;
+		status_change_end(src, SC_SPELLFIST,-1);
 	}
 
 	if(casttime > 0) {

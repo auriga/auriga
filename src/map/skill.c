@@ -12047,10 +12047,17 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 
 	if(battle_config.gm_skilluncond > 0 && pc_isGM(sd) >= battle_config.gm_skilluncond)
 		return 1;
-
-	if(sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) {
-		clif_skill_fail(sd,cnd->id,0,0,0);
-		return 0;
+	// 点穴-快-は睡眠状態では使えない
+	if( cnd->id  == SR_GENTLETOUCH_CURE ) {
+		if( sd->sc.opt1 == OPT1_SLEEP ) {
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+	} else {
+		if(sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) {
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
 	}
 	if(pc_is90overweight(sd)) {
 		clif_skill_fail(sd,cnd->id,9,0,0);
