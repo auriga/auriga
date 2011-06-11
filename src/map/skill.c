@@ -13671,12 +13671,12 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 				reduce_time -= sc->data[SC__LAZINESS].val1 * 10;
 		}
 
-		// カードによる詠唱時間減少効果
+		// カードによる詠唱時間増減効果
 		if(sd && sd->skill_addcastrate.count > 0) {
 			int i;
 			for(i=0; i<sd->skill_addcastrate.count; i++) {
 				if(skillid == sd->skill_addcastrate.id[i])
-					casttime = casttime * (100 - sd->skill_addcastrate.rate[i])/100;
+					casttime = casttime * (100 + sd->skill_addcastrate.rate[i])/100;
 			}
 		}
 	}
@@ -13703,12 +13703,12 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 		if(sc && sc->data[SC_DANCE_WITH_WUG].timer != -1) {
 			reduce_time2 += 20 + sc->data[SC_DANCE_WITH_WUG].val4 * 10;
 		}
-		// カードによる固定詠唱時間減少効果
+		// カードによる固定詠唱時間増減効果
 		if(sd && sd->skill_fixcastrate.count > 0) {
 			int i;
 			for(i=0; i<sd->skill_fixcastrate.count; i++) {
 				if(skillid == sd->skill_fixcastrate.id[i])
-					reduce_time2 += sd->skill_fixcastrate.rate[i];
+					reduce_time2 -= sd->skill_fixcastrate.rate[i];
 			}
 		}
 		fixedtime -= fixedtime * reduce_time2 / 100;
