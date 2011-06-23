@@ -1194,7 +1194,6 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	}
 
 	if(sc && sc->data[SC_SPELLFIST].timer != -1 && skill_num) {
-		sc->data[SC_SPELLFIST].val4 = 0;
 		status_change_end(src, SC_SPELLFIST,-1);
 	}
 

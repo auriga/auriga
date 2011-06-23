@@ -1454,6 +1454,10 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 		}
 		break;
+	case NC_POWERSWING:	/* パワースイング */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,1000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
 	case LG_SHIELDPRESS:	/* シールドプレス */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,3000+skilllv*800,status_get_lv(src)))
 			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
@@ -2315,6 +2319,15 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 					battle_skill_attack(BF_WEAPON,src,src,target,GC_CROSSIMPACT,1,tick,skl->flag);
 				}
 				break;
+			case NC_POWERSWING:		/* パワースイングのアックスブーメラン追撃 */
+				if(src->type == BL_PC) {
+					int lv = pc_checkskill((struct map_session_data *)src,NC_AXEBOOMERANG);
+					if(lv > 0)
+						battle_skill_attack(BF_WEAPON,src,src,target,NC_AXEBOOMERANG,lv,tick,skl->flag);
+				} else {
+					battle_skill_attack(BF_WEAPON,src,src,target,NC_AXEBOOMERANG,1,tick,skl->flag);
+				}
+				break;
 			case AB_DUPLELIGHT_MELEE:		/* デュプレライト(物理) */
 			case WM_REVERBERATION_MELEE:	/* 振動残響(物理) */
 				battle_skill_attack(BF_WEAPON,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
@@ -2895,7 +2908,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NC_COLDSLOWER:		/* コールドスローワー */
 	case NC_ARMSCANNON:		/* アームズキャノン */
 	case NC_AXEBOOMERANG:	/* アックスブーメラン */
-	case NC_POWERSWING:		/* パワースイング */
 	case LG_BANISHINGPOINT:	/* バニシングポイント */
 	case LG_SHIELDPRESS:	/* シールドプレス */
 	case LG_OVERBRAND:		/* オーバーブランド */
@@ -4115,6 +4127,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+						status_change_end(bl, SC__INVISIBILITY, -1);
 					}
 					if(sc->option & OPTION_SPECIALHIDING) {
 						status_change_end(bl, SC_INVISIBLE, -1);
@@ -4272,6 +4285,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+						status_change_end(bl, SC__INVISIBILITY, -1);
 					}
 					if(sc->option & OPTION_SPECIALHIDING) {
 						status_change_end(bl, SC_INVISIBLE, -1);
@@ -4370,6 +4384,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		} else {
 			int ar = (skilllv > 2) ? 3: 2;
 			/* スキルエフェクト表示 */
+			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 
 			skill_area_temp[1] = src->id;
@@ -4379,6 +4394,12 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+		}
+		break;
+	case NC_POWERSWING:		/* パワースイング */
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		if(atn_rand()%100 < 5) {
+			skill_addtimerskill(src,tick+800,bl->id,0,0,skillid,skilllv,BF_WEAPON,flag);
 		}
 		break;
 	case NC_DISJOINT:		/* FAW解除 */
@@ -4506,6 +4527,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 			map_foreachinarea(skill_delunit_by_ganbantein,
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_SKILL);
+			if(sd && atn_rand() % 10000 < 500)
+				pc_break_equip(sd, LOC_LARM);
 		}
 		break;
 	case SR_SKYNETBLOW:	/* 天羅地網 */
@@ -4535,6 +4558,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+						status_change_end(bl, SC__INVISIBILITY, -1);
 					}
 					if(sc->option & OPTION_SPECIALHIDING) {
 						status_change_end(bl, SC_INVISIBLE, -1);
@@ -7722,13 +7746,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case WL_WHITEIMPRISON:	/* ホワイトインプリズン */
 		sc = status_get_sc(bl);
-		if((sc && sc->data[SC_WHITEIMPRISON].timer != -1) || status_get_mode(bl)&0x20 || atn_rand() % 100 >= 40 + skilllv * 10) {
+		if((sc && sc->data[SC_WHITEIMPRISON].timer != -1) || status_get_mode(bl)&0x20 || (src != bl && battle_check_target(src,bl,BCT_ENEMY) <= 0) || atn_rand() % 100 >= 50 + skilllv * 3) {
 			if(sd)
 				clif_skill_fail(sd,skillid,0,0,0);
 			break;
 		}
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,(src == bl)? 5000: skill_get_time(skillid,skilllv),0);
 		break;
 	case WL_SIENNAEXECRATE:	/* シエナエクセクレイト */
 		if(flag&1) {
@@ -7967,6 +7991,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					status_change_end(bl, SC_HIDING, -1);
 					status_change_end(bl, SC_CLOAKING, -1);
 					status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+					status_change_end(bl, SC__INVISIBILITY, -1);
 				}
 				if(sc->option & OPTION_SPECIALHIDING) {
 					status_change_end(bl, SC_INVISIBLE, -1);
@@ -8081,6 +8106,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+						status_change_end(bl, SC__INVISIBILITY, -1);
 					}
 					if(sc->option & OPTION_SPECIALHIDING) {
 						status_change_end(bl, SC_INVISIBLE, -1);

@@ -1037,12 +1037,13 @@ static int battle_attack_drain(struct block_list *bl,int damage,int damage2,int 
  */
 static int battle_addmastery(struct map_session_data *sd,struct block_list *target,int dmg,int type)
 {
-	int damage = 0, race, skill, weapon;
+	int damage = 0, race, element, skill, weapon;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, target);
 
 	race = status_get_race(target);
+	element = status_get_element(target)%20;
 
 	// デーモンベイン vs 不死 or 悪魔 (死人は含めない？)
 	if((skill = pc_checkskill(sd,AL_DEMONBANE)) > 0 && (battle_check_undead(race,status_get_elem_type(target)) || race == RCT_DEMON) ) {
@@ -1068,6 +1069,12 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 	if(pc_isgear(sd) && (skill = pc_checkskill(sd,NC_MADOLICENCE)) > 0)
 	{
 		damage += (20 + skill * 20);
+	}
+
+	// 火と大地の研究(+10 〜 +50) vs 火属性 or 地属性
+	if((skill = pc_checkskill(sd,NC_RESEARCHFE)) > 0 && (element == ELE_FIRE || element == ELE_EARTH))
+	{
+		damage += (skill * 10);
 	}
 
 	weapon = (type == 0)? sd->weapontype1: sd->weapontype2;
@@ -1629,9 +1636,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_ACIDTERROR:		// アシッドテラー
 		case CR_ACIDDEMONSTRATION:	// アシッドデモンストレーション
 		case GN_FIRE_EXPANSION_ACID:	// ファイアーエクスパンション(塩酸)
-			calc_flag.hitrate = 1000000;
-			s_ele = s_ele_ = ELE_NEUTRAL;
-			break;
 		case NPC_CRITICALSLASH:		// 防御無視攻撃
 		case NPC_GUIDEDATTACK:		// ガイデッドアタック
 		case MO_INVESTIGATE:		// 発勁
@@ -1647,13 +1651,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_DEMONSTRATION:		// デモンストレーション
 		case TK_COUNTER:		// アプチャオルリギ
 		case AS_SPLASHER:		// ベナムスプラッシャー
+		case NPC_EXPULSION:		// エクスパルシオン
 		case RK_DRAGONBREATH:	// ドラゴンブレス
 		case GC_PHANTOMMENACE:		// ファントムメナス
 		case RA_SENSITIVEKEEN:		// 鋭敏な嗅覚
 		case NC_SELFDESTRUCTION:	// セルフディストラクション
-			calc_flag.hitrate = 1000000;
-			break;
-		case NPC_EXPULSION:		// エクスパルシオン
 			calc_flag.hitrate = 1000000;
 			break;
 		case GS_TRACKING:		// トラッキング
@@ -1674,8 +1676,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NPC_COMBOATTACK:		// 多段攻撃
 		case NPC_RANDOMATTACK:		// ランダムATK攻撃
-			s_ele = s_ele_ = ELE_NEUTRAL;
-			break;
 		case NPC_RANGEATTACK:		// 遠距離攻撃
 		case NJ_ZENYNAGE:		// 銭投げ
 		case NPC_CRITICALWOUND:		// 致命傷攻撃
@@ -2588,10 +2588,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NC_AXEBOOMERANG:	// アックスブーメラン
 			if(src_sd) {
 				int idx = src_sd->equip_index[9];
-				int weight = 0;
 				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid))
-					weight = src_sd->inventory_data[idx]->weight/10;
-				DMG_FIX( (160 + 40 * skill_lv + weight) * status_get_lv(src) / 150, 100 );
+				DMG_FIX( (160 + 40 * skill_lv + src_sd->inventory_data[idx]->weight/10) * status_get_lv(src) / 150, 100 );
 			} else {
 				DMG_FIX( (160 + 40 * skill_lv) * status_get_lv(src) / 150, 100 );
 			}
@@ -2600,7 +2598,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( (200 + 20 * skill_lv + status_get_str(src) + status_get_dex(src)) * status_get_lv(src) / 150, 100 );
 			break;
 		case NC_AXETORNADO:	// アックストルネード
-			DMG_FIX( (200 + 100 * skill_lv + status_get_vit(src)) * status_get_lv(src) / 100, 100 );
+			{
+				int dmg = 200 + 100 * skill_lv + status_get_vit(src);
+				int dist = unit_distance2(src,target);
+				if((skill_lv < 3 && dist > 1) || dist > 2)	// 外周
+					dmg = dmg * 75 / 100;
+				if(s_ele == ELE_WIND)	// 風属性武器装備時
+					dmg = dmg * 125 / 100;
+				DMG_FIX( dmg * status_get_lv(src) / 100, 100 );
+			}
 			break;
 		case SC_FATALMENACE:	// フェイタルメナス
 			DMG_FIX( 100 + 100 * skill_lv, 100 );
@@ -2620,10 +2626,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case LG_SHIELDPRESS:	// シールドプレス
 			if(src_sd) {
 				int idx = src_sd->equip_index[8];
-				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid))
-					DMG_ADD( src_sd->status.inventory[idx].refine*4 + src_sd->inventory_data[idx]->weight/10 );
+				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
+					DMG_FIX( (150 * skill_lv + status_get_str(src) + src_sd->inventory_data[idx]->weight/10) * status_get_lv(src) / 100, 100);
+				}
+			} else {
+				DMG_FIX( (150 * skill_lv + status_get_str(src)) * status_get_lv(src) / 100, 100 );
 			}
-			DMG_FIX( (60 + 40 * skill_lv) * status_get_lv(src) / 100, 100 );
 			break;
 		case LG_PINPOINTATTACK:	// ピンポイントアタック
 			DMG_FIX( 120 * skill_lv + status_get_agi(src) * 12, 100 );
@@ -2671,9 +2679,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd) {
 				int idx = src_sd->equip_index[8];
 				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid))
-					DMG_ADD( src_sd->inventory_data[idx]->weight/10 );
+					DMG_FIX( ((100 + 100 * skill_lv) * src_sd->inventory_data[idx]->weight / 1000) * status_get_lv(src) / 100, 100 );
+			} else {
+				DMG_FIX( (100 + 100 * skill_lv) * status_get_lv(src) / 100, 100 );
 			}
-			DMG_FIX( (100 + 100 * skill_lv) * status_get_lv(src) / 100, 100 );
 			break;
 		case SR_DRAGONCOMBO:	// 双竜脚
 			DMG_FIX( ( 100 + 40 * skill_lv ) * status_get_lv(src) / 100, 100 );
@@ -2963,6 +2972,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					if(s_race == RCT_BRUTE || s_race == RCT_PLANT || s_race == RCT_FISH)
 						t_def2 += skill * 5;
 				}
+				// 火と大地の研究
+				if(target_sd && (skill = pc_checkskill(target_sd,NC_RESEARCHFE)) > 0) {
+					int s_element = status_get_element(src)%20;
+					if(s_element == ELE_FIRE || s_element ==  ELE_EARTH)
+						t_def2 += skill * 10;
+				}
 				vitbonusmax = (t_vit / 20) * (t_vit / 20) - 1;
 
 				if(calc_flag.rh && !calc_flag.idef) {
@@ -3078,13 +3093,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(target_sd && atn_rand() % 100 < sc->data[SC_SHIELDSPELL_REF].val3) {
 					pc_break_equip(target_sd, LOC_BODY);
 				}
-			}
-			// スペルフィスト
-			if(sc->data[SC_SPELLFIST].timer != -1 && !skill_num) {
-				wd = battle_calc_attack(BF_MAGIC,src,target,sc->data[SC_SPELLFIST].val2,1,wd.flag);
-				wd.damage = wd.damage * (sc->data[SC_SPELLFIST].val1 + sc->data[SC_SPELLFIST].val3);
-				if((--sc->data[SC_SPELLFIST].val4) <= 0)
-					status_change_end(src, SC_SPELLFIST,-1);
 			}
 		}
 
@@ -3218,39 +3226,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		    src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 == WT_FIST ) {
 			DMG_ADD( skill*10 );
 		}
-	}
-	if( skill_num == SR_FALLENEMPIRE ) {	// 大纏崩捶
-		if(target_sd) {
-			DMG_ADD( status_get_str(src) * 4 + target_sd->weight * 65 / 10 );
-		} else {
-			DMG_ADD( status_get_str(src) * 4 + status_get_lv(target) * 30 );
-		}
-	}
-	if( skill_num == SR_TIGERCANNON ) {	// 號砲
-		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
-			DMG_ADD( status_get_lv(target) * 40 + skill_lv * 500 );			// コンボ発動時
-		} else {
-			DMG_ADD( status_get_lv(target) * 40 + skill_lv * 240 );			// 通常時
-		}
-	}
-	if( src_sd && skill_num == SR_GATEOFHELL ) {	// 羅刹破凰撃
-		int sp = 0;
-		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
-			// コンボ発動時
-			sp = status_get_max_sp(src) * skill_lv / 100;
-			DMG_ADD( status_get_max_sp(src) * ( 100 + 20 * skill_lv ) / 100 + status_get_lv(src) * 20 + status_get_max_hp(src) - status_get_hp(src) );
-		} else {
-			// 通常時
-			sp = status_get_max_sp(src) * (10 + skill_lv) / 100;
-			DMG_ADD( ( status_get_sp(src) - sp ) * ( 100 + 20 * skill_lv ) / 100 + status_get_lv(src) * 10 + status_get_max_hp(src) - status_get_hp(src) );
-		}
-		// SP消費
-		if(src_sd->status.sp > sp) {
-			src_sd->status.sp -= sp;
-		} else {
-			src_sd->status.sp = 0;
-		}
-		clif_updatestatus(src_sd,SP_SP);
 	}
 
 	/* 20．カードによるダメージ追加処理 */
@@ -3456,9 +3431,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage -= (t_def1 + t_def2 + ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1)) + status_get_mdef(target) + status_get_mdef2(target))/2;
 		}
 	}
+	if(sc && sc->data[SC_SPELLFIST].timer != -1 && !skill_num) {	// スペルフィスト
+		wd = battle_calc_attack(BF_MAGIC,src,target,sc->data[SC_SPELLFIST].val2,1,wd.flag);
+		wd.damage = wd.damage * (sc->data[SC_SPELLFIST].val1 + sc->data[SC_SPELLFIST].val3);
+		if((--sc->data[SC_SPELLFIST].val4) <= 0)
+			status_change_end(src, SC_SPELLFIST,-1);
+	}
 
 	/* 28．必中ダメージの加算 */
-	if(skill_num == NJ_SYURIKEN) {	// 手裏剣投げ
+	switch(skill_num) {
+	case NJ_SYURIKEN:	// 手裏剣投げ
 		if(src_sd) {
 			skill = pc_checkskill(src_sd,NJ_TOBIDOUGU);
 			DMG_ADD( skill * 3 );
@@ -3467,6 +3449,52 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 		}
 		DMG_ADD( skill_lv*4 );
+		break;
+	case LG_SHIELDPRESS:	// シールドプレス
+		if(src_sd) {
+			if(src_sd->equip_index[8] >= 0) {
+				int idx = src_sd->equip_index[8];
+				if(src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
+					DMG_ADD( src_sd->status.inventory[idx].refine * status_get_vit(src) );
+				}
+			}
+		}
+		break;
+	case SR_FALLENEMPIRE:	// 大纏崩捶
+		if(target_sd) {
+			DMG_ADD( status_get_str(src) * 4 + target_sd->weight * 65 / 10 );
+		} else {
+			DMG_ADD( status_get_str(src) * 4 + status_get_lv(target) * 30 );
+		}
+		break;
+	case SR_TIGERCANNON:	// 號砲
+		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
+			DMG_ADD( status_get_lv(target) * 40 + skill_lv * 500 );			// コンボ発動時
+		} else {
+			DMG_ADD( status_get_lv(target) * 40 + skill_lv * 240 );			// 通常時
+		}
+		break;
+	case SR_GATEOFHELL:	// 羅刹破凰撃
+		if(src_sd) {
+			int sp = 0;
+			if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
+				// コンボ発動時
+				sp = status_get_max_sp(src) * skill_lv / 100;
+				DMG_ADD( status_get_max_sp(src) * ( 100 + 20 * skill_lv ) / 100 + status_get_lv(src) * 20 + status_get_max_hp(src) - status_get_hp(src) );
+			} else {
+				// 通常時
+				sp = status_get_max_sp(src) * (10 + skill_lv) / 100;
+				DMG_ADD( ( status_get_sp(src) - sp ) * ( 100 + 20 * skill_lv ) / 100 + status_get_lv(src) * 10 + status_get_max_hp(src) - status_get_hp(src) );
+			}
+			// SP消費
+			if(src_sd->status.sp > sp) {
+				src_sd->status.sp -= sp;
+			} else {
+				src_sd->status.sp = 0;
+			}
+			clif_updatestatus(src_sd,SP_SP);
+		}
+		break;
 	}
 
 	if(src_sd) {

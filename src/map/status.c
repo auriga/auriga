@@ -1479,6 +1479,8 @@ L_RECALC:
 		sd->hit += skill*2;
 	if((sd->status.weapon == WT_1HAXE || sd->status.weapon == WT_2HAXE) && ((skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0))	// 斧修練の命中率増加
 		sd->hit += skill*3;
+	if((sd->status.weapon == WT_DAGGER || sd->status.weapon == WT_1HSWORD) && ((skill = pc_checkskill(sd,GN_TRAINING_SWORD)) > 0))	// 剣修練の命中率増加
+		sd->hit += skill*3;
 
 	if(sd->s_class.job == PC_JOB_SNV && sd->status.base_level >= 99)
 	{
@@ -2034,6 +2036,10 @@ L_RECALC:
 			sd->hit  = sd->hit * 80/100;
 			sd->flee = sd->flee * 80/100;
 		}
+		// インビジビリティ
+		if(sd->sc.data[SC__INVISIBILITY].timer != -1) {
+			sd->critical += sd->critical * (sd->sc.data[SC__INVISIBILITY].val1 * 20) / 100;
+		}
 		// マスカレード ： エナーベーション
 		if(sd->sc.data[SC__ENERVATION].timer != -1) {
 			sd->watk -= sd->watk * (20 + sd->sc.data[SC__ENERVATION].val1 * 10) / 100;
@@ -2499,6 +2505,13 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		if(sd->sc.data[SC__BODYPAINT].timer != -1) {
 			if(slow_val < 25)
 				slow_val = 25;
+		}
+
+		// インビジビリティ
+		if(sd->sc.data[SC__INVISIBILITY].timer != -1) {
+			int penalty = 50 - 10 * sd->sc.data[SC__INVISIBILITY].val1;
+			if(slow_val < penalty)
+				slow_val = penalty;
 		}
 
 		// マスカレード ： グルーミー
@@ -3746,6 +3759,8 @@ int status_get_critical(struct block_list *bl)
 			critical += sc->data[SC_EXPLOSIONSPIRITS].val2;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
 			critical += 10*sc->data[SC_TRUESIGHT].val1;
+		if(sc->data[SC__INVISIBILITY].timer != -1 && bl->type != BL_PC)	// インビジビリティ
+			critical += critical * (sc->data[SC__INVISIBILITY].val1 * 20) / 100;
 		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// マスカレード ： アンラッキー
 			critical -= critical * (sc->data[SC__UNLUCKY].val1 * 10) / 100;
 		if(sc->data[SC_STRIKING].timer != -1 && bl->type != BL_PC)	// ストライキング
@@ -4648,6 +4663,13 @@ int status_get_adelay(struct block_list *bl)
 					slow_val = 25;
 			}
 
+			// インビジビリティ
+			if(sc->data[SC__INVISIBILITY].timer != -1) {
+				int penalty = 50 - 10 * sc->data[SC__INVISIBILITY].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
 			// マスカレード ： グルーミー
 			if(sc->data[SC__GROOMY].timer != -1) {
 				int penalty = 20 + 10 * sc->data[SC__GROOMY].val1;
@@ -4861,6 +4883,13 @@ int status_get_amotion(struct block_list *bl)
 			if(sc->data[SC__BODYPAINT].timer != -1) {
 				if(slow_val < 25)
 					slow_val = 25;
+			}
+
+			// インビジビリティ
+			if(sc->data[SC__INVISIBILITY].timer != -1) {
+				int penalty = 50 - 10 * sc->data[SC__INVISIBILITY].val1;
+				if(slow_val < penalty)
+					slow_val = penalty;
 			}
 
 			// マスカレード ： グルーミー
@@ -5789,6 +5818,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 
 	// アンデッドは凍結・石化・出血無効
 	if((race == RCT_UNDEAD || elem == ELE_UNDEAD) && !(flag&1) && (type == SC_STONE || type == SC_FREEZE || type == SC_BLEED))
+		return 0;
+
+	// ウォーグバイト状態中はハイディング、クローキング無効
+	if(sc->data[SC_WUGBITE].timer != -1 && (type == SC_HIDING || type == SC_CLOAKING || type == SC_CLOAKINGEXCEED))
 		return 0;
 
 	// ウォーマー状態中は凍結、氷結、冷凍無効
@@ -7706,6 +7739,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_ANALYZE:			/* アナライズ */
 		case SC_NEUTRALBARRIER:		/* ニュートラルバリアー */
 		case SC__BODYPAINT:			/* ボディペインティング */
+		case SC__INVISIBILITY:		/* インビジビリティ */
 		case SC__ENERVATION:		/* マスカレード ： エナーベーション */
 		case SC__UNLUCKY:			/* マスカレード ： アンラッキー */
 		case SC__STRIPACCESSARY:	/* ストリップアクセサリー */
@@ -9324,6 +9358,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 			status_change_end(bl, SC_HIDING, -1);
 			status_change_end(bl, SC_CLOAKING, -1);
 			status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+			status_change_end(bl, SC__INVISIBILITY, -1);
 		}
 		if(sc->option & OPTION_SPECIALHIDING) {
 			status_change_end(bl, SC_INVISIBLE, -1);
@@ -9335,6 +9370,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 				status_change_end(bl, SC_HIDING, -1);
 				status_change_end(bl, SC_CLOAKING, -1);
 				status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+				status_change_end(bl, SC__INVISIBILITY, -1);
 			}
 			if(sc->option & OPTION_SPECIALHIDING) {
 				status_change_end(bl, SC_INVISIBLE, -1);

@@ -775,7 +775,7 @@
 2056,9,6,1,0,0,10,1,yes,0,0,0,magic,0	//AB_DUPLELIGHT_MAGIC#デュプレライト(魔法)#
 2057,0,6,4,0,5,5,1,yes,0,0,0,none,0	//AB_SILENTIUM#シレンティウム#
 
-2201,9,6,1,8,1,5,1,yes,0,0,0,magic,0	//WL_WHITEIMPRISON#ホワイトインプリズン#
+2201,9,6,16,8,1,5,1,yes,0,0,0,magic,0	//WL_WHITEIMPRISON#ホワイトインプリズン#
 2202,9,8,1,8,0,5,2,yes,0,0,0,magic,0	//WL_SOULEXPANSION#ソウルエクスパンション#
 2203,0,8,4,1,4,5,3:4:5:6:7,yes,0,0,0,magic,0	//WL_FROSTMISTY#フロストミスティ#
 2204,0,8,4,1,4,5,5,yes,0,0,0,magic,0	//WL_JACKFROST#ジャックフロスト#
@@ -852,7 +852,7 @@
 2275,5,6,16,0,1,5,1,no,0,0,0,weapon,0	//NC_REPAIR#リペア#
 2276,0,0,0,0,0,10,0,no,0,0,0,none,0	//NC_TRAININGAXE#斧修練#
 2277,0,0,0,0,0,5,0,no,0,0,0,none,0	//NC_RESEARCHFE#火と大地の研究#
-2278,4:5:6:7:8,6,1,0,0,5,1,no,0,0,0,weapon,0	//NC_AXEBOOMERANG#アックスブーメラン#
+2278,4:5:6:7:8,6,1,0,0,5,1,no,0,0,0,weapon,2:3:4:5:6	//NC_AXEBOOMERANG#アックスブーメラン#
 2279,1,6,1,0,0,5,1,no,0,0,0,weapon,0	//NC_POWERSWING#パワースイング#
 2280,0,8,4,0,0,5,5,no,0,0,0,weapon,0	//NC_AXETORNADO#アックストルネード#
 2281,4,6,2,0,1,5,1,no,0,0,2,weapon,0	//NC_SILVERSNIPER#FAW シルバースナイパー#
