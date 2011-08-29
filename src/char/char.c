@@ -1794,7 +1794,20 @@ int parse_char(int fd)
 						break;
 					}
 				}
-				if( i <= AUTH_FIFO_SIZE )
+				if( i >= AUTH_FIFO_SIZE )
+				{
+					if( login_fd >= 0 && session[login_fd] )
+					{
+						WFIFOW(login_fd, 0)=0x2712;
+						WFIFOL(login_fd, 2)=sd->account_id;
+						WFIFOL(login_fd, 6)=sd->login_id1;
+						WFIFOL(login_fd,10)=sd->login_id2;
+						WFIFOB(login_fd,14)=sd->sex;
+						WFIFOL(login_fd,15)=session[fd]->client_addr.sin_addr.s_addr;
+						WFIFOSET(login_fd,19);
+					}
+				}
+				else
 				{
 					// メンテナンス中
 					if( char_maintenance && isGM(sd->account_id) == 0 )
@@ -1820,19 +1833,6 @@ int parse_char(int fd)
 					// 0x6b送信
 					else
 						mmo_char_send006b(fd,sd);
-				}
-				else
-				{
-					if( login_fd >= 0 && session[login_fd] )
-					{
-						WFIFOW(login_fd, 0)=0x2712;
-						WFIFOL(login_fd, 2)=sd->account_id;
-						WFIFOL(login_fd, 6)=sd->login_id1;
-						WFIFOL(login_fd,10)=sd->login_id2;
-						WFIFOB(login_fd,14)=sd->sex;
-						WFIFOL(login_fd,15)=session[fd]->client_addr.sin_addr.s_addr;
-						WFIFOSET(login_fd,19);
-					}
 				}
 			}
 			RFIFOSKIP(fd,17);

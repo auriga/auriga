@@ -311,9 +311,6 @@ int pc_addspiritball(struct map_session_data *sd,int interval,int num)
 	/* 職業がモンクと修羅の場合 */
 	if(sd->s_class.job == PC_JOB_MO || sd->s_class.job == PC_JOB_SR)
 		max = pc_checkskill(sd,MO_CALLSPIRITS);		// 気功の習得レベルが最大数
-	/* その他の職業の場合 */
-	else
-		max = 5;
 
 	/* 潜龍昇天 */
 	if(sd->sc.data[SC_RAISINGDRAGON].timer != -1)

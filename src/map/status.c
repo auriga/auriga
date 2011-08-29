@@ -4793,8 +4793,22 @@ int status_get_adelay(struct block_list *bl)
 		adelay = (int)ceil(calc_adelay);
 
 		/* 最低値の設定 */
-		if(adelay < battle_config.monster_max_aspd)
-			adelay = battle_config.monster_max_aspd;
+		switch(bl->type)
+		{
+			case BL_MOB:
+			case BL_PET:
+				if(adelay < (battle_config.monster_max_aspd>>1) )
+					adelay = battle_config.monster_max_aspd>>1;
+				break;
+			case BL_HOM:
+				if(adelay < battle_config.homun_max_aspd)
+					adelay = battle_config.homun_max_aspd;
+				break;
+			case BL_MERC:
+				if(adelay < (battle_config.merc_max_aspd>>1) )
+					adelay = battle_config.merc_max_aspd>>1;
+				break;
+		}
 	}
 
 	return adelay;
@@ -5015,8 +5029,22 @@ int status_get_amotion(struct block_list *bl)
 		amotion = (int)ceil(calc_amotion);
 
 		/* 最低値の設定 */
-		if(amotion < (battle_config.monster_max_aspd>>1))
-			amotion = battle_config.monster_max_aspd;
+		switch(bl->type)
+		{
+			case BL_MOB:
+			case BL_PET:
+				if(amotion < battle_config.monster_max_aspd)
+					amotion = battle_config.monster_max_aspd;
+				break;
+			case BL_HOM:
+				if(amotion < battle_config.homun_max_aspd)
+					amotion = battle_config.homun_max_aspd;
+				break;
+			case BL_MERC:
+				if(amotion < battle_config.merc_max_aspd)
+					amotion = battle_config.merc_max_aspd;
+				break;
+		}
 	}
 
 	return amotion;

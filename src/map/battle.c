@@ -6197,6 +6197,8 @@ int battle_config_read(const char *cfgName)
 		{ "mvp_exp_rate",                       &battle_config.mvp_exp_rate,                       100      },
 		{ "monster_hp_rate",                    &battle_config.monster_hp_rate,                    100      },
 		{ "monster_max_aspd",                   &battle_config.monster_max_aspd,                   200      },
+		{ "homun_max_aspd",                     &battle_config.homun_max_aspd,                     200      },
+		{ "merc_max_aspd",                      &battle_config.merc_max_aspd,                      200      },
 		{ "atcommand_gm_only",                  &battle_config.atc_gmonly,                         1        },
 		{ "gm_all_skill",                       &battle_config.gm_allskill,                        1        },
 		{ "gm_all_skill_add_abra",              &battle_config.gm_allskill_addabra,                0        },

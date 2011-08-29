@@ -1,4 +1,23 @@
 ----------------------------------------
+//0877 [2011/08/30] by popori
+
+・vc_make.batにVC++ 2010 64bitコンパイルを追加 (vc_make.bat)
+　※Windows SDK最新版を基にパスを追記しています。適宜パスを修正して利用して下さい。
+
+・char.cの0x65のリクエストが飛んできた時の判定文が間違っていたので修正 (src/char/char.c)
+
+・0874の無駄を削除 (src/map/pc.c)
+
+・モンク・チャンピオンの両手杖基本ASPDを修正 (db/job_db1.txt)
+
+・3次職の基本ASPDを修正 (db/job_db1.txt)
+
+・3次職のHP・SPを修正 (db/job_hp_db.txt db/job_sp_db.txt db/job_db1.txt)
+
+・battle_auriga.confに「homun_max_aspd」「merc_max_aspd」を追加 (conf/battle_auriga.conf src/map/battle.* src/map/status.c)
+　デフォルト値は共に200
+
+----------------------------------------
 //0876 [2011/06/24] by Blaze
 
 ・メカニックスキル「火と大地の研究」の効果を実装（battle.c）
