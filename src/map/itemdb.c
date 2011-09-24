@@ -340,6 +340,21 @@ int itemdb_isdropable(int nameid)
 	return 0;
 }
 
+/*==========================================
+ * 購買露店に出せるアイテムは1、そうでないアイテムは0
+ *------------------------------------------
+ */
+int itemdb_isbuyingable(int nameid)
+{
+	struct item_data *id = itemdb_exists(nameid);
+
+	if(id && id->flag.buyingable)
+		return 1;
+
+	return 0;
+}
+
+
 //
 // 初期化
 //
@@ -506,7 +521,7 @@ static int itemdb_read_itemdb(void)
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
-		for(j=0,np=p=line;j<7 && p;j++){
+		for(j=0,np=p=line;j<8 && p;j++){
 			str[j]=p;
 			p=strchr(p,',');
 			if(p){ *p++=0; np=p; }
@@ -525,6 +540,7 @@ static int itemdb_read_itemdb(void)
 		id->flag.storageable = (atoi(str[4]) == 0)? 0: 1;
 		id->flag.cartable    = (atoi(str[5]) == 0)? 0: 1;
 		id->delay            = atoi(str[6]);
+		id->flag.buyingable  = (atoi(str[7]) == 0)? 0: 1;
 	}
 	fclose(fp);
 	printf("read db/item_db2.txt done (count=%d)\n",ln);

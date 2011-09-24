@@ -1,4 +1,17 @@
 ----------------------------------------
+//0879 [2011/09/25] by popori
+
+・購買露店システムの実装 (conf/battle_auriga.conf db/packet_db.txt src/map/battle.* src/map/buyingstore.* src/map/chat.c
+						  src/map/clif.* src/map/map.h src/map/pc.c src/map/trade.c src/map/unit.c src/map/vending.c
+						  src/map/map.dsp src/map/map_sql.dsp)
+
+・スキル「購買露店開設」の実装 (db/skill_db.txt db/skill_require_db.txt db/skill_tree.txt src/common/mmo.h src/map/skill.*)
+
+・スクリプト命令「openbuyingstore」の追加 (doc/script_ref.txt db/item_db.txt src/map/script.c)
+
+・item_db2.txtにフラグ「buyingable」を追加 (doc/db_ref.txt src/map/itemdb.* db/item_db2.txt)
+
+----------------------------------------
 //0878 [2011/09/25] by popori
 
 ・露店処理をパケット0x801を基に変更 (src/map/clif.c src/map/map.h src/map/vending.*)

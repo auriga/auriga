@@ -249,6 +249,10 @@ SOURCE=..\..\src\map\booking.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\map\buyingstore.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\common\version.c
 # End Source File
 # Begin Source File
@@ -426,6 +430,10 @@ SOURCE=..\..\src\map\quest.h
 # Begin Source File
 
 SOURCE=..\..\src\map\booking.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\buyingstore.h
 # End Source File
 # Begin Source File
 

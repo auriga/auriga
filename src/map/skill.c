@@ -51,6 +51,7 @@
 #include "ranking.h"
 #include "npc.h"
 #include "merc.h"
+#include "buyingstore.h"
 
 #define SKILLUNITTIMER_INVERVAL	100
 
@@ -7325,6 +7326,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sc && sc->data[SC_NEN].timer != -1)
 			status_change_end(bl,SC_NEN,-1);
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		break;
+	case ALL_BUYING_STORE:			/* 購買露店開設 */
+		if(sd) {
+			clif_skill_nodamage(src, bl, skillid, skilllv, buyingstore_openstorewindow(sd, MAX_BUYINGSTORE_COUNT));
+		}
 		break;
 	case HAMI_CASTLE:		/* キャストリング */
 		if(hd && hd->msd && atn_rand()%100 < 20*skilllv)

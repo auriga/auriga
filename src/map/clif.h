@@ -371,6 +371,18 @@ void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd
 void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd);
 void clif_deletebooking(struct map_session_data* sd, unsigned int id);
 
+// buyingstore
+void clif_openwindow_buyingstore(struct map_session_data *sd);
+void clif_failed_openbuyingstore(struct map_session_data *sd, unsigned short result, int weight);
+void clif_showmylist_buyingstore(struct map_session_data *sd);
+void clif_show_buyingstore(struct block_list* bl, const char *shop_title, int fd);
+void clif_close_buyingstore(struct block_list *bl, int fd);
+void clif_itemlist_buyingstore(struct map_session_data *sd, struct map_session_data *ssd);
+void clif_update_buyingstore(struct map_session_data *sd, short nameid, short amount);
+void clif_delete_buyingstore(struct map_session_data *sd, short idx, short amount, int value);
+void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, short nameid);
+void clif_failed_trybuyingstore(struct map_session_data *sd, short result);
+
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);
 

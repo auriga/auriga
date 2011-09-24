@@ -42,7 +42,7 @@
 static unsigned int vending_id = 0;
 
 // 露店アイテム購入失敗
-enum e_fail_vending
+enum
 {
 	VENDING_FAIL_NOTHING    = 0,
 	VENDING_FAIL_ZENY       = 1,
@@ -89,6 +89,8 @@ void vending_vendinglistreq(struct map_session_data *sd, int id)
 		return;
 	if( sd->state.vending )
 		return;
+	if( sd->state.buyingstore )
+		return;
 	if( vsd->state.deal_mode != 0 || sd->state.deal_mode != 0 )
 	{
 		clif_buyvending(sd, 0, 0, VENDING_FAIL_TRADING);
@@ -132,6 +134,8 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 	if( unit_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE )
 		return;
 	if( sd->state.vending )
+		return;
+	if( sd->state.buyingstore )
 		return;
 	if( sd->state.deal_mode )
 		return;
@@ -293,6 +297,10 @@ void vending_openvending(struct map_session_data *sd, short count, char *shop_ti
 
 	// player must close its actual shop before
 	if( sd->state.vending )
+		return;
+
+	// 購買露店中は開設不可
+	if( sd->state.buyingstore )
 		return;
 
 	// normal client can not send 'void' shop title

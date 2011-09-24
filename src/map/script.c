@@ -74,6 +74,7 @@
 #include "homun.h"
 #include "merc.h"
 #include "quest.h"
+#include "buyingstore.h"
 
 #define SCRIPT_BLOCK_SIZE 512
 
@@ -4017,6 +4018,7 @@ int buildin_checkquest(struct script_state *st);
 int buildin_getquestlimit(struct script_state *st);
 int buildin_getquestcount(struct script_state *st);
 int buildin_getquestmaxcount(struct script_state *st);
+int buildin_openbuyingstore(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4297,6 +4299,7 @@ struct script_function buildin_func[] = {
 	{buildin_getquestlimit,"getquestlimit","i"},
 	{buildin_getquestcount,"getquestcount","i*"},
 	{buildin_getquestmaxcount,"getquestmaxcount","i*"},
+	{buildin_openbuyingstore,"openbuyingstore","i"},
 	{NULL,NULL,NULL}
 };
 
@@ -12419,6 +12422,21 @@ int buildin_getquestmaxcount(struct script_state *st)
 		ret = qd->mob[idx].max;
 	}
 	push_val(st->stack,C_INT, ret);
+
+	return 0;
+}
+
+/*==========================================
+ * 購買露店ウインドウオープン
+ *------------------------------------------
+ */
+int buildin_openbuyingstore(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+
+	buyingstore_openstorewindow(sd, conv_num(st,& (st->stack->stack_data[st->start+2])));
 
 	return 0;
 }

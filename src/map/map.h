@@ -60,6 +60,7 @@
 #define MAX_SIZE_FIX 3		// サイズの種類
 #define MAX_FREEZE_SPELL 7	// リーディングスペルブックで保持できるスキル数
 #define MAX_SPIRITBALL 15	// 気功・コインの最大数
+#define MAX_BUYINGSTORE_COUNT 5	// 購買露店最大アイテム登録数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -244,6 +245,16 @@ struct quest_data {
 	} mob[3];
 };
 
+struct buyingstore {
+	int limit_zeny;
+	unsigned char count;
+	struct {
+		int value;
+		short amount;
+		short nameid;
+	} item[MAX_BUYINGSTORE_COUNT];
+};
+
 struct skill_unit_group;
 
 struct skill_unit {
@@ -359,6 +370,7 @@ struct map_session_data {
 		unsigned tk_doridori_sp : 1;
 		unsigned show_equip : 1;
 		unsigned vending : 1;
+		unsigned buyingstore : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -405,6 +417,7 @@ struct map_session_data {
 	unsigned int booking_id;
 	struct quest_data quest[MAX_QUESTLIST];
 	int questlist;
+	struct buyingstore buyingstore;
 
 	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wis拒否リスト
 
@@ -657,6 +670,8 @@ struct map_session_data {
 	int vend_num;
 	char message[80];
 	struct vending vending[MAX_VENDING];
+
+	unsigned int buyer_id;
 
 	int catch_target_class;
 	struct s_pet pet;

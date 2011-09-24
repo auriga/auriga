@@ -59,6 +59,7 @@ struct item_data {
 		unsigned cartable : 1;
 		unsigned pet_egg : 1;
 		unsigned pet_acce : 1;
+		unsigned buyingable : 1;
 	} flag;
 	int view_id;
 	int group;
@@ -113,6 +114,7 @@ int itemdb_isarmor(int nameid);
 int itemdb_iscartable(int nameid);
 int itemdb_isstorageable(int nameid);
 int itemdb_isdropable(int nameid);
+int itemdb_isbuyingable(int nameid);
 
 int itemdb_idsearch(const int fd, const char *str, int (*func)(void*, void*, va_list));
 

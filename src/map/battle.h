@@ -587,6 +587,8 @@ extern struct Battle_Config {
 	int third_song_overlap;
 	int clif_fix_level;
 	int get_status_point_over_lv100;
+	int max_buyingstore_zeny;
+	int max_buyingstore_amount;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

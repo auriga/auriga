@@ -2226,6 +2226,13 @@ AurigaNPCScript
 
 			<id>で指定したクエストをクエストリストから削除します。
 
+		openbuyingstore命令
+			openbuyingstoret <count>;
+
+			count		数値
+
+			最大<count>種類買い取り可能な購買露店を開設します。
+
 
 	＊関数
 		rand関数

@@ -59,6 +59,7 @@
 #include "unit.h"
 #include "ranking.h"
 #include "merc.h"
+#include "buyingstore.h"
 
 #define PVP_CALCRANK_INTERVAL 1000	// PVP順位計算の間隔
 
@@ -6412,6 +6413,8 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 
 	if(sd->state.vending)
 		vending_closevending(sd);
+	if(sd->state.buyingstore)
+		buyingstore_close(sd);
 
 	pc_delspiritball(sd,sd->spiritball.num,0);
 	pc_delcoin(sd,sd->coin.num,0);
