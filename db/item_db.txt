@@ -1188,7 +1188,7 @@
 2261,Prontera_Army_Cap,プロンテラ軍帽,4,20,,400,,4,,0,414946,2,256,,0,48,1,{},{}
 2262,Pierrot_Nose,ピエロの鼻,4,20,,100,,0,,0,1000333311,2,1,,0,49,,{},{}
 2263,Gangster_Patch,義賊の眼帯,4,20,,100,,0,,0,991944702,2,512,,0,50,,{},{}
-2264,Munak_Turban,ムナック帽,4,20,,300,,5,,0,1000333311,2,769,,0,51,,{},{ bonus2 bSubRace,1,10; bonus2 bMagicSubRace,1,10; }
+2264,Munak_Turban,ムナック帽,14,20,,300,,5,,0,1000333311,2,769,,0,51,,{},{ bonus2 bSubRace,1,10; bonus2 bMagicSubRace,1,10; }
 2265,Ganster_Mask,デモ用のマスク,4,20,,100,,0,,0,1000333311,2,1,,0,52,,{},{ bonus2 bResEff,Eff_Silence,1500; }
 2266,Iron_Cane,アイアンケイン,4,20,,300,,1,,0,16514,2,1,,50,53,,{},{}
 2267,Cigar,タバコ,4,20,,100,,0,,0,991944702,2,1,,0,54,,{},{ bonus2 bSubRace,4,3; bonus2 bMagicSubRace,4,3; }
@@ -2602,7 +2602,7 @@
 5377,Antique_Pipe,アンティークキセル,4,20,,100,,0,,0,1000333311,2,1,,0,383,,{},{ bonus2 bSubRace,7,2; bonus2 bMagicSubRace,7,2; }
 5378,Rabbit_Ear_Hat,兎耳帽子,4,20,,300,,0,,0,1000333311,2,256,,0,384,1,{},{ bonus bAgi,3; bonus3 bRevAutoSelfSpell,29,5,300; }
 5379,Balloon_Hat,バルーンハット,4,20,,800,,3,,1,1000333311,2,256,,0,385,1,{},{ bonus bCastrate,-getequiprefinerycnt(1); }
-5380,Fish_Head_Hat,魚帽子,4,20,,400,,1,,0,1000333311,2,256,,0,386,1,{},{ bonus4 bAutoSpell,281,1,300,EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; }
+5380,Fish_Head_Hat,魚帽子,4,20,,400,,1,,0,1000333311,2,256,,0,386,1,{},{ bonus3 bAutoSelfSpell,281,1,300; }
 5381,Santa_Poring_Hat,サンタポリン帽,4,20,,100,,2,,1,1000333311,2,256,,0,387,,{},{ bonus2 bAddEle,7,3; bonus2 bMagicAddEle,7,3; bonus2 bSubEle,7,3; bonus bMdef,2; }
 5382,Bell_Ribbon,小さな鈴のリボン,4,20,,200,,3,,1,1000333311,2,256,,0,388,1,{},{ bonus bVit,1; skill 33,1; }
 5383,Hunting_Cap,ハンティングキャップ,4,20,,250,,3,,1,991944702,2,256,,50,389,1,{},{ bonus bLuk,1; bonus2 bAddRace,2,10; }
@@ -2698,7 +2698,7 @@
 5473,Forceps_Hairpin,かにニッパのヘアピン,4,,,500,,4,,,1000333311,2,256,,30,470,,{},{ /* bonus3 bAddMonsterDropItem,991,5,100; bonus3 bAutoSpell,14,1,500; 発動率詳細不明、準備中*/ }
 5474,Notice_Board,お知らせ看板,4,,,700,,2,,,1000333311,2,256,,10,471,,{},{}
 5475,Cube_Mask,キューブマスク,13,,,100,,1,,,1000333311,2,513,,,472,,{},{}
-5476,Hairband_Of_Grandpeco,グランペコのヘアバンド,4,,,800,,2,,,1000333311,2,768,,30,473,1,{},{ bonus bStr,2; bonus bMaxHPrate,-10; bonus2 bAddGroup,2,15; }
+5476,Hairband_Of_Grandpeco,グランペコのヘアバンド,11,,,800,,2,,,1000333311,2,768,,30,473,1,{},{ bonus bStr,2; bonus bMaxHPrate,-10; bonus2 bAddGroup,2,15; }
 5477,Bro_Flag,ブラジル国旗,4,,,100,,1,,1,991944702,2,256,,30,474,1,{},{ skill 5,1; }
 5478,Classic_Hat,クラシックハット,4,,,500,,3,,0,1000333311,2,256,,,475,1,{},{bonus bStr,2; bonus bMaxHP,300; }
 5479,Shaman's_Hair_Ornament,シャーマンの髪飾り,4,,,300,,1,,0,1000333311,2,256,,30,476,1,{},{ bonus bMaxHP,50; bonus bMdef,3; bonus2 bSubEle,0,5; if( ( (getequipid(7)==2777) || (getequipid(8)==2777) ) && ( (getequipid(7)==2778) || (getequipid(8)==2778) ) ) bonus bMaxHP,300; bonus bCastrate,15; bonus bMatkRate,5; bonus bNoCastCancel,0; }
@@ -2819,9 +2819,9 @@
 5655,Unknown_Item,黒蛇王の帽子,4,,,500,,2,,,1000333311,2,256,,60,372,1,{},{ bonus bInt,2; bonus bAgi,2; bonus bDex,-2; bonus3 bAutoActiveMagic,5655,500,5000; if(checkactiveitem()) { misceffect 88,""; bonus bCastrate,-50; bonus bFlee,30; } }
 5656,Unknown_Item,スクーターヘルメット,4,,,1000,,7,,1,1000333311,2,256,,50,588,1,{},{ bonus bUnbreakableHelm,1; }
 5657,Unknown_Item,船長のパイプ,4,,,100,,0,,,1000333311,2,1,,30,383,,{},{ if(equippeditem(5359)==1){ bonus bAddLongWeaponDamage,getequiprefinerycnt(1); }; }
-5658,Unknown_Item,インプ帽子,4,,,400,,1,,,1000333311,2,256,,,589,,{},{ bonus3 bAutoSpell2,280,1,100; /* 暫定 */ }
-5659,Unknown_Item,スリーパー帽子,4,,,400,,1,,,1000333311,2,256,,,590,,{},{ bonus3 bAutoSpell2,283,1,100; /* 暫定 */ }
-5660,Unknown_Item,グリフォン帽子,4,,,400,,1,,,1000333311,2,256,,,591,,{},{ bonus3 bAutoSpell2,282,1,100; /* 暫定 */ }
+5658,Unknown_Item,インプ帽子,4,,,400,,1,,,1000333311,2,256,,,589,,{},{ bonus3 bAutoSelfSpell2,280,1,100; /* 暫定 */ }
+5659,Unknown_Item,スリーパー帽子,4,,,400,,1,,,1000333311,2,256,,,590,,{},{ bonus3 bAutoSelfSpell2,283,1,100; /* 暫定 */ }
+5660,Unknown_Item,グリフォン帽子,4,,,400,,1,,,1000333311,2,256,,,591,,{},{ bonus3 bAutoSelfSpell2,282,1,100; /* 暫定 */ }
 
 5665,Unknown_Item,ノルンの羽帽子,4,,,100,,1,,1,1000333311,2,256,,30,,,{},{}
 
@@ -3401,7 +3401,7 @@
 7224,Stone_of_Sage,賢者の石,3,10000,,10,,,,,,,,,,,,{},{}
 7225,Pumpkin_Lantern,カボチャの提灯,3,486,,10,,,,,,,,,,,,{},{}
 7226,Pellet,丸薬,3,2,,10,,,,,,,,,,,,{},{}
-7227,Unknown_Item,反対派の証,5,,,0,,0,,,1000333311,2,136,,1,,,{},{}
+7227,Unknown_Item,反対派の証,4,,,0,,0,,,1000333311,2,136,,1,,,{},{}
 7228,Gold_Bullion,金塊,3,,,300,,,,,,,,,,,,{},{}
 7229,Silver_Bullion,銀塊,3,,,300,,,,,,,,,,,,{},{}
 7230,Platinum_Bullion,白金の塊,3,,,300,,,,,,,,,,,,{},{}
@@ -4469,12 +4469,12 @@
 12247,Halohalo,ハロハロ,2,,,100,,,,,1000333311,2,,,20,,,{ sc_start SC_MSTR,600000,3; sc_start SC_MAGI,600000,3; sc_start SC_MVIT,600000,3; sc_start SC_MINT,600000,3; sc_start SC_MDEX,600000,3; sc_start SC_MLUK,600000,3; },{}
 12248,Masquerade_Ball_Box,仮装舞踏会の箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 5296,1; getitem 5297,1; getitem 5298,1; },{}
 12249,Kafra_Employee_Paystub,カプラの月給明細書,2,,,10,,,,,1000333311,2,,,,,,{ set Zeny,Zeny+rand(1,1000000); },{}
-12250,Str_Dish_,タンの盛り合わせ（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MSTR,3600000,10; },{}
-12251,Agi_Dish10_M,茹でサソリ（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MAGI,3600000,10; },{}
-12252,Int_Dish_,カクテル・竜の吐息（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MINT,3600000,10; },{}
-12253,Dex_Dish10_M,フベルゲルミルの酒（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MDEX,3600000,10; },{}
-12254,Luk_Dish_,九尾狐のしっぽ料理（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MLUK,3600000,10; },{}
-12255,Vit_Dish_,不死のチゲ鍋（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MVIT,3600000,10; },{}
+12250,Str_Dish_,タンの盛り合わせ（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MSTR2,3600000,10; },{}
+12251,Agi_Dish10_M,茹でサソリ（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MAGI2,3600000,10; },{}
+12252,Int_Dish_,カクテル・竜の吐息（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MINT2,3600000,10; },{}
+12253,Dex_Dish10_M,フベルゲルミルの酒（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MDEX2,3600000,10; },{}
+12254,Luk_Dish_,九尾狐のしっぽ料理（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MLUK2,3600000,10; },{}
+12255,Vit_Dish_,不死のチゲ鍋（特大）,2,,,10,,,,,1000333311,2,,,,,,{ sc_start SC_MVIT2,3600000,10; },{}
 12256,PRO_Gift_Box,pROプレゼントボックス,2,,,10,,,,,1000333311,2,,,,,,{},{}
 12257,Cold_Medicine,風邪薬,2,,,100,,,,,1000333311,2,,,50,,,{ percentheal 25,25; },{}
 12258,Bomb_Poring_Box,爆弾ポリンの箱,2,,,10,,,,,1000333311,2,,,,,,{ monster "this",0,0,"--ja--",1904,1,""; },{}

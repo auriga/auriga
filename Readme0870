@@ -1,4 +1,12 @@
 ----------------------------------------
+//0881 [2011/09/25] by popori
+
+・ARIAさんのitem_db.txtの修正をマージ (db/item_db.txt)
+  ARIAさんに感謝
+
+・0878のマージ漏れを補完 (src/map/clif.c src/map/vending.c)
+
+----------------------------------------
 //0880 [2011/09/25] by popori
 
 ・battle_auriga.confに「allow_same_activeitem」を追加 (conf/battle_auriga.conf src/map/battle.* src/map/pc.c)
