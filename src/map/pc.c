@@ -6410,7 +6410,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 
 	sd->status.hp = 0;
 
-	if(sd->vender_id)
+	if(sd->state.vending)
 		vending_closevending(sd);
 
 	pc_delspiritball(sd,sd->spiritball.num,0);

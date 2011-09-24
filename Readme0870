@@ -1,4 +1,17 @@
 ----------------------------------------
+//0878 [2011/09/25] by popori
+
+・露店処理をパケット0x801を基に変更 (src/map/clif.c src/map/map.h src/map/vending.*)
+
+・ついでに露店処理をリファクタリング (src/map/clif.c src/map/vending.*)
+
+・露店開設中かどうかの判断をvender_idで確認するのではなく、state.vendingで確認するように処理を変更 (src/map/chat.c src/map/clif.c src/map/pc.c src/map/trade.c src/map/vending.c src/map/unit.c)
+
+・パケット0x801の情報を変更 (doc/client_packet.txt)
+
+・PC型MOBのoptが変更された際、恐らくshiftクリックでないと攻撃が出来なくなりそうな個所があったので修正 (src/map/clif.c)
+
+----------------------------------------
 //0877 [2011/08/30] by popori
 
 ・vc_make.batにVC++ 2010 64bitコンパイルを追加 (vc_make.bat)

@@ -358,6 +358,7 @@ struct map_session_data {
 		unsigned tk_doridori_hp : 1;
 		unsigned tk_doridori_sp : 1;
 		unsigned show_equip : 1;
+		unsigned vending : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -652,7 +653,7 @@ struct map_session_data {
 
 	int adopt_invite;
 
-	int vender_id;
+	unsigned int vender_id;
 	int vend_num;
 	char message[80];
 	struct vending vending[MAX_VENDING];

@@ -2147,7 +2147,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			trade_tradecancel(sd);
 
 		// 露天を閉じる
-		if(sd->vender_id)
+		if(sd->state.vending)
 			vending_closevending(sd);
 
 		// 倉庫を開いてるなら閉じて保存する

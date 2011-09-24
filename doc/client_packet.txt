@@ -643,6 +643,7 @@ R 0135 <index>.w <amount>.w <fail>.B
 	fail=03 （なし）
 	fail=04 %s 買い物失敗在庫不足、現在在庫 amount 個
 	fail=05 アイテム交換中に売買不可
+	fail=06
 R 0136 <len>.w <ID>.l {<value>.l <index>.w <amount>.w <type>.B <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w}.22B*
 	露店開設成功
 R 0137 <index>.w <amount>.w
@@ -2248,9 +2249,9 @@ R 07ff <len>.w <result>.l
 	result:1 = 0x7fcが有効
 	result:2 = R化している
 	result:4 = チャネリングサービスが有効
-R 0800 <len>.w <ID>.l <charID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
+R 0800 <len>.w <accountID>.l <uniqueID>.l {<value>.l  <amount>.w <index>.w <type>.B <item ID>.w <identify flag>.B <attribute>.B <refine>.B <card>.4w}.22B
 	0133の上位版（2009-12-08aRagexeRE以降）
-S 0801 <len>.w <ID>.l <charID>.l {<amount>.w <index>.w}.4B*
+S 0801 <len>.w <accountID>.l <uniqueID>.l {<amount>.w <index>.w}.4B*
 	0134の上位版（2009-12-08aRagexeRE以降）
 S 0802 <level>.w <MapID>.w <job>.6w
 	パーティーブッキング登録要求
