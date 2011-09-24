@@ -589,6 +589,7 @@ extern struct Battle_Config {
 	int get_status_point_over_lv100;
 	int max_buyingstore_zeny;
 	int max_buyingstore_amount;
+	int allow_same_activeitem;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

@@ -1,4 +1,17 @@
 ----------------------------------------
+//0880 [2011/09/25] by popori
+
+・battle_auriga.confに「allow_same_activeitem」を追加 (conf/battle_auriga.conf src/map/battle.* src/map/pc.c)
+  同じカードのアクティブアイテムを許可するか切り替える
+  デフォルトはno
+
+・アクティブアイテム発動中に再度同アイテムの効果が発動しても発動時間が上書きされないのを修正 (src/map/pc.c)
+  kroeさんに感謝
+
+・クエストリストの追加、討伐数の更新が正常に適用されない問題を修正 (src/map/clif.c)
+  716さんに感謝
+
+----------------------------------------
 //0879 [2011/09/25] by popori
 
 ・購買露店システムの実装 (conf/battle_auriga.conf db/packet_db.txt src/map/battle.* src/map/buyingstore.* src/map/chat.c

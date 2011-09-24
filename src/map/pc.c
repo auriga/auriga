@@ -1896,8 +1896,6 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilli
  */
 int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,int tick,unsigned int flag)
 {
-	int i;
-
 	nullpo_retr(0, sd);
 
 	// 一杯
@@ -1905,9 +1903,12 @@ int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,int 
 		return 0;
 
 	// 同じIDが登録されているか
-	for(i = 0; i < sd->activeitem.count; i++) {
-		if(sd->activeitem.id[i] == id && sd->activeitem.skill[i] == skillid)
-			return 0;
+	if(!battle_config.allow_same_activeitem) {
+		int i;
+		for(i = 0; i < sd->activeitem.count; i++) {
+			if(sd->activeitem.id[i] == id && sd->activeitem.skill[i] == skillid)
+				return 0;
+		}
 	}
 
 	// 後ろに追加
@@ -1961,9 +1962,6 @@ int pc_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigned i
 
 	for(i=0;i<sd->activeitem.count;i++)
 	{
-		if(sd->activeitem_timer[i] != -1)
-			continue;
-
 		// スキル使用時に発動するアクティブアイテムは弾く
 		if(sd->activeitem.skill[i] != 0)
 			continue;
@@ -2003,10 +2001,15 @@ int pc_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigned i
 		if(atn_rand()%10000 > sd->activeitem.rate[i])
 			continue;
 
+		// 既に発動中の場合は時間を上書き
+		if(sd->activeitem_timer[i] != -1) {
+			sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], pc_activeitem_timer, sd->bl.id, NULL);
 		// 発動
-		sd->activeitem_id2[i]   = sd->activeitem.id[i];
-		sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], pc_activeitem_timer, sd->bl.id, NULL);
-		flag = 1;
+		} else {
+			sd->activeitem_id2[i]   = sd->activeitem.id[i];
+			sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], pc_activeitem_timer, sd->bl.id, NULL);
+			flag = 1;
+		}
 	}
 	if(flag)
 		status_calc_pc(sd,0);
@@ -2031,9 +2034,6 @@ int pc_activeitemskill_start(struct map_session_data* sd,int skillid,unsigned in
 
 	for(i=0;i<sd->activeitem.count;i++)
 	{
-		if(sd->activeitem_timer[i] != -1)
-			continue;
-
 		// スキルで発動するオートスペルのチェック
 		if(sd->activeitem.skill[i] != skillid)
 			continue;
@@ -2041,10 +2041,15 @@ int pc_activeitemskill_start(struct map_session_data* sd,int skillid,unsigned in
 		if(atn_rand()%10000 > sd->activeitem.rate[i])
 			continue;
 
+		// 既に発動中の場合は時間を上書き
+		if(sd->activeitem_timer[i] != -1) {
+			sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], pc_activeitem_timer, sd->bl.id, NULL);
 		// 発動
-		sd->activeitem_id2[i]   = sd->activeitem.id[i];
-		sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], pc_activeitem_timer, sd->bl.id, NULL);
-		flag = 1;
+		} else {
+			sd->activeitem_id2[i]   = sd->activeitem.id[i];
+			sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], pc_activeitem_timer, sd->bl.id, NULL);
+			flag = 1;
+		}
 	}
 	if(flag)
 		status_calc_pc(sd,0);

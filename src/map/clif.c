@@ -5265,7 +5265,7 @@ void clif_changeoption(struct block_list* bl)
 	WBUFW(buf, 6) = (sc) ? sc->opt1 : OPT1_NORMAL;
 	WBUFW(buf, 8) = (sc) ? sc->opt2 : OPT2_NORMAL;
 	WBUFW(buf,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : OPTION_NOTHING;
-	WBUFB(buf,12) = (sd) ? (unsigned char)sd->status.karma : ( bl->type == BL_MOB )? mob_is_pcview(((struct mob_data *)bl)->class_) : 0;
+	WBUFB(buf,12) = (sd) ? (unsigned char)sd->status.karma : 0;
 	clif_send(buf,packet_db[0x119].len,bl,AREA);
 #else
 	WBUFW(buf, 0) = 0x229;
@@ -5273,7 +5273,7 @@ void clif_changeoption(struct block_list* bl)
 	WBUFW(buf, 6) = (sc) ? sc->opt1 : OPT1_NORMAL;
 	WBUFW(buf, 8) = (sc) ? sc->opt2 : OPT2_NORMAL;
 	WBUFL(buf,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : OPTION_NOTHING;
-	WBUFB(buf,14) = (sd) ? (unsigned char)sd->status.karma : ( bl->type == BL_MOB )? mob_is_pcview(((struct mob_data *)bl)->class_) : 0;
+	WBUFB(buf,14) = (sd) ? (unsigned char)sd->status.karma : 0;
 	clif_send(buf,packet_db[0x229].len,bl,AREA);
 #endif
 
@@ -11753,7 +11753,6 @@ void clif_add_questlist(struct map_session_data *sd, int quest_id)
 	nullpo_retv(sd);
 
 	idx = quest_search_index(sd,quest_id);
-	idx = 0;
 	if(idx < 0 || idx > MAX_QUESTLIST)
 		return;
 
@@ -11814,7 +11813,6 @@ void clif_update_questcount(struct map_session_data *sd, int quest_id)
 	nullpo_retv(sd);
 
 	idx = quest_search_index(sd,quest_id);
-	idx = 0;
 	if(idx < 0 || idx > MAX_QUESTLIST)
 		return;
 

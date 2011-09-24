@@ -6644,6 +6644,7 @@ int battle_config_read(const char *cfgName)
 		{ "get_status_point_over_lv100",        &battle_config.get_status_point_over_lv100,        1        },
 		{ "max_buyingstore_zeny",               &battle_config.max_buyingstore_zeny,               99990000 },
 		{ "max_buyingstore_amount",             &battle_config.max_buyingstore_amount,             9999     },
+		{ "allow_same_activeitem",              &battle_config.allow_same_activeitem,              0        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 
