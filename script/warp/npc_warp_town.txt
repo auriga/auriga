@@ -2194,3 +2194,83 @@ mosk_in.gat,220,273,0	warp	moscoviawarp1021	1,1,mosk_in.gat,152,275
 mosk_in.gat,152,272,0	warp	moscoviawarp1022	1,1,mosk_in.gat,220,270
 //ババヤガの家
 mosk_in.gat,215,36,0	warp	moscoviawarp1023	1,1,mosk_dun02.gat,53,217
+
+
+
+//---アッシュ・バキューム追加マップ
+
+
+//==============================================================
+// -----  ミッドガルド連合軍駐屯地  -----
+// mid_camp.gat		ミッドガルド連合軍駐屯地
+// mid_campin.gat	ミッドガルド連合軍駐屯地内部
+//==============================================================
+//連合軍本部
+mid_camp.gat,214,249,0		warp	midcampwarp1001		1,1,mid_campin.gat,89,102
+mid_campin.gat,89,99,0		warp	midcampwarp1002		1,1,mid_camp.gat,215,247
+mid_campin.gat,66,114,0		warp	midcampwarp1003		1,1,mid_campin.gat,22,80
+mid_campin.gat,25,80,0		warp	midcampwarp1004		1,1,mid_campin.gat,70,114
+mid_campin.gat,66,120,0		warp	midcampwarp1005		1,1,mid_campin.gat,22,124
+mid_campin.gat,25,124,0		warp	midcampwarp1006		1,1,mid_campin.gat,70,120
+mid_campin.gat,68,128,0		warp	midcampwarp1007		1,1,mid_campin.gat,22,168
+mid_campin.gat,25,168,0		warp	midcampwarp1008		1,1,mid_campin.gat,71,128
+mid_campin.gat,86,141,0		warp	midcampwarp1009		1,1,mid_campin.gat,66,181
+mid_campin.gat,65,178,0		warp	midcampwarp1010		1,1,mid_campin.gat,86,138
+mid_campin.gat,94,141,0		warp	midcampwarp1011		1,1,mid_campin.gat,117,181
+mid_campin.gat,117,178,0	warp	midcampwarp1012		1,1,mid_campin.gat,94,138
+mid_campin.gat,111,128,0	warp	midcampwarp1013		1,1,mid_campin.gat,165,170
+mid_campin.gat,162,170,0	warp	midcampwarp1014		1,1,mid_campin.gat,108,128
+mid_campin.gat,113,120,0	warp	midcampwarp1015		1,1,mid_campin.gat,165,126
+mid_campin.gat,162,126,0	warp	midcampwarp1016		1,1,mid_campin.gat,110,120
+mid_campin.gat,113,114,0	warp	midcampwarp1017		1,1,mid_campin.gat,165,82
+mid_campin.gat,162,82,0		warp	midcampwarp1018		1,1,mid_campin.gat,110,114
+//武器庫
+mid_camp.gat,205,211,0		warp	midcampwarp1019		1,1,mid_campin.gat,229,123
+mid_campin.gat,232,123,0	warp	midcampwarp1020		1,1,mid_camp.gat,208,211
+mid_campin.gat,223,109,0	warp	midcampwarp1021		1,1,mid_camp.gat,198,205
+mid_camp.gat,196,204,0		warp	midcampwarp1022		1,1,mid_campin.gat,220,109
+//宿舎（東）
+mid_camp.gat,266,260,0		warp	midcampwarp1023		1,1,mid_campin.gat,286,124
+mid_campin.gat,283,124,0	warp	midcampwarp1024		1,1,mid_camp.gat,263,260
+//宿舎（西）
+mid_camp.gat,163,231,0		warp	midcampwarp1025		1,1,mid_campin.gat,376,133
+mid_campin.gat,376,136,0	warp	midcampwarp1026		1,1,mid_camp.gat,163,234
+
+
+
+//---ブラジリス追加マップ
+
+
+//==============================================================
+// -----  ブラジリス -----
+// brasilis.gat		ブラジリス
+// bra_in01.gat		ブラジリス 室内
+// -----
+// bra_fild01.gat	ブラジリスフィールド 01
+//==============================================================
+//ブラジリス⇒ブラジリスフィールド 01
+brasilis.gat,308,336,0	warp	brasiliswarp0501	1,1,bra_fild01.gat,74,34
+
+//ホテル
+brasilis.gat,274,153,0	warp	brasiliswarp1001	1,1,bra_in01.gat,38,9
+bra_in01.gat,39,7,0		warp	brasiliswarp1002	1,1,brasilis.gat,273,151
+bra_in01.gat,52,27,0	warp	brasiliswarp1003	1,1,bra_in01.gat,85,26
+bra_in01.gat,83,27,0	warp	brasiliswarp1004	1,1,bra_in01.gat,50,27
+bra_in01.gat,31,29,0	warp	brasiliswarp1005	1,1,bra_in01.gat,23,70
+bra_in01.gat,25,70,0	warp	brasiliswarp1006	1,1,bra_in01.gat,32,26
+bra_in01.gat,9,67,0		warp	brasiliswarp1007	1,1,bra_in01.gat,154,22
+bra_in01.gat,156,23,0	warp	brasiliswarp1008	1,1,bra_in01.gat,11,65
+bra_in01.gat,31,74,0	warp	brasiliswarp1009	1,1,bra_in01.gat,149,59
+bra_in01.gat,148,57,0	warp	brasiliswarp1010	1,1,bra_in01.gat,31,72
+bra_in01.gat,52,67,0	warp	brasiliswarp1011	1,1,bra_in01.gat,87,66
+bra_in01.gat,85,67,0	warp	brasiliswarp1012	1,1,bra_in01.gat,50,66
+
+//美術博物館
+brasilis.gat,146,162,0	warp	brasiliswarp1013	1,1,bra_in01.gat,17,137
+bra_in01.gat,17,134,0	warp	brasiliswarp1014	1,1,brasilis.gat,148,161
+bra_in01.gat,50,171,0	warp	brasiliswarp1015	1,1,bra_in01.gat,82,168
+bra_in01.gat,79,169,0	warp	brasiliswarp1016	1,1,bra_in01.gat,46,170
+bra_in01.gat,50,145,0	warp	brasiliswarp1017	1,1,bra_in01.gat,81,143
+bra_in01.gat,79,142,0	warp	brasiliswarp1018	1,1,bra_in01.gat,47,144
+bra_in01.gat,138,174,0	warp	brasiliswarp1019	1,1,bra_in01.gat,12,183
+bra_in01.gat,206,98,0	warp	brasiliswarp1020	1,1,brasilis.gat,120,160

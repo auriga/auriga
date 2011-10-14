@@ -1,4 +1,28 @@
 ----------------------------------------
+//0882 [2011/10/15] by Blaze
+
+・ブラジリスNPC実装 (npc_town_brasilis.txt)
+	-> ガラナクエスト実装
+	-> 幸運の睡蓮クエスト実装
+	-> トイレのオバケクエスト実装
+	-> イアラクエスト実装
+	-> 変なヒドラクエスト実装
+	-> ブラジリスの子犬クエスト実装
+		Thanks to Xia
+
+・ブラジリス関連NPC追加 (npc_misc_guide.txt, npc_misc_inn.txt, npc_misc_kafra.txt, npc_quest_ice.txt)
+
+・ブラジリス追加マップのwarp更新（npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt）
+
+・ブラジリス追加マップのmapflag更新（mapflag.txt）
+
+・ブラジリス追加マップのmonster出現定義追加（npc_monster_brasilis.txt, npc_monster_brafild.txt, npc_monster_bradun.txt）
+
+・db更新（item_db.txt, mob_db.txt, mob_skill_db.txt, quest_db.txt）
+
+・conf更新 (map_auriga.conf)
+
+----------------------------------------
 //0881 [2011/09/25] by popori
 
 ・ARIAさんのitem_db.txtの修正をマージ (db/item_db.txt)

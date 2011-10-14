@@ -17,6 +17,14 @@
 		mes "^3355FF100 Zeny^000000で";
 		mes "身も心も爽やかに！";
 	}
+	if(strnpcinfo(2) == "bra") {
+		mes "さぁ、あつ〜いブラジリスで";
+		mes "つめた〜いアイスクリームはいかが！";
+		mes "冷たいアイスクリーム！";
+		mes "^3355FF100 Zeny^000000で";
+		mes "身も心も爽やかにリフレッシュ！";
+		mes "おいしいよ！";
+	}
 	else {
 		mes "冷たくて甘〜い";
 		mes "アイスクリーム！";
@@ -41,6 +49,15 @@
 			mes "補給源。一度に10個まで";
 			mes "お買い求めいただけます。";
 			set '@max,10;
+		}
+		else if(strnpcinfo(2) == "bra") {
+			mes "ありがとうございます!!";
+			mes "ここブラジリスでは";
+			mes "最高のアイスクリーム製造機を";
+			mes "導入しておりますので、当店では";
+			mes "一度に^0000FF500個^000000まで";
+			mes "お買い求めいただけます！";
+			set '@max,500;
 		}
 		else {
 			mes "アイスクリームは";
@@ -125,3 +142,4 @@
 moc_ruins.gat,81,155,4	duplicate(IceBuyer)	アイスクリーム商人#moc	85
 alberta.gat,107,73,4	duplicate(IceBuyer)	アイスクリーム商人#alb	85
 moc_fild16.gat,88,304,4	duplicate(IceBuyer)	アイスクリーム商人#moc_	85
+brasilis.gat,189,225,3	duplicate(IceBuyer)	アイスクリーム商人#bra	85

@@ -76,6 +76,13 @@ ayothaya.gat	mapflag	nopenalty	dummy
 beach_dun.gat	mapflag	nomemo	dummy
 beach_dun2.gat	mapflag	nomemo	dummy
 beach_dun3.gat	mapflag	nomemo	dummy
+bra_dun01.gat	mapflag	nomemo	dummy
+bra_dun02.gat	mapflag	nomemo	dummy
+bra_in01.gat	mapflag	nomemo	dummy
+bra_in01.gat	mapflag	noteleport	dummy
+bra_in01.gat	mapflag	nobranch	dummy
+bra_in01.gat	mapflag	nopenalty	dummy
+brasilis.gat	mapflag	nopenalty	dummy
 c_tower1.gat	mapflag	nomemo	dummy
 c_tower2.gat	mapflag	nomemo	dummy
 c_tower3.gat	mapflag	nomemo	dummy
