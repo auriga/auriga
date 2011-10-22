@@ -2877,3 +2877,92 @@ brasilis.gat,240,81,3	script	ブラジリスガイド	478,{
 		}
 	}
 }
+
+
+//----------------------------------------------------------------------
+//[案内要員 - デワタ]
+
+dewata.gat,226,82,4	script	デワタ案内要員#dew1	537,{
+	mes "[デワタ案内要員]";
+	mes "美しい波が心を穏やかにさせる、";
+	mes "ここ、^884411デワタ^000000へようこそ。";
+	mes "街のご案内をしましょうか？";
+	while(1) {
+		next;
+		switch(select("カプラ職員","ホテル・ザ・グラント","食堂マスター","武器商人","防具商人","道具商人","果物商人","クラカト火山案内人","アルベルタ行船員","ミニMAP上の位置表示を消す","やめる")) {
+		case 1:
+			mes "[デワタ案内要員]";
+			mes "カプラ職員は";
+			mes ((strnpcinfo(2) == "dew2")? "すぐそちら": "街の中央")+ "にいます。";
+			viewpoint 1,202,184,1,0xFF0000;
+			break;
+		case 2:
+			mes "[デワタ案内要員]";
+			mes "ホテル・ザ・グラントは";
+			mes "街の北西にあります。";
+			viewpoint 1,127,289,2,0x99FFFF;
+			break;
+		case 3:
+			mes "[デワタ案内要員]";
+			mes "食堂マスターは";
+			mes "街の南西にいます。";
+			viewpoint 1,146,109,3,0xFF00FF;
+			break;
+		case 4:
+			mes "[デワタ案内要員]";
+			mes "武器商人は";
+			mes "街の中央のやや南東にいます。";
+			viewpoint 1,218,164,4,0x0000FF;
+			break;
+		case 5:
+			mes "[デワタ案内要員]";
+			mes "防具商人は";
+			mes "街の中央のやや西にいます。";
+			viewpoint 1,158,182,5,0xCC99FF;
+			break;
+		case 6:
+			mes "[デワタ案内要員]";
+			mes "道具商人は";
+			mes "街の中央のやや南西にいます。";
+			viewpoint 1,182,164,6,0xCCCC33;
+			break;
+		case 7:
+			mes "[デワタ案内要員]";
+			mes "果物商人は";
+			mes "街の中央の北西にいます。";
+			viewpoint 1,145,267,7,0xFF9900;
+			break;
+		case 8:
+			mes "[デワタ案内要員]";
+			mes "クラカト火山案内人は";
+			mes "街の南にいます。";
+			viewpoint 1,235,56,8,0x00FF00;
+			break;
+		case 9:
+			mes "[デワタ案内要員]";
+			mes "アルベルタ行船員は";
+			mes "街の南にいます。";
+			viewpoint 1,229,49,9,0xFFFFFF;
+			break;
+		case 10:
+			viewpoint 2,202,184,1,0xFF0000;
+			viewpoint 2,127,289,2,0x99FFFF;
+			viewpoint 2,146,109,3,0xFF00FF;
+			viewpoint 2,218,164,4,0x0000FF;
+			viewpoint 2,158,182,5,0xCC99FF;
+			viewpoint 2,182,164,6,0xCCCC33;
+			viewpoint 2,145,267,7,0xFF9900;
+			viewpoint 2,235,56,8,0x00FF00;
+			viewpoint 2,229,49,9,0xFFFFFF;
+			mes "[デワタ案内要員]";
+			mes "ミニMAP上の位置表示を";
+			mes "全て消しました。";
+			break;
+		case 11:
+			mes "[デワタ案内要員]";
+			mes "それでは、よい観光を。";
+			close;
+		}
+	}
+}
+dewata.gat,197,184,4	duplicate(デワタ案内要員#dew1)	デワタ案内要員#dew2	537

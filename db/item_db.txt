@@ -2136,92 +2136,111 @@
 4452,Centipede_Larva_Card,センチピード幼虫カード,6,20,,10,,,,,,,2,,,,,{},{ bonus bInt,1; bonus bMatk,3; }
 4453,Hillsrion_Card,ヒルスリオンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAtk,25; }
 
-4700,Strength1,Str + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4769) || equippeditem(4770)) end; bonus bStr,1; }
-4701,Strength2,Str + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4770)) end; bonus bStr,2; }
-4702,Strength3,Str + 3,3,,,,,,,,,,,,,,,{},{ bonus bStr,3; }
-4703,Strength4,Str + 4,3,,,,,,,,,,,,,,,{},{ bonus bStr,4; }
-4704,Strength5,Str + 5,3,,,,,,,,,,,,,,,{},{ bonus bStr,5; }
-4705,Strength6,Str + 6,3,,,,,,,,,,,,,,,{},{ bonus bStr,6; }
-4706,Strength7,Str + 7,3,,,,,,,,,,,,,,,{},{ bonus bStr,7; }
-4707,Strength8,Str + 8,3,,,,,,,,,,,,,,,{},{ bonus bStr,8; }
-4708,Strength9,Str + 9,3,,,,,,,,,,,,,,,{},{ bonus bStr,9; }
-4709,Strength10,Str + 10,3,,,,,,,,,,,,,,,{},{ bonus bStr,10; }
-4710,Inteligence1,Int + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4772) || equippeditem(4773)) end; bonus bInt,1; }
-4711,Inteligence2,Int + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4773)) end; bonus bInt,2; }
-4712,Inteligence3,Int + 3,3,,,,,,,,,,,,,,,{},{ bonus bInt,3; }
-4713,Inteligence4,Int + 4,3,,,,,,,,,,,,,,,{},{ bonus bInt,4; }
-4714,Inteligence5,Int + 5,3,,,,,,,,,,,,,,,{},{ bonus bInt,5; }
-4715,Inteligence6,Int + 6,3,,,,,,,,,,,,,,,{},{ bonus bInt,6; }
-4716,Inteligence7,Int + 7,3,,,,,,,,,,,,,,,{},{ bonus bInt,7; }
-4717,Inteligence8,Int + 8,3,,,,,,,,,,,,,,,{},{ bonus bInt,8; }
-4718,Inteligence9,Int + 9,3,,,,,,,,,,,,,,,{},{ bonus bInt,9; }
-4719,Inteligence10,Int + 10,3,,,,,,,,,,,,,,,{},{ bonus bInt,10; }
-4720,Dexterity1,Dex + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4781) || equippeditem(4783)) end; bonus bDex,1; }
-4721,Dexterity2,Dex + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4783)) end; bonus bDex,2; }
-4722,Dexterity3,Dex + 3,3,,,,,,,,,,,,,,,{},{ bonus bDex,3; }
-4723,Dexterity4,Dex + 4,3,,,,,,,,,,,,,,,{},{ bonus bDex,4; }
-4724,Dexterity5,Dex + 5,3,,,,,,,,,,,,,,,{},{ bonus bDex,5; }
-4725,Dexterity6,Dex + 6,3,,,,,,,,,,,,,,,{},{ bonus bDex,6; }
-4726,Dexterity7,Dex + 7,3,,,,,,,,,,,,,,,{},{ bonus bDex,7; }
-4727,Dexterity8,Dex + 8,3,,,,,,,,,,,,,,,{},{ bonus bDex,8; }
-4728,Dexterity9,Dex + 9,3,,,,,,,,,,,,,,,{},{ bonus bDex,9; }
-4729,Dexterity10,Dex + 10,3,,,,,,,,,,,,,,,{},{ bonus bDex,10; }
-4730,Agility1,Agi + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4778) || equippeditem(4779)) end; bonus bAgi,1; }
-4731,Agility2,Agi + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4779)) end; bonus bAgi,2; }
-4732,Agility3,Agi + 3,3,,,,,,,,,,,,,,,{},{ bonus bAgi,3; }
-4733,Agility4,Agi + 4,3,,,,,,,,,,,,,,,{},{ bonus bAgi,4; }
-4734,Agility5,Agi + 5,3,,,,,,,,,,,,,,,{},{ bonus bAgi,5; }
-4735,Agility6,Agi + 6,3,,,,,,,,,,,,,,,{},{ bonus bAgi,6; }
-4736,Agility7,Agi + 7,3,,,,,,,,,,,,,,,{},{ bonus bAgi,7; }
-4737,Agility8,Agi + 8,3,,,,,,,,,,,,,,,{},{ bonus bAgi,8; }
-4738,Agility9,Agi + 9,3,,,,,,,,,,,,,,,{},{ bonus bAgi,9; }
-4739,Agility10,Agi + 10,3,,,,,,,,,,,,,,,{},{ bonus bAgi,10; }
-4740,Vitality1,Vit + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4775) || equippeditem(4776)) end; bonus bVit,1; }
-4741,Vitality2,Vit + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4776)) end; bonus bVit,2; }
-4742,Vitality3,Vit + 3,3,,,,,,,,,,,,,,,{},{ bonus bVit,3; }
-4743,Vitality4,Vit + 4,3,,,,,,,,,,,,,,,{},{ bonus bVit,4; }
-4744,Vitality5,Vit + 5,3,,,,,,,,,,,,,,,{},{ bonus bVit,5; }
-4745,Vitality6,Vit + 6,3,,,,,,,,,,,,,,,{},{ bonus bVit,6; }
-4746,Vitality7,Vit + 7,3,,,,,,,,,,,,,,,{},{ bonus bVit,7; }
-4747,Vitality8,Vit + 8,3,,,,,,,,,,,,,,,{},{ bonus bVit,8; }
-4748,Vitality9,Vit + 9,3,,,,,,,,,,,,,,,{},{ bonus bVit,9; }
-4749,Vitality10,Vit + 10,3,,,,,,,,,,,,,,,{},{ bonus bVit,10; }
-4750,Luck1,Luk + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4784) || equippeditem(4785)) end; bonus bLuk,1; }
-4751,Luck2,Luk + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4785)) end; bonus bLuk,2; }
-4752,Luck3,Luk + 3,3,,,,,,,,,,,,,,,{},{ bonus bLuk,3; }
-4753,Luck4,Luk + 4,3,,,,,,,,,,,,,,,{},{ bonus bLuk,4; }
-4754,Luck5,Luk + 5,3,,,,,,,,,,,,,,,{},{ bonus bLuk,5; }
-4755,Luck6,Luk + 6,3,,,,,,,,,,,,,,,{},{ bonus bLuk,6; }
-4756,Luck7,Luk + 7,3,,,,,,,,,,,,,,,{},{ bonus bLuk,7; }
-4757,Luck8,Luk + 8,3,,,,,,,,,,,,,,,{},{ bonus bLuk,8; }
-4758,Luck9,Luk + 9,3,,,,,,,,,,,,,,,{},{ bonus bLuk,9; }
-4759,Luck10,Luk + 10,3,,,,,,,,,,,,,,,{},{ bonus bLuk,10; }
-4760,Unknown_Item,Matk + 1%,3,,,,,,,,,,,,,,,{},{ bonus bMatkRate,1; bonus bCastrate,-1; /*本来は固定詠唱時間のみ短縮*/ }
-4761,Unknown_Item,Matk + 2%,3,,,,,,,,,,,,,,,{},{ bonus bMatkRate,2; bonus bCastrate,-1; /*本来は固定詠唱時間のみ短縮*/ }
-4762,Unknown_Item,Flee + 6,3,,,,,,,,,,,,,,,{},{ bonus bFlee,6; }
-4763,Unknown_Item,Flee + 12,3,,,,,,,,,,,,,,,{},{ bonus bFlee,12; }
-4764,Unknown_Item,Cri + 5,3,,,,,,,,,,,,,,,{},{ bonus bCritical,5; }
-4765,Unknown_Item,Cri + 7,3,,,,,,,,,,,,,,,{},{ bonus bCritical,7; }
-4766,Unknown_Item,Atk + 2%,3,,,,,,,,,,,,,,,{},{ bonus bAtkRate,2; }
-4767,Unknown_Item,Atk + 3%,3,,,,,,,,,,,,,,,{},{ bonus bAtkRate,3; }
-4768,Unknown_Item,Str + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4700) || equippeditem(4701) || equippeditem(4702)) end; bonus bStr,1; }
-4769,Unknown_Item,Str + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4701) || equippeditem(4702)) end; bonus bStr,2; }
-4770,Unknown_Item,Str + 3,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4702)) end; bonus bStr,3; }
-4771,Unknown_Item,Int + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4710) || equippeditem(4711) || equippeditem(4712)) end; bonus bInt,1; }
-4772,Unknown_Item,Int + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4711) || equippeditem(4712)) end; bonus bInt,2; }
-4773,Unknown_Item,Int + 3,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4712)) end; bonus bInt,3; }
-4774,Unknown_Item,Vit + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4740) || equippeditem(4741) || equippeditem(4742)) end; bonus bVit,1; }
-4775,Unknown_Item,Vit + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4741) || equippeditem(4742)) end; bonus bVit,2; }
-4776,Unknown_Item,Vit + 3,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4742)) end; bonus bVit,3; }
-4777,Unknown_Item,Agi + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4730) || equippeditem(4731) || equippeditem(4732)) end; bonus bAgi,1; }
-4778,Unknown_Item,Agi + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4731) || equippeditem(4732)) end; bonus bAgi,2; }
-4779,Unknown_Item,Agi + 3,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4732)) end; bonus bAgi,3; }
-4780,Unknown_Item,Dex + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4720) || equippeditem(4721) || equippeditem(4722)) end; bonus bDex,1; }
-4781,Unknown_Item,Dex + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4721) || equippeditem(4722)) end; bonus bDex,2; }
-4782,Unknown_Item,Dex + 3,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4722)) end; bonus bDex,3; }
-4783,Unknown_Item,Luk + 1,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4750) || equippeditem(4751) || equippeditem(4752)) end; bonus bLuk,1; }
-4784,Unknown_Item,Luk + 2,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4751) || equippeditem(4752)) end; bonus bLuk,2; }
-4785,Unknown_Item,Luk + 3,3,,,,,,,,,,,,,,,{},{ if(equippeditem(4752)) end; bonus bLuk,3; }
+4700,Strength1,Str + 1,6,,,,,,,,,,1023,,,,,{},{ if(equippeditem(4769) || equippeditem(4770)) end; bonus bStr,1; }
+4701,Strength2,Str + 2,6,,,,,,,,,,1023,,,,,{},{ if(equippeditem(4770)) end; bonus bStr,2; }
+4702,Strength3,Str + 3,6,,,,,,,,,,1023,,,,,{},{ bonus bStr,3; }
+4703,Strength4,Str + 4,6,,,,,,,,,,1023,,,,,{},{ bonus bStr,4; }
+4704,Strength5,Str + 5,6,,,,,,,,,,1023,,,,,{},{ bonus bStr,5; }
+4705,Strength6,Str + 6,6,,,,,,,,,,1023,,,,,{},{ bonus bStr,6; }
+4706,Strength7,Str + 7,6,,,,,,,,,,1023,,,,,{},{ bonus bStr,7; }
+4707,Strength8,Str + 8,6,,,,,,,,,,1023,,,,,{},{ bonus bStr,8; }
+4708,Strength9,Str + 9,6,,,,,,,,,,1023,,,,,{},{ bonus bStr,9; }
+4709,Strength10,Str + 10,6,,,,,,,,,1023,,,,,,{},{ bonus bStr,10; }
+4710,Inteligence1,Int + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4772) || equippeditem(4773)) end; bonus bInt,1; }
+4711,Inteligence2,Int + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4773)) end; bonus bInt,2; }
+4712,Inteligence3,Int + 3,6,,,,,,,,,1023,,,,,,{},{ bonus bInt,3; }
+4713,Inteligence4,Int + 4,6,,,,,,,,,1023,,,,,,{},{ bonus bInt,4; }
+4714,Inteligence5,Int + 5,6,,,,,,,,,1023,,,,,,{},{ bonus bInt,5; }
+4715,Inteligence6,Int + 6,6,,,,,,,,,1023,,,,,,{},{ bonus bInt,6; }
+4716,Inteligence7,Int + 7,6,,,,,,,,,1023,,,,,,{},{ bonus bInt,7; }
+4717,Inteligence8,Int + 8,6,,,,,,,,,1023,,,,,,{},{ bonus bInt,8; }
+4718,Inteligence9,Int + 9,6,,,,,,,,,1023,,,,,,{},{ bonus bInt,9; }
+4719,Inteligence10,Int + 10,6,,,,,,,,,1023,,,,,,{},{ bonus bInt,10; }
+4720,Dexterity1,Dex + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4781) || equippeditem(4783)) end; bonus bDex,1; }
+4721,Dexterity2,Dex + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4783)) end; bonus bDex,2; }
+4722,Dexterity3,Dex + 3,6,,,,,,,,,1023,,,,,,{},{ bonus bDex,3; }
+4723,Dexterity4,Dex + 4,6,,,,,,,,,1023,,,,,,{},{ bonus bDex,4; }
+4724,Dexterity5,Dex + 5,6,,,,,,,,,1023,,,,,,{},{ bonus bDex,5; }
+4725,Dexterity6,Dex + 6,6,,,,,,,,,1023,,,,,,{},{ bonus bDex,6; }
+4726,Dexterity7,Dex + 7,6,,,,,,,,,1023,,,,,,{},{ bonus bDex,7; }
+4727,Dexterity8,Dex + 8,6,,,,,,,,,1023,,,,,,{},{ bonus bDex,8; }
+4728,Dexterity9,Dex + 9,6,,,,,,,,,1023,,,,,,{},{ bonus bDex,9; }
+4729,Dexterity10,Dex + 10,6,,,,,,,,,1023,,,,,,{},{ bonus bDex,10; }
+4730,Agility1,Agi + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4778) || equippeditem(4779)) end; bonus bAgi,1; }
+4731,Agility2,Agi + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4779)) end; bonus bAgi,2; }
+4732,Agility3,Agi + 3,6,,,,,,,,,1023,,,,,,{},{ bonus bAgi,3; }
+4733,Agility4,Agi + 4,6,,,,,,,,,1023,,,,,,{},{ bonus bAgi,4; }
+4734,Agility5,Agi + 5,6,,,,,,,,,1023,,,,,,{},{ bonus bAgi,5; }
+4735,Agility6,Agi + 6,6,,,,,,,,,1023,,,,,,{},{ bonus bAgi,6; }
+4736,Agility7,Agi + 7,6,,,,,,,,,1023,,,,,,{},{ bonus bAgi,7; }
+4737,Agility8,Agi + 8,6,,,,,,,,,1023,,,,,,{},{ bonus bAgi,8; }
+4738,Agility9,Agi + 9,6,,,,,,,,,1023,,,,,,{},{ bonus bAgi,9; }
+4739,Agility10,Agi + 10,6,,,,,,,,,1023,,,,,,{},{ bonus bAgi,10; }
+4740,Vitality1,Vit + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4775) || equippeditem(4776)) end; bonus bVit,1; }
+4741,Vitality2,Vit + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4776)) end; bonus bVit,2; }
+4742,Vitality3,Vit + 3,6,,,,,,,,,1023,,,,,,{},{ bonus bVit,3; }
+4743,Vitality4,Vit + 4,6,,,,,,,,,1023,,,,,,{},{ bonus bVit,4; }
+4744,Vitality5,Vit + 5,6,,,,,,,,,1023,,,,,,{},{ bonus bVit,5; }
+4745,Vitality6,Vit + 6,6,,,,,,,,,1023,,,,,,{},{ bonus bVit,6; }
+4746,Vitality7,Vit + 7,6,,,,,,,,,1023,,,,,,{},{ bonus bVit,7; }
+4747,Vitality8,Vit + 8,6,,,,,,,,,1023,,,,,,{},{ bonus bVit,8; }
+4748,Vitality9,Vit + 9,6,,,,,,,,,1023,,,,,,{},{ bonus bVit,9; }
+4749,Vitality10,Vit + 10,6,,,,,,,,,1023,,,,,,{},{ bonus bVit,10; }
+4750,Luck1,Luk + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4784) || equippeditem(4785)) end; bonus bLuk,1; }
+4751,Luck2,Luk + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4785)) end; bonus bLuk,2; }
+4752,Luck3,Luk + 3,6,,,,,,,,,1023,,,,,,{},{ bonus bLuk,3; }
+4753,Luck4,Luk + 4,6,,,,,,,,,1023,,,,,,{},{ bonus bLuk,4; }
+4754,Luck5,Luk + 5,6,,,,,,,,,1023,,,,,,{},{ bonus bLuk,5; }
+4755,Luck6,Luk + 6,6,,,,,,,,,1023,,,,,,{},{ bonus bLuk,6; }
+4756,Luck7,Luk + 7,6,,,,,,,,,1023,,,,,,{},{ bonus bLuk,7; }
+4757,Luck8,Luk + 8,6,,,,,,,,,1023,,,,,,{},{ bonus bLuk,8; }
+4758,Luck9,Luk + 9,6,,,,,,,,,1023,,,,,,{},{ bonus bLuk,9; }
+4759,Luck10,Luk + 10,6,,,,,,,,,1023,,,,,,{},{ bonus bLuk,10; }
+4760,Unknown_Item,Matk + 1%,6,,,,,,,,,1023,,,,,,{},{ bonus bMatkRate,1; bonus bCastrate,-1; /*本来は固定詠唱時間のみ短縮*/ }
+4761,Unknown_Item,Matk + 2%,6,,,,,,,,,1023,,,,,,{},{ bonus bMatkRate,2; bonus bCastrate,-1; /*本来は固定詠唱時間のみ短縮*/ }
+4762,Unknown_Item,Flee + 6,6,,,,,,,,,1023,,,,,,{},{ bonus bFlee,6; }
+4763,Unknown_Item,Flee + 12,6,,,,,,,,,1023,,,,,,{},{ bonus bFlee,12; }
+4764,Unknown_Item,Cri + 5,6,,,,,,,,,1023,,,,,,{},{ bonus bCritical,5; }
+4765,Unknown_Item,Cri + 7,6,,,,,,,,,1023,,,,,,{},{ bonus bCritical,7; }
+4766,Unknown_Item,Atk + 2%,6,,,,,,,,,1023,,,,,,{},{ bonus bAtkRate,2; }
+4767,Unknown_Item,Atk + 3%,6,,,,,,,,,1023,,,,,,{},{ bonus bAtkRate,3; }
+4768,Unknown_Item,Str + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4700) || equippeditem(4701) || equippeditem(4702)) end; bonus bStr,1; }
+4769,Unknown_Item,Str + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4701) || equippeditem(4702)) end; bonus bStr,2; }
+4770,Unknown_Item,Str + 3,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4702)) end; bonus bStr,3; }
+4771,Unknown_Item,Int + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4710) || equippeditem(4711) || equippeditem(4712)) end; bonus bInt,1; }
+4772,Unknown_Item,Int + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4711) || equippeditem(4712)) end; bonus bInt,2; }
+4773,Unknown_Item,Int + 3,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4712)) end; bonus bInt,3; }
+4774,Unknown_Item,Vit + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4740) || equippeditem(4741) || equippeditem(4742)) end; bonus bVit,1; }
+4775,Unknown_Item,Vit + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4741) || equippeditem(4742)) end; bonus bVit,2; }
+4776,Unknown_Item,Vit + 3,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4742)) end; bonus bVit,3; }
+4777,Unknown_Item,Agi + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4730) || equippeditem(4731) || equippeditem(4732)) end; bonus bAgi,1; }
+4778,Unknown_Item,Agi + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4731) || equippeditem(4732)) end; bonus bAgi,2; }
+4779,Unknown_Item,Agi + 3,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4732)) end; bonus bAgi,3; }
+4780,Unknown_Item,Dex + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4720) || equippeditem(4721) || equippeditem(4722)) end; bonus bDex,1; }
+4781,Unknown_Item,Dex + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4721) || equippeditem(4722)) end; bonus bDex,2; }
+4782,Unknown_Item,Dex + 3,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4722)) end; bonus bDex,3; }
+4783,Unknown_Item,Luk + 1,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4750) || equippeditem(4751) || equippeditem(4752)) end; bonus bLuk,1; }
+4784,Unknown_Item,Luk + 2,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4751) || equippeditem(4752)) end; bonus bLuk,2; }
+4785,Unknown_Item,Luk + 3,6,,,,,,,,,1023,,,,,,{},{ if(equippeditem(4752)) end; bonus bLuk,3; }
+4786,Unknown_Item,Mdef + 2,6,,,,,,,,,1023,,,,,,{},{ bonus bMdef,2; }
+4787,Unknown_Item,Mdef + 4,6,,,,,,,,,1023,,,,,,{},{ bonus bMdef,4; }
+4788,Unknown_Item,Mdef + 6,6,,,,,,,,,1023,,,,,,{},{ bonus bMdef,6; }
+4789,Unknown_Item,Mdef + 8,6,,,,,,,,,1023,,,,,,{},{ bonus bMdef,8; }
+4790,Unknown_Item,Mdef + 10,6,,,,,,,,,1023,,,,,,{},{ bonus bMdef,10; }
+4791,Unknown_Item,Def + 3,6,,,,,,,,,1023,,,,,,{},{ bonus bDef,3; }
+4792,Unknown_Item,Def + 6,6,,,,,,,,,1023,,,,,,{},{ bonus bDef,6; }
+4793,Unknown_Item,Def + 9,6,,,,,,,,,1023,,,,,,{},{ bonus bDef,9; }
+4794,Unknown_Item,Def + 12,6,,,,,,,,,1023,,,,,,{},{ bonus bDef,12; }
+4795,Unknown_Item,HP + 100,6,,,,,,,,,1023,,,,,,{},{ bonus bMaxHP,100; }
+4796,Unknown_Item,HP + 200,6,,,,,,,,,1023,,,,,,{},{ bonus bMaxHP,200; }
+4797,Unknown_Item,HP + 300,6,,,,,,,,,1023,,,,,,{},{ bonus bMaxHP,300; }
+4798,Unknown_Item,HP + 400,6,,,,,,,,,1023,,,,,,{},{ bonus bMaxHP,400; }
+4799,Unknown_Item,HP + 500,6,,,,,,,,,1023,,,,,,{},{ bonus bMaxHP,500; }
+4800,Unknown_Item,SP + 50,6,,,,,,,,,1023,,,,,,{},{ bonus bMaxSP,50; }
+4801,Unknown_Item,SP + 100,6,,,,,,,,,1023,,,,,,{},{ bonus bMaxSP,100; }
+4802,Unknown_Item,SP + 150,6,,,,,,,,,1023,,,,,,{},{ bonus bMaxSP,150; }
+
+4806,Unknown_Item,Matk + 3%,6,,,,,,,,,1023,,,,,,{},{ bonus bMatkRate,3; bonus bCastrate,-1; }
 
 5001,Headset,ヘッドフォン,4,20,,200,,3,,0,991944702,2,256,,0,87,1,{},{ bonus2 bResEff,Eff_Curse,1000; }
 5002,Gemmed_Crown,ジュエルクラウン,4,20,,600,,4,,0,414946,2,256,,60,88,1,{},{ bonus bMdef,3; bonus bInt,2; bonus bLuk,1; }
@@ -3174,6 +3193,13 @@
 6368,Unknown_Item,エンドレスタワーコイン,3,,,0,,,,,,,,,,,,{},{}
 
 6377,Buy_Market_Permit,購入露店ライセンス,3,20,,10,,,,,,,,,,,,{},{}
+
+6401,Unknown_Item,ヤシの樹液,3,,-1,500,,,,,,,,,,,,{},{}
+6402,Unknown_Item,ヤシの実,3,0,,50,,,,,,,,,,,,{},{}
+6403,Unknown_Item,デワタドラゴンの皮,3,4,,10,,,,,,,,,,,,{},{}
+6404,Unknown_Item,クリスヒルト,3,,-1,100,,,,,,,,,,,,{},{}
+6405,Unknown_Item,極楽鳥の羽,3,2,,10,,,,,,,,,,,,{},{}
+6406,Unknown_Item,輝く極楽鳥の羽,3,10,,100,,,,,,,,,,,,{},{}
 
 7001,Mold_Powder,カビの粉,3,680,,10,,,,,,,,,,,,{},{}
 7002,Ogre_Tooth,オーガの牙,3,658,,10,,,,,,,,,,,,{},{}
@@ -4207,6 +4233,10 @@
 11516,Asai_Fruit,アサイーの実,0,150,,20,,,,,1000333311,2,,,,,,{ itemheal rand(16,21),0; sc_end SC_Poison; sc_end SC_Silence; sc_end SC_Blind; sc_end SC_Confusion; sc_end SC_Hallucination; },{}
 11517,Puri_Potion,浄化の霊薬,0,20,,100,,,,,1000333311,2,,,,,,{ itemheal rand(16,21),0; },{}
 
+11532,Unknown_Item,ナシゴレン,0,400,,20,,,,,1000333311,2,,,,,,{ itemheal rand(133,168),0; },{}
+11533,Unknown_Item,サテ,0,14,,20,,,,,1000333311,2,,,,,,{ itemskill 54,2,""; },{}
+11534,Unknown_Item,ココナッツジュース,0,50,,40,,,,,1000333311,2,,,,,,{ itemheal rand(150,300),rand(20,30); },{}
+
 11701,Girl_Bunch_Of_Flower,少女の花束,3,,,50,,,,,,,,,,,,{},{}
 11702,Month_Cookie,月菓子,2,,,300,,,,,1000333311,2,,,,,,{ sc_end SC_Poison; sc_end SC_DPoison; sc_end SC_Silence; sc_end SC_Blind; sc_end SC_Confusion; sc_end SC_Curse; sc_end SC_Hallucination; itemskill 34,7,"月菓子"; },{}
 11703,Mysterious_Blood,神秘な血,2,,,10,,,,,1000333311,2,,,,,,{ itemheal 0,30; },{}
@@ -4856,6 +4886,8 @@
 13049,Unknown_Item,ラクマ,5,,,650,110,,,1,537006144,2,2,4,24,1,1,{},{ bonus bUseSPrate,-5; bonus bMatkRate,5; bonus2 bAddEff,Eff_Stun,200; /*発動率暫定*/ }
 13050,Unknown_Item,P.ダガーⅠ,5,,,,,,,,,2,,,,,,{},{}
 13051,Unknown_Item,P.ダガーⅡ,5,,,,,,,,,2,,,,,,{},{}
+
+13067,Unknown_Item,クリス,5,20,,700,107,,1,1,673144558,2,2,3,30,1,1,{},{ bonus bMatk,70; bonus2 bHPDrainRate,10,10; }
 
 13100,Six_Shooter,シックスシューター,15,4500,,400,30,,7,1,268435456,2,34,1,10,17,1,{},{ bonus bHit,-10; }
 13101,Six_Shooter_,シックスシューター,15,4500,,400,30,,7,2,268435456,2,34,1,10,17,1,{},{ bonus bHit,-10; }
@@ -6111,6 +6143,8 @@
 15014,Unknown_Item,漆黒の鎧,4,,,4500,,93,,1,,2,16,,100,0,,{},{}
 15015,Unknown_Item,強化したアドベンチャースーツ,4,,,,,,,,,2,16,,,,,{},{}
 
+15032,Unknown_Item,ティドゥン,4,20,,500,,2,,1,991944702,2,16,,0,0,1,{},{ bonus bMdef,10; bonus2 bSubEle,0,5; bonus2 bSubEle,1,5; bonus2 bSubEle,2,5; bonus2 bSubEle,3,5; bonus2 bSubEle,4,5; bonus2 bSubEle,5,5; bonus2 bSubEle,6,5; bonus2 bSubEle,7,5; bonus2 bSubEle,8,5; bonus2 bSubEle,9,5; bonus2 bResEff,Eff_Freeze,1500; bonus2 bResEff,Eff_Stun,1500; }
+
 16000,Unknown_Item,エルデ,5,,,500,130,,1,2,312754,2,2,3,50,8,1,{},{ bonus bMaxSP,50; bonus2 bAddSkillDamageRate,230,20; bonus2 bAddSkillDamageRate,229,20; bonus2 bAddSkillHealRate,478,10; bonus2 bAddSkillHealRate,231,10; }
 16001,Unknown_Item,赤いスクエアバッグ,5,,,500,130,,1,2,312754,2,2,3,50,8,1,{},{ bonus bMaxHP,200; bonus2 bAddSkillDamageRate,230,20; bonus2 bAddSkillDamageRate,229,20; bonus3 bAddMonsterDropItem,501,11,30; bonus3 bAddMonsterDropItem,502,11,30; bonus3 bAddMonsterDropItem,503,11,30; bonus3 bAddMonsterDropItem,504,11,30; bonus3 bAddMonsterDropItem,505,11,30; bonus3 bAddMonsterDropItem,506,11,30; /*暫定ドロップ率0.3%*/ if(readparam(bSTR)<90) end; bonus2 bAddEffShort,Eff_Stun,500; }
 16002,Unknown_Item,スタナー,5,,,0,175,,1,0,33040,2,2,,1,8,,{},{ bonus2 bAddSize,0,40; bonus2 bAddSize,1,40; bonus2 bAddSize,2,40; bonus2 bAddEff,Eff_Stun,1000; }
@@ -6344,3 +6378,5 @@
 18004,Iron_Cannon_Ball,アイアンキャノンボール,19,500,,10,250,,,,1024,2,32768,,,,,{},{}
 
 18100,Unknown_Item,シューティングスター,5,,,0,190,,5,0,1574912,2,34,4,1,11,,{},{}
+
+18520,Unknown_Item,ジャティ族の聖冠,4,,-1,100,,1,,0,1000333311,2,256,,,686,1,{},{ bonus2 bAddRace,2,5; bonus2 bAddRace,3,5; bonus2 bSubRace,2,5; bonus2 bSubRace,3,5; }

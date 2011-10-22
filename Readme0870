@@ -1,4 +1,26 @@
 ----------------------------------------
+//0883 [2011/10/23] by Blaze
+
+・デワタNPC実装 (npc_town_dewata.txt)
+	-> ジャティ族の王冠クエスト実装
+	-> 古の短剣クエスト実装
+	-> デワタの伝統酒クエスト実装
+		Thanks to Xia
+
+・デワタ関連NPC追加 (npc_misc_guide.txt, npc_misc_kafra.txt)
+
+・デワタ追加マップのwarp更新（npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt）
+
+・デワタ追加マップのmapflag更新（mapflag.txt）
+
+・デワタ追加マップのmonster出現定義追加（npc_monster_dewfild.txt, npc_monster_dewdun.txt）
+
+・db更新（item_db.txt, item_db2.txt, mob_db.txt, mob_skill_db.txt）
+　※Mobデータは暫定です
+
+・conf更新 (map_auriga.conf)
+
+----------------------------------------
 //0882 [2011/10/15] by Blaze
 
 ・ブラジリスNPC実装 (npc_town_brasilis.txt)

@@ -107,6 +107,13 @@ cmd_in02.gat	mapflag	noteleport	dummy
 cmd_in02.gat	mapflag	nobranch	dummy
 cmd_in02.gat	mapflag	nopenalty	dummy
 comodo.gat	mapflag	nopenalty	dummy
+dew_dun01.gat	mapflag	nomemo	dummy
+dew_dun02.gat	mapflag	nomemo	dummy
+dew_in01.gat	mapflag	nomemo	dummy
+dew_in01.gat	mapflag	noteleport	dummy
+dew_in01.gat	mapflag	nobranch	dummy
+dew_in01.gat	mapflag	nopenalty	dummy
+dewata.gat	mapflag	nopenalty	dummy
 ein_dun01.gat	mapflag	nomemo	dummy
 ein_dun02.gat	mapflag	nomemo	dummy
 ein_in01.gat	mapflag	nomemo	dummy
