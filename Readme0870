@@ -1,4 +1,17 @@
 ----------------------------------------
+//0884 [2011/10/29] by Blaze
+
+・討伐クエストNPC実装 (npc_quest_hunting.txt)
+
+・confにスクリプト定義を追加 (conf/map_auriga.conf)
+　※デフォルトは読み込み無効状態です。
+
+・クエストDB更新（db/quest_db.txt）
+
+・0883のファイル構成ミスを再アップ（npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt）
+	Thanks to muchey さん
+
+----------------------------------------
 //0883 [2011/10/23] by Blaze
 
 ・デワタNPC実装 (npc_town_dewata.txt)

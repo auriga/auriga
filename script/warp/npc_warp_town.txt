@@ -2274,3 +2274,20 @@ bra_in01.gat,50,145,0	warp	brasiliswarp1017	1,1,bra_in01.gat,81,143
 bra_in01.gat,79,142,0	warp	brasiliswarp1018	1,1,bra_in01.gat,47,144
 bra_in01.gat,138,174,0	warp	brasiliswarp1019	1,1,bra_in01.gat,12,183
 bra_in01.gat,206,98,0	warp	brasiliswarp1020	1,1,brasilis.gat,120,160
+
+
+
+//---デワタ追加マップ
+
+
+//==============================================================
+// -----  デワタ -----
+// dewata.gat		デワタ
+// dew_in01.gat		デワタ 室内
+// -----
+// dew_fild01.gat	デワタフィールド 01
+//==============================================================
+//デワタ⇒デワタフィールド 01
+dewata.gat,44,252,0		warp	dewatawarp0501	1,1,dew_fild01.gat,373,212
+//デワタ 室内⇒デワタフィールド 01
+dew_in01.gat,16,31,0	warp	dewatawarp0502	1,1,dew_fild01.gat,59,273
