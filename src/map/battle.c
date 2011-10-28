@@ -694,6 +694,16 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				pc_addspiritball(tsd,skill_get_time2(SR_GENTLETOUCH_ENERGYGAIN,sc->data[SC_GENTLETOUCH_ENERGYGAIN].val1),1);
 		}
 
+		// ダイヤモンドダスト
+		if(sc->data[SC_DIAMONDDUST].timer != -1 && damage > 0) {
+
+			if( (flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE) ||
+			    (!(flag&BF_SKILL) && status_get_attack_element(src) == ELE_FIRE) )
+			{
+				status_change_end(bl, SC_DIAMONDDUST, -1);
+			}
+		}
+
 		// ソーントラップ
 		if(sc->data[SC_THORNS_TRAP].timer != -1 && damage > 0) {
 			if( (flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE) ||
@@ -4657,7 +4667,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		sc->data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
 		sc->data[SC_CURSEDCIRCLE].timer != -1 ||		// 呪縛陣
 		(sc->data[SC_SIREN].timer != -1 && sc->data[SC_SIREN].val2 == target->id) ||		// セイレーンの声
-		sc->data[SC_DEEP_SLEEP].timer != -1			// 安らぎの子守唄
+		sc->data[SC_DEEP_SLEEP].timer != -1 ||		// 安らぎの子守唄
+		sc->data[SC_DIAMONDDUST].timer != -1		// ダイヤモンドダスト
 	)) {
 		unit_stopattack(src);
 		return 0;
@@ -5052,6 +5063,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			ssc->data[SC__MANHOLE].timer != -1 ||
 			ssc->data[SC_SIREN].timer != -1 ||
 			ssc->data[SC_DEEP_SLEEP].timer != -1 ||
+			ssc->data[SC_DIAMONDDUST].timer != -1 ||
 			(ssc->opt1 > OPT1_NORMAL && ssc->opt1 != OPT1_BURNNING))
 			return 0;
 	}

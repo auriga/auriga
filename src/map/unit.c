@@ -1551,6 +1551,7 @@ int unit_can_move(struct block_list *bl)
 		    sc->data[SC_CURSEDCIRCLE].timer != -1 ||	// 呪縛陣
 		    sc->data[SC_NETHERWORLD].timer != -1 ||	// 地獄の歌
 		    sc->data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
+		    sc->data[SC_DIAMONDDUST].timer != -1 ||	// ダイヤモンドダスト
 		    sc->data[SC_VACUUM_EXTREME].timer != -1 ||	// バキュームエクストリーム
 		    sc->data[SC_THORNS_TRAP].timer != -1 ||	// ソーントラップ
 		    sc->data[SC_BANANA_BOMB].timer != -1	// バナナ爆弾
@@ -1651,7 +1652,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		   sc->data[SC__MANHOLE].timer != -1 ||
 		   sc->data[SC_CURSEDCIRCLE_USER].timer != -1 ||
 		   sc->data[SC_CURSEDCIRCLE].timer != -1 ||
-		   sc->data[SC_DEEP_SLEEP].timer != -1)
+		   sc->data[SC_DEEP_SLEEP].timer != -1 ||
+		   sc->data[SC_DIAMONDDUST].timer != -1)
 			return 0;
 	}
 	if( tsc ) {

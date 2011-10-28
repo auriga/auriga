@@ -182,7 +182,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 500- */
 	SI_SIRCLEOFNATURE,SI_GLOOMYDAY,SI_SONG_OF_MANA,SI_DANCE_WITH_WUG,SI_SATURDAY_NIGHT_FEVER,SI_LERADS_DEW,SI_MELODYOFSINK,SI_BEYOND_OF_WARCRY,SI_UNLIMITED_HUMMING_VOICE,SI_PROPERTYWALK,
 	/* 510- */
-	SI_SPELLFIST,SI_BLANK,SI_BLANK,SI_STRIKING,SI_WARMER,SI_VACUUM_EXTREME,SI_GN_CARTBOOST,SI_THORNS_TRAP,SI_BLOOD_SUCKER,SI_SPORE_EXPLOSION,
+	SI_SPELLFIST,SI_DIAMONDDUST,SI_BLANK,SI_STRIKING,SI_WARMER,SI_VACUUM_EXTREME,SI_GN_CARTBOOST,SI_THORNS_TRAP,SI_BLOOD_SUCKER,SI_SPORE_EXPLOSION,
 	/* 520- */
 	SI_FIRE_EXPANSION_SMOKE_POWDER,SI_FIRE_EXPANSION_TEAR_GAS,SI_MANDRAGORA,SI_MELON_BOMB,SI_BANANA_BOMB,SI_MYSTERIOUS_POWDER,SI_BOOST500,SI_FULL_SWING_K,SI_MANA_PLUS,SI_MUSTLE_M,
 	/* 530- */
@@ -2031,6 +2031,10 @@ L_RECALC:
 			sd->addeff[0] += sd->sc.data[SC_DELUGE].val2;	// % of granting
 		*/
 
+		// ファイティングスピリット
+		if(sd->sc.data[SC_EISIR].timer != -1) {
+			sd->base_atk += sd->sc.data[SC_EISIR].val2;
+		}
 		// 恐怖
 		if(sd->sc.data[SC_FEAR].timer != -1) {
 			sd->hit  = sd->hit * 80/100;
@@ -2042,6 +2046,7 @@ L_RECALC:
 		}
 		// マスカレード ： エナーベーション
 		if(sd->sc.data[SC__ENERVATION].timer != -1) {
+			sd->base_atk -= sd->base_atk * (20 + sd->sc.data[SC__ENERVATION].val1 * 10) / 100;
 			sd->watk -= sd->watk * (20 + sd->sc.data[SC__ENERVATION].val1 * 10) / 100;
 		}
 		// マスカレード ： グルーミー
@@ -2059,7 +2064,7 @@ L_RECALC:
 		}
 		// シールドスペル(DEF)
 		if(sd->sc.data[SC_SHIELDSPELL_DEF].timer != -1 && sd->sc.data[SC_SHIELDSPELL_DEF].val2 == 2) {
-			sd->watk += sd->sc.data[SC_SHIELDSPELL_DEF].val3;
+			sd->base_atk += sd->sc.data[SC_SHIELDSPELL_DEF].val3;
 		}
 		// シールドスペル(精錬)
 		if(sd->sc.data[SC_SHIELDSPELL_REF].timer != -1 && sd->sc.data[SC_SHIELDSPELL_REF].val2 == 2) {
@@ -2076,7 +2081,7 @@ L_RECALC:
 		}
 		// バンディング
 		if(sd->sc.data[SC_BANDING].timer != -1 && sd->sc.data[SC_BANDING].val2 > 0) {
-			sd->watk += (10 + sd->sc.data[SC_BANDING].val1 * 10) * sd->sc.data[SC_BANDING].val2;
+			sd->base_atk += (10 + sd->sc.data[SC_BANDING].val1 * 10) * sd->sc.data[SC_BANDING].val2;
 			sd->def2 += (5 + sd->sc.data[SC_BANDING].val1) * sd->sc.data[SC_BANDING].val2;
 		}
 		// アースドライブ
@@ -2086,7 +2091,7 @@ L_RECALC:
 		// インスピレーション
 		if(sd->sc.data[SC_INSPIRATION].timer != -1) {
 			sd->status.max_hp += (600 + sd->status.max_hp / 20) * sd->sc.data[SC_INSPIRATION].val1;
-			sd->watk += sd->sc.data[SC_INSPIRATION].val1 * 40 + sd->status.job_level * 3;
+			sd->base_atk += sd->sc.data[SC_INSPIRATION].val1 * 40 + sd->status.job_level * 3;
 			sd->hit += 25 + sd->sc.data[SC_INSPIRATION].val1 * 5;
 		}
 		// 潜竜昇天
@@ -2406,10 +2411,10 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	int haste_val2   = 0;
 	int slow_val     = 0;
 	int bonus_rate   = 0;
+	int bonus_add    = 0;
 	int skilllv;
 	int tmp;
 	char berserk_flag  = 0;
-	char defender_flag = 0;
 
 	nullpo_retr(0, sd);
 
@@ -2653,7 +2658,11 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 
 		// ディフェンダー
 		if(sd->sc.data[SC_DEFENDER].timer != -1)
-			defender_flag = 1;
+			bonus_add += sd->sc.data[SC_DEFENDER].val3;
+
+		// ファイティングスピリット
+		if(sd->sc.data[SC_EISIR].timer != -1)
+			bonus_add -= sd->sc.data[SC_EISIR].val3;
 	}
 
 	/* 太陽と月と星の悪魔 */
@@ -2692,9 +2701,9 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	if(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE && (skilllv = pc_checkskill(sd,GS_SINGLEACTION)) > 0)
 		amotion -= (skilllv+1) / 2 * 10;
 
-	/* ディフェンダー */
-	if(defender_flag)
-		amotion += sd->sc.data[SC_DEFENDER].val3;
+	/* bonus_addの加算 */
+	if(bonus_add != 0)
+		amotion += bonus_add;
 
 	/* 小数切り上げ */
 	amotion = ceil(amotion);
@@ -7081,7 +7090,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			ud->state.change_speed = 1;
 			break;
 		case SC__REPRODUCE:		/* リプロデュース */
-			tick = 600*1000;
+			tick = 1000;
 			break;
 		case SC__AUTOSHADOWSPELL:	/* シャドウオートスペル */
 			val4 = 30 - val1*2;		// 発動確率
@@ -7231,6 +7240,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_PROPERTYWALK:		/* ファイアー/エレクトリックウォーク */
 			val3 = val1 * 2 + 6;	// 発生個数
+			break;
+		case SC_DIAMONDDUST:		/* ダイヤモンドダスト */
+			val2 = tick / 1000;
+			tick = 1000;
 			break;
 		case SC_SPELLFIST:		/* スペルフィスト */
 			val4 = val1 + 1;	// 回数
@@ -8810,7 +8823,6 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_BERKANA:
 	case SC_ROLLINGCUTTER:
 	case SC_WUGDASH:
-	case SC__REPRODUCE:
 	case LG_EXEEDBREAK:
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
@@ -9149,6 +9161,18 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
 		}
 		break;
+	case SC__REPRODUCE:		/* リプロデュース */
+		if(sd) {
+			int sp = 9 - (sc->data[type].val1 + 1) / 2;
+			if(sp > 0 && sd->status.sp >= sp) {
+				sd->status.sp -= sp;
+				clif_updatestatus(sd,SP_SP);
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
+		} else {
+			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+		}
+		break;
 	case SC__SHADOWFORM:		/* シャドウフォーム */
 		if((--sc->data[type].val4) > 0) {
 			if(sd) {
@@ -9295,6 +9319,19 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			unit_heal(bl, -hp, -sp);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_DIAMONDDUST:		/* ダイヤモンドダスト */
+		if(--sc->data[type].val2 > 0) {
+			int hp = 0,sp = 0;
+			hp = (int)((atn_bignumber)status_get_max_hp(bl) * 2 / 100);
+			if(sd)
+				sp = status_get_max_sp(bl) / 100;
+			if(hp >= status_get_hp(bl))
+				hp = status_get_hp(bl) - 1;
+			unit_heal(bl, -hp, -sp);
+			if(!unit_isdead(bl) && sc->data[type].timer != -1)
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	case SC_STRIKING:		/* ストライキング */

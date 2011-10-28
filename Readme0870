@@ -1,4 +1,33 @@
 ----------------------------------------
+//0885 [2011/10/29] by Blaze
+
+・全ての3次職スキルの詠唱時間、射程距離、消費SPなどを本鯖仕様に更新 (db/skill_db.txt, db/skill_cast_db.txt, db/skill_require_db.txt)
+
+・状態異常「冷凍」実装 (status.*, battle.c, pc.c, clif.c, unit.c, db/scdata_db.txt)
+
+・状態異常「ファイティングスピリット」実装（status.c, skill.c）
+
+・状態異常「リプロデュース」中、持続的にSPを消費するように修正（status.c, pc.c）
+
+・ソーサラースキル「ファイアーウォーク」「エレクトリックウォーク」の持続時間を修正（skill.c, db/skill_cast_db.txt）
+
+・ソーサラースキル「アースグレイヴ」に出血付与効果を実装（skill.c）
+
+・ソーサラースキル「ポイズンバスター」の効果範囲を修正（skill.c）
+
+・ウォーロックスキル「アースストレイン」のエフェクト開始位置を修正（skill.c）
+	Thanks to dream さん、refis さん
+
+・ウォーロックスキル「アースストレイン」の攻撃判定間隔を調整（db/skill_unit_db.txt）
+	Thanks to Akayumi さん
+
+・アークビショップスキル「ラウダアグヌス」「ラウダラムス」を確率で治癒成功判定をするように修正（skill.c）
+	Thanks to ARIA さん
+
+・状態異常「マスカレード ： エナーベーション」の攻撃力減少効果が武器の攻撃力のみ減少していたのを修正（status.c）
+	Thanks to Akayumi さん
+
+----------------------------------------
 //0884 [2011/10/29] by Blaze
 
 ・討伐クエストNPC実装 (npc_quest_hunting.txt)

@@ -13519,7 +13519,8 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC__MANHOLE].timer != -1 ||		// マンホール
 	    sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
 	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1 ||	// 呪縛陣
-	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 )	// 安らぎの子守唄
+	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
+		sd->sc.data[SC_DIAMONDDUST].timer != -1 )	// ダイヤモンドダスト
 	{
 		clif_delitem(sd, 0, item_index, 0);
 		return;
@@ -13578,7 +13579,8 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC__INVISIBILITY].timer != -1 ||	// インビジビリティ
 	    sd->sc.data[SC__MANHOLE].timer != -1 ||	// マンホール
 	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
-	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer != -1 )	// フライデーナイトフィーバー
+	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer != -1 ||	// フライデーナイトフィーバー
+		sd->sc.data[SC_DIAMONDDUST].timer != -1 )	// ダイヤモンドダスト
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;

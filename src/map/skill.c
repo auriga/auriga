@@ -281,7 +281,7 @@ int SkillStatusChangeTable3[MAX_THIRDSKILL] = {	/* status.hのenumのSC_***と�
 	/* 2431- */
 	SC_LERADS_DEW,SC_MELODYOFSINK,SC_BEYOND_OF_WARCRY,SC_UNLIMITED_HUMMING_VOICE,-1,-1,-1,-1,-1,-1,
 	/* 2441- */
-	-1,-1,SC_PROPERTYWALK,SC_PROPERTYWALK,SC_SPELLFIST,-1,-1,-1,-1,-1,
+	-1,-1,SC_PROPERTYWALK,SC_PROPERTYWALK,SC_SPELLFIST,SC_BLEED,SC_DIAMONDDUST,-1,-1,-1,
 	/* 2451- */
 	SC_STRIKING,SC_WARMER,SC_VACUUM_EXTREME,-1,SC_DEEP_SLEEP,-1,-1,-1,-1,-1,
 	/* 2461- */
@@ -1592,6 +1592,14 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			if(tsc->data[SC_UNLIMITED_HUMMING_VOICE].timer != -1)
 				status_change_end(bl,SC_UNLIMITED_HUMMING_VOICE,-1);
 		}
+		break;
+	case SO_EARTHGRAVE:		/* アースグレイヴ */
+		if(atn_rand() % 10000 < status_change_rate(bl,GetSkillStatusChangeTable(skillid),skilllv * 500,status_get_lv(src)))
+			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case SO_DIAMONDDUST:	/* ダイヤモンドダスト */
+		if(atn_rand() % 10000 < status_change_rate(bl,GetSkillStatusChangeTable(skillid),500 + skilllv * 500,status_get_lv(src)))
+			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
 	case SO_CLOUD_KILL:		/* クラウドキル */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,10000,status_get_lv(src)))
@@ -3718,7 +3726,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					bl = src;
 					break;
 				case SO_POISON_BUSTER:	/* ポイズンバスター */
-					ar = (skilllv > 3)? 4: 3;
+					ar = (skilllv / 5) + 1;
 					skill_area_temp[2] = bl->x;
 					skill_area_temp[3] = bl->y;
 					break;
@@ -5433,7 +5441,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case RK_GIANTGROWTH:		/* ジャイアントグロース */
 	case RK_STONEHARDSKIN:		/* ストーンハードスキン */
 	case RK_VITALITYACTIVATION:	/* バイタリティアクティベーション */
-	case RK_FIGHTINGSPIRIT:		/* ファイティングスピリット */
 	case RK_ABUNDANCE:			/* アバンダンス */
 	case GC_VENOMIMPRESS:		/* ベナムインプレス */
 	case GC_WEAPONBLOCKING:		/* ウェポンブロッキング */
@@ -7554,6 +7561,24 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
+	case RK_FIGHTINGSPIRIT:		/* ファイティングスピリット */
+		if(flag&1) {
+			if(src != bl && skill_area_temp[0])
+				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skill_area_temp[0]*7/4,0,0,skill_get_time(skillid,skilllv),0);
+		} else {
+			skill_area_temp[0] = 0;
+			if(sd && sd->status.party_id > 0) {
+				skill_area_temp[0] = party_check_same_map_member_count(sd);
+				/* パーティ全体への処理 */
+				party_foreachsamemap(skill_area_sub,
+					sd,PT_AREA_SIZE,
+					src,skillid,skilllv,tick, flag|BCT_PARTY|1,
+					skill_castend_nodamage_id);
+			}
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skill_area_temp[0]*7,((sd)? pc_checkskill(sd,RK_RUNEMASTERY): 0)*4,0,skill_get_time(skillid,skilllv),0);
+		}
+		break;
 	case GC_WEAPONCRUSH:	/* ウェポンクラッシュ */
 		{
 			int crush_fix;
@@ -7709,11 +7734,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(dstsd && dstsd->special_state.no_magic_damage)
 				break;
 			sc = status_get_sc(bl);
-			if(skillid == AB_LAUDAAGNUS && sc && (sc->data[SC_FREEZE].timer != -1 || sc->data[SC_STONE].timer != -1 || sc->data[SC_BLIND].timer != -1)) {
+			if(skillid == AB_LAUDAAGNUS && sc && (sc->data[SC_FREEZE].timer != -1 || sc->data[SC_STONE].timer != -1 || sc->data[SC_BLIND].timer != -1) && atn_rand() % 100 < 30 + skilllv * 5) {
 				status_change_end(bl, SC_FREEZE, -1);
 				status_change_end(bl, SC_STONE, -1);
 				status_change_end(bl, SC_BLIND, -1);
-			} else if(skillid == AB_LAUDARAMUS && sc && (sc->data[SC_SILENCE].timer != -1 || sc->data[SC_SLEEP].timer != -1 || sc->data[SC_STUN].timer != -1)) {
+			} else if(skillid == AB_LAUDARAMUS && sc && (sc->data[SC_SILENCE].timer != -1 || sc->data[SC_SLEEP].timer != -1 || sc->data[SC_STUN].timer != -1) && atn_rand() % 100 < 30 + skilllv * 5) {
 				status_change_end(bl, SC_SILENCE, -1);
 				status_change_end(bl, SC_SLEEP, -1);
 				status_change_end(bl, SC_STUN, -1);
@@ -8672,7 +8697,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SO_FIREWALK:		/* ファイアーウォーク */
 	case SO_ELECTRICWALK:	/* エレクトリックウォーク */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case SO_SPELLFIST:		/* スペルフィスト */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -9441,8 +9466,8 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			addx = (addy == 0)? dirx[dir]: 0;
 
 			// 初期位置を指定
-			tmpx = src->x + addx * 2;
-			tmpy = src->y + addy * 2;
+			tmpx = src->x + addx;
+			tmpy = src->y + addy;
 
 			clif_skill_poseffect(src,skillid,skilllv,tmpx,tmpy,tick);
 			for(i = 1; i < loop; i++) {
@@ -11646,11 +11671,12 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 		    sc->data[SC_OBLIVIONCURSE].timer != -1 ||
 			sc->data[SC_WHITEIMPRISON].timer != -1 ||
 		    (sc->data[SC_STASIS].timer != -1 && skill_get_skill_type(cnd->id) == BF_MAGIC) ||
-			 sc->data[SC__SHADOWFORM].timer != -1 ||
+			sc->data[SC__SHADOWFORM].timer != -1 ||
 			sc->data[SC__MANHOLE].timer != -1 ||
 			(sc->data[SC__INVISIBILITY].timer != -1 && cnd->id != SC_INVISIBILITY) ||
 			sc->data[SC__IGNORANCE].timer != -1 ||
-			sc->data[SC_CURSEDCIRCLE].timer != -1)
+			sc->data[SC_CURSEDCIRCLE].timer != -1 ||
+			sc->data[SC_DIAMONDDUST].timer != -1)
 			return 0;
 
 		if(sc->data[SC_BLADESTOP].timer != -1) {
