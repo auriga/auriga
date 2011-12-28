@@ -1,4 +1,13 @@
 ----------------------------------------
+//0894 [2011/12/29] by popori
+
+・0x8b9の送信タイミングを0x6b前にするよう変更と追加 (src/char/char.c)
+
+・PACKETVER20100615の追加 (vc_make.bat bcc32_make.bat Makefile src/login/login.c)
+
+・UnknownPacketが出力されないようにとりあえず定義だけ追加 (db/packet_db.txt src/map/clif.c)
+
+----------------------------------------
 //0893 [2011/12/29] by popori
 
 ・gcc環境下でのwarning修正 (src/map/skill.c)

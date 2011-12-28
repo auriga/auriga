@@ -17544,6 +17544,26 @@ static void clif_parse_SellBuyingStoreReq(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
+ * GMコマンド /recall2
+ *------------------------------------------
+ */
+static void clif_parse_GMrecall2(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ * GMコマンド /remove2
+ *------------------------------------------
+ */
+static void clif_parse_GMremove2(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -17856,6 +17876,8 @@ static void packetdb_readdb(void)
 		{ clif_parse_CloseBuyingStoreReq,       "closebuyingstorereq"       },
 		{ clif_parse_ClickBuyingStoreReq,       "clickbuyingstorereq"       },
 		{ clif_parse_SellBuyingStoreReq,        "sellbuyingstorereq"        },
+		{ clif_parse_GMrecall2,                 "recall2"                   },
+		{ clif_parse_GMremove2,                 "gmremove2"                 },
 		{ NULL,                                 NULL                        },
 	};
 

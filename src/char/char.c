@@ -1290,6 +1290,13 @@ int parse_tologin(int fd)
 			}
 			if(max_connect_user > 0) {
 				if(count_users() < max_connect_user  || isGM(sd->account_id) > 0) {
+#if PACKETVER >= 20110309
+					WFIFOW(fdc,0) = 0x8b9;
+					WFIFOL(fdc,2) = 0;
+					WFIFOL(fdc,6) = sd->account_id;
+					WFIFOW(fdc,10) = 0;
+					WFIFOSET(fdc,12);
+#endif
 					mmo_char_send006b(fdc,sd);
 				} else {
 					WFIFOW(fdc,0)=0x6c;
@@ -1297,7 +1304,6 @@ int parse_tologin(int fd)
 					WFIFOSET(fdc,3);
 				}
 			} else {
-				mmo_char_send006b(fdc,sd);
 #if PACKETVER >= 20110309
 				WFIFOW(fdc,0) = 0x8b9;
 				WFIFOL(fdc,2) = 0;
@@ -1305,6 +1311,7 @@ int parse_tologin(int fd)
 				WFIFOW(fdc,10) = 0;
 				WFIFOSET(fdc,12);
 #endif
+				mmo_char_send006b(fdc,sd);
 			}
 			RFIFOSKIP(fd,15);
 			break;
@@ -2421,7 +2428,16 @@ int parse_char(int fd)
 					if( max_connect_user > 0 )
 					{
 						if( count_users() < max_connect_user || isGM(sd->account_id) > 0 )
+						{
+#if PACKETVER >= 20110309
+							WFIFOW(fd,0) = 0x8b9;
+							WFIFOL(fd,2) = 0;
+							WFIFOL(fd,6) = sd->account_id;
+							WFIFOW(fd,10) = 0;
+							WFIFOSET(fd,12);
+#endif
 							mmo_char_send006b(fd,sd);
+						}
 						else
 						{
 							WFIFOW(fd,0)=0x6c;
@@ -2431,8 +2447,16 @@ int parse_char(int fd)
 					}
 
 					// 0x6b送信
-					else
+					else {
+#if PACKETVER >= 20110309
+						WFIFOW(fd,0) = 0x8b9;
+						WFIFOL(fd,2) = 0;
+						WFIFOL(fd,6) = sd->account_id;
+						WFIFOW(fd,10) = 0;
+						WFIFOSET(fd,12);
+#endif
 						mmo_char_send006b(fd,sd);
+					}
 				}
 			}
 			RFIFOSKIP(fd,17);

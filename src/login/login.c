@@ -1139,10 +1139,17 @@ int parse_login(int fd)
 				login_authok(sd,fd);
 			else
 			{
-				memset(WFIFOP(fd,0),0,23);
+#if PACKETVER < 20100615
+				memset(WFIFOP(fd,0),0,23);	// TODO: BlockDate
 				WFIFOW(fd,0) = 0x6a;
 				WFIFOB(fd,2) = result;
 				WFIFOSET(fd,23);
+#else
+				memset(WFIFOP(fd,0),0,26);	// TODO: BlockDate
+				WFIFOW(fd,0) = 0x83e;
+				WFIFOL(fd,2) = result;
+				WFIFOSET(fd,26);
+#endif
 			}
 			RFIFOSKIP(fd,RFIFOREST(fd));
 		}
