@@ -36,6 +36,7 @@ void npc_buysellsel(struct map_session_data *sd, int id, unsigned char type);
 int npc_buylist(struct map_session_data *,int,unsigned short *);
 int npc_selllist(struct map_session_data *,int,unsigned short *);
 int npc_pointshop_buy(struct map_session_data *sd,int nameid,int amount);
+int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const unsigned short *item_list);
 int npc_set_mapflag(int m,char *w3,char *w4);
 int npc_set_mapflag_sub(int m,char *str,short flag);
 int npc_globalmessage(const char *name,char *mes);

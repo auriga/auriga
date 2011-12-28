@@ -969,7 +969,7 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
  * スペシャルアイテム購入
  *------------------------------------------
  */
-int npc_pointshop_buy(struct map_session_data *sd,int nameid,int amount)
+int npc_pointshop_buy(struct map_session_data *sd, int nameid, int amount)
 {
 	struct npc_data *nd;
 	struct item_data *item_data;
@@ -1027,6 +1027,112 @@ int npc_pointshop_buy(struct map_session_data *sd,int nameid,int amount)
 
 	pc_additem(sd, &item_tmp, amount);
 	sd->shop_point -= point;
+
+	return 0;
+}
+
+/*==========================================
+ * スペシャルアイテム購入複数
+ *------------------------------------------
+ */
+int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const unsigned short *item_list)
+{
+	struct npc_data *nd;
+	struct item_data *item_data;
+	int i, j, blank;
+	int point = 0, weight = 0, new_ = 0;
+
+	nullpo_retr(1, sd);
+
+	nd = map_id2nd(sd->npc_shopid);
+	if(npc_checknear(sd, nd)) // check NULL of nd and if nd->bl.type is BL_NPC
+		return 1;
+
+	if(nd->subtype != POINTSHOP)
+		return 1;
+
+	if(sd->state.deal_mode != 0)
+		return 4;
+
+	if(len <= 0 || count <= 0)
+		return 5;
+
+	blank = pc_inventoryblank(sd);
+
+	for(i = 0; i < count; i++) {
+		const unsigned short nameid = item_list[i*2+1];
+		const unsigned short amount = item_list[i*2+0];
+
+		if(nameid <= 0 || amount <= 0)
+			return 5;
+
+		for(j = 0; nd->u.shop_item[j].nameid; j++) {
+			int view_id = itemdb_viewid(nd->u.shop_item[j].nameid);
+			if(view_id > 0) {
+				if(view_id == nameid) {
+					break;
+				}
+			} else if(nd->u.shop_item[j].nameid == nameid) {
+				break;
+			}
+		}
+
+		if((item_data = itemdb_exists(nd->u.shop_item[j].nameid)) == NULL)
+			return 5;
+
+		if (nd->u.shop_item[j].nameid == 0)
+			return 3;
+
+		if (itemdb_isequip3(nameid) && amount > 1) {
+			// Player sent a hexed packet trying to buy x of nonstackable item y!
+			return 3;
+		}
+
+		point += nd->u.shop_item[j].value * amount;
+		if(point > sd->shop_point)
+			return 6;
+
+		switch(pc_checkadditem(sd, nameid, amount)) {
+		case ADDITEM_EXIST:
+			break;
+		case ADDITEM_NEW:
+			new_++;
+			if (new_ > blank)
+				return 3; // 種類数超過
+			break;
+		case ADDITEM_OVERAMOUNT:
+			return 3; // アイテム数超過
+		}
+
+		weight += item_data->weight * amount;
+		if(weight + sd->weight > sd->max_weight)
+			return 2;
+	}
+
+	sd->shop_point -= point;
+
+	for( i = 0; i < count; i++) {
+		const unsigned short nameid = item_list[i*2+1];
+		const unsigned short amount = item_list[i*2+0];
+		struct item item_tmp;
+
+		for(j = 0; nd->u.shop_item[j].nameid; j++) {
+			int view_id = itemdb_viewid(nd->u.shop_item[j].nameid);
+			if(view_id > 0) {
+				if(view_id == nameid) {
+					break;
+				}
+			} else if(nd->u.shop_item[j].nameid == nameid) {
+				break;
+			}
+		}
+
+		memset(&item_tmp, 0, sizeof(item_tmp));
+		item_tmp.nameid   = nd->u.shop_item[j].nameid;
+		item_tmp.identify = 1;	// npc販売アイテムは鑑定済み
+
+		pc_additem(sd, &item_tmp, amount);
+	}
 
 	return 0;
 }

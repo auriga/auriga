@@ -71,7 +71,7 @@
 #include "buyingstore.h"
 
 /* パケットデータベース */
-#define MAX_PACKET_DB 0x850
+#define MAX_PACKET_DB 0x950
 
 struct packet_db {
 	short len;
@@ -14513,18 +14513,42 @@ static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int c
 	}
 	if(sd->npc_id != 0 || sd->state.store || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
-
-	fail = npc_pointshop_buy(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)), RFIFOW(fd,GETPACKETPOS(cmd,1)));
-
-	WFIFOW(fd,0)  = 0x289;
-	WFIFOL(fd,2)  = sd->shop_point;
+	else
+	{
 #if PACKETVER < 20070711
-	WFIFOW(fd,6)  = fail;
+		int nameid = RFIFOW(fd,GETPACKETPOS(cmd,0));
+		int count  = RFIFOW(fd,GETPACKETPOS(cmd,1));
+		fail = npc_pointshop_buy(sd,nameid,count);
+
+		WFIFOW(fd,0)  = 0x289;
+		WFIFOL(fd,2)  = sd->shop_point;
+		WFIFOW(fd,6)  = fail;
+		WFIFOSET(fd,packet_db[0x289].len);
+#elif PACKETVER < 20100803
+		int nameid = RFIFOW(fd,GETPACKETPOS(cmd,0));
+		int count  = RFIFOW(fd,GETPACKETPOS(cmd,1));
+		int points = RFIFOL(fd,GETPACKETPOS(cmd,2));
+		fail = npc_pointshop_buy(sd,nameid,count);
+
+		WFIFOW(fd,0)  = 0x289;
+		WFIFOL(fd,2)  = sd->shop_point;
+		WFIFOL(fd,6)  = 0;	// ??
+		WFIFOW(fd,10) = fail;
+		WFIFOSET(fd,packet_db[0x289].len);
 #else
-	WFIFOL(fd,6)  = 0;	// ??
-	WFIFOW(fd,10) = fail;
+		int len    = RFIFOW(fd,GETPACKETPOS(cmd,0)) - 10;
+		int points = RFIFOL(fd,GETPACKETPOS(cmd,1));
+		int count  = RFIFOW(fd,GETPACKETPOS(cmd,2));
+		const unsigned short *item_list = (const unsigned short *)RFIFOP(fd,GETPACKETPOS(cmd,3));
+		fail = npc_pointshop_buylist(sd,( len <= 0 ) ? 0 : len/4,count,item_list);
+
+		WFIFOW(fd,0)  = 0x289;
+		WFIFOL(fd,2)  = sd->shop_point;
+		WFIFOL(fd,6)  = 0;	// ??
+		WFIFOW(fd,10) = fail;
+		WFIFOSET(fd,packet_db[0x289].len);
 #endif
-	WFIFOSET(fd,packet_db[0x289].len);
+	}
 
 	return;
 }

@@ -1,4 +1,11 @@
 ----------------------------------------
+//0891 [2011/12/29] by popori
+
+・PACKETVER20100803からキャッシュショップの複数個購入に対応 (db/packet_db.txt src/map/clif.c src/map/npc.*)
+
+・MAX_PACKET_DBを0x950まで拡張 (src/map/clif.c)
+
+----------------------------------------
 //0890 [2011/12/29] by popori
 
 ・PACKETVER20110111より0x2d7の上位パケット0x859に対応 (src/map/clif.c)
