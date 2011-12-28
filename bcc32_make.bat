@@ -9,31 +9,31 @@ set PATH=C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib;%PAT
 :set __sqllib__=-L"C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt" libmysql.lib
 
 @rem パケット定義
-@rem 2010-08-03aRagexeRE: 31
-@rem 2010-07-28aRagexeRE: 30
-@rem 2010-07-21aRagexeRE: 29
-@rem 2010-06-29aRagexeRE: 28
-@rem 2010-04-14aRagexeRE: 27
-@rem 2010-02-23aRagexeRE: 26
-@rem 2009-12-08aRagexeRE: 25
-@rem 2009-11-18cRagexeRE: 24
-@rem 2009-11-04aRagexeRE: 23
-@rem 2009-07-15aRagexeRE: 22
-@rem 2009-06-17aRagexeRE: 21
-@rem 2009-06-03aRagexeRE: 20
-@rem 2009-01-14aSakexe or 2009-01-14aRagexeRE: 19
-@rem 2008-11-26cSakexe or 2008-11-26aRagexeRE: 18
-@rem 2008-11-13aSakexe: 17
-@rem 2008-08-20aSakexe: 16
-@rem 2008-05-28aSakexe or 2008-08-27aRagexeRE: 15
-@rem 2008-01-02aSakexe: 14
-@rem 2007-11-28aSakexe: 13
-@rem 2007-11-06aSakexe: 12
-@rem 2007-09-04aSakexe: 11
-@rem 2007-07-11aSakexe: 10
-@rem 2007-05-21aSakexe:  9
-@rem 2007-02-12aSakexe:  8
-set __PACKETDEF__=-DPACKETVER=31 -DNEW_006b -DNEW_006b_RE
+@rem 2010-08-03aRagexeRE: 20100803
+@rem 2010-07-28aRagexeRE: 20100728
+@rem 2010-07-21aRagexeRE: 20100721
+@rem 2010-06-29aRagexeRE: 20100629
+@rem 2010-04-14aRagexeRE: 20100414
+@rem 2010-02-23aRagexeRE: 20100223
+@rem 2009-12-08aRagexeRE: 20091208
+@rem 2009-11-18cRagexeRE: 20091118
+@rem 2009-11-04aRagexeRE: 20091104
+@rem 2009-07-15aRagexeRE: 20090715
+@rem 2009-06-17aRagexeRE: 20090617
+@rem 2009-06-03aRagexeRE: 20090603
+@rem 2008-11-26cSakexe or 2008-11-26aRagexeRE: 20081126
+@rem 2008-11-13aSakexe: 20081113
+@rem 2008-08-20aSakexe: 20080820
+@rem 2008-05-28aSakexe or 2008-08-27aRagexeRE: 20080827
+@rem 2008-01-02aSakexe: 20080102
+@rem 2007-11-28aSakexe: 20071128
+@rem 2007-11-06aSakexe: 20071106
+@rem 2007-09-04aSakexe: 20070904
+@rem 2007-07-11aSakexe: 20070711
+@rem 2007-05-21aSakexe: 20070521
+@rem 2007-02-12aSakexe: 20070212
+@rem 2006-10-23aSakexe: 20061023
+set __PACKETDEF__=-DPACKETVER=20100803 -DNEW_006b
 
 @rem コンパイルオプション
 @rem SQL⇔TEXTの切り替え、SQL版にする場合は以下のコンパイルオプションをコメントアウトしてください

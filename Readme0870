@@ -1,4 +1,19 @@
 ----------------------------------------
+//0887 [2011/12/29] by popori
+
+・PACKETVERのリナンバリング based on eathena
+ (vc_make.bat Makefile bcc32_make.bat src/char/char.c src/char/char.dsp src/char/char_sql.dsp src/common/mmo.h
+　src/converter/converter.dsp src/login/login.dsp src/login/login_sql.dsp src/map/atcommand.c src/map/chrif.c
+　src/map/clif.c src/map/map.dsp src/map/map_sql.dsp src/map/party.c src/map/pc.c src/map/script.c src/map/skill.c)
+　分かりづらいPACKETVERの連番方式、PACKETERの途中挿入が非常に面倒なのでeAベースでYYYYMMDD形式に変更します。
+
+・ビルドオプション「NEW_006b」を削除してPACKETVER20061023として定義し、「NEW_006b_RE」を「NEW_006b」として定義する
+ (vc_make.bat Makefile bcc32_make.bat src/char/char.c src/char/char.dsp src/char/char_sql.dsp src/map/map.dsp src/map/map_sql.dsp
+　src/converter/converter.dsp src/login/login.dsp src/login/login_sql.dsp)
+
+・ついでにリファクタリング (src/char/char.c src/map/clif.c)
+
+----------------------------------------
 //0886 [2011/12/29] by popori
 
 ・露店と購買露店中の判定をリファクタリング

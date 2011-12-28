@@ -7922,7 +7922,7 @@ int buildin_changebase(struct script_state *st)
 	sd->view_class = vclass;
 	clif_changelook(&sd->bl, LOOK_BASE, vclass);
 	clif_send_clothcolor(&sd->bl);
-#if PACKETVER > 14
+#if PACKETVER > 20080102
 	clif_skillinfoblock(sd);
 #endif
 	return 0;

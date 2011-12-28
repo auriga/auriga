@@ -3573,7 +3573,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 		char output[256];
 		struct item_data *data = sd->inventory_data[idx];
 
-#if PACKETVER >= 10
+#if PACKETVER >= 20070711
 		if(itemdb_isequip2(data)) {
 			// 強化装備アイテムの削除
 			pc_delitem(sd, idx, sd->status.inventory[idx].amount, 1, 0);
@@ -5386,7 +5386,7 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 	}
 
 	if (battle_config.disp_experience && (base_exp || job_exp)) {
-#if PACKETVER < 23
+#if PACKETVER < 20091104
 		char output[128];
 		int bexp = (base_exp > 0x7fffffff)? 0x7fffffff: (int)base_exp;
 		int jexp = (job_exp  > 0x7fffffff)? 0x7fffffff: (int)job_exp;
@@ -6086,7 +6086,7 @@ void pc_skillup(struct map_session_data *sd, int skill_num)
 		status_calc_pc(sd,0);
 		clif_skillup(sd,skill_num);
 		clif_updatestatus(sd,SP_SKILLPOINT);
-#if PACKETVER < 13
+#if PACKETVER < 20071128
 		clif_skillinfoblock(sd);
 #endif
 	}
@@ -7454,7 +7454,7 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 	clif_changeoption(&sd->bl);
 	clif_send_clothcolor(&sd->bl);
 	status_calc_pc(sd,0);
-#if PACKETVER > 14
+#if PACKETVER > 20080102
 	clif_skillinfoblock(sd);
 #endif
 	return;
@@ -8103,7 +8103,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 
 	pc_checkallowskill(sd);	// 装備品でスキルか解除されるかチェック
 	status_calc_pc(sd,0);
-#if PACKETVER > 14
+#if PACKETVER > 20080102
 	clif_skillinfoblock(sd);
 #endif
 	if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_HUMAN,sd->def_ele))

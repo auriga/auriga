@@ -2706,7 +2706,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 					clif_skill_cooldown(src_sd, src_ud->skillid, cooldown);
 				}
 			}
-#if PACKETVER > 18
+#if PACKETVER > 20081126
 			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv), 0, 0, 0);
 #endif
 		}
@@ -8969,7 +8969,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 					clif_skill_cooldown(src_sd, src_ud->skillid, cooldown);
 				}
 			}
-#if PACKETVER > 18
+#if PACKETVER > 20081126
 			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv), 0, 0, 0);
 #endif
 		}

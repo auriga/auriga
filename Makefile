@@ -5,31 +5,31 @@ CC = gcc -pipe
 # Detecting gcc version
 GCC_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
 
-# 2010-08-03aRagexeRE: 31
-# 2010-07-28aRagexeRE: 30
-# 2010-07-21aRagexeRE: 29
-# 2010-06-29aRagexeRE: 28
-# 2010-04-14aRagexeRE: 27
-# 2010-02-23aRagexeRE: 26
-# 2009-12-08aRagexeRE: 25
-# 2009-11-18cRagexeRE: 24
-# 2009-11-04aRagexeRE: 23
-# 2009-07-15aRagexeRE: 22
-# 2009-06-17aRagexeRE: 21
-# 2009-06-03aRagexeRE: 20
-# 2009-01-14aSakexe or 2009-01-14aRagexeRE: 19
-# 2008-11-26cSakexe or 2008-11-26aRagexeRE: 18
-# 2008-11-13aSakexe: 17
-# 2008-08-20aSakexe: 16
-# 2008-05-28aSakexe or 2008-08-27aRagexeRE: 15
-# 2008-01-02aSakexe: 14
-# 2007-11-28aSakexe: 13
-# 2007-11-06aSakexe: 12
-# 2007-09-04aSakexe: 11
-# 2007-07-11aSakexe: 10
-# 2007-05-21aSakexe:  9
-# 2007-02-12aSakexe:  8
-PACKETDEF = -DPACKETVER=31 -DNEW_006b -DNEW_006b_RE
+# 2010-08-03aRagexeRE: 20100803
+# 2010-07-28aRagexeRE: 20100728
+# 2010-07-21aRagexeRE: 20100721
+# 2010-06-29aRagexeRE: 20100629
+# 2010-04-14aRagexeRE: 20100414
+# 2010-02-23aRagexeRE: 20100223
+# 2009-12-08aRagexeRE: 20091208
+# 2009-11-18cRagexeRE: 20091118
+# 2009-11-04aRagexeRE: 20091104
+# 2009-07-15aRagexeRE: 20090715
+# 2009-06-17aRagexeRE: 20090617
+# 2009-06-03aRagexeRE: 20090603
+# 2008-11-26cSakexe or 2008-11-26aRagexeRE: 20081126
+# 2008-11-13aSakexe: 20081113
+# 2008-08-20aSakexe: 20080820
+# 2008-05-28aSakexe or 2008-08-27aRagexeRE: 20080827
+# 2008-01-02aSakexe: 20080102
+# 2007-11-28aSakexe: 20071128
+# 2007-11-06aSakexe: 20071106
+# 2007-09-04aSakexe: 20070904
+# 2007-07-11aSakexe: 20070711
+# 2007-05-21aSakexe: 20070521
+# 2007-02-12aSakexe: 20070212
+# 2006-10-23aSakexe: 20061023
+PACKETDEF = -DPACKETVER=20100803 -DNEW_006b
 
 PLATFORM = $(shell uname)
 

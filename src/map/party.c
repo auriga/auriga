@@ -925,7 +925,7 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 				c--;
 			} else {
 				if(battle_config.party_item_share_show && psd[i] != sd) {
-#if PACKETVER < 12
+#if PACKETVER < 20071106
 					char output[128];
 					snprintf(output, sizeof(output), msg_txt(177), psd[i]->status.name);
 					clif_displaymessage(sd->fd,output);
@@ -1043,7 +1043,7 @@ void party_leaderchanged(int party_id, int old_account_id, int account_id)
 	p->member[i].leader = 0;
 	p->member[j].leader = 1;
 
-#if PACKETVER < 25
+#if PACKETVER < 20091208
 	for(i=0; i<MAX_PARTY; i++) {
 		struct map_session_data *sd = p->member[i].sd;
 		if(sd)

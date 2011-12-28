@@ -863,7 +863,7 @@ static int chrif_breakadoption(int char_id, unsigned char *name)
 
 	snprintf(output, sizeof(output), msg_txt(174), name); // %sさんの要望により、養子関係が破棄されました
 	clif_disp_onlyself(sd->fd, output);
-#if PACKETVER > 14
+#if PACKETVER > 20080102
 	clif_skillinfoblock(sd);
 #endif
 	return 0;

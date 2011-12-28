@@ -5661,9 +5661,9 @@ int atcommand_changemaptype(const int fd, struct map_session_data* sd, AtCommand
 int atcommand_hotkeyset(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	int num, hotkeys;
-#if PACKETVER >= 21
+#if PACKETVER >= 20090617
 	hotkeys = 38;
-#elif PACKETVER >= 20
+#elif PACKETVER >= 20090603
 	hotkeys = 36;
 #else
 	hotkeys = 27;
