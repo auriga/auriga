@@ -1009,9 +1009,11 @@ static int char_break_adoption(const struct mmo_charstatus *st)
 		struct mmo_charstatus s1;
 		memcpy(&s1,st,sizeof(struct mmo_charstatus));
 		// 養子であれば元の職に戻す
-		if(s1.class_ >= PC_CLASS_NV_B && s1.class_ <= PC_CLASS_SNV_B) {
+		if(s1.class_ >= PC_CLASS_NV_B && s1.class_ <= PC_CLASS_SNV_B || PC_CLASS_ESNV_B) {
 			if(s1.class_ == PC_CLASS_SNV_B)
 				s1.class_ = PC_CLASS_SNV;
+			else if(s1.class_ == PC_CLASS_ESNV_B)
+				s1.class_ = PC_CLASS_ESNV;
 			else
 				s1.class_ -= PC_CLASS_NV_B;
 		}

@@ -197,12 +197,13 @@ int pc_check_guild_skill_effective_range(struct map_session_data *sd);
 						(sd)->status.class_ == PC_CLASS_RK5_H || (sd)->status.class_ == PC_CLASS_RK6_H)
 
 #define pc_isbaby(sd)  (((sd)->status.class_ >= PC_CLASS_NV_B && (sd)->status.class_ <= PC_CLASS_SNV_B) ||	\
-						((sd)->status.class_ >= PC_CLASS_RK_B && (sd)->status.class_ <= PC_CLASS_NC2_B))
+						((sd)->status.class_ >= PC_CLASS_RK_B && (sd)->status.class_ <= PC_CLASS_NC2_B) || \
+						(sd)->status.class_ == PC_CLASS_ESNV_B)
 
 #define pc_is1stclass(sd) (((sd)->s_class.job >= PC_JOB_SM && (sd)->s_class.job <= PC_JOB_TF) ||	\
 						   (sd)->s_class.job == PC_JOB_SNV || (sd)->s_class.job == PC_JOB_TK ||	\
 						   (sd)->s_class.job == PC_JOB_GS || (sd)->s_class.job == PC_JOB_NJ ||		\
-						   (sd)->s_class.job == PC_JOB_MB)
+						   (sd)->s_class.job == PC_JOB_MB || (sd)->s_class.job == PC_JOB_ESNV)
 
 #define pc_is2ndclass(sd) (((sd)->s_class.job >= PC_JOB_KN && (sd)->s_class.job <= PC_JOB_DC) ||	\
 						   (sd)->s_class.job == PC_JOB_SG || (sd)->s_class.job == PC_JOB_SL ||		\

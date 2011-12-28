@@ -991,7 +991,7 @@ tha_t05.gat,208,97,0		warp	thanatoswarp4009	1,1,tha_t05.gat,62,162
 tha_t05.gat,185,235,0		warp	thanatoswarp4010	1,1,tha_t06.gat,206,11
 //タナトスタワー6F⇒タナトスタワー7F
 tha_t06.gat,119,120,0		script	thanatoswarp4011	45,1,1,{
-	if( (Class >= CLASS_KN_H && Class <= CLASS_CR2_H) || (Class >= CLASS_RK && Class <= CLASS_NC2_B) || (BaseLevel >= 95 && (Job >=  Job_SuperNovice && Job <= Job_DarkCollector)) )
+	if( (Class >= CLASS_KN_H && Class <= CLASS_CR2_H) || (Class >= CLASS_RK && Class <= CLASS_NC2_B) || (BaseLevel >= 95 && (Job >=  Job_SuperNovice && Job <= Job_DarkCollector || Job == Job_ExpandedSuperNovice)) )
 		warp "thana_step.gat",69,369;
 	else {
 		mes "-何か巨大な力に阻まれている……-";

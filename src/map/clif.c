@@ -16424,7 +16424,7 @@ static void clif_parse_doridori(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-	if(sd->s_class.job == PC_JOB_SNV) {
+	if(sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) {
 		sd->state.sn_doridori = 1;
 	}
 	else if(sd->state.taekwonrest && sd->s_class.job >= PC_JOB_TK && sd->s_class.job <= PC_JOB_SL) {
@@ -16445,7 +16445,7 @@ static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, i
 
 	nullpo_retv(sd);
 
-	if(sd->s_class.job != PC_JOB_SNV)
+	if(sd->s_class.job != PC_JOB_SNV || sd->s_class.job != PC_JOB_ESNV)
 		return;
 
 	next = pc_nextbaseexp(sd);

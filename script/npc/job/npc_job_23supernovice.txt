@@ -34,7 +34,7 @@ aldeba_in.gat,223,167,3	script	トゼーレ	709,{
 		mes "では御機嫌よう〜。";
 		close;
 	}
-	if(Job == Job_SuperNovice) {
+	if(Job == Job_SuperNovice || Job == Job_ExpandedSuperNovice) {
 		mes "[トゼーレ]";
 		mes "君はもう立派なノービスクラブの一員";
 		mes "です。特に秀でた何かがある訳じゃなし";
@@ -242,7 +242,7 @@ aldeba_in.gat,223,167,3	script	トゼーレ	709,{
 
 //==============================================================
 aldeba_in.gat,216,169,5	script	セレイ	86,{
-	if(Job == Job_SuperNovice) {
+	if(Job == Job_SuperNovice || Job == Job_ExpandedSuperNovice) {
 		mes "[セレイ]";
 		mes "おおおおおおおおおおおおお!!!!";
 		mes "あなたは我等がノービスクラブの";
@@ -286,7 +286,7 @@ aldeba_in.gat,216,169,5	script	セレイ	86,{
 //------------------------------------------
 
 aldebaran.gat,54,238,5	script	カプラ職員	117,{
-	if(Job != Job_SuperNovice) {
+	if(Job != Job_SuperNovice || Job != Job_ExpandedSuperNovice) {
 		mes "[カプラ職員]";
 		mes "こんにちは〜。申し訳ございませんが";
 		mes "私がお客様にして差し上げられることは";

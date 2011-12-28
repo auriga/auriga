@@ -12114,6 +12114,8 @@ int buildin_getbaseclass(struct script_state *st)
 			break;
 		case PC_CLASS_SNV:
 		case PC_CLASS_SNV_B:
+		case PC_CLASS_ESNV:
+		case PC_CLASS_ESNV_B:
 			class_ = PC_CLASS_SNV;
 			break;
 		case PC_CLASS_SG:

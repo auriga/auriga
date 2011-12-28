@@ -4875,7 +4875,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				int skill = pc_checkskill(sd,HP_MEDITATIO);
 				if(skill > 0)	// メディタティオ
 					heal += heal * (skill * 2) / 100;
-				if(dstsd && sd->status.partner_id == dstsd->status.char_id && sd->s_class.job == PC_CLASS_SNV && sd->sex == SEX_FEMALE)
+				if(dstsd && sd->status.partner_id == dstsd->status.char_id && (sd->s_class.job == PC_CLASS_SNV || sd->s_class.job == PC_CLASS_ESNV) && sd->sex == SEX_FEMALE)
 					heal *= 2;	// スパノビの嫁が旦那にヒールすると2倍になる
 			}
 			if(skillid == AB_HIGHNESSHEAL)
@@ -6883,7 +6883,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			battle_heal(NULL,bl,0,gain_sp,0);
 
 			// スパノビの嫁が旦那に使用すると10%の確率でステータス付与
-			if(sd->s_class.job == PC_JOB_SNV && sd->sex == SEX_FEMALE && atn_rand()%100 < 10) {
+			if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) && sd->sex == SEX_FEMALE && atn_rand()%100 < 10) {
 				int sec = skill_get_time2(skillid,skilllv);
 				status_change_start(&sd->bl,GetSkillStatusChangeTable(skillid),skilllv,1,0,0,sec,0);
 				status_change_start(&dstsd->bl,GetSkillStatusChangeTable(skillid),skilllv,2,0,0,sec,0);
@@ -11749,7 +11749,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 			case SL_STAR:        if(job != PC_JOB_SG) fail = 1; break; // ケンセイの魂
 			case SL_SAGE:        if(job != PC_JOB_SA && job != PC_JOB_SO) fail = 1; break; // セージの魂
 			case SL_CRUSADER:    if(job != PC_JOB_CR && job != PC_JOB_LG) fail = 1; break; // クルセイダーの魂
-			case SL_SUPERNOVICE: if(job != PC_JOB_SNV) fail = 1; break; // スーパーノービスの魂
+			case SL_SUPERNOVICE: if(job != PC_JOB_SNV || job != PC_JOB_ESNV) fail = 1; break; // スーパーノービスの魂
 			case SL_KNIGHT:      if(job != PC_JOB_KN && job != PC_JOB_RK) fail = 1; break; // ナイトの魂
 			case SL_WIZARD:      if(job != PC_JOB_WZ && job != PC_JOB_WL) fail = 1; break; // ウィザードの魂
 			case SL_PRIEST:      if(job != PC_JOB_PR && job != PC_JOB_AB) fail = 1; break; // プリーストの魂
@@ -11870,7 +11870,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 					int i;
 					for(i=0; i<MAX_PARTY; i++) {
 						psd = pt->member[i].sd;
-						if(psd && (psd->status.class_ == PC_CLASS_SNV || psd->status.class_ == PC_CLASS_SNV_B)) {
+						if(psd && (psd->status.class_ == PC_CLASS_SNV || psd->status.class_ == PC_CLASS_SNV_B || psd->status.class_ == PC_CLASS_ESNV || psd->status.class_ == PC_CLASS_ESNV_B)) {
 							f = 1;
 							break;
 						}

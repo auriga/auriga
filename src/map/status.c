@@ -847,7 +847,7 @@ L_RECALC:
 		}
 	}
 	// 1度も死んでないJob70スパノビに+10
-	if(sd->s_class.job == PC_JOB_SNV && sd->status.die_counter == 0 && sd->status.job_level >= 70) {
+	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) && sd->status.die_counter == 0 && sd->status.job_level >= 70) {
 		sd->paramb[0] += 10;
 		sd->paramb[1] += 10;
 		sd->paramb[2] += 10;
@@ -1482,7 +1482,7 @@ L_RECALC:
 	if((sd->status.weapon == WT_DAGGER || sd->status.weapon == WT_1HSWORD) && ((skill = pc_checkskill(sd,GN_TRAINING_SWORD)) > 0))	// 剣修練の命中率増加
 		sd->hit += skill*3;
 
-	if(sd->s_class.job == PC_JOB_SNV && sd->status.base_level >= 99)
+	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) && sd->status.base_level >= 99)
 	{
 		if(pc_isupper(sd))
 			sd->status.max_hp += 2000*(100 + sd->paramc[2])/100 * battle_config.upper_hp_rate/100;
@@ -2009,7 +2009,7 @@ L_RECALC:
 		}
 
 		if(sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1) {	// 爆裂波動
-			if(sd->s_class.job == PC_JOB_SNV)
+			if(sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV)
 				sd->critical += sd->sc.data[SC_EXPLOSIONSPIRITS].val1*100;
 			else
 				sd->critical += sd->sc.data[SC_EXPLOSIONSPIRITS].val2;
@@ -9758,6 +9758,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 			type = SC_HUNTER;
 			break;
 		case PC_JOB_SNV:
+		case PC_JOB_ESNV:
 			type = SC_SUPERNOVICE;
 			break;
 		case PC_JOB_GS:

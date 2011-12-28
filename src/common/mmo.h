@@ -102,7 +102,7 @@
 #define MAX_MERC_SKILLID   (MERC_SKILLID+MAX_MERCSKILL)		// 傭兵スキルIDの最大値
 #define MAX_GUILD_SKILLID  (GUILD_SKILLID+MAX_GUILDSKILL)	// ギルドスキルIDの最大値
 
-#define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_GUILDSKILL)
+#define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_QUESTSKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_GUILDSKILL)
 #define MAX_PCSKILL  MAX_QUEST_SKILLID		// PCが使用可能の最大のスキルID
 
 #define MAX_QUEST_DB 1000
@@ -258,6 +258,89 @@ enum {
 	PC_CLASS_LG2_B,			// 養子ロイヤルガード(騎乗)
 	PC_CLASS_RA2_B,			// 養子レンジャー(騎乗)
 	PC_CLASS_NC2_B,			// 養子メカニック(騎乗)
+	PC_CLASS_NJ2   = 4114,	// 忍者(騎乗)
+	PC_CLASS_GS2,			// ガンスリンガー(騎乗)
+	PC_CLASS_SM2,			// ソードマン(騎乗)
+	PC_CLASS_BS2_H = 4118,	// ホワイトスミス(騎乗)
+	PC_CLASS_MC2,			// マーチャント(騎乗)
+	PC_CLASS_GN2,			// ジェネティック(騎乗)
+	PC_CLASS_AM2_H,			// クリエイター(騎乗)
+	PC_CLASS_AC2,			// アーチャー(騎乗)
+	PC_CLASS_SG3,			// 拳聖(騎乗)
+	PC_CLASS_NV2,			// ノービス(騎乗)
+	PC_CLASS_MO2,			// モンク(騎乗)
+	PC_CLASS_AL2,			// アコライト(騎乗)
+	PC_CLASS_SR2,			// 修羅(騎乗)
+	PC_CLASS_SNV2,			// スーパーノービス(騎乗)
+	PC_CLASS_AB2,			// アークビショップ(騎乗)
+	PC_CLASS_MG2,			// マジシャン(騎乗)
+	PC_CLASS_SA2,			// セージ(騎乗)
+	PC_CLASS_SO2,			// ソーサラー(騎乗)
+	PC_CLASS_WL2,			// ウォーロック(騎乗)
+	PC_CLASS_WZ2,			// ウィザード(騎乗)
+	PC_CLASS_WZ2_H = 4136,	// ハイウィザード(騎乗)
+	PC_CLASS_AM2,			// アルケミスト(騎乗)
+	PC_CLASS_BS2,			// ブラックスミス(騎乗)
+	PC_CLASS_MO2_H,			// チャンピオン(騎乗)
+	PC_CLASS_GC2,			// ギロチンクロス(騎乗)
+	PC_CLASS_TF2,			// シーフ(騎乗)
+	PC_CLASS_RG2,			// ローグ(騎乗)
+	PC_CLASS_RG2_H,			// チェイサー(騎乗)
+	PC_CLASS_RG3_H,			// JT_DOG_STALKER
+	PC_CLASS_AS2,			// アサシン(騎乗)
+	PC_CLASS_AS2_H,			// アサシンクロス(騎乗)
+	PC_CLASS_DC2,			// ダンサー(騎乗)
+	PC_CLASS_MI2,			// ミンストレル(騎乗)
+	PC_CLASS_BA2,			// バード(騎乗)
+	PC_CLASS_HT2_H,			// スナイパー(騎乗)
+	PC_CLASS_WA2,			// ワンダラー(騎乗)
+	PC_CLASS_DC2_H,			// ジプシー(騎乗)
+	PC_CLASS_BA2_H,			// クラウン(騎乗)
+	PC_CLASS_HT2,			// ハンター(騎乗)
+	PC_CLASS_TK2,			// テコンキッド(騎乗)
+	PC_CLASS_PR2,			// プリースト(騎乗)
+	PC_CLASS_PR2_H,			// ハイプリースト(騎乗)
+	PC_CLASS_NV2_B,			// 養子ノービス(騎乗)
+	PC_CLASS_MG2_B = 4160,	// 養子マジシャン(騎乗)
+	PC_CLASS_AC2_B,			// 養子アーチャー(騎乗)
+	PC_CLASS_AL2_B,			// 養子アコライト(騎乗)
+	PC_CLASS_MC2_B,			// 養子マーチャント(騎乗)
+	PC_CLASS_HT2_B,			// 養子ハンター(騎乗)
+	PC_CLASS_AS2_B,			// 養子アサシン(騎乗)
+	PC_CLASS_MO2_B,			// 養子モンク(騎乗)
+	PC_CLASS_SA2_B,			// 養子セージ(騎乗)
+	PC_CLASS_RG3_B,			// JT_DOG_CHASER_B
+	PC_CLASS_AM2_B,			// 養子アルケミスト(騎乗)
+	PC_CLASS_BA2_B,			// 養子バード(騎乗)
+	PC_CLASS_DC2_B,			// 養子ダンサー(騎乗)
+	PC_CLASS_SNV2_B,		// 養子スーパーノービス(騎乗)
+	PC_CLASS_WL2_B,			// 養子ウォーロック(騎乗)
+	PC_CLASS_AB2_B,			// 養子アークビショップ(騎乗)
+	PC_CLASS_GC2_B,			// 養子ギロチンクロス(騎乗)
+	PC_CLASS_MI2_B = 4177,	// 養子ミンストレル(騎乗)
+	PC_CLASS_WA2_B,			// 養子ワンダラー(騎乗)
+	PC_CLASS_SR2_B,			// 養子修羅(騎乗)
+	PC_CLASS_GN2_B,			// 養子ジェネティック(騎乗)
+	PC_CLASS_TF2_B,			// 養子シーフ(騎乗)
+	PC_CLASS_RG2_B,			// 養子ローグ(騎乗)
+	PC_CLASS_NV2_H,			// 転生ノービス(騎乗)
+	PC_CLASS_MG2_H = 4185,	// 転生マジシャン(騎乗)
+	PC_CLASS_AC2_H,			// 転生アーチャー(騎乗)
+	PC_CLASS_AL2_H,			// 転生アコライト(騎乗)
+	PC_CLASS_MC2_H,			// 転生マーチャント(騎乗)
+	PC_CLASS_TF2_H,			// 転生シーフ(騎乗)
+	PC_CLASS_ESNV,			// 拡張ノービス
+	PC_CLASS_ESNV_B,		// 養子拡張ノービス
+	PC_CLASS_ESNV2,			// 拡張スーパーノービス(騎乗)
+	PC_CLASS_ESNV2_B,		// 養子拡張スーパーノービス(騎乗)
+	PC_CLASS_PR2_B,			// 養子プリースト(騎乗)
+	PC_CLASS_WZ2_B,			// 養子ウィザード(騎乗)
+	PC_CLASS_BS2_B,			// 養子ブラックスミス(騎乗)
+	PC_CLASS_KG    = 4211,	// 影狼
+	PC_CLASS_OB,			// 朧
+	PC_CLASS_KG2,			// 影狼(騎乗)
+	PC_CLASS_OB2,			// 朧(騎乗)
+	PC_CLASS_SO2_B = 7176,	// 養子ソーサラー(騎乗)
 	PC_CLASS_MAX
 };
 
@@ -305,6 +388,7 @@ enum {
 	PC_JOB_SR,		// 修羅
 	PC_JOB_GN,		// ジェネティック
 	PC_JOB_SC,		// シャドウチェイサー
+	PC_JOB_ESNV,	// 拡張スーパーノービス
 	PC_JOB_MAX
 };
 

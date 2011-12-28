@@ -864,6 +864,7 @@ static int pc_check_useclass(struct map_session_data *sd, unsigned int class_)
 			job_bit = 0x00100000;
 			break;
 		case PC_JOB_SNV:	// スーパーノービス
+		case PC_JOB_ESNV:	// 拡張スーパーノービス
 			job_bit = 0x00800000;
 			break;
 		case PC_JOB_TK:		// テコンキッド
@@ -4920,6 +4921,10 @@ struct pc_base_job pc_calc_base_job(int b_class)
 			bj.job   = PC_JOB_SNV;
 			bj.upper = PC_UPPER_NORMAL;
 			break;
+		case PC_CLASS_ESNV:
+			bj.job   = PC_JOB_ESNV;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
 		case PC_CLASS_GS:
 			bj.job   = PC_JOB_GS;
 			bj.upper = PC_UPPER_NORMAL;
@@ -4998,6 +5003,10 @@ struct pc_base_job pc_calc_base_job(int b_class)
 			break;
 		case PC_CLASS_SNV_B:
 			bj.job   = PC_JOB_SNV;
+			bj.upper = PC_UPPER_BABY;
+			break;
+		case PC_CLASS_ESNV_B:
+			bj.job   = PC_JOB_ESNV;
 			bj.upper = PC_UPPER_BABY;
 			break;
 		case PC_CLASS_TK:
@@ -5196,6 +5205,12 @@ int pc_calc_class_job(int job, int upper)
 			else
 				class_ = PC_CLASS_SNV;
 			break;
+		case PC_JOB_ESNV:
+			if(upper == PC_UPPER_BABY)
+				class_ = PC_CLASS_ESNV_B;
+			else
+				class_ = PC_CLASS_ESNV;
+			break;
 		case PC_JOB_TK:
 			class_ = PC_CLASS_TK;
 			break;
@@ -5282,7 +5297,7 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		pc_heal(sd,sd->status.max_hp,sd->status.max_sp);
 
 		// スパノビはキリエ、イムポ、マニピ、グロ、サフラがかかる
-		if(sd->s_class.job == PC_JOB_SNV) {
+		if(sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) {
 			status_change_start(&sd->bl,SC_KYRIE,10,0,0,0,120000,0);
 			status_change_start(&sd->bl,SC_IMPOSITIO,5,0,0,0,120000,0);
 			status_change_start(&sd->bl,SC_MAGNIFICAT,5,0,0,0,120000,0);
@@ -5330,7 +5345,7 @@ static int pc_checkjoblevelup(struct map_session_data *sd)
 		sd->status.skill_point++;
 		clif_updatestatus(sd,SP_SKILLPOINT);
 		status_calc_pc(sd,0);
-		if(sd->status.class_ == PC_CLASS_SNV || sd->status.class_ == PC_CLASS_SNV_B)
+		if(sd->status.class_ == PC_CLASS_SNV || sd->status.class_ == PC_CLASS_SNV_B || sd->status.class_ == PC_CLASS_ESNV || sd->status.class_ == PC_CLASS_ESNV_B)
 			clif_misceffect(&sd->bl,8);
 		else
 			clif_misceffect(&sd->bl,1);
@@ -5626,6 +5641,8 @@ int pc_nextbaseexp(struct map_session_data *sd)
 		case PC_CLASS_LG2_B:	// 養子ロイヤルガード(騎乗)
 		case PC_CLASS_RA2_B:	// 養子レンジャー(騎乗)
 		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
+		case PC_CLASS_ESNV:	// 拡張スーパーノービス
+		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
 			table = 7;
 			break;
 		case PC_CLASS_RK_H:	// 転生ルーンナイト
@@ -5806,6 +5823,8 @@ int pc_nextjobexp(struct map_session_data *sd)
 		case PC_CLASS_LG2_B:	// 養子ロイヤルガード(騎乗)
 		case PC_CLASS_RA2_B:	// 養子レンジャー(騎乗)
 		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
+		case PC_CLASS_ESNV:	// 拡張スーパーノービス
+		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
 			table = 18;
 			break;
 		case PC_CLASS_RK_H:	// 転生ルーンナイト
@@ -6319,7 +6338,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	}
 
 	// スパノビがHP0になったとき、Exp99.0%以上かLv100状態ならばHPが全回復して金剛状態になる
-	if(sd->s_class.job == PC_JOB_SNV && !sd->state.snovice_dead_flag) {
+	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) && !sd->state.snovice_dead_flag) {
 		int next = pc_nextbaseexp(sd);
 		if( (next > 0 && (atn_bignumber)sd->status.base_exp * 1000 / next >= 990) ||
 		    (next <= 0 && sd->status.base_exp >= battle_config.snovice_maxexp_border) )
@@ -7272,8 +7291,8 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	if(job >= PC_JOB_TK && job <= PC_JOB_DA)
 		upper = PC_UPPER_NORMAL;
 
-	// スパノビで転生指定の場合
-	if(job == PC_JOB_SNV && upper == PC_UPPER_HIGH)
+	// スパノビ、拡張スパノビで転生指定の場合
+	if((job == PC_JOB_SNV || job == PC_JOB_ESNV) && upper == PC_UPPER_HIGH)
 		upper = PC_UPPER_NORMAL;
 
 	// 養子<->転生前の場合JOB1にしない
@@ -9098,7 +9117,7 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 	bsp = sd->status.sp;
 
 	inc_num = pc_spheal(sd);
-	if(sd->s_class.job == PC_JOB_SNV || sd->sc.data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc.data[SC_MONK].timer != -1)
+	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) || sd->sc.data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc.data[SC_MONK].timer != -1)
 		sd->regen.sp += inc_num;
 	if(sd->ud.walktimer == -1)
 		sd->regen.sptick += natural_heal_diff_tick;

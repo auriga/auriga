@@ -1,4 +1,12 @@
 ----------------------------------------
+//0892 [2011/12/29] by popori
+
+・拡張ノービスの実装
+ (src/common/mmo.h src/char/char.c src/map/clif.c src/map/pc.* src/map/script.c src/map/skill.c src/map/status.c
+　db/const.txt db/job_db1.txt db/job_db2.txt db/job2_2.txt db/job_hp_db.txt db/job_sp_db.txt db/skill_tree.txt
+　script/npc/job/npc_job_23supernovice.txt script/warp/npc_warp_dun.txt script/sample/npc_custom_jobchange.txt)
+
+----------------------------------------
 //0891 [2011/12/29] by popori
 
 ・PACKETVER20100803からキャッシュショップの複数個購入に対応 (db/packet_db.txt src/map/clif.c src/map/npc.*)
